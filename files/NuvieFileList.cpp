@@ -98,7 +98,7 @@ bool NuvieFileList::add_filename(const char *directory, const char *filename)
     return false;
    }
 
- filedesc.m_time = sb.st_mtimespec.tv_sec;
+ filedesc.m_time = sb.st_mtime;
  filedesc.filename.assign(filename);
 
  file_list.push_front(filedesc);
