@@ -140,6 +140,8 @@ const char *Converse::src_name()
         return("talk.lzc");
     if(gametype == NUVIE_GAME_SE)
         return("talk.lzc");
+
+ return("");
 }
 
 

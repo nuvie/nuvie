@@ -1,3 +1,7 @@
+2003-07-15  Eric Fry <efry@users.sourceforge.net>
+	* Some small compile fixes.
+	* Added Use Vortex. ;) Just for fun.
+
 2003-07-15  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Added [Avatar] HP global var. for conversations, changed init. of
 	PARTY* vars to number of followers, and increased number of vars to 36.

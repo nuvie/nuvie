@@ -161,7 +161,7 @@ protected:
 
 public:
     ConverseInterpret(Converse *owner);
-    ~ConverseInterpret();
+    virtual ~ConverseInterpret();
 
     bool waiting() { return(is_waiting); }
     void wait()    { is_waiting = true; }

@@ -31,7 +31,7 @@
 #include "UseCode.h"
 
 //object numbers
-
+#define OBJ_U6_VORTEX_CUBE     62
 #define OBJ_U6_KEY             64
 #define OBJ_U6_CHEST           98
 #define OBJ_U6_CANDLE         122

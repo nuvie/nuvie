@@ -96,6 +96,9 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
                          use_firedevice_message(obj,(bool)obj->frame_n);
                          break;
                          
+    case OBJ_U6_VORTEX_CUBE : scroll->display_string("\nYou've finished the game!!\nPity we haven't implemented the end sequence yet.\n");
+                              break;
+                              
     default : scroll->display_string("\nnot usable\n");
               break;
    }
