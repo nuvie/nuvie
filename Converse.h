@@ -18,10 +18,13 @@
  *
  */
 
+#include <SDL.h>
+
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
 #include <stack>
+
 #include "ActorManager.h"
 #include "Actor.h"
 #include "U6Lib_n.h"

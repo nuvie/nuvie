@@ -145,7 +145,6 @@ bool Player::loadObjlistData()
  objlist.seek(0x1c71);
  
  gender = objlist.read1();
- portrait_n = objlist.read1();
  
  return true;
 }

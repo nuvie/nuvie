@@ -500,7 +500,7 @@ U6LList *ObjManager::loadObjSuperChunk(char *filename)
    obj = loadObj(&file,i);
   // addObj(list,obj);
      
-   if(obj->status & 0x8) // FIX here OBJ_STATUS_IN_CONTAINER)
+   if(obj->status == 0x8) // FIX here might be & 0x8
      {
       addObjToContainer(list,obj);
      }

@@ -1,11 +1,11 @@
-#ifndef __InventoryView_h__
-#define __InventoryView_h__
+#ifndef __View_h__
+#define __View_h__
 
 /*
- *  InventoryView.h
+ *  View.h
  *  Nuive
  *
- *  Created by Eric Fry on Tue May 13 2003.
+ *  Created by Eric Fry on Fri May 16 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -24,36 +24,39 @@
  *
  */
 
+#include <SDL.h>
+
 #include "U6def.h"
 #include "Configuration.h"
-#include "View.h"
 #include "Screen.h"
 #include "Text.h"
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Party.h"
 
-class InventoryView : public View {
- 
- uint8 cur_actor_num;
- 
- //cursor pos
- 
- public:
- InventoryView(Configuration *cfg);
- ~InventoryView();
- 
- bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
- void update_display();
- bool handle_input(SDLKey *input);
- void display_doll(uint16 x, uint16 y);
- 
+class View
+{
  protected:
  
- void display_name();
- void display_inventory_list();
- void display_command_icons();
+ Configuration *config;
+ 
+ Screen *screen;
+ Text *text;
+ TileManager *tile_manager;
+ ObjManager *obj_manager;
+ Party *party;
+
+ public:
+ 
+ View(Configuration *cfg);
+ virtual ~View();
+ 
+ virtual bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ 
+ virtual void update_display()=0;
+ virtual bool handle_input(SDLKey *input);
+
 };
 
-#endif /* __InventoryView_h__ */
+#endif /* __View_h__ */
 

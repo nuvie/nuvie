@@ -246,7 +246,7 @@ uint32 U6Lib_n::get_item_size(uint32 item_number)
 }
 
 
-unsigned char *U6Lib_n::get_item(uint32 item_number)
+unsigned char *U6Lib_n::get_item(uint32 item_number, unsigned char *ret_buf)
 {
  uint32 item_size;
  unsigned char *buf;
@@ -258,7 +258,10 @@ unsigned char *U6Lib_n::get_item(uint32 item_number)
  if(item_size == 0)
    return NULL;
 
- buf = (unsigned char *)malloc(item_size);
+ if(ret_buf == NULL)
+   buf = (unsigned char *)malloc(item_size);
+ else
+   buf = ret_buf;
 
  file.seek(get_item_offset(item_number));
  

@@ -51,7 +51,7 @@ public:
    uint32 get_item_size(uint32 item_number);
    uint32 get_item_offset(uint32 item_number);
    void add_item_offset(uint32 offset32, const char *name);
-   unsigned char *get_item(uint32 item_number);
+   unsigned char *get_item(uint32 item_number, unsigned char *buf=NULL);
    void load_index(FILE *index_f);
    void write_index();
    void write_item(uint32 item_number);

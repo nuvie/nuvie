@@ -45,7 +45,6 @@ class Player
  
  char name[14];
  uint8 gender;
- uint8 portrait_n;
  
  uint8 karma;
  

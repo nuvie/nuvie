@@ -39,12 +39,13 @@
 #include "Player.h"
 #include "Party.h"
 #include "Converse.h"
-#include "InventoryView.h"
+#include "ViewManager.h"
 
 #include "MsgScroll.h"
 #include "Map.h"
 #include "MapWindow.h"
 #include "Event.h"
+#include "Portrait.h"
 
 #define NUVIE_GAME_ULTIMA6 1
 #define NUVIE_GAME_MARTIAN 2
@@ -69,9 +70,10 @@ class Game
  Party *party;
  Converse *converse;
  
- InventoryView *inventory_view;
+ ViewManager *view_manager;
  
  GameClock *clock;
+ Portrait *portrait;
  
  Event *event;
  

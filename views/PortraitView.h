@@ -1,11 +1,11 @@
-#ifndef __InventoryView_h__
-#define __InventoryView_h__
+#ifndef __PortraitView_h__
+#define __PortraitView_h__
 
 /*
- *  InventoryView.h
+ *  PortraitView.h
  *  Nuive
  *
- *  Created by Eric Fry on Tue May 13 2003.
+ *  Created by Eric Fry on Tue May 20 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -32,28 +32,30 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Party.h"
+#include "Portrait.h"
 
-class InventoryView : public View {
+class PortraitView : public View {
  
  uint8 cur_actor_num;
+ Portrait *portrait;
+ 
+ unsigned char *portrait_data;
  
  //cursor pos
  
  public:
- InventoryView(Configuration *cfg);
- ~InventoryView();
+ PortraitView(Configuration *cfg);
+ ~PortraitView();
  
- bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
  void update_display();
  bool handle_input(SDLKey *input);
- void display_doll(uint16 x, uint16 y);
+ 
+ void set_portrait(uint8 actor_num, char *name);
  
  protected:
  
- void display_name();
- void display_inventory_list();
- void display_command_icons();
 };
 
-#endif /* __InventoryView_h__ */
+#endif /* __PortraitView_h__ */
 

@@ -5,6 +5,20 @@
  *  Created by Eric Fry on Wed Mar 26 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 
 #include <SDL.h>
@@ -34,7 +48,7 @@ Event::~Event()
 }
 
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
-                 GameClock *gc, Converse *c)
+                 GameClock *gc, Converse *c, ViewManager *vm)
 {
  obj_manager = om;
  map_window = mw;
@@ -42,7 +56,8 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  clock = gc;
  player = p;
  converse = c;
-
+ view_manager = vm;
+ 
  mode = MOVE_MODE;
 
  book = new Book(config);
@@ -328,6 +343,9 @@ bool Event::look()
  sint16 p_id = -1; // party member number of actor
  char *data;
  
+ if(actor)
+   view_manager->set_portrait_mode(actor->get_actor_num(),NULL);
+
  scroll->display_string("Thou dost see ");
  // show real actor name and portrait if in avatar's party
  if(actor && ((p_id = player->get_party()->get_member_num(actor)) >= 0))

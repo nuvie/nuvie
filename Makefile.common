@@ -29,6 +29,10 @@ nuvie_SOURCES = \
 \
 	views/InventoryView.cpp \
 	views/InventoryView.h \
+	views/PortraitView.cpp \
+	views/PortraitView.h \
+	views/ViewManager.cpp \
+	views/ViewManager.h \
 \
 	Actor.cpp \
 	Actor.h \
@@ -58,6 +62,8 @@ nuvie_SOURCES = \
 	Party.h \
 	Player.cpp \
 	Player.h \
+	Portrait.cpp \
+	Portrait.h \
 	Text.cpp \
 	Text.h \
 	TileManager.cpp \

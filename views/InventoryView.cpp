@@ -23,9 +23,9 @@
 
 #include "InventoryView.h"
 
-InventoryView::InventoryView(Configuration *cfg)
+InventoryView::InventoryView(Configuration *cfg) : View(cfg)
 {
- config = cfg;
+
 }
 
 InventoryView::~InventoryView()
@@ -34,11 +34,9 @@ InventoryView::~InventoryView()
 
 bool InventoryView::init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
- screen = s;
- text = t;
- party = p;
- tile_manager = tm;
- obj_manager = om;
+ View::init(s,t,p,tm,om);
+ 
+ cur_actor_num = 3;
  
  return true;
 }
@@ -86,7 +84,7 @@ void InventoryView::display_name()
 {
  char *name;
  
- name = party->get_actor_name(0);
+ name = party->get_actor_name(cur_actor_num);
  
  if(name == NULL)
   return;
@@ -107,7 +105,7 @@ void InventoryView::display_inventory_list()
  
  empty_tile = tile_manager->get_tile(410);
  
- actor = party->get_actor(0);
+ actor = party->get_actor(cur_actor_num);
  
  inventory = actor->get_inventory_list();
  
@@ -152,3 +150,4 @@ void InventoryView::display_command_icons()
  screen->blit(176+4*16,88,tile->data,8,16,16,16,true);
 
 }
+
