@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <iostream>
 
-#include "misc/U6def.h"
+#include "nuvieDefs.h"
 #include "files/U6Lib_n.h"
 #include "files/U6Lzw.h"
 #include "conf/Configuration.h"
