@@ -330,7 +330,10 @@ int U6Lzw::get_next_codeword (long *bits_read, unsigned char *source, int codewo
 
     b0 = source[*bits_read/8];
     b1 = source[*bits_read/8+1];
-    b2 = source[*bits_read/8+2];
+    if (codeword_size + (*bits_read % 8) > 16)
+      b2 = source[*bits_read/8+2]; // only read next byte if necessary
+    else
+      b2 = 0;
 
     codeword = ((b2 << 16) + (b1 << 8) + b0);
     codeword = codeword >> (*bits_read % 8);
