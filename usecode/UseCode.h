@@ -34,6 +34,7 @@
 #define USE_EVENT_LOOK    0x02
 #define USE_EVENT_PASS    0x04
 #define USE_EVENT_ON      0x08 // post-move/idle ??
+#define USE_EVENT_SEARCH  0x10
 
 class UseCode
 {
@@ -47,7 +48,7 @@ class UseCode
 
  sint32 int_ref; // pass objects to usecode functions
  Obj *obj_ref;
- Actor *actor_ref;
+ Actor *actor_ref, *actor2_ref;
 
  public:
  
@@ -63,6 +64,7 @@ class UseCode
  virtual bool use_obj(Obj *obj, Actor *actor)  { return(false); }
  virtual bool look_obj(Obj *obj, Actor *actor) { return(false); }
  virtual bool pass_obj(Obj *obj, Actor *actor) { return(false); }
+ virtual bool search_obj(Obj *obj, Actor *actor) { return(false); }
 
  virtual bool can_use(Obj *obj)  { return(false); }
  virtual bool can_look(Obj *obj) { return(false); }
@@ -75,12 +77,12 @@ class UseCode
 
  void set_itemref(sint32 val) { int_ref = val; }
  void set_itemref(Obj *val)   { obj_ref = val; }
- void set_itemref(Actor *val) { actor_ref = val; }
+ void set_itemref(Actor *val, Actor *val2 = NULL) { actor_ref = val; actor2_ref = val2; }
 
  protected:
 
  void toggle_frame(Obj *obj);
- bool use_container(Obj *obj);
+ bool use_container(Obj *obj, bool print = true);
 
  virtual sint16 get_ucobject_index(uint16 n, uint8 f = 0) = 0;
  virtual bool uc_event(sint16 uco, uint8 ev, Obj *obj) = 0;

@@ -103,6 +103,13 @@ void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
  *ret_level = z;
 }
 
+
+MapCoord Actor::get_location()
+{
+    return(MapCoord(x, y, z));
+}
+
+
 uint16 Actor::get_tile_num()
 {
  return obj_n;// + frame_n;

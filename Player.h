@@ -44,7 +44,6 @@ class Player
  bool uncontrolled; // don't control or follow actor
  Actor *actor;
  ActorManager *actor_manager;
-// Vehicle *vehicle; // if riding in a vehicle
  
  char name[14];
  uint8 gender;

@@ -50,7 +50,9 @@ typedef enum {
  GET_MODE,
  MOVE_MODE,
  DROP_MODE,
- TALK_MODE
+ TALK_MODE,
+ USESELECT_MODE,
+ FREESELECT_MODE /*...or use a single free-move mode for get,talk,select?*/
 } EventMode;
 
 extern uint32 nuvieGameCounter;
@@ -97,6 +99,7 @@ class Event
  uint8 alt_code_input_num; // alt-code can get multiple inputs
 
  TimeQueue time_queue;
+ Obj *use_obj;
 
  public:
  Event(Configuration *cfg);
@@ -109,11 +112,17 @@ class Event
 
  bool update();
  bool handleEvent(const SDL_Event *event);
+ void useselect_mode(Obj *src, const char *prompt = NULL);
+ void freeselect_mode(Obj *src, const char *prompt = NULL);
+
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
  bool get(sint16 rel_x, sint16 rel_y);
  bool look();
  bool talk();
+ bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
+ bool select_obj(sint16 rel_x, sint16 rel_y);
+
  void alt_code(const char *cs);
  void alt_code_input(const char *in);
  void clear_alt_code() { alt_code_str[0] = '\0'; alt_code_len = 0; }
@@ -144,7 +153,7 @@ protected:
     bool repeat; // put back into queue with same delay after activation
 public:
 //    TimedEvent() { fprintf(stderr, "Event: timer must be given activation time!\n"); abort(); }
-    TimedEvent(uint32 reltime);
+    TimedEvent(uint32 reltime, bool immediate = false);
     virtual ~TimedEvent() { } // event queue will destroy after use
     virtual void timed(uint32 evtime) = 0;
 };

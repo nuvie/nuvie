@@ -1,3 +1,17 @@
+2003-10-07  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Objects can be used on other objects now (use-chaining). Right now
+	  this works for keys (but only on doors), and potions (but only to
+	  print a message).
+	* Timers can start immediately, so entering dungeons and using ladders
+	  starts as soon as the object is used. You can also exit dungeons now.
+	* Searching of spaces adjacent to the player is possible now. You can
+	  do this for secret doors, bags, and some other things. Other normal
+	  containers must be "used".
+	* Container contents are now printed in the message scroller when they
+	  are removed from the container.
+	* Looking at actors shouldn't display a weight if they are on an object.
+	* Actor/MapWindow: couple of new methods here to return MapCoords
+
 2003-10-06  Eric Fry <efry@users.sourceforge.net>
 	* More work on multi-tile actors.
 	* Added different movetypes for actors.

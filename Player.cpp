@@ -30,8 +30,6 @@ Player::Player(Configuration *cfg)
  config = cfg;
  config->value("config/GameType",game_type);
 
-// vehicle = NULL;
-
  karma = 0;
  questf = 0;
 }

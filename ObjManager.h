@@ -124,7 +124,7 @@ class ObjManager
  bool remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
  
  Obj *copy_obj(Obj *obj);
- const char *look_obj(Obj *obj);
+ const char *look_obj(Obj *obj, bool show_prefix = false);
 
  const char *get_obj_name(Obj *obj);
  float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS);

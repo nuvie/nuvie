@@ -6,7 +6,7 @@
  *  Copyright (c) 2003. All rights reserved.
  *
  */
-
+#include <cstdio>
 #include "U6misc.h"
 
 void config_get_path(Configuration *config, std::string filename, std::string &path)

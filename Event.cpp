@@ -56,6 +56,7 @@ Event::Event(Configuration *cfg)
  active_alt_code = 0;
  alt_code_input_num = 0;
 
+ use_obj = NULL;
 }
 
 Event::~Event()
@@ -202,30 +203,33 @@ bool Event::handleEvent(const SDL_Event *event)
                                break;
 
              case SDLK_RETURN  :
+                               map_window->set_show_use_cursor(false);
+                               map_window->set_show_cursor(false);
                                if(mode == LOOK_MODE)
                                  {
                                   mode = MOVE_MODE;
                                   look();
-                                  map_window->set_show_cursor(false);
                                  }
                                else if(mode == TALK_MODE)
                                  {
+                                  mode = MOVE_MODE;
                                   if(talk())
                                     scroll->set_talking(true);
-                                  mode = MOVE_MODE;
-                                  map_window->set_show_cursor(false);
                                  }
                                else if(mode == USE_MODE)
                                  {
                                   mode = MOVE_MODE;
                                   use(0,0);
-                                  map_window->set_show_use_cursor(false);
                                  }
                                else if(mode == GET_MODE)
                                  {
                                   mode = MOVE_MODE;
                                   get(0,0);
-                                  map_window->set_show_cursor(false);
+                                 }
+                               else if(mode == USESELECT_MODE || mode == FREESELECT_MODE)
+                                 {
+                                  mode = MOVE_MODE;
+                                  select_obj();
                                  }
                                else
                                  {
@@ -279,6 +283,34 @@ bool Event::handleEvent(const SDL_Event *event)
     if(active_alt_code && scroll->get_input())
         alt_code_input(scroll->get_input());
  return true;
+}
+
+
+/* Allow use-cursor move to grab a target for `use_obj'.
+ */
+void Event::useselect_mode(Obj *src, const char *prompt)
+{
+    use_obj = src;
+    mode = USESELECT_MODE;
+    if(prompt)
+        scroll->display_string(prompt);
+    map_window->centerCursor();
+    map_window->set_show_cursor(false);
+    map_window->set_show_use_cursor(true);
+}
+
+
+/* Allow free-cursor move to grab a target for `use_obj'.
+ */
+void Event::freeselect_mode(Obj *src, const char *prompt)
+{
+    use_obj = src;
+    mode = FREESELECT_MODE;
+    if(prompt)
+        scroll->display_string(prompt);
+    map_window->centerCursor();
+    map_window->set_show_use_cursor(false);
+    map_window->set_show_cursor(true);
 }
 
 
@@ -338,13 +370,17 @@ bool Event::talk()
 
 bool Event::move(sint16 rel_x, sint16 rel_y)
 {
- if(mode == LOOK_MODE || mode == TALK_MODE)
+ if(mode == LOOK_MODE || mode == TALK_MODE || mode == FREESELECT_MODE)
     map_window->moveCursorRelative(rel_x,rel_y);
  else
   {
    if(mode == USE_MODE)
      {
       use(rel_x,rel_y);
+     }
+   else if(mode == USESELECT_MODE)
+     {
+      select_obj(rel_x,rel_y);
      }
    else
      {
@@ -450,19 +486,61 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  else
   scroll->display_string("nothing\n");
 
- scroll->display_string("\n");
- scroll->display_prompt();
-
- map_window->set_show_use_cursor(false);
+ if(mode == USE_MODE) // if selecting, select_obj will return to MOVE_MODE
+ {
+     scroll->display_string("\n");
+     scroll->display_prompt();
+     map_window->set_show_use_cursor(false);
+     mode = MOVE_MODE;
+ }
  map_window->updateBlacking();
- mode = MOVE_MODE;
-
  return true;
+}
+
+
+/* Call usecode for `use_obj' with object and actor under the cursor, or the
+ * passed item(s) as the itemref.
+ */
+bool Event::select_obj(Obj *obj, Actor *actor)
+{
+    if(!obj)
+        obj = map_window->get_objAtCursor();
+    if(!actor)
+        actor = map_window->get_actorAtCursor();
+    usecode->set_itemref(obj);
+    usecode->set_itemref(NULL, actor);
+    if(use_obj && (obj || actor))
+     usecode->use_obj(use_obj, player->get_actor());
+    use_obj = NULL;
+    // return to MOVE_MODE
+    scroll->display_string("\n");
+    scroll->display_prompt();
+    map_window->set_show_use_cursor(false);
+    map_window->set_show_cursor(false);
+    mode = MOVE_MODE;
+    return(true);
+}
+
+
+/* Select object and actor relative to player.
+ */
+bool Event::select_obj(sint16 rel_x, sint16 rel_y)
+{
+//    uint16 x, y;
+//    uint8 level;
+//    player->get_location(&x, &y, &level);
+    map_window->moveCursorRelative(rel_x, rel_y);
+    return(select_obj(map_window->get_objAtCursor(), map_window->get_actorAtCursor()));
+//    return(select_obj(obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level),
+//                      Game::get_game()->get_actor_manager()->get_actor((uint16)(x+rel_x), (uint16)(y+rel_y), level)));
 }
 
 
 bool Event::look()
 {
+ bool can_search = true; // can object be searched? return from LOOK
+ uint16 ax, ay; // player location
+ uint8 az;
  Obj *obj;
  Actor *actor = map_window->get_actorAtCursor();
  sint16 p_id = -1; // party member number of actor
@@ -470,8 +548,10 @@ bool Event::look()
  float weight;
 
  if(actor)
+ {
    view_manager->set_portrait_mode(actor->get_actor_num(),NULL);
-
+   can_search = false;
+ }
  scroll->display_string("Thou dost see ");
  // show real actor name and portrait if in avatar's party
  if(actor && ((p_id = player->get_party()->get_member_num(actor)) >= 0))
@@ -479,7 +559,7 @@ bool Event::look()
  else
      scroll->display_string(map_window->lookAtCursor());
  obj = map_window->get_objAtCursor();
- if(obj)
+ if(obj && !actor) // don't display weight or do usecode for obj under actor
   {
    obj_manager->print_obj(obj,false); //DEBUG
    
@@ -491,12 +571,21 @@ bool Event::look()
      }
   // check for special description
   if(usecode->can_look(obj))
-     usecode->look_obj(obj, player->get_actor());
+     can_search = usecode->look_obj(obj, player->get_actor());
   }
-
- scroll->display_string("\n\n");
+ scroll->display_string("\n");
+ // search
+ MapCoord player_loc(player->get_actor()->get_location()), target_loc(map_window->get_cursorCoord());
+ if(can_search && player_loc.distance(target_loc) <= 1)
+ {
+   scroll->display_string("\nSearching here, you find ");
+   if(!obj || !usecode->search_obj(obj, player->get_actor()))
+     scroll->display_string("nothing.\n");
+   else
+     map_window->updateBlacking(); // secret doors
+ }
+ scroll->display_string("\n");
  scroll->display_prompt();
-
  return true;
 }
 
@@ -677,9 +766,11 @@ bool TimeQueue::call_timer(uint32 evtime)
 
 /* This constructor must be called by all subclasses to add to queue.
  */
-TimedEvent::TimedEvent(uint32 reltime) : delay(reltime),
+TimedEvent::TimedEvent(uint32 reltime, bool immediate) : delay(reltime),
             time(reltime + SDL_GetTicks()), ignore_pause(false), repeat(false)
 {
+    if(immediate)
+        time = 0; // start now (useful if repeat == true)
     event = Game::get_game()->get_event();
     event->get_time_queue()->add_timer(this);
 }
@@ -688,7 +779,7 @@ TimedEvent::TimedEvent(uint32 reltime) : delay(reltime),
 /* Party movement to/from dungeon or to vehicle, two tiles per second.
  * Construct & Set destination.
  */
-TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t) : TimedEvent(500)
+TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t) : TimedEvent(500, true)
 {
     party = Game::get_game()->get_party();
     dest = new MapCoord(*d);

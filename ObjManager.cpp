@@ -484,13 +484,13 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  return true;
 }
 
-const char *ObjManager::look_obj(Obj *obj)
+const char *ObjManager::look_obj(Obj *obj, bool show_prefix)
 {
  const char *desc;
  if(obj == NULL)
   return NULL;
 
- desc = tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,obj->qty,false);
+ desc = tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,obj->qty,show_prefix);
 
  return desc;
 }

@@ -71,6 +71,7 @@ class MapWindow: public GUI_Widget
  const char *lookAtCursor(bool show_prefix = true);
  Obj *get_objAtCursor();
  Actor *get_actorAtCursor();
+ MapCoord get_cursorCoord() { return(MapCoord(cur_x+cursor_x,cur_y+cursor_y,cur_level)); }
  
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);

@@ -78,20 +78,23 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_WINDOWED_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_door);
     add_usecode(OBJ_U6_CEDAR_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
     add_usecode(OBJ_U6_STEEL_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
-    add_usecode(OBJ_U6_SECRET_DOOR,  255,0,USE_EVENT_USE,&U6UseCode::use_secret_door);
+    add_usecode(OBJ_U6_KEY,          255,0,USE_EVENT_USE,&U6UseCode::use_key);
 
-    add_usecode(OBJ_U6_CHEST, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_CRATE, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_BARREL,255,0,USE_EVENT_USE,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_DRAWER,255,0,USE_EVENT_USE,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_BAG,   255,0,USE_EVENT_USE,&U6UseCode::use_container);
-                      
     add_usecode(OBJ_U6_SIGN,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_PICTURE,   255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+
+    add_usecode(OBJ_U6_CHEST, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_CRATE, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_BARREL,255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_SECRET_DOOR,255,0,USE_EVENT_USE|USE_EVENT_SEARCH,&U6UseCode::use_secret_door);
+    add_usecode(OBJ_U6_BAG,        255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_DRAWER,     255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_STONE_LION,   1,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_PLANT,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
 
     add_usecode(OBJ_U6_V_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough);
     add_usecode(OBJ_U6_H_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough);
@@ -114,6 +117,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_SUNDIAL,   255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
     add_usecode(OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
 
+    add_usecode(OBJ_U6_POTION,    255,0,USE_EVENT_USE,&U6UseCode::use_potion);
     add_usecode(OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_WINE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_MEAD,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
@@ -132,6 +136,11 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_HORSE_CHOPS, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_HONEY,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
+
+//    add_usecode(OBJ_U6_SHIP, 255,0,USE_EVENT_USE,&U6UseCode::use_boat);
+//    add_usecode(OBJ_U6_SKIFF,255,0,USE_EVENT_USE,&U6UseCode::use_boat);
+    add_usecode(OBJ_U6_RAFT,   0,0,USE_EVENT_USE,&U6UseCode::use_boat);
+//    add_usecode(OBJ_U6_BALLOON_BASKET,0,0,USE_EVENT_USE,&U6UseCode::use_balloon);
 
     add_usecode(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
 
@@ -210,7 +219,7 @@ bool U6UseCode::use_obj(Obj *obj, Actor *actor)
     sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
     if(uc < 0)
         return(false);
-    set_itemref(actor);
+    set_itemref(actor, actor2_ref);
     return(uc_event(uc, USE_EVENT_USE, obj));
 }
 
@@ -241,6 +250,19 @@ bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
 }
 
 
+/* SEARCH nearby object. Actor is the actor searching.
+ * Returns false if there is no usecode for that object.
+ */
+bool U6UseCode::search_obj(Obj *obj, Actor *actor)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    if(uc < 0)
+        return(false);
+    set_itemref(actor);
+    return(uc_event(uc, USE_EVENT_SEARCH, obj));
+}
+
+
 /* Return index of usecode definition in list for object N:F, or -1 if none.
  */
 sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f)
@@ -264,18 +286,35 @@ bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
 //printf("__pfn=%x\n", uc_objects[uco].ucf.__pfn_or_delta2.__pfn);
     if(uc_objects[uco].trigger & ev)
     {
-        printf("Usecode #%02d (%d:%d), event %d (%s)\n", uco, obj->obj_n,
-               obj->frame_n, ev, (ev == USE_EVENT_USE) ? "USE"
-                                 : (ev == USE_EVENT_LOOK) ? "LOOK"
-                                 : (ev == USE_EVENT_PASS) ? "PASS"
-                                 : "???");
+//        printf("Usecode #%02d (%d:%d), event %d (%s)\n", uco, obj->obj_n,
+        printf("Object %d:%d, event %s\n", obj->obj_n,
+               obj->frame_n, (ev == USE_EVENT_USE) ? "USE"
+                             : (ev == USE_EVENT_LOOK) ? "LOOK"
+                             : (ev == USE_EVENT_PASS) ? "PASS"
+                             : (ev == USE_EVENT_SEARCH) ? "SEARCH"
+                             : "???");
         bool ucret = (this->*uc_objects[uco].ucf)(obj, ev);
         int_ref = 0;
         actor_ref = NULL; // clear references
+        actor2_ref = NULL;
         obj_ref = NULL;
         return(ucret); // return from usecode function
     }
     return(false); // doesn't respond to event
+}
+
+
+void U6UseCode::lock_door(Obj *obj)
+{
+    if(is_unlocked_door(obj))
+        obj->frame_n += 4;
+}
+
+
+void U6UseCode::unlock_door(Obj *obj)
+{
+    if(is_locked_door(obj))
+        obj->frame_n -= 4;
 }
 
 
@@ -288,7 +327,7 @@ bool U6UseCode::use_door(Obj *obj, uint8 ev)
     key_obj = player->get_actor()->inventory_get_object(OBJ_U6_KEY, obj->quality);
     if(key_obj != NULL) // we have the key for this door so lets unlock it.
       {
-       obj->frame_n -= 4;
+       unlock_door(obj);
        scroll->display_string("\nunlocked\n");
       }
     else
@@ -461,19 +500,38 @@ bool U6UseCode::use_firedevice(Obj *obj, uint8 ev)
 
 bool U6UseCode::use_secret_door(Obj *obj, uint8 ev)
 {
-    if(obj->frame_n == 1 || obj->frame_n == 3)
-        obj->frame_n--;
-    else
-        obj->frame_n++;
-    return(true);
+    if(ev == USE_EVENT_USE)
+    {
+        if(obj->frame_n == 1 || obj->frame_n == 3)
+            obj->frame_n--;
+        else
+            obj->frame_n++;
+        return(true);
+    }
+    else if(ev == USE_EVENT_SEARCH)
+    {
+        scroll->display_string("a secret door!\n");
+        if(obj->frame_n == 0)
+            obj->frame_n++;
+        return(true);
+    }
+    return(false);
 }
 
 
 bool U6UseCode::use_container(Obj *obj, uint8 ev)
 {
+    bool has_objects = false;
     if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
         toggle_frame(obj); //open / close object
-    return(UseCode::use_container(obj));
+    if(ev == USE_EVENT_USE)
+        scroll->display_string("Searching here, you find ");
+    has_objects = UseCode::use_container(obj);
+    if(has_objects)
+        scroll->display_string(".\n");
+    else if(ev == USE_EVENT_USE)
+        scroll->display_string("nothing.\n");
+    return(has_objects);
 }
 
 
@@ -674,11 +732,115 @@ bool U6UseCode::use_food(Obj *obj, uint8 ev)
             else
                 scroll->display_string("\nYou eat the food.\n");
         }
-        // add to hp
-        // if object is alcoholic drink, add to drunkeness
+        // FIXME: add to hp?
+        // FIXME: if object is alcoholic drink, add to drunkeness
         return(true);
     }
     return(false);
+}
+
+
+/* Event: Use potion. If actor2 is passed, give them the potion, else select
+ * actor2.
+ */
+bool U6UseCode::use_potion(Obj *obj, uint8 ev)
+{
+    ActorManager *am = Game::get_game()->get_actor_manager();
+    if(ev == USE_EVENT_USE)
+    {
+        if(!actor2_ref && !obj_ref)
+            Game::get_game()->get_event()->freeselect_mode(obj, "On whom? ");
+        else if(!actor2_ref)
+            scroll->display_string("nobody\n");
+        else
+        {
+            Party *party = Game::get_game()->get_party();
+            sint8 party_num = party->get_member_num(actor2_ref);
+            scroll->display_string(party_num >= 0 ? party->get_actor_name(party_num)
+                                   : am->look_actor(actor2_ref));
+            scroll->display_string("\n");
+            switch(obj->frame_n) // FIXME
+            {
+                case 0: // BLUE -> ???
+                    scroll->display_string("Drink blue potion!\n");
+                    break;
+                case 1: // RED -> Dispel
+                    scroll->display_string("Drink dispel potion!\n");
+                    break;
+                case 2: // YELLOW -> Heal
+                    scroll->display_string("Drink healing potion!\n");
+                    break;
+                case 3: // GREEN -> Poison
+                    scroll->display_string("Drink poison potion!\n");
+                    break;
+                case 4: // ORANGE -> Sleep
+                    scroll->display_string("Drink sleeping potion!\n");
+                    break;
+                case 5: // PURPLE -> Protect
+                    scroll->display_string("Drink protection potion!\n");
+                    break;
+                case 6: // BLACK -> Invisibility
+                    scroll->display_string("Drink invisibility potion!\n");
+                    break;
+                case 7: // WHITE -> X-Ray
+                    scroll->display_string("Drink x-ray vision potion!\n");
+                    break;
+                default:
+                    scroll->display_string("No effect\n");
+            }
+            obj_manager->remove_obj(obj);
+        }
+        return(true);
+    }
+    return(false);
+}
+
+
+/* Use a key on itemref (a door).
+ * Return true if target object is valid?
+ */
+bool U6UseCode::use_key(Obj *obj, uint8 ev)
+{
+    if(ev == USE_EVENT_USE)
+    {
+        if(!obj_ref && !actor2_ref)
+            Game::get_game()->get_event()->useselect_mode(obj, "On ");
+        else if(!obj_ref)
+            scroll->display_string("nothing\n");
+        else
+        {
+            scroll->display_string(obj_manager->get_obj_name(obj_ref));
+            scroll->display_string("\n");
+            if(obj_ref->quality == obj->quality && is_closed_door(obj_ref))
+            {
+                if(is_locked_door(obj_ref))
+                {
+                    unlock_door(obj_ref);
+                    scroll->display_string("\nunlocked!\n");
+                }
+                else
+                {
+                    lock_door(obj_ref);
+                    scroll->display_string("\nlocked!\n");
+                }
+            }
+            else
+                scroll->display_string("No effect\n");
+        }
+        return(true);
+    }
+    return(false);
+}
+
+
+/* Enter and exit sea-going vessels.
+ */
+bool U6UseCode::use_boat(Obj *obj, uint8 ev)
+{
+    if(ev != USE_EVENT_USE)
+        return(false);
+    scroll->display_string("USE BOAT!\n");
+    return(true);
 }
 
 
@@ -702,8 +864,8 @@ bool U6UseCode::pass_quest_barrier(Obj *obj, uint8 ev)
 
 
 /* Event: Look
- * True: Display book data for object (if any exist).
- * False: Nothing special. Show normal description.
+ * True: Nothing special. Allow search.
+ * False: Displayed book data for object. Disallow search.
  */
 bool U6UseCode::look_sign(Obj *obj, uint8 ev)
 {
@@ -732,9 +894,9 @@ bool U6UseCode::look_sign(Obj *obj, uint8 ev)
             }
 
         }
-        return(true);
+        return(false);
     }
-    return(false);
+    return(true);
 }
 
 
@@ -748,9 +910,8 @@ bool U6UseCode::look_clock(Obj *obj, uint8 ev)
     {
         scroll->display_string("\nThe time is ");
         scroll->display_string(clock->get_time_string());
-        return(true);
     }
-    return(false);
+    return(true);
 }
 
 
@@ -795,7 +956,8 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
     else
         prefix = "";
 
-    if(ev == USE_EVENT_PASS && actor_ref == player->get_actor())
+    // don't activate if autowalking from linking exit
+    if(ev == USE_EVENT_PASS && actor_ref == player->get_actor() && !party->get_autowalk())
     {
         if(obj->quality != 0/* && Shamino is in party and alive*/)
         {

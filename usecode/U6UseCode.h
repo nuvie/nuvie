@@ -133,6 +133,7 @@
 #define OBJ_U6_HAM                 133
 #define OBJ_U6_HORSE_CHOPS         135
 
+#define OBJ_U6_PLANT               138
 #define OBJ_U6_PICTURE             143
 #define OBJ_U6_CANDELABRA          145
 #define OBJ_U6_PERSON_SLEEPING     146
@@ -175,9 +176,9 @@
 
 #define OBJ_U6_FISHING_POLE        264
 
-
 #define OBJ_U6_LEVER               268
 #define OBJ_U6_DRAWBRIDGE          269
+#define OBJ_U6_POTION              275
 #define OBJ_U6_V_PASSTHROUGH       278
 #define OBJ_U6_H_PASSTHROUGH       280
 #define OBJ_U6_CRANK               288
@@ -191,6 +192,7 @@
 #define OBJ_U6_LADDER              305
 #define OBJ_U6_HOLE                308
 #define OBJ_U6_PORTCULLIS          310
+#define OBJ_U6_STONE_LION          312
 #define OBJ_U6_CAVE                326
 
 #define OBJ_U6_THRONE              327
@@ -256,8 +258,8 @@
 #define OBJ_U6_SKIFF               414
 #define OBJ_U6_RAFT                415
 
+#define OBJ_U6_RAFT                415
 #define OBJ_U6_QUEST_GATE          416
-
 #define OBJ_U6_DRAGON_EGG          417
 
 #define OBJ_U6_CYCLOPS             424
@@ -300,6 +302,7 @@ class U6UseCode: public UseCode
  bool use_obj(Obj *obj, Actor *actor);
  bool look_obj(Obj *obj, Actor *actor);
  bool pass_obj(Obj *obj, Actor *actor);
+ bool search_obj(Obj *obj, Actor *actor);
 
  bool can_use(Obj *obj);
  bool can_look(Obj *obj);
@@ -307,6 +310,7 @@ class U6UseCode: public UseCode
 
  bool is_unlocked_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n != 9 && obj->frame_n != 11); }
  bool is_locked_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && (obj->frame_n == 9 || obj->frame_n == 11)); }
+ bool is_closed_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n > 3); }
  bool is_food(Obj *obj);
 
  protected:
@@ -324,11 +328,15 @@ class U6UseCode: public UseCode
  bool use_firedevice(Obj *obj, uint8 ev);
  bool use_container(Obj *obj, uint8 ev);
  bool use_vortex_cube(Obj *obj, uint8 ev);
+ bool use_key(Obj *obj, uint8 ev);
+ bool use_boat(Obj *obj, uint8 ev);
+ bool use_potion(Obj *obj, uint8 ev);
  bool look_mirror(Obj *obj, uint8 ev);
  bool look_sign(Obj *obj, uint8 ev);
  bool look_clock(Obj *obj, uint8 ev);
  bool pass_quest_barrier(Obj *obj, uint8 ev);
  bool enter_dungeon(Obj *obj, uint8 ev);
+// bool search_container(Obj *obj, uint8 ev);
 
 // supplementary
  Obj *drawbridge_find(Obj *crank_obj);
@@ -336,6 +344,8 @@ class U6UseCode: public UseCode
  void drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width);
  void drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width);
  bool use_firedevice_message(Obj *obj, bool lit);
+ void lock_door(Obj *obj);
+ void unlock_door(Obj *obj);
 
 #if 0 /* names for other events? */
  bool approach_mirror(Obj *obj, uint8 ev); // change to reflect frame

@@ -30,6 +30,7 @@ UseCode::UseCode(Configuration *cfg)
  int_ref = 0;
  actor_ref = NULL;
  obj_ref = NULL;
+ actor2_ref = NULL;
 }
 
 UseCode::~UseCode()
@@ -67,11 +68,11 @@ void UseCode::toggle_frame(Obj *obj)
    obj->frame_n = 1;
 }
 
-bool UseCode::use_container(Obj *obj)
+bool UseCode::use_container(Obj *obj, bool print)
 {
  Obj *temp_obj;
  U6Link *obj_link;
- 
+
  /* Test whether this object has items inside it. */
  if((obj->container != NULL) &&
    ((obj_link = obj->container->end()) != NULL))
@@ -87,12 +88,17 @@ bool UseCode::use_container(Obj *obj)
        temp_obj->x = obj->x;
        temp_obj->y = obj->y;
        temp_obj->z = obj->z;
+       if(print)
+        {
+         scroll->display_string(obj_manager->look_obj(temp_obj,true));
+         if(obj_link->prev) // more objects left
+           scroll->display_string(obj_link->prev->prev ? ", " : ", and ");
+        }
       }
 
      /* Remove objects from the container. */
      obj->container->removeAll();
      return true;
     }
-
  return false;
 }
