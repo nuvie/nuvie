@@ -137,7 +137,7 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
            break;
        // end of compressed file has been reached
        case 0x101:
-           end_marker_reached = TRUE;
+           end_marker_reached = true;
            break;
        // (cW <> 0x100) && (cW <> 0x101)
        default:
