@@ -691,8 +691,8 @@ void ConverseInterpret::evop(stack<converse_value> &i)
         case U6OP_CANCARRY: // 0x9a
             cnpc = converse->actors->get_actor(pop_arg(i));
             if(cnpc)
-               out = (cnpc->get_strength() * 2 * 10)
-                     - (uint32)(cnpc->get_inventory_weight() * 10);
+               out = (converse_value)((cnpc->inventory_get_max_weight()
+                                          - cnpc->get_inventory_weight()) * 10);
             break;
         case U6OP_WEIGHT: // 0x9b
             v[1] = pop_arg(i); // quantity
@@ -824,35 +824,50 @@ void ConverseInterpret::evop(stack<converse_value> &i)
             v[0] = pop_arg(i); // npc
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
+            {
                 out = cnpc->get_exp() + v[1];
+                cnpc->set_exp(out);
+            }
             break;
         case U6OP_LVL: // 0xe1
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
+            {
                 out = cnpc->get_level() + v[1];
+                cnpc->set_level(out);
+            }
             break;
         case U6OP_STR: // 0xe2
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
+            {
                 out = cnpc->get_strength() + v[1];
+                cnpc->set_strength(out);
+            }
             break;
         case U6OP_INT: // 0xe3
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
+            {
                 out = cnpc->get_intelligence() + v[1];
+                cnpc->set_intelligence(out);
+            }
             break;
         case U6OP_DEX: // 0xe4
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
+            {
                 out = cnpc->get_dexterity() + v[1];
+                cnpc->set_dexterity(out);
+            }
             break;
         default:
             fprintf(stderr, "Converse: UNK EVOP=%02x\n", in);
