@@ -105,21 +105,48 @@ bool Event::update()
                                   look();
                                   map_window->set_show_cursor(false);
                                  }
-                               if(mode == TALK_MODE)
+                               else if(mode == TALK_MODE)
                                  {
                                   mode = MOVE_MODE;
                                   if(talk())
                                     scroll->set_talking(true);
                                   map_window->set_show_cursor(false);
                                  }
-                               if(mode == USE_MODE)
+                               else if(mode == USE_MODE)
                                  {
                                   mode = MOVE_MODE;
                                   use(0,0);
                                   map_window->set_show_use_cursor(false);
                                  }
+                               else
+                                 {
+                                  scroll->display_string("what?\n\n");
+                                  scroll->display_prompt();
+                                 }
                                break;
-             default : break;                    
+             case SDLK_ESCAPE:
+                               if(mode == MOVE_MODE)
+                                 {
+                                  scroll->display_string("Pass!\n\n");
+                                  scroll->display_prompt();
+                                 }
+                               else
+                                 {
+                                  mode = MOVE_MODE;
+                                  map_window->set_show_use_cursor(false);
+                                  map_window->set_show_cursor(false);
+                                  scroll->display_string("what?\n\n");
+                                  scroll->display_prompt();
+                                 }
+                               break;
+             case SDLK_SPACE :
+                               scroll->display_string("Pass!\n\n");
+                               scroll->display_prompt();
+                               break;
+             default :
+                               scroll->display_string("what?\n\n");
+                               scroll->display_prompt();
+                               break;
             }
           break;
              
