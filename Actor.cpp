@@ -180,9 +180,9 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
  */
 void Actor::set_flag(uint8 bitflag)
 {
-	if(bitflag > 7)
-		return;
-	this->set_flags(this->get_flags() | (1 << bitflag));
+    if(bitflag > 7)
+        return;
+    this->set_flags(this->get_flags() | (1 << bitflag));
 }
 
 
@@ -190,14 +190,8 @@ void Actor::set_flag(uint8 bitflag)
  */
 void Actor::clear_flag(uint8 bitflag)
 {
-	uint8 f = 0;
-	if(bitflag > 7)
-		return;
-	this->set_flags(0x00);
-	do
-	{
-		if(f != bitflag)
-			this->set_flags(this->get_flags() | (f << bitflag));
-	} while(++f < 8);
+    if(bitflag > 7)
+        return;
+    this->set_flags(this->get_flags() & ~(1 << bitflag));
 }
 
