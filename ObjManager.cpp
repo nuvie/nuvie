@@ -828,30 +828,19 @@ bool ObjManager::add_obj(iAVLTree *obj_tree, Obj *obj, bool addOnTop)
 bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
 {
  U6Link *link;
- Obj *c_obj; //container object
-
- if(obj->y == 0)
-   {
-    link = list->gotoPos(obj->x);
-    if(link != NULL)
-       c_obj = (Obj *)link->data;
-   }
- else // traverse back through the object list to the first object that is NOT in a container.
-   {
-	for(link=list->end();link != NULL;link=link->prev)
-	  {
-	  
-	   if(link->data)
-		 {
-		  c_obj = (Obj *)link->data;
-		  if((c_obj->status & OBJ_STATUS_IN_CONTAINER) == 0)
-		     break;
-		 }
-		 
-	  }
-   }
+ Obj *c_obj = NULL; //container object
+ uint16 index;
+ 
+ index = obj->x;
+ 
+ if(obj->y & 0x1)
+   index += 1024;
+ 
+ link = list->gotoPos(index);
+ if(link != NULL)
+	c_obj = (Obj *)link->data;
 	 
- if(link && c_obj) // we've found our container.
+ if(c_obj) // we've found our container.
    {
     if(c_obj->container == NULL)
 	  c_obj->container = new U6LList();

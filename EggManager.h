@@ -60,6 +60,7 @@ class EggManager
   
  void add_egg(Obj *egg);
  void remove_egg(Obj *egg);
+ bool spawn_egg(Obj *egg, uint8 hatch_probability);
  void spawn_eggs(uint16 x, uint16 y, uint8 z);
  
  protected:

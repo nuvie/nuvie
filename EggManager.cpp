@@ -97,9 +97,6 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
 {
  std::list<Egg *>::iterator egg;
  sint16 dist_x, dist_y;
- uint16 i;
- Obj *obj, *spawned_obj;
- U6Link *link;
  uint8 hatch_probability;
 
  for(egg = egg_list.begin(); egg != egg_list.end();)
@@ -117,32 +114,7 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
           
           hatch_probability = NUVIE_RAND()%100;
           printf("Checking Egg (%x,%x,%x). Rand: %d Probability: %d%%\n",(*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z,hatch_probability,(*egg)->obj->qty);
-          
-          // check random probability that the egg will hatch
-          if((*egg)->obj->qty == 100 || hatch_probability <= (*egg)->obj->qty)  // Hatch the egg.
-            {
-             for(link = (*egg)->obj->container->start(); link != NULL; link = link->next)
-               {
-                obj = (Obj *)link->data;
-                for(i = 0;i < obj->qty;i++)
-                 {
-				  if(obj->quality != 0) /* spawn temp actor we know it's an actor if it has a non-zero worktype. */
-                     actor_manager->create_temp_actor(obj->obj_n,(*egg)->obj->x+i,(*egg)->obj->y,(*egg)->obj->z,obj->quality);
-				  else
-					{ /* spawn temp object */
-					 spawned_obj = new Obj();
-					 spawned_obj->obj_n = obj->obj_n;
-					 spawned_obj->x = (*egg)->obj->x+i;
-					 spawned_obj->y = (*egg)->obj->y;
-					 spawned_obj->z = (*egg)->obj->z;
-					 spawned_obj->qty = obj->qty;
-					 spawned_obj->status |= OBJ_STATUS_TEMPORARY | OBJ_STATUS_OK_TO_TAKE;
-
-					 obj_manager->add_obj(spawned_obj);
-					}
-                 }
-               }
-            }   
+          spawn_egg((*egg)->obj, hatch_probability);
          }
       }
     else
@@ -152,4 +124,39 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
    }
  
  return;
+}
+
+
+bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
+{
+ U6Link *link;
+ uint16 i;
+ Obj *obj, *spawned_obj;
+          // check random probability that the egg will hatch
+          if(egg->qty == 100 || hatch_probability <= egg->qty)  // Hatch the egg.
+            {
+             for(link = egg->container->start(); link != NULL; link = link->next)
+               {
+                obj = (Obj *)link->data;
+                for(i = 0;i < obj->qty;i++)
+                 {
+				  if(obj->quality != 0) /* spawn temp actor we know it's an actor if it has a non-zero worktype. */
+                     actor_manager->create_temp_actor(obj->obj_n,egg->x+i,egg->y,egg->z,obj->quality);
+				  else
+					{ /* spawn temp object */
+					 spawned_obj = new Obj();
+					 spawned_obj->obj_n = obj->obj_n;
+					 spawned_obj->x = egg->x+i;
+					 spawned_obj->y = egg->y;
+					 spawned_obj->z = egg->z;
+					 spawned_obj->qty = obj->qty;
+					 spawned_obj->status |= OBJ_STATUS_TEMPORARY | OBJ_STATUS_OK_TO_TAKE;
+
+					 obj_manager->add_obj(spawned_obj);
+					}
+                 }
+               }
+             return true;
+            }
+ return false;
 }

@@ -1,3 +1,11 @@
+2004-01-20  Eric Fry <efry at users.sourceforge.net>
+	* Moved egg spawning code into its own method 
+	  spawn_egg(Obj *egg, uint8 hatch_probability);
+	* Changed the container logic again. It turns out that x is always used
+	  to find the container. But if the objblk_n > 1024 then you must add
+	  1024 to x to find the correct container. So if y & 0x1 then add 1024
+	  to x.
+
 2004-01-18  Eric Fry <efry at users.sourceforge.net>
 	* Added correct dithering tile offsets for SE.
 	* Removed some DOS crlf's that slipped into the source tree.
