@@ -76,13 +76,13 @@ nuvie_SOURCES = \
 	screen/Surface.cpp \
 	screen/Surface.h \
 \
-	sound/Sample.cpp
-	sound/Sample.h
-	sound/Song.cpp
-	sound/Song.h
-	sound/Sound.h
-	sound/SoundManager.cpp
-	sound/SoundManager.h
+	sound/Sample.cpp \
+	sound/Sample.h \
+	sound/Song.cpp \
+	sound/Song.h \
+	sound/Sound.h \
+	sound/SoundManager.cpp \
+	sound/SoundManager.h \
 \
 	usecode/UseCode.h \
 	usecode/UseCode.cpp \
