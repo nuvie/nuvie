@@ -173,13 +173,17 @@ void InventoryWidget::display_inventory_list()
 
        //tile = tile_manager->get_tile(actor->indentory_tile());
 
-       //draw qty string for stackable items
-       if(tile != empty_tile && obj_manager->is_stackable(obj))
-         display_qty_string((area.x+8)+j*16,area.y+16+i*16,obj->qty);
+
+       if(tile != empty_tile)
+        {
+         //draw qty string for stackable items
+         if(obj_manager->is_stackable(obj))       
+           display_qty_string((area.x+8)+j*16,area.y+16+i*16,obj->qty);
        
-       //draw special char for Keys.
-       if(game_type == NUVIE_GAME_U6 && obj->obj_n == 64)
-         display_special_char((area.x+8)+j*16,area.y+16+i*16,obj->quality);
+         //draw special char for Keys.
+         if(game_type == NUVIE_GAME_U6 && obj->obj_n == 64)
+           display_special_char((area.x+8)+j*16,area.y+16+i*16,obj->quality);
+        }
 
        screen->blit((area.x+8)+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
       }

@@ -45,7 +45,8 @@ bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManag
  party = p;
  tile_manager = tm;
  obj_manager = om;
-
+ cur_party_member = 0;
+ 
  set_party_member(0);
 
  return true;
