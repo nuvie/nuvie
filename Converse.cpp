@@ -522,6 +522,7 @@ void Converse::continue_script()
             // assign value to declared input variable
             if(conv_i->var_input())
                 conv_i->assign_input();
+            set_svar(U6TALK_VAR_INPUT, get_input().c_str()); // set $Z
             unwait();
         }
         else if(!need_input && !scroll->get_page_break())

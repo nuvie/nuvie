@@ -54,8 +54,8 @@ typedef unsigned char* convscript_buffer;
 #define U6TALK_VAR_HP        0x19 // avatar's health
 #define U6TALK_VAR_QUESTF    0x1A // 0="Thou art not upon a sacred quest!"
 #define U6TALK_VAR_WORKTYPE  0x20 // current activity of npc, from schedule
-#define U6TALK_VAR__LAST_ 0x25 // (all above 36 appear uninitialized)
-
+#define U6TALK_VAR_INPUT     0x23 // previous input from player ($Z)
+#define U6TALK_VAR__LAST_ 0x25    // (all above 36 appear uninitialized)
 
 /* Conversation engine, apart from the interpreter. Loads converse files,
  * and reads script into buffer. Also manages input/output and has npc-related

@@ -34,8 +34,6 @@
 ConverseInterpret::ConverseInterpret(Converse *owner)
 {
     converse = owner;
-    rstrings = NULL; rstring_count = 0;
-    ystring = NULL;
     b_frame = NULL;
     decl_v = decl_t = 0x00;
 
@@ -47,8 +45,6 @@ ConverseInterpret::ConverseInterpret(Converse *owner)
 
 ConverseInterpret::~ConverseInterpret()
 {
-    free(rstrings);
-    free(ystring);
     leave_all(); // deletes b_frame when empty
 }
 
@@ -304,7 +300,7 @@ void ConverseInterpret::do_text()
             else if(!strcmp(symbol, "$Y")) // Y-string
                 output.append(get_ystr());
             else if(!strcmp(symbol, "$Z")) // previous input
-                output.append(converse->get_input());
+                output.append(converse->get_svar(U6TALK_VAR_INPUT));
             else if(symbol[0] == '$' // value of a string variable
                     && isdigit(symbol[1]))
                 output.append(converse->get_svar(strtol(&symbol[1], NULL, 10)));
@@ -399,18 +395,23 @@ uint8 ConverseInterpret::get_val_size(uint32 vi)
 }
 
 
-/* Set the return/result string pointer `sn' to `s'.
+/* Set the return string `sn' to `s'.
  */
 void ConverseInterpret::set_rstr(uint32 sn, const char *s)
 {
-    if(!rstrings)
-        rstrings = (const char **)malloc(sizeof(const char **));
-    if(sn >= rstring_count)
-    {
-        rstring_count = sn + 1;
-        rstrings = (const char **)realloc(rstrings, rstring_count * sizeof(const char **));
-    }
-    rstrings[sn] = s;
+    if(sn >= rstrings.size())
+        rstrings.resize(rstrings.size() + 1);
+    rstrings[sn] = s ? s : "";
+}
+
+
+/* Add a return string.
+ * Returns the index into the list, which is used by an instruction.
+ */
+converse_value ConverseInterpret::add_rstr(const char *s)
+{
+    rstrings.push_back(s ? s : "");
+    return(rstrings.size() - 1);
 }
 
 
@@ -540,17 +541,19 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             leave_all(); // always run
             break;
         case U6OP_DPRINT: // 0xb5
+        {
             v[0] = pop_arg(i); // db location
             v[1] = pop_arg(i); // index
-            cdb = get_db(v[0], v[1]);
-            if(!cdb)
-                break;
-            else if(cdb->type == 0)
-                converse->set_output(cdb->s); // (data may have special symbols)
-            else
+            char *dstring = get_db_string(v[0], v[1]);
+            if(dstring)
+            {
+//                converse->set_output(dstring); // data may have special symbols
+                converse->print(dstring); // data can have no special symbols
                 converse->print("\n");
-            delete cdb;
+                free(dstring);
+            }
             break;
+        }
         case U6OP_BYE: // 0xb6
             stop();
             break;
@@ -656,12 +659,10 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         case U6OP_ASKC: // 0xf8 (blocking, single character input)
             converse->poll_input(get_text().c_str(), false); // collected=allowed input
             break;
-        case U6OP_INPUTSTR: // 0xf9
-            converse->print("\n!inputstr\n");
-//            break;
-        case U6OP_INPUT: // 0xfb
+        case U6OP_INPUTSTR: // 0xf9 (string or integer)
+        case U6OP_INPUT: // 0xfb (integer)
             v[0] = pop_arg(i); // var
-            v[1] = pop_arg(i); // type
+            v[1] = pop_arg(i); // type (should be 0xb2)
             let(v[0], v[1]);
             converse->poll_input();
             break;
@@ -810,10 +811,9 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             out = converse->get_var(pop_arg(i));
             break;
         case U6OP_SVAR: // 0xb3 (using new rstring)
-//          out = new_rstr(converse->get_svar(pop_arg(i)));
-            set_rstr(rstring_count, converse->get_svar(pop_arg(i)));
-            out = rstring_count - 1; // rstr num
+            out = add_rstr(converse->get_svar(pop_arg(i))); // rstr num
             break;
+#if 0 /* old read style tries to detect if data is string or integer */
         case U6OP_DATA: // 0xb4
             v[1] = pop_arg(i); // index
             v[0] = pop_arg(i); // db location
@@ -821,13 +821,46 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             if(!cdb)
                 out = 0;
             else if(cdb->type == 0)
-            {
-                set_rstr(rstring_count, cdb->s);
-                out = rstring_count-1;
-            }
+                out = add_rstr(cdb->s);
             else
                 out = cdb->i;
             delete cdb;
+            break;
+#else /* new read assumes DATA will be assigned, and depends on variable type */
+        case U6OP_DATA: // 0xb4
+            v[1] = pop_arg(i); // index
+            v[0] = pop_arg(i); // db location
+            
+            if(decl_t == 0xb3)
+            {
+                char *dstring = get_db_string(v[0], v[1]);
+                if(dstring)
+                {
+                    out = add_rstr(dstring);
+                    free(dstring);
+                }
+                else
+                    out = add_rstr("");
+            }
+            else if(decl_t == 0xb2)
+                out = get_db_integer(v[0], v[1]);
+            else /* huh? try old db-read */
+            {
+                cdb = get_db(v[0], v[1]);
+                if(!cdb)
+                    out = 0;
+                else if(cdb->type == 0)
+                    out = add_rstr(cdb->s);
+                else
+                    out = cdb->i;
+                delete cdb;
+            }
+            break;
+#endif
+        case U6OP_INDEXOF: // 0xb7
+            v[1] = pop_arg(i); // string variable
+            v[0] = pop_arg(i); // db location
+            out = find_db_string(v[0], converse->get_svar(v[1]));
             break;
         case U6OP_OBJCOUNT: // 0xbb
             v[1] = pop_arg(i); // object
@@ -1054,10 +1087,12 @@ bool ConverseInterpret::check_keywords(string keystr, string instr)
 }
 
 
-/* Set the declared variable to input from Converse.
+/* Assign input from Converse to the declared variable.
  */
 void ConverseInterpret::assign_input()
 {
+    // FIXME: Nuvie treats 0xF9-INPUTSTR & 0xFB-INPUT as identical, but in U6
+    //        0xFB-INPUT could not input strings.
     if(decl_t == 0xb2)
         converse->set_var(decl_v, strtol(converse->get_input().c_str(), NULL, 10));
     if(decl_t == 0xb3)
@@ -1068,6 +1103,7 @@ void ConverseInterpret::assign_input()
 /* Collect data from section at `loc', index `i'.
  * Returns pointer to data, which can be 8bit integer or a character string.
  * FIXME: there is no checking for overflow beyond the initial location
+ *        Deprecated function that guesses the data type, and reads incorrectly.
  */
 struct ConverseInterpret::converse_db_s *
 ConverseInterpret::get_db(uint32 loc, uint32 i)
@@ -1106,3 +1142,111 @@ ConverseInterpret::get_db(uint32 loc, uint32 i)
     }
     return(item);
 }
+
+
+/* Collect data from section at `loc', index `i', as a string.
+ * Returns pointer to NEW data, or NULL if only integer data is found.
+ */
+char *ConverseInterpret::get_db_string(uint32 loc, uint32 i)
+{
+    convscript_buffer db = converse->script->get_buffer(loc);
+    char *item = NULL;
+    uint32 d = 0, dbuf_len = 0, /* string pointer & length */
+           p = 0; /* pointer into db */
+    if(!db)
+        return(NULL);
+    /* skip to index */
+    uint32 e = 0;
+    while(e++ < i)
+    {
+        if(db[p] == U6OP_ENDDATA)
+            return(NULL);
+        while(is_print(db[p++]));
+    }
+
+    d = 0; dbuf_len = 0;
+    do
+    {
+        if((d+1) >= dbuf_len) // resize buffer as needed
+            dbuf_len += 16;
+        item = (char *)realloc(item, dbuf_len);
+        item[d++] = (char)(db[p]); // copy
+        item[d] = '\0';
+    } while(is_print(db[++p]));
+    return(item);
+}
+
+
+/* Collect data from section at `loc', index `i', as an integer.
+ * Returns the two-byte integer value.
+ */
+converse_value ConverseInterpret::get_db_integer(uint32 loc, uint32 i)
+{
+    uint16 item = 0;
+    uint32 p = 0; /* pointer into db */
+
+    /* skip to index */
+    uint32 e = 0;
+    while(e++ < i)
+        p += 2;
+
+    /* use ConvScript functions to check overflow and read data correctly */
+    uint32 old_pos = converse->script->pos();
+    converse->script->seek(loc + p);
+    if(!converse->script->overflow(+1))
+        item = converse->script->read2();
+    converse->script->seek(old_pos);
+
+    return((converse_value)item);
+}
+
+
+/* Scan data section `loc' for `dstring'. Stop at ENDDATA.
+ * Returns the index of the string or the index of the ENDDATA marker.
+ */
+converse_value ConverseInterpret::find_db_string(uint32 loc, const char *dstring)
+{
+    convscript_buffer db = converse->script->get_buffer(loc);
+    char *item = NULL; /* item being checked */
+    uint32 d = 0, dbuf_len = 0, /* string pointer & length */
+           p = 0, /* pointer into db */
+           i = 0; /* item index */
+#ifdef CONVERSE_DEBUG
+fprintf(stderr, "\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
+#endif
+    while((converse_value)(db[p]) != U6OP_ENDDATA)
+    {
+        if(is_print(db[p]))
+        {
+            item = NULL;
+            d = 0; dbuf_len = 0;
+            do
+            {
+                if((d+1) >= dbuf_len) // resize buffer as needed
+                    dbuf_len += 16;
+                item = (char *)realloc(item, dbuf_len);
+                item[d++] = (char)(db[p]); // copy
+                item[d] = '\0';
+            } while(is_print(db[++p]));
+            ++p; // skip this unprintable now so it's not counted as an item
+            if(item)
+            {
+                string item_str = item;
+                string find_str = dstring;
+                free(item);
+                // match keywords format: clamp item to 4 characters
+                if(item_str.size() > 4)
+                    item_str.resize(4);
+                if(check_keywords(item_str, find_str))
+                    return(i);
+            }
+        }
+        else ++p;
+        ++i;
+    }
+#ifdef CONVERSE_DEBUG
+fprintf(stderr, "\nConverse: find_db_string: not found; returning %d\n", i);
+#endif
+    return(i);
+}
+

@@ -1287,13 +1287,10 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 scroll->display_string(" 2) Covetous\n");
                 scroll->display_string(" 3) Destard\n");
                 scroll->display_string(" 4) Shame\n");
-                scroll->display_string(" 5) Heftimus\n");
-                scroll->display_string(" 6) Ant Mound\n");
-                scroll->display_string(" 7) Hythloth\n");
-                scroll->display_string(" 8) Buc's Cave\n");
-                scroll->display_string(" 9) Pirate Cave\n");
+                scroll->display_string(" 5) Deceit\n");
+                scroll->display_string(" 6) Hythloth\n");
                 scroll->display_string("Location? ");
-                get_scroll_input("0123456789");
+                get_scroll_input("0123456");
                 break;
             case 6:
                 scroll->display_string("Other\n");
@@ -1302,8 +1299,12 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 scroll->display_string(" 3) Saw Mill\n");
                 scroll->display_string(" 4) Thieves Guild\n");
                 scroll->display_string(" 5) Wisps\n");
+                scroll->display_string(" 6) Heftimus\n");
+                scroll->display_string(" 7) Ant Mound\n");
+                scroll->display_string(" 8) Buc's Cave\n");
+                scroll->display_string(" 9) Pirate Cave\n");
                 scroll->display_string("Location? ");
-                get_scroll_input("012345");
+                get_scroll_input("0123456789");
                 break;
         }
     }
@@ -1396,16 +1397,10 @@ void Event::alt_code_teleport_menu(uint32 selection)
                     teleport_dest = "120 29d 0";
                 else if(selection == 4) // Shame
                     teleport_dest = "eb 19b 0";
-                else if(selection == 5) // Heftimus
-                    teleport_dest = "84 35b 0";
-                else if(selection == 6) // Ant Mound
-                    teleport_dest = "365 bb 0";
-                else if(selection == 7) // Hythloth
+                else if(selection == 5) // Deceit
+                    teleport_dest = "3c4 136 0";
+                else if(selection == 6) // Hythloth
                     teleport_dest = "3b4 3a4 0";
-                else if(selection == 8) // Buccaneer's Cave
-                    teleport_dest = "234 253 0";
-                else if(selection == 9) // Pirate Cave
-                    teleport_dest = "2c3 342 0";
                 break;
             case 6:
                 if(selection == 1) // Iolo's Hut
@@ -1418,6 +1413,14 @@ void Event::alt_code_teleport_menu(uint32 selection)
                     teleport_dest = "233 25e 0";
                 else if(selection == 5) // Wisps
                     teleport_dest = "a5 115 0";
+                else if(selection == 6) // Heftimus
+                    teleport_dest = "84 35b 0";
+                else if(selection == 7) // Ant Mound
+                    teleport_dest = "365 bb 0";
+                else if(selection == 8) // Buccaneer's Cave
+                    teleport_dest = "234 253 0";
+                else if(selection == 9) // Pirate Cave
+                    teleport_dest = "2c3 342 0";
                 break;
         }
         if(strlen(teleport_dest))

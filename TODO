@@ -13,7 +13,8 @@ Finish eggs:
 We don't fully understand the egg data (Y, Z, Quality).
 How does U6 determine where to spawn the contents? Some monsters seem
 grouped together, others spawn a distance from eachother. (if fighting)
-How do some eggs only hatch at certain times?
+Figure out remaining flags. Only "Silent-0x01" and "Nocturnal-0x10" are known.
+(These need to be checked for in EggManager.)
 
 Add these options to the command line:
 nuvie [options] game(from config)
@@ -27,15 +28,12 @@ one game can merge data with that in another gamedir
 Talk:
 MD SE talking
 Finish not completely implemented/known instructions:
-    0xbf - alternate inventory/portrait view
-    0xb4,0xb5 - get list data based on context of "let"
+    0xbf - alternate inventory/portrait view (or is it 0xbe?)
     0xc7 - objinparty, return value unclear
     0x9c - anything we are missing when we Horse an actor?
     0x9e - sleeping at inns unimplemented
     0xd6 - can't resurrect when actors can't even die!
     0xdb - unpoison actors
-    0xf9 - get string or integer input
-    0xb7,0xb8 - ?? used in final quest (gargoyle shrines)
 
 Event:
 Drop objects from inventory
@@ -79,8 +77,6 @@ Iolo "gather" should not gather gold from the Avatar's bags
 
 How does U6 determine the maximum stack-quantity for objects?
 
-Fix actor draw order issues.
-
 Actors:
 Improve Party following
 Implement speed in LPath (actors walking to work location get up to 4 moves)
@@ -93,10 +89,10 @@ New Monster pathfinder
 Move static mode out of U6Actor::wt_beg because it affects all actors with that
 worktype. Change worktype to wander after talked to player.
 
-Replace some actor info with pointer to an Obj?
-
 Actor::[check]move error/status struct (so that calling function can check)
 Actor::[check]move: take move_flags argument (replace current bools force_move/ignore_others)
+
+Fix actor draw order issues.
 
 Move Configuration search to Configuration or somewhere so it can be used in
 tools.
@@ -104,10 +100,10 @@ tools.
 things to do:
 raft
 balloon
-time-advance, sleep at inn, camp
+fadeout & time-advance (working on it)
+camping
 combat, combat worktypes
 weapons
-music
 sfx
 weather/ wind direction
 map wrapping
@@ -116,7 +112,6 @@ magic
 sprite animations (working on it)
 intro/end sequences
 game/gameselect menu(s)
-rabbits are EVIL
 
 wishlist:
 real-time mode (but not during combat)

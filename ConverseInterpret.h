@@ -75,6 +75,7 @@ using std::vector;
 #define U6OP_JUMP      0xb0
 #define U6OP_DPRINT    0xb5
 #define U6OP_BYE       0xb6
+#define U6OP_INDEXOF   0xb7
 #define U6OP_NEW       0xb9
 #define U6OP_DELETE    0xba
 #define U6OP_INVENTORY 0xbe
@@ -101,8 +102,7 @@ using std::vector;
 #define U6OP_INPUTNUM  0xfc
 #define U6OP_SIDENT    0xff
 
-#define U6OP_UNK1      0xB7
-#define U6OP_UNK2      0xB8
+#define U6OP_ENDDATA   0xb8
 
 /* Script is executed as it is stepped through byte-by-byte, and can have
  * text, data, and control codes. Flow is controlled by run-level stack.
@@ -141,17 +141,17 @@ protected:
     vector<struct in_val_s> in; // control values (input/instruction)
     uint32 in_start;
     string text; // input text from script
-    const char **rstrings; // string value(s) returned by op
-    uint32 rstring_count;
-    char *ystring; // modified by SETNAME, accessed with "$Y"
+    vector<std::string> rstrings; // string value(s) returned by op
+    string ystring; // modified by SETNAME, accessed with "$Y"
     uint8 decl_v; // declared/initialized variable number
     uint8 decl_t; // declared variable type: 0x00=none,0xb2=int,0xb3=string
     stack<struct convi_frame_s *> *b_frame;
 
-    const char *get_rstr(uint32 sn) { return((sn < rstring_count) ? rstrings[sn] : ""); }
-    const char *get_ystr()          { return(ystring ? ystring : ""); }
+    const char *get_rstr(uint32 sn) { return((sn < rstrings.size()) ? rstrings[sn].c_str() : ""); }
+    const char *get_ystr()          { return(ystring.c_str()); }
+    void set_ystr(const char *s)    { ystring = s ? s : ""; }
     void set_rstr(uint32 sn, const char *s);
-    void set_ystr(const char *s)    { free(ystring); ystring = strdup(s); }
+    converse_value add_rstr(const char *s);
 
     void let(uint8 v, uint8 t) { decl_v = v; decl_t = t; }
     void let()                 { decl_v = decl_t = 0x00; }
@@ -213,6 +213,9 @@ public:
     bool var_input() { return(decl_t != 0x00); }
     void assign_input(); // set declared variable to Converse input
     struct converse_db_s *get_db(uint32 loc, uint32 i);
+    converse_value get_db_integer(uint32 loc, uint32 i);
+    char *get_db_string(uint32 loc, uint32 i);
+    converse_value find_db_string(uint32 loc, const char *dstring);
 
     /* value tests */
     virtual bool is_print(converse_value check)
@@ -230,7 +233,7 @@ public:
                  || (check == 0x9a) || (check == 0x9b) || (check == 0x9d)
                  || (check == 0x9f) || (check == 0xa0) || (check == 0xa7)
                  || (check == 0xab) || (check == 0xb2) || (check == 0xb3)
-                 || (check == 0xb4) || (check == 0xbb) || (check == 0xc6)
+                 || (check == 0xb4) || (check == 0xb7) || (check == 0xbb) || (check == 0xc6)
                  || (check == 0xc7) || (check == 0xca) || (check == 0xcc)
                  || (check == 0xd7) || (check == 0xda) || (check == 0xdc)
                  || (check == 0xdd) || (check == 0xe0) || (check == 0xe1)
