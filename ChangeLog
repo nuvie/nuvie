@@ -1,3 +1,11 @@
+2003-07-15  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Added [Avatar] HP global var. for conversations, changed init. of
+	PARTY* vars to number of followers, and increased number of vars to 36.
+	* >=, <= operators fixed (tested with original U6 engine) This and above
+	removes the extra Avatar in party listings (such as in shops.)
+	*U6OP_RAND should no longer return values outside the given range,
+	resolves issue of Lord British repeating things. (tracker item 755717)
+
 2003-07-11  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Conversation interpreter is correctly skipping "buffer size" at start
 	of non-Lzw-encoded scripts now. Should've been done already but maybe I
