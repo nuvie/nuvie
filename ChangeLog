@@ -1,4 +1,7 @@
 2003-09-07  Eric Fry <efry@users.sourceforge.net>
+	* Fix for stackable items in Event::Get
+
+2003-09-07  Eric Fry <efry@users.sourceforge.net>
 	* MapWindow: You can now drop objects into containers on the map.
 	* Event: Fixed the Get method. The object is now referenced by
 	  Actor instead of being copied.
