@@ -302,6 +302,78 @@ void Converse::break_scope(uint8 levels)
 #endif /* CONVERSE_DEBUG */
 
 
+/* Tests/Compares values from the argument 0 list, starting at `va', using a
+ * comparison function code, and returns true or false.
+ */
+bool Converse::u6op_if_test(uint32 cmpf, uint32 va)
+{
+    bool ifcomp = false;
+    Actor *cnpc = 0;
+    uint32 v[6] = // vals, not including cmpfunc val
+    {
+        get_val(0, va), // v[0] == val1
+        (val_count(0) > 2) ? get_val(0, va + 1) : 0,
+        (val_count(0) > 3) ? get_val(0, va + 2) : 0,
+        (val_count(0) > 4) ? get_val(0, va + 3) : 0,
+        (val_count(0) > 5) ? get_val(0, va + 4) : 0,
+        (val_count(0) > 6) ? get_val(0, va + 5) : 0
+    };
+    switch(cmpf)
+    {
+        case 0x81: // val1 > val2
+            if(v[0] > v[1])
+                ifcomp = true;
+            break;
+        case 0x83: // val1 < val2 ??
+            if(v[0] < v[1])
+                ifcomp = true;
+            break;
+        case 0x84: // val1 < val2
+            if(v[0] < v[1])
+                ifcomp = true;
+            break;
+        case 0x85: // val1 != val2
+            if(v[0] != v[1])
+                ifcomp = true;
+            break;
+        case 0x86: // val1 == val2
+            if(v[0] == v[1])
+                ifcomp = true;
+            break;
+        case 0x94: // if (val1 ?val3? val2) OR (val4 ?val6? val5)
+            if(u6op_if_test(v[2], va) || u6op_if_test(v[5], va + 3))
+                ifcomp = true;
+            break;
+        case 0x95: // if (val1 ?val3? val2) AND (val4 ?val6? val5)
+            if(u6op_if_test(v[2], va) && u6op_if_test(v[5], va + 3))
+                ifcomp = true;
+            break;
+        case 0xab: // is npc(val1) flag(val2) set?
+            if(v[1] <= 7)
+            {
+                if(v[0] == 0xeb)
+                    cnpc = npc;
+                else
+                    cnpc = actors->get_actor(v[0]);
+                if(cnpc->get_flags() & (1 << v[1]))
+                    ifcomp = true;
+            }
+            break;
+        case 0xc6: // is val1 # of npc in party?
+            print("-!inparty-");
+            break;
+        case 0xd7: // is val1 # of an npc nearby self?
+            print("-!npcnear-");
+            break;
+        case 0x82: // ?? >=
+        default:
+            print("\nError: Unknown test\n");
+            break;
+    }
+    return(ifcomp);
+}
+
+
 /* Execute a command code from the parsed script, with optional arguments
  * already collected.
  * Returns false if user input is requested, or the script has stopped, and true
@@ -314,7 +386,7 @@ bool Converse::do_cmd()
     Party *group = 0;
     Uint32 res = 0; // some operation result
 #ifdef CONVERSE_DEBUG
-fprintf(stderr, "Converse: %04x: cmd=0x%02x\n", script_pt-script.buf, cmd);
+fprintf(stderr, "Converse: %04x: cmd=0x%02x\n", script_pt-script.buf-1, cmd);
 if(!args.empty() && !args[0].empty())
 {
     fprintf(stderr, "Converse: args:");
@@ -334,55 +406,13 @@ if(!args.empty() && !args[0].empty())
     {
         case U6OP_IF: // 1 arg, with multiple vals last val is test type
             test_msg("-if-");
-            // is val "true"?
-            if(val_count(0) == 1)
+            if(val_count(0) == 1) // is val1 "true"?
             {
                 if(get_val(0, 0))
                     ifcomp = true;
             }
-            else
-            switch(get_val(0, -1))
-            {
-                case 0x81: // val1 > val2
-                    if((val_count(0) > 2) && get_val(0, 0) > get_val(0, 1))
-                        ifcomp = true;
-                    break;
-                case 0x83: // val1 < val2 ??
-                    if((val_count(0) > 2) && get_val(0, 0) < get_val(0, 1))
-                        ifcomp = true;
-                    break;
-                case 0x84: // val1 < val2
-                    if((val_count(0) > 2) && get_val(0, 0) < get_val(0, 1))
-                        ifcomp = true;
-                    break;
-                case 0x85: // val1 != val2
-                    if((val_count(0) > 2) && get_val(0, 0) != get_val(0, 1))
-                        ifcomp = true;
-                    break;
-                case 0x86: // val1 == val2
-                    if((val_count(0) > 2) && get_val(0, 0) == get_val(0, 1))
-                        ifcomp = true;
-                    break;
-                case 0xab: // is npc(val1) flag(val2) set?
-                    if(val_count(0) > 2 && get_val(0, 1) <= 7)
-                    {
-                        if(get_val(0, 0) == 0xeb)
-                            cnpc = npc;
-                        else
-                            cnpc = actors->get_actor(get_val(0, 0));
-                        if(cnpc->get_flags() & (1 << get_val(0, 1)))
-                            ifcomp = true;
-                    }
-                    break;
-                case 0xc6: // is val1 # of npc in party?
-                    print("-!ifinparty- ");
-                    break;
-                case 0x82: // ?? >=
-                case 0x95: // (?) && (?) ??
-                default:
-                    print("\nError: Unknown test\n");
-                    break;
-            }
+            else if(val_count(0) >= 2) // test vals
+                ifcomp = u6op_if_test(get_val(0, -1), 0);
             enter_scope(ifcomp ? CONV_SCOPE_IF : CONV_SCOPE_IFELSE);
             test_msg((char *)(ifcomp ? "-TRUE-" : "-FALSE-"));
             break;
@@ -612,7 +642,8 @@ void Converse::collect_args()
             args.resize(ai + 1); args[ai].resize(0);
             continue;
         }
-        if(is_print(val) || is_cmd(val))
+        if((is_print(val) || is_cmd(val))
+           && (check_overflow(1) || peek(1) != 0xb2))
         {
 //          std::cerr << "val is printable or cmd, done" << std::endl;
             break;

@@ -29,6 +29,7 @@
 #include "MsgScroll.h"
 #include "GameClock.h"
 #include "Player.h"
+#include "U6def.h"
 
 enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
@@ -167,12 +168,9 @@ class Converse
     {
         if(rnd_lo == rnd_hi)
             return(rnd_lo);
-#ifdef MACOSX
-        return((random() + rnd_lo) % (rnd_hi + 1));
-#else
-        return((rand() + rnd_lo) % (rnd_hi + 1));
-#endif
+        return((NUVIE_RAND() + rnd_lo) % (rnd_hi + 1));
     }
+    bool u6op_if_test(uint32 cmpf, uint32 va);
 
     /* Seeking methods - update script pointer. */
     void seek(Uint32 offset = 0) { script_pt = script.buf; script_pt += offset; }
@@ -235,8 +233,9 @@ class Converse
      * that is part of some statements. */
     bool is_test(Uint8 check)
     {
-        return(((check == 0x81) || (check == 0x84) || (check == 0x85) || (check == 0x86)
-               || (check == 0xab) || (check == 0xc6) || (check == 0xdd)
+        return(((check == 0x81) || (check == 0x84) || (check == 0x85)
+               || (check == 0x86) || (check == 0x86) || (check == 0xab)
+               || (check == 0xc6) || (check == 0xd7) || (check == 0xdd)
                || (check == 0xbb) || (check == 0xe3)));
     }
     /* Returns true if the control code starts a statement (is the command). */
