@@ -52,21 +52,26 @@ Game::Game(Configuration *cfg)
 
 Game::~Game()
 {
+    // note: don't delete objects that are added to the GUI object via
+    // AddWidget()!
     delete tile_manager;
     delete obj_manager;
     delete palette;
     delete text;
-    delete scroll;
+    //delete scroll;
     delete game_map;
     delete actor_manager;
-    delete map_window;
+    //delete map_window;
     delete player;
     delete event;
-    delete background;
+    //delete background;
     delete converse;
     delete clock;
     delete party;
+    delete portrait;
     delete view_manager;
+    delete gui;
+    delete usecode;
 }
  
 bool Game::loadGame(Screen *s, uint8 type)
