@@ -498,7 +498,7 @@ void ObjManager::addObj(U6LList *list, Obj *obj)
     obj_list->x = obj->x;
     obj_list->y = obj->y;
     
-    list->add(obj_list);
+    list->addAtPos(0,obj_list);
    }
   
  obj_list->objs->addAtPos(0,obj);
