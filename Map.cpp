@@ -67,7 +67,7 @@ unsigned char *Map::get_map_data(uint8 level)
  return dungeons[level - 1];
 }
 
-inline uint16 Map::get_width(uint8 level)
+uint16 Map::get_width(uint8 level)
 {
  if(level == 0)
    return 1024; // surface
