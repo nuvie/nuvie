@@ -56,7 +56,6 @@ bool PartyView::init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl
 
 GUI_status PartyView::MouseUp(int x,int y,int button)
 {
-printf("PartyView:%x\n",this);
  x -= area.x;
  y -= area.y;
 
