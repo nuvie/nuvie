@@ -127,6 +127,11 @@ Actor *ActorManager::get_player()
  return actors[player_actor]; //FIX here for dead party leader etc.
 }
 
+void ActorManager::set_player(Actor *a)
+{
+ player_actor = a->id_n;
+}
+
 void ActorManager::updateActors()
 {
  uint16 i;

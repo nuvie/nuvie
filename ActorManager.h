@@ -53,7 +53,8 @@ class ActorManager
  Actor *get_actor(uint16 x, uint16 y, uint8 z);
  
  Actor *get_player();
-
+ void set_player(Actor *a);
+ 
  void updateActors();
  
  protected:

@@ -35,6 +35,7 @@ bool Player::init(Actor *a, ActorManager *am, MapWindow *mw)
  map_window = mw;
  
  a->set_in_party(true);
+ actor_manager->set_player(actor);
  
  return true;
 }
