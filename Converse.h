@@ -87,6 +87,12 @@ typedef struct
                 // 0xb2 = numbered variable
     Uint32 val;
 } converse_arg;
+typedef unsigned char* convscript_p;
+typedef struct
+{
+    convscript_p buf;
+    uint32 buf_len;
+} convscript;
 
 class Converse
 {
@@ -100,9 +106,8 @@ class Converse
     U6Lib_n *src; // points to opened converse.[ab] library
     Uint32 src_num; // 0=none 1="converse.a" 2="converse.b"
 
-    unsigned char *script;
-    Uint32 script_len;
-    unsigned char *script_pt; // points to next command/string in script
+    convscript script;
+    convscript_p script_pt; // points to next command/string in script
     Uint8 npc_num; // number of loaded npc script
     bool active; // running npc script? (paused or unpaused)
     bool is_waiting; // paused, waiting for user input?
@@ -136,7 +141,7 @@ class Converse
                 loadConv("converse.b");
         }
     }
-    unsigned char *read_script(Uint32 n);
+    convscript read_script(Uint32 n);
     void init_variables();
     void save_variables();
 
@@ -169,13 +174,13 @@ class Converse
     }
 
     /* Seeking methods - update script pointer. */
-    void seek(Uint32 offset = 0) { script_pt = script; script_pt += offset; }
+    void seek(Uint32 offset = 0) { script_pt = script.buf; script_pt += offset; }
     void seek_byte(Uint8 val)
     {
-        for(script_pt = script; !this->check_overflow(); script_pt++)
+        for(script_pt = script.buf; !this->check_overflow(); script_pt++)
             if(pop() == val)
                 return;
-        script_pt = script;
+        script_pt = script.buf;
     }
     void skip(Uint32 bytes = 1) { pop(bytes); }
 
@@ -212,7 +217,7 @@ class Converse
      */
     bool check_overflow(Uint32 ptadd = 0)
     {
-       return(((script_pt + ptadd) > (script + script_len)));
+       return(((script_pt + ptadd) > (script.buf + script.buf_len)));
     }
 
     /* Returns true if byte is a value-size definition. */

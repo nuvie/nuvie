@@ -32,11 +32,13 @@
 #include "ActorManager.h"
 #include "MapWindow.h"
 
+#include "Party.h"
+
 class Player
 {
  Configuration *config;
  GameClock *clock;
- 
+ Party *party;
  bool party_mode;
  Actor *actor;
  ActorManager *actor_manager;
@@ -53,8 +55,10 @@ class Player
  
  Player(Configuration *cfg);
  
- bool init(ActorManager *am, MapWindow *mw, GameClock *c);
- 
+ bool init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
+
+ Party *get_party() { return(party); }
+
  void set_actor(Actor *new_actor);
  Actor *get_actor();
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);

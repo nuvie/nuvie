@@ -28,18 +28,19 @@ Player::Player(Configuration *cfg)
  config = cfg;
 }
 
-bool Player::init(ActorManager *am, MapWindow *mw, GameClock *c)
+bool Player::init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
 {
  clock = c;
  actor_manager = am;
  map_window = mw;
+ party = p;
  actor = actor_manager->get_actor(1);
  
  loadObjlistData(); //load Player name, Karma.
  
  actor->set_in_party(true);
  actor_manager->set_player(actor);
- 
+
  return true;
 }
 

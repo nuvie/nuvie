@@ -87,9 +87,8 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  map_window->init(screen, game_map, tile_manager, obj_manager, actor_manager);
 
  player = new Player(config);
- player->init(actor_manager, map_window, clock);
- 
  party = new Party(config);
+ player->init(actor_manager, map_window, clock, party);
  party->init(actor_manager);
  
  scroll = new MsgScroll(config);
