@@ -339,32 +339,42 @@ bool ActorManager::loadActorSchedules()
  std::string filename;
  NuvieIOFileRead schedule;
  uint16 i;
- uint16 schedule_count, total_schedules;
+ uint16 total_schedules;
  uint16 num_schedules[256]; // an array to hold the number of schedule entries for each Actor.
- uint16 prev_offset, cur_offset;
  uint32 bytes_read;
  unsigned char *sched_data;
+ uint16 *sched_offsets;
  unsigned char *s_ptr;
  
  config_get_path(config,"schedule",filename);
  if(schedule.open(filename) == false)
    return false;
  
- //read the first 254 entries
- 
- prev_offset = schedule.read2();
+ sched_offsets = (uint16 *)malloc(256*sizeof(uint16));
 
- for(i=0,schedule_count=0;i<255;i++)
-   {
-    cur_offset = schedule.read2();
-    num_schedules[i] = cur_offset - prev_offset;
-    schedule_count += num_schedules[i];
-    prev_offset = cur_offset;
-   }
+ for (i = 0; i < 256; i++)
+  sched_offsets[i] = schedule.read2();
 
- // the last entry must be calculated from the total number of schedule entries in the file.
  total_schedules = schedule.read2();
- num_schedules[255] = total_schedules - schedule_count;
+
+ for (i = 0; i < 256; i++)
+ {
+    if (sched_offsets[i] == 0)
+        num_schedules[i] = 0;
+    else if (sched_offsets[i] > (total_schedules-1))
+        num_schedules[i] = 0;
+    else
+    // sched_offsets[i] is valid
+    {
+        if (i == 255)
+            num_schedules[i] = total_schedules - sched_offsets[i];
+        else if (sched_offsets[i+1] > (total_schedules-1))
+            num_schedules[i] = total_schedules - sched_offsets[i];
+        else
+            // sched_offsets[i+1] is valid
+            num_schedules[i] = sched_offsets[i+1] - sched_offsets[i];
+    }
+ }
  
  sched_data = schedule.readBuf(total_schedules * SCHEDULE_SIZE, &bytes_read);
 
@@ -374,15 +384,14 @@ bool ActorManager::loadActorSchedules()
     return false;
    }
 
- s_ptr = sched_data;
-
  for(i=0;i<256;i++)
   {
+   s_ptr = sched_data + (sched_offsets[i] * SCHEDULE_SIZE);
    actors[i]->loadSchedule(s_ptr,num_schedules[i]);
-   s_ptr += num_schedules[i] * SCHEDULE_SIZE;
   }
  
  free(sched_data);
+ free(sched_offsets);
  
  return true;
 }

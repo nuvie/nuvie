@@ -73,6 +73,12 @@ SoundManager::~SoundManager ()
 
 bool SoundManager::nuvieStartup (Configuration * config)
 {
+  std::string music_key;
+  std::string music_style;
+  std::string music_cfg_file; //full path and filename to music.cfg
+  std::string sound_dir_key;
+  std::string sound_dir;
+
   m_Config = config;
   m_Config->value ("config/audio/enabled", audio_enabled, true);
 
@@ -85,7 +91,15 @@ bool SoundManager::nuvieStartup (Configuration * config)
   
   m_Config->value ("config/audio/enable_music", music_enabled, true);
   m_Config->value ("config/audio/enable_sfx", sfx_enabled, true);
-    
+
+  music_key = config_get_game_key(config);
+  music_key.append("/music");
+  config->value (music_key, music_style, "native");
+
+  sound_dir_key = config_get_game_key(config);
+  sound_dir_key.append("/sounddir");
+  config->value (sound_dir_key, sound_dir, "");
+  
   if(!initAudio ())
     {
      return false;
@@ -93,26 +107,20 @@ bool SoundManager::nuvieStartup (Configuration * config)
 
   if(music_enabled)
     {
-     LoadNativeU6Songs();
+     if(music_style == "native")
+       LoadNativeU6Songs(); //FIX need to handle MD & SE music too.
+     else if (music_style == "custom")
+       LoadCustomSongs(sound_dir);
+     else
+       printf("Warning: Unknown music style '%s'\n", music_style.c_str());
+
      musicPlayFrom("random");
     }
 
   if(sfx_enabled)
     {
-     string scriptdirectory;
-     config->pathFromValue ("config/ultima6/sounddir", "", scriptdirectory);
-
-     if(scriptdirectory.length () == 0)
-       return false;
-
-     printf ("should load script from %s\n", scriptdirectory.c_str ());
-     string filename;
-     filename = scriptdirectory + "songs.cfg";
-     //LoadCustomSongs (scriptdirectory, filename);
-     filename = scriptdirectory + "obj_samples.cfg";
-     LoadObjectSamples (scriptdirectory, filename);
-     filename = scriptdirectory + "tile_samples.cfg";
-     LoadTileSamples (scriptdirectory, filename);
+     LoadObjectSamples (sound_dir);
+     LoadTileSamples (sound_dir);
     }
 
   return true;
@@ -192,7 +200,7 @@ bool SoundManager::LoadNativeU6Songs()
  return true;
 }
 
-bool SoundManager::LoadCustomSongs (string directory, string scriptname)
+bool SoundManager::LoadCustomSongs (string sound_dir)
 {
   char seps[] = ";\r\n";
   char *token1;
@@ -200,6 +208,10 @@ bool SoundManager::LoadCustomSongs (string directory, string scriptname)
   char *sz;
   NuvieIOFileRead niof;
   Song *song;
+  std::string scriptname;
+  std::string filename;
+  
+  build_path(sound_dir, "music.cfg", scriptname);
   
   if(niof.open (scriptname) == false)
     return false;
@@ -212,11 +224,13 @@ bool SoundManager::LoadCustomSongs (string directory, string scriptname)
   token1 = strtok (sz, seps);
   for( ; (token1 != NULL) && ((token2 = strtok(NULL, seps)) != NULL) ; token1 = strtok(NULL, seps))
     {
+      build_path(sound_dir, token2, filename);
+      
       song = (Song *)SongExists(token2);
       if(song == NULL)
         {
           song = new Song;
-          if(!loadSong(song, token2))
+          if(!loadSong(song, filename.c_str()))
             continue; //error loading song
         }
 
@@ -268,15 +282,23 @@ bool SoundManager::groupAddSong (char *group, Song *song)
 };
 
 
-bool SoundManager::LoadObjectSamples (string directory, string scriptname)
+bool SoundManager::LoadObjectSamples (string sound_dir)
 {
   char seps[] = ";\r\n";
   char *token1;
   char *token2;
   NuvieIOFileRead niof;
-  niof.open (scriptname);
-  char *sz = (char *) niof.readAll ();
+  char *sz;
+  string samplename;
+  string scriptname;
   
+  build_path(sound_dir, "obj_samples.cfg", scriptname);
+  
+  if(niof.open (scriptname) == false)
+    return false;
+
+  sz = (char *) niof.readAll ();
+
   token1 = strtok (sz, seps);
   
   while ((token1 != NULL) && ((token2 = strtok (NULL, seps)) != NULL))
@@ -289,8 +311,7 @@ bool SoundManager::LoadObjectSamples (string directory, string scriptname)
         {
           Sample *s;
           s = new Sample;
-          string samplename;
-          samplename = directory + token2;
+          build_path(sound_dir, token2, samplename);
           if (!s->Init (samplename.c_str ()))
             {
               printf ("could not load %s\n", samplename.c_str ());
@@ -320,14 +341,22 @@ bool SoundManager::LoadObjectSamples (string directory, string scriptname)
   return true;
 };
 
-bool SoundManager::LoadTileSamples (string directory, string scriptname)
+bool SoundManager::LoadTileSamples (string sound_dir)
 {
   char seps[] = ";\r\n";
   char *token1;
   char *token2;
   NuvieIOFileRead niof;
-  niof.open (scriptname);
-  char *sz = (char *) niof.readAll ();
+  char *sz;
+  string samplename;
+  string scriptname;
+  
+  build_path(sound_dir, "tile_samples.cfg", scriptname);
+  
+  if(niof.open (scriptname) == false)
+    return false;
+
+  sz = (char *) niof.readAll ();
 
   token1 = strtok (sz, seps);
 
@@ -341,8 +370,7 @@ bool SoundManager::LoadTileSamples (string directory, string scriptname)
         {
           Sample *s;
           s = new Sample;
-          string samplename;
-          samplename = directory + token2;
+          build_path(sound_dir, token2, samplename);
           if (!s->Init (samplename.c_str ()))
             {
               printf ("could not load %s\n", samplename.c_str ());

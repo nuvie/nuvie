@@ -1,3 +1,11 @@
+2004-03-14  Eric Fry <efry at users.sourceforge.net>
+	* Added custom music selection back in to nuvie. Nuvie can now play
+	  any music file supported by SDL_Mixer. We should really write some
+	  docs for all this stuff. ;)
+	* Incorporated Marc Winterrowd's schedule loading patch. This patch
+	  fixes an over run bug in the Actor schedule loading code. 
+	* The Nuvie project is one year old today!
+
 2004-03-11  Eric Fry <efry at users.sourceforge.net>
 	* Added SDL.h include into main.cpp. This should enable stdout/err
 	  redirection to file on win32 systems. Thanks to Marc Winterrowd for

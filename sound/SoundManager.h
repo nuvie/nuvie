@@ -57,13 +57,13 @@ public:
     void musicPlay();
     
 private:
-	bool LoadCustomSongs(string directory, string scriptname);
+	bool LoadCustomSongs(string scriptname);
     bool LoadNativeU6Songs();
     bool loadSong(Song *song, const char *filename);
     bool groupAddSong(char *group, Song *song);
     
-	bool LoadObjectSamples(string directory, string scriptname);
-	bool LoadTileSamples(string directory, string scriptname);
+	bool LoadObjectSamples(string sound_dir);
+	bool LoadTileSamples(string sound_dir);
 
 	Sound* SongExists(string name); //have we loaded this sound before?
 	Sound* SampleExists(string name); //have we loaded this sound before?

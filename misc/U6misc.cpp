@@ -56,6 +56,18 @@ uint8 get_game_type(const char *string)
  return NUVIE_GAME_NONE;
 }
 
+void build_path(std::string path, std::string filename, std::string &full_path)
+{
+ full_path = path;
+ 
+ if(full_path.length() > 0 && full_path[full_path.length()-1] != U6PATH_DELIMITER)
+    full_path += U6PATH_DELIMITER + filename;
+ else
+    full_path += filename;
+
+ return;
+}
+
 void print_b(uint8 num)
 {
  sint8 i;

@@ -16,6 +16,7 @@ class Configuration;
 std::string config_get_game_key(Configuration *config);
 void config_get_path(Configuration *config, std::string filename, std::string &path);
 uint8 get_game_type(const char *string);
+void build_path(std::string path, std::string filename, std::string &full_path);
 void print_b(uint8 num);
 void print_indent(uint8 indent);
 void print_bool(bool state, const char *yes = "true", const char *no = "false");
