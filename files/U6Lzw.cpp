@@ -39,9 +39,10 @@ unsigned char *U6Lzw::compress_buffer(unsigned char *src, uint32 src_len,
 {
     // FIXME - didnt bother fixing this since its output will be larger than
     //         the uncompressed data
-    uint32 blocks = 0, block = 0, b = 0, d = 0, rshift = 0;
-    uint16 val = 0;
-    unsigned char *dest_pt = NULL, *dest_buf = (unsigned char *)malloc(4);
+    uint32 blocks = 0; //, block = 0, b = 0, d = 0, rshift = 0;
+    //uint16 val = 0;
+    //unsigned char *dest_pt = NULL;
+    unsigned char *dest_buf = (unsigned char *)malloc(4);
     // add 4 byte uncompressed length value
     dest_len = 4;
     memcpy(dest_buf, &src_len, dest_len);

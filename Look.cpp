@@ -158,6 +158,27 @@ const char *Look::get_description(uint16 tile_num, bool *plural)
  return desc_buf;
 }
 
+bool Look::has_plural(uint16 tile_num)
+{
+ const char *desc;
+ 
+if(tile_num >= 2048)
+  return false;
+
+ desc = look_tbl[tile_num];
+ 
+if(desc == NULL)
+  return false;
+
+ for(;*desc != '\0';desc++)
+  {
+   if(*desc == '\\')
+     return true;
+  }
+  
+ return false;
+}
+
 uint16 Look::get_max_len()
 {
  return max_len;

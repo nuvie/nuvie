@@ -266,7 +266,11 @@ bool Event::handleEvent(const SDL_Event *event)
           break;
 
         case SDL_QUIT :
-                       return false; //time to quit.
+                       if(!showingQuitDialog)
+                          {
+                           showingQuitDialog = true;
+                           quitDialog();
+                          }
                        break;
         default:
         break;

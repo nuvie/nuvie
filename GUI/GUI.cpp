@@ -193,9 +193,9 @@ GUI:: HandleEvent(SDL_Event *event)
    {
 	  switch (event->type) {
  		/* SDL_QUIT events quit the GUI */ 
-     case SDL_QUIT:
-		 	 status = GUI_QUIT;
-		 	 break;
+    // case SDL_QUIT:
+		// 	 status = GUI_QUIT;
+		// 	 break;
 
 		 /* Keyboard and mouse events go to widgets */
 

@@ -218,7 +218,7 @@ void U6Actor::twitch()
 
 void U6Actor::preform_worktype()
 {
- uint8 walk_frame_tbl[4] = {0,1,2,1};
+ // uint8 walk_frame_tbl[4] = {0,1,2,1};
 
  switch(worktype)
   {

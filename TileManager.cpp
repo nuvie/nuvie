@@ -218,6 +218,11 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
  return desc_buf;
 }
 
+bool TileManager::tile_is_stackable(uint16 tile_num)
+{
+ return look->has_plural(tile_num);
+}
+
 void TileManager::update()
 {
  uint16 i;

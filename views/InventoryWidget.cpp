@@ -154,10 +154,11 @@ void InventoryWidget::display_inventory_list()
           tile = empty_tile;
           
        //tile = tile_manager->get_tile(actor->indentory_tile());
-       
-       if(tile != empty_tile && obj->qty > 0) //draw qty string for stackable items
+
+       //draw qty string for stackable items
+       if(tile != empty_tile && obj->qty > 0 && tile_manager->tile_is_stackable(tile->tile_num)) 
          display_qty_string((area.x+8)+j*16,area.y+16+i*16,obj->qty);
-         
+
        screen->blit((area.x+8)+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
       }
    }

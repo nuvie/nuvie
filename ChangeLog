@@ -1,3 +1,9 @@
+2003-09-16  Eric Fry <efry@users.sourceforge.net>
+	* Quantities are only displayed for stackable items in InventoryWidget.
+          Note I have still got to implement U6 key display eg 'A', 'B' etc.
+	* Pressing the window manager's [X] button now brings up the 
+          quit dialog.
+
 2003-09-14  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Fixed segfault when quitting during a conversation. (thanks wjp!)
 	[ 765881 ]

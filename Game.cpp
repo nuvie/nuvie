@@ -31,7 +31,7 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
-#include "Look.h"
+//#include "Look.h"
 
 #include "U6UseCode.h"
 #include "MDUseCode.h"
@@ -93,8 +93,7 @@ bool Game::loadGame(Screen *s, uint8 type)
  
    clock = new GameClock(config);
    clock->init();
- 
-   //loadBackground();
+   
    background = new Background(config);
    background->init();
    gui->AddWidget(background);

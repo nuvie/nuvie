@@ -104,7 +104,7 @@ class TileManager
    Tile *get_original_tile(uint16 tile_num);
 
    const char *lookAtTile(uint16 tile_num, uint16 qty, bool show_prefix);
-   
+   bool tile_is_stackable(uint16 tile_num);
    void update();
    
  protected:
