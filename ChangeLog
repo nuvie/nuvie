@@ -1,3 +1,6 @@
+2004-09-25  Michael Fink <vividos at users.sourceforge.net>
+	* fixed some memory leaks
+
 2004-09-25  Eric Fry <efry at users.sourceforge.net>
 	* Added ObjManager::list_add_obj() Adds an Obj into a U6LList combining
 	  with existing objects if stackable.

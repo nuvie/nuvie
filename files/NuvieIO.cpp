@@ -77,6 +77,12 @@ NuvieIOBuffer::NuvieIOBuffer() : NuvieIO()
  copied_data = false;
 }
 
+NuvieIOBuffer::~NuvieIOBuffer()
+{
+ if (data != NULL)
+   free(data);
+}
+
 bool NuvieIOBuffer::open(unsigned char *buf, uint32 buf_size, bool copy_buf)
 {
  if(data != NULL)

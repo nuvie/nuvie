@@ -94,6 +94,8 @@ Converse::~Converse()
         fprintf(stderr, "End conversation\n");
     }
     unload_conv();
+
+    delete speech;
 }
 
 

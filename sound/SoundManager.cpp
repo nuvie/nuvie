@@ -54,6 +54,17 @@ SoundManager::SoundManager ()
   opl = NULL;
 }
 
+// function object to delete map<T, SoundCollection *> items
+template <typename T>
+class SoundCollectionMapDeleter
+{
+public:
+   operator ()(const std::pair<T,SoundCollection *>& mapEntry)
+   {
+      delete mapEntry.second;
+   }
+};
+
 SoundManager::~SoundManager ()
 {
   //thanks to wjp for this one
@@ -67,6 +78,12 @@ SoundManager::~SoundManager ()
       delete *(m_Samples.begin ());
       m_Samples.erase (m_Samples.begin ());
     }
+
+  delete opl;
+
+  std::for_each(m_ObjectSampleMap.begin(), m_ObjectSampleMap.end(), SoundCollectionMapDeleter<int>());
+  std::for_each(m_TileSampleMap.begin(), m_TileSampleMap.end(), SoundCollectionMapDeleter<int>());
+  std::for_each(m_MusicMap.begin(), m_MusicMap.end(), SoundCollectionMapDeleter<string>());
 
   if(audio_enabled)
      Mix_CloseAudio ();

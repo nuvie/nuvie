@@ -114,12 +114,11 @@ Game::~Game()
     if(effect_manager) delete effect_manager;
     if(save_manager) delete save_manager;
     if(cursor) delete cursor;
+    if(egg_manager) delete egg_manager;
 }
 
 bool Game::loadGame(Screen *s, uint8 type)
 {
- EggManager *egg_manager;
-
  screen = s;
  game_type = type;
 

@@ -90,6 +90,7 @@ void SaveManager::init()
 
 SaveManager::~SaveManager()
 {
+ delete savegame;
 }
 
 bool SaveManager::load_latest_save()

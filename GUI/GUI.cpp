@@ -73,6 +73,8 @@ GUI:: ~GUI()
 		free(widgets);
 	}
 
+ delete selected_color;
+
  delete gui_font;
  delete gui_drag_manager;
 }

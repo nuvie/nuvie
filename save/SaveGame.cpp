@@ -61,6 +61,7 @@ SaveGame::SaveGame(Configuration *cfg)
 
 SaveGame::~SaveGame()
 {
+ objlist.close();
  clean_up();
 }
 
@@ -204,6 +205,7 @@ bool SaveGame::load_original()
   }
 
  delete[] filename;
+ delete objblk_file;
 
  //print_egg_list();
  config_get_path(config, OBJLIST_FILENAME, objlist_filename);

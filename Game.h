@@ -50,6 +50,7 @@ class GUI;
 class EffectManager;
 class SoundManager;
 class SaveManager;
+class EggManager;
 
 typedef enum
 {
@@ -84,6 +85,7 @@ class Game
  EffectManager *effect_manager;
  SoundManager *sound_manager;
  SaveManager *save_manager;
+ EggManager *egg_manager;
 
  GameClock *clock;
  Portrait *portrait;

@@ -77,6 +77,7 @@ class NuvieIOBuffer: public NuvieIO
 
  public:
    NuvieIOBuffer();
+   virtual ~NuvieIOBuffer();
 
    bool open(unsigned char *buf, uint32 buf_size, bool copy_buf=NUVIE_BUF_COPY);
 

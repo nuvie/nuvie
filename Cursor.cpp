@@ -95,8 +95,11 @@ uint32 Cursor::load_all(std::string filename)
 void Cursor::unload_all()
 {
     for(uint32 i = 0; i < cursors.size(); i++)
+    {
         if(cursors[i] && cursors[i]->shapedat)
             free(cursors[i]->shapedat);
+        delete cursors[i];
+    }
     if(cleanup)
         free(cleanup);
 }
