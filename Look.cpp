@@ -115,16 +115,17 @@ bool Look::init()
  return true;
 }
 
-const char *Look::get_description(uint16 tile_num, bool plural)
+const char *Look::get_description(uint16 tile_num, bool *plural)
 {
  const char *desc;
  char c;
  uint16 i, j;
  uint16 len;
+ bool has_plural = false;
  
  if(tile_num >= 2048)
    return NULL;
-
+ 
  desc = look_tbl[tile_num];
  
  len = strlen(desc);
@@ -133,11 +134,12 @@ const char *Look::get_description(uint16 tile_num, bool plural)
    {
     if(desc[i] == '\\' || desc[i] == '/')
       {
+       has_plural = true;
        c = desc[i];
        for(i++;isalpha(desc[i]) && i < len;i++)
         {
          
-         if((plural && c == '\\' ) || ( !plural && c == '/' ))
+         if((*plural && c == '\\' ) || ( !*plural && c == '/' ))
            { desc_buf[j] = desc[i]; j++; }
         }
       }
@@ -151,6 +153,8 @@ const char *Look::get_description(uint16 tile_num, bool plural)
 
  desc_buf[j] = desc[i];
 
+ *plural = has_plural; //we return if this string contained a plural form.
+ 
  return desc_buf;
 }
 

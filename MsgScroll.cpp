@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <string.h>
 #include <ctype.h>
 #include "U6misc.h"
 
@@ -65,7 +65,10 @@ MsgScroll::MsgScroll(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
    msg_buf[i] = (char *)malloc(scroll_width+1);
    memset(msg_buf[i],0,scroll_width+1);
   }
-
+ 
+ msg_buf_languages = (uint8 *)malloc(sizeof(uint8) * scroll_height);
+ memset(msg_buf_languages,0,scroll_height * sizeof(uint8));
+ 
  prompt = NULL;
  
  buf_pos = 0;
@@ -98,7 +101,8 @@ MsgScroll::~MsgScroll()
  for(i=0;i<scroll_height;i++)
   free(msg_buf[i]);
  free(msg_buf); 
-
+ free(msg_buf_languages);
+ 
  free(string_buf);
  free(prompt);
 }
@@ -118,10 +122,18 @@ bool MsgScroll::init(Text *txt, char *player_name)
  
  return true;
 }
-
-void MsgScroll::display_string(const char *string)
+ 
+void MsgScroll::display_string(const char *string, uint8 lang_num)
 {
- uint16 length;
+ if(string)
+   display_string(string, strlen(string), lang_num);
+ else
+   display_string(NULL, 0, lang_num);
+}
+
+void MsgScroll::display_string(const char *string, uint16 string_len, uint8 lang_num)
+{
+ uint16 string_buf_length;
  uint16 i;
  uint16 word_start, row_start, row_length;
  uint16 num_rows;
@@ -134,33 +146,33 @@ void MsgScroll::display_string(const char *string)
       return;
      }
 
-    if(set_string_buf(string) == false)
+    if(set_string_buf(string, string_len) == false)
        return;
    }
  else
    {
     if(string != NULL)
       {
-       set_string_buf_append(string);
+       set_string_buf_append(string, string_len);
        return;
       }
    }
 
- length = strlen(string_buf);
- 
+ string_buf_length = strlen(string_buf);
+  
  //if(msg_buf[buf_pos][0] != '\0')
  row_length = strlen(msg_buf[buf_pos]);
  
  i = string_buf_pos;
  string_buf_pos = 0;
  
- for(row_start = i, num_rows = 0, word_start = i; i <= length; i++, row_length++)
+ for(row_start = i, num_rows = 0, word_start = i; i <= string_buf_length; i++, row_length++)
    {
     if(string_buf[i] == '\n' || string_buf[i] == '*' || string_buf[i] == ' ' || string_buf[i] == '\0')
       {
        if(row_length >= scroll_width)
          {
-          buf_addString(&string_buf[row_start],word_start - row_start);
+          buf_addString(&string_buf[row_start],word_start - row_start,lang_num);
           row_start = word_start;
           buf_next();
           num_rows++;
@@ -171,7 +183,7 @@ void MsgScroll::display_string(const char *string)
       
        if(string_buf[i] != ' ')
         {
-         buf_addString(&string_buf[row_start],i - row_start);
+         buf_addString(&string_buf[row_start],i - row_start,lang_num);
          if(string_buf[i] != '\0')
           {
            buf_next();
@@ -183,7 +195,8 @@ void MsgScroll::display_string(const char *string)
         }
        else
         word_start = i+1;
-      if(num_rows == scroll_height-2 || string_buf[i] == '*')
+        // == 
+      if(num_rows >= scroll_height-2 || string_buf[i] == '*')
         {
          set_page_break(row_start);
          break;
@@ -322,10 +335,7 @@ void MsgScroll::Display(bool full_redraw)
      {
       if(msg_buf[j][0] != '\0')
         {
-         if(msg_buf[j][0] == '<' && msg_buf[j][strlen(msg_buf[j]) - 1] == '>') //britannian strip <..> chars
-           text->drawString(screen, &msg_buf[j][1], strlen(msg_buf[j]) - 2, area.x, area.y+i*8, 1);
-         else
-           text->drawString(screen, msg_buf[j], strlen(msg_buf[j]), area.x, area.y+i*8, 0); //normal text        
+         text->drawString(screen, msg_buf[j], area.x, area.y+i*8, msg_buf_languages[j]);         
         }
       j = (j + 1) % scroll_height;
      }
@@ -371,7 +381,7 @@ void MsgScroll::drawCursor(uint16 x, uint16 y)
      cursor_wait++;
 }
 
-bool MsgScroll::buf_addString(char *string, uint8 length)
+bool MsgScroll::buf_addString(char *string, uint8 length, uint8 lang_num)
 {
  uint16 buf_len;
  
@@ -379,6 +389,8 @@ bool MsgScroll::buf_addString(char *string, uint8 length)
  strncpy(&msg_buf[buf_pos][buf_len], string, length);
  msg_buf[buf_pos][buf_len+length] = '\0';
 
+ msg_buf_languages[buf_pos] = lang_num; //set the language for this line.
+ 
  //buf_pos++;
 
  return true;
@@ -395,6 +407,8 @@ bool MsgScroll::buf_next()
    buf_pos++;
 
  msg_buf[buf_pos][0] = '\0';
+ 
+ msg_buf_languages[buf_pos] = 0; //clear the language for this line.
  
  return true;
 }
@@ -413,11 +427,8 @@ bool MsgScroll::buf_prev()
  return true;
 }
 
-bool MsgScroll::set_string_buf(const char *string)
+bool MsgScroll::set_string_buf(const char *string, uint16 len)
 {
- uint16 len;
- 
- len = strlen(string);
  
  if(string_buf_len < len+1)
    {
@@ -425,28 +436,28 @@ bool MsgScroll::set_string_buf(const char *string)
     string_buf_len = len+1;
    }
 
- strcpy(string_buf,string);
+ strncpy(string_buf,string,len);
+ string_buf[len] = '\0';
  
  return true;
 }
 
-bool MsgScroll::set_string_buf_append(const char *string)
+bool MsgScroll::set_string_buf_append(const char *string, uint16 len)
 {
- uint16 len;
+ uint16 new_len;
  
  if(string == NULL)
    return false;
 
- len = strlen(string);
- len += strlen(string_buf);
+ new_len = len + strlen(string_buf);
  
- if(string_buf_len < len+1)
+ if(string_buf_len < new_len+1)
    {
-    string_buf = (char *)realloc(string_buf, len+1);
-    string_buf_len = len+1;
+    string_buf = (char *)realloc(string_buf, new_len+1);
+    string_buf_len = new_len+1;
    }
 
- strcat(string_buf,string);
+ strncat(string_buf,string,len);
  
  return true;
 }

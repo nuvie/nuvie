@@ -62,6 +62,8 @@ class MsgScroll: public GUI_Widget
  bool page_break;
  
  char **msg_buf;//[scroll_height][scroll_width+1];
+ uint8 *msg_buf_languages; //[scroll_height]
+
  uint16 scroll_height;
  uint16 scroll_width;
  
@@ -90,7 +92,9 @@ class MsgScroll: public GUI_Widget
  
  bool init(Text *txt, char *player_name);
  
- void display_string(const char *string);
+ void display_string(const char *string, uint8 lang_num=0);
+ void display_string(const char *string, uint16 string_len, uint8 lang_num);
+ 
  void display_prompt();
  void message(const char *string) { display_string(string); display_prompt(); }
  
@@ -111,12 +115,12 @@ class MsgScroll: public GUI_Widget
  void clearCursor(uint16 x, uint16 y);
  void drawCursor(uint16 x, uint16 y);
  
- bool buf_addString(char *string, uint8 length);
+ bool buf_addString(char *string, uint8 length, uint8 lang_num);
  bool buf_next();
  bool buf_prev();
  
- bool set_string_buf(const char *string);
- bool set_string_buf_append(const char *string);
+ bool set_string_buf(const char *string, uint16 len);
+ bool set_string_buf_append(const char *string, uint16 len);
  bool set_string_buf_pos(uint16 pos);
  
  void set_page_break(uint16 pos);

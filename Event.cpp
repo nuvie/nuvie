@@ -173,10 +173,20 @@ bool Event::handleEvent(const SDL_Event *event)
                                map_window->set_show_cursor(true);
                                break;
              case SDLK_t     :
-                               mode = TALK_MODE;
-                               scroll->display_string("Talk-");
-                               map_window->centerCursor();
-                               map_window->set_show_cursor(true);
+                               if(mode == TALK_MODE) //you can select an actor with 't' or enter.
+                                 {
+                                  if(talk())
+                                    scroll->set_talking(true);
+                                  mode = MOVE_MODE;
+                                  map_window->set_show_cursor(false);
+                                 }
+                               else
+                                 {
+                                  mode = TALK_MODE;
+                                  scroll->display_string("Talk-");
+                                  map_window->centerCursor();
+                                  map_window->set_show_cursor(true);
+                                 }
                                break;
              case SDLK_u     :
                                mode = USE_MODE;
@@ -540,7 +550,8 @@ void Event::alt_code(const char *cs)
             break;
 
         case 214:
-            scroll->display_string("Location: ");
+            scroll->display_string("Location: \n",2);
+            scroll->display_string(" ",0);
             scroll->set_input_mode(true);
             active_alt_code = c;
             break;

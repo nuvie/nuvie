@@ -704,9 +704,19 @@ bool U6UseCode::look_sign(Obj *obj, uint8 ev)
             scroll->display_string(":\n\n");
             if((data = book->get_book_data(obj->quality - 1)))
             {
-                scroll->display_string(data);
-                free(data);
+             if(data[0] == '<' && data[strlen(data)-1] == '>') //Britannian text is wrapped in '<' '>' chars
+                {
+                 scroll->display_string(&data[1],strlen(data)-2, 1); // 1 for britannian font.
+                 scroll->display_string("\n",1);
+                }
+             else
+                {
+                 scroll->display_string(data,strlen(data),0);
+                 scroll->display_string("\n",0);
+                }
+             free(data);
             }
+
         }
         return(true);
     }

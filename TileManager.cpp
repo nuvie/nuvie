@@ -206,11 +206,11 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
  else
   plural = false;
   
- desc = look->get_description(tile->tile_num,plural);
+ desc = look->get_description(tile->tile_num,&plural);
  if(show_prefix == false)
    return desc;
 
- if(qty > 0)
+ if(qty > 0 && plural)
    sprintf(desc_buf,"%d %s",qty, desc);
  else
    sprintf(desc_buf,"%s%s",article_tbl[tile->article_n], desc);

@@ -1,3 +1,12 @@
+2003-09-14  Eric Fry <efry@users.sourceforge.net>
+	* Reworked MsgScroll to handle lines in other fonts. I'm not completely
+          satisfied with this. As you can only have one font per line. :(
+	* You can now select an actor to talk to with either the 't' key or
+          the 'Enter' key.
+	* Signs should display in runic as required. [ 805253 ]
+	* Fixed Look quantity bug. [ 742559 ]
+	* Alt 214 now displays in "Location" Gargoylian. :)
+
 2003-09-13  Eric Fry <efry@users.sourceforge.net>
 	* Fixed wall reshaping bug with cookfires.
 	* Partial fix for runic signs. This will not work with multi-line 
