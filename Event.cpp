@@ -779,9 +779,9 @@ bool Event::look(Obj *obj)
         if(weight != 0)
         {
             if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
-                snprintf(weight_string,31,". They weigh %0.1f stones.",obj_manager->get_obj_weight(obj));
+                snprintf(weight_string,31,". They weigh %0.1f stones.",weight);
             else
-                snprintf(weight_string,31,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj));
+                snprintf(weight_string,31,". It weighs %0.1f stones.",weight);
             scroll->display_string(weight_string);
         }
         scroll->display_string("\n\n");

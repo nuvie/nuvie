@@ -836,7 +836,7 @@ float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool sc
 
  weight = obj_weight[obj->obj_n];
 
- if(obj->qty > 1)
+ if(obj->qty > 1 && is_stackable(obj))
    weight *= obj->qty;
 
  //weight /= 10;

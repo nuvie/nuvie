@@ -3,6 +3,8 @@
 	  to get. It is nolonger possible to get sundials or drawers. 
 	  Objects with a weight of 25.5 stones aren't gettable. It is
 	  however still possible to get the dragon parts in the museum. :(
+	* ObjManager::get_obj_weight() now checks if an object is stackable
+	  before multiplying its weight by its qty value.
 
 2004-06-13  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a bug when savedir wasn't defined in the config file.
