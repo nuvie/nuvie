@@ -154,6 +154,24 @@ bool ActorManager::loadActors()
     actors[i]->level = objlist.read1();
    }
  
+ // Current Worktype
+ 
+ objlist.seek(0x11f1);
+
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->set_worktype(objlist.read1());
+   }
+
+ // Combat mode
+ 
+ objlist.seek(0x12f1);
+
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->combat_mode = objlist.read1();
+   }
+    
  // Magic Points
  
  objlist.seek(0x13f1);
@@ -169,7 +187,7 @@ bool ActorManager::loadActors()
    {
     actors[i]->flags = objlist.read1();
    }
-
+ 
  loadActorSchedules();
  
  return true;

@@ -92,7 +92,8 @@ class Actor
  uint8 level;
  uint16 exp;
  uint8 magic;
- 
+ uint8 combat_mode;
+
  uint8 flags;
  
  char *name;

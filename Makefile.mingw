@@ -12,8 +12,8 @@ SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/conf -I$(SRC)/files \
-	-I$(SRC)/misc -I$(SRC)/screen -I$(SRC)/tools -I$(SRC)/usecode \
-	-I$(SRC)/views $(SDL_CFLAGS)
+	-I$(SRC)/misc -I$(SRC)/pathfinder -I$(SRC)/screen -I$(SRC)/tools \
+	-I$(SRC)/usecode -I$(SRC)/views $(SDL_CFLAGS)
 CXXFLAGS=-g
 
 LFLAGS=-mwindows

@@ -22,7 +22,7 @@ typedef struct astar_node_s
 class AStar : public PathFinder
 {
 protected:
-    list<astar_node *> open_nodes, closed_nodes; // nodes seen
+    std::list<astar_node *> open_nodes, closed_nodes; // nodes seen
     uint32 max_node_score; // highest score any node can have
 
 protected:

@@ -1,3 +1,8 @@
+2003-07-15  Eric Fry <efry@users.sourceforge.net>
+	* compile fixed for Mac OS X.
+	* added combat_mode to Actor.
+	* Actors now load up with correct worktype from objlist.
+
 2003-07-26  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Actor, PathFinder: Path-finding/direction finding classes added and
 	accessible from Actor. The path-finder is incomplete and distant

@@ -152,7 +152,7 @@ sint32 AStar::estimate_step_cost(MapCoord &c1, MapCoord &c2)
  */
 astar_node *AStar::find_closed_node(astar_node *ncmp)
 {
-    list<astar_node *>::iterator n;
+    std::list<astar_node *>::iterator n;
     for(n = closed_nodes.begin(); n != closed_nodes.end(); n++)
         if((*n)->loc == ncmp->loc)
             return(*n);
@@ -164,7 +164,7 @@ astar_node *AStar::find_closed_node(astar_node *ncmp)
  */
 astar_node *AStar::find_open_node(astar_node *ncmp)
 {
-    list<astar_node *>::iterator n;
+    std::list<astar_node *>::iterator n;
     for(n = open_nodes.begin(); n != open_nodes.end(); n++)
         if((*n)->loc == ncmp->loc)
             return(*n);
@@ -176,7 +176,7 @@ astar_node *AStar::find_open_node(astar_node *ncmp)
  */
 void AStar::push_open_node(astar_node *node)
 {
-    list<astar_node *>::iterator n, next;
+    std::list<astar_node *>::iterator n, next;
     if(open_nodes.empty())
     {
         open_nodes.push_front(node);
@@ -205,7 +205,7 @@ astar_node *AStar::pop_open_node()
  */
 void AStar::remove_closed_node(astar_node *ncmp)
 {
-    list<astar_node *>::iterator n;
+    std::list<astar_node *>::iterator n;
     for(n = closed_nodes.begin(); n != closed_nodes.end(); n++)
         if((*n)->loc == ncmp->loc)
         {

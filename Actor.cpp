@@ -507,11 +507,14 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
    
  sched[i] = NULL;
  
+/*
  sched_pos = getSchedulePos(clock->get_hour());
  
  if(sched[sched_pos] != NULL)
     set_worktype(sched[sched_pos]->worktype);
-
+*/
+ 
+ 
  return;
 }
 

@@ -1,7 +1,7 @@
 #ifndef	__PathFinder_h__
 #define	__PathFinder_h__
 
-#include "misc/U6def.h"
+#include "U6def.h"
 #include "Map.h"
 
 class Actor;
@@ -35,7 +35,7 @@ public:
     void set_speed(uint8 sp) { }
 
     bool reached_goal();
-    inline void get_adjacent_dir(sint8 &xdir, sint8 &ydir, sint8 rotate);
+    void get_adjacent_dir(sint8 &xdir, sint8 &ydir, sint8 rotate);
     void delete_path();
     uint32 get_max_cost(uint32 cost);
 

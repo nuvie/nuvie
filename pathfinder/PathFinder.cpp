@@ -55,7 +55,7 @@ bool PathFinder::reached_goal()
  * towards one of the seven nearby tiles to the left or right of base.
  * For rotate: -n = left n tiles, n = right n tiles
  */
-inline void PathFinder::get_adjacent_dir(sint8 &xdir, sint8 &ydir, sint8 rotate)
+ void PathFinder::get_adjacent_dir(sint8 &xdir, sint8 &ydir, sint8 rotate)
 {
     struct
     {
