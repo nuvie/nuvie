@@ -63,6 +63,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 
  memset(readied_objects,0,sizeof(readied_objects));
  moves = 1;
+ light = 0;
 
  name ="";
  flags = 0;
@@ -1305,3 +1306,16 @@ void Actor::hit(uint8 dmg)
    }
 }
 
+
+void Actor::add_light(uint8 val)
+{
+    light += val;
+}
+
+void Actor::subtract_light(uint8 val)
+{
+    if(light >= val)
+        light -= val;
+    else
+        light = 0;
+}

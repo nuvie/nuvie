@@ -251,12 +251,15 @@ void Game::set_pause_flags(GamePauseState state)
     {
         if(event->get_mode() != WAIT_MODE)
             event->set_mode(WAIT_MODE);
-        gui->block();
+        if(!gui->get_block_input())
+            gui->block();
     }
-    else if(event->get_mode() == WAIT_MODE)
+    else
     {
-        event->endAction(); // change to MOVE_MODE, hide cursors
-        gui->unblock();
+        if(event->get_mode() == WAIT_MODE)
+            event->endAction(); // change to MOVE_MODE, hide cursors
+        if(gui->get_block_input())
+            gui->unblock();
     }
 
     // if stopped world, freeze actormanager and gameclock

@@ -55,6 +55,8 @@
 #define MESG_EFFECT_COMPLETE EFFECT_CB_COMPLETE
 #define MESG_TIMED           CB_TIMED
 
+#define TORCH_LIGHT_LEVEL    4
+
 // numbered by entrance quality, "" = no name
 static const char *u6_dungeons[21] =
 {
@@ -302,14 +304,16 @@ bool U6UseCode::get_obj(Obj *obj, Actor *actor)
 
 /* Call DROP usecode for an object.
  */
-bool U6UseCode::drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y)
+bool U6UseCode::drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y, uint16 qty)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_DROP);
-    static MapCoord loc;
+    static MapCoord loc; // use statics for pointers
+    static uint32 obj_qty;
     loc.x = x;
     loc.y = y;
     set_itemref(actor);
     set_itemref(&loc);
+    items.uint_ref = &obj_qty;
     return(uc_event(type, USE_EVENT_DROP, obj));
 }
 
@@ -2172,16 +2176,19 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             {
                 torch = obj_manager->get_obj_from_stack(obj, 1);
                 if(torch != obj && obj->is_in_inventory()) // keep new one in inventory
-                    actor_manager->get_actor(torch->x)->inventory_add_object(torch);
+                    actor_manager->get_actor_holding_obj(torch)->inventory_add_object(torch);
 
                 if(torch->is_in_inventory()) // ready it
                 {
-                    can_light_it = actor_manager->get_actor(torch->x)->add_readied_object(torch);
-// FIXME: add lightglobe to actor
+                    Actor *actor = actor_manager->get_actor_holding_obj(torch);
+                    can_light_it = actor->add_readied_object(torch);
+                    actor->add_light(TORCH_LIGHT_LEVEL); // add lightglobe to actor
                 }
                 else if(torch != obj) // keep new one on map
                     can_light_it = obj_manager->add_obj(torch, true);
             }
+            else // already being held; just light
+                actor_manager->get_actor_holding_obj(torch)->add_light(TORCH_LIGHT_LEVEL);
 
             if(can_light_it)
             {
@@ -2206,7 +2213,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             {
                 Obj *torch = obj_manager->get_obj_from_stack(obj, obj->qty - 1);
                 if(torch != obj && obj->is_in_inventory()) // keep extras in inventory
-                    actor_manager->get_actor(torch->x)->inventory_add_object(torch);
+                    actor_manager->get_actor_holding_obj(torch)->inventory_add_object(torch);
             }
         }
         return(true); // equip or remove to inventory
@@ -2219,7 +2226,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
         {
             obj_manager->remove_obj(obj); // remove from map
             items.actor_ref->inventory_add_object(obj);
-// FIXME: add lightglobe to actor
+            items.actor_ref->add_light(TORCH_LIGHT_LEVEL); // add lightglobe to actor
         }
         else
             scroll->display_string("\nNo free hand to hold the torch.\n");
@@ -2242,6 +2249,8 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
  */
 void U6UseCode::extinguish_torch(Obj *obj)
 {
+    if(obj->is_in_inventory())
+        actor_manager->get_actor_holding_obj(obj)->subtract_light(TORCH_LIGHT_LEVEL);
     toggle_frame(obj);
     scroll->display_string("\nA torch burned out.\n");
 // FIXME: deleting the object is crashing

@@ -147,7 +147,7 @@ Obj *UseCode::get_obj_from_container(Obj *obj)
 
 /* Print name of event being sent and the object receiving it.
  */
-void UseCode::dbg_print_event(uint8 event, Obj *obj)
+void UseCode::dbg_print_event(UseCodeEvent event, Obj *obj)
 {
     string do_string = "";
     switch(event)

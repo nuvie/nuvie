@@ -66,7 +66,8 @@ typedef uint16 UseCodeEvent;
  *
  * MESSAGE (fumaroles, earthquakes?, powder kegs, clocks)
  * An internal event from the engine. It must have been previously requested.
- * Includes TIMED events, and DATA returns.
+ * Includes TIMED events, and DATA returns. Be careful that the object still
+ * exists.
  *
  * MOVE (cannons)
  * Returns: True to push object to the new position
@@ -74,12 +75,15 @@ typedef uint16 UseCodeEvent;
  * aimed with MOVE.
  * mapcoord_ref - target location
  *
- * (UN)LOAD unimplemented
+ * (UN)LOAD unimplemented (fumaroles)
  * Returns: undefined
- * Called when the object is cached in or out (and when new objects are
- * created.) It can be used to start timers, or to hatch eggs.
+ * Called when the object is cached in or out (or when it would have been in the
+ * original game... about 16 to 32 spaces away), and when new objects are created.
+ * It can be used to start timers, or to hatch eggs.
  *
- * Actor NEAR unimplemented
+ * Actor NEAR unimplemented (mirrors)
+ * Set something to happen when an actor moves close to or away from object.
+ * Distance will be used.
  *
  * Actor ON (chairs, traps) unimplemented
  * Returns: undefined
@@ -89,6 +93,8 @@ typedef uint16 UseCodeEvent;
  * ENTER view-area unimplemented
  *
  * LEAVE view-area unimplemented
+ * Enter and leave will be used to start and stop sound effects. Distance will
+ * be used.
  *
  * (UN)READY (Amulet of Submission)
  * Returns: True if the object may be worn, or removed
@@ -172,7 +178,7 @@ class UseCode
  virtual bool message_obj(Obj *obj, CallbackMessage msg, void *msg_data) { return(false); }
  virtual bool ready_obj(Obj *obj, Actor *actor)  { return(false); }
  virtual bool get_obj(Obj *obj, Actor *actor)    { return(false); }
- virtual bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y) { return(false); }
+ virtual bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y, uint16 qty = 0) { return(false); }
 
  virtual bool has_usecode(Obj *obj, uint16 ev = USE_EVENT_USE)  { return(false); }
  virtual bool has_lookcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_LOOK)); }
@@ -206,7 +212,7 @@ class UseCode
  protected:
 
  void toggle_frame(Obj *obj);
- void dbg_print_event(uint8 event, Obj *obj);
+ void dbg_print_event(UseCodeEvent event, Obj *obj);
 
 };
 

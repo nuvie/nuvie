@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <cassert>
 #include "nuvieDefs.h"
 
 #include "Configuration.h"
@@ -42,7 +42,6 @@
 #include "Game.h"
 #include "GameClock.h"
 
-#include <cassert>
 
 MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
@@ -545,8 +544,12 @@ void MapWindow::drawActors()
                 //FIX need a function for multi-tile actors.
                 drawTile(tile,actor->x - cur_x, actor->y - cur_y, false);
                 drawTile(tile,actor->x - cur_x, actor->y - cur_y, true);
-
                 //screen->blit((actor->x - cur_x)*16,(actor->y - cur_y)*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
+ 
+                // draw light coming from actor
+                if(actor->light > 0 && screen->updatingalphamap)
+                   screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light>5?5:actor->light);
+
                }
             }
          }

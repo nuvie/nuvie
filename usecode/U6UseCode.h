@@ -72,7 +72,7 @@ class U6UseCode: public UseCode, public CallBack
  bool message_obj(Obj *obj, CallbackMessage msg, void *msg_data);
  bool ready_obj(Obj *obj, Actor *actor);
  bool get_obj(Obj *obj, Actor *actor);
- bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y);
+ bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y, uint16 qty = 0);
 
  bool has_usecode(Obj *obj, uint16 ev = USE_EVENT_USE);
 

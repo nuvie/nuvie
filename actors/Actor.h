@@ -119,6 +119,7 @@ class Actor
  bool visible_flag;
 
  uint8 moves; // number of moves actor has this turn
+ uint8 light; // level of light around actor (normally 0)
 
  uint8 strength;
  uint8 dex;
@@ -191,8 +192,8 @@ class Actor
  void set_level(uint8 val) { level = val; }
  void set_exp(uint16 val) { exp = val; }
  void set_magic(uint8 val) { magic = val; }
-
-
+ void add_light(uint8 val);
+ void subtract_light(uint8 val);
 
  uint8 get_worktype();
  virtual void set_worktype(uint8 new_worktype);

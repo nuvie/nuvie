@@ -1826,8 +1826,12 @@ bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
     }
 
     // all object management is contained in the effect (use requested quantity)
-    obj->status |= OBJ_STATUS_OK_TO_TAKE;
-    new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
+    if(!usecode->has_dropcode(obj)
+       || usecode->drop_obj(obj, actor, drop_loc.x, drop_loc.y, qty ? qty : obj->qty))
+    {
+        obj->status |= OBJ_STATUS_OK_TO_TAKE;
+        new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
+    }
     return(true);
 }
 

@@ -1,3 +1,4 @@
+#include <cmath>
 #include "SDL.h"
 #include "nuvieDefs.h"
 
@@ -458,7 +459,7 @@ void TossAnim::start()
     move(src->x, src->y);
     add_tile(toss_tile, 0, 0);
 
-    sint32 velocity = 192;
+    sint32 velocity = 320;
     set_velocity((target->x == src->x) ? 0 : (target->x > src->x) ? velocity : -velocity,
                  (target->y == src->y) ? 0 : (target->y > src->y) ? velocity : -velocity);
 }

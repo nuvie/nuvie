@@ -24,8 +24,8 @@ class TimedCallback;
  * Missile - throw object to *ground or actor; optionally cause damage
  * *Boomerang - spin Missile and return to sender
  * Drop - throw obj from inventory to ground
- * SleepEffect - pause game & advance time quickly
- * FadeEffect - fade the mapwindow in or out
+ * Sleep - pause game & advance time quickly
+ * Fade - fade the mapwindow in or out
  */
 
 
@@ -292,11 +292,14 @@ protected:
     FadeDirection fade_dir; // IN (removing color) or OUT (adding color)
     uint32 fade_speed; // meaning of this depends on fade_type
     uint8 pixelated_color; // color from palette that is being faded to/from
+    SDL_Surface *fade_from; // image being faded from (or NULL if coloring)
 
     uint32 evtime, prev_evtime; // time of last message to callback()
 
 public:
     FadeEffect(FadeType fade, FadeDirection dir, uint32 color = 0, uint32 speed = 0);
+// get capture or do it outself?
+    FadeEffect(FadeType fade, FadeDirection dir, SDL_Surface *capture, uint32 speed = 0);
     ~FadeEffect();
     void init_pixelated_fade();
     void init_circle_fade();
@@ -307,7 +310,10 @@ public:
     bool circle_fade_out();
     bool circle_fade_in();
 
+protected:
     inline bool find_free_pixel(uint32 &rnum, uint32 pixel_count);
+    uint32 pixels_to_check();
+    bool pixelated_fade_core(uint32 pixels_to_check, uint8 fade_to);
 };
 
 

@@ -11,6 +11,7 @@
 #include "EffectManager.h"
 #include "UseCode.h"
 #include "ViewManager.h"
+#include "MsgScroll.h"
 #include "Effect.h"
 
 #include <cassert>
@@ -492,6 +493,13 @@ void DropEffect::hit_target()
     obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
     throw_obj = NULL; // set as dropped
 
+    // not appropriate to do "Event::endAction(true)" from here to display
+    // prompt, as we MUST unpause_user() in ThrowObjectEffect::hit_target, and
+    // that would be redundant and may not unpause everything if wait mode was
+    // already cancelled... so just prompt
+    game->get_scroll()->display_string("\n");
+    game->get_scroll()->display_prompt();
+ 
     ThrowObjectEffect::hit_target(); // calls delete_self()
 }
 
@@ -619,7 +627,7 @@ FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, uint32 color, uint32 sp
 
     fade_type = fade;
     fade_dir = dir;
-    fade_speed = speed ? speed : 50000; // pixels-per-second
+    fade_speed = speed ? speed : 75000; // pixels-per-second
 
     evtime = prev_evtime = 0;
 
@@ -662,10 +670,10 @@ void FadeEffect::init_pixelated_fade()
         return;
     }
 
-    // set FADE_PIXELATED_ONTOP to place the effect layer above the map border
+    // if FADE_PIXELATED_ONTOP is set, place the effect layer above the map border
     map_window->set_overlay_level((fade_type == FADE_PIXELATED)
                                   ? MAP_OVERLAY_DEFAULT : MAP_OVERLAY_ONTOP);
-    start_timer(100); // fire timer continuously
+    start_timer(1); // fire timer continuously
 }
 
 
@@ -736,68 +744,76 @@ inline bool FadeEffect::find_free_pixel(uint32 &rnum, uint32 pixel_count)
 }
 
 
-
 /* Randomly add pixels of the appropriate color to the overlay.
- * Returns true when all pixels have been filled, and nothing is visible.
+ * Returns true when the overlay is completely colored.
  */
-bool FadeEffect::pixelated_fade_out()
+bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, uint8 fade_to)
 {
-    bool all_clear = false; // completely faded to pixelated_color
-    uint32 time_passed = (prev_evtime == 0) ? 0 : evtime - prev_evtime;
-    uint32 fraction = 1000 / (time_passed > 0 ? time_passed : 1); // % of second passed, in milliseconds
-    uint32 pixels_per_fraction = fade_speed / (fraction > 0 ? fraction : 1);
-    prev_evtime = evtime;
+    uint8 *pixels = (uint8 *)(overlay->pixels);
+    uint32 p = 0; // scan counter
+    uint32 rnum = 0; // pixel index
+    uint32 colored = 0; // number of pixels that get colored
 
-    uint32 pixel_count = overlay->w * overlay->h;
-    int c = 0;
-    while(c++ < pixels_per_fraction)
+    while(p < pixels_to_check)
     {
-        uint32 rnum = NUVIE_RAND()%pixel_count;
-        // replace rnum with next transparent pixel
-        if(find_free_pixel(rnum, pixel_count))
+        uint16 cx = NUVIE_RAND()%overlay->w; // cx,cy = pixel
+        uint16 cy = NUVIE_RAND()%overlay->h;
+        rnum = cy*overlay->w + cx;
+
+        if(pixels[rnum] != fade_to)
         {
-            memset(&((uint8 *)(overlay->pixels))[rnum], pixelated_color, 1);
+            pixels[rnum] = fade_to;
+            ++colored; // another pixel was set
         }
-        else
+        ++p;
+    }
+
+    bool all_clear = !find_free_pixel(rnum, overlay->w*overlay->h);
+    if(!all_clear)    // if not done yet, do random+linear scan
+    {
+        while(colored++ < pixels_to_check)
         {
-            all_clear = true; // done
-            break;
+            pixels[rnum] = fade_to;
+            rnum = NUVIE_RAND()%(overlay->w*overlay->h);
+            if(!find_free_pixel(rnum, overlay->w*overlay->h))
+                return(true); // all clear
         }
     }
     return(all_clear);
 }
 
 
-/* Randomly add pixels of the transparent color to the overlay, having the effect
- * of removing the colored pixels.
+/* Color some of the mapwindow.
+ * Returns true when all pixels have been filled, and nothing is visible.
+ */
+bool FadeEffect::pixelated_fade_out()
+{
+    bool all_clear = false; // completely faded to pixelated_color
+    return(pixelated_fade_core(pixels_to_check(), pixelated_color));
+}
+
+
+/* Clear some of the mapwindow.
  * Returns true when all colored pixels have been removed, and the MapWindow
  * is visible.
  */
 bool FadeEffect::pixelated_fade_in()
 {
     bool all_clear = false; // completely faded to transparent color
+    return(pixelated_fade_core(pixels_to_check(), TRANSPARENT_COLOR));
+}
+
+
+/* Returns the number of pixels that should be checked/colored (based on speed)
+ * since the previous call.
+ */
+uint32 FadeEffect::pixels_to_check()
+{
     uint32 time_passed = (prev_evtime == 0) ? 0 : evtime - prev_evtime;
     uint32 fraction = 1000 / (time_passed > 0 ? time_passed : 1); // % of second passed, in milliseconds
     uint32 pixels_per_fraction = fade_speed / (fraction > 0 ? fraction : 1);
     prev_evtime = evtime;
-
-    uint32 pixel_count = overlay->w * overlay->h;
-    int c = 0;
-    while(c++ < pixels_per_fraction)
-    {
-        uint32 rnum = NUVIE_RAND()%pixel_count;
-        // replace rnum with next colored pixel
-        if(find_free_pixel(rnum, pixel_count))
-        {
-            memset(&((uint8 *)(overlay->pixels))[rnum], TRANSPARENT_COLOR, 1);
-        }
-        else
-        {
-            all_clear = true; // done
-            break;
-        }
-    }
-    return(all_clear);
+    return(pixels_per_fraction);
 }
 
 
@@ -806,6 +822,7 @@ bool FadeEffect::pixelated_fade_in()
  */
 bool FadeEffect::circle_fade_out()
 {
+// FIXME
     return(false);
 }
 
@@ -815,10 +832,13 @@ bool FadeEffect::circle_fade_out()
  */
 bool FadeEffect::circle_fade_in()
 {
+// FIXME
     return(false);
 }
 
 
+/* Pause game and do FadeEffect.
+ */
 GameFadeInEffect::GameFadeInEffect(uint32 color)
                               : FadeEffect(FADE_PIXELATED_ONTOP, FADE_IN, color)
 {
@@ -831,6 +851,8 @@ GameFadeInEffect::~GameFadeInEffect()
 }
 
 
+/* Identical to FadeEffect, but unpause game when finished.
+ */
 uint16 GameFadeInEffect::callback(uint16 msg, CallBack *caller, void *data)
 {
     bool fade_complete = false;
