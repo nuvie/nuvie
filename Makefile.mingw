@@ -61,10 +61,12 @@ install: all
 	mkdir -p $(U6PATH)
 	strip nuvie.exe -o $(U6PATH)/nuvie.exe
 
-tools: u6decomp.exe
+tools: u6decomp.exe unpack_conv.exe unpack.exe
 	mkdir -p $(U6PATH)
 	mkdir -p $(U6PATH)/tools
 	strip u6decomp.exe -o $(U6PATH)/tools/u6decomp.exe
+	strip unpack_conv.exe -o $(U6PATH)/tools/unpack_conv.exe
+	strip unpack.exe -o $(U6PATH)/tools/unpack.exe
 
 dist: install tools
 	cp nuvie.cfg.sample $(U6PATH)
