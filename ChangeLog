@@ -1,3 +1,8 @@
+2004-01-16  Eric Fry <efry at users.sourceforge.net>
+	* Objects now spawn from eggs.
+	* Actors can walk over or under other actors again. :) Might need to fix
+	  actor ordering.
+
 2004-01-16  Joseph Applegate <sb-x at users.sourceforge.net>
 	* You can MOVE objects around with the keyboard now, and special usecode
 	  may be called. You can't move actors yet.

@@ -98,7 +98,7 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
  std::list<Egg *>::iterator egg;
  sint16 dist_x, dist_y;
  uint16 i;
- Obj *obj;
+ Obj *obj, *spawned_obj;
  U6Link *link;
  uint8 hatch_probability;
 
@@ -126,7 +126,20 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
                 obj = (Obj *)link->data;
                 for(i = 0;i < obj->qty;i++)
                  {
-                  actor_manager->create_temp_actor(obj->obj_n,(*egg)->obj->x+i,(*egg)->obj->y,(*egg)->obj->z,obj->quality);
+				  if(obj->quality != 0) /* spawn temp actor we know it's an actor if it has a non-zero worktype. */
+                     actor_manager->create_temp_actor(obj->obj_n,(*egg)->obj->x+i,(*egg)->obj->y,(*egg)->obj->z,obj->quality);
+				  else
+					{ /* spawn temp object */
+					 spawned_obj = new Obj();
+					 spawned_obj->obj_n = obj->obj_n;
+					 spawned_obj->x = (*egg)->obj->x+i;
+					 spawned_obj->y = (*egg)->obj->y;
+					 spawned_obj->z = (*egg)->obj->z;
+					 spawned_obj->qty = obj->qty;
+					 spawned_obj->status |= OBJ_STATUS_TEMPORARY | OBJ_STATUS_OK_TO_TAKE;
+
+					 obj_manager->add_obj(spawned_obj);
+					}
                  }
                }
             }   

@@ -325,7 +325,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 
  // switch position with party members
  Actor *other = map->get_actor(new_x, new_y, new_z);
- if(other && other->is_visible() && !force_move && !other->push(this, ACTOR_PUSH_HERE, x, y, z))
+ if(other && other->is_visible() && !force_move && !other->is_passable() && !other->push(this, ACTOR_PUSH_HERE, x, y, z))
     return false; // blocked by actor
 
  // move

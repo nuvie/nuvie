@@ -116,7 +116,8 @@ bool Game::loadGame(Screen *s, uint8 type)
    obj_manager->loadObjs(tile_manager);
 
    game_map->loadMap(tile_manager, obj_manager);
- 
+   egg_manager->set_obj_manager(obj_manager);
+   
    actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
    actor_manager->loadActors();
 

@@ -126,7 +126,7 @@ class TimedCallbackTarget
 {
 public:
     TimedCallbackTarget()  { }
-    ~TimedCallbackTarget() { }
+    virtual ~TimedCallbackTarget() { }
     virtual void timed_callback(void *data)
     {
         fprintf(stderr, "void timer target activated\n");

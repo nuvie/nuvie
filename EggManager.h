@@ -46,6 +46,7 @@ class EggManager
  Configuration *config;
  Map *map;
  ActorManager *actor_manager;
+ ObjManager *obj_manager;
  
  std::list<Egg *> egg_list;
  
@@ -55,7 +56,8 @@ class EggManager
  ~EggManager();
  
  void set_actor_manager(ActorManager *am) { actor_manager = am; }
- 
+ void set_obj_manager(ObjManager *om) { obj_manager = om; }
+  
  void add_egg(Obj *egg);
  void remove_egg(Obj *egg);
  void spawn_eggs(uint16 x, uint16 y, uint8 z);

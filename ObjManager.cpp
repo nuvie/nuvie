@@ -750,7 +750,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
  for(i=0;i<num_objs;i++)
   {
    obj = loadObj(&file,i);
-
+ 
    list->add(obj);
 
    if(obj->obj_n == obj_egg_table[game_type])
