@@ -325,6 +325,8 @@ void Event::alt_code_input(const char *in)
 
         case 214:
             alt_code_teleport(in); //teleport player & party? to location string
+            scroll->display_string("\n");
+            scroll->display_prompt();
             active_alt_code = 0;
             break;
     }
