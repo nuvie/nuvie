@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "nuvieDefs.h"
 
 #include "Surface.h"
-#include <SDL.h>
+#include "SDL.h"
 
 #ifdef WANT_OPENGL
 #include "OpenGL.h"

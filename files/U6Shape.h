@@ -31,7 +31,7 @@
  * ==========
  */
 #include <string>
-#include <SDL.h>
+#include "SDL.h"
 
 class U6Lib_n;
 

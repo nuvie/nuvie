@@ -1,3 +1,9 @@
+2004-03-11  Eric Fry <efry at users.sourceforge.net>
+	* Added SDL.h include into main.cpp. This should enable stdout/err
+	  redirection to file on win32 systems. Thanks to Marc Winterrowd for
+	  finding that out.
+	* Changed some #include <SDL.h> statements to "SDL.h".
+
 2004-03-10  Eric Fry <efry at users.sourceforge.net>
 	* Removed SDL_Init(SDL_INIT_AUDIO) from SoundManager and replaced with 
 	  SDL_InitSubSystem (SDL_INIT_AUDIO)

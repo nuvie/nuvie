@@ -23,7 +23,7 @@
 
 #include <cassert>
 #include <cstring>
-#include <SDL.h>
+#include "SDL.h"
 
 #include "nuvieDefs.h"
 #include "Configuration.h"

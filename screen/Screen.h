@@ -25,7 +25,7 @@
  */ 
 #include <string>
 
-#include <SDL.h>
+#include "SDL.h"
 
 #include "Game.h"
 #include "Surface.h"

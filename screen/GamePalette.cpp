@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SDL.h>
+#include "SDL.h"
 
 #include "nuvieDefs.h"
 #include "NuvieIOFile.h"

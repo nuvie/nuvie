@@ -21,7 +21,7 @@
  *
  */
 
-#include <SDL.h>
+#include "SDL.h"
 #include "nuvieDefs.h"
 
 #include "GUI.h"

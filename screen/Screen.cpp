@@ -25,7 +25,7 @@
 #include <string.h>
 #include <iostream>
 #include <cmath>
-#include <SDL.h>
+#include "SDL.h"
 
 #include "nuvieDefs.h"
 #include "Configuration.h"

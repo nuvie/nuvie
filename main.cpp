@@ -23,6 +23,8 @@
 #include <time.h>
 #include <cstdlib>
 
+#include "SDL.h"
+
 #include "nuvieDefs.h"
 
 #include "nuvie.h"

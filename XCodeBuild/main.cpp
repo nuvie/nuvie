@@ -11,7 +11,7 @@
 #include <math.h>
 
 /* needed for main define */
-#include <SDL.h>  
+#include "SDL.h"  
 
 #include "main.h"
 

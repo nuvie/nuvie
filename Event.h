@@ -25,7 +25,7 @@
  */
 #include <list>
 
-#include <SDL.h>
+#include "SDL.h"
 
 #include "ObjManager.h"
 

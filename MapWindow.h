@@ -25,7 +25,7 @@
  */
 
 #include <vector>
-#include <SDL.h>
+#include "SDL.h"
 
 #include "ObjManager.h"
 #include "GUI_widget.h"

@@ -28,8 +28,8 @@
  */
 #include <string>
 #include <stdlib.h>
-#include <SDL.h>
-#include <SDL_endian.h>
+#include "SDL.h"
+#include "SDL_endian.h"
 #include "nuvieDefs.h"
 #include "U6Lzw.h"
 #include "U6Lib_n.h"

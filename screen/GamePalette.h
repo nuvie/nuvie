@@ -26,7 +26,7 @@
 
 #include "Screen.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
 class Configuration;
 
