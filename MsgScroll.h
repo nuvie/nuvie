@@ -99,7 +99,6 @@ class MsgScroll
  bool set_string_buf_pos(uint16 pos);
  
  void set_page_break(uint16 pos);
- void set_converse(Converse *conv_pt) { converse = conv_pt; }
  
  bool input_buf_add_char(char c);
  bool input_buf_remove_char();

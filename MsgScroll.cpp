@@ -28,7 +28,6 @@
 MsgScroll::MsgScroll(Configuration *cfg)
 {
  config = cfg;
- converse = NULL; 
  prompt_buf_len = 0;
 
  memset(msg_buf,0,sizeof(msg_buf));
