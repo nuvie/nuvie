@@ -321,8 +321,16 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
   
   if(weight != 0)
     {
-     player->get_actor()->inventory_add_object(obj->obj_n, obj->qty, obj->quality);
-     obj_manager->remove_obj(obj);
+       Actor *pc = player->get_actor();
+       float total = (weight*(obj->qty?obj->qty:1)) + pc->get_inventory_weight();
+       float max = pc->inventory_get_max_weight();
+       if(total <= pc->inventory_get_max_weight())
+         {
+           pc->inventory_add_object(obj->obj_n, obj->qty, obj->quality);
+           obj_manager->remove_obj(obj);
+         }
+      else
+         scroll->display_string("\n\nThe total is too heavy.");
     }
   else
     scroll->display_string("\n\nNot possible.");
