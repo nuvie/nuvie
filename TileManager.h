@@ -48,7 +48,7 @@ class Look;
 #define TILEFLAG_WINDOW 0x8 // flags2
 
 //flags3
-
+#define TILEFLAG_CAN_PLACE_ONTOP 0x2
 #define TILEFLAG_FORCED_PASSABLE 0x4
 
 

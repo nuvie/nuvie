@@ -816,6 +816,8 @@ bool Event::look()
  */
 bool Event::pushTo(sint16 rel_x, sint16 rel_y)
 {
+    Tile *obj_tile;
+    bool can_move = false;
     Map *map = Game::get_game()->get_game_map();
     LineTestResult lt;
     if(rel_x == 0 && rel_y == -1) // FIXME: move direction names somewhere else
@@ -858,10 +860,31 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
     {
         if(map->lineTest(use_obj->x+rel_x, use_obj->y+rel_y, use_obj->x+rel_x, use_obj->y+rel_y,
                          use_obj->z, LT_HitActors | LT_HitUnpassable, lt))
-            scroll->display_string("Blocked.\n\n");
-        else /* do normal move if no usecode or return from usecode was true */
-            if(!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y))
-                obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
+            {
+             if(lt.hitObj)
+              {
+               // We can place an object on a bench or table. Or on any other object if
+               // the object is passable and not on a boundary.
+               
+               obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
+               if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP || 
+                  (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
+                 can_move = true;
+              }
+            }
+         else
+           can_move = true;   
+
+        /* do normal move if no usecode or return from usecode was true */
+ 
+        if(can_move)
+          {
+           if(!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y))
+                can_move = obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
+          }
+        
+        if(!can_move)
+           scroll->display_string("Blocked.\n\n");
     }
     scroll->display_prompt();
     endAction();

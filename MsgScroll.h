@@ -37,7 +37,7 @@
 
 #define MSGSCROLL_CURSOR_DELAY 6 // used to slow down the animated cursor
 
-#define MSGSCROLL_SCROLLBACK_HEIGHT 50
+#define MSGSCROLL_SCROLLBACK_HEIGHT 100
 
 #include <list>
 #include <vector>

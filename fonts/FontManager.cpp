@@ -81,7 +81,7 @@ bool FontManager::init()
 Font *FontManager::get_font(uint16 font_number)
 {
  if(num_fonts > 0 && font_number < num_fonts)
-   return fonts.at(font_number);
+   return fonts[font_number]; //fonts.at(font_number);
 
  return NULL;
 }

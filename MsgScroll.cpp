@@ -412,7 +412,7 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
    if(allowed && strlen(allowed))
      permit_input = allowed;
    SDL_EnableUNICODE(1); // allow character translation
-   input_buf.clear();
+   input_buf.erase(0,input_buf.length());
  }
  else
    SDL_EnableUNICODE(0); // reduce translation overhead when not needed

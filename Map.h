@@ -50,7 +50,7 @@ public:
 	{
 		hit_x = x;
 		hit_y = y;
-		level = level;
+		hit_level = level;
 		hitActor = actorHit;
 		hitObj = objHit;
 	}
