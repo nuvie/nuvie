@@ -73,6 +73,18 @@ const ScalerStruct ScalerRegistry::scaler_array[] = {
 		Scalers<uint32, ManipRGB888>::Scale_Super2xSaI
 	},
 
+
+	// Scale2x - AdvanceMAME
+	{
+		"Scale2x",
+		SCALER_FLAG_2X_ONLY,
+		Scalers<uint16, ManipRGBGeneric>::Scale_Scale2x,
+		Scalers<uint16, ManipRGB555>::Scale_Scale2x,
+		Scalers<uint16, ManipRGB565>::Scale_Scale2x,
+		Scalers<uint32, ManipRGBGeneric>::Scale_Scale2x,
+		Scalers<uint32, ManipRGB888>::Scale_Scale2x
+	},
+
 	// SuperEagle
 	{
 		"SuperEagle",

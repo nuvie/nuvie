@@ -853,6 +853,127 @@ static void Scale_SuperEagle
  **/
 
 
+//
+// Scale2X algorithm by Andrea Mazzoleni.
+//
+/* This file is part of the Scale2x project.
+ *
+ * Copyright (C) 2001-2002 Andrea Mazzoleni
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+static void Scale_Scale2x
+(
+	Pixel_type *src,			// ->source pixels.
+	int srcx, int srcy,			// Start of rectangle within src.
+	int srcw, int srch,			// Dims. of rectangle.
+	const int sline_pixels,		// Pixels (words)/line for source.
+	const int sheight,			// Source height.
+	Pixel_type *dest,			// ->dest pixels.
+	const int dline_pixels,		// Pixels (words)/line for dest.
+	int scale_factor			// Scale Factor
+)
+{
+	dest += srcy*2*dline_pixels + srcx*2;
+	Pixel_type *dest0 = dest, *dest1 = dest + dline_pixels;
+					// ->current row.
+	Pixel_type *src1 = src + srcy*sline_pixels + srcx;
+	Pixel_type *src0 = src1 - sline_pixels;	// ->prev. row.
+	Pixel_type *src2 = src1 + sline_pixels;	// ->next row.
+	Pixel_type * limit_y = src1 + srch*sline_pixels;
+	Pixel_type * limit_x = src1 + srcw;
+					// Very end of source surface:
+	Pixel_type * end_src = src + sheight*sline_pixels;
+
+	if (src0 < src)
+		src0 = src1;		// Don't go before row 0.
+	if (srcx + srcw == sline_pixels)	// Going to right edge?
+		limit_x--;		// Stop 1 pixel before it.
+	while (src1 < limit_y)
+		{
+		if (src2 > end_src)
+			src2 = src1;	// On last row.
+		if (srcx == 0)		// First pixel.
+			{
+			dest0[0] = dest1[0] = src1[0];
+			if (src1[1] == src0[0] && src2[0] != src0[0])
+				dest0[1] = src0[0];
+			else
+				dest0[1] = src1[0];
+			if (src1[1] == src2[0] && src0[0] != src2[0])
+				dest1[1] = src2[0];
+			else
+				dest1[1] = src1[0];
+			++src0; ++src1; ++src2;
+			dest0 += 2; dest1 += 2;
+			}
+					// Middle pixels.
+		while (src1 < limit_x)
+			{
+			if (src1[-1] == src0[0] && src2[0] != src0[0] &&
+			    src1[1] != src0[0])
+				dest0[0] = src0[0];
+			else
+				dest0[0] = src1[0];
+			if (src1[1] == src0[0] && src2[0] != src0[0] && 
+			    src1[-1] != src0[0])
+				dest0[1] = src0[0];
+			else
+				dest0[1] = src1[0];
+			if (src1[-1] == src2[0] && src0[0] != src2[0] && 
+			    src1[1] != src2[0])
+				dest1[0] = src2[0];
+			else
+				dest1[0] = src1[0];
+			if (src1[1] == src2[0] && src0[0] != src2[0] && 
+			    src1[-1] != src2[0])
+				dest1[1] = src2[0];
+			else
+				dest1[1] = src1[0];
+			++src0; ++src1; ++src2;
+			dest0 += 2; dest1 += 2;
+			}
+		if (srcx + srcw == sline_pixels)
+			{		// End pixel in row.
+			if (src1[-1] == src0[0] && src2[0] != src0[0])
+				dest0[0] = src0[0];
+			else
+				dest0[0] = src1[0];
+			if (src1[-1] == src2[0] && src0[0] != src2[0])
+				dest1[0] = src2[0];
+			else
+				dest1[0] = src1[0];
+			dest0[1] = src1[0];
+			dest1[1] = src1[0];
+			++src0; ++src1; ++src2;
+			dest0 += 2; dest1 += 2;
+			}
+		src0 += sline_pixels - srcw;
+		src1 += sline_pixels - srcw;
+		src2 += sline_pixels - srcw;
+		dest1 += dline_pixels - 2*srcw;
+		if (src0 == src1)	// End of first row?
+			src0 -= sline_pixels;
+		limit_x += sline_pixels;
+		dest0 = dest1;
+		dest1 += dline_pixels;
+		}
+}
+
+
+
 typedef unsigned int COMPONENT;
 
 

@@ -1,6 +1,8 @@
 2003-05-28  Markus Niemistö <niemisto@users.sourceforge.net>
-        * ObjManager: Containers can now be used and items got out of them.
+        * ObjManager: Many containers can now be used and items got out of
+        them.
         * U6Shape: Added support for loading U6 shapes
+        * Scale: Grapped Scale2x scaler from Exult CVS
 
 2003-05-27  Eric Fry <efry@users.sourceforge.net>
 	* ObjManager: Objects are now stored in an AVL Tree. This should
