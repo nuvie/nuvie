@@ -35,6 +35,7 @@ using std::endl;
 //       uniform (better) text output
 //       show/remove portraits
 //       fix overflow at end of Chuckles(10) script
+//       the "scope" system is strange looking
 
 /* Load `convfilename' as src.
  */
@@ -78,6 +79,24 @@ Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
     npc = 0;
     script = 0;
     stop();
+}
+
+
+/* Copy the NPC num's name from their conversation script.
+ * Returns the name as a non-modifiable string of 16 characters maximum.
+ */
+const char *Converse::npc_name(uint8 num)
+{
+    Uint32 c;
+    unsigned char *s_pt = (num != npc_num) ? read_script(num) : script;
+
+    for(c = 0; s_pt[c+2] != 0xf1 && s_pt[c+2] != 0xf3 && c <= 15; c++)
+        aname[c] = s_pt[c+2];
+    aname[c <= 15 ? c : 15] = '\0';
+
+    if(s_pt != script)
+        free(s_pt);
+    return(aname);
 }
 
 
@@ -164,6 +183,8 @@ void Converse::collect_text(bool eval = false)
                     output.append(player->get_name());
                 else if(!strcmp(symbol, "$T")) // time of day
                     output.append(clock->get_time_of_day_string());
+                else if(!strcmp(symbol, "$Y")) // Y-string
+                    output.append(ystr ? ystr : "");
                 else if(!strcmp(symbol, "$Z")) // previous input
                     output.append(input_s);
                 // FIXME: only converts 1 character variable numbers
@@ -411,15 +432,16 @@ if(!args.empty() && !args[0].empty())
                         test_msg("- = npc(flag)-");
                         cnpc = actors->get_actor(get_val(0, 0));
                         if(cnpc)
-                            heap[declared].val = (cnpc->get_flags()
-                                                         & (1 << get_val(0, 1)))
-                                                 ? 1 : 0;
+                            heap[declared].val =
+                                      (cnpc->get_flags() & (1 << get_val(0, 1)))
+                                      ? 1 : 0;
                         else
                         {
                             print("\nError: No such NPC\n");
                             heap[declared].val = 0;
                         }
                         break;
+                    case 0xdd: // ?? party-member-num to npcnum?
                     default:
                         print("\nError: Unknown assignment\n");
                         break;
@@ -428,6 +450,31 @@ if(!args.empty() && !args[0].empty())
             else
                 print("\nAssignment error\n");
             declared = -1;
+            break;
+        case U6OP_YASSIGN: // 1 arg with npc number and optional operation(s)
+            // simple assignment
+            if(val_count(0) == 1)
+            {
+                test_msg("-$Y = X-");
+                ystr = npc_name(npc_num);
+            }
+            // assignment of expression with two values and an operation
+            else if(val_count(0) == 3)
+            {
+                test_msg("-$Y = X ? Z-");
+                ystr = npc_name(npc_num);
+                switch(get_val(0, -1))
+                {
+                    // only one op. seen for yassign:
+                    case 0xdd: // ?? party-member-num(from 0) to npcnum or 0
+                               // val2 does what? (val1 is literal without)
+                    default:
+                        print("\nError: Unknown assignment\n");
+                        break;
+                }
+            }
+            else
+                print("\nYAssignment error\n");
             break;
         case U6OP_ARGSTOP:
             test_msg("-EOA-");
@@ -615,9 +662,10 @@ void Converse::collect_args()
 
 /* Interpret `count' statements from the NPC script. These are control codes
  * (command with optional arguments, each with variable number of values), or
- * text. A count of 0 means to keep going if possible.
+ * text. A count of 0 means to keep going if possible. Stepping will stop if
+ * control command `bcmd' is encountered (if it's not 0x00.)
  */
-void Converse::step(Uint32 count)
+void Converse::step(Uint32 count, Uint8 bcmd)
 {
     Uint32 c = 0;
     bool stepping = true;
@@ -636,6 +684,8 @@ void Converse::step(Uint32 count)
             continue;
         }
 
+        if(bcmd != 0x00 && peek() == bcmd) // break on `bcmd'
+            break;
         cmd = pop();
         if(cmd == U6OP_SLOOK || cmd == U6OP_SLOOKB)
             look_offset = (Uint32)(script_pt - 1 - script);
@@ -684,8 +734,12 @@ void Converse::stop()
     free(script);
     script_pt = script = 0;
     script_len = 0;
+    npc_num = 0;
+    if(!heap.empty())
+        save_variables();
     heap.clear();
     declared = -1;
+    ystr = NULL;
 
     input_s.resize(0); // input_s.erase();
     keywords.resize(0);
@@ -694,7 +748,7 @@ void Converse::stop()
         scope.pop();
 
     active = is_waiting = false;
-    std::cerr << "Converse: script is stopped" << std::endl;
+    std::cerr << "Converse: end conversation" << std::endl;
 }
 
 
@@ -706,7 +760,59 @@ void Converse::init_variables()
     for(int v = 0; v <= CONV_VAR__LAST_; v++)
         heap[v].valt = heap[v].val = 0x00;
     heap[CONV_VAR_SEX].val = player->get_gender();
+    heap[CONV_VAR_PARTYSIZE].val = 1; // get from player's party
     heap[CONV_VAR_WORKTYPE].val = npc->get_worktype();
+}
+
+
+/* Copy the script variable values to the appropriate (original) locations.
+ */
+void Converse::save_variables()
+{
+    if(player)
+        player->set_gender(heap[CONV_VAR_SEX].val);
+    if(npc)
+    {
+        npc->set_worktype(heap[CONV_VAR_WORKTYPE].val);
+    }
+}
+
+
+/* Read (decode if necessary) an NPC conversation from the correct file.
+ * Returns a pointer to the loaded script buffer.
+ */
+unsigned char *Converse::read_script(Uint32 n)
+{
+    unsigned char *undec_script = 0; // item as it appears in library
+    unsigned char *dec_script = 0; // final item
+    Uint32 undec_script_len = 0;
+    U6Lzw decoder;
+
+    set_conv(n); // gets updated n
+    undec_script_len = src->get_item_size(n);
+    if(undec_script_len > 4)
+    {
+        std::cerr << "Converse: reading";
+        undec_script = src->get_item(n);
+        // decode
+        if(!(undec_script[0] == 0 && undec_script[1] == 0
+             && undec_script[2] == 0 && undec_script[3] == 0))
+        {
+            std::cerr << " encoded script";
+            dec_script =
+                       decoder.decompress_buffer(undec_script, undec_script_len,
+                                                 script_len);
+            free(undec_script);
+        }
+        else
+        {
+            std::cerr << " unencoded script";
+            dec_script = undec_script;
+            script_len = undec_script_len;
+        }
+        std::cerr << " for NPC " << (int)n << std::endl;
+    }
+    return(dec_script);
 }
 
 
@@ -717,8 +823,7 @@ void Converse::init_variables()
 bool Converse::start(Actor *talkto)
 {
     unsigned char *undec_script = 0; // item as it appears in library
-    Uint32 undec_script_len = 0, actor_num = 0, script_num = 0;
-    U6Lzw decoder;
+    Uint32 actor_num = 0, script_num = 0;
     if(!talkto || !src)
         return(false);
 
@@ -728,40 +833,19 @@ bool Converse::start(Actor *talkto)
     script_num = actor_num = talkto->get_actor_num();
     npc = talkto;
     init_variables();
-    set_conv(script_num);
-    undec_script_len = src->get_item_size(script_num);
-    if(undec_script_len > 4)
-    {
-        std::cerr << "Converse: reading";
-        undec_script = src->get_item(script_num);
-        // decode
-        if(!(undec_script[0] == 0 && undec_script[1] == 0
-             && undec_script[2] == 0 && undec_script[3] == 0))
-        {
-            std::cerr << " encoded script";
-            script = decoder.decompress_buffer(undec_script, undec_script_len,
-                                               script_len);
-            free(undec_script);
-        }
-        else
-        {
-            std::cerr << " unencoded script";
-            script = undec_script;
-            script_len = undec_script_len;
-        }
-        std::cerr << " for NPC " << (int)actor_num << std::endl;
-    }
+    script = read_script(script_num);
     // start script (makes step() available)
     if(script)
     {
-        std::cerr << "Converse: begin" << std::endl;
         active = true;
+        npc_num = actor_num;
         seek(0);
         enter_scope(CONV_SCOPE_SEEKIDENT);
+        std::cerr << "Converse: begin conversation for \""
+                  << npc_name(actor_num) << "\"" << std::endl;
         return(true);
     }
-    std::cerr << std::endl << "Converse: error loading script " << (int)script_num
-              << std::endl;
+    std::cerr << std::endl << "Converse: error loading script" << std::endl;
     return(false);
 }
 

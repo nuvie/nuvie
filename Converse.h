@@ -53,6 +53,7 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_UINT8 0xd3
 #define U6OP_UINT16 0xd4
 #define U6OP_UINT32 0xd2
+#define U6OP_YASSIGN 0xd8 // set $Y to name of an npc
 #define U6OP_ENDASK 0xee // end of response(s) to previous input
 #define U6OP_KEYWORD 0xef // keyword(s) to trigger next response follows
 #define U6OP_SIDENT 0xff // start of script; npc identification section
@@ -65,10 +66,6 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_INPUT 0xfb // get number, store in variable as integer
 #define U6OP_INPUTC 0xfc // get one character 0-9, store in variable as integer
 
-#define CONV_TEXTOP_PRINT 0
-#define CONV_TEXTOP_KEYWORD 1
-#define CONV_TEXTOP_LOOK 2
-
 #define CONV_SCOPE_MAIN 0
 #define CONV_SCOPE_ASK 1 // break at keywords, answer, endask
 #define CONV_SCOPE_ANSWER 2 // break at keywords or endask
@@ -78,7 +75,8 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define CONV_SCOPE_SEEKLOOK 6 // do nothing until looksection, then break
 #define CONV_SCOPE_SEEKIDENT 7 // after identsection change to SEEKLOOK
 
-#define CONV_VAR_SEX 0x10 // sex of npc: male=0 female=1
+#define CONV_VAR_SEX 0x10 // sex of avatar: male=0 female=1
+#define CONV_VAR_PARTYSIZE 0x17 // number of people in avatar's party
 #define CONV_VAR_WORKTYPE 0x20 // current activity of npc, from schedule
 #define CONV_VAR__LAST_ 0x20
 
@@ -105,11 +103,14 @@ class Converse
     unsigned char *script;
     Uint32 script_len;
     unsigned char *script_pt; // points to next command/string in script
+    Uint8 npc_num; // number of loaded npc script
     bool active; // running npc script? (paused or unpaused)
     bool is_waiting; // paused, waiting for user input?
     string output; // where text goes to be printed
     vector<converse_arg> heap; // random-access variable data
     sint16 declared; // declared variable number, target of next assignment
+    const char *ystr; // value of $Y in text
+    char aname[16]; // last name of NPC copied from script
 
     // statement parameters
     uint32 cmd; // previously read command code
@@ -135,7 +136,9 @@ class Converse
                 loadConv("converse.b");
         }
     }
-	void init_variables();
+    unsigned char *read_script(Uint32 n);
+    void init_variables();
+    void save_variables();
 
     bool do_cmd(); // do cmd with args and clear cmd and args
 	// handling of the argument list
@@ -227,7 +230,8 @@ class Converse
     bool is_test(Uint8 check)
     {
         return(((check == 0x81) || (check == 0x84) || (check == 0x85) || (check == 0x86)
-               || (check == 0xab) || (check == 0xc6)));
+               || (check == 0xab) || (check == 0xc6) || (check == 0xdd)
+               || (check == 0xbb) || (check == 0xe3)));
     }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)
@@ -291,7 +295,7 @@ public:
     void unwait() { is_waiting = false; }
     bool start(Actor *talkto); // makes step() available
     void stop();
-    void step(Uint32 count = 0);
+    void step(Uint32 count = 0, Uint8 bcmd = 0x00);
     void print(const char *printstr = 0);
     Uint32 print_name();
     /* Set input buffer (replacing what is already there.) */
@@ -314,6 +318,7 @@ public:
             heap[varnum].val = val;
         }
     }
+    const char *npc_name(uint8 num);
 };
 
 
