@@ -16,6 +16,7 @@
 #include "Look.h"
 
 Look::Look(Configuration *cfg)
+:look_data(NULL),desc_buf(NULL)
 {
  config = cfg;
  
@@ -24,6 +25,7 @@ Look::Look(Configuration *cfg)
 
 Look::~Look()
 {
+ free(look_data);
  free(desc_buf);
 }
 
@@ -32,40 +34,50 @@ bool Look::init()
  std::string filename;
  U6Lzw lzw;
  uint32 decomp_size;
- unsigned char *look_data;
  unsigned char *ptr;
- char *s;
+ const char *s;
  uint16 i,j;
+ unsigned int len;
  
  config->pathFromValue("config/ultima6/gamedir","look.lzd",filename);
  
  look_data = lzw.decompress_file(filename,decomp_size);
  if(look_data == NULL)
-   return false;
+    return false;
 
  ptr = look_data;
- 
+
+ // i: current string pos, j: last string pos
  for(i=0,j=0;i < 2048;)
    {
+    // get number of string
     i = ptr[0] + (ptr[1] << 8);
 
     if(i >= 2048)
        break;
-    s = readDescription(&ptr[2]);
-    
-    ptr += strlen(s) + 3;
-    
+
+    // store pointer to look_data buffer
+    look_tbl[i] = s = reinterpret_cast<char*>(&ptr[2]);
+
+    // update max_len
+    len = strlen(s);
+    if(max_len < len)
+     max_len = len;
+
+    ptr += len + 3;
+
+    // fill all empty strings between current and last one
     for(;j<=i;j++)
       look_tbl[j] = s;
    }
 
+ // fill remaining strings with "Nothing"
  for(i=j;i < 2048;i++)
    {
     look_tbl[i] = look_tbl[0]; // nothing
    }
-   
- free(look_data);
 
+ // allocate space for description buffer
  desc_buf = (char *)malloc(max_len+1);
  if(desc_buf == NULL)
    return false;
@@ -75,7 +87,7 @@ bool Look::init()
 
 const char *Look::get_description(uint16 tile_num, bool plural)
 {
- char *desc;
+ const char *desc;
  char c;
  uint16 i, j;
  uint16 len;
@@ -127,25 +139,4 @@ void Look::print()
   }
   
  return;
-}
-
-char *Look::readDescription(unsigned char *ptr)
-{
- uint16 i;
- char *s;
- 
- for(i = 0;;i++)
-  {
-   if(ptr[i] == '\0')
-     break;
-  }
- 
- s = (char *)malloc(i+1);
- 
- strcpy(s,(char *)ptr);
- 
- if(max_len < i)
-  max_len = i;
-  
- return s;
 }

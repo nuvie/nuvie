@@ -15,8 +15,9 @@
 class Look
 {
  Configuration *config;
- char *look_tbl[2048];
+ const char *look_tbl[2048];
  uint16 max_len;
+ unsigned char *look_data;
  char *desc_buf;
  
  public:
@@ -32,8 +33,6 @@ class Look
  void print();
  
  protected:
- 
- char *readDescription(unsigned char *ptr);
 };
 
 #endif /* __Look_h__ */
