@@ -515,7 +515,7 @@ next_group = "random";
       m_pCurrentSong = SoundManager::RequestSong (next_group);
       if(m_pCurrentSong)
         {
-          printf ("assinging new song! %x\n", m_pCurrentSong);
+          printf ("assigning new song! %x\n", m_pCurrentSong);
           if(!m_pCurrentSong->Play (false))
             {
               printf ("play failed!\n");
