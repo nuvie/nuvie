@@ -114,7 +114,10 @@ protected:
 
     bool is_waiting; // return control to Converse, paused waiting for something
     bool stopped; // conversation will end, after control returns to Converse
-    bool answer; // a response has been triggered by conversation input?
+    uint8 answer_mode; // should a response has been triggered by input?
+#define ANSWER_NO   0 /* keywords don't match */
+#define ANSWER_YES  1 /* keywords match */
+#define ANSWER_DONE 2 /* already answered */
 
     // input values (from the script)
     struct in_val_s

@@ -27,6 +27,7 @@
 #include "ActorManager.h"
 #include "GameClock.h"
 #include "MapWindow.h"
+#include "Effect.h"
 #include "ConverseInterpret.h"
 
 //#define CONVERSE_DEBUG
@@ -38,7 +39,7 @@ ConverseInterpret::ConverseInterpret(Converse *owner)
     decl_v = decl_t = 0x00;
 
     unwait();
-    answer = false;
+    answer_mode = ANSWER_NO;
     stopped = false;
 }
 
@@ -462,7 +463,8 @@ bool ConverseInterpret::op(stack<converse_value> &i)
 
     switch(in = pop_arg(i))
     {
-        case U6OP_SLEEP: {// 0x9e
+        case U6OP_SLEEP: // 0x9e
+        {
             converse->print("You're getting sleepy...*\nvery sleepy...*\n...you can barely keep your eyes open...*\n...*\n\nAt least pretend you're asleep!*\n");
             for(uint32 hour = 0; hour < 8; hour++) // FIXME
             {
@@ -470,7 +472,8 @@ bool ConverseInterpret::op(stack<converse_value> &i)
                 Game::get_game()->get_map_window()->updateBlacking();
                 Game::get_game()->get_map_window()->Display(true);
             }
-            } break;
+//            new SleepEffect("6:00");
+        }   break;
         case U6OP_HORSE: // 0x9c
             // FIXME: probably need to do more real actor/object set-up here
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
@@ -628,7 +631,12 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         case U6OP_ENDANSWER: // 0xee
             break; // (frame only)
         case U6OP_KEYWORDS: // 0xef (text:keywords)
-            answer = check_keywords(get_text(), converse->get_input());
+            if(answer_mode != ANSWER_DONE) // havn't already answered
+            {
+                answer_mode = ANSWER_NO;
+                if(check_keywords(get_text(), converse->get_input()))
+                    answer_mode = ANSWER_YES;
+            }
             break; // (frame only)
         case U6OP_SIDENT: // 0xff, arg 1 is id number, name follows
             v[0] = pop_arg(i);
@@ -650,13 +658,21 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             break;
         case U6OP_ANSWER: // 0xf6
             set_break(U6OP_KEYWORDS); // run or skip to next 0xef
-            set_run(answer); // depending on input comparison
+            if(answer_mode == ANSWER_YES) // depending on input comparison
+            {
+                set_run(true);
+                answer_mode = ANSWER_DONE; // don't do further comparisons
+            }
+            else
+                set_run(false);
             break;
         case U6OP_ASK: // 0xf7
+            answer_mode = ANSWER_NO; // reset answer switch
             converse->print("\nyou say:");
             converse->poll_input();
             break;
         case U6OP_ASKC: // 0xf8 (blocking, single character input)
+            answer_mode = ANSWER_NO; // reset answer switch
             converse->poll_input(get_text().c_str(), false); // collected=allowed input
             break;
         case U6OP_INPUTSTR: // 0xf9 (string or integer)
