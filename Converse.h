@@ -227,8 +227,8 @@ class Converse
             return(rnd_lo);
         return((NUVIE_RAND() + rnd_lo) % (rnd_hi + 1));
     }
-    uint32 u6op_if_test(uint32 cmpf, stack<uint32> *cmpv);
-    uint32 u6op_assign_eval(uint32 opf, stack<uint32> *opv);
+    uint32 u6op_if_test(uint32 cmpf, std::stack<uint32> *cmpv);
+    uint32 u6op_assign_eval(uint32 opf, std::stack<uint32> *opv);
 
     /* Seeking methods - update script pointer. */
     void seek(Uint32 offset = 0) { script_pt = script.buf; script_pt += offset; }
