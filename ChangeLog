@@ -1,3 +1,11 @@
+2005-03-24  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Added sun & moons with correct phase changes to sky display. PartyView
+	  was resized by 3 pixels to these extra tiles.
+	* Slowed down normal player movement very slightly. (8 moves per second)
+	* Added Ctrl-L to load latest save.
+	* Now updating CommandBar and sky when time changes in various classes.
+	* Replaced SDL_keysym numbers for inputting alt-codes with a switch.
+
 2005-03-06  Eric Fry <efry at users.sourceforge.net>
 	* Fixed the boundary fill logic when sherry goes through a mousehole.
 	* I've done some more work on the wall reshaping logic. The wall bug
