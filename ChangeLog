@@ -1,3 +1,6 @@
+2003-08-31  Eric Fry <efry@users.sourceforge.net>
+	* Fixed a GUI_Widget redraw bug.
+
 2003-08-27  Eric Fry <efry@users.sourceforge.net>
 	* A small fix for inventory display.
 

@@ -62,6 +62,9 @@ GUI_Widget:: Init(void *data, int x, int y, int w, int h)
 		pressed[n]=0;
 	}
  parent = NULL;
+ 
+ update_display = true;
+ 
 }
 
 int GUI_Widget:: AddWidget(GUI_Widget *widget)
