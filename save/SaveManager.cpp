@@ -52,6 +52,9 @@ void SaveManager::init()
  
  config->value("config/GameType",game_type);
  
+ search_prefix.assign("nuvie");
+ search_prefix.append(get_game_tag(game_type));
+ 
  savegame = new SaveGame(config);
 
  savedir_key = config_get_game_key(config);
@@ -68,12 +71,8 @@ void SaveManager::init()
 #else
     savedir.assign(".");
 #endif
-    return;
    }
 
- search_prefix.assign("nuvie");
- search_prefix.append(get_game_tag(game_type));
- 
 /*
    if(directory_exists(savedir.c_str()) == false && !savedir.empty())
 	   // try to create the save dir if it doesn't exist

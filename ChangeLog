@@ -1,3 +1,6 @@
+2004-06-13  Eric Fry <efry at users.sourceforge.net>
+	* Fixed a bug when savedir wasn't defined in the config file.
+
 2004-06-12  Eric Fry <efry at users.sourceforge.net>
 	* Added Portrait::load() This method loads the avatar portrait
 	  number from the objlist data.
