@@ -77,4 +77,5 @@ dist: install tools
 	cp README $(U6PATH)/README.txt
 	cp SDL/README-SDL.txt $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)
+	cp SDL/lib/SDL_mixer.dll $(U6PATH)
 	u2d $(U6PATH)/*.txt
