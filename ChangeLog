@@ -1,3 +1,6 @@
+2003-12-14  Eric Fry <efry@users.sourceforge.net>
+	* Fixed walk on pedastal bug. [ 791146 ]
+
 2003-12-13  Eric Fry <efry@users.sourceforge.net>
 	* A fix for an infinite loop when removing temporary eggs.
 

@@ -247,7 +247,7 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
              if(tile->dbl_height && obj->x == x && obj->y == y+1)
                 { tile_num--; check_tile = true; }
              if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
-                { tile_num -= 2; check_tile = true; }
+                { tile_num -= 3; check_tile = true; }
              if(check_tile)
                {
                 tile1 = tile_manager->get_original_tile(tile_num);
