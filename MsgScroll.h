@@ -91,6 +91,7 @@ class MsgScroll
  
  void display_string(const char *string);
  void display_prompt();
+ void message(const char *string) { display_string(string); display_prompt(); }
  
  void set_keyword_highlight(bool state);
  
