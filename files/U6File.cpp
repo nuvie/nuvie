@@ -40,6 +40,39 @@ U6File::~U6File()
 }
 
 
+/* Write the long integer `src' to the stream LSB first.
+ */
+bool U6File::write4(uint32 src)
+{
+    fputc((uint8)(src & 0xff), f);
+    fputc((uint8)((src >> 8) & 0xff), f);
+    fputc((uint8)((src >> 16) & 0xff), f);
+    fputc((uint8)((src >> 24) & 0xff), f);
+    return(true);
+}
+
+
+/* Write the short integer `src' to the stream LSB first.
+ */
+bool U6File::write2(uint16 src)
+{
+    fputc((uint8)(src & 0xff), f);
+    fputc((uint8)((src >> 8) & 0xff), f);
+    return(true);
+}
+
+
+/* Write `size' bytes from the buffer at `buf' to the stream.
+ * Returns the number of bytes successfully written.
+ */
+unsigned int U6File::writeBuf(unsigned char *buf, uint32 size)
+{
+    if(size == 0 || !buf)
+        return(0);
+    return(fwrite(buf, sizeof(unsigned char), size, f));
+}
+
+
 bool U6File::open(std::string &directory, std::string &file, char *mode)
 {
  std::string filename;
@@ -107,6 +140,7 @@ bool U6File::readToBuf(unsigned char *buf, uint32 buf_size)
 
  return true;
 }
+
 
 unsigned char *U6File::readBuf(uint32 size, unsigned int *bytes_read)
 {
