@@ -1,3 +1,14 @@
+2003-07-30  Eric Fry <efry@users.sourceforge.net>
+	* Added various worktypes to U6Actor.
+	   Walk in straight lines
+	   Sleep ( Actors now sleep in their beds ;)
+	   Wander around
+	   Standing still
+	* Actor now stores old obj_n and old_frame_n values. Used for
+	  returning actors from sleep.
+	* Fixed game.h reference style in Mac OS X build config. Thanks to
+	  Brad Oliver for spotting that one. :)
+
 2003-07-29  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Changed/added to Actor::set_direction()/face_location().
 	* Actor walking can be given a delay (don't start for that many turns)

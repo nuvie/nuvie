@@ -343,8 +343,8 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = Game.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/Game.h;
-			refType = 0;
+			path = ../Game.h;
+			refType = 2;
 		};
 		0725669A04272B7B00A8000A = {
 			fileEncoding = 30;

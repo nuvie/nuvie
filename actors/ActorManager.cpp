@@ -108,6 +108,19 @@ bool ActorManager::loadActors()
     actors[i]->direction = actors[i]->frame_n / 4;
    }
 
+ //old obj_n & frame_n values
+ 
+ objlist.seek(0x15f1);
+ 
+ for(i=0;i < 256; i++)
+   {
+    b1 = objlist.read1();
+    b2 = objlist.read1();
+    actors[i]->old_obj_n = b1;
+    actors[i]->old_obj_n += (b2 & 0x3) << 8;
+    
+    actors[i]->old_frame_n = (b2 & 0xfc) >> 2;
+   }
  // Strength
  
  objlist.seek(0x900);

@@ -79,6 +79,9 @@ class Actor
  
  uint16 obj_n;
  uint16 frame_n;
+ uint16 old_obj_n;
+ uint16 old_frame_n;
+ 
  uint8 direction;
  uint8 walk_frame;
  
@@ -180,7 +183,7 @@ class Actor
  protected:
  
  void loadSchedule(unsigned char *schedule_data, uint16 num);
- void updateSchedule();
+ virtual bool updateSchedule();
  uint16 getSchedulePos(uint8 hour);
  
 };

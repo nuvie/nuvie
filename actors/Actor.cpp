@@ -312,12 +312,6 @@ void Actor::update()
 */
  updateSchedule();
 
- if(pathfinder)
- {
-    pathfinder->walk_path();
-    if(pathfinder->reached_goal())
-        stop_walking();
- }
 }
 
 
@@ -599,7 +593,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
  return;
 }
 
-void Actor::updateSchedule()
+bool Actor::updateSchedule()
 {
  uint8 hour;
  uint16 new_pos;
@@ -609,12 +603,12 @@ void Actor::updateSchedule()
  new_pos = getSchedulePos(hour);
  
  if(new_pos == sched_pos) // schedules are the same so we do nothing.
-  return;
+  return false;
 
  sched_pos = new_pos;
  
  if(sched[sched_pos] == NULL)
-   return;
+   return false;
  
 // testing: just walk a few npc's for now
 // if(id_n > 64)
@@ -626,6 +620,8 @@ void Actor::updateSchedule()
  lwalk(sched_dest);
 // }
  set_worktype(sched[sched_pos]->worktype);
+ 
+ return true;
 }
 
 // returns the current schedule entry based on hour
