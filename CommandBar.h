@@ -59,6 +59,7 @@ public:
 
     virtual void Display(bool full_redraw);
     virtual GUI_status MouseDown(int x, int y, int button);
+    void update() { update_display = true; }
 
     void set_combat_mode(bool mode);
     void set_wind(std::string dir)        { wind = dir; update_display = true; }

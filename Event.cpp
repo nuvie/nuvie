@@ -43,6 +43,8 @@
 #include "PortraitView.h"
 #include "TimedEvent.h"
 #include "InventoryView.h"
+#include "PartyView.h"
+#include "CommandBar.h"
 #include "U6LList.h"
 #include "Event.h"
 #include "U6objects.h"
@@ -138,21 +140,73 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 {
 	SDLMod mods = SDL_GetModState();
 	// alt-code input
-	if((mods & KMOD_ALT)
-	   && ( (event->key.keysym.sym >= SDLK_KP0 && event->key.keysym.sym <= SDLK_KP9)
-               || (event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9) ) )
+	if(mods & KMOD_ALT)
 	{
-		if(event->key.keysym.sym >= SDLK_KP0 && event->key.keysym.sym <= SDLK_KP9)
-			alt_code_str[alt_code_len++] = (char)(event->key.keysym.sym-208);
-		else
-			alt_code_str[alt_code_len++] = (char)(event->key.keysym.sym);
-		alt_code_str[alt_code_len] = '\0';
-		if(alt_code_len == 3)
+		switch(event->key.keysym.sym)
 		{
-			alt_code(alt_code_str);
-			clear_alt_code();
+			case SDLK_KP0:
+                        case SDLK_0: alt_code_str[alt_code_len++] = '0'; break;
+			case SDLK_KP1:
+	                case SDLK_1: alt_code_str[alt_code_len++] = '1'; break;
+			case SDLK_KP2:
+	                case SDLK_2: alt_code_str[alt_code_len++] = '2'; break;
+			case SDLK_KP3:
+	                case SDLK_3: alt_code_str[alt_code_len++] = '3'; break;
+			case SDLK_KP4:
+	                case SDLK_4: alt_code_str[alt_code_len++] = '4'; break;
+			case SDLK_KP5:
+	                case SDLK_5: alt_code_str[alt_code_len++] = '5'; break;
+			case SDLK_KP6:
+	                case SDLK_6: alt_code_str[alt_code_len++] = '6'; break;
+			case SDLK_KP7:
+	                case SDLK_7: alt_code_str[alt_code_len++] = '7'; break;
+			case SDLK_KP8:
+	                case SDLK_8: alt_code_str[alt_code_len++] = '8'; break;
+			case SDLK_KP9:
+			case SDLK_9: alt_code_str[alt_code_len++] = '9'; break;
+			case SDLK_x: // quit
+				scroll->display_string("Exit!\n");
+				return false;
+			default: return true;
 		}
-		return	true;
+		if(alt_code_len != 0)
+		{
+			alt_code_str[alt_code_len] = '\0';
+			if(alt_code_len == 3)
+			{
+				alt_code(alt_code_str);
+				clear_alt_code();
+			}
+		}
+		return true;
+	}
+	if(mods & KMOD_CTRL)
+	{
+		switch(event->key.keysym.sym)
+		{
+			case SDLK_s: // save
+				scroll->display_string("Save game?\n");
+				return true;
+			case SDLK_l: { // load
+				SaveManager *save_manager = Game::get_game()->get_save_manager();
+				scroll->display_string("Load game!\n");
+				save_manager->load_latest_save();
+				return true; }
+			case SDLK_q: // quit
+				scroll->display_string("Exit!\n");
+				return false;
+			default:
+				if(event->key.keysym.sym != SDLK_LCTRL
+				   && event->key.keysym.sym != SDLK_RCTRL)
+					if(mode != MOVE_MODE)
+						cancelAction();
+					else
+					{
+						scroll->display_string("what?\n\n");
+						scroll->display_prompt();
+					}
+		}
+		return true;
 	}
 
 	switch (event->key.keysym.sym)
@@ -518,7 +572,12 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
    else
      {
         if(player->check_walk_delay())
+          {
             player->moveRelative(rel_x, rel_y);
+            // time changed
+            Game::get_game()->get_command_bar()->update(); // date & wind
+            view_manager->get_party_view()->update(); // sky
+          }
      }
   }
  return true;
@@ -1233,6 +1292,9 @@ void Event::alt_code(const char *cs)
             scroll->display_string("\n");
             scroll->display_prompt();
             map_window->updateBlacking();
+            // time changed
+            Game::get_game()->get_command_bar()->update(); // date & wind
+            view_manager->get_party_view()->update(); // sky
             active_alt_code = 0;
             break;
 
@@ -1877,8 +1939,12 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
     // Mouse->World->RelativeDirection
     map_window->mouseToWorldCoords((int)mx, (int)my, wx, wy);
     map_window->get_movement_direction((uint16)wx, (uint16)wy, rx, ry);
+    // FIXME: With U6 mouse-move, Avatar tries to move left or right around obstacles.
     player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
                          (ry == 0) ? 0 : ry < 0 ? -1 : 1);
+    // time changed
+    Game::get_game()->get_command_bar()->update(); // date & wind
+    view_manager->get_party_view()->update(); // sky
 }
 
 
@@ -2162,6 +2228,8 @@ void Event::endAction(bool prompt)
     use_obj = NULL;
     selected_actor = NULL;
     drop_qty = 0;
-    map_window->updateBlacking();
     Game::get_game()->set_mouse_pointer(0);
+    Game::get_game()->get_command_bar()->update(); // date&wind
+    view_manager->get_party_view()->update(); // sky
+    map_window->updateBlacking();
 }

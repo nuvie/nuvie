@@ -351,7 +351,7 @@ uint32 Player::get_walk_delay()
     else if(actor->obj_n == OBJ_U6_HORSE_WITH_RIDER)
         return(50); // 2x normal
     else
-        return(100); // normal movement about 10 spaces per second?
+        return(125); // normal movement about 8 spaces per second
 }
 
 

@@ -11,6 +11,9 @@
 #include "U6LList.h"
 #include "MsgScroll.h"
 #include "GameClock.h"
+#include "CommandBar.h"
+#include "ViewManager.h"
+#include "PartyView.h"
 // FIXME: effects use timers, not the other way around (make a movement effect?)
 #include "EffectManager.h"
 #include "Effect.h"
@@ -634,6 +637,8 @@ void TimedAdvance::timed(uint32 evtime)
             break;
     }
     Game::get_game()->get_map_window()->updateBlacking();
+    Game::get_game()->get_command_bar()->update(); // date
+    Game::get_game()->get_view_manager()->get_party_view()->update(); // sky
 
     if(hour_passed && callback_target) // another hour has passed
         message(MESG_TIMED, &evtime);

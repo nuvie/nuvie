@@ -149,7 +149,7 @@ void CommandBar::Display(bool full_redraw)
             screen->blit(area.x+i*16, area.y+8, icon[i]->data, 8, 16, 16, 16);
 
         if(default_action >= 0 && default_action <= 9)
-            screen->fill(1, area.x + default_action*16, area.y + 24, 16, 1);
+            screen->fill(9, area.x + default_action*16, area.y + 24, 16, 1);
         screen->update(area.x, area.y, area.w, area.h);
     }
 }

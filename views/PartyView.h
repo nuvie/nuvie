@@ -48,6 +48,7 @@ class PartyView : public View {
  GUI_status MouseUp(int x,int y,int button);
  GUI_status MouseDown(int x,int y,int button) { return(GUI_YUM); }
  void Display(bool full_redraw);
+ void update() { update_display = true; }
 
  protected:
 
@@ -55,6 +56,9 @@ class PartyView : public View {
  void display_surface_strip();
  void display_dungeon_strip();
  void display_arrows();
+ void display_sun_moon(Tile *tile, uint8 pos);
+ void display_sun(uint8 hour, uint8 minute=0);
+ void display_moons(uint8 day, uint8 hour, uint8 minute=0);
 
  bool up_arrow();
  bool down_arrow();

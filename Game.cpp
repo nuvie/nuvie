@@ -183,6 +183,9 @@ bool Game::loadGame(Screen *s, uint8 type)
    map_window->init(game_map, tile_manager, obj_manager, actor_manager);
    gui->AddWidget(map_window);
 
+   command_bar = new CommandBar(this);
+   gui->AddWidget(command_bar);
+
    player = new Player(config);
    party = new Party(config);
    player->init(obj_manager, actor_manager, map_window, clock, party);
@@ -196,9 +199,6 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    scroll = new MsgScroll(config, font_manager->get_font(0));
    gui->AddWidget(scroll);
-
-   command_bar = new CommandBar(this);
-   gui->AddWidget(command_bar);
 
    map_window->set_windowSize(11,11);
 
