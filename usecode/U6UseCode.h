@@ -24,6 +24,7 @@
  */
 
 #include "ObjManager.h"
+#include "TimedEvent.h"
 #include "UseCode.h"
 //object numbers
 #include "U6objects.h"
@@ -49,7 +50,7 @@ struct u6_uc_s // usecode definition (object)
  { obj_n = o; frame_n = f; dist = d; trigger = e; ucf = u; }
 };
 
-class U6UseCode: public UseCode
+class U6UseCode: public UseCode, public TimedCallbackTarget
 {
  typedef struct u6_uc_s uc_obj;
  uc_obj *uc_objects;
@@ -67,10 +68,13 @@ class U6UseCode: public UseCode
  bool look_obj(Obj *obj, Actor *actor);
  bool pass_obj(Obj *obj, Actor *actor);
  bool search_obj(Obj *obj, Actor *actor);
+ void timed_callback(void *obj_data);
+ bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y);
 
  bool has_usecode(Obj *obj);
  bool has_lookcode(Obj *obj);
  bool has_passcode(Obj *obj);
+ bool has_movecode(Obj *obj);
 
  bool is_unlocked_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n != 9 && obj->frame_n != 11); }
  bool is_locked_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && (obj->frame_n == 9 || obj->frame_n == 11)); }
@@ -116,6 +120,8 @@ class U6UseCode: public UseCode
  bool enter_dungeon(Obj *obj, uint8 ev);
  bool enter_red_moongate(Obj *obj, uint8 ev);
 // bool search_container(Obj *obj, uint8 ev);
+ bool use_powder_keg(Obj *obj, uint8 ev);
+ bool use_cannon(Obj *obj, uint8 ev);
 
 // supplementary
  Obj *drawbridge_find(Obj *crank_obj);

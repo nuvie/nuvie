@@ -1,3 +1,39 @@
+2004-01-16  Joseph Applegate <sb-x at users.sourceforge.net>
+	* You can MOVE objects around with the keyboard now, and special usecode
+	  may be called. You can't move actors yet.
+	* UseCode events TIMED and MOVE added. New objects Powder Keg & Cannon.
+	* New alt-code 300: show NPC portrait (this will be changed to "show
+	  portrait number")
+	* Portraits now only display until the player presses a key to continue.
+	  Event has to switch focus to it and PortraitView has to set `waiting'
+	  to "true".
+	* Portrait: Fixed the incorrect portrait number references. Actor 0
+	  displays no portrait (at least as a vehicle), shrines display no
+	  portraits, and Exodus' portrait number was off by 3. You can see
+	  gargoyles' portraits when you look at them now.
+	* Converse: Hardcoded script numbers added from actors 188+,
+	  including temporary NPCs. You can talk to Guards and Wisps now, and
+	  the shrines use the correct conversations.
+	* NPCs 188 to 200 are considered "always known" and their name is
+	  displayed when you talk to them.
+	* View focus added to EVENT. This lets us do things like display a
+	  portrait temporarily, or browse inventory with the keyboard.
+	  Unfortunately with the current event system it means more work has to
+	  be done when you want to get user input (you have to switch the
+	  focus). This should be managed by ViewManger in the future.
+	* Event: A couple of functions added to make getting input and showing
+	  portraits while switching focus to the appropriate view easier.
+	* TimeQueue now operates in Real Time (milliseconds) and Game Time
+	  (ticks/turns).
+	* New timer TimedCallback added. It is a flexible method of setting a
+	  callback function on any class to be called with the time is up, and
+	  with user-defined data. The class has to inherit TimedCallbackTarget.
+	* Use GameTimedCallback to do this in game ticks/turns.
+	* GameClock: Time counter added. This counts the number of minutes
+	  since start. Return this with get_time().
+	* Other new methods to GameClock: get_turn() returns move_counter
+	                                  get_ticks() returns SDL_Ticks()
+
 2004-01-14  Eric Fry <efry at users.sourceforge.net>
 	* Added the original hacked object creation. You can now use spam to
 	  make hacked objects in Nuvie. These objects have an overflowed

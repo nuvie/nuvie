@@ -176,6 +176,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_SUNDIAL,   255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
     add_usecode(OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
     add_usecode(OBJ_U6_WELL,      255,0,USE_EVENT_USE,&U6UseCode::use_well);
+    add_usecode(OBJ_U6_POWDER_KEG,255,0,USE_EVENT_USE|USE_EVENT_TIMED,&U6UseCode::use_powder_keg);
     
 	add_usecode(OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive);
 	
@@ -216,6 +217,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_SHOVEL,      0,0,USE_EVENT_USE,&U6UseCode::use_shovel);
     add_usecode(OBJ_U6_FOUNTAIN,    0,0,USE_EVENT_USE,&U6UseCode::use_fountain);
     add_usecode(OBJ_U6_RUBBER_DUCKY,0,0,USE_EVENT_USE,&U6UseCode::use_rubber_ducky);
+    add_usecode(OBJ_U6_CANNON,    255,0,USE_EVENT_USE|USE_EVENT_MOVE,&U6UseCode::use_cannon);
 
     add_usecode(OBJ_U6_PANPIPES,   0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
     add_usecode(OBJ_U6_HARPSICHORD,0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
@@ -288,6 +290,17 @@ bool U6UseCode::has_passcode(Obj *obj)
 }
 
 
+/* Is there MOVE usecode for an object? (not "can object be moved")
+ */
+bool U6UseCode::has_movecode(Obj *obj)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_MOVE);
+    if(uc < 0)
+        return(false);
+    return(true);
+}
+
+
 /* USE object. Actor is the actor using the object.
  * Returns false if there is no usecode for that object.
  */
@@ -340,6 +353,39 @@ bool U6UseCode::search_obj(Obj *obj, Actor *actor)
 }
 
 
+/* Call TIMER function for an object.
+ */
+void U6UseCode::timed_callback(void *obj_data)
+{
+    Obj *obj = (Obj *)obj_data;
+    if(!obj)
+    {
+        fprintf(stderr, "UseCode: timer activated for NULL object\n");
+        return;
+    }
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_TIMED);
+    if(uc < 0)
+        return;
+    uc_event(uc, USE_EVENT_TIMED, obj);
+}
+
+
+/* MOVE nearby object in a relative direction.
+ * Returns false if there is no usecode for that object.
+ */
+bool U6UseCode::move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_MOVE);
+    static MapCoord dir;
+    if(uc < 0)
+        return(false);
+    dir.sx = rel_x;
+    dir.sy = rel_y;
+    set_itemref(&dir);
+    return(uc_event(uc, USE_EVENT_MOVE, obj));
+}
+
+
 /* Return index of usecode definition in list for object N:F, or -1 if none.
  */
 sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f, uint8 ev)
@@ -370,6 +416,8 @@ bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
                              : (ev == USE_EVENT_LOOK) ? "LOOK"
                              : (ev == USE_EVENT_PASS) ? "PASS"
                              : (ev == USE_EVENT_SEARCH) ? "SEARCH"
+                             : (ev == USE_EVENT_TIMED) ? "TIMED"
+                             : (ev == USE_EVENT_MOVE) ? "MOVE"
                              : "???");
         bool ucret = (this->*uc_objects[uco].ucf)(obj, ev);
         int_ref = 0;
@@ -1626,7 +1674,7 @@ bool U6UseCode::look_clock(Obj *obj, uint8 ev)
  */
 bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
 {
-    ViewManager *view_manager = Game::get_game()->get_view_manager();
+//    ViewManager *view_manager = Game::get_game()->get_view_manager();
     if(ev == USE_EVENT_LOOK && actor_ref == player->get_actor())
     {
         uint16 x, y;
@@ -1635,7 +1683,7 @@ bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
         if(x == obj->x && y > obj->y && y <= (obj->y + 2))
         {
             scroll->display_string("\nYou can see yourself!");
-            view_manager->set_portrait_mode(actor_ref, NULL);
+            Game::get_game()->get_event()->display_portrait(actor_ref);
         }
         return(true);
     }
@@ -1737,3 +1785,81 @@ bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
     return(false);
 }
 
+
+
+/* Use: Light powder keg if unlit
+ * Timed: Explode
+ */
+bool U6UseCode::use_powder_keg(Obj *obj, uint8 ev)
+{
+static uint32 countdown = 0;
+    if(ev == USE_EVENT_USE)
+    {
+        if(obj->frame_n != 0)
+        {
+            scroll->display_string("\nNot now!\n");
+            return(false);
+        }
+        obj->frame_n = 1;
+countdown = 4;
+        new GameTimedCallback(this, obj, 1);
+// countdown and firings are only for this demo
+//        new GameTimedCallback(this, obj, 5);
+        scroll->display_string("\nPowder lit!\n");
+        scroll->display_string("Dupre: \"Run away!\"\n");
+        scroll->display_string("Shamino: \"Run away!\"\n");
+        return(true);
+    }
+    else if(ev == USE_EVENT_TIMED)
+    {
+        if(countdown == 0)
+        {
+            obj->frame_n = 0;
+            scroll->display_string("\nDupre: \"A dud?\"\n");
+            scroll->display_string("Iolo slaps Dupre. \"Powder kegs are not even implemented, you dolt!\"\n\n");
+            scroll->display_prompt();
+        }
+        else
+        {
+            --countdown;
+            new GameTimedCallback(this, obj, 1);
+        }
+        return(true);
+    }
+    return(false);
+}
+
+
+/* Use: Fire! (block input, start cannonball anim, release input on hit)
+ * Move: Change direction if necessary
+ */
+bool U6UseCode::use_cannon(Obj *obj, uint8 ev)
+{
+    if(ev == USE_EVENT_USE)
+    {
+        scroll->display_string("\nFire!\n"); // animate before newline, prompt after hit
+        return(true);
+    }
+    else if(ev == USE_EVENT_MOVE)
+    {
+        // allow normal move
+        if((obj->frame_n == 0 && mapcoord_ref->sy < 0)
+           || (obj->frame_n == 1 && mapcoord_ref->sx > 0)
+           || (obj->frame_n == 2 && mapcoord_ref->sy > 0)
+           || (obj->frame_n == 3 && mapcoord_ref->sx < 0))
+            return(true);
+        else // aim cannon in new direction
+        {
+            if(mapcoord_ref->sy < 0)
+                obj->frame_n = 0;
+            else if(mapcoord_ref->sy > 0)
+                obj->frame_n = 2;
+            else if(mapcoord_ref->sx < 0)
+                obj->frame_n = 3;
+            else if(mapcoord_ref->sx > 0)
+                obj->frame_n = 1;
+            return(false);
+        }
+    }
+    return(false);
+}

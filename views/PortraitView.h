@@ -44,17 +44,23 @@ class PortraitView : public View {
  
  unsigned char *portrait_data;
  
- //cursor pos
- 
+ bool waiting; // waiting for input, then will return to previous view
+ bool show_cursor; // indicate waiting for input
+// uint16 cursor_x, cursor_y;
+
  public:
  PortraitView(Configuration *cfg);
  ~PortraitView();
  
  bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
  void Display(bool full_redraw);
- 
+ bool handle_input(const SDL_keysym *input);
+
  bool set_portrait(Actor *actor, char *name);
- 
+ void set_show_cursor(bool state) { show_cursor = state; }
+ void set_waiting(bool state)     { waiting = state; }
+ bool get_waiting()     { return(waiting); }
+
  protected:
  
  void display_name();

@@ -35,8 +35,11 @@
 
 //define tmporary portraits.
 
+#define PORTRAIT_U6_GARGOYLE 194
 #define PORTRAIT_U6_GUARD 193
 #define PORTRAIT_U6_WISP 192
+#define PORTRAIT_U6_EXODUS 191
+#define PORTRAIT_U6_NOTHING 188
 
 Portrait::Portrait(Configuration *cfg)
 {
@@ -88,7 +91,7 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
 
  num = actor->get_actor_num();
 
- if(num <= 1) //avatar portrait
+ if(num == 1) // avatar portrait
     {
      portrait = &portrait_z;
      num = avatar_portrait_num;
@@ -96,14 +99,20 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
  else
    {
     num -= 1;
- 
-    if(num > 194) // there are 194 npc portraits
+
+    if(num == (188-1))
+        num = PORTRAIT_U6_EXODUS-1; // Exodus
+    else if(num >= (191-1) && num <= (198-1)) // Shrines, Temple of Singularity
+        return(NULL);
+    else if(num > 194) // there are 194 npc portraits
       {
+#warning Where is the return from Actor::make_obj freed?
 	   actor_obj = actor->make_obj(); //check for temporary actors with portraits. eg guards and wisps
 	   switch(actor_obj->obj_n)
 	    {
 		 case OBJ_U6_GUARD : num = PORTRAIT_U6_GUARD-1; break;
 		 case OBJ_U6_WISP : num = PORTRAIT_U6_WISP-1; break;
+		 case OBJ_U6_GARGOYLE : num = PORTRAIT_U6_GARGOYLE-1; break;
 		 default : return NULL;
 		}
       }

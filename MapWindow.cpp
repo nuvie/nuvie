@@ -31,7 +31,7 @@
 #include "MapWindow.h"
 #include "Map.h"
 #include "MsgScroll.h"
-
+#include "AnimManager.h"
 #include "GUI_widget.h"
 #include "Game.h"
 #include "GameClock.h"
@@ -42,6 +42,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  config->value("config/GameType",game_type);
  screen = NULL;
  //surface = NULL;
+ anim_manager = NULL;
  
  cur_x = 0;
  cur_y = 0;
@@ -63,6 +64,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 MapWindow::~MapWindow()
 {
  free(tmp_buf);
+#warning ANIMMANAGER
+// delete anim_manager;
 }
 
 bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
@@ -73,6 +76,8 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  tile_manager = tm;
  obj_manager = om;
  actor_manager = am;
+#warning ANIMMANAGER
+// anim_manager = new AnimManager();
 
  config->value("config/GameType",game_type);
 
@@ -132,6 +137,9 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
     clip_rect.y = 16;
     clip_rect.h -= 16;
    }
+
+#warning ANIMMANAGER
+// anim_manager->set_area(&clip_rect);
  
  updateBlacking();
  
@@ -234,7 +242,22 @@ const char *MapWindow::lookAtCursor(bool show_prefix)
  actor = actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
  if(actor != NULL)
    {
-    return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->get_tile_num()),0,show_prefix);
+    uint16 tile_num = obj_manager->get_obj_tile_num(actor->get_tile_num());
+    if(tile_num == 0)
+      {
+       uint8 actor_num = actor->get_actor_num();
+       if(actor_num == 188) // U6: Statue of Exodus
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(399), 0, show_prefix);
+       else if(actor_num == 189) // Statue of Mondain
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(397), 0, show_prefix);
+       else if(actor_num == 190) // Statue of Minax
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(398), 0, show_prefix);
+       else if(actor_num >= 191 && actor->get_actor_num() <= 198) // shrines
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(393), 0, show_prefix);
+       else if(actor_num == 199) // Altar of singularity
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(329), 0, show_prefix);
+      }
+    return tile_manager->lookAtTile(tile_num,0,show_prefix);
    }
    
  return map->look(cur_x + cursor_x, cur_y + cursor_y, cur_level);
@@ -310,7 +333,7 @@ if(!screen)
          screen->set_ambient( 0xFF );
      else //Night
          screen->set_ambient( 0x00 );
-         
+
  //Clear the opacity map
  screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
  
@@ -361,6 +384,8 @@ void MapWindow::Display(bool full_redraw)
   }
 
  drawObjs();
+
+ drawAnims();
  
  if(show_cursor)
   {
@@ -886,7 +911,6 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     if(map->is_passable(x,y,cur_level) || hackmove)
 	{
 	  LineTestResult result;
-
       // make sure the player can reach the drop point
 	  Actor* player = actor_manager->get_player();
 	  if (!map->lineTest(player->x, player->y, x, y, cur_level, LT_HitUnpassable, result) || hackmove)
@@ -894,7 +918,6 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
         return true;
 	  }
 	}
-
 	if (Game::get_game ()->get_scroll ())
 		Game::get_game ()->get_scroll ()->display_string("\n\nNot Possible\n\n>");
   }
@@ -1055,4 +1078,20 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
 
 	screen->blit(nx, ny, tile->data, 8, 16, 16, 16, true);
 	screen->update(nx, ny, 16, 16);
+}
+
+
+/* Display MapWindow animations.
+ */
+void MapWindow::drawAnims()
+{
+static uint32 add_test = 0;
+#warning ANIMMANAGER
+//if(add_test == 0)
+//    anim_manager->new_anim(new TextAnim());
+//add_test = 1;
+//    if(!anim_manager->get_surface())
+//        anim_manager->set_surface(screen);
+//    anim_manager->update();
+//    anim_manager->display();
 }

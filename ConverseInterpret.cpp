@@ -626,7 +626,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             if(v[0] != converse->npc_num)
                 fprintf(stderr,
                         "Converse: warning: npc number in script (%d) does not"
-                        " match real number (%d)\n", v[0], converse->npc_num);
+                        " match actor number (%d)\n", v[0], converse->npc_num);
             converse->name = strdup(get_text()); // collected
             break;
         case U6OP_SLOOK: // 0xf1, description follows

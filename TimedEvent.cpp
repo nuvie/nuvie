@@ -10,6 +10,7 @@
 #include "UseCode.h"
 #include "U6LList.h"
 #include "MsgScroll.h"
+#include "GameClock.h"
 #include "TimedEvent.h"
 
 
@@ -45,20 +46,23 @@ TimedEvent *TimeQueue::pop_timer()
 }
 
 
-/* Call timed event at front of queue, whose time is <= `evtime'.
+/* Call timed event at front of queue, whose time is <= `ev[g]time'.
  * Returns true if an event handler was called. (false if time isn't up yet)
  */
-bool TimeQueue::call_timer(uint32 evtime)
+bool TimeQueue::call_timer(uint32 evtime, uint32 evgtime)
 {
+    uint32 now = 0;
     if(empty())
         return(false);
     TimedEvent *first = tq.front();
-    if(first->time > evtime)
+    now = (first->real_time) ? evtime : evgtime; // use real time or game time?
+
+    if(first->time > now)
         return(false);
-    first->timed(evtime);
+    first->timed(now);
     if(first->repeat) // repeat! same delay, add time
     {
-        first->time = evtime + first->delay;
+        first->time = now + first->delay;
         add_timer(first);
     }
     return(true);
@@ -67,12 +71,15 @@ bool TimeQueue::call_timer(uint32 evtime)
 
 /* This constructor must be called by all subclasses to add to queue.
  */
-TimedEvent::TimedEvent(uint32 reltime, bool immediate) : delay(reltime),
-            time(reltime + SDL_GetTicks()), ignore_pause(false), repeat(false)
+TimedEvent::TimedEvent(uint32 reltime, bool immediate, bool realtime)
+            : delay(reltime), ignore_pause(false), repeat(false), real_time(realtime)
 {
+    GameClock *clock = Game::get_game()->get_clock();
+    event = Game::get_game()->get_event();
+
+    time = reltime + (real_time ? clock->get_ticks() : clock->get_turn());
     if(immediate)
         time = 0; // start now (useful if repeat == true)
-    event = Game::get_game()->get_event();
     event->get_time_queue()->add_timer(this);
 }
 
@@ -219,3 +226,24 @@ void TimedContainerSearch::timed(uint32 evtime)
     }
 }
 
+
+TimedCallback::TimedCallback(TimedCallbackTarget *t, void *d, uint32 wait_time, bool repeating)
+                            : TimedEvent(wait_time, false, false)
+{
+    target = t;
+    data = (char *)d;
+    repeat = repeating;
+}
+
+
+void TimedCallback::timed(uint32 evtime)
+{
+    target->timed_callback((void *)data);
+}
+
+
+GameTimedCallback::GameTimedCallback(TimedCallbackTarget *t, void *d, uint32 wait_time, bool repeating)
+                                     : TimedCallback(t, d, wait_time, repeating)
+{
+
+}

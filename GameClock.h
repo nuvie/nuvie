@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include "SDL.h"
 #define GAMECLOCK_TICKS_PER_MINUTE   4
 
 class Configuration;
@@ -40,6 +40,7 @@ class GameClock
  uint8 day_of_week;
  
  uint32 move_counter;
+ uint32 time_counter; // game minutes passed since start
  
  char date_string[11];
  char time_string[11];
@@ -76,7 +77,11 @@ class GameClock
  
  char *get_date_string();
  char *get_time_string();
- 
+
+ uint32 get_ticks() { return(SDL_GetTicks()); }
+ uint32 get_time()  { return(time_counter); }
+ uint32 get_turn()  { return(move_counter); }
+
  protected:
  
  inline void update_day_of_week();

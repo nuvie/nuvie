@@ -33,12 +33,14 @@ class Configuration;
 class TileManager;
 class ActorManager;
 class Actor;
+class AnimManager;
 class Map;
 class MapCoord;
 class Screen;
 
 class MapWindow: public GUI_Widget
 {
+ friend class AnimManager;
  Configuration *config;
  int game_type;
  
@@ -49,6 +51,7 @@ class MapWindow: public GUI_Widget
  TileManager *tile_manager;
  ObjManager *obj_manager;
  ActorManager *actor_manager;
+ AnimManager *anim_manager;
  
  sint16 cur_x, cur_y;
  uint16 cursor_x, cursor_y;
@@ -120,6 +123,7 @@ class MapWindow: public GUI_Widget
 protected:
 
  void drawActors();
+ void drawAnims();
  void drawObjs();
  void drawObjSuperBlock(bool draw_lowertiles, bool toptile);
  inline void drawObj(Obj *obj, bool draw_lowertiles, bool toptile);

@@ -52,9 +52,18 @@ typedef enum {
  MOVE_MODE,
  DROP_MODE,
  TALK_MODE,
+ PUSH_MODE,
+ PUSHSELECT_MODE,
  USESELECT_MODE,
  FREESELECT_MODE /*...or use a single free-move mode for get,talk,select?*/
 } EventMode;
+
+typedef enum {
+ FOCUS_NONE = 0, // MapWindow/Global
+ FOCUS_MSGSCROLL,
+ FOCUS_PORTRAITVIEW,
+ FOCUS_INVENTORYVIEW
+} ViewFocus; // ViewMgr should handle this
 
 extern uint32 nuvieGameCounter;
 
@@ -69,6 +78,7 @@ class Event
  GameClock *clock;
  Player *player;
  EventMode mode;
+ ViewFocus view_focus;
  Book *book;
  Converse *converse;
  ViewManager *view_manager;
@@ -95,14 +105,20 @@ class Event
 
  bool update();
  bool handleEvent(const SDL_Event *event);
+ bool pass_input(const SDL_Event *event);
  void useselect_mode(Obj *src, const char *prompt = NULL);
  void freeselect_mode(Obj *src, const char *prompt = NULL);
+ void set_view_focus(ViewFocus focus = FOCUS_NONE);
+ void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
+ void display_portrait(Actor *actor, const char *name = NULL);
 
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
  bool get(sint16 rel_x, sint16 rel_y);
  bool look();
  bool talk();
+ bool pushFrom(sint16 rel_x, sint16 rel_y);
+ bool pushTo(sint16 rel_x, sint16 rel_y);
  bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
  bool select_obj(sint16 rel_x, sint16 rel_y);
 

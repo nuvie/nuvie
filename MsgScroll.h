@@ -57,6 +57,7 @@ class MsgScroll: public GUI_Widget
  uint16 prompt_buf_len;
  
  bool page_break;
+ bool show_cursor;
  
  char **msg_buf;//[scroll_height][scroll_width+1];
  uint8 *msg_buf_languages; //[scroll_height]
@@ -101,7 +102,8 @@ class MsgScroll: public GUI_Widget
                      bool can_escape = true);
  void set_talking(bool state) { talking = state; }
  bool set_prompt(char *new_prompt);
- 
+ void set_show_cursor(bool state) { show_cursor = state; }
+
  bool get_page_break() { return(page_break); }
 
  bool handle_input(const SDL_keysym *input);

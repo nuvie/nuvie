@@ -96,6 +96,7 @@ MsgScroll::MsgScroll(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
  input_buf_pos = 0;
  
  page_break = false;
+ show_cursor = true;
 }
 
 MsgScroll::~MsgScroll()
@@ -358,8 +359,8 @@ void MsgScroll::Display(bool full_redraw)
   }
 else
  {
-  
-  drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8); 
+  if(show_cursor)
+   drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8); 
  }
  
  // spin cursor here.

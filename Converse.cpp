@@ -21,13 +21,14 @@
 #include <cstring>
 
 #include "nuvieDefs.h"
+#include "Game.h"
 #include "Configuration.h"
 #include "U6Lzw.h"
 #include "Player.h"
 #include "Party.h"
 #include "ViewManager.h"
 #include "ActorManager.h"
-
+#include "Event.h"
 #include "ConverseInterpret.h"
 #include "Converse.h"
 
@@ -162,6 +163,22 @@ uint32 Converse::load_conv(uint8 a)
     {
         if(src_num != 2)
             load_conv("converse.b");
+        if(a > 200) // (quick fix for U6: anything over 200 is a temporary npc)
+        {
+            Actor *npc = actors->get_actor(a);
+            if(npc->get_obj_n() == 373) // OBJ_U6_WISP
+                a = 201;
+            else if(npc->get_obj_n() == 382) // OBJ_U6_GUARD
+                a = 202;
+        }
+        else if(a == 188)  // U6: temp. fix for shrines
+            a = 191; // ??? -> Exodus
+        else if(a >= 191 && a <= 197) // shrines except spirituality & humility
+            a += 2;
+        else if(a == 198)
+            a = 192; // Spirituality -> Honesty
+        else if(a == 199)
+            a = 200; // Humility -> Singularity
         return(a - 99);
     }
 }
@@ -272,6 +289,7 @@ bool Converse::start(uint8 n)
         stop();
     if(!(npc = actors->get_actor(n)))
         return(false);
+    // get script num for npc number (and open file)
     script_num = load_conv(n);
     if(!src)
         return(false);
@@ -289,6 +307,7 @@ bool Converse::start(uint8 n)
         npc_num = n;
         init_variables();
         show_portrait(npc_num);
+        Game::get_game()->get_event()->set_view_focus(FOCUS_MSGSCROLL);
         unwait();
         fprintf(stderr, "Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
         return(true);
@@ -406,7 +425,8 @@ void Converse::show_portrait(uint8 n)
     const char *nameret = 0;
     if(!actor)
         return;
-    if((actor->get_flags() & 1) || player->get_party()->contains_actor(actor))
+    if((actor->get_flags() & 1) || player->get_party()->contains_actor(actor)
+         || (n >= 188 && n <= 200)) // always known NPCs
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor);

@@ -241,6 +241,7 @@ class Actor
  bool push(Actor *pusher, uint8 where = ACTOR_PUSH_ANYWHERE, uint16 tx = 0, uint16 ty = 0, uint16 tz = 0);
  
  Obj *make_obj();
+ uint16 get_obj_n() { return(obj_n); }
  virtual void clear();
  protected:
  

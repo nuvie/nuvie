@@ -913,6 +913,13 @@ bool Actor::updateSchedule(uint8 hour)
  
  if(sched[sched_pos] == NULL)
    return false;
+
+ // U6: temp. fix for walking statues; they shouldn't have schedules
+ if(id_n >= 188 && id_n <= 200)
+  {
+   printf("warning: tried to update schedule for non-movable actor %d\n", id_n);
+   return(false);
+  }
  
  MapCoord sched_dest(sched[sched_pos]->x, sched[sched_pos]->y,
                      sched[sched_pos]->z);

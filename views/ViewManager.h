@@ -72,7 +72,13 @@ class ViewManager
  void set_inventory_mode();
  void set_party_mode();
  void set_actor_mode();
-  
+
+ View *get_current_view() { return(current_view); }
+ ActorView *get_actor_view() { return(actor_view); }
+ InventoryView *get_inventory_view() { return(inventory_view); }
+ PortraitView *get_portrait_view() { return(portrait_view); }
+ PartyView *get_party_view() { return(party_view); }
+
  protected:
  
  bool set_current_view(View *view);

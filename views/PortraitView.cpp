@@ -25,9 +25,12 @@
 
 #include "nuvieDefs.h"
 
+#include "Game.h"
 #include "Actor.h"
 #include "Portrait.h"
 #include "Text.h"
+#include "ViewManager.h"
+#include "MsgScroll.h"
 #include "PortraitView.h"
 
 PortraitView::PortraitView(Configuration *cfg) : View(cfg)
@@ -50,13 +53,17 @@ bool PortraitView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, 
  
  portrait = port;
  cur_actor_num = 0;
-  
+ waiting = false;
+ show_cursor = false;
+ // cursor_x =
+ // cursor_y =
+
  return true;
 }
 
 void PortraitView::Display(bool full_redraw)
 {
- if(portrait_data != NULL && (full_redraw || update_display))
+ if(portrait_data != NULL/* && (full_redraw || update_display)*/)
   {
    update_display = false;
    screen->fill(0x31, area.x, area.y, area.w, area.h);
@@ -64,14 +71,14 @@ void PortraitView::Display(bool full_redraw)
    display_name();
    screen->update(area.x, area.y, area.w, area.h);
   }
- 
+  if(show_cursor) // FIXME: should we be using scroll's drawCursor?
+   Game::get_game()->get_scroll()->drawCursor(area.x, area.y + area.h - 8);
 }
 
 bool PortraitView::set_portrait(Actor *actor, char *name)
 {
-   
  cur_actor_num = actor->get_actor_num();
- 
+
  if(portrait_data != NULL)
    free(portrait_data);
    
@@ -86,7 +93,6 @@ bool PortraitView::set_portrait(Actor *actor, char *name)
    name_string->assign(name);
 
  Redraw();
-
  return true;
 }
 
@@ -101,3 +107,21 @@ void PortraitView::display_name()
  return;
 }
 
+
+/* On any input return to previous status view if waiting.
+ * Returns true if event was used.
+ */
+bool PortraitView::handle_input(const SDL_keysym *input)
+{
+    if(waiting)
+    {
+        waiting = false;
+        // FIXME revert to previous status view
+        Game::get_game()->get_view_manager()->set_inventory_mode();
+        // Game::get_game()->get_scroll()->set_input_mode(false);
+        Game::get_game()->get_scroll()->message("\n");
+        Game::get_game()->get_scroll()->set_show_cursor(true);
+        return(true);
+    }
+    return(false);
+}

@@ -166,6 +166,8 @@
 #define OBJ_U6_DEAD_ANIMAL         211
 
 #define OBJ_U6_MOUSEHOLE           213
+#define OBJ_U6_CANNON              221
+#define OBJ_U6_POWDER_KEG          223
 #define OBJ_U6_WELL                233
 #define OBJ_U6_FOUNTAIN            234
 #define OBJ_U6_SUNDIAL             235

@@ -33,13 +33,13 @@
 #define USE_EVENT_PASS    0x04 /* true: do normal move, false: object blocks */
 //#define USE_EVENT_ON      0x08 /* post-move/idle, chairs/traps ?? */
 #define USE_EVENT_SEARCH  0x10 /*undefined (true = had objects?); might remove*/
-//#define USE_EVENT_TIMED   0x00 /* fumaroles, earthquakes, powder kegs, clocks */
+#define USE_EVENT_TIMED   0x20 /* fumaroles, earthquakes, powder kegs, clocks */
+#define USE_EVENT_MOVE    0x40 /* true: move object, false: don't move object */
 //#define USE_EVENT_NEAR    0x00 /* mirrors; might use ON with distance val */
 //#define USE_EVENT_LOAD    0x00 /* eggs */
-//will need to increase trigger size for...
 //#define USE_EVENT_ATTACK  0x00 /* doors, chests, mirrors */
-//#define USE_EVENT_MOVE    0x00 /* cannons */
 //#define USE_EVENT_DROP    0x00 /* anything breakable */
+//will need to increase trigger size...
 
 class Configuration;
 class Map;
@@ -75,10 +75,12 @@ class UseCode
  virtual bool look_obj(Obj *obj, Actor *actor) { return(false); }
  virtual bool pass_obj(Obj *obj, Actor *actor) { return(false); }
  virtual bool search_obj(Obj *obj, Actor *actor) { return(false); }
+ virtual bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y) { return(false); }
 
  virtual bool has_usecode(Obj *obj)  { return(false); }
  virtual bool has_lookcode(Obj *obj) { return(false); }
  virtual bool has_passcode(Obj *obj) { return(false); }
+ virtual bool has_movecode(Obj *obj) { return(false); }
 
  bool is_door(Obj *obj) {return(is_locked_door(obj) || is_unlocked_door(obj));}
  virtual bool is_locked_door(Obj *obj)   { return(false); }

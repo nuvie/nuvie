@@ -32,6 +32,7 @@ GameClock::GameClock(Configuration *cfg)
  config = cfg;
 
  move_counter = 0;
+ time_counter = 0;
 }
  
 GameClock::~GameClock()
@@ -100,8 +101,10 @@ void GameClock::inc_minute()
     inc_hour();    
    }
  else
+   {
     minute++;
-
+    time_counter += 1;
+   }
  return;
 }
 
@@ -114,10 +117,13 @@ void GameClock::inc_hour()
     inc_day();
    }
  else
-   hour++;
- 
+   {
+    hour++;
+    time_counter += 60;
+   }
  printf("%s\n",get_time_string());
-   
+
+
  return;
 }
 
@@ -130,12 +136,15 @@ void GameClock::inc_day()
     inc_month();
    }
  else
-   day++;
-
+   {
+    day++;
+    time_counter += 1440;
+   }
  update_day_of_week();
  
  printf("%s\n",get_date_string());
- 
+
+
  return;
 }
 
@@ -148,15 +157,17 @@ void GameClock::inc_month()
     inc_year();
    }
  else
-   month++;
-   
+   {
+    month++;
+    time_counter += 40320;
+   }
  return;
 }
 
 void GameClock::inc_year()
 {
  year++;
-
+ time_counter += 483840;
  return;
 }
 
