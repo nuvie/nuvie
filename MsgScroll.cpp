@@ -200,18 +200,18 @@ bool MsgScroll::handle_input(SDLKey *input)
 {
     if(page_break == false && input_mode == false)
         return(false);
-    
+    if(page_break)
+      {
+       page_break = false;
+       display_string(NULL);
+       return(true);
+      }
     switch(*input)
     {
         case SDLK_ESCAPE:
-        case SDLK_RETURN: if(page_break)
-                            {
-                             page_break = false;
-                             display_string(NULL);
-                            }
-                          else if(input_mode)
+        case SDLK_RETURN: if(input_mode)
                             set_input_mode(false);
-                            
+
                           return(true);
         case SDLK_BACKSPACE :
                             if(input_mode)
