@@ -162,7 +162,7 @@ char *MapWindow::lookAtCursor()
 {
  Actor *actor;
  
- if(tmp_buf[cursor_y * win_width + cursor_x] == 0) //black area
+ if(tmp_buf[(cursor_y+1) * (win_width+2) + (cursor_x+1)] == 0) //black area
    return tile_manager->lookAtTile(0,0); // nothing to see here. ;)
 
  actor = actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
@@ -547,13 +547,13 @@ void MapWindow::reshapeBoundary()
 
           flag = 0;
 */                 
-          if(tmpBufTileIsBoundary(x,y-1))
+          if(tmpBufTileIsWall(x,y-1))
             flag |= TILEFLAG_WALL_NORTH;
-          if(tmpBufTileIsBoundary(x+1,y))
+          if(tmpBufTileIsWall(x+1,y))
             flag |= TILEFLAG_WALL_EAST;
-          if(tmpBufTileIsBoundary(x,y+1))
+          if(tmpBufTileIsWall(x,y+1))
             flag |= TILEFLAG_WALL_SOUTH;
-          if(tmpBufTileIsBoundary(x-1,y))
+          if(tmpBufTileIsWall(x-1,y))
             flag |= TILEFLAG_WALL_WEST;
             
           if(flag == 0) //isolated border tiles

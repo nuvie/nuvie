@@ -42,6 +42,7 @@
 
 #define OBJ_U6_LADDER 305
 #define OBJ_U6_CHEST 98
+#define OBJ_U6_CANDLE 122
 
 typedef struct
 {
@@ -88,11 +89,13 @@ class ObjManager
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
+ Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj);
  
  uint16 get_obj_tile_num(uint16 obj_num);
 
  bool use_obj(uint16 x, uint16 y, uint8 level);
- char *ObjManager::look_obj(uint16 x, uint16 y, uint8 level);
+ bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
+ char *look_obj(uint16 x, uint16 y, uint8 level);
  
  protected:
  
@@ -103,6 +106,8 @@ class ObjManager
  bool addObjToContainer(U6LList *list, Obj *obj);
  Obj *loadObj(U6File *file, uint16 objblk_n);
  char *get_objblk_path(char *path);
+ 
+ inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);
 };
 
 #endif /* __ObjManager_h__ */
