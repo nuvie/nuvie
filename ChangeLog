@@ -1,3 +1,11 @@
+2004-05-26  Eric Fry <efry at users.sourceforge.net>
+	* Fixed readied inventory when saving.
+	* Fixed Party names when loading.
+	* Eggs are nolonger saved twice if eggs are shown on map.
+	* Added clean up code to ObjManager and Egg manager.
+	* Note! There is a bug somewhere in the load/save code where
+	  we are losing objects. I'll have a look into this shortly.
+
 2004-05-25  Eric Fry <efry at users.sourceforge.net>
 	* More work on saving.
 	* You can now save and load a game in the new nuvie save format.

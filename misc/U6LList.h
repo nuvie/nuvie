@@ -26,6 +26,8 @@
 
 #include <stdio.h>
 
+#define U6LLIST_FREE_DATA true
+
 struct U6Link
 {
  U6Link *next;
@@ -48,7 +50,7 @@ class U6LList
  bool add(void *data);
  bool addAtPos(uint32 pos, void *data);
 
- bool remove(void *data, bool free_data=false);
+ bool remove(void *data);
  bool removeAll();
  
  uint32 count();

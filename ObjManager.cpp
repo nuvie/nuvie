@@ -88,7 +88,7 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
 
 ObjManager::~ObjManager()
 {
- //FIX ME. need to free objects.
+ clean();
 }
 
 bool ObjManager::load_basetile()
@@ -144,7 +144,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
  list = new U6LList();
 
  num_objs = chunk_buf->read2();
- //printf("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
+ printf("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
  
  for(i=0;i<num_objs;i++)
   {
@@ -173,7 +173,6 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
       if(obj->status & OBJ_STATUS_IN_CONTAINER)
         {
          addObjToContainer(list,obj);
-
         }
       else
         {
@@ -185,7 +184,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
         }
 
      }
-
+   //print_obj(obj,false);
   }
 
  
@@ -202,6 +201,7 @@ bool ObjManager::save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_of
  iAVLCursor node;
  uint32 start_pos;
  uint32 finish_pos;
+ uint16 egg_type = obj_egg_table[game_type];
  
  if(level == 0)
    obj_tree = surface[chunk_offset];
@@ -221,7 +221,8 @@ bool ObjManager::save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_of
   {
    for(link = item->obj_list->end(); link != NULL; link=link->prev)
     {
-     save_obj(save_buf, (Obj *)link->data, NULL);
+     if(((Obj *)link->data)->obj_n != egg_type) // we don't save eggs here. They are saved in save_eggs()
+       save_obj(save_buf, (Obj *)link->data, NULL);
     }
 
    item = (ObjTreeNode *)iAVLNext(&node);
@@ -243,13 +244,13 @@ bool ObjManager::save_eggs(NuvieIO *save_buf)
  std::list<Egg *> *egg_list;
  std::list<Egg *>::iterator egg;
 
- egg_list = egg_manager->get_egg_list();
-
  start_pos = save_buf->position();
-  
+
  //skip number of objects we will fill that in at the end.
  save_buf->write2(0);
 
+ egg_list = egg_manager->get_egg_list();
+  
  obj_save_count = 0;
 
  for(egg = egg_list->begin(); egg != egg_list->end();egg++)
@@ -308,16 +309,20 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
  
  if(parent) //obj is in a container
   {
+   obj->status |= OBJ_STATUS_IN_CONTAINER;
    obj->x = parent->objblk_n;
-   if(obj->x > 1024)
+   if(obj->x >= 1024)
      {
       obj->y |= 0x1;
       obj->x -= 1024;
      }
   }
- else 
-   obj->status &= (0xff ^ OBJ_STATUS_IN_CONTAINER);
- 
+ else
+  {
+   if((obj->status & OBJ_STATUS_READIED) != OBJ_STATUS_READIED)
+     obj->status &= (0xff ^ OBJ_STATUS_IN_CONTAINER);
+  }
+
  save_buf->write1(obj->status);
  save_buf->write1(obj->x & 0xff);
  b = obj->x >> 8;
@@ -343,13 +348,29 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
   {
    obj->objblk_n = obj_save_count;
    
-   for(link = obj->container->start(); link != NULL; link=link->next)
+   for(link = obj->container->end(); link != NULL; link=link->prev)
      save_obj(save_buf, (Obj *)link->data, obj);
   }
 
- obj_save_count++;
+ obj_save_count += 1;
 
  return true;
+}
+
+void ObjManager::clean()
+{
+ uint8 i;
+
+ egg_manager->clean(show_eggs); //show_eggs determines wether we delete the actual Objs from egg manager.
+  
+ for(i=0;i<64;i++)
+  iAVLCleanTree(surface[i], clean_obj_tree_node);
+
+ for(i=0;i<5;i++)
+  iAVLCleanTree(dungeon[i], clean_obj_tree_node);
+
+
+ return;
 }
 
 void ObjManager::show_egg_objs(bool value)
@@ -1352,6 +1373,20 @@ Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z)
  return obj; 
 }
 
+void delete_obj(Obj *obj)
+{
+ U6Link *link;
+ if(obj->container)
+  {
+   for(link=obj->container->start();link != NULL; link=link->next)
+     delete_obj((Obj *)link->data);
+  }
+ 
+ delete obj->container;
+ delete obj;
+ 
+ return;
+}
 
 /* Call load usecode for all objects (after loading them). This should be in
  * loadObj() but that was crashing when usecode tried to use timers.
@@ -1420,5 +1455,19 @@ Obj *ObjManager::get_obj_container(Obj *obj)
     assert(obj->is_in_container());
     // FIXME: We must be able to use obj->x/y/z.
     return(NULL);
+}
+
+void clean_obj_tree_node(void *node)
+{
+ U6Link *link;
+ ObjTreeNode *obj_node = (ObjTreeNode *)node;
+
+ for(link=obj_node->obj_list->start();link != NULL; link=link->next)
+   delete_obj((Obj *)link->data);
+
+ delete obj_node->obj_list;
+ delete obj_node;
+ 
+ return;
 }
 

@@ -26,7 +26,6 @@
 
 #include <list>
 #include "iAVLTree.h"
-
 #include "TileManager.h"
 
 class U6LList;
@@ -80,7 +79,8 @@ struct Obj
  uint8 quality;
 
  U6LList *container;
- Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; }; 
+ Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; };
+ 
  bool is_ok_to_take()   { return(status & OBJ_STATUS_OK_TO_TAKE); }
  bool is_in_container() { return(status & OBJ_STATUS_IN_CONTAINER); }
  bool is_in_inventory() { return(status & OBJ_STATUS_IN_INVENTORY); }
@@ -89,6 +89,9 @@ struct Obj
 };
 
 Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z);
+void delete_obj(Obj *obj);
+
+void clean_obj_tree_node(void *node);
 
 class ObjManager
 {
@@ -125,6 +128,7 @@ class ObjManager
  bool loadObjs();
  bool load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_offset);
  void startObjs();
+ void clean();
 
  bool save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_offset); 
  bool save_eggs(NuvieIO *save_buf);

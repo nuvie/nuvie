@@ -36,7 +36,6 @@
 #include "NuvieIOFile.h"
 #include "GameClock.h"
 
-
 EggManager::EggManager(Configuration *cfg, Map *m)
 {
  config = cfg;
@@ -56,7 +55,24 @@ EggManager::~EggManager()
    }
 
 }
- 
+
+void EggManager::clean(bool keep_obj)
+{
+ Egg *egg;
+ std::list<Egg *>::iterator egg_iter;
+
+ for(egg_iter = egg_list.begin(); egg_iter != egg_list.end();)
+   {
+    egg = *egg_iter;
+    
+    if(keep_obj == false)
+      delete_obj(egg->obj);
+      
+    egg_iter = egg_list.erase(egg_iter);
+   }
+
+}
+
 void EggManager::add_egg(Obj *egg_obj)
 {
  Egg *egg;
@@ -73,21 +89,21 @@ void EggManager::add_egg(Obj *egg_obj)
 }
 
 
-void EggManager::remove_egg(Obj *egg_obj)
+void EggManager::remove_egg(Obj *egg_obj, bool keep_obj)
 {
- std::list<Egg *>::iterator egg;
-
- for(egg = egg_list.begin(); egg != egg_list.end();)
+ std::list<Egg *>::iterator egg_iter;
+ 
+ for(egg_iter = egg_list.begin(); egg_iter != egg_list.end(); egg_iter++)
    {
-    if((*egg)->obj == egg_obj)
+    if((*egg_iter)->obj == egg_obj)
        {
-        egg_list.remove(*egg);
-        delete *egg;
+        if(keep_obj == false)
+          delete_obj((*egg_iter)->obj);
+          
+        egg_list.erase(egg_iter);
         
         break;
        }
-
-    egg++;
    }
 
  return;

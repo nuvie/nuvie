@@ -2,7 +2,7 @@
  * iAVLTree.h: Header file for iAVLTrees.
  * Copyright (C) 1998,2001  Michael H. Buselli
  * This is version 0.1.3 (alpha).
- * Generated from $Id: iAVLTree.h,v 1.1 2003-05-27 08:00:54 efry Exp $
+ * Generated from $Id: iAVLTree.h,v 1.2 2004-05-25 21:44:19 efry Exp $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -63,6 +63,7 @@ typedef struct {
 
 extern iAVLTree *iAVLAllocTree (iAVLKey (*getkey)(void const *item));
 extern void iAVLFreeTree (iAVLTree *avltree, void (freeitem)(void *item));
+extern void iAVLCleanTree (iAVLTree *avltree, void (freeitem)(void *item));
 extern int iAVLInsert (iAVLTree *avltree, void *item);
 extern void *iAVLSearch (iAVLTree const *avltree, iAVLKey key);
 extern int iAVLDelete (iAVLTree *avltree, iAVLKey key);

@@ -155,6 +155,8 @@ bool NuvieIOBuffer::readToBuf(unsigned char *buf, uint32 buf_size)
 
  memcpy(buf,&data[pos],buf_size);
  
+ pos += buf_size;
+ 
  return true;
 }
 
@@ -206,7 +208,9 @@ uint32 NuvieIOBuffer::writeBuf(unsigned char *src, uint32 src_size)
    return 0;
 
  memcpy(&data[pos],src,src_size);
-
+ 
+ pos += src_size;
+ 
  return src_size;
 }
 

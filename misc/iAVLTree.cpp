@@ -2,7 +2,7 @@
  * iAVLTree.c: Source code for iAVLTrees.
  * Copyright (C) 1998,2001  Michael H. Buselli
  * This is version 0.1.3 (alpha).
- * Generated from $Id: iAVLTree.cpp,v 1.2 2003-06-06 15:27:28 vividos Exp $
+ * Generated from $Id: iAVLTree.cpp,v 1.3 2004-05-25 21:44:19 efry Exp $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -76,11 +76,18 @@ iAVLTree *iAVLAllocTree (iAVLKey (*getkey)(void const *item))
  */
 void iAVLFreeTree (iAVLTree *avltree, void (freeitem)(void *item))
 {
-  if (avltree->top)
-    iAVLFreeBranch(avltree->top, freeitem);
+  iAVLCleanTree(avltree, freeitem);
   free(avltree);
 }
 
+void iAVLCleanTree (iAVLTree *avltree, void (freeitem)(void *item))
+{
+  if (avltree->top)
+    iAVLFreeBranch(avltree->top, freeitem);
+
+  avltree->top = NULL;
+  avltree->count = 0;
+}
 
 /*
  * AVLInsert:

@@ -34,14 +34,7 @@
  
  U6LList::~U6LList()
 {
- U6Link *link, *tmp_ptr;
- 
- for(link=head;link != NULL;)
-  {
-   tmp_ptr = link;
-   link = link->next;
-   delete tmp_ptr;
-  }
+ removeAll();
 }
  
 bool U6LList::add(void *data)
@@ -112,7 +105,7 @@ bool U6LList::add(void *data)
  return true;    
 }
 
-bool U6LList::remove(void *data, bool free_data)
+bool U6LList::remove(void *data)
 {
  U6Link *link;
  U6Link *prev;
@@ -128,7 +121,7 @@ bool U6LList::remove(void *data, bool free_data)
       tail = NULL;
     else
       head->prev = NULL;
-      
+
     delete link;
 
     return true;
