@@ -1,3 +1,7 @@
+2003-07-16  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Random strings said by Beh Lem and other NPC's (try patients in Cove)
+	are printed correctly now, instead of resulting in "Unknown command."
+
 2003-07-15  Eric Fry <efry@users.sourceforge.net>
 	* Some small compile fixes.
 	* Added Use Vortex. ;) Just for fun.
