@@ -89,6 +89,14 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
 ObjManager::~ObjManager()
 {
  clean();
+
+ unsigned int i;
+ for(i=0;i<64;i++)
+  iAVLFreeTree(surface[i], clean_obj_tree_node);
+
+ for(i=0;i<5;i++)
+  iAVLFreeTree(dungeon[i], clean_obj_tree_node);
+
 }
 
 bool ObjManager::load_basetile()
