@@ -9,6 +9,7 @@
 	  moongate. :(
 	* Added blocking checks for Use-passthrough
 	* Changed "blocked!" message to "Not now!".
+	* Added diagonal movement via the keypad.
 
 2003-11-14  Eric Fry <efry@users.sourceforge.net>
 	* Added day of week to GameClock

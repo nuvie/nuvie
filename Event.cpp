@@ -142,6 +142,19 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		//	keypad arrow keys
 		//	separated these out from normal arrow keys because 
 		//	they eventually need to account for alt-214, etc. cheats
+		case SDLK_KP7   :
+			move(-1,-1);
+			break;
+		case SDLK_KP9   :
+			move(1,-1);
+			break;
+		case SDLK_KP1   :
+			move(-1,1);
+			break;
+		case SDLK_KP3   :
+			move(1,1);
+			break;
+
 		case SDLK_KP8   :
 			move(0,-1);
 			break;
