@@ -386,7 +386,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  else
   scroll->display_string("nothing");
 
- scroll->display_string("\n");
+ scroll->display_string("\n\n");
  scroll->display_prompt();
 
  map_window->set_show_use_cursor(false);
@@ -673,7 +673,7 @@ static GUI_status quitDialogYesCallback(void *data)
  
  widget = (GUI_Widget *)data;
  
- widget->Delete();
+ //widget->Delete();
  
  showingQuitDialog = false;
  

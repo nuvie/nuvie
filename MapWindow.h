@@ -99,6 +99,7 @@ protected:
  bool boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y);
  
  void reshapeBoundary();
+ inline bool tmpBufTileIsBlack(uint16 x, uint16 y);
  bool tmpBufTileIsBoundary(uint16 x, uint16 y);
  bool tmpBufTileIsWall(uint16 x, uint16 y);
 };

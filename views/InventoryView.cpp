@@ -102,6 +102,8 @@ void InventoryView::Display(bool full_redraw)
    }
  else
    {
+//    for(int i=0;i<8;i++)
+//     text->drawChar(screen,24+i,area.x+4*16+16+i*8,area.y+16+16,0);
     screen->update(area.x+4*16+8,area.y+16+8,4*16,3*16); // item display
     //FIX add doll update rect.
    }

@@ -261,7 +261,7 @@ bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsig
        pW = cW;
     }
 
- return destination;
+ return true;
 }
  
  // -----------------

@@ -22,8 +22,9 @@
     slouken@devolution.com
 */
 
+#include <cmath>
+
 #include "GUI_area.h"
-#include "math.h"
 //#include "GUI_utils.h"
 
 GUI_Area:: GUI_Area(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, int aShape)
@@ -81,7 +82,7 @@ GUI_Area:: Display(bool full_redraw)
 	  y0=area.y+r2;
 	  for (x=area.x;x<area.x+area.w;x++)
 	  {
-	    dy=(int)((double) r2*sin(acos((double) (x-x0)/(double) r1)));
+	    dy=(int)((double) r2*std::sin(std::acos((double) (x-x0)/(double) r1)));
 	    framerect.x=x; framerect.y=y0-dy;
 	    framerect.w=1; framerect.h=dy << 1;
 	    SDL_FillRect(surface,&framerect,color);

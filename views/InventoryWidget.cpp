@@ -68,6 +68,7 @@ void InventoryWidget::Display(bool full_redraw)
    //screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
    display_inventory_container();
    display_inventory_list();
+   
    screen->update(area.x, area.y, area.w, area.h);
 //  }
  
@@ -194,7 +195,7 @@ inline Obj *InventoryWidget::get_obj_at_location(int x, int y)
         i++;
      }
 
-    if(i >= location && obj)
+    if(i >= location && obj && (obj->status & 0x18) != 0x18) // don't return readied or non existent objects
       return obj;
    }
 

@@ -715,6 +715,14 @@ void MapWindow::reshapeBoundary()
    }
 }
 
+inline bool MapWindow::tmpBufTileIsBlack(uint16 x, uint16 y)
+{
+ if(tmp_buf[y*(win_width + 2) + x] == 0)
+   return true;
+
+ return false;
+}
+
 bool MapWindow::tmpBufTileIsBoundary(uint16 x, uint16 y)
 {
  uint16 tile_num;
@@ -763,11 +771,33 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y)
 
 bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 {
+ uint16 map_width;
+  
+ x -= area.x;
+ y -= area.y;
+ 
+ x /= 16;
+ y /= 16;
+ 
  if(message == GUI_DRAG_OBJ)
    {
-    return true;
+    if(tmpBufTileIsBlack(x,y))
+      {
+       printf("Cannot drop onto nothing!");
+       return false;
+      }
+
+    map_width = map->get_width(cur_level);
+ 
+    x = (cur_x + x) % map_width;
+    y = (cur_y + y) % map_width;
+
+    if(map->is_passable(x,y,cur_level))
+      return true;
+    else
+      printf("Not Possible\n");
    }
-   
+
  return false;
 }
 

@@ -779,7 +779,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
         scroll->display_string("Shamino says, \"This is the ");
         scroll->display_string(prefix);
         scroll->display_string(dungeon_name);
-        scroll->display_string(".\"\n");
+        scroll->display_string(".\"\n\n");
         scroll->display_prompt();
     }
     return(false);

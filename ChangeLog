@@ -1,3 +1,8 @@
+2003-09-06  Eric Fry <efry@users.sourceforge.net>
+	* Some win32 compile fixes (Thanks vividos)
+	* More Drag and Drop work.
+	* MapWindow will now only accept drops on passable tiles.
+
 2003-09-04  Joseph Applegate <sb-x@users.sourceforge.net>
 	* A few new U6 food items added, and the ability to enter dungeons (but
 	you can't leave them yet).

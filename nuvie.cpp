@@ -210,10 +210,10 @@ void Nuvie::assignGameConfigValues(uint8 game_type)
 
 bool Nuvie::checkGameDir(uint8 game_type)
 {
- struct stat sb;
  std::string path;
 
 #ifndef WIN32 
+ struct stat sb;
  config_get_path(config, "", path);
 
  if(stat(path.c_str(),&sb) == 0 && sb.st_mode & S_IFDIR)
