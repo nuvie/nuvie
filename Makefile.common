@@ -20,6 +20,8 @@ nuvie_SOURCES = \
 \
 	misc/U6LList.cpp \
 	misc/U6LList.h \
+	misc/U6misc.cpp \
+	misc/U6misc.h \
 	misc/iAVLTree.cpp \
 	misc/iAVLTree.h \
 \
