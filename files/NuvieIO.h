@@ -1,0 +1,94 @@
+/*
+ *  NuvieIO.h
+ *  Nuive
+ *
+ *  Created by Eric Fry on Tue Jul 01 2003.
+ *  Copyright (c) 2003 The Nuvie Team. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+#include "U6def.h"
+#include "Configuration.h"
+
+class NuvieIO
+{
+ protected:
+ uint32 size;
+ uint32 pos;
+ 
+ public:
+ 
+   NuvieIO();
+   virtual ~NuvieIO();
+   
+   virtual void close()=0;
+  
+   virtual uint8 read1()=0;
+   virtual uint16 read2()=0;
+   virtual uint32 read4()=0;
+
+   unsigned char *readAll();
+   unsigned char *readBuf(uint32 read_size, unsigned int *bytes_read);
+   virtual bool readToBuf(unsigned char *buf, uint32 buf_size)=0;
+
+
+   virtual bool write1(uint8 src)=0;
+   virtual bool write2(uint16 src)=0;
+   virtual bool write4(uint32 src)=0;
+   virtual uint32 writeBuf(unsigned char *src, uint32 size)=0;
+   virtual uint32 write(NuvieIO *src)=0;
+   
+   uint32 get_size() { return size; }
+
+
+   inline void seekStart() { seek(0); }
+   inline void seekEnd() { seek(size); }
+   virtual void seek(uint32 new_pos)=0;
+   
+   inline bool is_end() { return (pos == size - 1); }
+
+};
+
+#define NUVIE_BUF_COPY   true
+#define NUVIE_BUF_NOCOPY false
+
+
+class NuvieIOBuffer: public NuvieIO
+{
+ protected:
+ 
+ unsigned char *data;
+ bool copied_data;
+ 
+ public:
+   NuvieIOBuffer();
+ 
+   bool open(unsigned char *buf, uint32 buf_size, bool copy_buf=NUVIE_BUF_COPY);
+   
+   void close();
+  
+   uint8 read1();
+   uint16 read2();
+   uint32 read4();
+   bool readToBuf(unsigned char *buf, uint32 buf_size);
+   
+   bool write1(uint8 src);
+   bool write2(uint16 src);
+   bool write4(uint32 src);
+   uint32 writeBuf(unsigned char *src, uint32 src_size)=0;
+   uint32 write(NuvieIO *src);
+};
