@@ -24,29 +24,59 @@
  *
  */
 
+#include "U6def.h"
+#include "Configuration.h"
+#include "Screen.h"
 #include "Text.h"
 
+#define MSGSCROLL_WIDTH 17
+#define MSGSCROLL_HEIGHT 10
 
 class MsgScroll
 {
+ Configuration *config;
+ Screen *screen;
  Text *text;
  bool keyword_highlight;
  bool input_mode;
  
+ char *prompt;
+ uint16 prompt_buf_len;
+ 
+ 
+ char msg_buf[MSGSCROLL_HEIGHT][18];
+ uint8 buf_pos;
+ uint8 start_pos;
+ bool buf_full;
+ 
+ bool scroll_updated;
+ uint8 cursor_char;
+ uint16 cursor_x, cursor_y;
+ 
+ uint16 cursor_wait;
+ 
  public:
  
- MsgScroll(Text *txt);
+ MsgScroll(Configuration *cfg);
  ~MsgScroll();
  
- void display_string(char *string, uint16 length);
+ bool init(Screen *s, Text *txt);
+ 
+ void display_string(char *string);
  void set_keyword_highlight(bool state);
  
  void set_input_mode(bool state);
+ bool set_prompt(char *new_prompt);
  
  char *get_input();
  
  void updateScroll();
  
+ void clearCursor(uint16 x, uint16 y);
+ void drawCursor(uint16 x, uint16 y);
+ 
+ bool buf_addString(char *string, uint8 length);
+ bool buf_next();
 };
 
 

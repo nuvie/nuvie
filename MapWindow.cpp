@@ -168,17 +168,27 @@ char *MapWindow::lookAtCursor()
  Actor *actor;
  
  if(tmp_buf[(cursor_y+1) * (win_width+2) + (cursor_x+1)] == 0) //black area
-   return tile_manager->lookAtTile(0,0); // nothing to see here. ;)
+   return tile_manager->lookAtTile(0,0,true); // nothing to see here. ;)
 
  actor = actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
  if(actor != NULL)
    {
-    return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->get_tile_num()),0);
+    return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->get_tile_num()),0,true);
    }
    
  return map->look(cur_x + cursor_x, cur_y + cursor_y, cur_level);
 }
  
+
+Obj *MapWindow::get_objAtCursor()
+{
+ Actor *actor;
+ 
+ if(tmp_buf[(cursor_y+1) * (win_width+2) + (cursor_x+1)] == 0) //black area
+   return NULL; // nothing to see here. ;)
+   
+ return obj_manager->get_obj(cur_x + cursor_x, cur_y + cursor_y, cur_level);
+}
 
 void MapWindow::get_level(uint8 *level)
 {

@@ -44,6 +44,8 @@
 
 #define OBJ_U6_CHEST           98
 #define OBJ_U6_CANDLE         122
+#define OBJ_U6_BOOK           151
+#define OBJ_U6_SCROLL         152
 #define OBJ_U6_V_PASSTHROUGH  278
 #define OBJ_U6_H_PASSTHROUGH  280
 #define OBJ_U6_LADDER         305
@@ -101,7 +103,7 @@ class ObjManager
 
  bool use_obj(Obj *obj);
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
- char *look_obj(uint16 x, uint16 y, uint8 level);
+ char *look_obj(Obj *obj);
  
  protected:
  

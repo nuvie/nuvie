@@ -79,7 +79,7 @@ public:
     */   
    void write_items()
    {
-       for(int i = 0; i < num_offsets; i++)
+       for(uint32 i = 0; i < num_offsets; i++)
         write_item(i);
    }
    void calc_item_offsets();

@@ -90,7 +90,7 @@ uint8 Text::get_char_num(uint8 c, uint8 lang_num)
    c = 32;
  if(lang_num > 0)
    {
-    if(c > 97 && c < 123) // toupper alpha characters
+    if(c >= 97 && c < 123) // toupper alpha characters
       c -= 32;
 
     if(lang_num == 1) // Britannian
@@ -110,28 +110,36 @@ uint8 Text::get_char_num(uint8 c, uint8 lang_num)
 
 void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y)
 {
+ unsigned char buf[64];
  unsigned char *pixels;
  uint16 i,j;
  unsigned char *font;
  uint16 pitch;
-  
- pixels = (unsigned char *)screen->get_pixels();
- pitch = screen->get_pitch();
+
+ memset(buf,0xff,64);
+ 
+ //pixels = (unsigned char *)screen->get_pixels();
+ pixels = buf;
+ pitch = 8;//screen->get_pitch();
  
  font = &font_data[char_num * 8];
  
- pixels += y * pitch + x;
+ //pixels += y * pitch + x;
  
  for(i=0;i<8;i++)
    {
     for(j=8;j>0;j--)
       {
-       if(font[i] & (1<<j))
-         pixels[7-j] = 0x48; // 0th palette entry should be black
+       if(font[i] & (1<<(j-1)))
+         pixels[8-j] = 0x48; // 0th palette entry should be black
+   //    else
+     //    pixels[7-j] = 0xff;
       }
       
     pixels += pitch;
    }
 
+ screen->blit(x,y,buf,8,8,8,8,true,NULL);
+ 
  return;
 }

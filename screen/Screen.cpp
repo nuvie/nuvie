@@ -161,6 +161,55 @@ bool Screen::clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
  return true; 
 }
 
+bool Screen::fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
+{
+ if(surface->bits_per_pixel == 16)
+    return fill16(colour_num, x, y, w, h);
+
+ return fill32(colour_num, x, y, w, h); 
+}
+
+bool Screen::fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
+{
+ uint16 *pixels;
+ uint16 i,j;
+  
+ pixels = (uint16 *)surface->pixels;
+
+ pixels += y * surface->w + x;
+
+ for(i=0;i<h;i++)
+    {
+     for(j=0;j<w;j++)
+        pixels[j] = (uint16)surface->colour32[colour_num];
+        
+     pixels += surface->w;
+    }
+
+ return true; 
+}
+
+bool Screen::fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
+{
+ uint32 *pixels;
+ uint16 i,j;
+
+  
+ pixels = (uint32 *)surface->pixels;
+
+ pixels += y * surface->w + x;
+
+ for(i=0;i<h;i++)
+    {
+     for(j=0;j<w;j++)
+        pixels[j] = surface->colour32[colour_num];
+        
+     pixels += surface->w;
+    }
+
+ return true; 
+}
+
 void *Screen::get_pixels()
 {
  //if(scaled_surface == NULL)

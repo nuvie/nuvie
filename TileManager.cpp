@@ -115,6 +115,10 @@ bool TileManager::loadTiles()
  if(look->init() == false)
    return false;
 
+ desc_buf = (char *)malloc(look->get_max_len() + 6); // add space for "%03d \n\0" or "the \n\0"
+ if(desc_buf == NULL)
+   return false;
+   
  loadAnimMask();
  
 #ifdef DEBUG
@@ -153,10 +157,9 @@ Tile *TileManager::get_original_tile(uint16 tile_num)
  return &tile[tile_num];
 }
 
-char *TileManager::lookAtTile(uint16 tile_num, uint16 qty)
+char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefix)
 {
  char *desc;
- char *desc_buf;
  bool plural;
  Tile *tile;
  
@@ -168,12 +171,15 @@ char *TileManager::lookAtTile(uint16 tile_num, uint16 qty)
   plural = false;
   
  desc = look->get_description(tile->tile_num,plural);
+ if(show_prefix == false)
+   return desc;
+
  if(qty > 0)
-   printf("Thou dost see %d %s\n",qty, desc);
+   sprintf(desc_buf,"%d %s",qty, desc);
  else
-   printf("Thou dost see %s%s\n",article_tbl[tile->article_n], desc);
+   sprintf(desc_buf,"%s%s",article_tbl[tile->article_n], desc);
    
- return desc;
+ return desc_buf;
 }
 
 void TileManager::update()

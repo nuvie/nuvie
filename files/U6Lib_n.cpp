@@ -51,7 +51,7 @@ void U6Lib_n::calc_item_offsets()
         offsets[0] = (num_offsets * lib_size); // skip library index
 //    printf("calc_item_offsets: sizes[0] == %d\n", sizes[0]);
 //    printf("calc_item_offsets: offsets[0] == %d\n", offsets[0]);
-    for(int i = 1; i < num_offsets; i++)
+    for(uint32 i = 1; i < num_offsets; i++)
     {
         if(sizes[i])
         {
@@ -106,7 +106,7 @@ void U6Lib_n::write_item(uint32 item_number)
 void U6Lib_n::write_index()
 {
     file.seekStart();
-    for(int o = 0; o < num_offsets; o++)
+    for(uint32 o = 0; o < num_offsets; o++)
     {
         if(lib_size == 2)
             file.write2(offsets[o]);
@@ -234,7 +234,7 @@ uint32 U6Lib_n::get_item_size(uint32 item_number)
     if(item_number > num_offsets)
         return(0);
     // get next non-zero offset, including the filesaze at offsets[num_offsets]
-    for(int o = (item_number + 1); o <= num_offsets; o++)
+    for(uint32 o = (item_number + 1); o <= num_offsets; o++)
         if(offsets[o])
         {
             next_offset = offsets[o];
@@ -259,6 +259,8 @@ unsigned char *U6Lib_n::get_item(uint32 item_number)
    return NULL;
 
  buf = (unsigned char *)malloc(item_size);
+
+ file.seek(get_item_offset(item_number));
  
  file.readToBuf(buf,item_size);
  

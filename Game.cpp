@@ -61,7 +61,8 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  text = new Text(config);
  text->loadFont();
 
- scroll = new MsgScroll(text);
+ scroll = new MsgScroll(config);
+ scroll->init(screen, text);
  
  game_map = new Map(config);
  game_map->loadMap(tile_manager, obj_manager);
@@ -76,7 +77,7 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  player->init(actor_manager->get_actor(1),actor_manager, map_window);
  
  event = new Event(config);
- event->init(obj_manager, map_window, player);
+ event->init(obj_manager, map_window, scroll, player);
  
  map_window->set_windowSize(11,11);
  //map_window->move(0x12e,0x16b);
@@ -123,6 +124,9 @@ void Game::play()
  bool game_play = true;
  
   drawBackground();
+
+  scroll->display_string(NULL);
+  
   screen->update();
   
   map_window->drawMap();

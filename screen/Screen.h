@@ -62,6 +62,8 @@ class Screen
    void *get_pixels();
    uint16 get_pitch();
    uint16 get_bpp();
+
+   bool fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
       
    bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL);     
    void update();
@@ -73,6 +75,10 @@ class Screen
    bool initScaler();
 
 protected:
+
+   bool fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
+   
+   bool fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
 
 inline bool Screen::blit16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans);
 

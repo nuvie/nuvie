@@ -740,6 +740,32 @@
 			settings = {
 			};
 		};
+		07D14A90044449E400A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Book.cpp;
+			path = /Users/eric/Projects/Ultima6/nuvie/Book.cpp;
+			refType = 0;
+		};
+		07D14A91044449E400A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Book.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/Book.h;
+			refType = 0;
+		};
+		07D14A92044449E400A8000A = {
+			fileRef = 07D14A90044449E400A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07D14A93044449E400A8000A = {
+			fileRef = 07D14A91044449E400A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		07DB53EA042DA0CF00A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -770,15 +796,15 @@
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = Look.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/Look.h;
-			refType = 0;
+			path = ../Look.h;
+			refType = 2;
 		};
 		07DB546C042E8C1A00A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = Look.cpp;
-			path = /Users/eric/Projects/Ultima6/nuvie/Look.cpp;
-			refType = 0;
+			path = ../Look.cpp;
+			refType = 2;
 		};
 		07DB546D042E8C1A00A8000A = {
 			fileRef = 07DB546B042E8C1A00A8000A;
@@ -971,6 +997,8 @@
 				07B8BE0C0419B95A00A8000A,
 				079CA1D204230A2B00A8000A,
 				072BE3AD041AFE1100A8000A,
+				07D14A91044449E400A8000A,
+				07D14A90044449E400A8000A,
 				07EF5321043137BF00A8000A,
 				07EF5322043137BF00A8000A,
 				0725669904272B7B00A8000A,
@@ -1123,6 +1151,7 @@
 				07EF5323043137BF00A8000A,
 				070823D9043EF72800A8000A,
 				070823DC043EF72800A8000A,
+				07D14A93044449E400A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1167,6 +1196,7 @@
 				07EF5324043137BF00A8000A,
 				070823D8043EF72800A8000A,
 				070823DB043EF72800A8000A,
+				07D14A92044449E400A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,3 +1,7 @@
+2003-04-09  Eric Fry  <efry@users.sourceforge.net>
+	* Work on MsgScroll class.
+	* Added signposts, books and scrolls.
+
 2003-04-08  Michael Fink <vividus@users.sourceforge.net>
 	* Added MSVC project files and code fixes
 

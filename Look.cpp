@@ -107,6 +107,11 @@ char *Look::get_description(uint16 tile_num, bool plural)
  return desc_buf;
 }
 
+uint16 Look::get_max_len()
+{
+ return max_len;
+}
+ 
 void Look::print()
 {
  uint16 i;

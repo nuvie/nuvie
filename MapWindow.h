@@ -67,6 +67,7 @@ class MapWindow
  void moveCursorRelative(sint16 rel_x, sint16 rel_y);
  
  char *lookAtCursor();
+ Obj *get_objAtCursor();
  
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);

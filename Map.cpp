@@ -135,7 +135,7 @@ char *Map::look(uint16 x, uint16 y, uint8 level)
     else
       tile_num =  ptr[y * get_width(level) + x];
 
- return tile_manager->lookAtTile(tile_num,qty);
+ return tile_manager->lookAtTile(tile_num,qty,true);
 }
 
 

@@ -15,6 +15,7 @@
 
 #include "MapWindow.h"
 #include "Player.h"
+#include "Book.h"
 
 #include "Event.h"
 
@@ -25,14 +26,19 @@ Event::Event(Configuration *cfg)
  config = cfg;
 }
 
-bool Event::init(ObjManager *om, MapWindow *mw, Player *p)
+bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p)
 {
  obj_manager = om;
  map_window = mw;
+ scroll = ms;
  player = p;
  
  mode = MOVE_MODE;
  
+ book = new Book(config);
+ if(book->init() == false)
+   return false;
+   
  return true;
 }
 
@@ -66,18 +72,32 @@ bool Event::update()
 					                     break;
              case SDLK_l     :
                                mode = LOOK_MODE;
+                               scroll->display_string("Look-");
+                               map_window->centerCursor();
+                               map_window->set_show_cursor(true);
+                               break;
+             case SDLK_t     :
+                               mode = TALK_MODE;
+                               scroll->display_string("Talk-");
                                map_window->centerCursor();
                                map_window->set_show_cursor(true);
                                break;
              case SDLK_u     : 
                                mode = USE_MODE;
+                               scroll->display_string("Use-");
                                map_window->centerCursor();
                                map_window->set_show_use_cursor(true);
                                break;
              case SDLK_RETURN  :
                                if(mode == LOOK_MODE)
                                  {
-                                  printf("%s\n",map_window->lookAtCursor());
+                                  mode = MOVE_MODE;
+                                  look();
+                                  map_window->set_show_cursor(false);
+                                 }
+                               if(mode == TALK_MODE)
+                                 {
+                                  scroll->display_string(NULL);
                                   mode = MOVE_MODE;
                                   map_window->set_show_cursor(false);
                                  }
@@ -105,7 +125,7 @@ bool Event::update()
 
 bool Event::move(sint16 rel_x, sint16 rel_y)
 {
- if(mode == LOOK_MODE)
+ if(mode == LOOK_MODE || mode == TALK_MODE)
     map_window->moveCursorRelative(rel_x,rel_y);
  else
   {
@@ -130,7 +150,13 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
 
  
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
- if(obj && obj->obj_n == OBJ_U6_LADDER)
+ 
+ if(obj)
+ {
+  scroll->display_string(obj_manager->look_obj(obj));
+  scroll->display_string("\n");
+  
+  if(obj->obj_n == OBJ_U6_LADDER)
    {
     if(obj->frame_n == 0) // DOWN
       {
@@ -147,14 +173,40 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
          player->move(obj->x,obj->y,level-1);
       }
    }
- else
-  {   
-   obj_manager->use_obj(obj);
-  }
-
+  else
+   {   
+    obj_manager->use_obj(obj);
+   }
+ }
+ 
+ scroll->display_string("\n");
+ scroll->display_string(NULL);
+  
  map_window->set_show_use_cursor(false);
  map_window->updateBlacking();
  mode = MOVE_MODE;
+
+ return true;
+}
+
+bool Event::look()
+{
+ Obj *obj;
+ char *data;
+ 
+ scroll->display_string("Thou dost see ");
+ scroll->display_string(map_window->lookAtCursor());
+ obj = map_window->get_objAtCursor();
+ if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || obj->obj_n == OBJ_U6_SCROLL))
+   {
+    scroll->display_string(":\n\n");
+    data = book->get_book_data(obj->quality-1);
+    scroll->display_string(data);
+    free(data);
+   }
+
+ scroll->display_string("\n\n");
+ scroll->display_string(NULL);
 
  return true;
 }
