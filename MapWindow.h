@@ -103,7 +103,7 @@ class MapWindow: public GUI_Widget
  void moveCursorRelative(sint16 rel_x, sint16 rel_y);
  
  const char *look(uint16 x, uint16 y, bool show_prefix = true);
- const char *lookAtCursor(bool show_prefix = true) { return(look(cur_x + cursor_x, cur_y + cursor_y, show_prefix)); }
+ const char *lookAtCursor(bool show_prefix = true) { return(look(cursor_x, cursor_y, show_prefix)); }
  Obj *get_objAtCursor();
  Actor *get_actorAtCursor();
  MapCoord get_cursorCoord();

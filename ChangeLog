@@ -1,3 +1,12 @@
+2004-05-19  Eric Fry <efry at users.sourceforge.net>
+	* Fixed a buffer overrun bug in MapWindow::look().
+	  Coords where being passed in map format when look() required
+	  coords in MapWindow format. This was overreading the 
+	  tmp_map_buf which was leading to strange results when looking at
+	  things on the map.
+	* Added ObjManager::set_obj_tile_num() in attempt to hide egg objects
+	  on the map. I'm not too sure if we'll end up going this way.
+
 2004-05-18  Eric Fry <efry at users.sourceforge.net>
 	* ObjManager: Split the main surface object index into 64 smaller 
 	  chunk indexes. This should help with saving.

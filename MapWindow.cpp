@@ -259,11 +259,11 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
  if(tmp_map_buf[(y+1) * tmp_map_width + (x+1)] == 0) //black area
    return tile_manager->lookAtTile(0,0,true); // nothing to see here. ;)
 
- actor = actor_manager->get_actor(x, y, cur_level);
+ actor = actor_manager->get_actor(cur_x + x, cur_y + y, cur_level);
  if(actor != NULL)
    return actor_manager->look_actor(actor, show_prefix);
    
- return map->look(x, y, cur_level);
+ return map->look(cur_x + x, cur_y + y, cur_level);
 }
  
 

@@ -105,7 +105,8 @@ class ObjManager
  U6LList *actor_inventories[256];
 
  bool show_eggs;
- 
+ uint16 egg_tile_num;
+  
  UseCode *usecode;
 
  std::list<Obj *> temp_obj_list;
@@ -116,6 +117,8 @@ class ObjManager
 
  ObjManager(Configuration *cfg, TileManager *tm, EggManager *em);
  ~ObjManager();
+
+ void show_egg_objs(bool value);
 
  bool loadObjs();
  void startObjs();
@@ -141,6 +144,7 @@ class ObjManager
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj);
 
  uint16 get_obj_tile_num(uint16 obj_num);
+ void set_obj_tile_num(uint16 obj_num, uint16 tile_num);
 
  U6LList *get_actor_inventory(uint16 actor_num);
  bool actor_has_inventory(uint16 actor_num);

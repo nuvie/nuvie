@@ -52,7 +52,9 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
  config = cfg;
  tile_manager = tm;
  egg_manager = em;
- 
+
+ loadBaseTile();
+  
  memset(actor_inventories,0,sizeof(actor_inventories));
 
  for(i=0;i<64;i++)
@@ -68,20 +70,34 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
  last_obj_blk_x = 0;
  last_obj_blk_y = 0;
  last_obj_blk_z = OBJ_TEMP_INIT;
+  
+ config->value("config/GameType",game_type);
+
+ //save the egg tile_num incase we want to switch egg display on again.
+ egg_tile_num = get_obj_tile_num(obj_egg_table[game_type]);
  
  show_eggs_key = config_get_game_key(config);
  show_eggs_key.append("/show_eggs");
  
  config->value(show_eggs_key, show_eggs);
 
- config->value("config/GameType",game_type);
- 
- loadBaseTile();
+ //if(!show_eggs)
+ //  show_egg_objs(false);
 }
 
 ObjManager::~ObjManager()
 {
  //FIX ME. need to free objects.
+}
+
+void ObjManager::show_egg_objs(bool value)
+{
+ if(value == true)
+   set_obj_tile_num(obj_egg_table[game_type], egg_tile_num); // show egg tile.
+ else
+   set_obj_tile_num(obj_egg_table[game_type], 0); //nothing. we don't want to show eggs.
+
+ return;   
 }
 
 bool ObjManager::loadObjs()
@@ -608,6 +624,12 @@ uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :
  return obj_to_tile[obj_num];
 }
 
+void ObjManager::set_obj_tile_num(uint16 obj_num, uint16 tile_num)
+{
+ obj_to_tile[obj_num] = tile_num;
+ return;
+}
+
 
 /* Animate all visible tiles of an object `loop_count' times.
  */
@@ -802,7 +824,6 @@ bool ObjManager::loadObjSuperChunk(char *filename, iAVLTree *obj_tree)
         {
          if(show_eggs || obj->obj_n != obj_egg_table[game_type]) // show remaining objects, hiding eggs if neccecary.
             add_obj(obj_tree,obj);
-
         }
 
      }
