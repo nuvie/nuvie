@@ -94,6 +94,7 @@ bool Nuvie::initConfig()
  
  config = new Configuration();
  
+#ifndef WIN32
  // ~/.nuvierc
  
  config_path.assign(getenv("HOME"));
@@ -102,6 +103,7 @@ bool Nuvie::initConfig()
   
  if(loadConfigFile(config_path))
    return true;
+#endif
 
  // nuvie.cfg in the working dir
  
