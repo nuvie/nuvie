@@ -57,7 +57,9 @@ class ActorManager
  
  Actor *get_player();
  void set_player(Actor *a);
- 
+
+ const char *actor_lookstr(Actor *a);
+
  void updateActors();
  
  protected:

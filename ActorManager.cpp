@@ -201,6 +201,17 @@ void ActorManager::set_player(Actor *a)
  player_actor = a->id_n;
 }
 
+/* Returns an actor's "look-string," a general description of their occupation
+ * or appearance.
+ */
+const char *ActorManager::actor_lookstr(Actor *a)
+{
+    return(tile_manager->lookAtTile(
+                           obj_manager->get_obj_tile_num(a->get_tile_num()),
+                                    0, false));
+}
+
+
 void ActorManager::updateActors()
 {
  uint16 i;

@@ -254,6 +254,7 @@ class Converse
     }
     uint32 u6op_if_test(uint32 cmpf, std::stack<uint32> *cmpv);
     uint32 u6op_assign_eval(uint32 opf, std::stack<uint32> *opv);
+    void show_portrait(uint8 n);
     void eval_arg(uint8 argn, bool test_first = false);
 
     /* Seeking methods - update script pointer. */

@@ -359,6 +359,24 @@ void Converse::break_scope(uint8 levels)
 #endif /* CONVERSE_DEBUG */
 
 
+/* Show portrait for npc `n'. The name will be shown for actors in the player
+ * party, or those the player/avatar has met. The look-string will be shown for
+ * anyone else.
+ */
+void Converse::show_portrait(uint8 n)
+{
+    Actor *actor = (n == npc_num) ? npc : actors->get_actor(n);
+    const char *nameret = 0;
+    if(!actor)
+        return;
+    if((actor->get_flags() & 1) || player->get_party()->contains_actor(actor))
+        nameret = npc_name(n);
+    else
+        nameret = actors->actor_lookstr(actor);
+    views->set_portrait_mode(n, (char *)nameret);
+}
+
+
 /* Tests/Compares values from a stack, using a comparison function code. The
  * number of values needed for the comparison will be popped from the stack. An
  * evaluation code can also be used.
@@ -783,23 +801,7 @@ if(!args.empty() && !args[0].empty())
                 cnpc->inventory_add_object(get_val(0, 0), 1, get_val(1, 0));
             break;
         case U6OP_PORTRAIT: // 1 arg, npc number
-            // use current name
-            if(get_npc_num(get_val(0, 0)) == npc_num)
-                views->set_portrait_mode(npc_num, (char *)my_name);
-            else
-            {
-                // use name from party information
-                if(player->get_party()->contains_actor(get_val(0, 0)))
-                {
-                    res = player->get_party()->get_member_num(res);
-                    views->set_portrait_mode(get_val(0, 0),
-                                      player->get_party()->get_actor_name(res));
-                }
-                // read name from script
-                else
-                    views->set_portrait_mode(get_val(0, 0),
-                                             (char *)npc_name(get_val(0, 0)));
-            }
+            show_portrait(get_npc_num(get_val(0, 0)));
             break;
         case U6OP_HEAL: // 1 arg, npc number
             eval_arg(0);
@@ -1192,7 +1194,7 @@ bool Converse::start(Actor *talkto)
 #ifdef CONVERSE_DEBUG
         fprintf(stderr, "Converse: script=%08x, script_len=%d\n", script.buf, script.buf_len);
 #endif
-        views->set_portrait_mode(npc_num, (char *)my_name);
+        show_portrait(npc_num);
         return(true);
     }
     fprintf(stderr, "Error loading npc %d, script %s:%d\n", actor_num,
