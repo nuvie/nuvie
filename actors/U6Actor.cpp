@@ -247,6 +247,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  sint16 rel_x, rel_y;
  MsgScroll *scroll = Game::get_game()->get_scroll();
  Party *party = Game::get_game()->get_party();
+ MapCoord old_pos = get_location();
  
  if(actor_type->has_surrounding_objs)
    remove_surrounding_objs_from_map();
@@ -310,6 +311,11 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
            }
         }
      }
+     // temp. fix; this too should be done with UseCode (and don't move the mirror)
+     Obj *old_mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,old_pos.x,old_pos.y-1,old_pos.z);
+     Obj *mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,new_x,new_y-1,new_z);
+     if(old_mirror) old_mirror->frame_n = 0;
+     if(mirror)     mirror->frame_n = 1;
   }
 
  if(actor_type->has_surrounding_objs) //add our surrounding objects back onto the map.

@@ -120,6 +120,7 @@ char *Player::get_gender_title()
 }
 
 
+// walk to adjacent square
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
  if(uncontrolled)
@@ -127,6 +128,11 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
  uint16 x, y;
  uint8 z;
  actor->get_location(&x, &y, &z);
+
+ // don't allow diagonal move between blocked tiles (player only)
+ if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS)
+                   && !actor->check_move(x + 0, y + rel_y, z, ACTOR_IGNORE_OTHERS))
+  return;
 
  // change direction only if we can move there
  //if(actor->check_move(x + rel_x, y + rel_y, z, ACTOR_IGNORE_OTHERS))
@@ -143,6 +149,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
  }
 }
 
+// teleport-type move
 void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 {
    if(uncontrolled)

@@ -1,3 +1,10 @@
+2003-12-02  Joseph Applegate <sb-x@users.sourceforge.net>
+	* You can no longer walk diagonally between blocked squares. This fixes
+	  walking over water.
+	* Updated Horse code (can't use another horse while riding), and added
+	  Codex of Ultimate Wisdom to book list.
+	* Mirrors now showing reflection when NPC's pass by them. [ 716226 ]
+
 2003-12-01  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Minor improvements made to how the party follows, in Party, PathFinder
 	  and ZPath. They are a little more jumpy now, but that will be fixed in

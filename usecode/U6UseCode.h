@@ -80,6 +80,7 @@
 #define OBJ_U6_MAGIC_BOW            54
 #define OBJ_U6_SPELLBOOK            57
 
+#define OBJ_U6_CODEX                59
 #define OBJ_U6_VORTEX_CUBE          62
 #define OBJ_U6_KEY                  64
 
@@ -283,7 +284,10 @@
 #define OBJ_U6__LAST_              431
 
 
-#define U6_LORD_BRITISH_ACTOR_NUM 5
+#define U6_LORD_BRITISH_ACTOR_NUM 5 // change to U6_NPC_LORD_BRITISH?
+#define U6_SHERRY_ACTOR_NUM       9
+#define U6_BEHLEM_ACTOR_NUM       164
+
 #define U6_LORD_BRITISH_ORB_CHECK_FLAG 0x20 // this is set if the player has asked LB about the orb of moons
 
 class U6UseCode;

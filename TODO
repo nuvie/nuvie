@@ -68,6 +68,8 @@ Replace some actor info with pointer to an Obj?
 Actor::[check]move error/status struct? (so that calling function can check)
 Actor::[check]move: take move_flags argument (replace current bools force_move/ignore_others)
 
+Altars and square (single object) tables shouldn't be passable, but are.
+
 things to do:
 raft
 balloon

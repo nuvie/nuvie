@@ -125,6 +125,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_PICTURE,   255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    add_usecode(OBJ_U6_CODEX,       0,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
 
     add_usecode(OBJ_U6_CHEST, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
     add_usecode(OBJ_U6_CRATE, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
@@ -803,7 +804,7 @@ bool U6UseCode::use_orb(Obj *obj, uint8 ev)
  
  if((lord_british->get_flags() & U6_LORD_BRITISH_ORB_CHECK_FLAG) == 0)
    {
-    scroll->display_string("\nYou can't figure out how to use it!\n");
+    scroll->display_string("\nYou can't figure out how to use it.\n");
     return false;
    }
 
@@ -903,7 +904,6 @@ bool U6UseCode::use_food(Obj *obj, uint8 ev)
             else
                 scroll->display_string("\nYou eat the food.\n");
         }
-        // FIXME: add to hp?
         // FIXME: if object is alcoholic drink, add to drunkeness
         return(true);
     }
@@ -1164,23 +1164,38 @@ bool U6UseCode::use_horse(Obj *obj, uint8 ev)
  if(ev != USE_EVENT_USE)
     return(false);
  
- actor = actor_manager->get_actor(obj->quality);
+ actor = actor_manager->get_actor(obj->quality); // horse or horse with rider
  if(!actor)
    return false;
+
+ player_actor = actor_ref;
+ if(player_actor->get_actor_num() == U6_SHERRY_ACTOR_NUM)
+   {
+    scroll->display_string("Sherry says: \"Eeek!!! I'm afraid of horses!\"\n");
+    return false;
+   }
+ else if(player_actor->get_actor_num() == U6_BEHLEM_ACTOR_NUM)
+   {
+    scroll->display_string("BehLem says: \"Horses are for food!\"\n");
+    return false;
+   }
+ else if(obj->obj_n == OBJ_U6_HORSE && player_actor->obj_n == OBJ_U6_HORSE_WITH_RIDER)
+   {
+    scroll->display_string("You're already on a horse!\n");
+    return false;
+   }
 
  actor_obj = actor->make_obj();
  actor->clear();
  
- player_actor = player->get_actor();
-
  //FIX we need to save the horse and add it back to the map when dismounting
  // this will be handled by the new actor methods in actor_manager.
- if(player_actor->obj_n == OBJ_U6_HORSE_WITH_RIDER) 
+ if(obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
    {
     actor_obj->obj_n = player_actor->base_obj_n; //revert to normal old actor type
     actor_obj->frame_n = player_actor->old_frame_n;
    }
- else
+ else // FIX Don't use Smith (Iolo's horse; "Horse not boardable!")
     actor_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER; // mount up.
     
  player_actor->move(actor_obj->x,actor_obj->y,actor_obj->z); //this will center the map window
@@ -1252,6 +1267,9 @@ bool U6UseCode::look_sign(Obj *obj, uint8 ev)
 bool U6UseCode::look_clock(Obj *obj, uint8 ev)
 {
     GameClock *clock = Game::get_game()->get_clock();
+    if(obj->obj_n == OBJ_U6_SUNDIAL
+       && (clock->get_hour() < 5 || clock->get_hour() > 19))
+        return(true); // don't get time from sundial at night
     if(ev == USE_EVENT_LOOK && actor_ref == player->get_actor())
     {
         scroll->display_string("\nThe time is ");

@@ -26,11 +26,20 @@
 #include "ObjManager.h"
 #include "Player.h"
 
-#define USE_EVENT_USE     0x01
-#define USE_EVENT_LOOK    0x02
-#define USE_EVENT_PASS    0x04
-#define USE_EVENT_ON      0x08 // post-move/idle ??
-#define USE_EVENT_SEARCH  0x10
+// The game triggers one of these events on an object to activate its UseCode
+// function(s). The return value meaning is different for each event.
+#define USE_EVENT_USE     0x01 /* return value undefined */
+#define USE_EVENT_LOOK    0x02 /* true: allow search, false: disallow search */
+#define USE_EVENT_PASS    0x04 /* true: do normal move, false: object blocks */
+//#define USE_EVENT_ON      0x08 /* post-move/idle, chairs/traps ?? */
+#define USE_EVENT_SEARCH  0x10 /*undefined (true = had objects?); might remove*/
+//#define USE_EVENT_TIMED   0x00 /* fumaroles, earthquakes, powder kegs, clocks */
+//#define USE_EVENT_NEAR    0x00 /* mirrors; might use ON with distance val */
+//#define USE_EVENT_LOAD    0x00 /* eggs */
+//will need to increase trigger size for...
+//#define USE_EVENT_ATTACK  0x00 /* doors, chests, mirrors */
+//#define USE_EVENT_MOVE    0x00 /* cannons */
+//#define USE_EVENT_DROP    0x00 /* anything breakable */
 
 class Configuration;
 class Map;
