@@ -32,7 +32,7 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 /* Control codes for U6; as far as I know work with the other games too... */
 #define U6OP_IF 0xa1
 #define U6OP_ENDIF 0xa2
-#define U6OP_ELSEIF 0xa3
+#define U6OP_ELSE 0xa3
 #define U6OP_SETF 0xa4
 #define U6OP_CLEARF 0xa5
 #define U6OP_ARGSTOP 0xa7
@@ -50,6 +50,7 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_SCONVERSE 0xf2
 #define U6OP_SANSWER 0xf6
 #define U6OP_SASK 0xf7
+#define U6OP_SASKC 0xf8
 
 typedef struct
 {
@@ -90,7 +91,6 @@ class Converse
 #define CONV_SCOPE_ANSWER 2 // break at keywords or endask
 #define CONV_SCOPE_IF 3 // at else change to endif, at endif break
 #define CONV_SCOPE_IFELSE 4 // at else change to if, at endif break
-#define CONV_SCOPE_IFEND 5 // at endif break
     std::stack <uint8> scope; // what "scope" is the script in?
 
     /* Check that loaded converse library (the source) contains `script_num'.
@@ -169,10 +169,16 @@ class Converse
     {
         return(((check == 0x0a) || (check >= 0x20 && check <=0x7a)));
     }
+    /* Returns true if `check' is an "if" test type. */
+    bool is_test(Uint8 check)
+    {
+        return(((check == 0x81) || (check == 0x85) || (check == 0x86)
+               || (check == 0xc6)));
+    }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)
     {
-        if(code >= 0xa1 && !is_valsize(code))
+        if(code >= 0xa1 && !is_valsize(code) && !is_test(code))
             return(true);
         return(false);
     }
@@ -185,7 +191,7 @@ class Converse
     }
 #endif
     bool check_keywords();
-    /* Returns true if the current scope allows the current command to execute.
+    /* Returns true if the current scope permits the current command to execute.
      */
     bool check_scope()
     {
@@ -196,9 +202,17 @@ class Converse
         {
             return(false);
         }
+        if(scope.top() == CONV_SCOPE_IFELSE
+           && (cmd != U6OP_ELSE && cmd != U6OP_ENDIF))
+        {
+            return(false);
+        }
 //        if(scope.top() == 
         return(true);
     }
+    void enter_scope(uint8 scopedef) { scope.push(scopedef); }
+    void break_scope(uint8 levels = 1)
+    { while(levels--) if(!scope.empty()) scope.pop(); else break; }
 public:
     Converse(Configuration *cfg, Converse_interpreter engine_type, MsgScroll *ioobj);
     ~Converse();

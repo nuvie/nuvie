@@ -50,7 +50,6 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
 
 bool Event::update()
 {
- 
   while ( SDL_PollEvent(&event) ) {
 			switch (event.type) {
 				case SDL_MOUSEMOTION:
@@ -147,7 +146,8 @@ bool Event::talk()
     // load npc script
     if(npc && converse->start(npc))
         return(true);
-    scroll->display_string("nothing!\n");
+    scroll->display_string("nothing!\n\n");
+    scroll->display_prompt();
     return(false);
 }
 
