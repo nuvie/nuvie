@@ -281,18 +281,24 @@ inline void Map::drawTile(uint16 tile_num, uint16 x, uint16 y)
  
  screen->blit(tile->data,8,x*16,y*16,16,16,tile->transparent);
        
- if(x > 0 && dbl_width)
+ if(dbl_width)
    {
     tile_num--;
-    tile = tile_manager->get_tile(tile_num);
-    screen->blit(tile->data,8,(x-1)*16,y*16,16,16,tile->transparent);
+    if(x > 0)
+      {
+       tile = tile_manager->get_tile(tile_num);
+       screen->blit(tile->data,8,(x-1)*16,y*16,16,16,tile->transparent);
+      }
    }
    
- if(y > 0 && dbl_height)
+ if(dbl_height)
    {
     tile_num--;
-    tile = tile_manager->get_tile(tile_num);
-    screen->blit(tile->data,8,x*16,(y-1)*16,16,16,tile->transparent);
+    if(y > 0)
+      {
+       tile = tile_manager->get_tile(tile_num);
+       screen->blit(tile->data,8,x*16,(y-1)*16,16,16,tile->transparent);
+      }
    }
    
  if(x > 0 && dbl_width && y > 0 && dbl_height)
