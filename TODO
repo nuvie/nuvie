@@ -41,12 +41,7 @@ Move objects within the party and into containers
 Take low-level input handling out of Event and make a keybinder.
 Take higher-level functions and move to PlayerAction class. This will be able
 to queue actions, and will handle the "mode" that Event has now. It may be where
-global actions (quit/save/load?) are too. It will make sure USE and other
-actions don't work when player control is paused.
-Action sync.:
-Right now you can press keys after doing certain things and quickly get another
-action in. You can't press different arrow keys and quickly change directions.
-Neither of those is the proper behavior.
+global actions (quit/save/load?) are too.
 
 DragnDrop:
 Should be able to drop objects on other non-passable objects (move rope to table)

@@ -304,12 +304,14 @@ bool Converse::start(uint8 n)
             fprintf(stderr, "Can't talk: Unimplemented or unknown game type\n");
             return(false);
         }
+        // set current NPC and start conversation
         npc_num = n;
         init_variables();
         show_portrait(npc_num);
+        Game::get_game()->get_sound_manager()->musicPause();
+        Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         unwait();
         fprintf(stderr, "Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
-        Game::get_game()->get_sound_manager()->musicPause();
         return(true);
     }
     fprintf(stderr, "Error loading npc %d from %s:%d\n",
@@ -328,8 +330,9 @@ void Converse::stop()
     scroll->display_string("\n");
     scroll->display_prompt();
     views->set_inventory_mode();
-
     Game::get_game()->get_sound_manager()->musicPlay();
+    Game::get_game()->get_event()->set_mode(MOVE_MODE); // return control to player
+
     active = false;
     fprintf(stderr, "End conversation\n");
 }

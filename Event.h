@@ -58,6 +58,7 @@ typedef enum {
  FREESELECT_MODE, /*...or use a single free-move mode for get,talk,select?*/
  PUSH_MODE,
  DROPTARGET_MODE,
+ WAIT_MODE
 } EventMode;
 
 extern uint32 nuvieGameCounter;

@@ -280,6 +280,8 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 
 bool Event::handleEvent(const SDL_Event *event)
 {
+	if(mode == WAIT_MODE)
+		return true;
 	switch (event->type) 
 	{
 		case SDL_MOUSEMOTION:
