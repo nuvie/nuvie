@@ -59,7 +59,7 @@ template <typename T>
 class SoundCollectionMapDeleter
 {
 public:
-   operator ()(const std::pair<T,SoundCollection *>& mapEntry)
+   void operator ()(const std::pair<T,SoundCollection *>& mapEntry)
    {
       delete mapEntry.second;
    }
