@@ -136,9 +136,13 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 	SDLMod mods = SDL_GetModState();
 	// alt-code input
 	if((mods & KMOD_ALT)
-	   && (event->key.keysym.sym >= SDLK_KP0 && event->key.keysym.sym <= SDLK_KP9))
+	   && ( (event->key.keysym.sym >= SDLK_KP0 && event->key.keysym.sym <= SDLK_KP9)
+               || (event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9) ) )
 	{
-		alt_code_str[alt_code_len++] = (char)(event->key.keysym.sym-208);
+		if(event->key.keysym.sym >= SDLK_KP0 && event->key.keysym.sym <= SDLK_KP9)
+			alt_code_str[alt_code_len++] = (char)(event->key.keysym.sym-208);
+		else
+			alt_code_str[alt_code_len++] = (char)(event->key.keysym.sym);
 		alt_code_str[alt_code_len] = '\0';
 		if(alt_code_len == 3)
 		{
