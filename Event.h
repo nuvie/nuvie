@@ -18,6 +18,7 @@
 #include "MsgScroll.h"
 #include "Player.h"
 #include "Book.h"
+#include "Converse.h"
 
 #define NUVIE_INTERVAL    50
 
@@ -42,6 +43,7 @@ class Event
  Player *player;
  EventMode mode;
  Book *book;
+ Converse *converse;
  
  SDL_Event event;
  int ts; //timestamp for TimeLeft() method.
@@ -49,13 +51,15 @@ class Event
  public:
  Event(Configuration *cfg);
  
- bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p);
+ bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
+           Converse *c);
   
  bool update();
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
  bool look();
- 
+ bool talk();
+
  void wait();
  
  protected:

@@ -16,7 +16,6 @@
 #include "MapWindow.h"
 #include "Player.h"
 #include "Book.h"
-
 #include "Event.h"
 
 uint32 nuvieGameCounter;
@@ -26,19 +25,21 @@ Event::Event(Configuration *cfg)
  config = cfg;
 }
 
-bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p)
+bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
+                 Converse *c)
 {
  obj_manager = om;
  map_window = mw;
  scroll = ms;
  player = p;
- 
+ converse = c;
+
  mode = MOVE_MODE;
- 
+
  book = new Book(config);
  if(book->init() == false)
    return false;
-   
+
  return true;
 }
 
@@ -47,12 +48,13 @@ bool Event::update()
  
   while ( SDL_PollEvent(&event) ) {
 			switch (event.type) {
-
 				case SDL_MOUSEMOTION:
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					break;
 				case SDL_KEYDOWN:
+           if(scroll->handle_input(&event.key.keysym.sym))
+             break; // break switch
            switch(event.key.keysym.sym)
             {
              case SDLK_UP    :
@@ -97,8 +99,13 @@ bool Event::update()
                                  }
                                if(mode == TALK_MODE)
                                  {
-                                  scroll->display_string(NULL);
                                   mode = MOVE_MODE;
+                                  if(talk())
+                                  {
+                                    scroll->set_talking(true);
+                                    scroll->display_string(converse->get_output());
+                                  }
+                                  scroll->display_string("\n");
                                   map_window->set_show_cursor(false);
                                  }
                                if(mode == USE_MODE)
@@ -122,6 +129,26 @@ bool Event::update()
 
  return true;
 }
+
+
+/* Get ID of Actor at cursor and check to see if him/her/it is willing to talk
+ * to the player character.
+ * Returns true if conversation starts, false if they don't talk, or if there
+ * is no Actor at the requested location.
+ */
+bool Event::talk()
+{
+    Actor *npc = map_window->get_actorAtCursor();
+    // load npc script
+    if(npc && converse->start(npc))
+    {
+        converse->print_name();
+        return(true);
+    }
+    scroll->display_string("nothing!");
+    return(false);
+}
+
 
 bool Event::move(sint16 rel_x, sint16 rel_y)
 {
