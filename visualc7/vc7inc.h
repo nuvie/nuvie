@@ -32,6 +32,7 @@
 
 #pragma	warning (disable : 4244)	//	conversion from 'x' to 'x', possible loss of data
 #pragma	warning (disable : 4100)	//	unreferenced formal parameter
+#pragma warning (disable : 4800)	//	forcing value to bool 'true' or 'false' (performance warning)
 
 //	for pre-compiled headers when I get all the #include issues fixed
 /*
@@ -42,5 +43,8 @@
 #include "SDL.h"
 #include "misc.h"
 */
+
+// .NET has no roundf function (C99)
+__inline roundf (float val) { return floorf (val); }
 
 #endif	/* __vc7inc_h__ */
