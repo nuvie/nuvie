@@ -66,7 +66,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_SUNDIAL,   255,0,USE_EVENT_LOOK,&U6UseCode::look_clock,OBJTYPE_NONE },
     { OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror,OBJTYPE_NONE },
     { OBJ_U6_WELL,      255,0,USE_EVENT_USE,&U6UseCode::use_well,OBJTYPE_NONE },
-    { OBJ_U6_POWDER_KEG,255,0,USE_EVENT_USE|USE_EVENT_TIMED,&U6UseCode::use_powder_keg,OBJTYPE_NONE },
+    { OBJ_U6_POWDER_KEG,255,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_powder_keg,OBJTYPE_NONE },
     
     { OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive,OBJTYPE_NONE },
 	
@@ -107,9 +107,9 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_PULL_CHAIN,  0,0,USE_EVENT_USE,&U6UseCode::use_bell,OBJTYPE_NONE },
     { OBJ_U6_BELL,      255,0,USE_EVENT_USE,&U6UseCode::use_bell,OBJTYPE_NONE },
     { OBJ_U6_SHOVEL,      0,0,USE_EVENT_USE,&U6UseCode::use_shovel,OBJTYPE_NONE },
-    { OBJ_U6_FOUNTAIN,    0,0,USE_EVENT_USE,&U6UseCode::use_fountain,OBJTYPE_NONE },
+    { OBJ_U6_FOUNTAIN,    0,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_fountain,OBJTYPE_NONE },
     { OBJ_U6_RUBBER_DUCKY,0,0,USE_EVENT_USE,&U6UseCode::use_rubber_ducky,OBJTYPE_NONE },
-    { OBJ_U6_CANNON,    255,0,USE_EVENT_USE|USE_EVENT_MOVE,&U6UseCode::use_cannon,OBJTYPE_NONE },
+    { OBJ_U6_CANNON,    255,0,USE_EVENT_USE|USE_EVENT_MOVE|USE_EVENT_MESSAGE,&U6UseCode::use_cannon,OBJTYPE_NONE },
 
     { OBJ_U6_PANPIPES,   0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },
     { OBJ_U6_HARPSICHORD,0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },

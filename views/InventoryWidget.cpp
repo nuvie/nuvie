@@ -233,6 +233,9 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
            case USE_MODE:
                event->use(obj);
                break;
+           case DROP_MODE:
+               event->drop_select(selected_obj);
+               break;
            default:
                selected_obj = obj;
                break;
@@ -495,8 +498,8 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
         return(GUI_YUM);
 
     scroll->display_string("Use-");
-    event->use(obj);
-    if(event->get_mode() == MOVE_MODE)
+    
+    if(event->use(obj))
     {
         scroll->display_string("\n");
         scroll->display_prompt();

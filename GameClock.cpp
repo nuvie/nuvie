@@ -23,8 +23,8 @@
 
 #include "nuvieDefs.h"
 #include "Configuration.h"
-#include "NuvieIO.h"
-
+#include "NuvieIOFile.h"
+#include "Game.h"
 #include "GameClock.h"
 
 GameClock::GameClock(Configuration *cfg)
@@ -34,6 +34,8 @@ GameClock::GameClock(Configuration *cfg)
  move_counter = 0;
  time_counter = 0;
  tick_counter = 0;
+
+ active = true;
 }
  
 GameClock::~GameClock()
@@ -104,13 +106,17 @@ void GameClock::inc_move_counter_by_a_minute()
 
 void GameClock::advance_to_next_hour()
 {
+ if(!active)
+   return;
+
  minute = 0;
- 
  inc_hour();
 }
 
 void GameClock::inc_minute()
 {
+ if(!active)
+   return;
 
  if(minute == 59)
    {
@@ -128,6 +134,8 @@ void GameClock::inc_minute()
 
 void GameClock::inc_hour()
 {
+ if(!active)
+   return;
 
  if(hour == 23)
    {
@@ -148,6 +156,8 @@ void GameClock::inc_hour()
 
 void GameClock::inc_day()
 {
+ if(!active)
+   return;
 
  if(day == 28)
    {
@@ -170,6 +180,8 @@ void GameClock::inc_day()
 
 void GameClock::inc_month()
 {
+ if(!active)
+   return;
 
  if(month == 12)
    {
@@ -187,6 +199,9 @@ void GameClock::inc_month()
 
 void GameClock::inc_year()
 {
+ if(!active)
+   return;
+
  year++;
  time_counter += 483840;
  tick_counter += (483840 * GAMECLOCK_TICKS_PER_MINUTE);

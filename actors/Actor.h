@@ -221,6 +221,11 @@ class Actor
 // void stop_walking() { delete pathfinder; pathfinder = NULL; }
  void stop_walking();
  virtual void preform_worktype() { return; }
+ void hit(uint8 dmg);
+ void hit(uint8 dmg, Actor *attacker) { hit(dmg); }
+ void hit(uint8 dmg, Obj *src_obj)    { hit(dmg); }
+ void reduce_hp(uint8 amount);
+ virtual void die();
  
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0);

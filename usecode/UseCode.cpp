@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <cstring>
 #include "nuvieDefs.h"
 
 #include "U6LList.h"
@@ -34,11 +34,7 @@ UseCode::UseCode(Game *g, Configuration *cfg)
  game = g;
  config = cfg;
 
- int_ref = 0;
- actor_ref = NULL;
- obj_ref = NULL;
- actor2_ref = NULL;
- mapcoord_ref = NULL;
+ clear_items();
 }
 
 UseCode::~UseCode()
@@ -56,6 +52,24 @@ bool UseCode::init(ObjManager *om, Map *m, Player *p, MsgScroll *ms)
  party = player->get_party();
 
  return true;
+}
+
+
+
+/* Clear items.
+ */
+void UseCode::clear_items()
+{
+    memset(&items, 0, sizeof(items));
+/*    items.uint_ref = NULL;
+    items.sint_ref = NULL;
+    items.obj_ref = NULL;
+    items.actor_ref = items.actor2_ref = NULL;
+    items.mapcoord_ref = NULL;
+    items.msg_ref = NULL;
+    items.string_ref = NULL;
+    items.ent_ref = NULL;
+    items.data_ref = NULL; */
 }
 
 
@@ -128,6 +142,53 @@ Obj *UseCode::get_obj_from_container(Obj *obj)
         return(temp_obj);
     }
     return(NULL);
+}
+
+
+/* Print name of event being sent and the object receiving it.
+ */
+void UseCode::dbg_print_event(uint8 event, Obj *obj)
+{
+    string do_string = "";
+    switch(event)
+    {
+        case USE_EVENT_USE:
+            do_string = "Use";
+            break;
+        case USE_EVENT_LOOK:
+            do_string = "Look at";
+            break;
+        case USE_EVENT_PASS:
+            do_string = "Pass";
+            break;
+        case USE_EVENT_SEARCH:
+            do_string = "Search";
+            break;
+        case USE_EVENT_MOVE:
+            do_string = "Move";
+            break;
+        case USE_EVENT_LOAD:
+            do_string = "Load";
+            break;
+        case USE_EVENT_MESSAGE:
+            do_string = "Internal message sent to";
+            break;
+        case USE_EVENT_READY:
+            do_string = "(Un)Equip";
+            break;
+        case USE_EVENT_GET:
+            do_string = "Get";
+            break;
+        case USE_EVENT_DROP:
+            do_string = "Drop";
+            break;
+    }
+    if(do_string != "")
+        fprintf(stderr, "UseCode: %s object %d:%d (%03x,%03x,%x)\n", do_string.c_str(),
+                obj->obj_n, obj->frame_n, obj->x, obj->y, obj->z);
+    else
+        fprintf(stderr, "UseCode: Event 0x%04x sent to object %d:%d (%03x,%03x,%x)\n",
+                event, obj->obj_n, obj->frame_n, obj->x, obj->y, obj->z);
 }
 
 

@@ -25,6 +25,8 @@
 #include <cstdio>
 #include "nuvieDefs.h"
 #include "U6LList.h"
+#include "MapEntity.h"
+
 #include "Game.h"
 #include "ViewManager.h"
 #include "ActorManager.h"
@@ -40,9 +42,18 @@
 #include "MapWindow.h"
 #include "TimedEvent.h"
 #include "EggManager.h"
+#include "AnimManager.h"
+#include "Effect.h"
 
 #include "U6UseCode.h"
 #include "U6ObjectTypes.h"
+
+#define MESG_ANIM_HIT_WORLD  ANIM_CB_HIT_WORLD
+#define MESG_ANIM_HIT        ANIM_CB_HIT
+#define MESG_TEXT_READY      MSGSCROLL_CB_TEXT_READY
+#define MESG_DATA_READY      CB_DATA_READY
+#define MESG_EFFECT_COMPLETE EFFECT_CB_COMPLETE
+#define MESG_TIMED           CB_TIMED
 
 // numbered by entrance quality, "" = no name
 static const char *u6_dungeons[21] =
@@ -155,7 +166,7 @@ bool U6UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::use_obj(Obj *obj, Actor *actor)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_USE);
-    set_itemref(actor, actor2_ref);
+    set_itemref(actor, items.actor2_ref);
     return(uc_event(type, USE_EVENT_USE, obj));
 }
 
@@ -190,18 +201,49 @@ bool U6UseCode::search_obj(Obj *obj, Actor *actor)
 }
 
 
-/* Call TIMER function for an object.
+/* Callback from timer or other class. User_data is the object which will
+ * receive the message (if applicable).
  */
-void U6UseCode::timed_callback(void *obj_data)
+uint16 U6UseCode::callback(uint16 msg, CallBack *caller, void *msg_data)
 {
-    Obj *obj = (Obj *)obj_data;
+    Obj *obj = (Obj *)callback_user_data;
     if(!obj)
     {
-        fprintf(stderr, "UseCode: timer activated for NULL object\n");
-        return;
+        fprintf(stderr, "UseCode: internal message %d sent to NULL object\n", msg);
+        return(0);
     }
-    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_TIMED);
-    uc_event(type, USE_EVENT_TIMED, obj);
+    message_obj(obj, (CallbackMessage)msg, msg_data);
+    return(0);
+}
+
+
+/* Call MESSAGE function for an object. Msg_data is assigned to the appropriate
+ * itemref.
+ * Returns false if there is no usecode for that object.
+ */
+bool U6UseCode::message_obj(Obj *obj, CallbackMessage msg, void *msg_data)
+{
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_MESSAGE);
+    items.msg_ref = &msg;
+    switch(msg) // set itemref from msgdata
+    {
+        case MESG_TIMED:
+            items.uint_ref = (uint32 *)msg_data;
+            break;
+        case MESG_ANIM_HIT_WORLD:
+            items.mapcoord_ref = (MapCoord *)msg_data;
+            break;
+        case MESG_ANIM_HIT:
+            items.ent_ref = (MapEntity *)msg_data;
+            break;
+        case MESG_TEXT_READY:
+            items.string_ref = (string *)msg_data;
+            break;
+        case MESG_DATA_READY:
+            items.data_ref = (char *)msg_data;
+            break;
+    }
+    uc_event(type, USE_EVENT_MESSAGE, obj);
 }
 
 
@@ -288,24 +330,9 @@ bool U6UseCode::uc_event(const U6ObjectType *type, UseCodeEvent ev, Obj *obj)
         return(false);
     if(type->trigger & ev)
     {
-        printf("UseCode: Object %d:%d, event %s\n", obj->obj_n, obj->frame_n,
-                               (ev == USE_EVENT_USE) ? "USE"
-                             : (ev == USE_EVENT_LOOK) ? "LOOK"
-                             : (ev == USE_EVENT_PASS) ? "PASS"
-                             : (ev == USE_EVENT_SEARCH) ? "SEARCH"
-                             : (ev == USE_EVENT_TIMED) ? "TIMED"
-                             : (ev == USE_EVENT_MOVE) ? "MOVE"
-                             : (ev == USE_EVENT_LOAD) ? "LOAD"
-                             : (ev == USE_EVENT_READY) ? "READY"
-                             : (ev == USE_EVENT_GET) ? "GET"
-                             : (ev == USE_EVENT_DROP) ? "DROP"
-                             : "???");
+        dbg_print_event(ev, obj);
         bool ucret = (this->*type->usefunc)(obj, ev);
-        int_ref = 0;
-        actor_ref = NULL; // clear references
-        actor2_ref = NULL;
-        obj_ref = NULL;
-	mapcoord_ref = NULL;
+        clear_items(); // clear references for next call
         return(ucret); // return from usecode function
     }
     return(false); // doesn't respond to event
@@ -326,10 +353,11 @@ void U6UseCode::unlock_door(Obj *obj)
 }
 
 
+// USE: unlock locked doors, open/close other doors
 bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
 {
  Obj *key_obj;
- bool print = (actor_ref == player->get_actor());
+ bool print = (items.actor_ref == player->get_actor());
 
  if(is_locked_door(obj)) // locked door
    {
@@ -366,6 +394,8 @@ bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
  return true;
 }
 
+
+// USE: climb up or down a ladder (entire party)
 bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
 {
  uint16 x = obj->x, y = obj->y;
@@ -373,7 +403,7 @@ bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
  if(!player->in_party_mode())
   {
     scroll->display_string("\nNot in solo mode.\n");
-    return(false);
+    return true;
   }
 
  if(obj->frame_n == 0) // DOWN
@@ -399,16 +429,17 @@ bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
  
  MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
  party->walk(&ladder, &destination, 100);
- return true;
+ return false;
 }
 
 
+// USE: Open the passhtrough! Close the passthrough!
 bool U6UseCode::use_passthrough(Obj *obj, UseCodeEvent ev)
 {
  uint16 new_x, new_y;
  uint8 new_frame_n;
  char action_string[6]; // either 'Open' or 'Close'
- bool print = (actor_ref == player->get_actor());
+ bool print = (items.actor_ref == player->get_actor());
  
  new_x = obj->x;
  new_y = obj->y;
@@ -461,7 +492,7 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
  U6Link *link;
  uint16 target_obj_n = 0;
  char *message = NULL;
- bool print = (actor_ref == player->get_actor());
+ bool print = (items.actor_ref == player->get_actor());
 
  if(obj->obj_n == OBJ_U6_LEVER)
  {
@@ -517,10 +548,12 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
 }
 
 
+/* USE: light or douse various fire objects (toggling their frame number)
+ */
 bool U6UseCode::use_firedevice(Obj *obj, UseCodeEvent ev)
 {
     if(obj->obj_n == OBJ_U6_BRAZIER && obj->frame_n == 2)
-        return(false); // holy flames can't be doused
+        return(true); // holy flames can't be doused
     if(obj->obj_n == OBJ_U6_FIREPLACE)
     {
         if(obj->frame_n == 1 || obj->frame_n == 3)
@@ -543,6 +576,9 @@ bool U6UseCode::use_firedevice(Obj *obj, UseCodeEvent ev)
 }
 
 
+/* SEARCH: discover and open door
+ * USE: open or close door
+ */
 bool U6UseCode::use_secret_door(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
@@ -560,7 +596,7 @@ bool U6UseCode::use_secret_door(Obj *obj, UseCodeEvent ev)
             obj->frame_n++;
         return(true);
     }
-    return(false);
+    return(true);
 }
 
 
@@ -576,9 +612,10 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
         if(obj->frame_n == 0)
         {
             scroll->display_string("\nSearching here, you find ");
-            bool found_objects = search_obj(obj, actor_ref);
+            bool found_objects = search_obj(obj, items.actor_ref);
             scroll->display_string(found_objects ? ".\n" : "nothing.\n");
-            return(found_objects);
+//            return(found_objects);
+            return(true);
         }
     }
     else if(ev == USE_EVENT_SEARCH) // search message already printed
@@ -631,7 +668,6 @@ Obj *U6UseCode::bell_find(Obj *chain_obj)
 
 
 //cranks control drawbridges.
-
 bool U6UseCode::use_crank(Obj *obj, UseCodeEvent ev)
 {
  uint16 x,y;
@@ -774,6 +810,10 @@ void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width
  scroll->display_string("\nClose the drawbridge.\n");
 }
 
+
+/* USE: select location on ground to bury orb; when location is passed, open
+ *      a red moongate to a new location
+ */
 bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
 {
  Obj *gate;
@@ -781,6 +821,7 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  uint8 px,py,z,oz;
  uint8 position;
  Actor *lord_british;
+ MapCoord *mapcoord_ref = items.mapcoord_ref;
  
  player->get_actor()->get_location(&x,&y,&z);
  lord_british = actor_manager->get_actor(U6_LORD_BRITISH_ACTOR_NUM);
@@ -791,7 +832,7 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  if((lord_british->get_flags() & U6_LORD_BRITISH_ORB_CHECK_FLAG) == 0)
    {
     scroll->display_string("\nYou can't figure out how to use it.\n");
-    return false;
+    return true;
    }
 
  if(!mapcoord_ref)
@@ -808,11 +849,11 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  py=2+oy-y;
   
  if( px > 5 || py > 4 ||           // Moongate out of range.
-     actor2_ref ||                 // Actor at location.
+     items.actor2_ref ||           // Actor at location.
      !map->is_passable(ox,oy,oz))  // Location not passable.
    {
     scroll->display_string("Failed.\n");
-    return false;
+    return true;
    }
   
  position=px+py*5;
@@ -866,10 +907,10 @@ void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridg
 bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 {
     Obj *dug_up_obj = NULL;
-    MapCoord from = actor_ref->get_location(),
+    MapCoord from = items.actor_ref->get_location(),
              dig_at;
 
-    if(!mapcoord_ref) // get direction (FIXME: should return relative dir)
+    if(!items.mapcoord_ref) // get direction (FIXME: should return relative dir)
     {
         if((obj->status & 0x18) != 0x18)
         {
@@ -879,7 +920,7 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
         game->get_event()->useselect_mode(obj, "Direction: ");
         return(true);
     }
-    dig_at = *mapcoord_ref;
+    dig_at = *items.mapcoord_ref;
 
     // print direction (FIXME: relative dir is what should have been returned)
     sint8 xdir = (dig_at.x == from.x) ? 0 : (dig_at.x < from.x) ? -1 : 1;
@@ -903,20 +944,20 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
     else
     {
         scroll->display_string("nowhere.\n\n");
-        return(false); // ??
+        return(true); // ??
     }
     // FIX: how are dig-able tiles determined?
     if(!game->get_map_window()->in_dungeon_level())
     {
         scroll->display_string("No effect\n");
-        return(false); // ??
+        return(true); // ??
     }
 
     // 10% chance of anything
     if(NUVIE_RAND() % 10)
     {
         scroll->display_string("Failed\n");
-        return(false);
+        return(true);
     }
     // Door #1 or Door #2?
     scroll->display_string("You dig a hole.\n");
@@ -937,54 +978,103 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* Magic fountain. Make a wish!
+/* USE: Magic fountain. Make a wish!
  */
 bool U6UseCode::use_fountain(Obj *obj, UseCodeEvent ev)
 {
-    std::string wish("");
-#if 0 /* do highlevel MsgScroll stuff first */
-    scroll->display_string("Make a wish?\n");
-//    get Y/N single char no enter no print
-//  Y
-    scroll->display_string("Wish for: \n\n");
-    // get string
-    if(wish != "Food" && wish != "Mutton" && wish != "Wine" && wish != "Fruit"
-       && wish != "Meat")
+    static bool get_wish = false;
+    static Actor *wish_actor = NULL; // person receiving gift
+
+    scroll->cancel_input_request();
+    if(ev == USE_EVENT_USE)
     {
-        scroll->display_string("Failed\n");
+        scroll->display_string("Make a wish? ");
+        // get Y/N single char, no ENTER (FIXME: no printing)
+        scroll->set_input_mode(true, "yn", false);
+        scroll->request_input(this, obj);
+        wish_actor = items.actor_ref;
+        assert(wish_actor);
         return(false);
     }
-#endif
-    // 25% chance of anything
-    if(NUVIE_RAND() % 4)
+    else if(ev == USE_EVENT_MESSAGE && items.string_ref)
     {
-        scroll->display_string("No effect\n");
-        return(false);
+        scroll->display_string("\n");
+        if(!get_wish) // answered with Y/N
+        {
+            // Y:
+            if(*items.string_ref == "y" || *items.string_ref == "Y")
+            {
+                scroll->display_string("Wish for: ");
+                // get string
+                scroll->set_input_mode(true);
+                scroll->request_input(this, obj);
+                get_wish = true;
+            }
+            else // N: won't wish
+            {
+                scroll->display_string("\n");
+                scroll->display_prompt();
+            }
+        }
+        else // answered with wish
+        {
+            get_wish = false;
+            bool wished_for_food = false;
+            char *wish = new char[items.string_ref->size() + 1];
+            strcpy(wish, items.string_ref->c_str());
+            if(strcasecmp(wish, "Food") == 0 || strcasecmp(wish, "Mutton") == 0
+               || strcasecmp(wish, "Wine") == 0 || strcasecmp(wish, "Fruit") == 0
+               || strcasecmp(wish, "Mead") == 0)
+                wished_for_food = true;
+            delete wish;
+            if(!wished_for_food)
+            {
+                scroll->display_string("\nFailed\n\n");
+                scroll->display_prompt();
+                return(true);
+            }
+            // 25% chance of anything
+            if((NUVIE_RAND() % 4) != 0)
+            {
+                scroll->display_string("\nNo effect\n\n");
+                scroll->display_prompt();
+                return(true);
+            }
+            scroll->display_string("\nYou got food");
+            // must be able to carry it
+            if(!wish_actor->can_carry_object(OBJ_U6_MEAT_PORTION, 1))
+            {
+                scroll->display_string(", but you can't carry it.\n\n");
+                scroll->display_prompt();
+                return(true);
+            }
+            scroll->display_string(".\n\n");
+            scroll->display_prompt();
+            assert(wish_actor);
+            wish_actor->inventory_new_object(OBJ_U6_MEAT_PORTION, 1);
+        }
     }
-    scroll->display_string("You got food");
-    // must be able to carry it
-    if(!actor_ref->can_carry_object(OBJ_U6_MEAT_PORTION, 1))
-    {
-        scroll->display_string(", but you can't carry it.\n");
-        return(false);
-    }
-    scroll->display_string(".\n");
-    actor_ref->inventory_new_object(OBJ_U6_MEAT_PORTION, 1);
-    return(true);
+    else
+        get_wish = false;
+    return(false);
 }
 
 
+/* USE: Make a rubber ducky sound.
+ */
 bool U6UseCode::use_rubber_ducky(Obj *obj, UseCodeEvent ev)
 {
-    if(actor_ref == player->get_actor())
+    if(items.actor_ref == player->get_actor())
         scroll->display_string("- Quack! Quack!\n");
     return(true);
 }
 
 
+/* USE: Enter instrument playing mode, with sound for used object.
+ */
 bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)
 {
-    if(actor_ref == player->get_actor())
+    if(items.actor_ref == player->get_actor())
     {
         char musicmsg[256];
         snprintf(musicmsg, 256, "You'd be playing %s right now...*if Nuvie had sound effects.\n",
@@ -1000,9 +1090,10 @@ bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)
 }
 
 
+// use_firedevice()
 bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
 {
- if(actor_ref != player->get_actor())
+ if(items.actor_ref != player->get_actor())
    return true;
  scroll->display_string("\n");
  scroll->display_string(obj_manager->get_obj_name(obj));
@@ -1015,13 +1106,13 @@ bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
 }
 
 
-/* Event: Eat/drink food object.
+/* USE: Eat/drink food object. Hic!
  */
 bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
-        if(actor_ref == player->get_actor())
+        if(items.actor_ref == player->get_actor())
         {
             if(obj->obj_n == OBJ_U6_WINE || obj->obj_n == OBJ_U6_MEAD
                || obj->obj_n == OBJ_U6_ALE || obj->obj_n == OBJ_U6_SNAKE_VENOM)
@@ -1030,13 +1121,12 @@ bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)
                 scroll->display_string("\nYou eat the food.\n");
         }
         destroy_obj(obj, 1);
-        return(true);
     }
     return(false);
 }
 
 
-/* Event: Use potion. If actor2 is passed, give them the potion, else select
+/* USE: Use potion. If actor2 is passed, give them the potion, else select
  * actor2.
  */
 bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
@@ -1044,15 +1134,15 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
     ActorManager *am = actor_manager;
     if(ev == USE_EVENT_USE)
     {
-        if(!actor2_ref && !obj_ref)
+        if(!items.actor2_ref && !items.obj_ref)
             game->get_event()->freeselect_mode(obj, "On whom? ");
-        else if(!actor2_ref)
+        else if(!items.actor2_ref)
             scroll->display_string("nobody\n");
         else
         {
-            sint8 party_num = party->get_member_num(actor2_ref);
+            sint8 party_num = party->get_member_num(items.actor2_ref);
             scroll->display_string(party_num >= 0 ? party->get_actor_name(party_num)
-                                   : am->look_actor(actor2_ref));
+                                   : am->look_actor(items.actor2_ref));
             scroll->display_string("\n");
             if(obj->frame_n <= 7)
             {
@@ -1070,14 +1160,14 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* Use a key on itemref (a door).
- * Return true if target object is valid?
+/* Use a key on obj_ref (a door).
  */
 bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
 {
+    Obj *obj_ref = items.obj_ref;
     if(ev == USE_EVENT_USE)
     {
-        if(!obj_ref && !actor2_ref)
+        if(!obj_ref && !items.actor2_ref)
             game->get_event()->useselect_mode(obj, "On ");
         else if(!obj_ref)
             scroll->display_string("nothing\n");
@@ -1107,7 +1197,7 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* Enter and exit sea-going vessels.
+/* USE: Enter and exit sea-going vessels. (entire party)
  */
 bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
 {
@@ -1120,7 +1210,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
  if(!player->in_party_mode())
   {
     scroll->display_string("\nNot in solo mode.\n");
-    return(false);
+    return(true);
   }
  ship_actor = actor_manager->get_actor(0); //get the vehicle actor.
  
@@ -1146,7 +1236,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
    else
      {
       scroll->display_string("\nOnly next to land.\n");
-      return false;
+      return true;
      }
    
    party->set_in_vehicle(false);
@@ -1160,7 +1250,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
     if(obj == NULL)
      {
       scroll->display_string("\nShip not usable\n");
-      return false;
+      return true;
      }
    }
   
@@ -1169,24 +1259,26 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
     if(party->has_obj(OBJ_U6_SHIP_DEED, obj->quality) == false)
       {
        scroll->display_string("\nA deed is required.\n");
-       return false;
+       return true;
       }
    }
 
  // walk to vehicle if necessary
  if(!party->is_at(obj->x, obj->y, obj->z))
-    party->enter_vehicle(obj);
- else
    {
-    ship_actor->init_from_obj(obj);
-    ship_actor->show(); // Swift!
-    obj_manager->remove_obj(obj);
-    obj_manager->delete_obj(obj);
-
-    party->hide(); // set in-vehicle
-    player->set_actor(ship_actor);
-    party->set_in_vehicle(true);
+    party->enter_vehicle(obj);
+    return(false);
    }
+
+ // use it (replace ship with vehicle actor)
+ ship_actor->init_from_obj(obj);
+ ship_actor->show(); // Swift!
+ obj_manager->remove_obj(obj);
+ obj_manager->delete_obj(obj);
+
+ party->hide(); // set in-vehicle
+ player->set_actor(ship_actor);
+ party->set_in_vehicle(true);
  return(true);
 }
 
@@ -1266,7 +1358,9 @@ bool U6UseCode::use_cow(Obj *obj, UseCodeEvent ev)
  if(ev != USE_EVENT_USE)
     return(false);
  
- return fill_bucket(OBJ_U6_BUCKET_OF_MILK);
+// return fill_bucket(OBJ_U6_BUCKET_OF_MILK);
+ fill_bucket(OBJ_U6_BUCKET_OF_MILK);
+ return true;
 }
 
 /* using a well fills an empty bucket in the player's inventory with water */
@@ -1275,9 +1369,12 @@ bool U6UseCode::use_well(Obj *obj, UseCodeEvent ev)
  if(ev != USE_EVENT_USE)
     return(false);
  
- return fill_bucket(OBJ_U6_BUCKET_OF_WATER);
+// return fill_bucket(OBJ_U6_BUCKET_OF_WATER);
+ fill_bucket(OBJ_U6_BUCKET_OF_WATER);
+ return true;
 }
 
+// fill an empty bucket in the player actor's inventory with some liquid
 bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
 {
  Actor *player_actor;
@@ -1291,12 +1388,12 @@ bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
        player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_WATER) )
       {
        scroll->display_string("\nYou need an empty bucket.\n");
-       return false;
+       return true;
       }
     else
       {
        scroll->display_string("\nYou need a bucket.\n");
-       return false;
+       return true;
       }
    }
  
@@ -1314,6 +1411,8 @@ bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
  return true;
 }
 
+
+// USE: replace a bucket of milk in the player's inventory with butter
 bool U6UseCode::use_churn(Obj *obj, UseCodeEvent ev)
 {
  ViewManager *view_manager = game->get_view_manager();
@@ -1326,7 +1425,7 @@ bool U6UseCode::use_churn(Obj *obj, UseCodeEvent ev)
  if(!player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_MILK))
    {
     scroll->display_string("\nYou need some milk.\n");
-	return false;
+	return true;
    }
 
  bucket = player_actor->inventory_get_object(OBJ_U6_BUCKET_OF_MILK);
@@ -1348,6 +1447,8 @@ bool U6UseCode::use_churn(Obj *obj, UseCodeEvent ev)
  return true;
 }
 
+
+// USE: fill an empty honey jar in the player's inventory
 bool U6UseCode::use_beehive(Obj *obj, UseCodeEvent ev)
 {
  ViewManager *view_manager = game->get_view_manager();
@@ -1367,7 +1468,7 @@ bool U6UseCode::use_beehive(Obj *obj, UseCodeEvent ev)
        scroll->display_string("\nYou need a honey jar.\n");
       }
 
-	return false;
+	return true;
    }
 
  honey_jar = player_actor->inventory_get_object(OBJ_U6_HONEY_JAR);
@@ -1385,6 +1486,10 @@ bool U6UseCode::use_beehive(Obj *obj, UseCodeEvent ev)
  return true;
 }
 
+
+/* USE: Mount or dismount from a horse. Don't allow using another horse if
+ * already riding one.
+ */
 bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
 {
  Actor *actor, *player_actor;
@@ -1397,21 +1502,21 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
  if(!actor)
    return false;
 
- player_actor = actor_ref;
+ player_actor = items.actor_ref;
  if(player_actor->get_actor_num() == U6_SHERRY_ACTOR_NUM)
    {
     scroll->display_string("Sherry says: \"Eeek!!! I'm afraid of horses!\"\n");
-    return false;
+    return true;
    }
  else if(player_actor->get_actor_num() == U6_BEHLEM_ACTOR_NUM)
    {
     scroll->display_string("BehLem says: \"Horses are for food!\"\n");
-    return false;
+    return true;
    }
  else if(obj->obj_n == OBJ_U6_HORSE && player_actor->obj_n == OBJ_U6_HORSE_WITH_RIDER)
    {
     scroll->display_string("You're already on a horse!\n");
-    return false;
+    return true;
    }
  
  actor_obj = actor->make_obj();
@@ -1466,7 +1571,7 @@ bool U6UseCode::pass_quest_barrier(Obj *obj, UseCodeEvent ev)
         if(player->get_quest_flag() == 0)
         {
             // block everyone, only print message when player attempts to pass
-            if(actor_ref == player->get_actor())
+            if(items.actor_ref == player->get_actor())
                 scroll->message("\n\"Thou art not upon a Sacred Quest!\n"
                                 "Passage denied!\"\n\n");
             return(false);
@@ -1475,9 +1580,8 @@ bool U6UseCode::pass_quest_barrier(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* Event: Look
- * True: Nothing special. Allow search.
- * False: Displayed book data for object. Disallow search.
+/* LOOK: Get (possibly translate) book data for readable object. Disallow search
+ * (return true) if book data was displayed.
  */
 bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
 {
@@ -1487,7 +1591,7 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
     if(ev == USE_EVENT_LOOK && obj->quality != 0)
     {
         // read
-        if(actor_ref == player->get_actor())
+        if(items.actor_ref == player->get_actor())
         {
             scroll->display_string(":\n\n");
             if((data = book->get_book_data(obj->quality - 1)))
@@ -1517,8 +1621,7 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* Event: Look
- * Display the current time.
+/* LOOK: Display the current time. Disallow search.
  */
 bool U6UseCode::look_clock(Obj *obj, UseCodeEvent ev)
 {
@@ -1526,7 +1629,7 @@ bool U6UseCode::look_clock(Obj *obj, UseCodeEvent ev)
     if(obj->obj_n == OBJ_U6_SUNDIAL
        && (clock->get_hour() < 5 || clock->get_hour() > 19))
         return(true); // don't get time from sundial at night
-    if(ev == USE_EVENT_LOOK && actor_ref == player->get_actor())
+    if(ev == USE_EVENT_LOOK && items.actor_ref == player->get_actor())
     {
         scroll->display_string("\nThe time is ");
         scroll->display_string(clock->get_time_string());
@@ -1540,15 +1643,15 @@ bool U6UseCode::look_clock(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::look_mirror(Obj *obj, UseCodeEvent ev)
 {
 //    ViewManager *view_manager = game->get_view_manager();
-    if(ev == USE_EVENT_LOOK && actor_ref == player->get_actor())
+    if(ev == USE_EVENT_LOOK && items.actor_ref == player->get_actor())
     {
         uint16 x, y;
         uint8 z;
-        actor_ref->get_location(&x, &y, &z);
+        items.actor_ref->get_location(&x, &y, &z);
         if(x == obj->x && y > obj->y && y <= (obj->y + 2))
         {
             scroll->display_string("\nYou can see yourself!");
-            game->get_event()->display_portrait(actor_ref);
+            game->get_event()->display_portrait(items.actor_ref);
         }
         return(true);
     }
@@ -1556,7 +1659,7 @@ bool U6UseCode::look_mirror(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* if not in party mode, say that you cannot enter and do normal move
+/* PASS: if not in party mode, say that you cannot enter and do normal move
  * else walk all party members to cave, give dungeon name, and move to dungeon
  */
 bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
@@ -1583,7 +1686,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
     party->dismount_from_horses();
     
     // don't activate if autowalking from linking exit
-    if(ev == USE_EVENT_PASS && actor_ref == player->get_actor() && !party->get_autowalk())
+    if(ev == USE_EVENT_PASS && items.actor_ref == player->get_actor() && !party->get_autowalk())
     {
         if(obj->quality != 0/* && Shamino is in party and alive*/)
         {
@@ -1591,8 +1694,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
             scroll->display_string("Shamino says, \"This is the ");
             scroll->display_string(prefix);
             scroll->display_string(dungeon_name);
-            scroll->display_string(".\"\n\n");
-            scroll->display_prompt();
+            scroll->display_string(".\"\n");
         }
         MapCoord entrance(x, y, z);
         // going down
@@ -1611,15 +1713,16 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
             party->walk(&entrance, &exit, 100);
         else
             party->walk(&entrance, &exit);
-        return(true);
+        return(false);
     }
     else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
-        if(party->contains_actor(actor_ref))
+        if(party->contains_actor(items.actor_ref))
             return(true);
     return(false);
 }
 
-/* if not in party mode, say that you cannot enter and do normal move
+
+/* PASS: if not in party mode, say that you cannot enter and do normal move
  * else walk all party members to moongate and teleport.
  */
 bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
@@ -1635,7 +1738,7 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
     }
 
     // don't activate if autowalking from linking exit
-    if(ev == USE_EVENT_PASS && actor_ref == player->get_actor() && !party->get_autowalk())
+    if(ev == USE_EVENT_PASS && items.actor_ref == player->get_actor() && !party->get_autowalk())
     {
         MapCoord entrance(x, y, z);
         if(obj->quality > 25)
@@ -1657,49 +1760,56 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
         return(true);
     }
     else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
-        if(party->contains_actor(actor_ref))
+        if(party->contains_actor(items.actor_ref))
             return(true);
     return(false);
 }
 
 
 
-/* Use: Light powder keg if unlit
- * Timed: Explode
+/* USE: Light powder keg if unlit
+ * MESSAGE: Timed: Explode; Effect complete: delete powder keg
  */
 bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)
 {
-static uint32 countdown = 0;
+    // allow only one keg to be active at a time (timer/messaging issues)
+    static bool lit_powder_keg = false;
+
     if(ev == USE_EVENT_USE)
     {
-        if(obj->frame_n != 0)
+        if(lit_powder_keg)
         {
             scroll->display_string("\nNot now!\n");
-            return(false);
+            return(true);
         }
         obj->frame_n = 1;
-countdown = 4;
-        new GameTimedCallback(this, obj, 1);
-// countdown and firings are only for this demo
-//        new GameTimedCallback(this, obj, 5);
+        lit_powder_keg = true;
+        new GameTimedCallback(this, obj, 5);
         scroll->display_string("\nPowder lit!\n");
-        scroll->display_string("Dupre: \"Run away!\"\n");
-        scroll->display_string("Shamino: \"Run away!\"\n");
         return(true);
     }
-    else if(ev == USE_EVENT_TIMED)
+    else if(ev == USE_EVENT_MESSAGE)
     {
-        if(countdown == 0)
+        if(*items.msg_ref == MESG_TIMED) // explode
         {
+            uint16 x = obj->x, y = obj->y;
+            if(obj->is_in_inventory()) // explode over actor carrying keg
+            {
+                x = actor_manager->get_actor(obj->x)->get_location().x;
+                y = actor_manager->get_actor(obj->x)->get_location().y;
+            }
             obj->frame_n = 0;
-            scroll->display_string("\nDupre: \"A dud?\"\n");
-            scroll->display_string("Iolo slaps Dupre. \"Powder kegs are not even implemented, you dolt!\"\n\n");
-            scroll->display_prompt();
+            Effect *effect = new UseCodeExplosiveEffect(obj, x, y, 3, 16);
+            // waits for effect to complete
         }
-        else
+        else if(*items.msg_ref == MESG_EFFECT_COMPLETE) // explosion finished
         {
-            --countdown;
-            new GameTimedCallback(this, obj, 1);
+            if(!obj->is_in_inventory())
+                obj_manager->remove_obj(obj);
+            else
+                actor_manager->get_actor(obj->x)->inventory_remove_obj(obj);
+            obj_manager->delete_obj(obj);
+            lit_powder_keg = false;
         }
         return(true);
     }
@@ -1712,9 +1822,23 @@ countdown = 4;
  */
 bool U6UseCode::use_cannon(Obj *obj, UseCodeEvent ev)
 {
+    MapCoord *mapcoord_ref = items.mapcoord_ref;
+
     if(ev == USE_EVENT_USE)
     {
-        scroll->display_string("\nFire!\n"); // animate before newline, prompt after hit
+        scroll->display_string("\nFire!\n");
+// FIXME: new UseCodeEffect(obj, cannonballtile, dir) // sets WAIT mode
+        new CannonballEffect(obj); // sets WAIT mode
+        return(false);
+    }
+    else if(ev == USE_EVENT_MESSAGE)
+    {
+// prompt is now printed by Event when resuming after effect
+//        if(*items.msg_ref == MESG_EFFECT_COMPLETE)
+//        {
+//            scroll->display_string("\n");
+//            scroll->display_prompt();
+//        }
         return(true);
     }
     else if(ev == USE_EVENT_MOVE)
@@ -1742,13 +1866,13 @@ bool U6UseCode::use_cannon(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* Hatch egg.
+/* USE: Hatch egg.
  */
 bool U6UseCode::use_egg(Obj *obj, UseCodeEvent ev)
 {
     EggManager *egg_manager = obj_manager->get_egg_manager();
     bool success = egg_manager->spawn_egg(obj, NUVIE_RAND() % 100);
-    if(actor_ref)
+    if(items.actor_ref)
         scroll->display_string(success ? "\nSpawned!\n" : "\nNo effect.\n");
     return(true);
 }
@@ -1825,10 +1949,10 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     {
         if(obj->frame_n == 0) // unlit: may get
             return(true);
-        if(actor_ref->add_readied_object(obj)) // FIXME: hopefully we can add after readying (need can_ready()?)
+        if(items.actor_ref->add_readied_object(obj)) // FIXME: hopefully we can add after readying (need can_ready()?)
         {
             obj_manager->remove_obj(obj); // remove from map
-            actor_ref->inventory_add_object(obj);
+            items.actor_ref->inventory_add_object(obj);
 // FIXME: add lightglobe to actor
         }
         else

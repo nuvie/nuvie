@@ -20,7 +20,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <cmath>
+#include <cstdlib>
 #include "nuvieDefs.h"
 
 #include "Configuration.h"
@@ -40,6 +41,7 @@ static const uint16 U6_ANIM_SRC_TILE[32] = {0x16,0x16,0x1a,0x1a,0x1e,0x1e,0x12,0
                                             0x1a,0x1e,0x16,0x12,0x16,0x1a,0x1e,0x12,
                                             0x1a,0x1e,0x1e,0x12,0x12,0x16,0x16,0x1a,
                                             0x12,0x16,0x1e,0x1a,0x1a,0x1e,0x12,0x16};
+
 
 TileManager::TileManager(Configuration *cfg)
 :desc_buf(NULL)
@@ -255,6 +257,9 @@ void TileManager::update()
  uint8 current_hour = Game::get_game()->get_clock()->get_hour();
  static sint8 last_hour = -1;
  
+ if(Game::get_game()->anims_paused())
+   return;
+
  // cycle animated tiles
 
  for(i = 0; i < animdata.number_of_tiles_to_animate; i++)
@@ -540,3 +545,104 @@ void TileManager::update_timed_tiles(uint8 hour)
 //    }
 }
 
+
+/* Returns tile rotated about the center by `rotate' degrees. (8-bit; clipped to
+ * standard 16x16 size) It must be deleted after use.
+ * **Fixed-point rotate function taken from the SDL Graphics Extension library
+ * (SGE) (c)1999-2003 Anders Lindström, licensed under LGPL v2+.**
+ */
+Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
+{
+    unsigned char tile_data[256];
+    memset(&tile_data, 255, 256); // fill output with transparent color
+
+    Sint32 dy, sx, sy;
+    Sint16 x, y, rx, ry;
+    Uint16 px = 8, py = 8; // rotate around these coordinates
+    Uint16 xmin = 0, xmax = 15, ymin = 0, ymax = 15; // size
+    Uint16 sxmin = xmin, sxmax = xmax, symin = ymin, symax = ymax;
+    Uint16 qx = 8, qy = 8; // ?? don't remember
+
+    float theta = float(rotate*M_PI/180.0);  /* Convert to radians.  */
+
+    Sint32 const stx = Sint32((sin(theta)) * 8192.0);
+    Sint32 const ctx = Sint32((cos(theta)) * 8192.0);
+    Sint32 const sty = Sint32((sin(theta)) * 8192.0);
+    Sint32 const cty = Sint32((cos(theta)) * 8192.0);
+    Sint32 const mx = Sint32(px*8192.0); 
+    Sint32 const my = Sint32(py*8192.0);
+
+    Sint32 const dx = xmin - qx;
+    Sint32 const ctdx = ctx*dx;
+    Sint32 const stdx = sty*dx;
+
+    Sint32 const src_pitch=16;
+    Sint32 const dst_pitch=16;
+    Uint8 const *src_row = (Uint8 *)&tile->data, *dst_pixels = (Uint8 *)&tile_data;
+    Uint8 *dst_row;
+
+    for(uint32 y=ymin; y<ymax; y++)
+    {
+        dy = y - qy;
+
+        sx = Sint32(ctdx  + stx*dy + mx);  /* Compute source anchor points */
+        sy = Sint32(cty*dy - stdx  + my);
+
+        /* Calculate pointer to dst surface */
+        dst_row = (Uint8 *)dst_pixels + y*dst_pitch;
+
+        for(uint32 x=xmin; x<xmax; x++)
+        {
+            rx=Sint16(sx >> 13);  /* Convert from fixed-point */
+            ry=Sint16(sy >> 13);
+
+            /* Make sure the source pixel is actually in the source image. */
+            if( (rx>=sxmin) && (rx<=sxmax) && (ry>=symin) && (ry<=symax) )
+                *(dst_row + x) = *(src_row + ry*src_pitch + rx);
+
+            sx += ctx;  /* Incremental transformations */
+            sy -= sty;
+        }
+    }
+
+    Tile *new_tile = new Tile(*tile); // retain properties of original tile
+    memcpy(&new_tile->data, &tile_data, 256); // replace data
+    return(new_tile);
+}
+
+
+#if 0 /* old */
+Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
+{
+    float angle = (rotate != 0) ? (rotate * M_PI) / 180.0 : 0; // radians
+    const float mul_x1 = cos(angle);  // | x1  y1 |
+    const float mul_y1 = sin(angle);  // | x2  y2 |
+    const float mul_x2 = -mul_y1;
+    const float mul_y2 = mul_x1;
+    unsigned char tile_data[256];
+    unsigned char *input = (unsigned char *)&tile->data, *output;
+
+    memset(&tile_data, 255, 256); // fill output with transparent color
+
+    for(sint8 y = -8; y < 8; y++) // scan input pixels
+    {
+        for(sint8 x = -8; x < 8; x++)
+        {
+            sint8 rx = (sint8)rint((x * mul_x1) + (y * mul_x2)); // calculate target pixel
+            sint8 ry = (sint8)rint((x * mul_y1) + (y * mul_y2));
+            if(rx >= -8 && rx <= 7 && ry >= -8 && ry <= 7)
+            {
+                output = (unsigned char *)&tile_data;
+                output += (ry + 8) * 16;
+                output[rx + 8] = input[x + 8]; // copy
+                if(rx <= 6) output[rx + 8 + 1] = input[x + 8]; // copy again to adjacent pixel
+            }
+        }
+        input += 16; // next line
+    }
+
+    Tile *new_tile = new Tile(*tile); // retain properties of original tile
+    memcpy(&new_tile->data, &tile_data, 256); // replace data
+    return(new_tile);
+}
+#endif

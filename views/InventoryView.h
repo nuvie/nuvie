@@ -73,6 +73,7 @@ class InventoryView : public View {
  Obj *get_objAtCursor();
 
  void Display(bool full_redraw);
+ void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
  GUI_status KeyDown(SDL_keysym key);
 
  protected:

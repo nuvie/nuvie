@@ -152,6 +152,9 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
  config = cfg;
  config->value("config/GameType",game_type);
 
+ callback_target = NULL;
+ callback_user_data = NULL;
+
  switch(game_type)
    {
     case NUVIE_GAME_U6 : scroll_width = MSGSCROLL_U6_WIDTH;
@@ -411,6 +414,8 @@ void MsgScroll::set_keyword_highlight(bool state)
  
 void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
 {
+ bool do_callback = false;
+
  input_mode = state;
  permit_input = NULL;
  permit_inputescape = can_escape;
@@ -427,8 +432,24 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
    input_buf.erase(0,input_buf.length());
  }
  else
+ {
    SDL_EnableUNICODE(0); // reduce translation overhead when not needed
+   if(callback_target)
+     do_callback = true; // **DELAY until end-of-method so callback can set_input_mode() again**
+ }
  Game::get_game()->get_gui()->lock_input(input_mode ? this : NULL);
+
+ // send whatever input was collected to target that requested it
+ if(do_callback)
+ {
+   CallBack *requestor = callback_target; // copy to temp
+   char *user_data = callback_user_data;
+   cancel_input_request(); // clear originals (callback may request again)
+
+   string input_str = string(input_buf);
+   requestor->set_user_data(user_data); // use temp requestor/user_data
+   requestor->callback(MSGSCROLL_CB_TEXT_READY, this, &input_str);
+ }
 }
 
 /* Take input from the main event handler and do something with it
@@ -734,3 +755,12 @@ void MsgScroll::clear_page_break()
   process_holding_buffer();
 }
 
+
+/* Set callback & callback_user_data so that a message will be sent to the
+ * caller when input has been gathered.
+ */
+void MsgScroll::request_input(CallBack *caller, void *user_data)
+{
+    callback_target = caller;
+    callback_user_data = (char *)user_data;
+}

@@ -33,6 +33,7 @@
 #include "misc.h"
 #include "NuvieIOFile.h"
 #include "GameClock.h"
+#include "Game.h"
 
 #define TEMP_ACTOR_OFFSET 224
 #define ACTOR_TEMP_INIT 255
@@ -441,7 +442,7 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
  uint8 cur_hour;
  uint16 i;
 
- if(!update)
+ if(!update || (Game::get_game()->get_pause_flags() & PAUSE_WORLD))
   return;
 
  update_temp_actors(x,y,z); // Remove out of range temp actors
@@ -467,6 +468,9 @@ void ActorManager::twitchActors()
 {
  uint16 i;
  
+ if(Game::get_game()->get_pause_flags() & PAUSE_WORLD)
+  return;
+
  for(i=0;i<256;i++)
   actors[i]->twitch();
 }
@@ -817,8 +821,8 @@ bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
     {
         sint16 x = (actor->x-xrange) + (NUVIE_RAND() % ((actor->x+xrange) - (actor->x-xrange) + 1)),
                y = (actor->y-yrange) + (NUVIE_RAND() % ((actor->y+yrange) - (actor->y-yrange) + 1));
-        if(!map->lineTest(actor->x, actor->y, x, y, actor->z, LT_HitUnpassable|LT_HitActors, lt))
-            if(actor->x != x || actor->y != y)
+        if(!map->lineTest(actor->x, actor->y, x, y, actor->z, LT_HitUnpassable, lt))
+            if(!get_actor(x, y, actor->z))
                 return(actor->move(x, y, actor->z));
     }
     return(false);

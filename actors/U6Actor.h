@@ -93,6 +93,8 @@ class U6Actor: public Actor
  const U6ActorType *actor_type;
  const U6ActorType *base_actor_type;
 
+ uint8 beg_mode; // for WT_BEG
+
  public:
  
  U6Actor(Map *m, ObjManager *om, GameClock *c);
@@ -109,6 +111,7 @@ class U6Actor: public Actor
  bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
  void twitch();
+ void die();
  
  uint8 get_object_readiable_location(uint16 obj_n);
  

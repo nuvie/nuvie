@@ -84,11 +84,17 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
  add_command_icons(tmp_screen, view_manager);
 
  cursor_tile = tile_manager->get_tile(365);
- update_cursor();
+// update_cursor(); moved to PlaceOnScreen
  
  return true;
 }
 
+
+void InventoryView::PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
+{
+ GUI_Widget::PlaceOnScreen(s,dm,x,y);
+ update_cursor(); // initial position; uses area
+}
 
 
 void InventoryView::Display(bool full_redraw)
@@ -545,6 +551,9 @@ void InventoryView::select_objAtCursor()
         case USE_MODE:
             if(obj)
                 event->use(obj);
+            break;
+        case DROP_MODE:
+            event->drop_select(obj);
             break;
         default:
             event->cancelAction();

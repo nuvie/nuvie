@@ -30,16 +30,12 @@
 #include "ActorManager.h"
 #include "MapWindow.h"
 #include "Map.h"
-// dont need all these includes (for Useobj.. move to player actions)
-#include "MsgScroll.h"
-#include "Player.h"
-#include "Party.h"
-#include "Converse.h"
-#include "UseCode.h"
-#include "U6objects.h"
 #include "Event.h"
-//#include "AnimManager.h"
+#include "MsgScroll.h"
+
+#include "AnimManager.h"
 #include "SoundManager.h"
+
 #include "GUI_widget.h"
 #include "Game.h"
 #include "GameClock.h"
@@ -54,6 +50,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  
  cur_x = 0;
  cur_y = 0;
+ cur_x_add = cur_y_add = 0;
+ vel_x = vel_y = 0;
  
  cursor_x = 0;
  cursor_y = 0;
@@ -76,8 +74,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 MapWindow::~MapWindow()
 {
  free(tmp_map_buf);
-//#warning ANIMMANAGER
-// delete anim_manager;
+ delete anim_manager;
 }
 
 bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
@@ -88,8 +85,7 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  tile_manager = tm;
  obj_manager = om;
  actor_manager = am;
-//#warning ANIMMANAGER
-// anim_manager = new AnimManager();
+ anim_manager = new AnimManager();
 
  config->value("config/GameType",game_type);
 
@@ -158,8 +154,7 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
     clip_rect.h -= 16;
    }
 
-//#warning ANIMMANAGER
-// anim_manager->set_area(&clip_rect);
+ anim_manager->set_area(&clip_rect);
  
  updateBlacking();
  
@@ -183,7 +178,7 @@ void MapWindow::moveLevel(uint8 new_level)
  updateBlacking();
 }
 
-void MapWindow::moveMap(sint16 new_x, sint16 new_y, sint8 new_level)
+void MapWindow::moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add, uint8 new_y_add)
 {
  uint16 map_side_length;
  
@@ -200,6 +195,8 @@ void MapWindow::moveMap(sint16 new_x, sint16 new_y, sint8 new_level)
          cur_x = new_x;
          cur_y = new_y;
          cur_level = new_level;
+         cur_x_add = new_x_add;
+         cur_y_add = new_y_add;
          updateBlacking();
  //       }
  //    } 
@@ -207,7 +204,27 @@ void MapWindow::moveMap(sint16 new_x, sint16 new_y, sint8 new_level)
 
 void MapWindow::moveMapRelative(sint16 rel_x, sint16 rel_y)
 {
- moveMap(cur_x + rel_x, cur_y + rel_y, cur_level); 
+ moveMap(cur_x + rel_x, cur_y + rel_y, cur_level);
+}
+
+/* Move map by relative pixel amount.
+ */
+void MapWindow::shiftMapRelative(sint16 rel_x, sint16 rel_y)
+{
+    uint8 tile_pitch = 16;
+    uint32 total_px = (cur_x * tile_pitch) + cur_x_add,
+           total_py = (cur_y * tile_pitch) + cur_y_add;
+    total_px += rel_x;
+    total_py += rel_y;
+    moveMap(total_px / tile_pitch, total_py / tile_pitch, cur_level,
+            total_px % tile_pitch, total_py % tile_pitch);
+}
+
+/* Center MapWindow on a location.
+ */
+void MapWindow::centerMap(uint16 x, uint16 y, uint8 z)
+{
+ moveMap(x - ((win_width - 1) / 2), y - ((win_height - 1) / 2), z);
 }
 
 void MapWindow::centerMapOnActor(Actor *actor)
@@ -215,11 +232,11 @@ void MapWindow::centerMapOnActor(Actor *actor)
  uint16 x;
  uint16 y;
  uint8 z;
- 
+
  actor->get_location(&x,&y,&z);
- 
- moveMap(x - ((win_width - 1) / 2), y - ((win_height - 1) / 2), z);
- 
+
+ centerMap(x, y, z);
+
  return;
 }
 
@@ -296,10 +313,14 @@ void MapWindow::get_level(uint8 *level)
  *level = cur_level;
 }
 
-void MapWindow::get_pos(uint16 *x, uint16 *y)
+void MapWindow::get_pos(uint16 *x, uint16 *y, uint8 *px, uint8 *py)
 {
  *x = cur_x;
  *y = cur_y;
+ if(px)
+   *px = cur_x_add;
+ if(py)
+   *py = cur_y_add;
 }
 
 
@@ -309,6 +330,48 @@ bool MapWindow::in_window(uint16 x, uint16 y, uint8 z)
 {
     return( (z == cur_level && x >= cur_x && x <= (cur_x + win_width)
              && y >= cur_y && y <= (cur_y + win_height)) );
+}
+
+
+/* Update player position if walking to mouse cursor. Update map position.
+ */
+void MapWindow::update()
+{
+    GameClock *clock = Game::get_game()->get_clock();
+    Event *event = Game::get_game()->get_event();
+    static uint32 last_update_time = clock->get_ticks();
+    uint32 update_time = clock->get_ticks();
+
+    anim_manager->update();
+
+    if(vel_x || vel_y)
+    {
+        if((update_time - last_update_time) >= 100) // only move every 10th sec
+        {
+            sint32 sx = vel_x / 10, sy = vel_y / 10;
+            if(vel_x && !sx) // move even if vel_x/vel_y was < 10
+                sx = (vel_x < 0) ? -1 : 1;
+            if(vel_y && !sy)
+                sy = (vel_y < 0) ? -1 : 1;
+
+            shiftMapRelative(sx, sy);
+            last_update_time = update_time;
+        }
+    }
+
+    if(walking)
+    {
+        // wait for possible double-click before starting
+        uint32 time_passed = update_time - last_mousedown_time;
+        int mx, my;
+        walk_start_delay -= ((sint32)(walk_start_delay - time_passed) > 0) ? time_passed : walk_start_delay;
+        if(walk_start_delay)
+            return;
+        if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(1) | SDL_BUTTON(3)))
+            event->walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
+                                        (uint32)my / screen->get_scale_factor());
+    }
+
 }
 
  
@@ -368,18 +431,22 @@ void MapWindow::Display(bool full_redraw)
   {
    for(j=0;j<win_width;j++)
      {
+      uint16 draw_x = (j*16), draw_y = (i*16);
+      draw_x -= (cur_x_add <= draw_x) ? cur_x_add : draw_x;
+      draw_y -= (cur_y_add <= draw_y) ? cur_y_add : draw_y;
+
       if(map_ptr[j] == 0)
-        screen->clear((j*16),(i*16),16,16,&clip_rect); //blackout tile.
+        screen->clear(draw_x,draw_y,16,16,&clip_rect); //blackout tile.
       else
         {
          if(map_ptr[j] >= 16 && map_ptr[j] < 48) //lay down the base tile for shoreline tiles
            {
             tile = tile_manager->get_anim_base_tile(map_ptr[j]);
-            screen->blit((j*16),(i*16),(unsigned char *)tile->data,8,16,16,16,tile->transparent,&clip_rect);
+            screen->blit(draw_x,draw_y,(unsigned char *)tile->data,8,16,16,16,tile->transparent,&clip_rect);
            }
 
          tile = tile_manager->get_tile(map_ptr[j]);
-         screen->blit((j*16),(i*16),(unsigned char *)tile->data,8,16,16,16,tile->transparent,&clip_rect);
+         screen->blit(draw_x,draw_y,(unsigned char *)tile->data,8,16,16,16,tile->transparent,&clip_rect);
         }
 
      }
@@ -612,16 +679,18 @@ inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile)
 //  {
 //    screen->blit(cursor_tile->data,8,x*16,y*16,16,16,false);
 //   }
-   
+// FIXME: Don't use pixel offset (x_add,y_add) here, pass it via params?
  if(toptile)
     {
      if(tile->toptile)
-        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
+//        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
+        screen->blit((x*16)-cur_x_add,(y*16)-cur_y_add,tile->data,8,16,16,16,tile->transparent,&clip_rect);
     }
  else
     {
      if(!tile->toptile)
-        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
+//        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
+        screen->blit((x*16)-cur_x_add,(y*16)-cur_y_add,tile->data,8,16,16,16,tile->transparent,&clip_rect);
     } 
 }
 
@@ -977,11 +1046,17 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
       }
     else //drop object onto map
       {   
-       obj->x = x;
-       obj->y = y;
-       obj->z = cur_level;
+//       obj->x = x;
+//       obj->y = y;
+//       obj->z = cur_level;
     
-       obj_manager->add_obj(obj,true);
+//       obj_manager->add_obj(obj,true);
+         Event *event = Game::get_game()->get_event();
+// if(dropping)
+         event->newAction(DROP_MODE);
+         event->drop_select(obj, obj->qty);
+         event->drop(x, y);
+// else move
       }
    }
 
@@ -993,6 +1068,8 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 
 GUI_status MapWindow::Idle(void)
 {
+#if 0 /* moved to update() */
+    Event *event = Game::get_game()->get_event();
     if(walking)
     {
         // wait for possible double-click before starting
@@ -1002,9 +1079,11 @@ GUI_status MapWindow::Idle(void)
         if(walk_start_delay)
             return(GUI_PASS);
         if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(1) | SDL_BUTTON(3)))
-            player_walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
+            event->walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
                                         (uint32)my / screen->get_scale_factor());
     }
+    return(GUI_PASS);
+#endif
     return(GUI_PASS);
 }
 
@@ -1013,6 +1092,7 @@ GUI_status MapWindow::Idle(void)
 GUI_status MapWindow::MouseClick(int x, int y, int button)
 {
     printf("Thou dost see the console.\n");
+// FIXME: LOOK here
     return(GUI_PASS);
 }
 
@@ -1028,7 +1108,7 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
     {
         int wx, wy;
         mouseToWorldCoords(x, y, wx, wy);
-        player_multiuse((uint16)wx, (uint16)wy);
+        event->multiuse((uint16)wx, (uint16)wy);
     }
     return(GUI_PASS);
 }
@@ -1084,6 +1164,7 @@ GUI_status MapWindow::MouseUp(int x, int y, int button)
 
 GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 {
+	Event *event = Game::get_game()->get_event();
 	Tile	*tile;
 
 	update_mouse_cursor((uint32)x, (uint32)y);
@@ -1110,10 +1191,9 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 		return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
 	}
 
+#if 0 /* moved to update() */
 	if(walking)
         {
-//		if((x == -1 || y == -1))
-//			walking == false;
 		// wait for possible double-click before starting
 		uint32 time_passed = SDL_GetTicks() - last_mousedown_time;
 
@@ -1123,10 +1203,10 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 		// use real mouse coords not -1,-1
 		state = SDL_GetMouseState(&x, &y);
 		if(state & (SDL_BUTTON(1) | SDL_BUTTON(3)))
-			player_walk_to_mouse_cursor((uint32)x / screen->get_scale_factor(),
+			event->walk_to_mouse_cursor((uint32)x / screen->get_scale_factor(),
                                                     (uint32)y / screen->get_scale_factor());
         }
-
+#endif
 	return	GUI_PASS;
 }
 
@@ -1209,164 +1289,26 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
  */
 void MapWindow::drawAnims()
 {
-//static uint32 add_test = 0;
-//#warning ANIMMANAGER
-//if(add_test == 0)
-//    anim_manager->new_anim(new TextAnim());
-//add_test = 1;
-//    if(!anim_manager->get_surface())
-//        anim_manager->set_surface(screen);
-//    anim_manager->update();
-//    anim_manager->display();
-}
-
-
-/* Walk the player towards the mouse cursor. (just 1 space for now)
- * FIXME: move somewhere else
- */
-void MapWindow::player_walk_to_mouse_cursor(uint32 mx, uint32 my)
+#if 0
+static uint32 add_test = 0;
+static sint32 anim_id = -1;
+if(add_test == 0)
 {
-// player->walk_to(uint16 x, uint16 y, uint16 move_max, uint16 timeout_seconds);
-    Player *player = Game::get_game()->get_player();
-    static uint32 walk_delay = player->get_walk_delay(),
-                  last_time = Game::get_game()->get_clock()->get_ticks();
-    uint32 this_time = Game::get_game()->get_clock()->get_ticks();
+//    if(anim_id >= 0)
+//        anim_manager->destroy_anim(anim_id);
+    TileAnim *anim = new TileAnim();
+    anim->add_tile(tile_manager->get_rotated_tile(tile_manager->get_tile(393), rotate_angle), 0, 0);
 
-        int wx, wy;
-        uint16 px, py;
-        uint8 pz;
-        sint16 rx, ry;
-        if((sint32)(walk_delay - (this_time - last_time)) < 0)
-            walk_delay = 0;
-        else
-            walk_delay -= (this_time - last_time);
-        last_time = this_time;
-        mouseToWorldCoords((int)mx, (int)my, wx, wy);
-        if(/*wx <= cur_x || wx > (cur_x + win_width) || wy <= cur_y || wy > (cur_y + win_height)
-           || */walk_delay > 0)
-            return;
-        player->get_location(&px, &py, &pz);
-        rx = wx - px;
-        ry = wy - py;
-        if(abs(rx) > (abs(ry)+1)) ry = 0;
-        else if(abs(ry) > (abs(rx)+1)) rx = 0;
-        player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
-                             (ry == 0) ? 0 : ry < 0 ? -1 : 1);
-
-    walk_delay = player->get_walk_delay();
+    anim->move(cur_x + 4, cur_y + 4);
+    anim_id = anim_manager->new_anim(anim);
+    add_test = 1; old_rotate = rotate_angle;
 }
-
-
-/* Talk to NPC, read a sign, or use an object at map coordinates.
- * FIXME: modularize, move to Event
- */
-void MapWindow::player_multiuse(uint16 wx, uint16 wy)
-{
-    UseCode *uc = Game::get_game()->get_usecode();
-    MsgScroll *scroll = Game::get_game()->get_scroll();
-    Converse *converse = Game::get_game()->get_converse();
-    Event *event = Game::get_game()->get_event();
-    Obj *obj = NULL;
-    Actor *actor = NULL, *player = actor_manager->get_player();
-    bool using_actor = false, talking = false;
-    MapCoord target(player->get_location());
-    const char *target_name = "nothing";
-
-    obj = obj_manager->get_obj(wx, wy, target.z);
-    actor = actor_manager->get_actor(wx, wy, target.z);
-
-    // use object or actor?
-    if(actor && actor->is_visible())
-    {
-        obj = actor->make_obj();
-        using_actor = true;
-        target.x = actor->x;
-        target.y = actor->y;
-        fprintf(stderr, "Use actor at %d,%d\n", actor->x, actor->y);
-    }
-    else if(obj)
-    {
-        target.x = obj->x;
-        target.y = obj->y;
-        fprintf(stderr, "Use object at %d,%d\n", obj->x, obj->y);
-    }
-
-    if(using_actor)
-    {
-        target_name = converse->npc_name(actor->get_actor_num());
-        if(!target_name && !(actor->get_flags() & 1)
-           && !Game::get_game()->get_player()->get_party()->contains_actor(actor))
-            target_name = look(target.x, target.y, false);
-        bool can_use = uc->has_usecode(obj);
-        if(can_use)
-        {
-            scroll->display_string("Use-");
-            scroll->display_string(target_name);
-            scroll->display_string("\n");
-            uc->use_obj(obj, player);
-        }
-        else
-        {
-            fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
-            if(actor->get_actor_num() == player->get_actor_num())
-            {
-                scroll->display_string("Talk-");
-                scroll->display_string(target_name);
-                scroll->display_string("\n");
-                scroll->display_string("\nTalking to yourself?\n");
-            }
-            else if(converse->start(actor)) // try to talk to actor
-            {
-                scroll->display_string("Talk-");
-                scroll->display_string(target_name);
-                scroll->display_string("\n");
-                player->face_actor(actor);
-                actor->face_actor(player);
-                talking = true;
-            }
-            else
-                scroll->display_string("Use-nothing\n");
-        }
-        // we were using an actor so free the temp Obj
-        obj_manager->delete_obj(obj);
-    }
-    else if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_SIGN_ARROW))
-    { /* usecode->is_sign(obj) */
-        scroll->display_string("Look-");
-        event->look(obj);
-    }
-    else if(obj)
-    {
-        target_name = obj_manager->look_obj(obj);
-        scroll->display_string("Use-");
-        scroll->display_string(target_name);
-        scroll->display_string("\n");
-
-        if(player->get_location().distance(target) > 1)
-        {
-            scroll->display_string("\nOut of range!\n");
-            fprintf(stderr, "distance to object: %d\n", player->get_location().distance(target));
-        }
-        else if(uc->has_usecode(obj))
-            uc->use_obj(obj, player);
-        else
-        {
-            fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
-            scroll->display_string("\nNot usable\n");
-        }
-    }
-    else
-        scroll->display_string("Use-nothing\n");
-
-    updateBlacking();
-
-    // if selecting another use-obj, select_obj will return to MOVE_MODE
-    // else display the prompt
-    if(event->get_mode() == MOVE_MODE && !talking)
-    {
-        scroll->display_string("\n");
-        scroll->display_prompt();
-    }
+#endif
+    if(!screen)
+        return;
+    else if(!anim_manager->get_surface())
+        anim_manager->set_surface(screen);
+    anim_manager->display();
 }
 
 
@@ -1476,10 +1418,11 @@ void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint
 }
 
 
-/* Revert mouse cursor to normal arrow.
+/* Revert mouse cursor to normal arrow. Stop walking.
  */
 GUI_status MapWindow::MouseLeave(Uint8 state)
 {
     Game::get_game()->set_mouse_pointer(0);
+    walking = false;
     return(GUI_PASS);
 }

@@ -55,7 +55,7 @@ bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c,
  actor = NULL;
  
  party_mode = true;
- uncontrolled = false;
+ mapwindow_centered = true;
   
  return true;
 }
@@ -127,12 +127,15 @@ Actor *Player::find_actor()
 }
 
 
-void Player::control()
+// keep MapWindow focused on Player actor, or remove focus
+void Player::set_mapwindow_centered(bool state)
 {
  uint16 x,y;
  uint8 z;
- 
- uncontrolled = false;
+
+ mapwindow_centered = state;
+ if(mapwindow_centered == false)
+    return;
  map_window->centerMapOnActor(actor);
  
  get_location(&x,&y,&z);
@@ -195,8 +198,6 @@ char *Player::get_gender_title()
 // walk to adjacent square
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
- if(uncontrolled)
-  return;
  uint16 x, y;
  uint8 z;
  actor->get_location(&x, &y, &z);
@@ -230,8 +231,6 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 // teleport-type move
 void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 {
-   if(uncontrolled)
-    return;
    actor->moves = 1; // player can always move (FIXME: check in Actor::move()?)
    if(actor->move(new_x, new_y, new_level, ACTOR_FORCE_MOVE))
    {
@@ -270,9 +269,6 @@ void Player::pass()
 {
  uint16 x,y;
  uint8 z;
- 
- if(uncontrolled)
-    return;
  
  clock->inc_move_counter_by_a_minute();
  if(party_mode && party->is_leader(actor)) // lead party

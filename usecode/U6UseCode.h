@@ -36,6 +36,7 @@
 #define U6_LORD_BRITISH_ORB_CHECK_FLAG 0x20 // this is set if the player has asked LB about the orb of moons
 
 class U6UseCode;
+class CallBack;
 class Configuration;
 class MsgScroll;
 
@@ -54,9 +55,8 @@ typedef struct // object properties & usecode
     uint16 flags; // properties (OBJTYPE)
 } U6ObjectType;
 
-class U6UseCode: public UseCode, public TimedCallbackTarget
+class U6UseCode: public UseCode, public CallBack
 {
-
  public:
  
  U6UseCode(Game *g, Configuration *cfg);
@@ -66,9 +66,9 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
  bool look_obj(Obj *obj, Actor *actor);
  bool pass_obj(Obj *obj, Actor *actor);
  bool search_obj(Obj *obj, Actor *actor);
- void timed_callback(void *obj_data);
  bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y);
  bool load_obj(Obj *obj);
+ bool message_obj(Obj *obj, CallbackMessage msg, void *msg_data);
  bool ready_obj(Obj *obj, Actor *actor);
  bool get_obj(Obj *obj, Actor *actor);
  bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y);
@@ -80,6 +80,8 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
  bool is_closed_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n > 3); }
  bool is_food(Obj *obj);
  bool is_container(Obj *obj);
+
+ uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
 
  protected:
  bool uc_event(const U6ObjectType *type, UseCodeEvent ev, Obj *obj);

@@ -197,7 +197,6 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
      }
     else
       tile_num =  ptr[y * get_width(level) + x];
-
  return tile_manager->lookAtTile(tile_num,qty,true);
 }
 
@@ -371,6 +370,8 @@ bool MapCoord::is_visible()
 
 bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result)
 {
+/* more checks added, may need more testing (SB-X) */
+#if 0
 	if (flags & LT_HitUnpassable)
 	{
 		if (!is_passable (x, y, level))
@@ -395,12 +396,62 @@ bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResul
 	}
 
 	return	false;
+#else
+	if (flags & LT_HitUnpassable)
+	{
+		if (!is_passable (x, y, level))
+		{
+			Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
+			return	true;
+		}
+	}
+	
+	if (flags & LT_HitForcedPassable)
+	{
+		if (obj_manager->is_forced_passable (x, y, level))
+		{
+			Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
+			return	true;
+		}
+	}
+
+	if (flags & LT_HitActors)
+	{
+		if (actor_manager->get_actor (x, y, level))
+		{
+			Result.init (x, y, level, actor_manager->get_actor (x, y, level), NULL);
+			return	true;
+		}
+	}
+
+	if ( (flags & LT_HitLocation) && Result.loc_to_hit)
+	{
+		if (x == Result.loc_to_hit->x && y == Result.loc_to_hit->y)
+		{
+			Result.init (x, y, level, NULL, NULL);
+			Result.loc_to_hit->z = level;
+                        Result.hitLoc = Result.loc_to_hit;
+			return	true;
+		}
+	}
+
+	if (flags & LT_HitObjects)
+	{
+		if (obj_manager->get_obj (x, y, level))
+		{
+			Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
+			return	true;
+		}
+	}
+
+	return	false;
+#endif
 }
 
 //	returns true if a line hits something travelling from (start_x, start_y) to
 //	(end_x, end_y).  If a hit occurs Result is filled in with the relevant info.
 bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
-				   uint8 flags, LineTestResult &Result)
+				   uint8 flags, LineTestResult &Result, uint32 skip)
 {
 	//	standard Bresenham's algorithm.
 	int	deltax = abs (end_x - start_x);
@@ -454,7 +505,7 @@ bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
 	for (int i = 0; i < count; i++)
 	{
 		//	test the current location
-		if (testIntersection(x, y, level, flags, Result) == true)
+		if ((i >= skip) && (testIntersection(x, y, level, flags, Result) == true))
 			return	true;
 
 		if (d < 0)

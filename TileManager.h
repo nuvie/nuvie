@@ -112,6 +112,8 @@ class TileManager
    void update();
    void update_timed_tiles(uint8 hour);
 
+   Tile *get_rotated_tile(Tile *tile, float rotate);
+
  protected:
    
    bool loadAnimData();

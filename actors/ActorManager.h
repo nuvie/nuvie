@@ -69,6 +69,7 @@ class ActorManager
  const char *look_actor(Actor *a, bool show_prefix = true);
 
  void set_update(bool u) { update = u; }
+ bool get_update()       { return(update); }
 
  void updateActors(uint16 x, uint16 y, uint8 z);
  void twitchActors();

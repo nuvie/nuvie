@@ -22,7 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <string>
+#include "CallBack.h"
+#include "MapEntity.h"
 #include "ObjManager.h"
 #include "Player.h"
 
@@ -31,9 +33,9 @@
 #define USE_EVENT_USE     0x01 /* return value undefined */
 #define USE_EVENT_LOOK    0x02 /* true: allow search, false: disallow search */
 #define USE_EVENT_PASS    0x04 /* true: do normal move, false: object blocks */
-#define USE_EVENT_ON      0x08 /* post-move/idle */
+#define USE_EVENT_MESSAGE 0x08 /* internal message or data return */
 #define USE_EVENT_SEARCH  0x10 /*undefined (true = had objects?); might remove*/
-#define USE_EVENT_TIMED   0x20 /* return value undefined */
+//#define USE_EVENT_ON      0x20 /* post-move/idle */
 #define USE_EVENT_MOVE    0x40 /* true: move object, false: don't move object */
 #define USE_EVENT_LOAD    0x80 /* return value undefined */
 #define USE_EVENT_READY   0x0100 /* true: object may be equipped */
@@ -62,11 +64,9 @@ typedef uint16 UseCodeEvent;
  * Called when someone looks at the object. Some objects aren't searched (books
  * for example) and should return false.
  *
- * TIMED (fumaroles, earthquakes?, powder kegs, clocks) FIXME: will change to MESSAGE
- * Returns: nothing
- * A timed event has been activated for the object. It must have already been
- * started by something else.
- * uint_ref - event activation time
+ * MESSAGE (fumaroles, earthquakes?, powder kegs, clocks)
+ * An internal event from the engine. It must have been previously requested.
+ * Includes TIMED events, and DATA returns.
  *
  * MOVE (cannons)
  * Returns: True to push object to the new position
@@ -116,8 +116,6 @@ typedef uint16 UseCodeEvent;
  * FIXME: might remove this and add as a player action
  *
  */
-
-
 class ActorManager;
 class Configuration;
 class Event;
@@ -140,10 +138,20 @@ class UseCode
  ActorManager *actor_manager;
  Party *party;
 
- sint32 int_ref; // pass objects to usecode functions
- Obj *obj_ref;
- Actor *actor_ref, *actor2_ref;
- MapCoord *mapcoord_ref;
+ // pass parameters to usecode functions via items (NULL itemref is unset)
+ struct
+ {
+  uint32 *uint_ref;
+  sint32 *sint_ref;
+  Obj *obj_ref;
+  Actor *actor_ref, *actor2_ref;
+  MapCoord *mapcoord_ref;
+  CallbackMessage *msg_ref;
+  std::string *string_ref;
+  MapEntity *ent_ref;
+  char *data_ref;
+ } items;
+ void clear_items();
 
  public:
  
@@ -161,6 +169,7 @@ class UseCode
  virtual bool search_obj(Obj *obj, Actor *actor) { return(false); }
  virtual bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y) { return(false); }
  virtual bool load_obj(Obj *obj)                 { return(false); }
+ virtual bool message_obj(Obj *obj, CallbackMessage msg, void *msg_data) { return(false); }
  virtual bool ready_obj(Obj *obj, Actor *actor)  { return(false); }
  virtual bool get_obj(Obj *obj, Actor *actor)    { return(false); }
  virtual bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y) { return(false); }
@@ -180,10 +189,10 @@ class UseCode
  virtual bool is_food(Obj *obj)          { return(false); }
  virtual bool is_container(Obj *obj)     { return(false); }
 
- void set_itemref(sint32 val) { int_ref = val; }
- void set_itemref(Obj *val)   { obj_ref = val; }
- void set_itemref(Actor *val, Actor *val2 = NULL) { actor_ref = val; actor2_ref = val2; }
- void set_itemref(MapCoord *val)   { mapcoord_ref = val; }
+ void set_itemref(sint32 *val) { items.sint_ref = val; }
+ void set_itemref(Obj *val)   { items.obj_ref = val; }
+ void set_itemref(Actor *val, Actor *val2 = NULL) { items.actor_ref = val; items.actor2_ref = val2; }
+ void set_itemref(MapCoord *val)   { items.mapcoord_ref = val; }
 
  Obj *get_obj_from_container(Obj *obj);
  bool search_container(Obj *obj);
@@ -192,6 +201,7 @@ class UseCode
  protected:
 
  void toggle_frame(Obj *obj);
+ void dbg_print_event(uint8 event, Obj *obj);
 
 };
 

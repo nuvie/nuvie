@@ -30,6 +30,7 @@
 #include "ObjManager.h"
 #include "GUI_CallBack.h"
 
+class CallbackTarget;
 class Configuration;
 class Book;
 class Game;
@@ -59,7 +60,8 @@ typedef enum {
  FREESELECT_MODE, /*...or use a single free-move mode for get,talk,select?*/
  PUSH_MODE,
  DROPTARGET_MODE,
- WAIT_MODE
+ DROPCOUNT_MODE, /* select how many objects to drop */
+ WAIT_MODE /* waiting for something, optionally display prompt when finished */
 } EventMode;
 
 extern uint32 nuvieGameCounter;
@@ -88,8 +90,9 @@ class Event : public GUI_CallBack
  uint8 alt_code_input_num; // alt-code can get multiple inputs
 
  TimeQueue *time_queue, *game_time_queue;
- Obj *use_obj;
+ Obj *use_obj; // used for many things right now (use/move/drop)
  Actor *selected_actor; // for PUSHSELECT
+ uint16 drop_qty;
 
  bool showingQuitDialog;
 
@@ -115,6 +118,7 @@ class Event : public GUI_CallBack
  void doAction(sint16 rel_x = 0, sint16 rel_y = 0);
  void cancelAction();
  void endAction();
+ void endWaitMode(); // change to MOVE_MODE, hide cursors, display prompt
 
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
@@ -135,9 +139,13 @@ class Event : public GUI_CallBack
  void party_mode();
  bool ready(Obj *obj);
  bool unready(Obj *obj);
- bool drop_select(Obj *obj);
- bool drop_to(uint16 x, uint16 y);
- bool drop(Obj *obj, uint16 x, uint16 y);
+ bool drop_select(Obj *obj, uint8 qty = 0);
+ bool drop_count(uint8 qty);
+ bool drop();
+ bool drop(Obj *obj, uint8 qty, uint16 x, uint16 y);
+ bool drop(uint16 x, uint16 y) { return(drop(use_obj, drop_qty, x, y)); }
+ void walk_to_mouse_cursor(uint32 mx, uint32 my);
+ void multiuse(uint16 wx, uint16 wy);
 
  void alt_code(const char *cs);
  void alt_code_input(const char *in);
@@ -149,6 +157,8 @@ class Event : public GUI_CallBack
 
  void wait();
 
+/* FIXME: Some of the above (action) functions can be removed from public, so
+   that we don't need to check for WAIT mode in all of them. */
  protected:
 
  inline Uint32 TimeLeft();
@@ -157,7 +167,7 @@ class Event : public GUI_CallBack
  void saveDialog();
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
  bool handleSDL_KEYDOWN (const SDL_Event *event);
- 
+
 };
 
 

@@ -41,6 +41,7 @@
 #include "Text.h"
 #include "FontManager.h"
 #include "ViewManager.h"
+#include "EffectManager.h"
 
 #include "MsgScroll.h"
 #include "Map.h"
@@ -75,7 +76,7 @@ Game::~Game()
     delete obj_manager;
     delete palette;
     delete text;
-	delete font_manager;
+    delete font_manager;
     //delete scroll;
     delete game_map;
     delete actor_manager;
@@ -91,6 +92,7 @@ Game::~Game()
     delete sound_manager;
     delete gui;
     delete usecode;
+    delete effect_manager;
     if(cursor) delete cursor;
 }
  
@@ -179,6 +181,8 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    usecode->init(obj_manager, game_map, player, scroll);
 
+   effect_manager = new EffectManager;
+
    init_cursor();
 
    event = new Event(config);
@@ -201,10 +205,6 @@ bool Game::loadGame(Screen *s, uint8 type)
 
 void Game::init_cursor()
 {
-
-    
-    //config->value("config/ultima6/gamedir", pointers_f);
-    //pointers_f += "u6mcga.ptr";
     cursor = new Cursor();
     if(cursor->init(config, screen))
        SDL_ShowCursor(false); // won't need the system default
@@ -219,6 +219,40 @@ void Game::init_cursor()
 bool Game::set_mouse_pointer(uint8 ptr_num)
 {
     return(cursor && cursor->set_pointer(ptr_num));
+}
+
+
+void Game::set_pause_flags(GamePauseState state)
+{
+    pause_flags = state; // set
+
+    // if stopped user input set event to wait mode
+    // else set event back to move mode
+    if(user_paused())
+    {
+        if(event->get_mode() != WAIT_MODE)
+            event->set_mode(WAIT_MODE);
+    }
+    else if(event->get_mode() == WAIT_MODE)
+        event->endWaitMode(); // change to MOVE_MODE, hide cursors, display prompt
+
+    // if stopped world, freeze actormanager and gameclock
+    if(world_paused())
+    {
+        if(actor_manager->get_update() == true) // ActorMgr is running
+            game->get_actor_manager()->set_update(false); // pause
+
+        if(clock->get_active() == true) // stop time
+            clock->set_active(false);
+    }
+    else // unpaused
+    {
+        if(actor_manager->get_update() == false) // ActorMgr is not running
+            game->get_actor_manager()->set_update(true); // resume
+
+        if(clock->get_active() == false) // start time
+            clock->set_active(true);
+    }
 }
 
 
@@ -245,9 +279,11 @@ void Game::play()
      palette->rotatePalette();
      tile_manager->update();
      actor_manager->twitchActors();
+     map_window->update();
      //map_window->drawMap();
      converse->continue_script();
      //scroll->updateScroll();
+     effect_manager->update_effects();
 
      if(cursor) cursor->clear();
      gui->Display();

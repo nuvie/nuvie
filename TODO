@@ -36,7 +36,6 @@ Finish not completely implemented/known instructions:
     0xdb - unpoison actors
 
 Event:
-Drop objects from inventory
 Move objects within the party and into containers
 Take low-level input handling out of Event and make a keybinder.
 Take higher-level functions and move to PlayerAction class. This will be able
@@ -57,8 +56,7 @@ Execute Usecode for post-move actions (frame changes), and when entering/leaving
 the screen area.
 Ex: call an event on "chair" when actor steps on it, to change to sit frame
  (This can be used to implement poison/sleep fields.)
-move u6ucobject stuff up to UseCode, needs to be generic to avoid duplication
-U6ObjectTypes, with one function per object
+U6ObjectTypes: only use one function per object if possible (purpose of events)
 
 MsgScroll:
 Give message scroller and other GUI areas some high-level I/O methods
@@ -70,7 +68,9 @@ PgUp/Dn
 Iolo "gather" should not gather gold from the Avatar's bags
      "split" does take all gold from the Avatar's bags, but adds outside of bags
 
-How does U6 determine the maximum stack-quantity for objects?
+How does U6 determine the maximum stack-quantity for objects? If I dial up 99
+powder kegs from Iolo, it should fill 99 slots in the inventory, rather than
+adding a powder keg with a quantity of 99.
 
 Actors:
 Improve Party following
@@ -80,6 +80,7 @@ to destination (it is not solely based on terrain score).
 New Follow pathfinder, follow an actor (if on same plane), with give-up distance
     (also run from actor)
 New Monster pathfinder
+Add ActorAction to do things like walking to a destination, and worktypes?
 
 Move static mode out of U6Actor::wt_beg because it affects all actors with that
 worktype. Change worktype to wander after talked to player.
@@ -92,6 +93,13 @@ Fix actor draw order issues.
 Move Configuration search to Configuration or somewhere so it can be used in
 tools.
 
+Effect: The way pause/resume while doing effects is interesting. If one effect
+chains another, it may step out of wait mode before the original effect is
+complete. By default this displays the prompt for some effects, so you get
+multiple prompts. Fix this.
+And while on the subject, need to correctly handle pausing the GameClock and
+animations. (perhaps sound effects)
+
 things to do:
 raft
 balloon
@@ -99,12 +107,10 @@ fadeout & time-advance (working on it)
 camping
 combat, combat worktypes
 weapons
-sfx
+sfx ... find some sfx (from FM-TOWNS, SNES or C64)
 weather/ wind direction
 map wrapping
-saving!
 magic
-sprite animations (working on it)
 intro/end sequences
 game/gameselect menu(s)
 

@@ -100,6 +100,9 @@ bool GamePalette::loadPalette()
 
 void GamePalette::rotatePalette()
 {
+ if(Game::get_game()->get_pause_flags() & PAUSE_ANIMS)
+  return;
+
  screen->rotate_palette(0xe0,8); // Fires, braziers, candles
  screen->rotate_palette(0xe8,8); // BluGlo[tm] magical items
 

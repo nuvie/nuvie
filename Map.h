@@ -31,6 +31,7 @@ class Configuration;
 class U6LList;
 class Actor;
 class ActorManager;
+class MapCoord;
 class TileManager;
 class Screen;
 
@@ -40,12 +41,22 @@ typedef enum LineTestFlags
 {
 	LT_HitActors			= (1<<0),
 	LT_HitUnpassable		= (1<<1),
-	LT_HitForcedPassable	= (1<<2)
+	LT_HitForcedPassable		= (1<<2),
+        LT_HitLocation			= (1<<3), /* hit location in Result */
+        LT_HitObjects			= (1<<4)  /* hit any object */
 };
 
 class LineTestResult
 {
 public:
+	LineTestResult() // clears properties not set by init() (SB-X)
+	{
+		hit_x = 0; hit_y = 0; hit_level = 0;
+		hitActor = NULL;
+		hitObj = NULL;
+		hitLoc = NULL;
+		loc_to_hit = NULL;
+	}
 	void	init (int x, int y, uint8 level, Actor* actorHit, Obj* objHit)
 	{
 		hit_x = x;
@@ -60,6 +71,8 @@ public:
 	uint8	hit_level;	// map level where object / actor was hit
 	Actor*	hitActor;
 	Obj*	hitObj;
+	MapCoord*	hitLoc;
+	MapCoord*	loc_to_hit;	// set hitLoc if hit x,y (z changes)
 };
 
 //typedef	(*LineTestFilter)(int x, int y, int level, LineTestResult &Result);
@@ -126,7 +139,7 @@ class Map
  const char *look(uint16 x, uint16 y, uint8 level);
 
  bool lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
-	 	       uint8 flags, LineTestResult &Result);
+	 	       uint8 flags, LineTestResult &Result, uint32 skip = 0);
  
  protected:
   

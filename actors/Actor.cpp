@@ -35,6 +35,7 @@
 #include "LPath.h"
 #include "ZPath.h"
 #include "Converse.h"
+#include "Effect.h"
 #include "Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
@@ -281,7 +282,7 @@ const char *Actor::get_name()
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     Converse *converse = Game::get_game()->get_converse();
     Party *party = Game::get_game()->get_party();
-    const char *talk_name = NULL;
+    const char *talk_name = NULL; // name from conversation script
 
     if(name == "")
     {
@@ -380,7 +381,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
         party->find_leader(party_member);
  }
  // re-center map if actor is player character
- if(id_n == game->get_player()->get_actor()->id_n && !game->get_player()->get_uncontrolled())
+ if(id_n == game->get_player()->get_actor()->id_n && game->get_player()->is_mapwindow_centered())
     game->get_map_window()->centerMapOnActor(this);
  return true;
 }
@@ -1186,3 +1187,52 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
     }
     return(false);
 }
+
+
+/* Subtract amount from hp. May die if hp is too low.
+ */
+void Actor::reduce_hp(uint8 amount)
+{
+    if(amount <= hp) hp -= amount;
+    else hp = 0;
+// FIX... game specific?
+    if(hp == 0)
+        die();
+}
+
+
+/* Replace actor object with dead body, complete with matching wardrobe.
+ */
+void Actor::die()
+{
+    Game *game = Game::get_game();
+    hp = 0;
+    alive = false;
+// FIX
+//    if I am the Player, fade-out, restore party, move to castle, fade-in
+//    ...of course, that is just in U6
+    if(this != game->get_player()->get_actor())
+    {
+        move(0,0,0,ACTOR_FORCE_MOVE); // ??
+        game->get_party()->remove_actor(this);
+    }
+//    add some blood? or do that in hit?
+}
+
+
+/* Get hit and take damage by some indirect effect. (no source)
+ */
+void Actor::hit(uint8 dmg)
+{
+    if(dmg)
+    {
+        fprintf(stderr, "hit %s for %d points", get_name(), dmg);
+        new HitEffect(this);
+        reduce_hp(dmg);
+        if(alive)
+            fprintf(stderr, ", %d remaining\n", hp);
+        else
+            fprintf(stderr, "\n%s killed!\n", get_name());
+    }
+}
+

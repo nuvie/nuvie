@@ -33,6 +33,7 @@
 #include "Party.h"
 #include "ActorManager.h"
 #include "Converse.h"
+#include "Effect.h"
 
 #include "U6ActorTypes.h"
 
@@ -43,7 +44,7 @@ static uint8 walk_frame_tbl[4] = {0,1,2,1}; //FIX
 
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
- 
+ beg_mode = 0; // beggers are waiting for targets
 }
 
 U6Actor::~U6Actor()
@@ -304,7 +305,8 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  bool ret;
  sint16 rel_x, rel_y;
  MsgScroll *scroll = Game::get_game()->get_scroll();
- Party *party = Game::get_game()->get_party();
+ Player *player = Game::get_game()->get_player();
+ Party *party = player->get_party();
  MapCoord old_pos = get_location();
  
  if(has_surrounding_objs())
@@ -329,14 +331,13 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 
          if(obj->obj_n == OBJ_U6_FIRE_FIELD) // ouch
            {
-            //hit animation
-            //-?? hp
+            hit(5); // -?? hp?
             if(in_party)
                scroll->message("Ouch!\n");
            }
          if(obj->obj_n == OBJ_U6_POISON_FIELD/* && not poisoned*/) // ick
            {
-            //hit animation
+            new HitEffect(this); // no direct hp loss
             if(in_party)
               {
                scroll->display_string(party->get_actor_name(party->get_member_num(this)));
@@ -351,7 +352,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
            }
          if(obj->obj_n == OBJ_U6_SLEEP_FIELD) // Zzz
            {
-            //hit animation
+            new HitEffect(this); // no hp loss
             //fall asleep (change worktype?)
             if(in_party)
                scroll->message("Zzz...\n");
@@ -359,10 +360,17 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
         }
      }
      // temp. fix; this too should be done with UseCode (and don't move the mirror)
-     Obj *old_mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,old_pos.x,old_pos.y-1,old_pos.z);
-     Obj *mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,new_x,new_y-1,new_z);
-     if(old_mirror) old_mirror->frame_n = 0;
-     if(mirror)     mirror->frame_n = 1;
+     if(old_pos.y > 0 && new_y > 0)
+     {
+         Obj *old_mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,old_pos.x,old_pos.y-1,old_pos.z);
+         Obj *mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,new_x,new_y-1,new_z);
+         if(old_mirror) old_mirror->frame_n = 0;
+         if(mirror)     mirror->frame_n = 1;
+     }
+
+   // Cyclops: shake ground if player is near
+   if(actor_type->base_obj_n == OBJ_U6_CYCLOPS && is_nearby(player->get_actor()))
+      new QuakeEffect(1, 200, player->get_actor());
   }
 
  if(has_surrounding_objs()) //add our surrounding objects back onto the map.
@@ -634,22 +642,23 @@ void U6Actor::wt_farm_animal_wander()
 
 
 /* Wander around, approach and talk to the player character if visible.
+ * Beg modes: 0 = waiting for target, 1 = following, 2 = just loiter
+ * FIXME: Might also be done using 3 worktypes.
  */
 void U6Actor::wt_beg()
 {
-    static uint8 mode = 0;// 0 = waiting for target, 1 = following,
-    Player *player = Game::get_game()->get_player();          // 2 = just loiter
+    Player *player = Game::get_game()->get_player();
     Actor *actor = player->get_actor();
     uint32 dist_from_start = 0;
     if(work_location.x || work_location.y)
         dist_from_start = get_location().distance(work_location);
 
-    if(mode == 0)
+    if(beg_mode == 0)
         if(is_nearby(actor)) // look for victi... er, player
-            mode = 1;
-    if(mode == 1)
+            beg_mode = 1;
+    if(beg_mode == 1)
     {
-        mode = is_nearby(actor) ? 1 : 0; // still visible?
+        beg_mode = is_nearby(actor) ? 1 : 0; // still visible?
         Party *party = player->get_party();
         MapCoord me(x,y,z), them(0,0,0);
         for(uint32 p = 0; p < party->get_party_size(); p++)
@@ -672,7 +681,7 @@ void U6Actor::wt_beg()
                     actor->face_actor(this);
                     face_actor(actor);
                 }
-                mode = 2;
+                beg_mode = 2;
                 return; // done
             }
         }
@@ -1096,3 +1105,22 @@ inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 ac
 
  return;
 }
+
+
+void U6Actor::die()
+{
+    MapCoord actor_loc = get_location();
+    Actor::die();
+    if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
+    {
+        Obj *dead_body = new Obj;
+        dead_body->obj_n = actor_type->dead_obj_n;
+        dead_body->frame_n = actor_type->dead_frame_n;
+        dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;
+        dead_body->quality = id_n;
+        dead_body->status = OBJ_STATUS_OK_TO_TAKE;
+        obj_manager->add_obj(dead_body, true);
+        // FIX: move my inventory into the dead body container
+    }
+}
+

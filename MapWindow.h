@@ -71,6 +71,9 @@ class MapWindow: public GUI_Widget
  uint16 win_width, win_height;
  uint8 cur_level;
 
+ uint8 cur_x_add, cur_y_add; // pixel offset from cur_x,cur_y (set by shiftMapRelative)
+ sint32 vel_x, vel_y; // velocity of automatic map movement (pixels per second)
+
  SDL_Rect clip_rect;
 
  Obj* selected_obj;
@@ -91,12 +94,15 @@ class MapWindow: public GUI_Widget
  bool set_windowSize(uint16 width, uint16 height);
  void set_show_cursor(bool state);
  void set_show_use_cursor(bool state);
+ void set_velocity(sint16 vx, sint16 vy) { vel_x = vx; vel_y = vy; }
  
  void moveLevel(uint8 new_level);
- void moveMap(sint16 new_x, sint16 new_y, sint8 new_level);
+ void moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add = 0, uint8 new_y_add = 0);
  void moveMapRelative(sint16 rel_x, sint16 rel_y);
- 
+ void shiftMapRelative(sint16 rel_x, sint16 rel_y);
+
  void centerMapOnActor(Actor *actor);
+ void centerMap(uint16 x, uint16 y, uint8 z);
  void centerCursor();
  
  void moveCursor(sint16 new_x, sint16 new_y);
@@ -113,16 +119,18 @@ class MapWindow: public GUI_Widget
  void get_movement_direction(uint16 wx, uint16 wx, sint16 &rel_x, sint16 &rel_y);
 
  TileManager *get_tile_manager() { return tile_manager; }
- SDL_Rect *get_clip_rect() { return &clip_rect; }
+ SDL_Rect *get_clip_rect()       { return &clip_rect; }
+ AnimManager *get_anim_manager() { return anim_manager; }
 
  void get_level(uint8 *level);
- void get_pos(uint16 *x, uint16 *y);
+ void get_pos(uint16 *x, uint16 *y, uint8 *px = NULL, uint8 *py = NULL);
+ void get_velocity(sint16 *vx, sint16 *vy) { *vx = vel_x; *vy = vel_y; }
 
  bool in_window(uint16 x, uint16 y, uint8 z);
  bool in_dungeon_level() { return(cur_level != 0 && cur_level != 5); }
 
  void updateBlacking();
- 
+ void update();
  void Display(bool full_redraw);
  
  virtual GUI_status	MouseDown (int x, int y, int button);
@@ -140,9 +148,6 @@ class MapWindow: public GUI_Widget
  void drag_perform_drop(int x, int y, int message, void *data);
 
  void drag_draw(int x, int y, int message, void* data);
-
- void player_walk_to_mouse_cursor(uint32 mx, uint32 my);
- void player_multiuse(uint16 wx, uint16 wy);
 
  void update_mouse_cursor(uint32 mx, uint32 my);
 

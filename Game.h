@@ -23,6 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <vector>
 
 class Configuration;
 class Screen;
@@ -46,6 +47,7 @@ class Portrait;
 class UseCode;
 class Event;
 class GUI;
+class EffectManager;
 class SoundManager;
 class SaveManager;
 
@@ -79,6 +81,7 @@ class Game
  Converse *converse;
  
  ViewManager *view_manager;
+ EffectManager *effect_manager;
  SoundManager *sound_manager;
  SaveManager *save_manager;
  
@@ -93,7 +96,7 @@ class Game
  GUI *gui;
 
  GamePauseState pause_flags;
- 
+
  public:
  
  Game(Configuration *cfg);
@@ -105,9 +108,18 @@ class Game
  void play();
 
  GamePauseState get_pause_flags()            { return(pause_flags); }
- void set_pause_flags(GamePauseState state)  { pause_flags = state; }
- void unpause()    { pause_flags = PAUSE_UNPAUSED; }
- void pause_all()  { pause_flags = PAUSE_ALL; }
+ void set_pause_flags(GamePauseState state);
+ void unpause_all() { set_pause_flags(PAUSE_UNPAUSED); }
+ void pause_all()   { set_pause_flags(PAUSE_ALL); }
+ void pause_user()  { set_pause_flags((GamePauseState)(pause_flags | PAUSE_USER)); }
+ bool pause_anims() { set_pause_flags((GamePauseState)(pause_flags | PAUSE_ANIMS)); }
+ void pause_world() { set_pause_flags((GamePauseState)(pause_flags | PAUSE_WORLD)); }
+
+ bool paused()       { return(pause_flags); }
+ bool all_paused()   { return(pause_flags & PAUSE_ALL); }
+ bool user_paused()  { return(pause_flags & PAUSE_USER); }
+ bool anims_paused() { return(pause_flags & PAUSE_ANIMS); }
+ bool world_paused() { return(pause_flags & PAUSE_WORLD); }
 
  bool set_mouse_pointer(uint8 ptr_num);
 
@@ -138,6 +150,8 @@ class Game
  SaveManager *get_save_manager()   { return(save_manager); }
  
  Cursor *get_cursor()              { return(cursor); }
+ EffectManager *get_effect_manager()
+                                   { return(effect_manager); }
 
  protected:
  

@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include "CallBack.h"
 #include "GUI_widget.h"
 
 #define MSGSCROLL_U6_WIDTH 17
@@ -79,7 +79,7 @@ class MsgLine
  MsgText *get_text_at_pos(uint16 pos);
 };
 
-class MsgScroll: public GUI_Widget
+class MsgScroll: public GUI_Widget, public CallBack
 {
  Configuration *config;
  int game_type;
@@ -114,6 +114,11 @@ class MsgScroll: public GUI_Widget
  uint16 line_count; // count the number of lines since last page break.
  
  uint16 display_pos;
+
+ // set by request_input()
+ CallBack *callback_target;
+ char *callback_user_data;
+
  public:
  
  MsgScroll(Configuration *cfg, Font *f);
@@ -122,7 +127,6 @@ class MsgScroll: public GUI_Widget
  bool init(char *player_name);
  
  void process_holding_buffer();
- 
 
  MsgText *holding_buffer_get_token();
  bool add_token(MsgText *token);
@@ -166,6 +170,9 @@ class MsgScroll: public GUI_Widget
  
  bool has_input();
  std::string get_input();
+ const char *peek_at_input();
+ void request_input(CallBack *caller, void *user_data);
+ void cancel_input_request() { request_input(NULL, NULL); }
  
  protected:
  

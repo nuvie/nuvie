@@ -44,12 +44,16 @@
 #include "InventoryView.h"
 #include "U6LList.h"
 #include "Event.h"
+#include "U6objects.h"
+#include "Effect.h"
+#include "EffectManager.h"
 
 #include "UseCode.h"
 #include "SaveManager.h"
 
 #include "GUI.h"
 #include "GUI_YesNoDialog.h"
+
 
 Event::Event(Configuration *cfg)
 {
@@ -224,6 +228,9 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_m     :
 			newAction(PUSHSELECT_MODE);
 			break;
+		case SDLK_d     :
+			newAction(DROP_MODE);
+			break;
                 case SDLK_F1:
                 case SDLK_F2:
                 case SDLK_F3:
@@ -281,6 +288,7 @@ bool Event::handleEvent(const SDL_Event *event)
 {
 	if(mode == WAIT_MODE)
 		return true;
+
 	switch (event->type) 
 	{
 		case SDL_MOUSEMOTION:
@@ -313,6 +321,8 @@ bool Event::handleEvent(const SDL_Event *event)
 
 	if(active_alt_code && scroll->has_input())
 		alt_code_input(scroll->get_input().c_str());
+	else if(mode == DROPCOUNT_MODE && scroll->has_input())
+		drop_count(strtol(scroll->get_input().c_str(), NULL, 10));
 
 	return true;
 }
@@ -375,6 +385,10 @@ bool Event::talk()
           *pc = player->get_actor();
     uint8 id = 0;
     const char *name = NULL;
+
+    if(mode == WAIT_MODE)
+        return(false);
+
     if(!npc)
     {
         scroll->display_string("nothing!\n\n");
@@ -431,6 +445,9 @@ bool Event::talk()
 
 bool Event::move(sint16 rel_x, sint16 rel_y)
 {
+ if(mode == WAIT_MODE)
+    return false;
+
  if(mode == LOOK_MODE || mode == TALK_MODE || mode == FREESELECT_MODE
     || mode == EQUIP_MODE || mode == DROP_MODE || mode == DROPTARGET_MODE)
     map_window->moveCursorRelative(rel_x,rel_y);
@@ -484,6 +501,9 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
 {
     bool got_object = false;
     float weight;
+    if(mode == WAIT_MODE)
+        return(false);
+
     if(!actor)
         actor = player->get_actor();
 
@@ -511,7 +531,7 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
                 {
                     scroll->display_string("\n\nStealing!!!"); // or "Stop Thief!!!"
                     player->subtract_karma();
-                    obj->status |= OBJ_STATUS_OK_TO_TAKE; // FIXME move to DROP
+                    obj->status |= OBJ_STATUS_OK_TO_TAKE;
                 }
                 obj_manager->remove_obj(obj); //remove object from map.
 
@@ -570,40 +590,49 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 
 bool Event::use(Obj *obj)
 {
+    if(mode == WAIT_MODE)
+        return(false);
     MapCoord target(obj->x, obj->y, obj->z);
+    bool display_prompt = true;
+
+    // end-action moved up here before the USE, so that usecode can change mode
+//    endAction(); // FIXME: might need to just switch mode here, but not end action
 
     scroll->display_string(obj_manager->look_obj(obj));
     scroll->display_string("\n");
 
-    if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player->get_actor()->get_location().distance(target) > 1)
+    if(!obj->is_in_inventory() && player->get_actor()->get_location().distance(target) > 1)
     {
         scroll->display_string("\nOut of range!\n");
         fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
     }
-    else if(usecode->has_usecode(obj))
-        usecode->use_obj(obj, player->get_actor());
+    else if(usecode->has_usecode(obj)) // Usable
+        display_prompt = usecode->use_obj(obj, player->get_actor());
     else
     {
         scroll->display_string("\nNot usable\n");
         fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
     }
-    map_window->updateBlacking();
-    // if selecting (now in a select mode), select_obj will return to MOVE_MODE
-    // else (mode is still USE_MODE) return to MOVE_MODE now
-    if(mode == USE_MODE)
+
+    map_window->updateBlacking(); // cleanup
+    if(display_prompt)
     {
         scroll->display_string("\n");
         scroll->display_prompt();
-        endAction();
     }
+    if(mode == USE_MODE) // check mode because UseCode may have changed it
+        endAction();
     return(true);
 }
 
 
 bool Event::use(Actor *actor)
 {
+    if(mode == WAIT_MODE)
+        return false;
     MapCoord target = actor->get_location();
     Obj *obj = actor->make_obj();
+    bool display_prompt = true;
 
     if(usecode->has_usecode(obj))
     {
@@ -611,11 +640,11 @@ bool Event::use(Actor *actor)
         scroll->display_string("\n");
         if(player->get_actor()->get_location().distance(target) > 1)
         {
-            scroll->display_string("\nToo far away!\n");
+            scroll->display_string("\nOut of range!\n");
             fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
         }
         else
-            usecode->use_obj(obj, player->get_actor());
+            display_prompt = usecode->use_obj(obj, player->get_actor());
     }
     else
     {
@@ -628,8 +657,11 @@ bool Event::use(Actor *actor)
     // else (mode is still USE_MODE) return to MOVE_MODE now
     if(mode == USE_MODE)
     {
-        scroll->display_string("\n");
-        scroll->display_prompt();
+        if(display_prompt)
+        {
+            scroll->display_string("\n");
+            scroll->display_prompt();
+        }
         endAction();
     }
     return(true);
@@ -648,6 +680,9 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
  actor = map->get_actor((uint16)(x+rel_x), (uint16)(y+rel_y), level);
 
+ if(mode == WAIT_MODE)
+    return false;
+
  if(obj)
     return(use(obj));
  else if(actor && actor->is_visible())
@@ -655,14 +690,9 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
 
  scroll->display_string("nothing\n");
 
- // if selecting (now in a select mode), select_obj will return to MOVE_MODE
- // else (mode is still USE_MODE) return to MOVE_MODE now
- if(mode == USE_MODE)
- {
-     scroll->display_string("\n");
-     scroll->display_prompt();
-     endAction();
- }
+ scroll->display_string("\n");
+ scroll->display_prompt();
+ endAction();
  return true;
 }
 
@@ -672,11 +702,16 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  */
 bool Event::select_obj(Obj *obj, Actor *actor)
 {
+    bool display_prompt = true;
     static MapCoord loc(0,0,0);
     if(!obj)
         obj = map_window->get_objAtCursor();
     if(!actor)
         actor = map_window->get_actorAtCursor();
+
+    if(mode == WAIT_MODE)
+        return(false);
+
     usecode->set_itemref(obj);
     usecode->set_itemref(NULL, actor);
     loc=map_window->get_cursorCoord();
@@ -684,13 +719,15 @@ bool Event::select_obj(Obj *obj, Actor *actor)
     //if(use_obj && (obj || actor))  // removed so it works with location only.
     //hopefully won't break anything, needs reimplementation anyway.
     if(use_obj)
-     usecode->use_obj(use_obj, player->get_actor());
-    use_obj = NULL;
+     display_prompt = usecode->use_obj(use_obj, player->get_actor());
+
     // return to MOVE_MODE
-    scroll->display_string("\n");
-    scroll->display_prompt();
+    if(display_prompt)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+    }
     endAction();
-    map_window->updateBlacking();
     return(true);
 }
 
@@ -716,6 +753,9 @@ bool Event::look(Obj *obj)
     char weight_string[32];
     float weight;
     bool special_desc = false;
+
+    if(mode == WAIT_MODE)
+        return(false);
 
     obj_manager->print_obj(obj, false); // DEBUG
     scroll->display_string("Thou dost see ");
@@ -757,6 +797,10 @@ bool Event::look(Actor *actor)
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     sint16 p_id = -1; // party member number of actor
     bool had_portrait = true;
+
+    if(mode == WAIT_MODE)
+        return(false);
+
     display_portrait(actor);
     had_portrait = view_manager->get_portrait_view()->get_waiting();
 
@@ -776,6 +820,10 @@ bool Event::search(Obj *obj)
 {
     MapCoord player_loc = player->get_actor()->get_location(),
              target_loc = map_window->get_cursorCoord();
+
+    if(mode == WAIT_MODE)
+        return(false);
+
     if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player_loc.distance(target_loc) <= 1)
     {
         scroll->display_string("Searching here, you find ");
@@ -798,6 +846,9 @@ bool Event::look()
  Obj *obj = map_window->get_objAtCursor();
  Actor *actor = map_window->get_actorAtCursor();
 
+ if(mode == WAIT_MODE)
+   return false;
+
  if(actor)
    display_prompt = !look(actor);
  else if(obj) // don't display weight or do usecode for obj under actor
@@ -811,7 +862,7 @@ bool Event::look()
   {
    scroll->display_string("Thou dost see ");
    scroll->display_string(map_window->lookAtCursor());
-   scroll->display_string("\n");
+//   scroll->display_string("\n");
   }
 
  if(display_prompt)
@@ -831,6 +882,10 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
     bool can_move = false;
     Map *map = Game::get_game()->get_game_map();
     LineTestResult lt;
+
+    if(mode == WAIT_MODE)
+        return(false);
+
     if(rel_x == 0 && rel_y == -1) // FIXME: move direction names somewhere else
         scroll->display_string("North.");
     else if(rel_x == 1 && rel_y == -1)
@@ -855,6 +910,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
     //        kind of check U6 did ("Failed.\n\n")
     if(selected_actor)
     {
+        // if actor can take a step, do so; else 50% chance of pushing them
         MapCoord from(selected_actor->get_location());
         if(map->lineTest(from.x+rel_x, from.y+rel_y, from.x+rel_x, from.y+rel_y,
                          from.z, LT_HitActors | LT_HitUnpassable, lt))
@@ -909,6 +965,10 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
 {
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     MapCoord from = player->get_actor()->get_location();
+
+    if(mode == WAIT_MODE)
+        return(false);
+
     map_window->set_show_use_cursor(false);
     if(rel_x || rel_y)
     {
@@ -1511,6 +1571,9 @@ void Event::solo_mode(uint32 party_member)
 {
     Actor *actor = player->get_party()->get_actor(party_member);
 
+    if(mode == WAIT_MODE)
+        return;
+
     if(player->get_actor()->get_actor_num() == 0) // vehicle
         return;
 
@@ -1535,6 +1598,9 @@ void Event::party_mode()
     MapCoord leader_loc;
     Actor *actor = player->get_party()->get_actor(0);
     assert(actor); // there must be a leader
+
+    if(mode == WAIT_MODE)
+        return;
 
     if(player->get_actor()->get_actor_num() == 0) // vehicle
         return;
@@ -1566,6 +1632,10 @@ bool Event::ready(Obj *obj)
 {
     Actor *actor = Game::get_game()->get_actor_manager()->get_actor(obj->x);
     bool readied = false;
+
+    if(mode == WAIT_MODE)
+        return(false);
+
     scroll->display_string("Ready-");
     scroll->display_string(obj_manager->look_obj(obj, false));
     scroll->display_string("\n");
@@ -1592,6 +1662,10 @@ bool Event::ready(Obj *obj)
 bool Event::unready(Obj *obj)
 {
     Actor *actor = Game::get_game()->get_actor_manager()->get_actor(obj->x);
+
+    if(mode == WAIT_MODE)
+        return(false);
+
     scroll->display_string("Unready-");
     scroll->display_string(obj_manager->look_obj(obj, false));
     scroll->display_string("\n");
@@ -1612,28 +1686,274 @@ bool Event::unready(Obj *obj)
 }
 
 
-/* Print object name and select it as object to be dropped.
+/* Print object name and select it as object to be dropped. If qty is 0, the
+ * amount to drop may be requested.
  */
-bool Event::drop_select(Obj *obj)
+bool Event::drop_select(Obj *obj, uint8 qty)
 {
+    if(mode == WAIT_MODE)
+        return(false);
+
+    endAction(); // DROP_MODE
+
+    use_obj = obj;
+    scroll->display_string(use_obj ? obj_manager->look_obj(use_obj) : "nothing");
+    scroll->display_string("\n");
+    
+    if(use_obj)
+    {
+        if(qty == 0 && obj_manager->is_stackable(use_obj) && use_obj->qty > 1)
+        {
+            scroll->display_string("How many? ");
+            newAction(DROPCOUNT_MODE);
+            return(true);
+        }
+        drop_qty = qty;
+
+        scroll->display_string("Where-");
+        set_mode(DROPTARGET_MODE);
+        map_window->centerCursor();
+        map_window->set_show_cursor(true);
+    }
+    else
+        scroll->display_prompt();
+
     return(true);
 }
 
 
-/* Make actor holding selected object drop it at x,y.
+/* Select quantity of `use_obj' to be dropped. (qty 0 = drop nothing)
  */
-bool Event::drop_to(uint16 x, uint16 y)
+bool Event::drop_count(uint8 qty)
 {
+    if(mode == WAIT_MODE)
+        return(false);
+
+    drop_qty = qty;
+    scroll->display_string("\n");
+
+    if(drop_qty != 0)
+    {
+        scroll->display_string("Where-");
+        set_mode(DROPTARGET_MODE);
+        map_window->centerCursor();
+        map_window->set_show_cursor(true);
+    }
+    else
+    {
+        endAction();
+        scroll->display_prompt();
+    }
+
+    return(true);
+}
+
+
+/* Make actor holding selected object drop it at cursor coordinates. Wait for
+ * drop effect to complete before ending the action.
+ */
+bool Event::drop()
+{
+    if(mode == WAIT_MODE)
+        return(false);
+    MapCoord drop_loc = map_window->get_cursorCoord();
+    drop(use_obj, drop_qty, drop_loc.x, drop_loc.y);
     return(true);
 }
 
 
 /* Make actor holding object drop it at x,y.
  */
-bool Event::drop(Obj *obj, uint16 x, uint16 y)
+bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
 {
+    if(mode == WAIT_MODE)
+        return(false);
+
+    Actor *actor = obj->is_in_inventory()
+                   ? Game::get_game()->get_actor_manager()->get_actor(obj->x)
+                    : player->get_actor();
+    MapCoord actor_loc = actor->get_location();
+    MapCoord drop_loc(x, y, actor_loc.z);
+    sint16 rel_x = x - actor_loc.x;
+    sint16 rel_y = y - actor_loc.y;
+    if(rel_x == 0 && rel_y < 0) // FIXME: move direction names somewhere else
+        scroll->display_string("North.");
+    else if(rel_x > 0 && rel_y < 0)
+        scroll->display_string("Northeast.");
+    else if(rel_x > 0 && rel_y == 0)
+        scroll->display_string("East.");
+    else if(rel_x > 0 && rel_y > 0)
+        scroll->display_string("Southeast.");
+    else if(rel_x == 0 && rel_y > 0)
+        scroll->display_string("South.");
+    else if(rel_x < 0 && rel_y > 0)
+        scroll->display_string("Southwest.");
+    else if(rel_x < 0 && rel_y == 0)
+        scroll->display_string("West.");
+    else if(rel_x < 0 && rel_y < 0)
+        scroll->display_string("Northwest.");
+    else
+        scroll->display_string("nowhere.");
+    scroll->display_string("\n");
+
+    // all object management is contained in the effect (use requested quantity)
+    obj->status |= OBJ_STATUS_OK_TO_TAKE;
+    Effect *effect = new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
     return(true);
 }
+
+
+/* Walk the player towards the mouse cursor. (just 1 space for now)
+ */
+void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
+{
+// player->walk_to(uint16 x, uint16 y, uint16 move_max, uint16 timeout_seconds);
+    static uint32 walk_delay = player->get_walk_delay(),
+                  last_time = clock->get_ticks();
+    uint32 this_time = clock->get_ticks();
+    int wx, wy;
+    uint16 px, py;
+    uint8 pz;
+    sint16 rx, ry;
+
+    if(mode == WAIT_MODE)
+        return;
+
+    if((sint32)(walk_delay - (this_time - last_time)) < 0)
+        walk_delay = 0;
+    else
+        walk_delay -= (this_time - last_time);
+    last_time = this_time;
+    map_window->mouseToWorldCoords((int)mx, (int)my, wx, wy);
+    if(/*wx <= cur_x || wx > (cur_x + win_width) || wy <= cur_y || wy > (cur_y + win_height)
+       || */walk_delay > 0)
+        return;
+    player->get_location(&px, &py, &pz);
+    rx = wx - px;
+    ry = wy - py;
+    if(abs(rx) > (abs(ry)+1)) ry = 0;
+    else if(abs(ry) > (abs(rx)+1)) rx = 0;
+    player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
+                         (ry == 0) ? 0 : ry < 0 ? -1 : 1);
+
+    walk_delay = player->get_walk_delay();
+}
+
+
+/* Talk to NPC, read a sign, or use an object at map coordinates.
+ * FIXME: modularize
+ */
+void Event::multiuse(uint16 wx, uint16 wy)
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    UseCode *uc = usecode;
+    Obj *obj = NULL;
+    Actor *actor = NULL, *player_actor = actor_manager->get_player();
+    bool using_actor = false, talking = false;
+    MapCoord target(player_actor->get_location());
+    const char *target_name = "nothing";
+
+    obj = obj_manager->get_obj(wx, wy, target.z);
+    actor = actor_manager->get_actor(wx, wy, target.z);
+
+    if(mode == WAIT_MODE)
+        return;
+
+    // use object or actor?
+    if(actor && actor->is_visible())
+    {
+        obj = actor->make_obj();
+        using_actor = true;
+        target.x = actor->get_location().x;
+        target.y = actor->get_location().y;
+        fprintf(stderr, "Use actor at %d,%d\n", target.x, target.y);
+    }
+    else if(obj)
+    {
+        target.x = obj->x;
+        target.y = obj->y;
+        fprintf(stderr, "Use object at %d,%d\n", obj->x, obj->y);
+    }
+
+    if(using_actor)
+    {
+        target_name = converse->npc_name(actor->get_actor_num());
+        if(!target_name && !(actor->get_flags() & 1)
+           && !player->get_party()->contains_actor(actor))
+            target_name = map_window->look(target.x, target.y, false);
+        bool can_use = uc->has_usecode(obj);
+        if(can_use)
+        {
+            scroll->display_string("Use-");
+            scroll->display_string(target_name);
+            scroll->display_string("\n");
+            uc->use_obj(obj, player_actor);
+        }
+        else
+        {
+            fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
+            if(actor->get_actor_num() == player_actor->get_actor_num())
+            {
+                scroll->display_string("Talk-");
+                scroll->display_string(target_name);
+                scroll->display_string("\n");
+                scroll->display_string("\nTalking to yourself?\n");
+            }
+            else if(converse->start(actor)) // try to talk to actor
+            {
+                scroll->display_string("Talk-");
+                scroll->display_string(target_name);
+                scroll->display_string("\n");
+                player_actor->face_actor(actor);
+                actor->face_actor(player_actor);
+                talking = true;
+            }
+            else
+                scroll->display_string("Use-nothing\n");
+        }
+        // we were using an actor so free the temp Obj
+        obj_manager->delete_obj(obj);
+    }
+    else if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_SIGN_ARROW))
+    { /* usecode->is_sign(obj) */
+        scroll->display_string("Look-");
+        look(obj);
+    }
+    else if(obj)
+    {
+        target_name = obj_manager->look_obj(obj);
+        scroll->display_string("Use-");
+        scroll->display_string(target_name);
+        scroll->display_string("\n");
+
+        if(player_actor->get_location().distance(target) > 1)
+        {
+            scroll->display_string("\nOut of range!\n");
+            fprintf(stderr, "distance to object: %d\n", player_actor->get_location().distance(target));
+        }
+        else if(uc->has_usecode(obj))
+            uc->use_obj(obj, player_actor);
+        else
+        {
+            fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
+            scroll->display_string("\nNot usable\n");
+        }
+    }
+    else
+        scroll->display_string("Use-nothing\n");
+
+    map_window->updateBlacking();
+
+    // if selecting another use-obj, select_obj will return to MOVE_MODE
+    // else display the prompt
+    if(mode == MOVE_MODE && !talking)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+    }
+    //endAction();?
+}
+
 
 
 /* Do the finishing action for the current mode, based on cursor coordinates,
@@ -1641,6 +1961,9 @@ bool Event::drop(Obj *obj, uint16 x, uint16 y)
  */
 void Event::doAction(sint16 rel_x, sint16 rel_y)
 {
+	if(mode == WAIT_MODE)
+		return;
+
 	map_window->set_show_use_cursor(false);
 	map_window->set_show_cursor(false);
 	Game::get_game()->set_mouse_pointer(0);
@@ -1678,6 +2001,10 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 		mode = MOVE_MODE;
 		select_obj();
 	}
+	else if(mode == DROPTARGET_MODE)
+	{
+		drop();
+	}
 	else if(mode == MOVE_MODE)
 	{
 		scroll->display_string("what?\n\n");
@@ -1692,6 +2019,9 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
  */
 void Event::cancelAction()
 {
+	if(mode == WAIT_MODE)
+		return;
+
 	if(mode == MOVE_MODE)
 	{
 		scroll->display_string("Pass!\n\n");
@@ -1712,12 +2042,15 @@ void Event::cancelAction()
  */
 void Event::newAction(EventMode new_mode)
 {
-	if(mode == new_mode)
+	if(mode == WAIT_MODE)
+		return;
+
+	if(mode == new_mode) // already in mode, finish
 	{
 		doAction();
                 return;
 	}
-	else if(mode != MOVE_MODE)
+	else if(mode != MOVE_MODE) // in another mode, exit
 	{
 		cancelAction();
                 return;
@@ -1754,8 +2087,12 @@ void Event::newAction(EventMode new_mode)
 			break;
 		case DROP_MODE:
 			scroll->display_string("Drop-");
+                        // drop to EQUIP_MODE (move cursor to inventory)
 		case EQUIP_MODE:
 			view_manager->get_inventory_view()->set_show_cursor(true);
+			break;
+		case DROPCOUNT_MODE:
+			get_scroll_input(); /* "How many?" */
 			break;
 		default:
 			cancelAction();
@@ -1764,6 +2101,7 @@ void Event::newAction(EventMode new_mode)
 
 
 /* Revert to default MOVE_MODE. (walking)
+ * This clears visible cursors, and resets all variables used by actions.
  */
 void Event::endAction()
 {
@@ -1773,6 +2111,18 @@ void Event::endAction()
     view_manager->get_inventory_view()->set_show_cursor(false);
     use_obj = NULL;
     selected_actor = NULL;
+    drop_qty = 0;
     map_window->updateBlacking();
     Game::get_game()->set_mouse_pointer(0);
+}
+
+
+/* Do endAction() and display the prompt. This is to "resume" after setting
+ * WAIT_MODE.
+ */
+void Event::endWaitMode()
+{
+    scroll->display_string("\n");
+    scroll->display_prompt();
+        endAction();
 }

@@ -675,10 +675,11 @@ void Party::walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay)
         new TimedPartyMove(walkto, teleport, step_delay);
     else
         new TimedPartyMove(walkto, teleport);
-    // other actors won't move
-    game->get_actor_manager()->set_update(false);
+
+    game->pause_world(); // other actors won't move
+    game->pause_user(); // don't allow input
     // view will snap back to player after everyone has moved
-    game->get_player()->uncontrol();
+    game->get_player()->set_mapwindow_centered(false);
     autowalk = true;
 }
 
@@ -693,10 +694,11 @@ void Party::walk(Obj *moongate, MapCoord *teleport, uint32 step_delay)
         new TimedPartyMove(&walkto, teleport, moongate, step_delay);
     else
         new TimedPartyMove(&walkto, teleport, moongate);
-    // other actors won't move
-    game->get_actor_manager()->set_update(false);
+
+    game->pause_world(); // other actors won't move
+    game->pause_user(); // don't allow input
     // view will snap back to player after everyone has moved
-    game->get_player()->uncontrol();
+    game->get_player()->set_mapwindow_centered(false);
     autowalk = true;
 }
 
@@ -714,10 +716,11 @@ void Party::enter_vehicle(Obj *ship_obj, uint32 step_delay)
         new TimedPartyMoveToVehicle(&walkto, ship_obj, step_delay);
     else
         new TimedPartyMoveToVehicle(&walkto, ship_obj);
-    // other actors won't move
-    game->get_actor_manager()->set_update(false);
+
+    game->pause_world(); // other actors won't move
+    game->pause_user(); // don't allow input
     // view will snap back to player after everyone has moved
-    game->get_player()->uncontrol();
+    game->get_player()->set_mapwindow_centered(false);
     autowalk = true;
 }
 
@@ -730,12 +733,12 @@ void Party::set_in_vehicle(bool value)
  return;
 }
 
-/* Done automatically walking, return control to player character.
+/* Done automatically walking, return view to player character.
  */
 void Party::stop_walking()
 {
-    game->get_player()->control();
-    game->get_actor_manager()->set_update(true);
+    game->get_player()->set_mapwindow_centered(true);
+    game->unpause_all(); // allow user input, unfreeze actors
     autowalk = false;
     update_music();
 }

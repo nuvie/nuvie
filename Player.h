@@ -41,7 +41,7 @@ class Player
  GameClock *clock;
  Party *party;
  bool party_mode;
- bool uncontrolled; // don't control or follow actor
+ bool mapwindow_centered;
  Actor *actor;
  ActorManager *actor_manager;
  ObjManager *obj_manager;
@@ -65,10 +65,10 @@ class Player
  
  Actor *find_actor();
 
+ bool is_mapwindow_centered()            { return(mapwindow_centered); }
+ void set_mapwindow_centered(bool state);
+
  Party *get_party()      { return(party); }
- bool get_uncontrolled() { return(uncontrolled); }
- void uncontrol()        { uncontrolled = true; }
- void control();
  bool set_party_mode(Actor *new_actor);
  bool set_solo_mode(Actor *new_actor);
  bool in_party_mode()    { return(party_mode); }
