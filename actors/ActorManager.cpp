@@ -68,22 +68,15 @@ ActorManager::~ActorManager()
 
 }
  
-bool ActorManager::loadActors()
+bool ActorManager::load(NuvieIO *objlist)
 {
  uint16 i;
  uint8 b1, b2, b3;
  int game_type;
- std::string filename;
- NuvieIOFileRead objlist;
- //NuvieIOFileRead schedule;
  
  config->value("config/GameType",game_type);
- config_get_path(config,"/savegame/objlist",filename);
- if(objlist.open(filename) == false)
-   return false;
 
-
- objlist.seek(0x100); // Start of Actor position info
+ objlist->seek(0x100); // Start of Actor position info
  
  for(i=0; i < 256; i++)
    {
@@ -94,9 +87,9 @@ bool ActorManager::loadActors()
       case NUVIE_GAME_SE : actors[i] = new Actor(map,obj_manager,clock); break;
      }
      
-    b1 = objlist.read1();
-    b2 = objlist.read1();
-    b3 = objlist.read1();
+    b1 = objlist->read1();
+    b2 = objlist->read1();
+    b3 = objlist->read1();
     
     actors[i]->x = b1;
     actors[i]->x += (b2 & 0x3) << 8; 
@@ -112,8 +105,8 @@ bool ActorManager::loadActors()
  
  for(i=0;i < 256; i++)
    {
-    b1 = objlist.read1();
-    b2 = objlist.read1();
+    b1 = objlist->read1();
+    b2 = objlist->read1();
     actors[i]->obj_n = b1;
     actors[i]->obj_n += (b2 & 0x3) << 8;
     
@@ -123,12 +116,12 @@ bool ActorManager::loadActors()
 
  //old obj_n & frame_n values
  
- objlist.seek(0x15f1);
+ objlist->seek(0x15f1);
  
  for(i=0;i < 256; i++)
    {
-    b1 = objlist.read1();
-    b2 = objlist.read1();
+    b1 = objlist->read1();
+    b2 = objlist->read1();
     actors[i]->base_obj_n = b1;
     actors[i]->base_obj_n += (b2 & 0x3) << 8;
     
@@ -149,82 +142,82 @@ bool ActorManager::loadActors()
    }
  // Strength
  
- objlist.seek(0x900);
+ objlist->seek(0x900);
  
  for(i=0;i < 256; i++)
    {
-    actors[i]->strength = objlist.read1();
+    actors[i]->strength = objlist->read1();
    }
  
  // Dexterity
  
- objlist.seek(0xa00);
+ objlist->seek(0xa00);
  
  for(i=0;i < 256; i++)
    {
-    actors[i]->dex = objlist.read1();
+    actors[i]->dex = objlist->read1();
    }
  
  // Intelligence
  
- objlist.seek(0xb00);
+ objlist->seek(0xb00);
  
  for(i=0;i < 256; i++)
    {
-    actors[i]->intelligence = objlist.read1();
+    actors[i]->intelligence = objlist->read1();
    }
 
   // Experience
  
- objlist.seek(0xc00);
+ objlist->seek(0xc00);
  
  for(i=0;i < 256; i++)
    {
-    actors[i]->exp = objlist.read2();
+    actors[i]->exp = objlist->read2();
    }
  
  // Health
  
- objlist.seek(0xe00);
+ objlist->seek(0xe00);
 
  for(i=0;i < 256; i++)
    {
-    actors[i]->hp = objlist.read1();
+    actors[i]->hp = objlist->read1();
    }
    
  // Experience Level
  
- objlist.seek(0xff1);
+ objlist->seek(0xff1);
  
  for(i=0;i < 256; i++)
    {
-    actors[i]->level = objlist.read1();
+    actors[i]->level = objlist->read1();
    }
  
 
  // Combat mode
  
- objlist.seek(0x12f1);
+ objlist->seek(0x12f1);
 
  for(i=0;i < 256; i++)
    {
-    actors[i]->combat_mode = objlist.read1();
+    actors[i]->combat_mode = objlist->read1();
    }
     
  // Magic Points
  
- objlist.seek(0x13f1);
+ objlist->seek(0x13f1);
  
  for(i=0;i < 256; i++)
    {
-    actors[i]->magic = objlist.read1();
+    actors[i]->magic = objlist->read1();
    }
 
- objlist.seek(0x17f1); // Start of Actor flags
+ objlist->seek(0x17f1); // Start of Actor flags
 
  for(i=0;i < 256; i++)
    {
-    actors[i]->flags = objlist.read1();
+    actors[i]->flags = objlist->read1();
    }
  
  loadActorSchedules();
@@ -238,11 +231,11 @@ bool ActorManager::loadActors()
 
  // Current Worktype
  
- objlist.seek(0x11f1);
+ objlist->seek(0x11f1);
 
  for(i=0;i < 256; i++)
    {
-    actors[i]->set_worktype(objlist.read1());
+    actors[i]->set_worktype(objlist->read1());
    }
 
  return true;

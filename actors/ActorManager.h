@@ -56,7 +56,7 @@ class ActorManager
  ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c);
  ~ActorManager();
 
- bool loadActors();
+ bool load(NuvieIO *objlist);
  
  Actor *get_actor(uint8 actor_num);
  Actor *get_actor(uint16 x, uint16 y, uint8 z);

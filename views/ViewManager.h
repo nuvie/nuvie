@@ -65,6 +65,7 @@ class ViewManager
  virtual ~ViewManager();
  
  bool init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *portrait);
+ void reload();
 
  void update();
  

@@ -24,7 +24,7 @@
 #include "nuvieDefs.h"
 
 #include "U6misc.h"
-#include "NuvieIOFile.h"
+#include "NuvieIO.h"
 #include "Game.h"
 #include "Converse.h"
 #include "TimedEvent.h"
@@ -53,12 +53,14 @@ Party::~Party()
 
 bool Party::init(Game *g, ActorManager *am)
 {
- std::string filename, formation_string;
+ std::string formation_string;
 
  game = g;
  actor_manager = am;
  map = g->get_game_map();
-
+ 
+ autowalk=false;
+ 
  config->value("config/party_formation", formation_string, "");
  if(formation_string == "row")
    formation = PARTY_FORM_ROW;
@@ -71,7 +73,36 @@ bool Party::init(Game *g, ActorManager *am)
  else
    formation = PARTY_FORM_STANDARD;
 
- loadParty();
+ return true;
+}
+
+bool Party::load(NuvieIO *objlist)
+{
+ uint8 actor_num;
+ uint16 i;
+ 
+ objlist->seek(0xff0);
+ num_in_party = objlist->read1();
+ 
+ 
+ objlist->seek(0xf00);
+ for(i=0;i<num_in_party;i++)
+  {
+   objlist->readToBuf((unsigned char *)member[i].name,14); // read in Player name.
+  }
+ objlist->seek(0xfe0);  
+ for(i=0;i<num_in_party;i++)
+  {
+   actor_num = objlist->read1();
+   member[i].actor = actor_manager->get_actor(actor_num);
+   member[i].actor->set_in_party(true);
+  }
+  
+ objlist->seek(0x1c12); // combat mode flag
+ in_combat_mode = (bool)objlist->read1();
+ 
+ reform_party();
+
  autowalk=false;
  // this may not be the proper way to get in_vehicle at start, but we havn't
  // found the relevant data in objlist yet (maybe only vehicle worktype?)
@@ -83,7 +114,7 @@ bool Party::init(Game *g, ActorManager *am)
   }
 
  update_music();
-
+ 
  return true;
 }
 
@@ -189,43 +220,6 @@ uint8 Party::get_actor_num(uint8 member_num)
 
  return member[member_num].actor->id_n;
 }
-
-bool Party::loadParty()
-{
- std::string filename;
- NuvieIOFileRead objlist;
- uint8 actor_num;
- uint16 i;
- 
- config_get_path(config,"savegame/objlist",filename);
- if(objlist.open(filename.c_str()) == false)
-   return false;
-
- objlist.seek(0xff0);
- num_in_party = objlist.read1();
- 
- 
- objlist.seek(0xf00);
- for(i=0;i<num_in_party;i++)
-  {
-   objlist.readToBuf((unsigned char *)member[i].name,14); // read in Player name.
-  }
- objlist.seek(0xfe0);  
- for(i=0;i<num_in_party;i++)
-  {
-   actor_num = objlist.read1();
-   member[i].actor = actor_manager->get_actor(actor_num);
-   member[i].actor->set_in_party(true);
-  }
-  
- objlist.seek(0x1c12); // combat mode flag
- in_combat_mode = (bool)objlist.read1();
- 
- reform_party();
- 
- return true;
-}
-
 
 /* Rearrange member slot positions based on the number of members and the
  * selected formation. Used only when adding or removing actors.

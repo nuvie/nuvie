@@ -75,6 +75,8 @@ nuvie_SOURCES = \
 \
 	save/SaveDialog.cpp \
 	save/SaveDialog.h \
+	save/SaveGame.cpp \
+	save/SaveGame.h \
 	save/SaveManager.cpp \
 	save/SaveManager.h \
 	save/SaveSlot.cpp \

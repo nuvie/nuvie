@@ -32,6 +32,7 @@ class Actor;
 class ActorManager;
 class MapCoord;
 class Map;
+class NuvieIO;
 
 struct PartyMember {
 char name[14];
@@ -98,6 +99,7 @@ class Party {
  ~Party();
  
  bool init(Game *g, ActorManager *am);
+ bool load(NuvieIO *objlist);
  
  bool add_actor(Actor *actor);
  bool remove_actor(Actor *actor);
@@ -153,7 +155,6 @@ class Party {
 
  protected:
 
- bool loadParty();
 };
 
 #endif /* _PARTY_H_ */

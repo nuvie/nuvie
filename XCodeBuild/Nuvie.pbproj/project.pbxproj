@@ -149,6 +149,7 @@
 				0726903E064E749600F249E5,
 				07269048064F928A00F249E5,
 				072691AD065252D200F249E5,
+				07656EEF065F177400EEE5C1,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -700,6 +701,7 @@
 				0726903D064E749600F249E5,
 				07269047064F928A00F249E5,
 				072691AC065252D200F249E5,
+				07656EEE065F177400EEE5C1,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1623,6 +1625,8 @@
 		};
 		0726902F064E745B00F249E5 = {
 			children = (
+				07656EED065F177400EEE5C1,
+				07656EEC065F177400EEE5C1,
 				072691AB065252D200F249E5,
 				072691AA065252D200F249E5,
 				07269046064F928A00F249E5,
@@ -2590,6 +2594,36 @@
 			path = ../views/InventoryWidget.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+		};
+		07656EEC065F177400EEE5C1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SaveGame.cpp;
+			path = ../save/SaveGame.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07656EED065F177400EEE5C1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SaveGame.h;
+			path = ../save/SaveGame.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07656EEE065F177400EEE5C1 = {
+			fileRef = 07656EEC065F177400EEE5C1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07656EEF065F177400EEE5C1 = {
+			fileRef = 07656EED065F177400EEE5C1;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		0787F20A064390F60028223C = {
 			fileEncoding = 30;

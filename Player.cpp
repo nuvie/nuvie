@@ -25,7 +25,7 @@
 
 #include "Configuration.h"
 #include "U6misc.h"
-#include "NuvieIOFile.h"
+#include "NuvieIO.h"
 #include "ActorManager.h"
 #include "Actor.h"
 #include "ObjManager.h"
@@ -52,13 +52,40 @@ bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c,
  obj_manager = om;
  map_window = mw;
  party = p;
- actor = find_actor();
-
- loadObjlistData(); //load Player name, Karma.
+ actor = NULL;
  
- actor_manager->set_player(actor);
  party_mode = true;
  uncontrolled = false;
+  
+ return true;
+}
+
+bool Player::load(NuvieIO *objlist)
+{
+ objlist->seek(0xf00);
+ 
+ objlist->readToBuf((unsigned char *)name,14); // read in Player name. 
+ 
+ if(game_type == NUVIE_GAME_U6)
+   {
+    objlist->seek(0x1bf1); // U6 Quest Flag
+    questf = objlist->read1();
+
+    objlist->seek(0x1bf9); // Player Karma.
+    karma = objlist->read1();
+
+    objlist->seek(0x1c71); // Player Gender.
+    gender = objlist->read1();
+   }
+   
+ if(game_type == NUVIE_GAME_MD)
+   {
+    objlist->seek(0x1d27); // Player Gender.
+    gender = objlist->read1();
+   }
+
+ actor = find_actor();
+ actor_manager->set_player(actor);
   
  return true;
 }
@@ -232,42 +259,6 @@ void Player::pass()
  actor_manager->updateActors(x,y,z); // SB-X move to gameclock
 }
 
-bool Player::loadObjlistData()
-{
- std::string filename;
- NuvieIOFileRead objlist;
-// int game_type;
- 
- config_get_path(config,"savegame/objlist",filename);
-
- if(objlist.open(filename) == false)
-   return false;
-
- objlist.seek(0xf00);
- 
- objlist.readToBuf((unsigned char *)name,14); // read in Player name. 
- 
- if(game_type == NUVIE_GAME_U6)
-   {
-    objlist.seek(0x1bf1); // U6 Quest Flag
-    questf = objlist.read1();
-
-    objlist.seek(0x1bf9); // Player Karma.
-    karma = objlist.read1();
-
-    objlist.seek(0x1c71); // Player Gender.
-    gender = objlist.read1();
-   }
-   
- if(game_type == NUVIE_GAME_MD)
-   {
-    objlist.seek(0x1d27); // Player Gender.
-    gender = objlist.read1();
-   }
-
- 
- return true;
-}
 
 
 /* Enter party mode, with everyone following actor. (must be in the party)

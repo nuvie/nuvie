@@ -23,7 +23,7 @@
 
 #include "nuvieDefs.h"
 #include "Configuration.h"
-#include "NuvieIOFile.h"
+#include "NuvieIO.h"
 
 #include "GameClock.h"
 
@@ -41,30 +41,36 @@ GameClock::~GameClock()
 
 }
 
-bool GameClock::init()
+bool GameClock::load(NuvieIO *objlist)
 {
+/*
  std::string filename;
- NuvieIOFileRead objlist;
  
  config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
  if(objlist.open(filename) == false)
    return false;
+*/
 
- objlist.seek(0x1bf3); // start of time data
+ objlist->seek(0x1bf3); // start of time data
 
- minute = objlist.read1();
- hour = objlist.read1();
- day = objlist.read1();
- month = objlist.read1();
- year = objlist.read2();
+ minute = objlist->read1();
+ hour = objlist->read1();
+ day = objlist->read1();
+ month = objlist->read1();
+ year = objlist->read2();
  
  update_day_of_week();
  
- printf("Initial gametime: %s %s\n",get_date_string(),get_time_string());
+ printf("Loaded game clock: %s %s\n",get_date_string(),get_time_string());
  
  return true;
 }
- 
+
+bool GameClock::save(NuvieIO *objlist)
+{
+ return true;
+}
+
 void GameClock::inc_move_counter()
 {
  move_counter++;

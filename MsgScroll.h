@@ -116,10 +116,10 @@ class MsgScroll: public GUI_Widget
  uint16 display_pos;
  public:
  
- MsgScroll(Configuration *cfg);
+ MsgScroll(Configuration *cfg, Font *f);
  ~MsgScroll();
  
- bool init(Font *f, char *player_name);
+ bool init(char *player_name);
  
  void process_holding_buffer();
  

@@ -33,7 +33,7 @@ class U6LList;
 class Configuration;
 class EggManager;
 class UseCode;
-class NuvieIOFileRead;
+class NuvieIO;
 
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1
@@ -121,8 +121,14 @@ class ObjManager
  void show_egg_objs(bool value);
 
  bool loadObjs();
+ bool load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_offset);
  void startObjs();
- 
+
+ bool save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_offset); 
+ bool save_eggs(NuvieIO *save_buf);
+ bool save_inventories(NuvieIO *save_buf);
+ bool save_obj(NuvieIO *save_buf, Obj *obj);
+
  void set_usecode(UseCode *uc) { usecode = uc; }
  UseCode *get_usecode()        { return(usecode); }
  EggManager *get_egg_manager() { return(egg_manager); }
@@ -174,14 +180,12 @@ class ObjManager
 
  protected:
 
- bool loadBaseTile();
- bool loadWeightTable();
+ bool load_basetile();
+ bool load_weight_table();
 
- bool loadObjSuperChunk(char *filename, iAVLTree *obj_tree);
- bool add_obj(iAVLTree *obj_tree, Obj *obj, bool addOnTop=false);
+
  bool addObjToContainer(U6LList *list, Obj *obj);
- Obj *loadObj(NuvieIOFileRead *file, uint16 objblk_n);
- char *get_objblk_path(char *path);
+ Obj *loadObj(NuvieIO *buf, uint16 objblk_n);
  iAVLTree *get_obj_tree(uint16 x, uint16 y, uint8 level);
 
  iAVLKey get_obj_tree_key(Obj *obj);

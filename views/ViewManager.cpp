@@ -76,6 +76,12 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  return true;
 }
 
+void ViewManager::reload()
+{
+ actor_view->set_party_member(0);
+ inventory_view->set_party_member(0);
+}
+
 bool ViewManager::set_current_view(View *view)
 {
  uint8 cur_party_member;

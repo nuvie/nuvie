@@ -53,15 +53,15 @@ class NuvieIO
    virtual uint32 writeBuf(unsigned char *src, uint32 src_size) { return 0; };
    virtual uint32 write(NuvieIO *src) { return 0; };
    
-   uint32 get_size() { return size; }
+   uint32 get_size() { return size; };
 
 
-   inline void seekStart() { seek(0); }
-   inline void seekEnd() { seek(size); }
+   inline void seekStart() { seek(0); };
+   inline void seekEnd() { seek(size); };
    virtual void seek(uint32 new_pos)=0;
    
-   inline bool is_end() { return (pos == size - 1); }
-
+   inline bool is_end() { return (pos == size - 1); };
+   uint32 position() { return pos; };
 };
 
 #define NUVIE_BUF_COPY   true

@@ -33,19 +33,27 @@
 
 #include "GUI.h"
 #include "SaveDialog.h"
+#include "SaveGame.h"
 
 
 SaveManager::SaveManager(Configuration *cfg)
 {
  config = cfg;
  dialog = NULL;
- 
+
+ savegame = new SaveGame(config);
+
 }
 
 SaveManager::~SaveManager()
 {
 }
 
+bool SaveManager::load_latest_save()
+{
+ return savegame->load_original();
+}
+ 
 void SaveManager::create_dialog()
 {
  GUI *gui = GUI::get_gui();
@@ -67,6 +75,9 @@ GUI_status SaveManager::callback(uint16 msg, GUI_CallBack *caller, void *data)
    switch(msg)
      {
        case SAVEDIALOG_CB_DELETE : dialog = NULL; break;
+       case SAVEDIALOG_CB_SAVE : if(savegame->save("nuvie01.sav") == false)
+                                    return GUI_PASS;
+                                 break;
        default : break;
      }
   }

@@ -27,6 +27,7 @@
 #define GAMECLOCK_TICKS_PER_MINUTE   4
 
 class Configuration;
+class NuvieIO;
 
 class GameClock
 {
@@ -51,8 +52,9 @@ class GameClock
  GameClock(Configuration *cfg);
  ~GameClock();
  
- bool init();
- 
+ bool load(NuvieIO *objlist);
+ bool save(NuvieIO *objlist);
+  
  void inc_move_counter();
  void inc_move_counter_by_a_minute();
  

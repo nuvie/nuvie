@@ -32,6 +32,7 @@ class Actor;
 class ActorManager;
 class MapWindow;
 class Party;
+class NuvieIO;
 
 class Player
 {
@@ -58,6 +59,9 @@ class Player
  Player(Configuration *cfg);
  
  bool init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
+
+ bool load(NuvieIO *objlist);
+ 
  Actor *find_actor();
 
  Party *get_party()      { return(party); }
@@ -98,7 +102,6 @@ class Player
 
  protected:
  
- bool loadObjlistData();
 };
 
 #endif /* __Player_h__ */

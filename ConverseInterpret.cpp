@@ -458,7 +458,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
     Actor *cnpc = NULL;
     Obj *cnpc_obj = NULL;
     Player *player = converse->player;
-    converse_db_s *cdb;
+//    converse_db_s *cdb;
 
     switch(in = pop_arg(i))
     {
@@ -691,7 +691,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
     converse_value in, out = 0;
     Actor *cnpc = NULL;
     Obj *cnpc_obj = NULL;
-    converse_db_s *cdb;
+//    converse_db_s *cdb;
     Player *player = converse->player;
 
     switch(in = pop_arg(i))

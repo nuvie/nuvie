@@ -53,8 +53,9 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
  tile_manager = tm;
  egg_manager = em;
 
- loadBaseTile();
-  
+ load_basetile();
+ load_weight_table();
+
  memset(actor_inventories,0,sizeof(actor_inventories));
 
  for(i=0;i<64;i++)
@@ -90,6 +91,199 @@ ObjManager::~ObjManager()
  //FIX ME. need to free objects.
 }
 
+bool ObjManager::load_basetile()
+{
+ std::string filename;
+ NuvieIOFileRead basetile;
+ uint16 i;
+
+ config_get_path(config,"basetile",filename);
+  
+ if(basetile.open(filename) == false)
+   return false;
+
+ for(i=0;i<1024;i++)
+   obj_to_tile[i] = basetile.read2();
+
+ return true;
+}
+
+bool ObjManager::load_weight_table()
+{
+ std::string filename;
+ NuvieIOFileRead tileflag;
+
+ config_get_path(config,"tileflag",filename);
+
+ if(tileflag.open(filename) == false)
+   return false;
+
+ tileflag.seek(0x1000);
+
+ tileflag.readToBuf(obj_weight,1024);
+
+ return true;
+}
+
+
+bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_offset)
+{
+ NuvieIOFileRead file;
+ U6LList *list;
+ uint16 num_objs;
+ Obj *obj;
+ uint16 i;
+ U6LList *inventory_list;
+ iAVLTree *obj_tree;
+ 
+ if(level == 0)
+   obj_tree = surface[chunk_offset];
+ else
+   obj_tree = dungeon[level - 1];
+
+ list = new U6LList();
+
+ num_objs = chunk_buf->read2();
+ //printf("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
+ 
+ for(i=0;i<num_objs;i++)
+  {
+   obj = loadObj(chunk_buf,i);
+ 
+   list->add(obj);
+
+   if(obj->obj_n == obj_egg_table[game_type])
+     {
+      egg_manager->add_egg(obj);
+     }
+
+   if(usecode->is_container(obj) && !obj->container) //object type is container, but may be empty
+     {
+      obj->container = new U6LList();
+     }
+
+   if(obj->status & OBJ_STATUS_IN_INVENTORY) //object in actor's inventory
+     {
+      inventory_list = get_actor_inventory(obj->x);
+      inventory_list->add(obj);
+
+     }
+   else
+     {
+      if(obj->status & OBJ_STATUS_IN_CONTAINER)
+        {
+         addObjToContainer(list,obj);
+
+        }
+      else
+        {
+         if(show_eggs || obj->obj_n != obj_egg_table[game_type]) // show remaining objects, hiding eggs if neccecary.
+            {
+             add_obj(obj);
+            // print_obj(obj,false);
+            }
+        }
+
+     }
+
+  }
+
+ delete list;
+
+ return true;
+}
+
+bool ObjManager::save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_offset)
+{
+ iAVLTree *obj_tree;
+ ObjTreeNode *item;
+ U6Link *link;
+ iAVLCursor node;
+ uint16 obj_count = 0;
+ uint32 start_pos;
+ 
+ item = (ObjTreeNode *)iAVLFirst(&node, obj_tree);
+ 
+ start_pos = save_buf->position();
+ 
+ //skip the 2 bytes for number of objects.
+ save_buf->write2(0); // we'll fill this in later on.
+ 
+ for(;item;)
+  {
+   for(link = item->obj_list->start(); link != NULL; link=link->next)
+    {
+     save_obj(save_buf, (Obj *)link->data);
+    }
+
+   item = (ObjTreeNode *)iAVLNext(&node);
+  }
+ return true;
+}
+
+bool ObjManager::save_eggs(NuvieIO *save_buf)
+{
+ return true;
+}
+
+bool ObjManager::save_inventories(NuvieIO *save_buf)
+{
+ U6Link *link;
+ uint16 count = 0;
+ uint16 i;
+ 
+ for(i=0;i<=256;i++)
+   {
+    if(actor_inventories[i] != NULL)
+      count += actor_inventories[i]->count();
+   }
+
+ printf("Actor Inventories: %d\n", count);
+ 
+ save_buf->write2(count);
+ 
+ for(i=0;i<=256;i++)
+   {
+    if(actor_inventories[i] != NULL)
+      {
+       for(link=actor_inventories[i]->start(); link != NULL; link=link->next)
+         {
+          save_obj(save_buf, (Obj *)link->data);
+         }
+      }
+   }
+
+ return true;
+}
+
+bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj)
+{
+ uint8 b;
+
+ save_buf->write1(obj->status);
+ save_buf->write1(obj->x & 0xff);
+ b = obj->x >> 8;
+ b += obj->y << 2;
+ save_buf->write1(b);
+ 
+ b = obj->y >> 6;
+ b += obj->z << 4;
+  
+ save_buf->write1(b);
+
+ save_buf->write1(obj->obj_n & 0xff);
+ 
+ b = obj->obj_n >> 8;
+ b += obj->frame_n << 2;
+ 
+ save_buf->write1(b);
+
+ save_buf->write1(obj->qty);
+ save_buf->write1(obj->quality);
+
+ return true;
+}
+
 void ObjManager::show_egg_objs(bool value)
 {
  if(value == true)
@@ -98,57 +292,6 @@ void ObjManager::show_egg_objs(bool value)
    set_obj_tile_num(obj_egg_table[game_type], 0); //nothing. we don't want to show eggs.
 
  return;   
-}
-
-bool ObjManager::loadObjs()
-{
- std::string path, key;
- char *filename;
- char x,y;
- uint16 len;
- uint8 i;
-
- key = config_get_game_key(config);
- key.append("/gamedir");
- 
- config->value(key,path);
-
- filename = get_objblk_path((char *)path.c_str());
-
- len = strlen(filename);
-
- i = 0;
-
- for(y = 'a';y < 'i'; y++)
-  {
-   for(x = 'a';x < 'i'; x++)
-    {
-     filename[len-1] = y;
-     filename[len-2] = x;
-     //printf("Loading %s\n",filename);
-     if(loadObjSuperChunk(filename,surface[i]) == false)
-       throw "Loading objects";
-     i++;
-    }
-  }
-
- filename[len-1] = 'i';
-
- for(i=0,x = 'a';x < 'f';x++,i++) //Load dungeons
-  {
-   filename[len-2] = x;
-   //printf("Loading %s\n",filename);
-   loadObjSuperChunk(filename,dungeon[i]);
-  }
-
-
- loadWeightTable();
-
- delete[] filename;
-
- //print_egg_list();
- 
- return true;
 }
 
 /*
@@ -453,11 +596,12 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
  return NULL;
 }
 
+/*
 bool ObjManager::add_obj(Obj *obj, bool addOnTop)
 {
  return add_obj(get_obj_tree(obj->x,obj->y,obj->z), obj, addOnTop);
 }
-
+*/
 bool ObjManager::remove_obj(Obj *obj)
 {
  U6LList *obj_list;
@@ -572,7 +716,7 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  obj->y = y;
  obj->z = level;
 
- add_obj(get_obj_tree(obj->x, obj->y, level),obj,true); // add the object on top of the stack
+ add_obj(obj,true); // add the object on top of the stack
 
  return true;
 }
@@ -740,109 +884,15 @@ inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_
  return NULL;
 }
 
-bool ObjManager::loadBaseTile()
+
+bool ObjManager::add_obj(Obj *obj, bool addOnTop)
 {
- std::string filename;
- NuvieIOFileRead basetile;
- uint16 i;
-
- config_get_path(config,"basetile",filename);
-  
- if(basetile.open(filename) == false)
-   return false;
-
- for(i=0;i<1024;i++)
-   obj_to_tile[i] = basetile.read2();
-
- return true;
-}
-
-bool ObjManager::loadWeightTable()
-{
- std::string filename;
- NuvieIOFileRead tileflag;
-
- config_get_path(config,"tileflag",filename);
-
- if(tileflag.open(filename) == false)
-   return false;
-
- tileflag.seek(0x1000);
-
- tileflag.readToBuf(obj_weight,1024);
-
- return true;
-}
-
-
-bool ObjManager::loadObjSuperChunk(char *filename, iAVLTree *obj_tree)
-{
- NuvieIOFileRead file;
- U6LList *list;
- uint16 num_objs;
- Obj *obj;
- uint16 i;
- U6LList *inventory_list;
-
- if(file.open(filename) == false)
-   return false;
-
- list = new U6LList();
-
- num_objs = file.read2();
-
- for(i=0;i<num_objs;i++)
-  {
-   obj = loadObj(&file,i);
- 
-   list->add(obj);
-
-   if(obj->obj_n == obj_egg_table[game_type])
-     {
-      egg_manager->add_egg(obj);
-     }
-
-   if(usecode->is_container(obj) && !obj->container) //object type is container, but may be empty
-     {
-      obj->container = new U6LList();
-     }
-
-   if(obj->status & OBJ_STATUS_IN_INVENTORY) //object in actor's inventory
-     {
-      inventory_list = get_actor_inventory(obj->x);
-      inventory_list->add(obj);
-
-     }
-   else
-     {
-      if(obj->status & OBJ_STATUS_IN_CONTAINER)
-        {
-         addObjToContainer(list,obj);
-
-        }
-      else
-        {
-         if(show_eggs || obj->obj_n != obj_egg_table[game_type]) // show remaining objects, hiding eggs if neccecary.
-            add_obj(obj_tree,obj);
-        }
-
-     }
-
-  }
-
-
-
- delete list;
-
- return true;
-}
-
-bool ObjManager::add_obj(iAVLTree *obj_tree, Obj *obj, bool addOnTop)
-{
+ iAVLTree *obj_tree;
  ObjTreeNode *node;
  U6LList *obj_list;
  iAVLKey key;
 
+ obj_tree = get_obj_tree(obj->x, obj->y, obj->z);
  key = get_obj_tree_key(obj);
 
  node = (ObjTreeNode *)iAVLSearch(obj_tree,key);
@@ -903,7 +953,7 @@ bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
  return false;
 }
 
-Obj *ObjManager::loadObj(NuvieIOFileRead *file, uint16 objblk_n)
+Obj *ObjManager::loadObj(NuvieIO *buf, uint16 objblk_n)
 {
  uint8 b1,b2;
  Obj *obj;
@@ -911,57 +961,31 @@ Obj *ObjManager::loadObj(NuvieIOFileRead *file, uint16 objblk_n)
  obj = new Obj;
  obj->objblk_n = objblk_n;
 
- obj->status = file->read1();
+ obj->status = buf->read1();
 
- obj->x = file->read1(); // h
- b1 = file->read1();
+ obj->x = buf->read1(); // h
+ b1 = buf->read1();
  obj->x += (b1 & 0x3) << 8;
 
  obj->y = (b1 & 0xfc) >> 2;
- b2 = file->read1();
+ b2 = buf->read1();
  obj->y += (b2 & 0xf) << 6;
 
  obj->z = (b2 & 0xf0) >> 4;
 
- b1 = file->read1();
- b2 = file->read1();
+ b1 = buf->read1();
+ b2 = buf->read1();
  obj->obj_n = b1;
  obj->obj_n += (b2 & 0x3) << 8;
 
  obj->frame_n = (b2 & 0xfc) >> 2;
 
- obj->qty = file->read1();
- obj->quality = file->read1();
+ obj->qty = buf->read1();
+ obj->quality = buf->read1();
 
  return obj;
 }
 
-char *ObjManager::get_objblk_path(char *path)
-{
- char *filename;
- uint16 len;
-
- if(path == NULL)
-   return NULL;
-
- len = strlen(path);
-
- if(len == 0)
-   return NULL;
-
- filename = new char [len+19]; // + room for /savegame/objblkxx\0
-
- strcpy(filename,path);
- if(filename[len-1] != U6PATH_DELIMITER)
-   {
-    filename[len] = U6PATH_DELIMITER;
-    filename[len+1] = '\0';
-   }
-
- strcat(filename,"savegame/objblkxx");
-
- return filename;
-}
 
 iAVLTree *ObjManager::get_obj_tree(uint16 x, uint16 y, uint8 level)
 {

@@ -143,9 +143,11 @@ MsgText *MsgLine::get_text_at_pos(uint16 pos)
 
 // MsgScroll Class
 
-MsgScroll::MsgScroll(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
+MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
  uint16 x, y;
+ 
+ font = f;
  
  config = cfg;
  config->value("config/GameType",game_type);
@@ -204,11 +206,10 @@ MsgScroll::~MsgScroll()
    
 }
 
-bool MsgScroll::init(Font *f, char *player_name)
+bool MsgScroll::init(char *player_name)
 {
  std::string prompt_string;
- font = f;
- 
+
  prompt_string.append(player_name);
  prompt_string.append(":\n>");
  

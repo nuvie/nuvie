@@ -97,8 +97,6 @@ Game::~Game()
 bool Game::loadGame(Screen *s, uint8 type)
 {
  EggManager *egg_manager;
- uint16 px, py;
- uint8 pz;
  
  screen = s;
  game_type = type;
@@ -117,7 +115,6 @@ bool Game::loadGame(Screen *s, uint8 type)
    palette = new GamePalette(screen,config);
 
    clock = new GameClock(config);
-   clock->init();
    
    background = new Background(config);
    background->init();
@@ -147,21 +144,20 @@ bool Game::loadGame(Screen *s, uint8 type)
      }
    
    obj_manager->set_usecode(usecode);
-   obj_manager->loadObjs();
+   //obj_manager->loadObjs();
    
    game_map->loadMap(tile_manager, obj_manager);
    egg_manager->set_obj_manager(obj_manager);
    
    actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
-   actor_manager->loadActors();
 
    game_map->set_actor_manager(actor_manager);
    egg_manager->set_actor_manager(actor_manager);
-   
+
    map_window = new MapWindow(config);
    map_window->init(game_map, tile_manager, obj_manager, actor_manager);
    gui->AddWidget(map_window);
-   
+      
    player = new Player(config);
    party = new Party(config);
    player->init(obj_manager, actor_manager, map_window, clock, party);
@@ -173,29 +169,25 @@ bool Game::loadGame(Screen *s, uint8 type)
    view_manager = new ViewManager(config);
    view_manager->init(gui, text, party, player, tile_manager, obj_manager, portrait);
  
-   scroll = new MsgScroll(config);
-   scroll->init(font_manager->get_font(0), player->get_name());
+   scroll = new MsgScroll(config, font_manager->get_font(0));
    gui->AddWidget(scroll);
 
    map_window->set_windowSize(11,11);
-   //map_window->move(0x12e,0x16b);
-   map_window->centerMapOnActor(player->get_actor());
 
    converse = new Converse();
    converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
 
-
    usecode->init(obj_manager, game_map, player, scroll);
-
 
    init_cursor();
 
-   player->get_location(&px, &py, &pz);
-   obj_manager->update(px, py, pz); // spawn eggs. 
-
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
+   
+   save_manager->load_latest_save();
 
+
+   
   }
  catch(const char *error_string)
   {

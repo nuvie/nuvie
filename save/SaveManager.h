@@ -33,12 +33,15 @@ class Configuration;
 
 
 class SaveDialog;
+class SaveGame;
 
 class SaveManager : public GUI_CallBack
 {
  Configuration *config;
  ActorManager *actor_manager;
  ObjManager *obj_manager;
+ 
+ SaveGame *savegame;
  
  // gui widgets;
  
@@ -49,6 +52,8 @@ class SaveManager : public GUI_CallBack
  SaveManager(Configuration *cfg);
  virtual ~SaveManager();
 
+ bool load_latest_save();
+ 
  void create_dialog();
   
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
