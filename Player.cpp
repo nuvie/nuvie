@@ -31,6 +31,7 @@ Player::Player(Configuration *cfg)
  config->value("config/GameType",game_type);
  
  karma = 0;
+ questf = 0;
 }
 
 bool Player::init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
@@ -144,14 +145,14 @@ void Player::moveDown()
 
 void Player::pass()
 {
- clock->inc_minute();
+ clock->inc_move_counter_by_a_minute();
 }
 
 bool Player::loadObjlistData()
 {
  std::string filename;
  NuvieIOFileRead objlist;
- int game_type;
+// int game_type;
  
  config_get_path(config,"savegame/objlist",filename);
 
@@ -164,6 +165,9 @@ bool Player::loadObjlistData()
  
  if(game_type == NUVIE_GAME_U6)
    {
+    objlist.seek(0x1bf1); // U6 Quest Flag
+    questf = objlist.read1();
+
     objlist.seek(0x1bf9); // Player Karma.
     karma = objlist.read1();
 

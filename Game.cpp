@@ -124,7 +124,8 @@ bool Game::loadGame(Screen *s, uint8 type)
      }
 
    usecode->init(obj_manager, game_map, player, scroll);
- 
+   obj_manager->set_usecode(usecode);
+
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode);
   }

@@ -20,17 +20,60 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <cstdlib>
 #include "U6UseCode.h"
 
 U6UseCode::U6UseCode(Configuration *cfg) : UseCode(cfg)
 {
-
+    init_objects();
 }
 
 U6UseCode::~U6UseCode()
 {
 }
+
+
+/* Create and fill usecode definition list.
+ */
+void U6UseCode::init_objects()
+{
+    memset(&uc_objects, 0, sizeof(uc_obj) * U6USE_NUM_OBJECTS);
+
+    uc_objects[0].obj_n = OBJ_U6_QUEST_GATE;
+    uc_objects[0].trigger |= USECODE_EVENT_STEPTO;
+    uc_objects[0].ucf = &U6UseCode::pass_quest_barrier;
+
+}
+
+
+/* Return index of usecode definition in list for object N:F.
+ */
+sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f)
+{
+    for(uint32 o = 0; o < U6USE_NUM_OBJECTS; o++)
+        if(uc_objects[o].obj_n == n && uc_objects[o].frame_n == f)
+            return(o);
+    return(-1);
+}
+
+
+/* Call usecode function `uco' from uc object list, with event `ev', for `obj'.
+ * The meaning of the return value is different for each event, but false will
+ * also be returned if `uco' isn't a valid index. (check that it is valid first)
+ */
+bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
+{
+    if(uco < 0 || uco >= U6USE_NUM_OBJECTS)
+        return(false);
+//printf("__pfn=%x\n", uc_objects[uco].ucf.__pfn_or_delta2.__pfn);
+    if(uc_objects[uco].trigger & ev)
+    {
+        printf("Usecode #%d (%d:%d), event 0x%02x\n", uco, obj->obj_n, obj->frame_n, ev);
+        return((this->*uc_objects[uco].ucf)(obj, ev));
+    }
+    return(false); // doesn't respond to event
+}
+
 
 bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
 {
@@ -425,4 +468,26 @@ bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
    scroll->display_string(" is doused.\n");
 
  return true;
+}
+
+
+/* Event: Step to.
+ * True: If Quest Flag is true, allow normal move.
+ * False: Block if Quest Flag is false.
+ */
+bool U6UseCode::pass_quest_barrier(Obj *obj, uint8 ev)
+{
+    if(ev == USECODE_EVENT_STEPTO)
+        if(player->get_quest_flag() == 0)
+        {
+            // block everyone, only print message when player attempts to pass
+            if(itemref == player->get_actor()->get_actor_num())
+            {
+                scroll->display_string("\n\"Thou art not upon a Sacred Quest!\n"
+                                       "Passage denied!\"\n\n");
+                scroll->display_prompt();
+            }
+            return(false);
+        }
+    return(true);
 }

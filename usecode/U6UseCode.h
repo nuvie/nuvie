@@ -71,13 +71,34 @@
 #define OBJ_U6_SIGN           332
 #define OBJ_U6_SECRET_DOOR    334
 
+#define OBJ_U6_QUEST_GATE     416
+#define OBJ_U6__LAST_         416
+
+#define U6USE_NUM_OBJECTS 1 /* count of objects with usecode */
+
+class U6UseCode;
+
+struct u6_uc_s // usecode definition (object)
+{
+ uint16 obj_n; // obj and frame numbers must match
+ uint8 frame_n;
+ uint8 dist; // distance
+ uint8 trigger; // event(s) to call ucf with
+ bool (U6UseCode::*ucf)(Obj *, uint8); // usecode function
+};
+
 class U6UseCode: public UseCode
 {
- 
+ typedef struct u6_uc_s uc_obj;
+ uc_obj uc_objects[U6USE_NUM_OBJECTS];
+
  public:
  
  U6UseCode(Configuration *cfg);
  ~U6UseCode();
+ void init_objects();
+ sint16 get_ucobject_index(uint16 n, uint8 f = 0);
+ bool uc_event(sint16 uco, uint8 ev, Obj *obj);
  
  bool use_obj(Obj *obj, Obj *src_obj=NULL);
  
@@ -95,6 +116,15 @@ class U6UseCode: public UseCode
  void drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width);
 
  bool use_firedevice_message(Obj *obj, bool lit);
+
+ bool pass_quest_barrier(Obj *obj, uint8 ev);
+
+#if 0 /* names for other events? */
+ bool look_mirror(Obj *obj, uint8 ev);
+ bool approach_mirror(Obj *obj, uint8 ev);
+ bool attack_mirror(Obj *obj, uint8 ev);
+ bool drop_mirror(Obj *obj, uint8 ev); // call after drop
+#endif
 };
 
 #endif /* __U6UseCode_h__ */

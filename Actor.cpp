@@ -34,7 +34,8 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 {
  map = m;
  obj_manager = om;
- 
+ usecode = NULL;
+
  clock = c;
  direction = 0;
  walk_frame = 0;
@@ -163,11 +164,23 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
  if(map->is_passable(new_x,new_y,new_z) ==  false)
    return false;
  
+ usecode = obj_manager->get_usecode();
+ obj = obj_manager->get_obj(new_x,new_y,new_z);
+ if(obj)
+  {
+   // check usecode table for a step-to function to call for this object
+   sint16 uc = usecode->get_ucobject_index(obj->obj_n, obj->frame_n);
+   if(uc >= 0)
+     {
+      usecode->set_itemref(id_n); // calling item is this actor
+      if(!usecode->uc_event(uc, USECODE_EVENT_STEPTO, obj))
+         return(false);
+     }
+  }
  x = new_x;
  y = new_y;
  z = new_z;
- 
- obj = obj_manager->get_obj(x,y,z);
+
  if(obj)
   {
    if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.

@@ -46,7 +46,8 @@ class Player
  
  char name[14];
  uint8 gender;
- 
+
+ uint8 questf; 
  uint8 karma;
  
  MapWindow *map_window;
@@ -63,6 +64,9 @@ class Player
  uint8 get_karma() { return(karma); }
  void add_karma(uint8 val);
  void subtract_karma(uint8 val);
+
+ void set_quest_flag(uint8 val) { questf = val; }
+ uint8 get_quest_flag()         { return(questf); }
  
  void set_actor(Actor *new_actor);
  Actor *get_actor();

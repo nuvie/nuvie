@@ -62,7 +62,7 @@ bool ActorManager::loadActors()
  
  for(i=0; i < 256; i++)
    {
-    actors[i] = new Actor(map,obj_manager, clock);
+    actors[i] = new Actor(map,obj_manager,clock);
     
     b1 = objlist.read1();
     b2 = objlist.read1();
@@ -205,7 +205,7 @@ void ActorManager::set_player(Actor *a)
 /* Returns an actor's "look-string," a general description of their occupation
  * or appearance.
  */
-const char *ActorManager::actor_lookstr(Actor *a)
+const char *ActorManager::look_actor(Actor *a)
 {
     return(tile_manager->lookAtTile(
                            obj_manager->get_obj_tile_num(a->get_tile_num()),
@@ -261,3 +261,4 @@ bool ActorManager::loadActorSchedules()
  
  return true;
 }
+

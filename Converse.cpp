@@ -179,7 +179,7 @@ void Converse::init_variables()
     // FIXME: count dead party members in PARTYALL, not in PARTYLIVE
     set_var(U6TALK_VAR_PARTYALL, get_var(U6TALK_VAR_PARTYLIVE));
     set_var(U6TALK_VAR_HP, player->get_actor()->get_hp());
-    set_var(U6TALK_VAR_QUESTF, 0); // FIXME: QUEST FLAG
+    set_var(U6TALK_VAR_QUESTF, player->get_quest_flag());
     set_var(U6TALK_VAR_WORKTYPE, npc->get_worktype());
 }
 
@@ -188,6 +188,8 @@ void Converse::init_variables()
  */
 void Converse::delete_variables()
 {
+    player->set_quest_flag((uint8)get_var(U6TALK_VAR_QUESTF));
+
     for(uint32 v = 0; v <= U6TALK_VAR__LAST_; v++)
         if(variables[v].sv)
             free(variables[v].sv);
@@ -380,7 +382,7 @@ void Converse::show_portrait(uint8 n)
     if((actor->get_flags() & 1) || player->get_party()->contains_actor(actor))
         nameret = npc_name(n);
     else
-        nameret = actors->actor_lookstr(actor);
+        nameret = actors->look_actor(actor);
     views->set_portrait_mode(n, (char *)nameret);
 }
 

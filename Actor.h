@@ -30,6 +30,8 @@
 #include "ObjManager.h"
 #include "GameClock.h"
 
+class UseCode;
+
 typedef struct {
 uint16 x;
 uint16 y;
@@ -49,6 +51,7 @@ class Actor
  Map *map;
  ObjManager *obj_manager;
  GameClock *clock;
+ UseCode *usecode;
  
  uint16 x;
  uint16 y;

@@ -1,3 +1,6 @@
+#ifndef __GameSelect_h__
+#define __GameSelect_h__
+
 /*
  *  GameSelect.h
  *  Nuvie
@@ -43,3 +46,5 @@ class GameSelect
  uint8 load(Screen *s, uint8 game_type=NUVIE_GAME_NONE);
  
 };
+
+#endif /* __GameSelect_h__ */

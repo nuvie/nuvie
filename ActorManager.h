@@ -49,7 +49,7 @@ class ActorManager
   
  ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c);
  ~ActorManager();
- 
+
  bool loadActors();
  
  Actor *get_actor(uint8 actor_num);
@@ -58,7 +58,7 @@ class ActorManager
  Actor *get_player();
  void set_player(Actor *a);
 
- const char *actor_lookstr(Actor *a);
+ const char *look_actor(Actor *a);
 
  void updateActors();
  

@@ -26,6 +26,9 @@
 UseCode::UseCode(Configuration *cfg)
 {
  config = cfg;
+
+ itemref = 0;
+
 }
 
 UseCode::~UseCode()
@@ -41,6 +44,7 @@ bool UseCode::init(ObjManager *om, Map *m, Player *p, MsgScroll *ms)
  
  return true;
 }
+
 
  bool UseCode::use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj)
  {
@@ -91,4 +95,3 @@ bool UseCode::use_container(Obj *obj)
 
  return false;
 }
-

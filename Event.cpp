@@ -184,7 +184,7 @@ bool Event::update()
                                  {
                                   scroll->display_string("Pass!\n\n");
                                   scroll->display_prompt();
-                                  clock->inc_move_counter_by_a_minute();
+                                  player->pass();
                                  }
                                else
                                  {
@@ -198,6 +198,7 @@ bool Event::update()
              case SDLK_SPACE :
                                scroll->display_string("Pass!\n\n");
                                scroll->display_prompt();
+                               player->pass();
                                break;
              default :
                                if(event.key.keysym.sym != SDLK_LALT
@@ -294,7 +295,9 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
          get(rel_x,rel_y);
         }
       else
-         player->moveRelative(rel_x,rel_y);
+        {
+         player->moveRelative(rel_x, rel_y);
+        }
      }
   }
 
