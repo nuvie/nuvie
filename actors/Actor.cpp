@@ -604,7 +604,14 @@ Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
  U6Link *link = 0;
  Obj *obj = 0;
  uint32 origqty = 0, newqty = 0;
+ uint8 frame_n = 0;
  
+ if(obj_n > 1024)
+   {
+    frame_n = (uint8)floor(obj_n / 1024);
+	obj_n -= frame_n * 1024;
+   }
+	
  inventory = get_inventory_list();
 
  // find same type of object in inventory, don't look in containers
@@ -630,6 +637,7 @@ Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
      obj->obj_n = obj_n;
      obj->quality = quality;
      obj->qty = newqty <= 255 ? newqty : 255;
+	 obj->frame_n = frame_n;
      inventory_add_object(obj);
      newqty -= obj->qty;
    }

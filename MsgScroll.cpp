@@ -189,7 +189,7 @@ void MsgScroll::display_string(const char *string, uint16 string_len, uint8 lang
        if(string_buf[i] != ' ')
         {
          buf_addString(&string_buf[row_start],i - row_start,lang_num);
-         if(string_buf[i] != '\0')
+         if(string_buf[i] == '\n' || row_length == scroll_width)
           {
            buf_next();
            num_rows++;
