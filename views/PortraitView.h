@@ -26,7 +26,6 @@
 
 #include "View.h"
 
-class string;
 
 class Configuration;
 class TileManager;
