@@ -1,3 +1,7 @@
+2003-05-27  Eric Fry <efry@users.sourceforge.net>
+	* ObjManager: Objects are now stored in an AVL Tree. This should 
+	  speed things up a bit on slower machines.
+
 2003-05-25  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Actor/ObjManager: Update to inventory and statistic access methods.
 	(adding/deleting items works, and set_hp(), get_maxhp() added)

@@ -653,7 +653,7 @@ bool Converse::do_cmd()
 {
     bool donext = true, ifcomp = false;
     Actor *cnpc = 0;
-    Party *group = 0;
+//    Party *group = 0;
     uint32 res = 0; // some operation result
 #ifdef CONVERSE_DEBUG
 fprintf(stderr, "Converse: %04x: cmd=0x%02x\n", cmd_offset, cmd);
@@ -1171,7 +1171,7 @@ convscript Converse::read_script(Uint32 &n)
  */
 bool Converse::start(Actor *talkto)
 {
-    unsigned char *undec_script = 0; // item as it appears in library
+  //  unsigned char *undec_script = 0; // item as it appears in library
     Uint32 actor_num = 0, script_num = 0;
     if(!talkto || !src)
         return(false);

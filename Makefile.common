@@ -19,6 +19,9 @@ nuvie_SOURCES = \
 	files/U6Shape.h \
 \
 	misc/U6LList.cpp \
+	misc/U6LList.h \
+	misc/iAVLTree.cpp \
+	misc/iAVLTree.h \
 \
 	screen/GamePalette.cpp \
 	screen/GamePalette.h \

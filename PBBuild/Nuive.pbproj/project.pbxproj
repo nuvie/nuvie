@@ -704,8 +704,36 @@
 			settings = {
 			};
 		};
+		079903C80481F21E00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = iAVLTree.cpp;
+			path = ../misc/iAVLTree.cpp;
+			refType = 2;
+		};
+		079903C90481F21E00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = iAVLTree.h;
+			path = ../misc/iAVLTree.h;
+			refType = 2;
+		};
+		079903CA0481F21E00A8000A = {
+			fileRef = 079903C80481F21E00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		079903CB0481F21E00A8000A = {
+			fileRef = 079903C90481F21E00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		079CA1D204230A2B00A8000A = {
 			children = (
+				079903C90481F21E00A8000A,
+				079903C80481F21E00A8000A,
 				079CA1D704232F3100A8000A,
 				072566B904272C0200A8000A,
 				072566B804272C0200A8000A,
@@ -724,6 +752,32 @@
 		};
 		079CA1D804232F3100A8000A = {
 			fileRef = 079CA1D704232F3100A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07B16EC504834FD000A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = U6Shape.cpp;
+			path = ../files/U6Shape.cpp;
+			refType = 2;
+		};
+		07B16EC604834FD000A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = U6Shape.h;
+			path = ../files/U6Shape.h;
+			refType = 2;
+		};
+		07B16EC704834FD000A8000A = {
+			fileRef = 07B16EC504834FD000A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07B16EC804834FD000A8000A = {
+			fileRef = 07B16EC604834FD000A8000A;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -816,6 +870,8 @@
 				07B8BE140419DA1000A8000A,
 				072BE3A5041ADE7D00A8000A,
 				072BE3A6041ADE7D00A8000A,
+				07B16EC604834FD000A8000A,
+				07B16EC504834FD000A8000A,
 			);
 			isa = PBXGroup;
 			name = Files;
@@ -1404,6 +1460,8 @@
 				07C3D130047A1C7B00A8000A,
 				07C3D132047A1C7B00A8000A,
 				07C3D136047A4A3F00A8000A,
+				079903CB0481F21E00A8000A,
+				07B16EC804834FD000A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1458,6 +1516,8 @@
 				07C3D12F047A1C7B00A8000A,
 				07C3D131047A1C7B00A8000A,
 				07C3D135047A4A3F00A8000A,
+				079903CA0481F21E00A8000A,
+				07B16EC704834FD000A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

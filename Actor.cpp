@@ -178,8 +178,9 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
 
 void Actor::update()
 {
+/*
  uint8 new_direction;
-/* 
+ 
  // do actor stuff here.
  if(standing)
   {
@@ -272,7 +273,7 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container)
       return(obj);
     else if(obj->container)
     {
-      if(obj = inventory_get_object(obj_n, qual, obj))
+      if((obj = inventory_get_object(obj_n, qual, obj)))
         return(obj);
     }
    }

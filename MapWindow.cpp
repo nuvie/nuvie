@@ -222,7 +222,7 @@ void MapWindow::drawMap()
  uint16 *map_ptr;
  uint16 map_width;
  Tile *tile;
- unsigned char *ptr;
+ //unsigned char *ptr;
  
  //map_ptr = map->get_map_data(cur_level);
  map_width = map->get_width(cur_level);
@@ -310,81 +310,42 @@ void MapWindow::drawActors()
 
 void MapWindow::drawObjs()
 {
- uint16 sc_x, sc_y;
- uint16 sc_w, sc_h;
- uint16 x,y;
 
- if(cur_level == 0)
-   {
-    sc_y = cur_y / 128;
-    sc_x = cur_x / 128;
-    
-    if(cur_x % 128 + win_width > 128)
-       sc_w = 2;
-    else
-       sc_w = 1;
+    drawObjSuperBlock(NULL,false); //draw objects for dungeon level
 
-    if(cur_y % 128 + win_height > 128)
-       sc_h = 2;
-    else
-       sc_h = 1;
-
-    for(y=sc_y; y < sc_y + sc_h; y++)
-      {
-       for(x=sc_x; x < sc_x + sc_w; x++)
-         drawObjSuperBlock(obj_manager->get_obj_superchunk(x,y,0),false);
-      }      
-   }
- else
-   {
-    drawObjSuperBlock(obj_manager->get_obj_superchunk(0,0,cur_level),false); //draw objects for dungeon level
-   }
    
  drawActors();
 
- if(cur_level == 0)
-   {
-    for(y=sc_y; y < sc_y + sc_h; y++)
-      {
-       for(x=sc_x; x < sc_x + sc_w; x++)
-         drawObjSuperBlock(obj_manager->get_obj_superchunk(x,y,0),true);
-      }      
-   }
- else
-   {
-    drawObjSuperBlock(obj_manager->get_obj_superchunk(0,0,cur_level),true); //draw objects for dungeon level
-   }
+
+    drawObjSuperBlock(NULL,true); //draw objects for dungeon level
+
  
  return;
 }
 
 void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
 {
- U6Link *link, *link1;
- ObjList *obj_list;
+ U6Link *link;
+ U6LList *obj_list;
  Obj *obj;
+ uint16 x,y;
  
- for(link=superblock->start();link != NULL;)
-  {
-   obj_list = (ObjList *)link->data;
-//   if(obj->y > cur_y + win_height)
-//      break;
-
-   if(obj_list->y >= cur_y && obj_list->y <= cur_y + win_height)
-     {
-      if(obj_list->x >= cur_x && obj_list->x <= cur_x + win_width)
-        {
-         for(link1=obj_list->objs->start();link1 != NULL;link1=link1->next)
+    for(y=cur_y;y <= cur_y + win_height;y++)
+      {
+       for(x=cur_x;x <= cur_x + win_width;x++)
+         {
+          obj_list =obj_manager->get_obj_list(x,y,cur_level);
+          if(obj_list)
            {
-            obj = (Obj *)link1->data;
-            drawObj(obj, toptile);
+            for(link=obj_list->start();link != NULL;link=link->next)
+              {
+               obj = (Obj *)link->data;
+               drawObj(obj, toptile);
+              }
            }
-        }
-     }
-     
-   link = superblock->next();
-  }
- 
+         }
+      }
+
 }
 
 inline void MapWindow::drawObj(Obj *obj, bool toptile)

@@ -24,6 +24,8 @@
  *
  */
 
+#include "iAVLTree.h"
+
 #include "U6def.h"
 #include "U6File.h"
 #include "U6LList.h"
@@ -60,13 +62,11 @@
 #define OBJ_U6_SIGN           332
 #define OBJ_U6_SECRET_DOOR    334
 
-typedef struct
+struct ObjTreeNode
 {
- uint16 x;
- uint16 y;
- U6LList *objs;
-} ObjList;
-
+ iAVLKey key;
+ U6LList *obj_list;
+};
 
 struct Obj
 {
@@ -90,8 +90,9 @@ class ObjManager
 {
  Configuration *config;
  TileManager *tile_manager;
- U6LList *surface[64];
- U6LList *dungeon[5];
+ iAVLTree *surface;
+ iAVLTree *dungeon[5];
+
  uint16 obj_to_tile[1024]; //maps object number (index) to tile number.
  uint8 obj_weight[1024];
  U6LList *actor_inventories[256];
@@ -103,11 +104,13 @@ class ObjManager
 
  bool loadObjs(TileManager *tm);
 
- U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
+ //U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
  bool is_door(Obj * obj);
 
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
+ U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);
+ 
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj);
@@ -129,13 +132,16 @@ class ObjManager
  bool loadBaseTile();
  bool loadWeightTable();
 
- U6LList *loadObjSuperChunk(char *filename);
- void addObj(U6LList *list, Obj *obj);
+ bool loadObjSuperChunk(char *filename, uint8 level);
+ void addObj(iAVLTree *obj_tree, Obj *obj);
  bool addObjToContainer(U6LList *list, Obj *obj);
  Obj *loadObj(U6File *file, uint16 objblk_n);
  char *get_objblk_path(char *path);
-
- inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);
+ iAVLTree *get_obj_tree(uint8 level);
+ 
+ iAVLKey get_obj_tree_key(Obj *obj);
+ iAVLKey get_obj_tree_key(uint16 x, uint16 y, uint8 level);
+ //inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);
 
  void print_object_list();
 };
