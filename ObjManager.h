@@ -113,6 +113,8 @@ class ObjManager
  uint16 last_obj_blk_x, last_obj_blk_y;
  uint8 last_obj_blk_z;
  
+ uint16 obj_save_count;
+ 
  public:
 
  ObjManager(Configuration *cfg, TileManager *tm, EggManager *em);
@@ -127,7 +129,7 @@ class ObjManager
  bool save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_offset); 
  bool save_eggs(NuvieIO *save_buf);
  bool save_inventories(NuvieIO *save_buf);
- bool save_obj(NuvieIO *save_buf, Obj *obj);
+ bool save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent);
 
  void set_usecode(UseCode *uc) { usecode = uc; }
  UseCode *get_usecode()        { return(usecode); }

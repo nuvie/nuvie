@@ -60,12 +60,15 @@ class SaveGame
  bool load(const char *filename);
 
  bool save(const char *filename);
+
  
  uint16 get_num_saves() { return num_saves; };
  
  protected:
 
  bool load_objlist();
+ bool save_objlist();
+  
  char *get_objblk_path(char *path);
 };
 

@@ -1,3 +1,15 @@
+2004-05-25  Eric Fry <efry at users.sourceforge.net>
+	* More work on saving.
+	* You can now save and load a game in the new nuvie save format.
+	* Readied objects aren't working correctly after a save/load. I'll
+	  fix that soon.
+	* At the moment it isn't posible to load a game while in the middle
+	  of another game. I need to fix the cleanup routines in a number
+	  of classes before we can load a game over the top of another.
+	* You can try saving your game by clicking on the save button in
+	  the new savedialog window. Press 's' while playing to see the new
+	  savedialog.
+
 2004-05-24  Eric Fry <efry at users.sourceforge.net>
 	* Work on new Load/Save system.
 	* Added SaveGame class.

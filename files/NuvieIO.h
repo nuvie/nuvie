@@ -81,7 +81,9 @@ class NuvieIOBuffer: public NuvieIO
    bool open(unsigned char *buf, uint32 buf_size, bool copy_buf=NUVIE_BUF_COPY);
    
    void close();
-  
+   
+   unsigned char *get_raw_data() { return data; }; //hehe evil
+   
    uint8 read1();
    uint16 read2();
    uint32 read4();

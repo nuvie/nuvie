@@ -227,11 +227,65 @@ bool SaveGame::load_objlist()
 
 bool SaveGame::load(const char *filename)
 {
+ uint8 i;
+ uint32 objlist_size;
+ uint32 bytes_read;
+ NuvieIOFileRead *loadfile;
+ unsigned char *data;
+ int game_type;
+ //char game_tag[3];
+ ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+ 
+ config->value("config/GameType",game_type);
+
+ loadfile = new NuvieIOFileRead();
+ 
+ if(loadfile->open(filename) == false)
+  {
+   delete loadfile;
+   return false;
+  }
+ 
+ loadfile->seek(15);
+ 
+ num_saves = loadfile->read2();
+ 
+ // load actor inventories
+ obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, 0);
+ 
+ // load eggs
+ obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, 0);
+
+ // load surface objects
+ for(i=0;i<64;i++)
+   {
+    obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, i);
+   }
+
+ // load dungeon objects
+ for(i=0;i<5;i++)
+   {
+    obj_manager->load_super_chunk((NuvieIO *)loadfile, i+1, 0);
+   }
+ 
+ objlist_size = loadfile->get_size() - loadfile->position();
+ 
+ data = loadfile->readBuf(objlist_size, &bytes_read);
+ 
+ objlist.open(data, objlist_size, NUVIE_BUF_COPY);
+ 
+ free(data);
+ loadfile->close();
+ delete loadfile;
+  
+ load_objlist();
+ 
  return true;
 }
 
 bool SaveGame::save(const char *filename)
 {
+ uint8 i;
  NuvieIOFileWrite *savefile;
  int game_type;
  char game_tag[3];
@@ -266,8 +320,48 @@ bool SaveGame::save(const char *filename)
  
  obj_manager->save_inventories(savefile);
  
+ obj_manager->save_eggs(savefile);
+
+ // save surface objects
+ for(i=0;i<64;i++)
+   obj_manager->save_super_chunk(savefile, 0, i);
+
+ // save dungeon objects
+ for(i=0;i<5;i++)
+   obj_manager->save_super_chunk(savefile, i+1, 0);
+ 
+ save_objlist();
+ 
+ savefile->writeBuf(objlist.get_raw_data(), objlist.get_size());
+
  savefile->close();
  
+ return true;
+}
+
+bool SaveGame::save_objlist()
+{
+ Game *game;
+ GameClock *clock;
+ ActorManager *actor_manager;
+ Player *player;
+ Party *party;
+ 
+ game = Game::get_game();
+ 
+ clock = game->get_clock();
+ actor_manager = game->get_actor_manager();
+ 
+ player = game->get_player();
+ party = game->get_party();
+
+ 
+ clock->save(&objlist);
+ actor_manager->save(&objlist);
+ 
+ player->save(&objlist);
+ party->save(&objlist);
+
  return true;
 }
 

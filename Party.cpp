@@ -118,6 +118,32 @@ bool Party::load(NuvieIO *objlist)
  return true;
 }
 
+bool Party::save(NuvieIO *objlist)
+{
+ uint16 i;
+ 
+ objlist->seek(0xff0);
+ objlist->write1(num_in_party);
+ 
+ 
+ objlist->seek(0xf00);
+ for(i=0;i<num_in_party;i++)
+  {
+   objlist->writeBuf((unsigned char *)member[i].name,14);
+  }
+
+ objlist->seek(0xfe0);  
+ for(i=0;i<num_in_party;i++)
+  {
+   objlist->write1(member[i].actor->get_actor_num());
+  }
+  
+ objlist->seek(0x1c12); // combat mode flag
+ objlist->write1((uint8)in_combat_mode);
+ 
+ return true;
+}
+
 bool Party::add_actor(Actor *actor)
 {
  Converse *converse = game->get_converse();

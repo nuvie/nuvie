@@ -51,7 +51,10 @@ SaveManager::~SaveManager()
 
 bool SaveManager::load_latest_save()
 {
- return savegame->load_original();
+ if(savegame->load("nuvie01.sav") == false) //try to load the savegame nuvie01.sav
+   return savegame->load_original();        // fall back to savegame/ if nuvie01.sav doesn't exist.
+
+ return true;   
 }
  
 void SaveManager::create_dialog()

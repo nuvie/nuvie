@@ -77,7 +77,7 @@ uint32 NuvieIOFile::get_filesize()
 
 void NuvieIOFile::seek(uint32 new_pos)
 {
- if(fp && new_pos < size)
+ if(fp && new_pos <= size)
    {
     fseek(fp,new_pos,SEEK_SET);
     pos = new_pos;
@@ -167,6 +167,9 @@ bool NuvieIOFileWrite::write1(uint8 src)
  
  pos++;
  
+ if(pos > size)
+   size = pos;
+   
  return true;
 }
 
@@ -180,6 +183,9 @@ bool NuvieIOFileWrite::write2(uint16 src)
  
  pos += 2;
  
+ if(pos > size)
+   size = pos;
+   
  return true;
 }
    
@@ -195,6 +201,9 @@ bool NuvieIOFileWrite::write4(uint32 src)
  
  pos += 4;
  
+ if(pos > size)
+   size = pos;
+   
  return true;
 }
 
@@ -204,7 +213,10 @@ uint32 NuvieIOFileWrite::writeBuf(const unsigned char *src, uint32 src_size)
    return(0);
  
  pos += src_size;
- 
+
+ if(pos > size)
+   size = pos;
+   
  return(fwrite(src, sizeof(unsigned char), src_size, fp));
 }
    

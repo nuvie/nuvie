@@ -164,6 +164,7 @@ bool NuvieIOBuffer::write1(uint8 src)
    return false;
  
  data[pos] = src;
+ pos++;
  
  return true;
 }

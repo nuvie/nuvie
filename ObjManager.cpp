@@ -188,6 +188,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
 
   }
 
+ 
  delete list;
 
  return true;
@@ -199,9 +200,14 @@ bool ObjManager::save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_of
  ObjTreeNode *item;
  U6Link *link;
  iAVLCursor node;
- uint16 obj_count = 0;
  uint32 start_pos;
+ uint32 finish_pos;
  
+ if(level == 0)
+   obj_tree = surface[chunk_offset];
+ else
+   obj_tree = dungeon[level-1];
+
  item = (ObjTreeNode *)iAVLFirst(&node, obj_tree);
  
  start_pos = save_buf->position();
@@ -209,57 +215,109 @@ bool ObjManager::save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_of
  //skip the 2 bytes for number of objects.
  save_buf->write2(0); // we'll fill this in later on.
  
+ obj_save_count = 0;
+ 
  for(;item;)
   {
-   for(link = item->obj_list->start(); link != NULL; link=link->next)
+   for(link = item->obj_list->end(); link != NULL; link=link->prev)
     {
-     save_obj(save_buf, (Obj *)link->data);
+     save_obj(save_buf, (Obj *)link->data, NULL);
     }
 
    item = (ObjTreeNode *)iAVLNext(&node);
   }
+ 
+ finish_pos = save_buf->position();
+ save_buf->seek(start_pos);
+ 
+ save_buf->write2(obj_save_count);
+ save_buf->seek(finish_pos);
+ 
  return true;
 }
 
 bool ObjManager::save_eggs(NuvieIO *save_buf)
 {
+ uint32 start_pos;
+ uint32 finish_pos;
+ std::list<Egg *> *egg_list;
+ std::list<Egg *>::iterator egg;
+
+ egg_list = egg_manager->get_egg_list();
+
+ start_pos = save_buf->position();
+  
+ //skip number of objects we will fill that in at the end.
+ save_buf->write2(0);
+
+ obj_save_count = 0;
+
+ for(egg = egg_list->begin(); egg != egg_list->end();egg++)
+   save_obj(save_buf, (*egg)->obj, NULL);
+
+ finish_pos = save_buf->position();
+ save_buf->seek(start_pos);
+ 
+ save_buf->write2(obj_save_count);
+ save_buf->seek(finish_pos);
+
+ printf("Eggs: %d\n", obj_save_count);
+
  return true;
 }
 
 bool ObjManager::save_inventories(NuvieIO *save_buf)
 {
+ uint32 start_pos;
+ uint32 finish_pos;
  U6Link *link;
- uint16 count = 0;
  uint16 i;
  
- for(i=0;i<=256;i++)
-   {
-    if(actor_inventories[i] != NULL)
-      count += actor_inventories[i]->count();
-   }
+ start_pos = save_buf->position();
 
- printf("Actor Inventories: %d\n", count);
+ save_buf->write2(0);
  
- save_buf->write2(count);
+ obj_save_count = 0;
  
- for(i=0;i<=256;i++)
+ for(i=0;i<256;i++)
    {
     if(actor_inventories[i] != NULL)
       {
        for(link=actor_inventories[i]->start(); link != NULL; link=link->next)
          {
-          save_obj(save_buf, (Obj *)link->data);
+          save_obj(save_buf, (Obj *)link->data, NULL);
          }
       }
    }
+ 
+ printf("Actor Inventories: %d\n", obj_save_count);
 
+ finish_pos = save_buf->position();
+ save_buf->seek(start_pos);
+ 
+ save_buf->write2(obj_save_count);
+ save_buf->seek(finish_pos);
+ 
  return true;
 }
 
-bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj)
+bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
 {
  uint8 b;
-
+ U6Link *link;
+ 
+ if(parent) //obj is in a container
+  {
+   obj->x = parent->objblk_n;
+   if(obj->x > 1024)
+     {
+      obj->y |= 0x1;
+      obj->x -= 1024;
+     }
+  }
+ else 
+   obj->status &= (0xff ^ OBJ_STATUS_IN_CONTAINER);
+ 
  save_buf->write1(obj->status);
  save_buf->write1(obj->x & 0xff);
  b = obj->x >> 8;
@@ -280,6 +338,16 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj)
 
  save_buf->write1(obj->qty);
  save_buf->write1(obj->quality);
+
+ if(obj->container)
+  {
+   obj->objblk_n = obj_save_count;
+   
+   for(link = obj->container->start(); link != NULL; link=link->next)
+     save_obj(save_buf, (Obj *)link->data, obj);
+  }
+
+ obj_save_count++;
 
  return true;
 }

@@ -90,6 +90,28 @@ bool Player::load(NuvieIO *objlist)
  return true;
 }
 
+bool Player::save(NuvieIO *objlist)
+{
+ if(game_type == NUVIE_GAME_U6)
+   {
+    objlist->seek(0x1bf1); // U6 Quest Flag
+    objlist->write1(questf);
+
+    objlist->seek(0x1bf9); // Player Karma.
+    objlist->write1(karma);
+
+    objlist->seek(0x1c71); // Player Gender.
+    objlist->write1(gender);
+   }
+   
+ if(game_type == NUVIE_GAME_MD)
+   {
+    objlist->seek(0x1d27); // Player Gender.
+    objlist->write1(gender);
+   }
+
+ return true;
+}
 
 /* Returns the first actor set as Player.
  */

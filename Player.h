@@ -61,6 +61,7 @@ class Player
  bool init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
 
  bool load(NuvieIO *objlist);
+ bool save(NuvieIO *objlist);
  
  Actor *find_actor();
 

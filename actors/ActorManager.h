@@ -57,6 +57,7 @@ class ActorManager
  ~ActorManager();
 
  bool load(NuvieIO *objlist);
+ bool save(NuvieIO *objlist);
  
  Actor *get_actor(uint8 actor_num);
  Actor *get_actor(uint16 x, uint16 y, uint8 z);

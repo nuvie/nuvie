@@ -100,6 +100,7 @@ class Party {
  
  bool init(Game *g, ActorManager *am);
  bool load(NuvieIO *objlist);
+ bool save(NuvieIO *objlist);
  
  bool add_actor(Actor *actor);
  bool remove_actor(Actor *actor);

@@ -240,7 +240,150 @@ bool ActorManager::load(NuvieIO *objlist)
 
  return true;
 }
+
+bool ActorManager::save(NuvieIO *objlist)
+{
+ uint16 i;
+ uint8 b;
+ int game_type;
  
+ config->value("config/GameType",game_type);
+
+ objlist->seek(0x100); // Start of Actor position info
+ 
+ for(i=0; i < 256; i++)
+   {
+    objlist->write1(actors[i]->x & 0xff);
+    
+    b = actors[i]->x >> 8; 
+    b += actors[i]->y << 2;
+    objlist->write1(b);
+
+    b = actors[i]->y >> 6;
+    b += actors[i]->z << 4;
+    objlist->write1(b);
+   }
+ 
+ for(i=0;i < 256; i++)
+   {    
+    objlist->write1(actors[i]->obj_n & 0xff);
+    b = actors[i]->obj_n >> 8;
+    b += actors[i]->frame_n << 2;
+    objlist->write1(b);
+   }
+
+ //old obj_n & frame_n values
+ 
+ objlist->seek(0x15f1);
+ 
+ for(i=0;i < 256; i++)
+   {    
+    objlist->write1(actors[i]->base_obj_n & 0xff);
+    b = actors[i]->base_obj_n >> 8;
+    b += actors[i]->old_frame_n << 2;
+    objlist->write1(b);
+   }
+
+ // Strength
+ 
+ objlist->seek(0x900);
+ 
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->strength);
+   }
+ 
+ // Dexterity
+ 
+ objlist->seek(0xa00);
+ 
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->dex);
+   }
+ 
+ // Intelligence
+ 
+ objlist->seek(0xb00);
+ 
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->intelligence);
+   }
+
+  // Experience
+ 
+ objlist->seek(0xc00);
+ 
+ for(i=0;i < 256; i++)
+   {
+    objlist->write2(actors[i]->exp);
+   }
+ 
+ // Health
+ 
+ objlist->seek(0xe00);
+
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->hp);
+   }
+   
+ // Experience Level
+ 
+ objlist->seek(0xff1);
+ 
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->level);
+   }
+ 
+
+ // Combat mode
+ 
+ objlist->seek(0x12f1);
+
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->combat_mode);
+   }
+    
+ // Magic Points
+ 
+ objlist->seek(0x13f1);
+ 
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->magic);
+   }
+
+ objlist->seek(0x17f1); // Start of Actor flags
+
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->flags);
+   }
+ 
+/*
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->inventory_parse_readied_objects();
+
+    actors[i]->init(); //let the actor object do some init
+   }
+*/
+ // Current Worktype
+ 
+ objlist->seek(0x11f1);
+
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->get_worktype());
+   }
+
+ return true;
+}
+
 Actor *ActorManager::get_actor(uint8 actor_num)
 {
  return actors[actor_num];

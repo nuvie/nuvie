@@ -68,6 +68,14 @@ bool GameClock::load(NuvieIO *objlist)
 
 bool GameClock::save(NuvieIO *objlist)
 {
+ objlist->seek(0x1bf3); // start of time data
+
+ objlist->write1(minute);
+ objlist->write1(hour);
+ objlist->write1(day);
+ objlist->write1(month);
+ objlist->write2(year);
+
  return true;
 }
 
