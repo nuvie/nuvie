@@ -26,9 +26,9 @@ using std::vector;
 
 /* Control and value opcodes for op() & evop() (U6) */
 #define U6OP_GT         0x81
-#define U6OP_GT2        0x82
+#define U6OP_GE         0x82
 #define U6OP_LT         0x83
-#define U6OP_LT2        0x84
+#define U6OP_LE         0x84
 #define U6OP_NE         0x85
 #define U6OP_EQ         0x86
 #define U6OP_ADD        0x90

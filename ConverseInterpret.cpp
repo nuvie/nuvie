@@ -661,28 +661,28 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
 
     switch(in = pop_arg(i))
     {
-        case U6OP_GT: // 0x81 ??
+        case U6OP_GT: // 0x81
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            if(v[0] > v[1]) // ?? <=
+            if(v[0] > v[1])
                 out = 1;
             break;
-        case U6OP_GT2: // 0x82 ??
+        case U6OP_GE: // 0x82
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            if(v[0] > v[1]) // ?? <
+            if(v[0] >= v[1])
                 out = 1;
             break;
-        case U6OP_LT: // 0x83 ??
+        case U6OP_LT: // 0x83
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            if(v[0] < v[1]) // ?? >=
+            if(v[0] < v[1])
                 out = 1;
             break;
-        case U6OP_LT2: // 0x84 ??
+        case U6OP_LE: // 0x84
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            if(v[0] < v[1]) // ?? >
+            if(v[0] <= v[1])
                 out = 1;
             break;
         case U6OP_NE: // 0x85
