@@ -144,7 +144,7 @@ void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
        if(font[i] & (1<<(j-1)))
          pixels[8-j] = color; // 0th palette entry should be black
    //    else
-     //    pixels[7-j] = 0x48;
+     //    pixels[7-j] = 0xff;
       }
       
     pixels += pitch;
