@@ -239,6 +239,14 @@ SOURCE=..\Book.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Converse.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Converse.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Event.cpp
 # End Source File
 # Begin Source File
