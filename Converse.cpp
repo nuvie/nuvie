@@ -63,21 +63,19 @@ Converse::~Converse()
  * object to send output to and get input from.
  */
 Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
-                   MsgScroll *ioobj, ActorManager *actormgr, GameClock *c, Player *p)
+                   MsgScroll *ioobj, ActorManager *actormgr, GameClock *c,
+                   Player *p)
 {
+    // get global objects
     config = cfg;
+    scroll = ioobj;
+    actors = actormgr;
     clock = c;
     player = p;
-    scroll = ioobj;
-	actors = actormgr;
+    // initialization
     interpreter = engine_type;
     src = 0; src_num = 0;
     npc = 0;
-    // argument count to each command:
-//    memset(&converse_cmd_args, 0, sizeof(Uint8) * 256);
-//    converse_cmd_args[U6OP_SETF] = 2;
-//    converse_cmd_args[U6OP_CLEARF] = 2;
-
     script = 0;
     stop();
 }
@@ -707,9 +705,8 @@ void Converse::init_variables()
     heap.resize(CONV_VAR__LAST_ + 1); // FIXME: the U6 max. var num is unknown
     for(int v = 0; v <= CONV_VAR__LAST_; v++)
         heap[v].valt = heap[v].val = 0x00;
-    heap[CONV_VAR_SEX].val = 0; // everyone is male for now
-//    heap[CONV_VAR_WORKTYPE].val = npc->get_worktype();
-    heap[CONV_VAR_WORKTYPE].val = 0x20;
+    heap[CONV_VAR_SEX].val = player->get_gender();
+    heap[CONV_VAR_WORKTYPE].val = npc->get_worktype();
 }
 
 

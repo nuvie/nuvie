@@ -278,7 +278,7 @@ class Converse
     { return(!scope.empty() ? scope.top() : CONV_SCOPE_MAIN); }
 public:
     Converse(Configuration *cfg, Converse_interpreter engine_type,
-		     MsgScroll *ioobj, ActorManager *actormgr, GameClock *c, Player *p);
+             MsgScroll *ioobj, ActorManager *actormgr, GameClock *c, Player *p);
     ~Converse();
     void loadConv(std::string convfilename="converse.a");
     /* Returns true if a script is active (paused or unpaused). */
