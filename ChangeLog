@@ -1,4 +1,10 @@
 2003-04-17  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Minor change to look more like original U6: `what?' and `Pass!'
+	messages are displayed on unknown keys, and Spacebar, respectively.
+	* And you can now "Escape" back to Move mode from Use/Look/Talk.
+	* And the "look" keyword correctly shows description in conversation.
+
+2003-04-17  Joseph Applegate <sb-x@users.sourceforge.net>
 	* MsgScroll: Any key escapes from page break
 	* Converse: Now handling if...else...endif by skipping blocks of script
 	until it reaches end-of-scope. Only a few if-tests are implemented.
