@@ -82,7 +82,7 @@ bool Song::Resume() {
 
 bool Song::FadeOut(float seconds) {
 	int ret;
-	if (m_pMusic==NULL) return false;
+	//if (m_pMusic==NULL) return false;
 	ret=Mix_FadeOutMusic((int)(seconds*1000.0f));
 	if (ret) return false;
 	return true;

@@ -213,6 +213,10 @@ bool Party::loadParty()
    member[i].actor = actor_manager->get_actor(actor_num);
    member[i].actor->set_in_party(true);
   }
+  
+ objlist.seek(0x1c12); // combat mode flag
+ in_combat_mode = (bool)objlist.read1();
+ 
  reform_party();
  
  return true;

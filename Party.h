@@ -90,6 +90,7 @@ class Party {
  bool autowalk; // party is automatically walking to a destination
  
  bool in_vehicle; //Party is in a vehicle.
+ bool in_combat_mode;
  
  public:
  

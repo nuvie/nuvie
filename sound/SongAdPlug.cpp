@@ -97,7 +97,7 @@ bool SongAdPlug::Play(bool looping) {
 
 bool SongAdPlug::Stop() {
 
-	if (!Mix_PlayingMusic()) return false;
+	//if (!Mix_PlayingMusic()) return false;
 	
     Mix_HookMusic(NULL,NULL);
 

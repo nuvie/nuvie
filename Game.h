@@ -46,7 +46,7 @@ class Portrait;
 class UseCode;
 class Event;
 class GUI;
-class SoundManager; //^^
+class SoundManager;
 
 typedef enum
 {
@@ -132,7 +132,7 @@ class Game
  UseCode *get_usecode()            { return(usecode); }
  Event *get_event()                { return(event); }
  GUI *get_gui()                    { return(gui); }
- SoundManager *get_sound_manager() { return(sound_manager); } //^^
+ SoundManager *get_sound_manager() { return(sound_manager); }
  Cursor *get_cursor()              { return(cursor); }
 
  protected:

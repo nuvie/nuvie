@@ -97,6 +97,8 @@ bool SoundManager::nuvieStartup (Configuration * config)
   filename = scriptdirectory + "tile_samples.cfg";
   LoadTileSamples (scriptdirectory, filename);
 
+  musicPlayFrom("random");
+
   return true;
 }
 
@@ -351,17 +353,30 @@ bool SoundManager::LoadTileSamples (string directory, string scriptname)
 
 void SoundManager::musicPlayFrom(string group)
 {
+ g_MusicFinished = true;
+ m_CurrentGroup = group;
 }
 
 void SoundManager::musicPause()
 {
+ //Mix_PauseMusic();
+  if (m_pCurrentSong != NULL)
+        {
+          m_pCurrentSong->Stop();
+        }
 }
 
 void SoundManager::musicPlay()
 {
+// Mix_ResumeMusic();
+ if (m_pCurrentSong != NULL)
+        {
+          m_pCurrentSong->Play();
+        }
+
 }
     
-void SoundManager::update ()
+void SoundManager::update_map_sfx ()
 {
   int i;
   uint16 x, y;
@@ -479,49 +494,25 @@ void SoundManager::update ()
           it++;
         }
     }
+}
 
-
-
-  //decide song according to level first
-//      printf("%d %d %d\n",x,y,l);
-/*
-  switch (l)
-    {
-    case 0:                    //player in Britannia
-      if ((x > 261) && (x < 418) && (y > 307) && (y < 459))     //player in britain
-        next_group = "Castle";
-      else
-        next_group = "Random";
-      break;
-    case 5:                    //player in Gargoyle world
-      next_group = "Gargoyle";
-      break;
-    default:
-      next_group = "Dungeon";
-      break;
-    }
-*/
-
-next_group = "random";
-
-  if ((m_pCurrentSong == NULL) || (m_CurrentGroup != next_group)
-      || (g_MusicFinished))
+void SoundManager::update ()
+{
+  if (audio_enabled && g_MusicFinished)
     {
       g_MusicFinished = false;
       if (m_pCurrentSong != NULL)
         {
           m_pCurrentSong->Stop();
         }
-      m_pCurrentSong = SoundManager::RequestSong (next_group);
+      m_pCurrentSong = SoundManager::RequestSong (m_CurrentGroup);
       if(m_pCurrentSong)
         {
           printf ("assigning new song! %x\n", m_pCurrentSong);
           if(!m_pCurrentSong->Play (false))
             {
               printf ("play failed!\n");
-              m_pCurrentSong = NULL;
             }
-          m_CurrentGroup = next_group;
         }
     }
 

@@ -48,8 +48,9 @@ public:
 	
 	bool nuvieStartup(Configuration *config);
 	bool initAudio();
-	void update(); //updates the active sounds
-
+	void update_map_sfx(); //updates the active sounds
+    void update(); // at the moment this just changes songs if required
+    
     void musicPlayFrom(string group);
     
     void musicPause();

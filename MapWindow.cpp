@@ -39,6 +39,7 @@
 #include "U6objects.h"
 #include "Event.h"
 //#include "AnimManager.h"
+#include "SoundManager.h"
 #include "GUI_widget.h"
 #include "Game.h"
 #include "GameClock.h"
@@ -341,6 +342,7 @@ if(!screen)
  
  m_ViewableObjects.clear();
  m_ViewableTiles.clear();
+
  
  window_updated = true;
 }
@@ -411,7 +413,12 @@ void MapWindow::Display(bool full_redraw)
  
  screen->update(8,8,win_width*16-16,win_height*16-16);
 
- window_updated = false;
+ if(window_updated)
+  {
+   window_updated = false;
+   Game::get_game()->get_sound_manager()->update_map_sfx();
+  }
+
 }
 
 void MapWindow::drawActors()

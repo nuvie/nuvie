@@ -35,6 +35,7 @@
 
 #define TEMP_ACTOR_OFFSET 224
 #define ACTOR_TEMP_INIT 255
+#define SCHEDULE_SIZE 5
 
 void config_get_path(Configuration *config, std::string filename, std::string &path);
 
@@ -338,8 +339,9 @@ bool ActorManager::loadActorSchedules()
  std::string filename;
  NuvieIOFileRead schedule;
  uint16 i;
- uint16 index[256];
- uint16 s_num;
+ uint16 schedule_count, total_schedules;
+ uint16 num_schedules[256]; // an array to hold the number of schedule entries for each Actor.
+ uint16 prev_offset, cur_offset;
  uint32 bytes_read;
  unsigned char *sched_data;
  unsigned char *s_ptr;
@@ -348,23 +350,36 @@ bool ActorManager::loadActorSchedules()
  if(schedule.open(filename) == false)
    return false;
  
- for(i=0;i<256;i++)
-   {
-    index[i] = schedule.read2();
-   }
+ //read the first 254 entries
  
- sched_data = schedule.readBuf(schedule.get_size() - 0x200, &bytes_read);
- s_ptr = sched_data + 2;
+ prev_offset = schedule.read2();
+
+ for(i=0,schedule_count=0;i<255;i++)
+   {
+    cur_offset = schedule.read2();
+    num_schedules[i] = cur_offset - prev_offset;
+    schedule_count += num_schedules[i];
+    prev_offset = cur_offset;
+   }
+
+ // the last entry must be calculated from the total number of schedule entries in the file.
+ total_schedules = schedule.read2();
+ num_schedules[255] = total_schedules - schedule_count;
+ 
+ sched_data = schedule.readBuf(total_schedules * SCHEDULE_SIZE, &bytes_read);
+
+ if(bytes_read != (uint32)(total_schedules * SCHEDULE_SIZE))
+   {
+    printf("Error: Reading schedules!\n");
+    return false;
+   }
+
+ s_ptr = sched_data;
 
  for(i=0;i<256;i++)
   {
-   if(i == 255) //Hmm a bit of a hack. might want to check if there are and scheduled events for Actor 255
-     s_num = 0;
-   else  
-     s_num = index[i+1] - index[i];
-
-   actors[i]->loadSchedule(s_ptr,s_num);
-   s_ptr += s_num * 5;
+   actors[i]->loadSchedule(s_ptr,num_schedules[i]);
+   s_ptr += num_schedules[i] * SCHEDULE_SIZE;
   }
  
  free(sched_data);

@@ -1,3 +1,9 @@
+2004-02-28  Eric Fry <efry at users.sourceforge.net>
+	* Cleaned up schedule loading code.
+	* Music stops when in talk mode.
+	* Added in_combat_mode flag to Party class.
+	* Map related sfx are only updated when the mapwindow changes.
+
 2004-02-24  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* actors/ActorManager.cpp: read all of 'schedule' (was missing 2 bytes)
 	* ObjManager.cpp: delete/delete[] mismatch
