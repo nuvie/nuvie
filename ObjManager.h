@@ -67,21 +67,21 @@ typedef struct
  U6LList *objs;
 } ObjList;
 
- 
+
 struct Obj
 {
  uint16 objblk_n;
  uint16 obj_n;
  uint8 frame_n;
- 
+
  uint8 status;
  uint16 x;
  uint16 y;
  uint8 z;
-  
+
  uint8 qty;
  uint8 quality;
- 
+
  U6LList *container;
  Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; };
 };
@@ -95,47 +95,48 @@ class ObjManager
  uint16 obj_to_tile[1024]; //maps object number (index) to tile number.
  uint8 obj_weight[1024];
  U6LList *actor_inventories[256];
- 
+
  public:
- 
+
  ObjManager(Configuration *cfg);
  ~ObjManager();
- 
+
  bool loadObjs(TileManager *tm);
- 
+
  U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
  bool is_door(Obj * obj);
- 
+
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj);
- 
+
  uint16 get_obj_tile_num(uint16 obj_num);
 
  U6LList *get_actor_inventory(uint16 actor_num);
  bool actor_has_inventory(uint16 actor_num);
- 
+
  bool use_obj(Obj *obj);
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
+ bool remove_obj(Obj *obj);
  const char *look_obj(Obj *obj);
- 
+
  float get_obj_weight(Obj *obj);
- 
+
  protected:
- 
+
  bool loadBaseTile();
  bool loadWeightTable();
- 
+
  U6LList *loadObjSuperChunk(char *filename);
  void addObj(U6LList *list, Obj *obj);
  bool addObjToContainer(U6LList *list, Obj *obj);
  Obj *loadObj(U6File *file, uint16 objblk_n);
  char *get_objblk_path(char *path);
- 
+
  inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);
- 
+
  void print_object_list();
 };
 

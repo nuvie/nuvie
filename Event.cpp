@@ -57,7 +57,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  player = p;
  converse = c;
  view_manager = vm;
- 
+
  mode = MOVE_MODE;
 
  book = new Book(config);
@@ -111,7 +111,7 @@ bool Event::update()
                                break;
              case SDLK_RIGHT :
                                move(1,0);
-                               break; 
+                               break;
              case SDLK_q     :
                                return false;
                                break;
@@ -131,12 +131,19 @@ bool Event::update()
                                map_window->centerCursor();
                                map_window->set_show_cursor(true);
                                break;
-             case SDLK_u     : 
+             case SDLK_u     :
                                mode = USE_MODE;
                                scroll->display_string("Use-");
                                map_window->centerCursor();
                                map_window->set_show_use_cursor(true);
                                break;
+             case SDLK_g     :
+                               mode = GET_MODE;
+                               scroll->display_string("Get-");
+                               map_window->centerCursor();
+                               map_window->set_show_use_cursor(true);
+                               break;
+
              case SDLK_RETURN  :
                                if(mode == LOOK_MODE)
                                  {
@@ -156,6 +163,12 @@ bool Event::update()
                                   mode = MOVE_MODE;
                                   use(0,0);
                                   map_window->set_show_use_cursor(false);
+                                 }
+                               else if(mode == GET_MODE)
+                                 {
+                                  mode = MOVE_MODE;
+                                  get(0,0);
+                                  map_window->set_show_cursor(false);
                                  }
                                else
                                  {
@@ -193,7 +206,7 @@ bool Event::update()
                                break;
             }
           break;
-             
+
         case SDL_QUIT :
                        return false; //time to quit.
                        break;
@@ -272,8 +285,57 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
       use(rel_x,rel_y);
      }
    else
-      player->moveRelative(rel_x,rel_y);
+     {
+      if(mode == GET_MODE)
+        {
+         get(rel_x,rel_y);
+        }
+      else
+         player->moveRelative(rel_x,rel_y);
+     }
   }
+
+ return true;
+}
+
+
+bool Event::get(sint16 rel_x, sint16 rel_y)
+{
+ Obj *obj;
+ uint16 x,y;
+ uint8 level;
+ float weight;
+ 
+ player->get_location(&x,&y,&level);
+
+ obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
+ if(obj)
+ {
+  scroll->display_string(obj_manager->look_obj(obj));
+
+  weight = obj_manager->get_obj_weight(obj);
+  weight /= 10;
+  
+  if(weight != 0)
+    {
+     player->get_actor()->inventory_add_object(obj->obj_n, obj->qty, obj->quality);
+     obj_manager->remove_obj(obj);
+    }
+  else
+    scroll->display_string("\n\nNot possible.");
+    
+ }
+ else
+  scroll->display_string("nothing");
+
+ scroll->display_string("\n");
+ scroll->display_prompt();
+
+ map_window->set_show_use_cursor(false);
+ map_window->updateBlacking();
+ view_manager->update_display();
+ mode = MOVE_MODE;
+
  return true;
 }
 
@@ -282,18 +344,18 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  Obj *obj;
  uint16 x,y;
  uint8 level;
- 
- player->get_location(&x,&y,&level);
- 
 
- 
+ player->get_location(&x,&y,&level);
+
+
+
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
- 
+
  if(obj)
  {
   scroll->display_string(obj_manager->look_obj(obj));
   scroll->display_string("\n");
-  
+
   if(obj->obj_n == OBJ_U6_LADDER || obj->obj_n == OBJ_U6_HOLE)
    {
     if(obj->frame_n == 0) // DOWN
@@ -314,27 +376,28 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
          obj->x / 8 * 8 * 4 + ((obj->quality & 0x03) * 8) + (obj->x - obj->x / 8 * 8),
          obj->y / 8 * 8 * 4 + ((obj->quality >> 2 & 0x03) * 8) + (obj->y - obj->y / 8 * 8),
          level-1);
-         
+
          }
        else
          player->move(obj->x,obj->y,level-1);
       }
    }
   else
-   {   
+   {
     obj_manager->use_obj(obj);
    }
  }
- 
+
  scroll->display_string("\n");
  scroll->display_prompt();
-  
+
  map_window->set_show_use_cursor(false);
  map_window->updateBlacking();
  mode = MOVE_MODE;
 
  return true;
 }
+
 
 bool Event::look()
 {
@@ -344,7 +407,7 @@ bool Event::look()
  char *data;
  char weight_string[26];
  float weight;
- 
+
  if(actor)
    view_manager->set_portrait_mode(actor->get_actor_num(),NULL);
 
@@ -364,7 +427,7 @@ bool Event::look()
       scroll->display_string(weight_string);
      }
 
-   if(obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || 
+   if(obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK ||
       obj->obj_n == OBJ_U6_SCROLL || obj->obj_n == OBJ_U6_PICTURE ||
       obj->obj_n == OBJ_U6_TOMBSTONE || obj->obj_n == OBJ_U6_CROSS)
       {
@@ -377,7 +440,7 @@ bool Event::look()
          }
       }
   }
-   
+
  scroll->display_string("\n\n");
  scroll->display_prompt();
 
@@ -399,7 +462,7 @@ void Event::alt_code_input(const char *in)
             }
             active_alt_code = 0;
             break;
-            
+
         case 214:
             alt_code_teleport(in); //teleport player & party? to location string
             scroll->display_string("\n");
@@ -429,7 +492,7 @@ void Event::alt_code(const char *cs)
             scroll->display_prompt();
             active_alt_code = 0;
             break;
-            
+
         case 214:
             scroll->display_string("Location: ");
             scroll->set_input_mode(true);
@@ -450,13 +513,13 @@ bool Event::alt_code_teleport(const char *location_string)
 {
  char *next_num;
  uint16 x, y, z;
- 
+
  x = strtol(location_string,&next_num,0);
  y = strtol(next_num,&next_num,0);
  z = strtol(next_num,&next_num,0);
 
  player->move(x,y,z);
- 
+
  return true;
 }
 
@@ -469,18 +532,18 @@ void Event::alt_code_infostring()
  uint8 year;
  uint16 x, y;
  uint8 z;
- 
+
  karma = player->get_karma();
  player->get_location(&x,&y,&z);
 
  day = clock->get_day();
  month = clock->get_month();
  year = clock->get_year();
- 
+
  sprintf(buf, "%02d%02d%02d%04d%03x%03x%x", karma, month, day, year, x,y,z);
- 
+
  scroll->display_string(buf);
- 
+
  return;
 }
 

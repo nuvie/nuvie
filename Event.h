@@ -62,24 +62,25 @@ class Event
  Book *book;
  Converse *converse;
  ViewManager *view_manager;
- 
+
  SDL_Event event;
  int ts; //timestamp for TimeLeft() method.
  char alt_code_str[4]; // string representation of alt-code input
  uint8 alt_code_len; // how many characters have been input for alt-code
  uint16 active_alt_code; // alt-code that needs more input
  uint8 alt_code_input_num; // alt-code can get multiple inputs
-  
+
  public:
  Event(Configuration *cfg);
  ~Event();
- 
+
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
            GameClock *gc, Converse *c, ViewManager *vm);
-  
+
  bool update();
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
+ bool get(sint16 rel_x, sint16 rel_y);
  bool look();
  bool talk();
  void alt_code(const char *cs);
@@ -87,11 +88,11 @@ class Event
  void clear_alt_code() { alt_code_str[0] = '\0'; alt_code_len = 0; }
  bool alt_code_teleport(const char *location_string);
  void alt_code_infostring();
- 
+
  void wait();
- 
+
  protected:
- 
+
  inline Uint32 TimeLeft();
 };
 
