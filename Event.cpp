@@ -25,6 +25,11 @@ Event::Event(Configuration *cfg)
  config = cfg;
 }
 
+Event::~Event()
+{
+ delete book;
+}
+
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
                  Converse *c)
 {

@@ -59,6 +59,8 @@ MsgScroll::MsgScroll(Configuration *cfg)
 
 MsgScroll::~MsgScroll()
 {
+ free(string_buf);
+ free(prompt);
 }
 
 bool MsgScroll::init(Screen *s, Text *txt)

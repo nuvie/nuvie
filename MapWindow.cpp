@@ -31,7 +31,7 @@ MapWindow::MapWindow(Configuration *cfg)
 
 MapWindow::~MapWindow()
 {
- 
+ free(tmp_buf);
 }
 
 bool MapWindow::init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorManager *am)

@@ -50,6 +50,7 @@ class Event
   
  public:
  Event(Configuration *cfg);
+ ~Event();
  
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
            Converse *c);

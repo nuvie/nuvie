@@ -21,7 +21,12 @@ Look::Look(Configuration *cfg)
  
  max_len = 0;
 }
- 
+
+Look::~Look()
+{
+ free(desc_buf);
+}
+
 bool Look::init()
 {
  std::string filename;

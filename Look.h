@@ -22,6 +22,7 @@ class Look
  public:
  
  Look(Configuration *cfg);
+ ~Look();
  
  bool init();
  
