@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 #include <stack>
 #include "ActorManager.h"
 #include "Actor.h"
@@ -27,7 +28,6 @@
 #include "Configuration.h"
 #include "MsgScroll.h"
 
-//#define CONVERSE_DEBUG
 
 enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
@@ -44,6 +44,7 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_BYE 0xb6 // end conversation
 #define U6OP_NEW 0xb9 // new object, place in an npc's inventory
 #define U6OP_DELETE 0xba // delete an object
+#define U6OP_INVENTORY 0xbe // show inventory
 #define U6OP_PORTRAIT 0xbf // show portrait
 #define U6OP_GIVE 0xc9 // transfer object from one npc inventory to another
 #define U6OP_WAIT 0xcb // insert page-break/wait for input to continue
@@ -147,6 +148,17 @@ class Converse
             return(args[arg_i][args[arg_i].size()-1].val);
     }
     uint8 val_count(uint8 arg_i) { return(args[arg_i].size()); }
+    /* Returns a randomly chosen number from `rnd_lo' to `rnd_hi'. */
+    uint32 rnd(uint32 rnd_lo, uint32 rnd_hi)
+    {
+        if(rnd_lo == rnd_hi)
+            return(rnd_lo);
+#ifdef MACOSX
+        return((random() + rnd_lo) % (rnd_hi + 1));
+#else
+        return((rand() + rnd_lo) % (rnd_hi + 1));
+#endif
+    }
 
     /* Seeking methods - update script pointer. */
     void seek(Uint32 offset = 0) { script_pt = script; script_pt += offset; }
@@ -205,7 +217,8 @@ class Converse
     {
         return(((check == 0x0a) || (check >= 0x20 && check <=0x7a)));
     }
-    /* Returns true if `check' is an "if" test type. */
+    /* Returns true if `check' is the number of a test or a special function
+     * that is part of some statements. */
     bool is_test(Uint8 check)
     {
         return(((check == 0x81) || (check == 0x84) || (check == 0x85) || (check == 0x86)
@@ -244,23 +257,8 @@ class Converse
 //        if(scope.top() == 
         return(true);
     }
-#ifndef CONVERSE_DEBUG
-    void enter_scope(uint8 scopedef) { scope.push(scopedef); }
-    void break_scope(uint8 levels = 1)
-    { while(levels--) if(!scope.empty()) scope.pop(); else break; }
-#else
-    void enter_scope(uint8 scopedef) { scope.push(scopedef); fprintf(stderr, "Converse: ...enter %d...\n", scopedef); }
-    void break_scope(uint8 levels = 1)
-    {
-        while(levels--)
-            if(!scope.empty())
-            {
-                fprintf(stderr, "Converse: ...leave %d...\n", scope.top());
-                scope.pop();
-            }
-            else break;
-    }
-#endif
+    void enter_scope(uint8 scopedef);
+    void break_scope(uint8 levels = 1);
     uint8 current_scope()
     { return(!scope.empty() ? scope.top() : CONV_SCOPE_MAIN); }
 public:
@@ -279,12 +277,7 @@ public:
     bool start(Actor *talkto); // makes step() available
     void stop();
     void step(Uint32 count = 0);
-    /* Send output buffer to message scroller. */
-    void print()
-    {
-        scroll->display_string((char *)output.c_str());
-        output.resize(0);
-    }
+    void print(const char *printstr = 0);
     Uint32 print_name();
     /* Set input buffer (replacing what is already there.) */
     void input(const char *new_input)
