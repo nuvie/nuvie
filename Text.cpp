@@ -24,6 +24,7 @@
 #include <stdio.h>
 
 #include <string>
+#include <cctype>
 
 #include "Configuration.h"
 #include "U6File.h"
