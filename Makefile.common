@@ -48,6 +48,8 @@ nuvie_SOURCES = \
 	GUI/GUI_widget.h \
 	GUI/GUI_DragManager.cpp \
 	GUI/GUI_DragManager.h \
+	GUI/GUI_Dialog.cpp \
+	GUI/GUI_Dialog.h \
 	GUI/GUI_YesNoDialog.cpp \
 	GUI/GUI_YesNoDialog.h \
 \
