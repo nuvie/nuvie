@@ -57,12 +57,14 @@ nuvie_SOURCES = \
 	GUI/GUI_YesNoDialog.cpp \
 	GUI/GUI_YesNoDialog.h \
 \
+	misc/CallBack.h \
 	misc/U6LList.cpp \
 	misc/U6LList.h \
 	misc/U6misc.cpp \
 	misc/U6misc.h \
 	misc/iAVLTree.cpp \
 	misc/iAVLTree.h \
+	misc/MapEntity.h \
 \
 	pathfinder/AStar.cpp \
 	pathfinder/AStar.h \
@@ -139,6 +141,8 @@ nuvie_SOURCES = \
 	views/InventoryWidget.cpp \
 	views/InventoryWidget.h \
 \
+	AnimManager.cpp \
+	AnimManager.h \
 	Background.cpp \
 	Background.h \
 	Book.cpp \
@@ -149,6 +153,10 @@ nuvie_SOURCES = \
 	ConverseInterpret.h \
 	Cursor.cpp \
 	Cursor.h \
+	Effect.cpp \
+	Effect.h \
+	EffectManager.cpp \
+	EffectManager.h \
 	EggManager.cpp \
 	EggManager.h \
 	Event.cpp \
