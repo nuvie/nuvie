@@ -1,3 +1,11 @@
+// TODO: work flawlessly with every u6 npc
+//       fix keywords/input comparison
+//       cleaner statement skipping
+//       methods to get/put args
+//       move argument collecting into argument collector
+//       uniform text output
+//       remove debugging messages
+//       show/remove portraits
 /* Copyright (C) 2003 Joseph Applegate
  *
  * This program is free software; you can redistribute it and/or
@@ -21,7 +29,9 @@
 
 // argument counts (256args * 256values), if args are collected first
 //static Uint8 converse_cmd_args[256];
-
+using std::cerr;
+using std::cin;
+using std::endl;
 
 /* Load `convfilename' as src.
  */
@@ -70,7 +80,6 @@ Uint32 Converse::print_name()
     output.append((const char *)script_pt, (unsigned int)len);
     output.append("\n\n");
     pop(len);
-    fprintf(stderr, "Converse: got name of npc 0x%02x\n", id);
     return(id);
 }
 
@@ -121,7 +130,7 @@ bool Converse::do_text()
     else if(text_op == CONV_TEXTOP_KEYWORD)
     {
         keywords = output;
-        fprintf(stderr, "Converse: got keywords: \"%s\"\n", keywords.c_str());
+//        fprintf(stderr, "Converse: got keywords: \"%s\"\n", keywords.c_str());
         output.resize(0);
         text_op = 0;
     }
@@ -136,7 +145,10 @@ bool Converse::do_text()
  */
 bool Converse::check_keywords()
 {
+    int findret = 0;
     if(keywords == "*")
+        return(true);
+    if(input_s.size() && ((findret = keywords.find(input_s)) >= 0))
         return(true);
     return(false);
 }
@@ -150,37 +162,53 @@ bool Converse::check_keywords()
 bool Converse::do_cmd()
 {
     bool donext = true;
-//    fprintf(stderr, "Converse: cmd=0x%02x\n", cmd);
-//    fprintf(stderr, "Converse: args: ");
-//    for(unsigned int a = 0; a < args.size(); a++)
-//        for(unsigned int v = 0; v < args[a].size(); v++)
-//            fprintf(stderr, "%d,%d=(0x%02x)0x%02x\n", a, v,
-//                    args[a][v].valt, args[a][v].val);
-//    fprintf(stderr, "\n");
+#if 0
+    fprintf(stderr, "Converse: cmd=0x%02x\n", cmd);
+    fprintf(stderr, "Converse: args: ");
+    for(unsigned int a = 0; a < args.size(); a++)
+        for(unsigned int v = 0; v < args[a].size(); v++)
+            fprintf(stderr, "%d,%d=(0x%02x)0x%02x\n", a, v,
+                    args[a][v].valt, args[a][v].val);
+    fprintf(stderr, "\n");
+#endif
     if(keywords.size()
        && (cmd != U6OP_KEYWORD && cmd != U6OP_SANSWER && cmd != U6OP_ENDASK))
     {
 //        fprintf(stderr, "Converse: skip cmd\n");
-//        fprintf(stderr, "Converse: keywords(%d)=\"%s\" skip cmd\n",
-//                keywords.size(), keywords.c_str());
+//        fprintf(stderr, "Converse: (keywords=\"%s\")\n", keywords.c_str());
         return(donext);
     }
     switch(cmd)
     {
+        case U6OP_IF:
+#if 0
+            switch(get_val(0, CONV_GETLASTVAL))
+            {
+                case 0xc6: // is val0 # of npc in party
+            }
+#endif
+            scroll->display_string("Unimplemented: `if'\n");
+            break;
+        case U6OP_ENDIF:
+            scroll->display_string("Unimplemented: `endif'\n");
+            break;
+        case U6OP_ELSEIF:
+            scroll->display_string("Unimplemented: `elseif'\n");
+            break;
         case U6OP_ARGSTOP:
-            std::cerr << "Converse: END-OF-ARGUMENT" << std::endl;
+//            std::cerr << "Converse: END-OF-ARGUMENT" << std::endl;
             break;
         case U6OP_SETF:
-            std::cerr << "Converse: SET" << std::endl;
 //            npcmanager->set_flag(get_val(0, 0), get_val(1, 0));
-            fprintf(stderr, "Converse: npc=%x flag=%x\n", args[0][0].val,
-                    args[1][0].val);
+//            fprintf(stderr, "Converse: npc=%x flag=%x\n", args[0][0].val,
+//                    args[1][0].val);
+            scroll->display_string("Unimplemented: `set'\n");
             break;
         case U6OP_CLEARF:
-            std::cerr << "Converse: CLEAR" << std::endl;
 //            npcmanager->clear_flag(get_val(0, 0), get_val(1, 0));
-            fprintf(stderr, "Converse: npc=%x flag=%x\n", args[0][0].val,
-                    args[1][0].val);
+//            fprintf(stderr, "Converse: npc=%x flag=%x\n", args[0][0].val,
+//                    args[1][0].val);
+            scroll->display_string("Unimplemented: `clear'\n");
             break;
         case U6OP_JUMP:
             std::cerr << "Converse: JUMP" << std::endl;
@@ -188,55 +216,56 @@ bool Converse::do_cmd()
             seek(args[0][0].val);
             break;
         case U6OP_BYE:
-            std::cerr << "Converse: BYE" << std::endl;
+//            std::cerr << "Converse: BYE" << std::endl;
             stop(); donext = false;
             break;
         case U6OP_WAIT:
-            std::cerr << "Converse: WAIT" << std::endl;
-            wait(); donext = false;
+//            std::cerr << "Converse: WAIT" << std::endl;
+            scroll->display_string("*");
             break;
         case U6OP_ENDASK:
-            std::cerr << "Converse: END-OF-ASK section" << std::endl;
+//            std::cerr << "Converse: END-OF-ASK section" << std::endl;
             keywords.resize(0);
             break;
         case U6OP_KEYWORD:
-            std::cerr << "Converse: KEYWORDS" << std::endl;
-            text_op = 2;
+//            std::cerr << "Converse: KEYWORDS" << std::endl;
+            text_op = CONV_TEXTOP_KEYWORD;
             break;
         case U6OP_SIDENT:
-            std::cerr << "Converse: IDENT section" << std::endl;
+//            std::cerr << "Converse: IDENT section" << std::endl;
             print_name();
             break;
         case U6OP_SLOOK:
         case U6OP_SLOOKB:
-            std::cerr << "Converse: LOOK section" << std::endl;
+//            std::cerr << "Converse: LOOK section" << std::endl;
             output.append("You see ");
             break;
         case U6OP_SCONVERSE:
-            std::cerr << "Converse: CONVERSE section" << std::endl;
+//            std::cerr << "Converse: CONVERSE section" << std::endl;
             break;
         case U6OP_SASK:
-            std::cerr << "Converse: ASK section" << std::endl;
-//            std::cerr << "Input" << std::endl;
-//            cin >> input_s;
+//            std::cerr << "Converse: ASK section" << std::endl;
+            scroll->display_string("\nyou say: ");
+            scroll->set_input_mode(true);
             wait(); donext = false;
             break;
         case U6OP_SANSWER:
-            std::cerr << "Converse: ANSWER (check KEYWORDS)" << std::endl;
+//            std::cerr << "Converse: ANSWER (check KEYWORDS)" << std::endl;
             if(check_keywords())
             {
                 keywords.resize(0);
                 // continue, no skip
+                text_op = CONV_TEXTOP_PRINT;
             }
-            else
-                std::cerr << "Converse: skip to next keyword" << std::endl;
             break;
-        case 0x00:
-            output.append("\nNull command\n");
-            break;
-        default:
-            output.append("\nUnknown command\n");
+        case 0x00: // incorrectly parsed
+            scroll->display_string("\nNull command\n");
+            // try to salvage the next statement
             while(!check_overflow() && pop() != U6OP_ARGSTOP);
+            donext = false;
+            break;
+        default: // unimplemented
+            scroll->display_string("\nUnknown command\n");
             donext = false;
     }
     cmd = 0x00;
@@ -315,7 +344,7 @@ void Converse::step(Uint32 count)
 //        std::cerr << "new statement" << std::endl;
         if(is_print(peek()))
         {
-            std::cerr << "GET TEXT" << std::endl;
+//            std::cerr << "GET TEXT" << std::endl;
             do_text();
             continue;
         }
@@ -475,11 +504,22 @@ void Converse::continue_script()
     {
         if(!waiting())
             step();
-//        else if(scroll->poll_input())
+        else if(scroll->peek_at_input())
+        {
+            scroll->display_string("\n\n");
+            input_s.assign(scroll->get_input());
+            fprintf(stderr, "Converse: got input: \"%s\"\n", input_s.c_str());
+            unwait();
+        }
+//        else
 //        {
+//            cerr << "Converse: input: ";
+//            cin >> input_s;
+//            unwait();
 //        }
-//        script has stopped itself:
-//        if(!converse->running())
+
+        // script has stopped itself:
+//        if(!running())
 //            remove portrait [& name [& inventory display]] unset talking mode
     }
 }

@@ -198,7 +198,7 @@ bool MsgScroll::handle_input(SDLKey *input)
 {
     if(page_break == false && input_mode == false)
         return(false);
-        
+    
     switch(*input)
     {
         case SDLK_ESCAPE:
@@ -207,8 +207,7 @@ bool MsgScroll::handle_input(SDLKey *input)
                              page_break = false;
                              display_string(NULL);
                             }
-                          
-                          if(input_mode)
+                          else if(input_mode)
                             set_input_mode(false);
                             
                           return(true);
@@ -465,9 +464,11 @@ char *MsgScroll::get_input()
  
 char *MsgScroll::peek_at_input()
 {
- if(input_buf_pos > 0)
-   return input_buf;
-   
+ if(input_mode == false)
+   {
+    if(input_buf_pos > 0)
+      return input_buf;
+   }
  return NULL;
 }
  

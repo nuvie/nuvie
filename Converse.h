@@ -29,6 +29,9 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
 
 /* Control codes for U6; as far as I know work with the other games too... */
+#define U6OP_IF 0xa1
+#define U6OP_ENDIF 0xa2
+#define U6OP_ELSEIF 0xa3
 #define U6OP_SETF 0xa4
 #define U6OP_CLEARF 0xa5
 #define U6OP_ARGSTOP 0xa7
