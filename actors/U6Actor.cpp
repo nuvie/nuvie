@@ -165,7 +165,7 @@ void U6Actor::wt_wander_around()
 {
  uint8 new_direction;
  
- if(NUVIE_RAND()%8 == 1)
+ if(NUVIE_RAND()%4 == 1)
    {
     new_direction = NUVIE_RAND()%4;
     set_direction(new_direction);
@@ -213,7 +213,7 @@ void U6Actor::wt_beg()
         }
         // get closer
         actor->get_location(&them.x, &them.y, &them.z);
-        swalk(them, 2);
+        swalk(them, 1);
     }
     else
         wt_wander_around();
