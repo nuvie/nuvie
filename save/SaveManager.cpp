@@ -71,6 +71,9 @@ void SaveManager::init()
     return;
    }
 
+ search_prefix.assign("nuvie");
+ search_prefix.append(get_game_tag(game_type));
+ 
 /*
    if(directory_exists(savedir.c_str()) == false && !savedir.empty())
 	   // try to create the save dir if it doesn't exist
@@ -92,8 +95,27 @@ SaveManager::~SaveManager()
 
 bool SaveManager::load_latest_save()
 {
- if(savegame->load("nuvie01.sav") == false) //try to load the savegame nuvie01.sav
-   return savegame->load_original();        // fall back to savegame/ if nuvie01.sav doesn't exist.
+ NuvieFileList filelist;
+ std::string *filename;
+ std::string fullpath;
+ 
+ if(filelist.open(savedir.c_str(), search_prefix.c_str(), NUVIE_SORT_TIME_DESC) == false)
+   return false;
+ 
+ filename = filelist.get_latest();
+
+ filelist.close();
+ 
+ if(filename != NULL)
+   build_path(savedir, filename->c_str(), fullpath);
+
+ if(!filename || savegame->load(fullpath.c_str()) == false) //try to load the latest save
+   {
+    if(savegame->load_original() == false)          // fall back to savegame/ if no nuvie savegames exist.
+      {
+       return savegame->load_new();                 // if all else fails try to load a new game. 
+      }
+   }
 
  return true;   
 }
@@ -105,7 +127,7 @@ void SaveManager::create_dialog()
  if(dialog == NULL)
    {
     dialog = new SaveDialog((GUI_CallBack *)this);
-    dialog->init(savedir.c_str(), get_game_tag(game_type));
+    dialog->init(savedir.c_str(), search_prefix.c_str());
     dialog->grab_focus();
     gui->AddWidget(dialog);
    }

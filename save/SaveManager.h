@@ -47,7 +47,7 @@ class SaveManager : public GUI_CallBack
  SaveGame *savegame;
  
  std::string savedir;
- 
+ std::string search_prefix; //eg. nuvieU6, nuvieMD or nuvieSE
  // gui widgets;
  
  SaveDialog *dialog;

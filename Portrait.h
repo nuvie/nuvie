@@ -46,6 +46,7 @@ class Portrait
  Portrait(Configuration *cfg);
  
  bool init();
+ bool load(NuvieIO *objlist);
  unsigned char *get_portrait_data(Actor *actor);
 };
 

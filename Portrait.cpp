@@ -49,17 +49,8 @@ Portrait::Portrait(Configuration *cfg)
 bool Portrait::init()
 {
  std::string filename;
- NuvieIOFileRead objlist;
- 
- config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
- if(objlist.open(filename) == false)
-   throw "Opening savegame/objlist";
 
- objlist.seek(0x1c72);
- 
- avatar_portrait_num = objlist.read1(); //read in the avatar portrait number from objlist.
- if(avatar_portrait_num > 0)
-   avatar_portrait_num--;
+ avatar_portrait_num = 0;
  
  config->pathFromValue("config/ultima6/gamedir","portrait.a",filename);
  if(portrait_a.open(filename,4) == false)
@@ -73,6 +64,17 @@ bool Portrait::init()
  if(portrait_z.open(filename,4) == false)
     throw "Opening portrait.z";
  
+ return true;
+}
+
+bool Portrait::load(NuvieIO *objlist)
+{
+ objlist->seek(0x1c72);
+ 
+ avatar_portrait_num = objlist->read1(); //read in the avatar portrait number from objlist.
+ if(avatar_portrait_num > 0)
+   avatar_portrait_num--;
+
  return true;
 }
 

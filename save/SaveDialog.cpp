@@ -37,7 +37,7 @@
 #include "SaveDialog.h"
 #include "NuvieFileList.h"
 
-#define NUVIE_SAVE_SCROLLER_ROWS   6
+#define NUVIE_SAVE_SCROLLER_ROWS   4
 #define NUVIE_SAVE_SCROLLER_HEIGHT NUVIE_SAVE_SCROLLER_ROWS * NUVIE_SAVESLOT_HEIGHT
 
 SaveDialog::SaveDialog(GUI_CallBack *callback) 
@@ -47,26 +47,22 @@ SaveDialog::SaveDialog(GUI_CallBack *callback)
  selected_slot = NULL;
 }
 
-bool SaveDialog::init(const char *save_directory, const char *game_tag)
+bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 {
  uint32 num_saves, i;
  NuvieFileList filelist;
  std::string *filename;
- std::string search_prefix;
  GUI_Widget *widget;
  GUI *gui = GUI::get_gui();
  GUI_Color bg_color = GUI_Color(162,144,87);
  GUI_Color bg_color1 = GUI_Color(147,131,74);
  GUI_Color *color_ptr;
- 
- search_prefix.assign("nuvie");
- search_prefix.append(game_tag);
- 
- if(filelist.open(save_directory, search_prefix.c_str(), NUVIE_SORT_TIME_DESC) == false)
+  
+ if(filelist.open(save_directory, search_prefix, NUVIE_SORT_TIME_DESC) == false)
    return false;
 
  
- scroller = new GUI_Scroller(10,25, 280, NUVIE_SAVE_SCROLLER_HEIGHT, 135,119,76, NUVIE_SAVESLOT_HEIGHT );
+ scroller = new GUI_Scroller(10,23, 280, NUVIE_SAVE_SCROLLER_HEIGHT, 135,119,76, NUVIE_SAVESLOT_HEIGHT );
  widget = (GUI_Widget *) new GUI_Text(10, 12, 0, 0, 0, "Nuvie Load/Save Manager", gui->get_font());
  AddWidget(widget);
 
@@ -116,13 +112,13 @@ bool SaveDialog::init(const char *save_directory, const char *game_tag)
 */
  AddWidget(scroller);
 
- load_button = new GUI_Button(this, 135, 152, 40, 18, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ load_button = new GUI_Button(this, 135, 154, 40, 18, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(load_button);
  
- save_button = new GUI_Button(this, 185, 152, 40, 18, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ save_button = new GUI_Button(this, 185, 154, 40, 18, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(save_button);
 
- cancel_button = new GUI_Button(this, 235, 152, 55, 18, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ cancel_button = new GUI_Button(this, 235, 154, 55, 18, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(cancel_button);
 
  filelist.close();

@@ -30,7 +30,7 @@ using std::string;
 class GUI;
 class GUI_CallBack;
 
-#define NUVIE_SAVESLOT_HEIGHT 20
+#define NUVIE_SAVESLOT_HEIGHT 32
 
 // Callback message types
 

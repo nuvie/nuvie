@@ -20,6 +20,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -27,6 +30,7 @@
 #include <list>
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 
 #include "NuvieFileList.h"
 
@@ -55,21 +59,25 @@ bool NuvieFileList::open(const char *directory, const char *search, uint8 s_mode
 
  for(;(entry = readdir(dir));)
   {
-   add_filename(entry->d_name);
+   add_filename(directory, entry->d_name);
   }
 
  closedir(dir);
+ 
+ file_list.sort(NuvieFileDesc()); //sort list by time last modified in decending order.
  
  list_ptr = file_list.begin();
  
  return true;
 }
 
-bool NuvieFileList::add_filename(const char *filename)
+bool NuvieFileList::add_filename(const char *directory, const char *filename)
 {
+ struct stat sb;
  const char *sp =  search_prefix.c_str();
- std::string s;
-  
+ NuvieFileDesc filedesc;
+ std::string fullpath;
+ 
  if(filename == NULL || strlen(filename) == 0)
    return false;
 
@@ -82,9 +90,18 @@ bool NuvieFileList::add_filename(const char *filename)
       return false;
    }
  
- s.assign(filename);
+ build_path(directory, filename, fullpath);
  
- file_list.push_front(s);
+ if(stat(fullpath.c_str(), &sb) != 0)
+   {
+    printf("Error: Couldn't stat() file %s\n", fullpath.c_str());
+    return false;
+   }
+
+ filedesc.m_time = sb.st_mtimespec.tv_sec;
+ filedesc.filename.assign(filename);
+
+ file_list.push_front(filedesc);
  
  return true;
 }
@@ -93,8 +110,25 @@ std::string *NuvieFileList::next()
 {
  if(list_ptr != file_list.end())
   {
-   std::string *filename = &(*list_ptr);
+   
+   std::string *filename = &((*list_ptr).filename);
    list_ptr++;
+   
+   return filename;
+  }
+
+ return NULL;
+}
+
+std::string *NuvieFileList::get_latest()
+{
+ std::list<NuvieFileDesc>::iterator iter;
+ 
+ iter = file_list.begin();
+ 
+ if(iter != file_list.end())
+  {   
+   std::string *filename = &((*iter).filename);
    
    return filename;
   }

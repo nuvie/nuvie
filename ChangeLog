@@ -1,3 +1,15 @@
+2004-06-12  Eric Fry <efry at users.sourceforge.net>
+	* Added Portrait::load() This method loads the avatar portrait
+	  number from the objlist data.
+	* Added NuvieFileDesc class.
+	* NuvieFileList is now sorted by date modified in decending order.
+	* Changed SaveDialog from 6 to 4 slots. Getting ready for save
+	  thumbnails.
+	* Changed SaveSlot from 20 to 32 pixels high.
+	* Nuvie now attempts to load the last latest savegame. If that fails
+	  it will attempt to load the original savegame/ If that also fails
+	  it will load a new game from the lzobjblk, lzdngblk files.
+
 2004-06-06  Joseph Applegate <sb-x at users.sourceforge.net>
 	* One line change to cleanup mouse cursor earlier, preventing GUI
 	  corruption by widgets being removed. Fixes [ 908994 ].

@@ -549,7 +549,7 @@ void SoundManager::update_map_sfx ()
     }
 }
 
-void SoundManager::update ()
+void SoundManager::update()
 {
   if (music_enabled && g_MusicFinished)
     {

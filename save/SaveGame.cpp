@@ -38,6 +38,7 @@
 #include "MsgScroll.h"
 #include "Party.h"
 #include "Player.h"
+#include "Portrait.h"
 #include "GameClock.h"
 
 SaveGame::SaveGame(Configuration *cfg)
@@ -157,8 +158,13 @@ bool SaveGame::load_original()
      filename[len-1] = y;
      filename[len-2] = x;
      
-     objblk_file->open(filename);
-     
+     if(objblk_file->open(filename) == false)
+       {
+        delete[] filename;
+        delete objblk_file;
+        return false;
+       }
+       
      if(obj_manager->load_super_chunk((NuvieIO *)objblk_file,0,i) == false)
        {
         delete[] filename;
@@ -216,6 +222,7 @@ bool SaveGame::load_objlist()
  MsgScroll *scroll;
  Player *player;
  Party *party;
+ Portrait *portrait;
  uint16 px, py;
  uint8 pz;
  
@@ -229,6 +236,7 @@ bool SaveGame::load_objlist()
  
  player = game->get_player();
  party = game->get_party();
+ portrait = game->get_portrait();
  view_manager = game->get_view_manager();
  
  clock->load(&objlist);
@@ -236,7 +244,9 @@ bool SaveGame::load_objlist()
  
  party->load(&objlist);
  player->load(&objlist);
-  
+
+ portrait->load(&objlist); //load avatar portrait number.
+ 
  view_manager->reload();
 
  
