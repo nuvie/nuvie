@@ -117,7 +117,8 @@ class Actor
  uint16 getSchedulePos(uint8 hour);
  
  bool setWorktype(uint8 new_worktype);
- 
+ public:
+ void set_worktype(uint8 new_worktype) { setWorktype(new_worktype); }
 };
 
 #endif /* __Actor_h__ */
