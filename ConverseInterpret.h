@@ -69,6 +69,7 @@ using std::vector;
 #define U6OP_DECL      0xa6
 #define U6OP_ASSIGN    0xa8
 #define U6OP_JUMP      0xb0
+#define U6OP_DPRINT    0xb5
 #define U6OP_BYE       0xb6
 #define U6OP_NEW       0xb9
 #define U6OP_DELETE    0xba

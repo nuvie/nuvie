@@ -458,6 +458,8 @@ bool ConverseInterpret::op(stack<converse_value> &i)
     ConvScript *cs = converse->script;
     Actor *cnpc = NULL;
     Player *player = converse->player;
+    converse_db_s *cdb;
+    char *dstr = NULL;
 
     switch(in = pop_arg(i))
     {
@@ -524,6 +526,18 @@ bool ConverseInterpret::op(stack<converse_value> &i)
 #endif
             cs->seek(v[0]);
             leave_all(); // always run
+            break;
+        case U6OP_DPRINT: // 0xb5
+            v[0] = pop_arg(i); // db location
+            v[1] = pop_arg(i); // index
+            cdb = get_db(v[0], v[1]);
+            if(!cdb)
+                break;
+            else if(cdb->type == 0)
+                converse->set_output(cdb->s); // (data may have special symbols)
+            else
+                converse->print("\n");
+            delete cdb;
             break;
         case U6OP_BYE: // 0xb6
             stop();
@@ -908,7 +922,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
  */
 void ConverseInterpret::eval(uint32 vi)
 {
-    stack<converse_value> op_stk;
+    stack<converse_value> op_stk, r_stk;
     sint32 v = vi;
 #ifdef CONVERSE_DEBUG
     fprintf(stderr, "Converse: EVAL");
@@ -925,7 +939,15 @@ void ConverseInterpret::eval(uint32 vi)
             evop(op_stk);
     }
     in->resize(vi);
-    add_val(!op_stk.empty() ? op_stk.top() : 0x00);
+    if(op_stk.empty()) // took all parameters, no return
+        add_val(0x00);
+    else
+    {
+        while(!op_stk.empty())
+            r_stk.push(pop_arg(op_stk)); // reverse
+        while(!r_stk.empty())
+            add_val(pop_arg(r_stk)); // return(s)
+    }
 
 #ifdef CONVERSE_DEBUG
     fprintf(stderr, " ->");
