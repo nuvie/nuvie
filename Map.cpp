@@ -100,13 +100,13 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
  uint8 obj_status;
  
  obj_status = obj_manager->is_passable(x, y, level);
- if(obj_status == OBJ_STATUS_NOT_PASSABLE)
+ if(obj_status == OBJ_NOT_PASSABLE)
   {
    return false;
   }
 
 //special case for bridges, hacked doors and dungeon enterances etc.
- if(obj_status != OBJ_STATUS_NO_OBJ && obj_manager->is_forced_passable(x, y, level)) 
+ if(obj_status != OBJ_NO_OBJ && obj_manager->is_forced_passable(x, y, level)) 
    return true;
 
  ptr = get_map_data(level);

@@ -229,7 +229,7 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
                {
                 tile1 = tile_manager->get_original_tile(tile_num);
                 if(tile1->passable == false)
-                  return OBJ_STATUS_NOT_PASSABLE;
+                  return OBJ_NOT_PASSABLE;
                 check_tile = false;
                }
             }
@@ -238,9 +238,9 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
    }
 
  if(object_at_location)
-   return OBJ_STATUS_PASSABLE;
+   return OBJ_PASSABLE;
             
- return OBJ_STATUS_NO_OBJ;
+ return OBJ_NO_OBJ;
 }
 
 bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
@@ -675,7 +675,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
    obj = loadObj(&file,i);
    list->add(obj);
 
-   if(obj->status & 0x10) //object in actor's inventory
+   if(obj->status & OBJ_STATUS_IN_INVENTORY) //object in actor's inventory
      {
       //printf("%d: %d, %d, %d\n",obj->x, obj->status, obj->obj_n, obj->y);
       inventory_list = get_actor_inventory(obj->x);
@@ -683,7 +683,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
      }
    else
     {
-     if(obj->status & 0x8) // 0x8 = object in container
+     if(obj->status & OBJ_STATUS_IN_CONTAINER)
       {
        addObjToContainer(list,obj);
       }

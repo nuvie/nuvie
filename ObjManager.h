@@ -36,12 +36,19 @@ class TileManager;
 class UseCode;
 
 // obj status bit flags
-#define OBJ_STATUS_NO_OBJ       0
-#define OBJ_STATUS_OK_TO_TAKE   1
-#define OBJ_STATUS_IN_CONTAINER 2
-#define OBJ_STATUS_IN_PARTY_INV 3
-#define OBJ_STATUS_NOT_PASSABLE 4
-#define OBJ_STATUS_PASSABLE     5
+#define OBJ_STATUS_OK_TO_TAKE    0x1
+//#define OBJ_STATUS_UNKNOWN     0x2
+//#define OBJ_STATUS_UNKNOWN     0x4
+#define OBJ_STATUS_IN_CONTAINER  0x8
+#define OBJ_STATUS_IN_INVENTORY 0x10
+#define OBJ_STATUS_TEMPORARY    0x20
+//#define OBJ_STATUS_UNKNOWN    0x40
+//#define OBJ_STATUS_UNKNOWN    0x80
+
+//is_passable return codes
+#define OBJ_NO_OBJ       0
+#define OBJ_NOT_PASSABLE 1
+#define OBJ_PASSABLE     2
 
 #define OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS true
 #define OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS false
