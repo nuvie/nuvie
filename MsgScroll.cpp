@@ -80,7 +80,7 @@ bool MsgScroll::init(Screen *s, Text *txt, char *player_name)
  return true;
 }
 
-void MsgScroll::display_string(char *string)
+void MsgScroll::display_string(const char *string)
 {
  uint16 length;
  uint16 i;
@@ -360,7 +360,7 @@ bool MsgScroll::buf_prev()
  return true;
 }
 
-bool MsgScroll::set_string_buf(char *string)
+bool MsgScroll::set_string_buf(const char *string)
 {
  uint16 len;
  
@@ -377,7 +377,7 @@ bool MsgScroll::set_string_buf(char *string)
  return true;
 }
 
-bool MsgScroll::set_string_buf_append(char *string)
+bool MsgScroll::set_string_buf_append(const char *string)
 {
  uint16 len;
  

@@ -159,9 +159,9 @@ Tile *TileManager::get_original_tile(uint16 tile_num)
  return &tile[tile_num];
 }
 
-char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefix)
+const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefix)
 {
- char *desc;
+ const char *desc;
  bool plural;
  Tile *tile;
  

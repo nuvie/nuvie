@@ -26,7 +26,7 @@ class Look
  
  bool init();
  
- char *get_description(uint16 tile_num, bool plural);
+ const char *get_description(uint16 tile_num, bool plural);
  uint16 get_max_len();
  
  void print();

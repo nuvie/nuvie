@@ -95,7 +95,7 @@ class TileManager
    Tile *get_anim_base_tile(uint16 tile_num);
    Tile *get_original_tile(uint16 tile_num);
 
-   char *lookAtTile(uint16 tile_num, uint16 qty, bool show_prefix);
+   const char *lookAtTile(uint16 tile_num, uint16 qty, bool show_prefix);
    
    void update();
    

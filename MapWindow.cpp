@@ -163,7 +163,7 @@ void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
  moveCursor(cursor_x + rel_x, cursor_y + rel_y);
 }
 
-char *MapWindow::lookAtCursor()
+const char *MapWindow::lookAtCursor()
 {
  Actor *actor;
  

@@ -112,7 +112,7 @@ class ObjManager
  
  bool use_obj(Obj *obj);
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
- char *look_obj(Obj *obj);
+ const char *look_obj(Obj *obj);
  
  protected:
  

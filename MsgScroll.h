@@ -76,7 +76,7 @@ class MsgScroll
  
  bool init(Screen *s, Text *txt, char *player_name);
  
- void display_string(char *string);
+ void display_string(const char *string);
  void display_prompt();
  
  void set_keyword_highlight(bool state);
@@ -97,8 +97,8 @@ class MsgScroll
  bool buf_next();
  bool buf_prev();
  
- bool set_string_buf(char *string);
- bool set_string_buf_append(char *string);
+ bool set_string_buf(const char *string);
+ bool set_string_buf_append(const char *string);
  bool set_string_buf_pos(uint16 pos);
  
  void set_page_break(uint16 pos);

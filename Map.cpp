@@ -109,7 +109,7 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
 }
 
 
-char *Map::look(uint16 x, uint16 y, uint8 level)
+const char *Map::look(uint16 x, uint16 y, uint8 level)
 {
  unsigned char *ptr;
  uint16 tile_num;

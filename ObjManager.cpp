@@ -420,9 +420,9 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  return true; 
 }
 
-char *ObjManager::look_obj(Obj *obj)
+const char *ObjManager::look_obj(Obj *obj)
 {
- char *desc;
+ const char *desc;
  if(obj == NULL)
   return NULL;
   

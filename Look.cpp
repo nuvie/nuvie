@@ -73,7 +73,7 @@ bool Look::init()
  return true;
 }
 
-char *Look::get_description(uint16 tile_num, bool plural)
+const char *Look::get_description(uint16 tile_num, bool plural)
 {
  char *desc;
  char c;
