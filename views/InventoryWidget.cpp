@@ -269,13 +269,13 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
        Redraw();
       }
       
-    if(HitRect(x,y,arrow_rects[0]))
+    if(HitRect(x,y,arrow_rects[0])) //up arrow hit rect
       {
        if(up_arrow())
          Redraw();
       }
 
-    if(HitRect(x,y,arrow_rects[1]))
+    if(HitRect(x,y,arrow_rects[1])) //down arrow hit rect
       {
        if(down_arrow())
          Redraw();

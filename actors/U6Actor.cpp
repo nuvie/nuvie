@@ -27,6 +27,9 @@
 #include "U6Actor.h"
 
 //static const uint8 sleep_objects[8];
+
+// A list of readiable objects and their readied location.
+
 static const struct {uint16 obj_n; uint8 readiable_location;}
  readiable_objects[] = {
 {OBJ_U6_LEATHER_HELM, ACTOR_HEAD },

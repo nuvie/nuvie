@@ -624,6 +624,8 @@ bool MapWindow::boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y)
  return false;
 }
 
+//reshape walls based on new blacked out areas.
+
 void MapWindow::reshapeBoundary()
 {
  uint16 x,y;
@@ -638,27 +640,14 @@ void MapWindow::reshapeBoundary()
          {
           tile = tile_manager->get_tile(tmp_buf[y*(win_width + 2) + x]);
         
-          if((tile->tile_num >= 144 && tile->tile_num <= 146) ||
-             (tile->tile_num >= 160 && tile->tile_num <= 162) ||
-             (tile->tile_num >= 176 && tile->tile_num <= 178))
+          if((tile->tile_num >= 140 && tile->tile_num <= 187)) //main U6 wall tiles FIX for WOU games
             {
              flag = 0;
             }
           else
             continue;
-         /*
-         flag = 0;
-         if(!tile->boundary)
-           continue;
-         if(tile->flags2 & TILEFLAG_WINDOW)
-           continue;
-           
 
-          if(tile->tile_num < 144 || tile->tile_num > 187)
-            continue;
-
-          flag = 0;
-*/                 
+          //generate the required wall flags                 
           if(tmpBufTileIsWall(x,y-1))
             flag |= TILEFLAG_WALL_NORTH;
           if(tmpBufTileIsWall(x+1,y))
@@ -670,45 +659,47 @@ void MapWindow::reshapeBoundary()
             
           if(flag == 0) //isolated border tiles
             continue; 
+
+          if(flag == 48) // 0011 top right corner 
+            {
+             if(tmpBufTileIsBlack(x,y-1) && tmpBufTileIsBlack(x+1,y)) //replace with blacked corner tile
+               {
+                //Oh dear! this is evil. FIX
+                tmp_buf[y*(win_width + 2) + x] = 266 + 2 * (((tile->tile_num - tile->tile_num % 16) - 140) / 16);
+                continue;
+               }
+            }
+
+          if(flag == 192) // 1100 bottom left corner
+            {
+             if(tmpBufTileIsBlack(x,y+1) && tmpBufTileIsBlack(x-1,y)) //replace with blacked corner tile
+               {
+                //Oh dear! this is evil. FIX
+                tmp_buf[y*(win_width + 2) + x] = 266 + 1 + 2 * (((tile->tile_num - tile->tile_num % 16) - 140) / 16);
+                continue;
+               }
+            }
             
-          if((tile->flags1 & 0xf0) == flag)
+          if((tile->flags1 & TILEFLAG_WALL_MASK) == flag) // complete match no work needed
             continue;
 
-          if(flag == 192)
-            {
-             tmp_buf[y*(win_width + 2) + x] = 266 + 1 + 2 * (((tile->tile_num - tile->tile_num % 16) - 144) / 16);
-             continue;
-            }
-
-          if(flag == 48)
-            {
-             tmp_buf[y*(win_width + 2) + x] = 266 + 2 * (((tile->tile_num - tile->tile_num % 16) - 144) / 16);
-             continue;
-            }
-           if(tile->tile_num <= 187)
-            {
+          // Look for a suitable tile to transform into
               
-             flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
-          
-   //       for(;(flag & tile->flags1) != flag;)
-    //        {
-    //      if(((tile->flags1  & 0xf0) & flag))
-    //        {
-             //tile = tile_manager->get_tile(tile->tile_num + 1);
+          flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
 
-             if(((tile->flags1) & 0xf0) > flag && flag != 144)
-              {
-               flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
-               for(;((tile->flags1 ) & 0xf0) != flag;)
-                 tile = tile_manager->get_tile(tile->tile_num - 1);
-              }
-             else
-              {
-               flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
-               for(;((tile->flags1 ) & 0xf0) != flag;)
-                 tile = tile_manager->get_tile(tile->tile_num + 1);
-              }
-             }  
+          if(((tile->flags1) & TILEFLAG_WALL_MASK) > flag && flag != 144) // 1001 _| corner
+            {
+             flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
+             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag;)
+               tile = tile_manager->get_tile(tile->tile_num - 1);
+            }
+          else
+            {
+             flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
+             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag;)
+               tile = tile_manager->get_tile(tile->tile_num + 1);
+            }
+
           tmp_buf[y*(win_width + 2) + x] = tile->tile_num;
          }
       }
@@ -819,7 +810,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
     printf("Drop (%x,%x,%x)\n", x, y, cur_level);
     obj = (Obj *)data;
     target_obj = obj_manager->get_obj(x,y, cur_level);
-    if(target_obj && target_obj->container) //drop object into a container.
+    if(target_obj && target_obj->container) //drop object into a container. FIX for locked chests.
       {
        target_obj->container->addAtPos(0,obj);
       }

@@ -34,6 +34,7 @@
 #define U6TILE_TRANS 0x5
 #define U6TILE_PBLCK 0xA
 
+#define TILEFLAG_WALL_MASK  0xf0 // 11110000
 //flags1
 #define TILEFLAG_WALL_NORTH 0x80
 #define TILEFLAG_WALL_EAST  0x40

@@ -1,4 +1,8 @@
 2003-09-11  Eric Fry <efry@users.sourceforge.net>
+	* Finally Fixed the wall corner tile display bug. [ 713521 ] :)
+	* Some code comments added.
+
+2003-09-11  Eric Fry <efry@users.sourceforge.net>
 	* Added arrows to InventoryWidget.
 
 2003-09-10  Joseph Applegate <sb-x@users.sourceforge.net>
