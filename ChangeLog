@@ -1,3 +1,9 @@
+2004-05-29  Eric Fry <efry at users.sourceforge.net>
+	* Fixed a load/save bug. I wasn't cleaning the old y value
+	  properly when saving containerized objects. This could
+	  cause an object to think its parent container index was + 1024
+	  which would send the object off into the void never to be seen again.
+
 2004-05-28  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* various: include case mismatches
 

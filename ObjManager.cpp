@@ -149,7 +149,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
  for(i=0;i<num_objs;i++)
   {
    obj = loadObj(chunk_buf,i);
- 
+     
    list->add(obj);
 
    if(obj->obj_n == obj_egg_table[game_type])
@@ -311,6 +311,7 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
   {
    obj->status |= OBJ_STATUS_IN_CONTAINER;
    obj->x = parent->objblk_n;
+   obj->y &= (0xff ^ 0x1); //clean zeroth bit in y which is used for objblk_n > 1024
    if(obj->x >= 1024)
      {
       obj->y |= 0x1;
