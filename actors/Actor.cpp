@@ -768,7 +768,8 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
    {
     sched[i] = (Schedule *)malloc(sizeof(Schedule));
 
-    sched[i]->hour = sched_data_ptr[0];
+    sched[i]->hour = sched_data_ptr[0] & 0x1f; // 5 bits for hour
+    sched[i]->day_of_week = sched_data_ptr[0] >> 5; // 3 bits for day of week
     sched[i]->worktype = sched_data_ptr[1];
     
     sched[i]->x = sched_data_ptr[2];
@@ -780,7 +781,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     sched[i]->z = (sched_data_ptr[4] & 0xf0) >> 4;
     sched_data_ptr += 5;
 #ifdef DEBUG
-    printf("#%04d %03x,%03x,%x hour %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->worktype);
+    printf("#%04d %03x,%03x,%x hour %2d day of week %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->day_of_week,sched[i]->worktype);
 #endif
    }
    
@@ -797,12 +798,15 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
  return;
 }
 
+//FIX for day_of_week
+
 bool Actor::updateSchedule()
 {
- uint8 hour;
+ uint8 hour, day_of_week;
  uint16 new_pos;
  
  hour = clock->get_hour();
+ day_of_week = clock->get_day_of_week();
  
  new_pos = getSchedulePos(hour);
  
@@ -843,6 +847,79 @@ uint16 Actor::getSchedulePos(uint8 hour)
 
  return i-1;
 }
+
+/*
+// returns the current schedule entry based on hour
+uint16 Actor::getSchedulePos(uint8 hour, uint8 day_of_week)
+{
+ uint16 i,j;
+ if(id_n == 133)
+  printf(".");
+  
+ i = getSchedulePos(hour);
+   
+ for(j=i;sched[j] != NULL && sched[j]->hour == sched[i]->hour;j++)
+  {
+   if(sched[j]->day_of_week > day_of_week)
+     {
+      if(j != i)
+        return j-1;
+      else // hour is in the last schedule entry.
+        {
+         for(;sched[j+1] != NULL && sched[j+1]->hour == sched[i]->hour;) // move to the last schedule entry.
+          j++;
+        }
+     }
+  }
+  
+ if(j==i)
+  return j;
+
+ return j-1; 
+}
+
+inline uint16 Actor::getSchedulePos(uint8 hour)
+{
+ uint16 i;
+ uint8 cur_hour;
+ 
+ for(i=0;sched[i] != NULL;i++)
+  {
+   if(sched[i]->hour > hour)
+     {
+      if(i != 0)
+        return i-1;
+      else // hour is in the last schedule entry.
+        {
+         for(;sched[i+1] != NULL;) // move to the last schedule entry.
+          i++;
+          
+         if(sched[i]->day_of_week > 0) //rewind to the start of the hour set.
+           {
+            cur_hour = sched[i]->hour;
+            for(;i >= 1 && sched[i-1]->hour == cur_hour;)
+              i--;
+           }
+        }
+     }
+   else  
+      for(;sched[i+1] != NULL && sched[i+1]->hour == sched[i]->hour;) //skip to next hour set.
+        i++;
+  }
+
+ if(sched[i] != NULL && sched[i]->day_of_week > 0) //rewind to the start of the hour set.
+   {
+    cur_hour = sched[i]->hour;
+    for(;i >= 1 && sched[i-1]->hour == cur_hour;)
+      i--;
+   }
+  
+ if(i==0)
+  return 0;
+
+ return i-1;
+}
+*/
 
 void Actor::set_worktype(uint8 new_worktype)
 {

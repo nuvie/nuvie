@@ -194,6 +194,7 @@ GUI:: HandleEvent(SDL_Event *event)
             {
              gui_drag_manager->drop((GUI_DragArea *)widgets[i],event->button.x,event->button.y);
              dragging = false;
+             Display(GUI_FULL_REDRAW); // redraw the widget to get rid of the drop graphic.
 					   break;
             }
 				}

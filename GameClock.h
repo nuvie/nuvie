@@ -39,6 +39,7 @@ class GameClock
  uint8 day;
  uint8 month;
  uint16 year;
+ uint8 day_of_week;
  
  uint32 move_counter;
  
@@ -73,10 +74,14 @@ class GameClock
  uint8 get_day();
  uint8 get_month();
  uint16 get_year();
-
+ uint8 get_day_of_week();
+ 
  char *get_date_string();
  char *get_time_string();
  
+ protected:
+ 
+ inline void update_day_of_week();
 };
 
 

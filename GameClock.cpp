@@ -52,10 +52,11 @@ bool GameClock::init()
 
  minute = objlist.read1();
  hour = objlist.read1();
- month = objlist.read1();
  day = objlist.read1();
- 
+ month = objlist.read1();
  year = objlist.read2();
+ 
+ update_day_of_week();
  
  printf("Initial gametime: %s %s\n",get_date_string(),get_time_string());
  
@@ -123,14 +124,18 @@ void GameClock::inc_hour()
 void GameClock::inc_day()
 {
 
- if(day == 30)
+ if(day == 28)
    {
     day = 1;
     inc_month();
    }
  else
    day++;
-   
+
+ update_day_of_week();
+ 
+ printf("%s\n",get_date_string());
+ 
  return;
 }
 
@@ -196,6 +201,11 @@ uint16 GameClock::get_year()
  return year;
 }
 
+uint8 GameClock::get_day_of_week()
+{
+ return day_of_week;
+}
+ 
 char *GameClock::get_date_string()
 {
 
@@ -229,3 +239,9 @@ char *GameClock::get_time_string()
  return time_string;
 }
 
+inline void GameClock::update_day_of_week()
+{
+ day_of_week = day % 7;
+ if(day_of_week == 0)
+   day_of_week = 7;
+}

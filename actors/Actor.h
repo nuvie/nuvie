@@ -63,6 +63,7 @@ uint16 x;
 uint16 y;
 uint8 z;
 uint8 hour;
+uint8 day_of_week; // 0 = any day 1..7
 uint8 worktype;
 } Schedule;
 
@@ -231,6 +232,8 @@ class Actor
  void loadSchedule(unsigned char *schedule_data, uint16 num);
  virtual bool updateSchedule();
  uint16 getSchedulePos(uint8 hour);
+// uint16 getSchedulePos(uint8 hour, uint8 day_of_week);
+// inline uint16 Actor::getSchedulePos(uint8 hour);
  
  void inventory_parse_readied_objects(); //this is used to initialise the readied_objects array on load.
 };

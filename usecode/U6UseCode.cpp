@@ -343,10 +343,17 @@ bool U6UseCode::use_door(Obj *obj, uint8 ev)
     return true;
    }
   
- if(obj->frame_n <= 3) //open door
+ if(obj->frame_n <= 3) //the door is open
    {
-    obj->frame_n += 4;
-    scroll->display_string("\nclosed!\n");
+    if(!map->is_passable(obj->x,obj->y,obj->z) || map->actor_at_location(obj->x, obj->y, obj->z)) //don't close door if blocked
+      {
+       scroll->display_string("\nblocked!\n");
+      }
+    else //close the door
+      {
+       obj->frame_n += 4;
+       scroll->display_string("\nclosed!\n");
+      }
    }
  else
    {

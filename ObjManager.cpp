@@ -30,7 +30,7 @@
 static const int obj_egg_table[4] = {0,   // NUVIE_GAME_NONE
                                      335, // NUVIE_GAME_U6
                                      0,   // NUVIE_GAME_MD
-                                     0};  // NUVIE_GAME_SE
+                                     230};  // NUVIE_GAME_SE
 
 iAVLKey get_iAVLKey(const void *item)
 {

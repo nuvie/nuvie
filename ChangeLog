@@ -1,4 +1,11 @@
-2003-10-30  Eric Fry <efry@users.sourceforge.net>
+2003-11-14  Eric Fry <efry@users.sourceforge.net>
+	* Added day of week to GameClock
+	* Added day of week to schedules.
+	* Fixed the number of days in a month. Britannia has 28 day months.
+	* Clean the screen after an unsuccessful drop.
+	* Don't close doors if blocked. [ 841973 ]
+
+2003-11-14  Eric Fry <efry@users.sourceforge.net>
 	Merged Jonathan E. Wright's changes.
 	They are...
 	* Added Dragging from MapWindow to other GUI objects.
