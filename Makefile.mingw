@@ -13,7 +13,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/conf -I$(SRC)/files \
 	-I$(SRC)/misc -I$(SRC)/screen -I$(SRC)/tools $(SDL_CFLAGS)
-CXXFLAGS=-O2
+CXXFLAGS=-g
 
 LFLAGS=-mwindows
 LIBS=-lmingw32 $(SDL_LIBS)

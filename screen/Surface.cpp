@@ -496,7 +496,7 @@ void RenderSurface::create_zbuffer()
 {
 #ifdef ENABLE_SOFTREND_EMU
 	SoftRend::SetupInitialState();
-#endif ENABLE_SOFTREND_EMU
+#endif
 
 	// Not in opengl, or if we alraedy have one
 	if (opengl || zbuffer_priv) return;
