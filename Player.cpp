@@ -99,14 +99,6 @@ char *Player::get_gender_title()
 
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
- if(rel_x < 0)
-  actor->set_direction(3);
- if(rel_x > 0)
-  actor->set_direction(1);
- if(rel_y < 0)
-  actor->set_direction(0);
- if(rel_y > 0)
-  actor->set_direction(2);
 
  // switch position with party members
  uint16 x, y;
@@ -120,12 +112,21 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     if(dir > 3)
         dir -= 4;
     obstacle->set_direction(dir); // move in opposite direction as player
-    obstacle->move(x, y, z);
+    obstacle->move(x, y, z,ACTOR_FORCE_MOVE);
     obstacle = NULL;
  }
 
- if(!obstacle && actor->moveRelative(rel_x,rel_y))
+ if(actor->moveRelative(rel_x,rel_y))
  {
+   if(rel_x < 0)
+    actor->set_direction(3);
+   if(rel_x > 0)
+    actor->set_direction(1);
+   if(rel_y < 0)
+    actor->set_direction(0);
+   if(rel_y > 0)
+    actor->set_direction(2);
+
    map_window->moveMapRelative(rel_x,rel_y);
    party->follow();
    actor_manager->updateActors();

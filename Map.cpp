@@ -90,7 +90,11 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
 //special case for bridges, hacked doors and dungeon enterances etc.
  if(obj_status != OBJ_STATUS_NO_OBJ && obj_manager->is_forced_passable(x, y, level)) 
    return true;
-   
+
+ //check for blocking Actor at location.
+ if(actor_manager->get_actor(x,y,level) != NULL)
+   return false;
+     
  ptr = get_map_data(level);
  map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
    

@@ -36,6 +36,8 @@
 #define ACTOR_DIR_D 2
 #define ACTOR_DIR_L 3
 
+#define ACTOR_FORCE_MOVE true
+
 class Map;
 class MapCoord;
 class UseCode;
@@ -148,7 +150,7 @@ class Actor
  void clear_flag(uint8 bitflag);
 
  bool moveRelative(sint16 rel_x, sint16 rel_y);
- bool move(sint16 new_x, sint16 new_y, sint8 new_z);
+ bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  bool check_move(sint16 new_x, sint16 new_y, sint8 new_z);
  
  void update();

@@ -176,9 +176,9 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z)
 }
 
 
-bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
+bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
- if(!check_move(new_x, new_y, new_z))
+ if(!force_move && !check_move(new_x, new_y, new_z))
    return false;
 
  usecode = obj_manager->get_usecode();
