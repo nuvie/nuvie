@@ -266,7 +266,7 @@ void MsgScroll::updateScroll()
    if(buf_full == true)
      {
       j = (buf_pos + 1) % MSGSCROLL_HEIGHT;
-      screen->fill(0x31,176, 112, MSGSCROLL_WIDTH * 8, (MSGSCROLL_HEIGHT)*8);
+      screen->fill(0x31,176, 112, MSGSCROLL_WIDTH * 8, (MSGSCROLL_HEIGHT)*8); //clear whole scroll
      }
    else
       j = 0;
@@ -280,15 +280,16 @@ void MsgScroll::updateScroll()
    scroll_updated = false;
    
    screen->update(176,112, MSGSCROLL_WIDTH * 8, (MSGSCROLL_HEIGHT)*8);
+   
+   if(buf_full)
+    cursor_y = MSGSCROLL_HEIGHT-1;
+   else
+    cursor_y = buf_pos;
+  
+   cursor_x = strlen(msg_buf[buf_pos]);
   }
 else
  {
-  if(buf_full)
-   cursor_y = MSGSCROLL_HEIGHT-1;
-  else
-   cursor_y = buf_pos;
-  
-  cursor_x = strlen(msg_buf[buf_pos]);
   
   drawCursor(176 + 8 * cursor_x, 112 + cursor_y * 8); 
  }
@@ -298,7 +299,7 @@ else
 
 void MsgScroll::clearCursor(uint16 x, uint16 y)
 {
- screen->fill(0x31, x, y, 8, 8);
+ screen->fill(0x31, x, y, 8,8);
 }
 
 void MsgScroll::drawCursor(uint16 x, uint16 y)
@@ -428,6 +429,7 @@ bool MsgScroll::input_buf_add_char(char c)
     input_buf = (char *)realloc(input_buf,input_buf_len + 16);
     if(input_buf == NULL)
       return false;
+    input_buf_len += 16;
    }
  
  input_buf[input_buf_pos] = c;

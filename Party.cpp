@@ -39,7 +39,6 @@ Party::~Party()
 bool Party::init(ActorManager *am)
 {
  std::string filename;
- U6File *objlist;
  
  actor_manager = am;
  

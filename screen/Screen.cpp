@@ -458,6 +458,7 @@ void Screen::set_screen_mode()
 	if (bpp != 16 && bpp != 32)
 		bpp = 16;
 
+  
 	std::cout << "Attempting to set vid mode: " << width << "x" << height << "x" << bpp << "x" << scale_factor;
 
 	// Is Fullscreen?

@@ -556,7 +556,7 @@ if(!args.empty() && !args[0].empty())
 //            std::cerr << "Converse: CONVERSE section" << std::endl;
             break;
         case U6OP_ASK:
-            scroll->display_string("\nyou say: ");
+            scroll->display_string("\nyou say:");
             scroll->set_input_mode(true);
             wait(); donext = false;
             break;
