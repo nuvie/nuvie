@@ -18,23 +18,22 @@ CXXFLAGS=-O2
 LFLAGS=-mwindows
 LIBS=-lmingw32 $(SDL_LIBS)
 
-CONF_OBJS=conf/Configuration.o conf/XMLNode.o conf/XMLTree.o 
-
-FILES_OBJS=files/U6Bmp.o files/U6File.o files/U6Lib_n.o files/U6Lzw.o
-
-MISC_OBJS=misc/U6LList.o
-
-SCREEN_OBJS=screen/GamePalette.o screen/Screen.o
-
 all: nuvie.exe
 
-NUVIE_OBJS=$(CONF_OBJS) $(FILES_OBJS) $(MISC_OBJS) $(SCREEN_OBJS) \
-	Game.o main.o Map.o MsgScroll.o nuvie.o ObjManager.o Text.o TileManager.o
+# Makefile.common defines nuvie_SOURCES
+include Makefile.common
+
+NUVIE_CPPs = $(filter %.cpp,$(nuvie_SOURCES))
+NUVIE_OBJS = $(NUVIE_CPPs:.cpp=.o)
 
 nuvie.exe: $(NUVIE_OBJS)
 	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
-U6DECOMP_OBJS=tools/dict.o tools/lzw.o tools/stack.o
+# tools/Makefile.common defines u6decomp_SOURCES
+include tools/Makefile.common
+
+U6DECOMP_Cs = $(filter %.c,$(u6decomp_SOURCES))
+U6DECOMP_OBJS=$(U6DECOMP_Cs:%.c=tools/%.o)
 
 u6decomp.exe: $(U6DECOMP_OBJS)
 	$(CC) -o $@ $+

@@ -1,0 +1,41 @@
+nuvie_SOURCES = \
+	conf/Configuration.cpp \
+	conf/Configuration.h \
+	conf/XMLNode.cpp \
+	conf/XMLNode.h \
+	conf/XMLTree.cpp \
+	conf/XMLTree.h \
+	conf/ConfigNode.h \
+\
+	files/U6Bmp.cpp \
+	files/U6Bmp.h \
+	files/U6File.cpp \
+	files/U6File.h \
+	files/U6Lib_n.cpp \
+	files/U6Lib_n.h \
+	files/U6Lzw.cpp \
+	files/U6Lzw.h \
+\
+	misc/U6LList.cpp \
+\
+	screen/GamePalette.cpp \
+	screen/GamePalette.h \
+	screen/Screen.cpp \
+	screen/Screen.h \
+\
+	Game.cpp \
+	Game.h \
+	Map.cpp \
+	Map.h \
+	MsgScroll.cpp \
+	MsgScroll.h \
+	ObjManager.cpp \
+	ObjManager.h \
+	Text.cpp \
+	Text.h \
+	TileManager.cpp \
+	TileManager.h \
+	main.cpp \
+	main.h \
+	nuvie.cpp \
+	nuvie.h

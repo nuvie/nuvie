@@ -1,0 +1,7 @@
+u6decomp_SOURCES = \
+	def.h \
+	dict.c \
+	dict.h \
+	lzw.c \
+	stack.c \
+	stack.h
