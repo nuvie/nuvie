@@ -39,7 +39,7 @@ ObjManager::ObjManager(Configuration *cfg)
  memset(actor_inventories,0,sizeof(actor_inventories));
 
  surface = iAVLAllocTree(get_iAVLKey);
- 
+
  for(i=0;i<5;i++)
   {
    dungeon[i] = iAVLAllocTree(get_iAVLKey);
@@ -123,7 +123,7 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
  uint16 tile_num;
  bool check_tile;
  uint16 i,j;
- 
+
 
 
  for(j=y;j<=y+1;j++)
@@ -131,7 +131,7 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
     for(i=x;i<=x+1;i++)
       {
        obj_list = get_obj_list(i,j,level);
-       
+
        if(obj_list != NULL)
          {
           link = obj_list->end();
@@ -189,13 +189,13 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
  uint8 obj_status = OBJ_STATUS_NO_OBJ;
  bool check_tile;
  uint16 i,j;
- 
+
  for(i=x;i<=x+1;i++)
    {
     for(j=y;j<=y+1;j++)
       {
        obj_list = get_obj_list(i,j,level);
-       
+
        if(obj_list != NULL)
          {
           link = obj_list->end();
@@ -238,17 +238,17 @@ U6LList *ObjManager::get_obj_list(uint16 x, uint16 y, uint8 level)
  iAVLTree *obj_tree;
  iAVLKey key;
  ObjTreeNode *item;
- 
+
  obj_tree = get_obj_tree(level);
  key = get_obj_tree_key(x,y,level);
- 
+
  item = (ObjTreeNode *)iAVLSearch(obj_tree,key);
  if(item)
   return item->obj_list;
-  
+
  return NULL;
 }
- 
+
 Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj)
 {
  Obj *obj;
@@ -316,7 +316,7 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
  Obj *obj;
 
  obj_list = get_obj_list(x,y,level);
- 
+
  if(obj_list != NULL)
    {
     if(top_obj)
@@ -336,6 +336,9 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
 
 bool ObjManager::use_obj(Obj *obj)
 {
+ U6Link *objs;
+ Obj *temp_obj;
+ int pos;
 
  if(obj == NULL)
    return false;
@@ -348,11 +351,54 @@ bool ObjManager::use_obj(Obj *obj)
       obj->frame_n -= 4;
    }
 
+
+  switch(obj->obj_n)
+   {
+    case OBJ_U6_CHEST :
+    case OBJ_U6_CRATE :
+    case OBJ_U6_DRAWER :
+    case OBJ_U6_BARREL :
+    case OBJ_U6_BAG :
+                         /* Test whether this object has items inside it. */
+                         if((obj->container != NULL) &&
+                          ((objs = obj->container->end()) != NULL))
+                          {
+                           Obj *temp_obj;
+                           U6LList *obj_list = get_obj_list(obj->x, obj->y, obj->z);
+
+                           /* the x coordinate of the object inside a
+                              container is the index of the container.
+                            */
+                           pos = ((Obj*)objs->data)->x;
+
+                           /* Add objects to obj_list. */
+                           for(; objs != NULL; objs = objs->prev)
+                            {
+                             temp_obj = (Obj*)objs->data;
+                             obj_list->addAtPos(++pos, temp_obj);
+                             temp_obj->status = OBJ_STATUS_OK_TO_TAKE;
+                             temp_obj->x = obj->x;
+                             temp_obj->y = obj->y;
+                             temp_obj->z = obj->z;
+                            }
+
+                           /* Remove objects from the container. */
+                           for(objs = obj->container->start(); objs != NULL;)
+                           {
+                             temp_obj = (Obj*)objs->data;
+                             objs = objs->next;
+                             obj->container->remove(temp_obj);
+                           }
+                         }
+   }
+
   switch(obj->obj_n)
    {
     case OBJ_U6_SECRET_DOOR :
     case OBJ_U6_CHEST :
     case OBJ_U6_CANDLE :
+    case OBJ_U6_BARREL :
+    case OBJ_U6_CRATE :
                          if(obj->frame_n > 0)
                            obj->frame_n--;
                          else
@@ -398,12 +444,12 @@ bool ObjManager::remove_obj(Obj *obj)
  U6LList *obj_list;
 
  obj_list = get_obj_list(obj->x,obj->y,obj->z);
- 
+
  if(obj_list != NULL)
    {
     obj_list->remove(obj);
    }
-   
+
  return true;
 }
 
@@ -424,7 +470,7 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  obj->z = level;
 
  addObj(get_obj_tree(level),obj);
- 
+
  return true;
 }
 
@@ -533,11 +579,11 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
  uint16 i;
  U6LList *inventory_list;
  iAVLTree *obj_tree;
- 
+
  obj_tree = get_obj_tree(level);
  if(obj_tree == NULL)
    return false;
-   
+
  if(file.open(filename,"rb") == false)
    return false;
 
@@ -569,7 +615,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
   }
 
  delete list;
- 
+
  return true;
 }
 
@@ -582,22 +628,22 @@ void ObjManager::addObj(iAVLTree *obj_tree, Obj *obj)
  key = get_obj_tree_key(obj);
 
  node = (ObjTreeNode *)iAVLSearch(obj_tree,key);
- 
+
  if(node == NULL)
    {
     obj_list = new U6LList();
-    
+
     node = (ObjTreeNode *)malloc(sizeof(struct ObjTreeNode));
     node->key = key;
     node->obj_list = obj_list;
-    
+
     iAVLInsert(obj_tree, node);
    }
  else
    {
     obj_list = node->obj_list;
    }
-   
+
  obj_list->addAtPos(0,obj);
 }
 
@@ -698,7 +744,7 @@ inline iAVLKey ObjManager::get_obj_tree_key(Obj *obj)
 
 iAVLKey ObjManager::get_obj_tree_key(uint16 x, uint16 y, uint8 level)
 {
- if(level == 0) 
+ if(level == 0)
    return y * 1024 + x;
  else
    return y * 256 + x;

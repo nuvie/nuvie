@@ -49,6 +49,10 @@
 #define OBJ_U6_PICTURE        143
 #define OBJ_U6_BOOK           151
 #define OBJ_U6_SCROLL         152
+#define OBJ_U6_DRAWER         176
+#define OBJ_U6_BARREL         186
+#define OBJ_U6_BAG            188
+#define OBJ_U6_CRATE          192
 #define OBJ_U6_MOUSEHOLE      213
 #define OBJ_U6_CHAIR          252
 #define OBJ_U6_CROSS          254
@@ -110,7 +114,7 @@ class ObjManager
 
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);
- 
+
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj);
@@ -138,7 +142,7 @@ class ObjManager
  Obj *loadObj(U6File *file, uint16 objblk_n);
  char *get_objblk_path(char *path);
  iAVLTree *get_obj_tree(uint8 level);
- 
+
  iAVLKey get_obj_tree_key(Obj *obj);
  iAVLKey get_obj_tree_key(uint16 x, uint16 y, uint8 level);
  //inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);

@@ -1,5 +1,9 @@
+2003-05-28  Markus Niemistö <niemisto@users.sourceforge.net>
+        * ObjManager: Containers can now be used and items got out of them.
+        * U6Shape: Added support for loading U6 shapes
+
 2003-05-27  Eric Fry <efry@users.sourceforge.net>
-	* ObjManager: Objects are now stored in an AVL Tree. This should 
+	* ObjManager: Objects are now stored in an AVL Tree. This should
 	  speed things up a bit on slower machines.
 
 2003-05-25  Joseph Applegate <sb-x@users.sourceforge.net>
@@ -11,7 +15,7 @@
 	* U6Lib_n: now handling (read or skip) 4byte filesize at start of files
 
 2003-05-24  Eric Fry <efry@users.sourceforge.net>
-	* Get support thanks to a patch by Markus Niemistvo.
+	* Get support thanks to a patch by Markus Niemistö.
 
 2003-05-23  Eric Fry <efry@users.sourceforge.net>
 	* Work done on object weight. "you see blah. I weighs x.x stones."
