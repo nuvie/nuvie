@@ -23,7 +23,7 @@
 
 #include <ctype.h>
 #include <string>
-#include "U6Misc.h"
+#include "U6misc.h"
 #include "U6Lib_n.h"
 #include "U6Bmp.h"
 #include "Background.h"
