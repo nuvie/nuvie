@@ -74,6 +74,7 @@ public:
 	void Run(GUI_IdleProc idle = NULL, int once = 0, int multitaskfriendly = 0);
   
   GUI_Font *get_font();
+  Screen *get_screen() {return screen;}
   
   /* Function to pass an event to the GUI widgets */
 	GUI_status HandleEvent(SDL_Event *event);

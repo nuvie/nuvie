@@ -99,6 +99,9 @@ GUI_Widget:: PlaceOnScreen(Screen *s, int x, int y)
 {
  std::list<GUI_Widget *>::iterator child;
 
+ if(screen != NULL)
+   return;
+
  area.x += x;
  area.y += y;
  

@@ -20,8 +20,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include "GUI_button.h"
 
 #include "InventoryView.h"
+
+static GUI_status leftButtonCallback(void *data);
+static GUI_status partyViewButtonCallback(void *data);
+static GUI_status actorViewButtonCallback(void *data);
+static GUI_status rightButtonCallback(void *data);
+static GUI_status combatButtonCallback(void *data);
 
 InventoryView::InventoryView(Configuration *cfg) : View(cfg)
 {
@@ -32,14 +39,42 @@ InventoryView::~InventoryView()
 {
 }
 
-bool InventoryView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool InventoryView::init(Screen *tmp_screen, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
  View::init(x,y,t,p,tm,om);
  
- cur_actor_num = 0;
+ party_position = 0;
+ 
+ add_command_icons(tmp_screen);
  
  return true;
 }
+
+bool InventoryView::show_party_member(uint8 party_member)
+{
+ if(party_member < party->get_party_size())
+   {
+    party_position = party_member;
+    Redraw();
+    return true;
+   }
+
+ return false;
+}
+
+bool InventoryView::show_next_party_member()
+{
+ return show_party_member(party_position + 1);
+}
+
+bool InventoryView::show_prev_party_member()
+{
+ if(party_position != 0)
+   return show_party_member(party_position - 1);
+ 
+ return false;
+}
+
 
 void InventoryView::Display(bool full_redraw)
 {
@@ -48,7 +83,7 @@ void InventoryView::Display(bool full_redraw)
     screen->fill(0x31, area.x, area.y, area.w, area.h);
 
     display_name();
-    display_command_icons();
+    //display_command_icons();
     display_inventory_weights();
     display_actor_icon();
    }
@@ -59,6 +94,7 @@ void InventoryView::Display(bool full_redraw)
  if(full_redraw || update_display)
    {
     update_display = false;
+    DisplayChildren();
     screen->update(area.x, area.y, area.w, area.h);
    }
  else
@@ -102,7 +138,7 @@ void InventoryView::display_name()
 {
  char *name;
  
- name = party->get_actor_name(cur_actor_num);
+ name = party->get_actor_name(party_position);
  
  if(name == NULL)
   return;
@@ -123,7 +159,7 @@ void InventoryView::display_inventory_list()
  
  empty_tile = tile_manager->get_tile(410);
  
- actor = party->get_actor(cur_actor_num);
+ actor = party->get_actor(party_position);
  
  inventory = actor->get_inventory_list();
  
@@ -148,25 +184,45 @@ void InventoryView::display_inventory_list()
    }
 }
 
-void InventoryView::display_command_icons()
+void InventoryView::add_command_icons(Screen *tmp_screen)
 {
  Tile *tile;
+ SDL_Surface *button_image;
+ SDL_Surface *button_image2;
+ GUI_Widget *button;
+ 
+ //FIX need to handle clicked button image, check image free on destruct.
  
  tile = tile_manager->get_tile(387); //left arrow icon
- screen->blit(area.x,area.y+80,tile->data,8,16,16,16,true);
-
- tile = tile_manager->get_tile(384); //party icon
- screen->blit(area.x+16,area.y+80,tile->data,8,16,16,16,true);
-
- tile = tile_manager->get_tile(385); //actor icon
- screen->blit(area.x+2*16,area.y+80,tile->data,8,16,16,16,true);
-
- tile = tile_manager->get_tile(388); //actor icon
- screen->blit(area.x+3*16,area.y+80,tile->data,8,16,16,16,true);
-
- tile = tile_manager->get_tile(391); //battle icon
- screen->blit(area.x+4*16,area.y+80,tile->data,8,16,16,16,true);
-
+ button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button = new GUI_Button(this, 0, 80, button_image, button_image2, leftButtonCallback);
+ this->AddWidget(button);
+ 
+ tile = tile_manager->get_tile(384); //party view icon
+ button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button = new GUI_Button(this, 16, 80, button_image, button_image2, partyViewButtonCallback);
+ this->AddWidget(button);
+ 
+ tile = tile_manager->get_tile(385); //actor view icon
+ button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button = new GUI_Button(this, 2*16, 80, button_image, button_image2, actorViewButtonCallback);
+ this->AddWidget(button);
+ 
+ tile = tile_manager->get_tile(388); //right arrow icon
+ button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button = new GUI_Button(this, 3*16, 80, button_image, button_image2, rightButtonCallback);
+ this->AddWidget(button);
+ 
+ tile = tile_manager->get_tile(391); //combat icon
+ button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
+ button = new GUI_Button(this, 4*16, 80, button_image, button_image2, combatButtonCallback);
+ this->AddWidget(button);
+ 
 }
 
 void InventoryView::display_inventory_weights()
@@ -174,7 +230,7 @@ void InventoryView::display_inventory_weights()
  uint8 strength;
  float inv_weight;
  float equip_weight;
- Actor *actor = party->get_actor(cur_actor_num);
+ Actor *actor = party->get_actor(party_position);
  char string[9]; //  "E:xx/xx"
  
  strength = actor->get_strength();
@@ -190,10 +246,69 @@ void InventoryView::display_inventory_weights()
 
 void InventoryView::display_actor_icon()
 {
- Actor *actor = party->get_actor(cur_actor_num);
+ Actor *actor = party->get_actor(party_position);
  Tile *actor_tile;
   
  actor_tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->get_tile_num())+9); //FIX here for sherry
  
  screen->blit(area.x+6*16,area.y+8,actor_tile->data,8,16,16,16,true);
 }
+
+static GUI_status leftButtonCallback(void *data)
+{
+ InventoryView *view;
+ 
+ view = (InventoryView *)data;
+ 
+ view->show_prev_party_member();
+ 
+ return GUI_YUM;
+}
+
+static GUI_status partyViewButtonCallback(void *data)
+{
+ InventoryView *view;
+ 
+ view = (InventoryView *)data;
+ 
+ //view->set_next_combat_mode();
+ printf("Set party view!\n");
+  
+ return GUI_YUM;
+}
+
+static GUI_status actorViewButtonCallback(void *data)
+{
+ InventoryView *view;
+ 
+ view = (InventoryView *)data;
+ 
+ //view->set_next_combat_mode();
+ printf("Set actor view!\n");
+  
+ return GUI_YUM;
+}
+
+static GUI_status rightButtonCallback(void *data)
+{
+ InventoryView *view;
+ 
+ view = (InventoryView *)data;
+ 
+ view->show_next_party_member();
+ 
+ return GUI_YUM;
+}
+
+static GUI_status combatButtonCallback(void *data)
+{
+ InventoryView *view;
+ 
+ view = (InventoryView *)data;
+ 
+ //view->set_next_combat_mode();
+ printf("Set party member combat mode here!\n");
+  
+ return GUI_YUM;
+}
+

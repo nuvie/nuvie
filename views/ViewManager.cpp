@@ -43,7 +43,7 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *o
  obj_manager = om;
 
  inventory_view = new InventoryView(config);
- inventory_view->init(176,8, text, party, tile_manager, obj_manager);
+ inventory_view->init(gui->get_screen(),176,8, text, party, tile_manager, obj_manager);
  
  portrait_view = new PortraitView(config);
  portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);
@@ -58,6 +58,9 @@ bool ViewManager::set_current_view(View *view)
  if(view == NULL || game_type != NUVIE_GAME_U6) //HACK! remove this when views support MD and SE
    return false;
 
+ if(current_view == view) // nothing to do if view is already the current_view.
+   return false;
+   
  if(current_view != NULL)
    gui->removeWidget((GUI_Widget *)current_view);//remove current widget from gui
 

@@ -363,6 +363,47 @@ bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16
  return true;
 }
 
+SDL_Surface *Screen::create_sdl_surface_from(unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch)
+{
+ SDL_Surface *new_surface;
+ uint16 i,j;
+ 
+ new_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, src_w, src_h, surface->bits_per_pixel,
+                                    surface->Rmask, surface->Gmask, surface->Bmask, 0);
+
+ if(surface->bits_per_pixel == 16)
+   {
+    uint16 *pixels = (uint16 *)new_surface->pixels;
+
+    for(i=0;i<src_h;i++)
+      {
+       for(j=0;j<src_w;j++)
+         {
+          pixels[j] = (uint16)surface->colour32[src_buf[j]];
+         }
+       src_buf += src_pitch;
+       pixels += src_pitch; //surface->pitch;
+      }
+   }
+ else
+   {
+    uint32 *pixels = (uint32 *)new_surface->pixels;
+
+    for(i=0;i<src_h;i++)
+      {
+       for(j=0;j<src_w;j++)
+         {
+          pixels[j] = surface->colour32[src_buf[j]];
+         }
+       src_buf += src_pitch;
+       pixels += src_pitch; //surface->pitch;
+      }
+   }
+
+ return new_surface;
+
+}
+
 uint16 Screen::get_pitch()
 {
  return (uint16)surface->pitch;

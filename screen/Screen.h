@@ -65,6 +65,7 @@ class Screen
    bool clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect=NULL);
    void *get_pixels();
    uint16 get_pitch();
+   SDL_Surface *create_sdl_surface_from(unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch);
    uint16 get_bpp();
    int get_scale_factor() { return scale_factor; }
    SDL_Surface *get_sdl_surface();

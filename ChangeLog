@@ -1,3 +1,10 @@
+2003-08-21  Eric Fry <efry@users.sourceforge.net>
+	* The left and right arrow buttons now change the inventory view.
+	* Stubs added for the other inventory buttons.
+	* Fixed placement bug when re-adding an existing widget.
+	* Screen: added method to generate an SDL_Surface for a given 8bit 
+          image buffer.
+
 2003-08-18  Eric Fry <efry@users.sourceforge.net>
 	* Converted the views over to the new GUI system.
 
