@@ -11,6 +11,8 @@
 #include "UseCode.h"
 #include "Effect.h"
 
+#include <cassert>
+
 #define MESG_ANIM_HIT_WORLD  ANIM_CB_HIT_WORLD
 #define MESG_ANIM_HIT        ANIM_CB_HIT
 #define MESG_ANIM_DONE       ANIM_CB_DONE
