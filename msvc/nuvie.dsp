@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".." /I "../actors" /I "../conf" /I "../files" /I "../gui" /I "../misc" /I "../pathfinder" /I "../screen" /I "../views" /I "../usecode" /I "../sound" /I "../fonts" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I ".." /I "../actors" /I "../conf" /I "../files" /I "../gui" /I "../misc" /I "../pathfinder" /I "../screen" /I "../views" /I "../usecode" /I "../sound" /I "../sound/adplug" /I "../save" /I "../fonts" /I "../visualc7" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".." /I "../actors" /I "../conf" /I "../files" /I "../gui" /I "../misc" /I "../pathfinder" /I "../screen" /I "../views" /I "../usecode" /I "../sound" /I "../fonts" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "_STLP_DEBUG" /D "_STLP_USE_NEWALLOC" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I ".." /I "../actors" /I "../conf" /I "../files" /I "../gui" /I "../misc" /I "../pathfinder" /I "../screen" /I "../views" /I "../usecode" /I "../sound" /I "../sound/adplug" /I "../save" /I "../fonts" /I "../visualc7" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "_STLP_DEBUG" /D "_STLP_USE_NEWALLOC" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -121,6 +121,14 @@ SOURCE=..\conf\XMLTree.h
 # Begin Group "files files"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\files\NuvieFileList.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\NuvieFileList.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\files\NuvieIO.cpp
@@ -247,6 +255,14 @@ SOURCE=..\screen\Surface.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\AnimManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\AnimManager.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Background.cpp
 # End Source File
 # Begin Source File
@@ -276,6 +292,30 @@ SOURCE=..\ConverseInterpret.cpp
 # Begin Source File
 
 SOURCE=..\ConverseInterpret.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Cursor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Cursor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Effect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Effect.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\EffectManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\EffectManager.h
 # End Source File
 # Begin Source File
 
@@ -367,6 +407,10 @@ SOURCE=..\nuvie.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\nuvieDefs.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\ObjManager.cpp
 # End Source File
 # Begin Source File
@@ -420,6 +464,10 @@ SOURCE=..\TimedEvent.cpp
 # Begin Source File
 
 SOURCE=..\TimedEvent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\U6objects.h
 # End Source File
 # End Group
 # Begin Group "msvc files"
@@ -627,6 +675,18 @@ SOURCE=..\Gui\GUI_button.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Gui\GUI_CallBack.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_Dialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_Dialog.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Gui\GUI_DragArea.h
 # End Source File
 # Begin Source File
@@ -655,6 +715,22 @@ SOURCE=..\Gui\GUI_loadimage.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Gui\GUI_ScrollBar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_ScrollBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_Scroller.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_Scroller.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Gui\GUI_status.h
 # End Source File
 # Begin Source File
@@ -664,6 +740,14 @@ SOURCE=..\Gui\GUI_text.cpp
 # Begin Source File
 
 SOURCE=..\Gui\GUI_text.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_TextInput.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_TextInput.h
 # End Source File
 # Begin Source File
 
@@ -693,6 +777,50 @@ SOURCE=..\Gui\the_font.h
 # Begin Group "sound"
 
 # PROP Default_Filter ""
+# Begin Group "adplug files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\sound\adplug\adplug_player.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\adplug_player.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\emuopl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\emuopl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\fmopl.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\fmopl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\opl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\silentopl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\u6m.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\adplug\u6m.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\sound\Sample.cpp
@@ -708,6 +836,14 @@ SOURCE=..\sound\Song.cpp
 # Begin Source File
 
 SOURCE=..\sound\Song.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\SongAdPlug.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\sound\SongAdPlug.h
 # End Source File
 # Begin Source File
 
@@ -741,6 +877,58 @@ SOURCE=..\fonts\FontManager.cpp
 
 SOURCE=..\fonts\FontManager.h
 # End Source File
+# End Group
+# Begin Group "save files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\save\SaveDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\save\SaveDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\save\SaveGame.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\save\SaveGame.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\save\SaveManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\save\SaveManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\save\SaveSlot.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\save\SaveSlot.h
+# End Source File
+# End Group
+# Begin Group "visualc7 files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\visualc7\dirent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\visualc7\vc7inc.h
+# End Source File
+# End Group
+# Begin Group "gui folder"
+
+# PROP Default_Filter ""
 # End Group
 # Begin Source File
 
