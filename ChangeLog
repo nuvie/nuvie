@@ -1,3 +1,8 @@
+2003-08-02  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Use usecode when looking at some objects
+	* New usecode objects (still being tested): Several food items, mirrors
+	* U6LibItem initialized to prevent crash while reading data.
+
 2003-07-30  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Actor::is_nearby() distance reduced to 4x4
 	* Added Beg worktype to U6Actor
