@@ -43,6 +43,7 @@ class MsgScroll
  bool keyword_highlight;
  bool input_mode;
  const char *permit_input; // character list, or 0 = any string
+ bool permit_inputescape; // can RETURN or ESCAPE be used to escape input entry
  bool talking;
  char *prompt;
  uint16 prompt_buf_len;
@@ -80,7 +81,8 @@ class MsgScroll
  
  void set_keyword_highlight(bool state);
  
- void set_input_mode(bool state, const char *allowed = NULL);
+ void set_input_mode(bool state, const char *allowed = NULL,
+                     bool can_escape = true);
  void set_talking(bool state) { talking = state; }
  bool set_prompt(char *new_prompt);
  

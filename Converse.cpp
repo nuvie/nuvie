@@ -20,7 +20,7 @@
 #include "U6Lzw.h"
 #include "Converse.h"
 
-//#define CONVERSE_DEBUG
+#define CONVERSE_DEBUG
 #ifdef CONVERSE_DEBUG
 # define test_msg(S) print(S)
 #else
@@ -35,7 +35,6 @@ using std::endl;
 //       uniform (better) text output
 //       show/remove portraits
 //       fix overflow at end of Chuckles(10) script
-//       "look" doesnt really work yet... Arty's description and name are mixed up
 
 /* Load `convfilename' as src.
  */
@@ -515,7 +514,7 @@ if(!args.empty() && !args[0].empty())
             wait(); donext = false;
             break;
         case U6OP_ASKC:
-            scroll->set_input_mode(true, output.c_str());
+            scroll->set_input_mode(true, output.c_str(), false);
             wait(); donext = false;
             break;
         case U6OP_SANSWER:
@@ -533,7 +532,6 @@ if(!args.empty() && !args[0].empty())
             break;
         case U6OP_INPUTC: // 1 val, variable to store input at
             declared = get_rval(0, 0);
-            // FIXME: only allow numeric character 0-9, ENTER, ESCAPE
             scroll->set_input_mode(true, "0123456789");
             wait(); donext = false;
             break;

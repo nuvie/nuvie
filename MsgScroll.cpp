@@ -164,10 +164,11 @@ void MsgScroll::set_keyword_highlight(bool state)
  keyword_highlight = state;
 }
  
-void MsgScroll::set_input_mode(bool state, const char *allowed)
+void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
 {
  input_mode = state;
  permit_input = NULL;
+ permit_inputescape = can_escape;
 
  if(input_mode == true)
  {
@@ -213,10 +214,20 @@ bool MsgScroll::handle_input(SDLKey *input)
       }
     switch(*input)
     {
-        case SDLK_ESCAPE: if(permit_input == NULL)
-                           set_input_mode(true); // reset input buffer
-        case SDLK_RETURN: if(input_mode && permit_input == NULL)
-                            set_input_mode(false);
+        case SDLK_ESCAPE: if(permit_inputescape)
+                          {
+                            // reset input buffer
+                            permit_input = NULL;
+                            input_buf_pos = 0;
+                            if(input_mode && permit_input == NULL)
+                              set_input_mode(false);
+                          }
+                          return(true);
+        case SDLK_RETURN: if(permit_inputescape)
+                          {
+                            if(input_mode && permit_input == NULL)
+                              set_input_mode(false);
+                          }
                           return(true);
         case SDLK_BACKSPACE :
                             if(input_mode)

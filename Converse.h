@@ -187,15 +187,17 @@ class Converse
     Uint16 pop2()
     {
         Uint16 val = 0;
-        memcpy(&val, script_pt, 2);
-        script_pt += 2;
+        val = *(script_pt++);
+        val += *(script_pt++) << 8;
         return(val);
     }
     Uint32 pop4()
     {
         Uint32 val = 0;
-        memcpy(&val, script_pt, 4);
-        script_pt += 4;
+        val = *(script_pt++);
+        val += *(script_pt++) << 8;
+        val += *(script_pt++) << 16;
+        val += *(script_pt++) << 24;
         return(val);
     }
     Uint8 peek(Uint32 peekahead = 0) { return((Uint8)*(script_pt+peekahead)); }
