@@ -861,6 +861,10 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
 
  if(x < 0) x = 0;
  if(y < 0) y = 0;
+ if(x > width)
+   return;
+ if(y > height)
+   return;  
  if((x + w) > width) w = width - x;
  if((y + h) > height) h = height - y;
  

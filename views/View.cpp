@@ -23,7 +23,10 @@
 
 #include "nuvieDefs.h"
 #include "Party.h"
+#include "ViewManager.h"
 #include "View.h"
+
+#include "GUI_Widget.h"
 
 View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
@@ -36,11 +39,7 @@ View::~View()
 
 bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
- area.x = x;
- area.y = y;
- 
- area.w = 136;
- area.h = 96;
+ GUI_Widget::Init(NULL, x, y, 136, 96);
  
  text = t;
  party = p;
@@ -77,27 +76,42 @@ bool View::prev_party_member()
  return false;
 }
 
-
-//GUI callbacks.
-
-GUI_status viewLeftButtonCallback(void *data)
+GUI_status View::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
- View *view;
+ ViewManager *view_manager;
  
- view = (View *)data;
- 
- view->prev_party_member();
- 
- return GUI_YUM;
-}
+ if(caller == (GUI_CallBack *)left_button)
+   {
+    prev_party_member();
+    return GUI_YUM;
+   }
 
-GUI_status viewRightButtonCallback(void *data)
-{
- View *view;
- 
- view = (View *)data;
- 
- view->next_party_member();
- 
- return GUI_YUM;
+ if(caller == (GUI_CallBack *)right_button)
+   {
+    next_party_member();
+    return GUI_YUM;
+   }
+
+ if(caller == (GUI_CallBack *)actor_button)
+   {
+    view_manager = (ViewManager *)data;
+    view_manager->set_actor_mode();
+    return GUI_YUM;
+   }
+
+ if(caller == (GUI_CallBack *)party_button)
+   {
+    view_manager = (ViewManager *)data;
+    view_manager->set_party_mode();
+    return GUI_YUM;
+   }
+
+ if(caller == (GUI_CallBack *)inventory_button)
+   {
+    view_manager = (ViewManager *)data;
+    view_manager->set_inventory_mode();
+    return GUI_YUM;
+   }
+                        
+ return GUI_PASS;
 }

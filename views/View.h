@@ -35,11 +35,14 @@ class Screen;
 class Text;
 class ObjManager;
 class Party;
+class GUI_Button;
 
 class View: public GUI_Widget
 {
  protected:
  Configuration *config;
+ 
+ GUI_Button *left_button, *right_button, *actor_button, *party_button, *inventory_button;
  
  Text *text;
  TileManager *tile_manager;
@@ -59,6 +62,10 @@ class View: public GUI_Widget
  uint8 get_party_member_num() { return cur_party_member; }
  bool next_party_member();
  bool prev_party_member();
+ 
+ protected:
+ 
+ GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 
 #endif /* __View_h__ */

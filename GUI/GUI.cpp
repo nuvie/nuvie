@@ -134,7 +134,7 @@ bool GUI::moveWidget(GUI_Widget *widget, uint32 dx, uint32 dy)
  if(!widget)
    return false;
 
- widget->Move(dx, dy);
+ widget->MoveRelative(dx, dy);
  
  if(widget->Status() == WIDGET_VISIBLE)
    force_full_redraw();
@@ -399,16 +399,18 @@ void GUI::Idle()
 
 bool GUI::set_focus(GUI_Widget *widget)
 {
+/*
 	for(int i = 0; i < numwidgets; ++i)
 	  {	
         if(!widget || (widgets[i] == widget)) // must be managed by GUI
 			{
+*/
              focused_widget = widget;
              return true;
-            }
-      }
+//            }
+//      }
 
- return false;
+// return false;
 }
 
 void GUI::lock_input(GUI_Widget *widget)

@@ -48,14 +48,9 @@ public:
 
 	/* Show the widget  */
 	virtual void Display(bool full_redraw);
-    
-    /* events, used for dragging the area. */
-    GUI_status MouseDown(int x, int y, int button);
-    GUI_status MouseUp(int x, int y, int button);
-    GUI_status MouseMotion(int x,int y,Uint8 state);
+
 
 protected:
-    int old_x, old_y;
 	Uint8 R, G, B;
 	Uint32 color;
 
@@ -69,8 +64,7 @@ protected:
 	/* remember me */
 	int frameThickness;
 	int shape;
-    
-    bool drag;
+
 };
 
 #endif /* _GUI_area_h */

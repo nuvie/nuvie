@@ -46,16 +46,10 @@
 #include "Event.h"
 
 #include "UseCode.h"
+#include "SaveManager.h"
 
 #include "GUI.h"
 #include "GUI_YesNoDialog.h"
-
-//dialog callbacks
-
-static GUI_status quitDialogYesCallback(void *data);
-static GUI_status quitDialogNoCallback(void *data);
-
-static bool showingQuitDialog = false; // Yuck! FIX find a better way to do this.
 
 Event::Event(Configuration *cfg)
 {
@@ -69,6 +63,7 @@ Event::Event(Configuration *cfg)
 
  book = NULL;
  time_queue = game_time_queue = NULL;
+ showingQuitDialog = false;
 }
 
 Event::~Event()
@@ -203,6 +198,10 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
                         else
                             view_manager->get_inventory_view()->set_show_cursor(true);
                         break;
+		case SDLK_s     : 
+				saveDialog();
+			break;
+
 		case SDLK_q     : 
 			if(mode == MOVE_MODE && !showingQuitDialog)
 			{
@@ -1470,34 +1469,41 @@ void Event::quitDialog()
 {
  GUI_Widget *quit_dialog;
 
- quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", quitDialogYesCallback, quitDialogNoCallback);
-
+ quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", (GUI_CallBack *)this, (GUI_CallBack *)this);
    
  gui->AddWidget(quit_dialog);
  gui->lock_input(quit_dialog);
  return;
 }
 
-static GUI_status quitDialogYesCallback(void *data)
-{ 
- showingQuitDialog = false;
- Game::get_game()->get_gui()->unlock_input();
- return GUI_QUIT;
+void Event::saveDialog()
+{
+ SaveManager *save_manager;
+
+ save_manager = new SaveManager(config, Game::get_game()->get_actor_manager(), obj_manager);
+
+ return; 
 }
 
-static GUI_status quitDialogNoCallback(void *data)
+GUI_status Event::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
  GUI_Widget *widget;
- 
- widget = (GUI_Widget *)data;
- 
- widget->Delete();
+  
+ switch(msg) // Handle callback from quit dialog.
+  {
+   case YESNODIALOG_CB_YES :  showingQuitDialog = false;
+                              Game::get_game()->get_gui()->unlock_input();
+                              return GUI_QUIT;
+   case YESNODIALOG_CB_NO :  widget = (GUI_Widget *)data;
+                             widget->Delete();
 
- showingQuitDialog = false;
- Game::get_game()->get_gui()->unlock_input();
- return GUI_YUM;
+                             showingQuitDialog = false;
+                             Game::get_game()->get_gui()->unlock_input();
+                             return GUI_YUM;
+  }
+
+ return GUI_PASS;
 }
-
 
 /* Switch to solo mode.
  */

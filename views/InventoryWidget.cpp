@@ -57,11 +57,8 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  obj_manager = om;
  text = t;
  
- area.x = x;
- area.y = y;
- 
- area.w = 72; // 4 * 16 + 8
- area.h = 64;
+ //72 =  4 * 16 + 8
+ GUI_Widget::Init(NULL, x, y, 72, 64);
  
  set_actor(a);
 

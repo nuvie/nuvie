@@ -143,6 +143,10 @@
 				0761811705E84B60001B6450,
 				072B48CD061E86AB00CC3368,
 				072B48FA061EEBDA00CC3368,
+				072B4A5C0620107A00CC3368,
+				072B4D210632953700CC3368,
+				0787F20B064390F60028223C,
+				0726903E064E749600F249E5,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -689,6 +693,9 @@
 				0761811605E84B60001B6450,
 				072B48CC061E86AB00CC3368,
 				072B48F9061EEBDA00CC3368,
+				072B4A5B0620107A00CC3368,
+				072B4D200632953700CC3368,
+				0726903D064E749600F249E5,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1610,6 +1617,46 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
+		0726902F064E745B00F249E5 = {
+			children = (
+				0726903B064E749600F249E5,
+				0726903C064E749600F249E5,
+			);
+			isa = PBXGroup;
+			name = Save;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0726903B064E749600F249E5 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SaveManager.cpp;
+			path = ../save/SaveManager.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0726903C064E749600F249E5 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SaveManager.h;
+			path = ../save/SaveManager.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0726903D064E749600F249E5 = {
+			fileRef = 0726903B064E749600F249E5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0726903E064E749600F249E5 = {
+			fileRef = 0726903C064E749600F249E5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		072B48CA061E86AB00CC3368 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1666,6 +1713,66 @@
 		};
 		072B48FA061EEBDA00CC3368 = {
 			fileRef = 072B48F8061EEBDA00CC3368;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072B4A590620107A00CC3368 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = GUI_ScrollBar.cpp;
+			path = ../GUI/GUI_ScrollBar.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072B4A5A0620107A00CC3368 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = GUI_ScrollBar.h;
+			path = ../GUI/GUI_ScrollBar.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072B4A5B0620107A00CC3368 = {
+			fileRef = 072B4A590620107A00CC3368;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072B4A5C0620107A00CC3368 = {
+			fileRef = 072B4A5A0620107A00CC3368;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072B4D1E0632953700CC3368 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = GUI_Scroller.cpp;
+			path = ../GUI/GUI_Scroller.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072B4D1F0632953700CC3368 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = GUI_Scroller.h;
+			path = ../GUI/GUI_Scroller.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072B4D200632953700CC3368 = {
+			fileRef = 072B4D1E0632953700CC3368;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072B4D210632953700CC3368 = {
+			fileRef = 072B4D1F0632953700CC3368;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1802,6 +1909,7 @@
 		};
 		074B913604E4C4BA00A8000A = {
 			children = (
+				0787F20A064390F60028223C,
 				072B48F8061EEBDA00CC3368,
 				072B48F7061EEBDA00CC3368,
 				0761777305D47ADB001B6450,
@@ -1826,6 +1934,10 @@
 				0762A3500504C4B900A8000A,
 				0762A334050361B500A8000A,
 				0762A335050361B500A8000A,
+				072B4A5A0620107A00CC3368,
+				072B4A590620107A00CC3368,
+				072B4D1F0632953700CC3368,
+				072B4D1E0632953700CC3368,
 			);
 			isa = PBXGroup;
 			name = GUI;
@@ -2410,6 +2522,21 @@
 			path = ../views/InventoryWidget.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+		};
+		0787F20A064390F60028223C = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = GUI_CallBack.h;
+			path = ../GUI/GUI_CallBack.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0787F20B064390F60028223C = {
+			fileRef = 0787F20A064390F60028223C;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		078BA0A4049B327F00A8000A = {
 			fileEncoding = 4;
@@ -3293,6 +3420,7 @@
 				079CA1D204230A2B00A8000A,
 				07AD65EB04D34BCA00A8000A,
 				072BE3AD041AFE1100A8000A,
+				0726902F064E745B00F249E5,
 				0761765605D100B2001B6450,
 				07B16F5904873BFA00A8000A,
 				072599AC0471126B00A8000A,

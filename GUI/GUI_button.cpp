@@ -36,23 +36,12 @@
 SDL_Surface *checkmarks=NULL;
 
 
-
-/* The default callback quits the GUI */
-static GUI_status Default_ActiveProc(void *unused)
-{
-	return(GUI_QUIT);
-}
-
-
 GUI_Button:: GUI_Button(void *data, int x, int y, SDL_Surface *image,
-			SDL_Surface *image2,GUI_ActiveProc activeproc)
+			SDL_Surface *image2, GUI_CallBack *callback)
  : GUI_Widget(data, x, y, image->w, image->h)
 {
-	if ( activeproc == NULL ) {
-		ActiveProc = Default_ActiveProc;
-	} else {
-		ActiveProc = activeproc;
-	}
+	callback_object = callback;
+    
 	button = image;
 	button2 = image2;
 	freebutton = 0;
@@ -68,14 +57,11 @@ GUI_Button:: GUI_Button(void *data, int x, int y, SDL_Surface *image,
 }
 
 GUI_Button:: GUI_Button(void *data, int x, int y, int w, int h,
-			GUI_ActiveProc activeproc)
+			GUI_CallBack *callback)
  : GUI_Widget(data, x, y, w, h)
 {
-	if ( activeproc == NULL ) {
-		ActiveProc = Default_ActiveProc;
-	} else {
-		ActiveProc = activeproc;
-	}
+	callback_object = callback;
+    
 	button = NULL;
 	button2 = NULL;
 	freebutton = 0;
@@ -92,14 +78,11 @@ GUI_Button:: GUI_Button(void *data, int x, int y, int w, int h,
 
 GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, char *text,
 		       GUI_Font *font, int alignment, int is_checkbutton,
-		       GUI_ActiveProc activeproc, int flat)
+		       GUI_CallBack *callback, int flat)
  : GUI_Widget(data,x,y,w,h)
 {
-  if ( activeproc == NULL )
-    ActiveProc = Default_ActiveProc;
-  else
-    ActiveProc = activeproc;
-
+  callback_object = callback;
+  
   if (font!=NULL)
   {
     buttonFont=font;
@@ -262,7 +245,7 @@ GUI_status GUI_Button:: MouseDown(int x, int y, int button)
 	  pressed[0]=1;
 	  Redraw();
 	}
-	return GUI_PASS;
+	return GUI_YUM;
 }
 
 GUI_status GUI_Button::MouseUp(int x,int y,int button)
@@ -271,11 +254,11 @@ GUI_status GUI_Button::MouseUp(int x,int y,int button)
 	{
 	  pressed[0]=0;
 	  if ((x>=0) && (y>=0))
-	    if (ActiveProc(widget_data)==GUI_QUIT)
+	    if (callback_object && callback_object->callback(BUTTON_CB, this, widget_data)==GUI_QUIT)
 	      return GUI_QUIT;
 	  Redraw();
 	}
-	return GUI_PASS;
+	return GUI_YUM;
 }
 
 GUI_status GUI_Button::MouseMotion(int x,int y,Uint8 state)
@@ -290,7 +273,7 @@ GUI_status GUI_Button::MouseMotion(int x,int y,Uint8 state)
 	  pressed[0]=1;
 	  Redraw();
 	}
-	return GUI_PASS;
+	return GUI_YUM;
 }
 
 void GUI_Button::Disable()

@@ -59,12 +59,8 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  tile_manager = tm;
  obj_manager = om;
  
- area.x = x;
- area.y = y;
- 
- area.w = 64;
- area.h = 64;
- 
+ GUI_Widget::Init(NULL, x, y, 64, 64);
+  
  set_actor(a);
  
  return true;

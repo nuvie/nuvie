@@ -145,7 +145,8 @@ MsgText *MsgLine::get_text_at_pos(uint16 pos)
 
 MsgScroll::MsgScroll(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
-
+ uint16 x, y;
+ 
  config = cfg;
  config->value("config/GameType",game_type);
 
@@ -153,25 +154,24 @@ MsgScroll::MsgScroll(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
    {
     case NUVIE_GAME_U6 : scroll_width = MSGSCROLL_U6_WIDTH;
                          scroll_height = MSGSCROLL_U6_HEIGHT;
-                         area.x = 176;
-                         area.y = 112;
+                         x = 176;
+                         y = 112;
                          break;
                          
     case NUVIE_GAME_MD : scroll_width = MSGSCROLL_MD_WIDTH;
                          scroll_height = MSGSCROLL_MD_HEIGHT;
-                         area.x = 184;
-                         area.y = 128;
+                         x = 184;
+                         y = 128;
                          break;
                          
     case NUVIE_GAME_SE : scroll_width = MSGSCROLL_SE_WIDTH;
                          scroll_height = MSGSCROLL_SE_HEIGHT;
-                         area.x = 184;
-                         area.y = 128;
+                         x = 184;
+                         y = 128;
                          break;
    }
 
- area.w = scroll_width * 8;
- area.h = scroll_height * 8;
+ GUI_Widget::Init(NULL, x, y, scroll_width * 8, scroll_height * 8);
  
  cursor_char = 0;
  cursor_x = 0;

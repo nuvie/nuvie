@@ -28,6 +28,7 @@
 #include "SDL.h"
 
 #include "ObjManager.h"
+#include "GUI_CallBack.h"
 
 class Configuration;
 class Book;
@@ -64,7 +65,7 @@ typedef enum {
 extern uint32 nuvieGameCounter;
 
 
-class Event
+class Event : public GUI_CallBack
 {
  Configuration *config;
  GUI *gui;
@@ -90,9 +91,11 @@ class Event
  Obj *use_obj;
  Actor *selected_actor; // for PUSHSELECT
 
+ bool showingQuitDialog;
+
  public:
  Event(Configuration *cfg);
- ~Event();
+ virtual ~Event();
 
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
            GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g);
@@ -151,6 +154,8 @@ class Event
  inline Uint32 TimeLeft();
  
  void quitDialog();
+ void saveDialog();
+ GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
  bool handleSDL_KEYDOWN (const SDL_Event *event);
  
 };

@@ -32,19 +32,19 @@
 #include "GUI_YesNoDialog.h"
 
 
-GUI_YesNoDialog::GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallbackProc yesCallbackProc, GUI_CallbackProc noCallbackProc) : 
-   GUI_Dialog(x, y, w, h, 252, 244, 192, GUI_DIALOG_MOVABLE)
+GUI_YesNoDialog::GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback) : 
+   GUI_Dialog(x, y, w, h, 244, 216, 131, GUI_DIALOG_MOVABLE)
 {
   GUI_Widget *widget;
   
-  yesCallback = yesCallbackProc;
-  noCallback = noCallbackProc;
+  yes_callback_object = yesCallback;
+  no_callback_object = noCallback;
 
-  widget = (GUI_Widget *) new GUI_Button(this, 100, 50, 40, 18, "Yes", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, yesCallback, 0);
-  AddWidget(widget);
+  yes_button =  new GUI_Button(this, 100, 50, 40, 18, "Yes", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, (GUI_CallBack *)this, 0);
+  AddWidget(yes_button);
 
-  widget = (GUI_Widget *) new GUI_Button(this, 30, 50, 40, 18, "No", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, noCallback, 0);
-  AddWidget(widget);
+  no_button =  new GUI_Button(this, 30, 50, 40, 18, "No", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, (GUI_CallBack *)this, 0);
+  AddWidget(no_button);
  
   widget = (GUI_Widget *) new GUI_Text(10, 25, 0, 0, 0, msg, gui->get_font());
   AddWidget(widget);
@@ -58,7 +58,18 @@ GUI_YesNoDialog::~GUI_YesNoDialog()
 GUI_status GUI_YesNoDialog::KeyDown(SDL_keysym key)
 {
  if(key.sym == SDLK_y)
-   return yesCallback(this);
+   return yes_callback_object->callback(YESNODIALOG_CB_YES, this, this);
 
- return noCallback(this);
+ return no_callback_object->callback(YESNODIALOG_CB_NO, this, this);
+}
+
+GUI_status GUI_YesNoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data)
+{
+ if(caller == (GUI_CallBack *)yes_button)
+   return yes_callback_object->callback(YESNODIALOG_CB_YES, this, this);
+
+ if(caller == (GUI_CallBack *)no_button)
+   return no_callback_object->callback(YESNODIALOG_CB_NO, this, this);
+
+ return GUI_PASS;
 }

@@ -1,3 +1,14 @@
+2004-05-10  Eric Fry <efry at users.sourceforge.net>
+	* Added GUI_ScrollBar, GUI_Scroller and a new generic callback
+	  class GUI_CallBack
+	* Added SaveManager class. This is still in the early stages
+	  of development. You can call up the dialog by pressing the
+	  's' key. Be aware that you cannot close the save manager dialog
+	  after opening it. I'll fix that when I start on the button
+	  callbacks.
+	* Changed the background colour of GUI dialogs. This should help them
+	  stand out over the game background textures.
+
 2004-04-11  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a bug in game loading sequence.
 	  ObjManager::loadObjs() must be called before Actors are initialised

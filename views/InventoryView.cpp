@@ -39,11 +39,6 @@
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
 
-extern GUI_status partyViewButtonCallback(void *data);
-extern GUI_status actorViewButtonCallback(void *data);
-
-static GUI_status combatButtonCallback(void *data);
-
 InventoryView::InventoryView(Configuration *cfg) : View(cfg),
    doll_widget(NULL), inventory_widget(NULL)
 {
@@ -197,39 +192,38 @@ void InventoryView::add_command_icons(Screen *tmp_screen, void *view_manager)
  Tile *tile;
  SDL_Surface *button_image;
  SDL_Surface *button_image2;
- GUI_Widget *button;
- 
+ GUI_Button *combat_button;
  //FIX need to handle clicked button image, check image free on destruct.
  
  tile = tile_manager->get_tile(387); //left arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 0, 80, button_image, button_image2, viewLeftButtonCallback);
- this->AddWidget(button);
+ left_button = new GUI_Button(this, 0, 80, button_image, button_image2, this);
+ this->AddWidget(left_button);
  
  tile = tile_manager->get_tile(384); //party view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(view_manager, 16, 80, button_image, button_image2, partyViewButtonCallback);
- this->AddWidget(button);
+ party_button = new GUI_Button(view_manager, 16, 80, button_image, button_image2, this);
+ this->AddWidget(party_button);
  
  tile = tile_manager->get_tile(385); //actor view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(view_manager, 2*16, 80, button_image, button_image2, actorViewButtonCallback);
- this->AddWidget(button);
+ actor_button = new GUI_Button(view_manager, 2*16, 80, button_image, button_image2, this);
+ this->AddWidget(actor_button);
  
  tile = tile_manager->get_tile(388); //right arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 3*16, 80, button_image, button_image2, viewRightButtonCallback);
- this->AddWidget(button);
+ right_button = new GUI_Button(this, 3*16, 80, button_image, button_image2, this);
+ this->AddWidget(right_button);
  
  tile = tile_manager->get_tile(391); //combat icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 4*16, 80, button_image, button_image2, combatButtonCallback);
- this->AddWidget(button);
+ combat_button = new GUI_Button(this, 4*16, 80, button_image, button_image2, this); //FIX combat
+ this->AddWidget(combat_button);
  
 }
 
@@ -258,19 +252,6 @@ void InventoryView::display_combat_mode()
  Actor *actor = party->get_actor(cur_party_member);
  text->drawString(screen, combat_mode_tbl[actor->get_combat_mode() - 2], area.x+5*16, area.y+88, 0);
 }
-
-static GUI_status combatButtonCallback(void *data)
-{
- InventoryView *view;
- 
- view = (InventoryView *)data;
- 
- //view->set_next_combat_mode();
- printf("Set party member combat mode here!\n");
-  
- return GUI_YUM;
-}
-
 
 /* Move the cursor around, ready or unready objects, select objects, switch
  * to container view, use command icons.

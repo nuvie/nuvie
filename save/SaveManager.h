@@ -1,10 +1,11 @@
-#ifndef __GUI_YesNoDialog_h__
-#define __GUI_YesNoDialog_h__
+#ifndef __SaveManager_h__
+#define __SaveManager_h__
+
 /*
- *  GUI_YesNoDialog.h
+ *  SaveManager.h
  *  Nuvie
  *
- *  Created by Eric Fry on Sat Feb 07 2004.
+ *  Created by Eric Fry on Wed Apr 28 2004.
  *  Copyright (c) 2004. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -23,32 +24,38 @@
  *
  */
 
-#include "GUI_Dialog.h"
+#include <string>
+#include <list>
 
-class GUI;
-class GUI_CallBack;
-class GUI_Button;
+#include "ObjManager.h"
 
-// Callback message types
+class Configuration;
+class ActorManager;
+class Actor;
 
-#define YESNODIALOG_CB_YES 0x1
-#define YESNODIALOG_CB_NO  0x2
+class GUI_Scroller;
+class GUI_Dialog;
 
-class GUI_YesNoDialog : public GUI_Dialog {
-protected:
-
-GUI_Button *yes_button, *no_button;
-GUI_CallBack *yes_callback_object, *no_callback_object;
-
-public:
-
-GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback);
-
-~GUI_YesNoDialog();
-
-GUI_status KeyDown(SDL_keysym key);
-
-GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
+class SaveManager
+{
+ Configuration *config;
+ ActorManager *actor_manager;
+ ObjManager *obj_manager;
+ 
+ // gui widgets;
+ 
+ GUI_Scroller *scroller;
+ GUI_Dialog *dialog;
+ 
+ public:
+  
+ SaveManager(Configuration *cfg, ActorManager *am, ObjManager *om);
+ ~SaveManager();
+ 
+ protected:
+ 
+ void create_dialog();
+ 
 };
 
-#endif /* __GUI_YesNoDialog_h__ */
+#endif /* __SaveManager_h__ */

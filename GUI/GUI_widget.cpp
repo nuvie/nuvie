@@ -57,8 +57,9 @@ void GUI_Widget::Init(void *data, int x, int y, int w, int h)
 	widget_data = data;
 	screen = NULL;
   surface = NULL;
-	SetRect(x, y, w, h);
-  real_x = real_y = 0;
+	SetRect(0, 0, w, h);
+  offset_x = x;
+  offset_y = y;
 	Show();
 	error = NULL;
 	for (int n=0;n<3; ++n ) {
@@ -106,7 +107,7 @@ void GUI_Widget:: Delete(void)
 	status = WIDGET_DELETED;
 }
 
-void GUI_Widget::Move(int dx,int dy)
+void GUI_Widget::MoveRelative(int dx,int dy)
 {
  std::list<GUI_Widget *>::iterator child;
 
@@ -114,7 +115,20 @@ void GUI_Widget::Move(int dx,int dy)
  area.y += dy;
  
  for(child = children.begin(); child != children.end(); child++)
-    (*child)->Move(dx,dy);
+    (*child)->MoveRelative(dx,dy);
+
+ return;
+}
+
+void GUI_Widget::Move(int new_x,int new_y)
+{
+ std::list<GUI_Widget *>::iterator child;
+
+ area.x = new_x + offset_x;
+ area.y = new_y + offset_y;
+ 
+ for(child = children.begin(); child != children.end(); child++)
+    (*child)->Move(area.x, area.y);
 
  return;
 }
@@ -138,8 +152,8 @@ void GUI_Widget::PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
  if(screen != NULL)
    return;
 
- area.x += x;
- area.y += y;
+ area.x = x + offset_x;
+ area.y = y + offset_y;
  
  gui_drag_manager = dm;
  
@@ -261,7 +275,10 @@ void GUI_Widget::DisplayChildren(bool full_redraw)
 
    /* display our children */
    for(child = children.begin(); child != children.end(); child++)
-      (*child)->Display(full_redraw);
+      {
+       if((*child)->Status() == WIDGET_VISIBLE)
+         (*child)->Display(full_redraw);
+      }
   }
 
  return;

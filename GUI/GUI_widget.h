@@ -51,7 +51,7 @@ protected:
 	/* The display surface for the widget */
 	SDL_Surface *surface;
 
-  int real_x, real_y; /* x,y in screen coords */
+    int offset_x, offset_y; /* original offsets to parent */
   
 	/* Flag -- whether or not the widget should be freed */
 	int status;
@@ -105,11 +105,12 @@ public:
 	/* Mark the widget as free, so it will be deleted by the GUI */
 	virtual void Delete(void);
   
-    virtual void Move(int dx,int dy);
+    virtual void MoveRelative(int dx,int dy);
+    virtual void Move(int new_x, int new_y);
     void grab_focus();
     void release_focus();
     
-  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
+  virtual void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
   
 	virtual int  Status(void);	/* Reports status to GUI */
 

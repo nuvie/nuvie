@@ -1,10 +1,11 @@
-#ifndef __GUI_YesNoDialog_h__
-#define __GUI_YesNoDialog_h__
+#ifndef __GUI_CALLBACK_H__
+#define __GUI_CALLBACK_H__
+
 /*
- *  GUI_YesNoDialog.h
+ *  GUI_CallBack.h 
  *  Nuvie
  *
- *  Created by Eric Fry on Sat Feb 07 2004.
+ *  Created by Eric Fry on Sat May 01 2004.
  *  Copyright (c) 2004. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -23,32 +24,17 @@
  *
  */
 
-#include "GUI_Dialog.h"
+#include "GUI_status.h"
 
-class GUI;
-class GUI_CallBack;
-class GUI_Button;
-
-// Callback message types
-
-#define YESNODIALOG_CB_YES 0x1
-#define YESNODIALOG_CB_NO  0x2
-
-class GUI_YesNoDialog : public GUI_Dialog {
-protected:
-
-GUI_Button *yes_button, *no_button;
-GUI_CallBack *yes_callback_object, *no_callback_object;
-
-public:
-
-GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback);
-
-~GUI_YesNoDialog();
-
-GUI_status KeyDown(SDL_keysym key);
-
-GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
+class GUI_CallBack
+{
+ 
+ public:
+ 
+ GUI_CallBack() { return; }
+ 
+ virtual GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data) { printf("Warning! Unhandled callback. msg (%x)\n", msg); return GUI_PASS; }
+ 
 };
 
-#endif /* __GUI_YesNoDialog_h__ */
+#endif /* __GUI_CALLBACK_H__ */

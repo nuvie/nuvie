@@ -99,33 +99,32 @@ void ActorView::add_command_icons(Screen *tmp_screen, void *view_manager)
  Tile *tile;
  SDL_Surface *button_image;
  SDL_Surface *button_image2;
- GUI_Widget *button;
  
  //FIX need to handle clicked button image, check image free on destruct.
  
  tile = tile_manager->get_tile(387); //left arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 0, 80, button_image, button_image2, viewLeftButtonCallback);
- this->AddWidget(button);
+ left_button = new GUI_Button(this, 0, 80, button_image, button_image2, this);
+ this->AddWidget(left_button);
  
  tile = tile_manager->get_tile(384); //party view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(view_manager, 16, 80, button_image, button_image2,partyViewButtonCallback);
- this->AddWidget(button);
+ party_button = new GUI_Button(view_manager, 16, 80, button_image, button_image2,this);
+ this->AddWidget(party_button);
  
  tile = tile_manager->get_tile(386); //inventory view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(view_manager, 2*16, 80, button_image, button_image2, inventoryViewButtonCallback);
- this->AddWidget(button);
+ inventory_button = new GUI_Button(view_manager, 2*16, 80, button_image, button_image2, this);
+ this->AddWidget(inventory_button);
  
  tile = tile_manager->get_tile(388); //right arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 3*16, 80, button_image, button_image2, viewRightButtonCallback);
- this->AddWidget(button);
+ right_button = new GUI_Button(this, 3*16, 80, button_image, button_image2, this);
+ this->AddWidget(right_button);
  
  return;
 }

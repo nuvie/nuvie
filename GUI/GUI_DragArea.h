@@ -23,7 +23,9 @@
  *
  */
 
-class GUI_DragArea {
+#include "GUI_CallBack.h"
+
+class GUI_DragArea : public GUI_CallBack {
 
  protected:
  
