@@ -1,3 +1,8 @@
+2003-06-01  Eric Fry <efry@users.sourceforge.net>
+	* Locked doors can only be opened when the avatar has the correct
+	  key in their inventory.
+	* Added MsgScroll descriptions for several usecode actions.
+
 2003-05-31  Eric Fry <efry@users.sourceforge.net>
 	* Use Lever now operates corresponding portcullis(s).
 	* The Avatar now walks up to the edge of the map correctly.

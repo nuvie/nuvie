@@ -38,16 +38,14 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
  if(obj == NULL)
    return false;
 
- if(obj->obj_n >= 297 && obj->obj_n <= 300) // door objects
-   {
-    if(obj->frame_n <= 3)
-      obj->frame_n += 4;
-    else
-      obj->frame_n -= 4;
-   }
-
   switch(obj->obj_n)
    {
+    case OBJ_U6_OAKEN_DOOR    :
+    case OBJ_U6_WINDOWED_DOOR :
+    case OBJ_U6_CEDAR_DOOR    :
+    case OBJ_U6_STEEL_DOOR    : use_door(obj);
+                                break;
+
     case OBJ_U6_LADDER :
     case OBJ_U6_HOLE : use_ladder(obj);
                        break;
@@ -68,16 +66,33 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
 
     case OBJ_U6_SWITCH : toggle_frame(obj); //FIX hookup switch action.
                         break;
-    case OBJ_U6_FIREPLACE :
+
+    case OBJ_U6_FIREPLACE : if(obj->frame_n == 1 || obj->frame_n == 3)
+                                {
+                                 use_firedevice_message(obj,false);
+                                 obj->frame_n--;
+                                }
+                              else
+                                {
+                                 use_firedevice_message(obj,true);
+                                 obj->frame_n++;
+                                }
+                              break;
+                              
     case OBJ_U6_SECRET_DOOR : if(obj->frame_n == 1 || obj->frame_n == 3)
                                 obj->frame_n--;
                               else
                                 obj->frame_n++;
                               break;
     case OBJ_U6_CANDLE :
+    case OBJ_U6_CANDELABRA :
     case OBJ_U6_BRAZIER :
                          toggle_frame(obj);
+                         use_firedevice_message(obj,(bool)obj->frame_n);
                          break;
+                         
+    default : scroll->display_string("\nnot usable\n");
+              break;
    }
 
 
@@ -86,6 +101,37 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
  return true;
 }
 
+bool U6UseCode::use_door(Obj *obj)
+{
+ Obj *key_obj;
+ 
+ if(obj->frame_n == 9 || obj->frame_n == 11) // locked door
+   {
+    key_obj = player->get_actor()->inventory_get_object(OBJ_U6_KEY, obj->quality);
+    if(key_obj != NULL) // we have the key for this door so lets unlock it.
+      {
+       obj->frame_n -= 4;
+       scroll->display_string("\nunlocked\n");
+      }
+    else
+       scroll->display_string("\nlocked\n");
+
+    return true;
+   }
+  
+ if(obj->frame_n <= 3) //open door
+   {
+    obj->frame_n += 4;
+    scroll->display_string("\nclosed!\n");
+   }
+ else
+   {
+    obj->frame_n -= 4;
+    scroll->display_string("\nopened!\n");
+   }
+   
+ return true;
+}
 
 bool U6UseCode::use_ladder(Obj *obj)
 {
@@ -102,7 +148,7 @@ bool U6UseCode::use_ladder(Obj *obj)
    {
     if(obj->z == 1)
       {
-       //FIX clean his up a bit. :)
+       //we use obj->quality to tell us which surface chunk to come up in.
        player->move(obj->x / 8 * 8 * 4 + ((obj->quality & 0x03) * 8) + (obj->x - obj->x / 8 * 8),
                     obj->y / 8 * 8 * 4 + ((obj->quality >> 2 & 0x03) * 8) + (obj->y - obj->y / 8 * 8),
                     obj->z-1);
@@ -217,5 +263,19 @@ bool U6UseCode::use_lever(Obj *obj)
  
  toggle_frame(obj);
  
+ scroll->display_string("\nswitch the lever, you hear a noise.\n");
+ 
+ return true;
+}
+
+bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
+{
+ scroll->display_string("\n");
+ scroll->display_string(obj_manager->get_obj_name(obj));
+ if(lit)
+   scroll->display_string(" is lit.\n");
+ else
+   scroll->display_string(" is doused.\n");
+
  return true;
 }

@@ -32,9 +32,11 @@
 
 //object numbers
 
+#define OBJ_U6_KEY             64
 #define OBJ_U6_CHEST           98
 #define OBJ_U6_CANDLE         122
 #define OBJ_U6_PICTURE        143
+#define OBJ_U6_CANDELABRA     145
 #define OBJ_U6_BOOK           151
 #define OBJ_U6_SCROLL         152
 #define OBJ_U6_FIREPLACE      164
@@ -51,6 +53,12 @@
 #define OBJ_U6_LEVER          268
 #define OBJ_U6_V_PASSTHROUGH  278
 #define OBJ_U6_H_PASSTHROUGH  280
+
+#define OBJ_U6_OAKEN_DOOR     297
+#define OBJ_U6_WINDOWED_DOOR  298
+#define OBJ_U6_CEDAR_DOOR     299
+#define OBJ_U6_STEEL_DOOR     300
+
 #define OBJ_U6_DOORWAY        301
 #define OBJ_U6_LADDER         305
 #define OBJ_U6_HOLE           308
@@ -72,11 +80,13 @@ class U6UseCode: public UseCode
  
  protected:
  
+ bool use_door(Obj *obj);
  bool use_ladder(Obj *obj);
  bool use_container(Obj *obj);
  bool use_passthrough(Obj *obj);
  bool use_lever(Obj *obj);
  
+ bool use_firedevice_message(Obj *obj, bool lit);
 };
 
 #endif /* __U6UseCode_h__ */
