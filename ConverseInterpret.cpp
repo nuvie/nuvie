@@ -488,12 +488,8 @@ void ConverseInterpret::op(stack<converse_value> &i)
                 // get name from party information
                 if(player->get_party()->contains_actor(v[0]))
                 {
-                    printf("PARTY HAS ACTOR %d!\n", v[0]);
                     v[0] = player->get_party()->get_member_num(v[0]);
-                    printf("MEMBER NUM IS %d!\n", v[0]);
                     set_ystr(player->get_party()->get_actor_name(v[0]));
-                    printf("NAME IS \"%s\"\n", player->get_party()->get_actor_name(v[0]));
-                    printf("SO YSTRING IS \"%s\"\n", get_ystr());
                 }
                 else
                     set_ystr(converse->npc_name(v[0])); // read from script
