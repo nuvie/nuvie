@@ -1,3 +1,7 @@
+2003-11-20  Eric Fry <efry@users.sourceforge.net>
+	* Fixed avatar portrait. It was out by 1. Thanks to Pieter Luteijn for
+	  spotting that one. [ 845094 ]
+
 2003-11-18  Eric Fry <efry@users.sourceforge.net>
 	* More code cleaning.
 

@@ -46,7 +46,8 @@ bool Portrait::init()
  objlist.seek(0x1c72);
  
  avatar_portrait_num = objlist.read1(); //read in the avatar portrait number from objlist.
- 
+ if(avatar_portrait_num > 0)
+   avatar_portrait_num--;
  
  config->pathFromValue("config/ultima6/gamedir","portrait.a",filename);
  if(portrait_a.open(filename,4) == false)
