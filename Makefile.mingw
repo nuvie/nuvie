@@ -2,21 +2,20 @@
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 6 installed
-U6PATH=C:/UC/Ultima6
+U6PATH=C:/Ultima6
 
 # Base of the nuvie source
 SRC=.
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/conf -I$(SRC)/files \
 	-I$(SRC)/misc -I$(SRC)/screen -I$(SRC)/tools $(SDL_CFLAGS)
-CXXFLAGS=-g3
-CXX=g++
+CXXFLAGS=-O2
 
-LFLAGS=
+LFLAGS=-mwindows
 LIBS=-lmingw32 $(SDL_LIBS)
 
 CONF_OBJS=conf/Configuration.o conf/XMLNode.o conf/XMLTree.o 
@@ -35,9 +34,22 @@ NUVIE_OBJS=$(CONF_OBJS) $(FILES_OBJS) $(MISC_OBJS) $(SCREEN_OBJS) \
 nuvie.exe: $(NUVIE_OBJS)
 	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
+U6DECOMP_OBJS=tools/dict.o tools/lzw.o tools/stack.o
+
+u6decomp.exe: $(U6DECOMP_OBJS)
+	$(CC) -o $@ $+
 clean:
-	rm -f $(NUVIE_OBJS)
+	rm -f $(NUVIE_OBJS) nuvie.exe $(U6DECOMP_OBJS) u6decomp.exe
 
 install: all
 	mkdir -p $(U6PATH)
-	cp nuvie.exe $(U6PATH)
+	strip nuvie.exe -o $(U6PATH)/nuvie.exe
+
+tools: u6decomp.exe
+	mkdir -p $(U6PATH)/tools
+	strip u6decomp.exe -o $(U6PATH)/tools/u6decomp.exe
+
+dist: install tools
+	cp SDL/README-SDL.txt $(U6PATH)
+	cp SDL/lib/SDL.dll $(U6PATH)
+
