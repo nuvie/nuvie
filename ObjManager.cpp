@@ -305,11 +305,9 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
  return NULL;
 }
 
-bool ObjManager::use_obj(uint16 x, uint16 y, uint8 level)
+bool ObjManager::use_obj(Obj *obj)
 {
- Obj *obj;
- 
- obj = get_obj(x,y,level);
+
  if(obj == NULL)
    return false;
 
@@ -320,31 +318,19 @@ bool ObjManager::use_obj(uint16 x, uint16 y, uint8 level)
     else
       obj->frame_n -= 4;
    }
-   
- if(obj->obj_n == OBJ_U6_LADDER)
-  {
-   printf("Use: ladder\n");
-   
-  }
  
-  if(obj->obj_n == OBJ_U6_CHEST)
-  {
-   printf("Use: chest\n");
-   if(obj->frame_n > 0)
-     obj->frame_n--;
-   else
-     obj->frame_n = 1;   
-  }
-
- if(obj->obj_n == OBJ_U6_CANDLE)
- {
-   if(obj->frame_n > 0)
-     obj->frame_n--;
-   else
-     obj->frame_n = 1;
- }
-
-
+  switch(obj->obj_n)
+   {
+    case OBJ_U6_SECRET_DOOR :
+    case OBJ_U6_CHEST :
+    case OBJ_U6_CANDLE : 
+                         if(obj->frame_n > 0)
+                           obj->frame_n--;
+                         else
+                           obj->frame_n = 1;
+                         break;
+   }
+ 
   if(obj->obj_n == OBJ_U6_V_PASSTHROUGH)
  {
    if(obj->frame_n < 2)

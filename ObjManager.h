@@ -48,6 +48,7 @@
 #define OBJ_U6_H_PASSTHROUGH  280
 #define OBJ_U6_LADDER         305
 #define OBJ_U6_SIGN           332
+#define OBJ_U6_SECRET_DOOR    334
 
 typedef struct
 {
@@ -98,7 +99,7 @@ class ObjManager
  
  uint16 get_obj_tile_num(uint16 obj_num);
 
- bool use_obj(uint16 x, uint16 y, uint8 level);
+ bool use_obj(Obj *obj);
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
  char *look_obj(uint16 x, uint16 y, uint8 level);
  

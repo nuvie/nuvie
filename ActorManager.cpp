@@ -25,12 +25,11 @@
 
 
 
-ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om)
+ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm)
 {
  config = cfg;
  map = m;
  tile_manager = tm;
- obj_manager = om;
  
  player_actor = 1;
 }

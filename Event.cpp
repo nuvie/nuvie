@@ -121,12 +121,37 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
 
 bool Event::use(sint16 rel_x, sint16 rel_y)
 {
+ Obj *obj;
  uint16 x,y;
  uint8 level;
  
  player->get_location(&x,&y,&level);
  
- obj_manager->use_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
+
+ 
+ obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
+ if(obj && obj->obj_n == OBJ_U6_LADDER)
+   {
+    if(obj->frame_n == 0) // DOWN
+      {
+       if(level == 0)
+          player->move(obj->x/4+3,obj->y/4-3,level+1);
+       else
+          player->move(obj->x,obj->y,level+1);
+      }
+    else //UP
+      {
+       if(level == 1)
+         player->move(obj->x*4-9,obj->y*4+15,level-1);
+       else
+         player->move(obj->x,obj->y,level-1);
+      }
+   }
+ else
+  {   
+   obj_manager->use_obj(obj);
+  }
+
  map_window->set_show_use_cursor(false);
  map_window->updateBlacking();
  mode = MOVE_MODE;

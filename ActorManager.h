@@ -37,14 +37,14 @@ class ActorManager
 {
  Configuration *config;
  TileManager *tile_manager;
- ObjManager *obj_manager;
+
  Map *map;
  Actor *actors[256];
  uint8 player_actor;
  
  public:
   
- ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om);
+ ActorManager(Configuration *cfg, Map *m, TileManager *tm);
  ~ActorManager();
  
  bool loadActors();

@@ -66,7 +66,7 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  game_map = new Map(config);
  game_map->loadMap(tile_manager, obj_manager);
  
- actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager);
+ actor_manager = new ActorManager(config, game_map, tile_manager);
  actor_manager->loadActors();
   
  map_window = new MapWindow(config);
