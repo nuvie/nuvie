@@ -82,7 +82,7 @@ Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
 }
 
 
-/* Copy the NPC num's name from their conversation script. (0 = Avatar's Name)
+/* Copy the NPC num's name from their conversation script.
  * Returns the name as a non-modifiable string of 16 characters maximum.
  */
 const char *Converse::npc_name(uint8 num)
@@ -90,7 +90,7 @@ const char *Converse::npc_name(uint8 num)
     Uint32 c;
     convscript temp_script;
     unsigned char *s_pt;
-    if(num == 0)
+    if(num == 0 || num == 1)
         return(player->get_name());
 
     if(num != npc_num)
@@ -346,13 +346,12 @@ if(!args.empty() && !args[0].empty())
                     if((val_count(0) > 2) && get_val(0, 0) > get_val(0, 1))
                         ifcomp = true;
                     break;
-                case 0x83: // val1 < val2
+                case 0x83: // val1 < val2 ??
                     if((val_count(0) > 2) && get_val(0, 0) < get_val(0, 1))
                         ifcomp = true;
                     break;
-                case 0x84: // ?? val1 <= val2
-                    test_msg("-0x84:<=?-");
-                    if((val_count(0) > 2) && get_val(0, 0) <= get_val(0, 1))
+                case 0x84: // val1 < val2
+                    if((val_count(0) > 2) && get_val(0, 0) < get_val(0, 1))
                         ifcomp = true;
                     break;
                 case 0x85: // val1 != val2
@@ -452,7 +451,7 @@ if(!args.empty() && !args[0].empty())
                             heap[declared].val = 0;
                         }
                         break;
-                    case 0xdd: // ?? party-member-num to npcnum?
+                    case 0xdd: // id of party member val1(0=leader), val2=??
                     default:
                         print("\nError: Unknown assignment\n");
                         break;
@@ -467,8 +466,7 @@ if(!args.empty() && !args[0].empty())
             if(val_count(0) == 1)
             {
                 test_msg("-$Y = N-");
-//                ystr = npc_name(npc_num);
-                ystr = "!-NPCName-";
+                ystr = npc_name(npc_num);
             }
             // assignment of expression with two values and an operation
             else if(val_count(0) == 3)
@@ -478,14 +476,8 @@ if(!args.empty() && !args[0].empty())
                     case 0xdd: // party-num(from 0) to npcnum, or 0
                                // val2 does what?? (val1 is literal without)
                         test_msg("-$Y = NPC(PARTYIDX)??-");
-//FIXME:
-                        printf("P_SIZE: %d\n", heap[CONV_VAR_PARTYSIZE].val);
-                        printf("P_ID: %d\n", get_val(0, 0));
                         cnpc = player->get_party()->get_actor(get_val(0, 0));
-                        printf("npc: %d\n", cnpc ? cnpc->get_actor_num() : 0);
                         ystr = npc_name(cnpc ? cnpc->get_actor_num() : 0);
-                        printf("name: \"%s\"\n", ystr);
-//                        ystr = "!-NPCName-";
                         break;
                     default:
                         print("\nError: Unknown assignment\n");

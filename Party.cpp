@@ -145,12 +145,11 @@ bool Party::loadParty()
  
  
  objlist.seek(0xf00);
- 
  for(i=0;i<num_in_party;i++)
   {
    objlist.readToBuf((unsigned char *)member[i].name,14); // read in Player name.
   }
-  
+ objlist.seek(0xfe0);  
  for(i=0;i<num_in_party;i++)
   {
    actor_num = objlist.read1();
