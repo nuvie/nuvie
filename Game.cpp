@@ -37,11 +37,11 @@
 Game::Game(Configuration *cfg)
 {
  config = cfg;
- 
 }
 
 Game::~Game()
 {
+    delete converse;
 }
  
 bool Game::loadGame(Screen *s, uint8 game_type)
@@ -76,14 +76,15 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  player = new Player(config);
  player->init(actor_manager->get_actor(1),actor_manager, map_window);
  
- event = new Event(config);
- event->init(obj_manager, map_window, scroll, player);
- 
  map_window->set_windowSize(11,11);
  //map_window->move(0x12e,0x16b);
  map_window->centerMapOnActor(player->get_actor());
 
- 
+ converse = new Converse(config, CONV_U6);
+ converse->loadConv();
+
+ event = new Event(config);
+ event->init(obj_manager, map_window, scroll, player, converse);
  return true;
 }
 
@@ -121,8 +122,8 @@ void Game::drawBackground()
   
 void Game::play()
 {
- bool game_play = true;
- 
+  bool game_play = true;
+
   drawBackground();
 
   scroll->display_string(NULL);
@@ -133,17 +134,30 @@ void Game::play()
   
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
   
-	for( ; game_play ; ) 
-    {
+  for( ; game_play ; ) 
+   {
      game_play = event->update();
      palette->rotatePalette();
      tile_manager->update();
      actor_manager->updateActors();
      map_window->drawMap();
+
+     if(converse->running() && !converse->waiting())
+     {
+        converse->step();
+        if(converse->has_output())
+            scroll->display_string(converse->get_output());
+//        script has stopped itself:
+//        if(!converse->running())
+//            remove portrait [& name [& inventory display]]
+//        script has paused itself
+//        else if(converse->waiting())
+//            display newline + down arrow if msgscroll not already waiting
+     }
      scroll->updateScroll();
      //screen->update();
      event->wait();
-	  }
+   }
 
  return;
 }

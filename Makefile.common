@@ -33,6 +33,8 @@ nuvie_SOURCES = \
 	ActorManager.h \
 	Book.cpp \
 	Book.h \
+	Converse.cpp \
+	Converse.h \
 	Event.cpp \
 	Event.h \
 	Game.cpp \
