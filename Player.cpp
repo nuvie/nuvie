@@ -55,6 +55,11 @@ void Player::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
  actor->get_location(ret_x,ret_y,ret_level);
 }
 
+char *Player::get_name()
+{
+ return name;
+}
+
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
  if(rel_x < 0)
@@ -116,6 +121,10 @@ bool Player::loadObjlistData()
  if(objlist.open(filename,"rb") == false)
    return false;
 
+ objlist.seek(0xf00);
+ 
+ objlist.readToBuf((unsigned char *)name,14); // read in Player name. 
+ 
  objlist.seek(0x1bf9); // Player Karma.
 
  karma = objlist.read1();

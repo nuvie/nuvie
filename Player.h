@@ -41,6 +41,8 @@ class Player
  Actor *actor;
  ActorManager *actor_manager;
  
+ char name[14];
+ 
  uint8 karma;
  
  MapWindow *map_window;
@@ -53,6 +55,7 @@ class Player
  
  Actor *get_actor();
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
+ char *get_name();
  
  void moveRelative(sint16 rel_x, sint16 rel_y);
  void Player::move(sint16 new_x, sint16 new_y, uint8 new_level);
