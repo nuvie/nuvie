@@ -985,7 +985,7 @@ GUI_status MapWindow::Idle(void)
         walk_start_delay -= ((sint32)(walk_start_delay - time_passed) > 0) ? time_passed : walk_start_delay;
         if(walk_start_delay)
             return(GUI_PASS);
-        if(SDL_GetMouseState(&mx, &my) & SDL_BUTTON(1))
+        if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(1) | SDL_BUTTON(3)))
             player_walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
                                         (uint32)my / screen->get_scale_factor());
     }
@@ -1070,10 +1070,7 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 {
 	Tile	*tile;
 
-//	if(dragging || (x == -1 || y == -1))
-//		screen->set_pointer(0);
-//	else
-//		screen->set_pointer(1);
+	update_mouse_cursor((uint32)x, (uint32)y);
 
 	//	printf ("MapWindow::MouseMotion\n");
     
@@ -1109,7 +1106,7 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 			return(GUI_PASS);
 		// use real mouse coords not -1,-1
 		state = SDL_GetMouseState(&x, &y);
-		if(state & SDL_BUTTON(1))
+		if(state & (SDL_BUTTON(1) | SDL_BUTTON(3)))
 			player_walk_to_mouse_cursor((uint32)x / screen->get_scale_factor(),
                                                     (uint32)y / screen->get_scale_factor());
         }
@@ -1356,3 +1353,117 @@ void MapWindow::player_multiuse(uint16 wx, uint16 wy)
     }
 }
 
+
+/* Set mouse pointer to a movement-arrow for walking, or a crosshair.
+ */
+void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
+{
+    Game *game = Game::get_game();
+    Event *event = game->get_event();
+    int wx, wy;
+    sint16 rel_x, rel_y;
+    mouseToWorldCoords((int)mx, (int)my, wx, wy);
+    get_movement_direction((uint16)wx, (uint16)wy, rel_x, rel_y);
+
+    if(event->get_mode() != MOVE_MODE)
+        return;
+    if(dragging || wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1) || wy == (cur_y+win_height-1))
+        game->set_mouse_pointer(0); // arrow
+    else if(rel_x == 0 && rel_y == 0)
+        game->set_mouse_pointer(1); // crosshairs
+    else if(rel_x == 0 && rel_y == -1)
+        game->set_mouse_pointer(2);
+    else if(rel_x == 1 && rel_y == -1)
+        game->set_mouse_pointer(3);
+    else if(rel_x == 1 && rel_y == 0)
+        game->set_mouse_pointer(4);
+    else if(rel_x == 1 && rel_y == 1)
+        game->set_mouse_pointer(5);
+    else if(rel_x == 0 && rel_y == 1)
+        game->set_mouse_pointer(6);
+    else if(rel_x == -1 && rel_y == 1)
+        game->set_mouse_pointer(7);
+    else if(rel_x == -1 && rel_y == 0)
+        game->set_mouse_pointer(8);
+    else if(rel_x == -1 && rel_y == -1)
+        game->set_mouse_pointer(9);
+}
+
+
+/* Get relative movement direction from the center of the MapWindow to the
+ * world coordinates wx,wy, for walking with the mouse, etc.
+ */
+void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y)
+{
+    uint16 cent_x = cur_x + (win_width / 2),
+           cent_y = cur_y + (win_height / 2);
+    uint16 dist_x = abs(wx - cent_x), dist_y = abs(wy - cent_y);
+    uint16 diff = abs(dist_x - dist_y);
+
+    rel_x = rel_y = 0;
+    if(wx == cent_x && wy == cent_y) // nowhere
+        return;
+    if(wx == cent_x) // up or down
+    {
+        rel_x = 0;
+        rel_y = (wy < cent_y) ? -1 : 1;
+    }
+    else if(wy == cent_y) // left or right
+    {
+        rel_x = (wx < cent_x) ? -1 : 1;
+        rel_y = 0;
+    }
+    else if(wx > cent_x && wy < cent_y)
+    {
+        if(diff < 2) // up right
+        {
+            rel_x = 1; rel_y = -1;
+        }
+        else if(dist_x < dist_y)  // up or right
+            rel_y = -1;
+        else
+            rel_x = 1;
+    }
+    else if(wx > cent_x && wy > cent_y)
+    {
+        if(diff < 2) // down right
+        {
+            rel_x = 1; rel_y = 1;
+        }
+        else if(dist_x < dist_y) // down or right
+            rel_y = 1;
+        else
+            rel_x = 1;
+    }
+    else if(wx < cent_x && wy > cent_y)
+    {
+        if(diff < 2) // down left
+        {
+            rel_x = -1; rel_y = 1;
+        }
+        else if(dist_x < dist_y) // down or left
+            rel_y = 1;
+        else
+            rel_x = -1;
+    }
+    else if(wx < cent_x && wy < cent_y)
+    {
+        if(diff < 2) // up left
+        {
+            rel_x = -1; rel_y = -1;
+        }
+        else if(dist_x < dist_y) // up or left
+            rel_y = -1;
+        else
+            rel_x = -1;
+    }
+}
+
+
+/* Revert mouse cursor to normal arrow.
+ */
+GUI_status MapWindow::MouseLeave(Uint8 state)
+{
+    Game::get_game()->set_mouse_pointer(0);
+    return(GUI_PASS);
+}

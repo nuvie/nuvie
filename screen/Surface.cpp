@@ -533,3 +533,8 @@ SDL_Surface *RenderSurface::get_sdl_surface()
 
  return sdl_surface;
 }
+
+const unsigned char *RenderSurface::get_pixels()
+{
+    return((const unsigned char *)pixels);
+}

@@ -80,6 +80,9 @@ protected:
 	unsigned int last_mouseup_x, last_mouseup_y;
 	unsigned int last_mousedown_x, last_mousedown_y;
 	int last_mouseup_button, last_mousedown_button;
+
+	bool mouse_over; // toggled by GUI; not guaranteed to be accurate
+
 public:
 
 	/* The area covered by the widget */
@@ -155,6 +158,8 @@ public:
 	virtual GUI_status MouseUp(int x, int y, int button);
 	virtual GUI_status MouseMotion(int x, int y, Uint8 state);
 	// SB-X
+	virtual GUI_status MouseEnter(Uint8 state);
+	virtual GUI_status MouseLeave(Uint8 state);
 	virtual GUI_status MouseClick(int x, int y, int button);
 	virtual GUI_status MouseDouble(int x, int y, int button);
 	GUI_status MouseIdle();

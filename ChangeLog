@@ -1,3 +1,25 @@
+2004-02-21  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Eggs no longer try to line up actors of the same type (they might be
+	  grouped later by alignment), but try to toss actors within a smaller
+	  area. The first actor out always stays at the egg location. The hatch
+	  probability is checked for each new actor.
+	* Game cursors for U6 are now loaded and displayed. The system cursor is
+	  used if this isn't possible. The main functions (such as
+	  set_mouse_pointer()) are in Game for now. (removed from screen)
+	  Using the mouse pointers in various places (mostly MapWindow).
+	* Mouse-walking can be done with left or right mouse buttons (like U6).
+	* UseCode: Moved usecode objects to a static array or U6ObjectTypes.
+	  This is easier to use and less prone to error. Usecode is referenced
+	  by a U6ObjectType pointer instead of index number. The new type has
+	  a properties setting we can use for containers.
+	  Various has_*code() checks changed to a single has_usecode().
+	  Added Game reference to ctors, because game is used frequently in
+	  usecode functions.
+	* GUI_Widget: MouseEnter/MouseLeave methods called when mouse crosses
+	  boundary of a widget (not checking its visible state yet).
+	* New utility methods in U6misc: print_bool, print_flags, and SDL_Rect
+	  tests.
+
 2004-02-19  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* sound/SongAdPlug.cpp: fixed music slowdown
 

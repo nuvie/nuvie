@@ -39,6 +39,7 @@ class MsgScroll;
 class Player;
 class Party;
 class Converse;
+class Cursor;
 class GameClock;
 class ViewManager;
 class Portrait;
@@ -83,7 +84,8 @@ class Game
  Portrait *portrait;
  UseCode *usecode;
 
- 
+ Cursor *cursor;
+
  Event *event;
  
  GUI *gui;
@@ -96,13 +98,16 @@ class Game
  ~Game();
  
  bool loadGame(Screen *screen, uint8 type);
- 
+ void init_cursor();
+
  void play();
 
  GamePauseState get_pause_flags()            { return(pause_flags); }
  void set_pause_flags(GamePauseState state)  { pause_flags = state; }
  void unpause()    { pause_flags = PAUSE_UNPAUSED; }
  void pause_all()  { pause_flags = PAUSE_ALL; }
+
+ bool set_mouse_pointer(uint8 ptr_num);
 
  /* Pass back instance of Game classes... and why not? */
  static Game *get_game()           { return(game); }
@@ -128,6 +133,7 @@ class Game
  Event *get_event()                { return(event); }
  GUI *get_gui()                    { return(gui); }
  SoundManager *get_sound_manager() { return(sound_manager); } //^^
+ Cursor *get_cursor()              { return(cursor); }
 
  protected:
  

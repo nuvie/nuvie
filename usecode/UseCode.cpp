@@ -27,8 +27,9 @@
 #include "MsgScroll.h"
 #include "UseCode.h"
 
-UseCode::UseCode(Configuration *cfg)
+UseCode::UseCode(Game *g, Configuration *cfg)
 {
+ game = g;
  config = cfg;
 
  int_ref = 0;
@@ -48,7 +49,10 @@ bool UseCode::init(ObjManager *om, Map *m, Player *p, MsgScroll *ms)
  map = m;
  player = p;
  scroll = ms;
- 
+
+ actor_manager = game->get_actor_manager();
+ party = player->get_party();
+
  return true;
 }
 

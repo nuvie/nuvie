@@ -40,7 +40,9 @@
 #include "MapWindow.h"
 #include "TimedEvent.h"
 #include "EggManager.h"
+
 #include "U6UseCode.h"
+#include "U6ObjectTypes.h"
 
 // numbered by entrance quality, "" = no name
 static const char *u6_dungeons[21] =
@@ -99,148 +101,12 @@ static const struct { uint16 x; uint16 y; uint8 z; } red_moongate_tbl[] =
  };
 
 
-U6UseCode::U6UseCode(Configuration *cfg) : UseCode(cfg)
+U6UseCode::U6UseCode(Game *g, Configuration *cfg) : UseCode(g, cfg)
 {
-    init_objects();
 }
 
 U6UseCode::~U6UseCode()
 {
-    free(uc_objects);
-}
-
-
-/* Create and fill usecode definition list.
- */
-void U6UseCode::init_objects()
-{
-    uc_objects = NULL;
-    uc_objects_size = 0; uc_object_count = 0;
-
-// (object,frame,distance to trigger,event(s),function)
-    add_usecode(OBJ_U6_EGG,0,0,USE_EVENT_USE/*|USE_EVENT_LOAD*/,&U6UseCode::use_egg);
-
-    add_usecode(OBJ_U6_OAKEN_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
-    add_usecode(OBJ_U6_WINDOWED_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_door);
-    add_usecode(OBJ_U6_CEDAR_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
-    add_usecode(OBJ_U6_STEEL_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
-    add_usecode(OBJ_U6_KEY,          255,0,USE_EVENT_USE,&U6UseCode::use_key);
-
-    add_usecode(OBJ_U6_SIGN,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    add_usecode(OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    add_usecode(OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    add_usecode(OBJ_U6_PICTURE,   255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    add_usecode(OBJ_U6_SIGN_ARROW,255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    add_usecode(OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    add_usecode(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    add_usecode(OBJ_U6_CODEX,       0,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-
-    add_usecode(OBJ_U6_CRATE,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_CRATE,      255,0,USE_EVENT_USE,   &U6UseCode::use_container);
-    add_usecode(OBJ_U6_BARREL,       0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_BARREL,     255,0,USE_EVENT_USE,   &U6UseCode::use_container);
-    add_usecode(OBJ_U6_CHEST,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_CHEST,      255,0,USE_EVENT_USE,   &U6UseCode::use_container);
-    add_usecode(OBJ_U6_SECRET_DOOR,255,0,USE_EVENT_USE|USE_EVENT_SEARCH,&U6UseCode::use_secret_door);
-    add_usecode(OBJ_U6_BAG,        255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_DRAWER,     255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_STONE_LION,   1,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_PLANT,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_GRAVE,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_DEAD_ANIMAL,255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_DEAD_BODY,  255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_DEAD_CYCLOPS, 0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_DEAD_GARGOYLE,0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_REMAINS,    255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-
-    add_usecode(OBJ_U6_V_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough);
-    add_usecode(OBJ_U6_H_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough);
-
-    add_usecode(OBJ_U6_LEVER, 255,0,USE_EVENT_USE,&U6UseCode::use_switch);
-    add_usecode(OBJ_U6_SWITCH,255,0,USE_EVENT_USE,&U6UseCode::use_switch);
-
-    add_usecode(OBJ_U6_CHURN, 255,0,USE_EVENT_USE,&U6UseCode::use_churn);
-
-    add_usecode(OBJ_U6_CRANK, 255,0,USE_EVENT_USE,&U6UseCode::use_crank);
-
-    add_usecode(OBJ_U6_FIREPLACE, 255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
-    add_usecode(OBJ_U6_CANDLE,    255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
-    add_usecode(OBJ_U6_CANDELABRA,255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
-    add_usecode(OBJ_U6_BRAZIER,   0,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
-    add_usecode(OBJ_U6_BRAZIER,   1,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
-
-    add_usecode(OBJ_U6_ORB_OF_THE_MOONS,255,0,USE_EVENT_USE,&U6UseCode::use_orb);
-    add_usecode(OBJ_U6_RED_GATE,  1,0,USE_EVENT_PASS,&U6UseCode::enter_red_moongate); //FIX we only want to go through frame_n 1
-    add_usecode(OBJ_U6_LADDER,255,0,USE_EVENT_USE,&U6UseCode::use_ladder);
-    add_usecode(OBJ_U6_CAVE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
-    add_usecode(OBJ_U6_HOLE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
-
-    add_usecode(OBJ_U6_CLOCK,     255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
-    add_usecode(OBJ_U6_SUNDIAL,   255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
-    add_usecode(OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
-    add_usecode(OBJ_U6_WELL,      255,0,USE_EVENT_USE,&U6UseCode::use_well);
-    add_usecode(OBJ_U6_POWDER_KEG,255,0,USE_EVENT_USE|USE_EVENT_TIMED,&U6UseCode::use_powder_keg);
-    
-    add_usecode(OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive);
-	
-    add_usecode(OBJ_U6_POTION,    255,0,USE_EVENT_USE,&U6UseCode::use_potion);
-    add_usecode(OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_WINE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_MEAD,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_ALE,         0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_BREAD,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_MEAT_PORTION,0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_ROLLS,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_CAKE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_CHEESE,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_RIBS,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_MEAT,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_GRAPES,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_HAM,         0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_GARLIC,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_SNAKE_VENOM, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_HORSE_CHOPS, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_JAR_OF_HONEY,0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
-
-    add_usecode(OBJ_U6_COW, 255, 0, USE_EVENT_USE,&U6UseCode::use_cow);
-    add_usecode(OBJ_U6_HORSE, 255,0,USE_EVENT_USE,&U6UseCode::use_horse);
-    add_usecode(OBJ_U6_HORSE_WITH_RIDER, 255,0,USE_EVENT_USE,&U6UseCode::use_horse);
-    
-    add_usecode(OBJ_U6_SHIP, 255,0,USE_EVENT_USE,&U6UseCode::use_boat);
-    add_usecode(OBJ_U6_SKIFF,255,0,USE_EVENT_USE,&U6UseCode::use_boat);
-    add_usecode(OBJ_U6_RAFT,   0,0,USE_EVENT_USE,&U6UseCode::use_boat);
-//    add_usecode(OBJ_U6_BALLOON_BASKET,0,0,USE_EVENT_USE,&U6UseCode::use_balloon);
-    
-    add_usecode(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
-
-    add_usecode(OBJ_U6_VORTEX_CUBE, 0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube);
-    add_usecode(OBJ_U6_PULL_CHAIN,  0,0,USE_EVENT_USE,&U6UseCode::use_bell);
-    add_usecode(OBJ_U6_BELL,      255,0,USE_EVENT_USE,&U6UseCode::use_bell);
-    add_usecode(OBJ_U6_SHOVEL,      0,0,USE_EVENT_USE,&U6UseCode::use_shovel);
-    add_usecode(OBJ_U6_FOUNTAIN,    0,0,USE_EVENT_USE,&U6UseCode::use_fountain);
-    add_usecode(OBJ_U6_RUBBER_DUCKY,0,0,USE_EVENT_USE,&U6UseCode::use_rubber_ducky);
-    add_usecode(OBJ_U6_CANNON,    255,0,USE_EVENT_USE|USE_EVENT_MOVE,&U6UseCode::use_cannon);
-
-    add_usecode(OBJ_U6_PANPIPES,   0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
-    add_usecode(OBJ_U6_HARPSICHORD,0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
-    add_usecode(OBJ_U6_HARP,       0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
-    add_usecode(OBJ_U6_LUTE,       0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
-    add_usecode(OBJ_U6_XYLOPHONE,  0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
-}
-
-
-/* Add usecode object to the list.
- */
-void U6UseCode::add_usecode(uint16 obj, uint8 frame, uint8 dist, uint8 ev,
-                            bool (U6UseCode::*func)(Obj *, uint8))
-{
-    if((uc_object_count + 1) >= uc_objects_size)
-    {
-        uc_objects_size += 8;
-        uc_objects = (uc_obj *)realloc(uc_objects, uc_objects_size*sizeof(uc_obj));
-    }
-    uc_objects[uc_object_count++].set(obj, frame, dist, ev, func);
 }
 
 
@@ -259,57 +125,12 @@ bool U6UseCode::is_food(Obj *obj)
 }
 
 
-/* Is there USE usecode for an object?
+/* Is there `ev' usecode for an object?
  */
-bool U6UseCode::has_usecode(Obj *obj)
+bool U6UseCode::has_usecode(Obj *obj, uint16 ev)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_USE);
-    if(uc < 0)
-        return(false);
-    return(true);
-}
-
-
-/* Is there LOOK usecode for an object?
- */
-bool U6UseCode::has_lookcode(Obj *obj)
-{
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_LOOK);
-    if(uc < 0)
-        return(false);
-    return(true);
-}
-
-
-/* Is there PASS usecode for an object? This doesn't check to see if an object
- * can be passed. (call the usecode for that)
- */
-bool U6UseCode::has_passcode(Obj *obj)
-{
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_PASS);
-    if(uc < 0)
-        return(false);
-    return(true);
-}
-
-
-/* Is there MOVE usecode for an object? (not "can object be moved")
- */
-bool U6UseCode::has_movecode(Obj *obj)
-{
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_MOVE);
-    if(uc < 0)
-        return(false);
-    return(true);
-}
-
-
-/* Is there LOAD usecode for an object?
- */
-bool U6UseCode::has_loadcode(Obj *obj)
-{
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_LOAD);
-    if(uc < 0)
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, ev);
+    if(!type)
         return(false);
     return(true);
 }
@@ -320,11 +141,9 @@ bool U6UseCode::has_loadcode(Obj *obj)
  */
 bool U6UseCode::use_obj(Obj *obj, Actor *actor)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_USE);
-    if(uc < 0)
-        return(false);
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_USE);
     set_itemref(actor, actor2_ref);
-    return(uc_event(uc, USE_EVENT_USE, obj));
+    return(uc_event(type, USE_EVENT_USE, obj));
 }
 
 
@@ -333,11 +152,9 @@ bool U6UseCode::use_obj(Obj *obj, Actor *actor)
  */
 bool U6UseCode::look_obj(Obj *obj, Actor *actor)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_LOOK);
-    if(uc < 0)
-        return(false);
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_LOOK);
     set_itemref(actor);
-    return(uc_event(uc, USE_EVENT_LOOK, obj));
+    return(uc_event(type, USE_EVENT_LOOK, obj));
 }
 
 
@@ -346,11 +163,9 @@ bool U6UseCode::look_obj(Obj *obj, Actor *actor)
  */
 bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_PASS);
-    if(uc < 0)
-        return(false);
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_PASS);
     set_itemref(actor);
-    return(uc_event(uc, USE_EVENT_PASS, obj));
+    return(uc_event(type, USE_EVENT_PASS, obj));
 }
 
 
@@ -359,11 +174,9 @@ bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
  */
 bool U6UseCode::search_obj(Obj *obj, Actor *actor)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_SEARCH);
-    if(uc < 0)
-        return(false);
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_SEARCH);
     set_itemref(actor);
-    return(uc_event(uc, USE_EVENT_SEARCH, obj));
+    return(uc_event(type, USE_EVENT_SEARCH, obj));
 }
 
 
@@ -377,10 +190,8 @@ void U6UseCode::timed_callback(void *obj_data)
         fprintf(stderr, "UseCode: timer activated for NULL object\n");
         return;
     }
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_TIMED);
-    if(uc < 0)
-        return;
-    uc_event(uc, USE_EVENT_TIMED, obj);
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_TIMED);
+    uc_event(type, USE_EVENT_TIMED, obj);
 }
 
 
@@ -389,14 +200,12 @@ void U6UseCode::timed_callback(void *obj_data)
  */
 bool U6UseCode::move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_MOVE);
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_MOVE);
     static MapCoord dir;
-    if(uc < 0)
-        return(false);
     dir.sx = rel_x;
     dir.sy = rel_y;
     set_itemref(&dir);
-    return(uc_event(uc, USE_EVENT_MOVE, obj));
+    return(uc_event(type, USE_EVENT_MOVE, obj));
 }
 
 
@@ -405,38 +214,37 @@ bool U6UseCode::move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
  */
 bool U6UseCode::load_obj(Obj *obj)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_LOAD);
-    if(uc < 0)
-        return(false);
-    return(uc_event(uc, USE_EVENT_LOAD, obj));
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_LOAD);
+    return(uc_event(type, USE_EVENT_LOAD, obj));
 }
 
 
-/* Return index of usecode definition in list for object N:F, or -1 if none.
+/* Return pointer to object-type in list for object N:F, or NULL if none.
  */
-sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f, uint8 ev)
+inline const U6ObjectType *U6UseCode::get_object_type(uint16 n, uint8 f, uint8 ev)
 {
-    for(uint32 o = 0; o < uc_object_count; o++)
-        if(uc_objects[o].obj_n == n && (uc_objects[o].frame_n == 0xFF
-                                        || uc_objects[o].frame_n == f)
-           && (uc_objects[o].trigger & ev))
-            return(o);
-    return(-1);
-}
-
-
-/* Call usecode function `uco' from uc object list, with event `ev', for `obj'.
- * The meaning of the return value is different for each event, but false will
- * also be returned if `uco' isn't a valid index. (check that it is valid first)
- */
-bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
-{
-    if(uco < 0 || uco >= uc_object_count)
-        return(false);
-//printf("__pfn=%x\n", uc_objects[uco].ucf.__pfn_or_delta2.__pfn);
-    if(uc_objects[uco].trigger & ev)
+    const U6ObjectType *type = U6ObjectTypes;
+    while(type->obj_n != OBJ_U6_NOTHING)
     {
-//        printf("Usecode #%02d (%d:%d), event %d (%s)\n", uco, obj->obj_n,
+        if(type->obj_n == n && (type->frame_n == 0xFF || type->frame_n == f)
+           && ((type->trigger & ev) || ev == 0))
+            return(type);
+        ++type;
+    }
+    return(NULL);
+}
+
+
+/* Call usecode function of the U6ObjectType, with event `ev', for `obj'.
+ * The meaning of the return value is different for each event.
+ * Returns false if the type is invalid or doesn't respond to the event.
+ */
+bool U6UseCode::uc_event(const U6ObjectType *type, uint8 ev, Obj *obj)
+{
+    if(!type || type->obj_n == OBJ_U6_NOTHING)
+        return(false);
+    if(type->trigger & ev)
+    {
         printf("Object %d:%d, event %s\n", obj->obj_n, obj->frame_n,
                                (ev == USE_EVENT_USE) ? "USE"
                              : (ev == USE_EVENT_LOOK) ? "LOOK"
@@ -446,7 +254,7 @@ bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
                              : (ev == USE_EVENT_MOVE) ? "MOVE"
                              : (ev == USE_EVENT_LOAD) ? "LOAD"
                              : "???");
-        bool ucret = (this->*uc_objects[uco].ucf)(obj, ev);
+        bool ucret = (this->*type->usefunc)(obj, ev);
         int_ref = 0;
         actor_ref = NULL; // clear references
         actor2_ref = NULL;
@@ -514,7 +322,6 @@ bool U6UseCode::use_door(Obj *obj, uint8 ev)
 
 bool U6UseCode::use_ladder(Obj *obj, uint8 ev)
 {
- Party *party = Game::get_game()->get_party();
  uint16 x = obj->x, y = obj->y;
  uint8 z;
  if(!player->in_party_mode())
@@ -928,11 +735,8 @@ bool U6UseCode::use_orb(Obj *obj, uint8 ev)
  uint8 px,py,z,oz;
  uint8 position;
  Actor *lord_british;
- ActorManager *actor_manager;
  
  player->get_actor()->get_location(&x,&y,&z);
- 
- actor_manager = Game::get_game()->get_actor_manager();
  lord_british = actor_manager->get_actor(U6_LORD_BRITISH_ACTOR_NUM);
  
  // The player must ask Lord British about the orb before it can be used.
@@ -946,7 +750,7 @@ bool U6UseCode::use_orb(Obj *obj, uint8 ev)
 
  if(!mapcoord_ref)
   {
-   Game::get_game()->get_event()->freeselect_mode(obj, "Where: ");
+   game->get_event()->freeselect_mode(obj, "Where: ");
    return true;
   }
 
@@ -1027,7 +831,7 @@ bool U6UseCode::use_shovel(Obj *obj, uint8 ev)
 //            return(false);
 //        }
         scroll->display_string("Telekinesis!\n");
-        Game::get_game()->get_event()->useselect_mode(obj, "Direction: ");
+        game->get_event()->useselect_mode(obj, "Direction: ");
         return(true);
     }
     dig_at = *mapcoord_ref;
@@ -1057,7 +861,7 @@ bool U6UseCode::use_shovel(Obj *obj, uint8 ev)
         return(false); // ??
     }
     // FIX: how are dig-able tiles determined?
-    if(!Game::get_game()->get_map_window()->in_dungeon_level())
+    if(!game->get_map_window()->in_dungeon_level())
     {
         scroll->display_string("No effect\n");
         return(false); // ??
@@ -1170,7 +974,6 @@ bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
  */
 bool U6UseCode::use_food(Obj *obj, uint8 ev)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     if(ev == USE_EVENT_USE)
     {
         if(actor_ref == player->get_actor())
@@ -1201,16 +1004,15 @@ bool U6UseCode::use_food(Obj *obj, uint8 ev)
  */
 bool U6UseCode::use_potion(Obj *obj, uint8 ev)
 {
-    ActorManager *am = Game::get_game()->get_actor_manager();
+    ActorManager *am = actor_manager;
     if(ev == USE_EVENT_USE)
     {
         if(!actor2_ref && !obj_ref)
-            Game::get_game()->get_event()->freeselect_mode(obj, "On whom? ");
+            game->get_event()->freeselect_mode(obj, "On whom? ");
         else if(!actor2_ref)
             scroll->display_string("nobody\n");
         else
         {
-            Party *party = Game::get_game()->get_party();
             sint8 party_num = party->get_member_num(actor2_ref);
             scroll->display_string(party_num >= 0 ? party->get_actor_name(party_num)
                                    : am->look_actor(actor2_ref));
@@ -1264,7 +1066,7 @@ bool U6UseCode::use_key(Obj *obj, uint8 ev)
     if(ev == USE_EVENT_USE)
     {
         if(!obj_ref && !actor2_ref)
-            Game::get_game()->get_event()->useselect_mode(obj, "On ");
+            game->get_event()->useselect_mode(obj, "On ");
         else if(!obj_ref)
             scroll->display_string("nothing\n");
         else
@@ -1297,8 +1099,6 @@ bool U6UseCode::use_key(Obj *obj, uint8 ev)
  */
 bool U6UseCode::use_boat(Obj *obj, uint8 ev)
 {
- ActorManager *actor_manager = Game::get_game()->get_actor_manager();
- Party *party = Game::get_game()->get_party();
  Actor *ship_actor;
  uint16 lx, ly;
  uint8 lz;
@@ -1468,7 +1268,6 @@ bool U6UseCode::use_well(Obj *obj, uint8 ev)
 
 bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
 {
- Player *player = Game::get_game()->get_player();
  Actor *player_actor;
  Obj *bucket;
 
@@ -1505,8 +1304,7 @@ bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
 
 bool U6UseCode::use_churn(Obj *obj, uint8 ev)
 {
- ViewManager *view_manager = Game::get_game()->get_view_manager();
- Player *player = Game::get_game()->get_player();
+ ViewManager *view_manager = game->get_view_manager();
  Actor *player_actor;
  Obj *bucket;
  Obj *butter;
@@ -1540,8 +1338,7 @@ bool U6UseCode::use_churn(Obj *obj, uint8 ev)
 
 bool U6UseCode::use_beehive(Obj *obj, uint8 ev)
 {
- ViewManager *view_manager = Game::get_game()->get_view_manager();
- Player *player = Game::get_game()->get_player();
+ ViewManager *view_manager = game->get_view_manager();
  Actor *player_actor;
  Obj *honey_jar;
  
@@ -1578,7 +1375,6 @@ bool U6UseCode::use_beehive(Obj *obj, uint8 ev)
 
 bool U6UseCode::use_horse(Obj *obj, uint8 ev)
 {
- ActorManager *actor_manager = Game::get_game()->get_actor_manager();
  Actor *actor, *player_actor;
  Obj *actor_obj;
 
@@ -1666,7 +1462,7 @@ bool U6UseCode::pass_quest_barrier(Obj *obj, uint8 ev)
 bool U6UseCode::look_sign(Obj *obj, uint8 ev)
 {
     char *data;
-    Book *book = Game::get_game()->get_event()->get_book(); // ??
+    Book *book = game->get_event()->get_book(); // ??
 
     if(ev == USE_EVENT_LOOK && obj->quality != 0)
     {
@@ -1706,7 +1502,7 @@ bool U6UseCode::look_sign(Obj *obj, uint8 ev)
  */
 bool U6UseCode::look_clock(Obj *obj, uint8 ev)
 {
-    GameClock *clock = Game::get_game()->get_clock();
+    GameClock *clock = game->get_clock();
     if(obj->obj_n == OBJ_U6_SUNDIAL
        && (clock->get_hour() < 5 || clock->get_hour() > 19))
         return(true); // don't get time from sundial at night
@@ -1723,7 +1519,7 @@ bool U6UseCode::look_clock(Obj *obj, uint8 ev)
  */
 bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
 {
-//    ViewManager *view_manager = Game::get_game()->get_view_manager();
+//    ViewManager *view_manager = game->get_view_manager();
     if(ev == USE_EVENT_LOOK && actor_ref == player->get_actor())
     {
         uint16 x, y;
@@ -1732,7 +1528,7 @@ bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
         if(x == obj->x && y > obj->y && y <= (obj->y + 2))
         {
             scroll->display_string("\nYou can see yourself!");
-            Game::get_game()->get_event()->display_portrait(actor_ref);
+            game->get_event()->display_portrait(actor_ref);
         }
         return(true);
     }
@@ -1745,7 +1541,6 @@ bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
  */
 bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
 {
-    Party *party = Game::get_game()->get_party();
     char *prefix = "", *dungeon_name = "";
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
@@ -1809,7 +1604,6 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
  */
 bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
 {
-    Party *party = Game::get_game()->get_party();
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
     if (obj->frame_n != 1) return false; // FIXME is this check needed?

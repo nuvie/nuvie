@@ -32,7 +32,6 @@
 #include "Scale.h"
 
 class Configuration;
-class Cursor;
 
 class Screen
 {
@@ -62,8 +61,6 @@ class Screen
  uint8 shading_ambient;
  uint8 *shading_tile[4];
 
- Cursor *cursor;
-
  public:
    Screen(Configuration *cfg);
    ~Screen();
@@ -74,6 +71,7 @@ class Screen
    bool rotate_palette(uint8 pos, uint8 length);
    bool clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect=NULL);
    void *get_pixels();
+   const unsigned char *get_surface_pixels() { return(surface->get_pixels()); }
    uint16 get_pitch();
    SDL_Surface *create_sdl_surface_from(unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch);
    uint16 get_bpp();
@@ -104,7 +102,8 @@ class Screen
    
    bool initScaler();
 
-   bool set_pointer(uint8 ptr_num);
+   unsigned char *copy_area(SDL_Rect *area = NULL);
+   void restore_area(unsigned char *pixels, SDL_Rect *area = NULL, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
 
 protected:
 
@@ -119,6 +118,11 @@ inline bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf,
 inline void Screen::blitbitmap16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
 inline void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
+
+   unsigned char *copy_area16(SDL_Rect *area);
+   unsigned char *copy_area32(SDL_Rect *area);
+   void restore_area16(unsigned char *pixels, SDL_Rect *area, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
+   void restore_area32(unsigned char *pixels, SDL_Rect *area, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
 
 void set_screen_mode();
 bool try_scaler(int w, int h, uint32 flags, int hwdepth);

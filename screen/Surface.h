@@ -127,6 +127,7 @@ public:
 	//FIX virtual void display8(uint8 *buf, int x, int y) = 0;
   
    SDL_Surface *get_sdl_surface();
+   const unsigned char *get_pixels();
 
 private:
 

@@ -109,6 +109,7 @@ class MapWindow: public GUI_Widget
  Obj *get_objAtMousePos(int x, int y);
  Actor *get_actorAtMousePos(int x, int y);
  void mouseToWorldCoords (int mx, int my, int &wx, int &wy);
+ void get_movement_direction(uint16 wx, uint16 wx, sint16 &rel_x, sint16 &rel_y);
 
  TileManager *get_tile_manager() { return tile_manager; }
  SDL_Rect *get_clip_rect() { return &clip_rect; }
@@ -129,6 +130,7 @@ class MapWindow: public GUI_Widget
  GUI_status MouseDouble(int x, int y, int button);
  GUI_status MouseClick(int x, int y, int button);
  GUI_status Idle(void);
+ GUI_status MouseLeave(Uint8 state);
 
  void drag_drop_success (int x, int y, int message, void *data);
  void drag_drop_failed (int x, int y, int message, void *data);
@@ -140,6 +142,8 @@ class MapWindow: public GUI_Widget
 
  void player_walk_to_mouse_cursor(uint32 mx, uint32 my);
  void player_multiuse(uint16 wx, uint16 wy);
+
+ void update_mouse_cursor(uint32 mx, uint32 my);
 
  std::vector<Obj *> m_ViewableObjects; //^^ dodgy public buffer
  std::vector<TileInfo> m_ViewableTiles; //^^ dodgy public buffer

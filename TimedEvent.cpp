@@ -124,7 +124,7 @@ TimedPartyMove::~TimedPartyMove()
 }
 
 
-/* Party movement to/from dungeon or to vehicle. Repeated until everyone is at
+/* Party movement to/from dungeon or to moongate. Repeated until everyone is at
  * the target area.
  */
 void TimedPartyMove::timed(uint32 evtime)

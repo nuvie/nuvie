@@ -96,19 +96,27 @@
  */
 
 
+class ActorManager;
 class Configuration;
+class Event;
+class Game;
 class Map;
 class MsgScroll;
 class MapCoord;
+class Party;
+class Player;
+
 class UseCode
 {
  protected:
- 
+ Game *game;
  Configuration *config;
  ObjManager *obj_manager;
  Map *map;
  Player *player;
  MsgScroll *scroll;
+ ActorManager *actor_manager;
+ Party *party;
 
  sint32 int_ref; // pass objects to usecode functions
  Obj *obj_ref;
@@ -117,11 +125,10 @@ class UseCode
 
  public:
  
- UseCode(Configuration *cfg);
+ UseCode(Game *g, Configuration *cfg);
  virtual ~UseCode();
  
  virtual bool init(ObjManager *om, Map *m, Player *p, MsgScroll *ms);
- virtual void init_objects() = 0;
  
  bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
  bool use_obj(Obj *obj, Obj *src_obj = NULL) { return(use_obj(obj, player->get_actor())); } // ??
@@ -133,11 +140,11 @@ class UseCode
  virtual bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y) { return(false); }
  virtual bool load_obj(Obj *obj) { return(false); }
 
- virtual bool has_usecode(Obj *obj)  { return(false); }
- virtual bool has_lookcode(Obj *obj) { return(false); }
- virtual bool has_passcode(Obj *obj) { return(false); }
- virtual bool has_movecode(Obj *obj) { return(false); }
- virtual bool has_loadcode(Obj *obj) { return(false); }
+ virtual bool has_usecode(Obj *obj, uint16 ev = USE_EVENT_USE)  { return(false); }
+ virtual bool has_lookcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_LOOK)); }
+ virtual bool has_passcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_PASS)); }
+ virtual bool has_movecode(Obj *obj) { return(has_usecode(obj, USE_EVENT_MOVE)); }
+ virtual bool has_loadcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_LOAD)); }
 
  bool is_door(Obj *obj) {return(is_locked_door(obj) || is_unlocked_door(obj));}
  virtual bool is_locked_door(Obj *obj)   { return(false); }
@@ -156,8 +163,6 @@ class UseCode
 
  void toggle_frame(Obj *obj);
 
- virtual sint16 get_ucobject_index(uint16 n, uint8 f, uint8 ev) = 0;
- virtual bool uc_event(sint16 uco, uint8 ev, Obj *obj) = 0;
 };
 
 #endif /* __UseCode_h__ */

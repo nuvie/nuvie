@@ -39,6 +39,7 @@
 #define OBJ_MD_OUTER_HATCH    427
 
 class Configuration;
+class Game;
 class MsgScroll;
 
 class MDUseCode: public UseCode
@@ -46,7 +47,7 @@ class MDUseCode: public UseCode
  
  public:
  
- MDUseCode(Configuration *cfg);
+ MDUseCode(Game *g, Configuration *cfg);
  ~MDUseCode();
  
  bool use_obj(Obj *obj, Obj *src_obj=NULL);

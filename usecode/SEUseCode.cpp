@@ -25,7 +25,7 @@
 #include "MsgScroll.h"
 #include "SEUseCode.h"
 
-SEUseCode::SEUseCode(Configuration *cfg) : UseCode(cfg)
+SEUseCode::SEUseCode(Game *g, Configuration *cfg) : UseCode(g, cfg)
 {
 
 }

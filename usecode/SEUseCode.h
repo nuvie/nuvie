@@ -30,6 +30,7 @@
 #define OBJ_SE_DOOR           234
 
 class Configuration;
+class Game;
 class MsgScroll;
 
 class SEUseCode: public UseCode
@@ -37,7 +38,7 @@ class SEUseCode: public UseCode
  
  public:
  
- SEUseCode(Configuration *cfg);
+ SEUseCode(Game *g, Configuration *cfg);
  ~SEUseCode();
  
  bool use_obj(Obj *obj, Obj *src_obj=NULL);

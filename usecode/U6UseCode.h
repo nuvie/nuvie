@@ -39,30 +39,39 @@ class U6UseCode;
 class Configuration;
 class MsgScroll;
 
-struct u6_uc_s // usecode definition (object)
+// U6ObjectType properties
+#define OBJTYPE_NONE      0x0000
+#define OBJTYPE_FOOD      0x0001
+#define OBJTYPE_DOOR      0x0002
+#define OBJTYPE_CONTAINER 0x0004
+
+typedef struct // object properties & usecode
 {
- uint16 obj_n; // obj and frame numbers must match
- uint8 frame_n; // 255 matches any frame
- uint8 dist; // distance
- uint8 trigger; // event(s) to call ucf with
- bool (U6UseCode::*ucf)(Obj *, uint8); // usecode function
- void set(uint16 o, uint8 f, uint8 d, uint8 e, bool (U6UseCode::*u)(Obj *, uint8))
- { obj_n = o; frame_n = f; dist = d; trigger = e; ucf = u; }
-};
+    uint16 obj_n; // type
+    uint8 frame_n; // 0xFF matches any frame
+    uint8 dist; // distance to trigger (depends on event, usually 0)
+    uint16 trigger; // accepted event(s)
+    bool (U6UseCode::*usefunc)(Obj *, uint8); // usecode function
+    uint16 flags; // properties (OBJTYPE)
+
+// move these to U6UseCode:
+//    bool is_food()             { return(objtype->flags & OBJTYPE_FOOD); }
+//    bool is_door()             { return(objtype->flags & OBJTYPE_DOOR); }
+//    bool is_container()        { return(objtype->flags & OBJTYPE_CONTAINER); }
+//    bool is_closed_door()      { return(is_door(obj) && obj->frame_n > 3); }
+//    bool is_locked_door()      { return(is_door(obj) && (obj->frame_n == 9 || obj->frame_n == 11)); }
+//    bool is_unlocked_door()    { return(is_door(obj) && !objtype->is_locked_door()); }
+//    bool is_closed_container() { return(false); }
+//    bool is_locked_container() { return(false); }
+} U6ObjectType;
 
 class U6UseCode: public UseCode, public TimedCallbackTarget
 {
- typedef struct u6_uc_s uc_obj;
- uc_obj *uc_objects;
- uint32 uc_objects_size; // size of uc_objects array
- uint16 uc_object_count; // count of game object<->usecode objects
 
  public:
  
- U6UseCode(Configuration *cfg);
+ U6UseCode(Game *g, Configuration *cfg);
  ~U6UseCode();
- void init_objects();
- void add_usecode(uint16 obj, uint8 frame, uint8 dist, uint8 ev, bool (U6UseCode::*func)(Obj *, uint8));
 
  bool use_obj(Obj *obj, Actor *actor);
  bool look_obj(Obj *obj, Actor *actor);
@@ -72,11 +81,7 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
  bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y);
  bool load_obj(Obj *obj);
 
- bool has_usecode(Obj *obj);
- bool has_lookcode(Obj *obj);
- bool has_passcode(Obj *obj);
- bool has_movecode(Obj *obj);
- bool has_loadcode(Obj *obj);
+ bool has_usecode(Obj *obj, uint16 ev = USE_EVENT_USE);
 
  bool is_unlocked_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n != 9 && obj->frame_n != 11); }
  bool is_locked_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && (obj->frame_n == 9 || obj->frame_n == 11)); }
@@ -84,9 +89,10 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
  bool is_food(Obj *obj);
 
  protected:
- sint16 get_ucobject_index(uint16 n, uint8 f, uint8 ev);
- bool uc_event(sint16 uco, uint8 ev, Obj *obj);
+ bool uc_event(const U6ObjectType *type, uint8 ev, Obj *obj);
+ inline const U6ObjectType *get_object_type(uint16 n, uint8 f, uint8 ev = 0);
 
+ public:
 // usecode
  bool use_orb(Obj *obj, uint8 ev);
  bool use_door(Obj *obj, uint8 ev);
@@ -127,6 +133,7 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
  bool use_egg(Obj *obj, uint8 ev);
  bool sundial(Obj *obj, uint8 ev);
 
+ protected:
 // supplementary
  Obj *drawbridge_find(Obj *crank_obj);
  void drawbridge_open(uint16 x, uint16 y, uint8 level, uint16 b_width);

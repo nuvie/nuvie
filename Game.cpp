@@ -52,6 +52,8 @@
 #include "MDUseCode.h"
 #include "SEUseCode.h"
 
+#include "Cursor.h"
+
 #include "Game.h"
 
 Game *Game::game = NULL;
@@ -60,6 +62,7 @@ Game::Game(Configuration *cfg)
 {
  game = this;
  config = cfg;
+ cursor = NULL;
 }
 
 Game::~Game()
@@ -86,6 +89,7 @@ Game::~Game()
     delete sound_manager;
     delete gui;
     delete usecode;
+    if(cursor) delete cursor;
 }
  
 bool Game::loadGame(Screen *s, uint8 type)
@@ -169,19 +173,22 @@ bool Game::loadGame(Screen *s, uint8 type)
    // Correct usecode class for each game
    switch (game_type)
      { 
-      case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(config); break;
-      case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(config); break;
-      case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(config); break;
+      case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(this, config); break;
+      case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(this, config); break;
+      case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(this, config); break;
      }
 
    usecode->init(obj_manager, game_map, player, scroll);
    obj_manager->set_usecode(usecode);
+
+   init_cursor();
 
    player->get_location(&px, &py, &pz);
    obj_manager->update(px, py, pz); // spawn eggs. 
 
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
+
   }
  catch(const char *error_string)
   {
@@ -191,7 +198,30 @@ bool Game::loadGame(Screen *s, uint8 type)
  
  return true;
 }
-  
+
+
+void Game::init_cursor()
+{
+    string pointers_f;
+    config->value("config/ultima6/gamedir", pointers_f);
+    pointers_f += "u6mcga.ptr";
+    cursor = new Cursor();
+    if(cursor->init(screen, pointers_f))
+       SDL_ShowCursor(false); // won't need the system default
+    else
+    {
+        delete cursor;
+        cursor = NULL; // no game cursor
+    }
+}
+
+
+bool Game::set_mouse_pointer(uint8 ptr_num)
+{
+    return(cursor && cursor->set_pointer(ptr_num));
+}
+
+
 void Game::play()
 {
   bool game_play = true;
@@ -219,7 +249,9 @@ void Game::play()
      converse->continue_script();
      //scroll->updateScroll();
 
+     if(cursor) cursor->clear();
      gui->Display();
+     if(cursor) cursor->display();
 
      screen->preformUpdate();
      sound_manager->update();
@@ -227,6 +259,3 @@ void Game::play()
    }
   return;
 }
-
-
- 

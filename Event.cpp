@@ -128,6 +128,9 @@ bool Event::update()
   if(idle)
     gui->Idle(); // run Idle() for all widgets
 
+  if(showingQuitDialog) // temp. fix to show normal cursor over quit dialog
+    Game::get_game()->set_mouse_pointer(0);
+
  return true;
 }
 
@@ -1599,6 +1602,7 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 {
 	map_window->set_show_use_cursor(false);
 	map_window->set_show_cursor(false);
+	Game::get_game()->set_mouse_pointer(0);
 	if(mode == LOOK_MODE)
 	{
 		mode = MOVE_MODE;
@@ -1678,6 +1682,7 @@ void Event::newAction(EventMode new_mode)
                 return;
 	}
 
+	Game::get_game()->set_mouse_pointer(1);
 	mode = new_mode;
 	switch(new_mode)
 	{
@@ -1728,4 +1733,5 @@ void Event::endAction()
     use_obj = NULL;
     selected_actor = NULL;
     map_window->updateBlacking();
+    Game::get_game()->set_mouse_pointer(0);
 }

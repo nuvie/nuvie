@@ -52,6 +52,7 @@ GUI_Widget::~GUI_Widget()
 void
 GUI_Widget:: Init(void *data, int x, int y, int w, int h)
 {
+//  int mx, my;
   gui_drag_manager = NULL; //set from placeOnScreen method
 	widget_data = data;
 	screen = NULL;
@@ -66,12 +67,15 @@ GUI_Widget:: Init(void *data, int x, int y, int w, int h)
  parent = NULL;
  
  update_display = true;
- mousedouble_delay = 200; // SB-X
+ mousedouble_delay = 300; // SB-X
  last_mousedown_time = last_mouseup_time = 0;
  last_mousedown_x = last_mousedown_y = 0;
  last_mousedown_button = 0;
  last_mouseup_x = last_mouseup_y = 0;
  last_mouseup_button = 0;
+
+// SDL_GetMouseState(&mx, &my);
+// mouse_over = HitRect(mx, my);
 }
 
 int GUI_Widget:: AddWidget(GUI_Widget *widget)
@@ -366,10 +370,23 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 			MouseIdle(); /* SB-X: reduce [double]click delay, don't worry about return (FIXME: might use a new method for this) */
 			if ( HitRect(x, y) )
 			{
+  			  if ( !mouse_over )
+  			  {
+  			  	mouse_over = true;
+  			  	MouseEnter(state);
+  			  }
   			  return(MouseMotion(x, y, state));
 			}
-			/* if widget was clicked before we must let it react*/
-			else if (ClickState(1)) return(MouseMotion(-1,-1,state));
+			else
+			{
+				if ( mouse_over )
+				{
+					mouse_over = false;
+					MouseLeave(state);
+				}
+				/* if widget was clicked before we must let it react*/
+				if (ClickState(1)) return(MouseMotion(-1,-1,state));
+			}
 		}
 		break;
 		default: {
@@ -486,3 +503,18 @@ GUI_status GUI_Widget::MouseDouble(int x, int y, int button)
 {
     return(GUI_PASS);
 }
+
+/* Mouse cursor passed out of the widget area.
+ */
+GUI_status GUI_Widget::MouseEnter(Uint8 state)
+{
+    return(GUI_PASS);
+}
+
+/* Mouse cursor passed into the widget area.
+ */
+GUI_status GUI_Widget::MouseLeave(Uint8 state)
+{
+    return(GUI_PASS);
+}
+
