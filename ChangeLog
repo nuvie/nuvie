@@ -1,3 +1,8 @@
+2003-07-06  Eric Fry <efry@users.sourceforge.net>
+	* Fixed some issues with NuvieIO classes. MD & SE now load again. ;)
+	* Fixed Stone lion rendering issue in U6. Added support for force
+	  lower tile flag when rendering.
+
 2003-07-05  Eric Fry <efry@users.sourceforge.net>
 	* Fixed typo in Project Builder project name. Most source files were 
 	  titled "Nuive" instead of "Nuvie". Thanks to Pieter Luteijn for

@@ -107,7 +107,7 @@ uint16 NuvieIOFileRead::read2()
 {
  unsigned char b0, b1;
  
- if(pos >= size-2)
+ if(pos > size-2)
    return 0;
  
  pos += 2;
@@ -121,7 +121,7 @@ uint16 NuvieIOFileRead::read2()
 uint32 NuvieIOFileRead::read4()
 {
  unsigned char b0, b1, b2, b3;
- if(pos >= size-4)
+ if(pos > size-4)
   return 0;
 
  pos += 4;
