@@ -1,3 +1,8 @@
+2003-11-24  Eric Fry <efry@users.sourceforge.net>
+	* Added Pieter Luteijn's Use orb code.
+	* A small OS X compile fix. Added #ifdef check for _MSC_VER in 
+	  nuvieDefs.h
+
 2003-11-20  Eric Fry <efry@users.sourceforge.net>
 	* Fixed avatar portrait. It was out by 1. Thanks to Pieter Luteijn for
 	  spotting that one. [ 845094 ]

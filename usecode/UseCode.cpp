@@ -35,6 +35,7 @@ UseCode::UseCode(Configuration *cfg)
  actor_ref = NULL;
  obj_ref = NULL;
  actor2_ref = NULL;
+ mapcoord_ref = NULL;
 }
 
 UseCode::~UseCode()

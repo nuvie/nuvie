@@ -98,6 +98,8 @@
 #define OBJ_U6_RED_GATE             84
 #define OBJ_U6_MOONGATE             85
 
+#define OBJ_U6_ORB_OF_THE_MOONS     87
+
 #define OBJ_U6_TORCH                90
 
 #define OBJ_U6_SNAKE_VENOM          92
@@ -322,6 +324,7 @@ class U6UseCode: public UseCode
  bool uc_event(sint16 uco, uint8 ev, Obj *obj);
 
 // usecode
+ bool use_orb(Obj *obj, uint8 ev);
  bool use_door(Obj *obj, uint8 ev);
  bool use_secret_door(Obj *obj, uint8 ev);
  bool use_ladder(Obj *obj, uint8 ev);

@@ -148,6 +148,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_CANDELABRA,255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
     add_usecode(OBJ_U6_BRAZIER,   255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
 
+    add_usecode(OBJ_U6_ORB_OF_THE_MOONS,255,0,USE_EVENT_USE,&U6UseCode::use_orb);
     add_usecode(OBJ_U6_RED_GATE,  1,0,USE_EVENT_PASS,&U6UseCode::enter_red_moongate); //FIX we only want to go through frame_n 1
     add_usecode(OBJ_U6_LADDER,255,0,USE_EVENT_USE,&U6UseCode::use_ladder);
     add_usecode(OBJ_U6_CAVE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
@@ -343,6 +344,7 @@ bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
         actor_ref = NULL; // clear references
         actor2_ref = NULL;
         obj_ref = NULL;
+	mapcoord_ref = NULL;
         return(ucret); // return from usecode function
     }
     return(false); // doesn't respond to event
@@ -771,6 +773,52 @@ void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width
 
  scroll->display_string("\nClose the drawbridge.\n");
 }
+
+bool U6UseCode::use_orb(Obj *obj, uint8 ev)
+{
+ Obj *gate;
+ uint16 x,y,ox,oy;
+ uint8 px,py,z,oz;
+ uint8 position;
+
+ player->get_actor()->get_location(&x,&y,&z);
+
+ if(!mapcoord_ref)
+  {
+   Game::get_game()->get_event()->freeselect_mode(obj, "Where: ");
+   return true;
+  }
+
+ ox=mapcoord_ref->x;
+ oy=mapcoord_ref->y;
+ oz=mapcoord_ref->z;
+ 
+ px=3+ox-x;
+ py=2+oy-y;
+  
+ if( px > 5 || py > 4 ||           // Moongate out of range.
+     actor2_ref ||                 // Actor at location.
+     !map->is_passable(ox,oy,oz))  // Location not passable.
+   {
+    scroll->display_string("Failed.\n");
+    return false;
+   }
+  
+ position=px+py*5;
+  
+ if(position >= 12 && position <= 14) // The three middle positions go noware.
+    position = 0;
+    
+ gate=new_obj(OBJ_U6_RED_GATE,1,ox,oy,z);
+ gate->quality=position;
+ gate->status |= OBJ_STATUS_TEMPORARY;
+  
+ obj_manager->add_obj(gate,true);
+ scroll->display_string("a red moon gate appears.\n");
+  
+ return true;
+}
+		  
 
 void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width)
 { 
@@ -1270,6 +1318,7 @@ bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
     Party *party = Game::get_game()->get_party();
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
+    if (obj->frame_n != 1) return false; // FIXME is this check needed?
 
     // don't activate if autowalking from linking exit
     if(ev == USE_EVENT_PASS && actor_ref == player->get_actor() && !party->get_autowalk())

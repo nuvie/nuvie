@@ -339,6 +339,8 @@ void MapWindow::Display(bool full_redraw)
    screen->blit(cursor_x*16,cursor_y*16,(unsigned char *)use_tile->data,8,16,16,16,true,&clip_rect);
   }
 
+// screen->fill(0,8,8,win_height*16-16,win_height*16-16);
+ 
  drawBorder();
  
 // ptr = (unsigned char *)screen->get_pixels();
@@ -346,7 +348,7 @@ void MapWindow::Display(bool full_redraw)
  
 // screen->blit(8,8,ptr,8,(win_width-1) * 16,(win_height-1) * 16, win_width * 16, false);
  
- screen->update(8,8,win_width*16,win_height*16);
+ screen->update(8,8,win_width*16-16,win_height*16-16);
  
 }
 

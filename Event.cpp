@@ -565,13 +565,18 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  */
 bool Event::select_obj(Obj *obj, Actor *actor)
 {
+    static MapCoord loc(0,0,0);
     if(!obj)
         obj = map_window->get_objAtCursor();
     if(!actor)
         actor = map_window->get_actorAtCursor();
     usecode->set_itemref(obj);
     usecode->set_itemref(NULL, actor);
-    if(use_obj && (obj || actor))
+    loc=map_window->get_cursorCoord();
+    usecode->set_itemref(&loc);
+    //if(use_obj && (obj || actor))  // removed so it works with location only.
+    //hopefully won't break anything, needs reimplementation anyway.
+    if(use_obj)
      usecode->use_obj(use_obj, player->get_actor());
     use_obj = NULL;
     // return to MOVE_MODE

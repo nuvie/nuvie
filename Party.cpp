@@ -54,7 +54,7 @@ bool Party::init(Game *g, ActorManager *am)
  actor_manager = am;
  
  loadParty();
- 
+ autowalk=false;
  return true;
 }
 

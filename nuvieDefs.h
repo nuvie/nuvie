@@ -1,10 +1,14 @@
 #ifndef __nuvieDefs_h__
 #define __nuvieDefs_h__
 
+#ifdef _MSC_VER
+
 #if _MSC_VER < 1300
 #include "msvc/msvc_kludges.h"
 #elif _MSC_VER >= 1300
 #include "visualc7/vc7inc.h"
+#endif
+
 #endif
 
 #define NUVIE_GAME_NONE  0

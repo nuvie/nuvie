@@ -35,7 +35,7 @@
 class Configuration;
 class Map;
 class MsgScroll;
-
+class MapCoord;
 class UseCode
 {
  protected:
@@ -49,6 +49,7 @@ class UseCode
  sint32 int_ref; // pass objects to usecode functions
  Obj *obj_ref;
  Actor *actor_ref, *actor2_ref;
+ MapCoord *mapcoord_ref;
 
  public:
  
@@ -78,7 +79,8 @@ class UseCode
  void set_itemref(sint32 val) { int_ref = val; }
  void set_itemref(Obj *val)   { obj_ref = val; }
  void set_itemref(Actor *val, Actor *val2 = NULL) { actor_ref = val; actor2_ref = val2; }
-
+ void set_itemref(MapCoord *val)   { mapcoord_ref = val; }
+ 
  protected:
 
  void toggle_frame(Obj *obj);
