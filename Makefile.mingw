@@ -11,7 +11,7 @@ SRC=.
 SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
-CPPFLAGS=-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
+CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 	-I$(SRC)/conf -I$(SRC)/files -I$(SRC)/GUI -I$(SRC)/misc \
 	-I$(SRC)/pathfinder -I$(SRC)/screen -I$(SRC)/tools \
 	-I$(SRC)/usecode -I$(SRC)/views $(SDL_CFLAGS)
