@@ -245,7 +245,7 @@ bool Event::talk()
     if(id == pc->get_actor_num())
     {
         // print name or look-string if actor has no name
-        name = converse->npc_name(id);
+        name = converse->npc_name(id); // get name
         if(!name)
             name = map_window->lookAtCursor();
         scroll->display_string(name);
@@ -257,7 +257,7 @@ bool Event::talk()
     if(converse->start(npc))
     {
         // print npc name if met-flag is set, or npc is in avatar's party
-        name = converse->npc_name(id); // get name & *record internally*
+        name = converse->npc_name(id); // get name
         if(name &&
            ((npc->get_flags() & 1) || player->get_party()->contains_actor(npc)))
             scroll->display_string(name);
