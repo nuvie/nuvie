@@ -130,7 +130,7 @@ bool SoundManager::initAudio ()
 
   int audio_channels = 2;
   int audio_buffers = 1024;        //4096; // Note: must be a power of two
-  SDL_Init (SDL_INIT_AUDIO);
+  SDL_InitSubSystem (SDL_INIT_AUDIO);
   ret = Mix_OpenAudio (audio_rate, audio_format, audio_channels, audio_buffers);
   if (ret) {
     printf("Error: Failed to initialize audio: %s\n", Mix_GetError());

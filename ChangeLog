@@ -1,3 +1,7 @@
+2004-03-10  Eric Fry <efry at users.sourceforge.net>
+	* Removed SDL_Init(SDL_INIT_AUDIO) from SoundManager and replaced with 
+	  SDL_InitSubSystem (SDL_INIT_AUDIO)
+
 2004-03-09  Eric Fry <efry at users.sourceforge.net>
 	* Removed redundant screen update call from InventoryWidget.
 	* Simplified inventory display clearing logic. Replaced 12 clear calls
