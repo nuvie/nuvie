@@ -522,7 +522,7 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
 
         // objects with 0 weight aren't gettable. 
         weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
-        if(weight != 0)
+        if(weight != 0 && weight != 25.5) //25.5 is the max weight and means an object is movable but not getable.
         {
             if(actor->can_carry_weight(weight))
             {
