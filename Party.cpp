@@ -20,7 +20,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include "Game.h"
+#include "Converse.h"
 #include "Party.h"
 
 Party::Party(Configuration *cfg)
@@ -33,10 +34,11 @@ Party::~Party()
 {
 }
 
-bool Party::init(ActorManager *am)
+bool Party::init(Game *g, ActorManager *am)
 {
  std::string filename;
- 
+
+ game = g;
  actor_manager = am;
  
  loadParty();
@@ -47,10 +49,13 @@ bool Party::init(ActorManager *am)
 
 bool Party::add_actor(Actor *actor)
 {
+ Converse *converse = game->get_converse();
+
  if(num_in_party < 16)
    {
     member[num_in_party].actor = actor;
-    //converse get name.
+    strncpy(member[num_in_party].name, converse->npc_name(actor->id_n), 14);
+    member[num_in_party].name[13] = '\0';
     member[num_in_party].combat_position = 0;
     num_in_party++;
     

@@ -33,6 +33,8 @@
 #include "ActorManager.h"
 #include "Actor.h"
 
+class Game;
+
 struct PartyMember {
 char name[14];
 Actor *actor;
@@ -41,7 +43,7 @@ uint8 combat_position;
 };
 
 class Party {
-
+ Game *game; // get pointers here to avoid construct order issues in loadGame()
  Configuration *config;
  ActorManager *actor_manager;
  
@@ -53,7 +55,7 @@ class Party {
  Party(Configuration *cfg);
  ~Party();
  
- bool init(ActorManager *am);
+ bool init(Game *g, ActorManager *am);
  
  bool contains_actor(Actor *actor)
  {

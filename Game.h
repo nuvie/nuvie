@@ -86,7 +86,28 @@ class Game
  void drawBackground();
  
  void play();
- 
+
+ /* Pass back instance of Game classes... and why not? */
+ Configuration *get_config()       { return(config); }
+ Screen *get_screen()              { return(screen); }
+ U6Bmp *get_background()           { return(background); }
+ GamePalette *get_palette()        { return(palette); }
+ Text *get_text()                  { return(text); }
+ TileManager *get_tile_manager()   { return(tile_manager); }
+ ObjManager *get_obj_manager()     { return(obj_manager); }
+ ActorManager *get_actor_manager() { return(actor_manager); }
+ Map *get_game_map()               { return(game_map); }
+ MapWindow *get_map_window()       { return(map_window); }
+ MsgScroll *get_scroll()           { return(scroll); }
+ Player *get_player()              { return(player); }
+ Party *get_party()                { return(party); }
+ Converse *get_converse()          { return(converse); } 
+ ViewManager *get_view_manager()   { return(view_manager); }
+ GameClock *get_clock()            { return(clock); }
+ Portrait *get_portrait()          { return(portrait); }
+ UseCode *get_usecode()            { return(usecode); }
+ Event *get_event()                { return(event); }
+
  protected:
  void assignGameConfigValues(uint8 game_type);
  
