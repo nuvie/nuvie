@@ -1,3 +1,10 @@
+2004-04-07  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Inventory: The prompt is now displayed after using or looking at any
+	  object in the inventory, using keyboard or mouse.
+	* Objects are no longer Un/Readied when attempting to LOOK at or USE
+	  them with the mouse.
+	* Added keyboard USE. Fixes [ 914958 ].
+
 2004-04-05  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed bug where you couldn't enter a moongate to the left or right
 	  of the Avatar (which doesn't go anywhere). [ 916717 ] 

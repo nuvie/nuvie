@@ -28,12 +28,9 @@
 #include "Actor.h"
 #include "Text.h"
 #include "GameClock.h"
-// dont need all these includes with PlayerActions
-#include "MsgScroll.h"
-#include "MapWindow.h"
-#include "Player.h"
-#include "UseCode.h"
 #include "Event.h"
+#include "MsgScroll.h"
+#include "UseCode.h"
 
 #include "InventoryFont.h"
 
@@ -44,9 +41,9 @@ InventoryWidget::InventoryWidget(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 
  config = cfg;
  container_obj = NULL;
  selected_obj = NULL;
- target_obj =  NULL;
+ target_obj = NULL;
+ ready_obj = NULL;
  row_offset = 0;
-
 }
 
 InventoryWidget::~InventoryWidget()
@@ -226,23 +223,27 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
  // ABOEING
  if(actor)
    {
-  if((selected_obj = get_obj_at_location(x,y)) != NULL) {
-   switch (event->get_mode()) {
-   case LOOK_MODE:
-   event->look(selected_obj);
-   scroll->display_prompt();
-   map_window->set_show_cursor(false);
-   break;
-   case USE_MODE:
-   event->use(selected_obj);
-   break;
-   default:
-    break;
+    Obj *obj; // FIXME: duplicating code in DollWidget
+    if((obj = get_obj_at_location(x,y)) != NULL)
+      {
+       switch(event->get_mode())
+          {
+           case LOOK_MODE:
+               if(event->look(obj)) // returns FALSE if prompt already displayed
+                scroll->display_prompt();
+               event->endAction(); // FIXME: should be done in look()
+               break;
+           case USE_MODE:
+               event->use(obj);
+               break;
+           default:
+               selected_obj = obj;
+               break;
+          }
+       return GUI_YUM;
+      }
    }
-   return GUI_YUM;
-  }
-   }
-	return GUI_PASS;
+ return GUI_PASS;
 }
 
 inline uint16 InventoryWidget::get_list_position(int x, int y)
@@ -291,13 +292,6 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
  Event *event = Game::get_game()->get_event();
  UseCode *usecode = Game::get_game()->get_usecode();
 
- // ABOEING
- if (event->get_mode() == LOOK_MODE) {
-  event->set_mode(MOVE_MODE);
-  selected_obj = NULL;
-  return GUI_YUM;
- }
-
  if(button == 1)
    {
     x -= area.x;
@@ -325,6 +319,7 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
     // only act now if not usable, else wait for possible double-click
     if(selected_obj && !usecode->has_usecode(selected_obj))
       {
+        ready_obj = NULL;
         if(selected_obj->container) // open up the container.
           {
             container_obj = selected_obj;
@@ -336,8 +331,9 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
             event->ready(selected_obj);
             Redraw();
           }
-        finish_mouseclick(); // won't do MouseClick()
       }
+    else
+        ready_obj = selected_obj;
 
    }
 
@@ -493,39 +489,21 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
  */
 GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 {
-    UseCode *uc = Game::get_game()->get_usecode();
     MsgScroll *scroll = Game::get_game()->get_scroll();
-    MapWindow *map_window = Game::get_game()->get_map_window();
     Event *event = Game::get_game()->get_event();
-    const char *target_name;
-    Obj *obj = get_obj_at_location(x - area.x, y - area.y);
+    Obj *obj = ready_obj;
+    ready_obj = NULL;
 
     if(!(actor && obj && button == 1 && event->get_mode() == MOVE_MODE))
         return(GUI_YUM);
 
-    target_name = obj_manager->look_obj(obj);
     scroll->display_string("Use-");
-    scroll->display_string(target_name);
-    scroll->display_string("\n");
-
-    if(uc->has_usecode(obj))
-        uc->use_obj(obj, Game::get_game()->get_player()->get_actor());
-    else
-    {
-        fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
-        scroll->display_string("\nNot usable\n");
-    }
-
-    map_window->updateBlacking();
-
-    // if selecting, select_obj will return to MOVE_MODE (and no need to here)
-    if(event->get_mode() == USE_MODE || event->get_mode() == MOVE_MODE)
+    event->use(obj);
+    if(event->get_mode() == MOVE_MODE)
     {
         scroll->display_string("\n");
         scroll->display_prompt();
-        event->set_mode(MOVE_MODE);
     }
-
     return(GUI_PASS);
 }
 
@@ -538,19 +516,20 @@ GUI_status InventoryWidget::MouseClick(int x, int y, int button)
  if(button != 1)
    return GUI_YUM;
 
- Obj *selected_obj = get_obj_at_location(x - area.x, y - area.y);
  // change to or from a container, ready/unready object
- if(selected_obj && selected_obj->container) // open up the container.
+ if(ready_obj && ready_obj->container) // open up the container.
    {
-    container_obj = selected_obj;
+    container_obj = ready_obj;
     Redraw();
    }
- else if(selected_obj) // attempt to ready selected object.
+ else if(ready_obj) // attempt to ready selected object.
    {
 //     actor->add_readied_object(selected_obj);
-     event->ready(selected_obj);
+     event->ready(ready_obj);
      Redraw();
    }
+
+ ready_obj = NULL;
 
  return GUI_YUM;
 }

@@ -826,11 +826,10 @@ bool U6UseCode::use_shovel(Obj *obj, uint8 ev)
     if(!mapcoord_ref) // get direction (FIXME: should return relative dir)
     {
         if((obj->status & 0x18) != 0x18)
-//        {
-//            scroll->display_string("\nNot readied.\n");
-//            return(false);
-//        }
-        scroll->display_string("Telekinesis!\n");
+        {
+            scroll->display_string("\nNot readied.\n");
+            return(false);
+        }
         game->get_event()->useselect_mode(obj, "Direction: ");
         return(true);
     }

@@ -378,7 +378,7 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 			x = event->motion.x;
 			y = event->motion.y;
 			state = event->motion.state;
-			MouseIdle(); /* SB-X: reduce [double]click delay, don't worry about return (FIXME: might use a new method for this) */
+			MouseIdle(); /* reduce [double]click delay, don't worry about return (FIXME: might use a new method for this) */
 			if ( focused || HitRect(x, y) )
 			{
   			  if ( !mouse_over )
@@ -463,7 +463,7 @@ GUI_status GUI_Widget::MouseIdle()
 		if((SDL_GetTicks() - last_mouseup_time) > mousedouble_delay)
 		{
 			// delay passed with no second click
-			finish_mouseclick(); // don't try MouseDouble()
+			cancel_mouseclick(); // don't try MouseDouble()
 			if(last_mouseup_x == last_mousedown_x && last_mouseup_y == last_mousedown_y)
 				return(MouseClick(last_mouseup_x, last_mouseup_y, last_mouseup_button));
 		}
@@ -488,7 +488,7 @@ GUI_status GUI_Widget::RegisterMouseUp(int x, int y, int button)
 		if(last_mouseup_time
 		   && ((SDL_GetTicks() - last_mouseup_time) <= mousedouble_delay))
 		{
-			finish_mouseclick(); // won't attempt MouseClick()
+			cancel_mouseclick(); // won't attempt MouseClick()
 			return(MouseDouble(x, y, button));
 		}
 	}

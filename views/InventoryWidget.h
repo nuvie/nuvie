@@ -43,7 +43,7 @@ class InventoryWidget : public GUI_Widget {
  Actor *actor;
  Obj *container_obj;
  
- Obj* selected_obj, *target_obj;
+ Obj *selected_obj, *target_obj, *ready_obj;
  uint16 row_offset;
  
  public:

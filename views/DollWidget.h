@@ -40,7 +40,7 @@ class DollWidget : public GUI_Widget {
  
  Actor *actor;
  
- Obj *selected_obj;
+ Obj *selected_obj, *unready_obj;
  
  public:
  DollWidget(Configuration *cfg);

@@ -34,6 +34,7 @@
 #include "Actor.h"
 #include "Event.h"
 #include "MapWindow.h"
+#include "MsgScroll.h"
 #include "ViewManager.h"
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
@@ -528,6 +529,7 @@ Obj *InventoryView::get_objAtCursor()
 void InventoryView::select_objAtCursor()
 {
     Event *event = Game::get_game()->get_event();
+    MsgScroll *scroll = Game::get_game()->get_scroll();
     Obj *obj = get_objAtCursor();
 
     if(cursor_pos.area == INVAREA_COMMAND)
@@ -555,7 +557,13 @@ void InventoryView::select_objAtCursor()
             break;
         case LOOK_MODE:
             if(obj)
-                event->look(obj);
+                if(event->look(obj)) // returns FALSE if prompt already displayed
+                    scroll->display_prompt();
+            event->endAction(); // FIXME: should be done in look()
+            break;
+        case USE_MODE:
+            if(obj)
+                event->use(obj);
             break;
         default:
             event->cancelAction();
