@@ -135,7 +135,17 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    obj_manager = new ObjManager(config, egg_manager);
 
-
+   // Correct usecode class for each game
+   switch (game_type)
+     { 
+      case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(this, config); break;
+      case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(this, config); break;
+      case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(this, config); break;
+     }
+   
+   obj_manager->set_usecode(usecode);
+   obj_manager->loadObjs(tile_manager);
+   
    game_map->loadMap(tile_manager, obj_manager);
    egg_manager->set_obj_manager(obj_manager);
    
@@ -171,17 +181,9 @@ bool Game::loadGame(Screen *s, uint8 type)
    converse = new Converse();
    converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
 
-   // Correct usecode class for each game
-   switch (game_type)
-     { 
-      case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(this, config); break;
-      case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(this, config); break;
-      case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(this, config); break;
-     }
 
    usecode->init(obj_manager, game_map, player, scroll);
-   obj_manager->set_usecode(usecode);
-   obj_manager->loadObjs(tile_manager);
+
 
    init_cursor();
 

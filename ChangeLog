@@ -1,3 +1,8 @@
+2004-04-11  Eric Fry <efry at users.sourceforge.net>
+	* Fixed a bug in game loading sequence.
+	  ObjManager::loadObjs() must be called before Actors are initialised
+	  and the mapwindow is updated.
+
 2004-04-09  Joseph Applegate <sb-x at users.sourceforge.net>
 	* UseCode: Disabled the "Telekinesis" usage of shovel. (must be readied)
 	  - Added correct descriptions of red & blue potions. They don't do
