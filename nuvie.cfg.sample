@@ -4,6 +4,10 @@
 
  <datadir>./data</datadir>
 
+ <general>
+  <lighting>1</lighting>
+ </general>
+
  <video>
   <scale_method>Point</scale_method>
   <scale_factor>2</scale_factor>

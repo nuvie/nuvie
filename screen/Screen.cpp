@@ -49,7 +49,9 @@ Screen::Screen(Configuration *cfg)
  update_rects = NULL;
  shading_data = NULL;
  updatingalphamap = true;
- UseOriginalLighting = true;
+ config->value( "config/general/lighting", lighting_style );
+ if( lighting_style > 2 || lighting_style < 0 )
+	 lighting_style = 1;
  
  max_update_rects = 10;
  num_update_rects = 0;
@@ -513,15 +515,21 @@ static const char TileGlobe[][11*11] =
 
 void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity )
 {
-    if( UseOriginalLighting )
-    {
-        if( opacity < 0xFF )
+	switch( lighting_style )
+	{
+	case 0:
+		return;
+	default:
+	case 1:
+		shading_ambient = opacity;
+		break;
+	case 2:
+		if( opacity < 0xFF )
             shading_ambient = 0;
         else
             shading_ambient = 0xFF;
-    }
-    else
-        shading_ambient = opacity;
+		break;
+	}
 
     if( shading_data == NULL )
     {
@@ -548,24 +556,21 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
     updatingalphamap = true;
 
     //Light globe around the avatar
-    if( UseOriginalLighting )
+    if( lighting_style == 2 )
         drawalphamap8globe( 5, 5, opacity/64+3 ); //range (0..3)+3 or (3..6)
-    else
+    else if( lighting_style != 0 )
         drawalphamap8globe( 5, 5, 3 );
 }
 
 void Screen::buildalphamap8()
 {
- int i;
- int tile_offset;
- 
     //Build three globes for 3 intensities
     //16x16, 32x32, 64x64
     shading_globe[0] = (uint8*)malloc(sqr(globeradius[0]));
     shading_globe[1] = (uint8*)malloc(sqr(globeradius[1]));
     shading_globe[2] = (uint8*)malloc(sqr(globeradius[2]));
 
-    for( i = 0; i < 3; i++ )
+    for( int i = 0; i < 3; i++ )
         for( int y = 0; y < globeradius[i]; y++ )
             for( int x = 0; x < globeradius[i]; x++ )
             {
@@ -587,18 +592,20 @@ void Screen::buildalphamap8()
     int game_type;
     config->value("config/GameType",game_type);
  
-    switch(game_type)
-	 {
-	  case NUVIE_GAME_U6 :
-	  case NUVIE_GAME_SE : tile_offset = 444; break;
-
-	  case NUVIE_GAME_MD : tile_offset = 268; break;
-	 }
-	 
-	 for(i = 0; i < 4; i++) //gather the array of shading tiles
-	   shading_tile[i] = game->get_map_window()->get_tile_manager()->get_tile(tile_offset + i)->data;
-
- return;
+    if(game_type == NUVIE_GAME_U6)
+    {
+        shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(444)->data;
+        shading_tile[1] = game->get_map_window()->get_tile_manager()->get_tile(445)->data;
+        shading_tile[2] = game->get_map_window()->get_tile_manager()->get_tile(446)->data;
+        shading_tile[3] = game->get_map_window()->get_tile_manager()->get_tile(447)->data;
+    }
+    else
+    {
+        shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(268)->data;
+        shading_tile[1] = game->get_map_window()->get_tile_manager()->get_tile(269)->data;
+        shading_tile[2] = game->get_map_window()->get_tile_manager()->get_tile(270)->data;
+        shading_tile[3] = game->get_map_window()->get_tile_manager()->get_tile(271)->data;
+    }
 }
 
 
@@ -607,7 +614,9 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
     sint16 i,j, globe;
     if( shading_ambient == 0xFF )
         return;
-    if( UseOriginalLighting )
+	if( lighting_style == 0 )
+		return;
+    if( lighting_style == 2 )
     {        
 		globe = r+1;
 		if( r > 5 )
@@ -648,12 +657,14 @@ void Screen::blitalphamap8()
 
     if( shading_ambient == 0xFF )
         return;
+	if( lighting_style == 0 )
+		return;
 
     uint16 i,j;
     Game *game = Game::get_game();
     updatingalphamap = false;
 
-    if( UseOriginalLighting )
+    if( lighting_style == 2 )
     {
         for( j = 0; j < 11; j++ )
         {

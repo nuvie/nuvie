@@ -87,8 +87,7 @@ class Screen
    void drawalphamap8globe( sint16 x, sint16 y, uint16 radius );
    void blitalphamap8();
    bool updatingalphamap;
-   bool UseOriginalLighting;
-
+   int lighting_style;
 
    uint8 get_ambient() { return shading_ambient; }
    void set_ambient( uint8 ambient ) { shading_ambient = ambient; }
