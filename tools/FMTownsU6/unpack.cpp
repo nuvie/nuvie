@@ -73,10 +73,10 @@ bool write_wav_file(const char *filename, unsigned char *audio_data, uint32 leng
  NuvieIOFileWrite file;
  file.open(filename);
  
- file.writeBuf("RIFF", 4);
+ file.writeBuf((const unsigned char*)"RIFF", 4);
  file.write4(36 + length * 2); //length of RIFF chunk
- file.writeBuf("WAVE", 4);
- file.writeBuf("fmt ", 4);
+ file.writeBuf((const unsigned char*)"WAVE", 4);
+ file.writeBuf((const unsigned char*)"fmt ", 4);
  file.write4(16); // length of format chunk
  file.write2(1); // PCM encoding
  file.write2(1); // mono
@@ -85,7 +85,7 @@ bool write_wav_file(const char *filename, unsigned char *audio_data, uint32 leng
  file.write2(2); // BlockAlign 
  file.write2(16); // Bits per sample 
 
- file.writeBuf("data", 4);
+ file.writeBuf((const unsigned char*)"data", 4);
  file.write4(length * 2); // length of data chunk 
  file.writeBuf(audio_data, length * 2);
 
