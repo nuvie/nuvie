@@ -231,3 +231,28 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
  return;
 }
 
+void DollWidget::drag_draw(int x, int y, int message, void* data)
+{
+	Tile* tile;
+
+	if (!selected_obj)
+		return;
+		
+	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj->obj_n) + selected_obj->frame_n);
+
+	int	nx = x - 8;
+	int	ny = y - 8;
+
+	if (nx + 16 >= 320)
+		nx = 303;
+	else if (nx < 0)
+		nx = 0;
+
+	if (ny + 16 >= 200)
+		ny = 183;
+	else if (ny < 0)
+		ny = 0;
+
+	screen->blit(nx, ny, tile->data, 8, 16, 16, 16, true);
+	screen->update(nx, ny, 16, 16);
+}

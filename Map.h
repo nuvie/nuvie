@@ -37,6 +37,34 @@ class TileManager;
 
 #define MAP_ORIGINAL_TILE true
 
+typedef enum LineTestFlags
+{
+	LT_HitActors			= (1<<0),
+	LT_HitUnpassable		= (1<<1),
+	LT_HitForcedPassable	= (1<<2)
+};
+
+class LineTestResult
+{
+public:
+	void	init (int x, int y, uint8 level, Actor* actorHit, Obj* objHit)
+	{
+		hit_x = x;
+		hit_y = y;
+		level = level;
+		hitActor = actorHit;
+		hitObj = objHit;
+	}
+
+	int		hit_x;		// x coord where object / actor was hit
+	int		hit_y;		// y coord where object / actor was hit
+	uint8	hit_level;	// map level where object / actor was hit
+	Actor*	hitActor;
+	Obj*	hitObj;
+};
+
+//typedef	(*LineTestFilter)(int x, int y, int level, LineTestResult &Result);
+
 /* Map Location with 2D X,Y coordinates and plane (map number)
  */
 class MapCoord
@@ -95,6 +123,9 @@ class Map
  bool actor_at_location(uint16 x, uint16 y, uint8 level);
 
  const char *look(uint16 x, uint16 y, uint8 level);
+
+ bool lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
+	 	       uint8 flags, LineTestResult &Result);
  
  protected:
   
@@ -103,6 +134,8 @@ class Map
  
  void insertDungeonSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 level);
  void insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 level); 
+
+ bool testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result);
 };
 
 #endif /* __Map_h__ */

@@ -118,174 +118,205 @@ bool Event::update()
  return true;
 }
 
+bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
+{
+	if(scroll->handle_input(&event->key.keysym))
+		return	true;
+
+	// alt-code input
+	if((event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9)
+		&& (SDL_GetModState() & KMOD_ALT))
+	{
+		alt_code_str[alt_code_len++] = (char)event->key.keysym.sym;
+		alt_code_str[alt_code_len] = '\0';
+		if(alt_code_len == 3)
+		{
+			alt_code(alt_code_str);
+			clear_alt_code();
+		}
+		return	true;
+	}
+	
+	switch (event->key.keysym.sym)
+	{
+		//	keypad arrow keys
+		//	separated these out from normal arrow keys because 
+		//	they eventually need to account for alt-214, etc. cheats
+		case SDLK_KP8   :
+			move(0,-1);
+			break;
+		case SDLK_KP2   :
+			move(0,1);
+			break;
+		case SDLK_KP4   :
+			move(-1,0);
+			break;
+		case SDLK_KP6   :
+			move(1,0);
+			break;
+		//	standard arrow keys
+		case SDLK_UP    :
+			move(0,-1);
+			break;
+		case SDLK_DOWN  :
+			move(0,1);
+			break;
+		case SDLK_LEFT  :
+			move(-1,0);
+			break;
+		case SDLK_RIGHT :
+			move(1,0);
+			break;
+		case SDLK_TAB   : 
+			view_manager->set_inventory_mode(); //show inventory view
+			break;
+		case SDLK_q     : 
+			if(!showingQuitDialog)
+			{
+				showingQuitDialog = true;
+				quitDialog();
+			}
+			break;
+		case SDLK_l     :
+			mode = LOOK_MODE;
+			scroll->display_string("Look-");
+			map_window->centerCursor();
+			map_window->set_show_cursor(true);
+			break;
+		case SDLK_t     :
+			if(mode == TALK_MODE) //you can select an actor with 't' or enter.
+			{
+				if(talk())
+					scroll->set_talking(true);
+				mode = MOVE_MODE;
+				map_window->set_show_cursor(false);
+			}
+			else
+			{
+				mode = TALK_MODE;
+				scroll->display_string("Talk-");
+				map_window->centerCursor();
+				map_window->set_show_cursor(true);
+			}
+			break;
+		case SDLK_u     :
+			mode = USE_MODE;
+			scroll->display_string("Use-");
+			map_window->centerCursor();
+			map_window->set_show_use_cursor(true);
+			break;
+		case SDLK_g     :
+			mode = GET_MODE;
+			scroll->display_string("Get-");
+			map_window->centerCursor();
+			map_window->set_show_use_cursor(true);
+			break;
+		case SDLK_RETURN  :
+		case SDLK_KP_ENTER   :
+			map_window->set_show_use_cursor(false);
+			map_window->set_show_cursor(false);
+			if(mode == LOOK_MODE)
+			{
+				mode = MOVE_MODE;
+				look();
+			}
+			else if(mode == TALK_MODE)
+			{
+				mode = MOVE_MODE;
+				if(talk())
+					scroll->set_talking(true);
+			}
+			else if(mode == USE_MODE)
+			{
+				//mode = MOVE_MODE;
+				use(0,0);
+			}
+			else if(mode == GET_MODE)
+			{
+				mode = MOVE_MODE;
+				get(0,0);
+			}
+			else if(mode == USESELECT_MODE || mode == FREESELECT_MODE)
+			{
+				mode = MOVE_MODE;
+				select_obj();
+			}
+			else
+			{
+				scroll->display_string("what?\n\n");
+				scroll->display_prompt();
+			}
+			break;
+		case SDLK_ESCAPE:
+			if(mode == MOVE_MODE)
+			{
+				scroll->display_string("Pass!\n\n");
+				scroll->display_prompt();
+				player->pass();
+			}
+			else
+			{
+				mode = MOVE_MODE;
+				map_window->set_show_use_cursor(false);
+				map_window->set_show_cursor(false);
+				scroll->display_string("what?\n\n");
+				scroll->display_prompt();
+			}
+			break;
+		case SDLK_SPACE :
+			scroll->display_string("Pass!\n\n");
+			scroll->display_prompt();
+			player->pass();
+			break;
+		default :
+			if (event->key.keysym.sym != SDLK_LALT
+				&& event->key.keysym.sym != SDLK_RALT)
+			{
+				scroll->display_string("what?\n\n");
+				scroll->display_prompt();
+			}
+			break;
+	}	//	switch (event->key.keysym.sym)
+
+	return	true;
+}
+
 bool Event::handleEvent(const SDL_Event *event)
 {
-			switch (event->type) {
-				case SDL_MOUSEMOTION:
-					break;
-				case SDL_MOUSEBUTTONDOWN:
-					break;
-				case SDL_KEYUP:
-                                        if(event->key.keysym.sym == SDLK_RALT
-                                           || event->key.keysym.sym == SDLK_LALT)
-                                        {
-                                            clear_alt_code();
-                                        }
-                                        break;
-				case SDL_KEYDOWN:
-           if(scroll->handle_input(&event->key.keysym))
-             break; // break switch
-           // alt-code input
-           if((event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9)
-              && (SDL_GetModState() & KMOD_ALT))
-           {
-               alt_code_str[alt_code_len++] = (char)event->key.keysym.sym;
-               alt_code_str[alt_code_len] = '\0';
-               if(alt_code_len == 3)
-               {
-                   alt_code(alt_code_str);
-                   clear_alt_code();
-               }
-               break;
-           }
-           switch(event->key.keysym.sym)
-            {
-             case SDLK_UP    :
-                               move(0,-1);
-                               break;
-             case SDLK_DOWN  :
-                               move(0,1);
-                               break;
-             case SDLK_LEFT  :
-                               move(-1,0);
-                               break;
-             case SDLK_RIGHT :
-                               move(1,0);
-                               break;
-             case SDLK_TAB   : view_manager->set_inventory_mode(); //show inventory view
-                               break;
-             case SDLK_q     : if(!showingQuitDialog)
-                                 {
-                                  showingQuitDialog = true;
-                                  quitDialog();
-                                 }
-                               break;
-             case SDLK_l     :
-                               mode = LOOK_MODE;
-                               scroll->display_string("Look-");
-                               map_window->centerCursor();
-                               map_window->set_show_cursor(true);
-                               break;
-             case SDLK_t     :
-                               if(mode == TALK_MODE) //you can select an actor with 't' or enter.
-                                 {
-                                  if(talk())
-                                    scroll->set_talking(true);
-                                  mode = MOVE_MODE;
-                                  map_window->set_show_cursor(false);
-                                 }
-                               else
-                                 {
-                                  mode = TALK_MODE;
-                                  scroll->display_string("Talk-");
-                                  map_window->centerCursor();
-                                  map_window->set_show_cursor(true);
-                                 }
-                               break;
-             case SDLK_u     :
-                               mode = USE_MODE;
-                               scroll->display_string("Use-");
-                               map_window->centerCursor();
-                               map_window->set_show_use_cursor(true);
-                               break;
-             case SDLK_g     :
-                               mode = GET_MODE;
-                               scroll->display_string("Get-");
-                               map_window->centerCursor();
-                               map_window->set_show_use_cursor(true);
-                               break;
-
-             case SDLK_RETURN  :
-                               map_window->set_show_use_cursor(false);
-                               map_window->set_show_cursor(false);
-                               if(mode == LOOK_MODE)
-                                 {
-                                  mode = MOVE_MODE;
-                                  look();
-                                 }
-                               else if(mode == TALK_MODE)
-                                 {
-                                  mode = MOVE_MODE;
-                                  if(talk())
-                                    scroll->set_talking(true);
-                                 }
-                               else if(mode == USE_MODE)
-                                 {
-                                  //mode = MOVE_MODE;
-                                  use(0,0);
-                                 }
-                               else if(mode == GET_MODE)
-                                 {
-                                  mode = MOVE_MODE;
-                                  get(0,0);
-                                 }
-                               else if(mode == USESELECT_MODE || mode == FREESELECT_MODE)
-                                 {
-                                  mode = MOVE_MODE;
-                                  select_obj();
-                                 }
-                               else
-                                 {
-                                  scroll->display_string("what?\n\n");
-                                  scroll->display_prompt();
-                                 }
-                               break;
-             case SDLK_ESCAPE:
-                               if(mode == MOVE_MODE)
-                                 {
-                                  scroll->display_string("Pass!\n\n");
-                                  scroll->display_prompt();
-                                  player->pass();
-                                 }
-                               else
-                                 {
-                                  mode = MOVE_MODE;
-                                  map_window->set_show_use_cursor(false);
-                                  map_window->set_show_cursor(false);
-                                  scroll->display_string("what?\n\n");
-                                  scroll->display_prompt();
-                                 }
-                               break;
-             case SDLK_SPACE :
-                               scroll->display_string("Pass!\n\n");
-                               scroll->display_prompt();
-                               player->pass();
-                               break;
-             default :
-                               if(event->key.keysym.sym != SDLK_LALT
-                                  && event->key.keysym.sym != SDLK_RALT)
-                               {
-                                scroll->display_string("what?\n\n");
-                                scroll->display_prompt();
-                               }
-                               break;
-            }
-          break;
-
-        case SDL_QUIT :
-                       if(!showingQuitDialog)
-                          {
-                           showingQuitDialog = true;
-                           quitDialog();
-                          }
-                       break;
-        default:
-        break;
+	switch (event->type) 
+	{
+		case SDL_MOUSEMOTION:
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			break;
+		case SDL_KEYUP:
+			if(event->key.keysym.sym == SDLK_RALT
+			   || event->key.keysym.sym == SDLK_LALT)
+			{
+				clear_alt_code();
 			}
+			break;
 
-    if(active_alt_code && scroll->get_input())
-        alt_code_input(scroll->get_input());
- return true;
+		case SDL_KEYDOWN:
+			handleSDL_KEYDOWN (event);
+			break;
+
+		case SDL_QUIT :
+			if(!showingQuitDialog)
+			{
+				showingQuitDialog = true;
+				quitDialog();
+			}
+			break;
+
+		default:
+			break;
+	}	
+
+	if(active_alt_code && scroll->get_input())
+		alt_code_input(scroll->get_input());
+	
+	return true;
 }
 
 

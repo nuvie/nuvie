@@ -283,6 +283,7 @@ bool MsgScroll::handle_input(const SDL_keysym *input)
                               set_input_mode(false);
                           }
                           return(true);
+		case SDLK_KP_ENTER:
         case SDLK_RETURN: if(permit_inputescape)
                           {
                             if(input_mode)

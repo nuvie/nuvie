@@ -366,3 +366,109 @@ bool MapCoord::is_visible()
 {
     return(Game::get_game()->get_map_window()->in_window(x, y, z));
 }
+
+
+bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result)
+{
+	if (flags & LT_HitUnpassable)
+	{
+		if (!is_passable (x, y, level))
+		{
+			Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
+			return	true;
+		}
+	}
+	
+	if (flags & LT_HitForcedPassable)
+	{
+		if (obj_manager->is_forced_passable (x, y, level))
+		{
+			Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
+			return	true;
+		}
+	}
+
+	if (flags & LT_HitActors)
+	{
+		// TODO:
+	}
+
+	return	false;
+}
+
+//	returns true if a line hits something travelling from (start_x, start_y) to
+//	(end_x, end_y).  If a hit occurs Result is filled in with the relevant info.
+bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
+				   uint8 flags, LineTestResult &Result)
+{
+	//	standard Bresenham's algorithm.
+	int	deltax = abs (end_x - start_x);
+	int	deltay = abs (end_y - start_y);
+
+	int	x = start_x;
+	int	y = start_y;
+	int d;
+	int xinc1, xinc2;
+	int yinc1, yinc2;
+	int dinc1, dinc2;
+	int count;
+
+
+	if (deltax >= deltay)
+	{
+		d = (deltay << 1) - deltax;
+
+		count = deltax + 1;
+		dinc1 = deltay << 1;
+		dinc2 = (deltay - deltax) << 1;
+		xinc1 = 1;
+		xinc2 = 1;
+		yinc1 = 0;
+		yinc2 = 1;
+	}
+	else
+	{
+		d = (deltax << 1) - deltay;
+
+		count = deltay + 1;
+		dinc1 = deltax << 1;
+		dinc2 = (deltax - deltay) << 1;
+		xinc1 = 0;
+		xinc2 = 1;
+		yinc1 = 1;
+		yinc2 = 1;
+	}
+
+	if (start_x > end_x)
+	{
+		xinc1 = -xinc1;
+		xinc2 = -xinc2;
+	}
+	if (start_y > end_y)
+	{
+		yinc1 = -yinc1;
+		yinc2 = -yinc2;
+	}
+
+	for (int i = 0; i < count; i++)
+	{
+		//	test the current location
+		if (testIntersection(x, y, level, flags, Result) == true)
+			return	true;
+
+		if (d < 0)
+		{
+			d += dinc1;
+			x += xinc1;
+			y += yinc1;
+		}
+		else
+		{
+			d += dinc2;
+			x += xinc2;
+			y += yinc2;
+		}
+	}
+
+	return	false;
+}

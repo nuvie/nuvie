@@ -37,6 +37,7 @@ class GUI_DragArea {
   virtual void drag_perform_drop(int x, int y, int message, void *data) { return; }
   virtual void drag_drop_failed(int x, int y, int message, void *data) { return; }
   virtual void drag_drop_success(int x, int y, int message, void *data) { return; }
+  virtual void drag_draw(int x, int y, int message, void* data) { return; }
 
 };
 

@@ -125,6 +125,11 @@ GUI:: Display(bool full_redraw)
 {
 	int i;
 
+	//	hack for now to make everyhing under the cursor draw until I find a bettwe
+	//	way of doing this...
+	if (dragging)
+		full_redraw = true;
+
 	for ( i=0; i<numwidgets; ++i ) {
 		if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
 			widgets[i]->Display(full_redraw);
@@ -132,6 +137,11 @@ GUI:: Display(bool full_redraw)
 		}
 	}
 	//SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+	int mx, my;
+	SDL_GetMouseState (&mx, &my);
+	
+	gui_drag_manager->draw (mx / screen_scale_factor, my / screen_scale_factor);
 }
 
 /* Function to handle a GUI status */

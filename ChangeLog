@@ -1,4 +1,16 @@
 2003-10-30  Eric Fry <efry@users.sourceforge.net>
+	Merged Jonathan E. Wright's changes.
+	They are...
+	* Added Dragging from MapWindow to other GUI objects.
+	* Added movement by the keypad.
+	* Added Map::lineTest this method checks a line of sight from the
+	  player to a point on the map for passability.
+	* Made drag inventory->world, paperdoll->world, world->world,
+	  world->paperdoll and world->inventory use lineTest to ensure the
+	  player can reach the item and the spot where it is being dropped.
+	* Show objects being dragged / dropped under cursor.
+
+2003-10-30  Eric Fry <efry@users.sourceforge.net>
 	* Temporary objects now clear on level change, teleport.
 
 2003-10-29  Eric Fry <efry@users.sourceforge.net>

@@ -66,7 +66,9 @@ class InventoryWidget : public GUI_Widget {
 
  bool drag_accept_drop(int x, int y, int message, void *data);
  void drag_perform_drop(int x, int y, int message, void *data);
- 
+
+ void drag_draw(int x, int y, int message, void* data);
+
  protected:
  inline uint16 get_list_position(int x, int y);
  inline Obj *get_obj_at_location(int x, int y);
@@ -77,7 +79,7 @@ class InventoryWidget : public GUI_Widget {
  
  bool up_arrow();
  bool down_arrow();
- 
+
 };
 
 #endif /* __InventoryWidget_h__ */

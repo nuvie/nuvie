@@ -118,6 +118,7 @@ class Event
  inline Uint32 TimeLeft();
  
  void quitDialog();
+ bool handleSDL_KEYDOWN (const SDL_Event *event);
  
 };
 

@@ -12,6 +12,7 @@
 #include "MapWindow.h"
 
 #include "GUI_widget.h"
+#include "Game.h"
 
 MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
@@ -31,6 +32,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  cur_level = 0;
 
  tmp_buf = NULL;
+
+ selected_obj = NULL;
    
 }
 
@@ -801,10 +804,20 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     y = (cur_y + y) % map_width;
 
     if(map->is_passable(x,y,cur_level))
-      return true;
-    else
-      printf("Not Possible\n");
-   }
+	{
+	  LineTestResult result;
+
+      // make sure the player can reach the drop point
+	  Actor* player = actor_manager->get_player();
+	  if (!map->lineTest(player->x, player->y, x, y, cur_level, LT_HitUnpassable, result))
+	  {
+        return true;
+	  }
+	}
+
+	if (Game::get_game ()->get_scroll ())
+		Game::get_game ()->get_scroll ()->display_string("\n\nNot Possible\n\n>");
+  }
 
  return false;
 }
@@ -824,7 +837,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
     x = (cur_x + x / 16) % map_width;
     y = (cur_y + y / 16) % map_width;
 
-    printf("Drop (%x,%x,%x)\n", x, y, cur_level);
+    //printf("Drop (%x,%x,%x)\n", x, y, cur_level);
     obj = (Obj *)data;
     target_obj = obj_manager->get_obj(x,y, cur_level);
     if(target_obj && target_obj->container) //drop object into a container. FIX for locked chests.
@@ -842,4 +855,125 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
    }
    
  return;
+}
+
+GUI_status	MapWindow::MouseDown (int x, int y, int button)
+{
+	//printf ("MapWindow::MouseDown, button = %i\n", button);
+
+	Obj	*obj = get_objAtMousePos (x, y);
+
+	if (!obj)
+		return	GUI_PASS;
+
+	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
+
+	if (weight == 0)
+		return	GUI_PASS;
+
+	selected_obj = obj;
+
+	return	GUI_PASS;
+}
+
+GUI_status	MapWindow::MouseUp (int x, int y, int button)
+{
+	//printf ("MapWindow::MouseUp\n");
+	if (selected_obj)
+	{
+		selected_obj = NULL;
+	}
+
+	return	GUI_PASS;
+}
+
+GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
+{
+	Tile	*tile;
+
+	//	printf ("MapWindow::MouseMotion\n");
+	if (selected_obj && !dragging)
+	{
+		// ensure that the player can reach the selected object before
+		// letting them drag it
+		int wx, wy;
+		mouseToWorldCoords (x, y, wx, wy);
+
+		LineTestResult result;
+		Actor* player = actor_manager->get_player();
+
+		if (map->lineTest(player->x, player->y, wx, wy, cur_level, LT_HitUnpassable, result))
+			// something was in the way, so don't allow a drag
+			return GUI_PASS;
+
+		dragging = true;
+		tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
+		return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
+	}
+
+	return	GUI_PASS;
+}
+
+void	MapWindow::drag_drop_success (int x, int y, int message, void *data)
+{
+	//printf ("MapWindow::drag_drop_success\n");
+	dragging = false;
+
+	if (selected_obj)
+		obj_manager->remove_obj (selected_obj);
+
+	selected_obj = NULL;
+	Redraw();
+}
+
+void	MapWindow::drag_drop_failed (int x, int y, int message, void *data)
+{
+	printf ("MapWindow::drag_drop_failed\n");
+	dragging = false;
+	selected_obj = NULL;
+}
+
+Obj *MapWindow::get_objAtMousePos (int mx, int my)
+{
+	int wx, wy;
+	mouseToWorldCoords (mx, my, wx, wy);
+
+    return	obj_manager->get_obj (wx, wy, cur_level);
+}
+
+void MapWindow::mouseToWorldCoords (int mx, int my, int &wx, int &wy)
+{
+	int x = mx - area.x;
+	int y = my - area.y;
+ 
+    int	map_width = map->get_width(cur_level);
+ 
+    wx = (cur_x + x / 16) % map_width;
+    wy = (cur_y + y / 16) % map_width;
+}
+
+void MapWindow::drag_draw(int x, int y, int message, void* data)
+{
+	Tile* tile;
+
+	if (!selected_obj)
+		return;
+		
+	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj->obj_n) + selected_obj->frame_n);
+
+	int	nx = x - 8;
+	int	ny = y - 8;
+
+	if (nx + 16 >= 320)
+		nx = 303;
+	else if (nx < 0)
+		nx = 0;
+
+	if (ny + 16 >= 200)
+		ny = 183;
+	else if (ny < 0)
+		ny = 0;
+
+	screen->blit(nx, ny, tile->data, 8, 16, 16, 16, true);
+	screen->update(nx, ny, 16, 16);
 }

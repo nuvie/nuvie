@@ -60,4 +60,17 @@ void GUI_DragManager::drop(GUI_DragArea *drag_target, int x, int y)
 
  return;
 }
+
+void GUI_DragManager::draw(int x, int y)
+{
+	if (!drag_source)
+		return;
+
+	drag_source->drag_draw (x, y, message, data);
+}
+
+GUI_DragArea *GUI_DragManager::get_source()
+{
+	return drag_source;
+}
  

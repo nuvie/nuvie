@@ -47,6 +47,8 @@ class MapWindow: public GUI_Widget
  uint8 cur_level;
 
  SDL_Rect clip_rect;
+
+ Obj* selected_obj;
  
  public:
  
@@ -73,7 +75,9 @@ class MapWindow: public GUI_Widget
  Obj *get_objAtCursor();
  Actor *get_actorAtCursor();
  MapCoord get_cursorCoord() { return(MapCoord(cur_x+cursor_x,cur_y+cursor_y,cur_level)); }
- 
+ Obj *get_objAtMousePos(int x, int y);
+ void mouseToWorldCoords (int mx, int my, int &wx, int &wy);
+
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);
 
@@ -83,8 +87,17 @@ class MapWindow: public GUI_Widget
  
  void Display(bool full_redraw);
  
+ virtual GUI_status	MouseDown (int x, int y, int button);
+ virtual GUI_status	MouseUp (int x, int y, int button);
+ virtual GUI_status	MouseMotion (int x, int y, Uint8 state);
+
+ void drag_drop_success (int x, int y, int message, void *data);
+ void drag_drop_failed (int x, int y, int message, void *data);
+
  bool drag_accept_drop(int x, int y, int message, void *data);
  void drag_perform_drop(int x, int y, int message, void *data);
+
+ void drag_draw(int x, int y, int message, void* data);
 
 protected:
 
