@@ -556,13 +556,16 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
 
 void Screen::buildalphamap8()
 {
+ int i;
+ int tile_offset;
+ 
     //Build three globes for 3 intensities
     //16x16, 32x32, 64x64
     shading_globe[0] = (uint8*)malloc(sqr(globeradius[0]));
     shading_globe[1] = (uint8*)malloc(sqr(globeradius[1]));
     shading_globe[2] = (uint8*)malloc(sqr(globeradius[2]));
 
-    for( int i = 0; i < 3; i++ )
+    for( i = 0; i < 3; i++ )
         for( int y = 0; y < globeradius[i]; y++ )
             for( int x = 0; x < globeradius[i]; x++ )
             {
@@ -584,20 +587,18 @@ void Screen::buildalphamap8()
     int game_type;
     config->value("config/GameType",game_type);
  
-    if(game_type == NUVIE_GAME_U6)
-    {
-        shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(444)->data;
-        shading_tile[1] = game->get_map_window()->get_tile_manager()->get_tile(445)->data;
-        shading_tile[2] = game->get_map_window()->get_tile_manager()->get_tile(446)->data;
-        shading_tile[3] = game->get_map_window()->get_tile_manager()->get_tile(447)->data;
-    }
-    else
-    {
-        shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(268)->data;
-        shading_tile[1] = game->get_map_window()->get_tile_manager()->get_tile(269)->data;
-        shading_tile[2] = game->get_map_window()->get_tile_manager()->get_tile(270)->data;
-        shading_tile[3] = game->get_map_window()->get_tile_manager()->get_tile(271)->data;
-    }
+    switch(game_type)
+	 {
+	  case NUVIE_GAME_U6 :
+	  case NUVIE_GAME_SE : tile_offset = 444; break;
+
+	  case NUVIE_GAME_MD : tile_offset = 268; break;
+	 }
+	 
+	 for(i = 0; i < 4; i++) //gather the array of shading tiles
+	   shading_tile[i] = game->get_map_window()->get_tile_manager()->get_tile(tile_offset + i)->data;
+
+ return;
 }
 
 
