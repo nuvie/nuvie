@@ -42,7 +42,7 @@ uint32 RenderSurface::Gmask;
 uint32 RenderSurface::Bmask;
 
 // Default constructor for no created surface
-RenderSurface::RenderSurface() : buffer(0), zbuffer_priv(0), opengl(0),
+RenderSurface::RenderSurface() : buffer(0), zbuffer_priv(0), sdl_surface(NULL), opengl(0),
 		bytes_per_pixel(0), bits_per_pixel(0),
 		pixels(0), zbuffer(0), w(0), h(0), pitch(0),
 		gl(0), gr(0), gt(0), gb(0), lock_count(0)
@@ -50,7 +50,7 @@ RenderSurface::RenderSurface() : buffer(0), zbuffer_priv(0), opengl(0),
 }
 
 // Constructor for custom buffer
-RenderSurface::RenderSurface(uint32 width, uint32 height, uint32 bpp, uint8 *p) : buffer(0), zbuffer_priv(0), opengl(0),
+RenderSurface::RenderSurface(uint32 width, uint32 height, uint32 bpp, uint8 *p) : buffer(0), zbuffer_priv(0), sdl_surface(NULL), opengl(0),
 		bytes_per_pixel(bpp/8), bits_per_pixel(bpp),
 		pixels(p), zbuffer(0), w(width), h(height), pitch(width),
 		gl(0), gr(width), gt(0), gb(height), lock_count(0)
@@ -61,7 +61,7 @@ RenderSurface::RenderSurface(uint32 width, uint32 height, uint32 bpp, uint8 *p) 
 }
 
 // Constructor for generic surface (with optional guardband)
-RenderSurface::RenderSurface(uint32 width, uint32 height, uint32 bpp, sint32 guard) : buffer(0), zbuffer_priv(0), opengl(0),
+RenderSurface::RenderSurface(uint32 width, uint32 height, uint32 bpp, sint32 guard) : buffer(0), zbuffer_priv(0), sdl_surface(NULL), opengl(0),
 		bytes_per_pixel(bpp/8), bits_per_pixel(bpp),
 		pixels(0), zbuffer(0), w(width), h(height), pitch(width*(bpp/8)+2*guard*(bpp/8)),
 		gl(-guard), gr(guard+width), gt(-guard), gb(guard+height), lock_count(0)
@@ -75,7 +75,7 @@ RenderSurface::RenderSurface(uint32 width, uint32 height, uint32 bpp, sint32 gua
 }
 
 // Constructor for sdl surface
-RenderSurface::RenderSurface(SDL_Surface *surf) : buffer(0), zbuffer_priv(0), opengl(0),
+RenderSurface::RenderSurface(SDL_Surface *surf) : buffer(0), zbuffer_priv(0), sdl_surface(NULL), opengl(0),
 		bytes_per_pixel(0), bits_per_pixel(0),
 		pixels((uint8 *) surf->pixels), zbuffer(0), w(surf->w), h(surf->h), pitch(surf->pitch),
 		gl(0), gr(surf->w), gt(0), gb(surf->h), lock_count(0)
@@ -84,7 +84,7 @@ RenderSurface::RenderSurface(SDL_Surface *surf) : buffer(0), zbuffer_priv(0), op
 }
 
 // Constructor for opengl surface
-RenderSurface::RenderSurface(OpenGL *ogl) : buffer(0), zbuffer_priv(0), opengl(ogl),
+RenderSurface::RenderSurface(OpenGL *ogl) : buffer(0), zbuffer_priv(0), sdl_surface(NULL), opengl(ogl),
 		bytes_per_pixel(0), bits_per_pixel(0),
 		pixels(0), zbuffer(0), w(0), h(0), pitch(0),
 		gl(0), gr(0), gt(0), gb(0), lock_count(0)
@@ -95,6 +95,7 @@ RenderSurface::~RenderSurface()
 {
 	if (buffer) delete [] buffer;
 	if (zbuffer_priv) delete [] zbuffer_priv;
+  if (sdl_surface) free(sdl_surface);
 }
 
 //
@@ -525,3 +526,10 @@ RenderSurface *CreateRenderSurface(OpenGL *ogl)
 	return new RenderSurface(ogl);
 }
 
+SDL_Surface *RenderSurface::get_sdl_surface()
+{
+ if(sdl_surface == NULL)
+   sdl_surface = SDL_CreateRGBSurfaceFrom(pixels, w, h, bits_per_pixel, pitch, Rmask, Gmask, Bmask, 0);
+
+ return sdl_surface;
+}

@@ -50,6 +50,10 @@ class Screen
  uint16 width;
  uint16 height;
  
+ SDL_Rect *update_rects;
+ uint16 num_update_rects;
+ uint16 max_update_rects;
+ 
  public:
    Screen(Configuration *cfg);
    ~Screen();
@@ -62,13 +66,16 @@ class Screen
    void *get_pixels();
    uint16 get_pitch();
    uint16 get_bpp();
+   int get_scale_factor() { return scale_factor; }
+   SDL_Surface *get_sdl_surface();
 
    bool fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
       
    bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL);     
    void update();
    void update(uint16 x, uint16 y, uint16 w, uint16 h);
-   
+   void preformUpdate();
+
    void lock();
    void unlock();
    

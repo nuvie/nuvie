@@ -2,6 +2,8 @@
 
  <loadgame>ultima6</loadgame>
 
+ <datadir>./data/</datadir>
+
  <video>
   <scale_method>Point</scale_method>
   <scale_factor>2</scale_factor>

@@ -36,6 +36,10 @@
 Screen::Screen(Configuration *cfg)
 {
  config = cfg;
+ 
+ update_rects = NULL;
+ max_update_rects = 10;
+ num_update_rects = 0;
 }
 
 Screen::~Screen()
@@ -57,6 +61,10 @@ bool Screen::init(uint16 new_width, uint16 new_height)
 			SDL_GetError());
    return false;
 	}
+
+ update_rects = (SDL_Rect *)malloc(sizeof(SDL_Rect) * max_update_rects);
+ if(update_rects == NULL)
+   return false;
 
  config->value("config/video/scale_method", str, "---");
  scaler_index = scaler_reg.GetIndexForName(str);
@@ -217,6 +225,14 @@ void *Screen::get_pixels()
  //   return NULL; 
  
  //return scaled_surface->pixels;
+ return NULL;
+}
+   
+SDL_Surface *Screen::get_sdl_surface()
+{
+ if(surface)
+   return surface->get_sdl_surface();
+
  return NULL;
 }
 
@@ -395,6 +411,7 @@ void Screen::update(uint16 x, uint16 y, uint16 w, uint16 h)
    w += 2;
  if(h <= surface->h-2)
    h += 2;
+
  if(scaler)
   {   
    scaler->Scale(surface->format_type, surface->pixels,		// type, source
@@ -416,10 +433,30 @@ void Screen::update(uint16 x, uint16 y, uint16 w, uint16 h)
    src += surface->pitch;
   }
    
- SDL_UpdateRect(sdl_surface,x*scale_factor,y*scale_factor,w*scale_factor,h*scale_factor);
+ if(num_update_rects == max_update_rects)
+   {
+    update_rects = (SDL_Rect *)realloc(update_rects,sizeof(SDL_Rect) * (max_update_rects + 10));
+    max_update_rects += 10;
+   }
+  
+ update_rects[num_update_rects].x = x*scale_factor;
+ update_rects[num_update_rects].y = y*scale_factor;
+ update_rects[num_update_rects].w = w*scale_factor;
+ update_rects[num_update_rects].h = h*scale_factor;
+ 
+ num_update_rects++;
+ 
+ //SDL_UpdateRect(sdl_surface,x*scale_factor,y*scale_factor,w*scale_factor,h*scale_factor);
 
  return;
 }
+
+void Screen::preformUpdate()
+{
+ SDL_UpdateRects(sdl_surface,num_update_rects,update_rects);
+ num_update_rects = 0;
+}
+
 void Screen::lock()
 {
 // SDL_LockSurface(scaled_surface);

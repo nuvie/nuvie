@@ -309,7 +309,7 @@ void MapWindow::drawMap()
  
 // screen->blit(8,8,ptr,8,(win_width-1) * 16,(win_height-1) * 16, win_width * 16, false);
  
- screen->update(0,0,win_width*16,win_height*16);
+ screen->update(8,8,win_width*16,win_height*16);
  
 }
 

@@ -29,7 +29,8 @@ class OpenGL;
 
 class RenderSurface {
 	uint8	*buffer;				// If the buffer is created, this is it
-	uint16	*zbuffer_priv;			
+	uint16	*zbuffer_priv;
+  SDL_Surface *sdl_surface;		
 public:
 	OpenGL	*opengl;				// OpenGL surface
 
@@ -52,6 +53,8 @@ public:
 	uint32	gt, gb;					// Guard top and bottom (up goes negetive)
 
 	uint32	lock_count;				// Number of locks on surface
+  
+
 public:
 
 	// Default constructor for no created surface
@@ -123,6 +126,9 @@ public:
 
 
 	//FIX virtual void display8(uint8 *buf, int x, int y) = 0;
+  
+   SDL_Surface *get_sdl_surface();
+
 private:
 
 	// Draw Lines

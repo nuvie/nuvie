@@ -27,6 +27,21 @@ nuvie_SOURCES = \
 	files/U6Shape.cpp \
 	files/U6Shape.h \
 \
+	GUI/GUI.cpp \
+	GUI/GUI.h \
+	GUI/GUI_area.cpp \
+	GUI/GUI_area.h \
+	GUI/GUI_button.cpp \
+	GUI/GUI_button.h \
+	GUI/GUI_font.cpp \
+	GUI/GUI_font.h \
+	GUI/GUI_loadimage.cpp \
+	GUI/GUI_loadimage.h \
+	GUI/GUI_text.cpp \
+	GUI/GUI_text.h \
+	GUI/GUI_widget.cpp \
+	GUI/GUI_widget.h \
+\
 	misc/U6LList.cpp \
 	misc/U6LList.h \
 	misc/U6misc.cpp \

@@ -38,7 +38,7 @@
 
 class Book;
 
-#define NUVIE_INTERVAL    50
+#define NUVIE_INTERVAL    65
 
 typedef enum {
  LOOK_MODE,

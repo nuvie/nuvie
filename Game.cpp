@@ -38,6 +38,9 @@
 #include "SEUseCode.h"
 
 #include "Game.h"
+#include "GUI_button.h"
+#include "GUI_area.h"
+#include "GUI_text.h"
 
 Game *Game::game = NULL;
 
@@ -68,6 +71,10 @@ Game::~Game()
  
 bool Game::loadGame(Screen *s, uint8 type)
 {
+ GUI_Button *test_button;
+ GUI_Area *test_area;
+ GUI_Text *test_text;
+  
  screen = s;
  game_type = type;
  try
@@ -139,6 +146,24 @@ bool Game::loadGame(Screen *s, uint8 type)
    return false;
   }
 
+ gui = new GUI(screen);
+
+/* TESTING
+
+ test_area = new GUI_Area(75, 60, 170, 80, 212, 208, 131, 72, 69, 29, 2, AREA_ANGULAR);
+ test_button = new GUI_Button(NULL, 100, 50, 40, 18, "Yes", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
+ test_area->AddWidget(test_button);
+
+ test_button = new GUI_Button(NULL, 30, 50, 40, 18, "No", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
+ test_area->AddWidget(test_button);
+ 
+ test_text = new GUI_Text(10, 25, 0, 0, 0, "Do you want to Quit", gui->get_font());
+ 
+ test_area->AddWidget(test_text);
+  
+ gui->AddWidget(test_area);
+*/
+ 
  return true;
 }
 
@@ -220,7 +245,10 @@ void Game::play()
      map_window->drawMap();
      converse->continue_script();
      scroll->updateScroll();
-     //screen->update();
+     //gui->Run(NULL,1,0);
+     //gui->Display();
+     // mucking around with gui screen->update(75, 60, 170, 100);
+     screen->preformUpdate();
      event->wait();
    }
   return;

@@ -26,6 +26,7 @@
 #include <SDL.h>
 
 #include "Configuration.h"
+#include "GUI.h"
 
 #include "U6Shape.h"
 
@@ -74,6 +75,8 @@ class Game
  UseCode *usecode;
  
  Event *event;
+ 
+ GUI *gui;
  
  public:
  
