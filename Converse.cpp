@@ -510,8 +510,13 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
             res = v[0] - v[1];
             break;
         case 0x9a: // weight that npc val1 is free to carry
+            v[0] = opv->top(); opv->pop();
+            // FIXME
             break;
         case 0x9b: // weight of object val1, times val2(quantity)
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            // FIXME
             break;
         case 0xa0: // random number between val1 and val2 inclusive
             test_msg("-equals rnd(X to Y)-\n");
@@ -543,6 +548,9 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
                 res = get_dbint(v[0], v[1]);
             break;
         case 0xbb: // quantity of object val2 on npc val1
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            // FIXME
             break;
         case 0xdd: // id of party member val1(0=leader), val2=??
             test_msg("-equals NPC(PARTYIDX)??-\n");
@@ -866,8 +874,7 @@ void Converse::collect_args()
             args.resize(ai + 1); args[ai].resize(0);
             continue;
         }
-        if((is_print(val) || is_cmd(val))
-           && (check_overflow(1) || !is_valtype(peek(1)))) // next is not 0xb2,0xb3
+        if(is_print(val) || is_cmd(val))
         {
 //          std::cerr << "val is printable or cmd, done" << std::endl;
             break;
@@ -1028,7 +1035,9 @@ void Converse::stop()
  */
 void Converse::init_variables()
 {
-    heap.resize(CONV_VAR__LAST_ + 1); // FIXME: the U6 max. var num is unknown
+    // FIXME: the U6 max. var num is unknown, in this implementation can be no
+    // greater than one less than the first command code.
+    heap.resize(CONV_VAR__LAST_ + 1);
     for(int v = 0; v <= CONV_VAR__LAST_; v++)
         heap[v].valt = heap[v].val = 0x00;
     heap[CONV_VAR_SEX].val = player->get_gender();
