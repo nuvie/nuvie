@@ -196,7 +196,7 @@ bool U6Lib_n::create(std::string &filename, uint8 size)
 
 bool U6Lib_n::open(std::string &filename, uint8 size)
 {
- if(file.open(filename,"r") == false)
+ if(file.open(filename,"rb") == false)
    {
     printf("Error: Opening %s\n",filename.c_str());
     return false;

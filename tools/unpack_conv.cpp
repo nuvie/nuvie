@@ -34,7 +34,7 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
     unsigned char *buf = NULL, *comp_buf = NULL;
     uint32 buf_size = 0, comp_size = 0, b = 0;
 
-    index_f = fopen(indexname, "r");
+    index_f = fopen(indexname, "rb");
     converse->load_index(index_f);
     num_items = converse->get_num_items();
     for(int i = 0; i < num_items; i++)
