@@ -291,6 +291,8 @@ void U6Lib_n::parse_lib()
 
 // file.seek((num_zero_offsets + 1) * lib_size);
  file.seekStart();
+ if(read_filesize)
+    file.seek(4);
  for(i = 0; i < num_offsets && !file.eof(); i++)
    {
     if(lib_size == 2)
@@ -300,7 +302,7 @@ void U6Lib_n::parse_lib()
    }
 
  offsets[num_offsets] = file.filesize(); //this is used to calculate the size of the last item in the lib.
- if(!filesize)
+ if(!read_filesize)
     filesize = offsets[num_offsets];
  return; 
 }
