@@ -68,6 +68,7 @@ class MapWindow
  
  char *lookAtCursor();
  Obj *get_objAtCursor();
+ Actor *get_actorAtCursor();
  
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);

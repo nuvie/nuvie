@@ -182,12 +182,21 @@ char *MapWindow::lookAtCursor()
 
 Obj *MapWindow::get_objAtCursor()
 {
- Actor *actor;
  
  if(tmp_buf[(cursor_y+1) * (win_width+2) + (cursor_x+1)] == 0) //black area
    return NULL; // nothing to see here. ;)
    
  return obj_manager->get_obj(cur_x + cursor_x, cur_y + cursor_y, cur_level);
+}
+
+Actor *MapWindow::get_actorAtCursor()
+{
+ Actor *actor;
+ 
+ if(tmp_buf[(cursor_y+1) * (win_width+2) + (cursor_x+1)] == 0) //black area
+   return NULL; // nothing to see here. ;)
+   
+ return actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
 }
 
 void MapWindow::get_level(uint8 *level)
