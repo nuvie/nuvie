@@ -1137,6 +1137,8 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
      printf("CONT ");
    if(obj->status & OBJ_STATUS_IN_INVENTORY)
      printf("INV ");
+   if(obj->status & OBJ_STATUS_OK_TO_TAKE)
+     printf("OK ");
    if(obj->status & OBJ_STATUS_TEMPORARY)
      printf("TEMP ");
   

@@ -106,15 +106,17 @@ class Event
  void freeselect_mode(Obj *src, const char *prompt = NULL);
  void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
  void display_portrait(Actor *actor, const char *name = NULL);
+ void newAction(EventMode new_mode);
  void doAction(sint16 rel_x = 0, sint16 rel_y = 0);
  void cancelAction();
- void newAction(EventMode new_mode);
+ void endAction();
 
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
  bool use(Obj *obj);
  bool use(Actor *actor);
  bool get(sint16 rel_x, sint16 rel_y);
+ bool get(Obj *obj, Obj *container_obj = NULL, Actor *actor = NULL);
  bool look();
  bool look(Obj *obj);
  bool look(Actor *actor);
@@ -126,6 +128,11 @@ class Event
  bool select_obj(sint16 rel_x, sint16 rel_y);
  void solo_mode(uint32 actor_num);
  void party_mode();
+ bool ready(Obj *obj);
+ bool unready(Obj *obj);
+ bool drop_select(Obj *obj);
+ bool drop_to(uint16 x, uint16 y);
+ bool drop(Obj *obj, uint16 x, uint16 y);
 
  void alt_code(const char *cs);
  void alt_code_input(const char *in);

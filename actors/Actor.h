@@ -226,15 +226,17 @@ class Actor
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0);
  uint32 inventory_count_objects(bool inc_readied_objects);
  uint32 inventory_count_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
- Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
+ Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0, bool search_containers = true);
  Obj *inventory_get_readied_object(uint8 location);
- bool inventory_add_object(Obj *obj);
- bool inventory_remove_obj(Obj *obj);
+ Obj *inventory_get_obj_container(Obj *obj, Obj *container = 0);
+ bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack = false);
+ bool inventory_remove_obj(Obj *obj, Obj *container = 0);
  Obj *inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality = 0);
  uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container = 0);
  float inventory_get_max_weight() { return((strength * 2)); }
  float get_inventory_weight();
  float get_inventory_equip_weight();
+ void inventory_drop_all();
  bool can_carry_weight(float obj_weight); // return from get_obj_weight()
  bool can_carry_object(uint16 obj_n, uint32 qty = 0);
  bool can_carry_object(Obj *obj) { return(can_carry_weight(obj_manager->get_obj_weight(obj, true))); }

@@ -654,7 +654,7 @@ inline void ActorManager::clean_temp_actor(Actor *actor)
 bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
 {
     // maximum number of tries
-    uint32 toss_max = MAX(xrange, yrange) * MIN(xrange, yrange);
+    uint32 toss_max = MAX(xrange, yrange) * MIN(xrange, yrange) * 2;
     LineTestResult lt;
     if(toss_max == 0)
         return(false);

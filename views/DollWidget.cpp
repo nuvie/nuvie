@@ -78,6 +78,14 @@ void DollWidget::set_actor(Actor *a)
 }
 
 
+SDL_Rect *DollWidget::get_item_hit_rect(uint8 location)
+{
+    if(location < 8)
+        return(&item_hit_rects[location]);
+    return(NULL);
+}
+
+
 void DollWidget::Display(bool full_redraw)
 {
  //if(full_redraw || update_display)
@@ -189,6 +197,7 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
 GUI_status DollWidget::MouseUp(int x,int y,int button)
 {
  Event *event = Game::get_game()->get_event();
+ UseCode *usecode = Game::get_game()->get_usecode();
  // ABOEING
  if (event->get_mode() == LOOK_MODE) {
   event->set_mode(MOVE_MODE);
@@ -196,15 +205,39 @@ GUI_status DollWidget::MouseUp(int x,int y,int button)
   return GUI_YUM;
  }
 
+ // only act now if not usable, else wait for possible double-click
+ if(selected_obj && !usecode->has_usecode(selected_obj)) // un-ready selected item.
+   {
+//    actor->remove_readied_object(selected_obj);
+    event->unready(selected_obj);
+    selected_obj = NULL;
+    Redraw();
+    finish_mouseclick();
+   }
+
+ selected_obj = NULL;
+ return GUI_YUM;
+}
+
+
+// waited for double-click
+GUI_status DollWidget::MouseClick(int x, int y, int button)
+{
+ Event *event = Game::get_game()->get_event();
+ Obj *selected_obj = NULL;
+ for(uint8 location=0;location<8;location++)
+    if(HitRect(x-area.x,y-area.y,item_hit_rects[location]))
+       selected_obj = actor->inventory_get_readied_object(location);
  if(selected_obj) // un-ready selected item.
    {
-    actor->remove_readied_object(selected_obj);
-    selected_obj = NULL;
+//    actor->remove_readied_object(selected_obj);
+    event->unready(selected_obj);
     Redraw();
    }
 
-	return GUI_YUM;
+ return GUI_YUM;
 }
+
 
 GUI_status DollWidget::MouseMotion(int x,int y,Uint8 state)
 {
@@ -248,6 +281,8 @@ bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
 
 void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
+ Event *event = Game::get_game()->get_event();
+ MsgScroll *scroll = Game::get_game()->get_scroll();
  Obj *obj;
  
  x -= area.x;
@@ -255,8 +290,24 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
  
  if(message == GUI_DRAG_OBJ)
    {
-    printf("Ready item.");
+    printf("Ready item.\n");
     obj = (Obj *)data;
+
+#if 0 /* trying to connect dragndrop to Actions, but it cant be done yet */
+    if(!(obj->status & OBJ_STATUS_IN_INVENTORY)) // get
+      {
+       scroll->display_string("Get-");
+       event->get(obj, NULL, actor);
+      }
+    if(obj->status & OBJ_STATUS_IN_INVENTORY) // ready
+      {
+       if((obj->status & OBJ_STATUS_READIED) != OBJ_STATUS_READIED)
+         {
+          assert(obj->x == actor->get_actor_num());
+          event->ready(obj);
+         }
+      }
+#endif
     actor->inventory_add_object(obj);
     actor->add_readied_object(obj);
     Redraw();
@@ -289,4 +340,49 @@ void DollWidget::drag_draw(int x, int y, int message, void* data)
 
 	screen->blit(nx, ny, tile->data, 8, 16, 16, 16, true);
 	screen->update(nx, ny, 16, 16);
+}
+
+
+/* Use object. (FIXME: this is duplicating code from InventoryWidget)
+ */
+GUI_status DollWidget::MouseDouble(int x, int y, int button)
+{
+    UseCode *uc = Game::get_game()->get_usecode();
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+    Converse *converse = Game::get_game()->get_converse();
+    MapWindow *map_window = Game::get_game()->get_map_window();
+    Event *event = Game::get_game()->get_event();
+    const char *target_name;
+    Obj *obj = NULL;
+    for(uint8 location = 0; location < 8; location++)
+        if(HitRect(x - area.x, y - area.y, item_hit_rects[location]))
+            obj = actor->inventory_get_readied_object(location);
+
+    if(!(actor && obj && button == 1 && event->get_mode() == MOVE_MODE))
+        return(GUI_YUM);
+
+    target_name = obj_manager->look_obj(obj);
+    scroll->display_string("Use-");
+    scroll->display_string(target_name);
+    scroll->display_string("\n");
+
+    if(uc->has_usecode(obj))
+        uc->use_obj(obj, Game::get_game()->get_player()->get_actor());
+    else
+    {
+        fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
+        scroll->display_string("\nNot usable\n");
+    }
+
+    map_window->updateBlacking();
+
+    // if selecting, select_obj will return to MOVE_MODE (and no need to here)
+    if(event->get_mode() == USE_MODE || event->get_mode() == MOVE_MODE)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        event->set_mode(MOVE_MODE);
+    }
+
+    return(GUI_PASS);
 }

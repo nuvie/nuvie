@@ -892,7 +892,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
    {
     if(tmpBufTileIsBlack(x,y) && !hackmove)
       {
-       printf("Cannot drop onto nothing!");
+       printf("Cannot drop onto nothing!\n");
        return false;
       }
 

@@ -1,3 +1,16 @@
+2004-01-27  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Added ability to READY and UNREADY objects with the keyboard
+	  Press tab to move cursor to inventory, and return to ready/unready.
+	  This is now hooked to Event::ready (which will move to PlayerActions)
+	* Double-click to USE an object in the inventory works for readiable
+	  objects (this introduces a slight delay in click-to-ready)
+	* Actor: Various inventory management fixes. (in counting, adding, and
+	  removing objects) This means Iolo's gather/split gold commands work
+	  99% correct now. (it is taking gold from containers in Avatar's
+	  inventory when it shouldnt, and I don't know how to determine the
+	  maximum stack-quantity of objects)
+	* Mice can pass/be passed by actors, and can go through mouseholes.
+
 2004-01-24  Joseph Applegate <sb-x at users.sourceforge.net>
 	* New alt-codes: 314-teleport to NPC,
 	                 414-destination menu for lazy teleporters,

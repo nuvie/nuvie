@@ -60,15 +60,16 @@ class Player
  bool init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
  Actor *find_actor();
 
- Party *get_party() { return(party); }
+ Party *get_party()      { return(party); }
  bool get_uncontrolled() { return(uncontrolled); }
- void uncontrol() { uncontrolled = true; }
+ void uncontrol()        { uncontrolled = true; }
  void control();
  bool set_party_mode(Actor *new_actor);
  bool set_solo_mode(Actor *new_actor);
+ bool in_party_mode()    { return(party_mode); }
 
  void set_karma(uint8 val) { karma = val; }
- uint8 get_karma() { return(karma); }
+ uint8 get_karma()         { return(karma); }
  void add_karma(uint8 val = 1);
  void subtract_karma(uint8 val = 1);
 
@@ -83,7 +84,7 @@ class Player
  char *get_name();
  void set_gender(uint8 val) { gender = val; }
  char *get_gender_title();
- uint8 get_gender() { return(gender); }
+ uint8 get_gender()         { return(gender); }
 
  void moveRelative(sint16 rel_x, sint16 rel_y);
  void move(sint16 new_x, sint16 new_y, uint8 new_level);

@@ -32,7 +32,9 @@
 #include "Party.h"
 #include "Text.h"
 #include "Actor.h"
-
+#include "Event.h"
+#include "MapWindow.h"
+#include "ViewManager.h"
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
 
@@ -44,7 +46,11 @@ static GUI_status combatButtonCallback(void *data);
 InventoryView::InventoryView(Configuration *cfg) : View(cfg),
    doll_widget(NULL), inventory_widget(NULL)
 {
-
+ cursor_pos.area = INVAREA_LIST;
+ cursor_pos.x = cursor_pos.y = 0;
+ cursor_pos.px = cursor_pos.py = 0;
+ cursor_tile = NULL;
+ show_cursor = false;
 }
 
 InventoryView::~InventoryView()
@@ -62,7 +68,6 @@ bool InventoryView::set_party_member(uint8 party_member)
 
    return true;
   }
-
  return false;
 }
 
@@ -81,6 +86,9 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
  AddWidget(inventory_widget);
 
  add_command_icons(tmp_screen, view_manager);
+
+ cursor_tile = tile_manager->get_tile(365);
+ update_cursor();
  
  return true;
 }
@@ -104,7 +112,7 @@ void InventoryView::Display(bool full_redraw)
  //display_inventory_list();
 
  DisplayChildren(full_redraw);
- 
+
  if(full_redraw || update_display)
    {
     update_display = false;
@@ -116,6 +124,13 @@ void InventoryView::Display(bool full_redraw)
 //     text->drawChar(screen,24+i,area.x+4*16+16+i*8,area.y+16+16,0);
     screen->update(area.x+4*16+8,area.y+16+8,4*16,3*16); // item display
     //FIX add doll update rect.
+   }
+
+ if(show_cursor && cursor_tile != NULL)
+   {
+    screen->blit(cursor_pos.px, cursor_pos.py, (unsigned char *)cursor_tile->data,
+                 8, 16, 16, 16, true, NULL);
+    screen->update(cursor_pos.px, cursor_pos.py, 16, 16);
    }
 
  return;
@@ -263,4 +278,293 @@ static GUI_status combatButtonCallback(void *data)
 }
 
 
+/* Move the cursor around, ready or unready objects, select objects, switch
+ * to container view, use command icons.
+ */
+GUI_status InventoryView::KeyDown(SDL_keysym key)
+{
+    Event *event = Game::get_game()->get_event();
+    ViewManager *view_manager = Game::get_game()->get_view_manager();
+    if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
+        return(GUI_PASS);
+    switch(key.sym)
+    {
+        case SDLK_UP:
+            moveCursorRelative(0, -1);
+            break;
+        case SDLK_DOWN:
+            moveCursorRelative(0, 1);
+            break;
+        case SDLK_LEFT:
+            moveCursorRelative(-1, 0);
+            break;
+        case SDLK_RIGHT:
+            moveCursorRelative(1, 0);
+            break;
+        case SDLK_SPACE:
+        case SDLK_RETURN:
+            select_objAtCursor();
+            break;
+        case SDLK_TAB:
+            set_show_cursor(false);
+            Game::get_game()->get_map_window()->centerCursor();
+            Game::get_game()->get_map_window()->set_show_cursor(true);
+            break;
+        case SDLK_F1: // FIXME: these should pass down to Event (global actions)
+        case SDLK_F2:
+        case SDLK_F3:
+        case SDLK_F4:
+        case SDLK_F5:
+        case SDLK_F6:
+        case SDLK_F7:
+        case SDLK_F8:
+            if(view_manager->get_inventory_view()->set_party_member(key.sym - 282))
+            {
+                view_manager->set_inventory_mode();
+                moveCursorToInventory(0, 0);
+            }
+            break;
+        case SDLK_F10:
+            view_manager->set_party_mode();
+            set_show_cursor(false);
+            break;
+        case SDLK_ESCAPE:
+        default:
+            event->cancelAction();
+            break;
+    }
+    return(GUI_YUM);
+}
 
+
+/* Put cursor over one of the readied-item slots.
+ */
+void InventoryView::moveCursorToSlot(uint8 slot_num)
+{
+    cursor_pos.area = INVAREA_DOLL;
+    cursor_pos.x = slot_num;
+}
+
+
+/* Put cursor over one of the visible inventory slots. (column inv_x, row inv_y)
+ */
+void InventoryView::moveCursorToInventory(uint8 inv_x, uint8 inv_y)
+{
+    cursor_pos.area = INVAREA_LIST;
+    cursor_pos.x = inv_x;
+    cursor_pos.y = inv_y;
+}
+
+
+/* Put cursor over one of the command icons.
+ */
+void InventoryView::moveCursorToButton(uint8 button_num)
+{
+    cursor_pos.area = INVAREA_COMMAND;
+    cursor_pos.x = button_num;
+}
+
+
+/* Put cursor over the container or actor icon above the inventory widget.
+ */
+void InventoryView::moveCursorToTop()
+{
+    cursor_pos.area = INVAREA_TOP;
+}
+
+
+/* Put cursor over the next slot or icon in relative direction new_x, new_y.
+ */
+void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
+{
+    uint32 x = cursor_pos.x, y = cursor_pos.y;
+    if(cursor_pos.area == INVAREA_LIST)
+    {
+        if(x == 0 && new_x < 0)
+        {
+            if(y == 0)
+                moveCursorToSlot(2);
+            else if(y == 1)
+                moveCursorToSlot(4);
+            else if(y == 2)
+                moveCursorToSlot(6);
+        }
+        else if(y == 0 && new_y < 0)
+        {
+            if(inventory_widget->up_arrow()) // scroll up
+                update_display = true;
+            else
+                moveCursorToTop(); // move to container icon
+        }
+        else if(y == 2 && new_y > 0)
+        {
+            if(inventory_widget->down_arrow()) // scroll down
+                update_display = true;
+            else
+                moveCursorToButton((x == 0) ? 3 : 4); // move to command icon
+        }
+        else if((x + new_x) <= 3)
+            moveCursorToInventory(x + new_x, y + new_y);
+    }
+    else if(cursor_pos.area == INVAREA_DOLL)
+    {
+        // moves from these readied items can jump to inventory list
+        if(new_x > 0 && x == 2)
+            moveCursorToInventory(0, 0);
+        else if(new_x > 0 && x == 4)
+            moveCursorToInventory(0, 1);
+        else if(new_x > 0 && x == 6)
+            moveCursorToInventory(0, 2);
+        // moves from these readied items can jump to command icons
+        else if(new_y > 0 && x == 5)
+            moveCursorToButton(0);
+        else if(new_y > 0 && x == 6)
+            moveCursorToButton(2);
+        else if(new_y > 0 && x == 7)
+            moveCursorToButton(1);
+        // the rest move between readied items
+        else if(x == 0)
+            moveCursorToSlot((new_x < 0) ? 1
+                             : (new_x > 0) ? 2
+                             : (new_y > 0) ? 7 : 0);
+        else if(x == 7)
+            moveCursorToSlot((new_x < 0) ? 5
+                             : (new_x > 0) ? 6
+                             : (new_y < 0) ? 0 : 7);
+        else if(x == 1)
+            moveCursorToSlot((new_x > 0) ? 0
+                             : (new_y > 0) ? 3 : 1);
+        else if(x == 3)
+            moveCursorToSlot((new_x > 0) ? 4
+                             : (new_y < 0) ? 1
+                             : (new_y > 0) ? 5 : 3);
+        else if(x == 5)
+            moveCursorToSlot((new_x > 0) ? 7
+                             : (new_y < 0) ? 3 : 5);
+        else if(x == 2)
+            moveCursorToSlot((new_x < 0) ? 0
+                             : (new_y > 0) ? 4 : 2);
+        else if(x == 4)
+            moveCursorToSlot((new_x < 0) ? 3
+                             : (new_y < 0) ? 2
+                             : (new_y > 0) ? 6 : 4);
+        else if(x == 6)
+            moveCursorToSlot((new_x < 0) ? 7
+                             : (new_y < 0) ? 4 : 6);
+    }
+    else if(cursor_pos.area == INVAREA_COMMAND)
+    {
+        if(new_y < 0)
+        {
+            if(x == 0)
+                moveCursorToSlot(5);
+            else if(x == 1)
+                moveCursorToSlot(7);
+            else if(x == 2)
+                moveCursorToSlot(6);
+            else if(x == 3)
+                moveCursorToInventory(0, 2);
+            else if(x == 4)
+                moveCursorToInventory(1, 2);
+        }
+        else if((x + new_x) >= 0 && (x + new_x) <= 4)
+            moveCursorToButton(x + new_x);
+        update_display = true;
+    }
+    else if(cursor_pos.area == INVAREA_TOP)
+        if(new_y > 0)
+        {
+            moveCursorToInventory(cursor_pos.x, 0);
+            update_display = true;
+        }
+    update_cursor();
+}
+
+
+/* Update on-screen location (px,py) of cursor.
+ */
+void InventoryView::update_cursor()
+{
+    SDL_Rect *ready_loc;
+
+    switch(cursor_pos.area)
+    {
+        case INVAREA_LIST:
+            cursor_pos.px = (4 * 16 + 8) + cursor_pos.x * 16;
+            cursor_pos.py = 16 + 8 + cursor_pos.y * 16;
+            cursor_pos.px += area.x;
+            cursor_pos.py += area.y;
+            break;
+        case INVAREA_TOP:
+            cursor_pos.px = 32 + inventory_widget->area.x;
+            cursor_pos.py = 0 + inventory_widget->area.y;
+            break;
+        case INVAREA_DOLL:
+            ready_loc = doll_widget->get_item_hit_rect(cursor_pos.x);
+            cursor_pos.px = ready_loc->x + doll_widget->area.x;
+            cursor_pos.py = ready_loc->y + doll_widget->area.y;
+            break;
+        case INVAREA_COMMAND:
+            cursor_pos.px = ((cursor_pos.x + 1) * 16) - 16;
+            cursor_pos.py = 80;
+            cursor_pos.px += area.x;
+            cursor_pos.py += area.y;
+            break;
+    }
+}
+
+
+/* Returns pointer to object at cursor position, or NULL.
+ */
+Obj *InventoryView::get_objAtCursor()
+{
+   // emulate mouse; use center of cursor
+    uint32 hit_x = cursor_pos.px + 8 - inventory_widget->area.x,
+           hit_y = cursor_pos.py + 8 - inventory_widget->area.y;
+    if(cursor_pos.area == INVAREA_LIST) 
+        return(inventory_widget->get_obj_at_location(hit_x, hit_y));
+    else if(cursor_pos.area == INVAREA_DOLL)
+        return(inventory_widget->get_actor()->inventory_get_readied_object(cursor_pos.x));
+
+    return(NULL);
+}
+
+
+/* Do the action for the current EventMode with the object under the cursor.
+ */
+void InventoryView::select_objAtCursor()
+{
+    Event *event = Game::get_game()->get_event();
+    Obj *obj = get_objAtCursor();
+
+    if(cursor_pos.area == INVAREA_COMMAND)
+    {
+        printf("Do command icon function here!\n");
+        return;
+    }
+    else if(cursor_pos.area == INVAREA_TOP)
+    {
+        inventory_widget->set_container(NULL);
+        return;
+    }
+    switch(event->get_mode())
+    {
+        case EQUIP_MODE:
+            if(obj && obj->container)
+                inventory_widget->set_container(obj);
+            else if(obj)
+            {
+                if(cursor_pos.area == INVAREA_LIST)
+                    event->ready(obj);
+                else if(cursor_pos.area == INVAREA_DOLL)
+                    event->unready(obj);
+            }
+            break;
+        case LOOK_MODE:
+            if(obj)
+                event->look(obj);
+            break;
+        default:
+            event->cancelAction();
+    }
+}

@@ -40,16 +40,41 @@ class InventoryView : public View {
  
  DollWidget *doll_widget;
  InventoryWidget *inventory_widget;
- 
+
+ enum invarea
+ {
+    INVAREA_LIST = 0, // cursor is over the inventory list (x,y)
+    INVAREA_TOP,      // the actor or container icon
+    INVAREA_DOLL,     // the readied-items list (0-7)
+    INVAREA_COMMAND   // the command icons (0-4)
+ };
+ struct invcursor_pos_s
+ {
+    enum invarea area;
+    uint8 x, y; // y is only used for inventory list
+    uint32 px, py;
+ } cursor_pos;
+ Tile *cursor_tile; 
+ bool show_cursor;
+
  public:
  InventoryView(Configuration *cfg);
  ~InventoryView();
  
  bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
  bool set_party_member(uint8 party_member);
- 
+ void set_show_cursor(bool state) { show_cursor = state; update_display = true; }
+ void moveCursorToSlot(uint8 slot_num);
+ void moveCursorToInventory(uint8 inv_x = 0, uint8 inv_y = 0);
+ void moveCursorRelative(sint8 new_x, sint8 new_y);
+ void moveCursorToButton(uint8 button_num = 0);
+ void moveCursorToTop();
+ void select_objAtCursor();
+ Obj *get_objAtCursor();
+
  void Display(bool full_redraw);
-  
+ GUI_status KeyDown(SDL_keysym key);
+
  protected:
 
  void display_name();
@@ -57,6 +82,7 @@ class InventoryView : public View {
  void add_command_icons(Screen *tmp_screen, void *view_manager);
  void display_inventory_weights();
  void display_combat_mode();
+ void update_cursor();
 };
 
 #endif /* __InventoryView_h__ */

@@ -66,7 +66,7 @@ GUI_Widget:: Init(void *data, int x, int y, int w, int h)
  parent = NULL;
  
  update_display = true;
- mousedouble_delay = 300;
+ mousedouble_delay = 200; // SB-X
  last_mousedown_time = last_mouseup_time = 0;
  last_mousedown_x = last_mousedown_y = 0;
  last_mousedown_button = 0;
@@ -363,6 +363,7 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 			x = event->motion.x;
 			y = event->motion.y;
 			state = event->motion.state;
+			MouseIdle(); /* SB-X: reduce [double]click delay, don't worry about return (FIXME: might use a new method for this) */
 			if ( HitRect(x, y) )
 			{
   			  return(MouseMotion(x, y, state));
@@ -425,12 +426,16 @@ void GUI_Widget::drag_perform_drop(int x, int y, int message, void *data)
 // SB-X
 GUI_status GUI_Widget::MouseIdle()
 {
+	// idle children
+	std::list<GUI_Widget *>::iterator child;
+	for(child = children.begin(); child != children.end(); child++)
+		(*child)->MouseIdle();
+
 	if(mousedouble_delay && last_mouseup_time)
 		if((SDL_GetTicks() - last_mouseup_time) > mousedouble_delay)
 		{
 			// delay passed with no second click
-			last_mouseup_time = 0; // don't try MouseDouble()
-			last_mousedown_time = 0;
+			finish_mouseclick(); // don't try MouseDouble()
 			if(last_mouseup_x == last_mousedown_x && last_mouseup_y == last_mousedown_y)
 				return(MouseClick(last_mouseup_x, last_mouseup_y, last_mouseup_button));
 		}
@@ -455,8 +460,7 @@ GUI_status GUI_Widget::RegisterMouseUp(int x, int y, int button)
 		if(last_mouseup_time
 		   && ((SDL_GetTicks() - last_mouseup_time) <= mousedouble_delay))
 		{
-			last_mouseup_time = 0; // won't attempt MouseClick()
-			last_mousedown_time = 0;
+			finish_mouseclick(); // won't attempt MouseClick()
 			return(MouseDouble(x, y, button));
 		}
 	}

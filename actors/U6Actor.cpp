@@ -304,7 +304,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  rel_y = new_y - y;
   
  ret = Actor::move(new_x,new_y,new_z,force_move);
- 
+
  if(ret == true)
   {
    if(actor_type->has_surrounding_objs)
@@ -378,7 +378,7 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_ac
 
  if(Actor::check_move(new_x, new_y, new_z, ignore_actors) == false)
     return false;
- 
+
     switch(actor_type->movetype)
       {
        case MOVETYPE_U6_WATER_HIGH : // for HIGH we only want to move to open water.
@@ -396,7 +396,9 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_ac
                                   break;
        case MOVETYPE_U6_LAND :
        default : if(map->is_passable(new_x,new_y,new_z) == false)
-                    return(false);
+                    if(obj_n != OBJ_U6_MOUSE /* try to go through mousehole */
+                       || obj_manager->get_obj_of_type_from_location(OBJ_U6_MOUSEHOLE,new_x,new_y,new_z) == NULL)
+                       return(false);
       }
 
  return(true);
@@ -632,7 +634,15 @@ void U6Actor::wt_beg()
             {
                 // talk to me :)
                 stop_walking();
-                if(Game::get_game()->get_converse()->start(this))
+                // FIXME: this check should be in Converse
+                if(!player->in_party_mode())
+                {
+                    MsgScroll *scroll = Game::get_game()->get_scroll();
+                    scroll->display_string("\nNot in solo mode.\n");
+                    scroll->display_string("\n");
+                    scroll->display_prompt();
+                }
+                else if(Game::get_game()->get_converse()->start(this))
                 {
                     actor->face_actor(this);
                     face_actor(actor);

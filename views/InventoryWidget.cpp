@@ -46,6 +46,7 @@ InventoryWidget::InventoryWidget(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 
  selected_obj = NULL;
  target_obj =  NULL;
  row_offset = 0;
+
 }
 
 InventoryWidget::~InventoryWidget()
@@ -66,13 +67,14 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  area.h = 64;
  
  set_actor(a);
- 
+
  return true;
 }
 
 void InventoryWidget::set_actor(Actor *a)
 {
  actor = a;
+ container_obj = NULL;
  Redraw();
 }
 
@@ -96,6 +98,7 @@ void InventoryWidget::Display(bool full_redraw)
   {
    screen->update(area.x+8,area.y+16,area.w-8,area.h-16); // update only the inventory list
   }
+
 }
 
 //either an Actor or an object container.
@@ -292,8 +295,8 @@ inline Obj *InventoryWidget::get_obj_at_location(int x, int y)
 
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 { 
- bool selected = false;
  Event *event = Game::get_game()->get_event();
+ UseCode *usecode = Game::get_game()->get_usecode();
 
  // ABOEING
  if (event->get_mode() == LOOK_MODE) {
@@ -302,15 +305,7 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
   return GUI_YUM;
  }
 
- // change to or from a container, ready/unready object
- // wait for double-click if object is usable
- if(selected_obj && selected_obj->container) // open up the container.
-   {
-    container_obj = selected_obj;
-    Redraw();
-    selected = true;
-   }
- else if(button == 1)
+ if(button == 1)
    {
     x -= area.x;
     y -= area.y;
@@ -333,26 +328,24 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
        if(down_arrow())
          Redraw();
       }
-    
-    if(selected_obj) // attempt to ready selected object.
+
+    // only act now if not usable, else wait for possible double-click
+    if(selected_obj && !usecode->has_usecode(selected_obj))
       {
-       selected = actor->add_readied_object(selected_obj);
-       Redraw();
+        if(selected_obj->container) // open up the container.
+          {
+            container_obj = selected_obj;
+            Redraw();
+          }
+        else // attempt to ready selected object.
+          {
+//            actor->add_readied_object(selected_obj);
+            event->ready(selected_obj);
+            Redraw();
+          }
+        finish_mouseclick(); // won't do MouseClick()
       }
-   }
- else if(button == 3)
-   {
-    x -= area.x;
-    y -= area.y;
-    if(selected_obj) // attempt to drop selected object.
-      {
-       selected = true;
-       actor->inventory_remove_obj(selected_obj);
-       selected_obj->x = actor->get_location().x;
-       selected_obj->y = actor->get_location().y;
-       obj_manager->add_obj(selected_obj);
-       Redraw();
-      }
+
    }
 
  selected_obj = NULL;
@@ -407,7 +400,7 @@ void InventoryWidget::drag_drop_success(int x, int y, int message, void *data)
  if(container_obj)
    container_obj->container->remove(selected_obj);
  else
-   actor->inventory_remove_obj(selected_obj);
+   actor->inventory_remove_obj(selected_obj, container_obj);
 
  selected_obj = NULL;
  Redraw();
@@ -437,6 +430,8 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 
 void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
+ Event *event = Game::get_game()->get_event();
+ MsgScroll *scroll = Game::get_game()->get_scroll();
  Obj *obj;
  
  x -= area.x;
@@ -444,14 +439,26 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
  
  if(message == GUI_DRAG_OBJ)
    {
-    printf("Drop into inventory");
+    printf("Drop into inventory\n");
     obj = (Obj *)data;
 
     if(target_obj && target_obj->container && target_obj != obj)
       {
        container_obj = target_obj; //swap to container ready to drop item inside
       }
-    
+
+#if 0 /* trying to connect dragndrop to Actions, but it cant be done yet */
+    if((obj->status & OBJ_STATUS_READIED) == OBJ_STATUS_READIED) // unready
+      {
+       assert(obj->x == actor->get_actor_num());
+       event->unready(obj);
+      }
+    else if(!(obj->status & OBJ_STATUS_IN_INVENTORY)) // get
+      {
+       scroll->display_string("Get-");
+       event->get(obj, container_obj, actor);
+      }
+#endif
     if(!container_obj)
      actor->inventory_add_object(obj);
     else
@@ -521,7 +528,7 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 
     map_window->updateBlacking();
 
-    // if selecting, select_obj will return to MOVE_MODE
+    // if selecting, select_obj will return to MOVE_MODE (and no need to here)
     if(event->get_mode() == USE_MODE || event->get_mode() == MOVE_MODE)
     {
         scroll->display_string("\n");
@@ -530,5 +537,31 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
     }
 
     return(GUI_PASS);
+}
+
+
+// waited for double-click
+GUI_status InventoryWidget::MouseClick(int x, int y, int button)
+{ 
+ Event *event = Game::get_game()->get_event();
+
+ if(button != 1)
+   return GUI_YUM;
+
+ Obj *selected_obj = get_obj_at_location(x - area.x, y - area.y);
+ // change to or from a container, ready/unready object
+ if(selected_obj && selected_obj->container) // open up the container.
+   {
+    container_obj = selected_obj;
+    Redraw();
+   }
+ else if(selected_obj) // attempt to ready selected object.
+   {
+//     actor->add_readied_object(selected_obj);
+     event->ready(selected_obj);
+     Redraw();
+   }
+
+ return GUI_YUM;
 }
 

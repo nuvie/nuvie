@@ -285,6 +285,7 @@ bool Player::set_solo_mode(Actor *new_actor)
     {
         party_mode = false;
         actor = new_actor;
+        actor->stop_walking();
         return(true);
     }
     return(false);

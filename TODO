@@ -51,9 +51,6 @@ action in. You can't press different arrow keys and quickly change directions.
 Neither of those is the proper behavior.
 
 DragnDrop:
-When releasing object after move, commands should go through
-PlayerAction queue, so that the proper checks are performed and the
-number of turns are passed that it would take to get to the original location.
 Should be able to drop objects on other non-passable objects (move rope to table)
 Don't drag skiffs to land (check object's passable?)
 When dragging object, show cursor as indicator if object can be dropped in a
@@ -77,8 +74,10 @@ not indicated in data, but a break indicated in the data + a screenfull of text
 should not cause two breaks (requiring player to ESC twice).
 PgUp/Dn
 
-Iolo "gather" gets gold in containers eg in bags, backpacks (need to do more
-testing)
+Iolo "gather" should not gather gold from the Avatar's bags
+     "split" does take all gold from the Avatar's bags, but adds outside of bags
+
+How does U6 determine the maximum stack-quantity for objects?
 
 Fix actor draw order issues.
 

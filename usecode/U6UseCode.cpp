@@ -517,6 +517,12 @@ bool U6UseCode::use_ladder(Obj *obj, uint8 ev)
  Party *party = Game::get_game()->get_party();
  uint16 x = obj->x, y = obj->y;
  uint8 z;
+ if(!player->in_party_mode())
+  {
+    scroll->display_string("\nNot in solo mode.\n");
+    return(false);
+  }
+
  if(obj->frame_n == 0) // DOWN
    {
     if(obj->z == 0)//handle the transition from the surface to the first dungeon level
@@ -1296,7 +1302,11 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
  
  if(ev != USE_EVENT_USE)
     return(false);
-
+ if(!player->in_party_mode())
+  {
+    scroll->display_string("\nNot in solo mode.\n");
+    return(false);
+  }
  ship_actor = actor_manager->get_actor(0); //get the vehicle actor.
  
  // get out of boat
@@ -1735,6 +1745,12 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
     char *prefix = "", *dungeon_name = "";
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
+    if(!player->in_party_mode())
+    {
+        scroll->display_string("\nNot in solo mode.\n\n");
+        scroll->display_prompt();
+        return(true);
+    }
 
     if(obj->quality < 21)
         dungeon_name = (char *)u6_dungeons[obj->quality];
@@ -1791,6 +1807,12 @@ bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
     if (obj->frame_n != 1) return false; // FIXME is this check needed?
+    if(!player->in_party_mode())
+    {
+        scroll->display_string("\nNot in solo mode.\n\n");
+        scroll->display_prompt();
+        return(true);
+    }
 
     // don't activate if autowalking from linking exit
     if(ev == USE_EVENT_PASS && actor_ref == player->get_actor() && !party->get_autowalk())

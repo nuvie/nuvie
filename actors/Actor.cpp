@@ -22,6 +22,7 @@
  */
 #include <cstdlib>
 #include <cmath>
+#include <cassert>
 #include "nuvieDefs.h"
 #include "U6LList.h"
 #include "Game.h"
@@ -61,7 +62,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  moves = 1;
 
  name ="";
-
+ flags = 0;
 }
  
 Actor::~Actor()
@@ -297,7 +298,7 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
        {
         a = map->get_actor(new_x,new_y,new_z);
         if(a)
-          return a->is_passable(); // we can move over or under some actors. eg mice, dragons etc.
+          return (a->is_passable() || is_passable()); // we can move over or under some actors. eg mice, dragons etc.
        }
 
 //    if(map->is_passable(new_x,new_y,new_z) == false)
@@ -328,7 +329,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 
  // switch position with party members
  Actor *other = map->get_actor(new_x, new_y, new_z);
- if(other && other->is_visible() && !force_move && !other->is_passable() && !other->push(this, ACTOR_PUSH_HERE, x, y, z))
+ if(other && other->is_visible() && !force_move && !other->is_passable() && !is_passable() && !other->push(this, ACTOR_PUSH_HERE, x, y, z))
     return false; // blocked by actor
 
  // move
@@ -467,21 +468,7 @@ void Actor::set_in_party(bool state)
     }
     else // left
     {
-#if 0 /* CRASHING */
-        // drop everything
-        U6LList *inv = get_inventory_list();
-        for(U6Link *link = inv->start(); link != NULL; link = link->next)
-        {
-            Obj *obj = (Obj *)link->data;
-            obj->x = x; obj->y = y; obj->z = z;
-            if(obj->status & 0x18)
-                remove_readied_object(obj);
-//            obj->status &= ~OBJ_STATUS_IN_INVENTORY;
-            obj->status |= OBJ_STATUS_OK_TO_TAKE;
-            obj_manager->add_obj(obj, true); // add to map
-        }
-        inv->removeAll();
-#endif
+        inventory_drop_all();
         set_worktype(0x8f); // U6_WANDER_AROUND
     }
 }
@@ -549,9 +536,9 @@ uint32 Actor::inventory_count_object(uint16 obj_n, uint8 qual, Obj *container)
     {
         obj = (Obj *)link->data;
         if(obj->container)
-            inventory_count_object(obj_n, qual, obj);
+            qty += inventory_count_object(obj_n, qual, obj);
         if(obj->obj_n == obj_n && obj->quality == qual)
-            qty += obj->qty;
+            qty += (obj->qty > 0) ? obj->qty : 1; // quantity 0 counts as 1
     }
     return(qty);
 }
@@ -560,7 +547,7 @@ uint32 Actor::inventory_count_object(uint16 obj_n, uint8 qual, Obj *container)
 /* Returns object descriptor of object in the actor's inventory, or NULL if no
  * matching object is found.
  */
-Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container)
+Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container, bool search_containers)
 {
  U6LList *inventory;
  U6Link *link;
@@ -573,7 +560,7 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container)
     obj = (Obj *)link->data;
     if(obj->obj_n == obj_n && obj->quality == qual)
       return(obj);
-    else if(obj->container)
+    else if(obj->container && search_containers)
     {
       if((obj = inventory_get_object(obj_n, qual, obj)))
         return(obj);
@@ -591,12 +578,37 @@ Obj *Actor::inventory_get_readied_object(uint8 location)
  return NULL;
 }
 
-bool Actor::inventory_add_object(Obj *obj)
+
+bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
 {
- U6LList *inventory = get_inventory_list();
- obj->status |= OBJ_STATUS_IN_INVENTORY;
- obj->x = id_n;
- return inventory->addAtPos(0, obj);
+ U6LList *inventory = get_inventory_list(), *add_to = inventory;
+
+ if(container) // assumes actor is holding the container
+ {
+   add_to = container->container;
+   obj->status |= OBJ_STATUS_IN_CONTAINER;
+   obj->x = container->objblk_n;
+ }
+ else
+ {
+   if(stack && obj_manager->is_stackable(obj)) // find similiar objects outside containers
+   {
+     Obj *stack_with = inventory_get_object(obj->obj_n, obj->quality, NULL, false);
+     if(stack_with) // we stack onto the new object, and delete the old one
+     {
+       if(obj->qty == 0) // quantity 0 adds as 1
+         obj->qty = 1;
+       obj->qty += (stack_with->qty > 0) ? stack_with->qty : 1;
+       // FIXME: how to determine max. stack size? (it varies)
+       inventory_remove_obj(stack_with);
+       obj_manager->delete_obj(stack_with);
+     }
+   }
+   // only objects outside containers are marked in_inventory
+   obj->status |= OBJ_STATUS_IN_INVENTORY;
+   obj->x = id_n;
+ }
+ return add_to->addAtPos(0, obj);
 }
 
 
@@ -604,10 +616,7 @@ bool Actor::inventory_add_object(Obj *obj)
  */ 
 Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
 {
- U6LList *inventory = 0;
- U6Link *link = 0;
  Obj *obj = 0;
- uint32 origqty = 0, newqty = 0;
  uint8 frame_n = 0;
  
  if(obj_n > 1024)
@@ -615,81 +624,84 @@ Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
     frame_n = (uint8)floor(obj_n / 1024);
 	obj_n -= frame_n * 1024;
    }
-	
- inventory = get_inventory_list();
 
- // find same type of object in inventory, don't look in containers
- for(link = inventory->start(); link != NULL; link = link->next)
- {
-   obj = (Obj *)link->data;
-   if(obj->obj_n == obj_n && obj->quality == quality)
-     break;
-   obj = 0;
- }
- // define and link (when stacking, quantity of 0 is 1)
- origqty = (obj && obj->qty) ? obj->qty : 1;
- newqty = qty ? qty : 1;
- if(obj && ((origqty + newqty) <= 255))
- {
-    origqty += newqty;
-    obj->qty = origqty;
- }
- else // don't stack, add new stack(s) of up to 255 qty
-   while(newqty)
-   {
-     obj = new Obj;
-     obj->obj_n = obj_n;
-     obj->quality = quality;
-     obj->qty = newqty <= 255 ? newqty : 255;
-	 obj->frame_n = frame_n;
-     inventory_add_object(obj);
-     newqty -= obj->qty;
-   }
+ obj = new Obj;
+ obj->obj_n = obj_n;
+ obj->frame_n = frame_n;
+ obj->qty = qty;
+ obj->quality = quality;
+ inventory_add_object(obj, NULL, true);
+
  return(obj);
 }
 
 
+/* Delete `qty' objects of type from inventory (or from a container).
+ * Returns the number removed (may be less than requested).
+ */
 uint32
 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container)
 {
- U6LList *inventory;
  U6Link *link;
  Obj *obj;
  uint8 oqty = 0;
  uint32 deleted = 0;
  
- inventory = container ? container->container : get_inventory_list();
- for(link = inventory->start(); deleted < qty && link != NULL; link = link->next)
+ while((obj = inventory_get_object(obj_n, quality, container, true))
+       && (deleted < qty))
  {
-    obj = (Obj *)link->data;
-    if(obj->container)
-        deleted += inventory_del_object(obj_n, qty - deleted, quality, obj);
-    if((deleted < qty) && (obj->obj_n == obj_n) && (obj->quality == quality))
-    {
-        oqty = obj->qty ? obj->qty : 1;
-        if(oqty <= (qty - deleted))
-        {
-            obj->status &= ~OBJ_STATUS_IN_INVENTORY;
-            inventory->remove(obj);
-        }
-        else
-            obj->qty = oqty - qty;
-        deleted += oqty;
-    }
+    oqty = obj->qty ? obj->qty : 1;
+    if(oqty <= (qty - deleted))
+        inventory_remove_obj(obj, container);
+    else
+        obj->qty = oqty - qty;
+    deleted += oqty;
  }
  return(deleted);
 }
 
-bool Actor::inventory_remove_obj(Obj *obj)
+
+bool Actor::inventory_remove_obj(Obj *obj, Obj *container)
 {
  U6LList *inventory;
 
  inventory = get_inventory_list();
- if((obj->status & 0x18) == 0x18)
+ if(obj->is_readied())
     remove_readied_object(obj);
+ if(!container)
+    container = inventory_get_obj_container(obj);
+
+ if(container)
+ {
+    obj->status &= ~OBJ_STATUS_IN_CONTAINER;
+    return container->container->remove(obj);
+ }
  obj->status &= ~OBJ_STATUS_IN_INVENTORY;
  return inventory->remove(obj);
 }
+
+
+/* Search inventory for obj and return pointer to object it is contained in.
+ * Returns NULL if obj is not in a container, or is not found.
+ */
+Obj *Actor::inventory_get_obj_container(Obj *obj, Obj *container)
+{
+    U6LList *inventory = container ? container->container : get_inventory_list();
+    for(U6Link *link = inventory->start(); link != NULL; link = link->next)
+    {
+        Obj *this_obj = (Obj *)link->data;
+        if(this_obj == obj)
+            return(container);
+        else if(this_obj->container) // a new container to search in
+        {
+            Obj *result = inventory_get_obj_container(obj, this_obj);
+            if(result)
+                return(result);
+        }
+    }
+    return(NULL);
+}
+
  
 float Actor::get_inventory_weight()
 {
@@ -782,9 +794,11 @@ void Actor::inventory_parse_readied_objects()
 bool Actor::add_readied_object(Obj *obj)
 {
  uint8 location;
- 
+
+ assert(obj->is_in_inventory());
+
  location =  get_object_readiable_location(obj->obj_n);
- 
+
  switch(location)
    {
     case ACTOR_NOT_READIABLE : return false;
@@ -819,7 +833,6 @@ bool Actor::add_readied_object(Obj *obj)
    }
 
  obj->status |= 0x18; //set object to readied status
-
  return true;
 }
 
@@ -842,16 +855,35 @@ void Actor::remove_readied_object(Obj *obj)
 void Actor::remove_readied_object(uint8 location)
 {
  Obj *obj;
- 
+
  obj = inventory_get_readied_object(location);
  
  if(obj)
    {
     readied_objects[location] = NULL;
     obj->status ^= 0x18; // remove "readied" bit flag.
+    obj->status |= OBJ_STATUS_IN_INVENTORY; // keep "in inventory"
    }
 
  return;
+}
+
+
+void Actor::inventory_drop_all()
+{
+    U6LList *inv = NULL;
+    Obj *obj = NULL;
+
+    while(inventory_count_objects(true))
+    {
+        inv = get_inventory_list();
+        obj = (Obj *)(inv->start()->data);
+        if(!inventory_remove_obj(obj))
+            break;
+        obj->status |= OBJ_STATUS_OK_TO_TAKE;
+        obj->x = x; obj->y = y; obj->z = z;
+        obj_manager->add_obj(obj, true); // add to map
+    }
 }
 
 

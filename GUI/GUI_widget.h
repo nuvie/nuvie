@@ -201,6 +201,7 @@ protected:
 	void enable_mousedouble(uint32 delay = 300)
 					{ mousedouble_delay = delay; }
 	void disable_mousedouble()	{ mousedouble_delay = 0; }
+	void finish_mouseclick()        { last_mouseup_time = last_mousedown_time = 0; }
 };
 
 #endif /* _GUI_widget_h */

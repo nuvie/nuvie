@@ -81,6 +81,11 @@ struct Obj
 
  U6LList *container;
  Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; }; 
+ bool is_ok_to_take()   { return(status & OBJ_STATUS_OK_TO_TAKE); }
+ bool is_in_container() { return(status & OBJ_STATUS_IN_CONTAINER); }
+ bool is_in_inventory() { return(status & OBJ_STATUS_IN_INVENTORY); }
+ bool is_temporary()    { return(status & OBJ_STATUS_TEMPORARY); }
+ bool is_readied()      { return((status & OBJ_STATUS_READIED) == OBJ_STATUS_READIED); }
 };
 
 Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z);

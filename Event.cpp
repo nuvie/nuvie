@@ -42,6 +42,7 @@
 #include "PortraitView.h"
 #include "TimedEvent.h"
 #include "InventoryView.h"
+#include "U6LList.h"
 #include "Event.h"
 
 #include "UseCode.h"
@@ -193,24 +194,13 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_RIGHT :
 			move(1,0);
 			break;
-#if 0 /* not working, will change with PlayerAction anyway */
 		case SDLK_TAB :
-                        if(view_focus == FOCUS_INVENTORYVIEW)
-                        {
-                            set_view_focus(FOCUS_NONE);
-                            if(mode == USE_MODE)
-                                map_window->set_show_use_cursor(true);
-                            else
-                                map_window->set_show_cursor(true);
-                        }
+                        map_window->set_show_cursor(false);
+                        if(mode == MOVE_MODE)
+                            newAction(EQUIP_MODE);
                         else
-                        {
-                            set_view_focus(FOCUS_INVENTORYVIEW);
-                            if(mode == MOVE_MODE)
-                                mode = EQUIP_MODE;
-                        }
+                            view_manager->get_inventory_view()->set_show_cursor(true);
                         break;
-#endif
 		case SDLK_q     : 
 			if(mode == MOVE_MODE && !showingQuitDialog)
 			{
@@ -401,13 +391,19 @@ bool Event::talk()
         scroll->display_prompt();
         return(false);
     }
+    // FIXME: this check and the "no response" messages should be in Converse
+    if(!player->in_party_mode())
+    {
+        scroll->display_string(map_window->lookAtCursor(false));
+        scroll->display_string("\nNot in solo mode.\n");
+    }
     // load and begin npc script
-    if(converse->start(npc))
+    else if(converse->start(npc))
     {
         // print npc name if met-flag is set, or npc is in avatar's party
         name = converse->npc_name(id); // get name
         if(name &&
-           ((npc->get_flags() & 1) || player->get_party()->contains_actor(npc)))
+           (npc->is_met() || player->get_party()->contains_actor(npc)))
             scroll->display_string(name);
         else
             scroll->display_string(map_window->lookAtCursor(false));
@@ -418,8 +414,12 @@ bool Event::talk()
         return(true);
     }
     // some actor that has no script
-    scroll->display_string(map_window->lookAtCursor(false));
-    scroll->display_string("\nFunny, no response.\n\n");
+    else
+    {
+        scroll->display_string(map_window->lookAtCursor(false));
+        scroll->display_string("\nFunny, no response.\n");
+    }
+    scroll->display_string("\n");
     scroll->display_prompt();
     return(false);
 }
@@ -427,7 +427,8 @@ bool Event::talk()
 
 bool Event::move(sint16 rel_x, sint16 rel_y)
 {
- if(mode == LOOK_MODE || mode == TALK_MODE || mode == FREESELECT_MODE)
+ if(mode == LOOK_MODE || mode == TALK_MODE || mode == FREESELECT_MODE
+    || mode == EQUIP_MODE || mode == DROP_MODE || mode == DROPTARGET_MODE)
     map_window->moveCursorRelative(rel_x,rel_y);
  else
   {
@@ -473,6 +474,69 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
 }
 
 
+/* Get object into an actor. (no mode change)
+ */
+bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
+{
+    bool got_object = false;
+    float weight;
+    if(!actor)
+        actor = player->get_actor();
+
+    if(obj)
+    {
+        scroll->display_string(obj_manager->look_obj(obj));
+
+        // objects with 0 weight aren't gettable. 
+        weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
+        if(weight != 0)
+        {
+            if(actor->can_carry_weight(weight))
+            {
+                // object is someone else's
+                if(!(obj->status & OBJ_STATUS_OK_TO_TAKE))
+                {
+                    scroll->display_string("\n\nStealing!!!"); // or "Stop Thief!!!"
+                    player->subtract_karma();
+                    obj->status |= OBJ_STATUS_OK_TO_TAKE; // FIXME move to DROP
+                }
+                obj_manager->remove_obj(obj); //remove object from map.
+
+                actor->inventory_add_object(obj, container_obj, true);
+#if 0 /* inventory_add_object() will stack now */
+                // add to container (assume the actor is holding container)
+                if(container_obj)
+                    actor->inventory_add_object(obj, container_obj);
+                // stackable object; will make copy and delete this
+                else if(obj->qty > 0)
+                {
+                    // only new_object() can stack (for now)
+                    actor->inventory_new_object(obj->obj_n, obj->qty, obj->quality);
+                    obj_manager->delete_obj(obj); // original copy defunct
+                }
+                else // just stick this one in there
+                    actor->inventory_add_object(obj);
+#endif
+                got_object = true;
+            }
+            else
+                scroll->display_string("\n\nThe total is too heavy.");
+        }
+        else
+            scroll->display_string("\n\nNot possible.");
+    }
+    else
+        scroll->display_string("nothing");
+
+    scroll->display_string("\n\n");
+    scroll->display_prompt();
+    map_window->updateBlacking();
+    return(got_object);
+}
+
+
+/* Get object at selected position, and end action.
+ */
 bool Event::get(sint16 rel_x, sint16 rel_y)
 {
  Obj *obj;
@@ -483,54 +547,12 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  player->get_location(&x,&y,&level);
 
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
- if(obj)
- {
-  scroll->display_string(obj_manager->look_obj(obj));
+ bool got_object = get(obj, NULL, player->get_actor());
 
-  // objects with 0 weight aren't gettable. 
-  weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
-  if(weight != 0)
-    {
-       Actor *pc = player->get_actor();
-       if(pc->can_carry_weight(weight))
-         {
-          // object is someone else's
-          if(!(obj->status & OBJ_STATUS_OK_TO_TAKE))
-            {
-             scroll->display_string("\n\nStealing!!!"); // or "Stop Thief!!!"
-             player->subtract_karma();
-             obj->status |= OBJ_STATUS_OK_TO_TAKE; // move to DROP
-            }
-
-          obj_manager->remove_obj(obj); //remove object from map.
-
-          if(obj->qty > 0) // stackable object; will make copy and delete this
-            {
-             pc->inventory_new_object(obj->obj_n, obj->qty, obj->quality);
-             obj_manager->delete_obj(obj); // original copy defunct
-            }
-          else
-             pc->inventory_add_object(obj); // just stick this one in there
-         }
-      else
-         scroll->display_string("\n\nThe total is too heavy.");
-    }
-  else
-    scroll->display_string("\n\nNot possible.");
-    
- }
- else
-  scroll->display_string("nothing");
-
- scroll->display_string("\n\n");
- scroll->display_prompt();
-
- map_window->set_show_use_cursor(false);
- map_window->updateBlacking();
  view_manager->update(); //redraw views to show new item.
- mode = MOVE_MODE;
+ endAction();
 
- return true;
+ return got_object;
 }
 
 
@@ -560,8 +582,7 @@ bool Event::use(Obj *obj)
     {
         scroll->display_string("\n");
         scroll->display_prompt();
-        map_window->set_show_use_cursor(false);
-        mode = MOVE_MODE;
+        endAction();
     }
 }
 
@@ -596,8 +617,7 @@ bool Event::use(Actor *actor)
     {
         scroll->display_string("\n");
         scroll->display_prompt();
-        map_window->set_show_use_cursor(false);
-        mode = MOVE_MODE;
+        endAction();
     }
 }
 
@@ -627,8 +647,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  {
      scroll->display_string("\n");
      scroll->display_prompt();
-     map_window->set_show_use_cursor(false);
-     mode = MOVE_MODE;
+     endAction();
  }
  return true;
 }
@@ -656,10 +675,7 @@ bool Event::select_obj(Obj *obj, Actor *actor)
     // return to MOVE_MODE
     scroll->display_string("\n");
     scroll->display_prompt();
-    map_window->set_show_use_cursor(false);
-    map_window->set_show_cursor(false);
-    mode = MOVE_MODE;
-    
+    endAction();
     map_window->updateBlacking();
     return(true);
 }
@@ -826,8 +842,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
         if(!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y))
             obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
     scroll->display_prompt();
-    mode = MOVE_MODE;
-    use_obj = NULL;
+    endAction();
     return(true);
 }
 
@@ -854,7 +869,7 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     {
         scroll->display_string("nothing.\n\n");
         scroll->display_prompt();
-        mode = MOVE_MODE;
+        endAction();
     }
     return(true);
 }
@@ -1051,7 +1066,7 @@ void Event::alt_code(const char *cs)
         case 314: // teleport player & party to selected location
             if(player->get_actor()->get_actor_num() == 0)
             {
-                scroll->display_string("\n<nat uail abord wip!>\n");
+                scroll->display_string("\nNot while aboard ship!\n");
                 scroll->display_prompt();
                 active_alt_code = 0;
             }
@@ -1424,6 +1439,10 @@ static GUI_status quitDialogNoCallback(void *data)
 void Event::solo_mode(uint32 party_member)
 {
     Actor *actor = player->get_party()->get_actor(party_member);
+
+    if(player->get_actor()->get_actor_num() == 0) // vehicle
+        return;
+
     if(actor && player->set_solo_mode(actor))
     {
         scroll->display_string("\nSolo mode\n\n");
@@ -1443,24 +1462,90 @@ void Event::party_mode()
     MapCoord leader_loc;
     Actor *actor = player->get_party()->get_actor(0);
     assert(actor); // there must be a leader
+
+    if(player->get_actor()->get_actor_num() == 0) // vehicle
+        return;
+
     leader_loc = actor->get_location();
     if(player->get_party()->is_at(leader_loc, 8))
     {
         if(player->set_party_mode(player->get_party()->get_actor(0)))
         {
-            scroll->display_string("\nParty mode\n\n");
+            scroll->display_string("\nParty mode\n");
             std::string prompt = player->get_party()->get_actor_name(0);
             prompt += ":\n>";
             scroll->set_prompt((char *)prompt.c_str());
-            scroll->display_prompt();
             map_window->centerMapOnActor(actor);
         }
     }
     else
-    {
-        scroll->display_string("Not everyone is here.\n\n");
-        scroll->display_prompt();
-    }
+        scroll->display_string("Not everyone is here.\n");
+    scroll->display_string("\n");
+    scroll->display_prompt();
+}
+
+
+/* Make actor wear an object they are holding.
+ */
+bool Event::ready(Obj *obj)
+{
+    Actor *actor = Game::get_game()->get_actor_manager()->get_actor(obj->x);
+    bool readied = false;
+    scroll->display_string("Ready-");
+    scroll->display_string(obj_manager->look_obj(obj, false));
+    scroll->display_string("\n");
+
+    // FIXME: perform READY usecode
+
+    if(!(readied = actor->add_readied_object(obj)))
+        scroll->display_string("\nCan't be readied!\n");
+
+    scroll->display_string("\n");
+    scroll->display_prompt();
+    return(readied);
+}
+
+
+/* Make actor hold an object they are wearing.
+ */
+bool Event::unready(Obj *obj)
+{
+    Actor *actor = Game::get_game()->get_actor_manager()->get_actor(obj->x);
+    scroll->display_string("Unready-");
+    scroll->display_string(obj_manager->look_obj(obj, false));
+    scroll->display_string("\n");
+
+    // FIXNE: perform READY usecode
+
+    actor->remove_readied_object(obj);
+
+    scroll->display_string("\n");
+    scroll->display_prompt();
+    return(true);
+}
+
+
+/* Print object name and select it as object to be dropped.
+ */
+bool Event::drop_select(Obj *obj)
+{
+    return(true);
+}
+
+
+/* Make actor holding selected object drop it at x,y.
+ */
+bool Event::drop_to(uint16 x, uint16 y)
+{
+    return(true);
+}
+
+
+/* Make actor holding object drop it at x,y.
+ */
+bool Event::drop(Obj *obj, uint16 x, uint16 y)
+{
+    return(true);
 }
 
 
@@ -1505,12 +1590,13 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 		mode = MOVE_MODE;
 		select_obj();
 	}
-	else
+	else if(mode == MOVE_MODE)
 	{
 		scroll->display_string("what?\n\n");
 		scroll->display_prompt();
-		use_obj = NULL;
 	}
+	else
+		cancelAction();
 }
 
 
@@ -1526,14 +1612,10 @@ void Event::cancelAction()
 	}
 	else
 	{
-		mode = MOVE_MODE;
 		scroll->display_string("what?\n\n");
 		scroll->display_prompt();
 	}
-	map_window->set_show_use_cursor(false);
-	map_window->set_show_cursor(false);
-	use_obj = NULL;
-	map_window->updateBlacking();
+        endAction();
 }
 
 
@@ -1581,7 +1663,25 @@ void Event::newAction(EventMode new_mode)
 			map_window->centerCursor();
 			map_window->set_show_use_cursor(true);
 			break;
+		case DROP_MODE:
+			scroll->display_string("Drop-");
+		case EQUIP_MODE:
+			view_manager->get_inventory_view()->set_show_cursor(true);
+			break;
 		default:
 			cancelAction();
 	}
+}
+
+
+/* Revert to default MOVE_MODE. (walking)
+ */
+void Event::endAction()
+{
+    mode = MOVE_MODE;
+    map_window->set_show_use_cursor(false);
+    map_window->set_show_cursor(false);
+    view_manager->get_inventory_view()->set_show_cursor(false);
+    use_obj = NULL;
+    map_window->updateBlacking();
 }

@@ -53,6 +53,8 @@ class DollWidget : public GUI_Widget {
  virtual GUI_status MouseDown(int x, int y, int button);
  virtual GUI_status MouseUp(int x,int y,int button);
  virtual GUI_status MouseMotion(int x,int y,Uint8 state);
+ GUI_status MouseDouble(int x, int y, int button);
+ GUI_status MouseClick(int x, int y, int button);
 
  void drag_drop_success(int x, int y, int message, void *data);
  void drag_drop_failed(int x, int y, int message, void *data);
@@ -61,6 +63,8 @@ class DollWidget : public GUI_Widget {
  void drag_perform_drop(int x, int y, int message, void *data); 
 
  void drag_draw(int x, int y, int message, void* data);
+
+ SDL_Rect *get_item_hit_rect(uint8 location);
 
  protected:
 

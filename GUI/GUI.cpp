@@ -356,6 +356,7 @@ void GUI::Idle()
 {
 	if(locked_widget)
 	{
+		locked_widget->MouseIdle();
 		locked_widget->Idle();
 		return;
 	}

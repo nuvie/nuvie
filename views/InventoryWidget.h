@@ -52,12 +52,15 @@ class InventoryWidget : public GUI_Widget {
  
  bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
  void set_actor(Actor *a);
+ Actor *get_actor() { return(actor); }
+ void set_container(Obj *obj) { container_obj = obj; Redraw(); }
  void Display(bool full_redraw);
  
  virtual GUI_status MouseDown(int x, int y, int button);
  virtual GUI_status MouseUp(int x,int y,int button);
  virtual GUI_status MouseMotion(int x,int y,Uint8 state);
  GUI_status MouseDouble(int x, int y, int button);
+ GUI_status MouseClick(int x,int y,int button);
 
  void drag_drop_success(int x, int y, int message, void *data);
  void drag_drop_failed(int x, int y, int message, void *data);
@@ -69,15 +72,15 @@ class InventoryWidget : public GUI_Widget {
 
  protected:
  inline uint16 get_list_position(int x, int y);
- inline Obj *get_obj_at_location(int x, int y);
  void display_inventory_container();
  void display_inventory_list();
  inline void display_qty_string(uint16 x, uint16 y, uint8 qty);
  void display_arrows();
- 
+
+ public:
  bool up_arrow();
  bool down_arrow();
-
+ inline Obj *get_obj_at_location(int x, int y);
 };
 
 #endif /* __InventoryWidget_h__ */
