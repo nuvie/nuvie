@@ -29,12 +29,14 @@
 
 #include "U6def.h"
 #include "U6File.h"
+#include "Configuration.h"
 #include "Screen.h"
 #include "GamePalette.h"
 
-GamePalette::GamePalette(Screen *s)
+GamePalette::GamePalette(Screen *s, Configuration *cfg)
 {
  screen = s;
+ config = cfg;
  
  palette = (SDL_Color *)malloc(sizeof(SDL_Color) * 256);
  memset(palette, 0, sizeof(SDL_Color) * 256);
@@ -51,14 +53,21 @@ GamePalette::~GamePalette()
 }
 
 
-void GamePalette::loadPalette()
+bool GamePalette::loadPalette()
 {
  uint16 i,j;
+ std::string filename;
  U6File file;
  unsigned char *buf;
  SDL_Color *pal_ptr;
  
- file.open("/Users/eric/Projects/Ultima6/nuvie/ultima6/u6pal","r");
+ config->pathFromValue("config/ultima6/gamedir","u6pal",filename);
+ 
+ if(file.open("/Users/eric/Projects/Ultima6/nuvie/ultima6/u6pal","rb") == false)
+  {
+   printf("Error: loading palette.\n");
+   return false;
+  }
  
  buf = file.readFile();
  
@@ -73,7 +82,8 @@ void GamePalette::loadPalette()
   }
 
  free(buf);
- //delete file;
+ 
+ return true;
 }
 
 void GamePalette::rotatePalette(uint8 pos, uint8 length, uint8 amount)

@@ -22,8 +22,8 @@ class U6LzwStack
    U6LzwStack();
 
    void reset(void);
-   BOOL is_empty(void);
-   BOOL is_full(void);
+   bool is_empty(void);
+   bool is_full(void);
    void push(unsigned char element);
    unsigned char pop(void);
    unsigned char gettop(void);
@@ -69,8 +69,8 @@ class U6Lzw
 
  protected:
 
-  BOOL is_valid_lzw_file(U6File *input_file);
-  BOOL is_valid_lzw_buffer(unsigned char *buf, uint32 length);
+  bool is_valid_lzw_file(U6File *input_file);
+  bool is_valid_lzw_buffer(unsigned char *buf, uint32 length);
   
   long get_uncompressed_file_size(U6File *input_file);
   long get_uncompressed_buffer_size(unsigned char *buf, uint32 length);

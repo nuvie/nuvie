@@ -52,7 +52,7 @@ bool Text::loadFont()
 
  config->pathFromValue("config/ultima6/gamedir","u6.ch",filename);
  
- if(u6_ch.open(filename,"r") == false)
+ if(u6_ch.open(filename,"rb") == false)
    return false;
  
  font_data = u6_ch.readFile();

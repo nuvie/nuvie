@@ -101,11 +101,11 @@ uint32 U6File::read4()
    return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 }
 
-BOOL U6File::readToBuf(unsigned char *buf, uint32 buf_size)
+bool U6File::readToBuf(unsigned char *buf, uint32 buf_size)
 {
  fread(buf,1,buf_size,f);
 
- return TRUE;
+ return true;
 }
 
 unsigned char *U6File::readBuf(uint32 size, uint32 &bytes_read)
@@ -154,31 +154,31 @@ uint32 U6File::filesize()
  return(file_length);
 }
 
-BOOL U6File::seek(uint32 pos)
+bool U6File::seek(uint32 pos)
 {
  if(fseek(f,pos,SEEK_SET))
-   return TRUE;
+   return true;
 
- return FALSE;
+ return false;
 }
 
-BOOL U6File::seekStart()
+bool U6File::seekStart()
 {
  if(fseek(f, 0, SEEK_SET))
-   return TRUE;
+   return true;
 
- return FALSE;
+ return false;
 }
 
-BOOL U6File::seekEnd()
+bool U6File::seekEnd()
 {
  if(fseek(f,0,SEEK_END))
-   return TRUE;
+   return true;
 
- return FALSE;
+ return false;
 }
 
-BOOL U6File::eof()
+bool U6File::eof()
 {
- return (BOOL)feof(f);
+ return (bool)feof(f);
 }

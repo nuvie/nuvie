@@ -37,37 +37,37 @@ U6Lzw::~U6Lzw()
 // returns "FALSE" if the file doesn't satisfy these conditions
 // return "TRUE" otherwise
 
-BOOL U6Lzw::is_valid_lzw_file(U6File *input_file)
+bool U6Lzw::is_valid_lzw_file(U6File *input_file)
 {
     // file must contain 4-byte size header and space for the 9-bit value 0x100
-    if (input_file->filesize() < 6) { return(FALSE); }
+    if (input_file->filesize() < 6) { return(false); }
 
    // the last byte of the size header must be 0 (U6's files aren't *that* big)
     input_file->seek(3);
     unsigned char byte3 = input_file->read1(); 
-    if (byte3 != 0) { return(FALSE); }
+    if (byte3 != 0) { return(false); }
     // the 9 bits after the size header must be 0x100
     input_file->seek(4);
     unsigned char b0 = input_file->read1();
     unsigned char b1 = input_file->read1();
     input_file->seekStart();
-    if ((b0 != 0) || ((b1 & 1) != 1)) { return(FALSE); }
+    if ((b0 != 0) || ((b1 & 1) != 1)) { return(false); }
 
-    return(TRUE);
+    return(true);
 }
 
-BOOL U6Lzw::is_valid_lzw_buffer(unsigned char *buf, uint32 length)
+bool U6Lzw::is_valid_lzw_buffer(unsigned char *buf, uint32 length)
 {
  if(length < 6)
-   return FALSE;
+   return false;
 
  if(buf[3] != 0)
-   return FALSE;
+   return false;
 
  if((buf[4] != 0) || ((buf[5] & 1) != 1))
-   return FALSE;
+   return false;
 
- return TRUE;
+ return true;
 }
 
 long U6Lzw::get_uncompressed_file_size(U6File *input_file)
@@ -102,7 +102,7 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
 {
     const int max_codeword_length = 12;
  
-    BOOL end_marker_reached = FALSE;
+    bool end_marker_reached = false;
     int codeword_size = 9;
     long bits_read = 0; 
     int next_free_codeword = 0x102;
@@ -215,7 +215,7 @@ unsigned char *U6Lzw::decompress_file(std::string filename, uint32 &destination_
     uint32 source_buffer_size;
     U6File input_file;
     
-    input_file.open(filename,"r");
+    input_file.open(filename,"rb");
     
     if (this->is_valid_lzw_file(&input_file))
     {
@@ -317,14 +317,20 @@ void U6LzwStack::reset(void)
  contains = 0;
 }
 
-BOOL U6LzwStack::is_empty(void)
+bool U6LzwStack::is_empty(void)
 {
- return (contains==0);
+ if(contains == 0)
+   return true;
+   
+ return false; 
 }
 
-BOOL U6LzwStack::is_full(void)
+bool U6LzwStack::is_full(void)
 {
- return(contains==STACK_SIZE);
+ if(contains==STACK_SIZE)
+    return true;
+
+ return false;
 }
 
 void U6LzwStack::push(unsigned char element)

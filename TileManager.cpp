@@ -58,7 +58,7 @@ bool TileManager::loadTiles()
  tile_data = lzw->decompress_file(path,decomp_size);
  
  config->pathFromValue("config/ultima6/gamedir","objtiles.vga",path);
- objtiles_vga.open(path,"r");
+ objtiles_vga.open(path,"rb");
  
  objtiles_size = objtiles_vga.filesize();
  
@@ -71,7 +71,7 @@ bool TileManager::loadTiles()
  masktype = lzw->decompress_file(path,masktype_size);
 
  config->pathFromValue("config/ultima6/gamedir","tileindx.vga",path);
- tileindx_vga.open(path,"r");
+ tileindx_vga.open(path,"rb");
  
  for(i=0;i<2048;i++)
   {
@@ -141,7 +141,7 @@ bool TileManager::loadTileFlag()
  
  config->pathFromValue("config/ultima6/gamedir","tileflag",filename);
 
- if(file.open(filename,"r") == false)
+ if(file.open(filename,"rb") == false)
    return false;
  
  for(i=0;i < 2048; i++)
@@ -185,7 +185,7 @@ bool TileManager::loadAnimData()
  
  config->pathFromValue("config/ultima6/gamedir","animdata",filename);
 
- if(file.open(filename,"r") == false)
+ if(file.open(filename,"rb") == false)
    return false;
 
  if(file.filesize() != 194)

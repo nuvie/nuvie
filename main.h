@@ -22,5 +22,6 @@
  */
 
 
+#ifdef MACOSX
 int nuvieMain(int argc, char **argv);
-
+#endif

@@ -1,0 +1,43 @@
+# nuvie makefile for use in Windows with mingw using GCC 3.2 and msys shell
+# It may require a little tweaking. (paths)
+
+# Where is Ultima 6 installed
+U6PATH=C:/UC/Ultima6
+
+# Base of the nuvie source
+SRC=.
+
+### Modify these paths
+SDL_CFLAGS=-I$(SRC)/sdl/include
+SDL_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL
+
+CPPFLAGS=-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/conf -I$(SRC)/files \
+	-I$(SRC)/misc -I$(SRC)/screen -I$(SRC)/tools $(SDL_CFLAGS)
+CXXFLAGS=-g3
+CXX=g++
+
+LFLAGS=
+LIBS=-lmingw32 $(SDL_LIBS)
+
+CONF_OBJS=conf/Configuration.o conf/XMLNode.o conf/XMLTree.o 
+
+FILES_OBJS=files/U6Bmp.o files/U6File.o files/U6Lib_n.o files/U6Lzw.o
+
+MISC_OBJS=misc/U6LList.o
+
+SCREEN_OBJS=screen/GamePalette.o screen/Screen.o
+
+all: nuvie.exe
+
+NUVIE_OBJS=$(CONF_OBJS) $(FILES_OBJS) $(MISC_OBJS) $(SCREEN_OBJS) \
+	Game.o main.o Map.o MsgScroll.o nuvie.o ObjManager.o Text.o TileManager.o
+
+nuvie.exe: $(NUVIE_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+clean:
+	rm -f $(NUVIE_OBJS)
+
+install: all
+	mkdir -p $(U6PATH)
+	cp nuvie.exe $(U6PATH)

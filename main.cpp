@@ -21,11 +21,15 @@
  *
  */
 
-#include "Nuvie.h"
+#include "nuvie.h"
 
 #include "main.h"
 
+#ifdef MACOSX
 int nuvieMain(int argc, char **argv)
+#else
+int main(int argc, char **argv)
+#endif
 {
  Nuvie *nuvie;
  

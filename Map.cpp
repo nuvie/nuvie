@@ -69,11 +69,11 @@ bool Map::loadMap(Screen *s, TileManager *tm, ObjManager *om)
  obj_manager = om;
  
  config->pathFromValue("config/ultima6/gamedir","map",filename);
- if(map_file.open(filename,"r") == false)
+ if(map_file.open(filename,"rb") == false)
    return false;
 
  config->pathFromValue("config/ultima6/gamedir","chunks",filename);
- if(chunks_file.open(filename,"r") == false)
+ if(chunks_file.open(filename,"rb") == false)
    return false;
 
  map_data = map_file.readFile();

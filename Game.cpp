@@ -52,7 +52,7 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  obj_manager = new ObjManager(config);
  obj_manager->loadObjs();
  
- palette = new GamePalette(screen);
+ palette = new GamePalette(screen,config);
  
  loadBackground();
 

@@ -57,3 +57,4 @@ void MsgScroll::updateScroll()
  // spin cursor here.
 }
  
+

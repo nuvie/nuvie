@@ -1,6 +1,7 @@
 #ifndef __U6def_h__
 #define __U6def_h__
 
+/*
 #ifndef BOOL
 typedef unsigned char BOOL;
 #endif
@@ -12,6 +13,7 @@ typedef unsigned char BOOL;
 #ifndef TRUE
 #define TRUE  1
 #endif
+*/
 
 #define U6PATH_DELIMITER '/'
 

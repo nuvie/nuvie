@@ -53,19 +53,19 @@ Screen::~Screen()
  SDL_Quit();
 }
   
-BOOL Screen::set_palette(SDL_Color *palette)
+bool Screen::set_palette(SDL_Color *palette)
 {
 
  SDL_SetColors(surface,palette,0,256);
   
- return TRUE;
+ return true;
 }
 
-BOOL Screen::clear(uint8 color)
+bool Screen::clear(uint8 color)
 {
  SDL_FillRect(surface, NULL, (uint32)color);
 
- return TRUE; 
+ return true; 
 }
 
 void *Screen::get_pixels()

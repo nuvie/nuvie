@@ -39,8 +39,8 @@ class Screen
    Screen(uint16 width = 320, uint16 height = 200);
    ~Screen();
   
-   BOOL set_palette(SDL_Color *palette);
-   BOOL clear(uint8 color = 0);
+   bool set_palette(SDL_Color *palette);
+   bool clear(uint8 color = 0);
    void *get_pixels();
    uint16 get_pitch();
    uint16 get_bpp();
@@ -55,3 +55,4 @@ class Screen
 
 
 #endif /* __Screen_h__ */
+

@@ -48,3 +48,4 @@ class Text
 };
 
 #endif /* __Text_h__ */
+

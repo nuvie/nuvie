@@ -34,7 +34,7 @@ ObjManager::~ObjManager()
 {
 }
  
-bool ObjManager::ObjManager::loadObjs()
+bool ObjManager::loadObjs()
 {
  std::string path;
  char *filename;
@@ -92,7 +92,7 @@ bool ObjManager::loadBaseTile()
  
  config->pathFromValue("config/ultima6/gamedir","basetile",filename);
  
- if(basetile.open(filename,"r") == false)
+ if(basetile.open(filename,"rb") == false)
    return false;
  
  for(i=0;i<1024;i++)
@@ -109,7 +109,7 @@ U6LList *ObjManager::loadObjSuperChunk(char *filename)
  Obj *obj;
  uint16 i;
  
- if(file.open(filename,"r") == false)
+ if(file.open(filename,"rb") == false)
    return NULL;
  
  list = new U6LList();

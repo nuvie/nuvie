@@ -25,6 +25,7 @@
  */
 
 #include "U6def.h"
+#include "Configuration.h"
 #include "Screen.h"
 
 #include <SDL.h>
@@ -33,17 +34,19 @@ class GamePalette
 {
  SDL_Color *palette;
  Screen *screen;
+ Configuration *config;
  
  public:
  
-   GamePalette(Screen *s);
+   GamePalette(Screen *s, Configuration *cfg);
    ~GamePalette();
  
  protected:
  
-   void loadPalette();
+   bool loadPalette();
    void rotatePalette(uint8 pos, uint8 length, uint8 amount);
 };
 
 
 #endif /* __GamePalette_h__ */
+

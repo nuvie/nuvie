@@ -47,16 +47,16 @@ class U6File
    uint8 read1();
    uint16 read2();
    uint32 read4();
-   BOOL readToBuf(unsigned char *buf, uint32 buf_size);
+   bool readToBuf(unsigned char *buf, uint32 buf_size);
    unsigned char *readBuf(uint32 size, uint32 &bytes_read);
    unsigned char *U6File::readFile();
 
    uint32 filesize();
 
-   BOOL seek(uint32 pos);
-   BOOL seekStart();
-   BOOL seekEnd();
-   BOOL eof();
+   bool seek(uint32 pos);
+   bool seekStart();
+   bool seekEnd();
+   bool eof();
 };
 
 #endif /* __U6File_h__ */
