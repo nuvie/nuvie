@@ -681,7 +681,7 @@ bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
         
     scroll->display_string("\n");
     scroll->display_prompt();
-    delete mantra;
+    delete[] mantra;
    }
 
  return true;
