@@ -165,7 +165,7 @@ void U6Actor::wt_wander_around()
 {
  uint8 new_direction;
  
- if(NUVIE_RAND()%4 == 1)
+ if(NUVIE_RAND()%8 == 1)
    {
     new_direction = NUVIE_RAND()%4;
     set_direction(new_direction);
