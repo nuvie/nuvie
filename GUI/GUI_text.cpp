@@ -22,18 +22,18 @@
  */
 
 #include "GUI_text.h"
-#include "GUI_Font.h"
+#include "GUI_font.h"
 
 GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font *gui_font)
  : GUI_Widget(NULL, x, y, 0, 0)
 {
  int w,h;
- 
+
  R = r;
  G = g;
  B = b;
  text = NULL;
- 
+
  font = gui_font;
  text = (char *)strdup(str);
 
