@@ -68,9 +68,9 @@ char *Player::get_name()
 char *Player::get_gender_title()
 {
  if(gender == 0)
-   return "Milord";
+   return "milord";
  else
-   return "Milady";
+   return "milady";
 }
 
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
