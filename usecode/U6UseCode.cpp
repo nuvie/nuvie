@@ -61,11 +61,13 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
     case OBJ_U6_H_PASSTHROUGH : use_passthrough(obj);
                                 break;
 
-    case OBJ_U6_LEVER : use_lever(obj);
+    case OBJ_U6_LEVER : use_switch(obj,OBJ_U6_PORTCULLIS);
+                        scroll->display_string("\nswitch the lever, you hear a noise.\n");
                         break;
 
-    case OBJ_U6_SWITCH : toggle_frame(obj); //FIX hookup switch action.
-                        break;
+    case OBJ_U6_SWITCH : use_switch(obj,OBJ_U6_ELECTRIC_FIELD);
+                         scroll->display_string("\nFIX use description.\n");
+                         break;
 
     case OBJ_U6_CRANK : use_crank(obj);
                         break;
@@ -226,7 +228,8 @@ bool U6UseCode::use_passthrough(Obj *obj)
  return true;
 }
 
-bool U6UseCode::use_lever(Obj *obj)
+// for use with levers and switches, target_obj_n is either OBJ_U6_PORTCULLIS or OBJ_U6_ELECTRIC_FIELD
+bool U6UseCode::use_switch(Obj *obj, uint16 target_obj_n)
 {
  Obj *doorway_obj;
  Obj *portc_obj;
@@ -241,23 +244,29 @@ bool U6UseCode::use_lever(Obj *obj)
 
     for(portc_obj=NULL,link=obj_list->start();link != NULL;link=link->next) // find existing portcullis.
      {
-      if(((Obj *)link->data)->obj_n == OBJ_U6_PORTCULLIS)
+      if(((Obj *)link->data)->obj_n == target_obj_n)
         {
          portc_obj = (Obj *)link->data;
          break;
         }
      }
 
-    if(portc_obj == NULL) //no portcullis object, so lets create one.
+    if(portc_obj == NULL) //no barrier object, so lets create one.
      {
       portc_obj = obj_manager->copy_obj(doorway_obj);
-      portc_obj->obj_n = OBJ_U6_PORTCULLIS;
+      portc_obj->obj_n = target_obj_n;
       portc_obj->quality = 0;
-      if(portc_obj->frame_n == 9) //FIX Hack for cream buildings might need one for virt wall. 
-        portc_obj->frame_n = 1;
+      if(target_obj_n == OBJ_U6_PORTCULLIS)
+        {
+         if(portc_obj->frame_n == 9) //FIX Hack for cream buildings might need one for virt wall. 
+           portc_obj->frame_n = 1;
+        }
+      else
+         portc_obj->frame_n = 0;
+         
       obj_manager->add_obj(portc_obj,true);
      }
-    else //delete portcullis object.
+    else //delete barrier object.
      {
       obj_list->remove(portc_obj);
       delete portc_obj;
@@ -266,7 +275,7 @@ bool U6UseCode::use_lever(Obj *obj)
  
  toggle_frame(obj);
  
- scroll->display_string("\nswitch the lever, you hear a noise.\n");
+
  
  return true;
 }

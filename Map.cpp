@@ -100,7 +100,7 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
  ptr = get_map_data(level);
  map_tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
 
- if(map_tile->boundary)
+ if(map_tile->boundary && obj_manager->is_forced_passable(x, y, level) == false)
    return true;
    
  if(obj_manager->is_boundary(x, y, level))

@@ -41,6 +41,7 @@
 #define OBJ_U6_SCROLL         152
 #define OBJ_U6_FIREPLACE      164
 #define OBJ_U6_SWITCH         174
+#define OBJ_U6_ELECTRIC_FIELD 175
 #define OBJ_U6_DRAWER         176
 #define OBJ_U6_BARREL         186
 #define OBJ_U6_BAG            188
@@ -86,7 +87,7 @@ class U6UseCode: public UseCode
  bool use_ladder(Obj *obj);
  bool use_container(Obj *obj);
  bool use_passthrough(Obj *obj);
- bool use_lever(Obj *obj);
+ bool use_switch(Obj *obj, uint16 target_obj_n);
  bool use_crank(Obj *obj);
  
  Obj *drawbridge_find(Obj *crank_obj);

@@ -222,7 +222,7 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
                 { tile_num -= 2; check_tile = true; }
              if(check_tile)
                {
-                tile1 = tile_manager->get_tile(tile_num);
+                tile1 = tile_manager->get_original_tile(tile_num);
                 if(tile1->passable == false)
                   return OBJ_STATUS_NOT_PASSABLE;
                 check_tile = false;

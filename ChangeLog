@@ -1,3 +1,7 @@
+2003-06-08  Eric Fry <efry@users.sourceforge.net>
+	* Added electric field switches.
+	* Animated tiles now block correctly.
+
 2003-06-03  Eric Fry <efry@users.sourceforge.net>
 	* Added Drawbridge support. You should now be able to leave the
 	  the castle properly.
