@@ -1,5 +1,4 @@
 // TODO: work flawlessly with every u6 npc
-//       fix keywords/input comparison
 //       cleaner statement skipping
 //       methods to get/put args
 //       move argument collecting into argument collector
@@ -34,6 +33,7 @@ using std::cerr;
 using std::cin;
 using std::endl;
 
+
 /* Load `convfilename' as src.
  */
 void Converse::loadConv(std::string convfilename)
@@ -46,6 +46,15 @@ void Converse::loadConv(std::string convfilename)
     src_num = (convfilename == "converse.a")
               ? 1 : (convfilename == "converse.b") ? 2 : 0;
     std::cerr << "Converse: load \"" << convfilename << "\"" << std::endl;
+}
+
+
+Converse::~Converse()
+{
+    delete src;
+    // FIXME: free and delete heap .. oops.. one doesn't exist yet :P
+    if(active)
+        this->stop();
 }
 
 
@@ -123,7 +132,7 @@ bool Converse::do_text()
     output.append((const char *)script_pt, (unsigned int)c);
     skip(c);
 
-    if(text_op == CONV_TEXTOP_PRINT && keywords.empty())
+    if(text_op == CONV_TEXTOP_PRINT && check_scope())
         print();
     else if(text_op == CONV_TEXTOP_KEYWORD)
     {
@@ -194,11 +203,9 @@ bool Converse::do_cmd()
                     args[a][v].valt, args[a][v].val);
     fprintf(stderr, "\n");
 #endif
-    if(!keywords.empty()
-       && (cmd != U6OP_KEYWORD && cmd != U6OP_SANSWER && cmd != U6OP_ENDASK))
+    if(!check_scope())
     {
 //        fprintf(stderr, "Converse: skip cmd\n");
-//        fprintf(stderr, "Converse: (keywords=\"%s\")\n", keywords.c_str());
         return(donext);
     }
     switch(cmd)
@@ -249,6 +256,7 @@ bool Converse::do_cmd()
         case U6OP_ENDASK:
 //            std::cerr << "Converse: END-OF-ASK section" << std::endl;
             keywords.resize(0);
+            scope.pop(); scope.pop();
             break;
         case U6OP_KEYWORD:
 //            std::cerr << "Converse: KEYWORDS" << std::endl;
@@ -270,6 +278,7 @@ bool Converse::do_cmd()
 //            std::cerr << "Converse: ASK section" << std::endl;
             scroll->display_string("\nyou say: ");
             scroll->set_input_mode(true);
+            scope.push(CONV_SCOPE_ASK);
             wait(); donext = false;
             break;
         case U6OP_SANSWER:
@@ -279,6 +288,7 @@ bool Converse::do_cmd()
                 keywords.resize(0);
                 // continue, no skip
                 text_op = CONV_TEXTOP_PRINT;
+                scope.push(CONV_SCOPE_ANSWER);
             }
             break;
         case 0x00: // incorrectly parsed

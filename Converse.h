@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <stack>
 #include "Actor.h"
 #include "U6Lib_n.h"
 #include "Configuration.h"
@@ -75,7 +76,7 @@ class Converse
     string output; // where text goes to be printed
 
     // statement parameters
-    Uint32 cmd; // previously read command code
+    uint32 cmd; // previously read command code
     // fixed # of args with variable # values each
     vector <vector<converse_arg> > args;
     string input_s; // last input from player
@@ -83,7 +84,14 @@ class Converse
 #define CONV_TEXTOP_PRINT 0
 #define CONV_TEXTOP_KEYWORD 1
 #define CONV_TEXTOP_LOOK 2
-    Uint8 text_op; // one of CONV_TEXTOP_[012]
+    uint8 text_op; // one of CONV_TEXTOP_[012]
+#define CONV_SCOPE_MAIN 0
+#define CONV_SCOPE_ASK 1 // break at endask
+#define CONV_SCOPE_ANSWER 2 // break at keywords or endask
+#define CONV_SCOPE_IF 3 // at else change to endif, at endif break
+#define CONV_SCOPE_IFELSE 4 // at else change to if, at endif break
+#define CONV_SCOPE_IFEND 5 // at endif break
+    stack <uint8> scope; // what "scope" is the script in?
 
     /* Check that loaded converse library (the source) contains `script_num'.
      * Load another source if it doesn't, and update `script_num' to item number.
@@ -176,15 +184,24 @@ class Converse
         return(args[argi][vali].val);
     }
 #endif
-    bool Converse::check_keywords();
+    bool check_keywords();
+    /* Returns true if the current scope allows the current command to execute.
+     */
+    bool check_scope()
+    {
+        if(scope.empty())
+            return(true);
+        if(scope.top() == CONV_SCOPE_ASK
+           && (cmd != U6OP_KEYWORD && cmd != U6OP_SANSWER && cmd != U6OP_ENDASK))
+        {
+            return(false);
+        }
+//        if(scope.top() == 
+        return(true);
+    }
 public:
     Converse(Configuration *cfg, Converse_interpreter engine_type, MsgScroll *ioobj);
-    ~Converse()
-    {
-        // FIXME: free and delete heap .. oops.. one doesn't exist yet :P
-        if(active)
-            this->stop();
-    }
+    ~Converse();
     void loadConv(std::string convfilename="converse.a");
     /* Returns true if a script is active (paused or unpaused). */
     bool running() { return(active); }
