@@ -144,7 +144,9 @@ void Game::updateEvents()
             { game_map->moveWindowRelative(-1,0); break; }
 					if(event.key.keysym.sym==SDLK_RIGHT)
             { game_map->moveWindowRelative(1,0); break; }
-       
+					if(event.key.keysym.sym==SDLK_q)
+						game_stop = true;
+					break;       
 				case SDL_QUIT:
 					game_stop = true;
 					break;
