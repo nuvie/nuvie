@@ -32,7 +32,7 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
     FILE *src_f = 0, *index_f = 0; // FIXME: use NuvieIOFileRead
     int num_items = 0, num_added = 0;
     unsigned char *buf = NULL, *comp_buf = NULL; // source, output buffers
-    uint32 buf_size = 0, comp_size = 0, b = 0;
+    uint32 buf_size = 0, comp_size = 0;
 
     index_f = fopen(indexname, "rb");
     converse->load_index(index_f);
@@ -47,7 +47,7 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
             src_f = fopen(item_name, "rb");
             if(!src_f)
             {
-                printf("Item %d: Error opening data file (%s)\n", item_name);
+                printf("Item %d: Error opening data file (%s)\n", i, item_name);
                 break;
             }
             while(!feof(src_f))
