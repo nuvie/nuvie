@@ -29,11 +29,10 @@
 #include "U6def.h"
 #include "NuvieIOFile.h"
 #include "U6LList.h"
-
+#include "TileManager.h"
 #include "Configuration.h"
 
-#include "TileManager.h"
-
+class TileManager;
 class UseCode;
 
 // obj status bit flags
@@ -130,6 +129,10 @@ class ObjManager
  const char *get_obj_name(Obj *obj);
  float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS);
  uint8 get_obj_weight(uint16 obj_n) { return(obj_weight[obj_n]); }
+
+ void animate_forwards(Obj *obj, uint32 loop_count = 1);
+ void animate_backwards(Obj *obj, uint32 loop_count = 1);
+
  protected:
 
  bool loadBaseTile();

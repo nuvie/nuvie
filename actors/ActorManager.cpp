@@ -22,6 +22,7 @@
  */
 #include "Actor.h"
 #include "U6Actor.h"
+#include "TileManager.h"
 #include "ActorManager.h"
 #include "misc.h"
 

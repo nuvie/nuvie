@@ -80,13 +80,15 @@ uint16 tile_to_animate[0x20];
 uint16 first_anim_frame[0x20]; 
 uint8 and_masks[0x20];
 uint8 shift_values[0x20];
+sint8 loop_count[0x20]; // times to animate (-1 = infinite)
+uint8 loop[0x20]; // 0 = loop forwards, 1 = backwards
 } Animdata;
 
 class TileManager
 {
  Tile tile[2048];
  uint16 tileindex[2048]; //used for animated tiles
- uint16 game_counter;
+ uint16 game_counter, rgame_counter;
  Animdata animdata;
  Look *look;
 
@@ -102,6 +104,7 @@ class TileManager
    Tile *get_tile(uint16 tile_num);
    Tile *get_anim_base_tile(uint16 tile_num);
    Tile *get_original_tile(uint16 tile_num);
+   void set_anim_loop(uint16 tile_num, sint8 loopc, uint8 loop = 0);
 
    const char *lookAtTile(uint16 tile_num, uint16 qty, bool show_prefix);
    bool tile_is_stackable(uint16 tile_num);

@@ -30,11 +30,11 @@
 #include "Configuration.h"
 #include "GameClock.h"
 #include "Map.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 
 class Actor;
 class Map;
+class TileManager;
 
 class ActorManager
 {

@@ -191,6 +191,18 @@ Tile *TileManager::get_original_tile(uint16 tile_num)
  return &tile[tile_num];
 }
 
+
+void TileManager::set_anim_loop(uint16 tile_num, sint8 loopc, uint8 loop)
+{
+    for(uint32 i = 0; i < 32; i++)
+        if(animdata.tile_to_animate[i] == tile_num)
+        {
+            animdata.loop_count[i] = loopc;
+            animdata.loop[i] = loop;
+        }
+}
+
+
 const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefix)
 {
  const char *desc;
@@ -221,25 +233,43 @@ bool TileManager::tile_is_stackable(uint16 tile_num)
  return look->has_plural(tile_num);
 }
 
+
 void TileManager::update()
 {
  uint16 i;
- uint16 current_anim_frame;
+ uint16 current_anim_frame, prev_tileindex;
  
  // cycle animated tiles
 
- for (i = 0; i < animdata.number_of_tiles_to_animate; i++)
+ for(i = 0; i < animdata.number_of_tiles_to_animate; i++)
     {
-     current_anim_frame = (game_counter & animdata.and_masks[i]) >> animdata.shift_values[i];
-
-     tileindex[animdata.tile_to_animate[i]] = tileindex[animdata.first_anim_frame[i] + current_anim_frame];
+     if(animdata.loop_count[i] != 0)
+       {
+        if(animdata.loop[i] == 0) // get next frame
+          current_anim_frame = (game_counter & animdata.and_masks[i]) >> animdata.shift_values[i];
+        else if(animdata.loop[i] == 1) // get previous frame
+          current_anim_frame = (rgame_counter & animdata.and_masks[i]) >> animdata.shift_values[i];
+        prev_tileindex = tileindex[animdata.tile_to_animate[i]];
+        tileindex[animdata.tile_to_animate[i]] = tileindex[animdata.first_anim_frame[i] + current_anim_frame];
+        // loop complete if back to first frame (and not infinite loop)
+        if(animdata.loop_count[i] > 0
+           && tileindex[animdata.tile_to_animate[i]] != prev_tileindex
+           && tileindex[animdata.tile_to_animate[i]] == tileindex[animdata.first_anim_frame[i]])
+          --animdata.loop_count[i];
+       }
+     else // not animating
+        tileindex[animdata.tile_to_animate[i]] = tileindex[animdata.first_anim_frame[i]];
     }
-
  if(game_counter == 65535)
    game_counter = 0;
  else
    game_counter++;
+ if(rgame_counter == 0)
+   rgame_counter = 65535;
+ else
+   rgame_counter--;
 }
+
 
 bool TileManager::loadTileFlag()
 {
@@ -308,7 +338,8 @@ bool TileManager::loadAnimData()
  std::string filename;
  NuvieIOFileRead file;
  uint8 i;
- 
+ int game_type; 
+ config->value("config/GameType",game_type);
  config_get_path(config,"animdata",filename);
 
  if(file.open(filename) == false)
@@ -337,6 +368,18 @@ bool TileManager::loadAnimData()
   for(i=0;i<32;i++)
   {
    animdata.shift_values[i] = file.read1();
+  }
+
+  for(i=0;i<32;i++) // FIXME: any data on which tiles don't start as animated?
+  {
+   animdata.loop[i] = 0; // loop forwards
+   if((game_type == NUVIE_GAME_U6) &&
+      (animdata.tile_to_animate[i] == 862 // Crank
+      || animdata.tile_to_animate[i] == 1009 // Crank
+      || animdata.tile_to_animate[i] == 1020)) // Chain
+    animdata.loop_count[i] = 0; // don't start animated
+   else
+    animdata.loop_count[i] = -1; // infinite animation
   }
   
  return true;

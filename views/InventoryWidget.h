@@ -29,11 +29,11 @@
 #include "U6def.h"
 #include "Configuration.h"
 #include "GUI_widget.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 #include "Actor.h"
 #include "Text.h"
 
+class TileManager;
 
 class InventoryWidget : public GUI_Widget {
  

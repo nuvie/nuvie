@@ -131,6 +131,8 @@ nuvie_SOURCES = \
 	Text.h \
 	TileManager.cpp \
 	TileManager.h \
+	TimedEvent.cpp \
+	TimedEvent.h \
 	main.cpp \
 	main.h \
 	nuvie.cpp \

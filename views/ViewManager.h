@@ -30,7 +30,6 @@
 #include "Configuration.h"
 #include "GUI.h"
 #include "Text.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 #include "Party.h"
 #include "Player.h"
@@ -41,6 +40,8 @@
 #include "InventoryView.h"
 #include "PartyView.h"
 #include "PortraitView.h"
+
+class TileManager;
 
 class ViewManager
 {

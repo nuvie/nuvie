@@ -30,7 +30,6 @@
 #include "Configuration.h"
 #include "Screen.h"
 #include "Text.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 #include "Party.h"
 
@@ -38,6 +37,8 @@
 
 GUI_status viewLeftButtonCallback(void *data);
 GUI_status viewRightButtonCallback(void *data);
+
+class TileManager;
 
 class View: public GUI_Widget
 {

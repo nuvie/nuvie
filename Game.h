@@ -34,7 +34,6 @@
 #include "GamePalette.h"
 #include "GameClock.h"
 #include "Text.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
 #include "Player.h"
@@ -49,6 +48,8 @@
 #include "Portrait.h"
 #include "UseCode.h"
 #include "Background.h"
+
+class TileManager;
 
 class Game
 {

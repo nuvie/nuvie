@@ -113,13 +113,16 @@ class Party {
  void reform_party();
  void follow();
  bool has_obj(uint16 obj_n, uint8 quality);
+ bool is_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);
+ bool is_at(MapCoord &xyz, uint32 threshold = 0) { return(is_at(xyz.x,xyz.y,xyz.z,threshold)); }
 
  void show();
  void hide();
  
  bool move(uint16 dx, uint16 dy, uint8 dz);
 
- void walk(MapCoord *walkto, MapCoord *teleport);
+ void walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay = 0);
+ void enter_vehicle(Obj *ship_obj, uint32 step_delay = 0);
  void stop_walking();
  bool get_autowalk() { return(autowalk); } 
 

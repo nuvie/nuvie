@@ -24,6 +24,7 @@
 #include "NuvieIOFile.h"
 #include "Game.h"
 #include "Converse.h"
+#include "TimedEvent.h"
 #include "Party.h"
 
 Party::Party(Configuration *cfg)
@@ -298,6 +299,21 @@ bool Party::has_obj(uint16 obj_n, uint8 quality)
  return false;
 }
 
+
+/* Is everyone in the party at the coordinates?
+ */
+bool Party::is_at(uint16 x, uint16 y, uint8 z, uint32 threshold)
+{
+    for(uint32 p = 0; p < num_in_party; p++)
+    {
+        MapCoord member_loc(member[p].actor->get_location());
+        if(member_loc.x != x || member_loc.y != y || member_loc.z != z)
+            return(false);
+    }
+    return(true);
+}
+
+
 void Party::show()
 {
  uint16 i;
@@ -334,11 +350,32 @@ bool Party::move(uint16 dx, uint16 dy, uint8 dz)
 
 
 /* Automatically walk (timed) to a destination, and then teleport to new
- * location (optional). Used to enter/exit dungeons and vehicles.
+ * location (optional). Used to enter/exit dungeons.
+ * (step_delay 0 = default speed)
  */
-void Party::walk(MapCoord *walkto, MapCoord *teleport)
+void Party::walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay)
 {
-    new TimedPartyMove(walkto, teleport);
+    if(step_delay)
+        new TimedPartyMove(walkto, teleport, step_delay);
+    else
+        new TimedPartyMove(walkto, teleport);
+    // other actors won't move
+    game->get_actor_manager()->set_update(false);
+    // view will snap back to player after everyone has moved
+    game->get_player()->uncontrol();
+    autowalk = true;
+}
+
+
+/* Automatically walk (timed) to vehicle. (step_delay 0 = default speed)
+ */
+void Party::enter_vehicle(Obj *ship_obj, uint32 step_delay)
+{
+    MapCoord walkto(ship_obj->x, ship_obj->y, ship_obj->z);
+    if(step_delay)
+        new TimedPartyMoveToVehicle(&walkto, ship_obj, step_delay);
+    else
+        new TimedPartyMoveToVehicle(&walkto, ship_obj);
     // other actors won't move
     game->get_actor_manager()->set_update(false);
     // view will snap back to player after everyone has moved
@@ -351,7 +388,6 @@ void Party::walk(MapCoord *walkto, MapCoord *teleport)
  */
 void Party::stop_walking()
 {
-//        Game *game = Game::get_game();
     game->get_player()->control();
     game->get_actor_manager()->set_update(true);
     autowalk = false;

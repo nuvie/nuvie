@@ -15,11 +15,12 @@
 #include "Configuration.h"
 #include "Surface.h"
 #include "Screen.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
-
+#include "TileManager.h"
 #include "GUI.h"
+
+class TileManager;
 
 class MapWindow: public GUI_Widget
 {

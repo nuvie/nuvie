@@ -31,10 +31,11 @@
 #include "View.h"
 #include "Screen.h"
 #include "Text.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 #include "Party.h"
 #include "Portrait.h"
+
+class TileManager;
 
 class PortraitView : public View {
  

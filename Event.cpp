@@ -32,6 +32,7 @@
 #include "Player.h"
 #include "Book.h"
 #include "PortraitView.h"
+#include "TimedEvent.h"
 #include "Event.h"
 
 #include "U6UseCode.h"
@@ -63,6 +64,7 @@ Event::Event(Configuration *cfg)
 Event::~Event()
 {
  delete book;
+ delete time_queue;
 }
 
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
@@ -83,7 +85,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  book = new Book(config);
  if(book->init() == false)
    return false;
-
+ time_queue = new TimeQueue;
  return true;
 }
 
@@ -91,9 +93,9 @@ bool Event::update()
 {
  // timed
  uint32 now = SDL_GetTicks(); // FIXME: get from Game or GameClock
- while(!time_queue.empty() && time_queue.call_timer(now))
+ while(!time_queue->empty() && time_queue->call_timer(now))
  {
-    TimedEvent *tevent = time_queue.pop_timer(); // remove from timequeue
+    TimedEvent *tevent = time_queue->pop_timer(); // remove from timequeue
     if(!tevent->repeat)
         delete tevent; // if not repeated, safe to delete
  }
@@ -469,7 +471,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  uint8 level;
 
  player->get_location(&x,&y,&level);
-   
+
  actor = map->get_actor((uint16)(x+rel_x), (uint16)(y+rel_y), level);
  if(actor && actor->is_visible())
    {
@@ -477,7 +479,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
    }
  else
     obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
-   
+
  if(obj)
  {
   scroll->display_string(obj_manager->look_obj(obj));
@@ -721,122 +723,6 @@ void Event::wait()
 {
  SDL_Delay(TimeLeft());
 }
-
-// Timer (should be in another file)
-
-/* Add new timed event to queue, which will activate `event' when time is
- * `evtime'.
- */
-void TimeQueue::add_timer(TimedEvent *tevent)
-{
-    std::list<TimedEvent *>::iterator t;
-    if(tq.empty())
-    {
-        tq.push_front(tevent);
-        return;
-    }
-    // add after events with earlier time
-    t = tq.begin();
-    while(t != tq.end() && (*t++)->time <= tevent->time);
-    tq.insert(t, tevent);
-}
-
-
-/* Remove and return timed event at front of queue, or NULL if empty.
- */
-TimedEvent *TimeQueue::pop_timer()
-{
-    TimedEvent *first = NULL;
-    if(!empty())
-    {
-        first = tq.front();
-        tq.pop_front(); // remove it
-    }
-    return(first);
-}
-
-
-/* Call timed event at front of queue, whose time is <= `evtime'.
- * Returns true if an event handler was called. (false if time isn't up yet)
- */
-bool TimeQueue::call_timer(uint32 evtime)
-{
-    if(empty())
-        return(false);
-    TimedEvent *first = tq.front();
-    if(first->time > evtime)
-        return(false);
-    first->timed(evtime);
-    if(first->repeat) // repeat! same delay, add time
-    {
-        first->time = evtime + first->delay;
-        add_timer(first);
-    }
-    return(true);
-}
-
-
-/* This constructor must be called by all subclasses to add to queue.
- */
-TimedEvent::TimedEvent(uint32 reltime, bool immediate) : delay(reltime),
-            time(reltime + SDL_GetTicks()), ignore_pause(false), repeat(false)
-{
-    if(immediate)
-        time = 0; // start now (useful if repeat == true)
-    event = Game::get_game()->get_event();
-    event->get_time_queue()->add_timer(this);
-}
-
-
-/* Party movement to/from dungeon or to vehicle, two tiles per second.
- * Construct & Set destination.
- */
-TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t) : TimedEvent(500, true)
-{
-    party = Game::get_game()->get_party();
-    dest = new MapCoord(*d);
-    if(t)
-        target = new MapCoord(*t);
-    else
-        target = NULL;
-}
-
-
-/* Party movement to/from dungeon or to vehicle. Repeated until everyone is in
- * the boat. (FIXME: handle boats)
- */
-void TimedPartyMove::timed(uint32 evtime)
-{
-    repeat = false;
-    for(uint32 a = 0; a < party->get_party_size(); a++)
-    {
-        // if not at target (FIXME: only checks Z for now)
-        Actor *person = party->get_actor(a);
-        uint16 x, y; uint8 z;
-        person->get_location(&x, &y, &z);
-        MapCoord loc(x, y, z);
-        if((target && loc.z != target->z) || (!target && loc != *dest))
-        {
-            // if at dest or offscreen, teleport to target
-            MapWindow *map_window = Game::get_game()->get_map_window();
-            if((target && loc == *dest)
-               || !map_window->in_window(loc.x, loc.y, loc.z))
-                person->move(target->x, target->y, target->z, ACTOR_FORCE_MOVE);
-            else // walk there
-                person->swalk(*dest);
-
-            person->update();
-            repeat = true;
-        }
-        // at target
-        if((target && loc.z == target->z) || (loc == *dest))
-            person->stop_walking();
-    }
-
-    if(!repeat)
-        party->stop_walking();
-}
-
 
 //Protected
 

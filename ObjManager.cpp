@@ -22,7 +22,7 @@
  */
 
 #include "U6def.h"
-
+#include "TileManager.h"
 #include "ObjManager.h"
 
 #include "U6misc.h"
@@ -527,6 +527,23 @@ uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :
  return obj_to_tile[obj_num];
 }
 
+
+/* Animate all visible tiles of an object `loop_count' times.
+ */
+void ObjManager::animate_forwards(Obj *obj, uint32 loop_count)
+{
+    tile_manager->set_anim_loop(get_obj_tile_num(obj->obj_n), loop_count, 0);
+}
+
+
+/* Animate in reverse all visible tiles of an object `loop_count' times.
+ */
+void ObjManager::animate_backwards(Obj *obj, uint32 loop_count)
+{
+    tile_manager->set_anim_loop(get_obj_tile_num(obj->obj_n), loop_count, 1);
+}
+
+
 U6LList *ObjManager::get_actor_inventory(uint16 actor_num)
 {
  if(actor_num >= 256)
@@ -889,11 +906,13 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  
  if(in_container == false)
    printf("at %x, %x, %x",obj->x, obj->y, obj->z);
-   
  printf("\n");
  
  print_indent(indent);
  printf("frame_n: %d\n",obj->frame_n);
+
+ print_indent(indent);
+ printf("Tile: %d\n", get_obj_tile_num(obj->obj_n));
 
  print_indent(indent);
  printf("Status: ");

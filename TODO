@@ -37,6 +37,9 @@ Use/drop/move objects from inventory
 
 Give message scroller and other GUI areas some high-level I/O methods
 
+Use and other actions aren't supposed to work when Player is uncontrolled
+
+Don't try to dump container contents if CLOSING the container
 
 Restrict farm animals to within fenced areas.
 Fix actor draw order issues.

@@ -150,6 +150,8 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
 
     add_usecode(OBJ_U6_VORTEX_CUBE,0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube);
+    add_usecode(OBJ_U6_PULL_CHAIN, 0,0,USE_EVENT_USE,&U6UseCode::use_bell);
+    add_usecode(OBJ_U6_BELL,     255,0,USE_EVENT_USE,&U6UseCode::use_bell);
 }
 
 
@@ -529,7 +531,7 @@ bool U6UseCode::use_container(Obj *obj, uint8 ev)
     bool has_objects = false;
     if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
         toggle_frame(obj); //open / close object
-    if(ev == USE_EVENT_USE)
+    if(ev == USE_EVENT_USE) // only print messages if USING
         scroll->display_string("Searching here, you find ");
     has_objects = UseCode::use_container(obj);
     if(has_objects)
@@ -547,6 +549,27 @@ bool U6UseCode::use_vortex_cube(Obj *obj, uint8 ev)
 }
 
 
+/* Use bell or pull-chain, ring and animate nearby bell.
+ */
+bool U6UseCode::use_bell(Obj *obj, uint8 ev)
+{
+    Obj *bell = NULL;
+    if(ev != USE_EVENT_USE)
+        return(false);
+    if(obj->obj_n == OBJ_U6_BELL)
+        bell = obj;
+    else // should be next to chain
+    {
+        bell = obj_manager->get_obj_of_type_from_location(OBJ_U6_BELL, obj->x + 1, obj->y, obj->z);
+        if(!bell)
+            bell = obj_manager->get_obj_of_type_from_location(OBJ_U6_BELL, obj->x - 1, obj->y, obj->z);
+    }
+    if(bell)
+        obj_manager->animate_forwards(bell, 2);
+    return(true);
+}
+
+
 //cranks control drawbridges.
 
 bool U6UseCode::use_crank(Obj *obj, uint8 ev)
@@ -556,7 +579,7 @@ bool U6UseCode::use_crank(Obj *obj, uint8 ev)
  uint16 b_width;
  bool bridge_open;
  Obj *start_obj;
- 
+
  start_obj = drawbridge_find(obj);
  
  if(start_obj->frame_n == 3) // bridge open
@@ -567,14 +590,25 @@ bool U6UseCode::use_crank(Obj *obj, uint8 ev)
  x = start_obj->x;
  y = start_obj->y;
  level = start_obj->z;
- 
  drawbridge_remove(x, y, level, &b_width);
 
+ // find and animate chain
+ if(!(start_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_CHAIN, obj->x+1, obj->y, obj->z)))
+   start_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_CHAIN, obj->x-1, obj->y, obj->z);
+ if(start_obj)
+   obj_manager->animate_forwards(start_obj, 3);
+
  if(bridge_open)
+ {
+   obj_manager->animate_backwards(obj, 3); // animate crank
    drawbridge_close(x, y, level, b_width);
+ }
  else
+ {
+   obj_manager->animate_forwards(obj, 3);
    drawbridge_open(x, y, level, b_width);
-    
+ }
+
  return true;
 }
 
@@ -901,16 +935,21 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
        return false;
       }
    }
-    
+
+ // walk to vehicle if necessary
+ if(!party->is_at(obj->x, obj->y, obj->z))
+    party->enter_vehicle(obj);
+ else
+   {
     ship_actor->init_from_obj(obj);
-    ship_actor->show(); 
+    ship_actor->show(); // Swift!
     obj_manager->remove_obj(obj);
     delete obj;
-    
-    party->hide();
+
+    party->hide(); // set in-vehicle
     player->set_actor(ship_actor);
-    
-    return(true);
+   }
+ return(true);
 }
 
 inline Obj *U6UseCode::use_boat_find_center(Obj *obj)
@@ -982,6 +1021,7 @@ inline bool U6UseCode::use_boat_find_land(uint16 *x, uint16 *y, uint8 *z)
 
  return false;
 }
+
 
 bool U6UseCode::use_horse(Obj *obj, uint8 ev)
 {

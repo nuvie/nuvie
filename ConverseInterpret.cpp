@@ -20,6 +20,7 @@
 #include <ctype.h>
 
 #include "Player.h"
+#include "U6UseCode.h"
 #include "ConverseInterpret.h"
 
 //#define CONVERSE_DEBUG
@@ -457,6 +458,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
     converse_value in;
     ConvScript *cs = converse->script;
     Actor *cnpc = NULL;
+    Obj *cnpc_obj = NULL;
     Player *player = converse->player;
     converse_db_s *cdb;
     char *dstr = NULL;
@@ -464,8 +466,12 @@ bool ConverseInterpret::op(stack<converse_value> &i)
     switch(in = pop_arg(i))
     {
         case U6OP_HORSE: // 0x9c
-            converse->print("!horse\n");
-            npc_num(pop_arg(i)); // FIXME: give horse to npc
+            // FIXME: probably need to do more real actor/object set-up here
+            cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
+            cnpc_obj = cnpc->make_obj();
+            cnpc_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER; // mount up.
+            cnpc->init_from_obj(cnpc_obj);
+            delete cnpc_obj;
             break;
         case U6OP_IF: // 0xa1 (test val)
             set_break(U6OP_ELSE);
@@ -670,6 +676,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
     converse_value in, out = 0;
     ConvScript *cs = converse->script;
     Actor *cnpc = NULL;
+    Obj *cnpc_obj = NULL;
     converse_db_s *cdb;
     Player *player = converse->player;
 
@@ -738,10 +745,11 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             out = converse->objects->get_obj_weight(v[0]) * v[1];
             break;
         case U6OP_HORSED: // 0x9d
-//            converse->print("!horsed\n");
-            pop_arg(i);
-            if(false) // FIXME: check for horse
+            cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
+            cnpc_obj = cnpc->make_obj();
+            if(cnpc_obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
                 out = 1;
+            delete cnpc_obj;
             break;
         case U6OP_RAND: // 0xa0
             v[1] = pop_arg(i); // max.

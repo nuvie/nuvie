@@ -1,3 +1,13 @@
+2003-10-14  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Party members will now walk up and enter skiffs and ships when using.
+	* Blacksmith NPC's can sell you a horse. There is a serious bug here
+	  that I haven't reproduced yet.
+	* Certain objects should have proper tile animations now
+	  (crank/chain/bell), so this fixes the relevant bug item. [ 713532 ]
+	* Bells (like the one in Britain) can be used too, but still no sound.
+	* TimedEvent: Timer functions moved from Event to new files
+	* ObjManager TileManager: Tile animation control methods added here
+
 2003-10-12  Eric Fry <efry@users.sourceforge.net>
 	* Added "use" support for skiffs, ships and horses.
           Ship support is still a bit rough. Horse's disappear after use. :(

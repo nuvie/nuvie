@@ -29,11 +29,11 @@
 
 #include "Configuration.h"
 #include "Screen.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 
 class ActorManager;
 class Actor;
+class TileManager;
 
 #define MAP_ORIGINAL_TILE true
 

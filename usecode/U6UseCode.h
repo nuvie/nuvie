@@ -167,6 +167,7 @@
 
 #define OBJ_U6_MOUSEHOLE           213
 #define OBJ_U6_SUNDIAL             235
+#define OBJ_U6_BELL                236
 #define OBJ_U6_CHAIR               252
 #define OBJ_U6_CROSS               254
 #define OBJ_U6_TOMBSTONE           255
@@ -183,6 +184,7 @@
 #define OBJ_U6_V_PASSTHROUGH       278
 #define OBJ_U6_H_PASSTHROUGH       280
 #define OBJ_U6_CRANK               288
+#define OBJ_U6_CHAIN               293
 
 #define OBJ_U6_OAKEN_DOOR          297
 #define OBJ_U6_WINDOWED_DOOR       298
@@ -244,7 +246,6 @@
 #define OBJ_U6_CHILD               381
 #define OBJ_U6_GUARD               382
 
-
 #define OBJ_U6_JESTER              383
 #define OBJ_U6_PEASANT             384
 #define OBJ_U6_FARMER              385
@@ -254,15 +255,15 @@
 #define OBJ_U6_MUSICIAN_PLAYING    392
 #define OBJ_U6_LORD_BRITISH        409
 #define OBJ_U6_AVATAR              410
-#define OBJ_U6_SHIP                412
 
+#define OBJ_U6_SHIP                412
 #define OBJ_U6_SKIFF               414
 #define OBJ_U6_RAFT                415
-
-#define OBJ_U6_RAFT                415
 #define OBJ_U6_NO_VEHICLE          416
+
 #define OBJ_U6_QUEST_GATE          416
 #define OBJ_U6_DRAGON_EGG          417
+#define OBJ_U6_PULL_CHAIN          419
 
 #define OBJ_U6_CYCLOPS             424
 
@@ -337,6 +338,7 @@ class U6UseCode: public UseCode
  inline bool use_boat_find_land(uint16 *x, uint16 *y, uint8 *z);
  bool use_horse(Obj *obj, uint8 ev);
  bool use_potion(Obj *obj, uint8 ev);
+ bool use_bell(Obj *obj, uint8 ev);
  bool look_mirror(Obj *obj, uint8 ev);
  bool look_sign(Obj *obj, uint8 ev);
  bool look_clock(Obj *obj, uint8 ev);

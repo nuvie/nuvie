@@ -8,6 +8,7 @@
  */
 #include "Configuration.h"
 #include "Actor.h"
+#include "TileManager.h"
 #include "MapWindow.h"
 
 #include "GUI_widget.h"

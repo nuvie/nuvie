@@ -29,12 +29,13 @@
 #include "View.h"
 #include "Screen.h"
 #include "Text.h"
-#include "TileManager.h"
 #include "ObjManager.h"
 #include "Actor.h"
 #include "Party.h"
 #include "DollWidget.h"
 #include "InventoryWidget.h"
+
+class TileManager;
 
 class InventoryView : public View {
  
