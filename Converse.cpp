@@ -268,7 +268,7 @@ if(!args.empty() && !args[0].empty())
                     break;
             }
             enter_scope(ifcomp ? CONV_SCOPE_IF : CONV_SCOPE_IFELSE);
-			scroll->display_string(ifcomp ? "-TRUE" : "-FALSE" "-\n");
+            scroll->display_string((char *)(ifcomp ? "-TRUE" : "-FALSE" "-\n"));
             break;
         case U6OP_ENDIF:
             break_scope();
