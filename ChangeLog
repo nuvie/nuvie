@@ -1,3 +1,7 @@
+2003-05-18  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Event and MsgScroll now use SDL Unicode translation to get character
+	input.
+
 2003-05-16  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Actor: New methods is_nearby(), face_location(), face_actor().
 	* Converse: NPC name is now saved internally when it is first read.
