@@ -68,7 +68,7 @@ bool MsgScroll::init(Screen *s, Text *txt)
  screen = s;
  text = txt;
  
- if(set_prompt("Avatar\n>") == false)
+ if(set_prompt("Avatar:\n>") == false)
    return false;
  
  set_input_mode(false);
