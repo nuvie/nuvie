@@ -143,9 +143,10 @@ class Actor
 // bool is_visible() { return(MapCoord(x,y,z).is_visible()); }
  bool is_alive();
  bool is_nearby(Actor *other);
- bool is_nearby(uint8 a);
+ bool is_nearby(uint8 actor_num);
  bool is_at_position(Obj *obj);
  bool is_passable();
+ bool is_temporary();
  
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  MapCoord get_location();
@@ -229,7 +230,7 @@ class Actor
  protected:
  
  void loadSchedule(unsigned char *schedule_data, uint16 num);
- virtual bool updateSchedule();
+ virtual bool updateSchedule(uint8 hour);
  uint16 getSchedulePos(uint8 hour);
 // uint16 getSchedulePos(uint8 hour, uint8 day_of_week);
 // inline uint16 Actor::getSchedulePos(uint8 hour);

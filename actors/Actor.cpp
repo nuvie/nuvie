@@ -114,9 +114,9 @@ bool Actor::is_nearby(Actor *other)
 }
 
 
-bool Actor::is_nearby(uint8 a)
+bool Actor::is_nearby(uint8 actor_num)
 {
-    return(is_nearby(Game::get_game()->get_actor_manager()->get_actor(a)));
+    return(is_nearby(Game::get_game()->get_actor_manager()->get_actor(actor_num)));
 }
 
 bool Actor::is_at_position(Obj *obj)
@@ -135,6 +135,12 @@ bool Actor::is_passable()
 
  return tile->passable;
 }
+
+bool is_temporary()
+{
+ return false;
+}
+
 
 void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 {
@@ -394,7 +400,7 @@ void Actor::update()
     }
   }
 */
- updateSchedule();
+ //updateSchedule();
  if(pathfinder)
  {
     if(pathfinder->reached_goal()) // check schedule after walk, before stopping
@@ -829,12 +835,12 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
 
 //FIX for day_of_week
 
-bool Actor::updateSchedule()
+bool Actor::updateSchedule(uint8 hour)
 {
- uint8 hour, day_of_week;
+ uint8 day_of_week;
  uint16 new_pos;
  
- hour = clock->get_hour();
+ //hour = clock->get_hour();
  day_of_week = clock->get_day_of_week();
  
  new_pos = getSchedulePos(hour);

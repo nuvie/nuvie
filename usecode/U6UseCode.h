@@ -276,6 +276,10 @@
 
 #define OBJ_U6__LAST_              431
 
+
+#define U6_LORD_BRITISH_ACTOR_NUM 5
+#define U6_LORD_BRITISH_ORB_CHECK_FLAG 0x20 // this is set if the player has asked LB about the orb of moons
+
 class U6UseCode;
 class Configuration;
 class MsgScroll;

@@ -29,6 +29,7 @@
 #include "ActorManager.h"
 #include "misc.h"
 #include "NuvieIOFile.h"
+#include "GameClock.h"
 
 void config_get_path(Configuration *config, std::string filename, std::string &path);
 
@@ -39,7 +40,9 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  tile_manager = tm;
  obj_manager = om;
  clock = c;
-
+ 
+ game_hour = clock->get_hour();
+ 
  player_actor = 1;
 
  update = true;
@@ -282,12 +285,26 @@ const char *ActorManager::look_actor(Actor *a)
 
 void ActorManager::updateActors()
 {
+ uint8 cur_hour;
  uint16 i;
+
  if(!update)
   return;
+
+ cur_hour = clock->get_hour();
+
+ if(cur_hour != game_hour)
+   {
+    game_hour = cur_hour;
+
+    for(i=0;i<256;i++)
+      actors[i]->updateSchedule(cur_hour);
+   }
+
  for(i=0;i<256;i++)
   actors[i]->update();
-  
+
+ return;  
 }
 
 void ActorManager::twitchActors()

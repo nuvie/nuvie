@@ -46,7 +46,8 @@ class ActorManager
  Actor *actors[256];
  uint8 player_actor;
  GameClock *clock;
-
+ uint8 game_hour;
+ 
  public:
   
  ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c);

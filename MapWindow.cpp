@@ -457,7 +457,6 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
 {
  uint16 x,y;
  Tile *tile;
- Tile *tile1;
  
  y = obj->y - cur_y;
  x = obj->x - cur_x;

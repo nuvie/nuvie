@@ -780,8 +780,22 @@ bool U6UseCode::use_orb(Obj *obj, uint8 ev)
  uint16 x,y,ox,oy;
  uint8 px,py,z,oz;
  uint8 position;
-
+ Actor *lord_british;
+ ActorManager *actor_manager;
+ 
  player->get_actor()->get_location(&x,&y,&z);
+ 
+ actor_manager = Game::get_game()->get_actor_manager();
+ lord_british = actor_manager->get_actor(U6_LORD_BRITISH_ACTOR_NUM);
+ 
+ // The player must ask Lord British about the orb before it can be used.
+ // This sets the flag 0x20 in LB's flags field which allows the orb to be used.
+ 
+ if((lord_british->get_flags() & U6_LORD_BRITISH_ORB_CHECK_FLAG) == 0)
+   {
+    scroll->display_string("\nYou can't figure out how to use it!\n");
+    return false;
+   }
 
  if(!mapcoord_ref)
   {

@@ -1,3 +1,9 @@
+2003-11-28  Eric Fry <efry@users.sourceforge.net>
+	* Added proper check when using orb of moons. You can only use the
+	  orb after saying 'orb' to Lord British.
+	* Moved hour change check from Actor to ActorManager. ActorManager
+	  only calls Actor::updateSchedule() when the hour changes.
+
 2003-11-26  Eric Fry <efry@users.sourceforge.net>
 	* Light globes are now not drawn for blacked out objects.
 	

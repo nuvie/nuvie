@@ -172,10 +172,10 @@ void U6Actor::update()
  return;
 }
 
-bool U6Actor::updateSchedule()
+bool U6Actor::updateSchedule(uint8 hour)
 {
  bool ret;
- if((ret = Actor::updateSchedule()) == true) //walk to next schedule location if required.
+ if((ret = Actor::updateSchedule(hour)) == true) //walk to next schedule location if required.
    {
     if(sched[sched_pos] != NULL && (sched[sched_pos]->x != x || sched[sched_pos]->y != y || sched[sched_pos]->z != z))
        set_worktype(WORKTYPE_U6_WALK_TO_LOCATION);

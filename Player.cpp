@@ -139,6 +139,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
    actor_manager->updateActors();
    clock->inc_move_counter(); // SB-X move to gameclock
    obj_manager->temp_obj_list_update(x, y, z); // remove temporary objs
+   //actor_manager->cache_update(x,y,z); // clean actor cache remove temp actors
  }
 }
 

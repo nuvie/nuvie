@@ -84,7 +84,7 @@ class U6Actor: public Actor
  bool init();
  uint16 get_downward_facing_tile_num();
  void update();
- bool updateSchedule();
+ bool updateSchedule(uint8 hour);
  void set_worktype(uint8 new_worktype);
  void preform_worktype();
  void set_direction(uint8 d);
