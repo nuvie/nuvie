@@ -69,18 +69,27 @@ bool Text::drawString(Screen *screen, std::string str, uint16 x, uint16 y, uint8
 
 bool Text::drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 lang_num)
 {
- uint16 i, len;
+ uint16 i, len, l; // l is drawn-index of character, to determine x
+ bool highlight = false;
  
  if(font_data == NULL)
    return false;
  
  len = strlen(str);
  
- for(i=0;i<len;i++)
+ for(i=0, l=0;i<len;i++)
    {
-    drawChar(screen,get_char_num(str[i],lang_num),x + i * 8, y);
+    if(str[i] == '@')
+       highlight = true;
+    else
+      {
+       if(!isalpha(str[i]))
+          highlight = false;
+       drawChar(screen, get_char_num(str[i],lang_num), x + (l++) * 8, y,
+                highlight ? 0x0c : 0x48);
+      }
    }
-     
+ highlight = false;
  return true;
 }
 
@@ -108,7 +117,8 @@ uint8 Text::get_char_num(uint8 c, uint8 lang_num)
  return c;
 }
 
-void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y)
+void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
+                    uint8 color)
 {
  unsigned char buf[64];
  unsigned char *pixels;
@@ -131,15 +141,14 @@ void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y)
     for(j=8;j>0;j--)
       {
        if(font[i] & (1<<(j-1)))
-         pixels[8-j] = 0x48; // 0th palette entry should be black
+         pixels[8-j] = color; // 0th palette entry should be black
    //    else
-     //    pixels[7-j] = 0xff;
+     //    pixels[7-j] = 0x48;
       }
       
     pixels += pitch;
    }
 
  screen->blit(x,y,buf,8,8,8,8,true,NULL);
- 
  return;
 }

@@ -1,3 +1,7 @@
+2003-04-23  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Text: Quick edit to highlight keywords in text. This is -not- the
+	correct way to do this, but it was easy and works for now.
+
 2003-04-20  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Converse: new commands handled, and printed text expansion
 	* MsgScroll: set_input_mode can accept a list of characters, and will
