@@ -1558,8 +1558,7 @@ bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
         if(x == obj->x && y > obj->y && y <= (obj->y + 2))
         {
             scroll->display_string("\nYou can see yourself!");
-//            view_manager->set_portrait_mode(actor_ref->get_actor_num(), NULL, true);
-            view_manager->set_portrait_mode(actor_ref->get_actor_num(), NULL);
+            view_manager->set_portrait_mode(actor_ref, NULL);
         }
         return(true);
     }

@@ -32,6 +32,7 @@ class Portrait;
 class Party;
 class Player;
 class Text;
+class Actor;
 
 class View;
 class PartyView;
@@ -67,7 +68,7 @@ class ViewManager
 
  void update();
  
- void set_portrait_mode(uint8 actor_num, char *name);
+ void set_portrait_mode(Actor *actor, char *name);
  void set_inventory_mode();
  void set_party_mode();
  void set_actor_mode();

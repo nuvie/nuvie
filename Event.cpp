@@ -624,7 +624,7 @@ bool Event::look()
 
  if(actor)
  {
-   view_manager->set_portrait_mode(actor->get_actor_num(),NULL);
+   view_manager->set_portrait_mode(actor,NULL);
    can_search = false;
  }
  scroll->display_string("Thou dost see ");

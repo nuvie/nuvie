@@ -28,6 +28,8 @@
 
 #include "ViewManager.h"
 
+#include "Actor.h"
+
 #include "ActorView.h"
 #include "PortraitView.h"
 #include "InventoryView.h"
@@ -109,12 +111,12 @@ void ViewManager::update()
  return;
 }
 
- 
-void ViewManager::set_portrait_mode(uint8 actor_num, char *name)
+// We only change to portrait mode if the actor has a portrait.
+
+void ViewManager::set_portrait_mode(Actor *actor, char *name)
 {
- portrait_view->set_portrait(actor_num, name);
- 
- set_current_view((View *)portrait_view);
+ if(portrait_view->set_portrait(actor, name) == true)
+   set_current_view((View *)portrait_view);
 }
 
 void ViewManager::set_inventory_mode()

@@ -1,4 +1,10 @@
-2003-12-29  Eric Fry <efry@users.sourceforge.net>
+2003-12-31  Eric Fry <efry at users.sourceforge.net>
+	* Added twitching to the hydra tenticles.
+	* Nuvie will no longer show a blank portrait when looking at a
+	  temp actor with no portrait.
+	* Guards and wisps now show a portrait when you look at them.
+
+2003-12-29  Eric Fry <efry at users.sourceforge.net>
 	* MapWindow: Added permenant darkness to dungeon levels.
 	* ObjManager: Added is_stackable method for checking if an object can
 	  be pluralised.
@@ -6,11 +12,11 @@
 	  at an item with a quantity > 1.
 	* U6Actor: Added dragon actors. I've also started Hydra support.
  
-2003-12-25  Eric Fry <efry@users.sourceforge.net>
+2003-12-25  Eric Fry <efry at users.sourceforge.net>
 	* Some fixes for object weight. Inventory weight should be closer to the
 	  original now.
 	
-2003-12-25  Eric Fry <efry@users.sourceforge.net>
+2003-12-25  Eric Fry <efry at users.sourceforge.net>
 	* Fixed an issue with containers. [ 864087 ] There are some comtainer
 	  objects that don't reference their container through the x variable.
 	  They seem to follow the container object in the objblk files. They
@@ -18,24 +24,24 @@
 	  I think their might still be some issues with calculating inventory 
 	  weight.
 
-2003-12-21  Eric Fry <efry@users.sourceforge.net>
+2003-12-21  Eric Fry <efry at users.sourceforge.net>
 	* Fixed inventory display order. Nuvie was displaying the inventory 
 	  list in reverse order. Thanks to Dominus for spotting that one.
 
-2003-12-20  Eric Fry <efry@users.sourceforge.net>
+2003-12-20  Eric Fry <efry at users.sourceforge.net>
 	* Work on horse usecode. Temporary Actors are used correctly when
 	  mounting/dismounting horses.
 	* The player can no longer use character horses eg Iolo's horse.
  
-2003-12-14  Eric Fry <efry@users.sourceforge.net>
+2003-12-14  Eric Fry <efry at users.sourceforge.net>
 	* Fixed walk on pedastal bug. [ 791146 ]
 	* Fixed lockup when walking to the top or left of the map. This only
 	  really occured in the dungeon levels.
 
-2003-12-13  Eric Fry <efry@users.sourceforge.net>
+2003-12-13  Eric Fry <efry at users.sourceforge.net>
 	* A fix for an infinite loop when removing temporary eggs.
 
-2003-12-10  Eric Fry <efry@users.sourceforge.net>
+2003-12-10  Eric Fry <efry at users.sourceforge.net>
 	* Added proper worktype for cows and horses. They keep within the fenced
 	  areas now.
 	* Some minor tweeks for multi-tile actors. 
@@ -43,7 +49,7 @@
 	  actors on the same spot. eg over an egg. I haven't tracked down
 	  what's causing this crash yet. :(
 
-2003-12-08  Eric Fry <efry@users.sourceforge.net>
+2003-12-08  Eric Fry <efry at users.sourceforge.net>
 	* Added egg support. Eggs now spawn Actors as you pass them by. :)
 	  I've still got a bit to do on this. Eggs need to throw their contents
 	  around the map. At the moment Actors are all spawning on top of their
@@ -56,12 +62,12 @@
 	* Added Use Well. This will fill a bucket with water.
 	* Added Apple XCode build configuration.
 
-2003-12-04  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-12-04  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed closed containers dumping contents.
 	* Temp. fix added for horses disappearing after riding.
 	* People riding horses dismount now before boarding a ship.
 
-2003-12-03  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-12-03  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Starting from an in-vehicle savegame works correctly now.
 	* Player: The party only follows if you are controlling the leader now,
 	  but is moved if you are controlling a vehicle.
@@ -74,24 +80,24 @@
 	  implemented) and shovels. Fixed bug in food code that could prevent
 	  food/drinks from being removed properly when eaten.
 
-2003-12-03  Eric Fry <efry@users.sourceforge.net>
+2003-12-03  Eric Fry <efry at users.sourceforge.net>
 	* Fixed double free when cleaning up temp objects.
 	* Update darkness when creating a moongate.
 	* Fixed crash when exiting ships.
 	* Added in_vehicle to Party.
 
-2003-12-03  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-12-03  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Objects are removed from temp. list when removed from the map.
 	* Fixed segfault when getting objects and stacking them in inventory.
 
-2003-12-02  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-12-02  Joseph Applegate <sb-x at users.sourceforge.net>
 	* You can no longer walk diagonally between blocked squares. This fixes
 	  walking over water.
 	* Updated Horse code (can't use another horse while riding), and added
 	  Codex of Ultimate Wisdom to book list.
 	* Mirrors now showing reflection when NPC's pass by them. [ 716226 ]
 
-2003-12-01  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-12-01  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Minor improvements made to how the party follows, in Party, PathFinder
 	  and ZPath. They are a little more jumpy now, but that will be fixed in
 	  the future. PathFinder path isn't cleared unless dest changes.
@@ -132,50 +138,50 @@
 	* UseCode: Holy flames can't be doused.
 	  Object numbers of fire,poison,sleep,protection fields added.
 
-2003-11-28  Eric Fry <efry@users.sourceforge.net>
+2003-11-28  Eric Fry <efry at users.sourceforge.net>
 	* Added proper check when using orb of moons. You can only use the
 	  orb after saying 'orb' to Lord British.
 	* Moved hour change check from Actor to ActorManager. ActorManager
 	  only calls Actor::updateSchedule() when the hour changes.
 
-2003-11-26  Eric Fry <efry@users.sourceforge.net>
+2003-11-26  Eric Fry <efry at users.sourceforge.net>
 	* Light globes are now not drawn for blacked out objects.
 	
-2003-11-25  Jonathan E. Wright <nelno@users.sourceforge.net>
+2003-11-25  Jonathan E. Wright <nelno at users.sourceforge.net>
 	* Fixed VS .NET build to work with alpha blended darkness.
 	* Fixed MSVC 6 build to work with alpha blended darkness.
 	* Just found this file and realized what Eric meant by "update the 
 	  change log"... I thought you meant the change log in CVS.  Sorry. :)
 	  
-2003-11-25  Eric Fry <efry@users.sourceforge.net>
+2003-11-25  Eric Fry <efry at users.sourceforge.net>
 	* Added Sam Matthew's Alpha blended darkness. :-) This is still a 
 	  little rough around the edges but it is looking really nice!
 	* Fixed the palette rotation. It was rotating the wrong way.
 
-2003-11-24  Eric Fry <efry@users.sourceforge.net>
+2003-11-24  Eric Fry <efry at users.sourceforge.net>
 	* Added Pieter Luteijn's Use orb code.
 	* A small OS X compile fix. Added #ifdef check for _MSC_VER in 
 	  nuvieDefs.h
 
-2003-11-23  Jonathan E. Wright <nelno@users.sourceforge.net>
+2003-11-23  Jonathan E. Wright <nelno at users.sourceforge.net>
     * Added Visual Studio .NET 2003 build configuration.
 
-2003-11-20  Eric Fry <efry@users.sourceforge.net>
+2003-11-20  Eric Fry <efry at users.sourceforge.net>
 	* Fixed avatar portrait. It was out by 1. Thanks to Pieter Luteijn for
 	  spotting that one. [ 845094 ]
 
-2003-11-18  Eric Fry <efry@users.sourceforge.net>
+2003-11-18  Eric Fry <efry at users.sourceforge.net>
 	* More code cleaning.
 
-2003-11-17  Eric Fry <efry@users.sourceforge.net>
+2003-11-17  Eric Fry <efry at users.sourceforge.net>
 	* Renamed U6def.h to nuvieDefs.h and moved it to the root dir.
 	* Fixed Actor blocking. You can now move over and under certain actors.
 	  Eg. you can walk over mice and under birds, dragons etc.
 
-2003-11-16  Eric Fry <efry@users.sourceforge.net>
+2003-11-16  Eric Fry <efry at users.sourceforge.net>
 	* Header #include cleanup.
 
-2003-11-15  Eric Fry <efry@users.sourceforge.net>
+2003-11-15  Eric Fry <efry at users.sourceforge.net>
 	* Fixed crash when entering caves on the gargoyle plane.
 	* Added usecode for entering the red moongates.
 	  It isn't currently possible to create moongates. As we need to 
@@ -188,14 +194,14 @@
 	* Changed "blocked!" message to "Not now!".
 	* Added diagonal movement via the keypad.
 
-2003-11-14  Eric Fry <efry@users.sourceforge.net>
+2003-11-14  Eric Fry <efry at users.sourceforge.net>
 	* Added day of week to GameClock
 	* Added day of week to schedules.
 	* Fixed the number of days in a month. Britannia has 28 day months.
 	* Clean the screen after an unsuccessful drop.
 	* Don't close doors if blocked. [ 841973 ]
 
-2003-11-14  Eric Fry <efry@users.sourceforge.net>
+2003-11-14  Eric Fry <efry at users.sourceforge.net>
 	Merged Jonathan E. Wright's changes.
 	They are...
 	* Added Dragging from MapWindow to other GUI objects.
@@ -207,33 +213,33 @@
 	  player can reach the item and the spot where it is being dropped.
 	* Show objects being dragged / dropped under cursor.
 
-2003-10-30  Eric Fry <efry@users.sourceforge.net>
+2003-10-30  Eric Fry <efry at users.sourceforge.net>
 	* Temporary objects now clear on level change, teleport.
 
-2003-10-29  Eric Fry <efry@users.sourceforge.net>
+2003-10-29  Eric Fry <efry at users.sourceforge.net>
 	* Moved temp obj addition into ObjManager::add_obj()
 	* Added ObjManager::delete_obj() method to delete an object and any
 	  container items it might hold.
 	* Don't display actors with a 0 object number.
 
-2003-10-27  Eric Fry <efry@users.sourceforge.net>
+2003-10-27  Eric Fry <efry at users.sourceforge.net>
 	* Started work on temp obj removal. This still needs work. It may
 	  be quite unstable.
 	* Added the ability to hide eggs via a config switch.
 
-2003-10-19  Eric Fry <efry@users.sourceforge.net>
+2003-10-19  Eric Fry <efry at users.sourceforge.net>
 	* Changed ObjManager::is_passable return codes OBJ_STATUS_ to OBJ_ and
 	  added proper OBJ_STATUS_ defines for Obj status bit flags.
 
-2003-10-18  Eric Fry <efry@users.sourceforge.net>
+2003-10-18  Eric Fry <efry at users.sourceforge.net>
 	* Added a small tool for unpacking U6 FM-Towns audio files.
 	  The tool extracts all samples in a given file as 16bit wav files.
 
-2003-10-16  Eric Fry <efry@users.sourceforge.net>
+2003-10-16  Eric Fry <efry at users.sourceforge.net>
 	* Fixed rendering error with ships.
 	* Fixed player sitting bug.
 
-2003-10-14  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-10-14  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Party members will now walk up and enter skiffs and ships when using.
 	* Blacksmith NPC's can sell you a horse. There is a serious bug here
 	  that I haven't reproduced yet.
@@ -243,19 +249,19 @@
 	* TimedEvent: Timer functions moved from Event to new files
 	* ObjManager TileManager: Tile animation control methods added here
 
-2003-10-12  Eric Fry <efry@users.sourceforge.net>
+2003-10-12  Eric Fry <efry at users.sourceforge.net>
 	* Added "use" support for skiffs, ships and horses.
           Ship support is still a bit rough. Horse's disappear after use. :(
 	  I'll fix this when we add the temp actor management methods into
 	  ActorManager.
 
-2003-10-07  Eric Fry <efry@users.sourceforge.net>
+2003-10-07  Eric Fry <efry at users.sourceforge.net>
 	* Added split-type actors. Cows, horses, etc.
 	* Added twitch support for some multi-tile actors.
 	* Some worktype tweaks.
 	* Actor: changed old_obj_n to base_obj_n.
 
-2003-10-07  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-10-07  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Objects can be used on other objects now (use-chaining). Right now
 	  this works for keys (but only on doors), and potions (but only to
 	  print a message).
@@ -269,30 +275,30 @@
 	* Looking at actors shouldn't display a weight if they are on an object.
 	* Actor/MapWindow: couple of new methods here to return MapCoords
 
-2003-10-06  Eric Fry <efry@users.sourceforge.net>
+2003-10-06  Eric Fry <efry at users.sourceforge.net>
 	* More work on multi-tile actors.
 	* Added different movetypes for actors.
 	* Added support for ships and skiffs. They can't be used yet 
 	  but it's a start. :)
 
-2003-10-05  Eric Fry <efry@users.sourceforge.net>
+2003-10-05  Eric Fry <efry at users.sourceforge.net>
 	* Moved Actor walk info into a table. Most Actor types should move 
 	  around correctly now. This should fix the Sherry bug. [ 716209 ]
 	* Added some object printing routines.
 
-2003-09-16  Eric Fry <efry@users.sourceforge.net>
+2003-09-16  Eric Fry <efry at users.sourceforge.net>
 	* Quantities are only displayed for stackable items in InventoryWidget.
           Note I have still got to implement U6 key display eg 'A', 'B' etc.
 	* Pressing the window manager's [X] button now brings up the 
           quit dialog.
 
-2003-09-14  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-09-14  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed segfault when quitting during a conversation. (thanks wjp!)
 	[ 765881 ]
 	* Fixed HEAL bug that would prevent healer NPCs from getting the injured
 	NPC number.
 
-2003-09-14  Eric Fry <efry@users.sourceforge.net>
+2003-09-14  Eric Fry <efry at users.sourceforge.net>
 	* Reworked MsgScroll to handle lines in other fonts. I'm not completely
           satisfied with this. As you can only have one font per line. :(
 	* You can now select an actor to talk to with either the 't' key or
@@ -301,19 +307,19 @@
 	* Fixed Look quantity bug. [ 742559 ]
 	* Alt 214 now displays in "Location" Gargoylian. :)
 
-2003-09-13  Eric Fry <efry@users.sourceforge.net>
+2003-09-13  Eric Fry <efry at users.sourceforge.net>
 	* Fixed wall reshaping bug with cookfires.
 	* Partial fix for runic signs. This will not work with multi-line 
           message strings. I'll fix that soon.
 
-2003-09-11  Eric Fry <efry@users.sourceforge.net>
+2003-09-11  Eric Fry <efry at users.sourceforge.net>
 	* Finally Fixed the wall corner tile display bug. [ 713521 ] :)
 	* Some code comments added.
 
-2003-09-11  Eric Fry <efry@users.sourceforge.net>
+2003-09-11  Eric Fry <efry at users.sourceforge.net>
 	* Added arrows to InventoryWidget.
 
-2003-09-10  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-09-10  Joseph Applegate <sb-x at users.sourceforge.net>
 	* TimeQueue and Timers added to Event files. These should probably be
 	moved into their own file(s).
 	* Actor and Player respect "uncontrolled" flag on Player, preventing
@@ -322,100 +328,100 @@
 	caves when entered, and reappears on the other side. You cannot exit
 	dungeons yet.
 
-2003-09-09  Eric Fry <efry@users.sourceforge.net>
+2003-09-09  Eric Fry <efry at users.sourceforge.net>
 	* Replaced gcc-3.3 with gcc in the Project Builder build system.
 	* Added quantity strings to InventoryWidget
 	* Event::Get Fixed weight check bug. Weight was aleady
 	  multiplied by obj->qty
 
-2003-09-07  Eric Fry <efry@users.sourceforge.net>
+2003-09-07  Eric Fry <efry at users.sourceforge.net>
 	* Fix for stackable items in Event::Get
 
-2003-09-07  Eric Fry <efry@users.sourceforge.net>
+2003-09-07  Eric Fry <efry at users.sourceforge.net>
 	* MapWindow: You can now drop objects into containers on the map.
 	* Event: Fixed the Get method. The object is now referenced by
 	  Actor instead of being copied.
 	* Added some more items to the TODO file.
 
-2003-09-06  Eric Fry <efry@users.sourceforge.net>
+2003-09-06  Eric Fry <efry at users.sourceforge.net>
 	* Some win32 compile fixes (Thanks vividos)
 	* More Drag and Drop work.
 	* MapWindow will now only accept drops on passable tiles.
 
-2003-09-04  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-09-04  Joseph Applegate <sb-x at users.sourceforge.net>
 	* A few new U6 food items added, and the ability to enter dungeons (but
 	you can't leave them yet).
 	* Event: started event timer (untested)
 	* Added some TODO notes
 
-2003-09-04  Michael Fink <vividos@users.sourceforge.net>
+2003-09-04  Michael Fink <vividos at users.sourceforge.net>
 	* Fixed most memory leaks
 	* Updated MSVC project file
 
-2003-09-04  Eric Fry <efry@users.sourceforge.net>
+2003-09-04  Eric Fry <efry at users.sourceforge.net>
 	* More Drag and Drop changes. Dragging an item from within the inventory
 	  to a container should work correctly now.
 	* It is now possible to ready/unready items by clicking or dragging.
 
-2003-09-04  Eric Fry <efry@users.sourceforge.net>
+2003-09-04  Eric Fry <efry at users.sourceforge.net>
 	* Drag and Drop support added. You can now drag objects from the 
 	  inventory to the map. :)
 	* New classes added GUI_DragManager, GUI_DragArea, 
 	  DollWidget & InventoryWidget.
 
-2003-08-31  Eric Fry <efry@users.sourceforge.net>
+2003-08-31  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a GUI_Widget redraw bug.
 
-2003-08-27  Eric Fry <efry@users.sourceforge.net>
+2003-08-27  Eric Fry <efry at users.sourceforge.net>
 	* A small fix for inventory display.
 
-2003-08-24  Eric Fry <efry@users.sourceforge.net>
+2003-08-24  Eric Fry <efry at users.sourceforge.net>
 	* Added Background widget. Floating dialogs should clear correctly now.
 
-2003-08-23  Eric Fry <efry@users.sourceforge.net>
+2003-08-23  Eric Fry <efry at users.sourceforge.net>
 	* Added PartyView class.
 	* Started to add readied objects to doll on InventoryView.
 
-2003-08-22  Eric Fry <efry@users.sourceforge.net>
+2003-08-22  Eric Fry <efry at users.sourceforge.net>
 	* More work on views.
 	* Added ActorView. Switching works with buttons.
 
-2003-08-21  Eric Fry <efry@users.sourceforge.net>
+2003-08-21  Eric Fry <efry at users.sourceforge.net>
 	* The left and right arrow buttons now change the inventory view.
 	* Stubs added for the other inventory buttons.
 	* Fixed placement bug when re-adding an existing widget.
 	* Screen: added method to generate an SDL_Surface for a given 8bit 
           image buffer.
 
-2003-08-18  Eric Fry <efry@users.sourceforge.net>
+2003-08-18  Eric Fry <efry at users.sourceforge.net>
 	* Converted the views over to the new GUI system.
 
-2003-08-15  Eric Fry <efry@users.sourceforge.net>
+2003-08-15  Eric Fry <efry at users.sourceforge.net>
 	* Added quit dialog. (Note! this still needs some work.)
 	* Merged GUI and Event event handlers.
 	* Numerous GUI changes.
 
-2003-08-14  Eric Fry <efry@users.sourceforge.net>
+2003-08-14  Eric Fry <efry at users.sourceforge.net>
 	* Initial import of the new GUI system.
 	* Screen update code cleaned up a bit. Added update rects to improve
 	  scaling proformance.
 
-2003-08-03  Eric Fry <efry@users.sourceforge.net>
+2003-08-03  Eric Fry <efry at users.sourceforge.net>
 	* Added Twitching to Actors.
 	* You can now sit on LB's throne correctly.
 	* Added lute playing worktype. 0x95
 	* Removed edible doors. ;)
 
-2003-08-02  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-08-02  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Use usecode when looking at some objects
 	* New usecode objects (still being tested): Several food items, mirrors
 	* U6LibItem initialized to prevent crash while reading data.
 
-2003-07-30  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-30  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Actor::is_nearby() distance reduced to 4x4
 	* Added Beg worktype to U6Actor
 
-2003-07-30  Eric Fry <efry@users.sourceforge.net>
+2003-07-30  Eric Fry <efry at users.sourceforge.net>
 	* Added various worktypes to U6Actor.
 	   Walk in straight lines
 	   Sleep ( Actors now sleep in their beds ;)
@@ -426,7 +432,7 @@
 	* Fixed game.h reference style in Mac OS X build config. Thanks to
 	  Brad Oliver for spotting that one. :)
 
-2003-07-29  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-29  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Changed/added to Actor::set_direction()/face_location().
 	* Actor walking can be given a delay (don't start for that many turns)
 	* Long range path-finder improved. Short range still needs work.
@@ -435,16 +441,16 @@
 	* Player: party movement and mapwindow re-centering is now in Actor
 	* Event: any NPC can be followed/watched with alt-code 500.
 
-2003-07-28  Eric Fry <efry@users.sourceforge.net>
+2003-07-28  Eric Fry <efry at users.sourceforge.net>
 	* Added preform_worktype() to U6Actor class.
 	* Started to implement worktypes.
 
-2003-07-27  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-27  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed bug where y/n questions in conversations would prevent input
 	and lock the game up.
 	* Fix in Party.cpp for compiling with MSVC
 
-2003-07-27  Eric Fry <efry@users.sourceforge.net>
+2003-07-27  Eric Fry <efry at users.sourceforge.net>
 	* compile fixed for Mac OS X.
 	* added combat_mode to Actor.
 	* Actors now load up with correct worktype from objlist.
@@ -453,7 +459,7 @@
 	* Added U6Actor.cpp/h
 	* Party members now dodge other Actors. (This still needs work).
 
-2003-07-26  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-26  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Actor, PathFinder: Path-finding/direction finding classes added and
 	accessible from Actor. The path-finder is incomplete and distant
 	destinations aren't reachable yet. There are still a few glitches.
@@ -470,7 +476,7 @@
 	* UseCode: is_unlocked_door() checks if object is door that can be opened.
 	* Added classes: PathFinder AStar LPath ZPath
 
-2003-07-18  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-18  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Usecode system extended to allow multiple "event" functions. Each
 	object may have usecode executed when its event criteria are met.
 	* Actor: Usecode event STEPTO checked when actors move toward an object.
@@ -480,15 +486,15 @@
 	* U6UseCode: The guardian's barrier on the isle of the avatar blocks
 	correctly when the avatar hasn't been given a quest.
 
-2003-07-16  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-16  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Random strings said by Beh Lem and other NPC's (try patients in Cove)
 	are printed correctly now, instead of resulting in "Unknown command."
 
-2003-07-15  Eric Fry <efry@users.sourceforge.net>
+2003-07-15  Eric Fry <efry at users.sourceforge.net>
 	* Some small compile fixes.
 	* Added Use Vortex. ;) Just for fun.
 
-2003-07-15  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-15  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added [Avatar] HP global var. for conversations, changed init. of
 	PARTY* vars to number of followers, and increased number of vars to 36.
 	* >=, <= operators fixed (tested with original U6 engine) This and above
@@ -496,98 +502,98 @@
 	*U6OP_RAND should no longer return values outside the given range,
 	resolves issue of Lord British repeating things. (tracker item 755717)
 
-2003-07-11  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-11  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Conversation interpreter is correctly skipping "buffer size" at start
 	of non-Lzw-encoded scripts now. Should've been done already but maybe I
 	rewrote that part and overlooked it.
 
-2003-07-06  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-07-06  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Handle both upper and lower case y/n input (tracker item 765879)
 
-2003-07-06  Eric Fry <efry@users.sourceforge.net>
+2003-07-06  Eric Fry <efry at users.sourceforge.net>
 	* Fixed some issues with NuvieIO classes. MD & SE now load again. ;)
 	* Fixed Stone lion rendering issue in U6. Added support for force
 	  lower tile flag when rendering.
 
-2003-07-05  Eric Fry <efry@users.sourceforge.net>
+2003-07-05  Eric Fry <efry at users.sourceforge.net>
 	* Fixed typo in Project Builder project name. Most source files were 
 	  titled "Nuive" instead of "Nuvie". Thanks to Pieter Luteijn for
 	  spotting that one. ;)
 	* Nuvie now uses new NuvieIOFile classes for file access.
 
-2003-07-04  Eric Fry <efry@users.sourceforge.net>
+2003-07-04  Eric Fry <efry at users.sourceforge.net>
 	* Added files for new IO classes. NuvieIO.cpp/h
 
-2003-06-27  Eric Fry <efry@users.sourceforge.net>
+2003-06-27  Eric Fry <efry at users.sourceforge.net>
 	* Work on game loading. Added more error handling.
 
-2003-06-26  Eric Fry <efry@users.sourceforge.net>
+2003-06-26  Eric Fry <efry at users.sourceforge.net>
 	* Added some gameselect functionality. You can now select which game
 	  Nuvie will load from the config file or via the command line.
 	* Work done on MD/SE MsgScroll support.
 	* removed nuvie.cfg from repository, added nuvie.cfg.sample instead.
 
-2003-06-22  Eric Fry <efry@users.sourceforge.net>
+2003-06-22  Eric Fry <efry at users.sourceforge.net>
 	* Removed U6 is_door method from ObjManager.
 	* Better blacking support for MD & SE.
 	* Added SEUseCode class.
 	* Added some MD use codes. It is now possible to leave the capsule.
 	* 0x is nolonger required on the hex numbers in ALT-214 teleport mode.
 
-2003-06-21  Eric Fry <efry@users.sourceforge.net>
+2003-06-21  Eric Fry <efry at users.sourceforge.net>
 	* MD & SE now load their respective background graphics.
 	* Reworked U6Shape, U6Lib_n and U6Bmp.
 
-2003-06-21  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-06-21  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Select NPC's can now join and leave the party. HORSE cmds worked on.
 
-2003-06-16  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-06-16  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Player: Added karma functions to set value.
 	* Conversation class rearranged (to start adding support for MD and SE.)
 	New ops handled: ADDKARMA, SUBKARMA, and NPC stats.
 
-2003-06-14  Eric Fry <efry@users.sourceforge.net>
+2003-06-14  Eric Fry <efry at users.sourceforge.net>
 	* Work started on MD and SE support. Both games now load in a limited
 	  capacity if a copy of U6 is present.
 
-2003-06-08  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-06-08  Joseph Applegate <sb-x at users.sourceforge.net>
 	* NPCs who should be working no longer tell you they are out-to-lunch.
 	Incidentally this fix might have solved some other minor problems.
 
-2003-06-08  Eric Fry <efry@users.sourceforge.net>
+2003-06-08  Eric Fry <efry at users.sourceforge.net>
 	* Added electric field switches.
 	* Animated tiles now block correctly.
 
-2003-06-03  Eric Fry <efry@users.sourceforge.net>
+2003-06-03  Eric Fry <efry at users.sourceforge.net>
 	* Added Drawbridge support. You should now be able to leave the
 	  the castle properly.
 
-2003-06-01  Eric Fry <efry@users.sourceforge.net>
+2003-06-01  Eric Fry <efry at users.sourceforge.net>
 	* Locked doors can only be opened when the avatar has the correct
 	  key in their inventory.
 	* Added MsgScroll descriptions for several usecode actions.
 
-2003-05-31  Eric Fry <efry@users.sourceforge.net>
+2003-05-31  Eric Fry <efry at users.sourceforge.net>
 	* Use Lever now operates corresponding portcullis(s).
 	* The Avatar now walks up to the edge of the map correctly.
 
-2003-05-30  Eric Fry <efry@users.sourceforge.net>
+2003-05-30  Eric Fry <efry at users.sourceforge.net>
 	* Added UseCode,U6UseCode classes.
 	* Fixed clocks.
 	* Fixed look display for animated objects.
 	* Added GameSelect class which will contain game selection menu etc.
 
-2003-05-28  Markus Niemistö <niemisto@users.sourceforge.net>
+2003-05-28  Markus Niemistö <niemisto at users.sourceforge.net>
         * ObjManager: Many containers can now be used and items got out of
         them.
         * U6Shape: Added support for loading U6 shapes
         * Scale: Grapped Scale2x scaler from Exult CVS
 
-2003-05-27  Eric Fry <efry@users.sourceforge.net>
+2003-05-27  Eric Fry <efry at users.sourceforge.net>
 	* ObjManager: Objects are now stored in an AVL Tree. This should
 	  speed things up a bit on slower machines.
 
-2003-05-25  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-25  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Actor/ObjManager: Update to inventory and statistic access methods.
 	(adding/deleting items works, and set_hp(), get_maxhp() added)
 	* ActorManager: New method actor_lookstr() to get generic description
@@ -595,29 +601,29 @@
 	portrait is limited to those NPC's that have met or follow the avatar
 	* U6Lib_n: now handling (read or skip) 4byte filesize at start of files
 
-2003-05-24  Eric Fry <efry@users.sourceforge.net>
+2003-05-24  Eric Fry <efry at users.sourceforge.net>
 	* Get support thanks to a patch by Markus Niemistö.
 
-2003-05-23  Eric Fry <efry@users.sourceforge.net>
+2003-05-23  Eric Fry <efry at users.sourceforge.net>
 	* Work done on object weight. "you see blah. I weighs x.x stones."
 	* More stats loaded for actors. Str, Int, Dex, level, exp etc.
 	* Work on InventoryView, weights and actor icon are now displayed.
 	* name support added to PortraitView.
 
-2003-05-21  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-21  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Portraits now display during conversations (at the start and when
 	requested.)
 
-2003-05-20  Eric Fry <efry@users.sourceforge.net>
+2003-05-20  Eric Fry <efry at users.sourceforge.net>
 	* work done on View system. Added ViewManager, View, PortraitView.
 	* Added Portrait loading class.
 	* portraits now display when looking at an actor.
 
-2003-05-18  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-18  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Event and MsgScroll now use SDL Unicode translation to get character
 	input.
 
-2003-05-16  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-16  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Actor: New methods is_nearby(), face_location(), face_actor().
 	* Converse: NPC name is now saved internally when it is first read.
 	* Event: There are now different responses to different targets when
@@ -626,133 +632,133 @@
 	name, and name isn't shown for anyone else who player hasn't "met."
 	Actors and player face other before talking.
 
-2003-05-16  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-16  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Converse: Few more test-ops added to further improve shopkeepers'
 	abilities.
 	* New/Delete/Transfer object commands implemented.
 	* Party: Functionality of contains_actor() moved to get_member_num(),
 	and former method changed to call new one (and made inline.)
 
-2003-05-15  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-15  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Converse: Many (most?) shopkeepers should work to some degree now, but
 	the player can't actually get the items yet.
 
-2003-05-13  Eric Fry <efry@users.sourceforge.net>
+2003-05-13  Eric Fry <efry at users.sourceforge.net>
 	* Event: Alt-213 info string & Alt-125 advance hour added.
 	* InventoryView: Started work on inventory view.
 
-2003-05-09  Eric Fry <efry@users.sourceforge.net>
+2003-05-09  Eric Fry <efry at users.sourceforge.net>
 	* Event: Alt-214 now teleports.
 
-2003-05-09  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-09  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Event: Added alt-codes support. Hold ALT, and enter 3 numbers.
 
-2003-05-09  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-09  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Player is initialized with a Party object now, and can return a
 	pointer to it.
 	* Rearranged some of conversation code. Access Party with Player.
 	Support for a few more if-tests.
 
-2003-05-07  Eric Fry <efry@users.sourceforge.net>
+2003-05-07  Eric Fry <efry at users.sourceforge.net>
 	* Fixed memory leak in MsgScroll::input_buf_add_char()
 	* Fixed text rendering when in talk mode.
 	* Fixed boundary check on cream buildings.
 
-2003-05-07  Michael Fink <vividos@users.sourceforge.net>
+2003-05-07  Michael Fink <vividos at users.sourceforge.net>
 	* Changed some parameter and return types from "char*" to
 	"const char*" to clarify string constness
 	* Rewrote Look text extraction
 
-2003-05-07  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-07  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Player: get_gender() (returns avatar gender value, 0 or 1)
 	* Actor: set_worktype()
 
-2003-05-07  Eric Fry <efry@users.sourceforge.net>
+2003-05-07  Eric Fry <efry at users.sourceforge.net>
 	* Added Party class.
 	* Started work on Actor inventories.
 	* Player name now appears in prompt.
 
-2003-05-05  Eric Fry <efry@users.sourceforge.net>
+2003-05-05  Eric Fry <efry at users.sourceforge.net>
 	* Added player name to Player class. Hooked it into Converse.
 
-2003-05-04  Eric Fry <efry@users.sourceforge.net>
+2003-05-04  Eric Fry <efry at users.sourceforge.net>
 	* Added GameClock
 	* Actors now follow their schedules.
 	* Actors sit on chairs now.
 	* Time of day works in talk mode.
 	* Added Karma to Player class.
 
-2003-05-03  Michael Fink <vividos@users.sourceforge.net>
+2003-05-03  Michael Fink <vividos at users.sourceforge.net>
 	* Fixed some more memory leaks
 	* Added handling of uncompressed files to U6Lzw
 
-2003-05-02  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-05-02  Joseph Applegate <sb-x at users.sourceforge.net>
 	* RETURN or ENTER sends "0" for single-number input in conversations
 
-2003-05-02  Eric Fry <efry@users.sourceforge.net>
+2003-05-02  Eric Fry <efry at users.sourceforge.net>
 	* Ladders work correctly now. Thanks Jim. ;)
 	* Look Picture.
 
-2003-04-23  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+2003-04-23  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* Text: need <cctype> for isalpha()
 
-2003-04-23  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-04-23  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Text: Quick edit to highlight keywords in text. This is -not- the
 	correct way to do this, but it was easy and works for now.
 
-2003-04-20  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-04-20  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Converse: new commands handled, and printed text expansion
 	* MsgScroll: set_input_mode can accept a list of characters, and will
 	only allow the input of those characters
 
-2003-04-20  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-04-20  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Converse instance is now created with pointer to an ActorManager.
 	* NPC flags added (initialized but not loaded yet in ActorManager)
 
-2003-04-17  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-04-17  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Minor change to look more like original U6: `what?' and `Pass!'
 	messages are displayed on unknown keys, and Spacebar, respectively.
 	* And you can now "Escape" back to Move mode from Use/Look/Talk.
 	* And the "look" keyword correctly shows description in conversation.
 
-2003-04-17  Joseph Applegate <sb-x@users.sourceforge.net>
+2003-04-17  Joseph Applegate <sb-x at users.sourceforge.net>
 	* MsgScroll: Any key escapes from page break
 	* Converse: Now handling if...else...endif by skipping blocks of script
 	until it reaches end-of-scope. Only a few if-tests are implemented.
 	* When talking to NPC's empty input says "bye".
 
-2003-04-15  Michael Fink <vividos@users.sourceforge.net>
+2003-04-15  Michael Fink <vividos at users.sourceforge.net>
 	* Fixed memory leaks
 
-2003-04-11  Eric Fry  <efry@users.sourceforge.net>
+2003-04-11  Eric Fry  <efry at users.sourceforge.net>
 	* Added page break to MsgScroll
 
-2003-04-09  Eric Fry  <efry@users.sourceforge.net>
+2003-04-09  Eric Fry  <efry at users.sourceforge.net>
 	* Work on MsgScroll class.
 	* Added signposts, books and scrolls.
 
-2003-04-08  Michael Fink <vividos@users.sourceforge.net>
+2003-04-08  Michael Fink <vividos at users.sourceforge.net>
 	* Added MSVC project files and code fixes
 
-2003-04-07  Eric Fry  <efry@users.sourceforge.net>
+2003-04-07  Eric Fry  <efry at users.sourceforge.net>
 	* Use: secret door.
 	* Use: ladder (started).
 
-2003-04-06  Eric Fry  <efry@users.sourceforge.net>
+2003-04-06  Eric Fry  <efry at users.sourceforge.net>
 	* Fixed shoreline animation.
 
-2003-04-05  Eric Fry  <efry@users.sourceforge.net>
+2003-04-05  Eric Fry  <efry at users.sourceforge.net>
 	* Intergrated Ryan's Scaler code.
 	* Actors now twitch and move around.
 	* Actors are now blacked properly.
 	* Palette cycling.
 
-2003-04-02  Eric Fry  <efry@users.sourceforge.net>
+2003-04-02  Eric Fry  <efry at users.sourceforge.net>
 	* Windows are now working properly.
 	* Work started on scaling.
 	* Added little tool to unpack converse.a/b files
 
-2003-03-30  Eric Fry  <efry@users.sourceforge.net>
+2003-03-30  Eric Fry  <efry at users.sourceforge.net>
 	* Started Changelog.
 	* Chests now open and close.
 	* More work done on blacking.

@@ -26,8 +26,17 @@
 #include "Configuration.h"
 
 #include "NuvieIOFile.h"
+
+#include "Actor.h"
 #include "Portrait.h"
 #include "U6Lzw.h"
+
+#include "U6objects.h"
+
+//define tmporary portraits.
+
+#define PORTRAIT_U6_GUARD 193
+#define PORTRAIT_U6_WISP 192
 
 Portrait::Portrait(Configuration *cfg)
 {
@@ -64,14 +73,21 @@ bool Portrait::init()
  return true;
 }
 
-unsigned char *Portrait::get_portrait_data(uint16 num)
+unsigned char *Portrait::get_portrait_data(Actor *actor)
 {
+ uint8 num;
  U6Lzw lzw;
  U6Lib_n *portrait;
  unsigned char *lzw_data;
  uint32 new_length;
  unsigned char *new_portrait;
+ Obj *actor_obj;
  
+ if(actor == NULL)
+   return NULL;
+
+ num = actor->get_actor_num();
+
  if(num <= 1) //avatar portrait
     {
      portrait = &portrait_z;
@@ -81,8 +97,16 @@ unsigned char *Portrait::get_portrait_data(uint16 num)
    {
     num -= 1;
  
-    if(num > 194) //there are 194 npc portraits
-      return NULL;
+    if(num > 194) // there are 194 npc portraits
+      {
+	   actor_obj = actor->make_obj(); //check for temporary actors with portraits. eg guards and wisps
+	   switch(actor_obj->obj_n)
+	    {
+		 case OBJ_U6_GUARD : num = PORTRAIT_U6_GUARD-1; break;
+		 case OBJ_U6_WISP : num = PORTRAIT_U6_WISP-1; break;
+		 default : return NULL;
+		}
+      }
 
     if(num < 98)
       portrait = &portrait_a;

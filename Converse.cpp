@@ -410,7 +410,7 @@ void Converse::show_portrait(uint8 n)
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor);
-    views->set_portrait_mode(n, (char *)nameret);
+    views->set_portrait_mode(actor, (char *)nameret);
 }
 
 

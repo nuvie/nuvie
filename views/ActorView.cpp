@@ -70,7 +70,7 @@ bool ActorView::set_party_member(uint8 party_member)
     if(portrait_data)
       free(portrait_data);
 
-    portrait_data = portrait->get_portrait_data(party->get_actor_num(cur_party_member));
+    portrait_data = portrait->get_portrait_data(party->get_actor(cur_party_member));
     if(portrait_data == NULL)
       return false;
    }

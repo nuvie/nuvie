@@ -27,6 +27,7 @@
 #include "U6Lib_n.h"
 
 class Configuration;
+class Actor;
 
 class Portrait
 {
@@ -45,7 +46,7 @@ class Portrait
  Portrait(Configuration *cfg);
  
  bool init();
- unsigned char *get_portrait_data(uint16 num);
+ unsigned char *get_portrait_data(Actor *actor);
 };
 
 #endif /* __Portrait_h__ */

@@ -34,6 +34,7 @@ class Screen;
 class Text;
 class ObjManager;
 class Party;
+class Actor;
 
 class PortraitView : public View {
  
@@ -52,7 +53,7 @@ class PortraitView : public View {
  bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
  void Display(bool full_redraw);
  
- void set_portrait(uint8 actor_num, char *name);
+ bool set_portrait(Actor *actor, char *name);
  
  protected:
  

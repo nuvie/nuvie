@@ -25,6 +25,7 @@
 
 #include "nuvieDefs.h"
 
+#include "Actor.h"
 #include "Portrait.h"
 #include "Text.h"
 #include "PortraitView.h"
@@ -66,15 +67,18 @@ void PortraitView::Display(bool full_redraw)
  
 }
 
-void PortraitView::set_portrait(uint8 actor_num, char *name)
+bool PortraitView::set_portrait(Actor *actor, char *name)
 {
    
- cur_actor_num = actor_num;
+ cur_actor_num = actor->get_actor_num();
  
  if(portrait_data != NULL)
    free(portrait_data);
    
- portrait_data = portrait->get_portrait_data(cur_actor_num);
+ portrait_data = portrait->get_portrait_data(actor);
+
+ if(portrait_data == NULL)
+   return false;
 
  if(name == NULL)
    name_string->assign("");  //FIX
@@ -82,6 +86,8 @@ void PortraitView::set_portrait(uint8 actor_num, char *name)
    name_string->assign(name);
 
  Redraw();
+
+ return true;
 }
 
 void PortraitView::display_name()

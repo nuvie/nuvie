@@ -192,14 +192,14 @@ bool U6Actor::init_hydra()
 {
  // For some reason a Hydra has a different object number for its tenticles. :-(
  
- init_surrounding_obj(x,   y-1, z, OBJ_U6_HYDRA_BODY, frame_n + 388);
- init_surrounding_obj(x+1, y-1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+4);
- init_surrounding_obj(x+1, y, z, OBJ_U6_HYDRA_BODY, frame_n + 388+8);
- init_surrounding_obj(x+1, y+1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+12);
- init_surrounding_obj(x,   y+1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+16);
- init_surrounding_obj(x-1, y+1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+20);
- init_surrounding_obj(x-1, y, z, OBJ_U6_HYDRA_BODY, frame_n + 388+24);
- init_surrounding_obj(x-1, y-1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+28);
+ init_surrounding_obj(x,   y-1, z, OBJ_U6_HYDRA_BODY, 0);
+ init_surrounding_obj(x+1, y-1, z, OBJ_U6_HYDRA_BODY, 4);
+ init_surrounding_obj(x+1, y, z, OBJ_U6_HYDRA_BODY, 8);
+ init_surrounding_obj(x+1, y+1, z, OBJ_U6_HYDRA_BODY, 12);
+ init_surrounding_obj(x,   y+1, z, OBJ_U6_HYDRA_BODY, 16);
+ init_surrounding_obj(x-1, y+1, z, OBJ_U6_HYDRA_BODY, 20);
+ init_surrounding_obj(x-1, y, z, OBJ_U6_HYDRA_BODY, 24);
+ init_surrounding_obj(x-1, y-1, z, OBJ_U6_HYDRA_BODY, 28);
 
  return true;
 }
@@ -429,7 +429,14 @@ void U6Actor::twitch()
      walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
 
    if(actor_type->has_surrounding_objs)
-      twitch_surrounding_objs();
+    {
+	 switch(obj_n)
+	   {
+		case OBJ_U6_HYDRA : twitch_surrounding_hydra_objs(); break;
+		case OBJ_U6_DRAGON :
+		default : twitch_surrounding_objs(); break;
+	   }
+	}
 
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1);
   }
@@ -970,9 +977,33 @@ inline void U6Actor::twitch_surrounding_objs()
  
  for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
    {
-    (*obj)->frame_n = ((*obj)->frame_n / (actor_type->frames_per_direction * 4) * (actor_type->frames_per_direction * 4)) + direction * actor_type->tiles_per_direction +
-                       walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame;
+    twitch_obj(*obj);
    }
+
+}
+
+inline void U6Actor::twitch_surrounding_dragon_objs()
+{
+}
+
+inline void U6Actor::twitch_surrounding_hydra_objs()
+{
+ uint8 i;
+ std::list<Obj *>::iterator obj;
+ 
+ //Note! list order is important here. As it corresponds to the frame order in the tile set. This is definied in init_hydra()
+ 
+ for(i = 0, obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++, i += 4)
+   {
+    if(NUVIE_RAND() % 4 == 0)
+	   (*obj)->frame_n = i + (((*obj)->frame_n - i + 1) % 4);
+   }
+}
+
+inline void U6Actor::twitch_obj(Obj *obj)
+{
+ obj->frame_n = (obj->frame_n / (actor_type->frames_per_direction * 4) * (actor_type->frames_per_direction * 4)) + direction * actor_type->tiles_per_direction +
+                       walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame;
 
 }
 
@@ -1012,7 +1043,7 @@ inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 ac
    obj->x = x;
    obj->y = y;
    obj->z = z;
-   obj->obj_n = obj_n;
+   obj->obj_n = actor_obj_n;
    obj->frame_n = obj_frame_n;
    obj_manager->add_obj(obj);
   }

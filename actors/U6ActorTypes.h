@@ -38,7 +38,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_CORPSER,0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, false, MOVETYPE_U6_LAND, 50},
  {OBJ_U6_RABBIT,0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, false, MOVETYPE_U6_LAND, 25},
  {OBJ_U6_ROT_WORMS,0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, false, MOVETYPE_U6_LAND, 50},
- {OBJ_U6_HYDRA,0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, false, MOVETYPE_U6_LAND, 50},
+ {OBJ_U6_HYDRA,0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, true, MOVETYPE_U6_LAND, 5},
  {OBJ_U6_MOUSE,1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, false, MOVETYPE_U6_LAND, 0},
  {OBJ_U6_CAT,1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, false, MOVETYPE_U6_LAND, 40},
 
