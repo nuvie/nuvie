@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
  unsigned char *item;
  unsigned char *raw_audio;
  uint16 *converted_audio;
+ uint16 temp_sample;
  char wave_file[16]; // "char000_000.wav"
  uint16 conv_number;
 
@@ -49,9 +50,14 @@ int main(int argc, char *argv[])
      for(j=0;j<decomp_size;j++)
       {
        if(raw_audio[j] & 128)
-         converted_audio[j] = ((sint16)abs(128 - raw_audio[j]) ^ 0xffff) + 1;
+         converted_audio[j] = ((sint16)(abs(128 - raw_audio[j]) * 256) ^ 0xffff) + 1;
        else
-         converted_audio[j] = (uint16)raw_audio[j];
+         converted_audio[j] = (uint16)raw_audio[j] * 256;
+#ifdef BIG_ENDIAN
+       temp_sample = converted_audio[j] >> 8;
+       temp_sample |= (converted_audio[j] & 0xff) << 8;
+       converted_audio[j] = temp_sample;
+#endif
       }
 
      sprintf(wave_file,"char%03d_%03d.wav", conv_number, i);
