@@ -1,3 +1,6 @@
+2003-05-09  Eric Fry <efry@users.sourceforge.net>
+	* Event: Alt-214 now teleports.
+
 2003-05-09  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Event: Added alt-codes support. Hold ALT, and enter 3 numbers.
 

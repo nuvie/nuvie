@@ -322,6 +322,11 @@ void Event::alt_code_input(const char *in)
             }
             active_alt_code = 0;
             break;
+
+        case 214:
+            alt_code_teleport(in); //teleport player & party? to location string
+            active_alt_code = 0;
+            break;
     }
 }
 
@@ -337,9 +342,29 @@ void Event::alt_code(const char *cs)
             scroll->display_string("Npc number? ");
             scroll->set_input_mode(true);
             active_alt_code = c;
+            break;
+
+        case 214:
+            scroll->display_string("Location: ");
+            scroll->set_input_mode(true);
+            active_alt_code = c;
+            break;
     }
 }
 
+bool Event::alt_code_teleport(const char *location_string)
+{
+ char *next_num;
+ uint16 x, y, z;
+ 
+ x = strtol(location_string,&next_num,0);
+ y = strtol(next_num,&next_num,0);
+ z = strtol(next_num,&next_num,0);
+
+ player->move(x,y,z);
+ 
+ return true;
+}
 
 void Event::wait()
 {

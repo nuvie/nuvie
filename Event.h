@@ -67,6 +67,7 @@ class Event
  void alt_code(const char *cs);
  void alt_code_input(const char *in);
  void clear_alt_code() { alt_code_str[0] = '\0'; alt_code_len = 0; }
+ bool alt_code_teleport(const char *location_string);
 
  void wait();
  
