@@ -36,7 +36,7 @@
 #include "SaveDialog.h"
 #include "SaveSlot.h"
 #include "SaveGame.h"
-
+#include <direct.h>
 
 SaveManager::SaveManager(Configuration *cfg)
 {
@@ -70,8 +70,12 @@ void SaveManager::init()
 #endif
     return;
    }
- 
- if(directory_exists(savedir.c_str()) == false)
+
+   if(directory_exists(savedir.c_str()) == false && !savedir.empty())
+	   // try to create the save dir if it doesn't exist
+	   mkdir(savedir.c_str());
+
+   if(directory_exists(savedir.c_str()) == false)
    {
     printf("Error: savedir '%s' either not found or not accessable!\n", savedir.c_str());
     throw "Setting Save Directory!";

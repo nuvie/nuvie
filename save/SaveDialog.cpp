@@ -97,6 +97,7 @@ bool SaveDialog::init(const char *save_directory, const char *game_tag)
    }
 
  // pad out empty slots if required
+/*
  if(num_saves < NUVIE_SAVE_SCROLLER_ROWS-1)
    {
     for(i=0; i < NUVIE_SAVE_SCROLLER_ROWS - num_saves - 1; i++)
@@ -112,7 +113,7 @@ bool SaveDialog::init(const char *save_directory, const char *game_tag)
          color_ptr = &bg_color;
       }
    }
-
+*/
  AddWidget(scroller);
 
  load_button = new GUI_Button(this, 135, 152, 40, 18, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
