@@ -31,6 +31,7 @@
 #include "Text.h"
 #include "TileManager.h"
 #include "ObjManager.h"
+#include "Actor.h"
 #include "Party.h"
 
 class InventoryView : public View {
@@ -46,10 +47,13 @@ class InventoryView : public View {
  
  protected:
  
+ inline void display_readied_object(uint8 location, uint16 x, uint16 y, Actor *actor, Tile *empty_tile);
+ 
  void display_name();
  void display_inventory_list();
  void add_command_icons(Screen *tmp_screen, void *view_manager);
  void display_inventory_weights();
+ void display_combat_mode();
  void display_actor_icon();
 };
 

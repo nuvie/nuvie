@@ -27,6 +27,57 @@
 #include "U6Actor.h"
 
 //static const uint8 sleep_objects[8];
+static const struct {uint16 obj_n; uint8 readiable_location;}
+ readiable_objects[] = {
+{OBJ_U6_LEATHER_HELM, ACTOR_HEAD },
+{OBJ_U6_CHAIN_COIF, ACTOR_HEAD },
+{OBJ_U6_IRON_HELM, ACTOR_HEAD },
+{OBJ_U6_SPIKED_HELM, ACTOR_HEAD },
+{OBJ_U6_WINGED_HELM, ACTOR_HEAD },
+{OBJ_U6_BRASS_HELM, ACTOR_HEAD },
+{OBJ_U6_GARGOYLE_HELM, ACTOR_HEAD },
+{OBJ_U6_MAGIC_HELM, ACTOR_HEAD },
+{OBJ_U6_WOODEN_SHIELD, ACTOR_ARM },
+{OBJ_U6_CURVED_HEATER, ACTOR_ARM },
+{OBJ_U6_WINGED_SHIELD, ACTOR_ARM },
+{OBJ_U6_KITE_SHIELD, ACTOR_ARM },
+{OBJ_U6_SPIKED_SHIELD, ACTOR_ARM },
+{OBJ_U6_BLACK_SHIELD, ACTOR_ARM },
+{OBJ_U6_DOOR_SHIELD, ACTOR_ARM },
+{OBJ_U6_MAGIC_SHIELD, ACTOR_ARM },
+{OBJ_U6_CLOTH_ARMOUR, ACTOR_BODY },
+{OBJ_U6_LEATHER_ARMOR, ACTOR_BODY },
+{OBJ_U6_RING_MAIL, ACTOR_BODY },
+{OBJ_U6_SCALE_MAIL, ACTOR_BODY },
+{OBJ_U6_CHAIN_MAIL, ACTOR_BODY },
+{OBJ_U6_PLATE_MAIL, ACTOR_BODY },
+{OBJ_U6_MAGIC_ARMOUR, ACTOR_BODY },
+{OBJ_U6_SPIKED_COLLAR, ACTOR_BODY },
+{OBJ_U6_GUILD_BELT, ACTOR_BODY },
+{OBJ_U6_GARGOYLE_BELT, ACTOR_BODY },
+{OBJ_U6_LEATHER_BOOTS, ACTOR_FOOT },
+{OBJ_U6_SWAMP_BOOTS, ACTOR_FOOT },
+
+{OBJ_U6_SLING, ACTOR_ARM },
+{OBJ_U6_CLUB, ACTOR_ARM },
+{OBJ_U6_MAIN_GAUCHE, ACTOR_ARM },
+{OBJ_U6_SPEAR, ACTOR_ARM },
+{OBJ_U6_THROWING_AXE, ACTOR_ARM },
+{OBJ_U6_DAGGER, ACTOR_ARM },
+{OBJ_U6_MACE, ACTOR_ARM },
+{OBJ_U6_MORNING_STAR, ACTOR_ARM },
+{OBJ_U6_BOW, ACTOR_ARM },
+{OBJ_U6_CROSSBOW, ACTOR_ARM },
+{OBJ_U6_SWORD, ACTOR_ARM },
+{OBJ_U6_TWO_HANDED_HAMMER, ACTOR_ARM },
+{OBJ_U6_TWO_HANDED_AXE, ACTOR_ARM },
+{OBJ_U6_TWO_HANDED_SWORD, ACTOR_ARM },
+{OBJ_U6_HALBERD, ACTOR_ARM },
+{OBJ_U6_GLASS_SWORD, ACTOR_ARM },
+{OBJ_U6_BOOMERANG, ACTOR_ARM },
+{OBJ_U6_TRIPLE_CROSSBOW, ACTOR_ARM },
+
+{OBJ_U6_NOTHING, ACTOR_NOT_READIABLE} }; // this last element terminates the array.
 
 
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
@@ -83,6 +134,19 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
   }
 
  return ret;
+}
+
+uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
+{
+ uint16 i;
+ 
+ for(i=0;readiable_objects[i].obj_n != OBJ_U6_NOTHING;i++)
+   {
+    if(obj_n == readiable_objects[i].obj_n)
+      return readiable_objects[i].readiable_location;
+   }
+
+ return ACTOR_NOT_READIABLE;
 }
 
 void U6Actor::twitch()

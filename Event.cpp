@@ -148,6 +148,8 @@ bool Event::handleEvent(const SDL_Event *event)
              case SDLK_RIGHT :
                                move(1,0);
                                break;
+             case SDLK_TAB   : view_manager->set_inventory_mode(); //show inventory view
+                               break;
              case SDLK_q     : if(!showingQuitDialog)
                                  {
                                   showingQuitDialog = true;

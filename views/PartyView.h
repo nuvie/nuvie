@@ -34,30 +34,26 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Party.h"
-#include "Portrait.h"
+#include "Player.h"
 
 class PartyView : public View {
- 
- uint8 cur_actor_num;
- Portrait *portrait;
- std::string name_string;
- 
- unsigned char *portrait_data;
- 
- //cursor pos
+
+ Player *player;
+ void *view_manager;
  
  public:
  PartyView(Configuration *cfg);
  ~PartyView();
  
- bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
+ bool init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl, TileManager *tm, ObjManager *om);
+ GUI_status MouseUp(int x,int y,int button);
  void Display(bool full_redraw);
- 
- void set_portrait(uint8 actor_num, char *name);
  
  protected:
  
- void display_name();
+ void display_sun_moon_strip();
+ void display_surface_strip();
+ void display_dungeon_strip();
  
 };
 

@@ -82,6 +82,8 @@ nuvie_SOURCES = \
 	views/ActorView.h \
 	views/InventoryView.cpp \
 	views/InventoryView.h \
+	views/PartyView.cpp \
+	views/PartyView.h \
 	views/PortraitView.cpp \
 	views/PortraitView.h \
 	views/ViewManager.cpp \

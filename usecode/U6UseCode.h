@@ -31,88 +31,138 @@
 #include "UseCode.h"
 
 //object numbers
-#define OBJ_U6_VORTEX_CUBE      62
-#define OBJ_U6_KEY              64
+#define OBJ_U6_NOTHING            0
 
-#define OBJ_U6_GARLIC           67
-#define OBJ_U6_SNAKE_VENOM      92
-#define OBJ_U6_GRAPES           95
-#define OBJ_U6_BUTTER           96
+#define OBJ_U6_LEATHER_HELM       1
+#define OBJ_U6_CHAIN_COIF         2
+#define OBJ_U6_IRON_HELM          3
+#define OBJ_U6_SPIKED_HELM        4
+#define OBJ_U6_WINGED_HELM        5
+#define OBJ_U6_BRASS_HELM         6
+#define OBJ_U6_GARGOYLE_HELM      7
+#define OBJ_U6_MAGIC_HELM         8
+#define OBJ_U6_WOODEN_SHIELD      9
+#define OBJ_U6_CURVED_HEATER     10
+#define OBJ_U6_WINGED_SHIELD     11
+#define OBJ_U6_KITE_SHIELD       12
+#define OBJ_U6_SPIKED_SHIELD     13
+#define OBJ_U6_BLACK_SHIELD      14
+#define OBJ_U6_DOOR_SHIELD       15
+#define OBJ_U6_MAGIC_SHIELD      16
+#define OBJ_U6_CLOTH_ARMOUR      17
+#define OBJ_U6_LEATHER_ARMOR     18
+#define OBJ_U6_RING_MAIL         19
+#define OBJ_U6_SCALE_MAIL        20
+#define OBJ_U6_CHAIN_MAIL        21
+#define OBJ_U6_PLATE_MAIL        22
+#define OBJ_U6_MAGIC_ARMOUR      23
+#define OBJ_U6_SPIKED_COLLAR     24
+#define OBJ_U6_GUILD_BELT        25
+#define OBJ_U6_GARGOYLE_BELT     26
+#define OBJ_U6_LEATHER_BOOTS     27
+#define OBJ_U6_SWAMP_BOOTS       28
 
-#define OBJ_U6_CHEST            98
+#define OBJ_U6_SLING             33
+#define OBJ_U6_CLUB              34
+#define OBJ_U6_MAIN_GAUCHE       35
+#define OBJ_U6_SPEAR             36
+#define OBJ_U6_THROWING_AXE      37
+#define OBJ_U6_DAGGER            38
+#define OBJ_U6_MACE              39
+#define OBJ_U6_MORNING_STAR      40
+#define OBJ_U6_BOW               41
+#define OBJ_U6_CROSSBOW          42
+#define OBJ_U6_SWORD             43
+#define OBJ_U6_TWO_HANDED_HAMMER 44
+#define OBJ_U6_TWO_HANDED_AXE    45
+#define OBJ_U6_TWO_HANDED_SWORD  46
+#define OBJ_U6_HALBERD           47
+#define OBJ_U6_GLASS_SWORD       48
+#define OBJ_U6_BOOMERANG         49
+#define OBJ_U6_TRIPLE_CROSSBOW   50
 
-#define OBJ_U6_WINE            115
-#define OBJ_U6_MEAD            116
-#define OBJ_U6_ALE             117
+#define OBJ_U6_VORTEX_CUBE       62
+#define OBJ_U6_KEY               64
 
-#define OBJ_U6_CANDLE          122
-#define OBJ_U6_MIRROR          123
+#define OBJ_U6_GARLIC            67
+#define OBJ_U6_SNAKE_VENOM       92
+#define OBJ_U6_GRAPES            95
+#define OBJ_U6_BUTTER            96
 
-#define OBJ_U6_BREAD           128
-#define OBJ_U6_MEAT_PORTION    129
-#define OBJ_U6_ROLLS           130
-#define OBJ_U6_CAKE            131
-#define OBJ_U6_CHEESE          132
-#define OBJ_U6_HAM             133
-#define OBJ_U6_HORSE_CHOPS     135
+#define OBJ_U6_CHEST             98
 
-#define OBJ_U6_PICTURE         143
-#define OBJ_U6_CANDELABRA      145
-#define OBJ_U6_PERSON_SLEEPING 146
-#define OBJ_U6_BOOK            151
-#define OBJ_U6_SCROLL          152
-#define OBJ_U6_CLOCK           159
-#define OBJ_U6_BED             163
-#define OBJ_U6_FIREPLACE       164
-#define OBJ_U6_SWITCH          174
-#define OBJ_U6_ELECTRIC_FIELD  175
-#define OBJ_U6_DRAWER          176
-#define OBJ_U6_BARREL          186
-#define OBJ_U6_BAG             188
-#define OBJ_U6_HONEY_JAR       183
+#define OBJ_U6_WINE             115
+#define OBJ_U6_MEAD             116
+#define OBJ_U6_ALE              117
 
-#define OBJ_U6_HONEY           184
+#define OBJ_U6_CANDLE           122
+#define OBJ_U6_MIRROR           123
 
-#define OBJ_U6_CRATE           192
-#define OBJ_U6_BRAZIER         206
+#define OBJ_U6_BREAD            128
+#define OBJ_U6_MEAT_PORTION     129
+#define OBJ_U6_ROLLS            130
+#define OBJ_U6_CAKE             131
+#define OBJ_U6_CHEESE           132
+#define OBJ_U6_HAM              133
+#define OBJ_U6_HORSE_CHOPS      135
+ 
+#define OBJ_U6_PICTURE          143
+#define OBJ_U6_CANDELABRA       145
+#define OBJ_U6_PERSON_SLEEPING  146
+#define OBJ_U6_BOOK             151
+#define OBJ_U6_SCROLL           152
+#define OBJ_U6_CLOCK            159
+#define OBJ_U6_BED              163
+#define OBJ_U6_FIREPLACE        164
+#define OBJ_U6_SWITCH           174
+#define OBJ_U6_ELECTRIC_FIELD   175
+#define OBJ_U6_DRAWER           176
+#define OBJ_U6_BARREL           186
+#define OBJ_U6_BAG              188
+#define OBJ_U6_HONEY_JAR        183
 
-#define OBJ_U6_MEAT            209
-#define OBJ_U6_RIBS            210
+#define OBJ_U6_HONEY            184
 
-#define OBJ_U6_MOUSEHOLE       213
-#define OBJ_U6_CHAIR           252
-#define OBJ_U6_CROSS           254
-#define OBJ_U6_TOMBSTONE       255
-#define OBJ_U6_LEVER           268
-#define OBJ_U6_DRAWBRIDGE      269
-#define OBJ_U6_V_PASSTHROUGH   278
-#define OBJ_U6_H_PASSTHROUGH   280
-#define OBJ_U6_CRANK           288
+#define OBJ_U6_CRATE            192
+#define OBJ_U6_BRAZIER          206
+ 
+#define OBJ_U6_MEAT             209
+#define OBJ_U6_RIBS             210
 
-#define OBJ_U6_OAKEN_DOOR      297
-#define OBJ_U6_WINDOWED_DOOR   298
-#define OBJ_U6_CEDAR_DOOR      299
-#define OBJ_U6_STEEL_DOOR      300
+#define OBJ_U6_MOUSEHOLE        213
+#define OBJ_U6_CHAIR            252
+#define OBJ_U6_CROSS            254
+#define OBJ_U6_TOMBSTONE        255
+#define OBJ_U6_LEVER            268
+#define OBJ_U6_DRAWBRIDGE       269
+#define OBJ_U6_V_PASSTHROUGH    278
+#define OBJ_U6_H_PASSTHROUGH    280
+#define OBJ_U6_CRANK            288
 
-#define OBJ_U6_DOORWAY         301
-#define OBJ_U6_LADDER          305
-#define OBJ_U6_HOLE            308
-#define OBJ_U6_PORTCULLIS      310
-#define OBJ_U6_CAVE            326
+#define OBJ_U6_OAKEN_DOOR       297
+#define OBJ_U6_WINDOWED_DOOR    298
+#define OBJ_U6_CEDAR_DOOR       299
+#define OBJ_U6_STEEL_DOOR       300
 
-#define OBJ_U6_THRONE          327
+#define OBJ_U6_DOORWAY          301
+#define OBJ_U6_LADDER           305
+#define OBJ_U6_HOLE             308
+#define OBJ_U6_PORTCULLIS       310
+#define OBJ_U6_CAVE             326
 
-#define OBJ_U6_SIGN            332
-#define OBJ_U6_SECRET_DOOR     334
+#define OBJ_U6_THRONE           327
 
-#define OBJ_U6_JESTER          383
-#define OBJ_U6_MUSICIAN        392
+#define OBJ_U6_SIGN             332
+#define OBJ_U6_SECRET_DOOR      334
 
-#define OBJ_U6_QUEST_GATE      416
+#define OBJ_U6_JESTER           383
+#define OBJ_U6_MUSICIAN         392
 
-#define OBJ_U6_DRAGON_EGG      417
+#define OBJ_U6_QUEST_GATE       416
 
-#define OBJ_U6__LAST_          417
+#define OBJ_U6_DRAGON_EGG       417
+
+#define OBJ_U6__LAST_           417
 
 class U6UseCode;
 

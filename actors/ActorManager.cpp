@@ -211,6 +211,11 @@ bool ActorManager::loadActors()
  
  loadActorSchedules();
  
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->inventory_parse_readied_objects();
+   }
+
  return true;
 }
  

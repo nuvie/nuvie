@@ -66,6 +66,11 @@ void Player::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
  actor->get_location(ret_x,ret_y,ret_level);
 }
 
+uint8 Player::get_location_level()
+{
+ return actor->z;
+}
+
 char *Player::get_name()
 {
  return name;

@@ -24,6 +24,8 @@
 
 #include "InventoryView.h"
 
+static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
+
 extern GUI_status partyViewButtonCallback(void *data);
 extern GUI_status actorViewButtonCallback(void *data);
 
@@ -58,6 +60,7 @@ void InventoryView::Display(bool full_redraw)
     display_name();
     //display_command_icons();
     display_inventory_weights();
+    display_combat_mode();
     display_actor_icon();
    }
 
@@ -81,8 +84,13 @@ void InventoryView::Display(bool full_redraw)
 
 void InventoryView::display_doll(uint16 x, uint16 y)
 {
- Tile *tile;
- uint8 i,j;
+ Tile *tile, *empty_tile;
+ Actor *actor;
+ uint16 i,j;
+ 
+ empty_tile = tile_manager->get_tile(410);
+ 
+ actor = party->get_actor(cur_party_member);
  
  for(i=0;i<2;i++)
    {
@@ -93,17 +101,35 @@ void InventoryView::display_doll(uint16 x, uint16 y)
       }
    }
 
- tile = tile_manager->get_tile(410);
+ display_readied_object(ACTOR_NECK, x, (y+8) + 0 * 16, actor, empty_tile);
+ display_readied_object(ACTOR_BODY, x+3*16, (y+8) + 0 * 16, actor, empty_tile);
+
+ display_readied_object(ACTOR_ARM, x, (y+8) + 1 * 16, actor, empty_tile);
+ display_readied_object(ACTOR_ARM_2, x+3*16, (y+8) + 1 * 16, actor, empty_tile);
  
- for(i=0;i<3;i++)
-   {
-    screen->blit(x,(y+8)+i*16,tile->data,8,16,16,16,true); //left slots
-    screen->blit(x+3*16,(y+8)+i*16,tile->data,8,16,16,16,true); //right slots
-   }
+ display_readied_object(ACTOR_HAND, x, (y+8) + 2 * 16, actor, empty_tile);
+ display_readied_object(ACTOR_HAND_2, x+3*16, (y+8) + 2 * 16, actor, empty_tile);
 
- screen->blit(x+16+8,y,tile->data,8,16,16,16,true); //top slot
- screen->blit(x+16+8,y+3*16,tile->data,8,16,16,16,true); //bottom slot
+ display_readied_object(ACTOR_HEAD, x+16+8, y, actor, empty_tile);
+ display_readied_object(ACTOR_FOOT, x+16+8, y+3*16, actor, empty_tile);
 
+ return;
+}
+
+inline void InventoryView::display_readied_object(uint8 location, uint16 x, uint16 y, Actor *actor, Tile *empty_tile)
+{
+ Obj *obj;
+ Tile *tile;
+ 
+ obj = actor->inventory_get_readied_object(location);
+ 
+ if(obj)
+   tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+ else
+   tile = empty_tile;
+ 
+ screen->blit(x,y,tile->data,8,16,16,16,true);
+ 
  return;
 }
 
@@ -145,8 +171,19 @@ void InventoryView::display_inventory_list()
        if(link != NULL)
          {
           obj = (Obj *)link->data;
+          if((obj->status & 0x18) == 0x18) //skip any readied objects
+            {
+             for(;link != NULL && (obj->status & 0x18) == 0x18; link = link->next)
+                obj = (Obj *)link->data;
+            }
           tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-          link = link->next;
+          if(link)
+            link = link->next;
+          else
+            {
+             if((obj->status & 0x18) == 0x18) //last object is readied so skip it.
+                tile = empty_tile;
+            }
          }
         else
           tile = empty_tile;
@@ -215,6 +252,12 @@ void InventoryView::display_inventory_weights()
  
  snprintf(string,8,"I:%d/%d",(int)inv_weight,strength*2);
  text->drawString(screen, string, area.x+4*16+8, area.y+72, 0);
+}
+
+void InventoryView::display_combat_mode()
+{
+ Actor *actor = party->get_actor(cur_party_member);
+ text->drawString(screen, combat_mode_tbl[actor->get_combat_mode() - 2], area.x+5*16, area.y+88, 0);
 }
 
 void InventoryView::display_actor_icon()

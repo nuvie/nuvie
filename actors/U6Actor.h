@@ -61,6 +61,8 @@ class U6Actor: public Actor
  bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  void twitch();
  
+ uint8 get_object_readiable_location(uint16 obj_n);
+ 
  protected:
  void wt_walk_to_location();
  void wt_walk_straight();

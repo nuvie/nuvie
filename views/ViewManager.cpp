@@ -35,7 +35,7 @@ ViewManager::~ViewManager()
  delete inventory_view;
 }
 
-bool ViewManager::init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *portrait)
+bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *portrait)
 {
  gui = g;
  text = t;
@@ -49,6 +49,9 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *o
  inventory_view = new InventoryView(config);
  inventory_view->init(gui->get_screen(), this, 176,8, text, party, tile_manager, obj_manager);
  
+ party_view = new PartyView(config);
+ party_view->init(this,176,8, text, party, player, tile_manager, obj_manager);
+
  portrait_view = new PortraitView(config);
  portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);
  
@@ -90,19 +93,15 @@ void ViewManager::set_portrait_mode(uint8 actor_num, char *name)
  
  set_current_view((View *)portrait_view);
 }
-/*
+
 void ViewManager::set_inventory_mode()
-{
- set_inventory_mode(current_view->get_party_member_num());
-}
-*/
-void ViewManager::set_inventory_mode(uint8 actor_num)
 {
  set_current_view((View *)inventory_view);
 }
 
 void ViewManager::set_party_mode()
 {
+ set_current_view((View *)party_view);
  return;
 }
 
@@ -123,7 +122,6 @@ GUI_status partyViewButtonCallback(void *data)
  view_manager = (ViewManager *)data;
  
  view_manager->set_party_mode();
- printf("Set party view!\n");
   
  return GUI_YUM;
 }
@@ -135,7 +133,6 @@ GUI_status actorViewButtonCallback(void *data)
  view_manager = (ViewManager *)data;
  
  view_manager->set_actor_mode();
- printf("Set actor view!\n");
   
  return GUI_YUM;
 }
@@ -146,8 +143,7 @@ GUI_status inventoryViewButtonCallback(void *data)
  
  view_manager = (ViewManager *)data;
  
- view_manager->set_inventory_mode(0);
- printf("Set actor view!\n");
+ view_manager->set_inventory_mode();
   
  return GUI_YUM;
 }

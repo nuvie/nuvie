@@ -30,6 +30,16 @@
 #include "ObjManager.h"
 #include "GameClock.h"
 
+#define ACTOR_HEAD   0
+#define ACTOR_NECK   1
+#define ACTOR_BODY   2
+#define ACTOR_ARM    3
+#define ACTOR_ARM_2  4 
+#define ACTOR_HAND   5
+#define ACTOR_HAND_2 6
+#define ACTOR_FOOT   7
+#define ACTOR_NOT_READIABLE 8
+
 // directions
 #define ACTOR_DIR_U 0
 #define ACTOR_DIR_R 1
@@ -58,6 +68,7 @@ class Actor
  friend class MapWindow;
  friend class LPath;
  friend class Party;
+ friend class Player;
  friend class PathFinder;
  friend class ZPath;
 
@@ -108,6 +119,8 @@ class Actor
  
  U6LList *obj_inventory;
  
+ Obj *readied_objects[8];
+ 
  Schedule **sched;
  
  //current schedule pos;
@@ -134,7 +147,8 @@ class Actor
  uint8 get_level() { return(level); }
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
-
+ uint8 get_combat_mode() { return combat_mode; }
+ 
  void set_strength(uint8 val) { strength = val; }
  void set_dexterity(uint8 val) { dex = val; }
  void set_intelligence(uint8 val) { intelligence = val; }
@@ -174,12 +188,16 @@ class Actor
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0);
  uint32 inventory_count_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
+ Obj *inventory_get_readied_object(uint8 location);
  bool inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality);
  uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container = 0);
  float inventory_get_max_weight() { return((strength * 2)); }
  float get_inventory_weight();
  float get_inventory_equip_weight();
-
+ 
+ virtual uint8 get_object_readiable_location(uint16 obj_n) { return ACTOR_NOT_READIABLE; }
+ bool add_readied_object(Obj *obj);
+ 
  virtual void twitch() { return; }
  
  protected:
@@ -188,6 +206,7 @@ class Actor
  virtual bool updateSchedule();
  uint16 getSchedulePos(uint8 hour);
  
+ void inventory_parse_readied_objects(); //this is used to initialise the readied_objects array on load.
 };
 
 #endif /* __Actor_h__ */

@@ -47,6 +47,9 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  in_party = false;
  worktype = 0;
  sched_pos = 0;
+ 
+ memset(readied_objects,0,sizeof(readied_objects));
+ 
 }
  
 Actor::~Actor()
@@ -438,6 +441,14 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container)
  return NULL;
 }
 
+Obj *Actor::inventory_get_readied_object(uint8 location)
+{
+ if(readied_objects[location] != NULL)
+   return readied_objects[location];
+
+ return NULL;
+}
+
 
 bool Actor::inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality)
 {
@@ -552,6 +563,72 @@ float Actor::get_inventory_equip_weight()
  weight /= 10;
  
  return weight;
+}
+
+void Actor::inventory_parse_readied_objects()
+{
+ U6LList *inventory;
+ U6Link *link;
+ Obj *obj;
+ 
+ if(obj_manager->actor_has_inventory(id_n) == false)
+   return;
+
+ inventory = obj_manager->get_actor_inventory(id_n);
+
+ for(link=inventory->start();link != NULL;link=link->next)
+  {
+   obj = (Obj *)link->data;
+   if((obj->status & 0x18) == 0x18) //object readied
+      {
+       add_readied_object(obj);
+      }
+  }
+
+ return;
+}
+
+//FIX handle not readiable, no place to put, double handed objects
+bool Actor::add_readied_object(Obj *obj)
+{
+ uint8 location;
+ 
+ location =  get_object_readiable_location(obj->obj_n);
+ 
+ switch(location)
+   {
+    case ACTOR_NOT_READIABLE : return false;
+
+    case ACTOR_ARM : if(readied_objects[ACTOR_ARM] == NULL)
+                       readied_objects[ACTOR_ARM] = obj;
+                     else
+                      {
+                       if(readied_objects[ACTOR_ARM_2] == NULL)
+                         readied_objects[ACTOR_ARM_2] = obj;
+                       else
+                         return false;
+                      }
+                     break;
+                     
+    case ACTOR_HAND : if(readied_objects[ACTOR_HAND] == NULL)
+                        readied_objects[ACTOR_HAND] = obj;
+                      else
+                       {
+                        if(readied_objects[ACTOR_HAND_2] == NULL)
+                          readied_objects[ACTOR_HAND_2] = obj;
+                        else
+                          return false;
+                       }
+                      break;
+
+    default : if(readied_objects[location] == NULL)
+                readied_objects[location] = obj;
+              else
+                return false;
+              break;
+   }
+
+ return true;
 }
 
 

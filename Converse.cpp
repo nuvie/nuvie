@@ -288,7 +288,7 @@ void Converse::stop()
     scroll->set_talking(false);
     scroll->display_string("\n");
     scroll->display_prompt();
-    views->set_inventory_mode(0);
+    views->set_inventory_mode();
     active = false;
     fprintf(stderr, "End conversation\n");
 }

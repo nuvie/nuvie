@@ -70,11 +70,7 @@ Game::~Game()
 }
  
 bool Game::loadGame(Screen *s, uint8 type)
-{
- GUI_Button *test_button;
- GUI_Area *test_area;
- GUI_Text *test_text;
-  
+{  
  screen = s;
  game_type = type;
  
@@ -118,7 +114,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    portrait->init();
  
    view_manager = new ViewManager(config);
-   view_manager->init(gui, text, party, tile_manager, obj_manager, portrait);
+   view_manager->init(gui, text, party, player, tile_manager, obj_manager, portrait);
  
    scroll = new MsgScroll(config);
    scroll->init(text, player->get_name());
@@ -216,7 +212,7 @@ void Game::play()
 
   scroll->display_prompt();
   
-  view_manager->set_inventory_mode(1); //FIX
+  //view_manager->set_inventory_mode(1); //FIX
   
   screen->update();
   

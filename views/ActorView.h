@@ -57,7 +57,7 @@ class ActorView : public View {
  
  void add_command_icons(Screen *tmp_screen, void *view_manager);
  void display_name();
- 
+ void display_actor_stats();
 };
 
 #endif /* __ActorView_h__ */

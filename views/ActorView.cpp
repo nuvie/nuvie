@@ -27,6 +27,7 @@
 #include "ActorView.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
+extern GUI_status partyViewButtonCallback(void *data);
 
 ActorView::ActorView(Configuration *cfg) : View(cfg)
 {
@@ -80,6 +81,7 @@ void ActorView::Display(bool full_redraw)
    screen->fill(0x31, area.x, area.y, area.w, area.h);
    screen->blit(area.x,area.y+8,portrait_data,8,56,64,56,false);
    display_name();
+   display_actor_stats();
    DisplayChildren(); //draw buttons
    screen->update(area.x, area.y, area.w, area.h);
   }
@@ -119,7 +121,7 @@ void ActorView::add_command_icons(Screen *tmp_screen, void *view_manager)
  tile = tile_manager->get_tile(384); //party view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 16, 80, button_image, button_image2, NULL);//partyViewButtonCallback);
+ button = new GUI_Button(view_manager, 16, 80, button_image, button_image2,partyViewButtonCallback);
  this->AddWidget(button);
  
  tile = tile_manager->get_tile(386); //inventory view icon
@@ -148,6 +150,37 @@ void ActorView::display_name()
   
  text->drawString(screen, name, area.x + ((136) - strlen(name) * 8) / 2, area.y, 0);
  
+ return;
+}
+
+void ActorView::display_actor_stats()
+{
+ Actor *actor;
+ char buf[10];
+ 
+ actor = party->get_actor(cur_party_member);
+ 
+ sprintf(buf,"STR:%d",actor->get_strength());
+ text->drawString(screen, buf, area.x + 5 * 16, area.y + 16, 0);
+
+ sprintf(buf,"DEX:%d",actor->get_dexterity());
+ text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 8, 0);
+
+ sprintf(buf,"INT:%d",actor->get_intelligence());
+ text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 2 * 8, 0);
+
+ text->drawString(screen, "Magic", area.x + 5 * 16, area.y + 16 + 4 * 8, 0);
+ sprintf(buf,"%d/%d",actor->get_magic(),0);
+ text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 5 * 8, 0);
+ 
+ text->drawString(screen, "Health", area.x + 5 * 16, area.y + 16 + 6 * 8, 0);
+ sprintf(buf,"%3d/%d",actor->get_hp(),actor->get_maxhp());
+ text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 7 * 8, 0);
+
+ text->drawString(screen, "Lev/Exp", area.x + 5 * 16, area.y + 16 + 8 * 8, 0);
+ sprintf(buf,"%d/%d",actor->get_level(),actor->get_exp());
+ text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 9 * 8, 0);
+
  return;
 }
 

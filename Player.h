@@ -71,6 +71,8 @@ class Player
  void set_actor(Actor *new_actor);
  Actor *get_actor();
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
+ uint8 get_location_level();
+ 
  char *get_name();
  void set_gender(uint8 val) { gender = val; }
  char *get_gender_title();

@@ -23,66 +23,128 @@
 
 #include "PartyView.h"
 
+extern GUI_status inventoryViewButtonCallback(void *data);
+
 PartyView::PartyView(Configuration *cfg) : View(cfg)
 {
- portrait_data = NULL;
+
 }
 
 PartyView::~PartyView()
 {
- if(portrait_data != NULL)
-   free(portrait_data);
+
 }
 
-bool PartyView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
+bool PartyView::init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl, TileManager *tm, ObjManager *om)
 {
  View::init(x,y,t,p,tm,om);
  
- portrait = port;
- cur_actor_num = 0;
-  
+ view_manager = vm;
+ player = pl;
+ 
  return true;
+}
+
+GUI_status PartyView::MouseUp(int x,int y,int button)
+{
+ x -= area.x;
+ y -= area.y;
+ 
+ if(x >= 16 || y < 16)
+   return GUI_PASS;
+
+ uint8 party_size = party->get_party_size();
+ 
+ if(y > party_size * 16 + 16)
+	 return GUI_PASS;
+
+ set_party_member((y - 16) / 16);
+ 
+ inventoryViewButtonCallback(view_manager);
+ 
+ return GUI_YUM;
 }
 
 void PartyView::Display(bool full_redraw)
 {
- if(portrait_data != NULL && (full_redraw || update_display))
+ uint8 i;
+ Actor *actor;
+ Tile *actor_tile;
+ char *actor_name;
+ char hp_string[4];
+ uint8 party_size = party->get_party_size();
+ 
+ if(full_redraw || update_display)
   {
    update_display = false;
    screen->fill(0x31, area.x, area.y, area.w, area.h);
-   screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
-   display_name();
+   
+   display_sun_moon_strip();
+
+   if(party_size > 5)
+     party_size = 5; //only show the first 5 party members.
+     
+   for(i=0;i<party_size;i++)
+     {
+      actor = party->get_actor(i);
+      actor_tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->get_tile_num())+9); //FIX here for sherry
+      screen->blit(area.x,area.y+16+1+i*16,actor_tile->data,8,16,16,16,true);
+      
+      actor_name = party->get_actor_name(i);
+      text->drawString(screen, actor_name, area.x + 16 + 8, area.y + 16 + 1 + i * 16 + 8, 0);
+      sprintf(hp_string,"%3d",actor->get_hp());
+      text->drawString(screen, hp_string, area.x + 112, area.y + 16 + 1 + i * 16, 0);
+     }
+     
    screen->update(area.x, area.y, area.w, area.h);
   }
- 
-}
-
-void PartyView::set_portrait(uint8 actor_num, char *name)
-{
-   
- cur_actor_num = actor_num;
- 
- if(portrait_data != NULL)
-   free(portrait_data);
-   
- portrait_data = portrait->get_portrait_data(cur_actor_num);
-
- if(name == NULL)
-   name_string.assign("");  //FIX
- else
-   name_string.assign(name);
-
- Redraw();
-}
-
-void PartyView::display_name()
-{
- const char *name;
- 
- name = name_string.c_str();
- 
- text->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+80, 0);
- 
+  
  return;
 }
 
+void PartyView::display_sun_moon_strip()
+{
+ uint8 level = player->get_location_level();
+ 
+ if(level == 0)
+   display_surface_strip();
+ else
+   display_dungeon_strip();
+
+ return;
+}
+
+void PartyView::display_surface_strip()
+{
+ uint8 i;
+ Tile *tile;
+ 
+ for(i=0;i<9;i++)
+   {
+    tile = tile_manager->get_tile(352+i);
+    screen->blit(area.x+i*16,area.y,tile->data,8,16,16,16,true);
+   }
+
+ return;
+}
+
+void PartyView::display_dungeon_strip()
+{
+ uint8 i;
+ Tile *tile;
+ 
+ tile = tile_manager->get_tile(372);
+ screen->blit(area.x,area.y,tile->data,8,16,16,16,true);
+
+ tile = tile_manager->get_tile(373);
+
+ for(i=1;i<8;i++)
+   {
+    screen->blit(area.x+i*16,area.y,tile->data,8,16,16,16,true);
+   }
+
+ tile = tile_manager->get_tile(374);
+ screen->blit(area.x+7*16+8,area.y,tile->data,8,16,16,16,true);
+
+ return;
+}

@@ -33,11 +33,13 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Party.h"
+#include "Player.h"
 #include "Portrait.h"
 
 #include "View.h"
 #include "ActorView.h"
 #include "InventoryView.h"
+#include "PartyView.h"
 #include "PortraitView.h"
 
 class ViewManager
@@ -55,6 +57,7 @@ class ViewManager
  ActorView *actor_view;
  InventoryView *inventory_view;
  PortraitView *portrait_view;
+ PartyView *party_view;
  
  View *current_view;
  
@@ -63,10 +66,10 @@ class ViewManager
  ViewManager(Configuration *cfg);
  virtual ~ViewManager();
  
- bool init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *portrait);
+ bool init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *portrait);
 
  void set_portrait_mode(uint8 actor_num, char *name);
- void set_inventory_mode(uint8 actor_num);
+ void set_inventory_mode();
  void set_party_mode();
  void set_actor_mode();
   
