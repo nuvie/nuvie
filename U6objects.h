@@ -144,6 +144,7 @@
 #define OBJ_U6_BUCKET              178
 #define OBJ_U6_BUCKET_OF_WATER     179
 #define OBJ_U6_BUCKET_OF_MILK      180
+#define OBJ_U6_CHURN               181
 
 #define OBJ_U6_BARREL              186
 #define OBJ_U6_BAG                 188

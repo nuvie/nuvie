@@ -100,6 +100,7 @@ class U6UseCode: public UseCode
  bool use_cow(Obj *obj, uint8 ev);
  bool use_well(Obj *obj, uint8 ev);
  bool fill_bucket(uint16 filled_bucket_obj_n);
+ bool use_churn(Obj *obj, uint8 ev);
  bool use_horse(Obj *obj, uint8 ev);
  bool use_potion(Obj *obj, uint8 ev);
  bool use_bell(Obj *obj, uint8 ev);

@@ -1,3 +1,7 @@
+2004-01-10  Eric Fry <efry at users.sourceforge.net>
+	* Added use:churn. Using a churn now makes butter. If you have a bucket
+	  of milk in your inventory.
+
 2004-01-08  Eric Fry <efry at users.sourceforge.net>
 	* Added Sam's optimized darkness patch. The Darkness code should be a
 	  lot faster now.

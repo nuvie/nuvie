@@ -156,6 +156,8 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_LEVER, 255,0,USE_EVENT_USE,&U6UseCode::use_switch);
     add_usecode(OBJ_U6_SWITCH,255,0,USE_EVENT_USE,&U6UseCode::use_switch);
 
+    add_usecode(OBJ_U6_CHURN, 255,0,USE_EVENT_USE,&U6UseCode::use_churn);
+
     add_usecode(OBJ_U6_CRANK, 255,0,USE_EVENT_USE,&U6UseCode::use_crank);
 
     add_usecode(OBJ_U6_FIREPLACE, 255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
@@ -1401,6 +1403,41 @@ bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
  
  scroll->display_string("\nDone\n");
  
+ return true;
+}
+
+bool U6UseCode::use_churn(Obj *obj, uint8 ev)
+{
+ ViewManager *view_manager = Game::get_game()->get_view_manager();
+ Player *player = Game::get_game()->get_player();
+ Actor *player_actor;
+ Obj *bucket;
+ Obj *butter;
+ 
+ player_actor = player->get_actor();
+
+ if(!player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_MILK))
+   {
+    scroll->display_string("\nYou need some milk.\n");
+	return false;
+   }
+
+ bucket = player_actor->inventory_get_object(OBJ_U6_BUCKET_OF_MILK);
+ player_actor->inventory_remove_obj(bucket);
+ 
+ bucket->obj_n = OBJ_U6_BUCKET;
+ 
+ butter = new Obj();
+ 
+ butter->obj_n = OBJ_U6_BUTTER;
+ player_actor->inventory_add_object(butter);
+ player_actor->inventory_add_object(bucket);
+ 
+ view_manager->set_inventory_mode();
+ 
+ view_manager->update(); //FIX this should be moved higher up in UseCode
+ 
+ scroll->display_string("\nDone\n");
  return true;
 }
 
