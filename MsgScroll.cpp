@@ -449,3 +449,26 @@ bool MsgScroll::input_buf_remove_char()
  
  return true;
 }
+
+char *MsgScroll::get_input()
+{
+ // MsgScroll sets input_mode to false when it receives SDLK_ENTER 
+ if(input_mode == false)
+   {
+    if(input_buf_pos > 0)
+      return input_buf;
+    else
+      return "";
+   }
+  
+ return NULL;
+}
+ 
+char *MsgScroll::peek_at_input()
+{
+ if(input_buf_pos > 0)
+   return input_buf;
+   
+ return NULL;
+}
+ 

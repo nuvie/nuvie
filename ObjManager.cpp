@@ -73,6 +73,8 @@ bool ObjManager::loadObjs(TileManager *tm)
    
  loadBaseTile();
  
+ delete filename;
+ 
  return true;
 }
  

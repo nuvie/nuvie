@@ -105,6 +105,10 @@ class MsgScroll
  
  bool input_buf_add_char(char c);
  bool input_buf_remove_char();
+ 
+ char *get_input();
+ char *peek_at_input();
+
 };
 
 
