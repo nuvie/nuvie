@@ -1019,20 +1019,6 @@
 			settings = {
 			};
 		};
-		07B8BE040419B94F00A8000A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			name = U6File.cpp;
-			path = ../files/U6File.cpp;
-			refType = 2;
-		};
-		07B8BE050419B94F00A8000A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			name = U6File.h;
-			path = ../files/U6File.h;
-			refType = 2;
-		};
 		07B8BE060419B94F00A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1065,8 +1051,6 @@
 				07AEE75B04B1727B00A8000A,
 				07938EA404B6C8B100A8000A,
 				07938EA504B6C8B100A8000A,
-				07B8BE050419B94F00A8000A,
-				07B8BE040419B94F00A8000A,
 				07B8BE070419B94F00A8000A,
 				07B8BE060419B94F00A8000A,
 				07B8BE130419DA1000A8000A,
