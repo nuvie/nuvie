@@ -27,13 +27,15 @@
 #include <SDL.h>
 
 #include "U6def.h"
+#include "Configuration.h"
 
 #include "Surface.h"
 
 #include "Screen.h"
 
-Screen::Screen()
+Screen::Screen(Configuration *cfg)
 {
+ config = cfg;
 }
 
 Screen::~Screen()
@@ -53,9 +55,9 @@ bool Screen::init(uint16 new_width, uint16 new_height)
    return false;
 	}
 
- surface = SDL_SetVideoMode(width, height, 8, SDL_SWSURFACE | SDL_HWPALETTE);
- pitch = surface->pitch;
- bpp = surface->format->BitsPerPixel;
+ scaled_surface = SDL_SetVideoMode(width, height, 8, SDL_SWSURFACE | SDL_HWPALETTE);
+ pitch = scaled_surface->pitch;
+ bpp = scaled_surface->format->BitsPerPixel;
  
  printf("surface pitch = %d\n",pitch);
  
@@ -65,24 +67,24 @@ bool Screen::init(uint16 new_width, uint16 new_height)
 bool Screen::set_palette(SDL_Color *palette)
 {
 
- SDL_SetColors(surface,palette,0,256);
+ SDL_SetColors(scaled_surface,palette,0,256);
   
  return true;
 }
 
 bool Screen::clear(uint8 color)
 {
- SDL_FillRect(surface, NULL, (uint32)color);
+ SDL_FillRect(scaled_surface, NULL, (uint32)color);
 
  return true; 
 }
 
 void *Screen::get_pixels()
 {
- if(surface == NULL)
+ if(scaled_surface == NULL)
     return NULL; 
  
- return surface->pixels;
+ return scaled_surface->pixels;
 }
 
 bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
@@ -90,7 +92,7 @@ bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 s
  unsigned char *pixels;
  uint16 i,j;
  
- pixels = (unsigned char *)surface->pixels;
+ pixels = (unsigned char *)scaled_surface->pixels;
  
  pixels += dest_y * pitch + dest_x;
 
@@ -132,22 +134,30 @@ uint16 Screen::get_bpp()
 
 void Screen::update()
 {
- if(surface)
-   SDL_UpdateRect(surface,0,0,0,0);
+ if(scaled_surface)
+   SDL_UpdateRect(scaled_surface,0,0,0,0);
 
  return;
 }
 
 void Screen::lock()
 {
- SDL_LockSurface(surface);
+ SDL_LockSurface(scaled_surface);
  
  return;
 }
 
 void Screen::unlock()
 {
- SDL_UnlockSurface(surface);
+ SDL_UnlockSurface(scaled_surface);
  
  return;
 }
+
+bool Screen::initScaler()
+{
+ std::string scaler_name;
+ 
+ return true;
+}
+   

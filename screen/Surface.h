@@ -30,10 +30,11 @@
 
 class Surface
 {
- private:
-  unsigned char *data;
+ 
   
  protected:
+ 
+ SDL_Surface *surface;
  
  uint16 width;
  uint16 height;

@@ -25,6 +25,8 @@
 
 #include "Actor.h"
 
+static uint8 walk_frame_tbl[4] = {0,1,2,1};
+
 Actor::Actor(Map *m)
 {
  map = m;
@@ -59,6 +61,9 @@ void Actor::set_direction(uint8 d)
    direction = d;
 
  walk_frame = (walk_frame + 1) % 4;
+ 
+ frame_n = direction * 4 + walk_frame_tbl[walk_frame];
+ 
 }
 
 bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)

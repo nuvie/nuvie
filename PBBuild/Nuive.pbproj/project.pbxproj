@@ -398,6 +398,8 @@
 				07707D42043558C800A8000A,
 				072BE3B2041AFE8A00A8000A,
 				072BE3B3041AFE8A00A8000A,
+				07DBE1B90437CC7200A8000A,
+				07DBE1BA0437CC7200A8000A,
 			);
 			isa = PBXGroup;
 			name = Screen;
@@ -749,6 +751,20 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
+		};
+		07DBE1B90437CC7200A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = scaler.cpp;
+			path = ../screen/scaler.cpp;
+			refType = 2;
+		};
+		07DBE1BA0437CC7200A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = scaler.h;
+			path = ../screen/scaler.h;
+			refType = 2;
 		};
 		07EF5321043137BF00A8000A = {
 			fileEncoding = 4;

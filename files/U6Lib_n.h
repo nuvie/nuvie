@@ -36,9 +36,11 @@ class U6Lib_n
  
  public:
    
-   U6Lib_n(std::string &filename, uint8 size = 2);
+   U6Lib_n();
    ~U6Lib_n();
  
+ 
+   bool open(std::string &filename, uint8 size);
    uint32 get_num_items();
    uint32 get_item_size(uint32 item_number);
    unsigned char *get_item(uint32 item_number);

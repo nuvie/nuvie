@@ -116,7 +116,9 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
     unsigned char *destination;
     
     destination_length = this->get_uncompressed_buffer_size(source,source_length);
-    
+    if(destination_length == -1)
+      return NULL;
+  
     destination = (unsigned char *)malloc(destination_length);
     
     source += 4; //skip the filesize dword.

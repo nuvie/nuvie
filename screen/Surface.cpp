@@ -38,29 +38,33 @@ Surface::Surface()
  pitch = 0;
  bpp = 0;
 
- data = 0;
+ surface = NULL;
 }
 
 Surface::~Surface()
 {
- if(data != NULL)
-   free(data);
-
+ if(surface)
+  SDL_FreeSurface(surface);
+ surface = NULL;
 }
 
 bool Surface::init(uint16 new_width, uint16 new_height)
 {
  width = new_width;
  height = new_height;
- pitch = width;
- bpp = 8;
  
- data = (unsigned char *)malloc(width * height);
- if(data == NULL)
+ surface = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
+ 
+ printf("get here");
+ 
+ if(surface == NULL)
    {
     printf("Argh! out of memory. Surface::init()\n");
     return false;
    }
+   
+ pitch = surface->pitch;
+ bpp = surface->format->BitsPerPixel;
    
  return true; 
 }
@@ -68,20 +72,21 @@ bool Surface::init(uint16 new_width, uint16 new_height)
 
 bool Surface::set_palette(SDL_Color *palette)
 {
-
+ SDL_SetColors(surface,palette,0,256);
+  
  return true;
 }
 
 bool Surface::clear(uint8 color)
 {
- memset(data,color, width * height);
+ //memset(data,color, width * height);
  
  return true; 
 }
 
 void *Surface::get_pixels()
 {
- return data;
+ return surface->pixels;
 }
 
 uint16 Surface::get_pitch()
@@ -99,7 +104,7 @@ bool Surface::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 
  unsigned char *pixels;
  uint16 i,j;
 
- pixels = data;
+ pixels = (unsigned char *)surface->pixels;
  pixels += dest_y * pitch + dest_x;
 
  if(trans)
@@ -125,6 +130,8 @@ bool Surface::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 
      }
   }
 
+ SDL_UpdateRect(surface,dest_x,dest_y,src_w,src_h);
+ 
  return true;
 }
 

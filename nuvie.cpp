@@ -59,7 +59,7 @@ bool Nuvie::init()
  
  config->readConfigFile("nuvie.cfg","config");
   
- screen = new Screen();
+ screen = new Screen(config);
  if(screen->init(320,200) == false)
    return false;
  

@@ -27,14 +27,16 @@
 #include <SDL.h>
 
 #include "U6def.h"
+#include "Configuration.h"
 #include "Surface.h"
 
 class Screen: Surface
 {
- SDL_Surface *surface;
+ Configuration *config;
+ SDL_Surface *scaled_surface;
  
  public:
-   Screen();
+   Screen(Configuration *cfg);
    ~Screen();
 
    bool init(uint16 width = 320, uint16 height = 200);
@@ -50,6 +52,9 @@ class Screen: Surface
    
    void lock();
    void unlock();
+   
+   bool initScaler();
+
 };
 
 

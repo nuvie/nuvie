@@ -23,7 +23,7 @@
 
 #include "ActorManager.h"
 
-static uint8 walk_frame_tbl[4] = {0,1,2,1};
+
 
 ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om)
 {
@@ -32,6 +32,7 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  tile_manager = tm;
  obj_manager = om;
  
+ player_actor = 1;
 }
 
 ActorManager::~ActorManager()
@@ -95,6 +96,7 @@ bool ActorManager::loadActors()
     actors[i]->a_num += (b2 & 0x3) << 8;
     
     actors[i]->frame_n = (b2 & 0xfc) >> 2;
+    actors[i]->direction = actors[i]->frame_n / 4;
    }
 
  loadActorSchedules();
@@ -120,9 +122,9 @@ Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z)
  return NULL;
 }
 
-Actor *ActorManager::get_partyLeader()
+Actor *ActorManager::get_player()
 {
- return actors[1]; //FIX here for dead party leader etc.
+ return actors[player_actor]; //FIX here for dead party leader etc.
 }
 
 void ActorManager::updateActors()
@@ -147,10 +149,10 @@ void ActorManager::drawActors(Surface *surface, uint16 x, uint16 y, uint16 width
          {
           if(actors[i]->z == level)
            {
-            if(i == 1) //HACK fix this for proper frame handling
-              tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actors[i]->a_num)+(actors[i]->direction*4)+walk_frame_tbl[actors[i]->walk_frame]);
-            else
+  //          if(i == 1) //HACK fix this for proper frame handling
               tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actors[i]->a_num)+actors[i]->frame_n);
+//            else
+//              tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actors[i]->a_num)+actors[i]->frame_n);
 
             surface->blit((actors[i]->x - x)*16,(actors[i]->y - y)*16,tile->data,8,16,16,16,tile->transparent);
            }

@@ -3,7 +3,7 @@
  *  Nuive
  *
  *  Created by Eric Fry on Fri Mar 21 2003.
- *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
+ *  Copyright (c) 2003. All rights reserved.
  *
  */
 
@@ -495,7 +495,8 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  
  if(map->is_boundary(x,y,cur_level)) //hit the boundary wall tiles
   {
-   return;
+   if(boundaryLookThroughWindow(*ptr, x, y) == false)
+      return;
   }
   
  boundaryFill(map_ptr, pitch, x+1, y);
@@ -509,6 +510,29 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
 
  
  return;
+}
+
+bool MapWindow::boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y)
+{
+ Tile *tile;
+ Actor *actor;
+ uint16 a_x, a_y;
+ uint8 a_z;
+ 
+ tile = tile_manager->get_tile(tile_num);
+ if(!(tile->flags2 & TILEFLAG_WINDOW))
+   return false;
+
+ actor = actor_manager->get_player();
+ actor->get_location(&a_x,&a_y,&a_z);
+ 
+ if(a_x >= x - 1 && a_x <= x + 1)
+   {
+    if(a_y >= y - 1 && a_y <= y + 1)
+       return true;
+   }
+
+ return false;
 }
 
 void MapWindow::reshapeBoundary()

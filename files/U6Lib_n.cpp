@@ -25,22 +25,33 @@
 
 #include "U6Lib_n.h"
 
-U6Lib_n::U6Lib_n(std::string &filename, uint8 size)
+U6Lib_n::U6Lib_n()
 {
- file.open(filename,"r");
- 
- lib_size = size;
  num_offsets = 0;
  num_zero_offsets = 0;
  offsets = NULL;
- 
- this->parse_lib();
 }
+
 
 U6Lib_n::~U6Lib_n(void)
 {
 
  free(offsets);
+}
+
+bool U6Lib_n::open(std::string &filename, uint8 size)
+{
+ if(file.open(filename,"r") == false)
+   {
+    printf("Error: Opening %s\n",filename.c_str());
+    return false;
+   }
+ 
+ lib_size = size;
+ 
+ this->parse_lib();
+ 
+ return true;
 }
  
 uint32 U6Lib_n::get_num_items(void)
@@ -54,8 +65,10 @@ uint32 U6Lib_n::get_item_size(uint32 item_number)
  
  if(item_number >= num_offsets)
    return 0;
-   
- size = offsets[item_number+1] - offsets[item_number];
+ if(offsets[item_number+1] > offsets[item_number])
+   size = offsets[item_number+1] - offsets[item_number];
+ else
+   size = 0;
 
  return size;
 }
@@ -69,7 +82,9 @@ unsigned char *U6Lib_n::get_item(uint32 item_number)
    return NULL;
  
  item_size = this->get_item_size(item_number);
- 
+ if(item_size == 0)
+   return NULL;
+
  buf = (unsigned char *)malloc(item_size);
  
  file.readToBuf(buf,item_size);

@@ -41,6 +41,7 @@ class ActorManager
  ObjManager *obj_manager;
  Map *map;
  Actor *actors[256];
+ uint8 player_actor;
  
  public:
   
@@ -52,7 +53,7 @@ class ActorManager
  Actor *get_actor(uint8 actor_num);
  Actor *get_actor(uint16 x, uint16 y, uint8 z);
  
- Actor *get_partyLeader();
+ Actor *get_player();
 
  void updateActors();
  

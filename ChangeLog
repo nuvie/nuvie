@@ -1,3 +1,8 @@
+2003-04-02  Eric Fry  <efry@users.sourceforge.net>
+	* Windows are now working properly.
+	* Work started on scaling.
+	* Added little tool to unpack converse.a/b files
+
 2003-03-30  Eric Fry  <efry@users.sourceforge.net>
 	* Started Changelog.
 	* Chests now open and close.
