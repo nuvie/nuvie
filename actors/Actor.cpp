@@ -325,6 +325,7 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
         a = map->get_actor(new_x,new_y,new_z);
         if(a)
           return (a->is_passable() || is_passable()); // we can move over or under some actors. eg mice, dragons etc.
+        // FIXME: but I dont think we can pass dogs/cats/reapers can we?
        }
 
 //    if(map->is_passable(new_x,new_y,new_z) == false)

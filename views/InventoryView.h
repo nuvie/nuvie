@@ -69,6 +69,7 @@ class InventoryView : public View {
  void moveCursorRelative(sint8 new_x, sint8 new_y);
  void moveCursorToButton(uint8 button_num = 0);
  void moveCursorToTop();
+ bool select_obj(Obj *obj);
  void select_objAtCursor();
  Obj *get_objAtCursor();
 
@@ -84,6 +85,8 @@ class InventoryView : public View {
  void display_inventory_weights();
  void display_combat_mode();
  void update_cursor();
+
+ GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 
 #endif /* __InventoryView_h__ */

@@ -114,8 +114,9 @@ class Event : public GUI_CallBack
  void freeselect_mode(Obj *src, const char *prompt = NULL);
  void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
  void display_portrait(Actor *actor, const char *name = NULL);
- void newAction(EventMode new_mode);
+ bool newAction(EventMode new_mode);
  void doAction(sint16 rel_x = 0, sint16 rel_y = 0);
+ void doAction(Obj *obj);
  void cancelAction();
  void endAction();
  void endWaitMode(); // change to MOVE_MODE, hide cursors, display prompt

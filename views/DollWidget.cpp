@@ -41,9 +41,11 @@ static SDL_Rect item_hit_rects[8] = { {24, 0,16,16},   // ACTOR_HEAD
                                      {48,40,16,16},   // ACTOR_HAND_2
                                      {24,48,16,16} }; // ACTOR_FOOT
 
-DollWidget::DollWidget(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
+DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
+ callback_object = callback;
+
  actor = NULL;
  selected_obj = NULL;
  unready_obj = NULL;
@@ -147,10 +149,8 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
 {
  Event *event = Game::get_game()->get_event();
  MsgScroll *scroll = Game::get_game()->get_scroll();
- //MapWindow *map_window = Game::get_game()->get_map_window();
  uint8 location;
  Obj *obj;
-
  x -= area.x;
  y -= area.y;
 
@@ -164,28 +164,16 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
           obj = actor->inventory_get_readied_object(location);
           if(obj)
            {
-            // ABOEING
-            switch(event->get_mode())
-             {
-              case LOOK_MODE:
-                 if(event->look(obj)) // returns FALSE if prompt already displayed
-                   scroll->display_prompt();
-                 event->endAction(); // FIXME: should be done in look()
-                 break;
-              case USE_MODE:
-                 event->use(obj);
-                 break;
-              default:
+             // send to View
+             if(callback_object->callback(INVSELECT_CB, this, obj) == GUI_PASS)
                  selected_obj = obj;
-                 break;
-             }
              return GUI_YUM;
            }
          }
       }
    }
 
-	return GUI_YUM;
+ return GUI_YUM;
 }
 
 
@@ -331,24 +319,18 @@ void DollWidget::drag_draw(int x, int y, int message, void* data)
 }
 
 
-/* Use object. (FIXME: this is duplicating code from InventoryWidget)
+/* Use object.
  */
 GUI_status DollWidget::MouseDouble(int x, int y, int button)
 {
-    MsgScroll *scroll = Game::get_game()->get_scroll();
     Event *event = Game::get_game()->get_event();
     Obj *obj = unready_obj;
     unready_obj = NULL;
 
-    if(!(actor && obj && button == 1 && event->get_mode() == MOVE_MODE))
+    if(!(actor && obj && button == 1))
         return(GUI_YUM);
 
-    scroll->display_string("Use-");
-    event->use(obj);
-    if(event->get_mode() == MOVE_MODE)
-    {
-        scroll->display_string("\n");
-        scroll->display_prompt();
-    }
+    if(event->newAction(USE_MODE))
+        event->doAction(obj);
     return(GUI_PASS);
 }

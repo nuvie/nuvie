@@ -35,6 +35,20 @@
 #include "misc.h"
 #include "NuvieIOFile.h"
 #include "GameClock.h"
+#include "Game.h"
+
+
+/* ALWAYS means the time is unset, is unknown, or day and night are both set */
+typedef enum
+{
+    EGG_HATCH_ALWAYS, EGG_HATCH_DAY, EGG_HATCH_NIGHT
+} egg_hatch_time;
+#define EGG_DAY_HOUR   06 /* first hour of the day */
+#define EGG_NIGHT_HOUR 19 /* first hour of night */
+#define EGG_HATCH_TIME(EQ) (EQ < 10) ? EGG_HATCH_ALWAYS \
+                            : (EQ < 20) ? EGG_HATCH_DAY \
+                            : (EQ < 30) ? EGG_HATCH_NIGHT : EGG_HATCH_ALWAYS;
+
 
 EggManager::EggManager(Configuration *cfg, Map *m)
 {
@@ -110,6 +124,7 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
 
  for(egg = egg_list.begin(); egg != egg_list.end();)
    {
+    uint8 quality = (*egg)->obj->quality;
     dist_x = abs((sint16)(*egg)->obj->x - x);
     dist_y = abs((sint16)(*egg)->obj->y - y);
 
@@ -122,7 +137,17 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
 		  (*egg)->obj->status |= OBJ_STATUS_EGG_ACTIVE;
 
           hatch_probability = NUVIE_RAND()%100;
-          printf("Checking Egg (%x,%x,%x). Rand: %d Probability: %d%%\n",(*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z,hatch_probability,(*egg)->obj->qty);
+          const char *align_str = get_alignment_str(quality);
+          printf("Checking Egg (%x,%x,%x). Rand: %d Probability: %d%%",(*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z,hatch_probability,(*egg)->obj->qty);
+          if(align_str)
+             printf(" Align: %s", align_str);
+          else
+             printf(" Quality: %d", quality);
+          if(quality < 10)      printf(" (always)");    // 0-9
+          else if(quality < 20) printf(" (day)");       // 10-19
+          else if(quality < 30) printf(" (night)");     // 20-29
+          else if(quality < 40) printf(" (day+night)"); // 30-39
+          printf("\n");
           spawn_egg((*egg)->obj, hatch_probability);
          }
       }
@@ -141,6 +166,14 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
  U6Link *link;
  uint16 i;
  Obj *obj, *spawned_obj;
+ uint8 hour = Game::get_game()->get_clock()->get_hour();
+
+    // check time that the egg will hach
+    egg_hatch_time period = EGG_HATCH_TIME(egg->quality);
+    if( period==EGG_HATCH_ALWAYS
+        || (period==EGG_HATCH_DAY && hour>=EGG_DAY_HOUR && hour<EGG_NIGHT_HOUR)
+        || (period==EGG_HATCH_NIGHT && !(hour>=EGG_DAY_HOUR && hour<EGG_NIGHT_HOUR)) )
+    {
           // check random probability that the egg will hatch
           if(egg->qty == 100 || hatch_probability <= egg->qty)  // Hatch the egg.
             {
@@ -185,5 +218,25 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
                }
              return true;
             }
+    }
  return false;
+}
+
+
+/* Returns monster alignment from egg quality.
+ */
+const char *EggManager::get_alignment_str(uint8 quality)
+{
+    quality %= 10;
+    if(quality == 0)
+        return("default");
+    else if(quality == 1)
+        return("neutral");
+    else if(quality == 2)
+        return("evil");
+    else if(quality == 3)
+        return("good");
+    else if(quality == 4)
+        return("chaotic");
+    return(NULL);
 }

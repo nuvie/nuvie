@@ -972,10 +972,10 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
         if((obj->status & 0x18) != 0x18)
         {
             scroll->display_string("\nNot readied.\n");
-            return(false);
+            return(true);
         }
         game->get_event()->useselect_mode(obj, "Direction: ");
-        return(true);
+        return(false);
     }
     dig_at = *items.mapcoord_ref;
 
@@ -1459,7 +1459,7 @@ bool U6UseCode::use_balloon_plans(Obj *obj, UseCodeEvent ev)
     balloon = new_obj(OBJ_U6_BALLOON, 0, player_location.x, player_location.y, player_location.z);
 
     if(balloon && obj_manager->add_obj(balloon))
-      scroll->display_string("Done!\n");
+      scroll->display_string("You study the scroll!\n");
    }
    
  return true;
@@ -1726,7 +1726,7 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
 	actor->init_from_obj(actor_obj);
 
     // create a temporary horse on the map.
-	actor_manager->create_temp_actor(OBJ_U6_HORSE, obj->x, obj->y, obj->z, WORKTYPE_U6_ANIMAL_WANDER);
+	actor_manager->create_temp_actor(OBJ_U6_HORSE, obj->x, obj->y, obj->z, WORKTYPE_U6_GRAZE);
    }
  else if(!actor_manager->is_temp_actor(actor))// Try to mount horse. Don't use permenant Actors eg Smith, push-me pull-you
    {

@@ -27,6 +27,7 @@
 #include "GUI_widget.h"
 #include "TileManager.h"
 #include "ObjManager.h"
+#include "InventoryMessage.h"
 
 class Configuration;
 class Actor;
@@ -43,7 +44,7 @@ class DollWidget : public GUI_Widget {
  Obj *selected_obj, *unready_obj;
 
  public:
- DollWidget(Configuration *cfg);
+ DollWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~DollWidget();
 
  bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om);
@@ -67,6 +68,8 @@ class DollWidget : public GUI_Widget {
  SDL_Rect *get_item_hit_rect(uint8 location);
 
  protected:
+
+ GUI_CallBack *callback_object; // object-selected callback
 
  void DollWidget::display_doll();
  void display_readied_object(uint8 location, uint16 x, uint16 y, Actor *actor, Tile *empty_tile);

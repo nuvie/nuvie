@@ -68,6 +68,8 @@ class EggManager
 
  protected:
 
+ const char *get_alignment_str(uint8 quality);
+
 };
 
 #endif /* __EggManager_h__ */

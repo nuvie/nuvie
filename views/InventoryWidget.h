@@ -26,6 +26,7 @@
 
 #include "GUI_widget.h"
 #include "ObjManager.h"
+#include "InventoryMessage.h"
 
 class Configuration;
 class TileManager;
@@ -47,7 +48,7 @@ class InventoryWidget : public GUI_Widget {
  uint16 row_offset;
 
  public:
- InventoryWidget(Configuration *cfg);
+ InventoryWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~InventoryWidget();
 
  bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
@@ -71,6 +72,9 @@ class InventoryWidget : public GUI_Widget {
  void drag_draw(int x, int y, int message, void* data);
 
  protected:
+
+ GUI_CallBack *callback_object; // object-selected callback
+
  inline uint16 get_list_position(int x, int y);
  void display_inventory_container();
  void display_inventory_list();

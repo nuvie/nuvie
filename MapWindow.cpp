@@ -1081,7 +1081,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 //       obj_manager->add_obj(obj,true);
          Event *event = Game::get_game()->get_event();
 // if(dropping)
-         event->newAction(DROP_MODE);
+         event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
          event->drop_select(obj, obj->qty);
          event->drop(x, y);
 // else move
@@ -1464,7 +1464,12 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
     LineTestResult lt;
     MapCoord actor_loc;
     if(actor)
+    {
         actor_loc = actor->get_location();
+        // can't ever drop at the actor location
+        if(actor_loc.x == x && actor_loc.y == y)
+            return(false);
+    }
 
     if(tmpBufTileIsBlack(x - cur_x, y - cur_y)
        || !map->is_passable(x, y, cur_level)

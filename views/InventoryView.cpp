@@ -71,12 +71,12 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 {
  View::init(x,y,t,p,tm,om);
 
- doll_widget = new DollWidget(config);
+ doll_widget = new DollWidget(config, this);
  doll_widget->init(party->get_actor(cur_party_member), 0, 8, tile_manager, obj_manager);
 
  AddWidget(doll_widget);
 
- inventory_widget = new InventoryWidget(config);
+ inventory_widget = new InventoryWidget(config, this);
  inventory_widget->init(party->get_actor(cur_party_member), 64, 8, tile_manager, obj_manager, text);
 
  AddWidget(inventory_widget);
@@ -266,6 +266,7 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
 {
     Event *event = Game::get_game()->get_event();
     ViewManager *view_manager = Game::get_game()->get_view_manager();
+
     if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
         return(GUI_PASS);
     switch(key.sym)
@@ -516,12 +517,25 @@ Obj *InventoryView::get_objAtCursor()
 void InventoryView::select_objAtCursor()
 {
     Event *event = Game::get_game()->get_event();
-    MsgScroll *scroll = Game::get_game()->get_scroll();
+    ViewManager *view_manager = Game::get_game()->get_view_manager();
     Obj *obj = get_objAtCursor();
 
+    // special areas
     if(cursor_pos.area == INVAREA_COMMAND)
     {
-        printf("Do command icon function here! button %d\n",cursor_pos.x);
+        if(cursor_pos.x == 0) // left
+            View::callback(BUTTON_CB, left_button, view_manager);
+        if(cursor_pos.x == 1) // party
+            View::callback(BUTTON_CB, party_button, view_manager);
+        if(cursor_pos.x == 2) // status
+            View::callback(BUTTON_CB, actor_button, view_manager);
+        if(cursor_pos.x == 3) // right
+            View::callback(BUTTON_CB, right_button, view_manager);
+        if(cursor_pos.x == 4) // combat mode
+        {
+//            View::callback(BUTTON_CB, combat_button, view_manager);
+            printf("Combat mode!\n");
+        }
         return;
     }
     else if(cursor_pos.area == INVAREA_TOP)
@@ -529,6 +543,20 @@ void InventoryView::select_objAtCursor()
         inventory_widget->set_container(NULL);
         return;
     }
+
+    select_obj(obj); // do action with an object
+}
+
+
+/* Do the action for the current EventMode with an object (presumably accessed
+ * from inventory). Pass NULL if an empty space is selected.
+ * Returns false if no action was performed.
+ */
+bool InventoryView::select_obj(Obj *obj)
+{
+    Event *event = Game::get_game()->get_event();
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+
     switch(event->get_mode())
     {
         case EQUIP_MODE:
@@ -556,6 +584,23 @@ void InventoryView::select_objAtCursor()
             event->drop_select(obj);
             break;
         default:
-            event->cancelAction();
+            if(!obj) // don't cancelAction() and "Pass!" if selected an object
+                event->cancelAction();
+            return(false);
     }
+    return(true);
 }
+
+
+/* Messages from child widgets.
+ */
+GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
+{
+    if(msg != INVSELECT_CB) // hit one of the command buttons
+        return(View::callback(msg, caller, data));
+
+    if(select_obj((Obj *)data))
+        return(GUI_YUM);
+    return(GUI_PASS);
+}
+

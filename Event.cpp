@@ -1777,29 +1777,28 @@ bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
     sint16 rel_x = x - actor_loc.x;
     sint16 rel_y = y - actor_loc.y;
     if(rel_x == 0 && rel_y < 0) // FIXME: move direction names somewhere else
-        scroll->display_string("North.");
+        scroll->display_string("North.\n");
     else if(rel_x > 0 && rel_y < 0)
-        scroll->display_string("Northeast.");
+        scroll->display_string("Northeast.\n");
     else if(rel_x > 0 && rel_y == 0)
-        scroll->display_string("East.");
+        scroll->display_string("East.\n");
     else if(rel_x > 0 && rel_y > 0)
-        scroll->display_string("Southeast.");
+        scroll->display_string("Southeast.\n");
     else if(rel_x == 0 && rel_y > 0)
-        scroll->display_string("South.");
+        scroll->display_string("South.\n");
     else if(rel_x < 0 && rel_y > 0)
-        scroll->display_string("Southwest.");
+        scroll->display_string("Southwest.\n");
     else if(rel_x < 0 && rel_y == 0)
-        scroll->display_string("West.");
+        scroll->display_string("West.\n");
     else if(rel_x < 0 && rel_y < 0)
-        scroll->display_string("Northwest.");
-    else
-        scroll->display_string("nowhere.");
-    scroll->display_string("\n");
+        scroll->display_string("Northwest.\n");
+//    else
+//        scroll->display_string("nowhere");
 
     // check drop-to location (FIXME: This is redundant if using DragnDrop)
     if(!map_window->can_drop_obj(drop_loc.x, drop_loc.y, actor))
     {
-        scroll->display_string("\nNot Possible\n");
+        scroll->display_string("Not possible\n");
         scroll->display_string("\n");
         scroll->display_prompt();
         endAction(); // because the DropEffect is never called to do this
@@ -1966,7 +1965,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
 
 
 
-/* Do the finishing action for the current mode, based on cursor coordinates,
+/* Do the "finishing action" for the current mode, based on cursor coordinates,
  * or based on the passed player-relative coordinates.
  */
 void Event::doAction(sint16 rel_x, sint16 rel_y)
@@ -2025,6 +2024,48 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 }
 
 
+/* Do the "finishing action" for the current mode, based on passed object.
+ * (object can be NULL)
+ * FIXME: currently some actions can't be performed with Object pointers
+ */
+void Event::doAction(Obj *obj)
+{
+	if(mode == WAIT_MODE)
+		return;
+
+	map_window->set_show_use_cursor(false);
+	map_window->set_show_cursor(false);
+	Game::get_game()->set_mouse_pointer(0);
+	if(mode == LOOK_MODE)
+	{
+		mode = MOVE_MODE;
+		look(obj);
+	}
+	else if(mode == USE_MODE)
+	{
+		//mode = MOVE_MODE;
+		use(obj);
+	}
+	else if(mode == GET_MODE)
+	{
+		mode = MOVE_MODE;
+		get(obj);
+	}
+	else if(mode == USESELECT_MODE || mode == FREESELECT_MODE)
+	{
+		mode = MOVE_MODE;
+		select_obj(obj);
+	}
+	else if(mode == MOVE_MODE)
+	{
+		scroll->display_string("what?\n\n");
+		scroll->display_prompt();
+	}
+	else
+		cancelAction();
+}
+
+
 /* Cancel the action for the current mode, switch back to MOVE_MODE if possible.
  */
 void Event::cancelAction()
@@ -2049,21 +2090,23 @@ void Event::cancelAction()
 
 /* Request new EventMode, for selecting a target. This will cancel any pending
  * actions, or perform the action for the current mode.
+ * Returns true if a new mode has been started. (basically if a new "select an
+ * object/direction for this action" prompt is displayed)
  */
-void Event::newAction(EventMode new_mode)
+bool Event::newAction(EventMode new_mode)
 {
 	if(mode == WAIT_MODE)
-		return;
+		return(false);
 
 	if(mode == new_mode) // already in mode, finish
 	{
 		doAction();
-                return;
+		return(false); // although this is success, we reverted to MOVE_MODE
 	}
 	else if(mode != MOVE_MODE) // in another mode, exit
 	{
 		cancelAction();
-                return;
+		return(false);
 	}
 
 	Game::get_game()->set_mouse_pointer(1);
@@ -2106,7 +2149,9 @@ void Event::newAction(EventMode new_mode)
 			break;
 		default:
 			cancelAction();
+			return(false);
 	}
+	return(true); // ready for object/direction
 }
 
 

@@ -1,3 +1,15 @@
+2004-08-03  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Fixed crashing bug when dropping an object at the actor location. (I
+	  thought I fixed this already???)
+	* More "glitches" related to dropping things fixed. The game won't stay
+	  stuck in DROP mode when you select the center square. (nowhere)
+	* There should be a more consistent feel when using the mouse and
+	  keyboard on items in your inventory. All "selection" code has been
+	  moved to InventoryView. The command icons can now be selected with the
+	  arrow keys and ENTER.
+	* Eggs will now only spawn at the correct time of day. This information
+	  is also added to the console output. Alignment is not assigned yet.
+
 2004-07-30  Eric Fry <efry at users.sourceforge.net>
 	* Added temp_actor flag to Actor.
 	* Added armor_class to Actor.

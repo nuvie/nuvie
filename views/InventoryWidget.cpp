@@ -36,9 +36,11 @@
 
 static SDL_Rect arrow_rects[2] = {{0,16,8,8},{0,3*16+8,8,8}};
 
-InventoryWidget::InventoryWidget(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
+InventoryWidget::InventoryWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
+ callback_object = callback;
+
  container_obj = NULL;
  selected_obj = NULL;
  target_obj = NULL;
@@ -213,7 +215,6 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
 {
  Event *event = Game::get_game()->get_event();
  MsgScroll *scroll = Game::get_game()->get_scroll();
- //MapWindow *map_window = Game::get_game()->get_map_window();
  x -= area.x;
  y -= area.y;
 
@@ -223,23 +224,9 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
     Obj *obj; // FIXME: duplicating code in DollWidget
     if((obj = get_obj_at_location(x,y)) != NULL)
       {
-       switch(event->get_mode())
-          {
-           case LOOK_MODE:
-               if(event->look(obj)) // returns FALSE if prompt already displayed
-                scroll->display_prompt();
-               event->endAction(); // FIXME: should be done in look()
-               break;
-           case USE_MODE:
-               event->use(obj);
-               break;
-           case DROP_MODE:
-               event->drop_select(selected_obj);
-               break;
-           default:
-               selected_obj = obj;
-               break;
-          }
+       // send to View
+       if(callback_object->callback(INVSELECT_CB, this, obj) == GUI_PASS)
+           selected_obj = obj;
        return GUI_YUM;
       }
    }
@@ -489,21 +476,15 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
  */
 GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 {
-    MsgScroll *scroll = Game::get_game()->get_scroll();
     Event *event = Game::get_game()->get_event();
     Obj *obj = ready_obj;
     ready_obj = NULL;
 
-    if(!(actor && obj && button == 1 && event->get_mode() == MOVE_MODE))
+    if(!(actor && obj && button == 1))
         return(GUI_YUM);
 
-    scroll->display_string("Use-");
-
-    if(event->use(obj))
-    {
-        scroll->display_string("\n");
-        scroll->display_prompt();
-    }
+    if(event->newAction(USE_MODE))
+        event->doAction(obj);
     return(GUI_PASS);
 }
 
