@@ -158,7 +158,7 @@ bool NuvieIOFileWrite::open(const char *filename)
 
 bool NuvieIOFileWrite::write1(uint8 src)
 {
- if(fp==NULL || pos >= size-1)
+ if(fp==NULL) // || pos >= size-1)
    return false;
 
  fputc(src,fp);
@@ -170,7 +170,7 @@ bool NuvieIOFileWrite::write1(uint8 src)
 
 bool NuvieIOFileWrite::write2(uint16 src)
 {
- if(fp==NULL || pos >= size-2)
+ if(fp==NULL) // || pos >= size-2)
    return false;
 
  fputc((uint8)(src & 0xff), fp);
@@ -183,7 +183,7 @@ bool NuvieIOFileWrite::write2(uint16 src)
    
 bool NuvieIOFileWrite::write4(uint32 src)
 {
- if(fp==NULL || pos >= size-4)
+ if(fp==NULL) // || pos >= size-4)
    return false;
  
  fputc((uint8)(src & 0xff), fp);
@@ -196,9 +196,9 @@ bool NuvieIOFileWrite::write4(uint32 src)
  return true;
 }
 
-uint32 NuvieIOFileWrite::writeBuf(unsigned char *src, uint32 src_size)
+uint32 NuvieIOFileWrite::writeBuf(const unsigned char *src, uint32 src_size)
 {
- if(fp == NULL || pos + src_size > size)
+ if(fp == NULL)// || pos + src_size > size)
    return(0);
  
  pos += src_size;

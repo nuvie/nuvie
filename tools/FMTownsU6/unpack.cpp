@@ -1,0 +1,96 @@
+#include "NuvieIO.h"
+#include "U6Lzw.h"
+#include "U6Lib_n.h"
+
+bool write_wav_file(const char *filename, unsigned char *audio_data, uint32 length);
+
+
+int main(int argc, char *argv[])
+{
+ U6Lib_n lib;
+ U6Lzw lzw;
+ string filename;
+ uint16 i, num_items;
+ uint32 item_size;
+ uint32 decomp_size, j;
+ unsigned char *item;
+ unsigned char *raw_audio;
+ uint16 *converted_audio;
+ char wave_file[16]; // "char000_000.wav"
+ uint16 conv_number;
+
+ if(argc < 2)
+  {
+   printf("Usage: unpack inputfile index_number\n");
+   exit(1);
+  }
+
+ filename.assign(argv[1]);
+ conv_number = atoi(argv[2]);
+
+ lib.open(filename,4);
+
+ num_items = lib.get_num_items();
+
+ for(i=0;i<num_items;i++)
+  {
+   item_size = lib.get_item_size(i);
+   if(item_size == 0)
+     continue;
+   item = lib.get_item(i);
+   raw_audio = lzw.decompress_buffer(item, item_size, decomp_size);
+
+   if(raw_audio != NULL)
+    {
+     converted_audio = (uint16 *)malloc(decomp_size * sizeof(uint16));
+
+//   printf("uncompressed size = %d\n",decomp_size);
+
+     for(j=0;j<decomp_size;j++)
+      {
+       if(raw_audio[j] & 128)
+         converted_audio[j] = ((sint16)abs(128 - raw_audio[j]) ^ 0xffff) + 1;
+       else
+         converted_audio[j] = (uint16)raw_audio[j];
+      }
+
+     sprintf(wave_file,"char%03d_%03d.wav", conv_number, i);
+     write_wav_file(wave_file, (unsigned char *)converted_audio, decomp_size);
+
+     free(raw_audio);
+     free(converted_audio);
+    }
+  }
+
+ lib.close();
+
+ return 0;
+}
+
+
+bool write_wav_file(const char *filename, unsigned char *audio_data, uint32 length)
+{
+ NuvieIOFileWrite file;
+ file.open(filename);
+ 
+ file.writeBuf("RIFF", 4);
+ file.write4(36 + length * 2); //length of RIFF chunk
+ file.writeBuf("WAVE", 4);
+ file.writeBuf("fmt ", 4);
+ file.write4(16); // length of format chunk
+ file.write2(1); // PCM encoding
+ file.write2(1); // mono
+ file.write4(16000); // sample frequency 16KHz
+ file.write4(16000 * 2); // sample rate
+ file.write2(2); // BlockAlign 
+ file.write2(16); // Bits per sample 
+
+ file.writeBuf("data", 4);
+ file.write4(length * 2); // length of data chunk 
+ file.writeBuf(audio_data, length * 2);
+
+ file.close();
+
+ return true;
+}
+

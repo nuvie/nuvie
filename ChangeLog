@@ -1,3 +1,7 @@
+2003-10-18  Eric Fry <efry@users.sourceforge.net>
+	* Added a small tool for unpacking U6 FM-Towns audio files.
+	  The tool extracts all samples in a given file as 16bit wav files.
+
 2003-10-16  Eric Fry <efry@users.sourceforge.net>
 	* Fixed rendering error with ships.
 	* Fixed player sitting bug.
