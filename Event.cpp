@@ -218,7 +218,6 @@ bool Event::talk()
         if(!name)
             name = map_window->lookAtCursor();
         scroll->display_string(name);
-        printf("name is \"%s\"\n", name ? name : "(null)");
         scroll->display_string("\nTalking to yourself?\n\n");
         scroll->display_prompt();
         return(false);
@@ -240,6 +239,7 @@ bool Event::talk()
         return(true);
     }
     // some actor that has no script
+    scroll->display_string(map_window->lookAtCursor(false));
     scroll->display_string("\nFunny, no response.\n\n");
     scroll->display_prompt();
     return(false);
@@ -364,7 +364,7 @@ void Event::alt_code_input(const char *in)
         case 400: // talk to NPC (FIXME: get portrait and inventory too)
             if(!converse->start((uint8)strtol(in, NULL, 10)))
             {
-                scroll->display_string("nobody!\n\n");
+                scroll->display_string("\n");
                 scroll->display_prompt();
             }
             active_alt_code = 0;

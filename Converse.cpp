@@ -100,7 +100,7 @@ const char *Converse::npc_name(uint8 num)
     // load script if not for current NPC
     if(num != npc_num)
     {
-        temp_script = read_script(num);
+        temp_script = read_script((Uint32)num);
         s_pt = temp_script.buf;
     }
     else
@@ -1050,10 +1050,11 @@ void Converse::save_variables()
 }
 
 
-/* Read (decode if necessary) an NPC conversation from the correct file.
+/* Read (decode if necessary) an NPC conversation from the correct file. The
+ * script number is updated to the actual number in the source read from.
  * Returns a new script structure.
  */
-convscript Converse::read_script(Uint32 n)
+convscript Converse::read_script(Uint32 &n)
 {
     unsigned char *undec_script = 0; // item as it appears in library
     unsigned char *dec_script = 0; // decoded
@@ -1082,10 +1083,9 @@ convscript Converse::read_script(Uint32 n)
             dec_script = undec_script;
             dec_len = undec_len;
         }
-        fprintf(stderr, " (%s:%d)",
+        fprintf(stderr, " (%s:%d)\n",
                 src_num == 1 ? "converse.a" : "converse.b", (unsigned int)n);
     }
-    fprintf(stderr, "\n");
     read_script.buf = dec_script;
     read_script.buf_len = dec_len;
     return(read_script);
@@ -1124,7 +1124,8 @@ bool Converse::start(Actor *talkto)
 #endif
         return(true);
     }
-    fprintf(stderr, "Error loading npc script\n");
+    fprintf(stderr, "Error loading npc %d, script %s:%d\n", actor_num,
+            src_num == 1 ? "converse.a" : "converse.b", script_num);
     return(false);
 }
 

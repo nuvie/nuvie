@@ -153,7 +153,7 @@ class Converse
                 loadConv("converse.b");
         }
     }
-    convscript read_script(Uint32 n);
+    convscript read_script(Uint32 &n);
     void init_variables();
     void save_variables();
 
