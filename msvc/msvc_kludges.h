@@ -33,7 +33,7 @@
 #define snprintf _snprintf
 #define strcasecmp _stricmp
 
-__inline roundf (float val) { return floorf (val); }
+__inline float roundf (float val) { return floorf (val); }
 
 
 // Using STLport?
