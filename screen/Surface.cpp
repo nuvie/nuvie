@@ -313,7 +313,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 fraction = std::labs((LINE_FRACTION * (sy-ey)) / (sx-ex));
 		uint32 ycounter = 0;
 
-		while (1) { 
+		for ( ; ; ) { 
 			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
 				*pixptr = col32;
 			pixptr+=xinc;
@@ -335,7 +335,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 fraction = std::labs((LINE_FRACTION * (sx-ex)) / (sy-ey));
 		uint32 xcounter = 0;
 
-		while (1) { 
+		for ( ; ; ) { 
 			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
 				*pixptr = col32;
 			pixptr+=pitch;
@@ -434,7 +434,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 fraction = std::labs((LINE_FRACTION * (sy-ey)) / (sx-ex));
 		uint32 ycounter = 0;
 
-		while (1) { 
+		for ( ; ; ) { 
 			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
 				*pixptr = col32;
 			pixptr+=xinc;
@@ -456,7 +456,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 fraction = std::labs((LINE_FRACTION * (sx-ex)) / (sy-ey));
 		uint32 xcounter = 0;
 
-		while (1) { 
+		for ( ; ; ) { 
 			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
 				*pixptr = col32;
 			pixptr+=pitch;
