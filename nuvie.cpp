@@ -48,6 +48,7 @@ Nuvie::~Nuvie()
 {
  delete config;
  delete screen;
+ delete game;
 }
 
 bool Nuvie::init()

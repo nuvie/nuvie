@@ -41,6 +41,17 @@ Game::Game(Configuration *cfg)
 
 Game::~Game()
 {
+    delete tile_manager;
+    delete obj_manager;
+    delete palette;
+    delete text;
+    delete scroll;
+    delete game_map;
+    delete actor_manager;
+    delete map_window;
+    delete player;
+    delete event;
+    delete background;
     delete converse;
 }
  
