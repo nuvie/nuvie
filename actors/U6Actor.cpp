@@ -78,7 +78,10 @@ void U6Actor::set_direction(uint8 d)
  if(d < 4)
    direction = d;
 
- walk_frame = (walk_frame + 1) % actor_type->frames_per_direction;
+ if(actor_type->frames_per_direction == 0)
+   walk_frame = (walk_frame + 1) % 4;
+ else
+   walk_frame = (walk_frame + 1) % actor_type->frames_per_direction;
  
  frame_n = direction * actor_type->tiles_per_direction + 
            (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1;
@@ -135,7 +138,10 @@ void U6Actor::twitch()
 
  if(NUVIE_RAND()%actor_type->twitch_rand == 1)
   {
-   walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
+   if(actor_type->frames_per_direction == 0)
+     walk_frame = (walk_frame + 1) % 4;
+   else
+     walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
    frame_n = direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1;
   }
 
