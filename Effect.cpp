@@ -734,10 +734,10 @@ inline bool FadeEffect::find_free_pixel(uint32 &rnum, uint32 pixel_count)
             rnum = p;
             return(true);
         }
-    for(uint32 p = 0; p < rnum; p++) // check all pixels before rnum
-        if(pixels[p] == scan_color)
+    for(uint32 q = 0; q < rnum; q++) // check all pixels before rnum
+        if(pixels[q] == scan_color)
         {
-            rnum = p;
+            rnum = q;
             return(true);
         }
     return(false);
