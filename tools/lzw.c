@@ -1,6 +1,8 @@
-// =============================================================
-// This program decompresses Ultima_6-style LZW-comrpessed files
-// =============================================================
+/*
+ * =============================================================
+ * This program decompresses Ultima_6-style LZW-comrpessed files
+ * =============================================================
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,22 +37,26 @@ long get_filesize(FILE *input_file)
    return(file_length);
 }
 
-// this function only checks a few *necessary* conditions
-// returns "FALSE" if the file doesn't satisfy these conditions
-// return "TRUE" otherwise
+/*
+ * this function only checks a few *necessary* conditions
+ * returns "FALSE" if the file doesn't satisfy these conditions
+ * return "TRUE" otherwise
+ */
 BOOL is_valid_lzw_file(FILE *input_file)
 {
-    // file must contain 4-byte size header and space for the 9-bit value 0x100
+ unsigned char byte3, b0, b1;
+
+    /* file must contain 4-byte size header and space for the 9-bit value 0x100 */
     if (get_filesize(input_file) < 6) { return(FALSE); }
-    // the last byte of the size header must be 0 (U6's files aren't *that* big)
+    /* the last byte of the size header must be 0 (U6's files aren't *that* big)*/
     fseek(input_file, 3, SEEK_SET);
-    unsigned char byte3 = fgetc(input_file); 
+    byte3 = fgetc(input_file); 
     fseek(input_file, 0, SEEK_SET);
     if (byte3 != 0) { return(FALSE); }
-    // the 9 bits after the size header must be 0x100
+    /* the 9 bits after the size header must be 0x100 */
     fseek(input_file, 4, SEEK_SET);
-    unsigned char b0 = fgetc(input_file);
-    unsigned char b1 = fgetc(input_file);
+    b0 = fgetc(input_file);
+    b1 = fgetc(input_file);
     fseek(input_file, 0, SEEK_SET);
     if ((b0 != 0) || ((b1 & 1) != 1)) { return(FALSE); }
 
@@ -71,9 +77,11 @@ long get_uncompressed_size(FILE *input_file)
    else { return (-1); }
 }
 
-// ----------------------------------------------
-// Read the next code word from the source buffer
-// ----------------------------------------------
+/*
+ * ----------------------------------------------
+ * Read the next code word from the source buffer
+ * ----------------------------------------------
+ */
 int get_next_codeword (long *bits_read, unsigned char *source, int codeword_size)
 {
    unsigned char b0,b1,b2;
@@ -128,15 +136,17 @@ void get_string(int codeword)
       s_push(root);
    }
 
-   // push the root at the leaf
+   /* push the root at the leaf */
    s_push((unsigned char)current_codeword);
 }
 
-// -----------------------------------------------------------------------------
-// LZW-decompress from buffer to buffer.
-// The parameters "source_length" and "destination_length" are currently unused.
-// They might be used to prevent reading/writing outside the buffers.
-// -----------------------------------------------------------------------------
+/*
+ * -----------------------------------------------------------------------------
+ * LZW-decompress from buffer to buffer.
+ * The parameters "source_length" and "destination_length" are currently unused.
+ * They might be used to prevent reading/writing outside the buffers.
+ * -----------------------------------------------------------------------------
+ */
 void lzw_decompress_b(unsigned char *source, long source_length, unsigned char *destination, long destination_length)
 {
    const int max_codeword_length = 12;
@@ -158,7 +168,7 @@ void lzw_decompress_b(unsigned char *source, long source_length, unsigned char *
       cW = get_next_codeword(&bits_read, source, codeword_size);
       switch (cW)
       {
-      // re-init the dictionary
+      /* re-init the dictionary */
       case 0x100:
           codeword_size = 9;
           next_free_codeword = 0x102;
@@ -167,23 +177,23 @@ void lzw_decompress_b(unsigned char *source, long source_length, unsigned char *
           cW = get_next_codeword(&bits_read, source, codeword_size);
           output_root((unsigned char)cW, destination, &bytes_written);
           break;
-      // end of compressed file has been reached
+      /* end of compressed file has been reached */
       case 0x101:
           end_marker_reached = TRUE;
           break;
-      // (cW <> 0x100) && (cW <> 0x101)
+      /* (cW <> 0x100) && (cW <> 0x101) */
       default:
-          if (cW < next_free_codeword)  // codeword is already in the dictionary
+          if (cW < next_free_codeword)  /* codeword is already in the dictionary*/
           {
-             // create the string associated with cW (on the stack)
+             /* create the string associated with cW (on the stack) */
              get_string(cW);
              C = s_gettop();
-             // output the string represented by cW
+             /* output the string represented by cW */
              while (!s_is_empty())
              {
                 output_root(s_pop(), destination, &bytes_written);
              }
-             // add pW+C to the dictionary
+             /* add pW+C to the dictionary */
              d_add(C,pW);
 
              next_free_codeword++;
@@ -196,26 +206,26 @@ void lzw_decompress_b(unsigned char *source, long source_length, unsigned char *
                 }
              }
           }
-          else  // codeword is not yet defined
+          else  /* codeword is not yet defined */
           {
-             // create the string associated with pW (on the stack)
+             /* create the string associated with pW (on the stack) */
              get_string(pW);
              C = s_gettop();
-             // output the string represented by pW
+             /* output the string represented by pW */
              while (!s_is_empty())
              {
                 output_root(s_pop(), destination, &bytes_written);
              }
-             // output the char C
+             /* output the char C */
              output_root(C, destination, &bytes_written);
-             // the new dictionary entry must correspond to cW
-             // if it doesn't, something is wrong with the lzw-compressed data.
+             /* the new dictionary entry must correspond to cW */
+             /* if it doesn't, something is wrong with the lzw-compressed data.*/
              if (cW != next_free_codeword)
              {
                 printf("cW != next_free_codeword!\n");
                 exit(-1);
              }
-             // add pW+C to the dictionary
+             /* add pW+C to the dictionary */
              d_add(C,pW);
              
              next_free_codeword++;
@@ -230,14 +240,16 @@ void lzw_decompress_b(unsigned char *source, long source_length, unsigned char *
           };
           break;
       }
-      // shift roles - the current cW becomes the new pW
+      /* shift roles - the current cW becomes the new pW */
       pW = cW;
    }
 }
 
-// -----------------
-// from file to file
-// -----------------
+/*
+ * -----------------
+ * from file to file
+ * -----------------
+ */
 void lzw_decompress(FILE *input_file, FILE* output_file)
 {
    unsigned char *source_buffer;
@@ -247,34 +259,36 @@ void lzw_decompress(FILE *input_file, FILE* output_file)
 
    if (is_valid_lzw_file(input_file))
    {
-      // determine the buffer sizes
+      /* determine the buffer sizes */
       source_buffer_size = get_filesize(input_file)-4;
       destination_buffer_size = get_uncompressed_size(input_file);
 
-      // create the buffers
+      /* create the buffers */
       source_buffer = (unsigned char *)malloc(sizeof(unsigned char *) * source_buffer_size);
       destination_buffer = (unsigned char *)malloc(sizeof(unsigned char *) * destination_buffer_size);
 
-      // read the input file into the source buffer
+      /*  read the input file into the source buffer */
       fseek(input_file, 4, SEEK_SET);  
       fread(source_buffer, 1, source_buffer_size, input_file);
 
-      // decompress the input file
+      /* decompress the input file */
       lzw_decompress_b(source_buffer,source_buffer_size,destination_buffer,destination_buffer_size);
 
-      // write the destination buffer to the output file
+      /* write the destination buffer to the output file */
       fwrite(destination_buffer, 1, destination_buffer_size, output_file);
 
-      // destroy the buffers
+      /* destroy the buffers */
       free(source_buffer);
       free(destination_buffer);
    }
 }
 
-// ----------------------------------------------------------
-// called if the program is run with 1 command line parameter
-// display uncompressed file size
-// ----------------------------------------------------------
+/*
+ * ----------------------------------------------------------
+ * called if the program is run with 1 command line parameter
+ * display uncompressed file size
+ * ----------------------------------------------------------
+ */
 void one_argument(char *file_name) {
    FILE *compressed_file;
    long uncompressed_size;
@@ -295,11 +309,12 @@ void one_argument(char *file_name) {
    }
 }
    
-
-// -----------------------------------------------------------
-// called if the program is run with 2 command line parameters
-// decompress arg1 into arg2
-// -----------------------------------------------------------
+/*
+ * -----------------------------------------------------------
+ * called if the program is run with 2 command line parameters
+ * decompress arg1 into arg2
+ * -----------------------------------------------------------
+ */
 void two_arguments(char *source_file_name, char *destination_file_name)
 {
    FILE *source;
@@ -326,10 +341,11 @@ void two_arguments(char *source_file_name, char *destination_file_name)
 
 int main (int argc, char *argv[]) {
 
-// 0 args => print help message
-// 1 arg ==> display uncompressed file size, but don't decompress
-// 2 args => decompress arg1 into arg2
-
+/*
+ * 0 args => print help message
+ * 1 arg ==> display uncompressed file size, but don't decompress
+ * 2 args => decompress arg1 into arg2
+ */
  switch (argc)
  {
  case 1:
