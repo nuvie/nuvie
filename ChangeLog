@@ -1,3 +1,7 @@
+2004-02-07  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* sounds/*: fixed include case and added endlines at end of file
+	* configure.ac: added check for SDL_mixer
+
 2004-02-07  Eric Fry <efry at users.sourceforge.net>
 	* Fixed the mysterious crash on multitile actors bug [ 890188 ].
 	  Party members now dismount from horses before using ladders or caves.

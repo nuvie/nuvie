@@ -21,7 +21,7 @@
  *
  */
 
-#include "sample.h"
+#include "Sample.h"
 
 Sample::Sample() {
 	m_pSample=NULL;

@@ -34,9 +34,9 @@
 #ifndef SOUNDMANAGER_H
 #define SOUNDMANAGER_H
 #include "Sound.h"
-#include "nuviedefs.h"
+#include "nuvieDefs.h"
 #include "Configuration.h"
-#include "nuvieIOFile.h"
+#include "NuvieIOFile.h"
 
 
 class SoundManager {
