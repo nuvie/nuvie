@@ -343,6 +343,14 @@ SOURCE=..\Player.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Portrait.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Portrait.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Text.cpp
 # End Source File
 # Begin Source File
@@ -376,6 +384,30 @@ SOURCE=..\views\InventoryView.cpp
 # Begin Source File
 
 SOURCE=..\views\InventoryView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\PortraitView.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\PortraitView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\View.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\View.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\ViewManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\ViewManager.h
 # End Source File
 # End Group
 # Begin Source File
