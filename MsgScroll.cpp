@@ -79,8 +79,8 @@ bool MsgScroll::init(Screen *s, Text *txt)
 void MsgScroll::display_string(char *string)
 {
  uint16 length;
- uint16 i,j;
- uint16 word_start, row_length;
+ uint16 i;
+ uint16 word_start, row_start, row_length;
  uint16 num_rows;
 
     
@@ -111,24 +111,24 @@ void MsgScroll::display_string(char *string)
  i = string_buf_pos;
  string_buf_pos = 0;
  
- for(j=i,num_rows=0,word_start=i;i <= length;i++,row_length++)
+ for(row_start = i, num_rows = 0, word_start = i; i <= length; i++, row_length++)
    {
     if(string_buf[i] == '\n' || string_buf[i] == '*' || string_buf[i] == ' ' || string_buf[i] == '\0')
       {
        if(row_length >= MSGSCROLL_WIDTH)
          {
-          buf_addString(&string_buf[j],word_start - j);
-          j = word_start;
+          buf_addString(&string_buf[row_start],word_start - row_start);
+          row_start = word_start;
           buf_next();
           num_rows++;
         //  msg_buf[buf_pos][0] = '\0';
-          row_length = i - j;
+          row_length = i - row_start;
          }
 
       
        if(string_buf[i] != ' ')
         {
-         buf_addString(&string_buf[j],i - j);
+         buf_addString(&string_buf[row_start],i - row_start);
          if(string_buf[i] != '\0')
           {
            buf_next();
@@ -136,13 +136,13 @@ void MsgScroll::display_string(char *string)
           }
 
          row_length = 0;
-         j = i+1;
+         row_start = i+1;
         }
        else
         word_start = i+1;
       if(num_rows == MSGSCROLL_HEIGHT-2 || string_buf[i] == '*')
         {
-         set_page_break(j);
+         set_page_break(row_start);
          break;
         }
 

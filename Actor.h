@@ -63,6 +63,8 @@ class Actor
  uint8 dex;
  uint8 inteligence;
  uint8 hp;
+ uint16 exp;
+ 
  uint8 flags;
  
  char *name;

@@ -200,7 +200,6 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  Obj *obj;
  uint16 x,y;
  uint8 level;
- uint16 upper_x, upper_y;
  
  player->get_location(&x,&y,&level);
  
@@ -219,22 +218,22 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
       {
        if(level == 0)
         {
-         //upper_x = obj->x + (128 - (obj->x % 128));
-         //upper_y = obj->y + (128 - (obj->y % 128));
-         upper_x = obj->x  - (obj->x % 128);
-         upper_y = obj->y  - (obj->y % 128);
-         
-         player->move(upper_x / 4 + ((obj->x - upper_x)), upper_y / 4 + ((obj->y - upper_y)), level+1);
+         player->move(((obj->x & 0x07) | (obj->x >> 2 & 0xF8)), ((obj->y & 0x07) | (obj->y >> 2 & 0xF8)), level+1);
         }
-          //player->move((obj->x / 4 + round((float)(x+rel_x) / 128.0)),(obj->y / 4 - round((float)(y+rel_y) / 128.0)) ,level+1);
-          //player->move((obj->x + obj->x % 4) / 4,(obj->y - obj->y % 4) / 4,level+1);
        else
           player->move(obj->x,obj->y,level+1);
       }
     else //UP
       {
        if(level == 1)
-         player->move(obj->x*4-9,obj->y*4+15,level-1);
+         {
+        //FIX clean his up a bit. :)
+         player->move(
+         obj->x / 8 * 8 * 4 + ((obj->quality & 0x03) * 8) + (obj->x - obj->x / 8 * 8),
+         obj->y / 8 * 8 * 4 + ((obj->quality >> 2 & 0x03) * 8) + (obj->y - obj->y / 8 * 8),
+         level-1);
+         
+         }
        else
          player->move(obj->x,obj->y,level-1);
       }

@@ -82,8 +82,6 @@ bool ActorManager::loadActors()
       actors[i]->z = 0;
      }
 */     
-	// FIXME: load flags?
-	actors[i]->flags = 0x00;
    }
 
  for(i=0;i < 256; i++)
@@ -97,6 +95,32 @@ bool ActorManager::loadActors()
     actors[i]->direction = actors[i]->frame_n / 4;
    }
 
+ objlist.seek(0x800); // Start of Actor flags
+
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->flags = objlist.read1();
+   }
+
+
+ // Experience
+ 
+ objlist.seek(0xc00);
+ 
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->exp = objlist.read2();
+   }
+ 
+ // Health
+ 
+ objlist.seek(0xe00);
+
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->hp = objlist.read1();
+   }
+ 
  loadActorSchedules();
  
  return true;
