@@ -1757,6 +1757,8 @@ bool U6UseCode::use_egg(Obj *obj, UseCodeEvent ev)
 /* Use: Light torch if readied or on the ground.
  * Ready: Get a torch from a stack and equip it.
  * Unready: Unlight torch.
+ * Get: Equip torch if lit
+ * Drop: Unlight torch
  */
 bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
 {
@@ -1764,6 +1766,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     {
         if(obj->frame_n == 1)
         {
+// FIXME: remove lightglobe from actor
             extinguish_torch(obj);
             return(true);
         }
@@ -1782,7 +1785,10 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
                 if(torch != obj && obj->is_in_inventory()) // keep new one in inventory
                     actor_manager->get_actor(torch->x)->inventory_add_object(torch);
                 if(torch->is_in_inventory()) // and ready it
+                {
                     light_it = actor_manager->get_actor(torch->x)->add_readied_object(torch);
+// FIXME: add lightglobe to actor
+                }
                 else // keep new one on map
                     light_it = obj_manager->add_obj(torch, true);
             }
@@ -1800,10 +1806,11 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     {
         if(obj->is_readied() && obj->frame_n == 1) // remove
         {
+// FIXME: remove lightglobe from actor
             extinguish_torch(obj);
             return(false); // destroyed
         }
-        else if(!obj->is_readied()) // equip (remove excess torches)
+        if(!obj->is_readied()) // equip (remove excess torches)
         {
             if(obj->qty > 1)
             {
@@ -1819,7 +1826,11 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
         if(obj->frame_n == 0) // unlit: may get
             return(true);
         if(actor_ref->add_readied_object(obj)) // FIXME: hopefully we can add after readying (need can_ready()?)
+        {
+            obj_manager->remove_obj(obj); // remove from map
             actor_ref->inventory_add_object(obj);
+// FIXME: add lightglobe to actor
+        }
         else
             scroll->display_string("\nNo free hand to hold the torch.\n");
         return(false); // ready or not, handled by usecode
@@ -1828,6 +1839,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     {
         if(obj->frame_n == 0) // unlit: normal drop
             return(true);
+// FIXME: remove lightglobe from actor
         extinguish_torch(obj);
         return(false); // destroyed
     }
@@ -1842,5 +1854,6 @@ void U6UseCode::extinguish_torch(Obj *obj)
 {
     toggle_frame(obj);
     scroll->display_string("\nA torch burned out.\n");
-    destroy_obj(obj);
+// FIXME: deleting the object is crashing
+//    destroy_obj(obj);
 }
