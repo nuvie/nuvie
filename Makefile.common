@@ -3,6 +3,8 @@ nuvie_SOURCES = \
 	actors/Actor.h \
 	actors/U6Actor.cpp \
 	actors/U6Actor.h \
+	actors/U6ActorTypes.h \
+	actors/U6WorkTypes.h \
 	actors/ActorManager.cpp \
 	actors/ActorManager.h \
 \
@@ -13,6 +15,7 @@ nuvie_SOURCES = \
 	conf/XMLTree.cpp \
 	conf/XMLTree.h \
 	conf/ConfigNode.h \
+	conf/misc.h \
 \
 	files/NuvieIO.cpp \
 	files/NuvieIO.h \
@@ -44,12 +47,16 @@ nuvie_SOURCES = \
 	GUI/GUI_font.h \
 	GUI/GUI_loadimage.cpp \
 	GUI/GUI_loadimage.h \
+	GUI/GUI_status.h \
 	GUI/GUI_text.cpp \
 	GUI/GUI_text.h \
+	GUI/GUI_types.h \
 	GUI/GUI_TextInput.cpp \
 	GUI/GUI_TextInput.h \
 	GUI/GUI_widget.cpp \
 	GUI/GUI_widget.h \
+	GUI/GUI_CallBack.h \
+	GUI/GUI_DragArea.h \
 	GUI/GUI_DragManager.cpp \
 	GUI/GUI_DragManager.h \
 	GUI/GUI_Dialog.cpp \
@@ -60,6 +67,7 @@ nuvie_SOURCES = \
 	GUI/GUI_Scroller.h \
 	GUI/GUI_YesNoDialog.cpp \
 	GUI/GUI_YesNoDialog.h \
+	GUI/the_font.h \
 \
 	misc/CallBack.h \
 	misc/U6LList.cpp \
@@ -92,6 +100,7 @@ nuvie_SOURCES = \
 	screen/GamePalette.h \
 	screen/Scale.cpp \
 	screen/Scale.h \
+	screen/Scale.inl \
 	screen/Screen.cpp \
 	screen/Screen.h \
 	screen/Surface.cpp \
@@ -142,6 +151,8 @@ nuvie_SOURCES = \
 	views/ViewManager.h \
 	views/DollWidget.cpp \
 	views/DollWidget.h \
+	views/InventoryFont.h \
+	views/InventoryMessage.h \
 	views/InventoryWidget.cpp \
 	views/InventoryWidget.h \
 \
@@ -197,7 +208,9 @@ nuvie_SOURCES = \
 	TileManager.h \
 	TimedEvent.cpp \
 	TimedEvent.h \
+	U6objects.h \
 	main.cpp \
 	main.h \
 	nuvie.cpp \
-	nuvie.h
+	nuvie.h \
+	nuvieDefs.h

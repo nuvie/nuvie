@@ -1,3 +1,8 @@
+2005-03-06  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* builds/linux/*: added fedora .spec file, .desktop file and icon
+	* various: fixed 'make dist', install data
+	* save/SaveManager.cpp: default savedir to ~/.nuvie in linux
+
 2005-03-05  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* ConverseInterpret.cpp: implement singular/plural forms of words
 

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Nuvie
+Comment=Engine for Ultima 6, Martian Dreams, Savage Empire
+Exec=nuvie
+Icon=nuvie.png
+Terminal=false
+Type=Application
+Categories=Application;Game;RolePlaying;
+StartupNotify=false

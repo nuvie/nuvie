@@ -71,5 +71,7 @@ LIBS="$LIBS $SDL_LIBS"
 AC_CONFIG_FILES([
 Makefile
 tools/Makefile
+builds/linux/nuvie.cfg
+nuvie.spec:builds/linux/nuvie.spec.in
 ])
 AC_OUTPUT

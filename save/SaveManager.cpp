@@ -38,6 +38,10 @@
 #include "SaveGame.h"
 //#include <direct.h>
 
+#ifdef __linux__
+#include <sys/stat.h>
+#endif
+
 SaveManager::SaveManager(Configuration *cfg)
 {
  config = cfg;
@@ -65,10 +69,20 @@ void SaveManager::init()
 
  if(savedir.size() == 0)
    {
-    printf("Warning: savedir config variable not found. Using current directory for saves!\n");
 #ifdef WIN32
+    printf("Warning: savedir config variable not found. Using current directory for saves!\n");
     savedir.assign("");
+#elif defined(__linux__)
+    printf("savedir config variable not found. Using ~/.nuvie for saves.\n");
+    savedir = getenv("HOME");
+    savedir += "/.nuvie";
+    if(directory_exists(savedir.c_str()) == false && !savedir.empty()) {
+      // try to create the save dir if it doesn't exist
+      printf("creating directory ~/.nuvie\n");
+      mkdir(savedir.c_str(), 0700);
+    }
 #else
+    printf("Warning: savedir config variable not found. Using current directory for saves!\n");
     savedir.assign(".");
 #endif
    }

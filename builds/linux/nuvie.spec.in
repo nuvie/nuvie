@@ -1,0 +1,50 @@
+%define ver      @VERSION@
+%define rel      1
+%define name	 @PACKAGE@
+
+Summary: Ultima VI Engine
+Name: %name
+Version: %ver
+Release: %rel
+Copyright: GPL
+Group: Amusements/Games
+Source: nuvie-%{ver}.tar.bz2
+BuildRoot: %{_tmppath}/%{name}-root
+Packager: Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+URL: http://nuvie.sourceforge.net
+BuildRequires: SDL-devel >= 1.2
+BuildRequires: SDL_mixer-devel >= 1.2
+
+%description
+An open sourced game engine for playing Ultima 6, Martian Dreams and Savage Empire.
+
+%changelog
+
+* Sun Mar 06 2005  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+
+- initial spec file
+
+
+%prep
+%setup
+
+%build
+%configure
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+%makeinstall
+cp builds/linux/nuvie.cfg %{buildroot}/%{_datadir}/nuvie/nuvie.cfg
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog README TODO nuvie.cfg.sample
+%{_bindir}/nuvie
+%{_datadir}/nuvie/*.bmp
+%{_datadir}/nuvie/nuvie.cfg
+%{_datadir}/icons/nuvie.png
+%{_datadir}/applications/nuvie.desktop

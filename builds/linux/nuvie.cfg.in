@@ -1,0 +1,41 @@
+<config>
+
+ <loadgame>ultima6</loadgame>
+
+ <datadir>@datadir@/nuvie</datadir>
+
+ <general>
+  <lighting>original</lighting>
+  <enable_cursors>yes</enable_cursors>
+ </general>
+
+ <video>
+  <scale_method>Point</scale_method>
+  <scale_factor>2</scale_factor>
+ </video>
+
+ <audio>
+  <enabled>yes</enabled>
+  <enable_music>yes</enable_music>
+  <enable_sfx>no</enable_sfx>
+ </audio>
+
+ <ultima6>
+  <gamedir>@datadir@/nuvie/ultima6</gamedir>
+  <sounddir>@datadir@/nuvie/u6_sounds</sounddir>
+  <skip_intro> no </skip_intro>
+  <show_eggs> yes </show_eggs>
+  <music>native</music>
+ </ultima6>
+
+ <martian>
+  <gamedir>@datadir@/nuvie/martian</gamedir>
+  <skip_intro> no </skip_intro>
+ </martian>
+
+ <savage>
+  <gamedir>@datadir@/nuvie/savage</gamedir>
+  <skip_intro> no </skip_intro>
+ </savage>
+
+</config>
