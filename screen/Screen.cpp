@@ -484,7 +484,7 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 radius )
 		*/
 
 		//The condensed version
-		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + MAX( 0, 255 - sqrt( i*i+j*j ) / (float)radius * 255 ) );
+		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + MAX( 0, 255 - sqrt( float (i*i+j*j) ) / (float)radius * 255 ) );
 #else //Gaussian attenuation
 		/*
 		float r;
@@ -501,7 +501,7 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 radius )
 		//*/
 
 		//The condensed version
-		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)]+exp( -10*pow( sqrt( i*i + j*j ) / sqrt( 2*pow( radius, 2 ) ), 2 ) ) * 255 );
+		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)]+exp( -10*pow( sqrt( float (i*i + j*j) ) / sqrt( 2*pow( radius, 2 ) ), 2 ) ) * 255 );
 #endif
 	}
 }

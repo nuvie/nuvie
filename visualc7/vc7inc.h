@@ -24,12 +24,23 @@
  *
  */
 
-#define snprintf _snprintf
-#define strcasecmp _stricmp
+#define snprintf	_snprintf
+#define strcasecmp	_stricmp
 
 #include <locale>
+#include <math.h>
 
 #pragma	warning (disable : 4244)	//	conversion from 'x' to 'x', possible loss of data
 #pragma	warning (disable : 4100)	//	unreferenced formal parameter
+
+//	for pre-compiled headers when I get all the #include issues fixed
+/*
+#include <iostream>
+
+#include "sys/types.h"
+#include "sys/stat.h"
+#include "SDL.h"
+#include "misc.h"
+*/
 
 #endif	/* __vc7inc_h__ */
