@@ -33,11 +33,42 @@
 
 #include "SDL.h"
 #include "GUI_status.h"
+#include "GUI_DragArea.h"
+#include "GUI_DragManager.h"
 #include "Screen.h"
 
 
-class GUI_Widget {
+class GUI_Widget : public GUI_DragArea {
 
+protected:
+
+	/* A generic pointer to user-specified data for the widget.
+	 */
+	void *widget_data;
+
+  Screen *screen;
+	/* The display surface for the widget */
+	SDL_Surface *surface;
+
+  int real_x, real_y; /* x,y in screen coords */
+  
+	/* Flag -- whether or not the widget should be freed */
+	int status;
+
+  /* should we redraw this widget */
+  bool update_display;
+  
+	/* the button states for theoretically 3 buttons */
+	int pressed[3];
+  
+  std::list<GUI_Widget *>children;
+  GUI_Widget *parent;
+
+ 	char *error;
+	char  errbuf[BUFSIZ];
+
+  GUI_DragManager *gui_drag_manager;
+  
 public:
 
 	/* The area covered by the widget */
@@ -58,7 +89,7 @@ public:
 	/* Mark the widget as free, so it will be deleted by the GUI */
 	virtual void Delete(void);
   
-  void PlaceOnScreen(Screen *s, int x, int y);
+  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
   
 	virtual int  Status(void);	/* Reports status to GUI */
 
@@ -113,6 +144,9 @@ public:
 	virtual GUI_status MouseUp(int x, int y, int button);
 	virtual GUI_status MouseMotion(int x, int y, Uint8 state);
 
+  bool drag_accept_drop(int x, int y, int message, void *data);
+  void drag_perform_drop(int x, int y, int message, void *data);
+  
 	/* Main event handler function.
 	   This function gets raw SDL events from the GUI.
 	 */
@@ -137,28 +171,6 @@ protected:
 
   void setParent(GUI_Widget *widget);
 
-	/* A generic pointer to user-specified data for the widget.
-	 */
-	void *widget_data;
-
-  Screen *screen;
-	/* The display surface for the widget */
-	SDL_Surface *surface;
-
-  int real_x, real_y; /* x,y in screen coords */
-  
-	/* Flag -- whether or not the widget should be freed */
-	int status;
-
-  /* should we redraw this widget */
-  bool update_display;
-  
-	/* the button states for theoretically 3 buttons */
-	int pressed[3];
-  
-  std::list<GUI_Widget *>children;
-  GUI_Widget *parent;
-  
 	/* Useful for getting error feedback */
 	void SetError(char *fmt, ...) {
 		va_list ap;
@@ -168,8 +180,6 @@ protected:
 		va_end(ap);
 		error = errbuf;
 	}
-	char *error;
-	char  errbuf[BUFSIZ];
 
 };
 

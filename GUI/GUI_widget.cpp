@@ -51,6 +51,7 @@ GUI_Widget::~GUI_Widget()
 void
 GUI_Widget:: Init(void *data, int x, int y, int w, int h)
 {
+  gui_drag_manager = NULL; //set from placeOnScreen method
 	widget_data = data;
 	screen = NULL;
   surface = NULL;
@@ -98,7 +99,7 @@ GUI_Widget:: Delete(void)
 }
 
 void
-GUI_Widget:: PlaceOnScreen(Screen *s, int x, int y)
+GUI_Widget:: PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
 {
  std::list<GUI_Widget *>::iterator child;
 
@@ -108,11 +109,13 @@ GUI_Widget:: PlaceOnScreen(Screen *s, int x, int y)
  area.x += x;
  area.y += y;
  
+ gui_drag_manager = dm;
+ 
  SetDisplay(s);
  
  /* place our children relative to ourself */
  for(child = children.begin(); child != children.end(); child++)
-    (*child)->PlaceOnScreen(screen, area.x, area.y);
+    (*child)->PlaceOnScreen(screen, dm, area.x, area.y);
  return;
 }
 
@@ -221,6 +224,9 @@ GUI_Widget:: Display(bool full_redraw)
 void
 GUI_Widget:: DisplayChildren(bool full_redraw)
 {
+ if(update_display)
+   full_redraw = true;
+
  if(children.empty() == false)
   {
    std::list<GUI_Widget *>::iterator child;
@@ -357,4 +363,46 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 		break;
 	}
 	return(GUI_PASS);
+}
+
+// iterate through children if present to hit the correct drag area.
+bool GUI_Widget::drag_accept_drop(int x, int y, int message, void *data)
+{
+ if(children.empty() == false)
+   {
+    std::list<GUI_Widget *>::iterator child;
+      
+    for(child = children.begin(); child != children.end(); child++)
+      {
+       if((*child)->HitRect(x,y))
+         {
+          if((*child)->drag_accept_drop(x,y,message,data))
+            return true;
+         }
+      }
+   }
+
+ return false;
+}
+
+void GUI_Widget::drag_perform_drop(int x, int y, int message, void *data)
+{
+ if(children.empty() == false)
+   {
+    std::list<GUI_Widget *>::iterator child;
+      
+    for(child = children.begin(); child != children.end(); child++)
+      {
+       if((*child)->HitRect(x,y))
+         {
+          if((*child)->drag_accept_drop(x,y,message,data))
+            {
+             (*child)->drag_perform_drop(x,y,message,data);
+             break;
+            }
+         }
+      }
+   }
+
+ return;
 }

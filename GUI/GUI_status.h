@@ -28,10 +28,11 @@
 #define _GUI_status_h
 
 typedef enum {
-	GUI_QUIT,			/* Close the GUI */
-	GUI_REDRAW,			/* The GUI needs to be redrawn */
-	GUI_YUM,			/* The event was eaten by the widget */
-	GUI_PASS			/* The event should be passed on */
+	GUI_QUIT,			    /* Close the GUI */
+	GUI_REDRAW,			  /* The GUI needs to be redrawn */
+	GUI_YUM,			    /* The event was eaten by the widget */
+	GUI_PASS,			    /* The event should be passed on */
+  GUI_DRAG_AND_DROP /* Drag and Drop sequence initiated by GUI */
 } GUI_status;
 
 typedef enum {

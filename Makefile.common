@@ -41,6 +41,8 @@ nuvie_SOURCES = \
 	GUI/GUI_text.h \
 	GUI/GUI_widget.cpp \
 	GUI/GUI_widget.h \
+	GUI/GUI_DragManager.cpp \
+	GUI/GUI_DragManager.h \
 \
 	misc/U6LList.cpp \
 	misc/U6LList.h \
@@ -88,6 +90,10 @@ nuvie_SOURCES = \
 	views/PortraitView.h \
 	views/ViewManager.cpp \
 	views/ViewManager.h \
+	views/DollWidget.cpp \
+	views/DollWidget.h \
+	views/InventoryWidget.cpp \
+	views/InventoryWidget.h \
 \
 	Background.cpp \
 	Background.h \

@@ -676,6 +676,10 @@
 				07C3D12B047A1C7B00A8000A,
 				07C3D12E047A1C7B00A8000A,
 				07C3D12D047A1C7B00A8000A,
+				0762A33905036D0E00A8000A,
+				0762A33805036D0E00A8000A,
+				0762A3550506027A00A8000A,
+				0762A3540506027A00A8000A,
 			);
 			isa = PBXGroup;
 			name = Views;
@@ -856,6 +860,9 @@
 				074B915204E4C51500A8000A,
 				074B914E04E4C51500A8000A,
 				074B915604E4C51500A8000A,
+				0762A3500504C4B900A8000A,
+				0762A334050361B500A8000A,
+				0762A335050361B500A8000A,
 			);
 			isa = PBXGroup;
 			name = GUI;
@@ -1040,6 +1047,97 @@
 		};
 		074B917604E4C51500A8000A = {
 			fileRef = 074B915604E4C51500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0762A334050361B500A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = GUI_DragManager.h;
+			path = ../GUI/GUI_DragManager.h;
+			refType = 2;
+		};
+		0762A335050361B500A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = GUI_DragManager.cpp;
+			path = ../GUI/GUI_DragManager.cpp;
+			refType = 2;
+		};
+		0762A336050361B500A8000A = {
+			fileRef = 0762A334050361B500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0762A337050361B500A8000A = {
+			fileRef = 0762A335050361B500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0762A33805036D0E00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = DollWidget.cpp;
+			path = ../views/DollWidget.cpp;
+			refType = 2;
+		};
+		0762A33905036D0E00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = DollWidget.h;
+			path = ../views/DollWidget.h;
+			refType = 2;
+		};
+		0762A33A05036D0E00A8000A = {
+			fileRef = 0762A33805036D0E00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0762A33B05036D0E00A8000A = {
+			fileRef = 0762A33905036D0E00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0762A3500504C4B900A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = GUI_DragArea.h;
+			path = ../GUI/GUI_DragArea.h;
+			refType = 2;
+		};
+		0762A3510504C4B900A8000A = {
+			fileRef = 0762A3500504C4B900A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0762A3540506027A00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = InventoryWidget.cpp;
+			path = ../views/InventoryWidget.cpp;
+			refType = 2;
+		};
+		0762A3550506027A00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = InventoryWidget.h;
+			path = ../views/InventoryWidget.h;
+			refType = 2;
+		};
+		0762A3560506027A00A8000A = {
+			fileRef = 0762A3540506027A00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0762A3570506027A00A8000A = {
+			fileRef = 0762A3550506027A00A8000A;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2219,6 +2317,10 @@
 				071DE9FC04F6334E00A8000A,
 				071DEA0704F71E8700A8000A,
 				07D6E0F404F89B0300A8000A,
+				0762A336050361B500A8000A,
+				0762A33B05036D0E00A8000A,
+				0762A3510504C4B900A8000A,
+				0762A3570506027A00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2298,6 +2400,9 @@
 				071DE9FD04F6334F00A8000A,
 				071DEA0604F71E8700A8000A,
 				07D6E0F304F89B0300A8000A,
+				0762A337050361B500A8000A,
+				0762A33A05036D0E00A8000A,
+				0762A3560506027A00A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

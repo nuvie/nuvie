@@ -1,11 +1,11 @@
-#ifndef __InventoryView_h__
-#define __InventoryView_h__
+#ifndef __DollWidget_h__
+#define __DollWidget_h__
 
 /*
- *  InventoryView.h
+ *  DollWidget.h
  *  Nuvie
  *
- *  Created by Eric Fry on Tue May 13 2003.
+ *  Created by Eric Fry on Mon Sep 01 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -24,41 +24,46 @@
  *
  */
 
+#include <string>
+
 #include "U6def.h"
 #include "Configuration.h"
-#include "View.h"
-#include "Screen.h"
-#include "Text.h"
+#include "GUI_Widget.h"
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Actor.h"
-#include "Party.h"
-#include "DollWidget.h"
-#include "InventoryWidget.h"
 
-class InventoryView : public View {
+class DollWidget : public GUI_Widget {
  
- DollWidget *doll_widget;
- InventoryWidget *inventory_widget;
+ Configuration *config;
+ 
+ TileManager *tile_manager;
+ ObjManager *obj_manager;
+ 
+ Actor *actor;
+ 
+ Obj *selected_obj;
  
  public:
- InventoryView(Configuration *cfg);
- ~InventoryView();
+ DollWidget(Configuration *cfg);
+ ~DollWidget();
  
- bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
- bool set_party_member(uint8 party_member);
- 
+ bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om);
+ void set_actor(Actor *a);
  void Display(bool full_redraw);
-  
+ 
+ virtual GUI_status MouseDown(int x, int y, int button);
+ virtual GUI_status MouseUp(int x,int y,int button);
+ virtual GUI_status MouseMotion(int x,int y,Uint8 state);
+
+ void drag_drop_success(int x, int y, int message, void *data);
+ void drag_drop_failed(int x, int y, int message, void *data);
+ 
  protected:
 
- void display_name();
- void display_inventory_list();
- void add_command_icons(Screen *tmp_screen, void *view_manager);
- void display_inventory_weights();
- void display_combat_mode();
- void display_actor_icon();
+ void DollWidget::display_doll();
+ void display_readied_object(uint8 location, uint16 x, uint16 y, Actor *actor, Tile *empty_tile);
 };
 
-#endif /* __InventoryView_h__ */
+#endif /* __DollWidget_h__ */
 

@@ -190,13 +190,17 @@ class Actor
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
  Obj *inventory_get_readied_object(uint8 location);
  bool inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality);
+ bool inventory_add_object(Obj *obj);
  uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container = 0);
+ bool inventory_remove_obj(Obj *obj);
  float inventory_get_max_weight() { return((strength * 2)); }
  float get_inventory_weight();
  float get_inventory_equip_weight();
  
  virtual uint8 get_object_readiable_location(uint16 obj_n) { return ACTOR_NOT_READIABLE; }
  bool add_readied_object(Obj *obj);
+ void remove_readied_object(Obj *obj);
+ void remove_readied_object(uint8 location);
  
  virtual void twitch() { return; }
  

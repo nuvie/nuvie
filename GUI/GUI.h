@@ -29,6 +29,7 @@
 
 #include "SDL.h"
 #include "GUI_status.h"
+#include "GUI_DragManager.h"
 #include "GUI_widget.h"
 #include "GUI_font.h"
 
@@ -36,6 +37,29 @@
 
 #define GUI_FULL_REDRAW true
 class GUI {
+
+protected:
+
+	/* The display surface */
+  Screen *screen;
+	int screen_scale_factor;
+
+  GUI_Font *gui_font;
+  GUI_DragManager *gui_drag_manager;
+  
+	/* Pointers for an array of widgets */
+	int maxwidgets;
+	int numwidgets;
+	GUI_Widget **widgets;
+
+	/* Flag - whether or not the GUI is currently running */
+	int running;
+
+	/* Flag - whether or not the GUI needs to be displayed */
+	int display;
+
+  /* Flag - wether we are preforming a drag and drop */
+  bool dragging;
 
 public:
 	GUI(Screen *s);
@@ -57,9 +81,7 @@ public:
 	   events after a call to Run(), and false if a widget or idle
 	   function requested a quit.
 	 */
-	int Running(void) {
-		return(running);
-	}
+	int Running(void) { return(running); }
 
 	/* Run the GUI.
 	   This returns when either a widget requests a quit, the idle
@@ -80,26 +102,9 @@ public:
 	GUI_status HandleEvent(SDL_Event *event);
   
 protected:
-	/* The display surface */
-  Screen *screen;
-	int screen_scale_factor;
-
-  GUI_Font *gui_font;
   
-	/* Pointers for an array of widgets */
-	int maxwidgets;
-	int numwidgets;
-	GUI_Widget **widgets;
-
-	/* Flag - whether or not the GUI is currently running */
-	int running;
-
-	/* Flag - whether or not the GUI needs to be displayed */
-	int display;
-
 	/* Function to handle a GUI status */
 	void HandleStatus(GUI_status status);
-
 
 };
 

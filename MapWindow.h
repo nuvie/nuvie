@@ -81,6 +81,9 @@ class MapWindow: public GUI_Widget
  
  void Display(bool full_redraw);
  
+ bool drag_accept_drop(int x, int y, int message, void *data);
+ void drag_perform_drop(int x, int y, int message, void *data);
+
 protected:
 
  void drawActors();

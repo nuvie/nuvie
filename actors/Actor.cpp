@@ -449,7 +449,12 @@ Obj *Actor::inventory_get_readied_object(uint8 location)
  return NULL;
 }
 
-
+bool Actor::inventory_add_object(Obj *obj)
+{
+ U6LList *inventory = get_inventory_list();
+ return inventory->addAtPos(0, obj);
+}
+ 
 bool Actor::inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality)
 {
  U6LList *inventory = 0;
@@ -517,7 +522,14 @@ Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *contai
  return(deleted);
 }
 
+bool Actor::inventory_remove_obj(Obj *obj)
+{
+ U6LList *inventory;
 
+ inventory = get_inventory_list();
+ return inventory->remove(obj);
+}
+ 
 float Actor::get_inventory_weight()
 {
  U6LList *inventory;
@@ -631,6 +643,37 @@ bool Actor::add_readied_object(Obj *obj)
  obj->status |= 0x18; //set object to readied status
 
  return true;
+}
+
+void Actor::remove_readied_object(Obj *obj)
+{
+ uint8 location;
+ 
+ for(location=0;location<8;location++)
+   {
+    if(readied_objects[location] == obj)
+      {
+       remove_readied_object(location);
+       break;
+      }
+   }
+
+ return;
+}
+
+void Actor::remove_readied_object(uint8 location)
+{
+ Obj *obj;
+ 
+ obj = inventory_get_readied_object(location);
+ 
+ if(obj)
+   {
+    readied_objects[location] = NULL;
+    obj->status ^= 0x18; // remove "readied" bit flag.
+   }
+
+ return;
 }
 
 

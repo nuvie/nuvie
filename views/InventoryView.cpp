@@ -40,10 +40,35 @@ InventoryView::~InventoryView()
 {
 }
 
+bool InventoryView::set_party_member(uint8 party_member)
+{
+ if(View::set_party_member(party_member))
+  {
+   if(doll_widget)
+     doll_widget->set_actor(party->get_actor(cur_party_member));
+   if(inventory_widget)
+     inventory_widget->set_actor(party->get_actor(cur_party_member));
+
+   return true;
+  }
+
+ return false;
+}
+
 bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
  View::init(x,y,t,p,tm,om);
  
+ doll_widget = new DollWidget(config);
+ doll_widget->init(party->get_actor(cur_party_member), 0, 8, tile_manager, obj_manager);
+ 
+ AddWidget(doll_widget);
+ 
+ inventory_widget = new InventoryWidget(config);
+ inventory_widget->init(party->get_actor(cur_party_member), 64, 8, tile_manager, obj_manager);
+ 
+ AddWidget(inventory_widget);
+
  add_command_icons(tmp_screen, view_manager);
  
  return true;
@@ -64,13 +89,14 @@ void InventoryView::Display(bool full_redraw)
     display_actor_icon();
    }
 
- display_doll(area.x,area.y+8);
- display_inventory_list();
+ //display_doll(area.x,area.y+8);
+ //display_inventory_list();
 
+ DisplayChildren(full_redraw);
+ 
  if(full_redraw || update_display)
    {
     update_display = false;
-    DisplayChildren();
     screen->update(area.x, area.y, area.w, area.h);
    }
  else
@@ -79,57 +105,6 @@ void InventoryView::Display(bool full_redraw)
     //FIX add doll update rect.
    }
 
- return;
-}
-
-void InventoryView::display_doll(uint16 x, uint16 y)
-{
- Tile *tile, *empty_tile;
- Actor *actor;
- uint16 i,j;
- 
- empty_tile = tile_manager->get_tile(410);
- 
- actor = party->get_actor(cur_party_member);
- 
- for(i=0;i<2;i++)
-   {
-    for(j=0;j<2;j++) // draw doll
-      {
-       tile = tile_manager->get_tile(368+i*2+j);
-       screen->blit(x+16+j*16,y+16+i*16,tile->data,8,16,16,16,true);
-      }
-   }
-
- display_readied_object(ACTOR_NECK, x, (y+8) + 0 * 16, actor, empty_tile);
- display_readied_object(ACTOR_BODY, x+3*16, (y+8) + 0 * 16, actor, empty_tile);
-
- display_readied_object(ACTOR_ARM, x, (y+8) + 1 * 16, actor, empty_tile);
- display_readied_object(ACTOR_ARM_2, x+3*16, (y+8) + 1 * 16, actor, empty_tile);
- 
- display_readied_object(ACTOR_HAND, x, (y+8) + 2 * 16, actor, empty_tile);
- display_readied_object(ACTOR_HAND_2, x+3*16, (y+8) + 2 * 16, actor, empty_tile);
-
- display_readied_object(ACTOR_HEAD, x+16+8, y, actor, empty_tile);
- display_readied_object(ACTOR_FOOT, x+16+8, y+3*16, actor, empty_tile);
-
- return;
-}
-
-inline void InventoryView::display_readied_object(uint8 location, uint16 x, uint16 y, Actor *actor, Tile *empty_tile)
-{
- Obj *obj;
- Tile *tile;
- 
- obj = actor->inventory_get_readied_object(location);
- 
- if(obj)
-   tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
- else
-   tile = empty_tile;
- 
- screen->blit(x,y,tile->data,8,16,16,16,true);
- 
  return;
 }
 

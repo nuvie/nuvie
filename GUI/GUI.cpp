@@ -39,8 +39,10 @@ GUI:: GUI(Screen *s)
 	maxwidgets = 0;
 	widgets = NULL;
   screen_scale_factor = screen->get_scale_factor();
+  dragging = false;
   
   gui_font = new GUI_Font();
+  gui_drag_manager = new GUI_DragManager(screen);
 }
 
 GUI:: ~GUI()
@@ -87,7 +89,7 @@ GUI:: AddWidget(GUI_Widget *widget)
 		++numwidgets;
 	}
 	widgets[i] = widget;
-  widget->PlaceOnScreen(screen,0,0);
+  widget->PlaceOnScreen(screen,gui_drag_manager,0,0);
 
 	return(0);
 }
@@ -134,12 +136,12 @@ void
 GUI:: HandleStatus(GUI_status status)
 {
 	switch (status) {
-		case GUI_QUIT:
-			running = 0;
-			break;
-		case GUI_REDRAW:
-			display = 1;
-			break;
+		case GUI_QUIT: running = 0;
+			             break;
+		case GUI_REDRAW: display = 1;
+			               break;
+    case GUI_DRAG_AND_DROP: dragging = true;
+                            break;
 		default:
 			break;
 	}
@@ -150,7 +152,8 @@ GUI_status
 GUI:: HandleEvent(SDL_Event *event)
 {
 	int i;
-	GUI_status status;
+  int hit;
+	GUI_status status = GUI_PASS;
 
   if(screen_scale_factor != 1)
     {
@@ -161,38 +164,58 @@ GUI:: HandleEvent(SDL_Event *event)
         }
      if(event->type == SDL_MOUSEMOTION)
         {
-         event->button.x /= screen_scale_factor;
-         event->button.y /= screen_scale_factor;
+         event->motion.x /= screen_scale_factor;
+         event->motion.y /= screen_scale_factor;
+         event->motion.xrel /= screen_scale_factor;
+         event->motion.yrel /= screen_scale_factor;
         }
     }
 
-	switch (event->type) {
-		/* SDL_QUIT events quit the GUI */
-		case SDL_QUIT:
-			status = GUI_QUIT;
-			break;
-
-		/* Keyboard and mouse events go to widgets */
-
-		case SDL_MOUSEMOTION:
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
-    case SDL_KEYDOWN:
-		case SDL_KEYUP:
-			/* Go through widgets, topmost first */
-			status = GUI_PASS;
-			for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {
-				if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
-					status = widgets[i]->HandleEvent(event);
+  if(dragging)
+   {
+    if(event->type == SDL_MOUSEBUTTONUP)
+      {
+       for (hit=false,i=numwidgets-1; (i>=0)&&(hit == false); --i)
+        {
+				 if(widgets[i]->Status() == WIDGET_VISIBLE && widgets[i]->HitRect(event->button.x,event->button.y))
+            {
+             gui_drag_manager->drop((GUI_DragArea *)widgets[i],event->button.x,event->button.y);
+             dragging = false;
+					   break;
+            }
 				}
 			}
-			break;
+   }
+  else
+   {
+	  switch (event->type) {
+ 		/* SDL_QUIT events quit the GUI */ 
+     case SDL_QUIT:
+		 	 status = GUI_QUIT;
+		 	 break;
 
-		/* Ignore unhandled events */
-		default:
-			status = GUI_PASS;
-			break;
-	}
+		 /* Keyboard and mouse events go to widgets */
+
+		 case SDL_MOUSEMOTION:
+		 case SDL_MOUSEBUTTONDOWN:
+		 case SDL_MOUSEBUTTONUP:
+     case SDL_KEYDOWN:
+		 case SDL_KEYUP:
+			 /* Go through widgets, topmost first */
+			 status = GUI_PASS;
+			 for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {
+				 if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
+				 	 status = widgets[i]->HandleEvent(event);
+				 }
+			 }
+			 break;
+
+		 /* Ignore unhandled events */
+		 default:
+			 status = GUI_PASS;
+			 break;
+    }
+	 }
 
 	HandleStatus(status);
 

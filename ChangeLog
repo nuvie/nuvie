@@ -1,3 +1,9 @@
+2003-09-04  Eric Fry <efry@users.sourceforge.net>
+	* Drag and Drop support added. You can now drag objects from the 
+	  inventory to the map. :)
+	* New classes added GUI_DragManager, GUI_DragArea, 
+	  DollWidget & InventoryWidget.
+
 2003-08-31  Eric Fry <efry@users.sourceforge.net>
 	* Fixed a GUI_Widget redraw bug.
 

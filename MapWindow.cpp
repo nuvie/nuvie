@@ -761,3 +761,33 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y)
  return false;
 }
 
+bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
+{
+ if(message == GUI_DRAG_OBJ)
+   {
+    return true;
+   }
+   
+ return false;
+}
+
+void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
+{
+ Obj *obj;
+ 
+ x -= area.x;
+ y -= area.y;
+ 
+ if(message == GUI_DRAG_OBJ)
+   {
+    printf("Drop (%d,%d)\n", x / 16, y / 16);
+    obj = (Obj *)data;
+    obj->x = cur_x + x / 16;
+    obj->y = cur_y + y / 16;
+    obj->z = cur_level;
+    
+    obj_manager->add_obj(obj,true);
+   }
+   
+ return;
+}
