@@ -100,6 +100,19 @@ static const struct { uint16 x; uint16 y; uint8 z; } red_moongate_tbl[] =
   {0x296, 0x43,  0x0}
  };
 
+// numbered by potion quality
+static const char *u6_potions[8] =
+{
+    "an awaken", // blue
+    "a cure", // red
+    "a heal", // yellow
+    "a poison", // green
+    "a sleep", // orange
+    "a protection", // purple
+    "an invisibility", // black
+    "an xray vision" // white
+};
+
 
 U6UseCode::U6UseCode(Game *g, Configuration *cfg) : UseCode(g, cfg)
 {
@@ -1016,36 +1029,15 @@ bool U6UseCode::use_potion(Obj *obj, uint8 ev)
             scroll->display_string(party_num >= 0 ? party->get_actor_name(party_num)
                                    : am->look_actor(actor2_ref));
             scroll->display_string("\n");
-            switch(obj->frame_n) // FIXME
+            if(obj->frame_n <= 7)
             {
-                case 0: // BLUE -> ???
-                    scroll->display_string("Drink blue potion!\n");
-                    break;
-                case 1: // RED -> Dispel
-                    scroll->display_string("Drink dispel potion!\n");
-                    break;
-                case 2: // YELLOW -> Heal
-                    scroll->display_string("Drink healing potion!\n");
-                    break;
-                case 3: // GREEN -> Poison
-                    scroll->display_string("Drink poison potion!\n");
-                    break;
-                case 4: // ORANGE -> Sleep
-                    scroll->display_string("Drink sleeping potion!\n");
-                    break;
-                case 5: // PURPLE -> Protect
-                    scroll->display_string("Drink protection potion!\n");
-                    break;
-                case 6: // BLACK -> Invisibility
-                    scroll->display_string("Drink invisibility potion!\n");
-                    break;
-                case 7: // WHITE -> X-Ray
-                    scroll->display_string("Drink x-ray vision potion!\n");
-                    break;
-                default:
-                    scroll->display_string("No effect\n");
+                scroll->display_string("Drink ");
+                scroll->display_string(u6_potions[obj->frame_n]);
+                scroll->display_string(" potion!\n");
             }
-            if(obj->status & OBJ_STATUS_IN_INVENTORY)
+            else
+                scroll->display_string("No effect\n");
+            if(obj->is_in_inventory())
                 am->get_actor(obj->x)->inventory_remove_obj(obj);
             else
                 obj_manager->remove_obj(obj);
