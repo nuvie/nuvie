@@ -93,6 +93,7 @@ class Converse
 
     string *in_str; // last input from player
     string *out_str; // text that is to be printed
+    char *allowed_input; // characters requested for single-character input
 
     char aname[16]; // return from npc_name()
     struct converse_variables_s

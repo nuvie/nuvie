@@ -48,6 +48,7 @@ Converse::Converse()
     src_num = 0;
 
     in_str = out_str = NULL;
+    allowed_input = NULL;
 
     active = false;
     variables = NULL;
@@ -74,7 +75,7 @@ Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
 Converse::~Converse()
 {
     if(running())
-        stop();
+        stop(); // most of destructor here (called when conversations end)
     unload_conv();
 }
 
@@ -277,6 +278,11 @@ void Converse::stop()
         free(desc);
         desc = NULL;
     }
+    if(allowed_input)
+    {
+        free(allowed_input);
+        allowed_input = NULL;
+    }
     delete_variables();
 
     scroll->set_talking(false);
@@ -426,7 +432,12 @@ const char *Converse::npc_name(uint8 num)
  */
 void Converse::poll_input(const char *allowed, bool nonblock)
 {
-    scroll->set_input_mode(true, allowed, nonblock);
+    if(allowed_input)
+        free(allowed_input);
+    allowed_input = NULL;
+    allowed_input = (allowed && strlen(allowed)) ? strdup(allowed) : NULL;
+
+    scroll->set_input_mode(true, allowed_input, nonblock);
     need_input = true;
     conv_i->wait();
 }
