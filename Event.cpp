@@ -436,7 +436,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
           if(obj->qty > 0) //stackable object
             {
              pc->inventory_add_object(obj->obj_n, obj->qty, obj->quality);
-             delete obj;
+             obj_manager->delete_obj(obj);
             }
            else
              pc->inventory_add_object(obj);
@@ -506,7 +506,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  map_window->updateBlacking();
  
  if(actor) //we were using an actor so free the temp Obj
-  delete obj;
+  obj_manager->delete_obj(obj);
 
  return true;
 }

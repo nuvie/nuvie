@@ -1,3 +1,9 @@
+2003-10-29  Eric Fry <efry@users.sourceforge.net>
+	* Moved temp obj addition into ObjManager::add_obj()
+	* Added ObjManager::delete_obj() method to delete an object and any
+	  container items it might hold.
+	* Don't display actors with a 0 object number.
+
 2003-10-27  Eric Fry <efry@users.sourceforge.net>
 	* Started work on temp obj removal. This still needs work. It may
 	  be quite unstable.

@@ -828,7 +828,7 @@ bool U6UseCode::use_potion(Obj *obj, uint8 ev)
                     scroll->display_string("No effect\n");
             }
             obj_manager->remove_obj(obj);
-            delete obj;
+            obj_manager->delete_obj(obj);
         }
         return(true);
     }
@@ -944,7 +944,7 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
     ship_actor->init_from_obj(obj);
     ship_actor->show(); // Swift!
     obj_manager->remove_obj(obj);
-    delete obj;
+    obj_manager->delete_obj(obj);
 
     party->hide(); // set in-vehicle
     player->set_actor(ship_actor);

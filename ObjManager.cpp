@@ -445,13 +445,35 @@ bool ObjManager::remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y,
       if(obj->obj_n == obj_n)
         {
          obj_list->remove(obj);
-         delete obj;
+         delete_obj(obj);
          objects_deleted = true;
         }
      }
    }
 
  return objects_deleted;
+}
+
+void ObjManager::delete_obj(Obj *obj)
+{
+ U6Link *link;
+
+ if(obj == NULL)
+   return;
+
+ if(obj->container)
+   {
+    link = obj->container->start();
+    for(;link != NULL;link=link->next)
+      {
+       delete_obj((Obj *)link->data);
+      }
+    delete obj->container;
+   }
+   
+ delete obj;
+ 
+ return;
 }
 
 Obj *ObjManager::copy_obj(Obj *obj)
@@ -708,8 +730,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
         }
       else
         {
-         if(obj->status & OBJ_STATUS_TEMPORARY && obj->z <= 5)
-            temp_obj_list_add(obj);
+
 
          if(show_eggs || obj->obj_n != obj_egg_table[game_type]) // show remaining objects, hiding eggs if neccecary.
             add_obj(obj_tree,obj);
@@ -751,6 +772,9 @@ bool ObjManager::add_obj(iAVLTree *obj_tree, Obj *obj, bool addOnTop)
    obj_list->add(obj);
  else
    obj_list->addAtPos(0,obj);
+ 
+ if(obj->status & OBJ_STATUS_TEMPORARY)
+   temp_obj_list_add(obj);
 
  return true;
 }

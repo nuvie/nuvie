@@ -137,6 +137,7 @@ class ObjManager
  bool add_obj(Obj *obj, bool addOnTop=false);
  bool remove_obj(Obj *obj);
  bool remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
+ void delete_obj(Obj *obj);
  
  Obj *copy_obj(Obj *obj);
  const char *look_obj(Obj *obj, bool show_prefix = false);
