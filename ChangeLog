@@ -1,3 +1,19 @@
+2004-04-09  Joseph Applegate <sb-x at users.sourceforge.net>
+	* UseCode: Disabled the "Telekinesis" usage of shovel. (must be readied)
+	  - Added correct descriptions of red & blue potions. They don't do
+	    anything yet. [ 891645 ]
+	  - Added Torch. It doesn't light the area around you yet! [ 860198 ]
+	  - GET & READY events are implemented now.
+	  - Added backpack.
+	* Backpacks and other containers can now be used as containers, even if
+	  they were empty on load. This has forced object loading to be moved to
+	  after UseCode is instantiated in Game::loadGame(). Fixes [ 887980 ].
+	* New Event mode WAIT now set when talking to someone. It may replace
+	  Player::uncontrolled. Fixes [ 841967 ].
+	* New methods ObjManager::get_obj_from_stack() and
+	  UseCode::destroy_obj().
+	* Fixed a crash when eating food by double-clicking it.
+        
 2004-04-07  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Inventory: The prompt is now displayed after using or looking at any
 	  object in the inventory, using keyboard or mouse.
