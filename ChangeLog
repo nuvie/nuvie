@@ -1,3 +1,6 @@
+2004-06-02  Eric Fry <efry at users.sourceforge.net>
+	* Added party/solo mode loading and saving to Player.
+
 2004-06-01  Eric Fry <efry at users.sourceforge.net>
 	* We now call ObjManager::clean() from all load types. This fixes
 	  some issues that occured when loading a new game.

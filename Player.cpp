@@ -69,6 +69,8 @@ void Player::init()
 
 bool Player::load(NuvieIO *objlist)
 {
+ uint8 solo_member_num = 0xff;
+ 
  init();
  
  objlist->seek(0xf00);
@@ -85,6 +87,9 @@ bool Player::load(NuvieIO *objlist)
 
     objlist->seek(0x1c71); // Player Gender.
     gender = objlist->read1();
+    
+    objlist->seek(0x1c6a); //Party Mode = 0xff other wise it is solo mode party member number starting from 0.
+    solo_member_num = objlist->read1();      
    }
    
  if(game_type == NUVIE_GAME_MD)
@@ -94,7 +99,15 @@ bool Player::load(NuvieIO *objlist)
    }
 
  set_actor(find_actor());
-  
+
+ if(solo_member_num == 0xff)
+   {
+    party_mode = false;
+    set_party_mode(actor);
+   }
+ else
+    set_solo_mode(party->get_actor(solo_member_num));
+
  return true;
 }
 
@@ -110,6 +123,12 @@ bool Player::save(NuvieIO *objlist)
 
     objlist->seek(0x1c71); // Player Gender.
     objlist->write1(gender);
+    
+    objlist->seek(0x1c6a); // solo member num.
+    if(party_mode)
+      objlist->write1(0xff); // 0xff = party mode
+    else
+      objlist->write1(party->get_member_num(actor)); //write the party member number of the solo actor 
    }
    
  if(game_type == NUVIE_GAME_MD)
