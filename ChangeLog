@@ -1,8 +1,8 @@
 2003-12-25  Eric Fry <efry@users.sourceforge.net>
-	* Fixed an issue with containers. There are some comtainer objects
-	  that don't reference their container through the x variable. They seem
-	  to follow the container object in the objblk files. They also appear
-	  to have a positive > 0 value for y.
+	* Fixed an issue with containers. [ 864087 ] There are some comtainer
+	  objects that don't reference their container through the x variable.
+	  They seem to follow the container object in the objblk files. They
+	  also appear to have a positive > 0 value for y.
 	  I think their might still be some issues with calculating inventory 
 	  weight.
 
