@@ -231,6 +231,14 @@ SOURCE=..\ActorManager.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Book.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Book.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Event.cpp
 # End Source File
 # Begin Source File
@@ -334,6 +342,10 @@ SOURCE=..\TileManager.h
 SOURCE=.\msvc_kludges.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\ChangeLog
+# End Source File
 # Begin Source File
 
 SOURCE=..\nuvie.cfg
