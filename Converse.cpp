@@ -20,7 +20,7 @@
 #include "U6Lzw.h"
 #include "Converse.h"
 
-//#define CONVERSE_DEBUG
+#define CONVERSE_DEBUG
 #ifdef CONVERSE_DEBUG
 # define test_msg(S) print(S)
 #else
@@ -32,6 +32,8 @@ using std::cin;
 using std::endl;
 
 // TODO: work flawlessly with every u6 npc
+//       ifnpcinparty
+//       ifnpcnear
 //       uniform (better) text output
 //       show/remove portraits
 //       fix overflow at end of Chuckles(10) script
@@ -360,7 +362,8 @@ bool Converse::u6op_if_test(uint32 cmpf, uint32 va)
             }
             break;
         case 0xc6: // is val1 # of npc in party?
-            print("-!inparty-");
+            if(player->get_party()->contains_actor(v[0]))
+                ifcomp = true;
             break;
         case 0xd7: // is val1 # of an npc nearby self?
             print("-!npcnear-");
