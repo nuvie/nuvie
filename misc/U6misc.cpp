@@ -9,6 +9,18 @@
 #include <cstdio>
 #include "U6misc.h"
 
+std::string config_get_game_key(Configuration *config)
+{
+ std::string game_key, game_name;
+ 
+ config->value("config/GameName",game_name);
+ 
+ game_key.assign("config/");
+ game_key.append(game_name);
+ 
+ return game_key;
+}
+
 void config_get_path(Configuration *config, std::string filename, std::string &path)
 {
  std::string key, game_name;

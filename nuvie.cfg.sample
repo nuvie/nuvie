@@ -12,6 +12,7 @@
  <ultima6>
   <gamedir>./ultima6</gamedir>
   <skip_intro> no </skip_intro>
+  <show_eggs> yes </show_eggs>
  </ultima6>
 
  <martian>

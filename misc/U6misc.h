@@ -14,6 +14,7 @@
 #include "U6def.h"
 #include "Configuration.h"
 
+std::string config_get_game_key(Configuration *config);
 void config_get_path(Configuration *config, std::string filename, std::string &path);
 uint8 get_game_type(const char *string);
 void print_b(uint8 num);

@@ -27,6 +27,11 @@
 
 #include "U6misc.h"
 
+static const int obj_egg_table[4] = {0,   // NUVIE_GAME_NONE
+                                     335, // NUVIE_GAME_U6
+                                     0,   // NUVIE_GAME_MD
+                                     0};  // NUVIE_GAME_SE
+
 iAVLKey get_iAVLKey(const void *item)
 {
  return ((ObjTreeNode *)item)->key;
@@ -36,7 +41,8 @@ ObjManager::ObjManager(Configuration *cfg)
 {
  uint8 i;
  config = cfg;
-
+ std::string show_eggs_key;
+ 
  memset(actor_inventories,0,sizeof(actor_inventories));
 
  surface = iAVLAllocTree(get_iAVLKey);
@@ -45,6 +51,17 @@ ObjManager::ObjManager(Configuration *cfg)
   {
    dungeon[i] = iAVLAllocTree(get_iAVLKey);
   }
+
+ temp_obj_blk_x = 0;
+ temp_obj_blk_y = 0;
+ temp_obj_blk_z = 0;
+ 
+ show_eggs_key = config_get_game_key(config);
+ show_eggs_key.append("/show_eggs");
+ 
+ config->value(show_eggs_key, show_eggs);
+
+ config->value("config/GameType",game_type);
 }
 
 ObjManager::~ObjManager()
@@ -54,7 +71,7 @@ ObjManager::~ObjManager()
 
 bool ObjManager::loadObjs(TileManager *tm)
 {
- std::string path, key, game_name;
+ std::string path, key;
  char *filename;
  char x,y;
  uint16 len;
@@ -62,10 +79,7 @@ bool ObjManager::loadObjs(TileManager *tm)
 
  tile_manager = tm;
 
- config->value("config/GameName",game_name);
- 
- key.assign("config/");
- key.append(game_name);
+ key = config_get_game_key(config);
  key.append("/gamedir");
  
  config->value(key,path);
@@ -674,6 +688,11 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
   {
    obj = loadObj(&file,i);
    list->add(obj);
+   
+   if(obj->obj_n == obj_egg_table[game_type])
+     {
+      //add to egg manager here.
+     }
 
    if(obj->status & OBJ_STATUS_IN_INVENTORY) //object in actor's inventory
      {
@@ -682,15 +701,20 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
       inventory_list->addAtPos(0,obj);
      }
    else
-    {
-     if(obj->status & OBJ_STATUS_IN_CONTAINER)
-      {
-       addObjToContainer(list,obj);
-      }
-     else
-       add_obj(obj_tree,obj);
-    }
+     {
+      if(obj->status & OBJ_STATUS_IN_CONTAINER)
+        {
+         addObjToContainer(list,obj);
+        }
+      else
+        {
+         if(obj->status & OBJ_STATUS_TEMPORARY && obj->z <= 5)
+            temp_obj_list_add(obj);
 
+         if(show_eggs || obj->obj_n != obj_egg_table[game_type]) // show remaining objects, hiding eggs if neccecary.
+            add_obj(obj_tree,obj);
+        }
+     }
   }
 
  delete list;
@@ -832,6 +856,65 @@ iAVLKey ObjManager::get_obj_tree_key(uint16 x, uint16 y, uint8 level)
    return y * 1024 + x;
  else
    return y * 256 + x;
+}
+
+void ObjManager::temp_obj_list_update(uint16 x, uint16 y, uint8 z)
+{
+ uint16 cur_blk_x, cur_blk_y;
+ uint8 cur_blk_z;
+ 
+ cur_blk_x = x / 32;
+ cur_blk_y = y / 32;
+ 
+ //FIX for level change. we want to remove all temps on level change.
+ if(cur_blk_x != temp_obj_blk_x || cur_blk_y != temp_obj_blk_y)
+   {
+    temp_obj_blk_x = cur_blk_x;
+    temp_obj_blk_y = cur_blk_y;
+    temp_obj_list_clean(x,y);
+   }
+
+ return;
+}
+
+bool ObjManager::temp_obj_list_add(Obj *obj)
+{
+ if(obj == NULL)
+  return false;
+
+ temp_obj_list.push_back(obj);
+
+ return true;
+}
+
+bool ObjManager::temp_obj_list_remove(Obj *obj)
+{
+ temp_obj_list.remove(obj);
+ return true;
+}
+
+void ObjManager::temp_obj_list_clean(uint16 x, uint16 y)
+{
+ std::list<Obj *>::iterator obj;
+ sint16 dist_x, dist_y;
+ 
+ for(obj = temp_obj_list.begin(); obj != temp_obj_list.end();)
+   {
+    dist_x = abs((sint16)(*obj)->x - x);
+    dist_y = abs((sint16)(*obj)->y - y);
+
+    if(dist_x > 32 || dist_y > 32)
+      {
+       printf("Removing obj %d.\n",(*obj)->obj_n);
+       remove_obj(*obj);
+       delete *obj;
+       obj = temp_obj_list.erase(obj);
+      } 
+    else
+      obj++;
+   }
+
+ return;
 }
 
 /*

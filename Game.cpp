@@ -114,7 +114,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    
    player = new Player(config);
    party = new Party(config);
-   player->init(actor_manager, map_window, clock, party);
+   player->init(obj_manager, actor_manager, map_window, clock, party);
    party->init(this, actor_manager); // (reverse Game reference test-case)
  
    portrait = new Portrait(config);

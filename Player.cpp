@@ -34,10 +34,11 @@ Player::Player(Configuration *cfg)
  questf = 0;
 }
 
-bool Player::init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
+bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
 {
  clock = c;
  actor_manager = am;
+ obj_manager = om;
  map_window = mw;
  party = p;
  actor = actor_manager->get_actor(1);
@@ -122,6 +123,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
    party->follow();
    actor_manager->updateActors();
    clock->inc_move_counter(); // SB-X move to gameclock
+   obj_manager->temp_obj_list_update(x, y, z); // remove temporary objs
  }
 }
 
@@ -135,6 +137,7 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 // center everyone first, so we don't try to path-find between planes if blocked
     party->move(new_x, new_y, new_level);
     party->follow();
+
    }
 }
 

@@ -24,6 +24,7 @@
  *
  */
 
+#include <list>
 #include "iAVLTree.h"
 
 #include "U6def.h"
@@ -84,6 +85,7 @@ Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z);
 class ObjManager
 {
  Configuration *config;
+ int game_type;
  TileManager *tile_manager;
  iAVLTree *surface;
  iAVLTree *dungeon[5];
@@ -92,8 +94,14 @@ class ObjManager
  uint8 obj_weight[1024];
  U6LList *actor_inventories[256];
 
+ bool show_eggs;
+ 
  UseCode *usecode;
 
+ std::list<Obj *> temp_obj_list;
+ uint16 temp_obj_blk_x, temp_obj_blk_y;
+ uint8 temp_obj_blk_z;
+ 
  public:
 
  ObjManager(Configuration *cfg);
@@ -140,6 +148,8 @@ class ObjManager
  void animate_forwards(Obj *obj, uint32 loop_count = 1);
  void animate_backwards(Obj *obj, uint32 loop_count = 1);
 
+ void temp_obj_list_update(uint16 x, uint16 y, uint8 z);
+
  protected:
 
  bool loadBaseTile();
@@ -155,6 +165,10 @@ class ObjManager
  iAVLKey get_obj_tree_key(Obj *obj);
  iAVLKey get_obj_tree_key(uint16 x, uint16 y, uint8 level);
  //inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);
+
+ bool temp_obj_list_add(Obj *obj);
+ bool temp_obj_list_remove(Obj *obj);
+ void temp_obj_list_clean(uint16 x, uint16 y);
 
  public:
  void print_object_list();

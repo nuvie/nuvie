@@ -1,3 +1,8 @@
+2003-10-27  Eric Fry <efry@users.sourceforge.net>
+	* Started work on temp obj removal. This still needs work. It may
+	  be quite unstable.
+	* Added the ability to hide eggs via a config switch.
+
 2003-10-19  Eric Fry <efry@users.sourceforge.net>
 	* Changed ObjManager::is_passable return codes OBJ_STATUS_ to OBJ_ and
 	  added proper OBJ_STATUS_ defines for Obj status bit flags.

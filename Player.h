@@ -30,6 +30,7 @@
 
 #include "Actor.h"
 #include "ActorManager.h"
+#include "ObjManager.h"
 #include "MapWindow.h"
 
 #include "Party.h"
@@ -44,6 +45,7 @@ class Player
  bool uncontrolled; // don't control or follow actor
  Actor *actor;
  ActorManager *actor_manager;
+ ObjManager *obj_manager;
  
  char name[14];
  uint8 gender;
@@ -57,7 +59,7 @@ class Player
  
  Player(Configuration *cfg);
  
- bool init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
+ bool init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
 
  Party *get_party() { return(party); }
  bool get_uncontrolled() { return(uncontrolled); }
