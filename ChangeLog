@@ -1,3 +1,15 @@
+2003-11-15  Eric Fry <efry@users.sourceforge.net>
+	* Fixed crash when entering caves on the gargoyle plane.
+	* Added usecode for entering the red moongates.
+	  It isn't currently possible to create moongates. As we need to 
+	  overhaul the Event system.
+	  We also need to fix TimedPartyMove::timed so we can use the moongate
+	  to travel to a destination on the same plane. At the moment you
+	  can only travel to destinations on a different plane to the
+	  moongate. :(
+	* Added blocking checks for Use-passthrough
+	* Changed "blocked!" message to "Not now!".
+
 2003-11-14  Eric Fry <efry@users.sourceforge.net>
 	* Added day of week to GameClock
 	* Added day of week to schedules.

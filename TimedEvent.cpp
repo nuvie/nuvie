@@ -97,7 +97,7 @@ void TimedPartyMove::timed(uint32 evtime)
         Actor *person = party->get_actor(a);
         MapCoord loc(person->get_location());
         // if not at target area (FIXME: only checks Z for now)
-        if(loc.z != target->z)
+        if(loc.z != target->z) //FIX for moongate teleport on the same plane.
         {
             // at destination or offscreen, teleport to target
             MapWindow *map_window = Game::get_game()->get_map_window();

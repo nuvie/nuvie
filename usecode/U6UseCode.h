@@ -99,6 +99,8 @@
 #define OBJ_U6_STORM_CLOAK          81
 #define OBJ_U6_RING                 82
 #define OBJ_U6_FLASK_OF_OIL         83
+#define OBJ_U6_RED_GATE             84
+#define OBJ_U6_MOONGATE             85
 
 #define OBJ_U6_TORCH                90
 
@@ -344,6 +346,7 @@ class U6UseCode: public UseCode
  bool look_clock(Obj *obj, uint8 ev);
  bool pass_quest_barrier(Obj *obj, uint8 ev);
  bool enter_dungeon(Obj *obj, uint8 ev);
+ bool enter_red_moongate(Obj *obj, uint8 ev);
 // bool search_container(Obj *obj, uint8 ev);
 
 // supplementary

@@ -56,6 +56,36 @@ static const char *u6_dungeons[21] =
     "Buccaneer's Cave"
 };
 
+// Red moongate teleport locations.
+static const struct { uint16 x; uint16 y; uint8 z; } red_moongate_tbl[] = 
+{ {0x0,   0x0,   0x0},
+  {0x383, 0x1f3, 0x0},
+  {0x3a7, 0x106, 0x0},
+  {0x1b3, 0x18b, 0x0},
+  {0x1f7, 0x166, 0x0},
+  {0x93,  0x373, 0x0},
+  {0x397, 0x3a6, 0x0},
+  {0x44,  0x2d,  0x5},
+  {0x133, 0x160, 0x0},
+  {0xbc,  0x2d,  0x5},
+  {0x9f,  0x3ae, 0x0},
+  {0x2e3, 0x2bb, 0x0},
+  {0x0,   0x0,   0x0},
+  {0x0,   0x0,   0x0},
+  {0x0,   0x0,   0x0},
+  {0xe3,  0x83,  0x0},
+  {0x17,  0x16,  0x1},
+  {0x80,  0x56,  0x5},
+  {0x6c,  0xdd,  0x5},
+  {0x39b, 0x36c, 0x0},
+  {0x127, 0x26,  0x0},
+  {0x4b,  0x1fb, 0x0},
+  {0x147, 0x336, 0x0},
+  {0x183, 0x313, 0x0},
+  {0x33f, 0xa6,  0x0},
+  {0x296, 0x43,  0x0}
+ };
+
 
 U6UseCode::U6UseCode(Configuration *cfg) : UseCode(cfg)
 {
@@ -111,6 +141,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_CANDELABRA,255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
     add_usecode(OBJ_U6_BRAZIER,   255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
 
+    add_usecode(OBJ_U6_RED_GATE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_red_moongate);
     add_usecode(OBJ_U6_LADDER,255,0,USE_EVENT_USE,&U6UseCode::use_ladder);
     add_usecode(OBJ_U6_CAVE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
     add_usecode(OBJ_U6_HOLE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
@@ -347,7 +378,7 @@ bool U6UseCode::use_door(Obj *obj, uint8 ev)
    {
     if(!map->is_passable(obj->x,obj->y,obj->z) || map->actor_at_location(obj->x, obj->y, obj->z)) //don't close door if blocked
       {
-       scroll->display_string("\nblocked!\n");
+       scroll->display_string("\nNot now!\n");
       }
     else //close the door
       {
@@ -395,32 +426,45 @@ bool U6UseCode::use_ladder(Obj *obj, uint8 ev)
 
 bool U6UseCode::use_passthrough(Obj *obj, uint8 ev)
 {
- if(obj->obj_n == OBJ_U6_V_PASSTHROUGH)
+ uint16 new_x, new_y;
+ uint8 new_frame_n;
+ char action_string[6]; // either 'Open' or 'Close'
+ 
+ new_x = obj->x;
+ new_y = obj->y;
+ new_frame_n = obj->frame_n;
+ 
+ if(obj->frame_n < 2) // the pass through is currently closed.
   {
-   if(obj->frame_n < 2)
-    {
-     obj_manager->move(obj,obj->x,obj->y-1,obj->z);
-     obj->frame_n = 2;
-    }
-   else
-    {
-     obj_manager->move(obj,obj->x,obj->y+1,obj->z);
-     obj->frame_n = 0;
-    }
+   if(obj->obj_n == OBJ_U6_V_PASSTHROUGH)
+     new_y--;
+   else // OBJ_U6_H_PASSTHROUGH
+     new_x--;
+
+   new_frame_n = 2; // open the pass through
+   strcpy(action_string,"Open");
   }
- else // OBJ_U6_H_PASSTHROUGH
+ else // the pass through is currently open.
   {
-   if(obj->frame_n < 2)
-    {
-     obj_manager->move(obj,obj->x-1,obj->y,obj->z);
-     obj->frame_n = 2;
-    }
-   else
-    {
-     obj_manager->move(obj,obj->x+1,obj->y,obj->z);
-     obj->frame_n = 0;
-    }
+   if(obj->obj_n == OBJ_U6_V_PASSTHROUGH)
+     new_y++;
+   else // OBJ_U6_H_PASSTHROUGH
+     new_x++;
+
+   new_frame_n = 0; // close the pass through
+   strcpy(action_string,"Close");
   }
+
+ if(!map->actor_at_location(new_x, new_y, obj->z))
+    {
+     obj_manager->move(obj, new_x, new_y, obj->z);
+     obj->frame_n = new_frame_n;
+     scroll->display_string("\n");
+     scroll->display_string(action_string);
+     scroll->display_string(" the passthrough.\n");
+    }
+ else
+    scroll->display_string("\nNot now!\n");
   
  return true;
 }
@@ -1196,7 +1240,48 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
             x = (x & 0x07) | (x >> 2 & 0xF8);
             y = (y & 0x07) | (y >> 2 & 0xF8);
         }
-        z += 1;
+        if(z < 5)
+          z += 1;
+        else
+          z -= 1;
+
+        MapCoord exit(x, y, z);
+        party->walk(&entrance, &exit);
+        return(true);
+    }
+    else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
+        if(party->contains_actor(actor_ref))
+            return(true);
+    return(false);
+}
+
+/* if not in party mode, say that you cannot enter and do normal move
+ * else walk all party members to moongate and teleport.
+ */
+bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
+{
+    Party *party = Game::get_game()->get_party();
+    uint16 x = obj->x, y = obj->y;
+    uint8 z = obj->z;
+
+    // don't activate if autowalking from linking exit
+    if(ev == USE_EVENT_PASS && actor_ref == player->get_actor() && !party->get_autowalk())
+    {
+        MapCoord entrance(x, y, z);
+        if(obj->quality > 25)
+           {
+            printf("Error: invalid moongate destination %d\n",obj->quality);
+            return false;
+           }
+
+        if((obj->quality > 0 && obj->quality < 12) ||
+           (obj->quality > 14 && obj->quality < 26) ) //positions 0, 12, 13 and 14 go noware.
+           {
+            x = red_moongate_tbl[obj->quality].x; // set our moongate destination from the lookup table.
+            y = red_moongate_tbl[obj->quality].y;
+            z = red_moongate_tbl[obj->quality].z;
+           }
+                      
         MapCoord exit(x, y, z);
         party->walk(&entrance, &exit);
         return(true);
