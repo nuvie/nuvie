@@ -1193,9 +1193,12 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
     {
         if(!items.actor2_ref && !items.obj_ref)
             game->get_event()->freeselect_mode(obj, "On whom? ");
-        else if(!items.actor2_ref)
+        else if(!items.actor2_ref) // no selection
+        {
             scroll->display_string("nobody\n");
-        else
+            return(true);
+        }
+        else // use potion
         {
             sint8 party_num = party->get_member_num(items.actor2_ref);
             scroll->display_string(party_num >= 0 ? party->get_actor_name(party_num)
@@ -1210,8 +1213,8 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
             else
                 scroll->display_string("No effect\n");
             destroy_obj(obj);
+            return(true);
         }
-        return(true);
     }
     return(false);
 }
@@ -1227,7 +1230,10 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
         if(!obj_ref && !items.actor2_ref)
             game->get_event()->useselect_mode(obj, "On ");
         else if(!obj_ref)
+        {
             scroll->display_string("nothing\n");
+            return(true);
+        }
         else
         {
             scroll->display_string(obj_manager->get_obj_name(obj_ref));
@@ -1247,8 +1253,8 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
             }
             else
                 scroll->display_string("No effect\n");
+            return(true);
         }
-        return(true);
     }
     return(false);
 }
