@@ -281,8 +281,6 @@ bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
 
 void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
- Event *event = Game::get_game()->get_event();
- MsgScroll *scroll = Game::get_game()->get_scroll();
  Obj *obj;
  
  x -= area.x;
@@ -349,7 +347,6 @@ GUI_status DollWidget::MouseDouble(int x, int y, int button)
 {
     UseCode *uc = Game::get_game()->get_usecode();
     MsgScroll *scroll = Game::get_game()->get_scroll();
-    Converse *converse = Game::get_game()->get_converse();
     MapWindow *map_window = Game::get_game()->get_map_window();
     Event *event = Game::get_game()->get_event();
     const char *target_name;

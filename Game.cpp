@@ -36,6 +36,7 @@
 #include "Party.h"
 #include "Converse.h"
 #include "Text.h"
+#include "FontManager.h"
 #include "ViewManager.h"
 
 #include "MsgScroll.h"
@@ -67,6 +68,7 @@ Game::~Game()
     delete obj_manager;
     delete palette;
     delete text;
+	delete font_manager;
     //delete scroll;
     delete game_map;
     delete actor_manager;
@@ -105,6 +107,9 @@ bool Game::loadGame(Screen *s, uint8 type)
    text = new Text(config);
    text->loadFont();
 
+   font_manager = new FontManager(config);
+   font_manager->init();
+   
    game_map = new Map(config);
 
    egg_manager = new EggManager(config, game_map);
@@ -140,7 +145,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    view_manager->init(gui, text, party, player, tile_manager, obj_manager, portrait);
  
    scroll = new MsgScroll(config);
-   scroll->init(text, player->get_name());
+   scroll->init(font_manager->get_font(0), player->get_name());
    gui->AddWidget(scroll);
 
    map_window->set_windowSize(11,11);

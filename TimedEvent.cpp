@@ -129,8 +129,6 @@ TimedPartyMove::~TimedPartyMove()
  */
 void TimedPartyMove::timed(uint32 evtime)
 {
-    Player *player = Game::get_game()->get_player();
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     repeat = false;
     for(uint32 a = 0; a < party->get_party_size(); a++)
     {
@@ -174,8 +172,6 @@ TimedPartyMoveToVehicle::TimedPartyMoveToVehicle(MapCoord *d, Obj *obj,
  */
 void TimedPartyMoveToVehicle::timed(uint32 evtime)
 {
-    Player *player = Game::get_game()->get_player();
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     repeat = false;
     for(uint32 a = 0; a < party->get_party_size(); a++)
     {

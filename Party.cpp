@@ -418,7 +418,6 @@ void Party::follow()
 {
     LineTestResult lt;
     MapCoord leader = member[0].actor->get_location();
-    uint8 ldir = member[0].actor->get_direction();
 
     for(uint32 m = 1; m < num_in_party; m++)
     {
@@ -432,8 +431,7 @@ void Party::follow()
         MapCoord target = get_formation_coords(m); // target in formation
         MapCoord dest = target; // where we decide to move to
         bool target_can_see_leader = !map->lineTest(target.x,target.y,leader.x,leader.y,leader.z,LT_HitUnpassable,lt);
-        bool member_can_see_target = !map->lineTest(here.x,here.y,target.x,target.y,leader.z,LT_HitUnpassable,lt);
-        bool leader_with_target = (target_can_see_leader && member_can_see_target);
+        //bool member_can_see_target = !map->lineTest(here.x,here.y,target.x,target.y,leader.z,LT_HitUnpassable,lt);
         if(target_can_see_leader && here == target) // Do nothing if already there
         {
             member[m].leader_x = leader.x; // update known location of leader

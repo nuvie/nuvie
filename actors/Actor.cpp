@@ -665,7 +665,6 @@ Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
 uint32
 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container)
 {
- U6Link *link;
  Obj *obj;
  uint8 oqty = 0;
  uint32 deleted = 0;
@@ -1143,7 +1142,6 @@ void Actor::clear()
  */
 bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
 {
-    Party *party = Game::get_game()->get_party();
     Actor *player_actor = Game::get_game()->get_player()->get_actor();
     // prevent multiple pushes when move was forced (and didn't check moves)
     if(moves == 0 && pusher != player_actor)

@@ -80,7 +80,7 @@ class InventoryWidget : public GUI_Widget {
  public:
  bool up_arrow();
  bool down_arrow();
- inline Obj *get_obj_at_location(int x, int y);
+ Obj *get_obj_at_location(int x, int y);
 };
 
 #endif /* __InventoryWidget_h__ */

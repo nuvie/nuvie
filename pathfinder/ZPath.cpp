@@ -149,7 +149,6 @@ ZPath::get_closest_dir(MapCoord &start, MapCoord &d1, MapCoord &d2, uint8 skip)
     sint8 turn = 0;
     sint16 xdiff = d1.x - start.x, ydiff = d1.y - start.y;
     sint8 xdir = (xdiff == 0) ? 0 : (xdiff < 0) ? -1 : 1, ydir = (ydiff == 0) ? 0 : (ydiff < 0) ? -1 : 1;
-    sint8 oxdir = xdir, oydir = ydir;
     uint32 cdist = 0;
     // turn towards closest axis (furthest distance)
     if(xdiff == 0 || ydiff == 0 || xdiff == ydiff) // moving in a straight line, or same distances

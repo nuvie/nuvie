@@ -37,8 +37,47 @@
 
 #define MSGSCROLL_CURSOR_DELAY 6 // used to slow down the animated cursor
 
+#define MSGSCROLL_SCROLLBACK_HEIGHT 50
+
+#include <list>
+#include <vector>
+using std::list;
+
+
 class Configuration;
-class Text;
+class Font;
+
+class MsgText
+{ 
+ public:
+
+ Font *font;
+ std::string s;
+ 
+ MsgText();
+ MsgText(std::string new_string, Font *f);
+ ~MsgText();
+ 
+ void append(std::string new_string);
+ void copy(MsgText *msg_text);
+ uint32 length();
+};
+
+class MsgLine
+{
+ public:
+
+ std::list<MsgText *> text;
+ uint32 total_length;
+
+ MsgLine() { total_length = 0; };
+ ~MsgLine();
+ 
+ void append(MsgText *new_text);
+ void remove_char();
+ uint32 length();
+ MsgText *get_text_at_pos(uint16 pos);
+};
 
 class MsgScroll: public GUI_Widget
 {
@@ -47,27 +86,23 @@ class MsgScroll: public GUI_Widget
  uint16 screen_x; //x offset to top left corner of MsgScroll
  uint16 screen_y; //y offset to top left corner of MsgScroll
  
- Text *text;
+ Font *font;
  bool keyword_highlight;
  bool input_mode;
  const char *permit_input; // character list, or 0 = any string
  bool permit_inputescape; // can RETURN or ESCAPE be used to escape input entry
  bool talking;
- char *prompt;
- uint16 prompt_buf_len;
+ 
+ MsgText prompt;
+ std::list<MsgText *> holding_buffer;
  
  bool page_break;
  bool show_cursor;
  
- char **msg_buf;//[scroll_height][scroll_width+1];
- uint8 *msg_buf_languages; //[scroll_height]
-
+ std::list<MsgLine *> msg_buf;
+ 
  uint16 scroll_height;
  uint16 scroll_width;
- 
- uint8 buf_pos;
- uint8 start_pos;
- bool buf_full;
  
  bool scroll_updated;
  uint8 cursor_char;
@@ -75,25 +110,34 @@ class MsgScroll: public GUI_Widget
  
  uint16 cursor_wait;
  
- char *string_buf;
- uint16 string_buf_len;
- uint16 string_buf_pos;
+ std::string input_buf;
+ uint16 line_count; // count the number of lines since last page break.
  
- char *input_buf;
- uint16 input_buf_len;
- uint16 input_buf_pos;
- 
+ uint16 display_pos;
  public:
  
  MsgScroll(Configuration *cfg);
  ~MsgScroll();
  
- bool init(Text *txt, char *player_name);
+ bool init(Font *f, char *player_name);
+ 
+ void process_holding_buffer();
+ 
+
+ MsgText *holding_buffer_get_token();
+ bool add_token(MsgText *token);
+ bool remove_char();
+ 
+ void set_font(Font *f);
+ 
+ void display_string(const char *string, Font *f);
+ 
+ void display_string(const char *string, uint16 length, uint8 lang_num);
  
  void display_string(const char *string, uint8 lang_num=0);
- void display_string(const char *string, uint16 string_len, uint8 lang_num);
- 
+ bool set_prompt(const char *new_prompt, Font *f=NULL);
  void display_prompt();
+ 
  void message(const char *string) { display_string(string); display_prompt(); }
  
  void set_keyword_highlight(bool state);
@@ -101,35 +145,32 @@ class MsgScroll: public GUI_Widget
  void set_input_mode(bool state, const char *allowed = NULL,
                      bool can_escape = true);
  void set_talking(bool state) { talking = state; }
- bool set_prompt(char *new_prompt);
+
  void set_show_cursor(bool state) { show_cursor = state; }
 
  bool get_page_break() { return(page_break); }
 
- bool handle_input(const SDL_keysym *input);
- GUI_status HandleEvent(const SDL_Event *event);
+ GUI_status KeyDown(SDL_keysym key);
  GUI_status MouseUp(int x, int y, int button);
+ MsgText *get_token_at_pos(uint16 x, uint16 y);
  //void updateScroll();
  void Display(bool full_redraw);
  
  void clearCursor(uint16 x, uint16 y);
  void drawCursor(uint16 x, uint16 y);
- 
- bool buf_addString(char *string, uint8 length, uint8 lang_num);
- bool buf_next();
- bool buf_prev();
- 
- bool set_string_buf(const char *string, uint16 len);
- bool set_string_buf_append(const char *string, uint16 len);
- bool set_string_buf_pos(uint16 pos);
- 
- void set_page_break(uint16 pos);
+  
+ void set_page_break();
  
  bool input_buf_add_char(char c);
  bool input_buf_remove_char();
  
- char *get_input();
- char *peek_at_input();
+ const char *get_input();
+ const char *peek_at_input();
+ 
+ protected:
+ 
+ inline MsgLine *add_new_line();
+ void drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y);
 };
 
 

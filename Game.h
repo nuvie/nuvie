@@ -29,6 +29,7 @@ class Screen;
 class Background;
 class GamePalette;
 class Text;
+class FontManager;
 class TileManager;
 class ObjManager;
 class ActorManager;
@@ -63,6 +64,7 @@ class Game
  Background *background; 
  GamePalette *palette;
  Text *text;
+ FontManager *font_manager;
  TileManager *tile_manager;
  ObjManager *obj_manager;
  ActorManager *actor_manager;
@@ -107,6 +109,7 @@ class Game
 // U6Shape *get_background()         { return(background); }
  GamePalette *get_palette()        { return(palette); }
  Text *get_text()                  { return(text); }
+ FontManager *get_font_manager()   { return(font_manager); }
  TileManager *get_tile_manager()   { return(tile_manager); }
  ObjManager *get_obj_manager()     { return(obj_manager); }
  ActorManager *get_actor_manager() { return(actor_manager); }

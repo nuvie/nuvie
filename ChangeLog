@@ -1,3 +1,18 @@
+2004-01-31  Eric Fry <efry at users.sourceforge.net>
+	* Rewrote the MsgScroll Class.
+	  - You can now scroll back through the MsgScroll when in input mode.
+	    Using the up/down arrow keys.
+	  - Clicking on a word while in input mode will add the word to your
+	    input.
+	  - You can now have multiple fonts per line.
+	* Added new font/fontmanager classes to Nuvie. These classes should
+	  be used instead of Text. This should help us in supporting MD and SE
+	  fonts.
+	* Fixed a few compiler warnings. Removed unused variables.
+ 	* Fixed InventoryWidget bug [ 881842 ] where every inventory slot
+	  displayed the empty slot tile.
+	* Fixed leak when viewing temp actor portraits.
+
 2004-01-30  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added ability to MOVE actors (with the keyboard).
 	* Fixed: obvious logical AND/OR error in ConverseInterpret (shortcut

@@ -177,7 +177,6 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
  unsigned char *ptr;
  uint16 tile_num;
  Obj *obj;
- Tile *tile;
  uint16 qty = 0;
  
  if(level == 0)

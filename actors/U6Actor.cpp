@@ -914,7 +914,6 @@ inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_dire
 inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_direction)
 {
  std::list<Obj *>::iterator obj;
- uint16 pitch = map->get_width(z);
  uint8 frame_offset =  (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
  Obj *head, *tail, *wing1, *wing2;
  

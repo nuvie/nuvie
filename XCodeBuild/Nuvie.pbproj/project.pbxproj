@@ -18,6 +18,7 @@
 				CC = "";
 				CPLUSPLUS = "";
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" /Users/eric/Library/Frameworks";
+				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -123,6 +124,8 @@
 				073C4A360568DC54003B7A20,
 				078CE6690582F64100EC127A,
 				079A4265058748A2003627C9,
+				07F10D2805C7D27A0029E1F1,
+				07F10D2A05C7D27A0029E1F1,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -656,6 +659,8 @@
 				0703C0ED054BE5660003D6CB,
 				0703C0EE054BE5660003D6CB,
 				078CE6680582F64100EC127A,
+				07F10D2705C7D27A0029E1F1,
+				07F10D2905C7D27A0029E1F1,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2595,6 +2600,78 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
+		07F10D1D05C7D2490029E1F1 = {
+			children = (
+				07F10D2305C7D27A0029E1F1,
+				07F10D2405C7D27A0029E1F1,
+				07F10D2505C7D27A0029E1F1,
+				07F10D2605C7D27A0029E1F1,
+			);
+			isa = PBXGroup;
+			name = Fonts;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		07F10D2305C7D27A0029E1F1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Font.cpp;
+			path = ../fonts/Font.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F10D2405C7D27A0029E1F1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Font.h;
+			path = ../fonts/Font.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F10D2505C7D27A0029E1F1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FontManager.cpp;
+			path = ../fonts/FontManager.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F10D2605C7D27A0029E1F1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FontManager.h;
+			path = ../fonts/FontManager.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F10D2705C7D27A0029E1F1 = {
+			fileRef = 07F10D2305C7D27A0029E1F1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07F10D2805C7D27A0029E1F1 = {
+			fileRef = 07F10D2405C7D27A0029E1F1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07F10D2905C7D27A0029E1F1 = {
+			fileRef = 07F10D2505C7D27A0029E1F1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07F10D2A05C7D27A0029E1F1 = {
+			fileRef = 07F10D2605C7D27A0029E1F1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //070
 //071
 //072
@@ -2730,6 +2807,7 @@
 		};
 		29B97315FDCFA39411CA2CEA = {
 			children = (
+				07F10D1D05C7D2490029E1F1,
 				072BE3BC041B07DD00A8000A,
 				074B913604E4C4BA00A8000A,
 				070B5A5704D3D7AE00A8000A,

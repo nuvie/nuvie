@@ -544,7 +544,6 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  Obj *obj;
  uint16 x,y;
  uint8 level;
- float weight;
  
  player->get_location(&x,&y,&level);
 
@@ -817,7 +816,6 @@ bool Event::look()
  */
 bool Event::pushTo(sint16 rel_x, sint16 rel_y)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     Map *map = Game::get_game()->get_game_map();
     LineTestResult lt;
     if(rel_x == 0 && rel_y == -1) // FIXME: move direction names somewhere else

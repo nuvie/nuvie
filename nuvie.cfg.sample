@@ -5,7 +5,7 @@
  <datadir>./data</datadir>
 
  <general>
-  <lighting>1</lighting>
+  <lighting>original</lighting>
  </general>
 
  <video>

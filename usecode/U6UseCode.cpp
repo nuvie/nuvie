@@ -1674,6 +1674,7 @@ bool U6UseCode::look_sign(Obj *obj, uint8 ev)
             scroll->display_string(":\n\n");
             if((data = book->get_book_data(obj->quality - 1)))
             {
+/*
              // FIX Any alternate-font text is in < >, Runic is capitalized,
              // Gargish is lower-case. Translations follow untranslated text and
              // are wrapped in & &.
@@ -1684,9 +1685,10 @@ bool U6UseCode::look_sign(Obj *obj, uint8 ev)
                 }
              else
                 {
-                 scroll->display_string(data,strlen(data),0);
-                 scroll->display_string("\n",0);
-                }
+*/
+                 scroll->display_string(data,strlen(data)); //normal font
+                 scroll->display_string("\n"); // normal font
+//                }
              free(data);
             }
 

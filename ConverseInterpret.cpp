@@ -466,7 +466,6 @@ bool ConverseInterpret::op(stack<converse_value> &i)
     Obj *cnpc_obj = NULL;
     Player *player = converse->player;
     converse_db_s *cdb;
-    char *dstr = NULL;
 
     switch(in = pop_arg(i))
     {
@@ -697,7 +696,6 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
     bool success = true;
     converse_value v[4]; // input
     converse_value in, out = 0;
-    ConvScript *cs = converse->script;
     Actor *cnpc = NULL;
     Obj *cnpc_obj = NULL;
     converse_db_s *cdb;

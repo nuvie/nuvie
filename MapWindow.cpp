@@ -318,9 +318,9 @@ if(!screen)
      if(in_dungeon_level())
 	     screen->set_ambient( 0x00 );
      else if( h == 19 ) //Dusk
-         screen->set_ambient( 255*(float)(60-clock->get_minute())/60.0 );
+         screen->set_ambient( (uint8)(255*(float)(60-clock->get_minute())/60.0) );
      else if( h == 5 ) //Dawn
-         screen->set_ambient( 255*(float)clock->get_minute()/60.0 );
+         screen->set_ambient( (uint8)(255*(float)clock->get_minute()/60.0) );
      else if( h > 5 && h < 19 ) //Day
          screen->set_ambient( 0xFF );
      else //Night
@@ -1173,7 +1173,7 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
  */
 void MapWindow::drawAnims()
 {
-static uint32 add_test = 0;
+//static uint32 add_test = 0;
 //#warning ANIMMANAGER
 //if(add_test == 0)
 //    anim_manager->new_anim(new TextAnim());

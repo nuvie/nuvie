@@ -84,7 +84,6 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
  unsigned char *lzw_data;
  uint32 new_length;
  unsigned char *new_portrait;
- Obj *actor_obj;
  
  if(actor == NULL)
    return NULL;
@@ -106,9 +105,7 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
         return(NULL);
     else if(num > 194) // there are 194 npc portraits
       {
-#warning Where is the return from Actor::make_obj freed?
-	   actor_obj = actor->make_obj(); //check for temporary actors with portraits. eg guards and wisps
-	   switch(actor_obj->obj_n)
+	   switch(actor->get_obj_n()) //check for temporary actors with portraits. eg guards and wisps
 	    {
 		 case OBJ_U6_GUARD : num = PORTRAIT_U6_GUARD-1; break;
 		 case OBJ_U6_WISP : num = PORTRAIT_U6_WISP-1; break;
