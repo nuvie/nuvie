@@ -42,7 +42,7 @@ class Text
    bool loadFont();
    
    bool drawString(Screen *screen, std::string str, uint16 x, uint16 y, uint8 lang_num=0);
-   bool drawString(Screen *screen, char *str, uint16 x, uint16 y, uint8 lang_num=0);
+   bool drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 lang_num=0);
    uint8 Text::get_char_num(uint8 c, uint8 lang_num);
    void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y); 
 };

@@ -67,7 +67,7 @@ bool Text::drawString(Screen *screen, std::string str, uint16 x, uint16 y, uint8
  return drawString(screen, str.c_str(), x, y, lang_num);
 }
 
-bool Text::drawString(Screen *screen, char *str, uint16 x, uint16 y, uint8 lang_num)
+bool Text::drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 lang_num)
 {
  uint16 i, len;
  
