@@ -700,8 +700,55 @@ bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
 
 bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 {
-    scroll->display_string("\nYou've finished the game!!\nPity we haven't implemented the end sequence yet.\n");
-    return(true);
+ Obj *britannian_lens, *gargoyle_lens;
+ Obj *container_obj;
+ Obj *codex;
+ U6Link *link;
+ uint8 moonstone_check = 0;
+ MapCoord player_location = player->get_actor()->get_location();
+     
+ if(obj->container != NULL || player_location.z == 0)  // make sure we've got all 8 moonstones in our vortex cube.
+   {
+    codex = obj_manager->find_obj(OBJ_U6_CODEX, 128, player_location.z, NULL); // 128 = codex's book id
+    britannian_lens = obj_manager->find_obj(OBJ_U6_BRITANNIAN_LENS, 0, player_location.z, NULL);
+    gargoyle_lens = obj_manager->find_obj(OBJ_U6_GARGOYLE_LENS, 0, player_location.z, NULL);
+        
+    // make sure the player is close to the codex
+    if(codex && abs(player_location.x - codex->x) < 11 && abs(player_location.y - codex->y) < 11) //FIXME this should probably be mapwindow size
+      {
+       // check that the lenses are in the correct place.
+       if(britannian_lens && gargoyle_lens && 
+          britannian_lens->x == 0x399 && britannian_lens->y == 0x353 && britannian_lens->z == 0 &&
+          gargoyle_lens->x == 0x39d && gargoyle_lens->y == 0x353 && gargoyle_lens->z == 0)
+         {
+          for(link = obj->container->start(); link != NULL; link = link->next)
+            {
+             container_obj = (Obj *)link->data;
+             if(container_obj->obj_n == OBJ_U6_MOONSTONE)
+               {
+                moonstone_check |= 1 << container_obj->frame_n;
+               }
+            }
+
+          if(moonstone_check == 0xff) // have we got all 8 moonstones?
+            {
+             obj_manager->remove_obj(codex);
+             delete codex;
+          
+             scroll->display_string("\nThe Codex has vanished!\n");
+
+             scroll->display_string("\nYou've finished the game!!\nPity we haven't implemented the end sequence yet.\n");
+
+             return(true);
+            }
+         }
+      }
+   }
+
+ printf("moonstone_check = %d\n", moonstone_check);  
+ scroll->display_string("\nNo Effect!\n");
+ 
+ return true;
 }
 
 

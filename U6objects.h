@@ -55,6 +55,8 @@
 #define OBJ_U6_FORCE_FIELD          51
 
 #define OBJ_U6_MAGIC_BOW            54
+#define OBJ_U6_ARROW                55
+#define OBJ_U6_BOLT                 56
 #define OBJ_U6_SPELLBOOK            57
 
 #define OBJ_U6_CODEX                59
@@ -63,6 +65,7 @@
 
 #define OBJ_U6_GARLIC               67
 
+#define OBJ_U6_MOONSTONE            73
 #define OBJ_U6_ANKH_AMULET          74
 #define OBJ_U6_SNAKE_AMULET         75
 #define OBJ_U6_AMULET_OF_SUBMISSION 76
@@ -295,6 +298,10 @@
 #define OBJ_U6_WOMAN               387
 #define OBJ_U6_CAT                 388
 #define OBJ_U6_MUSICIAN_PLAYING    392
+
+#define OBJ_U6_BRITANNIAN_LENS     394
+#define OBJ_U6_GARGOYLE_LENS       396
+
 #define OBJ_U6_LORD_BRITISH        409
 #define OBJ_U6_AVATAR              410
 
