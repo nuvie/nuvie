@@ -65,70 +65,75 @@ Game::~Game()
  
 bool Game::loadGame(Screen *s, uint8 type)
 {
- 
  screen = s;
  game_type = type;
- 
- assignGameConfigValues(game_type);
- 
- tile_manager = new TileManager(config);
- tile_manager->loadTiles();
+ try
+  {
+   tile_manager = new TileManager(config);
+   tile_manager->loadTiles();
 
- obj_manager = new ObjManager(config);
- obj_manager->loadObjs(tile_manager);
+   obj_manager = new ObjManager(config);
+   obj_manager->loadObjs(tile_manager);
  
- palette = new GamePalette(screen,config);
+   palette = new GamePalette(screen,config);
  
- clock = new GameClock(config);
- clock->init();
+   clock = new GameClock(config);
+   clock->init();
  
- loadBackground();
+   loadBackground();
 
- text = new Text(config);
- text->loadFont();
+   text = new Text(config);
+   text->loadFont();
 
- game_map = new Map(config);
- game_map->loadMap(tile_manager, obj_manager);
+   game_map = new Map(config);
+   game_map->loadMap(tile_manager, obj_manager);
  
- actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
- actor_manager->loadActors();
+   actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
+   actor_manager->loadActors();
   
- map_window = new MapWindow(config);
- map_window->init(screen, game_map, tile_manager, obj_manager, actor_manager);
+   map_window = new MapWindow(config);
+   map_window->init(screen, game_map, tile_manager, obj_manager, actor_manager);
 
- player = new Player(config);
- party = new Party(config);
- player->init(actor_manager, map_window, clock, party);
- party->init(this, actor_manager); // (reverse Game reference test-case)
+   player = new Player(config);
+   party = new Party(config);
+   player->init(actor_manager, map_window, clock, party);
+   party->init(this, actor_manager); // (reverse Game reference test-case)
  
- portrait = new Portrait(config);
- portrait->init();
+   portrait = new Portrait(config);
+   portrait->init();
  
- view_manager = new ViewManager(config);
- view_manager->init(screen, text, party, tile_manager, obj_manager, portrait);
+   view_manager = new ViewManager(config);
+   view_manager->init(screen, text, party, tile_manager, obj_manager, portrait);
  
- scroll = new MsgScroll(config);
- scroll->init(screen, text, player->get_name());
+   scroll = new MsgScroll(config);
+   scroll->init(screen, text, player->get_name());
 
- map_window->set_windowSize(11,11);
- //map_window->move(0x12e,0x16b);
- map_window->centerMapOnActor(player->get_actor());
+   map_window->set_windowSize(11,11);
+   //map_window->move(0x12e,0x16b);
+   map_window->centerMapOnActor(player->get_actor());
 
- converse = new Converse();
- converse->init(config, scroll, actor_manager, clock, player, view_manager, obj_manager);
+   converse = new Converse();
+   converse->init(config, scroll, actor_manager, clock, player, view_manager, obj_manager);
 
- // Correct usecode class for each game
- switch (game_type)
-   { 
-    case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(config); break;
-    case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(config); break;
-    case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(config); break;
-   }
+   // Correct usecode class for each game
+   switch (game_type)
+     { 
+      case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(config); break;
+      case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(config); break;
+      case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(config); break;
+     }
 
- usecode->init(obj_manager, game_map, player, scroll);
+   usecode->init(obj_manager, game_map, player, scroll);
  
- event = new Event(config);
- event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode);
+   event = new Event(config);
+   event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode);
+  }
+ catch(const char *error_string)
+  {
+   printf("Error: %s\n",error_string);
+   return false;
+  }
+
  return true;
 }
 
@@ -217,28 +222,4 @@ void Game::play()
 }
 
 
-void Game::assignGameConfigValues(uint8 game_type)
-{
- std::string game_name, game_id;
- 
- config->set("config/GameType",game_type);
-
- switch(game_type)
-  {
-   case NUVIE_GAME_U6 : game_name.assign("ultima6");
-                        game_id.assign("u6");
-                        break;
-   case NUVIE_GAME_MD : game_name.assign("martian");
-                        game_id.assign("md");
-                        break;
-   case NUVIE_GAME_SE : game_name.assign("savage");
-                        game_id.assign("se");
-                        break;
-  }
-
- config->set("config/GameName",game_name);
- config->set("config/GameID",game_id);
- 
- return;
-}
  

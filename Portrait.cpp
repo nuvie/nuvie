@@ -36,7 +36,7 @@ bool Portrait::init()
  
  config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
  if(objlist.open(filename,"rb") == false)
-   return false;
+   throw "Opening savegame/objlist";
 
  objlist.seek(0x1c72);
  
@@ -45,21 +45,15 @@ bool Portrait::init()
  
  config->pathFromValue("config/ultima6/gamedir","portrait.a",filename);
  if(portrait_a.open(filename,4) == false)
-    return false;
-
- printf("num portraits in a = %d\n",portrait_a.get_num_items());
+    throw "Opening portrait.a";
  
  config->pathFromValue("config/ultima6/gamedir","portrait.b",filename);
  if(portrait_b.open(filename,4) == false)
-    return false;
-
- printf("num portraits in b = %d\n",portrait_b.get_num_items());
+    throw "Opening portrait.b";
  
  config->pathFromValue("config/ultima6/gamedir","portrait.z",filename);
  if(portrait_z.open(filename,4) == false)
-    return false;
-
- printf("num portraits in z = %d\n",portrait_z.get_num_items());
+    throw "Opening portrait.z";
  
  return true;
 }

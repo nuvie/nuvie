@@ -34,10 +34,9 @@ GameSelect::~GameSelect()
  
 }
 
-bool GameSelect::load(Screen *s, uint8 game_type)
+uint8 GameSelect::load(Screen *s, uint8 game_type)
 {
  std::string cfg_game_string;
- bool ret;
  
  screen = s;
  
@@ -49,13 +48,6 @@ bool GameSelect::load(Screen *s, uint8 game_type)
     if(game_type == NUVIE_GAME_NONE)
       game_type = NUVIE_GAME_U6; // FIX we should select game from a menu here.
    }
-
- game = new Game(config);
  
- if((ret = game->loadGame(screen,game_type)))
-   game->play();
-
- delete game;
- 
- return ret;
+ return game_type;
 }

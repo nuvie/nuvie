@@ -47,6 +47,8 @@ class Nuvie
    
    bool initConfig();
    bool loadConfigFile(std::string filename);
+   void assignGameConfigValues(uint8 game_type);
+   bool checkGameDir(uint8 game_type);
 };
 
 

@@ -42,15 +42,19 @@ Nuvie::Nuvie()
 {
  config = NULL;
  screen = NULL;
+ game = NULL;
 }
 
 Nuvie::~Nuvie()
 {
  if(config != NULL)
    delete config;
+
  if(screen != NULL)
- delete screen;
- //delete game;
+   delete screen;
+   
+ if(game != NULL)
+   delete game;
 }
 
 
@@ -64,13 +68,18 @@ bool Nuvie::init(int argc, char **argv)
  else
    game_type = NUVIE_GAME_NONE;
 
+ //find and load config file
  if(initConfig() == false)
-   return false;
- 
+   {
+    printf("Error: No config file found!\n");
+    return false;
+   }
+
+ //load SDL screen and scaler if selected.
  screen = new Screen(config);
  if(screen->init(320,200) == false)
    {
-    printf("Error: initializing screen\n");
+    printf("Error: Initializing screen!\n");
     return false;
    }
 
@@ -78,17 +87,34 @@ bool Nuvie::init(int argc, char **argv)
  
  game_select = new GameSelect(config);
  
- game_select->load(screen,game_type);
- 
- 
+ // select game from graphical menu if required
+ game_type = game_select->load(screen,game_type);
  delete game_select;
+ if(game_type == NUVIE_GAME_NONE)
+   return false;
  
+ //setup various game related config variables.
+ assignGameConfigValues(game_type);
+ 
+ //check for a vaild path to the selected game.
+ if(checkGameDir(game_type) == false)
+   return false;
+
+ game = new Game(config);
+ 
+ if(game->loadGame(screen,game_type) == false)
+   {
+    delete game;
+    return false;
+   }
+
  return true;
 }
 
 bool Nuvie::play()
 {
- 
+ if(game)
+  game->play();
 
  return true;
 }
@@ -107,7 +133,7 @@ bool Nuvie::initConfig()
  config_path.assign(getenv("HOME"));
 // config_path.append(U6PATH_DELIMITER);
  config_path.append("/.nuvierc");
-  
+ 
  if(loadConfigFile(config_path))
    return true;
 #endif
@@ -142,15 +168,59 @@ bool Nuvie::initConfig()
 bool Nuvie::loadConfigFile(std::string filename)
 {
  struct stat sb;
-  
- // FIX! need to add support for finding nuvie.cfg file.
+ printf("Loading Config from '%s': ", filename.c_str());
+
  if(stat(filename.c_str(),&sb) == 0)
   {
     if(config->readConfigFile(filename,"config") == true)
       {
+       printf("Done.\n");
        return true;
       }
   }
-  
+
+ printf("Failed.\n");
+ return false;
+}
+
+void Nuvie::assignGameConfigValues(uint8 game_type)
+{
+ std::string game_name, game_id;
+ 
+ config->set("config/GameType",game_type);
+
+ switch(game_type)
+  {
+   case NUVIE_GAME_U6 : game_name.assign("ultima6");
+                        game_id.assign("u6");
+                        break;
+   case NUVIE_GAME_MD : game_name.assign("martian");
+                        game_id.assign("md");
+                        break;
+   case NUVIE_GAME_SE : game_name.assign("savage");
+                        game_id.assign("se");
+                        break;
+  }
+
+ config->set("config/GameName",game_name);
+ config->set("config/GameID",game_id);
+ 
+ return;
+}
+
+bool Nuvie::checkGameDir(uint8 game_type)
+{
+ struct stat sb;
+ std::string path;
+ 
+ config_get_path(config, "", path);
+
+ if(stat(path.c_str(),&sb) == 0 && sb.st_mode & S_IFDIR)
+  {
+   return true;
+  }
+
+ printf("Error: Invalid gamedir! '%s'\n", path.c_str());
+ 
  return false;
 }

@@ -36,8 +36,8 @@
 #define MSGSCROLL_MD_WIDTH 16
 #define MSGSCROLL_MD_HEIGHT 8
 
-#define MSGSCROLL_SE_WIDTH 17
-#define MSGSCROLL_SE_HEIGHT 10
+#define MSGSCROLL_SE_WIDTH 16
+#define MSGSCROLL_SE_HEIGHT 8
 
 #define MSGSCROLL_CURSOR_DELAY 6 // used to slow down the animated cursor
 

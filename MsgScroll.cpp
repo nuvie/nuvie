@@ -51,8 +51,8 @@ MsgScroll::MsgScroll(Configuration *cfg)
                          
     case NUVIE_GAME_SE : scroll_width = MSGSCROLL_SE_WIDTH;
                          scroll_height = MSGSCROLL_SE_HEIGHT;
-                         screen_x = 176;
-                         screen_y = 112;
+                         screen_x = 184;
+                         screen_y = 128;
                          break;
    }
 

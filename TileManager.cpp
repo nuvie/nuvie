@@ -80,19 +80,21 @@ bool TileManager::loadTiles()
     case NUVIE_GAME_U6 : 
                          tile_data = lzw->decompress_file(maptiles_path,maptiles_size);
                          if(tile_data == NULL)
-                           return false;
+                           throw "Decompressing maptiles.vga";
                          masktype = lzw->decompress_file(masktype_path,masktype_size);
+                         if(masktype == NULL)
+                           throw "Decompressing masktype.vga";
                          break;
     case NUVIE_GAME_MD :
     case NUVIE_GAME_SE : if(lib_file.open(maptiles_path,4,game_type) == false)
-                           return false;
+                           throw "Opening maptiles.vga";
                          maptiles_size = lib_file.get_item_size(0);
 
                          tile_data = lib_file.get_item(0);
                          lib_file.close();
                          
                          if(lib_file.open(masktype_path,4,game_type) == false)
-                           return false;
+                           throw "Opening masktype.vga";
                          //masktype_size = lib_file.get_item_size(0);
 
                          masktype = lib_file.get_item(0);
@@ -101,19 +103,20 @@ bool TileManager::loadTiles()
    }
  
  config_get_path(config,"objtiles.vga",path);
- objtiles_vga.open(path,"rb");
- 
+ if(objtiles_vga.open(path,"rb") == false)
+   throw "Opening objtiles.vga";
+
  objtiles_size = objtiles_vga.filesize();
  
  tile_data = (unsigned char *)realloc(tile_data,maptiles_size + objtiles_size);
   
  objtiles_vga.readToBuf(&tile_data[maptiles_size], objtiles_size);
- 
- 
+  
  config_get_path(config,"tileindx.vga",path);
 
- tileindx_vga.open(path,"rb");
- 
+ if(tileindx_vga.open(path,"rb") == false)
+   throw "Opening tileindx.vga";
+
  for(i=0;i<2048;i++)
   {
    tile_offset = tileindx_vga.read2() * 16;
@@ -143,11 +146,11 @@ bool TileManager::loadTiles()
  
  look = new Look(config);
  if(look->init() == false)
-   return false;
+   throw "Initialising Look Class";
 
  desc_buf = (char *)malloc(look->get_max_len() + 6); // add space for "%03d \n\0" or "the \n\0"
  if(desc_buf == NULL)
-   return false;
+   throw "Allocating desc_buf";
    
  loadAnimMask();
  

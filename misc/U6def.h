@@ -10,6 +10,10 @@
 #define NUVIE_GAME_MD    2
 #define NUVIE_GAME_SE    4
 
+#define NUVIE_CONFIG_NAME_U6 "ultima6"
+#define NUVIE_CONFIG_NAME_MD "martian"
+#define NUVIE_CONFIG_NAME_SE "savage"
+
 /*
 #ifndef BOOL
 typedef unsigned char BOOL;

@@ -39,3 +39,5 @@ uint8 get_game_type(const char *string)
 
  return NUVIE_GAME_NONE;
 }
+
+

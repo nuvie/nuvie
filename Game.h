@@ -109,7 +109,6 @@ class Game
  Event *get_event()                { return(event); }
 
  protected:
- void assignGameConfigValues(uint8 game_type);
  
 };
 

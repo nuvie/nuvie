@@ -83,7 +83,8 @@ bool ObjManager::loadObjs(TileManager *tm)
      filename[len-1] = y;
      filename[len-2] = x;
      //printf("Loading %s\n",filename);
-     loadObjSuperChunk(filename,0);
+     if(loadObjSuperChunk(filename,0) == false)
+       throw "Loading objects";
      i++;
     }
   }
@@ -640,7 +641,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
 
  obj_tree = get_obj_tree(level);
  if(obj_tree == NULL)
-   return false;
+   throw "Getting obj_tree";
 
  if(file.open(filename,"rb") == false)
    return false;
