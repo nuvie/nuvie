@@ -123,19 +123,27 @@ SOURCE=..\conf\XMLTree.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\files\NuvieIO.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\NuvieIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\NuvieIOFile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\NuvieIOFile.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\files\U6Bmp.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\U6Bmp.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\U6File.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\U6File.h
 # End Source File
 # Begin Source File
 
@@ -152,6 +160,14 @@ SOURCE=..\files\U6Lzw.cpp
 # Begin Source File
 
 SOURCE=..\files\U6Lzw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\U6Shape.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\U6Shape.h
 # End Source File
 # End Group
 # Begin Group "misc files"
@@ -176,6 +192,14 @@ SOURCE=..\misc\U6LList.cpp
 # Begin Source File
 
 SOURCE=..\misc\U6LList.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\misc\U6misc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\misc\U6misc.h
 # End Source File
 # End Group
 # Begin Group "screen files"
@@ -252,6 +276,14 @@ SOURCE=..\Converse.cpp
 # Begin Source File
 
 SOURCE=..\Converse.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\ConverseInterpret.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\ConverseInterpret.h
 # End Source File
 # Begin Source File
 
@@ -429,6 +461,22 @@ SOURCE=..\views\ViewManager.h
 # Begin Group "usecode files"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\usecode\MDUseCode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\MDUseCode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\SEUseCode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\SEUseCode.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\usecode\U6UseCode.cpp
