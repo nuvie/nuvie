@@ -173,15 +173,16 @@ bool Party::loadParty()
  */
 void Party::reform_party()
 {
+    uint32 n;
     member[0].form_x = 0; member[0].form_y = 0;
     switch(formation)
     {
         case PARTY_FORM_COLUMN:
-            for(uint32 n = 1; n < num_in_party; n++)
+            for(n = 1; n < num_in_party; n++)
             {   member[n].form_x = 0; member[n].form_y = n; }
             break;
         case PARTY_FORM_ROW:
-            for(uint32 n = 1; n < num_in_party; n++)
+            for(n = 1; n < num_in_party; n++)
             {   member[n].form_x = -n; member[n].form_y = 0; }
             break;
         case PARTY_FORM_PHALANX: // FIXME: need to move party first
@@ -192,7 +193,7 @@ void Party::reform_party()
             member[5].form_x = 1; member[5].form_y = -1;
             member[6].form_x = -1; member[6].form_y = 1;
             member[7].form_x = 1; member[7].form_y = 1;
-            for(uint32 n = 8; n < num_in_party; n++) // the rest "tail"
+            for(n = 8; n < num_in_party; n++) // the rest "tail"
             {   member[n].form_x = 0; member[n].form_y = (n-8)+2; }
             break;
         case PARTY_FORM_DELTA:

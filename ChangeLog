@@ -1,3 +1,8 @@
+2003-07-27  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Fixed bug where y/n questions in conversations would prevent input
+	and lock the game up.
+	* Fix in Party.cpp for compiling with MSVC
+
 2003-07-15  Eric Fry <efry@users.sourceforge.net>
 	* compile fixed for Mac OS X.
 	* added combat_mode to Actor.
