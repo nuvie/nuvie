@@ -44,7 +44,7 @@ class ViewManager
  protected:
  
  Configuration *config;
- 
+ int game_type;
  Screen *screen;
  Text *text;
  TileManager *tile_manager;

@@ -31,7 +31,40 @@ Using Nuvie
 -----------
 
 Nuvie requires some configuration. You will at least need to set the path
-to your ultima6 directory in nuvie.cfg
+to your ultima6 directory in nuvie.cfg 
+
+A sample config file has been included nuvie.cfg.sample
+
+Note! The Martian Dreams and Savage Empire games currently need a working copy
+of Ultima 6 to function. 
+
+Keyboard commands
+-----------------
+
+g         Get an object.
+l         Look at an object.
+q         Quit Nuvie.
+t         Talk to an NPC.
+u         Use an object.
+
+Scalers
+-------
+
+Nuvie currently supports the following scalers.
+
+Note! These scaler names are case-sensitive in the config file.
+
+Point
+Interlaced
+2xSaI
+Super2xSaI
+Scale2x
+SuperEagle
+BiLinear
+BiLinearPlus
+BilinearInterlaced
+BilinearHalfInterlaced
+BilinearQuarterInterlaced
 
 
 Credits and Thanks

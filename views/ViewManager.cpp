@@ -26,6 +26,7 @@
 ViewManager::ViewManager(Configuration *cfg)
 {
  config = cfg;
+ config->value("config/GameType",game_type);
 }
  
 ViewManager::~ViewManager()
@@ -59,9 +60,12 @@ bool ViewManager::handle_input(SDLKey *input)
 
 void ViewManager::update_display()
 {
- screen->fill(0x31, 176, 8, 136, 96);
- current_view->update_display();
- screen->update(176, 8, 136, 96);
+ if(game_type == NUVIE_GAME_U6) //HACK! remove this when views support MD and SE
+   {
+    screen->fill(0x31, 176, 8, 136, 96);
+    current_view->update_display();
+    screen->update(176, 8, 136, 96);
+   }
 }
 
 void ViewManager::set_portrait_mode(uint8 actor_num, char *name)
