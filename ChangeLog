@@ -1,3 +1,7 @@
+2003-09-04  Michael Fink <vividos@users.sourceforge.net>
+	* Fixed most memory leaks
+	* Updated MSVC project file
+
 2003-09-04  Eric Fry <efry@users.sourceforge.net>
 	* More Drag and Drop changes. Dragging an item from within the inventory
 	  to a container should work correctly now.
