@@ -27,6 +27,9 @@ nuvie_SOURCES = \
 	screen/Surface.cpp \
 	screen/Surface.h \
 \
+	views/InventoryView.cpp \
+	views/InventoryView.h \
+\
 	Actor.cpp \
 	Actor.h \
 	ActorManager.cpp \

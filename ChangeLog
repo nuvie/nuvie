@@ -1,3 +1,7 @@
+2003-05-13  Eric Fry <efry@users.sourceforge.net>
+	* Event: Alt-213 info string & Alt-125 advance hour added.
+	* InventoryView: Started work on inventory view.
+
 2003-05-09  Eric Fry <efry@users.sourceforge.net>
 	* Event: Alt-214 now teleports.
 

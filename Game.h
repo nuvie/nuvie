@@ -39,6 +39,7 @@
 #include "Player.h"
 #include "Party.h"
 #include "Converse.h"
+#include "InventoryView.h"
 
 #include "MsgScroll.h"
 #include "Map.h"
@@ -67,7 +68,9 @@ class Game
  Player *player;
  Party *party;
  Converse *converse;
-
+ 
+ InventoryView *inventory_view;
+ 
  GameClock *clock;
  
  Event *event;

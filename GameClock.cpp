@@ -48,7 +48,7 @@ bool GameClock::init()
  if(objlist.open(filename,"rb") == false)
    return false;
 
- objlist.seek(0x1bf3); // Start of Actor position info
+ objlist.seek(0x1bf3); // start of time data
 
  minute = objlist.read1();
  hour = objlist.read1();
@@ -79,6 +79,15 @@ void GameClock::inc_move_counter_by_a_minute()
  move_counter += GAMECLOCK_TICKS_PER_MINUTE;
  
  inc_minute();
+}
+
+// advance game time to the start of the next hour.
+
+void GameClock::advance_to_next_hour()
+{
+ minute = 0;
+ 
+ inc_hour();
 }
 
 void GameClock::inc_minute()
@@ -170,6 +179,21 @@ uint8 GameClock::get_hour()
 uint8 GameClock::get_minute()
 {
  return minute;
+}
+
+uint8 GameClock::get_day()
+{
+ return day;
+}
+
+uint8 GameClock::get_month()
+{
+ return month;
+}
+
+uint16 GameClock::get_year()
+{
+ return year;
 }
 
 char *GameClock::get_date_string()

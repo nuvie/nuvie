@@ -34,11 +34,12 @@ Event::~Event()
 }
 
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
-                 Converse *c)
+                 GameClock *gc, Converse *c)
 {
  obj_manager = om;
  map_window = mw;
  scroll = ms;
+ clock = gc;
  player = p;
  converse = c;
 
@@ -152,6 +153,7 @@ bool Event::update()
                                  {
                                   scroll->display_string("Pass!\n\n");
                                   scroll->display_prompt();
+                                  clock->inc_move_counter_by_a_minute();
                                  }
                                else
                                  {
@@ -290,7 +292,9 @@ bool Event::look()
  scroll->display_string("Thou dost see ");
  scroll->display_string(map_window->lookAtCursor());
  obj = map_window->get_objAtCursor();
- if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || obj->obj_n == OBJ_U6_SCROLL || obj->obj_n == OBJ_U6_PICTURE))
+ if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || 
+            obj->obj_n == OBJ_U6_SCROLL || obj->obj_n == OBJ_U6_PICTURE ||
+            obj->obj_n == OBJ_U6_TOMBSTONE || obj->obj_n == OBJ_U6_CROSS ))
    {
     if(obj->quality != 0)
       {
@@ -322,7 +326,7 @@ void Event::alt_code_input(const char *in)
             }
             active_alt_code = 0;
             break;
-
+            
         case 214:
             alt_code_teleport(in); //teleport player & party? to location string
             scroll->display_string("\n");
@@ -346,10 +350,25 @@ void Event::alt_code(const char *cs)
             active_alt_code = c;
             break;
 
+        case 213:
+            alt_code_infostring();
+            scroll->display_string("\n");
+            scroll->display_prompt();
+            active_alt_code = 0;
+            break;
+            
         case 214:
             scroll->display_string("Location: ");
             scroll->set_input_mode(true);
             active_alt_code = c;
+            break;
+
+        case 215:
+            clock->advance_to_next_hour();
+            scroll->display_string(clock->get_time_string());
+            scroll->display_string("\n");
+            scroll->display_prompt();
+            active_alt_code = 0;
             break;
     }
 }
@@ -366,6 +385,30 @@ bool Event::alt_code_teleport(const char *location_string)
  player->move(x,y,z);
  
  return true;
+}
+
+void Event::alt_code_infostring()
+{
+ char buf[18]; // kkmmddyyyyxxxyyyz
+ uint8 karma;
+ uint8 day;
+ uint8 month;
+ uint8 year;
+ uint16 x, y;
+ uint8 z;
+ 
+ karma = player->get_karma();
+ player->get_location(&x,&y,&z);
+
+ day = clock->get_day();
+ month = clock->get_month();
+ year = clock->get_year();
+ 
+ sprintf(buf, "%02d%02d%02d%04d%03x%03x%x", karma, month, day, year, x,y,z);
+ 
+ scroll->display_string(buf);
+ 
+ return;
 }
 
 void Event::wait()

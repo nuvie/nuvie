@@ -25,6 +25,7 @@
  */
 
 #include "U6def.h"
+#include "U6LList.h"
 #include "Map.h"
 #include "ObjManager.h"
 #include "GameClock.h"
@@ -106,6 +107,7 @@ class Actor
  void update();
  void set_in_party(bool state);
  
+ U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n);
  bool inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality);
  bool inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);

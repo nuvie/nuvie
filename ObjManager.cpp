@@ -80,7 +80,7 @@ bool ObjManager::loadObjs(TileManager *tm)
  loadBaseTile();
  
  delete filename;
- 
+
  return true;
 }
  
@@ -646,4 +646,18 @@ inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level)
    }
 
  return dungeon[level-1];
+}
+
+//prints a human readable list of object number / names.
+
+void ObjManager::print_object_list()
+{
+ uint16 i;
+ 
+ for(i=0;i<1024;i++)
+  {
+   printf("%04d: %s\n",i,tile_manager->lookAtTile(get_obj_tile_num(i),0,false));
+  }
+
+ return;
 }

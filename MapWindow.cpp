@@ -295,7 +295,11 @@ void MapWindow::drawActors()
              if(tmp_buf[(actor->y - cur_y + 1) * (win_width+2) + (actor->x - cur_x + 1)] != 0)
                {
                 tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
-                screen->blit((actor->x - cur_x)*16,(actor->y - cur_y)*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
+                //FIX need a function for multi-tile actors.
+                drawTile(tile,actor->x - cur_x, actor->y - cur_y, false);                
+                drawTile(tile,actor->x - cur_x, actor->y - cur_y, true);
+                
+                //screen->blit((actor->x - cur_x)*16,(actor->y - cur_y)*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
                }
             }
          }

@@ -1,8 +1,8 @@
 /*
- *  Book.cpp
+ *  InventoryView.h
  *  Nuive
  *
- *  Created by Eric Fry on Wed Apr 09 2003.
+ *  Created by Eric Fry on Tue May 13 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -21,29 +21,39 @@
  *
  */
 
-#include "Book.h"
+#include "U6def.h"
+#include "Configuration.h"
+#include "Screen.h"
+#include "Text.h"
+#include "TileManager.h"
+#include "ObjManager.h"
+#include "Party.h"
 
-Book::Book(Configuration *cfg)
-{
- config = cfg;
-}
-
-bool Book::init()
-{
- std::string filename;
+class InventoryView {
  
- config->pathFromValue("config/ultima6/gamedir","book.dat",filename);
+ Configuration *config;
+ Screen *screen;
+ Text *text;
+ TileManager *tile_manager;
+ ObjManager *obj_manager;
+ Party *party;
+ uint8 current_player;
  
- if(books.open(filename,2) == false)
-    return false;
+ //cursor pos
  
- return true;
-}
-
-char *Book::get_book_data(uint16 num)
-{
- if(num >= books.get_num_items())
-   return NULL;
-
- return reinterpret_cast<char*>(books.get_item(num));
-}
+ public:
+ 
+ InventoryView(Configuration *cfg);
+ ~InventoryView();
+ 
+ bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ void update_display();
+ bool handle_input(SDLKey *input);
+ void display_doll(uint16 x, uint16 y);
+ 
+ protected:
+ 
+ void display_name();
+ void display_inventory_list();
+ void display_command_icons();
+};

@@ -481,6 +481,41 @@
 			path = /Users/eric/Projects/Ultima6/nuvie/nuvie.cfg;
 			refType = 0;
 		};
+		072599AC0471126B00A8000A = {
+			children = (
+				072599AD047112F000A8000A,
+				072599AE047112F000A8000A,
+			);
+			isa = PBXGroup;
+			name = Views;
+			refType = 4;
+		};
+		072599AD047112F000A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = InventoryView.h;
+			path = ../views/InventoryView.h;
+			refType = 2;
+		};
+		072599AE047112F000A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = InventoryView.cpp;
+			path = ../views/InventoryView.cpp;
+			refType = 2;
+		};
+		072599AF047112F000A8000A = {
+			fileRef = 072599AD047112F000A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072599B0047112F000A8000A = {
+			fileRef = 072599AE047112F000A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		072BE3A5041ADE7D00A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -1086,6 +1121,7 @@
 				07B8BE0C0419B95A00A8000A,
 				079CA1D204230A2B00A8000A,
 				072BE3AD041AFE1100A8000A,
+				072599AC0471126B00A8000A,
 				07D14A91044449E400A8000A,
 				07D14A90044449E400A8000A,
 				0704F9D50446B4E600A8000A,
@@ -1251,6 +1287,7 @@
 				0704F9D70446B4E600A8000A,
 				07B4187804640AFB00A8000A,
 				0717C7BB0467B00900A8000A,
+				072599AF047112F000A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1300,6 +1337,7 @@
 				0704F9D60446B4E600A8000A,
 				07B4187704640AFB00A8000A,
 				0717C7BC0467B00900A8000A,
+				072599B0047112F000A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

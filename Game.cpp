@@ -91,6 +91,9 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  player->init(actor_manager, map_window, clock, party);
  party->init(actor_manager);
  
+ inventory_view = new InventoryView(config);
+ inventory_view->init(screen, text, party, tile_manager, obj_manager);
+ 
  scroll = new MsgScroll(config);
  scroll->init(screen, text, player->get_name());
 
@@ -102,7 +105,7 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  converse->loadConv();
 
  event = new Event(config);
- event->init(obj_manager, map_window, scroll, player, converse);
+ event->init(obj_manager, map_window, scroll, player, clock, converse);
  return true;
 }
 
@@ -145,6 +148,8 @@ void Game::play()
   drawBackground();
 
   scroll->display_prompt();
+  
+  inventory_view->update_display();
   
   screen->update();
   

@@ -48,6 +48,8 @@
 #define OBJ_U6_BOOK           151
 #define OBJ_U6_SCROLL         152
 #define OBJ_U6_CHAIR          252
+#define OBJ_U6_CROSS          254
+#define OBJ_U6_TOMBSTONE      255
 #define OBJ_U6_V_PASSTHROUGH  278
 #define OBJ_U6_H_PASSTHROUGH  280
 #define OBJ_U6_LADDER         305
@@ -127,6 +129,8 @@ class ObjManager
  char *get_objblk_path(char *path);
  
  inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);
+ 
+ void print_object_list();
 };
 
 #endif /* __ObjManager_h__ */

@@ -168,6 +168,11 @@ void Actor::set_in_party(bool state)
  in_party = state;
 }
 
+U6LList *Actor::get_inventory_list()
+{
+ return obj_manager->get_actor_inventory(id_n); 
+}
+
 bool Actor::inventory_has_object(uint16 obj_n)
 {
  U6LList *inventory;
@@ -242,7 +247,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     sched[i]->z = (sched_data_ptr[4] & 0xf0) >> 4;
     sched_data_ptr += 5;
 #ifdef DEBUG
-    printf("#%04d %d,%d,%d hour %d worktype %d\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->worktype);
+    printf("#%04d %03x,%03x,%x hour %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->worktype);
 #endif
    }
    

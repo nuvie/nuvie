@@ -55,6 +55,8 @@ class GameClock
  void inc_move_counter();
  void inc_move_counter_by_a_minute();
  
+ void advance_to_next_hour();
+ 
  void inc_minute();
  void inc_hour();
  void inc_day();
@@ -68,6 +70,10 @@ class GameClock
  uint8 get_hour();
  uint8 get_minute();
  
+ uint8 get_day();
+ uint8 get_month();
+ uint16 get_year();
+
  char *get_date_string();
  char *get_time_string();
  

@@ -16,6 +16,7 @@
 #include "ObjManager.h"
 #include "MapWindow.h"
 #include "MsgScroll.h"
+#include "GameClock.h"
 #include "Player.h"
 #include "Book.h"
 #include "Converse.h"
@@ -40,6 +41,7 @@ class Event
  ObjManager *obj_manager;
  MapWindow *map_window;
  MsgScroll *scroll;
+ GameClock *clock;
  Player *player;
  EventMode mode;
  Book *book;
@@ -57,7 +59,7 @@ class Event
  ~Event();
  
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
-           Converse *c);
+           GameClock *gc, Converse *c);
   
  bool update();
  bool move(sint16 rel_x, sint16 rel_y);
@@ -68,7 +70,8 @@ class Event
  void alt_code_input(const char *in);
  void clear_alt_code() { alt_code_str[0] = '\0'; alt_code_len = 0; }
  bool alt_code_teleport(const char *location_string);
-
+ void alt_code_infostring();
+ 
  void wait();
  
  protected:
