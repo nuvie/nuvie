@@ -27,6 +27,7 @@
 
 #include <SDL.h>
 
+#include "Game.h"
 #include "Surface.h"
 #include "Scale.h"
 
@@ -58,8 +59,8 @@ class Screen
  uint8 *shading_data;
  uint8 *shading_globe[3];
  uint8 shading_ambient;
- bool updatingalphamap;
- 
+ uint8 *shading_tile[4];
+
  public:
    Screen(Configuration *cfg);
    ~Screen();
@@ -85,6 +86,9 @@ class Screen
    void clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity );
    void drawalphamap8globe( sint16 x, sint16 y, uint16 radius );
    void blitalphamap8();
+   bool updatingalphamap;
+   bool UseOriginalLighting;
+
 
    uint8 get_ambient() { return shading_ambient; }
    void set_ambient( uint8 ambient ) { shading_ambient = ambient; }
