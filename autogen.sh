@@ -4,12 +4,12 @@ DIE=0
 
 # Check for availability
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
-  echo "**Error**: You must have 'autoconf' installed to compile Underworld Adventures."
+  echo "**Error**: You must have 'autoconf' installed to compile Nuvie."
   DIE=1
 }
 
 (automake --version) < /dev/null > /dev/null 2>&1 || {
-  echo "**Error**: You must have 'automake' installed to compile Underworld Adventures."
+  echo "**Error**: You must have 'automake' installed to compile Nuvie."
   DIE=1
   NO_AUTOMAKE=yes
 }
