@@ -509,7 +509,8 @@ void ActorManager::twitchActors()
 {
  uint16 i;
 
- if(Game::get_game()->get_pause_flags() & PAUSE_WORLD)
+ // while Actors are part of the world, their twitching is considered animation
+ if(Game::get_game()->anims_paused())
   return;
 
  for(i=0;i<256;i++)

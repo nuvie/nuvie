@@ -198,10 +198,12 @@ protected:
     uint8 blocking; // stop_flags
     uint8 tile_center; // tile_pitch / 2
     float tanS; // Ydiff/Xdiff, between src and target (for movement velocity)
-    uint32 old_rely; // when moving diagonally, last Y relative position
+    sint16 old_relpos; // when moving diagonally, last relative position on minor axis
     float x_left, y_left; // when unable to move in a call, fractional movement values are collected here
+    uint16 x_dist, y_dist; // distances from start->target on X-axis & Y-axis
 
     bool update();
+    MapCoord get_location();
 
 public:
     TossAnim(Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags = 0);

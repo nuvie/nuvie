@@ -113,6 +113,9 @@ class Game
  GamePauseState get_pause_flags()            { return(pause_flags); }
  void set_pause_flags(GamePauseState state);
  void unpause_all() { set_pause_flags(PAUSE_UNPAUSED); }
+ void unpause_user(){ set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_USER)); }
+ void unpause_anims(){ set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_ANIMS)); }
+ void unpause_world(){ set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_WORLD)); }
  void pause_all()   { set_pause_flags(PAUSE_ALL); }
  void pause_user()  { set_pause_flags((GamePauseState)(pause_flags | PAUSE_USER)); }
  void pause_anims() { set_pause_flags((GamePauseState)(pause_flags | PAUSE_ANIMS)); }

@@ -1,3 +1,10 @@
+2005-02-06  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Fixed TossAnim/ThrowAnim movement mentioned in last update. It looks
+	  completely different when compared to the old animation. The slightly
+	  off-center placement is gone. Try dragging a chair around.
+	* Improved Fade appearance just slightly. It shouldn't get a horizontal
+	  lines effect now.
+
 2005-02-05  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed a cannon moving bug where movement towards a blocked tile would
 	  not let you turn the cannon. You can do that now.

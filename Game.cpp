@@ -262,6 +262,7 @@ void Game::set_pause_flags(GamePauseState state)
     }
 
     // if stopped world, freeze actormanager and gameclock
+    // (other classes will check the pauseflags themselves)
     if(world_paused())
     {
         if(actor_manager->get_update() == true) // ActorMgr is running

@@ -143,27 +143,6 @@ void print_flags(uint8 num, const char *f[8])
 }
 
 
-/* Is point x,y within rect?
- */
-inline bool point_in_rect(uint16 x, uint16 y, SDL_Rect *rect)
-{
-    uint16 rx2 = rect->x + rect->w,
-           ry2 = rect->y + rect->h;
-    return((x >= rect->x && x <= rx2 && y >= rect->y && y <= ry2));
-}
-
-
-/* Does line xy->x2y2 cross rect, to any extent?
- */
-inline bool line_in_rect(uint16 x1, uint16 y1, uint16 x2, uint16 y2, SDL_Rect *rect)
-{
-    uint16 rx2 = rect->x + rect->w,
-           ry2 = rect->y + rect->h;
-    return(((y1 >= rect->y && y1 <= ry2 && x1 <= rx2 && x2 >= rect->x)
-            || (x1 >= rect->x && x1 <= rx2 && y1 <= ry2 && y2 >= rect->y)));
-}
-
-
 /* Where rect1 and rect2 merge, subtract and copy that rect to sub_rect.
  * Returns false if the rectangles don't intersect.
  */

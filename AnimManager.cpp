@@ -1,7 +1,8 @@
 #include <cmath>
+#include <vector>
 #include "SDL.h"
 #include "nuvieDefs.h"
-#include <vector>
+#include "U6misc.h"
 
 #include "Actor.h"
 #include "ActorManager.h"
@@ -16,17 +17,6 @@
 #define MESG_ANIM_HIT_WORLD ANIM_CB_HIT_WORLD
 #define MESG_ANIM_HIT       ANIM_CB_HIT
 #define MESG_ANIM_DONE      ANIM_CB_DONE
-
-/* Defines:
- * this_time: THIS_TIME
- * ms_passed: milliseconds since LAST_TIME_VAR
- * fraction: fraction of a second since LAST_TIME
- */
-//DIVIDE_TIME(THIS_TIME, LAST_TIME_VAR) ( \
-//    uint32 this_time = THIS_TIME; \
-//    uint32 ms_passed = (this_time - LAST_TIME_VAR) > 0 ? (this_time - LAST_TIME_VAR) : 1; \
-//    uint32 fraction = 1000 / ms_passed; // % of second \
-//)
 
 static float get_relative_degrees(sint16 sx, sint16 sy, float angle_up = 0);
 
@@ -439,13 +429,13 @@ bool HitAnim::update()
 /*** TossAnim ***/
 TossAnim::TossAnim(Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags)
 {
-    init(tile, start, stop, 192, stop_flags);
+    init(tile, start, stop, 320, stop_flags);
 }
 
 
 TossAnim::TossAnim(CallBack *t, void *d, Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags)
 {
-    init(tile, start, stop, 192, stop_flags);
+    init(tile, start, stop, 320, stop_flags);
     set_target(t);
     set_user_data(d);
 }
@@ -474,8 +464,9 @@ void TossAnim::init(Tile *tile, MapCoord *start, MapCoord *stop, uint16 sp, uint
 
     map_window->get_level(&mapwindow_level);
     tanS = 0;
-    old_rely = 0;
+    old_relpos = 0;
     x_left = 0; y_left = 0;
+    x_dist = 0; y_dist = 0;
 
     speed = sp;
 }
@@ -486,17 +477,19 @@ void TossAnim::init(Tile *tile, MapCoord *start, MapCoord *stop, uint16 sp, uint
 void TossAnim::start()
 {
     uint8 pitch = anim_manager->get_tile_pitch(); // AnimManager not set until start
-    tile_center = pitch / 2;
+    tile_center = (pitch / 2) - 1;
 
     add_tile(toss_tile, 0, 0);
     move(src->x, src->y);
 
     // pixel-line movement constants
-    start_px = src->x * pitch + tile_center;
-    start_py = src->y * pitch + tile_center;
-    target_px = target->x * pitch + tile_center;
-    target_py = target->y * pitch + tile_center;
-    if(target_px-start_px) // will move in X direction
+    start_px = src->x * pitch;
+    start_py = src->y * pitch;
+    target_px = target->x * pitch;
+    target_py = target->y * pitch;
+    x_dist = abs(target_px-start_px);
+    y_dist = abs(target_py-start_py);
+    if(x_dist) // will move in X direction (and possibly diagonally)
         tanS = float(sint32(target_py-start_py)) / sint32(target_px-start_px);
 //printf("start: tanS = %d / %d = %f\n", target_py-start_py, target_px-start_px, tanS);
     Game::get_game()->dont_wait_for_interval();
@@ -512,6 +505,24 @@ void TossAnim::stop()
         TileAnim::stop();
         Game::get_game()->wait_for_interval();
     }
+}
+
+
+/* Returns location of tile biased by movement. If moving left or up, the
+ * center of the tile must be left or above the center of its location.
+ */
+MapCoord TossAnim::get_location()
+{
+    MapCoord loc(tx, ty, 0);
+    if(src->x > target->x) // moving left
+    {
+        if(px > 0) loc.x += 1;
+    }
+    if(src->y > target->y) // moving up
+    {
+        if(px > 0) loc.y += 1;
+    }
+    return(loc);
 }
 
 
@@ -559,7 +570,7 @@ bool TossAnim::update()
                 // target (mandatory stop)
                 if(new_loc.x == target->x && new_loc.y == target->y)
                     hit_target();
-                else if (new_loc.distance(*src) >= src->distance(*target))
+                else if(new_loc.distance(*src) > src->distance(*target))
                 {   // overshot target (move and stop)
                     printf("anim warning: TossAnim missed the target\n");
                     move(target->x, target->y);
@@ -612,12 +623,9 @@ void TossAnim::hit_blocking(MapCoord obj_loc)
  */
 uint32 TossAnim::update_position(uint32 max_move)
 {
-//    DIVIDE_TIME(SDL_GetTicks(), last_move_time); // defines fraction
-    /* divide time */
-    uint32 this_time = SDL_GetTicks();
-    uint32 ms_passed = (this_time - last_move_time) > 0 ? (this_time - last_move_time) : 1;
-    uint32 fraction = 1000 / ms_passed; // % of second
-    last_move_time = this_time;
+    uint32 ms_passed = 0;
+    uint32 fraction = divide_time(SDL_GetTicks(), last_move_time, &ms_passed);
+
     /* get number of moves(pixels) this fraction, and movement direction */
     uint32 moves_left = 0;
     float moves = (float)speed / (fraction > 0 ? fraction : 1);
@@ -640,11 +648,22 @@ uint32 TossAnim::update_position(uint32 max_move)
 
     if(x_move != 0)
     {
-        uint32 xpos = tx * 16 + px; // pixel location
-        sint32 relx = (xpos + x_move) - start_px; // new relative position
-        sint32 rely = (uint32)roundf(relx * tanS);
-        shift(x_move, rely - old_rely); // **MOVE**
-        old_rely = rely;
+        if(x_dist >= y_dist) // Y=X*tangent
+        {
+            uint32 xpos = tx * 16 + px; // pixel location
+            sint32 relx = (xpos + x_move) - start_px; // new relative position
+            sint32 rely = (uint32)roundf(relx * tanS);
+            shift(x_move, rely - old_relpos); // **MOVE**
+            old_relpos = rely;
+        }
+        else // X=Y/tangent
+        {
+            uint32 ypos = ty * 16 + py; // pixel location
+            sint32 rely = (ypos + y_move) - start_py; // new relative position
+            sint32 relx = (uint32)roundf(rely / tanS);
+            shift(relx - old_relpos, y_move); // **MOVE**
+            old_relpos = relx;
+        }
     }
     else // only moving along Y
         shift(0, y_move); // **MOVE**

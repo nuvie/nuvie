@@ -629,7 +629,7 @@ FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, uint32 color, uint32 sp
 
     fade_type = fade;
     fade_dir = dir;
-    fade_speed = speed ? speed : 75000; // pixels-per-second
+    fade_speed = speed ? speed : 256000; // pixels-per-second (to check, not draw)
 
     evtime = prev_evtime = 0;
 
@@ -659,6 +659,7 @@ void FadeEffect::init_pixelated_fade()
     overlay = map_window->get_overlay();
     if(overlay != NULL)
     {
+        pixel_count = overlay->w * overlay->h;
         // clear overlay to fill color or transparent
         if(fade_dir == FADE_OUT)
             fillret = SDL_FillRect(overlay, NULL, uint32(TRANSPARENT_COLOR));
@@ -675,6 +676,7 @@ void FadeEffect::init_pixelated_fade()
     // if FADE_PIXELATED_ONTOP is set, place the effect layer above the map border
     map_window->set_overlay_level((fade_type == FADE_PIXELATED)
                                   ? MAP_OVERLAY_DEFAULT : MAP_OVERLAY_ONTOP);
+    colored_total = 0;
     start_timer(1); // fire timer continuously
 }
 
@@ -758,30 +760,20 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, uint8 fade_to)
 
     while(p < pixels_to_check)
     {
-        uint16 cx = NUVIE_RAND()%overlay->w; // cx,cy = pixel
-        uint16 cy = NUVIE_RAND()%overlay->h;
-        rnum = cy*overlay->w + cx;
-
+        rnum = NUVIE_RAND()%pixel_count;
         if(pixels[rnum] != fade_to)
         {
             pixels[rnum] = fade_to;
-            ++colored; // another pixel was set
+            ++colored, ++colored_total; // another pixel was set
         }
         ++p;
     }
-
-    bool all_clear = !find_free_pixel(rnum, overlay->w*overlay->h);
-    if(!all_clear)    // if not done yet, do random+linear scan
+    if(colored_total >= (pixel_count - overlay->w*2)) // fill the rest
     {
-        while(colored++ < pixels_to_check)
-        {
-            pixels[rnum] = fade_to;
-            rnum = NUVIE_RAND()%(overlay->w*overlay->h);
-            if(!find_free_pixel(rnum, overlay->w*overlay->h))
-                return(true); // all clear
-        }
+        SDL_FillRect(overlay, NULL, (uint32)fade_to);
+        return(true);
     }
-    return(all_clear);
+    else return(false);
 }
 
 
@@ -870,7 +862,7 @@ uint16 GameFadeInEffect::callback(uint16 msg, CallBack *caller, void *data)
     // done
     if(fade_complete == true)
     {
-        game->unpause_all();
+        game->unpause_user();
         delete_self();
     }
     return(0);

@@ -295,6 +295,7 @@ protected:
     SDL_Surface *fade_from; // image being faded from (or NULL if coloring)
 
     uint32 evtime, prev_evtime; // time of last message to callback()
+    uint32 pixel_count, colored_total; // number of pixels total/colored
 
 public:
     FadeEffect(FadeType fade, FadeDirection dir, uint32 color = 0, uint32 speed = 0);
