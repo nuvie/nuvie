@@ -79,7 +79,7 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
  obj = obj_manager->get_base_obj(x, y, level);
  if(obj != NULL)
    {
-    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n));
+    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
     if(tile->passable == false)
       return false;
    }

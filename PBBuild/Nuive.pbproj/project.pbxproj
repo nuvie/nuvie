@@ -670,28 +670,28 @@
 			settings = {
 			};
 		};
-		07C5BE0B042D65B100A8000A = {
-			fileEncoding = 4;
+		07DB53EA042DA0CF00A8000A = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
-			name = player.h;
-			path = ../player.h;
-			refType = 2;
+			name = Player.cpp;
+			path = /Users/eric/Projects/Ultima6/nuvie/Player.cpp;
+			refType = 0;
 		};
-		07C5BE0C042D65B100A8000A = {
-			fileEncoding = 4;
+		07DB53EB042DA0CF00A8000A = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
-			name = player.cpp;
-			path = ../player.cpp;
-			refType = 2;
+			name = Player.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/Player.h;
+			refType = 0;
 		};
-		07C5BE0D042D65B100A8000A = {
-			fileRef = 07C5BE0B042D65B100A8000A;
+		07DB53EC042DA0CF00A8000A = {
+			fileRef = 07DB53EA042DA0CF00A8000A;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		07C5BE0E042D65B100A8000A = {
-			fileRef = 07C5BE0C042D65B100A8000A;
+		07DB53ED042DA0CF00A8000A = {
+			fileRef = 07DB53EB042DA0CF00A8000A;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -861,6 +861,8 @@
 				0725669E04272B7B00A8000A,
 				072566A104272B7B00A8000A,
 				072566A004272B7B00A8000A,
+				07DB53EB042DA0CF00A8000A,
+				07DB53EA042DA0CF00A8000A,
 				072566A304272B7B00A8000A,
 				072566A204272B7B00A8000A,
 				072566A504272B7B00A8000A,
@@ -869,8 +871,6 @@
 				072566B404272BC000A8000A,
 				0740D532042AA97500A8000A,
 				0740D531042AA97500A8000A,
-				07C5BE0B042D65B100A8000A,
-				07C5BE0C042D65B100A8000A,
 				0740D534042AA97500A8000A,
 				0740D533042AA97500A8000A,
 			);
@@ -992,7 +992,7 @@
 				0740D538042AA97500A8000A,
 				0740D53A042AA97500A8000A,
 				0740D53C042AA97500A8000A,
-				07C5BE0D042D65B100A8000A,
+				07DB53ED042DA0CF00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1031,7 +1031,7 @@
 				0740D537042AA97500A8000A,
 				0740D539042AA97500A8000A,
 				0740D53B042AA97500A8000A,
-				07C5BE0E042D65B100A8000A,
+				07DB53EC042DA0CF00A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
