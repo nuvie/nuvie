@@ -2166,23 +2166,24 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
         else
         {
             Obj *torch = obj;
-            bool light_it = true;
+            bool can_light_it = true; // only set FALSE on some error
 
             if(!obj->is_readied())
             {
                 torch = obj_manager->get_obj_from_stack(obj, 1);
                 if(torch != obj && obj->is_in_inventory()) // keep new one in inventory
                     actor_manager->get_actor(torch->x)->inventory_add_object(torch);
-                if(torch->is_in_inventory()) // and ready it
+
+                if(torch->is_in_inventory()) // ready it
                 {
-                    light_it = actor_manager->get_actor(torch->x)->add_readied_object(torch);
+                    can_light_it = actor_manager->get_actor(torch->x)->add_readied_object(torch);
 // FIXME: add lightglobe to actor
                 }
-                else // keep new one on map
-                    light_it = obj_manager->add_obj(torch, true);
+                else if(torch != obj) // keep new one on map
+                    can_light_it = obj_manager->add_obj(torch, true);
             }
 
-            if(light_it)
+            if(can_light_it)
             {
                 toggle_frame(torch);
                 scroll->display_string("\nTorch is lit.\n");
