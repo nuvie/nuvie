@@ -24,25 +24,28 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cctype>
+
+#include "U6Lzw.h"
+
 #include "U6Lib_n.h"
 
 U6Lib_n::U6Lib_n()
 {
  num_offsets = 0;
- num_zero_offsets = 0;
- offsets = sizes = NULL;
+ items = NULL;
 }
 
 
 U6Lib_n::~U6Lib_n(void)
 {
- free(offsets);
- free(sizes);
+ if(items)
+   free(items);
 }
 
 
 /* (Re)calculate item offsets from item sizes.
  */
+#if 0
 void U6Lib_n::calc_item_offsets()
 {
     if(num_offsets == 0)
@@ -192,10 +195,12 @@ bool U6Lib_n::create(std::string &filename, uint8 size)
     lib_size = size;
     return(true);
 }
+#endif
 
-
-bool U6Lib_n::open(std::string &filename, uint8 size, bool read_size)
+bool U6Lib_n::open(std::string &filename, uint8 size, uint8 type)
 {
+ game_type = type;
+ 
  if(file.open(filename,"rb") == false)
    {
     printf("Error: Opening %s\n",filename.c_str());
@@ -203,7 +208,6 @@ bool U6Lib_n::open(std::string &filename, uint8 size, bool read_size)
    }
  
  lib_size = size;
- read_filesize = read_size;
  this->parse_lib();
 
  return true;
@@ -221,115 +225,193 @@ uint32 U6Lib_n::get_item_offset(uint32 item_number)
 {
     if(item_number >= num_offsets)
         return(0);
-    return(offsets[item_number]);
+    return(items[item_number].offset);
 }
 
-
-/* Returns data size of `item_number' calculated from offsets.
- */
 uint32 U6Lib_n::get_item_size(uint32 item_number)
 {
-    uint32 next_offset = 0;
+ if(item_number >= num_offsets)
+   return(0);
 
-    if(item_number > num_offsets)
-        return(0);
-    // get next non-zero offset, including the filesaze at offsets[num_offsets]
-    for(uint32 o = (item_number + 1); o <= num_offsets; o++)
-        if(offsets[o])
-        {
-            next_offset = offsets[o];
-            break;
-        }
-    if(offsets[item_number] && (next_offset > offsets[item_number]))
-        return(next_offset - offsets[item_number]);
-    return(0);
+ return(items[item_number].uncomp_size);
 }
-
 
 unsigned char *U6Lib_n::get_item(uint32 item_number, unsigned char *ret_buf)
 {
- uint32 item_size;
- unsigned char *buf;
- 
+ U6LibItem *item;
+ unsigned char *buf, *lzw_buf;
+
  if(item_number >= num_offsets)
    return NULL;
+   
+ item = &items[item_number];
  
- item_size = this->get_item_size(item_number);
- if(item_size == 0)
+ if(item->size == 0)
    return NULL;
 
  if(ret_buf == NULL)
-   buf = (unsigned char *)malloc(item_size);
+   buf = (unsigned char *)malloc(item->uncomp_size);
  else
    buf = ret_buf;
 
- file.seek(get_item_offset(item_number));
+ file.seek(item->offset);
  
- file.readToBuf(buf,item_size);
+ if(is_compressed(item_number))
+  {
+   U6Lzw lzw;
+   lzw_buf = (unsigned char *)malloc(item->size);
+   file.readToBuf(lzw_buf,item->size);
+   lzw.decompress_buffer(lzw_buf, item->size, buf, item->uncomp_size);
+  }
+ else
+   file.readToBuf(buf,item->size);
  
  return buf;
 }
 
+bool U6Lib_n::is_compressed(uint32 item_number)
+{
+ uint32 i;
+ 
+ switch(items[item_number].flag)
+  {
+   case 0x1 :
+   case 0x20 : return true;
+   case 0xff :
+               for(i=item_number;i<num_offsets;i++)
+                 {
+                  if(items[i].flag != 0xff)
+                    break;
+                 }
+               if(i < num_offsets)
+                 return is_compressed(i);
+               break;
+  }
+
+ return false;
+}
 
 void U6Lib_n::parse_lib()
 {
- uint32 first_offset;
  uint32 i;
+ bool skip4 = false;
  
  if(lib_size != 2 && lib_size != 4)
    return;
  
  file.seekStart();
- if(read_filesize)
-    filesize = file.read4();
-
- first_offset = this->get_first_offset();
-
-// num_offsets = (first_offset - (num_zero_offsets * lib_size)) / lib_size;
- num_offsets = (first_offset / lib_size);
- offsets = (uint32 *)malloc(sizeof(uint32) * (num_offsets + 1));
-
-// file.seek((num_zero_offsets + 1) * lib_size);
+ 
+ if(game_type != NUVIE_GAME_U6) //U6 doesn't have a 4 byte filesize header.
+    {
+     skip4 = true;
+     filesize = file.read4();
+    }
+ else
+    filesize = file.filesize();
+    
+ num_offsets = calculate_num_offsets(skip4);
+ 
+ items = (U6LibItem *)malloc(sizeof(U6LibItem) * (num_offsets + 1));
+ 
  file.seekStart();
- if(read_filesize)
-    file.seek(4);
+ if(skip4)
+    file.seek(0x4);
  for(i = 0; i < num_offsets && !file.eof(); i++)
    {
     if(lib_size == 2)
-       offsets[i] = file.read2();
+       items[i].offset = file.read2();
     else
-       offsets[i] = file.read4();
+      {
+       items[i].offset = file.read4();
+       items[i].flag = (items[i].offset & 0xff000000) >> 24; //extract flag byte
+       items[i].offset &= 0xffffff;
+      }
    }
 
- offsets[num_offsets] = file.filesize(); //this is used to calculate the size of the last item in the lib.
- if(!read_filesize)
-    filesize = offsets[num_offsets];
+ items[num_offsets].offset = filesize; //this is used to calculate the size of the last item in the lib.
+
+ calculate_item_sizes();
+ 
  return; 
 }
 
+void U6Lib_n::calculate_item_sizes()
+{
+ uint32 i, next_offset = 0;
+
+ for(i=0;i < num_offsets; i++)
+   {
+    items[i].size = 0;
+    // get next non-zero offset, including the filesize at items[num_offsets]
+    for(uint32 o = (i + 1); o <= num_offsets; o++)
+        if(items[o].offset)
+        {
+            next_offset = items[o].offset;
+            break;
+        }
+
+    if(items[i].offset && (next_offset > items[i].offset))
+        items[i].size = next_offset - items[i].offset;
+    
+    items[i].uncomp_size = calculate_item_uncomp_size(&items[i]);
+   }
+
+ return;
+}
+
+uint32 U6Lib_n::calculate_item_uncomp_size(U6LibItem *item)
+{
+ uint32 uncomp_size = 0;
+ 
+ switch(item->flag)
+  {
+   case 0x01 : //compressed
+               file.seek(item->offset);
+               uncomp_size = file.read4();
+               break;
+
+               //uncompressed 4 byte item size header
+   case 0x2  :
+   case 0xc1 : uncomp_size = item->size - 4;
+                break;
+
+              // uncompressed
+   case 0x0  :
+   case 0xe0 :
+   default   : uncomp_size = item->size;
+               break;
+  }
+
+ return uncomp_size;
+}
 
 // we need to handle NULL offsets at the start of the offset table in the converse.a file
-uint32 U6Lib_n::get_first_offset()
+uint32 U6Lib_n::calculate_num_offsets(bool skip4) //skip4 bytes of header.
 {
  uint32 i;
  uint32 offset = 0;
- 
+
+ if(skip4)
+   file.seek(0x4);
+   
+ //find first non-zero offset and calculate num_offsets from that.  
  for(i=0;!file.eof();i++)
    {
     if(lib_size == 2)
       offset = file.read2();
     else
-      offset = file.read4();
-
+      {
+       offset = file.read4();
+       offset &= 0xffffff; // clear flag byte.
+      }
     if(offset != 0)
-      break;
+      {
+       if(skip4)
+         offset -= 4;
+         
+       return offset / lib_size;
+      } 
    }
-   
- if(offset != 0)
-   {
-    num_zero_offsets = i;
-    return offset;
-   }
-   
+      
  return 0;
 }

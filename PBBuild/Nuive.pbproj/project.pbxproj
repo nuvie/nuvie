@@ -9,15 +9,15 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = Converse.cpp;
-			path = /Users/eric/Projects/Ultima6/nuvie/Converse.cpp;
-			refType = 0;
+			path = ../Converse.cpp;
+			refType = 2;
 		};
 		0704F9D50446B4E600A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = Converse.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/Converse.h;
-			refType = 0;
+			path = ../Converse.h;
+			refType = 2;
 		};
 		0704F9D60446B4E600A8000A = {
 			fileRef = 0704F9D40446B4E600A8000A;
@@ -904,6 +904,8 @@
 			children = (
 				07B16F550487352A00A8000A,
 				07B16F560487352A00A8000A,
+				07EC223604A17C6E00A8000A,
+				07EC223504A17C6E00A8000A,
 				07B16F5B0487529500A8000A,
 				07B16F5A0487529500A8000A,
 			);
@@ -1259,6 +1261,32 @@
 		};
 		07E3229F046BEBC900A8000A = {
 			fileRef = 07E3229E046BEBC900A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07EC223504A17C6E00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = MDUseCode.cpp;
+			path = /Users/eric/Projects/Ultima6/nuvie/usecode/MDUseCode.cpp;
+			refType = 0;
+		};
+		07EC223604A17C6E00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = MDUseCode.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/usecode/MDUseCode.h;
+			refType = 0;
+		};
+		07EC223704A17C6E00A8000A = {
+			fileRef = 07EC223504A17C6E00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07EC223804A17C6E00A8000A = {
+			fileRef = 07EC223604A17C6E00A8000A;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1624,6 +1652,7 @@
 				07B16F5D0487529500A8000A,
 				078BA0A6049B327F00A8000A,
 				078BA0BE049EA5AE00A8000A,
+				07EC223804A17C6E00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1685,6 +1714,7 @@
 				07B16F5C0487529500A8000A,
 				078BA0A7049B327F00A8000A,
 				078BA0BD049EA5AE00A8000A,
+				07EC223704A17C6E00A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

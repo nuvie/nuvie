@@ -6,12 +6,14 @@
  *  Copyright (c) 2003. All rights reserved.
  *
  */
+#include "Configuration.h"
 
 #include "MapWindow.h"
 
 MapWindow::MapWindow(Configuration *cfg)
 {
  config = cfg;
+ config->value("config/GameType",game_type);
  screen = NULL;
  //surface = NULL;
  
@@ -70,9 +72,16 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
 //   return false;
 
  clip_rect.x = 8;
- clip_rect.y = 8;
  clip_rect.w = (win_width - 1) * 16;
  clip_rect.h = (win_height - 1) * 16;
+
+ if(game_type == NUVIE_GAME_U6)
+   clip_rect.y = 8;
+ else
+   {
+    clip_rect.y = 16;
+    clip_rect.h -= 16;
+   }
  
  updateBlacking();
  
@@ -446,6 +455,9 @@ void MapWindow::drawBorder()
  Tile *tile1;
  uint16 i;
  
+ if(game_type != NUVIE_GAME_U6)
+   return;
+
  tile = tile_manager->get_tile(432);
  screen->blit(0,0,tile->data,8,16,16,16,true,&clip_rect);
 

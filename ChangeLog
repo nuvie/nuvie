@@ -1,3 +1,7 @@
+2003-06-21  Eric Fry <efry@users.sourceforge.net>
+	* MD & SE now load their respective background graphics.
+	* Reworked U6Shape, U6Lib_n and U6Bmp.
+
 2003-06-21  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Select NPC's can now join and leave the party. HORSE cmds worked on.
 

@@ -22,6 +22,7 @@
 class MapWindow
 {
  Configuration *config;
+ int game_type;
  Screen *screen;
  
  Map *map;

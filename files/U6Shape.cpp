@@ -92,10 +92,9 @@
  */
 U6Shape::U6Shape()
 {
-	num_shapes = 0;
-	shape = NULL;
-	raw = NULL;
-	hotx = hoty = NULL;
+ raw = NULL;
+ hotx = hoty = 0;
+ width = height = 0;
 }
 
 
@@ -108,130 +107,99 @@ U6Shape::U6Shape()
  */
 U6Shape::~U6Shape(void)
 {
-	if (num_shapes == 0)
-		return;
-		/* NOT REACHED */
-
-	/* Free memory. */
-	for (int i = 0; i < num_shapes; i++)
-	{
-		free(raw[i]);
-		SDL_FreeSurface(shape[i]);
-	}
-	free(hotx);
-	free(hoty);
-	free(raw);
-	free(shape);
+ if(raw)
+  free(raw);
 }
 
+bool U6Shape::load(std::string filename)
+{
+ return false;
+}
 
+bool U6Shape::load(U6Lib_n *file, uint32 index)
+{
+ unsigned char *buf;
+ 
+ buf = file->get_item(index);
+ if(buf != NULL)
+   {
+    if(load(buf))
+      {
+       free(buf);
+       return true;
+      }
+    else
+       free(buf);
+   }
+ 
+ return false;
+}
+  
 /*
- * ===========================================
- *  bool U6Shape::load(std::string file_name);
- * ===========================================
+ * =========================================
+ *  bool U6Shape::load(unsigned char *buf);
+ * =========================================
  *
- * Loads all shapes from lzw-compressed file file_name.
+ * Loads shape from buf
  * Returns true if successful, else returns false.
  */
-bool U6Shape::load(std::string file_name)
+bool U6Shape::load(unsigned char *buf)
 {
-	U6Lzw *lzw;
 	int encoded;
-	uint32 file_size, file_size_lzw, temp;
-	uint32 *shape_offset;
-	unsigned char *data, *start;
-	uint16 num_pixels, last_num_pixels = 0;
-	sint16 xsize, ysize, xpos, ypos;
+	unsigned char *data;
+	uint16 num_pixels;
+	sint16 xpos, ypos;
 
 	/* A file already loaded. */
-	if (num_shapes != 0)
+	if (raw != NULL)
 		return false;
 		/* NOT REACHED */
 
-	/* Create a decompressor. */
-	lzw = new U6Lzw();
+  data = buf;
+    
+  /* Size and hot point. */
+  width = SDL_SwapLE16(*(uint16*)data); data += 2;
+  width += hotx = SDL_SwapLE16(*(uint16*)data); data += 2;
 
-	/* First decompress the file. */
-	if ((data = start = lzw->decompress_file(file_name, file_size_lzw)) ==
-	   NULL)
-		return false;
-		/* NOT REACHED */
+  height = hoty = SDL_SwapLE16(*(uint16*)data); data += 2;
+  height += SDL_SwapLE16(*(uint16*)data); data += 2;
 
-	/* Decompressor is no longer needed. */
-	delete lzw;
+  width++; height++;
 
-	/* Get file size. */
-	file_size = SDL_SwapLE32(*(uint32*)data); data += 4;
+  /* Allocate memory for shape and make it all transperent. */
+  raw = (unsigned char*)malloc(width * height);
+  memset(raw, 255, width * height);
 
-	/* Test wheter file is corrupted. */
-	if (file_size != file_size_lzw)
-		return false;
-		/* NOT RECHED */
+  /* Get the pixel data. */
+  while ((num_pixels = SDL_SwapLE16(*(uint16*)data)) != 0)
+    {
+     data += 2;
 
-	/* Calculate number of shapes. */
-	temp = SDL_SwapLE32(*(uint32*)data);
-	num_shapes = (temp - 4) / 4;
+     /* Coordinates relative to hot spot. */
+     xpos = SDL_SwapLE16(*(uint16*)data); data += 2;
+     ypos = SDL_SwapLE16(*(uint16*)data); data += 2;
 
-	/* Allocate memory. */
-	shape_offset = (uint32*)malloc(sizeof(uint32) * num_shapes);
-	shape = (SDL_Surface**)malloc(sizeof(SDL_Surface**) * num_shapes);
-	raw = (unsigned char**)malloc(sizeof(unsigned char**) * num_shapes);
-	hotx = (uint16*)malloc(sizeof(uint16) * num_shapes);
-	hoty = (uint16*)malloc(sizeof(uint16) * num_shapes);
+     /*
+      * Test if this block of pixels is encoded
+      * (bit0 is set).
+      */
+     encoded = num_pixels & 1;
 
-	/* Get shape offsets. */
-	for (int i = 0; i < num_shapes; i++)
-	{
-		shape_offset[i] = SDL_SwapLE32(*(uint32*)data); data += 4;
-	}
+     /* Divide it by 2. */
+     num_pixels >>= 1;
 
-	/* Now we'll get the shapes themselves. */
-	for (int i = 0; i < num_shapes; i++)
-	{
-		/* Find the start. */
-		data = start + shape_offset[i];
+     /* Normal pixel:
+      * =============
+      *
+      * Just fetch as many pixels as num_pixels suggests.
+      */
+     if (!encoded)
+      {
+       memcpy(raw + (hotx + xpos) +
+				   (hoty + ypos) * width, data, num_pixels);
+       data += num_pixels;
 
-		/* Size and hot point. */
-		xsize = SDL_SwapLE16(*(uint16*)data); data += 2;
-		xsize += hotx[i] = SDL_SwapLE16(*(uint16*)data); data += 2;
-
-		ysize = hoty[i] = SDL_SwapLE16(*(uint16*)data); data += 2;
-		ysize += SDL_SwapLE16(*(uint16*)data); data += 2;
-
-		/* Allocate memory for shape and make it all transperent. */
-		raw[i] = (unsigned char*)malloc(xsize * ysize);
-		memset(raw[i], 255, xsize * ysize);
-
-		/* Get the pixel data. */
-		while ((num_pixels = SDL_SwapLE16(*(uint16*)data)) != 0)
-		{
-			data += 2;
-
-			/* Coordinates relative to hot spot. */
-			xpos = *(uint16*)data; data += 2;
-			ypos = *(uint16*)data; data += 2;
-
-			/*
-			 * Test if this block of pixels is encoded
-			 * (bit0 is set).
-			 */
-			encoded = num_pixels & 1;
-
-			/* Divide it by 2. */
-			num_pixels >>= 1;
-
-			/* Normal pixel:
-			 * =============
-			 *
-			 * Just fetch as many pixels as num_pixels suggests.
-			 */
-			if (!encoded)
-			{
-				memcpy(raw[i] + (hotx[i] + xpos) +
-				   (hoty[i] + ypos) * xsize, data, num_pixels);
-				data += num_pixels;
-
-				continue;
+       continue;
 				/* NOT REACHED */
 			}
 
@@ -253,8 +221,8 @@ bool U6Shape::load(std::string file_name)
 				 */
 				if (repeat)
 				{
-					memset(raw[i] + (hotx[i] + xpos) +
-					   (hoty[i] + ypos) * xsize + j,
+					memset(raw + (hotx + xpos) +
+					   (hoty + ypos) * width + j,
 					   *data++, num_pixels2);
 				}
 
@@ -265,8 +233,8 @@ bool U6Shape::load(std::string file_name)
 				 */
 				else
 				{
-					memcpy(raw[i] + (hotx[i] + xpos) +
-					   (hoty[i] + ypos) * xsize + j, data,
+					memcpy(raw + (hotx + xpos) +
+					   (hoty + ypos) * width + j, data,
 					   num_pixels2);
 					data += num_pixels2;
 				}
@@ -275,82 +243,76 @@ bool U6Shape::load(std::string file_name)
 
 		}
 
-		/* Create a SDL_Surface. */
-		shape[i] = SDL_CreateRGBSurfaceFrom(raw[i], xsize, ysize,
-		   8, xsize, 0, 0, 0, 0);
-	}
-
-	/* Free temporarily allocated memory. */
-	free(start);
-	free(shape_offset);
 	return true;
 }
 
-
 /*
- * ================================
- *  int U6Shape::get_num_shapes();
- * ================================
+ * =====================================
+ *  unsigned char *U6Shape::get_data();
+ * =====================================
  *
- * Returns the number of shapes.
+ * Returns raw data representing the shape or NULL on failure.
  */
-int U6Shape::get_num_shapes()
+unsigned char *U6Shape::get_data()
 {
-	return num_shapes;
+	return raw;
 }
 
-
 /*
- * =====================================================
- *  SDL_Surface *U6Shape::get_shape_surface(int index);
- * =====================================================
+ * ============================================
+ *  SDL_Surface *U6Shape::get_shape_surface();
+ * ============================================
  *
- * Returns a SDL_Surface representing the shape number index
- * or NULL on failure.
+ * Returns a SDL_Surface representing the shape
+ * or NULL on failure. NOTE! user must free this
+ * data.
  */
-SDL_Surface *U6Shape::get_shape_surface(int index)
+SDL_Surface *U6Shape::get_shape_surface()
 {
-	if ((num_shapes == 0) || (index > num_shapes))
+	if (raw == NULL)
 		return NULL;
 		/* NOT REACHED */
 
-	return shape[index];
+	return SDL_CreateRGBSurfaceFrom(raw, width, height,8, width, 0, 0, 0, 0);
 }
 
 
 /*
  * ====================================================
- *  unsigned char *U6Shape::get_shape_data(int index);
+ *  bool U6Shape::get_hot_point(uint16 *x, uint16 *y);
  * ====================================================
  *
- * Returns raw data representing the shape number index or NULL on failure.
- */
-unsigned char *U6Shape::get_shape_data(int index)
-{
-	if ((num_shapes == 0) || (index > num_shapes))
-		return NULL;
-		/* NOT REACHED */
-
-	return raw[index];
-}
-
-
-/*
- * ===============================================================
- *  bool U6Shape::get_hot_point(int index, uint16 *x, uint16 *y);
- * ===============================================================
- *
- * Puts the coordinates of the shape whose number is index in x and y and
+ * Puts the coordinates of the shape in x and y and
  * returns true or on failure just returns false.
  */
-bool U6Shape::get_hot_point(int index, uint16 *x, uint16 *y)
+bool U6Shape::get_hot_point(uint16 *x, uint16 *y)
 {
-	if ((num_shapes == 0) || (index > num_shapes) ||
-	   (x == NULL) || (y == NULL))
+	if (raw == NULL)
 		return false;
 		/* NOT REACHED */
 
-	*x = hotx[index];
-	*y = hoty[index];
+	*x = hotx;
+	*y = hoty;
+  
+	return true;
+}
+
+/*
+ * ===============================================
+ *  bool U6Shape::get_size(uint16 *w, uint16 *h);
+ * ===============================================
+ *
+ * Puts the size of the shape in w and h and
+ * returns true or on failure just returns false.
+ */
+bool U6Shape::get_size(uint16 *w, uint16 *h)
+{
+	if (raw == NULL)
+		return false;
+		/* NOT REACHED */
+
+	*w = width;
+  *h = height;
+    
 	return true;
 }

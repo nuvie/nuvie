@@ -27,7 +27,7 @@
 
 #include "Configuration.h"
 
-#include "U6Bmp.h"
+#include "U6Shape.h"
 
 #include "Screen.h"
 #include "GamePalette.h"
@@ -50,11 +50,11 @@
 
 class Game
 {
- uint8 type;
+ uint8 game_type;
  
  Configuration *config;
  Screen *screen;
- U6Bmp *background;
+ U6Shape *background;
  GamePalette *palette;
  Text *text;
  TileManager *tile_manager;
@@ -80,7 +80,7 @@ class Game
  Game(Configuration *cfg);
  ~Game();
  
- bool loadGame(Screen *screen, uint8 game_type);
+ bool loadGame(Screen *screen, uint8 type);
  
  bool loadBackground();
  void drawBackground();

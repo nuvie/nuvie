@@ -33,7 +33,7 @@
 #include <string>
 #include <SDL.h>
 #include "U6def.h"
-
+#include "U6Lib_n.h"
 
 /*
  * ==================
@@ -46,21 +46,24 @@
 class U6Shape
 {
 private:
-	int num_shapes;
-	SDL_Surface **shape;
-	unsigned char **raw;
-	uint16 *hotx, *hoty;
+	uint16 hotx, hoty;
+
+protected:
+	unsigned char *raw;
+  uint16 width, height;
 
 public:
 	U6Shape();
-	~U6Shape();
+	virtual ~U6Shape();
 
-	bool load(std::string file_name);
-	int get_num_shapes();
-	SDL_Surface *get_shape_surface(int index);
-	unsigned char *get_shape_data(int index);
-	bool get_hot_point(int index, uint16 *x, uint16 *y);
+	virtual bool load(std::string filename);
+  bool load(U6Lib_n *file, uint32 index);
+	virtual bool load(unsigned char *buf);
+  
+	unsigned char *get_data();
+  SDL_Surface *get_shape_surface();
+	bool get_hot_point(uint16 *x, uint16 *y);
+	bool get_size(uint16 *w, uint16 *h);  
 };
-
 
 #endif

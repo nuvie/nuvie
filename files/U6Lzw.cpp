@@ -140,10 +140,32 @@ long U6Lzw::get_uncompressed_buffer_size(unsigned char *buf, uint32 length)
  // The parameters "source_length" and "destination_length" are currently unused.
  // They might be used to prevent reading/writing outside the buffers.
  // -----------------------------------------------------------------------------
+
 unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, uint32 &destination_length)
 {
-    const int max_codeword_length = 12;
+ unsigned char *destination;
+ sint32 uncomp_size;
  
+ uncomp_size = this->get_uncompressed_buffer_size(source,source_length);
+ if(uncomp_size == -1)
+   return(NULL);
+ else
+   destination_length = uncomp_size;
+   
+ destination = (unsigned char *)malloc(destination_length);
+ 
+ if(decompress_buffer(source, source_length, destination, destination_length) == false)
+   {
+    free(destination);
+    return NULL;
+   }
+
+ return destination;
+}    
+
+bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsigned char *destination, uint32 destination_length)
+{
+    const int max_codeword_length = 12;
     bool end_marker_reached = false;
     int codeword_size = 9;
     long bits_read = 0; 
@@ -155,16 +177,7 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
     int cW;
     int pW;
     unsigned char C;
-    unsigned char *destination;
-    
-//    destination_length = this->get_uncompressed_buffer_size(source,source_length);
-    sint32 uncomp_size = this->get_uncompressed_buffer_size(source,source_length);
-    if(uncomp_size == -1)
-      return(NULL);
-    else
-      destination_length = uncomp_size;
-    destination = (unsigned char *)malloc(destination_length);
-    
+
     source += 4; //skip the filesize dword.
     
     while (! end_marker_reached)

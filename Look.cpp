@@ -26,7 +26,7 @@
 #include "Configuration.h"
 
 #include "U6misc.h"
-
+#include "U6Lib_n.h"
 #include "U6Lzw.h"
 
 #include "Look.h"
@@ -65,17 +65,17 @@ bool Look::init()
                          look_data = lzw.decompress_file(filename,decomp_size);
                          if(look_data == NULL)
                            return false;
-                          ptr = look_data;
                           break;
     case NUVIE_GAME_MD :
-    case NUVIE_GAME_SE : config_get_path(config,"look.lzc",filename);
-                         if(look_file.open(filename,"rb") == false)
+    case NUVIE_GAME_SE : U6Lib_n lib_file;
+                         config_get_path(config,"look.lzc",filename);
+                         if(lib_file.open(filename,4,game_type) == false)
                            return false;
-                         look_data = look_file.readFile();
-                         ptr = &look_data[0x8]; //skip the filesize, offset DWORDS
+                         look_data = lib_file.get_item(0);
                          break;
    }
 
+ ptr = look_data;
  // i: current string pos, j: last string pos
  for(i=0,j=0;i < 2048;)
    {

@@ -63,6 +63,7 @@ class U6Lzw
   ~U6Lzw(void);
 
   unsigned char *decompress_buffer(unsigned char *source, uint32 source_length, uint32 &destination_length);
+  bool decompress_buffer(unsigned char *source, uint32 source_length, unsigned char *destination, uint32 destination_length);
   unsigned char *decompress_file(std::string filename, uint32 &destination_length);
   unsigned char *compress_buffer(unsigned char *src, uint32 src_len,
                                  uint32 &dest_len);

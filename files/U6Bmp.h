@@ -27,23 +27,19 @@
 #include <string>
 
 #include "U6def.h"
+#include "U6Shape.h"
 
-class U6Bmp
+class U6Bmp: public U6Shape
 {
- uint16 width;
- uint16 height;
+ private:
  unsigned char *data;
- uint32 data_size;
  
  public:
  
    U6Bmp();
    ~U6Bmp();
-   uint16 get_width();
-   uint16 get_height();
-   unsigned char *get_data();
     
-   bool open(std::string filename);
+   bool load(std::string filename);
  
 };
 

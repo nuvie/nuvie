@@ -29,56 +29,40 @@
 #include "U6Lzw.h"
 #include "U6Bmp.h"
 
-U6Bmp::U6Bmp()
+U6Bmp::U6Bmp(): U6Shape()
 {
- width = 0;
- height = 0;
  data = NULL;
- data_size = 0;
 }
 
 U6Bmp::~U6Bmp()
 {
  if(data != NULL)
    free(data);
+
+ raw = NULL;
 }
 
-uint16 U6Bmp::get_width()
-{
- return width;
-}
 
-uint16 U6Bmp::get_height()
+bool U6Bmp::load(std::string filename)
 {
- return height;
-}
-
-unsigned char *U6Bmp::get_data()
-{
- if(data_size < 5)
-   return NULL;
-   
- return &data[4]; //skip width and height bytes.
-}
-
-bool U6Bmp::open(std::string filename)
-{
- U6Lzw *lzw;
+ U6Lzw lzw;
+ uint32 data_size;
+ 
+ if(data != NULL)
+   return false;
 
  if(filename.length() == 0)
    return false;
-   
- lzw = new U6Lzw;
- 
- data = lzw->decompress_file(filename,data_size);
 
- delete lzw;
+ data = lzw.decompress_file(filename,data_size);
 
  if(data == NULL)
    return false;
    
  width = (data[0] + (data[1]<<8));
  height = (data[2] + (data[3]<<8));
-  
+ 
+ raw = data + 0x4;
+   
  return true;
 }

@@ -24,6 +24,7 @@
 #include "U6def.h"
 #include "Configuration.h"
 #include "U6Bmp.h"
+#include "U6misc.h"
 
 #include "Screen.h"
 #include "Text.h"
@@ -61,10 +62,11 @@ Game::~Game()
     delete view_manager;
 }
  
-bool Game::loadGame(Screen *s, uint8 game_type)
+bool Game::loadGame(Screen *s, uint8 type)
 {
  
  screen = s;
+ game_type = type;
  
  assignGameConfigValues(game_type);
  
@@ -115,10 +117,13 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  converse->init(config, scroll, actor_manager, clock, player, view_manager, obj_manager);
 
  // Correct usecode class for each game
- if (game_type == NUVIE_GAME_U6)
-	 usecode = (UseCode *) new U6UseCode(config);
- else if (game_type == NUVIE_GAME_MD)
-	 usecode = (UseCode *) new MDUseCode(config);
+ switch (game_type)
+   { 
+    case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(config); break;
+    case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(config); break;
+    case NUVIE_GAME_SE : usecode = (UseCode *) new U6UseCode(config); break; // FIX
+   }
+
  usecode->init(obj_manager, game_map, player, scroll);
  
  event = new Event(config);
@@ -129,29 +134,50 @@ bool Game::loadGame(Screen *s, uint8 game_type)
 bool Game::loadBackground()
 {
  std::string filename;
- 
- background = new U6Bmp();
- 
- config->pathFromValue("config/ultima6/gamedir", "paper.bmp", filename);
- 
- if(background->open(filename) == false)
-   return false;
+ U6Lib_n file;
+ unsigned char *temp_buf;
+  
+ switch(game_type)
+   {
+    case NUVIE_GAME_U6 : config_get_path(config,"paper.bmp",filename);
+                         background = (U6Shape *) new U6Bmp();
+                         if(background->load(filename) == false)
+                           return false;
+                         break;
+
+    case NUVIE_GAME_MD : 
+                         background = new U6Shape();
+                         config_get_path(config,"mdscreen.lzc",filename);
+                         file.open(filename,4,game_type);
+                         temp_buf = file.get_item(0);
+                         background->load(temp_buf + 8);
+                         free(temp_buf);
+                         break;
+
+    case NUVIE_GAME_SE : 
+                         background = new U6Shape();
+                         config_get_path(config,"screen.lzc",filename);
+                         file.open(filename,4,game_type);
+                         temp_buf = file.get_item(0);
+                         background->load(temp_buf + 8);
+                         free(temp_buf);
+                         break;
+   }
 
  return true;
 }
 
 void Game::drawBackground()
 {
- //char *pixels;
  unsigned char *data;
  uint16 width, height;
 
- //pixels = (unsigned char *)screen->get_pixels();
  data = background->get_data();
- width = background->get_width();
- height = background->get_height();
+ background->get_size(&width,&height);
 
- screen->blit(0, 0, data, 8,  width, height, width,false);
+ //pixels = (unsigned char *)screen->get_pixels();
+
+ screen->blit(0, 0, data, 8,  width, height, width,true);
  
  //memcpy(pixels,data,data_size);
 
