@@ -95,7 +95,7 @@ RenderSurface::~RenderSurface()
 {
 	if (buffer) delete [] buffer;
 	if (zbuffer_priv) delete [] zbuffer_priv;
-  if (sdl_surface) free(sdl_surface);
+	if (sdl_surface) SDL_FreeSurface(sdl_surface);
 }
 
 //

@@ -135,9 +135,9 @@ GUI_Button::~GUI_Button()
   if (freebutton)
   {
     if (button)
-      delete button;
+      SDL_FreeSurface(button);
     if (button2)
-      delete button2;
+      SDL_FreeSurface(button2);
   }
   if (freefont)
     delete buttonFont;
