@@ -2199,10 +2199,9 @@
 				29B9732DFDCFA39411CA2CEA,
 			);
 			buildSettings = {
-				CC = "/usr/bin/gcc-3.3";
-				CPLUSPLUS = "/usr/bin/g++-3.3";
+				CC = /usr/bin/gcc;
+				CPLUSPLUS = "/usr/bin/g++";
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\"";
-				GCC_VERSION = 3.x;
 				HEADER_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks/SDL.framework/Headers\"";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
