@@ -434,11 +434,22 @@ void MapWindow::drawObjSuperBlock(bool draw_lowertiles, bool toptile)
  U6Link *link;
  U6LList *obj_list;
  Obj *obj;
- uint16 x,y;
+ sint16 x,y;
+ uint16 stop_x, stop_y;
 
-    for(y=cur_y+win_height; y >= cur_y; y--)
+ if(cur_x < 0)
+   stop_x = 0;
+ else
+   stop_x = cur_x;
+   
+ if(cur_y < 0)
+   stop_y = 0;
+ else
+   stop_y = cur_y;
+
+    for(y=cur_y+win_height; y >= stop_y; y--)
       {
-       for(x=cur_x+win_width;x >= cur_x; x--)
+       for(x=cur_x+win_width;x >= stop_x; x--)
          {
           obj_list =obj_manager->get_obj_list(x,y,cur_level);
           if(obj_list)
@@ -456,12 +467,15 @@ void MapWindow::drawObjSuperBlock(bool draw_lowertiles, bool toptile)
 
 inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
 {
- uint16 x,y;
+ sint16 x,y;
  Tile *tile;
  
  y = obj->y - cur_y;
  x = obj->x - cur_x;
  
+ if(x < 0 || y < 0)
+   return;
+
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
  if(draw_lowertiles == false && (tile->flags3 & 0x4) && toptile == false) //don't display force lower tiles.

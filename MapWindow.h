@@ -50,7 +50,7 @@ class MapWindow: public GUI_Widget
  ObjManager *obj_manager;
  ActorManager *actor_manager;
  
- uint16 cur_x, cur_y;
+ sint16 cur_x, cur_y;
  uint16 cursor_x, cursor_y;
  Tile *cursor_tile;
  Tile *use_tile;
