@@ -1,4 +1,4 @@
-AC_PREREQ(2.53)
+AC_PREREQ(2.52)
 AC_INIT(nuvie,0.1)
 AC_CONFIG_SRCDIR(nuvie.cpp)
 

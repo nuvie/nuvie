@@ -42,9 +42,14 @@ bool ActorManager::loadActors()
  uint8 b1, b2, b3;
  std::string filename;
  U6File objlist;
+ U6File schedule;
  
  config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
  if(objlist.open(filename,"rb") == false)
+   return false;
+
+ config->pathFromValue("config/ultima6/gamedir","schedule",filename);
+ if(schedule.open(filename,"rb") == false)
    return false;
 
  objlist.seek(0x100); // Start of Actor position info

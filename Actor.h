@@ -27,6 +27,14 @@
 #include "U6def.h"
 #include "Map.h"
 
+typedef struct {
+uint16 x;
+uint16 y;
+uint16 z;
+uint8 hour;
+uint8 unknown;
+} Schedule;
+
 class Actor
 {
  friend class ActorManager;
@@ -50,12 +58,18 @@ class Actor
  
  char *name;
  
+ Schedule **sched;
+ 
  public:
  
  Actor(Map *m);
  ~Actor();
  
  bool is_alive();
+ 
+ protected:
+ 
+ void loadSchedule(unsigned char *schedule_data, uint16 num);
  
 };
 
