@@ -1,3 +1,7 @@
+2003-06-08  Joseph Applegate <sb-x@users.sourceforge.net>
+	* NPCs who should be working no longer tell you they are out-to-lunch.
+	Incidentally this fix might have solved some other minor problems.
+
 2003-06-08  Eric Fry <efry@users.sourceforge.net>
 	* Added electric field switches.
 	* Animated tiles now block correctly.
