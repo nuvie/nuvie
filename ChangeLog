@@ -1,3 +1,11 @@
+2003-12-25  Eric Fry <efry@users.sourceforge.net>
+	* Fixed an issue with containers. There are some comtainer objects
+	  that don't reference their container through the x variable. They seem
+	  to follow the container object in the objblk files. They also appear
+	  to have a positive > 0 value for y.
+	  I think their might still be some issues with calculating inventory 
+	  weight.
+
 2003-12-21  Eric Fry <efry@users.sourceforge.net>
 	* Fixed inventory display order. Nuvie was displaying the inventory 
 	  list in reverse order. Thanks to Dominus for spotting that one.

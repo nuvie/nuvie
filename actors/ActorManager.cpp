@@ -433,7 +433,7 @@ void ActorManager::print_actor(Actor *actor)
             Obj *obj = (Obj *)link->data;
             printf(" %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
                    obj_manager->look_obj(obj), obj->obj_n, obj->frame_n, obj->quality,
-                   obj->qty, obj_manager->get_obj_weight(obj, false));
+                   obj->qty, obj_manager->get_obj_weight(obj, false)/10);
         }
         printf("(weight %f / %f)\n", actor->get_inventory_weight(),
                actor->inventory_get_max_weight());

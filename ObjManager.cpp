@@ -88,6 +88,8 @@ bool ObjManager::loadObjs(TileManager *tm)
 
  tile_manager = tm;
 
+ loadBaseTile();
+
  key = config_get_game_key(config);
  key.append("/gamedir");
  
@@ -121,7 +123,6 @@ bool ObjManager::loadObjs(TileManager *tm)
    loadObjSuperChunk(filename,i);
   }
 
- loadBaseTile();
 
  loadWeightTable();
 
@@ -731,8 +732,9 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
  for(i=0;i<num_objs;i++)
   {
    obj = loadObj(&file,i);
+ 
    list->add(obj);
-   
+
    if(obj->obj_n == obj_egg_table[game_type])
      {
       egg_manager->add_egg(obj);
@@ -740,25 +742,29 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
 
    if(obj->status & OBJ_STATUS_IN_INVENTORY) //object in actor's inventory
      {
-      //printf("%d: %d, %d, %d\n",obj->x, obj->status, obj->obj_n, obj->y);
       inventory_list = get_actor_inventory(obj->x);
       inventory_list->add(obj);
+
      }
    else
      {
       if(obj->status & OBJ_STATUS_IN_CONTAINER)
         {
          addObjToContainer(list,obj);
+
         }
       else
         {
-
-
          if(show_eggs || obj->obj_n != obj_egg_table[game_type]) // show remaining objects, hiding eggs if neccecary.
             add_obj(obj_tree,obj);
+
         }
+
      }
+
   }
+
+
 
  delete list;
 
@@ -806,13 +812,35 @@ bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
  U6Link *link;
  Obj *c_obj; //container object
 
- link = list->gotoPos(obj->x);
- if(link != NULL)
+ if(obj->y == 0)
    {
-    c_obj = (Obj *)link->data;
+    link = list->gotoPos(obj->x);
+    if(link != NULL)
+       c_obj = (Obj *)link->data;
+   }
+ else // traverse back through the object list to the first object that is NOT in a container.
+   {
+	for(link=list->end();link != NULL;link=link->prev)
+	  {
+	  
+	   if(link->data)
+		 {
+		  c_obj = (Obj *)link->data;
+		  if((c_obj->status & OBJ_STATUS_IN_CONTAINER) == 0)
+		     break;
+		 }
+		 
+	  }
+   }
+	 
+ if(link && c_obj) // we've found our container.
+   {
     if(c_obj->container == NULL)
-       c_obj->container = new U6LList();
+	  c_obj->container = new U6LList();
     c_obj->container->addAtPos(0,obj);
+	
+	//printf("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
+	//printf(" -> %s (%x,%x,%x)\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false),c_obj->x,c_obj->y,c_obj->z);
 
     return true;
    }
@@ -1075,9 +1103,15 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  printf("%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
  
  if(in_container == false)
-   printf("at %x, %x, %x",obj->x, obj->y, obj->z);
+   printf("at %x, %x, %x (%d,%d,%d)",obj->x, obj->y, obj->z, obj->x, obj->y, obj->z);
  printf("\n");
+
+ print_indent(indent);
+ printf("objblk_n: %d\n", obj->objblk_n);
  
+ print_indent(indent);
+ printf("obj_n: %d\n",obj->obj_n);
+
  print_indent(indent);
  printf("frame_n: %d\n",obj->frame_n);
 
@@ -1087,12 +1121,25 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  print_indent(indent);
  printf("Status: ");
  print_b(obj->status);
- printf("\n");
+ if(obj->status != 0)
+  {
+   printf(" ( ");
+   if(obj->status & OBJ_STATUS_IN_CONTAINER)
+     printf("CONT ");
+   if(obj->status & OBJ_STATUS_IN_INVENTORY)
+     printf("INV ");
+   if(obj->status & OBJ_STATUS_TEMPORARY)
+     printf("TEMP ");
+  
+   printf(")");
+  }
 
+ printf("\n");
+  
  if(in_container)
   {
    print_indent(indent);
-   printf("y = %d, z = %d\n", obj->y, obj->z);
+   printf("parent_id = %d, y = %d, z = %d\n", obj->x, obj->y, obj->z);
   }
 
  print_indent(indent);
