@@ -73,6 +73,8 @@ nuvie_SOURCES = \
 	pathfinder/ZPath.cpp \
 	pathfinder/ZPath.h \
 \
+	save/SaveDialog.cpp \
+	save/SaveDialog.h \
 	save/SaveManager.cpp \
 	save/SaveManager.h \
 \

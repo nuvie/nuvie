@@ -147,6 +147,7 @@
 				072B4D210632953700CC3368,
 				0787F20B064390F60028223C,
 				0726903E064E749600F249E5,
+				07269048064F928A00F249E5,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -696,6 +697,7 @@
 				072B4A5B0620107A00CC3368,
 				072B4D200632953700CC3368,
 				0726903D064E749600F249E5,
+				07269047064F928A00F249E5,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1619,8 +1621,10 @@
 		};
 		0726902F064E745B00F249E5 = {
 			children = (
-				0726903B064E749600F249E5,
+				07269046064F928A00F249E5,
+				07269045064F928A00F249E5,
 				0726903C064E749600F249E5,
+				0726903B064E749600F249E5,
 			);
 			isa = PBXGroup;
 			name = Save;
@@ -1653,6 +1657,36 @@
 		};
 		0726903E064E749600F249E5 = {
 			fileRef = 0726903C064E749600F249E5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07269045064F928A00F249E5 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SaveDialog.cpp;
+			path = ../save/SaveDialog.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07269046064F928A00F249E5 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SaveDialog.h;
+			path = ../save/SaveDialog.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07269047064F928A00F249E5 = {
+			fileRef = 07269045064F928A00F249E5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07269048064F928A00F249E5 = {
+			fileRef = 07269046064F928A00F249E5;
 			isa = PBXBuildFile;
 			settings = {
 			};

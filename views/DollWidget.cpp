@@ -147,7 +147,7 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
 {
  Event *event = Game::get_game()->get_event();
  MsgScroll *scroll = Game::get_game()->get_scroll();
- MapWindow *map_window = Game::get_game()->get_map_window();
+ //MapWindow *map_window = Game::get_game()->get_map_window();
  uint8 location;
  Obj *obj;
  

@@ -32,19 +32,14 @@
 #include "NuvieIOFile.h"
 
 #include "GUI.h"
-#include "GUI_Area.h"
-#include "GUI_Text.h"
-#include "GUI_Scroller.h"
-#include "GUI_Dialog.h"
-#include "GUI_Button.h"
+#include "SaveDialog.h"
 
-SaveManager::SaveManager(Configuration *cfg, ActorManager *am, ObjManager *om)
+
+SaveManager::SaveManager(Configuration *cfg)
 {
  config = cfg;
- actor_manager = am;
- obj_manager = om;
+ dialog = NULL;
  
- create_dialog();
 }
 
 SaveManager::~SaveManager()
@@ -53,43 +48,28 @@ SaveManager::~SaveManager()
 
 void SaveManager::create_dialog()
 {
- GUI_Widget *widget;
  GUI *gui = GUI::get_gui();
- 
- dialog = new GUI_Dialog(10,10, 300, 180, 244, 216, 131, GUI_DIALOG_MOVABLE);
- scroller = new GUI_Scroller(10,25, 280, 120, 135,119,76, 20 );
- widget = (GUI_Widget *) new GUI_Text(10, 12, 0, 0, 0, "Nuvie Load/Save Manager", gui->get_font());
- dialog->AddWidget(widget);
- 
- widget = new GUI_Area(0, 0, 266, 20, 225, 225, 225, AREA_ANGULAR);
- scroller->AddWidget(widget);
- widget = new GUI_Area(0, 0, 266, 20, 50, 50, 50, AREA_ANGULAR);
- scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 25, 25, 25, AREA_ANGULAR);
- scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 50, 50, 50, AREA_ANGULAR);
- scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 25, 25, 25, AREA_ANGULAR);
- scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 50, 50, 50, AREA_ANGULAR);
- scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 25, 25, 25, AREA_ANGULAR);
- scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 50, 50, 50, AREA_ANGULAR);
- scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 25, 25, 25, AREA_ANGULAR);
- scroller->AddWidget(widget);
   
- dialog->AddWidget(scroller);
+ if(dialog == NULL)
+   {
+    dialog = new SaveDialog((GUI_CallBack *)this);
+    dialog->grab_focus();
+    gui->AddWidget(dialog);
+   }
+   
+ return;
+}
 
- widget = (GUI_Widget *) new GUI_Button(this, 135, 152, 40, 18, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
- dialog->AddWidget(widget);
- 
- widget = (GUI_Widget *) new GUI_Button(this, 185, 152, 40, 18, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
- dialog->AddWidget(widget);
+GUI_status SaveManager::callback(uint16 msg, GUI_CallBack *caller, void *data)
+{
+ if(caller == dialog)
+  {
+   switch(msg)
+     {
+       case SAVEDIALOG_CB_DELETE : dialog = NULL; break;
+       default : break;
+     }
+  }
 
- widget = (GUI_Widget *) new GUI_Button(this, 235, 152, 55, 18, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
- dialog->AddWidget(widget);
-
- gui->AddWidget(dialog);
+ return GUI_YUM;
 }

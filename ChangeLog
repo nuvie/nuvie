@@ -1,4 +1,11 @@
 2004-05-10  Eric Fry <efry at users.sourceforge.net>
+	* Added SaveDialog class.
+	* Moved save dialog code into the new SaveDialog class.
+	* Hooked up save dialog close callbacks. It is now possible to close
+	  the save dialog by clicking the cancel button or pressing the escape
+	  key.
+
+2004-05-10  Eric Fry <efry at users.sourceforge.net>
 	* Added GUI_ScrollBar, GUI_Scroller and a new generic callback
 	  class GUI_CallBack
 	* Added SaveManager class. This is still in the early stages

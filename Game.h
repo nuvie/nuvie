@@ -47,6 +47,7 @@ class UseCode;
 class Event;
 class GUI;
 class SoundManager;
+class SaveManager;
 
 typedef enum
 {
@@ -78,7 +79,8 @@ class Game
  Converse *converse;
  
  ViewManager *view_manager;
- SoundManager *sound_manager; //^^
+ SoundManager *sound_manager;
+ SaveManager *save_manager;
  
  GameClock *clock;
  Portrait *portrait;
@@ -133,6 +135,8 @@ class Game
  Event *get_event()                { return(event); }
  GUI *get_gui()                    { return(gui); }
  SoundManager *get_sound_manager() { return(sound_manager); }
+ SaveManager *get_save_manager()   { return(save_manager); }
+ 
  Cursor *get_cursor()              { return(cursor); }
 
  protected:

@@ -54,6 +54,7 @@
 #include "SEUseCode.h"
 
 #include "Cursor.h"
+#include "SaveManager.h"
 
 #include "Game.h"
 
@@ -111,6 +112,8 @@ bool Game::loadGame(Screen *s, uint8 type)
    //sound_manager->LoadSongs(NULL);
    //sound_manager->LoadObjectSamples(NULL);
 
+   save_manager = new SaveManager(config);
+   
    palette = new GamePalette(screen,config);
 
    clock = new GameClock(config);

@@ -1,11 +1,10 @@
-#ifndef __SaveManager_h__
-#define __SaveManager_h__
-
+#ifndef __SaveDialog_h__
+#define __SaveDialog_h__
 /*
- *  SaveManager.h
+ *  SaveDialog.h
  *  Nuvie
  *
- *  Created by Eric Fry on Wed Apr 28 2004.
+ *  Created by Eric Fry on Mon May 10 2004.
  *  Copyright (c) 2004. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -24,39 +23,38 @@
  *
  */
 
-#include <string>
-#include <list>
+#include "GUI_Dialog.h"
 
-#include "GUI_CallBack.h"
+class GUI;
+class GUI_CallBack;
+class GUI_Button;
+class GUI_Scroller;
 
-class Configuration;
+// Callback message types
 
+#define SAVEDIALOG_CB_SAVE    0x1
+#define SAVEDIALOG_CB_LOAD    0x2
+#define SAVEDIALOG_CB_CANCEL  0x3
+#define SAVEDIALOG_CB_DELETE  0x4
 
-class SaveDialog;
+class SaveDialog : public GUI_Dialog {
+protected:
 
-class SaveManager : public GUI_CallBack
-{
- Configuration *config;
- ActorManager *actor_manager;
- ObjManager *obj_manager;
- 
- // gui widgets;
- 
- SaveDialog *dialog;
- 
- public:
-  
- SaveManager(Configuration *cfg);
- virtual ~SaveManager();
+GUI_Scroller *scroller;
 
- void create_dialog();
-  
- GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
-  
- protected:
- 
+GUI_CallBack *callback_object;
+GUI_Button *save_button, *load_button, *cancel_button;
 
- 
+public:
+
+SaveDialog(GUI_CallBack *callback);
+
+~SaveDialog();
+
+GUI_status close_dialog();
+GUI_status KeyDown(SDL_keysym key);
+
+GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 
-#endif /* __SaveManager_h__ */
+#endif /* __SaveDialog_h__ */

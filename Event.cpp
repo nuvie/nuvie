@@ -1478,9 +1478,9 @@ void Event::quitDialog()
 
 void Event::saveDialog()
 {
- SaveManager *save_manager;
+ SaveManager *save_manager = Game::get_game()->get_save_manager();
 
- save_manager = new SaveManager(config, Game::get_game()->get_actor_manager(), obj_manager);
+ save_manager->create_dialog();
 
  return; 
 }
