@@ -3,6 +3,8 @@
 FILES=`find $1`
 
 for FILE in $FILES; do
-	mv $1 `echo $FILE | tr A-Z a-z`;
+    NEWNAME=`echo $FILE | tr A-Z a-z`
+    mv $FILE $NEWNAME~
+    mv $NEWNAME~ $NEWNAME
 done;
 
