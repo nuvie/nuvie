@@ -1253,7 +1253,7 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 break;
             case 2:
                 if(selection == 1) // Cove
-                    teleport_dest = "83 db 0";
+                    teleport_dest = "223 163 0";
                 else if(selection == 2) // Paws
                     teleport_dest = "198 264 0";
                 else if(selection == 3) // Serpent's Hold
