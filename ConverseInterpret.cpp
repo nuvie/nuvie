@@ -171,7 +171,7 @@ void ConverseInterpret::add_text(unsigned char c)
         text = new string;
     do
     {
-        text->push_back((unsigned char)cs->read());
+        text->append(1,(unsigned char)cs->read());
     } while(!cs->overflow() && is_print(cs->peek()));
 }
 
@@ -321,7 +321,7 @@ void ConverseInterpret::do_text()
         }
         else
         {
-           output.push_back(c_str[i]);
+           output.append(1,c_str[i]);
            i += 1;
         }
     }
