@@ -117,7 +117,6 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 
 void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 {
-   stop();
    if(actor->move(new_x, new_y, new_level))
    {
 //    map_window->centerMapOnActor(actor);
@@ -127,22 +126,22 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
    }
 }
 
-void Player::moveLeft(bool moving)
+void Player::moveLeft()
 {
  moveRelative(-1,0);
 }
 
-void Player::moveRight(bool moving)
+void Player::moveRight()
 {
  moveRelative(1,0);
 }
 
-void Player::moveUp(bool moving)
+void Player::moveUp()
 {
  moveRelative(0,-1);
 }
 
-void Player::moveDown(bool moving)
+void Player::moveDown()
 {
  moveRelative(0,1);
 }
