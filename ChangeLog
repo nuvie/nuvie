@@ -1,3 +1,6 @@
+2003-10-30  Eric Fry <efry@users.sourceforge.net>
+	* Temporary objects now clear on level change, teleport.
+
 2003-10-29  Eric Fry <efry@users.sourceforge.net>
 	* Moved temp obj addition into ObjManager::add_obj()
 	* Added ObjManager::delete_obj() method to delete an object and any

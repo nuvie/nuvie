@@ -54,7 +54,7 @@ ObjManager::ObjManager(Configuration *cfg)
 
  temp_obj_blk_x = 0;
  temp_obj_blk_y = 0;
- temp_obj_blk_z = 0;
+ temp_obj_blk_z = OBJ_TEMP_INIT;
  
  show_eggs_key = config_get_game_key(config);
  show_eggs_key.append("/show_eggs");
@@ -885,10 +885,20 @@ iAVLKey ObjManager::get_obj_tree_key(uint16 x, uint16 y, uint8 level)
 void ObjManager::temp_obj_list_update(uint16 x, uint16 y, uint8 z)
 {
  uint16 cur_blk_x, cur_blk_y;
- uint8 cur_blk_z;
  
- cur_blk_x = x / 32;
- cur_blk_y = y / 32;
+ // We're changing levels so clean out all temp objects on the current level.
+ if(temp_obj_blk_z != z)
+   {
+    if(temp_obj_blk_z != OBJ_TEMP_INIT)
+      temp_obj_list_clean(temp_obj_blk_z);
+
+    temp_obj_blk_z = z;
+    
+    return;
+   }
+
+ cur_blk_x = x >> 5; // x / 32;
+ cur_blk_y = y >> 5; // y / 32;
  
  //FIX for level change. we want to remove all temps on level change.
  if(cur_blk_x != temp_obj_blk_x || cur_blk_y != temp_obj_blk_y)
@@ -917,6 +927,29 @@ bool ObjManager::temp_obj_list_remove(Obj *obj)
  return true;
 }
 
+// clean objects from a whole level.
+void ObjManager::temp_obj_list_clean(uint8 z)
+{
+ std::list<Obj *>::iterator obj;
+ 
+ for(obj = temp_obj_list.begin(); obj != temp_obj_list.end();)
+   {
+    if((*obj)->z == z)
+      {
+       printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
+       remove_obj(*obj);
+       delete *obj;
+       obj = temp_obj_list.erase(obj);
+      } 
+    else
+      obj++;
+   }
+
+ return;
+}
+
+
+// Clean objects more than 32 tiles from position
 void ObjManager::temp_obj_list_clean(uint16 x, uint16 y)
 {
  std::list<Obj *>::iterator obj;
@@ -929,7 +962,7 @@ void ObjManager::temp_obj_list_clean(uint16 x, uint16 y)
 
     if(dist_x > 32 || dist_y > 32)
       {
-       printf("Removing obj %d.\n",(*obj)->obj_n);
+       printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
        remove_obj(*obj);
        delete *obj;
        obj = temp_obj_list.erase(obj);

@@ -56,6 +56,8 @@ class UseCode;
 
 #define OBJ_ADD_TOP true
 
+#define OBJ_TEMP_INIT 255 // this is used to stop temporary objects from being cleaned upon startup.
+
 struct ObjTreeNode
 {
  iAVLKey key;
@@ -169,6 +171,7 @@ class ObjManager
 
  bool temp_obj_list_add(Obj *obj);
  bool temp_obj_list_remove(Obj *obj);
+ void temp_obj_list_clean(uint8 z);
  void temp_obj_list_clean(uint16 x, uint16 y);
 
  public:

@@ -137,7 +137,7 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 // center everyone first, so we don't try to path-find between planes if blocked
     party->move(new_x, new_y, new_level);
     party->follow();
-
+    obj_manager->temp_obj_list_update(new_x, new_y, new_level); // remove temporary objs
    }
 }
 
