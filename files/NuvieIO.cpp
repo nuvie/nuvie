@@ -41,7 +41,26 @@ unsigned char *NuvieIO::readAll()
    
 unsigned char *NuvieIO::readBuf(uint32 read_size, uint32 *bytes_read)
 {
- return NULL; //fix
+ unsigned char *buf;
+ 
+ *bytes_read = 0;
+     
+ if(pos + read_size > size)
+    return NULL;
+ 
+ buf = (unsigned char *)malloc(read_size);
+ if(buf == NULL)
+   return NULL;
+
+ if(readToBuf(buf, read_size) == false)
+   {
+    free(buf);
+    return NULL;
+   }
+ 
+ *bytes_read = read_size;
+   
+ return buf;
 }
 
 
@@ -126,7 +145,7 @@ uint32 NuvieIOBuffer::read4()
 
 bool NuvieIOBuffer::readToBuf(unsigned char *buf, uint32 buf_size)
 {
- if(pos + buf_size >= size || buf == NULL)
+ if(pos + buf_size > size || buf == NULL)
    return false;
 
  memcpy(buf,data,buf_size);
@@ -177,7 +196,7 @@ bool NuvieIOBuffer::write4(uint32 src)
 
 uint32 NuvieIOBuffer::writeBuf(unsigned char *src, uint32 src_size)
 {
-  if(pos + src_size >= size || src == NULL)
+  if(pos + src_size > size || src == NULL)
    return 0;
 
  memcpy(&data[pos],src,src_size);

@@ -23,7 +23,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
-#include "U6File.h"
+#include "NuvieIOFile.h"
 
 #include "GameClock.h"
 
@@ -42,10 +42,10 @@ GameClock::~GameClock()
 bool GameClock::init()
 {
  std::string filename;
- U6File objlist;
+ NuvieIOFileRead objlist;
  
  config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
- if(objlist.open(filename,"rb") == false)
+ if(objlist.open(filename) == false)
    return false;
 
  objlist.seek(0x1bf3); // start of time data

@@ -21,6 +21,7 @@
  *
  */
 #include "U6misc.h"
+#include "NuvieIOFile.h"
 
 #include "Player.h"
 
@@ -149,12 +150,12 @@ void Player::pass()
 bool Player::loadObjlistData()
 {
  std::string filename;
- U6File objlist;
+ NuvieIOFileRead objlist;
  int game_type;
  
  config_get_path(config,"savegame/objlist",filename);
 
- if(objlist.open(filename,"rb") == false)
+ if(objlist.open(filename) == false)
    return false;
 
  objlist.seek(0xf00);

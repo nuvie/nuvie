@@ -1,3 +1,5 @@
+#ifndef __NuvieIO_h__
+#define __NuvieIO_h__
 /*
  *  NuvieIO.h
  *  Nuvie
@@ -92,3 +94,4 @@ class NuvieIOBuffer: public NuvieIO
    uint32 writeBuf(unsigned char *src, uint32 src_size)=0;
    uint32 write(NuvieIO *src);
 };
+#endif /* __NuvieIO_h__ */

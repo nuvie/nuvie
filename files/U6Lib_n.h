@@ -24,7 +24,7 @@
  *
  */
 #include "U6def.h"
-#include "U6File.h"
+#include "NuvieIO.h"
 #include <vector>
 
 using std::string;
@@ -45,15 +45,14 @@ class U6Lib_n
  uint8 lib_size; // measured in bytes either 2 or 4
  uint32 num_offsets; // number of items, size of lists
  U6LibItem *items;
- U6File file;
- vector<string> names; // names from index file, same number as offsets
- vector<unsigned char *> data; // data-buffers for each item
+ NuvieIO *data;
 
 public:
    U6Lib_n();
    ~U6Lib_n();
  
    bool open(std::string &filename, uint8 size, uint8 type=NUVIE_GAME_U6);
+   bool U6Lib_n::open(NuvieIO *new_data, uint8 size, uint8 type=NUVIE_GAME_U6);
    void close();
 //   bool create(std::string &filename, uint8 size);
    uint32 get_num_items();

@@ -46,6 +46,8 @@ bool NuvieIOFile::openWithMode(const char *filename, const char *mode)
    return false;
   }
 
+ size = get_filesize();
+ 
  return true;
 }
 
@@ -55,6 +57,17 @@ void NuvieIOFile::close()
    fclose(fp);
 
  fp = NULL;
+}
+
+uint32 NuvieIOFile::get_filesize()
+{
+ uint32 file_length;
+
+ fseek(fp, 0, SEEK_END);
+ file_length = (uint32)ftell(fp);
+ fseek(fp, pos, SEEK_SET);
+
+ return file_length; 
 }
 
 void NuvieIOFile::seek(uint32 new_pos)
@@ -120,13 +133,15 @@ uint32 NuvieIOFileRead::read4()
 
 bool NuvieIOFileRead::readToBuf(unsigned char *buf, uint32 buf_size)
 {
- if(pos + buf_size >= size)
+ if(pos + buf_size > size)
    return false;
 
  fread(buf,1,buf_size,fp); // FIX for partial read.
 
  return true;
 }
+
+
 
 // NuvieIOFileWrite
 //
@@ -178,7 +193,7 @@ bool NuvieIOFileWrite::write4(uint32 src)
 
 uint32 NuvieIOFileWrite::writeBuf(unsigned char *src, uint32 src_size)
 {
- if(fp == NULL || pos + src_size >= size)
+ if(fp == NULL || pos + src_size > size)
    return(0);
  
  pos += src_size;

@@ -27,7 +27,7 @@
 #include "iAVLTree.h"
 
 #include "U6def.h"
-#include "U6File.h"
+#include "NuvieIOFile.h"
 #include "U6LList.h"
 
 #include "Configuration.h"
@@ -127,7 +127,7 @@ class ObjManager
  bool loadObjSuperChunk(char *filename, uint8 level);
  bool add_obj(iAVLTree *obj_tree, Obj *obj, bool addOnTop=false);
  bool addObjToContainer(U6LList *list, Obj *obj);
- Obj *loadObj(U6File *file, uint16 objblk_n);
+ Obj *loadObj(NuvieIOFileRead *file, uint16 objblk_n);
  char *get_objblk_path(char *path);
  iAVLTree *get_obj_tree(uint8 level);
 

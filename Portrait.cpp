@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include "NuvieIOFile.h"
 #include "Portrait.h"
 #include "U6Lzw.h"
 
@@ -32,10 +32,10 @@ Portrait::Portrait(Configuration *cfg)
 bool Portrait::init()
 {
  std::string filename;
- U6File objlist;
+ NuvieIOFileRead objlist;
  
  config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
- if(objlist.open(filename,"rb") == false)
+ if(objlist.open(filename) == false)
    throw "Opening savegame/objlist";
 
  objlist.seek(0x1c72);

@@ -7,10 +7,12 @@ nuvie_SOURCES = \
 	conf/XMLTree.h \
 	conf/ConfigNode.h \
 \
+	files/NuvieIO.cpp \
+	files/NuvieIO.h \
+	files/NuvieIOFile.cpp \
+	files/NuvieIOFile.h \
 	files/U6Bmp.cpp \
 	files/U6Bmp.h \
-	files/U6File.cpp \
-	files/U6File.h \
 	files/U6Lib_n.cpp \
 	files/U6Lib_n.h \
 	files/U6Lzw.cpp \

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "U6File.h"
+#include "NuvieIOFile.h"
 
 
 // LZW Stack 
@@ -70,10 +70,10 @@ class U6Lzw
   const char *strerror() { return (const char *)errstr; } // get error string
  protected:
 
-  bool is_valid_lzw_file(U6File *input_file);
+  bool is_valid_lzw_file(NuvieIOFileRead *input_file);
   bool is_valid_lzw_buffer(unsigned char *buf, uint32 length);
   
-  long get_uncompressed_file_size(U6File *input_file);
+  long get_uncompressed_file_size(NuvieIOFileRead *input_file);
   long get_uncompressed_buffer_size(unsigned char *buf, uint32 length);
   
   int get_next_codeword (long *bits_read, unsigned char *source, 

@@ -50,11 +50,11 @@ bool ActorManager::loadActors()
  uint16 i;
  uint8 b1, b2, b3;
  std::string filename;
- U6File objlist;
- U6File schedule;
+ NuvieIOFileRead objlist;
+ //NuvieIOFileRead schedule;
  
  config_get_path(config,"/savegame/objlist",filename);
- if(objlist.open(filename,"rb") == false)
+ if(objlist.open(filename) == false)
    return false;
 
 
@@ -225,7 +225,7 @@ void ActorManager::updateActors()
 bool ActorManager::loadActorSchedules()
 {
  std::string filename;
- U6File schedule;
+ NuvieIOFileRead schedule;
  uint16 i;
  uint16 index[256];
  uint16 s_num;
@@ -234,7 +234,7 @@ bool ActorManager::loadActorSchedules()
  unsigned char *s_ptr;
  
  config_get_path(config,"schedule",filename);
- if(schedule.open(filename,"rb") == false)
+ if(schedule.open(filename) == false)
    return false;
  
  for(i=0;i<256;i++)
@@ -242,7 +242,7 @@ bool ActorManager::loadActorSchedules()
     index[i] = schedule.read2();
    }
  
- sched_data = schedule.readBuf(schedule.filesize() - 0x202, &bytes_read);
+ sched_data = schedule.readBuf(schedule.get_size() - 0x202, &bytes_read);
  
  s_ptr = sched_data + 2;
 

@@ -27,7 +27,6 @@
 
 #include "U6def.h"
 #include "Configuration.h"
-#include "U6File.h"
 #include "U6LList.h"
 
 #include "ActorManager.h"

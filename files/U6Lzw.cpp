@@ -73,10 +73,10 @@ unsigned char *U6Lzw::compress_buffer(unsigned char *src, uint32 src_len,
 // returns "FALSE" if the file doesn't satisfy these conditions
 // return "TRUE" otherwise
 
-bool U6Lzw::is_valid_lzw_file(U6File *input_file)
+bool U6Lzw::is_valid_lzw_file(NuvieIOFileRead *input_file)
 {
     // file must contain 4-byte size header and space for the 9-bit value 0x100
-    if (input_file->filesize() < 6) { return(false); }
+    if (input_file->get_size() < 6) { return(false); }
 
    // the last byte of the size header must be 0 (U6's files aren't *that* big)
     input_file->seek(3);
@@ -112,7 +112,7 @@ bool U6Lzw::is_valid_lzw_buffer(unsigned char *buf, uint32 length)
  return true;
 }
 
-long U6Lzw::get_uncompressed_file_size(U6File *input_file)
+long U6Lzw::get_uncompressed_file_size(NuvieIOFileRead *input_file)
 { 
     long uncompressed_file_length;
  
@@ -272,16 +272,16 @@ unsigned char *U6Lzw::decompress_file(std::string filename, uint32 &destination_
     unsigned char *source_buffer;
     unsigned char *destination_buffer;
     uint32 source_buffer_size;
-    U6File input_file;
+    NuvieIOFileRead input_file;
     
     destination_length = 0;
-    if(input_file.open(filename,"rb") == false)
+    if(input_file.open(filename) == false)
       return NULL;
     
     if (this->is_valid_lzw_file(&input_file))
     {
        // determine the buffer sizes
-       source_buffer_size = input_file.filesize();
+       source_buffer_size = input_file.get_size();
 //       destination_buffer_size = this->get_uncompressed_file_size(input_file);
  
        // create the buffers
@@ -305,7 +305,7 @@ unsigned char *U6Lzw::decompress_file(std::string filename, uint32 &destination_
     else
     {
        // uncompressed file
-       uint32 destination_buffer_size = input_file.filesize();
+       uint32 destination_buffer_size = input_file.get_size();
        destination_length = destination_buffer_size-8;
 
        destination_buffer = (unsigned char *)malloc(destination_length);

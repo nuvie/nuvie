@@ -1,3 +1,5 @@
+#ifndef __NuvieIOFile_h__
+#define __NuvieIOFile_h__
 /*
  *  NuvieIOFile.h
  *  Nuvie
@@ -21,6 +23,7 @@
  *
  */
 #include <stdio.h>
+#include <string>
 
 #include "U6def.h"
 
@@ -38,12 +41,15 @@ class NuvieIOFile : public NuvieIO
    virtual ~NuvieIOFile();
    
    virtual bool open(const char *filename) { return false; };
+   bool open(std::string filename) { return open(filename.c_str()); };
+   
    void close();
      
    void seek(uint32 new_pos);
    
  protected:
     bool openWithMode(const char *filename, const char *mode);
+    uint32 get_filesize();
 };
 
 class NuvieIOFileRead : public NuvieIOFile
@@ -56,7 +62,8 @@ class NuvieIOFileRead : public NuvieIOFile
   // virtual ~NuvieIOFileRead();
 
    bool open(const char *filename);
-     
+   bool open(std::string filename) { return open(filename.c_str()); };
+        
    uint8 read1();
    uint16 read2();
    uint32 read4();
@@ -73,7 +80,8 @@ class NuvieIOFileWrite : public NuvieIOFileRead
   // virtual ~NuvieIOFileRead();
 
    bool open(const char *filename);
-     
+   bool open(std::string filename) { return open(filename.c_str()); };
+        
    bool write1(uint8 src);
    bool write2(uint16 src);
    bool write4(uint32 src);
@@ -81,4 +89,4 @@ class NuvieIOFileWrite : public NuvieIOFileRead
    uint32 write(NuvieIO *src);
 
 };
-
+#endif /* __NuvieIOFile_h__ */

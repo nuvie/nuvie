@@ -21,7 +21,7 @@
  *
  */
 
-#include "U6File.h"
+#include "NuvieIOFile.h"
 #include "U6Lib_n.h"
 #include "U6Lzw.h"
 
@@ -53,9 +53,9 @@ TileManager::~TileManager()
 bool TileManager::loadTiles()
 {
  std::string maptiles_path, masktype_path, path;
- U6File objtiles_vga;
- U6File tileindx_vga;
- U6File file;
+ NuvieIOFileRead objtiles_vga;
+ NuvieIOFileRead tileindx_vga;
+ NuvieIOFileRead file;
  U6Lib_n lib_file;
  U6Lzw *lzw;
  uint32 tile_offset;
@@ -104,10 +104,10 @@ bool TileManager::loadTiles()
    }
  
  config_get_path(config,"objtiles.vga",path);
- if(objtiles_vga.open(path,"rb") == false)
+ if(objtiles_vga.open(path) == false)
    throw "Opening objtiles.vga";
 
- objtiles_size = objtiles_vga.filesize();
+ objtiles_size = objtiles_vga.get_size();
  
  tile_data = (unsigned char *)realloc(tile_data,maptiles_size + objtiles_size);
   
@@ -115,7 +115,7 @@ bool TileManager::loadTiles()
   
  config_get_path(config,"tileindx.vga",path);
 
- if(tileindx_vga.open(path,"rb") == false)
+ if(tileindx_vga.open(path) == false)
    throw "Opening tileindx.vga";
 
  for(i=0;i<2048;i++)
@@ -239,12 +239,12 @@ void TileManager::update()
 bool TileManager::loadTileFlag()
 {
  std::string filename;
- U6File file;
+ NuvieIOFileRead file;
  uint16 i;
  
  config_get_path(config,"tileflag",filename);
  
- if(file.open(filename,"rb") == false)
+ if(file.open(filename) == false)
    return false;
  
  for(i=0;i < 2048; i++)
@@ -301,15 +301,15 @@ bool TileManager::loadTileFlag()
 bool TileManager::loadAnimData()
 {
  std::string filename;
- U6File file;
+ NuvieIOFileRead file;
  uint8 i;
  
  config_get_path(config,"animdata",filename);
 
- if(file.open(filename,"rb") == false)
+ if(file.open(filename) == false)
    return false;
 
- if(file.filesize() != 194)
+ if(file.get_size() != 194)
    return false;
 
  animdata.number_of_tiles_to_animate = file.read2();

@@ -23,7 +23,7 @@
 #include <string>
 
 #include "U6def.h"
-#include "U6File.h"
+#include "NuvieIOFile.h"
 
 #include "Configuration.h"
 #include "TileManager.h"
@@ -146,8 +146,8 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
 bool Map::loadMap(TileManager *tm, ObjManager *om)
 {
  std::string filename;
- U6File map_file;
- U6File chunks_file;
+ NuvieIOFileRead map_file;
+ NuvieIOFileRead chunks_file;
  unsigned char *map_data;
  unsigned char *map_ptr;
  unsigned char *chunk_data;
@@ -158,18 +158,18 @@ bool Map::loadMap(TileManager *tm, ObjManager *om)
  obj_manager = om;
 
  config_get_path(config,"map",filename);
- if(map_file.open(filename,"rb") == false)
+ if(map_file.open(filename) == false)
    return false;
 
  config_get_path(config,"chunks",filename);
- if(chunks_file.open(filename,"rb") == false)
+ if(chunks_file.open(filename) == false)
    return false;
 
- map_data = map_file.readFile();
+ map_data = map_file.readAll();
  if(map_data == NULL)
    return false;
    
- chunk_data = chunks_file.readFile();
+ chunk_data = chunks_file.readAll();
  if(chunk_data == NULL)
    return false;
 

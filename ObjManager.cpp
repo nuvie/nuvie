@@ -597,12 +597,12 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
 bool ObjManager::loadBaseTile()
 {
  std::string filename;
- U6File basetile;
+ NuvieIOFileRead basetile;
  uint16 i;
 
  config_get_path(config,"basetile",filename);
   
- if(basetile.open(filename,"rb") == false)
+ if(basetile.open(filename) == false)
    return false;
 
  for(i=0;i<1024;i++)
@@ -614,11 +614,11 @@ bool ObjManager::loadBaseTile()
 bool ObjManager::loadWeightTable()
 {
  std::string filename;
- U6File tileflag;
+ NuvieIOFileRead tileflag;
 
  config_get_path(config,"tileflag",filename);
 
- if(tileflag.open(filename,"rb") == false)
+ if(tileflag.open(filename) == false)
    return false;
 
  tileflag.seek(0x1000);
@@ -631,7 +631,7 @@ bool ObjManager::loadWeightTable()
 
 bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
 {
- U6File file;
+ NuvieIOFileRead file;
  U6LList *list;
  uint16 num_objs;
  Obj *obj;
@@ -643,7 +643,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
  if(obj_tree == NULL)
    throw "Getting obj_tree";
 
- if(file.open(filename,"rb") == false)
+ if(file.open(filename) == false)
    return false;
 
  list = new U6LList();
@@ -730,7 +730,7 @@ bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
  return false;
 }
 
-Obj *ObjManager::loadObj(U6File *file, uint16 objblk_n)
+Obj *ObjManager::loadObj(NuvieIOFileRead *file, uint16 objblk_n)
 {
  uint8 b1,b2;
  Obj *obj;

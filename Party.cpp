@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include "NuvieIOFile.h"
 #include "Game.h"
 #include "Converse.h"
 #include "Party.h"
@@ -135,12 +136,12 @@ sint8 Party::get_member_num(Actor *actor)
 bool Party::loadParty()
 {
  std::string filename;
- U6File objlist;
+ NuvieIOFileRead objlist;
  uint8 actor_num;
  uint16 i;
  
  config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
- if(objlist.open(filename,"rb") == false)
+ if(objlist.open(filename.c_str()) == false)
    return false;
 
  objlist.seek(0xff0);

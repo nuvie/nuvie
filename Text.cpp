@@ -27,7 +27,7 @@
 #include <cctype>
 
 #include "Configuration.h"
-#include "U6File.h"
+#include "NuvieIOFile.h"
 
 #include "Screen.h"
 
@@ -49,14 +49,14 @@ Text::~Text()
 bool Text::loadFont()
 {
  std::string filename;
- U6File u6_ch;
+ NuvieIOFileRead u6_ch;
 
  config->pathFromValue("config/ultima6/gamedir","u6.ch",filename);
  
- if(u6_ch.open(filename,"rb") == false)
+ if(u6_ch.open(filename) == false)
    return false;
  
- font_data = u6_ch.readFile();
+ font_data = u6_ch.readAll();
  if(font_data == NULL)
    return false;
    

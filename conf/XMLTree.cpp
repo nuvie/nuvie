@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <fstream>
 
-#include "U6File.h"
+//#include "U6File.h"
 
 //#include "pent_include.h"
 #include "misc.h"

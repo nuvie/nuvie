@@ -28,7 +28,7 @@
 #include <SDL.h>
 
 #include "U6def.h"
-#include "U6File.h"
+#include "NuvieIOFile.h"
 #include "Configuration.h"
 #include "Screen.h"
 #include "GamePalette.h"
@@ -58,7 +58,7 @@ bool GamePalette::loadPalette()
 {
  uint16 i,j;
  std::string filename;
- U6File file;
+ NuvieIOFileRead file;
  unsigned char *buf;
  uint8 *pal_ptr;
  std::string key, game_name, game_id, pal_name;
@@ -75,13 +75,13 @@ bool GamePalette::loadPalette()
     
  config->pathFromValue(key,pal_name,filename);
  
- if(file.open(filename,"rb") == false)
+ if(file.open(filename) == false)
   {
    printf("Error: loading palette.\n");
    return false;
   }
  
- buf = file.readFile();
+ buf = file.readAll();
  
  pal_ptr = palette;
  

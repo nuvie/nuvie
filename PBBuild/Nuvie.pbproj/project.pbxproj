@@ -784,15 +784,15 @@
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = NuvieIOFile.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/files/NuvieIOFile.h;
-			refType = 0;
+			path = ../files/NuvieIOFile.h;
+			refType = 2;
 		};
 		07938EA504B6C8B100A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = NuvieIOFile.cpp;
-			path = /Users/eric/Projects/Ultima6/nuvie/files/NuvieIOFile.cpp;
-			refType = 0;
+			path = ../files/NuvieIOFile.cpp;
+			refType = 2;
 		};
 		07938EA604B6C8B100A8000A = {
 			fileRef = 07938EA404B6C8B100A8000A;
@@ -1046,18 +1046,6 @@
 			name = U6Lzw.h;
 			path = ../files/U6Lzw.h;
 			refType = 2;
-		};
-		07B8BE080419B94F00A8000A = {
-			fileRef = 07B8BE040419B94F00A8000A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		07B8BE090419B94F00A8000A = {
-			fileRef = 07B8BE050419B94F00A8000A;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		07B8BE0A0419B94F00A8000A = {
 			fileRef = 07B8BE060419B94F00A8000A;
@@ -1694,7 +1682,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5A47AA101A0483001D3D55B,
-				07B8BE090419B94F00A8000A,
 				07B8BE0B0419B94F00A8000A,
 				07B8BE150419DA1000A8000A,
 				072BE3A7041ADE7D00A8000A,
@@ -1761,7 +1748,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5A47AA301A0483001D3D55B,
-				07B8BE080419B94F00A8000A,
 				07B8BE0A0419B94F00A8000A,
 				07B8BE120419C49C00A8000A,
 				07B8BE160419DA1000A8000A,

@@ -24,6 +24,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
+#include "NuvieIOFile.h"
 
 #include "U6misc.h"
 #include "U6Lib_n.h"
@@ -55,7 +56,7 @@ bool Look::init()
  uint16 i,j;
  unsigned int len;
  int game_type;
- U6File look_file;
+ NuvieIOFileRead look_file;
  
  config->value("config/GameType",game_type);
  
