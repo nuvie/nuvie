@@ -1,3 +1,7 @@
+2003-07-30  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Actor::is_nearby() distance reduced to 4x4
+	* Added Beg worktype to U6Actor
+
 2003-07-30  Eric Fry <efry@users.sourceforge.net>
 	* Added various worktypes to U6Actor.
 	   Walk in straight lines

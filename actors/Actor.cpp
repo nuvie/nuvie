@@ -74,11 +74,9 @@ bool Actor::is_alive()
  */
 bool Actor::is_nearby(Actor *other)
 {
-    uint16 x2, y2;
-    uint8 z2;
-
-    other->get_location(&x2, &y2, &z2);
-    if(abs(x - x2) <= 18 && abs(y - y2) <= 18 && z == z2)
+    MapCoord here(x,y,z), where(0,0,0);
+    other->get_location(&where.x, &where.y, &where.z);
+    if(here.xdistance(where) < 5 && here.ydistance(where) < 5 && z == where.z)
         return(true);
     return(false);
 }
@@ -281,7 +279,7 @@ void Actor::update()
  moved = false;
 /*
  uint8 new_direction;
- 
+
  // do actor stuff here.
  if(standing)
   {
@@ -311,7 +309,13 @@ void Actor::update()
   }
 */
  updateSchedule();
-
+ if(pathfinder)
+ {
+    if(pathfinder->reached_goal()) // check schedule after walk, before stopping
+       stop_walking();
+    else
+        pathfinder->walk_path();
+ }
 }
 
 
@@ -610,17 +614,10 @@ bool Actor::updateSchedule()
  if(sched[sched_pos] == NULL)
    return false;
  
-// testing: just walk a few npc's for now
-// if(id_n > 64)
-//    move(sched[sched_pos]->x,sched[sched_pos]->y,sched[sched_pos]->z);
-// else
-// {
  MapCoord sched_dest(sched[sched_pos]->x, sched[sched_pos]->y,
                      sched[sched_pos]->z);
  lwalk(sched_dest);
-// }
  set_worktype(sched[sched_pos]->worktype);
- 
  return true;
 }
 

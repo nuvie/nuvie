@@ -21,9 +21,9 @@
  *
  */
 #include <cstdlib>
-
+#include "Game.h"
 #include "U6UseCode.h"
-#include "pathfinder.h"
+#include "PathFinder.h"
 #include "U6Actor.h"
 
 //static const uint8 sleep_objects[8];
@@ -59,8 +59,20 @@ bool U6Actor::updateSchedule()
 
 void U6Actor::preform_worktype()
 {
+ uint8 walk_frame_tbl[4] = {0,1,2,1};
  switch(worktype)
   {
+   case WORKTYPE_U6_FACE_NORTH :
+   case WORKTYPE_U6_FACE_EAST  :
+   case WORKTYPE_U6_FACE_SOUTH :
+   case WORKTYPE_U6_FACE_WEST  :
+     // twitch
+     if(NUVIE_RAND()%15 == 1)
+       {
+        walk_frame = NUVIE_RAND()%4;
+        frame_n = direction * 4 + walk_frame_tbl[walk_frame];
+       }
+     break;
    case WORKTYPE_U6_IN_PARTY :
    case WORKTYPE_U6_WALK_TO_LOCATION : wt_walk_to_location();
                                       break;
@@ -71,6 +83,7 @@ void U6Actor::preform_worktype()
 
    case WORKTYPE_U6_WORK :
    case WORKTYPE_U6_WANDER_AROUND   : wt_wander_around(); break;
+   case WORKTYPE_U6_BEG : wt_beg(); break;
 //   case WORKTYPE_U6_
 //                     break;
   }
@@ -103,21 +116,14 @@ void U6Actor::set_worktype(uint8 new_worktype)
   }
 }
 
+
 void U6Actor::wt_walk_to_location()
 {
- if(pathfinder)
- {
-    pathfinder->walk_path();
-    if(pathfinder->reached_goal())
-        {
-         stop_walking();
-         if(sched[sched_pos] != NULL)
-           set_worktype(sched[sched_pos]->worktype);
-        }
- }
-
+ if(pathfinder && pathfinder->reached_goal() && sched[sched_pos] != NULL)
+    set_worktype(sched[sched_pos]->worktype);
  return;
 }
+
 
 void U6Actor::wt_walk_straight()
 {
@@ -174,6 +180,45 @@ void U6Actor::wt_wander_around()
 
  return;
 }
+
+
+/* Wander around, approach and talk to the player character if visible.
+ */
+void U6Actor::wt_beg()
+{
+    static uint8 mode = 0;// 0 = waiting for target, 1 = following,
+    Player *player = Game::get_game()->get_player();          // 2 = just loiter
+    Actor *actor = player->get_actor();
+
+    if(mode == 0)
+        if(is_nearby(actor)) // look for victi... er, player
+            mode = 1;
+    if(mode == 1)
+    {
+        mode = is_nearby(actor) ? 1 : 0; // still visible?
+        Party *party = player->get_party();
+        MapCoord me(x,y,z), them(0,0,0);
+        for(uint32 p = 0; p < party->get_party_size(); p++)
+        {
+            party->get_actor(p)->get_location(&them.x, &them.y, &them.z);
+            if(me.xdistance(them) <= 1 && me.ydistance(them) <= 1
+               && z == them.z)
+            {
+                // talk to me :)
+                stop_walking();
+                Game::get_game()->get_converse()->start(this);
+                mode = 2;
+                return; // done
+            }
+        }
+        // get closer
+        actor->get_location(&them.x, &them.y, &them.z);
+        swalk(them, 2);
+    }
+    else
+        wt_wander_around();
+}
+
 
 void U6Actor::wt_sleep()
 {

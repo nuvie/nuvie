@@ -42,6 +42,7 @@
 #define WORKTYPE_U6_WANDER_AROUND 0x8f
 #define WORKTYPE_U6_WORK 0x90
 #define WORKTYPE_U6_SLEEP 0x91
+#define WORKTYPE_U6_BEG 0x96
 
 class U6Actor: public Actor
 {
@@ -61,8 +62,8 @@ class U6Actor: public Actor
  void wt_walk_to_location();
  void wt_walk_straight();
  void wt_wander_around();
+ void wt_beg();
  void wt_sleep();
- 
 };
 
 #endif /* __U6Actor_h__ */
