@@ -285,7 +285,7 @@ bool MsgScroll::handle_input(SDL_keysym *input)
                   {
                    if(permit_input == NULL)
                     input_buf_add_char(ascii);
-                   else if(strchr(permit_input, ascii))
+                   else if(strchr(permit_input, ascii) || strchr(permit_input, tolower(ascii)))
                    {
                     input_buf_add_char(toupper(ascii));
                     set_input_mode(false);
