@@ -269,11 +269,40 @@ SDL_Surface *Screen::get_sdl_surface()
  return NULL;
 }
 
-bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans, SDL_Rect *clip_rect)
+bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans, SDL_Rect *clip_rect)
 {
  uint16 src_x = 0;
  uint16 src_y = 0;
  
+ // clip to screen.
+ 
+ if(dest_x >= width || dest_y >= height)
+   return false;
+
+ if(dest_x < 0)
+   {
+    if(dest_x + src_w <= 0)
+      return false;
+    else
+      src_w += dest_x;
+   }
+
+ if(dest_y < 0)
+   {
+    if(dest_y + src_h <= 0)
+      return false;
+    else
+      src_h += dest_y;
+   }
+   
+ if(dest_x + src_w >= width)
+   src_w = width - dest_x;
+
+ if(dest_y + src_h >= height)
+   src_h = height - dest_y;
+ 
+ //clip to rect if required.
+
  if(clip_rect)
   {
    if(clip_rect->x > dest_x)
@@ -816,9 +845,10 @@ SDL_UpdateRect(sdl_surface,0,0,0,0);
 }
 
 
-void Screen::update(uint16 x, uint16 y, uint16 w, uint16 h)
+void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
 {
  //if(scaled_surface)
+/* 
  if(x >= 2)
    x -= 2;
  if(y >= 2)
@@ -827,7 +857,13 @@ void Screen::update(uint16 x, uint16 y, uint16 w, uint16 h)
    w += 2;
  if(h <= surface->h-2)
    h += 2;
+*/
 
+ if(x < 0) x = 0;
+ if(y < 0) y = 0;
+ if((x + w) > width) w = width - x;
+ if((y + h) > height) h = height - y;
+ 
  if(scaler)
   {   
    scaler->Scale(surface->format_type, surface->pixels,		// type, source

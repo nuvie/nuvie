@@ -33,9 +33,11 @@
 /* Number of widget elements to allocate at once */
 #define WIDGET_ARRAYCHUNK	32
 
+GUI *GUI::gui = NULL;
 
 GUI:: GUI(Screen *s)
 {
+    gui = this;
 	screen = s;
 	numwidgets = 0;
 	maxwidgets = 0;
@@ -44,6 +46,7 @@ GUI:: GUI(Screen *s)
 
   screen_scale_factor = screen->get_scale_factor();
   dragging = false;
+  full_redraw = true;
   focused_widget = locked_widget = NULL;
   
   gui_font = new GUI_Font();
@@ -115,27 +118,46 @@ bool GUI::removeWidget(GUI_Widget *widget)
           }
 
         --numwidgets;
-        Display(GUI_FULL_REDRAW);
+        force_full_redraw();
+        Display();
         return true;
-			 }
+       }
     }
  
  return false;
 }
 
-void
-GUI:: Display(bool full_redraw)
+bool GUI::moveWidget(GUI_Widget *widget, uint32 dx, uint32 dy)
+{
+ if(!widget)
+   return false;
+
+ widget->Move(dx, dy);
+ 
+ if(widget->Status() == WIDGET_VISIBLE)
+   force_full_redraw();
+
+ return true;
+}
+
+inline void GUI::force_full_redraw()
+{
+ full_redraw = true;
+}
+
+void GUI::Display()
 {
 	int i;
-
-	//	hack for now to make everyhing under the cursor draw until I find a bettwe
+    bool complete_redraw = false;
+    
+	//	hack for now to make everyhing under the cursor draw until I find a better
 	//	way of doing this...
-	if (dragging)
-		full_redraw = true;
+	if (dragging || full_redraw)
+		complete_redraw = true;
 
 	for ( i=0; i<numwidgets; ++i ) {
 		if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
-			widgets[i]->Display(full_redraw);
+			widgets[i]->Display(complete_redraw);
       //screen->update(widgets[i]->area.x,widgets[i]->area.y,widgets[i]->area.w,widgets[i]->area.h);
 		}
 	}
@@ -145,6 +167,9 @@ GUI:: Display(bool full_redraw)
 	SDL_GetMouseState (&mx, &my);
 	
 	gui_drag_manager->draw (mx / screen_scale_factor, my / screen_scale_factor);
+
+    if(full_redraw)
+       full_redraw = false;
 }
 
 /* Function to handle a GUI status */
@@ -197,7 +222,7 @@ GUI:: HandleEvent(SDL_Event *event)
             {
              gui_drag_manager->drop((GUI_DragArea *)widgets[i],event->button.x,event->button.y);
              dragging = false;
-             Display(GUI_FULL_REDRAW); // redraw the widget to get rid of the drop graphic.
+             Display(); // redraw the widget to get rid of the drop graphic.
 					   break;
             }
 				}
@@ -271,7 +296,10 @@ GUI:: HandleEvent(SDL_Event *event)
 
         --numwidgets;
         if(status != GUI_QUIT) //no point redrawing if we're going to quit.
-          Display(GUI_FULL_REDRAW);
+         {
+          force_full_redraw();
+          Display();
+         }
 			 }
     } 
  return status;
@@ -281,8 +309,7 @@ GUI:: HandleEvent(SDL_Event *event)
    This returns when either a widget requests a quit, the idle
    function requests a quit, or the SDL window has been closed.
  */
-void
-GUI:: Run(GUI_IdleProc idle, int once, int multitaskfriendly)
+void GUI::Run(GUI_IdleProc idle, int once, int multitaskfriendly)
 {
 	int i;
 	SDL_Event event;
@@ -368,11 +395,18 @@ void GUI::Idle()
 	}
 }
 
-void GUI::set_focus(GUI_Widget *widget)
+bool GUI::set_focus(GUI_Widget *widget)
 {
 	for(int i = 0; i < numwidgets; ++i)
-		if(!widget || (widgets[i] == widget)) // must be managed by GUI
-			focused_widget = widget;
+	  {	
+        if(!widget || (widgets[i] == widget)) // must be managed by GUI
+			{
+             focused_widget = widget;
+             return true;
+            }
+      }
+
+ return false;
 }
 
 void GUI::lock_input(GUI_Widget *widget)

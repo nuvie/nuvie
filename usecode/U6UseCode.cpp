@@ -1639,8 +1639,8 @@ bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
             y = red_moongate_tbl[obj->quality].y;
             z = red_moongate_tbl[obj->quality].z;
            }
-                      
         MapCoord exit(x, y, z);
+                      
         party->walk(&entrance, &exit);
         return(true);
     }

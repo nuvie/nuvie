@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include "nuvieDefs.h"
+#include "GUI.h"
 #include "GUI_area.h"
 //#include "GUI_utils.h"
 
@@ -36,6 +37,8 @@ GUI_Area:: GUI_Area(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, int a
 	color = 0;
 	useFrame=0;
 	shape=aShape;
+    drag = false;
+    old_x = old_y = 0;
 }
 
 GUI_Area:: GUI_Area(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b,
@@ -53,6 +56,8 @@ GUI_Area:: GUI_Area(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b,
 	frameColor=0;
 	frameThickness=fthick;
 	shape=aShape;
+    drag = false;
+    old_x = old_y = 0;
 }
 
 /* Map the color to the display */
@@ -112,20 +117,24 @@ GUI_Area:: Display(bool full_redraw)
 	  break;
 
 	case AREA_ANGULAR:
-	  SDL_FillRect(surface, &area, color);
+      framerect=area;
+	  SDL_FillRect(surface, &framerect, color);
 
 	  /* draw frame */
 	  if (useFrame)
 	  {
-	    framerect=area;
+        framerect=area;
 	    framerect.h=frameThickness;
 	    SDL_FillRect(surface, &framerect, frameColor);
+        framerect=area;
+        framerect.h=frameThickness;
 	    framerect.y+=area.h-frameThickness;
 	    SDL_FillRect(surface, &framerect, frameColor);
-	    framerect.y=area.y;
-	    framerect.h=area.h;
+        framerect=area;
 	    framerect.w=frameThickness;
 	    SDL_FillRect(surface, &framerect, frameColor);
+        framerect=area;
+        framerect.w=frameThickness;
 	    framerect.x+=area.w-frameThickness;
 	    SDL_FillRect(surface, &framerect, frameColor);
 	  }
@@ -138,3 +147,43 @@ GUI_Area:: Display(bool full_redraw)
 
  return;
 }
+
+GUI_status GUI_Area::MouseDown(int x, int y, int button)
+{
+ drag = true;
+ old_x = x;
+ old_y = y;
+
+ grab_focus();
+ 
+ return GUI_YUM;
+}
+
+GUI_status GUI_Area::MouseUp(int x, int y, int button)
+{
+ drag = false;
+
+ release_focus();
+
+ return GUI_YUM;
+}
+
+GUI_status GUI_Area::MouseMotion(int x,int y,Uint8 state)
+{
+ int dx, dy;
+ 
+ if(!drag)
+   return GUI_PASS;
+ 
+ dx = x - old_x;
+ dy = y - old_y;
+
+ old_x = x;
+ old_y = y;
+ 
+ GUI::get_gui()->moveWidget(this,dx,dy);
+// Redraw();
+ 
+ return (GUI_YUM);
+}
+

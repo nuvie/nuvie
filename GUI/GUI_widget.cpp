@@ -23,6 +23,7 @@
 */
 
 #include "nuvieDefs.h"
+#include "GUI.h"
 #include "GUI_widget.h"
 
 
@@ -49,9 +50,9 @@ GUI_Widget::~GUI_Widget()
  return;
 }
   
-void
-GUI_Widget:: Init(void *data, int x, int y, int w, int h)
+void GUI_Widget::Init(void *data, int x, int y, int w, int h)
 {
+  focused = false;
   gui_drag_manager = NULL; //set from placeOnScreen method
 	widget_data = data;
 	screen = NULL;
@@ -78,7 +79,7 @@ GUI_Widget:: Init(void *data, int x, int y, int w, int h)
  mouse_over = HitRect(mx, my);
 }
 
-int GUI_Widget:: AddWidget(GUI_Widget *widget)
+int GUI_Widget::AddWidget(GUI_Widget *widget)
 {
  children.push_back(widget);
  widget->setParent(this);
@@ -88,28 +89,49 @@ int GUI_Widget:: AddWidget(GUI_Widget *widget)
 
   
 /* Mark the widget as visible -- this is the default state */
-void
-GUI_Widget:: Show(void)
+void GUI_Widget::Show(void)
 {
 	status = WIDGET_VISIBLE;
 }
 
 /* Mark the widget as hidden;  no display, no events */
-void
-GUI_Widget:: Hide(void)
+void GUI_Widget::Hide(void)
 {
 	status = WIDGET_HIDDEN;
 }
 
 /* Mark the widget as free, so it will be deleted by the GUI */
-void
-GUI_Widget:: Delete(void)
+void GUI_Widget:: Delete(void)
 {
 	status = WIDGET_DELETED;
 }
 
-void
-GUI_Widget:: PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
+void GUI_Widget::Move(int dx,int dy)
+{
+ std::list<GUI_Widget *>::iterator child;
+
+ area.x += dx;
+ area.y += dy;
+ 
+ for(child = children.begin(); child != children.end(); child++)
+    (*child)->Move(dx,dy);
+
+ return;
+}
+
+void GUI_Widget::grab_focus()
+{
+ if(GUI::get_gui()->set_focus(this))
+   focused = true;
+}
+
+void GUI_Widget::release_focus()
+{
+ GUI::get_gui()->clear_focus();
+ focused = false;
+}
+
+void GUI_Widget::PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
 {
  std::list<GUI_Widget *>::iterator child;
 
@@ -187,13 +209,12 @@ GUI_Widget:: SetRect(SDL_Rect **bounds)
 
 /* Check to see if a point intersects the bounds of the widget.
  */
-int
-GUI_Widget:: HitRect(int x, int y)
+int GUI_Widget::HitRect(int x, int y)
 {
 	return(HitRect(x, y, area));
 }
-int
-GUI_Widget:: HitRect(int x, int y, SDL_Rect &rect)
+
+int GUI_Widget::HitRect(int x, int y, SDL_Rect &rect)
 {
 	int hit;
 
@@ -206,8 +227,7 @@ GUI_Widget:: HitRect(int x, int y, SDL_Rect &rect)
 }
 
 /* Set the display surface for this widget */
-void
-GUI_Widget:: SetDisplay(Screen *s)
+void GUI_Widget::SetDisplay(Screen *s)
 {
 	screen = s;
   surface = screen->get_sdl_surface();
@@ -225,14 +245,12 @@ void GUI_Widget::setParent(GUI_Widget *widget)
 ****************NO, NOT AT ALL IF I'M NOT TOO DUMB TO LOOK******
 ******OTHERWISE YOU COULDN'T FILLRECT in Display(), ETC!!!! ***********
  */
-void
-GUI_Widget:: Display(bool full_redraw)
+void GUI_Widget::Display(bool full_redraw)
 {
  DisplayChildren(full_redraw);
 }
 
-void
-GUI_Widget:: DisplayChildren(bool full_redraw)
+void GUI_Widget::DisplayChildren(bool full_redraw)
 {
  if(update_display)
    full_redraw = true;
@@ -264,8 +282,7 @@ void GUI_Widget::Redraw(void)
 }
 
 /* GUI idle function -- run when no events pending */
-GUI_status
-GUI_Widget:: Idle(void)
+GUI_status GUI_Widget::Idle(void)
 {
 	return(GUI_PASS);
 }
@@ -276,33 +293,28 @@ GUI_Widget:: Idle(void)
    or not the event should be passed on to other widgets.
    These are called by the default HandleEvent function.
 */
-GUI_status
-GUI_Widget:: KeyDown(SDL_keysym key)
+GUI_status GUI_Widget::KeyDown(SDL_keysym key)
 {
 	return(GUI_PASS);
 }
 
-GUI_status
-GUI_Widget:: KeyUp(SDL_keysym key)
+GUI_status GUI_Widget::KeyUp(SDL_keysym key)
 {
 	return(GUI_PASS);
 }
 
-GUI_status
-GUI_Widget:: MouseDown(int x, int y, int button)
+GUI_status GUI_Widget::MouseDown(int x, int y, int button)
 {
 	return(GUI_PASS);
 }
 
-GUI_status
-GUI_Widget:: MouseUp(int x, int y, int button)
+GUI_status GUI_Widget::MouseUp(int x, int y, int button)
 {
 	return(GUI_PASS);
 }
 
 
-GUI_status
-GUI_Widget:: MouseMotion(int x, int y, Uint8 state)
+GUI_status GUI_Widget::MouseMotion(int x, int y, Uint8 state)
 {
 	return(GUI_PASS);
 }
@@ -310,8 +322,7 @@ GUI_Widget:: MouseMotion(int x, int y, Uint8 state)
 /* Main event handler function.
    This function gets raw SDL events from the GUI.
  */
-GUI_status
-GUI_Widget:: HandleEvent(const SDL_Event *event)
+GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 {
  if(children.empty() == false)
   {
@@ -339,7 +350,7 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 			int x, y, button;
 			x = event->button.x;
 			y = event->button.y;
-			if ( HitRect(x, y) ) {
+			if ( focused || HitRect(x, y) ) {
 				button = event->button.button;
                                 RegisterMouseDown(x, y, button);
 				return(MouseDown(x, y, button));
@@ -351,7 +362,7 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 			x = event->button.x;
 			y = event->button.y;
 			button = event->button.button;
-			if ( HitRect(x, y) )
+			if ( focused || HitRect(x, y) )
 			{
 				button = event->button.button;
 				RegisterMouseUp(x, y, button);
@@ -368,7 +379,7 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 			y = event->motion.y;
 			state = event->motion.state;
 			MouseIdle(); /* SB-X: reduce [double]click delay, don't worry about return (FIXME: might use a new method for this) */
-			if ( HitRect(x, y) )
+			if ( focused || HitRect(x, y) )
 			{
   			  if ( !mouse_over )
   			  {

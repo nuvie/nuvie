@@ -1,3 +1,13 @@
+2004-03-25  Eric Fry <efry at users.sourceforge.net>
+	* You can now move GUI_Areas around the screen. This means you can
+	  drag the quit dialog around. ;-)
+	* Added grab_focus/release_focus methods to GUI_Widget.
+	* Fixed GUI_Widget focus code to allow mouse events to be directed to
+	  the focused widget.
+	* Added force_full_redraw() to GUI. Calling this method will cause all
+	  widgets to do a full redraw on the next call to GUI::Display().
+	* Added GUI:get_gui()
+
 2004-03-16  Eric Fry <efry at users.sourceforge.net>
 	* Eggs now spawn at the destination when using the red moon gate.
 

@@ -39,7 +39,9 @@
 class GUI {
 
 protected:
-
+ 
+  static GUI *gui;
+ 
 	/* The display surface */
   Screen *screen;
 	int screen_scale_factor;
@@ -65,7 +67,9 @@ protected:
 
   /* Flag - wether we are preforming a drag and drop */
   bool dragging;
-
+  
+  bool full_redraw; //this forces all widgets to redraw on the next call to Display()
+  
 public:
 	GUI(Screen *s);
 	~GUI();
@@ -79,8 +83,13 @@ public:
   /* remove widget from gui system but don't delete it */
   bool removeWidget(GUI_Widget *widget);
 
+  bool moveWidget(GUI_Widget *widget, uint32 dx, uint32 dy);
+  
+  /* force everything to redraw */
+  void force_full_redraw();
+  
 	/* Display the GUI manually */
-	void Display(bool full_redraw=false);
+	void Display();
 
 	/* Returns will return true if the GUI is still ready to handle
 	   events after a call to Run(), and false if a widget or idle
@@ -102,14 +111,15 @@ public:
 
 	/* Run Idle() on all widgets. */
 	void Idle(); // SB-X
-  
+    
+  static GUI *get_gui() { return gui; }
   GUI_Font *get_font();
   Screen *get_screen() {return screen;}
   
   /* Function to pass an event to the GUI widgets */
 	GUI_status HandleEvent(SDL_Event *event);
 
-	void set_focus(GUI_Widget *widget);
+	bool set_focus(GUI_Widget *widget);
 	void clear_focus()  { set_focus(NULL); }
 	void lock_input(GUI_Widget *widget);
 	void unlock_input() { lock_input(NULL); }

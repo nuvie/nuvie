@@ -179,12 +179,14 @@ void GUI_Button::ChangeTextButton(int x, int y, int w, int h, char* text, int al
 /* Show the widget  */
 void GUI_Button:: Display(bool full_redraw)
 {
+ SDL_Rect src,dest=area;
+
 	if (button)
 	{
 	  if ((button2!=NULL) && (pressed[0])==1)
-	    SDL_BlitSurface(button2,NULL,surface,&area);
+	    SDL_BlitSurface(button2,NULL,surface,&dest);
 	  else
-	    SDL_BlitSurface(button,NULL,surface,&area);
+	    SDL_BlitSurface(button,NULL,surface,&dest);
 	}
 	if (is_checkable)
 	{
@@ -197,7 +199,7 @@ void GUI_Button:: Display(bool full_redraw)
 	    buttonFont->TextOut(surface,area.x+4,area.y+4,textmark);
 	  }
 */
-	  SDL_Rect src,dest=area;
+
 	  src.x=8-(checked*8); src.y=0;
 	  src.w=8; src.h=10;
 	  dest.x+=4; dest.y+=4;

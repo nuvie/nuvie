@@ -62,6 +62,8 @@ protected:
 	/* the button states for theoretically 3 buttons */
 	int pressed[3];
   
+  bool focused;
+  
   std::list<GUI_Widget *>children;
   GUI_Widget *parent;
 
@@ -103,6 +105,10 @@ public:
 	/* Mark the widget as free, so it will be deleted by the GUI */
 	virtual void Delete(void);
   
+    virtual void Move(int dx,int dy);
+    void grab_focus();
+    void release_focus();
+    
   void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
   
 	virtual int  Status(void);	/* Reports status to GUI */

@@ -80,7 +80,7 @@ class Screen
 
    bool fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
       
-   bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL);
+   bool blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL);
    void blitbitmap(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
    void buildalphamap8();
@@ -94,7 +94,7 @@ class Screen
    void set_ambient( uint8 ambient ) { shading_ambient = ambient; }
 
    void update();
-   void update(uint16 x, uint16 y, uint16 w, uint16 h);
+   void update(sint32 x, sint32 y, uint16 w, uint16 h);
    void preformUpdate();
    bool should_update_alphamap() { return updatingalphamap; }
    void lock();
