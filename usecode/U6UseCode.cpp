@@ -1621,6 +1621,56 @@ bool U6UseCode::use_fan(Obj *obj, UseCodeEvent ev)
  return true;
 }
 
+/* USE: Sextant. Display Latitude/Longitude coords centered on LB's castle.
+ */
+bool U6UseCode::use_sextant(Obj *obj, UseCodeEvent ev)
+{
+ MapCoord location;
+ char buf[18]; // "\nxxoS, xxoE\n"
+ char lat, lon;
+ uint16 x, y;
+ 
+ if(ev != USE_EVENT_USE)
+   return false;
+      
+ location = player->get_actor()->get_location();
+ 
+ //only use sextant on surface level.
+ if(location.z == 0)
+   {
+    x = location.x / 8;
+    if(x > 38)
+     {
+      lon = 'E';
+      x -= 38;
+     }
+    else
+     {
+      x = 38 - x;
+      lon = 'W';
+     }
+     
+    y = location.y / 8;
+    if(y > 45)
+     {
+      lat = 'S';
+      y -= 45;
+     }
+    else
+     {
+      y = 45 - y;
+      lat = 'N';
+     }
+     
+    sprintf(buf, "\n%2d{%c, %2d{%c\n", y, lat, x, lon);
+    scroll->display_string(buf);
+   }
+ else
+   scroll->display_string("\nNot usable\n");
+
+ return(true);
+}
+
 /* Pass: Allow normal move if player's Quest Flag is set.
  */
 bool U6UseCode::pass_quest_barrier(Obj *obj, UseCodeEvent ev)

@@ -91,7 +91,8 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
 
     { OBJ_U6_FAN, 0, 0,USE_EVENT_USE,&U6UseCode::use_fan,OBJTYPE_NONE },
-    
+    { OBJ_U6_SEXTANT, 0, 0,USE_EVENT_USE,&U6UseCode::use_sextant,OBJTYPE_NONE },
+       
     { OBJ_U6_COW, 255, 0, USE_EVENT_USE,&U6UseCode::use_cow,OBJTYPE_NONE },
     { OBJ_U6_HORSE, 255,0,USE_EVENT_USE,&U6UseCode::use_horse,OBJTYPE_NONE },
     { OBJ_U6_HORSE_WITH_RIDER, 255,0,USE_EVENT_USE,&U6UseCode::use_horse,OBJTYPE_NONE },

@@ -1,3 +1,6 @@
+2004-07-23  Eric Fry <efry at users.sourceforge.net>
+	* Added use:sextant.
+
 2004-07-20  Eric Fry <efry at users.sourceforge.net>
 	* Added background color to GUI_TextInput when selected.
 	* GUI_TextInput now handles shifted/capslock chars correctly.

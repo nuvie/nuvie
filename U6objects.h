@@ -83,6 +83,9 @@
 #define OBJ_U6_TORCH                90
 
 #define OBJ_U6_SNAKE_VENOM          92
+
+#define OBJ_U6_SEXTANT              93
+
 #define OBJ_U6_GRAPES               95
 #define OBJ_U6_BUTTER               96
 
