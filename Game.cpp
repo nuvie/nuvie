@@ -94,7 +94,7 @@ bool Game::loadGame(Screen *s, uint8 type)
  try
   {
    palette = new GamePalette(screen,config);
- 
+
    clock = new GameClock(config);
    clock->init();
    
@@ -187,7 +187,6 @@ void Game::play()
   
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
-  screen->buildalphamap8();
   screen->clearalphamap8( 8, 8, 160, 160, 0x00 );
 
   map_window->updateBlacking();

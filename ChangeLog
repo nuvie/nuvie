@@ -1,3 +1,8 @@
+2004-01-11  Eric Fry <efry at users.sourceforge.net>
+	* Fixed a crash on load bug. [ 874477 ] Nuvie would crash while loading
+	  if the game was saved at night or in a dungeon. Nuvie was trying to
+	  render the darkness globes before they had been initialized.
+
 2004-01-10  Eric Fry <efry at users.sourceforge.net>
 	* Added use:churn. Using a churn now makes butter. If you have a bucket
 	  of milk in your inventory.

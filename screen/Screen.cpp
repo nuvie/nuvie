@@ -107,7 +107,9 @@ fullscreen = false;
 // memcpy(palette,0,768);
  
  set_screen_mode();
-  
+
+ buildalphamap8();
+   
  return true;
 }
 
