@@ -27,6 +27,22 @@
 #include "U6def.h"
 #include "Actor.h"
 
+// Worktype codes
+
+#define WORKTYPE_U6_WALK_TO_LOCATION 0x84
+
+#define WORKTYPE_U6_FACE_NORTH 0x87
+#define WORKTYPE_U6_FACE_EAST 0x88
+#define WORKTYPE_U6_FACE_SOUTH 0x89
+#define WORKTYPE_U6_FACE_WEST 0x8a
+
+#define WORKTYPE_U6_WALK_NORTH_SOUTH 0x8b
+#define WORKTYPE_U6_WALK_EAST_WEST 0xf //0x8c
+
+#define WORKTYPE_U6_WANDER_AROUND 0x8f
+
+#define WORKTYPE_U6_SLEEP 0x91
+
 class U6Actor: public Actor
 {
  
@@ -37,9 +53,13 @@ class U6Actor: public Actor
  
  
  void update();
-
+ void set_worktype(uint8 new_worktype);
+ void preform_worktype();
+ 
  protected:
-  
+ void wt_walk_straight();
+ void wt_wander_around();
+ 
 };
 
 #endif /* __U6Actor_h__ */
