@@ -864,6 +864,7 @@ if(!args.empty() && !args[0].empty())
             my_desc = strdup(get_text()); // collected
             print("You see ");
             print(my_desc);
+            print("\n");
             donext = false;
             break;
         case U6OP_SCONVERSE:
