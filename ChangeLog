@@ -1,3 +1,9 @@
+2004-01-28  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Replaced the quantity loop for things hatched from eggs. My last egg
+	"fix" removed that, but now that fix is fixed. You can get multiple
+	actors of the same type from an egg again. (check animal pens, shrines)
+	* UseCode: Remove IN_CONTAINER bit when dumping objects from containers.
+
 2004-01-27  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added ability to READY and UNREADY objects with the keyboard
 	  Press tab to move cursor to inventory, and return to ready/unready.
@@ -7,9 +13,9 @@
 	* Actor: Various inventory management fixes. (in counting, adding, and
 	  removing objects) This means Iolo's gather/split gold commands work
 	  99% correct now. (it is taking gold from containers in Avatar's
-	  inventory when it shouldnt, and I don't know how to determine the
+	  inventory when it shouldn't, and I don't know how to determine the
 	  maximum stack-quantity of objects)
-	* Mice can pass/be passed by actors, and can go through mouseholes.
+	* Mice will pass/be passed by actors, and can go through mouseholes.
 
 2004-01-24  Joseph Applegate <sb-x at users.sourceforge.net>
 	* New alt-codes: 314-teleport to NPC,
