@@ -120,12 +120,12 @@ void Configuration::value(std::string key, bool &ret, bool defaultvalue)
 void Configuration::pathFromValue(std::string key, std::string file, std::string &full_path)
 {
  value(key,full_path);
- 
- if(full_path[full_path.length()] != U6PATH_DELIMITER)
-   full_path += U6PATH_DELIMITER + file;
+
+ if(full_path.length() > 0 && full_path[full_path.length()-1] != U6PATH_DELIMITER)
+    full_path += U6PATH_DELIMITER + file;
  else
-   full_path += file;
- 
+    full_path += file;
+
  return;
 }
 

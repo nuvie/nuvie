@@ -80,7 +80,8 @@ bool TileManager::loadTiles()
     case NUVIE_GAME_U6 : 
                          tile_data = lzw->decompress_file(maptiles_path,maptiles_size);
                          if(tile_data == NULL)
-                           throw "Decompressing maptiles.vga";
+                            throw "Decompressing maptiles.vga";
+
                          masktype = lzw->decompress_file(masktype_path,masktype_size);
                          if(masktype == NULL)
                            throw "Decompressing masktype.vga";

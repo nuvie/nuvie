@@ -28,7 +28,11 @@ typedef unsigned char BOOL;
 #endif
 */
 
-#define U6PATH_DELIMITER '/'
+#ifndef WIN32
+  #define U6PATH_DELIMITER '/'
+#else
+  #define U6PATH_DELIMITER '\\'
+#endif
 
 typedef unsigned char uint8;
 typedef unsigned short uint16;

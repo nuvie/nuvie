@@ -89,9 +89,12 @@ bool U6File::open(std::string &directory, std::string &file, char *mode)
 bool U6File::open(std::string filename, char *mode)
 {
  f = fopen(filename.c_str(),mode);
-
+ 
  if(f == NULL)
+  {
+   printf("Error: Failed opening '%s'\n",filename.c_str());
    return false;
+  }
 
  return true;
 }
@@ -101,8 +104,11 @@ bool U6File::open(char *filename, char *mode)
  f = fopen(filename,mode);
  
  if(f == NULL)
-  return false;
-  
+  {
+   printf("Error: Failed opening '%s'\n",filename);
+   return false;
+  }
+
  return true;
 }
 
