@@ -1,5 +1,7 @@
 2003-09-13  Eric Fry <efry@users.sourceforge.net>
 	* Fixed wall reshaping bug with cookfires.
+	* Partial fix for runic signs. This will no work with multi-line message
+          strings. I'll fix that soon.
 
 2003-09-11  Eric Fry <efry@users.sourceforge.net>
 	* Finally Fixed the wall corner tile display bug. [ 713521 ] :)

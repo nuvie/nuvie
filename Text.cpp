@@ -62,23 +62,28 @@ bool Text::loadFont()
    
  return true;
 }
-
+/*
 bool Text::drawString(Screen *screen, std::string str, uint16 x, uint16 y, uint8 lang_num)
 {
- return drawString(screen, str.c_str(), x, y, lang_num);
+ const char *c_string;
+ c_string = str.c_str();
+ return drawString(screen, c_string, strlen(c_string), x, y, lang_num);
 }
-
+*/
 bool Text::drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 lang_num)
 {
- uint16 i, len, l; // l is drawn-index of character, to determine x
+ return drawString(screen, str, strlen(str), x, y, lang_num);
+}
+
+bool Text::drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 lang_num)
+{
+ uint16 i, l; // l is drawn-index of character, to determine x
  bool highlight = false;
  
  if(font_data == NULL)
    return false;
  
- len = strlen(str);
- 
- for(i=0, l=0;i<len;i++)
+ for(i=0, l=0;i<string_len;i++)
    {
     if(str[i] == '@')
        highlight = true;

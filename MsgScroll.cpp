@@ -303,7 +303,7 @@ bool MsgScroll::handle_input(const SDL_keysym *input)
 void MsgScroll::Display(bool full_redraw)
 {
  uint16 i,j;
-
+ 
  clearCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
 
  if(scroll_updated || full_redraw)
@@ -321,7 +321,12 @@ void MsgScroll::Display(bool full_redraw)
    for(i=0;i< scroll_height;i++)
      {
       if(msg_buf[j][0] != '\0')
-         text->drawString(screen, msg_buf[j], area.x, area.y+i*8, 0);
+        {
+         if(msg_buf[j][0] == '<' && msg_buf[j][strlen(msg_buf[j]) - 1] == '>') //britannian strip <..> chars
+           text->drawString(screen, &msg_buf[j][1], strlen(msg_buf[j]) - 2, area.x, area.y+i*8, 1);
+         else
+           text->drawString(screen, msg_buf[j], strlen(msg_buf[j]), area.x, area.y+i*8, 0); //normal text        
+        }
       j = (j + 1) % scroll_height;
      }
    scroll_updated = false;
