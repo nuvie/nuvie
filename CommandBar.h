@@ -43,7 +43,7 @@ protected:
     Game *game;
     Event *event;
     Text *text;
-    Tile *icon[10]; // just reference pointers; managed by GUI
+    Tile *icon[10];
 
     sint8 default_action; // underlined icon (-1 = none)
     bool combat_mode; // state of combat icon
