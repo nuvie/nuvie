@@ -89,6 +89,22 @@ Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
 }
 
 
+/* Check that loaded converse library (the source) contains `script_num'.
+ * Load another source if it doesn't, and update `script_num' to item number.
+ */
+void Converse::set_conv(Uint32 &script_num)
+{
+    if(script_num <= 98 && src_num == 2)
+        loadConv("converse.a");
+    else if(script_num >= 99)
+    {
+        script_num -= 99;
+        if(src_num == 1)
+            loadConv("converse.b");
+    }
+}
+
+
 /* Copy the NPC num's name from their conversation script.
  * Returns the name as a non-modifiable string of 16 characters maximum.
  */
@@ -125,18 +141,30 @@ const char *Converse::npc_name(uint8 num)
  */
 void Converse::print(const char *printstr)
 {
-#ifdef CONVERSE_DEBUG /* and optionally send it to stderr */
-    fprintf(stderr,"Converse: print \"%s\"\n",printstr?printstr:output.c_str());
-#endif
     if(!printstr)
+        printstr = output.c_str();
+#ifdef CONVERSE_DEBUG /* and optionally send it to stderr */
+    uint32 dplen = strlen(printstr), slen = strlen(printstr), d = 0;
+    char *dprint = (char *)malloc(dplen);
+    for(int c = 0; c < slen; c++)
     {
-        scroll->display_string((char *)output.c_str());
-        // FIXME: HACK-since 0xcb is turned into *, it must be checked for here
-        
-        output.resize(0);
+        if(printstr[c] == '\n')
+        {
+            dplen += 1;
+            dprint = (char *)realloc(dprint, dplen);
+            dprint[d++] = '\\';
+            dprint[d++] = 'n';
+        }
+        else
+            dprint[d++] = printstr[c];
     }
-    else
-        scroll->display_string((char *)printstr);
+    dprint[d] = '\0';
+    fprintf(stderr,"\nConverse: PRINT \"%s\"\n\n", dprint);
+    free(dprint);
+#endif
+    scroll->display_string((char *)printstr);
+    if(printstr == output.c_str())
+        output.resize(0);
 }
 
 
@@ -412,11 +440,13 @@ uint32 Converse::u6op_if_test(uint32 cmpf, stack<uint32> *cmpv)
             if(v[0] > v[1])
                 ifcomp = 1;
             break;
-        case 0x82: // ?? >=
+        case 0x82: // ?? >
             v[1] = cmpv->top(); cmpv->pop();
             v[0] = cmpv->top(); cmpv->pop();
+            if(v[0] > v[1])
+                ifcomp = 1;
             break;
-        case 0x83: // val1 < val2 ??
+        case 0x83: // val1 < val2
             v[1] = cmpv->top(); cmpv->pop();
             v[0] = cmpv->top(); cmpv->pop();
             if(v[0] < v[1])
@@ -529,39 +559,40 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
     switch(opf)
     {
         case 0x90: // val1 + val2
-            test_msg("-equals X + Y-\n");
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
             res = v[0] + v[1];
             break;
         case 0x91: // val1 - val2
-            test_msg("-equals X - Y-\n");
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
             res = v[0] - v[1];
+            break;
+        case 0x92: // val1 * val2
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            res = v[0] * v[1];
             break;
         case 0x9a: // weight that npc val1 is free to carry
             v[0] = opv->top(); opv->pop();
             cnpc = actors->get_actor(v[0]);
             if(cnpc)
                res = (cnpc->get_strength() * 2 * 10) - (uint32)(cnpc->get_inventory_weight() * 10);
-printf("9A: weight that npc %d can carry: %d\n", v[0], res);
-printf("    (max weight: %d, total weight: %d)\n", cnpc->get_strength() * 2 * 10, (uint32)(cnpc->get_inventory_weight() * 10));
+//printf("9A: weight that npc %d can carry: %d\n", v[0], res);
+//printf("    (max weight: %d, total weight: %d)\n", cnpc->get_strength() * 2 * 10, (uint32)(cnpc->get_inventory_weight() * 10));
             break;
         case 0x9b: // weight of object val1, times val2(quantity)
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
             res = objects->get_obj_weight(v[0]) * v[1];
-printf("9B: weight of object %d * %d: %d\n", v[0], v[1], res);
+//printf("9B: weight of object %d * %d: %d\n", v[0], v[1], res);
             break;
         case 0xa0: // random number between val1 and val2 inclusive
-            test_msg("-equals rnd(X to Y)-\n");
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
             res = rnd(v[0], v[1]);
             break;
         case 0xab: // flag val2 of npc val1
-            test_msg("-equals npc(flag)-\n");
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
             cnpc = actors->get_actor(v[0]);
@@ -570,7 +601,6 @@ printf("9B: weight of object %d * %d: %d\n", v[0], v[1], res);
                        ? 1 : 0;
             break;
         case 0xb4: // indexed data val2 at script location val1
-            test_msg("-listX[Y]-\n");
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
             if(declared >= 0 && declared_t == 0xb3)
@@ -595,7 +625,6 @@ printf("9B: weight of object %d * %d: %d\n", v[0], v[1], res);
                 res = 0x8001;
             break;
         case 0xdd: // id of party member val1(0=leader), val2=??
-            test_msg("-equals NPC(PARTYIDX)??-\n");
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
             cnpc = player->get_party()->get_actor(v[0]);
@@ -656,16 +685,15 @@ bool Converse::do_cmd()
 //    Party *group = 0;
     uint32 res = 0; // some operation result
 #ifdef CONVERSE_DEBUG
-fprintf(stderr, "Converse: %04x: cmd=0x%02x\n", cmd_offset, cmd);
+fprintf(stderr, "Converse: %04x: 0x%02x\n", cmd_offset, cmd);
 if(!args.empty() && !args[0].empty())
 {
     fprintf(stderr, "Converse: args:");
     for(unsigned int a = 0; a < args.size() && !args[a].empty(); a++)
     {
-        fprintf(stderr, " (");
+        fprintf(stderr, " ");
         for(unsigned int v = 0; v < args[a].size(); v++)
             fprintf(stderr, "(0x%02x)0x%02x", args[a][v].valt, args[a][v].val);
-        fprintf(stderr, ")");
     }
     fprintf(stderr, "\n");
 }
@@ -675,11 +703,9 @@ if(!args.empty() && !args[0].empty())
     switch(cmd)
     {
         case U6OP_IF: // 1 arg, with multiple vals last val is test type
-            test_msg("-if-\n");
             eval_arg(0, true);
             ifcomp = get_val(0, 0) ? true : false;
             enter_scope(ifcomp ? CONV_SCOPE_IF : CONV_SCOPE_IFELSE);
-            test_msg((char *)(ifcomp ? "-TRUE-\n" : "-FALSE-\n"));
             break;
         case U6OP_ENDIF:
             break_scope();
@@ -703,7 +729,6 @@ if(!args.empty() && !args[0].empty())
                 print("\nError: Illegal var. num\n");
                 break;
             }
-            test_msg("-let X-\n");
             break;
         case U6OP_ASSIGN: // 1 arg with assignment values/operations
         case U6OP_YASSIGN:
@@ -1217,15 +1242,18 @@ void Converse::continue_script()
         else if(need_input && scroll->get_input())
         {
             scroll->display_string("\n\n");
-            input_s.assign(scroll->get_input());
+            input(scroll->get_input());
             if(input_s.empty())
-                input_s.assign("bye");
+                input("bye");
             else if(input_s == "look")
             {
                 print("You see ");
                 print(my_desc);
                 seek(getinput_offset);
             }
+#ifdef CONVERSE_DEBUG
+            fprintf(stderr, "\nConverse: INPUT \"%s\"\n\n", input_s.c_str());
+#endif
             // assign value to declared input variable
             set_var(declared, strtol(input_s.c_str(), NULL, 10));
             let(-1);

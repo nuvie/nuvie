@@ -108,6 +108,34 @@ typedef struct
     uint32 buf_len;
 } convscript;
 
+#if 0
+class ConvScript
+{
+    convscript_buffer buf;
+    uint32 buf_len;
+    ConvScript() { buf = 0; buf_len = 0; }
+    ~ConvScript() { if(buf) free(buf); }
+    public:
+    uint8 read();
+    uint16 read2();
+    Uint32 read4();
+    ConvScript *dup_script(ConvScript *orig)
+    {
+        if(!orig)
+            return(NULL);
+        ConvScript *dest = new ConvScript;
+        dest->buf = (convscript_buffer)malloc(dest->buf_len);
+        memcpy(dest->buf, orig->buf, orig->buf_len);
+        dest->buf_len = orig->buf_len;
+        return(dest);
+    }
+    convscript_buffer operator=(convscript_buffer src, void)
+    {
+        return(dup_script(src));
+    }
+};
+#endif
+
 class Converse
 {
     Configuration *config;
@@ -149,20 +177,7 @@ class Converse
     Uint32 cmd_offset; // location of `cmd' in script
     Uint32 getinput_offset; // location of last input statement
 
-    /* Check that loaded converse library (the source) contains `script_num'.
-     * Load another source if it doesn't, and update `script_num' to item number.
-     */
-    void set_conv(Uint32 &script_num)
-    {
-        if(script_num <= 98 && src_num == 2)
-            loadConv("converse.a");
-        else if(script_num >= 99)
-        {
-            script_num -= 99;
-            if(src_num == 1)
-                loadConv("converse.b");
-        }
-    }
+    void set_conv(Uint32 &script_num);
     convscript read_script(Uint32 &n);
     void init_variables();
     void save_variables();
@@ -310,10 +325,7 @@ class Converse
         return((valcpy == 0xd3 || valcpy == 0xd2 || valcpy == 0xd4));
     }
     /* Returns true if byte is a value-type suffix. */
-    bool is_valtype(Uint8 valcpy)
-    {
-        return((valcpy == 0xb2 || valcpy == 0xb3));
-    }
+    bool is_valtype(Uint8 valcpy) {return((valcpy == 0xb2 || valcpy == 0xb3));}
     /* Returns true if `check' can be part of a text string. */
     bool is_print(Uint8 check)
     {
@@ -325,12 +337,12 @@ class Converse
     {
         return( ((check == 0x81) || (check == 0x82) || (check == 0x83)
                  || (check == 0x84) || (check == 0x85) || (check == 0x86)
-                 || (check == 0x90) || (check == 0x91) || (check == 0x94)
-                 || (check == 0x95) || (check == 0x9a) || (check == 0x9b)
-                 || (check == 0xa0) || (check == 0xab) || (check == 0xb4)
-                 || (check == 0xbb) || (check == 0xc6) || (check == 0xc7)
-                 || (check == 0xd7) || (check == 0xda) || (check == 0xdc)
-                 || (check == 0xdd) || (check == 0xe3)) );
+                 || (check == 0x90) || (check == 0x91) || (check == 0x92)
+                 || (check == 0x94) || (check == 0x95) || (check == 0x9a)
+                 || (check == 0x9b) || (check == 0xa0) || (check == 0xab)
+                 || (check == 0xb4) || (check == 0xbb) || (check == 0xc6)
+                 || (check == 0xc7) || (check == 0xd7) || (check == 0xda)
+                 || (check == 0xdc) || (check == 0xdd) || (check == 0xe3)) );
     }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)
@@ -410,10 +422,7 @@ public:
     void step(Uint32 count = 0, Uint8 bcmd = 0x00);
     void print(const char *printstr = 0);
     /* Set input buffer (replacing what is already there.) */
-    void input(const char *new_input)
-    {
-        input_s.assign(new_input);
-    }
+    void input(const char *new_input) { input_s.assign(new_input); }
     void continue_script();
     const char *npc_name(uint8 num);
 };
