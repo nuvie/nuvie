@@ -631,7 +631,8 @@ bool Event::use(Obj *obj)
     scroll->display_string(obj_manager->look_obj(obj));
     scroll->display_string("\n");
 
-    if(!obj->is_in_inventory() && player->get_actor()->get_location().distance(target) > 1)
+    if(!obj_manager->is_held(obj)
+        && player->get_actor()->get_location().distance(target) > 1)
     {
         scroll->display_string("\nOut of range!\n");
         printf("distance to object: %d\n", player->get_actor()->get_location().distance(target));

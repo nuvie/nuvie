@@ -1531,3 +1531,17 @@ void clean_obj_tree_node(void *node)
  return;
 }
 
+
+/* Returns true if an object is in an actor inventory, including containers. */
+bool ObjManager::is_held(Obj *obj)
+{
+    while(!obj->is_in_inventory())
+    {
+        if(!obj->is_in_container())
+            return false;
+        obj = get_obj_container(obj);
+        if(!obj) // FIXME: TODO: get_obj_container()
+            return false;
+    }
+    return true;
+}
