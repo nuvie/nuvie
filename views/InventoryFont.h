@@ -24,7 +24,7 @@
  *
  */
 
-static unsigned char inventory_font[10][15] = 
+static unsigned char inventory_font[10][15] =
 {
  {1,1,1,
   1,0,1,

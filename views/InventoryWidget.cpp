@@ -56,10 +56,10 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  tile_manager = tm;
  obj_manager = om;
  text = t;
- 
+
  //72 =  4 * 16 + 8
  GUI_Widget::Init(NULL, x, y, 72, 64);
- 
+
  set_actor(a);
 
  return true;
@@ -82,7 +82,7 @@ void InventoryWidget::Display(bool full_redraw)
   }
    //screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
  display_inventory_list();
-    
+
  if(full_redraw || update_display)
   {
    update_display = false;
@@ -103,10 +103,10 @@ void InventoryWidget::display_inventory_container()
  if(!container_obj) //display actor
    tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
  else // display container object
-   tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(container_obj->obj_n)+container_obj->frame_n);  
-  
+   tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(container_obj->obj_n)+container_obj->frame_n);
+
  screen->blit(area.x+32,area.y,tile->data,8,16,16,16,true);
- 
+
  return;
 }
 
@@ -120,12 +120,12 @@ void InventoryWidget::display_inventory_list()
  uint16 skip_num;
 
  empty_tile = tile_manager->get_tile(410);
- 
+
  if(container_obj)
    inventory = container_obj->container;
  else
    inventory = actor->get_inventory_list();
- 
+
  link = inventory->start();
 
  //skip row_offset rows of objects.
@@ -138,7 +138,7 @@ void InventoryWidget::display_inventory_list()
    }
 
   //clear the screen first inventory icons, 4 x 3 tiles
- 
+
   screen->fill(0x31, area.x +8, area.y + 16, 16 * 4, 16 * 3);
 
   for(i=0;i<3;i++)
@@ -165,11 +165,11 @@ void InventoryWidget::display_inventory_list()
          }
         else
           tile = empty_tile;
-          
+
        //tile = tile_manager->get_tile(actor->indentory_tile());
 
        //draw qty string for stackable items
-       if(tile != empty_tile && obj_manager->is_stackable(obj)) 
+       if(tile != empty_tile && obj_manager->is_stackable(obj))
          display_qty_string((area.x+8)+j*16,area.y+16+i*16,obj->qty);
 
        screen->blit((area.x+8)+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
@@ -181,12 +181,12 @@ void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint8 qty)
 {
  uint8 len, i, offset;
  char buf[4];
- 
+
  sprintf(buf,"%d",qty);
  len = strlen(buf);
- 
+
  offset = (16 - len*4) / 2;
- 
+
  for(i=0;i<len;i++)
   screen->blitbitmap(x+offset+4*i,y+11,inventory_font[buf[i]-48],3,5,0x48,0x31);
 
@@ -196,7 +196,7 @@ void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint8 qty)
 void InventoryWidget::display_arrows()
 {
  uint32 num_objects;
- 
+
  num_objects = actor->inventory_count_objects(false);
 
  if(num_objects <= 12) //reset row_offset if we only have one page of objects
@@ -210,13 +210,13 @@ void InventoryWidget::display_arrows()
 }
 
 GUI_status InventoryWidget::MouseDown(int x, int y, int button)
-{ 
+{
  Event *event = Game::get_game()->get_event();
  MsgScroll *scroll = Game::get_game()->get_scroll();
  //MapWindow *map_window = Game::get_game()->get_map_window();
  x -= area.x;
  y -= area.y;
- 
+
  // ABOEING
  if(actor)
    {
@@ -249,10 +249,10 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
 inline uint16 InventoryWidget::get_list_position(int x, int y)
 {
  uint16 list_pos;
- 
+
  list_pos = ((y - 16) / 16) * 4 + (x - 8) / 16;
  list_pos += row_offset * 4;
- 
+
  return list_pos;
 }
 
@@ -272,7 +272,7 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
       inventory = container_obj->container;
     else
       inventory = actor->get_inventory_list();
- 
+
     for(i=0,link = inventory->start();link != NULL && i <= location;link=link->next)
      {
       obj = (Obj *)link->data;
@@ -288,7 +288,7 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
 }
 
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
-{ 
+{
  Event *event = Game::get_game()->get_event();
  UseCode *usecode = Game::get_game()->get_usecode();
 
@@ -296,14 +296,14 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
    {
     x -= area.x;
     y -= area.y;
-    
+
     if(x >= 32 && x <= 48 && // hit top icon either actor or container
        y >= 0 && y <= 16)
       {
        container_obj = NULL; //return to main Actor inventory
        Redraw();
       }
-      
+
     if(HitRect(x,y,arrow_rects[0])) //up arrow hit rect
       {
        if(up_arrow())
@@ -356,7 +356,7 @@ bool InventoryWidget::up_arrow()
 bool InventoryWidget::down_arrow()
 {
  uint32 num_objects;
- 
+
  num_objects = actor->inventory_count_objects(false);
 
  if(num_objects - row_offset * 4 > 12)
@@ -378,7 +378,7 @@ GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
     tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
     return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
    }
-   
+
 	return GUI_PASS;
 }
 
@@ -413,17 +413,17 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
       target_obj = get_obj_at_location(x,y);
     return true;
    }
-   
+
  return false;
 }
 
 void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
  Obj *obj;
- 
+
  x -= area.x;
  y -= area.y;
- 
+
  if(message == GUI_DRAG_OBJ)
    {
     printf("Drop into inventory\n");
@@ -452,8 +452,8 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
      container_obj->container->addAtPos(0,obj);
     Redraw();
    }
-   
- target_obj = NULL;  
+
+ target_obj = NULL;
 
  return;
 }
@@ -464,7 +464,7 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
 
 	if (!selected_obj)
 		return;
-		
+
 	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj->obj_n) + selected_obj->frame_n);
 
 	int	nx = x - 8;
@@ -498,7 +498,7 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
         return(GUI_YUM);
 
     scroll->display_string("Use-");
-    
+
     if(event->use(obj))
     {
         scroll->display_string("\n");
@@ -510,7 +510,7 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 
 // waited for double-click
 GUI_status InventoryWidget::MouseClick(int x, int y, int button)
-{ 
+{
  Event *event = Game::get_game()->get_event();
 
  if(button != 1)

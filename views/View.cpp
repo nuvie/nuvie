@@ -32,7 +32,7 @@ View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
 }
- 
+
 View::~View()
 {
 }
@@ -40,14 +40,14 @@ View::~View()
 bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
  GUI_Widget::Init(NULL, x, y, 136, 96);
- 
+
  text = t;
  party = p;
  tile_manager = tm;
  obj_manager = om;
 
  set_party_member(0);
- 
+
  return true;
 }
 
@@ -72,14 +72,14 @@ bool View::prev_party_member()
 {
  if(cur_party_member != 0)
    return set_party_member(cur_party_member - 1);
- 
+
  return false;
 }
 
 GUI_status View::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
  ViewManager *view_manager;
- 
+
  if(caller == (GUI_CallBack *)left_button)
    {
     prev_party_member();
@@ -112,6 +112,6 @@ GUI_status View::callback(uint16 msg, GUI_CallBack *caller, void *data)
     view_manager->set_inventory_mode();
     return GUI_YUM;
    }
-                        
+
  return GUI_PASS;
 }

@@ -38,20 +38,20 @@
 Map::Map(Configuration *cfg)
 {
  config = cfg;
- 
+
  surface = NULL;
 
 }
- 
+
 Map::~Map()
 {
  uint8 i;
- 
+
  if(surface == NULL)
    return;
-   
+
  free(surface);
-   
+
  for(i=0;i<5;i++)
    free(dungeons[i]);
 }
@@ -61,10 +61,10 @@ unsigned char *Map::get_map_data(uint8 level)
 {
  if(level == 0)
    return surface;
- 
+
  if(level > 5)
    return NULL;
- 
+
  return dungeons[level - 1];
 }
 
@@ -72,17 +72,17 @@ Tile *Map::get_tile(uint16 x, uint16 y, uint8 level, bool original_tile)
 {
  Tile *map_tile;
  uint8 *ptr;
- 
+
  if(level > 5)
    return NULL;
-   
+
  ptr = get_map_data(level);
- 
+
  if(original_tile)
     map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
  else
     map_tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
- 
+
  return map_tile;
 }
 
@@ -90,7 +90,7 @@ uint16 Map::get_width(uint8 level)
 {
  if(level == 0)
    return 1024; // surface
-   
+
  return 256; // dungeon
 }
 
@@ -99,7 +99,7 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
  uint8 *ptr;
  Tile *map_tile;
  uint8 obj_status;
- 
+
  obj_status = obj_manager->is_passable(x, y, level);
  if(obj_status == OBJ_NOT_PASSABLE)
   {
@@ -107,12 +107,12 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
   }
 
 //special case for bridges, hacked doors and dungeon enterances etc.
- if(obj_status != OBJ_NO_OBJ && obj_manager->is_forced_passable(x, y, level)) 
+ if(obj_status != OBJ_NO_OBJ && obj_manager->is_forced_passable(x, y, level))
    return true;
 
  ptr = get_map_data(level);
  map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
-   
+
  return map_tile->passable;
 }
 
@@ -120,13 +120,13 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
 {
  uint8 *ptr;
  Tile *map_tile;
-   
+
  ptr = get_map_data(level);
  map_tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
 
  if(map_tile->boundary && obj_manager->is_forced_passable(x, y, level) == false)
    return true;
-   
+
  if(obj_manager->is_boundary(x, y, level))
    return true;
 
@@ -178,7 +178,7 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
  uint16 tile_num;
  Obj *obj;
  uint16 qty = 0;
- 
+
  if(level == 0)
   {
    ptr = surface;
@@ -211,7 +211,7 @@ bool Map::loadMap(TileManager *tm, ObjManager *om)
  unsigned char *chunk_data;
 
  uint8 i;
- 
+
  tile_manager = tm;
  obj_manager = om;
 
@@ -226,7 +226,7 @@ bool Map::loadMap(TileManager *tm, ObjManager *om)
  map_data = map_file.readAll();
  if(map_data == NULL)
    return false;
-   
+
  chunk_data = chunks_file.readAll();
  if(chunk_data == NULL)
    return false;
@@ -236,7 +236,7 @@ bool Map::loadMap(TileManager *tm, ObjManager *om)
 surface = (unsigned char *)malloc(1024 * 1024);
 if(surface == NULL)
   return false;
-   
+
  for(i=0;i<64;i++)
    {
     insertSurfaceSuperChunk(map_ptr,chunk_data,i);
@@ -248,15 +248,15 @@ if(surface == NULL)
     dungeons[i] = (unsigned char *)malloc(256 * 256);
     if(dungeons[i] == NULL)
       return false;
-      
+
     insertDungeonSuperChunk(map_ptr,chunk_data,i);
     map_ptr += 1536;
    }
 
  free(map_data);
  free(chunk_data);
- 
- return true;      
+
+ return true;
 }
 
 void Map::insertSurfaceSuperChunk(unsigned char *schunk, unsigned char *chunk_data, uint8 schunk_num)
@@ -264,23 +264,23 @@ void Map::insertSurfaceSuperChunk(unsigned char *schunk, unsigned char *chunk_da
  uint16 world_x, world_y;
  uint16 c1,c2;
  uint8 i,j;
- 
+
  world_x = schunk_num % 8;
  world_y = (schunk_num - world_x) / 8;
- 
+
  world_x *= 128;
  world_y *= 128;
- 
+
  for(i=0;i<16;i++)
    {
     for(j=0;j<16;j += 2)
       {
        c1 = ((schunk[1] & 0xf) << 8) | schunk[0];
        c2 = (schunk[2] << 4) | (schunk[1] >> 4);
-       
+
        insertSurfaceChunk(&chunk_data[c1*64],world_x + j * 8, world_y + i * 8);
        insertSurfaceChunk(&chunk_data[c2*64],world_x + (j+1) * 8, world_y + i * 8);
-       
+
        schunk += 3;
       }
    }
@@ -290,9 +290,9 @@ void Map::insertSurfaceChunk(unsigned char *chunk, uint16 x, uint16 y)
 {
  unsigned char *map_ptr;
  uint8 i;
- 
+
  map_ptr = &surface[y * 1024 + x];
- 
+
  for(i=0;i<8;i++)
    {
     memcpy(map_ptr,chunk,8);
@@ -306,17 +306,17 @@ void Map::insertDungeonSuperChunk(unsigned char *schunk, unsigned char *chunk_da
 {
  uint16 c1,c2;
  uint8 i,j;
-  
+
  for(i=0;i<32;i++)
    {
     for(j=0;j<32;j += 2)
       {
        c1 = ((schunk[1] & 0xf) << 8) | schunk[0];
        c2 = (schunk[2] << 4) | (schunk[1] >> 4);
-       
+
        insertDungeonChunk(&chunk_data[c1*64], j * 8, i * 8,level);
        insertDungeonChunk(&chunk_data[c2*64], (j+1) * 8, i * 8,level);
-       
+
        schunk += 3;
       }
    }
@@ -326,9 +326,9 @@ void Map::insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 lev
 {
  unsigned char *map_ptr;
  uint8 i;
- 
+
  map_ptr = &dungeons[level][y * 256 + x];
- 
+
  for(i=0;i<8;i++)
    {
     memcpy(map_ptr,chunk,8);
@@ -380,7 +380,7 @@ bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResul
 			return	true;
 		}
 	}
-	
+
 	if (flags & LT_HitForcedPassable)
 	{
 		if (obj_manager->is_forced_passable (x, y, level))
@@ -405,7 +405,7 @@ bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResul
 			return	true;
 		}
 	}
-	
+
 	if (flags & LT_HitForcedPassable)
 	{
 		if (obj_manager->is_forced_passable (x, y, level))

@@ -31,7 +31,7 @@ class CPlayer;
 class SongAdPlug : public Song {
 public:
     uint16 samples_left;
-    
+
 	SongAdPlug(CEmuopl *o);
 	~SongAdPlug();
 	bool Init(const char *filename);
@@ -39,13 +39,13 @@ public:
 	bool Stop();
     CPlayer *get_player() { return player; };
     CEmuopl *get_opl() { return opl; };
-    
+
 private:
     CEmuopl *opl;
 	CPlayer *player;
 
 
-    
+
 };
 
 #endif /* __SongAdPlug_h__ */

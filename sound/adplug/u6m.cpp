@@ -1,17 +1,17 @@
 /*
  * Adplug - Replayer for many OPL2/OPL3 audio file formats.
  * Copyright (C) 1999 - 2003 Simon Peter, <dn.tlp@gmx.net>, et al.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,7 +30,7 @@ Cu6mPlayer::~Cu6mPlayer()
  if(song_data)
    free(song_data);
 }
-    
+
 CPlayer *Cu6mPlayer::factory(Copl *newopl)
 {
   return new Cu6mPlayer(newopl);
@@ -110,7 +110,7 @@ void Cu6mPlayer::rewind(int subsong)
     song_pos = 0;
     loop_position = 0;   // position of the loop point
     read_delay = 0;      // delay (in timer ticks) before further song data is read
- 
+
     for (int i = 0; i < 9; i++)
     {
         // frequency
@@ -166,7 +166,7 @@ void Cu6mPlayer::command_loop()
         command_byte = read_song_byte();   // implicitly increments song_pos
         command_nibble_hi = command_byte >> 4;
         command_nibble_lo = command_byte & 0xf;
- 
+
         switch (command_nibble_hi)
         {
             case 0x0: command_0(command_nibble_lo); break;
@@ -229,7 +229,7 @@ void Cu6mPlayer::command_1(int channel)
 
     vb_direction_flag[channel] = 0;
     vb_current_value[channel] = 0;
- 
+
     freq_byte = read_song_byte();
     freq_word = expand_freq_byte(freq_byte);
     set_adlib_freq(channel,freq_word);
@@ -248,7 +248,7 @@ void Cu6mPlayer::command_2(int channel)
 {
     unsigned char freq_byte;
     byte_pair freq_word;
- 
+
     freq_byte = read_song_byte();
     freq_word = expand_freq_byte(freq_byte);
     freq_word.hi = freq_word.hi | 0x20; // note on
@@ -345,7 +345,7 @@ void Cu6mPlayer::command_7(int channel)
 void Cu6mPlayer::command_81()
 {
     subsong_info new_ss_info;
- 
+
     new_ss_info.subsong_repetitions = read_song_byte();
     new_ss_info.subsong_start = read_song_byte(); new_ss_info.subsong_start += read_song_byte() << 8;
     new_ss_info.continue_pos = song_pos;

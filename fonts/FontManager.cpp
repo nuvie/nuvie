@@ -37,7 +37,7 @@ FontManager::FontManager(Configuration *cfg)
 FontManager::~FontManager()
 {
  std::vector<Font *>::iterator font;
- 
+
  for(font = fonts.begin(); font != fonts.end();)
    {
     delete *font;
@@ -45,7 +45,7 @@ FontManager::~FontManager()
    }
 
 }
- 
+
 bool FontManager::init()
 {
  Font *font;
@@ -54,10 +54,10 @@ bool FontManager::init()
  NuvieIOFileRead u6_ch;
 
  config->pathFromValue("config/ultima6/gamedir","u6.ch",filename);
- 
+
  if(u6_ch.open(filename) == false)
    return false;
- 
+
  font_data = u6_ch.readAll();
  if(font_data == NULL)
    return false;
@@ -67,7 +67,7 @@ bool FontManager::init()
  font->init(font_data,128,0);
  fonts.push_back(font);
  num_fonts++;
- 
+
  // runic & gargoyle font
  font = new Font();
  font->init(&font_data[128 * 8], 128, 0);

@@ -24,9 +24,9 @@
 //notes: this file should be moved to the nuvie main directory instead of sound.
 
 //priorities:
-//todo: 
+//todo:
 //-sample loading partialy implemented, will do later (now is 21/01/04)
-//-make songs fade in & out - add query/callback for end of song so that they can cycle 
+//-make songs fade in & out - add query/callback for end of song so that they can cycle
 //-make samples sound from mapwindow
 //-make samples fade in & out according to distance
 //-try and use original .m files
@@ -45,34 +45,34 @@ class SoundManager {
 public:
 	SoundManager();
 	~SoundManager();
-	
+
 	bool nuvieStartup(Configuration *config);
 	bool initAudio();
 	void update_map_sfx(); //updates the active sounds
     void update(); // at the moment this just changes songs if required
-    
+
     void musicPlayFrom(string group);
-    
+
     void musicPause();
     void musicPlay();
-    
+
 private:
 	bool LoadCustomSongs(string scriptname);
     bool LoadNativeU6Songs();
     bool loadSong(Song *song, const char *filename);
     bool groupAddSong(char *group, Song *song);
-    
+
 	bool LoadObjectSamples(string sound_dir);
 	bool LoadTileSamples(string sound_dir);
 
 	Sound* SongExists(string name); //have we loaded this sound before?
 	Sound* SampleExists(string name); //have we loaded this sound before?
-    
+
 
 	Sound* RequestTileSound(int id);
 	Sound* RequestObjectSound(int id);
 	Sound* RequestSong(string group); //request a song from this group
-	
+
 	map<int,SoundCollection *> m_TileSampleMap;
 	map<int,SoundCollection *> m_ObjectSampleMap;
 	map<string,SoundCollection *> m_MusicMap;
@@ -87,7 +87,7 @@ private:
     bool audio_enabled;
     bool music_enabled;
     bool sfx_enabled;
-    
+
     CEmuopl *opl;
 public:
 	static bool g_MusicFinished;

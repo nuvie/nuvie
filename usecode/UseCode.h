@@ -76,7 +76,7 @@ typedef uint16 UseCodeEvent;
  *
  * (UN)LOAD unimplemented
  * Returns: undefined
- * Called when the object is cached in or out (and when new objects are 
+ * Called when the object is cached in or out (and when new objects are
  * created.) It can be used to start timers, or to hatch eggs.
  *
  * Actor NEAR unimplemented
@@ -105,7 +105,7 @@ typedef uint16 UseCodeEvent;
  * Special drop functions can be created with this.
  * actor_ref - the actor dropping it
  * mapcoord_ref - the desired drop target
- * 
+ *
  * GET (torches, runes?)
  * Returns: True if the actor can get the object.
  * Special get functions can be created with this.
@@ -154,12 +154,12 @@ class UseCode
  void clear_items();
 
  public:
- 
+
  UseCode(Game *g, Configuration *cfg);
  virtual ~UseCode();
- 
+
  virtual bool init(ObjManager *om, Map *m, Player *p, MsgScroll *ms);
- 
+
  bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
  bool use_obj(Obj *obj, Obj *src_obj = NULL) { return(use_obj(obj, player->get_actor())); } // ??
 

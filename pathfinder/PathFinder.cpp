@@ -44,7 +44,7 @@ void PathFinder::delete_path()
 
 
 /* Returns true if actor is at the destination.
- */ 
+ */
 bool PathFinder::reached_goal()
 {
     return(actor->x == dest.x && actor->y == dest.y && actor->z == dest.z);

@@ -4,7 +4,7 @@
  *
  *  Created by Eric Fry on Sat Jul 05 2003.
  *  Copyright (c) 2003 The Nuvie Team. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -41,7 +41,7 @@ bool NuvieIOFile::openWithMode(const char *filename, const char *mode)
   return false;
 
  fp = fopen(filename,mode);
- 
+
  if(fp == NULL)
   {
    printf("Error: Failed opening '%s'\n",filename);
@@ -50,7 +50,7 @@ bool NuvieIOFile::openWithMode(const char *filename, const char *mode)
 
  size = get_filesize();
  pos = 0;
- 
+
  return true;
 }
 
@@ -60,7 +60,7 @@ void NuvieIOFile::close()
    fclose(fp);
 
  fp = NULL;
- 
+
  NuvieIO::close();
 }
 
@@ -72,7 +72,7 @@ uint32 NuvieIOFile::get_filesize()
  file_length = (uint32)ftell(fp);
  fseek(fp, pos, SEEK_SET);
 
- return file_length; 
+ return file_length;
 }
 
 void NuvieIOFile::seek(uint32 new_pos)
@@ -99,21 +99,21 @@ uint8 NuvieIOFileRead::read1()
 {
  if(pos >= size)
   return 0;
- 
+
  pos++;
-  
+
  return(fgetc(fp));
 }
 
 uint16 NuvieIOFileRead::read2()
 {
  unsigned char b0, b1;
- 
+
  if(pos > size-2)
    return 0;
- 
+
  pos += 2;
- 
+
  b0 = fgetc(fp);
  b1 = fgetc(fp);
 
@@ -127,7 +127,7 @@ uint32 NuvieIOFileRead::read4()
   return 0;
 
  pos += 4;
- 
+
  b0 = fgetc(fp);
  b1 = fgetc(fp);
  b2 = fgetc(fp);
@@ -144,7 +144,7 @@ bool NuvieIOFileRead::readToBuf(unsigned char *buf, uint32 buf_size)
  fread(buf,1,buf_size,fp); // FIX for partial read.
 
  pos += buf_size;
- 
+
  return true;
 }
 
@@ -164,12 +164,12 @@ bool NuvieIOFileWrite::write1(uint8 src)
    return false;
 
  fputc(src,fp);
- 
+
  pos++;
- 
+
  if(pos > size)
    size = pos;
-   
+
  return true;
 }
 
@@ -180,30 +180,30 @@ bool NuvieIOFileWrite::write2(uint16 src)
 
  fputc((uint8)(src & 0xff), fp);
  fputc((uint8)((src >> 8) & 0xff), fp);
- 
+
  pos += 2;
- 
+
  if(pos > size)
    size = pos;
-   
+
  return true;
 }
-   
+
 bool NuvieIOFileWrite::write4(uint32 src)
 {
  if(fp==NULL) // || pos >= size-4)
    return false;
- 
+
  fputc((uint8)(src & 0xff), fp);
  fputc((uint8)((src >> 8) & 0xff), fp);
  fputc((uint8)((src >> 16) & 0xff), fp);
  fputc((uint8)((src >> 24) & 0xff), fp);
- 
+
  pos += 4;
- 
+
  if(pos > size)
    size = pos;
-   
+
  return true;
 }
 
@@ -211,15 +211,15 @@ uint32 NuvieIOFileWrite::writeBuf(const unsigned char *src, uint32 src_size)
 {
  if(fp == NULL)// || pos + src_size > size)
    return(0);
- 
+
  pos += src_size;
 
  if(pos > size)
    size = pos;
-   
+
  return(fwrite(src, sizeof(unsigned char), src_size, fp));
 }
-   
+
 uint32 NuvieIOFileWrite::write(NuvieIO *src)
 {
  return 0;

@@ -120,7 +120,7 @@ bool U6Shape::load(std::string filename)
 bool U6Shape::load(U6Lib_n *file, uint32 index)
 {
  unsigned char *buf;
- 
+
  buf = file->get_item(index);
  if(buf != NULL)
    {
@@ -132,10 +132,10 @@ bool U6Shape::load(U6Lib_n *file, uint32 index)
     else
        free(buf);
    }
- 
+
  return false;
 }
-  
+
 /*
  * =========================================
  *  bool U6Shape::load(unsigned char *buf);
@@ -157,7 +157,7 @@ bool U6Shape::load(unsigned char *buf)
 		/* NOT REACHED */
 
   data = buf;
-    
+
   /* Size and hot point. */
   width = SDL_SwapLE16(*(uint16*)data); data += 2;
   width += hotx = SDL_SwapLE16(*(uint16*)data); data += 2;
@@ -294,7 +294,7 @@ bool U6Shape::get_hot_point(uint16 *x, uint16 *y)
 
 	*x = hotx;
 	*y = hoty;
-  
+
 	return true;
 }
 
@@ -314,6 +314,6 @@ bool U6Shape::get_size(uint16 *w, uint16 *h)
 
 	*w = width;
   *h = height;
-    
+
 	return true;
 }

@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
- 
+
 //#include <string>
 
 class Configuration;
@@ -35,12 +35,12 @@ class Text
  unsigned char *font_data;
 
  public:
- 
+
    Text(Configuration *cfg);
    ~Text();
-   
+
    bool loadFont();
-   
+
 //   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y, uint8 lang_num=0);
    bool drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 lang_num=0);
    bool drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 lang_num);

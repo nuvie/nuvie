@@ -44,15 +44,15 @@ int main(int argc, char **argv)
  #else
  srand(time(NULL));
  #endif
- 
+
  nuvie = new Nuvie;
- 
+
  if(nuvie->init(argc, argv) == false)
    return 1;
- 
+
  nuvie->play();
- 
+
  delete nuvie;
- 
+
  return 0;
 }

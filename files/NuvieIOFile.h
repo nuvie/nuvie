@@ -32,19 +32,19 @@ class NuvieIOFile : public NuvieIO
 {
  protected:
  FILE *fp;
- 
+
  public:
- 
+
    NuvieIOFile();
    virtual ~NuvieIOFile();
-   
+
    virtual bool open(const char *filename) { return false; };
    bool open(std::string filename) { return open(filename.c_str()); };
-   
+
    void close();
-     
+
    void seek(uint32 new_pos);
-   
+
  protected:
     bool openWithMode(const char *filename, const char *mode);
     uint32 get_filesize();
@@ -53,15 +53,15 @@ class NuvieIOFile : public NuvieIO
 class NuvieIOFileRead : public NuvieIOFile
 {
  protected:
- 
+
  public:
- 
+
   // NuvieIOFileRead();
   // virtual ~NuvieIOFileRead();
 
    bool open(const char *filename);
    bool open(std::string filename) { return open(filename.c_str()); };
-        
+
    uint8 read1();
    uint16 read2();
    uint32 read4();
@@ -71,15 +71,15 @@ class NuvieIOFileRead : public NuvieIOFile
 
 class NuvieIOFileWrite : public NuvieIOFileRead
 {
- 
+
  public:
- 
+
   // NuvieIOFileRead();
   // virtual ~NuvieIOFileRead();
 
    bool open(const char *filename);
    bool open(std::string filename) { return open(filename.c_str()); };
-        
+
    bool write1(uint8 src);
    bool write2(uint16 src);
    bool write4(uint32 src);

@@ -37,7 +37,7 @@ using std::string;
 #define ACTOR_NECK   1
 #define ACTOR_BODY   2
 #define ACTOR_ARM    3
-#define ACTOR_ARM_2  4 
+#define ACTOR_ARM_2  4
 #define ACTOR_HAND   5
 #define ACTOR_HAND_2 6
 #define ACTOR_FOOT   7
@@ -86,17 +86,17 @@ class Actor
  protected:
 
  uint8 id_n;
- 
+
  Map *map;
  ObjManager *obj_manager;
  GameClock *clock;
  UseCode *usecode;
  PathFinder *pathfinder;
- 
+
  uint16 x;
  uint16 y;
  uint16 z;
- 
+
  uint8 worktype;
  MapCoord work_location;
 
@@ -104,17 +104,17 @@ class Actor
  uint16 frame_n;
  uint16 base_obj_n;
  uint16 old_frame_n;
- 
+
  uint8 direction;
  uint8 walk_frame;
- 
+
  bool can_move;
  bool alive;
  bool met_player;
- 
+
  bool in_party;
  bool visible_flag;
- 
+
  uint8 moves; // number of moves actor has this turn
 
  uint8 strength;
@@ -127,28 +127,28 @@ class Actor
  uint8 combat_mode;
 
  uint8 flags;
- 
+
  string name;
- 
+
  U6LList *obj_inventory;
- 
+
  Obj *readied_objects[8];
- 
+
  Schedule **sched;
- 
+
  //current schedule pos;
  uint16 sched_pos;
 
  list<Obj *> surrounding_objects; //used for multi-tile actors.
- 
+
  public:
- 
+
  Actor(Map *m, ObjManager *om, GameClock *c);
  virtual ~Actor();
- 
+
  virtual bool init();
  void init_from_obj(Obj *obj);
- 
+
 // bool is_visible() { return(MapCoord(x,y,z).is_visible()); }
  bool is_alive();
  bool is_nearby(Actor *other);
@@ -168,7 +168,7 @@ class Actor
  virtual uint16 get_downward_facing_tile_num();
  uint8 get_actor_num() { return(id_n); }
  uint8 get_flags() { return(flags); }
- 
+
  uint8 get_strength() { return(strength); }
  uint8 get_dexterity() { return(dex); }
  uint8 get_intelligence() { return(intelligence); }
@@ -178,7 +178,7 @@ class Actor
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
  uint8 get_combat_mode() { return combat_mode; }
- 
+
  void set_strength(uint8 val) { strength = val; }
  void set_dexterity(uint8 val) { dex = val; }
  void set_intelligence(uint8 val) { intelligence = val; }
@@ -190,10 +190,10 @@ class Actor
  // combat methods
  void attack(Actor *actor); // attack another actor
  void defend(uint16 hit); // defend against an attack from another actor
- 
+
  uint8 get_worktype();
  virtual void set_worktype(uint8 new_worktype);
-  
+
  uint8 get_direction() { return(direction); }
  void set_direction(sint16 rel_x, sint16 rel_y);
  virtual void set_direction(uint8 d);
@@ -206,9 +206,9 @@ class Actor
  void clear_flag(uint8 bitflag);
  void show() { visible_flag = true; }
  void hide() { visible_flag = false; }
- 
+
  bool is_visible() { return visible_flag; }
- 
+
  bool moveRelative(sint16 rel_x, sint16 rel_y);
  virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
@@ -226,7 +226,7 @@ class Actor
  void hit(uint8 dmg, Obj *src_obj)    { hit(dmg); }
  void reduce_hp(uint8 amount);
  virtual void die();
- 
+
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_zero_qual = true);
  uint32 inventory_count_objects(bool inc_readied_objects);
@@ -250,21 +250,21 @@ class Actor
  bool add_readied_object(Obj *obj);
  void remove_readied_object(Obj *obj);
  void remove_readied_object(uint8 location);
- 
+
  virtual void twitch() { return; }
  bool push(Actor *pusher, uint8 where = ACTOR_PUSH_ANYWHERE, uint16 tx = 0, uint16 ty = 0, uint16 tz = 0);
- 
+
  Obj *make_obj();
  uint16 get_obj_n() { return(obj_n); }
  virtual void clear();
  protected:
- 
+
  void loadSchedule(unsigned char *schedule_data, uint16 num);
  virtual bool updateSchedule(uint8 hour);
  uint16 getSchedulePos(uint8 hour);
 // uint16 getSchedulePos(uint8 hour, uint8 day_of_week);
 // inline uint16 Actor::getSchedulePos(uint8 hour);
- 
+
  void inventory_parse_readied_objects(); //this is used to initialise the readied_objects array on load.
 };
 

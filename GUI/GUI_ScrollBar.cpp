@@ -59,13 +59,13 @@ GUI_ScrollBar::GUI_ScrollBar(int x, int y, int h, GUI_CallBack *callback)
 {
  callback_object = callback;
  drag = false;
- 
+
  loadButtons();
- 
+
  track_length = area.h - 2 * button_height;
  slider_length = track_length / 2;
  slider_y = 5;
- 
+
 }
 
 
@@ -74,7 +74,7 @@ void GUI_ScrollBar::loadButtons()
   std::string datadir = GUI::get_gui()->get_data_dir();
   std::string imagefile;
   SDL_Surface *image, *image1;
-    
+
   build_path(datadir, "ScrollBarUp_1.bmp", imagefile);
   image = SDL_LoadBMP(imagefile.c_str());
   build_path(datadir, "ScrollBarUp_2.bmp", imagefile);
@@ -89,7 +89,7 @@ void GUI_ScrollBar::loadButtons()
   image1 = SDL_LoadBMP(imagefile.c_str());
 
   button_height = image->h;
-  
+
   down_button = new GUI_Button(NULL, 0, area.h - button_height, image, image1, this);
   this->AddWidget(down_button);
 
@@ -104,7 +104,7 @@ void GUI_ScrollBar::SetDisplay(Screen *s)
 	slider_highlight_c = SDL_MapRGB(surface->format, SLIDER_HIGHLIGHT_R, SLIDER_HIGHLIGHT_G, SLIDER_HIGHLIGHT_B);
 	slider_shadow_c = SDL_MapRGB(surface->format, SLIDER_SHADOW_R, SLIDER_SHADOW_G, SLIDER_SHADOW_B);
 	slider_base_c = SDL_MapRGB(surface->format, SLIDER_BASE_R, SLIDER_BASE_G, SLIDER_BASE_B);
-    
+
 	track_border_c = SDL_MapRGB(surface->format, TRACK_BORDER_R, TRACK_BORDER_G, TRACK_BORDER_B);
 	track_base_c = SDL_MapRGB(surface->format, TRACK_BASE_R, TRACK_BASE_G, TRACK_BASE_B);
 }
@@ -125,7 +125,7 @@ void GUI_ScrollBar::Display(bool full_redraw)
 {
  SDL_Rect framerect;
  // SDL_Rect src, dst;
- 
+
  if(slider_y > 0)
    {
     framerect.x = area.x;
@@ -133,7 +133,7 @@ void GUI_ScrollBar::Display(bool full_redraw)
     framerect.w = SCROLLBAR_WIDTH;
     framerect.h = slider_y;
     SDL_FillRect(surface, &framerect, track_base_c);
-    
+
     // Draw Border
     framerect.x = area.x;
     framerect.y = area.y + button_height;
@@ -154,7 +154,7 @@ void GUI_ScrollBar::Display(bool full_redraw)
     SDL_FillRect(surface, &framerect, track_border_c);
 
    }
-    
+
  DisplaySlider();
 
  if(slider_y + slider_length < track_length)
@@ -164,7 +164,7 @@ void GUI_ScrollBar::Display(bool full_redraw)
     framerect.w = SCROLLBAR_WIDTH;
     framerect.h = track_length - (slider_y + slider_length);
     SDL_FillRect(surface, &framerect, track_base_c);
-    
+
     // Draw Border
     framerect.x = area.x;
     framerect.y = area.y + area.h - button_height - 1;
@@ -187,7 +187,7 @@ void GUI_ScrollBar::Display(bool full_redraw)
    }
 
  DisplayChildren();
- 
+
  screen->update(area.x,area.y,area.w,area.h);
 
  return;
@@ -196,7 +196,7 @@ void GUI_ScrollBar::Display(bool full_redraw)
 inline void GUI_ScrollBar::DisplaySlider()
 {
  SDL_Rect rect;
- 
+
  rect.x = area.x;
  rect.y = area.y + button_height + slider_y;
  rect.w = SCROLLBAR_WIDTH;
@@ -208,7 +208,7 @@ inline void GUI_ScrollBar::DisplaySlider()
  rect.w = 1;
  rect.h = slider_length - 1;
  SDL_FillRect(surface, &rect, slider_highlight_c);
- 
+
  rect.x = area.x + 1;
  rect.y = area.y + button_height + slider_y;
  rect.w = SCROLLBAR_WIDTH-1;
@@ -220,7 +220,7 @@ inline void GUI_ScrollBar::DisplaySlider()
  rect.w = 1;
  rect.h = slider_length;
  SDL_FillRect(surface, &rect, slider_shadow_c);
- 
+
  rect.x = area.x;
  rect.y = area.y + button_height + slider_y + slider_length - 1;
  rect.w = SCROLLBAR_WIDTH-1;
@@ -253,10 +253,10 @@ GUI_status GUI_ScrollBar::MouseUp(int x, int y, int button)
 GUI_status GUI_ScrollBar::MouseMotion(int x,int y, Uint8 state)
 {
  int new_slider_y;
- 
+
  if(!drag)
    return GUI_PASS;
- 
+
  new_slider_y = y - slider_click_offset - (area.y + button_height);
 
  if(move_slider(new_slider_y))
@@ -264,7 +264,7 @@ GUI_status GUI_ScrollBar::MouseMotion(int x,int y, Uint8 state)
     send_slider_moved_msg();
    }
 // Redraw();
- 
+
  return (GUI_YUM);
 }
 
@@ -280,7 +280,7 @@ inline bool GUI_ScrollBar::move_slider(int new_slider_y)
 
  if(slider_y == new_slider_y)
    return false;
- 
+
  slider_y = new_slider_y;
 
  return true;
@@ -289,27 +289,27 @@ inline bool GUI_ScrollBar::move_slider(int new_slider_y)
 void GUI_ScrollBar::send_slider_moved_msg()
 {
  float slider_percentage;
- 
+
  slider_percentage = slider_y / (float)track_length;
 
  callback_object->callback(SCROLLBAR_CB_SLIDER_MOVED, this, &slider_percentage);
- 
+
  return;
 }
 
 GUI_status GUI_ScrollBar::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
  uint16 action = 0;
- 
+
  if(msg == BUTTON_CB)
    {
     if(caller == up_button)
       action = SCROLLBAR_CB_UP_BUTTON;
-      
+
     if(caller == down_button)
       action = SCROLLBAR_CB_DOWN_BUTTON;
    }
-   
+
  if(action)
    callback_object->callback(action, this, NULL);
 

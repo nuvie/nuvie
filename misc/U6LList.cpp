@@ -31,31 +31,31 @@
  tail = NULL;
  cur = NULL;
 }
- 
+
  U6LList::~U6LList()
 {
  removeAll();
 }
- 
+
 bool U6LList::add(void *data)
 {
  U6Link *link;
- 
+
  link = new U6Link;
  if(link == NULL)
    return false;
-   
+
  if(tail == NULL)
    head = tail = link;
- else   
+ else
    {
     link->prev = tail;
     tail->next = link;
     tail = link;
    }
-   
+
  link->data = data;
- 
+
  return true;
 }
 
@@ -63,13 +63,13 @@ bool U6LList::add(void *data)
 {
  uint32 i;
  U6Link *link, *prev, *new_link;
- 
+
  new_link = new U6Link;
  if(new_link == NULL)
    return false;
-    
+
  new_link->data = data;
- 
+
  if(pos == 0 || head == NULL) // pos at head or list empty
    {
     if(head != NULL)
@@ -80,14 +80,14 @@ bool U6LList::add(void *data)
       tail = head;
    }
  else
-   {  
+   {
     prev=NULL;
     for(link=head,i=0;link != NULL && i < pos;i++)
       {
        prev=link;
        link=link->next;
       }
-   
+
     if(prev == tail)
       {
        new_link->prev = tail;
@@ -102,17 +102,17 @@ bool U6LList::add(void *data)
       }
    }
 
- return true;    
+ return true;
 }
 
 bool U6LList::remove(void *data)
 {
  U6Link *link;
  U6Link *prev;
- 
- if(head == NULL) 
+
+ if(head == NULL)
    return false;
-   
+
  if(head->data == data) // remove head
    {
     link = head;
@@ -126,13 +126,13 @@ bool U6LList::remove(void *data)
 
     return true;
    }
-   
+
  for(link = prev = head;link != NULL;)
   {
    if(link->data == data)
     {
      prev->next = link->next;
-     
+
      if(link == tail)
          tail = prev;
 
@@ -150,14 +150,14 @@ bool U6LList::remove(void *data)
    prev = link;
    link = link->next;
   }
-  
+
  return false;
 }
- 
+
 bool U6LList::removeAll()
 {
  U6Link *tmp_link, *link;
- 
+
  for(link=head;link != NULL;)
   {
    tmp_link = link;
@@ -169,15 +169,15 @@ bool U6LList::removeAll()
  head = NULL;
  tail = NULL;
  cur = NULL;
- 
- return true;  
+
+ return true;
 }
 
 uint32 U6LList::count()
 {
  uint32 i;
  U6Link *link;
- 
+
  for(i=0,link=head; link != NULL; link=link->next)
   {
    i++;
@@ -185,28 +185,28 @@ uint32 U6LList::count()
 
  return i;
 }
- 
+
  U6Link *U6LList::start()
 {
  cur = head;
- 
+
  return cur;
 }
 
 U6Link *U6LList::end()
 {
  cur = tail;
- 
+
  return cur;
 }
- 
+
 U6Link *U6LList::next()
 {
  if(cur == tail)
    return NULL;
-   
+
  cur = cur->next;
- 
+
  return cur;
 }
 
@@ -214,9 +214,9 @@ U6Link *U6LList::prev()
 {
  if(cur == head)
    return NULL;
-   
+
  cur = cur->prev;
- 
+
  return cur;
 }
 
@@ -224,9 +224,9 @@ U6Link *U6LList::gotoPos(uint32 pos)
 {
  U6Link *link;
  uint32 i;
- 
+
  for(link=head,i=0;link != NULL && i < pos;i++)
    link = link->next;
-   
+
  return link;
 }

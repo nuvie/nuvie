@@ -32,7 +32,7 @@
 #include "Background.h"
 
 Background::Background(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
-{ 
+{
  config = cfg;
  config->value("config/GameType",game_type);
 
@@ -50,7 +50,7 @@ bool Background::init()
  std::string filename;
  U6Lib_n file;
  unsigned char *temp_buf;
-  
+
  switch(game_type)
    {
     case NUVIE_GAME_U6 : config_get_path(config,"paper.bmp",filename);
@@ -59,7 +59,7 @@ bool Background::init()
                            return false;
                          break;
 
-    case NUVIE_GAME_MD : 
+    case NUVIE_GAME_MD :
                          background = new U6Shape();
                          config_get_path(config,"mdscreen.lzc",filename);
                          file.open(filename,4,game_type);
@@ -68,7 +68,7 @@ bool Background::init()
                          free(temp_buf);
                          break;
 
-    case NUVIE_GAME_SE : 
+    case NUVIE_GAME_SE :
                          background = new U6Shape();
                          config_get_path(config,"screen.lzc",filename);
                          file.open(filename,4,game_type);
@@ -80,9 +80,9 @@ bool Background::init()
 
  area.x = 0;
  area.y = 0;
- 
+
  background->get_size(&area.w,&area.h);
- 
+
  return true;
 }
 
@@ -91,7 +91,7 @@ void Background::Display(bool full_redraw)
  if(full_redraw || update_display)
    {
     update_display = false;
-    
+
     if(game_type != NUVIE_GAME_U6)
        screen->clear(area.x,area.y,area.w,area.h,NULL);
 

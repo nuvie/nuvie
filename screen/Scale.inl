@@ -102,12 +102,12 @@ template <class Pixel_type, class Manip_pixels> class Scalers {
 public:
 
 
-/** 
+/**
  ** 2xSaI scaling filter source code adapted for Exult
  ** August 29 2000, originally written in May 1999
  ** by Derek Liauw Kie Fa (DerekL666@yahoo.com/D.A.K.L.LiauwKieFa@student.tudelft.nl)
  ** This source is made available under the terms of the GNU GPL
- ** I'd appreciate it I am given credit in the program or documentation 
+ ** I'd appreciate it I am given credit in the program or documentation
  **/
 
 static inline Pixel_type Interpolate_2xSaI (Pixel_type colorA, Pixel_type colorB)
@@ -155,19 +155,19 @@ static inline int GetResult1(Pixel_type A, Pixel_type B, Pixel_type C, Pixel_typ
 	int r = 0;
 	if (A == C) x+=1; else if (B == C) y+=1;
 	if (A == D) x+=1; else if (B == D) y+=1;
-	if (x <= 1) r+=1; 
+	if (x <= 1) r+=1;
 	if (y <= 1) r-=1;
 	return r;
 }
 
-static inline int GetResult2(Pixel_type A, Pixel_type B, Pixel_type C, Pixel_type D) 
+static inline int GetResult2(Pixel_type A, Pixel_type B, Pixel_type C, Pixel_type D)
 {
-	int x = 0; 
+	int x = 0;
 	int y = 0;
 	int r = 0;
 	if (A == C) x+=1; else if (B == C) y+=1;
 	if (A == D) x+=1; else if (B == D) y+=1;
-	if (x <= 1) r-=1; 
+	if (x <= 1) r-=1;
 	if (y <= 1) r+=1;
 	return r;
 }
@@ -420,7 +420,7 @@ static void Scale_Super2xSaI
     int ybeforelast2 = sheight - 2 - srcy;
     int xbeforelast1 = sline_pixels - 1 - srcx;
     int xbeforelast2 = sline_pixels - 2 - srcx;
-		
+
     for (int y = 0; y < srch; y++)
 	{
 		Pixel_type *bP = srcPtr;
@@ -593,7 +593,7 @@ static void Scale_Super2xSaI
 		}
 		srcPtr += sline_pixels;
 		dstPtr += 2*dline_pixels;
-	}; 
+	};
 }
 
 //
@@ -646,7 +646,7 @@ static void Scale_SuperEagle
     int ybeforelast2 = sheight - 2 - srcy;
     int xbeforelast1 = sline_pixels - 1 - srcx;
     int xbeforelast2 = sline_pixels - 2 - srcx;
-		
+
     for (int y = 0; y < srch; y++)
 	{
 		Pixel_type *bP = srcPtr;
@@ -758,7 +758,7 @@ static void Scale_SuperEagle
                product2b = product1a = color5;
 			   product2b = product1a;
 
- 
+
                if ((colorB1 == color5) ||  (color3 == colorS1))
                {
                    //product1b = INTERPOLATE (color5, color6);
@@ -843,12 +843,12 @@ static void Scale_SuperEagle
 		}
 		srcPtr += sline_pixels;
 		dstPtr += 2*dline_pixels;
-	}; 
+	};
 }
 
 
 
-/** 
+/**
  ** End of 2xSaI code
  **/
 
@@ -927,17 +927,17 @@ static void Scale_Scale2x
 				dest0[0] = src0[0];
 			else
 				dest0[0] = src1[0];
-			if (src1[1] == src0[0] && src2[0] != src0[0] && 
+			if (src1[1] == src0[0] && src2[0] != src0[0] &&
 			    src1[-1] != src0[0])
 				dest0[1] = src0[0];
 			else
 				dest0[1] = src1[0];
-			if (src1[-1] == src2[0] && src0[0] != src2[0] && 
+			if (src1[-1] == src2[0] && src0[0] != src2[0] &&
 			    src1[1] != src2[0])
 				dest1[0] = src2[0];
 			else
 				dest1[0] = src1[0];
-			if (src1[1] == src2[0] && src0[0] != src2[0] && 
+			if (src1[1] == src2[0] && src0[0] != src2[0] &&
 			    src1[-1] != src2[0])
 				dest1[1] = src2[0];
 			else
@@ -1055,7 +1055,7 @@ static void Scale_Bilinear
 		Pixel_type *to_orig = to;
 
 		if (y+1 < sheight)
-			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next, 
+			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next,
 						 srcw+1);
 		else
 			fill_rgb_row(from, from_width, rgb_row_next, srcw+1);
@@ -1237,7 +1237,7 @@ static void Scale_BilinearHalfInterlaced
 		Pixel_type *to_orig = to;
 
 		if (y+1 < sheight)
-			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next, 
+			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next,
 						 srcw+1);
 		else
 			fill_rgb_row(from, from_width, rgb_row_next, srcw+1);
@@ -1346,7 +1346,7 @@ static void Scale_BilinearQuarterInterlaced
 		Pixel_type *to_orig = to;
 
 		if (y+1 < sheight)
-			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next, 
+			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next,
 						 srcw+1);
 		else
 			fill_rgb_row(from, from_width, rgb_row_next, srcw+1);
@@ -1461,7 +1461,7 @@ static void Scale_BilinearPlus
 		Pixel_type *to_orig = to;
 
 		if (y+1 < sheight)
-			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next, 
+			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next,
 						 srcw+1);
 		else
 			fill_rgb_row(from, from_width, rgb_row_next, srcw+1);
@@ -1591,7 +1591,7 @@ static void Scale_point
 			limit_x += sline_pixels;
 			source += add_src;
 		}
-	} 
+	}
 	// Slightly Optimzed 32 bit 2x
 	else if (factor == 2) {
 		Pixel_type data;
@@ -1615,8 +1615,8 @@ static void Scale_point
 			limit_x += sline_pixels;
 			source += add_src;
 		}
-	} 
-	else 
+	}
+	else
 	{
 		Pixel_type data;
 		static unsigned int src_sub;
@@ -1700,7 +1700,7 @@ static void Scale_interlaced
 			limit_x += sline_pixels;
 			source += add_src;
 		}
-	} 
+	}
 	// Slightly Optimzed 32 bit 2x
 	else if (factor == 2) {
 		Pixel_type data;
@@ -1719,8 +1719,8 @@ static void Scale_interlaced
 			limit_x += sline_pixels;
 			source += add_src;
 		}
-	} 
-	else 
+	}
+	else
 	{
 		Pixel_type data;
 		static unsigned int src_sub;
@@ -1806,7 +1806,7 @@ void BlurFilter
     +--+--+
 	| 1| 1|
     +--+--+
-	
+
 	Top/Bottom Edge Pixel
     +--+--+--+
 	| 1| 2| 1|
@@ -1834,7 +1834,7 @@ void BlurFilter
 	const bool last_col = srcx+srcw == swidth;
 
 	// Pointers to end of source, and start of last line
-	const Pixel_type *last = source + (srcy+sheight-1)*spitch;		
+	const Pixel_type *last = source + (srcy+sheight-1)*spitch;
 	const Pixel_type *end = source + (srcy+srch-1)*spitch+ srcx+srcw;
 
 	// Pointer to the end of the line
@@ -1852,7 +1852,7 @@ void BlurFilter
 	COMPONENT ab;
 
 	// Point buffers to first pixel
-	const Pixel_type *sourceP = source + (srcy-1)*spitch + srcx;	// Previous line			
+	const Pixel_type *sourceP = source + (srcy-1)*spitch + srcx;	// Previous line
 	const Pixel_type *sourceN = source + (srcy+1)*spitch + srcx;	// Next line
 	source += srcy*spitch + srcx;
 	dest += srcy*dpitch + srcx;
@@ -2001,7 +2001,7 @@ void Rotator
 	const int spitch,				// Pixels/line for source.
 	Pixel_type *dest,				// ->dest pixels.
 	const int dincx,				// Amount to increment for each x pixel (can be negetive)
-	const int dincy					// Pixels/line for dest. (amount to increment for each y pixel) 
+	const int dincy					// Pixels/line for dest. (amount to increment for each y pixel)
 	)
 {
 

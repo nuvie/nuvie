@@ -137,7 +137,7 @@ bool Configuration::set(std::string key, std::string value)
 	for (std::vector<XMLTree*>::reverse_iterator i = trees.rbegin();
 		 i != trees.rend(); ++i)
 	{
-		if (!((*i)->isReadonly()) && 
+		if (!((*i)->isReadonly()) &&
 			(*i)->checkRoot(key))
 		{
 			(*i)->set(key, value);
@@ -165,7 +165,7 @@ bool Configuration::set(std::string key, int value)
 	for (std::vector<XMLTree*>::reverse_iterator i = trees.rbegin();
 		 i != trees.rend(); ++i)
 	{
-		if (!((*i)->isReadonly()) && 
+		if (!((*i)->isReadonly()) &&
 			(*i)->checkRoot(key))
 		{
 			(*i)->set(key, value);
@@ -185,7 +185,7 @@ bool Configuration::set(std::string key, bool value)
 	for (std::vector<XMLTree*>::reverse_iterator i = trees.rbegin();
 		 i != trees.rend(); ++i)
 	{
-		if (!((*i)->isReadonly()) && 
+		if (!((*i)->isReadonly()) &&
 			(*i)->checkRoot(key))
 		{
 			(*i)->set(key, value);

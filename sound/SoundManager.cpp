@@ -46,11 +46,11 @@ SoundManager::SoundManager ()
 {
   m_pCurrentSong = NULL;
   g_MusicFinished = true;
-  
+
   audio_enabled = false;
   music_enabled = false;
   sfx_enabled = false;
-  
+
   opl = NULL;
 }
 
@@ -89,7 +89,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
       sfx_enabled = false;
       return false;
      }
-  
+
   m_Config->value ("config/audio/enable_music", music_enabled, true);
   m_Config->value ("config/audio/enable_sfx", sfx_enabled, true);
 
@@ -100,7 +100,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
   sound_dir_key = config_get_game_key(config);
   sound_dir_key.append("/sounddir");
   config->value (sound_dir_key, sound_dir, "");
-  
+
   if(!initAudio ())
     {
      return false;
@@ -146,18 +146,18 @@ bool SoundManager::initAudio ()
     return false;
   }
   Mix_HookMusicFinished (musicFinished);
-  
+
   opl = new CEmuopl(audio_rate, true, true); // 16bit stereo
-  
+
   return true;
 }
 
 bool SoundManager::LoadNativeU6Songs()
 {
  Song *song;
- 
+
  string filename;
- 
+
  config_get_path(m_Config, "brit.m", filename);
  song = new SongAdPlug(opl);
  loadSong(song, filename.c_str());
@@ -197,7 +197,7 @@ bool SoundManager::LoadNativeU6Songs()
  song = new SongAdPlug(opl);
  loadSong(song, filename.c_str());
  groupAddSong("dungeon", song);
- 
+
  return true;
 }
 
@@ -211,14 +211,14 @@ bool SoundManager::LoadCustomSongs (string sound_dir)
   Song *song;
   std::string scriptname;
   std::string filename;
-  
+
   build_path(sound_dir, "music.cfg", scriptname);
-  
+
   if(niof.open (scriptname) == false)
     return false;
 
   sz = (char *)niof.readAll();
-  
+
   if(sz == NULL)
     return false;
 
@@ -226,7 +226,7 @@ bool SoundManager::LoadCustomSongs (string sound_dir)
   for( ; (token1 != NULL) && ((token2 = strtok(NULL, seps)) != NULL) ; token1 = strtok(NULL, seps))
     {
       build_path(sound_dir, token2, filename);
-      
+
       song = (Song *)SongExists(token2);
       if(song == NULL)
         {
@@ -240,7 +240,7 @@ bool SoundManager::LoadCustomSongs (string sound_dir)
     }
 
   free(sz);
-  
+
   return true;
 }
 
@@ -292,16 +292,16 @@ bool SoundManager::LoadObjectSamples (string sound_dir)
   char *sz;
   string samplename;
   string scriptname;
-  
+
   build_path(sound_dir, "obj_samples.cfg", scriptname);
-  
+
   if(niof.open (scriptname) == false)
     return false;
 
   sz = (char *) niof.readAll ();
 
   token1 = strtok (sz, seps);
-  
+
   while ((token1 != NULL) && ((token2 = strtok (NULL, seps)) != NULL))
     {
       int id = atoi (token1);
@@ -318,7 +318,7 @@ bool SoundManager::LoadObjectSamples (string sound_dir)
               printf ("could not load %s\n", samplename.c_str ());
             }
           ps = s;
-          m_Samples.push_back (ps);     //add it to our global list 
+          m_Samples.push_back (ps);     //add it to our global list
         }
       if (ps != NULL)
         {                       //we have a valid sound
@@ -351,9 +351,9 @@ bool SoundManager::LoadTileSamples (string sound_dir)
   char *sz;
   string samplename;
   string scriptname;
-  
+
   build_path(sound_dir, "tile_samples.cfg", scriptname);
-  
+
   if(niof.open (scriptname) == false)
     {
      printf("Error: opening %s\n",scriptname.c_str());
@@ -380,7 +380,7 @@ bool SoundManager::LoadTileSamples (string sound_dir)
               printf ("could not load %s\n", samplename.c_str ());
             }
           ps = s;
-          m_Samples.push_back (ps);     //add it to our global list 
+          m_Samples.push_back (ps);     //add it to our global list
         }
       if (ps != NULL)
         {                       //we have a valid sound
@@ -431,23 +431,23 @@ void SoundManager::musicPlay()
         }
 
 }
-    
+
 void SoundManager::update_map_sfx ()
 {
   unsigned int i;
   uint16 x, y;
   uint8 l;
-  
+
   if(sfx_enabled == false)
     return;
 
   string next_group = "";
   Player *p = Game::get_game ()->get_player ();
   MapWindow *mw = Game::get_game ()->get_map_window ();
-  
+
   vector < Sound * >currentlyActiveSounds;
   map < Sound *, float >volumeLevels;
-  
+
   p->get_location (&x, &y, &l);
 
   //m_ViewableTiles

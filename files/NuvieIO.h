@@ -30,14 +30,14 @@ class NuvieIO
  protected:
  uint32 size;
  uint32 pos;
- 
+
  public:
- 
+
    NuvieIO();
    virtual ~NuvieIO();
-   
+
    virtual void close() { size=0; pos = 0; };
-  
+
    virtual uint8 read1() { return 0; };
    virtual uint16 read2() { return 0; };
    virtual uint32 read4() { return 0; };
@@ -52,14 +52,14 @@ class NuvieIO
    virtual bool write4(uint32 src) { return false; };
    virtual uint32 writeBuf(unsigned char *src, uint32 src_size) { return 0; };
    virtual uint32 write(NuvieIO *src) { return 0; };
-   
+
    uint32 get_size() { return size; };
 
 
    inline void seekStart() { seek(0); };
    inline void seekEnd() { seek(size); };
    virtual void seek(uint32 new_pos)=0;
-   
+
    inline bool is_end() { return (pos == size - 1); };
    uint32 position() { return pos; };
 };
@@ -71,24 +71,24 @@ class NuvieIO
 class NuvieIOBuffer: public NuvieIO
 {
  protected:
- 
+
  unsigned char *data;
  bool copied_data;
- 
+
  public:
    NuvieIOBuffer();
- 
+
    bool open(unsigned char *buf, uint32 buf_size, bool copy_buf=NUVIE_BUF_COPY);
-   
+
    void close();
-   
+
    unsigned char *get_raw_data() { return data; }; //hehe evil
-   
+
    uint8 read1();
    uint16 read2();
    uint32 read4();
    bool readToBuf(unsigned char *buf, uint32 buf_size);
-   
+
    bool write1(uint8 src);
    bool write2(uint16 src);
    bool write4(uint32 src);

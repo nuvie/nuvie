@@ -41,15 +41,15 @@
 	* Fixed up some paths added WIN32 \ delimiter into more paths.
 	* Added save description field into save game. Note this isn't editable
 	  yet.
-	* NOTE! please delete any existing savegames before running this 
-	  version. As the savefile structure has changed. I'll add a save 
+	* NOTE! please delete any existing savegames before running this
+	  version. As the savefile structure has changed. I'll add a save
 	  version check some time in the future. ;-)
 	* There is a bug when selecting the top slot in the save dialog
 	  scroller widget. I'll look at this soon.
 
 2004-06-14  Eric Fry <efry at users.sourceforge.net>
-	* Partial fix for bug [ 932493 ] Can get some objects "Not possible" 
-	  to get. It is nolonger possible to get sundials or drawers. 
+	* Partial fix for bug [ 932493 ] Can get some objects "Not possible"
+	  to get. It is nolonger possible to get sundials or drawers.
 	  Objects with a weight of 25.5 stones aren't gettable. It is
 	  however still possible to get the dragon parts in the museum. :(
 	* ObjManager::get_obj_weight() now checks if an object is stackable
@@ -91,27 +91,27 @@
 	  a new save while in ship to test this.
 
 2004-05-31  Jonathan Wright <nelno at nelno.com>
-    * Fixed compilation error in MapWindow.h (wx defined twice in 
+    * Fixed compilation error in MapWindow.h (wx defined twice in
       get_movement_direction)
     * fixed Win32 uninitialized variable warning in MsgScroll::Display () in
       MessageScroll.cpp.
     * fixed Win32 uninitialized variable warning in MsgScroll::MsgScroll.
     * in AnimManager.cpp, fixed some cases where unary minus was being
       used on unsigned integers.
-    * added <save_dir> section to nuvie.cfg.sample.    
+    * added <save_dir> section to nuvie.cfg.sample.
     * changed NUVIE_PATH_DELIMITER to '/' for WIN32.  As far as I know, WIN32
-      file io functions work perfectly well with '/' instead of '\', unless 
-      memory fails me and Win95 didn't like this.  I noticed the path delimiters 
+      file io functions work perfectly well with '/' instead of '\', unless
+      memory fails me and Win95 didn't like this.  I noticed the path delimiters
       in nuvie.cfg were all '/' and they never get converted anyway, so if '/'
       didn't work, everything would already be failing to load on Win32.
-    * in SaveManager.cpp, made it auto-create the save game directory if it 
+    * in SaveManager.cpp, made it auto-create the save game directory if it
       doesn't exist, instead of failing.
     * commented out code that fills in all empty save slots with "New save."
-      Just seemed less confusing and aesthetically more pleasing to have that 
+      Just seemed less confusing and aesthetically more pleasing to have that
       only in the first slot.
-    * Added custom implementations for opendir, closedir and readdir on Win32 
+    * Added custom implementations for opendir, closedir and readdir on Win32
       in dirent.h and dirent.cpp in visualc7 directory.
-    
+
 2004-05-31  Eric Fry <efry at users.sourceforge.net>
 	* You can save and load from the slots in the save dialog now. :)
 	  I'll have to test this some more. I've used opendir/ readdir
@@ -254,14 +254,14 @@
 2004-05-19  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a buffer overrun bug in MapWindow::look().
 	  Coords where being passed in map format when look() required
-	  coords in MapWindow format. This was overreading the 
+	  coords in MapWindow format. This was overreading the
 	  tmp_map_buf which was leading to strange results when looking at
 	  things on the map.
 	* Added ObjManager::set_obj_tile_num() in attempt to hide egg objects
 	  on the map. I'm not too sure if we'll end up going this way.
 
 2004-05-18  Eric Fry <efry at users.sourceforge.net>
-	* ObjManager: Split the main surface object index into 64 smaller 
+	* ObjManager: Split the main surface object index into 64 smaller
 	  chunk indexes. This should help with saving.
 	* Added SaveSlot class. This is the save data widget in the SaveDialog.
 
@@ -303,7 +303,7 @@
 	* New methods ObjManager::get_obj_from_stack() and
 	  UseCode::destroy_obj().
 	* Fixed a crash when eating food by double-clicking it.
-        
+
 2004-04-07  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Inventory: The prompt is now displayed after using or looking at any
 	  object in the inventory, using keyboard or mouse.
@@ -313,18 +313,18 @@
 
 2004-04-05  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed bug where you couldn't enter a moongate to the left or right
-	  of the Avatar (which doesn't go anywhere). [ 916717 ] 
+	  of the Avatar (which doesn't go anywhere). [ 916717 ]
 	* Shrines should now correctly check your experience before raising your
 	  level. [ 903773 ]
 
 2004-04-04  Eric Fry <efry at users.sourceforge.net>
-	* Added GUI_Dialog class. I forgot to add GUI_Dialog class in 
+	* Added GUI_Dialog class. I forgot to add GUI_Dialog class in
 	  yesterdays update.
-	  
+
 2004-04-03  Eric Fry <efry at users.sourceforge.net>
-	* Renamed sound/adplug/player.cpp|h files to 
+	* Renamed sound/adplug/player.cpp|h files to
 	  sound/adplug/adplug_player.cpp|h This should fix a compiler
-	  filename clash when building Nuvie using the autoconf build 
+	  filename clash when building Nuvie using the autoconf build
 	  environment under Mac OS X.
 	* Added config variable to GUI class.
 	* Added GUI::get_data_dir() This method retrieves the datadir
@@ -356,18 +356,18 @@
 2004-03-15  Eric Fry <efry at users.sourceforge.net>
 	* Fixed Escape. Escape now skips a turn. Pass!
 	* Added use:fan. This just prints "You feel a breeze." at the moment.
-	  It should change the wind direction. When we implement wind that 
+	  It should change the wind direction. When we implement wind that
 	  is. ;-)
 	* Renamed variable can_twitch to can_move in the Actor class.
 	* Fixed small glitch in the new schedule loading code. Lord British's
 	  schedule entries weren't being loaded.
-	* Added an Actor 'tile style' enum to U6ActorTypes. This is either 
+	* Added an Actor 'tile style' enum to U6ActorTypes. This is either
 	  single, double, quad, or multitile.
 	* Fixed an issue with actors standing on their seats when loading the
 	  savegame data.
 	* Added U6 Actor alignment enum type. This isn't used yet.
-	* Fixed bug with gargoyle and cyclops Actors not loading with the 
-	  correct frame_n. [ 886425 ] "Actors don't collect all their tiles 
+	* Fixed bug with gargoyle and cyclops Actors not loading with the
+	  correct frame_n. [ 886425 ] "Actors don't collect all their tiles
 	  immediately".
 
 2004-03-14  Eric Fry <efry at users.sourceforge.net>
@@ -375,7 +375,7 @@
 	  any music file supported by SDL_Mixer. We should really write some
 	  docs for all this stuff. ;)
 	* Incorporated Marc Winterrowd's schedule loading patch. This patch
-	  fixes an over run bug in the Actor schedule loading code. 
+	  fixes an over run bug in the Actor schedule loading code.
 	* The Nuvie project is one year old today!
 
 2004-03-11  Eric Fry <efry at users.sourceforge.net>
@@ -385,7 +385,7 @@
 	* Changed some #include <SDL.h> statements to "SDL.h".
 
 2004-03-10  Eric Fry <efry at users.sourceforge.net>
-	* Removed SDL_Init(SDL_INIT_AUDIO) from SoundManager and replaced with 
+	* Removed SDL_Init(SDL_INIT_AUDIO) from SoundManager and replaced with
 	  SDL_InitSubSystem (SDL_INIT_AUDIO)
 
 2004-03-09  Eric Fry <efry at users.sourceforge.net>
@@ -394,18 +394,18 @@
 	  with 1 clear call.
 
 2004-03-07  Eric Fry <efry at users.sourceforge.net>
-	* Added more audio config options. You can now selectively turn off 
+	* Added more audio config options. You can now selectively turn off
 	  music & sound effects.
-	* Added enable_cursors config option. You can now enable/disable mouse 
+	* Added enable_cursors config option. You can now enable/disable mouse
 	  cursors.
 
 2004-03-03  Eric Fry <efry at users.sourceforge.net>
 	* A small fix to get music working on win32.
 
 2004-03-02  Eric Fry <efry at users.sourceforge.net>
-	* Music should play at the correct times in U6. Hornpipe.m when you use 
+	* Music should play at the correct times in U6. Hornpipe.m when you use
 	  a boat, Engage.m when you are in combat mode etc.
-	* Fixed a small lockup when not entering any values for alt-214 
+	* Fixed a small lockup when not entering any values for alt-214
 	  teleport cheat.
 
 2004-02-28  Eric Fry <efry at users.sourceforge.net>
@@ -485,10 +485,10 @@
 2004-02-12  Eric Fry <efry at users.sourceforge.net>
 	* Added a striped down version of AdPlug into nuvie.
 	* Added an audio config section.
-	* It is possible to play the original ultima6 .m adlib music tracks 
+	* It is possible to play the original ultima6 .m adlib music tracks
 	  in Nuvie.
-	  
-	  Note! you will have to add entries into a song.cfg file in the 
+
+	  Note! you will have to add entries into a song.cfg file in the
 	  sounddir directory. I'll add proper support for native song files
 	  soon.
 	  The song.cfg file should look somthing like this.
@@ -500,23 +500,23 @@
 	  Random;/fullpath_to_u6/STONES.M;
 	  Dungeon;/fullpath_to_u6/DUNGEON.M;
 	  Gargoyle;/fullpath_to_u6/GARGOYLE.M;
- 
+
 2004-02-07  Jonathan Wright <nelno at nelno.com>
-    * Lots of little changes for VisualC7 and MSCV 6 build: 
+    * Lots of little changes for VisualC7 and MSCV 6 build:
       - added #pragma warning for forcing value to bool (got this a
         lot in .NET compiles, but it's only a minor performance warning from
         mixing bool and int)
       - Added new include directories for sound and fonts
-      - changed some while (1) to for ( ; ; ) so that some "conditional 
+      - changed some while (1) to for ( ; ; ) so that some "conditional
         expression is constant warnings" go away in MS VC builds.
       - added assignment operator to ConfigNode to fix warning "assignment
         operator cound not be generated" in VC 6 and VC 7.
       - added roundf (float f) functions.  VC 6 and 7 don't define this in
         math.h (C99 standard only?)
-      - fixed warning for potential use of uninitialized variable (pW) in 
+      - fixed warning for potential use of uninitialized variable (pW) in
         U6lzw.cpp (looked to me like this would be a problem with any properly
         formatted file, though).
-    
+
 2004-02-07  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* sounds/*: fixed include case and added endlines at end of file
 	* configure.ac: added check for SDL_mixer
@@ -554,7 +554,7 @@
  	* Fixed InventoryWidget bug [ 881842 ] where every inventory slot
 	  displayed the empty slot tile.
 	* Fixed leak when viewing temp actor portraits.
-	* Eggs now spawn on load / level change. 
+	* Eggs now spawn on load / level change.
 
 2004-01-30  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added ability to MOVE actors (with the keyboard).
@@ -649,7 +649,7 @@
 	  (everything needs more testing)
 
 2004-01-20  Eric Fry <efry at users.sourceforge.net>
-	* Moved egg spawning code into its own method 
+	* Moved egg spawning code into its own method
 	  spawn_egg(Obj *egg, uint8 hatch_probability);
 	* Changed the container logic again. It turns out that x is always used
 	  to find the container. But if the objblk_n > 1024 then you must add
@@ -759,28 +759,28 @@
 	* Event: Fixed the "Look" event. It now says "They weigh" when looking
 	  at an item with a quantity > 1.
 	* U6Actor: Added dragon actors. I've also started Hydra support.
- 
+
 2003-12-25  Eric Fry <efry at users.sourceforge.net>
 	* Some fixes for object weight. Inventory weight should be closer to the
 	  original now.
-	
+
 2003-12-25  Eric Fry <efry at users.sourceforge.net>
 	* Fixed an issue with containers. [ 864087 ] There are some comtainer
 	  objects that don't reference their container through the x variable.
 	  They seem to follow the container object in the objblk files. They
 	  also appear to have a positive > 0 value for y.
-	  I think their might still be some issues with calculating inventory 
+	  I think their might still be some issues with calculating inventory
 	  weight.
 
 2003-12-21  Eric Fry <efry at users.sourceforge.net>
-	* Fixed inventory display order. Nuvie was displaying the inventory 
+	* Fixed inventory display order. Nuvie was displaying the inventory
 	  list in reverse order. Thanks to Dominus for spotting that one.
 
 2003-12-20  Eric Fry <efry at users.sourceforge.net>
 	* Work on horse usecode. Temporary Actors are used correctly when
 	  mounting/dismounting horses.
 	* The player can no longer use character horses eg Iolo's horse.
- 
+
 2003-12-14  Eric Fry <efry at users.sourceforge.net>
 	* Fixed walk on pedastal bug. [ 791146 ]
 	* Fixed lockup when walking to the top or left of the map. This only
@@ -792,7 +792,7 @@
 2003-12-10  Eric Fry <efry at users.sourceforge.net>
 	* Added proper worktype for cows and horses. They keep within the fenced
 	  areas now.
-	* Some minor tweeks for multi-tile actors. 
+	* Some minor tweeks for multi-tile actors.
 	* Note! I've got a crash when I create two multi-tile
 	  actors on the same spot. eg over an egg. I haven't tracked down
 	  what's causing this crash yet. :(
@@ -801,7 +801,7 @@
 	* Added egg support. Eggs now spawn Actors as you pass them by. :)
 	  I've still got a bit to do on this. Eggs need to throw their contents
 	  around the map. At the moment Actors are all spawning on top of their
-	  egg. This is causing some problems for multi-tile actors. I'll fix 
+	  egg. This is causing some problems for multi-tile actors. I'll fix
 	  this soon. I've also got to handle the creation of non Actor objects.
 	  This includes Reagents.
 	* Added temp actor mangagement. Added the ability to create temp actors.
@@ -894,21 +894,21 @@
 
 2003-11-26  Eric Fry <efry at users.sourceforge.net>
 	* Light globes are now not drawn for blacked out objects.
-	
+
 2003-11-25  Jonathan E. Wright <nelno at users.sourceforge.net>
 	* Fixed VS .NET build to work with alpha blended darkness.
 	* Fixed MSVC 6 build to work with alpha blended darkness.
-	* Just found this file and realized what Eric meant by "update the 
+	* Just found this file and realized what Eric meant by "update the
 	  change log"... I thought you meant the change log in CVS.  Sorry. :)
-	  
+
 2003-11-25  Eric Fry <efry at users.sourceforge.net>
-	* Added Sam Matthew's Alpha blended darkness. :-) This is still a 
+	* Added Sam Matthew's Alpha blended darkness. :-) This is still a
 	  little rough around the edges but it is looking really nice!
 	* Fixed the palette rotation. It was rotating the wrong way.
 
 2003-11-24  Eric Fry <efry at users.sourceforge.net>
 	* Added Pieter Luteijn's Use orb code.
-	* A small OS X compile fix. Added #ifdef check for _MSC_VER in 
+	* A small OS X compile fix. Added #ifdef check for _MSC_VER in
 	  nuvieDefs.h
 
 2003-11-23  Jonathan E. Wright <nelno at users.sourceforge.net>
@@ -932,7 +932,7 @@
 2003-11-15  Eric Fry <efry at users.sourceforge.net>
 	* Fixed crash when entering caves on the gargoyle plane.
 	* Added usecode for entering the red moongates.
-	  It isn't currently possible to create moongates. As we need to 
+	  It isn't currently possible to create moongates. As we need to
 	  overhaul the Event system.
 	  We also need to fix TimedPartyMove::timed so we can use the moongate
 	  to travel to a destination on the same plane. At the moment you
@@ -1026,18 +1026,18 @@
 2003-10-06  Eric Fry <efry at users.sourceforge.net>
 	* More work on multi-tile actors.
 	* Added different movetypes for actors.
-	* Added support for ships and skiffs. They can't be used yet 
+	* Added support for ships and skiffs. They can't be used yet
 	  but it's a start. :)
 
 2003-10-05  Eric Fry <efry at users.sourceforge.net>
-	* Moved Actor walk info into a table. Most Actor types should move 
+	* Moved Actor walk info into a table. Most Actor types should move
 	  around correctly now. This should fix the Sherry bug. [ 716209 ]
 	* Added some object printing routines.
 
 2003-09-16  Eric Fry <efry at users.sourceforge.net>
 	* Quantities are only displayed for stackable items in InventoryWidget.
           Note I have still got to implement U6 key display eg 'A', 'B' etc.
-	* Pressing the window manager's [X] button now brings up the 
+	* Pressing the window manager's [X] button now brings up the
           quit dialog.
 
 2003-09-14  Joseph Applegate <sb-x at users.sourceforge.net>
@@ -1057,7 +1057,7 @@
 
 2003-09-13  Eric Fry <efry at users.sourceforge.net>
 	* Fixed wall reshaping bug with cookfires.
-	* Partial fix for runic signs. This will not work with multi-line 
+	* Partial fix for runic signs. This will not work with multi-line
           message strings. I'll fix that soon.
 
 2003-09-11  Eric Fry <efry at users.sourceforge.net>
@@ -1112,9 +1112,9 @@
 	* It is now possible to ready/unready items by clicking or dragging.
 
 2003-09-04  Eric Fry <efry at users.sourceforge.net>
-	* Drag and Drop support added. You can now drag objects from the 
+	* Drag and Drop support added. You can now drag objects from the
 	  inventory to the map. :)
-	* New classes added GUI_DragManager, GUI_DragArea, 
+	* New classes added GUI_DragManager, GUI_DragArea,
 	  DollWidget & InventoryWidget.
 
 2003-08-31  Eric Fry <efry at users.sourceforge.net>
@@ -1138,7 +1138,7 @@
 	* The left and right arrow buttons now change the inventory view.
 	* Stubs added for the other inventory buttons.
 	* Fixed placement bug when re-adding an existing widget.
-	* Screen: added method to generate an SDL_Surface for a given 8bit 
+	* Screen: added method to generate an SDL_Surface for a given 8bit
           image buffer.
 
 2003-08-18  Eric Fry <efry at users.sourceforge.net>
@@ -1264,7 +1264,7 @@
 	  lower tile flag when rendering.
 
 2003-07-05  Eric Fry <efry at users.sourceforge.net>
-	* Fixed typo in Project Builder project name. Most source files were 
+	* Fixed typo in Project Builder project name. Most source files were
 	  titled "Nuive" instead of "Nuvie". Thanks to Pieter Luteijn for
 	  spotting that one. ;)
 	* Nuvie now uses new NuvieIOFile classes for file access.

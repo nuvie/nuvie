@@ -37,13 +37,13 @@ class Party;
 class Actor;
 
 class PortraitView : public View {
- 
+
  uint8 cur_actor_num;
  Portrait *portrait;
  std::string *name_string;
- 
+
  unsigned char *portrait_data;
- 
+
  bool waiting; // waiting for input, then will return to previous view
  bool show_cursor; // indicate waiting for input
 // uint16 cursor_x, cursor_y;
@@ -51,7 +51,7 @@ class PortraitView : public View {
  public:
  PortraitView(Configuration *cfg);
  ~PortraitView();
- 
+
  bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
  void Display(bool full_redraw);
  GUI_status HandleEvent(const SDL_Event *event);
@@ -62,9 +62,9 @@ class PortraitView : public View {
  bool get_waiting()     { return(waiting); }
 
  protected:
- 
+
  void display_name();
- 
+
 };
 
 #endif /* __PortraitView_h__ */

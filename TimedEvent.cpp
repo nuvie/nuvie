@@ -58,7 +58,7 @@ void TimeQueue::add_timer(TimedEvent *tevent)
 }
 
 
-/* Remove timed event from queue. 
+/* Remove timed event from queue.
  */
 void TimeQueue::remove_timer(TimedEvent *tevent)
 {

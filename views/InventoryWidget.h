@@ -33,29 +33,29 @@ class Actor;
 class Text;
 
 class InventoryWidget : public GUI_Widget {
- 
+
  Configuration *config;
- 
+
  TileManager *tile_manager;
  ObjManager *obj_manager;
  Text *text;
- 
+
  Actor *actor;
  Obj *container_obj;
- 
+
  Obj *selected_obj, *target_obj, *ready_obj;
  uint16 row_offset;
- 
+
  public:
  InventoryWidget(Configuration *cfg);
  ~InventoryWidget();
- 
+
  bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
  void set_actor(Actor *a);
  Actor *get_actor() { return(actor); }
  void set_container(Obj *obj) { container_obj = obj; Redraw(); }
  void Display(bool full_redraw);
- 
+
  virtual GUI_status MouseDown(int x, int y, int button);
  virtual GUI_status MouseUp(int x,int y,int button);
  virtual GUI_status MouseMotion(int x,int y,Uint8 state);

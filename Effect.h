@@ -151,7 +151,7 @@ class UseCodeExplosiveEffect : public ExplosiveEffect
 {
      Obj *obj; // explosion came from this object (can be NULL)
      Obj *original_obj; // don't hit this object (chain-reaction avoidance hack)
-     
+
  public:
     UseCodeExplosiveEffect(Obj *src_obj, uint16 x, uint16 y, uint32 size, uint16 dmg = 0, Obj *dont_hit_me = NULL)
                           : ExplosiveEffect(x, y, size, dmg), obj(src_obj), original_obj(dont_hit_me)
@@ -161,7 +161,7 @@ class UseCodeExplosiveEffect : public ExplosiveEffect
     bool hit_object(Obj *hit_obj); // explosion hit something
 
 
-     
+
 };
 
 

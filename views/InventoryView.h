@@ -37,7 +37,7 @@ class DollWidget;
 class InventoryWidget;
 
 class InventoryView : public View {
- 
+
  DollWidget *doll_widget;
  InventoryWidget *inventory_widget;
 
@@ -54,13 +54,13 @@ class InventoryView : public View {
     uint8 x, y; // y is only used for inventory list
     uint32 px, py;
  } cursor_pos;
- Tile *cursor_tile; 
+ Tile *cursor_tile;
  bool show_cursor;
 
  public:
  InventoryView(Configuration *cfg);
  ~InventoryView();
- 
+
  bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
  bool set_party_member(uint8 party_member);
  void set_show_cursor(bool state) { show_cursor = state; update_display = true; }

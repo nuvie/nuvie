@@ -41,7 +41,7 @@ ViewManager::ViewManager(Configuration *cfg)
  config->value("config/GameType",game_type);
  current_view = NULL;
 }
- 
+
 ViewManager::~ViewManager()
 {
  // only delete the views that are not currently active
@@ -61,18 +61,18 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
 
  actor_view = new ActorView(config);
  actor_view->init(gui->get_screen(), this, 176,8, text, party, tile_manager, obj_manager, portrait);
- 
+
  inventory_view = new InventoryView(config);
  inventory_view->init(gui->get_screen(), this, 176,8, text, party, tile_manager, obj_manager);
- 
+
  party_view = new PartyView(config);
  party_view->init(this,176,8, text, party, player, tile_manager, obj_manager);
 
  portrait_view = new PortraitView(config);
  portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);
- 
+
  set_current_view((View *)inventory_view);
- 
+
  return true;
 }
 
@@ -80,21 +80,21 @@ void ViewManager::reload()
 {
  actor_view->set_party_member(0);
  inventory_view->set_party_member(0);
- 
+
  set_current_view((View *)inventory_view);
 }
 
 bool ViewManager::set_current_view(View *view)
 {
  uint8 cur_party_member;
- 
+
  //actor_view->set_party_member(cur_party_member);
  if(view == NULL || game_type != NUVIE_GAME_U6) //HACK! remove this when views support MD and SE
    return false;
 
  if(current_view == view) // nothing to do if view is already the current_view.
    return false;
-   
+
  if(current_view != NULL)
    {
     gui->removeWidget((GUI_Widget *)current_view);//remove current widget from gui
@@ -105,12 +105,12 @@ bool ViewManager::set_current_view(View *view)
         view->set_party_member(cur_party_member);
        }
    }
-   
+
  current_view = view;
  gui->AddWidget((GUI_Widget *)view);
- 
+
  view->Redraw();
- 
+
  return true;
 }
 
@@ -145,7 +145,7 @@ void ViewManager::set_party_mode()
 void ViewManager::set_actor_mode()
 {
 
- 
+
  set_current_view((View *)actor_view);
 }
 
@@ -155,32 +155,32 @@ void ViewManager::set_actor_mode()
 GUI_status partyViewButtonCallback(void *data)
 {
  ViewManager *view_manager;
- 
+
  view_manager = (ViewManager *)data;
- 
+
  view_manager->set_party_mode();
-  
+
  return GUI_YUM;
 }
 
 GUI_status actorViewButtonCallback(void *data)
 {
  ViewManager *view_manager;
- 
+
  view_manager = (ViewManager *)data;
- 
+
  view_manager->set_actor_mode();
-  
+
  return GUI_YUM;
 }
 
 GUI_status inventoryViewButtonCallback(void *data)
 {
  ViewManager *view_manager;
- 
+
  view_manager = (ViewManager *)data;
- 
+
  view_manager->set_inventory_mode();
-  
+
  return GUI_YUM;
 }

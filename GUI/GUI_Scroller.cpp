@@ -43,7 +43,7 @@ GUI_Scroller::GUI_Scroller(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b
     num_rows = 0;
     disp_offset = 0;
     scroll_bar = new GUI_ScrollBar(area.w - SCROLLBAR_WIDTH, 0, area.h, (GUI_CallBack *)this);
-    
+
     GUI_Widget::AddWidget(scroll_bar); // we call the GUI_Widget::AddWidget method our method is for scroller container items.
 }
 
@@ -59,7 +59,7 @@ int GUI_Scroller::AddWidget(GUI_Widget *widget)
  GUI_Widget::AddWidget(widget);
  num_rows++;
  update_viewport(true);
- 
+
  return 0;
 }
 
@@ -75,20 +75,20 @@ void GUI_Scroller::update_viewport(bool update_slider)
  uint16 i;
  float s_len = 1.0;
  float s_pos = 0.0;
- 
+
  if(update_slider)
   {
    if(rows_per_page < num_rows)
      s_len = (float)rows_per_page / (float)num_rows;
-   
+
    scroll_bar->set_slider_length(s_len);
- 
+
    if(disp_offset > 0)
      s_pos = (float)disp_offset / (float)num_rows;
- 
+
    scroll_bar->set_slider_position(s_pos);
   }
-   
+
   std::list<GUI_Widget *>::iterator child;
   child = children.begin();
   child++; // skip the scroll_bar widget. This is a bit evil.
@@ -111,14 +111,14 @@ void GUI_Scroller::update_viewport(bool update_slider)
 void GUI_Scroller:: Display(bool full_redraw)
 {
  SDL_Rect framerect;
- 
+
  framerect = area;
  framerect.w -= SCROLLBAR_WIDTH;
- 
+
  SDL_FillRect(surface, &framerect, bg_color);
- 
+
  DisplayChildren();
- 
+
 // screen->update(area.x,area.y,area.w,area.h);
 
  return;
@@ -129,7 +129,7 @@ GUI_status GUI_Scroller::MouseDown(int x, int y, int button)
 
 
  //grab_focus();
- 
+
  return GUI_YUM;
 }
 
@@ -144,10 +144,10 @@ GUI_status GUI_Scroller::MouseUp(int x, int y, int button)
 GUI_status GUI_Scroller::MouseMotion(int x,int y,Uint8 state)
 {
 
- 
+
  //GUI::get_gui()->moveWidget(this,dx,dy);
 // Redraw();
- 
+
  return (GUI_YUM);
 }
 
@@ -173,27 +173,27 @@ void GUI_Scroller::move_down()
 void GUI_Scroller::move_percentage(float offset_percentage)
 {
  // printf("offset_percentage = %f\n", offset_percentage);
- 
- disp_offset = (int)((float)num_rows * offset_percentage); 
+
+ disp_offset = (int)((float)num_rows * offset_percentage);
  update_viewport(false);
- 
+
 }
 
 GUI_status GUI_Scroller::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
- 
+
  switch(msg)
   {
-   case SCROLLBAR_CB_SLIDER_MOVED : 
+   case SCROLLBAR_CB_SLIDER_MOVED :
                                     move_percentage(*(float *)data);
                                     break;
 
    case SCROLLBAR_CB_UP_BUTTON : move_up();
                                  break;
-                                 
+
    case SCROLLBAR_CB_DOWN_BUTTON : move_down();
                                  break;
-                                 
+
    default : printf("Unhandled callback!\n"); break;
   }
 

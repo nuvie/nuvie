@@ -41,18 +41,18 @@ class ActorManager
  ObjManager *obj_manager;
 
  bool update; // ActorManager is not paused
- 
+
  Map *map;
  Actor *actors[256];
  uint8 player_actor;
  GameClock *clock;
  uint8 game_hour;
- 
+
  uint16 last_obj_blk_x, last_obj_blk_y;
  uint8 last_obj_blk_z;
- 
+
  public:
-  
+
  ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c);
  ~ActorManager();
 
@@ -61,11 +61,11 @@ class ActorManager
 
  bool load(NuvieIO *objlist);
  bool save(NuvieIO *objlist);
- 
+
  Actor *get_actor(uint8 actor_num);
  Actor *get_actor(uint16 x, uint16 y, uint8 z);
  Actor *get_actor_holding_obj(Obj *obj);
- 
+
  Actor *get_player();
  void set_player(Actor *a);
 
@@ -78,18 +78,18 @@ class ActorManager
  void twitchActors();
  void print_actor(Actor *actor);
  const char *get_worktype_string(uint32 wt);
- 
+
  void clear_actor(Actor *actor);
- 
+
  bool is_temp_actor(Actor *actor);
  bool create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype, Actor **new_actor = NULL);
  bool toss_actor(Actor *actor, uint16 xrange, uint16 yrange);
 
  protected:
- 
+
  bool loadActorSchedules();
  inline Actor *find_free_temp_actor();
- 
+
  void update_temp_actors(uint16 x, uint16 y, uint8 z);
  void clean_temp_actors_from_level(uint8 level);
  void clean_temp_actors_from_area(uint16 x, uint16 y);

@@ -34,7 +34,7 @@
 #define OBJ_U6_SWAMP_BOOTS          28
 
 #define OBJ_U6_SLING                33
-#define OBJ_U6_CLUB                 34 
+#define OBJ_U6_CLUB                 34
 #define OBJ_U6_MAIN_GAUCHE          35
 #define OBJ_U6_SPEAR                36
 #define OBJ_U6_THROWING_AXE         37

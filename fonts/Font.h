@@ -35,14 +35,14 @@ class Font
  unsigned char *font_data;
  uint16 offset;
  uint16 num_chars;
- 
+
  public:
- 
+
    Font();
    ~Font();
-   
+
    bool init(unsigned char *data, uint16 num_chars, uint16 char_offset);
-   
+
 //   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y);
    bool drawString(Screen *screen, const char *str, uint16 x, uint16 y);
    bool drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y);
@@ -50,7 +50,7 @@ class Font
    void drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color = FONT_COLOR_U6_NORMAL);
   protected:
-  
+
    uint8 get_char_num(uint8 c);
 
 };

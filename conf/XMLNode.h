@@ -30,7 +30,7 @@ protected:
 	std::string				content;
 	std::vector<XMLNode*>	nodelist;
 	bool					no_close;
-	
+
 public:
 	XMLNode() : no_close(false)
 		{  }
@@ -40,7 +40,7 @@ public:
 		: id(n.id),content(n.content),nodelist(n.nodelist), no_close(false)
 		{  }
 	~XMLNode();
-	
+
 	XMLNode &operator=(const XMLNode &n) {
 		id=n.id; content=n.content; nodelist=n.nodelist; no_close = n.no_close;
 		return *this;
@@ -48,20 +48,20 @@ public:
 
 	const std::string &reference(const std::string &,bool &);
 	const XMLNode *subtree(const std::string &) const;
-	
-	const std::string &value(void) const { 
+
+	const std::string &value(void) const {
 		return content;
 	}
-	
+
 	typedef std::pair<std::string, std::string> KeyType;
 	typedef std::vector<KeyType> KeyTypeList;
-	
+
 	bool searchpairs(KeyTypeList &ktl, const std::string &basekey,
 					 const std::string currkey, const unsigned int pos);
 	void selectpairs(KeyTypeList &ktl, const std::string currkey);
-	
+
 	std::string dump(int depth = 0);
-	
+
 	void xmlassign(const std::string &key, const std::string &value);
 	void xmlparse(const std::string &s,std::size_t &pos);
 

@@ -43,7 +43,7 @@ Values are written to the last-loaded writable config file with the right root.
  Because of this it's important to make sure the last-loaded config file with
  a given root is writable. (The idea is that you can load a system-wide config
  file first, and a user's config file after that.)
- 
+
 */
 
 class Configuration
@@ -66,7 +66,7 @@ class Configuration
 	void value(std::string key, bool &ret, bool defaultvalue=false);
 
   void pathFromValue(std::string key, std::string file, std::string &full_path);
-  
+
 	// set value
 	bool set(std::string key, std::string value);
 	bool set(std::string key, const char* value);

@@ -43,7 +43,7 @@ class ActorView;
 class ViewManager
 {
  protected:
- 
+
  Configuration *config;
  int game_type;
  GUI *gui;
@@ -56,19 +56,19 @@ class ViewManager
  InventoryView *inventory_view;
  PortraitView *portrait_view;
  PartyView *party_view;
- 
+
  View *current_view;
- 
+
  public:
- 
+
  ViewManager(Configuration *cfg);
  virtual ~ViewManager();
- 
+
  bool init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *portrait);
  void reload();
 
  void update();
- 
+
  void set_portrait_mode(Actor *actor, char *name);
  void set_inventory_mode();
  void set_party_mode();
@@ -81,7 +81,7 @@ class ViewManager
  PartyView *get_party_view() { return(party_view); }
 
  protected:
- 
+
  bool set_current_view(View *view);
 };
 

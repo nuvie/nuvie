@@ -4,7 +4,7 @@
  *
  *  Created by Eric Fry on Tue Jul 01 2003.
  *  Copyright (c) 2003 The Nuvie Team. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -43,16 +43,16 @@ unsigned char *NuvieIO::readAll()
  uint32 bytes_read;
  return readBuf(size, &bytes_read);
 }
-   
+
 unsigned char *NuvieIO::readBuf(uint32 read_size, uint32 *bytes_read)
 {
  unsigned char *buf;
- 
+
  *bytes_read = 0;
-     
+
  if(pos + read_size > size)
     return NULL;
- 
+
  buf = (unsigned char *)malloc(read_size);
  if(buf == NULL)
    return NULL;
@@ -62,9 +62,9 @@ unsigned char *NuvieIO::readBuf(uint32 read_size, uint32 *bytes_read)
     free(buf);
     return NULL;
    }
- 
+
  *bytes_read = read_size;
-   
+
  return buf;
 }
 
@@ -98,7 +98,7 @@ bool NuvieIOBuffer::open(unsigned char *buf, uint32 buf_size, bool copy_buf)
    data = buf;
 
  size = buf_size;
- 
+
  return true;
 }
 
@@ -109,11 +109,11 @@ void NuvieIOBuffer::close()
 
  if(copied_data && data != NULL)
    free(data);
- 
+
  data = NULL;
- 
+
 }
-  
+
 uint8 NuvieIOBuffer::read1()
 {
  if(pos >= size)
@@ -125,13 +125,13 @@ uint8 NuvieIOBuffer::read1()
 uint16 NuvieIOBuffer::read2()
 {
  uint16 val;
- 
+
   if(pos >= size-2)
    return 0;
 
  val = data[pos] + (data[pos+1]<<8);
  pos += 2;
- 
+
  return val;
 }
 
@@ -141,10 +141,10 @@ uint32 NuvieIOBuffer::read4()
 
  if(pos >= size-4)
    return 0;
-   
+
  val = (data[pos] + (data[pos+1]<<8) + (data[pos+2]<<16) + (data[pos+3]<<24));
  pos += 4;
- 
+
  return val;
 }
 
@@ -154,9 +154,9 @@ bool NuvieIOBuffer::readToBuf(unsigned char *buf, uint32 buf_size)
    return false;
 
  memcpy(buf,&data[pos],buf_size);
- 
+
  pos += buf_size;
- 
+
  return true;
 }
 
@@ -164,10 +164,10 @@ bool NuvieIOBuffer::write1(uint8 src)
 {
  if(pos >= size)
    return false;
- 
+
  data[pos] = src;
  pos++;
- 
+
  return true;
 }
 
@@ -180,7 +180,7 @@ bool NuvieIOBuffer::write2(uint16 src)
  data[pos] = src & 0xff;
  data[pos+1] = (src >> 8) & 0xff;
  pos += 2;
- 
+
  return true;
 }
 
@@ -191,14 +191,14 @@ bool NuvieIOBuffer::write4(uint32 src)
    return false;
 
  ptr = &data[pos];
- 
+
  *ptr++ = src & 0xff;
  *ptr++ = (src >> 8) & 0xff;
  *ptr++ = (src >> 16) & 0xff;
  *ptr++ = (src >> 24) & 0xff;
 
  pos += 4;
- 
+
  return true;
 }
 
@@ -208,9 +208,9 @@ uint32 NuvieIOBuffer::writeBuf(unsigned char *src, uint32 src_size)
    return 0;
 
  memcpy(&data[pos],src,src_size);
- 
+
  pos += src_size;
- 
+
  return src_size;
 }
 

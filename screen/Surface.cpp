@@ -101,7 +101,7 @@ RenderSurface::~RenderSurface()
 //
 // Set the buffer format from SDL_PixelFormat
 //
-void RenderSurface::set_format(const SDL_PixelFormat *fmt) 
+void RenderSurface::set_format(const SDL_PixelFormat *fmt)
 {
 	bits_per_pixel = fmt->BitsPerPixel;
 	bytes_per_pixel = fmt->BytesPerPixel;
@@ -139,7 +139,7 @@ void RenderSurface::set_format(const SDL_PixelFormat *fmt)
 //
 // Set a custom 565 format
 //
-void RenderSurface::set_format565(int rsft, int gsft, int bsft) 
+void RenderSurface::set_format565(int rsft, int gsft, int bsft)
 {
 	bits_per_pixel = 16;
 	bytes_per_pixel = 2;
@@ -169,7 +169,7 @@ void RenderSurface::set_format565(int rsft, int gsft, int bsft)
 //
 // Set a custom 555 format
 //
-void RenderSurface::set_format555(int rsft, int gsft, int bsft) 
+void RenderSurface::set_format555(int rsft, int gsft, int bsft)
 {
 	bits_per_pixel = 16;
 	bytes_per_pixel = 2;
@@ -199,7 +199,7 @@ void RenderSurface::set_format555(int rsft, int gsft, int bsft)
 //
 // Set a custom 888 format
 //
-void RenderSurface::set_format888(int rsft, int gsft, int bsft) 
+void RenderSurface::set_format888(int rsft, int gsft, int bsft)
 {
 	bits_per_pixel = 32;
 	bytes_per_pixel = 4;
@@ -267,7 +267,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 			ey--;
 		}
 	}
-	
+
 	uint16 * pixptr = (uint16 *) (pixels + pitch*sy + sx*2);
 	uint16 * pixend = (uint16 *) (pixels + pitch*ey + ex*2);
 	int pitch = this->pitch*yinc / 2;
@@ -292,7 +292,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 	if (sx == ex) {
 		//std::cout << "Vertical" << std::endl;
 		// start is below end
-		while (pixptr != pixend) { 
+		while (pixptr != pixend) {
 			if (no_clip || (cury >= 0 && cury < height)) *pixptr = col32;
 			pixptr+=pitch;
 			cury+=yinc;
@@ -301,7 +301,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 	// Horizontal
 	else if (sy == ey) {
 		//std::cout << "Horizontal" << std::endl;
-		while (pixptr != pixend) { 
+		while (pixptr != pixend) {
 			if (no_clip || (curx >= 0 && curx < width)) *pixptr = col32;
 			pixptr+=xinc;
 			curx+=xinc;
@@ -313,7 +313,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 fraction = std::labs((LINE_FRACTION * (sy-ey)) / (sx-ex));
 		uint32 ycounter = 0;
 
-		for ( ; ; ) { 
+		for ( ; ; ) {
 			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
 				*pixptr = col32;
 			pixptr+=xinc;
@@ -335,7 +335,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 fraction = std::labs((LINE_FRACTION * (sx-ex)) / (sy-ey));
 		uint32 xcounter = 0;
 
-		for ( ; ; ) { 
+		for ( ; ; ) {
 			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
 				*pixptr = col32;
 			pixptr+=pitch;
@@ -388,7 +388,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 			ey--;
 		}
 	}
-	
+
 	uint32 * pixptr = (uint32 *) (pixels + pitch*sy + sx*4);
 	uint32 * pixend = (uint32 *) (pixels + pitch*ey + ex*4);
 	int pitch = this->pitch*yinc / 4;
@@ -413,7 +413,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 	if (sx == ex) {
 		//std::cout << "Vertical" << std::endl;
 		// start is below end
-		while (pixptr != pixend) { 
+		while (pixptr != pixend) {
 			if (no_clip || (cury >= 0 && cury < height)) *pixptr = col32;
 			pixptr+=pitch;
 			cury+=yinc;
@@ -422,7 +422,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 	// Horizontal
 	else if (sy == ey) {
 		//std::cout << "Horizontal" << std::endl;
-		while (pixptr != pixend) { 
+		while (pixptr != pixend) {
 			if (no_clip || (curx >= 0 && curx < width)) *pixptr = col32;
 			pixptr+=xinc;
 			curx+=xinc;
@@ -434,7 +434,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 fraction = std::labs((LINE_FRACTION * (sy-ey)) / (sx-ex));
 		uint32 ycounter = 0;
 
-		for ( ; ; ) { 
+		for ( ; ; ) {
 			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
 				*pixptr = col32;
 			pixptr+=xinc;
@@ -456,7 +456,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 fraction = std::labs((LINE_FRACTION * (sx-ex)) / (sy-ey));
 		uint32 xcounter = 0;
 
-		for ( ; ; ) { 
+		for ( ; ; ) {
 			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
 				*pixptr = col32;
 			pixptr+=pitch;

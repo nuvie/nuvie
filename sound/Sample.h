@@ -23,7 +23,7 @@
 #ifndef SAMPLE_H
 #define SAMPLE_H
 
-#include "Sound.h" 
+#include "Sound.h"
 
 class Sample: public Sound {
 public:
@@ -32,7 +32,7 @@ public:
 	bool Init(const char *filename);
 	bool Play(bool looping = false);
 	bool Stop();
-	bool FadeOut(float seconds); 
+	bool FadeOut(float seconds);
 	bool SetVolume(float volume); //range 0..1
 private:
 	Mix_Chunk *m_pSample;

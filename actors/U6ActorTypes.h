@@ -24,7 +24,7 @@
 
 
 const U6ActorType u6ActorTypes[] = {
-// 4x1 tile actors  
+// 4x1 tile actors
  {OBJ_U6_INSECTS,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW, 20},
  {OBJ_U6_GIANT_SQUID,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH, 50},
  {OBJ_U6_GHOST,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 45},
@@ -80,11 +80,11 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_AVATAR,3, 4, 1, 0, OBJ_U6_DEAD_BODY, 7, true, true, ACTOR_ST, MOVETYPE_U6_LAND, 50},
 
  {OBJ_U6_MUSICIAN_PLAYING, 2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 3},
- 
+
  {OBJ_U6_SHIP, 1, 2, 2, 8, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_WATER_HIGH, 0},
  {OBJ_U6_SKIFF, 1, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW, 0},
  {OBJ_U6_RAFT, 0, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW, 0}, // FIX might need to fix this
-  
+
  {OBJ_U6_GIANT_SCORPION, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND, 30},
  {OBJ_U6_GIANT_ANT, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND, 30},
  {OBJ_U6_COW, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND, 40},
@@ -93,7 +93,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_HORSE_WITH_RIDER, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND, 20},
 
  {OBJ_U6_DRAGON, 2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_AIR_HIGH, 10},
- 
+
  {OBJ_U6_NOTHING, 0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 0} //end indicator
 };
 

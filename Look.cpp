@@ -36,7 +36,7 @@ Look::Look(Configuration *cfg)
 :look_data(NULL),desc_buf(NULL)
 {
  config = cfg;
- 
+
  max_len = 0;
 }
 
@@ -57,9 +57,9 @@ bool Look::init()
  unsigned int len;
  int game_type;
  NuvieIOFileRead look_file;
- 
+
  config->value("config/GameType",game_type);
- 
+
  switch(game_type)
    {
     case NUVIE_GAME_U6 : config_get_path(config,"look.lzd",filename);
@@ -122,14 +122,14 @@ const char *Look::get_description(uint16 tile_num, bool *plural)
  uint16 i, j;
  uint16 len;
  bool has_plural = false;
- 
+
  if(tile_num >= 2048)
    return NULL;
- 
+
  desc = look_tbl[tile_num];
- 
+
  len = strlen(desc);
- 
+
  for(i=0,j=0;i < len;)
    {
     if(desc[i] == '\\' || desc[i] == '/')
@@ -138,7 +138,7 @@ const char *Look::get_description(uint16 tile_num, bool *plural)
        c = desc[i];
        for(i++;isalpha(desc[i]) && i < len;i++)
         {
-         
+
          if((*plural && c == '\\' ) || ( !*plural && c == '/' ))
            { desc_buf[j] = desc[i]; j++; }
         }
@@ -154,19 +154,19 @@ const char *Look::get_description(uint16 tile_num, bool *plural)
  desc_buf[j] = desc[i];
 
  *plural = has_plural; //we return if this string contained a plural form.
- 
+
  return desc_buf;
 }
 
 bool Look::has_plural(uint16 tile_num)
 {
  const char *desc;
- 
+
 if(tile_num >= 2048)
   return false;
 
  desc = look_tbl[tile_num];
- 
+
 if(desc == NULL)
   return false;
 
@@ -175,7 +175,7 @@ if(desc == NULL)
    if(*desc == '\\')
      return true;
   }
-  
+
  return false;
 }
 
@@ -183,15 +183,15 @@ uint16 Look::get_max_len()
 {
  return max_len;
 }
- 
+
 void Look::print()
 {
  uint16 i;
- 
+
  for(i=0;i<2048;i++)
   {
    printf("%04d :: %s\n",i,look_tbl[i]);
   }
-  
+
  return;
 }

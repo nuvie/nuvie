@@ -67,7 +67,7 @@ bool TileManager::loadTiles()
  U6Lib_n lib_file;
  U6Lzw *lzw;
  uint32 tile_offset;
- 
+
  unsigned char *tile_data = NULL;
  uint32 maptiles_size = 0;
  uint32 objtiles_size;
@@ -76,16 +76,16 @@ bool TileManager::loadTiles()
  uint32 masktype_size;
  uint16 i;
  int game_type;
- 
+
  config->value("config/GameType",game_type);
  config_get_path(config,"maptiles.vga",maptiles_path);
  config_get_path(config,"masktype.vga",masktype_path);
- 
+
  lzw = new U6Lzw();
- 
+
  switch(game_type)
    {
-    case NUVIE_GAME_U6 : 
+    case NUVIE_GAME_U6 :
                          tile_data = lzw->decompress_file(maptiles_path,maptiles_size);
                          if(tile_data == NULL)
                             throw "Decompressing maptiles.vga";
@@ -101,7 +101,7 @@ bool TileManager::loadTiles()
 
                          tile_data = lib_file.get_item(0);
                          lib_file.close();
-                         
+
                          if(lib_file.open(masktype_path,4,game_type) == false)
                            throw "Opening masktype.vga";
                          //masktype_size = lib_file.get_item_size(0);
@@ -110,17 +110,17 @@ bool TileManager::loadTiles()
                          lib_file.close();
                          break;
    }
- 
+
  config_get_path(config,"objtiles.vga",path);
  if(objtiles_vga.open(path) == false)
    throw "Opening objtiles.vga";
 
  objtiles_size = objtiles_vga.get_size();
- 
+
  tile_data = (unsigned char *)realloc(tile_data,maptiles_size + objtiles_size);
-  
+
  objtiles_vga.readToBuf(&tile_data[maptiles_size], objtiles_size);
-  
+
  config_get_path(config,"tileindx.vga",path);
 
  if(tileindx_vga.open(path) == false)
@@ -130,29 +130,29 @@ bool TileManager::loadTiles()
   {
    tile_offset = tileindx_vga.read2() * 16;
    tile[i].tile_num = i;
-   
+
    tile[i].transparent = false;
-   
+
    switch(masktype[i])
     {
      case U6TILE_TRANS : tile[i].transparent = true;
      case U6TILE_PLAIN : memcpy(tile[i].data, &tile_data[tile_offset], 256);
                          break;
-                         
+
      case U6TILE_PBLCK : tile[i].transparent = true;
                          decodePixelBlockTile(&tile_data[tile_offset],i);
                          break;
     }
-    
+
    tileindex[i] = i; //set all tile indexs to default value. this is changed in update() for animated tiles
   }
 
  loadAnimData();
  loadTileFlag();
-  
+
  free(masktype);
  free(tile_data);
- 
+
  look = new Look(config);
  if(look->init() == false)
    throw "Initialising Look Class";
@@ -160,9 +160,9 @@ bool TileManager::loadTiles()
  desc_buf = (char *)malloc(look->get_max_len() + 6); // add space for "%03d \n\0" or "the \n\0"
  if(desc_buf == NULL)
    throw "Allocating desc_buf";
-   
+
  loadAnimMask();
- 
+
 #ifdef DEBUG
 
  look->print();
@@ -178,9 +178,9 @@ bool TileManager::loadTiles()
    printf(" %s\n",look->get_description(i,false));
   }
 #endif
- 
+
  delete lzw;
- 
+
  return true;
 }
 
@@ -223,14 +223,14 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
  const char *desc;
  bool plural;
  Tile *tile;
- 
+
  tile = get_original_tile(tile_num);
- 
+
  if(qty > 1)
    plural = true;
  else
   plural = false;
-  
+
  desc = look->get_description(tile->tile_num,&plural);
  if(show_prefix == false)
    return desc;
@@ -239,7 +239,7 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
    sprintf(desc_buf,"%d %s",qty, desc);
  else
    sprintf(desc_buf,"%s%s",article_tbl[tile->article_n], desc);
-   
+
  return desc_buf;
 }
 
@@ -256,7 +256,7 @@ void TileManager::update()
  uint16 prev_tileindex;
  uint8 current_hour = Game::get_game()->get_clock()->get_hour();
  static sint8 last_hour = -1;
- 
+
  if(Game::get_game()->anims_paused())
    return;
 
@@ -301,12 +301,12 @@ bool TileManager::loadTileFlag()
  std::string filename;
  NuvieIOFileRead file;
  uint16 i;
- 
+
  config_get_path(config,"tileflag",filename);
- 
+
  if(file.open(filename) == false)
    return false;
- 
+
  for(i=0;i < 2048; i++)
   {
    tile[i].flags1 = file.read1();
@@ -314,7 +314,7 @@ bool TileManager::loadTileFlag()
      tile[i].passable = false;
    else
      tile[i].passable = true;
-     
+
    if(tile[i].flags1 & 0x1)
      tile[i].water = true;
    else
@@ -363,7 +363,7 @@ bool TileManager::loadAnimData()
  std::string filename;
  NuvieIOFileRead file;
  uint8 i;
- int game_type; 
+ int game_type;
  config->value("config/GameType",game_type);
  config_get_path(config,"animdata",filename);
 
@@ -374,7 +374,7 @@ bool TileManager::loadAnimData()
    return false;
 
  animdata.number_of_tiles_to_animate = file.read2();
- 
+
  for(i=0;i<32;i++)
   {
    animdata.tile_to_animate[i] = file.read2();
@@ -384,12 +384,12 @@ bool TileManager::loadAnimData()
   {
    animdata.first_anim_frame[i] = file.read2();
   }
-  
+
   for(i=0;i<32;i++)
   {
    animdata.and_masks[i] = file.read1();
   }
-  
+
   for(i=0;i<32;i++)
   {
    animdata.shift_values[i] = file.read1();
@@ -418,35 +418,35 @@ void TileManager::decodePixelBlockTile(unsigned char *tile_data, uint16 tile_num
  uint8 x;
  unsigned char *ptr;
  unsigned char *data_ptr;
- 
+
 // num_blocks = tile_data[0];
- 
+
  ptr = &tile_data[1];
- 
+
  data_ptr = tile[tile_num].data;
-   
+
  memset(data_ptr,0xff,256); //set all pixels to transparent.
 
  for(i=0; ; i++)
    {
     disp = (ptr[0] + (ptr[1] << 8));
-       
+
     x = disp % 160 + (disp >= 1760 ? 160 : 0);
-       
+
     len = ptr[2];
 
     if(len == 0)
       break;
-    
+
     data_ptr += x;
-    
+
     memcpy(data_ptr,&ptr[3],len);
-    
+
     data_ptr += len;
-    
+
     ptr += (3+len);
    }
-   
+
  return;
 }
 
@@ -459,12 +459,12 @@ bool TileManager::loadAnimMask()
  unsigned char *animmask;
  unsigned char *mask_ptr;
  uint32 animmask_size;
- 
+
  unsigned char *tile_data;
  uint16 bytes2clear;
  uint16 displacement;
  int game_type;
- 
+
  config->value("config/GameType",game_type);
  if(game_type != NUVIE_GAME_U6)                //only U6 has animmask.vga
    return true;
@@ -472,7 +472,7 @@ bool TileManager::loadAnimMask()
  config_get_path(config,"animmask.vga",filename);
 
  animmask = lzw.decompress_file(filename,animmask_size);
- 
+
  if(animmask == NULL)
    return false;
 
@@ -480,35 +480,35 @@ bool TileManager::loadAnimMask()
   {
    tile_data = tile[16+i].data;
    tile[16+i].transparent = true;
-   
+
    mask_ptr = animmask + i * 64;
    bytes2clear = mask_ptr[0];
-      
+
    if(bytes2clear != 0)
      memset(tile_data,0xff,bytes2clear);
 
    tile_data += bytes2clear;
    mask_ptr++;
-   
+
    displacement = mask_ptr[0];
    bytes2clear = mask_ptr[1];
-   
+
    mask_ptr += 2;
-   
+
    for(;displacement != 0 && bytes2clear != 0;mask_ptr += 2)
      {
       tile_data += displacement;
-      
+
       memset(tile_data,0xff,bytes2clear);
       tile_data += bytes2clear;
-      
+
       displacement = mask_ptr[0];
       bytes2clear = mask_ptr[1];
      }
-  }  
- 
+  }
+
  free(animmask);
- 
+
  return true;
 }
 
@@ -569,7 +569,7 @@ Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
     Sint32 const ctx = Sint32((cos(theta)) * 8192.0);
     Sint32 const sty = Sint32((sin(theta)) * 8192.0);
     Sint32 const cty = Sint32((cos(theta)) * 8192.0);
-    Sint32 const mx = Sint32(px*8192.0); 
+    Sint32 const mx = Sint32(px*8192.0);
     Sint32 const my = Sint32(py*8192.0);
 
     Sint32 const dx = xmin - qx;

@@ -64,7 +64,7 @@ public:
 
     void drawTile(Tile *tile, uint16 x, uint16 y);
     void drawTileAtWorldCoords(Tile *tile, uint16 wx, uint16 wy, uint16 add_x = 0, uint16 add_y = 0);
-    
+
 };
 
 

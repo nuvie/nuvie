@@ -29,14 +29,14 @@
 #include "UseCode.h"
 #include "Event.h"
 
-#include "Actor.h" 
+#include "Actor.h"
 #include "DollWidget.h"
 
 static SDL_Rect item_hit_rects[8] = { {24, 0,16,16},   // ACTOR_HEAD
                                      { 0, 8,16,16},   // ACTOR_NECK
                                      {48, 8,16,16},   // ACTOR_BODY
                                      { 0,24,16,16},   // ACTOR_ARM
-                                     {48,24,16,16},   // ACTOR_ARM_2 
+                                     {48,24,16,16},   // ACTOR_ARM_2
                                      { 0,40,16,16},   // ACTOR_HAND
                                      {48,40,16,16},   // ACTOR_HAND_2
                                      {24,48,16,16} }; // ACTOR_FOOT
@@ -58,11 +58,11 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
 {
  tile_manager = tm;
  obj_manager = om;
- 
+
  GUI_Widget::Init(NULL, x, y, 64, 64);
-  
+
  set_actor(a);
- 
+
  return true;
 }
 
@@ -91,16 +91,16 @@ void DollWidget::Display(bool full_redraw)
      display_doll();
    screen->update(area.x, area.y, area.w, area.h);
 //  }
- 
+
 }
 
 inline void DollWidget::display_doll()
 {
  Tile *tile, *empty_tile;
  uint16 i,j;
- 
+
  empty_tile = tile_manager->get_tile(410);
- 
+
  for(i=0;i<2;i++)
    {
     for(j=0;j<2;j++) // draw doll
@@ -115,7 +115,7 @@ inline void DollWidget::display_doll()
 
  display_readied_object(ACTOR_ARM, area.x, (area.y+8) + 1 * 16, actor, empty_tile);
  display_readied_object(ACTOR_ARM_2, area.x+3*16, (area.y+8) + 1 * 16, actor, empty_tile);
- 
+
  display_readied_object(ACTOR_HAND, area.x, (area.y+8) + 2 * 16, actor, empty_tile);
  display_readied_object(ACTOR_HAND_2, area.x+3*16, (area.y+8) + 2 * 16, actor, empty_tile);
 
@@ -129,16 +129,16 @@ inline void DollWidget::display_readied_object(uint8 location, uint16 x, uint16 
 {
  Obj *obj;
  Tile *tile;
- 
+
  obj = actor->inventory_get_readied_object(location);
- 
+
  if(obj)
    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
  else
    tile = empty_tile;
- 
+
  screen->blit(x,y,tile->data,8,16,16,16,true);
- 
+
  return;
 }
 
@@ -150,10 +150,10 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
  //MapWindow *map_window = Game::get_game()->get_map_window();
  uint8 location;
  Obj *obj;
- 
+
  x -= area.x;
  y -= area.y;
- 
+
  if(actor && selected_obj == NULL)
    {
     for(location=0;location<8;location++)
@@ -178,7 +178,7 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
               default:
                  selected_obj = obj;
                  break;
-             }            
+             }
              return GUI_YUM;
            }
          }
@@ -239,7 +239,7 @@ GUI_status DollWidget::MouseMotion(int x,int y,Uint8 state)
     tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
     return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
    }
-   
+
 	return GUI_PASS;
 }
 
@@ -265,17 +265,17 @@ bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
    {
     return true;
    }
-   
+
  return false;
 }
 
 void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
  Obj *obj;
- 
+
  x -= area.x;
  y -= area.y;
- 
+
  if(message == GUI_DRAG_OBJ)
    {
     printf("Ready item.\n");
@@ -300,7 +300,7 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
     actor->add_readied_object(obj);
     Redraw();
    }
-   
+
  return;
 }
 
@@ -310,7 +310,7 @@ void DollWidget::drag_draw(int x, int y, int message, void* data)
 
 	if (!selected_obj)
 		return;
-		
+
 	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj->obj_n) + selected_obj->frame_n);
 
 	int	nx = x - 8;

@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
- 
+
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -52,7 +52,7 @@ Nuvie::~Nuvie()
 
  if(screen != NULL)
    delete screen;
-   
+
  if(game != NULL)
    delete game;
 }
@@ -62,7 +62,7 @@ bool Nuvie::init(int argc, char **argv)
 {
  GameSelect *game_select;
  uint8 game_type;
- 
+
  if(argc > 1)
    game_type = get_game_type(argv[1]);
  else
@@ -84,24 +84,24 @@ bool Nuvie::init(int argc, char **argv)
    }
 
  SDL_WM_SetCaption("Nuvie","Nuvie");
- 
+
  game_select = new GameSelect(config);
- 
+
  // select game from graphical menu if required
  game_type = game_select->load(screen,game_type);
  delete game_select;
  if(game_type == NUVIE_GAME_NONE)
    return false;
- 
+
  //setup various game related config variables.
  assignGameConfigValues(game_type);
- 
+
  //check for a vaild path to the selected game.
  if(checkGameDir(game_type) == false)
    return false;
 
  game = new Game(config);
- 
+
  if(game->loadGame(screen,game_type) == false)
    {
     delete game;
@@ -124,44 +124,44 @@ bool Nuvie::initConfig()
 {
  std::string config_path;
 
- 
+
  config = new Configuration();
- 
+
 #ifndef WIN32
  // ~/.nuvierc
- 
+
  config_path.assign(getenv("HOME"));
 // config_path.append(U6PATH_DELIMITER);
  config_path.append("/.nuvierc");
- 
+
  if(loadConfigFile(config_path))
    return true;
 #endif
 
  // nuvie.cfg in the working dir
- 
+
  config_path.assign("nuvie.cfg");
- 
+
  if(loadConfigFile(config_path))
    return true;
 
 #ifndef WIN32
  // standard share locations
- 
+
  config_path.assign("/usr/local/share/nuvie/nuvie.cfg");
- 
+
  if(loadConfigFile(config_path))
    return true;
 
  config_path.assign("/usr/share/nuvie/nuvie.cfg");
- 
+
  if(loadConfigFile(config_path))
    return true;
-#endif 
+#endif
 
  delete config;
  config = NULL;
- 
+
  return false;
 }
 
@@ -186,7 +186,7 @@ bool Nuvie::loadConfigFile(std::string filename)
 void Nuvie::assignGameConfigValues(uint8 game_type)
 {
  std::string game_name, game_id;
- 
+
  config->set("config/GameType",game_type);
 
  switch(game_type)
@@ -204,7 +204,7 @@ void Nuvie::assignGameConfigValues(uint8 game_type)
 
  config->set("config/GameName",game_name);
  config->set("config/GameID",game_id);
- 
+
  return;
 }
 
@@ -212,7 +212,7 @@ bool Nuvie::checkGameDir(uint8 game_type)
 {
  std::string path;
 
-#ifndef WIN32 
+#ifndef WIN32
  struct stat sb;
  config_get_path(config, "", path);
 
@@ -222,7 +222,7 @@ bool Nuvie::checkGameDir(uint8 game_type)
   }
 
  printf("Error: Invalid gamedir! '%s'\n", path.c_str());
- 
+
  return false;
 #endif
 

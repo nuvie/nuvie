@@ -19,12 +19,12 @@
 std::string config_get_game_key(Configuration *config)
 {
  std::string game_key, game_name;
- 
+
  config->value("config/GameName",game_name);
- 
+
  game_key.assign("config/");
  game_key.append(game_name);
- 
+
  return game_key;
 }
 
@@ -43,15 +43,15 @@ const char *get_game_tag(int game_type)
 void config_get_path(Configuration *config, std::string filename, std::string &path)
 {
  std::string key, game_name;
- 
+
  config->value("config/GameName",game_name);
- 
+
  key.assign("config/");
  key.append(game_name);
  key.append("/gamedir");
-    
+
  config->pathFromValue(key, filename, path);
- 
+
  return;
 }
 
@@ -66,7 +66,7 @@ uint8 get_game_type(const char *string)
       return NUVIE_GAME_SE;
     if(strcmp("u6",string) == 0 || strcmp("ultima6",string) == 0)
       return NUVIE_GAME_U6;
-   } 
+   }
 
  return NUVIE_GAME_NONE;
 }
@@ -74,7 +74,7 @@ uint8 get_game_type(const char *string)
 void build_path(std::string path, std::string filename, std::string &full_path)
 {
  full_path = path;
- 
+
  if(full_path.length() > 0 && full_path[full_path.length()-1] != U6PATH_DELIMITER)
     full_path += U6PATH_DELIMITER + filename;
  else
@@ -86,7 +86,7 @@ void build_path(std::string path, std::string filename, std::string &full_path)
 bool directory_exists(const char *directory)
 {
  struct stat sb;
- 
+
  if(stat(directory, &sb) != 0)
    return false;
 
@@ -99,7 +99,7 @@ bool directory_exists(const char *directory)
 void print_b(uint8 num)
 {
  sint8 i;
- 
+
  for(i=7;i>=0;i--)
  {
   if(num & (1<<i))
@@ -107,14 +107,14 @@ void print_b(uint8 num)
   else
     printf("0");
  }
- 
+
  return;
 }
 
 void print_indent(uint8 indent)
 {
  uint16 i;
- 
+
  for(i=0;i < indent;i++)
   printf(" ");
 

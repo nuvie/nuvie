@@ -67,9 +67,9 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror,OBJTYPE_NONE },
     { OBJ_U6_WELL,      255,0,USE_EVENT_USE,&U6UseCode::use_well,OBJTYPE_NONE },
     { OBJ_U6_POWDER_KEG,255,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_powder_keg,OBJTYPE_NONE },
-    
+
     { OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive,OBJTYPE_NONE },
-	
+
     { OBJ_U6_POTION,    255,0,USE_EVENT_USE,&U6UseCode::use_potion,OBJTYPE_NONE },
     { OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
     { OBJ_U6_WINE,        0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
@@ -92,16 +92,16 @@ const U6ObjectType U6ObjectTypes[] =
 
     { OBJ_U6_FAN, 0, 0,USE_EVENT_USE,&U6UseCode::use_fan,OBJTYPE_NONE },
     { OBJ_U6_SEXTANT, 0, 0,USE_EVENT_USE,&U6UseCode::use_sextant,OBJTYPE_NONE },
-       
+
     { OBJ_U6_COW, 255, 0, USE_EVENT_USE,&U6UseCode::use_cow,OBJTYPE_NONE },
     { OBJ_U6_HORSE, 255,0,USE_EVENT_USE,&U6UseCode::use_horse,OBJTYPE_NONE },
     { OBJ_U6_HORSE_WITH_RIDER, 255,0,USE_EVENT_USE,&U6UseCode::use_horse,OBJTYPE_NONE },
-    
+
     { OBJ_U6_SHIP, 255,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
     { OBJ_U6_SKIFF,255,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
     { OBJ_U6_RAFT,   0,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
 //    { OBJ_U6_BALLOON_BASKET,0,0,USE_EVENT_USE,&U6UseCode::use_balloon,OBJTYPE_NONE },
-    
+
     { OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier,OBJTYPE_NONE },
 
     { OBJ_U6_RUNE_HONESTY,      0, 0, USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_rune,OBJTYPE_NONE },
@@ -112,7 +112,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_RUNE_HONOR,        0, 0, USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_rune,OBJTYPE_NONE },
     { OBJ_U6_RUNE_SPIRITUALITY, 0, 0, USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_rune,OBJTYPE_NONE },
     { OBJ_U6_RUNE_HUMILITY,     0, 0, USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_rune,OBJTYPE_NONE },
-    
+
     { OBJ_U6_VORTEX_CUBE, 0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube,OBJTYPE_NONE },
     { OBJ_U6_PULL_CHAIN,  0,0,USE_EVENT_USE,&U6UseCode::use_bell,OBJTYPE_NONE },
     { OBJ_U6_BELL,      255,0,USE_EVENT_USE,&U6UseCode::use_bell,OBJTYPE_NONE },

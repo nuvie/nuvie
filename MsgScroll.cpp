@@ -66,7 +66,7 @@ uint32 MsgText::length()
 MsgLine::~MsgLine()
 {
  std::list<MsgText *>::iterator iter;
- 
+
  for(iter=text.begin(); iter != text.end(); iter++)
   {
    delete *iter;
@@ -76,7 +76,7 @@ MsgLine::~MsgLine()
 void MsgLine::append(MsgText *new_text)
 {
  MsgText *msg_text = NULL;
- 
+
  if(text.size() > 0)
     msg_text = text.back();
 
@@ -90,7 +90,7 @@ void MsgLine::append(MsgText *new_text)
   }
 
  total_length += new_text->s.length();
- 
+
  return;
 }
 
@@ -98,13 +98,13 @@ void MsgLine::append(MsgText *new_text)
 void MsgLine::remove_char()
 {
  MsgText *msg_text;
- 
+
  if(total_length == 0)
    return;
- 
+
  msg_text = text.back();
  msg_text->s.erase(msg_text->s.length() - 1, 1);
- 
+
  if(msg_text->s.length() == 0)
    {
     text.pop_back();
@@ -112,7 +112,7 @@ void MsgLine::remove_char()
    }
 
  total_length--;
- 
+
  return;
 }
 
@@ -126,7 +126,7 @@ MsgText *MsgLine::get_text_at_pos(uint16 pos)
 {
  uint16 i;
  std::list<MsgText *>::iterator iter;
- 
+
  if(pos > total_length)
    return NULL;
 
@@ -146,9 +146,9 @@ MsgText *MsgLine::get_text_at_pos(uint16 pos)
 MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
  uint16 x, y;
- 
+
  font = f;
- 
+
  config = cfg;
  config->value("config/GameType",game_type);
 
@@ -162,13 +162,13 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
                          x = 184;
                          y = 128;
                          break;
-                         
+
     case NUVIE_GAME_SE : scroll_width = MSGSCROLL_SE_WIDTH;
                          scroll_height = MSGSCROLL_SE_HEIGHT;
                          x = 184;
                          y = 128;
                          break;
-    case NUVIE_GAME_U6 : 
+    case NUVIE_GAME_U6 :
 	default :
 						 scroll_width = MSGSCROLL_U6_WIDTH;
                          scroll_height = MSGSCROLL_U6_HEIGHT;
@@ -178,19 +178,19 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
    }
 
  GUI_Widget::Init(NULL, x, y, scroll_width * 8, scroll_height * 8);
- 
+
  cursor_char = 0;
  cursor_x = 0;
  cursor_y = scroll_height-1;
  line_count = 0;
- 
+
  cursor_wait = 0;
- 
+
  scroll_updated = false;
- 
+
  page_break = false;
  show_cursor = true;
- 
+
  add_new_line();
  display_pos = 0;
 }
@@ -199,15 +199,15 @@ MsgScroll::~MsgScroll()
 {
  std::list<MsgLine *>::iterator msg_line;
  std::list<MsgText *>::iterator msg_text;
- 
+
  // delete the scroll buffer
  for(msg_line = msg_buf.begin(); msg_line != msg_buf.end(); msg_line++)
    delete *msg_line;
- 
+
  // delete the holding buffer
  for(msg_text = holding_buffer.begin(); msg_text != holding_buffer.end(); msg_text++)
    delete *msg_text;
-   
+
 }
 
 bool MsgScroll::init(char *player_name)
@@ -216,20 +216,20 @@ bool MsgScroll::init(char *player_name)
 
  prompt_string.append(player_name);
  prompt_string.append(":\n>");
- 
+
  if(set_prompt((char *)prompt_string.c_str(),font) == false)
    return false;
- 
+
  set_input_mode(false);
- 
+
  return true;
 }
 
 void MsgScroll::display_string(std::string s, uint16 length, uint8 lang_num)
 {
- 
+
 }
- 
+
 void MsgScroll::display_string(std::string s, uint8 lang_num)
 {
  display_string(s,font);
@@ -246,11 +246,11 @@ void MsgScroll::display_string(std::string s, Font *f)
    f = font;
 
  msg_text = new MsgText(s, f);
-   
+
  holding_buffer.push_back(msg_text);
 
  process_holding_buffer();
- 
+
 }
 
 // process text tokens till we either run out or hit a page break.
@@ -262,7 +262,7 @@ void MsgScroll::display_string(std::string s, Font *f)
   if(!page_break)
     {
      token = holding_buffer_get_token();
-  
+
      for( ; token != NULL && !page_break; )
        {
         add_token(token);
@@ -279,12 +279,12 @@ void MsgScroll::display_string(std::string s, Font *f)
  {
   MsgText *input, *token;
   int i;
-  
+
   if(holding_buffer.empty())
     return NULL;
 
   input = holding_buffer.front();
-  
+
   if(input->font == NULL)
     {
      line_count = 0;
@@ -292,13 +292,13 @@ void MsgScroll::display_string(std::string s, Font *f)
      delete input;
      return NULL;
     }
-     
+
   i = input->s.find_first_of(" \t\n*<>",0);
   if(i == 0) i++;
 
   if(i == -1)
     i = input->s.length();
-	
+
   if(i > 0)
    {
     token = new MsgText(input->s.substr(0,i), font); // FIX maybe a format flag. // input->font);
@@ -317,7 +317,7 @@ void MsgScroll::display_string(std::string s, Font *f)
 bool MsgScroll::add_token(MsgText *token)
 {
  MsgLine *msg_line;
- 
+
  msg_line = msg_buf.back(); // retrieve the last line from the scroll buffer.
 
  switch(token->s[0])
@@ -328,7 +328,7 @@ bool MsgScroll::add_token(MsgText *token)
     case '<'  :  font = Game::get_game()->get_font_manager()->get_font(1); // runic / gargoyle font
                  break;
 
-    case '>'  :  if(font == Game::get_game()->get_font_manager()->get_font(1)) 
+    case '>'  :  if(font == Game::get_game()->get_font_manager()->get_font(1))
                     {
                      font = Game::get_game()->get_font_manager()->get_font(0); // english font
                      break;
@@ -339,7 +339,7 @@ bool MsgScroll::add_token(MsgText *token)
                    {
                     msg_line = add_new_line();
                    }
-                 
+
                  if(msg_line->total_length + token->length() == scroll_width) //we add a new line but write to the old line.
                     add_new_line();
 
@@ -355,17 +355,17 @@ bool MsgScroll::add_token(MsgText *token)
 
 if(msg_buf.size() > scroll_height)
    display_pos = msg_buf.size() - scroll_height;
-      
+
  return true;
 }
 
 bool MsgScroll::remove_char()
 {
  MsgLine *msg_line;
- 
+
  msg_line = msg_buf.back(); // retrieve the last line from the scroll buffer.
  msg_line->remove_char();
- 
+
  if(msg_line->total_length == 0) // remove empty line from scroll buffer
    {
     msg_buf.pop_back();
@@ -386,7 +386,7 @@ inline MsgLine *MsgScroll::add_new_line()
 
  if(line_count > scroll_height - 1)
      set_page_break();
- 
+
  return msg_line;
 }
 
@@ -395,7 +395,7 @@ bool MsgScroll::set_prompt(const char *new_prompt, Font *f)
 
  prompt.s.assign(new_prompt);
  prompt.font = f;
- 
+
  return true;
 }
 
@@ -407,12 +407,12 @@ void MsgScroll::display_prompt()
 
  clear_page_break();
 }
- 
+
 void MsgScroll::set_keyword_highlight(bool state)
 {
  keyword_highlight = state;
 }
- 
+
 void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
 {
  bool do_callback = false;
@@ -422,9 +422,9 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
  permit_inputescape = can_escape;
 
  line_count = 0;
- 
+
  clear_page_break();
-    
+
  if(input_mode == true)
  {
    if(allowed && strlen(allowed))
@@ -530,7 +530,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                   }
             break;
     }
-    
+
  return(GUI_YUM);
 }
 
@@ -538,7 +538,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
 {
  uint16 i;
  MsgText *token;
- 
+
  if(input_mode)
    {
     token = get_token_at_pos(x,y);
@@ -551,7 +551,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
         }
      }
    }
-   
+
     if(page_break) // any click == scroll-to-end
     {
         page_break = false;
@@ -574,14 +574,14 @@ MsgText *MsgScroll::get_token_at_pos(uint16 x, uint16 y)
  sint32 buf_x, buf_y;
  MsgText *token = NULL;
  std::list<MsgLine *>::iterator iter;
- 
- buf_x = (x - area.x) / 8; 
+
+ buf_x = (x - area.x) / 8;
  buf_y = (y - area.y) / 8;
- 
+
  if(buf_x < 0 || buf_x >= scroll_width || // click not in MsgScroll area.
     buf_y < 0 || buf_y >= scroll_height)
      return NULL;
-     
+
  if(msg_buf.size() <= scroll_height)
    {
     if((sint32)msg_buf.size() < buf_y + 1)
@@ -597,7 +597,7 @@ MsgText *MsgScroll::get_token_at_pos(uint16 x, uint16 y)
    iter++;
    i++;
   }
- 
+
  if(iter != msg_buf.end())
    {
     token = (*iter)->get_text_at_pos(buf_x);
@@ -613,7 +613,7 @@ void MsgScroll::Display(bool full_redraw)
  uint16 i;
  std::list<MsgLine *>::iterator iter;
  MsgLine *msg_line = NULL;
- 
+
  clearCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
 
  if(scroll_updated || full_redraw)
@@ -630,10 +630,10 @@ void MsgScroll::Display(bool full_redraw)
 	  drawLine(screen, msg_line, i);
      }
    scroll_updated = false;
-   
+
    screen->update(area.x,area.y, scroll_width * 8, (scroll_height)*8);
-   
-   cursor_y = i-1;  
+
+   cursor_y = i-1;
    if (msg_line)
      cursor_x = msg_line->total_length;
    else
@@ -642,7 +642,7 @@ void MsgScroll::Display(bool full_redraw)
 else
  {
   if(show_cursor && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height) )
-    drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8); 
+    drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
  }
 
 }
@@ -652,7 +652,7 @@ inline void MsgScroll::drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y
  MsgText *token;
  std::list<MsgText *>::iterator iter;
  uint16 total_length = 0;
- 
+
  for(iter=msg_line->text.begin();iter != msg_line->text.end() ; iter++)
    {
     token = *iter;
@@ -675,14 +675,14 @@ void MsgScroll::drawCursor(uint16 x, uint16 y)
 	}
  else
     font->drawChar(screen, cursor_char + 5, x, y); //spinning ankh
-  
+
   screen->update(x, y, 8, 8);
   if(cursor_wait == MSGSCROLL_CURSOR_DELAY)
     {
      cursor_char = (cursor_char + 1) % 4;
      cursor_wait = 0;
     }
-  else 
+  else
      cursor_wait++;
 }
 
@@ -705,14 +705,14 @@ bool MsgScroll::input_buf_add_char(char c)
  MsgText token;
  input_buf.append(&c, 1);
  scroll_updated = true;
- 
+
  // Add char to scroll buffer
- 
+
  token.s.assign(&c, 1);
  token.font = font;
- 
+
  add_token(&token);
- 
+
  return true;
 }
 
@@ -723,10 +723,10 @@ bool MsgScroll::input_buf_remove_char()
     input_buf.erase(input_buf.length() - 1, 1);
     scroll_updated = true;
     remove_char();
-    
+
     return true;
    }
-   
+
  return false;
 }
 
@@ -740,9 +740,9 @@ bool MsgScroll::has_input()
 
 std::string MsgScroll::get_input()
 {
- // MsgScroll sets input_mode to false when it receives SDLK_ENTER 
+ // MsgScroll sets input_mode to false when it receives SDLK_ENTER
  std::string s;
- 
+
  if(input_mode == false)
    {
     s.assign(input_buf);
@@ -755,7 +755,7 @@ void MsgScroll::clear_page_break()
 {
   MsgText *msg_text = new MsgText("", NULL);
   holding_buffer.push_back(msg_text);
-  
+
   process_holding_buffer();
 }
 

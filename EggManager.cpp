@@ -25,7 +25,7 @@
 #include <cassert>
 #include "nuvieDefs.h"
 #include "Configuration.h"
- 
+
 #include "Actor.h"
 #include "TileManager.h"
 #include "ActorManager.h"
@@ -55,7 +55,7 @@ void EggManager::clean(bool keep_obj)
  for(egg_iter = egg_list.begin(); egg_iter != egg_list.end();)
    {
     egg = *egg_iter;
-    
+
     if(keep_obj == false)
       delete_obj(egg->obj);
 
@@ -68,13 +68,13 @@ void EggManager::clean(bool keep_obj)
 void EggManager::add_egg(Obj *egg_obj)
 {
  Egg *egg;
- 
+
  if(egg_obj == NULL)
   return;
 
  egg = new Egg();
  egg->obj = egg_obj;
- 
+
  egg_list.push_back(egg);
 
  return;
@@ -84,17 +84,17 @@ void EggManager::add_egg(Obj *egg_obj)
 void EggManager::remove_egg(Obj *egg_obj, bool keep_obj)
 {
  std::list<Egg *>::iterator egg_iter;
- 
+
  for(egg_iter = egg_list.begin(); egg_iter != egg_list.end(); egg_iter++)
    {
     if((*egg_iter)->obj == egg_obj)
        {
         if(keep_obj == false)
           delete_obj((*egg_iter)->obj);
-        
+
         delete *egg_iter;
         egg_list.erase(egg_iter);
-        
+
         break;
        }
    }
@@ -115,12 +115,12 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
 
     if(dist_x <= 32 && dist_y <= 32 && (*egg)->obj->z == z)
       {
-       
+
        if(((*egg)->obj->status & OBJ_STATUS_EGG_ACTIVE) == 0 || ((*egg)->obj->status & OBJ_STATUS_SEEN_EGG) == 0)
          {
           (*egg)->obj->status |= OBJ_STATUS_SEEN_EGG;
 		  (*egg)->obj->status |= OBJ_STATUS_EGG_ACTIVE;
-          
+
           hatch_probability = NUVIE_RAND()%100;
           printf("Checking Egg (%x,%x,%x). Rand: %d Probability: %d%%\n",(*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z,hatch_probability,(*egg)->obj->qty);
           spawn_egg((*egg)->obj, hatch_probability);
@@ -131,7 +131,7 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
 
     egg++;
    }
- 
+
  return;
 }
 

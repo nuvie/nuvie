@@ -65,9 +65,9 @@ SaveGame::~SaveGame()
 }
 
 void SaveGame::init(ObjManager *obj_manager)
-{ 
+{
  header.save_description.assign("");
- 
+
  if(objlist.get_size() > 0)
    objlist.close();
 
@@ -92,12 +92,12 @@ bool SaveGame::load_new()
  obj_manager = Game::get_game()->get_obj_manager();
 
  init(obj_manager);
- 
+
  // load surface chunks
-  
+
  config_get_path(config,"lzobjblk",filename);
  data = lzw.decompress_file(filename, decomp_size);
- 
+
  buf.open(data, decomp_size, NUVIE_BUF_NOCOPY);
 
  for(i=0;i<64;i++)
@@ -105,12 +105,12 @@ bool SaveGame::load_new()
 
  buf.close();
  free(data);
- 
+
  // load dungeon chunks
-  
+
  config_get_path(config,"lzdngblk",filename);
  data = lzw.decompress_file(filename,decomp_size);
- 
+
  buf.open(data, decomp_size, NUVIE_BUF_NOCOPY);
 
  for(i=0;i<5;i++)
@@ -118,13 +118,13 @@ bool SaveGame::load_new()
 
  pos = buf.position();
  buf.close();
- 
+
  // load objlist
-  
+
  objlist.open(&data[pos], decomp_size - pos, NUVIE_BUF_COPY);
 
  load_objlist();
- 
+
  free(data);
 
  return true;
@@ -141,24 +141,24 @@ bool SaveGame::load_original()
  NuvieIOFileRead *objblk_file;
  NuvieIOFileRead objlist_file;
  ObjManager *obj_manager;
- 
+
  objblk_file = new NuvieIOFileRead();
 
  obj_manager = Game::get_game()->get_obj_manager();
- 
+
  init(obj_manager);
-  
+
  key = config_get_game_key(config);
  key.append("/gamedir");
- 
+
  config->value(key,path);
 
  printf("Loading Original Game: %s%csavegame%c\n", path.c_str(), U6PATH_DELIMITER, U6PATH_DELIMITER);
- 
+
  filename = get_objblk_path((char *)path.c_str());
 
  len = strlen(filename);
- 
+
  i = 0;
 
  for(y = 'a';y < 'i'; y++)
@@ -167,14 +167,14 @@ bool SaveGame::load_original()
     {
      filename[len-1] = y;
      filename[len-2] = x;
-     
+
      if(objblk_file->open(filename) == false)
        {
         delete[] filename;
         delete objblk_file;
         return false;
        }
-       
+
      if(obj_manager->load_super_chunk((NuvieIO *)objblk_file,0,i) == false)
        {
         delete[] filename;
@@ -192,7 +192,7 @@ bool SaveGame::load_original()
   {
    filename[len-2] = x;
    objblk_file->open(filename);
-     
+
    if(obj_manager->load_super_chunk((NuvieIO *)objblk_file, i, 0) == false)
      {
       delete[] filename;
@@ -214,9 +214,9 @@ bool SaveGame::load_original()
 
  objlist.open(data, objlist_file.get_size(), NUVIE_BUF_COPY);
  free(data);
- 
+
  load_objlist();
- 
+
  return true;
 }
 
@@ -226,7 +226,7 @@ bool SaveGame::load_objlist()
  Game *game;
  GameClock *clock;
  ActorManager *actor_manager;
- ObjManager *obj_manager; 
+ ObjManager *obj_manager;
  ViewManager *view_manager;
  MapWindow *map_window;
  MsgScroll *scroll;
@@ -235,42 +235,42 @@ bool SaveGame::load_objlist()
  Portrait *portrait;
  uint16 px, py;
  uint8 pz;
- 
+
  game = Game::get_game();
- 
+
  clock = game->get_clock();
  actor_manager = game->get_actor_manager();
  obj_manager = game->get_obj_manager();
  scroll = game->get_scroll();
  map_window = game->get_map_window();
- 
+
  player = game->get_player();
  party = game->get_party();
  portrait = game->get_portrait();
  view_manager = game->get_view_manager();
- 
+
  clock->load(&objlist);
  actor_manager->load(&objlist);
- 
+
  party->load(&objlist);
  player->load(&objlist);
 
  portrait->load(&objlist); //load avatar portrait number.
- 
+
  view_manager->reload();
 
- 
+
  player->get_location(&px, &py, &pz);
- obj_manager->update(px, py, pz); // spawn eggs. 
-   
+ obj_manager->update(px, py, pz); // spawn eggs.
+
  map_window->centerMapOnActor(player->get_actor());
 
  scroll->display_string("\nGame Loaded\n\n");
- 
+
  scroll->init(player->get_name());
- 
+
  scroll->display_prompt();
- 
+
  return true;
 }
 
@@ -278,7 +278,7 @@ SaveHeader *SaveGame::load_info(NuvieIOFileRead *loadfile)
 {
  uint32 rmask, gmask, bmask;
  unsigned char save_desc[MAX_SAVE_DESC_LENGTH+1];
- 
+
  #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     rmask = 0x00ff0000;
     gmask = 0x0000ff00;
@@ -290,23 +290,23 @@ SaveHeader *SaveGame::load_info(NuvieIOFileRead *loadfile)
  #endif
 
  clean_up();
- 
+
  loadfile->seek(15); //skip version, textual id string and game tag
- 
+
  header.num_saves = loadfile->read2();
- 
+
  loadfile->readToBuf(save_desc, MAX_SAVE_DESC_LENGTH);
  save_desc[MAX_SAVE_DESC_LENGTH+1] = '\0';
  header.save_description.assign((const char *)save_desc);
- 
+
  //should we load the thumbnail here!?
- 
+
  header.thumbnail_data = new unsigned char[MAPWINDOW_THUMBNAIL_SIZE * MAPWINDOW_THUMBNAIL_SIZE * 3];
- 
+
  loadfile->readToBuf(header.thumbnail_data, MAPWINDOW_THUMBNAIL_SIZE * MAPWINDOW_THUMBNAIL_SIZE * 3); //seek past thumbnail data.
 
  header.thumbnail = SDL_CreateRGBSurfaceFrom(header.thumbnail_data, MAPWINDOW_THUMBNAIL_SIZE, MAPWINDOW_THUMBNAIL_SIZE, 24, MAPWINDOW_THUMBNAIL_SIZE * 3, rmask, gmask, bmask, 0);
- 
+
  return &header;
 }
 
@@ -320,26 +320,26 @@ bool SaveGame::load(const char *filename)
  int game_type;
  //char game_tag[3];
  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
- 
+
  init(obj_manager);
- 
+
  config->value("config/GameType",game_type);
 
  loadfile = new NuvieIOFileRead();
- 
+
  if(loadfile->open(filename) == false)
   {
    delete loadfile;
    return false;
   }
- 
+
  printf("Loading Game: %s\n", filename);
- 
+
  load_info(loadfile); //load header info
- 
+
  // load actor inventories
  obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, 0);
- 
+
  // load eggs
  obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, 0);
 
@@ -354,19 +354,19 @@ bool SaveGame::load(const char *filename)
    {
     obj_manager->load_super_chunk((NuvieIO *)loadfile, i+1, 0);
    }
- 
+
  objlist_size = loadfile->get_size() - loadfile->position();
- 
+
  data = loadfile->readBuf(objlist_size, &bytes_read);
- 
+
  objlist.open(data, objlist_size, NUVIE_BUF_COPY);
- 
+
  free(data);
  loadfile->close();
  delete loadfile;
-  
+
  load_objlist();
- 
+
  return true;
 }
 
@@ -378,13 +378,13 @@ bool SaveGame::save(const char *filename, std::string *save_description)
  char game_tag[3];
  unsigned char save_desc[MAX_SAVE_DESC_LENGTH];
  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
- 
+
  config->value("config/GameType",game_type);
 
  savefile = new NuvieIOFileWrite();
- 
+
  savefile->open(filename);
- 
+
  savefile->write2(NUVIE_SAVE_VERSION);
  savefile->writeBuf((const unsigned char *)"Nuvie Save", 11);
 
@@ -393,27 +393,27 @@ bool SaveGame::save(const char *filename, std::string *save_description)
    {
     case NUVIE_GAME_U6 : strcpy(game_tag, "U6");
                          break;
- 
+
     case NUVIE_GAME_MD : strcpy(game_tag, "MD");
                          break;
 
     case NUVIE_GAME_SE : strcpy(game_tag, "SE");
                          break;
    }
- 
+
  savefile->writeBuf((const unsigned char *)game_tag, 2);
- 
+
  header.num_saves++;
  savefile->write2(header.num_saves);
 
  memset(save_desc, 0, MAX_SAVE_DESC_LENGTH);
  strncpy((char *)save_desc, save_description->c_str(), MAX_SAVE_DESC_LENGTH);
  savefile->writeBuf(save_desc, MAX_SAVE_DESC_LENGTH);
- 
+
  save_thumbnail(savefile);
-  
+
  obj_manager->save_inventories(savefile);
- 
+
  obj_manager->save_eggs(savefile);
 
  // save surface objects
@@ -423,13 +423,13 @@ bool SaveGame::save(const char *filename, std::string *save_description)
  // save dungeon objects
  for(i=0;i<5;i++)
    obj_manager->save_super_chunk(savefile, i+1, 0);
- 
+
  save_objlist();
- 
+
  savefile->writeBuf(objlist.get_raw_data(), objlist.get_size());
 
  savefile->close();
- 
+
  return true;
 }
 
@@ -441,19 +441,19 @@ bool SaveGame::save_objlist()
  Player *player;
  Party *party;
  MsgScroll *scroll;
- 
+
  game = Game::get_game();
- 
+
  clock = game->get_clock();
  actor_manager = game->get_actor_manager();
- 
+
  player = game->get_player();
  party = game->get_party();
  scroll = game->get_scroll();
- 
+
  clock->save(&objlist);
  actor_manager->save(&objlist);
- 
+
  player->save(&objlist);
  party->save(&objlist);
 
@@ -466,14 +466,14 @@ bool SaveGame::save_objlist()
 bool SaveGame::save_thumbnail(NuvieIOFileWrite *savefile)
 {
  unsigned char *thumbnail;
- 
+
  MapWindow *map_window = Game::get_game()->get_map_window();
- 
+
  thumbnail = map_window->make_thumbnail();
- 
+
  savefile->writeBuf(thumbnail, MAPWINDOW_THUMBNAIL_SIZE * MAPWINDOW_THUMBNAIL_SIZE * 3);
  map_window->free_thumbnail();
- 
+
  return true;
 }
 
@@ -484,7 +484,7 @@ void SaveGame::clean_up()
    {
     SDL_FreeSurface(header.thumbnail);
     delete header.thumbnail_data;
-    
+
     header.thumbnail = NULL;
     header.thumbnail_data = NULL;
    }
@@ -515,7 +515,7 @@ char *SaveGame::get_objblk_path(char *path)
    }
 
  strcat(filename,OBJBLK_FILENAME);
-  
+
  return filename;
 }
 

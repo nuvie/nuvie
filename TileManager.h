@@ -76,7 +76,7 @@ unsigned char data[256];
 typedef struct {
 uint16 number_of_tiles_to_animate;
 uint16 tile_to_animate[0x20];
-uint16 first_anim_frame[0x20]; 
+uint16 first_anim_frame[0x20];
 uint8 and_masks[0x20];
 uint8 shift_values[0x20];
 sint8 loop_count[0x20]; // times to animate (-1 = infinite)
@@ -93,12 +93,12 @@ class TileManager
 
  char *desc_buf; // for look
  Configuration *config;
- 
+
  public:
- 
+
    TileManager(Configuration *cfg);
    ~TileManager();
-    
+
    bool loadTiles();
    Tile *get_tile(uint16 tile_num);
    Tile *get_anim_base_tile(uint16 tile_num);
@@ -115,13 +115,13 @@ class TileManager
    Tile *get_rotated_tile(Tile *tile, float rotate);
 
  protected:
-   
+
    bool loadAnimData();
    bool loadTileFlag();
    void decodePixelBlockTile(unsigned char *tile_data, uint16 tile_num);
 
    bool loadAnimMask();
 };
-   
+
 #endif /* __TileManager_h__ */
 

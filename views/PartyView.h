@@ -38,21 +38,21 @@ class PartyView : public View {
 
  Player *player;
  void *view_manager;
- 
+
  public:
  PartyView(Configuration *cfg);
  ~PartyView();
- 
+
  bool init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl, TileManager *tm, ObjManager *om);
  GUI_status MouseUp(int x,int y,int button);
  void Display(bool full_redraw);
- 
+
  protected:
- 
+
  void display_sun_moon_strip();
  void display_surface_strip();
  void display_dungeon_strip();
- 
+
 };
 
 #endif /* __PartyView_h__ */

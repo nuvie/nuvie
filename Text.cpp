@@ -38,7 +38,7 @@
 Text::Text(Configuration *cfg)
 {
  config = cfg;
- 
+
  font_data = NULL;
 }
 
@@ -47,21 +47,21 @@ Text::~Text()
  if(font_data != NULL)
    free(font_data);
 }
-   
+
 bool Text::loadFont()
 {
  std::string filename;
  NuvieIOFileRead u6_ch;
 
  config->pathFromValue("config/ultima6/gamedir","u6.ch",filename);
- 
+
  if(u6_ch.open(filename) == false)
    return false;
- 
+
  font_data = u6_ch.readAll();
  if(font_data == NULL)
    return false;
-   
+
  return true;
 }
 /*
@@ -81,10 +81,10 @@ bool Text::drawString(Screen *screen, const char *str, uint16 string_len, uint16
 {
  uint16 i, l; // l is drawn-index of character, to determine x
  bool highlight = false;
- 
+
  if(font_data == NULL)
    return false;
- 
+
  for(i=0, l=0;i<string_len;i++)
    {
     if(str[i] == '@')
@@ -113,7 +113,7 @@ uint8 Text::get_char_num(uint8 c, uint8 lang_num)
     if(lang_num == 1) // Britannian
       c += 128;
 
-    if(lang_num == 2) // Gargoylian 
+    if(lang_num == 2) // Gargoylian
       {
        if(c < 64) // note uses non alpha chars from britannian. :)
           c += 128;
@@ -135,15 +135,15 @@ void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
  uint16 pitch;
 
  memset(buf,0xff,64);
- 
+
  //pixels = (unsigned char *)screen->get_pixels();
  pixels = buf;
  pitch = 8;//screen->get_pitch();
- 
+
  font = &font_data[char_num * 8];
- 
+
  //pixels += y * pitch + x;
- 
+
  for(i=0;i<8;i++)
    {
     for(j=8;j>0;j--)
@@ -151,7 +151,7 @@ void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
        if(font[i] & (1<<(j-1)))
          pixels[8-j] = color; // 0th palette entry should be black
       }
-      
+
     pixels += pitch;
    }
 

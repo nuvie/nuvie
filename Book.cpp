@@ -44,12 +44,12 @@ Book::~Book()
 bool Book::init()
 {
  std::string filename;
- 
+
  config->pathFromValue("config/ultima6/gamedir","book.dat",filename);
- 
+
  if(books->open(filename,2) == false)
     return false;
- 
+
  return true;
 }
 

@@ -28,7 +28,7 @@
 
 class GUI_Font;
 
-class GUI_Text : public GUI_Widget 
+class GUI_Text : public GUI_Widget
 {
 protected:
 	Uint8 R, G, B;

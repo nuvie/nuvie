@@ -115,10 +115,10 @@ class Map
  TileManager *tile_manager;
  ObjManager *obj_manager;
  ActorManager *actor_manager;
- 
+
  uint8 *surface;
  uint8 *dungeons[5];
-  
+
  public:
 
  Map(Configuration *cfg);
@@ -140,14 +140,14 @@ class Map
 
  bool lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
 	 	       uint8 flags, LineTestResult &Result, uint32 skip = 0);
- 
+
  protected:
-  
+
  void insertSurfaceSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 schunk_num);
  void insertSurfaceChunk(unsigned char *chunk, uint16 x, uint16 y);
- 
+
  void insertDungeonSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 level);
- void insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 level); 
+ void insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 level);
 
  bool testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result);
 };

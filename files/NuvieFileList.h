@@ -39,42 +39,42 @@ class Configuration;
 class NuvieFileDesc
 {
  public:
-  
+
  std::string filename;
  time_t m_time;
 
  bool operator<(const NuvieFileDesc &rhs) { return (this->m_time < rhs.m_time); };
  bool operator()(const NuvieFileDesc &lhs, const NuvieFileDesc &rhs) { return (lhs.m_time > rhs.m_time); };
 };
-  
+
 class NuvieFileList
 {
  protected:
- 
+
  std::list<NuvieFileDesc> file_list;
  std::list<NuvieFileDesc>::iterator list_ptr;
- 
+
  std::string search_prefix;
  uint8 sort_mode;
- 
+
  public:
- 
+
    NuvieFileList();
    ~NuvieFileList();
-  
+
    bool open(const char *directory, const char *restrict, uint8 sort_mode);
-   
-   
+
+
    std::string *next();
    std::string *get_latest();
    uint32 get_num_files();
-   
+
    void close();
- 
+
  protected:
- 
+
  bool add_filename(const char *directory, const char *filename);
- 
+
 };
 
 #endif /* __NuvieFileList_h__ */

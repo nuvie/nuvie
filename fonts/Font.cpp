@@ -54,7 +54,7 @@ bool Font::init(unsigned char *data, uint16 num_c, uint16 char_offset)
 
  font_data = (unsigned char *)malloc(num_chars * 8);
  memcpy(font_data, data, num_chars * 8);
- 
+
  return true;
 }
 
@@ -67,10 +67,10 @@ bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16
 {
  uint16 i, l; // l is drawn-index of character, to determine x
  bool highlight = false;
- 
+
  if(font_data == NULL)
    return false;
- 
+
  for(i=0, l=0;i<string_len;i++)
    {
     if(str[i] == '@')
@@ -107,15 +107,15 @@ void Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
  uint16 pitch;
 
  memset(buf,0xff,64);
- 
+
  //pixels = (unsigned char *)screen->get_pixels();
  pixels = buf;
  pitch = 8;//screen->get_pitch();
- 
+
  font = &font_data[char_num * 8];
- 
+
  //pixels += y * pitch + x;
- 
+
  for(i=0;i<8;i++)
    {
     for(j=8;j>0;j--)
@@ -123,7 +123,7 @@ void Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
        if(font[i] & (1<<(j-1)))
          pixels[8-j] = color; // 0th palette entry should be black
       }
-      
+
     pixels += pitch;
    }
 

@@ -36,7 +36,7 @@ MDUseCode::~MDUseCode()
 
 bool MDUseCode::use_obj(Obj *obj, Obj *src_obj)
 {
- 
+
  if(obj == NULL)
    return false;
 
@@ -52,14 +52,14 @@ bool MDUseCode::use_obj(Obj *obj, Obj *src_obj)
                          obj->frame_n = 1;
                         }
                       break;
-                      
+
     case OBJ_MD_OUTER_HATCH : if(obj->frame_n == 1) //Blast the hatch open... cutscene here FIX
                                 {
                                  obj_manager->move(obj,obj->x+1,obj->y+1,obj->z);
                                  obj->frame_n = 2;
                                 }
                               break;
-                          
+
     case OBJ_MD_WOODEN_CRATE : if(obj->frame_n == 2) //we can't open nailed crates by hand.
                                  break;
     case OBJ_MD_BRASS_TRUNK :
@@ -68,7 +68,7 @@ bool MDUseCode::use_obj(Obj *obj, Obj *src_obj)
                       toggle_frame(obj); //open / close object
     case OBJ_MD_BAG : search_container(obj);
                       break;
-                      
+
     default : scroll->display_string("\nnot usable\n");
               break;
    }

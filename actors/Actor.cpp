@@ -56,17 +56,17 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  can_move = true;
  in_party = false;
  visible_flag = true;
- 
+
  worktype = 0;
  sched_pos = 0;
- 
+
  memset(readied_objects,0,sizeof(readied_objects));
  moves = 1;
 
  name ="";
  flags = 0;
 }
- 
+
 Actor::~Actor()
 {
  // free sched array
@@ -93,10 +93,10 @@ void Actor::init_from_obj(Obj *obj)
  x = obj->x;
  y = obj->y;
  z = obj->z;
- 
+
  obj_n = obj->obj_n;
  frame_n = obj->frame_n;
- 
+
  init();
  show();
  return;
@@ -135,14 +135,14 @@ bool Actor::is_at_position(Obj *obj)
 {
  if(obj->x == x && obj->y == y && obj->z == z)
    return true;
-   
+
  return false;
 }
 
 bool Actor::is_passable()
 {
  Tile *tile;
- 
+
  tile = obj_manager->get_obj_tile(obj_n,frame_n);
 
  return tile->passable;
@@ -185,9 +185,9 @@ void Actor::set_direction(uint8 d)
    direction = d;
 
  walk_frame = (walk_frame + 1) % 4;
- 
+
  frame_n = direction * 4 + walk_frame_tbl[walk_frame];
- 
+
 }
 
 
@@ -233,7 +233,7 @@ void Actor::face_location(MapCoord &loc)
 {
  face_location(loc.x, loc.y);
 }
- 
+
 /* Set direction towards an x,y location on the map.
  */
 void Actor::face_location(uint16 lx, uint16 ly)
@@ -267,7 +267,7 @@ void Actor::face_actor(Actor *a)
 {
  uint16 ax, ay;
  uint8 al;
-    
+
  a->get_location(&ax, &ay, &al);
  face_location(ax, ay);
 }
@@ -306,7 +306,7 @@ bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors)
 {
  Actor *a;
- 
+
     if(z > 5)
         return(false);
 
@@ -327,7 +327,7 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
 
 //    if(map->is_passable(new_x,new_y,new_z) == false)
 //        return(false);
-        
+
     return(true);
 }
 
@@ -405,7 +405,7 @@ void Actor::update()
    else
     {
      if(!in_party)
-       {       
+       {
         if(NUVIE_RAND()%80 == 1)
           {
            new_direction = NUVIE_RAND()%4;
@@ -514,7 +514,7 @@ void Actor::defend(uint16 hit)
 
 U6LList *Actor::get_inventory_list()
 {
- return obj_manager->get_actor_inventory(id_n); 
+ return obj_manager->get_actor_inventory(id_n);
 }
 
 
@@ -531,7 +531,7 @@ uint32 Actor::inventory_count_objects(bool inc_readied_objects)
  uint32 count = 0;
  U6Link *link;
  U6LList *inventory = get_inventory_list();
- 
+
  if(inc_readied_objects)
   {
    return inventory->count();
@@ -581,7 +581,7 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container, bool 
  U6LList *inventory;
  U6Link *link;
  Obj *obj;
- 
+
  inventory = container ? container->container
                        : get_inventory_list();
  for(link=inventory->start();link != NULL;link=link->next)
@@ -642,12 +642,12 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
 
 
 /* Returns a pointer to new or old object. (already added to inventory)
- */ 
+ */
 Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
 {
  Obj *obj = 0;
  uint8 frame_n = 0;
- 
+
  if(obj_n > 1024)
    {
     frame_n = (uint8)floorf(obj_n / 1024);
@@ -674,7 +674,7 @@ Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *contai
  Obj *obj;
  uint8 oqty = 0;
  uint32 deleted = 0;
- 
+
  while((obj = inventory_get_object(obj_n, quality, container, true))
        && (deleted < qty))
  {
@@ -730,14 +730,14 @@ Obj *Actor::inventory_get_obj_container(Obj *obj, Obj *container)
     return(NULL);
 }
 
- 
+
 float Actor::get_inventory_weight()
 {
  U6LList *inventory;
  U6Link *link;
  Obj *obj;
  float weight = 0;
- 
+
  if(obj_manager->actor_has_inventory(id_n) == false)
    return 0;
 
@@ -748,7 +748,7 @@ float Actor::get_inventory_weight()
    obj = (Obj *)link->data;
    weight += obj_manager->get_obj_weight(obj);
   }
- 
+
  return roundf(weight);
 }
 
@@ -758,7 +758,7 @@ float Actor::get_inventory_equip_weight()
  U6Link *link;
  Obj *obj;
  float weight = 0;
- 
+
  if(obj_manager->actor_has_inventory(id_n) == false)
    return 0;
 
@@ -770,7 +770,7 @@ float Actor::get_inventory_equip_weight()
    if((obj->status & 0x18) == 0x18) //object readied
       weight += obj_manager->get_obj_weight(obj);
   }
- 
+
  return roundf(weight);
 }
 
@@ -800,7 +800,7 @@ void Actor::inventory_parse_readied_objects()
  U6LList *inventory;
  U6Link *link;
  Obj *obj;
- 
+
  if(obj_manager->actor_has_inventory(id_n) == false)
    return;
 
@@ -839,7 +839,7 @@ bool Actor::add_readied_object(Obj *obj)
                          return false;
                       }
                      break;
-                     
+
     case ACTOR_HAND : if(readied_objects[ACTOR_HAND] == NULL)
                         readied_objects[ACTOR_HAND] = obj;
                       else
@@ -865,7 +865,7 @@ bool Actor::add_readied_object(Obj *obj)
 void Actor::remove_readied_object(Obj *obj)
 {
  uint8 location;
- 
+
  for(location=0;location<8;location++)
    {
     if(readied_objects[location] == obj)
@@ -883,7 +883,7 @@ void Actor::remove_readied_object(uint8 location)
  Obj *obj;
 
  obj = inventory_get_readied_object(location);
- 
+
  if(obj)
    {
     readied_objects[location] = NULL;
@@ -917,11 +917,11 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
 {
  uint16 i;
  unsigned char *sched_data_ptr;
- 
+
  sched = (Schedule**)malloc(sizeof(Schedule*) * (num+1));
- 
+
  sched_data_ptr = sched_data;
- 
+
  for(i=0;i<num;i++)
    {
     sched[i] = (Schedule *)malloc(sizeof(Schedule));
@@ -929,13 +929,13 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     sched[i]->hour = sched_data_ptr[0] & 0x1f; // 5 bits for hour
     sched[i]->day_of_week = sched_data_ptr[0] >> 5; // 3 bits for day of week
     sched[i]->worktype = sched_data_ptr[1];
-    
+
     sched[i]->x = sched_data_ptr[2];
-    sched[i]->x += (sched_data_ptr[3] & 0x3) << 8; 
-    
+    sched[i]->x += (sched_data_ptr[3] & 0x3) << 8;
+
     sched[i]->y = (sched_data_ptr[3] & 0xfc) >> 2;
     sched[i]->y += (sched_data_ptr[4] & 0xf) << 6;
-    
+
     sched[i]->z = (sched_data_ptr[4] & 0xf0) >> 4;
     sched_data_ptr += 5;
 #ifdef DEBUG
@@ -944,15 +944,15 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
    }
 
  sched[i] = NULL;
- 
+
 /*
  sched_pos = getSchedulePos(clock->get_hour());
- 
+
  if(sched[sched_pos] != NULL)
     set_worktype(sched[sched_pos]->worktype);
 */
- 
- 
+
+
  return;
 }
 
@@ -965,14 +965,14 @@ bool Actor::updateSchedule(uint8 hour)
 
  //hour = clock->get_hour();
  day_of_week = clock->get_day_of_week();
- 
+
  new_pos = getSchedulePos(hour);
- 
+
  if(new_pos == sched_pos) // schedules are the same so we do nothing.
   return false;
 
  sched_pos = new_pos;
- 
+
  if(sched[sched_pos] == NULL)
    return false;
 
@@ -982,7 +982,7 @@ bool Actor::updateSchedule(uint8 hour)
    printf("warning: tried to update schedule for non-movable actor %d\n", id_n);
    return(false);
   }
- 
+
  MapCoord sched_dest(sched[sched_pos]->x, sched[sched_pos]->y,
                      sched[sched_pos]->z);
  lwalk(sched_dest);
@@ -995,7 +995,7 @@ bool Actor::updateSchedule(uint8 hour)
 uint16 Actor::getSchedulePos(uint8 hour)
 {
  uint16 i;
-  
+
  for(i=0;sched[i] != NULL;i++)
   {
    if(sched[i]->hour > hour)
@@ -1007,7 +1007,7 @@ uint16 Actor::getSchedulePos(uint8 hour)
           i++;
      }
   }
-  
+
  if(i==0)
   return 0;
 
@@ -1021,9 +1021,9 @@ uint16 Actor::getSchedulePos(uint8 hour, uint8 day_of_week)
  uint16 i,j;
  if(id_n == 133)
   printf(".");
-  
+
  i = getSchedulePos(hour);
-   
+
  for(j=i;sched[j] != NULL && sched[j]->hour == sched[i]->hour;j++)
   {
    if(sched[j]->day_of_week > day_of_week)
@@ -1037,18 +1037,18 @@ uint16 Actor::getSchedulePos(uint8 hour, uint8 day_of_week)
         }
      }
   }
-  
+
  if(j==i)
   return j;
 
- return j-1; 
+ return j-1;
 }
 
 inline uint16 Actor::getSchedulePos(uint8 hour)
 {
  uint16 i;
  uint8 cur_hour;
- 
+
  for(i=0;sched[i] != NULL;i++)
   {
    if(sched[i]->hour > hour)
@@ -1059,7 +1059,7 @@ inline uint16 Actor::getSchedulePos(uint8 hour)
         {
          for(;sched[i+1] != NULL;) // move to the last schedule entry.
           i++;
-          
+
          if(sched[i]->day_of_week > 0) //rewind to the start of the hour set.
            {
             cur_hour = sched[i]->hour;
@@ -1068,7 +1068,7 @@ inline uint16 Actor::getSchedulePos(uint8 hour)
            }
         }
      }
-   else  
+   else
       for(;sched[i+1] != NULL && sched[i+1]->hour == sched[i]->hour;) //skip to next hour set.
         i++;
   }
@@ -1079,7 +1079,7 @@ inline uint16 Actor::getSchedulePos(uint8 hour)
     for(;i >= 1 && sched[i-1]->hour == cur_hour;)
       i--;
    }
-  
+
  if(i==0)
   return 0;
 
@@ -1118,17 +1118,17 @@ void Actor::clear_flag(uint8 bitflag)
 Obj *Actor::make_obj()
 {
  Obj *obj;
- 
+
  obj = new Obj();
- 
+
  obj->x = x;
  obj->y = y;
  obj->z = z;
- 
+
  obj->obj_n = obj_n;
  obj->frame_n = frame_n;
  obj->quality = id_n;
- 
+
  return obj;
 }
 

@@ -23,7 +23,7 @@
 
 #include "nuvieDefs.h"
 #include "Configuration.h"
- 
+
 #include "Actor.h"
 #include "ActorManager.h"
 #include "U6misc.h"
@@ -49,24 +49,24 @@ SaveManager::SaveManager(Configuration *cfg)
 void SaveManager::init()
 {
  std::string savedir_key;
- 
+
  config->value("config/GameType",game_type);
- 
+
  search_prefix.assign("nuvie");
  search_prefix.append(get_game_tag(game_type));
- 
+
  savegame = new SaveGame(config);
 
  savedir_key = config_get_game_key(config);
- 
+
  savedir_key.append("/savedir");
- 
+
  config->value(savedir_key, savedir);
- 
+
  if(savedir.size() == 0)
    {
     printf("Warning: savedir config variable not found. Using current directory for saves!\n");
-#ifdef WIN32    
+#ifdef WIN32
     savedir.assign("");
 #else
     savedir.assign(".");
@@ -97,14 +97,14 @@ bool SaveManager::load_latest_save()
  NuvieFileList filelist;
  std::string *filename;
  std::string fullpath;
- 
+
  if(filelist.open(savedir.c_str(), search_prefix.c_str(), NUVIE_SORT_TIME_DESC) == false)
    return false;
- 
+
  filename = filelist.get_latest();
 
  filelist.close();
- 
+
  if(filename != NULL)
    build_path(savedir, filename->c_str(), fullpath);
 
@@ -112,17 +112,17 @@ bool SaveManager::load_latest_save()
    {
     if(savegame->load_original() == false)          // fall back to savegame/ if no nuvie savegames exist.
       {
-       return savegame->load_new();                 // if all else fails try to load a new game. 
+       return savegame->load_new();                 // if all else fails try to load a new game.
       }
    }
 
- return true;   
+ return true;
 }
- 
+
 void SaveManager::create_dialog()
 {
  GUI *gui = GUI::get_gui();
-  
+
  if(dialog == NULL)
    {
     dialog = new SaveDialog((GUI_CallBack *)this);
@@ -130,19 +130,19 @@ void SaveManager::create_dialog()
     dialog->grab_focus();
     gui->AddWidget(dialog);
    }
-   
+
  return;
 }
 
 bool SaveManager::load(SaveSlot *save_slot)
 {
  std::string save_filename;
- 
+
  if(save_slot->get_filename()->size() == 0)
    return savegame->load_new();
 
  build_path(savedir, save_slot->get_filename()->c_str(), save_filename);
- 
+
  return savegame->load(save_filename.c_str());
 }
 
@@ -151,17 +151,17 @@ bool SaveManager::save(SaveSlot *save_slot)
  std::string save_filename;
  std::string save_fullpath;
  std::string save_desc;
- 
 
- 
+
+
  save_filename.assign(save_slot->get_filename()->c_str());
- 
+
  if(save_filename.size() == 0)
    save_filename = get_new_savefilename();
-   
+
  build_path(savedir, save_filename, save_fullpath);
 
- save_desc = save_slot->get_save_description(); 
+ save_desc = save_slot->get_save_description();
  return savegame->save(save_fullpath.c_str(), &save_desc);
 }
 
@@ -175,14 +175,14 @@ std::string SaveManager::get_new_savefilename()
  std::string num_str;
  char end_buf[8]; // 000.sav\0
  NuvieFileList filelist;
- 
+
  max_count = 0;
- 
+
  search_prefix = "nuvie";
  search_prefix.append(get_game_tag(game_type));
- 
+
  new_filename = search_prefix;
- 
+
  filelist.open(savedir.c_str(), search_prefix.c_str(), NUVIE_SORT_TIME_DESC);
 
  for(;(filename = filelist.next());)
@@ -192,23 +192,23 @@ std::string SaveManager::get_new_savefilename()
     count = atoi(num_str.c_str());
     if(count > max_count)
       max_count = count;
-   } 
- 
+   }
+
  filelist.close();
 
  max_count++;
- 
+
  snprintf(end_buf, 8, "%03d.sav",max_count);
- 
+
  new_filename.append(end_buf);
- 
+
  return new_filename;
 }
 
 GUI_status SaveManager::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
  SaveSlot *save_slot;
- 
+
  if(caller == dialog)
   {
    switch(msg)

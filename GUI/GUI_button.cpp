@@ -41,7 +41,7 @@ GUI_Button:: GUI_Button(void *data, int x, int y, SDL_Surface *image,
  : GUI_Widget(data, x, y, image->w, image->h)
 {
 	callback_object = callback;
-    
+
 	button = image;
 	button2 = image2;
 	freebutton = 0;
@@ -61,7 +61,7 @@ GUI_Button:: GUI_Button(void *data, int x, int y, int w, int h,
  : GUI_Widget(data, x, y, w, h)
 {
 	callback_object = callback;
-    
+
 	button = NULL;
 	button2 = NULL;
 	freebutton = 0;
@@ -82,7 +82,7 @@ GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, char *text,
  : GUI_Widget(data,x,y,w,h)
 {
   callback_object = callback;
-  
+
   if (font!=NULL)
   {
     buttonFont=font;
@@ -100,7 +100,7 @@ GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, char *text,
 
   is_checkable=is_checkbutton;
   checked=0;
-/*  
+/*
   if (is_checkable &&(checkmarks==NULL))
   {
     checkmarks=GUI_LoadImage(checker_w,checker_h,checker_pal,checker_data);
@@ -218,7 +218,7 @@ void GUI_Button:: Display(bool full_redraw)
 		  r = (pixel>>surface->format->Rshift)&0xFF;
 		  g = (pixel>>surface->format->Gshift)&0xFF;
 		  b = (pixel>>surface->format->Bshift)&0xFF;
-		  *((pointer)+surface->format->Rshift/8) = r; 
+		  *((pointer)+surface->format->Rshift/8) = r;
 		  *((pointer)+surface->format->Gshift/8) = g;
 		  *((pointer)+surface->format->Bshift/8) = b;
 		  pointer+=6;

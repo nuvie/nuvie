@@ -40,7 +40,7 @@
 #define NUVIE_SAVE_SCROLLER_ROWS   3
 #define NUVIE_SAVE_SCROLLER_HEIGHT NUVIE_SAVE_SCROLLER_ROWS * NUVIE_SAVESLOT_HEIGHT
 
-SaveDialog::SaveDialog(GUI_CallBack *callback) 
+SaveDialog::SaveDialog(GUI_CallBack *callback)
           : GUI_Dialog(10,4, 300, 192, 244, 216, 131, GUI_DIALOG_MOVABLE)
 {
  callback_object = callback;
@@ -57,11 +57,11 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
  GUI_Color bg_color = GUI_Color(162,144,87);
  GUI_Color bg_color1 = GUI_Color(147,131,74);
  GUI_Color *color_ptr;
-  
+
  if(filelist.open(save_directory, search_prefix, NUVIE_SORT_TIME_DESC) == false)
    return false;
 
- 
+
  scroller = new GUI_Scroller(10,26, 280, NUVIE_SAVE_SCROLLER_HEIGHT, 135,119,76, NUVIE_SAVESLOT_HEIGHT );
  widget = (GUI_Widget *) new GUI_Text(10, 12, 0, 0, 0, "Load/Save", gui->get_font());
  AddWidget(widget);
@@ -73,17 +73,17 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 // Add an empty slot at the top.
  widget = new SaveSlot(this, bg_color1);
  ((SaveSlot *)widget)->init(NULL, NULL);
-    
+
  scroller->AddWidget(widget);
-       
+
  color_ptr = &bg_color;
- 
+
  for(i=0; i < num_saves; i++)
    {
     filename = filelist.next();
     widget = new SaveSlot(this, *color_ptr);
     ((SaveSlot *)widget)->init(save_directory, filename);
-    
+
     scroller->AddWidget(widget);
 
     if(color_ptr == &bg_color)
@@ -100,7 +100,7 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
       {
        widget = new SaveSlot(this, *color_ptr);
        ((SaveSlot *)widget)->init(NULL);
-    
+
        scroller->AddWidget(widget);
 
        if(color_ptr == &bg_color)
@@ -114,7 +114,7 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 
  load_button = new GUI_Button(this, 135, 8, 40, 16, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(load_button);
- 
+
  save_button = new GUI_Button(this, 185, 8, 40, 16, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(save_button);
 
@@ -122,7 +122,7 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
  AddWidget(cancel_button);
 
  filelist.close();
- 
+
  return true;
 }
 
@@ -160,14 +160,14 @@ GUI_status SaveDialog::callback(uint16 msg, GUI_CallBack *caller, void *data)
         close_dialog();
      return GUI_YUM;
     }
-     
+
  if(caller == (GUI_CallBack *)save_button)
     {
      if(selected_slot != NULL && callback_object->callback(SAVEDIALOG_CB_SAVE, this, selected_slot) == GUI_YUM)
         close_dialog();
      return GUI_YUM;
     }
-    
+
  if(dynamic_cast<SaveSlot*>(caller))
    {
     if(msg == SAVESLOT_CB_SELECTED)
@@ -177,7 +177,7 @@ GUI_status SaveDialog::callback(uint16 msg, GUI_CallBack *caller, void *data)
 
        selected_slot = (SaveSlot *)caller;
       }
-      
+
     if(msg == SAVESLOT_CB_SAVE)
       {
        if(callback_object->callback(SAVEDIALOG_CB_SAVE, this, caller) == GUI_YUM) //caller = slot to save in

@@ -22,7 +22,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- */ 
+ */
 #include <string>
 
 #include "SDL.h"
@@ -38,7 +38,7 @@ class Screen
  Configuration *config;
  SDL_Surface *sdl_surface;
  RenderSurface *surface;
- 
+
  ScalerRegistry		scaler_reg;		// Scaler Registry
  const ScalerStruct	*scaler;		// Scaler
  int scaler_index;	// Index of Current Scaler
@@ -46,11 +46,11 @@ class Screen
 
  bool fullscreen;
  bool doubleBuffer;
- 
+
  uint8 palette[768];
  uint16 width;
  uint16 height;
- 
+
  SDL_Rect *update_rects;
  uint16 num_update_rects;
  uint16 max_update_rects;
@@ -66,7 +66,7 @@ class Screen
    ~Screen();
 
    bool init(uint16 width, uint16 height);
-   
+
    bool set_palette(uint8 *palette);
    bool rotate_palette(uint8 pos, uint8 length);
    bool clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect=NULL);
@@ -79,7 +79,7 @@ class Screen
    SDL_Surface *get_sdl_surface();
 
    bool fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
-      
+
    bool blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL);
    void blitbitmap(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
@@ -99,18 +99,18 @@ class Screen
    bool should_update_alphamap() { return updatingalphamap; }
    void lock();
    void unlock();
-   
+
    bool initScaler();
 
    unsigned char *copy_area(SDL_Rect *area = NULL);
    unsigned char *copy_area(SDL_Rect *area, uint16 down_scale);
-   
+
    void restore_area(unsigned char *pixels, SDL_Rect *area = NULL, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
 
 protected:
 
    bool fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
-   
+
    bool fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
 
 inline bool Screen::blit16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans);
@@ -123,7 +123,7 @@ inline void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *sr
 
    unsigned char *copy_area16(SDL_Rect *area, uint16 down_scale);
    unsigned char *copy_area32(SDL_Rect *area, uint16 down_scale);
-   
+
    unsigned char *copy_area16(SDL_Rect *area);
    unsigned char *copy_area32(SDL_Rect *area);
    void restore_area16(unsigned char *pixels, SDL_Rect *area, unsigned char *target = NULL, SDL_Rect *target_area = NULL);

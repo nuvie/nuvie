@@ -82,7 +82,7 @@ bool U6Lzw::is_valid_lzw_file(NuvieIOFileRead *input_file)
 
    // the last byte of the size header must be 0 (U6's files aren't *that* big)
     input_file->seek(3);
-    unsigned char byte3 = input_file->read1(); 
+    unsigned char byte3 = input_file->read1();
     if (byte3 != 0) { return(false); }
     // the 9 bits after the size header must be 0x100
     input_file->seek(4);
@@ -115,11 +115,11 @@ bool U6Lzw::is_valid_lzw_buffer(unsigned char *buf, uint32 length)
 }
 
 long U6Lzw::get_uncompressed_file_size(NuvieIOFileRead *input_file)
-{ 
+{
     long uncompressed_file_length;
- 
+
     if (is_valid_lzw_file(input_file))
-    {   
+    {
        input_file->seekStart();
        uncompressed_file_length = input_file->read4();
        input_file->seekStart();
@@ -129,14 +129,14 @@ long U6Lzw::get_uncompressed_file_size(NuvieIOFileRead *input_file)
  }
 
 long U6Lzw::get_uncompressed_buffer_size(unsigned char *buf, uint32 length)
-{ 
+{
     if (is_valid_lzw_buffer(buf,length))
-    {   
+    {
      return (buf[0] + (buf[1]<<8) + (buf[2]<<16) + (buf[3]<<24));
     }
     else { return (-1); }
- } 
- 
+ }
+
  // -----------------------------------------------------------------------------
  // LZW-decompress from buffer to buffer.
  // The parameters "source_length" and "destination_length" are currently unused.
@@ -147,15 +147,15 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
 {
  unsigned char *destination;
  sint32 uncomp_size;
- 
+
  uncomp_size = this->get_uncompressed_buffer_size(source,source_length);
  if(uncomp_size == -1)
    return(NULL);
  else
    destination_length = uncomp_size;
-   
+
  destination = (unsigned char *)malloc(destination_length);
- 
+
  if(decompress_buffer(source, source_length, destination, destination_length) == false)
    {
     free(destination);
@@ -163,25 +163,25 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
    }
 
  return destination;
-}    
+}
 
 bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsigned char *destination, uint32 destination_length)
 {
     const int max_codeword_length = 12;
     bool end_marker_reached = false;
     int codeword_size = 9;
-    long bits_read = 0; 
+    long bits_read = 0;
     int next_free_codeword = 0x102;
     int dictionary_size = 0x200;
- 
+
     long bytes_written = 0;
- 
+
     int cW;
     int pW = 0;  // get rid of uninitialized warning.
     unsigned char C;
 
     source += 4; //skip the filesize dword.
-    
+
     while (! end_marker_reached)
     {
        cW = get_next_codeword(&bits_read, source, codeword_size);
@@ -214,7 +214,7 @@ bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsig
               }
               // add pW+C to the dictionary
               dict->add(C,pW);
- 
+
               next_free_codeword++;
               if (next_free_codeword >= dictionary_size)
               {
@@ -246,15 +246,15 @@ bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsig
               }
               // add pW+C to the dictionary
               dict->add(C,pW);
-              
+
               next_free_codeword++;
               if (next_free_codeword >= dictionary_size)
               {
                  if (codeword_size < max_codeword_length)
-                 {                   
+                 {
                     codeword_size += 1;
                     dictionary_size *= 2;
-                 } 
+                 }
               }
            };
            break;
@@ -265,7 +265,7 @@ bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsig
 
  return true;
 }
- 
+
  // -----------------
  // from file to file
  // -----------------
@@ -275,31 +275,31 @@ unsigned char *U6Lzw::decompress_file(std::string filename, uint32 &destination_
     unsigned char *destination_buffer;
     uint32 source_buffer_size;
     NuvieIOFileRead input_file;
-    
+
     destination_length = 0;
     if(input_file.open(filename) == false)
       return NULL;
-    
+
     if (this->is_valid_lzw_file(&input_file))
     {
        // determine the buffer sizes
        source_buffer_size = input_file.get_size();
 //       destination_buffer_size = this->get_uncompressed_file_size(input_file);
- 
+
        // create the buffers
        source_buffer = (unsigned char *)malloc(sizeof(unsigned char *) * source_buffer_size);
 //       destination_buffer = (unsigned char *)malloc(sizeof(unsigned char *) * destination_buffer_size);
- 
+
        // read the input file into the source buffer
        input_file.seekStart();
        input_file.readToBuf(source_buffer,source_buffer_size);
- 
+
        // decompress the input file
        destination_buffer = this->decompress_buffer(source_buffer,source_buffer_size,destination_length);
- 
+
        // write the destination buffer to the output file
        //fwrite(destination_buffer, 1, destination_buffer_size, output_file);
- 
+
        // destroy the buffers
        free(source_buffer);
        //free(destination_buffer);
@@ -316,7 +316,7 @@ unsigned char *U6Lzw::decompress_file(std::string filename, uint32 &destination_
        input_file.seek(8);
        input_file.readToBuf(destination_buffer,destination_length);
     }
-  
+
  return destination_buffer;
 }
 
@@ -327,11 +327,11 @@ int U6Lzw::get_next_codeword (long *bits_read, unsigned char *source, int codewo
 {
     unsigned char b0,b1,b2;
     int codeword;
-    
+
     b0 = source[*bits_read/8];
     b1 = source[*bits_read/8+1];
     b2 = source[*bits_read/8+2];
- 
+
     codeword = ((b2 << 16) + (b1 << 8) + b0);
     codeword = codeword >> (*bits_read % 8);
     switch (codeword_size)
@@ -353,21 +353,21 @@ int U6Lzw::get_next_codeword (long *bits_read, unsigned char *source, int codewo
          break;
     }
     *bits_read += codeword_size;
- 
+
     return (codeword);
 }
- 
+
 void U6Lzw::output_root(unsigned char root, unsigned char *destination, long *position)
 {
     destination[*position] = root;
-    *position = *position + 1;   
+    *position = *position + 1;
 }
- 
+
 void U6Lzw::get_string(int codeword)
 {
     unsigned char root;
     int current_codeword;
-    
+
     current_codeword = codeword;
     stack->reset();
     while (current_codeword > 0xff)
@@ -376,7 +376,7 @@ void U6Lzw::get_string(int codeword)
        current_codeword = dict->get_codeword(current_codeword);
        stack->push(root);
     }
- 
+
     // push the root at the leaf
     stack->push((unsigned char)current_codeword);
 }
@@ -396,8 +396,8 @@ bool U6LzwStack::is_empty(void)
 {
  if(contains == 0)
    return true;
-   
- return false; 
+
+ return false;
 }
 
 bool U6LzwStack::is_full(void)
@@ -413,14 +413,14 @@ void U6LzwStack::push(unsigned char element)
  if(!this->is_full())
    {
     stack[contains] = element;
-    contains++;   
+    contains++;
    }
 }
 
 unsigned char U6LzwStack::pop(void)
 {
  unsigned char element;
-     
+
  if(!this->is_empty())
  {
   element = stack[contains-1];
@@ -441,9 +441,9 @@ unsigned char U6LzwStack::gettop(void)
    }
 
  return '\0'; /* what should we return here!? */
-} 
+}
 
-/* 
+/*
    --------------------------------------------------
    a dictionary class
    --------------------------------------------------
@@ -453,7 +453,7 @@ U6LzwDict::U6LzwDict()
 {
  this->reset();
 }
- 
+
 void U6LzwDict::reset(void)
 {
  contains = 0x102;

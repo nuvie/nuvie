@@ -39,7 +39,7 @@ class GUI_Scroller : public GUI_Widget {
     uint16 num_rows;
     GUI_ScrollBar *scroll_bar;
     uint16 disp_offset;
-    
+
 public:
 	/* Passed the area, color and shape */
 	GUI_Scroller(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, uint16 r_height);
@@ -47,12 +47,12 @@ public:
 	/* Map the color to the display */
 	virtual void SetDisplay(Screen *s);
     void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
-    
+
     int AddWidget(GUI_Widget *widget);
 
 	/* Show the widget  */
 	virtual void Display(bool full_redraw);
-    
+
     /* events, used for dragging the area. */
     GUI_status MouseDown(int x, int y, int button);
     GUI_status MouseUp(int x, int y, int button);

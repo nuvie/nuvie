@@ -54,17 +54,17 @@ struct SaveHeader
 
  SaveHeader() { num_saves = 0; actual_play_time = 0; game_play_time = 0; thumbnail = NULL; thumbnail_data = NULL; };
 };
- 
+
 class SaveGame
 {
  Configuration *config;
- 
+
  SaveHeader header;
 
  NuvieIOBuffer objlist;
- 
+
  public:
-  
+
  SaveGame(Configuration *cfg);
  ~SaveGame();
 
@@ -77,15 +77,15 @@ class SaveGame
 
  bool save(const char *filename, std::string *save_description);
 
- 
+
  uint16 get_num_saves() { return header.num_saves; };
- 
+
  protected:
 
  bool load_objlist();
  bool save_objlist();
  bool save_thumbnail(NuvieIOFileWrite *savefile);
-  
+
  void clean_up();
  char *get_objblk_path(char *path);
 };

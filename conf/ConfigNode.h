@@ -28,7 +28,7 @@ class ConfigNode
 	ConfigNode(Configuration& config_, std::string key_)
 		: config(config_), key(key_)
 	{ }
-	
+
  public:
 	~ConfigNode() { }
 

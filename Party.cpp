@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
- 
+
 #include "nuvieDefs.h"
 
 #include "U6misc.h"
@@ -44,7 +44,7 @@ Party::Party(Configuration *cfg)
 
  formation = PARTY_FORM_STANDARD;
  num_in_party = 0;
- 
+
 }
 
 Party::~Party()
@@ -58,7 +58,7 @@ bool Party::init(Game *g, ActorManager *am)
  game = g;
  actor_manager = am;
  map = g->get_game_map();
- 
+
  autowalk=false;
  in_vehicle = false;
 
@@ -84,27 +84,27 @@ bool Party::load(NuvieIO *objlist)
 
  autowalk = false;
  in_vehicle = false;
-  
+
  objlist->seek(0xff0);
  num_in_party = objlist->read1();
- 
- 
+
+
  objlist->seek(0xf00);
  for(i=0;i<num_in_party;i++)
   {
    objlist->readToBuf((unsigned char *)member[i].name,14); // read in Player name.
   }
- objlist->seek(0xfe0);  
+ objlist->seek(0xfe0);
  for(i=0;i<num_in_party;i++)
   {
    actor_num = objlist->read1();
    member[i].actor = actor_manager->get_actor(actor_num);
    member[i].actor->set_in_party(true);
   }
-  
+
  objlist->seek(0x1c12); // combat mode flag
  in_combat_mode = (bool)objlist->read1();
- 
+
  reform_party();
 
  autowalk=false;
@@ -118,33 +118,33 @@ bool Party::load(NuvieIO *objlist)
   }
 
  update_music();
- 
+
  return true;
 }
 
 bool Party::save(NuvieIO *objlist)
 {
  uint16 i;
- 
+
  objlist->seek(0xff0);
  objlist->write1(num_in_party);
- 
- 
+
+
  objlist->seek(0xf00);
  for(i=0;i<num_in_party;i++)
   {
    objlist->writeBuf((unsigned char *)member[i].name,14);
   }
 
- objlist->seek(0xfe0);  
+ objlist->seek(0xfe0);
  for(i=0;i<num_in_party;i++)
   {
    objlist->write1(member[i].actor->get_actor_num());
   }
-  
+
  objlist->seek(0x1c12); // combat mode flag
  objlist->write1((uint8)in_combat_mode);
- 
+
  return true;
 }
 
@@ -175,7 +175,7 @@ bool Party::add_actor(Actor *actor)
 bool Party::remove_actor(Actor *actor)
 {
  uint8 i;
- 
+
  for(i=0;i< num_in_party;i++)
   {
    if(member[i].actor->id_n == actor->id_n)
@@ -195,7 +195,7 @@ bool Party::remove_actor(Actor *actor)
 
  return false;
 }
- 
+
 void Party::split_gold()
 {
 }
@@ -541,13 +541,13 @@ void Party::find_leader(uint8 m)
 bool Party::has_obj(uint16 obj_n, uint8 quality)
 {
  uint16 i;
- 
+
  for(i=0;i<num_in_party;i++)
   {
    if(member[i].actor->inventory_get_object(obj_n, quality) != NULL) // we got a match
-     return true; 
+     return true;
   }
-  
+
  return false;
 }
 
@@ -558,7 +558,7 @@ uint16 Party::who_has_obj(uint16 obj_n, uint8 quality)
     for(i = 0; i < num_in_party; i++)
     {
         if(member[i].actor->inventory_get_object(obj_n, quality) != NULL)
-            return(member[i].actor->get_actor_num()); 
+            return(member[i].actor->get_actor_num());
     }
     return(0);
 }
@@ -581,7 +581,7 @@ bool Party::is_at(MapCoord &xyz, uint32 threshold)
 {
  return(is_at(xyz.x,xyz.y,xyz.z,threshold));
 }
- 
+
 bool Party::contains_actor(Actor *actor)
 {
  if(get_member_num(actor) >= 0)
@@ -600,7 +600,7 @@ void Party::set_in_combat_mode(bool value)
   // You can't enter combat mode while in a vehicle.
   if(value && in_vehicle)
      return;
-     
+
   in_combat_mode = value;
 
   update_music();
@@ -610,7 +610,7 @@ void Party::update_music()
 {
  SoundManager *s = Game::get_game()->get_sound_manager();
  MapCoord pos;
- 
+
  if(in_vehicle)
    {
     s->musicPlayFrom("boat");
@@ -621,9 +621,9 @@ void Party::update_music()
     s->musicPlayFrom("combat");
     return;
    }
- 
+
  pos = get_location(0); // FIX we need to get the position of the party leader.
- 
+
  switch(pos.z)
   {
    case 0 : s->musicPlayFrom("random"); break;
@@ -637,24 +637,24 @@ void Party::update_music()
 void Party::show()
 {
  uint16 i;
- 
+
  for(i=0;i<num_in_party;i++)
   {
    member[i].actor->show();
   }
-  
+
  return;
 }
 
 void Party::hide()
 {
  uint16 i;
- 
+
  for(i=0;i<num_in_party;i++)
   {
    member[i].actor->hide();
   }
-  
+
  return;
 }
 
@@ -715,7 +715,7 @@ void Party::enter_vehicle(Obj *ship_obj, uint32 step_delay)
     MapCoord walkto(ship_obj->x, ship_obj->y, ship_obj->z);
 
     dismount_from_horses();
-    
+
     if(step_delay)
         new TimedPartyMoveToVehicle(&walkto, ship_obj, step_delay);
     else
@@ -728,7 +728,7 @@ void Party::enter_vehicle(Obj *ship_obj, uint32 step_delay)
     autowalk = true;
 }
 
-void Party::set_in_vehicle(bool value) 
+void Party::set_in_vehicle(bool value)
 {
  in_vehicle = value;
 

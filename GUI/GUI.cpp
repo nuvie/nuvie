@@ -40,7 +40,7 @@ GUI *GUI::gui = NULL;
 GUI:: GUI(Configuration *c, Screen *s)
 {
  SDL_Surface *sdl_surface;
- 
+
     gui = this;
     config = c;
 	screen = s;
@@ -53,12 +53,12 @@ GUI:: GUI(Configuration *c, Screen *s)
   dragging = false;
   full_redraw = true;
   focused_widget = locked_widget = NULL;
-  
+
   sdl_surface = screen->get_sdl_surface();
-  
+
   selected_color = new GUI_Color(10,10,50);
   selected_color->map_color(sdl_surface);
-  
+
   gui_font = new GUI_Font();
   gui_drag_manager = new GUI_DragManager(screen);
 }
@@ -117,7 +117,7 @@ GUI:: AddWidget(GUI_Widget *widget)
 bool GUI::removeWidget(GUI_Widget *widget)
 {
  int i;
- 
+
   for(i=0; i<numwidgets; ++i)
     {
      if(widgets[i] == widget)
@@ -133,7 +133,7 @@ bool GUI::removeWidget(GUI_Widget *widget)
         return true;
        }
     }
- 
+
  return false;
 }
 
@@ -144,16 +144,16 @@ void GUI::CleanupDeletedWidgets(bool redraw)
     locked_widget = 0;
   if (focused_widget && focused_widget->Status() == WIDGET_DELETED)
     focused_widget = 0;
- 
+
   for(int i=0; i<numwidgets; )
   {
     if(widgets[i]->Status() == WIDGET_DELETED)
     {
       delete widgets[i];
-      
+
       for(int j=i+1; j<numwidgets; ++j ) //shuffle remaining widgets down.
         widgets[j-1] = widgets[j];
-      
+
       --numwidgets;
       if(redraw)
       {
@@ -172,7 +172,7 @@ bool GUI::moveWidget(GUI_Widget *widget, uint32 dx, uint32 dy)
    return false;
 
  widget->MoveRelative(dx, dy);
- 
+
  if(widget->Status() == WIDGET_VISIBLE)
    force_full_redraw();
 
@@ -188,7 +188,7 @@ void GUI::Display()
 {
 	int i;
     bool complete_redraw = false;
-    
+
 	//	hack for now to make everyhing under the cursor draw until I find a better
 	//	way of doing this...
 	if (dragging || full_redraw)
@@ -204,7 +204,7 @@ void GUI::Display()
 
 	int mx, my;
 	SDL_GetMouseState (&mx, &my);
-	
+
 	gui_drag_manager->draw (mx / screen_scale_factor, my / screen_scale_factor);
 
     if(full_redraw)
@@ -228,7 +228,7 @@ GUI:: HandleStatus(GUI_status status)
 }
 
 /* Handle an event, passing it to widgets until they return a status */
-GUI_status 
+GUI_status
 GUI:: HandleEvent(SDL_Event *event)
 {
 	int i;
@@ -270,7 +270,7 @@ GUI:: HandleEvent(SDL_Event *event)
   else
    {
 	  switch (event->type) {
- 		/* SDL_QUIT events quit the GUI */ 
+ 		/* SDL_QUIT events quit the GUI */
     // case SDL_QUIT:
 		// 	 status = GUI_QUIT;
 		// 	 break;
@@ -411,7 +411,7 @@ bool GUI::set_focus(GUI_Widget *widget)
 {
 /*
 	for(int i = 0; i < numwidgets; ++i)
-	  {	
+	  {
         if(!widget || (widgets[i] == widget)) // must be managed by GUI
 			{
 */
@@ -433,9 +433,9 @@ void GUI::lock_input(GUI_Widget *widget)
 std::string GUI::get_data_dir()
 {
  std::string datadir;
- 
+
  config->value("config/datadir", datadir, "");
- 
+
  return datadir;
 }
 

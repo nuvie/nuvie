@@ -58,7 +58,7 @@ typedef struct // object properties & usecode
 class U6UseCode: public UseCode, public CallBack
 {
  public:
- 
+
  U6UseCode(Game *g, Configuration *cfg);
  ~U6UseCode();
 

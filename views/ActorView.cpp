@@ -50,13 +50,13 @@ ActorView::~ActorView()
 bool ActorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
 {
  View::init(x,y,t,p,tm,om);
- 
+
  portrait = port;
- 
+
  add_command_icons(tmp_screen, view_manager);
- 
+
  set_party_member(0);
- 
+
  return true;
 }
 
@@ -78,7 +78,7 @@ bool ActorView::set_party_member(uint8 party_member)
  return true;
 }
 
- 
+
 void ActorView::Display(bool full_redraw)
 {
  if(portrait_data != NULL && (full_redraw || update_display))
@@ -91,7 +91,7 @@ void ActorView::Display(bool full_redraw)
    DisplayChildren(); //draw buttons
    screen->update(area.x, area.y, area.w, area.h);
   }
- 
+
 }
 
 void ActorView::add_command_icons(Screen *tmp_screen, void *view_manager)
@@ -99,47 +99,47 @@ void ActorView::add_command_icons(Screen *tmp_screen, void *view_manager)
  Tile *tile;
  SDL_Surface *button_image;
  SDL_Surface *button_image2;
- 
+
  //FIX need to handle clicked button image, check image free on destruct.
- 
+
  tile = tile_manager->get_tile(387); //left arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  left_button = new GUI_Button(this, 0, 80, button_image, button_image2, this);
  this->AddWidget(left_button);
- 
+
  tile = tile_manager->get_tile(384); //party view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  party_button = new GUI_Button(view_manager, 16, 80, button_image, button_image2,this);
  this->AddWidget(party_button);
- 
+
  tile = tile_manager->get_tile(386); //inventory view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  inventory_button = new GUI_Button(view_manager, 2*16, 80, button_image, button_image2, this);
  this->AddWidget(inventory_button);
- 
+
  tile = tile_manager->get_tile(388); //right arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  right_button = new GUI_Button(this, 3*16, 80, button_image, button_image2, this);
  this->AddWidget(right_button);
- 
+
  return;
 }
 
 void ActorView::display_name()
 {
  char *name;
- 
+
  name = party->get_actor_name(cur_party_member);
- 
+
  if(name == NULL)
   return;
-  
+
  text->drawString(screen, name, area.x + ((136) - strlen(name) * 8) / 2, area.y, 0);
- 
+
  return;
 }
 
@@ -147,9 +147,9 @@ void ActorView::display_actor_stats()
 {
  Actor *actor;
  char buf[10];
- 
+
  actor = party->get_actor(cur_party_member);
- 
+
  sprintf(buf,"STR:%d",actor->get_strength());
  text->drawString(screen, buf, area.x + 5 * 16, area.y + 16, 0);
 
@@ -162,7 +162,7 @@ void ActorView::display_actor_stats()
  text->drawString(screen, "Magic", area.x + 5 * 16, area.y + 16 + 4 * 8, 0);
  sprintf(buf,"%d/%d",actor->get_magic(),0);
  text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 5 * 8, 0);
- 
+
  text->drawString(screen, "Health", area.x + 5 * 16, area.y + 16 + 6 * 8, 0);
  sprintf(buf,"%3d/%d",actor->get_hp(),actor->get_maxhp());
  text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 7 * 8, 0);

@@ -49,9 +49,9 @@ U6Lib_n::~U6Lib_n(void)
 bool U6Lib_n::open(std::string &filename, uint8 size, uint8 type)
 {
  NuvieIOFileRead *file;
- 
+
  file = new NuvieIOFileRead();
- 
+
  if(file->open(filename) == false)
    {
     delete file;
@@ -67,7 +67,7 @@ bool U6Lib_n::open(NuvieIO *new_data, uint8 size, uint8 type)
 {
  game_type = type;
  data = new_data;
- 
+
  lib_size = size;
  this->parse_lib();
 
@@ -83,12 +83,12 @@ void U6Lib_n::close()
    free(items);
   }
  items = NULL;
- 
+
  if(data != NULL)
    data->close();
- 
+
  num_offsets = 0;
- 
+
  return;
 }
 
@@ -142,7 +142,7 @@ unsigned char *U6Lib_n::get_item(uint32 item_number, unsigned char *ret_buf)
 
  if(item_number >= num_offsets)
    return NULL;
-   
+
  item = &items[item_number];
 
  if(item->size == 0 || item->offset == 0)
@@ -154,7 +154,7 @@ unsigned char *U6Lib_n::get_item(uint32 item_number, unsigned char *ret_buf)
    buf = ret_buf;
 
  data->seek(item->offset);
- 
+
  if(is_compressed(item_number))
   {
    U6Lzw lzw;
@@ -164,14 +164,14 @@ unsigned char *U6Lib_n::get_item(uint32 item_number, unsigned char *ret_buf)
   }
  else
    data->readToBuf(buf,item->size);
- 
+
  return buf;
 }
 
 bool U6Lib_n::is_compressed(uint32 item_number)
 {
  uint32 i;
- 
+
  switch(items[item_number].flag)
   {
    case 0x1 :
@@ -194,12 +194,12 @@ void U6Lib_n::parse_lib()
 {
  uint32 i;
  bool skip4 = false;
- 
+
  if(lib_size != 2 && lib_size != 4)
    return;
 
  data->seekStart();
- 
+
  if(game_type != NUVIE_GAME_U6) //U6 doesn't have a 4 byte filesize header.
     {
      skip4 = true;
@@ -207,7 +207,7 @@ void U6Lib_n::parse_lib()
     }
  else
     filesize = data->get_size();
-    
+
  num_offsets = calculate_num_offsets(skip4);
 
  items = (U6LibItem *)malloc(sizeof(U6LibItem) * (num_offsets + 1));
@@ -232,8 +232,8 @@ void U6Lib_n::parse_lib()
  items[num_offsets].offset = filesize; //this is used to calculate the size of the last item in the lib.
 
  calculate_item_sizes();
- 
- return; 
+
+ return;
 }
 
 
@@ -255,7 +255,7 @@ void U6Lib_n::calculate_item_sizes()
 
     if(items[i].offset && (next_offset > items[i].offset))
         items[i].size = next_offset - items[i].offset;
-    
+
     items[i].uncomp_size = calculate_item_uncomp_size(&items[i]);
    }
 
@@ -266,7 +266,7 @@ void U6Lib_n::calculate_item_sizes()
 uint32 U6Lib_n::calculate_item_uncomp_size(U6LibItem *item)
 {
  uint32 uncomp_size = 0;
- 
+
  switch(item->flag)
   {
    case 0x01 : //compressed
@@ -297,8 +297,8 @@ uint32 U6Lib_n::calculate_num_offsets(bool skip4) //skip4 bytes of header.
 
  if(skip4)
    data->seek(0x4);
-   
- //find first non-zero offset and calculate num_offsets from that.  
+
+ //find first non-zero offset and calculate num_offsets from that.
  for(i=0;!data->is_end();i++)
    {
     if(lib_size == 2)
@@ -312,11 +312,11 @@ uint32 U6Lib_n::calculate_num_offsets(bool skip4) //skip4 bytes of header.
       {
        if(skip4)
          offset -= 4;
-         
+
        return offset / lib_size;
-      } 
+      }
    }
-      
+
  return 0;
 }
 

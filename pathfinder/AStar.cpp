@@ -164,7 +164,7 @@ sint32 AStar::step_cost(MapCoord &c1, MapCoord &c2)
     }
     if(c1.x != c2.x && c1.y != c2.y) // prefer non-diagonal
         ++c;
-    return(c); 
+    return(c);
 }
 
 

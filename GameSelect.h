@@ -31,18 +31,18 @@ class Game;
 class GameSelect
 {
  protected:
- 
+
  Configuration *config;
  Screen *screen;
  Game *game;
- 
+
  public:
- 
+
  GameSelect(Configuration *cfg);
  ~GameSelect();
- 
+
  uint8 load(Screen *s, uint8 game_type=NUVIE_GAME_NONE);
- 
+
 };
 
 #endif /* __GameSelect_h__ */

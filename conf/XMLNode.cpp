@@ -70,7 +70,7 @@ const string& XMLNode::reference(const string &h, bool &exists)
 				return (*it)->reference(k,exists);
 		}
 	}
-	
+
 	exists = false;
 	return c_empty_string;
 }
@@ -135,13 +135,13 @@ string XMLNode::dump(int depth)
 		if(!no_close)
 		{
 			s += string(depth,' ');
-		
+
 			s += "</";
 			s += close_tag(id);
 			s += ">\n";
 		}
 	}
-	
+
 	return s;
 }
 
@@ -168,7 +168,7 @@ void XMLNode::xmlassign(const string &key, const string &value)
 			return;
 		}
 	}
-	
+
 	// No match, so create a new node and do recursion
 	XMLNode *t = new XMLNode(k2);
 	nodelist.push_back(t);
@@ -226,23 +226,23 @@ static string decode_entity(const string &s, std::size_t &pos)
 {
 	std::size_t old_pos = pos;
 	string::size_type entity_name_len = s.find_first_of("; \t\r\n", pos) -pos -1;
-	
+
 	/* Call me paranoid... but I don't think having an end-of-line or similar
 		inside a &...; expression is 'good', valid though it may be. */
 	assert(s[pos+entity_name_len+1]==';');
-	
+
 	string entity_name = s.substr(pos+1, entity_name_len);
-	
+
 	pos += entity_name_len + 2;
-	
+
 	// std::cout << "DECODE: " << entity_name << endl;
-	
+
 	if     (entity_name == "amp")  return string("&");
 	else if(entity_name == "apos") return string("'");
 	else if(entity_name == "quot") return string("\"");
 	else if(entity_name == "lt")   return string("<");
 	else if(entity_name == "gt")   return string(">");
-	
+
 	return s.substr(old_pos, entity_name_len+2);
 }
 
@@ -250,7 +250,7 @@ static string close_tag(const string &s)
 {
 	if(s.find(" ") == string::npos)
 		return s;
-	
+
 	return s.substr(0,s.find(" "));
 }
 
@@ -336,7 +336,7 @@ void XMLNode::xmlparse(const string &s,std::size_t &pos)
 	trim(content);
 }
 
-/* Returns a list of key->value pairs that are found under the provided 
+/* Returns a list of key->value pairs that are found under the provided
    'basekey'.
 	Ignores comments (<!-- ... --> and doesn't return them.
 	Returns true if search is 'finished'
@@ -373,7 +373,7 @@ bool XMLNode::searchpairs(KeyTypeList &ktl, const string &basekey,
 void XMLNode::selectpairs(KeyTypeList &ktl, const std::string currkey)
 {
 	ktl.push_back(KeyType(currkey + id, content));
-	
+
 	for(std::vector<XMLNode *>::iterator i = nodelist.begin();
 		i != nodelist.end(); ++i)
 	{

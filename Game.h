@@ -66,7 +66,7 @@ class Game
  static Game *game;
  Configuration *config;
  Screen *screen;
- Background *background; 
+ Background *background;
  GamePalette *palette;
  Text *text;
  FontManager *font_manager;
@@ -79,12 +79,12 @@ class Game
  Player *player;
  Party *party;
  Converse *converse;
- 
+
  ViewManager *view_manager;
  EffectManager *effect_manager;
  SoundManager *sound_manager;
  SaveManager *save_manager;
- 
+
  GameClock *clock;
  Portrait *portrait;
  UseCode *usecode;
@@ -92,16 +92,16 @@ class Game
  Cursor *cursor;
 
  Event *event;
- 
+
  GUI *gui;
 
  GamePauseState pause_flags;
 
  public:
- 
+
  Game(Configuration *cfg);
  ~Game();
- 
+
  bool loadGame(Screen *screen, uint8 type);
  void init_cursor();
 
@@ -139,7 +139,7 @@ class Game
  MsgScroll *get_scroll()           { return(scroll); }
  Player *get_player()              { return(player); }
  Party *get_party()                { return(party); }
- Converse *get_converse()          { return(converse); } 
+ Converse *get_converse()          { return(converse); }
  ViewManager *get_view_manager()   { return(view_manager); }
  GameClock *get_clock()            { return(clock); }
  Portrait *get_portrait()          { return(portrait); }
@@ -148,13 +148,13 @@ class Game
  GUI *get_gui()                    { return(gui); }
  SoundManager *get_sound_manager() { return(sound_manager); }
  SaveManager *get_save_manager()   { return(save_manager); }
- 
+
  Cursor *get_cursor()              { return(cursor); }
  EffectManager *get_effect_manager()
                                    { return(effect_manager); }
 
  protected:
- 
+
 };
 
 #endif /* __Game_h__ */

@@ -51,7 +51,7 @@ PortraitView::~PortraitView()
 bool PortraitView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
 {
  View::init(x,y,t,p,tm,om);
- 
+
  portrait = port;
  cur_actor_num = 0;
  waiting = false;
@@ -82,7 +82,7 @@ bool PortraitView::set_portrait(Actor *actor, char *name)
 
  if(portrait_data != NULL)
    free(portrait_data);
-   
+
  portrait_data = portrait->get_portrait_data(actor);
 
  if(portrait_data == NULL)
@@ -100,11 +100,11 @@ bool PortraitView::set_portrait(Actor *actor, char *name)
 void PortraitView::display_name()
 {
  const char *name;
- 
+
  name = name_string->c_str();
- 
+
  text->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+80, 0);
- 
+
  return;
 }
 

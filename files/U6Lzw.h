@@ -5,7 +5,7 @@
 
 class NuvieIOFileRead;
 
-// LZW Stack 
+// LZW Stack
 
 #define STACK_SIZE 10000
 
@@ -44,7 +44,7 @@ class U6LzwDict
  public:
 
    U6LzwDict();
- 
+
    void reset(void);
    void add(unsigned char root, int codeword);
    unsigned char get_root(int codeword);
@@ -71,11 +71,11 @@ class U6Lzw
 
   bool is_valid_lzw_file(NuvieIOFileRead *input_file);
   bool is_valid_lzw_buffer(unsigned char *buf, uint32 length);
-  
+
   long get_uncompressed_file_size(NuvieIOFileRead *input_file);
   long get_uncompressed_buffer_size(unsigned char *buf, uint32 length);
-  
-  int get_next_codeword (long *bits_read, unsigned char *source, 
+
+  int get_next_codeword (long *bits_read, unsigned char *source,
                          int codeword_size);
   void output_root(unsigned char root, unsigned char *destination,
                    long *position);

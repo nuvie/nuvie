@@ -52,28 +52,28 @@ class MapWindow: public GUI_Widget
  friend class AnimManager;
  Configuration *config;
  int game_type;
- 
+
  Map *map;
- 
- uint16 *tmp_map_buf; // tempory buffer for flood fill, hide rooms. 
+
+ uint16 *tmp_map_buf; // tempory buffer for flood fill, hide rooms.
  uint16 tmp_map_width, tmp_map_height;
- 
+
  TileManager *tile_manager;
  ObjManager *obj_manager;
  ActorManager *actor_manager;
  AnimManager *anim_manager;
- 
+
  sint16 cur_x, cur_y;
  uint16 cursor_x, cursor_y;
  Tile *cursor_tile;
  Tile *use_tile;
- 
+
  bool show_cursor;
  bool show_use_cursor;
- 
+
  unsigned char *thumbnail;
  bool new_thumbnail;
- 
+
  uint16 win_width, win_height;
  uint8 cur_level;
 
@@ -89,19 +89,19 @@ class MapWindow: public GUI_Widget
  uint32 walk_start_delay;
 
  bool window_updated;
- 
+
  public:
- 
+
  MapWindow(Configuration *cfg);
  ~MapWindow();
- 
+
  bool init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am);
- 
+
  bool set_windowSize(uint16 width, uint16 height);
  void set_show_cursor(bool state);
  void set_show_use_cursor(bool state);
  void set_velocity(sint16 vx, sint16 vy) { vel_x = vx; vel_y = vy; }
- 
+
  void moveLevel(uint8 new_level);
  void moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add = 0, uint8 new_y_add = 0);
  void moveMapRelative(sint16 rel_x, sint16 rel_y);
@@ -110,10 +110,10 @@ class MapWindow: public GUI_Widget
  void centerMapOnActor(Actor *actor);
  void centerMap(uint16 x, uint16 y, uint8 z);
  void centerCursor();
- 
+
  void moveCursor(sint16 new_x, sint16 new_y);
  void moveCursorRelative(sint16 rel_x, sint16 rel_y);
- 
+
  const char *look(uint16 x, uint16 y, bool show_prefix = true);
  const char *lookAtCursor(bool show_prefix = true) { return(look(cursor_x, cursor_y, show_prefix)); }
  Obj *get_objAtCursor();
@@ -140,7 +140,7 @@ class MapWindow: public GUI_Widget
  void updateBlacking();
  void update();
  void Display(bool full_redraw);
- 
+
  virtual GUI_status	MouseDown (int x, int y, int button);
  virtual GUI_status	MouseUp (int x, int y, int button);
  virtual GUI_status	MouseMotion (int x, int y, Uint8 state);
@@ -180,7 +180,7 @@ protected:
  void generateTmpMap();
  void boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y);
  bool boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y);
- 
+
  void reshapeBoundary();
  inline bool tmpBufTileIsBlack(uint16 x, uint16 y);
  bool tmpBufTileIsBoundary(uint16 x, uint16 y);

@@ -36,14 +36,14 @@ SEUseCode::~SEUseCode()
 
 bool SEUseCode::use_obj(Obj *obj, Obj *src_obj)
 {
- 
+
  if(obj == NULL)
    return false;
 
   switch(obj->obj_n)
    {
     case OBJ_SE_DOOR : break;
-                  
+
     default : scroll->display_string("\nnot usable\n");
               break;
    }

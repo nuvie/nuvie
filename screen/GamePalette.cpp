@@ -37,14 +37,14 @@ GamePalette::GamePalette(Screen *s, Configuration *cfg)
 {
  screen = s;
  config = cfg;
- 
+
  palette = (uint8 *)malloc(768);
  memset(palette, 0, 768);
- 
+
  this->loadPalette();
- 
+
  screen->set_palette(palette);
- 
+
  counter = 0;
 }
 
@@ -62,29 +62,29 @@ bool GamePalette::loadPalette()
  unsigned char *buf;
  uint8 *pal_ptr;
  std::string key, game_name, game_id, pal_name;
- 
+
  config->value("config/GameName",game_name);
  config->value("config/GameID",game_id);
 
  pal_name.assign(game_id);
  pal_name.append("pal");
- 
+
  key.assign("config/");
  key.append(game_name);
  key.append("/gamedir");
-    
+
  config->pathFromValue(key,pal_name,filename);
- 
+
  if(file.open(filename) == false)
   {
    printf("Error: loading palette.\n");
    return false;
   }
- 
+
  buf = file.readAll();
- 
+
  pal_ptr = palette;
- 
+
  for(i=0,j=0;i<256;i++,j+=3)
   {
    pal_ptr[0] = buf[j]<<2;
@@ -94,7 +94,7 @@ bool GamePalette::loadPalette()
   }
 
  free(buf);
- 
+
  return true;
 }
 
@@ -108,9 +108,9 @@ void GamePalette::rotatePalette()
 
  if(counter == 0)
   {
-   screen->rotate_palette(0xf0,4); // 
+   screen->rotate_palette(0xf0,4); //
    screen->rotate_palette(0xf4,4); // Kitchen Cauldrons
-   screen->rotate_palette(0xfb,4); // 
+   screen->rotate_palette(0xfb,4); //
    counter = 1;
   }
  else

@@ -63,7 +63,7 @@ class XMLTree
 
 	typedef std::pair<std::string, std::string> KeyType;
 	typedef std::vector<KeyType> KeyTypeList;
-	
+
 	void getSubkeys(KeyTypeList &ktl, std::string basekey);
 
  private:

@@ -120,7 +120,7 @@ void GUI_Font::TextOut(SDL_Surface* context,int x, int y, char* text, int line_w
 void GUI_Font:: TextExtent(char *text, int *w, int *h, int line_wrap)
 {
  int len = strlen(text);
- 
+
  if(line_wrap && len > line_wrap)
    *w = line_wrap * charw;
  else

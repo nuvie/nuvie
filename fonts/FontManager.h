@@ -33,21 +33,21 @@ class Font;
 class FontManager
 {
  Configuration *config;
- 
+
  std::vector<Font *> fonts;
  uint16 num_fonts;
- 
+
  public:
-  
+
  FontManager(Configuration *cfg);
  ~FontManager();
- 
+
  bool init();
 
  Font *get_font(uint16 font_number);
 
  protected:
- 
+
 };
 
 #endif /* __FontManager_h__ */

@@ -29,7 +29,7 @@ class OpenGL;
 class RenderSurface {
 	uint8	*buffer;				// If the buffer is created, this is it
 	uint16	*zbuffer_priv;
-  SDL_Surface *sdl_surface;		
+  SDL_Surface *sdl_surface;
 public:
 	OpenGL	*opengl;				// OpenGL surface
 
@@ -42,7 +42,7 @@ public:
 	uint16	*zbuffer;				// Z Buffer
 
 	uint32	colour32[256];			// Palette as 16/32 bit colours
-	
+
 	// Dimentions
 	uint32	w, h;					// Surface width and height
 	uint32	pitch;					// Surface pitch
@@ -52,16 +52,16 @@ public:
 	uint32	gt, gb;					// Guard top and bottom (up goes negetive)
 
 	uint32	lock_count;				// Number of locks on surface
-  
+
 
 public:
 
 	// Default constructor for no created surface
 	RenderSurface();
-	
+
 	// Constructor for custom buffer
 	RenderSurface(uint32 width, uint32 height, uint32 bpp, uint8 *p);
-	
+
 	// Constructor for surface (with optional guardband)
 	RenderSurface(uint32 width, uint32 height, uint32 bpp, sint32 gb = 0);
 
@@ -125,7 +125,7 @@ public:
 
 
 	//FIX virtual void display8(uint8 *buf, int x, int y) = 0;
-  
+
    SDL_Surface *get_sdl_surface();
    const unsigned char *get_pixels();
 

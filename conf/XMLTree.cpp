@@ -81,18 +81,18 @@ void XMLTree::clear(std::string root_)
 bool XMLTree::readConfigFile(std::string fname)
 {
 	std::ifstream f;
-  
+
 //	if (!FileSystem::get_instance()->rawopen(f, fname, true))
 //		return false;
 // mode = std::ios::in;
- 
+
  f.open(fname.c_str(),std::ios::in);
  if(f.is_open() == false)
   {
    PERR("Error opening config file");
    return false;
   }
-  
+
 	std::string sbuf, line;
 	while (f.good()) {
 		std::getline(f, line);
@@ -100,7 +100,7 @@ bool XMLTree::readConfigFile(std::string fname)
 	}
 
 	f.close();
- 
+
 	if (!readConfigString(sbuf))
 		return false;
 
@@ -122,7 +122,7 @@ bool XMLTree::readConfigString(std::string s)
 		return false;
 	}
 	++nn;
-	
+
 	tree->xmlparse(sbuf,nn);
 
 	return true;
@@ -142,7 +142,7 @@ void XMLTree::write()
 	//if (!FileSystem::get_instance()->rawopen(f, filename, true))
 	//	return;
   f.open(filename.c_str(),std::ios::out);
-  
+
 	f << dump();
 
 	f.close();

@@ -84,30 +84,30 @@ class Party {
  Configuration *config;
  ActorManager *actor_manager;
  Map *map;
- 
+
  PartyMember member[16];
  uint8 num_in_party; // number of party members.
  uint8 formation; // walking formation
  bool autowalk; // party is automatically walking to a destination
- 
+
  bool in_vehicle; //Party is in a vehicle.
  bool in_combat_mode;
- 
+
  public:
- 
+
  Party(Configuration *cfg);
  ~Party();
- 
+
  bool init(Game *g, ActorManager *am);
  bool load(NuvieIO *objlist);
  bool save(NuvieIO *objlist);
- 
+
  bool add_actor(Actor *actor);
  bool remove_actor(Actor *actor);
- 
+
  void split_gold();
  void gather_gold();
- 
+
  uint8 get_party_size();
  uint8 get_party_max() { return(8); } // U6
  Actor *get_actor(uint8 member_num);
@@ -131,18 +131,18 @@ class Party {
  bool contains_actor(uint8 actor_num);
  bool is_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);
  bool is_at(MapCoord &xyz, uint32 threshold = 0);
- 
+
  void set_in_vehicle(bool value);
  bool is_in_vehicle() { return in_vehicle; }
- 
+
  void set_in_combat_mode(bool value);
  bool is_in_combat_mode() { return in_combat_mode; }
- 
+
  void update_music();
- 
+
  void show();
  void hide();
- 
+
  bool move(uint16 dx, uint16 dy, uint8 dz);
 
  void walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay = 0);
@@ -150,7 +150,7 @@ class Party {
  void walk(Obj *moongate, MapCoord *teleport, uint32 step_delay = 0);
  void enter_vehicle(Obj *ship_obj, uint32 step_delay = 0);
  void stop_walking();
- bool get_autowalk() { return(autowalk); } 
+ bool get_autowalk() { return(autowalk); }
 
  void dismount_from_horses();
 

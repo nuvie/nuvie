@@ -652,7 +652,7 @@ void TossAnim::update_position()
 
 /*** ExplosiveAnim ***/
 
-    
+
 ExplosiveAnim::ExplosiveAnim(MapCoord *start, uint32 size)
 {
     exploding_tile_num = 393; // U6 FIREBALL_EFFECT

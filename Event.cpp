@@ -89,7 +89,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  converse = c;
  view_manager = vm;
  usecode = uc;
- 
+
  mode = MOVE_MODE;
 
  book = new Book(config);
@@ -153,7 +153,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		}
 		return	true;
 	}
-	
+
 	switch (event->key.keysym.sym)
 	{
 		//	keypad arrow keys
@@ -202,11 +202,11 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
                         else
                             view_manager->get_inventory_view()->set_show_cursor(true);
                         break;
-		case SDLK_s     : 
+		case SDLK_s     :
 				saveDialog();
 			break;
 
-		case SDLK_q     : 
+		case SDLK_q     :
 			if(mode == MOVE_MODE && !showingQuitDialog)
 			{
 				showingQuitDialog = true;
@@ -289,7 +289,7 @@ bool Event::handleEvent(const SDL_Event *event)
 	if(mode == WAIT_MODE)
 		return true;
 
-	switch (event->type) 
+	switch (event->type)
 	{
 		case SDL_MOUSEMOTION:
 			break;
@@ -317,7 +317,7 @@ bool Event::handleEvent(const SDL_Event *event)
 
 		default:
 			break;
-	}	
+	}
 
 	if(active_alt_code && scroll->has_input())
 		alt_code_input(scroll->get_input().c_str());
@@ -520,7 +520,7 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
             return(false); // ???
         }
 
-        // objects with 0 weight aren't gettable. 
+        // objects with 0 weight aren't gettable.
         weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
         if(weight != 0 && weight != 25.5) //25.5 is the max weight and means an object is movable but not getable.
         {
@@ -575,7 +575,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  Obj *obj;
  uint16 x,y;
  uint8 level;
- 
+
  player->get_location(&x,&y,&level);
 
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
@@ -932,24 +932,24 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
               {
                // We can place an object on a bench or table. Or on any other object if
                // the object is passable and not on a boundary.
-               
+
                obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
-               if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP || 
+               if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
                   (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
                  can_move = true;
               }
             }
          else
-           can_move = true;   
+           can_move = true;
 
         /* do normal move if no usecode or return from usecode was true */
- 
+
         if(can_move)
           {
            if(!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y))
                 can_move = obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
           }
-        
+
         if(!can_move)
            scroll->display_string("Blocked.\n\n");
     }
@@ -1049,7 +1049,7 @@ void Event::alt_code_input(const char *in)
                 scroll->display_string("\n<zi>: ");
                 get_scroll_input();
             }
-            else 
+            else
             {
                 alt_code_teleport(teleport_string.c_str());
                 scroll->display_string("\n");
@@ -1219,7 +1219,7 @@ bool Event::alt_code_teleport(const char *location_string)
 
  if(!location_string || !strlen(location_string))
    return false;
- 
+
  x = strtol(location_string,&next_num,16);
  y = strtol(next_num,&next_num,16);
  z = strtol(next_num,&next_num,16);
@@ -1228,10 +1228,10 @@ bool Event::alt_code_teleport(const char *location_string)
    return false;
 
  player->move(x,y,z);
- 
+
  // This is a bit of a hack but we would like to update the music when teleporting.
  Game::get_game()->get_party()->update_music();
- 
+
  return true;
 }
 
@@ -1530,7 +1530,7 @@ void Event::quitDialog()
  GUI_Widget *quit_dialog;
 
  quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", (GUI_CallBack *)this, (GUI_CallBack *)this);
-   
+
  gui->AddWidget(quit_dialog);
  gui->lock_input(quit_dialog);
  return;
@@ -1542,13 +1542,13 @@ void Event::saveDialog()
 
  save_manager->create_dialog();
 
- return; 
+ return;
 }
 
 GUI_status Event::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
  GUI_Widget *widget;
-  
+
  switch(msg) // Handle callback from quit dialog.
   {
    case YESNODIALOG_CB_YES :  showingQuitDialog = false;
@@ -1699,7 +1699,7 @@ bool Event::drop_select(Obj *obj, uint8 qty)
     use_obj = obj;
     scroll->display_string(use_obj ? obj_manager->look_obj(use_obj) : "nothing");
     scroll->display_string("\n");
-    
+
     if(use_obj)
     {
         if(qty == 0 && obj_manager->is_stackable(use_obj) && use_obj->qty > 1)

@@ -59,11 +59,11 @@ public:
 	virtual bool load(std::string filename);
   bool load(U6Lib_n *file, uint32 index);
 	virtual bool load(unsigned char *buf);
-  
+
 	unsigned char *get_data();
   SDL_Surface *get_shape_surface();
 	bool get_hot_point(uint16 *x, uint16 *y);
-	bool get_size(uint16 *w, uint16 *h);  
+	bool get_size(uint16 *w, uint16 *h);
 };
 
 #endif

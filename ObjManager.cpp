@@ -59,10 +59,10 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
  memset(actor_inventories,0,sizeof(actor_inventories));
 
  for(i=0;i<64;i++)
-  { 
+  {
    surface[i] = iAVLAllocTree(get_iAVLKey);
   }
-  
+
  for(i=0;i<5;i++)
   {
    dungeon[i] = iAVLAllocTree(get_iAVLKey);
@@ -71,15 +71,15 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
  last_obj_blk_x = 0;
  last_obj_blk_y = 0;
  last_obj_blk_z = OBJ_TEMP_INIT;
-  
+
  config->value("config/GameType",game_type);
 
  //save the egg tile_num incase we want to switch egg display on again.
  egg_tile_num = get_obj_tile_num(obj_egg_table[game_type]);
- 
+
  show_eggs_key = config_get_game_key(config);
  show_eggs_key.append("/show_eggs");
- 
+
  config->value(show_eggs_key, show_eggs);
 
  //if(!show_eggs)
@@ -98,7 +98,7 @@ bool ObjManager::load_basetile()
  uint16 i;
 
  config_get_path(config,"basetile",filename);
-  
+
  if(basetile.open(filename) == false)
    return false;
 
@@ -135,7 +135,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
  uint16 i;
  U6LList *inventory_list;
  iAVLTree *obj_tree;
- 
+
  if(level == 0)
    obj_tree = surface[chunk_offset];
  else
@@ -145,11 +145,11 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
 
  num_objs = chunk_buf->read2();
  //printf("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
- 
+
  for(i=0;i<num_objs;i++)
   {
    obj = loadObj(chunk_buf,i);
-     
+
    list->add(obj);
 
    if(obj->obj_n == obj_egg_table[game_type])
@@ -187,7 +187,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
    //print_obj(obj,false);
   }
 
- 
+
  delete list;
 
  return true;
@@ -202,21 +202,21 @@ bool ObjManager::save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_of
  uint32 start_pos;
  uint32 finish_pos;
  uint16 egg_type = obj_egg_table[game_type];
- 
+
  if(level == 0)
    obj_tree = surface[chunk_offset];
  else
    obj_tree = dungeon[level-1];
 
  item = (ObjTreeNode *)iAVLFirst(&node, obj_tree);
- 
+
  start_pos = save_buf->position();
- 
+
  //skip the 2 bytes for number of objects.
  save_buf->write2(0); // we'll fill this in later on.
- 
+
  obj_save_count = 0;
- 
+
  for(;item;)
   {
    for(link = item->obj_list->end(); link != NULL; link=link->prev)
@@ -227,13 +227,13 @@ bool ObjManager::save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_of
 
    item = (ObjTreeNode *)iAVLNext(&node);
   }
- 
+
  finish_pos = save_buf->position();
  save_buf->seek(start_pos);
- 
+
  save_buf->write2(obj_save_count);
  save_buf->seek(finish_pos);
- 
+
  return true;
 }
 
@@ -250,7 +250,7 @@ bool ObjManager::save_eggs(NuvieIO *save_buf)
  save_buf->write2(0);
 
  egg_list = egg_manager->get_egg_list();
-  
+
  obj_save_count = 0;
 
  for(egg = egg_list->begin(); egg != egg_list->end();egg++)
@@ -258,7 +258,7 @@ bool ObjManager::save_eggs(NuvieIO *save_buf)
 
  finish_pos = save_buf->position();
  save_buf->seek(start_pos);
- 
+
  save_buf->write2(obj_save_count);
  save_buf->seek(finish_pos);
 
@@ -273,13 +273,13 @@ bool ObjManager::save_inventories(NuvieIO *save_buf)
  uint32 finish_pos;
  U6Link *link;
  uint16 i;
- 
+
  start_pos = save_buf->position();
 
  save_buf->write2(0);
- 
+
  obj_save_count = 0;
- 
+
  for(i=0;i<256;i++)
    {
     if(actor_inventories[i] != NULL)
@@ -290,15 +290,15 @@ bool ObjManager::save_inventories(NuvieIO *save_buf)
          }
       }
    }
- 
+
  printf("Actor Inventories: %d\n", obj_save_count);
 
  finish_pos = save_buf->position();
  save_buf->seek(start_pos);
- 
+
  save_buf->write2(obj_save_count);
  save_buf->seek(finish_pos);
- 
+
  return true;
 }
 
@@ -306,7 +306,7 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
 {
  uint8 b;
  U6Link *link;
- 
+
  if(parent) //obj is in a container
   {
    obj->status |= OBJ_STATUS_IN_CONTAINER;
@@ -329,17 +329,17 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
  b = obj->x >> 8;
  b += obj->y << 2;
  save_buf->write1(b);
- 
+
  b = obj->y >> 6;
  b += obj->z << 4;
-  
+
  save_buf->write1(b);
 
  save_buf->write1(obj->obj_n & 0xff);
- 
+
  b = obj->obj_n >> 8;
  b += obj->frame_n << 2;
- 
+
  save_buf->write1(b);
 
  save_buf->write1(obj->qty);
@@ -348,7 +348,7 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
  if(obj->container)
   {
    obj->objblk_n = obj_save_count;
-   
+
    for(link = obj->container->end(); link != NULL; link=link->prev)
      save_obj(save_buf, (Obj *)link->data, obj);
   }
@@ -363,7 +363,7 @@ void ObjManager::clean()
  uint8 i;
 
  egg_manager->clean(show_eggs); //show_eggs determines wether we delete the actual Objs from egg manager.
-  
+
  for(i=0;i<64;i++)
   iAVLCleanTree(surface[i], clean_obj_tree_node);
 
@@ -371,10 +371,10 @@ void ObjManager::clean()
   iAVLCleanTree(dungeon[i], clean_obj_tree_node);
 
  clean_actor_inventories();
- 
+
  // remove the temporary object list. The objects were deleted from the surface and dungeon trees.
  temp_obj_list.clear();
- 
+
  return;
 }
 
@@ -382,7 +382,7 @@ void ObjManager::clean_actor_inventories()
 {
  U6Link *link;
  uint16 i;
- 
+
  for(i=0; i < 256; i++)
   {
    if(actor_inventories[i])
@@ -395,7 +395,7 @@ void ObjManager::clean_actor_inventories()
 
  return;
 }
- 
+
 void ObjManager::show_egg_objs(bool value)
 {
  if(value == true)
@@ -403,7 +403,7 @@ void ObjManager::show_egg_objs(bool value)
  else
    set_obj_tile_num(obj_egg_table[game_type], 0); //nothing. we don't want to show eggs.
 
- return;   
+ return;
 }
 
 /*
@@ -503,11 +503,11 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
          {
           if(obj_list->end() != NULL)
             object_at_location = true;
-         }   
+         }
        if(obj_list != NULL)
          {
           link = obj_list->end();
-            
+
           for(check_tile = false;link != NULL;link = link->prev)
             {
              obj = (Obj *)link->data;
@@ -536,7 +536,7 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
 
  if(object_at_location)
    return OBJ_PASSABLE;
-            
+
  return OBJ_NO_OBJ;
 }
 
@@ -546,9 +546,9 @@ bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
  U6Link *link;
  Obj *obj;
  Tile *tile;
- 
+
  obj_list = get_obj_list(x,y,level);
- 
+
  if(obj_list)
   {
    for(link=obj_list->start();link!=NULL;link=link->next)
@@ -559,7 +559,7 @@ bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
         return true;
      }
   }
-  
+
  return false;
 }
 
@@ -666,13 +666,13 @@ Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y,
  U6LList *obj_list;
  U6Link *link;
  Obj *obj;
- 
+
  obj_list = get_obj_list(x,y,z);
- 
+
  if(obj_list == NULL)
   return NULL;
-  
- for(link=obj_list->start();link != NULL; link=link->next) 
+
+ for(link=obj_list->start();link != NULL; link=link->next)
    {
     obj = (Obj *)link->data;
     if(obj->obj_n == obj_n)
@@ -744,16 +744,16 @@ bool ObjManager::remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y,
  U6Link *link;
  Obj *obj;
  bool objects_deleted = false;
- 
+
  obj_list = get_obj_list(x,y,z);
 
  if(obj_list != NULL)
    {
-    for(link=obj_list->start();link != NULL; ) 
+    for(link=obj_list->start();link != NULL; )
      {
       obj = (Obj *)link->data;
       link=link->next;
-      
+
       if(obj->obj_n == obj_n)
         {
          obj_list->remove(obj);
@@ -769,7 +769,7 @@ bool ObjManager::remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y,
 Obj *ObjManager::copy_obj(Obj *obj)
 {
  Obj *new_obj;
- 
+
  if(obj == NULL)
    return NULL;
 
@@ -777,7 +777,7 @@ Obj *ObjManager::copy_obj(Obj *obj)
 
  new_obj->obj_n = obj->obj_n;
  new_obj->frame_n = obj->frame_n;
-   
+
  new_obj->status = obj->status;
  new_obj->qty = obj->qty;
  new_obj->quality = obj->quality;
@@ -787,7 +787,7 @@ Obj *ObjManager::copy_obj(Obj *obj)
  new_obj->z = obj->z;
 
  // should we copy container???
- 
+
  return new_obj;
 }
 
@@ -921,7 +921,7 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
 
  if(prev_obj == NULL)
    passed_prev_obj = true;
- 
+
  if(level == 0)
    {
     for(i=0;i<64;i++)
@@ -942,14 +942,14 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
 }
 
 inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree, bool *passed_prev_obj)
-{ 
+{
  iAVLCursor cursor;
  ObjTreeNode *node;
  U6Link *link;
  Obj *new_obj;
 
  node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
-   
+
  for(;node != NULL;)
   {
    link = ((U6LList *)(node->obj_list))->start();
@@ -962,7 +962,7 @@ inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_
           *passed_prev_obj = true;
         else
           {
-           if(*passed_prev_obj)  
+           if(*passed_prev_obj)
              return new_obj;
           }
        }
@@ -970,7 +970,7 @@ inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_
 
    node = (ObjTreeNode *)iAVLNext(&cursor);
   }
-  
+
  return NULL;
 }
 
@@ -1006,7 +1006,7 @@ bool ObjManager::add_obj(Obj *obj, bool addOnTop)
    obj_list->add(obj);
  else
    obj_list->addAtPos(0,obj);
- 
+
  if(obj->status & OBJ_STATUS_TEMPORARY)
    temp_obj_list_add(obj);
 
@@ -1018,22 +1018,22 @@ bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
  U6Link *link;
  Obj *c_obj = NULL; //container object
  uint16 index;
- 
+
  index = obj->x;
- 
+
  if(obj->y & 0x1)
    index += 1024;
- 
+
  link = list->gotoPos(index);
  if(link != NULL)
 	c_obj = (Obj *)link->data;
-	 
+
  if(c_obj) // we've found our container.
    {
     if(c_obj->container == NULL)
 	  c_obj->container = new U6LList();
     c_obj->container->addAtPos(0,obj);
-	
+
 	//printf("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
 	//printf(" -> %s (%x,%x,%x)\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false),c_obj->x,c_obj->y,c_obj->z);
 
@@ -1112,22 +1112,22 @@ void ObjManager::update(uint16 x, uint16 y, uint8 z)
 
  cur_blk_x = x >> 5; // x / 32;
  cur_blk_y = y >> 5; // y / 32;
- 
+
  // We're changing levels so clean out all temp objects on the current level.
  if(last_obj_blk_z != z)
    {
     if(last_obj_blk_z != OBJ_TEMP_INIT)
       temp_obj_list_clean_level(last_obj_blk_z);
-    
+
     egg_manager->spawn_eggs(x, y, z);
-    
+
     last_obj_blk_x = cur_blk_x;
     last_obj_blk_y = cur_blk_y;
     last_obj_blk_z = z;
-    
+
     return;
    }
- 
+
  //FIX for level change. we want to remove all temps on level change.
  if(cur_blk_x != last_obj_blk_x || cur_blk_y != last_obj_blk_y)
    {
@@ -1136,7 +1136,7 @@ void ObjManager::update(uint16 x, uint16 y, uint8 z)
 
     temp_obj_list_clean_area(x, y);
     egg_manager->spawn_eggs(x, y, z);
-    
+
    }
 
  return;
@@ -1163,7 +1163,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
 {
  std::list<Obj *>::iterator obj;
  std::list<Obj *>::iterator tmp_obj;
- 
+
  for(obj = temp_obj_list.begin(); obj != temp_obj_list.end();)
    {
     if((*obj)->z == z)
@@ -1171,10 +1171,10 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
        printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
        tmp_obj = obj;
        tmp_obj++;
-       remove_obj(*obj); // this calls temp_obj_list_remove() 
+       remove_obj(*obj); // this calls temp_obj_list_remove()
        delete *obj;
        obj = tmp_obj;
-      } 
+      }
     else
       obj++;
    }
@@ -1189,7 +1189,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
  std::list<Obj *>::iterator obj;
  std::list<Obj *>::iterator tmp_obj;
  sint16 dist_x, dist_y;
- 
+
  for(obj = temp_obj_list.begin(); obj != temp_obj_list.end();)
    {
     dist_x = abs((sint16)(*obj)->x - x);
@@ -1243,7 +1243,7 @@ void ObjManager::print_object_list()
 void ObjManager::print_egg_list()
 {
  uint8 i;
- 
+
  for(i=0;i < 64;i++)
    print_egg_tree(surface[i]);
 
@@ -1262,7 +1262,7 @@ inline void ObjManager::print_egg_tree(iAVLTree *obj_tree)
  Obj *obj;
 
   tree_node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
-  
+
   for(;tree_node != NULL;tree_node = (ObjTreeNode *)iAVLNext(&cursor) )
    {
     obj_list = (U6LList *)tree_node->obj_list;
@@ -1287,14 +1287,14 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  printf("\n");
  print_indent(indent);
  printf("%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
- 
+
  if(in_container == false)
    printf("at %x, %x, %x (%d,%d,%d)",obj->x, obj->y, obj->z, obj->x, obj->y, obj->z);
  printf("\n");
 
  print_indent(indent);
  printf("objblk_n: %d\n", obj->objblk_n);
- 
+
  print_indent(indent);
  printf("obj_n: %d\n",obj->obj_n);
 
@@ -1318,12 +1318,12 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
      printf("OK ");
    if(obj->status & OBJ_STATUS_TEMPORARY)
      printf("TEMP ");
-  
+
    printf(")");
   }
 
  printf("\n");
-  
+
  if(in_container)
   {
    print_indent(indent);
@@ -1334,24 +1334,24 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  printf("Quantity: %d\n",obj->qty);
  print_indent(indent);
  printf("Quality: %d\n",obj->quality);
- 
+
  if(obj->container)
    {
     print_indent(indent);
     printf("Container\n");
     print_indent(indent);
     printf("---------");
-    
+
     for(link = obj->container->start(); link != NULL; link = link->next)
      {
       container_obj = (Obj *)link->data;
       print_obj(container_obj, true, indent + 2);
      }
-     
+
     print_indent(indent);
     printf("---------\n");
-   }    
-  
+   }
+
  if(in_container == false)
    printf("\n");
 
@@ -1361,17 +1361,17 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
 Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z)
 {
  Obj *obj;
- 
+
  obj = new Obj();
- 
+
  obj->obj_n = obj_n;
  obj->frame_n = frame_n;
 
- obj->x = x; 
- obj->y = y; 
+ obj->x = x;
+ obj->y = y;
  obj->z = z;
- 
- return obj; 
+
+ return obj;
 }
 
 void delete_obj(Obj *obj)
@@ -1382,10 +1382,10 @@ void delete_obj(Obj *obj)
    for(link=obj->container->start();link != NULL; link=link->next)
      delete_obj((Obj *)link->data);
   }
- 
+
  delete obj->container;
  delete obj;
- 
+
  return;
 }
 
@@ -1468,7 +1468,7 @@ void clean_obj_tree_node(void *node)
 
  delete obj_node->obj_list;
  delete obj_node;
- 
+
  return;
 }
 

@@ -34,21 +34,21 @@ class Screen;
 class GUI_DragManager {
 
 protected:
- 
+
  Screen *screen;
 
  GUI_DragArea *drag_source;
  int message;
  void *data;
- 
+
 public:
 
  GUI_DragManager(Screen *s);
- 
+
  GUI_status start_drag(GUI_DragArea *src, int msg, void *d, unsigned char *icon_buf, uint16 w, uint16 h, uint8 bpp);
- void drop(GUI_DragArea *drag_target, int x, int y);    
- 
- // let us find out where the drag originated, because we might 
+ void drop(GUI_DragArea *drag_target, int x, int y);
+
+ // let us find out where the drag originated, because we might
  // need to do something different depending on where a dragged
  // object is coming from.
  GUI_DragArea *get_source();

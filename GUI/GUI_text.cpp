@@ -34,7 +34,7 @@ GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, GUI_Font *gui_font,
  B = b;
  text = NULL;
  max_width = line_length;
- 
+
  font = gui_font;
 }
 
@@ -49,9 +49,9 @@ GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font
  B = b;
  text = NULL;
  max_width = line_length;
- 
+
  font = gui_font;
- 
+
  text = (char *)strdup(str);
 
  if(text == NULL)

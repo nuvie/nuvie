@@ -44,7 +44,7 @@ SaveSlot::SaveSlot(GUI_CallBack *callback, GUI_Color bg_color) : GUI_Widget(NULL
 {
  callback_object = callback;
  background_color = bg_color;
- 
+
  selected = false;
  thumbnail = NULL;
 }
@@ -56,7 +56,7 @@ SaveSlot::~SaveSlot()
 }
 
 bool SaveSlot::init(const char *directory, std::string *file)
-{ 
+{
  GUI_Widget *widget;
  GUI *gui = GUI::get_gui();
 
@@ -83,7 +83,7 @@ bool SaveSlot::init(const char *directory, std::string *file)
 
  widget = (GUI_Widget *) new GUI_TextInput(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, (char *)save_description.c_str(), gui->get_font(),26,2, this);
  AddWidget(widget);
- 
+
  return true;
 }
 
@@ -96,35 +96,35 @@ bool SaveSlot::load_info(const char *directory)
  GUI *gui = GUI::get_gui();
  std::string full_path;
  char buf[30];
- 
+
  savegame = new SaveGame(Game::get_game()->get_config());
- 
+
  build_path(directory, filename.c_str(), full_path);
- 
+
  if(loadfile.open(full_path.c_str()) == false)
    {
     printf("Error: Reading header from %s\n", filename.c_str());
     delete savegame;
     return false;
    }
- 
+
  header = savegame->load_info(&loadfile);
- 
+
  save_description = header->save_description;
- 
+
  thumbnail = SDL_ConvertSurface(header->thumbnail, header->thumbnail->format, SDL_SWSURFACE);
 
 
- 
+
  widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 20, 200, 200, 200, (char *)filename.c_str(), gui->get_font()); //evil const cast lets remove this
  AddWidget(widget);
- 
+
  sprintf(buf, "Num Saves: %d", header->num_saves);
  widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 29, 200, 200, 200, buf, gui->get_font());
  AddWidget(widget);
 
  delete savegame;
- 
+
  return true;
 }
 
@@ -158,7 +158,7 @@ void SaveSlot::Display(bool full_redraw)
    }
 
  DisplayChildren();
- 
+
 }
 
 GUI_status SaveSlot::KeyDown(SDL_keysym key)
@@ -194,9 +194,9 @@ GUI_status SaveSlot::callback(uint16 msg, GUI_CallBack *caller, void *data)
  if(msg == TEXTINPUT_CB_TEXT_READY) //we should probably make sure the caller is a GUI_TextInput object
    {
     save_description.assign((char *)data);
-    
+
     return callback_object->callback(SAVESLOT_CB_SAVE, this, this);
    }
-   
+
  return GUI_PASS;
 }

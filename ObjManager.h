@@ -80,7 +80,7 @@ struct Obj
 
  U6LList *container;
  Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; };
- 
+
  bool is_ok_to_take()   { return(status & OBJ_STATUS_OK_TO_TAKE); }
  bool is_in_container() { return(status & OBJ_STATUS_IN_CONTAINER); }
  bool is_in_inventory() { return(status & OBJ_STATUS_IN_INVENTORY); }
@@ -109,15 +109,15 @@ class ObjManager
 
  bool show_eggs;
  uint16 egg_tile_num;
-  
+
  UseCode *usecode;
 
  std::list<Obj *> temp_obj_list;
  uint16 last_obj_blk_x, last_obj_blk_y;
  uint8 last_obj_blk_z;
- 
+
  uint16 obj_save_count;
- 
+
  public:
 
  ObjManager(Configuration *cfg, TileManager *tm, EggManager *em);
@@ -131,7 +131,7 @@ class ObjManager
  void clean();
  void clean_actor_inventories();
 
- bool save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_offset); 
+ bool save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_offset);
  bool save_eggs(NuvieIO *save_buf);
  bool save_inventories(NuvieIO *save_buf);
  bool save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent);
@@ -147,7 +147,7 @@ class ObjManager
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  bool is_forced_passable(uint16 x, uint16 y, uint8 level);
  bool is_stackable(Obj *obj);
- 
+
  U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);
 
  Tile *get_obj_tile(uint16 obj_n, uint8 frame_n);
@@ -161,7 +161,7 @@ class ObjManager
 
  U6LList *get_actor_inventory(uint16 actor_num);
  bool actor_has_inventory(uint16 actor_num);
- 
+
  Obj *find_next_obj(Obj *prev_obj);
  Obj *find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_obj=NULL);
 
@@ -169,7 +169,7 @@ class ObjManager
  bool add_obj(Obj *obj, bool addOnTop=false);
  bool remove_obj(Obj *obj);
  bool remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
- 
+
  Obj *copy_obj(Obj *obj);
  const char *look_obj(Obj *obj, bool show_prefix = false);
  Obj *get_obj_from_stack(Obj *obj, uint32 count);

@@ -41,30 +41,30 @@ class View: public GUI_Widget
 {
  protected:
  Configuration *config;
- 
+
  GUI_Button *left_button, *right_button, *actor_button, *party_button, *inventory_button;
- 
+
  Text *text;
  TileManager *tile_manager;
  ObjManager *obj_manager;
  Party *party;
 
  uint8 cur_party_member;
- 
+
  public:
- 
+
  View(Configuration *cfg);
  virtual ~View();
- 
+
  virtual bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
- 
+
  virtual bool set_party_member(uint8 party_member);
  uint8 get_party_member_num() { return cur_party_member; }
  bool next_party_member();
  bool prev_party_member();
- 
+
  protected:
- 
+
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 

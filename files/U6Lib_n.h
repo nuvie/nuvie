@@ -54,14 +54,14 @@ class U6Lib_n
 public:
    U6Lib_n();
    ~U6Lib_n();
- 
+
    bool open(std::string &filename, uint8 size, uint8 type=NUVIE_GAME_U6);
    bool open(NuvieIO *new_data, uint8 size, uint8 type=NUVIE_GAME_U6);
    void close();
    bool create(std::string &filename, uint8 size, uint8 type=NUVIE_GAME_U6);
 
    unsigned char *get_item(uint32 item_number, unsigned char *buf=NULL); // read
-   void set_item_data(uint32 item_number, unsigned char *src, uint32 src_len); 
+   void set_item_data(uint32 item_number, unsigned char *src, uint32 src_len);
 
    uint32 get_num_items();
    uint32 get_item_size(uint32 item_number);

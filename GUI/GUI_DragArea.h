@@ -28,13 +28,13 @@
 class GUI_DragArea : public GUI_CallBack {
 
  protected:
- 
+
  bool dragging;
- 
+
  public:
- 
+
   GUI_DragArea() { dragging = false; }
-  
+
   virtual bool drag_accept_drop(int x, int y, int message, void *data) { return false; }
   virtual void drag_perform_drop(int x, int y, int message, void *data) { return; }
   virtual void drag_drop_failed(int x, int y, int message, void *data) { return; }

@@ -44,7 +44,7 @@ void GameClock::init()
  move_counter = 0;
  time_counter = 0;
  tick_counter = 0;
- 
+
  active = true;
 }
 
@@ -59,11 +59,11 @@ bool GameClock::load(NuvieIO *objlist)
  day = objlist->read1();
  month = objlist->read1();
  year = objlist->read2();
- 
+
  update_day_of_week();
- 
+
  printf("Loaded game clock: %s %s\n",get_date_string(),get_time_string());
- 
+
  return true;
 }
 
@@ -120,7 +120,7 @@ void GameClock::inc_minute()
  if(minute == 59)
    {
     minute = 0;
-    inc_hour();    
+    inc_hour();
    }
  else
    {
@@ -170,7 +170,7 @@ void GameClock::inc_day()
     tick_counter += (1440 * GAMECLOCK_TICKS_PER_MINUTE);
    }
  update_day_of_week();
- 
+
  printf("%s\n",get_date_string());
 
 
@@ -211,7 +211,7 @@ uint32 GameClock::get_move_count()
 {
  return move_counter;
 }
- 
+
 char *GameClock::get_time_of_day_string()
 {
  if(hour < 12)
@@ -220,9 +220,9 @@ char *GameClock::get_time_of_day_string()
  if(hour >= 12 && hour <= 18)
    return "afternoon";
 
- return "evening";   
+ return "evening";
 }
- 
+
 uint8 GameClock::get_hour()
 {
  return hour;
@@ -252,12 +252,12 @@ uint8 GameClock::get_day_of_week()
 {
  return day_of_week;
 }
- 
+
 char *GameClock::get_date_string()
 {
 
  sprintf(date_string, "%2d-%02d-%04d", month, day, year);
- 
+
  return date_string;
 }
 
@@ -265,12 +265,12 @@ char *GameClock::get_time_string()
 {
  char c;
  uint8 tmp_hour;
- 
+
  if(hour < 12)
    c = 'A';
  else
    c = 'P';
- 
+
  if(hour > 12)
   tmp_hour = hour - 12;
  else
@@ -280,9 +280,9 @@ char *GameClock::get_time_string()
     else
       tmp_hour = hour;
    }
-   
+
  sprintf(time_string, "%02d:%02d %c.M.", tmp_hour, minute, c);
-  
+
  return time_string;
 }
 

@@ -35,18 +35,18 @@ class Nuvie
  Configuration *config;
  Screen *screen;
  Game *game;
- 
+
  public:
- 
+
    Nuvie();
    ~Nuvie();
 
 
    bool init(int argc, char **argv);
    bool play();
-   
+
    protected:
-   
+
    bool initConfig();
    bool loadConfigFile(std::string filename);
    void assignGameConfigValues(uint8 game_type);

@@ -39,7 +39,7 @@
 
 //static const uint8 sleep_objects[8];
 
-static uint8 walk_frame_tbl[4] = {0,1,2,1}; //FIX 
+static uint8 walk_frame_tbl[4] = {0,1,2,1}; //FIX
 
 
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
@@ -54,9 +54,9 @@ U6Actor::~U6Actor()
 bool U6Actor::init()
 {
  set_actor_obj_n(obj_n); //set actor_type
- 
+
  base_actor_type = get_actor_type(base_obj_n);
- 
+
  if(actor_type->tile_type == ACTOR_QT && frame_n == 0) //set the two quad tile actors to correct frame number.
    frame_n = 3;
 
@@ -68,9 +68,9 @@ bool U6Actor::init()
  switch(obj_n) //gather surrounding objects from map if required
   {
    case OBJ_U6_SHIP : init_ship(); break;
-   
+
    case OBJ_U6_HYDRA : init_hydra(); break;
-   
+
    case OBJ_U6_DRAGON : init_dragon(); break;
 
    case OBJ_U6_GIANT_SCORPION :
@@ -79,7 +79,7 @@ bool U6Actor::init()
    case OBJ_U6_ALLIGATOR :
    case OBJ_U6_HORSE :
    case OBJ_U6_HORSE_WITH_RIDER : init_splitactor(); break;
- 
+
 
    default : break;
   }
@@ -98,12 +98,12 @@ bool U6Actor::init_ship()
 {
  Obj *obj;
  uint16 obj1_x, obj1_y, obj2_x, obj2_y;
- 
+
  obj1_x = x;
  obj1_y = y;
  obj2_x = x;
  obj2_y = y;
-   
+
  switch(direction)
   {
    case ACTOR_DIR_U : obj1_y = y+1;
@@ -119,7 +119,7 @@ bool U6Actor::init_ship()
                       obj2_x = x+1;
                       break;
   }
-  
+
  obj = obj_manager->get_obj(obj1_x,obj1_y,z);
  if(obj == NULL)
    return false;
@@ -136,10 +136,10 @@ bool U6Actor::init_ship()
 bool U6Actor::init_splitactor()
 {
  uint16 obj_x, obj_y;
- 
+
  obj_x = x;
  obj_y = y;
-   
+
  switch(direction) //FIX for world wrapping
   {
    case ACTOR_DIR_U : obj_y = y+1;
@@ -153,7 +153,7 @@ bool U6Actor::init_splitactor()
   }
 
  init_surrounding_obj(obj_x, obj_y, z, obj_n, frame_n + 8); // init back object
- 
+
  return true;
 }
 
@@ -161,12 +161,12 @@ bool U6Actor::init_dragon()
 {
  uint16 head_x, head_y, tail_x, tail_y;
  uint16 wing1_x, wing1_y, wing2_x, wing2_y;
- 
+
  head_x = tail_x = x;
  wing1_x = wing2_x = x;
  head_y = tail_y = y;
  wing1_y = wing2_y = y;
-   
+
  switch(direction)
   {
    case ACTOR_DIR_U : head_y = y-1;
@@ -190,19 +190,19 @@ bool U6Actor::init_dragon()
                       wing2_y = y-1;
                       break;
   }
-  
+
  init_surrounding_obj(head_x, head_y, z, obj_n, frame_n + 8);
  init_surrounding_obj(tail_x, tail_y, z, obj_n, frame_n + 16);
  init_surrounding_obj(wing1_x, wing1_y, z, obj_n, frame_n + 24);
  init_surrounding_obj(wing2_x, wing2_y, z, obj_n, frame_n + 32);
- 
+
  return true;
 }
 
 bool U6Actor::init_hydra()
 {
  // For some reason a Hydra has a different object number for its tenticles. :-(
- 
+
  init_surrounding_obj(x,   y-1, z, OBJ_U6_HYDRA_BODY, 0);
  init_surrounding_obj(x+1, y-1, z, OBJ_U6_HYDRA_BODY, 4);
  init_surrounding_obj(x+1, y, z, OBJ_U6_HYDRA_BODY, 8);
@@ -218,10 +218,10 @@ bool U6Actor::init_hydra()
 uint16 U6Actor::get_downward_facing_tile_num()
 {
  uint8 shift = 0;
- 
+
  if(base_actor_type->frames_per_direction > 1) //we want the second frame for most actor types.
    shift = 1;
-   
+
  return obj_manager->get_obj_tile_num(base_actor_type->base_obj_n) + base_actor_type->tile_start_offset + (ACTOR_DIR_D * base_actor_type->tiles_per_direction + base_actor_type->tiles_per_frame - 1) + shift;
 }
 
@@ -247,7 +247,7 @@ bool U6Actor::updateSchedule(uint8 hour)
 // workout our direction based on actor_type and frame_n
 inline void U6Actor::discover_direction()
 {
- if(actor_type->frames_per_direction != 0) 
+ if(actor_type->frames_per_direction != 0)
    direction = (frame_n - actor_type->tile_start_offset ) / actor_type->tiles_per_direction;
  else
    direction = ACTOR_DIR_D;
@@ -257,7 +257,7 @@ void U6Actor::set_direction(uint8 d)
 {
  if(d >= 4)
    return;
-   
+
 
  if(actor_type->frames_per_direction == 0)
    walk_frame = (walk_frame + 1) % 4;
@@ -280,9 +280,9 @@ void U6Actor::set_direction(uint8 d)
 
  //only change direction frame if the actor can twitch ie isn't sitting or in bed etc.
  if(can_move)
-   frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + 
+   frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction +
              (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
- 
+
 }
 
 void U6Actor::clear()
@@ -292,9 +292,9 @@ void U6Actor::clear()
    remove_surrounding_objs_from_map();
    clear_surrounding_objs_list(REMOVE_SURROUNDING_OBJS);
   }
- 
+
  Actor::clear();
- 
+
  return;
 }
 
@@ -308,20 +308,20 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  Player *player = Game::get_game()->get_player();
  Party *party = player->get_party();
  MapCoord old_pos = get_location();
- 
+
  if(has_surrounding_objs())
    remove_surrounding_objs_from_map();
 
  rel_x = new_x - x;
  rel_y = new_y - y;
-  
+
  ret = Actor::move(new_x,new_y,new_z,force_move);
 
  if(ret == true)
   {
    if(has_surrounding_objs())
       move_surrounding_objs_relative(rel_x, rel_y);
-   
+
    if(actor_type->can_sit)
      {
       Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
@@ -397,7 +397,7 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_ac
        case MOVETYPE_U6_WATER_LOW : if(!map->is_water(new_x, new_y, new_z))
                                        return false;
                                     break;
-       case MOVETYPE_U6_AIR_LOW : 
+       case MOVETYPE_U6_AIR_LOW :
        case MOVETYPE_U6_AIR_HIGH : if(map->is_boundary(new_x, new_y, new_z))
                                     return false; //FIX for proper air boundary
                                   break;
@@ -424,7 +424,7 @@ bool U6Actor::sit_on_chair(Obj *obj)
             can_move = false;
             return true;
            }
-       
+
          if(obj->obj_n == OBJ_U6_THRONE  && obj->frame_n == 3) //make actor sit on LB's throne.
            {
             frame_n = 8 + 3; //sitting facing south.
@@ -440,7 +440,7 @@ bool U6Actor::sit_on_chair(Obj *obj)
 uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
 {
  uint16 i;
- 
+
  for(i=0;readiable_objects[i].obj_n != OBJ_U6_NOTHING;i++)
    {
     if(obj_n == readiable_objects[i].obj_n)
@@ -452,7 +452,7 @@ uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
 
 void U6Actor::twitch()
 {
- 
+
  if(can_move == false || actor_type->twitch_rand == 0)
    return;
 
@@ -493,13 +493,13 @@ void U6Actor::preform_worktype()
    case WORKTYPE_U6_IN_PARTY :
    case WORKTYPE_U6_WALK_TO_LOCATION : wt_walk_to_location();
                                       break;
-                                      
+
    case WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH :
    case WORKTYPE_U6_GUARD_WALK_EAST_WEST   :
    case WORKTYPE_U6_WALK_NORTH_SOUTH :
    case WORKTYPE_U6_WALK_EAST_WEST   : wt_walk_straight(); break;
 
-   case WORKTYPE_U6_WORK : 
+   case WORKTYPE_U6_WORK :
    case WORKTYPE_U6_WANDER_AROUND   : wt_wander_around(); break;
    case WORKTYPE_U6_ANIMAL_WANDER : wt_farm_animal_wander(); break;
    case WORKTYPE_U6_BEG : wt_beg(); break;
@@ -518,7 +518,7 @@ void U6Actor::set_worktype(uint8 new_worktype)
  //reset to base obj_n
  if(worktype > 2) //don't revert for party worktypes as they might be riding a horse.
    set_actor_obj_n(base_actor_type->base_obj_n);
- 
+
  if(worktype == WORKTYPE_U6_SLEEP || worktype == WORKTYPE_U6_PLAY_LUTE)
    {
     frame_n = old_frame_n;
@@ -616,7 +616,7 @@ void U6Actor::wt_farm_animal_wander()
 {
  uint8 new_direction;
  sint8 rel_x = 0, rel_y = 0;
- 
+
  if(NUVIE_RAND()%8 == 1)
    {
     new_direction = NUVIE_RAND()%4;
@@ -699,7 +699,7 @@ void U6Actor::wt_beg()
 
 
 void U6Actor::wt_sleep()
-{ 
+{
  Obj *obj = obj_manager->get_obj(x,y,z);
  if(obj)
    {
@@ -726,7 +726,7 @@ void U6Actor::wt_sleep()
          obj_n = actor_type->dead_obj_n;
          frame_n = actor_type->dead_frame_n;
         }
-      } 
+      }
    }
 
  can_move = false;
@@ -739,19 +739,19 @@ void U6Actor::wt_play_lute()
  old_frame_n = frame_n;
 
  set_actor_obj_n(OBJ_U6_MUSICIAN_PLAYING);
- 
+
  frame_n = direction * actor_type->tiles_per_direction;
- 
+
  return;
 }
 
 void U6Actor::set_actor_obj_n(uint16 new_obj_n)
 {
  old_frame_n = frame_n;
- 
+
  obj_n = new_obj_n;
  actor_type = get_actor_type(new_obj_n);
- 
+
  return;
 }
 
@@ -764,7 +764,7 @@ inline const U6ActorType *U6Actor::get_actor_type(uint16 new_obj_n)
    if(type->base_obj_n == new_obj_n)
      break;
   }
- 
+
  return type;
 }
 
@@ -779,7 +779,7 @@ inline bool U6Actor::has_surrounding_objs()
 inline void U6Actor::remove_surrounding_objs_from_map()
 {
  std::list<Obj *>::iterator obj;
- 
+
  for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
     obj_manager->remove_obj((*obj));
 
@@ -799,7 +799,7 @@ inline void U6Actor::add_surrounding_objs_to_map()
 inline void U6Actor::move_surrounding_objs_relative(sint16 rel_x, sint16 rel_y)
 {
  std::list<Obj *>::iterator obj;
- 
+
  for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
     {
      (*obj)->x += rel_x;
@@ -813,7 +813,7 @@ inline void U6Actor::move_surrounding_objs_relative(sint16 rel_x, sint16 rel_y)
 inline void U6Actor::set_direction_of_surrounding_objs(uint8 new_direction)
 {
  remove_surrounding_objs_from_map();
- 
+
  switch(obj_n)
    {
     case OBJ_U6_SHIP : set_direction_of_surrounding_ship_objs(new_direction); break;
@@ -829,7 +829,7 @@ inline void U6Actor::set_direction_of_surrounding_objs(uint8 new_direction)
    }
 
  add_surrounding_objs_to_map();
- 
+
  return;
 }
 
@@ -837,14 +837,14 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
 {
  std::list<Obj *>::iterator obj;
  uint16 pitch = map->get_width(z);
- 
+
  obj = surrounding_objects.begin();
  if(obj == surrounding_objects.end())
   return;
 
  (*obj)->x = x;
  (*obj)->y = y;
- 
+
  (*obj)->frame_n =  new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1;
  switch(new_direction)
   {
@@ -871,15 +871,15 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
                       else
                         (*obj)->x = x - 1;
                       break;
-  }                   
-    
+  }
+
  obj++;
  if(obj == surrounding_objects.end())
   return;
 
  (*obj)->x = x;
  (*obj)->y = y;
- 
+
  (*obj)->frame_n =  16 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
  switch(new_direction)
   {
@@ -906,7 +906,7 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
                       else
                         (*obj)->x = x + 1;
                       break;
-  }                   
+  }
 
 }
 
@@ -914,10 +914,10 @@ inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_dire
 {
  Obj *obj;
  uint16 pitch = map->get_width(z);
- 
+
  if(surrounding_objects.empty())
    return;
-    
+
  obj = surrounding_objects.back();
 
  obj->frame_n =  8 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
@@ -950,7 +950,7 @@ inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_dire
                       else
                         obj->x = x + 1;
                       break;
-  }                   
+  }
 
 }
 
@@ -959,9 +959,9 @@ inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_directio
  std::list<Obj *>::iterator obj;
  uint8 frame_offset =  (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
  Obj *head, *tail, *wing1, *wing2;
- 
+
  //NOTE! this is dependant on the order the in which the objects are loaded in U6Actor::init_dragon()
- 
+
  obj = surrounding_objects.begin();
  if(obj == surrounding_objects.end())
   return;
@@ -969,7 +969,7 @@ inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_directio
  head->frame_n =  8 + frame_offset;
  head->x = x;
  head->y = y;
- 
+
  obj++;
  if(obj == surrounding_objects.end())
   return;
@@ -977,7 +977,7 @@ inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_directio
  tail->frame_n =  16 + frame_offset;
  tail->x = x;
  tail->y = y;
- 
+
  obj++;
  if(obj == surrounding_objects.end())
   return;
@@ -985,7 +985,7 @@ inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_directio
  wing1->frame_n =  24 + frame_offset;
  wing1->x = x;
  wing1->y = y;
- 
+
  obj++;
  if(obj == surrounding_objects.end())
   return;
@@ -1019,14 +1019,14 @@ inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_directio
 					  wing1->y = y + 1;
 					  wing2->y = y - 1;
 					  break;
-  }                   
+  }
 
 }
 
 inline void U6Actor::twitch_surrounding_objs()
 {
  std::list<Obj *>::iterator obj;
- 
+
  for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
    {
     twitch_obj(*obj);
@@ -1042,9 +1042,9 @@ inline void U6Actor::twitch_surrounding_hydra_objs()
 {
  uint8 i;
  std::list<Obj *>::iterator obj;
- 
+
  //Note! list order is important here. As it corresponds to the frame order in the tile set. This is definied in init_hydra()
- 
+
  for(i = 0, obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++, i += 4)
    {
     if(NUVIE_RAND() % 4 == 0)
@@ -1062,7 +1062,7 @@ inline void U6Actor::twitch_obj(Obj *obj)
 inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)
 {
  std::list<Obj *>::iterator obj;
- 
+
  if(surrounding_objects.empty())
    return;
 
@@ -1073,7 +1073,7 @@ inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)
   }
 
  obj = surrounding_objects.begin();
- 
+
  for(;!surrounding_objects.empty();)
   {
    obj_manager->remove_obj(*obj);
@@ -1087,7 +1087,7 @@ inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)
 inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 actor_obj_n, uint16 obj_frame_n)
 {
  Obj *obj;
- 
+
  obj = obj_manager->get_obj(x, y, z);
  if(obj == NULL || actor_obj_n != obj->obj_n || (obj->quality != 0 && obj->quality != id_n))
   {
@@ -1099,8 +1099,8 @@ inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 ac
    obj->frame_n = obj_frame_n;
    obj_manager->add_obj(obj);
   }
- 
- obj->quality = id_n;  
+
+ obj->quality = id_n;
  surrounding_objects.push_back(obj);
 
  return;

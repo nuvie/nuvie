@@ -194,13 +194,13 @@ int	ScalerRegistry::GetIndexForName(const std::string &name)
 	//FIX std::string sclr = to_uppercase(name);
 
 	for (int index = 0; index < num_scalers; index++) {
-		
+
 		// Make this name also uppercase
 	//	std::string sclr2 = to_uppercase(scaler_array[index].name);
 
 //		if (sclr == sclr2) return index;
    if(name == scaler_array[index].name) return index;
-   
+
 	}
 
 	return -1;
@@ -223,7 +223,7 @@ const char *ScalerRegistry::GetNameForIndex(int index)
 const ScalerStruct *ScalerRegistry::GetScaler(int index)
 {
 	if (index < 0 || index >= num_scalers) return 0;
-	
+
 	return scaler_array+index;
 }
 
@@ -251,8 +251,8 @@ void Application::show_8to16_blur
 						sdl_surf->format);
 	BlurFilter<unsigned char, uint16, Manip8to16>
 		(screen->pixels, x, y, w, h,
-		    screen->w, screen->h, screen->pitch, 
-		    (uint16 *) sdl_surf->pixels, 
+		    screen->w, screen->h, screen->pitch,
+		    (uint16 *) sdl_surf->pixels,
 			sdl_surf->pitch/
 				sdl_surf->format->BytesPerPixel,
 			manip);
@@ -266,8 +266,8 @@ void Application::show_8to555_blur
 	Manip8to555 manip(palette);
 	BlurFilter<unsigned char, uint16, Manip8to555>
 		(screen->pixels, x, y, w, h,
-		    screen->w, screen->h, screen->pitch, 
-		    (uint16 *) sdl_surf->pixels, 
+		    screen->w, screen->h, screen->pitch,
+		    (uint16 *) sdl_surf->pixels,
 			sdl_surf->pitch/
 				sdl_surf->format->BytesPerPixel,
 			manip);
@@ -281,8 +281,8 @@ void Application::show_8to565_blur
 	Manip8to565 manip(palette);
 	BlurFilter<unsigned char, uint16, Manip8to565>
 		(screen->pixels, x, y, w, h,
-		    screen->w, screen->h, screen->pitch, 
-		    (uint16 *) sdl_surf->pixels, 
+		    screen->w, screen->h, screen->pitch,
+		    (uint16 *) sdl_surf->pixels,
 			sdl_surf->pitch/
 				sdl_surf->format->BytesPerPixel,
 			manip);
@@ -297,7 +297,7 @@ void Application::show_8to32_blur
 						sdl_surf->format);
 	BlurFilter<unsigned char, uint32, Manip8to32>
 		(screen->pixels, x, y, w, h,
-		    screen->w, screen->h, screen->pitch, 
+		    screen->w, screen->h, screen->pitch,
 			(uint32 *) sdl_surf->pixels,
 			sdl_surf->pitch/
 				sdl_surf->format->BytesPerPixel,

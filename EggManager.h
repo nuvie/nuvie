@@ -47,27 +47,27 @@ class EggManager
  Map *map;
  ActorManager *actor_manager;
  ObjManager *obj_manager;
- 
+
  std::list<Egg *> egg_list;
- 
+
  public:
-  
+
  EggManager(Configuration *cfg, Map *m);
  ~EggManager();
- 
+
  void set_actor_manager(ActorManager *am) { actor_manager = am; }
  void set_obj_manager(ObjManager *om) { obj_manager = om; }
-  
+
  void clean(bool keep_obj=true);
-  
+
  void add_egg(Obj *egg);
  void remove_egg(Obj *egg, bool keep_egg=true);
  bool spawn_egg(Obj *egg, uint8 hatch_probability);
  void spawn_eggs(uint16 x, uint16 y, uint8 z);
  std::list<Egg *> *get_egg_list() { return &egg_list; };
- 
+
  protected:
- 
+
 };
 
 #endif /* __EggManager_h__ */

@@ -41,23 +41,23 @@ class U6LList
  U6Link *head;
  U6Link *tail;
  U6Link *cur;
- 
+
  public:
- 
+
  U6LList();
  ~U6LList();
- 
+
  bool add(void *data);
  bool addAtPos(uint32 pos, void *data);
 
  bool remove(void *data);
  bool removeAll();
- 
+
  uint32 count();
- 
+
  U6Link *start();
  U6Link *end();
- 
+
  U6Link *next();
  U6Link *prev();
  U6Link *gotoPos(uint32 pos);

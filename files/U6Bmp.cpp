@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  */
 
 #include <stdio.h>
@@ -49,7 +49,7 @@ bool U6Bmp::load(std::string filename)
 {
  U6Lzw lzw;
  uint32 data_size;
- 
+
  if(data != NULL)
    return false;
 
@@ -60,11 +60,11 @@ bool U6Bmp::load(std::string filename)
 
  if(data == NULL)
    return false;
-   
+
  width = (data[0] + (data[1]<<8));
  height = (data[2] + (data[3]<<8));
- 
+
  raw = data + 0x4;
-   
+
  return true;
 }

@@ -77,15 +77,15 @@ void UseCode::clear_items()
  bool UseCode::use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj)
  {
   Obj *obj;
-  
+
   obj = obj_manager->get_obj(x,y,z,true);
-  
+
   if(obj == NULL)
     return false;
-  
+
   return use_obj(obj,src_obj);
  }
- 
+
 void UseCode::toggle_frame(Obj *obj)
 {
  if(obj->frame_n > 0)

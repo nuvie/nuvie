@@ -42,14 +42,14 @@ GUI_Widget::~GUI_Widget()
  for(;!children.empty();)
     {
      GUI_Widget *child = children.front();
-     
+
      children.pop_front();
      delete child;
     }
 
  return;
 }
-  
+
 void GUI_Widget::Init(void *data, int x, int y, int w, int h)
 {
   focused = false;
@@ -66,7 +66,7 @@ void GUI_Widget::Init(void *data, int x, int y, int w, int h)
 		pressed[n]=0;
 	}
  parent = NULL;
- 
+
  update_display = true;
  mousedouble_delay = 300; // SB-X
  last_mousedown_time = last_mouseup_time = 0;
@@ -84,11 +84,11 @@ int GUI_Widget::AddWidget(GUI_Widget *widget)
 {
  children.push_back(widget);
  widget->setParent(this);
- 
+
  return 0; //success.
 }
 
-  
+
 /* Mark the widget as visible -- this is the default state */
 void GUI_Widget::Show(void)
 {
@@ -113,7 +113,7 @@ void GUI_Widget::MoveRelative(int dx,int dy)
 
  area.x += dx;
  area.y += dy;
- 
+
  for(child = children.begin(); child != children.end(); child++)
     (*child)->MoveRelative(dx,dy);
 
@@ -126,7 +126,7 @@ void GUI_Widget::Move(int new_x,int new_y)
 
  area.x = new_x + offset_x;
  area.y = new_y + offset_y;
- 
+
  for(child = children.begin(); child != children.end(); child++)
     (*child)->Move(area.x, area.y);
 
@@ -154,11 +154,11 @@ void GUI_Widget::PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
 
  area.x = x + offset_x;
  area.y = y + offset_y;
- 
+
  gui_drag_manager = dm;
- 
+
  SetDisplay(s);
- 
+
  /* place our children relative to ourself */
  for(child = children.begin(); child != children.end(); child++)
     (*child)->PlaceOnScreen(screen, dm, area.x, area.y);
@@ -175,7 +175,7 @@ GUI_Widget:: Status(void)
 /* Set the bounds of the widget.
    If 'w' or 'h' is -1, that parameter will not be changed.
  */
-void 
+void
 GUI_Widget:: SetRect(int x, int y, int w, int h)
 {
 	area.x = x;
@@ -187,7 +187,7 @@ GUI_Widget:: SetRect(int x, int y, int w, int h)
 		area.h = h;
 	}
 }
-void 
+void
 GUI_Widget:: SetRect(SDL_Rect **bounds)
 {
 	int minx, maxx;
@@ -287,7 +287,7 @@ void GUI_Widget::DisplayChildren(bool full_redraw)
 /* Redraw the widget and only the widget */
 void GUI_Widget::Redraw(void)
 {
- 
+
   if (status==WIDGET_VISIBLE)
   {
    update_display = true;
@@ -436,7 +436,7 @@ bool GUI_Widget::drag_accept_drop(int x, int y, int message, void *data)
  if(children.empty() == false)
    {
     std::list<GUI_Widget *>::iterator child;
-      
+
     for(child = children.begin(); child != children.end(); child++)
       {
        if((*child)->HitRect(x,y))
@@ -455,7 +455,7 @@ void GUI_Widget::drag_perform_drop(int x, int y, int message, void *data)
  if(children.empty() == false)
    {
     std::list<GUI_Widget *>::iterator child;
-      
+
     for(child = children.begin(); child != children.end(); child++)
       {
        if((*child)->HitRect(x,y))

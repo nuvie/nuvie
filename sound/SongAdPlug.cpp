@@ -49,7 +49,7 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
     }
 
  len -= song->samples_left;
- 
+
  for(i=len;i > 0; i -= 735)
    {
      if(!player->update())
@@ -98,7 +98,7 @@ bool SongAdPlug::Play(bool looping) {
 bool SongAdPlug::Stop() {
 
 	//if (!Mix_PlayingMusic()) return false;
-	
+
     Mix_HookMusic(NULL,NULL);
 
 	return true;

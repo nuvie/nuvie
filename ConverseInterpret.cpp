@@ -847,7 +847,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
         case U6OP_DATA: // 0xb4
             v[1] = pop_arg(i); // index
             v[0] = pop_arg(i); // db location
-            
+
             if(decl_t == 0xb3)
             {
                 char *dstring = get_db_string(v[0], v[1]);

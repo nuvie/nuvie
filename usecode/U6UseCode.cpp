@@ -82,7 +82,7 @@ static const char *u6_dungeons[21] =
 };
 
 // Red moongate teleport locations.
-static const struct { uint16 x; uint16 y; uint8 z; } red_moongate_tbl[] = 
+static const struct { uint16 x; uint16 y; uint8 z; } red_moongate_tbl[] =
 { {0x0,   0x0,   0x0},
   {0x383, 0x1f3, 0x0},
   {0x3a7, 0x106, 0x0},
@@ -245,7 +245,7 @@ bool U6UseCode::message_obj(Obj *obj, CallbackMessage msg, void *msg_data)
 
         default : break;
     }
-    
+
  return uc_event(type, USE_EVENT_MESSAGE, obj);
 }
 
@@ -375,7 +375,7 @@ bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
 
     return true;
    }
-  
+
  if(obj->frame_n <= 3) //the door is open
    {
     if(!map->is_passable(obj->x,obj->y,obj->z) || map->actor_at_location(obj->x, obj->y, obj->z)) //don't close door if blocked
@@ -393,7 +393,7 @@ bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
     obj->frame_n -= 4;
     if(print) scroll->display_string("\nopened!\n");
    }
-   
+
  return true;
 }
 
@@ -427,9 +427,9 @@ bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
       }
     z = obj->z - 1;
    }
- 
+
  party->dismount_from_horses();
- 
+
  MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
  party->walk(&ladder, &destination, 100);
  return false;
@@ -443,11 +443,11 @@ bool U6UseCode::use_passthrough(Obj *obj, UseCodeEvent ev)
  uint8 new_frame_n;
  char action_string[6]; // either 'Open' or 'Close'
  bool print = (items.actor_ref == player->get_actor());
- 
+
  new_x = obj->x;
  new_y = obj->y;
  new_frame_n = obj->frame_n;
- 
+
  if(obj->frame_n < 2) // the pass through is currently closed.
   {
    if(obj->obj_n == OBJ_U6_V_PASSTHROUGH)
@@ -482,7 +482,7 @@ bool U6UseCode::use_passthrough(Obj *obj, UseCodeEvent ev)
     }
  else if(print)
     scroll->display_string("\nNot now!\n");
-  
+
  return true;
 }
 
@@ -529,12 +529,12 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
       portc_obj->quality = 0;
       if(target_obj_n == OBJ_U6_PORTCULLIS)
         {
-         if(portc_obj->frame_n == 9) //FIX Hack for cream buildings might need one for virt wall. 
+         if(portc_obj->frame_n == 9) //FIX Hack for cream buildings might need one for virt wall.
            portc_obj->frame_n = 1;
         }
       else
          portc_obj->frame_n = 0;
-         
+
       obj_manager->add_obj(portc_obj,true);
      }
     else //delete barrier object.
@@ -543,7 +543,7 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
       delete portc_obj;
      }
    }
- 
+
  toggle_frame(obj);
  if(print)
    scroll->display_string(message);
@@ -635,15 +635,15 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
 
 /* Use rune to free shrine */
 bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
-{ 
+{
  char mantras[][8] = {"AHM", "MU", "RA", "BEH", "CAH", "SUMM", "OM", "LUM"};
  Obj *force_field = NULL;
  uint16 rune_obj_offset = obj->obj_n - OBJ_U6_RUNE_HONESTY;
  MapCoord player_location = player->get_actor()->get_location();
 
- 
+
  scroll->cancel_input_request();
-    
+
  if(ev == USE_EVENT_USE)
    {
     scroll->display_string("Mantra: ");
@@ -659,26 +659,26 @@ bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
 
     char *mantra = new char[items.string_ref->size() + 1];
     strcpy(mantra, items.string_ref->c_str());
-        
+
     if(strcasecmp(mantra,  mantras[rune_obj_offset]) == 0)
       {
        // find the matching force field for this shrine. match rune offset against force field quality
        force_field = obj_manager->find_obj(OBJ_U6_FORCE_FIELD, rune_obj_offset, player_location.z, NULL);
-       
+
        // make sure the player is right next to the force field.
        if(force_field && abs(player_location.x - force_field->x) < 2 && abs(player_location.y - force_field->y) < 2)
          {
           obj_manager->remove_obj(force_field);
           delete force_field;
-          
+
           scroll->display_string("\nDone!\n");
          }
        else
           scroll->display_string("\nNo effect!\n");
-      }   
+      }
     else
        scroll->display_string("\nWrong mantra!\n");
-        
+
     scroll->display_string("\n");
     scroll->display_prompt();
     delete[] mantra;
@@ -734,7 +734,7 @@ bool U6UseCode::use_crank(Obj *obj, UseCodeEvent ev)
  Obj *start_obj;
 
  start_obj = drawbridge_find(obj);
- 
+
  if(start_obj->frame_n == 3) // bridge open
     bridge_open = true;
  else
@@ -769,7 +769,7 @@ Obj *U6UseCode::drawbridge_find(Obj *crank_obj)
 {
  uint16 i,j;
  Obj *start_obj, *tmp_obj;
- 
+
  for(i=0;i<6;i++) // search on right side of crank.
   {
    start_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_DRAWBRIDGE, crank_obj->x+1, crank_obj->y+i,  crank_obj->z);
@@ -780,12 +780,12 @@ Obj *U6UseCode::drawbridge_find(Obj *crank_obj)
  for(i=0;i<6;i++) // search on left side of crank.
   {
    tmp_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_DRAWBRIDGE, crank_obj->x-1, crank_obj->y+i,  crank_obj->z);
-   
+
    if(tmp_obj != NULL) // this means we are using the right crank.
      {
       //find the start of the drawbridge on the left.
       // we do this by searching to the left of the crank till we hit the crank on the otherside.
-      // we then move right 1 tile and down 'i' tiles to the start object. :) 
+      // we then move right 1 tile and down 'i' tiles to the start object. :)
       for(j=1; j < crank_obj->x; j++)
         {
          tmp_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_CRANK, crank_obj->x-j, crank_obj->y,  crank_obj->z);
@@ -805,43 +805,43 @@ void U6UseCode::drawbridge_open(uint16 x, uint16 y, uint8 level, uint16 b_width)
 {
  uint16 i,j;
  Obj *obj;
- 
+
  y++;
- 
+
  for(i=0;;i++)
   {
    obj = new_obj(OBJ_U6_DRAWBRIDGE,3,x,y+i,level); //left side chain
    obj_manager->add_obj(obj,true);
-     
+
    obj = new_obj(OBJ_U6_DRAWBRIDGE,5,x+b_width-1,y+i,level); //right side chain
    obj_manager->add_obj(obj,true);
 
    for(j=0;j<b_width-2;j++)
-    {     
+    {
      obj = new_obj(OBJ_U6_DRAWBRIDGE,4,x+1+j,y+i,level);
      obj_manager->add_obj(obj,true);
     }
-    
+
    if(map->is_passable(x,y+i+1,level)) //we extend the drawbridge until we hit a passable tile.
-    break; 
+    break;
   }
- 
+
  i++;
- 
+
  for(j=0;j<b_width-2;j++) //middle bottom tiles
   {
-   obj = new_obj(OBJ_U6_DRAWBRIDGE,1,x+1+j,y+i,level);  
+   obj = new_obj(OBJ_U6_DRAWBRIDGE,1,x+1+j,y+i,level);
    obj_manager->add_obj(obj,true);
   }
-  
+
  obj = new_obj(OBJ_U6_DRAWBRIDGE,0,x,y+i,level); //bottom left
  obj_manager->add_obj(obj,true);
-     
+
  obj = new_obj(OBJ_U6_DRAWBRIDGE,2,x+b_width-1,y+i,level);  // bottom right
  obj_manager->add_obj(obj,true);
 
  scroll->display_string("\nOpen the drawbridge.\n");
- 
+
  return;
 }
 
@@ -849,18 +849,18 @@ void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width
 {
  uint16 i;
  Obj *obj;
- 
+
  y--;
- 
+
  obj = new_obj(OBJ_U6_DRAWBRIDGE,6,x-1,y,level);  //left side
  obj_manager->add_obj(obj,true);
- 
- obj = new_obj(OBJ_U6_DRAWBRIDGE,8,x+b_width-1,y,level);  //right side     
+
+ obj = new_obj(OBJ_U6_DRAWBRIDGE,8,x+b_width-1,y,level);  //right side
  obj_manager->add_obj(obj,true);
- 
+
  for(i=0;i<b_width-1;i++)
   {
-   obj = new_obj(OBJ_U6_DRAWBRIDGE,7,x+i,y,level);  //middle        
+   obj = new_obj(OBJ_U6_DRAWBRIDGE,7,x+i,y,level);  //middle
    obj_manager->add_obj(obj,true);
   }
 
@@ -879,13 +879,13 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  uint8 position;
  Actor *lord_british;
  MapCoord *mapcoord_ref = items.mapcoord_ref;
- 
+
  player->get_actor()->get_location(&x,&y,&z);
  lord_british = actor_manager->get_actor(U6_LORD_BRITISH_ACTOR_NUM);
- 
+
  // The player must ask Lord British about the orb before it can be used.
  // This sets the flag 0x20 in LB's flags field which allows the orb to be used.
- 
+
  if((lord_british->get_flags() & U6_LORD_BRITISH_ORB_CHECK_FLAG) == 0)
    {
     scroll->display_string("\nYou can't figure out how to use it.\n");
@@ -901,10 +901,10 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  ox=mapcoord_ref->x;
  oy=mapcoord_ref->y;
  oz=mapcoord_ref->z;
- 
+
  px=3+ox-x;
  py=2+oy-y;
-  
+
  if( px > 5 || py > 4 ||           // Moongate out of range.
      items.actor2_ref ||           // Actor at location.
      !map->is_passable(ox,oy,oz))  // Location not passable.
@@ -912,34 +912,34 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
     scroll->display_string("Failed.\n");
     return true;
    }
-  
+
  position=px+py*5;
-  
+
  if(position >= 12 && position <= 14) // The three middle positions go noware.
     position = 0;
-    
+
  gate=new_obj(OBJ_U6_RED_GATE,1,ox,oy,z);
  gate->quality=position;
  gate->status |= OBJ_STATUS_TEMPORARY;
-  
+
  obj_manager->add_obj(gate,true);
  scroll->display_string("a red moon gate appears.\n");
-  
+
  return true;
 }
-		  
+
 
 void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width)
-{ 
+{
  uint16 w,h;
 
  //remove end of closed drawbridge.
  // if present.
  if(x > 0)
    obj_manager->remove_obj_type_from_location(OBJ_U6_DRAWBRIDGE,x-1,y,level);
- 
+
  *bridge_width = 0;
- 
+
  //remove the rest of the bridge.
  for(h=0,w=1;w != 0;h++)
   {
@@ -1261,16 +1261,16 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
  Actor *ship_actor;
  uint16 lx, ly;
  uint8 lz;
- 
+
  if(ev != USE_EVENT_USE)
     return(false);
  ship_actor = actor_manager->get_actor(0); //get the vehicle actor.
- 
+
  // get out of boat
- if(party->is_in_vehicle()) 
+ if(party->is_in_vehicle())
   {
    ship_actor->get_location(&lx,&ly,&lz); //retrieve actor position for land check.
-   
+
    if(use_boat_find_land(&lx,&ly,&lz)) //we must be next to land to disembark
      {
       Obj *obj = ship_actor->make_obj();
@@ -1290,9 +1290,9 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
       scroll->display_string("\nOnly next to land.\n");
       return true;
      }
-   
+
    party->set_in_vehicle(false);
-     
+
    return true;
   }
 
@@ -1311,7 +1311,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
       return true;
      }
    }
-  
+
  if(obj->quality != 0)    //deed check
    {
     if(party->has_obj(OBJ_U6_SHIP_DEED, obj->quality) == false)
@@ -1344,14 +1344,14 @@ inline Obj *U6UseCode::use_boat_find_center(Obj *obj)
 {
  Obj *new_obj;
  uint16 x, y;
- uint8 ship_direction = (obj->frame_n % 8) / 2; //find the direction based on the frame_n 
- 
+ uint8 ship_direction = (obj->frame_n % 8) / 2; //find the direction based on the frame_n
+
  if(obj->frame_n >= 8 && obj->frame_n < 16) //center obj
   return obj;
 
  x = obj->x;
  y = obj->y;
- 
+
  if(obj->frame_n < 8) //front obj
    {
     switch(ship_direction)
@@ -1360,7 +1360,7 @@ inline Obj *U6UseCode::use_boat_find_center(Obj *obj)
        case ACTOR_DIR_R : x--; break;
        case ACTOR_DIR_D : y--; break;
        case ACTOR_DIR_L : x++; break;
-      } 
+      }
    }
  else
    {
@@ -1372,12 +1372,12 @@ inline Obj *U6UseCode::use_boat_find_center(Obj *obj)
           case ACTOR_DIR_R : x++; break;
           case ACTOR_DIR_D : y++; break;
           case ACTOR_DIR_L : x--; break;
-         } 
+         }
       }
    }
 
  new_obj = obj_manager->get_objBasedAt(x,y,obj->z,true);
- 
+
  if(new_obj != NULL && new_obj->obj_n == OBJ_U6_SHIP)
    return new_obj;
 
@@ -1415,7 +1415,7 @@ bool U6UseCode::use_cow(Obj *obj, UseCodeEvent ev)
 {
  if(ev != USE_EVENT_USE)
     return(false);
- 
+
 // return fill_bucket(OBJ_U6_BUCKET_OF_MILK);
  fill_bucket(OBJ_U6_BUCKET_OF_MILK);
  return true;
@@ -1426,7 +1426,7 @@ bool U6UseCode::use_well(Obj *obj, UseCodeEvent ev)
 {
  if(ev != USE_EVENT_USE)
     return(false);
- 
+
 // return fill_bucket(OBJ_U6_BUCKET_OF_WATER);
  fill_bucket(OBJ_U6_BUCKET_OF_WATER);
  return true;
@@ -1439,10 +1439,10 @@ bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
  Obj *bucket;
 
  player_actor = player->get_actor();
- 
+
  if(!player_actor->inventory_has_object(OBJ_U6_BUCKET))
    {
-    if(player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_MILK) || 
+    if(player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_MILK) ||
        player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_WATER) )
       {
        scroll->display_string("\nYou need an empty bucket.\n");
@@ -1454,18 +1454,18 @@ bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
        return true;
       }
    }
- 
+
  // Fill the first empty bucket in player's inventory.
- 
+
  bucket = player_actor->inventory_get_object(OBJ_U6_BUCKET);
  player_actor->inventory_remove_obj(bucket);
- 
+
  bucket->obj_n = filled_bucket_obj_n;
- 
+
  player_actor->inventory_add_object(bucket);
- 
+
  scroll->display_string("\nDone\n");
- 
+
  return true;
 }
 
@@ -1477,7 +1477,7 @@ bool U6UseCode::use_churn(Obj *obj, UseCodeEvent ev)
  Actor *player_actor;
  Obj *bucket;
  Obj *butter;
- 
+
  player_actor = player->get_actor();
 
  if(!player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_MILK))
@@ -1488,19 +1488,19 @@ bool U6UseCode::use_churn(Obj *obj, UseCodeEvent ev)
 
  bucket = player_actor->inventory_get_object(OBJ_U6_BUCKET_OF_MILK);
  player_actor->inventory_remove_obj(bucket);
- 
+
  bucket->obj_n = OBJ_U6_BUCKET;
- 
+
  butter = new Obj();
- 
+
  butter->obj_n = OBJ_U6_BUTTER;
  player_actor->inventory_add_object(butter);
  player_actor->inventory_add_object(bucket);
- 
+
  view_manager->set_inventory_mode();
- 
+
  view_manager->update(); //FIX this should be moved higher up in UseCode
- 
+
  scroll->display_string("\nDone\n");
  return true;
 }
@@ -1512,7 +1512,7 @@ bool U6UseCode::use_beehive(Obj *obj, UseCodeEvent ev)
  ViewManager *view_manager = game->get_view_manager();
  Actor *player_actor;
  Obj *honey_jar;
- 
+
  player_actor = player->get_actor();
 
  if(!player_actor->inventory_has_object(OBJ_U6_HONEY_JAR))
@@ -1533,13 +1533,13 @@ bool U6UseCode::use_beehive(Obj *obj, UseCodeEvent ev)
  player_actor->inventory_remove_obj(honey_jar);
 
  honey_jar->obj_n = OBJ_U6_JAR_OF_HONEY; //fill the empty jar with honey.
- 
+
  player_actor->inventory_add_object(honey_jar);   // add the filled jar back to the player's inventory
- 
+
  view_manager->set_inventory_mode();
- 
+
  view_manager->update(); //FIX this should be moved higher up in UseCode
- 
+
  scroll->display_string("\nDone\n");
  return true;
 }
@@ -1555,7 +1555,7 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
 
  if(ev != USE_EVENT_USE)
     return(false);
- 
+
  actor = actor_manager->get_actor(obj->quality); // horse or horse with rider
  if(!actor)
    return false;
@@ -1576,15 +1576,15 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
     scroll->display_string("You're already on a horse!\n");
     return true;
    }
- 
+
  actor_obj = actor->make_obj();
-	 
+
  //dismount from horse. revert to original actor type.
  //Add a temporary horse actor onto the map.
  if(obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
    {
     actor->clear();
-	
+
     actor_obj->obj_n = actor->base_obj_n; //revert to normal actor type
     actor_obj->frame_n = actor->old_frame_n;
 
@@ -1602,10 +1602,10 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
     actor_manager->clear_actor(actor); //clear the temp horse actor from the map.
 
     actor_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER;
-    
+
 	player_actor->move(actor_obj->x,actor_obj->y,actor_obj->z); //this will center the map window
     player_actor->init_from_obj(actor_obj);
-	
+
 	delete actor_obj;
    }
 
@@ -1617,7 +1617,7 @@ bool U6UseCode::use_fan(Obj *obj, UseCodeEvent ev)
  scroll->display_string("\nYou feel a breeze.\n");
 
  //FIX! change wind direction here.
- 
+
  return true;
 }
 
@@ -1629,12 +1629,12 @@ bool U6UseCode::use_sextant(Obj *obj, UseCodeEvent ev)
  char buf[18]; // "\nxxoS, xxoE\n"
  char lat, lon;
  uint16 x, y;
- 
+
  if(ev != USE_EVENT_USE)
    return false;
-      
+
  location = player->get_actor()->get_location();
- 
+
  //only use sextant on surface level.
  if(location.z == 0)
    {
@@ -1649,7 +1649,7 @@ bool U6UseCode::use_sextant(Obj *obj, UseCodeEvent ev)
       x = 38 - x;
       lon = 'W';
      }
-     
+
     y = location.y / 8;
     if(y > 45)
      {
@@ -1661,7 +1661,7 @@ bool U6UseCode::use_sextant(Obj *obj, UseCodeEvent ev)
       y = 45 - y;
       lat = 'N';
      }
-     
+
     sprintf(buf, "\n%2d{%c, %2d{%c\n", y, lat, x, lon);
     scroll->display_string(buf);
    }
@@ -1792,7 +1792,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
         prefix = "";
 
     party->dismount_from_horses();
-    
+
     // don't activate if autowalking from linking exit
     if(ev == USE_EVENT_PASS && items.actor_ref == player->get_actor() && !party->get_autowalk())
     {
@@ -1863,7 +1863,7 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
             z = red_moongate_tbl[obj->quality].z;
            }
         MapCoord exit(x, y, z);
-                      
+
         party->walk(obj, &exit);
         return(true);
     }
@@ -1907,9 +1907,9 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)
                 y = actor_manager->get_actor(obj->x)->get_location().y;
             }
             obj->frame_n = 0;
-            
+
             new UseCodeExplosiveEffect(obj, x, y, 3, 16);
-            
+
             // waits for effect to complete
         }
         else if(*items.msg_ref == MESG_EFFECT_COMPLETE) // explosion finished

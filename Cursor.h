@@ -41,7 +41,7 @@ class Cursor
 
 public:
     Cursor();
-    ~Cursor()                              { unload_all(); } 
+    ~Cursor()                              { unload_all(); }
     bool init(Configuration *c, Screen *s);
     uint32 load_all(std::string filename);
     void unload_all();

@@ -48,7 +48,7 @@ public:
 
 	/* Show the widget  */
 	virtual void Display(bool full_redraw);
-    
+
     /* events, used for dragging the area. */
     GUI_status MouseDown(int x, int y, int button);
     GUI_status MouseUp(int x, int y, int button);

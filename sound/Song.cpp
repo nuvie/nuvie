@@ -51,7 +51,7 @@ bool Song::Init(const char *filename) {
 bool Song::Play(bool looping) {
 	int ret;
 	if (m_pMusic==NULL) return false;
-	ret=Mix_PlayMusic(m_pMusic, looping ? -1 : 0);	
+	ret=Mix_PlayMusic(m_pMusic, looping ? -1 : 0);
 	if (ret) return false;
 	return true;
 }

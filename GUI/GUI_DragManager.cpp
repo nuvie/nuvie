@@ -31,7 +31,7 @@
  GUI_DragManager::GUI_DragManager(Screen *s)
  {
   screen = s;
-  
+
   message = 0;
   data = NULL;
   drag_source = NULL;
@@ -40,7 +40,7 @@
 GUI_status GUI_DragManager::start_drag(GUI_DragArea *src, int msg, void *d, unsigned char *icon_buf, uint16 w, uint16 h, uint8 bpp)
 {
  printf("Start Drag\n");
- 
+
  drag_source = src;
  message = msg;
  data = d;
@@ -59,7 +59,7 @@ void GUI_DragManager::drop(GUI_DragArea *drag_target, int x, int y)
   }
  else
    drag_source->drag_drop_failed(x,y,message,data);
- 
+
  drag_source = NULL;
 
  return;
@@ -77,4 +77,4 @@ GUI_DragArea *GUI_DragManager::get_source()
 {
 	return drag_source;
 }
- 
+

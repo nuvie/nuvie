@@ -36,15 +36,15 @@ class GamePalette
  Screen *screen;
  Configuration *config;
  uint8 counter;
- 
+
  public:
- 
+
    GamePalette(Screen *s, Configuration *cfg);
    ~GamePalette();
    void GamePalette::rotatePalette();
- 
+
  protected:
- 
+
    bool loadPalette();
 };
 

@@ -33,18 +33,18 @@ class Background: public GUI_Widget
 {
  Configuration *config;
  int game_type;
- 
+
  U6Shape *background;
- 
+
  public:
- 
+
  Background(Configuration *cfg);
  ~Background();
- 
+
  bool init();
 
  void Display(bool full_redraw);
- 
+
 };
 
 

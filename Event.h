@@ -44,7 +44,7 @@ class ViewManager;
 class UseCode;
 class GUI;
 
-#define NUVIE_INTERVAL    65 
+#define NUVIE_INTERVAL    65
 
 typedef enum {
  LOOK_MODE,
@@ -81,7 +81,7 @@ class Event : public GUI_CallBack
  Converse *converse;
  ViewManager *view_manager;
  UseCode *usecode;
- 
+
  SDL_Event event;
  int ts; //timestamp for TimeLeft() method.
  char alt_code_str[4]; // string representation of alt-code input
@@ -162,7 +162,7 @@ class Event : public GUI_CallBack
  protected:
 
  inline Uint32 TimeLeft();
- 
+
  void quitDialog();
  void saveDialog();
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);

@@ -119,7 +119,7 @@ protected:
 
 	/* The activation callback */
 	GUI_CallBack *callback_object;
-	
+
 	/* remember me! - flags */
 	int enabled;
 	int flatbutton;

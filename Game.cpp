@@ -84,7 +84,7 @@ Game::Game(Configuration *cfg)
  gui = NULL;
  usecode = NULL;
  effect_manager = NULL;
- 
+
 }
 
 Game::~Game()
@@ -115,14 +115,14 @@ Game::~Game()
     if(save_manager) delete save_manager;
     if(cursor) delete cursor;
 }
- 
+
 bool Game::loadGame(Screen *s, uint8 type)
 {
  EggManager *egg_manager;
- 
+
  screen = s;
  game_type = type;
- 
+
  gui = new GUI(config, screen);
 
  try
@@ -134,25 +134,25 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    save_manager = new SaveManager(config);
    save_manager->init();
-   
+
    palette = new GamePalette(screen,config);
 
    clock = new GameClock(config);
-   
+
    background = new Background(config);
    background->init();
    gui->AddWidget(background);
-   
+
    text = new Text(config);
    text->loadFont();
 
    font_manager = new FontManager(config);
    font_manager->init();
-   
+
    game_map = new Map(config);
 
    egg_manager = new EggManager(config, game_map);
-         
+
    tile_manager = new TileManager(config);
    tile_manager->loadTiles();
 
@@ -160,18 +160,18 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    // Correct usecode class for each game
    switch (game_type)
-     { 
+     {
       case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(this, config); break;
       case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(this, config); break;
       case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(this, config); break;
      }
-   
+
    obj_manager->set_usecode(usecode);
    //obj_manager->loadObjs();
-   
+
    game_map->loadMap(tile_manager, obj_manager);
    egg_manager->set_obj_manager(obj_manager);
-   
+
    actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
 
    game_map->set_actor_manager(actor_manager);
@@ -180,18 +180,18 @@ bool Game::loadGame(Screen *s, uint8 type)
    map_window = new MapWindow(config);
    map_window->init(game_map, tile_manager, obj_manager, actor_manager);
    gui->AddWidget(map_window);
-      
+
    player = new Player(config);
    party = new Party(config);
    player->init(obj_manager, actor_manager, map_window, clock, party);
    party->init(this, actor_manager);
- 
+
    portrait = new Portrait(config);
    portrait->init();
- 
+
    view_manager = new ViewManager(config);
    view_manager->init(gui, text, party, player, tile_manager, obj_manager, portrait);
- 
+
    scroll = new MsgScroll(config, font_manager->get_font(0));
    gui->AddWidget(scroll);
 
@@ -208,16 +208,16 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
-   
+
    save_manager->load_latest_save();
-   
+
   }
  catch(const char *error_string)
   {
    printf("Error: %s\n",error_string);
    return false;
   }
- 
+
  return true;
 }
 
@@ -279,18 +279,18 @@ void Game::play()
 {
   bool game_play = true;
   pause_flags = PAUSE_UNPAUSED;
- 
+
   //view_manager->set_inventory_mode(1); //FIX
-  
+
   screen->update();
-  
+
   //map_window->drawMap();
-  
+
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
   map_window->updateBlacking();
-    
-  for( ; game_play ; ) 
+
+  for( ; game_play ; )
    {
      if(cursor) cursor->clear(); // restore cursor area before GUI events
 

@@ -136,7 +136,7 @@ void GUI_Area::Display(bool full_redraw)
 	}
 
  DisplayChildren();
- 
+
  screen->update(area.x,area.y,area.w,area.h);
 
  return;

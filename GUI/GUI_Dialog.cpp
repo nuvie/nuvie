@@ -38,7 +38,7 @@ GUI_Dialog::GUI_Dialog(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, bo
 	bg_color = 0;
     drag = false;
     old_x = old_y = 0;
-    
+
     loadBorderImages();
 }
 
@@ -49,7 +49,7 @@ void GUI_Dialog::loadBorderImages()
   char filename[15]; // BorderU6_x.bmp\0
   std::string datadir = GUI::get_gui()->get_data_dir();
   std::string imagefile;
-    
+
   for(i=0;i<8;i++)
    {
      sprintf(filename, "Border%s_%d.bmp", "U6", i + 1);
@@ -59,7 +59,7 @@ void GUI_Dialog::loadBorderImages()
        {
         printf("Error: Loading %s from '%s' directory\n", filename, datadir.c_str());
        }
-   }    
+   }
 }
 
 /* Map the color to the display */
@@ -76,7 +76,7 @@ GUI_Dialog:: Display(bool full_redraw)
  int i;
  SDL_Rect framerect;
  SDL_Rect src, dst;
- 
+
  framerect.x = area.x + 8;
  framerect.y = area.y + 8;
  framerect.w = area.w - 16;
@@ -95,21 +95,21 @@ GUI_Dialog:: Display(bool full_redraw)
  dst.w = 8;
  dst.h = 8;
  SDL_BlitSurface(border[2], NULL, surface, &dst);
- 
+
  dst.x = area.x + area.w - 8;
  dst.y = area.y + area.h - 8;
  dst.w = 8;
  dst.h = 8;
  SDL_BlitSurface(border[4], NULL, surface, &dst);
- 
+
  dst.x = area.x;
  dst.y = area.y + area.h - 8;
  dst.w = 8;
  dst.h = 8;
  SDL_BlitSurface(border[6], NULL, surface, &dst);
- 
+
  // Draw top and bottom border lines
- 
+
  for(i=area.x + 8; i < area.x + area.w - 24; i += 16)
    {
     dst.x = i;
@@ -131,7 +131,7 @@ GUI_Dialog:: Display(bool full_redraw)
     src.y = 0;
     src.w = area.x + area.w - 8 - i;
     src.h = 8;
-    
+
     dst.x = i;
     dst.y = area.y;
     dst.w = src.w;
@@ -149,7 +149,7 @@ GUI_Dialog:: Display(bool full_redraw)
 
 
  for(i=area.y + 8; i < area.y + area.h - 24; i += 16)
-   {   
+   {
     dst.x = area.x;
     dst.y = i;
     dst.w = 8;
@@ -182,9 +182,9 @@ GUI_Dialog:: Display(bool full_redraw)
     dst.h = src.h;
     SDL_BlitSurface(border[3], &src, surface, &dst);
    }
-   
+
  DisplayChildren();
- 
+
  screen->update(area.x,area.y,area.w,area.h);
 
  return;
@@ -197,7 +197,7 @@ GUI_status GUI_Dialog::MouseDown(int x, int y, int button)
  old_y = y;
 
  grab_focus();
- 
+
  return GUI_YUM;
 }
 
@@ -213,19 +213,19 @@ GUI_status GUI_Dialog::MouseUp(int x, int y, int button)
 GUI_status GUI_Dialog::MouseMotion(int x,int y,Uint8 state)
 {
  int dx, dy;
- 
+
  if(!drag)
    return GUI_PASS;
- 
+
  dx = x - old_x;
  dy = y - old_y;
 
  old_x = x;
  old_y = y;
- 
+
  GUI::get_gui()->moveWidget(this,dx,dy);
 // Redraw();
- 
+
  return (GUI_YUM);
 }
 

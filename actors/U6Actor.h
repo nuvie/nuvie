@@ -89,17 +89,17 @@ typedef struct {
 class U6Actor: public Actor
 {
  protected:
- 
+
  const U6ActorType *actor_type;
  const U6ActorType *base_actor_type;
 
  uint8 beg_mode; // for WT_BEG
 
  public:
- 
+
  U6Actor(Map *m, ObjManager *om, GameClock *c);
  ~U6Actor();
- 
+
  bool init();
  uint16 get_downward_facing_tile_num();
  void update();
@@ -112,9 +112,9 @@ class U6Actor: public Actor
  bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
  void twitch();
  void die();
- 
+
  uint8 get_object_readiable_location(uint16 obj_n);
- 
+
  protected:
  bool init_ship();
  bool init_splitactor(); //cows, horses etc.
@@ -134,7 +134,7 @@ class U6Actor: public Actor
 
  inline const U6ActorType *get_actor_type(uint16 new_obj_n);
  void set_actor_obj_n(uint16 new_obj_n);
- 
+
  inline bool has_surrounding_objs();
  inline void remove_surrounding_objs_from_map();
  inline void add_surrounding_objs_to_map();
@@ -148,7 +148,7 @@ class U6Actor: public Actor
  inline void twitch_surrounding_dragon_objs();
  inline void twitch_surrounding_hydra_objs();
  inline void twitch_obj(Obj *obj);
- 
+
  inline void clear_surrounding_objs_list(bool delete_objs=false);
  inline void init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 actor_obj_n, uint16 obj_frame_n);
 

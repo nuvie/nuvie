@@ -35,23 +35,23 @@ class Portrait;
 class Party;
 
 class ActorView : public View {
- 
+
  Portrait *portrait;
- 
+
  unsigned char *portrait_data;
- 
+
  public:
  ActorView(Configuration *cfg);
  ~ActorView();
- 
+
  bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
- 
+
  bool set_party_member(uint8 party_member);
-  
+
  void Display(bool full_redraw);
-  
+
  protected:
- 
+
  void add_command_icons(Screen *tmp_screen, void *view_manager);
  void display_name();
  void display_actor_stats();

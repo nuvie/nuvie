@@ -32,7 +32,7 @@ GUI_TextInput:: GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str
 {
  max_height = height;
  callback_object = callback;
- 
+
  text = (char *)malloc(max_width * max_height + 1);
 
  if(text == NULL)
@@ -42,10 +42,10 @@ GUI_TextInput:: GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str
   }
 
  strncpy(text, str, max_width * max_height);
- 
+
  pos = strlen(text);
  length = pos;
- 
+
  area.w = max_width * font->CharWidth();
  area.h = max_height * font->CharHeight();
 }
@@ -60,43 +60,43 @@ GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
  //release focus if we click outside the text box.
  if(focused && !HitRect(x, y))
    release_focus();
- else 
+ else
   {
-   if(!focused)  
+   if(!focused)
      grab_focus();
   }
-  
+
  return(GUI_PASS);
 }
 
 GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
 {
  char ascii;
- 
+
  if(!focused)
    return GUI_PASS;
 
  switch(key.sym)
    {
-    case SDLK_LSHIFT   : 
+    case SDLK_LSHIFT   :
     case SDLK_RSHIFT   :
     case SDLK_LCTRL    :
-    case SDLK_RCTRL    : 
+    case SDLK_RCTRL    :
     case SDLK_CAPSLOCK : break;
 
     case SDLK_RETURN : if(callback_object)
                          callback_object->callback(TEXTINPUT_CB_TEXT_READY, this, text);
     case SDLK_ESCAPE : release_focus(); break;
-    
+
     case SDLK_HOME : pos = 0; break;
     case SDLK_END  : pos = length; break;
-    
-    case SDLK_KP4  : 
+
+    case SDLK_KP4  :
     case SDLK_LEFT : if(pos > 0)
                        pos--;
                      break;
-    
-    case SDLK_KP6   : 
+
+    case SDLK_KP6   :
     case SDLK_RIGHT : if(pos < length)
                        pos++;
                       break;
@@ -109,14 +109,14 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
                           break;
 
     case SDLK_BACKSPACE : remove_char(); break; //delete the character to the left of the cursor
-    
+
     default : if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
                    ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
               add_char(ascii); break;
    }
-   
 
- 
+
+
  return(GUI_YUM);
 }
 
@@ -137,7 +137,7 @@ void GUI_TextInput::add_char(char c)
 
  text[pos] = c;
  pos++;
-  
+
  text[length] = '\0';
 
  return;
@@ -146,7 +146,7 @@ void GUI_TextInput::add_char(char c)
 void GUI_TextInput::remove_char()
 {
  uint16 i;
- 
+
  if(pos == 0)
   return;
 
@@ -155,7 +155,7 @@ void GUI_TextInput::remove_char()
 
  pos--;
  length--;
- 
+
  return;
 }
 
@@ -172,7 +172,7 @@ void GUI_TextInput::SetDisplay(Screen *s)
 void GUI_TextInput:: Display(bool full_redraw)
 {
  SDL_Rect r;
- 
+
  if(full_redraw && focused)
    {
     r = area;
@@ -180,7 +180,7 @@ void GUI_TextInput:: Display(bool full_redraw)
    }
 
  GUI_Text::Display(full_redraw);
- 
+
  if(focused)
   display_cursor();
 
@@ -191,19 +191,19 @@ void GUI_TextInput::display_cursor()
  SDL_Rect r;
  uint16 x, y;
  uint16 cw, ch;
- 
+
  x = pos % max_width;
  y = pos / max_width;
- 
+
  cw = font->CharWidth();
  ch = font->CharHeight();
- 
+
  r.x = area.x + x * cw;
  r.y = area.y + y * ch;
  r.w = 1;
  r.h = ch;
- 
+
  SDL_FillRect(surface, &r, cursor_color);
- 
+
  return;
 }

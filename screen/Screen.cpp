@@ -46,7 +46,7 @@ Screen::Screen(Configuration *cfg)
 {
  std::string str_lighting_style;
  config = cfg;
- 
+
  update_rects = NULL;
  shading_data = NULL;
  updatingalphamap = true;
@@ -59,7 +59,7 @@ Screen::Screen(Configuration *cfg)
 	 lighting_style = 1;
  else
 	 lighting_style = 2;
- 
+
  max_update_rects = 10;
  num_update_rects = 0;
  memset( shading_globe, 0, sizeof(uint8*) * 3 );
@@ -83,10 +83,10 @@ Screen::~Screen()
 bool Screen::init(uint16 new_width, uint16 new_height)
 {
  std::string str;
- 
+
  width = new_width;
  height = new_height;
- 
+
   	/* Initialize the SDL library */
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 		fprintf(stderr, "Couldn't initialize SDL: %s\n",
@@ -101,7 +101,7 @@ bool Screen::init(uint16 new_width, uint16 new_height)
  config->value("config/video/scale_method", str, "---");
  scaler_index = scaler_reg.GetIndexForName(str);
  if(scaler_index == -1)
-   { 
+   {
 		//config.set("config/video/scale_method","SuperEagle",true);
 		scaler_index = scaler_reg.GetIndexForName("SuperEagle");
 	 }
@@ -113,11 +113,11 @@ fullscreen = false;
  //scaled_surface = SDL_SetVideoMode(width, height, 8, SDL_SWSURFACE | SDL_HWPALETTE);
  //pitch = scaled_surface->pitch;
  //bpp = scaled_surface->format->BitsPerPixel;
- 
+
  //printf("surface pitch = %d\n",pitch);
- 
+
 // memcpy(palette,0,768);
- 
+
  set_screen_mode();
 
  return true;
@@ -140,7 +140,7 @@ bool Screen::set_palette(uint8 *p)
 
 		surface->colour32[i] = c;
 	 }
-  
+
  return true;
 }
 
@@ -148,14 +148,14 @@ bool Screen::rotate_palette(uint8 pos, uint8 length)
 {
  uint32 tmp_colour;
  uint8 i;
- 
+
  tmp_colour = surface->colour32[pos+length-1];
- 
+
  for(i= length-1;i > 0; i-- )
     surface->colour32[pos + i] = surface->colour32[pos + i - 1];
 
  surface->colour32[pos] = tmp_colour;
-   
+
  return true;
 }
 
@@ -164,19 +164,19 @@ bool Screen::clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
  uint8 *pixels;
  uint16 i;
  uint16 x1,y1;
-  
+
  pixels = (uint8 *)surface->pixels;
- 
+
  if(clip_rect)
    {
     x1 = x;
     y1 = y;
     if(x < clip_rect->x)
       x = clip_rect->x;
-      
+
     if(y < clip_rect->y)
       y = clip_rect->y;
-      
+
     if(x1 + w > clip_rect->x + clip_rect->w)
       {
        w -= (x1 + w) - (clip_rect->x + clip_rect->w);
@@ -191,7 +191,7 @@ bool Screen::clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
          return false;
       }
    }
-   
+
  pixels += y * surface->pitch + (x * surface->bytes_per_pixel);
 
  for(i=0;i<h;i++)
@@ -200,7 +200,7 @@ bool Screen::clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
      pixels += surface->pitch;
     }
 
- return true; 
+ return true;
 }
 
 bool Screen::fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
@@ -215,7 +215,7 @@ bool Screen::fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
 {
  uint16 *pixels;
  uint16 i,j;
-  
+
  pixels = (uint16 *)surface->pixels;
 
  pixels += y * surface->w + x;
@@ -224,11 +224,11 @@ bool Screen::fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
     {
      for(j=0;j<w;j++)
         pixels[j] = (uint16)surface->colour32[colour_num];
-        
+
      pixels += surface->w;
     }
 
- return true; 
+ return true;
 }
 
 bool Screen::fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
@@ -236,7 +236,7 @@ bool Screen::fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
  uint32 *pixels;
  uint16 i,j;
 
-  
+
  pixels = (uint32 *)surface->pixels;
 
  pixels += y * surface->w + x;
@@ -245,22 +245,22 @@ bool Screen::fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
     {
      for(j=0;j<w;j++)
         pixels[j] = surface->colour32[colour_num];
-        
+
      pixels += surface->w;
     }
 
- return true; 
+ return true;
 }
 
 void *Screen::get_pixels()
 {
  //if(scaled_surface == NULL)
- //   return NULL; 
- 
+ //   return NULL;
+
  //return scaled_surface->pixels;
  return NULL;
 }
-   
+
 SDL_Surface *Screen::get_sdl_surface()
 {
  if(surface)
@@ -273,9 +273,9 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
 {
  uint16 src_x = 0;
  uint16 src_y = 0;
- 
+
  // clip to screen.
- 
+
  if(dest_x >= width || dest_y >= height)
    return false;
 
@@ -294,13 +294,13 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
     else
       src_h += dest_y;
    }
-   
+
  if(dest_x + src_w >= width)
    src_w = width - dest_x;
 
  if(dest_y + src_h >= height)
    src_h = height - dest_y;
- 
+
  //clip to rect if required.
 
  if(clip_rect)
@@ -313,7 +313,7 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
        src_w -= clip_rect->x - dest_x;
        dest_x = clip_rect->x;
       }
-      
+
    if(clip_rect->y > dest_y)
      {
       src_y = clip_rect->y - dest_y;
@@ -322,12 +322,12 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
       src_h -= clip_rect->y - dest_y;
       dest_y = clip_rect->y;
      }
-     
+
    if(dest_x + src_w > clip_rect->x + clip_rect->w)
      {
       if(clip_rect->x + clip_rect->w - dest_x <= 0)
         return false;
-      
+
       src_w = clip_rect->x + clip_rect->w - dest_x;
      }
 
@@ -335,10 +335,10 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
      {
       if(clip_rect->y + clip_rect->h - dest_y <= 0)
         return false;
-      
+
       src_h = clip_rect->y + clip_rect->h - dest_y;
      }
-     
+
    src_buf += src_y * src_pitch + src_x;
   }
 
@@ -352,9 +352,9 @@ inline bool Screen::blit16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf,
 {
  uint16 *pixels;
  uint16 i,j;
-  
+
  pixels = (uint16 *)surface->pixels;
- 
+
  pixels += dest_y * surface->w + dest_x;
 
  if(trans)
@@ -390,12 +390,12 @@ bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16
 {
  uint32 *pixels;
  uint16 i,j;
-  
+
  pixels = (uint32 *)surface->pixels;
- 
+
  pixels += dest_y * surface->w + dest_x;
 
-      
+
  if(trans)
   {
    for(i=0;i<src_h;i++)
@@ -439,9 +439,9 @@ void Screen::blitbitmap16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, 
 {
  uint16 *pixels;
  uint16 i,j;
-  
+
  pixels = (uint16 *)surface->pixels;
- 
+
  pixels += dest_y * surface->w + dest_x;
 
  for(i=0;i<src_h;i++)
@@ -464,9 +464,9 @@ void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, 
 {
  uint32 *pixels;
  uint16 i,j;
-  
+
  pixels = (uint32 *)surface->pixels;
- 
+
  pixels += dest_y * surface->w + dest_x;
 
  for(i=0;i<src_h;i++)
@@ -489,7 +489,7 @@ void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, 
 //0 is pitch-black
 //Globe of r 1 is just a single tile of 2
 
-static const char TileGlobe[][11*11] = 
+static const char TileGlobe[][11*11] =
 {
 {
 	1,1,1,
@@ -629,7 +629,7 @@ void Screen::buildalphamap8()
     Game *game = Game::get_game();
     int game_type;
     config->value("config/GameType",game_type);
- 
+
     if(game_type == NUVIE_GAME_U6)
     {
         shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(444)->data;
@@ -655,7 +655,7 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 	if( lighting_style == 0 )
 		return;
     if( lighting_style == 2 )
-    {        
+    {
 		globe = r+1;
 		if( r > 5 )
 			r = 5;
@@ -730,7 +730,7 @@ void Screen::blitalphamap8()
                 pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & 0xF800 ) >> 11)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 11) | //R
                               ( ( (unsigned char)(( (float)(( pixels16[j] & 0x07E0 ) >> 5 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 5 ) | //G
                               ( ( (unsigned char)(( (float)(( pixels16[j] & 0x001F ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
-            
+
                 //Red = 0xF800 = 1111 1000 0000 0000
                 //Grn = 0x07E0 = 0000 0111 1110 0000
                 //Blu = 0x001F = 0000 0000 0001 1111
@@ -762,7 +762,7 @@ void Screen::blitalphamap8()
         std::cout << "Screen::blitalphamap8() cannot handle your screen surface depth of " << surface->bits_per_pixel << std::endl;
         break;
         return;
-    }    
+    }
 
 }
 
@@ -770,7 +770,7 @@ SDL_Surface *Screen::create_sdl_surface_from(unsigned char *src_buf, uint16 src_
 {
  SDL_Surface *new_surface;
  uint16 i,j;
- 
+
  new_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, src_w, src_h, surface->bits_per_pixel,
                                     surface->Rmask, surface->Gmask, surface->Bmask, 0);
 
@@ -827,18 +827,18 @@ void Screen::update()
 				         surface->pitch/surface->bytes_per_pixel, surface->h,	// pixels/line, pixels/col
 				         sdl_surface->pixels,									// dest
 				         sdl_surface->pitch/sdl_surface->format->BytesPerPixel,	// destpixels/line
-                 scale_factor); 
+                 scale_factor);
   }
  else
   {
    uint8 *src = (uint8 *)surface->pixels;
    uint8 *dest = (uint8 *)sdl_surface->pixels;
-   
+
    memcpy(dest,src,surface->w*surface->bytes_per_pixel);
    dest += sdl_surface->pitch;
    src += surface->pitch;
   }
-  
+
 SDL_UpdateRect(sdl_surface,0,0,0,0);
 
  return;
@@ -848,7 +848,7 @@ SDL_UpdateRect(sdl_surface,0,0,0,0);
 void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
 {
  //if(scaled_surface)
-/* 
+/*
  if(x >= 2)
    x -= 2;
  if(y >= 2)
@@ -864,18 +864,18 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
  if(x > width)
    return;
  if(y > height)
-   return;  
+   return;
  if((x + w) > width) w = width - x;
  if((y + h) > height) h = height - y;
- 
+
  if(scaler)
-  {   
+  {
    scaler->Scale(surface->format_type, surface->pixels,		// type, source
                  x, y, w, h,							// x, y, w, h
                  surface->pitch/surface->bytes_per_pixel, surface->h,	// pixels/line, pixels/col
                  sdl_surface->pixels,									// dest
                  sdl_surface->pitch/sdl_surface->format->BytesPerPixel,	// destpixels/line
-                 scale_factor); 
+                 scale_factor);
   }
  else
   {
@@ -903,9 +903,9 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
  num_update_rects++;
 
  //SDL_UpdateRect(sdl_surface,x*scale_factor,y*scale_factor,w*scale_factor,h*scale_factor);
- 
+
  //printf("update rect(%d,%d::%d,%d)\n", update_rects[num_update_rects].x, update_rects[num_update_rects].y, update_rects[num_update_rects].w, update_rects[num_update_rects].h);
- 
+
  return;
 }
 
@@ -919,21 +919,21 @@ void Screen::preformUpdate()
 void Screen::lock()
 {
 // SDL_LockSurface(scaled_surface);
- 
+
  return;
 }
 
 void Screen::unlock()
 {
  //SDL_UnlockSurface(scaled_surface);
- 
+
  return;
 }
 
 bool Screen::initScaler()
 {
  std::string scaler_name;
- 
+
  return true;
 }
 
@@ -964,7 +964,7 @@ void Screen::set_screen_mode()
 	else
 		flags |= SDL_RESIZABLE;
 
-	// Opengl Stuff 
+	// Opengl Stuff
 #ifdef WANT_OPENGL
 	if (useOpengl) {
 		std::cout << " OpenGL" << std::endl;
@@ -988,8 +988,8 @@ void Screen::set_screen_mode()
 
 			std::cout << opengl->get_texture_mem_used() << " bytes of textures loaded so far" << std::endl;
 
-			// Hide system mouse cursor   
-			SDL_ShowCursor(0); 
+			// Hide system mouse cursor
+			SDL_ShowCursor(0);
 
 			return;
 		}
@@ -1007,7 +1007,7 @@ void Screen::set_screen_mode()
 		std::cout << " Software Surface" << std::endl;
 	}
 
-	// Old Software rendering. Try a scaler_index first, 
+	// Old Software rendering. Try a scaler_index first,
 	if (!try_scaler(width, height, flags, bpp)) {
 
 		scale_factor = 1;
@@ -1045,13 +1045,13 @@ void Screen::set_screen_mode()
 #ifdef UNDER_CE
 	SHFullScreen(GetActiveWindow(), SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON | SHFS_HIDESTARTICON);
 #endif
-	// Hide system mouse cursor   
+	// Hide system mouse cursor
 #ifndef UNDER_CE
-//	SDL_ShowCursor(0); 
+//	SDL_ShowCursor(0);
 #endif
 
 	surface->set_format(sdl_surface->format);
-																				
+
 
 //	if (zbuffer) screen->create_zbuffer();
 }
@@ -1070,7 +1070,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 			scaler = scaler_reg.GetPointScaler();
 		}
 		// If the scaler selected is 2x only, and we are in a > than 2x mode, use Point
-		else if (scale_factor > 2 && scaler->flags & SCALER_FLAG_2X_ONLY) 
+		else if (scale_factor > 2 && scaler->flags & SCALER_FLAG_2X_ONLY)
 		{
 			std::cout << "Scaler " << scaler->name << " only supports 2x. " << scale_factor << "x requested" << std::endl;
 			scaler = scaler_reg.GetPointScaler();
@@ -1141,10 +1141,10 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 
 //Note! assumes area divides evenly by down_scale factor
 unsigned char *Screen::copy_area(SDL_Rect *area, uint16 down_scale)
-{ 
+{
  if(surface->bits_per_pixel == 16)
    return(copy_area16(area, down_scale));
-    
+
  return(copy_area32(area, down_scale));
 }
 
@@ -1159,12 +1159,12 @@ unsigned char *Screen::copy_area16(SDL_Rect *area, uint16 down_scale)
  uint32 ra, ga, ba;
  uint16 x, y;
  uint8 x1, y1;
- 
+
  dst_pixels = new unsigned char[((area->w / down_scale) * (area->h / down_scale)) * 3];
  ptr = dst_pixels;
- 
+
  fmt = main_surface->format;
- 
+
  for(y = 0; y < area->h; y += down_scale)
   {
    for(x = 0; x < area->w; x += down_scale)
@@ -1183,19 +1183,19 @@ unsigned char *Screen::copy_area16(SDL_Rect *area, uint16 down_scale)
          ra = *src_pixels & fmt->Rmask;
          ra >>= fmt->Rshift;
          ra <<= fmt->Rloss;
-         
+
          ga = *src_pixels & fmt->Gmask;
          ga >>= fmt->Gshift;
-         ga <<= fmt->Gloss;         
-         
+         ga <<= fmt->Gloss;
+
          ba = *src_pixels & fmt->Bmask;
          ba >>= fmt->Bshift;
          ba <<= fmt->Bloss;
-                  
+
          r += ra;
          g += ga;
          b += ba;
-         
+
          src_pixels++;
         }
        src_pixels += surface->w;
@@ -1222,12 +1222,12 @@ unsigned char *Screen::copy_area32(SDL_Rect *area, uint16 down_scale)
  uint32 ra, ga, ba;
  uint16 x, y;
  uint8 x1, y1;
- 
+
  dst_pixels = new unsigned char[((area->w / down_scale) * (area->h / down_scale)) * 3];
  ptr = dst_pixels;
- 
+
  fmt = main_surface->format;
- 
+
  for(y = 0; y < area->h; y += down_scale)
   {
    for(x = 0; x < area->w; x += down_scale)
@@ -1246,19 +1246,19 @@ unsigned char *Screen::copy_area32(SDL_Rect *area, uint16 down_scale)
          ra = *src_pixels & fmt->Rmask;
          ra >>= fmt->Rshift;
          ra <<= fmt->Rloss;
-         
+
          ga = *src_pixels & fmt->Gmask;
          ga >>= fmt->Gshift;
-         ga <<= fmt->Gloss;         
-         
+         ga <<= fmt->Gloss;
+
          ba = *src_pixels & fmt->Bmask;
          ba >>= fmt->Bshift;
          ba <<= fmt->Bloss;
-                  
+
          r += ra;
          g += ga;
          b += ba;
-         
+
          src_pixels++;
         }
        src_pixels += surface->w;

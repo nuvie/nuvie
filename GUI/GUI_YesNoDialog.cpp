@@ -32,11 +32,11 @@
 #include "GUI_YesNoDialog.h"
 
 
-GUI_YesNoDialog::GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback) : 
+GUI_YesNoDialog::GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback) :
    GUI_Dialog(x, y, w, h, 244, 216, 131, GUI_DIALOG_MOVABLE)
 {
   GUI_Widget *widget;
-  
+
   yes_callback_object = yesCallback;
   no_callback_object = noCallback;
 
@@ -45,7 +45,7 @@ GUI_YesNoDialog::GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg
 
   no_button =  new GUI_Button(this, 30, 50, 40, 18, "No", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, (GUI_CallBack *)this, 0);
   AddWidget(no_button);
- 
+
   widget = (GUI_Widget *) new GUI_Text(10, 25, 0, 0, 0, msg, gui->get_font());
   AddWidget(widget);
 }

@@ -45,24 +45,24 @@ class Player
  Actor *actor;
  ActorManager *actor_manager;
  ObjManager *obj_manager;
- 
+
  char name[14];
  uint8 gender;
 
- uint8 questf; 
+ uint8 questf;
  uint8 karma;
- 
+
  MapWindow *map_window;
- 
+
  public:
- 
+
  Player(Configuration *cfg);
- 
+
  bool init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
  void init();
  bool load(NuvieIO *objlist);
  bool save(NuvieIO *objlist);
- 
+
  Actor *find_actor();
 
  bool is_mapwindow_centered()            { return(mapwindow_centered); }
@@ -80,12 +80,12 @@ class Player
 
  void set_quest_flag(uint8 val) { questf = val; }
  uint8 get_quest_flag()         { return(questf); }
- 
+
  void set_actor(Actor *new_actor);
  Actor *get_actor();
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  uint8 get_location_level();
- 
+
  char *get_name();
  void set_gender(uint8 val) { gender = val; }
  char *get_gender_title();
@@ -102,7 +102,7 @@ class Player
  uint32 get_walk_delay();
 
  protected:
- 
+
 };
 
 #endif /* __Player_h__ */

@@ -32,21 +32,21 @@ class Look
  uint16 max_len;
  unsigned char *look_data;
  char *desc_buf;
- 
+
  public:
- 
+
  Look(Configuration *cfg);
  ~Look();
- 
+
  bool init();
- 
+
  // if description has a plural form, true is returned in plural
  const char *get_description(uint16 tile_num, bool *plural);
  bool has_plural(uint16 tile_num);
  uint16 get_max_len();
- 
+
  void print();
- 
+
  protected:
 };
 

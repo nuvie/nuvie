@@ -52,18 +52,18 @@ protected:
 	SDL_Surface *surface;
 
     int offset_x, offset_y; /* original offsets to parent */
-  
+
 	/* Flag -- whether or not the widget should be freed */
 	int status;
 
   /* should we redraw this widget */
   bool update_display;
-  
+
 	/* the button states for theoretically 3 buttons */
 	int pressed[3];
-  
+
   bool focused;
-  
+
   std::list<GUI_Widget *>children;
   GUI_Widget *parent;
 
@@ -89,13 +89,13 @@ public:
 
 	/* The area covered by the widget */
 	SDL_Rect area;
-  
+
 	GUI_Widget(void *data);
 	GUI_Widget(void *data, int x, int y, int w, int h);
 	virtual ~GUI_Widget();
-  
+
   int AddWidget(GUI_Widget *widget);
-  
+
 	/* Mark the widget as visible -- this is the default state */
 	virtual void Show(void);
 
@@ -104,14 +104,14 @@ public:
 
 	/* Mark the widget as free, so it will be deleted by the GUI */
 	virtual void Delete(void);
-  
+
     virtual void MoveRelative(int dx,int dy);
     virtual void Move(int new_x, int new_y);
     void grab_focus();
     void release_focus();
-    
+
   virtual void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
-  
+
 	virtual int  Status(void);	/* Reports status to GUI */
 
 	/* Set the bounds of the widget.
@@ -150,7 +150,7 @@ public:
 
   /* should this widget be redrawn */
   inline bool needs_redraw() { return update_display; }
-  
+
 	/* GUI idle function -- run when no events pending */
 	virtual GUI_status Idle(void);
 
@@ -175,7 +175,7 @@ public:
 
   bool drag_accept_drop(int x, int y, int message, void *data);
   void drag_perform_drop(int x, int y, int message, void *data);
-  
+
 	/* Main event handler function.
 	   This function gets raw SDL events from the GUI.
 	 */

@@ -43,10 +43,10 @@ class GUI_Color;
 class GUI {
 
 protected:
- 
+
   static GUI *gui;
    Configuration *config;
-   
+
 	/* The display surface */
   Screen *screen;
 
@@ -54,7 +54,7 @@ protected:
 
   GUI_Font *gui_font;
   GUI_DragManager *gui_drag_manager;
-  
+
 	/* Pointers for an array of widgets */
 	int maxwidgets;
 	int numwidgets;
@@ -73,12 +73,12 @@ protected:
 
   /* Flag - wether we are preforming a drag and drop */
   bool dragging;
-  
+
   bool full_redraw; //this forces all widgets to redraw on the next call to Display()
-  
+
   // some default colours
   GUI_Color *selected_color;
-  
+
 public:
 	GUI(Configuration *c, Screen *s);
 	~GUI();
@@ -93,10 +93,10 @@ public:
   bool removeWidget(GUI_Widget *widget);
 
   bool moveWidget(GUI_Widget *widget, uint32 dx, uint32 dy);
-  
+
   /* force everything to redraw */
   void force_full_redraw();
-  
+
 	/* Display the GUI manually */
 	void Display();
 
@@ -120,11 +120,11 @@ public:
 
 	/* Run Idle() on all widgets. */
 	void Idle(); // SB-X
-    
+
   static GUI *get_gui() { return gui; }
   GUI_Font *get_font();
   Screen *get_screen() {return screen;}
-  
+
   //colors
   GUI_Color *get_selected_color() { return selected_color; }
 
@@ -137,7 +137,7 @@ public:
 	void unlock_input() { lock_input(NULL); }
     std::string get_data_dir();
 protected:
-  
+
 	/* Function to handle a GUI status */
 	void HandleStatus(GUI_status status);
 

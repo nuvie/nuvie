@@ -4,7 +4,7 @@
  *
  *  Created by Eric Fry on Sun May 30 2004.
  *  Copyright (c) 2004 The Nuvie Team. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -46,7 +46,7 @@ bool NuvieFileList::open(const char *directory, const char *search, uint8 s_mode
 {
  DIR *dir;
  struct dirent *entry;
- 
+
  search_prefix.assign(search);
  sort_mode = s_mode;
 
@@ -63,11 +63,11 @@ bool NuvieFileList::open(const char *directory, const char *search, uint8 s_mode
   }
 
  closedir(dir);
- 
+
  file_list.sort(NuvieFileDesc()); //sort list by time last modified in decending order.
- 
+
  list_ptr = file_list.begin();
- 
+
  return true;
 }
 
@@ -77,7 +77,7 @@ bool NuvieFileList::add_filename(const char *directory, const char *filename)
  const char *sp =  search_prefix.c_str();
  NuvieFileDesc filedesc;
  std::string fullpath;
- 
+
  if(filename == NULL || strlen(filename) == 0)
    return false;
 
@@ -89,9 +89,9 @@ bool NuvieFileList::add_filename(const char *directory, const char *filename)
     if(strncmp(sp, filename, strlen(sp)) != 0)
       return false;
    }
- 
+
  build_path(directory, filename, fullpath);
- 
+
  if(stat(fullpath.c_str(), &sb) != 0)
    {
     printf("Error: Couldn't stat() file %s\n", fullpath.c_str());
@@ -102,7 +102,7 @@ bool NuvieFileList::add_filename(const char *directory, const char *filename)
  filedesc.filename.assign(filename);
 
  file_list.push_front(filedesc);
- 
+
  return true;
 }
 
@@ -110,10 +110,10 @@ std::string *NuvieFileList::next()
 {
  if(list_ptr != file_list.end())
   {
-   
+
    std::string *filename = &((*list_ptr).filename);
    list_ptr++;
-   
+
    return filename;
   }
 
@@ -123,13 +123,13 @@ std::string *NuvieFileList::next()
 std::string *NuvieFileList::get_latest()
 {
  std::list<NuvieFileDesc>::iterator iter;
- 
+
  iter = file_list.begin();
- 
+
  if(iter != file_list.end())
-  {   
+  {
    std::string *filename = &((*iter).filename);
-   
+
    return filename;
   }
 
@@ -144,4 +144,4 @@ uint32 NuvieFileList::get_num_files()
 void NuvieFileList::close()
 {
  return;
-}   
+}

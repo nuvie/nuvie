@@ -31,18 +31,18 @@ class GUI_Font;
 
 #define TEXTINPUT_CB_TEXT_READY 0x1
 
-class GUI_TextInput : public GUI_Text 
+class GUI_TextInput : public GUI_Text
 {
  protected:
  uint16 max_height;
  uint16 pos;
  uint16 length;
- 
+
  GUI_CallBack *callback_object;
- 
+
  Uint32 cursor_color;
  Uint32 selected_bgcolor;
- 
+
  public:
 
  GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b,
