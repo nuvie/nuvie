@@ -11,9 +11,19 @@ nuvie [options] game(from config)
 Converse/Talk:
 0xbf - alternate inventory/portrait view
 Consider input buffer filled with spaces as empty
+MD SE talking
+
+Event:
+Move "now" time to Game or GameClock, add some type to handle ticks
+Move TimeQueue/Timer functions to new class file(s)?
+Take low-level input handling out of Event and make a keybinder.
+
+Actors: There must be a uniform way to set all actors direction and frame, and
+to animate them, no matter what size they are.
 
 Iolo "gather" doesn't get gold in containers eg in bags, backpacks
 
+things to do:
 skiff
 ship
 balloon
@@ -28,4 +38,4 @@ saving
 eggs
 non human actors
 magic
-
+sprite animations

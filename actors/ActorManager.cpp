@@ -36,6 +36,8 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  clock = c;
 
  player_actor = 1;
+
+ update = true;
 }
 
 ActorManager::~ActorManager()
@@ -261,7 +263,8 @@ const char *ActorManager::look_actor(Actor *a)
 void ActorManager::updateActors()
 {
  uint16 i;
- 
+ if(!update)
+  return;
  for(i=0;i<256;i++)
   actors[i]->update();
   

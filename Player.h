@@ -41,8 +41,10 @@ class Player
  GameClock *clock;
  Party *party;
  bool party_mode;
+ bool uncontrolled; // don't control or follow actor
  Actor *actor;
  ActorManager *actor_manager;
+// Vehicle *vehicle; // if riding in a vehicle
  
  char name[14];
  uint8 gender;
@@ -59,6 +61,9 @@ class Player
  bool init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
 
  Party *get_party() { return(party); }
+ bool get_uncontrolled() { return(uncontrolled); }
+ void uncontrol() { uncontrolled = true; }
+ void control() { uncontrolled = false; map_window->centerMapOnActor(actor); }
  
  void set_karma(uint8 val) { karma = val; }
  uint8 get_karma() { return(karma); }

@@ -73,6 +73,7 @@ class Party {
  PartyMember member[16];
  uint8 num_in_party; // number of party members.
  uint8 formation; // walking formation
+ bool autowalk; // party is automatically walking to a destination
  
  public:
  
@@ -112,6 +113,10 @@ class Party {
  void reform_party();
  void follow();
  bool move(uint16 dx, uint16 dy, uint8 dz);
+
+ void walk(MapCoord *walkto, MapCoord *teleport);
+ void stop_walking();
+ bool get_autowalk() { return(autowalk); } 
 
  protected:
 

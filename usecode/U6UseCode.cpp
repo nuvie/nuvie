@@ -335,6 +335,7 @@ bool U6UseCode::use_door(Obj *obj)
 
 bool U6UseCode::use_ladder(Obj *obj)
 {
+#if 0 /* code used for moving player instantly, party would teleport */
  if(obj->frame_n == 0) // DOWN
    {
     if(obj->z == 0) //handle the transition from the surface to the first dungeon level
@@ -357,6 +358,30 @@ bool U6UseCode::use_ladder(Obj *obj)
     else
        player->move(obj->x,obj->y,obj->z-1);
    }
+#endif
+ Party *party = Game::get_game()->get_party();
+ uint16 x = obj->x, y = obj->y;
+ uint8 z;
+ if(obj->frame_n == 0) // DOWN
+   {
+    if(obj->z == 0)//handle the transition from the surface to the first dungeon level
+      {
+       x = (obj->x & 0x07) | (obj->x >> 2 & 0xF8);
+       y = (obj->y & 0x07) | (obj->y >> 2 & 0xF8);
+      }
+    z = obj->z + 1;
+   }
+ else //UP
+   {
+    if(obj->z == 1)//we use obj->quality to tell us which surface chunk to come up in.
+      {
+       x = obj->x / 8 * 8 * 4 + ((obj->quality & 0x03) * 8) + (obj->x - obj->x / 8 * 8);
+       y = obj->y / 8 * 8 * 4 + ((obj->quality >> 2 & 0x03) * 8) + (obj->y - obj->y / 8 * 8);
+      }
+    z = obj->z - 1;
+   }
+ MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
+ party->walk(&ladder, &destination);
  return true;
 }
 
@@ -732,6 +757,7 @@ bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
  */
 bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
 {
+    Party *party = Game::get_game()->get_party();
     char *prefix = "", *dungeon_name = "";
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
@@ -769,19 +795,26 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
 
     if(ev == USE_EVENT_PASS && actor_ref == player->get_actor())
     {
-        // move down to next plane
-        if(z == 0) //handle the transition from the surface to the first dungeon level
-          {
-           actor_ref->move(((x & 0x07) | (x >> 2 & 0xF8)), ((y & 0x07) | (y >> 2 & 0xF8)), z+1);
-          }
-        else
-           actor_ref->move(x,y,z+1); //dungeon ladders line up so we simply drop straight down
         scroll->display_string("Shamino says, \"This is the ");
         scroll->display_string(prefix);
         scroll->display_string(dungeon_name);
         scroll->display_string(".\"\n\n");
         scroll->display_prompt();
+        MapCoord entrance(x, y, z);
+        // going down
+        if(z == 0) // from surface, do superchunk translation
+        {
+            x = (x & 0x07) | (x >> 2 & 0xF8);
+            y = (y & 0x07) | (y >> 2 & 0xF8);
+        }
+        z += 1;
+        MapCoord exit(x, y, z);
+        party->walk(&entrance, &exit);
+        return(true);
     }
+    else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
+        if(party->contains_actor(actor_ref))
+            return(true);
     return(false);
 }
 

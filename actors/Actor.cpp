@@ -276,7 +276,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 */
  // re-center map if actor is player character
  Game *game = Game::get_game();
- if(id_n == game->get_player()->get_actor()->id_n)
+ if(id_n == game->get_player()->get_actor()->id_n && !game->get_player()->get_uncontrolled())
     game->get_map_window()->centerMapOnActor(this);
  moved = true;
  return true;

@@ -41,12 +41,14 @@ class ActorManager
  Configuration *config;
  TileManager *tile_manager;
  ObjManager *obj_manager;
+
+ bool update; // ActorManager is not paused
  
  Map *map;
  Actor *actors[256];
  uint8 player_actor;
  GameClock *clock;
- 
+
  public:
   
  ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c);
@@ -61,6 +63,8 @@ class ActorManager
  void set_player(Actor *a);
 
  const char *look_actor(Actor *a);
+
+ void set_update(bool u) { update = u; }
 
  void updateActors();
  void twitchActors();

@@ -1,3 +1,12 @@
+2003-09-10  Joseph Applegate <sb-x@users.sourceforge.net>
+	* TimeQueue and Timers added to Event files. These should probably be
+	moved into their own file(s).
+	* Actor and Player respect "uncontrolled" flag on Player, preventing
+	move of Player or MapWindow recentering.
+	* The entire party properly walks towards ladders when used, or
+	caves when entered, and reappears on the other side. You cannot exit
+	dungeons yet.
+
 2003-09-09  Eric Fry <efry@users.sourceforge.net>
 	* Replaced gcc-3.3 with gcc in the Project Builder build system.
 	* Added quantity strings to InventoryWidget

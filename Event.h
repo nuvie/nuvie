@@ -38,6 +38,8 @@
 #include "GUI.h"
 
 class Book;
+class Game;
+class TimedEvent;
 
 #define NUVIE_INTERVAL    65
 
@@ -54,19 +56,21 @@ typedef enum {
 extern uint32 nuvieGameCounter;
 
 
-/* Event activated by a timer.
+/* Queue of timed events.
  */
-class TimedEvent
+class TimeQueue
 {
-friend class Event;
-    uint32 time;
-    bool queued;
-    bool ignore_pause;
+    std::list<TimedEvent *> tq;
 public:
-    TimedEvent() : time(0), queued(false), ignore_pause(false) { }
-    virtual ~TimedEvent() { } // queue should destroy after used
-    virtual void timed(uint32 evtime) = 0;
-    void set_time(uint32 new_time) { time = new_time; }
+    TimeQueue() : tq() { }
+    ~TimeQueue() { clear(); }
+
+    bool empty() { return(tq.empty()); }
+    void clear() { while(!empty()) pop_timer(); }
+
+    void add_timer(TimedEvent *tevent);
+    TimedEvent *pop_timer();
+    bool call_timer(uint32 evtime); // activate
 };
 
 
@@ -92,7 +96,7 @@ class Event
  uint16 active_alt_code; // alt-code that needs more input
  uint8 alt_code_input_num; // alt-code can get multiple inputs
 
- std::list<TimedEvent *> time_queue;
+ TimeQueue time_queue;
 
  public:
  Event(Configuration *cfg);
@@ -101,6 +105,7 @@ class Event
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
            GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g);
  Book *get_book() { return(book); }
+ TimeQueue *get_time_queue() { return(&time_queue); }
 
  bool update();
  bool handleEvent(const SDL_Event *event);
@@ -117,10 +122,6 @@ class Event
 
  void wait();
 
- void add_timer(TimedEvent *tevent, uint32 evtime);
- void remove_timer(uint32 evtime);
- bool call_timer(uint32 evtime);
-
  protected:
 
  inline Uint32 TimeLeft();
@@ -129,17 +130,54 @@ class Event
  
 };
 
-#if 0
-/* Move the party to a vehicle or dungeon.
+
+/* Event activated by a timer.
+ */
+class TimedEvent
+{
+friend class TimeQueue;
+friend class Event;
+protected:
+    Event *event;
+    uint32 delay, time; // timer delay, next absolute time to activate
+    bool ignore_pause; // activates even if game is paused
+    bool repeat; // put back into queue with same delay after activation
+public:
+//    TimedEvent() { fprintf(stderr, "Event: timer must be given activation time!\n"); abort(); }
+    TimedEvent(uint32 reltime);
+    virtual ~TimedEvent() { } // event queue will destroy after use
+    virtual void timed(uint32 evtime) = 0;
+};
+
+
+/* Move the party to a vehicle or dungeon two-steps per second. Those characters
+ * off-screen will just teleport to the target (or vehicle location).
  */
 class TimedPartyMove : public TimedEvent
 {
     Party *party; // the party
-//    MapCoord
+    MapCoord *dest; // destination, where all actors walk to and disappear
+    MapCoord *target; // where they reappear in dungeon, NULL for vehicles
 public:
-    TimedPartyMove() { }
+    TimedPartyMove(MapCoord *d, MapCoord *t = NULL);
+    ~TimedPartyMove() { delete dest; delete target; }
     void timed(uint32 evtime);
 };
-#endif
+
+
+/* Print to stdout. (timer test)
+ */
+class TimedMessage : public TimedEvent
+{
+    std::string msg;
+public:
+    TimedMessage(uint32 reltime, const char *m, bool rep = false)
+    : TimedEvent(reltime), msg(m) { repeat = rep; }
+    void timed(uint32 evtime)
+    {
+        printf("Activate! evtime=%d msg=\"%s\"\n", evtime, msg.c_str());
+    }
+};
+
 
 #endif /* __Event_h__ */

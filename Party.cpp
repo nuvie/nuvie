@@ -294,3 +294,28 @@ bool Party::move(uint16 dx, uint16 dy, uint8 dz)
             return(false);
     return(true);
 }
+
+
+/* Automatically walk (timed) to a destination, and then teleport to new
+ * location (optional). Used to enter/exit dungeons and vehicles.
+ */
+void Party::walk(MapCoord *walkto, MapCoord *teleport)
+{
+    new TimedPartyMove(walkto, teleport);
+    // other actors won't move
+    game->get_actor_manager()->set_update(false);
+    // view will snap back to player after everyone has moved
+    game->get_player()->uncontrol();
+    autowalk = true;
+}
+
+
+/* Done automatically walking, return control to player character.
+ */
+void Party::stop_walking()
+{
+//        Game *game = Game::get_game();
+    game->get_player()->control();
+    game->get_actor_manager()->set_update(true);
+    autowalk = false;
+}

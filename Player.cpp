@@ -30,6 +30,8 @@ Player::Player(Configuration *cfg)
  config = cfg;
  config->value("config/GameType",game_type);
 
+// vehicle = NULL;
+
  karma = 0;
  questf = 0;
 }
@@ -46,6 +48,7 @@ bool Player::init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
  
  actor->set_in_party(true);
  actor_manager->set_player(actor);
+ uncontrolled = false;
 
  return true;
 }
@@ -104,6 +107,8 @@ char *Player::get_gender_title()
 
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
+ if(uncontrolled)
+  return;
  uint16 x, y;
  uint8 z;
  actor->get_location(&x, &y, &z);
@@ -122,6 +127,8 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 
 void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 {
+   if(uncontrolled)
+    return;
    if(actor->move(new_x, new_y, new_level))
    {
 //    map_window->centerMapOnActor(actor);

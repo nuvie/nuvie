@@ -88,9 +88,13 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
 bool Event::update()
 {
  // timed
- uint32 now = SDL_GetTicks();
- while(call_timer(now))
-    remove_timer(now);
+ uint32 now = SDL_GetTicks(); // FIXME: get from Game or GameClock
+ while(!time_queue.empty() && time_queue.call_timer(now))
+ {
+    TimedEvent *tevent = time_queue.pop_timer(); // remove from timequeue
+    if(!tevent->repeat)
+        delete tevent; // if not repeated, safe to delete
+ }
  // polled
  SDL_Event event;
  while(SDL_PollEvent(&event))
@@ -593,50 +597,117 @@ void Event::wait()
  SDL_Delay(TimeLeft());
 }
 
+// Timer (should be in another file)
 
 /* Add new timed event to queue, which will activate `event' when time is
  * `evtime'.
  */
-void Event::add_timer(TimedEvent *tevent, uint32 evtime)
+void TimeQueue::add_timer(TimedEvent *tevent)
 {
     std::list<TimedEvent *>::iterator t;
-    tevent->set_time(evtime);
-//    printf("TIME: NEW EVENT TIME = %d\n", tevent->time);
-    if(time_queue.empty())
+    if(tq.empty())
     {
-        time_queue.push_front(tevent);
+        tq.push_front(tevent);
         return;
     }
     // add after events with earlier time
-    t = time_queue.begin();
-    while(t != time_queue.end() && (*t++)->time <= tevent->time);
-    time_queue.insert(t, tevent);
+    t = tq.begin();
+    while(t != tq.end() && (*t++)->time <= tevent->time);
+    tq.insert(t, tevent);
 }
 
 
-/* Remove/destroy timed event at front of queue with a time <= `evtime'.
+/* Remove and return timed event at front of queue, or NULL if empty.
  */
-void Event::remove_timer(uint32 evtime)
+TimedEvent *TimeQueue::pop_timer()
 {
-//    printf("TIME: DELETE EVENT TIME = %d\n", evtime);
-    TimedEvent *first = time_queue.front();
-    if(first->time <= evtime)
-        time_queue.pop_front(); // remove it
-    delete first;
+    TimedEvent *first = NULL;
+    if(!empty())
+    {
+        first = tq.front();
+        tq.pop_front(); // remove it
+    }
+    return(first);
 }
 
 
 /* Call timed event at front of queue, whose time is <= `evtime'.
  * Returns true if an event handler was called. (false if time isn't up yet)
  */
-bool Event::call_timer(uint32 evtime)
+bool TimeQueue::call_timer(uint32 evtime)
 {
-//    printf("TIME: CALL EVENT TIME = %d\n", evtime);
-    TimedEvent *first = time_queue.front();
-    if(time_queue.empty() || first->time > evtime)
+    if(empty())
+        return(false);
+    TimedEvent *first = tq.front();
+    if(first->time > evtime)
         return(false);
     first->timed(evtime);
+    if(first->repeat) // repeat! same delay, add time
+    {
+        first->time = evtime + first->delay;
+        add_timer(first);
+    }
     return(true);
+}
+
+
+/* This constructor must be called by all subclasses to add to queue.
+ */
+TimedEvent::TimedEvent(uint32 reltime) : delay(reltime),
+            time(reltime + SDL_GetTicks()), ignore_pause(false), repeat(false)
+{
+    event = Game::get_game()->get_event();
+    event->get_time_queue()->add_timer(this);
+}
+
+
+/* Party movement to/from dungeon or to vehicle, two tiles per second.
+ * Construct & Set destination.
+ */
+TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t = NULL) : TimedEvent(500)
+{
+    party = Game::get_game()->get_party();
+    dest = new MapCoord(*d);
+    if(t)
+        target = new MapCoord(*t);
+    else
+        target = NULL;
+}
+
+
+/* Party movement to/from dungeon or to vehicle. Repeated until everyone is in
+ * the boat. (FIXME: handle boats)
+ */
+void TimedPartyMove::timed(uint32 evtime)
+{
+    repeat = false;
+    for(uint32 a = 0; a < party->get_party_size(); a++)
+    {
+        // if not at target (FIXME: only checks Z for now)
+        Actor *person = party->get_actor(a);
+        uint16 x, y; uint8 z;
+        person->get_location(&x, &y, &z);
+        MapCoord loc(x, y, z);
+        if((target && loc.z != target->z) || (!target && loc != *dest))
+        {
+            // if at dest or offscreen, teleport to target
+            MapWindow *map_window = Game::get_game()->get_map_window();
+            if((target && loc == *dest)
+               || !map_window->in_window(loc.x, loc.y, loc.z))
+                person->move(target->x, target->y, target->z, ACTOR_FORCE_MOVE);
+            else // walk there
+                person->swalk(*dest);
+
+            person->update();
+            repeat = true;
+        }
+        // at target
+        if((target && loc.z == target->z) || (loc == *dest))
+            person->stop_walking();
+    }
+
+    if(!repeat)
+        party->stop_walking();
 }
 
 
@@ -647,7 +718,7 @@ inline Uint32 Event::TimeLeft()
     static Uint32 next_time = 0;
     Uint32 now;
 
-    now = SDL_GetTicks();
+    now = SDL_GetTicks(); // FIXME: get from Game or GameClock
     if ( next_time <= now ) {
         next_time = now+NUVIE_INTERVAL;
         return(0);
