@@ -479,11 +479,12 @@ if(!args.empty() && !args[0].empty())
                                // val2 does what?? (val1 is literal without)
                         test_msg("-$Y = NPC(PARTYIDX)??-");
 //FIXME:
+                        printf("P_SIZE: %d\n", heap[CONV_VAR_PARTYSIZE].val);
                         printf("P_ID: %d\n", get_val(0, 0));
                         cnpc = player->get_party()->get_actor(get_val(0, 0));
                         printf("npc: %d\n", cnpc ? cnpc->get_actor_num() : 0);
-                        printf("name: \"%s\"\n", npc_name(cnpc ? cnpc->get_actor_num() : 0));
                         ystr = npc_name(cnpc ? cnpc->get_actor_num() : 0);
+                        printf("name: \"%s\"\n", ystr);
 //                        ystr = "!-NPCName-";
                         break;
                     default:
@@ -787,6 +788,7 @@ void Converse::init_variables()
         heap[v].valt = heap[v].val = 0x00;
     heap[CONV_VAR_SEX].val = player->get_gender();
     heap[CONV_VAR_PARTYSIZE].val = player->get_party()->get_party_size();
+    heap[CONV_VAR_PARTYSIZET].val = heap[CONV_VAR_PARTYSIZE].val;
     heap[CONV_VAR_WORKTYPE].val = npc->get_worktype();
 }
 

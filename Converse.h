@@ -76,7 +76,8 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define CONV_SCOPE_SEEKIDENT 7 // after identsection change to SEEKLOOK
 
 #define CONV_VAR_SEX 0x10 // sex of avatar: male=0 female=1
-#define CONV_VAR_PARTYSIZE 0x17 // number of people in avatar's party
+#define CONV_VAR_PARTYSIZE 0x17 // number of people (alive) in avatar's party
+#define CONV_VAR_PARTYSIZET 0x18 // number of people (alive+dead) in party
 #define CONV_VAR_WORKTYPE 0x20 // current activity of npc, from schedule
 #define CONV_VAR__LAST_ 0x20
 
