@@ -28,7 +28,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
-#include "GUI_Widget.h"
+#include "GUI_widget.h"
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Actor.h"

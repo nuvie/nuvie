@@ -1,4 +1,13 @@
 Nuvie TODO List
 ---------------
 
+Command line:
+nuvie [options] game(from config)
+-h, --help
+-s, --savedir, savegame directory ?
+?? config location
+?? Set gametype or location
 
+Converse/Talk:
+0xbf - alternate inventory/portrait view
+Consider input buffer filled with spaces as empty

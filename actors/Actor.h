@@ -134,6 +134,7 @@ class Actor
 // bool is_visible() { return(MapCoord(x,y,z).is_visible()); }
  bool is_alive();
  bool is_nearby(Actor *other);
+ bool is_nearby(uint8 a);
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  uint16 get_tile_num();
  uint8 get_actor_num() { return(id_n); }

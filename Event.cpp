@@ -30,6 +30,7 @@
 #include "MapWindow.h"
 #include "Player.h"
 #include "Book.h"
+#include "PortraitView.h"
 #include "Event.h"
 
 #include "U6UseCode.h"
@@ -86,6 +87,11 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
 
 bool Event::update()
 {
+ // timed
+ uint32 now = SDL_GetTicks();
+ while(call_timer(now))
+    remove_timer(now);
+ // polled
  SDL_Event event;
  while(SDL_PollEvent(&event))
   {
@@ -254,7 +260,6 @@ bool Event::handleEvent(const SDL_Event *event)
 
     if(active_alt_code && scroll->get_input())
         alt_code_input(scroll->get_input());
-
  return true;
 }
 
@@ -579,6 +584,53 @@ void Event::wait()
 {
  SDL_Delay(TimeLeft());
 }
+
+
+/* Add new timed event to queue, which will activate `event' when time is
+ * `evtime'.
+ */
+void Event::add_timer(TimedEvent *tevent, uint32 evtime)
+{
+    std::list<TimedEvent *>::iterator t;
+    tevent->set_time(evtime);
+//    printf("TIME: NEW EVENT TIME = %d\n", tevent->time);
+    if(time_queue.empty())
+    {
+        time_queue.push_front(tevent);
+        return;
+    }
+    // add after events with earlier time
+    t = time_queue.begin();
+    while(t != time_queue.end() && (*t++)->time <= tevent->time);
+    time_queue.insert(t, tevent);
+}
+
+
+/* Remove/destroy timed event at front of queue with a time <= `evtime'.
+ */
+void Event::remove_timer(uint32 evtime)
+{
+//    printf("TIME: DELETE EVENT TIME = %d\n", evtime);
+    TimedEvent *first = time_queue.front();
+    if(first->time <= evtime)
+        time_queue.pop_front(); // remove it
+    delete first;
+}
+
+
+/* Call timed event at front of queue, whose time is <= `evtime'.
+ * Returns true if an event handler was called. (false if time isn't up yet)
+ */
+bool Event::call_timer(uint32 evtime)
+{
+//    printf("TIME: CALL EVENT TIME = %d\n", evtime);
+    TimedEvent *first = time_queue.front();
+    if(time_queue.empty() || first->time > evtime)
+        return(false);
+    first->timed(evtime);
+    return(true);
+}
+
 
 //Protected
 

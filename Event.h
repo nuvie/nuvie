@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <list>
 #include "U6def.h"
 
 #include "Configuration.h"
@@ -53,6 +53,23 @@ typedef enum {
 
 extern uint32 nuvieGameCounter;
 
+
+/* Event activated by a timer.
+ */
+class TimedEvent
+{
+friend class Event;
+    uint32 time;
+    bool queued;
+    bool ignore_pause;
+public:
+    TimedEvent() : time(0), queued(false), ignore_pause(false) { }
+    virtual ~TimedEvent() { } // queue should destroy after used
+    virtual void timed(uint32 evtime) = 0;
+    void set_time(uint32 new_time) { time = new_time; }
+};
+
+
 class Event
 {
  Configuration *config;
@@ -74,7 +91,9 @@ class Event
  uint8 alt_code_len; // how many characters have been input for alt-code
  uint16 active_alt_code; // alt-code that needs more input
  uint8 alt_code_input_num; // alt-code can get multiple inputs
- 
+
+ std::list<TimedEvent *> time_queue;
+
  public:
  Event(Configuration *cfg);
  ~Event();
@@ -98,6 +117,10 @@ class Event
 
  void wait();
 
+ void add_timer(TimedEvent *tevent, uint32 evtime);
+ void remove_timer(uint32 evtime);
+ bool call_timer(uint32 evtime);
+
  protected:
 
  inline Uint32 TimeLeft();
@@ -105,5 +128,18 @@ class Event
  void quitDialog();
  
 };
+
+#if 0
+/* Move the party to a vehicle or dungeon.
+ */
+class TimedPartyMove : public TimedEvent
+{
+    Party *party; // the party
+//    MapCoord
+public:
+    TimedPartyMove() { }
+    void timed(uint32 evtime);
+};
+#endif
 
 #endif /* __Event_h__ */

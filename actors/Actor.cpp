@@ -85,6 +85,12 @@ bool Actor::is_nearby(Actor *other)
 }
 
 
+bool Actor::is_nearby(uint8 a)
+{
+    return(is_nearby(Game::get_game()->get_actor_manager()->get_actor(a)));
+}
+
+
 void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 {
  *ret_x = x;

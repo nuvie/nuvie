@@ -118,7 +118,6 @@
 #define OBJ_U6_CLEAVER             113
 #define OBJ_U6_KNIFE               114
 
-
 #define OBJ_U6_WINE                115
 #define OBJ_U6_MEAD                116
 #define OBJ_U6_ALE                 117
@@ -133,7 +132,7 @@
 #define OBJ_U6_CHEESE              132
 #define OBJ_U6_HAM                 133
 #define OBJ_U6_HORSE_CHOPS         135
- 
+
 #define OBJ_U6_PICTURE             143
 #define OBJ_U6_CANDELABRA          145
 #define OBJ_U6_PERSON_SLEEPING     146
@@ -141,7 +140,6 @@
 #define OBJ_U6_SCROLL              152
 
 #define OBJ_U6_LUTE                158
-
 
 #define OBJ_U6_CLOCK               159
 #define OBJ_U6_BED                 163
@@ -161,11 +159,12 @@
 #define OBJ_U6_HAMMER              204
 
 #define OBJ_U6_BRAZIER             206
- 
+
 #define OBJ_U6_MEAT                209
 #define OBJ_U6_RIBS                210
 
 #define OBJ_U6_MOUSEHOLE           213
+#define OBJ_U6_SUNDIAL             235
 #define OBJ_U6_CHAIR               252
 #define OBJ_U6_CROSS               254
 #define OBJ_U6_TOMBSTONE           255
@@ -175,6 +174,8 @@
 #define OBJ_U6_INVISIBILITY_RING   258
 
 #define OBJ_U6_FISHING_POLE        264
+
+
 #define OBJ_U6_LEVER               268
 #define OBJ_U6_DRAWBRIDGE          269
 #define OBJ_U6_V_PASSTHROUGH       278
@@ -223,6 +224,7 @@ class U6UseCode: public UseCode
 {
  typedef struct u6_uc_s uc_obj;
  uc_obj *uc_objects;
+ uint32 uc_objects_size; // size of uc_objects array
  uint16 uc_object_count; // count of game object<->usecode objects
 
  public:
@@ -230,7 +232,8 @@ class U6UseCode: public UseCode
  U6UseCode(Configuration *cfg);
  ~U6UseCode();
  void init_objects();
- 
+ void add_usecode(uint16 obj, uint8 frame, uint8 dist, uint8 ev, bool (U6UseCode::*func)(Obj *, uint8));
+
  bool use_obj(Obj *obj, Obj *src_obj=NULL);
  bool use_obj(Obj *obj, Actor *actor);
  bool look_obj(Obj *obj, Actor *actor);
@@ -239,6 +242,9 @@ class U6UseCode: public UseCode
  bool is_unlocked_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n != 9 && obj->frame_n != 11); }
  bool is_locked_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && (obj->frame_n == 9 || obj->frame_n == 11)); }
  bool is_food(Obj *obj);
+ const char *is_dungeon(Obj *obj);
+ const char *is_cave(Obj *obj);
+ const char *is_shrine(Obj *obj);
  bool can_use(Obj *obj);
  bool can_look(Obj *obj);
  bool can_pass(Obj *obj);
@@ -265,6 +271,7 @@ class U6UseCode: public UseCode
  bool look_mirror(Obj *obj, uint8 ev);
  bool look_sign(Obj *obj, uint8 ev);
  bool look_clock(Obj *obj, uint8 ev);
+ bool enter_dungeon(Obj *obj, uint8 ev);
 
 #if 0 /* names for other events? */
  bool approach_mirror(Obj *obj, uint8 ev); // change to reflect frame

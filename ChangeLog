@@ -1,3 +1,9 @@
+2003-09-04  Joseph Applegate <sb-x@users.sourceforge.net>
+	* A few new U6 food items added, and the ability to enter dungeons (but
+	you can't leave them yet).
+	* Event: started event timer (untested)
+	* Added some TODO notes
+
 2003-09-04  Michael Fink <vividos@users.sourceforge.net>
 	* Fixed most memory leaks
 	* Updated MSVC project file

@@ -21,6 +21,7 @@
  *
  */
 #include <cstdlib>
+#include <cassert>
 #include "Game.h"
 #include "ViewManager.h"
 #include "GameClock.h"
@@ -34,7 +35,7 @@ U6UseCode::U6UseCode(Configuration *cfg) : UseCode(cfg)
 
 U6UseCode::~U6UseCode()
 {
-    delete uc_objects;
+    free(uc_objects);
 }
 
 
@@ -42,47 +43,62 @@ U6UseCode::~U6UseCode()
  */
 void U6UseCode::init_objects()
 {
-    uc_object_count = 31; // count of uc_object[X].set()
-    uc_objects = uc_object_count ? new uc_obj[uc_object_count] : NULL;
+    uc_objects = NULL;
+    uc_objects_size = 0; uc_object_count = 0;
 
-// set(object,frame,distance to trigger,event(s),function)
-    uc_objects[0].set(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
-    uc_objects[1].set(OBJ_U6_SIGN,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    uc_objects[2].set(OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    uc_objects[3].set(OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    uc_objects[4].set(OBJ_U6_PICTURE,   255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    uc_objects[5].set(OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    uc_objects[6].set(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
-    uc_objects[7].set(OBJ_U6_CLOCK,       1,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
-    uc_objects[8].set(OBJ_U6_MIRROR,      0,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
-    uc_objects[9].set(OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[10].set(OBJ_U6_WINE,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[11].set(OBJ_U6_MEAD,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[12].set(OBJ_U6_ALE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[13].set(OBJ_U6_BREAD,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[14].set(OBJ_U6_MEAT_PORTION,0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[15].set(OBJ_U6_ROLLS,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[16].set(OBJ_U6_CAKE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[17].set(OBJ_U6_CHEESE,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[18].set(OBJ_U6_RIBS,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[19].set(OBJ_U6_MEAT,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[20].set(OBJ_U6_GRAPES,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[21].set(OBJ_U6_HAM,         0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[22].set(OBJ_U6_GARLIC,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[23].set(OBJ_U6_SNAKE_VENOM, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[24].set(OBJ_U6_HORSE_CHOPS, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[25].set(OBJ_U6_HONEY,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[26].set(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
-/*
-    uc_objects[27].set(OBJ_U6_OAKEN_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[28].set(OBJ_U6_WINDOWED_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[29].set(OBJ_U6_CEDAR_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
-    uc_objects[30].set(OBJ_U6_STEEL_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
-*/
+// (object,frame,distance to trigger,event(s),function)
+    add_usecode(OBJ_U6_SIGN,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    add_usecode(OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    add_usecode(OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    add_usecode(OBJ_U6_PICTURE,   255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    add_usecode(OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    add_usecode(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+
+    add_usecode(OBJ_U6_CAVE,255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
+    add_usecode(OBJ_U6_HOLE,  0,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
+
+    add_usecode(OBJ_U6_CLOCK,       1,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
+    add_usecode(OBJ_U6_SUNDIAL,   255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
+    add_usecode(OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
+
+    add_usecode(OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_WINE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_MEAD,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_ALE,         0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_BREAD,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_MEAT_PORTION,0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_ROLLS,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_CAKE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_CHEESE,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_RIBS,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_MEAT,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_GRAPES,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_HAM,         0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_GARLIC,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_SNAKE_VENOM, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_HORSE_CHOPS, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_HONEY,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
+
+    add_usecode(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
 }
 
 
-/* Is the object a food item?
+/* Add usecode object to the list.
+ */
+void U6UseCode::add_usecode(uint16 obj, uint8 frame, uint8 dist, uint8 ev,
+                            bool (U6UseCode::*func)(Obj *, uint8))
+{
+    if((uc_object_count + 1) >= uc_objects_size)
+    {
+        uc_objects_size += 8;
+        uc_objects = (uc_obj *)realloc(uc_objects, uc_objects_size*sizeof(uc_obj));
+    }
+    uc_objects[uc_object_count++].set(obj, frame, dist, ev, func);
+}
+
+
+/* Is the object a food (or drink) item?
  */
 bool U6UseCode::is_food(Obj *obj)
 {
@@ -90,7 +106,10 @@ bool U6UseCode::is_food(Obj *obj)
     return(n == OBJ_U6_BUTTER || n == OBJ_U6_CHEESE
            || n == OBJ_U6_WINE || n == OBJ_U6_MEAD || n == OBJ_U6_ALE
            || n == OBJ_U6_BREAD || n == OBJ_U6_ROLLS || n == OBJ_U6_CAKE
-           || n == OBJ_U6_MEAT_PORTION || n == OBJ_U6_MEAT || n == OBJ_U6_RIBS);
+           || n == OBJ_U6_MEAT_PORTION || n == OBJ_U6_MEAT || n == OBJ_U6_RIBS
+           || n == OBJ_U6_HAM || n == OBJ_U6_HORSE_CHOPS
+           || n == OBJ_U6_GRAPES || n == OBJ_U6_HONEY || n == OBJ_U6_GARLIC
+           || n == OBJ_U6_SNAKE_VENOM || n == OBJ_U6_DRAGON_EGG);
 }
 
 
@@ -220,7 +239,7 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
                                 break;
 
     case OBJ_U6_LADDER :
-    case OBJ_U6_HOLE : use_ladder(obj);
+/*    case OBJ_U6_HOLE :*/ use_ladder(obj);
                        break;
 
     case OBJ_U6_CHEST :
@@ -338,7 +357,6 @@ bool U6UseCode::use_ladder(Obj *obj)
     else
        player->move(obj->x,obj->y,obj->z-1);
    }
-
  return true;
 }
 
@@ -700,9 +718,69 @@ bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
         if(x == obj->x && y > obj->y && y <= (obj->y + 2))
         {
             scroll->display_string("\nYou can see yourself!");
+//            view_manager->set_portrait_mode(actor_ref->get_actor_num(), NULL, true);
             view_manager->set_portrait_mode(actor_ref->get_actor_num(), NULL);
         }
         return(true);
+    }
+    return(false);
+}
+
+
+/* if not in party mode, say that you cannot enter and do normal move
+ * else walk all party members to cave, give dungeon name, and move to dungeon
+ */
+bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
+{
+    char *prefix = "", *dungeon_name = "";
+    uint16 x = obj->x, y = obj->y;
+    uint8 z = obj->z;
+
+    switch(obj->quality)
+    {
+        case 1:  dungeon_name = "Deceit";           break;
+        case 2:  dungeon_name = "Despise";          break;
+        case 3:  dungeon_name = "Destard";          break;
+        case 4:  dungeon_name = "Wrong";            break;
+        case 5:  dungeon_name = "Covetous";         break;
+        case 6:  dungeon_name = "Shame";            break;
+        case 7:  dungeon_name = "Hythloth";         break;
+        case 8:  dungeon_name = "GSA";              break;
+        case 9:  dungeon_name = "Control";          break;
+        case 10: dungeon_name = "Passion";          break;
+        case 11: dungeon_name = "Diligence";        break;
+        case 12: dungeon_name = "Tomb of Kings";    break;
+        case 13: dungeon_name = "Ant Mound";        break;
+        case 14: dungeon_name = "Swamp Cave";       break;
+        case 15: dungeon_name = "Spider Cave";      break;
+        case 16: dungeon_name = "Cyclops Cave";     break;
+        case 17: dungeon_name = "Heftimus Cave";    break;
+        case 18: dungeon_name = "Heroes' Hole";     break;
+        case 19: dungeon_name = "Pirate Cave";      break;
+        case 20: dungeon_name = "Buccaneer's Cave"; break;
+        default: dungeon_name = "";
+    }
+    if(obj->quality >= 1 && obj->quality <= 7)
+        prefix = "dungeon ";
+    else if(obj->quality >= 9 && obj->quality <= 11)
+        prefix = "shrine of ";
+    else
+        prefix = "";
+
+    if(ev == USE_EVENT_PASS && actor_ref == player->get_actor())
+    {
+        // move down to next plane
+        if(z == 0) //handle the transition from the surface to the first dungeon level
+          {
+           actor_ref->move(((x & 0x07) | (x >> 2 & 0xF8)), ((y & 0x07) | (y >> 2 & 0xF8)), z+1);
+          }
+        else
+           actor_ref->move(x,y,z+1); //dungeon ladders line up so we simply drop straight down
+        scroll->display_string("Shamino says, \"This is the ");
+        scroll->display_string(prefix);
+        scroll->display_string(dungeon_name);
+        scroll->display_string(".\"\n");
+        scroll->display_prompt();
     }
     return(false);
 }
