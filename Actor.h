@@ -90,6 +90,7 @@ class Actor
  ~Actor();
  
  bool is_alive();
+ bool is_nearby(Actor *other);
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  uint16 get_tile_num();
  uint8 get_actor_num() { return(id_n); }
@@ -97,6 +98,14 @@ class Actor
  uint8 get_worktype();
  
  void set_direction(uint8 d);
+ void face_location(uint16 lx, uint16 ly);
+ void face_actor(Actor *a)
+ {
+    uint16 ax, ay; uint8 al;
+    a->get_location(&ax, &ay, &al);
+    face_location(ax, ay);
+ }
+
  void set_flags(uint8 newflags) { flags = newflags; }
  void set_flag(uint8 bitflag);
  void clear_flag(uint8 bitflag);

@@ -61,8 +61,8 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_KEYWORD 0xef // keyword(s) to trigger next response follows
 #define U6OP_SIDENT 0xff // start of script; npc identification section
 #define U6OP_SLOOK 0xf1 // start of look section
-#define U6OP_SLOOKB 0xf3
 #define U6OP_SCONVERSE 0xf2 // start of main conversation section
+#define U6OP_SPREFIX 0xf3 // unknown; can precede 0xf1 or 0xf2
 #define U6OP_SANSWER 0xf6 // start of response
 #define U6OP_ASK 0xf7 // get input string
 #define U6OP_ASKC 0xf8 // get one character
@@ -77,6 +77,7 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define CONV_SCOPE_ENDASK 5 // break at end-of-ask
 #define CONV_SCOPE_SEEKLOOK 6 // do nothing until looksection, then break
 #define CONV_SCOPE_SEEKIDENT 7 // after identsection change to SEEKLOOK
+#define CONV_SCOPE_SEEKCONV 8 // do nothing until conversesection, then break
 
 #define CONV_VAR_SEX 0x10 // sex of avatar: male=0 female=1
 #define CONV_VAR_PARTYSIZE 0x17 // number of people (alive) in avatar's party
@@ -124,7 +125,9 @@ class Converse
     uint8 declared_t; // 0xb3 if declared variable is string, else it is integer
     const char *ystr; // value of $Y in text
     char *rstr; // result of expressions returning strings
-    char aname[16]; // last name of NPC copied from script
+    char my_name[16], // name of active NPC
+         *my_desc, // description of active NPC
+         aname[16]; // name of another NPC
 
     // statement parameters
     uint32 cmd; // previously read command code
@@ -133,8 +136,8 @@ class Converse
     string input_s; // last input from player
     string keywords; // keyword list from last KEYWORD statement
     std::stack <uint8> scope; // what "scope" is the script in?
-    Uint32 getinput_offset; // location of last input-request statement
-    Uint32 look_offset; // location of "look" section
+    Uint32 cmd_offset; // location of `cmd' in script
+    Uint32 getinput_offset; // location of last input statement
 
     /* Check that loaded converse library (the source) contains `script_num'.
      * Load another source if it doesn't, and update `script_num' to item number.
@@ -185,6 +188,8 @@ class Converse
         args[arg_i][val_i].val = set.val;
         args[arg_i][val_i].valt = set.valt;
     }
+    /* Returns collected text. */
+    const char *get_text() { return(output.c_str()); }
     /* Return value stored at a normal variable. */
     uint32 get_var(uint8 varnum)
     {
@@ -299,7 +304,8 @@ class Converse
     /* Returns true if `check' can be part of a text string. */
     bool is_print(Uint8 check)
     {
-        return(((check == 0x0a) || (check >= 0x20 && check <=0x7a)));
+        return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a)
+                 || (check == 0xcb)) );
     }
     /* Returns true if `check' is the number of a test or a special function
      * that is part of some statements. */
@@ -344,12 +350,17 @@ class Converse
             return(false);
         }
         if(scope.top() == CONV_SCOPE_SEEKLOOK
-           && (cmd != U6OP_SLOOK && cmd != U6OP_SLOOKB))
+           && (cmd != U6OP_SLOOK))
         {
             return(false);
         }
         if(scope.top() == CONV_SCOPE_SEEKIDENT
            && (cmd != U6OP_SIDENT))
+        {
+            return(false);
+        }
+        if(scope.top() == CONV_SCOPE_SEEKCONV
+           && (cmd != U6OP_SCONVERSE))
         {
             return(false);
         }
@@ -379,9 +390,9 @@ public:
         return(start(actors->get_actor(n)));
     }
     void stop();
+    void reset();
     void step(Uint32 count = 0, Uint8 bcmd = 0x00);
     void print(const char *printstr = 0);
-    Uint32 print_name();
     /* Set input buffer (replacing what is already there.) */
     void input(const char *new_input)
     {

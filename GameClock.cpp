@@ -57,7 +57,7 @@ bool GameClock::init()
  
  year = objlist.read2();
  
- printf("Inital gametime: %s %s\n",get_date_string(),get_time_string());
+ printf("Initial gametime: %s %s\n",get_date_string(),get_time_string());
  
  return true;
 }

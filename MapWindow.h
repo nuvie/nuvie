@@ -66,7 +66,7 @@ class MapWindow
  void moveCursor(sint16 new_x, sint16 new_y);
  void moveCursorRelative(sint16 rel_x, sint16 rel_y);
  
- const char *lookAtCursor();
+ const char *lookAtCursor(bool show_prefix = true);
  Obj *get_objAtCursor();
  Actor *get_actorAtCursor();
  

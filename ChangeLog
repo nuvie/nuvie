@@ -1,4 +1,13 @@
 2003-05-16  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Actor: New methods is_nearby(), face_location(), face_actor().
+	* Converse: NPC name is now saved internally when it is first read.
+	* Event: There are now different responses to different targets when
+	trying to talk to "yourself" or nobody.
+	Looking at or talking to someone in the avatar's party now always shows
+	name, and name isn't shown for anyone else who player hasn't "met."
+	Actors and player face other before talking.
+
+2003-05-16  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Converse: Few more test-ops added to further improve shopkeepers'
 	abilities.
 	* New/Delete/Transfer object commands implemented.

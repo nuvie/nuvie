@@ -131,9 +131,9 @@ bool Event::update()
                                  }
                                else if(mode == TALK_MODE)
                                  {
-                                  mode = MOVE_MODE;
                                   if(talk())
                                     scroll->set_talking(true);
+                                  mode = MOVE_MODE;
                                   map_window->set_show_cursor(false);
                                  }
                                else if(mode == USE_MODE)
@@ -199,11 +199,48 @@ bool Event::update()
  */
 bool Event::talk()
 {
-    Actor *npc = map_window->get_actorAtCursor();
-    // load npc script
-    if(npc && converse->start(npc))
+    Actor *npc = map_window->get_actorAtCursor(),
+          *pc = player->get_actor();
+    uint8 id = 0;
+    const char *name = NULL;
+    if(!npc)
+    {
+        scroll->display_string("nothing!\n\n");
+        scroll->display_prompt();
+        return(false);
+    }
+    id = npc->get_actor_num();
+    // actor is controlled by player
+    if(id == pc->get_actor_num())
+    {
+        // print name or look-string if actor has no name
+        name = converse->npc_name(id);
+        if(!name)
+            name = map_window->lookAtCursor();
+        scroll->display_string(name);
+        printf("name is \"%s\"\n", name ? name : "(null)");
+        scroll->display_string("\nTalking to yourself?\n\n");
+        scroll->display_prompt();
+        return(false);
+    }
+    // load and begin npc script
+    if(converse->start(npc))
+    {
+        // print npc name if met-flag is set, or npc is in avatar's party
+        name = converse->npc_name(id); // get name & *record internally*
+        if(name &&
+           ((npc->get_flags() & 1) || player->get_party()->contains_actor(npc)))
+            scroll->display_string(name);
+        else
+            scroll->display_string(map_window->lookAtCursor(false));
+        scroll->display_string("\n");
+        // turn towards eachother
+        pc->face_actor(npc);
+        npc->face_actor(pc);
         return(true);
-    scroll->display_string("nothing!\n\n");
+    }
+    // some actor that has no script
+    scroll->display_string("\nFunny, no response.\n\n");
     scroll->display_prompt();
     return(false);
 }
@@ -287,10 +324,16 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
 bool Event::look()
 {
  Obj *obj;
+ Actor *actor = map_window->get_actorAtCursor();
+ sint16 p_id = -1; // party member number of actor
  char *data;
  
  scroll->display_string("Thou dost see ");
- scroll->display_string(map_window->lookAtCursor());
+ // show real actor name and portrait if in avatar's party
+ if(actor && ((p_id = player->get_party()->get_member_num(actor)) >= 0))
+     scroll->display_string(player->get_party()->get_actor_name(p_id));
+ else
+     scroll->display_string(map_window->lookAtCursor());
  obj = map_window->get_objAtCursor();
  if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || 
             obj->obj_n == OBJ_U6_SCROLL || obj->obj_n == OBJ_U6_PICTURE ||

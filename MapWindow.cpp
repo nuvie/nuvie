@@ -163,7 +163,8 @@ void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
  moveCursor(cursor_x + rel_x, cursor_y + rel_y);
 }
 
-const char *MapWindow::lookAtCursor()
+
+const char *MapWindow::lookAtCursor(bool show_prefix)
 {
  Actor *actor;
  
@@ -173,7 +174,7 @@ const char *MapWindow::lookAtCursor()
  actor = actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
  if(actor != NULL)
    {
-    return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->get_tile_num()),0,true);
+    return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->get_tile_num()),0,show_prefix);
    }
    
  return map->look(cur_x + cursor_x, cur_y + cursor_y, cur_level);

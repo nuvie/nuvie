@@ -62,6 +62,22 @@ bool Actor::is_alive()
  return alive;
 }
 
+
+/* Returns true if another NPC `n' is in proximity to this one.
+ */
+bool Actor::is_nearby(Actor *other)
+{
+    uint16 x, y, x2, y2;
+    uint8 l, l2;
+
+    this->get_location(&x, &y, &l);
+    other->get_location(&x2, &y2, &l2);
+    if(abs(x - x2) <= 18 && abs(y - y2) <= 18 && l == l2)
+        return(true);
+    return(false);
+}
+
+
 void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 {
  *ret_x = x;
@@ -89,6 +105,30 @@ void Actor::set_direction(uint8 d)
  frame_n = direction * 4 + walk_frame_tbl[walk_frame];
  
 }
+
+
+/* Re-orient actor to be facing an x,y location on the map (so they turn to
+ * talk to others, etc)
+ */
+void Actor::face_location(uint16 lx, uint16 ly)
+{
+    uint16 xdiff = abs(x - lx), ydiff = abs(y - ly);
+    if(ydiff)
+    {
+        if(y < ly && direction != 2)
+            set_direction(2); // down
+        else if(y > ly && direction != 0)
+            set_direction(0); // up
+    }
+    if(xdiff)
+    {
+        if(x < lx && direction != 1)
+            set_direction(1); // right
+        else if(x > lx && direction != 3)
+            set_direction(3); // left
+    }
+}
+
 
 bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 {
