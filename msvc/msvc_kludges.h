@@ -19,10 +19,35 @@
 
 
 // Disable some warnings
-#pragma warning (disable: 4786)	// Debug Len > 255
+#pragma warning (disable: 4786)  // Debug Len > 255
+#pragma warning (disable: 4275)  // non dll-interface class ...
 
 // Include that before all other things; caused problems in wchar.h
 #include <string>
+
+
+#define snprintf _snprintf
+
+
+// Using STLport?
+#ifdef _STLP_MSVC
+
+// Yes, we have STLport
+
+// Put some symbols back into the std namespace
+#include <cstdlib>
+#include <cctype>
+
+namespace std
+{
+   using _STLP_VENDOR_CSTD::labs;
+   using _STLP_VENDOR_CSTD::toupper;
+}
+
+
+#else // _STLP_MSVC
+
+// No, we don't have STLport
 
 
 // Put the headers that should be in std into the std namespace
@@ -40,10 +65,10 @@ namespace std {
    using ::toupper;
    using ::size_t;
 
-#define snprintf _snprintf
 	using ::snprintf;
 }
 
+#endif // _STLP_MSVC
 
 // Precompiled Header part
 #ifdef USING_PRECOMPILED_HEADER
