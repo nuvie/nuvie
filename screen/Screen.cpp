@@ -46,6 +46,7 @@ Screen::~Screen()
 bool Screen::init(uint16 new_width, uint16 new_height)
 {
  std::string str;
+ 
  width = new_width;
  height = new_height;
  
@@ -64,7 +65,8 @@ bool Screen::init(uint16 new_width, uint16 new_height)
 		scaler_index = scaler_reg.GetIndexForName("SuperEagle");
 	 }
 
-scale_factor = 2;
+config->value("config/video/scale_factor", scale_factor, 1);
+
 fullscreen = false;
 
  //scaled_surface = SDL_SetVideoMode(width, height, 8, SDL_SWSURFACE | SDL_HWPALETTE);

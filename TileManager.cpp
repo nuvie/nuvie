@@ -169,9 +169,9 @@ char *TileManager::lookAtTile(uint16 tile_num, uint16 qty)
   
  desc = look->get_description(tile->tile_num,plural);
  if(qty > 0)
-   printf("Thou doth see %d %s\n",qty, desc);
+   printf("Thou dost see %d %s\n",qty, desc);
  else
-   printf("Thou doth see %s%s\n",article_tbl[tile->article_n], desc);
+   printf("Thou dost see %s%s\n",article_tbl[tile->article_n], desc);
    
  return desc;
 }
