@@ -38,6 +38,10 @@
 class GUI_Widget {
 
 public:
+
+	/* The area covered by the widget */
+	SDL_Rect area;
+  
 	GUI_Widget(void *data);
 	GUI_Widget(void *data, int x, int y, int w, int h);
 	virtual ~GUI_Widget() { }
@@ -133,9 +137,6 @@ protected:
 
 	/* The display surface for the widget */
 	SDL_Surface *screen;
-
-	/* The area covered by the widget */
-	SDL_Rect area;
 
   int real_x, real_y; /* x,y in screen coords */
   

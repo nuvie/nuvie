@@ -210,7 +210,7 @@ void GUI_Widget::Redraw(void)
   if (status==WIDGET_VISIBLE)
   {
     Display();
-    SDL_UpdateRects(screen,1,&area);
+    //SDL_UpdateRects(screen,1,&area);
   }
 }
 

@@ -30,7 +30,7 @@
 
 
 /* the check marks bitmap */
-#include "the_checker.h"
+//#include "the_checker.h"
 SDL_Surface *checkmarks=NULL;
 
 
@@ -115,11 +115,13 @@ GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, char *text,
 
   is_checkable=is_checkbutton;
   checked=0;
+/*  
   if (is_checkable &&(checkmarks==NULL))
   {
     checkmarks=GUI_LoadImage(checker_w,checker_h,checker_pal,checker_data);
     SDL_SetColorKey(checkmarks,SDL_SRCCOLORKEY,0);
   }
+*/
   ChangeTextButton(-1,-1,-1,-1,text,alignment);
 
   for (int i=0;i<3; ++i ) {

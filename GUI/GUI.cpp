@@ -100,6 +100,7 @@ GUI:: Display(void)
 	for ( i=0; i<numwidgets; ++i ) {
 		if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
 			widgets[i]->Display();
+      screen->update(widgets[i]->area.x,widgets[i]->area.y,widgets[i]->area.w,widgets[i]->area.h);
 		}
 	}
 	//SDL_UpdateRect(screen, 0, 0, 0, 0);
