@@ -1,3 +1,12 @@
+2003-07-29  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Changed/added to Actor::set_direction()/face_location().
+	* Actor walking can be given a delay (don't start for that many turns)
+	* Long range path-finder improved. Short range still needs work.
+	* Made game static/global. A Game instance can be retrieved from itself.
+	* New distance methods of MapCoord, to check each direction.
+	* Player: party movement and mapwindow re-centering is now in Actor
+	* Event: any NPC can be followed/watched with alt-code 500.
+
 2003-07-28  Eric Fry <efry@users.sourceforge.net>
 	* Added preform_worktype() to U6Actor class.
 	* Started to implement worktypes.
