@@ -39,9 +39,9 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
  short *data = (short *)stream;
  CEmuopl *opl = song->get_opl();
  CPlayer *player = song->get_player();
- 
+
  len /= 4;
- 
+
  if(song->samples_left)
     {
       opl->update(data, song->samples_left);
@@ -65,7 +65,10 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
          j = i;
        }
      else
+       {
+         song->samples_left = 0;
          j = 735;
+       }
 
      opl->update(data, j);
 

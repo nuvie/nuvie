@@ -1,3 +1,6 @@
+2004-02-19  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* sound/SongAdPlug.cpp: fixed music slowdown
+
 2004-02-18  Eric Fry <efry at users.sourceforge.net>
 	* Adplug should fill the sound buffer at the right rate now.
 	  Music should sound better now. But it is now slowing down after
