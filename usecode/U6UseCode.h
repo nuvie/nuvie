@@ -101,6 +101,8 @@
 
 #define OBJ_U6_ORB_OF_THE_MOONS     87
 
+#define OBJ_U6_GOLD                 88
+#define OBJ_U6_GOLD_NUGGET          89
 #define OBJ_U6_TORCH                90
 
 #define OBJ_U6_SNAKE_VENOM          92
@@ -147,6 +149,9 @@
 #define OBJ_U6_CLOCK               159
 #define OBJ_U6_BED                 163
 #define OBJ_U6_FIREPLACE           164
+
+#define OBJ_U6_REMAINS             168
+
 #define OBJ_U6_SWITCH              174
 #define OBJ_U6_ELECTRIC_FIELD      175
 #define OBJ_U6_DRAWER              176
@@ -166,7 +171,10 @@
 #define OBJ_U6_MEAT                209
 #define OBJ_U6_RIBS                210
 
+#define OBJ_U6_DEAD_ANIMAL         211
+
 #define OBJ_U6_MOUSEHOLE           213
+#define OBJ_U6_FOUNTAIN            234
 #define OBJ_U6_SUNDIAL             235
 #define OBJ_U6_BELL                236
 #define OBJ_U6_CHAIR               252
@@ -178,6 +186,8 @@
 #define OBJ_U6_INVISIBILITY_RING   258
 
 #define OBJ_U6_FISHING_POLE        264
+
+#define OBJ_U6_GRAVE               266
 
 #define OBJ_U6_LEVER               268
 #define OBJ_U6_DRAWBRIDGE          269
@@ -208,6 +218,7 @@
 #define OBJ_U6_THRONE              327
 
 #define OBJ_U6_SIGN                332
+#define OBJ_U6_SIGN_ARROW          333
 #define OBJ_U6_SECRET_DOOR         334
 #define OBJ_U6_BLOOD               338
 #define OBJ_U6_DEAD_BODY           339
@@ -356,6 +367,8 @@ class U6UseCode: public UseCode
  bool use_horse(Obj *obj, uint8 ev);
  bool use_potion(Obj *obj, uint8 ev);
  bool use_bell(Obj *obj, uint8 ev);
+ bool use_shovel(Obj *obj, uint8 ev);
+ bool use_fountain(Obj *obj, uint8 ev);
  bool look_mirror(Obj *obj, uint8 ev);
  bool look_sign(Obj *obj, uint8 ev);
  bool look_clock(Obj *obj, uint8 ev);

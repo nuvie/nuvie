@@ -58,6 +58,7 @@ class Player
  Player(Configuration *cfg);
  
  bool init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
+ Actor *find_actor();
 
  Party *get_party() { return(party); }
  bool get_uncontrolled() { return(uncontrolled); }

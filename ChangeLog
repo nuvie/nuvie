@@ -1,3 +1,16 @@
+2003-12-03  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Starting from an in-vehicle savegame works correctly now.
+	* Player: The party only follows if you are controlling the leader now,
+	  but is moved if you are controlling a vehicle.
+	  Player tells ActorManager the new player actor when set.
+	* The player actor at start is found by looking at actor worktypes.
+	* Renamed Actor::inventory_add_object(Obj*) to inventory_new_object(),
+	  and it now returns an object pointer.
+	* New object weight tests: can_carry_object(), can_carry_weight()
+	* UseCode: Added some new searchables, and code for fountains (not fully
+	  implemented) and shovels. Fixed bug in food code that could prevent
+	  food/drinks from being removed properly when eaten.
+
 2003-12-03  Eric Fry <efry@users.sourceforge.net>
 	* Fixed double free when cleaning up temp objects.
 	* Update darkness when creating a moongate.

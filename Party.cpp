@@ -72,6 +72,14 @@ bool Party::init(Game *g, ActorManager *am)
 
  loadParty();
  autowalk=false;
+ // this may not be the proper way to get in_vehicle at start, but we havn't
+ // found the relevant data in objlist yet (maybe only vehicle worktype?)
+ MapCoord vehicle_loc = actor_manager->get_actor(0)->get_location();
+ if(is_at(vehicle_loc.x, vehicle_loc.y, vehicle_loc.z))
+  {
+   in_vehicle = true;
+   hide();
+  }
  return true;
 }
 
@@ -414,8 +422,8 @@ void Party::follow()
 
     for(uint32 m = 1; m < num_in_party; m++)
     {
-       if(!member[m].actor->is_visible()) // hidden, probably in vehicle
-       {
+        if(!member[m].actor->is_visible()) // hidden, no point walking there
+        {
             member[m].actor->stop_walking(); // in case we were searching
             member[m].actor->move(leader.x, leader.y, leader.z, ACTOR_FORCE_MOVE);
             continue;

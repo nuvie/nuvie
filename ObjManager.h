@@ -43,6 +43,8 @@ class NuvieIOFileRead;
 #define OBJ_STATUS_TEMPORARY    0x20
 //#define OBJ_STATUS_UNKNOWN    0x40
 //#define OBJ_STATUS_UNKNOWN    0x80
+// combined:
+#define OBJ_STATUS_READIED      0x18
 
 //is_passable return codes
 #define OBJ_NO_OBJ       0

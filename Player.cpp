@@ -51,16 +51,30 @@ bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c,
  obj_manager = om;
  map_window = mw;
  party = p;
- actor = actor_manager->get_actor(1);
- 
+ actor = find_actor();
+
  loadObjlistData(); //load Player name, Karma.
  
- actor->set_in_party(true);
  actor_manager->set_player(actor);
  uncontrolled = false;
 
  return true;
 }
+
+
+/* Returns the first actor set as Player.
+ */
+Actor *Player::find_actor()
+{
+    for(uint32 p = 0; p < 255; p++)
+    {
+        Actor *actor = actor_manager->get_actor(p);
+        if(actor->get_worktype() == 0x02) // WT_U6_PLAYER
+            return(actor);
+    }
+    return(actor_manager->get_actor(1)); // U6NPC_AVATAR
+}
+
 
 void Player::control()
 {
@@ -71,6 +85,7 @@ void Player::control()
 void Player::set_actor(Actor *new_actor)
 {
  actor = new_actor;
+ actor_manager->set_player(actor);
  map_window->centerMapOnActor(actor);
 }
 
@@ -141,7 +156,13 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
  {
   actor->set_direction(rel_x, rel_y);
 //   map_window->moveMapRelative(rel_x,rel_y);
-   party->follow();
+   if(party->is_leader(actor)) // lead party
+     party->follow();
+   else if(actor->id_n == 0) // using vehicle; drag party along
+   {
+     MapCoord new_xyz = actor->get_location();
+     party->move(new_xyz.x, new_xyz.y, new_xyz.z);
+   }
    actor_manager->updateActors();
    clock->inc_move_counter(); // SB-X move to gameclock
    obj_manager->temp_obj_list_update(x, y, z); // remove temporary objs
@@ -158,9 +179,11 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
    if(actor->move(new_x, new_y, new_level))
    {
     //map_window->centerMapOnActor(actor);
-    // center everyone first, then try to move them to correct positions
-    party->move(new_x, new_y, new_level);
-    party->follow();
+    if(party->is_leader(actor)) // lead party
+      {
+       party->move(new_x, new_y, new_level); // center everyone first
+       party->follow(); // then try to move them to correct positions
+      }
     actor_manager->updateActors();
     obj_manager->temp_obj_list_update(new_x, new_y, new_level); // remove temporary objs
    }

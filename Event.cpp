@@ -466,20 +466,12 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  {
   scroll->display_string(obj_manager->look_obj(obj));
 
-  weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
-  weight /= 10;
-
   // objects with 0 weight aren't gettable. 
+  weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
   if(weight != 0)
     {
-     weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS);
-     weight /= 10;
-     
        Actor *pc = player->get_actor();
-       float total = weight + pc->get_inventory_weight();
-       //float max = pc->inventory_get_max_weight();
-
-       if(total <= pc->inventory_get_max_weight())
+       if(pc->can_carry_weight(weight))
          {
           // object is someone else's
           if(!(obj->status & OBJ_STATUS_OK_TO_TAKE))
@@ -493,7 +485,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 
           if(obj->qty > 0) // stackable object; will make copy and delete this
             {
-             pc->inventory_add_object(obj->obj_n, obj->qty, obj->quality);
+             pc->inventory_new_object(obj->obj_n, obj->qty, obj->quality);
              obj_manager->delete_obj(obj); // original copy defunct
             }
           else

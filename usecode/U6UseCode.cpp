@@ -35,6 +35,7 @@
 #include "GameClock.h"
 #include "Book.h"
 #include "Event.h"
+#include "MapWindow.h"
 #include "U6UseCode.h"
 
 // numbered by entrance quality, "" = no name
@@ -123,6 +124,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_PICTURE,   255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    add_usecode(OBJ_U6_SIGN_ARROW,255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_CODEX,       0,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
@@ -135,6 +137,12 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_DRAWER,     255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
     add_usecode(OBJ_U6_STONE_LION,   1,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
     add_usecode(OBJ_U6_PLANT,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_GRAVE,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_DEAD_ANIMAL,255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_DEAD_BODY,  255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_DEAD_CYCLOPS, 0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_DEAD_GARGOYLE,0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_REMAINS,    255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
 
     add_usecode(OBJ_U6_V_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough);
     add_usecode(OBJ_U6_H_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough);
@@ -193,6 +201,8 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_VORTEX_CUBE,0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube);
     add_usecode(OBJ_U6_PULL_CHAIN, 0,0,USE_EVENT_USE,&U6UseCode::use_bell);
     add_usecode(OBJ_U6_BELL,     255,0,USE_EVENT_USE,&U6UseCode::use_bell);
+    add_usecode(OBJ_U6_SHOVEL,     0,0,USE_EVENT_USE,&U6UseCode::use_shovel);
+    add_usecode(OBJ_U6_FOUNTAIN,   0,0,USE_EVENT_USE,&U6UseCode::use_fountain);
 }
 
 
@@ -588,7 +598,7 @@ bool U6UseCode::use_secret_door(Obj *obj, uint8 ev)
     }
     else if(ev == USE_EVENT_SEARCH)
     {
-        scroll->display_string("a secret door!\n");
+        scroll->display_string("a secret door.\n");
         if(obj->frame_n == 0)
             obj->frame_n++;
         return(true);
@@ -629,7 +639,7 @@ bool U6UseCode::use_bell(Obj *obj, uint8 ev)
         return(false);
     if(obj->obj_n == OBJ_U6_BELL)
         bell = obj;
-    else // should be next to chain
+    else // FIXME: bell isn't always next to chain (Tomb of Kings)
     {
         bell = obj_manager->get_obj_of_type_from_location(OBJ_U6_BELL, obj->x + 1, obj->y, obj->z);
         if(!bell)
@@ -873,6 +883,122 @@ void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridg
  return;
 }
 
+
+/* Use shovel in one of 8 directions. If used in a dungeon level get a chance of
+ * finding gold or a fountain (to make a wish).
+ */
+bool U6UseCode::use_shovel(Obj *obj, uint8 ev)
+{
+    Obj *dug_up_obj = NULL;
+    MapCoord from = actor_ref->get_location(),
+             dig_at;
+
+    if(!mapcoord_ref) // get direction (FIXME: should return relative dir)
+    {
+        if((obj->status & 0x18) != 0x18)
+//        {
+//            scroll->display_string("\nNot readied.\n");
+//            return(false);
+//        }
+        scroll->display_string("Telekinesis!\n");
+        Game::get_game()->get_event()->useselect_mode(obj, "Direction: ");
+        return(true);
+    }
+    dig_at = *mapcoord_ref;
+
+    // print direction (FIXME: relative dir is what should have been returned)
+    sint8 xdir = (dig_at.x == from.x) ? 0 : (dig_at.x < from.x) ? -1 : 1;
+    sint8 ydir = (dig_at.y == from.y) ? 0 : (dig_at.y < from.y) ? -1 : 1;
+    if(xdir == 0 && ydir == -1) // and also, move direction names somewhere else
+        scroll->display_string("North.\n\n");
+    else if(xdir == 1 && ydir == -1)
+        scroll->display_string("Northeast.\n\n");
+    else if(xdir == 1 && ydir == 0)
+        scroll->display_string("East.\n\n");
+    else if(xdir == 1 && ydir == 1)
+        scroll->display_string("Southeast.\n\n");
+    else if(xdir == 0 && ydir == 1)
+        scroll->display_string("South.\n\n");
+    else if(xdir == -1 && ydir == 1)
+        scroll->display_string("Southwest.\n\n");
+    else if(xdir == -1 && ydir == 0)
+        scroll->display_string("West.\n\n");
+    else if(xdir == -1 && ydir == -1)
+        scroll->display_string("Northwest.\n\n");
+    else
+    {
+        scroll->display_string("nowhere.\n\n");
+        return(false); // ??
+    }
+    // FIX: how are dig-able tiles determined?
+    if(!Game::get_game()->get_map_window()->in_dungeon_level())
+    {
+        scroll->display_string("No effect\n");
+        return(false); // ??
+    }
+
+    // 10% chance of anything
+    if(NUVIE_RAND() % 10)
+    {
+        scroll->display_string("Failed\n");
+        return(false);
+    }
+    // Door #1 or Door #2?
+    scroll->display_string("You dig a hole.\n");
+    Obj *fountain = obj_manager->get_obj_of_type_from_location(OBJ_U6_FOUNTAIN,dig_at.x,dig_at.y,dig_at.z);
+    if((NUVIE_RAND() % 2) && !fountain)
+    {
+        scroll->display_string("You find a water fountain.\n");
+        dug_up_obj = new_obj(OBJ_U6_FOUNTAIN,0, dig_at.x,dig_at.y,dig_at.z);
+    }
+    else
+    {
+        scroll->display_string("You find a gold nugget.\n");
+        dug_up_obj = new_obj(OBJ_U6_GOLD_NUGGET,0, dig_at.x,dig_at.y,dig_at.z);
+    }
+    dug_up_obj->status |= OBJ_STATUS_OK_TO_TAKE;
+    obj_manager->add_obj(dug_up_obj, true);
+    return(true);
+}
+
+
+/* Magic fountain. Make a wish!
+ */
+bool U6UseCode::use_fountain(Obj *obj, uint8 ev)
+{
+    std::string wish("");
+#if 0 /* do highlevel MsgScroll stuff first */
+    scroll->display_string("Make a wish?\n");
+//    get Y/N single char no enter no print
+//  Y
+    scroll->display_string("Wish for: \n\n");
+    // get string
+    if(wish != "Food" && wish != "Mutton" && wish != "Wine" && wish != "Fruit"
+       && wish != "Meat")
+    {
+        scroll->display_string("Failed\n");
+        return(false);
+    }
+#endif
+    // 25% chance of anything
+    if(NUVIE_RAND() % 4)
+    {
+        scroll->display_string("No effect\n");
+        return(false);
+    }
+    scroll->display_string("You got food");
+    // must be able to carry it
+    if(!actor_ref->can_carry_object(OBJ_U6_MEAT_PORTION, 1))
+    {
+        scroll->display_string(", but you can't carry it.\n");
+        return(false);
+    }
+    scroll->display_string(".\n");
+    actor_ref->inventory_new_object(OBJ_U6_MEAT_PORTION, 1);
+    return(true);
+}
+
+
 bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
 {
  if(actor_ref != player->get_actor())
@@ -888,23 +1014,30 @@ bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
 }
 
 
-/* Event: Use
- * True: Ate the food.
- * False: Didn't eat the food.
+/* Event: Eat/drink food object.
  */
 bool U6UseCode::use_food(Obj *obj, uint8 ev)
 {
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     if(ev == USE_EVENT_USE)
     {
-        if(obj_manager->remove_obj(obj) && actor_ref == player->get_actor())
+        if(actor_ref == player->get_actor())
         {
             if(obj->obj_n == OBJ_U6_WINE || obj->obj_n == OBJ_U6_MEAD
                || obj->obj_n == OBJ_U6_ALE || obj->obj_n == OBJ_U6_SNAKE_VENOM)
                 scroll->display_string("\nYou drink it.\n");
-            else
+            else // FIXME: if object is alcoholic drink, add to drunkeness
                 scroll->display_string("\nYou eat the food.\n");
         }
-        // FIXME: if object is alcoholic drink, add to drunkeness
+        if(obj->qty <= 1)
+        {
+            if(obj->status & OBJ_STATUS_IN_INVENTORY)
+                actor_manager->get_actor(obj->x)->inventory_remove_obj(obj);
+            else
+                obj_manager->remove_obj(obj);
+            obj_manager->delete_obj(obj);
+        }
+        else obj->qty -= 1;
         return(true);
     }
     return(false);

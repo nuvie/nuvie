@@ -559,7 +559,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             v[3] = pop_arg(i); // quant
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
-                cnpc->inventory_add_object(v[1], v[3], v[2]);
+                cnpc->inventory_new_object(v[1], v[3], v[2]);
             break;
         case U6OP_DELETE: // 0xba
 //bool Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);
@@ -582,7 +582,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             cnpc->inventory_del_object(v[0], 1, v[1]);
             cnpc = converse->actors->get_actor(npc_num(v[3]));
             if(cnpc)
-                cnpc->inventory_add_object(v[0], 1, v[1]);
+                cnpc->inventory_new_object(v[0], 1, v[1]);
             break;
         case U6OP_ADDKARMA: // 0xc4
             player->add_karma(pop_arg(i));

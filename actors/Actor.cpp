@@ -348,8 +348,8 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  if(in_party)
  {
     Party *party = game->get_party();
-    uint8 party_member = party->get_member_num(this);
-    if(party_member != 0)
+    sint8 party_member = party->get_member_num(this);
+    if(party_member > 0)
         party->find_leader(party_member);
  }
  // re-center map if actor is player character
@@ -590,8 +590,11 @@ bool Actor::inventory_add_object(Obj *obj)
  obj->status |= OBJ_STATUS_IN_INVENTORY;
  return inventory->addAtPos(0, obj);
 }
- 
-bool Actor::inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality)
+
+
+/* Returns a pointer to new or old object. (already added to inventory)
+ */ 
+Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
 {
  U6LList *inventory = 0;
  U6Link *link = 0;
@@ -616,18 +619,17 @@ bool Actor::inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality)
     origqty += newqty;
     obj->qty = origqty;
  }
- else // don't stack
+ else // don't stack, add new stack(s) of up to 255 qty
    while(newqty)
    {
      obj = new Obj;
      obj->obj_n = obj_n;
      obj->quality = quality;
      obj->qty = newqty <= 255 ? newqty : 255;
-     obj->status |= OBJ_STATUS_IN_INVENTORY;
-     inventory->addAtPos(0, obj);
+     inventory_add_object(obj);
      newqty -= obj->qty;
    }
- return true;
+ return(obj);
 }
 
 
@@ -719,6 +721,27 @@ float Actor::get_inventory_equip_weight()
  
  return weight;
 }
+
+
+/* Can the actor carry a new object of this type?
+ */
+bool Actor::can_carry_object(uint16 obj_n, uint32 qty)
+{
+    float obj_weight = obj_manager->get_obj_weight(obj_n);
+    if(qty) obj_weight *= qty;
+    return(can_carry_weight(obj_weight));
+}
+
+
+/* Can the actor carry new object(s) of this weight?
+ * (return from get_obj_weight())
+ */
+bool Actor::can_carry_weight(float obj_weight)
+{
+    obj_weight /= 10;
+    return((get_inventory_weight() + obj_weight) <= inventory_get_max_weight());
+}
+
 
 void Actor::inventory_parse_readied_objects()
 {
