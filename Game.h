@@ -58,10 +58,10 @@ class Game
  GamePalette *palette;
  Text *text;
  TileManager *tile_manager;
- ObjManager *obj_manager;
+ static ObjManager *obj_manager;
  ActorManager *actor_manager;
  Map *game_map;
- MapWindow *map_window;
+ static MapWindow *map_window;
  MsgScroll *scroll;
  Player *player;
  Party *party;
@@ -71,7 +71,7 @@ class Game
  
  GameClock *clock;
  Portrait *portrait;
- UseCode *usecode;
+ static UseCode *usecode;
  
  Event *event;
  
@@ -94,10 +94,10 @@ class Game
  GamePalette *get_palette()        { return(palette); }
  Text *get_text()                  { return(text); }
  TileManager *get_tile_manager()   { return(tile_manager); }
- ObjManager *get_obj_manager()     { return(obj_manager); }
+ static ObjManager *get_obj_manager()     { return(obj_manager); }
  ActorManager *get_actor_manager() { return(actor_manager); }
  Map *get_game_map()               { return(game_map); }
- MapWindow *get_map_window()       { return(map_window); }
+ static MapWindow *get_map_window()       { return(map_window); }
  MsgScroll *get_scroll()           { return(scroll); }
  Player *get_player()              { return(player); }
  Party *get_party()                { return(party); }
@@ -105,7 +105,7 @@ class Game
  ViewManager *get_view_manager()   { return(view_manager); }
  GameClock *get_clock()            { return(clock); }
  Portrait *get_portrait()          { return(portrait); }
- UseCode *get_usecode()            { return(usecode); }
+ static UseCode *get_usecode()            { return(usecode); }
  Event *get_event()                { return(event); }
 
  protected:
