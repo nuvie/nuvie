@@ -540,10 +540,21 @@ bool MapWindow::boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y)
  Actor *actor;
  uint16 a_x, a_y;
  uint8 a_z;
+ Obj  *obj;
  
  tile = tile_manager->get_tile(tile_num);
  if(!(tile->flags2 & TILEFLAG_WINDOW))
-   return false;
+   {
+    obj = obj_manager->get_objBasedAt(x,y,cur_level,true);
+    if(obj) //check for a windowed object.
+      {
+       tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+       if(!(tile->flags2 & TILEFLAG_WINDOW))
+          return false;
+      }
+    else
+       return false;
+   }
 
  actor = actor_manager->get_player();
  actor->get_location(&a_x,&a_y,&a_z);

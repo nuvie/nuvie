@@ -66,7 +66,7 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
                         break;
 
     case OBJ_U6_SWITCH : use_switch(obj,OBJ_U6_ELECTRIC_FIELD);
-                         scroll->display_string("\nFIX use description.\n");
+                         scroll->display_string("\nOperate the switch, you hear a noise.\n");
                          break;
 
     case OBJ_U6_CRANK : use_crank(obj);
