@@ -110,9 +110,8 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  //map_window->move(0x12e,0x16b);
  map_window->centerMapOnActor(player->get_actor());
 
- converse = new Converse(config, CONV_U6, scroll, actor_manager, clock, player,
-                         view_manager, obj_manager);
- converse->loadConv();
+ converse = new Converse();
+ converse->init(config, scroll, actor_manager, clock, player, view_manager, obj_manager);
 
  usecode = (UseCode *) new U6UseCode(config);
  usecode->init(obj_manager, game_map, player, scroll);
