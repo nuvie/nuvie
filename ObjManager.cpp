@@ -559,6 +559,8 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  return true;
 }
 
+/* Returns an objects look-string, its general description.
+ */
 const char *ObjManager::look_obj(Obj *obj, bool show_prefix)
 {
  const char *desc;

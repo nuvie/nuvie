@@ -1,50 +1,77 @@
 Nuvie TODO List
 ---------------
-Command line:
+Cursors:
+In normal/move mode (no pending action), cursor is standard arrow over ever
+area but the MapWindow. Above the MapWindow it is a directional arrow, or the
+small crosshair when over the player. MouseDown over the player passes.
+In Look/Talk/Get/Drop/etc modes, the cursor is the small crosshair everywhere.
+While talking or displaying a portrait, the cursor is the small crosshair
+everywhere. Clicking anywhere in the MapWindow, or one of the buttons, or
+any object slot in the Inventory scrolls down the page in MsgScroll.
+
+Finish eggs:
+We don't fully understand the egg data (Y, Z, Quality).
+How does U6 determine where to spawn the contents? Some monsters seem
+grouped together, others spawn a distance from eachother. (if fighting)
+How do some eggs only hatch at certain times?
+
+Add these options to the command line:
 nuvie [options] game(from config)
 -h, --help
 -s, --savedir, savegame directory ?
 ?? config location
 ?? Set gametype or location
+datadir contains patch data for each game-type
+one game can merge data with that in another gamedir
 
-Converse/Talk:
-0xbf - alternate inventory/portrait view
-Consider input buffer filled with spaces as empty
+Talk:
 MD SE talking
+Finish not completely implemented/known instructions:
+    0xbf - alternate inventory/portrait view
+    0xb4,0xb5 - get list data based on context of "let"
+    0xc7 - objinparty, return value unclear
+    0x9c - anything we are missing when we Horse an actor?
+    0x9e - sleeping at inns unimplemented
+    0xd6 - can't resurrect when actors can't even die!
+    0xdb - unpoison actors
+    0xf9 - get string or integer input
+    0xb7,0xb8 - ?? used in final quest (gargoyle shrines)
 
 Event:
-Move "now" time to Game or GameClock, add some type to handle ticks
+Drop objects from inventory
+Move objects within the party and into containers
 Take low-level input handling out of Event and make a keybinder.
-PlayerAction class(es) (ActorActions?)
-Use/drop/move objects from inventory
-Use and other actions aren't supposed to work when Player is uncontrolled
-Action sync.: After an input event is processed, don't allow any more. (right
-now you can press keys after doing certain things and quickly get another action
-in)
-Dragndrop: When releasing object after move, commands should go through some
-action queue or through Event, so that the proper checks are performed and the
+Take higher-level functions and move to PlayerAction class. This will be able
+to queue actions, and will handle the "mode" that Event has now. It may be where
+global actions (quit/save/load?) are too. It will make sure USE and other
+actions don't work when player control is paused.
+Action sync.:
+Right now you can press keys after doing certain things and quickly get another
+action in. You can't press different arrow keys and quickly change directions.
+Neither of those is the proper behavior.
+
+DragnDrop:
+When releasing object after move, commands should go through
+PlayerAction queue, so that the proper checks are performed and the
 number of turns are passed that it would take to get to the original location.
 Should be able to drop objects on other non-passable objects (move rope to table)
 Don't drag skiffs to land (check object's passable?)
 When dragging object, show cursor as indicator if object can be dropped in a
 location.
 
-Actors:
-Improve Party following
-Implement speed in LPath (actors walking to work location get up to 4 moves)
-And with LPath, NPCs travel wide angles along roads instead of shortest path
-to destination (it is not solely based on terrain score).
-New Follow pathfinder, follow an actor (if on same plane), with give-up distance
-    (also run from actor)
-Maybe a new Monster pathfinder
+U6TileManager? TileManager controls whether or not a tile is a poison or fire
+field and damages actor, and when to start/stop environmental sound effects.
 
 UseCode:
-Execute Usecode for post-move actions (frame changes)
+Execute Usecode for post-move actions (frame changes), and when entering/leaving
+the screen area.
 Ex: call an event on "chair" when actor steps on it, to change to sit frame
  (This can be used to implement poison/sleep fields.)
 move u6ucobject stuff up to UseCode, needs to be generic to avoid duplication
+U6ObjectTypes, with one function per object
 
-MsgScroll: Give message scroller and other GUI areas some high-level I/O methods
+MsgScroll:
+Give message scroller and other GUI areas some high-level I/O methods
 Screenfulls of text should pause even if
 not indicated in data, but a break indicated in the data + a screenfull of text
 should not cause two breaks (requiring player to ESC twice).
@@ -55,11 +82,21 @@ testing)
 
 Fix actor draw order issues.
 
+Actors:
+Improve Party following
+Implement speed in LPath (actors walking to work location get up to 4 moves)
+And with LPath, NPCs travel wide angles along roads instead of shortest path
+to destination (it is not solely based on terrain score).
+New Follow pathfinder, follow an actor (if on same plane), with give-up distance
+    (also run from actor)
+New Monster pathfinder
+
 Move static mode out of U6Actor::wt_beg because it affects all actors with that
 worktype. Change worktype to wander after talked to player.
 
 Replace some actor info with pointer to an Obj?
-Actor::[check]move error/status struct? (so that calling function can check)
+
+Actor::[check]move error/status struct (so that calling function can check)
 Actor::[check]move: take move_flags argument (replace current bools force_move/ignore_others)
 
 Move Configuration search to Configuration or somewhere so it can be used in
@@ -68,18 +105,19 @@ tools.
 things to do:
 raft
 balloon
-combat
+time-advance, sleep at inn, camp
+combat, combat worktypes
 weapons
 music
 sfx
 weather/ wind direction
 map wrapping
 saving!
-eggs
 magic
-sprite animations
+sprite animations (working on it)
 intro/end sequences
 game/gameselect menu(s)
+rabbits are EVIL
 
 wishlist:
 real-time mode (but not during combat)

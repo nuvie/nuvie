@@ -64,7 +64,9 @@ class Player
  bool get_uncontrolled() { return(uncontrolled); }
  void uncontrol() { uncontrolled = true; }
  void control();
- 
+ bool set_party_mode(Actor *new_actor);
+ bool set_solo_mode(Actor *new_actor);
+
  void set_karma(uint8 val) { karma = val; }
  uint8 get_karma() { return(karma); }
  void add_karma(uint8 val = 1);
@@ -90,7 +92,9 @@ class Player
  void moveUp();
  void moveDown();
  void pass();
- 
+
+ uint32 get_walk_delay();
+
  protected:
  
  bool loadObjlistData();

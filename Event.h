@@ -52,18 +52,13 @@ typedef enum {
  MOVE_MODE,
  DROP_MODE,
  TALK_MODE, /* finding an actor to talk to */
- PUSH_MODE,
  PUSHSELECT_MODE,
+ EQUIP_MODE,
  USESELECT_MODE,
  FREESELECT_MODE, /*...or use a single free-move mode for get,talk,select?*/
+ PUSH_MODE,
+ DROPTARGET_MODE,
 } EventMode;
-
-typedef enum {
- FOCUS_NONE = 0, // MapWindow/Global
- FOCUS_MSGSCROLL,
- FOCUS_PORTRAITVIEW,
- FOCUS_INVENTORYVIEW
-} ViewFocus; // ViewMgr should handle this
 
 extern uint32 nuvieGameCounter;
 
@@ -78,7 +73,6 @@ class Event
  GameClock *clock;
  Player *player;
  EventMode mode;
- ViewFocus view_focus;
  Book *book;
  Converse *converse;
  ViewManager *view_manager;
@@ -103,6 +97,8 @@ class Event
  Book *get_book() { return(book); }
  TimeQueue *get_time_queue() { return(time_queue); }
  TimeQueue *get_game_time_queue() { return(game_time_queue); }
+ EventMode get_mode() { return(mode); }
+ void set_mode(EventMode new_mode) { mode = new_mode; }
 
  bool update();
  bool handleEvent(const SDL_Event *event);
@@ -110,33 +106,35 @@ class Event
  void freeselect_mode(Obj *src, const char *prompt = NULL);
  void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
  void display_portrait(Actor *actor, const char *name = NULL);
+ void doAction(sint16 rel_x = 0, sint16 rel_y = 0);
+ void cancelAction();
+ void newAction(EventMode new_mode);
 
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
+ bool use(Obj *obj);
+ bool use(Actor *actor);
  bool get(sint16 rel_x, sint16 rel_y);
  bool look();
+ bool look(Obj *obj);
+ bool look(Actor *actor);
+ bool search(Obj *obj);
  bool talk();
  bool pushFrom(sint16 rel_x, sint16 rel_y);
  bool pushTo(sint16 rel_x, sint16 rel_y);
  bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
  bool select_obj(sint16 rel_x, sint16 rel_y);
- bool doUse(Obj *obj);
- bool doLookObj(Obj *obj, bool inventory=false);
- bool doLookActor(Actor *actor);
+ void solo_mode(uint32 actor_num);
+ void party_mode();
 
  void alt_code(const char *cs);
  void alt_code_input(const char *in);
  void clear_alt_code() { alt_code_str[0] = '\0'; alt_code_len = 0; }
  bool alt_code_teleport(const char *location_string);
  void alt_code_infostring();
+ void alt_code_teleport_menu(uint32 selection);
 
  void wait();
-
- EventMode get_mode() { return(mode); }
- void set_mode(EventMode new_mode) { mode = new_mode; }
- bool pass_input(const SDL_Event *event);
- void set_view_focus(ViewFocus focus = FOCUS_NONE);
- ViewFocus get_view_focus() { return(view_focus); }
 
  protected:
 

@@ -307,7 +307,6 @@ bool Converse::start(uint8 n)
         npc_num = n;
         init_variables();
         show_portrait(npc_num);
-        Game::get_game()->get_event()->set_view_focus(FOCUS_MSGSCROLL);
         unwait();
         fprintf(stderr, "Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
         return(true);
@@ -328,7 +327,6 @@ void Converse::stop()
     scroll->display_string("\n");
     scroll->display_prompt();
     views->set_inventory_mode();
-    Game::get_game()->get_event()->set_view_focus(FOCUS_NONE);
 
     active = false;
     fprintf(stderr, "End conversation\n");

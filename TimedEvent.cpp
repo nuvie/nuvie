@@ -89,7 +89,7 @@ TimedEvent::TimedEvent(uint32 reltime, bool immediate, bool realtime)
     GameClock *clock = Game::get_game()->get_clock();
     event = Game::get_game()->get_event();
 
-    time = reltime + (real_time ? clock->get_ticks() : clock->get_turn());
+    time = reltime + (real_time ? clock->get_ticks() : clock->get_game_ticks());
     if(immediate)
         time = 0; // start now (useful if repeat == true)
     if(real_time)

@@ -31,6 +31,7 @@
 #include "Text.h"
 #include "ViewManager.h"
 #include "MsgScroll.h"
+#include "GUI.h"
 #include "PortraitView.h"
 
 PortraitView::PortraitView(Configuration *cfg) : View(cfg)
@@ -111,17 +112,31 @@ void PortraitView::display_name()
 /* On any input return to previous status view if waiting.
  * Returns true if event was used.
  */
-bool PortraitView::handle_input(const SDL_keysym *input)
+GUI_status PortraitView::HandleEvent(const SDL_Event *event)
 {
-    if(waiting)
+    if(waiting
+       && (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_KEYDOWN))
     {
-        waiting = false;
         // FIXME revert to previous status view
         Game::get_game()->get_view_manager()->set_inventory_mode();
         // Game::get_game()->get_scroll()->set_input_mode(false);
         Game::get_game()->get_scroll()->message("\n");
-        Game::get_game()->get_scroll()->set_show_cursor(true);
-        return(true);
+        set_waiting(false);
+        return(GUI_YUM);
     }
-    return(false);
+    return(GUI_PASS);
+}
+
+
+/* Start/stop waiting for input to continue, and (for now) steal cursor from
+ * MsgScroll.
+ */
+void PortraitView::set_waiting(bool state)
+{
+    if(state == true && portrait_data == NULL) // don't wait for nothing
+        return;
+    waiting = state;
+    set_show_cursor(waiting);
+    Game::get_game()->get_scroll()->set_show_cursor(!waiting);
+    Game::get_game()->get_gui()->lock_input(waiting ? this : NULL);
 }

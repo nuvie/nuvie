@@ -21,6 +21,7 @@
  *
  */
 
+#include <cassert>
 #include <SDL.h>
 
 #include "nuvieDefs.h"
@@ -90,7 +91,6 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  usecode = uc;
  
  mode = MOVE_MODE;
- view_focus = FOCUS_NONE;
 
  book = new Book(config);
  if(book->init() == false)
@@ -102,6 +102,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
 
 bool Event::update()
 {
+ bool idle = true;
  // timed
  time_queue->call_timers(clock->get_ticks());
  game_time_queue->call_timers(clock->get_game_ticks());
@@ -110,6 +111,7 @@ bool Event::update()
  SDL_Event event;
  while(SDL_PollEvent(&event))
   {
+   idle = false;
    switch(gui->HandleEvent(&event))
      {
       case GUI_PASS : if(handleEvent(&event) == false)
@@ -122,25 +124,20 @@ bool Event::update()
      }
   }
 
+  if(idle)
+    gui->Idle(); // run Idle() for all widgets
+
  return true;
 }
 
 bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 {
-	if(view_focus && pass_input(event))
-		return true;
-        if(view_focus != FOCUS_NONE) // reclaim focus if nothing else needed it
-            set_view_focus(FOCUS_NONE);
-
+	SDLMod mods = SDL_GetModState();
 	// alt-code input
-	if((SDL_GetModState() & KMOD_ALT)
-	   && ((event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9) ||
-	      (event->key.keysym.sym >= SDLK_KP0 && event->key.keysym.sym <= SDLK_KP9)))
+	if((mods & KMOD_ALT)
+	   && (event->key.keysym.sym >= SDLK_KP0 && event->key.keysym.sym <= SDLK_KP9))
 	{
-		if(event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9)
-			alt_code_str[alt_code_len++] = (char)event->key.keysym.sym;
-		else
-			alt_code_str[alt_code_len++] = (char)(event->key.keysym.sym-208);
+		alt_code_str[alt_code_len++] = (char)(event->key.keysym.sym-208);
 		alt_code_str[alt_code_len] = '\0';
 		if(alt_code_len == 3)
 		{
@@ -210,51 +207,26 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
                         break;
 #endif
 		case SDLK_q     : 
-			if(!showingQuitDialog)
+			if(mode == MOVE_MODE && !showingQuitDialog)
 			{
 				showingQuitDialog = true;
 				quitDialog();
 			}
 			break;
 		case SDLK_l     :
-			mode = LOOK_MODE;
-			scroll->display_string("Look-");
-			map_window->centerCursor();
-			map_window->set_show_cursor(true);
+			newAction(LOOK_MODE);
 			break;
 		case SDLK_t     :
-			if(mode == TALK_MODE) //you can select an actor with 't' or enter.
-			{
-				if(talk())
-			            scroll->set_talking(true);
-				mode = MOVE_MODE;
-				map_window->set_show_cursor(false);
-			}
-			else
-			{
-				mode = TALK_MODE;
-				scroll->display_string("Talk-");
-				map_window->centerCursor();
-				map_window->set_show_cursor(true);
-			}
+			newAction(TALK_MODE);
 			break;
 		case SDLK_u     :
-			mode = USE_MODE;
-			scroll->display_string("Use-");
-			map_window->centerCursor();
-			map_window->set_show_use_cursor(true);
+			newAction(USE_MODE);
 			break;
 		case SDLK_g     :
-			mode = GET_MODE;
-			scroll->display_string("Get-");
-			map_window->centerCursor();
-			map_window->set_show_use_cursor(true);
+			newAction(GET_MODE);
 			break;
 		case SDLK_m     :
-			mode = PUSHSELECT_MODE;
-			scroll->display_string("Move-");
-			map_window->centerCursor();
-			map_window->set_show_use_cursor(true);
+			newAction(PUSHSELECT_MODE);
 			break;
                 case SDLK_F1:
                 case SDLK_F2:
@@ -264,88 +236,40 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
                 case SDLK_F6:
                 case SDLK_F7:
                 case SDLK_F8:
-                            if(view_manager->get_inventory_view()
-                                ->set_party_member(event->key.keysym.sym - 282))
-                                view_manager->set_inventory_mode();
+                        if(view_manager->get_inventory_view()
+                           ->set_party_member(event->key.keysym.sym - 282))
+                            view_manager->set_inventory_mode();
                         break;
                 case SDLK_F10:
                             view_manager->set_party_mode();
                         break;
+                case SDLK_1:
+                case SDLK_2:
+                case SDLK_3:
+                case SDLK_4:
+                case SDLK_5:
+                case SDLK_6:
+                case SDLK_7:
+                case SDLK_8:
+			solo_mode(event->key.keysym.sym - 48 - 1);
+			break;
+                case SDLK_0:
+                case SDLK_9:
+			party_mode();
+			break;
 		case SDLK_RETURN  :
 		case SDLK_KP_ENTER   :
-			map_window->set_show_use_cursor(false);
-			map_window->set_show_cursor(false);
-			if(mode == LOOK_MODE)
-			{
-				mode = MOVE_MODE;
-				look();
-			}
-			else if(mode == TALK_MODE)
-			{
-				mode = MOVE_MODE;
-				if(talk())
-                                    scroll->set_talking(true);
-			}
-			else if(mode == USE_MODE)
-			{
-				//mode = MOVE_MODE;
-				use(0,0);
-			}
-			else if(mode == GET_MODE)
-			{
-				mode = MOVE_MODE;
-				get(0,0);
-			}
-			else if(mode == PUSH_MODE)
-			{
-				pushTo(0,0);
-			}
-			else if(mode == PUSHSELECT_MODE)
-			{
-				pushFrom(0,0);
-			}
-			else if(mode == USESELECT_MODE || mode == FREESELECT_MODE)
-			{
-				mode = MOVE_MODE;
-				select_obj();
-			}
-			else
-			{
-				scroll->display_string("what?\n\n");
-				scroll->display_prompt();
-			}
-			break;
-		case SDLK_ESCAPE:
-			if(mode == MOVE_MODE)
-			{
-				scroll->display_string("Pass!\n\n");
-				scroll->display_prompt();
-				player->pass();
-			}
-			else
-			{
-				mode = MOVE_MODE;
-				map_window->set_show_use_cursor(false);
-				map_window->set_show_cursor(false);
-				scroll->display_string("what?\n\n");
-				scroll->display_prompt();
-                                use_obj = NULL;
-			}
-                        map_window->updateBlacking();
+			doAction();
 			break;
 		case SDLK_SPACE :
-			scroll->display_string("Pass!\n\n");
-			scroll->display_prompt();
-			player->pass();
-                        map_window->updateBlacking();
+			mode = MOVE_MODE;
+			cancelAction();
 			break;
+		case SDLK_ESCAPE:
 		default :
 			if (event->key.keysym.sym != SDLK_LALT
 				&& event->key.keysym.sym != SDLK_RALT)
-			{
-				scroll->display_string("what?\n\n");
-				scroll->display_prompt();
-			}
+				cancelAction();
 			break;
 	}	//	switch (event->key.keysym.sym)
 	return	true;
@@ -390,66 +314,12 @@ bool Event::handleEvent(const SDL_Event *event)
 }
 
 
-/* Send some of the input to another view/input-area that has focus.
- * Returns true if the event was used.
- */
-bool Event::pass_input(const SDL_Event *event)
-{
-    if(view_focus == FOCUS_MSGSCROLL)
-        return(scroll->handle_input(&event->key.keysym));
-//    else if(view_focus == FOCUS_INVENTORYVIEW)
-//        return(view_manager->get_inventory_view()->handle_input(&event->key.keysym));
-    else if(view_focus == FOCUS_PORTRAITVIEW)
-        return(view_manager->get_portrait_view()->handle_input(&event->key.keysym));
-    return(false);
-}
-
-
-/* Remove focus from previous view/input-area, set to new.
- */
-void Event::set_view_focus(ViewFocus focus)
-{
-    // remove old focus indication
-    if(view_focus == FOCUS_NONE || view_focus == FOCUS_MSGSCROLL)
-        scroll->set_show_cursor(false);
-    else if(view_focus == FOCUS_PORTRAITVIEW)
-        view_manager->get_portrait_view()->set_show_cursor(false);
-
-    view_focus = focus; // SET
-
-    // indicate new focus (for some views this is done earlier)
-    if(view_focus == FOCUS_NONE || view_focus == FOCUS_MSGSCROLL)
-        scroll->set_show_cursor(true);
-    else if(view_focus == FOCUS_PORTRAITVIEW)
-    {
-        view_manager->get_portrait_view()->set_show_cursor(true);
-        if(!view_manager->get_portrait_view()->get_waiting())
-            scroll->set_show_cursor(true);
-    }
-
-    if(view_focus != FOCUS_NONE) // NONE = MapWindow
-    {
-        map_window->set_show_cursor(false);
-        map_window->set_show_use_cursor(false);
-    }
-
-printf("Event focus=%s\n", (view_focus == FOCUS_NONE)?"NONE":
-                          (view_focus == FOCUS_MSGSCROLL)?"MSGSCROLL":
-                          (view_focus == FOCUS_PORTRAITVIEW)?"PORTRAIT":
-                          (view_focus == FOCUS_INVENTORYVIEW)?"INVENTORY":"???");
-}
-
-
-
 /* Switch focus to MsgScroll and start getting user input.
  */
 void Event::get_scroll_input(const char *allowed, bool can_escape)
 {
    if(scroll)
-   {
        scroll->set_input_mode(true, allowed, can_escape);
-       set_view_focus(FOCUS_MSGSCROLL);
-   }
 }
 
 
@@ -457,8 +327,8 @@ void Event::get_scroll_input(const char *allowed, bool can_escape)
  */
 void Event::display_portrait(Actor *actor, const char *name)
 {
-   view_manager->set_portrait_mode(actor, (char *)name);
-   set_view_focus(FOCUS_PORTRAITVIEW);
+    view_manager->set_portrait_mode(actor, (char *)name);
+    view_manager->get_portrait_view()->set_waiting(true);
 }
 
 
@@ -566,19 +436,28 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
      {
       pushFrom(rel_x,rel_y);
      }
+   else if(mode == GET_MODE)
+     {
+      get(rel_x,rel_y);
+     }
    else
      {
-      if(mode == GET_MODE)
+        static uint32 walk_delay = 0, // unlike mouse-move, start with no delay
+                      last_time = SDL_GetTicks();
+        uint32 this_time = SDL_GetTicks();
+        uint32 time_passed = this_time - last_time;
+        if(sint32(walk_delay - time_passed) < 0)
+            walk_delay = 0;
+        else
+            walk_delay -= time_passed;
+        last_time = this_time;
+        if(!walk_delay)
         {
-         get(rel_x,rel_y);
-        }
-      else
-        {
-         player->moveRelative(rel_x, rel_y);
+            player->moveRelative(rel_x, rel_y);
+            walk_delay = player->get_walk_delay();
         }
      }
   }
-
  return true;
 }
 
@@ -644,7 +523,74 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 }
 
 
-#if 0
+bool Event::use(Obj *obj)
+{
+    MapCoord target(obj->x, obj->y, obj->z);
+
+    scroll->display_string(obj_manager->look_obj(obj));
+    scroll->display_string("\n");
+
+    if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player->get_actor()->get_location().distance(target) > 1)
+    {
+        scroll->display_string("\nToo far away!\n");
+        fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
+    }
+    else if(usecode->has_usecode(obj))
+        usecode->use_obj(obj, player->get_actor());
+    else
+    {
+        scroll->display_string("\nNot usable\n");
+        fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
+    }
+    map_window->updateBlacking();
+    // if selecting (now in a select mode), select_obj will return to MOVE_MODE
+    // else (mode is still USE_MODE) return to MOVE_MODE now
+    if(mode == USE_MODE)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        map_window->set_show_use_cursor(false);
+        mode = MOVE_MODE;
+    }
+}
+
+
+bool Event::use(Actor *actor)
+{
+    MapCoord target = actor->get_location();
+    Obj *obj = actor->make_obj();
+
+    if(usecode->has_usecode(obj))
+    {
+        scroll->display_string(obj_manager->look_obj(obj));
+        scroll->display_string("\n");
+        if(player->get_actor()->get_location().distance(target) > 1)
+        {
+            scroll->display_string("\nToo far away!\n");
+            fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
+        }
+        else
+            usecode->use_obj(obj, player->get_actor());
+    }
+    else
+    {
+        scroll->display_string("nothing\n");
+        fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
+    }
+    obj_manager->delete_obj(obj); // we were using an actor so free the temp Obj
+    map_window->updateBlacking();
+    // if selecting (now in a select mode), select_obj will return to MOVE_MODE
+    // else (mode is still USE_MODE) return to MOVE_MODE now
+    if(mode == USE_MODE)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        map_window->set_show_use_cursor(false);
+        mode = MOVE_MODE;
+    }
+}
+
+
 bool Event::use(sint16 rel_x, sint16 rel_y)
 {
  Actor *actor = NULL;
@@ -652,75 +598,28 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  Map *map = Game::get_game()->get_game_map();
  uint16 x,y;
  uint8 level;
- bool using_actor = false;
 
  player->get_location(&x,&y,&level);
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
  actor = map->get_actor((uint16)(x+rel_x), (uint16)(y+rel_y), level);
- if(!obj && actor && actor->is_visible())
-   {
-    obj = actor->make_obj();
-    using_actor = true;
-   }
 
  if(obj)
- {
-  MapCoord target(obj->x, obj->y, obj->z);
-  bool can_use = usecode->has_usecode(obj);
-  if(!using_actor || can_use)
-  {
-   scroll->display_string(obj_manager->look_obj(obj));
-   scroll->display_string("\n");
-  }
-  if(can_use)
-   usecode->use_obj(obj, player->get_actor());
-  else
-  {
-   if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player->get_actor()->get_location().distance(target) > 1)
-    {
-      scroll->display_string("\nToo far away!\n");
-      fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
-    }
-   else if(using_actor)
-      scroll->display_string("nothing\n");
-   else
-      scroll->display_string("\nNot usable\n");
-   fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
-  }
- }
- else
-  scroll->display_string("nothing\n");
+    return(use(obj));
+ else if(actor && actor->is_visible())
+    return(use(actor));
 
- if(mode == USE_MODE) // if selecting, select_obj will return to MOVE_MODE
+ scroll->display_string("nothing\n");
+
+ // if selecting (now in a select mode), select_obj will return to MOVE_MODE
+ // else (mode is still USE_MODE) return to MOVE_MODE now
+ if(mode == USE_MODE)
  {
      scroll->display_string("\n");
      scroll->display_prompt();
      map_window->set_show_use_cursor(false);
      mode = MOVE_MODE;
  }
- map_window->updateBlacking();
- 
- if(using_actor) //we were using an actor so free the temp Obj
-  obj_manager->delete_obj(obj);
- if(scroll->get_page_break())
-  set_view_focus(FOCUS_MSGSCROLL);
  return true;
-}
-#endif
-// ABOEING
-bool Event::use(sint16 rel_x, sint16 rel_y)
-{
- printf("called use\n");
- Actor *actor = NULL;
- Obj *obj = NULL;
- Map *map = Game::get_game()->get_game_map();
- uint16 x,y;
- uint8 level;
- bool using_actor = false;
-
- player->get_location(&x,&y,&level);
- obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
- return doUse(obj);
 }
 
 
@@ -769,120 +668,117 @@ bool Event::select_obj(sint16 rel_x, sint16 rel_y)
 }
 
 
-#if 0
+/* Returns true if object can be searched. (false if prompt shouldn't be shown)
+ */
+bool Event::look(Obj *obj)
+{
+    char weight_string[32];
+    float weight;
+    bool special_desc = false;
+
+    obj_manager->print_obj(obj, false); // DEBUG
+    scroll->display_string("Thou dost see ");
+    scroll->display_string(obj_manager->look_obj(obj, true));
+
+    // check for special description
+    if(usecode->has_lookcode(obj))
+    {
+        special_desc = usecode->look_obj(obj, player->get_actor());
+//        scroll->display_string("\n");
+    }
+    if(special_desc)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        return(false);
+    }
+    else
+    {
+        weight = obj_manager->get_obj_weight(obj);
+        if(weight != 0)
+        {
+            if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
+                snprintf(weight_string,31,". They weigh %0.1f stones.",obj_manager->get_obj_weight(obj));
+            else
+                snprintf(weight_string,31,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj));
+            scroll->display_string(weight_string);
+        }
+        scroll->display_string("\n\n");
+        return(true);
+    }
+}
+
+
+/* Returns true if there was a portrait for actor.
+ */
+bool Event::look(Actor *actor)
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    sint16 p_id = -1; // party member number of actor
+    bool had_portrait = true;
+    display_portrait(actor);
+    had_portrait = view_manager->get_portrait_view()->get_waiting();
+
+    actor_manager->print_actor(actor); // DEBUG
+    scroll->display_string("Thou dost see ");
+    // show real actor name and portrait if in avatar's party
+    if((p_id = player->get_party()->get_member_num(actor)) >= 0)
+        scroll->display_string(player->get_party()->get_actor_name(p_id));
+    else
+        scroll->display_string(actor_manager->look_actor(actor, true));
+    scroll->display_string("\n");
+    return(had_portrait);
+}
+
+
+bool Event::search(Obj *obj)
+{
+    MapCoord player_loc = player->get_actor()->get_location(),
+             target_loc = map_window->get_cursorCoord();
+    if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player_loc.distance(target_loc) <= 1)
+    {
+        scroll->display_string("Searching here, you find ");
+        if(!obj || !usecode->search_obj(obj, player->get_actor()))
+            scroll->display_string("nothing.\n");
+        else
+        {
+            scroll->display_string(".\n");
+            map_window->updateBlacking(); // secret doors
+        }
+        return(true);
+    }
+    return(false);
+}
+
+
 bool Event::look()
 {
- bool can_search = true; // can object be searched? return from LOOK
  bool display_prompt = true;
  Obj *obj = map_window->get_objAtCursor();
  Actor *actor = map_window->get_actorAtCursor();
- sint16 p_id = -1; // party member number of actor
- char weight_string[32];
- float weight;
 
- if(actor) // display portrait, move cursor, will wait for input to continue
- {
-   display_portrait(actor);
-   if(view_manager->get_portrait_view()->get_waiting()) // there was a portrait
-     display_prompt = false;
-   can_search = false;
- }
- scroll->display_string("Thou dost see ");
  if(actor)
-   {
-    Game::get_game()->get_actor_manager()->print_actor(actor); //DEBUG
-    // show real actor name and portrait if in avatar's party
-    if((p_id = player->get_party()->get_member_num(actor)) >= 0)
-       scroll->display_string(player->get_party()->get_actor_name(p_id));
-    else
-       scroll->display_string(map_window->lookAtCursor());
-   }
+   display_prompt = !look(actor);
  else if(obj) // don't display weight or do usecode for obj under actor
   {
-   obj_manager->print_obj(obj,false); //DEBUG
-   scroll->display_string(map_window->lookAtCursor());
-
-   weight = obj_manager->get_obj_weight(obj);
-   if(weight != 0)
-     {
-	  if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
-         snprintf(weight_string,31,". They weigh %0.1f stones.",obj_manager->get_obj_weight(obj));
-	  else
-         snprintf(weight_string,31,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj));
-		 
-      scroll->display_string(weight_string);
-     }
-  // check for special description
-  if(usecode->has_lookcode(obj))
-    can_search = usecode->look_obj(obj, player->get_actor());
+   if(look(obj))
+     search(obj);
+   else
+     display_prompt = false;
   }
  else // ground
+  {
+   scroll->display_string("Thou dost see ");
    scroll->display_string(map_window->lookAtCursor());
- scroll->display_string("\n");
- // search
- MapCoord player_loc = player->get_actor()->get_location(),
-          target_loc = map_window->get_cursorCoord();
- if(can_search && player_loc.distance(target_loc) <= 1)
-   {
-    scroll->display_string("\nSearching here, you find ");
-    if(!obj || !usecode->search_obj(obj, player->get_actor()))
-       scroll->display_string("nothing.\n");
-    else
-      {
-       scroll->display_string(".\n");
-       map_window->updateBlacking(); // secret doors
-      }
-   }
+   scroll->display_string("\n");
+  }
 
  if(display_prompt)
   {
    scroll->display_string("\n");
    scroll->display_prompt();
   }
- if(scroll->get_page_break())
-  set_view_focus(FOCUS_MSGSCROLL);
  return true;
-}
-#endif
-// ABOEING
-bool Event::look()
-{
- 
- Obj *obj = map_window->get_objAtCursor();
- Actor *actor = map_window->get_actorAtCursor();
- 
- scroll->display_string("Thou dost see ");
- 
- bool can_search;
- if (obj) {
-  can_search = doLookObj(obj);
- }  else 
- if (actor) {
-  can_search = doLookActor(actor);
- } else 
-  scroll->display_string(map_window->lookAtCursor());
- scroll->display_string("\n");
- // search
- MapCoord player_loc = player->get_actor()->get_location(),
-  target_loc = map_window->get_cursorCoord();
- if(can_search && player_loc.distance(target_loc) <= 1)
- {
-  scroll->display_string("\nSearching here, you find ");
-  if(!obj || !usecode->search_obj(obj, player->get_actor()))
-   scroll->display_string("nothing.\n");
-  else
-  {
-   scroll->display_string(".\n");
-   map_window->updateBlacking(); // secret doors
-  }
- }
- 
- scroll->display_string("\n");
- scroll->display_prompt(); 
-
- if(scroll->get_page_break())
-  set_view_focus(FOCUS_MSGSCROLL);
- return can_search;
 }
 
 
@@ -953,124 +849,14 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
 }
 
 
-// ABOEING
-bool Event::doLookObj(Obj *obj, bool inventory) {
- bool can_search = true; // can object be searched? return from LOOK
- bool display_prompt = true;
- sint16 p_id = -1; // party member number of actor
- char weight_string[32];
- float weight;
- if(obj) // don't display weight or do usecode for obj under actor
- {
-  if (inventory) {
-   scroll->display_string(Game::get_game()->get_tile_manager()->lookAtTile(Game::get_game()->get_obj_manager()->get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
-   return false;
-  }
-  scroll->display_string(map_window->lookAtCursor());
-  weight = obj_manager->get_obj_weight(obj);
-  if(weight != 0)
-  {
-   if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
-    snprintf(weight_string,31,". They weigh %0.1f stones.",obj_manager->get_obj_weight(obj));
-   else
-    snprintf(weight_string,31,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj));
-   scroll->display_string(weight_string);
-  }
-  // check for special description
-  if(usecode->has_lookcode(obj)) {
-   can_search = usecode->look_obj(obj, player->get_actor());
-  }
- }
- return can_search;
-}
-
-
-// ABOEING
-bool Event::doLookActor(Actor *actor) {
- 
- bool can_search = true; // can object be searched? return from LOOK
- bool display_prompt = true;
- sint16 p_id = -1; // party member number of actor
- char weight_string[32];
- float weight;
- 
- if(actor) // display portrait, move cursor, will wait for input to continue
- {
-  display_portrait(actor);
-  if(view_manager->get_portrait_view()->get_waiting()) // there was a portrait
-   display_prompt = false;
-  can_search = false;
-   // Game::get_game()->get_actor_manager()->print_actor(actor); //DEBUG
-   // show real actor name and portrait if in avatar's party
-   if((p_id = player->get_party()->get_member_num(actor)) >= 0)
-    scroll->display_string(player->get_party()->get_actor_name(p_id));
-   else
-    scroll->display_string(map_window->lookAtCursor());
- }
- return can_search;
-}
-
-
-// ABOEING
-bool Event::doUse(Obj *obj) {
- Actor *actor = NULL;
- Map *map = Game::get_game()->get_game_map();
- uint16 x,y;
- uint8 level;
- bool using_actor = false;
-
- player->get_location(&x,&y,&level);
- actor = map->get_actor((uint16)(x), (uint16)(y), level);
- if(!obj && actor && actor->is_visible())
-   {
-    obj = actor->make_obj();
-    using_actor = true;
-   }
-
- if(obj)
- {
-  bool can_use = usecode->has_usecode(obj);
-  if(!using_actor || can_use)
-  {
-   scroll->display_string(obj_manager->look_obj(obj));
-   scroll->display_string("\n");
-  }
-  if(can_use)
-   usecode->use_obj(obj, player->get_actor());
-  else
-  {
-   if(using_actor)
-      scroll->display_string("nothing\n");
-   else
-      scroll->display_string("\nNot usable\n");
-   fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
-  }
- }
- else
-  scroll->display_string("nothing\n");
-
- if(mode == USE_MODE) // if selecting, select_obj will return to MOVE_MODE
- {
-     scroll->display_string("\n");
-     scroll->display_prompt();
-     map_window->set_show_use_cursor(false);
-     mode = MOVE_MODE;
- }
- map_window->updateBlacking();
- 
- if(using_actor) //we were using an actor so free the temp Obj
-  obj_manager->delete_obj(obj);
-
- return true;
-}
-
-
 /* Send input to active alt-code.
  */
 void Event::alt_code_input(const char *in)
 {
     ActorManager *am = Game::get_game()->get_actor_manager();
     Actor *a = am->get_actor((uint8)strtol(in, NULL, 10));
+    static string teleport_string = "";
+    static Obj obj;
     switch(active_alt_code)
     {
         case 300: // show NPC portrait (FIXME: should be show portrait number)
@@ -1089,11 +875,51 @@ void Event::alt_code_input(const char *in)
             active_alt_code = 0;
             break;
 
-        case 214:
-            alt_code_teleport(in); //teleport player & party? to location string
+/*        case 214:
+            alt_code_teleport(in); //teleport player & party to location string
             scroll->display_string("\n");
             scroll->display_prompt();
             active_alt_code = 0;
+            break;
+*/
+
+        case 214: // teleport player & party to location string
+            teleport_string += " ";
+            teleport_string += in;
+            ++alt_code_input_num;
+            if(alt_code_input_num == 1)
+            {
+                scroll->display_string("\n<uai>: ");
+                get_scroll_input();
+            }
+            else if(alt_code_input_num == 2)
+            {
+                scroll->display_string("\n<zi>: ");
+                get_scroll_input();
+            }
+            else 
+            {
+                alt_code_teleport(teleport_string.c_str());
+                scroll->display_string("\n");
+                scroll->display_prompt();
+                teleport_string = "";
+                alt_code_input_num = 0;
+                active_alt_code = 0;
+            }
+            break;
+
+        case 314: // teleport player & party to selected location
+            if(strtol(in, NULL, 10) != 0)
+            {
+                alt_code_teleport_menu((uint32)strtol(in, NULL, 10));
+            }
+            if(strtol(in, NULL, 10) == 0 || alt_code_input_num > 2)
+            {
+                scroll->display_string("\n");
+                scroll->display_prompt();
+                alt_code_input_num = 0;
+                active_alt_code = 0;
+            }
             break;
 
         case 500: // control/watch anyone
@@ -1103,6 +929,29 @@ void Event::alt_code_input(const char *in)
             scroll->display_prompt();
             active_alt_code = 0;
             break;
+
+        case 456: // polymorph
+            if(alt_code_input_num == 0)
+            {
+                obj.obj_n = strtol(in, NULL, 10);
+                obj.frame_n = 0;
+                scroll->display_string("\nNpc number? ");
+                get_scroll_input();
+                ++alt_code_input_num;
+            }
+            else
+            {
+                obj.x = a->get_location().x;
+                obj.y = a->get_location().y;
+                obj.z = a->get_location().z;
+                a->init_from_obj(&obj);
+                scroll->display_string("\nMorphed!\n\n");
+                scroll->display_prompt();
+                alt_code_input_num = 0;
+                active_alt_code = 0;
+            }
+            break;
+
     }
 }
 
@@ -1114,8 +963,8 @@ void Event::alt_code(const char *cs)
     uint16 c = (uint16)strtol(cs, NULL, 10);
     switch(c)
     {
-        case 300: // display portrait of anyone
-            scroll->display_string("Npc number? ");
+        case 300: // display portrait by number
+            scroll->display_string("Portrait? ");
             get_scroll_input();
             active_alt_code = c;
             break;
@@ -1132,6 +981,12 @@ void Event::alt_code(const char *cs)
             active_alt_code = c;
             break;
 
+        case 456: // polymorph
+            scroll->display_string("Object number? ");
+            get_scroll_input();
+            active_alt_code = c;
+            break;
+
         case 213:
             alt_code_infostring();
             scroll->display_string("\n");
@@ -1139,11 +994,26 @@ void Event::alt_code(const char *cs)
             active_alt_code = 0;
             break;
 
-        case 214:
+/*        case 214:
             scroll->display_string("Location: \n",2);
             scroll->display_string(" ",0);
             get_scroll_input();
             active_alt_code = c;
+            break;
+*/
+        case 214:
+            if(player->get_actor()->get_actor_num() == 0)
+            {
+                scroll->display_string("\n<nat uail abord wip!>\n");
+                scroll->display_prompt();
+                active_alt_code = 0;
+            }
+            else
+            {
+                scroll->display_string("\n<gotu eks>: ");
+                get_scroll_input();
+                active_alt_code = c;
+            }
             break;
 
         case 215:
@@ -1162,6 +1032,20 @@ void Event::alt_code(const char *cs)
             active_alt_code = 0;
             break;
 
+        case 314:
+            if(player->get_actor()->get_actor_num() == 0)
+            {
+                scroll->display_string("\n<nat uail abord wip!>\n");
+                scroll->display_prompt();
+                active_alt_code = 0;
+            }
+            else
+            {
+                alt_code_teleport_menu(0);
+                active_alt_code = c;
+            }
+            break;
+
     }
 }
 
@@ -1173,6 +1057,7 @@ bool Event::alt_code_teleport(const char *location_string)
  x = strtol(location_string,&next_num,16);
  y = strtol(next_num,&next_num,16);
  z = strtol(next_num,&next_num,16);
+
  player->move(x,y,z);
 
  return true;
@@ -1201,6 +1086,109 @@ void Event::alt_code_infostring()
 
  return;
 }
+
+
+/* Display teleport destinations, get input.
+ */
+void Event::alt_code_teleport_menu(uint32 selection)
+{
+    static uint8 category = 0;
+    char teleport_dest[11] = "";
+    if(alt_code_input_num == 0)
+    {
+        scroll->display_string("\nLazy Teleporters' Menu!\n");
+        scroll->display_string(" 1) Cities\n");
+        scroll->display_string(" 2) Merchants\n");
+        scroll->display_string(" 3) Shrines\n");
+        scroll->display_string(" 4) Moon Orb\n");
+        scroll->display_string(" 5) Gargoyles\n");
+        scroll->display_string(" 6) Other\n");
+        scroll->display_string("Category? ");
+        get_scroll_input("0123456");
+    }
+    else if(alt_code_input_num == 1) // selected category
+    {
+        category = selection;
+        switch(selection)
+        {
+            case 1:
+                scroll->display_string("Cities\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 2:
+                scroll->display_string("Merchants\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 3:
+                scroll->display_string("Shrines\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 4:
+                scroll->display_string("Moon Orb\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 5:
+                scroll->display_string("Gargoyles\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 6:
+                scroll->display_string("Other\n"
+                                       " 1) Castle\n"
+                                       " 2) Royal Mint\n"
+                                       " 3) Lumberjack\n"
+                                       " 4) Saw Mill\n"
+                                       " 5) Thieves Guild\n"
+                                       " 6) Wisps\n"
+                                       " 7) Iolo's Hut\n"
+                                       " 8) Lycaeum\n"
+                                       "Location? ");
+                get_scroll_input("012345678");
+                break;
+        }
+    }
+    else if(alt_code_input_num == 2) // selected location
+    {
+        switch(category)
+        {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                if(selection == 1) // Castle British
+                    teleport_dest = "133 15f 0";
+                else if(selection == 2) // Royal Mint
+                    teleport_dest = "144 18c 0";
+                else if(selection == 3) // Lumberjack (Yew)
+                    teleport_dest = "b2 94 0";
+                else if(selection == 4) // Saw Mill (Minoc)
+                    teleport_dest = "2a4 65 0";
+                else if(selection == 5) // Thieves Guild
+                    teleport_dest = "233 25e 0";
+                else if(selection == 6) // Wisps
+                    teleport_dest = "a5 115 0";
+                else if(selection == 7) // Iolo's Hut
+                    teleport_dest = "c3 e8 0";
+                else if(selection == 8) // Mariah (Lycaeum)
+                    teleport_dest = "37b 1aa 0";
+                break;
+        }
+        alt_code_teleport(teleport_dest);
+    }
+    ++alt_code_input_num;
+}
+
 
 void Event::wait()
 {
@@ -1238,7 +1226,7 @@ void Event::quitDialog()
  area_widget->AddWidget(widget);
    
  gui->AddWidget(area_widget);
-
+ gui->lock_input(area_widget);
  return;
 }
 
@@ -1251,7 +1239,7 @@ static GUI_status quitDialogYesCallback(void *data)
  //widget->Delete();
  
  showingQuitDialog = false;
- 
+ Game::get_game()->get_gui()->unlock_input();
  return GUI_QUIT;
 }
 
@@ -1264,6 +1252,174 @@ static GUI_status quitDialogNoCallback(void *data)
  widget->Delete();
 
  showingQuitDialog = false;
- 
+ Game::get_game()->get_gui()->unlock_input();
  return GUI_YUM;
+}
+
+
+/* Switch to solo mode.
+ */
+void Event::solo_mode(uint32 party_member)
+{
+    Actor *actor = player->get_party()->get_actor(party_member);
+    if(actor && player->set_solo_mode(actor))
+    {
+        scroll->display_string("\nSolo mode\n\n");
+        std::string prompt = player->get_party()->get_actor_name(party_member);
+        prompt += ":\n>";
+        scroll->set_prompt((char *)prompt.c_str());
+        scroll->display_prompt();
+        map_window->centerMapOnActor(actor);
+    }
+}
+
+
+/* Switch to party mode.
+ */
+void Event::party_mode()
+{
+    MapCoord leader_loc;
+    Actor *actor = player->get_party()->get_actor(0);
+    assert(actor); // there must be a leader
+    leader_loc = actor->get_location();
+    if(player->get_party()->is_at(leader_loc, 8))
+    {
+        if(player->set_party_mode(player->get_party()->get_actor(0)))
+        {
+            scroll->display_string("\nParty mode\n\n");
+            std::string prompt = player->get_party()->get_actor_name(0);
+            prompt += ":\n>";
+            scroll->set_prompt((char *)prompt.c_str());
+            scroll->display_prompt();
+            map_window->centerMapOnActor(actor);
+        }
+    }
+    else
+    {
+        scroll->display_string("Not everyone is here.\n\n");
+        scroll->display_prompt();
+    }
+}
+
+
+/* Do the finishing action for the current mode, based on cursor coordinates,
+ * or based on the passed player-relative coordinates.
+ */
+void Event::doAction(sint16 rel_x, sint16 rel_y)
+{
+	map_window->set_show_use_cursor(false);
+	map_window->set_show_cursor(false);
+	if(mode == LOOK_MODE)
+	{
+		mode = MOVE_MODE;
+		look();
+	}
+	else if(mode == TALK_MODE)
+	{
+		mode = MOVE_MODE;
+		if(talk())
+			scroll->set_talking(true);
+	}
+	else if(mode == USE_MODE)
+	{
+		//mode = MOVE_MODE;
+		use(rel_x,rel_y);
+	}
+	else if(mode == GET_MODE)
+	{
+		mode = MOVE_MODE;
+		get(rel_x,rel_y);
+	}
+	else if(mode == PUSHSELECT_MODE)
+	{
+		pushFrom(rel_x,rel_y);
+	}
+	else if(mode == PUSH_MODE)
+	{
+		pushTo(rel_x,rel_y);
+	}
+	else if(mode == USESELECT_MODE || mode == FREESELECT_MODE)
+	{
+		mode = MOVE_MODE;
+		select_obj();
+	}
+	else
+	{
+		scroll->display_string("what?\n\n");
+		scroll->display_prompt();
+		use_obj = NULL;
+	}
+}
+
+
+/* Cancel the action for the current mode, switch back to MOVE_MODE if possible.
+ */
+void Event::cancelAction()
+{
+	if(mode == MOVE_MODE)
+	{
+		scroll->display_string("Pass!\n\n");
+		scroll->display_prompt();
+		player->pass();
+	}
+	else
+	{
+		mode = MOVE_MODE;
+		scroll->display_string("what?\n\n");
+		scroll->display_prompt();
+	}
+	map_window->set_show_use_cursor(false);
+	map_window->set_show_cursor(false);
+	use_obj = NULL;
+	map_window->updateBlacking();
+}
+
+
+/* Request new EventMode, for selecting a target. This will cancel any pending
+ * actions, or perform the action for the current mode.
+ */
+void Event::newAction(EventMode new_mode)
+{
+	if(mode == new_mode)
+	{
+		doAction();
+                return;
+	}
+	else if(mode != MOVE_MODE)
+	{
+		cancelAction();
+                return;
+	}
+
+	mode = new_mode;
+	switch(new_mode)
+	{
+		case LOOK_MODE:
+			scroll->display_string("Look-");
+			map_window->centerCursor();
+			map_window->set_show_cursor(true);
+			break;
+		case TALK_MODE:
+			scroll->display_string("Talk-");
+			map_window->centerCursor();
+			map_window->set_show_cursor(true);
+			break;
+		case USE_MODE:
+			scroll->display_string("Use-");
+			map_window->centerCursor();
+			map_window->set_show_use_cursor(true);
+			break;
+		case GET_MODE:
+			scroll->display_string("Get-");
+			map_window->centerCursor();
+			map_window->set_show_use_cursor(true);
+			break;
+		case PUSHSELECT_MODE:
+			scroll->display_string("Move-");
+			map_window->centerCursor();
+			map_window->set_show_use_cursor(true);
+			break;
+		default:
+			cancelAction();
+	}
 }

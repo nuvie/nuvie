@@ -70,6 +70,7 @@ class MapWindow: public GUI_Widget
  Actor *selected_actor;
  bool hackmove;
  bool walking;
+ uint32 walk_start_delay;
 
  public:
  
@@ -117,8 +118,9 @@ class MapWindow: public GUI_Widget
  virtual GUI_status	MouseDown (int x, int y, int button);
  virtual GUI_status	MouseUp (int x, int y, int button);
  virtual GUI_status	MouseMotion (int x, int y, Uint8 state);
- GUI_status MouseDouble(uint32 x, uint32 y, uint8 button);
- GUI_status MouseClick(uint32 x, uint32 y, uint8 button);
+ GUI_status MouseDouble(int x, int y, int button);
+ GUI_status MouseClick(int x, int y, int button);
+ GUI_status Idle(void);
 
  void drag_drop_success (int x, int y, int message, void *data);
  void drag_drop_failed (int x, int y, int message, void *data);
@@ -127,6 +129,9 @@ class MapWindow: public GUI_Widget
  void drag_perform_drop(int x, int y, int message, void *data);
 
  void drag_draw(int x, int y, int message, void* data);
+
+ void player_walk_to_mouse_cursor(uint32 mx, uint32 my);
+ void player_multiuse(uint16 wx, uint16 wy);
 
 protected:
 

@@ -52,6 +52,11 @@ protected:
 	int numwidgets;
 	GUI_Widget **widgets;
 
+	/* All input will go to this widget first. */
+	GUI_Widget *focused_widget; // SB-X
+	/* All input will go to this widget ONLY. */
+	GUI_Widget *locked_widget; // SB-X
+
 	/* Flag - whether or not the GUI is currently running */
 	int running;
 
@@ -94,13 +99,21 @@ public:
 	   be executed then.
 	 */
 	void Run(GUI_IdleProc idle = NULL, int once = 0, int multitaskfriendly = 0);
+
+	/* Run Idle() on all widgets. */
+	void Idle(); // SB-X
   
   GUI_Font *get_font();
   Screen *get_screen() {return screen;}
   
   /* Function to pass an event to the GUI widgets */
 	GUI_status HandleEvent(SDL_Event *event);
-  
+
+	void set_focus(GUI_Widget *widget);
+	void clear_focus()  { set_focus(NULL); }
+	void lock_input(GUI_Widget *widget);
+	void unlock_input() { lock_input(NULL); }
+
 protected:
   
 	/* Function to handle a GUI status */

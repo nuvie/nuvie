@@ -191,9 +191,10 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
     obj = obj_manager->get_obj(x, y, level);
     if(obj != NULL)
      {
-      tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-      tile_num = tile->tile_num;
-      qty = obj->qty;
+//      tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+//      tile_num = tile->tile_num;
+//      qty = obj->qty;
+      return obj_manager->look_obj(obj);
      }
     else
       tile_num =  ptr[y * get_width(level) + x];

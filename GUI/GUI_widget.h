@@ -68,7 +68,17 @@ protected:
 	char  errbuf[BUFSIZ];
 
   GUI_DragManager *gui_drag_manager;
-  
+
+	// SB-X
+	/* Maximum time between two clicks to get a double-click.
+	   (0 = double-click disabled) */
+	uint32 mousedouble_delay;
+	/* The time of the last mouse press, and release (SDL_GetTicks()). */
+	unsigned int last_mousedown_time, last_mouseup_time;
+
+	unsigned int last_mouseup_x, last_mouseup_y;
+	unsigned int last_mousedown_x, last_mousedown_y;
+	int last_mouseup_button, last_mousedown_button;
 public:
 
 	/* The area covered by the widget */
@@ -143,6 +153,12 @@ public:
 	virtual GUI_status MouseDown(int x, int y, int button);
 	virtual GUI_status MouseUp(int x, int y, int button);
 	virtual GUI_status MouseMotion(int x, int y, Uint8 state);
+	// SB-X
+	virtual GUI_status MouseClick(int x, int y, int button);
+	virtual GUI_status MouseDouble(int x, int y, int button);
+	GUI_status MouseIdle();
+	GUI_status RegisterMouseDown(int x, int y, int button);
+	GUI_status RegisterMouseUp(int x, int y, int button);
 
   bool drag_accept_drop(int x, int y, int message, void *data);
   void drag_perform_drop(int x, int y, int message, void *data);
@@ -181,6 +197,10 @@ protected:
 		error = errbuf;
 	}
 
+	// SB-X
+	void enable_mousedouble(uint32 delay = 300)
+					{ mousedouble_delay = delay; }
+	void disable_mousedouble()	{ mousedouble_delay = 0; }
 };
 
 #endif /* _GUI_widget_h */

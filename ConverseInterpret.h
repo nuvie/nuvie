@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <cstring>
 #include "Converse.h"
 
 using std::string;
@@ -34,11 +35,13 @@ using std::vector;
 #define U6OP_ADD        0x90
 #define U6OP_SUB        0x91
 #define U6OP_MUL        0x92
+#define	U6OP_DIV        0x93
 #define U6OP_LOR        0x94
 #define U6OP_LAND       0x95
 #define U6OP_CANCARRY   0x9a
 #define U6OP_WEIGHT     0x9b
 #define U6OP_HORSED     0x9d
+#define U6OP_HASOBJ     0x9f
 #define U6OP_RAND       0xa0
 #define U6OP_EVAL       0xa7
 #define U6OP_FLAG       0xab
@@ -48,8 +51,8 @@ using std::vector;
 #define U6OP_OBJCOUNT   0xbb
 #define U6OP_INPARTY    0xc6
 #define U6OP_OBJINPARTY 0xc7
-#define U7OP_JOIN       0xca
-#define U7OP_LEAVE      0xcc
+#define U6OP_JOIN       0xca
+#define U6OP_LEAVE      0xcc
 #define U6OP_NPCNEARBY  0xd7
 #define U6OP_WOUNDED    0xda
 #define U6OP_POISONED   0xdc
@@ -61,6 +64,7 @@ using std::vector;
 #define U6OP_DEX        0xe4
 
 #define U6OP_HORSE     0x9c
+#define U6OP_SLEEP     0x9e
 #define U6OP_IF        0xa1
 #define U6OP_ENDIF     0xa2
 #define U6OP_ELSE      0xa3
@@ -80,6 +84,7 @@ using std::vector;
 #define U6OP_GIVE      0xc9
 #define U6OP_WAIT      0xcb
 #define U6OP_WORKTYPE  0xcd
+#define	U6OP_RESURRECT 0xd6
 #define U6OP_SETNAME   0xd8
 #define U6OP_HEAL      0xd9
 #define U6OP_CURE      0xdb
@@ -91,9 +96,13 @@ using std::vector;
 #define U6OP_ANSWER    0xf6
 #define U6OP_ASK       0xf7
 #define U6OP_ASKC      0xf8
+#define	U6OP_INPUTSTR  0xf9
 #define U6OP_INPUT     0xfb
 #define U6OP_INPUTNUM  0xfc
 #define U6OP_SIDENT    0xff
+
+#define U6OP_UNK1      0xB7
+#define U6OP_UNK2      0xB8
 
 /* Script is executed as it is stepped through byte-by-byte, and can have
  * text, data, and control codes. Flow is controlled by run-level stack.
@@ -209,7 +218,7 @@ public:
     virtual bool is_print(converse_value check)
      { return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a)) ); }
     virtual bool is_ctrl(converse_value code)
-     { return(((code >= 0xa1 || code == 0x9c) && !is_valop(code) && !is_datasize(code))); }
+     { return(((code >= 0xa1 || code == 0x9c || code == 0x9e) && !is_valop(code) && !is_datasize(code))); }
     virtual bool is_datasize(converse_value check)
      { return((check == 0xd3 || check == 0xd2 || check == 0xd4)); }
     virtual bool is_valop(converse_value check)
@@ -217,9 +226,9 @@ public:
         return( ((check == 0x81) || (check == 0x82) || (check == 0x83)
                  || (check == 0x84) || (check == 0x85) || (check == 0x86)
                  || (check == 0x90) || (check == 0x91) || (check == 0x92)
-                 || (check == 0x94) || (check == 0x95) || (check == 0x9a)
-                 || (check == 0x9b) || (check == 0x9d) || (check == 0xa0)
-                 || (check == 0xa7)
+                 || (check == 0x93) || (check == 0x94) || (check == 0x95)
+                 || (check == 0x9a) || (check == 0x9b) || (check == 0x9d)
+                 || (check == 0x9f) || (check == 0xa0) || (check == 0xa7)
                  || (check == 0xab) || (check == 0xb2) || (check == 0xb3)
                  || (check == 0xb4) || (check == 0xbb) || (check == 0xc6)
                  || (check == 0xc7) || (check == 0xca) || (check == 0xcc)

@@ -120,7 +120,6 @@ void ViewManager::set_portrait_mode(Actor *actor, char *name)
  if(portrait_view->set_portrait(actor, name) == true)
   {
    set_current_view((View *)portrait_view);
-   portrait_view->set_waiting(true); // will display until user input
   }
 }
 

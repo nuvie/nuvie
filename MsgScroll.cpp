@@ -241,6 +241,7 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
  }
  else
    SDL_EnableUNICODE(0); // reduce translation overhead when not needed
+ Game::get_game()->get_gui()->lock_input(input_mode ? this : NULL);
 }
 
 bool MsgScroll::set_prompt(char *new_prompt)
@@ -270,14 +271,18 @@ bool MsgScroll::set_prompt(char *new_prompt)
 bool MsgScroll::handle_input(const SDL_keysym *input)
 {
     char ascii = 0;
+
     if(page_break == false && input_mode == false)
         return(false);
     if(page_break)
       {
        page_break = false;
        display_string(NULL);
+       if(!input_mode)
+         Game::get_game()->get_gui()->unlock_input();
        return(true);
       }
+
     switch(input->sym)
     {
         case SDLK_ESCAPE: if(permit_inputescape)
@@ -320,10 +325,12 @@ bool MsgScroll::handle_input(const SDL_keysym *input)
 }
 
 
-GUI_status MsgScroll::HandleEvent(SDL_Event *event)
+GUI_status MsgScroll::HandleEvent(const SDL_Event *event)
 {
     if(event->type == SDL_MOUSEBUTTONUP)
         return(MouseUp(event->button.x, event->button.y, event->button.button));
+    else if(event->type == SDL_KEYDOWN)
+        return(handle_input(&event->key.keysym) ? GUI_YUM : GUI_PASS);
     return(GUI_PASS);
 }
 
@@ -334,6 +341,8 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
     {
         page_break = false;
         display_string(NULL);
+        if(!input_mode)
+            Game::get_game()->get_gui()->unlock_input();
         return(GUI_YUM);
     }
     else if(button == 3) // right click == send input
@@ -512,6 +521,7 @@ void MsgScroll::set_page_break(uint16 pos)
   return;
 
  page_break = true;
+ Game::get_game()->get_gui()->lock_input(this);
 
  return;
 }

@@ -26,6 +26,7 @@
 #include "U6UseCode.h"
 #include "ActorManager.h"
 #include "GameClock.h"
+#include "MapWindow.h"
 #include "ConverseInterpret.h"
 
 //#define CONVERSE_DEBUG
@@ -469,11 +470,20 @@ bool ConverseInterpret::op(stack<converse_value> &i)
 
     switch(in = pop_arg(i))
     {
+        case U6OP_SLEEP: // 0x9e
+            converse->print("You're getting sleepy...*\nvery sleepy...*\n...you can barely keep your eyes open...*\n...*\n\nAt least pretend you're asleep!*\n");
+            for(uint32 hour = 0; hour < 8; hour++) // FIXME
+            {
+                converse->clock->advance_to_next_hour();
+                Game::get_game()->get_map_window()->updateBlacking();
+                Game::get_game()->get_map_window()->Display(true);
+            }
+            break;
         case U6OP_HORSE: // 0x9c
             // FIXME: probably need to do more real actor/object set-up here
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             cnpc_obj = cnpc->make_obj();
-			cnpc_obj->frame_n = 0; // FIX for actors orginal direction.
+            cnpc_obj->frame_n = 0; // FIX for actors orginal direction.
             cnpc_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER; // mount up.
             cnpc->init_from_obj(cnpc_obj);
             delete cnpc_obj;
@@ -591,12 +601,17 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         case U6OP_SUBKARMA: // 0xc5
             player->subtract_karma(pop_arg(i));
             break;
+        case U6OP_RESURRECT: // 0xd6
+            cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
+            converse->print("!resurrect\n"); // CREATE actor
+            break;
         case U6OP_HEAL: // 0xd9
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
                 cnpc->set_hp(cnpc->get_maxhp());
             break;
         case U6OP_CURE: // 0xdb
+            cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             converse->print("!cure\n"); // UNPOISON actor
             break;
         case U6OP_WORKTYPE: // 0xcd
@@ -650,6 +665,9 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         case U6OP_ASKC: // 0xf8 (blocking, single character input)
             converse->poll_input(get_text(), false); // collected=allowed input
             break;
+        case U6OP_INPUTSTR: // 0xf9
+            converse->print("\n!inputstr\n");
+//            break;
         case U6OP_INPUT: // 0xfb
             v[0] = pop_arg(i); // var
             v[1] = pop_arg(i); // type
@@ -730,6 +748,18 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
         case U6OP_MUL: // 0x92
             out = pop_arg(i) * pop_arg(i);
             break;
+        case U6OP_DIV: // 0x93
+            v[1] = pop_arg(i);
+            v[0] = pop_arg(i);
+            if(v[1] == 0)
+            {
+                fprintf(stderr, "Converse: Divide error\n");
+                success = false;
+                stop();
+            }
+            else
+                out = v[0] / v[1];
+            break;
         case U6OP_LOR: // 0x94
             if(pop_arg(i) || pop_arg(i))
                 out = 1;
@@ -755,6 +785,14 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             if(cnpc_obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
                 out = 1;
             delete cnpc_obj;
+            break;
+        case U6OP_HASOBJ: // 0x9f
+            v[2] = pop_arg(i); // quality
+            v[1] = pop_arg(i); // object
+            v[0] = pop_arg(i); // npc
+            cnpc = converse->actors->get_actor(v[0]);
+            if(cnpc && cnpc->inventory_has_object(v[1], v[2]))
+                out = 1;
             break;
         case U6OP_RAND: // 0xa0
             v[1] = pop_arg(i); // max.
@@ -819,7 +857,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 out = npc_num(out); // first NPC that has object (sometimes 0xFFFF?)
             }
             break;
-        case U7OP_JOIN: // 0xca
+        case U6OP_JOIN: // 0xca
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
             {
@@ -835,7 +873,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                     // 0: SUCCESS
             }
             break;
-        case U7OP_LEAVE: // 0xcc
+        case U6OP_LEAVE: // 0xcc
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
             {

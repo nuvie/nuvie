@@ -66,7 +66,12 @@ GUI_Widget:: Init(void *data, int x, int y, int w, int h)
  parent = NULL;
  
  update_display = true;
- 
+ mousedouble_delay = 300;
+ last_mousedown_time = last_mouseup_time = 0;
+ last_mousedown_x = last_mousedown_y = 0;
+ last_mousedown_button = 0;
+ last_mouseup_x = last_mouseup_y = 0;
+ last_mouseup_button = 0;
 }
 
 int GUI_Widget:: AddWidget(GUI_Widget *widget)
@@ -261,6 +266,7 @@ GUI_Widget:: Idle(void)
 	return(GUI_PASS);
 }
 
+
 /* Widget event handlers.
    These functions should return a status telling the GUI whether
    or not the event should be passed on to other widgets.
@@ -271,21 +277,26 @@ GUI_Widget:: KeyDown(SDL_keysym key)
 {
 	return(GUI_PASS);
 }
+
 GUI_status
 GUI_Widget:: KeyUp(SDL_keysym key)
 {
 	return(GUI_PASS);
 }
+
 GUI_status
 GUI_Widget:: MouseDown(int x, int y, int button)
 {
 	return(GUI_PASS);
 }
+
 GUI_status
 GUI_Widget:: MouseUp(int x, int y, int button)
 {
 	return(GUI_PASS);
 }
+
+
 GUI_status
 GUI_Widget:: MouseMotion(int x, int y, Uint8 state)
 {
@@ -326,6 +337,7 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 			y = event->button.y;
 			if ( HitRect(x, y) ) {
 				button = event->button.button;
+                                RegisterMouseDown(x, y, button);
 				return(MouseDown(x, y, button));
 			}
 		}
@@ -338,6 +350,7 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 			if ( HitRect(x, y) )
 			{
 				button = event->button.button;
+				RegisterMouseUp(x, y, button);
 				return(MouseUp(x, y, button));
 			}
 			/* if widget was clicked before we must let it deactivate itself*/
@@ -406,4 +419,66 @@ void GUI_Widget::drag_perform_drop(int x, int y, int message, void *data)
    }
 
  return;
+}
+
+
+// SB-X
+GUI_status GUI_Widget::MouseIdle()
+{
+	if(mousedouble_delay && last_mouseup_time)
+		if((SDL_GetTicks() - last_mouseup_time) > mousedouble_delay)
+		{
+			// delay passed with no second click
+			last_mouseup_time = 0; // don't try MouseDouble()
+			last_mousedown_time = 0;
+			if(last_mouseup_x == last_mousedown_x && last_mouseup_y == last_mousedown_y)
+				return(MouseClick(last_mouseup_x, last_mouseup_y, last_mouseup_button));
+		}
+	return(GUI_PASS);
+}
+
+
+GUI_status GUI_Widget::RegisterMouseDown(int x, int y, int button)
+{
+	last_mousedown_time = SDL_GetTicks();
+	last_mousedown_x = x;
+	last_mousedown_y = y;
+	last_mousedown_button = button;
+	return(GUI_PASS);
+}
+
+
+GUI_status GUI_Widget::RegisterMouseUp(int x, int y, int button)
+{
+	if(mousedouble_delay) // accepting double-click
+	{
+		if(last_mouseup_time
+		   && ((SDL_GetTicks() - last_mouseup_time) <= mousedouble_delay))
+		{
+			last_mouseup_time = 0; // won't attempt MouseClick()
+			last_mousedown_time = 0;
+			return(MouseDouble(x, y, button));
+		}
+	}
+	else if(last_mousedown_time && x == last_mousedown_x && y == last_mousedown_y)
+		return(MouseClick(x, y, button));
+	last_mouseup_time = SDL_GetTicks(); // MouseClick() after delay
+	last_mouseup_x = x;
+	last_mouseup_y = y;
+	last_mouseup_button = button;
+	return(GUI_PASS);
+}
+
+/* Mouse button was pressed and released over the widget.
+ */
+GUI_status GUI_Widget::MouseClick(int x, int y, int button)
+{
+    return(GUI_PASS);
+}
+
+/* Mouse button was clicked twice over the widget, within mousedouble_delay.
+ */
+GUI_status GUI_Widget::MouseDouble(int x, int y, int button)
+{
+    return(GUI_PASS);
 }

@@ -595,6 +595,7 @@ bool Actor::inventory_add_object(Obj *obj)
 {
  U6LList *inventory = get_inventory_list();
  obj->status |= OBJ_STATUS_IN_INVENTORY;
+ obj->x = id_n;
  return inventory->addAtPos(0, obj);
 }
 
@@ -1094,7 +1095,7 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
     // prevent multiple pushes when move was forced (and didn't check moves)
     if(moves == 0 && pusher != player_actor)
         return(false);
-    if(where == ACTOR_PUSH_HERE)
+    if(where == ACTOR_PUSH_HERE) // push towards tx,ty,tz (FIXME: should use pusher's coords)
     {
         MapCoord to(tx, ty, tz), from(get_location());
         if(to.distance(from) > 1 || z != tz)
@@ -1110,9 +1111,14 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
             return(push_ret);
         }
     }
-    else if(where == ACTOR_PUSH_ANYWHERE)
+    else if(where == ACTOR_PUSH_ANYWHERE) // go to any neighboring direction
     {
-// FIXME: scan all neigboring directions for an opening and go there
+        MapCoord from(get_location());
+        uint16 square = 1;
+        for(uint16 x=(from.x-square); x<=(from.x+square); x+=square)
+            for(uint16 y=(from.y-square); y<=(from.y+square); y+=square)
+                if(x != from.x && y != from.y && move(x, y, from.z))
+                    return(true);
     }
     else if(where == ACTOR_PUSH_FORWARD)
     {

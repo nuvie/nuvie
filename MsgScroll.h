@@ -107,7 +107,7 @@ class MsgScroll: public GUI_Widget
  bool get_page_break() { return(page_break); }
 
  bool handle_input(const SDL_keysym *input);
- GUI_status HandleEvent(SDL_Event *event);
+ GUI_status HandleEvent(const SDL_Event *event);
  GUI_status MouseUp(int x, int y, int button);
  //void updateScroll();
  void Display(bool full_redraw);

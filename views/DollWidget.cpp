@@ -165,15 +165,12 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
      // ABOEING
      switch (event->get_mode()) {
      case LOOK_MODE:
-      event->doLookObj(selected_obj,true);
-      scroll->display_string("\nThou dost see ");
-      event->doLookObj(selected_obj,true);
-      scroll->display_string("\n\n");
+      event->look(selected_obj);
       scroll->display_prompt();
       map_window->set_show_cursor(false);
       break;
      case USE_MODE:
-      event->doUse(selected_obj);
+      event->use(selected_obj);
       break;
      default:
       break;

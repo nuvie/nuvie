@@ -121,6 +121,7 @@ class Game
  Portrait *get_portrait()          { return(portrait); }
  UseCode *get_usecode()            { return(usecode); }
  Event *get_event()                { return(event); }
+ GUI *get_gui()                    { return(gui); }
 
  protected:
  

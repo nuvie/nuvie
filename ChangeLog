@@ -1,3 +1,33 @@
+2004-01-24  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Contents of eggs are now tossed out to a random location, if the egg
+	  location is occupied by an actor. (the original U6 did some
+	  interesting things with eggs; added a note to the TODO list)
+	* ConverseInterpret: Either implemented or added placeholders for the
+	  SLEEP, RESURRECT, INPUTSTR, DIV, and HASOBJ instructions. Thanks to
+	  Paul Gilbert.
+	* A walk delay is now imposed on continuous movement with the keyboard
+	  or mouse. It can be set in Player::get_walk_delay().
+	* Added Click & DoubleClick events to GUI_widget, along with the
+	  necessary support functions. For now, a GUI_widget that defines
+	  HandleEvent can't use these. All widgets' Idle() methods are called in
+	  Event.
+	* Removed Event::view_focus stuff. You now GUI::lock_input() on a
+	  GUI_Widget that you wish to grab all events.
+	* Mouse movement and actions on the MapWindow are more solid now. There
+	  is still some minor work to complete on it.
+	* Event: Much of the code in the handleKeyDown switch moved to new
+	  public methods. (doAction/cancelAction/newAction) I took the new
+	  doLook/doUse methods and replaced them with multiple use/look
+	  incarnations. The messages printed should be accurate now. Each one
+	  returns to the prompt when it is finished.
+	* Solo/party mode switching implemented. The other party members will
+	  oddly get stuck until you move the leader in Solo mode.
+	* In preparation of the new MsgScroll that will hopefully be able to
+	  convert to multiple fonts on any line, I've changed alt-code 214 to
+	  be more like the original. (and use identical <>-escaped prompts) It
+	  doesn't work aboard ship anymore.
+	* Misc. fixes
+
 2004-01-21  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* Makefile.mingw, */Makefile.common: added new tools to Makefile.mingw
 

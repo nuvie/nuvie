@@ -285,11 +285,24 @@ void ActorManager::set_player(Actor *a)
 /* Returns an actor's "look-string," a general description of their occupation
  * or appearance.
  */
-const char *ActorManager::look_actor(Actor *a)
+const char *ActorManager::look_actor(Actor *a, bool show_prefix)
 {
-    return(tile_manager->lookAtTile(
-                           obj_manager->get_obj_tile_num(a->get_tile_num()),
-                                    0, false));
+    uint16 tile_num = obj_manager->get_obj_tile_num(a->get_tile_num());
+    if(tile_num == 0)
+      {
+       uint8 actor_num = a->id_n;
+       if(actor_num == 188) // U6: Statue of Exodus
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(399), 0, show_prefix);
+       else if(actor_num == 189) // Statue of Mondain
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(397), 0, show_prefix);
+       else if(actor_num == 190) // Statue of Minax
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(398), 0, show_prefix);
+       else if(actor_num >= 191 && actor_num <= 198) // shrines
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(393), 0, show_prefix);
+       else if(actor_num == 199) // Altar of singularity
+         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(329), 0, show_prefix);
+      }
+    return tile_manager->lookAtTile(tile_num,0,show_prefix);
 }
 
 
@@ -511,7 +524,7 @@ bool ActorManager::is_temp_actor(Actor *actor)
  return false;
 }
 
-bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype)
+bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype, Actor **new_actor)
 {
  Actor *actor;
  
@@ -533,12 +546,16 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    actor->show();
 
    printf("Adding Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
- 
+
+   if(new_actor)
+    *new_actor = actor; 
    return true;
   }
  else
   printf("***All Temp Actor Slots Full***\n");
-  
+
+ if(new_actor)
+  *new_actor = NULL;
  return false;
 }
 
@@ -628,4 +645,28 @@ inline void ActorManager::clean_temp_actor(Actor *actor)
  actor->clear();
 
  return;
+}
+
+
+/* Move an actor to a random location within range.
+ * Returns true when tossed.
+ */
+bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
+{
+    // maximum number of tries
+    uint32 toss_max = MAX(xrange, yrange) * MIN(xrange, yrange);
+    LineTestResult lt;
+    if(toss_max == 0)
+        return(false);
+    if(xrange > 0) --xrange; // range includes the starting location
+    if(yrange > 0) --yrange;
+    while(toss_max--)
+    {
+        sint16 x = (actor->x-xrange) + (NUVIE_RAND() % ((actor->x+xrange) - (actor->x-xrange) + 1)),
+               y = (actor->y-yrange) + (NUVIE_RAND() % ((actor->y+yrange) - (actor->y-yrange) + 1));
+        if(!map->lineTest(actor->x, actor->y, x, y, actor->z, LT_HitUnpassable|LT_HitActors, lt))
+            if(actor->x != x || actor->y != y)
+                return(actor->move(x, y, actor->z));
+    }
+    return(false);
 }

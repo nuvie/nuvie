@@ -22,7 +22,7 @@
  */
 
 #include <list>
-
+#include <cassert>
 #include "nuvieDefs.h"
 #include "Configuration.h"
  
@@ -135,13 +135,23 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
           // check random probability that the egg will hatch
           if(egg->qty == 100 || hatch_probability <= egg->qty)  // Hatch the egg.
             {
+             assert(egg->container);
              for(link = egg->container->start(); link != NULL; link = link->next)
                {
                 obj = (Obj *)link->data;
-                for(i = 0;i < obj->qty;i++)
-                 {
+//                for(i = 0;i < obj->qty;i++) // line up contents in a row by egg
+//                 {
 				  if(obj->quality != 0) /* spawn temp actor we know it's an actor if it has a non-zero worktype. */
-                     actor_manager->create_temp_actor(obj->obj_n,egg->x+i,egg->y,egg->z,obj->quality);
+//                     actor_manager->create_temp_actor(obj->obj_n,egg->x+i,egg->y,egg->z,obj->quality);
+				  {
+				  	Actor *prev_actor = actor_manager->get_actor(egg->x, egg->y, egg->z);
+				  	Actor *new_actor = NULL;
+				  	if(actor_manager->create_temp_actor(obj->obj_n,egg->x,egg->y,egg->z,obj->quality,&new_actor)
+                                           && prev_actor)
+						// try to line-up actors of the same type
+						if(prev_actor->get_obj_n() != new_actor->get_obj_n() || !actor_manager->toss_actor(prev_actor, 4, 1))
+							actor_manager->toss_actor(prev_actor, 3, 3);
+				  }
 				  else
 					{ /* spawn temp object */
 					 spawned_obj = new Obj();
@@ -154,7 +164,7 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 
 					 obj_manager->add_obj(spawned_obj);
 					}
-                 }
+//                 }
                }
              return true;
             }

@@ -233,15 +233,12 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
   if((selected_obj = get_obj_at_location(x,y)) != NULL) {
    switch (event->get_mode()) {
    case LOOK_MODE:
-   event->doLookObj(selected_obj,true);
-   scroll->display_string("\nThou dost see ");
-   event->doLookObj(selected_obj,true);
-   scroll->display_string("\n\n");
+   event->look(selected_obj);
    scroll->display_prompt();
    map_window->set_show_cursor(false);
    break;
    case USE_MODE:
-   event->doUse(selected_obj);
+   event->use(selected_obj);
    break;
    default:
     break;
@@ -295,8 +292,6 @@ inline Obj *InventoryWidget::get_obj_at_location(int x, int y)
 
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 { 
-#define DBLCLICK_TIME 300
- static uint32 last_click_time = 0, last_click_button = 0;
  bool selected = false;
  Event *event = Game::get_game()->get_event();
 
@@ -307,6 +302,8 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
   return GUI_YUM;
  }
 
+ // change to or from a container, ready/unready object
+ // wait for double-click if object is usable
  if(selected_obj && selected_obj->container) // open up the container.
    {
     container_obj = selected_obj;
@@ -359,24 +356,6 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
    }
 
  selected_obj = NULL;
-
- if(!selected)
- {
-    // register double-click
-    uint32 click_time = Game::get_game()->get_clock()->get_ticks();
-    if(last_click_time && (click_time - last_click_time) <= DBLCLICK_TIME
-       && last_click_button == button)
-    {
-        last_click_time = 0;
-        last_click_button = 0;
-        return(MouseDouble(x + area.x, y + area.y, button));
-    }
-    else
-    {
-        last_click_time = click_time;
-        last_click_button = button;
-    }
- }
 
  return GUI_YUM;
 }
@@ -514,7 +493,7 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
 
 /* Use object.
  */
-GUI_status InventoryWidget::MouseDouble(uint32 x, uint32 y, uint8 button)
+GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 {
     UseCode *uc = Game::get_game()->get_usecode();
     MsgScroll *scroll = Game::get_game()->get_scroll();

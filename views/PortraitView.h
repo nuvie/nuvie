@@ -54,11 +54,11 @@ class PortraitView : public View {
  
  bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
  void Display(bool full_redraw);
- bool handle_input(const SDL_keysym *input);
+ GUI_status HandleEvent(const SDL_Event *event);
 
  bool set_portrait(Actor *actor, char *name);
  void set_show_cursor(bool state) { show_cursor = state; }
- void set_waiting(bool state)     { waiting = state; }
+ void set_waiting(bool state);
  bool get_waiting()     { return(waiting); }
 
  protected:

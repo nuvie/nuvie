@@ -44,6 +44,7 @@ GUI:: GUI(Screen *s)
 
   screen_scale_factor = screen->get_scale_factor();
   dragging = false;
+  focused_widget = locked_widget = NULL;
   
   gui_font = new GUI_Font();
   gui_drag_manager = new GUI_DragManager(screen);
@@ -215,13 +216,34 @@ GUI:: HandleEvent(SDL_Event *event)
 		 case SDL_MOUSEMOTION:
 		 case SDL_MOUSEBUTTONDOWN:
 		 case SDL_MOUSEBUTTONUP:
-     case SDL_KEYDOWN:
+		 case SDL_KEYDOWN:
 		 case SDL_KEYUP:
-			 /* Go through widgets, topmost first */
-			 status = GUI_PASS;
-			 for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {
-				 if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
-				 	 status = widgets[i]->HandleEvent(event);
+//			 /* Go through widgets, topmost first */
+//			 status = GUI_PASS;
+//			 for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {
+//				 if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
+//				 	 status = widgets[i]->HandleEvent(event);
+//				 }
+//			 }
+//			 break;
+			 /* Send everything to locked widget. */
+			 if ( locked_widget && locked_widget->Status() == WIDGET_VISIBLE) {
+			 	 status = locked_widget->HandleEvent(event);
+				 if(status == GUI_PASS) // can't bypass the lock
+					status = GUI_YUM;
+			 }
+			 /* Go through widgets, focused first, then from the
+			    top.*/
+			 else {
+				 status = GUI_PASS;
+				 if ( focused_widget && focused_widget->Status() == WIDGET_VISIBLE) {
+				 	 status = focused_widget->HandleEvent(event);
+				 }
+				 for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {
+					 if ( widgets[i]->Status() == WIDGET_VISIBLE
+					      && widgets[i] != focused_widget ) {
+					 	 status = widgets[i]->HandleEvent(event);
+					 }
 				 }
 			 }
 			 break;
@@ -315,6 +337,7 @@ GUI:: Run(GUI_IdleProc idle, int once, int multitaskfriendly)
 				HandleStatus(idle());
 			}
 			for ( i=numwidgets-1; i>=0; --i ) {
+				HandleStatus(widgets[i]->MouseIdle());
 				HandleStatus(widgets[i]->Idle());
 			}
 		}
@@ -325,4 +348,35 @@ GUI:: Run(GUI_IdleProc idle, int once, int multitaskfriendly)
 GUI_Font *GUI::get_font()
 {
  return gui_font;
+}
+
+
+// SB-X
+void GUI::Idle()
+{
+	if(locked_widget)
+	{
+		locked_widget->Idle();
+		return;
+	}
+
+	for(int i = numwidgets - 1; i >= 0; --i)
+	{
+		HandleStatus(widgets[i]->MouseIdle());
+		HandleStatus(widgets[i]->Idle());
+	}
+}
+
+void GUI::set_focus(GUI_Widget *widget)
+{
+	for(int i = 0; i < numwidgets; ++i)
+		if(!widget || (widgets[i] == widget)) // must be managed by GUI
+			focused_widget = widget;
+}
+
+void GUI::lock_input(GUI_Widget *widget)
+{
+	for(int i = 0; i < numwidgets; ++i)
+		if(!widget || (widgets[i] == widget)) // must be managed by GUI
+			locked_widget = widget;
 }

@@ -64,7 +64,7 @@ class ActorManager
  Actor *get_player();
  void set_player(Actor *a);
 
- const char *look_actor(Actor *a);
+ const char *look_actor(Actor *a, bool show_prefix = true);
 
  void set_update(bool u) { update = u; }
 
@@ -76,8 +76,9 @@ class ActorManager
  void clear_actor(Actor *actor);
  
  bool is_temp_actor(Actor *actor);
- bool create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype);
- 
+ bool create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype, Actor **new_actor = NULL);
+ bool toss_actor(Actor *actor, uint16 xrange, uint16 yrange);
+
  protected:
  
  bool loadActorSchedules();

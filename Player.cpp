@@ -32,7 +32,7 @@
 #include "MapWindow.h"
 #include "GameClock.h"
 #include "Party.h"
-
+#include "U6objects.h"
 #include "Player.h"
 
 Player::Player(Configuration *cfg)
@@ -56,6 +56,7 @@ bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c,
  loadObjlistData(); //load Player name, Karma.
  
  actor_manager->set_player(actor);
+ party_mode = true;
  uncontrolled = false;
 
  return true;
@@ -156,7 +157,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
  {
   actor->set_direction(rel_x, rel_y);
 //   map_window->moveMapRelative(rel_x,rel_y);
-   if(party->is_leader(actor)) // lead party
+   if(party_mode && party->is_leader(actor)) // lead party
      party->follow();
    else if(actor->id_n == 0) // using vehicle; drag party along
    {
@@ -176,7 +177,7 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
    if(uncontrolled)
     return;
    actor->moves = 1; // player can always move (FIXME: check in Actor::move()?)
-   if(actor->move(new_x, new_y, new_level))
+   if(actor->move(new_x, new_y, new_level, ACTOR_FORCE_MOVE))
    {
     //map_window->centerMapOnActor(actor);
     if(party->is_leader(actor)) // lead party
@@ -218,7 +219,8 @@ void Player::pass()
     return;
  
  clock->inc_move_counter_by_a_minute();
- party->follow();
+ if(party_mode && party->is_leader(actor)) // lead party
+    party->follow();
  get_location(&x, &y, &z);
  actor_manager->updateActors(x,y,z); // SB-X move to gameclock
 }
@@ -258,4 +260,51 @@ bool Player::loadObjlistData()
 
  
  return true;
+}
+
+
+/* Enter party mode, with everyone following actor. (must be in the party)
+ */
+bool Player::set_party_mode(Actor *new_actor)
+{
+    if(party->contains_actor(new_actor))
+    {
+        party_mode = true;
+        actor = new_actor;
+        return(true);
+    }
+    return(false);
+}
+
+
+/* Enter solo mode as actor. (must be in the party)
+ */
+bool Player::set_solo_mode(Actor *new_actor)
+{
+    if(party->contains_actor(new_actor))
+    {
+        party_mode = false;
+        actor = new_actor;
+        return(true);
+    }
+    return(false);
+}
+
+
+/* Returns the delay in continuous movement for the actor type we control.
+ */
+uint32 Player::get_walk_delay()
+{
+/*    if(actor->obj_n == OBJ_U6_BALLOON?)
+        return(??); // ???
+    else */if(actor->obj_n == OBJ_U6_SHIP)
+        return(20); // 5x normal
+    else if(actor->obj_n == OBJ_U6_SKIFF)
+        return(50); // 2x normal
+    else if(actor->obj_n == OBJ_U6_RAFT)
+        return(100); // normal
+    else if(actor->obj_n == OBJ_U6_HORSE_WITH_RIDER)
+        return(50); // 2x normal
+    else
+        return(100); // normal movement about ?? spaces per second
 }
