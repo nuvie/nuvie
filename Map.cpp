@@ -91,10 +91,6 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
  if(obj_status != OBJ_STATUS_NO_OBJ && obj_manager->is_forced_passable(x, y, level)) 
    return true;
 
- //check for blocking Actor at location.
- if(actor_manager->get_actor(x,y,level) != NULL)
-   return false;
-     
  ptr = get_map_data(level);
  map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
    
@@ -118,6 +114,14 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
+{
+ //check for blocking Actor at location.
+ if(actor_manager->get_actor(x,y,level) != NULL)
+   return true;
+
+ return false;
+}
 
 /* Return pointer to actor standing at map coordinates.
  */

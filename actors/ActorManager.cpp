@@ -21,6 +21,7 @@
  *
  */
 #include "Actor.h"
+#include "U6Actor.h"
 #include "ActorManager.h"
 #include "misc.h"
 
@@ -50,10 +51,12 @@ bool ActorManager::loadActors()
 {
  uint16 i;
  uint8 b1, b2, b3;
+ int game_type;
  std::string filename;
  NuvieIOFileRead objlist;
  //NuvieIOFileRead schedule;
  
+ config->value("config/GameType",game_type);
  config_get_path(config,"/savegame/objlist",filename);
  if(objlist.open(filename) == false)
    return false;
@@ -63,8 +66,13 @@ bool ActorManager::loadActors()
  
  for(i=0; i < 256; i++)
    {
-    actors[i] = new Actor(map,obj_manager,clock);
-    
+    switch(game_type)
+     {
+      case NUVIE_GAME_U6 : actors[i] = new U6Actor(map,obj_manager,clock); break;
+      case NUVIE_GAME_MD : actors[i] = new Actor(map,obj_manager,clock); break;
+      case NUVIE_GAME_SE : actors[i] = new Actor(map,obj_manager,clock); break;
+     }
+     
     b1 = objlist.read1();
     b2 = objlist.read1();
     b3 = objlist.read1();

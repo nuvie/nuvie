@@ -70,7 +70,7 @@ void LPath::walk_path(uint32 speed)
     else
         actor->set_direction(ACTOR_DIR_U);
     Obj *door = NULL;
-    bool moved = actor->move(nx, ny, nz);
+    bool moved = actor->move(nx, ny, nz,ACTOR_FORCE_MOVE);
     if(!moved) // check for unlocked door, and open it
     {
         ObjManager *obj_manager = Game::get_obj_manager();

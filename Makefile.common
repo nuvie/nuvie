@@ -1,4 +1,11 @@
 nuvie_SOURCES = \
+	actors/Actor.cpp \
+	actors/Actor.h \
+	actors/U6Actor.cpp \
+	actors/U6Actor.h \
+	actors/ActorManager.cpp \
+	actors/ActorManager.h \
+\
 	conf/Configuration.cpp \
 	conf/Configuration.h \
 	conf/XMLNode.cpp \
@@ -63,10 +70,6 @@ nuvie_SOURCES = \
 	views/ViewManager.cpp \
 	views/ViewManager.h \
 \
-	Actor.cpp \
-	Actor.h \
-	ActorManager.cpp \
-	ActorManager.h \
 	Book.cpp \
 	Book.h \
 	Converse.cpp \

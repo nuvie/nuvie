@@ -110,7 +110,7 @@ class Actor
  public:
  
  Actor(Map *m, ObjManager *om, GameClock *c);
- ~Actor();
+ virtual ~Actor();
  
 // bool is_visible() { return(MapCoord(x,y,z).is_visible()); }
  bool is_alive();
@@ -153,7 +153,7 @@ class Actor
  bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  bool check_move(sint16 new_x, sint16 new_y, sint8 new_z);
  
- void update();
+ virtual void update();
  void set_in_party(bool state);
  void swalk(MapCoord &d, uint8 speed = 1);
  void swalk(MapCoord &d, MapCoord &d2, uint8 speed = 1);

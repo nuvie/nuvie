@@ -2,6 +2,10 @@
 	* compile fixed for Mac OS X.
 	* added combat_mode to Actor.
 	* Actors now load up with correct worktype from objlist.
+	* Moved Actor* classes into actors/ sub-directory.
+	* Setup Actor to be subclassed for the three different game types.
+	* Added U6Actor.cpp/h
+	* Party members now dodge other Actors. (This still needs work).
 
 2003-07-26  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Actor, PathFinder: Path-finding/direction finding classes added and

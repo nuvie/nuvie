@@ -87,6 +87,7 @@ class Map
  uint16 get_width(uint8 level);
  bool is_passable(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
+ bool actor_at_location(uint16 x, uint16 y, uint8 level);
 
  const char *look(uint16 x, uint16 y, uint8 level);
  

@@ -25,8 +25,8 @@
 #include "Map.h"
 #include "ObjManager.h"
 #include "U6UseCode.h"
-#include "pathfinder/LPath.h"
-#include "pathfinder/ZPath.h"
+#include "LPath.h"
+#include "ZPath.h"
 #include "Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
@@ -172,6 +172,7 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z)
 
     if(map->is_passable(new_x,new_y,new_z) == false)
         return(false);
+
     return(true);
 }
 
@@ -179,6 +180,9 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z)
 bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
  if(!force_move && !check_move(new_x, new_y, new_z))
+   return false;
+   
+ if(!force_move && map->actor_at_location(new_x, new_y, new_z))
    return false;
 
  usecode = obj_manager->get_usecode();
