@@ -94,7 +94,7 @@ class Actor
  
  uint16 obj_n;
  uint16 frame_n;
- uint16 old_obj_n;
+ uint16 base_obj_n;
  uint16 old_frame_n;
  
  uint8 direction;
@@ -146,6 +146,7 @@ class Actor
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  MapCoord get_location();
  uint16 get_tile_num();
+ virtual uint16 get_downward_facing_tile_num();
  uint8 get_actor_num() { return(id_n); }
  uint8 get_flags() { return(flags); }
  

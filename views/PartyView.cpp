@@ -87,7 +87,7 @@ void PartyView::Display(bool full_redraw)
    for(i=0;i<party_size;i++)
      {
       actor = party->get_actor(i);
-      actor_tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->get_tile_num())+9); //FIX here for sherry
+      actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
       screen->blit(area.x,area.y+16+1+i*16,actor_tile->data,8,16,16,16,true);
       
       actor_name = party->get_actor_name(i);

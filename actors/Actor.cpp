@@ -120,6 +120,10 @@ uint8 Actor::get_worktype()
  return worktype;
 }
 
+uint16 Actor::get_downward_facing_tile_num()
+{
+ return obj_manager->get_obj_tile_num(obj_n) + frame_n;
+}
 
 /* Set direction faced by actor and change walk frame.
  */

@@ -91,9 +91,9 @@ void InventoryWidget::display_inventory_container()
 {
  Tile *tile;
 
- if(!container_obj)
-   tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->get_tile_num())+9); //FIX here for sherry
- else
+ if(!container_obj) //display actor
+   tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
+ else // display container object
    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(container_obj->obj_n)+container_obj->frame_n);  
   
  screen->blit(area.x+32,area.y,tile->data,8,16,16,16,true);

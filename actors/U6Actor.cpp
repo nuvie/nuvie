@@ -46,14 +46,25 @@ bool U6Actor::init()
 {
  set_actor_obj_n(obj_n); //set actor_type
  
+ base_actor_type = get_actor_type(base_obj_n);
+  
  if(actor_type->frames_per_direction != 0) 
    direction = (frame_n - actor_type->tile_start_offset ) / actor_type->tiles_per_direction;
  else
    direction = ACTOR_DIR_D;
 
- switch(obj_n)
+ switch(obj_n) //gather surrounding objects from map if required
   {
    case OBJ_U6_SHIP : init_ship(); break;
+
+   case OBJ_U6_GIANT_SCORPION :
+   case OBJ_U6_GIANT_ANT :
+   case OBJ_U6_COW :
+   case OBJ_U6_ALLIGATOR :
+   case OBJ_U6_HORSE :
+   case OBJ_U6_HORSE_WITH_RIDER : init_splitactor(); break;
+ 
+
    default : break;
   }
 
@@ -99,6 +110,44 @@ bool U6Actor::init_ship()
  return true;
 }
 
+bool U6Actor::init_splitactor()
+{
+ Obj *obj;
+ uint16 obj_x, obj_y;
+ 
+ obj_x = x;
+ obj_y = y;
+   
+ switch(direction) //FIX for world wrapping
+  {
+   case ACTOR_DIR_U : obj_y = y+1;
+                      break;
+   case ACTOR_DIR_R : obj_x = x-1;
+                      break;
+   case ACTOR_DIR_D : obj_y = y-1;
+                      break;
+   case ACTOR_DIR_L : obj_x = x+1;
+                      break;
+  }
+  
+ obj = obj_manager->get_obj(obj_x,obj_y,z);
+ if(obj == NULL)
+   return false;
+ surrounding_objects.push_back(obj);
+
+ return true;
+}
+
+uint16 U6Actor::get_downward_facing_tile_num()
+{
+ uint8 shift = 0;
+ 
+ if(base_actor_type->frames_per_direction > 1) //we want the second frame for most actor types.
+   shift = 1;
+   
+ return obj_manager->get_obj_tile_num(base_actor_type->base_obj_n) + base_actor_type->tile_start_offset + (ACTOR_DIR_D * base_actor_type->tiles_per_direction + base_actor_type->tiles_per_frame - 1) + shift;
+}
+
 void U6Actor::update()
 {
  Actor::update();
@@ -124,16 +173,21 @@ void U6Actor::set_direction(uint8 d)
    return;
    
 
- if(actor_type->has_surrounding_objs && direction != d)
-    set_direction_of_surrounding_objs(d);
-
- direction = d;
-
-
  if(actor_type->frames_per_direction == 0)
    walk_frame = (walk_frame + 1) % 4;
  else
    walk_frame = (walk_frame + 1) % actor_type->frames_per_direction;
+
+
+ if(actor_type->has_surrounding_objs)
+   {
+    if(direction != d)
+      set_direction_of_surrounding_objs(d);
+    else
+      twitch_surrounding_objs();
+   }
+
+ direction = d;
  
  frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + 
            (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
@@ -243,6 +297,10 @@ void U6Actor::twitch()
      walk_frame = (walk_frame + 1) % 4;
    else
      walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
+
+   if(actor_type->has_surrounding_objs)
+      twitch_surrounding_objs();
+
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1);
   }
 
@@ -309,9 +367,12 @@ void U6Actor::set_worktype(uint8 new_worktype)
  if(new_worktype == worktype)
    return;
 
+ //reset to base obj_n
+ if(worktype > 2) //don't revert for party worktypes as they might be riding a horse.
+   set_actor_obj_n(base_actor_type->base_obj_n);
+ 
  if(worktype == WORKTYPE_U6_SLEEP || worktype == WORKTYPE_U6_PLAY_LUTE)
-   { 
-    obj_n = old_obj_n;
+   {
     frame_n = old_frame_n;
    }
  Actor::set_worktype(new_worktype);
@@ -443,14 +504,14 @@ void U6Actor::wt_sleep()
       {
        if(obj->frame_n == 1 || obj->frame_n == 5) //horizontal bed
          {
-          old_obj_n = obj_n;
+          //old_obj_n = obj_n;
           old_frame_n = frame_n;
           obj_n = OBJ_U6_PERSON_SLEEPING;
           frame_n = 0;
          }
        if(obj->frame_n == 7 || obj->frame_n == 10) //vertical bed
          {
-          old_obj_n = obj_n;
+          //old_obj_n = obj_n;
           old_frame_n = frame_n;
           obj_n = OBJ_U6_PERSON_SLEEPING;
           frame_n = 1;
@@ -460,7 +521,7 @@ void U6Actor::wt_sleep()
       {
        if(actor_type->can_laydown)
         {
-         old_obj_n = obj_n;
+         //old_obj_n = obj_n;
          old_frame_n = frame_n;
          obj_n = actor_type->dead_obj_n;
          frame_n = actor_type->dead_frame_n;
@@ -475,7 +536,7 @@ void U6Actor::wt_sleep()
 
 void U6Actor::wt_play_lute()
 {
- old_obj_n = obj_n;
+ //old_obj_n = obj_n;
  old_frame_n = frame_n;
 
  set_actor_obj_n(OBJ_U6_MUSICIAN_PLAYING);
@@ -487,18 +548,25 @@ void U6Actor::wt_play_lute()
 
 void U6Actor::set_actor_obj_n(uint16 new_obj_n)
 {
- old_obj_n = obj_n;
  old_frame_n = frame_n;
  
  obj_n = new_obj_n;
+ actor_type = get_actor_type(new_obj_n);
  
- for(actor_type = u6ActorTypes; actor_type->base_obj_n != OBJ_U6_NOTHING; actor_type++)
+ return;
+}
+
+inline const U6ActorType *U6Actor::get_actor_type(uint16 new_obj_n)
+{
+ const U6ActorType *type;
+
+ for(type = u6ActorTypes; type->base_obj_n != OBJ_U6_NOTHING; type++)
   {
-   if(actor_type->base_obj_n == new_obj_n) // FIX!? should this be old_obj_n maybe call old_obj_n base_obj_n
+   if(type->base_obj_n == new_obj_n)
      break;
   }
-
- return;
+ 
+ return type;
 }
 
 inline void U6Actor::remove_surrounding_objs_from_map()
@@ -542,6 +610,13 @@ inline void U6Actor::set_direction_of_surrounding_objs(uint8 new_direction)
  switch(obj_n)
    {
     case OBJ_U6_SHIP : set_direction_of_surrounding_ship_objs(new_direction); break;
+    
+    case OBJ_U6_GIANT_SCORPION :
+    case OBJ_U6_GIANT_ANT :
+    case OBJ_U6_COW :
+    case OBJ_U6_ALLIGATOR :
+    case OBJ_U6_HORSE :
+    case OBJ_U6_HORSE_WITH_RIDER : set_direction_of_surrounding_splitactor_objs(new_direction); break;
    }
 
  add_surrounding_objs_to_map();
@@ -625,5 +700,65 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
                       (*obj)->y = y;
                       break;
   }                   
+
+}
+
+inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_direction)
+{
+ std::list<Obj *>::iterator obj;
+ uint16 pitch = map->get_width(z);
+ 
+ obj = surrounding_objects.begin();
+ if(obj == surrounding_objects.end())
+  return;
+
+ (*obj)->frame_n =  8 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
+
+ (*obj)->x = x;
+ (*obj)->y = y;
+
+ switch(new_direction)
+  {
+   case ACTOR_DIR_U : if(y == pitch - 1)
+                        (*obj)->y = 0;
+                      else
+                        (*obj)->y = y + 1;
+                      break;
+
+   case ACTOR_DIR_R : if(x == 0)
+                        (*obj)->x = pitch - 1;
+                      else
+                        (*obj)->x = x - 1;
+                      break;
+
+   case ACTOR_DIR_D : if(y == 0)
+                        (*obj)->y = pitch - 1;
+                      else
+                        (*obj)->y = y - 1;
+                      break;
+
+   case ACTOR_DIR_L : if(x == pitch - 1)
+                        (*obj)->x = 0;
+                      else
+                        (*obj)->x = x + 1;
+                      break;
+  }                   
+/*
+ (*obj)->frame_n = 8 + (new_direction * actor_type->tiles_per_direction + 
+                   (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + 
+                    actor_type->tiles_per_frame - 1);
+*/
+}
+
+inline void U6Actor::twitch_surrounding_objs()
+{
+ std::list<Obj *>::iterator obj;
+ //uint16 pitch = map->get_width(z);
+ 
+ for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
+   {
+    (*obj)->frame_n = ((*obj)->frame_n / (actor_type->frames_per_direction * 4) * (actor_type->frames_per_direction * 4)) + direction * actor_type->tiles_per_direction +
+                       walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame;
+   }
 
 }

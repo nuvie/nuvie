@@ -57,7 +57,6 @@ class InventoryView : public View {
  void add_command_icons(Screen *tmp_screen, void *view_manager);
  void display_inventory_weights();
  void display_combat_mode();
- void display_actor_icon();
 };
 
 #endif /* __InventoryView_h__ */

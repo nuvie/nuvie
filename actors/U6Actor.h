@@ -70,14 +70,17 @@ typedef struct {
 class U6Actor: public Actor
 {
  protected:
- const U6ActorType *actor_type;
  
+ const U6ActorType *actor_type;
+ const U6ActorType *base_actor_type;
+
  public:
  
  U6Actor(Map *m, ObjManager *om, GameClock *c);
  ~U6Actor();
  
  bool init();
+ uint16 get_downward_facing_tile_num();
  void update();
  bool updateSchedule();
  void set_worktype(uint8 new_worktype);
@@ -91,6 +94,7 @@ class U6Actor: public Actor
  
  protected:
  bool init_ship();
+ bool init_splitactor(); //cows, horses etc.
  
  void wt_walk_to_location();
  void wt_walk_straight();
@@ -99,6 +103,7 @@ class U6Actor: public Actor
  void wt_sleep();
  void wt_play_lute();
 
+ inline const U6ActorType *get_actor_type(uint16 new_obj_n);
  void set_actor_obj_n(uint16 new_obj_n);
  
  inline void remove_surrounding_objs_from_map();
@@ -106,6 +111,9 @@ class U6Actor: public Actor
  inline void move_surrounding_objs_relative(sint16 rel_x, sint16 rel_y);
  inline void set_direction_of_surrounding_objs(uint8 new_direction);
  inline void set_direction_of_surrounding_ship_objs(uint8 new_direction);
+ inline void set_direction_of_surrounding_splitactor_objs(uint8 new_direction);
+ 
+ inline void twitch_surrounding_objs();
 };
 
 #endif /* __U6Actor_h__ */

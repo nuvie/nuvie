@@ -87,7 +87,7 @@ void InventoryView::Display(bool full_redraw)
     //display_command_icons();
     display_inventory_weights();
     display_combat_mode();
-    display_actor_icon();
+
    }
 
  //display_doll(area.x,area.y+8);
@@ -238,16 +238,6 @@ void InventoryView::display_combat_mode()
 {
  Actor *actor = party->get_actor(cur_party_member);
  text->drawString(screen, combat_mode_tbl[actor->get_combat_mode() - 2], area.x+5*16, area.y+88, 0);
-}
-
-void InventoryView::display_actor_icon()
-{
- Actor *actor = party->get_actor(cur_party_member);
- Tile *actor_tile;
-  
- actor_tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->get_tile_num())+9); //FIX here for sherry
- 
- screen->blit(area.x+6*16,area.y+8,actor_tile->data,8,16,16,16,true);
 }
 
 static GUI_status combatButtonCallback(void *data)

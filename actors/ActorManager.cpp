@@ -118,20 +118,20 @@ bool ActorManager::loadActors()
    {
     b1 = objlist.read1();
     b2 = objlist.read1();
-    actors[i]->old_obj_n = b1;
-    actors[i]->old_obj_n += (b2 & 0x3) << 8;
+    actors[i]->base_obj_n = b1;
+    actors[i]->base_obj_n += (b2 & 0x3) << 8;
     
     actors[i]->old_frame_n = (b2 & 0xfc) >> 2;
 
     if(actors[i]->obj_n == 0)
-      {
-       actors[i]->obj_n = actors[i]->old_obj_n;
-       actors[i]->frame_n = actors[i]->old_frame_n;
-      }
-      
-    if(actors[i]->old_obj_n == 0)
      {
-      actors[i]->old_obj_n = actors[i]->obj_n;
+      actors[i]->obj_n = actors[i]->base_obj_n;
+      actors[i]->frame_n = actors[i]->old_frame_n;
+     }
+
+    if(actors[i]->base_obj_n == 0)
+     {
+      actors[i]->base_obj_n = actors[i]->obj_n;
       actors[i]->old_frame_n = actors[i]->frame_n;
      }
    }

@@ -1,3 +1,9 @@
+2003-10-07  Eric Fry <efry@users.sourceforge.net>
+	* Added split-type actors. Cows, horses, etc.
+	* Added twitch support for some multi-tile actors.
+	* Some worktype tweaks.
+	* Actor: changed old_obj_n to base_obj_n.
+
 2003-10-07  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Objects can be used on other objects now (use-chaining). Right now
 	  this works for keys (but only on doors), and potions (but only to

@@ -38,6 +38,9 @@ Use/drop/move objects from inventory
 Give message scroller and other GUI areas some high-level I/O methods
 
 
+Restrict farm animals to within fenced areas.
+Fix actor draw order issues.
+
 things to do:
 skiff
 ship

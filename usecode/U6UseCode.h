@@ -269,8 +269,9 @@
 #define OBJ_U6_COW                 428
 #define OBJ_U6_ALLIGATOR           429
 #define OBJ_U6_HORSE               430
+#define OBJ_U6_HORSE_WITH_RIDER    431
 
-#define OBJ_U6__LAST_              430
+#define OBJ_U6__LAST_              431
 
 class U6UseCode;
 
