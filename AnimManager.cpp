@@ -1,6 +1,7 @@
 #include <cmath>
 #include "SDL.h"
 #include "nuvieDefs.h"
+#include <vector>
 
 #include "Actor.h"
 #include "ActorManager.h"
@@ -343,7 +344,7 @@ void TileAnim::remove_tile(uint32 i)
     if(i < tiles.size())
     {
         //vector<PositionedTile*>::iterator ti = &tiles[i];
-        vector<PositionedTile*>::iterator ti = tiles.begin();
+        std::vector<PositionedTile*>::iterator ti = tiles.begin();
         for(uint32 j = 0; j < i; j++)
             ti++;
 
