@@ -1,3 +1,7 @@
+2005-01-02  Eric Fry <efry at users.sourceforge.net>
+	* Fixed red moongate bug. [1091114] There was a small typo in the last 
+	  moon gate location. X was 0x296 where it should have been 0x29b.
+
 2004-11-27  Eric Fry <efry at users.sourceforge.net>
 	* Added more game logic to use:vortex_cube.
 
