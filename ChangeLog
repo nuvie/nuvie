@@ -1,3 +1,8 @@
+2003-05-07  Michael Fink <vividos@users.sourceforge.net>
+	* Changed some parameter and return types from "char*" to
+	"const char*" to clarify string constness
+	* Rewrote Look text extraction
+
 2003-05-07  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Player: get_gender() (returns avatar gender value, 0 or 1)
 	* Actor: set_worktype()
@@ -16,6 +21,10 @@
 	* Actors sit on chairs now.
 	* Time of day works in talk mode.
 	* Added Karma to Player class.
+
+2003-05-03  Michael Fink <vividos@users.sourceforge.net>
+	* Fixed some more memory leaks
+	* Added handling of uncompressed files to U6Lzw
 
 2003-05-02  Joseph Applegate <sb-x@users.sourceforge.net>
 	* RETURN or ENTER sends "0" for single-number input in conversations
