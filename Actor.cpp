@@ -29,6 +29,7 @@
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
 
 Actor::Actor(Map *m)
+:sched(NULL)
 {
  map = m;
  direction = 0;
@@ -39,8 +40,17 @@ Actor::Actor(Map *m)
  
 Actor::~Actor()
 {
+ // free sched array
+ if (sched != NULL)
+ {
+    Schedule** cursched = sched;
+    while(*cursched != NULL)
+       free(*cursched++);
+
+    free(sched);
+ }
 }
- 
+
 bool Actor::is_alive()
 {
  return alive;
