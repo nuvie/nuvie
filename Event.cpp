@@ -1147,12 +1147,21 @@ bool Event::alt_code_teleport(const char *location_string)
  char *next_num;
  uint16 x, y, z;
 
+ if(!location_string || !strlen(location_string))
+   return false;
+ 
  x = strtol(location_string,&next_num,16);
  y = strtol(next_num,&next_num,16);
  z = strtol(next_num,&next_num,16);
 
- player->move(x,y,z);
+ if(x == 0 && y == 0)
+   return false;
 
+ player->move(x,y,z);
+ 
+ // This is a bit of a hack but we would like to update the music when teleporting.
+ Game::get_game()->get_party()->update_music();
+ 
  return true;
 }
 

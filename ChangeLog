@@ -1,3 +1,9 @@
+2004-03-02  Eric Fry <efry at users.sourceforge.net>
+	* Music should play at the correct times in U6. Hornpipe.m when you use 
+	  a boat, Engage.m when you are in combat mode etc.
+	* Fixed a small lockup when not entering any values for alt-214 
+	  teleport cheat.
+
 2004-02-28  Eric Fry <efry at users.sourceforge.net>
 	* Cleaned up schedule loading code.
 	* Music stops when in talk mode.

@@ -128,9 +128,14 @@ class Party {
  bool contains_actor(uint8 actor_num);
  bool is_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);
  bool is_at(MapCoord &xyz, uint32 threshold = 0);
-
- void set_in_vehicle(bool value) { in_vehicle = value; }
+ 
+ void set_in_vehicle(bool value);
  bool is_in_vehicle() { return in_vehicle; }
+ 
+ void set_in_combat_mode(bool value);
+ bool is_in_combat_mode() { return in_combat_mode; }
+ 
+ void update_music();
  
  void show();
  void hide();

@@ -156,17 +156,22 @@ bool SoundManager::LoadNativeU6Songs()
  config_get_path(m_Config, "engage.m", filename);
  song = new SongAdPlug(opl);
  loadSong(song, filename.c_str());
- groupAddSong("engage", song);
+ groupAddSong("combat", song);
 
  config_get_path(m_Config, "hornpipe.m", filename);
  song = new SongAdPlug(opl);
  loadSong(song, filename.c_str());
- groupAddSong("hornpipe", song);
+ groupAddSong("boat", song);
 
  config_get_path(m_Config, "gargoyle.m", filename);
  song = new SongAdPlug(opl);
  loadSong(song, filename.c_str());
  groupAddSong("gargoyle", song);
+
+ config_get_path(m_Config, "dungeon.m", filename);
+ song = new SongAdPlug(opl);
+ loadSong(song, filename.c_str());
+ groupAddSong("dungeon", song);
  
  return true;
 }

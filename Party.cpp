@@ -30,6 +30,7 @@
 #include "TimedEvent.h"
 #include "Configuration.h"
 #include "ActorManager.h"
+#include "SoundManager.h"
 #include "Player.h"
 #include "Map.h"
 #include "U6UseCode.h"
@@ -77,9 +78,10 @@ bool Party::init(Game *g, ActorManager *am)
  MapCoord vehicle_loc = actor_manager->get_actor(0)->get_location();
  if(is_at(vehicle_loc.x, vehicle_loc.y, vehicle_loc.z))
   {
-   in_vehicle = true;
+   set_in_vehicle(true);
    hide();
   }
+
  return true;
 }
 
@@ -567,6 +569,44 @@ bool Party::contains_actor(uint8 actor_num)
  return(contains_actor(actor_manager->get_actor(actor_num)));
 }
 
+void Party::set_in_combat_mode(bool value)
+{
+  // You can't enter combat mode while in a vehicle.
+  if(value && in_vehicle)
+     return;
+     
+  in_combat_mode = value;
+
+  update_music();
+}
+
+void Party::update_music()
+{
+ SoundManager *s = Game::get_game()->get_sound_manager();
+ MapCoord pos;
+ 
+ if(in_vehicle)
+   {
+    s->musicPlayFrom("boat");
+    return;
+   }
+ else if(in_combat_mode)
+   {
+    s->musicPlayFrom("combat");
+    return;
+   }
+ 
+ pos = get_location(0); // FIX we need to get the position of the party leader.
+ 
+ switch(pos.z)
+  {
+   case 0 : s->musicPlayFrom("random"); break;
+   case 5 : s->musicPlayFrom("gargoyle"); break;
+   default : s->musicPlayFrom("dungeon"); break;
+  }
+
+ return;
+}
 
 void Party::show()
 {
@@ -640,6 +680,14 @@ void Party::enter_vehicle(Obj *ship_obj, uint32 step_delay)
     autowalk = true;
 }
 
+void Party::set_in_vehicle(bool value) 
+{
+ in_vehicle = value;
+
+ update_music();
+
+ return;
+}
 
 /* Done automatically walking, return control to player character.
  */
@@ -648,6 +696,7 @@ void Party::stop_walking()
     game->get_player()->control();
     game->get_actor_manager()->set_update(true);
     autowalk = false;
+    update_music();
 }
 
 void Party::dismount_from_horses()
