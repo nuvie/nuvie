@@ -7,6 +7,10 @@
  *
  */
 
+#ifdef _MSC_VER
+#include "../msvc/msvc_kludges.h"
+#endif
+
 #include <cstdio>
 #include <string>
 #define PERR(x) printf(x)

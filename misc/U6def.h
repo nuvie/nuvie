@@ -1,6 +1,10 @@
 #ifndef __U6def_h__
 #define __U6def_h__
 
+#ifdef _MSC_VER
+#include "../msvc/msvc_kludges.h"
+#endif
+
 /*
 #ifndef BOOL
 typedef unsigned char BOOL;
