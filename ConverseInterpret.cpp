@@ -427,11 +427,29 @@ converse_value ConverseInterpret::pop_arg(stack<converse_value> &vs)
 }
 
 
+#if 0
+bool MDTalkInterpret::op(stack<converse_value> &i)
+{
+    bool success = true;
+    converse_value v[4], in; // args
+
+    switch(in == pop_arg(i))
+    {
+        default:
+            i.push(in);
+            success = ConverseInterpret::op(i);
+    }
+    return(success);
+}
+#endif
+
+
 /* Run control code with arguments/operands (arranged on a stack from
  * top to bottom.)
  */
-void ConverseInterpret::op(stack<converse_value> &i)
+bool ConverseInterpret::op(stack<converse_value> &i)
 {
+    bool success = true;
     converse_value v[4]; // args
     converse_value in;
     ConvScript *cs = converse->script;
@@ -619,15 +637,18 @@ void ConverseInterpret::op(stack<converse_value> &i)
         default:
             converse->print("[Unknown command]\n");
             fprintf(stderr, "Converse: UNK OP=%02x\n", in);
+            success = false;
     }
+    return(success);
 }
 
 
 /* The other set of codes, these operate on the input values, so call them
  * valops. Output goes back to the stack.
  */
-void ConverseInterpret::evop(stack<converse_value> &i)
+bool ConverseInterpret::evop(stack<converse_value> &i)
 {
+    bool success = true;
     converse_value v[4]; // input
     converse_value in, out = 0;
     ConvScript *cs = converse->script;
@@ -871,8 +892,10 @@ void ConverseInterpret::evop(stack<converse_value> &i)
             break;
         default:
             fprintf(stderr, "Converse: UNK EVOP=%02x\n", in);
+            success = false;
     }
     i.push(out);
+    return(success);
 }
 
 

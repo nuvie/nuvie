@@ -113,7 +113,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    map_window->centerMapOnActor(player->get_actor());
 
    converse = new Converse();
-   converse->init(config, scroll, actor_manager, clock, player, view_manager, obj_manager);
+   converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
 
    // Correct usecode class for each game
    switch (game_type)

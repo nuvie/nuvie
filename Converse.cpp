@@ -56,8 +56,9 @@ Converse::Converse()
 
 /* Initialize global classes from the game.
  */
-void Converse::init(Configuration *cfg, MsgScroll *s, ActorManager *a,
-                    GameClock *c, Player *p, ViewManager *v, ObjManager *o)
+void
+Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
+               GameClock *c, Player *p, ViewManager *v, ObjManager *o)
 {
     config = cfg;
     scroll = s;
@@ -66,6 +67,7 @@ void Converse::init(Configuration *cfg, MsgScroll *s, ActorManager *a,
     player = p;
     views = v;
     objects = o;
+    gametype = t;
 }
 
 
@@ -84,9 +86,21 @@ void Converse::load_conv(const std::string &convfilename)
     string conv_lib_str;
     config->pathFromValue("config/ultima6/gamedir", convfilename, conv_lib_str);
     unload_conv();
-    src = new U6Lib_n;
-    src->open(conv_lib_str, 4);
-    src_num = (convfilename == "converse.a") ? 1 : (convfilename == "converse.b") ? 2 : 0;
+    src_num = 0;
+    if(gametype == NUVIE_GAME_U6)
+    {
+        src = new U6Lib_n;
+        src->open(conv_lib_str, 4);
+        src_num = (convfilename == "converse.a") ? 1 : (convfilename == "converse.b") ? 2 : 0;
+    }
+/*  else if(gametype == NUVIE_GAME_MD)
+    {
+        src = new U6Lib_n(?);
+        src->open(conv_lib_str, ?);
+    }
+    else if(gametype == NUVIE_GAME_SE)
+    {
+    } */
 #ifdef CONVERSE_DEBUG
     fprintf(stderr, "Converse: load \"%s\"\n", convfilename.c_str());
 #endif
@@ -114,7 +128,22 @@ uint32 Converse::load_conv(uint8 a)
 }
 
 
-/* Get an NPC conversation from the correct file.
+/* Returns name of loaded source file, identified by `src_num'.
+ */
+const char *Converse::src_name()
+{
+    if(src_num == 0)
+        return("");
+    if(gametype == NUVIE_GAME_U6)
+        return((src_num == 1) ? "converse.a" : "converse.b");
+    if(gametype == NUVIE_GAME_MD)
+        return("talk.lzc");
+    if(gametype == NUVIE_GAME_SE)
+        return("talk.lzc");
+}
+
+
+/* Get an NPC conversation from the source file.
  * Returns new ConvScript object.
  */
 ConvScript *Converse::load_script(uint32 n)
@@ -156,20 +185,33 @@ void Converse::init_variables()
  */
 void Converse::delete_variables()
 {
-#if 0 /* Actually... there are control codes that set these values. */
-    if(player)
-    {
-        player->set_gender(get_var(U6TALK_VAR_SEX));
-        player->set_karma(get_var(U6TALK_VAR_KARMA));
-    }
-    if(npc)
-        npc->set_worktype(get_var(U6TALK_VAR_WORKTYPE));
-#endif
     for(uint32 v = 0; v <= U6TALK_VAR__LAST_; v++)
         if(variables[v].sv)
             free(variables[v].sv);
     delete [] variables;
     variables = NULL;
+}
+
+
+/* Create new script interpreter for the current game.
+ * Returns pointer to object which is derived from ConverseInterpret.
+ */
+ConverseInterpret *Converse::new_interpreter()
+{
+    ConverseInterpret *ci = NULL;
+    switch(gametype)
+    {
+        case NUVIE_GAME_U6:
+            ci = (ConverseInterpret*)new U6ConverseInterpret(this);
+            break;
+//        case NUVIE_GAME_MD:
+//            ci = (ConverseInterpret *)new MDTalkInterpret(this);
+//            break;
+//        case NUVIE_GAME_SE:
+//            ci = (ConverseInterpret *)new SETalkInterpret(this);
+//            break;
+    }
+    return(ci);
 }
 
 
@@ -187,13 +229,19 @@ bool Converse::start(uint8 n)
     if(!(npc = actors->get_actor(n)))
         return(false);
     script_num = load_conv(n);
+    if(!src)
+        return(false);
     script = load_script(script_num);
 
     // begin
     if(script)
     {
         active = true;
-        conv_i = new ConverseInterpret(this);
+        if(!(conv_i = new_interpreter()))
+        {
+            fprintf(stderr, "Can't talk: Unimplemented or unknown game type\n");
+            return(false);
+        }
         npc_num = n;
         init_variables();
         show_portrait(npc_num);

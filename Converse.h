@@ -43,6 +43,7 @@ class ConvScript;
 
 using std::string;
 
+typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
 typedef uint32 converse_value; // any single value read from a script
 typedef unsigned char* convscript_buffer;
 
@@ -57,11 +58,14 @@ typedef unsigned char* convscript_buffer;
 
 /* Conversation engine, apart from the interpreter. Loads converse files,
  * and reads script into buffer. Also manages input/output and has npc-related
- * support functions. This single class must handle all games.
+ * support functions. This class handles all game types.
  */
 class Converse
 {
     friend class ConverseInterpret;
+    friend class SETalkInterpret;
+    friend class MDTalkInterpret;
+    friend class U6ConverseInterpret;
 
     // game system objects from nuvie
     Configuration *config;
@@ -72,11 +76,12 @@ class Converse
     ViewManager *views;
     MsgScroll *scroll; // i/o
 
+    nuvie_game_t gametype; // what game is being played?
     U6Lib_n *src;
-    uint8 src_num;
-    const char *src_name() { return((src_num == 1) ? "converse.a" : (src_num == 2) ? "converse.b" : ""); }
+    uint8 src_num; // identify source file: 0=unset/unused
+    const char *src_name();
 
-    ConverseInterpret *conv_i;
+    ConverseInterpret *conv_i; // interpreter
     ConvScript *script;
     Actor *npc;
     uint8 npc_num;
@@ -93,18 +98,18 @@ class Converse
     {
         converse_value cv;
         char *sv;
-    } *variables;
+    } *variables; /* initialized for [U6TALK_VAR__LAST_+1] items */
 
 public:
     Converse();
     ~Converse();
-    void init(Configuration *cfg, MsgScroll *s, ActorManager *a, GameClock *c,
-              Player *p, ViewManager *v, ObjManager *o);
-
+    void init(Configuration *cfg, nuvie_game_t t, MsgScroll *s, ActorManager *a,
+              GameClock *c,Player *p, ViewManager *v, ObjManager *o);
     void load_conv(const std::string &convfilename);
     uint32 load_conv(uint8 a);
-    void unload_conv() { delete src; }
+    void unload_conv() { delete src; src = NULL; }
     ConvScript *load_script(uint32 n);
+    ConverseInterpret *new_interpreter();
 
     bool start(Actor *a) { return(start(a->get_actor_num())); }
     bool start(uint8 n);

@@ -54,7 +54,7 @@ using std::vector;
 #define U6OP_WOUNDED    0xda
 #define U6OP_POISONED   0xdc
 #define U6OP_NPC        0xdd
-#define U6OP_EXP        0xe0 // FIXME: stat ops need to add to value
+#define U6OP_EXP        0xe0
 #define U6OP_LVL        0xe1
 #define U6OP_STR        0xe2
 #define U6OP_INT        0xe3
@@ -74,9 +74,9 @@ using std::vector;
 #define U6OP_DELETE    0xba
 #define U6OP_INVENTORY 0xbe
 #define U6OP_PORTRAIT  0xbf
-#define U6OP_GIVE      0xc9
 #define U6OP_ADDKARMA  0xc4
 #define U6OP_SUBKARMA  0xc5
+#define U6OP_GIVE      0xc9
 #define U6OP_WAIT      0xcb
 #define U6OP_WORKTYPE  0xcd
 #define U6OP_SETNAME   0xd8
@@ -84,7 +84,6 @@ using std::vector;
 #define U6OP_CURE      0xdb
 #define U6OP_ENDANSWER 0xee
 #define U6OP_KEYWORDS  0xef
-#define U6OP_SIDENT    0xff
 #define U6OP_SLOOK     0xf1
 #define U6OP_SCONVERSE 0xf2
 #define U6OP_SPREFIX   0xf3
@@ -93,41 +92,34 @@ using std::vector;
 #define U6OP_ASKC      0xf8
 #define U6OP_INPUT     0xfb
 #define U6OP_INPUTNUM  0xfc
+#define U6OP_SIDENT    0xff
 
-// FIXME: This class is for U6 conversations, but it should be generalized.
 /* Script is executed as it is stepped through byte-by-byte, and can have
  * text, data, and control codes. Flow is controlled by run-level stack.
  */
 class ConverseInterpret
 {
+protected:
     Converse *converse; // to get data from container
 
     bool is_waiting; // return control to Converse, paused waiting for something
     bool stopped; // conversation will end, after control returns to Converse
+    bool answer; // a response has been triggered by conversation input?
 
+    // input values (from the script)
     struct in_val_s
     {
         converse_value v; // data
         uint8 d; // data-size or 0x00
     };
-    vector<struct in_val_s> *in; // control values (input/instruction)
-    uint32 in_start;
-    string *text; // input text from script
-    const char **rstrings; // string value(s) returned by op
-    uint32 rstring_count;
-    char *ystring; // modified by SETNAME, accessed with "$Y"
-
-    const char *get_rstr(uint32 sn) { return((sn < rstring_count) ? rstrings[sn] : ""); }
-    const char *get_ystr()          { return(ystring ? ystring : ""); }
-    void set_rstr(uint32 sn, const char *s);
-    void set_ystr(const char *s)    { free(ystring); ystring = strdup(s); }
-
-    bool answer; // response has been triggered by conversation input?
-    uint8 decl_v; // declared/initialized variable number
-    uint8 decl_t; // declared variable type: 0x00=none,0xb2=int,0xb3=string
-    void let(uint8 v, uint8 t) { decl_v = v; decl_t = t; }
-    void let()                 { decl_v = decl_t = 0x00; }
-
+    // ONE data item from a converse script db
+    struct converse_db_s
+    {
+        uint8 type; // 0=s 1=i
+        char *s;
+        uint8 i;
+    };
+    // frame around blocks of code that may or may not execute
     struct convi_frame_s
     {
         uint32 start;
@@ -135,7 +127,25 @@ class ConverseInterpret
         bool run; // run(true) or skip(false) instructions
         converse_value break_c; // will toggle run setting
     };
+
+    vector<struct in_val_s> *in; // control values (input/instruction)
+    uint32 in_start;
+    string *text; // input text from script
+    const char **rstrings; // string value(s) returned by op
+    uint32 rstring_count;
+    char *ystring; // modified by SETNAME, accessed with "$Y"
+    uint8 decl_v; // declared/initialized variable number
+    uint8 decl_t; // declared variable type: 0x00=none,0xb2=int,0xb3=string
     stack<struct convi_frame_s *> *b_frame;
+
+    const char *get_rstr(uint32 sn) { return((sn < rstring_count) ? rstrings[sn] : ""); }
+    const char *get_ystr()          { return(ystring ? ystring : ""); }
+    void set_rstr(uint32 sn, const char *s);
+    void set_ystr(const char *s)    { free(ystring); ystring = strdup(s); }
+
+    void let(uint8 v, uint8 t) { decl_v = v; decl_t = t; }
+    void let()                 { decl_v = decl_t = 0x00; }
+
     void enter(converse_value c);
     void leave();
     void leave_all() { while(b_frame && !b_frame->empty()) leave(); }
@@ -148,13 +158,6 @@ class ConverseInterpret
     void clear_break()               { set_break(0x00); }
     void set_run(bool r) { if(top_frame()) top_frame()->run = r; }
     bool get_run()       { return(top_frame() ? top_frame()->run : true); }
-
-    struct converse_db_s // ONE data item from a converse script db
-    {
-        uint8 type; // 0=s 1=i
-        char *s;
-        uint8 i;
-    };
 
 public:
     ConverseInterpret(Converse *owner);
@@ -170,8 +173,8 @@ public:
 
 protected:
     /* collecting from script */
-    void collect_input();
-    struct in_val_s read_value();
+    virtual void collect_input();
+    virtual struct in_val_s read_value();
     void eval(uint32 vi = 0);
 
     void add_val(converse_value c, uint8 d = 0);
@@ -191,26 +194,24 @@ protected:
     void do_ctrl();
     void do_text();
     converse_value pop_arg(stack<converse_value> &vs);
-    void evop(stack<converse_value> &i);
-    void op(stack<converse_value> &i);
+    virtual bool evop(stack<converse_value> &i);
+    virtual bool op(stack<converse_value> &i);
 
 public:
-    /* Return `n' as-is or convert to number of NPC from Converse. */
-//    uint8 npc_num(uint32 n) { return((n != 0xeb) ? n : converse->npc_num); }
-    uint8 npc_num(uint32 n);
+    virtual uint8 npc_num(uint32 n);//uint8 npc_num(uint32 n){return((n!=0xeb)?n:converse->npc_num);}
     bool check_keywords(const char *keystr, const char *instr);
     bool var_input() { return(decl_t != 0x00); }
     void assign_input(); // set declared variable to Converse input
     struct converse_db_s *get_db(uint32 loc, uint32 i);
 
     /* value tests */
-    bool is_print(converse_value check)
+    virtual bool is_print(converse_value check)
      { return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a)) ); }
-    bool is_ctrl(converse_value code)
+    virtual bool is_ctrl(converse_value code)
      { return(((code >= 0xa1 || code == 0x9c) && !is_valop(code) && !is_datasize(code))); }
-    bool is_datasize(converse_value check)
+    virtual bool is_datasize(converse_value check)
      { return((check == 0xd3 || check == 0xd2 || check == 0xd4)); }
-    bool is_valop(converse_value check)
+    virtual bool is_valop(converse_value check)
     {
         return( ((check == 0x81) || (check == 0x82) || (check == 0x83)
                  || (check == 0x84) || (check == 0x85) || (check == 0x86)
@@ -225,7 +226,29 @@ public:
                  || (check == 0xdd) || (check == 0xe0) || (check == 0xe1)
                  || (check == 0xe2) || (check == 0xe3) || (check == 0xe4)) );
     }
-
 };
+
+
+class U6ConverseInterpret : public ConverseInterpret
+{
+public:
+    U6ConverseInterpret(Converse *owner) : ConverseInterpret(owner) { }
+//    ~U6ConverseInterpret();
+};
+
+
+class SETalkInterpret : public ConverseInterpret
+{
+public:
+    SETalkInterpret(Converse *owner) : ConverseInterpret(owner) { }
+};
+
+
+class MDTalkInterpret : public ConverseInterpret
+{
+public:
+    MDTalkInterpret(Converse *owner) : ConverseInterpret(owner) { }
+};
+
 
 #endif /* __ConverseInterpret_h__ */
