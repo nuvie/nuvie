@@ -91,7 +91,7 @@ class Converse
 #define CONV_SCOPE_IF 3 // at else change to endif, at endif break
 #define CONV_SCOPE_IFELSE 4 // at else change to if, at endif break
 #define CONV_SCOPE_IFEND 5 // at endif break
-    stack <uint8> scope; // what "scope" is the script in?
+    std::stack <uint8> scope; // what "scope" is the script in?
 
     /* Check that loaded converse library (the source) contains `script_num'.
      * Load another source if it doesn't, and update `script_num' to item number.
