@@ -67,7 +67,11 @@ bool NuvieFileList::open(const char *directory, const char *search, uint8 s_mode
 
  closedir(dir);
 
+#if (_MSC_VER <= 1200)
+ file_list.sort();
+#else
  file_list.sort(NuvieFileDesc()); //sort list by time last modified in decending order.
+#endif
 
  list_ptr = file_list.begin();
 
