@@ -52,6 +52,8 @@
 #define OBJ_U6_BOOMERANG            49
 #define OBJ_U6_TRIPLE_CROSSBOW      50
 
+#define OBJ_U6_FORCE_FIELD          51
+
 #define OBJ_U6_MAGIC_BOW            54
 #define OBJ_U6_SPELLBOOK            57
 
@@ -175,6 +177,16 @@
 #define OBJ_U6_FOUNTAIN            234
 #define OBJ_U6_SUNDIAL             235
 #define OBJ_U6_BELL                236
+
+#define OBJ_U6_RUNE_HONESTY        242
+#define OBJ_U6_RUNE_COMPASSION     243
+#define OBJ_U6_RUNE_VALOR          244
+#define OBJ_U6_RUNE_JUSTICE        245
+#define OBJ_U6_RUNE_SACRIFICE      246
+#define OBJ_U6_RUNE_HONOR          247
+#define OBJ_U6_RUNE_SPIRITUALITY   248
+#define OBJ_U6_RUNE_HUMILITY       249
+
 #define OBJ_U6_CHAIR               252
 #define OBJ_U6_CROSS               254
 #define OBJ_U6_TOMBSTONE           255

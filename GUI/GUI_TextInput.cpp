@@ -71,14 +71,25 @@ GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
 
 GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
 {
+ char ascii;
+ 
  if(!focused)
    return GUI_PASS;
 
  switch(key.sym)
    {
+    case SDLK_LSHIFT   : 
+    case SDLK_RSHIFT   :
+    case SDLK_LCTRL    :
+    case SDLK_RCTRL    : 
+    case SDLK_CAPSLOCK : break;
+
     case SDLK_RETURN : if(callback_object)
                          callback_object->callback(TEXTINPUT_CB_TEXT_READY, this, text);
     case SDLK_ESCAPE : release_focus(); break;
+    
+    case SDLK_HOME : pos = 0; break;
+    case SDLK_END  : pos = length; break;
     
     case SDLK_KP4  : 
     case SDLK_LEFT : if(pos > 0)
@@ -90,9 +101,18 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
                        pos++;
                       break;
 
-    case SDLK_BACKSPACE : remove_char(); break;
+    case SDLK_DELETE    : if(pos < length) //delete the character to the right of the cursor
+                            {
+                             pos++;
+                             remove_char(); break;
+                            }
+                          break;
+
+    case SDLK_BACKSPACE : remove_char(); break; //delete the character to the left of the cursor
     
-    default : add_char((char)key.sym); break;
+    default : if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
+                   ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
+              add_char(ascii); break;
    }
    
 
@@ -103,7 +123,7 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
 void GUI_TextInput::add_char(char c)
 {
  uint16 i;
- 
+
  if(length+1 > max_width * max_height)
    return;
 
@@ -144,12 +164,21 @@ void GUI_TextInput::SetDisplay(Screen *s)
 {
 	GUI_Widget::SetDisplay(s);
 	cursor_color = SDL_MapRGB(surface->format, 0xff, 0, 0);
+    selected_bgcolor = SDL_MapRGB(surface->format, 0x5a, 0x6e, 0x91);
 }
 
 
 /* Show the widget  */
 void GUI_TextInput:: Display(bool full_redraw)
 {
+ SDL_Rect r;
+ 
+ if(full_redraw && focused)
+   {
+    r = area;
+    SDL_FillRect(surface, &r, selected_bgcolor);
+   }
+
  GUI_Text::Display(full_redraw);
  
  if(focused)

@@ -100,6 +100,7 @@ class U6UseCode: public UseCode, public CallBack
  bool use_firedevice(Obj *obj, UseCodeEvent ev);
  bool use_fan(Obj *obj, UseCodeEvent ev);
  bool use_container(Obj *obj, UseCodeEvent ev);
+ bool use_rune(Obj *obj, UseCodeEvent ev);
  bool use_vortex_cube(Obj *obj, UseCodeEvent ev);
  bool use_key(Obj *obj, UseCodeEvent ev);
  bool use_boat(Obj *obj, UseCodeEvent ev);

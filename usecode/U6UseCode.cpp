@@ -633,6 +633,60 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
     return(false);
 }
 
+/* Use rune to free shrine */
+bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
+{ 
+ char mantras[][8] = {"AHM", "MU", "RA", "BEH", "CAH", "SUMM", "OM", "LUM"};
+ Obj *force_field = NULL;
+ uint16 rune_obj_offset = obj->obj_n - OBJ_U6_RUNE_HONESTY;
+ MapCoord player_location = player->get_actor()->get_location();
+
+ 
+ scroll->cancel_input_request();
+    
+ if(ev == USE_EVENT_USE)
+   {
+    scroll->display_string("Mantra: ");
+
+    scroll->set_input_mode(true, NULL, true);
+    scroll->request_input(this, obj);
+
+    return(false);
+   }
+ else if(ev == USE_EVENT_MESSAGE && items.string_ref)
+   {
+    scroll->display_string("\n");
+
+    char *mantra = new char[items.string_ref->size() + 1];
+    strcpy(mantra, items.string_ref->c_str());
+        
+    if(strcasecmp(mantra,  mantras[rune_obj_offset]) == 0)
+      {
+       // find the matching force field for this shrine. match rune offset against force field quality
+       force_field = obj_manager->find_obj(OBJ_U6_FORCE_FIELD, rune_obj_offset, player_location.z, NULL);
+       
+       // make sure the player is right next to the force field.
+       if(force_field && abs(player_location.x - force_field->x) < 2 && abs(player_location.y - force_field->y) < 2)
+         {
+          obj_manager->remove_obj(force_field);
+          delete force_field;
+          
+          scroll->display_string("\nDone!\n");
+         }
+       else
+          scroll->display_string("\nNo effect!\n");
+      }   
+    else
+       scroll->display_string("\nWrong mantra!\n");
+        
+    scroll->display_string("\n");
+    scroll->display_prompt();
+    delete mantra;
+   }
+
+ return true;
+}
+
 
 bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 {
