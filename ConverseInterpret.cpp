@@ -826,7 +826,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 out = cdb->i;
             delete cdb;
             break;
-#else /* new read assumes DATA will be assigned, and depends on variable type */
+#else /* new read assumes DATA may be assigned, and depend on variable type */
         case U6OP_DATA: // 0xb4
             v[1] = pop_arg(i); // index
             v[0] = pop_arg(i); // db location
@@ -842,19 +842,8 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 else
                     out = add_rstr("");
             }
-            else if(decl_t == 0xb2)
+            else // this will work for 0xB2 assignment and normal stack ops
                 out = get_db_integer(v[0], v[1]);
-            else /* huh? try old db-read */
-            {
-                cdb = get_db(v[0], v[1]);
-                if(!cdb)
-                    out = 0;
-                else if(cdb->type == 0)
-                    out = add_rstr(cdb->s);
-                else
-                    out = cdb->i;
-                delete cdb;
-            }
             break;
 #endif
         case U6OP_INDEXOF: // 0xb7

@@ -1641,7 +1641,7 @@ bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
            }
         MapCoord exit(x, y, z);
                       
-        party->walk(&entrance, &exit);
+        party->walk(obj, &exit);
         return(true);
     }
     else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now

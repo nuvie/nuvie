@@ -66,8 +66,8 @@ public:
 };
 
 
-/* Move the party to/from a dungeon or ladder. Characters off-screen will
- * teleport.
+/* Move the party to/from a dungeon or ladder or moongate. Characters off-screen
+ * will teleport.
  */
 class TimedPartyMove : public TimedEvent
 {
@@ -76,9 +76,13 @@ protected:
     MapCoord *dest; // destination, where all actors walk to and disappear
     MapCoord *target; // where they reappear at the new plane
     uint32 moves_left; // walk timeout
+    Obj *moongate; // if using a moongate
 public:
     TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay = 500);
+    TimedPartyMove(MapCoord *d, MapCoord *t, Obj *use_obj, uint32 step_delay = 500);
     ~TimedPartyMove();
+
+    void init(MapCoord *d, MapCoord *t, Obj *use_obj);
     
     void timed(uint32 evtime);
 };

@@ -663,6 +663,25 @@ void Party::walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay)
 }
 
 
+/* Enter a moongate and teleport to a new location.
+ * (step_delay 0 = default speed)
+ */
+void Party::walk(Obj *moongate, MapCoord *teleport, uint32 step_delay)
+{
+    MapCoord walkto(moongate->x, moongate->y, moongate->z);
+    if(step_delay)
+        new TimedPartyMove(&walkto, teleport, moongate, step_delay);
+    else
+        new TimedPartyMove(&walkto, teleport, moongate);
+    // other actors won't move
+    game->get_actor_manager()->set_update(false);
+    // view will snap back to player after everyone has moved
+    game->get_player()->uncontrol();
+    autowalk = true;
+}
+
+
+
 /* Automatically walk (timed) to vehicle. (step_delay 0 = default speed)
  */
 void Party::enter_vehicle(Obj *ship_obj, uint32 step_delay)

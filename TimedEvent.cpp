@@ -81,6 +81,9 @@ bool TimeQueue::call_timer(uint32 now)
 }
 
 
+/*** TimedEvent ***/
+
+
 /* This constructor must be called by all subclasses to add to queue.
  */
 TimedEvent::TimedEvent(uint32 reltime, bool immediate, bool realtime)
@@ -101,21 +104,27 @@ TimedEvent::TimedEvent(uint32 reltime, bool immediate, bool realtime)
 }
 
 
+/*** TimedPartyMove ***/
+
 
 /* Party movement to/from dungeon, with a certain number of
- * milliseconds between each step. Construct & Set destination.
+ * milliseconds between each step.
  */
 TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay)
                               : TimedEvent(step_delay, true)
 {
-    party = Game::get_game()->get_party();
-    dest = new MapCoord(*d);
-    if(t)
-        target = new MapCoord(*t);
-    else
-        target = NULL;
-    moves_left = party->get_party_size() * 2;
+    init(d, t, NULL);
 }
+
+
+/* Movement through temporary moongate.
+ */
+TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t, Obj *use_obj, uint32 step_delay)
+                              : TimedEvent(step_delay, true)
+{
+    init(d, t, use_obj);
+}
+
 
 TimedPartyMove::~TimedPartyMove()
 {
@@ -124,8 +133,23 @@ TimedPartyMove::~TimedPartyMove()
 }
 
 
-/* Party movement to/from dungeon or to moongate. Repeated until everyone is at
- * the target area.
+/* Set destination.
+ */
+void TimedPartyMove::init(MapCoord *d, MapCoord *t, Obj *use_obj)
+{
+    party = Game::get_game()->get_party();
+    target = NULL;
+    moves_left = party->get_party_size() * 2;
+
+    dest = new MapCoord(*d);
+    if(t)
+        target = new MapCoord(*t);
+    moongate = use_obj;
+}
+
+
+/* Party movement to/from dungeon or to moongate. Repeated until everyone has
+ * entered, then the entire party is moved to the destination.
  */
 void TimedPartyMove::timed(uint32 evtime)
 {
@@ -134,28 +158,42 @@ void TimedPartyMove::timed(uint32 evtime)
     {
         Actor *person = party->get_actor(a);
         MapCoord loc(person->get_location());
-        // if not at target area
-	if(!person->is_nearby(*target))
+        // if not disappeared
+	if(person->is_visible())
         {
-            // at destination or offscreen (or timed out), teleport to target
+            // at destination or offscreen (or timed out), hide
             MapWindow *map_window = Game::get_game()->get_map_window();
             if(loc == *dest || !map_window->in_window(loc.x, loc.y, loc.z)
                || moves_left == 0)
-                person->move(target->x, target->y, target->z, ACTOR_FORCE_MOVE);
+                person->hide();
             else // keep walking to destination
                 person->swalk(*dest);
-            person->update();
+            person->update(); // update here because ActorManager is paused
             repeat = true;
         }
-        // at target area
-        if(person->is_nearby(*target))
-            person->stop_walking(); // return control
+        // entered dungeon/moongate (hidden)
+        if(!person->is_visible())
+            person->stop_walking(); // stop and wait for everyone else
     }
-    if(!repeat) // everyone is at target area
-        party->stop_walking();
+    if(!repeat) // everyone is ready to go to the target area
+    {
+        // must delete moongate here because dest may be the same as target...
+        // remove moongate before moving so the tempobj cleanup doesn't bite us
+        if(moongate)
+        {
+            Game::get_game()->get_obj_manager()->remove_obj(moongate);
+            Game::get_game()->get_obj_manager()->delete_obj(moongate);
+        }
+        party->move(target->x, target->y, target->z);
+        party->show();
+        party->stop_walking(); // return control
+    }
     if(moves_left > 0)
         --moves_left;
 }
+
+
+/*** TimedPartyMoveToVehicle ***/
 
 
 /* Party movement to vehicle. Second target is unused.
@@ -240,6 +278,7 @@ void TimedContainerSearch::timed(uint32 evtime)
 }
 
 
+/*** TimedCallback ***/
 TimedCallback::TimedCallback(TimedCallbackTarget *t, void *d, uint32 wait_time, bool repeating)
                             : TimedEvent(wait_time, false, false)
 {

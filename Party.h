@@ -144,6 +144,7 @@ class Party {
 
  void walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay = 0);
  void walk(MapCoord *walkto, uint32 step_delay = 0) { walk(walkto, NULL, step_delay); }
+ void walk(Obj *moongate, MapCoord *teleport, uint32 step_delay = 0);
  void enter_vehicle(Obj *ship_obj, uint32 step_delay = 0);
  void stop_walking();
  bool get_autowalk() { return(autowalk); } 
