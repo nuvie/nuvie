@@ -135,7 +135,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
     if(obj->frame_n == 0) // DOWN
       {
        if(level == 0)
-          player->move(obj->x/4+3,obj->y/4-3,level+1);
+          player->move(obj->x / 4 + obj->x % 4,obj->y / 4 - obj->y % 4,level+1);
        else
           player->move(obj->x,obj->y,level+1);
       }

@@ -624,8 +624,8 @@ void MapWindow::reshapeBoundary()
           if(flag == 0) //isolated border tiles
             continue; 
             
-                       if(tile->flags1 & 0xf0 == flag)
-              continue;
+          if((tile->flags1 & 0xf0) == flag)
+            continue;
 
           if(flag == 192)
             {

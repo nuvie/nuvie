@@ -2,6 +2,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
+#include <iostream>
 
 #include "misc/U6def.h"
 #include "files/U6Lib_n.h"
@@ -40,7 +41,7 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
     {
         if(strlen(converse->item_name(i)))
         {
-            cout << "<- `" << converse->item_name(i) << "'" << endl;
+            std::cout << "<- `" << converse->item_name(i) << "'" << std::endl;
             src_f = fopen(converse->item_name(i), "rb");
             if(!src_f)
             {
@@ -84,7 +85,7 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
         }
         else
         {
-            cout << "<- (no data)" << endl;
+            std::cout << "<- (no data)" << std::endl;
             converse->add_item(NULL, 0);
         }
     }
@@ -117,7 +118,7 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
                      "# %d item(s)\n"
                      "# Offset  Filename\n", num_items);
  }
- cout << "This file contains " << num_items << " scripts." << endl;
+ std::cout << "This file contains " << num_items << " scripts." << std::endl;
  for(i=0;i < num_items; i++)
   {
    buf_size = converse->get_item_size(i);
@@ -166,7 +167,7 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
 
    strcat(outfilename,".conv");
 
-   cout << "-> " << outfilename << endl;
+   std::cout << "-> " << outfilename << std::endl;
    out_file = fopen(outfilename,"wb");
    fwrite(uncomp_buf,1,uncomp_size,out_file);
    fclose(out_file);
@@ -196,31 +197,31 @@ int main(int argc, char **argv)
     arg++;
  }
 
- cout << "Using Nuvie configuration `" << "nuvie.cfg" << "'." << endl;
+ std::cout << "Using Nuvie configuration `" << "nuvie.cfg" << "'." << std::endl;
  config.readConfigFile("nuvie.cfg","config");
 
  if(!repack)
  {
-    cout << "Unpacking files converse.a and converse.b from the game"
-            " directory..." << endl;
+    std::cout << "Unpacking files converse.a and converse.b from the game"
+            " directory..." << std::endl;
     config.pathFromValue("config/ultima6/gamedir", "converse.a", filename);
-    cout << "--converse.a--" << endl;
+    std::cout << "--converse.a--" << std::endl;
     converse_a.open(filename, 4);
     unpack_converse_file(&converse_a, &lzw, "converse.a.index");
-    cout << "--converse.b--" << endl;
+    std::cout << "--converse.b--" << std::endl;
     config.pathFromValue("config/ultima6/gamedir", "/converse.b", filename);
     converse_b.open(filename, 4);
     unpack_converse_file(&converse_b, &lzw, "converse.b.index");
  }
  else
  {
-    cout << "Repacking scripts to files converse.a"
-            " and converse.b in the current directory..." << endl;
-    cout << "--converse.a--" << endl;
+    std::cout << "Repacking scripts to files converse.a"
+            " and converse.b in the current directory..." << std::endl;
+    std::cout << "--converse.a--" << std::endl;
     filename = "converse.a";
     converse_a_out.create(filename, 4);
     pack_converse_file(&converse_a_out, &lzw, "converse.a.index");
-    cout << "--converse.b--" << endl;
+    std::cout << "--converse.b--" << std::endl;
     filename = "converse.b";
     converse_b_out.create(filename, 4);
     pack_converse_file(&converse_b_out, &lzw, "converse.b.index");
