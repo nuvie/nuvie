@@ -73,10 +73,16 @@ bool SoundManager::nuvieStartup (Configuration * config)
   m_Config->value ("config/audio/enabled", audio_enabled, false);
 
   if(audio_enabled == false)
-    return false;
+     return false;
 
   if(!initAudio ())
-    return false;
+    {
+     printf("Error: Failed to initiate audio!");
+     return false;
+    }
+
+  LoadNativeU6Songs();
+  
   string scriptdirectory;
   config->pathFromValue ("config/ultima6/sounddir", "", scriptdirectory);
 
@@ -87,11 +93,11 @@ bool SoundManager::nuvieStartup (Configuration * config)
   string filename;
   filename = scriptdirectory + "songs.cfg";
   //LoadCustomSongs (scriptdirectory, filename);
-  LoadNativeU6Songs();
-   filename = scriptdirectory + "obj_samples.cfg";
+  filename = scriptdirectory + "obj_samples.cfg";
   LoadObjectSamples (scriptdirectory, filename);
   filename = scriptdirectory + "tile_samples.cfg";
   LoadTileSamples (scriptdirectory, filename);
+
   return true;
 }
 
@@ -505,13 +511,16 @@ next_group = "random";
           m_pCurrentSong->Stop();
         }
       m_pCurrentSong = SoundManager::RequestSong (next_group);
-      printf ("assinging new song! %x\n", m_pCurrentSong);
-      if (!m_pCurrentSong->Play (false))
+      if(m_pCurrentSong)
         {
-          printf ("play failed!\n");
-          m_pCurrentSong = NULL;
+          printf ("assinging new song! %x\n", m_pCurrentSong);
+          if(!m_pCurrentSong->Play (false))
+            {
+              printf ("play failed!\n");
+              m_pCurrentSong = NULL;
+            }
+          m_CurrentGroup = next_group;
         }
-      m_CurrentGroup = next_group;
     }
 
 }
