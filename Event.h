@@ -32,10 +32,11 @@
 #include "MsgScroll.h"
 #include "GameClock.h"
 #include "Player.h"
-#include "Book.h"
 #include "Converse.h"
 #include "ViewManager.h"
 #include "UseCode.h"
+
+class Book;
 
 #define NUVIE_INTERVAL    50
 
@@ -78,6 +79,7 @@ class Event
 
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
            GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc);
+ Book *get_book() { return(book); }
 
  bool update();
  bool move(sint16 rel_x, sint16 rel_y);

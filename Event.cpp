@@ -370,6 +370,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
   scroll->display_string("\n");
 
   usecode->use_obj(obj);
+  usecode->use_obj(obj, player->get_actor()); // testing
  }
 
  scroll->display_string("\n");
@@ -388,7 +389,6 @@ bool Event::look()
  Obj *obj;
  Actor *actor = map_window->get_actorAtCursor();
  sint16 p_id = -1; // party member number of actor
- char *data;
  char weight_string[26];
  float weight;
 
@@ -410,19 +410,9 @@ bool Event::look()
       snprintf(weight_string,25,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj) / 10.0);
       scroll->display_string(weight_string);
      }
-
-   if(obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK ||
-      obj->obj_n == OBJ_U6_SCROLL || obj->obj_n == OBJ_U6_PICTURE ||
-      obj->obj_n == OBJ_U6_TOMBSTONE || obj->obj_n == OBJ_U6_CROSS)
-      {
-       if(obj->quality != 0)
-         {
-          scroll->display_string(":\n\n");
-          data = book->get_book_data(obj->quality-1);
-          scroll->display_string(data);
-          free(data);
-         }
-      }
+  // check for special description
+  if(usecode->can_look(obj))
+     usecode->look_obj(obj, player->get_actor());
   }
 
  scroll->display_string("\n\n");
