@@ -82,6 +82,8 @@ bool Party::init(Game *g, ActorManager *am)
    hide();
   }
 
+ update_music();
+
  return true;
 }
 

@@ -1,3 +1,6 @@
+2004-03-03  Eric Fry <efry at users.sourceforge.net>
+	* A small fix to get music working on win32.
+
 2004-03-02  Eric Fry <efry at users.sourceforge.net>
 	* Music should play at the correct times in U6. Hornpipe.m when you use 
 	  a boat, Engage.m when you are in combat mode etc.

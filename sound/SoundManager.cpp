@@ -44,7 +44,7 @@ void musicFinished ()
 SoundManager::SoundManager ()
 {
   m_pCurrentSong = NULL;
-  g_MusicFinished = false;
+  g_MusicFinished = true;
   audio_enabled = false;
   opl = NULL;
 }
