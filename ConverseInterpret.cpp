@@ -147,6 +147,9 @@ void ConverseInterpret::step()
         }
         else
         {
+#ifdef CONVERSE_DEBUG
+            fprintf(stderr, "Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
+#endif
             converse->print("[Tried to print a control char.]\n");
             cs->skip();
         }

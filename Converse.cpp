@@ -543,8 +543,10 @@ void ConvScript::read_script()
         else
         {
             compressed = false;
-            dec_script = undec_script;
-            dec_len = undec_len;
+            dec_len = undec_len - 4;
+            dec_script = (unsigned char *)malloc(dec_len);
+            memcpy(dec_script, undec_script + 4, dec_len);
+            free(undec_script);
         }
     }
     if(dec_len)
