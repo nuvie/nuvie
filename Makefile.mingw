@@ -51,6 +51,7 @@ tools: u6decomp.exe
 
 dist: install tools
 	cp AUTHORS $(U6PATH)/AUTHORS.txt
+	cp ChangeLog $(U6PATH)/ChangeLog.txt
 	cp COPYING $(U6PATH)/COPYING.txt
 	cp README $(U6PATH)/README.txt
 	cp SDL/README-SDL.txt $(U6PATH)
