@@ -1,3 +1,8 @@
+2004-02-18  Eric Fry <efry at users.sourceforge.net>
+	* Adplug should fill the sound buffer at the right rate now.
+	  Music should sound better now. But it is now slowing down after
+	  about 20 seconds. I'll have to look into this further.
+
 2004-02-16  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* sound/*, Makefile.am: fixed build (include case, include dirs)
 	* sound/SoundManager.cpp: show SDL_Mixer error when init fails

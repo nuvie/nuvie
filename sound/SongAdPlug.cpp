@@ -34,20 +34,43 @@
 
 void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
 {
+ sint32 i, j;
  SongAdPlug *song = (SongAdPlug *)udata;
- 
+ short *data = (short *)stream;
  CEmuopl *opl = song->get_opl();
  CPlayer *player = song->get_player();
  
  len /= 4;
  
- if(!player->update())
-   {
-    player->rewind();
-    SoundManager::g_MusicFinished = true;
-   }
+ if(song->samples_left)
+    {
+      opl->update(data, song->samples_left);
+      data += song->samples_left * 2;
+    }
 
- opl->update((short *)stream, len);
+ len -= song->samples_left;
+ 
+ for(i=len;i > 0; i -= 735)
+   {
+     if(!player->update())
+       {
+         player->rewind();
+         SoundManager::g_MusicFinished = true;
+         printf("Music Finished!\n");
+       }
+
+     if(i < 735)
+       {
+         song->samples_left = 735 - i;
+         j = i;
+       }
+     else
+         j = 735;
+
+     opl->update(data, j);
+
+     data += j * 2;
+   }
 
  return;
 }
@@ -55,6 +78,7 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
 
 SongAdPlug::SongAdPlug(CEmuopl *o) {
  opl = o;
+ samples_left = 0;
 }
 
 SongAdPlug::~SongAdPlug() {
