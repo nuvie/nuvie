@@ -1,3 +1,16 @@
+2004-07-30  Eric Fry <efry at users.sourceforge.net>
+	* Added temp_actor flag to Actor.
+	* Added armor_class to Actor.
+	* Added Actor::all_items_to_container() this method takes the actor's
+	  inventory and places it into an object container. This is used for
+	  building the dead body object.
+	* An actors inventory is placed in their dead body object upon death.
+	* Started to add combat logic.
+	* Started to add "Move party to castle upon the Avatar's death".
+	* Actors will absorb damage with their armor_class. (If they were 
+	  assigned any;) ) I'll need to calculate armor class based on combat
+	  objects. They will come later.
+
 2004-07-25  Eric Fry <efry at users.sourceforge.net>
 	* Added use:balloon_plans. You can now build a balloon.
 	* Added use:balloon. You can now use the balloon. The balloon

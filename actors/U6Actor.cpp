@@ -1120,8 +1120,33 @@ inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 ac
 
 void U6Actor::die()
 {
-    MapCoord actor_loc = get_location();
-    Actor::die();
+ Game *game = Game::get_game();
+ Party *party = game->get_party();
+ Player *player = game->get_player();
+ MapCoord actor_loc = get_location();
+ MsgScroll *scroll = game->get_scroll();
+ 
+ Actor::die();
+    
+ if(in_party)
+  {
+   if(party->get_member_num(this) == 0) // Avatar
+     {
+      scroll->display_string("\nAn unending darkness engulfs thee...\n\n");
+      scroll->display_string("A voice in the darkness intones, \"KAL LOR!\"\n");
+      
+      player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
+      player->move(0x133,0x160,0); //move to LB's castle.
+      //move party to LB's castle
+     }
+   else
+     {
+      party->remove_actor(this);
+      if(player->get_actor() == this)
+        player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
+     }
+  }
+      
     if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
     {
         Obj *dead_body = new Obj;
@@ -1130,8 +1155,25 @@ void U6Actor::die()
         dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;
         dead_body->quality = id_n;
         dead_body->status = OBJ_STATUS_OK_TO_TAKE;
-        obj_manager->add_obj(dead_body, true);
+        if(temp_actor)
+          dead_body->status |= OBJ_STATUS_TEMPORARY;
+          
         // FIX: move my inventory into the dead body container
+        all_items_to_container(dead_body);
+
+        obj_manager->add_obj(dead_body, true);
+
     }
+
+ // FIX
+//    if I am the Player, fade-out, restore party, move to castle, fade-in
+//    ...of course, that is just in U6
+    if(this != game->get_player()->get_actor())
+    {
+        move(0,0,0,ACTOR_FORCE_MOVE); // ??
+        game->get_party()->remove_actor(this);
+    }
+//    add some blood? or do that in hit?
+
 }
 

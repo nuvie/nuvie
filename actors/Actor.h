@@ -57,6 +57,8 @@ using std::string;
 #define ACTOR_PUSH_FORWARD  2
 #define ACTOR_PUSH_TO       3
 
+#define ACTOR_SHOW_BLOOD true
+
 class Map;
 class MapCoord;
 class UseCode;
@@ -110,6 +112,7 @@ class Actor
 
  bool can_move;
  bool alive;
+ bool temp_actor;
  bool met_player;
 
  bool in_party;
@@ -128,6 +131,8 @@ class Actor
 
  uint8 flags;
 
+ uint8 armor_class;
+ 
  string name;
 
  U6LList *obj_inventory;
@@ -187,9 +192,7 @@ class Actor
  void set_exp(uint16 val) { exp = val; }
  void set_magic(uint8 val) { magic = val; }
 
- // combat methods
- void attack(Actor *actor); // attack another actor
- void defend(uint16 hit); // defend against an attack from another actor
+
 
  uint8 get_worktype();
  virtual void set_worktype(uint8 new_worktype);
@@ -221,12 +224,17 @@ class Actor
 // void stop_walking() { delete pathfinder; pathfinder = NULL; }
  void stop_walking();
  virtual void preform_worktype() { return; }
+ 
+ // combat methods
+ void attack(MapCoord pos); // attack at a given map location
+ void defend(uint8 hit, uint8 weapon_damage); // defend against a hit
+ 
  void hit(uint8 dmg);
  void hit(uint8 dmg, Actor *attacker) { hit(dmg); }
  void hit(uint8 dmg, Obj *src_obj)    { hit(dmg); }
  void reduce_hp(uint8 amount);
  virtual void die();
-
+ 
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_zero_qual = true);
  uint32 inventory_count_objects(bool inc_readied_objects);
@@ -242,6 +250,7 @@ class Actor
  float get_inventory_weight();
  float get_inventory_equip_weight();
  void inventory_drop_all();
+ void all_items_to_container(Obj *container_obj);
  bool can_carry_weight(float obj_weight); // return from get_obj_weight()
  bool can_carry_object(uint16 obj_n, uint32 qty = 0);
  bool can_carry_object(Obj *obj) { return(can_carry_weight(obj_manager->get_obj_weight(obj, true))); }

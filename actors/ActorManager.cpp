@@ -725,7 +725,9 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    actor->x = x;
    actor->y = y;
    actor->z = z;
-
+   
+   actor->temp_actor = true;
+   
    actor->init();
 
    actor->set_worktype(worktype);

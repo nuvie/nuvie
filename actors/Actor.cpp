@@ -55,6 +55,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  walk_frame = 0;
  can_move = true;
  in_party = false;
+ temp_actor = false;
  visible_flag = true;
 
  worktype = 0;
@@ -65,6 +66,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 
  name ="";
  flags = 0;
+ armor_class = 0;
 }
 
 Actor::~Actor()
@@ -497,17 +499,15 @@ void Actor::set_in_party(bool state)
     }
     else // left
     {
-        inventory_drop_all();
-        set_worktype(0x8f); // U6_WANDER_AROUND
+        if(alive)
+          {
+           inventory_drop_all();
+           set_worktype(0x8f); // U6_WANDER_AROUND
+          }
     }
 }
 
-void Actor::attack(Actor *actor)
-{
- return;
-}
-
-void Actor::defend(uint16 hit)
+void Actor::attack(MapCoord pos)
 {
  return;
 }
@@ -915,6 +915,44 @@ void Actor::inventory_drop_all()
     }
 }
 
+// Moves inventory and all readied items into a container object.
+void Actor::all_items_to_container(Obj *container_obj)
+{
+ U6LList *inventory;
+ U6Link *link;
+ Obj *obj;
+ uint8 i;
+
+ if(!container_obj->container)
+   container_obj->container = new U6LList();
+
+ inventory = get_inventory_list();
+
+ if(!inventory)
+   return;
+
+ for(link=inventory->start(); link != NULL;)
+   {
+    obj = (Obj *)link->data;
+    link = link->next;
+    inventory->remove(obj);
+
+    if(temp_actor)
+      obj->status |= OBJ_STATUS_TEMPORARY;
+      
+    container_obj->container->add(obj);
+   }
+ 
+ for(i=0;i<8;i++)
+   {
+    if(readied_objects[i])
+      {
+       remove_readied_object(i);
+      }
+   }
+
+ return;
+}
 
 void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
 {
@@ -1192,10 +1230,31 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
 }
 
 
+void Actor::defend(uint8 attack, uint8 weapon_damage)
+{
+ uint8 damage;
+ uint8 ac;
+   
+ if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
+   {
+    damage = NUVIE_RAND() % weapon_damage;
+
+
+    if(damage > ac)
+      {
+       hit(damage - ac);
+      }
+   }
+
+ return;
+}
+
 /* Subtract amount from hp. May die if hp is too low.
  */
 void Actor::reduce_hp(uint8 amount)
 {
+ fprintf(stderr, "hit %s for %d points", get_name(), amount);
+
     if(amount <= hp) hp -= amount;
     else hp = 0;
 // FIX... game specific?
@@ -1208,18 +1267,8 @@ void Actor::reduce_hp(uint8 amount)
  */
 void Actor::die()
 {
-    Game *game = Game::get_game();
     hp = 0;
     alive = false;
-// FIX
-//    if I am the Player, fade-out, restore party, move to castle, fade-in
-//    ...of course, that is just in U6
-    if(this != game->get_player()->get_actor())
-    {
-        move(0,0,0,ACTOR_FORCE_MOVE); // ??
-        game->get_party()->remove_actor(this);
-    }
-//    add some blood? or do that in hit?
 }
 
 
@@ -1227,15 +1276,27 @@ void Actor::die()
  */
 void Actor::hit(uint8 dmg)
 {
-    if(dmg)
-    {
-        fprintf(stderr, "hit %s for %d points", get_name(), dmg);
-        new HitEffect(this);
-        reduce_hp(dmg);
-        if(alive)
-            fprintf(stderr, ", %d remaining\n", hp);
-        else
-            fprintf(stderr, "\n%s killed!\n", get_name());
-    }
+ uint8 ac = 0;
+ MsgScroll *scroll = Game::get_game()->get_scroll();
+
+ if(armor_class > 0)
+  ac = NUVIE_RAND() % armor_class;
+     
+ if(dmg > ac)
+   {
+    new HitEffect(this);
+    reduce_hp(dmg - ac);
+        
+    scroll->display_string(get_name());
+                         
+    if(hp == 0)
+      scroll->display_string(" Killed!\n");
+    else
+      {
+       if(hp < 15)
+         scroll->display_string(" Critical!\n");
+      }
+
+   }
 }
 
