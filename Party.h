@@ -1,3 +1,5 @@
+#ifndef _PARTY_H_
+#define _PARTY_H_
 /*
  *  Party.h
  *  Nuive
@@ -72,3 +74,4 @@ class Party {
  bool loadParty();
 };
 
+#endif /* _PARTY_H_ */
