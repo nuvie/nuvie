@@ -30,9 +30,9 @@
 #include "MsgScroll.h"
 #include "Player.h"
 
-#define USECODE_EVENT_USE     0x01
-#define USECODE_EVENT_LOOK    0x02
-#define USECODE_EVENT_STEPTO  0x04
+#define USE_EVENT_USE     0x01
+#define USE_EVENT_LOOK    0x02
+#define USE_EVENT_PASS    0x04
 
 
 class UseCode
@@ -45,7 +45,9 @@ class UseCode
  Player *player;
  MsgScroll *scroll;
 
- sint32 itemref; // pass integers to usecode functions
+ sint32 int_ref; // pass objects to usecode functions
+ Obj *obj_ref;
+ Actor *actor_ref;
 
  public:
  
@@ -53,22 +55,31 @@ class UseCode
  virtual ~UseCode();
  
  virtual bool init(ObjManager *om, Map *m, Player *p, MsgScroll *ms);
+ virtual void init_objects() = 0;
  
  bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
  virtual bool use_obj(Obj *obj, Obj *src_obj=NULL)=0;
+ virtual bool use_obj(Obj *obj, Actor *actor)  { return(false); }
+ virtual bool look_obj(Obj *obj, Actor *actor) { return(false); }
+ virtual bool pass_obj(Obj *obj, Actor *actor) { return(false); }
 
+ virtual bool is_locked_door(Obj *obj)   { return(false); }
  virtual bool is_unlocked_door(Obj *obj) { return(false); }
+ virtual bool can_use(Obj *obj)  { return(false); }
+ virtual bool can_look(Obj *obj) { return(false); }
+ virtual bool can_pass(Obj *obj) { return(false); }
 
- virtual void init_objects() = 0;
- virtual sint16 get_ucobject_index(uint16 n, uint8 f = 0) = 0;
- virtual bool uc_event(sint16 uco, uint8 ev, Obj *obj) = 0;
-
- void set_itemref(sint32 val) { itemref = val; }
+ void set_itemref(sint32 val) { int_ref = val; }
+ void set_itemref(Obj *val)   { obj_ref = val; }
+ void set_itemref(Actor *val) { actor_ref = val; }
 
  protected:
- 
+
  void toggle_frame(Obj *obj);
  bool use_container(Obj *obj);
+
+ virtual sint16 get_ucobject_index(uint16 n, uint8 f = 0) = 0;
+ virtual bool uc_event(sint16 uco, uint8 ev, Obj *obj) = 0;
 };
 
 #endif /* __UseCode_h__ */

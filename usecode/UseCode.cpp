@@ -27,8 +27,9 @@ UseCode::UseCode(Configuration *cfg)
 {
  config = cfg;
 
- itemref = 0;
-
+ int_ref = 0;
+ actor_ref = NULL;
+ obj_ref = NULL;
 }
 
 UseCode::~UseCode()

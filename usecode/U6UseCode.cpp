@@ -21,6 +21,10 @@
  *
  */
 #include <cstdlib>
+#include "Game.h"
+#include "ViewManager.h"
+#include "GameClock.h"
+#include "Book.h"
 #include "U6UseCode.h"
 
 U6UseCode::U6UseCode(Configuration *cfg) : UseCode(cfg)
@@ -37,21 +41,137 @@ U6UseCode::~U6UseCode()
  */
 void U6UseCode::init_objects()
 {
-    memset(&uc_objects, 0, sizeof(uc_obj) * U6USE_NUM_OBJECTS);
+    uc_object_count = 31; // count of uc_object[X].set()
+    uc_objects = uc_object_count ? new uc_obj[uc_object_count] : NULL;
 
-    uc_objects[0].obj_n = OBJ_U6_QUEST_GATE;
-    uc_objects[0].trigger |= USECODE_EVENT_STEPTO;
-    uc_objects[0].ucf = &U6UseCode::pass_quest_barrier;
+// set(object,frame,distance to trigger,event(s),function)
+    uc_objects[0].set(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
+    uc_objects[1].set(OBJ_U6_SIGN,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    uc_objects[2].set(OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    uc_objects[3].set(OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    uc_objects[4].set(OBJ_U6_PICTURE,   255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    uc_objects[5].set(OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    uc_objects[6].set(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
+    uc_objects[7].set(OBJ_U6_CLOCK,       1,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
+    uc_objects[8].set(OBJ_U6_MIRROR,      0,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
+    uc_objects[9].set(OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[10].set(OBJ_U6_WINE,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[11].set(OBJ_U6_MEAD,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[12].set(OBJ_U6_ALE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[13].set(OBJ_U6_BREAD,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[14].set(OBJ_U6_MEAT_PORTION,0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[15].set(OBJ_U6_ROLLS,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[16].set(OBJ_U6_CAKE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[17].set(OBJ_U6_CHEESE,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[18].set(OBJ_U6_RIBS,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[19].set(OBJ_U6_MEAT,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[20].set(OBJ_U6_GRAPES,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[21].set(OBJ_U6_HAM,         0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[22].set(OBJ_U6_GARLIC,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[23].set(OBJ_U6_SNAKE_VENOM, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[24].set(OBJ_U6_HORSE_CHOPS, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[25].set(OBJ_U6_HONEY,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[26].set(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
 
+    uc_objects[27].set(OBJ_U6_OAKEN_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[28].set(OBJ_U6_WINDOWED_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[29].set(OBJ_U6_CEDAR_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
+    uc_objects[30].set(OBJ_U6_STEEL_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
 }
 
 
-/* Return index of usecode definition in list for object N:F.
+/* Is the object a food item?
+ */
+bool U6UseCode::is_food(Obj *obj)
+{
+    uint16 n = obj->obj_n;
+    return(n == OBJ_U6_BUTTER || n == OBJ_U6_CHEESE
+           || n == OBJ_U6_WINE || n == OBJ_U6_MEAD || n == OBJ_U6_ALE
+           || n == OBJ_U6_BREAD || n == OBJ_U6_ROLLS || n == OBJ_U6_CAKE
+           || n == OBJ_U6_MEAT_PORTION || n == OBJ_U6_MEAT || n == OBJ_U6_RIBS);
+}
+
+
+/* Is there usecode for an object, with the appropriate event?
+ */
+bool U6UseCode::can_use(Obj *obj)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    if(uc < 0 || !(uc_objects[uc].trigger & USE_EVENT_USE))
+        return(false);
+    return(true);
+}
+
+
+/* Is there usecode for an object, with the appropriate event?
+ */
+bool U6UseCode::can_look(Obj *obj)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    if(uc < 0 || !(uc_objects[uc].trigger & USE_EVENT_LOOK))
+        return(false);
+    return(true);
+}
+
+
+/* Is there usecode for an object, with the appropriate event? This doesn't
+ * check to see if an object can be passed. (call the usecode for that)
+ */
+bool U6UseCode::can_pass(Obj *obj)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    if(uc < 0 || !(uc_objects[uc].trigger & USE_EVENT_PASS))
+        return(false);
+    return(true);
+}
+
+
+/* USE object. Actor is the actor using the object.
+ * Returns false if there is no usecode for that object.
+ */
+bool U6UseCode::use_obj(Obj *obj, Actor *actor)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    if(uc < 0)
+        return(false);
+    set_itemref(actor);
+    return(uc_event(uc, USE_EVENT_USE, obj));
+}
+
+
+/* LOOK at object. Actor is the actor looking at the object.
+ * Returns false if there is no usecode for that object.
+ */
+bool U6UseCode::look_obj(Obj *obj, Actor *actor)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    if(uc < 0)
+        return(false);
+    set_itemref(actor);
+    return(uc_event(uc, USE_EVENT_LOOK, obj));
+}
+
+
+/* PASS object. Actor is the actor trying to pass the object.
+ * Returns false if there is no usecode for that object.
+ */
+bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    if(uc < 0)
+        return(false);
+    set_itemref(actor);
+    return(uc_event(uc, USE_EVENT_PASS, obj));
+}
+
+
+/* Return index of usecode definition in list for object N:F, or -1 if none.
  */
 sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f)
 {
-    for(uint32 o = 0; o < U6USE_NUM_OBJECTS; o++)
-        if(uc_objects[o].obj_n == n && uc_objects[o].frame_n == f)
+    for(uint32 o = 0; o < uc_object_count; o++)
+        if(uc_objects[o].obj_n == n && (uc_objects[o].frame_n == 0xFF
+                                        || uc_objects[o].frame_n == f))
             return(o);
     return(-1);
 }
@@ -63,13 +183,21 @@ sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f)
  */
 bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
 {
-    if(uco < 0 || uco >= U6USE_NUM_OBJECTS)
+    if(uco < 0 || uco >= uc_object_count)
         return(false);
 //printf("__pfn=%x\n", uc_objects[uco].ucf.__pfn_or_delta2.__pfn);
     if(uc_objects[uco].trigger & ev)
     {
-        printf("Usecode #%d (%d:%d), event 0x%02x\n", uco, obj->obj_n, obj->frame_n, ev);
-        return((this->*uc_objects[uco].ucf)(obj, ev));
+        printf("Usecode #%02d (%d:%d), event %d (%s)\n", uco, obj->obj_n,
+               obj->frame_n, ev, (ev == USE_EVENT_USE) ? "USE"
+                                 : (ev == USE_EVENT_LOOK) ? "LOOK"
+                                 : (ev == USE_EVENT_PASS) ? "PASS"
+                                 : "???");
+        bool ucret = (this->*uc_objects[uco].ucf)(obj, ev);
+        int_ref = 0;
+        actor_ref = NULL; // clear references
+        obj_ref = NULL;
+        return(ucret); // return from usecode function
     }
     return(false); // doesn't respond to event
 }
@@ -471,23 +599,109 @@ bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
 }
 
 
-/* Event: Step to.
+/* Event: Use
+ * True: Ate the food.
+ * False: Didn't eat the food.
+ */
+bool U6UseCode::use_food(Obj *obj, uint8 ev)
+{
+    if(ev == USE_EVENT_USE)
+    {
+        if(obj_manager->remove_obj(obj) && actor_ref == player->get_actor())
+        {
+            if(obj->obj_n == OBJ_U6_WINE || obj->obj_n == OBJ_U6_MEAD
+               || obj->obj_n == OBJ_U6_ALE || obj->obj_n == OBJ_U6_SNAKE_VENOM)
+                scroll->display_string("\nYou drink it.\n");
+            else
+                scroll->display_string("\nYou eat the food.\n");
+        }
+        // add to hp
+        // if object is alcoholic drink, add to drunkeness
+        return(true);
+    }
+    return(false);
+}
+
+
+/* Event: Pass
  * True: If Quest Flag is true, allow normal move.
  * False: Block if Quest Flag is false.
  */
 bool U6UseCode::pass_quest_barrier(Obj *obj, uint8 ev)
 {
-    if(ev == USECODE_EVENT_STEPTO)
+    if(ev == USE_EVENT_PASS)
         if(player->get_quest_flag() == 0)
         {
             // block everyone, only print message when player attempts to pass
-            if(itemref == player->get_actor()->get_actor_num())
-            {
-                scroll->display_string("\n\"Thou art not upon a Sacred Quest!\n"
-                                       "Passage denied!\"\n\n");
-                scroll->display_prompt();
-            }
+            if(actor_ref == player->get_actor())
+                scroll->message("\n\"Thou art not upon a Sacred Quest!\n"
+                                "Passage denied!\"\n\n");
             return(false);
         }
     return(true);
 }
+
+
+/* Event: Look
+ * True: Display book data for object (if any exist).
+ * False: Nothing special. Show normal description.
+ */
+bool U6UseCode::look_sign(Obj *obj, uint8 ev)
+{
+    char *data;
+    Book *book = Game::get_game()->get_event()->get_book(); // ??
+
+    if(ev == USE_EVENT_LOOK && obj->quality != 0)
+    {
+        // read
+        if(actor_ref == player->get_actor())
+        {
+            scroll->display_string(":\n\n");
+            if((data = book->get_book_data(obj->quality - 1)))
+            {
+                scroll->display_string(data);
+                free(data);
+            }
+        }
+        return(true);
+    }
+    return(false);
+}
+
+
+/* Event: Look
+ * Display the current time.
+ */
+bool U6UseCode::look_clock(Obj *obj, uint8 ev)
+{
+    GameClock *clock = Game::get_game()->get_clock();
+    if(ev == USE_EVENT_LOOK && actor_ref == player->get_actor())
+    {
+        scroll->display_string("\nThe time is ");
+        scroll->display_string(clock->get_time_string());
+        return(true);
+    }
+    return(false);
+}
+
+
+/* test (need to determine use of true/false return)
+ */
+bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
+{
+    ViewManager *view_manager = Game::get_game()->get_view_manager();
+    if(ev == USE_EVENT_LOOK && actor_ref == player->get_actor())
+    {
+        uint16 x, y;
+        uint8 z;
+        actor_ref->get_location(&x, &y, &z);
+        if(x == obj->x && y > obj->y && y <= (obj->y + 2))
+        {
+            scroll->display_string("\nYou can see yourself!");
+            view_manager->set_portrait_mode(actor_ref->get_actor_num(), NULL);
+        }
+        return(true);
+    }
+    return(false);
+}
+
