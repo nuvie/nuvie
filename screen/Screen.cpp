@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include <cmath>
 #include <SDL.h>
 
 #include "nuvieDefs.h"
@@ -33,13 +34,20 @@
 #include "Scale.h"
 #include "Screen.h"
 
+#define sqr(a) ((a)*(a))
+
+//Ultima 6 light globe sizes.
+
+static const uint8 globeradius[]   = { 32, 64, 128 };
+static const uint8 globeradius_2[] = { 16, 32,  64 };
+
 Screen::Screen(Configuration *cfg)
 {
  config = cfg;
  
  update_rects = NULL;
  shading_data = NULL;
- updatingAlphaMap = true;
+ updatingalphamap = true;
  
  max_update_rects = 10;
  num_update_rects = 0;
@@ -50,6 +58,13 @@ Screen::~Screen()
  delete surface;
  if (update_rects) free(update_rects);
  if (shading_data) free(shading_data);
+
+ for( int i = 0; i < 3; i++ )
+   {
+    if(shading_globe[i])
+       free(shading_globe[i]);
+   }
+
  SDL_Quit();
 }
 
@@ -452,70 +467,70 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
 	{
 		memset( shading_data, shading_ambient, sizeof(char)*shading_rect.w*shading_rect.h );
 	}
+	updatingalphamap = true;
 
- updatingAlphaMap = true;
+	//Light globe around the avatar
+	drawalphamap8globe( 88, 88, 3 );
+
 }
 
-void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 radius )
+void Screen::buildalphamap8()
 {
- if( shading_ambient == 0xFF )
-    return;
- //The x and y are relative to (0,0) of the screen itself, and are absolute coordinates, so are i and j
- sint16 i,j;
- for(i=-radius;i<radius;i++)
-	for(j=-radius;j<radius;j++)
-	{
-		if( (y-shading_rect.y+i)-1 < 0 ||
-			(x-shading_rect.x+j)-1 < 0 ||
-			(y-shading_rect.y+i)+1 > shading_rect.h ||
-			(x-shading_rect.x+j)+1 > shading_rect.w )
-			continue;
-#if 1 //Linear attenuation
-		/*
-		float r;
-		//Distance from center
-		r  = sqrt( i*i+j*j );
-		//Unitize
-		r /= (float)radius;
-		//Fit into a byte
-		r *= 255;
-		//Place it
-		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = min( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + max( 0, 255 - r ) );
-		*/
+	//Build three globes for 3 intensities
+	//16x16, 32x32, 64x64
+	shading_globe[0] = (uint8*)malloc(sqr(globeradius[0]));
+	shading_globe[1] = (uint8*)malloc(sqr(globeradius[1]));
+	shading_globe[2] = (uint8*)malloc(sqr(globeradius[2]));
 
-		//The condensed version
-		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + MAX( 0, 255 - sqrt( float (i*i+j*j) ) / (float)radius * 255 ) );
-#else //Gaussian attenuation
-		/*
-		float r;
-		//Distance from center
-		r  = sqrt( i*i+j*j );
-		//Unitize
-		r /= sqrt( sqr(radius)+sqr(radius) );
-		//Calculate brightness
-		r  = (float)exp(-(10*r*r));
-		//Fit into a byte
-		r *= 255;
-		//Place it
-		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)]+r );
-		//*/
-
-		//The condensed version
-		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)]+exp( -10*pow( sqrt( float (i*i + j*j) ) / sqrt( 2*pow( radius, 2 ) ), 2 ) ) * 255 );
-#endif
-	}
+	for( int i = 0; i < 3; i++ )
+		for( int y = 0; y < globeradius[i]; y++ )
+			for( int x = 0; x < globeradius[i]; x++ )
+			{
+				float r;
+				//Distance from center
+				r  = sqrt( sqr((y-globeradius_2[i]))+sqr((x-globeradius_2[i])) );
+				//Unitize
+				r /= sqrt( sqr(globeradius_2[i])+sqr(globeradius_2[i]) );
+				//Calculate brightness
+				r  = (float)exp(-(10*r*r));
+				//Fit into a byte
+				r *= 255;
+				//Place it
+				shading_globe[i][y*globeradius[i]+x] = (uint8)r;
+			}
 }
+
+void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
+{
+	if( shading_ambient == 0xFF )
+		return;
+	r--;
+	//The x and y are relative to (0,0) of the screen itself, and are absolute coordinates, so are i and j
+	sint16 i,j;
+	for(i=-globeradius_2[r];i<globeradius_2[r];i++)
+		for(j=-globeradius_2[r];j<globeradius_2[r];j++)
+		{
+			if( (y-shading_rect.y+i)-1 < 0 ||
+				(x-shading_rect.x+j)-1 < 0 ||
+				(y-shading_rect.y+i)+1 > shading_rect.h ||
+				(x-shading_rect.x+j)+1 > shading_rect.w )
+				continue;
+			shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + shading_globe[r][(i+globeradius_2[r])*globeradius[r]+(j+globeradius_2[r])], 255 );
+			//shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = 0xFF;
+		}
+}
+
 
 void Screen::blitalphamap8()
 {
- updatingAlphaMap = false;
- 
 	//pixel = (dst*(1-alpha))+(src*alpha)   for an interpolation
 	//pixel = pixel * alpha                 for a reduction
 	//We use a reduction here
 
 	if( shading_ambient == 0xFF )
 		return;
+
+	updatingalphamap = false;
 
 	uint16 i,j;
 

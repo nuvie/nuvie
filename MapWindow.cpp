@@ -297,8 +297,9 @@ void MapWindow::updateBlacking()
  
      GameClock *clock = Game::get_game()->get_clock();
      int h = clock->get_hour();
-if(screen)
-{
+if(!screen)
+ return;
+ 
      if(in_dungeon_level())
 	     screen->set_ambient( 0x00 );
      else if( h == 19 ) //Dusk
@@ -314,8 +315,8 @@ if(screen)
  screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
  
  //Light globe around the avatar
- screen->drawalphamap8globe( 88, 88, 64 );
-}
+ screen->drawalphamap8globe( 88, 88, 3 );
+
 
 }
 
@@ -501,7 +502,7 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
 
   //Draw a lightglobe in the middle of the 16x16 tile.
   if((tile->flags2 & 0x3) > 0 && screen->should_update_alphamap())
-	 screen->drawalphamap8globe( 8 + (obj->x - cur_x)*16, 8 + (obj->y - cur_y)*16 , (tile->flags2 & 0x3)*16 );
+	 screen->drawalphamap8globe( 8 + (obj->x - cur_x)*16, 8 + (obj->y - cur_y)*16 , (tile->flags2 & 0x3) );
       
   drawTile(tile,obj->x - cur_x, obj->y - cur_y, toptile);
   

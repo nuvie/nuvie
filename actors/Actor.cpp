@@ -483,6 +483,15 @@ void Actor::set_in_party(bool state)
     }
 }
 
+void Actor::attack(Actor *actor)
+{
+ return;
+}
+
+void Actor::defend(uint16 hit)
+{
+ return;
+}
 
 U6LList *Actor::get_inventory_list()
 {

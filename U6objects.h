@@ -114,6 +114,9 @@
 #define OBJ_U6_HORSE_CHOPS         135
 
 #define OBJ_U6_PLANT               138
+
+#define OBJ_U6_DECORATIVE_SWORD    141
+
 #define OBJ_U6_PICTURE             143
 #define OBJ_U6_CANDELABRA          145
 #define OBJ_U6_PERSON_SLEEPING     146

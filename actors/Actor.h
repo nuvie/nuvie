@@ -180,6 +180,10 @@ class Actor
  void set_exp(uint16 val) { exp = val; }
  void set_magic(uint8 val) { magic = val; }
 
+ // combat methods
+ void attack(Actor *actor); // attack another actor
+ void defend(uint16 hit); // defend against an attack from another actor
+ 
  uint8 get_worktype();
  virtual void set_worktype(uint8 new_worktype);
   

@@ -56,8 +56,9 @@ class Screen
 
  SDL_Rect shading_rect;
  uint8 *shading_data;
+ uint8 *shading_globe[3];
  uint8 shading_ambient;
- bool updatingAlphaMap;
+ bool updatingalphamap;
  
  public:
    Screen(Configuration *cfg);
@@ -80,16 +81,18 @@ class Screen
    bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL);
    void blitbitmap(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
+   void buildalphamap8();
    void clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity );
    void drawalphamap8globe( sint16 x, sint16 y, uint16 radius );
    void blitalphamap8();
+
    uint8 get_ambient() { return shading_ambient; }
    void set_ambient( uint8 ambient ) { shading_ambient = ambient; }
 
    void update();
    void update(uint16 x, uint16 y, uint16 w, uint16 h);
    void preformUpdate();
-   bool should_update_alphamap() { return updatingAlphaMap; }
+   bool should_update_alphamap() { return updatingalphamap; }
    void lock();
    void unlock();
    

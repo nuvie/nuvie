@@ -1,3 +1,9 @@
+2004-01-08  Eric Fry <efry at users.sourceforge.net>
+	* Added Sam's optimized darkness patch. The Darkness code should be a
+	  lot faster now.
+	* Some work on weapon stats. I'm not completely sure how combat will
+	  end up. But at least the combat numbers are written down someware. ;)
+
 2004-01-02  Eric Fry <efry at users.sourceforge.net>
 	* Added rolling pin to the list of readiable objects.
 
