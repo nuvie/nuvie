@@ -31,7 +31,8 @@ extern GUI_status actorViewButtonCallback(void *data);
 
 static GUI_status combatButtonCallback(void *data);
 
-InventoryView::InventoryView(Configuration *cfg) : View(cfg)
+InventoryView::InventoryView(Configuration *cfg) : View(cfg),
+   doll_widget(NULL), inventory_widget(NULL)
 {
 
 }
