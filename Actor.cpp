@@ -222,7 +222,31 @@ U6LList *Actor::get_inventory_list()
  return obj_manager->get_actor_inventory(id_n); 
 }
 
-bool Actor::inventory_has_object(uint16 obj_n)
+
+bool Actor::inventory_has_object(uint16 obj_n, uint8 qual)
+{
+    if(inventory_get_object(obj_n, qual))
+        return(true);
+    return(false);
+}
+
+
+/* Returns the number of objects in the actor's inventory with matching object
+ * number and quality.
+ */
+uint8 Actor::inventory_count_object(uint16 obj_n, uint8 qual)
+{
+    Obj *obj = inventory_get_object(obj_n, qual);
+    if(!obj)
+        return(0);
+    return(obj->qty);
+}
+
+
+/* Returns object descriptor of object in the actor's inventory, or NULL if no
+ * matching object is found.
+ */
+Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual)
 {
  U6LList *inventory;
  U6Link *link;
@@ -234,11 +258,12 @@ bool Actor::inventory_has_object(uint16 obj_n)
    {
     obj = (Obj *)link->data;
     if(obj->obj_n == obj_n)
-      return true;
+      return(obj);
    }
    
  return false;
 }
+
 
 bool Actor::inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality)
 {

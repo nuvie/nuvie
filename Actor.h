@@ -124,12 +124,16 @@ class Actor
  void set_in_party(bool state);
  
  U6LList *get_inventory_list();
- bool inventory_has_object(uint16 obj_n);
+ bool inventory_has_object(uint16 obj_n, uint8 qual = 0);
+ uint8 inventory_count_object(uint16 obj_n, uint8 qual = 0);
+ Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0);
  bool inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality);
  bool inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);
+ float inventory_get_total_weight() { return(get_inventory_weight() + get_inventory_equip_weight()); }
+ float inventory_get_max_weight() { return(strength * 2); }
  float get_inventory_weight();
  float get_inventory_equip_weight();
- 
+
  protected:
  
  void loadSchedule(unsigned char *schedule_data, uint16 num);
