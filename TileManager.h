@@ -40,9 +40,11 @@
 #define TILEFLAG_WALL_EAST  0x40
 #define TILEFLAG_WALL_SOUTH 0x20
 #define TILEFLAG_WALL_WEST  0x10
+#define TILEFLAG_WALL 0x4
 
 //flags2
-#define TILEFLAG_WALL 0x4
+#define TILEFLAG_BOUNDARY 0x4
+
 
 #define TILEFLAG_WINDOW 0x8 // flags2
 

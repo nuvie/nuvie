@@ -159,7 +159,7 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
              if(check_tile)
                {
                 tile1 = tile_manager->get_tile(tile_num);
-                if(tile1->flags2 & TILEFLAG_WALL)
+                if(tile1->flags2 & TILEFLAG_BOUNDARY)
                   return true;
 
                 check_tile = false;

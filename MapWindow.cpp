@@ -629,7 +629,7 @@ bool MapWindow::boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y)
 void MapWindow::reshapeBoundary()
 {
  uint16 x,y;
- uint8 flag;
+ uint8 flag, original_flag;
  Tile *tile;
  
  for(y=1;y <= win_height;y++)
@@ -639,10 +639,11 @@ void MapWindow::reshapeBoundary()
        if(tmpBufTileIsBoundary(x,y))
          {
           tile = tile_manager->get_tile(tmp_buf[y*(win_width + 2) + x]);
-        
+      
           if((tile->tile_num >= 140 && tile->tile_num <= 187)) //main U6 wall tiles FIX for WOU games
             {
              flag = 0;
+             original_flag = tile->flags1 & TILEFLAG_WALL_MASK;
             }
           else
             continue;
@@ -655,6 +656,17 @@ void MapWindow::reshapeBoundary()
           if(tmpBufTileIsWall(x,y+1))
             flag |= TILEFLAG_WALL_SOUTH;
           if(tmpBufTileIsWall(x-1,y))
+            flag |= TILEFLAG_WALL_WEST;
+
+          //we want to keep existing tile if it is pointing to non-wall tiles which are not blacked
+          //this is used to support cookfire walls which aren't considered walls in tileflags.
+          if(tmpBufTileIsBlack(x,y-1) == false && (original_flag & TILEFLAG_WALL_NORTH))
+            flag |= TILEFLAG_WALL_NORTH;
+          if(tmpBufTileIsBlack(x+1,y) == false && (original_flag & TILEFLAG_WALL_EAST))
+            flag |= TILEFLAG_WALL_EAST;
+          if(tmpBufTileIsBlack(x,y+1) == false && (original_flag & TILEFLAG_WALL_SOUTH))
+            flag |= TILEFLAG_WALL_SOUTH;
+          if(tmpBufTileIsBlack(x-1,y) == false && (original_flag & TILEFLAG_WALL_WEST))
             flag |= TILEFLAG_WALL_WEST;
             
           if(flag == 0) //isolated border tiles
@@ -750,10 +762,13 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y)
  if(tile->flags1 & TILEFLAG_WALL)
    return true;
 
+// if(obj_manager->is_boundary(cur_x-1+x, cur_y-1+y, cur_level))
+//  return true;
+
  tile = obj_manager->get_obj_tile(cur_x-1+x, cur_y-1+y, cur_level, false);
  if(tile != NULL)
    {
-    if(tile->flags1 & TILEFLAG_WALL)
+    if(tile->flags2 & TILEFLAG_BOUNDARY)
       return true;
    }
    
