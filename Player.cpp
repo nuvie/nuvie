@@ -65,6 +65,23 @@ char *Player::get_name()
  return name;
 }
 
+
+/* Add to Player karma. Handle appropriately the karma min/max limits.
+ */
+void Player::add_karma(uint8 val)
+{
+    karma = ((karma + val) <= 99) ? karma + val : 99;
+}
+
+
+/* Subtract from Player karma. Handle appropriately the karma min/max limits.
+ */
+void Player::subtract_karma(uint8 val)
+{
+    karma = ((karma - val) >= 0) ? karma - val : 0;
+}
+
+
 char *Player::get_gender_title()
 {
  if(gender == 0)
