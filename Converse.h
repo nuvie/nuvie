@@ -49,11 +49,12 @@ typedef unsigned char* convscript_buffer;
 
 #define U6TALK_VAR_SEX       0x10 // sex of avatar: male=0 female=1
 #define U6TALK_VAR_KARMA     0x14 // avatar's karma
-#define U6TALK_VAR_PARTYLIVE 0x17 // number of people (alive) in avatar's party
-#define U6TALK_VAR_PARTYALL  0x18 // number of people (alive+dead) in party
+#define U6TALK_VAR_PARTYLIVE 0x17 // number of people (living) following avatar
+#define U6TALK_VAR_PARTYALL  0x18 // number of people (total) following avatar
+#define U6TALK_VAR_HP        0x19 // avatar's health
 #define U6TALK_VAR_QUESTF    0x1A // 0="Thou art not upon a sacred quest!"
 #define U6TALK_VAR_WORKTYPE  0x20 // current activity of npc, from schedule
-#define U6TALK_VAR__LAST_ 0x20
+#define U6TALK_VAR__LAST_ 0x25 // (all above 36 appear uninitialized)
 
 
 /* Conversation engine, apart from the interpreter. Loads converse files,

@@ -173,9 +173,10 @@ void Converse::init_variables()
     }
     set_var(U6TALK_VAR_SEX, player->get_gender());
     set_var(U6TALK_VAR_KARMA, player->get_karma());
-    set_var(U6TALK_VAR_PARTYLIVE, player->get_party()->get_party_size());
-    // FIXME: dead party members
+    set_var(U6TALK_VAR_PARTYLIVE, player->get_party()->get_party_size() - 1);
+    // FIXME: count dead party members in PARTYALL, not in PARTYLIVE
     set_var(U6TALK_VAR_PARTYALL, get_var(U6TALK_VAR_PARTYLIVE));
+    set_var(U6TALK_VAR_HP, player->get_actor()->get_hp());
     set_var(U6TALK_VAR_QUESTF, 0); // FIXME: QUEST FLAG
     set_var(U6TALK_VAR_WORKTYPE, npc->get_worktype());
 }
