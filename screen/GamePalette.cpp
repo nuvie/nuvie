@@ -63,7 +63,7 @@ bool GamePalette::loadPalette()
  
  config->pathFromValue("config/ultima6/gamedir","u6pal",filename);
  
- if(file.open("/Users/eric/Projects/Ultima6/nuvie/ultima6/u6pal","rb") == false)
+ if(file.open(filename,"rb") == false)
   {
    printf("Error: loading palette.\n");
    return false;
