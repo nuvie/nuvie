@@ -108,7 +108,7 @@ bool U6File::readToBuf(unsigned char *buf, uint32 buf_size)
  return true;
 }
 
-unsigned char *U6File::readBuf(uint32 size, uint32 &bytes_read)
+unsigned char *U6File::readBuf(uint32 size, unsigned int *bytes_read)
 {
  unsigned char *buf;
  
@@ -119,7 +119,7 @@ unsigned char *U6File::readBuf(uint32 size, uint32 &bytes_read)
     return NULL;
    }
    
- bytes_read = fread(buf,1,size,f);
+ *bytes_read = fread(buf,1,size,f);
 
  return buf;
 }

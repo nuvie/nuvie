@@ -50,10 +50,15 @@ class ActorManager
  bool loadActors();
  
  Actor *get_actor(uint8 actor_num);
- 
+ Actor *get_partyLeader();
+
  void updateActors();
  
  void drawActors(Screen *screen, uint16 x, uint16 y, uint16 width, uint16 height, uint8 level);
+ 
+ protected:
+ 
+ bool ActorManager::loadActorSchedules();
  
 };
 

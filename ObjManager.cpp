@@ -79,6 +79,32 @@ U6LList *ObjManager::get_obj_superchunk(uint16 x, uint16 y, uint8 level)
  return dungeon[level-1];
 }
 
+// x, y in world coords
+Obj *ObjManager::get_base_obj(uint16 x, uint16 y, uint8 level)
+{
+ U6Link *link;
+ Obj *obj;
+ uint16 sx,sy; // note these values are not required if level > 0
+ 
+ if(level == 0)
+   {
+    sx = x / 128;
+    sy = y / 128;
+    link = surface[sy * 8 + sx]->start();
+   }
+ else
+   link = dungeon[level-1]->start();
+ 
+ for(;link != NULL;link=link->next)
+   {
+    obj = (Obj *)link->data;
+    if(obj->x == x && obj->y == y)
+      return obj;
+   }
+
+ return NULL;
+}
+ 
 uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :)
 {   
  return obj_to_tile[obj_num];
@@ -166,7 +192,7 @@ Obj *ObjManager::loadObj(U6File *file)
  b2 = file->read1();
  obj->y += (b2 & 0xf) << 6;
    
- obj->z = (b2 & 0xf0) >> 4; // ?? this is unverified.
+ obj->z = (b2 & 0xf0) >> 4;
    
  b1 = file->read1();
  b2 = file->read1();

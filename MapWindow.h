@@ -44,7 +44,7 @@ class MapWindow
  void moveLevel(uint8 new_level);
  void move(uint16 new_x, uint16 new_y);
  void moveRelative(sint16 rel_x, sint16 rel_y);
- 
+ void centerOnActor(Actor *actor);
  
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);

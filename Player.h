@@ -1,11 +1,11 @@
-#ifndef __Actor_h__
-#define __Actor_h__
+#ifndef __Player_h__
+#define __Player_h__
 
 /*
- *  Actor.h
+ *  player.h
  *  Nuive
  *
- *  Created by Eric Fry on Thu Mar 20 2003.
+ *  Created by Eric Fry on Sun Mar 23 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -25,65 +25,34 @@
  */
 
 #include "U6def.h"
-#include "Map.h"
+#include "Configuration.h"
 
-typedef struct {
-uint16 x;
-uint16 y;
-uint16 z;
-uint8 hour;
-uint8 unknown;
-} Schedule;
+#include "Actor.h"
+#include "ActorManager.h"
+#include "MapWindow.h"
 
-class Actor
+class Player
 {
- friend class ActorManager;
+ Configuration *config;
  
- uint8 id_n;
+ bool party_mode;
+ Actor *actor;
+ ActorManager *actor_manager;
  
- Map *map;
- 
- uint16 x;
- uint16 y;
- uint16 z;
- 
- uint16 a_num;
- uint16 frame_n;
- uint8 direction;
- uint8 walk_frame;
- 
- bool alive;
- bool met_player;
- 
- bool in_party;
- 
- uint8 strength;
- uint8 dex;
- uint8 inteligence;
- 
- uint8 hp;
- 
- char *name;
- 
- Schedule **sched;
+ MapWindow *map_window;
  
  public:
  
- Actor(Map *m);
- ~Actor();
+ Player(Configuration *cfg);
  
- bool is_alive();
- void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
- void set_direction(uint8 d);
- 
- bool moveRelative(sint16 rel_x, sint16 rel_y);
- 
- void update();
- 
- protected:
- 
- void loadSchedule(unsigned char *schedule_data, uint16 num);
+ bool init(Actor *a, ActorManager *am, MapWindow *mw);
+ Actor *get_actor();
+
+ void moveLeft();
+ void moveRight();
+ void moveUp();
+ void moveDown();
  
 };
 
-#endif /* __Actor_h__ */
+#endif /* __Player_h__ */

@@ -70,6 +70,26 @@ uint16 Map::get_width(uint8 level)
  return 256; // dungeon
 }
 
+bool Map::is_passable(uint16 x, uint16 y, uint8 level)
+{
+ uint8 *ptr;
+ Obj *obj;
+ Tile *tile;
+
+ obj = obj_manager->get_base_obj(x, y, level);
+ if(obj != NULL)
+   {
+    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n));
+    if(tile->passable == false)
+      return false;
+   }
+     
+ ptr = get_map_data(level);
+ tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
+
+ return tile->passable;
+}
+
 bool Map::loadMap(TileManager *tm, ObjManager *om)
 {
  std::string filename;

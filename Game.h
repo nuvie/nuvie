@@ -35,6 +35,7 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
+#include "Player.h"
 
 #include "MsgScroll.h"
 #include "Map.h"
@@ -65,6 +66,7 @@ class Game
  Map *game_map;
  MapWindow *map_window;
  MsgScroll *scroll;
+ Player *player;
  
  uint8 game_mode;
  

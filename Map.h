@@ -49,7 +49,8 @@ class Map
  
  bool loadMap(TileManager *tm, ObjManager *om);
  unsigned char *get_map_data(uint8 level);
- uint16 Map::get_width(uint8 level);
+ uint16 get_width(uint8 level);
+ bool is_passable(uint16 x, uint16 y, uint8 level);
  
  protected:
   

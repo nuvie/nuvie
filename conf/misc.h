@@ -3,7 +3,7 @@
  *  Nuive
  *
  *  Created by Eric Fry on Tue Mar 11 2003.
- *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
+ *  Copyright (c) 2003. All rights reserved.
  *
  */
 

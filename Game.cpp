@@ -67,12 +67,16 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  
  actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager);
  actor_manager->loadActors();
- 
+  
  map_window = new MapWindow(config);
  map_window->init(screen, game_map, tile_manager, obj_manager, actor_manager);
+
+ player = new Player(config);
+ player->init(actor_manager->get_actor(1),actor_manager, map_window);
  
  map_window->set_windowSize(11,11);
- map_window->move(0x12e,0x16b);
+ //map_window->move(0x12e,0x16b);
+ map_window->centerOnActor(player->get_actor());
  
  return true;
 }
@@ -122,6 +126,7 @@ void Game::play()
     {
      updateEvents();
      tile_manager->update();
+     actor_manager->updateActors();
      map_window->drawMap();
      scroll->updateScroll();
      screen->update();
@@ -142,6 +147,7 @@ void Game::updateEvents()
 				case SDL_MOUSEBUTTONDOWN:
 					break;
 				case SDL_KEYDOWN:
+/*
 					if(event.key.keysym.sym==SDLK_UP)
             { map_window->moveRelative(0,-1); break; }
  					if(event.key.keysym.sym==SDLK_DOWN)
@@ -150,6 +156,15 @@ void Game::updateEvents()
             { map_window->moveRelative(-1,0); break; }
 					if(event.key.keysym.sym==SDLK_RIGHT)
             { map_window->moveRelative(1,0); break; }
+*/
+					if(event.key.keysym.sym==SDLK_UP)
+            { player->moveUp(); break; }
+ 					if(event.key.keysym.sym==SDLK_DOWN)
+            { player->moveDown(); break; }
+					if(event.key.keysym.sym==SDLK_LEFT)
+            { player->moveLeft(); break; }
+					if(event.key.keysym.sym==SDLK_RIGHT)
+            { player->moveRight(); break; }
 					if(event.key.keysym.sym==SDLK_q)
 						game_stop = true;
 					break;       

@@ -66,7 +66,8 @@ class ObjManager
  bool loadObjs();
  
  U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
-
+ Obj *get_base_obj(uint16 x, uint16 y, uint8 level);
+ 
  uint16 get_obj_tile_num(uint16 obj_num);
 
  protected:

@@ -70,6 +70,20 @@ void MapWindow::moveRelative(sint16 rel_x, sint16 rel_y)
      cur_y += rel_y;
 }
 
+void MapWindow::centerOnActor(Actor *actor)
+{
+ uint16 x;
+ uint16 y;
+ uint8 z;
+ 
+ actor->get_location(&x,&y,&z);
+ 
+ cur_x = x - ((win_width - 1) / 2);
+ cur_y = y - ((win_height - 1) / 2);
+
+ return;
+}
+
 void MapWindow::get_level(uint8 *level)
 {
  *level = cur_level;
