@@ -371,7 +371,7 @@ const char *Converse::npc_name(uint8 num)
 /* Start checking i/o object for some input, (optionally block all but allowed
  * input) and tell interpreter to wait.
  */
-void Converse::poll_input(const char *allowed = NULL, bool nonblock = true)
+void Converse::poll_input(const char *allowed, bool nonblock)
 {
     scroll->set_input_mode(true, allowed, nonblock);
     need_input = true;
@@ -509,7 +509,7 @@ void ConvScript::read_script()
 
 /* Returns 8bit value from current script location in LSB-first form.
  */
-converse_value ConvScript::read(uint32 advance = 1)
+converse_value ConvScript::read(uint32 advance)
 {
     uint8 val = 0;
     while(advance--)
