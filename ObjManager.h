@@ -34,6 +34,8 @@
 
 #include "TileManager.h"
 
+class UseCode;
+
 // obj status bit flags
 #define OBJ_STATUS_NO_OBJ       0
 #define OBJ_STATUS_OK_TO_TAKE   1
@@ -80,12 +82,17 @@ class ObjManager
  uint8 obj_weight[1024];
  U6LList *actor_inventories[256];
 
+ UseCode *usecode;
+
  public:
 
  ObjManager(Configuration *cfg);
  ~ObjManager();
 
  bool loadObjs(TileManager *tm);
+
+ void set_usecode(UseCode *uc) { usecode = uc; }
+ UseCode *get_usecode()        { return(usecode); }
 
  //U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
