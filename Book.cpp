@@ -31,5 +31,5 @@ char *Book::get_book_data(uint16 num)
  if(num >= books.get_num_items())
    return NULL;
 
- return books.get_item(num);
+ return reinterpret_cast<char*>(books.get_item(num));
 }
