@@ -219,13 +219,13 @@ bool MsgScroll::handle_input(SDLKey *input)
                             // reset input buffer
                             permit_input = NULL;
                             input_buf_pos = 0;
-                            if(input_mode && permit_input == NULL)
+                            if(input_mode)
                               set_input_mode(false);
                           }
                           return(true);
         case SDLK_RETURN: if(permit_inputescape)
                           {
-                            if(input_mode && permit_input == NULL)
+                            if(input_mode)
                               set_input_mode(false);
                           }
                           return(true);
