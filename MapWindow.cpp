@@ -153,9 +153,9 @@ void MapWindow::drawObjSuperBlock(U6LList *superblock)
 //   if(obj->y > cur_y + win_height)
 //      break;
 
-   if(obj->y >= cur_y && obj->y < cur_y + win_height)
+   if(obj->y >= cur_y && obj->y <= cur_y + win_height)
      {
-      if(obj->x >= cur_x && obj->x < cur_x + win_width)
+      if(obj->x >= cur_x && obj->x <= cur_x + win_width)
         {
          //draw here.
          drawObj(obj);
@@ -188,12 +188,13 @@ inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y)
  dbl_width = tile->dbl_width;
  dbl_height = tile->dbl_height;
  
- screen->blit(tile->data,8,x*16,y*16,16,16,tile->transparent);
+ if(x < win_width && y < win_height)
+   screen->blit(tile->data,8,x*16,y*16,16,16,tile->transparent);
        
  if(dbl_width)
    {
     tile_num--;
-    if(x > 0)
+    if(x > 0 && y < win_height)
       {
        tile = tile_manager->get_tile(tile_num);
        screen->blit(tile->data,8,(x-1)*16,y*16,16,16,tile->transparent);
@@ -203,7 +204,7 @@ inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y)
  if(dbl_height)
    {
     tile_num--;
-    if(y > 0)
+    if(y > 0 && x < win_width)
       {
        tile = tile_manager->get_tile(tile_num);
        screen->blit(tile->data,8,x*16,(y-1)*16,16,16,tile->transparent);
