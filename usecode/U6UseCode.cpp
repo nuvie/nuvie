@@ -902,7 +902,7 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  if(!mapcoord_ref)
   {
    game->get_event()->freeselect_mode(obj, "Where: ");
-   return true;
+   return false; // no prompt
   }
 
  ox=mapcoord_ref->x;

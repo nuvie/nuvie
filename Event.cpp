@@ -357,6 +357,7 @@ void Event::useselect_mode(Obj *src, const char *prompt)
     map_window->centerCursor();
     map_window->set_show_cursor(false);
     map_window->set_show_use_cursor(true);
+    view_manager->get_inventory_view()->set_show_cursor(false);
 }
 
 
@@ -371,6 +372,7 @@ void Event::freeselect_mode(Obj *src, const char *prompt)
     map_window->centerCursor();
     map_window->set_show_use_cursor(false);
     map_window->set_show_cursor(true);
+    view_manager->get_inventory_view()->set_show_cursor(false);
 }
 
 
