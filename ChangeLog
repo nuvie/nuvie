@@ -1,3 +1,8 @@
+2003-06-16  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Player: Added karma functions to set value.
+	* Conversation class rearranged (to start adding support for MD and SE.)
+	New ops handled: ADDKARMA, SUBKARMA, and NPC stats.
+
 2003-06-14  Eric Fry <efry@users.sourceforge.net>
 	* Work started on MD and SE support. Both games now load in a limited
 	  capacity if a copy of U6 is present.
