@@ -68,7 +68,7 @@ bool Event::update()
                                         }
                                         break;
 				case SDL_KEYDOWN:
-           if(scroll->handle_input(&event.key.keysym.sym))
+           if(scroll->handle_input(&event.key.keysym))
              break; // break switch
            // alt-code input
            if((event.key.keysym.sym >= SDLK_0 && event.key.keysym.sym <= SDLK_9)
