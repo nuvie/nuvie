@@ -48,7 +48,7 @@ Event::~Event()
 }
 
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
-                 GameClock *gc, Converse *c, ViewManager *vm)
+                 GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc)
 {
  obj_manager = om;
  map_window = mw;
@@ -57,7 +57,8 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  player = p;
  converse = c;
  view_manager = vm;
-
+ usecode = uc;
+ 
  mode = MOVE_MODE;
 
  book = new Book(config);
@@ -348,7 +349,6 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  player->get_location(&x,&y,&level);
 
 
-
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
 
  if(obj)
@@ -356,36 +356,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
   scroll->display_string(obj_manager->look_obj(obj));
   scroll->display_string("\n");
 
-  if(obj->obj_n == OBJ_U6_LADDER || obj->obj_n == OBJ_U6_HOLE)
-   {
-    if(obj->frame_n == 0) // DOWN
-      {
-       if(level == 0)
-        {
-         player->move(((obj->x & 0x07) | (obj->x >> 2 & 0xF8)), ((obj->y & 0x07) | (obj->y >> 2 & 0xF8)), level+1);
-        }
-       else
-          player->move(obj->x,obj->y,level+1);
-      }
-    else //UP
-      {
-       if(level == 1)
-         {
-        //FIX clean his up a bit. :)
-         player->move(
-         obj->x / 8 * 8 * 4 + ((obj->quality & 0x03) * 8) + (obj->x - obj->x / 8 * 8),
-         obj->y / 8 * 8 * 4 + ((obj->quality >> 2 & 0x03) * 8) + (obj->y - obj->y / 8 * 8),
-         level-1);
-
-         }
-       else
-         player->move(obj->x,obj->y,level-1);
-      }
-   }
-  else
-   {
-    obj_manager->use_obj(obj);
-   }
+  usecode->use_obj(obj);
  }
 
  scroll->display_string("\n");

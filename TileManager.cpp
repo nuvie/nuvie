@@ -165,7 +165,7 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
  bool plural;
  Tile *tile;
  
- tile = get_tile(tile_num);
+ tile = get_original_tile(tile_num);
  
  if(qty > 1)
    plural = true;

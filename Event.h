@@ -35,6 +35,7 @@
 #include "Book.h"
 #include "Converse.h"
 #include "ViewManager.h"
+#include "UseCode.h"
 
 #define NUVIE_INTERVAL    50
 
@@ -62,7 +63,8 @@ class Event
  Book *book;
  Converse *converse;
  ViewManager *view_manager;
-
+ UseCode *usecode;
+ 
  SDL_Event event;
  int ts; //timestamp for TimeLeft() method.
  char alt_code_str[4]; // string representation of alt-code input
@@ -75,7 +77,7 @@ class Event
  ~Event();
 
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
-           GameClock *gc, Converse *c, ViewManager *vm);
+           GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc);
 
  bool update();
  bool move(sint16 rel_x, sint16 rel_y);

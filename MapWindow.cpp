@@ -329,7 +329,7 @@ void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
  U6LList *obj_list;
  Obj *obj;
  uint16 x,y;
- 
+
     for(y=cur_y+win_height; y >= cur_y; y--)
       {
        for(x=cur_x+win_width;x >= cur_x; x--)
@@ -356,7 +356,7 @@ inline void MapWindow::drawObj(Obj *obj, bool toptile)
  y = obj->y - cur_y;
  x = obj->x - cur_x;
  
- tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+ tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
  
  if(tmp_buf[(y+1)*(win_width+2)+(x+1)] == 0) //don't draw object if area is in darkness.
     return;
@@ -386,7 +386,7 @@ inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile)
  dbl_height = tile->dbl_height;
  
  if(x < win_width && y < win_height)
-   drawTopTile(tile,x,y,toptile);
+   drawTopTile(tile_manager->get_tile(tile_num),x,y,toptile);
        
  if(dbl_width)
    {

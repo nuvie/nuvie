@@ -277,15 +277,11 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
  Obj *obj;
  Tile *tile;
 
- obj = get_objBasedAt(x,y,level,top_obj);
- if(obj != NULL)
-   return obj;
-
- obj = get_objBasedAt(x+1,y,level,top_obj);
+ obj = get_objBasedAt(x+1,y+1,level,top_obj);
  if(obj != NULL)
   {
    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
-   if(tile->dbl_width)
+   if(tile->dbl_width && tile->dbl_height)
      return obj;
   }
 
@@ -297,13 +293,17 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
      return obj;
   }
 
- obj = get_objBasedAt(x+1,y+1,level,top_obj);
+ obj = get_objBasedAt(x+1,y,level,top_obj);
  if(obj != NULL)
   {
    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
-   if(tile->dbl_width && tile->dbl_height)
+   if(tile->dbl_width)
      return obj;
   }
+
+ obj = get_objBasedAt(x,y,level,top_obj);
+ if(obj != NULL)
+   return obj;
 
  return NULL;
 }
@@ -332,100 +332,6 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
    }
 
  return NULL;
-}
-
-bool ObjManager::use_obj(Obj *obj)
-{
- U6Link *objs;
- Obj *temp_obj;
- int pos;
-
- if(obj == NULL)
-   return false;
-
- if(obj->obj_n >= 297 && obj->obj_n <= 300) // door objects
-   {
-    if(obj->frame_n <= 3)
-      obj->frame_n += 4;
-    else
-      obj->frame_n -= 4;
-   }
-
-
-  switch(obj->obj_n)
-   {
-    case OBJ_U6_CHEST :
-    case OBJ_U6_CRATE :
-    case OBJ_U6_DRAWER :
-    case OBJ_U6_BARREL :
-    case OBJ_U6_BAG :
-                         /* Test whether this object has items inside it. */
-                         if((obj->container != NULL) &&
-                          ((objs = obj->container->end()) != NULL))
-                          {
-                           U6LList *obj_list = get_obj_list(obj->x, obj->y, obj->z);
-
-                           /* Add objects to obj_list. */
-                           for(; objs != NULL; objs = objs->prev)
-                            {
-                             temp_obj = (Obj*)objs->data;
-                             obj_list->add(temp_obj);
-                             temp_obj->status = OBJ_STATUS_OK_TO_TAKE;
-                             temp_obj->x = obj->x;
-                             temp_obj->y = obj->y;
-                             temp_obj->z = obj->z;
-                            }
-
-                           /* Remove objects from the container. */
-                           obj->container->removeAll();
-                         }
-   }
-
-  switch(obj->obj_n)
-   {
-    case OBJ_U6_SECRET_DOOR :
-    case OBJ_U6_CHEST :
-    case OBJ_U6_CANDLE :
-    case OBJ_U6_BARREL :
-    case OBJ_U6_CRATE :
-                         if(obj->frame_n > 0)
-                           obj->frame_n--;
-                         else
-                           obj->frame_n = 1;
-                         break;
-   }
-
-  if(obj->obj_n == OBJ_U6_V_PASSTHROUGH)
- {
-   if(obj->frame_n < 2)
-    {
-     move(obj,obj->x,obj->y-1,obj->z);
-     obj->frame_n = 2;
-    }
-   else
-    {
-     move(obj,obj->x,obj->y+1,obj->z);
-     obj->frame_n = 0;
-    }
- }
-
-  if(obj->obj_n == OBJ_U6_H_PASSTHROUGH)
- {
-   if(obj->frame_n < 2)
-    {
-     move(obj,obj->x-1,obj->y,obj->z);
-     obj->frame_n = 2;
-    }
-   else
-    {
-     move(obj,obj->x+1,obj->y,obj->z);
-     obj->frame_n = 0;
-    }
- }
-
- printf("Use Obj #%d Frame #%d\n",obj->obj_n, obj->frame_n);
-
- return true;
 }
 
 bool ObjManager::remove_obj(Obj *obj)

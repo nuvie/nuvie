@@ -32,6 +32,8 @@
 #include "ActorManager.h"
 #include "Look.h"
 
+#include "U6UseCode.h"
+
 #include "Game.h"
 
 Game::Game(Configuration *cfg)
@@ -60,6 +62,7 @@ Game::~Game()
  
 bool Game::loadGame(Screen *s, uint8 game_type)
 {
+ 
  screen = s;
 
  tile_manager = new TileManager(config);
@@ -109,8 +112,11 @@ bool Game::loadGame(Screen *s, uint8 game_type)
                          view_manager, obj_manager);
  converse->loadConv();
 
+ usecode = (UseCode *) new U6UseCode(config);
+ usecode->init(obj_manager, player, scroll);
+ 
  event = new Event(config);
- event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager);
+ event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode);
  return true;
 }
 

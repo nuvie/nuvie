@@ -33,24 +33,30 @@
 #include "Configuration.h"
 #include "Screen.h"
 #include "Game.h"
+#include "GameSelect.h"
 
 #include "nuvie.h"
 
 Nuvie::Nuvie()
 {
+ config = NULL;
+ screen = NULL;
 }
 
 Nuvie::~Nuvie()
 {
- delete config;
+ if(config != NULL)
+   delete config;
+ if(screen != NULL)
  delete screen;
- delete game;
+ //delete game;
 }
 
 
 bool Nuvie::init()
 {
-  
+ GameSelect *game_select;
+ 
  if(initConfig() == false)
    return false;
    
@@ -63,12 +69,13 @@ bool Nuvie::init()
 
  SDL_WM_SetCaption("Nuvie","Nuvie");
  
- game = new Game(config);
+ game_select = new GameSelect(config);
  
- game->loadGame(screen,NUVIE_GAME_ULTIMA6);
+ game_select->load(screen);
  
- game->play();
-   
+ 
+ delete game_select;
+ 
  return true;
 }
 
@@ -116,6 +123,7 @@ bool Nuvie::initConfig()
    return true;
 
  delete config;
+ config = NULL;
  
  return false;
 }

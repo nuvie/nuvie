@@ -32,6 +32,11 @@ nuvie_SOURCES = \
 	screen/Surface.cpp \
 	screen/Surface.h \
 \
+	usecode/UseCode.h \
+	usecode/UseCode.cpp \
+	usecode/U6UseCode.h \
+	usecode/U6UseCode.cpp \
+\
 	views/View.cpp \
 	views/View.h \
 	views/InventoryView.cpp \
@@ -55,6 +60,8 @@ nuvie_SOURCES = \
 	Game.h \
 	GameClock.cpp \
 	GameClock.h \
+	GameSelect.cpp \
+	GameSelect.h \
 	Look.cpp \
 	Look.h \
 	Map.cpp \

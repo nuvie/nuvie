@@ -49,14 +49,17 @@
 #define OBJ_U6_PICTURE        143
 #define OBJ_U6_BOOK           151
 #define OBJ_U6_SCROLL         152
+#define OBJ_U6_FIREPLACE      164
 #define OBJ_U6_DRAWER         176
 #define OBJ_U6_BARREL         186
 #define OBJ_U6_BAG            188
 #define OBJ_U6_CRATE          192
+#define OBJ_U6_BRAZIER        206
 #define OBJ_U6_MOUSEHOLE      213
 #define OBJ_U6_CHAIR          252
 #define OBJ_U6_CROSS          254
 #define OBJ_U6_TOMBSTONE      255
+#define OBJ_U6_LEVER          268
 #define OBJ_U6_V_PASSTHROUGH  278
 #define OBJ_U6_H_PASSTHROUGH  280
 #define OBJ_U6_LADDER         305
@@ -124,7 +127,6 @@ class ObjManager
  U6LList *get_actor_inventory(uint16 actor_num);
  bool actor_has_inventory(uint16 actor_num);
 
- bool use_obj(Obj *obj);
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
  bool remove_obj(Obj *obj);
  const char *look_obj(Obj *obj);

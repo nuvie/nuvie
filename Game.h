@@ -46,6 +46,7 @@
 #include "MapWindow.h"
 #include "Event.h"
 #include "Portrait.h"
+#include "UseCode.h"
 
 #define NUVIE_GAME_ULTIMA6 1
 #define NUVIE_GAME_MARTIAN 2
@@ -74,6 +75,7 @@ class Game
  
  GameClock *clock;
  Portrait *portrait;
+ UseCode *usecode;
  
  Event *event;
  
