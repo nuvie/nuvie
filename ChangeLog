@@ -1,4 +1,4 @@
-2004-01-07  Eric Fry <efry at users.sourceforge.net>
+2004-02-07  Eric Fry <efry at users.sourceforge.net>
 	* Fixed the mysterious crash on multitile actors bug [ 890188 ].
 	  Party members now dismount from horses before using ladders or caves.
 	* Added keyboard commands to quit dialog. [ 874454 ] This was done by
@@ -11,7 +11,7 @@
 	  time being. We need to add some config switches and support for
 	  the original .m adlib music files.
 
-2004-01-02  Eric Fry <efry at users.sourceforge.net>
+2004-02-02  Eric Fry <efry at users.sourceforge.net>
 	* You can now move objects onto tables.
 	* Fixed some compiler issues with STL on older versions of gcc.
 	  Removed references to vector::at and string::clear
