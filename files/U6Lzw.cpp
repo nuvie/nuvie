@@ -162,7 +162,7 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
     unsigned char *destination;
     
 //    destination_length = this->get_uncompressed_buffer_size(source,source_length);
-    signed long long uncomp_size = this->get_uncompressed_buffer_size(source,source_length);
+    sint32 uncomp_size = this->get_uncompressed_buffer_size(source,source_length);
     if(uncomp_size == -1)
       return(NULL);
     else
