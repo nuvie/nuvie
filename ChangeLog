@@ -1,3 +1,6 @@
+2004-01-02  Eric Fry <efry at users.sourceforge.net>
+	* Added rolling pin to the list of readiable objects.
+
 2003-12-31  Eric Fry <efry at users.sourceforge.net>
 	* Added twitching to the hydra tenticles.
 	* Nuvie will no longer show a blank portrait when looking at a

@@ -93,6 +93,8 @@
 #define OBJ_U6_SHOVEL              104
 #define OBJ_U6_HOE                 105
 
+#define OBJ_U6_ROLLING_PIN         109
+
 #define OBJ_U6_CLEAVER             113
 #define OBJ_U6_KNIFE               114
 

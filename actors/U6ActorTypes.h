@@ -172,6 +172,8 @@ static const struct {uint16 obj_n; uint8 readiable_location;}
 {OBJ_U6_SHOVEL, ACTOR_ARM },
 {OBJ_U6_HOE, ACTOR_ARM },
 
+{OBJ_U6_ROLLING_PIN, ACTOR_ARM },
+
 {OBJ_U6_CLEAVER, ACTOR_ARM },
 {OBJ_U6_KNIFE, ACTOR_ARM },
 
