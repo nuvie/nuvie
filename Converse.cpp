@@ -311,6 +311,8 @@ bool Converse::u6op_if_test(uint32 cmpf, uint32 va)
 {
     bool ifcomp = false;
     Actor *cnpc = 0;
+    uint16 x, y, x2, y2;
+    uint8 l, l2;
     uint32 v[6] = // vals, not including cmpfunc val
     {
         get_val(0, va), // v[0] == val1
@@ -366,7 +368,16 @@ bool Converse::u6op_if_test(uint32 cmpf, uint32 va)
                 ifcomp = true;
             break;
         case 0xd7: // is val1 # of an npc nearby self?
-            print("-!npcnear-");
+            cnpc = actors->get_actor(v[0]);
+            if(cnpc)
+            {
+                fprintf(stderr, "Converse: warning: if(nearby(%d)) untested\n",
+                        cnpc->get_actor_num());
+                npc->get_location(&x, &y, &l);
+                cnpc->get_location(&x2, &y2, &l2);
+                if(abs(x - x2) <= 18 && abs(y - y2) <= 18 && l == l2)
+                    ifcomp = true;
+            }
             break;
         case 0x82: // ?? >=
         default:
