@@ -80,9 +80,8 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  //map_window->move(0x12e,0x16b);
  map_window->centerMapOnActor(player->get_actor());
 
- converse = new Converse(config, CONV_U6);
+ converse = new Converse(config, CONV_U6, scroll);
  converse->loadConv();
- scroll->set_converse(converse);
 
  event = new Event(config);
  event->init(obj_manager, map_window, scroll, player, converse);
@@ -142,25 +141,10 @@ void Game::play()
      tile_manager->update();
      actor_manager->updateActors();
      map_window->drawMap();
-
-     if(converse->running() && !converse->waiting())
-     {
-        converse->step();
-        if(converse->has_output())
-            scroll->display_string(converse->get_output());
-//        script has stopped itself:
-//        if(!converse->running())
-//            remove portrait [& name [& inventory display]] unset talking mode
-//      script has paused itself
-        if(converse->waiting() == 1) // script has page break
-            scroll->display_string("*");
-//        else if(converse->waiting() == 2) // need input
-//            show newline and prompt (you say: )
-     }
+     converse->continue_script();
      scroll->updateScroll();
      //screen->update();
      event->wait();
    }
-
- return;
+  return;
 }
