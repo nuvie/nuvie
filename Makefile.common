@@ -23,10 +23,16 @@ nuvie_SOURCES = \
 	screen/Screen.cpp \
 	screen/Screen.h \
 \
+	Actor.cpp \
+	Actor.h \
+	ActorManager.cpp \
+	ActorManager.h \
 	Game.cpp \
 	Game.h \
 	Map.cpp \
 	Map.h \
+	MapWindow.cpp \
+	MapWindow.h \
 	MsgScroll.cpp \
 	MsgScroll.h \
 	ObjManager.cpp \

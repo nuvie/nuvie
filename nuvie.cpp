@@ -61,6 +61,8 @@ bool Nuvie::init()
   
  screen = new Screen(320,200);
  
+ SDL_WM_SetCaption("Nuvie","Nuvie");
+ 
  game = new Game(config);
  
  game->loadGame(screen,NUVIE_GAME_ULTIMA6);

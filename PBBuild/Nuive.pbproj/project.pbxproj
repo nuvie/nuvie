@@ -463,6 +463,84 @@
 			name = MacOSX;
 			refType = 4;
 		};
+		0740D531042AA97500A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Actor.cpp;
+			path = ../Actor.cpp;
+			refType = 2;
+		};
+		0740D532042AA97500A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Actor.h;
+			path = ../Actor.h;
+			refType = 2;
+		};
+		0740D533042AA97500A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = ActorManager.cpp;
+			path = ../ActorManager.cpp;
+			refType = 2;
+		};
+		0740D534042AA97500A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = ActorManager.h;
+			path = ../ActorManager.h;
+			refType = 2;
+		};
+		0740D535042AA97500A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = MapWindow.cpp;
+			path = ../MapWindow.cpp;
+			refType = 2;
+		};
+		0740D536042AA97500A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = MapWindow.h;
+			path = ../MapWindow.h;
+			refType = 2;
+		};
+		0740D537042AA97500A8000A = {
+			fileRef = 0740D531042AA97500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0740D538042AA97500A8000A = {
+			fileRef = 0740D532042AA97500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0740D539042AA97500A8000A = {
+			fileRef = 0740D533042AA97500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0740D53A042AA97500A8000A = {
+			fileRef = 0740D534042AA97500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0740D53B042AA97500A8000A = {
+			fileRef = 0740D535042AA97500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0740D53C042AA97500A8000A = {
+			fileRef = 0740D536042AA97500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		079CA1D204230A2B00A8000A = {
 			children = (
 				079CA1D704232F3100A8000A,
@@ -751,6 +829,8 @@
 				0725669B04272B7B00A8000A,
 				0725669C04272B7B00A8000A,
 				0725669D04272B7B00A8000A,
+				0740D535042AA97500A8000A,
+				0740D536042AA97500A8000A,
 				0725669E04272B7B00A8000A,
 				0725669F04272B7B00A8000A,
 				072566A004272B7B00A8000A,
@@ -761,6 +841,10 @@
 				072566A504272B7B00A8000A,
 				072566B404272BC000A8000A,
 				072566B504272BC000A8000A,
+				0740D531042AA97500A8000A,
+				0740D532042AA97500A8000A,
+				0740D533042AA97500A8000A,
+				0740D534042AA97500A8000A,
 			);
 			isa = PBXGroup;
 			name = "Other Sources";
@@ -877,6 +961,9 @@
 				072566B304272B7B00A8000A,
 				072566B704272BC000A8000A,
 				072566BB04272C0200A8000A,
+				0740D538042AA97500A8000A,
+				0740D53A042AA97500A8000A,
+				0740D53C042AA97500A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -912,6 +999,9 @@
 				072566B204272B7B00A8000A,
 				072566B604272BC000A8000A,
 				072566BA04272C0200A8000A,
+				0740D537042AA97500A8000A,
+				0740D539042AA97500A8000A,
+				0740D53B042AA97500A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

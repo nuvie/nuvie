@@ -29,6 +29,7 @@
 #include "Text.h"
 #include "TileManager.h"
 #include "ObjManager.h"
+#include "ActorManager.h"
 
 #include "Game.h"
 
@@ -62,11 +63,16 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  scroll = new MsgScroll(text);
  
  game_map = new Map(config);
- game_map->loadMap(screen, tile_manager, obj_manager);
+ game_map->loadMap(tile_manager, obj_manager);
  
- game_map->moveWindow(0x12e,0x16b);
-
- game_map->set_windowSize(11,11);
+ actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager);
+ actor_manager->loadActors();
+ 
+ map_window = new MapWindow(config);
+ map_window->init(screen, game_map, tile_manager, obj_manager, actor_manager);
+ 
+ map_window->set_windowSize(11,11);
+ map_window->move(0x12e,0x16b);
  
  return true;
 }
@@ -105,7 +111,7 @@ void Game::play()
 
   drawBackground();
   
-  game_map->drawMap();
+  map_window->drawMap();
   
   screen->update();
   
@@ -116,7 +122,8 @@ void Game::play()
     {
      updateEvents();
      tile_manager->update();
-     game_map->drawMap();
+     map_window->drawMap();
+     //actor_manager->drawActors(0x12e,0x16b,11,11,0);
      scroll->updateScroll();
      screen->update();
      wait();
@@ -137,13 +144,13 @@ void Game::updateEvents()
 					break;
 				case SDL_KEYDOWN:
 					if(event.key.keysym.sym==SDLK_UP)
-            { game_map->moveWindowRelative(0,-1); break; }
+            { map_window->moveRelative(0,-1); break; }
  					if(event.key.keysym.sym==SDLK_DOWN)
-            { game_map->moveWindowRelative(0,1); break; }
+            { map_window->moveRelative(0,1); break; }
 					if(event.key.keysym.sym==SDLK_LEFT)
-            { game_map->moveWindowRelative(-1,0); break; }
+            { map_window->moveRelative(-1,0); break; }
 					if(event.key.keysym.sym==SDLK_RIGHT)
-            { game_map->moveWindowRelative(1,0); break; }
+            { map_window->moveRelative(1,0); break; }
 					if(event.key.keysym.sym==SDLK_q)
 						game_stop = true;
 					break;       

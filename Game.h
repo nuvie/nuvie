@@ -34,9 +34,11 @@
 #include "Text.h"
 #include "TileManager.h"
 #include "ObjManager.h"
+#include "ActorManager.h"
 
 #include "MsgScroll.h"
 #include "Map.h"
+#include "MapWindow.h"
 
 #define NUVIE_GAME_ULTIMA6 1
 #define NUVIE_GAME_MARTIAN 2
@@ -59,7 +61,9 @@ class Game
  Text *text;
  TileManager *tile_manager;
  ObjManager *obj_manager;
+ ActorManager *actor_manager;
  Map *game_map;
+ MapWindow *map_window;
  MsgScroll *scroll;
  
  uint8 game_mode;

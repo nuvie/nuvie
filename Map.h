@@ -38,48 +38,26 @@ class Map
  Configuration *config;
  TileManager *tile_manager;
  ObjManager *obj_manager;
- Screen *screen;
   
  uint8 *surface;
- uint8 **dungeons;
- 
- uint16 cur_x, cur_y;
- 
- uint16 win_width, win_height;
- uint8 cur_level;
- 
+ uint8 *dungeons[5];
+  
  public:
 
  Map(Configuration *cfg);
  ~Map();
  
- bool loadMap(Screen *s, TileManager *tm, ObjManager *om);
- 
- void set_windowSize(uint16 width, uint16 height);
- 
- void moveWindowLevel(uint8 new_level);
- void moveWindow(uint16 new_x, uint16 new_y);
- void moveWindowRelative(sint16 rel_x, sint16 rel_y);
- 
- 
- void get_windowLevel(uint8 *level);
- void get_windowPos(uint16 *x, uint16 *y);
- 
- void drawMap();
-
-
- //void get_schunk_coords(&uint16 schunk_num, &uint16 schunk_x, &uint16 schunk_y);
+ bool loadMap(TileManager *tm, ObjManager *om);
+ unsigned char *get_map_data(uint8 level);
+ uint16 Map::get_width(uint8 level);
  
  protected:
- 
- void drawObjs();
- void drawObjSuperBlock(U6LList *superblock);
- inline void drawObj(Obj *obj);
- inline void drawTile(uint16 tile_num, uint16 x, uint16 y);
- 
+  
  void insertSurfaceSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 schunk_num);
  void insertSurfaceChunk(unsigned char *chunk, uint16 x, uint16 y);
  
+ void insertDungeonSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 level);
+ void insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 level); 
 };
 
 #endif /* __Map_h__ */
