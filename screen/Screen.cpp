@@ -607,9 +607,9 @@ void Screen::buildalphamap8()
             {
                 float r;
                 //Distance from center
-                r  = sqrt( sqr((y-globeradius_2[i]))+sqr((x-globeradius_2[i])) );
+                r  = sqrtf( sqr((y-globeradius_2[i]))+sqr((x-globeradius_2[i])) );
                 //Unitize
-                r /= sqrt( sqr(globeradius_2[i])+sqr(globeradius_2[i]) );
+                r /= sqrtf( sqr(globeradius_2[i])+sqr(globeradius_2[i]) );
                 //Calculate brightness
                 r  = (float)exp(-(10*r*r));
                 //Fit into a byte
