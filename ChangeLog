@@ -1,3 +1,7 @@
+2003-12-03  Eric Fry <efry@users.sourceforge.net>
+	* Fixed double free when cleaning up temp objects.
+	* Update darkness when creating a moongate.
+
 2003-12-03  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Objects are removed from temp. list when removed from the map.
 	* Fixed segfault when getting objects and stacking them in inventory.

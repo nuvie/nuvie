@@ -43,7 +43,7 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  obj_manager = om;
  clock = c;
  
- game_hour = clock->get_hour();
+ game_hour = 0;
  
  player_actor = 1;
 

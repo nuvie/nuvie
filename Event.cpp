@@ -601,6 +601,8 @@ bool Event::select_obj(Obj *obj, Actor *actor)
     map_window->set_show_use_cursor(false);
     map_window->set_show_cursor(false);
     mode = MOVE_MODE;
+    
+    map_window->updateBlacking();
     return(true);
 }
 

@@ -944,15 +944,18 @@ bool ObjManager::temp_obj_list_remove(Obj *obj)
 void ObjManager::temp_obj_list_clean(uint8 z)
 {
  std::list<Obj *>::iterator obj;
+ std::list<Obj *>::iterator tmp_obj;
  
  for(obj = temp_obj_list.begin(); obj != temp_obj_list.end();)
    {
     if((*obj)->z == z)
       {
        printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
-       remove_obj(*obj);
+       tmp_obj = obj;
+       tmp_obj++;
+       remove_obj(*obj); // this calls temp_obj_list_remove() 
        delete *obj;
-       obj = temp_obj_list.erase(obj);
+       obj = tmp_obj;
       } 
     else
       obj++;
@@ -966,6 +969,7 @@ void ObjManager::temp_obj_list_clean(uint8 z)
 void ObjManager::temp_obj_list_clean(uint16 x, uint16 y)
 {
  std::list<Obj *>::iterator obj;
+ std::list<Obj *>::iterator tmp_obj;
  sint16 dist_x, dist_y;
  
  for(obj = temp_obj_list.begin(); obj != temp_obj_list.end();)
@@ -976,9 +980,11 @@ void ObjManager::temp_obj_list_clean(uint16 x, uint16 y)
     if(dist_x > 32 || dist_y > 32)
       {
        printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
+       tmp_obj = obj;
+       tmp_obj++;
        remove_obj(*obj);
        delete *obj;
-       obj = temp_obj_list.erase(obj);
+       obj = tmp_obj;
       } 
     else
       obj++;
