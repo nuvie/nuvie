@@ -1,3 +1,6 @@
+2004-09-24  Michael Fink <vividos at users.sourceforge.net>
+	* Compile fixes and updated project files for msvc6
+
 2004-08-14  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Sleep-at-inn implemented, with fade effects. The sky display doesn't
 	  exist yet so you won't see the sun/moons going by. You always sleep
