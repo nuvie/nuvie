@@ -68,7 +68,7 @@ void LPath::walk_path(uint32 speed)
         Game *game = Game::get_game();
         UseCode *uc = game->get_usecode();
         Obj *door = game->get_obj_manager()->get_obj(nx, ny, nz);
-        if(door && uc->is_unlocked_door(door) && uc->use_obj(door))
+        if(door && uc->is_unlocked_door(door) && uc->use_obj(door, actor))
 //            moved = actor->move(nx, ny, nz); // try again
             moved = actor->move(nx, ny, nz, ACTOR_FORCE_MOVE);
         else

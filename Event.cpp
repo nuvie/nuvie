@@ -435,9 +435,16 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
   scroll->display_string(obj_manager->look_obj(obj));
   scroll->display_string("\n");
 
-  usecode->use_obj(obj);
-  usecode->use_obj(obj, player->get_actor()); // testing
+  if(usecode->can_use(obj))
+   usecode->use_obj(obj, player->get_actor());
+  else
+  {
+   scroll->display_string("\nNot usable\n");
+   fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
+  }
  }
+ else
+  scroll->display_string("nothing\n");
 
  scroll->display_string("\n");
  scroll->display_prompt();

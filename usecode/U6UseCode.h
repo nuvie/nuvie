@@ -234,44 +234,45 @@ class U6UseCode: public UseCode
  void init_objects();
  void add_usecode(uint16 obj, uint8 frame, uint8 dist, uint8 ev, bool (U6UseCode::*func)(Obj *, uint8));
 
- bool use_obj(Obj *obj, Obj *src_obj=NULL);
  bool use_obj(Obj *obj, Actor *actor);
  bool look_obj(Obj *obj, Actor *actor);
  bool pass_obj(Obj *obj, Actor *actor);
 
- bool is_unlocked_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n != 9 && obj->frame_n != 11); }
- bool is_locked_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && (obj->frame_n == 9 || obj->frame_n == 11)); }
- bool is_food(Obj *obj);
- const char *is_dungeon(Obj *obj);
- const char *is_cave(Obj *obj);
- const char *is_shrine(Obj *obj);
  bool can_use(Obj *obj);
  bool can_look(Obj *obj);
  bool can_pass(Obj *obj);
 
+ bool is_unlocked_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n != 9 && obj->frame_n != 11); }
+ bool is_locked_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && (obj->frame_n == 9 || obj->frame_n == 11)); }
+ bool is_food(Obj *obj);
+
  protected:
  sint16 get_ucobject_index(uint16 n, uint8 f = 0);
  bool uc_event(sint16 uco, uint8 ev, Obj *obj);
- 
- bool use_door(Obj *obj);
- bool use_ladder(Obj *obj);
- bool use_passthrough(Obj *obj);
- bool use_switch(Obj *obj, uint16 target_obj_n);
- bool use_crank(Obj *obj);
+
+// usecode
+ bool use_door(Obj *obj, uint8 ev);
+ bool use_secret_door(Obj *obj, uint8 ev);
+ bool use_ladder(Obj *obj, uint8 ev);
+ bool use_passthrough(Obj *obj, uint8 ev);
+ bool use_switch(Obj *obj, uint8 ev);
+ bool use_crank(Obj *obj, uint8 ev);
  bool use_food(Obj *obj, uint8 ev);
- 
+ bool use_firedevice(Obj *obj, uint8 ev);
+ bool use_container(Obj *obj, uint8 ev);
+ bool use_vortex_cube(Obj *obj, uint8 ev);
+ bool look_mirror(Obj *obj, uint8 ev);
+ bool look_sign(Obj *obj, uint8 ev);
+ bool look_clock(Obj *obj, uint8 ev);
+ bool pass_quest_barrier(Obj *obj, uint8 ev);
+ bool enter_dungeon(Obj *obj, uint8 ev);
+
+// supplementary
  Obj *drawbridge_find(Obj *crank_obj);
  void drawbridge_open(uint16 x, uint16 y, uint8 level, uint16 b_width);
  void drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width);
  void drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width);
-
  bool use_firedevice_message(Obj *obj, bool lit);
-
- bool pass_quest_barrier(Obj *obj, uint8 ev);
- bool look_mirror(Obj *obj, uint8 ev);
- bool look_sign(Obj *obj, uint8 ev);
- bool look_clock(Obj *obj, uint8 ev);
- bool enter_dungeon(Obj *obj, uint8 ev);
 
 #if 0 /* names for other events? */
  bool approach_mirror(Obj *obj, uint8 ev); // change to reflect frame

@@ -453,7 +453,7 @@ bool MDTalkInterpret::op(stack<converse_value> &i)
 bool ConverseInterpret::op(stack<converse_value> &i)
 {
     bool success = true;
-    converse_value v[4]; // args
+    converse_value v[4] = { 0, 0, 0, 0 }; // args
     converse_value in;
     ConvScript *cs = converse->script;
     Actor *cnpc = NULL;
@@ -581,7 +581,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             player->subtract_karma(pop_arg(i));
             break;
         case U6OP_HEAL: // 0xd9
-            cnpc = converse->actors->get_actor(npc_num(v[0]));
+            cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
                 cnpc->set_hp(cnpc->get_maxhp());
             break;

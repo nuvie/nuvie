@@ -102,6 +102,8 @@ class Converse
         char *sv;
     } *variables; /* initialized for [U6TALK_VAR__LAST_+1] items */
 
+    void reset();
+
 public:
     Converse();
     ~Converse();

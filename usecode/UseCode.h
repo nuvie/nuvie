@@ -33,7 +33,7 @@
 #define USE_EVENT_USE     0x01
 #define USE_EVENT_LOOK    0x02
 #define USE_EVENT_PASS    0x04
-
+#define USE_EVENT_ON      0x08 // post-move/idle ??
 
 class UseCode
 {
@@ -58,16 +58,20 @@ class UseCode
  virtual void init_objects() = 0;
  
  bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
- virtual bool use_obj(Obj *obj, Obj *src_obj=NULL)=0;
+ bool use_obj(Obj *obj, Obj *src_obj = NULL) { return(use_obj(obj, player->get_actor())); } // ??
+
  virtual bool use_obj(Obj *obj, Actor *actor)  { return(false); }
  virtual bool look_obj(Obj *obj, Actor *actor) { return(false); }
  virtual bool pass_obj(Obj *obj, Actor *actor) { return(false); }
 
- virtual bool is_locked_door(Obj *obj)   { return(false); }
- virtual bool is_unlocked_door(Obj *obj) { return(false); }
  virtual bool can_use(Obj *obj)  { return(false); }
  virtual bool can_look(Obj *obj) { return(false); }
  virtual bool can_pass(Obj *obj) { return(false); }
+
+ bool is_door(Obj *obj) {return(is_locked_door(obj) || is_unlocked_door(obj));}
+ virtual bool is_locked_door(Obj *obj)   { return(false); }
+ virtual bool is_unlocked_door(Obj *obj) { return(false); }
+ virtual bool is_food(Obj *obj)          { return(false); }
 
  void set_itemref(sint32 val) { int_ref = val; }
  void set_itemref(Obj *val)   { obj_ref = val; }

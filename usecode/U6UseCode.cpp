@@ -28,6 +28,33 @@
 #include "Book.h"
 #include "U6UseCode.h"
 
+// numbered by entrance quality, "" = no name
+static const char *u6_dungeons[21] =
+{
+    "",
+    "Deceit",
+    "Despise",
+    "Destard",
+    "Wrong",
+    "Covetous",
+    "Shame",
+    "Hythloth",
+    "GSA",
+    "Control",
+    "Passion",
+    "Diligence",
+    "Tomb of Kings",
+    "Ant Mound",
+    "Swamp Cave",
+    "Spider Cave",
+    "Cyclops Cave",
+    "Heftimus Cave",
+    "Heroes' Hole",
+    "Pirate Cave",
+    "Buccaneer's Cave"
+};
+
+
 U6UseCode::U6UseCode(Configuration *cfg) : UseCode(cfg)
 {
     init_objects();
@@ -47,6 +74,18 @@ void U6UseCode::init_objects()
     uc_objects_size = 0; uc_object_count = 0;
 
 // (object,frame,distance to trigger,event(s),function)
+    add_usecode(OBJ_U6_OAKEN_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
+    add_usecode(OBJ_U6_WINDOWED_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_door);
+    add_usecode(OBJ_U6_CEDAR_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
+    add_usecode(OBJ_U6_STEEL_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
+    add_usecode(OBJ_U6_SECRET_DOOR,  255,0,USE_EVENT_USE,&U6UseCode::use_secret_door);
+
+    add_usecode(OBJ_U6_CHEST, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_CRATE, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_BARREL,255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_DRAWER,255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_BAG,   255,0,USE_EVENT_USE,&U6UseCode::use_container);
+                      
     add_usecode(OBJ_U6_SIGN,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
@@ -54,10 +93,24 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
 
-    add_usecode(OBJ_U6_CAVE,255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
-    add_usecode(OBJ_U6_HOLE,  0,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
+    add_usecode(OBJ_U6_V_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough);
+    add_usecode(OBJ_U6_H_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough);
 
-    add_usecode(OBJ_U6_CLOCK,       1,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
+    add_usecode(OBJ_U6_LEVER, 255,0,USE_EVENT_USE,&U6UseCode::use_switch);
+    add_usecode(OBJ_U6_SWITCH,255,0,USE_EVENT_USE,&U6UseCode::use_switch);
+
+    add_usecode(OBJ_U6_CRANK, 255,0,USE_EVENT_USE,&U6UseCode::use_crank);
+
+    add_usecode(OBJ_U6_FIREPLACE, 255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
+    add_usecode(OBJ_U6_CANDLE,    255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
+    add_usecode(OBJ_U6_CANDELABRA,255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
+    add_usecode(OBJ_U6_BRAZIER,   255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
+
+    add_usecode(OBJ_U6_LADDER,255,0,USE_EVENT_USE,&U6UseCode::use_ladder);
+    add_usecode(OBJ_U6_CAVE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
+    add_usecode(OBJ_U6_HOLE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
+
+    add_usecode(OBJ_U6_CLOCK,     255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
     add_usecode(OBJ_U6_SUNDIAL,   255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
     add_usecode(OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
 
@@ -81,6 +134,8 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
 
     add_usecode(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
+
+    add_usecode(OBJ_U6_VORTEX_CUBE,0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube);
 }
 
 
@@ -113,7 +168,7 @@ bool U6UseCode::is_food(Obj *obj)
 }
 
 
-/* Is there usecode for an object, with the appropriate event?
+/* Is there USE usecode for an object?
  */
 bool U6UseCode::can_use(Obj *obj)
 {
@@ -124,7 +179,7 @@ bool U6UseCode::can_use(Obj *obj)
 }
 
 
-/* Is there usecode for an object, with the appropriate event?
+/* Is there LOOK usecode for an object?
  */
 bool U6UseCode::can_look(Obj *obj)
 {
@@ -135,8 +190,8 @@ bool U6UseCode::can_look(Obj *obj)
 }
 
 
-/* Is there usecode for an object, with the appropriate event? This doesn't
- * check to see if an object can be passed. (call the usecode for that)
+/* Is there PASS usecode for an object? This doesn't check to see if an object
+ * can be passed. (call the usecode for that)
  */
 bool U6UseCode::can_pass(Obj *obj)
 {
@@ -224,88 +279,11 @@ bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
 }
 
 
-bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
-{
- 
- if(obj == NULL)
-   return false;
-
-  switch(obj->obj_n)
-   {
-    case OBJ_U6_OAKEN_DOOR    :
-    case OBJ_U6_WINDOWED_DOOR :
-    case OBJ_U6_CEDAR_DOOR    :
-    case OBJ_U6_STEEL_DOOR    : use_door(obj);
-                                break;
-
-    case OBJ_U6_LADDER :
-/*    case OBJ_U6_HOLE :*/ use_ladder(obj);
-                       break;
-
-    case OBJ_U6_CHEST :
-    case OBJ_U6_CRATE :
-    case OBJ_U6_BARREL : toggle_frame(obj); //open / close object
-    case OBJ_U6_DRAWER :
-    case OBJ_U6_BAG : use_container(obj);
-                      break;
-                      
-    case OBJ_U6_V_PASSTHROUGH :
-    case OBJ_U6_H_PASSTHROUGH : use_passthrough(obj);
-                                break;
-
-    case OBJ_U6_LEVER : use_switch(obj,OBJ_U6_PORTCULLIS);
-                        scroll->display_string("\nswitch the lever, you hear a noise.\n");
-                        break;
-
-    case OBJ_U6_SWITCH : use_switch(obj,OBJ_U6_ELECTRIC_FIELD);
-                         scroll->display_string("\nOperate the switch, you hear a noise.\n");
-                         break;
-
-    case OBJ_U6_CRANK : use_crank(obj);
-                        break;
-                        
-    case OBJ_U6_FIREPLACE : if(obj->frame_n == 1 || obj->frame_n == 3)
-                                {
-                                 use_firedevice_message(obj,false);
-                                 obj->frame_n--;
-                                }
-                              else
-                                {
-                                 use_firedevice_message(obj,true);
-                                 obj->frame_n++;
-                                }
-                              break;
-                              
-    case OBJ_U6_SECRET_DOOR : if(obj->frame_n == 1 || obj->frame_n == 3)
-                                obj->frame_n--;
-                              else
-                                obj->frame_n++;
-                              break;
-    case OBJ_U6_CANDLE :
-    case OBJ_U6_CANDELABRA :
-    case OBJ_U6_BRAZIER :
-                         toggle_frame(obj);
-                         use_firedevice_message(obj,(bool)obj->frame_n);
-                         break;
-                         
-    case OBJ_U6_VORTEX_CUBE : scroll->display_string("\nYou've finished the game!!\nPity we haven't implemented the end sequence yet.\n");
-                              break;
-                              
-    default : scroll->display_string("\nnot usable\n");
-              break;
-   }
-
-
- printf("Use Obj #%d Frame #%d\n",obj->obj_n, obj->frame_n);
-
- return true;
-}
-
-bool U6UseCode::use_door(Obj *obj)
+bool U6UseCode::use_door(Obj *obj, uint8 ev)
 {
  Obj *key_obj;
  
- if(obj->frame_n == 9 || obj->frame_n == 11) // locked door
+ if(is_locked_door(obj)) // locked door
    {
     key_obj = player->get_actor()->inventory_get_object(OBJ_U6_KEY, obj->quality);
     if(key_obj != NULL) // we have the key for this door so lets unlock it.
@@ -333,32 +311,8 @@ bool U6UseCode::use_door(Obj *obj)
  return true;
 }
 
-bool U6UseCode::use_ladder(Obj *obj)
+bool U6UseCode::use_ladder(Obj *obj, uint8 ev)
 {
-#if 0 /* code used for moving player instantly, party would teleport */
- if(obj->frame_n == 0) // DOWN
-   {
-    if(obj->z == 0) //handle the transition from the surface to the first dungeon level
-      {
-       player->move(((obj->x & 0x07) | (obj->x >> 2 & 0xF8)), ((obj->y & 0x07) | (obj->y >> 2 & 0xF8)), obj->z+1);
-      }
-    else
-       player->move(obj->x,obj->y,obj->z+1); //dungeon ladders line up so we simply drop straight down
-   }
- else //UP
-   {
-    if(obj->z == 1)
-      {
-       //we use obj->quality to tell us which surface chunk to come up in.
-       player->move(obj->x / 8 * 8 * 4 + ((obj->quality & 0x03) * 8) + (obj->x - obj->x / 8 * 8),
-                    obj->y / 8 * 8 * 4 + ((obj->quality >> 2 & 0x03) * 8) + (obj->y - obj->y / 8 * 8),
-                    obj->z-1);
-
-      }
-    else
-       player->move(obj->x,obj->y,obj->z-1);
-   }
-#endif
  Party *party = Game::get_game()->get_party();
  uint16 x = obj->x, y = obj->y;
  uint8 z;
@@ -386,7 +340,7 @@ bool U6UseCode::use_ladder(Obj *obj)
 }
 
 
-bool U6UseCode::use_passthrough(Obj *obj)
+bool U6UseCode::use_passthrough(Obj *obj, uint8 ev)
 {
  if(obj->obj_n == OBJ_U6_V_PASSTHROUGH)
   {
@@ -419,15 +373,27 @@ bool U6UseCode::use_passthrough(Obj *obj)
 }
 
 // for use with levers and switches, target_obj_n is either OBJ_U6_PORTCULLIS or OBJ_U6_ELECTRIC_FIELD
-bool U6UseCode::use_switch(Obj *obj, uint16 target_obj_n)
+bool U6UseCode::use_switch(Obj *obj, uint8 ev)
 {
  Obj *doorway_obj;
  Obj *portc_obj;
  U6LList *obj_list;
  U6Link *link;
- 
+ uint16 target_obj_n = 0;
+ char *message = NULL;
+
+ if(obj->obj_n == OBJ_U6_LEVER)
+ {
+     target_obj_n = OBJ_U6_PORTCULLIS;
+     message = "\nswitch the lever, you hear a noise.\n";
+ }
+ else if(obj->obj_n == OBJ_U6_SWITCH)
+ {
+     target_obj_n = OBJ_U6_ELECTRIC_FIELD;
+     message = "\nOperate the switch, you hear a noise.\n";
+ }
+
  doorway_obj = obj_manager->find_obj(OBJ_U6_DOORWAY, obj->quality, obj->z);
- 
  for(;doorway_obj != NULL;doorway_obj = obj_manager->find_next_obj(doorway_obj))
    {
     obj_list = obj_manager->get_obj_list(doorway_obj->x,doorway_obj->y,doorway_obj->z);
@@ -464,15 +430,63 @@ bool U6UseCode::use_switch(Obj *obj, uint16 target_obj_n)
    }
  
  toggle_frame(obj);
- 
-
- 
+ scroll->display_string(message);
  return true;
 }
 
+
+bool U6UseCode::use_firedevice(Obj *obj, uint8 ev)
+{
+    if(obj->obj_n == OBJ_U6_FIREPLACE)
+    {
+        if(obj->frame_n == 1 || obj->frame_n == 3)
+        {
+            use_firedevice_message(obj,false);
+            obj->frame_n--;
+        }
+        else
+        {
+            use_firedevice_message(obj,true);
+            obj->frame_n++;
+        }
+    }
+    else
+    {
+        toggle_frame(obj);
+        use_firedevice_message(obj,(bool)obj->frame_n);
+    }
+    return(true);
+}
+
+
+bool U6UseCode::use_secret_door(Obj *obj, uint8 ev)
+{
+    if(obj->frame_n == 1 || obj->frame_n == 3)
+        obj->frame_n--;
+    else
+        obj->frame_n++;
+    return(true);
+}
+
+
+bool U6UseCode::use_container(Obj *obj, uint8 ev)
+{
+    if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
+        toggle_frame(obj); //open / close object
+    return(UseCode::use_container(obj));
+}
+
+
+bool U6UseCode::use_vortex_cube(Obj *obj, uint8 ev)
+{
+    scroll->display_string("\nYou've finished the game!!\nPity we haven't implemented the end sequence yet.\n");
+    return(true);
+}
+
+
 //cranks control drawbridges.
 
-bool U6UseCode::use_crank(Obj *obj)
+bool U6UseCode::use_crank(Obj *obj, uint8 ev)
 {
  uint16 x,y;
  uint8 level;
@@ -772,30 +786,8 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
 
-    switch(obj->quality)
-    {
-        case 1:  dungeon_name = "Deceit";           break;
-        case 2:  dungeon_name = "Despise";          break;
-        case 3:  dungeon_name = "Destard";          break;
-        case 4:  dungeon_name = "Wrong";            break;
-        case 5:  dungeon_name = "Covetous";         break;
-        case 6:  dungeon_name = "Shame";            break;
-        case 7:  dungeon_name = "Hythloth";         break;
-        case 8:  dungeon_name = "GSA";              break;
-        case 9:  dungeon_name = "Control";          break;
-        case 10: dungeon_name = "Passion";          break;
-        case 11: dungeon_name = "Diligence";        break;
-        case 12: dungeon_name = "Tomb of Kings";    break;
-        case 13: dungeon_name = "Ant Mound";        break;
-        case 14: dungeon_name = "Swamp Cave";       break;
-        case 15: dungeon_name = "Spider Cave";      break;
-        case 16: dungeon_name = "Cyclops Cave";     break;
-        case 17: dungeon_name = "Heftimus Cave";    break;
-        case 18: dungeon_name = "Heroes' Hole";     break;
-        case 19: dungeon_name = "Pirate Cave";      break;
-        case 20: dungeon_name = "Buccaneer's Cave"; break;
-        default: dungeon_name = "";
-    }
+    if(obj->quality < 21)
+        dungeon_name = (char *)u6_dungeons[obj->quality];
     if(obj->quality >= 1 && obj->quality <= 7)
         prefix = "dungeon ";
     else if(obj->quality >= 9 && obj->quality <= 11)
@@ -805,11 +797,15 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
 
     if(ev == USE_EVENT_PASS && actor_ref == player->get_actor())
     {
-        scroll->display_string("Shamino says, \"This is the ");
-        scroll->display_string(prefix);
-        scroll->display_string(dungeon_name);
-        scroll->display_string(".\"\n\n");
-        scroll->display_prompt();
+        if(obj->quality != 0/* && Shamino is in party and alive*/)
+        {
+            // scroll->printf("%s says, \"This is the %s%s.\"\n\n", prefix, dungeon_name);
+            scroll->display_string("Shamino says, \"This is the ");
+            scroll->display_string(prefix);
+            scroll->display_string(dungeon_name);
+            scroll->display_string(".\"\n\n");
+            scroll->display_prompt();
+        }
         MapCoord entrance(x, y, z);
         // going down
         if(z == 0) // from surface, do superchunk translation

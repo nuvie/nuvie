@@ -21,7 +21,7 @@ Take low-level input handling out of Event and make a keybinder.
 Actors: There must be a uniform way to set all actors direction and frame, and
 to animate them, no matter what size they are.
 
-Iolo "gather" doesn't get gold in containers eg in bags, backpacks
+Iolo "gather" gets gold in containers eg in bags, backpacks
 
 things to do:
 skiff

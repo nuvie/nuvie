@@ -75,8 +75,38 @@ Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
 Converse::~Converse()
 {
     if(running())
-        stop(); // most of destructor here (called when conversations end)
+    {
+        reset();
+        fprintf(stderr, "End conversation\n");
+    }
     unload_conv();
+}
+
+
+/* Free up allocated memory, reset values for new conversation. (call only when
+ * ending a conversation or quitting)
+ */
+void Converse::reset()
+{
+    delete conv_i; conv_i = NULL;
+    set_input(); // delete
+    set_output();
+    if(name)
+    {
+        free(name);
+        name = NULL;
+    }
+    if(desc)
+    {
+        free(desc);
+        desc = NULL;
+    }
+    if(allowed_input)
+    {
+        free(allowed_input);
+        allowed_input = NULL;
+    }
+    delete_variables();
 }
 
 
@@ -185,7 +215,7 @@ void Converse::init_variables()
 }
 
 
-/* Free memory used be Converse variable list.
+/* Free memory used by Converse variable list.
  */
 void Converse::delete_variables()
 {
@@ -265,30 +295,13 @@ bool Converse::start(uint8 n)
  */
 void Converse::stop()
 {
-    delete conv_i; conv_i = NULL;
-    set_input(); // delete
-    set_output();
-    if(name)
-    {
-        free(name);
-        name = NULL;
-    }
-    if(desc)
-    {
-        free(desc);
-        desc = NULL;
-    }
-    if(allowed_input)
-    {
-        free(allowed_input);
-        allowed_input = NULL;
-    }
-    delete_variables();
+    reset(); // free memory
 
     scroll->set_talking(false);
     scroll->display_string("\n");
     scroll->display_prompt();
     views->set_inventory_mode();
+
     active = false;
     fprintf(stderr, "End conversation\n");
 }

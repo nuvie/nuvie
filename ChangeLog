@@ -1,3 +1,9 @@
+2003-09-14  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Fixed segfault when quitting during a conversation. (thanks wjp!)
+	[ 765881 ]
+	* Fixed HEAL bug that would prevent healer NPCs from getting the injured
+	NPC number.
+
 2003-09-14  Eric Fry <efry@users.sourceforge.net>
 	* Reworked MsgScroll to handle lines in other fonts. I'm not completely
           satisfied with this. As you can only have one font per line. :(
