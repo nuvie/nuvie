@@ -45,6 +45,8 @@ TileManager::TileManager(Configuration *cfg)
 TileManager::~TileManager()
 {
  // remove tiles
+ free(desc_buf);
+ delete look;
 }
 
 bool TileManager::loadTiles()
