@@ -55,7 +55,8 @@ unpack.exe: $(UNPACK_OBJS)
 	$(CXX) -o $@ $+
 
 clean:
-	rm -f $(NUVIE_OBJS) nuvie.exe $(U6DECOMP_OBJS) u6decomp.exe
+	rm -f $(NUVIE_OBJS) nuvie.exe $(U6DECOMP_OBJS) u6decomp.exe \
+	$(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACK_OBJS) unpack.exe
 
 install: all
 	mkdir -p $(U6PATH)
