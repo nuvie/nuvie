@@ -28,6 +28,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
+#include "GameClock.h"
 #include "Map.h"
 #include "TileManager.h"
 #include "ObjManager.h"
@@ -37,14 +38,16 @@ class ActorManager
 {
  Configuration *config;
  TileManager *tile_manager;
-
+ ObjManager *obj_manager;
+ 
  Map *map;
  Actor *actors[256];
  uint8 player_actor;
+ GameClock *clock;
  
  public:
   
- ActorManager(Configuration *cfg, Map *m, TileManager *tm);
+ ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c);
  ~ActorManager();
  
  bool loadActors();

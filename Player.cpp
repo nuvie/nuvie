@@ -28,11 +28,14 @@ Player::Player(Configuration *cfg)
  config = cfg;
 }
 
-bool Player::init(Actor *a, ActorManager *am, MapWindow *mw)
+bool Player::init(Actor *a, ActorManager *am, MapWindow *mw, GameClock *c)
 {
+ clock = c;
  actor = a;
  actor_manager = am;
  map_window = mw;
+ 
+ loadObjlistData(); //load Player name, Karma.
  
  a->set_in_party(true);
  actor_manager->set_player(actor);
@@ -40,6 +43,8 @@ bool Player::init(Actor *a, ActorManager *am, MapWindow *mw)
  return true;
 }
 
+
+ 
 Actor *Player::get_actor()
 {
  return actor;
@@ -63,6 +68,9 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
    
  if(actor->moveRelative(rel_x,rel_y))
    map_window->moveMapRelative(rel_x,rel_y);
+   
+ clock->inc_move_counter();
+ actor_manager->updateActors();
 }
 
 void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
@@ -92,4 +100,25 @@ void Player::moveUp()
 void Player::moveDown()
 {
  moveRelative(0,1);
+}
+
+void Player::pass()
+{
+ clock->inc_minute();
+}
+
+bool Player::loadObjlistData()
+{
+ std::string filename;
+ U6File objlist;
+ 
+ config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
+ if(objlist.open(filename,"rb") == false)
+   return false;
+
+ objlist.seek(0x1bf9); // Player Karma.
+
+ karma = objlist.read1();
+
+ return true;
 }

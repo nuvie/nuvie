@@ -1,12 +1,12 @@
-#ifndef __Player_h__
-#define __Player_h__
+#ifndef __GameClock_h__
+#define __GameClock_h__
 
 /*
- *  player.h
+ *  GameClock.h
  *  Nuive
  *
- *  Created by Eric Fry on Sun Mar 23 2003.
- *  Copyright (c) 2003. All rights reserved.
+ *  Created by Eric Fry on Fri May 02 2003.
+ *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,46 +25,53 @@
  */
 
 #include "U6def.h"
+
 #include "Configuration.h"
-#include "GameClock.h"
 
-#include "Actor.h"
-#include "ActorManager.h"
-#include "MapWindow.h"
+#define GAMECLOCK_TICKS_PER_MINUTE   4
 
-class Player
+class GameClock
 {
  Configuration *config;
- GameClock *clock;
  
- bool party_mode;
- Actor *actor;
- ActorManager *actor_manager;
+ uint8 minute;
+ uint8 hour;
+ uint8 day;
+ uint8 month;
+ uint16 year;
  
- uint8 karma;
+ uint32 move_counter;
  
- MapWindow *map_window;
+ char date_string[11];
+ char time_string[11];
  
  public:
  
- Player(Configuration *cfg);
+ GameClock(Configuration *cfg);
+ ~GameClock();
  
- bool init(Actor *a, ActorManager *am, MapWindow *mw, GameClock *c);
+ bool init();
  
- Actor *get_actor();
- void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
+ void inc_move_counter();
+ void inc_move_counter_by_a_minute();
  
- void moveRelative(sint16 rel_x, sint16 rel_y);
- void Player::move(sint16 new_x, sint16 new_y, uint8 new_level);
- void moveLeft();
- void moveRight();
- void moveUp();
- void moveDown();
- void pass();
+ void inc_minute();
+ void inc_hour();
+ void inc_day();
+ void inc_month();
+ void inc_year();
  
- protected:
+ uint32 get_move_count();
  
- bool loadObjlistData();
+ char *get_time_of_day_string();
+ 
+ uint8 get_hour();
+ uint8 get_minute();
+ 
+ char *get_date_string();
+ char *get_time_string();
+ 
 };
 
-#endif /* __Player_h__ */
+
+#endif /* __GameClock_h__ */

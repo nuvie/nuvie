@@ -23,19 +23,25 @@
 #include <cstdlib>
 
 #include "Map.h"
+#include "ObjManager.h"
 
 #include "Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
 
-Actor::Actor(Map *m)
+Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 :sched(NULL)
 {
  map = m;
+ obj_manager = om;
+ 
+ clock = c;
  direction = 0;
  walk_frame = 0;
  standing = true;
  in_party = false;
+ worktype = 0;
+ sched_pos = 0;
 }
  
 Actor::~Actor()
@@ -68,6 +74,11 @@ uint16 Actor::get_tile_num()
  return a_num;// + frame_n;
 }
 
+uint8 Actor::get_worktype()
+{
+ return worktype;
+}
+
 void Actor::set_direction(uint8 d)
 {
  if(d < 4)
@@ -87,6 +98,7 @@ bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
 {
  uint16 pitch;
+ Obj *obj;
  
  if(z > 5)
    return false;
@@ -106,13 +118,19 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
  y = new_y;
  z = new_z;
  
+ obj = obj_manager->get_obj(x,y,z);
+ if(obj)
+  {
+   if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
+     frame_n = (obj->frame_n * 4) + 3;
+  }
  return true;
 }
 
 void Actor::update()
 {
  uint8 new_direction;
- 
+/* 
  // do actor stuff here.
  if(standing)
   {
@@ -124,7 +142,7 @@ void Actor::update()
    else
     {
      if(!in_party)
-       {
+       {       
         if(NUVIE_RAND()%80 == 1)
           {
            new_direction = NUVIE_RAND()%4;
@@ -140,6 +158,8 @@ void Actor::update()
        }
     }
   }
+*/
+ updateSchedule();
 
 }
 
@@ -153,9 +173,6 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
  uint16 i;
  unsigned char *sched_data_ptr;
  
- if(num == 0)
-     return;
-
  sched = (Schedule**)malloc(sizeof(Schedule*) * (num+1));
  
  sched_data_ptr = sched_data;
@@ -176,15 +193,72 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     sched[i]->z = (sched_data_ptr[4] & 0xf0) >> 4;
     sched_data_ptr += 5;
 #ifdef DEBUG
-    printf("#%04d %d,%d,%d hour %d unknown %d\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->worktype);
+    printf("#%04d %d,%d,%d hour %d worktype %d\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->worktype);
 #endif
    }
    
  sched[i] = NULL;
  
+ sched_pos = getSchedulePos(clock->get_hour());
+ 
+ if(sched[sched_pos] != NULL)
+    setWorktype(sched[sched_pos]->worktype);
+
  return;
 }
 
+void Actor::updateSchedule()
+{
+ uint8 hour;
+ uint16 new_pos;
+ 
+ hour = clock->get_hour();
+ 
+ new_pos = getSchedulePos(hour);
+ 
+ if(new_pos == sched_pos)
+  return;
+
+ sched_pos = new_pos;
+ 
+ if(sched[sched_pos] == NULL)
+   return;
+ 
+ move(sched[sched_pos]->x,sched[sched_pos]->y,sched[sched_pos]->z);
+ 
+ setWorktype(sched[sched_pos]->worktype);
+ 
+}
+
+// returns the current schedule entry based on hour
+uint16 Actor::getSchedulePos(uint8 hour)
+{
+ uint16 i;
+  
+ for(i=0;sched[i] != NULL;i++)
+  {
+   if(sched[i]->hour > hour)
+     {
+      if(i != 0)
+        return i-1;
+      else // i == 0 this means we are in the last schedule entry
+        for(;sched[i+1] != NULL;)
+          i++;
+     }
+  }
+  
+ if(i==0)
+  return 0;
+
+ return i-1;
+}
+
+bool Actor::setWorktype(uint8 new_worktype)
+{
+ worktype = new_worktype;
+ 
+ return true;
+}
 
 /* Set NPC flag `bitflag' to 1.
  */

@@ -27,7 +27,7 @@
 #include "U6Lib_n.h"
 #include "Configuration.h"
 #include "MsgScroll.h"
-
+#include "GameClock.h"
 
 enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
@@ -93,6 +93,7 @@ class Converse
 {
     Configuration *config;
     Converse_interpreter interpreter;
+    GameClock *clock;
     ActorManager *actors;
     Actor *npc;
     MsgScroll *scroll; // i/o object
@@ -275,7 +276,7 @@ class Converse
     { return(!scope.empty() ? scope.top() : CONV_SCOPE_MAIN); }
 public:
     Converse(Configuration *cfg, Converse_interpreter engine_type,
-		     MsgScroll *ioobj, ActorManager *actormgr);
+		     MsgScroll *ioobj, ActorManager *actormgr, GameClock *c);
     ~Converse();
     void loadConv(std::string convfilename="converse.a");
     /* Returns true if a script is active (paused or unpaused). */

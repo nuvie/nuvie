@@ -24,12 +24,13 @@
 #include "ActorManager.h"
 
 
-
-ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm)
+ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c)
 {
  config = cfg;
  map = m;
  tile_manager = tm;
+ obj_manager = om;
+ clock = c;
  
  player_actor = 1;
 }
@@ -60,7 +61,7 @@ bool ActorManager::loadActors()
  
  for(i=0; i < 256; i++)
    {
-    actors[i] = new Actor(map);
+    actors[i] = new Actor(map,obj_manager, clock);
     
     b1 = objlist.read1();
     b2 = objlist.read1();

@@ -1,3 +1,10 @@
+2003-05-04  Eric Fry <efry@users.sourceforge.net>
+	* Added GameClock
+	* Actors now follow their schedules.
+	* Actors sit on chairs now.
+	* Time of day works in talk mode.
+	* Added Karma to Player class.
+
 2003-05-02  Joseph Applegate <sb-x@users.sourceforge.net>
 	* RETURN or ENTER sends "0" for single-number input in conversations
 

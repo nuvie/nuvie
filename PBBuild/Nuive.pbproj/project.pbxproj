@@ -661,6 +661,32 @@
 			settings = {
 			};
 		};
+		07B4187504640AFB00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = GameClock.cpp;
+			path = /Users/eric/Projects/Ultima6/nuvie/GameClock.cpp;
+			refType = 0;
+		};
+		07B4187604640AFB00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = GameClock.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/GameClock.h;
+			refType = 0;
+		};
+		07B4187704640AFB00A8000A = {
+			fileRef = 07B4187504640AFB00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07B4187804640AFB00A8000A = {
+			fileRef = 07B4187604640AFB00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		07B8BE040419B94F00A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1031,6 +1057,8 @@
 				07EF5322043137BF00A8000A,
 				0725669904272B7B00A8000A,
 				0725669804272B7B00A8000A,
+				07B4187604640AFB00A8000A,
+				07B4187504640AFB00A8000A,
 				07DB546B042E8C1A00A8000A,
 				07DB546C042E8C1A00A8000A,
 				0725669B04272B7B00A8000A,
@@ -1181,6 +1209,7 @@
 				070823DC043EF72800A8000A,
 				07D14A93044449E400A8000A,
 				0704F9D70446B4E600A8000A,
+				07B4187804640AFB00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1227,6 +1256,7 @@
 				070823DB043EF72800A8000A,
 				07D14A92044449E400A8000A,
 				0704F9D60446B4E600A8000A,
+				07B4187704640AFB00A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -26,6 +26,8 @@
 
 #include "U6def.h"
 #include "Map.h"
+#include "ObjManager.h"
+#include "GameClock.h"
 
 typedef struct {
 uint16 x;
@@ -43,10 +45,14 @@ class Actor
  uint8 id_n;
  
  Map *map;
+ ObjManager *obj_manager;
+ GameClock *clock;
  
  uint16 x;
  uint16 y;
  uint16 z;
+ 
+ uint8 worktype;
  
  uint16 a_num;
  uint16 frame_n;
@@ -71,9 +77,12 @@ class Actor
  
  Schedule **sched;
  
+ //current schedule pos;
+ uint16 sched_pos;
+ 
  public:
  
- Actor(Map *m);
+ Actor(Map *m, ObjManager *om, GameClock *c);
  ~Actor();
  
  bool is_alive();
@@ -81,7 +90,8 @@ class Actor
  uint16 get_tile_num();
  uint8 get_actor_num() { return(id_n); }
  uint8 get_flags() { return(flags); }
-
+ uint8 get_worktype();
+ 
  void set_direction(uint8 d);
  void set_flags(uint8 newflags) { flags = newflags; }
  void set_flag(uint8 bitflag);
@@ -96,6 +106,11 @@ class Actor
  protected:
  
  void loadSchedule(unsigned char *schedule_data, uint16 num);
+ void updateSchedule();
+ uint16 getSchedulePos(uint8 hour);
+ 
+ bool setWorktype(uint8 new_worktype);
+ 
 };
 
 #endif /* __Actor_h__ */

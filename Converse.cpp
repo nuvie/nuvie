@@ -63,9 +63,10 @@ Converse::~Converse()
  * object to send output to and get input from.
  */
 Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
-                   MsgScroll *ioobj, ActorManager *actormgr)
+                   MsgScroll *ioobj, ActorManager *actormgr, GameClock *c)
 {
     config = cfg;
+    clock = c;
     scroll = ioobj;
 	actors = actormgr;
     interpreter = engine_type;
@@ -163,7 +164,7 @@ void Converse::collect_text(bool eval = false)
                 else if(!strcmp(symbol, "$P")) // player name
                     output.append("Nuvie");
                 else if(!strcmp(symbol, "$T")) // time of day
-                    output.append("TimeOfDay");
+                    output.append(clock->get_time_of_day_string());
                 else if(!strcmp(symbol, "$Z")) // previous input
                     output.append(input_s);
                 // FIXME: only converts 1 character variable numbers

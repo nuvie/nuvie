@@ -31,6 +31,7 @@
 
 #include "Screen.h"
 #include "GamePalette.h"
+#include "GameClock.h"
 #include "Text.h"
 #include "TileManager.h"
 #include "ObjManager.h"
@@ -65,6 +66,8 @@ class Game
  Player *player;
  Converse *converse;
 
+ GameClock *clock;
+ 
  Event *event;
  
  public:

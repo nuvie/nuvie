@@ -39,6 +39,8 @@ nuvie_SOURCES = \
 	Event.h \
 	Game.cpp \
 	Game.h \
+	GameClock.cpp \
+	GameClock.h \
 	Look.cpp \
 	Look.h \
 	Map.cpp \

@@ -53,6 +53,7 @@ Game::~Game()
     delete event;
     delete background;
     delete converse;
+    delete clock;
 }
  
 bool Game::loadGame(Screen *s, uint8 game_type)
@@ -67,6 +68,9 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  
  palette = new GamePalette(screen,config);
  
+ clock = new GameClock(config);
+ clock->init();
+ 
  loadBackground();
 
  text = new Text(config);
@@ -78,20 +82,20 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  game_map = new Map(config);
  game_map->loadMap(tile_manager, obj_manager);
  
- actor_manager = new ActorManager(config, game_map, tile_manager);
+ actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
  actor_manager->loadActors();
   
  map_window = new MapWindow(config);
  map_window->init(screen, game_map, tile_manager, obj_manager, actor_manager);
 
  player = new Player(config);
- player->init(actor_manager->get_actor(1),actor_manager, map_window);
+ player->init(actor_manager->get_actor(1),actor_manager, map_window, clock);
  
  map_window->set_windowSize(11,11);
  //map_window->move(0x12e,0x16b);
  map_window->centerMapOnActor(player->get_actor());
 
- converse = new Converse(config, CONV_U6, scroll, actor_manager);
+ converse = new Converse(config, CONV_U6, scroll, actor_manager, clock);
  converse->loadConv();
 
  event = new Event(config);
@@ -150,7 +154,7 @@ void Game::play()
      game_play = event->update();
      palette->rotatePalette();
      tile_manager->update();
-     actor_manager->updateActors();
+     //actor_manager->updateActors();
      map_window->drawMap();
      converse->continue_script();
      scroll->updateScroll();

@@ -47,6 +47,7 @@
 #define OBJ_U6_PICTURE        143
 #define OBJ_U6_BOOK           151
 #define OBJ_U6_SCROLL         152
+#define OBJ_U6_CHAIR          252
 #define OBJ_U6_V_PASSTHROUGH  278
 #define OBJ_U6_H_PASSTHROUGH  280
 #define OBJ_U6_LADDER         305
