@@ -33,10 +33,21 @@
 #include "TileManager.h"
 
 // obj status bit flags
-#define OBJ_STATUS_OK_TO_TAKE   0x1
-#define OBJ_STATUS_IN_CONTAINER 0x8
-#define OBJ_STATUS_IN_PARTY_INV 0x10
+#define OBJ_STATUS_NO_OBJ       0
+#define OBJ_STATUS_OK_TO_TAKE   1
+#define OBJ_STATUS_IN_CONTAINER 2
+#define OBJ_STATUS_IN_PARTY_INV 3
+#define OBJ_STATUS_NOT_PASSABLE 4
+#define OBJ_STATUS_PASSABLE     5
 
+typedef struct
+{
+ uint16 x;
+ uint16 y;
+ U6LList *objs;
+} ObjList;
+
+ 
 typedef struct
 {
  uint16 obj_n;
@@ -69,15 +80,21 @@ class ObjManager
  bool loadObjs(TileManager *tm);
  
  U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
- Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level);
+ bool is_boundary(uint16 x, uint16 y, uint8 level);
+ uint8 is_passable(uint16 x, uint16 y, uint8 level);
+ Tile *get_obj_tile(uint16 x, uint16 y, uint8 level);
+ Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  
  uint16 get_obj_tile_num(uint16 obj_num);
 
+ bool use_obj(uint16 x, uint16 y, uint8 level);
+ 
  protected:
  
  bool loadBaseTile();
 
  U6LList *loadObjSuperChunk(char *filename);
+ void addObj(U6LList *list, Obj *obj);
  bool addObjToContainer(U6LList *list, Obj *obj);
  Obj *loadObj(U6File *file);
  char *get_objblk_path(char *path);

@@ -48,6 +48,11 @@ void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
  *ret_level = z;
 }
 
+uint16 Actor::get_tile_num()
+{
+ return a_num;// + frame_n;
+}
+
 void Actor::set_direction(uint8 d)
 {
  if(d < 4)
@@ -109,8 +114,9 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     
     sched[i]->z = (sched_data[4] & 0xf0) >> 4;
     sched_data += 5;
-
+#ifdef DEBUG
     printf("#%04d %d,%d,%d hour %d unknown %d\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->unknown);
+#endif
    }
    
  sched[i] = NULL;

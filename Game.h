@@ -40,16 +40,11 @@
 #include "MsgScroll.h"
 #include "Map.h"
 #include "MapWindow.h"
+#include "Event.h"
 
 #define NUVIE_GAME_ULTIMA6 1
 #define NUVIE_GAME_MARTIAN 2
 #define NUVIE_GAME_SAVAGE  4
-
-#define NUVIE_INTERVAL    50
-
-#define NUVIE_CMD_MODE  1
-#define NUVIE_TALK_MODE 2
-#define NUVIE_CAST_MODE 4
 
 class Game
 {
@@ -68,11 +63,7 @@ class Game
  MsgScroll *scroll;
  Player *player;
  
- uint8 game_mode;
- 
- int ts;
- SDL_Event event;
- bool game_stop;
+ Event *event;
  
  public:
  
@@ -86,12 +77,6 @@ class Game
  
  void play();
  
- protected:
- 
- void updateEvents();
- 
- inline Uint32 TimeLeft();
- void wait();
 };
 
 #endif /* __Game_h__ */

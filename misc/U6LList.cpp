@@ -54,6 +54,7 @@ bool U6LList::add(void *data)
    head = tail = link;
  else   
    {
+    link->prev = tail;
     tail->next = link;
     tail = link;
    }
@@ -76,6 +77,8 @@ bool U6LList::add(void *data)
  
  if(pos == 0 || head == NULL) // pos at head or list empty
    {
+    if(head != NULL)
+      head->prev = new_link;
     new_link->next = head;
     head = new_link;
     if(tail == NULL)
@@ -91,11 +94,13 @@ bool U6LList::add(void *data)
    
     if(prev == tail)
       {
+       new_link->prev = tail;
        tail->next = new_link;
        tail = new_link;
       }
     else
       {
+       new_link->prev = prev;
        new_link->next = prev->next;
        prev->next = new_link;
       }
@@ -118,6 +123,9 @@ bool U6LList::remove(void *data, bool free_data)
     head = head->next;
     if(head == NULL) // empty list
       tail = NULL;
+    else
+      head->prev = NULL;
+      
     delete link;
 
     return true;
@@ -128,6 +136,7 @@ bool U6LList::remove(void *data, bool free_data)
    if(link->data == data)
     {
      prev->next = link->next;
+     link->prev = prev;
      
      if(link == tail)
          tail = prev;
@@ -166,6 +175,16 @@ U6Link *U6LList::next()
    return NULL;
    
  cur = cur->next;
+ 
+ return cur;
+}
+
+U6Link *U6LList::prev()
+{
+ if(cur == head)
+   return NULL;
+   
+ cur = cur->prev;
  
  return cur;
 }

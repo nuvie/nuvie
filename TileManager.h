@@ -26,6 +26,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
+#include "Look.h"
 
 // tile types stored in masktype.vga
 
@@ -34,14 +35,22 @@
 #define U6TILE_PBLCK 0xA
 
 typedef struct {
+uint16 tile_num;
 bool passable;
+bool water;
 bool toptile;
 bool dbl_width;
 bool dbl_height;
 bool transparent;
-
+bool boundary;
+uint8 article_n;
 //uint8 qty;
 //uint8 flags;
+
+uint8 flags1;
+uint8 flags2;
+uint8 flags3;
+
 unsigned char data[256];
 } Tile;
 
@@ -60,6 +69,7 @@ class TileManager
  uint16 tileindex[2048]; //used for animated tiles
  uint16 game_counter;
  Animdata animdata;
+ Look *look;
   
  Configuration *config;
  
@@ -70,7 +80,10 @@ class TileManager
     
    bool loadTiles();
    Tile *get_tile(uint16 tile_num);
+   Tile *get_original_tile(uint16 tile_num);
 
+   char *lookAtTile(uint16 tile_num);
+   
    void update();
    
  protected:

@@ -30,6 +30,12 @@ class MapWindow
  ActorManager *actor_manager;
  
  uint16 cur_x, cur_y;
+ uint16 cursor_x, cursor_y;
+ Tile *cursor_tile;
+ Tile *use_tile;
+ 
+ bool show_cursor;
+ bool show_use_cursor;
  
  uint16 win_width, win_height;
  uint8 cur_level;
@@ -42,11 +48,20 @@ class MapWindow
  bool init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorManager *am);
  
  bool set_windowSize(uint16 width, uint16 height);
+ void set_show_cursor(bool state);
+ void set_show_use_cursor(bool state);
  
  void moveLevel(uint8 new_level);
- void move(uint16 new_x, uint16 new_y);
- void moveRelative(sint16 rel_x, sint16 rel_y);
- void centerOnActor(Actor *actor);
+ void moveMap(uint16 new_x, uint16 new_y);
+ void moveMapRelative(sint16 rel_x, sint16 rel_y);
+ 
+ void centerMapOnActor(Actor *actor);
+ void centerCursor();
+ 
+ void moveCursor(sint16 new_x, sint16 new_y);
+ void moveCursorRelative(sint16 rel_x, sint16 rel_y);
+ 
+ char *lookAtCursor();
  
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);

@@ -30,6 +30,7 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
+#include "Look.h"
 
 #include "Game.h"
 
@@ -74,9 +75,13 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  player = new Player(config);
  player->init(actor_manager->get_actor(1),actor_manager, map_window);
  
+ event = new Event(config);
+ event->init(obj_manager, map_window, player);
+ 
  map_window->set_windowSize(11,11);
  //map_window->move(0x12e,0x16b);
- map_window->centerOnActor(player->get_actor());
+ map_window->centerMapOnActor(player->get_actor());
+
  
  return true;
 }
@@ -112,86 +117,26 @@ void Game::drawBackground()
   
 void Game::play()
 {
-
+ bool game_play = true;
+ 
   drawBackground();
   
   map_window->drawMap();
   
   screen->update();
   
-  game_stop = false;
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
   
-	for( ; !game_stop ; ) 
+	for( ; game_play ; ) 
     {
-     updateEvents();
+     game_play = event->update();
      tile_manager->update();
      actor_manager->updateActors();
      map_window->drawMap();
      scroll->updateScroll();
      screen->update();
-     wait();
+     event->wait();
 	  }
 
  return;
-}
-
-void Game::updateEvents()
-{
- 
-  while ( SDL_PollEvent(&event) ) {
-			switch (event.type) {
-
-				case SDL_MOUSEMOTION:
-					break;
-				case SDL_MOUSEBUTTONDOWN:
-					break;
-				case SDL_KEYDOWN:
-/*
-					if(event.key.keysym.sym==SDLK_UP)
-            { map_window->moveRelative(0,-1); break; }
- 					if(event.key.keysym.sym==SDLK_DOWN)
-            { map_window->moveRelative(0,1); break; }
-					if(event.key.keysym.sym==SDLK_LEFT)
-            { map_window->moveRelative(-1,0); break; }
-					if(event.key.keysym.sym==SDLK_RIGHT)
-            { map_window->moveRelative(1,0); break; }
-*/
-					if(event.key.keysym.sym==SDLK_UP)
-            { player->moveUp(); break; }
- 					if(event.key.keysym.sym==SDLK_DOWN)
-            { player->moveDown(); break; }
-					if(event.key.keysym.sym==SDLK_LEFT)
-            { player->moveLeft(); break; }
-					if(event.key.keysym.sym==SDLK_RIGHT)
-            { player->moveRight(); break; }
-					if(event.key.keysym.sym==SDLK_q)
-						game_stop = true;
-					break;       
-				case SDL_QUIT:
-					game_stop = true;
-					break;
-				default:
-					break;
-			}
-		}
-
-}
-
-inline Uint32 Game::TimeLeft()
-{
-    static Uint32 next_time = 0;
-    Uint32 now;
-
-    now = SDL_GetTicks();
-    if ( next_time <= now ) {
-        next_time = now+NUVIE_INTERVAL;
-        return(0);
-    }
-    return(next_time-now);
-}
-
-void Game::wait()
-{
- SDL_Delay(TimeLeft());
 }

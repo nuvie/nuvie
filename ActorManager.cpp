@@ -31,6 +31,7 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  map = m;
  tile_manager = tm;
  obj_manager = om;
+ 
 }
 
 ActorManager::~ActorManager()
@@ -73,6 +74,14 @@ bool ActorManager::loadActors()
    
     actors[i]->z = (b3 & 0xf0) >> 4;
     actors[i]->id_n = i;
+/* Force avatar to gargoyle world
+    if(i == 1)
+     {
+      actors[i]->x = 215;
+      actors[i]->y = 222;
+      actors[i]->z = 5;
+     }
+*/
    }
 
  for(i=0;i < 256; i++)
@@ -95,6 +104,19 @@ Actor *ActorManager::get_actor(uint8 actor_num)
  return actors[actor_num];
 }
 
+Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z)
+{
+ uint16 i;
+
+ for(i=0;i<256;i++)
+  {
+   if(actors[i]->x == x && actors[i]->y == y && actors[i]->z == z)
+     return actors[i];
+  }
+
+ return NULL;
+}
+
 Actor *ActorManager::get_partyLeader()
 {
  return actors[1]; //FIX here for dead party leader etc.
@@ -108,7 +130,7 @@ void ActorManager::updateActors()
   actors[i]->update();
   
 }
- 
+
 void ActorManager::drawActors(Screen *screen, uint16 x, uint16 y, uint16 width, uint16 height, uint8 level)
 {
  uint16 i;

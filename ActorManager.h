@@ -50,6 +50,8 @@ class ActorManager
  bool loadActors();
  
  Actor *get_actor(uint8 actor_num);
+ Actor *get_actor(uint16 x, uint16 y, uint8 z);
+ 
  Actor *get_partyLeader();
 
  void updateActors();

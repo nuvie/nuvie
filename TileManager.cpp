@@ -24,7 +24,13 @@
 #include "U6File.h"
 #include "U6Lzw.h"
 
+//#include "misc.h"
+
 #include "TileManager.h"
+
+void print_b(uint8 num);
+
+static char article_tbl[][4] = {"", "a", "an", "the"};
 
 TileManager::TileManager(Configuration *cfg)
 {
@@ -76,6 +82,7 @@ bool TileManager::loadTiles()
  for(i=0;i<2048;i++)
   {
    tile_offset = tileindx_vga.read2() * 16;
+   tile[i].tile_num = i;
    
    tile[i].transparent = false;
    
@@ -95,12 +102,28 @@ bool TileManager::loadTiles()
 
  loadAnimData();
  loadTileFlag();
- 
+  
  free(masktype);
  free(tile_data);
  
- //delete objtiles_vga;
- //delete tileindx_vga;
+ look = new Look(config);
+ if(look->init() == false)
+   return false;
+
+ look->print();
+ 
+#ifdef DEBUG
+ for(i=0;i<2048;i++)
+  {
+   printf("%04d : ",i);
+   print_b(tile[i].flags1);
+   printf(" ");
+   print_b(tile[i].flags2);
+   printf(" ");
+   print_b(tile[i].flags3);
+   printf(" %s\n",look->get_description(i));
+  }
+#endif
  
  delete lzw;
  
@@ -110,6 +133,16 @@ bool TileManager::loadTiles()
 Tile *TileManager::get_tile(uint16 tile_num)
 {
  return &tile[tileindex[tile_num]];
+}
+
+Tile *TileManager::get_original_tile(uint16 tile_num)
+{
+ return &tile[tile_num];
+}
+
+char *TileManager::lookAtTile(uint16 tile_num)
+{
+ return look->get_description(tile_num);
 }
 
 void TileManager::update()
@@ -146,32 +179,50 @@ bool TileManager::loadTileFlag()
  
  for(i=0;i < 2048; i++)
   {
-   byte = file.read1();
-   if(byte & 0x2)
+   tile[i].flags1 = file.read1();
+   if(tile[i].flags1 & 0x2)
      tile[i].passable = false;
    else
      tile[i].passable = true;
+     
+   if(tile[i].flags1 & 0x1)
+     tile[i].water = true;
+   else
+     tile[i].water = false;
+
   }
 
  for(i=0;i < 2048; i++)
   {
-   byte = file.read1();
-   if(byte & 0x10)
+   tile[i].flags2 = file.read1();
+   if(tile[i].flags2 & 0x10)
      tile[i].toptile = true;
    else
      tile[i].toptile = false;
 
-   if(byte & 0x40)
+   if(tile[i].flags2 & 0x4 || tile[i].flags2 & 0x8) // 0x4 normal boundary, 0x8 window FIX to handle these properly.
+     tile[i].boundary = true;
+   else
+     tile[i].boundary = false;
+
+
+   if(tile[i].flags2 & 0x40)
      tile[i].dbl_height = true;
    else
      tile[i].dbl_height = false;
 
-   if(byte & 0x80)
+   if(tile[i].flags2 & 0x80)
      tile[i].dbl_width = true;
    else
      tile[i].dbl_width = false;
+  }
 
-    //FIX add article
+ file.seek(0x1400);
+
+ for(i=0;i < 2048; i++) // '', 'a', 'an', 'the'
+  {
+   tile[i].flags3 = file.read1();
+   tile[i].article_n = (tile[i].flags3 & 0xC0) >> 6;
   }
 
  return true;
@@ -256,3 +307,17 @@ void TileManager::decodePixelBlockTile(unsigned char *tile_data, uint16 tile_num
  return;
 }
 
+void print_b(uint8 num)
+{
+ sint8 i;
+ 
+ for(i=7;i>=0;i--)
+ {
+  if(num & (1<<i))
+    printf("1");
+  else
+    printf("o");
+ }
+ 
+ return;
+}

@@ -31,8 +31,9 @@
 typedef struct U6Link
 {
  U6Link *next;
+ U6Link *prev;
  void *data;
- U6Link() {next = NULL; data = NULL;}
+ U6Link() {next = NULL; prev = NULL; data = NULL;}
 };
 
 class U6LList
@@ -55,6 +56,7 @@ class U6LList
  U6Link *end();
  
  U6Link *next();
+ U6Link *prev();
  U6Link *gotoPos(uint32 pos);
 };
 

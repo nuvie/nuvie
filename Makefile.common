@@ -27,8 +27,12 @@ nuvie_SOURCES = \
 	Actor.h \
 	ActorManager.cpp \
 	ActorManager.h \
+	Event.cpp \
+	Event.h \
 	Game.cpp \
 	Game.h \
+	Look.cpp \
+	Look.h \
 	Map.cpp \
 	Map.h \
 	MapWindow.cpp \

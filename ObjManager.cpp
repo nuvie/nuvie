@@ -63,6 +63,14 @@ bool ObjManager::loadObjs(TileManager *tm)
     }
   }
  
+ filename[len-1] = 'i';
+ 
+ for(i=0,x = 'a';x < 'f';x++,i++) //Load dungeons
+  {
+   filename[len-2] = x;
+   dungeon[i] = loadObjSuperChunk(filename);
+  }
+   
  loadBaseTile();
  
  return true;
@@ -81,48 +89,244 @@ U6LList *ObjManager::get_obj_superchunk(uint16 x, uint16 y, uint8 level)
  return dungeon[level-1];
 }
 
-
-// x, y in world coords
-Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level)
+bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
 {
- U6Link *link;
+ U6Link *link, *link1;
+ ObjList *obj_list;
  Obj *obj;
- Tile *tile;
+ Tile *tile, *tile1;
  uint16 tile_num;
  uint16 sx,sy; // note these values are not required if level > 0
+ bool check_tile;
  
  if(level == 0)
    {
     sx = x / 128;
     sy = y / 128;
-    link = surface[sy * 8 + sx]->start();
+    link = surface[sy * 8 + sx]->end();
    }
  else
-   link = dungeon[level-1]->start();
+   link = dungeon[level-1]->end();
  
- for(;link != NULL;link=link->next)
+ for(;link != NULL;link=link->prev)
    {
-    obj = (Obj *)link->data;
+    obj_list = (ObjList *)link->data;
     
-    tile_num = get_obj_tile_num(obj->obj_n)+obj->frame_n;
-    tile = tile_manager->get_tile(tile_num);
-    
-    if(obj->x == x && obj->y == y)
-      break;
-    if(tile->dbl_width && obj->x == x+1 && obj->y == y)
-      { tile_num--; break; }
-    if(tile->dbl_height && obj->x == x && obj->y == y+1)
-      { tile_num--; break; }
-    if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
-      { tile_num -= 2; break; }
+    if(obj_list->x == x || obj_list->x == x+1)
+      {
+       if(obj_list->y == y || obj_list->y == y+1)
+         {
+          link1 = obj_list->objs->end();
+                    
+          for(check_tile = false;link1 != NULL;link1 = link1->prev)
+            {
+             obj = (Obj *)link1->data;
+             tile_num = get_obj_tile_num(obj->obj_n)+obj->frame_n;
+             tile = tile_manager->get_original_tile(tile_num);
+
+             if(obj->x == x && obj->y == y)
+               { check_tile = true; }
+             if(tile->dbl_width && obj->x == x+1 && obj->y == y)
+                { tile_num--; check_tile = true; }
+             if(tile->dbl_height && obj->x == x && obj->y == y+1)
+                { tile_num--; check_tile = true; }
+             if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
+                { tile_num -= 2; check_tile = true; }
+             if(check_tile)
+               {
+                tile1 = tile_manager->get_tile(tile_num);
+                if(tile1->boundary == true)
+                  return true;
+                check_tile = false;
+               }
+            }
+         }
+      }
    }
 
- if(link != NULL)
+ return false;
+}
+
+
+uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
+{
+ U6Link *link, *link1;
+ ObjList *obj_list;
+ Obj *obj;
+ Tile *tile, *tile1;
+ uint16 tile_num;
+ uint16 sx,sy; // note these values are not required if level > 0
+ uint8 obj_status = OBJ_STATUS_NO_OBJ;
+ bool check_tile;
+ 
+ link1 = NULL;
+ 
+ if(level == 0)
+   {
+    sx = x / 128;
+    sy = y / 128;
+    link = surface[sy * 8 + sx]->end();
+   }
+ else
+   link = dungeon[level-1]->end();
+ 
+ for(;link != NULL;link=link->prev)
+   {
+    obj_list = (ObjList *)link->data;
+    
+    if(obj_list->x == x || obj_list->x == x+1)
+      {
+       if(obj_list->y == y || obj_list->y == y+1)
+         {
+          link1 = obj_list->objs->end();
+
+          obj_status = OBJ_STATUS_PASSABLE;
+                    
+          for(check_tile = false;link1 != NULL;link1 = link1->prev)
+            {
+             obj = (Obj *)link1->data;
+             tile_num = get_obj_tile_num(obj->obj_n)+obj->frame_n;
+             tile = tile_manager->get_original_tile(tile_num);
+    
+             if(obj->x == x && obj->y == y)
+               { check_tile = true; }
+             if(tile->dbl_width && obj->x == x+1 && obj->y == y)
+                { tile_num--; check_tile = true; }
+             if(tile->dbl_height && obj->x == x && obj->y == y+1)
+                { tile_num--; check_tile = true; }
+             if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
+                { tile_num -= 2; check_tile = true; }
+             if(check_tile)
+               {
+                tile1 = tile_manager->get_tile(tile_num);
+                if(tile1->passable == false)
+                  return OBJ_STATUS_NOT_PASSABLE;
+                check_tile = false;
+               }
+            }
+         }
+      }
+   }
+
+ return obj_status;
+}
+
+// x, y in world coords
+Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level)
+{
+ U6Link *link, *link1;
+ ObjList *obj_list;
+ Obj *obj;
+ Tile *tile;
+ uint16 tile_num;
+ uint16 sx,sy; // note these values are not required if level > 0
+ 
+ link1 = NULL;
+ 
+ if(level == 0)
+   {
+    sx = x / 128;
+    sy = y / 128;
+    link = surface[sy * 8 + sx]->end();
+   }
+ else
+   link = dungeon[level-1]->end();
+ 
+ for(;link != NULL;link=link->prev)
+   {
+    obj_list = (ObjList *)link->data;
+    
+    if(obj_list->x == x || obj_list->x == x+1)
+      {
+       if(obj_list->y == y || obj_list->y == y+1)
+         {
+          link1 = obj_list->objs->end();
+          
+          for(;link1 != NULL;link1 = link1->prev)
+            {
+             obj = (Obj *)link1->data;
+             tile_num = get_obj_tile_num(obj->obj_n)+obj->frame_n;
+             tile = tile_manager->get_original_tile(tile_num);
+    
+             if(obj->x == x && obj->y == y)
+                break;
+             if(tile->dbl_width && obj->x == x+1 && obj->y == y)
+                { tile_num--; break; }
+             if(tile->dbl_height && obj->x == x && obj->y == y+1)
+                { tile_num--; break; }
+             if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
+                { tile_num -= 2; break; }
+            }
+         }
+      }
+   }
+
+ if(link1 != NULL)
    {
     return tile_manager->get_tile(tile_num);
    }
 
  return NULL;
+}
+
+// x, y in world coords
+Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
+{
+ U6Link *link, *link1;
+ ObjList *obj_list;
+ Obj *obj;
+ uint16 sx,sy; // note these values are not required if level > 0
+ 
+ link1 = NULL;
+ 
+ if(level == 0)
+   {
+    sx = x / 128;
+    sy = y / 128;
+    link = surface[sy * 8 + sx]->end();
+   }
+ else
+   link = dungeon[level-1]->end();
+ 
+ for(;link != NULL;link=link->prev)
+   {
+    obj_list = (ObjList *)link->data;
+    
+    if(obj_list->x == x && obj_list->y == y)
+      {
+       if(top_obj)
+          link1 = obj_list->objs->end();
+       else
+          link1 = obj_list->objs->start();
+       
+       if(link1 != NULL)
+          {
+           obj = (Obj *)link1->data;
+           return obj;
+          }
+      }    
+   }
+
+ return NULL;
+}
+
+bool ObjManager::use_obj(uint16 x, uint16 y, uint8 level)
+{
+ Obj *obj;
+ 
+ obj = get_obj(x,y,level);
+ if(obj == NULL)
+   return false;
+
+ if(obj->obj_n >= 297 && obj->obj_n <= 300) // door objects
+   {
+    if(obj->frame_n <= 3)
+      obj->frame_n += 4;
+    else
+      obj->frame_n -= 4;
+   }
+   
+ return true;
 }
 
 uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :)
@@ -165,15 +369,43 @@ U6LList *ObjManager::loadObjSuperChunk(char *filename)
  for(i=0;i<num_objs;i++)
   {
    obj = loadObj(&file);
-   if(obj->status & OBJ_STATUS_IN_CONTAINER)
+  // addObj(list,obj);
+  
+   if(obj->status & 0x8) // FIX here OBJ_STATUS_IN_CONTAINER)
      {
       addObjToContainer(list,obj);
      }
    else      
-      list->addAtPos(0,obj);
+      addObj(list,obj);
   }
    
  return list;
+}
+
+void ObjManager::addObj(U6LList *list, Obj *obj)
+{
+ U6Link *link;
+ ObjList *obj_list;
+  
+ for(link = list->end();link != NULL;link = link->prev)
+   {
+    obj_list = (ObjList *)link->data;
+    if(obj_list->x == obj->x && obj_list->y == obj->y)
+      break;
+   }
+ 
+ if(link == NULL)
+   {
+    obj_list = new ObjList;
+    obj_list->objs = new U6LList();
+    
+    obj_list->x = obj->x;
+    obj_list->y = obj->y;
+    
+    list->add(obj_list);
+   }
+  
+ obj_list->objs->addAtPos(0,obj);
 }
 
 bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
@@ -181,7 +413,7 @@ bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
  U6Link *link;
  Obj *c_obj; //container object
  
- return true;
+ return true; // FIX
  
  link = list->gotoPos(obj->x); //get the parent container object
  c_obj = (Obj *)link->data; //FIX from here.. <+===-

@@ -74,6 +74,8 @@ class Actor
  
  bool is_alive();
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
+ uint16 get_tile_num();
+ 
  void set_direction(uint8 d);
  
  bool moveRelative(sint16 rel_x, sint16 rel_y);

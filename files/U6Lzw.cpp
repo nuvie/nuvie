@@ -215,7 +215,9 @@ unsigned char *U6Lzw::decompress_file(std::string filename, uint32 &destination_
     uint32 source_buffer_size;
     U6File input_file;
     
-    input_file.open(filename,"rb");
+    destination_length = 0;
+    if(input_file.open(filename,"rb") == false)
+      return NULL;
     
     if (this->is_valid_lzw_file(&input_file))
     {

@@ -38,7 +38,7 @@ class Map
  Configuration *config;
  TileManager *tile_manager;
  ObjManager *obj_manager;
-  
+ 
  uint8 *surface;
  uint8 *dungeons[5];
   
@@ -51,6 +51,9 @@ class Map
  unsigned char *get_map_data(uint8 level);
  uint16 get_width(uint8 level);
  bool is_passable(uint16 x, uint16 y, uint8 level);
+ bool is_boundary(uint16 x, uint16 y, uint8 level);
+ 
+ char *look(uint16 x, uint16 y, uint8 level);
  
  protected:
   

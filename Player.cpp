@@ -42,30 +42,42 @@ Actor *Player::get_actor()
  return actor;
 }
 
+void Player::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
+{
+ actor->get_location(ret_x,ret_y,ret_level);
+}
+
+void Player::moveRelative(sint16 rel_x, sint16 rel_y)
+{
+ if(rel_x < 0)
+   actor->set_direction(3);
+ if(rel_x > 0)
+   actor->set_direction(1);
+ if(rel_y < 0)
+   actor->set_direction(0);
+ if(rel_y > 0)
+   actor->set_direction(2);
+   
+ if(actor->moveRelative(rel_x,rel_y))
+   map_window->moveMapRelative(rel_x,rel_y);
+}
+
 void Player::moveLeft()
 {
- actor->set_direction(3);
- if(actor->moveRelative(-1,0))
-   map_window->moveRelative(-1,0);
+ moveRelative(-1,0);
 }
 
 void Player::moveRight()
 {
- actor->set_direction(1);
- if(actor->moveRelative(1,0))
-   map_window->moveRelative(1,0);
+ moveRelative(1,0);
 }
 
 void Player::moveUp()
 {
- actor->set_direction(0);
- if(actor->moveRelative(0,-1))
-   map_window->moveRelative(0,-1);
+ moveRelative(0,-1);
 }
 
 void Player::moveDown()
 {
- actor->set_direction(2);
- if(actor->moveRelative(0,1))
-   map_window->moveRelative(0,1);
+ moveRelative(0,1);
 }

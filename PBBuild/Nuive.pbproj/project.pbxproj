@@ -696,6 +696,58 @@
 			settings = {
 			};
 		};
+		07DB546B042E8C1A00A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Look.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/Look.h;
+			refType = 0;
+		};
+		07DB546C042E8C1A00A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Look.cpp;
+			path = /Users/eric/Projects/Ultima6/nuvie/Look.cpp;
+			refType = 0;
+		};
+		07DB546D042E8C1A00A8000A = {
+			fileRef = 07DB546B042E8C1A00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07DB546E042E8C1A00A8000A = {
+			fileRef = 07DB546C042E8C1A00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07EF5321043137BF00A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Event.h;
+			path = ../Event.h;
+			refType = 2;
+		};
+		07EF5322043137BF00A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Event.cpp;
+			path = ../Event.cpp;
+			refType = 2;
+		};
+		07EF5323043137BF00A8000A = {
+			fileRef = 07EF5321043137BF00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07EF5324043137BF00A8000A = {
+			fileRef = 07EF5322043137BF00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //070
 //071
 //072
@@ -849,8 +901,12 @@
 				07B8BE0C0419B95A00A8000A,
 				079CA1D204230A2B00A8000A,
 				072BE3AD041AFE1100A8000A,
+				07EF5321043137BF00A8000A,
+				07EF5322043137BF00A8000A,
 				0725669904272B7B00A8000A,
 				0725669804272B7B00A8000A,
+				07DB546B042E8C1A00A8000A,
+				07DB546C042E8C1A00A8000A,
 				0725669B04272B7B00A8000A,
 				0725669A04272B7B00A8000A,
 				0725669D04272B7B00A8000A,
@@ -993,6 +1049,8 @@
 				0740D53A042AA97500A8000A,
 				0740D53C042AA97500A8000A,
 				07DB53ED042DA0CF00A8000A,
+				07DB546D042E8C1A00A8000A,
+				07EF5323043137BF00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1032,6 +1090,8 @@
 				0740D539042AA97500A8000A,
 				0740D53B042AA97500A8000A,
 				07DB53EC042DA0CF00A8000A,
+				07DB546E042E8C1A00A8000A,
+				07EF5324043137BF00A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

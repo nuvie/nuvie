@@ -17,6 +17,11 @@ MapWindow::MapWindow(Configuration *cfg)
  cur_x = 0;
  cur_y = 0;
  
+ cursor_x = 0;
+ cursor_y = 0;
+ show_cursor = false;
+ show_use_cursor = false;
+ 
  win_width = 11;
  win_height = 11;
  
@@ -36,9 +41,12 @@ bool MapWindow::init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorMa
  obj_manager = om;
  actor_manager = am;
 
- tmp_buf = (unsigned char *)malloc(win_width * win_height);
+ tmp_buf = (unsigned char *)malloc((win_width + 2) * (win_height + 2));
  if(tmp_buf == NULL)
    return false;
+
+ cursor_tile = tile_manager->get_tile(365); // might change in MD, SE
+ use_tile = tile_manager->get_tile(364); // might change in MD, SE
 
  return true;
 }
@@ -48,24 +56,37 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
  win_width = width;
  win_height = height;
  
- tmp_buf = (unsigned char *)realloc(tmp_buf, win_width * win_height);
+ //we make the map +1 bigger all around for the boundary fill function
+ //this enables edges of the map window to display correctly.
+ 
+ tmp_buf = (unsigned char *)realloc(tmp_buf, (win_width + 2) * (win_height + 2)); 
  if(tmp_buf == NULL)
    return false;
 
  return true;
 }
- 
+
+void MapWindow::set_show_cursor(bool state)
+{
+ show_cursor = state;
+}
+
+void MapWindow::set_show_use_cursor(bool state)
+{
+ show_use_cursor = state;
+} 
+
 void MapWindow::moveLevel(uint8 new_level)
 {
  cur_level = new_level;
 }
 
-void MapWindow::move(uint16 new_x, uint16 new_y)
+void MapWindow::moveMap(uint16 new_x, uint16 new_y)
 {
- moveRelative(new_x - cur_x, new_y - cur_y);
+ moveMapRelative(new_x - cur_x, new_y - cur_y);
 }
 
-void MapWindow::moveRelative(sint16 rel_x, sint16 rel_y)
+void MapWindow::moveMapRelative(sint16 rel_x, sint16 rel_y)
 {
  uint16 map_side_length;
  
@@ -81,7 +102,7 @@ void MapWindow::moveRelative(sint16 rel_x, sint16 rel_y)
      cur_y += rel_y;
 }
 
-void MapWindow::centerOnActor(Actor *actor)
+void MapWindow::centerMapOnActor(Actor *actor)
 {
  uint16 x;
  uint16 y;
@@ -91,9 +112,55 @@ void MapWindow::centerOnActor(Actor *actor)
  
  cur_x = x - ((win_width - 1) / 2);
  cur_y = y - ((win_height - 1) / 2);
+ cur_level = z;
+ 
+ return;
+}
+
+void MapWindow::centerCursor()
+{
+ 
+ cursor_x = (win_width - 1) / 2;
+ cursor_y = (win_height - 1) / 2;
 
  return;
 }
+
+void MapWindow::moveCursor(sint16 new_x, sint16 new_y)
+{
+ if(new_x < 0 || new_x >= win_width)
+   return;
+
+ if(new_y < 0 || new_y >= win_height)
+   return;
+
+ cursor_x = new_x;
+ cursor_y = new_y;
+ 
+ return;
+}
+
+void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
+{
+ moveCursor(cursor_x + rel_x, cursor_y + rel_y);
+}
+
+char *MapWindow::lookAtCursor()
+{
+ Actor *actor;
+ 
+ if(tmp_buf[cursor_y * win_width + cursor_x] == 0) //black area
+   return tile_manager->lookAtTile(0); // nothing to see here. ;)
+
+ actor = actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
+ if(actor != NULL)
+   {
+    return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->get_tile_num()));
+   }
+   
+ return map->look(cur_x + cursor_x, cur_y + cursor_y, cur_level);
+}
+ 
 
 void MapWindow::get_level(uint8 *level)
 {
@@ -120,6 +187,7 @@ void MapWindow::drawMap()
  
  //map_ptr += cur_y * map_width + cur_x;
   map_ptr = tmp_buf;
+  map_ptr += 1 * (win_width + 2) + 1; //remember our tmp map is 1 bigger all around.
   
   for(i=0;i<win_height;i++)
   {
@@ -131,13 +199,27 @@ void MapWindow::drawMap()
         tile = tile_manager->get_tile(map_ptr[j]);
 
       screen->blit((unsigned char *)tile->data,8,(j*16),(i*16),16,16);
+      if(tile->boundary)
+        {
+         //screen->blit(cursor_tile->data,8,j*16,i*16,16,16,false);
+        }
+
      }
    //map_ptr += map_width;
-   map_ptr += win_width;
+   map_ptr += win_width + 2;
   }
 
  drawObjs();
  
+ if(show_cursor)
+  {
+   screen->blit((unsigned char *)cursor_tile->data,8,cursor_x*16,cursor_y*16,16,16,true);
+  }
+  
+ if(show_use_cursor)
+  {
+   screen->blit((unsigned char *)use_tile->data,8,cursor_x*16,cursor_y*16,16,16,true);
+  }
 }
 
 void MapWindow::drawObjs()
@@ -192,20 +274,25 @@ void MapWindow::drawObjs()
 
 void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
 {
- U6Link *link;
+ U6Link *link, *link1;
+ ObjList *obj_list;
  Obj *obj;
  
  for(link=superblock->start();link != NULL;)
   {
-   obj = (Obj *)link->data;
+   obj_list = (ObjList *)link->data;
 //   if(obj->y > cur_y + win_height)
 //      break;
 
-   if(obj->y >= cur_y && obj->y <= cur_y + win_height)
+   if(obj_list->y >= cur_y && obj_list->y <= cur_y + win_height)
      {
-      if(obj->x >= cur_x && obj->x <= cur_x + win_width)
+      if(obj_list->x >= cur_x && obj_list->x <= cur_x + win_width)
         {
-         drawObj(obj, toptile);
+         for(link1=obj_list->objs->start();link1 != NULL;link1=link1->next)
+           {
+            obj = (Obj *)link1->data;
+            drawObj(obj, toptile);
+           }
         }
      }
      
@@ -269,8 +356,12 @@ inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y, bool toptil
 
 inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile)
 {
- if(tmp_buf[y*win_width+x] == 0) //don't draw object if area is in darkness.
+ if(tmp_buf[(y+1)*(win_width+2)+(x+1)] == 0) //don't draw object if area is in darkness.
    return;
+// if(tile->boundary)
+//  {
+//    screen->blit(cursor_tile->data,8,x*16,y*16,16,16,false);
+//   }
    
  if(toptile)
     {
@@ -292,7 +383,7 @@ void MapWindow::generateTmpMap()
  map_ptr = map->get_map_data(cur_level);
  pitch = map->get_width(cur_level);
  
- memset(tmp_buf, 0, win_width * win_height);
+ memset(tmp_buf, 0, (win_width+2) * (win_height+2));
 
  boundaryFill(map_ptr, pitch, cur_x + ((win_width - 1) / 2), cur_y + ((win_height - 1) / 2));
  
@@ -304,13 +395,13 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  unsigned char *ptr;
  uint16 pos;
  
- if((x < cur_x) || (x >= cur_x + win_width))
+ if((x < cur_x - 1) || (x >= (cur_x-1) + win_width + 2))
    return;
 
- if((y < cur_y) || (y >= cur_y + win_height))
+ if((y < cur_y - 1) || (y >= (cur_y-1) + win_height + 2))
    return;
    
- pos = (y - cur_y) * win_width + (x - cur_x);
+ pos = (y - (cur_y-1)) * (win_width+2) + (x - (cur_x-1));
 
  ptr = &tmp_buf[pos];
 
@@ -321,13 +412,11 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  
  *ptr = current;
  
- //FIX there has to be a better wall detection method probably in tileflags. ;)
- 
- if(current >= 140 && current <= 205) //hit the boundary wall tiles
+ if(map->is_boundary(x,y,cur_level)) //hit the boundary wall tiles
   {
    return;
   }
-
+  
  boundaryFill(map_ptr, pitch, x+1, y);
  boundaryFill(map_ptr, pitch, x, y+1);
  boundaryFill(map_ptr, pitch, x+1, y+1);

@@ -73,20 +73,68 @@ uint16 Map::get_width(uint8 level)
 bool Map::is_passable(uint16 x, uint16 y, uint8 level)
 {
  uint8 *ptr;
- Tile *tile;
-
- tile = obj_manager->get_obj_tile(x, y, level);
- if(tile != NULL)
-   {
-    if(tile->passable == false)
-      return false;
-   }
-     
+ Tile *obj_tile;
+ Tile *map_tile;
+ uint8 obj_status;
+ 
+ obj_status = obj_manager->is_passable(x, y, level);
+ if(obj_status == OBJ_STATUS_NOT_PASSABLE)
+  {
+   return false;
+  }
+   
  ptr = get_map_data(level);
- tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
+ map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
 
- return tile->passable;
+ if(obj_status == OBJ_STATUS_PASSABLE && map_tile->water) //special case for bridges etc.
+   return true;
+   
+ return map_tile->passable;
 }
+
+bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
+{
+ uint8 *ptr;
+ Tile *map_tile;
+   
+ ptr = get_map_data(level);
+ map_tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
+
+ if(map_tile->boundary)
+   return true;
+   
+ if(obj_manager->is_boundary(x, y, level))
+   return true;
+
+ return false;
+}
+
+
+char *Map::look(uint16 x, uint16 y, uint8 level)
+{
+ unsigned char *ptr;
+ uint16 tile_num;
+ Tile *tile;
+ 
+ if(level == 0)
+  {
+   ptr = surface;
+  }
+ else
+   ptr = dungeons[level - 1];
+
+
+    tile = obj_manager->get_obj_tile(x, y, level);
+    if(tile != NULL)
+     {
+      tile_num = tile->tile_num;
+     }
+    else
+      tile_num =  ptr[y * get_width(level) + x];
+
+ return tile_manager->lookAtTile(tile_num);
+}
+
 
 bool Map::loadMap(TileManager *tm, ObjManager *om)
 {
