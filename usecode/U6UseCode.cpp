@@ -66,6 +66,8 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
     case OBJ_U6_LEVER : use_lever(obj);
                         break;
 
+    case OBJ_U6_SWITCH : toggle_frame(obj); //FIX hookup switch action.
+                        break;
     case OBJ_U6_FIREPLACE :
     case OBJ_U6_SECRET_DOOR : if(obj->frame_n == 1 || obj->frame_n == 3)
                                 obj->frame_n--;
@@ -177,9 +179,43 @@ bool U6UseCode::use_passthrough(Obj *obj)
 
 bool U6UseCode::use_lever(Obj *obj)
 {
- toggle_frame(obj);
+ Obj *doorway_obj;
+ Obj *portc_obj;
+ U6LList *obj_list;
+ U6Link *link;
  
- //FIX do lever work here.
+ doorway_obj = obj_manager->find_obj(OBJ_U6_DOORWAY, obj->quality, obj->z);
+ 
+ for(;doorway_obj != NULL;doorway_obj = obj_manager->find_next_obj(doorway_obj))
+   {
+    obj_list = obj_manager->get_obj_list(doorway_obj->x,doorway_obj->y,doorway_obj->z);
+
+    for(portc_obj=NULL,link=obj_list->start();link != NULL;link=link->next) // find existing portcullis.
+     {
+      if(((Obj *)link->data)->obj_n == OBJ_U6_PORTCULLIS)
+        {
+         portc_obj = (Obj *)link->data;
+         break;
+        }
+     }
+
+    if(portc_obj == NULL) //no portcullis object, so lets create one.
+     {
+      portc_obj = obj_manager->copy_obj(doorway_obj);
+      portc_obj->obj_n = OBJ_U6_PORTCULLIS;
+      portc_obj->quality = 0;
+      if(portc_obj->frame_n == 9) //FIX Hack for cream buildings might need one for virt wall. 
+        portc_obj->frame_n = 1;
+      obj_manager->add_obj(portc_obj,true);
+     }
+    else //delete portcullis object.
+     {
+      obj_list->remove(portc_obj);
+      delete portc_obj;
+     }
+   }
+ 
+ toggle_frame(obj);
  
  return true;
 }

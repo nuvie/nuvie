@@ -24,7 +24,7 @@
 
 #include "Map.h"
 #include "ObjManager.h"
-
+#include "U6UseCode.h"
 #include "Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};

@@ -1,3 +1,7 @@
+2003-05-31  Eric Fry <efry@users.sourceforge.net>
+	* Use Lever now operates corresponding portcullis(s).
+	* The Avatar now walks up to the edge of the map correctly.
+
 2003-05-30  Eric Fry <efry@users.sourceforge.net>
 	* Added UseCode,U6UseCode classes.
 	* Fixed clocks.

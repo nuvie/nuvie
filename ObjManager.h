@@ -42,32 +42,6 @@
 #define OBJ_STATUS_NOT_PASSABLE 4
 #define OBJ_STATUS_PASSABLE     5
 
-//object numbers
-
-#define OBJ_U6_CHEST           98
-#define OBJ_U6_CANDLE         122
-#define OBJ_U6_PICTURE        143
-#define OBJ_U6_BOOK           151
-#define OBJ_U6_SCROLL         152
-#define OBJ_U6_FIREPLACE      164
-#define OBJ_U6_DRAWER         176
-#define OBJ_U6_BARREL         186
-#define OBJ_U6_BAG            188
-#define OBJ_U6_CRATE          192
-#define OBJ_U6_BRAZIER        206
-#define OBJ_U6_MOUSEHOLE      213
-#define OBJ_U6_CHAIR          252
-#define OBJ_U6_CROSS          254
-#define OBJ_U6_TOMBSTONE      255
-#define OBJ_U6_LEVER          268
-#define OBJ_U6_V_PASSTHROUGH  278
-#define OBJ_U6_H_PASSTHROUGH  280
-#define OBJ_U6_LADDER         305
-#define OBJ_U6_HOLE           308
-#define OBJ_U6_CAVE           326
-
-#define OBJ_U6_SIGN           332
-#define OBJ_U6_SECRET_DOOR    334
 
 struct ObjTreeNode
 {
@@ -126,9 +100,14 @@ class ObjManager
 
  U6LList *get_actor_inventory(uint16 actor_num);
  bool actor_has_inventory(uint16 actor_num);
+ 
+ Obj *find_next_obj(Obj *prev_obj);
+ Obj *find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_obj=NULL);
 
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
+ bool add_obj(Obj *obj, bool addOnTop=false);
  bool remove_obj(Obj *obj);
+ Obj *copy_obj(Obj *obj);
  const char *look_obj(Obj *obj);
 
  float get_obj_weight(Obj *obj);
@@ -139,7 +118,7 @@ class ObjManager
  bool loadWeightTable();
 
  bool loadObjSuperChunk(char *filename, uint8 level);
- void addObj(iAVLTree *obj_tree, Obj *obj, bool addOnTop=false);
+ bool add_obj(iAVLTree *obj_tree, Obj *obj, bool addOnTop=false);
  bool addObjToContainer(U6LList *list, Obj *obj);
  Obj *loadObj(U6File *file, uint16 objblk_n);
  char *get_objblk_path(char *path);

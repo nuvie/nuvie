@@ -104,17 +104,18 @@ void MapWindow::moveMap(sint16 new_x, sint16 new_y, sint8 new_level)
    map_side_length = 1024;
  else
    map_side_length = 256;
-  
+/*  
  if(new_x >= 0 && new_x <= map_side_length - win_width)
     {
      if(new_y >= 0 && new_y <= map_side_length - win_height)
         {
+ */       
          cur_x = new_x;
          cur_y = new_y;
          cur_level = new_level;
          updateBlacking();
-        }
-     } 
+ //       }
+ //    } 
 }
 
 void MapWindow::moveMapRelative(sint16 rel_x, sint16 rel_y)
@@ -497,10 +498,10 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  uint16 *ptr;
  uint16 pos;
  
- if((x < cur_x - 1) || (x >= (cur_x-1) + win_width + 2))
+ if((x < cur_x - 1) || (x >= (cur_x-1) + win_width + 2) || x >= pitch)
    return;
 
- if((y < cur_y - 1) || (y >= (cur_y-1) + win_height + 2))
+ if((y < cur_y - 1) || (y >= (cur_y-1) + win_height + 2) || y >= pitch)
    return;
    
  pos = (y - (cur_y-1)) * (win_width+2) + (x - (cur_x-1));

@@ -32,6 +32,8 @@
 #include "Book.h"
 #include "Event.h"
 
+#include "U6UseCode.h"
+
 uint32 nuvieGameCounter;
 
 Event::Event(Configuration *cfg)

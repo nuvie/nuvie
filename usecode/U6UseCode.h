@@ -30,6 +30,36 @@
 #include "Player.h"
 #include "UseCode.h"
 
+//object numbers
+
+#define OBJ_U6_CHEST           98
+#define OBJ_U6_CANDLE         122
+#define OBJ_U6_PICTURE        143
+#define OBJ_U6_BOOK           151
+#define OBJ_U6_SCROLL         152
+#define OBJ_U6_FIREPLACE      164
+#define OBJ_U6_SWITCH         174
+#define OBJ_U6_DRAWER         176
+#define OBJ_U6_BARREL         186
+#define OBJ_U6_BAG            188
+#define OBJ_U6_CRATE          192
+#define OBJ_U6_BRAZIER        206
+#define OBJ_U6_MOUSEHOLE      213
+#define OBJ_U6_CHAIR          252
+#define OBJ_U6_CROSS          254
+#define OBJ_U6_TOMBSTONE      255
+#define OBJ_U6_LEVER          268
+#define OBJ_U6_V_PASSTHROUGH  278
+#define OBJ_U6_H_PASSTHROUGH  280
+#define OBJ_U6_DOORWAY        301
+#define OBJ_U6_LADDER         305
+#define OBJ_U6_HOLE           308
+#define OBJ_U6_PORTCULLIS     310
+#define OBJ_U6_CAVE           326
+
+#define OBJ_U6_SIGN           332
+#define OBJ_U6_SECRET_DOOR    334
+
 class U6UseCode: public UseCode
 {
  

@@ -170,10 +170,11 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+//FIX this needs to be moved magicnumbers :(
 bool ObjManager::is_door(Obj * obj)
 {
  //for U6
- if((obj->obj_n >= 297 && obj->obj_n <= 300) || obj->obj_n == 334 || obj->obj_n == OBJ_U6_MOUSEHOLE)
+ if((obj->obj_n >= 297 && obj->obj_n <= 300) || obj->obj_n == 334 || obj->obj_n == 213) //OBJ_U6_MOUSEHOLE)
    return true;
 
  return false;
@@ -334,6 +335,11 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
  return NULL;
 }
 
+bool ObjManager::add_obj(Obj *obj, bool addOnTop)
+{
+ return add_obj(get_obj_tree(obj->z), obj, addOnTop);
+}
+
 bool ObjManager::remove_obj(Obj *obj)
 {
  U6LList *obj_list;
@@ -348,6 +354,30 @@ bool ObjManager::remove_obj(Obj *obj)
  return true;
 }
 
+Obj *ObjManager::copy_obj(Obj *obj)
+{
+ Obj *new_obj;
+ 
+ if(obj == NULL)
+   return NULL;
+
+ new_obj = new Obj;
+
+ new_obj->obj_n = obj->obj_n;
+ new_obj->frame_n = obj->frame_n;
+   
+ new_obj->status = obj->status;
+ new_obj->qty = obj->qty;
+ new_obj->quality = obj->quality;
+
+ new_obj->x = obj->x;
+ new_obj->y = obj->y;
+ new_obj->z = obj->z;
+
+ // should we copy container???
+ 
+ return new_obj;
+}
 
 bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
 {
@@ -364,7 +394,7 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  obj->y = y;
  obj->z = level;
 
- addObj(get_obj_tree(level),obj,true); // add the object on top of the stack
+ add_obj(get_obj_tree(level),obj,true); // add the object on top of the stack
 
  return true;
 }
@@ -428,6 +458,52 @@ bool ObjManager::actor_has_inventory(uint16 actor_num)
   }
 
  return false;
+}
+
+Obj *ObjManager::find_next_obj(Obj *prev_obj)
+{
+ if(prev_obj == NULL)
+   return NULL;
+
+ return find_obj(prev_obj->obj_n, prev_obj->quality, prev_obj->z, prev_obj);
+}
+
+Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_obj)
+{
+ iAVLTree *obj_tree = get_obj_tree(level);
+ iAVLCursor cursor;
+ ObjTreeNode *node, *prev_node;
+ U6Link *link;
+ Obj *new_obj;
+ bool passed_prev_obj = false;
+
+ if(prev_obj == NULL)
+   passed_prev_obj = true;
+
+ node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
+   
+ for(;node != NULL;)
+  {
+   link = ((U6LList *)(node->obj_list))->start();
+   for(;link != NULL;link=link->next)
+    {
+     if( ((Obj *)(link->data))->obj_n == obj_n && ((Obj *)(link->data))->quality == quality )
+       {
+        new_obj = (Obj *)link->data;
+        if(new_obj == prev_obj)
+          passed_prev_obj = true;
+        else
+          {
+           if(passed_prev_obj)  
+             return new_obj;
+          }
+       }
+    }
+
+   node = (ObjTreeNode *)iAVLNext(&cursor);
+  }
+  
+ return NULL;
 }
 
 bool ObjManager::loadBaseTile()
@@ -504,7 +580,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
        addObjToContainer(list,obj);
       }
      else
-       addObj(obj_tree,obj);
+       add_obj(obj_tree,obj);
     }
 
   }
@@ -514,7 +590,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
  return true;
 }
 
-void ObjManager::addObj(iAVLTree *obj_tree, Obj *obj, bool addOnTop)
+bool ObjManager::add_obj(iAVLTree *obj_tree, Obj *obj, bool addOnTop)
 {
  ObjTreeNode *node;
  U6LList *obj_list;
@@ -543,6 +619,8 @@ void ObjManager::addObj(iAVLTree *obj_tree, Obj *obj, bool addOnTop)
    obj_list->add(obj);
  else
    obj_list->addAtPos(0,obj);
+
+ return true;
 }
 
 bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
