@@ -37,6 +37,8 @@ Surface::Surface()
  
  pitch = 0;
  bpp = 0;
+
+ data = 0;
 }
 
 Surface::~Surface()
