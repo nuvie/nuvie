@@ -40,6 +40,6 @@ class GameSelect
  GameSelect(Configuration *cfg);
  ~GameSelect();
  
- bool load(Screen *s);
+ bool load(Screen *s, uint8 game_type=NUVIE_GAME_NONE);
  
 };

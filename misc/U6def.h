@@ -5,9 +5,10 @@
 #include "../msvc/msvc_kludges.h"
 #endif
 
-#define NUVIE_GAME_U6  1
-#define NUVIE_GAME_MD  2
-#define NUVIE_GAME_SE  4
+#define NUVIE_GAME_NONE  0
+#define NUVIE_GAME_U6    1
+#define NUVIE_GAME_MD    2
+#define NUVIE_GAME_SE    4
 
 /*
 #ifndef BOOL

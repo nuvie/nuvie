@@ -43,7 +43,7 @@ int main(int argc, char **argv)
  
  nuvie = new Nuvie;
  
- if(nuvie->init() == false)
+ if(nuvie->init(argc, argv) == false)
    return 1;
  
  nuvie->play();

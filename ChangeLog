@@ -1,3 +1,9 @@
+2003-06-26  Eric Fry <efry@users.sourceforge.net>
+	* Added some gameselect functionality. You can now select which game
+	  Nuvie will load from the config file or via the command line.
+	* Work done on MD/SE MsgScroll support.
+	* removed nuvie.cfg from repository, added nuvie.cfg.sample instead.
+
 2003-06-22  Eric Fry <efry@users.sourceforge.net>
 	* Removed U6 is_door method from ObjManager.
 	* Better blacking support for MD & SE.

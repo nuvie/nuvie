@@ -37,6 +37,7 @@
 class Player
 {
  Configuration *config;
+ int game_type;
  GameClock *clock;
  Party *party;
  bool party_mode;

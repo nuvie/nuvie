@@ -31,6 +31,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
+#include "U6misc.h"
 #include "Screen.h"
 #include "Game.h"
 #include "GameSelect.h"
@@ -53,13 +54,19 @@ Nuvie::~Nuvie()
 }
 
 
-bool Nuvie::init()
+bool Nuvie::init(int argc, char **argv)
 {
  GameSelect *game_select;
+ uint8 game_type;
  
+ if(argc > 1)
+   game_type = get_game_type(argv[1]);
+ else
+   game_type = NUVIE_GAME_NONE;
+
  if(initConfig() == false)
    return false;
-   
+ 
  screen = new Screen(config);
  if(screen->init(320,200) == false)
    {
@@ -71,7 +78,7 @@ bool Nuvie::init()
  
  game_select = new GameSelect(config);
  
- game_select->load(screen);
+ game_select->load(screen,game_type);
  
  
  delete game_select;

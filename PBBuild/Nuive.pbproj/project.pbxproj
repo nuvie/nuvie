@@ -708,15 +708,15 @@
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = U6misc.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/misc/U6misc.h;
-			refType = 0;
+			path = ../misc/U6misc.h;
+			refType = 2;
 		};
 		078BA0A5049B327F00A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = U6misc.cpp;
-			path = /Users/eric/Projects/Ultima6/nuvie/misc/U6misc.cpp;
-			refType = 0;
+			path = ../misc/U6misc.cpp;
+			refType = 2;
 		};
 		078BA0A6049B327F00A8000A = {
 			fileRef = 078BA0A4049B327F00A8000A;
@@ -1586,7 +1586,10 @@
 				29B9732DFDCFA39411CA2CEA,
 			);
 			buildSettings = {
+				CC = "/usr/bin/gcc-3.3";
+				CPLUSPLUS = "/usr/bin/g++-3.3";
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\"";
+				GCC_VERSION = 3.x;
 				HEADER_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks/SDL.framework/Headers\"";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";

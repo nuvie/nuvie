@@ -21,6 +21,7 @@
  *
  */
 
+#include "U6misc.h"
 #include "GameSelect.h"
 
 GameSelect::GameSelect(Configuration *cfg)
@@ -33,16 +34,28 @@ GameSelect::~GameSelect()
  
 }
 
-bool GameSelect::load(Screen *s)
+bool GameSelect::load(Screen *s, uint8 game_type)
 {
+ std::string cfg_game_string;
+ bool ret;
+ 
  screen = s;
  
+ if(game_type == NUVIE_GAME_NONE) // if game_type not specified on cmdline
+   {
+    config->value("config/loadgame",cfg_game_string,""); // attempt to get game_type_string from config
+    game_type = get_game_type(cfg_game_string.c_str());
+    
+    if(game_type == NUVIE_GAME_NONE)
+      game_type = NUVIE_GAME_U6; // FIX we should select game from a menu here.
+   }
+
  game = new Game(config);
  
- if(game->loadGame(screen,NUVIE_GAME_U6))
+ if((ret = game->loadGame(screen,game_type)))
    game->play();
 
  delete game;
  
- return true;
+ return ret;
 }

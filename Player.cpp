@@ -20,12 +20,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include "U6misc.h"
 
 #include "Player.h"
 
 Player::Player(Configuration *cfg)
 {
  config = cfg;
+ config->value("config/GameType",game_type);
+ 
+ karma = 0;
 }
 
 bool Player::init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
@@ -146,8 +150,10 @@ bool Player::loadObjlistData()
 {
  std::string filename;
  U6File objlist;
+ int game_type;
  
- config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
+ config_get_path(config,"savegame/objlist",filename);
+
  if(objlist.open(filename,"rb") == false)
    return false;
 
@@ -155,13 +161,21 @@ bool Player::loadObjlistData()
  
  objlist.readToBuf((unsigned char *)name,14); // read in Player name. 
  
- objlist.seek(0x1bf9); // Player Karma.
+ if(game_type == NUVIE_GAME_U6)
+   {
+    objlist.seek(0x1bf9); // Player Karma.
+    karma = objlist.read1();
 
- karma = objlist.read1();
+    objlist.seek(0x1c71); // Player Gender.
+    gender = objlist.read1();
+   }
+   
+ if(game_type == NUVIE_GAME_MD)
+   {
+    objlist.seek(0x1d27); // Player Gender.
+    gender = objlist.read1();
+   }
 
- objlist.seek(0x1c71);
- 
- gender = objlist.read1();
  
  return true;
 }

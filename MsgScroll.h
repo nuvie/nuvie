@@ -30,15 +30,25 @@
 #include "Screen.h"
 #include "Text.h"
 
-#define MSGSCROLL_WIDTH 17
-#define MSGSCROLL_HEIGHT 10
+#define MSGSCROLL_U6_WIDTH 17
+#define MSGSCROLL_U6_HEIGHT 10
+
+#define MSGSCROLL_MD_WIDTH 16
+#define MSGSCROLL_MD_HEIGHT 8
+
+#define MSGSCROLL_SE_WIDTH 17
+#define MSGSCROLL_SE_HEIGHT 10
 
 #define MSGSCROLL_CURSOR_DELAY 6 // used to slow down the animated cursor
 
 class MsgScroll
 {
  Configuration *config;
+ int game_type;
  Screen *screen;
+ uint16 screen_x; //x offset to top left corner of MsgScroll
+ uint16 screen_y; //y offset to top left corner of MsgScroll
+ 
  Text *text;
  bool keyword_highlight;
  bool input_mode;
@@ -50,7 +60,10 @@ class MsgScroll
  
  bool page_break;
  
- char msg_buf[MSGSCROLL_HEIGHT][MSGSCROLL_WIDTH+1];
+ char **msg_buf;//[scroll_height][scroll_width+1];
+ uint16 scroll_height;
+ uint16 scroll_width;
+ 
  uint8 buf_pos;
  uint8 start_pos;
  bool buf_full;

@@ -1,5 +1,5 @@
-#ifndef __ERICmisc_h__
-#define __ERICmisc_h__
+#ifndef __U6misc_h__
+#define __U6misc_h__
 /*
  *  misc.h
  *  Nuive
@@ -15,5 +15,6 @@
 #include "Configuration.h"
 
 void config_get_path(Configuration *config, std::string filename, std::string &path);
+uint8 get_game_type(const char *string);
 
-#endif /* __ERICmisc_h__ */
+#endif /* __U6misc_h__ */

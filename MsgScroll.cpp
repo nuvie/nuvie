@@ -22,15 +22,46 @@
  */
 
 #include <ctype.h>
+#include "U6misc.h"
 
 #include "MsgScroll.h"
 
 MsgScroll::MsgScroll(Configuration *cfg)
 {
+ uint16 i;
+ 
  config = cfg;
+ config->value("config/GameType",game_type);
+
  prompt_buf_len = 0;
 
- memset(msg_buf,0,sizeof(msg_buf));
+ switch(game_type)
+   {
+    case NUVIE_GAME_U6 : scroll_width = MSGSCROLL_U6_WIDTH;
+                         scroll_height = MSGSCROLL_U6_HEIGHT;
+                         screen_x = 176;
+                         screen_y = 112;
+                         break;
+                         
+    case NUVIE_GAME_MD : scroll_width = MSGSCROLL_MD_WIDTH;
+                         scroll_height = MSGSCROLL_MD_HEIGHT;
+                         screen_x = 184;
+                         screen_y = 128;
+                         break;
+                         
+    case NUVIE_GAME_SE : scroll_width = MSGSCROLL_SE_WIDTH;
+                         scroll_height = MSGSCROLL_SE_HEIGHT;
+                         screen_x = 176;
+                         screen_y = 112;
+                         break;
+   }
+
+ msg_buf = (char **)malloc(scroll_height * sizeof(char *));
+ for(i=0;i<scroll_height;i++)
+  {
+   msg_buf[i] = (char *)malloc(scroll_width+1);
+   memset(msg_buf[i],0,scroll_width+1);
+  }
 
  prompt = NULL;
  
@@ -40,7 +71,7 @@ MsgScroll::MsgScroll(Configuration *cfg)
  
  cursor_char = 0;
  cursor_x = 0;
- cursor_y = MSGSCROLL_HEIGHT-1;
+ cursor_y = scroll_height-1;
  
  cursor_wait = 0;
  
@@ -59,6 +90,12 @@ MsgScroll::MsgScroll(Configuration *cfg)
 
 MsgScroll::~MsgScroll()
 {
+ uint16 i;
+ 
+ for(i=0;i<scroll_height;i++)
+  free(msg_buf[i]);
+ free(msg_buf); 
+
  free(string_buf);
  free(prompt);
 }
@@ -119,7 +156,7 @@ void MsgScroll::display_string(const char *string)
    {
     if(string_buf[i] == '\n' || string_buf[i] == '*' || string_buf[i] == ' ' || string_buf[i] == '\0')
       {
-       if(row_length >= MSGSCROLL_WIDTH)
+       if(row_length >= scroll_width)
          {
           buf_addString(&string_buf[row_start],word_start - row_start);
           row_start = word_start;
@@ -144,7 +181,7 @@ void MsgScroll::display_string(const char *string)
         }
        else
         word_start = i+1;
-      if(num_rows == MSGSCROLL_HEIGHT-2 || string_buf[i] == '*')
+      if(num_rows == scroll_height-2 || string_buf[i] == '*')
         {
          set_page_break(row_start);
          break;
@@ -265,30 +302,30 @@ void MsgScroll::updateScroll()
 {
  uint16 i,j;
 
- clearCursor(176 + 8 * cursor_x, 112 + cursor_y * 8);
+ clearCursor(screen_x + 8 * cursor_x, screen_y + cursor_y * 8);
 
  if(scroll_updated)
   {
    if(buf_full == true)
      {
-      j = (buf_pos + 1) % MSGSCROLL_HEIGHT;
-      screen->fill(0x31,176, 112, MSGSCROLL_WIDTH * 8, (MSGSCROLL_HEIGHT)*8); //clear whole scroll
+      j = (buf_pos + 1) % scroll_height;
+      screen->fill(0x31,screen_x, screen_y, scroll_width * 8, (scroll_height)*8); //clear whole scroll
      }
    else
       j = 0;
          
-   for(i=0;i< MSGSCROLL_HEIGHT;i++)
+   for(i=0;i< scroll_height;i++)
      {
       if(msg_buf[j][0] != '\0')
-         text->drawString(screen, msg_buf[j], 176, 112+i*8, 0);
-      j = (j + 1) % MSGSCROLL_HEIGHT;
+         text->drawString(screen, msg_buf[j], screen_x, screen_y+i*8, 0);
+      j = (j + 1) % scroll_height;
      }
    scroll_updated = false;
    
-   screen->update(176,112, MSGSCROLL_WIDTH * 8, (MSGSCROLL_HEIGHT)*8);
+   screen->update(screen_x,screen_y, scroll_width * 8, (scroll_height)*8);
    
    if(buf_full)
-    cursor_y = MSGSCROLL_HEIGHT-1;
+    cursor_y = scroll_height-1;
    else
     cursor_y = buf_pos;
   
@@ -297,7 +334,7 @@ void MsgScroll::updateScroll()
 else
  {
   
-  drawCursor(176 + 8 * cursor_x, 112 + cursor_y * 8); 
+  drawCursor(screen_x + 8 * cursor_x, screen_y + cursor_y * 8); 
  }
  
  // spin cursor here.
@@ -340,7 +377,7 @@ bool MsgScroll::buf_addString(char *string, uint8 length)
 
 bool MsgScroll::buf_next()
 {
- if(buf_pos == MSGSCROLL_HEIGHT-1)
+ if(buf_pos == scroll_height-1)
    {
     buf_full = true;
     buf_pos = 0;
@@ -357,7 +394,7 @@ bool MsgScroll::buf_prev()
 {
  if(buf_pos == 0)
   {
-   buf_pos = MSGSCROLL_HEIGHT-1;
+   buf_pos = scroll_height-1;
   }
  else
   {
@@ -445,7 +482,7 @@ bool MsgScroll::input_buf_add_char(char c)
 
  buf_len = strlen(msg_buf[buf_pos]);
  
- if(buf_len + 1 >= MSGSCROLL_WIDTH)
+ if(buf_len + 1 >= scroll_width)
    {
     buf_next();
     buf_len = 0;

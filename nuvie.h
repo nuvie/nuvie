@@ -40,7 +40,7 @@ class Nuvie
    ~Nuvie();
 
 
-   bool init();
+   bool init(int argc, char **argv);
    bool play();
    
    protected:
