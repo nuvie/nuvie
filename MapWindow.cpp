@@ -512,7 +512,7 @@ void MapWindow::Display(bool full_redraw)
  screen->blitalphamap8();
 
  if(overlay && overlay_level == MAP_OVERLAY_DEFAULT)
-   screen->blit(0, 0, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
+   screen->blit(area.x, area.y, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
 
  if(new_thumbnail)
    create_thumbnail();
@@ -520,7 +520,7 @@ void MapWindow::Display(bool full_redraw)
  drawBorder();
 
  if(overlay && overlay_level == MAP_OVERLAY_ONTOP)
-   screen->blit(0, 0, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
+   screen->blit(area.x, area.y, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
 
 // ptr = (unsigned char *)screen->get_pixels();
 // ptr += 8 * screen->get_pitch() + 8;
@@ -1539,13 +1539,22 @@ void MapWindow::free_thumbnail()
 /* Returns a new 8bit copy of the mapwindow as displayed. Caller must free it. */
 SDL_Surface *MapWindow::get_sdl_surface()
 {
+ return(get_sdl_surface(0, 0, area.w, area.h));
+}
+
+SDL_Surface *MapWindow::get_sdl_surface(uint16 x, uint16 y, uint16 w, uint16 h)
+{
  SDL_Surface *new_surface = NULL;
  unsigned char *screen_area;
+ SDL_Rect copy_area = { area.x + x, area.y + y, w, h };
 
  GUI::get_gui()->Display();
- screen_area = screen->copy_area(&area);
+ screen_area = screen->copy_area(&copy_area);
 
- new_surface = screen->create_sdl_surface_8(screen_area, area.w, area.h);
+ new_surface = screen->create_sdl_surface_8(screen_area, copy_area.w, copy_area.h);
+// new_surface = screen->create_sdl_surface_from(screen_area, screen->get_bpp(),
+//                                               copy_area.w, copy_area.h,
+//                                               copy_area.w);
  delete [] screen_area;
  return(new_surface);
 }

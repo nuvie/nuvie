@@ -1,3 +1,20 @@
+2005-02-27  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Fixed these bugs: (which most people probably didn't know about)
+	  Invalid memory access (deleting a freed pixel surface) in FadeEffect.
+	  EffectManager could go into infinite loop when waiting for events.
+	  Nothing on a dungeon level could be moved. (without dragging)
+	  TimeQueue always used real-time to set repeat time.
+	* The visual effects for using a red moongate are complete. Red
+	  moongates materialize into view when placed. Note that these effects
+	  don't look correct at night-time when using smooth lighting. This is
+	  because I always work with an 8bit surface. (not accounting for alpha)
+	* Walking to dungeon entrances is now as fast as walking to ladders.
+	  Party members try to get into formation when they reach the target.
+	* NPC's can always step onto red moongates now.
+	* Usecode can now set WAIT_MODE after being called by select_obj().
+	* Changed MapWindow::get_sdl_surface() to accept coordinates.
+	* Added newline to end of misc.h.
+
 2005-02-21  Eric Fry <efry at users.sourceforge.net>
 	* Removed unused misc.h includes from EggManager.cpp and
 	  ActorManager.cpp

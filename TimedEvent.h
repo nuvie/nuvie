@@ -6,10 +6,12 @@
 #include <cstdio>
 #include "CallBack.h"
 
+class Actor;
 class CallBack;
 class Event;
 class GameClock;
 class MapCoord;
+class MapWindow;
 class MsgScroll;
 class Party;
 class TimedCallbackTarget;
@@ -101,12 +103,15 @@ public:
 class TimedPartyMove : public TimedEvent, public CallBack
 {
 protected:
+    MapWindow *map_window;
     Party *party; // the party
     MapCoord *dest; // destination, where all actors walk to and disappear
     MapCoord *target; // where they reappear at the new plane
     uint32 moves_left; // walk timeout
     Obj *moongate; // if using a moongate
-    bool wait_for_effect; // waiting for a visual effect to complete
+    uint8 wait_for_effect; // waiting for a visual effect to complete if not 0
+    Actor *actor_to_hide; // this actor has reached exit and should be hidden
+    bool falling_in;
 
 public:
     TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay = 500);
@@ -116,6 +121,12 @@ public:
     void timed(uint32 evtime);
 
     uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
+
+protected:
+    bool move_party();
+    bool fall_in();
+    void hide_actor(Actor *person);
+    void change_location();
 };
 
 
@@ -205,6 +216,5 @@ public:
     bool time_passed(); // stop time has passed
     void get_time_from_string(uint8 &hour, uint8 &minute, std::string timestring);
 };
-
 
 #endif /* __TimedEvent_h__ */

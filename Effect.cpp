@@ -24,6 +24,7 @@
 #define TRANSPARENT_COLOR 0xFF /* transparent pixel color */
 
 QuakeEffect *QuakeEffect::current_quake = NULL;
+FadeEffect *FadeEffect::current_fade = NULL;
 
 
 /* Add self to effect list (for future deletion).
@@ -651,21 +652,35 @@ uint16 SleepEffect::callback(uint16 msg, CallBack *caller, void *data)
 /*** FadeEffect ***/
 FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, uint32 color, uint32 speed)
 {
-    speed = speed ? speed : 256000;
-    init(fade, dir, color, NULL, speed);
+    speed = speed ? speed : 256000; // FIXME: get speed from effect radius
+    init(fade, dir, color, NULL, 0, 0, speed);
 }
-
 
 /* Takes an image to fade from/to. */
 FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, SDL_Surface *capture, uint32 speed)
 {
     speed = speed ? speed : 196000;
-    init(fade, dir, 0, capture, speed); // color=black
+    init(fade, dir, 0, capture, 0, 0, speed); // color=black
+}
+
+/* Localizes effect to specific coordinates. The size of the effect is determined
+ * by the size of the image. */
+FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, SDL_Surface *capture, uint16 x, uint16 y, uint32 speed)
+{
+    speed = speed ? speed : 1024;
+    init(fade, dir, 0, capture, x, y, speed); // color=black
 }
 
 
-void FadeEffect::init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surface *capture, uint32 speed)
+void FadeEffect::init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surface *capture, uint16 x, uint16 y, uint32 speed)
 {
+    if(current_fade)
+    {
+        delete_self();
+        return;
+    }
+    current_fade = this; // cleared in dtor
+
     screen = game->get_screen();
     map_window = game->get_map_window();
     viewport = new SDL_Rect(map_window->GetRect());
@@ -675,11 +690,15 @@ void FadeEffect::init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surfac
     fade_speed = speed; // pixels-per-second (to check, not draw)
 
     evtime = prev_evtime = 0;
-    fade_x = fade_y = 0;
+    fade_x = x; fade_y = y;
     fade_from = NULL;
     if(capture)
-        fade_from = SDL_CreateRGBSurfaceFrom(capture->pixels, capture->w, capture->h,
-                                             capture->format->BitsPerPixel, capture->pitch, 0, 0, 0, 0);
+    {
+        fade_from = SDL_CreateRGBSurface(SDL_SWSURFACE, capture->w, capture->h,
+                                         capture->format->BitsPerPixel, 0, 0, 0, 0);
+        for(uint32 p = 0, pixels = (capture->w*capture->h); p < pixels; p++)
+            ((uint8*)fade_from->pixels)[p] = ((uint8*)capture->pixels)[p];
+    }
 
     if(fade_type == FADE_PIXELATED || fade_type == FADE_PIXELATED_ONTOP)
     {
@@ -693,11 +712,16 @@ void FadeEffect::init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surfac
 
 FadeEffect::~FadeEffect()
 {
-    delete viewport;
-    if(fade_dir == FADE_IN) // overlay should be empty now, so just delete it
-        map_window->set_overlay(NULL);
-    if(fade_from)
-        SDL_FreeSurface(fade_from);
+    if(current_fade == this) // these weren't init. if FadeEffect didn't start
+    {
+        delete viewport;
+        if(fade_dir == FADE_IN) // overlay should be empty now, so just delete it
+            map_window->set_overlay(NULL);
+        if(fade_from)
+            SDL_FreeSurface(fade_from);
+
+        current_fade = NULL;
+    }
 }
 
 
@@ -709,16 +733,17 @@ void FadeEffect::init_pixelated_fade()
     overlay = map_window->get_overlay();
     if(overlay != NULL)
     {
-        pixel_count = fade_from ? fade_from->w * fade_from->h
-                                : overlay->w * overlay->h;
+        pixel_count = fade_from ? (fade_from->w) * (fade_from->h)
+                                : (overlay->w-fade_x) * (overlay->h-fade_y);
         // clear overlay to fill color or transparent
         if(fade_dir == FADE_OUT)
         {
             if(fade_from) // fade from captured surface to transparent
             {
-                SDL_Rect fade_from_rect = { 0, 0, fade_from->w, fade_from->h };
-                SDL_Rect overlay_rect = { fade_x, fade_y, fade_from->w, fade_from->h };
-                fillret = SDL_BlitSurface(fade_from, &fade_from_rect,
+                // put surface on transparent background (not checked)
+                fillret = SDL_FillRect(overlay, NULL, uint32(TRANSPARENT_COLOR));
+                SDL_Rect overlay_rect = { fade_x, fade_y, 0, 0 };
+                fillret = SDL_BlitSurface(fade_from, NULL,
                                           overlay, &overlay_rect);
             }
             else // fade from transparent to color
@@ -785,6 +810,7 @@ uint16 FadeEffect::callback(uint16 msg, CallBack *caller, void *data)
  * out, and a colored pixel if fading in.
  * Returns true if a free pixel was found and set as rnum.
  */
+// FIXME: this probably doesn't work because it only handles 8bpp
 inline bool FadeEffect::find_free_pixel(uint32 &rnum, uint32 pixel_count)
 {
     uint8 scan_color = (fade_dir == FADE_OUT) ? TRANSPARENT_COLOR
@@ -836,17 +862,25 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, sint16 fade_to)
     uint32 p = 0; // scan counter
     uint32 rnum = 0; // pixel index
     uint32 colored = 0; // number of pixels that get colored
-    uint16 fade_width = fade_from ? fade_from->w : overlay->w;
-    uint16 fade_start = fade_from ? fade_y*overlay->w + fade_x : 0;
+    uint16 fade_width = fade_from ? fade_from->w : overlay->w-fade_x;
+    uint16 fade_height = fade_from ? fade_from->h : overlay->h-fade_y;
+    uint8 color = fade_to;
 
     while(p < pixels_to_check)
     {
-        rnum = NUVIE_RAND()%pixel_count + fade_start;
+        uint16 x = NUVIE_RAND()%fade_width + fade_x,
+               y = NUVIE_RAND()%fade_height + fade_y;
+        if(x >= overlay->w) x = overlay->w-1; // prevent overflow if fade_from is too big
+        if(y >= overlay->h) y = overlay->h-1;
+        rnum = y*overlay->w + x;
         if(fade_to == -1) // get color from "fade_from"
-            fade_to == from_pixels[rnum - fade_start];
-        if(pixels[rnum] != fade_to)
         {
-            pixels[rnum] = fade_to;
+            x -= fade_x; y -= fade_y;
+            color = from_pixels[y*fade_from->w + x];
+        }
+        if(pixels[rnum] != color)
+        {
+            pixels[rnum] = color;
             ++colored, ++colored_total; // another pixel was set
         }
         ++p;
@@ -856,7 +890,7 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, sint16 fade_to)
     {
         if(fade_to >= 0)
             SDL_FillRect(overlay, NULL, (uint32)fade_to);
-        else
+        else // Note: assert(fade_from) if(fade_to < 0)
         {
             SDL_Rect fade_from_rect = { 0, 0, fade_from->w, fade_from->h };
             SDL_Rect overlay_rect = { fade_x, fade_y, fade_from->w, fade_from->h };
@@ -947,3 +981,76 @@ uint16 GameFadeInEffect::callback(uint16 msg, CallBack *caller, void *data)
         game->unpause_user();
     return(0);
 }
+
+
+FadeObjectEffect::FadeObjectEffect(Obj *obj, FadeDirection dir)
+{
+    obj_manager = game->get_obj_manager();
+    fade_obj = obj;
+    fade_dir = dir;
+
+    SDL_Surface *capture = game->get_map_window()->get_sdl_surface();
+    if(fade_dir == FADE_IN) // fading IN to object, so fade OUT from capture
+    {
+        effect_manager->watch_effect(this, /* call me */
+                                     new FadeEffect(FADE_PIXELATED, FADE_OUT, capture));
+        obj_manager->add_obj(fade_obj, OBJ_ADD_TOP);
+        game->get_map_window()->updateBlacking(); // object is likely a moongate
+    }
+    else if(fade_dir == FADE_OUT)
+    {
+        effect_manager->watch_effect(this, /* call me */
+                                     new FadeEffect(FADE_PIXELATED, FADE_OUT, capture, 0, 0, 128000));
+//        obj_manager->remove_obj(fade_obj);
+        game->get_map_window()->updateBlacking();
+    }
+    SDL_FreeSurface(capture);
+
+    game->pause_user();
+}
+
+FadeObjectEffect::~FadeObjectEffect()
+{
+    game->unpause_user();
+}
+
+/* Assume FadeEffect is complete. */
+uint16 FadeObjectEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    delete_self();
+    return(0);
+}
+
+
+/* These types of local/vanish effects are slightly longer than a normal Fade.
+ * FIXME: FadeEffect should take local effect area, or change speed to time.
+ */
+VanishEffect::VanishEffect(bool pause_user)
+                         : input_blocked(pause_user)
+{
+    SDL_Surface *capture = game->get_map_window()->get_sdl_surface();
+//    effect_manager->watch_effect(this, /* call me */
+//                                 new FadeEffect(FADE_PIXELATED, FADE_OUT, capture, 0, 0, 128000));
+    effect_manager->watch_effect(this, /* call me */
+                                 new FadeEffect(FADE_PIXELATED, FADE_OUT, capture));
+    SDL_FreeSurface(capture);
+
+    if(input_blocked == VANISH_WAIT)
+        game->pause_user();
+    game->pause_anims();
+}
+
+VanishEffect::~VanishEffect()
+{
+    game->unpause_anims();
+    if(input_blocked == VANISH_WAIT)
+        game->unpause_user();
+}
+
+/* Assume FadeEffect is complete. */
+uint16 VanishEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    delete_self();
+    return(0);
+}
+

@@ -14,6 +14,7 @@ class NuvieAnim;
 class Screen;
 class TimedAdvance;
 class TimedCallback;
+class ObjManager;
 
 /* Effects: * = unwritten or untested
  * Quake - earthquake from cyclops or volcanos
@@ -21,11 +22,15 @@ class TimedCallback;
  * Explosive - explosion caused by powder keg, volcanos, or cannonball hit
  * ThrowObject - any thrown object
  * Cannonball (FIX: change to UseCodeThrow)
- * Missile - throw object to *ground or actor; optionally cause damage
+ * *Missile - throw object to *ground or actor; optionally cause damage
  * *Boomerang - spin Missile and return to sender
  * Drop - throw obj from inventory to ground
  * Sleep - pause game & advance time quickly
  * Fade - fade the mapwindow in or out
+ * GameFadeIn - blocks user-input until Fade is complete
+ * *Palette - do something with the color palette
+ * Vanish - fade from an image of the mapwindow to the real mapwindow
+ * *FadeObject - might not need this since Vanish can be used
  */
 
 
@@ -284,6 +289,8 @@ typedef enum { FADE_IN, FADE_OUT } FadeDirection;
 class FadeEffect : public TimedEffect
 {
 protected:
+    static FadeEffect *current_fade; // do nothing if already active
+
     MapWindow *map_window; // for CIRCLE, the MapWindow handles the fade
     Screen *screen; // for PIXELATED, the overlay is blitted to the screen...
     SDL_Rect *viewport; // ...at the MapWindow coordinates set here
@@ -301,8 +308,8 @@ protected:
 
 public:
     FadeEffect(FadeType fade, FadeDirection dir, uint32 color = 0, uint32 speed = 0);
-// get capture or do it outself?
     FadeEffect(FadeType fade, FadeDirection dir, SDL_Surface *capture, uint32 speed = 0);
+    FadeEffect(FadeType fade, FadeDirection dir, SDL_Surface *capture, uint16 x, uint16 y, uint32 speed = 0);
     ~FadeEffect();
     virtual uint16 callback(uint16 msg, CallBack *caller, void *data);
     
@@ -312,14 +319,14 @@ public:
     bool circle_fade_in();
 
 protected:
-    void init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surface *capture, uint32 speed);
+    void init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surface *capture, uint16 x, uint16 y, uint32 speed);
     void init_pixelated_fade();
     void init_circle_fade();
 
     inline bool find_free_pixel(uint32 &rnum, uint32 pixel_count);
     uint32 pixels_to_check();
     bool pixelated_fade_core(uint32 pixels_to_check, sint16 fade_to);
-    inline uint32 get_random_pixel(uint16 center_thresh = 0);
+//    inline uint32 get_random_pixel(uint16 center_thresh = 0);
 };
 
 
@@ -333,5 +340,34 @@ public:
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
+
+/* Captures an image of the MapWindow without an object, then places the object
+ * on the map and fades to the new image. (or the opposite if FADE_OUT is used)
+ */
+class FadeObjectEffect : public Effect
+{
+    ObjManager *obj_manager;
+    Obj *fade_obj;
+    FadeDirection fade_dir;
+public:
+    FadeObjectEffect(Obj *obj, FadeDirection dir);
+    ~FadeObjectEffect();
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
+
+
+/* Do a blocking fade-to (FADE_OUT) from a captured image of the game area, to
+ * the active game area. (transparent) This is used for vanish or morph effects.
+ */
+#define VANISH_WAIT true
+#define VANISH_NOWAIT false
+class VanishEffect : public Effect
+{
+    bool input_blocked;
+public:
+    VanishEffect(bool pause_user = VANISH_NOWAIT);
+    ~VanishEffect();
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
 
 #endif /* __Effect_h__ */

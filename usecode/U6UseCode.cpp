@@ -443,6 +443,12 @@ bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
  party->dismount_from_horses();
 
  MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
+ MapCoord from(items.actor_ref->get_location());
+ if(from != ladder) // take the first step to object so party members don't get in the way during walk-action (FIXME: consequence of ZPath logic preventing party members from pushing eachother out of the way)
+     player->moveRelative(((ladder.x - from.x) < 0) ? -1
+                        : ((ladder.x - from.x) > 0) ? 1 : 0,
+                                             ((ladder.y - from.y) < 0) ? -1
+                                           : ((ladder.y - from.y) > 0) ? 1 : 0);
  party->walk(&ladder, &destination, 100);
  return false;
 }
@@ -980,7 +986,9 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  gate->quality=position;
  gate->status |= OBJ_STATUS_TEMPORARY;
 
- obj_manager->add_obj(gate,true);
+ new VanishEffect(VANISH_WAIT);
+ obj_manager->add_obj(gate, true);
+ game->get_map_window()->updateBlacking(); // next update not until Effect completes
  scroll->display_string("a red moon gate appears.\n");
 
  return true;
@@ -2047,7 +2055,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
       
     if(!player->in_party_mode())
     {
-        scroll->display_string("\nNot in solo mode.\n\n");
+        scroll->display_string("\n\nNot in solo mode.\n");
         scroll->display_prompt();
         return(true);
     }
@@ -2087,11 +2095,12 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
           z -= 1;
 
         MapCoord exit(x, y, z);
-        if(obj->obj_n == OBJ_U6_HOLE) // fall down hole faster
-            party->walk(&entrance, &exit, 100);
-        else
-            party->walk(&entrance, &exit);
-        return(false);
+//        if(obj->obj_n == OBJ_U6_HOLE) // fall down hole faster
+//            party->walk(&entrance, &exit, 100);
+//        else
+//            party->walk(&entrance, &exit);
+        party->walk(&entrance, &exit, 100);
+        return(true);
     }
     else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
         if(party->contains_actor(items.actor_ref))
@@ -2144,7 +2153,7 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
     else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
         if(party->contains_actor(items.actor_ref))
             return(true);
-    return(false);
+    return(true);
 }
 
 

@@ -196,6 +196,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_RIGHT :
 			move(1,0);
 			break;
+
 		case SDLK_TAB :
                         map_window->set_show_cursor(false);
                         if(mode == MOVE_MODE)
@@ -625,14 +626,14 @@ bool Event::use(Obj *obj)
     if(!obj->is_in_inventory() && player->get_actor()->get_location().distance(target) > 1)
     {
         scroll->display_string("\nOut of range!\n");
-        fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
+        printf("distance to object: %d\n", player->get_actor()->get_location().distance(target));
     }
     else if(usecode->has_usecode(obj)) // Usable
         display_prompt = usecode->use_obj(obj, player->get_actor());
     else
     {
         scroll->display_string("\nNot usable\n");
-        fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
+        printf("Object %d:%d\n", obj->obj_n, obj->frame_n);
     }
 
     map_window->updateBlacking(); // cleanup
@@ -662,7 +663,7 @@ bool Event::use(Actor *actor)
         if(player->get_actor()->get_location().distance(target) > 1)
         {
             scroll->display_string("\nOut of range!\n");
-            fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
+            printf("distance to object: %d\n", player->get_actor()->get_location().distance(target));
         }
         else
             display_prompt = usecode->use_obj(obj, player->get_actor());
@@ -670,7 +671,7 @@ bool Event::use(Actor *actor)
     else
     {
         scroll->display_string("nothing\n");
-        fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
+        printf("Object %d:%d\n", obj->obj_n, obj->frame_n);
     }
     delete_obj(obj); // we were using an actor so free the temp Obj
     map_window->updateBlacking();
@@ -748,7 +749,8 @@ bool Event::select_obj(Obj *obj, Actor *actor)
         scroll->display_string("\n");
         scroll->display_prompt();
     }
-    endAction();
+    if(mode != WAIT_MODE)
+        endAction();
     return(true);
 }
 
@@ -915,9 +917,6 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
         from = selected_actor->get_location();
     else
         from = MapCoord(use_obj->x, use_obj->y, use_obj->z);
-    // you can only push one space at a time
-//    rel_x = (rel_x == 0) ? 0 : (rel_x < 0) ? -1 : 1;
-//    rel_y = (rel_y == 0) ? 0 : (rel_y < 0) ? -1 : 1;
     if(push_from == PUSH_FROM_PLAYER) // coordinates must be converted
     {
         to.x = pusher.x + rel_x;
@@ -933,6 +932,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     pushrel_x = (pushrel_x == 0) ? 0 : (pushrel_x < 0) ? -1 : 1;
     pushrel_y = (pushrel_y == 0) ? 0 : (pushrel_y < 0) ? -1 : 1;
     to.x = from.x + pushrel_x; to.y = from.y + pushrel_y;
+    to.z = from.z;
 
     scroll->display_string(get_direction_name(pushrel_x, pushrel_y));
     scroll->display_string(".\n\n");
@@ -1899,13 +1899,13 @@ void Event::multiuse(uint16 wx, uint16 wy)
         using_actor = true;
         target.x = actor->get_location().x;
         target.y = actor->get_location().y;
-        fprintf(stderr, "Use actor at %d,%d\n", target.x, target.y);
+        printf("Use actor at %d,%d\n", target.x, target.y);
     }
     else if(obj)
     {
         target.x = obj->x;
         target.y = obj->y;
-        fprintf(stderr, "Use object at %d,%d\n", obj->x, obj->y);
+        printf("Use object at %d,%d\n", obj->x, obj->y);
     }
 
     if(using_actor) // use or talk to an actor
