@@ -235,8 +235,8 @@ class Converse
     {
         return(((check == 0x81) || (check == 0x84) || (check == 0x85)
                || (check == 0x86) || (check == 0x86) || (check == 0xab)
-               || (check == 0xc6) || (check == 0xd7) || (check == 0xdd)
-               || (check == 0xbb) || (check == 0xe3)));
+               || (check == 0xc6) || (check == 0xc7) || (check == 0xd7)
+               || (check == 0xdd) || (check == 0xbb) || (check == 0xe3)));
     }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)
@@ -299,6 +299,10 @@ public:
     /* Tell script to resume. */
     void unwait() { is_waiting = false; }
     bool start(Actor *talkto); // makes step() available
+    bool start(uint8 n)
+    {
+        return(start(actors->get_actor(n)));
+    }
     void stop();
     void step(Uint32 count = 0, Uint8 bcmd = 0x00);
     void print(const char *printstr = 0);
