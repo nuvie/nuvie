@@ -44,8 +44,8 @@ public:
   
 	GUI_Widget(void *data);
 	GUI_Widget(void *data, int x, int y, int w, int h);
-	virtual ~GUI_Widget() { }
-
+	virtual ~GUI_Widget();
+  
   int AddWidget(GUI_Widget *widget);
   
 	/* Mark the widget as visible -- this is the default state */

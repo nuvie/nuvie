@@ -102,7 +102,7 @@ class MsgScroll
  
  bool get_page_break() { return(page_break); }
 
- bool handle_input(SDL_keysym *input);
+ bool handle_input(const SDL_keysym *input);
 
  void updateScroll();
  

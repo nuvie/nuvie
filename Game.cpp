@@ -137,32 +137,16 @@ bool Game::loadGame(Screen *s, uint8 type)
    usecode->init(obj_manager, game_map, player, scroll);
    obj_manager->set_usecode(usecode);
 
+   gui = new GUI(screen);
+ 
    event = new Event(config);
-   event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode);
+   event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
   }
  catch(const char *error_string)
   {
    printf("Error: %s\n",error_string);
    return false;
   }
-
- gui = new GUI(screen);
-
-/* TESTING
-
- test_area = new GUI_Area(75, 60, 170, 80, 212, 208, 131, 72, 69, 29, 2, AREA_ANGULAR);
- test_button = new GUI_Button(NULL, 100, 50, 40, 18, "Yes", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
- test_area->AddWidget(test_button);
-
- test_button = new GUI_Button(NULL, 30, 50, 40, 18, "No", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
- test_area->AddWidget(test_button);
- 
- test_text = new GUI_Text(10, 25, 0, 0, 0, "Do you want to Quit", gui->get_font());
- 
- test_area->AddWidget(test_text);
-  
- gui->AddWidget(test_area);
-*/
  
  return true;
 }
@@ -245,9 +229,9 @@ void Game::play()
      map_window->drawMap();
      converse->continue_script();
      scroll->updateScroll();
-     //gui->Run(NULL,1,0);
-     //gui->Display();
-     // mucking around with gui screen->update(75, 60, 170, 100);
+
+     gui->Display();
+
      screen->preformUpdate();
      event->wait();
    }

@@ -34,7 +34,19 @@
 
 #include "U6UseCode.h"
 
+#include "GUI.h"
+#include "GUI_area.h"
+#include "GUI_button.h"
+#include "GUI_text.h"
+
+//dialog callbacks
+
+static GUI_status quitDialogYesCallback(void *data);
+static GUI_status quitDialogNoCallback(void *data);
+
 uint32 nuvieGameCounter;
+
+static bool showingQuitDialog = false; // Yuck! FIX find a better way to do this.
 
 Event::Event(Configuration *cfg)
 {
@@ -42,6 +54,7 @@ Event::Event(Configuration *cfg)
  clear_alt_code();
  active_alt_code = 0;
  alt_code_input_num = 0;
+ showingQuitDialog = false;
 }
 
 Event::~Event()
@@ -50,8 +63,9 @@ Event::~Event()
 }
 
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
-                 GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc)
+                 GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g)
 {
+ gui = g;
  obj_manager = om;
  map_window = mw;
  scroll = ms;
@@ -72,27 +86,46 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
 
 bool Event::update()
 {
-  while(SDL_PollEvent(&event)) {
-			switch (event.type) {
+ SDL_Event event;
+ while(SDL_PollEvent(&event))
+  {
+   switch(gui->HandleEvent(&event))
+     {
+      case GUI_PASS : if(handleEvent(&event) == false)
+                         return false;
+                      break;
+
+      case GUI_QUIT : return false;
+   
+      default : break;
+     }
+  }
+
+ return true;
+}
+
+bool Event::handleEvent(const SDL_Event *event)
+{
+			switch (event->type) {
 				case SDL_MOUSEMOTION:
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					break;
 				case SDL_KEYUP:
-                                        if(event.key.keysym.sym == SDLK_RALT
-                                           || event.key.keysym.sym == SDLK_LALT)
+                                        if(event->key.keysym.sym == SDLK_RALT
+                                           || event->key.keysym.sym == SDLK_LALT)
                                         {
                                             clear_alt_code();
                                         }
                                         break;
 				case SDL_KEYDOWN:
-           if(scroll->handle_input(&event.key.keysym))
+           if(scroll->handle_input(&event->key.keysym))
              break; // break switch
            // alt-code input
-           if((event.key.keysym.sym >= SDLK_0 && event.key.keysym.sym <= SDLK_9)
+           if((event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9)
               && (SDL_GetModState() & KMOD_ALT))
            {
-               alt_code_str[alt_code_len++] = (char)event.key.keysym.sym;
+               alt_code_str[alt_code_len++] = (char)event->key.keysym.sym;
                alt_code_str[alt_code_len] = '\0';
                if(alt_code_len == 3)
                {
@@ -101,7 +134,7 @@ bool Event::update()
                }
                break;
            }
-           switch(event.key.keysym.sym)
+           switch(event->key.keysym.sym)
             {
              case SDLK_UP    :
                                move(0,-1);
@@ -115,8 +148,11 @@ bool Event::update()
              case SDLK_RIGHT :
                                move(1,0);
                                break;
-             case SDLK_q     :
-                               return false;
+             case SDLK_q     : if(!showingQuitDialog)
+                                 {
+                                  showingQuitDialog = true;
+                                  quitDialog();
+                                 }
                                break;
              case SDLK_l     :
                                mode = LOOK_MODE;
@@ -124,10 +160,6 @@ bool Event::update()
                                map_window->centerCursor();
                                map_window->set_show_cursor(true);
                                break;
-//             case SDLK_p     :
-//                               scroll->display_string("\nYou say:");
-//                               scroll->set_input_mode(true);
-//                               break;
              case SDLK_t     :
                                mode = TALK_MODE;
                                scroll->display_string("Talk-");
@@ -201,8 +233,8 @@ bool Event::update()
                                player->pass();
                                break;
              default :
-                               if(event.key.keysym.sym != SDLK_LALT
-                                  && event.key.keysym.sym != SDLK_RALT)
+                               if(event->key.keysym.sym != SDLK_LALT
+                                  && event->key.keysym.sym != SDLK_RALT)
                                {
                                 scroll->display_string("what?\n\n");
                                 scroll->display_prompt();
@@ -217,9 +249,10 @@ bool Event::update()
         default:
         break;
 			}
-		}
+
     if(active_alt_code && scroll->get_input())
         alt_code_input(scroll->get_input());
+
  return true;
 }
 
@@ -558,4 +591,50 @@ inline Uint32 Event::TimeLeft()
         return(0);
     }
     return(next_time-now);
+}
+
+void Event::quitDialog()
+{
+ GUI_Widget *area_widget;
+ GUI_Widget *widget;
+ 
+ area_widget = (GUI_Widget *) new GUI_Area(75, 60, 170, 80, 212, 208, 131, 72, 69, 29, 2, AREA_ANGULAR);
+ widget = (GUI_Widget *) new GUI_Button(area_widget, 100, 50, 40, 18, "Yes", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, quitDialogYesCallback, 0);
+ area_widget->AddWidget(widget);
+
+ widget = (GUI_Widget *) new GUI_Button(area_widget, 30, 50, 40, 18, "No", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, quitDialogNoCallback, 0);
+ area_widget->AddWidget(widget);
+ 
+ widget = (GUI_Widget *) new GUI_Text(10, 25, 0, 0, 0, "Do you want to Quit", gui->get_font());
+ area_widget->AddWidget(widget);
+   
+ gui->AddWidget(area_widget);
+
+ return;
+}
+
+static GUI_status quitDialogYesCallback(void *data)
+{
+ GUI_Widget *widget;
+ 
+ widget = (GUI_Widget *)data;
+ 
+ widget->Delete();
+ 
+ showingQuitDialog = false;
+ 
+ return GUI_QUIT;
+}
+
+static GUI_status quitDialogNoCallback(void *data)
+{
+ GUI_Widget *widget;
+ 
+ widget = (GUI_Widget *)data;
+ 
+ widget->Delete();
+
+ showingQuitDialog = false;
+ 
+ return GUI_YUM;
 }

@@ -71,6 +71,9 @@ public:
   
   GUI_Font *get_font();
   
+  /* Function to pass an event to the GUI widgets */
+	GUI_status HandleEvent(SDL_Event *event);
+  
 protected:
 	/* The display surface */
   Screen *screen;
@@ -92,8 +95,7 @@ protected:
 	/* Function to handle a GUI status */
 	void HandleStatus(GUI_status status);
 
-	/* Function to pass an event to the GUI widgets */
-	void HandleEvent(SDL_Event *event);
+
 };
 
 #endif /* _GUI_h */

@@ -246,7 +246,7 @@ bool MsgScroll::set_prompt(char *new_prompt)
  * if necessary.
  * Returns true if the input was used and false if not.
  */
-bool MsgScroll::handle_input(SDL_keysym *input)
+bool MsgScroll::handle_input(const SDL_keysym *input)
 {
     char ascii = 0;
     if(page_break == false && input_mode == false)

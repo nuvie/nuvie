@@ -35,6 +35,7 @@
 #include "Converse.h"
 #include "ViewManager.h"
 #include "UseCode.h"
+#include "GUI.h"
 
 class Book;
 
@@ -55,6 +56,7 @@ extern uint32 nuvieGameCounter;
 class Event
 {
  Configuration *config;
+ GUI *gui;
  ObjManager *obj_manager;
  MapWindow *map_window;
  MsgScroll *scroll;
@@ -72,16 +74,17 @@ class Event
  uint8 alt_code_len; // how many characters have been input for alt-code
  uint16 active_alt_code; // alt-code that needs more input
  uint8 alt_code_input_num; // alt-code can get multiple inputs
-
+ 
  public:
  Event(Configuration *cfg);
  ~Event();
 
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
-           GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc);
+           GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g);
  Book *get_book() { return(book); }
 
  bool update();
+ bool handleEvent(const SDL_Event *event);
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
  bool get(sint16 rel_x, sint16 rel_y);
@@ -98,6 +101,9 @@ class Event
  protected:
 
  inline Uint32 TimeLeft();
+ 
+ void quitDialog();
+ 
 };
 
 #endif /* __Event_h__ */

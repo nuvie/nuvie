@@ -34,6 +34,20 @@ GUI_Widget:: GUI_Widget(void *data, int x, int y, int w, int h)
 {
 	Init(data, x, y, w, h);
 }
+
+GUI_Widget::~GUI_Widget()
+{
+ for(;!children.empty();)
+    {
+     GUI_Widget *child = children.front();
+     
+     children.pop_front();
+     delete child;
+    }
+
+ return;
+}
+  
 void
 GUI_Widget:: Init(void *data, int x, int y, int w, int h)
 {
@@ -264,7 +278,11 @@ GUI_Widget:: HandleEvent(const SDL_Event *event)
 
    /* display our children */
    for(child = children.begin(); child != children.end(); child++)
-     (*child)->HandleEvent(event);
+     {
+      GUI_status status = (*child)->HandleEvent(event);
+      if(status != GUI_PASS)
+        return status;
+     }
   }
 
 	switch (event->type) {

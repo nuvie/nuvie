@@ -123,7 +123,7 @@ GUI:: HandleStatus(GUI_status status)
 }
 
 /* Handle an event, passing it to widgets until they return a status */
-void 
+GUI_status 
 GUI:: HandleEvent(SDL_Event *event)
 {
 	int i;
@@ -170,7 +170,10 @@ GUI:: HandleEvent(SDL_Event *event)
 			status = GUI_PASS;
 			break;
 	}
+
 	HandleStatus(status);
+  
+ return status;
 }
 
 /* Run the GUI.
