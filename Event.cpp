@@ -1336,7 +1336,7 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 else if(selection == 6) // Ant Mound
                     teleport_dest = "365 bb 0";
                 else if(selection == 7) // Hythloth
-                    teleport_dest = "384 3a4 0";
+                    teleport_dest = "3b4 3a4 0";
                 else if(selection == 8) // Buccaneer's Cave
                     teleport_dest = "234 253 0";
                 else if(selection == 9) // Pirate Cave
