@@ -378,6 +378,8 @@ void U6UseCode::drawbridge_open(uint16 x, uint16 y, uint8 level, uint16 b_width)
  obj = new_obj(OBJ_U6_DRAWBRIDGE,2,x+b_width-1,y+i,level);  // bottom right
  obj_manager->add_obj(obj,true);
 
+ scroll->display_string("\nOpen the drawbridge.\n");
+ 
  return;
 }
 
@@ -400,6 +402,7 @@ void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width
    obj_manager->add_obj(obj,true);
   }
 
+ scroll->display_string("\nClose the drawbridge.\n");
 }
 
 void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width)

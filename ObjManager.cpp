@@ -187,8 +187,8 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
  Obj *obj;
  Tile *tile, *tile1;
  uint16 tile_num;
- uint8 obj_status = OBJ_STATUS_NO_OBJ;
  bool check_tile;
+ bool object_at_location = false;
  uint16 i,j;
 
  for(i=x;i<=x+1;i++)
@@ -196,12 +196,14 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
     for(j=y;j<=y+1;j++)
       {
        obj_list = get_obj_list(i,j,level);
-
+       if(i == x && j == y && obj_list)
+         {
+          if(obj_list->end() != NULL)
+            object_at_location = true;
+         }   
        if(obj_list != NULL)
          {
           link = obj_list->end();
-          if(link != NULL)
-            obj_status = OBJ_STATUS_PASSABLE;
             
           for(check_tile = false;link != NULL;link = link->prev)
             {
@@ -229,7 +231,10 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
       }
    }
 
- return obj_status;
+ if(object_at_location)
+   return OBJ_STATUS_PASSABLE;
+            
+ return OBJ_STATUS_NO_OBJ;
 }
 
 //gets the linked list of objects at a perticular location.
