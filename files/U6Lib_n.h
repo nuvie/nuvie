@@ -70,7 +70,7 @@ public:
     */
    uint32 item_size(uint32 item_number)
    {
-    if(item_number >= num_offsets);
+    if(item_number >= num_offsets)
         return(0);
     return(sizes[item_number]);
    }
