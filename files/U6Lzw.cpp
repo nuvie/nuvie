@@ -16,22 +16,18 @@
 #include "U6def.h"
 #include "U6Lzw.h"
 
-static U6LzwDict *dict = NULL;
-static U6LzwStack *stack = NULL;
 
 U6Lzw::U6Lzw()
 {
- if(dict == NULL)
-    dict = new U6LzwDict;
- if(stack == NULL)
-    stack = new U6LzwStack;
+ dict = new U6LzwDict;
+ stack = new U6LzwStack;
  errstr = "unknown error";
 }
 
 U6Lzw::~U6Lzw()
 {
- //delete dict;
- //delete stack;
+ delete dict;
+ delete stack;
 }
 
 
