@@ -191,6 +191,9 @@ if(surface == NULL)
     map_ptr += 1536;
    }
 
+ free(map_data);
+ free(chunk_data);
+ 
  return true;      
 }
 

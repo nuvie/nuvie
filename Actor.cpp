@@ -141,29 +141,32 @@ void Actor::set_in_party(bool state)
 void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
 {
  uint16 i;
+ unsigned char *sched_data_ptr;
  
  if(num == 0)
      return;
 
- sched = (Schedule**)malloc(sizeof(Schedule*) * num+1);
+ sched = (Schedule**)malloc(sizeof(Schedule*) * (num+1));
+ 
+ sched_data_ptr = sched_data;
  
  for(i=0;i<num;i++)
    {
     sched[i] = (Schedule *)malloc(sizeof(Schedule));
 
-    sched[i]->hour = sched_data[0];
-    sched[i]->worktype = sched_data[1];
+    sched[i]->hour = sched_data_ptr[0];
+    sched[i]->worktype = sched_data_ptr[1];
     
-    sched[i]->x = sched_data[2];
-    sched[i]->x += (sched_data[3] & 0x3) << 8; 
+    sched[i]->x = sched_data_ptr[2];
+    sched[i]->x += (sched_data_ptr[3] & 0x3) << 8; 
     
-    sched[i]->y = (sched_data[3] & 0xfc) >> 2;
-    sched[i]->y += (sched_data[4] & 0xf) << 6;
+    sched[i]->y = (sched_data_ptr[3] & 0xfc) >> 2;
+    sched[i]->y += (sched_data_ptr[4] & 0xf) << 6;
     
-    sched[i]->z = (sched_data[4] & 0xf0) >> 4;
-    sched_data += 5;
+    sched[i]->z = (sched_data_ptr[4] & 0xf0) >> 4;
+    sched_data_ptr += 5;
 #ifdef DEBUG
-    printf("#%04d %d,%d,%d hour %d unknown %d\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->unknown);
+    printf("#%04d %d,%d,%d hour %d unknown %d\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->worktype);
 #endif
    }
    

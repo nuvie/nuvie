@@ -57,7 +57,8 @@ bool Nuvie::init()
  
  // FIX! need to add support for finding nuvie.cfg file.
  
- config->readConfigFile("nuvie.cfg","config");
+ if(config->readConfigFile("nuvie.cfg","config") == false)
+   return false;
   
  screen = new Screen(config);
  if(screen->init(320,200) == false)
