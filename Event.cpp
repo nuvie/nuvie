@@ -1,6 +1,6 @@
 /*
  *  Event.cpp
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Wed Mar 26 2003.
  *  Copyright (c) 2003. All rights reserved.

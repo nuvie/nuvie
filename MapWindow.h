@@ -3,7 +3,7 @@
 
 /*
  *  MapWindow.h
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Fri Mar 21 2003.
  *  Copyright (c) 2003. All rights reserved.

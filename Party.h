@@ -2,7 +2,7 @@
 #define _PARTY_H_
 /*
  *  Party.h
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Tue May 06 2003.
  *  Copyright (c) 2003. All rights reserved.

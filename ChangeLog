@@ -1,3 +1,8 @@
+2003-07-05  Eric Fry <efry@users.sourceforge.net>
+	* Fixed typo in Project Builder project name. Most source files were 
+	  titled "Nuive" instead of "Nuvie". Thanks to Pieter Luteijn for
+	  spotting that one. ;)
+
 2003-07-04  Eric Fry <efry@users.sourceforge.net>
 	* Added files for new IO classes. NuvieIO.cpp/h
 

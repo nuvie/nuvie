@@ -2,7 +2,7 @@
 #define __SEUseCode_h__
 /*
  *  SEUseCode.h
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Sun Jun 22 2003.
  *  Copyright (c) 2003. All rights reserved.

@@ -1,6 +1,6 @@
 /*
  *  Book.cpp
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Wed Apr 09 2003.
  *  Copyright (c) 2003. All rights reserved.

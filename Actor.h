@@ -3,7 +3,7 @@
 
 /*
  *  Actor.h
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Thu Mar 20 2003.
  *  Copyright (c) 2003. All rights reserved.

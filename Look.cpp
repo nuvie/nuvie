@@ -1,6 +1,6 @@
 /*
  *  Look.cpp
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Mon Mar 24 2003.
  *  Copyright (c) 2003. All rights reserved.

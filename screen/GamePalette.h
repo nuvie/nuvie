@@ -3,7 +3,7 @@
 
 /*
  *  GamePalette.h
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Sun Mar 09 2003.
  *  Copyright (c) 2003. All rights reserved.

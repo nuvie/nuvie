@@ -1,6 +1,6 @@
 /*
  *  View.cpp
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Fri May 16 2003.
  *  Copyright (c) 2003. All rights reserved.

@@ -1,6 +1,6 @@
 /*
  *  NuvieIO.cpp
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Tue Jul 01 2003.
  *  Copyright (c) 2003 The Nuvie Team. All rights reserved.

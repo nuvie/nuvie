@@ -2,7 +2,7 @@
 #define __U6UseCode_h__
 /*
  *  U6UseCode.h
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Fri May 30 2003.
  *  Copyright (c) 2003. All rights reserved.

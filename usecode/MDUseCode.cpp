@@ -1,6 +1,6 @@
 /*
  *  MDUseCode.cpp
- *  Nuive
+ *  Nuvie
  *
  *  Created by Markus Niemistö on Wed Jun 18 2003.
  *  Copyright (c) 2003. All rights reserved.

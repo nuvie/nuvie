@@ -3,7 +3,7 @@
 
 /*
  *  U6Lib_n.h
- *  Nuive
+ *  Nuvie
  *
  *  Created by Eric Fry on Sat Mar 08 2003.
  *  Copyright (c) 2003. All rights reserved.
