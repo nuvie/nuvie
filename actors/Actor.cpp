@@ -350,10 +350,10 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
     return false;
 
  // blocking actors are checked for later
+ obj = obj_manager->get_obj(new_x,new_y,new_z);
  if(!force_move && !check_move(new_x, new_y, new_z, ACTOR_IGNORE_OTHERS))
    {
     // open door if pathfinding (FIXME: check worktype)
-    Obj *obj = obj_manager->get_obj(new_x,new_y,new_z);
     if(!(obj && usecode->is_unlocked_door(obj) && pathfinder && pathfinder->can_travel())
        || !usecode->use_obj(obj, this))
        return false; // blocked by object or map tile
@@ -1275,7 +1275,7 @@ void Actor::defend(uint8 attack, uint8 weapon_damage)
  */
 void Actor::reduce_hp(uint8 amount)
 {
- fprintf(stderr, "hit %s for %d points\n", get_name(), amount);
+ printf("hit %s for %d points\n", get_name(), amount);
 
     if(amount <= hp) hp -= amount;
     else hp = 0;
