@@ -28,6 +28,7 @@
 #include "SongAdPlug.h"
 #include "Sample.h"
 #include <algorithm>
+#include <cmath>
 
 #include "Game.h"
 #include "Player.h"
