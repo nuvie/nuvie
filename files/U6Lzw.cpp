@@ -231,7 +231,7 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
               if (cW != next_free_codeword)
               {
                  printf("cW != next_free_codeword!\n");
-                 exit(-1);
+                 return(NULL);
               }
               // add pW+C to the dictionary
               dict->add(C,pW);
