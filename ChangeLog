@@ -1,6 +1,7 @@
 2003-11-25  Eric Fry <efry@users.sourceforge.net>
 	* Added Sam Matthew's Alpha blended darkness. :-) This is still a 
 	  little rough around the edges but it is looking really nice!
+	* Fixed the palette rotation. It was rotating the wrong way.
 
 2003-11-24  Eric Fry <efry@users.sourceforge.net>
 	* Added Pieter Luteijn's Use orb code.

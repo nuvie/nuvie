@@ -121,12 +121,12 @@ bool Screen::rotate_palette(uint8 pos, uint8 length)
  uint32 tmp_colour;
  uint8 i;
  
- tmp_colour = surface->colour32[pos];
+ tmp_colour = surface->colour32[pos+length-1];
  
- for(i=0;i<length-1;i++)
-    surface->colour32[pos + i] = surface->colour32[pos + i + 1];
+ for(i= length-1;i > 0; i-- )
+    surface->colour32[pos + i] = surface->colour32[pos + i - 1];
 
- surface->colour32[pos + length - 1] = tmp_colour;
+ surface->colour32[pos] = tmp_colour;
    
  return true;
 }
