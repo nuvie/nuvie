@@ -119,6 +119,7 @@ class U6UseCode: public UseCode, public CallBack
  bool use_horse(Obj *obj, UseCodeEvent ev);
  bool use_potion(Obj *obj, UseCodeEvent ev);
  bool use_bell(Obj *obj, UseCodeEvent ev);
+ bool use_fishing_pole(Obj *obj, UseCodeEvent ev);
  bool use_shovel(Obj *obj, UseCodeEvent ev);
  bool use_fountain(Obj *obj, UseCodeEvent ev);
  bool use_rubber_ducky(Obj *obj, UseCodeEvent ev);
@@ -149,6 +150,7 @@ class U6UseCode: public UseCode, public CallBack
  void sundial_set_shadow(Obj *sundial, uint8 hour);
  void extinguish_torch(Obj *obj);
 
+ inline bool use_find_water(uint16 *x, uint16 *y, uint8 *z);
 };
 
 #endif /* __U6UseCode_h__ */

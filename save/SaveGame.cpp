@@ -37,6 +37,7 @@
 #include "Game.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
+#include "Actor.h"
 #include "ViewManager.h"
 #include "MapWindow.h"
 #include "MsgScroll.h"
@@ -280,6 +281,7 @@ SaveHeader *SaveGame::load_info(NuvieIOFileRead *loadfile)
 {
  uint32 rmask, gmask, bmask;
  unsigned char save_desc[MAX_SAVE_DESC_LENGTH+1];
+ unsigned char player_name[14];
 
  #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     rmask = 0x00ff0000;
@@ -301,6 +303,17 @@ SaveHeader *SaveGame::load_info(NuvieIOFileRead *loadfile)
  save_desc[MAX_SAVE_DESC_LENGTH+1] = '\0';
  header.save_description.assign((const char *)save_desc);
 
+ loadfile->readToBuf(player_name, 14);
+ header.player_name.assign((const char *)player_name);
+
+ header.player_gender = loadfile->read1();
+
+ header.level = loadfile->read1();
+ header.str = loadfile->read1();
+ header.dex = loadfile->read1();
+ header.intelligence = loadfile->read1();
+ header.exp = loadfile->read2();
+
  //should we load the thumbnail here!?
 
  header.thumbnail_data = new unsigned char[MAPWINDOW_THUMBNAIL_SIZE * MAPWINDOW_THUMBNAIL_SIZE * 3];
@@ -310,6 +323,22 @@ SaveHeader *SaveGame::load_info(NuvieIOFileRead *loadfile)
  header.thumbnail = SDL_CreateRGBSurfaceFrom(header.thumbnail_data, MAPWINDOW_THUMBNAIL_SIZE, MAPWINDOW_THUMBNAIL_SIZE, 24, MAPWINDOW_THUMBNAIL_SIZE * 3, rmask, gmask, bmask, 0);
 
  return &header;
+}
+
+bool SaveGame::check_version(NuvieIOFileRead *loadfile)
+{
+ uint16 version;
+ 
+ loadfile->seekStart();
+ 
+ version = loadfile->read2();
+ if(version != NUVIE_SAVE_VERSION)
+  {
+   printf("Error: Incompatible savegame version. Savegame version '%d', current system version '%d'\n", version, NUVIE_SAVE_VERSION);
+   return false;
+  }
+
+ return true;
 }
 
 bool SaveGame::load(const char *filename)
@@ -336,6 +365,12 @@ bool SaveGame::load(const char *filename)
   }
 
  printf("Loading Game: %s\n", filename);
+
+ if(!check_version(loadfile))
+  {
+   delete loadfile;
+   return false;
+  }
 
  load_info(loadfile); //load header info
 
@@ -378,8 +413,11 @@ bool SaveGame::save(const char *filename, std::string *save_description)
  NuvieIOFileWrite *savefile;
  int game_type;
  char game_tag[3];
+ unsigned char player_name[14];
  unsigned char save_desc[MAX_SAVE_DESC_LENGTH];
  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+ Player *player = Game::get_game()->get_player();
+ Actor *avatar = Game::get_game()->get_actor_manager()->get_actor(1); // get the avatar actor.
 
  config->value("config/GameType",game_type);
 
@@ -411,6 +449,18 @@ bool SaveGame::save(const char *filename, std::string *save_description)
  memset(save_desc, 0, MAX_SAVE_DESC_LENGTH);
  strncpy((char *)save_desc, save_description->c_str(), MAX_SAVE_DESC_LENGTH);
  savefile->writeBuf(save_desc, MAX_SAVE_DESC_LENGTH);
+ 
+ memset(player_name, 0, 14);
+ strcpy((char *)player_name, (const char *)player->get_name());
+ savefile->writeBuf((const unsigned char *)player_name, 14);
+
+ savefile->write1(player->get_gender());
+
+ savefile->write1(avatar->get_level());
+ savefile->write1(avatar->get_strength());
+ savefile->write1(avatar->get_dexterity());
+ savefile->write1(avatar->get_intelligence());
+ savefile->write2(avatar->get_exp());
 
  save_thumbnail(savefile);
 

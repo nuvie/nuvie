@@ -967,6 +967,86 @@ void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridg
  return;
 }
 
+// USE: fishing pole. Attempt to catch a fish from an adjacent water square.
+bool U6UseCode::use_fishing_pole(Obj *obj, UseCodeEvent ev)
+{
+ ViewManager *view_manager = game->get_view_manager();
+ Actor *player_actor;
+ Obj *fish;
+ uint16 x, y;
+ uint8 z;
+ 
+ player_actor = player->get_actor();
+
+ player_actor->get_location(&x, &y, &z);
+ 
+ if(use_find_water(&x, &y, &z) == false)
+  {
+   scroll->display_string("\nYou need to stand next to water.\n");
+   return true;
+  }
+
+ if(NUVIE_RAND() % 100 <= 20)
+   {
+    fish = new Obj();
+
+    fish->obj_n = OBJ_U6_FISH;
+    if(!player_actor->can_carry_object(OBJ_U6_FISH, 1))
+      {
+       scroll->display_string("\nGot it, but can't carry it.\n");
+       if(use_boat_find_land(&x,&y,&z) == false) //we couldn't find an empty spot for the fish.
+         {                                       //so back into the water with thee.
+          delete fish;
+          return true;
+         }
+
+       fish->x = x;
+       fish->y = y;
+       fish->z = z;
+       obj_manager->add_obj(fish);
+       return true;
+      }
+
+    player_actor->inventory_add_object(fish);
+
+    view_manager->set_inventory_mode();
+
+    view_manager->update(); //FIX this should be moved higher up in UseCode
+
+    scroll->display_string("\nGot it!\n");
+   }
+ else
+   scroll->display_string("\nDidn't get a fish.\n");
+
+ return true;
+}
+
+inline bool U6UseCode::use_find_water(uint16 *x, uint16 *y, uint8 *z)
+{
+ if(map->is_water(*x, *y-1, *z))  //UP
+   {
+    *y = *y - 1;
+    return true;
+   }
+ if(map->is_water(*x+1, *y, *z)) //RIGHT
+   {
+    *x = *x + 1;
+    return true;
+   }
+ if(map->is_water(*x, *y+1, *z)) //DOWN
+   {
+    *y = *y + 1;
+    return true;
+   }
+ if(map->is_water(*x-1, *y, *z)) //LEFT
+   {
+    *x = *x - 1;
+    return true;
+   }
+
+ return false;
+}
+
 
 /* Use shovel in one of 8 directions. If used in a dungeon level get a chance of
  * finding gold or a fountain (to make a wish).

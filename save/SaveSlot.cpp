@@ -78,7 +78,8 @@ bool SaveSlot::init(const char *directory, std::string *file)
 
  if(!new_save)
    {
-    load_info(directory);
+    if(!load_info(directory))
+      return false;
    }
 
  widget = (GUI_Widget *) new GUI_TextInput(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, (char *)save_description.c_str(), gui->get_font(),26,2, this);
@@ -96,12 +97,14 @@ bool SaveSlot::load_info(const char *directory)
  GUI *gui = GUI::get_gui();
  std::string full_path;
  char buf[30];
+ char gender;
+ uint8 i;
 
  savegame = new SaveGame(Game::get_game()->get_config());
 
  build_path(directory, filename.c_str(), full_path);
 
- if(loadfile.open(full_path.c_str()) == false)
+ if(loadfile.open(full_path.c_str()) == false || savegame->check_version(&loadfile) == false)
    {
     printf("Error: Reading header from %s\n", filename.c_str());
     delete savegame;
@@ -114,13 +117,38 @@ bool SaveSlot::load_info(const char *directory)
 
  thumbnail = SDL_ConvertSurface(header->thumbnail, header->thumbnail->format, SDL_SWSURFACE);
 
+ if(header->player_gender == 0)
+   gender = 'm';
+ else
+   gender = 'f';
 
+ sprintf(buf, "%s (%c)",header->player_name.c_str(),gender);
+ if(strlen(buf) < 17)
+  {
+   for(i=strlen(buf);i < 17; i++)
+    buf[i] = ' ';
 
- widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 20, 200, 200, 200, (char *)filename.c_str(), gui->get_font()); //evil const cast lets remove this
+   buf[17] = '\0';
+  }
+
+ strcat(buf, " Day:");
+
+ widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 20, 200, 200, 200, buf, gui->get_font()); //evil const cast lets remove this
  AddWidget(widget);
 
- sprintf(buf, "Num Saves: %d", header->num_saves);
- widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 29, 200, 200, 200, buf, gui->get_font());
+ sprintf(buf, "Lvl:%d %3d/%3d/%3d  XP:%d", header->level, header->str, header->dex, header->intelligence, header->exp);
+ 
+ widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 29, 200, 200, 200, buf, gui->get_font()); //evil const cast lets remove this
+ AddWidget(widget);
+
+
+ sprintf(buf, "%s (%d save", (char *)filename.c_str(), header->num_saves);
+ if(header->num_saves > 1)
+   strcat(buf, "s");
+ 
+ strcat(buf, ")");
+ 
+ widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 38, 200, 200, 200, buf, gui->get_font());
  AddWidget(widget);
 
  delete savegame;

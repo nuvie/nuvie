@@ -25,7 +25,7 @@
  */
 
 #define NUVIE_SAVE_VERSION_MAJOR 0
-#define NUVIE_SAVE_VERSION_MINOR 2
+#define NUVIE_SAVE_VERSION_MINOR 3
 
 #define NUVIE_SAVE_VERSION       NUVIE_SAVE_VERSION_MAJOR * 256 + NUVIE_SAVE_VERSION_MINOR
 
@@ -48,7 +48,12 @@ struct SaveHeader
  uint32 actual_play_time; //total play time for this save game in minutes.
  uint32 game_play_time; //total play time for this save game measured in game turns.
  std::string save_description;
-
+ std::string player_name;
+ uint8 player_gender;
+ uint8 str, intelligence, dex;
+ uint16 level;
+ uint16 exp;
+ 
  SDL_Surface *thumbnail;
  unsigned char *thumbnail_data;
 
@@ -74,6 +79,8 @@ class SaveGame
  bool load_original();
  SaveHeader *load_info(NuvieIOFileRead *loadfile);
  bool load(const char *filename);
+
+ bool check_version(NuvieIOFileRead *loadfile);
 
  bool save(const char *filename, std::string *save_description);
 

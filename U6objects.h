@@ -201,6 +201,7 @@
 #define OBJ_U6_INVISIBILITY_RING   258
 
 #define OBJ_U6_FISHING_POLE        264
+#define OBJ_U6_FISH                265
 
 #define OBJ_U6_GRAVE               266
 

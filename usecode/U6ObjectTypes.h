@@ -47,6 +47,9 @@ const U6ObjectType U6ObjectTypes[] =
 
     { OBJ_U6_CHURN, 255,0,USE_EVENT_USE,&U6UseCode::use_churn,OBJTYPE_NONE },
 
+    { OBJ_U6_FISHING_POLE, 255,0,USE_EVENT_USE,&U6UseCode::use_fishing_pole,OBJTYPE_NONE },
+
+
     { OBJ_U6_CRANK, 255,0,USE_EVENT_USE,&U6UseCode::use_crank,OBJTYPE_NONE },
 
     { OBJ_U6_FIREPLACE, 255,0,USE_EVENT_USE,&U6UseCode::use_firedevice,OBJTYPE_NONE },

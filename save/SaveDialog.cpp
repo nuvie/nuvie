@@ -82,14 +82,17 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
    {
     filename = filelist.next();
     widget = new SaveSlot(this, *color_ptr);
-    ((SaveSlot *)widget)->init(save_directory, filename);
+    if(((SaveSlot *)widget)->init(save_directory, filename) == true)
+     {
+      scroller->AddWidget(widget);
 
-    scroller->AddWidget(widget);
-
-    if(color_ptr == &bg_color)
-      color_ptr = &bg_color1;
+      if(color_ptr == &bg_color)
+        color_ptr = &bg_color1;
+      else
+        color_ptr = &bg_color;
+     }
     else
-      color_ptr = &bg_color;
+      delete (SaveSlot *)widget;
    }
 
  // pad out empty slots if required

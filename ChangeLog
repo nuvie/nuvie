@@ -1,3 +1,10 @@
+2004-10-05  Eric Fry <efry at users.sourceforge.net>
+	* Added use:fishing_pole.
+	* Removed SDL window resize flag.
+	* Removed some redundant code from Screen when dealing with x1 scale.
+	* Added some new fields into the samegame file. 
+	  *WARNING* This breaks compatibility with old nuvie savegames.
+ 
 2004-10-04  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Add scroll-arrows to Party Roster.
 

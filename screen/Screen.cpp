@@ -831,12 +831,13 @@ void Screen::update()
   }
  else
   {
+/*  
    uint8 *src = (uint8 *)surface->pixels;
    uint8 *dest = (uint8 *)sdl_surface->pixels;
 
    memcpy(dest,src,surface->w*surface->bytes_per_pixel);
    dest += sdl_surface->pitch;
-   src += surface->pitch;
+   src += surface->pitch; */
   }
 
 SDL_UpdateRect(sdl_surface,0,0,0,0);
@@ -877,17 +878,6 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
                  sdl_surface->pitch/sdl_surface->format->BytesPerPixel,	// destpixels/line
                  scale_factor);
   }
- else
-  {
-   uint8 *src = (uint8 *)surface->pixels;
-   uint8 *dest = (uint8 *)sdl_surface->pixels;
-   src += y * surface->pitch + (surface->bytes_per_pixel * x);
-   dest += y * sdl_surface->pitch + (sdl_surface->format->BytesPerPixel * x);
-
-   memcpy(dest,src,w*surface->bytes_per_pixel);
-   dest += sdl_surface->pitch;
-   src += surface->pitch;
-  }
 
  if(num_update_rects == max_update_rects)
    {
@@ -911,7 +901,23 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
 
 void Screen::preformUpdate()
 {
+/*
+ uint16 i;
  //printf("Screen update %d.\n",num_update_rects);
+ if(!scaler)
+  {
+   uint8 *src = (uint8 *)surface->pixels;
+   uint8 *dest = (uint8 *)sdl_surface->pixels;
+
+   for(i=0;i < num_update_rects;i++)
+    {
+     memcpy(dest + update_rects[i].y * sdl_surface->pitch + sdl_surface->format->BytesPerPixel * update_rects[i].x,
+            src + update_rects[i].y * surface->pitch + surface->bytes_per_pixel * update_rects[i].x,
+            update_rects[i].w * surface->bytes_per_pixel);
+    }
+  }
+*/
+  
  SDL_UpdateRects(sdl_surface,num_update_rects,update_rects);
  num_update_rects = 0;
 }
@@ -937,7 +943,6 @@ bool Screen::initScaler()
  return true;
 }
 
-
 void Screen::set_screen_mode()
 {
 	// Get info. about video.
@@ -954,6 +959,11 @@ void Screen::set_screen_mode()
 	if (bpp != 16 && bpp != 32)
 		bpp = 16;
 
+#ifdef MACOSX 
+    if (scale_factor == 1) //FIXME There appears to be an update issue with 32bpp x1 scale on OS X
+        bpp = 16;          // I'll need to look into this further. For now we can just use 16bpp at x1 scale.
+#endif
+
 	std::cout << "Attempting to set vid mode: " << width << "x" << height << "x" << bpp << "x" << scale_factor;
 
 	// Is Fullscreen?
@@ -961,8 +971,8 @@ void Screen::set_screen_mode()
 		flags |= SDL_FULLSCREEN;
 		std::cout << " Fullscreen";
 	}
-	else
-		flags |= SDL_RESIZABLE;
+//	else
+//		flags |= SDL_RESIZABLE;
 
 	// Opengl Stuff
 #ifdef WANT_OPENGL
