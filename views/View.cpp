@@ -45,5 +45,57 @@ bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManag
  tile_manager = tm;
  obj_manager = om;
 
+ set_party_member(0);
+ 
  return true;
+}
+
+bool View::set_party_member(uint8 party_member)
+{
+ if(party_member < party->get_party_size())
+   {
+    cur_party_member = party_member;
+    Redraw();
+    return true;
+   }
+
+ return false;
+}
+
+bool View::next_party_member()
+{
+ return set_party_member(cur_party_member + 1);
+}
+
+bool View::prev_party_member()
+{
+ if(cur_party_member != 0)
+   return set_party_member(cur_party_member - 1);
+ 
+ return false;
+}
+
+
+//GUI callbacks.
+
+GUI_status viewLeftButtonCallback(void *data)
+{
+ View *view;
+ 
+ view = (View *)data;
+ 
+ view->prev_party_member();
+ 
+ return GUI_YUM;
+}
+
+GUI_status viewRightButtonCallback(void *data)
+{
+ View *view;
+ 
+ view = (View *)data;
+ 
+ view->next_party_member();
+ 
+ return GUI_YUM;
 }

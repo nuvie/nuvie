@@ -1,11 +1,11 @@
-#ifndef __ViewManager_h__
-#define __ViewManager_h__
+#ifndef __ActorView_h__
+#define __ActorView_h__
 
 /*
- *  ViewManager.h
+ *  ActorView.h
  *  Nuvie
  *
- *  Created by Eric Fry on Tue May 20 2003.
+ *  Created by Eric Fry on Fri Aug 22 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -24,56 +24,41 @@
  *
  */
 
-#include <SDL.h>
+#include <string>
 
 #include "U6def.h"
 #include "Configuration.h"
-#include "GUI.h"
+#include "View.h"
+#include "Screen.h"
 #include "Text.h"
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Party.h"
 #include "Portrait.h"
 
-#include "View.h"
-#include "ActorView.h"
-#include "InventoryView.h"
-#include "PortraitView.h"
-
-class ViewManager
-{
- protected:
+class ActorView : public View {
  
- Configuration *config;
- int game_type;
- GUI *gui;
- Text *text;
- TileManager *tile_manager;
- ObjManager *obj_manager;
- Party *party;
-
- ActorView *actor_view;
- InventoryView *inventory_view;
- PortraitView *portrait_view;
+ Portrait *portrait;
+ std::string name_string;
  
- View *current_view;
+ unsigned char *portrait_data;
  
  public:
+ ActorView(Configuration *cfg);
+ ~ActorView();
  
- ViewManager(Configuration *cfg);
- virtual ~ViewManager();
+ bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
  
- bool init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *portrait);
-
- void set_portrait_mode(uint8 actor_num, char *name);
- void set_inventory_mode(uint8 actor_num);
- void set_party_mode();
- void set_actor_mode();
+ bool set_party_member(uint8 party_member);
+  
+ void Display(bool full_redraw);
   
  protected:
  
- bool set_current_view(View *view);
+ void add_command_icons(Screen *tmp_screen, void *view_manager);
+ void display_name();
+ 
 };
 
-#endif /* __ViewManager_h__ */
+#endif /* __ActorView_h__ */
 

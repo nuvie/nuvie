@@ -135,6 +135,13 @@ sint8 Party::get_member_num(Actor *actor)
     return(-1);
 }
 
+uint8 Party::get_actor_num(uint8 member_num)
+{
+ if(num_in_party <= member_num)
+   return 0; // hmm how should we handle this error.
+
+ return member[member_num].actor->id_n;
+}
 
 bool Party::loadParty()
 {

@@ -35,18 +35,12 @@
 
 class InventoryView : public View {
  
- uint8 party_position; // the position in the party 0 = avatar, 1 dupre. etc.
- 
  public:
  InventoryView(Configuration *cfg);
  ~InventoryView();
  
- bool init(Screen *tmp_screen, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
  
- bool show_party_member(uint8 party_member);
- bool show_next_party_member();
- bool show_prev_party_member();
-
  void Display(bool full_redraw);
  void display_doll(uint16 x, uint16 y);
  
@@ -54,7 +48,7 @@ class InventoryView : public View {
  
  void display_name();
  void display_inventory_list();
- void add_command_icons(Screen *tmp_screen);
+ void add_command_icons(Screen *tmp_screen, void *view_manager);
  void display_inventory_weights();
  void display_actor_icon();
 };

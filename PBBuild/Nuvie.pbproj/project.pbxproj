@@ -251,6 +251,46 @@
 			settings = {
 			};
 		};
+		071DE9F404F61F9000A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = ActorView.cpp;
+			path = ../views/ActorView.cpp;
+			refType = 2;
+		};
+		071DE9F504F61F9000A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = ActorView.h;
+			path = ../views/ActorView.h;
+			refType = 2;
+		};
+		071DE9F604F61F9000A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = PartyView.cpp;
+			path = ../views/PartyView.cpp;
+			refType = 2;
+		};
+		071DE9F704F61F9000A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = PartyView.h;
+			path = ../views/PartyView.h;
+			refType = 2;
+		};
+		071DE9FC04F6334E00A8000A = {
+			fileRef = 071DE9F504F61F9000A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		071DE9FD04F6334F00A8000A = {
+			fileRef = 071DE9F404F61F9000A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		072191ED041DB2C900A8000A = {
 			children = (
 				072191EE041DB2F000A8000A,
@@ -614,8 +654,12 @@
 			children = (
 				07C3D1250474C34900A8000A,
 				07C3D1260474C34900A8000A,
+				071DE9F504F61F9000A8000A,
+				071DE9F404F61F9000A8000A,
 				072599AD047112F000A8000A,
 				072599AE047112F000A8000A,
+				071DE9F704F61F9000A8000A,
+				071DE9F604F61F9000A8000A,
 				07C3D12C047A1C7B00A8000A,
 				07C3D12B047A1C7B00A8000A,
 				07C3D12E047A1C7B00A8000A,
@@ -2132,6 +2176,7 @@
 				074B917604E4C51500A8000A,
 				071DE9B704EBA52500A8000A,
 				071DE9C104EBC97700A8000A,
+				071DE9FC04F6334E00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2208,6 +2253,7 @@
 				074B917204E4C51500A8000A,
 				071DE9B604EBA52500A8000A,
 				071DE9C004EBC97600A8000A,
+				071DE9FD04F6334F00A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

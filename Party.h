@@ -106,7 +106,9 @@ class Party {
  {
   return(get_member_num(actor_manager->get_actor(a)));
  }
-
+ //get actor id_n from party_member num.
+ uint8 get_actor_num(uint8 member_num);
+ 
  void reform_party();
  void follow();
  bool move(uint16 dx, uint16 dy, uint8 dz);

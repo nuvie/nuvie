@@ -36,6 +36,9 @@
 
 #include "GUI_Widget.h"
 
+GUI_status viewLeftButtonCallback(void *data);
+GUI_status viewRightButtonCallback(void *data);
+
 class View: public GUI_Widget
 {
  protected:
@@ -46,6 +49,8 @@ class View: public GUI_Widget
  ObjManager *obj_manager;
  Party *party;
 
+ uint8 cur_party_member;
+ 
  public:
  
  View(Configuration *cfg);
@@ -53,6 +58,10 @@ class View: public GUI_Widget
  
  virtual bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
  
+ virtual bool set_party_member(uint8 party_member);
+ uint8 get_party_member_num() { return cur_party_member; }
+ bool next_party_member();
+ bool prev_party_member();
 };
 
 #endif /* __View_h__ */

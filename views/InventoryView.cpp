@@ -24,10 +24,9 @@
 
 #include "InventoryView.h"
 
-static GUI_status leftButtonCallback(void *data);
-static GUI_status partyViewButtonCallback(void *data);
-static GUI_status actorViewButtonCallback(void *data);
-static GUI_status rightButtonCallback(void *data);
+extern GUI_status partyViewButtonCallback(void *data);
+extern GUI_status actorViewButtonCallback(void *data);
+
 static GUI_status combatButtonCallback(void *data);
 
 InventoryView::InventoryView(Configuration *cfg) : View(cfg)
@@ -39,41 +38,15 @@ InventoryView::~InventoryView()
 {
 }
 
-bool InventoryView::init(Screen *tmp_screen, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
  View::init(x,y,t,p,tm,om);
  
- party_position = 0;
- 
- add_command_icons(tmp_screen);
+ add_command_icons(tmp_screen, view_manager);
  
  return true;
 }
 
-bool InventoryView::show_party_member(uint8 party_member)
-{
- if(party_member < party->get_party_size())
-   {
-    party_position = party_member;
-    Redraw();
-    return true;
-   }
-
- return false;
-}
-
-bool InventoryView::show_next_party_member()
-{
- return show_party_member(party_position + 1);
-}
-
-bool InventoryView::show_prev_party_member()
-{
- if(party_position != 0)
-   return show_party_member(party_position - 1);
- 
- return false;
-}
 
 
 void InventoryView::Display(bool full_redraw)
@@ -138,7 +111,7 @@ void InventoryView::display_name()
 {
  char *name;
  
- name = party->get_actor_name(party_position);
+ name = party->get_actor_name(cur_party_member);
  
  if(name == NULL)
   return;
@@ -159,7 +132,7 @@ void InventoryView::display_inventory_list()
  
  empty_tile = tile_manager->get_tile(410);
  
- actor = party->get_actor(party_position);
+ actor = party->get_actor(cur_party_member);
  
  inventory = actor->get_inventory_list();
  
@@ -184,7 +157,7 @@ void InventoryView::display_inventory_list()
    }
 }
 
-void InventoryView::add_command_icons(Screen *tmp_screen)
+void InventoryView::add_command_icons(Screen *tmp_screen, void *view_manager)
 {
  Tile *tile;
  SDL_Surface *button_image;
@@ -196,25 +169,25 @@ void InventoryView::add_command_icons(Screen *tmp_screen)
  tile = tile_manager->get_tile(387); //left arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 0, 80, button_image, button_image2, leftButtonCallback);
+ button = new GUI_Button(this, 0, 80, button_image, button_image2, viewLeftButtonCallback);
  this->AddWidget(button);
  
  tile = tile_manager->get_tile(384); //party view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 16, 80, button_image, button_image2, partyViewButtonCallback);
+ button = new GUI_Button(view_manager, 16, 80, button_image, button_image2, partyViewButtonCallback);
  this->AddWidget(button);
  
  tile = tile_manager->get_tile(385); //actor view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 2*16, 80, button_image, button_image2, actorViewButtonCallback);
+ button = new GUI_Button(view_manager, 2*16, 80, button_image, button_image2, actorViewButtonCallback);
  this->AddWidget(button);
  
  tile = tile_manager->get_tile(388); //right arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- button = new GUI_Button(this, 3*16, 80, button_image, button_image2, rightButtonCallback);
+ button = new GUI_Button(this, 3*16, 80, button_image, button_image2, viewRightButtonCallback);
  this->AddWidget(button);
  
  tile = tile_manager->get_tile(391); //combat icon
@@ -230,7 +203,7 @@ void InventoryView::display_inventory_weights()
  uint8 strength;
  float inv_weight;
  float equip_weight;
- Actor *actor = party->get_actor(party_position);
+ Actor *actor = party->get_actor(cur_party_member);
  char string[9]; //  "E:xx/xx"
  
  strength = actor->get_strength();
@@ -246,58 +219,12 @@ void InventoryView::display_inventory_weights()
 
 void InventoryView::display_actor_icon()
 {
- Actor *actor = party->get_actor(party_position);
+ Actor *actor = party->get_actor(cur_party_member);
  Tile *actor_tile;
   
  actor_tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->get_tile_num())+9); //FIX here for sherry
  
  screen->blit(area.x+6*16,area.y+8,actor_tile->data,8,16,16,16,true);
-}
-
-static GUI_status leftButtonCallback(void *data)
-{
- InventoryView *view;
- 
- view = (InventoryView *)data;
- 
- view->show_prev_party_member();
- 
- return GUI_YUM;
-}
-
-static GUI_status partyViewButtonCallback(void *data)
-{
- InventoryView *view;
- 
- view = (InventoryView *)data;
- 
- //view->set_next_combat_mode();
- printf("Set party view!\n");
-  
- return GUI_YUM;
-}
-
-static GUI_status actorViewButtonCallback(void *data)
-{
- InventoryView *view;
- 
- view = (InventoryView *)data;
- 
- //view->set_next_combat_mode();
- printf("Set actor view!\n");
-  
- return GUI_YUM;
-}
-
-static GUI_status rightButtonCallback(void *data)
-{
- InventoryView *view;
- 
- view = (InventoryView *)data;
- 
- view->show_next_party_member();
- 
- return GUI_YUM;
 }
 
 static GUI_status combatButtonCallback(void *data)
@@ -311,4 +238,6 @@ static GUI_status combatButtonCallback(void *data)
   
  return GUI_YUM;
 }
+
+
 

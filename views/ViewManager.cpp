@@ -27,6 +27,7 @@ ViewManager::ViewManager(Configuration *cfg)
 {
  config = cfg;
  config->value("config/GameType",game_type);
+ current_view = NULL;
 }
  
 ViewManager::~ViewManager()
@@ -42,8 +43,11 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *o
  tile_manager = tm;
  obj_manager = om;
 
+ actor_view = new ActorView(config);
+ actor_view->init(gui->get_screen(), this, 176,8, text, party, tile_manager, obj_manager, portrait);
+ 
  inventory_view = new InventoryView(config);
- inventory_view->init(gui->get_screen(),176,8, text, party, tile_manager, obj_manager);
+ inventory_view->init(gui->get_screen(), this, 176,8, text, party, tile_manager, obj_manager);
  
  portrait_view = new PortraitView(config);
  portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);
@@ -55,6 +59,9 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *o
 
 bool ViewManager::set_current_view(View *view)
 {
+ uint8 cur_party_member;
+ 
+ //actor_view->set_party_member(cur_party_member);
  if(view == NULL || game_type != NUVIE_GAME_U6) //HACK! remove this when views support MD and SE
    return false;
 
@@ -62,10 +69,17 @@ bool ViewManager::set_current_view(View *view)
    return false;
    
  if(current_view != NULL)
-   gui->removeWidget((GUI_Widget *)current_view);//remove current widget from gui
+   {
+    gui->removeWidget((GUI_Widget *)current_view);//remove current widget from gui
 
+    cur_party_member = current_view->get_party_member_num();
+    view->set_party_member(cur_party_member);
+   }
+   
  current_view = view;
  gui->AddWidget((GUI_Widget *)view);
+ 
+ view->Redraw();
  
  return true;
 }
@@ -75,13 +89,16 @@ void ViewManager::set_portrait_mode(uint8 actor_num, char *name)
  portrait_view->set_portrait(actor_num, name);
  
  set_current_view((View *)portrait_view);
- portrait_view->Redraw();
 }
-
+/*
+void ViewManager::set_inventory_mode()
+{
+ set_inventory_mode(current_view->get_party_member_num());
+}
+*/
 void ViewManager::set_inventory_mode(uint8 actor_num)
 {
  set_current_view((View *)inventory_view);
- inventory_view->Redraw();
 }
 
 void ViewManager::set_party_mode()
@@ -89,4 +106,49 @@ void ViewManager::set_party_mode()
  return;
 }
 
+void ViewManager::set_actor_mode()
+{
+
+ 
+ set_current_view((View *)actor_view);
+}
+
+
+// callbacks for switching views
+
+GUI_status partyViewButtonCallback(void *data)
+{
+ ViewManager *view_manager;
+ 
+ view_manager = (ViewManager *)data;
+ 
+ view_manager->set_party_mode();
+ printf("Set party view!\n");
+  
+ return GUI_YUM;
+}
+
+GUI_status actorViewButtonCallback(void *data)
+{
+ ViewManager *view_manager;
+ 
+ view_manager = (ViewManager *)data;
+ 
+ view_manager->set_actor_mode();
+ printf("Set actor view!\n");
+  
+ return GUI_YUM;
+}
+
+GUI_status inventoryViewButtonCallback(void *data)
+{
+ ViewManager *view_manager;
+ 
+ view_manager = (ViewManager *)data;
+ 
+ view_manager->set_inventory_mode(0);
+ printf("Set actor view!\n");
+  
+ return GUI_YUM;
+}
   

@@ -1,3 +1,7 @@
+2003-08-22  Eric Fry <efry@users.sourceforge.net>
+	* More work on views.
+	* Added ActorView. Switching works with buttons.
+
 2003-08-21  Eric Fry <efry@users.sourceforge.net>
 	* The left and right arrow buttons now change the inventory view.
 	* Stubs added for the other inventory buttons.
