@@ -1,3 +1,6 @@
+2005-03-05  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* ConverseInterpret.cpp: implement singular/plural forms of words
+
 2005-03-05  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a bug with stackable objects. Objects with qty > 255 would
 	  lose their high byte of data when beeing saved. The correct value

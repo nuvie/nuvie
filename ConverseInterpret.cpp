@@ -284,6 +284,7 @@ void ConverseInterpret::do_text()
     string output;
     const char *c_str = converse->get_output().c_str();
     const uint32 len = strlen(c_str);
+    uint32 last_value = 0;
 
     while(i < len)
     {
@@ -312,8 +313,9 @@ void ConverseInterpret::do_text()
                    else if(symbol[0] == '#' // value of a variable
                            && isdigit(symbol[1]))
                      {
-                      snprintf(intval, 16, "%d",
-                               converse->get_var(strtol(&symbol[1], NULL, 10)));
+                      last_value = converse->get_var(strtol(&symbol[1], NULL, 10));
+                      snprintf(intval, 16, "%d", last_value);
+
                       output.append((char *)intval);
                       output.append("");
                      }
@@ -335,6 +337,23 @@ void ConverseInterpret::do_text()
                      }
                    break;
                    
+         case '/' : // singular
+         case '\\' : // plural
+         {
+                   bool show = false;
+                   if ((last_value == 1 && c_str[i] == '/') ||
+                       (last_value != 1 && c_str[i] == '\\')) show = true;
+                   ++i;
+                   unsigned int count = 0;
+                   while (i+count < len &&
+                          c_str[i+count] >= 'a' && c_str[i+count] <= 'z')
+                     // NOTE: the above check might not work for non-english
+                     count++;
+                   if (show) output.append(count,c_str[i]);
+                   i += count;
+                   break;
+         }
+
          default :  output.append(1,c_str[i]);
                     i += 1;
                     break;
