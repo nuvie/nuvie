@@ -26,6 +26,8 @@
 
 #include "GUI.h"
 
+#include "SoundManager.h"
+
 #include "Screen.h"
 #include "GamePalette.h"
 #include "GameClock.h"
@@ -81,6 +83,7 @@ Game::~Game()
     delete party;
     delete portrait;
     delete view_manager;
+    delete sound_manager;
     delete gui;
     delete usecode;
 }
@@ -98,6 +101,11 @@ bool Game::loadGame(Screen *s, uint8 type)
 
  try
   {
+   sound_manager = new SoundManager();
+   sound_manager->nuvieStartup(config);
+   //sound_manager->LoadSongs(NULL);
+   //sound_manager->LoadObjectSamples(NULL);
+
    palette = new GamePalette(screen,config);
 
    clock = new GameClock(config);
@@ -214,6 +222,7 @@ void Game::play()
      gui->Display();
 
      screen->preformUpdate();
+     //sound_manager->Update();
      event->wait();
    }
   return;

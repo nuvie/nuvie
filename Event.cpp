@@ -48,9 +48,7 @@
 #include "UseCode.h"
 
 #include "GUI.h"
-#include "GUI_area.h"
-#include "GUI_button.h"
-#include "GUI_text.h"
+#include "GUI_YesNoDialog.h"
 
 //dialog callbacks
 
@@ -1444,32 +1442,18 @@ inline Uint32 Event::TimeLeft()
 
 void Event::quitDialog()
 {
- GUI_Widget *area_widget;
- GUI_Widget *widget;
- 
- area_widget = (GUI_Widget *) new GUI_Area(75, 60, 170, 80, 212, 208, 131, 72, 69, 29, 2, AREA_ANGULAR);
- widget = (GUI_Widget *) new GUI_Button(area_widget, 100, 50, 40, 18, "Yes", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, quitDialogYesCallback, 0);
- area_widget->AddWidget(widget);
+ GUI_Widget *quit_dialog;
 
- widget = (GUI_Widget *) new GUI_Button(area_widget, 30, 50, 40, 18, "No", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, quitDialogNoCallback, 0);
- area_widget->AddWidget(widget);
- 
- widget = (GUI_Widget *) new GUI_Text(10, 25, 0, 0, 0, "Do you want to Quit", gui->get_font());
- area_widget->AddWidget(widget);
+ quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", quitDialogYesCallback, quitDialogNoCallback);
+
    
- gui->AddWidget(area_widget);
- gui->lock_input(area_widget);
+ gui->AddWidget(quit_dialog);
+ gui->lock_input(quit_dialog);
  return;
 }
 
 static GUI_status quitDialogYesCallback(void *data)
-{
- GUI_Widget *widget;
- 
- widget = (GUI_Widget *)data;
- 
- //widget->Delete();
- 
+{ 
  showingQuitDialog = false;
  Game::get_game()->get_gui()->unlock_input();
  return GUI_QUIT;

@@ -139,14 +139,18 @@ bool U6LList::remove(void *data, bool free_data)
    if(link->data == data)
     {
      prev->next = link->next;
-     link->prev = prev;
      
      if(link == tail)
          tail = prev;
-         
-           
+
      delete link;
-     
+
+     if(prev->next)
+      {
+       link = prev->next;
+       link->prev = prev;
+      }
+
      return true;
     }
 

@@ -24,6 +24,7 @@
  *
  */
 
+#include <vector>
 #include <SDL.h>
 
 #include "ObjManager.h"
@@ -37,6 +38,11 @@ class AnimManager;
 class Map;
 class MapCoord;
 class Screen;
+
+typedef struct {
+	Tile *t;
+	uint16 x,y;
+} TileInfo;
 
 class MapWindow: public GUI_Widget
 {
@@ -72,6 +78,8 @@ class MapWindow: public GUI_Widget
  bool walking;
  uint32 walk_start_delay;
 
+ bool window_updated;
+ 
  public:
  
  MapWindow(Configuration *cfg);
@@ -132,6 +140,9 @@ class MapWindow: public GUI_Widget
 
  void player_walk_to_mouse_cursor(uint32 mx, uint32 my);
  void player_multiuse(uint16 wx, uint16 wy);
+
+ std::vector<Obj *> m_ViewableObjects; //^^ dodgy public buffer
+ std::vector<TileInfo> m_ViewableTiles; //^^ dodgy public buffer
 
 protected:
 

@@ -1,3 +1,16 @@
+2004-01-07  Eric Fry <efry at users.sourceforge.net>
+	* Fixed the mysterious crash on multitile actors bug [ 890188 ].
+	  Party members now dismount from horses before using ladders or caves.
+	* Added keyboard commands to quit dialog. [ 874454 ] This was done by
+	  adding a new class GUI_YesNoDialog. This still needs a little work.
+	* Fixed a bug with ships. The Party would attempt to board the ship
+	  even if you didn't have the correct deed.
+	* You can now scroll back the MsgScroll buffer when in page break mode.
+	  Not just at the input prompt.
+	* Added Adrians sound support code. This has been commented out for the
+	  time being. We need to add some config switches and support for
+	  the original .m adlib music files.
+
 2004-01-02  Eric Fry <efry at users.sourceforge.net>
 	* You can now move objects onto tables.
 	* Fixed some compiler issues with STL on older versions of gcc.

@@ -238,6 +238,9 @@ void MsgScroll::display_string(const char *string, Font *f)
 	return;
    }
 
+ if(strlen(string) == 0)
+   return;
+
  if(f == NULL)
    f = font;
 
@@ -281,6 +284,14 @@ void MsgScroll::display_string(const char *string, Font *f)
 
   input = holding_buffer.front();
   
+  if(input->font == NULL)
+    {
+     line_count = 0;
+     holding_buffer.pop_front();
+     delete input;
+     return NULL;
+    }
+     
   i = input->s.find_first_of(" \t\n*<>",0);
   if(i == 0) i++;
 
@@ -340,12 +351,6 @@ bool MsgScroll::add_token(MsgText *token)
 			        msg_line->append(token);
                  break;
    }
-	
- if(msg_buf.size() > MSGSCROLL_SCROLLBACK_HEIGHT)
-   msg_buf.pop_front();
-
- if(line_count >= scroll_height - 1)
-     set_page_break();
 
 if(msg_buf.size() > scroll_height)
    display_pos = msg_buf.size() - scroll_height;
@@ -374,6 +379,12 @@ inline MsgLine *MsgScroll::add_new_line()
  MsgLine *msg_line = new MsgLine();
  msg_buf.push_back(msg_line);
  line_count++;
+
+ if(msg_buf.size() > MSGSCROLL_SCROLLBACK_HEIGHT)
+   msg_buf.pop_front();
+
+ if(line_count > scroll_height - 1)
+     set_page_break();
  
  return msg_line;
 }
@@ -391,7 +402,9 @@ void MsgScroll::display_prompt()
 {
  //line_count = 0;
  display_string(prompt.s.c_str(), prompt.font);
- line_count = 0;
+ //line_count = 0;
+
+ clear_page_break();
 }
  
 void MsgScroll::set_keyword_highlight(bool state)
@@ -407,6 +420,8 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
 
  line_count = 0;
  
+ clear_page_break();
+    
  if(input_mode == true)
  {
    if(allowed && strlen(allowed))
@@ -428,6 +443,27 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
 
     if(page_break == false && input_mode == false)
         return(GUI_PASS);
+
+    switch(key.sym)
+     {
+      case SDLK_UP : if(display_pos > 0)
+                       {
+                        display_pos--;
+                        scroll_updated = true;
+                       }
+                     return (GUI_YUM);
+                     break;
+
+      case SDLK_DOWN: if(msg_buf.size() > scroll_height && display_pos < msg_buf.size() - scroll_height)
+                        {
+                         display_pos++;
+                         scroll_updated = true;
+                        }
+                      return (GUI_YUM);
+                      break;
+      default : break;
+     }
+
     if(page_break)
       {
        page_break = false;
@@ -441,18 +477,6 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
 
     switch(key.sym)
     {
-        case SDLK_UP : if(display_pos > 0)
-                         {
-                          display_pos--;
-                          scroll_updated = true;
-                         }
-                       break;
-        case SDLK_DOWN: if(msg_buf.size() > scroll_height && display_pos < msg_buf.size() - scroll_height)
-                          {
-                           display_pos++;
-                           scroll_updated = true;
-                          }
-                        break;
         case SDLK_ESCAPE: if(permit_inputescape)
                           {
                             // reset input buffer
@@ -707,4 +731,12 @@ const char *MsgScroll::peek_at_input()
 
  return NULL;
 }
- 
+
+void MsgScroll::clear_page_break()
+{
+  MsgText *msg_text = new MsgText("", NULL);
+  holding_buffer.push_back(msg_text);
+  
+  process_holding_buffer();
+}
+

@@ -541,6 +541,9 @@ bool U6UseCode::use_ladder(Obj *obj, uint8 ev)
       }
     z = obj->z - 1;
    }
+ 
+ party->dismount_from_horses();
+ 
  MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
  party->walk(&ladder, &destination, 100);
  return true;
@@ -1338,18 +1341,8 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
      
    return true;
   }
-  
- 
- if(obj->quality != 0)    //deed check
-   {
-    if(party->has_obj(OBJ_U6_SHIP_DEED, obj->quality) == false)
-      {
-       scroll->display_string("\nA deed is required.\n");
-       return false;
-      }
-   }
 
- if(obj->obj_n == OBJ_U6_SHIP) //If we are using a ship we need to use its center object.
+  if(obj->obj_n == OBJ_U6_SHIP) //If we are using a ship we need to use its center object.
    {
     obj = use_boat_find_center(obj); //return the center object
     if(obj == NULL)
@@ -1357,6 +1350,15 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
       scroll->display_string("\nShip not usable\n");
       return false;
      }
+   }
+  
+ if(obj->quality != 0)    //deed check
+   {
+    if(party->has_obj(OBJ_U6_SHIP_DEED, obj->quality) == false)
+      {
+       scroll->display_string("\nA deed is required.\n");
+       return false;
+      }
    }
 
  // walk to vehicle if necessary
@@ -1763,6 +1765,8 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
     else
         prefix = "";
 
+    party->dismount_from_horses();
+    
     // don't activate if autowalking from linking exit
     if(ev == USE_EVENT_PASS && actor_ref == player->get_actor() && !party->get_autowalk())
     {

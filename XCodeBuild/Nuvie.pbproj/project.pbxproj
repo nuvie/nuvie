@@ -19,11 +19,13 @@
 				CPLUSPLUS = "";
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" /Users/eric/Library/Frameworks";
 				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_PROFILING_CODE = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers";
+				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers $(HOME)/Library/Frameworks/SDL_mixer.framework/Headers";
 				INFOPLIST_FILE = "Info-Nuvie.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
@@ -126,6 +128,11 @@
 				079A4265058748A2003627C9,
 				07F10D2805C7D27A0029E1F1,
 				07F10D2A05C7D27A0029E1F1,
+				0761766C05D100EB001B6450,
+				0761766E05D100EB001B6450,
+				0761766F05D100EB001B6450,
+				0761767105D100EB001B6450,
+				0761777505D47ADB001B6450,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -661,6 +668,10 @@
 				078CE6680582F64100EC127A,
 				07F10D2705C7D27A0029E1F1,
 				07F10D2905C7D27A0029E1F1,
+				0761766B05D100EB001B6450,
+				0761766D05D100EB001B6450,
+				0761767005D100EB001B6450,
+				0761777405D47ADB001B6450,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1066,6 +1077,7 @@
 			files = (
 				0703C0F0054BE5660003D6CB,
 				073C469105664B2E003B7A20,
+				076176A505D1029A001B6450,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1713,6 +1725,8 @@
 		};
 		074B913604E4C4BA00A8000A = {
 			children = (
+				0761777305D47ADB001B6450,
+				0761777205D47ADB001B6450,
 				074B913904E4C51500A8000A,
 				074B913804E4C51500A8000A,
 				074B913B04E4C51500A8000A,
@@ -1873,6 +1887,171 @@
 			path = ../GUI/the_font.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+		};
+		0761765605D100B2001B6450 = {
+			children = (
+				0761766505D100EB001B6450,
+				0761766405D100EB001B6450,
+				0761766705D100EB001B6450,
+				0761766605D100EB001B6450,
+				0761766805D100EB001B6450,
+				0761766A05D100EB001B6450,
+				0761766905D100EB001B6450,
+			);
+			isa = PBXGroup;
+			name = Sound;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0761766405D100EB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Sample.cpp;
+			path = ../sound/Sample.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761766505D100EB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Sample.h;
+			path = ../sound/Sample.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761766605D100EB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Song.cpp;
+			path = ../sound/Song.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761766705D100EB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Song.h;
+			path = ../sound/Song.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761766805D100EB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Sound.h;
+			path = ../sound/Sound.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761766905D100EB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SoundManager.cpp;
+			path = ../sound/SoundManager.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761766A05D100EB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SoundManager.h;
+			path = ../sound/SoundManager.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761766B05D100EB001B6450 = {
+			fileRef = 0761766405D100EB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761766C05D100EB001B6450 = {
+			fileRef = 0761766505D100EB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761766D05D100EB001B6450 = {
+			fileRef = 0761766605D100EB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761766E05D100EB001B6450 = {
+			fileRef = 0761766705D100EB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761766F05D100EB001B6450 = {
+			fileRef = 0761766805D100EB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761767005D100EB001B6450 = {
+			fileRef = 0761766905D100EB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761767105D100EB001B6450 = {
+			fileRef = 0761766A05D100EB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		076176A405D1029A001B6450 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = SDL_mixer.framework;
+			path = /Users/eric/Library/Frameworks/SDL_mixer.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		076176A505D1029A001B6450 = {
+			fileRef = 076176A405D1029A001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761777205D47ADB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = GUI_YesNoDialog.cpp;
+			path = ../GUI/GUI_YesNoDialog.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761777305D47ADB001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = GUI_YesNoDialog.h;
+			path = ../GUI/GUI_YesNoDialog.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761777405D47ADB001B6450 = {
+			fileRef = 0761777205D47ADB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761777505D47ADB001B6450 = {
+			fileRef = 0761777305D47ADB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		0762A334050361B500A8000A = {
 			fileEncoding = 4;
@@ -2722,6 +2901,7 @@
 			children = (
 				1058C7A1FEA54F0111CA2CBB,
 				073C469005664B2E003B7A20,
+				076176A405D1029A001B6450,
 			);
 			isa = PBXGroup;
 			name = "Linked Frameworks";
@@ -2817,6 +2997,7 @@
 				079CA1D204230A2B00A8000A,
 				07AD65EB04D34BCA00A8000A,
 				072BE3AD041AFE1100A8000A,
+				0761765605D100B2001B6450,
 				07B16F5904873BFA00A8000A,
 				072599AC0471126B00A8000A,
 				07D6E0F204F89B0300A8000A,

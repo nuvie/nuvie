@@ -68,6 +68,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  config->value("config/enable_hackmove", hackmove);
  walking = false;
  walk_start_delay = 0;
+ 
+ window_updated = true;
 }
 
 MapWindow::~MapWindow()
@@ -329,6 +331,10 @@ if(!screen)
  //Clear the opacity map
  screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
  
+ m_ViewableObjects.clear();
+ m_ViewableTiles.clear();
+ 
+ window_updated = true;
 }
 
 void MapWindow::Display(bool full_redraw)
@@ -397,6 +403,7 @@ void MapWindow::Display(bool full_redraw)
  
  screen->update(8,8,win_width*16-16,win_height*16-16);
 
+ window_updated = false;
 }
 
 void MapWindow::drawActors()
@@ -492,6 +499,9 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  if(x < 0 || y < 0)
    return;
 
+ if(window_updated)
+   m_ViewableObjects.push_back(obj);
+
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
    //Draw a lightglobe in the middle of the 16x16 tile.
@@ -532,7 +542,16 @@ inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile)
  uint16 tile_num;
 
  tile_num = tile->tile_num;
- 
+
+ if(window_updated)
+   {
+    TileInfo ti;
+    ti.t=tile;
+    ti.x=x;
+    ti.y=y;
+    m_ViewableTiles.push_back(ti);
+   }
+
  dbl_width = tile->dbl_width;
  dbl_height = tile->dbl_height;
  

@@ -870,42 +870,43 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
 
 inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_direction)
 {
- std::list<Obj *>::iterator obj;
+ Obj *obj;
  uint16 pitch = map->get_width(z);
  
- obj = surrounding_objects.begin();
- if(obj == surrounding_objects.end())
-  return;
+ if(surrounding_objects.empty())
+   return;
+    
+ obj = surrounding_objects.back();
 
- (*obj)->frame_n =  8 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
+ obj->frame_n =  8 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
 
- (*obj)->x = x;
- (*obj)->y = y;
+ obj->x = x;
+ obj->y = y;
 
  switch(new_direction)
   {
    case ACTOR_DIR_U : if(y == pitch - 1)
-                        (*obj)->y = 0;
+                        obj->y = 0;
                       else
-                        (*obj)->y = y + 1;
+                        obj->y = y + 1;
                       break;
 
    case ACTOR_DIR_R : if(x == 0)
-                        (*obj)->x = pitch - 1;
+                        obj->x = pitch - 1;
                       else
-                        (*obj)->x = x - 1;
+                        obj->x = x - 1;
                       break;
 
    case ACTOR_DIR_D : if(y == 0)
-                        (*obj)->y = pitch - 1;
+                        obj->y = pitch - 1;
                       else
-                        (*obj)->y = y - 1;
+                        obj->y = y - 1;
                       break;
 
    case ACTOR_DIR_L : if(x == pitch - 1)
-                        (*obj)->x = 0;
+                        obj->x = 0;
                       else
-                        (*obj)->x = x + 1;
+                        obj->x = x + 1;
                       break;
   }                   
 

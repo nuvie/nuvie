@@ -103,15 +103,7 @@ bool ActorManager::loadActors()
     actors[i]->y += (b3 & 0xf) << 6;
    
     actors[i]->z = (b3 & 0xf0) >> 4;
-    actors[i]->id_n = (uint8)i;
-/* Force avatar to gargoyle world
-    if(i == 1)
-     {
-      actors[i]->x = 607;
-      actors[i]->y = 285;
-      actors[i]->z = 0;
-     }
-*/     
+    actors[i]->id_n = (uint8)i;    
    }
 
 // objlist.seek(0x15f1);

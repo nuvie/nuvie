@@ -48,6 +48,8 @@ nuvie_SOURCES = \
 	GUI/GUI_widget.h \
 	GUI/GUI_DragManager.cpp \
 	GUI/GUI_DragManager.h \
+	GUI/GUI_YesNoDialog.cpp \
+	GUI/GUI_YesNoDialog.h \
 \
 	misc/U6LList.cpp \
 	misc/U6LList.h \
@@ -73,6 +75,14 @@ nuvie_SOURCES = \
 	screen/Screen.h \
 	screen/Surface.cpp \
 	screen/Surface.h \
+\
+	sound/Sample.cpp
+	sound/Sample.h
+	sound/Song.cpp
+	sound/Song.h
+	sound/Sound.h
+	sound/SoundManager.cpp
+	sound/SoundManager.h
 \
 	usecode/UseCode.h \
 	usecode/UseCode.cpp \

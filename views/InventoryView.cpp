@@ -539,7 +539,7 @@ void InventoryView::select_objAtCursor()
 
     if(cursor_pos.area == INVAREA_COMMAND)
     {
-        printf("Do command icon function here!\n");
+        printf("Do command icon function here! button %d\n",cursor_pos.x);
         return;
     }
     else if(cursor_pos.area == INVAREA_TOP)

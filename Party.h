@@ -142,6 +142,8 @@ class Party {
  void stop_walking();
  bool get_autowalk() { return(autowalk); } 
 
+ void dismount_from_horses();
+
  protected:
 
  bool loadParty();

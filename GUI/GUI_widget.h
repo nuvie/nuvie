@@ -37,6 +37,7 @@
 #include "GUI_DragManager.h"
 #include "Screen.h"
 
+typedef GUI_status (*GUI_CallbackProc)(void *data);
 
 class GUI_Widget : public GUI_DragArea {
 

@@ -171,6 +171,7 @@ class MsgScroll: public GUI_Widget
  
  inline MsgLine *add_new_line();
  void drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y);
+ inline void clear_page_break();
 };
 
 
