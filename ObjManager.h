@@ -30,6 +30,8 @@
 
 #include "Configuration.h"
 
+#include "TileManager.h"
+
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE   0x1
 #define OBJ_STATUS_IN_CONTAINER 0x8
@@ -54,6 +56,7 @@ typedef struct
 class ObjManager
 {
  Configuration *config;
+ TileManager *tile_manager;
  U6LList *surface[64];
  U6LList *dungeon[5];
  uint16 obj_to_tile[1024]; //maps object number (index) to tile number.
@@ -63,10 +66,10 @@ class ObjManager
  ObjManager(Configuration *cfg);
  ~ObjManager();
  
- bool loadObjs();
+ bool loadObjs(TileManager *tm);
  
  U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
- Obj *get_base_obj(uint16 x, uint16 y, uint8 level);
+ Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level);
  
  uint16 get_obj_tile_num(uint16 obj_num);
 

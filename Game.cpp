@@ -51,7 +51,7 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  tile_manager->loadTiles();
 
  obj_manager = new ObjManager(config);
- obj_manager->loadObjs();
+ obj_manager->loadObjs(tile_manager);
  
  palette = new GamePalette(screen,config);
  

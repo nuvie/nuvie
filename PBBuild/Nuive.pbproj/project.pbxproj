@@ -674,15 +674,15 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = Player.cpp;
-			path = /Users/eric/Projects/Ultima6/nuvie/Player.cpp;
-			refType = 0;
+			path = ../Player.cpp;
+			refType = 2;
 		};
 		07DB53EB042DA0CF00A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = Player.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/Player.h;
-			refType = 0;
+			path = ../Player.h;
+			refType = 2;
 		};
 		07DB53EC042DA0CF00A8000A = {
 			fileRef = 07DB53EA042DA0CF00A8000A;

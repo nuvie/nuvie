@@ -34,13 +34,15 @@ ObjManager::~ObjManager()
 {
 }
  
-bool ObjManager::loadObjs()
+bool ObjManager::loadObjs(TileManager *tm)
 {
  std::string path;
  char *filename;
  char x,y;
  uint16 len;
  uint8 i;
+ 
+ tile_manager = tm;
  
  config->value("config/ultima6/gamedir",path);
  
@@ -79,11 +81,14 @@ U6LList *ObjManager::get_obj_superchunk(uint16 x, uint16 y, uint8 level)
  return dungeon[level-1];
 }
 
+
 // x, y in world coords
-Obj *ObjManager::get_base_obj(uint16 x, uint16 y, uint8 level)
+Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level)
 {
  U6Link *link;
  Obj *obj;
+ Tile *tile;
+ uint16 tile_num;
  uint16 sx,sy; // note these values are not required if level > 0
  
  if(level == 0)
@@ -98,13 +103,28 @@ Obj *ObjManager::get_base_obj(uint16 x, uint16 y, uint8 level)
  for(;link != NULL;link=link->next)
    {
     obj = (Obj *)link->data;
+    
+    tile_num = get_obj_tile_num(obj->obj_n)+obj->frame_n;
+    tile = tile_manager->get_tile(tile_num);
+    
     if(obj->x == x && obj->y == y)
-      return obj;
+      break;
+    if(tile->dbl_width && obj->x == x+1 && obj->y == y)
+      { tile_num--; break; }
+    if(tile->dbl_height && obj->x == x && obj->y == y+1)
+      { tile_num--; break; }
+    if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
+      { tile_num -= 2; break; }
+   }
+
+ if(link != NULL)
+   {
+    return tile_manager->get_tile(tile_num);
    }
 
  return NULL;
 }
- 
+
 uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :)
 {   
  return obj_to_tile[obj_num];
