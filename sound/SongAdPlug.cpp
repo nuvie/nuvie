@@ -28,7 +28,7 @@
 #include "adplug/u6m.h"
 
 #include "SongAdPlug.h"
-#include "Soundmanager.h"
+#include "SoundManager.h"
 
 #define DEFAULT_BUF_LEN 512
 
