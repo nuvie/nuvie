@@ -492,6 +492,15 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
     {
         scroll->display_string(obj_manager->look_obj(obj));
 
+        // perform GET usecode (can't add to container)
+        if(usecode->has_getcode(obj) && (usecode->get_obj(obj, actor) == false))
+        {
+            scroll->display_string("\n");
+            scroll->display_prompt();
+            map_window->updateBlacking();
+            return(false); // ???
+        }
+
         // objects with 0 weight aren't gettable. 
         weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
         if(weight != 0)
@@ -1555,7 +1564,13 @@ bool Event::ready(Obj *obj)
     scroll->display_string(obj_manager->look_obj(obj, false));
     scroll->display_string("\n");
 
-    // FIXME: perform READY usecode
+    // perform READY usecode
+    if(usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        return(obj->is_readied()); // handled by usecode
+    }
 
     if(!(readied = actor->add_readied_object(obj)))
         scroll->display_string("\nCan't be readied!\n");
@@ -1575,7 +1590,13 @@ bool Event::unready(Obj *obj)
     scroll->display_string(obj_manager->look_obj(obj, false));
     scroll->display_string("\n");
 
-    // FIXNE: perform READY usecode
+    // perform unREADY usecode
+    if(usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        return(true); // handled by usecode
+    }
 
     actor->remove_readied_object(obj);
 

@@ -134,7 +134,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    tile_manager->loadTiles();
 
    obj_manager = new ObjManager(config, egg_manager);
-   obj_manager->loadObjs(tile_manager);
+
 
    game_map->loadMap(tile_manager, obj_manager);
    egg_manager->set_obj_manager(obj_manager);
@@ -152,7 +152,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    player = new Player(config);
    party = new Party(config);
    player->init(obj_manager, actor_manager, map_window, clock, party);
-   party->init(this, actor_manager); // (reverse Game reference test-case)
+   party->init(this, actor_manager);
  
    portrait = new Portrait(config);
    portrait->init();
@@ -181,6 +181,7 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    usecode->init(obj_manager, game_map, player, scroll);
    obj_manager->set_usecode(usecode);
+   obj_manager->loadObjs(tile_manager);
 
    init_cursor();
 

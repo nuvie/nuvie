@@ -85,6 +85,7 @@
 #define OBJ_U6_BUTTER               96
 
 #define OBJ_U6_CHEST                98
+#define OBJ_U6_BACKPACK             99
 
 #define OBJ_U6_SCYTHE              100
 #define OBJ_U6_PITCHFORK           101

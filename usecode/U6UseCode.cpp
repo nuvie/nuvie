@@ -127,20 +127,21 @@ U6UseCode::~U6UseCode()
  */
 bool U6UseCode::is_food(Obj *obj)
 {
-    uint16 n = obj->obj_n;
-    return(n == OBJ_U6_BUTTER || n == OBJ_U6_CHEESE
-           || n == OBJ_U6_WINE || n == OBJ_U6_MEAD || n == OBJ_U6_ALE
-           || n == OBJ_U6_BREAD || n == OBJ_U6_ROLLS || n == OBJ_U6_CAKE
-           || n == OBJ_U6_MEAT_PORTION || n == OBJ_U6_MEAT || n == OBJ_U6_RIBS
-           || n == OBJ_U6_HAM || n == OBJ_U6_HORSE_CHOPS
-           || n == OBJ_U6_GRAPES || n == OBJ_U6_JAR_OF_HONEY || n == OBJ_U6_GARLIC
-           || n == OBJ_U6_SNAKE_VENOM || n == OBJ_U6_DRAGON_EGG);
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n);
+    return(type && (type->flags & OBJTYPE_FOOD));
+}
+
+
+bool U6UseCode::is_container(Obj *obj)
+{
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n);
+    return(type && (type->flags & OBJTYPE_CONTAINER));
 }
 
 
 /* Is there `ev' usecode for an object?
  */
-bool U6UseCode::has_usecode(Obj *obj, uint16 ev)
+bool U6UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, ev);
     if(!type)
@@ -150,7 +151,6 @@ bool U6UseCode::has_usecode(Obj *obj, uint16 ev)
 
 
 /* USE object. Actor is the actor using the object.
- * Returns false if there is no usecode for that object.
  */
 bool U6UseCode::use_obj(Obj *obj, Actor *actor)
 {
@@ -161,7 +161,6 @@ bool U6UseCode::use_obj(Obj *obj, Actor *actor)
 
 
 /* LOOK at object. Actor is the actor looking at the object.
- * Returns false if there is no usecode for that object.
  */
 bool U6UseCode::look_obj(Obj *obj, Actor *actor)
 {
@@ -172,7 +171,6 @@ bool U6UseCode::look_obj(Obj *obj, Actor *actor)
 
 
 /* PASS object. Actor is the actor trying to pass the object.
- * Returns false if there is no usecode for that object.
  */
 bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
 {
@@ -183,7 +181,6 @@ bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
 
 
 /* SEARCH nearby object. Actor is the actor searching.
- * Returns false if there is no usecode for that object.
  */
 bool U6UseCode::search_obj(Obj *obj, Actor *actor)
 {
@@ -209,7 +206,6 @@ void U6UseCode::timed_callback(void *obj_data)
 
 
 /* MOVE nearby object in a relative direction.
- * Returns false if there is no usecode for that object.
  */
 bool U6UseCode::move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
 {
@@ -232,9 +228,43 @@ bool U6UseCode::load_obj(Obj *obj)
 }
 
 
+/* Call READY or UNREADY usecode for an object.
+ */
+bool U6UseCode::ready_obj(Obj *obj, Actor *actor)
+{
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_READY);
+    set_itemref(actor);
+    return(uc_event(type, USE_EVENT_READY, obj));
+}
+
+
+/* Call GET usecode for an object.
+ */
+bool U6UseCode::get_obj(Obj *obj, Actor *actor)
+{
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_GET);
+    set_itemref(actor);
+    return(uc_event(type, USE_EVENT_GET, obj));
+}
+
+
+/* Call DROP usecode for an object.
+ */
+bool U6UseCode::drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y)
+{
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_DROP);
+    static MapCoord loc;
+    loc.x = x;
+    loc.y = y;
+    set_itemref(actor);
+    set_itemref(&loc);
+    return(uc_event(type, USE_EVENT_DROP, obj));
+}
+
+
 /* Return pointer to object-type in list for object N:F, or NULL if none.
  */
-inline const U6ObjectType *U6UseCode::get_object_type(uint16 n, uint8 f, uint8 ev)
+inline const U6ObjectType *U6UseCode::get_object_type(uint16 n, uint8 f, UseCodeEvent ev)
 {
     const U6ObjectType *type = U6ObjectTypes;
     while(type->obj_n != OBJ_U6_NOTHING)
@@ -252,13 +282,13 @@ inline const U6ObjectType *U6UseCode::get_object_type(uint16 n, uint8 f, uint8 e
  * The meaning of the return value is different for each event.
  * Returns false if the type is invalid or doesn't respond to the event.
  */
-bool U6UseCode::uc_event(const U6ObjectType *type, uint8 ev, Obj *obj)
+bool U6UseCode::uc_event(const U6ObjectType *type, UseCodeEvent ev, Obj *obj)
 {
     if(!type || type->obj_n == OBJ_U6_NOTHING)
         return(false);
     if(type->trigger & ev)
     {
-        printf("Object %d:%d, event %s\n", obj->obj_n, obj->frame_n,
+        printf("UseCode: Object %d:%d, event %s\n", obj->obj_n, obj->frame_n,
                                (ev == USE_EVENT_USE) ? "USE"
                              : (ev == USE_EVENT_LOOK) ? "LOOK"
                              : (ev == USE_EVENT_PASS) ? "PASS"
@@ -266,6 +296,9 @@ bool U6UseCode::uc_event(const U6ObjectType *type, uint8 ev, Obj *obj)
                              : (ev == USE_EVENT_TIMED) ? "TIMED"
                              : (ev == USE_EVENT_MOVE) ? "MOVE"
                              : (ev == USE_EVENT_LOAD) ? "LOAD"
+                             : (ev == USE_EVENT_READY) ? "READY"
+                             : (ev == USE_EVENT_GET) ? "GET"
+                             : (ev == USE_EVENT_DROP) ? "DROP"
                              : "???");
         bool ucret = (this->*type->usefunc)(obj, ev);
         int_ref = 0;
@@ -293,7 +326,7 @@ void U6UseCode::unlock_door(Obj *obj)
 }
 
 
-bool U6UseCode::use_door(Obj *obj, uint8 ev)
+bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
 {
  Obj *key_obj;
  bool print = (actor_ref == player->get_actor());
@@ -333,7 +366,7 @@ bool U6UseCode::use_door(Obj *obj, uint8 ev)
  return true;
 }
 
-bool U6UseCode::use_ladder(Obj *obj, uint8 ev)
+bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
 {
  uint16 x = obj->x, y = obj->y;
  uint8 z;
@@ -370,7 +403,7 @@ bool U6UseCode::use_ladder(Obj *obj, uint8 ev)
 }
 
 
-bool U6UseCode::use_passthrough(Obj *obj, uint8 ev)
+bool U6UseCode::use_passthrough(Obj *obj, UseCodeEvent ev)
 {
  uint16 new_x, new_y;
  uint8 new_frame_n;
@@ -420,7 +453,7 @@ bool U6UseCode::use_passthrough(Obj *obj, uint8 ev)
 }
 
 // for use with levers and switches, target_obj_n is either OBJ_U6_PORTCULLIS or OBJ_U6_ELECTRIC_FIELD
-bool U6UseCode::use_switch(Obj *obj, uint8 ev)
+bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
 {
  Obj *doorway_obj;
  Obj *portc_obj;
@@ -484,7 +517,7 @@ bool U6UseCode::use_switch(Obj *obj, uint8 ev)
 }
 
 
-bool U6UseCode::use_firedevice(Obj *obj, uint8 ev)
+bool U6UseCode::use_firedevice(Obj *obj, UseCodeEvent ev)
 {
     if(obj->obj_n == OBJ_U6_BRAZIER && obj->frame_n == 2)
         return(false); // holy flames can't be doused
@@ -510,7 +543,7 @@ bool U6UseCode::use_firedevice(Obj *obj, uint8 ev)
 }
 
 
-bool U6UseCode::use_secret_door(Obj *obj, uint8 ev)
+bool U6UseCode::use_secret_door(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
@@ -534,7 +567,7 @@ bool U6UseCode::use_secret_door(Obj *obj, uint8 ev)
 /* Use: Open/close container. If container is open, Search.
  * Search: Dump container contents.
  */
-bool U6UseCode::use_container(Obj *obj, uint8 ev)
+bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
@@ -561,7 +594,7 @@ bool U6UseCode::use_container(Obj *obj, uint8 ev)
 }
 
 
-bool U6UseCode::use_vortex_cube(Obj *obj, uint8 ev)
+bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 {
     scroll->display_string("\nYou've finished the game!!\nPity we haven't implemented the end sequence yet.\n");
     return(true);
@@ -570,7 +603,7 @@ bool U6UseCode::use_vortex_cube(Obj *obj, uint8 ev)
 
 /* Use bell or pull-chain, ring and animate nearby bell.
  */
-bool U6UseCode::use_bell(Obj *obj, uint8 ev)
+bool U6UseCode::use_bell(Obj *obj, UseCodeEvent ev)
 {
     Obj *bell = NULL;
     if(ev != USE_EVENT_USE)
@@ -599,7 +632,7 @@ Obj *U6UseCode::bell_find(Obj *chain_obj)
 
 //cranks control drawbridges.
 
-bool U6UseCode::use_crank(Obj *obj, uint8 ev)
+bool U6UseCode::use_crank(Obj *obj, UseCodeEvent ev)
 {
  uint16 x,y;
  uint8 level;
@@ -741,7 +774,7 @@ void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width
  scroll->display_string("\nClose the drawbridge.\n");
 }
 
-bool U6UseCode::use_orb(Obj *obj, uint8 ev)
+bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
 {
  Obj *gate;
  uint16 x,y,ox,oy;
@@ -830,7 +863,7 @@ void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridg
 /* Use shovel in one of 8 directions. If used in a dungeon level get a chance of
  * finding gold or a fountain (to make a wish).
  */
-bool U6UseCode::use_shovel(Obj *obj, uint8 ev)
+bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 {
     Obj *dug_up_obj = NULL;
     MapCoord from = actor_ref->get_location(),
@@ -906,7 +939,7 @@ bool U6UseCode::use_shovel(Obj *obj, uint8 ev)
 
 /* Magic fountain. Make a wish!
  */
-bool U6UseCode::use_fountain(Obj *obj, uint8 ev)
+bool U6UseCode::use_fountain(Obj *obj, UseCodeEvent ev)
 {
     std::string wish("");
 #if 0 /* do highlevel MsgScroll stuff first */
@@ -941,7 +974,7 @@ bool U6UseCode::use_fountain(Obj *obj, uint8 ev)
 }
 
 
-bool U6UseCode::use_rubber_ducky(Obj *obj, uint8 ev)
+bool U6UseCode::use_rubber_ducky(Obj *obj, UseCodeEvent ev)
 {
     if(actor_ref == player->get_actor())
         scroll->display_string("- Quack! Quack!\n");
@@ -949,7 +982,7 @@ bool U6UseCode::use_rubber_ducky(Obj *obj, uint8 ev)
 }
 
 
-bool U6UseCode::play_instrument(Obj *obj, uint8 ev)
+bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)
 {
     if(actor_ref == player->get_actor())
     {
@@ -984,7 +1017,7 @@ bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
 
 /* Event: Eat/drink food object.
  */
-bool U6UseCode::use_food(Obj *obj, uint8 ev)
+bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
@@ -996,15 +1029,7 @@ bool U6UseCode::use_food(Obj *obj, uint8 ev)
             else // FIXME: if object is alcoholic drink, add to drunkeness
                 scroll->display_string("\nYou eat the food.\n");
         }
-        if(obj->qty <= 1)
-        {
-            if(obj->status & OBJ_STATUS_IN_INVENTORY)
-                actor_manager->get_actor(obj->x)->inventory_remove_obj(obj);
-            else
-                obj_manager->remove_obj(obj);
-            obj_manager->delete_obj(obj);
-        }
-        else obj->qty -= 1;
+        destroy_obj(obj, 1);
         return(true);
     }
     return(false);
@@ -1014,7 +1039,7 @@ bool U6UseCode::use_food(Obj *obj, uint8 ev)
 /* Event: Use potion. If actor2 is passed, give them the potion, else select
  * actor2.
  */
-bool U6UseCode::use_potion(Obj *obj, uint8 ev)
+bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
 {
     ActorManager *am = actor_manager;
     if(ev == USE_EVENT_USE)
@@ -1037,11 +1062,7 @@ bool U6UseCode::use_potion(Obj *obj, uint8 ev)
             }
             else
                 scroll->display_string("No effect\n");
-            if(obj->is_in_inventory())
-                am->get_actor(obj->x)->inventory_remove_obj(obj);
-            else
-                obj_manager->remove_obj(obj);
-            obj_manager->delete_obj(obj);
+            destroy_obj(obj);
         }
         return(true);
     }
@@ -1052,7 +1073,7 @@ bool U6UseCode::use_potion(Obj *obj, uint8 ev)
 /* Use a key on itemref (a door).
  * Return true if target object is valid?
  */
-bool U6UseCode::use_key(Obj *obj, uint8 ev)
+bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
@@ -1088,7 +1109,7 @@ bool U6UseCode::use_key(Obj *obj, uint8 ev)
 
 /* Enter and exit sea-going vessels.
  */
-bool U6UseCode::use_boat(Obj *obj, uint8 ev)
+bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
 {
  Actor *ship_actor;
  uint16 lx, ly;
@@ -1240,7 +1261,7 @@ inline bool U6UseCode::use_boat_find_land(uint16 *x, uint16 *y, uint8 *z)
 }
 
 /* using a cow fills an empty bucket in the player's inventory with milk */
-bool U6UseCode::use_cow(Obj *obj, uint8 ev)
+bool U6UseCode::use_cow(Obj *obj, UseCodeEvent ev)
 {
  if(ev != USE_EVENT_USE)
     return(false);
@@ -1249,7 +1270,7 @@ bool U6UseCode::use_cow(Obj *obj, uint8 ev)
 }
 
 /* using a well fills an empty bucket in the player's inventory with water */
-bool U6UseCode::use_well(Obj *obj, uint8 ev)
+bool U6UseCode::use_well(Obj *obj, UseCodeEvent ev)
 {
  if(ev != USE_EVENT_USE)
     return(false);
@@ -1293,7 +1314,7 @@ bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
  return true;
 }
 
-bool U6UseCode::use_churn(Obj *obj, uint8 ev)
+bool U6UseCode::use_churn(Obj *obj, UseCodeEvent ev)
 {
  ViewManager *view_manager = game->get_view_manager();
  Actor *player_actor;
@@ -1327,7 +1348,7 @@ bool U6UseCode::use_churn(Obj *obj, uint8 ev)
  return true;
 }
 
-bool U6UseCode::use_beehive(Obj *obj, uint8 ev)
+bool U6UseCode::use_beehive(Obj *obj, UseCodeEvent ev)
 {
  ViewManager *view_manager = game->get_view_manager();
  Actor *player_actor;
@@ -1364,7 +1385,7 @@ bool U6UseCode::use_beehive(Obj *obj, uint8 ev)
  return true;
 }
 
-bool U6UseCode::use_horse(Obj *obj, uint8 ev)
+bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
 {
  Actor *actor, *player_actor;
  Obj *actor_obj;
@@ -1428,7 +1449,7 @@ bool U6UseCode::use_horse(Obj *obj, uint8 ev)
  return true;
 }
 
-bool U6UseCode::use_fan(Obj *obj, uint8 ev)
+bool U6UseCode::use_fan(Obj *obj, UseCodeEvent ev)
 {
  scroll->display_string("\nYou feel a breeze.\n");
 
@@ -1439,7 +1460,7 @@ bool U6UseCode::use_fan(Obj *obj, uint8 ev)
 
 /* Pass: Allow normal move if player's Quest Flag is set.
  */
-bool U6UseCode::pass_quest_barrier(Obj *obj, uint8 ev)
+bool U6UseCode::pass_quest_barrier(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_PASS)
         if(player->get_quest_flag() == 0)
@@ -1458,7 +1479,7 @@ bool U6UseCode::pass_quest_barrier(Obj *obj, uint8 ev)
  * True: Nothing special. Allow search.
  * False: Displayed book data for object. Disallow search.
  */
-bool U6UseCode::look_sign(Obj *obj, uint8 ev)
+bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
 {
     char *data;
     Book *book = game->get_event()->get_book(); // ??
@@ -1499,7 +1520,7 @@ bool U6UseCode::look_sign(Obj *obj, uint8 ev)
 /* Event: Look
  * Display the current time.
  */
-bool U6UseCode::look_clock(Obj *obj, uint8 ev)
+bool U6UseCode::look_clock(Obj *obj, UseCodeEvent ev)
 {
     GameClock *clock = game->get_clock();
     if(obj->obj_n == OBJ_U6_SUNDIAL
@@ -1516,7 +1537,7 @@ bool U6UseCode::look_clock(Obj *obj, uint8 ev)
 
 /* test (need to determine use of true/false return)
  */
-bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
+bool U6UseCode::look_mirror(Obj *obj, UseCodeEvent ev)
 {
 //    ViewManager *view_manager = game->get_view_manager();
     if(ev == USE_EVENT_LOOK && actor_ref == player->get_actor())
@@ -1538,7 +1559,7 @@ bool U6UseCode::look_mirror(Obj *obj, uint8 ev)
 /* if not in party mode, say that you cannot enter and do normal move
  * else walk all party members to cave, give dungeon name, and move to dungeon
  */
-bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
+bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
 {
     char *prefix = "", *dungeon_name = "";
     uint16 x = obj->x, y = obj->y;
@@ -1601,7 +1622,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
 /* if not in party mode, say that you cannot enter and do normal move
  * else walk all party members to moongate and teleport.
  */
-bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
+bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
 {
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
@@ -1646,7 +1667,7 @@ bool U6UseCode::enter_red_moongate(Obj *obj, uint8 ev)
 /* Use: Light powder keg if unlit
  * Timed: Explode
  */
-bool U6UseCode::use_powder_keg(Obj *obj, uint8 ev)
+bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)
 {
 static uint32 countdown = 0;
     if(ev == USE_EVENT_USE)
@@ -1689,7 +1710,7 @@ countdown = 4;
 /* Use: Fire! (block input, start cannonball anim, release input on hit)
  * Move: Change direction if necessary
  */
-bool U6UseCode::use_cannon(Obj *obj, uint8 ev)
+bool U6UseCode::use_cannon(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
@@ -1723,11 +1744,103 @@ bool U6UseCode::use_cannon(Obj *obj, uint8 ev)
 
 /* Hatch egg.
  */
-bool U6UseCode::use_egg(Obj *obj, uint8 ev)
+bool U6UseCode::use_egg(Obj *obj, UseCodeEvent ev)
 {
     EggManager *egg_manager = obj_manager->get_egg_manager();
     bool success = egg_manager->spawn_egg(obj, NUVIE_RAND() % 100);
     if(actor_ref)
         scroll->display_string(success ? "\nSpawned!\n" : "\nNo effect.\n");
     return(true);
+}
+
+
+/* Use: Light torch if readied or on the ground.
+ * Ready: Get a torch from a stack and equip it.
+ * Unready: Unlight torch.
+ */
+bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
+{
+    if(ev == USE_EVENT_USE)
+    {
+        if(obj->frame_n == 1)
+        {
+            extinguish_torch(obj);
+            return(true);
+        }
+
+        // light
+        if(!obj->is_in_inventory() && obj->is_in_container())
+            scroll->display_string("\nNot now!\n");
+        else
+        {
+            Obj *torch = obj;
+            bool light_it = true;
+
+            if(!obj->is_readied())
+            {
+                torch = obj_manager->get_obj_from_stack(obj, 1);
+                if(torch != obj && obj->is_in_inventory()) // keep new one in inventory
+                    actor_manager->get_actor(torch->x)->inventory_add_object(torch);
+                if(torch->is_in_inventory()) // and ready it
+                    light_it = actor_manager->get_actor(torch->x)->add_readied_object(torch);
+                else // keep new one on map
+                    light_it = obj_manager->add_obj(torch, true);
+            }
+
+            if(light_it)
+            {
+                toggle_frame(torch);
+                scroll->display_string("\nTorch is lit.\n");
+            }
+            else
+                scroll->display_string("\nNo free hand to hold the torch.\n");
+        }
+    }
+    else if(ev == USE_EVENT_READY)
+    {
+        if(obj->is_readied() && obj->frame_n == 1) // remove
+        {
+            extinguish_torch(obj);
+            return(false); // destroyed
+        }
+        else if(!obj->is_readied()) // equip (remove excess torches)
+        {
+            if(obj->qty > 1)
+            {
+                Obj *torch = obj_manager->get_obj_from_stack(obj, obj->qty - 1);
+                if(torch != obj && obj->is_in_inventory()) // keep extras in inventory
+                    actor_manager->get_actor(torch->x)->inventory_add_object(torch);
+            }
+        }
+        return(true); // equip or remove to inventory
+    }
+    else if(ev == USE_EVENT_GET)
+    {
+        if(obj->frame_n == 0) // unlit: may get
+            return(true);
+        if(actor_ref->add_readied_object(obj)) // FIXME: hopefully we can add after readying (need can_ready()?)
+            actor_ref->inventory_add_object(obj);
+        else
+            scroll->display_string("\nNo free hand to hold the torch.\n");
+        return(false); // ready or not, handled by usecode
+    }
+    else if(ev == USE_EVENT_DROP)
+    {
+        if(obj->frame_n == 0) // unlit: normal drop
+            return(true);
+        extinguish_torch(obj);
+        return(false); // destroyed
+    }
+
+    return(true);
+}
+
+
+/* Torches disappear when extinguished.
+ */
+void U6UseCode::extinguish_torch(Obj *obj)
+{
+    toggle_frame(obj);
+    scroll->display_string("\nA torch burned out.\n");
+    destroy_obj(obj);
 }

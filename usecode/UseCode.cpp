@@ -25,6 +25,8 @@
 
 #include "U6LList.h"
 #include "MsgScroll.h"
+#include "ActorManager.h"
+#include "Actor.h"
 #include "UseCode.h"
 
 UseCode::UseCode(Game *g, Configuration *cfg)
@@ -128,3 +130,34 @@ Obj *UseCode::get_obj_from_container(Obj *obj)
     return(NULL);
 }
 
+
+/* Subtract `count' from object quantity. Destroy the object completely if all
+ * stacked objects were removed, or the object is not stackable, or `count' is
+ * 0. This means it will be removed from the world or an actor's inventory, and
+ * deleted.
+ * Returns the original object if it still exists, because the count was smaller
+ * than the object stack, or it could not be completely destroyed for whatever
+ * reason. Returns NULL if the object was destroyed.
+ */
+Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    bool removed = false;
+
+    // subtract
+    if(count > 0 && obj_manager->is_stackable(obj) && obj->qty > count)
+        obj->qty -= count;
+    else // destroy
+    {
+        if(obj->is_in_inventory())
+            removed = actor_manager->get_actor(obj->x)->inventory_remove_obj(obj);
+        else
+            removed = obj_manager->remove_obj(obj);
+        if(removed)
+        {
+            obj_manager->delete_obj(obj);
+            obj = NULL;
+        }
+    }
+    return(obj);
+}

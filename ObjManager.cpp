@@ -760,6 +760,11 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
       egg_manager->add_egg(obj);
      }
 
+   if(usecode->is_container(obj) && !obj->container) //object type is container, but may be empty
+     {
+      obj->container = new U6LList();
+     }
+
    if(obj->status & OBJ_STATUS_IN_INVENTORY) //object in actor's inventory
      {
       inventory_list = get_actor_inventory(obj->x);
@@ -1232,3 +1237,24 @@ void ObjManager::startObjs()
         }
     }
 }
+
+
+/* Subtract an object stack with quantity set to `count' from original object
+ * stack `obj'.
+ * Returns a new object if a stack could be subtracted from the original,
+ * leaving the original intact.
+ * Returns the original if its quantity was smaller than the requested count or
+ * it is not stackable.
+ */
+Obj *ObjManager::get_obj_from_stack(Obj *obj, uint32 count)
+{
+    if(count == 0 || obj->qty <= count || !is_stackable(obj))
+        return(obj);
+    // requested is over 0, original quantity is greater than requested, object
+    //  is stackable
+    Obj *new_obj = copy_obj(obj);
+    new_obj->qty = count;
+    obj->qty -= count; // remove requested from original
+    return(new_obj);
+}
+

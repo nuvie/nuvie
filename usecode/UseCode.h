@@ -36,62 +36,84 @@
 #define USE_EVENT_TIMED   0x20 /* return value undefined */
 #define USE_EVENT_MOVE    0x40 /* true: move object, false: don't move object */
 #define USE_EVENT_LOAD    0x80 /* return value undefined */
+#define USE_EVENT_READY   0x0100 /* true: object may be equipped */
+#define USE_EVENT_GET     0x0200 /* true: do normal get */
+#define USE_EVENT_DROP    0x0400 /* true: do normal drop */
 //#define USE_EVENT_NEAR    0x00 /* mirrors; might use ON with distance val */
 //#define USE_EVENT_ATTACK  0x00 /* doors, chests, mirrors */
-//#define USE_EVENT_DROP    0x00 /* anything breakable */
 //#define USE_EVENT_ENTER   0x00 /* object enters view (clocks) */
 //#define USE_EVENT_LEAVE   0x00 /* object leaves view */
-//will need to increase trigger size...
+
+typedef uint16 UseCodeEvent;
 
 /* Events:
  * USE
  * Returns: undefined
- * Use the object. actor_ref is the actor using it (the player actor)
+ * Use the object.
+ * actor_ref - the actor using it (the player actor typically)
  *
  * PASS (Quest Barrier)
  * Returns: True if actor may move, False if object blocks
  * Called when an actor attempts to step onto an object.
+ * actor_ref - actor trying to pass
  *
  * LOOK (signs)
  * Returns: True if an object can be searched
  * Called when someone looks at the object. Some objects aren't searched (books
  * for example) and should return false.
  *
- * TIMED (fumaroles, earthquakes?, powder kegs, clocks)
+ * TIMED (fumaroles, earthquakes?, powder kegs, clocks) FIXME: will change to MESSAGE
  * Returns: nothing
  * A timed event has been activated for the object. It must have already been
  * started by something else.
+ * uint_ref - event activation time
  *
  * MOVE (cannons)
  * Returns: True to push object to the new position
  * Use this to perform special move functions for some objects. A cannon can be
  * aimed with MOVE.
+ * mapcoord_ref - target location
  *
- * (UN)LOAD
+ * (UN)LOAD unimplemented
  * Returns: undefined
  * Called when the object is cached in or out (and when new objects are 
  * created.) It can be used to start timers, or to hatch eggs.
  *
- * Actor NEAR
+ * Actor NEAR unimplemented
  *
- * Actor ON (chairs, traps)
+ * Actor ON (chairs, traps) unimplemented
  * Returns: undefined
  * Called each turn for any objects in the view-area with actors standing on
  * them.
  *
- * ENTER view-area
+ * ENTER view-area unimplemented
  *
- * LEAVE view-area
+ * LEAVE view-area unimplemented
  *
  * (UN)READY (Amulet of Submission)
  * Returns: True if the object may be worn, or removed
  * This is called before the object is is equipped or removed. Check the
  * object's flags to determine if it is being equipped or not. (if its readied
- * flag is set it is being removed).
+ * flag is set it is being removed). Special un/ready functions can be created
+ * with this.
+ * actor_ref - the actor un/readying it
  *
  * ATTACK (doors, chests)
  *
- * DROP (breakables)
+ * DROP (breakables, torches)
+ * Returns: True to allow normal drop at the target.
+ * Special drop functions can be created with this.
+ * actor_ref - the actor dropping it
+ * mapcoord_ref - the desired drop target
+ * 
+ * GET (torches, runes?)
+ * Returns: True if the actor can get the object.
+ * Special get functions can be created with this.
+ * actor_ref - the actor getting it
+ *
+ * SEARCH (graves, secret doors)
+ * Returns: True if the object contained other objects.
+ * FIXME: might remove this and add as a player action
  *
  */
 
@@ -133,23 +155,30 @@ class UseCode
  bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
  bool use_obj(Obj *obj, Obj *src_obj = NULL) { return(use_obj(obj, player->get_actor())); } // ??
 
- virtual bool use_obj(Obj *obj, Actor *actor)  { return(false); }
- virtual bool look_obj(Obj *obj, Actor *actor) { return(false); }
- virtual bool pass_obj(Obj *obj, Actor *actor) { return(false); }
+ virtual bool use_obj(Obj *obj, Actor *actor)    { return(false); }
+ virtual bool look_obj(Obj *obj, Actor *actor)   { return(false); }
+ virtual bool pass_obj(Obj *obj, Actor *actor)   { return(false); }
  virtual bool search_obj(Obj *obj, Actor *actor) { return(false); }
  virtual bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y) { return(false); }
- virtual bool load_obj(Obj *obj) { return(false); }
+ virtual bool load_obj(Obj *obj)                 { return(false); }
+ virtual bool ready_obj(Obj *obj, Actor *actor)  { return(false); }
+ virtual bool get_obj(Obj *obj, Actor *actor)    { return(false); }
+ virtual bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y) { return(false); }
 
  virtual bool has_usecode(Obj *obj, uint16 ev = USE_EVENT_USE)  { return(false); }
  virtual bool has_lookcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_LOOK)); }
  virtual bool has_passcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_PASS)); }
  virtual bool has_movecode(Obj *obj) { return(has_usecode(obj, USE_EVENT_MOVE)); }
  virtual bool has_loadcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_LOAD)); }
+ virtual bool has_readycode(Obj *obj) { return(has_usecode(obj, USE_EVENT_READY)); }
+ virtual bool has_getcode(Obj *obj)  { return(has_usecode(obj, USE_EVENT_GET)); }
+ virtual bool has_dropcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_DROP)); }
 
  bool is_door(Obj *obj) {return(is_locked_door(obj) || is_unlocked_door(obj));}
  virtual bool is_locked_door(Obj *obj)   { return(false); }
  virtual bool is_unlocked_door(Obj *obj) { return(false); }
  virtual bool is_food(Obj *obj)          { return(false); }
+ virtual bool is_container(Obj *obj)     { return(false); }
 
  void set_itemref(sint32 val) { int_ref = val; }
  void set_itemref(Obj *val)   { obj_ref = val; }
@@ -158,6 +187,7 @@ class UseCode
 
  Obj *get_obj_from_container(Obj *obj);
  bool search_container(Obj *obj);
+ Obj *destroy_obj(Obj *obj, uint32 count = 0);
 
  protected:
 

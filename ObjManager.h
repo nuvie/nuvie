@@ -37,7 +37,7 @@ class NuvieIOFileRead;
 
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1
-#define OBJ_STATUS_SEEN_EGG      0x2  // something to do wih eggs
+#define OBJ_STATUS_SEEN_EGG      0x2  // something to do with eggs
 //#define OBJ_STATUS_UNKNOWN     0x4
 #define OBJ_STATUS_IN_CONTAINER  0x8
 #define OBJ_STATUS_IN_INVENTORY 0x10
@@ -155,6 +155,7 @@ class ObjManager
  
  Obj *copy_obj(Obj *obj);
  const char *look_obj(Obj *obj, bool show_prefix = false);
+ Obj *get_obj_from_stack(Obj *obj, uint32 count);
 
  const char *get_obj_name(Obj *obj);
  float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, bool scale=true);
