@@ -1,3 +1,6 @@
+2004-03-16  Eric Fry <efry at users.sourceforge.net>
+	* Eggs now spawn at the destination when using the red moon gate.
+
 2004-03-15  Eric Fry <efry at users.sourceforge.net>
 	* Fixed Escape. Escape now skips a turn. Pass!
 	* Added use:fan. This just prints "You feel a breeze." at the moment.

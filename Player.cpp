@@ -80,8 +80,14 @@ Actor *Player::find_actor()
 
 void Player::control()
 {
+ uint16 x,y;
+ uint8 z;
+ 
  uncontrolled = false;
  map_window->centerMapOnActor(actor);
+ 
+ get_location(&x,&y,&z);
+ obj_manager->update(x,y,z); // spawn eggs when teleporting. eg red moongate.
 }
  
 void Player::set_actor(Actor *new_actor)
