@@ -102,6 +102,7 @@
 				070B5A5804D3D7DC00A8000A,
 				070B5A6504D3DEDF00A8000A,
 				070B5A6404D3DEDF00A8000A,
+				07A5001E052AE88D00A8000A,
 				070B5A5B04D3D7DC00A8000A,
 				070B5A5A04D3D7DC00A8000A,
 			);
@@ -1299,6 +1300,19 @@
 			settings = {
 			};
 		};
+		07A5001E052AE88D00A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = U6ActorTypes.h;
+			path = ../actors/U6ActorTypes.h;
+			refType = 2;
+		};
+		07A5001F052AE88D00A8000A = {
+			fileRef = 07A5001E052AE88D00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		07AD65EB04D34BCA00A8000A = {
 			children = (
 				07AD65ED04D34BEA00A8000A,
@@ -2335,6 +2349,7 @@
 				0762A3510504C4B900A8000A,
 				0762A3570506027A00A8000A,
 				07E87A12050E07AF00A8000A,
+				07A5001F052AE88D00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

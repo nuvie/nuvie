@@ -104,6 +104,8 @@ bool ObjManager::loadObjs(TileManager *tm)
 
  delete filename;
 
+ //print_egg_list();
+ 
  return true;
 }
 
@@ -839,6 +841,91 @@ void ObjManager::print_object_list()
   {
    printf("%04d: %s\n",i,tile_manager->lookAtTile(get_obj_tile_num(i),0,false));
   }
+
+ return;
+}
+
+void ObjManager::print_egg_list()
+{
+ iAVLTree *obj_tree;
+ ObjTreeNode *tree_node;
+ iAVLCursor cursor;
+ U6LList *obj_list;
+ U6Link *link;
+ Obj *obj;
+ uint8 i;
+ 
+ for(i=0;i <= 5;i++)
+ {
+  obj_tree = get_obj_tree(i);
+  tree_node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
+  
+  for(;tree_node != NULL;tree_node = (ObjTreeNode *)iAVLNext(&cursor) )
+   {
+    obj_list = (U6LList *)tree_node->obj_list;
+    for(link = obj_list->start(); link != NULL; link = link->next)
+     {
+      obj = (Obj *)link->data;
+      if(obj->obj_n == 335)
+       {
+        print_obj(obj,false);
+       }
+     }
+   }
+ }
+
+ return;
+}
+
+void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
+{
+ U6Link *link;
+ Obj *container_obj;
+
+ printf("\n");
+ print_indent(indent);
+ printf("%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
+ 
+ if(in_container == false)
+   printf("at %x, %x, %x",obj->x, obj->y, obj->z);
+   
+ printf("\n");
+
+ print_indent(indent);
+ printf("Status: ");
+ print_b(obj->status);
+ printf("\n");
+
+ if(in_container)
+  {
+   print_indent(indent);
+   printf("y = %d, z = %d\n", obj->y, obj->z);
+  }
+
+ print_indent(indent);
+ printf("Quantity: %d\n",obj->qty);
+ print_indent(indent);
+ printf("Quality: %d\n",obj->quality);
+ 
+ if(obj->container)
+   {
+    print_indent(indent);
+    printf("Container\n");
+    print_indent(indent);
+    printf("---------");
+    
+    for(link = obj->container->start(); link != NULL; link = link->next)
+     {
+      container_obj = (Obj *)link->data;
+      print_obj(container_obj, true, indent + 2);
+     }
+     
+    print_indent(indent);
+    printf("---------\n");
+   }    
+  
+ if(in_container == false)
+   printf("\n");
 
  return;
 }

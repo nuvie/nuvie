@@ -29,6 +29,8 @@
 
 // Worktype codes
 #define WORKTYPE_U6_IN_PARTY 0x1
+#define WORKTYPE_U6_ANIMAL_WANDER 0xc
+
 #define WORKTYPE_U6_WALK_TO_LOCATION 0x84
 
 #define WORKTYPE_U6_FACE_NORTH 0x87
@@ -45,19 +47,34 @@
 #define WORKTYPE_U6_PLAY_LUTE 0x95
 #define WORKTYPE_U6_BEG 0x96
 
+typedef struct {
+ uint16 base_obj_n;
+ uint8 frames_per_direction;
+ uint8 tiles_per_direction;
+ uint8 tiles_per_frame;
+ uint16 dead_obj_n;
+ uint8 dead_frame_n;
+ bool can_laydown;
+ bool can_sit;
+ uint16 twitch_rand; //used to control how frequently an actor twitches, lower numbers twitch more
+} U6ActorType;
+
 class U6Actor: public Actor
 {
+ protected:
+ const U6ActorType *actor_type;
  
  public:
  
  U6Actor(Map *m, ObjManager *om, GameClock *c);
  ~U6Actor();
  
- 
+ bool init();
  void update();
  bool updateSchedule();
  void set_worktype(uint8 new_worktype);
  void preform_worktype();
+ void set_direction(uint8 d);
  bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  void twitch();
  
@@ -71,6 +88,7 @@ class U6Actor: public Actor
  void wt_sleep();
  void wt_play_lute();
 
+ void set_actor_obj_n(uint16 new_obj_n);
 };
 
 #endif /* __U6Actor_h__ */

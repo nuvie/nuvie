@@ -197,15 +197,74 @@
 
 #define OBJ_U6_SIGN                332
 #define OBJ_U6_SECRET_DOOR         334
+#define OBJ_U6_BLOOD               338
+#define OBJ_U6_DEAD_BODY           339
+#define OBJ_U6_DEAD_CYCLOPS        340
+#define OBJ_U6_DEAD_GARGOYLE       341
+#define OBJ_U6_GIANT_RAT           342
+#define OBJ_U6_INSECTS             343
+#define OBJ_U6_GIANT_BAT           344
+#define OBJ_U6_GIANT_SQUID         345
+#define OBJ_U6_REAPER              347
+#define OBJ_U6_SEA_SERPENT         346
+#define OBJ_U6_SHEEP               348
+#define OBJ_U6_DOG                 349
+#define OBJ_U6_DEER                350
+#define OBJ_U6_WOLF                351
+#define OBJ_U6_GHOST               352
+#define OBJ_U6_GREMLIN             353
+#define OBJ_U6_MOUSE               354
+#define OBJ_U6_GAZER               355
+#define OBJ_U6_BIRD                356
+#define OBJ_U6_CORPSER             357
+#define OBJ_U6_SNAKE               358
+#define OBJ_U6_RABBIT              359
+#define OBJ_U6_ROT_WORMS           360
+#define OBJ_U6_GIANT_SPIDER        361
+#define OBJ_U6_WINGED_GARGOYLE     362
+#define OBJ_U6_GARGOYLE            363
+#define OBJ_U6_ACID_SLUG           364
+#define OBJ_U6_DAEMON              367
+#define OBJ_U6_SKELETON            368
+#define OBJ_U6_DRAKE               369
+#define OBJ_U6_HEADLESS            370
+#define OBJ_U6_TROLL               371
+#define OBJ_U6_MONGBAT             372
+#define OBJ_U6_WISP                373
+#define OBJ_U6_HYDRA               374
+
+#define OBJ_U6_FIGHTER             376
+#define OBJ_U6_SWASHBUCKLER        377
+#define OBJ_U6_MAGE                378
+#define OBJ_U6_VILLAGER            379
+#define OBJ_U6_MERCHANT            380
+#define OBJ_U6_CHILD               381
+#define OBJ_U6_GUARD               382
+
 
 #define OBJ_U6_JESTER              383
-#define OBJ_U6_MUSICIAN            392
+#define OBJ_U6_PEASANT             384
+#define OBJ_U6_FARMER              385
+#define OBJ_U6_MUSICIAN            386
+#define OBJ_U6_WOMAN               387
+#define OBJ_U6_CAT                 388
+#define OBJ_U6_MUSICIAN_PLAYING    392
+#define OBJ_U6_LORD_BRITISH        409
+#define OBJ_U6_AVATAR              410
 
 #define OBJ_U6_QUEST_GATE          416
 
 #define OBJ_U6_DRAGON_EGG          417
 
-#define OBJ_U6__LAST_              417
+#define OBJ_U6_CYCLOPS             424
+
+#define OBJ_U6_GIANT_SCORPION      426
+#define OBJ_U6_GIANT_ANT           427
+#define OBJ_U6_COW                 428
+#define OBJ_U6_ALLIGATOR           429
+#define OBJ_U6_HORSE               430
+
+#define OBJ_U6__LAST_              430
 
 class U6UseCode;
 

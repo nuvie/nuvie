@@ -67,6 +67,11 @@ Actor::~Actor()
     delete pathfinder;
 }
 
+bool Actor::init()
+{
+ return true;
+}
+
 bool Actor::is_alive()
 {
  return alive;

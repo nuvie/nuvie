@@ -146,6 +146,8 @@ class ObjManager
  //inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);
 
  void print_object_list();
+ void print_egg_list();
+ void print_obj(Obj *obj, bool in_container, uint8 indent=0);
 };
 
 #endif /* __ObjManager_h__ */

@@ -131,6 +131,8 @@ class Actor
  Actor(Map *m, ObjManager *om, GameClock *c);
  virtual ~Actor();
  
+ virtual bool init();
+ 
 // bool is_visible() { return(MapCoord(x,y,z).is_visible()); }
  bool is_alive();
  bool is_nearby(Actor *other);
@@ -163,7 +165,7 @@ class Actor
   
  uint8 get_direction() { return(direction); }
  void set_direction(sint16 rel_x, sint16 rel_y);
- void set_direction(uint8 d);
+ virtual void set_direction(uint8 d);
  void face_location(MapCoord &loc) { face_location(loc.x, loc.y); }
  void face_location(uint16 lx, uint16 ly);
  void face_actor(Actor *a);

@@ -1,3 +1,8 @@
+2003-10-05  Eric Fry <efry@users.sourceforge.net>
+	* Moved Actor walk info into a table. Most Actor types should move 
+	  around correctly now. This should fix the Sherry bug. [ 716209 ]
+	* Added some object printing routines.
+
 2003-09-16  Eric Fry <efry@users.sourceforge.net>
 	* Quantities are only displayed for stackable items in InventoryWidget.
           Note I have still got to implement U6 key display eg 'A', 'B' etc.

@@ -26,96 +26,11 @@
 #include "PathFinder.h"
 #include "U6Actor.h"
 
+#include "U6ActorTypes.h"
+
 //static const uint8 sleep_objects[8];
 
-// A list of readiable objects and their readied location.
-
-static const struct {uint16 obj_n; uint8 readiable_location;}
- readiable_objects[] = {
-{OBJ_U6_LEATHER_HELM, ACTOR_HEAD },
-{OBJ_U6_CHAIN_COIF, ACTOR_HEAD },
-{OBJ_U6_IRON_HELM, ACTOR_HEAD },
-{OBJ_U6_SPIKED_HELM, ACTOR_HEAD },
-{OBJ_U6_WINGED_HELM, ACTOR_HEAD },
-{OBJ_U6_BRASS_HELM, ACTOR_HEAD },
-{OBJ_U6_GARGOYLE_HELM, ACTOR_HEAD },
-{OBJ_U6_MAGIC_HELM, ACTOR_HEAD },
-{OBJ_U6_WOODEN_SHIELD, ACTOR_ARM },
-{OBJ_U6_CURVED_HEATER, ACTOR_ARM },
-{OBJ_U6_WINGED_SHIELD, ACTOR_ARM },
-{OBJ_U6_KITE_SHIELD, ACTOR_ARM },
-{OBJ_U6_SPIKED_SHIELD, ACTOR_ARM },
-{OBJ_U6_BLACK_SHIELD, ACTOR_ARM },
-{OBJ_U6_DOOR_SHIELD, ACTOR_ARM },
-{OBJ_U6_MAGIC_SHIELD, ACTOR_ARM },
-{OBJ_U6_CLOTH_ARMOUR, ACTOR_BODY },
-{OBJ_U6_LEATHER_ARMOR, ACTOR_BODY },
-{OBJ_U6_RING_MAIL, ACTOR_BODY },
-{OBJ_U6_SCALE_MAIL, ACTOR_BODY },
-{OBJ_U6_CHAIN_MAIL, ACTOR_BODY },
-{OBJ_U6_PLATE_MAIL, ACTOR_BODY },
-{OBJ_U6_MAGIC_ARMOUR, ACTOR_BODY },
-{OBJ_U6_SPIKED_COLLAR, ACTOR_BODY },
-{OBJ_U6_GUILD_BELT, ACTOR_BODY },
-{OBJ_U6_GARGOYLE_BELT, ACTOR_BODY },
-{OBJ_U6_LEATHER_BOOTS, ACTOR_FOOT },
-{OBJ_U6_SWAMP_BOOTS, ACTOR_FOOT },
-
-{OBJ_U6_SLING, ACTOR_ARM },
-{OBJ_U6_CLUB, ACTOR_ARM },
-{OBJ_U6_MAIN_GAUCHE, ACTOR_ARM },
-{OBJ_U6_SPEAR, ACTOR_ARM },
-{OBJ_U6_THROWING_AXE, ACTOR_ARM },
-{OBJ_U6_DAGGER, ACTOR_ARM },
-{OBJ_U6_MACE, ACTOR_ARM },
-{OBJ_U6_MORNING_STAR, ACTOR_ARM },
-{OBJ_U6_BOW, ACTOR_ARM },
-{OBJ_U6_CROSSBOW, ACTOR_ARM },
-{OBJ_U6_SWORD, ACTOR_ARM },
-{OBJ_U6_TWO_HANDED_HAMMER, ACTOR_ARM },
-{OBJ_U6_TWO_HANDED_AXE, ACTOR_ARM },
-{OBJ_U6_TWO_HANDED_SWORD, ACTOR_ARM },
-{OBJ_U6_HALBERD, ACTOR_ARM },
-{OBJ_U6_GLASS_SWORD, ACTOR_ARM },
-{OBJ_U6_BOOMERANG, ACTOR_ARM },
-{OBJ_U6_TRIPLE_CROSSBOW, ACTOR_ARM },
-
-{OBJ_U6_MAGIC_BOW, ACTOR_ARM },
-{OBJ_U6_SPELLBOOK, ACTOR_ARM },
-
-{OBJ_U6_ANKH_AMULET, ACTOR_NECK },
-{OBJ_U6_SNAKE_AMULET, ACTOR_NECK },
-{OBJ_U6_AMULET_OF_SUBMISSION, ACTOR_NECK },
-
-{OBJ_U6_STAFF, ACTOR_ARM },
-{OBJ_U6_LIGHTNING_WAND, ACTOR_ARM },
-{OBJ_U6_FIRE_WAND, ACTOR_ARM },
-{OBJ_U6_STORM_CLOAK, ACTOR_BODY },
-{OBJ_U6_RING, ACTOR_HAND },
-{OBJ_U6_FLASK_OF_OIL, ACTOR_ARM },
-
-{OBJ_U6_TORCH, ACTOR_ARM },
-
-{OBJ_U6_SCYTHE, ACTOR_ARM },
-{OBJ_U6_PITCHFORK, ACTOR_ARM },
-{OBJ_U6_RAKE, ACTOR_ARM },
-{OBJ_U6_PICK, ACTOR_ARM },
-{OBJ_U6_SHOVEL, ACTOR_ARM },
-{OBJ_U6_HOE, ACTOR_ARM },
-
-{OBJ_U6_CLEAVER, ACTOR_ARM },
-{OBJ_U6_KNIFE, ACTOR_ARM },
-
-{OBJ_U6_LUTE, ACTOR_ARM },
-
-{OBJ_U6_PLIERS, ACTOR_ARM },
-{OBJ_U6_HAMMER, ACTOR_ARM },
-
-{OBJ_U6_PROTECTION_RING, ACTOR_HAND },
-{OBJ_U6_REGENERATION_RING, ACTOR_HAND },
-{OBJ_U6_INVISIBILITY_RING, ACTOR_HAND },
-
-{OBJ_U6_NOTHING, ACTOR_NOT_READIABLE} }; // this last element terminates the array.
+static uint8 walk_frame_tbl[4] = {0,1,2,1}; //FIX 
 
 
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
@@ -125,6 +40,18 @@ U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 
 U6Actor::~U6Actor()
 {
+}
+
+bool U6Actor::init()
+{
+ set_actor_obj_n(obj_n); //set actor_type
+ 
+ if(actor_type->frames_per_direction != 0) 
+   direction = frame_n / actor_type->tiles_per_direction;
+ else
+   direction = ACTOR_DIR_D;
+
+ return true;
 }
 
 void U6Actor::update()
@@ -146,6 +73,18 @@ bool U6Actor::updateSchedule()
  return ret;
 }
 
+void U6Actor::set_direction(uint8 d)
+{
+ if(d < 4)
+   direction = d;
+
+ walk_frame = (walk_frame + 1) % actor_type->frames_per_direction;
+ 
+ frame_n = direction * actor_type->tiles_per_direction + 
+           (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1;
+ 
+}
+
 bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
  bool ret = Actor::move(new_x,new_y,new_z,force_move);
@@ -153,7 +92,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  if(ret == true)
   {
    Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
-   if(obj)
+   if(obj && actor_type->can_sit)
      {
       if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
        {
@@ -189,10 +128,21 @@ uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
 
 void U6Actor::twitch()
 {
+ 
  // twitch
- switch(obj_n)
+ if(can_twitch == false || actor_type->twitch_rand == 0)
+   return;
+
+ if(NUVIE_RAND()%actor_type->twitch_rand == 1)
   {
-   case OBJ_U6_MUSICIAN : if(NUVIE_RAND()%3 == 1)
+   walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
+   frame_n = direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1;
+  }
+
+/* 
+ switch(obj_n) //FIX twitch frequency should go in type table. :)
+  {
+   case OBJ_U6_MUSICIAN_PLAYING : if(NUVIE_RAND()%3 == 1)
                             {
                              walk_frame = NUVIE_RAND()%2;
                              frame_n = direction * 2 + walk_frame;
@@ -200,18 +150,19 @@ void U6Actor::twitch()
                            break;
    case OBJ_U6_JESTER : if(can_twitch && NUVIE_RAND()%5 == 1) //jester's move around a lot!
                           {
-                           walk_frame = NUVIE_RAND()%3;
-                           frame_n = direction * 4 + walk_frame;
+                           walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
+                           frame_n = direction * actor_type->frames_per_direction + walk_frame;
                           }
                         break;
 
    default : if(can_twitch && NUVIE_RAND()%50 == 1)
                {
-                walk_frame = NUVIE_RAND()%3;
-                frame_n = direction * 4 + walk_frame;
+                walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
+                frame_n = direction * actor_type->frames_per_direction + walk_frame;
                }
              break;
   }
+*/
 
  return;
 }
@@ -236,6 +187,7 @@ void U6Actor::preform_worktype()
    case WORKTYPE_U6_WALK_EAST_WEST   : wt_walk_straight(); break;
 
    case WORKTYPE_U6_WORK :
+   case WORKTYPE_U6_ANIMAL_WANDER :
    case WORKTYPE_U6_WANDER_AROUND   : wt_wander_around(); break;
    case WORKTYPE_U6_BEG : wt_beg(); break;
 //   case WORKTYPE_U6_
@@ -397,6 +349,16 @@ void U6Actor::wt_sleep()
           frame_n = 1;
          }
       }
+    else // lay down on the ground using the dead body frame
+      {
+       if(actor_type->can_laydown)
+        {
+         old_obj_n = obj_n;
+         old_frame_n = frame_n;
+         obj_n = actor_type->dead_obj_n;
+         frame_n = actor_type->dead_frame_n;
+        }
+      } 
    }
 
  can_twitch = false;
@@ -408,9 +370,27 @@ void U6Actor::wt_play_lute()
 {
  old_obj_n = obj_n;
  old_frame_n = frame_n;
+
+ set_actor_obj_n(OBJ_U6_MUSICIAN_PLAYING);
  
- obj_n = OBJ_U6_MUSICIAN;
- frame_n = 4;
+ frame_n = direction * actor_type->tiles_per_direction;
  
  return;
 }
+
+void U6Actor::set_actor_obj_n(uint16 new_obj_n)
+{
+ old_obj_n = obj_n;
+ old_frame_n = frame_n;
+ 
+ obj_n = new_obj_n;
+ 
+ for(actor_type = u6ActorTypes; actor_type->base_obj_n != OBJ_U6_NOTHING; actor_type++)
+  {
+   if(actor_type->base_obj_n == new_obj_n) // FIX!? should this be old_obj_n maybe call old_obj_n base_obj_n
+     break;
+  }
+
+ return;
+}
+
