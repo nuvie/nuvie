@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..,../actors,../conf,../files,../gui,../misc,../pathfinder,../screen,../views,../usecode"
+				AdditionalIncludeDirectories="..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../sound;../fonts"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdlmain.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib sdl_mixer.lib"
 				OutputFile=".\Release/nuvie.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -82,7 +82,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..,../actors,../conf,../files,../gui,../misc,../pathfinder,../screen,../views,../usecode"
+				AdditionalIncludeDirectories="..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../sound;../fonts"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_STLP_DEBUG;_STLP_USE_NEWALLOC"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -100,7 +100,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdlmain.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib sdl_mixer.lib"
 				OutputFile=".\Debug/nuvie.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -608,6 +608,12 @@
 			</File>
 			<File
 				RelativePath="..\ConverseInterpret.h">
+			</File>
+			<File
+				RelativePath="..\EggManager.cpp">
+			</File>
+			<File
+				RelativePath="..\EggManager.h">
 			</File>
 			<File
 				RelativePath="..\Event.cpp">
@@ -1644,6 +1650,12 @@
 				RelativePath="..\Gui\GUI_widget.h">
 			</File>
 			<File
+				RelativePath="..\Gui\GUI_YesNoDialog.cpp">
+			</File>
+			<File
+				RelativePath="..\Gui\GUI_YesNoDialog.h">
+			</File>
+			<File
 				RelativePath="..\Gui\the_font.h">
 			</File>
 		</Filter>
@@ -1654,11 +1666,52 @@
 				RelativePath=".\vc7inc.h">
 			</File>
 		</Filter>
+		<Filter
+			Name="sound"
+			Filter="">
+			<File
+				RelativePath="..\sound\Sample.cpp">
+			</File>
+			<File
+				RelativePath="..\sound\Sample.h">
+			</File>
+			<File
+				RelativePath="..\sound\Song.cpp">
+			</File>
+			<File
+				RelativePath="..\sound\Song.h">
+			</File>
+			<File
+				RelativePath="..\sound\Sound.h">
+			</File>
+			<File
+				RelativePath="..\sound\SoundManager.cpp">
+			</File>
+			<File
+				RelativePath="..\sound\SoundManager.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="fonts"
+			Filter="">
+			<File
+				RelativePath="..\fonts\Font.cpp">
+			</File>
+			<File
+				RelativePath="..\fonts\Font.h">
+			</File>
+			<File
+				RelativePath="..\fonts\FontManager.cpp">
+			</File>
+			<File
+				RelativePath="..\fonts\FontManager.h">
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\ChangeLog">
 		</File>
 		<File
-			RelativePath="..\nuvie.cfg">
+			RelativePath=".\visualc7_build_notes.txt">
 		</File>
 	</Files>
 	<Globals>
