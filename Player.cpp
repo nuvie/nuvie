@@ -29,7 +29,7 @@ Player::Player(Configuration *cfg)
 {
  config = cfg;
  config->value("config/GameType",game_type);
- 
+
  karma = 0;
  questf = 0;
 }
@@ -99,35 +99,16 @@ char *Player::get_gender_title()
 
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
-
- // switch position with party members
  uint16 x, y;
  uint8 z;
- get_location(&x, &y, &z);
- Actor *obstacle = actor_manager->get_actor(x + rel_x, y + rel_y, z);
- if(obstacle && party->contains_actor(obstacle))
- {
-    uint8 dir = actor->get_direction();
-    dir += 2;
-    if(dir > 3)
-        dir -= 4;
-    obstacle->set_direction(dir); // move in opposite direction as player
-    obstacle->move(x, y, z,ACTOR_FORCE_MOVE);
-    obstacle = NULL;
- }
+ actor->get_location(&x, &y, &z);
 
+ // change direction only if we can move there
+ if(actor->check_move(x + rel_x, y + rel_y, z, ACTOR_IGNORE_OTHERS))
+    actor->set_direction(rel_x, rel_y);
  if(actor->moveRelative(rel_x,rel_y))
  {
-   if(rel_x < 0)
-    actor->set_direction(3);
-   if(rel_x > 0)
-    actor->set_direction(1);
-   if(rel_y < 0)
-    actor->set_direction(0);
-   if(rel_y > 0)
-    actor->set_direction(2);
-
-   map_window->moveMapRelative(rel_x,rel_y);
+//   map_window->moveMapRelative(rel_x,rel_y);
    party->follow();
    actor_manager->updateActors();
    clock->inc_move_counter(); // SB-X move to gameclock
@@ -136,31 +117,32 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 
 void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 {
+   stop();
    if(actor->move(new_x, new_y, new_level))
    {
-    map_window->centerMapOnActor(actor);
+//    map_window->centerMapOnActor(actor);
 // center everyone first, so we don't try to path-find between planes if blocked
     party->move(new_x, new_y, new_level);
     party->follow();
    }
 }
 
-void Player::moveLeft()
+void Player::moveLeft(bool moving)
 {
  moveRelative(-1,0);
 }
 
-void Player::moveRight()
+void Player::moveRight(bool moving)
 {
  moveRelative(1,0);
 }
 
-void Player::moveUp()
+void Player::moveUp(bool moving)
 {
  moveRelative(0,-1);
 }
 
-void Player::moveDown()
+void Player::moveDown(bool moving)
 {
  moveRelative(0,1);
 }

@@ -46,11 +46,13 @@ public:
     uint8 z; // plane
 
     MapCoord(uint16 nx, uint16 ny, uint16 nz) { x = nx; y = ny; z = nz; }
-    
-    // greatest 2D distance X or Y
+
+    uint32 xdistance(MapCoord &c2) { return(abs(c2.x - x)); }
+    uint32 ydistance(MapCoord &c2) { return(abs(c2.y - y)); }
+    // greatest 2D distance X or Y (estimate of shortest)
     uint32 distance(MapCoord &c2)
     {
-        uint16 dx = abs(c2.x - x), dy = abs(c2.y - y);
+        uint16 dx = xdistance(c2), dy = ydistance(c2);
         return(dx >= dy ? dx : dy);
     }
     // get absolute coordinates for relative destination (dx,dy)

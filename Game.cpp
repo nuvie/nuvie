@@ -39,12 +39,11 @@
 
 #include "Game.h"
 
-MapWindow *Game::map_window = NULL;
-ObjManager *Game::obj_manager = NULL;
-UseCode *Game::usecode = NULL;
+Game *Game::game = NULL;
 
 Game::Game(Configuration *cfg)
 {
+ game = this;
  config = cfg;
 }
 

@@ -324,5 +324,5 @@ MapCoord MapCoord::abs_coords(sint16 dx, sint16 dy)
  */
 bool MapCoord::is_visible()
 {
-    return(Game::get_map_window()->in_window(x, y, z));
+    return(Game::get_game()->get_map_window()->in_window(x, y, z));
 }

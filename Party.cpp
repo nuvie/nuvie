@@ -220,6 +220,7 @@ void Party::reform_party()
  */
 void Party::follow()
 {
+    bool quickmove = true;
     uint8 lz, az, dir = member[0].actor->get_direction();
     uint16 lx, ly, ax, ay; // leader & actor coordinates
     member[0].actor->get_location(&lx, &ly, &lz);
@@ -233,30 +234,46 @@ void Party::follow()
              (dir == ACTOR_DIR_D) ? lx - member[m].form_x :
              (dir == ACTOR_DIR_L) ? lx + member[m].form_y : ax;
         dy = (dir == ACTOR_DIR_U) ? ly + member[m].form_y :
-             (dir == ACTOR_DIR_R) ? ly - member[m].form_x :
+             (dir == ACTOR_DIR_R) ? ly + member[m].form_x :
              (dir == ACTOR_DIR_D) ? ly - member[m].form_y :
-             (dir == ACTOR_DIR_L) ? ly + member[m].form_x : ay;
+             (dir == ACTOR_DIR_L) ? ly - member[m].form_x : ay;
         if(ax == dx && ay == dy) // already there
-            continue;
-
-        // try quick move
-        if(((abs(ax - dx) <= 1 && abs(ay - dy) <= 1) || az != lz)
-           && member[m].actor->move(dx, dy, lz))
         {
             member[m].actor->stop_walking();
-            if(dy < ay)
-                member[m].actor->set_direction(ACTOR_DIR_U);
-            else if(dy > ay)
-                member[m].actor->set_direction(ACTOR_DIR_D);
-            else if(dx < ax)
-                member[m].actor->set_direction(ACTOR_DIR_L);
-            else
-                member[m].actor->set_direction(ACTOR_DIR_R);
             continue;
         }
-        // walk there
+        sint16 xdiff = dx - ax;
+        sint16 ydiff = dy - ay;
+        uint8 xdist = abs(xdiff);
+        uint8 ydist = abs(ydiff);
+        // quick move
+        if(az != lz)
+        {
+            member[m].actor->stop_walking();
+            member[m].actor->set_direction(xdiff, ydiff);
+            member[m].actor->move(lx, ly, lz, ACTOR_FORCE_MOVE);
+            continue;
+        }
+        else if(quickmove && xdist <= 1 && ydist <= 1)
+        {
+            member[m].actor->stop_walking();
+            member[m].actor->set_direction(xdiff, ydiff);
+            member[m].actor->moveRelative(xdiff < 0 ? -1 : xdiff > 0 ? 1 : 0,
+                                             ydiff < 0 ? -1 : ydiff > 0 ? 1 : 0);
+            if(ax == dx && ay == dy)
+                continue;
+        }
+        // make everyone else path-find to stay synchronized
+        quickmove = false;
+        // walk there (delay based on distance, if leader moved towards party)
         MapCoord dest(dx, dy, lz), leader_dest(lx, ly, lz);
-        member[m].actor->swalk(dest, leader_dest);
+        uint8 dist = xdist > ydist ? xdist : ydist;
+        uint8 delay = ((dir == ACTOR_DIR_L && dx < ax) // leader moved away
+                       || (dir == ACTOR_DIR_D && dy > ay)
+                       || (dir == ACTOR_DIR_R && dx > ax)
+                       || (dir == ACTOR_DIR_U && dy < ay)) ? 0 : dist;
+        if(delay > 2) delay = 2;
+        member[m].actor->swalk(dest, leader_dest, 1, delay);
     }
 }
 
@@ -266,7 +283,7 @@ void Party::follow()
 bool Party::move(uint16 dx, uint16 dy, uint8 dz)
 {
     for(sint32 m = (num_in_party - 1); m >= 0; m--)
-        if(!member[m].actor->move(dx, dy, dz))
+        if(!member[m].actor->move(dx, dy, dz, ACTOR_FORCE_MOVE))
             return(false);
     return(true);
 }

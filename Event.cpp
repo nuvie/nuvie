@@ -26,7 +26,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
-
+#include "Game.h"
 #include "MapWindow.h"
 #include "Player.h"
 #include "Book.h"
@@ -72,7 +72,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
 
 bool Event::update()
 {
-  while ( SDL_PollEvent(&event) ) {
+  while(SDL_PollEvent(&event)) {
 			switch (event.type) {
 				case SDL_MOUSEMOTION:
 					break;
@@ -453,6 +453,16 @@ void Event::alt_code_input(const char *in)
             scroll->display_prompt();
             active_alt_code = 0;
             break;
+
+        case 500: // control/watch anyone
+            ActorManager *am = Game::get_game()->get_actor_manager();
+            Actor *a = am->get_actor((uint8)strtol(in, NULL, 10));
+            player->set_actor(a);
+            map_window->centerMapOnActor(a);
+            scroll->display_string("\n");
+            scroll->display_prompt();
+            active_alt_code = 0;
+            break;
     }
 }
 
@@ -465,6 +475,12 @@ void Event::alt_code(const char *cs)
     switch(c)
     {
         case 400: // talk to anyone (FIXME: get portrait and inventory too)
+            scroll->display_string("Npc number? ");
+            scroll->set_input_mode(true);
+            active_alt_code = c;
+            break;
+
+        case 500: // control/watch anyone
             scroll->display_string("Npc number? ");
             scroll->set_input_mode(true);
             active_alt_code = c;
