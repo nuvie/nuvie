@@ -1,3 +1,20 @@
+2003-07-26  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Actor, PathFinder: Path-finding/direction finding classes added and
+	accessible from Actor. The path-finder is incomplete and distant
+	destinations aren't reachable yet. There are still a few glitches.
+	* Added some direction definitions that are at least easier to remember
+	than 0, 1, 2, 3.
+	* Game: Made map_window, obj_manager, and usecode made static so they
+	can be easily accessed. The Game object itself should probably be static
+	instead.
+	* Map: Added get_actor() to get an actor at a location on the map.
+	* New Type/Class MapCoord for easier passing of map/tile coordinates.
+	MapWindow:in_window() checks to see if a map coordinate is on screen.
+	* Party, Player: Party formation and movement implemented.
+	When moving, other actors except party members block the player.
+	* UseCode: is_unlocked_door() checks if object is door that can be opened.
+	* Added classes: PathFinder AStar LPath ZPath
+
 2003-07-18  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Usecode system extended to allow multiple "event" functions. Each
 	object may have usecode executed when its event criteria are met.
