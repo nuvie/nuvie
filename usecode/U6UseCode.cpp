@@ -527,7 +527,7 @@ bool U6UseCode::use_switch(Obj *obj, uint8 ev)
  if(obj->obj_n == OBJ_U6_LEVER)
  {
      target_obj_n = OBJ_U6_PORTCULLIS;
-     message = "\nswitch the lever, you hear a noise.\n";
+     message = "\nSwitch the lever, you hear a noise.\n";
  }
  else if(obj->obj_n == OBJ_U6_SWITCH)
  {

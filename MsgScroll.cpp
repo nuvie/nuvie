@@ -139,7 +139,8 @@ void MsgScroll::display_string(const char *string, uint16 string_len, uint8 lang
 {
  uint16 string_buf_length;
  uint16 i;
- uint16 word_start, row_start, row_length;
+ uint16 word_start, row_start;
+ sint16 row_length;
  uint16 num_rows;
 
     
@@ -174,7 +175,7 @@ void MsgScroll::display_string(const char *string, uint16 string_len, uint8 lang
    {
     if(string_buf[i] == '\n' || string_buf[i] == '*' || string_buf[i] == ' ' || string_buf[i] == '\0')
       {
-       if(row_length >= scroll_width)
+       if(row_length > scroll_width)
          {
           buf_addString(&string_buf[row_start],word_start - row_start,lang_num);
           row_start = word_start;
@@ -194,7 +195,7 @@ void MsgScroll::display_string(const char *string, uint16 string_len, uint8 lang
            num_rows++;
           }
 
-         row_length = 0;
+         row_length = -1; // this will increment back to 0 which is what we really want.
          row_start = i+1;
         }
        else
