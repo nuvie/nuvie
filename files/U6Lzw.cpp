@@ -289,6 +289,18 @@ unsigned char *U6Lzw::decompress_file(std::string filename, uint32 &destination_
        free(source_buffer);
        //free(destination_buffer);
     }
+    else
+    {
+       // uncompressed file
+       uint32 destination_buffer_size = input_file.filesize();
+       destination_length = destination_buffer_size-8;
+
+       destination_buffer = (unsigned char *)malloc(destination_length);
+
+       // data starts at offset 8
+       input_file.seek(8);
+       input_file.readToBuf(destination_buffer,destination_length);
+    }
   
  return destination_buffer;
 }
