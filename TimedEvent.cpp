@@ -110,9 +110,12 @@ bool TimeQueue::call_timer(uint32 now)
  */
 bool TimeQueue::delete_timer(TimedEvent *tevent)
 {
-    if(tevent->tq_can_delete)
+    if(tevent->tq_can_delete) {
         delete tevent;
-    return(tevent->tq_can_delete);
+        return true;
+    }
+
+    return false;
 }
 
 
