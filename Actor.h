@@ -102,12 +102,18 @@ class Actor
  uint8 get_dexterity() { return(dex); }
  uint8 get_intelligence() { return(intelligence); }
  uint8 get_hp() { return(hp); }
- uint8 get_maxhp() { return(((level * 30) <= 255) ? (level * 30) : 255); }
+ uint8 get_maxhp() { return(((level * 30) <= 255) ? (level * 30) : 255); } // U6
  uint8 get_level() { return(level); }
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
 
+ void set_strength(uint8 val) { strength = val; }
+ void set_dexterity(uint8 val) { dex = val; }
+ void set_intelligence(uint8 val) { intelligence = val; }
  void set_hp(uint8 val) { hp = val; }
+ void set_level(uint8 val) { level = val; }
+ void set_exp(uint16 val) { exp = val; }
+ void set_magic(uint8 val) { magic = val; }
 
  uint8 get_worktype();
  void set_worktype(uint8 new_worktype);
