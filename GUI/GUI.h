@@ -141,6 +141,8 @@ protected:
 	/* Function to handle a GUI status */
 	void HandleStatus(GUI_status status);
 
+  void CleanupDeletedWidgets(bool redraw=false);
+
 };
 
 #endif /* _GUI_h */

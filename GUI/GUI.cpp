@@ -137,6 +137,35 @@ bool GUI::removeWidget(GUI_Widget *widget)
  return false;
 }
 
+void GUI::CleanupDeletedWidgets(bool redraw)
+{
+  /* Garbage collection */
+  if (locked_widget && locked_widget->Status() == WIDGET_DELETED)
+    locked_widget = 0;
+  if (focused_widget && focused_widget->Status() == WIDGET_DELETED)
+    focused_widget = 0;
+ 
+  for(int i=0; i<numwidgets; )
+  {
+    if(widgets[i]->Status() == WIDGET_DELETED)
+    {
+      delete widgets[i];
+      
+      for(int j=i+1; j<numwidgets; ++j ) //shuffle remaining widgets down.
+        widgets[j-1] = widgets[j];
+      
+      --numwidgets;
+      if(redraw)
+      {
+        // CHECKME: is it really necessary to redraw after each deletion?
+        force_full_redraw();
+        Display();
+      }
+    } else
+      ++i;
+  }
+}
+
 bool GUI::moveWidget(GUI_Widget *widget, uint32 dx, uint32 dy)
 {
  if(!widget)
@@ -292,27 +321,9 @@ GUI:: HandleEvent(SDL_Event *event)
 
 	HandleStatus(status);
 
-  /* Garbage collection */
-  for(i=0; i<numwidgets; ++i)
-    {
-     if(widgets[i]->Status() == WIDGET_DELETED)
-       {
-        delete widgets[i];
+  CleanupDeletedWidgets(status != GUI_QUIT);
 
-        for(int j=i+1; j<numwidgets; ++j ) //shuffle remaining widgets down.
-          {
-           widgets[j-1] = widgets[j];
-          }
-
-        --numwidgets;
-        if(status != GUI_QUIT) //no point redrawing if we're going to quit.
-         {
-          force_full_redraw();
-          Display();
-         }
-			 }
-    } 
- return status;
+  return status;
 }
 
 /* Run the GUI.
@@ -334,16 +345,7 @@ void GUI::Run(GUI_IdleProc idle, int once, int multitaskfriendly)
 		display = 1;
 	}
 	do {
-		/* Garbage collection */
-		for ( i=0; i<numwidgets; ++i ) {
-			if ( widgets[i]->Status() == WIDGET_DELETED ) {
-				delete widgets[i];
-				for ( int j=i+1; j<numwidgets; ++j ) {
-					widgets[j-1] = widgets[j];
-				}
-				--numwidgets;
-			}
-		}
+    CleanupDeletedWidgets();
 
 		/* Display widgets if necessary */
 		if ( display ) {

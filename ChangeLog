@@ -1,3 +1,6 @@
+2004-06-02  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* GUI/GUI.*: fix crash when deleting the focused/locked widget
+
 2004-06-02  Eric Fry <efry at users.sourceforge.net>
 	* Added party/solo mode loading and saving to Player.
 
