@@ -26,7 +26,7 @@
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "GUI.h"
-#include "GUI_Widget.h"
+#include "GUI_widget.h"
 #include "GUI_ScrollBar.h"
 #include "GUI_Scroller.h"
 

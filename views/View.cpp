@@ -26,7 +26,7 @@
 #include "ViewManager.h"
 #include "View.h"
 
-#include "GUI_Widget.h"
+#include "GUI_widget.h"
 
 View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
 {

@@ -1,3 +1,6 @@
+2004-05-28  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* various: include case mismatches
+
 2004-05-26  Eric Fry <efry at users.sourceforge.net>
 	* Fixed readied inventory when saving.
 	* Fixed Party names when loading.
