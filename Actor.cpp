@@ -106,18 +106,18 @@ void Actor::update()
  // do actor stuff here.
  if(standing)
   {
-   if(random()%50 == 1)
+   if(NUVIE_RAND()%50 == 1)
      {
-      walk_frame = random()%4;
+      walk_frame = NUVIE_RAND()%4;
       frame_n = direction * 4 + walk_frame_tbl[walk_frame];
      }
    else
     {
      if(!in_party)
        {
-        if(random()%80 == 1)
+        if(NUVIE_RAND()%80 == 1)
           {
-           new_direction = random()%4;
+           new_direction = NUVIE_RAND()%4;
            set_direction(new_direction);
            switch(new_direction)
             {

@@ -58,12 +58,12 @@ class Screen
    
    bool set_palette(uint8 *palette);
    bool rotate_palette(uint8 pos, uint8 length);
-   bool clear(uint16 x, uint16 y, uint16 w, uint16 h);
+   bool clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect=NULL);
    void *get_pixels();
    uint16 get_pitch();
    uint16 get_bpp();
       
-   bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false);     
+   bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL);     
    void update();
    void update(uint16 x, uint16 y, uint16 w, uint16 h);
    

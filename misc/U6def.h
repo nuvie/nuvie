@@ -25,4 +25,10 @@ typedef signed char sint8;
 typedef signed short sint16;
 typedef signed int sint32;
 
+#ifdef MACOSX
+#define NUVIE_RAND random
+#else
+#define NUVIE_RAND rand
+#endif
+
 #endif /* __U6def_h__ */

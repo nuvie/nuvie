@@ -9,6 +9,7 @@
  *  Copyright (c) 2003. All rights reserved.
  *
  */
+#include <SDL.h>
 
 #include "U6def.h"
 #include "Configuration.h"
@@ -42,6 +43,8 @@ class MapWindow
  uint16 win_width, win_height;
  uint8 cur_level;
 
+ SDL_Rect clip_rect;
+ 
  public:
  
  MapWindow(Configuration *cfg);

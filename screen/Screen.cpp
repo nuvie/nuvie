@@ -115,13 +115,39 @@ bool Screen::rotate_palette(uint8 pos, uint8 length)
  return true;
 }
 
-bool Screen::clear(uint16 x, uint16 y, uint16 w, uint16 h)
+bool Screen::clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
 {
  uint8 *pixels;
  uint16 i;
+ uint16 x1,y1;
   
  pixels = (uint8 *)surface->pixels;
  
+ if(clip_rect)
+   {
+    x1 = x;
+    y1 = y;
+    if(x < clip_rect->x)
+      x = clip_rect->x;
+      
+    if(y < clip_rect->y)
+      y = clip_rect->y;
+      
+    if(x1 + w > clip_rect->x + clip_rect->w)
+      {
+       w -= (x1 + w) - (clip_rect->x + clip_rect->w);
+       if(w <= 0)
+         return false;
+      }
+
+    if(y1 + h > clip_rect->y + clip_rect->h)
+      {
+       h -= (y1 + h) - (clip_rect->y + clip_rect->h);
+       if(h <= 0)
+         return false;
+      }
+   }
+   
  pixels += y * surface->pitch + (x * surface->bytes_per_pixel);
 
  for(i=0;i<h;i++)
@@ -142,8 +168,50 @@ void *Screen::get_pixels()
  return NULL;
 }
 
-bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
+bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans, SDL_Rect *clip_rect)
 {
+ uint16 src_x = 0;
+ uint16 src_y = 0;
+ 
+ if(clip_rect)
+  {
+   if(clip_rect->x > dest_x)
+      {
+       src_x = clip_rect->x - dest_x;
+       if(src_x > dest_x + src_w)
+         return false;
+       src_w -= clip_rect->x - dest_x;
+       dest_x = clip_rect->x;
+      }
+      
+   if(clip_rect->y > dest_y)
+     {
+      src_y = clip_rect->y - dest_y;
+      if(src_y > dest_y + src_h)
+         return false;
+      src_h -= clip_rect->y - dest_y;
+      dest_y = clip_rect->y;
+     }
+     
+   if(dest_x + src_w > clip_rect->x + clip_rect->w)
+     {
+      if(clip_rect->x + clip_rect->w - dest_x <= 0)
+        return false;
+      
+      src_w = clip_rect->x + clip_rect->w - dest_x;
+     }
+
+   if(dest_y + src_h > clip_rect->y + clip_rect->h)
+     {
+      if(clip_rect->y + clip_rect->h - dest_y <= 0)
+        return false;
+      
+      src_h = clip_rect->y + clip_rect->h - dest_y;
+     }
+     
+   src_buf += src_y * src_pitch + src_x;
+  }
+
  if(surface->bits_per_pixel == 16)
    return blit16(dest_x, dest_y, src_buf, src_bpp, src_w, src_h, src_pitch, trans);
 
@@ -197,6 +265,7 @@ bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16
  
  pixels += dest_y * surface->w + dest_x;
 
+      
  if(trans)
   {
    for(i=0;i<src_h;i++)

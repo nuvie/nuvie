@@ -35,8 +35,12 @@ int main(int argc, char **argv)
 {
  Nuvie *nuvie;
 
+ #ifdef MACOSX
  srandom(time(NULL));
-  
+ #else
+ srand(time(NULL));
+ #endif
+ 
  nuvie = new Nuvie;
  
  nuvie->init();

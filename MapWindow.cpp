@@ -69,6 +69,11 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
 // if(surface->init(win_width*16,win_height*16) == false)
 //   return false;
 
+ clip_rect.x = 8;
+ clip_rect.y = 8;
+ clip_rect.w = (win_width - 1) * 16;
+ clip_rect.h = (win_height - 1) * 16;
+ 
  updateBlacking();
  
  return true;
@@ -211,11 +216,11 @@ void MapWindow::drawMap()
    for(j=0;j<win_width;j++)
      {
       if(map_ptr[j] == 0)
-        screen->clear((j*16),(i*16),16,16); //blackout tile.
+        screen->clear((j*16),(i*16),16,16,&clip_rect); //blackout tile.
       else
         {
          tile = tile_manager->get_tile(map_ptr[j]);
-         screen->blit((j*16),(i*16),(unsigned char *)tile->data,8,16,16,16);
+         screen->blit((j*16),(i*16),(unsigned char *)tile->data,8,16,16,16,false,&clip_rect);
         }
 
      }
@@ -227,12 +232,12 @@ void MapWindow::drawMap()
  
  if(show_cursor)
   {
-   screen->blit(cursor_x*16,cursor_y*16,(unsigned char *)cursor_tile->data,8,16,16,16,true);
+   screen->blit(cursor_x*16,cursor_y*16,(unsigned char *)cursor_tile->data,8,16,16,16,true,&clip_rect);
   }
   
  if(show_use_cursor)
   {
-   screen->blit(cursor_x*16,cursor_y*16,(unsigned char *)use_tile->data,8,16,16,16,true);
+   screen->blit(cursor_x*16,cursor_y*16,(unsigned char *)use_tile->data,8,16,16,16,true,&clip_rect);
   }
 
  drawBorder();
@@ -265,7 +270,7 @@ void MapWindow::drawActors()
              if(tmp_buf[(actor->y - cur_y + 1) * (win_width+2) + (actor->x - cur_x + 1)] != 0)
                {
                 tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->a_num)+actor->frame_n);
-                screen->blit((actor->x - cur_x)*16,(actor->y - cur_y)*16,tile->data,8,16,16,16,tile->transparent);
+                screen->blit((actor->x - cur_x)*16,(actor->y - cur_y)*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
                }
             }
          }
@@ -434,12 +439,12 @@ inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile)
  if(toptile)
     {
      if(tile->toptile)
-        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent);
+        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
     }
  else
     {
      if(!tile->toptile)
-        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent);
+        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
     } 
 }
 
@@ -450,24 +455,24 @@ void MapWindow::drawBorder()
  uint16 i;
  
  tile = tile_manager->get_tile(432);
- screen->blit(0,0,tile->data,8,16,16,16,true);
+ screen->blit(0,0,tile->data,8,16,16,16,true,&clip_rect);
 
  tile = tile_manager->get_tile(434);
- screen->blit((win_width-1)*16,0,tile->data,8,16,16,16,true);
+ screen->blit((win_width-1)*16,0,tile->data,8,16,16,16,true,&clip_rect);
 
  tile = tile_manager->get_tile(435);
- screen->blit(0,(win_height-1)*16,tile->data,8,16,16,16,true);
+ screen->blit(0,(win_height-1)*16,tile->data,8,16,16,16,true,&clip_rect);
 
  tile = tile_manager->get_tile(437);
- screen->blit((win_width-1)*16,(win_height-1)*16,tile->data,8,16,16,16,true);
+ screen->blit((win_width-1)*16,(win_height-1)*16,tile->data,8,16,16,16,true,&clip_rect);
  
  tile = tile_manager->get_tile(433);
  tile1 = tile_manager->get_tile(436);
 
  for(i=1;i < win_width-1;i++)
    {
-    screen->blit(i*16,0,tile->data,8,16,16,16,true);
-    screen->blit(i*16,(win_height-1)*16,tile1->data,8,16,16,16,true);
+    screen->blit(i*16,0,tile->data,8,16,16,16,true,&clip_rect);
+    screen->blit(i*16,(win_height-1)*16,tile1->data,8,16,16,16,true,&clip_rect);
    }
 
  tile = tile_manager->get_tile(438);
@@ -475,8 +480,8 @@ void MapWindow::drawBorder()
    
   for(i=1;i < win_height-1;i++)
    {
-    screen->blit(0,i*16,tile->data,8,16,16,16,true);
-    screen->blit((win_width-1)*16,i*16,tile1->data,8,16,16,16,true);
+    screen->blit(0,i*16,tile->data,8,16,16,16,true,&clip_rect);
+    screen->blit((win_width-1)*16,i*16,tile1->data,8,16,16,16,true,&clip_rect);
    } 
 }
 
