@@ -1,3 +1,17 @@
+2005-03-03  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Actors who are sleeping no longer respond to conversation.
+	  Actors who are immobile (but awake) won't turn to face the player.
+	* Added the command-icons and date/wind text. (class CommandBar).
+	* Replaced U6Actor::walk_frame_tbl with a frame counter walk_frame_inc
+	  to loop walk_frame in two directions. Fixes [ 852832 ].
+	* MouseClick/MouseDouble code has been simplified. (only generates one
+	  of the three events at a time) Things using this have to be changed.
+	  Double-click is disabled right now. (but I'll fix it soon)
+	* New code added to allow objects in containers to be used. (if the
+	  container is held by an actor) It doesn't actually work yet.
+	* Fixed InventoryView bug that could ready an object twice on MouseDown.
+	* Added ActorError status struct to Actor. Added U6WorkTypes.h.
+
 2005-02-27  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed these bugs: (which most people probably didn't know about)
 	  Invalid memory access (deleting a freed pixel surface) in FadeEffect.
