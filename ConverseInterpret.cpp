@@ -26,6 +26,7 @@
 #include "U6UseCode.h"
 #include "ActorManager.h"
 #include "GameClock.h"
+#include "Map.h"
 #include "MapWindow.h"
 #include "Effect.h"
 #include "ConverseInterpret.h"
