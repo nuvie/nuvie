@@ -1,3 +1,10 @@
+2004-05-30  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Fixed crash from ThrowObject effect caused by a TimedEvent attempting
+	  to use callback of deleted effect. Animation is stopped on target.
+	* Explosions are slightly larger when hitting walls with cannon fire.
+	* PLACEONTABLE tileflag is checked when dropping objects. The check has
+	  been moved to MapWindow::can_drop_obj().
+
 2004-05-30  Eric Fry <efry at users.sourceforge.net>
 	* Removed absolute paths from XCode project files. Thanks to Fortran
 	  Dragon for spotting them.

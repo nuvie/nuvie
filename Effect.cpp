@@ -400,6 +400,7 @@ void ThrowObjectEffect::start_anim()
  */
 void ThrowObjectEffect::hit_target()
 {
+    anim->stop();
     game->unpause_all();
     delete_self();
 }
@@ -461,7 +462,7 @@ void DropEffect::hit_target()
     throw_obj->x = stop_at.x;
     throw_obj->y = stop_at.y;
     throw_obj->z = stop_at.z;
-    obj_manager->add_obj(throw_obj);
+    obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
     throw_obj = NULL; // set as dropped
 
     ThrowObjectEffect::hit_target(); // calls delete_self()

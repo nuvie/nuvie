@@ -1757,8 +1757,7 @@ bool Event::drop()
     if(mode == WAIT_MODE)
         return(false);
     MapCoord drop_loc = map_window->get_cursorCoord();
-    drop(use_obj, drop_qty, drop_loc.x, drop_loc.y);
-    return(true);
+    return(drop(use_obj, drop_qty, drop_loc.x, drop_loc.y));
 }
 
 
@@ -1766,6 +1765,7 @@ bool Event::drop()
  */
 bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
 {
+    Map *map = Game::get_game()->get_game_map();
     if(mode == WAIT_MODE)
         return(false);
 
@@ -1795,6 +1795,16 @@ bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
     else
         scroll->display_string("nowhere.");
     scroll->display_string("\n");
+
+    // check drop-to location (FIXME: This is redundant if using DragnDrop)
+    if(!map_window->can_drop_obj(drop_loc.x, drop_loc.y, actor))
+    {
+        scroll->display_string("\nNot Possible\n");
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        endAction(); // because the DropEffect is never called to do this
+        return(false);
+    }
 
     // all object management is contained in the effect (use requested quantity)
     obj->status |= OBJ_STATUS_OK_TO_TAKE;

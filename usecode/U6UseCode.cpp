@@ -1125,7 +1125,7 @@ bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)
         }
         destroy_obj(obj, 1);
     }
-    return(false);
+    return(true);
 }
 
 

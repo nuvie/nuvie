@@ -341,11 +341,11 @@ void TileAnim::remove_tile(uint32 i)
 {
     if(i < tiles.size())
     {
-      vector<PositionedTile*>::iterator ti = tiles.begin();
-      for(uint32 j = 0; j < i; j++)
-         ti++;
-
         //vector<PositionedTile*>::iterator ti = &tiles[i];
+        vector<PositionedTile*>::iterator ti = tiles.begin();
+        for(uint32 j = 0; j < i; j++)
+            ti++;
+
         delete *ti;
         tiles.erase(ti);
     }
@@ -441,6 +441,13 @@ TossAnim::TossAnim(CallBack *t, void *d, Tile *tile, MapCoord *start, MapCoord *
     src = new MapCoord(*start);
     target = new MapCoord(*stop);
     blocking = stop_flags;
+}
+
+
+TossAnim::~TossAnim()
+{
+    delete src;
+    delete target;
 }
 
 
@@ -808,7 +815,7 @@ bool ExplosiveAnim::update()
 
         // stop in this direction
         // FIXME: more things than boundaries (walls) stop explosions
-        if(map->is_boundary(edge.x, edge.y, mapwindow_level))
+        if(map->is_boundary(edge.x, edge.y, mapwindow_level) && edge != center)
             flame[t].direction.sx = flame[t].direction.sy = 0;
 //        get_shifted_location(edge.x, edge.y, edge_px, edge_py,
 //                             flame[t].direction.sx, flame[t].direction.sy);
@@ -891,6 +898,12 @@ ThrowObjectAnim::ThrowObjectAnim(Obj *obj, MapCoord *from, MapCoord *to, uint32 
 
     // set velocity (x,y) based on direction & speed
     set_velocity_for_speed(direction.sx, direction.sy, vel);
+}
+
+
+ThrowObjectAnim::~ThrowObjectAnim()
+{
+    delete toss_tile;
 }
 
 

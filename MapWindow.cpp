@@ -994,29 +994,49 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
  
  if(message == GUI_DRAG_OBJ)
    {
+/*
     if(tmpBufTileIsBlack(x,y) && !hackmove)
       {
        printf("Cannot drop onto nothing!\n");
        return false;
       }
-
+*/
     map_width = map->get_width(cur_level);
  
     x = (cur_x + x) % map_width;
     y = (cur_y + y) % map_width;
-
+/*
+    Obj *block_obj = NULL; // blocking object
     if(map->is_passable(x,y,cur_level) || hackmove)
 	{
 	  LineTestResult result;
-      // make sure the player can reach the drop point
+	// make sure the player can reach the drop point
 	  Actor* player = actor_manager->get_player();
 	  if (!map->lineTest(player->x, player->y, x, y, cur_level, LT_HitUnpassable, result) || hackmove)
 	  {
-        return true;
+		return true;
 	  }
+          else if(result.hitObj)
+		block_obj = result.hitObj;
 	}
-	if (Game::get_game ()->get_scroll ())
-		Game::get_game ()->get_scroll ()->display_string("\n\nNot Possible\n\n>");
+    else
+	block_obj = obj_manager->get_obj(x,y,cur_level);
+
+    if(block_obj)
+    {
+        // We can place an object on a bench or table. Or on any other object if
+        // the object is passable and not on a boundary.
+        Tile *obj_tile = obj_manager->get_obj_tile(block_obj->obj_n, block_obj->frame_n);
+        if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
+           (obj_tile->passable && !map->is_boundary(block_obj->x, block_obj->y, cur_level)) )
+            return true;
+    }
+*/
+    if(can_drop_obj(x, y, actor_manager->get_player()))
+      return true;
+
+    Game::get_game()->get_scroll()->display_string("\n\nNot Possible\n\n");
+    Game::get_game()->get_scroll()->display_prompt();
   }
 
  return false;
@@ -1426,3 +1446,31 @@ GUI_status MapWindow::MouseLeave(Uint8 state)
     walking = false;
     return(GUI_PASS);
 }
+
+
+/* Returns true if any object could be placed at world coordinates x,y.
+ * If actor is set a line-of-site check must pass. (z is always cur_level)
+ */
+bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
+{
+    LineTestResult lt;
+    MapCoord actor_loc;
+    if(actor)
+        actor_loc = actor->get_location();
+
+    if(tmpBufTileIsBlack(x - cur_x, y - cur_y)
+       || !map->is_passable(x, y, cur_level)
+       || (actor && map->lineTest(actor_loc.x, actor_loc.y, x, y, cur_level, LT_HitUnpassable, lt)))
+    {
+        // We can place an object on a bench or table. Or on any other object if
+        // the object is passable and not on a boundary.
+        if(!lt.hitObj) // (but if unpassable isn't an object, nothing we can do)
+            return(false);
+        Tile *obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
+        if(!(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
+            (obj_tile->passable && !map->is_boundary(lt.hitObj->x, lt.hitObj->y, cur_level))))
+            return(false);
+    }
+    return(true);
+}
+

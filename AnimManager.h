@@ -164,7 +164,8 @@ class TimedAnim: public TileAnim
 protected:
     TimedCallback *timer;
 public:
-    TimedAnim() { timer = NULL; }
+    TimedAnim()  { timer = NULL; }
+    ~TimedAnim() { stop_timer(); }
     void start_timer(uint32 delay) { if(!timer) timer = new TimedCallback(this, NULL, delay, true); }
     void stop_timer()              { if(timer) { timer->clear_target(); timer = NULL; } }
 
@@ -193,7 +194,7 @@ protected:
 public:
     TossAnim(Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags = 0);
     TossAnim(CallBack *t, void *d, Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags = 0);
-    ~TossAnim()               { delete src; delete target; }
+    ~TossAnim();
 
     void start();
     void update_position();
@@ -213,7 +214,7 @@ class ThrowObjectAnim : public TossAnim
 public:
     // vel = pixels per second
     ThrowObjectAnim(Obj *obj, MapCoord *from, MapCoord *to, uint32 vel);
-    ~ThrowObjectAnim() { delete toss_tile; }
+    ~ThrowObjectAnim();
 
     void start();
 

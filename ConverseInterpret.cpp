@@ -990,7 +990,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
 void ConverseInterpret::eval(uint32 vi)
 {
     stack<converse_value> op_stk, r_stk;
-    sint32 v = vi;
+    uint32 v = vi;
 #ifdef CONVERSE_DEBUG
     fprintf(stderr, "Converse: EVAL");
     for(uint32 w = 0; w < val_count(); w++)
