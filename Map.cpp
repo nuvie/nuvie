@@ -26,8 +26,9 @@
 #include "NuvieIOFile.h"
 
 #include "Configuration.h"
+#include "Game.h"
 #include "TileManager.h"
-
+#include "ActorManager.h"
 #include "Map.h"
 
 #include "U6misc.h"
@@ -53,6 +54,7 @@ Map::~Map()
  for(i=0;i<5;i++)
    free(dungeons[i]);
 }
+
 
 unsigned char *Map::get_map_data(uint8 level)
 {
@@ -110,6 +112,14 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
    return true;
 
  return false;
+}
+
+
+/* Return pointer to actor standing at map coordinates.
+ */
+Actor *Map::get_actor(uint16 x, uint16 y, uint8 z)
+{
+    return(actor_manager->get_actor(x,y,z));
 }
 
 
@@ -278,4 +288,33 @@ void Map::insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 lev
     chunk += 8;
    }
 
+}
+
+
+/* Get absolute coordinates for relative destination from MapCoord.
+ */
+MapCoord MapCoord::abs_coords(sint16 dx, sint16 dy)
+{
+//    uint16 pitch = Map::get_width(z);
+    uint16 pitch = (z == 0) ? 1024 : 256;
+    dx += x;
+    dy += y;
+    // keep in map boundary
+    if(dx < 0)
+        dx = 0;
+    else if(dx >= pitch)
+        dx = pitch - 1;
+    if(dy < 0)
+        dy = 0;
+    else if(dy >= pitch)
+        dy = pitch - 1;
+    return(MapCoord(dx, dy, z));
+}
+
+
+/* Returns true if this map coordinate is visible in the game window.
+ */
+bool MapCoord::is_visible()
+{
+    return(Game::get_map_window()->in_window(x, y, z));
 }

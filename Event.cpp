@@ -124,10 +124,10 @@ bool Event::update()
                                map_window->centerCursor();
                                map_window->set_show_cursor(true);
                                break;
-             case SDLK_p     :
-                               scroll->display_string("\nYou say:");
-                               scroll->set_input_mode(true);
-                               break;
+//             case SDLK_p     :
+//                               scroll->display_string("\nYou say:");
+//                               scroll->set_input_mode(true);
+//                               break;
              case SDLK_t     :
                                mode = TALK_MODE;
                                scroll->display_string("Talk-");
@@ -501,7 +501,6 @@ bool Event::alt_code_teleport(const char *location_string)
  x = strtol(location_string,&next_num,16);
  y = strtol(next_num,&next_num,16);
  z = strtol(next_num,&next_num,16);
-
  player->move(x,y,z);
 
  return true;

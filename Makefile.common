@@ -27,6 +27,15 @@ nuvie_SOURCES = \
 	misc/iAVLTree.cpp \
 	misc/iAVLTree.h \
 \
+	pathfinder/AStar.cpp \
+	pathfinder/AStar.h \
+	pathfinder/LPath.cpp \
+	pathfinder/LPath.h \
+	pathfinder/PathFinder.cpp \
+	pathfinder/PathFinder.h \
+	pathfinder/ZPath.cpp \
+	pathfinder/ZPath.h \
+\
 	screen/GamePalette.cpp \
 	screen/GamePalette.h \
 	screen/Scale.cpp \

@@ -32,7 +32,9 @@
 #include "Map.h"
 #include "TileManager.h"
 #include "ObjManager.h"
-#include "Actor.h"
+
+class Actor;
+class Map;
 
 class ActorManager
 {

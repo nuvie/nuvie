@@ -73,9 +73,9 @@ class MapWindow
  
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);
- void get_abs_coords(sint16 &d_x, sint16 &d_y, sint16 x, sint16 y, sint8 z);
 
- 
+ bool in_window(uint16 x, uint16 y, uint8 z);
+
  void updateBlacking();
  
  void drawMap();

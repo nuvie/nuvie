@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <cstdlib>
 #include "U6def.h"
 #include "U6LList.h"
 
@@ -32,11 +32,44 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 
+class ActorManager;
+class Actor;
+
+
+/* Map Location with 2D X,Y coordinates and plane (map number)
+ */
+class MapCoord
+{
+public:
+    union { uint16 x; sint16 sx; };
+    union { uint16 y; sint16 sy; };
+    uint8 z; // plane
+
+    MapCoord(uint16 nx, uint16 ny, uint16 nz) { x = nx; y = ny; z = nz; }
+    
+    // greatest 2D distance X or Y
+    uint32 distance(MapCoord &c2)
+    {
+        uint16 dx = abs(c2.x - x), dy = abs(c2.y - y);
+        return(dx >= dy ? dx : dy);
+    }
+    // get absolute coordinates for relative destination (dx,dy)
+    MapCoord abs_coords(sint16 dx, sint16 dy);
+    // location is on screen?
+//    bool is_visible() { return(Game::get_map_window()->in_window(x, y, z)); }
+    bool is_visible();
+
+    bool operator==(MapCoord &c2) {return(x == c2.x && y == c2.y && z == c2.z);}
+    bool operator!=(MapCoord &c2) { return(!(*this == c2)); }
+};
+
+
 class Map
 {
  Configuration *config;
  TileManager *tile_manager;
  ObjManager *obj_manager;
+ ActorManager *actor_manager;
  
  uint8 *surface;
  uint8 *dungeons[5];
@@ -45,13 +78,16 @@ class Map
 
  Map(Configuration *cfg);
  ~Map();
- 
+
+ void set_actor_manager(ActorManager *am) { actor_manager = am; }
+ Actor *get_actor(uint16 x, uint16 y, uint8 z);
+
  bool loadMap(TileManager *tm, ObjManager *om);
  unsigned char *get_map_data(uint8 level);
  uint16 get_width(uint8 level);
  bool is_passable(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
- 
+
  const char *look(uint16 x, uint16 y, uint8 level);
  
  protected:
@@ -64,4 +100,3 @@ class Map
 };
 
 #endif /* __Map_h__ */
-

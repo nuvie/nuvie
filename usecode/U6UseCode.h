@@ -101,7 +101,9 @@ class U6UseCode: public UseCode
  bool uc_event(sint16 uco, uint8 ev, Obj *obj);
  
  bool use_obj(Obj *obj, Obj *src_obj=NULL);
- 
+
+ bool is_unlocked_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n != 9 && obj->frame_n != 11); }
+
  protected:
  
  bool use_door(Obj *obj);

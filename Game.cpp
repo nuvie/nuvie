@@ -39,6 +39,10 @@
 
 #include "Game.h"
 
+MapWindow *Game::map_window = NULL;
+ObjManager *Game::obj_manager = NULL;
+UseCode *Game::usecode = NULL;
+
 Game::Game(Configuration *cfg)
 {
  config = cfg;
@@ -90,6 +94,7 @@ bool Game::loadGame(Screen *s, uint8 type)
  
    actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
    actor_manager->loadActors();
+   game_map->set_actor_manager(actor_manager);
   
    map_window = new MapWindow(config);
    map_window->init(screen, game_map, tile_manager, obj_manager, actor_manager);
@@ -206,7 +211,7 @@ void Game::play()
   map_window->drawMap();
   
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
-  
+
   for( ; game_play ; ) 
    {
      game_play = event->update();

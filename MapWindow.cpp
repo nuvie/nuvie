@@ -7,7 +7,7 @@
  *
  */
 #include "Configuration.h"
-
+#include "Actor.h"
 #include "MapWindow.h"
 
 MapWindow::MapWindow(Configuration *cfg)
@@ -236,6 +236,16 @@ void MapWindow::get_pos(uint16 *x, uint16 *y)
  *x = cur_x;
  *y = cur_y;
 }
+
+
+/* Returns true if the location at the coordinates is visible on the map window.
+ */
+bool MapWindow::in_window(uint16 x, uint16 y, uint8 z)
+{
+    return( (z == cur_level && x >= cur_x && x <= (cur_x + win_width)
+             && y >= cur_y && y <= (cur_y + win_height)) );
+}
+
  
 void MapWindow::updateBlacking()
 {
@@ -744,21 +754,3 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y)
  return false;
 }
 
-
-/* Replace relative destination d_x,d_y (from x,y) with absolute coordinates.
- */
-void MapWindow::get_abs_coords(sint16 &d_x, sint16 &d_y, sint16 x, sint16 y, sint8 z)
-{
-    uint16 pitch = map->get_width(z);
-    d_x += x;
-    d_y += y;
-    // keep in map boundary
-    if(d_x < 0)
-        d_x = 0;
-    else if(d_x >= pitch)
-        d_x = pitch - 1;
-    if(d_y < 0)
-        d_y = 0;
-    else if(d_y >= pitch)
-        d_y = pitch - 1;
-}

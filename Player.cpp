@@ -96,31 +96,52 @@ char *Player::get_gender_title()
    return "milady";
 }
 
+
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
  if(rel_x < 0)
-   actor->set_direction(3);
+  actor->set_direction(3);
  if(rel_x > 0)
-   actor->set_direction(1);
+  actor->set_direction(1);
  if(rel_y < 0)
-   actor->set_direction(0);
+  actor->set_direction(0);
  if(rel_y > 0)
-   actor->set_direction(2);
-   
- if(actor->moveRelative(rel_x,rel_y))
+  actor->set_direction(2);
+
+ // switch position with party members
+ uint16 x, y;
+ uint8 z;
+ get_location(&x, &y, &z);
+ Actor *obstacle = actor_manager->get_actor(x + rel_x, y + rel_y, z);
+ if(obstacle && party->contains_actor(obstacle))
+ {
+    uint8 dir = actor->get_direction();
+    dir += 2;
+    if(dir > 3)
+        dir -= 4;
+    obstacle->set_direction(dir); // move in opposite direction as player
+    obstacle->move(x, y, z);
+    obstacle = NULL;
+ }
+
+ if(!obstacle && actor->moveRelative(rel_x,rel_y))
+ {
    map_window->moveMapRelative(rel_x,rel_y);
-   
- clock->inc_move_counter();
- actor_manager->updateActors();
+   party->follow();
+   actor_manager->updateActors();
+   clock->inc_move_counter(); // SB-X move to gameclock
+ }
 }
 
 void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 {
- if(actor->move(new_x,new_y,new_level))
+   if(actor->move(new_x, new_y, new_level))
    {
-    //map_window->moveMap(new_x,new_y,new_level);
     map_window->centerMapOnActor(actor);
-   } 
+// center everyone first, so we don't try to path-find between planes if blocked
+    party->move(new_x, new_y, new_level);
+    party->follow();
+   }
 }
 
 void Player::moveLeft()
@@ -146,6 +167,7 @@ void Player::moveDown()
 void Player::pass()
 {
  clock->inc_move_counter_by_a_minute();
+ actor_manager->updateActors(); // SB-X move to gameclock
 }
 
 bool Player::loadObjlistData()

@@ -30,7 +30,16 @@
 #include "ObjManager.h"
 #include "GameClock.h"
 
+// directions
+#define ACTOR_DIR_U 0
+#define ACTOR_DIR_R 1
+#define ACTOR_DIR_D 2
+#define ACTOR_DIR_L 3
+
+class Map;
+class MapCoord;
 class UseCode;
+class PathFinder;
 
 typedef struct {
 uint16 x;
@@ -44,7 +53,10 @@ class Actor
 {
  friend class ActorManager;
  friend class MapWindow;
+ friend class LPath;
  friend class Party;
+ friend class PathFinder;
+ friend class ZPath;
  
  uint8 id_n;
  
@@ -52,6 +64,7 @@ class Actor
  ObjManager *obj_manager;
  GameClock *clock;
  UseCode *usecode;
+ PathFinder *pathfinder;
  
  uint16 x;
  uint16 y;
@@ -69,7 +82,9 @@ class Actor
  bool met_player;
  
  bool in_party;
- 
+
+ bool moved; // actor has moved this turn (FIXME: unused)
+
  uint8 strength;
  uint8 dex;
  uint8 intelligence;
@@ -88,12 +103,13 @@ class Actor
  
  //current schedule pos;
  uint16 sched_pos;
- 
+
  public:
  
  Actor(Map *m, ObjManager *om, GameClock *c);
  ~Actor();
  
+// bool is_visible() { return(MapCoord(x,y,z).is_visible()); }
  bool is_alive();
  bool is_nearby(Actor *other);
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
@@ -122,6 +138,7 @@ class Actor
  void set_worktype(uint8 new_worktype);
   
  void set_direction(uint8 d);
+ uint8 get_direction() { return(direction); }
  void face_location(uint16 lx, uint16 ly);
  void face_actor(Actor *a);
 
@@ -131,9 +148,15 @@ class Actor
 
  bool moveRelative(sint16 rel_x, sint16 rel_y);
  bool move(sint16 new_x, sint16 new_y, sint8 new_z);
+ bool check_move(sint16 new_x, sint16 new_y, sint8 new_z);
  
  void update();
  void set_in_party(bool state);
+ void swalk(MapCoord &d, uint8 speed = 1);
+ void swalk(MapCoord &d, MapCoord &d2, uint8 speed = 1);
+ void lwalk(MapCoord &d, uint8 speed = 1);
+// void stop_walking() { delete pathfinder; pathfinder = NULL; }
+ void stop_walking();
  
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0);

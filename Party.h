@@ -38,8 +38,32 @@ struct PartyMember {
 char name[14];
 Actor *actor;
 uint8 combat_position;
-
+sint8 form_x; // relative position left or right of leader
+sint8 form_y; // relative position in front or in back of leader
+              // (leader is at 0,0)
 };
+
+/* party walking formations: */
+#define PARTY_FORM_STANDARD 0
+#define PARTY_FORM_COLUMN   1
+#define PARTY_FORM_ROW      2
+#define PARTY_FORM_PHALANX  3
+#define PARTY_FORM_DELTA    4
+/*   0 <- standard *
+ *  1 2            *
+ * 4 3 5           *
+ *  6 7            *
+ *                 *
+ * 0 <- column     * 3210 <- row
+ * 1               * 7654
+ * 2               *
+ * 3...            *
+ *                 *
+ * 415             *    0 <- delta
+ * 203 <- phalanx  *   1 2
+ * 6 7             *  3   4
+ *                 * 6     7
+ */
 
 class Party {
  Game *game; // get pointers here to avoid construct order issues in loadGame()
@@ -47,7 +71,8 @@ class Party {
  ActorManager *actor_manager;
  
  PartyMember member[16];
- uint8 num_in_party; //number of party members.
+ uint8 num_in_party; // number of party members.
+ uint8 formation; // walking formation
  
  public:
  
@@ -81,6 +106,10 @@ class Party {
  {
   return(get_member_num(actor_manager->get_actor(a)));
  }
+
+ void reform_party();
+ void follow();
+ bool move(uint16 dx, uint16 dy, uint8 dz);
 
  protected:
 

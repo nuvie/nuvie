@@ -20,10 +20,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include "Actor.h"
 #include "ActorManager.h"
 #include "misc.h"
- void config_get_path(Configuration *config, std::string filename, std::string &path);
+
+void config_get_path(Configuration *config, std::string filename, std::string &path);
 
 ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c)
 {
@@ -32,7 +33,7 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  tile_manager = tm;
  obj_manager = om;
  clock = c;
- 
+
  player_actor = 1;
 }
 

@@ -29,6 +29,7 @@ Party::Party(Configuration *cfg)
 {
  config = cfg;
  num_in_party = 0;
+ formation = PARTY_FORM_STANDARD;
 }
 
 Party::~Party()
@@ -59,7 +60,8 @@ bool Party::add_actor(Actor *actor)
     member[num_in_party].name[13] = '\0';
     member[num_in_party].combat_position = 0;
     num_in_party++;
-    
+
+    reform_party();
     return true;
    }
 
@@ -82,7 +84,8 @@ bool Party::remove_actor(Actor *actor)
            member[i] = member[i+1];
         }
       num_in_party--;
-        
+
+      reform_party();
       return true;
      }
   }
@@ -159,6 +162,110 @@ bool Party::loadParty()
    actor_num = objlist.read1();
    member[i].actor = actor_manager->get_actor(actor_num);
   }
+ reform_party();
  
  return true;
+}
+
+
+/* Rearrange member slot positions based on the number of members and the
+ * selected formation. Used only when adding or removing actors.
+ */
+void Party::reform_party()
+{
+    member[0].form_x = 0; member[0].form_y = 0;
+    switch(formation)
+    {
+        case PARTY_FORM_COLUMN:
+            for(uint32 n = 1; n < num_in_party; n++)
+            {   member[n].form_x = 0; member[n].form_y = n; }
+            break;
+        case PARTY_FORM_ROW:
+            for(uint32 n = 1; n < num_in_party; n++)
+            {   member[n].form_x = -n; member[n].form_y = 0; }
+            break;
+        case PARTY_FORM_PHALANX: // FIXME: need to move party first
+            member[1].form_x = 0; member[1].form_y = -1;
+            member[2].form_x = -1; member[2].form_y = 0;
+            member[3].form_x = 1; member[3].form_y = 0;
+            member[4].form_x = -1; member[4].form_y = -1;
+            member[5].form_x = 1; member[5].form_y = -1;
+            member[6].form_x = -1; member[6].form_y = 1;
+            member[7].form_x = 1; member[7].form_y = 1;
+            for(uint32 n = 8; n < num_in_party; n++) // the rest "tail"
+            {   member[n].form_x = 0; member[n].form_y = (n-8)+2; }
+            break;
+        case PARTY_FORM_DELTA:
+        case PARTY_FORM_STANDARD:
+        default:
+            if(num_in_party >= 3)
+                member[1].form_x = -1;
+            else
+                member[1].form_x = 0;
+            member[1].form_y = 1;
+            member[2].form_x = 1; member[2].form_y = 1;
+            member[3].form_x = 0; member[3].form_y = 2;
+            member[4].form_x = -2; member[4].form_y = 2;
+            member[5].form_x = 2; member[5].form_y = 2;
+            member[6].form_x = -1; member[6].form_y = 3;
+            member[7].form_x = 1; member[7].form_y = 3;
+    }
+}
+
+
+/* Update the actual locations of the party actors on the map, so that they are
+ * in the proper formation.
+ * If the new position is blocked or more than one space away, path-find to it.
+ */
+void Party::follow()
+{
+    uint8 lz, az, dir = member[0].actor->get_direction();
+    uint16 lx, ly, ax, ay; // leader & actor coordinates
+    member[0].actor->get_location(&lx, &ly, &lz);
+
+    for(uint32 m = 1; m < num_in_party; m++)
+    {
+        member[m].actor->get_location(&ax, &ay, &az);
+        uint16 dx, dy; // destination
+        dx = (dir == ACTOR_DIR_U) ? lx + member[m].form_x :
+             (dir == ACTOR_DIR_R) ? lx - member[m].form_y :
+             (dir == ACTOR_DIR_D) ? lx - member[m].form_x :
+             (dir == ACTOR_DIR_L) ? lx + member[m].form_y : ax;
+        dy = (dir == ACTOR_DIR_U) ? ly + member[m].form_y :
+             (dir == ACTOR_DIR_R) ? ly - member[m].form_x :
+             (dir == ACTOR_DIR_D) ? ly - member[m].form_y :
+             (dir == ACTOR_DIR_L) ? ly + member[m].form_x : ay;
+        if(ax == dx && ay == dy) // already there
+            continue;
+
+        // try quick move
+        if(((abs(ax - dx) <= 1 && abs(ay - dy) <= 1) || az != lz)
+           && member[m].actor->move(dx, dy, lz))
+        {
+            member[m].actor->stop_walking();
+            if(dy < ay)
+                member[m].actor->set_direction(ACTOR_DIR_U);
+            else if(dy > ay)
+                member[m].actor->set_direction(ACTOR_DIR_D);
+            else if(dx < ax)
+                member[m].actor->set_direction(ACTOR_DIR_L);
+            else
+                member[m].actor->set_direction(ACTOR_DIR_R);
+            continue;
+        }
+        // walk there
+        MapCoord dest(dx, dy, lz), leader_dest(lx, ly, lz);
+        member[m].actor->swalk(dest, leader_dest);
+    }
+}
+
+
+/* Move and center everyone in the party to one location.
+ */
+bool Party::move(uint16 dx, uint16 dy, uint8 dz)
+{
+    for(sint32 m = (num_in_party - 1); m >= 0; m--)
+        if(!member[m].actor->move(dx, dy, dz))
+            return(false);
+    return(true);
 }

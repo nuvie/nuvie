@@ -25,9 +25,20 @@
 #include "Map.h"
 #include "ObjManager.h"
 #include "U6UseCode.h"
+#include "pathfinder/LPath.h"
+#include "pathfinder/ZPath.h"
 #include "Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
+
+
+#warning inline Actor::stop_walking
+void Actor::stop_walking()
+{
+    delete pathfinder;
+    pathfinder = NULL;
+}
+
 
 Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 :sched(NULL)
@@ -35,8 +46,9 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  map = m;
  obj_manager = om;
  usecode = NULL;
-
  clock = c;
+ pathfinder = NULL;
+
  direction = 0;
  walk_frame = 0;
  standing = true;
@@ -48,7 +60,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 Actor::~Actor()
 {
  // free sched array
- if (sched != NULL)
+ if(sched != NULL)
  {
     Schedule** cursched = sched;
     while(*cursched != NULL)
@@ -56,6 +68,8 @@ Actor::~Actor()
 
     free(sched);
  }
+ if(pathfinder)
+    delete pathfinder;
 }
 
 bool Actor::is_alive()
@@ -68,12 +82,11 @@ bool Actor::is_alive()
  */
 bool Actor::is_nearby(Actor *other)
 {
-    uint16 x, y, x2, y2;
-    uint8 l, l2;
+    uint16 x2, y2;
+    uint8 z2;
 
-    this->get_location(&x, &y, &l);
-    other->get_location(&x2, &y2, &l2);
-    if(abs(x - x2) <= 18 && abs(y - y2) <= 18 && l == l2)
+    other->get_location(&x2, &y2, &z2);
+    if(abs(x - x2) <= 18 && abs(y - y2) <= 18 && z == z2)
         return(true);
     return(false);
 }
@@ -145,27 +158,31 @@ bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
  return move(x + rel_x, y + rel_y, z);
 }
 
+
+bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z)
+{
+    if(z > 5)
+        return(false);
+
+    uint16 pitch = map->get_width(new_z);
+    if(new_x < 0 || new_x >= pitch)
+        return(false);
+    if(new_y < 0 || new_y >= pitch)
+        return(false);
+
+    if(map->is_passable(new_x,new_y,new_z) == false)
+        return(false);
+    return(true);
+}
+
+
 bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
 {
- uint16 pitch;
- Obj *obj;
- 
- if(z > 5)
-   return false;
-  
- pitch = map->get_width(new_z);
- 
- if(new_x < 0 || new_x >= pitch)
+ if(!check_move(new_x, new_y, new_z))
    return false;
 
- if(new_y < 0 || new_y >= pitch)
-   return false;
-
- if(map->is_passable(new_x,new_y,new_z) ==  false)
-   return false;
- 
  usecode = obj_manager->get_usecode();
- obj = obj_manager->get_obj(new_x,new_y,new_z);
+ Obj *obj = obj_manager->get_obj(new_x,new_y,new_z);
  if(obj)
   {
    // check usecode table for a step-to function to call for this object
@@ -186,8 +203,10 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
    if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
      frame_n = (obj->frame_n * 4) + 3;
   }
+ moved = true;
  return true;
 }
+
 
 void Actor::update()
 {
@@ -224,7 +243,53 @@ void Actor::update()
 */
  updateSchedule();
 
+ if(pathfinder)
+ {
+    pathfinder->walk_path();
+    if(pathfinder->reached_goal())
+        stop_walking();
+ }
 }
+
+
+/* Start walking to a short-range destination on the map (Follow).
+ */
+void Actor::swalk(MapCoord &d, uint8 speed)
+{
+    if(pathfinder && (!pathfinder->can_follow()))
+        stop_walking();
+    if(!pathfinder)
+        pathfinder = new ZPath(this, d);
+    else
+        pathfinder->set_dest(d); // use existing path-finder
+    pathfinder->set_speed(speed);
+}
+
+
+/* Start walking to a short-range destination on the map. Allow a secondary
+ * destination (to follow another actor in formation, for example.)
+ */
+void Actor::swalk(MapCoord &d, MapCoord &d2, uint8 speed)
+{
+    swalk(d, speed);
+    if(pathfinder)
+        pathfinder->set_dest2(d2);
+}
+
+
+/* Start walking to a long-range destination on the map (Travel).
+ */
+void Actor::lwalk(MapCoord &d, uint8 speed)
+{
+    if(pathfinder && (!pathfinder->can_travel()))
+        stop_walking();
+    if(!pathfinder)
+        pathfinder = new LPath(this, d);
+    else
+        pathfinder->set_dest(d); // use existing path-finder
+    pathfinder->set_speed(speed);
+}
+
 
 void Actor::set_in_party(bool state)
 {
@@ -467,10 +532,16 @@ void Actor::updateSchedule()
  if(sched[sched_pos] == NULL)
    return;
  
- move(sched[sched_pos]->x,sched[sched_pos]->y,sched[sched_pos]->z);
- 
+// testing: just walk a few npc's for now
+// if(id_n > 64)
+//    move(sched[sched_pos]->x,sched[sched_pos]->y,sched[sched_pos]->z);
+// else
+// {
+ MapCoord sched_dest(sched[sched_pos]->x, sched[sched_pos]->y,
+                     sched[sched_pos]->z);
+ lwalk(sched_dest);
+// }
  set_worktype(sched[sched_pos]->worktype);
- 
 }
 
 // returns the current schedule entry based on hour

@@ -57,6 +57,8 @@ class UseCode
  bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
  virtual bool use_obj(Obj *obj, Obj *src_obj=NULL)=0;
 
+ virtual bool is_unlocked_door(Obj *obj) { return(false); }
+
  virtual void init_objects() = 0;
  virtual sint16 get_ucobject_index(uint16 n, uint8 f = 0) = 0;
  virtual bool uc_event(sint16 uco, uint8 ev, Obj *obj) = 0;
