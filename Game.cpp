@@ -292,6 +292,8 @@ void Game::play()
     
   for( ; game_play ; ) 
    {
+     if(cursor) cursor->clear(); // restore cursor area before GUI events
+
      game_play = event->update();
      palette->rotatePalette();
      tile_manager->update();
@@ -302,7 +304,6 @@ void Game::play()
      //scroll->updateScroll();
      effect_manager->update_effects();
 
-     if(cursor) cursor->clear();
      gui->Display();
      if(cursor) cursor->display();
 
