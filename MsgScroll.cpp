@@ -190,6 +190,7 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
 
  page_break = false;
  show_cursor = true;
+ talking = false;
 
  add_new_line();
  display_pos = 0;
@@ -401,11 +402,14 @@ bool MsgScroll::set_prompt(const char *new_prompt, Font *f)
 
 void MsgScroll::display_prompt()
 {
+ if(!talking)
+  { 
  //line_count = 0;
- display_string(prompt.s.c_str(), prompt.font);
+   display_string(prompt.s.c_str(), prompt.font);
  //line_count = 0;
 
- clear_page_break();
+   clear_page_break();
+  }
 }
 
 void MsgScroll::set_keyword_highlight(bool state)
@@ -641,7 +645,8 @@ void MsgScroll::Display(bool full_redraw)
   }
 else
  {
-  if(show_cursor && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height) )
+  if(show_cursor && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height)
+     && widget_has_focus() ) // hide cursor when scroll loses input
     drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
  }
 

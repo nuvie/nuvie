@@ -1256,7 +1256,7 @@ void Actor::defend(uint8 attack, uint8 weapon_damage)
  */
 void Actor::reduce_hp(uint8 amount)
 {
- fprintf(stderr, "hit %s for %d points", get_name(), amount);
+ fprintf(stderr, "hit %s for %d points\n", get_name(), amount);
 
     if(amount <= hp) hp -= amount;
     else hp = 0;
@@ -1298,6 +1298,8 @@ void Actor::hit(uint8 dmg)
       {
        if(hp < 15)
          scroll->display_string(" Critical!\n");
+       else
+         scroll->display_string(" hit.\n"); // FIX string based on dmg amount
       }
 
    }

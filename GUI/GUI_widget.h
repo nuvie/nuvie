@@ -150,6 +150,8 @@ public:
 
   /* should this widget be redrawn */
   inline bool needs_redraw() { return update_display; }
+  /* widget has focus or no widget is focused */
+  bool widget_has_focus(); // SB-X
 
 	/* GUI idle function -- run when no events pending */
 	virtual GUI_status Idle(void);

@@ -42,6 +42,9 @@ class Screen;
 #define MAPWINDOW_THUMBNAIL_SIZE 52
 #define MAPWINDOW_THUMBNAIL_SCALE 3
 
+#define MAP_OVERLAY_DEFAULT 0 /* just below border */
+#define MAP_OVERLAY_ONTOP   1 /* cover border */
+
 typedef struct {
 	Tile *t;
 	uint16 x,y;
@@ -57,6 +60,8 @@ class MapWindow: public GUI_Widget
 
  uint16 *tmp_map_buf; // tempory buffer for flood fill, hide rooms.
  uint16 tmp_map_width, tmp_map_height;
+ SDL_Surface *overlay; // used for visual effects
+ uint8 overlay_level; // where the overlay surface is placed
 
  TileManager *tile_manager;
  ObjManager *obj_manager;
@@ -101,6 +106,8 @@ class MapWindow: public GUI_Widget
  void set_show_cursor(bool state);
  void set_show_use_cursor(bool state);
  void set_velocity(sint16 vx, sint16 vy) { vel_x = vx; vel_y = vy; }
+ void set_overlay(SDL_Surface *surfpt);
+ void set_overlay_level(int level = MAP_OVERLAY_DEFAULT) { overlay_level = level; }
 
  void moveLevel(uint8 new_level);
  void moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add = 0, uint8 new_y_add = 0);
@@ -125,8 +132,9 @@ class MapWindow: public GUI_Widget
  void get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y);
 
  TileManager *get_tile_manager() { return tile_manager; }
- SDL_Rect *get_clip_rect()       { return &clip_rect; }
  AnimManager *get_anim_manager() { return anim_manager; }
+ SDL_Rect *get_clip_rect()       { return &clip_rect; }
+ SDL_Surface *get_overlay();
 
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y, uint8 *px = NULL, uint8 *py = NULL);

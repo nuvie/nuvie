@@ -1,3 +1,4 @@
+#include <cstring>
 #include "nuvieDefs.h"
 #include "Game.h"
 
@@ -9,6 +10,7 @@
 #include "GameClock.h"
 #include "EffectManager.h"
 #include "UseCode.h"
+#include "ViewManager.h"
 #include "Effect.h"
 
 #include <cassert>
@@ -17,6 +19,8 @@
 #define MESG_ANIM_HIT        ANIM_CB_HIT
 #define MESG_ANIM_DONE       ANIM_CB_DONE
 #define MESG_EFFECT_COMPLETE EFFECT_CB_COMPLETE
+
+#define TRANSPARENT_COLOR 0xFF /* transparent pixel color */
 
 QuakeEffect *QuakeEffect::current_quake = NULL;
 
@@ -141,6 +145,25 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 }
 
 
+/*** TimedEffect ***/
+void TimedEffect::start_timer(uint32 delay)
+{
+    if(!timer)
+        timer = new TimedCallback(this, NULL, delay, true);
+}
+
+
+void TimedEffect::stop_timer()
+{
+    if(timer)
+    {
+        timer->clear_target();
+        timer = NULL;
+    }
+}
+
+
+/*** QuakeEffect ***/
 /* Shake the visible play area around for `duration' milliseconds. Magnitude
  * determines the speed of movement. An actor may be selected to keep the
  * MapWindow centered on after the Quake.
@@ -402,7 +425,8 @@ void ThrowObjectEffect::start_anim()
  */
 void ThrowObjectEffect::hit_target()
 {
-    anim->stop();
+    if(anim)
+        anim->stop();
     game->unpause_all();
     delete_self();
 }
@@ -449,7 +473,8 @@ uint16 DropEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
     if(!throw_obj || (msg != MESG_ANIM_DONE && msg != MESG_ANIM_HIT_WORLD))
         return(0);
 
-    if(msg == MESG_ANIM_HIT_WORLD && stop_at == *(MapCoord *)msg_data)
+    if(msg == MESG_ANIM_HIT_WORLD && stop_at == *(MapCoord *)msg_data
+       && anim)
         anim->stop();
 
     hit_target();
@@ -514,12 +539,315 @@ uint16 MissileEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
     {
         if(hit_actor && hit_damage != 0) // stop at actor if effect causes damage
         {
-            anim->stop();
+            if(anim)
+                anim->stop();
             ((MapEntity *)msg_data)->actor->hit(hit_damage);
             hit_target();
         }
     }
     else if(msg == MESG_ANIM_DONE)
         hit_target();
+    return(0);
+}
+
+
+/*** SleepEffect ***/
+SleepEffect::SleepEffect(std::string until)
+                         : timer(NULL),stop_hour(0),stop_minute(0),stop_time("")
+{
+    stop_time = until;
+    game->pause_user();
+    effect_manager->watch_effect(this, new FadeEffect(FADE_PIXELATED, FADE_OUT));
+}
+
+
+SleepEffect::~SleepEffect()
+{
+    if(timer) // make sure it doesn't try to call us again
+        timer->clear_target();
+}
+
+
+/* As with TimedEffect, make sure the timer doesn't try to use callback again.
+ */
+void SleepEffect::delete_self()
+{
+    timer->clear_target(); // this will also stop/delete the TimedAdvance
+    timer = NULL;
+    Effect::delete_self();
+}
+
+
+/* Resume normal play when requested time has been reached.
+ */
+uint16 SleepEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    uint8 hour = Game::get_game()->get_clock()->get_hour();
+    uint8 minute = Game::get_game()->get_clock()->get_minute();
+
+    // waited for FadeEffect
+    if(msg == MESG_EFFECT_COMPLETE)
+    {
+        if(timer == NULL) // starting
+        {
+            timer = new TimedAdvance(stop_time, 360); // 6 hours per second
+            timer->set_target(this);
+            timer->get_time_from_string(stop_hour, stop_minute, stop_time);
+            // stop_hour & stop_minute are checked each hour
+        }
+        else // stopping
+        {
+            game->unpause_all();
+            delete_self();
+        }
+        return(0);
+    }
+    // assume msg == MESG_TIMED; will stop after effect completes
+    if(hour == stop_hour && minute >= stop_minute)
+        effect_manager->watch_effect(this, new FadeEffect(FADE_PIXELATED, FADE_IN));
+
+    return(0);
+}
+
+
+/*** FadeEffect ***/
+FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, uint32 color, uint32 speed)
+{
+    screen = game->get_screen();
+    map_window = game->get_map_window();
+    viewport = new SDL_Rect(map_window->GetRect());
+
+    fade_type = fade;
+    fade_dir = dir;
+    fade_speed = speed ? speed : 50000; // pixels-per-second
+
+    evtime = prev_evtime = 0;
+
+    if(fade_type == FADE_PIXELATED || fade_type == FADE_PIXELATED_ONTOP)
+    {
+        pixelated_color = color;
+        init_pixelated_fade();
+    }
+    else
+        init_circle_fade();
+}
+
+
+FadeEffect::~FadeEffect()
+{
+    delete viewport;
+    if(fade_dir == FADE_IN) // overlay should be empty now, so just delete it
+        map_window->set_overlay(NULL);
+}
+
+
+/* Start effect.
+ */
+void FadeEffect::init_pixelated_fade()
+{
+    int fillret = -1; // check error
+    overlay = map_window->get_overlay();
+    if(overlay != NULL)
+    {
+        // clear overlay to fill color or transparent
+        if(fade_dir == FADE_OUT)
+            fillret = SDL_FillRect(overlay, NULL, uint32(TRANSPARENT_COLOR));
+        else
+            fillret = SDL_FillRect(overlay, NULL, uint32(pixelated_color));
+    }
+    if(fillret == -1)
+    {
+        fprintf(stderr, "FadeEffect: error creating overlay surface\n");
+        delete_self();
+        return;
+    }
+
+    // set FADE_PIXELATED_ONTOP to place the effect layer above the map border
+    map_window->set_overlay_level((fade_type == FADE_PIXELATED)
+                                  ? MAP_OVERLAY_DEFAULT : MAP_OVERLAY_ONTOP);
+    start_timer(100); // fire timer continuously
+}
+
+
+/* Start effect.
+ */
+void FadeEffect::init_circle_fade()
+{
+    delete_self(); // FIXME
+}
+
+
+/* Called by the timer as frequently as possible. Do the appropriate
+ * fade method and stop when the effect is oomplete.
+ */
+uint16 FadeEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    bool fade_complete = false;
+
+    // warning: msg is assumed to be CB_TIMED and data is set
+    evtime = *(uint32 *)(data);
+
+    // do effect
+    if(fade_type == FADE_PIXELATED || fade_type == FADE_PIXELATED_ONTOP)
+    {
+        if(fade_dir == FADE_OUT)
+            fade_complete = pixelated_fade_out();
+        else
+            fade_complete = pixelated_fade_in();
+    }
+    else /* CIRCLE */
+    {
+        if(fade_dir == FADE_OUT)
+            fade_complete = circle_fade_out();
+        else
+            fade_complete = circle_fade_in();
+    }
+
+    // done
+    if(fade_complete == true)
+        delete_self();
+    return(0);
+}
+
+
+/* Scan the overlay, starting at pixel rnum, for a transparent pixel if fading
+ * out, and a colored pixel if fading in.
+ * Returns true if a free pixel was found and set as rnum.
+ */
+inline bool FadeEffect::find_free_pixel(uint32 &rnum, uint32 pixel_count)
+{
+    uint8 scan_color = (fade_dir == FADE_OUT) ? TRANSPARENT_COLOR
+                                              : pixelated_color;
+    uint8 *pixels = (uint8 *)(overlay->pixels);
+
+    for(uint32 p = rnum; p < pixel_count; p++) // check all pixels after rnum
+        if(pixels[p] == scan_color)
+        {
+            rnum = p;
+            return(true);
+        }
+    for(uint32 p = 0; p < rnum; p++) // check all pixels before rnum
+        if(pixels[p] == scan_color)
+        {
+            rnum = p;
+            return(true);
+        }
+    return(false);
+}
+
+
+
+/* Randomly add pixels of the appropriate color to the overlay.
+ * Returns true when all pixels have been filled, and nothing is visible.
+ */
+bool FadeEffect::pixelated_fade_out()
+{
+    bool all_clear = false; // completely faded to pixelated_color
+    uint32 time_passed = (prev_evtime == 0) ? 0 : evtime - prev_evtime;
+    uint32 fraction = 1000 / (time_passed > 0 ? time_passed : 1); // % of second passed, in milliseconds
+    uint32 pixels_per_fraction = fade_speed / (fraction > 0 ? fraction : 1);
+    prev_evtime = evtime;
+
+    uint32 pixel_count = overlay->w * overlay->h;
+    int c = 0;
+    while(c++ < pixels_per_fraction)
+    {
+        uint32 rnum = NUVIE_RAND()%pixel_count;
+        // replace rnum with next transparent pixel
+        if(find_free_pixel(rnum, pixel_count))
+        {
+            memset(&((uint8 *)(overlay->pixels))[rnum], pixelated_color, 1);
+        }
+        else
+        {
+            all_clear = true; // done
+            break;
+        }
+    }
+    return(all_clear);
+}
+
+
+/* Randomly add pixels of the transparent color to the overlay, having the effect
+ * of removing the colored pixels.
+ * Returns true when all colored pixels have been removed, and the MapWindow
+ * is visible.
+ */
+bool FadeEffect::pixelated_fade_in()
+{
+    bool all_clear = false; // completely faded to transparent color
+    uint32 time_passed = (prev_evtime == 0) ? 0 : evtime - prev_evtime;
+    uint32 fraction = 1000 / (time_passed > 0 ? time_passed : 1); // % of second passed, in milliseconds
+    uint32 pixels_per_fraction = fade_speed / (fraction > 0 ? fraction : 1);
+    prev_evtime = evtime;
+
+    uint32 pixel_count = overlay->w * overlay->h;
+    int c = 0;
+    while(c++ < pixels_per_fraction)
+    {
+        uint32 rnum = NUVIE_RAND()%pixel_count;
+        // replace rnum with next colored pixel
+        if(find_free_pixel(rnum, pixel_count))
+        {
+            memset(&((uint8 *)(overlay->pixels))[rnum], TRANSPARENT_COLOR, 1);
+        }
+        else
+        {
+            all_clear = true; // done
+            break;
+        }
+    }
+    return(all_clear);
+}
+
+
+/* Reduce the MapWindow's ambient light level, according to the set speed.
+ * Returns true when nothing is visible.
+ */
+bool FadeEffect::circle_fade_out()
+{
+    return(false);
+}
+
+
+/* Add to the MapWindow's ambient light level, according to the set speed.
+ * Returns true when the light level has returned to normal.
+ */
+bool FadeEffect::circle_fade_in()
+{
+    return(false);
+}
+
+
+GameFadeInEffect::GameFadeInEffect(uint32 color)
+                              : FadeEffect(FADE_PIXELATED_ONTOP, FADE_IN, color)
+{
+    game->pause_user();
+}
+
+
+GameFadeInEffect::~GameFadeInEffect()
+{
+}
+
+
+uint16 GameFadeInEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    bool fade_complete = false;
+
+    // warning: msg is assumed to be CB_TIMED and data is set
+    evtime = *(uint32 *)(data);
+
+    if(fade_dir == FADE_OUT)
+        fade_complete = pixelated_fade_out();
+    else
+        fade_complete = pixelated_fade_in();
+
+    // done
+    if(fade_complete == true)
+    {
+        game->unpause_all();
+        delete_self();
+    }
     return(0);
 }

@@ -64,6 +64,8 @@ protected:
 	GUI_Widget *focused_widget; // SB-X
 	/* All input will go to this widget ONLY. */
 	GUI_Widget *locked_widget; // SB-X
+        /* All input will be ignored. */
+        bool block_input; // SB-X
 
 	/* Flag - whether or not the GUI is currently running */
 	int running;
@@ -123,7 +125,10 @@ public:
 
   static GUI *get_gui() { return gui; }
   GUI_Font *get_font();
-  Screen *get_screen() {return screen;}
+  Screen *get_screen()             { return screen; }
+  GUI_Widget *get_focused_widget() { return focused_widget; }
+  GUI_Widget *get_locked_widget()  { return locked_widget; }
+  bool get_block_input()           { return block_input; }
 
   //colors
   GUI_Color *get_selected_color() { return selected_color; }
@@ -134,7 +139,9 @@ public:
 	bool set_focus(GUI_Widget *widget);
 	void clear_focus()  { set_focus(NULL); }
 	void lock_input(GUI_Widget *widget);
-	void unlock_input() { lock_input(NULL); }
+	void unlock_input() { lock_input(NULL); unblock(); }
+        void block()   { block_input = true; }
+        void unblock() { block_input = false; }
     std::string get_data_dir();
 protected:
 

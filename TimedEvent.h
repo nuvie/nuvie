@@ -7,6 +7,7 @@
 #include "CallBack.h"
 
 class Event;
+class GameClock;
 class MapCoord;
 class MsgScroll;
 class Party;
@@ -118,6 +119,7 @@ public:
 };
 
 
+#if 0
 class TimedRTC : public TimedEvent
 {
 public:
@@ -127,6 +129,7 @@ public:
 //        Game::get_game()->get_player()->pass();
     }
 };
+#endif
 
 
 /* Dump one item at a time out of a container, and print it's name to MsgScroll.
@@ -153,8 +156,8 @@ class TimedCallback : public TimedEvent, public CallBack
 public:
     TimedCallback(CallBack *t, void *d, uint32 wait_time,
                   bool repeat = false);
-    ~TimedCallback() {  }
-    void timed(uint32 evtime);
+    virtual ~TimedCallback() {  }
+    virtual void timed(uint32 evtime);
     void clear_target() { set_target(NULL); }
 };
 
@@ -165,5 +168,31 @@ public:
     GameTimedCallback(CallBack *t, void *d, uint32 wait_time, bool repeat = false);
     ~GameTimedCallback() {  }
 };
+
+
+/* Advance gameclock up to 24hours from start time. The callback is used every
+ * hour from the start time, up to and including the stop time.
+ */
+class TimedAdvance : public TimedCallback
+{
+    GameClock *clock;
+    uint16 advance; // minutes requested
+    uint16 minutes; // minutes advanced
+    uint16 rate; // rate is minutes-per-second
+    uint32 prev_evtime; // last time the timer was called
+    uint8 minutes_this_hour;
+
+public:
+    TimedAdvance(uint8 hours, uint16 r = 60);
+    TimedAdvance(std::string timestring, uint16 r = 60); // "HH:MM"
+    ~TimedAdvance();
+
+    void init(uint16 min, uint16 r); // start time advance
+
+    void timed(uint32 evtime);
+    bool time_passed(); // stop time has passed
+    void get_time_from_string(uint8 &hour, uint8 &minute, std::string timestring);
+};
+
 
 #endif /* __TimedEvent_h__ */

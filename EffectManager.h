@@ -21,8 +21,16 @@ friend class Effect;
         Effect *sender;
     } EffectMessage;
 */
+    /* this is better than the previous effect messaging system */
+    typedef struct
+    {
+        CallBack *watcher;
+        Effect *effect;
+    } EffectWatch;
+    typedef std::vector<EffectWatch>::iterator WatchIterator;
 
     std::vector<Effect *> effects; // the simple list
+    std::vector<EffectWatch> watched;
 /*
     std::vector<EffectMessage> pending_messages; // in recv order front to back
 */
@@ -33,6 +41,8 @@ public:
 
 private:
     void add_effect(Effect *eff); // only effects can add themselves
+    void signal_watch(Effect *effect);
+    EffectWatch *find_effect_watch(Effect *effect);
 public:
     void delete_effect(Effect *eff); // anyone may delete an effect
 /*
@@ -50,6 +60,8 @@ public:
 */
 
     bool has_effects();
+    void watch_effect(CallBack *callback_target, Effect *watch);
+    void unwatch_effect(CallBack *callback_target, Effect *watch = NULL);
 };
 
 #endif /* __EffectManager_h__ */

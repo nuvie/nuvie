@@ -53,6 +53,7 @@ GUI:: GUI(Configuration *c, Screen *s)
   dragging = false;
   full_redraw = true;
   focused_widget = locked_widget = NULL;
+  block_input = false;
 
   sdl_surface = screen->get_sdl_surface();
 
@@ -251,7 +252,7 @@ GUI:: HandleEvent(SDL_Event *event)
         }
     }
 
-  if(dragging)
+  if(dragging && !block_input)
    {
     if(event->type == SDL_MOUSEBUTTONUP) //FIX for button up that doesn't hit a widget.
       {
@@ -267,7 +268,7 @@ GUI:: HandleEvent(SDL_Event *event)
 				}
 			}
    }
-  else
+  else if(!block_input)
    {
 	  switch (event->type) {
  		/* SDL_QUIT events quit the GUI */
@@ -305,7 +306,7 @@ GUI:: HandleEvent(SDL_Event *event)
 				 }
 				 for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {
 					 if ( widgets[i]->Status() == WIDGET_VISIBLE
-					      && widgets[i] != focused_widget ) {
+					      && widgets[i] != focused_widget ) { // don't send to focused twice
 					 	 status = widgets[i]->HandleEvent(event);
 					 }
 				 }

@@ -624,9 +624,8 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
             scroll->display_string("\nSearching here, you find ");
             bool found_objects = search_obj(obj, items.actor_ref);
             scroll->display_string(found_objects ? ".\n" : "nothing.\n");
-//            return(found_objects);
-            return(true);
         }
+        return(true);
     }
     else if(ev == USE_EVENT_SEARCH) // search message already printed
     {
@@ -1338,7 +1337,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
  if(!party->is_at(obj->x, obj->y, obj->z))
    {
     party->enter_vehicle(obj);
-    return(false);
+    return(true);
    }
 
  // use it (replace ship with vehicle actor)
@@ -2065,8 +2064,7 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)
             obj->frame_n = 0;
 
             new UseCodeExplosiveEffect(obj, x, y, 3, 16);
-
-            // waits for effect to complete
+            // Note: waits for effect to complete and sends MESG_EFFECT_COMPLETE
         }
         else if(*items.msg_ref == MESG_EFFECT_COMPLETE) // explosion finished
         {
@@ -2084,6 +2082,7 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)
 
 
 /* Use: Fire! (block input, start cannonball anim, release input on hit)
+ * Message: Effect complete. Return to prompt.
  * Move: Change direction if necessary
  */
 bool U6UseCode::use_cannon(Obj *obj, UseCodeEvent ev)
@@ -2095,16 +2094,16 @@ bool U6UseCode::use_cannon(Obj *obj, UseCodeEvent ev)
         scroll->display_string("\nFire!\n");
 // FIXME: new UseCodeEffect(obj, cannonballtile, dir) // sets WAIT mode
         new CannonballEffect(obj); // sets WAIT mode
+        // Note: waits for effect to complete and sends MESG_EFFECT_COMPLETE
         return(false);
     }
     else if(ev == USE_EVENT_MESSAGE)
     {
-// prompt is now printed by Event when resuming after effect
-//        if(*items.msg_ref == MESG_EFFECT_COMPLETE)
-//        {
-//            scroll->display_string("\n");
-//            scroll->display_prompt();
-//        }
+        if(*items.msg_ref == MESG_EFFECT_COMPLETE)
+        {
+            scroll->display_string("\n");
+            scroll->display_prompt();
+        }
         return(true);
     }
     else if(ev == USE_EVENT_MOVE)

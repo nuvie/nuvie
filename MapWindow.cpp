@@ -32,6 +32,7 @@
 #include "Map.h"
 #include "Event.h"
 #include "MsgScroll.h"
+#include "Effect.h" /* for initial fade-in */
 
 #include "AnimManager.h"
 #include "SoundManager.h"
@@ -61,6 +62,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 
  new_thumbnail = false;
  thumbnail = NULL;
+ overlay = NULL;
+ overlay_level = MAP_OVERLAY_DEFAULT;
 
  cur_level = 0;
 
@@ -77,6 +80,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 
 MapWindow::~MapWindow()
 {
+ set_overlay(NULL); // free
  free(tmp_map_buf);
  delete anim_manager;
 }
@@ -112,6 +116,11 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  area.y = 0;
 
  set_windowSize(11,11);
+
+ // hide the window until game is fully loaded and does fade-in
+ get_overlay(); // this allocates `overlay`
+ overlay_level = MAP_OVERLAY_ONTOP;
+ assert(SDL_FillRect(overlay, NULL, 0x31) == 0);
 
  return true;
 }
@@ -343,10 +352,19 @@ void MapWindow::update()
 {
     GameClock *clock = Game::get_game()->get_clock();
     Event *event = Game::get_game()->get_event();
+    static bool game_started = false; // set to true on the first update()
     static uint32 last_update_time = clock->get_ticks();
     uint32 update_time = clock->get_ticks();
 
-    anim_manager->update();
+    // do fade-in on the first update (game has loaded now)
+    if(game_started == false)
+    {
+//        new FadeEffect(FADE_PIXELATED_ONTOP, FADE_IN, 0x31);
+        new GameFadeInEffect(0x31);
+        game_started = true;
+    }
+
+    anim_manager->update(); // update animations
 
     if(vel_x || vel_y) // this slides the map
     {
@@ -476,10 +494,16 @@ void MapWindow::Display(bool full_redraw)
 
  screen->blitalphamap8();
 
+ if(overlay && overlay_level == MAP_OVERLAY_DEFAULT)
+   screen->blit(0, 0, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
+
  if(new_thumbnail)
    create_thumbnail();
 
  drawBorder();
+
+ if(overlay && overlay_level == MAP_OVERLAY_ONTOP)
+   screen->blit(0, 0, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
 
 // ptr = (unsigned char *)screen->get_pixels();
 // ptr += 8 * screen->get_pitch() + 8;
@@ -1285,21 +1309,6 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
  */
 void MapWindow::drawAnims()
 {
-#if 0
-static uint32 add_test = 0;
-static sint32 anim_id = -1;
-if(add_test == 0)
-{
-//    if(anim_id >= 0)
-//        anim_manager->destroy_anim(anim_id);
-    TileAnim *anim = new TileAnim();
-    anim->add_tile(tile_manager->get_rotated_tile(tile_manager->get_tile(393), rotate_angle), 0, 0);
-
-    anim->move(cur_x + 4, cur_y + 4);
-    anim_id = anim_manager->new_anim(anim);
-    add_test = 1; old_rotate = rotate_angle;
-}
-#endif
     if(!screen)
         return;
     else if(!anim_manager->get_surface())
@@ -1492,4 +1501,25 @@ void MapWindow::free_thumbnail()
    }
 
  return;
+}
+
+
+/* Returns the overlay surface. A new 8bit overlay is created if necessary.
+ */
+SDL_Surface *MapWindow::get_overlay()
+{
+    if(!overlay)
+        overlay = SDL_CreateRGBSurface(SDL_SWSURFACE, area.w, area.h,
+                                       8, 0, 0, 0, 0);
+    return(overlay);
+}
+
+
+/* Set the overlay surface. The current overlay is deleted if necessary.
+ */
+void MapWindow::set_overlay(SDL_Surface *surfpt)
+{
+    if(overlay && (overlay != surfpt))
+        SDL_FreeSurface(overlay);
+    overlay = surfpt;
 }

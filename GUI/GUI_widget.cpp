@@ -551,3 +551,19 @@ GUI_status GUI_Widget::MouseLeave(Uint8 state)
     return(GUI_PASS);
 }
 
+
+/* Returns false if any widget but this one is focused or locked.
+ */
+bool GUI_Widget::widget_has_focus()
+{
+    GUI_Widget *focused_widget = GUI::get_gui()->get_focused_widget();
+    GUI_Widget *locked_widget = GUI::get_gui()->get_locked_widget();
+
+    if(GUI::get_gui()->get_block_input())
+        return(false);
+    if(locked_widget != NULL && locked_widget != this)
+        return(false);
+    if(focused_widget != NULL && focused_widget != this)
+        return(false);
+    return(true);
+}

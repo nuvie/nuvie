@@ -465,16 +465,11 @@ bool ConverseInterpret::op(stack<converse_value> &i)
     switch(in = pop_arg(i))
     {
         case U6OP_SLEEP: // 0x9e
-        {
-            converse->print("You're getting sleepy...*\nvery sleepy...*\n...you can barely keep your eyes open...*\n...*\n\nAt least pretend you're asleep!*\n");
-            for(uint32 hour = 0; hour < 8; hour++) // FIXME
-            {
-                converse->clock->advance_to_next_hour();
-                Game::get_game()->get_map_window()->updateBlacking();
-                Game::get_game()->get_map_window()->Display(true);
-            }
-//            new SleepEffect("6:00");
-        }   break;
+            // Note: It's usually unecessary to wait for the effect, as it
+            // pauses input and the user can't continue the conversation until
+            // the effect is complete.
+            new SleepEffect("5:46"); // sleep until sunrise
+            break;
         case U6OP_HORSE: // 0x9c
             // FIXME: probably need to do more real actor/object set-up here
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));

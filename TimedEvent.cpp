@@ -381,3 +381,139 @@ GameTimedCallback::GameTimedCallback(CallBack *t, void *d, uint32 wait_time, boo
     queue(); // start
 printf("new GameTimedCallback(callback=%x, user_data=%x, delay=%d, repeat=%d)\n", callback_target, callback_user_data, delay, repeat_count);
 }
+
+
+
+/*** TimedAdvance: Advance game time by rate until hours has passed. **/
+#define TIMEADVANCE_PER_SECOND 1000 /* frequency of timer calls */
+TimedAdvance::TimedAdvance(uint8 hours, uint16 r)
+                          : TimedCallback(NULL, NULL, 1000/TIMEADVANCE_PER_SECOND, true),
+                            clock(Game::get_game()->get_clock()), minutes(0),
+                            minutes_this_hour(0)
+{
+printf("TimedAdvance(%d):", hours);
+    init(hours * 60, r);
+}
+
+
+/* Advance to time indicated by timestring, of the format "HH:MM".
+ */
+TimedAdvance::TimedAdvance(std::string timestring, uint16 r)
+                          : TimedCallback(NULL, NULL, 1000/TIMEADVANCE_PER_SECOND, true),
+                            clock(Game::get_game()->get_clock()), minutes(0),
+                            minutes_this_hour(0)
+{
+    uint8 hour = 0, minute = 0;
+
+    get_time_from_string(hour, minute, timestring); // set stop time
+printf("TimedAdvance(%02d:%02d):", hour, minute);
+    // set number of hours and minutes to advance
+    uint16 advance_h = (clock->get_hour() == hour) ? 24
+                       : (clock->get_hour() < hour) ? (hour-clock->get_hour())
+                       : (24-(clock->get_hour()-hour));
+    uint16 advance_m;
+    if(clock->get_minute()<=minute)
+        advance_m = minute - clock->get_minute();
+    else
+    {
+        advance_m = (60 - (clock->get_minute()-minute));
+        if(advance_h > 0)
+            advance_h -= 1;
+        else
+            advance_h = 23;
+    }
+    // go
+    init((advance_h * 60) + advance_m, r);
+}
+
+
+TimedAdvance::~TimedAdvance()
+{
+
+}
+
+
+/* Set time advance.
+ */
+void TimedAdvance::init(uint16 min, uint16 r)
+{
+    advance = min;
+    rate = r;
+    prev_evtime = clock->get_ticks();
+printf(" %02d:%02d + %02d:%02d (rate=%d)\n",
+       clock->get_hour(), clock->get_minute(), advance/60, advance%60, rate);
+}
+
+
+/* Advance game time by rate each second. Timer is stopped after after the time
+ * has been advanced as requested.
+ */
+void TimedAdvance::timed(uint32 evtime)
+{
+    uint32 milliseconds = (evtime - prev_evtime) > 0 ? (evtime - prev_evtime) : 1;
+    uint32 fraction = 1000 / milliseconds; // % of second
+    uint32 minutes_per_fraction = rate / (fraction > 0 ? fraction : 1);
+    bool hour_passed = false; // another hour has passed
+    prev_evtime = evtime;
+
+    for(uint32 m = 0; m < minutes_per_fraction; m++)
+    {
+        clock->inc_minute();
+        minutes += 1;
+        if(++minutes_this_hour > 59)
+        {
+            minutes_this_hour = 0;
+            hour_passed = true;
+        }
+        if(time_passed())
+            break;
+    }
+    Game::get_game()->get_map_window()->updateBlacking();
+
+    if(hour_passed && callback_target) // another hour has passed
+        message(MESG_TIMED, &evtime);
+
+    if(time_passed())
+    {
+printf("~TimedAdvance(): now %02d:%02d\n", clock->get_hour(), clock->get_minute());
+        if(callback_target && !hour_passed) // make sure to call target
+            message(MESG_TIMED, &evtime);
+        stop(); // done
+    }
+}
+
+
+/* Returns true when the requested amount of time has passed.
+ */
+bool TimedAdvance::time_passed()
+{
+    return(minutes >= advance);
+}
+
+
+/* Set hour and minute from "HH:MM" string.
+ */
+void TimedAdvance::get_time_from_string(uint8 &hour, uint8 &minute, std::string timestring)
+{
+    char *hour_s = NULL, *minute_s = NULL;
+    hour_s = strdup(timestring.c_str());
+    for(uint32 c = 0; c < strlen(hour_s); c++)
+        if(hour_s[c] == ':') // get minutes
+        {
+            minute_s = strdup(&hour_s[c + 1]);
+            hour_s[c] = '\0';
+            break;
+        }
+
+    if(hour_s)
+    {
+        hour = strtol(hour_s, NULL, 10);
+        free(hour_s);
+    }
+    if(minute_s)
+    {
+        minute = strtol(minute_s, NULL, 10);
+        free(minute_s);
+    }
+}
+

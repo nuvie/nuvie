@@ -307,6 +307,7 @@ bool Converse::start(uint8 n)
         // set current NPC and start conversation
         npc_num = n;
         init_variables();
+        scroll->set_talking(true);
         show_portrait(npc_num);
         Game::get_game()->get_sound_manager()->musicPause();
         Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions

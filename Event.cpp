@@ -1939,8 +1939,9 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 	else if(mode == TALK_MODE)
 	{
 		mode = MOVE_MODE;
-		if(talk())
-			scroll->set_talking(true);
+//		if(talk())
+//			scroll->set_talking(true);
+		talk();
 	}
 	else if(mode == USE_MODE)
 	{
@@ -1999,8 +2000,9 @@ void Event::doAction(Obj *obj)
 	else if(mode == TALK_MODE)
 	{
 		mode = MOVE_MODE;
-		if(talk(obj))
-			scroll->set_talking(true);
+//		if(talk(obj))
+//			scroll->set_talking(true);
+		talk(obj);
 	}
 	else if(mode == USE_MODE)
 	{
@@ -2119,8 +2121,14 @@ bool Event::newAction(EventMode new_mode)
 /* Revert to default MOVE_MODE. (walking)
  * This clears visible cursors, and resets all variables used by actions.
  */
-void Event::endAction()
+void Event::endAction(bool prompt)
 {
+    if(prompt)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+    }
+
     mode = MOVE_MODE;
     map_window->set_show_use_cursor(false);
     map_window->set_show_cursor(false);
@@ -2130,15 +2138,4 @@ void Event::endAction()
     drop_qty = 0;
     map_window->updateBlacking();
     Game::get_game()->set_mouse_pointer(0);
-}
-
-
-/* Do endAction() and display the prompt. This is to "resume" after setting
- * WAIT_MODE.
- */
-void Event::endWaitMode()
-{
-    scroll->display_string("\n");
-    scroll->display_prompt();
-    endAction();
 }

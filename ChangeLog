@@ -1,3 +1,24 @@
+2004-08-14  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Sleep-at-inn implemented, with fade effects. The sky display doesn't
+	  exist yet so you won't see the sun/moons going by. You always sleep
+	  until 5:46A.M.
+	* For good measure, threw in the initial fade-in when the game starts.
+	  (I checked: it doesn't repeat on every reload)
+	* The ankh/arrow cursor is no longer redrawn if MsgScroll loses focus.
+	* Added some functions to wait for effects to complete. A CallBack class
+	  can call EffectManager::watch_effect(this, effect) to get the message.
+	* Added an extra effects layer to MapWindow. Effects can get this with
+	  get_overlay(), and draw to it directly. It will either be drawn under
+	  or over the border, depending on overlay_level.
+	* GUI now has a block_input setting; call GUI::block() to set. This is
+	  the inverse of GUI::lock_input(NULL) and blocks events to all widgets.
+	  It's set when pausing the game. (along with setting Event::WAIT_MODE)
+	* New function GUI_Widget::widget_has_focus() returns true if this
+	  widget will be the first to get input. (and GUI is not blocked)
+	* Mouse and keyboard both move the Avatar at the same speed.
+	* Fixed prompt display for various usecode functions. (moving direct
+	  prompt display out of U6UseCode broke some of them)
+
 2004-08-03  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed crashing bug when dropping an object at the actor location. (I
 	  thought I fixed this already???)

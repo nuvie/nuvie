@@ -1,15 +1,18 @@
 #ifndef __Effect_h__
 #define __Effect_h__
 
+#include "SDL.h"
 #include "CallBack.h"
+#include "Map.h"
 #include "ObjManager.h"
 
 //class Actor;
 class EffectManager;
 class Game;
-class MapCoord;
 class MapWindow;
 class NuvieAnim;
+class Screen;
+class TimedAdvance;
 class TimedCallback;
 
 /* Effects: * = unwritten or untested
@@ -19,8 +22,10 @@ class TimedCallback;
  * ThrowObject - any thrown object
  * Cannonball (FIX: change to UseCodeThrow)
  * Missile - throw object to *ground or actor; optionally cause damage
- * *Boomerang
+ * *Boomerang - spin Missile and return to sender
  * Drop - throw obj from inventory to ground
+ * SleepEffect - pause game & advance time quickly
+ * FadeEffect - fade the mapwindow in or out
  */
 
 
@@ -78,8 +83,8 @@ public:
     TimedEffect()                  { timer = NULL; }
     ~TimedEffect()                 { stop_timer(); }
 
-    void start_timer(uint32 delay) { if(!timer) timer = new TimedCallback(this, NULL, delay, true); }
-    void stop_timer()              { if(timer) { timer->clear_target(); timer = NULL; } }
+    void start_timer(uint32 delay);
+    void stop_timer();
 
     void delete_self() { stop_timer(); Effect::delete_self(); }
 
@@ -250,6 +255,71 @@ class PaletteEffect : public TimedEffect
 
 
 #endif
+
+
+/* For sleeping at inns. Fade-out, advance time, and fade-in.
+ */
+class SleepEffect : public Effect
+{
+    TimedAdvance *timer; // timed event
+    uint8 stop_hour, stop_minute; // sleep until this time
+    std::string stop_time;
+public:
+    SleepEffect(std::string until);
+    ~SleepEffect();
+
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+    void delete_self();
+};
+
+
+typedef enum { FADE_PIXELATED, FADE_CIRCLE, FADE_PIXELATED_ONTOP } FadeType;
+typedef enum { FADE_IN, FADE_OUT } FadeDirection;
+
+/* Manipulate the MapWindow for two types of fades. One is a stippled-like fade
+ * that draws pixels to random locations on the screen until completely flooded
+ * with a set color. The other changes the ambient light until fully black.
+ */
+class FadeEffect : public TimedEffect
+{
+protected:
+    MapWindow *map_window; // for CIRCLE, the MapWindow handles the fade
+    Screen *screen; // for PIXELATED, the overlay is blitted to the screen...
+    SDL_Rect *viewport; // ...at the MapWindow coordinates set here
+    SDL_Surface *overlay; // this is what gets blitted
+
+    FadeType fade_type; // PIXELATED[_ONTOP] or CIRCLE
+    FadeDirection fade_dir; // IN (removing color) or OUT (adding color)
+    uint32 fade_speed; // meaning of this depends on fade_type
+    uint8 pixelated_color; // color from palette that is being faded to/from
+
+    uint32 evtime, prev_evtime; // time of last message to callback()
+
+public:
+    FadeEffect(FadeType fade, FadeDirection dir, uint32 color = 0, uint32 speed = 0);
+    ~FadeEffect();
+    void init_pixelated_fade();
+    void init_circle_fade();
+    virtual uint16 callback(uint16 msg, CallBack *caller, void *data);
+    
+    bool pixelated_fade_out();
+    bool pixelated_fade_in();
+    bool circle_fade_out();
+    bool circle_fade_in();
+
+    inline bool find_free_pixel(uint32 &rnum, uint32 pixel_count);
+};
+
+
+/* Front-end to FadeEffect that fades in, and resumes game.
+ */
+class GameFadeInEffect : public FadeEffect
+{
+public:
+    GameFadeInEffect(uint32 color);
+    ~GameFadeInEffect();
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
 
 
 #endif /* __Effect_h__ */
