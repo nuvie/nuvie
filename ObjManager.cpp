@@ -126,7 +126,7 @@ bool ObjManager::loadObjs(TileManager *tm)
 
  loadWeightTable();
 
- delete filename;
+ delete[] filename;
 
  //print_egg_list();
  

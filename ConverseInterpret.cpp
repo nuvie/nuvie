@@ -34,8 +34,6 @@
 ConverseInterpret::ConverseInterpret(Converse *owner)
 {
     converse = owner;
-    in = NULL;
-    text = NULL;
     rstrings = NULL; rstring_count = 0;
     ystring = NULL;
     b_frame = NULL;
@@ -49,8 +47,6 @@ ConverseInterpret::ConverseInterpret(Converse *owner)
 
 ConverseInterpret::~ConverseInterpret()
 {
-    delete in;
-    delete text;
     free(rstrings);
     free(ystring);
     leave_all(); // deletes b_frame when empty
@@ -176,11 +172,9 @@ void ConverseInterpret::step()
 void ConverseInterpret::add_text(unsigned char c)
 {
     ConvScript *cs = converse->script;
-    if(!text)
-        text = new string;
     do
     {
-        text->append(1,(unsigned char)cs->read());
+        text.append(1,(unsigned char)cs->read());
     } while(!cs->overflow() && is_print(cs->peek()));
 }
 
@@ -192,9 +186,7 @@ void ConverseInterpret::add_val(converse_value c, uint8 d)
     struct in_val_s ivs;
     ivs.v = c;
     ivs.d = d;
-    if(!in)
-        in = new vector<in_val_s>;
-    in->push_back(ivs);
+    in.push_back(ivs);
 }
 
 
@@ -271,7 +263,7 @@ void ConverseInterpret::exec()
     {
         if(val_count())
             do_ctrl();
-        if(converse->get_output() && strlen(converse->get_output()))
+        if(!converse->get_output().empty())
             do_text();
     }
 #ifdef CONVERSE_DEBUG
@@ -279,7 +271,7 @@ void ConverseInterpret::exec()
         fprintf(stderr, "Converse: %04x ----: %02x\n", in_start, get_val(0));
 #endif
     flush();
-    converse->set_output();
+    converse->set_output(""); // clear output
 }
 
 
@@ -291,7 +283,7 @@ void ConverseInterpret::do_text()
     char symbol[3] = { '\0', '\0', '\0' },
          intval[16];
     string output;
-    const char *c_str = converse->get_output();
+    const char *c_str = converse->get_output().c_str();
     const uint32 len = strlen(c_str);
 
     while(i < len)
@@ -362,10 +354,10 @@ void ConverseInterpret::do_ctrl()
 converse_value ConverseInterpret::pop_val()
 {
     converse_value ret = 0;
-    if(in && !in->empty())
+    if(!in.empty())
     {
         ret = get_val(val_count() - 1);
-        in->resize(val_count() - 1);
+        in.resize(val_count() - 1);
     }
     return(ret);
 }
@@ -377,10 +369,10 @@ converse_value ConverseInterpret::pop_val()
 uint8 ConverseInterpret::pop_val_size()
 {
     converse_value ret = 0;
-    if(in && !in->empty())
+    if(!in.empty())
     {
         ret = get_val_size(val_count() - 1);
-        in->resize(val_count() - 1);
+        in.resize(val_count() - 1);
     }
     return(ret);
 }
@@ -390,8 +382,8 @@ uint8 ConverseInterpret::pop_val_size()
  */
 converse_value ConverseInterpret::get_val(uint32 vi)
 {
-    if(in && (vi < in->size()))
-        return((*in)[vi].v);
+    if(vi < in.size())
+        return(in[vi].v);
     return(0);
 }
 
@@ -401,8 +393,8 @@ converse_value ConverseInterpret::get_val(uint32 vi)
  */
 uint8 ConverseInterpret::get_val_size(uint32 vi)
 {
-    if(in && (vi < in->size()))
-        return((*in)[vi].d);
+    if(vi < in.size())
+        return(in[vi].d);
     return(0);
 }
 
@@ -641,10 +633,10 @@ bool ConverseInterpret::op(stack<converse_value> &i)
                 fprintf(stderr,
                         "Converse: warning: npc number in script (%d) does not"
                         " match actor number (%d)\n", v[0], converse->npc_num);
-            converse->name = strdup(get_text()); // collected
+            converse->name = strdup(get_text().c_str()); // collected
             break;
         case U6OP_SLOOK: // 0xf1, description follows
-            converse->desc = strdup(get_text()); // collected
+            converse->desc = strdup(get_text().c_str()); // collected
             converse->print("\nYou see ");
             converse->print(converse->desc);
             converse->print("\n");
@@ -662,7 +654,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             converse->poll_input();
             break;
         case U6OP_ASKC: // 0xf8 (blocking, single character input)
-            converse->poll_input(get_text(), false); // collected=allowed input
+            converse->poll_input(get_text().c_str(), false); // collected=allowed input
             break;
         case U6OP_INPUTSTR: // 0xf9
             converse->print("\n!inputstr\n");
@@ -991,7 +983,7 @@ void ConverseInterpret::eval(uint32 vi)
         if(is_valop(a) && !ds)
             evop(op_stk);
     }
-    in->resize(vi);
+    in.resize(vi);
     if(op_stk.empty()) // took all parameters, no return
         add_val(0x00);
     else
@@ -1025,14 +1017,14 @@ uint8 ConverseInterpret::npc_num(uint32 n)
 /* Returns true if the keywords list contains the input string, or contains an
  * asterisk (matching any input).
  */
-bool ConverseInterpret::check_keywords(const char *keystr, const char *instr)
+bool ConverseInterpret::check_keywords(string keystr, string instr)
 {
     const char *strt_s = NULL;
     char *tok_s = NULL, *cmp_s = NULL;
-    if(!strcmp(keystr, "*"))
+    if(keystr == "*")
         return(true);
     // check each comma-separated keyword
-    strt_s = keystr;
+    strt_s = keystr.c_str();
     for(uint32 c = 0; c < strlen(strt_s); c++)
     {
         // check at start of string and each keyword
@@ -1043,7 +1035,7 @@ bool ConverseInterpret::check_keywords(const char *keystr, const char *instr)
             tok_s = strdup(&strt_s[(c == 0) ? c : c + 1]);
             for(l = 0; l < strlen(tok_s) && tok_s[l] != ','; l++);
             tok_s[l] = '\0';
-            cmp_s = strdup(instr);
+            cmp_s = strdup(instr.c_str());
             // trim input to keyword size
             if(l < strlen(cmp_s))
                 cmp_s[l] = '\0';
@@ -1067,9 +1059,9 @@ bool ConverseInterpret::check_keywords(const char *keystr, const char *instr)
 void ConverseInterpret::assign_input()
 {
     if(decl_t == 0xb2)
-        converse->set_var(decl_v, strtol(converse->get_input(), NULL, 10));
+        converse->set_var(decl_v, strtol(converse->get_input().c_str(), NULL, 10));
     if(decl_t == 0xb3)
-        converse->set_svar(decl_v, converse->get_input());
+        converse->set_svar(decl_v, converse->get_input().c_str());
 }
 
 

@@ -138,9 +138,9 @@ protected:
         converse_value break_c; // will toggle run setting
     };
 
-    vector<struct in_val_s> *in; // control values (input/instruction)
+    vector<struct in_val_s> in; // control values (input/instruction)
     uint32 in_start;
-    string *text; // input text from script
+    string text; // input text from script
     const char **rstrings; // string value(s) returned by op
     uint32 rstring_count;
     char *ystring; // modified by SETNAME, accessed with "$Y"
@@ -191,13 +191,13 @@ protected:
     void add_text(unsigned char c = 0);
 
     /* manipulating collected input */
-    uint32 val_count()     { return(in ? in->size() : 0); }
+    uint32 val_count()     { return(in.size()); }
     converse_value get_val(uint32 vi);
     uint8 get_val_size(uint32 vi);
     converse_value pop_val();
     uint8 pop_val_size();
-    const char *get_text() { return(text ? text->c_str() : NULL); }
-    void flush() {if(in) in->resize(0); in_start = 0; if(text) text->resize(0);}
+    string get_text() { return text; }
+    void flush() {in.resize(0); in_start = 0; text.resize(0);}
 
     /* operating on input */
     void exec();
@@ -209,7 +209,7 @@ protected:
 
 public:
     virtual uint8 npc_num(uint32 n);//uint8 npc_num(uint32 n){return((n!=0xeb)?n:converse->npc_num);}
-    bool check_keywords(const char *keystr, const char *instr);
+    bool check_keywords(std::string keystr, std::string instr);
     bool var_input() { return(decl_t != 0x00); }
     void assign_input(); // set declared variable to Converse input
     struct converse_db_s *get_db(uint32 loc, uint32 i);

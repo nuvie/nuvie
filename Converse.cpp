@@ -53,7 +53,6 @@ Converse::Converse()
     src = NULL;
     src_num = 0;
 
-    in_str = out_str = NULL;
     allowed_input = NULL;
 
     active = false;
@@ -98,8 +97,8 @@ Converse::~Converse()
 void Converse::reset()
 {
     delete conv_i; conv_i = NULL;
-    set_input(); // delete
-    set_output();
+    set_input(""); // delete
+    set_output(""); // clear output
     if(name)
     {
         free(name);
@@ -340,46 +339,13 @@ bool Converse::input()
     if(scroll->has_input())
     {
      std::string s = scroll->get_input();
-        set_input(&s);
+        set_input(s);
 #ifdef CONVERSE_DEBUG
-        fprintf(stderr, "Converse: INPUT \"%s\"\n\n", get_input());
+        fprintf(stderr, "Converse: INPUT \"%s\"\n\n", get_input().c_str());
 #endif
         return(true);
     }
     return(false);
-}
-
-
-/* Set the string value returned by `get_input()' (or delete the current.)
- */
-void Converse::set_input(std::string *s)
-{
-    if(!s)
-    {
-        delete in_str;
-        in_str = NULL;
-        return;
-    }
-    if(!in_str)
-        in_str = new string;
-
-    *in_str = *s; //in_str->assign(s->c_str());
-}
-
-
-/* Set the string value returned by `get_output()' (or delete the current.)
- */
-void Converse::set_output(const char *s)
-{
-    if(!s)
-    {
-        delete out_str;
-        out_str = NULL;
-        return;
-    }
-    if(!out_str)
-        out_str = new string;
-    out_str->assign(s);
 }
 
 
@@ -388,7 +354,7 @@ void Converse::set_output(const char *s)
 void Converse::print(const char *s)
 {
 #ifdef CONVERSE_DEBUG
-    fprintf(stderr, "Converse: PRINT \"%s\"\n\n", s ? s : get_output());
+    fprintf(stderr, "Converse: PRINT \"%s\"\n\n",s ? s : get_output().c_str());
 #endif
     if(s)
         scroll->display_string(s);
@@ -506,22 +472,22 @@ void Converse::unwait()
  */
 bool Converse::override_input()
 {
-    if(in_str->empty())
-        in_str->assign("bye");
-    else if((*in_str) == "look")
+    if(in_str.empty())
+        in_str = "bye";
+    else if(in_str == "look")
     {
         print("You see ");
         print(desc);
         script->seek(script->pos() - 1); // back to ASK command
     }
-    else if(party_all_the_time && (*in_str) == "join")
+    else if(party_all_the_time && in_str == "join")
     {
         if(!player->get_party()->contains_actor(npc))
             player->get_party()->add_actor(npc);
         print("\"Friends of Nuvie? Sure, I'll come along!\"\n");
         return(false);
     }
-    else if(party_all_the_time && (*in_str) == "leave")
+    else if(party_all_the_time && in_str == "leave")
     {
         if(player->get_party()->contains_actor(npc))
             player->get_party()->remove_actor(npc);

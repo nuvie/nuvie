@@ -130,11 +130,11 @@ class MsgScroll: public GUI_Widget
  
  void set_font(Font *f);
  
- void display_string(const char *string, Font *f);
+ void display_string(std::string s, Font *f);
  
- void display_string(const char *string, uint16 length, uint8 lang_num);
+ void display_string(std::string s, uint16 length, uint8 lang_num);
  
- void display_string(const char *string, uint8 lang_num=0);
+ void display_string(std::string s, uint8 lang_num=0);
  bool set_prompt(const char *new_prompt, Font *f=NULL);
  void display_prompt();
  
@@ -166,7 +166,6 @@ class MsgScroll: public GUI_Widget
  
  bool has_input();
  std::string get_input();
- const char *peek_at_input();
  
  protected:
  

@@ -353,8 +353,7 @@ bool ActorManager::loadActorSchedules()
     index[i] = schedule.read2();
    }
  
- sched_data = schedule.readBuf(schedule.get_size() - 0x202, &bytes_read);
- 
+ sched_data = schedule.readBuf(schedule.get_size() - 0x200, &bytes_read);
  s_ptr = sched_data + 2;
 
  for(i=0;i<256;i++)

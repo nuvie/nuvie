@@ -92,8 +92,8 @@ class Converse
     bool need_input; // waiting for text input
     bool party_all_the_time; // force NPCs to join player's party?
 
-    string *in_str; // last input from player
-    string *out_str; // text that is to be printed
+    string in_str; // last input from player
+    string out_str; // text that is to be printed
     char *allowed_input; // characters requested for single-character input
 
     char aname[16]; // return from npc_name()
@@ -128,10 +128,10 @@ public:
 
     bool input();
     void print(const char *s = NULL);
-    const char *get_input()  { return(in_str ? in_str->c_str() : ""); }
-    const char *get_output() { return(out_str ? out_str->c_str() : ""); }
-    void set_input(std::string *s = NULL);
-    void set_output(const char *s = NULL);
+    string get_input()  { return in_str; }
+    string get_output() { return out_str; }
+    void set_input(std::string s) { in_str = s; }
+    void set_output(std::string s) { out_str = s; }
 
     const char *npc_name(uint8 num);
     void show_portrait(uint8 n);

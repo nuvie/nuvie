@@ -220,32 +220,27 @@ bool MsgScroll::init(Font *f, char *player_name)
  return true;
 }
 
-void MsgScroll::display_string(const char *string, uint16 length, uint8 lang_num)
+void MsgScroll::display_string(std::string s, uint16 length, uint8 lang_num)
 {
  
 }
  
-void MsgScroll::display_string(const char *string, uint8 lang_num)
+void MsgScroll::display_string(std::string s, uint8 lang_num)
 {
- display_string(string,font);
+ display_string(s,font);
 }
 
-void MsgScroll::display_string(const char *string, Font *f)
+void MsgScroll::display_string(std::string s, Font *f)
 {
  MsgText *msg_text;
- if(string == NULL)
-   {
-    printf("MsgScroll: NULL String!\n");
-	return;
-   }
 
- if(strlen(string) == 0)
+ if(s.empty())
    return;
 
  if(f == NULL)
    f = font;
 
- msg_text = new MsgText(string, f);
+ msg_text = new MsgText(s, f);
    
  holding_buffer.push_back(msg_text);
 
@@ -728,14 +723,6 @@ std::string MsgScroll::get_input()
    }
 
  return s;
-}
-
-const char *MsgScroll::peek_at_input()
-{
- if(input_buf.length() > 0)
-   return input_buf.c_str();
-
- return NULL;
 }
 
 void MsgScroll::clear_page_break()

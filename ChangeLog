@@ -1,3 +1,12 @@
+2004-02-24  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* actors/ActorManager.cpp: read all of 'schedule' (was missing 2 bytes)
+	* ObjManager.cpp: delete/delete[] mismatch
+	* Makefile.common: add U6ObjectTypes.h to source list
+	* MsgScroll.cpp, Converse.cpp, ConverseInterpet.cpp:
+	  converted several functions/variables to std::strings.
+	  I'm fairly sure the new code is functionally equivalent to the old
+	  code, but if I broke something, let me know and I'll fix it.
+
 2004-02-23  Eric Fry <efry at users.sourceforge.net>
 	* MsgScroll.cpp: Added has_input() This returns true when there is input
 	  ready.
