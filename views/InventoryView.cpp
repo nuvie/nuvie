@@ -176,10 +176,11 @@ void InventoryView::display_inventory_list()
              for(;link != NULL && (obj->status & 0x18) == 0x18; link = link->next)
                 obj = (Obj *)link->data;
             }
-          tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-          if(link)
-            link = link->next;
           else
+            link = link->next;
+
+          tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+          if(link == NULL)
             {
              if((obj->status & 0x18) == 0x18) //last object is readied so skip it.
                 tile = empty_tile;
@@ -241,16 +242,17 @@ void InventoryView::display_inventory_weights()
  float inv_weight;
  float equip_weight;
  Actor *actor = party->get_actor(cur_party_member);
- char string[9]; //  "E:xx/xx"
+ char string[9]; //  "E:xx/xxs"
  
  strength = actor->get_strength();
+ //FIX weight isn't correct. 
  inv_weight = actor->get_inventory_weight();
  equip_weight = actor->get_inventory_equip_weight();
   
- snprintf(string,8,"E:%d/%d",(int)equip_weight,strength);
+ snprintf(string,9,"E:%d/%ds",(int)equip_weight,strength);
  text->drawString(screen, string, area.x, area.y+72, 0);
  
- snprintf(string,8,"I:%d/%d",(int)inv_weight,strength*2);
+ snprintf(string,9,"I:%d/%ds",(int)inv_weight,strength*2);
  text->drawString(screen, string, area.x+4*16+8, area.y+72, 0);
 }
 
