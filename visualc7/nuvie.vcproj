@@ -22,11 +22,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../sound;../fonts"
+				AdditionalIncludeDirectories="..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../sound;../sound/adplug;../fonts;../save;."
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release\intermediate/nuvie.pch"
 				AssemblerListingLocation=".\Release\intermediate/"
@@ -82,10 +83,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../sound;../fonts"
+				AdditionalIncludeDirectories="..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../sound;../sound/adplug;../fonts;../save;."
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_STLP_DEBUG;_STLP_USE_NEWALLOC"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="nuvieDefs.h"
 				PrecompiledHeaderFile=".\Debug\intermediate/nuvie.pch"
@@ -139,7 +141,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="conf files"
+			Name="conf"
 			Filter="">
 			<File
 				RelativePath="..\conf\ConfigNode.h">
@@ -201,8 +203,14 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="files files"
+			Name="files"
 			Filter="">
+			<File
+				RelativePath="..\files\NuvieFileList.cpp">
+			</File>
+			<File
+				RelativePath="..\files\NuvieFileList.h">
+			</File>
 			<File
 				RelativePath="..\files\NuvieIO.cpp">
 				<FileConfiguration
@@ -343,7 +351,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="misc files"
+			Name="misc"
 			Filter="">
 			<File
 				RelativePath="..\misc\iAVLTree.cpp">
@@ -416,7 +424,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="screen files"
+			Name="screen"
 			Filter="">
 			<File
 				RelativePath="..\screen\GamePalette.cpp">
@@ -515,8 +523,14 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="nuvie files"
+			Name="nuvie"
 			Filter="">
+			<File
+				RelativePath="..\AnimManager.cpp">
+			</File>
+			<File
+				RelativePath="..\AnimManager.h">
+			</File>
 			<File
 				RelativePath="..\Background.cpp">
 				<FileConfiguration
@@ -608,6 +622,24 @@
 			</File>
 			<File
 				RelativePath="..\ConverseInterpret.h">
+			</File>
+			<File
+				RelativePath="..\Cursor.cpp">
+			</File>
+			<File
+				RelativePath="..\Cursor.h">
+			</File>
+			<File
+				RelativePath="..\Effect.cpp">
+			</File>
+			<File
+				RelativePath="..\Effect.h">
+			</File>
+			<File
+				RelativePath="..\EffectManager.cpp">
+			</File>
+			<File
+				RelativePath="..\EffectManager.h">
 			</File>
 			<File
 				RelativePath="..\EggManager.cpp">
@@ -994,14 +1026,14 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="msvc files"
+			Name="msvc"
 			Filter="">
 			<File
 				RelativePath="..\msvc\msvc_kludges.h">
 			</File>
 		</Filter>
 		<Filter
-			Name="views files"
+			Name="views"
 			Filter="">
 			<File
 				RelativePath="..\views\ActorView.cpp">
@@ -1189,7 +1221,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="usecode files"
+			Name="usecode"
 			Filter="">
 			<File
 				RelativePath="..\usecode\MDUseCode.cpp">
@@ -1285,7 +1317,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="actors files"
+			Name="actors"
 			Filter="">
 			<File
 				RelativePath="..\actors\Actor.cpp">
@@ -1358,7 +1390,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="pathfinder files"
+			Name="pathfinder"
 			Filter="">
 			<File
 				RelativePath="..\pathfinder\AStar.cpp">
@@ -1454,7 +1486,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="gui files"
+			Name="gui"
 			Filter="">
 			<File
 				RelativePath="..\Gui\GUI.cpp">
@@ -1524,6 +1556,12 @@
 			</File>
 			<File
 				RelativePath="..\Gui\GUI_button.h">
+			</File>
+			<File
+				RelativePath="..\Gui\GUI_Dialog.cpp">
+			</File>
+			<File
+				RelativePath="..\Gui\GUI_Dialog.h">
 			</File>
 			<File
 				RelativePath="..\Gui\GUI_DragArea.h">
@@ -1598,6 +1636,18 @@
 				RelativePath="..\Gui\GUI_loadimage.h">
 			</File>
 			<File
+				RelativePath="..\Gui\GUI_ScrollBar.cpp">
+			</File>
+			<File
+				RelativePath="..\Gui\GUI_ScrollBar.h">
+			</File>
+			<File
+				RelativePath="..\Gui\GUI_Scroller.cpp">
+			</File>
+			<File
+				RelativePath="..\Gui\GUI_Scroller.h">
+			</File>
+			<File
 				RelativePath="..\Gui\GUI_status.h">
 			</File>
 			<File
@@ -1663,6 +1713,12 @@
 			Name="visualc7"
 			Filter="">
 			<File
+				RelativePath=".\dirent.cpp">
+			</File>
+			<File
+				RelativePath=".\dirent.h">
+			</File>
+			<File
 				RelativePath=".\vc7inc.h">
 			</File>
 		</Filter>
@@ -1682,6 +1738,12 @@
 				RelativePath="..\sound\Song.h">
 			</File>
 			<File
+				RelativePath="..\sound\SongAdPlug.cpp">
+			</File>
+			<File
+				RelativePath="..\sound\SongAdPlug.h">
+			</File>
+			<File
 				RelativePath="..\sound\Sound.h">
 			</File>
 			<File
@@ -1690,6 +1752,40 @@
 			<File
 				RelativePath="..\sound\SoundManager.h">
 			</File>
+			<Filter
+				Name="adplug"
+				Filter="">
+				<File
+					RelativePath="..\sound\adplug\adplug_player.cpp">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\adplug_player.h">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\emuopl.cpp">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\emuopl.h">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\fmopl.c">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\fmopl.h">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\opl.h">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\silentopl.h">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\u6m.cpp">
+				</File>
+				<File
+					RelativePath="..\sound\adplug\u6m.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="fonts"
@@ -1705,6 +1801,34 @@
 			</File>
 			<File
 				RelativePath="..\fonts\FontManager.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="save"
+			Filter="">
+			<File
+				RelativePath="..\save\SaveDialog.cpp">
+			</File>
+			<File
+				RelativePath="..\save\SaveDialog.h">
+			</File>
+			<File
+				RelativePath="..\save\SaveGame.cpp">
+			</File>
+			<File
+				RelativePath="..\save\SaveGame.h">
+			</File>
+			<File
+				RelativePath="..\save\SaveManager.cpp">
+			</File>
+			<File
+				RelativePath="..\save\SaveManager.h">
+			</File>
+			<File
+				RelativePath="..\save\SaveSlot.cpp">
+			</File>
+			<File
+				RelativePath="..\save\SaveSlot.h">
 			</File>
 		</Filter>
 		<File

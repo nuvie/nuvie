@@ -29,10 +29,12 @@
 
 #include <locale>
 #include <math.h>
+#include <assert.h>
 
 #pragma	warning (disable : 4244)	//	conversion from 'x' to 'x', possible loss of data
 #pragma	warning (disable : 4100)	//	unreferenced formal parameter
 #pragma warning (disable : 4800)	//	forcing value to bool 'true' or 'false' (performance warning)
+#pragma warning (disable : 4121)	//	alignment of member was sensitive to packing
 
 //	for pre-compiled headers when I get all the #include issues fixed
 /*
@@ -46,5 +48,7 @@
 
 // .NET has no roundf function (C99)
 __inline roundf (float val) { return floorf (val); }
+
+#define M_PI	3.1415926535897932384626433832795
 
 #endif	/* __vc7inc_h__ */
