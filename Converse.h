@@ -23,16 +23,21 @@
 #include "Actor.h"
 #include "U6Lib_n.h"
 #include "Configuration.h"
+#include "MsgScroll.h"
 
 enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
 
-/* Control codes for U6, as far as I know work with the others too... */
+/* Control codes for U6; as far as I know work with the other games too... */
 #define U6OP_SETF 0xa4
 #define U6OP_CLEARF 0xa5
+#define U6OP_ARGSTOP 0xa7
 #define U6OP_JUMP 0xb0
 #define U6OP_BYE 0xb6
 #define U6OP_WAIT 0xcb
+#define U6OP_UINT8 0xd3
+#define U6OP_UINT16 0xd4
+#define U6OP_UINT32 0xd2
 #define U6OP_ENDASK 0xee
 #define U6OP_KEYWORD 0xef
 #define U6OP_SIDENT 0xff
@@ -44,36 +49,57 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
 typedef struct
 {
-    Uint32 val_c; // number of values
-    vector<Uint32> val_t; // type/size of each value (from value list)
-                          // 0xd4 = 32bit integer
-                          // 0xd3 = 8bit integer
-    vector<Uint32> val;
+    Uint8 valt; // value type
+                // 0x00 = integer constant
+                // 0xb2 = numbered variable
+    Uint32 val;
 } converse_arg;
 
 class Converse
 {
     Configuration *config;
     Converse_interpreter interpreter;
-    U6Lib_n *src; // points to opened converse.[ab] library
     Actor *npc;
+    MsgScroll *scroll; // i/o object
+    U6Lib_n *src; // points to opened converse.[ab] library
+    Uint32 src_num; // 0=none 1="converse.a" 2="converse.b"
+
     unsigned char *script;
     Uint32 script_len;
     unsigned char *script_pt; // points to next command/string in script
     bool active; // running npc script? (paused or unpaused)
     bool is_waiting; // paused, waiting for user input?
-    Uint32 prompt; // 0 = not waiting
-                   // 1 = just waiting for any input to continue
-                   // 2 = need input character or string, ENTER, or ESC
-    char *allowed_input; // NULL if any input is allowed
-    string output; // where text goes until something grabs it
-    char *output_cpy; // "safe" buffer of text until checked again
-    Uint32 cmd, skip_to_cmd;
+    string output; // where text goes to be printed
+
+    // statement parameters
+    Uint32 cmd; // previously read command code
+    // fixed # of args with variable # values each
+    vector <vector<converse_arg> > args;
     string input_s; // last input from player
     string keywords; // keyword list from last KEYWORD statement
+#define CONV_TEXTOP_PRINT 0
+#define CONV_TEXTOP_KEYWORD 1
+#define CONV_TEXTOP_LOOK 2
+    Uint8 text_op; // one of CONV_TEXTOP_[012]
+
+    /* Check that loaded converse library (the source) contains `script_num'.
+     * Load another source if it doesn't, and update `script_num' to item number.
+     */
+    void set_conv(Uint32 &script_num)
+    {
+        if(script_num <= 98 && src_num == 2)
+            loadConv("converse.a");
+        else if(script_num >= 99)
+        {
+            script_num -= 99;
+            if(src_num == 1)
+                loadConv("converse.b");
+        }
+    }
 
     bool do_cmd(); // do cmd with args and clear cmd and args
-    bool do_text(Uint32 text_len);
+    void collect_args();
+    bool do_text();
 
     /* Seeking methods - update script pointer. */
     void seek(Uint32 offset = 0) { script_pt = script; script_pt += offset; }
@@ -114,12 +140,6 @@ class Converse
         return(val);
     }
     Uint8 peek(Uint32 peekahead = 0) { return((Uint8)*(script_pt+peekahead)); }
-
-    /* Returns true if byte is a value-size definition. */
-    bool is_valsize(Uint8 valcpy)
-    {
-        return((valcpy == 0xd3 || valcpy == 0xd2 || valcpy == 0xd4));
-    }
     /* Returns true if the script pointer is greater than the length of the
      * script.
      */
@@ -127,54 +147,62 @@ class Converse
     {
        return(((script_pt + ptadd) > (script + script_len)));
     }
+
+    /* Returns true if byte is a value-size definition. */
+    bool is_valsize(Uint8 valcpy)
+    {
+        return((valcpy == 0xd3 || valcpy == 0xd2 || valcpy == 0xd4));
+    }
+    /* Returns true if `check' can be part of a text string. */
+    bool is_print(Uint8 check)
+    {
+        return(((check == 0x0a) || (check >= 0x20 && check <=0x7a)));
+    }
+    /* Returns true if the control code starts a statement (is the command). */
+    bool is_cmd(Uint8 code)
+    {
+        if(code >= 0xa1 && !is_valsize(code))
+            return(true);
+        return(false);
+    }
+#if 0
+    Uint32 get_val(Uint8 argi, Uint vali)
+    {
+//        if(args[argi][vali].valt == 0xb2)
+//            get variable value
+        return(args[argi][vali].val);
+    }
+#endif
+    bool Converse::check_keywords();
 public:
-    Converse(Configuration *cfg, Converse_interpreter engine_type);
+    Converse(Configuration *cfg, Converse_interpreter engine_type, MsgScroll *ioobj);
     ~Converse()
     {
         // FIXME: free and delete heap .. oops.. one doesn't exist yet :P
         if(active)
             this->stop();
     }
-    void loadConv();
+    void loadConv(std::string convfilename="converse.a");
     /* Returns true if a script is active (paused or unpaused). */
     bool running() { return(active); }
-    /* Returns 0 if the script is not waiting for input, or
-        1 if any key will continue the script,
-        2 if some character/string input is needed.
-    */
-    Uint32 waiting()
-    {
-        if(!is_waiting)
-            return(0);
-        return(prompt);
-    }
+    /* Returns true if the script is waiting for input. */
+    bool waiting() { return(is_waiting); }
     /* Tell script to pause. */
-    void wait() { is_waiting = true; prompt = 1; }
+    void wait() { is_waiting = true; }
     /* Tell script to resume. */
-    void unwait() { is_waiting = false; prompt = 0; }
+    void unwait() { is_waiting = false; }
     bool start(Actor *talkto); // makes step() available
     void stop();
     void step(Uint32 count = 0);
-    /* Returns text to print or NULL if no text is available. **The string
-     * pointer returned becomes invalid when get_output() is called again.**
-     */
-    char *get_output()
-    {
-        output_cpy = (char *)realloc(output_cpy, output.size());
-        if(output_cpy)
-            strcpy(output_cpy, (char *)output.c_str());
-        output.resize(0);
-        fprintf(stderr, "Converse: output=\"%s\"\n", output_cpy);
-        return(output_cpy);
-    }
-    /* Return true if there is output text ready to be printed. */
-    bool has_output() { return(!output.empty()); }
+    /* Send output buffer to message scroller. */
+    void print() { scroll->display_string((char *)output.c_str()); output.resize(0); }
     Uint32 print_name();
     /* Set input buffer (replacing what is already there.) */
     void input(const char *new_input)
     {
         input_s.assign(new_input);
     }
+    void continue_script();
 };
 
 

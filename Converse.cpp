@@ -20,41 +20,42 @@
 #include "Converse.h"
 
 // argument counts (256args * 256values), if args are collected first
-static Uint8 converse_cmd_args[256];
+//static Uint8 converse_cmd_args[256];
 
 
-/* Load converse.a as src.
+/* Load `convfilename' as src.
  */
-void Converse::loadConv()
+void Converse::loadConv(std::string convfilename)
 {
     string conv_lib_str;
-    config->pathFromValue("config/ultima6/gamedir", "converse.a", conv_lib_str);
+    config->pathFromValue("config/ultima6/gamedir", convfilename, conv_lib_str);
+    delete src;
     src = new U6Lib_n;
     src->open(conv_lib_str, 4);
+    src_num = (convfilename == "converse.a")
+              ? 1 : (convfilename == "converse.b") ? 2 : 0;
+    std::cerr << "Converse: load \"" << convfilename << "\"" << std::endl;
 }
 
 
-/* Set the interpreter type, and point to an opened converse library. Initialize
- * data. FIXME: call stop() to do most of the work
+/* Set the interpreter type, and point to an opened converse library, and an
+ * object to send output to and get input from.
  */
-Converse::Converse(Configuration *cfg, Converse_interpreter engine_type)
+Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
+                   MsgScroll *ioobj)
 {
     config = cfg;
+    scroll = ioobj;
     interpreter = engine_type;
-    src = 0;
+    src = 0; src_num = 0;
     npc = 0;
-    active = is_waiting = false;
-    prompt = 0;
-    allowed_input = NULL;
-    script_pt = script = 0;
-    script_len = 0;
-    output_cpy = 0;
-    cmd = 0x00; // no command
-
     // argument count to each command:
-    memset(&converse_cmd_args, 0, sizeof(Uint8) * 256);
-    converse_cmd_args[U6OP_SETF] = 2;
-    converse_cmd_args[U6OP_CLEARF] = 2;
+//    memset(&converse_cmd_args, 0, sizeof(Uint8) * 256);
+//    converse_cmd_args[U6OP_SETF] = 2;
+//    converse_cmd_args[U6OP_CLEARF] = 2;
+
+    script = 0;
+    stop();
 }
 
 
@@ -67,7 +68,7 @@ Uint32 Converse::print_name()
     id = pop();
     for(; isprint(script_pt[len]); len++);
     output.append((const char *)script_pt, (unsigned int)len);
-    output.append("\n");
+    output.append("\n\n");
     pop(len);
     fprintf(stderr, "Converse: got name of npc 0x%02x\n", id);
     return(id);
@@ -93,11 +94,9 @@ void Converse::seek_converse()
 }
 
 
-/* Try to print `print_len' bytes of text from the currect script location.
- * Returns true if printing (to output string) was successful or false if the
- * script runs out or a non-printable character is encountered.
+/* Handle script text. Print it, get it as keywords, or skip it.
  */
-bool Converse::do_text(Uint32 print_len)
+bool Converse::do_text()
 {
 // loop to print len
 // when symbol is encountered, print up to c, update p_strt
@@ -109,9 +108,37 @@ bool Converse::do_text(Uint32 print_len)
 //    while(c < print_len)
 //    {
 //    }
-    output.append((const char *)script_pt, (unsigned int)print_len);
-    skip(print_len);
+    int c;
+    for(c = 0; !check_overflow(c) && is_print(peek(c)); c++);
+    output.append((const char *)script_pt, (unsigned int)c);
+    skip(c);
+
+    if(text_op == CONV_TEXTOP_PRINT && !keywords.size())
+    {
+        fprintf(stderr, "Converse: print \"%s\"\n", output.c_str());
+        print();
+    }
+    else if(text_op == CONV_TEXTOP_KEYWORD)
+    {
+        keywords = output;
+        fprintf(stderr, "Converse: got keywords: \"%s\"\n", keywords.c_str());
+        output.resize(0);
+        text_op = 0;
+    }
+    else
+        output.resize(0);
     return(true);
+}
+
+
+/* Returns true if the keywords list contains the input string, or contains an
+ * asterisk (matching any input).
+ */
+bool Converse::check_keywords()
+{
+    if(keywords == "*")
+        return(true);
+    return(false);
 }
 
 
@@ -123,125 +150,151 @@ bool Converse::do_text(Uint32 print_len)
 bool Converse::do_cmd()
 {
     bool donext = true;
+    fprintf(stderr, "Converse: cmd=0x%02x\n", cmd);
+    fprintf(stderr, "Converse: args: ");
+    for(unsigned int a = 0; a < args.size(); a++)
+        for(unsigned int v = 0; v < args[a].size(); v++)
+            fprintf(stderr, "%d,%d=(0x%02x)0x%02x\n", a, v,
+                    args[a][v].valt, args[a][v].val);
+    fprintf(stderr, "\n");
+    if(keywords.size()
+       && (cmd != U6OP_KEYWORD && cmd != U6OP_SANSWER && cmd != U6OP_ENDASK))
+    {
+        fprintf(stderr, "Converse: skip cmd\n");
+        fprintf(stderr, "Converse: keywords(%d)=\"%s\" skip cmd\n",
+                keywords.size(), keywords.c_str());
+        return(donext);
+    }
     switch(cmd)
     {
-        case U6OP_SETF: // set (npc, flag)
+        case U6OP_ARGSTOP:
+            std::cerr << "Converse: END-OF-ARGUMENT" << std::endl;
+            break;
+        case U6OP_SETF:
             std::cerr << "Converse: SET" << std::endl;
+//            npcmanager->set_flag(get_val(0, 0), get_val(1, 0));
+            fprintf(stderr, "Converse: npc=%x flag=%x\n", args[0][0].val,
+                    args[1][0].val);
             break;
-        case U6OP_CLEARF: // clear (npc, flag)
+        case U6OP_CLEARF:
             std::cerr << "Converse: CLEAR" << std::endl;
+//            npcmanager->clear_flag(get_val(0, 0), get_val(1, 0));
+            fprintf(stderr, "Converse: npc=%x flag=%x\n", args[0][0].val,
+                    args[1][0].val);
             break;
-        case U6OP_JUMP: // goto (4byte offset)
+        case U6OP_JUMP:
             std::cerr << "Converse: JUMP" << std::endl;
-            seek(pop4());
+            fprintf(stderr, "Converse: offset=%08x\n", args[0][0].val);
+            seek(args[0][0].val);
             break;
-        case U6OP_BYE: // bye
+        case U6OP_BYE:
             std::cerr << "Converse: BYE" << std::endl;
-            stop();
-            donext = false;
+            stop(); donext = false;
             break;
-        case U6OP_WAIT: // wait
+        case U6OP_WAIT:
             std::cerr << "Converse: WAIT" << std::endl;
-            wait();
-            prompt = 1;
-            donext = false;
+            wait(); donext = false;
             break;
-        case U6OP_ENDASK: // endask
-            std::cerr << "Converse: end of ASK section" << std::endl;
+        case U6OP_ENDASK:
+            std::cerr << "Converse: END-OF-ASK section" << std::endl;
+            keywords.resize(0);
             break;
-        case U6OP_KEYWORD: // keywords (keyword list)
-            std::cerr << "Converse: get KEYWORDS" << std::endl;
-            keywords = "";
-            while(!check_overflow() && peek() > 0 && peek() < 0xa0)
-                keywords.push_back((char)pop());
-            std::cerr << "Converse: got \"" << keywords << "\"" << std::endl;
+        case U6OP_KEYWORD:
+            std::cerr << "Converse: KEYWORDS" << std::endl;
+            text_op = 2;
             break;
-        case U6OP_SIDENT:// npc (1byte npc, name)
-            std::cerr << "Converse: start IDENT section" << std::endl;
+        case U6OP_SIDENT:
+            std::cerr << "Converse: IDENT section" << std::endl;
             print_name();
             break;
         case U6OP_SLOOK:
-        case U6OP_SLOOKB: // description start
-            std::cerr << "Converse: start LOOK section" << std::endl;
+        case U6OP_SLOOKB:
+            std::cerr << "Converse: LOOK section" << std::endl;
             output.append("You see ");
             break;
-        case U6OP_SCONVERSE: // conversation start
-            std::cerr << "Converse: start CONVERSE section" << std::endl;
+        case U6OP_SCONVERSE:
+            std::cerr << "Converse: CONVERSE section" << std::endl;
             break;
-        case U6OP_SASK: // ask section start
-            std::cerr << "Converse: start ASK section" << std::endl;
-            wait();
-            prompt = 2; allowed_input = NULL; // any
-            donext = false;
+        case U6OP_SASK:
+            std::cerr << "Converse: ASK section" << std::endl;
+            cout << "Input" << endl;
+//            cin >> input_s;
+            wait(); donext = false;
             break;
-        case U6OP_SANSWER: // answer section start
-            std::cerr << "Converse: check KEYWORDS" << std::endl;
-//            if(check_keywords())
-//                keywords = "";
-//            else(
+        case U6OP_SANSWER:
+            std::cerr << "Converse: ANSWER (check KEYWORDS)" << std::endl;
+            if(check_keywords())
+            {
+                keywords.resize(0);
+                // continue, no skip
+            }
+            else
+                cerr << "Converse: skip to next keyword" << endl;
             break;
         case 0x00:
             output.append("\nNull command\n");
             break;
         default:
             output.append("\nUnknown command\n");
+            while(!check_overflow() && pop() != U6OP_ARGSTOP);
+            donext = false;
     }
     cmd = 0x00;
-//    args.clear();
     return(donext);
 }
 
 
 #if 0
-/* Read in the argument list for the command. Each 0xa7 starts the next, and
- * ends the final argument.
- * If the command has 1 argument it does not have to be terminated with 0xa7.
+/* Each control statement has a specific number of arguments & values. This
+ * collects them into the argument vector for `cmd'.
  */
-void Converse::collect_args(Uint32 cmd, Uint32 argc, unsigned char *strt,
-                            unsigned int len)
+void Converse::collect_args()
 {
-    int a = 0, b = 0;
-    args.reserve(argc);
-    for(a = 0; a < argc; a++)
+    Uint32 val = 0x00;
+    args.clear();
+    switch(cmd)
     {
-        args[argc].val_c = 0;
-        if(converse_cmd_variadic[cmd])
-        {
-            args[a].val_t = (Uint32 *)malloc(sizeof(Uint32) * args[argc].val_c);
-            args[a].val = (Uint32 *)malloc(sizeof(Uint32) * args[argc].val_c);
-//        while(b < len)
-//        {
-//        }
-        }
+        case U6OP_SETF: // a1=npc a7 b1=flag a7
+        case U6OP_CLEARF: // a1=npc a7 b1=flag a7
+            val = pop();
+            if(val == 0xd3)
+                args[0][0].val = pop();
+            else if(val == 0xd2)
+                args[0][0].val = pop4();
+            else if(val == 0xd4)
+                args[0][0].val = pop2();
+            else
+            {
+                args[0][0].val = val;
+                args[0][0].valt = pop();
+            }
+            skip();
+            val = pop();
+            if(val == 0xd3)
+                args[1][0].val = pop();
+            else if(val == 0xd2)
+                args[1][0].val = pop4();
+            else if(val == 0xd4)
+                args[1][0].val = pop2();
+            else
+            {
+                args[1][0].val = val;
+                args[1][0].valt = pop();
+            }
+            skip();
+            break;
+        case U6OP_JUMP: // 4byte offset
+            args[0][0].val = pop4();
+            break;
+//        case U6OP_CREATE: // a1=npc b1=objnum c1=qual d1=quant
+//            break;
+        case U6OP_KEYWORD: // keyword list
+            std::cerr << "Converse: get KEYWORDS" << std::endl;
+            keywords = "";
+            while(!check_overflow() && peek() > 0 && peek() < 0xa0)
+                keywords.push_back((char)pop());
+            break;
     }
-
-    do // args
-                {
-                    args[arg_c].val_c = 0;
-                    args[arg_c].val_t = args[arg_c].val = NULL;
-                    collect_args(
-                    while(*script_pt != 0xa7) // arg values
-                    {
-                        args[arg_c].val_t = realloc(args[arg_c].val_t, sizeof(Uint32)
-                                                            *args[arg_c].val_c);
-                        args[arg_c].val = realloc(args[arg_c].val, sizeof(Uint32)
-                                                            *args[arg_c].val_c);
-                        // get type
-                        if(args[arg_c].val_t[args[arg_c].val_c] == 0
-                           && is_valsize(*script_pt))
-                        // get value
-                        else if(args[arg_c].val_t[args[arg_c].val_c] == 0
-                                && is_varnum(*script_pt))
-                        else // probably next cmd
-                        {
-                            ++args[arg_c].val_c;
-                            ++script_pt;
-                            break;
-                        }
-                    }
-                    args[arg_c].val_t
-                    fprintf(stderr, "Converse: arg arg_c\n");
-                } while(++a < arg_c);
 }
 #endif
 
@@ -254,78 +307,108 @@ void Converse::collect_args(Uint32 cmd, Uint32 argc, unsigned char *strt,
  */
 void Converse::step(Uint32 count)
 {
-    Uint32 c = 0, a = 0, arg_c = 0, len = 0;
+    Uint32 val = 0, ai = 0, vi = 0, c = 0;
     bool stepping = true;
-    if(!active)
-        return;
 
-    do
+    while(stepping && !check_overflow() && ((count > 0) ? c++ < count : true))
     {
-        cmd = peek();
-        if(cmd == 0 || cmd > 0xa0) // FIXME: change istextorcontrol comparison
+        cerr << "new statement" << endl;
+        if(is_print(peek()))
         {
-            skip();
-            fprintf(stderr, "Converse: cmd is 0x%02x\n", cmd);
-            arg_c = converse_cmd_args[cmd <= 255 ? cmd : 0x00];
-//            args.reserve(arg_c);
-            fprintf(stderr, "Converse: cmd has %d arg(s)\n", arg_c);
-            if(arg_c == 0)
+            cerr << "GET TEXT" << endl;
+            do_text();
+            continue;
+        }
+        cmd = pop();
+        cerr << "popped cmd" << endl;
+        if(cmd == U6OP_SIDENT)
+        {
+            cerr << "sident" << endl;
+            print_name();
+            continue;
+        }
+        cerr << "get args" << endl;
+        ai = vi = 0;
+        args.clear(); args.resize(ai + 1);
+        if(cmd == U6OP_JUMP)
+        {
+            args[0].resize(1);
+            args[0][0].val = pop4();
+            stepping = do_cmd();
+            continue;
+        }
+        while(!check_overflow())
+        {
+            cerr << "check next val" << endl;
+            val = peek();
+            if(val == U6OP_ARGSTOP)
             {
-                stepping = do_cmd();
+                cerr << "val is 0xa7, skip, next arg" << endl;
+                skip(); ++ai;
+                args.resize(ai + 1);
+                continue;
+            }
+            if(is_print(val) || is_cmd(val))
+            {
+                cerr << "val is printable or cmd, done" << endl;
+                break;
+            }
+            cerr << "skip, get val" << endl;
+            skip();
+            if(val == 0xd2)
+            {
+                args[ai].resize(vi + 1);
+                args[ai][vi++].val = pop4();
+                cerr << "popped 4, next val" << endl;
+            }
+            else if(val == 0xd3)
+            {
+                args[ai].resize(vi + 1);
+                args[ai][vi++].val = pop();
+                cerr << "popped 1, next val" << endl;
+            }
+            else if(val == 0xd4)
+            {
+                args[ai].resize(vi + 1);
+                args[ai][vi++].val = pop2();
+                cerr << "popped 2, next val" << endl;
             }
             else
             {
-                if(arg_c == 1)
-                    skip(2);
-                else
-                    for(a = 0; a < arg_c; a++)
-                        skip(3);
-                arg_c = 0;
-                output.append("\nUnimplemented\n");
+                args[ai].resize(vi + 1);
+                cerr << "val is val" << endl;
+                args[ai][vi].val = val;
+                if(peek() == 0xb2)
+                {
+                    args[ai][vi].valt = pop();
+                    cerr << "0xb2 follows, popped" << endl;
+                }
+                ++vi;
+                cerr << "next val" << endl;
             }
-            ++c; continue;
         }
-        std::cerr << "Converse: print" << std::endl;
-        // grab text length and parse it
-        for(len = 1; peek(len) > 0 && peek(len) < 0xa0 && !check_overflow(len); ++len);
-        if(!do_text(len))
-            output.append("\nPrint error\n");
-        ++c;
-    } while(((count != 0) ? c < count : true) && stepping && !check_overflow());
-    if(check_overflow())
-    {
-        output.append("\nEOF\n");
-        stop();
+        stepping = do_cmd();
     }
+    print();
 }
 
 
-/* Stop execution of the current script and unload it.
+/* Stop execution of the current script and unload it. Initialize data.
  */
 void Converse::stop()
 {
-    if(!active)
-        return;
-    if(script_len)
-    {
-        script_len = 0;
-        delete script;
-    }
-    script_pt = 0;
-    if(output_cpy)
-    {
-        free(output_cpy);
-        output_cpy = NULL;
-    }
-    cmd = 0x00;
-//    args.clear();
-    is_waiting = false;
-    prompt = 0;
-    allowed_input = 0;
-    input_s.resize(0); // input_s.erase();
     npc = 0;
-    active = false;
-    std::cerr << "Converse: stopped script" << std::endl;
+    free(script);
+    script_pt = script = 0;
+    script_len = 0;
+
+    input_s.resize(0); // input_s.erase();
+    keywords.resize(0);
+    args.clear();
+    text_op = CONV_TEXTOP_PRINT;
+
+    active = is_waiting = false;
+    std::cerr << "Converse: script is stopped" << std::endl;
 }
 
 
@@ -336,7 +419,7 @@ void Converse::stop()
 bool Converse::start(Actor *talkto)
 {
     unsigned char *undec_script = 0; // item as it appears in library
-    Uint32 undec_script_len = 0, actor_num = 0;
+    Uint32 undec_script_len = 0, actor_num = 0, script_num = 0;
     U6Lzw decoder;
     if(!talkto || !src)
         return(false);
@@ -344,12 +427,13 @@ bool Converse::start(Actor *talkto)
     // make sure previous script is unloaded first
     if(active)
         this->stop();
-    actor_num = talkto->get_actor_num();
-    undec_script_len = src->get_item_size(actor_num);
+    script_num = actor_num = talkto->get_actor_num();
+    set_conv(script_num);
+    undec_script_len = src->get_item_size(script_num);
     if(undec_script_len > 4)
     {
-        undec_script = src->get_item(actor_num);
-        std::cerr << "Converse: loading";
+        std::cerr << "Converse: reading";
+        undec_script = src->get_item(script_num);
         // decode
         if(!(undec_script[0] == 0 && undec_script[1] == 0
              && undec_script[2] == 0 && undec_script[3] == 0))
@@ -357,6 +441,7 @@ bool Converse::start(Actor *talkto)
             std::cerr << " encoded script";
             script = decoder.decompress_buffer(undec_script, undec_script_len,
                                                script_len);
+            free(undec_script);
         }
         else
         {
@@ -364,8 +449,8 @@ bool Converse::start(Actor *talkto)
             script = undec_script;
             script_len = undec_script_len;
         }
+        std::cerr << " for NPC " << (int)actor_num << std::endl;
     }
-    std::cerr << " for NPC " << (int)actor_num << std::endl;
     // start script (makes step() available)
     if(script)
     {
@@ -374,7 +459,27 @@ bool Converse::start(Actor *talkto)
         seek(0);
         return(true);
     }
-    std::cerr << std::endl << "Converse: error loading actor " << (int)actor_num
-                 << " script" << std::endl;
+    std::cerr << std::endl << "Converse: error loading script " << (int)script_num
+              << std::endl;
     return(false);
+}
+
+
+/* Check to see if script is not waiting. If it is, continue the active script.
+ * If the script is waiting, check the i/o object for input, taking the input if
+ * available.
+ */
+void Converse::continue_script()
+{
+    if(running())
+    {
+        if(!waiting())
+            step();
+//        else if(scroll->poll_input())
+//        {
+//        }
+//        script has stopped itself:
+//        if(!converse->running())
+//            remove portrait [& name [& inventory display]] unset talking mode
+    }
 }
