@@ -500,6 +500,7 @@ void Actor::set_in_party(bool state)
 //        obj_n = base_obj_n; U6Actor::set_worktype
         can_move = true;
         set_worktype(0x01); // U6_IN_PARTY
+        status_flags |= ACTOR_STATUS_IN_PARTY;
     }
     else // left
     {
@@ -507,6 +508,7 @@ void Actor::set_in_party(bool state)
           {
            inventory_drop_all();
            set_worktype(0x8f); // U6_WANDER_AROUND
+           status_flags ^= ACTOR_STATUS_IN_PARTY;
           }
     }
 }
@@ -1278,6 +1280,7 @@ void Actor::die()
 {
     hp = 0;
     alive = false;
+    status_flags |= ACTOR_STATUS_DEAD;
 }
 
 

@@ -145,8 +145,19 @@ bool ActorManager::load(NuvieIO *objlist)
     actors[i]->direction = actors[i]->frame_n / 4;
    }
 
- //old obj_n & frame_n values
+ // Actor status flags.
+ 
+ objlist->seek(0x800);
+ 
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->status_flags = objlist->read1();
+    actors[i]->alive = (bool)(actors[i]->status_flags & ACTOR_STATUS_DEAD);
+    
+   }
 
+ //old obj_n & frame_n values
+ 
  objlist->seek(0x15f1);
 
  for(i=0;i < 256; i++)
@@ -619,9 +630,10 @@ void ActorManager::print_actor(Actor *actor)
     printf("NPC flags: ");
     print_b(actor->flags);
     printf("\n");
-//    printf("Status flags: ");
-//    print_b();
-//    printf("\n");
+
+    printf("Status flags: ");
+    print_b(actor->status_flags);
+    printf("\n");
 
     uint32 inv = actor->inventory_count_objects(true);
     if(inv)
@@ -712,6 +724,8 @@ bool ActorManager::resurrect_actor(Obj *actor_obj, MapCoord new_position)
   {
    actor = get_actor(actor_obj->quality);
    actor->alive = true;
+   actor->status_flags = actor->status_flags ^ ACTOR_STATUS_DEAD;
+   
    actor->show();
 
    actor->x = new_position.x;
@@ -727,7 +741,7 @@ bool ActorManager::resurrect_actor(Obj *actor_obj, MapCoord new_position)
    actor->set_hp(1);
    //actor->set_worktype(0x1);
    
-   if(actor->flags & 0x1) //actor in party
+   if((actor->status_flags & ACTOR_STATUS_IN_PARTY) == ACTOR_STATUS_IN_PARTY) //actor in party
      Game::get_game()->get_party()->add_actor(actor);
    
    //add body container objects back into actor's inventory.

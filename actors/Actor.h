@@ -59,6 +59,9 @@ using std::string;
 
 #define ACTOR_SHOW_BLOOD true
 
+#define ACTOR_STATUS_DEAD 0x10
+#define ACTOR_STATUS_IN_PARTY 0xc0
+
 class Map;
 class MapCoord;
 class UseCode;
@@ -109,7 +112,9 @@ class Actor
 
  uint8 direction;
  uint8 walk_frame;
-
+ 
+ uint8 status_flags;
+ 
  bool can_move;
  bool alive;
  bool temp_actor;

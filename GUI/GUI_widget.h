@@ -108,7 +108,7 @@ public:
     virtual void MoveRelative(int dx,int dy);
     virtual void Move(int new_x, int new_y);
     void grab_focus();
-    void release_focus();
+    virtual void release_focus();
 
   virtual void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
 

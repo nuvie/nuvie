@@ -55,6 +55,13 @@ GUI_TextInput::~GUI_TextInput()
  return;
 }
 
+void GUI_TextInput::release_focus()
+{
+ GUI_Widget::release_focus();
+ 
+ SDL_EnableUNICODE(0); //disable unicode.
+}
+
 GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
 {
  //release focus if we click outside the text box.
@@ -63,7 +70,10 @@ GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
  else
   {
    if(!focused)
-     grab_focus();
+     {
+      grab_focus();
+      SDL_EnableUNICODE(1); //turn on unicode processing.
+     }
   }
 
  return(GUI_PASS);

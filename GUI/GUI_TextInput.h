@@ -49,6 +49,8 @@ class GUI_TextInput : public GUI_Text
                char *str, GUI_Font *gui_font, uint16 width, uint16 height, GUI_CallBack *callback);
  ~GUI_TextInput();
 
+ void release_focus();
+
  GUI_status MouseUp(int x, int y, int button);
  GUI_status KeyDown(SDL_keysym key);
 

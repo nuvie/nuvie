@@ -1,3 +1,10 @@
+2004-09-25  Eric Fry <efry at users.sourceforge.net>
+	* Enable unicode support when GUI_TextInput widget grabs focus.
+	* Disable unicode support when GUI_TextInput widget releases focus.
+	* Added status_flags to Actor class.
+	* Use actor status_flags to determine if a dead actor should be added
+	  back into the party when resurrected.
+
 2004-09-25  Michael Fink <vividos at users.sourceforge.net>
 	* fixed some memory leaks
 
