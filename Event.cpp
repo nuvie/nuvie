@@ -1765,7 +1765,7 @@ bool Event::drop()
  */
 bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
 {
-    Map *map = Game::get_game()->get_game_map();
+   // Map *map = Game::get_game()->get_game_map();
     if(mode == WAIT_MODE)
         return(false);
 

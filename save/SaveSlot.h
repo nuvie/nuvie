@@ -24,10 +24,13 @@
  */
 
 #include "GUI_widget.h"
+#include "GUI_types.h"
+using std::string;
 
 class GUI;
 class GUI_CallBack;
-class GUI_Color;
+
+#define NUVIE_SAVESLOT_HEIGHT 20
 
 // Callback message types
 
@@ -41,12 +44,18 @@ protected:
 GUI_CallBack *callback_object;
 GUI_Color background_color;
 bool selected;
+bool new_save;
+
+std::string filename;
 
 public:
 
 SaveSlot(GUI_CallBack *callback, GUI_Color bg_color);
 
 ~SaveSlot();
+
+bool init(std::string *filename);
+std::string *get_filename();
 
 void deselect() { selected = false; };
 

@@ -43,10 +43,25 @@
 SaveGame::SaveGame(Configuration *cfg)
 {
  config = cfg;
+ init();
 }
 
 SaveGame::~SaveGame()
 {
+}
+
+void SaveGame::init()
+{
+ num_saves = 0;
+ actual_play_time = 0;
+ game_play_time = 0; 
+ 
+ save_description.assign("");
+ 
+ if(objlist.get_size() > 0)
+   objlist.close();
+
+ return;
 }
 
 bool SaveGame::load_new()
@@ -62,6 +77,8 @@ bool SaveGame::load_new()
 
  obj_manager = Game::get_game()->get_obj_manager();
 
+ init();
+ 
  // load surface chunks
   
  config_get_path(config,"lzobjblk",filename);
@@ -112,7 +129,9 @@ bool SaveGame::load_original()
  ObjManager *obj_manager;
  
  objblk_file = new NuvieIOFileRead();
- 
+
+ init();
+  
  obj_manager = Game::get_game()->get_obj_manager();
  
  key = config_get_game_key(config);
@@ -216,14 +235,19 @@ bool SaveGame::load_objlist()
  party->load(&objlist);
  
  view_manager->reload();
+
  
- scroll->init(player->get_name());
-   
  player->get_location(&px, &py, &pz);
  obj_manager->update(px, py, pz); // spawn eggs. 
    
  map_window->centerMapOnActor(player->get_actor());
 
+ scroll->display_string("\nGame Loaded\n\n");
+ 
+ scroll->init(player->get_name());
+ 
+ scroll->display_prompt();
+ 
  return true;
 }
 
@@ -237,6 +261,8 @@ bool SaveGame::load(const char *filename)
  int game_type;
  //char game_tag[3];
  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+ 
+ init();
  
  config->value("config/GameType",game_type);
 
@@ -352,6 +378,7 @@ bool SaveGame::save_objlist()
  ActorManager *actor_manager;
  Player *player;
  Party *party;
+ MsgScroll *scroll;
  
  game = Game::get_game();
  
@@ -360,13 +387,16 @@ bool SaveGame::save_objlist()
  
  player = game->get_player();
  party = game->get_party();
-
+ scroll = game->get_scroll();
  
  clock->save(&objlist);
  actor_manager->save(&objlist);
  
  player->save(&objlist);
  party->save(&objlist);
+
+ scroll->display_string("\nGame Saved\n\n");
+ scroll->display_prompt();
 
  return true;
 }

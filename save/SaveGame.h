@@ -55,6 +55,8 @@ class SaveGame
  SaveGame(Configuration *cfg);
  ~SaveGame();
 
+ void init();
+
  bool load_new();
  bool load_original();
  bool load(const char *filename);

@@ -372,6 +372,9 @@ void ObjManager::clean()
 
  clean_actor_inventories();
  
+ // remove the temporary object list. The objects were deleted from the surface and dungeon trees.
+ temp_obj_list.clear();
+ 
  return;
 }
 

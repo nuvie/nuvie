@@ -6,6 +6,9 @@
  *  Copyright (c) 2003. All rights reserved.
  *
  */
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include <cstdio>
 #include <string>
 #include "nuvieDefs.h"
@@ -23,6 +26,18 @@ std::string config_get_game_key(Configuration *config)
  game_key.append(game_name);
  
  return game_key;
+}
+
+const char *get_game_tag(int game_type)
+{
+ switch(game_type)
+   {
+    case NUVIE_GAME_U6 : return "U6";
+    case NUVIE_GAME_MD : return "MD";
+    case NUVIE_GAME_SE : return "SE";
+   }
+
+ return "";
 }
 
 void config_get_path(Configuration *config, std::string filename, std::string &path)
@@ -66,6 +81,19 @@ void build_path(std::string path, std::string filename, std::string &full_path)
     full_path += filename;
 
  return;
+}
+
+bool directory_exists(const char *directory)
+{
+ struct stat sb;
+ 
+ if(stat(directory, &sb) != 0)
+   return false;
+
+ if(!(sb.st_mode | S_IFDIR))
+   return false;
+
+ return true;
 }
 
 void print_b(uint8 num)

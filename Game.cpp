@@ -66,33 +66,53 @@ Game::Game(Configuration *cfg)
  game = this;
  config = cfg;
  cursor = NULL;
+ tile_manager = NULL;
+ obj_manager = NULL;
+ palette = NULL;
+ text = NULL;
+ font_manager = NULL;
+ game_map = NULL;
+ actor_manager = NULL;
+ player = NULL;
+ event = NULL;
+ converse = NULL;
+ clock = NULL;
+ party = NULL;
+ portrait = NULL;
+ view_manager = NULL;
+ sound_manager = NULL;
+ gui = NULL;
+ usecode = NULL;
+ effect_manager = NULL;
+ 
 }
 
 Game::~Game()
 {
     // note: don't delete objects that are added to the GUI object via
     // AddWidget()!
-    delete tile_manager;
-    delete obj_manager;
-    delete palette;
-    delete text;
-    delete font_manager;
+    if(tile_manager) delete tile_manager;
+    if(obj_manager) delete obj_manager;
+    if(palette) delete palette;
+    if(text) delete text;
+    if(font_manager) delete font_manager;
     //delete scroll;
-    delete game_map;
-    delete actor_manager;
+    if(game_map) delete game_map;
+    if(actor_manager) delete actor_manager;
     //delete map_window;
-    delete player;
-    delete event;
+    if(player) delete player;
+    if(event) delete event;
     //delete background;
-    delete converse;
-    delete clock;
-    delete party;
-    delete portrait;
-    delete view_manager;
-    delete sound_manager;
-    delete gui;
-    delete usecode;
-    delete effect_manager;
+    if(converse) delete converse;
+    if(clock) delete clock;
+    if(party) delete party;
+    if(portrait) delete portrait;
+    if(view_manager) delete view_manager;
+    if(sound_manager) delete sound_manager;
+    if(gui) delete gui;
+    if(usecode) delete usecode;
+    if(effect_manager) delete effect_manager;
+    if(save_manager) delete save_manager;
     if(cursor) delete cursor;
 }
  
@@ -113,6 +133,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    //sound_manager->LoadObjectSamples(NULL);
 
    save_manager = new SaveManager(config);
+   save_manager->init();
    
    palette = new GamePalette(screen,config);
 
@@ -189,8 +210,6 @@ bool Game::loadGame(Screen *s, uint8 type)
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
    
    save_manager->load_latest_save();
-
-
    
   }
  catch(const char *error_string)
@@ -261,8 +280,6 @@ void Game::play()
   bool game_play = true;
   pause_flags = PAUSE_UNPAUSED;
  
-  scroll->display_prompt();
-  
   //view_manager->set_inventory_mode(1); //FIX
   
   screen->update();

@@ -1,3 +1,10 @@
+2004-05-31  Eric Fry <efry at users.sourceforge.net>
+	* You can save and load from the slots in the save dialog now. :)
+	  I'll have to test this some more. I've used opendir/ readdir
+	  and stat calls. I hope these work under Win32. We might need to
+	  include a posix opendir wrapper to compile under MSVC.
+	* Cleaned temp objects list on ObjManager cleanup.
+
 2004-05-30  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed crash from ThrowObject effect caused by a TimedEvent attempting
 	  to use callback of deleted effect. Animation is stopped on target.

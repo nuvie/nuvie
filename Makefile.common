@@ -18,6 +18,8 @@ nuvie_SOURCES = \
 	files/NuvieIO.h \
 	files/NuvieIOFile.cpp \
 	files/NuvieIOFile.h \
+	files/NuvieFileList.cpp \
+	files/NuvieFileList.h \
 	files/U6Bmp.cpp \
 	files/U6Bmp.h \
 	files/U6Lib_n.cpp \

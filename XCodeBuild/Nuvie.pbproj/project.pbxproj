@@ -25,7 +25,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers $(HOME)/Library/Frameworks/SDL_mixer.framework/Headers /usr/local/SDL ..";
+				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers $(HOME)/Library/Frameworks/SDL_mixer.framework/Headers /usr/local/include/SDL ..";
 				INFOPLIST_FILE = "Info-Nuvie.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
@@ -153,6 +153,7 @@
 				07B011810668765B000771BC,
 				07132C7E066968A200F0A38E,
 				07132CA70669694A00F0A38E,
+				078B44500669B9B5000EFE27,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -708,6 +709,7 @@
 				07B0117E0668765B000771BC,
 				07B011800668765B000771BC,
 				07132C7D066968A200F0A38E,
+				078B444F0669B9B5000EFE27,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2676,6 +2678,36 @@
 			settings = {
 			};
 		};
+		078B444D0669B9B5000EFE27 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = NuvieFileList.cpp;
+			path = ../files/NuvieFileList.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		078B444E0669B9B5000EFE27 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = NuvieFileList.h;
+			path = ../files/NuvieFileList.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		078B444F0669B9B5000EFE27 = {
+			fileRef = 078B444D0669B9B5000EFE27;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		078B44500669B9B5000EFE27 = {
+			fileRef = 078B444E0669B9B5000EFE27;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		078BA0A4049B327F00A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -3140,6 +3172,8 @@
 				07AEE75B04B1727B00A8000A,
 				07938EA404B6C8B100A8000A,
 				07938EA504B6C8B100A8000A,
+				078B444E0669B9B5000EFE27,
+				078B444D0669B9B5000EFE27,
 				07B8BE070419B94F00A8000A,
 				07B8BE060419B94F00A8000A,
 				07B8BE130419DA1000A8000A,

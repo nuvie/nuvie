@@ -54,6 +54,8 @@ SaveDialog(GUI_CallBack *callback);
 
 ~SaveDialog();
 
+bool init(const char *save_directory, const char *game_tag);
+
 GUI_status close_dialog();
 GUI_status KeyDown(SDL_keysym key);
 

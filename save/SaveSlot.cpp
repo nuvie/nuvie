@@ -32,31 +32,55 @@
 #include "SaveSlot.h"
 
 
-SaveSlot::SaveSlot(GUI_CallBack *callback, GUI_Color bg_color) : GUI_Widget(NULL, 0, 0, 266, 20)
+SaveSlot::SaveSlot(GUI_CallBack *callback, GUI_Color bg_color) : GUI_Widget(NULL, 0, 0, 266, NUVIE_SAVESLOT_HEIGHT)
 {
- GUI_Widget *widget;
- GUI *gui = GUI::get_gui();
-
  callback_object = callback;
  background_color = bg_color;
  
  selected = false;
- 
- widget = (GUI_Widget *) new GUI_Text(2, 2, 255, 255, 255, "Save Slot......", gui->get_font());
- AddWidget(widget);
-
- //widget = (GUI_Widget *) new GUI_Text(2, 10, 255, 255, 255, "Eric GT: 98:45 Saves: 5", gui->get_font());
- widget = (GUI_Widget *) new GUI_Text(2, 10, 200, 200, 200, "GT 300:55,RT 50,P 5", gui->get_font());
- AddWidget(widget); 
-
- return;
 }
-
 
 SaveSlot::~SaveSlot()
 {
 }
 
+bool SaveSlot::init(std::string *file)
+{ 
+ GUI_Widget *widget;
+ GUI *gui = GUI::get_gui();
+
+ if(file != NULL)
+  {
+   filename.assign(file->c_str());
+   new_save = false;
+  }
+ else
+  {
+   filename.assign(""); //empty save slot.
+   new_save = true;
+  }
+
+ if(new_save)
+   widget = (GUI_Widget *) new GUI_Text(2, 2, 255, 255, 255, "New Save.", gui->get_font());
+ else
+   widget = (GUI_Widget *) new GUI_Text(2, 2, 255, 255, 255, (char *)filename.c_str(), gui->get_font()); //evil const cast lets remove this
+
+ AddWidget(widget);
+
+ if(!new_save)
+   {
+    //widget = (GUI_Widget *) new GUI_Text(2, 10, 255, 255, 255, "Eric GT: 98:45 Saves: 5", gui->get_font());
+    widget = (GUI_Widget *) new GUI_Text(2, 10, 200, 200, 200, "GT 300:55,RT 50,P 5", gui->get_font());
+    AddWidget(widget);
+   }
+
+ return true;
+}
+
+std::string *SaveSlot::get_filename()
+{
+ return &filename;
+}
 
 /* Map the color to the display */
 void SaveSlot::SetDisplay(Screen *s)

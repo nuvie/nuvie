@@ -34,6 +34,7 @@ class Configuration;
 
 class SaveDialog;
 class SaveGame;
+class SaveSlot;
 
 class SaveManager : public GUI_CallBack
 {
@@ -41,7 +42,11 @@ class SaveManager : public GUI_CallBack
  ActorManager *actor_manager;
  ObjManager *obj_manager;
  
+ int game_type;
+ 
  SaveGame *savegame;
+ 
+ std::string savedir;
  
  // gui widgets;
  
@@ -52,10 +57,17 @@ class SaveManager : public GUI_CallBack
  SaveManager(Configuration *cfg);
  virtual ~SaveManager();
 
+ void init();
+
  bool load_latest_save();
  
  void create_dialog();
-  
+
+ bool load(SaveSlot *save_slot);
+ bool save(SaveSlot *save_slot);
+
+ std::string get_new_savefilename();
+
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
   
  protected:
