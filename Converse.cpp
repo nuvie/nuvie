@@ -204,7 +204,7 @@ void Converse::collect_text(bool eval = false)
             }
             else
             {
-                output.push_back((char)peek(c));
+                output.append(1,(char)peek(c));
                 ++c;
             }
         }
