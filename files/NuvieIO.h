@@ -37,20 +37,20 @@ class NuvieIO
    
    virtual void close()=0;
   
-   virtual uint8 read1()=0;
-   virtual uint16 read2()=0;
-   virtual uint32 read4()=0;
+   virtual uint8 read1() { return 0; };
+   virtual uint16 read2() { return 0; };
+   virtual uint32 read4() { return 0; };
 
    unsigned char *readAll();
    unsigned char *readBuf(uint32 read_size, unsigned int *bytes_read);
-   virtual bool readToBuf(unsigned char *buf, uint32 buf_size)=0;
+   virtual bool readToBuf(unsigned char *buf, uint32 buf_size) { return false; };
 
 
-   virtual bool write1(uint8 src)=0;
-   virtual bool write2(uint16 src)=0;
-   virtual bool write4(uint32 src)=0;
-   virtual uint32 writeBuf(unsigned char *src, uint32 size)=0;
-   virtual uint32 write(NuvieIO *src)=0;
+   virtual bool write1(uint8 src) { return false; };
+   virtual bool write2(uint16 src) { return false; };
+   virtual bool write4(uint32 src) { return false; };
+   virtual uint32 writeBuf(unsigned char *src, uint32 src_size) { return 0; };
+   virtual uint32 write(NuvieIO *src) { return 0; };
    
    uint32 get_size() { return size; }
 

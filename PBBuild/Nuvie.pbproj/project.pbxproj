@@ -780,6 +780,32 @@
 			settings = {
 			};
 		};
+		07938EA404B6C8B100A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = NuvieIOFile.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/files/NuvieIOFile.h;
+			refType = 0;
+		};
+		07938EA504B6C8B100A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = NuvieIOFile.cpp;
+			path = /Users/eric/Projects/Ultima6/nuvie/files/NuvieIOFile.cpp;
+			refType = 0;
+		};
+		07938EA604B6C8B100A8000A = {
+			fileRef = 07938EA404B6C8B100A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07938EA704B6C8B100A8000A = {
+			fileRef = 07938EA504B6C8B100A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		079903C80481F21E00A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1049,6 +1075,8 @@
 			children = (
 				07AEE75A04B1727B00A8000A,
 				07AEE75B04B1727B00A8000A,
+				07938EA404B6C8B100A8000A,
+				07938EA504B6C8B100A8000A,
 				07B8BE050419B94F00A8000A,
 				07B8BE040419B94F00A8000A,
 				07B8BE070419B94F00A8000A,
@@ -1714,6 +1742,7 @@
 				07EC223804A17C6E00A8000A,
 				07DFDDB604A5BFE600A8000A,
 				07938E6104B59AF800A8000A,
+				07938EA604B6C8B100A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1778,6 +1807,7 @@
 				07EC223704A17C6E00A8000A,
 				07DFDDB504A5BFE600A8000A,
 				07938E6004B59AF800A8000A,
+				07938EA704B6C8B100A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
