@@ -140,7 +140,7 @@ bool Converse::do_text()
     {
         keywords = output;
         output.resize(0);
-        text_op = 0;
+        text_op = CONV_TEXTOP_PRINT;
     }
     else
         output.resize(0);
@@ -407,24 +407,26 @@ void Converse::step(Uint32 count)
     Uint32 c = 0;
     bool stepping = true;
 
-    while(stepping && !check_overflow() && ((count > 0) ? c++ < count : true))
+    while(stepping && !check_overflow() && ((count > 0) ? (c++ < count) : true))
     {
-//        std::cerr << "new statement" << std::endl;
         if(is_print(peek()))
         {
-//            std::cerr << "GET TEXT" << std::endl;
             do_text();
             continue;
         }
+
         cmd = pop();
-//        std::cerr << "popped cmd" << std::endl;
         if(cmd == U6OP_SIDENT)
         {
-//            std::cerr << "sident" << std::endl;
             print_name();
             continue;
         }
-//        std::cerr << "get args" << std::endl;
+
+        if(cmd == U6OP_SLOOK || cmd == U6OP_SLOOKB)
+            look_offset = (Uint32)(script_pt - 1 - script);
+        if(cmd == U6OP_SASK || cmd == U6OP_SASKC)
+            getinput_offset = (Uint32)(script_pt - 1 - script);
+        // get args
         args.clear(); args.resize(1);
         if(cmd == U6OP_JUMP)
         {
@@ -530,7 +532,13 @@ void Converse::continue_script()
             input_s.assign(scroll->get_input());
             if(input_s.empty())
                 input_s.assign("bye");
-//            fprintf(stderr, "Converse: got input: \"%s\"\n", input_s.c_str());
+            else if(input_s == "look")
+            {
+                break_scope(); // not part of ASK block
+                seek(look_offset);
+                step(2); // "look" marker & text
+                seek(getinput_offset);
+            }
             unwait();
         }
         // script has stopped itself:
