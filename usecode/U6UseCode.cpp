@@ -306,7 +306,6 @@ Obj *U6UseCode::drawbridge_find(Obj *crank_obj)
 {
  uint16 i,j;
  Obj *start_obj, *tmp_obj;
- bool closed;
  
  for(i=0;i<6;i++) // search on right side of crank.
   {
@@ -408,7 +407,6 @@ void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width
 void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width)
 { 
  uint16 w,h;
- Obj *obj;
 
  //remove end of closed drawbridge.
  // if present.

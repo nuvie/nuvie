@@ -42,8 +42,12 @@
 
 #define TILEFLAG_WALL 0x4
 
-
 #define TILEFLAG_WINDOW 0x8 // flags2
+
+//flags3
+
+#define TILEFLAG_FORCED_PASSABLE 0x4
+
 
 typedef struct {
 uint16 tile_num;

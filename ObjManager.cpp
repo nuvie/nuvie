@@ -180,6 +180,7 @@ bool ObjManager::is_door(Obj * obj)
  return false;
 }
 
+
 uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
 {
  U6Link *link;
@@ -235,6 +236,29 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
    return OBJ_STATUS_PASSABLE;
             
  return OBJ_STATUS_NO_OBJ;
+}
+
+bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
+{
+ U6LList *obj_list;
+ U6Link *link;
+ Obj *obj;
+ Tile *tile;
+ 
+ obj_list = get_obj_list(x,y,level);
+ 
+ if(obj_list)
+  {
+   for(link=obj_list->start();link!=NULL;link=link->next)
+     {
+      obj = (Obj *)link->data;
+      tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+      if(tile->flags3 & TILEFLAG_FORCED_PASSABLE)
+        return true;
+     }
+  }
+  
+ return false;
 }
 
 //gets the linked list of objects at a perticular location.
@@ -733,6 +757,9 @@ Obj *ObjManager::loadObj(U6File *file, uint16 objblk_n)
  obj->qty = file->read1();
  obj->quality = file->read1();
 
+ if(obj->obj_n == 335)
+  printf("egg status = %d, qty = %d qual = %d\n",obj->status,obj->qty,obj->quality);
+ 
  return obj;
 }
 
