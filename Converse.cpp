@@ -343,7 +343,7 @@ if(!args.empty() && !args[0].empty())
                     }
                     break;
                 case 0xc6: // is val1 # of npc in party?
-                    print("-!ifinparty-");
+                    print("-!ifinparty- ");
                     break;
                 case 0x82: // ?? >=
                 case 0x95: // (?) && (?) ??
