@@ -163,7 +163,7 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
 bool ObjManager::is_door(Obj * obj)
 {
  //for U6
- if(obj->obj_n >= 297 && obj->obj_n <= 300)
+ if((obj->obj_n >= 297 && obj->obj_n <= 300) || obj->obj_n == 334)
    return true;
  
  return false;

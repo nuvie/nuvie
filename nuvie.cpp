@@ -59,12 +59,18 @@ bool Nuvie::init()
  // FIX! need to add support for finding nuvie.cfg file.
  
  if(config->readConfigFile("nuvie.cfg","config") == false)
-   return false;
-  
+   {
+    delete config;
+    return false;
+   }
+
  screen = new Screen(config);
  if(screen->init(320,200) == false)
-   return false;
- 
+   {
+    printf("Error: initializing screen\n");
+    return false;
+   }
+
  SDL_WM_SetCaption("Nuvie","Nuvie");
  
  game = new Game(config);

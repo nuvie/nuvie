@@ -691,15 +691,15 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = GameClock.cpp;
-			path = /Users/eric/Projects/Ultima6/nuvie/GameClock.cpp;
-			refType = 0;
+			path = ../GameClock.cpp;
+			refType = 2;
 		};
 		07B4187604640AFB00A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = GameClock.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/GameClock.h;
-			refType = 0;
+			path = ../GameClock.h;
+			refType = 2;
 		};
 		07B4187704640AFB00A8000A = {
 			fileRef = 07B4187504640AFB00A8000A;
@@ -822,15 +822,15 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = Book.cpp;
-			path = /Users/eric/Projects/Ultima6/nuvie/Book.cpp;
-			refType = 0;
+			path = ../Book.cpp;
+			refType = 2;
 		};
 		07D14A91044449E400A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = Book.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/Book.h;
-			refType = 0;
+			path = ../Book.h;
+			refType = 2;
 		};
 		07D14A92044449E400A8000A = {
 			fileRef = 07D14A90044449E400A8000A;
@@ -892,6 +892,17 @@
 		};
 		07DB546E042E8C1A00A8000A = {
 			fileRef = 07DB546C042E8C1A00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07E3229E046BEBC900A8000A = {
+			isa = PBXFileReference;
+			path = nuvie.icns;
+			refType = 4;
+		};
+		07E3229F046BEBC900A8000A = {
+			fileRef = 07E3229E046BEBC900A8000A;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1121,6 +1132,7 @@
 			children = (
 				072566C404272E4B00A8000A,
 				089C165CFE840E0CC02AAC07,
+				07E3229E046BEBC900A8000A,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -1185,7 +1197,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Nuive</string>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string>nuvie.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -1248,6 +1260,7 @@
 			files = (
 				089C165EFE840E0CC02AAC07,
 				070823DA043EF72800A8000A,
+				07E3229F046BEBC900A8000A,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -2,9 +2,6 @@
  *  Party.cpp
  *  Nuive
  *
- *  Created by Eric Fry on Tue May 06 2003.
- *  Copyright (c) 2003. All rights reserved.
- *
  *  Created by Eric Fry on Sun Mar 23 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
