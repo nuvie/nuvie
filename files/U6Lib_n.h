@@ -33,6 +33,8 @@ using std::vector;
 
 class U6Lib_n
 {
+ uint32 filesize; // total size of file
+ bool read_filesize; // true if filesize should be read from the file
  uint8 lib_size; // measured in bytes either 2 or 4
  uint32 num_offsets; // number of items, size of lists
  uint32 num_zero_offsets;
@@ -45,7 +47,7 @@ public:
    U6Lib_n();
    ~U6Lib_n();
  
-   bool open(std::string &filename, uint8 size);
+   bool open(std::string &filename, uint8 size, bool read_size = false);
    bool create(std::string &filename, uint8 size);
    uint32 get_num_items();
    uint32 get_item_size(uint32 item_number);

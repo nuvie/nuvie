@@ -194,7 +194,7 @@ bool U6Lib_n::create(std::string &filename, uint8 size)
 }
 
 
-bool U6Lib_n::open(std::string &filename, uint8 size)
+bool U6Lib_n::open(std::string &filename, uint8 size, bool read_size)
 {
  if(file.open(filename,"rb") == false)
    {
@@ -203,9 +203,9 @@ bool U6Lib_n::open(std::string &filename, uint8 size)
    }
  
  lib_size = size;
- 
+ read_filesize = read_size;
  this->parse_lib();
- 
+
  return true;
 }
  
@@ -280,7 +280,9 @@ void U6Lib_n::parse_lib()
    return;
  
  file.seekStart();
- 
+ if(read_filesize)
+    filesize = file.read4();
+
  first_offset = this->get_first_offset();
 
 // num_offsets = (first_offset - (num_zero_offsets * lib_size)) / lib_size;
@@ -298,6 +300,8 @@ void U6Lib_n::parse_lib()
    }
 
  offsets[num_offsets] = file.filesize(); //this is used to calculate the size of the last item in the lib.
+ if(!filesize)
+    filesize = offsets[num_offsets];
  return; 
 }
 
