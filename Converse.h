@@ -34,6 +34,7 @@
 #include "Player.h"
 #include "U6def.h"
 #include "ViewManager.h"
+#include "ObjManager.h"
 
 using std::stack;
 
@@ -61,6 +62,8 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_UINT16 0xd4
 #define U6OP_UINT32 0xd2
 #define U6OP_YASSIGN 0xd8 // set $Y to name of an npc
+#define U6OP_HEAL 0xd9 // restore all of npc's hit points
+#define U6OP_CURE 0xdb // remove poison status on npc
 #define U6OP_ENDASK 0xee // end of response(s) to previous input
 #define U6OP_KEYWORD 0xef // keyword(s) to trigger next response follows
 #define U6OP_SIDENT 0xff // start of script; npc identification section
@@ -111,6 +114,7 @@ class Converse
     Converse_interpreter interpreter;
     GameClock *clock;
     ActorManager *actors;
+    ObjManager *objects;
     Actor *npc;
     Player *player;
     ViewManager *views;
@@ -239,6 +243,8 @@ class Converse
     void set_ystr(const char *v) { ystr = v; }
     char *get_dbstr(uint32 loc, uint32 i);
     uint8 get_dbint(uint32 loc, uint32 i);
+    /* Return NPC Number, where 0xEB is "this" NPC. */
+    uint8 get_npc_num(uint32 n) { return((n != 0xeb) ? n : npc_num); }
     /* Returns a randomly chosen number from `rnd_lo' to `rnd_hi'. */
     uint32 rnd(uint32 rnd_lo, uint32 rnd_hi)
     {
@@ -322,7 +328,8 @@ class Converse
                  || (check == 0x95) || (check == 0x9a) || (check == 0x9b)
                  || (check == 0xa0) || (check == 0xab) || (check == 0xb4)
                  || (check == 0xbb) || (check == 0xc6) || (check == 0xc7)
-                 || (check == 0xd7) || (check == 0xdd) || (check == 0xe3)) );
+                 || (check == 0xd7) || (check == 0xda) || (check == 0xdc)
+                 || (check == 0xdd) || (check == 0xe3)) );
     }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)
@@ -379,7 +386,7 @@ class Converse
 public:
     Converse(Configuration *cfg, Converse_interpreter engine_type,
              MsgScroll *ioobj, ActorManager *actormgr, GameClock *c, Player *p,
-             ViewManager *viewmgr);
+             ViewManager *viewmgr, ObjManager *objmgr);
     ~Converse();
     void loadConv(std::string convfilename="converse.a");
     /* Returns true if a script is active (paused or unpaused). */

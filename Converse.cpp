@@ -67,7 +67,7 @@ Converse::~Converse()
  */
 Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
                    MsgScroll *ioobj, ActorManager *actormgr, GameClock *c,
-                   Player *p, ViewManager *viewmgr)
+                   Player *p, ViewManager *viewmgr, ObjManager *objmgr)
 {
     // get global objects
     config = cfg;
@@ -76,6 +76,7 @@ Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
     clock = c;
     player = p;
     views = viewmgr;
+    objects = objmgr;
     // initialization
     interpreter = engine_type;
     src = 0; src_num = 0;
@@ -457,6 +458,19 @@ uint32 Converse::u6op_if_test(uint32 cmpf, stack<uint32> *cmpv)
             if(cnpc)
                 ifcomp = npc->is_nearby(cnpc) ? 1 : 0;
             break;
+        case 0xda: // is npc val1 wounded?
+            v[0] = cmpv->top(); cmpv->pop();
+            cnpc = actors->get_actor(get_npc_num(v[0]));
+            if(cnpc)
+                if(cnpc->get_hp() < cnpc->get_maxhp())
+                    ifcomp = 1;
+            break;
+        case 0xdc: // is npc val1 poisoned?
+            v[0] = cmpv->top(); cmpv->pop();
+            cnpc = actors->get_actor(get_npc_num(v[0]));
+            // FIXME
+            ifcomp = 0;
+            break;
         default: // try eval op, or just return 0
             ifcomp = u6op_assign_eval(cmpf, cmpv);
             break;
@@ -510,12 +524,17 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
             break;
         case 0x9a: // weight that npc val1 is free to carry
             v[0] = opv->top(); opv->pop();
-            // FIXME
+            cnpc = actors->get_actor(v[0]);
+            if(cnpc)
+               res = (cnpc->get_strength() * 2 * 10) - (uint32)(cnpc->get_inventory_weight() * 10);
+printf("9A: weight that npc %d can carry: %d\n", v[0], res);
+printf("    (max weight: %d, total weight: %d)\n", cnpc->get_strength() * 2 * 10, (uint32)(cnpc->get_inventory_weight() * 10));
             break;
         case 0x9b: // weight of object val1, times val2(quantity)
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
-            // FIXME
+            res = objects->get_obj_weight(v[0]) * v[1];
+printf("9B: weight of object %d * %d: %d\n", v[0], v[1], res);
             break;
         case 0xa0: // random number between val1 and val2 inclusive
             test_msg("-equals rnd(X to Y)-\n");
@@ -531,11 +550,6 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
             if(cnpc)
                 res = (cnpc->get_flags() & (1 << v[1]))
                        ? 1 : 0;
-            else
-            {
-                print("\nError: No such NPC\n");
-                res = 0;    
-            }
             break;
         case 0xb4: // indexed data val2 at script location val1
             test_msg("-listX[Y]-\n");
@@ -549,7 +563,18 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
         case 0xbb: // quantity of object val2 on npc val1
             v[1] = opv->top(); opv->pop();
             v[0] = opv->top(); opv->pop();
-            // FIXME
+            cnpc = actors->get_actor(v[0]);
+            if(cnpc)
+                res = cnpc->inventory_count_object(v[1], 0);
+            break;
+        case 0xc7: // unknown, combines two vals, related to in-inventory check
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            // ??
+            if(player->get_actor()->inventory_get_object(v[0], v[1]))
+                res = 0x8001;
+            else
+                res = 0xFFFF;
             break;
         case 0xdd: // id of party member val1(0=leader), val2=??
             test_msg("-equals NPC(PARTYIDX)??-\n");
@@ -728,7 +753,7 @@ if(!args.empty() && !args[0].empty())
             eval_arg(1);
             eval_arg(2);
             eval_arg(3);
-            cnpc = actors->get_actor(get_val(0, 0));
+            cnpc = actors->get_actor(get_npc_num(get_val(0, 0)));
             if(cnpc)
                 cnpc->inventory_add_object(get_val(1, 0), get_val(3, 0),
                                            get_val(2, 0));
@@ -739,7 +764,7 @@ if(!args.empty() && !args[0].empty())
             eval_arg(1);
             eval_arg(2);
             eval_arg(3);
-            cnpc = actors->get_actor(get_val(0, 0));
+            cnpc = actors->get_actor(get_npc_num(get_val(0, 0)));
             if(cnpc)
                 cnpc->inventory_del_object(get_val(1, 0), get_val(3, 0),
                                            get_val(2, 0));
@@ -749,20 +774,17 @@ if(!args.empty() && !args[0].empty())
             eval_arg(1);
             eval_arg(2);
             eval_arg(3);
-            cnpc = actors->get_actor(get_val(2, 0));
+            cnpc = actors->get_actor(get_npc_num(get_val(2, 0)));
             if(!cnpc)
                 break;
             cnpc->inventory_del_object(get_val(0, 0), 1, get_val(1, 0));
-            cnpc = actors->get_actor(get_val(3, 0));
+            cnpc = actors->get_actor(get_npc_num(get_val(3, 0)));
             if(cnpc)
                 cnpc->inventory_add_object(get_val(0, 0), 1, get_val(1, 0));
             break;
-        case U6OP_WORKTYPE: // 2 args, npc number, new worktype
-            print("-!worktype-");
-            break;
         case U6OP_PORTRAIT: // 1 arg, npc number
             // use current name
-            if(get_val(0, 0) == 0xeb)
+            if(get_npc_num(get_val(0, 0)) == npc_num)
                 views->set_portrait_mode(npc_num, (char *)my_name);
             else
             {
@@ -778,6 +800,23 @@ if(!args.empty() && !args[0].empty())
                     views->set_portrait_mode(get_val(0, 0),
                                              (char *)npc_name(get_val(0, 0)));
             }
+            break;
+        case U6OP_HEAL: // 1 arg, npc number
+            eval_arg(0);
+            cnpc = actors->get_actor(get_npc_num(get_val(0, 0)));
+            if(cnpc)
+                cnpc->set_hp(cnpc->get_maxhp());
+            break;
+        case U6OP_CURE: // 1 arg, npc number
+            eval_arg(0);
+            print("-!cure-"); // UNPOISON actor
+            break;
+        case U6OP_WORKTYPE: // 2 args, npc number, new worktype
+            eval_arg(0);
+            eval_arg(1);
+            cnpc = actors->get_actor(get_npc_num(get_val(0, 0)));
+            if(cnpc)
+                cnpc->set_worktype(get_val(1, 0));
             break;
         case U6OP_INVENTORY:
             print("-!inventory-");
@@ -1049,7 +1088,6 @@ void Converse::stop()
 {
     reset();
     fprintf(stderr, "End conversation\n");
-    views->set_inventory_mode(0);
 }
 
 
@@ -1200,8 +1238,8 @@ void Converse::continue_script()
         {
             scroll->set_talking(false);
             scroll->display_string("\n");
-//            remove portrait [& name [& inventory display]]
             scroll->display_prompt();
+            views->set_inventory_mode(0);
         }
     }
 }

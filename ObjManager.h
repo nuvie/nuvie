@@ -123,7 +123,7 @@ class ObjManager
  const char *look_obj(Obj *obj);
 
  float get_obj_weight(Obj *obj);
-
+ uint8 get_obj_weight(uint16 obj_n) { return(obj_weight[obj_n]); }
  protected:
 
  bool loadBaseTile();

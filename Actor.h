@@ -128,8 +128,8 @@ class Actor
  
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0);
- uint8 inventory_count_object(uint16 obj_n, uint8 qual = 0);
- Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0);
+ uint32 inventory_count_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
+ Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
  bool inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality);
  bool inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);
  float inventory_get_total_weight() { return(get_inventory_weight() + get_inventory_equip_weight()); }

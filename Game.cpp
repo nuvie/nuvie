@@ -106,7 +106,7 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  map_window->centerMapOnActor(player->get_actor());
 
  converse = new Converse(config, CONV_U6, scroll, actor_manager, clock, player,
-                         view_manager);
+                         view_manager, obj_manager);
  converse->loadConv();
 
  event = new Event(config);

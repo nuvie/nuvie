@@ -234,34 +234,50 @@ bool Actor::inventory_has_object(uint16 obj_n, uint8 qual)
 /* Returns the number of objects in the actor's inventory with matching object
  * number and quality.
  */
-uint8 Actor::inventory_count_object(uint16 obj_n, uint8 qual)
+uint32 Actor::inventory_count_object(uint16 obj_n, uint8 qual, Obj *container)
 {
-    Obj *obj = inventory_get_object(obj_n, qual);
-    if(!obj)
-        return(0);
-    return(obj->qty);
+    uint32 qty = 0;
+    U6Link *link = 0;
+    Obj *obj = 0;
+    U6LList *inv = container ? container->container
+                             : get_inventory_list();
+
+    for(link = inv->start(); link != NULL; link = link->next)
+    {
+        obj = (Obj *)link->data;
+        if(obj->container)
+            inventory_count_object(obj_n, qual, obj);
+        if(obj->obj_n == obj_n && obj->quality == qual)
+            qty += obj->qty;
+    }
+    return(qty);
 }
 
 
 /* Returns object descriptor of object in the actor's inventory, or NULL if no
  * matching object is found.
  */
-Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual)
+Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container)
 {
  U6LList *inventory;
  U6Link *link;
  Obj *obj;
  
- inventory = obj_manager->get_actor_inventory(id_n);
- 
+ inventory = container ? container->container
+                       : get_inventory_list();
  for(link=inventory->start();link != NULL;link=link->next)
    {
     obj = (Obj *)link->data;
-    if(obj->obj_n == obj_n)
+    if(obj->obj_n == obj_n && obj->quality == qual)
       return(obj);
+    else if(obj->container)
+    {
+      if(obj = inventory_get_object(obj_n, qual, obj))
+        return(obj);
+    }
    }
-   
- return false;
+
+ return NULL;
 }
 
 
