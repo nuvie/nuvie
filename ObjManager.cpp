@@ -28,10 +28,14 @@
 ObjManager::ObjManager(Configuration *cfg)
 {
  config = cfg;
+ 
+ memset(actor_inventories,0,sizeof(actor_inventories));
+ 
 }
 
 ObjManager::~ObjManager()
 {
+ //FIX ME. need to free objects.
 }
  
 bool ObjManager::loadObjs(TileManager *tm)
@@ -432,6 +436,19 @@ uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :
  return obj_to_tile[obj_num];
 }
 
+U6LList *ObjManager::get_actor_inventory(uint16 actor_num)
+{
+ if(actor_num >= 256)
+   return NULL;
+
+ if(actor_inventories[actor_num] == NULL)
+   {
+    actor_inventories[actor_num] = new U6LList();
+   }
+   
+ return actor_inventories[actor_num];
+}
+
 bool ObjManager::loadBaseTile()
 {
  std::string filename;
@@ -456,6 +473,7 @@ U6LList *ObjManager::loadObjSuperChunk(char *filename)
  uint16 num_objs;
  Obj *obj;
  uint16 i;
+ U6LList *inventory_list;
  
  if(file.open(filename,"rb") == false)
    return NULL;
@@ -468,15 +486,23 @@ U6LList *ObjManager::loadObjSuperChunk(char *filename)
   {
    obj = loadObj(&file,i);
   // addObj(list,obj);
-   if(i == 793)
-     printf(".");
      
    if(obj->status & 0x8) // FIX here OBJ_STATUS_IN_CONTAINER)
      {
       addObjToContainer(list,obj);
      }
-   else      
-      addObj(list,obj);
+   else
+    {
+     if(obj->status & 0x10) //object in actor's inventory
+       {
+        //printf("%d: %d, %d, %d\n",obj->x, obj->status, obj->obj_n, obj->y);
+        inventory_list = get_actor_inventory(obj->x);
+        inventory_list->addAtPos(0,obj);
+       }
+     else
+        addObj(list,obj);
+    }
+
   }
    
  return list;
@@ -541,7 +567,6 @@ Obj *ObjManager::loadObj(U6File *file, uint16 objblk_n)
  Obj *obj;
  
  obj = new Obj;
- obj->container = NULL;
  obj->objblk_n = objblk_n;
  
  obj->status = file->read1();
@@ -565,15 +590,6 @@ Obj *ObjManager::loadObj(U6File *file, uint16 objblk_n)
    
  obj->qty = file->read1();
  obj->quality = file->read1();
-
-/*
- if(obj->status == 0 && (obj->obj_n == OBJ_U6_LADDER || obj->obj_n == OBJ_U6_HOLE || obj->obj_n == OBJ_U6_CAVE) && obj->z == 0) //&& obj->frame_n == 0)
-
-// if(obj->status == 0 && (obj->obj_n == OBJ_U6_LADDER ) && obj->z == 1 && obj->frame_n == 1)
-   {
-    printf("%03d: (%03d,%03d) (%03d,%03d) %d qty = %d quality = %d\n",obj->obj_n,obj->x,obj->y,obj->x/4, obj->y/4, obj->objblk_n, obj->qty, obj->quality);
-   }
-*/
    
  return obj;
 }

@@ -74,7 +74,7 @@ class MsgScroll
  MsgScroll(Configuration *cfg);
  ~MsgScroll();
  
- bool init(Screen *s, Text *txt);
+ bool init(Screen *s, Text *txt, char *player_name);
  
  void display_string(char *string);
  void display_prompt();

@@ -159,7 +159,7 @@ void Converse::collect_text(bool eval = false)
                 strncpy(symbol, p_strt, 2);
                 // evaluate
                 if(!strcmp(symbol, "$G")) // gender title
-                    output.append("Doctor");
+                    output.append(player->get_gender_title());
                 else if(!strcmp(symbol, "$N")) // npc name
                     output.append("MyName");
                 else if(!strcmp(symbol, "$P")) // player name

@@ -71,7 +71,7 @@ void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 
 uint16 Actor::get_tile_num()
 {
- return a_num;// + frame_n;
+ return obj_n;// + frame_n;
 }
 
 uint8 Actor::get_worktype()
@@ -166,6 +166,55 @@ void Actor::update()
 void Actor::set_in_party(bool state)
 {
  in_party = state;
+}
+
+bool Actor::inventory_has_object(uint16 obj_n)
+{
+ U6LList *inventory;
+ U6Link *link;
+ Obj *obj;
+ 
+ inventory = obj_manager->get_actor_inventory(id_n);
+ 
+ for(link=inventory->start();link != NULL;link=link->next)
+   {
+    obj = (Obj *)link->data;
+    if(obj->obj_n == obj_n)
+      return true;
+   }
+   
+ return false;
+}
+
+bool Actor::inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality)
+{
+ U6LList *inventory;
+ U6Link *link;
+ Obj *obj;
+ 
+ inventory = obj_manager->get_actor_inventory(id_n);
+ obj = new Obj;
+ 
+ obj->obj_n = obj_n;
+ obj->qty = qty;
+ obj->quality = quality;
+ 
+ inventory->addAtPos(0,obj);
+ 
+ return true;
+}
+
+bool Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality)
+{
+ U6LList *inventory;
+ U6Link *link;
+ Obj *obj;
+ 
+ inventory = obj_manager->get_actor_inventory(id_n);
+
+ //FIX ME here!
+ 
+ return false;
 }
 
 void Actor::loadSchedule(unsigned char *sched_data, uint16 num)

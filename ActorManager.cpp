@@ -85,12 +85,14 @@ bool ActorManager::loadActors()
 */     
    }
 
+ objlist.seek(0x15f1);
+ 
  for(i=0;i < 256; i++)
    {
     b1 = objlist.read1();
     b2 = objlist.read1();
-    actors[i]->a_num = b1;
-    actors[i]->a_num += (b2 & 0x3) << 8;
+    actors[i]->obj_n = b1;
+    actors[i]->obj_n += (b2 & 0x3) << 8;
     
     actors[i]->frame_n = (b2 & 0xfc) >> 2;
     actors[i]->direction = actors[i]->frame_n / 4;

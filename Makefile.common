@@ -51,6 +51,8 @@ nuvie_SOURCES = \
 	MsgScroll.h \
 	ObjManager.cpp \
 	ObjManager.h \
+	Party.cpp \
+	Party.h \
 	Player.cpp \
 	Player.h \
 	Text.cpp \

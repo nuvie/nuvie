@@ -65,7 +65,7 @@ typedef struct
 } ObjList;
 
  
-typedef struct
+struct Obj
 {
  uint16 objblk_n;
  uint16 obj_n;
@@ -80,7 +80,8 @@ typedef struct
  uint8 quality;
  
  U6LList *container;
-} Obj;
+ Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; };
+};
 
 class ObjManager
 {
@@ -89,6 +90,7 @@ class ObjManager
  U6LList *surface[64];
  U6LList *dungeon[5];
  uint16 obj_to_tile[1024]; //maps object number (index) to tile number.
+ U6LList *actor_inventories[256];
  
  public:
  
@@ -106,6 +108,8 @@ class ObjManager
  
  uint16 get_obj_tile_num(uint16 obj_num);
 
+ U6LList *get_actor_inventory(uint16 actor_num);
+ 
  bool use_obj(Obj *obj);
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
  char *look_obj(Obj *obj);

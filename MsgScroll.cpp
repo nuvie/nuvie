@@ -63,12 +63,16 @@ MsgScroll::~MsgScroll()
  free(prompt);
 }
 
-bool MsgScroll::init(Screen *s, Text *txt)
+bool MsgScroll::init(Screen *s, Text *txt, char *player_name)
 {
+ std::string prompt_string;
  screen = s;
  text = txt;
  
- if(set_prompt("Avatar:\n>") == false)
+ prompt_string.append(player_name);
+ prompt_string.append(":\n>");
+ 
+ if(set_prompt((char *)prompt_string.c_str()) == false)
    return false;
  
  set_input_mode(false);

@@ -28,23 +28,27 @@ Player::Player(Configuration *cfg)
  config = cfg;
 }
 
-bool Player::init(Actor *a, ActorManager *am, MapWindow *mw, GameClock *c)
+bool Player::init(ActorManager *am, MapWindow *mw, GameClock *c)
 {
  clock = c;
- actor = a;
  actor_manager = am;
  map_window = mw;
+ actor = actor_manager->get_actor(1);
  
  loadObjlistData(); //load Player name, Karma.
  
- a->set_in_party(true);
+ actor->set_in_party(true);
  actor_manager->set_player(actor);
  
  return true;
 }
 
 
- 
+void Player::set_actor(Actor *new_actor)
+{
+ actor = new_actor;
+}
+
 Actor *Player::get_actor()
 {
  return actor;
@@ -58,6 +62,14 @@ void Player::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 char *Player::get_name()
 {
  return name;
+}
+
+char *Player::get_gender_title()
+{
+ if(gender == 0)
+   return "Milord";
+ else
+   return "Milady";
 }
 
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
@@ -129,5 +141,10 @@ bool Player::loadObjlistData()
 
  karma = objlist.read1();
 
+ objlist.seek(0x1c71);
+ 
+ gender = objlist.read1();
+ portrait_n = objlist.read1();
+ 
  return true;
 }

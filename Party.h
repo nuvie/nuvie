@@ -1,9 +1,9 @@
-#ifndef __Player_h__
-#define __Player_h__
-
 /*
- *  player.h
+ *  Party.h
  *  Nuive
+ *
+ *  Created by Eric Fry on Tue May 06 2003.
+ *  Copyright (c) 2003. All rights reserved.
  *
  *  Created by Eric Fry on Sun Mar 23 2003.
  *  Copyright (c) 2003. All rights reserved.
@@ -24,54 +24,47 @@
  *
  */
 
+#include <string.h>
+
 #include "U6def.h"
 #include "Configuration.h"
-#include "GameClock.h"
+#include "U6File.h"
+#include "U6LList.h"
 
-#include "Actor.h"
 #include "ActorManager.h"
-#include "MapWindow.h"
+#include "Actor.h"
 
-class Player
-{
+struct PartyMember {
+char name[14];
+Actor *actor;
+uint8 combat_position;
+
+};
+
+class Party {
+
  Configuration *config;
- GameClock *clock;
- 
- bool party_mode;
- Actor *actor;
  ActorManager *actor_manager;
  
- char name[14];
- uint8 gender;
- uint8 portrait_n;
- 
- uint8 karma;
- 
- MapWindow *map_window;
+ PartyMember member[16];
+ uint8 num_in_party; //number of party members.
  
  public:
  
- Player(Configuration *cfg);
+ Party(Configuration *cfg);
+ ~Party();
  
- bool init(ActorManager *am, MapWindow *mw, GameClock *c);
+ bool init(ActorManager *am);
  
- void set_actor(Actor *new_actor);
- Actor *get_actor();
- void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
- char *get_name();
- char *get_gender_title();
+ bool contains_actor(Actor *actor);
+ bool add_actor(Actor *actor);
+ bool remove_actor(Actor *actor);
  
- void moveRelative(sint16 rel_x, sint16 rel_y);
- void Player::move(sint16 new_x, sint16 new_y, uint8 new_level);
- void moveLeft();
- void moveRight();
- void moveUp();
- void moveDown();
- void pass();
+ void split_gold();
+ void gather_gold();
  
  protected:
  
- bool loadObjlistData();
+ bool loadParty();
 };
 
-#endif /* __Player_h__ */

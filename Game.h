@@ -37,6 +37,7 @@
 #include "ObjManager.h"
 #include "ActorManager.h"
 #include "Player.h"
+#include "Party.h"
 #include "Converse.h"
 
 #include "MsgScroll.h"
@@ -64,6 +65,7 @@ class Game
  MapWindow *map_window;
  MsgScroll *scroll;
  Player *player;
+ Party *party;
  Converse *converse;
 
  GameClock *clock;

@@ -41,6 +41,7 @@ class Actor
 {
  friend class ActorManager;
  friend class MapWindow;
+ friend class Party;
  
  uint8 id_n;
  
@@ -54,7 +55,7 @@ class Actor
  
  uint8 worktype;
  
- uint16 a_num;
+ uint16 obj_n;
  uint16 frame_n;
  uint8 direction;
  uint8 walk_frame;
@@ -74,6 +75,8 @@ class Actor
  uint8 flags;
  
  char *name;
+ 
+ U6LList *obj_inventory;
  
  Schedule **sched;
  
@@ -102,6 +105,10 @@ class Actor
  
  void update();
  void set_in_party(bool state);
+ 
+ bool inventory_has_object(uint16 obj_n);
+ bool inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality);
+ bool inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);
  
  protected:
  
