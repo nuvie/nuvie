@@ -29,6 +29,10 @@
 #include "PathFinder.h"
 #include "U6Actor.h"
 
+#include "Party.h"
+#include "ActorManager.h"
+#include "Converse.h"
+
 #include "U6ActorTypes.h"
 
 //static const uint8 sleep_objects[8];

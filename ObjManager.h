@@ -29,7 +29,6 @@
 
 #include "TileManager.h"
 
-
 class U6LList;
 class Configuration;
 class UseCode;

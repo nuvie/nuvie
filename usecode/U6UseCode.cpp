@@ -27,9 +27,14 @@
 #include "Game.h"
 #include "ViewManager.h"
 #include "ActorManager.h"
+#include "Actor.h"
 #include "Party.h"
+#include "Player.h"
+#include "MsgScroll.h"
+#include "Map.h"
 #include "GameClock.h"
 #include "Book.h"
+#include "Event.h"
 #include "U6UseCode.h"
 
 // numbered by entrance quality, "" = no name
@@ -143,7 +148,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_CANDELABRA,255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
     add_usecode(OBJ_U6_BRAZIER,   255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
 
-    add_usecode(OBJ_U6_RED_GATE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_red_moongate);
+    add_usecode(OBJ_U6_RED_GATE,  1,0,USE_EVENT_PASS,&U6UseCode::enter_red_moongate); //FIX we only want to go through frame_n 1
     add_usecode(OBJ_U6_LADDER,255,0,USE_EVENT_USE,&U6UseCode::use_ladder);
     add_usecode(OBJ_U6_CAVE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);
     add_usecode(OBJ_U6_HOLE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon);

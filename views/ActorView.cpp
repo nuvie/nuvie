@@ -94,21 +94,6 @@ void ActorView::Display(bool full_redraw)
  
 }
 
-/* 
- if(portrait_data != NULL)
-   free(portrait_data);
-   
- portrait_data = portrait->get_portrait_data(cur_actor_num);
-
- if(name == NULL)
-   name_string.assign("");  //FIX
- else
-   name_string.assign(name);
-
- Redraw();
-}
-*/
-
 void ActorView::add_command_icons(Screen *tmp_screen, void *view_manager)
 {
  Tile *tile;

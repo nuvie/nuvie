@@ -28,6 +28,11 @@
 #include "Game.h"
 #include "Converse.h"
 #include "TimedEvent.h"
+
+#include "ActorManager.h"
+#include "Player.h"
+#include "Map.h"
+
 #include "Party.h"
 
 Party::Party(Configuration *cfg)

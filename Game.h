@@ -23,33 +23,27 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-#include <SDL.h>
 
-#include "Configuration.h"
-#include "GUI.h"
-
-#include "U6Shape.h"
-
-#include "Screen.h"
-#include "GamePalette.h"
-#include "GameClock.h"
-#include "Text.h"
-#include "ObjManager.h"
-#include "ActorManager.h"
-#include "Player.h"
-#include "Party.h"
-#include "Converse.h"
-#include "ViewManager.h"
-
-#include "MsgScroll.h"
-#include "Map.h"
-#include "MapWindow.h"
-#include "Event.h"
-#include "Portrait.h"
-#include "UseCode.h"
-#include "Background.h"
-
+class Configuration;
+class Screen;
+class Background;
+class GamePalette;
+class Text;
 class TileManager;
+class ObjManager;
+class ActorManager;
+class Map;
+class MapWindow;
+class MsgScroll;
+class Player;
+class Party;
+class Converse;
+class GameClock;
+class ViewManager;
+class Portrait;
+class UseCode;
+class Event;
+class GUI;
 
 class Game
 {

@@ -23,13 +23,16 @@
  
 #include "nuvieDefs.h"
 
+#include "Screen.h"
 #include "U6LList.h"
 #include "GUI_button.h"
 #include "DollWidget.h"
 #include "InventoryWidget.h"
-#include "DollWidget.h"
 #include "InventoryView.h"
 #include "Party.h"
+#include "Text.h"
+#include "Actor.h"
+
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
 

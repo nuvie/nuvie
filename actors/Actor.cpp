@@ -24,15 +24,20 @@
 #include "nuvieDefs.h"
 #include "U6LList.h"
 #include "Game.h"
+#include "GameClock.h"
 #include "Map.h"
+#include "MapWindow.h"
 #include "ObjManager.h"
+#include "ActorManager.h"
 #include "U6UseCode.h"
+#include "Party.h"
 #include "LPath.h"
 #include "ZPath.h"
 #include "Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
 
+class ActorManager;
 
 Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 :sched(NULL)

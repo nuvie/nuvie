@@ -24,8 +24,6 @@
  *
  */
 
-#include <SDL.h>
-
 class Configuration;
 class GUI;
 class TileManager;

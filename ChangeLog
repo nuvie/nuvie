@@ -1,3 +1,6 @@
+2003-11-18  Eric Fry <efry@users.sourceforge.net>
+	* More code cleaning.
+
 2003-11-17  Eric Fry <efry@users.sourceforge.net>
 	* Renamed U6def.h to nuvieDefs.h and moved it to the root dir.
 	* Fixed Actor blocking. You can now move over and under certain actors.

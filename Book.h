@@ -24,19 +24,19 @@
  *
  */
 
-#include "U6Lib_n.h"
-
 class Configuration;
+class U6Lib_n;
 
 class Book
 {
  Configuration *config;
  
- U6Lib_n books;
+ U6Lib_n *books;
  
  public:
  
  Book(Configuration *cfg);
+ ~Book();
  
  bool init();
  char *get_book_data(uint16 num);

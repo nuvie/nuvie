@@ -23,19 +23,25 @@
 
 #include <SDL.h>
 
-
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "Game.h"
+#include "GameClock.h"
 #include "MapWindow.h"
 #include "Map.h"
+#include "MsgScroll.h"
+#include "ActorManager.h"
+#include "Actor.h"
+#include "Converse.h"
 #include "Player.h"
+#include "Party.h"
 #include "Book.h"
+#include "ViewManager.h"
 #include "PortraitView.h"
 #include "TimedEvent.h"
 #include "Event.h"
 
-#include "U6UseCode.h"
+#include "UseCode.h"
 
 #include "GUI.h"
 #include "GUI_area.h"
@@ -46,8 +52,6 @@
 
 static GUI_status quitDialogYesCallback(void *data);
 static GUI_status quitDialogNoCallback(void *data);
-
-uint32 nuvieGameCounter;
 
 static bool showingQuitDialog = false; // Yuck! FIX find a better way to do this.
 
@@ -597,8 +601,8 @@ bool Event::select_obj(sint16 rel_x, sint16 rel_y)
 bool Event::look()
 {
  bool can_search = true; // can object be searched? return from LOOK
- uint16 ax, ay; // player location
- uint8 az;
+ //uint16 ax, ay; // player location
+ //uint8 az;
  Obj *obj;
  Actor *actor = map_window->get_actorAtCursor();
  sint16 p_id = -1; // party member number of actor

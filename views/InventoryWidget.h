@@ -24,15 +24,13 @@
  *
  */
 
-#include <string>
-
-#include "Configuration.h"
 #include "GUI_widget.h"
 #include "ObjManager.h"
-#include "Actor.h"
-#include "Text.h"
 
+class Configuration;
 class TileManager;
+class Actor;
+class Text;
 
 class InventoryWidget : public GUI_Widget {
  

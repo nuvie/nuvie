@@ -24,9 +24,9 @@
  *
  */
 
-#include <string>
-
 #include "View.h"
+
+class string;
 
 class Configuration;
 class TileManager;
@@ -40,7 +40,7 @@ class PortraitView : public View {
  
  uint8 cur_actor_num;
  Portrait *portrait;
- std::string name_string;
+ std::string *name_string;
  
  unsigned char *portrait_data;
  

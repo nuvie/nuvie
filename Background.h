@@ -23,11 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-#include "SDL.h"
 
 #include "GUI_widget.h"
 
 class Configuration;
+class U6Shape;
 
 class Background: public GUI_Widget
 {

@@ -2,11 +2,10 @@
 #define __TimedEvent_h__
 
 #include <list>
-#include "U6misc.h"
-#include "Map.h"
 
 class Event;
 class Party;
+class MapCoord;
 class TimedEvent;
 
 /* A queue for our events.
@@ -72,7 +71,8 @@ protected:
     MapCoord *target; // where they reappear at the new plane
 public:
     TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay = 500);
-    ~TimedPartyMove() { delete dest; delete target; }
+    ~TimedPartyMove();
+    
     void timed(uint32 evtime);
 };
 

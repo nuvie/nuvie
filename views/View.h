@@ -24,8 +24,6 @@
  *
  */
 
-#include <SDL.h>
-
 #include "GUI_widget.h"
 
 GUI_status viewLeftButtonCallback(void *data);

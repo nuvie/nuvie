@@ -27,7 +27,10 @@
 #include "U6LList.h"
 #include "Actor.h"
 #include "TileManager.h"
+#include "ActorManager.h"
 #include "MapWindow.h"
+#include "Map.h"
+#include "MsgScroll.h"
 
 #include "GUI_widget.h"
 #include "Game.h"

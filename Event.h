@@ -25,6 +25,8 @@
  */
 #include <list>
 
+#include <SDL.h>
+
 #include "ObjManager.h"
 
 class Configuration;

@@ -24,14 +24,11 @@
  *
  */
 
-#include <string>
-
 #include "GUI_widget.h"
-#include "ObjManager.h"
 #include "TileManager.h"
+#include "ObjManager.h"
 
 class Configuration;
-class TileManager;
 class Actor;
 
 class DollWidget : public GUI_Widget {

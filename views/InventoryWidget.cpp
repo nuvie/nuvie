@@ -25,6 +25,8 @@
 #include "U6LList.h"
 
 #include "InventoryWidget.h"
+#include "Actor.h"
+#include "Text.h"
 
 #include "InventoryFont.h"
 

@@ -23,24 +23,32 @@
 
 #include "nuvieDefs.h"
 #include "Configuration.h"
-#include "U6Bmp.h"
-#include "U6misc.h"
+
+#include "GUI.h"
 
 #include "Screen.h"
-#include "Text.h"
-#include "TileManager.h"
+#include "GamePalette.h"
+#include "GameClock.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
-//#include "Look.h"
+#include "Player.h"
+#include "Party.h"
+#include "Converse.h"
+#include "Text.h"
+#include "ViewManager.h"
+
+#include "MsgScroll.h"
+#include "Map.h"
+#include "MapWindow.h"
+#include "Event.h"
+#include "Portrait.h"
+#include "Background.h"
 
 #include "U6UseCode.h"
 #include "MDUseCode.h"
 #include "SEUseCode.h"
 
 #include "Game.h"
-#include "GUI_button.h"
-#include "GUI_area.h"
-#include "GUI_text.h"
 
 Game *Game::game = NULL;
 

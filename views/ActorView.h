@@ -24,22 +24,19 @@
  *
  */
 
-#include <string>
-
 #include "View.h"
-#include "ObjManager.h"
 
 class Configuration;
 class Screen;
 class Text;
 class TileManager;
+class ObjManager;
 class Portrait;
 class Party;
 
 class ActorView : public View {
  
  Portrait *portrait;
- std::string name_string;
  
  unsigned char *portrait_data;
  

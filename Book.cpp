@@ -26,11 +26,19 @@
 #include "nuvieDefs.h"
 #include "Configuration.h"
 
+#include "U6Lib_n.h"
+
 #include "Book.h"
 
 Book::Book(Configuration *cfg)
 {
  config = cfg;
+ books = new U6Lib_n;
+}
+
+Book::~Book()
+{
+ delete books;
 }
 
 bool Book::init()
@@ -39,7 +47,7 @@ bool Book::init()
  
  config->pathFromValue("config/ultima6/gamedir","book.dat",filename);
  
- if(books.open(filename,2) == false)
+ if(books->open(filename,2) == false)
     return false;
  
  return true;
@@ -47,8 +55,8 @@ bool Book::init()
 
 char *Book::get_book_data(uint16 num)
 {
- if(num >= books.get_num_items())
+ if(num >= books->get_num_items())
    return NULL;
 
- return reinterpret_cast<char*>(books.get_item(num));
+ return reinterpret_cast<char*>(books->get_item(num));
 }

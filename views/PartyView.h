@@ -24,8 +24,6 @@
  *
  */
 
-#include <string>
-
 #include "View.h"
 
 class Configuration;

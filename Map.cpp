@@ -30,6 +30,7 @@
 #include "TileManager.h"
 #include "ActorManager.h"
 #include "Map.h"
+#include "MapWindow.h"
 
 #include "U6misc.h"
 

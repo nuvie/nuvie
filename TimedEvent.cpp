@@ -1,10 +1,14 @@
 
 #include "nuvieDefs.h"
 
-#include "Actor.h"
 #include "Game.h"
+#include "Actor.h"
 #include "MapWindow.h"
+#include "Map.h"
 #include "Party.h"
+#include "Event.h"
+#include "UseCode.h"
+
 #include "TimedEvent.h"
 
 
@@ -72,6 +76,7 @@ TimedEvent::TimedEvent(uint32 reltime, bool immediate) : delay(reltime),
 }
 
 
+
 /* Party movement to/from dungeon, with a certain number of
  * milliseconds between each step. Construct & Set destination.
  */
@@ -84,6 +89,12 @@ TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay)
         target = new MapCoord(*t);
     else
         target = NULL;
+}
+
+TimedPartyMove::~TimedPartyMove()
+{
+ delete dest;
+ delete target;
 }
 
 

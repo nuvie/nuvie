@@ -21,6 +21,8 @@
  *
  */
 
+#include <string>
+
 #include "nuvieDefs.h"
 
 #include "Portrait.h"
@@ -30,12 +32,15 @@
 PortraitView::PortraitView(Configuration *cfg) : View(cfg)
 {
  portrait_data = NULL;
+ name_string = new string;
 }
 
 PortraitView::~PortraitView()
 {
  if(portrait_data != NULL)
    free(portrait_data);
+
+ delete name_string;
 }
 
 bool PortraitView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
@@ -72,9 +77,9 @@ void PortraitView::set_portrait(uint8 actor_num, char *name)
  portrait_data = portrait->get_portrait_data(cur_actor_num);
 
  if(name == NULL)
-   name_string.assign("");  //FIX
+   name_string->assign("");  //FIX
  else
-   name_string.assign(name);
+   name_string->assign(name);
 
  Redraw();
 }
@@ -83,7 +88,7 @@ void PortraitView::display_name()
 {
  const char *name;
  
- name = name_string.c_str();
+ name = name_string->c_str();
  
  text->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+80, 0);
  
