@@ -1,3 +1,20 @@
+2004-03-15  Eric Fry <efry at users.sourceforge.net>
+	* Fixed Escape. Escape now skips a turn. Pass!
+	* Added use:fan. This just prints "You feel a breeze." at the moment.
+	  It should change the wind direction. When we implement wind that 
+	  is. ;-)
+	* Renamed variable can_twitch to can_move in the Actor class.
+	* Fixed small glitch in the new schedule loading code. Lord British's
+	  schedule entries weren't being loaded.
+	* Added an Actor 'tile style' enum to U6ActorTypes. This is either 
+	  single, double, quad, or multitile.
+	* Fixed an issue with actors standing on their seats when loading the
+	  savegame data.
+	* Added U6 Actor alignment enum type. This isn't used yet.
+	* Fixed bug with gargoyle and cyclops Actors not loading with the 
+	  correct frame_n. [ 886425 ] "Actors don't collect all their tiles 
+	  immediately".
+
 2004-03-14  Eric Fry <efry at users.sourceforge.net>
 	* Added custom music selection back in to nuvie. Nuvie can now play
 	  any music file supported by SDL_Mixer. We should really write some

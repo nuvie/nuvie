@@ -108,7 +108,7 @@ class Actor
  uint8 direction;
  uint8 walk_frame;
  
- bool can_twitch; //FIX should this be called can_move!?
+ bool can_move;
  bool alive;
  bool met_player;
  
@@ -212,7 +212,7 @@ class Actor
  bool moveRelative(sint16 rel_x, sint16 rel_y);
  virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
- 
+ virtual bool Actor::can_be_moved();
  virtual void update();
  void set_in_party(bool state);
  void swalk(MapCoord &d, uint8 speed = 1, uint8 delay = 0);

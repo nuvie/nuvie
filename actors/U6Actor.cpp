@@ -55,10 +55,13 @@ bool U6Actor::init()
  set_actor_obj_n(obj_n); //set actor_type
  
  base_actor_type = get_actor_type(base_obj_n);
-  
+ 
+ if(actor_type->tile_type == ACTOR_QT && frame_n == 0) //set the two quad tile actors to correct frame number.
+   frame_n = 3;
+
  discover_direction();
 
- if(actor_type->has_surrounding_objs)
+ if(has_surrounding_objs())
    clear_surrounding_objs_list(); //clean up the old list if required.
 
  switch(obj_n) //gather surrounding objects from map if required
@@ -79,6 +82,13 @@ bool U6Actor::init()
 
    default : break;
   }
+
+
+ if(actor_type->can_sit) // For some reason U6 starts with actors standing on their chairs.
+   {                     // We need to sit them down.
+    Obj *obj = obj_manager->get_obj(x,y,z);
+    sit_on_chair(obj); // attempt to sit on obj.
+   }
 
  return true;
 }
@@ -254,13 +264,13 @@ void U6Actor::set_direction(uint8 d)
    walk_frame = (walk_frame + 1) % actor_type->frames_per_direction;
 
 
- if(actor_type->has_surrounding_objs)
+ if(has_surrounding_objs())
    {
     if(direction != d)
       set_direction_of_surrounding_objs(d);
     else
      {
-      if(can_twitch && actor_type->twitch_rand) //only twitch actors with a non zero twitch_rand.
+      if(can_move && actor_type->twitch_rand) //only twitch actors with a non zero twitch_rand.
         twitch_surrounding_objs();
      }
    }
@@ -268,7 +278,7 @@ void U6Actor::set_direction(uint8 d)
  direction = d;
 
  //only change direction frame if the actor can twitch ie isn't sitting or in bed etc.
- if(can_twitch)
+ if(can_move)
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + 
              (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
  
@@ -276,7 +286,7 @@ void U6Actor::set_direction(uint8 d)
 
 void U6Actor::clear()
 {
- if(actor_type->has_surrounding_objs)
+ if(has_surrounding_objs())
   {
    remove_surrounding_objs_from_map();
    clear_surrounding_objs_list(REMOVE_SURROUNDING_OBJS);
@@ -297,7 +307,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  Party *party = Game::get_game()->get_party();
  MapCoord old_pos = get_location();
  
- if(actor_type->has_surrounding_objs)
+ if(has_surrounding_objs())
    remove_surrounding_objs_from_map();
 
  rel_x = new_x - x;
@@ -307,7 +317,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 
  if(ret == true)
   {
-   if(actor_type->has_surrounding_objs)
+   if(has_surrounding_objs())
       move_surrounding_objs_relative(rel_x, rel_y);
    
    if(actor_type->can_sit)
@@ -315,19 +325,8 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
       Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
       if(obj)
         {
-         if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
-           {
-            frame_n = (obj->frame_n * 4) + 3;
-            direction = obj->frame_n;
-            can_twitch = false;
-           }
-       
-         if(obj->obj_n == OBJ_U6_THRONE  && obj->frame_n == 3) //make actor sit on LB's throne.
-           {
-            frame_n = 8 + 3; //sitting facing south.
-            direction = 2;
-            can_twitch = false;
-           }
+         sit_on_chair(obj); // make the Actor sit if they are on top of a chair.
+
          if(obj->obj_n == OBJ_U6_FIRE_FIELD) // ouch
            {
             //hit animation
@@ -366,7 +365,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
      if(mirror)     mirror->frame_n = 1;
   }
 
- if(actor_type->has_surrounding_objs) //add our surrounding objects back onto the map.
+ if(has_surrounding_objs()) //add our surrounding objects back onto the map.
    add_surrounding_objs_to_map();
 
  return ret;
@@ -404,6 +403,32 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_ac
  return(true);
 }
 
+// attempt to sit if obj is a chair.
+
+bool U6Actor::sit_on_chair(Obj *obj)
+{
+   if(actor_type->can_sit && obj)
+     {
+         if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
+           {
+            frame_n = (obj->frame_n * 4) + 3;
+            direction = obj->frame_n;
+            can_move = false;
+            return true;
+           }
+       
+         if(obj->obj_n == OBJ_U6_THRONE  && obj->frame_n == 3) //make actor sit on LB's throne.
+           {
+            frame_n = 8 + 3; //sitting facing south.
+            direction = 2;
+            can_move = false;
+            return true;
+           }
+     }
+
+ return false;
+}
+
 uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
 {
  uint16 i;
@@ -420,7 +445,7 @@ uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
 void U6Actor::twitch()
 {
  
- if(can_twitch == false || actor_type->twitch_rand == 0)
+ if(can_move == false || actor_type->twitch_rand == 0)
    return;
 
  if(NUVIE_RAND()%actor_type->twitch_rand == 1)
@@ -430,7 +455,7 @@ void U6Actor::twitch()
    else
      walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
 
-   if(actor_type->has_surrounding_objs)
+   if(has_surrounding_objs())
     {
 	 switch(obj_n)
 	   {
@@ -695,7 +720,7 @@ void U6Actor::wt_sleep()
       } 
    }
 
- can_twitch = false;
+ can_move = false;
 
  return;
 }
@@ -732,6 +757,14 @@ inline const U6ActorType *U6Actor::get_actor_type(uint16 new_obj_n)
   }
  
  return type;
+}
+
+inline bool U6Actor::has_surrounding_objs()
+{
+ if(actor_type->tile_type == ACTOR_DT || actor_type->tile_type == ACTOR_MT)
+   return true;
+
+ return false;
 }
 
 inline void U6Actor::remove_surrounding_objs_from_map()

@@ -258,11 +258,11 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_KP_ENTER   :
 			doAction();
 			break;
+		case SDLK_ESCAPE:
 		case SDLK_SPACE :
 			mode = MOVE_MODE;
 			cancelAction();
 			break;
-		case SDLK_ESCAPE:
 		default :
 			if (event->key.keysym.sym != SDLK_LALT
 				&& event->key.keysym.sym != SDLK_RALT)
@@ -851,7 +851,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
             scroll->display_string("Blocked.\n\n");
         else if(!selected_actor->moveRelative(rel_x, rel_y))
         {
-            if(NUVIE_RAND() % 2) // already checked if target is passable
+            if(selected_actor->can_be_moved() && NUVIE_RAND() % 2) // already checked if target is passable
                 selected_actor->move(from.x+rel_x, from.y+rel_y, from.z, ACTOR_FORCE_MOVE);
             else
                 scroll->display_string("Failed.\n\n");

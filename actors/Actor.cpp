@@ -52,7 +52,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 
  direction = 0;
  walk_frame = 0;
- can_twitch = true;
+ can_move = true;
  in_party = false;
  visible_flag = true;
  
@@ -331,6 +331,11 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
 }
 
 
+bool Actor::can_be_moved()
+{
+ return can_move;
+}
+
 bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
  // no moves left (FIXME: ignore for any player-actor)
@@ -360,7 +365,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  y = new_y;
  z = new_z;
 
- can_twitch = true;
+ can_move = true;
  if(!force_move && moves > 0)
     --moves;
 
@@ -486,7 +491,7 @@ void Actor::set_in_party(bool state)
     if(state == true) // joined
     {
 //        obj_n = base_obj_n; U6Actor::set_worktype
-        can_twitch = true;
+        can_move = true;
         set_worktype(0x01); // U6_IN_PARTY
     }
     else // left

@@ -359,9 +359,10 @@ bool ActorManager::loadActorSchedules()
 
  for (i = 0; i < 256; i++)
  {
-    if (sched_offsets[i] == 0)
-        num_schedules[i] = 0;
-    else if (sched_offsets[i] > (total_schedules-1))
+    //if (sched_offsets[i] == 0)
+    //    num_schedules[i] = 0;
+    //else 
+    if (sched_offsets[i] > (total_schedules-1))
         num_schedules[i] = 0;
     else
     // sched_offsets[i] is valid
@@ -415,7 +416,7 @@ void ActorManager::print_actor(Actor *actor)
                                               (direction==ACTOR_DIR_L)?"west":"???");
     printf("walk_frame: %d\n", actor->walk_frame);
 
-    printf("can_twitch: %s\n", actor->can_twitch ? "true" : "false");
+    printf("can_move: %s\n", actor->can_move ? "true" : "false");
 //    printf("alive: %s\n", actor->alive ? "true" : "false");
     printf("in_party: %s\n", actor->in_party ? "true" : "false");
     printf("visible_flag: %s\n", actor->visible_flag ? "true" : "false");

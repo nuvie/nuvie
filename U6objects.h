@@ -165,6 +165,8 @@
 
 #define OBJ_U6_DEAD_ANIMAL         211
 
+#define OBJ_U6_FAN                 212
+
 #define OBJ_U6_MOUSEHOLE           213
 #define OBJ_U6_CANNON              221
 #define OBJ_U6_POWDER_KEG          223

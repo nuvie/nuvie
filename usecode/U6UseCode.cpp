@@ -1437,6 +1437,14 @@ bool U6UseCode::use_horse(Obj *obj, uint8 ev)
  return true;
 }
 
+bool U6UseCode::use_fan(Obj *obj, uint8 ev)
+{
+ scroll->display_string("\nYou feel a breeze.\n");
+
+ //FIX! change wind direction here.
+ 
+ return true;
+}
 
 /* Pass: Allow normal move if player's Quest Flag is set.
  */

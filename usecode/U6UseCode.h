@@ -103,6 +103,7 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
  bool use_crank(Obj *obj, uint8 ev);
  bool use_food(Obj *obj, uint8 ev);
  bool use_firedevice(Obj *obj, uint8 ev);
+ bool use_fan(Obj *obj, uint8 ev);
  bool use_container(Obj *obj, uint8 ev);
  bool use_vortex_cube(Obj *obj, uint8 ev);
  bool use_key(Obj *obj, uint8 ev);
