@@ -27,7 +27,7 @@
 #include <SDL.h>
 
 #include "ObjManager.h"
-#include "GUI_Widget.h"
+#include "GUI_widget.h"
 
 class Configuration;
 class TileManager;

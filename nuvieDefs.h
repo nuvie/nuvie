@@ -2,7 +2,7 @@
 #define __nuvieDefs_h__
 
 #ifdef _MSC_VER
-#include "../msvc/msvc_kludges.h"
+#include "msvc/msvc_kludges.h"
 #endif
 
 #define NUVIE_GAME_NONE  0
