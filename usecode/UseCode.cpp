@@ -150,7 +150,10 @@ Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
     else // destroy
     {
         if(obj->is_in_inventory())
-            removed = actor_manager->get_actor(obj->x)->inventory_remove_obj(obj);
+            removed = actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj);
+        else if(obj->is_in_container())
+//            removed = obj_manager->get_obj_container(obj);
+            removed = false; // FIXME
         else
             removed = obj_manager->remove_obj(obj);
         if(removed)

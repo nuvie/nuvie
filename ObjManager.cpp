@@ -1258,3 +1258,14 @@ Obj *ObjManager::get_obj_from_stack(Obj *obj, uint32 count)
     return(new_obj);
 }
 
+
+
+/* Returns the object which contains another object.
+ */
+Obj *ObjManager::get_obj_container(Obj *obj)
+{
+    assert(obj->is_in_container());
+    // FIXME: We must be able to use obj->x/y/z.
+    return(NULL);
+}
+

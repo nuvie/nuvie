@@ -156,6 +156,7 @@ class ObjManager
  Obj *copy_obj(Obj *obj);
  const char *look_obj(Obj *obj, bool show_prefix = false);
  Obj *get_obj_from_stack(Obj *obj, uint32 count);
+ Obj *get_obj_container(Obj *obj);
 
  const char *get_obj_name(Obj *obj);
  float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, bool scale=true);
