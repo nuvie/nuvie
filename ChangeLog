@@ -2,6 +2,7 @@
 	* You can now move objects onto tables.
 	* Fixed some compiler issues with STL on older versions of gcc.
 	  Removed references to vector::at and string::clear
+	* Fixed Avatar moving while dragging object bug. [ 888666 ]
 
 2004-01-31  Eric Fry <efry at users.sourceforge.net>
 	* Rewrote the MsgScroll Class.

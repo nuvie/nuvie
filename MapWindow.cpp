@@ -1057,6 +1057,10 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 //		screen->set_pointer(1);
 
 	//	printf ("MapWindow::MouseMotion\n");
+    
+    if(selected_obj) // We don't want to walk if we are selecting an object to move.
+      walking = false;
+
 	if (selected_obj && !dragging)
 	{
 		int wx, wy;
