@@ -34,11 +34,6 @@
 
 Screen::Screen()
 {
- width = 0;
- height = 0;
- 
- pitch = 0;
- bpp = 0;
 }
 
 Screen::~Screen()

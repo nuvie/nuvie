@@ -330,38 +330,37 @@ void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
 inline void MapWindow::drawObj(Obj *obj, bool toptile)
 {
  uint16 x,y;
+ Tile *tile;
  
- //Tile *tile;
- 
-  //tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n); 
-  //screen->blit((char *)tile->data,8,((obj->x - cur_x)*16),((obj->y - cur_y)*16),16,16,tile->transparent);
  y = obj->y - cur_y;
  x = obj->x - cur_x;
+ 
+ tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
  
  if(tmp_buf[(y+1)*(win_width+2)+(x+1)] == 0) //don't draw object if area is in darkness.
     return;
  else
     {
-     if(tmp_buf[(y+1)*(win_width+2)+(x+2)] == 0 && (obj->obj_n < 290 || obj->obj_n > 302))
+     if(tmp_buf[(y+1)*(win_width+2)+(x+2)] == 0 && !(tile->flags1 & TILEFLAG_WALL))
         return;
      else
       {
-       if(tmp_buf[(y+2)*(win_width+2)+(x+1)] == 0 && (obj->obj_n < 290 || obj->obj_n > 302))
+       if(tmp_buf[(y+2)*(win_width+2)+(x+1)] == 0 && !(tile->flags1 & TILEFLAG_WALL))//(obj->obj_n < 290 || obj->obj_n > 302))
          return;
       }
     }
       
-  drawTile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n,obj->x - cur_x, obj->y - cur_y, toptile);
+  drawTile(tile,obj->x - cur_x, obj->y - cur_y, toptile);
   
 }
 
-inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y, bool toptile)
+inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile)
 {
- Tile *tile;
  bool dbl_width, dbl_height;
- 
- tile = tile_manager->get_tile(tile_num);
+ uint16 tile_num;
 
+ tile_num = tile->tile_num;
+ 
  dbl_width = tile->dbl_width;
  dbl_height = tile->dbl_height;
  
