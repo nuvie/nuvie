@@ -1,3 +1,69 @@
+2004-05-29  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Added CallBack AnimManager EffectManager & Effect. NuvieAnim and
+	  TileAnim could probably stand to have their differences negotiated.
+	  A few new Effects & animations have been included. Try powder kegs &
+	  cannons.
+	* Event: New input modes DROP, DROPTARGET, and DROPCOUNT for dropping
+	  object from inventory. Also, added ability to drop objects.
+	* Added WAIT mode to block all input until further notice.
+	  A new method endWaitMode() will drop out of WAIT_MODE
+	  and display the prompt automatically. This is used by Effects, when
+	  unpausing from Game::set_pause_flags(). This WAIT_MODE is checked in
+	  most functions. We can perform these actions from outside Event.
+	* New functions to implement Drop: drop_select(), drop_count(), Drop().
+	* Actor: New methods: reduce_hp(), die(), hit(), which calls a
+	  HitEffect. Slightly modified a toss_anim() check in ActorManager.
+	* U6Actor: Replaced static beg mode with class member beg_mode.
+	* Check that coordinates are valid before checking for a mirror
+	  next to the actor. (no map wrapping yet)
+	* Added calls to hit() and HitEffect() when actor steps on poison,
+	  fire, or sleep fields. Cyclops shake the ground when walking.
+	* UseCode: Replaced TimedCallback inheritance with CallBack.
+	  Added message_obj() to send internal message to an object.
+	  Changed the meaning of USE_EVENT return. True is returned if the
+	  prompt should be displayed. Removed some displays of the prompt.
+	* Added/updated: use_fountain(), use_powder_keg(), use_cannon()
+	* InventoryView: Pressing ENTER when Event::DROP_MODE is set will do the
+	  appropriate action. Sure would be convenient if these were in one
+	  place. :)
+	  Fixed cursor positioning error, when calling update_cursor() from
+	  init(). It's now called in PlaceOnScreen().
+	* Game: set_pause_flags() does more stuff than it used to.
+	  Pausing/unpausing can enable or disable certain parts of the engine
+	  from here. PAUSE_USER will set Event to WAIT_MODE, for example.
+	* The clock can be stopped/started with new function set_active().
+	* AnimManager is now a part of MapWindow. It handles the tricky parts
+	  of tile animations, that MapWindow could do, but shouldn't have to.
+	  MapWindow::drawAnims() calls the AnimManager function.
+	* The MapWindow coordinates can now be set with pixel precision. This
+	  is accomplished with two extra parameters to moveMap() - the pixel
+	  offset from the tile coordinates. New method shiftMapRelative() will
+	  update the MapWindow location by relative pixel amounts.
+	* AND the map can now be moved automatically with builtin velocity
+	  setting, measured in pixels per second. (set_velocity()) This is
+	  unused at the moment, but was intended to be used by QuakeEffect.
+	* Other new methods: centerMap(), update() for map movement and walk.
+	* Added call to DROP action (Event) when dragging something onto the
+	  map. This is fine for dragging from inventory, but looks odd when
+	  dragging from the map.
+	* Map: I improved lineTest a little. Trying to improve it any more broke
+	  things so this is all that was changed: Added HitObjects, HitActors
+	  and HitLocation checks. LineTestResult can now contain a location
+	  which you pass before the test, that will pass if the line hits that
+	  location. HitLoc is identical to that if it hit. A "skip" variable
+	  is added to the test to allow you to skip a number of coordinates in
+	  the line. You can test different segments of the same line that way.
+	* MsgScroll: Added request_input() method, allowing any Callback class
+	  to request that the next input string be sent to it. Done in
+	  set_input_mode().
+	* TimedEvent: Fixed timers a bit. Hopefully it's more stable & easy to
+	  read. You now have to queue() a timed event to add it to the queue,
+	  but this is usually done in the constructor.
+	  Added TIMER_* defines. Replaced repeat bool with repeat_count int.
+	  Added methods: queue(), dequeue(), stop(), repeat(), set_time().
+	* TileManager: Added tile rotation function.
+	* Player: Replaced uncontrolled setting with mapwindow_centered.
+
 2004-05-29  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a load/save bug. I wasn't cleaning the old y value
 	  properly when saving containerized objects. This could
