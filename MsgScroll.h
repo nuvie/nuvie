@@ -86,7 +86,7 @@ class MsgScroll
  void set_talking(bool state) { talking = state; }
  bool set_prompt(char *new_prompt);
  
- bool handle_input(SDLKey *input);
+ bool handle_input(SDL_keysym *input);
 
  void updateScroll();
  

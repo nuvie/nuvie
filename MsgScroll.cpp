@@ -179,7 +179,10 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
    input_buf_pos = 0;
    if(allowed && strlen(allowed))
      permit_input = allowed;
+   SDL_EnableUNICODE(1); // allow character translation
  }
+ else
+   SDL_EnableUNICODE(0); // reduce translation overhead when not needed
 }
 
 bool MsgScroll::set_prompt(char *new_prompt)
@@ -206,8 +209,9 @@ bool MsgScroll::set_prompt(char *new_prompt)
  * if necessary.
  * Returns true if the input was used and false if not.
  */
-bool MsgScroll::handle_input(SDLKey *input)
+bool MsgScroll::handle_input(SDL_keysym *input)
 {
+    char ascii = 0;
     if(page_break == false && input_mode == false)
         return(false);
     if(page_break)
@@ -216,7 +220,7 @@ bool MsgScroll::handle_input(SDLKey *input)
        display_string(NULL);
        return(true);
       }
-    switch(*input)
+    switch(input->sym)
     {
         case SDLK_ESCAPE: if(permit_inputescape)
                           {
@@ -238,13 +242,15 @@ bool MsgScroll::handle_input(SDLKey *input)
                               input_buf_remove_char();
                             break;
         default: // alphanumeric characters
-                 if(input_mode && isascii(*input)) //(isalnum(*input) || *input == ' '))
+                 if((input->unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
+                   ascii = (char)(input->unicode & 0x7F); // (in low 7bits)
+                 if(input_mode && isprint(ascii))
                   {
                    if(permit_input == NULL)
-                    input_buf_add_char((char)*input);
-                   else if(strchr(permit_input, (char)*input))
+                    input_buf_add_char(ascii);
+                   else if(strchr(permit_input, ascii))
                    {
-                    input_buf_add_char(toupper((char)*input));
+                    input_buf_add_char(toupper(ascii));
                     set_input_mode(false);
                    }
                   }
