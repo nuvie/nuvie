@@ -157,9 +157,9 @@ bool TileManager::loadTileFlag()
   {
    byte = file.read1();
    if(byte & 0x10)
-     tile[i].hightile = true;
+     tile[i].toptile = true;
    else
-     tile[i].hightile = false;
+     tile[i].toptile = false;
 
    if(byte & 0x40)
      tile[i].dbl_height = true;

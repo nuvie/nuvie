@@ -35,7 +35,7 @@
 
 typedef struct {
 bool passable;
-bool hightile;
+bool toptile;
 bool dbl_width;
 bool dbl_height;
 bool transparent;

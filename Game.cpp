@@ -123,7 +123,6 @@ void Game::play()
      updateEvents();
      tile_manager->update();
      map_window->drawMap();
-     //actor_manager->drawActors(0x12e,0x16b,11,11,0);
      scroll->updateScroll();
      screen->update();
      wait();

@@ -54,10 +54,10 @@ class MapWindow
 protected:
 
  void drawObjs();
- void drawObjSuperBlock(U6LList *superblock);
- inline void drawObj(Obj *obj);
- inline void drawTile(uint16 tile_num, uint16 x, uint16 y);
-
+ void drawObjSuperBlock(U6LList *superblock, bool toptile);
+ inline void drawObj(Obj *obj, bool toptile);
+ inline void drawTile(uint16 tile_num, uint16 x, uint16 y, bool toptile);
+ inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);
 };
 
 #endif /* __MapWindow_h__ */

@@ -104,7 +104,7 @@ void MapWindow::drawMap()
   }
 
  drawObjs();
- actor_manager->drawActors(screen, cur_x, cur_y, win_width, win_height, cur_level);
+ 
 }
 
 void MapWindow::drawObjs()
@@ -127,22 +127,37 @@ void MapWindow::drawObjs()
        sc_h = 2;
     else
        sc_h = 1;
-          
+
     for(y=sc_y; y < sc_y + sc_h; y++)
       {
        for(x=sc_x; x < sc_x + sc_w; x++)
-         drawObjSuperBlock(obj_manager->get_obj_superchunk(x,y,0));
+         drawObjSuperBlock(obj_manager->get_obj_superchunk(x,y,0),false);
       }      
    }
  else
    {
-    drawObjSuperBlock(obj_manager->get_obj_superchunk(0,0,cur_level)); //draw objects for dungeon level
+    drawObjSuperBlock(obj_manager->get_obj_superchunk(0,0,cur_level),false); //draw objects for dungeon level
    }
-      
+   
+ actor_manager->drawActors(screen, cur_x, cur_y, win_width, win_height, cur_level);
+
+ if(cur_level == 0)
+   {
+    for(y=sc_y; y < sc_y + sc_h; y++)
+      {
+       for(x=sc_x; x < sc_x + sc_w; x++)
+         drawObjSuperBlock(obj_manager->get_obj_superchunk(x,y,0),true);
+      }      
+   }
+ else
+   {
+    drawObjSuperBlock(obj_manager->get_obj_superchunk(0,0,cur_level),true); //draw objects for dungeon level
+   }
+ 
  return;
 }
 
-void MapWindow::drawObjSuperBlock(U6LList *superblock)
+void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
 {
  U6Link *link;
  Obj *obj;
@@ -157,8 +172,7 @@ void MapWindow::drawObjSuperBlock(U6LList *superblock)
      {
       if(obj->x >= cur_x && obj->x <= cur_x + win_width)
         {
-         //draw here.
-         drawObj(obj);
+         drawObj(obj, toptile);
         }
      }
      
@@ -167,18 +181,18 @@ void MapWindow::drawObjSuperBlock(U6LList *superblock)
  
 }
 
-inline void MapWindow::drawObj(Obj *obj)
+inline void MapWindow::drawObj(Obj *obj, bool toptile)
 {
  //Tile *tile;
  
   //tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n); 
   //screen->blit((char *)tile->data,8,((obj->x - cur_x)*16),((obj->y - cur_y)*16),16,16,tile->transparent);
   
-  drawTile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n,obj->x - cur_x, obj->y - cur_y);
+  drawTile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n,obj->x - cur_x, obj->y - cur_y, toptile);
   
 }
 
-inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y)
+inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y, bool toptile)
 {
  Tile *tile;
  bool dbl_width, dbl_height;
@@ -189,7 +203,7 @@ inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y)
  dbl_height = tile->dbl_height;
  
  if(x < win_width && y < win_height)
-   screen->blit(tile->data,8,x*16,y*16,16,16,tile->transparent);
+   drawTopTile(tile,x,y,toptile);
        
  if(dbl_width)
    {
@@ -197,7 +211,7 @@ inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y)
     if(x > 0 && y < win_height)
       {
        tile = tile_manager->get_tile(tile_num);
-       screen->blit(tile->data,8,(x-1)*16,y*16,16,16,tile->transparent);
+       drawTopTile(tile,x-1,y,toptile);
       }
    }
    
@@ -207,7 +221,7 @@ inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y)
     if(y > 0 && x < win_width)
       {
        tile = tile_manager->get_tile(tile_num);
-       screen->blit(tile->data,8,x*16,(y-1)*16,16,16,tile->transparent);
+       drawTopTile(tile,x,y-1,toptile);
       }
    }
    
@@ -215,7 +229,21 @@ inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y)
    {
     tile_num--;
     tile = tile_manager->get_tile(tile_num);
-    screen->blit(tile->data,8,(x-1)*16,(y-1)*16,16,16,tile->transparent);
+    drawTopTile(tile,x-1,y-1,toptile);
    }
  
+}
+
+inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile)
+{
+ if(toptile)
+    {
+     if(tile->toptile)
+        screen->blit(tile->data,8,x*16,y*16,16,16,tile->transparent);
+    }
+ else
+    {
+     if(!tile->toptile)
+        screen->blit(tile->data,8,x*16,y*16,16,16,tile->transparent);
+    } 
 }
