@@ -152,7 +152,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     sched[i] = (Schedule *)malloc(sizeof(Schedule));
 
     sched[i]->hour = sched_data[0];
-    sched[i]->unknown = sched_data[1];
+    sched[i]->worktype = sched_data[1];
     
     sched[i]->x = sched_data[2];
     sched[i]->x += (sched_data[3] & 0x3) << 8; 

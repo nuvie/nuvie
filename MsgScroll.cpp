@@ -44,6 +44,12 @@ MsgScroll::MsgScroll(Configuration *cfg)
  cursor_wait = 0;
  
  scroll_updated = false;
+ 
+ string_buf = NULL;
+ string_buf_len = 0;
+ string_buf_pos = 0;
+ 
+ page_break = false;
 }
 
 MsgScroll::~MsgScroll()
@@ -68,50 +74,84 @@ void MsgScroll::display_string(char *string)
  uint16 length;
  uint16 i,j;
  uint16 word_start, row_length;
- 
- if(string == NULL)
+ uint16 num_rows;
+
+    
+ if(string_buf_pos == 0)
    {
-    display_string(prompt);
-    return;
+    if(string == NULL)
+     {
+      return;
+     }
+
+    if(set_string_buf(string) == false)
+       return;
+   }
+ else
+   {
+    if(string != NULL)
+      {
+       set_string_buf_append(string);
+       return;
+      }
    }
 
- length = strlen(string);
+ length = strlen(string_buf);
  
  //if(msg_buf[buf_pos][0] != '\0')
  row_length = strlen(msg_buf[buf_pos]);
  
- for(i=0,j=0,word_start=0;i <= length;i++,row_length++)
+ i = string_buf_pos;
+ string_buf_pos = 0;
+ 
+ for(j=i,num_rows=0,word_start=i;i <= length;i++,row_length++)
    {
-    if(string[i] == '\n' || string[i] == '*' || string[i] == ' ' || string[i] == '\0')
+    if(string_buf[i] == '\n' || string_buf[i] == '*' || string_buf[i] == ' ' || string_buf[i] == '\0')
       {
        if(row_length >= MSGSCROLL_WIDTH)
          {
-          buf_addString(&string[j],word_start - j);
+          buf_addString(&string_buf[j],word_start - j);
           j = word_start;
           buf_next();
+          num_rows++;
         //  msg_buf[buf_pos][0] = '\0';
           row_length = i - j;
          }
 
       
-       if(string[i] != ' ')
+       if(string_buf[i] != ' ')
         {
-         buf_addString(&string[j],i - j);
-         if(string[i] != '\0')
+         buf_addString(&string_buf[j],i - j);
+         if(string_buf[i] != '\0')
           {
            buf_next();
+           num_rows++;
           }
+
          row_length = 0;
          j = i+1;
         }
        else
         word_start = i+1;
+      if(num_rows == MSGSCROLL_HEIGHT-2 || string_buf[i] == '*')
+        {
+         set_page_break(j);
+         break;
+        }
+
       }
    }
-   
+
  scroll_updated = true;
 }
 
+
+void MsgScroll::display_prompt()
+{
+ if(prompt != NULL)
+    display_string(prompt);
+}
+ 
 void MsgScroll::set_keyword_highlight(bool state)
 {
  keyword_highlight = state;
@@ -148,12 +188,15 @@ bool MsgScroll::set_prompt(char *new_prompt)
  */
 bool MsgScroll::handle_input(SDLKey *input)
 {
-//    if(!input)
+    if(page_break == false)
         return(false);
+        
     switch(*input)
     {
-        case SDLK_RETURN: // enter input
-            return(true);
+        case SDLK_ESCAPE:
+        case SDLK_RETURN: page_break = false;
+                          display_string(NULL);
+                          return(true);
         default: // alphanumeric characters
             break;
     }
@@ -209,7 +252,10 @@ void MsgScroll::clearCursor(uint16 x, uint16 y)
 
 void MsgScroll::drawCursor(uint16 x, uint16 y)
 {
-  text->drawChar(screen, cursor_char + 5, x, y);
+ if(page_break)
+    text->drawChar(screen, 1, x, y); // down arrow
+ else
+    text->drawChar(screen, cursor_char + 5, x, y); //spinning ankh
   
   screen->update(x, y, 8, 8);
   if(cursor_wait == MSGSCROLL_CURSOR_DELAY)
@@ -249,3 +295,61 @@ bool MsgScroll::buf_next()
  return true;
 }
 
+bool MsgScroll::set_string_buf(char *string)
+{
+ uint16 len;
+ 
+ len = strlen(string);
+ 
+ if(string_buf_len < len+1)
+   {
+    string_buf = (char *)realloc(string_buf,len+1);
+    string_buf_len = len+1;
+   }
+
+ strcpy(string_buf,string);
+ 
+ return true;
+}
+
+bool MsgScroll::set_string_buf_append(char *string)
+{
+ uint16 len;
+ 
+ if(string == NULL)
+   return false;
+
+ len = strlen(string);
+ len += strlen(string_buf);
+ 
+ if(string_buf_len < len+1)
+   {
+    string_buf = (char *)realloc(string_buf, len+1);
+    string_buf_len = len+1;
+   }
+
+ strcat(string_buf,string);
+ 
+ return true;
+}
+
+bool MsgScroll::set_string_buf_pos(uint16 pos)
+{
+ if(pos < string_buf_len)
+ { 
+  string_buf_pos = pos;
+  return true;
+ }
+ 
+ return false;
+}
+
+void MsgScroll::set_page_break(uint16 pos)
+{
+ if(set_string_buf_pos(pos) == false)
+  return;
+
+ page_break = true;
+
+ return;
+}

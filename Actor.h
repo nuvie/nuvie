@@ -32,7 +32,7 @@ uint16 x;
 uint16 y;
 uint8 z;
 uint8 hour;
-uint8 unknown;
+uint8 worktype;
 } Schedule;
 
 class Actor

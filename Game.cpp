@@ -126,7 +126,7 @@ void Game::play()
 
   drawBackground();
 
-  scroll->display_string(NULL);
+  scroll->display_prompt();
   
   screen->update();
   

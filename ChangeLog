@@ -1,3 +1,6 @@
+2003-04-11  Eric Fry  <efry@users.sourceforge.net>
+	* Added page break to MsgScroll
+
 2003-04-09  Eric Fry  <efry@users.sourceforge.net>
 	* Work on MsgScroll class.
 	* Added signposts, books and scrolls.

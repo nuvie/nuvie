@@ -207,7 +207,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  }
  
  scroll->display_string("\n");
- scroll->display_string(NULL);
+ scroll->display_prompt();
   
  map_window->set_show_use_cursor(false);
  map_window->updateBlacking();
@@ -233,7 +233,7 @@ bool Event::look()
    }
 
  scroll->display_string("\n\n");
- scroll->display_string(NULL);
+ scroll->display_prompt();
 
  return true;
 }

@@ -46,6 +46,7 @@ class MsgScroll
  char *prompt;
  uint16 prompt_buf_len;
  
+ bool page_break;
  
  char msg_buf[MSGSCROLL_HEIGHT][MSGSCROLL_WIDTH+1];
  uint8 buf_pos;
@@ -58,6 +59,10 @@ class MsgScroll
  
  uint16 cursor_wait;
  
+ char *string_buf;
+ uint16 string_buf_len;
+ uint16 string_buf_pos;
+ 
  public:
  
  MsgScroll(Configuration *cfg);
@@ -66,6 +71,8 @@ class MsgScroll
  bool init(Screen *s, Text *txt);
  
  void display_string(char *string);
+ void display_prompt();
+ 
  void set_keyword_highlight(bool state);
  
  void set_input_mode(bool state);
@@ -81,6 +88,12 @@ class MsgScroll
  
  bool buf_addString(char *string, uint8 length);
  bool buf_next();
+ 
+ bool set_string_buf(char *string);
+ bool set_string_buf_append(char *string);
+ bool set_string_buf_pos(uint16 pos);
+ 
+ void set_page_break(uint16 pos);
 };
 
 
