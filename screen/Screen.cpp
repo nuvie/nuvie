@@ -44,14 +44,21 @@ static const uint8 globeradius_2[] = { 16, 32,  64 };
 
 Screen::Screen(Configuration *cfg)
 {
+ std::string str_lighting_style;
  config = cfg;
  
  update_rects = NULL;
  shading_data = NULL;
  updatingalphamap = true;
- config->value( "config/general/lighting", lighting_style );
- if( lighting_style > 2 || lighting_style < 0 )
+ std::string x;
+ config->value( "config/general/lighting", str_lighting_style );
+
+ if( str_lighting_style == "original" )
+	 lighting_style = 2;
+ else if( str_lighting_style == "smooth" )
 	 lighting_style = 1;
+ else
+	 lighting_style = 0;
  
  max_update_rects = 10;
  num_update_rects = 0;
