@@ -118,8 +118,7 @@ class Event : public GUI_CallBack
  void doAction(sint16 rel_x = 0, sint16 rel_y = 0);
  void doAction(Obj *obj);
  void cancelAction();
- void endAction();
- void endWaitMode(); // change to MOVE_MODE, hide cursors, display prompt
+ void endAction(bool prompt = false);
 
  /* The upper-level calls (look/talk/use) encapsulate everything about the
     action, except printing the action name ("Talk-"). The lower-level methods
