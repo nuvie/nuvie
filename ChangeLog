@@ -1,3 +1,7 @@
+2003-12-21  Eric Fry <efry@users.sourceforge.net>
+	* Fixed inventory display order. Nuvie was displaying the inventory 
+	  list in reverse order. Thanks to Dominus for spotting that one.
+
 2003-12-20  Eric Fry <efry@users.sourceforge.net>
 	* Work on horse usecode. Temporary Actors are used correctly when
 	  mounting/dismounting horses.

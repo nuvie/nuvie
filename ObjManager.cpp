@@ -742,7 +742,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
      {
       //printf("%d: %d, %d, %d\n",obj->x, obj->status, obj->obj_n, obj->y);
       inventory_list = get_actor_inventory(obj->x);
-      inventory_list->addAtPos(0,obj);
+      inventory_list->add(obj);
      }
    else
      {
