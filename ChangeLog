@@ -1,3 +1,6 @@
+2004-01-21  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* Makefile.mingw, */Makefile.common: added new tools to Makefile.mingw
+
 2004-01-20  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Alt-214 codes can be entered with the numeric keypad now.
 	* Keys F1-F10 enabled to switch between party members and roster.

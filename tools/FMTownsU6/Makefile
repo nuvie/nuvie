@@ -4,11 +4,10 @@ CFLAGS= -g -Wall -I ../.. -I ../../files -I ../../conf -I ../../misc
 
 LDFLAGS= 
 
-OBJS=	../../files/NuvieIO.o\
-	../../files/NuvieIOFile.o\
-	../../files/U6Lzw.o\
-	../../files/U6Lib_n.o\
-	unpack.o
+# Makefile.common defines unpack_OBJS
+include Makefile.common
+
+OBJS=$(unpack_OBJS)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@

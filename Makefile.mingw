@@ -40,6 +40,20 @@ U6DECOMP_OBJS=$(U6DECOMP_Cs:%.c=tools/%.o)
 
 u6decomp.exe: $(U6DECOMP_OBJS)
 	$(CC) -o $@ $+
+
+UNPACKCONV_CPPs = $(filter %.cpp,$(unpack_conv_SOURCES))
+UNPACKCONV_OBJS = $(UNPACKCONV_CPPs:%.cpp=tools/%.o)
+
+unpack_conv.exe: $(UNPACKCONV_OBJS)
+	$(CXX) -o $@ $+
+
+include tools/FMTownsU6/Makefile.common
+
+UNPACK_OBJS = $(unpack_OBJS:%=tools/FMTownsU6/%)
+
+unpack.exe: $(UNPACK_OBJS)
+	$(CXX) -o $@ $+
+
 clean:
 	rm -f $(NUVIE_OBJS) nuvie.exe $(U6DECOMP_OBJS) u6decomp.exe
 

@@ -5,3 +5,23 @@ u6decomp_SOURCES = \
 	lzw.c \
 	stack.c \
 	stack.h
+
+unpack_conv_SOURCES = \
+	unpack_conv.cpp \
+\
+	../conf/Configuration.cpp \
+	../conf/Configuration.h \
+	../conf/XMLNode.cpp \
+	../conf/XMLNode.h \
+	../conf/XMLTree.cpp \
+	../conf/XMLTree.h \
+	../conf/ConfigNode.h \
+\
+	../files/NuvieIO.cpp \
+	../files/NuvieIO.h \
+	../files/NuvieIOFile.cpp \
+	../files/NuvieIOFile.h \
+	../files/U6Lib_n.cpp \
+	../files/U6Lib_n.h \
+	../files/U6Lzw.cpp \
+	../files/U6Lzw.h

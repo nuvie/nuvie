@@ -1,0 +1,5 @@
+unpack_OBJS = ../../files/NuvieIO.o\
+	../../files/NuvieIOFile.o\
+	../../files/U6Lzw.o\
+	../../files/U6Lib_n.o\
+	unpack.o
