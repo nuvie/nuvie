@@ -485,7 +485,7 @@ void SaveGame::clean_up()
  if(header.thumbnail)
    {
     SDL_FreeSurface(header.thumbnail);
-    delete header.thumbnail_data;
+    delete[] header.thumbnail_data;
 
     header.thumbnail = NULL;
     header.thumbnail_data = NULL;

@@ -1501,7 +1501,7 @@ void MapWindow::free_thumbnail()
 {
  if(thumbnail)
    {
-    delete thumbnail;
+    delete[] thumbnail;
     thumbnail = NULL;
    }
 
