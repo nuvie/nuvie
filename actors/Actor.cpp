@@ -635,6 +635,9 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
    }
    // only objects outside containers are marked in_inventory
    obj->status |= OBJ_STATUS_IN_INVENTORY;
+   
+   // we have the item now so we don't consider it stealing if we get it at any time in the future.
+   obj->status |= OBJ_STATUS_OK_TO_TAKE;
    obj->x = id_n;
  }
  return add_to->addAtPos(0, obj);

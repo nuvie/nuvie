@@ -397,7 +397,18 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_ac
        case MOVETYPE_U6_WATER_LOW : if(!map->is_water(new_x, new_y, new_z))
                                        return false;
                                     break;
-       case MOVETYPE_U6_AIR_LOW :
+
+       case MOVETYPE_U6_AIR_LOW : map_tile = map->get_tile(new_x, new_y, new_z, MAP_ORIGINAL_TILE);
+                                  if(map_tile->flags1 & TILEFLAG_WALL) //low air boundry
+                                    return false;
+
+                                  map_tile = obj_manager->get_obj_tile(new_x, new_y, new_z, false);
+                                  if(map_tile && (map_tile->flags1 & TILEFLAG_WALL ||
+                                     (map_tile->flags2 & (TILEFLAG_DOUBLE_WIDTH | TILEFLAG_DOUBLE_HEIGHT)) == (TILEFLAG_DOUBLE_WIDTH | TILEFLAG_DOUBLE_HEIGHT)))
+                                    return false;
+                                  break;
+
+                                  //fall through to MOVETYPE_U6_AIR_HIGH
        case MOVETYPE_U6_AIR_HIGH : if(map->is_boundary(new_x, new_y, new_z))
                                     return false; //FIX for proper air boundary
                                   break;

@@ -1410,6 +1410,141 @@ inline bool U6UseCode::use_boat_find_land(uint16 *x, uint16 *y, uint8 *z)
  return false;
 }
 
+/* construct a balloon using the balloon plans */
+bool U6UseCode::use_balloon_plans(Obj *obj, UseCodeEvent ev)
+{
+ MapCoord player_location = player->get_actor()->get_location();
+ bool missing_obj = false;
+ Obj *balloon;
+ 
+ if(ev != USE_EVENT_USE)
+    return(false);
+
+ scroll->display_string("\n");
+ 
+ //make sure the party is carrying the required parts.
+ 
+ if(!party->has_obj(OBJ_U6_MAMMOTH_SILK_BAG, 0))
+   {
+    scroll->display_string("Missing a mammoth silk bag.\n");
+    missing_obj = true;
+   }
+
+ if(!party->has_obj(OBJ_U6_BALLOON_BASKET, 0))
+   {
+    scroll->display_string("Missing a balloon basket.\n");
+    missing_obj = true;
+   }
+    
+ if(!party->has_obj(OBJ_U6_CAULDRON, 0))
+   {
+    scroll->display_string("Missing a cauldron.\n");
+    missing_obj = true;
+   }
+ 
+ if(!party->has_obj(OBJ_U6_ROPE, 0))
+   {
+    scroll->display_string("Missing a rope.\n");  
+    missing_obj = true;
+   }
+
+ // Make the balloon if we have all the parts.
+ if(!missing_obj)
+   {
+    party->remove_obj(OBJ_U6_MAMMOTH_SILK_BAG, 0);
+    party->remove_obj(OBJ_U6_BALLOON_BASKET, 0);
+    party->remove_obj(OBJ_U6_CAULDRON, 0);
+    party->remove_obj(OBJ_U6_ROPE, 0);
+            
+    balloon = new_obj(OBJ_U6_BALLOON, 0, player_location.x, player_location.y, player_location.z);
+
+    if(balloon && obj_manager->add_obj(balloon))
+      scroll->display_string("Done!\n");
+   }
+   
+ return true;
+}
+
+
+/* USE: balloon. (entire party)
+ */
+bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
+{
+ Actor *balloon_actor;
+ uint16 lx, ly;
+ uint8 lz;
+
+ if(ev != USE_EVENT_USE)
+    return(false);
+
+ if(obj->obj_n == OBJ_U6_BALLOON)
+   {
+    obj->obj_n = OBJ_U6_INFLATED_BALLOON;
+    obj->frame_n = 3;
+
+    return true;
+   }
+   
+ balloon_actor = actor_manager->get_actor(0); //get the vehicle actor.
+
+ // get out of balloon
+ if(party->is_in_vehicle())
+  {
+   balloon_actor->get_location(&lx,&ly,&lz); //retrieve actor position for land check.
+
+   if(use_boat_find_land(&lx,&ly,&lz)) //we must be next to land to disembark
+     {
+      Obj *obj;
+
+      party->show();
+      balloon_actor->hide();
+      player->set_actor(party->get_actor(0));
+      player->move(lx,ly,lz);
+      balloon_actor->obj_n = OBJ_U6_NO_VEHICLE;
+      balloon_actor->frame_n = 0;
+      balloon_actor->init();
+      balloon_actor->move(0,0,0,ACTOR_FORCE_MOVE);
+
+      obj = new_obj(OBJ_U6_BALLOON, 0, lx, ly, lz);
+      obj_manager->add_obj(obj, OBJ_ADD_TOP);
+     }
+   else
+     {
+      scroll->display_string("\nOnly next to land.\n");
+      return true;
+     }
+
+   party->set_in_vehicle(false);
+
+   return true;
+  }
+
+  if(!player->in_party_mode())
+   {
+    scroll->display_string("\nNot in solo mode.\n");
+    return(true);
+   }
+
+ // walk to vehicle if necessary
+ if(!party->is_at(obj->x, obj->y, obj->z))
+   {
+    party->enter_vehicle(obj);
+    return(false);
+   }
+
+ // use it (replace ship with vehicle actor)
+ balloon_actor->init_from_obj(obj);
+ balloon_actor->show(); // Swift!
+ obj_manager->remove_obj(obj);
+ delete_obj(obj);
+
+ party->hide(); // set in-vehicle
+ player->set_actor(balloon_actor);
+ party->set_in_vehicle(true);
+ return(true);
+}
+
+
 /* using a cow fills an empty bucket in the player's inventory with milk */
 bool U6UseCode::use_cow(Obj *obj, UseCodeEvent ev)
 {
@@ -1775,6 +1910,10 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
     char *prefix = "", *dungeon_name = "";
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
+
+    if(party->is_in_vehicle()) //don't enter if in a balloon.
+      return true;
+      
     if(!player->in_party_mode())
     {
         scroll->display_string("\nNot in solo mode.\n\n");
@@ -1837,6 +1976,10 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
 {
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
+
+    if(party->is_in_vehicle())
+      return true;
+
     if (obj->frame_n != 1) return false; // FIXME is this check needed?
     if(!player->in_party_mode())
     {

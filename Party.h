@@ -124,6 +124,7 @@ class Party {
  void find_leader(uint8 m);
 
  bool has_obj(uint16 obj_n, uint8 quality);
+ bool remove_obj(uint16 obj_n, uint8 quality);
  uint16 who_has_obj(uint16 obj_n, uint8 quality);
 
  bool is_leader(Actor *actor) { return(get_member_num(actor) == 0); }

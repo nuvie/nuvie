@@ -126,6 +126,8 @@
 #define OBJ_U6_PICTURE             143
 #define OBJ_U6_CANDELABRA          145
 #define OBJ_U6_PERSON_SLEEPING     146
+#define OBJ_U6_CAULDRON            147
+
 #define OBJ_U6_SHIP_DEED           149
 #define OBJ_U6_BOOK                151
 #define OBJ_U6_SCROLL              152
@@ -204,10 +206,12 @@
 
 #define OBJ_U6_LEVER               268
 #define OBJ_U6_DRAWBRIDGE          269
+#define OBJ_U6_BALLOON_PLANS       270
 #define OBJ_U6_POTION              275
 #define OBJ_U6_V_PASSTHROUGH       278
 #define OBJ_U6_H_PASSTHROUGH       280
 #define OBJ_U6_FENCE               281
+#define OBJ_U6_ROPE                284
 #define OBJ_U6_CRANK               288
 #define OBJ_U6_CHAIN               293
 
@@ -303,6 +307,10 @@
 #define OBJ_U6_QUEST_GATE          416
 #define OBJ_U6_DRAGON_EGG          417
 #define OBJ_U6_PULL_CHAIN          419
+#define OBJ_U6_BALLOON             420
+#define OBJ_U6_MAMMOTH_SILK_BAG    421
+#define OBJ_U6_BALLOON_BASKET      422
+#define OBJ_U6_INFLATED_BALLOON    423
 
 #define OBJ_U6_CYCLOPS             424
 #define OBJ_U6_HYDRA_BODY          425

@@ -551,6 +551,28 @@ bool Party::has_obj(uint16 obj_n, uint8 quality)
  return false;
 }
 
+// Removes the first occurence of an object in the party.
+bool Party::remove_obj(uint16 obj_n, uint8 quality)
+{
+ uint16 i;
+ Obj *obj;
+ 
+ for(i = 0; i < num_in_party; i++)
+   {
+    obj = member[i].actor->inventory_get_object(obj_n, quality);
+    if(obj != NULL)
+       {
+        if(member[i].actor->inventory_remove_obj(obj))
+          {
+           delete_obj(obj);
+           return true;
+          }
+       }
+   }
+    
+ return false;
+}
+
 
 uint16 Party::who_has_obj(uint16 obj_n, uint8 quality)
 {

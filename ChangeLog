@@ -1,3 +1,17 @@
+2004-07-25  Eric Fry <efry at users.sourceforge.net>
+	* Added use:balloon_plans. You can now build a balloon.
+	* Added use:balloon. You can now use the balloon. The balloon
+	  is currently controlled by the player. I will have to fix this
+	  when we add wind direction. The balloon should drift along
+	  the current wind direction. There are also some rendering issues
+	  with the balloon object when moving in front of other multi-tile
+	  objects.
+	* Objects are now marked as "ok to take" After being added to the
+	  player's inventory. Nuvie won't shout "Stealing" every time you drop
+	  and pickup an inventory item now.
+	* Added Party::remove_obj() this method removes the first instance of
+	  a given object type from the party's collective inventory.
+
 2004-07-23  Eric Fry <efry at users.sourceforge.net>
 	* Added use:sextant.
 

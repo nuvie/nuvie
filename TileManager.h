@@ -42,8 +42,10 @@ class Look;
 #define TILEFLAG_WALL 0x4
 
 //flags2
-#define TILEFLAG_BOUNDARY 0x4
-
+#define TILEFLAG_BOUNDARY         0x4
+#define TILEFLAG_MISSLE_BOUNDARY  0x20
+#define TILEFLAG_DOUBLE_HEIGHT    0x40
+#define TILEFLAG_DOUBLE_WIDTH     0x80
 
 #define TILEFLAG_WINDOW 0x8 // flags2
 

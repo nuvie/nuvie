@@ -100,7 +100,10 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_SHIP, 255,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
     { OBJ_U6_SKIFF,255,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
     { OBJ_U6_RAFT,   0,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
-//    { OBJ_U6_BALLOON_BASKET,0,0,USE_EVENT_USE,&U6UseCode::use_balloon,OBJTYPE_NONE },
+    
+    { OBJ_U6_BALLOON_PLANS,0,0,USE_EVENT_USE,&U6UseCode::use_balloon_plans,OBJTYPE_NONE },    
+    { OBJ_U6_BALLOON,0,0,USE_EVENT_USE,&U6UseCode::use_balloon,OBJTYPE_NONE },
+    { OBJ_U6_INFLATED_BALLOON,255,0,USE_EVENT_USE,&U6UseCode::use_balloon,OBJTYPE_NONE },
 
     { OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier,OBJTYPE_NONE },
 

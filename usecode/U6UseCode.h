@@ -107,6 +107,8 @@ class U6UseCode: public UseCode, public CallBack
  bool use_boat(Obj *obj, UseCodeEvent ev);
  inline Obj *use_boat_find_center(Obj *obj);
  inline bool use_boat_find_land(uint16 *x, uint16 *y, uint8 *z);
+ bool use_balloon_plans(Obj *obj, UseCodeEvent ev);
+ bool use_balloon(Obj *obj, UseCodeEvent ev);
  bool use_cow(Obj *obj, UseCodeEvent ev);
  bool use_well(Obj *obj, UseCodeEvent ev);
  bool fill_bucket(uint16 filled_bucket_obj_n);
