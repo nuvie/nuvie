@@ -577,20 +577,20 @@ U6LList *ObjManager::loadObjSuperChunk(char *filename)
    obj = loadObj(&file,i);
   // addObj(list,obj);
 
-   if(obj->status == 0x8) // FIX here might be & 0x8
+   if(obj->status & 0x10) //object in actor's inventory
      {
-      addObjToContainer(list,obj);
+      //printf("%d: %d, %d, %d\n",obj->x, obj->status, obj->obj_n, obj->y);
+      inventory_list = get_actor_inventory(obj->x);
+      inventory_list->addAtPos(0,obj);
      }
    else
     {
-     if(obj->status & 0x10) //object in actor's inventory
-       {
-        //printf("%d: %d, %d, %d\n",obj->x, obj->status, obj->obj_n, obj->y);
-        inventory_list = get_actor_inventory(obj->x);
-        inventory_list->addAtPos(0,obj);
-       }
+     if(obj->status & 0x8) // FIX here might be & 0x8
+      {
+       addObjToContainer(list,obj);
+      }
      else
-        addObj(list,obj);
+       addObj(list,obj);
     }
 
   }
