@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include "U6misc.h"
 #include "NuvieIOFile.h"
 #include "Game.h"
 #include "Converse.h"
@@ -150,7 +151,7 @@ bool Party::loadParty()
  uint8 actor_num;
  uint16 i;
  
- config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
+ config_get_path(config,"savegame/objlist",filename);
  if(objlist.open(filename.c_str()) == false)
    return false;
 
@@ -284,6 +285,42 @@ void Party::follow()
     }
 }
 
+bool Party::has_obj(uint16 obj_n, uint8 quality)
+{
+ uint16 i;
+ 
+ for(i=0;i<num_in_party;i++)
+  {
+   if(member[i].actor->inventory_get_object(obj_n, quality) != NULL) // we got a match
+     return true; 
+  }
+  
+ return false;
+}
+
+void Party::show()
+{
+ uint16 i;
+ 
+ for(i=0;i<num_in_party;i++)
+  {
+   member[i].actor->show();
+  }
+  
+ return;
+}
+
+void Party::hide()
+{
+ uint16 i;
+ 
+ for(i=0;i<num_in_party;i++)
+  {
+   member[i].actor->hide();
+  }
+  
+ return;
+}
 
 /* Move and center everyone in the party to one location.
  */

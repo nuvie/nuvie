@@ -47,10 +47,13 @@
 #define WORKTYPE_U6_PLAY_LUTE 0x95
 #define WORKTYPE_U6_BEG 0x96
 
-#define MOVETYPE_U6_LAND     1
-#define MOVETYPE_U6_WATER    2
-#define MOVETYPE_U6_AIR_LOW  3 // balloon, birds... this movetype cannot cross mountain tops.
-#define MOVETYPE_U6_AIR_HIGH 4 // dragons
+#define MOVETYPE_U6_LAND       1
+#define MOVETYPE_U6_WATER_LOW  2 // skiffs, rafts
+#define MOVETYPE_U6_WATER_HIGH 3 // ships
+#define MOVETYPE_U6_AIR_LOW    4 // balloon, birds... this movetype cannot cross mountain tops.
+#define MOVETYPE_U6_AIR_HIGH   5 // dragons
+
+#define REMOVE_SURROUNDING_OBJS true
 
 typedef struct {
  uint16 base_obj_n;
@@ -86,6 +89,7 @@ class U6Actor: public Actor
  void set_worktype(uint8 new_worktype);
  void preform_worktype();
  void set_direction(uint8 d);
+ void clear();
  bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
  void twitch();
@@ -95,7 +99,7 @@ class U6Actor: public Actor
  protected:
  bool init_ship();
  bool init_splitactor(); //cows, horses etc.
- 
+ inline void discover_direction();
  void wt_walk_to_location();
  void wt_walk_straight();
  void wt_wander_around();
@@ -114,6 +118,7 @@ class U6Actor: public Actor
  inline void set_direction_of_surrounding_splitactor_objs(uint8 new_direction);
  
  inline void twitch_surrounding_objs();
+ inline void clear_surrounding_objs_list(bool delete_objs=false);
 };
 
 #endif /* __U6Actor_h__ */

@@ -45,6 +45,8 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  walk_frame = 0;
  can_twitch = true;
  in_party = false;
+ visible_flag = true;
+ 
  worktype = 0;
  sched_pos = 0;
  
@@ -72,6 +74,21 @@ bool Actor::init()
  return true;
 }
 
+void Actor::init_from_obj(Obj *obj)
+{
+
+ x = obj->x;
+ y = obj->y;
+ z = obj->z;
+ 
+ obj_n = obj->obj_n;
+ frame_n = obj->frame_n;
+ 
+ init();
+ show();
+ return;
+}
+
 bool Actor::is_alive()
 {
  return alive;
@@ -95,6 +112,13 @@ bool Actor::is_nearby(uint8 a)
     return(is_nearby(Game::get_game()->get_actor_manager()->get_actor(a)));
 }
 
+bool Actor::is_at_position(Obj *obj)
+{
+ if(obj->x == x && obj->y == y && obj->z == z)
+   return true;
+   
+ return false;
+}
 
 void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 {
@@ -220,6 +244,8 @@ void Actor::face_actor(Actor *a)
 }
 
 
+
+
 bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 {
  return move(x + rel_x, y + rel_y, z);
@@ -270,9 +296,15 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
      // don't switch with party leader or actors who have moved (unless leader)
      if(!party->contains_actor(other) || (party->get_member_num(other) == 0)
         || (other->moved && (party->get_member_num(this) != 0)))
-        return false; // blocked by actor
-     other->face_location(x, y);
-     other->move(x, y, z, ACTOR_FORCE_MOVE);
+        {
+         if(other->is_visible())
+           return false; // blocked by actor
+        }
+     else
+       {
+        other->face_location(x, y);
+        other->move(x, y, z, ACTOR_FORCE_MOVE);
+       }
  }
 
  // move
@@ -836,5 +868,32 @@ void Actor::clear_flag(uint8 bitflag)
     if(bitflag > 7)
         return;
     this->set_flags(this->get_flags() & ~(1 << bitflag));
+}
+
+Obj *Actor::make_obj()
+{
+ Obj *obj;
+ 
+ obj = new Obj();
+ 
+ obj->x = x;
+ obj->y = y;
+ obj->z = z;
+ 
+ obj->obj_n = obj_n;
+ obj->frame_n = frame_n;
+ obj->quality = id_n;
+ 
+ return obj;
+}
+
+void Actor::clear()
+{
+ x = 0;
+ y = 0;
+ z = 0;
+ hide();
+ worktype = 0;
+ 
 }
 

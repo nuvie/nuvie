@@ -1,3 +1,9 @@
+2003-10-12  Eric Fry <efry@users.sourceforge.net>
+	* Added "use" support for skiffs, ships and horses.
+          Ship support is still a bit rough. Horse's disappear after use. :(
+	  I'll fix this when we add the temp actor management methods into
+	  ActorManager.
+
 2003-10-07  Eric Fry <efry@users.sourceforge.net>
 	* Added split-type actors. Cows, horses, etc.
 	* Added twitch support for some multi-tile actors.

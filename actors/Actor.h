@@ -75,7 +75,7 @@ class Actor
  friend class Player;
  friend class PathFinder;
  friend class ZPath;
-
+ friend class U6UseCode;
  protected:
 
  uint8 id_n;
@@ -105,7 +105,8 @@ class Actor
  bool met_player;
  
  bool in_party;
-
+ bool visible_flag;
+ 
  bool moved; // actor has moved this turn (FIXME: unused)
 
  uint8 strength;
@@ -138,11 +139,14 @@ class Actor
  virtual ~Actor();
  
  virtual bool init();
+ void init_from_obj(Obj *obj);
  
 // bool is_visible() { return(MapCoord(x,y,z).is_visible()); }
  bool is_alive();
  bool is_nearby(Actor *other);
  bool is_nearby(uint8 a);
+ bool is_at_position(Obj *obj);
+ 
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  MapCoord get_location();
  uint16 get_tile_num();
@@ -181,7 +185,11 @@ class Actor
  void set_flags(uint8 newflags) { flags = newflags; }
  void set_flag(uint8 bitflag);
  void clear_flag(uint8 bitflag);
-
+ void show() { visible_flag = true; }
+ void hide() { visible_flag = false; }
+ 
+ bool is_visible() { return visible_flag; }
+ 
  bool moveRelative(sint16 rel_x, sint16 rel_y);
  virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
@@ -216,6 +224,8 @@ class Actor
  
  virtual void twitch() { return; }
  
+ Obj *make_obj();
+ virtual void clear();
  protected:
  
  void loadSchedule(unsigned char *schedule_data, uint16 num);

@@ -47,6 +47,7 @@ class UseCode;
 #define OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS true
 #define OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS false
 
+#define OBJ_ADD_TOP true
 
 struct ObjTreeNode
 {

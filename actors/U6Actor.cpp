@@ -48,10 +48,10 @@ bool U6Actor::init()
  
  base_actor_type = get_actor_type(base_obj_n);
   
- if(actor_type->frames_per_direction != 0) 
-   direction = (frame_n - actor_type->tile_start_offset ) / actor_type->tiles_per_direction;
- else
-   direction = ACTOR_DIR_D;
+ discover_direction();
+
+ if(actor_type->has_surrounding_objs)
+   clear_surrounding_objs_list(); //clean up the old list if required.
 
  switch(obj_n) //gather surrounding objects from map if required
   {
@@ -131,8 +131,18 @@ bool U6Actor::init_splitactor()
   }
   
  obj = obj_manager->get_obj(obj_x,obj_y,z);
- if(obj == NULL)
-   return false;
+ if(obj == NULL || obj->obj_n != obj_n) // create a new back object
+   {
+    obj = new Obj();
+    obj->x = obj_x;
+    obj->y = obj_y;
+    obj->z = z;
+    obj->obj_n = obj_n;
+    obj->frame_n = frame_n + 8;
+    obj_manager->add_obj(obj);
+   }
+   
+ obj->quality = id_n; //associate actor id with obj.
  surrounding_objects.push_back(obj);
 
  return true;
@@ -167,6 +177,15 @@ bool U6Actor::updateSchedule()
  return ret;
 }
 
+// workout our direction based on actor_type and frame_n
+inline void U6Actor::discover_direction()
+{
+ if(actor_type->frames_per_direction != 0) 
+   direction = (frame_n - actor_type->tile_start_offset ) / actor_type->tiles_per_direction;
+ else
+   direction = ACTOR_DIR_D;
+}
+
 void U6Actor::set_direction(uint8 d)
 {
  if(d >= 4)
@@ -184,7 +203,10 @@ void U6Actor::set_direction(uint8 d)
     if(direction != d)
       set_direction_of_surrounding_objs(d);
     else
-      twitch_surrounding_objs();
+     {
+      if(actor_type->twitch_rand) //only twitch actors with a non zero twitch_rand.
+        twitch_surrounding_objs();
+     }
    }
 
  direction = d;
@@ -193,6 +215,21 @@ void U6Actor::set_direction(uint8 d)
            (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
  
 }
+
+void U6Actor::clear()
+{
+ if(actor_type->has_surrounding_objs)
+  {
+   remove_surrounding_objs_from_map();
+   clear_surrounding_objs_list(REMOVE_SURROUNDING_OBJS);
+  }
+ 
+ Actor::clear();
+ 
+ return;
+}
+
+
 
 bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
@@ -242,6 +279,8 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 
 bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors)
 {
+ Tile *map_tile;
+
     if(z > 5)
         return(false);
 
@@ -253,9 +292,15 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_ac
  
     switch(actor_type->movetype)
       {
-       case MOVETYPE_U6_WATER : if(!map->is_water(new_x, new_y, new_z))
-                                  return false;
-                                break;
+       case MOVETYPE_U6_WATER_HIGH : // for HIGH we only want to move to open water.
+                                     // No shorelines.
+                                     map_tile = map->get_tile(new_x, new_y, new_z, MAP_ORIGINAL_TILE);
+                                     if(map_tile->tile_num >= 16 && map_tile->tile_num <= 47)
+                                       return false;
+                                    //fall through to MOVETYPE_U6_WATER_LOW
+       case MOVETYPE_U6_WATER_LOW : if(!map->is_water(new_x, new_y, new_z))
+                                       return false;
+                                    break;
        case MOVETYPE_U6_AIR_LOW : 
        case MOVETYPE_U6_AIR_HIGH : if(map->is_boundary(new_x, new_y, new_z))
                                     return false; //FIX for proper air boundary
@@ -553,7 +598,7 @@ inline void U6Actor::add_surrounding_objs_to_map()
  std::list<Obj *>::iterator obj;
  
  for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
-    obj_manager->add_obj((*obj));
+    obj_manager->add_obj((*obj),OBJ_ADD_TOP);
 
  return;
 }
@@ -723,4 +768,29 @@ inline void U6Actor::twitch_surrounding_objs()
                        walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame;
    }
 
+}
+
+inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)
+{
+ std::list<Obj *>::iterator obj;
+ 
+ if(surrounding_objects.empty())
+   return;
+
+ if(delete_objs == false)
+  {
+   surrounding_objects.resize(0);
+   return;
+  }
+
+ obj = surrounding_objects.begin();
+ 
+ for(;!surrounding_objects.empty();)
+  {
+   obj_manager->remove_obj(*obj);
+   delete *obj;
+   obj = surrounding_objects.erase(obj);
+  }
+
+ return;
 }

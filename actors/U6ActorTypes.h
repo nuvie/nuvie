@@ -26,7 +26,7 @@
 const U6ActorType u6ActorTypes[] = {
 // 4x1 tile actors  
  {OBJ_U6_INSECTS,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, false, MOVETYPE_U6_AIR_LOW, 20},
- {OBJ_U6_GIANT_SQUID,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_WATER, 50},
+ {OBJ_U6_GIANT_SQUID,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_WATER_HIGH, 50},
  {OBJ_U6_GHOST,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_LAND, 45},
  {OBJ_U6_ACID_SLUG,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_LAND, 50},
  {OBJ_U6_WISP,0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_AIR_LOW, 50},
@@ -43,7 +43,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_CAT,1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, false, MOVETYPE_U6_LAND, 40},
 
  // 4x2
- {OBJ_U6_SEA_SERPENT,2, 2, 1, 0, OBJ_U6_NOTHING, 0, false,false, false, MOVETYPE_U6_WATER, 60},
+ {OBJ_U6_SEA_SERPENT,2, 2, 1, 0, OBJ_U6_NOTHING, 0, false,false, false, MOVETYPE_U6_WATER_HIGH, 60},
  {OBJ_U6_GIANT_RAT,2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, false, MOVETYPE_U6_LAND, 40},
  {OBJ_U6_SHEEP,2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, false, MOVETYPE_U6_LAND, 35},
  {OBJ_U6_DOG,2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, false, MOVETYPE_U6_LAND, 35},
@@ -81,9 +81,9 @@ const U6ActorType u6ActorTypes[] = {
 
  {OBJ_U6_MUSICIAN_PLAYING, 2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_LAND, 3},
  
- {OBJ_U6_SHIP, 1, 2, 2, 8, OBJ_U6_NOTHING, 0, false, false, true, MOVETYPE_U6_WATER, 0},
- {OBJ_U6_SKIFF, 1, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_WATER, 0},
- {OBJ_U6_RAFT, 0, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_WATER, 0}, // FIX might need to fix this
+ {OBJ_U6_SHIP, 1, 2, 2, 8, OBJ_U6_NOTHING, 0, false, false, true, MOVETYPE_U6_WATER_HIGH, 0},
+ {OBJ_U6_SKIFF, 1, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_WATER_LOW, 0},
+ {OBJ_U6_RAFT, 0, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, false, MOVETYPE_U6_WATER_LOW, 0}, // FIX might need to fix this
   
  {OBJ_U6_GIANT_SCORPION, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, true, MOVETYPE_U6_LAND, 30},
  {OBJ_U6_GIANT_ANT, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, true, MOVETYPE_U6_LAND, 30},

@@ -67,6 +67,24 @@ unsigned char *Map::get_map_data(uint8 level)
  return dungeons[level - 1];
 }
 
+Tile *Map::get_tile(uint16 x, uint16 y, uint8 level, bool original_tile)
+{
+ Tile *map_tile;
+ uint8 *ptr;
+ 
+ if(level > 5)
+   return NULL;
+   
+ ptr = get_map_data(level);
+ 
+ if(original_tile)
+    map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
+ else
+    map_tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
+ 
+ return map_tile;
+}
+
 uint16 Map::get_width(uint8 level)
 {
  if(level == 0)

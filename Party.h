@@ -112,6 +112,11 @@ class Party {
  
  void reform_party();
  void follow();
+ bool has_obj(uint16 obj_n, uint8 quality);
+
+ void show();
+ void hide();
+ 
  bool move(uint16 dx, uint16 dy, uint8 dz);
 
  void walk(MapCoord *walkto, MapCoord *teleport);

@@ -312,6 +312,10 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
  Obj *obj;
  Tile *tile;
 
+ obj = get_objBasedAt(x,y,level,top_obj);
+ if(obj != NULL)
+   return obj;
+
  obj = get_objBasedAt(x+1,y+1,level,top_obj);
  if(obj != NULL)
   {
@@ -336,9 +340,6 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
      return obj;
   }
 
- obj = get_objBasedAt(x,y,level,top_obj);
- if(obj != NULL)
-   return obj;
 
  return NULL;
 }
@@ -890,6 +891,9 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
    printf("at %x, %x, %x",obj->x, obj->y, obj->z);
    
  printf("\n");
+ 
+ print_indent(indent);
+ printf("frame_n: %d\n",obj->frame_n);
 
  print_indent(indent);
  printf("Status: ");

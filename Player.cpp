@@ -55,6 +55,7 @@ bool Player::init(ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
 void Player::set_actor(Actor *new_actor)
 {
  actor = new_actor;
+ map_window->centerMapOnActor(actor);
 }
 
 Actor *Player::get_actor()
@@ -130,7 +131,7 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
     return;
    if(actor->move(new_x, new_y, new_level))
    {
-//    map_window->centerMapOnActor(actor);
+    //map_window->centerMapOnActor(actor);
 // center everyone first, so we don't try to path-find between planes if blocked
     party->move(new_x, new_y, new_level);
     party->follow();

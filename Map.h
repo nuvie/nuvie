@@ -35,6 +35,7 @@
 class ActorManager;
 class Actor;
 
+#define MAP_ORIGINAL_TILE true
 
 /* Map Location with 2D X,Y coordinates and plane (map number)
  */
@@ -86,6 +87,7 @@ class Map
 
  bool loadMap(TileManager *tm, ObjManager *om);
  unsigned char *get_map_data(uint8 level);
+ Tile *get_tile(uint16 x, uint16 y, uint8 level, bool original_tile=false);
  uint16 get_width(uint8 level);
  bool is_passable(uint16 x, uint16 y, uint8 level);
  bool is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects=false);

@@ -137,6 +137,7 @@
 #define OBJ_U6_PICTURE             143
 #define OBJ_U6_CANDELABRA          145
 #define OBJ_U6_PERSON_SLEEPING     146
+#define OBJ_U6_SHIP_DEED           149
 #define OBJ_U6_BOOK                151
 #define OBJ_U6_SCROLL              152
 
@@ -259,6 +260,7 @@
 #define OBJ_U6_RAFT                415
 
 #define OBJ_U6_RAFT                415
+#define OBJ_U6_NO_VEHICLE          416
 #define OBJ_U6_QUEST_GATE          416
 #define OBJ_U6_DRAGON_EGG          417
 
@@ -331,6 +333,9 @@ class U6UseCode: public UseCode
  bool use_vortex_cube(Obj *obj, uint8 ev);
  bool use_key(Obj *obj, uint8 ev);
  bool use_boat(Obj *obj, uint8 ev);
+ inline Obj *use_boat_find_center(Obj *obj);
+ inline bool use_boat_find_land(uint16 *x, uint16 *y, uint8 *z);
+ bool use_horse(Obj *obj, uint8 ev);
  bool use_potion(Obj *obj, uint8 ev);
  bool look_mirror(Obj *obj, uint8 ev);
  bool look_sign(Obj *obj, uint8 ev);

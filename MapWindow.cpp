@@ -336,7 +336,7 @@ void MapWindow::drawActors()
          {
           if(actor->y >= cur_y && actor->y < cur_y + win_height)
             {
-             if(tmp_buf[(actor->y - cur_y + 1) * (win_width+2) + (actor->x - cur_x + 1)] != 0)
+             if(tmp_buf[(actor->y - cur_y + 1) * (win_width+2) + (actor->x - cur_x + 1)] != 0 && actor->is_visible())
                {
                 tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
                 //FIX need a function for multi-tile actors.

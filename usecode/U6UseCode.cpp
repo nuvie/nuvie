@@ -24,6 +24,8 @@
 #include <cassert>
 #include "Game.h"
 #include "ViewManager.h"
+#include "ActorManager.h"
+#include "Party.h"
 #include "GameClock.h"
 #include "Book.h"
 #include "U6UseCode.h"
@@ -137,11 +139,14 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_HONEY,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
 
-//    add_usecode(OBJ_U6_SHIP, 255,0,USE_EVENT_USE,&U6UseCode::use_boat);
-//    add_usecode(OBJ_U6_SKIFF,255,0,USE_EVENT_USE,&U6UseCode::use_boat);
+    add_usecode(OBJ_U6_HORSE, 255,0,USE_EVENT_USE,&U6UseCode::use_horse);
+    add_usecode(OBJ_U6_HORSE_WITH_RIDER, 255,0,USE_EVENT_USE,&U6UseCode::use_horse);
+    
+    add_usecode(OBJ_U6_SHIP, 255,0,USE_EVENT_USE,&U6UseCode::use_boat);
+    add_usecode(OBJ_U6_SKIFF,255,0,USE_EVENT_USE,&U6UseCode::use_boat);
     add_usecode(OBJ_U6_RAFT,   0,0,USE_EVENT_USE,&U6UseCode::use_boat);
 //    add_usecode(OBJ_U6_BALLOON_BASKET,0,0,USE_EVENT_USE,&U6UseCode::use_balloon);
-
+    
     add_usecode(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
 
     add_usecode(OBJ_U6_VORTEX_CUBE,0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube);
@@ -789,6 +794,7 @@ bool U6UseCode::use_potion(Obj *obj, uint8 ev)
                     scroll->display_string("No effect\n");
             }
             obj_manager->remove_obj(obj);
+            delete obj;
         }
         return(true);
     }
@@ -837,12 +843,180 @@ bool U6UseCode::use_key(Obj *obj, uint8 ev)
  */
 bool U6UseCode::use_boat(Obj *obj, uint8 ev)
 {
+ ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+ Party *party = Game::get_game()->get_party();
+ Actor *ship_actor;
+ uint16 lx, ly;
+ uint8 lz;
+ 
     if(ev != USE_EVENT_USE)
         return(false);
-    scroll->display_string("USE BOAT!\n");
+
+ ship_actor = actor_manager->get_actor(0); //get the vehicle actor.
+
+ if(obj->obj_n == OBJ_U6_SHIP) //If we are using a ship we need to use its center object.
+   {
+    obj = use_boat_find_center(obj); //return the center object
+    if(obj == NULL)
+     {
+      scroll->display_string("\nShip not usable\n");
+      return false;
+     }
+   }
+ 
+ // get out of boat
+ if(ship_actor->obj_n == obj->obj_n && ship_actor->is_at_position(obj)) 
+  {
+   ship_actor->get_location(&lx,&ly,&lz); //retrieve actor position for land check.
+   
+   if(use_boat_find_land(&lx,&ly,&lz)) //we must be next to land to disembark
+     {
+      Obj *obj = ship_actor->make_obj();
+
+      party->show();
+      ship_actor->hide();
+      player->set_actor(party->get_actor(0));
+      player->move(lx,ly,lz);
+      ship_actor->obj_n = OBJ_U6_NO_VEHICLE;
+      ship_actor->frame_n = 0;
+      ship_actor->init();
+      ship_actor->move(0,0,0,ACTOR_FORCE_MOVE);
+      obj_manager->add_obj(obj);
+     }
+   else
+     {
+      scroll->display_string("\nOnly next to land.\n");
+      return false;
+     }
+     
+   return true;
+  }
+  
+ 
+ if(obj->quality != 0)    //deed check
+   {
+    if(party->has_obj(OBJ_U6_SHIP_DEED, obj->quality) == false)
+      {
+       scroll->display_string("\nA deed is required.\n");
+       return false;
+      }
+   }
+    
+    ship_actor->init_from_obj(obj);
+    ship_actor->show(); 
+    obj_manager->remove_obj(obj);
+    delete obj;
+    
+    party->hide();
+    player->set_actor(ship_actor);
+    
     return(true);
 }
 
+inline Obj *U6UseCode::use_boat_find_center(Obj *obj)
+{
+ Obj *new_obj;
+ uint16 x, y;
+ uint8 ship_direction = (obj->frame_n % 8) / 2; //find the direction based on the frame_n 
+ 
+ if(obj->frame_n >= 8 && obj->frame_n < 16) //center obj
+  return obj;
+
+ x = obj->x;
+ y = obj->y;
+ 
+ if(obj->frame_n < 8) //front obj
+   {
+    switch(ship_direction)
+      {
+       case ACTOR_DIR_U : y++; break;
+       case ACTOR_DIR_R : x--; break;
+       case ACTOR_DIR_D : y--; break;
+       case ACTOR_DIR_L : x++; break;
+      } 
+   }
+ else
+   {
+    if(obj->frame_n >= 16 && obj->frame_n < 24) //back obj
+      {
+       switch(ship_direction)
+         {
+          case ACTOR_DIR_U : y--; break;
+          case ACTOR_DIR_R : x++; break;
+          case ACTOR_DIR_D : y++; break;
+          case ACTOR_DIR_L : x--; break;
+         } 
+      }
+   }
+
+ new_obj = obj_manager->get_obj(x,y,obj->z);
+ 
+ if(new_obj != NULL && new_obj->obj_n == OBJ_U6_SHIP)
+   return new_obj;
+
+ return NULL;
+}
+
+inline bool U6UseCode::use_boat_find_land(uint16 *x, uint16 *y, uint8 *z)
+{
+ if(map->is_passable(*x, *y-1, *z))  //UP
+   {
+    *y = *y - 1;
+    return true;
+   }
+ if(map->is_passable(*x+1, *y, *z)) //RIGHT
+   {
+    *x = *x + 1;
+    return true;
+   }
+ if(map->is_passable(*x, *y+1, *z)) //DOWN
+   {
+    *y = *y + 1;
+    return true;
+   }
+ if(map->is_passable(*x-1, *y, *z)) //LEFT
+   {
+    *x = *x - 1;
+    return true;
+   }
+
+ return false;
+}
+
+bool U6UseCode::use_horse(Obj *obj, uint8 ev)
+{
+ ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+ Actor *actor, *player_actor;
+ Obj *actor_obj;
+ 
+ if(ev != USE_EVENT_USE)
+    return(false);
+ 
+ actor = actor_manager->get_actor(obj->quality);
+ if(!actor)
+   return false;
+
+ actor_obj = actor->make_obj();
+ actor->clear();
+ 
+ player_actor = player->get_actor();
+
+ //FIX we need to save the horse and add it back to the map when dismounting
+ // this will be handled by the new actor methods in actor_manager.
+ if(player_actor->obj_n == OBJ_U6_HORSE_WITH_RIDER) 
+   {
+    actor_obj->obj_n = player_actor->base_obj_n; //revert to normal old actor type
+    actor_obj->frame_n = player_actor->old_frame_n;
+   }
+ else
+    actor_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER; // mount up.
+    
+ player_actor->move(actor_obj->x,actor_obj->y,actor_obj->z); //this will center the map window
+ player_actor->init_from_obj(actor_obj);
+ delete actor_obj;
+ 
+ return true;
+}
 
 /* Event: Pass
  * True: If Quest Flag is true, allow normal move.

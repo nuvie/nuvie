@@ -28,6 +28,7 @@
 #include "Configuration.h"
 #include "Game.h"
 #include "MapWindow.h"
+#include "Map.h"
 #include "Player.h"
 #include "Book.h"
 #include "PortraitView.h"
@@ -218,7 +219,7 @@ bool Event::handleEvent(const SDL_Event *event)
                                  }
                                else if(mode == USE_MODE)
                                  {
-                                  mode = MOVE_MODE;
+                                  //mode = MOVE_MODE;
                                   use(0,0);
                                  }
                                else if(mode == GET_MODE)
@@ -461,15 +462,22 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 
 bool Event::use(sint16 rel_x, sint16 rel_y)
 {
- Obj *obj;
+ Actor *actor = NULL;
+ Obj *obj = NULL;
+ Map *map = Game::get_game()->get_game_map();
  uint16 x,y;
  uint8 level;
 
  player->get_location(&x,&y,&level);
-
-
- obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
-
+   
+ actor = map->get_actor((uint16)(x+rel_x), (uint16)(y+rel_y), level);
+ if(actor && actor->is_visible())
+   {
+    obj = actor->make_obj();
+   }
+ else
+    obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
+   
  if(obj)
  {
   scroll->display_string(obj_manager->look_obj(obj));
@@ -494,6 +502,10 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
      mode = MOVE_MODE;
  }
  map_window->updateBlacking();
+ 
+ if(actor) //we were using an actor so free the temp Obj
+  delete obj;
+
  return true;
 }
 
