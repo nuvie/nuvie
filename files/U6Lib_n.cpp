@@ -37,6 +37,7 @@ U6Lib_n::U6Lib_n()
  num_offsets = 0;
  items = NULL;
  data = NULL;
+ del_data = false;
 }
 
 
@@ -57,6 +58,8 @@ bool U6Lib_n::open(std::string &filename, uint8 size, uint8 type)
     delete file;
     return false;
    }
+
+ del_data = true;
 
  return open((NuvieIO *)file, size, type);
 }
@@ -86,6 +89,12 @@ void U6Lib_n::close()
 
  if(data != NULL)
    data->close();
+
+ if (del_data)
+    delete data;
+
+ data = NULL;
+ del_data = false;
 
  num_offsets = 0;
 

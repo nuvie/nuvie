@@ -65,6 +65,8 @@ uint32 Cursor::load_all(std::string filename)
         return(0);
     // FIXME: u6lib_n assumes u6 libs have no filesize header
     iobuf.open(slib32_data, slib32_len);
+    free(slib32_data);
+
     if(!pointer_list.open(&iobuf, 4, NUVIE_GAME_MD))
         return(0);
 
@@ -74,14 +76,21 @@ uint32 Cursor::load_all(std::string filename)
     {
         MousePointer *ptr = NULL;
         U6Shape *shape = new U6Shape;
-        if(!shape->load(pointer_list.get_item(num_read)))
-            break;
+        unsigned char *data = pointer_list.get_item(num_read);
+        if(!shape->load(data))
+        {
+           free(data);
+           delete shape;
+           break;
+        }
         ptr = new MousePointer; // set from shape data
         shape->get_hot_point(&(ptr->point_x), &(ptr->point_y));
         shape->get_size(&(ptr->w), &(ptr->h));
         ptr->shapedat = (unsigned char *)malloc(ptr->w * ptr->h);
         memcpy(ptr->shapedat, shape->get_data(), ptr->w * ptr->h);
         cursors[num_read++] = ptr;
+
+        free(data);
         delete shape;
     }
     pointer_list.close();

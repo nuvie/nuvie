@@ -50,6 +50,7 @@ class U6Lib_n
  uint32 num_offsets; // number of items, size of lists
  U6LibItem *items;
  NuvieIO *data;
+ bool del_data;
 
 public:
    U6Lib_n();
