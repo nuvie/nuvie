@@ -92,7 +92,7 @@ const char *Converse::npc_name(uint8 num)
     unsigned char *s_pt;
     if(num == 0 || num == 1)
         return(player->get_name());
-
+    // load script if not for current NPC
     if(num != npc_num)
     {
         temp_script = read_script(num);
@@ -100,11 +100,11 @@ const char *Converse::npc_name(uint8 num)
     }
     else
         s_pt = script.buf;
-
+    // read name up to LOOK section, convert "_" to "."
     for(c = 0; s_pt[c+2] != 0xf1 && s_pt[c+2] != 0xf3 && c <= 15; c++)
-        aname[c] = s_pt[c+2];
+        aname[c] = s_pt[c+2] != '_' ? s_pt[c+2] : '.';
     aname[c <= 15 ? c : 15] = '\0';
-
+    // unload script if not for current NPC
     if(s_pt != script.buf)
         free(s_pt);
     return(aname);
@@ -312,6 +312,7 @@ bool Converse::do_cmd()
     bool donext = true, ifcomp = false;
     Actor *cnpc = 0;
     Party *group = 0;
+    Uint32 res = 0; // some operation result
 #ifdef CONVERSE_DEBUG
 fprintf(stderr, "Converse: %04x: cmd=0x%02x\n", script_pt-script.buf, cmd);
 if(!args.empty() && !args[0].empty())
@@ -410,16 +411,12 @@ if(!args.empty() && !args[0].empty())
             test_msg("-let X-");
             break;
         case U6OP_ASSIGN: // 1 arg with assignment values/operations
-            if(declared < 0 || declared > CONV_VAR__LAST_)
-            {
-                print("\nError: Unknown variable\n");
-                break;
-            }
+        case U6OP_YASSIGN:
             // simple assignment
             if(val_count(0) == 1)
             {
                 test_msg("- = X-");
-                heap[declared].val = get_val(0, 0);
+                res = get_val(0, 0);
             }
             // assignment of expression with two values and an operation
             else if(val_count(0) == 3)
@@ -428,30 +425,33 @@ if(!args.empty() && !args[0].empty())
                 {
                     case 0x90: // val1 + val2
                         test_msg("- = X + Y-");
-                        heap[declared].val = get_val(0, 0) + get_val(0, 1);
+                        res = get_val(0, 0) + get_val(0, 1);
                         break;
                     case 0x91: // val1 - val2
                         test_msg("- = X - Y-");
-                        heap[declared].val = get_val(0, 0) - get_val(0, 1);
+                        res = get_val(0, 0) - get_val(0, 1);
                         break;
                     case 0xa0: // random number between val1 and val2 inclusive
                         test_msg("- = rnd(X to Y)-");
-                        heap[declared].val = rnd(get_val(0, 0), get_val(0, 1));
+                        res = rnd(get_val(0, 0), get_val(0, 1));
                         break;
                     case 0xab: // flag val2 of npc val1
                         test_msg("- = npc(flag)-");
                         cnpc = actors->get_actor(get_val(0, 0));
                         if(cnpc)
-                            heap[declared].val =
-                                      (cnpc->get_flags() & (1 << get_val(0, 1)))
-                                      ? 1 : 0;
+                            res = (cnpc->get_flags() & (1 << get_val(0, 1)))
+                                  ? 1 : 0;
                         else
                         {
                             print("\nError: No such NPC\n");
-                            heap[declared].val = 0;
+                            res = 0;
                         }
                         break;
                     case 0xdd: // id of party member val1(0=leader), val2=??
+                        test_msg("- = NPC(PARTYIDX)??-");
+                        cnpc = player->get_party()->get_actor(get_val(0, 0));
+                        res = cnpc ? cnpc->get_actor_num() : 0;
+                        break;
                     default:
                         print("\nError: Unknown assignment\n");
                         break;
@@ -459,33 +459,16 @@ if(!args.empty() && !args[0].empty())
             }
             else
                 print("\nAssignment error\n");
-            declared = -1;
-            break;
-        case U6OP_YASSIGN: // 1 arg with npc number and optional operation(s)
-            // simple assignment
-            if(val_count(0) == 1)
+            if(cmd == U6OP_ASSIGN)
             {
-                test_msg("-$Y = N-");
-                ystr = npc_name(npc_num);
-            }
-            // assignment of expression with two values and an operation
-            else if(val_count(0) == 3)
-            {
-                switch(get_val(0, -1))
-                {
-                    case 0xdd: // party-num(from 0) to npcnum, or 0
-                               // val2 does what?? (val1 is literal without)
-                        test_msg("-$Y = NPC(PARTYIDX)??-");
-                        cnpc = player->get_party()->get_actor(get_val(0, 0));
-                        ystr = npc_name(cnpc ? cnpc->get_actor_num() : 0);
-                        break;
-                    default:
-                        print("\nError: Unknown assignment\n");
-                        break;
-                }
+                if(declared >= 0 && declared <= CONV_VAR__LAST_)
+                    heap[declared].val = res;
+                else
+                    print("\nError: Unknown variable\n");
             }
             else
-                print("\nYAssignment error\n");
+                ystr = npc_name(res);
+            declared = -1;
             break;
         case U6OP_ARGSTOP:
             test_msg("-EOA-");
