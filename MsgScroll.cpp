@@ -164,12 +164,17 @@ void MsgScroll::set_keyword_highlight(bool state)
  keyword_highlight = state;
 }
  
-void MsgScroll::set_input_mode(bool state)
+void MsgScroll::set_input_mode(bool state, const char *allowed)
 {
  input_mode = state;
+ permit_input = NULL;
 
  if(input_mode == true)
+ {
    input_buf_pos = 0;
+   if(allowed && strlen(allowed))
+     permit_input = allowed;
+ }
 }
 
 bool MsgScroll::set_prompt(char *new_prompt)
@@ -208,10 +213,10 @@ bool MsgScroll::handle_input(SDLKey *input)
       }
     switch(*input)
     {
-        case SDLK_ESCAPE:
-        case SDLK_RETURN: if(input_mode)
+        case SDLK_ESCAPE: if(permit_input == NULL)
+                           set_input_mode(true); // reset input buffer
+        case SDLK_RETURN: if(input_mode && permit_input == NULL)
                             set_input_mode(false);
-
                           return(true);
         case SDLK_BACKSPACE :
                             if(input_mode)
@@ -220,7 +225,13 @@ bool MsgScroll::handle_input(SDLKey *input)
         default: // alphanumeric characters
                  if(input_mode && isascii(*input)) //(isalnum(*input) || *input == ' '))
                   {
-                   input_buf_add_char((char)*input);
+                   if(permit_input == NULL)
+                    input_buf_add_char((char)*input);
+                   else if(strchr(permit_input, (char)*input))
+                   {
+                    input_buf_add_char(toupper((char)*input));
+                    set_input_mode(false);
+                   }
                   }
             break;
     }
@@ -449,6 +460,7 @@ bool MsgScroll::input_buf_remove_char()
  
  return true;
 }
+
 
 char *MsgScroll::get_input()
 {

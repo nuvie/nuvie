@@ -1,4 +1,9 @@
 2003-04-20  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Converse: new commands handled, and printed text expansion
+	* MsgScroll: set_input_mode can accept a list of characters, and will
+	only allow the input of those characters
+
+2003-04-20  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Converse instance is now created with pointer to an ActorManager.
 	* NPC flags added (initialized but not loaded yet in ActorManager)
 

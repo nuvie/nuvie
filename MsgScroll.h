@@ -42,6 +42,7 @@ class MsgScroll
  Text *text;
  bool keyword_highlight;
  bool input_mode;
+ const char *permit_input; // character list, or 0 = any string
  bool talking;
  char *prompt;
  uint16 prompt_buf_len;
@@ -79,7 +80,7 @@ class MsgScroll
  
  void set_keyword_highlight(bool state);
  
- void set_input_mode(bool state);
+ void set_input_mode(bool state, const char *allowed = NULL);
  void set_talking(bool state) { talking = state; }
  bool set_prompt(char *new_prompt);
  
@@ -105,7 +106,6 @@ class MsgScroll
  
  char *get_input();
  char *peek_at_input();
-
 };
 
 

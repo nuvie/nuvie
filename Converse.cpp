@@ -20,16 +20,21 @@
 #include "U6Lzw.h"
 #include "Converse.h"
 
+#ifdef CONVERSE_DEBUG
+# define test_msg(S) scroll->display_string(S)
+#else
+# define test_msg(S) scroll->display_string("")
+#endif
+
 using std::cerr;
 using std::cin;
 using std::endl;
-// temporary variable to keep script from getting into infinite loop
-static uint8 jump_count;
 
 // TODO: work flawlessly with every u6 npc
-//       uniform text output
+//       uniform (better) text output
 //       show/remove portraits
-//       get/set flags
+//       fix overflow at end of Chuckles(10) script
+
 
 /* Load `convfilename' as src.
  */
@@ -115,46 +120,59 @@ void Converse::seek_converse()
  */
 uint32 Converse::get_val(uint8 arg_i, sint8 val_i)
 {
-	if(val_i >= 0)
+    if(val_i >= 0)
         return(args[arg_i][val_i].valt != 0xb2
-			   ? args[arg_i][val_i].val : get_var(args[arg_i][val_i].val));
-	else // -1 = last value in argument
-	{
+	       ? args[arg_i][val_i].val : get_var(args[arg_i][val_i].val));
+    else // -1 = last value in argument
+    {
         if(args[arg_i][args[arg_i].size()-1].valt != 0xb2)
             return(args[arg_i][args[arg_i].size()-1].val);
         else
             return(get_var(args[arg_i][args[arg_i].size()-1].val));
-	}
+    }
 }
 
 
 /* Handle script text. Evaluate as output text, get as keywords, or skip.
  */
-void Converse::collect_text(uint8 text_op = CONV_TEXTOP_PRINT)
+void Converse::collect_text(bool eval = false)
 {
-// loop to print len
-// when symbol is encountered, collect up to c, update p_strt
-//  parse symbol
-//  collect evaluated string
-// if p_strt is before c, collect up to c
-//    int c = 0;
-//    unsigned char *p_strt = script_pt;
-//    while(c < print_len)
-//    {
-//    }
-    int c;
-	output.resize(0);
-    for(c = 0; !check_overflow(c) && is_print(peek(c)); c++);
-    output.append((const char *)script_pt, (unsigned int)c);
-    skip(c);
+    unsigned int c;
+    char symbol[3] = { '\0', '\0', '\0' };
+    const char *p_strt = (const char *)script_pt;
 
-	switch(text_op)
-	{
-		case CONV_TEXTOP_PRINT:
-			break;
-		case CONV_TEXTOP_KEYWORD:
-			break;
-	}
+    output.resize(0);
+    if(!eval)
+    {
+        for(c = 0; !check_overflow(c) && is_print(peek(c)); c++);
+        output.append((const char *)script_pt, (unsigned int)c);
+    }
+    else
+        for(c = 0; !check_overflow(c) && is_print(peek(c)); c++)
+        {
+            if(peek(c) == '$' || peek(c) == '#')
+            {
+                p_strt = (const char *)&script_pt[c];
+                // copy symbol
+                strncpy(symbol, p_strt, 2); c++; /* loop will add another */
+                // evaluate
+                if(!strcmp(symbol, "$G")) // gender title
+                    output.append("doctor");
+                else if(!strcmp(symbol, "$N")) // npc name
+                    output.append(".o.HoJu.o.");
+                else if(!strcmp(symbol, "$P")) // player name
+                    output.append("Nuvie");
+                else if(!strcmp(symbol, "$T")) // time of day
+                    output.append("health and blessings");
+                else if(!strcmp(symbol, "$Z")) // previous input
+                    output.append(input_s);
+                else
+                    output.append(symbol);
+            }
+            else
+                output.push_back((char)peek(c));
+        }
+    skip(c);
 }
 
 
@@ -184,7 +202,7 @@ bool Converse::check_keywords()
             if(l < strlen(cmp_s))
                 cmp_s[l] = '\0';
             // compare
-            if(!strcmp(tok_s, cmp_s))
+            if(!strcasecmp(tok_s, cmp_s))
             {
                 free(cmp_s);
                 free(tok_s);
@@ -206,9 +224,8 @@ bool Converse::check_keywords()
 bool Converse::do_cmd()
 {
     bool donext = true, ifcomp = false;
-	Actor *cnpc = 0;
-	uint8 flagnum = 0, flags = 0x00;
-#if 0
+    Actor *cnpc = 0;
+#ifdef CONVERSE_DEBUG
     fprintf(stderr, "Converse: cmd=0x%02x\n", cmd);
 if(!args.empty() && !args[0].empty())
 {
@@ -227,35 +244,43 @@ if(!args.empty() && !args[0].empty())
         return(donext);
     switch(cmd)
     {
-        case U6OP_IF: // 1 arg, last val is test type
+        case U6OP_IF: // 1 arg, with multiple vals last val is test type
+            // is val "true"?
+            if(val_count(0) == 1)
+            {
+                test_msg("\n-if ?-\n");
+                if(get_val(0, 0))
+                    ifcomp = true;
+            }
+            else
             switch(get_val(0, -1))
             {
                 case 0x84: // val1 < val2
-					scroll->display_string("\n-if ? < ?-\n");
+                    test_msg("\n-if ? < ?-\n");
                     if((val_count(0) > 2) && get_val(0, 0) < get_val(0, 1))
                         ifcomp = true;
                     break;
                 case 0x85: // val1 != val2
-					scroll->display_string("\n-if ? != ?-\n");
+                    test_msg("\n-if ? != ?-\n");
                     if((val_count(0) > 2) && get_val(0, 0) != get_val(0, 1))
                         ifcomp = true;
                     break;
                 case 0x86: // val1 == val2
-					scroll->display_string("\n-if ? == ?-\n");
+                    test_msg("\n-if ? == ?-\n");
                     if((val_count(0) > 2) && get_val(0, 0) == get_val(0, 1))
                         ifcomp = true;
                     break;
                 case 0xab: // is npc(val1) flag(val2) set?
-					scroll->display_string("\n-if npc(flag)-\n");
-					if(val_count(0) > 2 && get_val(0, 1) <= 7)
-					{
-						if(get_val(0, 0) == 0xeb)
-							cnpc = npc;
-						else
-							cnpc = actors->get_actor(get_val(0, 0));
-						if(cnpc->get_flags() & (1 << get_val(0, 1)))
-							ifcomp = true;
-					}
+                    test_msg("\n-if npc(flag)-\n");
+                    if(val_count(0) > 2 && get_val(0, 1) <= 7)
+                    {
+                        if(get_val(0, 0) == 0xeb)
+                            cnpc = npc;
+                        else
+                            cnpc = actors->get_actor(get_val(0, 0));
+                        if(cnpc->get_flags() & (1 << get_val(0, 1)))
+                            ifcomp = true;
+                    }
                     break;
                 case 0xc6: // is val1 # of npc in party?
                     scroll->display_string("\n!:ifinparty\n");
@@ -263,54 +288,112 @@ if(!args.empty() && !args[0].empty())
                 case 0x81: // ??
                 case 0x82: // ??
                 case 0x83: // ??
+                case 0x95: // (?) && (?) ??
                 default:
                     scroll->display_string("\nError: Unknown test\n");
                     break;
             }
             enter_scope(ifcomp ? CONV_SCOPE_IF : CONV_SCOPE_IFELSE);
-            scroll->display_string((char *)(ifcomp ? "-TRUE" : "-FALSE" "-\n"));
+            test_msg((char *)(ifcomp ? "-TRUE-\n" : "-FALSE-\n"));
             break;
         case U6OP_ENDIF:
             break_scope();
             break;
         case U6OP_ELSE:
-            break_scope();
-            enter_scope(CONV_SCOPE_IF);
+            if(current_scope() == CONV_SCOPE_IFELSE)
+            {
+                break_scope();
+                enter_scope(CONV_SCOPE_IF);
+            }
+            else if(current_scope() == CONV_SCOPE_IF)
+            {
+                break_scope();
+                enter_scope(CONV_SCOPE_IFELSE);
+            }
+            break;
+        case U6OP_DECL:
+            declared = get_rval(0, 0);
+            if(declared < 0 || declared > CONV_VAR__LAST_)
+            {
+                scroll->display_string("\nError: Illegal var. num\n");
+                break;
+            }
+            test_msg("\n-let X-\n");
+            break;
+        case U6OP_ASSIGN: // 1 arg with assignment values/operations
+            if(declared < 0 || declared > CONV_VAR__LAST_)
+            {
+                scroll->display_string("\nError: Unknown variable\n");
+                break;
+            }
+            // simple assignment
+            if(val_count(0) == 1)
+            {
+                test_msg("\n-= ?-\n");
+                heap[declared].val = get_val(0, 0);
+            }
+            // assignment of expression with two values and an operation
+            else if(val_count(0) == 3)
+            {
+                switch(get_val(0, -1))
+                {
+                    case 0x90: // val1 + val2
+                        test_msg("\n-= ? + ?-\n");
+                        heap[declared].val = get_val(0, 0) + get_val(0, 1);
+                        break;
+                    case 0x91: // val1 - val2
+                        test_msg("\n-= ? - ?-\n");
+                        heap[declared].val = get_val(0, 0) - get_val(0, 1);
+                        break;
+                    default:
+                        scroll->display_string("\nError: Unk. assign op.\n");
+                        break;
+                }
+            }
+            else
+                scroll->display_string("\nError in assign (>3 vals)\n");
+            declared = -1;
             break;
         case U6OP_ARGSTOP:
-//            std::cerr << "Converse: END-OF-ARGUMENT" << std::endl;
+            test_msg("-EOA-");
             break;
         case U6OP_SETF: // 0,0=npc 1,0=flagnum
-			if(get_val(0, 0) == 0xeb) // "this npc"
-				cnpc = npc;
-			else
-				cnpc = actors->get_actor(get_val(0, 0));
-			cnpc->set_flag(get_val(1, 0));
+            if(get_val(0, 0) == 0xeb) // "this npc"
+                cnpc = npc;
+            else
+                cnpc = actors->get_actor(get_val(0, 0));
+            cnpc->set_flag(get_val(1, 0));
             break;
         case U6OP_CLEARF: // 0,0=npc 1,0=flagnum
-			if(get_val(0, 0) == 0xeb) // "this npc"
-				cnpc = npc;
-			else
-				cnpc = actors->get_actor(get_val(0, 0));
-			cnpc->clear_flag(get_val(1, 0));
+            if(get_val(0, 0) == 0xeb) // "this npc"
+                cnpc = npc;
+            else
+                cnpc = actors->get_actor(get_val(0, 0));
+            cnpc->clear_flag(get_val(1, 0));
             break;
         case U6OP_JUMP:
             seek(get_val(0, 0));
-            if(++jump_count == 5)
-            {
-                fprintf(stderr, "Converse: infinite loop detected!\n");
-                scroll->display_string("\nError\n");
-                stop();
-                donext = false;
-            }
+            break_scope(scope.size());
             break;
         case U6OP_BYE:
             stop();
             donext = false;
             break;
-		case U6OP_PORTRAIT:
-			scroll->display_string("\n!:portrait\n");
-			break;
+        case U6OP_NEW: // 4 args, npc, objnum, qual, quant
+            scroll->display_string("\n!:new obj.\n");
+            break;
+        case U6OP_DELETE: // 4 args, npc, objnum, qual, quant
+            scroll->display_string("\n!:delete obj.\n");
+            break;
+        case U6OP_GIVE: // 4 args, objnum, qual, fromnpc, tonpc
+            scroll->display_string("\n!:give obj.\n");
+            break;
+        case U6OP_WORKTYPE: // 2 args, npc number, new worktype
+            scroll->display_string("\n!:worktype\n");
+            break;
+        case U6OP_PORTRAIT:
+            scroll->display_string("\n!:portrait\n");
+            break;
         case U6OP_WAIT:
             scroll->display_string("*");
             break;
@@ -319,9 +402,21 @@ if(!args.empty() && !args[0].empty())
             keywords.resize(0);
             break_scope(2);
             break;
-        case U6OP_KEYWORD:
-		    keywords.assign(output);
-			output.resize(0);
+        case U6OP_KEYWORD: // end of last answer, start of keyword list
+            if(current_scope() == CONV_SCOPE_ANSWER)
+            {
+                // already answered
+                break_scope();
+                enter_scope(CONV_SCOPE_ENDASK);
+            }
+            else
+            {
+                // not answered yet
+                if(current_scope() != CONV_SCOPE_ASK)
+                    enter_scope(CONV_SCOPE_ASK);
+                keywords.assign(output);
+                output.resize(0);
+            }
             break;
         case U6OP_SIDENT:
 //            std::cerr << "Converse: IDENT section" << std::endl;
@@ -335,15 +430,15 @@ if(!args.empty() && !args[0].empty())
         case U6OP_SCONVERSE:
 //            std::cerr << "Converse: CONVERSE section" << std::endl;
             break;
-        case U6OP_SASK:
+        case U6OP_ASK:
 //            std::cerr << "Converse: ASK section" << std::endl;
             scroll->display_string("\nyou say: ");
             scroll->set_input_mode(true);
-            enter_scope(CONV_SCOPE_ASK);
             wait(); donext = false;
             break;
-        case U6OP_SASKC:
-            scroll->display_string("\n!:askc\n");
+        case U6OP_ASKC:
+            scroll->set_input_mode(true, output.c_str());
+            wait(); donext = false;
             break;
         case U6OP_SANSWER:
 //            std::cerr << "Converse: ANSWER (check KEYWORDS)" << std::endl;
@@ -352,8 +447,18 @@ if(!args.empty() && !args[0].empty())
                 keywords.resize(0);
                 // continue, no skip
                 enter_scope(CONV_SCOPE_ANSWER);
-                jump_count = 0;
             }
+            break;
+        case U6OP_INPUT: // 1 val, variable to store input at
+            declared = get_rval(0, 0);
+            scroll->set_input_mode(true);
+            wait(); donext = false;
+            break;
+        case U6OP_INPUTC: // 1 val, variable to store input at
+            declared = get_rval(0, 0);
+            // FIXME: only allow numeric character 0-9, ENTER, ESCAPE
+            scroll->set_input_mode(true, "0123456789");
+            wait(); donext = false;
             break;
         case 0x00: // incorrectly parsed
             scroll->display_string("\nNull command\n");
@@ -394,21 +499,21 @@ void Converse::collect_args()
         }
 //            std::cerr << "skip, get val" << std::endl;
         skip();
-        if(val == 0xd2)
+        if(val == U6OP_UINT32)
         {
             args[ai].resize(vi + 1);
 			args[ai][vi].valt = 0;
             args[ai][vi++].val = pop4();
 //          std::cerr << "popped 4, next val" << std::endl;
         }
-        else if(val == 0xd3)
+        else if(val == U6OP_UINT8)
         {
             args[ai].resize(vi + 1);
 			args[ai][vi].valt = 0;
             args[ai][vi++].val = pop();
 //			fprintf(stderr, "popped 1 as val: 0x%02x\n", args[ai][vi-1].val);
         }
-        else if(val == 0xd4)
+        else if(val == U6OP_UINT16)
         {
             args[ai].resize(vi + 1);
 			args[ai][vi].valt = 0;
@@ -446,12 +551,16 @@ void Converse::step(Uint32 count)
     {
         if(is_print(peek()))
         {
-            collect_text();
-			if(check_scope())
-			{
-//				fprintf(stderr, "Converse: print\n");
-				print();
-			}
+            if(check_scope())
+            {
+                collect_text(true);
+#ifdef CONVERSE_DEBUG
+                fprintf(stderr, "Converse: print \"%s\"\n", output.c_str());
+#endif
+                print();
+            }
+            else
+                collect_text(false); // save some processing time
             continue;
         }
 
@@ -464,30 +573,33 @@ void Converse::step(Uint32 count)
 
         if(cmd == U6OP_SLOOK || cmd == U6OP_SLOOKB)
             look_offset = (Uint32)(script_pt - 1 - script);
-        if(cmd == U6OP_SASK || cmd == U6OP_SASKC)
+        if(cmd == U6OP_ASK || cmd == U6OP_ASKC)
             getinput_offset = (Uint32)(script_pt - 1 - script);
         // get args
         args.clear(); args.resize(1);
         if(cmd == U6OP_JUMP)
         {
             args[0].resize(1);
-			args[0][0].valt = 0;
+            args[0][0].valt = 0;
             args[0][0].val = pop4();
         }
-		else if(cmd == U6OP_KEYWORD)
-		{
-			collect_text(CONV_TEXTOP_KEYWORD);
-		}
+        else if(cmd == U6OP_KEYWORD)
+	{
+	    collect_text(); // get keyword list
+	}
+        else if(cmd == U6OP_ASKC)
+        {
+            collect_text(); // get characters allowed as input
+        }
         else
             collect_args();
         stepping = do_cmd();
     }
-	if(check_overflow())
-	{
-		scroll->display_string("\n-EOF-\n");
-		stop();
-	}
-    print();
+    if(check_overflow())
+    {
+        scroll->display_string("\n-EOF-\n");
+        stop();
+    }
 }
 
 
@@ -499,7 +611,8 @@ void Converse::stop()
     free(script);
     script_pt = script = 0;
     script_len = 0;
-	heap.clear();
+    heap.clear();
+    declared = -1;
 
     input_s.resize(0); // input_s.erase();
     keywords.resize(0);
@@ -516,10 +629,12 @@ void Converse::stop()
  */
 void Converse::init_variables()
 {
-	heap.resize(CONV_VAR__LAST_ + 1); // FIXME: the U6 max. var num is unknown
-	for(int v = 0; v <= CONV_VAR__LAST_; v++)
-		heap[v].valt = heap[v].val = 0x00;
-	//	heap[CONV_VAR_WORKTYPE].val = npc->get_worktype();
+    heap.resize(CONV_VAR__LAST_ + 1); // FIXME: the U6 max. var num is unknown
+    for(int v = 0; v <= CONV_VAR__LAST_; v++)
+        heap[v].valt = heap[v].val = 0x00;
+    heap[CONV_VAR_SEX].val = 0; // everyone is male for now
+//    heap[CONV_VAR_WORKTYPE].val = npc->get_worktype();
+    heap[CONV_VAR_WORKTYPE].val = 0x20;
 }
 
 
@@ -539,8 +654,8 @@ bool Converse::start(Actor *talkto)
     if(active)
         this->stop();
     script_num = actor_num = talkto->get_actor_num();
-	npc = talkto;
-	init_variables();
+    npc = talkto;
+    init_variables();
     set_conv(script_num);
     undec_script_len = src->get_item_size(script_num);
     if(undec_script_len > 4)
@@ -569,7 +684,6 @@ bool Converse::start(Actor *talkto)
     {
         std::cerr << "Converse: begin" << std::endl;
         active = true;
-        jump_count = 0; // FIXME: tmp var
         seek(0);
         return(true);
     }
@@ -597,10 +711,15 @@ void Converse::continue_script()
                 input_s.assign("bye");
             else if(input_s == "look")
             {
-                break_scope(); // not part of ASK block
                 seek(look_offset);
-                step(2); // "look" marker & text
+                step(2); // "look" marker & text, another FIXME: look section can have many statements
                 seek(getinput_offset);
+            }
+            // assign value to declared input variable
+            if(declared >= 0 && declared <= CONV_VAR__LAST_)
+            {
+                heap[declared].val = strtol(input_s.c_str(), NULL, 10);
+                declared = -1;
             }
             unwait();
         }

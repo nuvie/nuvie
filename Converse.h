@@ -27,8 +27,9 @@
 #include "Configuration.h"
 #include "MsgScroll.h"
 
-enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
+//#define CONVERSE_DEBUG
 
+enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
 /* Control codes for U6; as far as I know work with the other games too... */
 #define U6OP_IF 0xa1
@@ -36,11 +37,17 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_ELSE 0xa3
 #define U6OP_SETF 0xa4 // set flag
 #define U6OP_CLEARF 0xa5 // clear flag
+#define U6OP_DECL 0xa6 // declare variable, to be initialized with ASSIGN
 #define U6OP_ARGSTOP 0xa7 // optional argument terminator
+#define U6OP_ASSIGN 0xa8 // assign value(s) with optional math to declared var.
 #define U6OP_JUMP 0xb0 // go to location (absolute, from start of script)
 #define U6OP_BYE 0xb6 // end conversation
+#define U6OP_NEW 0xb9 // new object, place in an npc's inventory
+#define U6OP_DELETE 0xba // delete an object
 #define U6OP_PORTRAIT 0xbf // show portrait
+#define U6OP_GIVE 0xc9 // transfer object from one npc inventory to another
 #define U6OP_WAIT 0xcb // insert page-break/wait for input to continue
+#define U6OP_WORKTYPE 0xcd // set worktype of npc
 #define U6OP_UINT8 0xd3
 #define U6OP_UINT16 0xd4
 #define U6OP_UINT32 0xd2
@@ -51,18 +58,21 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_SLOOKB 0xf3
 #define U6OP_SCONVERSE 0xf2 // start of main conversation section
 #define U6OP_SANSWER 0xf6 // start of response
-#define U6OP_SASK 0xf7 // get input string and choose response
-#define U6OP_SASKC 0xf8 // get one character and choose response
+#define U6OP_ASK 0xf7 // get input string
+#define U6OP_ASKC 0xf8 // get one character
+#define U6OP_INPUT 0xfb // get number, store in variable as integer
+#define U6OP_INPUTC 0xfc // get one character 0-9, store in variable as integer
 
 #define CONV_TEXTOP_PRINT 0
 #define CONV_TEXTOP_KEYWORD 1
 #define CONV_TEXTOP_LOOK 2
 
 #define CONV_SCOPE_MAIN 0
-#define CONV_SCOPE_ASK 1 // break at endask
+#define CONV_SCOPE_ASK 1 // break at keywords, answer, endask
 #define CONV_SCOPE_ANSWER 2 // break at keywords or endask
 #define CONV_SCOPE_IF 3 // at else change to endif, at endif break
 #define CONV_SCOPE_IFELSE 4 // at else change to if, at endif break
+#define CONV_SCOPE_ENDASK 5 // break at end-of-ask
 
 #define CONV_VAR_SEX 0x10 // sex of npc: male=0 female=1
 #define CONV_VAR_WORKTYPE 0x20 // current activity of npc, from schedule
@@ -92,7 +102,8 @@ class Converse
     bool active; // running npc script? (paused or unpaused)
     bool is_waiting; // paused, waiting for user input?
     string output; // where text goes to be printed
-	vector<converse_arg> heap; // random-access variable data
+    vector<converse_arg> heap; // random-access variable data
+    sint16 declared; // declared variable number, target of next assignment
 
     // statement parameters
     uint32 cmd; // previously read command code
@@ -123,8 +134,18 @@ class Converse
     bool do_cmd(); // do cmd with args and clear cmd and args
 	// handling of the argument list
     void collect_args();
-    void collect_text(uint8 text_op);
-	uint32 get_val(uint8 arg_i, sint8 val_i);
+    void collect_text(bool eval);
+    uint32 get_val(uint8 arg_i, sint8 val_i);
+    /* Returns requested value from the argument list. The actual reference
+     * number is returned in the case of a variable, not the stored value.
+     */
+    uint32 get_rval(uint8 arg_i, sint8 val_i)
+    {
+        if(val_i >= 0)
+            return(args[arg_i][val_i].val);
+        else // -1 = last value in argument
+            return(args[arg_i][args[arg_i].size()-1].val);
+    }
     uint8 val_count(uint8 arg_i) { return(args[arg_i].size()); }
 
     /* Seeking methods - update script pointer. */
@@ -197,14 +218,7 @@ class Converse
             return(true);
         return(false);
     }
-#if 0
-    Uint32 get_val(Uint8 argi, Uint vali)
-    {
-//        if(args[argi][vali].valt == 0xb2)
-//            get variable value
-        return(args[argi][vali].val);
-    }
-#endif
+
     bool check_keywords();
     /* Returns true if the current scope permits the current command to execute.
      */
@@ -217,6 +231,11 @@ class Converse
         {
             return(false);
         }
+        if(scope.top() == CONV_SCOPE_ENDASK
+           && (cmd != U6OP_ENDASK))
+        {
+            return(false);
+        }
         if(scope.top() == CONV_SCOPE_IFELSE
            && (cmd != U6OP_ELSE && cmd != U6OP_ENDIF))
         {
@@ -225,13 +244,25 @@ class Converse
 //        if(scope.top() == 
         return(true);
     }
+#ifndef CONVERSE_DEBUG
     void enter_scope(uint8 scopedef) { scope.push(scopedef); }
-	//void enter_scope(uint8 scopedef) { scope.push(scopedef); fprintf(stderr, "Converse: ...enter...\n"); }
     void break_scope(uint8 levels = 1)
-	{ while(levels--) if(!scope.empty()) scope.pop(); else break; }
-    //void break_scope(uint8 levels = 1)
-	//{ while(levels--) if(!scope.empty()) scope.pop(); else break; fprintf(stderr, "Converse: ...leave...\n"); }
-
+    { while(levels--) if(!scope.empty()) scope.pop(); else break; }
+#else
+    void enter_scope(uint8 scopedef) { scope.push(scopedef); fprintf(stderr, "Converse: ...enter %d...\n", scopedef); }
+    void break_scope(uint8 levels = 1)
+    {
+        while(levels--)
+            if(!scope.empty())
+            {
+                fprintf(stderr, "Converse: ...leave %d...\n", scope.top());
+                scope.pop();
+            }
+            else break;
+    }
+#endif
+    uint8 current_scope()
+    { return(!scope.empty() ? scope.top() : CONV_SCOPE_MAIN); }
 public:
     Converse(Configuration *cfg, Converse_interpreter engine_type,
 		     MsgScroll *ioobj, ActorManager *actormgr);
@@ -249,7 +280,11 @@ public:
     void stop();
     void step(Uint32 count = 0);
     /* Send output buffer to message scroller. */
-    void print() { scroll->display_string((char *)output.c_str()); output.resize(0); }
+    void print()
+    {
+        scroll->display_string((char *)output.c_str());
+        output.resize(0);
+    }
     Uint32 print_name();
     /* Set input buffer (replacing what is already there.) */
     void input(const char *new_input)
@@ -257,20 +292,20 @@ public:
         input_s.assign(new_input);
     }
     void continue_script();
-	/* Return value stored at a normal variable. */
-	uint32 get_var(uint8 varnum)
-	{
-		return(varnum <= CONV_VAR__LAST_ ? heap[varnum].val : 0x00);
-	}
-	/* Set the value of a normal variable. */
-	void set_var(uint8 varnum, uint32 val, uint8 valt = 0x00)
-	{
-		if(varnum <= CONV_VAR__LAST_)
-		{
-			heap[varnum].valt = valt;
-			heap[varnum].val = val;
-		}
-	}
+    /* Return value stored at a normal variable. */
+    uint32 get_var(uint8 varnum)
+    {
+        return(varnum <= CONV_VAR__LAST_ ? heap[varnum].val : 0x00);
+    }
+    /* Set the value of a normal variable. */
+    void set_var(uint8 varnum, uint32 val, uint8 valt = 0x00)
+    {
+        if(varnum <= CONV_VAR__LAST_)
+        {
+            heap[varnum].valt = valt;
+            heap[varnum].val = val;
+        }
+    }
 };
 
 
