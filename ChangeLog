@@ -1,3 +1,19 @@
+2004-02-07  Jonathan Wright <nelno at nelno.com>
+    * Lots of little changes for VisualC7 and MSCV 6 build: 
+      - added #pragma warning for forcing value to bool (got this a
+        lot in .NET compiles, but it's only a minor performance warning from
+        mixing bool and int)
+      - Added new include directories for sound and fonts
+      - changed some while (1) to for ( ; ; ) so that some "conditional 
+        expression is constant warnings" go away in MS VC builds.
+      - added assignment operator to ConfigNode to fix warning "assignment
+        operator cound not be generated" in VC 6 and VC 7.
+      - added roundf (float f) functions.  VC 6 and 7 don't define this in
+        math.h (C99 standard only?)
+      - fixed warning for potential use of uninitialized variable (pW) in 
+        U6lzw.cpp (looked to me like this would be a problem with any properly
+        formatted file, though).
+    
 2004-02-07  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* sounds/*: fixed include case and added endlines at end of file
 	* configure.ac: added check for SDL_mixer
