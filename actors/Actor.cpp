@@ -628,6 +628,8 @@ bool Actor::add_readied_object(Obj *obj)
               break;
    }
 
+ obj->status |= 0x18; //set object to readied status
+
  return true;
 }
 

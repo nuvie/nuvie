@@ -89,6 +89,8 @@ nuvie_SOURCES = \
 	views/ViewManager.cpp \
 	views/ViewManager.h \
 \
+	Background.cpp \
+	Background.h \
 	Book.cpp \
 	Book.h \
 	Converse.cpp \

@@ -89,8 +89,11 @@ bool Game::loadGame(Screen *s, uint8 type)
    clock = new GameClock(config);
    clock->init();
  
-   loadBackground();
-
+   //loadBackground();
+   background = new Background(config);
+   background->init();
+   gui->AddWidget(background);
+   
    text = new Text(config);
    text->loadFont();
 
@@ -150,65 +153,10 @@ bool Game::loadGame(Screen *s, uint8 type)
  
  return true;
 }
-
-bool Game::loadBackground()
-{
- std::string filename;
- U6Lib_n file;
- unsigned char *temp_buf;
-  
- switch(game_type)
-   {
-    case NUVIE_GAME_U6 : config_get_path(config,"paper.bmp",filename);
-                         background = (U6Shape *) new U6Bmp();
-                         if(background->load(filename) == false)
-                           return false;
-                         break;
-
-    case NUVIE_GAME_MD : 
-                         background = new U6Shape();
-                         config_get_path(config,"mdscreen.lzc",filename);
-                         file.open(filename,4,game_type);
-                         temp_buf = file.get_item(0);
-                         background->load(temp_buf + 8);
-                         free(temp_buf);
-                         break;
-
-    case NUVIE_GAME_SE : 
-                         background = new U6Shape();
-                         config_get_path(config,"screen.lzc",filename);
-                         file.open(filename,4,game_type);
-                         temp_buf = file.get_item(0);
-                         background->load(temp_buf + 8);
-                         free(temp_buf);
-                         break;
-   }
-
- return true;
-}
-
-void Game::drawBackground()
-{
- unsigned char *data;
- uint16 width, height;
-
- data = background->get_data();
- background->get_size(&width,&height);
-
- //pixels = (unsigned char *)screen->get_pixels();
-
- screen->blit(0, 0, data, 8,  width, height, width,true);
- 
- //memcpy(pixels,data,data_size);
-
- return;
-}
   
 void Game::play()
 {
   bool game_play = true;
-
-  drawBackground();
 
   scroll->display_prompt();
   

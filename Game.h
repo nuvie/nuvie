@@ -48,6 +48,7 @@
 #include "Event.h"
 #include "Portrait.h"
 #include "UseCode.h"
+#include "Background.h"
 
 class Game
 {
@@ -55,7 +56,7 @@ class Game
  static Game *game;
  Configuration *config;
  Screen *screen;
- U6Shape *background;
+ Background *background; 
  GamePalette *palette;
  Text *text;
  TileManager *tile_manager;
@@ -73,6 +74,7 @@ class Game
  GameClock *clock;
  Portrait *portrait;
  UseCode *usecode;
+
  
  Event *event;
  
@@ -85,16 +87,13 @@ class Game
  
  bool loadGame(Screen *screen, uint8 type);
  
- bool loadBackground();
- void drawBackground();
- 
  void play();
 
  /* Pass back instance of Game classes... and why not? */
  static Game *get_game()           { return(game); }
  Configuration *get_config()       { return(config); }
  Screen *get_screen()              { return(screen); }
- U6Shape *get_background()         { return(background); }
+// U6Shape *get_background()         { return(background); }
  GamePalette *get_palette()        { return(palette); }
  Text *get_text()                  { return(text); }
  TileManager *get_tile_manager()   { return(tile_manager); }
