@@ -1,3 +1,7 @@
+2003-10-16  Eric Fry <efry@users.sourceforge.net>
+	* Fixed rendering error with ships.
+	* Fixed player sitting bug.
+
 2003-10-14  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Party members will now walk up and enter skiffs and ships when using.
 	* Blacksmith NPC's can sell you a horse. There is a serious bug here

@@ -204,15 +204,17 @@ void U6Actor::set_direction(uint8 d)
       set_direction_of_surrounding_objs(d);
     else
      {
-      if(actor_type->twitch_rand) //only twitch actors with a non zero twitch_rand.
+      if(can_twitch && actor_type->twitch_rand) //only twitch actors with a non zero twitch_rand.
         twitch_surrounding_objs();
      }
    }
 
  direction = d;
- 
- frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + 
-           (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
+
+ //only change direction frame if the actor can twitch ie isn't sitting or in bed etc.
+ if(can_twitch)
+   frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + 
+             (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
  
 }
 
@@ -252,7 +254,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
    if(actor_type->can_sit)
      {
       Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
-      if(obj && actor_type->can_sit)
+      if(obj)
         {
          if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
            {

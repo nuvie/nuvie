@@ -401,7 +401,7 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
- if(draw_lowertiles == false && tile->flags3 & 0x4) //don't display force lower tiles.
+ if(draw_lowertiles == false && (tile->flags3 & 0x4) && toptile == false) //don't display force lower tiles.
    return;
  
  if(draw_lowertiles == true && !(tile->flags3 & 0x4))

@@ -1676,6 +1676,32 @@
 			settings = {
 			};
 		};
+		07BE4D79053EA33600A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = TimedEvent.cpp;
+			path = ../TimedEvent.cpp;
+			refType = 2;
+		};
+		07BE4D7A053EA33600A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = TimedEvent.h;
+			path = ../TimedEvent.h;
+			refType = 2;
+		};
+		07BE4D7B053EA33600A8000A = {
+			fileRef = 07BE4D79053EA33600A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07BE4D7C053EA33600A8000A = {
+			fileRef = 07BE4D7A053EA33600A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		07C3D1250474C34900A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -2149,6 +2175,8 @@
 				07D14A90044449E400A8000A,
 				07EF5321043137BF00A8000A,
 				07EF5322043137BF00A8000A,
+				07BE4D7A053EA33600A8000A,
+				07BE4D79053EA33600A8000A,
 				0725669904272B7B00A8000A,
 				0725669804272B7B00A8000A,
 				07B4187604640AFB00A8000A,
@@ -2351,6 +2379,7 @@
 				0762A3570506027A00A8000A,
 				07E87A12050E07AF00A8000A,
 				07A5001F052AE88D00A8000A,
+				07BE4D7C053EA33600A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2433,6 +2462,7 @@
 				0762A337050361B500A8000A,
 				0762A33A05036D0E00A8000A,
 				0762A3560506027A00A8000A,
+				07BE4D7B053EA33600A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

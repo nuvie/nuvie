@@ -100,7 +100,7 @@ class Actor
  uint8 direction;
  uint8 walk_frame;
  
- bool can_twitch;
+ bool can_twitch; //FIX should this be called can_move!?
  bool alive;
  bool met_player;
  
