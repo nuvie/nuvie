@@ -23,6 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include "SDL.h"
 
 #include "U6def.h"
 #include "Configuration.h"
@@ -39,7 +40,7 @@ class MsgScroll
  Text *text;
  bool keyword_highlight;
  bool input_mode;
- 
+ bool talking;
  char *prompt;
  uint16 prompt_buf_len;
  
@@ -66,10 +67,11 @@ class MsgScroll
  void set_keyword_highlight(bool state);
  
  void set_input_mode(bool state);
+ void set_talking(bool state) { talking = state; }
  bool set_prompt(char *new_prompt);
  
- char *get_input();
- 
+ bool handle_input(SDLKey *input);
+
  void updateScroll();
  
  void clearCursor(uint16 x, uint16 y);

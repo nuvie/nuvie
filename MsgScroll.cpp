@@ -141,10 +141,25 @@ bool MsgScroll::set_prompt(char *new_prompt)
  return true;
 }
 
-char *MsgScroll::get_input()
+
+/* Take input from the main event handler and do something with it
+ * if necessary.
+ * Returns true if the input was used and false if not.
+ */
+bool MsgScroll::handle_input(SDLKey *input)
 {
- return NULL;
+//    if(!input)
+        return(false);
+    switch(*input)
+    {
+        case SDLK_RETURN: // enter input
+            return(true);
+        default: // alphanumeric characters
+            break;
+    }
+    return(false);
 }
+
 
 void MsgScroll::updateScroll()
 {
