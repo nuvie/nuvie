@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".." /I "../conf" /I "../files" /I "../misc" /I "../screen" /I "../views" /I "../usecode" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".." /I "../actors" /I "../conf" /I "../files" /I "../gui" /I "../misc" /I "../pathfinder" /I "../screen" /I "../views" /I "../usecode" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".." /I "../conf" /I "../files" /I "../misc" /I "../screen" /I "../views" /I "../usecode" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "_STLP_DEBUG" /D "_STLP_USE_NEWALLOC" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".." /I "../actors" /I "../conf" /I "../files" /I "../gui" /I "../misc" /I "../pathfinder" /I "../screen" /I "../views" /I "../usecode" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "_STLP_DEBUG" /D "_STLP_USE_NEWALLOC" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -247,19 +247,11 @@ SOURCE=..\screen\Surface.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Actor.cpp
+SOURCE=..\Background.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Actor.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\ActorManager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\ActorManager.h
+SOURCE=..\Background.h
 # End Source File
 # Begin Source File
 
@@ -427,11 +419,43 @@ SOURCE=.\msvc_kludges.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\views\ActorView.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\ActorView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\DollWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\DollWidget.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\views\InventoryView.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\views\InventoryView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\InventoryWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\InventoryWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\PartyView.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\views\PartyView.h
 # End Source File
 # Begin Source File
 
@@ -492,6 +516,154 @@ SOURCE=..\usecode\UseCode.cpp
 # Begin Source File
 
 SOURCE=..\usecode\UseCode.h
+# End Source File
+# End Group
+# Begin Group "actors files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\actors\Actor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\actors\Actor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\actors\ActorManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\actors\ActorManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\actors\U6Actor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\actors\U6Actor.h
+# End Source File
+# End Group
+# Begin Group "pathfinder files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\pathfinder\AStar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\AStar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\LPath.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\LPath.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\PathFinder.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\PathFinder.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\ZPath.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\ZPath.h
+# End Source File
+# End Group
+# Begin Group "gui files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Gui\GUI.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_area.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_area.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_button.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_DragArea.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_DragManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_DragManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_font.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_font.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_loadimage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_loadimage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_status.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_text.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_text.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_widget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\GUI_widget.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Gui\the_font.h
 # End Source File
 # End Group
 # Begin Source File
