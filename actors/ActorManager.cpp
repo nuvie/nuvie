@@ -152,7 +152,7 @@ bool ActorManager::load(NuvieIO *objlist)
  for(i=0;i < 256; i++)
    {
     actors[i]->status_flags = objlist->read1();
-    actors[i]->alive = (bool)(actors[i]->status_flags & ACTOR_STATUS_DEAD);
+    actors[i]->alive = (bool)!(actors[i]->status_flags & ACTOR_STATUS_DEAD);
     
    }
 

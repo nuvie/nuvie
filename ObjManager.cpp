@@ -353,14 +353,12 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
 
  save_buf->write1(b);
 
- if(is_stackable(obj))
-  {
-   obj->quality = obj->qty >> 8;
-   obj->qty = obj->qty & 0xff;
-  }
+ save_buf->write1((uint8)(obj->qty & 0xff)); //only save the lower byte to disk.
 
- save_buf->write1((uint8)obj->qty);
- save_buf->write1(obj->quality);
+ if(is_stackable(obj))
+   save_buf->write1(obj->qty >> 8);
+ else
+   save_buf->write1(obj->quality);
 
  if(obj->container)
   {

@@ -935,6 +935,19 @@ void Actor::remove_readied_object(uint8 location)
  return;
 }
 
+void Actor::remove_all_readied_objects()
+{
+ uint8 location;
+
+ for(location=0;location<8;location++)
+   {
+    if(readied_objects[location] != NULL)
+      remove_readied_object(location);
+   }
+
+ return;
+}
+
 
 void Actor::inventory_drop_all()
 {
@@ -1306,6 +1319,7 @@ void Actor::die()
 {
     hp = 0;
     alive = false;
+    visible_flag = false;
     status_flags |= ACTOR_STATUS_DEAD;
 }
 

@@ -11,13 +11,14 @@
 				0703C0A8054BE5660003D6CB,
 				0703C0AC054BE5660003D6CB,
 				0703C0EF054BE5660003D6CB,
+				07BBB03B07D88B6700F2792A,
 			);
 			buildRules = (
 			);
 			buildSettings = {
 				CC = "";
 				CPLUSPLUS = "";
-				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" /Users/eric/Library/Frameworks";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_GENERATE_PROFILING_CODE = YES;
@@ -156,6 +157,7 @@
 				07E25F5D06A171EA009E8571,
 				07E2601C06AA5FE3009E8571,
 				07A7120906D897CD00EC7D32,
+				07BBAF1407D8750700F2792A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -708,6 +710,7 @@
 				078B444F0669B9B5000EFE27,
 				07E2601E06AA5FE4009E8571,
 				07A7120806D897CD00EC7D32,
+				07BBAF1307D8750700F2792A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1111,9 +1114,9 @@
 		0703C0EF054BE5660003D6CB = {
 			buildActionMask = 2147483647;
 			files = (
+				07BBAFFB07D8824500F2792A,
+				07BBB00307D8845900F2792A,
 				0703C0F0054BE5660003D6CB,
-				073C469105664B2E003B7A20,
-				076176A505D1029A001B6450,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1983,20 +1986,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		073C469005664B2E003B7A20 = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = SDL.framework;
-			path = "$(HOME)/Library/Frameworks/SDL.framework";
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		073C469105664B2E003B7A20 = {
-			fileRef = 073C469005664B2E003B7A20;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		0740D535042AA97500A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -2309,20 +2298,6 @@
 		};
 		0761767105D100EB001B6450 = {
 			fileRef = 0761766A05D100EB001B6450;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		076176A405D1029A001B6450 = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = SDL_mixer.framework;
-			path = "$(HOME)/Library/Frameworks/SDL_mixer.framework";
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		076176A505D1029A001B6450 = {
-			fileRef = 076176A405D1029A001B6450;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -3264,6 +3239,95 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
+		07BBAF1107D8750700F2792A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandBar.cpp;
+			path = ../CommandBar.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07BBAF1207D8750700F2792A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandBar.h;
+			path = ../CommandBar.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07BBAF1307D8750700F2792A = {
+			fileRef = 07BBAF1107D8750700F2792A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07BBAF1407D8750700F2792A = {
+			fileRef = 07BBAF1207D8750700F2792A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07BBAF9807D8817D00F2792A = {
+			explicitFileType = wrapper.framework;
+			isa = PBXFileReference;
+			name = SDL.framework;
+			path = "/Users/eric/Library/Frameworks/$(LOCAL_LIBRARY_DIR)/Frameworks/SDL.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		07BBAFFA07D8824500F2792A = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = SDL_mixer.framework;
+			path = /Users/eric/Library/Frameworks/SDL_mixer.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		07BBAFFB07D8824500F2792A = {
+			fileRef = 07BBAFFA07D8824500F2792A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07BBB00207D8845900F2792A = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = SDL.framework;
+			path = /Users/eric/Library/Frameworks/SDL.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		07BBB00307D8845900F2792A = {
+			fileRef = 07BBB00207D8845900F2792A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07BBB03B07D88B6700F2792A = {
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				07BBB06107D88C1200F2792A,
+				07BBB06207D88C1200F2792A,
+			);
+			isa = PBXCopyFilesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07BBB06107D88C1200F2792A = {
+			fileRef = 07BBB00207D8845900F2792A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07BBB06207D88C1200F2792A = {
+			fileRef = 07BBAFFA07D8824500F2792A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		07BE4D79053EA33600A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -3635,8 +3699,6 @@
 		1058C7A0FEA54F0111CA2CBB = {
 			children = (
 				1058C7A1FEA54F0111CA2CBB,
-				073C469005664B2E003B7A20,
-				076176A405D1029A001B6450,
 			);
 			isa = PBXGroup;
 			name = "Linked Frameworks";
@@ -3707,6 +3769,7 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				07BBAF9807D8817D00F2792A,
 				080E96DDFE201D6D7F000001,
 				29B97315FDCFA39411CA2CEA,
 				29B97317FDCFA39411CA2CEA,
@@ -3742,6 +3805,8 @@
 				07D6E0F104F89B0300A8000A,
 				07D14A91044449E400A8000A,
 				07D14A90044449E400A8000A,
+				07BBAF1207D8750700F2792A,
+				07BBAF1107D8750700F2792A,
 				0761811505E84B60001B6450,
 				0761811405E84B60001B6450,
 				078CE6670582F64100EC127A,
@@ -3802,6 +3867,8 @@
 		};
 		29B97323FDCFA39411CA2CEA = {
 			children = (
+				07BBB00207D8845900F2792A,
+				07BBAFFA07D8824500F2792A,
 				1058C7A0FEA54F0111CA2CBB,
 				1058C7A2FEA54F0111CA2CBB,
 			);

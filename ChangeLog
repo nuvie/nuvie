@@ -1,3 +1,18 @@
+2005-03-05  Eric Fry <efry at users.sourceforge.net>
+	* Fixed a bug with stackable objects. Objects with qty > 255 would
+	  lose their high byte of data when beeing saved. The correct value
+	  was being saved but it was cutting the qty when returning control
+	  to the player.
+	* Updated the OS X specific SDLMain.m cocoa wrapper.
+	* Updated XCode build environment to include CommandBar.cpp/h
+	  Note! I still need to figure out a good way of referencing the SDL
+	  and SDL_mixer frameworks.
+	* Added Actor::remove_all_readied_objects(). This is used when the
+	  Avatar dies and is ressurected in LB's castle.
+	* Fixed Actor alive variable assignment. It was swapped around.
+	* Added Mac OS X specific README file.
+	* Added Mac OS X specific config file.
+
 2005-03-03  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Actors who are sleeping no longer respond to conversation.
 	  Actors who are immobile (but awake) won't turn to face the player.
