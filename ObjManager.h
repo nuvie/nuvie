@@ -122,6 +122,8 @@ class ObjManager
 
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  bool is_forced_passable(uint16 x, uint16 y, uint8 level);
+ bool is_stackable(Obj *obj);
+ 
  U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);
 
  Tile *get_obj_tile(uint16 obj_n, uint8 frame_n);

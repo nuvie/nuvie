@@ -101,6 +101,9 @@ class U6Actor: public Actor
  protected:
  bool init_ship();
  bool init_splitactor(); //cows, horses etc.
+ bool init_dragon();
+ bool init_hydra();
+
  inline void discover_direction();
  void wt_walk_to_location();
  void wt_walk_straight();
@@ -119,9 +122,12 @@ class U6Actor: public Actor
  inline void set_direction_of_surrounding_objs(uint8 new_direction);
  inline void set_direction_of_surrounding_ship_objs(uint8 new_direction);
  inline void set_direction_of_surrounding_splitactor_objs(uint8 new_direction);
- 
+ inline void set_direction_of_surrounding_dragon_objs(uint8 new_direction);
+
  inline void twitch_surrounding_objs();
  inline void clear_surrounding_objs_list(bool delete_objs=false);
+ inline void init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 actor_obj_n, uint16 obj_frame_n);
+
 };
 
 #endif /* __U6Actor_h__ */

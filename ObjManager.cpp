@@ -290,6 +290,21 @@ bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+bool ObjManager::is_stackable(Obj *obj)
+{
+ Tile *tile;
+
+ if(obj == NULL)
+   return false;
+
+ tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+
+ if(tile_manager->tile_is_stackable(tile->tile_num))
+   return true;
+
+ return false;
+}
+
 //gets the linked list of objects at a perticular location.
 
 U6LList *ObjManager::get_obj_list(uint16 x, uint16 y, uint8 level)

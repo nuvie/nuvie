@@ -64,6 +64,10 @@ bool U6Actor::init()
  switch(obj_n) //gather surrounding objects from map if required
   {
    case OBJ_U6_SHIP : init_ship(); break;
+   
+   case OBJ_U6_HYDRA : init_hydra(); break;
+   
+   case OBJ_U6_DRAGON : init_dragon(); break;
 
    case OBJ_U6_GIANT_SCORPION :
    case OBJ_U6_GIANT_ANT :
@@ -120,7 +124,6 @@ bool U6Actor::init_ship()
 
 bool U6Actor::init_splitactor()
 {
- Obj *obj;
  uint16 obj_x, obj_y;
  
  obj_x = x;
@@ -137,21 +140,66 @@ bool U6Actor::init_splitactor()
    case ACTOR_DIR_L : obj_x = x+1;
                       break;
   }
-  
- obj = obj_manager->get_obj(obj_x,obj_y,z);
- if(obj == NULL || obj->obj_n != obj_n || (obj->quality != 0 && obj->quality != id_n)) // create a new back object
-   {
-    obj = new Obj();
-    obj->x = obj_x;
-    obj->y = obj_y;
-    obj->z = z;
-    obj->obj_n = obj_n;
-    obj->frame_n = frame_n + 8;
-    obj_manager->add_obj(obj);
-   }
+
+ init_surrounding_obj(obj_x, obj_y, z, obj_n, frame_n + 8); // init back object
+ 
+ return true;
+}
+
+bool U6Actor::init_dragon()
+{
+ uint16 head_x, head_y, tail_x, tail_y;
+ uint16 wing1_x, wing1_y, wing2_x, wing2_y;
+ 
+ head_x = tail_x = x;
+ wing1_x = wing2_x = x;
+ head_y = tail_y = y;
+ wing1_y = wing2_y = y;
    
- obj->quality = id_n; //associate actor id with obj.
- surrounding_objects.push_back(obj);
+ switch(direction)
+  {
+   case ACTOR_DIR_U : head_y = y-1;
+                      tail_y = y+1;
+                      wing1_x = x-1;
+                      wing2_x = x+1;
+                      break;
+   case ACTOR_DIR_R : head_x = x+1;
+                      tail_x = x-1;
+                      wing1_y = y-1;
+                      wing2_y = y+1;
+                      break;
+   case ACTOR_DIR_D : head_y = y+1;
+                      tail_y = y-1;
+                      wing1_x = x+1;
+                      wing2_x = x-1;
+                      break;
+   case ACTOR_DIR_L : head_x = x-1;
+                      tail_x = x+1;
+                      wing1_y = y+1;
+                      wing2_y = y-1;
+                      break;
+  }
+  
+ init_surrounding_obj(head_x, head_y, z, obj_n, frame_n + 8);
+ init_surrounding_obj(tail_x, tail_y, z, obj_n, frame_n + 16);
+ init_surrounding_obj(wing1_x, wing1_y, z, obj_n, frame_n + 24);
+ init_surrounding_obj(wing2_x, wing2_y, z, obj_n, frame_n + 32);
+ 
+ return true;
+}
+
+bool U6Actor::init_hydra()
+{
+ // For some reason a Hydra has a different object number for its tenticles. :-(
+ 
+ init_surrounding_obj(x,   y-1, z, OBJ_U6_HYDRA_BODY, frame_n + 388);
+ init_surrounding_obj(x+1, y-1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+4);
+ init_surrounding_obj(x+1, y, z, OBJ_U6_HYDRA_BODY, frame_n + 388+8);
+ init_surrounding_obj(x+1, y+1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+12);
+ init_surrounding_obj(x,   y+1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+16);
+ init_surrounding_obj(x-1, y+1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+20);
+ init_surrounding_obj(x-1, y, z, OBJ_U6_HYDRA_BODY, frame_n + 388+24);
+ init_surrounding_obj(x-1, y-1, z, OBJ_U6_HYDRA_BODY, frame_n + 388+28);
 
  return true;
 }
@@ -710,13 +758,15 @@ inline void U6Actor::set_direction_of_surrounding_objs(uint8 new_direction)
  switch(obj_n)
    {
     case OBJ_U6_SHIP : set_direction_of_surrounding_ship_objs(new_direction); break;
-    
+
     case OBJ_U6_GIANT_SCORPION :
     case OBJ_U6_GIANT_ANT :
     case OBJ_U6_COW :
     case OBJ_U6_ALLIGATOR :
     case OBJ_U6_HORSE :
     case OBJ_U6_HORSE_WITH_RIDER : set_direction_of_surrounding_splitactor_objs(new_direction); break;
+
+	case OBJ_U6_DRAGON : set_direction_of_surrounding_dragon_objs(new_direction); break;
    }
 
  add_surrounding_objs_to_map();
@@ -844,6 +894,76 @@ inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_dire
 
 }
 
+inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_direction)
+{
+ std::list<Obj *>::iterator obj;
+ uint16 pitch = map->get_width(z);
+ uint8 frame_offset =  (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
+ Obj *head, *tail, *wing1, *wing2;
+ 
+ //NOTE! this is dependant on the order the in which the objects are loaded in U6Actor::init_dragon()
+ 
+ obj = surrounding_objects.begin();
+ if(obj == surrounding_objects.end())
+  return;
+ head = *obj;
+ head->frame_n =  8 + frame_offset;
+ head->x = x;
+ head->y = y;
+ 
+ obj++;
+ if(obj == surrounding_objects.end())
+  return;
+ tail = *obj;
+ tail->frame_n =  16 + frame_offset;
+ tail->x = x;
+ tail->y = y;
+ 
+ obj++;
+ if(obj == surrounding_objects.end())
+  return;
+ wing1 = *obj;
+ wing1->frame_n =  24 + frame_offset;
+ wing1->x = x;
+ wing1->y = y;
+ 
+ obj++;
+ if(obj == surrounding_objects.end())
+  return;
+ wing2 = *obj;
+ wing2->frame_n =  32 + frame_offset;
+ wing2->x = x;
+ wing2->y = y;
+
+ switch(new_direction)
+  {
+   case ACTOR_DIR_U : head->y = y - 1;
+                      tail->y = y + 1;
+					  wing1->x = x - 1;
+					  wing2->x = x + 1;
+					  break;
+
+   case ACTOR_DIR_R : head->x = x + 1;
+                      tail->x = x - 1;
+					  wing1->y = y - 1;
+					  wing2->y = y + 1;
+					  break;
+
+   case ACTOR_DIR_D : head->y = y + 1;
+                      tail->y = y - 1;
+					  wing1->x = x + 1;
+					  wing2->x = x - 1;
+					  break;
+
+   case ACTOR_DIR_L : head->x = x - 1;
+                      tail->x = x + 1;
+					  wing1->y = y + 1;
+					  wing2->y = y - 1;
+					  break;
+  }                   
+
+}
+
 inline void U6Actor::twitch_surrounding_objs()
 {
  std::list<Obj *>::iterator obj;
@@ -877,6 +997,28 @@ inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)
    delete *obj;
    obj = surrounding_objects.erase(obj);
   }
+
+ return;
+}
+
+inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 actor_obj_n, uint16 obj_frame_n)
+{
+ Obj *obj;
+ 
+ obj = obj_manager->get_obj(x, y, z);
+ if(obj == NULL || actor_obj_n != obj->obj_n || (obj->quality != 0 && obj->quality != id_n))
+  {
+   obj = new Obj();
+   obj->x = x;
+   obj->y = y;
+   obj->z = z;
+   obj->obj_n = obj_n;
+   obj->frame_n = obj_frame_n;
+   obj_manager->add_obj(obj);
+  }
+ 
+ obj->quality = id_n;  
+ surrounding_objects.push_back(obj);
 
  return;
 }

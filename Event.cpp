@@ -619,7 +619,7 @@ bool Event::look()
  Obj *obj = map_window->get_objAtCursor();
  Actor *actor = map_window->get_actorAtCursor();
  sint16 p_id = -1; // party member number of actor
- char weight_string[26];
+ char weight_string[32];
  float weight;
 
  if(actor)
@@ -645,7 +645,11 @@ bool Event::look()
    weight = obj_manager->get_obj_weight(obj);
    if(weight != 0)
      {
-      snprintf(weight_string,25,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj));
+	  if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
+         snprintf(weight_string,31,". They weigh %0.1f stones.",obj_manager->get_obj_weight(obj));
+	  else
+         snprintf(weight_string,31,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj));
+		 
       scroll->display_string(weight_string);
      }
   // check for special description

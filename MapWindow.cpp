@@ -299,7 +299,9 @@ void MapWindow::updateBlacking()
      int h = clock->get_hour();
 if(screen)
 {
-     if( h == 19 ) //Dusk
+     if(in_dungeon_level())
+	     screen->set_ambient( 0x00 );
+     else if( h == 19 ) //Dusk
          screen->set_ambient( 255*(float)(60-clock->get_minute())/60.0 );
      else if( h == 5 ) //Dawn
          screen->set_ambient( 255*(float)clock->get_minute()/60.0 );

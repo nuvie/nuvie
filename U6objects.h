@@ -243,7 +243,7 @@
 #define OBJ_U6_TROLL               371
 #define OBJ_U6_MONGBAT             372
 #define OBJ_U6_WISP                373
-#define OBJ_U6_HYDRA               374
+#define OBJ_U6_HYDRA			   374
 
 #define OBJ_U6_FIGHTER             376
 #define OBJ_U6_SWASHBUCKLER        377
@@ -263,6 +263,8 @@
 #define OBJ_U6_LORD_BRITISH        409
 #define OBJ_U6_AVATAR              410
 
+#define OBJ_U6_DRAGON              411
+
 #define OBJ_U6_SHIP                412
 #define OBJ_U6_SKIFF               414
 #define OBJ_U6_RAFT                415
@@ -273,6 +275,7 @@
 #define OBJ_U6_PULL_CHAIN          419
 
 #define OBJ_U6_CYCLOPS             424
+#define OBJ_U6_HYDRA_BODY          425
 
 #define OBJ_U6_GIANT_SCORPION      426
 #define OBJ_U6_GIANT_ANT           427

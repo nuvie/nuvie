@@ -1,3 +1,11 @@
+2003-12-29  Eric Fry <efry@users.sourceforge.net>
+	* MapWindow: Added permenant darkness to dungeon levels.
+	* ObjManager: Added is_stackable method for checking if an object can
+	  be pluralised.
+	* Event: Fixed the "Look" event. It now says "They weigh" when looking
+	  at an item with a quantity > 1.
+	* U6Actor: Added dragon actors. I've also started Hydra support.
+ 
 2003-12-25  Eric Fry <efry@users.sourceforge.net>
 	* Some fixes for object weight. Inventory weight should be closer to the
 	  original now.

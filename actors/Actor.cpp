@@ -687,8 +687,6 @@ float Actor::get_inventory_weight()
    obj = (Obj *)link->data;
    weight += obj_manager->get_obj_weight(obj);
   }
-
- // weight /= 10;
  
  return round(weight);
 }
@@ -711,8 +709,6 @@ float Actor::get_inventory_equip_weight()
    if((obj->status & 0x18) == 0x18) //object readied
       weight += obj_manager->get_obj_weight(obj);
   }
-
- // weight /= 10;
  
  return round(weight);
 }
