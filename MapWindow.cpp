@@ -457,15 +457,12 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
 {
  uint16 x,y;
  Tile *tile;
+ Tile *tile1;
  
  y = obj->y - cur_y;
  x = obj->x - cur_x;
  
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-
- //Draw a lightglobe in the middle of the 16x16 tile.
- if((tile->flags2 & 0x3) > 0 && screen->should_update_alphamap())
-	 screen->drawalphamap8globe( 8 + (obj->x - cur_x)*16, 8 + (obj->y - cur_y)*16 , (tile->flags2 & 0x3)*16 );
 
  if(draw_lowertiles == false && (tile->flags3 & 0x4) && toptile == false) //don't display force lower tiles.
    return;
@@ -485,6 +482,10 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
          return;
       }
     }
+
+  //Draw a lightglobe in the middle of the 16x16 tile.
+  if((tile->flags2 & 0x3) > 0 && screen->should_update_alphamap())
+	 screen->drawalphamap8globe( 8 + (obj->x - cur_x)*16, 8 + (obj->y - cur_y)*16 , (tile->flags2 & 0x3)*16 );
       
   drawTile(tile,obj->x - cur_x, obj->y - cur_y, toptile);
   
@@ -915,7 +916,9 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
        obj_manager->add_obj(obj,true);
       }
    }
-   
+
+ updateBlacking();
+        
  return;
 }
 

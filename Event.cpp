@@ -279,11 +279,13 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 				scroll->display_string("what?\n\n");
 				scroll->display_prompt();
 			}
+                        map_window->updateBlacking();
 			break;
 		case SDLK_SPACE :
 			scroll->display_string("Pass!\n\n");
 			scroll->display_prompt();
 			player->pass();
+                        map_window->updateBlacking();
 			break;
 		default :
 			if (event->key.keysym.sym != SDLK_LALT
@@ -730,6 +732,7 @@ void Event::alt_code(const char *cs)
             scroll->display_string(clock->get_time_string());
             scroll->display_string("\n");
             scroll->display_prompt();
+            map_window->updateBlacking();
             active_alt_code = 0;
             break;
     }

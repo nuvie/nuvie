@@ -1,3 +1,6 @@
+2003-11-26  Eric Fry <efry@users.sourceforge.net>
+	* Light globes are now not drawn for blacked out objects.
+	
 2003-11-25  Jonathan E. Wright <nelno@users.sourceforge.net>
 	* Fixed VS .NET build to work with alpha blended darkness.
 	* Fixed MSVC 6 build to work with alpha blended darkness.
