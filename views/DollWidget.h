@@ -58,7 +58,10 @@ class DollWidget : public GUI_Widget {
 
  void drag_drop_success(int x, int y, int message, void *data);
  void drag_drop_failed(int x, int y, int message, void *data);
- 
+
+ bool drag_accept_drop(int x, int y, int message, void *data);
+ void drag_perform_drop(int x, int y, int message, void *data); 
+
  protected:
 
  void DollWidget::display_doll();

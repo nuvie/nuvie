@@ -173,7 +173,7 @@ GUI:: HandleEvent(SDL_Event *event)
 
   if(dragging)
    {
-    if(event->type == SDL_MOUSEBUTTONUP)
+    if(event->type == SDL_MOUSEBUTTONUP) //FIX for button up that doesn't hit a widget.
       {
        for (hit=false,i=numwidgets-1; (i>=0)&&(hit == false); --i)
         {

@@ -43,7 +43,8 @@ class InventoryWidget : public GUI_Widget {
  Actor *actor;
  Obj *container_obj;
  
- Obj* selected_obj;
+ Obj* selected_obj, *target_obj;
+ uint16 row_offset;
  
  public:
  InventoryWidget(Configuration *cfg);
@@ -64,7 +65,8 @@ class InventoryWidget : public GUI_Widget {
  void drag_perform_drop(int x, int y, int message, void *data);
  
  protected:
- inline Obj *InventoryWidget::get_obj_at_location(int x, int y);
+ inline uint16 get_list_position(int x, int y);
+ inline Obj *get_obj_at_location(int x, int y);
  void display_inventory_container();
  void display_inventory_list();
 };

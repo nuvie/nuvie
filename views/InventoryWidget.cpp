@@ -28,6 +28,8 @@ InventoryWidget::InventoryWidget(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 
  config = cfg;
  container_obj = NULL;
  selected_obj = NULL;
+ target_obj =  NULL;
+ row_offset = 0;
 }
 
 InventoryWidget::~InventoryWidget()
@@ -93,7 +95,8 @@ void InventoryWidget::display_inventory_list()
  U6Link *link;
  Obj *obj;
  uint16 i,j;
- 
+ uint16 skip_num;
+
  empty_tile = tile_manager->get_tile(410);
  
  if(container_obj)
@@ -102,7 +105,16 @@ void InventoryWidget::display_inventory_list()
    inventory = actor->get_inventory_list();
  
  link = inventory->start();
- 
+
+ //skip row_offset rows of objects.
+ skip_num = row_offset * 4;
+ for(i=0;link != NULL && i < skip_num; link = link->next)
+   {
+    obj = (Obj *)link->data;
+    if((obj->status & 0x18) != 0x18)
+      i++;
+   }
+
   for(i=0;i<3;i++)
    {
     for(j=0;j<4;j++)
@@ -148,6 +160,16 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
 	return GUI_PASS;
 }
 
+inline uint16 InventoryWidget::get_list_position(int x, int y)
+{
+ uint16 list_pos;
+ 
+ list_pos = ((y - 16) / 16) * 4 + (x - 8) / 16;
+ list_pos += row_offset * 4;
+ 
+ return list_pos;
+}
+
 inline Obj *InventoryWidget::get_obj_at_location(int x, int y)
 {
  uint8 location;
@@ -158,7 +180,7 @@ inline Obj *InventoryWidget::get_obj_at_location(int x, int y)
 
  if(x >= 8 && y >= 16)
    {
-    location = ((y - 16) / 16) * 4 + (x - 8) / 16; //find the postion of the object we hit in the inventory
+    location = get_list_position(x,y); //find the postion of the object we hit in the inventory
 
     if(container_obj)
       inventory = container_obj->container;
@@ -184,7 +206,6 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
  if(selected_obj && selected_obj->container) // open up the container.
    {
     container_obj = selected_obj;
-    selected_obj = NULL;
     Redraw();
    }
  else
@@ -197,9 +218,17 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
       {
        container_obj = NULL; //return to main Actor inventory
       }
-   }
 
-	return GUI_YUM;
+    if(selected_obj) // attempt to ready selected object.
+      {
+       actor->add_readied_object(selected_obj);
+       Redraw();
+      }
+   }
+  
+ selected_obj = NULL;
+	
+ return GUI_YUM;
 }
 
 GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
@@ -240,6 +269,11 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
  if(message == GUI_DRAG_OBJ)
    {
+    x -= area.x;
+    y -= area.y;
+
+    if(target_obj == NULL) //we need to check this so we don't screw up target_obj on subsequent calls
+      target_obj = get_obj_at_location(x,y);
     return true;
    }
    
@@ -248,7 +282,7 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 
 void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
- Obj *obj, *target_obj;
+ Obj *obj;
  
  x -= area.x;
  y -= area.y;
@@ -257,7 +291,7 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
    {
     printf("Drop into inventory");
     obj = (Obj *)data;
-    target_obj = get_obj_at_location(x,y);
+
     if(target_obj && target_obj->container)
       {
        container_obj = target_obj; //swap to container ready to drop item inside
@@ -270,6 +304,8 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
     Redraw();
    }
    
+ target_obj = NULL;  
+
  return;
 }
 

@@ -162,8 +162,12 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
 
 GUI_status DollWidget::MouseUp(int x,int y,int button)
 {
- if(selected_obj)
-   selected_obj = NULL;
+ if(selected_obj) // un-ready selected item.
+   {
+    actor->remove_readied_object(selected_obj);
+    selected_obj = NULL;
+    Redraw();
+   }
 
 	return GUI_YUM;
 }
@@ -196,5 +200,34 @@ void DollWidget::drag_drop_failed(int x, int y, int message, void *data)
  printf("Drop Failed\n");
  dragging = false;
  selected_obj = NULL;
+}
+
+bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
+{
+ if(message == GUI_DRAG_OBJ) //FIX add weight check and ready check
+   {
+    return true;
+   }
+   
+ return false;
+}
+
+void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
+{
+ Obj *obj;
+ 
+ x -= area.x;
+ y -= area.y;
+ 
+ if(message == GUI_DRAG_OBJ)
+   {
+    printf("Ready item.");
+    obj = (Obj *)data;
+    actor->inventory_add_object(obj);
+    actor->add_readied_object(obj);
+    Redraw();
+   }
+   
+ return;
 }
 

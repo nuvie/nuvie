@@ -1,4 +1,9 @@
 2003-09-04  Eric Fry <efry@users.sourceforge.net>
+	* More Drag and Drop changes. Dragging an item from within the inventory
+	  to a container should work correctly now.
+	* It is now possible to ready/unready items by clicking or dragging.
+
+2003-09-04  Eric Fry <efry@users.sourceforge.net>
 	* Drag and Drop support added. You can now drag objects from the 
 	  inventory to the map. :)
 	* New classes added GUI_DragManager, GUI_DragArea, 
