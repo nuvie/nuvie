@@ -45,10 +45,14 @@ install: all
 	strip nuvie.exe -o $(U6PATH)/nuvie.exe
 
 tools: u6decomp.exe
+	mkdir -p $(U6PATH)
 	mkdir -p $(U6PATH)/tools
 	strip u6decomp.exe -o $(U6PATH)/tools/u6decomp.exe
 
 dist: install tools
+	cp AUTHORS $(U6PATH)/AUTHORS.txt
+	cp COPYING $(U6PATH)/COPYING.txt
+	cp README $(U6PATH)/README.txt
 	cp SDL/README-SDL.txt $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)
-
+	u2d $(U6PATH)/*.txt
