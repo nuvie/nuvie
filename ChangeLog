@@ -2,6 +2,7 @@
 	* Intergrated Ryan's Scaler code.
 	* Actors now twitch and move around.
 	* Actors are now blacked properly.
+	* Palette cycling.
 
 2003-04-02  Eric Fry  <efry@users.sourceforge.net>
 	* Windows are now working properly.
