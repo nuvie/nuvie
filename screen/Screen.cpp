@@ -40,6 +40,7 @@ Screen::Screen(Configuration *cfg)
 
 Screen::~Screen()
 {
+ delete surface;
  SDL_Quit();
 }
 
