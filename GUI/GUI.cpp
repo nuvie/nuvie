@@ -422,7 +422,7 @@ std::string GUI::get_data_dir()
 {
  std::string datadir;
  
- config->value("comfig/datadir", datadir, "");
+ config->value("config/datadir", datadir, "");
  
  return datadir;
 }
