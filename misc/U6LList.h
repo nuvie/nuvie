@@ -28,7 +28,7 @@
 
 #include "U6def.h"
 
-typedef struct U6Link
+struct U6Link
 {
  U6Link *next;
  U6Link *prev;

@@ -62,6 +62,12 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
    map_window->moveMapRelative(rel_x,rel_y);
 }
 
+void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
+{
+ if(actor->move(new_x,new_y,new_level))
+   map_window->moveMap(new_x,new_y,new_level);
+}
+
 void Player::moveLeft()
 {
  moveRelative(-1,0);

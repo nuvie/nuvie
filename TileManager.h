@@ -34,6 +34,17 @@
 #define U6TILE_TRANS 0x5
 #define U6TILE_PBLCK 0xA
 
+//flags1
+#define TILEFLAG_WALL_NORTH 0x80
+#define TILEFLAG_WALL_EAST  0x40
+#define TILEFLAG_WALL_SOUTH 0x20
+#define TILEFLAG_WALL_WEST  0x10
+
+#define TILEFLAG_WALL 0x4
+
+
+#define TILEFLAG_WINDOW 0x8 // flags2
+
 typedef struct {
 uint16 tile_num;
 bool passable;
@@ -82,7 +93,7 @@ class TileManager
    Tile *get_tile(uint16 tile_num);
    Tile *get_original_tile(uint16 tile_num);
 
-   char *lookAtTile(uint16 tile_num);
+   char *lookAtTile(uint16 tile_num, uint16 qty);
    
    void update();
    

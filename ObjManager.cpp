@@ -212,13 +212,13 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
 }
 
 // x, y in world coords
-Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level)
+Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj)
 {
  U6Link *link, *link1;
  ObjList *obj_list;
  Obj *obj;
  Tile *tile;
- uint16 tile_num;
+ uint16 tile_num = 0;
  uint16 sx,sy; // note these values are not required if level > 0
  
  link1 = NULL;
@@ -240,9 +240,12 @@ Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level)
       {
        if(obj_list->y == y || obj_list->y == y+1)
          {
-          link1 = obj_list->objs->end();
-          
-          for(;link1 != NULL;link1 = link1->prev)
+             if(top_obj == true)
+              link1 = obj_list->objs->end();
+             else
+              link1 = obj_list->objs->start();
+
+          for(;link1 != NULL;)
             {
              obj = (Obj *)link1->data;
              tile_num = get_obj_tile_num(obj->obj_n)+obj->frame_n;
@@ -256,16 +259,25 @@ Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level)
                 { tile_num--; break; }
              if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
                 { tile_num -= 2; break; }
+             if(top_obj == true)
+               link1 = link1->prev;
+             else
+               link1 = link1->next;
             }
+         if(link1 != NULL)
+           {
+            return tile_manager->get_tile(tile_num);
+           }
+
          }
       }
    }
-
+/*
  if(link1 != NULL)
    {
     return tile_manager->get_tile(tile_num);
    }
-
+*/
  return NULL;
 }
 
@@ -325,12 +337,39 @@ bool ObjManager::use_obj(uint16 x, uint16 y, uint8 level)
     else
       obj->frame_n -= 4;
    }
+   
  if(obj->obj_n == OBJ_U6_LADDER)
   {
    printf("Use: ladder\n");
+   
   }
-    
+ 
+  if(obj->obj_n == OBJ_U6_CHEST)
+  {
+   printf("Use: chest\n");
+   if(obj->frame_n > 0)
+     obj->frame_n--;
+   else
+     obj->frame_n = 1;   
+  }
+
+ printf("Use Obj #%d Frame #%d\n",obj->obj_n, obj->frame_n);
+ 
  return true;
+}
+
+char *ObjManager::look_obj(uint16 x, uint16 y, uint8 level)
+{
+ Obj *obj;
+ char *desc;
+ 
+ obj = get_obj(x,y,level);
+ if(obj == NULL)
+   return NULL;
+
+ desc = tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,obj->qty);
+ 
+ return desc;
 }
 
 uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :)
@@ -372,9 +411,11 @@ U6LList *ObjManager::loadObjSuperChunk(char *filename)
  
  for(i=0;i<num_objs;i++)
   {
-   obj = loadObj(&file);
+   obj = loadObj(&file,i);
   // addObj(list,obj);
-  
+   if(i == 793)
+     printf(".");
+     
    if(obj->status & 0x8) // FIX here OBJ_STATUS_IN_CONTAINER)
      {
       addObjToContainer(list,obj);
@@ -414,29 +455,39 @@ void ObjManager::addObj(U6LList *list, Obj *obj)
 
 bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
 {
- U6Link *link;
+ U6Link *link, *link1;
  Obj *c_obj; //container object
- 
- return true; // FIX
- 
- link = list->gotoPos(obj->x); //get the parent container object
- c_obj = (Obj *)link->data; //FIX from here.. <+===-
- 
- if(c_obj->container == NULL)
-   c_obj->container = new U6LList();
- 
- c_obj->container->addAtPos(0,obj);
+ ObjList *obj_list;
+  
+ for(link = list->end();link != NULL;link = link->prev)
+   {
+    obj_list = (ObjList *)link->data;
+    link1 = obj_list->objs->end();
+    
+    for(;link1!=NULL;link1=link1->prev)
+      {
+       c_obj = (Obj *)link1->data;
+       if(c_obj->objblk_n == obj->x)
+         {
+          if(c_obj->container == NULL)
+            c_obj->container = new U6LList();
+          c_obj->container->addAtPos(0,obj);
+          return true;
+         }
+      }
+   }
    
- return true;
+ return false;
 }
 
-Obj *ObjManager::loadObj(U6File *file)
+Obj *ObjManager::loadObj(U6File *file, uint16 objblk_n)
 {
  uint8 b1,b2;
  Obj *obj;
  
  obj = new Obj;
  obj->container = NULL;
+ obj->objblk_n = objblk_n;
  
  obj->status = file->read1();
    

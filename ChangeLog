@@ -1,0 +1,7 @@
+2003-03-30  Eric Fry  <efry@users.sourceforge.net>
+	* Started Changelog.
+	* Chests now open and close.
+	* More work done on blacking.
+	* MapWindow now draws to its own surface. Added Ultima6 map border
+	tiles and trimmed map window down to 10x10 tiles.
+

@@ -73,13 +73,16 @@ bool ActorManager::loadActors()
     actors[i]->y += (b3 & 0xf) << 6;
    
     actors[i]->z = (b3 & 0xf0) >> 4;
-    actors[i]->id_n = i;
-/* Force avatar to gargoyle world
+    actors[i]->id_n = (uint8)i;
+/* Force avatar to gargoyle world 
     if(i == 1)
      {
-      actors[i]->x = 215;
-      actors[i]->y = 222;
-      actors[i]->z = 5;
+//      actors[i]->x = 215;
+  //    actors[i]->y = 222;
+    //  actors[i]->z = 5;
+      actors[i]->x = 50;
+      actors[i]->y = 50;
+      actors[i]->z = 1;
      }
 */
    }
@@ -131,7 +134,7 @@ void ActorManager::updateActors()
   
 }
 
-void ActorManager::drawActors(Screen *screen, uint16 x, uint16 y, uint16 width, uint16 height, uint8 level)
+void ActorManager::drawActors(Surface *surface, uint16 x, uint16 y, uint16 width, uint16 height, uint8 level)
 {
  uint16 i;
  Tile *tile;
@@ -149,7 +152,7 @@ void ActorManager::drawActors(Screen *screen, uint16 x, uint16 y, uint16 width, 
             else
               tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actors[i]->a_num)+actors[i]->frame_n);
 
-            screen->blit(tile->data,8,(actors[i]->x - x)*16,(actors[i]->y - y)*16,16,16,tile->transparent);
+            surface->blit((actors[i]->x - x)*16,(actors[i]->y - y)*16,tile->data,8,16,16,16,tile->transparent);
            }
          }
       }

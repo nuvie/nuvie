@@ -28,7 +28,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
-#include "Screen.h"
+#include "Surface.h"
 #include "Map.h"
 #include "TileManager.h"
 #include "ObjManager.h"
@@ -56,7 +56,7 @@ class ActorManager
 
  void updateActors();
  
- void drawActors(Screen *screen, uint16 x, uint16 y, uint16 width, uint16 height, uint8 level);
+ void drawActors(Surface *surface, uint16 x, uint16 y, uint16 width, uint16 height, uint8 level);
  
  protected:
  

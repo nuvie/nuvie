@@ -394,6 +394,8 @@
 			children = (
 				072BE3AF041AFE3900A8000A,
 				072BE3AE041AFE3900A8000A,
+				07707D43043558C800A8000A,
+				07707D42043558C800A8000A,
 				072BE3B2041AFE8A00A8000A,
 				072BE3B3041AFE8A00A8000A,
 			);
@@ -537,6 +539,32 @@
 		};
 		0740D53C042AA97500A8000A = {
 			fileRef = 0740D536042AA97500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07707D42043558C800A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Surface.cpp;
+			path = ../screen/Surface.cpp;
+			refType = 2;
+		};
+		07707D43043558C800A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Surface.h;
+			path = ../screen/Surface.h;
+			refType = 2;
+		};
+		07707D44043558C800A8000A = {
+			fileRef = 07707D42043558C800A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07707D45043558C800A8000A = {
+			fileRef = 07707D43043558C800A8000A;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -979,7 +1007,7 @@
 				HEADER_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks/SDL.framework/Headers\"";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "-DMACOSX";
+				OTHER_CFLAGS = "-DMACOSX -Wall";
 				OTHER_LDFLAGS = "-framework SDL";
 				PREBINDING = NO;
 				PRODUCT_NAME = Nuive;
@@ -1051,6 +1079,7 @@
 				07DB53ED042DA0CF00A8000A,
 				07DB546D042E8C1A00A8000A,
 				07EF5323043137BF00A8000A,
+				07707D45043558C800A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1092,6 +1121,7 @@
 				07DB53EC042DA0CF00A8000A,
 				07DB546E042E8C1A00A8000A,
 				07EF5324043137BF00A8000A,
+				07707D44043558C800A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -30,9 +30,7 @@
 
 #include "Surface.h"
 
-#include "Screen.h"
-
-Screen::Screen()
+Surface::Surface()
 {
  width = 0;
  height = 0;
@@ -41,62 +39,65 @@ Screen::Screen()
  bpp = 0;
 }
 
-Screen::~Screen()
+Surface::~Surface()
 {
- SDL_Quit();
+ if(data != NULL)
+   free(data);
+
 }
 
-bool Screen::init(uint16 new_width, uint16 new_height)
+bool Surface::init(uint16 new_width, uint16 new_height)
 {
  width = new_width;
  height = new_height;
+ pitch = width;
+ bpp = 8;
  
-  	/* Initialize the SDL library */
-	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-		fprintf(stderr, "Couldn't initialize SDL: %s\n",
-			SDL_GetError());
-   return false;
-	}
-
- surface = SDL_SetVideoMode(width, height, 8, SDL_SWSURFACE | SDL_HWPALETTE);
- pitch = surface->pitch;
- bpp = surface->format->BitsPerPixel;
- 
- printf("surface pitch = %d\n",pitch);
- 
- return true;
-}
-
-bool Screen::set_palette(SDL_Color *palette)
-{
-
- SDL_SetColors(surface,palette,0,256);
-  
- return true;
-}
-
-bool Screen::clear(uint8 color)
-{
- SDL_FillRect(surface, NULL, (uint32)color);
-
+ data = (unsigned char *)malloc(width * height);
+ if(data == NULL)
+   {
+    printf("Argh! out of memory. Surface::init()\n");
+    return false;
+   }
+   
  return true; 
 }
 
-void *Screen::get_pixels()
+
+bool Surface::set_palette(SDL_Color *palette)
 {
- if(surface == NULL)
-    return NULL; 
- 
- return surface->pixels;
+
+ return true;
 }
 
-bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
+bool Surface::clear(uint8 color)
+{
+ memset(data,color, width * height);
+ 
+ return true; 
+}
+
+void *Surface::get_pixels()
+{
+ return data;
+}
+
+uint16 Surface::get_pitch()
+{
+ return (uint16)pitch;
+}
+
+uint16 Surface::get_bpp()
+{
+ return bpp;
+}
+
+bool Surface::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
 {
  unsigned char *pixels;
  uint16 i,j;
- 
- pixels = (unsigned char *)surface->pixels;
- 
+
+ pixels = data;
  pixels += dest_y * pitch + dest_x;
 
  if(trans)
@@ -125,34 +126,17 @@ bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 s
  return true;
 }
 
-uint16 Screen::get_pitch()
+void Surface::update()
 {
- return (uint16)pitch;
+  return;
 }
 
-uint16 Screen::get_bpp()
+void Surface::lock()
 {
- return bpp;
-}
-
-void Screen::update()
-{
- if(surface)
-   SDL_UpdateRect(surface,0,0,0,0);
-
  return;
 }
 
-void Screen::lock()
+void Surface::unlock()
 {
- SDL_LockSurface(surface);
- 
- return;
-}
-
-void Screen::unlock()
-{
- SDL_UnlockSurface(surface);
- 
  return;
 }

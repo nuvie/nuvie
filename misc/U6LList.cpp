@@ -86,6 +86,7 @@ bool U6LList::add(void *data)
    }
  else
    {  
+    prev=NULL;
     for(link=head,i=0;link != NULL && i < pos;i++)
       {
        prev=link;

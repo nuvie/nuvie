@@ -50,6 +50,7 @@ class Player
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  
  void moveRelative(sint16 rel_x, sint16 rel_y);
+ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level);
  void moveLeft();
  void moveRight();
  void moveUp();

@@ -6,6 +6,8 @@
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
+#include <ctype.h>
+
 #include "U6def.h"
 #include "Configuration.h"
 
@@ -16,6 +18,8 @@
 Look::Look(Configuration *cfg)
 {
  config = cfg;
+ 
+ max_len = 0;
 }
  
 bool Look::init()
@@ -56,16 +60,51 @@ bool Look::init()
    }
    
  free(look_data);
- 
+
+ desc_buf = (char *)malloc(max_len+1);
+ if(desc_buf == NULL)
+   return false;
+
  return true;
 }
 
-char *Look::get_description(uint16 tile_num)
+char *Look::get_description(uint16 tile_num, bool plural)
 {
+ char *desc;
+ char c;
+ uint16 i, j;
+ uint16 len;
+ 
  if(tile_num >= 2048)
    return NULL;
 
- return look_tbl[tile_num];
+ desc = look_tbl[tile_num];
+ 
+ len = strlen(desc);
+ 
+ for(i=0,j=0;i < len;)
+   {
+    if(desc[i] == '\\' || desc[i] == '/')
+      {
+       c = desc[i];
+       for(i++;isalpha(desc[i]) && i < len;i++)
+        {
+         
+         if((plural && c == '\\' ) || ( !plural && c == '/' ))
+           { desc_buf[j] = desc[i]; j++; }
+        }
+      }
+    else
+      {
+       desc_buf[j] = desc[i];
+       i++;
+       j++;
+      }
+   }
+
+ desc_buf[j] = desc[i];
+
+ return desc_buf;
 }
 
 void Look::print()
@@ -95,5 +134,8 @@ char *Look::readDescription(unsigned char *ptr)
  
  strcpy(s,(char *)ptr);
  
+ if(max_len < i)
+  max_len = i;
+  
  return s;
 }

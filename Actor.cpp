@@ -63,12 +63,17 @@ void Actor::set_direction(uint8 d)
 
 bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 {
+ return move(x + rel_x, y + rel_y, z);
+}
+
+bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
+{
  uint16 pitch;
- sint16 new_x, new_y;
  
- pitch = map->get_width(z);
- new_x = x + rel_x;
- new_y = y + rel_y;
+ if(z > 5)
+   return false;
+  
+ pitch = map->get_width(new_z);
  
  if(new_x < 0 || new_x >= pitch)
    return false;
@@ -76,11 +81,12 @@ bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
  if(new_y < 0 || new_y >= pitch)
    return false;
 
- if(map->is_passable(new_x,new_y,z) ==  false)
+ if(map->is_passable(new_x,new_y,new_z) ==  false)
    return false;
  
  x = new_x;
  y = new_y;
+ z = new_z;
  
  return true;
 }

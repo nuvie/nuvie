@@ -12,6 +12,8 @@
 
 #include "U6def.h"
 #include "Configuration.h"
+#include "Surface.h"
+#include "Screen.h"
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
@@ -20,10 +22,11 @@ class MapWindow
 {
  Configuration *config;
  Screen *screen;
+ Surface *surface;
  
  Map *map;
  
- unsigned char *tmp_buf; // tempory buffer for flood fill, hide rooms. 
+ uint16 *tmp_buf; // tempory buffer for flood fill, hide rooms. 
  
  TileManager *tile_manager;
  ObjManager *obj_manager;
@@ -76,10 +79,15 @@ protected:
  void drawObjSuperBlock(U6LList *superblock, bool toptile);
  inline void drawObj(Obj *obj, bool toptile);
  inline void drawTile(uint16 tile_num, uint16 x, uint16 y, bool toptile);
+ void drawBorder();
  inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);
 
  void generateTmpMap();
  void boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y);
+ 
+ void reshapeBoundary();
+ bool tmpBufTileIsBoundary(uint16 x, uint16 y);
+ bool tmpBufTileIsWall(uint16 x, uint16 y);
 };
 
 #endif /* __MapWindow_h__ */

@@ -41,6 +41,7 @@
 #define OBJ_STATUS_PASSABLE     5
 
 #define OBJ_U6_LADDER 305
+#define OBJ_U6_CHEST 98
 
 typedef struct
 {
@@ -52,6 +53,7 @@ typedef struct
  
 typedef struct
 {
+ uint16 objblk_n;
  uint16 obj_n;
  uint8 frame_n;
  
@@ -84,12 +86,13 @@ class ObjManager
  U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
- Tile *get_obj_tile(uint16 x, uint16 y, uint8 level);
+ Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  
  uint16 get_obj_tile_num(uint16 obj_num);
 
  bool use_obj(uint16 x, uint16 y, uint8 level);
+ char *ObjManager::look_obj(uint16 x, uint16 y, uint8 level);
  
  protected:
  
@@ -98,7 +101,7 @@ class ObjManager
  U6LList *loadObjSuperChunk(char *filename);
  void addObj(U6LList *list, Obj *obj);
  bool addObjToContainer(U6LList *list, Obj *obj);
- Obj *loadObj(U6File *file);
+ Obj *loadObj(U6File *file, uint16 objblk_n);
  char *get_objblk_path(char *path);
 };
 

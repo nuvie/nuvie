@@ -73,7 +73,6 @@ uint16 Map::get_width(uint8 level)
 bool Map::is_passable(uint16 x, uint16 y, uint8 level)
 {
  uint8 *ptr;
- Tile *obj_tile;
  Tile *map_tile;
  uint8 obj_status;
  
@@ -132,7 +131,7 @@ char *Map::look(uint16 x, uint16 y, uint8 level)
     else
       tile_num =  ptr[y * get_width(level) + x];
 
- return tile_manager->lookAtTile(tile_num);
+ return tile_manager->lookAtTile(tile_num,0);
 }
 
 

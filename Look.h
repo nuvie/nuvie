@@ -16,6 +16,8 @@ class Look
 {
  Configuration *config;
  char *look_tbl[2048];
+ uint16 max_len;
+ char *desc_buf;
  
  public:
  
@@ -23,7 +25,7 @@ class Look
  
  bool init();
  
- char *get_description(uint16 tile_num);
+ char *get_description(uint16 tile_num, bool plural);
  void print();
  
  protected:

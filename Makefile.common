@@ -22,6 +22,8 @@ nuvie_SOURCES = \
 	screen/GamePalette.h \
 	screen/Screen.cpp \
 	screen/Screen.h \
+	screen/Surface.cpp \
+	screen/Surface.h \
 \
 	Actor.cpp \
 	Actor.h \

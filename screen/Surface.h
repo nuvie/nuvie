@@ -1,5 +1,8 @@
+#ifndef __Surface_h__
+#define __Surface_h__
+
 /*
- *  nuvie.cpp
+ *  Surface.h
  *  Nuive
  *
  *  Created by Eric Fry on Sun Mar 09 2003.
@@ -19,64 +22,44 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- */
- 
-#include <stdlib.h>
-#include <string.h>
+ */ 
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "U6def.h"
 
-#include "Configuration.h"
-
-#include "Screen.h"
-#include "GamePalette.h"
-#include "U6Bmp.h"
-#include "TileManager.h"
-#include "Text.h"
-
-#include "Game.h"
-
-#include "nuvie.h"
-
-Nuvie::Nuvie()
+class Surface
 {
-}
-
-Nuvie::~Nuvie()
-{
- delete config;
- delete screen;
-}
-
-bool Nuvie::init()
-{
+ private:
+  unsigned char *data;
   
- config = new Configuration();
+ protected:
  
- // FIX! need to add support for finding nuvie.cfg file.
- 
- config->readConfigFile("nuvie.cfg","config");
+ uint16 width;
+ uint16 height;
+
+ uint16 pitch;
+ uint16 bpp;
   
- screen = new Screen();
- if(screen->init(320,200) == false)
-   return false;
+ public:
  
- SDL_WM_SetCaption("Nuvie","Nuvie");
- 
- game = new Game(config);
- 
- game->loadGame(screen,NUVIE_GAME_ULTIMA6);
- 
- game->play();
-   
- return true;
-}
+   Surface();
+   virtual ~Surface();
+  
+   virtual bool init(uint16 width = 320, uint16 height = 200);
 
-bool Nuvie::play()
-{
- 
+   virtual bool set_palette(SDL_Color *palette);
+   virtual bool clear(uint8 color = 0);
+   virtual void *get_pixels();
+   virtual uint16 get_pitch();
+   uint16 get_bpp();
 
- return true;
-}
+   virtual bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false);
+   virtual void Surface::update();
+   virtual void lock();
+   virtual void unlock();
+};
+
+
+#endif /* __Surface_h__ */
+

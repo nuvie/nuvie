@@ -130,7 +130,8 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  map_window->set_show_use_cursor(false);
  map_window->updateBlacking();
  mode = MOVE_MODE;
-       
+
+ return true;
 }
 
 void Event::wait()

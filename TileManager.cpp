@@ -30,7 +30,7 @@
 
 void print_b(uint8 num);
 
-static char article_tbl[][4] = {"", "a", "an", "the"};
+static char article_tbl[][5] = {"", "a ", "an ", "the "};
 
 TileManager::TileManager(Configuration *cfg)
 {
@@ -110,9 +110,11 @@ bool TileManager::loadTiles()
  if(look->init() == false)
    return false;
 
- look->print();
  
 #ifdef DEBUG
+
+ look->print();
+
  for(i=0;i<2048;i++)
   {
    printf("%04d : ",i);
@@ -140,9 +142,27 @@ Tile *TileManager::get_original_tile(uint16 tile_num)
  return &tile[tile_num];
 }
 
-char *TileManager::lookAtTile(uint16 tile_num)
+char *TileManager::lookAtTile(uint16 tile_num, uint16 qty)
 {
- return look->get_description(tile_num);
+ char *desc;
+ char *desc_buf;
+ bool plural;
+ Tile *tile;
+ 
+ tile = get_tile(tile_num);
+ 
+ if(qty > 0)
+   plural = true;
+ else
+  plural = false;
+  
+ desc = look->get_description(tile->tile_num,plural);
+ if(qty > 0)
+   printf("Thou doth see %d %s\n",qty, desc);
+ else
+   printf("Thou doth see %s%s\n",article_tbl[tile->article_n], desc);
+   
+ return desc;
 }
 
 void TileManager::update()
@@ -170,7 +190,6 @@ bool TileManager::loadTileFlag()
  std::string filename;
  U6File file;
  uint16 i;
- uint8 byte;
  
  config->pathFromValue("config/ultima6/gamedir","tileflag",filename);
 

@@ -27,26 +27,25 @@
 #include <SDL.h>
 
 #include "U6def.h"
+#include "Surface.h"
 
-class Screen
+class Screen: Surface
 {
- uint16 width;
- uint16 height;
  SDL_Surface *surface;
  
  public:
- 
-   Screen(uint16 width = 320, uint16 height = 200);
+   Screen();
    ~Screen();
-  
-   bool set_palette(SDL_Color *palette);
-   bool clear(uint8 color = 0);
-   void *get_pixels();
-   uint16 get_pitch();
-   uint16 get_bpp();
 
-   bool blit(unsigned char *buf, uint16 bpp, uint16 x, uint16 y, uint16 width, uint16 height, bool trans=false);
+   bool init(uint16 width = 320, uint16 height = 200);
+   
+   virtual bool set_palette(SDL_Color *palette);
+   virtual bool clear(uint8 color = 0);
+   virtual void *get_pixels();
+   virtual uint16 get_pitch();
+   virtual uint16 get_bpp();
       
+   virtual bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false);     
    void update();
    
    void lock();

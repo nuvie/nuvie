@@ -30,7 +30,7 @@
 typedef struct {
 uint16 x;
 uint16 y;
-uint16 z;
+uint8 z;
 uint8 hour;
 uint8 unknown;
 } Schedule;
@@ -79,6 +79,7 @@ class Actor
  void set_direction(uint8 d);
  
  bool moveRelative(sint16 rel_x, sint16 rel_y);
+ bool move(sint16 new_x, sint16 new_y, sint8 new_z);
  
  void update();
  
