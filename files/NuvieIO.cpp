@@ -124,7 +124,7 @@ uint16 NuvieIOBuffer::read2()
   if(pos >= size-2)
    return 0;
 
- val = data[pos] + data[pos+1]<<8;
+ val = data[pos] + (data[pos+1]<<8);
  pos += 2;
  
  return val;
