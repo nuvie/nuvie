@@ -431,6 +431,9 @@ bool ObjManager::remove_obj(Obj *obj)
     obj_list->remove(obj);
    }
 
+ if(obj->status & OBJ_STATUS_TEMPORARY)
+   temp_obj_list_remove(obj);
+
  return true;
 }
 

@@ -481,23 +481,23 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 
        if(total <= pc->inventory_get_max_weight())
          {
-          obj_manager->remove_obj(obj); //remove object from map.
-
-          if(obj->qty > 0) //stackable object
-            {
-             pc->inventory_add_object(obj->obj_n, obj->qty, obj->quality);
-             obj_manager->delete_obj(obj);
-            }
-           else
-             pc->inventory_add_object(obj);
           // object is someone else's
           if(!(obj->status & OBJ_STATUS_OK_TO_TAKE))
-          {
+            {
              scroll->display_string("\n\nStealing!!!"); // or "Stop Thief!!!"
              player->subtract_karma();
-          }
-          obj->status |= OBJ_STATUS_OK_TO_TAKE; // move to DROP
-          //obj->status &= ~OBJ_STATUS_TEMPORARY; // move to DROP
+             obj->status |= OBJ_STATUS_OK_TO_TAKE; // move to DROP
+            }
+
+          obj_manager->remove_obj(obj); //remove object from map.
+
+          if(obj->qty > 0) // stackable object; will make copy and delete this
+            {
+             pc->inventory_add_object(obj->obj_n, obj->qty, obj->quality);
+             obj_manager->delete_obj(obj); // original copy defunct
+            }
+          else
+             pc->inventory_add_object(obj); // just stick this one in there
          }
       else
          scroll->display_string("\n\nThe total is too heavy.");

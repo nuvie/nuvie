@@ -1,3 +1,7 @@
+2003-12-03  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Objects are removed from temp. list when removed from the map.
+	* Fixed segfault when getting objects and stacking them in inventory.
+
 2003-12-02  Joseph Applegate <sb-x@users.sourceforge.net>
 	* You can no longer walk diagonally between blocked squares. This fixes
 	  walking over water.
