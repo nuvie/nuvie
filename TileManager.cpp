@@ -39,6 +39,7 @@ static const uint16 U6_ANIM_SRC_TILE[32] = {0x16,0x16,0x1a,0x1a,0x1e,0x1e,0x12,0
                                             0x12,0x16,0x1e,0x1a,0x1a,0x1e,0x12,0x16};
 
 TileManager::TileManager(Configuration *cfg)
+:desc_buf(NULL)
 {
  config = cfg;
  memset(tileindex,0,sizeof(tileindex));
