@@ -130,7 +130,7 @@ public:
     void print(const char *s = NULL);
     const char *get_input()  { return(in_str ? in_str->c_str() : ""); }
     const char *get_output() { return(out_str ? out_str->c_str() : ""); }
-    void set_input(const char *s = NULL);
+    void set_input(std::string *s = NULL);
     void set_output(const char *s = NULL);
 
     const char *npc_name(uint8 num);

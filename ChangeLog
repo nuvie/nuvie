@@ -1,3 +1,14 @@
+2004-02-23  Eric Fry <efry at users.sourceforge.net>
+	* MsgScroll.cpp: Added has_input() This returns true when there is input
+	  ready.
+	  - get_input() now returns a std::string instead of a private c string.
+	    The teleporters menu should work again now.
+	* MapWindow.cpp: Renamed tmp_buf to tmp_map_buf.
+	  - Added tmp_map_width, tmp_map_height variables.
+	  - Increased tmp_map_width to prevent a buffer overrun when checking
+	    for blank tiles around objects on boundary tiles.
+	    Thanks to Willem for spotting that one.
+
 2004-02-22  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* Cursor.cpp: initialize Cursor::hidden
 	* GUI/GUI_Widget.cpp, TileManager.cpp: initialize member vars

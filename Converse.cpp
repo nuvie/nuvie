@@ -337,9 +337,10 @@ void Converse::stop()
  */
 bool Converse::input()
 {
-    if(scroll->get_input())
+    if(scroll->has_input())
     {
-        set_input(scroll->get_input());
+     std::string s = scroll->get_input();
+        set_input(&s);
 #ifdef CONVERSE_DEBUG
         fprintf(stderr, "Converse: INPUT \"%s\"\n\n", get_input());
 #endif
@@ -351,7 +352,7 @@ bool Converse::input()
 
 /* Set the string value returned by `get_input()' (or delete the current.)
  */
-void Converse::set_input(const char *s)
+void Converse::set_input(std::string *s)
 {
     if(!s)
     {
@@ -361,7 +362,8 @@ void Converse::set_input(const char *s)
     }
     if(!in_str)
         in_str = new string;
-    in_str->assign(s);
+
+    *in_str = *s; //in_str->assign(s->c_str());
 }
 
 

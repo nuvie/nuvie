@@ -709,20 +709,25 @@ bool MsgScroll::input_buf_remove_char()
  return false;
 }
 
+bool MsgScroll::has_input()
+{
+ if(input_mode == false) //we only have input ready after the user presses enter.
+   return true;
 
-const char *MsgScroll::get_input()
+ return false;
+}
+
+std::string MsgScroll::get_input()
 {
  // MsgScroll sets input_mode to false when it receives SDLK_ENTER 
-
+ std::string s;
+ 
  if(input_mode == false)
    {
-    if(input_buf.length() > 0)
-      return input_buf.c_str();
-    else
-      return "";
+    s.assign(input_buf);
    }
 
- return NULL;
+ return s;
 }
 
 const char *MsgScroll::peek_at_input()

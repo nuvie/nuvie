@@ -164,7 +164,8 @@ class MsgScroll: public GUI_Widget
  bool input_buf_add_char(char c);
  bool input_buf_remove_char();
  
- const char *get_input();
+ bool has_input();
+ std::string get_input();
  const char *peek_at_input();
  
  protected:

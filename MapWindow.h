@@ -52,7 +52,8 @@ class MapWindow: public GUI_Widget
  
  Map *map;
  
- uint16 *tmp_buf; // tempory buffer for flood fill, hide rooms. 
+ uint16 *tmp_map_buf; // tempory buffer for flood fill, hide rooms. 
+ uint16 tmp_map_width, tmp_map_height;
  
  TileManager *tile_manager;
  ObjManager *obj_manager;

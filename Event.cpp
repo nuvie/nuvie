@@ -310,8 +310,8 @@ bool Event::handleEvent(const SDL_Event *event)
 			break;
 	}	
 
-	if(active_alt_code && scroll->get_input())
-		alt_code_input(scroll->get_input());
+	if(active_alt_code && scroll->has_input())
+		alt_code_input(scroll->get_input().c_str());
 
 	return true;
 }

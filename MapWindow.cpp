@@ -61,7 +61,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
   
  cur_level = 0;
 
- tmp_buf = NULL;
+ tmp_map_buf = NULL;
 
  selected_obj = NULL;
  selected_actor = NULL;
@@ -74,7 +74,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 
 MapWindow::~MapWindow()
 {
- free(tmp_buf);
+ free(tmp_map_buf);
 //#warning ANIMMANAGER
 // delete anim_manager;
 }
@@ -123,11 +123,19 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
  area.w = win_width * 16;
  area.h = win_height * 16;
  
- //we make the map +1 bigger all around for the boundary fill function
- //this enables edges of the map window to display correctly.
+ // We make the temp map +1 bigger on the top and left edges
+ // and +2 bigger on the bottom and right edges
+  
+ // The +1 is for the boundary fill function
  
- tmp_buf = (uint16 *)realloc(tmp_buf, (win_width + 2) * (win_height + 2) * sizeof(uint16)); 
- if(tmp_buf == NULL)
+ // The additional +1 on the right/bottom edges is needed 
+ // to hide objects on boundarys when wall is in darkness
+
+ tmp_map_width = win_width + 3;
+ tmp_map_height = win_height + 3;
+  
+ tmp_map_buf = (uint16 *)realloc(tmp_map_buf, tmp_map_width * tmp_map_height * sizeof(uint16)); 
+ if(tmp_map_buf == NULL)
    return false;
 
 // if(surface != NULL)
@@ -247,7 +255,7 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 {
  Actor *actor;
  
- if(tmp_buf[(y+1) * (win_width+2) + (x+1)] == 0) //black area
+ if(tmp_map_buf[(y+1) * tmp_map_width + (x+1)] == 0) //black area
    return tile_manager->lookAtTile(0,0,true); // nothing to see here. ;)
 
  actor = actor_manager->get_actor(x, y, cur_level);
@@ -261,7 +269,7 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 Obj *MapWindow::get_objAtCursor()
 {
  
- if(tmp_buf[(cursor_y+1) * (win_width+2) + (cursor_x+1)] == 0) //black area
+ if(tmp_map_buf[(cursor_y+1) * tmp_map_width + (cursor_x+1)] == 0) //black area
    return NULL; // nothing to see here. ;)
    
  return obj_manager->get_obj(cur_x + cursor_x, cur_y + cursor_y, cur_level);
@@ -271,7 +279,7 @@ Actor *MapWindow::get_actorAtCursor()
 {
  //Actor *actor;
  
- if(tmp_buf[(cursor_y+1) * (win_width+2) + (cursor_x+1)] == 0) //black area
+ if(tmp_map_buf[(cursor_y+1) * tmp_map_width + (cursor_x+1)] == 0) //black area
    return NULL; // nothing to see here. ;)
    
  return actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
@@ -351,8 +359,8 @@ void MapWindow::Display(bool full_redraw)
  map_width = map->get_width(cur_level);
    
  //map_ptr += cur_y * map_width + cur_x;
-  map_ptr = tmp_buf;
-  map_ptr += (1 * (win_width + 2) + 1);// * sizeof(uint16); //remember our tmp map is 1 bigger all around.
+  map_ptr = tmp_map_buf;
+  map_ptr += (1 * tmp_map_width + 1);// * sizeof(uint16); //remember our tmp map is 1 bigger all around.
   
   for(i=0;i<win_height;i++)
   {
@@ -374,7 +382,7 @@ void MapWindow::Display(bool full_redraw)
 
      }
    //map_ptr += map_width;
-   map_ptr += (win_width + 2) ;//* sizeof(uint16);
+   map_ptr += tmp_map_width ;//* sizeof(uint16);
   }
 
  drawObjs();
@@ -422,7 +430,7 @@ void MapWindow::drawActors()
          {
           if(actor->y >= cur_y && actor->y < cur_y + win_height)
             {
-             if(tmp_buf[(actor->y - cur_y + 1) * (win_width+2) + (actor->x - cur_x + 1)] != 0 && 
+             if(tmp_map_buf[(actor->y - cur_y + 1) * tmp_map_width + (actor->x - cur_x + 1)] != 0 && 
                 actor->is_visible() && actor->obj_n != 0)
                {
                 tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
@@ -518,15 +526,16 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  if(draw_lowertiles == true && !(tile->flags3 & 0x4))
    return;
 
- if(tmp_buf[(y+1)*(win_width+2)+(x+1)] == 0) //don't draw object if area is in darkness.
+ if(tmp_map_buf[(y+1)*tmp_map_width+(x+1)] == 0) //don't draw object if area is in darkness.
     return;
  else
     {
-     if(tmp_buf[(y+1)*(win_width+2)+(x+2)] == 0 && !(tile->flags1 & TILEFLAG_WALL))
+     // We don't show objects on walls if the area to the right or bottom of the wall is in darkness
+     if(tmp_map_buf[(y+1)*tmp_map_width+(x+2)] == 0 && !(tile->flags1 & TILEFLAG_WALL))
         return;
      else
       {
-       if(tmp_buf[(y+2)*(win_width+2)+(x+1)] == 0 && !(tile->flags1 & TILEFLAG_WALL))//(obj->obj_n < 290 || obj->obj_n > 302))
+       if(tmp_map_buf[(y+2)*tmp_map_width+(x+1)] == 0 && !(tile->flags1 & TILEFLAG_WALL))//(obj->obj_n < 290 || obj->obj_n > 302))
          return;
       }
     }
@@ -614,7 +623,7 @@ void MapWindow::drawBorder()
  Tile *tile;
  Tile *tile1;
  uint16 i;
- 
+
  if(game_type != NUVIE_GAME_U6)
    return;
 
@@ -657,7 +666,7 @@ void MapWindow::generateTmpMap()
  map_ptr = map->get_map_data(cur_level);
  pitch = map->get_width(cur_level);
  
- memset(tmp_buf, 0, (win_width+2) * (win_height+2) * sizeof(uint16));
+ memset(tmp_map_buf, 0, tmp_map_width * tmp_map_height * sizeof(uint16));
 
  boundaryFill(map_ptr, pitch, cur_x + ((win_width - 1) / 2), cur_y + ((win_height - 1) / 2));
  
@@ -670,15 +679,15 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  uint16 *ptr;
  uint16 pos;
  
- if((x < cur_x - 1) || (x >= (cur_x-1) + win_width + 2) || x >= pitch)
+ if((x < cur_x - 1) || (x >= (cur_x-1) + tmp_map_width) || x >= pitch)
    return;
 
- if((y < cur_y - 1) || (y >= (cur_y-1) + win_height + 2) || y >= pitch)
+ if((y < cur_y - 1) || (y >= (cur_y-1) + tmp_map_height) || y >= pitch)
    return;
    
- pos = (y - (cur_y-1)) * (win_width+2) + (x - (cur_x-1));
+ pos = (y - (cur_y-1)) * tmp_map_width + (x - (cur_x-1));
 
- ptr = &tmp_buf[pos];
+ ptr = &tmp_map_buf[pos];
 
  if(*ptr != 0)
    return;
@@ -760,7 +769,7 @@ void MapWindow::reshapeBoundary()
       {
        if(tmpBufTileIsBoundary(x,y))
          {
-          tile = tile_manager->get_tile(tmp_buf[y*(win_width + 2) + x]);
+          tile = tile_manager->get_tile(tmp_map_buf[y*tmp_map_width + x]);
       
           if((tile->tile_num >= 140 && tile->tile_num <= 187)) //main U6 wall tiles FIX for WOU games
             {
@@ -799,7 +808,7 @@ void MapWindow::reshapeBoundary()
              if(tmpBufTileIsBlack(x,y-1) && tmpBufTileIsBlack(x+1,y)) //replace with blacked corner tile
                {
                 //Oh dear! this is evil. FIX
-                tmp_buf[y*(win_width + 2) + x] = 266 + 2 * (((tile->tile_num - tile->tile_num % 16) - 140) / 16);
+                tmp_map_buf[y*tmp_map_width + x] = 266 + 2 * (((tile->tile_num - tile->tile_num % 16) - 140) / 16);
                 continue;
                }
             }
@@ -809,7 +818,7 @@ void MapWindow::reshapeBoundary()
              if(tmpBufTileIsBlack(x,y+1) && tmpBufTileIsBlack(x-1,y)) //replace with blacked corner tile
                {
                 //Oh dear! this is evil. FIX
-                tmp_buf[y*(win_width + 2) + x] = 266 + 1 + 2 * (((tile->tile_num - tile->tile_num % 16) - 140) / 16);
+                tmp_map_buf[y*tmp_map_width + x] = 266 + 1 + 2 * (((tile->tile_num - tile->tile_num % 16) - 140) / 16);
                 continue;
                }
             }
@@ -834,7 +843,7 @@ void MapWindow::reshapeBoundary()
                tile = tile_manager->get_tile(tile->tile_num + 1);
             }
 
-          tmp_buf[y*(win_width + 2) + x] = tile->tile_num;
+          tmp_map_buf[y*tmp_map_width + x] = tile->tile_num;
          }
       }
    }
@@ -842,7 +851,7 @@ void MapWindow::reshapeBoundary()
 
 inline bool MapWindow::tmpBufTileIsBlack(uint16 x, uint16 y)
 {
- if(tmp_buf[y*(win_width + 2) + x] == 0)
+ if(tmp_map_buf[y*tmp_map_width + x] == 0)
    return true;
 
  return false;
@@ -853,7 +862,7 @@ bool MapWindow::tmpBufTileIsBoundary(uint16 x, uint16 y)
  uint16 tile_num;
  Tile *tile;
 
- tile_num = tmp_buf[y*(win_width + 2) + x];
+ tile_num = tmp_map_buf[y*tmp_map_width + x];
  
  if(tile_num == 0)
    return false;
@@ -874,7 +883,7 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y)
  uint16 tile_num;
  Tile *tile;
 
- tile_num = tmp_buf[y*(win_width + 2) + x];
+ tile_num = tmp_map_buf[y*tmp_map_width + x];
  
  if(tile_num == 0)
    return false;
