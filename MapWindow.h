@@ -82,8 +82,8 @@ protected:
 
  void drawActors();
  void drawObjs();
- void drawObjSuperBlock(U6LList *superblock, bool toptile);
- inline void drawObj(Obj *obj, bool toptile);
+ void drawObjSuperBlock(bool draw_lowertiles, bool toptile);
+ inline void drawObj(Obj *obj, bool draw_lowertiles, bool toptile);
  inline void drawTile(Tile *tile, uint16 x, uint16 y, bool toptile);
  void drawBorder();
  inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);

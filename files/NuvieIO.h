@@ -37,7 +37,7 @@ class NuvieIO
    NuvieIO();
    virtual ~NuvieIO();
    
-   virtual void close()=0;
+   virtual void close() { size=0; pos = 0; };
   
    virtual uint8 read1() { return 0; };
    virtual uint16 read2() { return 0; };

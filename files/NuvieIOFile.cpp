@@ -47,6 +47,7 @@ bool NuvieIOFile::openWithMode(const char *filename, const char *mode)
   }
 
  size = get_filesize();
+ pos = 0;
  
  return true;
 }
@@ -57,6 +58,8 @@ void NuvieIOFile::close()
    fclose(fp);
 
  fp = NULL;
+ 
+ NuvieIO::close();
 }
 
 uint32 NuvieIOFile::get_filesize()
@@ -138,6 +141,8 @@ bool NuvieIOFileRead::readToBuf(unsigned char *buf, uint32 buf_size)
 
  fread(buf,1,buf_size,fp); // FIX for partial read.
 
+ pos += buf_size;
+ 
  return true;
 }
 

@@ -336,20 +336,19 @@ void MapWindow::drawActors()
 
 void MapWindow::drawObjs()
 {
+ //FIX we need to make this more efficent.
+ 
+ drawObjSuperBlock(true,false); //draw force lower objects
+ drawObjSuperBlock(false,false); //draw lower objects
 
-    drawObjSuperBlock(NULL,false); //draw objects for dungeon level
-
-   
  drawActors();
-
-
-    drawObjSuperBlock(NULL,true); //draw objects for dungeon level
-
+ 
+ drawObjSuperBlock(false,true); //draw top objects
  
  return;
 }
 
-void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
+void MapWindow::drawObjSuperBlock(bool draw_lowertiles, bool toptile)
 {
  U6Link *link;
  U6LList *obj_list;
@@ -366,7 +365,7 @@ void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
             for(link=obj_list->start();link != NULL;link=link->next)
               {
                obj = (Obj *)link->data;
-               drawObj(obj, toptile);
+               drawObj(obj, draw_lowertiles, toptile);
               }
            }
          }
@@ -374,7 +373,7 @@ void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
 
 }
 
-inline void MapWindow::drawObj(Obj *obj, bool toptile)
+inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
 {
  uint16 x,y;
  Tile *tile;
@@ -383,7 +382,13 @@ inline void MapWindow::drawObj(Obj *obj, bool toptile)
  x = obj->x - cur_x;
  
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+
+ if(draw_lowertiles == false && tile->flags3 & 0x4) //don't display force lower tiles.
+   return;
  
+ if(draw_lowertiles == true && !(tile->flags3 & 0x4))
+   return;
+
  if(tmp_buf[(y+1)*(win_width+2)+(x+1)] == 0) //don't draw object if area is in darkness.
     return;
  else
