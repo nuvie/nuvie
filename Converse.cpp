@@ -24,6 +24,7 @@
  *
  */
 #include <cctype>
+#include <cstring>
 #include "U6Lzw.h"
 #include "Converse.h"
 
@@ -122,15 +123,11 @@ bool Converse::do_text()
     output.append((const char *)script_pt, (unsigned int)c);
     skip(c);
 
-    if(text_op == CONV_TEXTOP_PRINT && !keywords.size())
-    {
-        fprintf(stderr, "Converse: print \"%s\"\n", output.c_str());
+    if(text_op == CONV_TEXTOP_PRINT && keywords.empty())
         print();
-    }
     else if(text_op == CONV_TEXTOP_KEYWORD)
     {
         keywords = output;
-//        fprintf(stderr, "Converse: got keywords: \"%s\"\n", keywords.c_str());
         output.resize(0);
         text_op = 0;
     }
@@ -145,11 +142,37 @@ bool Converse::do_text()
  */
 bool Converse::check_keywords()
 {
-    int findret = 0;
+    const char *strt_s = NULL;
+    char *tok_s = NULL, *cmp_s = NULL;
     if(keywords == "*")
         return(true);
-    if(input_s.size() && ((findret = keywords.find(input_s)) >= 0))
-        return(true);
+    // check each comma-separated keyword
+    strt_s = keywords.c_str();
+    for(uint32 c = 0; c < strlen(strt_s); c++)
+    {
+        // check at start of string and each keyword
+        if(c == 0 || strt_s[c] == ',')
+        {
+            // copy from keyword start to end of string/keyword
+            uint32 l;
+            tok_s = strdup(&strt_s[(c == 0) ? c : c + 1]);
+            for(l = 0; l < strlen(tok_s) && tok_s[l] != ','; l++);
+            tok_s[l] = '\0';
+            cmp_s = strdup(input_s.c_str());
+            // trim input to keyword size
+            if(l < strlen(cmp_s))
+                cmp_s[l] = '\0';
+            // compare
+            if(!strcmp(tok_s, cmp_s))
+            {
+                free(cmp_s);
+                free(tok_s);
+                return(true);
+            }
+            free(cmp_s);
+            free(tok_s);
+        }
+    }
     return(false);
 }
 
@@ -171,7 +194,7 @@ bool Converse::do_cmd()
                     args[a][v].valt, args[a][v].val);
     fprintf(stderr, "\n");
 #endif
-    if(keywords.size()
+    if(!keywords.empty()
        && (cmd != U6OP_KEYWORD && cmd != U6OP_SANSWER && cmd != U6OP_ENDASK))
     {
 //        fprintf(stderr, "Converse: skip cmd\n");
@@ -211,12 +234,12 @@ bool Converse::do_cmd()
             scroll->display_string("Unimplemented: `clear'\n");
             break;
         case U6OP_JUMP:
-            std::cerr << "Converse: JUMP" << std::endl;
-            fprintf(stderr, "Converse: offset=%08x\n", args[0][0].val);
+            fprintf(stderr, "Converse: JUMP offset=%08x\n", args[0][0].val);
             seek(args[0][0].val);
             break;
         case U6OP_BYE:
 //            std::cerr << "Converse: BYE" << std::endl;
+            scroll->display_string("-BYE-\n");
             stop(); donext = false;
             break;
         case U6OP_WAIT:
@@ -504,7 +527,7 @@ void Converse::continue_script()
     {
         if(!waiting())
             step();
-        else if(scroll->peek_at_input())
+        else if(scroll->get_input())
         {
             scroll->display_string("\n\n");
             input_s.assign(scroll->get_input());

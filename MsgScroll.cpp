@@ -461,14 +461,11 @@ char *MsgScroll::get_input()
   
  return NULL;
 }
- 
+
 char *MsgScroll::peek_at_input()
 {
- if(input_mode == false)
-   {
-    if(input_buf_pos > 0)
-      return input_buf;
-   }
+ if(input_buf_pos > 0)
+   return input_buf;
  return NULL;
 }
  
