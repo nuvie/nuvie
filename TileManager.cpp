@@ -32,6 +32,11 @@ void print_b(uint8 num);
 
 static char article_tbl[][5] = {"", "a ", "an ", "the "};
 
+static const uint16 U6_ANIM_SRC_TILE[32] = {0x16,0x16,0x1a,0x1a,0x1e,0x1e,0x12,0x12,
+                                            0x1a,0x1e,0x16,0x12,0x16,0x1a,0x1e,0x12,
+                                            0x1a,0x1e,0x1e,0x12,0x12,0x16,0x16,0x1a,
+                                            0x12,0x16,0x1e,0x1a,0x1a,0x1e,0x12,0x16};
+
 TileManager::TileManager(Configuration *cfg)
 {
  config = cfg;
@@ -110,6 +115,7 @@ bool TileManager::loadTiles()
  if(look->init() == false)
    return false;
 
+ loadAnimMask();
  
 #ifdef DEBUG
 
@@ -135,6 +141,11 @@ bool TileManager::loadTiles()
 Tile *TileManager::get_tile(uint16 tile_num)
 {
  return &tile[tileindex[tile_num]];
+}
+
+Tile *TileManager::get_anim_base_tile(uint16 tile_num)
+{
+ return &tile[tileindex[U6_ANIM_SRC_TILE[tile_num-16]/2]];
 }
 
 Tile *TileManager::get_original_tile(uint16 tile_num)
@@ -326,6 +337,64 @@ void TileManager::decodePixelBlockTile(unsigned char *tile_data, uint16 tile_num
  return;
 }
 
+
+//FIX this is U6 specific.
+
+bool TileManager::loadAnimMask()
+{
+ std::string filename;
+ U6Lzw lzw;
+ uint16 i;
+ unsigned char *animmask;
+ unsigned char *mask_ptr;
+ uint32 animmask_size;
+ 
+ unsigned char *tile_data;
+ uint16 bytes2clear;
+ uint16 displacement;
+ 
+ config->pathFromValue("config/ultima6/gamedir","animmask.vga",filename);
+ animmask = lzw.decompress_file(filename,animmask_size);
+ 
+ if(animmask == NULL)
+   return false;
+
+ for(i=0;i<32;i++) // Make the 32 tiles from index 16 onwards transparent with data from animmask.vga
+  {
+   tile_data = tile[16+i].data;
+   tile[16+i].transparent = true;
+   
+   mask_ptr = animmask + i * 64;
+   bytes2clear = mask_ptr[0];
+      
+   if(bytes2clear != 0)
+     memset(tile_data,0xff,bytes2clear);
+
+   tile_data += bytes2clear;
+   mask_ptr++;
+   
+   displacement = mask_ptr[0];
+   bytes2clear = mask_ptr[1];
+   
+   mask_ptr += 2;
+   
+   for(;displacement != 0 && bytes2clear != 0;mask_ptr += 2)
+     {
+      tile_data += displacement;
+      
+      memset(tile_data,0xff,bytes2clear);
+      tile_data += bytes2clear;
+      
+      displacement = mask_ptr[0];
+      bytes2clear = mask_ptr[1];
+     }
+  }  
+ 
+ free(animmask);
+ 
+ return true;
+}
+   
 void print_b(uint8 num)
 {
  sint8 i;

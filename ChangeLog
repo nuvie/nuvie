@@ -1,3 +1,6 @@
+2003-04-06  Eric Fry  <efry@users.sourceforge.net>
+	* Fixed shoreline animation.
+
 2003-04-05  Eric Fry  <efry@users.sourceforge.net>
 	* Intergrated Ryan's Scaler code.
 	* Actors now twitch and move around.

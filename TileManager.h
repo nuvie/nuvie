@@ -91,6 +91,7 @@ class TileManager
     
    bool loadTiles();
    Tile *get_tile(uint16 tile_num);
+   Tile *get_anim_base_tile(uint16 tile_num);
    Tile *get_original_tile(uint16 tile_num);
 
    char *lookAtTile(uint16 tile_num, uint16 qty);
@@ -102,7 +103,9 @@ class TileManager
    bool loadAnimData();
    bool loadTileFlag();
    void decodePixelBlockTile(unsigned char *tile_data, uint16 tile_num);
-};
 
+   bool loadAnimMask();
+};
+   
 #endif /* __TileManager_h__ */
 

@@ -219,8 +219,14 @@ void MapWindow::drawMap()
         screen->clear((j*16),(i*16),16,16,&clip_rect); //blackout tile.
       else
         {
+         if(map_ptr[j] >= 16 && map_ptr[j] < 48) //lay down the base tile for shoreline tiles
+           {
+            tile = tile_manager->get_anim_base_tile(map_ptr[j]);
+            screen->blit((j*16),(i*16),(unsigned char *)tile->data,8,16,16,16,tile->transparent,&clip_rect);
+           }
+
          tile = tile_manager->get_tile(map_ptr[j]);
-         screen->blit((j*16),(i*16),(unsigned char *)tile->data,8,16,16,16,false,&clip_rect);
+         screen->blit((j*16),(i*16),(unsigned char *)tile->data,8,16,16,16,tile->transparent,&clip_rect);
         }
 
      }
