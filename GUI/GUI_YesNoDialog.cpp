@@ -28,12 +28,12 @@
 #include "GUI_button.h"
 #include "GUI_text.h"
 
-#include "GUI_area.h"
+#include "GUI_Dialog.h"
 #include "GUI_YesNoDialog.h"
 
 
 GUI_YesNoDialog::GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallbackProc yesCallbackProc, GUI_CallbackProc noCallbackProc) : 
-   GUI_Area(x, y, w, h, 212, 208, 131, 72, 69, 29, 2, AREA_ANGULAR)
+   GUI_Dialog(x, y, w, h, 252, 244, 192, GUI_DIALOG_MOVABLE)
 {
   GUI_Widget *widget;
   

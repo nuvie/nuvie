@@ -33,17 +33,22 @@
 #include "GUI_widget.h"
 #include "GUI_font.h"
 
-#include "Screen.h"
+
+class Configuration;
+class Screen;
 
 #define GUI_FULL_REDRAW true
+
 class GUI {
 
 protected:
  
   static GUI *gui;
- 
+   Configuration *config;
+   
 	/* The display surface */
   Screen *screen;
+
 	int screen_scale_factor;
 
   GUI_Font *gui_font;
@@ -71,7 +76,7 @@ protected:
   bool full_redraw; //this forces all widgets to redraw on the next call to Display()
   
 public:
-	GUI(Screen *s);
+	GUI(Configuration *c, Screen *s);
 	~GUI();
 
 	/* Add a widget to the GUI.
@@ -123,7 +128,7 @@ public:
 	void clear_focus()  { set_focus(NULL); }
 	void lock_input(GUI_Widget *widget);
 	void unlock_input() { lock_input(NULL); }
-
+    std::string get_data_dir();
 protected:
   
 	/* Function to handle a GUI status */

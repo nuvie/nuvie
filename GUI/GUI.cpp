@@ -27,6 +27,7 @@
 #include <stdlib.h>
 
 #include "nuvieDefs.h"
+#include "Configuration.h"
 
 #include "GUI.h"
 
@@ -35,9 +36,10 @@
 
 GUI *GUI::gui = NULL;
 
-GUI:: GUI(Screen *s)
+GUI:: GUI(Configuration *c, Screen *s)
 {
     gui = this;
+    config = c;
 	screen = s;
 	numwidgets = 0;
 	maxwidgets = 0;
@@ -415,3 +417,13 @@ void GUI::lock_input(GUI_Widget *widget)
 		if(!widget || (widgets[i] == widget)) // must be managed by GUI
 			locked_widget = widget;
 }
+
+std::string GUI::get_data_dir()
+{
+ std::string datadir;
+ 
+ config->value("comfig/datadir", datadir, "");
+ 
+ return datadir;
+}
+

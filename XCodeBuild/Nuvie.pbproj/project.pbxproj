@@ -136,12 +136,13 @@
 				0761792E05D79146001B6450,
 				0761793005D79146001B6450,
 				0761793605D79146001B6450,
-				0761793805D79146001B6450,
 				0761794105D79146001B6450,
 				07617A6B05D7A067001B6450,
 				07617E4F05DBA903001B6450,
 				076180FD05E84901001B6450,
 				0761811705E84B60001B6450,
+				072B48CD061E86AB00CC3368,
+				072B48FA061EEBDA00CC3368,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -683,10 +684,11 @@
 				0761777405D47ADB001B6450,
 				0761792D05D79146001B6450,
 				0761792F05D79146001B6450,
-				0761793705D79146001B6450,
 				0761794005D79146001B6450,
 				07617E4E05DBA903001B6450,
 				0761811605E84B60001B6450,
+				072B48CC061E86AB00CC3368,
+				072B48F9061EEBDA00CC3368,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1608,6 +1610,66 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
+		072B48CA061E86AB00CC3368 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = adplug_player.cpp;
+			path = ../sound/adplug/adplug_player.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072B48CB061E86AB00CC3368 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = adplug_player.h;
+			path = ../sound/adplug/adplug_player.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072B48CC061E86AB00CC3368 = {
+			fileRef = 072B48CA061E86AB00CC3368;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072B48CD061E86AB00CC3368 = {
+			fileRef = 072B48CB061E86AB00CC3368;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072B48F7061EEBDA00CC3368 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = GUI_Dialog.cpp;
+			path = ../GUI/GUI_Dialog.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072B48F8061EEBDA00CC3368 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = GUI_Dialog.h;
+			path = ../GUI/GUI_Dialog.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072B48F9061EEBDA00CC3368 = {
+			fileRef = 072B48F7061EEBDA00CC3368;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072B48FA061EEBDA00CC3368 = {
+			fileRef = 072B48F8061EEBDA00CC3368;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		072BE3A5041ADE7D00A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -1740,6 +1802,8 @@
 		};
 		074B913604E4C4BA00A8000A = {
 			children = (
+				072B48F8061EEBDA00CC3368,
+				072B48F7061EEBDA00CC3368,
 				0761777305D47ADB001B6450,
 				0761777205D47ADB001B6450,
 				074B913904E4C51500A8000A,
@@ -2073,13 +2137,13 @@
 		};
 		076178FC05D79121001B6450 = {
 			children = (
+				072B48CB061E86AB00CC3368,
+				072B48CA061E86AB00CC3368,
 				0761790E05D79146001B6450,
 				0761790D05D79146001B6450,
 				0761791005D79146001B6450,
 				0761790F05D79146001B6450,
 				0761791605D79146001B6450,
-				0761791805D79146001B6450,
-				0761791705D79146001B6450,
 				07617A6A05D7A067001B6450,
 				0761792105D79146001B6450,
 				0761792005D79146001B6450,
@@ -2134,24 +2198,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		0761791705D79146001B6450 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = player.cpp;
-			path = ../sound/adplug/player.cpp;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		0761791805D79146001B6450 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = player.h;
-			path = ../sound/adplug/player.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		0761792005D79146001B6450 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -2196,18 +2242,6 @@
 		};
 		0761793605D79146001B6450 = {
 			fileRef = 0761791605D79146001B6450;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		0761793705D79146001B6450 = {
-			fileRef = 0761791705D79146001B6450;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		0761793805D79146001B6450 = {
-			fileRef = 0761791805D79146001B6450;
 			isa = PBXBuildFile;
 			settings = {
 			};

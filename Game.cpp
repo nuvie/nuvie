@@ -102,7 +102,7 @@ bool Game::loadGame(Screen *s, uint8 type)
  screen = s;
  game_type = type;
  
- gui = new GUI(screen);
+ gui = new GUI(config, screen);
 
  try
   {

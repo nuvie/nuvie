@@ -23,11 +23,11 @@
  *
  */
 
-#include "GUI_area.h"
+#include "GUI_Dialog.h"
 
 class GUI;
 
-class GUI_YesNoDialog : public GUI_Area {
+class GUI_YesNoDialog : public GUI_Dialog {
 protected:
 
 GUI_CallbackProc yesCallback;

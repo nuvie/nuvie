@@ -1,3 +1,14 @@
+2004-04-03  Eric Fry <efry at users.sourceforge.net>
+	* Renamed sound/adplug/player.cpp|h files to 
+	  sound/adplug/adplug_player.cpp|h This should fix a compiler
+	  filename clash when building Nuvie using the autoconf build 
+	  environment under Mac OS X.
+	* Added config variable to GUI class.
+	* Added GUI::get_data_dir() This method retrieves the datadir
+	  path from the config file.
+	* Added GUI_Dialog class. This class replaces GUI_Area as a base
+	  class for dialog widgets. It is moveable and has textured borders! :-)
+
 2004-03-27  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added Dungeon Deciet to the teleporter list under "Dungeons". Some
 	  destinations there were moved to "Other".

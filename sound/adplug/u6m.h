@@ -22,7 +22,7 @@
 
 #include <stack>
 
-#include "player.h"
+#include "adplug_player.h"
 
 class Cu6mPlayer: public CPlayer
 {
