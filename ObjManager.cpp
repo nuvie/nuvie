@@ -560,7 +560,7 @@ const char *ObjManager::get_obj_name(Obj *obj)
  return tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n),0,false);
 }
 
-float ObjManager::get_obj_weight(Obj *obj, bool include_container_items)
+float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool scale)
 {
  float weight;
  U6Link *link;
@@ -574,8 +574,11 @@ float ObjManager::get_obj_weight(Obj *obj, bool include_container_items)
  if(obj->container != NULL && include_container_items == true)
    {
     for(link=obj->container->start();link != NULL;link=link->next)
-      weight += get_obj_weight(reinterpret_cast<Obj*>(link->data));
+      weight += get_obj_weight(reinterpret_cast<Obj*>(link->data), false); //don't scale container objects yet.
    }
+
+ if(scale)
+   weight /= 10;
 
  return weight;
 }

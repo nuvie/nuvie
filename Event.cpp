@@ -645,7 +645,7 @@ bool Event::look()
    weight = obj_manager->get_obj_weight(obj);
    if(weight != 0)
      {
-      snprintf(weight_string,25,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj) / 10.0);
+      snprintf(weight_string,25,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj));
       scroll->display_string(weight_string);
      }
   // check for special description

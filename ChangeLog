@@ -1,4 +1,8 @@
 2003-12-25  Eric Fry <efry@users.sourceforge.net>
+	* Some fixes for object weight. Inventory weight should be closer to the
+	  original now.
+	
+2003-12-25  Eric Fry <efry@users.sourceforge.net>
 	* Fixed an issue with containers. [ 864087 ] There are some comtainer
 	  objects that don't reference their container through the x variable.
 	  They seem to follow the container object in the objblk files. They

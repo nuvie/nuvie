@@ -21,6 +21,7 @@
  *
  */
 #include <cstdlib>
+#include <cmath>
 #include "nuvieDefs.h"
 #include "U6LList.h"
 #include "Game.h"
@@ -687,9 +688,9 @@ float Actor::get_inventory_weight()
    weight += obj_manager->get_obj_weight(obj);
   }
 
- weight /= 10;
+ // weight /= 10;
  
- return weight;
+ return round(weight);
 }
 
 float Actor::get_inventory_equip_weight()
@@ -711,9 +712,9 @@ float Actor::get_inventory_equip_weight()
       weight += obj_manager->get_obj_weight(obj);
   }
 
- weight /= 10;
+ // weight /= 10;
  
- return weight;
+ return round(weight);
 }
 
 
@@ -732,7 +733,7 @@ bool Actor::can_carry_object(uint16 obj_n, uint32 qty)
  */
 bool Actor::can_carry_weight(float obj_weight)
 {
-    obj_weight /= 10;
+    // obj_weight /= 10;
     return((get_inventory_weight() + obj_weight) <= inventory_get_max_weight());
 }
 

@@ -148,7 +148,7 @@ class ObjManager
  const char *look_obj(Obj *obj, bool show_prefix = false);
 
  const char *get_obj_name(Obj *obj);
- float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS);
+ float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, bool scale=true);
  uint8 get_obj_weight(uint16 obj_n) { return(obj_weight[obj_n]); }
 
  void animate_forwards(Obj *obj, uint32 loop_count = 1);
