@@ -20,6 +20,7 @@
 // Disable some warnings
 #pragma warning (disable: 4786)  // Debug Len > 255
 #pragma warning (disable: 4275)  // non dll-interface class ...
+#pragma warning (disable: 4800)  // forcing value to bool 'true' or 'false'
 
 // Include that before all other things; caused problems in wchar.h
 #include <string>
@@ -27,6 +28,8 @@
 
 #define snprintf _snprintf
 #define strcasecmp _stricmp
+
+__inline roundf (float val) { return floorf (val); }
 
 
 // Using STLport?
