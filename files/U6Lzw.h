@@ -12,13 +12,11 @@
 
 class U6LzwStack
 {
- protected:
-
+protected:
    unsigned char stack[STACK_SIZE];
    int contains;
 
- public:
-
+public:
    U6LzwStack();
 
    void reset(void);
@@ -58,7 +56,7 @@ class U6Lzw
 {
  //U6LzwStack *stack;
  //U6LzwDict *dict;
- 
+    char *errstr; // error string
  public:
 
   U6Lzw(void);
@@ -66,7 +64,9 @@ class U6Lzw
 
   unsigned char *decompress_buffer(unsigned char *source, uint32 source_length, uint32 &destination_length);
   unsigned char *decompress_file(std::string filename, uint32 &destination_length);
-
+  unsigned char *compress_buffer(unsigned char *src, uint32 src_len,
+                                 uint32 &dest_len);
+  const char *strerror() { return (const char *)errstr; } // get error string
  protected:
 
   bool is_valid_lzw_file(U6File *input_file);

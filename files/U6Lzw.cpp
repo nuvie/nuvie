@@ -4,7 +4,7 @@
 //
 
 // =============================================================
-// This program decompresses Ultima_6-style LZW-comrpessed files
+// This program decompresses Ultima_6-style LZW-compressed files
 // =============================================================
 
 #include <stdio.h>
@@ -25,6 +25,7 @@ U6Lzw::U6Lzw()
     dict = new U6LzwDict;
  if(stack == NULL)
     stack = new U6LzwStack;
+ errstr = "unknown error";
 }
 
 U6Lzw::~U6Lzw()
@@ -32,6 +33,45 @@ U6Lzw::~U6Lzw()
  //delete dict;
  //delete stack;
 }
+
+
+/* Copy and return the contents of `src' buffer, in LZW form. It is not really
+ * compressed, it just makes it suitable to be read by an LZW decoder.
+ */
+unsigned char *U6Lzw::compress_buffer(unsigned char *src, uint32 src_len,
+                                      uint32 &dest_len)
+{
+    // FIXME - didnt bother fixing this since its output will be larger than
+    //         the uncompressed data
+    uint32 blocks = 0, block = 0, b = 0, d = 0, rshift = 0;
+    uint16 val = 0;
+    unsigned char *dest_pt = NULL, *dest_buf = (unsigned char *)malloc(4);
+    // add 4 byte uncompressed length value
+    dest_len = 4;
+    memcpy(dest_buf, &src_len, dest_len);
+    blocks = (src_len / 64);
+    if((blocks * 64) < src_len)
+        blocks += 1;
+    dest_buf = (unsigned char *)realloc(dest_buf, src_len + 4);
+    dest_len = src_len + 4;
+    memset(&dest_buf[4], 0, src_len);
+#if 0
+    for(block = 0, d = 4; block < blocks && b < src_len; block++)
+    {
+        dest_len += 128;
+        dest_buf = (unsigned char *)realloc(dest_buf, dest_len);
+        // add 9 bit value 0x100
+//        rshift += (rshift < 7) ? 1 : -rshift;
+        for(; b < src_len; b++)
+        {
+            // for each byte in block, add 9bit value, upper bit = 0
+        }
+    }
+    // add 9 bit value 0x101
+#endif
+    return(dest_buf);
+}
+
 
 // this function only checks a few *necessary* conditions
 // returns "FALSE" if the file doesn't satisfy these conditions
@@ -58,15 +98,21 @@ bool U6Lzw::is_valid_lzw_file(U6File *input_file)
 
 bool U6Lzw::is_valid_lzw_buffer(unsigned char *buf, uint32 length)
 {
- if(length < 6)
-   return false;
-
- if(buf[3] != 0)
-   return false;
-
- if((buf[4] != 0) || ((buf[5] & 1) != 1))
-   return false;
-
+    if(length < 6)
+    {
+        errstr = "is_valid_lzw_buffer: buffer length < 6";
+        return false;
+    }
+    if(buf[3] != 0)
+    {
+        errstr = "is_valid_lzw_buffer: buffer size > 16MB";
+        return false;
+    }
+    if((buf[4] != 0) || ((buf[5] & 1) != 1))
+    {
+        errstr = "is_valid_lzw_buffer: first 9 bits of data != 0x100";
+        return false;
+    }
  return true;
 }
 
@@ -118,7 +164,6 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
     destination_length = this->get_uncompressed_buffer_size(source,source_length);
     if(destination_length == -1)
       return NULL;
-  
     destination = (unsigned char *)malloc(destination_length);
     
     source += 4; //skip the filesize dword.
@@ -203,7 +248,7 @@ unsigned char *U6Lzw::decompress_buffer(unsigned char *source, uint32 source_len
        // shift roles - the current cW becomes the new pW
        pW = cW;
     }
-    
+
  return destination;
 }
  
