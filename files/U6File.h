@@ -47,9 +47,9 @@ class U6File
    uint8 read1();
    uint16 read2();
    uint32 read4();
-   bool write4(uint32 src)
-   bool write2(uint16 src)
-   unsigned int writeBuf(unsigned char *buf, uint32 size)
+   bool write4(uint32 src);
+   bool write2(uint16 src);
+   unsigned int writeBuf(unsigned char *buf, uint32 size);
    bool readToBuf(unsigned char *buf, uint32 buf_size);
    unsigned char *readBuf(uint32 size, unsigned int *bytes_read);
    unsigned char *readFile();
