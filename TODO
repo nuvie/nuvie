@@ -12,6 +12,8 @@ Converse/Talk:
 0xbf - alternate inventory/portrait view
 Consider input buffer filled with spaces as empty
 
+Iolo "gather" doesn't get gold in containers eg in bags, backpacks
+
 skiff
 ship
 balloon

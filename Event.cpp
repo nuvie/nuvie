@@ -369,7 +369,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
      weight /= 10;
      
        Actor *pc = player->get_actor();
-       float total = (weight*(obj->qty?obj->qty:1)) + pc->get_inventory_weight();
+       float total = weight + pc->get_inventory_weight();
        //float max = pc->inventory_get_max_weight();
 
        if(total <= pc->inventory_get_max_weight())

@@ -1,6 +1,8 @@
 2003-09-09  Eric Fry <efry@users.sourceforge.net>
 	* Replaced gcc-3.3 with gcc in the Project Builder build system.
 	* Added quantity strings to InventoryWidget
+	* Event::Get Fixed weight check bug. Weight was aleady
+	  multiplied by obj->qty
 
 2003-09-07  Eric Fry <efry@users.sourceforge.net>
 	* Fix for stackable items in Event::Get
