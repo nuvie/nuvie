@@ -155,6 +155,24 @@ bool U6LList::remove(void *data, bool free_data)
  return false;
 }
  
+bool U6LList::removeAll()
+{
+ U6Link *tmp_link, *link;
+ 
+ for(link=head;link != NULL;)
+  {
+   tmp_link = link;
+   link=link->next;
+
+   delete tmp_link;
+  }
+
+ head = NULL;
+ tail = NULL;
+ cur = NULL;
+ 
+ return true;  
+}
   
  U6Link *U6LList::start()
 {

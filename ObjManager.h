@@ -137,7 +137,7 @@ class ObjManager
  bool loadWeightTable();
 
  bool loadObjSuperChunk(char *filename, uint8 level);
- void addObj(iAVLTree *obj_tree, Obj *obj);
+ void addObj(iAVLTree *obj_tree, Obj *obj, bool addOnTop=false);
  bool addObjToContainer(U6LList *list, Obj *obj);
  Obj *loadObj(U6File *file, uint16 objblk_n);
  char *get_objblk_path(char *path);

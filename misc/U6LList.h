@@ -51,6 +51,7 @@ class U6LList
  bool addAtPos(uint32 pos, void *data);
 
  bool remove(void *data, bool free_data=false);
+ bool removeAll();
  
  U6Link *start();
  U6Link *end();

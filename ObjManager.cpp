@@ -363,19 +363,13 @@ bool ObjManager::use_obj(Obj *obj)
                          if((obj->container != NULL) &&
                           ((objs = obj->container->end()) != NULL))
                           {
-                           Obj *temp_obj;
                            U6LList *obj_list = get_obj_list(obj->x, obj->y, obj->z);
-
-                           /* the x coordinate of the object inside a
-                              container is the index of the container.
-                            */
-                           pos = ((Obj*)objs->data)->x;
 
                            /* Add objects to obj_list. */
                            for(; objs != NULL; objs = objs->prev)
                             {
                              temp_obj = (Obj*)objs->data;
-                             obj_list->addAtPos(++pos, temp_obj);
+                             obj_list->add(temp_obj);
                              temp_obj->status = OBJ_STATUS_OK_TO_TAKE;
                              temp_obj->x = obj->x;
                              temp_obj->y = obj->y;
@@ -383,12 +377,7 @@ bool ObjManager::use_obj(Obj *obj)
                             }
 
                            /* Remove objects from the container. */
-                           for(objs = obj->container->start(); objs != NULL;)
-                           {
-                             temp_obj = (Obj*)objs->data;
-                             objs = objs->next;
-                             obj->container->remove(temp_obj);
-                           }
+                           obj->container->removeAll();
                          }
    }
 
@@ -469,7 +458,7 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  obj->y = y;
  obj->z = level;
 
- addObj(get_obj_tree(level),obj);
+ addObj(get_obj_tree(level),obj,true); // add the object on top of the stack
 
  return true;
 }
@@ -619,7 +608,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
  return true;
 }
 
-void ObjManager::addObj(iAVLTree *obj_tree, Obj *obj)
+void ObjManager::addObj(iAVLTree *obj_tree, Obj *obj, bool addOnTop)
 {
  ObjTreeNode *node;
  U6LList *obj_list;
@@ -644,7 +633,10 @@ void ObjManager::addObj(iAVLTree *obj_tree, Obj *obj)
     obj_list = node->obj_list;
    }
 
- obj_list->addAtPos(0,obj);
+ if(addOnTop)
+   obj_list->add(obj);
+ else
+   obj_list->addAtPos(0,obj);
 }
 
 bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
