@@ -20,6 +20,8 @@ nuvie_SOURCES = \
 \
 	screen/GamePalette.cpp \
 	screen/GamePalette.h \
+	screen/Scale.cpp \
+	screen/Scale.h \
 	screen/Screen.cpp \
 	screen/Screen.h \
 	screen/Surface.cpp \

@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <cstdlib>
 
 #include "Map.h"
 
@@ -32,6 +33,8 @@ Actor::Actor(Map *m)
  map = m;
  direction = 0;
  walk_frame = 0;
+ standing = true;
+ in_party = false;
 }
  
 Actor::~Actor()
@@ -98,7 +101,41 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z)
 
 void Actor::update()
 {
+ uint8 new_direction;
+ 
  // do actor stuff here.
+ if(standing)
+  {
+   if(random()%50 == 1)
+     {
+      walk_frame = random()%4;
+      frame_n = direction * 4 + walk_frame_tbl[walk_frame];
+     }
+   else
+    {
+     if(!in_party)
+       {
+        if(random()%80 == 1)
+          {
+           new_direction = random()%4;
+           set_direction(new_direction);
+           switch(new_direction)
+            {
+             case 0 : moveRelative(0,-1); break;
+             case 1 : moveRelative(1,0); break;
+             case 2 : moveRelative(0,1); break;
+             case 3 : moveRelative(-1,0); break;
+            }
+          }
+       }
+    }
+  }
+
+}
+
+void Actor::set_in_party(bool state)
+{
+ in_party = state;
 }
 
 void Actor::loadSchedule(unsigned char *sched_data, uint16 num)

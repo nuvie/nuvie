@@ -5,6 +5,71 @@
 	};
 	objectVersion = 38;
 	objects = {
+		070823D3043EF72800A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Scale.cpp;
+			path = ../screen/Scale.cpp;
+			refType = 2;
+		};
+		070823D4043EF72800A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Scale.h;
+			path = ../screen/Scale.h;
+			refType = 2;
+		};
+		070823D5043EF72800A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Scale.inl;
+			path = ../screen/Scale.inl;
+			refType = 2;
+		};
+		070823D6043EF72800A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Surface.cpp;
+			path = ../screen/Surface.cpp;
+			refType = 2;
+		};
+		070823D7043EF72800A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Surface.h;
+			path = ../screen/Surface.h;
+			refType = 2;
+		};
+		070823D8043EF72800A8000A = {
+			fileRef = 070823D3043EF72800A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		070823D9043EF72800A8000A = {
+			fileRef = 070823D4043EF72800A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		070823DA043EF72800A8000A = {
+			fileRef = 070823D5043EF72800A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		070823DB043EF72800A8000A = {
+			fileRef = 070823D6043EF72800A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		070823DC043EF72800A8000A = {
+			fileRef = 070823D7043EF72800A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		072191ED041DB2C900A8000A = {
 			children = (
 				072191EE041DB2F000A8000A,
@@ -394,12 +459,13 @@
 			children = (
 				072BE3AF041AFE3900A8000A,
 				072BE3AE041AFE3900A8000A,
-				07707D43043558C800A8000A,
-				07707D42043558C800A8000A,
 				072BE3B2041AFE8A00A8000A,
 				072BE3B3041AFE8A00A8000A,
-				07DBE1B90437CC7200A8000A,
-				07DBE1BA0437CC7200A8000A,
+				070823D3043EF72800A8000A,
+				070823D4043EF72800A8000A,
+				070823D5043EF72800A8000A,
+				070823D6043EF72800A8000A,
+				070823D7043EF72800A8000A,
 			);
 			isa = PBXGroup;
 			name = Screen;
@@ -541,32 +607,6 @@
 		};
 		0740D53C042AA97500A8000A = {
 			fileRef = 0740D536042AA97500A8000A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		07707D42043558C800A8000A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			name = Surface.cpp;
-			path = ../screen/Surface.cpp;
-			refType = 2;
-		};
-		07707D43043558C800A8000A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			name = Surface.h;
-			path = ../screen/Surface.h;
-			refType = 2;
-		};
-		07707D44043558C800A8000A = {
-			fileRef = 07707D42043558C800A8000A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		07707D45043558C800A8000A = {
-			fileRef = 07707D43043558C800A8000A;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -751,20 +791,6 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
-		};
-		07DBE1B90437CC7200A8000A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			name = scaler.cpp;
-			path = ../screen/scaler.cpp;
-			refType = 2;
-		};
-		07DBE1BA0437CC7200A8000A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			name = scaler.h;
-			path = ../screen/scaler.h;
-			refType = 2;
 		};
 		07EF5321043137BF00A8000A = {
 			fileEncoding = 4;
@@ -1095,7 +1121,8 @@
 				07DB53ED042DA0CF00A8000A,
 				07DB546D042E8C1A00A8000A,
 				07EF5323043137BF00A8000A,
-				07707D45043558C800A8000A,
+				070823D9043EF72800A8000A,
+				070823DC043EF72800A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1104,6 +1131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				089C165EFE840E0CC02AAC07,
+				070823DA043EF72800A8000A,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1137,7 +1165,8 @@
 				07DB53EC042DA0CF00A8000A,
 				07DB546E042E8C1A00A8000A,
 				07EF5324043137BF00A8000A,
-				07707D44043558C800A8000A,
+				070823D8043EF72800A8000A,
+				070823DB043EF72800A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -38,13 +38,14 @@ GamePalette::GamePalette(Screen *s, Configuration *cfg)
  screen = s;
  config = cfg;
  
- palette = (SDL_Color *)malloc(sizeof(SDL_Color) * 256);
- memset(palette, 0, sizeof(SDL_Color) * 256);
+ palette = (uint8 *)malloc(768);
+ memset(palette, 0, 768);
  
  this->loadPalette();
  
  screen->set_palette(palette);
  
+ counter = 0;
 }
 
 GamePalette::~GamePalette()
@@ -59,7 +60,7 @@ bool GamePalette::loadPalette()
  std::string filename;
  U6File file;
  unsigned char *buf;
- SDL_Color *pal_ptr;
+ uint8 *pal_ptr;
  
  config->pathFromValue("config/ultima6/gamedir","u6pal",filename);
  
@@ -75,10 +76,10 @@ bool GamePalette::loadPalette()
  
  for(i=0,j=0;i<256;i++,j+=3)
   {
-   palette[i].r = buf[j]<<2;
-   palette[i].g = buf[j+1]<<2;
-   palette[i].b = buf[j+2]<<2;
-   pal_ptr += sizeof(SDL_Color);
+   pal_ptr[0] = buf[j]<<2;
+   pal_ptr[1] = buf[j+1]<<2;
+   pal_ptr[2] = buf[j+2]<<2;
+   pal_ptr += 3;
   }
 
  free(buf);
@@ -86,9 +87,19 @@ bool GamePalette::loadPalette()
  return true;
 }
 
-void GamePalette::rotatePalette(uint8 pos, uint8 length, uint8 amount)
+void GamePalette::rotatePalette()
 {
- //SDL_Color color;
- //for
- //color = 
+ screen->rotate_palette(0xe0,8); // Fires, braziers, candles
+ screen->rotate_palette(0xe8,8); // BluGlo[tm] magical items
+
+ if(counter == 0)
+  {
+   screen->rotate_palette(0xf0,4); // 
+   screen->rotate_palette(0xf4,4); // Kitchen Cauldrons
+   screen->rotate_palette(0xfb,4); // 
+   counter = 1;
+  }
+ else
+  counter = 0;
+
 }

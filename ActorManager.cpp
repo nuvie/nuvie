@@ -136,33 +136,6 @@ void ActorManager::updateActors()
   
 }
 
-void ActorManager::drawActors(Surface *surface, uint16 x, uint16 y, uint16 width, uint16 height, uint8 level)
-{
- uint16 i;
- Tile *tile;
- 
- for(i=0;i < 256;i++)
-   {
-    if(actors[i]->x >= x && actors[i]->x < x + width)
-      {
-       if(actors[i]->y >= y && actors[i]->y < y + height)
-         {
-          if(actors[i]->z == level)
-           {
-  //          if(i == 1) //HACK fix this for proper frame handling
-              tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actors[i]->a_num)+actors[i]->frame_n);
-//            else
-//              tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actors[i]->a_num)+actors[i]->frame_n);
-
-            surface->blit((actors[i]->x - x)*16,(actors[i]->y - y)*16,tile->data,8,16,16,16,tile->transparent);
-           }
-         }
-      }
-   }
-
- return;
-}
-
 bool ActorManager::loadActorSchedules()
 {
  std::string filename;

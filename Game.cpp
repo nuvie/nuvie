@@ -102,15 +102,18 @@ bool Game::loadBackground()
 
 void Game::drawBackground()
 {
- char *pixels;
- char *data;
- uint32 data_size;
+ //char *pixels;
+ unsigned char *data;
+ uint16 width, height;
 
- pixels = (char *)screen->get_pixels();
- data = (char *)background->get_data();
- data_size = background->get_width() * background->get_height();
+ //pixels = (unsigned char *)screen->get_pixels();
+ data = background->get_data();
+ width = background->get_width();
+ height = background->get_height();
+
+ screen->blit(0, 0, data, 8,  width, height, width,false);
  
- memcpy(pixels,data,data_size);
+ //memcpy(pixels,data,data_size);
 
  return;
 }
@@ -120,21 +123,21 @@ void Game::play()
  bool game_play = true;
  
   drawBackground();
+  screen->update();
   
   map_window->drawMap();
-  
-  screen->update();
   
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
   
 	for( ; game_play ; ) 
     {
      game_play = event->update();
+     palette->rotatePalette();
      tile_manager->update();
      actor_manager->updateActors();
      map_window->drawMap();
      scroll->updateScroll();
-     screen->update();
+     //screen->update();
      event->wait();
 	  }
 

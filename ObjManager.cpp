@@ -345,7 +345,7 @@ bool ObjManager::use_obj(uint16 x, uint16 y, uint8 level)
  }
 
 
-  if(obj->obj_n == 278)
+  if(obj->obj_n == OBJ_U6_V_PASSTHROUGH)
  {
    if(obj->frame_n < 2)
     {
@@ -359,7 +359,7 @@ bool ObjManager::use_obj(uint16 x, uint16 y, uint8 level)
     }
  }
 
-  if(obj->obj_n == 280)
+  if(obj->obj_n == OBJ_U6_H_PASSTHROUGH)
  {
    if(obj->frame_n < 2)
     {

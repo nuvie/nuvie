@@ -20,6 +20,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <time.h>
+#include <cstdlib>
 
 #include "nuvie.h"
 
@@ -32,7 +34,9 @@ int main(int argc, char **argv)
 #endif
 {
  Nuvie *nuvie;
- 
+
+ srandom(time(NULL));
+  
  nuvie = new Nuvie;
  
  nuvie->init();

@@ -23,38 +23,59 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */ 
+#include <string>
 
 #include <SDL.h>
 
 #include "U6def.h"
 #include "Configuration.h"
 #include "Surface.h"
+#include "Scale.h"
 
-class Screen: Surface
+class Screen
 {
  Configuration *config;
- SDL_Surface *scaled_surface;
+ SDL_Surface *sdl_surface;
+ RenderSurface *surface;
+ 
+ ScalerRegistry		scaler_reg;		// Scaler Registry
+ const ScalerStruct	*scaler;		// Scaler
+ int scaler_index;	// Index of Current Scaler
+ int scale_factor;	// Scale factor
+
+ bool fullscreen;
+ bool doubleBuffer;
+ 
+ uint8 palette[768];
+ uint16 width;
+ uint16 height;
  
  public:
    Screen(Configuration *cfg);
    ~Screen();
 
-   bool init(uint16 width = 320, uint16 height = 200);
+   bool init(uint16 width, uint16 height);
    
-   virtual bool set_palette(SDL_Color *palette);
-   virtual bool clear(uint8 color = 0);
-   virtual void *get_pixels();
-   virtual uint16 get_pitch();
-   virtual uint16 get_bpp();
+   bool set_palette(uint8 *palette);
+   bool rotate_palette(uint8 pos, uint8 length);
+   bool clear(uint16 x, uint16 y, uint16 w, uint16 h);
+   void *get_pixels();
+   uint16 get_pitch();
+   uint16 get_bpp();
       
-   virtual bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false);     
+   bool blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false);     
    void update();
+   void update(uint16 x, uint16 y, uint16 w, uint16 h);
    
    void lock();
    void unlock();
    
    bool initScaler();
 
+protected:
+
+void set_screen_mode();
+bool try_scaler(int w, int h, uint32 flags, int hwdepth);
 };
 
 

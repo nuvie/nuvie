@@ -40,9 +40,14 @@
 #define OBJ_STATUS_NOT_PASSABLE 4
 #define OBJ_STATUS_PASSABLE     5
 
-#define OBJ_U6_LADDER 305
-#define OBJ_U6_CHEST 98
-#define OBJ_U6_CANDLE 122
+//object numbers
+
+#define OBJ_U6_CHEST           98
+#define OBJ_U6_CANDLE         122
+#define OBJ_U6_V_PASSTHROUGH  278
+#define OBJ_U6_H_PASSTHROUGH  280
+#define OBJ_U6_LADDER         305
+#define OBJ_U6_SIGN           332
 
 typedef struct
 {

@@ -110,12 +110,12 @@ uint8 Text::get_char_num(uint8 c, uint8 lang_num)
 
 void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y)
 {
- char *pixels;
+ unsigned char *pixels;
  uint16 i,j;
  unsigned char *font;
  uint16 pitch;
   
- pixels = (char *)screen->get_pixels();
+ pixels = (unsigned char *)screen->get_pixels();
  pitch = screen->get_pitch();
  
  font = &font_data[char_num * 8];

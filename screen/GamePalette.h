@@ -32,19 +32,20 @@
 
 class GamePalette
 {
- SDL_Color *palette;
+ uint8 *palette;
  Screen *screen;
  Configuration *config;
+ uint8 counter;
  
  public:
  
    GamePalette(Screen *s, Configuration *cfg);
    ~GamePalette();
+   void GamePalette::rotatePalette();
  
  protected:
  
    bool loadPalette();
-   void rotatePalette(uint8 pos, uint8 length, uint8 amount);
 };
 
 

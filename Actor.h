@@ -38,6 +38,7 @@ uint8 unknown;
 class Actor
 {
  friend class ActorManager;
+ friend class MapWindow;
  
  uint8 id_n;
  
@@ -52,6 +53,7 @@ class Actor
  uint8 direction;
  uint8 walk_frame;
  
+ bool standing;
  bool alive;
  bool met_player;
  
@@ -82,6 +84,7 @@ class Actor
  bool move(sint16 new_x, sint16 new_y, sint8 new_z);
  
  void update();
+ void set_in_party(bool state);
  
  protected:
  

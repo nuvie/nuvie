@@ -22,7 +22,6 @@ class MapWindow
 {
  Configuration *config;
  Screen *screen;
- Surface *surface;
  
  Map *map;
  
@@ -75,6 +74,7 @@ class MapWindow
  
 protected:
 
+ void drawActors();
  void drawObjs();
  void drawObjSuperBlock(U6LList *superblock, bool toptile);
  inline void drawObj(Obj *obj, bool toptile);
