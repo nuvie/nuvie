@@ -203,14 +203,12 @@ bool Game::loadGame(Screen *s, uint8 type)
 
 void Game::init_cursor()
 {
-    string pointers_f;
-    
-    config_get_path(config, "u6mcga.ptr", pointers_f);
+
     
     //config->value("config/ultima6/gamedir", pointers_f);
     //pointers_f += "u6mcga.ptr";
     cursor = new Cursor();
-    if(cursor->init(screen, pointers_f))
+    if(cursor->init(config, screen))
        SDL_ShowCursor(false); // won't need the system default
     else
     {

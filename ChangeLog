@@ -1,3 +1,9 @@
+2004-03-07  Eric Fry <efry at users.sourceforge.net>
+	* Added more audio config options. You can now selectively turn off 
+	  music & sound effects.
+	* Added enable_cursors config option. You can now enable/disable mouse 
+	  cursors.
+
 2004-03-03  Eric Fry <efry at users.sourceforge.net>
 	* A small fix to get music working on win32.
 

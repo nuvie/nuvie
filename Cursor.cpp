@@ -1,8 +1,10 @@
 #include <cassert>
 #include "nuvieDefs.h"
+#include "Configuration.h"
 #include "Screen.h"
 #include "NuvieIO.h"
 #include "NuvieIOFile.h"
+#include "U6misc.h"
 #include "U6Lzw.h"
 #include "U6Shape.h"
 #include "U6Lib_n.h"
@@ -27,9 +29,21 @@ Cursor::Cursor()
 
 /* Returns true if mouse pointers file was loaded.
  */
-bool Cursor::init(Screen *s, std::string filename)
+bool Cursor::init(Configuration *c, Screen *s)
 {
+    std::string filename;
+    bool enable_cursors;
+    
+    config = c;
     screen = s;
+    
+    config->value("config/general/enable_cursors", enable_cursors, true);
+    
+    if(!enable_cursors)
+      return false;
+    
+    config_get_path(config, "u6mcga.ptr", filename);
+    
     if(filename != "")
         if(load_all(filename) > 0)
             return(true);

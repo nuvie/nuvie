@@ -85,6 +85,9 @@ private:
 	Sound *m_pCurrentSong;
 	list<Sound *> m_ActiveSounds;
     bool audio_enabled;
+    bool music_enabled;
+    bool sfx_enabled;
+    
     CEmuopl *opl;
 public:
 	static bool g_MusicFinished;

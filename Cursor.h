@@ -5,6 +5,7 @@
 #include <vector>
 #include "SDL.h"
 
+class Configuration;
 class Screen;
 class U6Shape;
 
@@ -23,6 +24,7 @@ class Cursor
 {
     friend class Screen;
     Screen *screen;
+    Configuration *config;
     sint32 cur_x, cur_y; // location on screen, unused normally
     std::vector<MousePointer *> cursors; // pointer list
     uint8 cursor_id; // which pointer is active
@@ -40,7 +42,7 @@ class Cursor
 public:
     Cursor();
     ~Cursor()                              { unload_all(); } 
-    bool init(Screen *s, std::string filename = "");
+    bool init(Configuration *c, Screen *s);
     uint32 load_all(std::string filename);
     void unload_all();
     bool set_pointer(uint8 ptr_num);

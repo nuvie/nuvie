@@ -45,7 +45,11 @@ SoundManager::SoundManager ()
 {
   m_pCurrentSong = NULL;
   g_MusicFinished = true;
+  
   audio_enabled = false;
+  music_enabled = false;
+  sfx_enabled = false;
+  
   opl = NULL;
 }
 
@@ -70,34 +74,46 @@ SoundManager::~SoundManager ()
 bool SoundManager::nuvieStartup (Configuration * config)
 {
   m_Config = config;
-  m_Config->value ("config/audio/enabled", audio_enabled, false);
+  m_Config->value ("config/audio/enabled", audio_enabled, true);
 
   if(audio_enabled == false)
-     return false;
-
+     {
+      music_enabled = false;
+      sfx_enabled = false;
+      return false;
+     }
+  
+  m_Config->value ("config/audio/enable_music", music_enabled, true);
+  m_Config->value ("config/audio/enable_sfx", sfx_enabled, true);
+    
   if(!initAudio ())
     {
      return false;
     }
 
-  LoadNativeU6Songs();
-  
-  string scriptdirectory;
-  config->pathFromValue ("config/ultima6/sounddir", "", scriptdirectory);
+  if(music_enabled)
+    {
+     LoadNativeU6Songs();
+     musicPlayFrom("random");
+    }
 
-  if (scriptdirectory.length () == 0)
-    return false;
+  if(sfx_enabled)
+    {
+     string scriptdirectory;
+     config->pathFromValue ("config/ultima6/sounddir", "", scriptdirectory);
 
-  printf ("should load script from %s\n", scriptdirectory.c_str ());
-  string filename;
-  filename = scriptdirectory + "songs.cfg";
-  //LoadCustomSongs (scriptdirectory, filename);
-  filename = scriptdirectory + "obj_samples.cfg";
-  LoadObjectSamples (scriptdirectory, filename);
-  filename = scriptdirectory + "tile_samples.cfg";
-  LoadTileSamples (scriptdirectory, filename);
+     if(scriptdirectory.length () == 0)
+       return false;
 
-  musicPlayFrom("random");
+     printf ("should load script from %s\n", scriptdirectory.c_str ());
+     string filename;
+     filename = scriptdirectory + "songs.cfg";
+     //LoadCustomSongs (scriptdirectory, filename);
+     filename = scriptdirectory + "obj_samples.cfg";
+     LoadObjectSamples (scriptdirectory, filename);
+     filename = scriptdirectory + "tile_samples.cfg";
+     LoadTileSamples (scriptdirectory, filename);
+    }
 
   return true;
 }
@@ -358,8 +374,11 @@ bool SoundManager::LoadTileSamples (string directory, string scriptname)
 
 void SoundManager::musicPlayFrom(string group)
 {
- g_MusicFinished = true;
- m_CurrentGroup = group;
+ if(m_CurrentGroup != group)
+  {
+   g_MusicFinished = true;
+   m_CurrentGroup = group;
+  }
 }
 
 void SoundManager::musicPause()
@@ -387,7 +406,7 @@ void SoundManager::update_map_sfx ()
   uint16 x, y;
   uint8 l;
   
-  if(audio_enabled == false)
+  if(sfx_enabled == false)
     return;
 
   string next_group = "";
@@ -503,7 +522,7 @@ void SoundManager::update_map_sfx ()
 
 void SoundManager::update ()
 {
-  if (audio_enabled && g_MusicFinished)
+  if (music_enabled && g_MusicFinished)
     {
       g_MusicFinished = false;
       if (m_pCurrentSong != NULL)
