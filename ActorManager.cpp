@@ -95,12 +95,6 @@ bool ActorManager::loadActors()
     actors[i]->direction = actors[i]->frame_n / 4;
    }
 
- objlist.seek(0x800); // Start of Actor flags
-
- for(i=0;i < 256; i++)
-   {
-    actors[i]->flags = objlist.read1();
-   }
 
 
  // Experience
@@ -121,6 +115,13 @@ bool ActorManager::loadActors()
     actors[i]->hp = objlist.read1();
    }
  
+ objlist.seek(0x17f1); // Start of Actor flags
+
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->flags = objlist.read1();
+   }
+
  loadActorSchedules();
  
  return true;
