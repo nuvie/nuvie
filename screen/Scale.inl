@@ -19,7 +19,9 @@
 #ifndef SCALE_INL_INCLUDED
 #define SCALE_INL_INCLUDED
 
+#ifndef _MSC_VER
 using std::memcpy;
+#endif
 
 /*
  *	Manipulate 16-bit 555 format.
