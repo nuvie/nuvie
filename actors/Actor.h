@@ -60,7 +60,9 @@ class Actor
  friend class Party;
  friend class PathFinder;
  friend class ZPath;
- 
+
+ protected:
+
  uint8 id_n;
  
  Map *map;
@@ -72,7 +74,7 @@ class Actor
  uint16 x;
  uint16 y;
  uint16 z;
-
+ 
  uint8 worktype;
  
  uint16 obj_n;
@@ -139,7 +141,7 @@ class Actor
  void set_magic(uint8 val) { magic = val; }
 
  uint8 get_worktype();
- void set_worktype(uint8 new_worktype);
+ virtual void set_worktype(uint8 new_worktype);
   
  uint8 get_direction() { return(direction); }
  void set_direction(sint16 rel_x, sint16 rel_y);
@@ -163,6 +165,7 @@ class Actor
  void lwalk(MapCoord &d, uint8 speed = 1, uint8 delay = 0);
 // void stop_walking() { delete pathfinder; pathfinder = NULL; }
  void stop_walking();
+ virtual void preform_worktype() { return; }
  
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0);
