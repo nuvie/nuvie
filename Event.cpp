@@ -23,6 +23,9 @@ uint32 nuvieGameCounter;
 Event::Event(Configuration *cfg)
 {
  config = cfg;
+ clear_alt_code();
+ active_alt_code = 0;
+ alt_code_input_num = 0;
 }
 
 Event::~Event()
@@ -56,9 +59,29 @@ bool Event::update()
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					break;
+				case SDL_KEYUP:
+                                        if(event.key.keysym.sym == SDLK_RALT
+                                           || event.key.keysym.sym == SDLK_LALT)
+                                        {
+                                            clear_alt_code();
+                                        }
+                                        break;
 				case SDL_KEYDOWN:
            if(scroll->handle_input(&event.key.keysym.sym))
              break; // break switch
+           // alt-code input
+           if((event.key.keysym.sym >= SDLK_0 && event.key.keysym.sym <= SDLK_9)
+              && (SDL_GetModState() & KMOD_ALT))
+           {
+               alt_code_str[alt_code_len++] = (char)event.key.keysym.sym;
+               alt_code_str[alt_code_len] = '\0';
+               if(alt_code_len == 3)
+               {
+                   alt_code(alt_code_str);
+                   clear_alt_code();
+               }
+               break;
+           }
            switch(event.key.keysym.sym)
             {
              case SDLK_UP    :
@@ -73,9 +96,9 @@ bool Event::update()
              case SDLK_RIGHT :
                                move(1,0);
                                break; 
-					   case SDLK_q     :
-						                   return false;
-					                     break;
+             case SDLK_q     :
+                               return false;
+                               break;
              case SDLK_l     :
                                mode = LOOK_MODE;
                                scroll->display_string("Look-");
@@ -144,8 +167,12 @@ bool Event::update()
                                scroll->display_prompt();
                                break;
              default :
-                               scroll->display_string("what?\n\n");
-                               scroll->display_prompt();
+                               if(event.key.keysym.sym != SDLK_LALT
+                                  && event.key.keysym.sym != SDLK_RALT)
+                               {
+                                scroll->display_string("what?\n\n");
+                                scroll->display_prompt();
+                               }
                                break;
             }
           break;
@@ -157,7 +184,8 @@ bool Event::update()
         break;
 			}
 		}
-
+    if(active_alt_code && scroll->get_input())
+        alt_code_input(scroll->get_input());
  return true;
 }
 
@@ -278,6 +306,40 @@ bool Event::look()
 
  return true;
 }
+
+
+/* Send input to active alt-code.
+ */
+void Event::alt_code_input(const char *in)
+{
+    switch(active_alt_code)
+    {
+        case 400: // talk to NPC (FIXME: get portrait and inventory too)
+            if(!converse->start((uint8)strtol(in, NULL, 10)))
+            {
+                scroll->display_string("nobody!\n\n");
+                scroll->display_prompt();
+            }
+            active_alt_code = 0;
+            break;
+    }
+}
+
+
+/* Get an alt-code from `cs' and use it.
+ */
+void Event::alt_code(const char *cs)
+{
+    uint16 c = (uint16)strtol(cs, NULL, 10);
+    switch(c)
+    {
+        case 400: // talk to anyone (FIXME: get portrait and inventory too)
+            scroll->display_string("Npc number? ");
+            scroll->set_input_mode(true);
+            active_alt_code = c;
+    }
+}
+
 
 void Event::wait()
 {

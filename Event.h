@@ -47,6 +47,10 @@ class Event
  
  SDL_Event event;
  int ts; //timestamp for TimeLeft() method.
+ char alt_code_str[4]; // string representation of alt-code input
+ uint8 alt_code_len; // how many characters have been input for alt-code
+ uint16 active_alt_code; // alt-code that needs more input
+ uint8 alt_code_input_num; // alt-code can get multiple inputs
   
  public:
  Event(Configuration *cfg);
@@ -60,6 +64,9 @@ class Event
  bool use(sint16 rel_x, sint16 rel_y);
  bool look();
  bool talk();
+ void alt_code(const char *cs);
+ void alt_code_input(const char *in);
+ void clear_alt_code() { alt_code_str[0] = '\0'; alt_code_len = 0; }
 
  void wait();
  

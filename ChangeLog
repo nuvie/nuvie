@@ -1,4 +1,7 @@
 2003-05-09  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Event: Added alt-codes support. Hold ALT, and enter 3 numbers.
+
+2003-05-09  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Player is initialized with a Party object now, and can return a
 	pointer to it.
 	* Rearranged some of conversation code. Access Party with Player.
