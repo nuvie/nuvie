@@ -231,10 +231,10 @@ uint32 U6Lib_n::get_item_size(uint32 item_number)
 {
     uint32 next_offset = 0;
 
-    if(item_number >= num_offsets)
+    if(item_number > num_offsets)
         return(0);
-    // get next non-zero offset
-    for(int o = (item_number + 1); o < num_offsets; o++)
+    // get next non-zero offset, including the filesaze at offsets[num_offsets]
+    for(int o = (item_number + 1); o <= num_offsets; o++)
         if(offsets[o])
         {
             next_offset = offsets[o];
@@ -293,7 +293,6 @@ void U6Lib_n::parse_lib()
    }
 
  offsets[num_offsets] = file.filesize(); //this is used to calculate the size of the last item in the lib.
- 
  return; 
 }
 
