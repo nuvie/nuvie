@@ -24,7 +24,6 @@ void EffectManager::delete_effect(Effect *eff)
     {
         if(*ei == eff)
         {
-            printf("EffectManager: delete %x\n", eff);
             signal_watch(eff);
             delete eff;
             effects.erase(ei);
@@ -38,7 +37,6 @@ void EffectManager::delete_effect(Effect *eff)
  */
 void EffectManager::add_effect(Effect *eff)
 {
-    printf("EffectManager: new %x\n", eff);
     effects.push_back(eff);
 }
 
@@ -51,7 +49,6 @@ void EffectManager::update_effects()
     {
         if((*ei)->is_defunct()/* && !has_message(*ei)*/)
         {
-            printf("EffectManager: delete %x\n", *ei);
             signal_watch(*ei);
             delete(*ei);
             ei = effects.erase(ei);

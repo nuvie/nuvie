@@ -81,7 +81,8 @@ GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
 
 GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
 {
- char ascii;
+// char ascii;
+ char ascii = 0;
 
  if(!focused)
    return GUI_PASS;

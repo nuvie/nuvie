@@ -121,7 +121,8 @@ NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_n
 #endif
  U6Lib_n sam_file;
  U6Lzw lzw;
- NuvieIOBuffer *wav_buffer;
+// NuvieIOBuffer *wav_buffer;
+ NuvieIOBuffer *wav_buffer = 0;
  uint32 j;
  
  sam_file.open(filename, 4);

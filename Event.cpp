@@ -1860,8 +1860,6 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
 // FIXME: might add generic walk_to() action to Player
 // player->walk_to(uint16 x, uint16 y, uint16 move_max, uint16 timeout_seconds);
     int wx, wy;
-    uint16 px, py;
-    uint8 pz;
     sint16 rx, ry;
 
     if(mode == WAIT_MODE || !player->check_walk_delay())

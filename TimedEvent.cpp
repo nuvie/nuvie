@@ -24,7 +24,6 @@
  */
 void TimeQueue::call_timers(uint32 now)
 {
-    GameClock *clock = Game::get_game()->get_clock();
     while(!empty() && call_timer(now))
     {
         TimedEvent *tevent = pop_timer(); // remove
@@ -136,8 +135,8 @@ bool TimeQueue::delete_timer(TimedEvent *tevent)
  * be queued afterwards to start.
  */
 TimedEvent::TimedEvent(uint32 reltime, bool immediate, bool realtime)
-            : delay(reltime), ignore_pause(false), real_time(realtime),
-              tq_can_delete(true), repeat_count(0), defunct(false)
+            : delay(reltime), repeat_count(0), ignore_pause(false),
+              real_time(realtime), tq_can_delete(true), defunct(false)
 {
     tq = NULL;
 
