@@ -100,4 +100,19 @@ public:
 };
 
 
+/* Dump one item at a time out of a container, and print it's name to MsgScroll.
+ */
+class TimedContainerSearch : public TimedEvent
+{
+    MsgScroll *scroll;
+    UseCode *uc;
+    ObjManager *om;
+    Obj *container_obj;
+    Obj *prev_obj; // removed from container
+public:
+    TimedContainerSearch(Obj *obj);
+    void timed(uint32 evtime);
+};
+
+
 #endif /* __TimedEvent_h__ */

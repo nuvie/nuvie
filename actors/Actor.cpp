@@ -322,7 +322,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  // usecode must allow movement
  usecode = obj_manager->get_usecode();
  Obj *obj = obj_manager->get_obj(new_x,new_y,new_z);
- if(obj && usecode->can_pass(obj))
+ if(obj && usecode->has_passcode(obj))
   {
     if(!usecode->pass_obj(obj, this)) // calling item is this actor
        return(false);

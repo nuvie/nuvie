@@ -1,3 +1,8 @@
+2003-12-04  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Fixed closed containers dumping contents.
+	* Temp. fix added for horses disappearing after riding.
+	* People riding horses dismount now before boarding a ship.
+
 2003-12-03  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Starting from an in-vehicle savegame works correctly now.
 	* Player: The party only follows if you are controlling the leader now,

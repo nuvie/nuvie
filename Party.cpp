@@ -32,7 +32,7 @@
 #include "ActorManager.h"
 #include "Player.h"
 #include "Map.h"
-
+#include "U6UseCode.h"
 #include "Party.h"
 
 Party::Party(Configuration *cfg)
@@ -624,6 +624,19 @@ void Party::walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay)
 void Party::enter_vehicle(Obj *ship_obj, uint32 step_delay)
 {
     MapCoord walkto(ship_obj->x, ship_obj->y, ship_obj->z);
+
+    // leave horses on land
+    for(uint32 m = 0; m < num_in_party; m++)
+    {
+        UseCode *usecode = Game::get_game()->get_usecode();
+        if(member[m].actor->obj_n == OBJ_U6_HORSE_WITH_RIDER)
+        {
+            Obj *my_obj = member[m].actor->make_obj();
+            usecode->use_obj(my_obj, member[m].actor);
+            delete my_obj;
+        }
+    }
+
     if(step_delay)
         new TimedPartyMoveToVehicle(&walkto, ship_obj, step_delay);
     else

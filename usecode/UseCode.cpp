@@ -53,6 +53,7 @@ bool UseCode::init(ObjManager *om, Map *m, Player *p, MsgScroll *ms)
 }
 
 
+// use obj at location with src_obj as object_ref
  bool UseCode::use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj)
  {
   Obj *obj;
@@ -73,7 +74,10 @@ void UseCode::toggle_frame(Obj *obj)
    obj->frame_n = 1;
 }
 
-bool UseCode::use_container(Obj *obj, bool print)
+
+/* Print container contents and dump them on top of the container.
+ */
+bool UseCode::search_container(Obj *obj)
 {
  Obj *temp_obj;
  U6Link *obj_link;
@@ -89,21 +93,33 @@ bool UseCode::use_container(Obj *obj, bool print)
       {
        temp_obj = (Obj*)obj_link->data;
        obj_list->add(temp_obj);
-       temp_obj->status = OBJ_STATUS_OK_TO_TAKE;
+       temp_obj->status |= OBJ_STATUS_OK_TO_TAKE;
        temp_obj->x = obj->x;
        temp_obj->y = obj->y;
        temp_obj->z = obj->z;
-       if(print)
-        {
-         scroll->display_string(obj_manager->look_obj(temp_obj,true));
-         if(obj_link->prev) // more objects left
-           scroll->display_string(obj_link->prev->prev ? ", " : ", and ");
-        }
+       scroll->display_string(obj_manager->look_obj(temp_obj,true));
+       if(obj_link->prev) // more objects left
+         scroll->display_string(obj_link->prev->prev ? ", " : ", and ");
       }
-
      /* Remove objects from the container. */
      obj->container->removeAll();
      return true;
     }
  return false;
 }
+
+
+/* Remove last object in container and return a pointer to it.
+ */
+Obj *UseCode::get_obj_from_container(Obj *obj)
+{
+    Obj *temp_obj;
+    if(obj->container && obj->container->end())
+    {
+        temp_obj = (Obj *)obj->container->end()->data;
+        obj->container->remove(temp_obj); // a pop_back() may be more efficient
+        return(temp_obj);
+    }
+    return(NULL);
+}
+

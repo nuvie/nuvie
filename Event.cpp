@@ -532,7 +532,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
 
  if(obj)
  {
-  bool can_use = usecode->can_use(obj);
+  bool can_use = usecode->has_usecode(obj);
   if(!using_actor || can_use)
   {
    scroll->display_string(obj_manager->look_obj(obj));
@@ -649,22 +649,26 @@ bool Event::look()
       scroll->display_string(weight_string);
      }
   // check for special description
-  if(usecode->can_look(obj))
+  if(usecode->has_lookcode(obj))
      can_search = usecode->look_obj(obj, player->get_actor());
   }
  else // ground
    scroll->display_string(map_window->lookAtCursor());
  scroll->display_string("\n");
  // search
- MapCoord player_loc(player->get_actor()->get_location()), target_loc(map_window->get_cursorCoord());
+ MapCoord player_loc = player->get_actor()->get_location(),
+          target_loc = map_window->get_cursorCoord();
  if(can_search && player_loc.distance(target_loc) <= 1)
- {
-   scroll->display_string("\nSearching here, you find ");
-   if(!obj || !usecode->search_obj(obj, player->get_actor()))
-     scroll->display_string("nothing.\n");
-   else
-     map_window->updateBlacking(); // secret doors
- }
+   {
+    scroll->display_string("\nSearching here, you find ");
+    if(!obj || !usecode->search_obj(obj, player->get_actor()))
+       scroll->display_string("nothing.\n");
+    else
+      {
+       scroll->display_string(".\n");
+       map_window->updateBlacking(); // secret doors
+      }
+   }
  scroll->display_string("\n");
  scroll->display_prompt();
  return true;

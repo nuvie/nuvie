@@ -43,7 +43,7 @@ class SEUseCode: public UseCode
  bool use_obj(Obj *obj, Obj *src_obj=NULL);
 
  void init_objects() { }
- sint16 get_ucobject_index(uint16 n, uint8 f = 0) { return(-1); }
+ sint16 get_ucobject_index(uint16 n, uint8 f, uint8 ev) { return(-1); }
  bool uc_event(sint16 uco, uint8 ev, Obj *obj) { return(false); }
  
  protected:

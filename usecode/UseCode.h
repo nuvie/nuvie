@@ -76,9 +76,9 @@ class UseCode
  virtual bool pass_obj(Obj *obj, Actor *actor) { return(false); }
  virtual bool search_obj(Obj *obj, Actor *actor) { return(false); }
 
- virtual bool can_use(Obj *obj)  { return(false); }
- virtual bool can_look(Obj *obj) { return(false); }
- virtual bool can_pass(Obj *obj) { return(false); }
+ virtual bool has_usecode(Obj *obj)  { return(false); }
+ virtual bool has_lookcode(Obj *obj) { return(false); }
+ virtual bool has_passcode(Obj *obj) { return(false); }
 
  bool is_door(Obj *obj) {return(is_locked_door(obj) || is_unlocked_door(obj));}
  virtual bool is_locked_door(Obj *obj)   { return(false); }
@@ -89,13 +89,15 @@ class UseCode
  void set_itemref(Obj *val)   { obj_ref = val; }
  void set_itemref(Actor *val, Actor *val2 = NULL) { actor_ref = val; actor2_ref = val2; }
  void set_itemref(MapCoord *val)   { mapcoord_ref = val; }
- 
+
+ Obj *get_obj_from_container(Obj *obj);
+ bool search_container(Obj *obj);
+
  protected:
 
  void toggle_frame(Obj *obj);
- bool use_container(Obj *obj, bool print = true);
 
- virtual sint16 get_ucobject_index(uint16 n, uint8 f = 0) = 0;
+ virtual sint16 get_ucobject_index(uint16 n, uint8 f, uint8 ev) = 0;
  virtual bool uc_event(sint16 uco, uint8 ev, Obj *obj) = 0;
 };
 

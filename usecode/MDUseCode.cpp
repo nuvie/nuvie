@@ -66,7 +66,7 @@ bool MDUseCode::use_obj(Obj *obj, Obj *src_obj)
     case OBJ_MD_STEAMER_TRUNK :
     case OBJ_MD_BARREL :
                       toggle_frame(obj); //open / close object
-    case OBJ_MD_BAG : use_container(obj);
+    case OBJ_MD_BAG : search_container(obj);
                       break;
                       
     default : scroll->display_string("\nnot usable\n");

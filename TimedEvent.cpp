@@ -8,7 +8,8 @@
 #include "Party.h"
 #include "Event.h"
 #include "UseCode.h"
-
+#include "U6LList.h"
+#include "MsgScroll.h"
 #include "TimedEvent.h"
 
 
@@ -183,3 +184,38 @@ void TimedPartyMoveToVehicle::timed(uint32 evtime)
     if(moves_left > 0)
         --moves_left;
 }
+
+
+/* Dump one item at a time out of a container, and print it's name to MsgScroll.
+ */
+TimedContainerSearch::TimedContainerSearch(Obj *obj) : TimedEvent(500, false)
+{
+    Game *game = Game::get_game();
+    scroll = game->get_scroll();
+    uc = game->get_usecode();
+    om = game->get_obj_manager();
+
+    container_obj = obj;
+    prev_obj = NULL;
+    Game::get_game()->get_player()->uncontrol();
+}
+
+
+void TimedContainerSearch::timed(uint32 evtime)
+{
+    prev_obj = uc->get_obj_from_container(container_obj);
+    if(prev_obj)
+    {
+        scroll->display_string(om->look_obj(prev_obj, true));
+        if(container_obj->container->end()) // more objects left
+            scroll->display_string(container_obj->container->end()->prev
+                                   ? ", " : ", and ");
+        repeat = true;
+    }
+    else
+    {
+        Game::get_game()->get_player()->control();
+        repeat = false;
+    }
+}
+

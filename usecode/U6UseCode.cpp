@@ -22,6 +22,7 @@
  */
 #include <cstdlib>
 #include <cassert>
+#include <cstdio>
 #include "nuvieDefs.h"
 #include "U6LList.h"
 #include "Game.h"
@@ -36,6 +37,7 @@
 #include "Book.h"
 #include "Event.h"
 #include "MapWindow.h"
+#include "TimedEvent.h"
 #include "U6UseCode.h"
 
 // numbered by entrance quality, "" = no name
@@ -129,9 +131,12 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
     add_usecode(OBJ_U6_CODEX,       0,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
 
-    add_usecode(OBJ_U6_CHEST, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_CRATE, 255,0,USE_EVENT_USE,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_BARREL,255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_CRATE,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_CRATE,      255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_BARREL,       0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_BARREL,     255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_CHEST,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_CHEST,      255,0,USE_EVENT_USE,&U6UseCode::use_container);
     add_usecode(OBJ_U6_SECRET_DOOR,255,0,USE_EVENT_USE|USE_EVENT_SEARCH,&U6UseCode::use_secret_door);
     add_usecode(OBJ_U6_BAG,        255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
     add_usecode(OBJ_U6_DRAWER,     255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
@@ -198,11 +203,18 @@ void U6UseCode::init_objects()
     
     add_usecode(OBJ_U6_QUEST_GATE,  0,0,USE_EVENT_PASS,&U6UseCode::pass_quest_barrier);
 
-    add_usecode(OBJ_U6_VORTEX_CUBE,0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube);
-    add_usecode(OBJ_U6_PULL_CHAIN, 0,0,USE_EVENT_USE,&U6UseCode::use_bell);
-    add_usecode(OBJ_U6_BELL,     255,0,USE_EVENT_USE,&U6UseCode::use_bell);
-    add_usecode(OBJ_U6_SHOVEL,     0,0,USE_EVENT_USE,&U6UseCode::use_shovel);
-    add_usecode(OBJ_U6_FOUNTAIN,   0,0,USE_EVENT_USE,&U6UseCode::use_fountain);
+    add_usecode(OBJ_U6_VORTEX_CUBE, 0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube);
+    add_usecode(OBJ_U6_PULL_CHAIN,  0,0,USE_EVENT_USE,&U6UseCode::use_bell);
+    add_usecode(OBJ_U6_BELL,      255,0,USE_EVENT_USE,&U6UseCode::use_bell);
+    add_usecode(OBJ_U6_SHOVEL,      0,0,USE_EVENT_USE,&U6UseCode::use_shovel);
+    add_usecode(OBJ_U6_FOUNTAIN,    0,0,USE_EVENT_USE,&U6UseCode::use_fountain);
+    add_usecode(OBJ_U6_RUBBER_DUCKY,0,0,USE_EVENT_USE,&U6UseCode::use_rubber_ducky);
+
+    add_usecode(OBJ_U6_PANPIPES,   0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
+    add_usecode(OBJ_U6_HARPSICHORD,0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
+    add_usecode(OBJ_U6_HARP,       0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
+    add_usecode(OBJ_U6_LUTE,       0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
+    add_usecode(OBJ_U6_XYLOPHONE,  0,0,USE_EVENT_USE,&U6UseCode::play_instrument);
 }
 
 
@@ -237,10 +249,10 @@ bool U6UseCode::is_food(Obj *obj)
 
 /* Is there USE usecode for an object?
  */
-bool U6UseCode::can_use(Obj *obj)
+bool U6UseCode::has_usecode(Obj *obj)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
-    if(uc < 0 || !(uc_objects[uc].trigger & USE_EVENT_USE))
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_USE);
+    if(uc < 0)
         return(false);
     return(true);
 }
@@ -248,10 +260,10 @@ bool U6UseCode::can_use(Obj *obj)
 
 /* Is there LOOK usecode for an object?
  */
-bool U6UseCode::can_look(Obj *obj)
+bool U6UseCode::has_lookcode(Obj *obj)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
-    if(uc < 0 || !(uc_objects[uc].trigger & USE_EVENT_LOOK))
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_LOOK);
+    if(uc < 0)
         return(false);
     return(true);
 }
@@ -260,10 +272,10 @@ bool U6UseCode::can_look(Obj *obj)
 /* Is there PASS usecode for an object? This doesn't check to see if an object
  * can be passed. (call the usecode for that)
  */
-bool U6UseCode::can_pass(Obj *obj)
+bool U6UseCode::has_passcode(Obj *obj)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
-    if(uc < 0 || !(uc_objects[uc].trigger & USE_EVENT_PASS))
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_PASS);
+    if(uc < 0)
         return(false);
     return(true);
 }
@@ -274,7 +286,7 @@ bool U6UseCode::can_pass(Obj *obj)
  */
 bool U6UseCode::use_obj(Obj *obj, Actor *actor)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_USE);
     if(uc < 0)
         return(false);
     set_itemref(actor, actor2_ref);
@@ -287,7 +299,7 @@ bool U6UseCode::use_obj(Obj *obj, Actor *actor)
  */
 bool U6UseCode::look_obj(Obj *obj, Actor *actor)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_LOOK);
     if(uc < 0)
         return(false);
     set_itemref(actor);
@@ -300,7 +312,7 @@ bool U6UseCode::look_obj(Obj *obj, Actor *actor)
  */
 bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_PASS);
     if(uc < 0)
         return(false);
     set_itemref(actor);
@@ -313,7 +325,7 @@ bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
  */
 bool U6UseCode::search_obj(Obj *obj, Actor *actor)
 {
-    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n);
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_SEARCH);
     if(uc < 0)
         return(false);
     set_itemref(actor);
@@ -323,11 +335,12 @@ bool U6UseCode::search_obj(Obj *obj, Actor *actor)
 
 /* Return index of usecode definition in list for object N:F, or -1 if none.
  */
-sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f)
+sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f, uint8 ev)
 {
     for(uint32 o = 0; o < uc_object_count; o++)
         if(uc_objects[o].obj_n == n && (uc_objects[o].frame_n == 0xFF
-                                        || uc_objects[o].frame_n == f))
+                                        || uc_objects[o].frame_n == f)
+           && (uc_objects[o].trigger & ev))
             return(o);
     return(-1);
 }
@@ -598,7 +611,7 @@ bool U6UseCode::use_secret_door(Obj *obj, uint8 ev)
     }
     else if(ev == USE_EVENT_SEARCH)
     {
-        scroll->display_string("a secret door.\n");
+        scroll->display_string("a secret door");
         if(obj->frame_n == 0)
             obj->frame_n++;
         return(true);
@@ -607,19 +620,33 @@ bool U6UseCode::use_secret_door(Obj *obj, uint8 ev)
 }
 
 
+/* Use: Open/close container. If container is open, Search.
+ * Search: Dump container contents.
+ */
 bool U6UseCode::use_container(Obj *obj, uint8 ev)
 {
-    bool has_objects = false;
-    if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
-        toggle_frame(obj); //open / close object
-    if(ev == USE_EVENT_USE) // only print messages if USING
-        scroll->display_string("Searching here, you find ");
-    has_objects = UseCode::use_container(obj);
-    if(has_objects)
-        scroll->display_string(".\n");
-    else if(ev == USE_EVENT_USE)
-        scroll->display_string("nothing.\n");
-    return(has_objects);
+    if(ev == USE_EVENT_USE)
+    {
+        if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
+            toggle_frame(obj); //open / close object
+        if(obj->frame_n == 0)
+        {
+            scroll->display_string("\nSearching here, you find ");
+            bool found_objects = search_obj(obj, actor_ref);
+            scroll->display_string(found_objects ? ".\n" : "nothing.\n");
+            return(found_objects);
+        }
+    }
+    else if(ev == USE_EVENT_SEARCH) // search message already printed
+    {
+        return(UseCode::search_container(obj));
+//        if(obj->container && obj->container->end())
+//        {
+//            new TimedContainerSearch(obj);
+//            return(true);
+//        }
+    }
+    return(false);
 }
 
 
@@ -999,6 +1026,32 @@ bool U6UseCode::use_fountain(Obj *obj, uint8 ev)
 }
 
 
+bool U6UseCode::use_rubber_ducky(Obj *obj, uint8 ev)
+{
+    if(actor_ref == player->get_actor())
+        scroll->display_string("- Quack! Quack!\n");
+    return(true);
+}
+
+
+bool U6UseCode::play_instrument(Obj *obj, uint8 ev)
+{
+    if(actor_ref == player->get_actor())
+    {
+        char musicmsg[256];
+        snprintf(musicmsg, 256, "You'd be playing %s right now...*if Nuvie had sound effects.\n",
+                 obj->obj_n == OBJ_U6_PANPIPES ? "panpipes"
+                 : obj->obj_n == OBJ_U6_HARPSICHORD ? "a harpsichord"
+                 : obj->obj_n == OBJ_U6_HARP ? "a harp"
+                 : obj->obj_n == OBJ_U6_LUTE ? "a lute"
+                 : obj->obj_n == OBJ_U6_XYLOPHONE ? "a xylophone"
+                 : "a musical instrument");
+        scroll->display_string(musicmsg);
+    }
+    return(true);
+}
+
+
 bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
 {
  if(actor_ref != player->get_actor())
@@ -1092,7 +1145,10 @@ bool U6UseCode::use_potion(Obj *obj, uint8 ev)
                 default:
                     scroll->display_string("No effect\n");
             }
-            obj_manager->remove_obj(obj);
+            if(obj->status & OBJ_STATUS_IN_INVENTORY)
+                am->get_actor(obj->x)->inventory_remove_obj(obj);
+            else
+                obj_manager->remove_obj(obj);
             obj_manager->delete_obj(obj);
         }
         return(true);
@@ -1296,7 +1352,8 @@ bool U6UseCode::use_horse(Obj *obj, uint8 ev)
  ActorManager *actor_manager = Game::get_game()->get_actor_manager();
  Actor *actor, *player_actor;
  Obj *actor_obj;
- 
+ static Actor *horse_actor = NULL; // HACK: save horse actor when riding
+                                    // will only work for 1 rider
  if(ev != USE_EVENT_USE)
     return(false);
  
@@ -1330,9 +1387,20 @@ bool U6UseCode::use_horse(Obj *obj, uint8 ev)
    {
     actor_obj->obj_n = player_actor->base_obj_n; //revert to normal old actor type
     actor_obj->frame_n = player_actor->old_frame_n;
+    if(horse_actor) // HACK
+      {
+       horse_actor->move(actor_obj->x,actor_obj->y,actor_obj->z,ACTOR_FORCE_MOVE);
+       horse_actor->show();
+       horse_actor->set_worktype(0x0c);
+       horse_actor->init();
+       horse_actor = NULL;
+      }
    }
  else // FIX Don't use Smith (Iolo's horse; "Horse not boardable!")
+   {
     actor_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER; // mount up.
+    horse_actor = actor; // HACK
+   }
     
  player_actor->move(actor_obj->x,actor_obj->y,actor_obj->z); //this will center the map window
  player_actor->init_from_obj(actor_obj);
@@ -1341,9 +1409,8 @@ bool U6UseCode::use_horse(Obj *obj, uint8 ev)
  return true;
 }
 
-/* Event: Pass
- * True: If Quest Flag is true, allow normal move.
- * False: Block if Quest Flag is false.
+
+/* Pass: Allow normal move if player's Quest Flag is set.
  */
 bool U6UseCode::pass_quest_barrier(Obj *obj, uint8 ev)
 {
@@ -1379,7 +1446,7 @@ bool U6UseCode::look_sign(Obj *obj, uint8 ev)
             {
              if(data[0] == '<' && data[strlen(data)-1] == '>') //Britannian text is wrapped in '<' '>' chars
                 {
-                 scroll->display_string(&data[1],strlen(data)-2, 1); // 1 for britannian font.
+                 scroll->display_string(&data[1],strlen(data)-2, 2); // 1 for britannian font.
                  scroll->display_string("\n",1);
                 }
              else
