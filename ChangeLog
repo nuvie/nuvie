@@ -1,4 +1,4 @@
-2004-09-25  Eric Fry <efry at users.sourceforge.net>
+2004-10-02  Eric Fry <efry at users.sourceforge.net>
 	* Enable unicode support when GUI_TextInput widget grabs focus.
 	* Disable unicode support when GUI_TextInput widget releases focus.
 	* Added status_flags to Actor class.
