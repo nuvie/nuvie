@@ -143,16 +143,9 @@ void InventoryWidget::display_inventory_list()
       i++;
    }
 
- // ABOEING
- //clear the screen first
-  tile = empty_tile;
- for(i=0;i<3;i++)
- {
-  for(j=0;j<4;j++)
-  {
-   screen->fill(0x31, (area.x+8)+j*16, area.y+16+i*16, 16, 16);
-  }
- }
+  //clear the screen first inventory icons, 4 x 3 tiles
+ 
+  screen->fill(0x31, area.x +8, area.y + 16, 16 * 4, 16 * 3);
 
   for(i=0;i<3;i++)
    {

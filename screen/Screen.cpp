@@ -863,12 +863,15 @@ void Screen::update(uint16 x, uint16 y, uint16 w, uint16 h)
  num_update_rects++;
 
  //SDL_UpdateRect(sdl_surface,x*scale_factor,y*scale_factor,w*scale_factor,h*scale_factor);
-
+ 
+ //printf("update rect(%d,%d::%d,%d)\n", update_rects[num_update_rects].x, update_rects[num_update_rects].y, update_rects[num_update_rects].w, update_rects[num_update_rects].h);
+ 
  return;
 }
 
 void Screen::preformUpdate()
 {
+ //printf("Screen update %d.\n",num_update_rects);
  SDL_UpdateRects(sdl_surface,num_update_rects,update_rects);
  num_update_rects = 0;
 }

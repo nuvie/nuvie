@@ -1,3 +1,8 @@
+2004-03-09  Eric Fry <efry at users.sourceforge.net>
+	* Removed redundant screen update call from InventoryWidget.
+	* Simplified inventory display clearing logic. Replaced 12 clear calls
+	  with 1 clear call.
+
 2004-03-07  Eric Fry <efry at users.sourceforge.net>
 	* Added more audio config options. You can now selectively turn off 
 	  music & sound effects.
