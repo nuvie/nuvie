@@ -1,3 +1,7 @@
+2003-06-03  Eric Fry <efry@users.sourceforge.net>
+	* Added Drawbridge support. You should now be able to leave the
+	  the castle properly.
+
 2003-06-01  Eric Fry <efry@users.sourceforge.net>
 	* Locked doors can only be opened when the avatar has the correct
 	  key in their inventory.

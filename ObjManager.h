@@ -64,8 +64,10 @@ struct Obj
  uint8 quality;
 
  U6LList *container;
- Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; };
+ Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; }; 
 };
+
+Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z);
 
 class ObjManager
 {
@@ -94,6 +96,7 @@ class ObjManager
 
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
+ Obj *get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj);
 
  uint16 get_obj_tile_num(uint16 obj_num);
@@ -107,6 +110,8 @@ class ObjManager
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
  bool add_obj(Obj *obj, bool addOnTop=false);
  bool remove_obj(Obj *obj);
+ bool remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
+ 
  Obj *copy_obj(Obj *obj);
  const char *look_obj(Obj *obj);
 

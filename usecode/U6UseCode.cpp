@@ -67,6 +67,9 @@ bool U6UseCode::use_obj(Obj *obj, Obj *src_obj)
     case OBJ_U6_SWITCH : toggle_frame(obj); //FIX hookup switch action.
                         break;
 
+    case OBJ_U6_CRANK : use_crank(obj);
+                        break;
+                        
     case OBJ_U6_FIREPLACE : if(obj->frame_n == 1 || obj->frame_n == 3)
                                 {
                                  use_firedevice_message(obj,false);
@@ -266,6 +269,166 @@ bool U6UseCode::use_lever(Obj *obj)
  scroll->display_string("\nswitch the lever, you hear a noise.\n");
  
  return true;
+}
+
+//cranks control drawbridges.
+
+bool U6UseCode::use_crank(Obj *obj)
+{
+ uint16 x,y;
+ uint8 level;
+ uint16 b_width;
+ bool bridge_open;
+ Obj *start_obj;
+ 
+ start_obj = drawbridge_find(obj);
+ 
+ if(start_obj->frame_n == 3) // bridge open
+    bridge_open = true;
+ else
+    bridge_open = false;
+
+ x = start_obj->x;
+ y = start_obj->y;
+ level = start_obj->z;
+ 
+ drawbridge_remove(x, y, level, &b_width);
+
+ if(bridge_open)
+   drawbridge_close(x, y, level, b_width);
+ else
+   drawbridge_open(x, y, level, b_width);
+    
+ return true;
+}
+
+Obj *U6UseCode::drawbridge_find(Obj *crank_obj)
+{
+ uint16 i,j;
+ Obj *start_obj, *tmp_obj;
+ bool closed;
+ 
+ for(i=0;i<6;i++) // search on right side of crank.
+  {
+   start_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_DRAWBRIDGE, crank_obj->x+1, crank_obj->y+i,  crank_obj->z);
+   if(start_obj != NULL) // this means we are using the left crank.
+     return start_obj;
+  }
+
+ for(i=0;i<6;i++) // search on left side of crank.
+  {
+   tmp_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_DRAWBRIDGE, crank_obj->x-1, crank_obj->y+i,  crank_obj->z);
+   
+   if(tmp_obj != NULL) // this means we are using the right crank.
+     {
+      //find the start of the drawbridge on the left.
+      // we do this by searching to the left of the crank till we hit the crank on the otherside.
+      // we then move right 1 tile and down 'i' tiles to the start object. :) 
+      for(j=1; j < crank_obj->x; j++)
+        {
+         tmp_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_CRANK, crank_obj->x-j, crank_obj->y,  crank_obj->z);
+         if(tmp_obj && tmp_obj->obj_n == OBJ_U6_CRANK)
+           {
+            start_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_DRAWBRIDGE, tmp_obj->x+1, tmp_obj->y+i,  tmp_obj->z);
+            return start_obj;
+           }
+        }
+     }
+  }
+
+ return NULL;
+}
+
+void U6UseCode::drawbridge_open(uint16 x, uint16 y, uint8 level, uint16 b_width)
+{
+ uint16 i,j;
+ Obj *obj;
+ 
+ y++;
+ 
+ for(i=0;;i++)
+  {
+   obj = new_obj(OBJ_U6_DRAWBRIDGE,3,x,y+i,level); //left side chain
+   obj_manager->add_obj(obj,true);
+     
+   obj = new_obj(OBJ_U6_DRAWBRIDGE,5,x+b_width-1,y+i,level); //right side chain
+   obj_manager->add_obj(obj,true);
+
+   for(j=0;j<b_width-2;j++)
+    {     
+     obj = new_obj(OBJ_U6_DRAWBRIDGE,4,x+1+j,y+i,level);
+     obj_manager->add_obj(obj,true);
+    }
+    
+   if(map->is_passable(x,y+i+1,level)) //we extend the drawbridge until we hit a passable tile.
+    break; 
+  }
+ 
+ i++;
+ 
+ for(j=0;j<b_width-2;j++) //middle bottom tiles
+  {
+   obj = new_obj(OBJ_U6_DRAWBRIDGE,1,x+1+j,y+i,level);  
+   obj_manager->add_obj(obj,true);
+  }
+  
+ obj = new_obj(OBJ_U6_DRAWBRIDGE,0,x,y+i,level); //bottom left
+ obj_manager->add_obj(obj,true);
+     
+ obj = new_obj(OBJ_U6_DRAWBRIDGE,2,x+b_width-1,y+i,level);  // bottom right
+ obj_manager->add_obj(obj,true);
+
+ return;
+}
+
+void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width)
+{
+ uint16 i;
+ Obj *obj;
+ 
+ y--;
+ 
+ obj = new_obj(OBJ_U6_DRAWBRIDGE,6,x-1,y,level);  //left side
+ obj_manager->add_obj(obj,true);
+ 
+ obj = new_obj(OBJ_U6_DRAWBRIDGE,8,x+b_width-1,y,level);  //right side     
+ obj_manager->add_obj(obj,true);
+ 
+ for(i=0;i<b_width-1;i++)
+  {
+   obj = new_obj(OBJ_U6_DRAWBRIDGE,7,x+i,y,level);  //middle        
+   obj_manager->add_obj(obj,true);
+  }
+
+}
+
+void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width)
+{ 
+ uint16 w,h;
+ Obj *obj;
+
+ //remove end of closed drawbridge.
+ // if present.
+ if(x > 0)
+   obj_manager->remove_obj_type_from_location(OBJ_U6_DRAWBRIDGE,x-1,y,level);
+ 
+ *bridge_width = 0;
+ 
+ //remove the rest of the bridge.
+ for(h=0,w=1;w != 0;h++)
+  {
+   for(w=0;;w++)
+    {
+     if(obj_manager->remove_obj_type_from_location(OBJ_U6_DRAWBRIDGE,x+w,y+h,level) == false)
+       {
+        if(w != 0)
+          *bridge_width = w;
+        break;
+       }
+    }
+  }
+
+ return;
 }
 
 bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)

@@ -51,8 +51,10 @@
 #define OBJ_U6_CROSS          254
 #define OBJ_U6_TOMBSTONE      255
 #define OBJ_U6_LEVER          268
+#define OBJ_U6_DRAWBRIDGE     269
 #define OBJ_U6_V_PASSTHROUGH  278
 #define OBJ_U6_H_PASSTHROUGH  280
+#define OBJ_U6_CRANK          288
 
 #define OBJ_U6_OAKEN_DOOR     297
 #define OBJ_U6_WINDOWED_DOOR  298
@@ -85,7 +87,13 @@ class U6UseCode: public UseCode
  bool use_container(Obj *obj);
  bool use_passthrough(Obj *obj);
  bool use_lever(Obj *obj);
+ bool use_crank(Obj *obj);
  
+ Obj *drawbridge_find(Obj *crank_obj);
+ void drawbridge_open(uint16 x, uint16 y, uint8 level, uint16 b_width);
+ void drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width);
+ void drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridge_width);
+
  bool use_firedevice_message(Obj *obj, bool lit);
 };
 

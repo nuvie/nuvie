@@ -113,7 +113,7 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  converse->loadConv();
 
  usecode = (UseCode *) new U6UseCode(config);
- usecode->init(obj_manager, player, scroll);
+ usecode->init(obj_manager, game_map, player, scroll);
  
  event = new Event(config);
  event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode);

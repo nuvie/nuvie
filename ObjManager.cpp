@@ -200,9 +200,9 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
        if(obj_list != NULL)
          {
           link = obj_list->end();
-
-          obj_status = OBJ_STATUS_PASSABLE;
-
+          if(link != NULL)
+            obj_status = OBJ_STATUS_PASSABLE;
+            
           for(check_tile = false;link != NULL;link = link->prev)
             {
              obj = (Obj *)link->data;
@@ -309,6 +309,27 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
  return NULL;
 }
 
+Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z)
+{
+ U6LList *obj_list;
+ U6Link *link;
+ Obj *obj;
+ 
+ obj_list = get_obj_list(x,y,z);
+ 
+ if(obj_list == NULL)
+  return NULL;
+  
+ for(link=obj_list->start();link != NULL; link=link->next) 
+   {
+    obj = (Obj *)link->data;
+    if(obj->obj_n == obj_n)
+      return obj;
+   }
+
+ return NULL;
+}
+
 // x, y in world coords
 Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
 {
@@ -352,6 +373,36 @@ bool ObjManager::remove_obj(Obj *obj)
    }
 
  return true;
+}
+
+// remove all objects of type obj_n from location (x,y,z)
+
+bool ObjManager::remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z)
+{
+ U6LList *obj_list;
+ U6Link *link;
+ Obj *obj;
+ bool objects_deleted = false;
+ 
+ obj_list = get_obj_list(x,y,z);
+
+ if(obj_list != NULL)
+   {
+    for(link=obj_list->start();link != NULL; ) 
+     {
+      obj = (Obj *)link->data;
+      link=link->next;
+      
+      if(obj->obj_n == obj_n)
+        {
+         obj_list->remove(obj);
+         delete obj;
+         objects_deleted = true;
+        }
+     }
+   }
+
+ return objects_deleted;
 }
 
 Obj *ObjManager::copy_obj(Obj *obj)
@@ -477,7 +528,7 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
 {
  iAVLTree *obj_tree = get_obj_tree(level);
  iAVLCursor cursor;
- ObjTreeNode *node, *prev_node;
+ ObjTreeNode *node;
  U6Link *link;
  Obj *new_obj;
  bool passed_prev_obj = false;
@@ -758,4 +809,20 @@ void ObjManager::print_object_list()
   }
 
  return;
+}
+
+Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z)
+{
+ Obj *obj;
+ 
+ obj = new Obj();
+ 
+ obj->obj_n = obj_n;
+ obj->frame_n = frame_n;
+
+ obj->x = x; 
+ obj->y = y; 
+ obj->z = z;
+ 
+ return obj; 
 }

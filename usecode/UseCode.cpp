@@ -32,9 +32,10 @@ UseCode::~UseCode()
 {
 }
 
-bool UseCode::init(ObjManager *om, Player *p, MsgScroll *ms)
+bool UseCode::init(ObjManager *om, Map *m, Player *p, MsgScroll *ms)
 {
  obj_manager = om;
+ map = m;
  player = p;
  scroll = ms;
  

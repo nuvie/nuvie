@@ -26,6 +26,7 @@
 #include "U6def.h"
 #include "Configuration.h"
 #include "ObjManager.h"
+#include "Map.h"
 #include "MsgScroll.h"
 #include "Player.h"
 
@@ -35,6 +36,7 @@ class UseCode
  
  Configuration *config;
  ObjManager *obj_manager;
+ Map *map;
  Player *player;
  MsgScroll *scroll;
  
@@ -43,7 +45,7 @@ class UseCode
  UseCode(Configuration *cfg);
  virtual ~UseCode();
  
- virtual bool init(ObjManager *om, Player *p, MsgScroll *ms);
+ virtual bool init(ObjManager *om, Map *m, Player *p, MsgScroll *ms);
  
  bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
  virtual bool use_obj(Obj *obj, Obj *src_obj=NULL)=0;

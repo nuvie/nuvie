@@ -112,6 +112,7 @@ bool Nuvie::initConfig()
  if(loadConfigFile(config_path))
    return true;
 
+#ifndef WIN32
  // standard share locations
  
  config_path.assign("/usr/local/share/nuvie/nuvie.cfg");
@@ -123,6 +124,7 @@ bool Nuvie::initConfig()
  
  if(loadConfigFile(config_path))
    return true;
+#endif 
 
  delete config;
  config = NULL;
