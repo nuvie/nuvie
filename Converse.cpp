@@ -20,7 +20,7 @@
 #include "U6Lzw.h"
 #include "Converse.h"
 
-#define CONVERSE_DEBUG
+//#define CONVERSE_DEBUG
 #ifdef CONVERSE_DEBUG
 # define test_msg(S) print(S)
 #else

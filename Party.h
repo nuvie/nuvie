@@ -59,6 +59,10 @@ class Party {
  bool init(ActorManager *am);
  
  bool contains_actor(Actor *actor);
+ bool contains_actor(uint8 a)
+ {
+  return(contains_actor(actor_manager->get_actor(a)));
+ }
  bool add_actor(Actor *actor);
  bool remove_actor(Actor *actor);
  
@@ -68,9 +72,9 @@ class Party {
  uint8 get_party_size();
  Actor *get_actor(uint8 member_num);
  char *get_actor_name(uint8 member_num);
- 
+
  protected:
- 
+
  bool loadParty();
 };
 

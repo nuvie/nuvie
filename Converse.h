@@ -234,9 +234,9 @@ class Converse
     bool is_test(Uint8 check)
     {
         return(((check == 0x81) || (check == 0x84) || (check == 0x85)
-               || (check == 0x86) || (check == 0x86) || (check == 0xab)
-               || (check == 0xc6) || (check == 0xc7) || (check == 0xd7)
-               || (check == 0xdd) || (check == 0xbb) || (check == 0xe3)));
+               || (check == 0x86) || (check == 0xab) || (check == 0xc6)
+               || (check == 0xc7) || (check == 0xd7) || (check == 0xdd)
+               || (check == 0xbb) || (check == 0xe3)));
     }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)
