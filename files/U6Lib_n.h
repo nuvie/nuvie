@@ -25,9 +25,10 @@
  */
 #include <vector>
 #include <string>
+#include <cstdio> /* FILE */
 
 using std::string;
-using std::vector;
+//using std::vector;
 
 class NuvieIO;
 
@@ -37,6 +38,8 @@ struct U6LibItem
  uint8 flag;
  uint32 uncomp_size;
  uint32 size;
+ string *name;
+ unsigned char *data; // for writing or cache
 };
 
 class U6Lib_n
@@ -53,41 +56,28 @@ public:
    ~U6Lib_n();
  
    bool open(std::string &filename, uint8 size, uint8 type=NUVIE_GAME_U6);
-   bool U6Lib_n::open(NuvieIO *new_data, uint8 size, uint8 type=NUVIE_GAME_U6);
+   bool open(NuvieIO *new_data, uint8 size, uint8 type=NUVIE_GAME_U6);
    void close();
-//   bool create(std::string &filename, uint8 size);
+   bool create(std::string &filename, uint8 size, uint8 type=NUVIE_GAME_U6);
+
+   unsigned char *get_item(uint32 item_number, unsigned char *buf=NULL); // read
+   void set_item_data(uint32 item_number, unsigned char *src, uint32 src_len); 
+
    uint32 get_num_items();
    uint32 get_item_size(uint32 item_number);
    uint32 get_item_offset(uint32 item_number);
-//   void add_item_offset(uint32 offset32, const char *name);
-   unsigned char *get_item(uint32 item_number, unsigned char *buf=NULL);
+   const char *get_item_name(uint32 item_number);
    bool is_compressed(uint32 item_number);
 
-//   void load_index(FILE *index_f);
-//   void write_index();
-//   void write_item(uint32 item_number);
-   /* Returns the filename associated with `item_number'.
-    */
-/*
-   const char *item_name(uint32 item_number)
-   {
-    if(item_number >= num_offsets)
-        return(NULL);
-    return(names[item_number].c_str());
-   }
-   void add_item(unsigned char *src, uint32 src_len);
-   unsigned char *item(uint32 item_number) { return(data[item_number]); }
+   void add_item(uint32 offset32, const char *name = NULL);
+   void write_item(uint32 item_number);
+   void write_items();
 
-   // Write all items to the library file at their respective offsets from the
-   // start of the file.
-      
-   void write_items()
-   {
-       for(uint32 i = 0; i < num_offsets; i++)
-        write_item(i);
-   }
+   void load_index(FILE *index_f);
+   void write_index();
+
    void calc_item_offsets();
-*/
+
 protected:
    void parse_lib();
    void calculate_item_sizes();

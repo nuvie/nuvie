@@ -29,9 +29,9 @@ uint16 get_actor_name_length(unsigned char *buf)
  */
 void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
 {
-    FILE *src_f = 0, *index_f = 0;
+    FILE *src_f = 0, *index_f = 0; // FIXME: use NuvieIOFileRead
     int num_items = 0, num_added = 0;
-    unsigned char *buf = NULL, *comp_buf = NULL;
+    unsigned char *buf = NULL, *comp_buf = NULL; // source, output buffers
     uint32 buf_size = 0, comp_size = 0, b = 0;
 
     index_f = fopen(indexname, "rb");
@@ -39,13 +39,15 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
     num_items = converse->get_num_items();
     for(int i = 0; i < num_items; i++)
     {
-        if(strlen(converse->item_name(i)))
+        if(strlen(converse->get_item_name(i)))
         {
-            std::cout << "<- `" << converse->item_name(i) << "'" << std::endl;
-            src_f = fopen(converse->item_name(i), "rb");
+            const char *item_name = converse->get_item_name(i);
+            printf("<- `%s'\n", item_name);
+            // read source
+            src_f = fopen(item_name, "rb");
             if(!src_f)
             {
-                printf("Item %d: Error opening file!\n", i);
+                printf("Item %d: Error opening data file (%s)\n", item_name);
                 break;
             }
             while(!feof(src_f))
@@ -54,8 +56,10 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
                 fread(&buf[buf_size++], 1, 1, src_f);
             }
             fclose(src_f);
+            if(buf_size) // read loop adds 1 extra byte to size
+                buf_size -= 1;
         }
-        if(buf_size)
+        if(buf_size) // the source exists and is not empty, write it to lib
         {
 #ifdef USE_LZW
 #error LZW compression does not work yet
@@ -73,8 +77,8 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
             memset(comp_buf, 0, sizeof(uint32));
             memcpy(comp_buf + sizeof(uint32), buf, buf_size);
 #endif
-            converse->add_item(comp_buf, comp_size);
-            ++num_added;
+            converse->set_item_data(i, comp_buf, comp_size);
+            ++num_added; // only need to increment if there IS data
             free(buf); buf = NULL; buf_size = 0;
             if(comp_size)
             {
@@ -83,15 +87,15 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
                 comp_buf = NULL;
             }
         }
-        else
+        else // the source does not exist or is empty, will just write index
         {
-            std::cout << "<- (no data)" << std::endl;
-            converse->add_item(NULL, 0);
+            printf("<- (no data)\n");
+            converse->set_item_data(i, NULL, 0);
         }
     }
     converse->calc_item_offsets();
     converse->write_index();
-    if(num_added)
+    if(num_added) // don't bother writing data if there isn't any
         converse->write_items();
     fclose(index_f);
 }
@@ -118,28 +122,33 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
                      "# %d item(s)\n"
                      "# Offset  Filename\n", num_items);
  }
- std::cout << "This file contains " << num_items << " scripts." << std::endl;
- for(i=0;i < num_items; i++)
+ printf("This file contains %d scripts.\n", num_items);
+ for(i = 0; i < num_items; i++)
   {
    buf_size = converse->get_item_size(i);
    buf_loc = converse->get_item_offset(i);
-   fprintf(indexfile, "%08x  ", buf_loc);
-   buf = converse->get_item(i);
+   fprintf(indexfile, "%08x  ", buf_loc); // save original offset
+   if(buf_loc == 0) // no data (only zero offset is written)
+    {
+     fputc('\n', indexfile);
+     continue;
+    }
+   buf = converse->get_item(i); // read from source
     if(!buf)
     {
         buf = (unsigned char *)malloc(buf_size);
         memset(buf, 0, buf_size);
     }
+    // data is not compressed (only seen in one item of converse.b)
     if(buf_size >= 4 && (buf[0] + buf[1] + buf[2] + buf[3]) == 0)
     {
-        // data is not compressed (only seen in one item of converse.b)
         uncomp_size = buf_size - 4;
         uncomp_buf = (unsigned char *)malloc(uncomp_size);
         memcpy(uncomp_buf, buf + 4, uncomp_size);
     }
     else
         uncomp_buf = lzw->decompress_buffer(buf,buf_size,uncomp_size);
-   if(uncomp_buf == NULL)
+    if(uncomp_buf == NULL)
     {
      printf("Error: unpacking Lzw i = %d\n",i);
      printf("Error: (%s)\n", lzw->strerror());
@@ -152,7 +161,7 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
         printf("Wrote item data to %s\n", outfilename);
         free(buf);
         fclose(out_file);
-        fprintf(indexfile, "%s", outfilename);
+        fprintf(indexfile, "%s", outfilename); // save output filename
      }
      fputc('\n', indexfile);
      continue;
@@ -167,11 +176,11 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
 
    strcat(outfilename,".conv");
 
-   std::cout << "-> " << outfilename << std::endl;
+   printf("-> %s\n", outfilename);
    out_file = fopen(outfilename,"wb");
-   fwrite(uncomp_buf,1,uncomp_size,out_file);
+   fwrite(uncomp_buf,1,uncomp_size,out_file); // write output file
    fclose(out_file);
-   fprintf(indexfile, "%s\n", outfilename);
+   fprintf(indexfile, "%s\n", outfilename); // save output filename
    free(buf);
    free(uncomp_buf);
   }
@@ -194,6 +203,10 @@ int main(int argc, char **argv)
     if(argv[arg][0] == '-' && strlen(argv[arg]) >= 2)
         if(argv[arg][1] == 'r') // re-pack
             repack = true;
+// FIXME: make repack seperate prog, pack to one lib at a time (a or b)
+//        if(argv[arg][1] == 'i') // insert
+//            repack = true;
+//        if(argv[arg][1] == 'c') // config location
     arg++;
  }
 

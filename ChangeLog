@@ -1,3 +1,7 @@
+2004-01-12  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Tools: unpack_conv working again. (broken files were being produced
+	  and repack -r didn't work because of U6Lib_n differences)
+
 2004-01-11  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a crash on load bug. [ 874477 ] Nuvie would crash while loading
 	  if the game was saved at night or in a dungeon. Nuvie was trying to

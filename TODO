@@ -29,36 +29,30 @@ Don't drag skiffs to land (check object's passable?)
 When dragging object, show cursor as indicator if object can be dropped in a
 location.
 
-Actors: There must be a uniform way to set all actors direction and frame, and
-to animate them, no matter what size they are.
+Actors:
 Improve Party following
 Implement speed in LPath (actors walking to work location get up to 4 moves)
 And with LPath, NPCs travel wide angles along roads instead of shortest path
 to destination (it is not solely based on terrain score).
 New Follow pathfinder, follow an actor (if on same plane), with give-up distance
+    (also run from actor)
+Maybe a new Monster pathfinder
 
 UseCode:
-Execute Usecode for post-move actions (frame changes)?
+Execute Usecode for post-move actions (frame changes)
 Ex: call an event on "chair" when actor steps on it, to change to sit frame
  (This can be used to implement poison/sleep fields.)
-Mirror usecode (enter-area, leave-area, and drop)
 move u6ucobject stuff up to UseCode, needs to be generic to avoid duplication
 
 MsgScroll: Give message scroller and other GUI areas some high-level I/O methods
-Textlines aren't wide enough, or wrapping behaves differently than original.
-Breaks look different than in original. Screenfulls of text should pause even if
+Screenfulls of text should pause even if
 not indicated in data, but a break indicated in the data + a screenfull of text
 should not cause two breaks (requiring player to ESC twice).
 PgUp/Dn
 
-fix start-in-vehicle
-
 Iolo "gather" gets gold in containers eg in bags, backpacks (need to do more
 testing)
 
-Don't try to dump container contents if CLOSING the container
-
-Restrict farm animals to within fenced areas. (and other actors)
 Fix actor draw order issues.
 
 Move static mode out of U6Actor::wt_beg because it affects all actors with that
@@ -68,7 +62,8 @@ Replace some actor info with pointer to an Obj?
 Actor::[check]move error/status struct? (so that calling function can check)
 Actor::[check]move: take move_flags argument (replace current bools force_move/ignore_others)
 
-Altars and square (single object) tables shouldn't be passable, but are.
+Move Configuration search to Configuration or somewhere so it can be used in
+tools.
 
 things to do:
 raft
