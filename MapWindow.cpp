@@ -36,12 +36,23 @@ bool MapWindow::init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorMa
  obj_manager = om;
  actor_manager = am;
 
+ tmp_buf = (unsigned char *)malloc(win_width * win_height);
+ if(tmp_buf == NULL)
+   return false;
+
  return true;
 }
-void MapWindow::set_windowSize(uint16 width, uint16 height)
+
+bool MapWindow::set_windowSize(uint16 width, uint16 height)
 {
  win_width = width;
  win_height = height;
+ 
+ tmp_buf = (unsigned char *)realloc(tmp_buf, win_width * win_height);
+ if(tmp_buf == NULL)
+   return false;
+
+ return true;
 }
  
 void MapWindow::moveLevel(uint8 new_level)
@@ -102,19 +113,27 @@ void MapWindow::drawMap()
  uint16 map_width;
  Tile *tile;
  
- map_ptr = map->get_map_data(cur_level);
+ //map_ptr = map->get_map_data(cur_level);
  map_width = map->get_width(cur_level);
  
- map_ptr += cur_y * map_width + cur_x;
-    
+ generateTmpMap();
+ 
+ //map_ptr += cur_y * map_width + cur_x;
+  map_ptr = tmp_buf;
+  
   for(i=0;i<win_height;i++)
   {
    for(j=0;j<win_width;j++)
      {
-      tile = tile_manager->get_tile(map_ptr[j]); 
+      if(map_ptr[j] == 0)
+        tile = tile_manager->get_tile(206);
+      else
+        tile = tile_manager->get_tile(map_ptr[j]);
+
       screen->blit((unsigned char *)tile->data,8,(j*16),(i*16),16,16);
      }
-   map_ptr += map_width;
+   //map_ptr += map_width;
+   map_ptr += win_width;
   }
 
  drawObjs();
@@ -250,6 +269,9 @@ inline void MapWindow::drawTile(uint16 tile_num, uint16 x, uint16 y, bool toptil
 
 inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile)
 {
+ if(tmp_buf[y*win_width+x] == 0) //don't draw object if area is in darkness.
+   return;
+   
  if(toptile)
     {
      if(tile->toptile)
@@ -260,4 +282,60 @@ inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile)
      if(!tile->toptile)
         screen->blit(tile->data,8,x*16,y*16,16,16,tile->transparent);
     } 
+}
+
+void MapWindow::generateTmpMap()
+{
+ unsigned char *map_ptr;
+ uint16 pitch;
+ 
+ map_ptr = map->get_map_data(cur_level);
+ pitch = map->get_width(cur_level);
+ 
+ memset(tmp_buf, 0, win_width * win_height);
+
+ boundaryFill(map_ptr, pitch, cur_x + ((win_width - 1) / 2), cur_y + ((win_height - 1) / 2));
+ 
+}
+
+void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y) 
+{
+ unsigned char current;
+ unsigned char *ptr;
+ uint16 pos;
+ 
+ if((x < cur_x) || (x >= cur_x + win_width))
+   return;
+
+ if((y < cur_y) || (y >= cur_y + win_height))
+   return;
+   
+ pos = (y - cur_y) * win_width + (x - cur_x);
+
+ ptr = &tmp_buf[pos];
+
+ if(*ptr != 0)
+   return;
+ 
+ current = map_ptr[y * pitch + x];
+ 
+ *ptr = current;
+ 
+ //FIX there has to be a better wall detection method probably in tileflags. ;)
+ 
+ if(current >= 140 && current <= 205) //hit the boundary wall tiles
+  {
+   return;
+  }
+
+ boundaryFill(map_ptr, pitch, x+1, y);
+ boundaryFill(map_ptr, pitch, x, y+1);
+ boundaryFill(map_ptr, pitch, x+1, y+1);
+ boundaryFill(map_ptr, pitch, x-1, y-1);
+ boundaryFill(map_ptr, pitch, x-1, y);
+ boundaryFill(map_ptr, pitch, x, y-1);
+
+
+ 
+ return;
 }

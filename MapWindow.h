@@ -23,6 +23,8 @@ class MapWindow
  
  Map *map;
  
+ unsigned char *tmp_buf; // tempory buffer for flood fill, hide rooms. 
+ 
  TileManager *tile_manager;
  ObjManager *obj_manager;
  ActorManager *actor_manager;
@@ -39,7 +41,7 @@ class MapWindow
  
  bool init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorManager *am);
  
- void set_windowSize(uint16 width, uint16 height);
+ bool set_windowSize(uint16 width, uint16 height);
  
  void moveLevel(uint8 new_level);
  void move(uint16 new_x, uint16 new_y);
@@ -58,6 +60,9 @@ protected:
  inline void drawObj(Obj *obj, bool toptile);
  inline void drawTile(uint16 tile_num, uint16 x, uint16 y, bool toptile);
  inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);
+
+ void generateTmpMap();
+ void boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y);
 };
 
 #endif /* __MapWindow_h__ */
