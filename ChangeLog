@@ -1,3 +1,7 @@
+2003-05-21  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Portraits now display during conversations (at the start and when
+	requested.)
+
 2003-05-20  Eric Fry <efry@users.sourceforge.net>
 	* work done on View system. Added ViewManager, View, PortraitView.
 	* Added Portrait loading class.
