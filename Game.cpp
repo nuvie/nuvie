@@ -188,8 +188,6 @@ void Game::play()
   
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
-  screen->clearalphamap8( 8, 8, 160, 160, 0x00 );
-
   map_window->updateBlacking();
   
   for( ; game_play ; ) 

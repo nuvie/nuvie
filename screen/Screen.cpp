@@ -33,6 +33,7 @@
 #include "Surface.h"
 #include "Scale.h"
 #include "Screen.h"
+#include "MapWindow.h"
 
 #define sqr(a) ((a)*(a))
 
@@ -48,6 +49,7 @@ Screen::Screen(Configuration *cfg)
  update_rects = NULL;
  shading_data = NULL;
  updatingalphamap = true;
+ UseOriginalLighting = true;
  
  max_update_rects = 10;
  num_update_rects = 0;
@@ -108,8 +110,6 @@ fullscreen = false;
  
  set_screen_mode();
 
- buildalphamap8();
-   
  return true;
 }
 
@@ -129,7 +129,7 @@ bool Screen::set_palette(uint8 *p)
 
 		surface->colour32[i] = c;
 	 }
- 
+  
  return true;
 }
 
@@ -445,145 +445,275 @@ void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, 
  return;
 }
 
+//4 is pure-light
+//0 is pitch-black
+//Globe of r 1 is just a single tile of 2
+
+static const char TileGlobe[][11*11] = 
+{
+{
+	1,1,1,
+	1,2,1,
+	1,1,1
+},
+{
+    0,0,0,0,0,
+    0,1,2,1,0,
+    0,2,3,2,0,
+    0,1,2,1,0,
+    0,0,0,0,0
+},
+{
+    0,0,1,1,1,0,0,
+    0,1,2,2,2,1,0,
+    1,2,3,3,3,2,1,
+    1,2,3,4,3,2,1,
+    1,2,3,3,3,2,1,
+    0,1,2,2,2,1,0,
+    0,0,1,1,1,0,0
+},
+{
+    0,0,0,1,1,1,0,0,0,
+    0,0,1,2,2,2,1,0,0,
+    0,1,2,3,3,3,2,1,0,
+    1,2,3,3,4,3,3,2,1,
+    1,2,3,4,4,4,3,2,1,
+    1,2,3,3,4,3,3,2,1,
+    0,1,2,3,3,3,2,1,0,
+    0,0,1,2,2,2,1,0,0,
+    0,0,0,1,1,1,0,0,0
+},
+{
+    0,0,1,1,2,2,2,1,1,0,0,
+    0,1,1,2,3,3,2,2,1,1,0,
+    1,1,2,3,3,3,3,2,2,1,1,
+    1,2,3,3,4,4,4,3,2,2,1,
+    2,2,3,4,4,4,4,4,3,2,2,
+    2,2,3,4,4,4,4,4,3,2,2,
+    2,2,3,4,4,4,4,4,3,2,2,
+    1,2,2,3,4,4,4,3,2,2,1,
+    1,1,2,2,3,3,3,2,2,1,1,
+    0,1,1,2,2,2,2,2,1,1,0,
+    0,0,1,1,2,2,2,1,1,0,0,
+},
+{
+    1,1,2,2,2,2,2,2,2,1,1,
+    1,2,2,3,3,3,3,3,2,2,1,
+    2,2,3,3,4,4,4,3,3,2,2,
+    2,3,3,4,4,4,4,4,3,3,2,
+    2,3,4,4,4,4,4,4,4,3,2,
+    2,3,4,4,4,4,4,4,4,3,2,
+    2,3,4,4,4,4,4,4,4,3,2,
+	2,3,3,4,4,4,4,4,3,3,2,
+	2,2,3,3,4,4,4,3,3,2,2,
+	1,2,2,3,3,3,3,3,2,2,1,
+    1,1,2,2,2,2,2,2,2,1,1
+}
+};
+
 void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity )
 {
-	shading_ambient = opacity;
-	if( shading_data == NULL )
-	{
-		shading_rect.x = x;
-		shading_rect.y = y;
-		shading_rect.w = w;
-		shading_rect.h = h;
-		shading_data = (unsigned char*)malloc(sizeof(char)*shading_rect.w*shading_rect.h);
-		if( shading_data == NULL )
-		{
-			/* We couldn't allocate memory for the opacity map, so just disable lighting */
-			shading_ambient = 0xFF;
-			return;
-		}
-	}
-	if( shading_ambient == 0xFF )
-	{
-	}
-	else
-	{
-		memset( shading_data, shading_ambient, sizeof(char)*shading_rect.w*shading_rect.h );
-	}
-	updatingalphamap = true;
+    if( UseOriginalLighting )
+    {
+        if( opacity < 0xFF )
+            shading_ambient = 0;
+        else
+            shading_ambient = 0xFF;
+    }
+    else
+        shading_ambient = opacity;
 
-	//Light globe around the avatar
-	drawalphamap8globe( 88, 88, 3 );
+    if( shading_data == NULL )
+    {
+        shading_rect.x = x;
+        shading_rect.y = y;
+        shading_rect.w = w;
+        shading_rect.h = h;
+        shading_data = (unsigned char*)malloc(sizeof(char)*shading_rect.w*shading_rect.h);
+        if( shading_data == NULL )
+        {
+            /* We couldn't allocate memory for the opacity map, so just disable lighting */
+            shading_ambient = 0xFF;
+            return;
+        }
+        buildalphamap8();
+    }
+    if( shading_ambient == 0xFF )
+    {
+    }
+    else
+    {
+        memset( shading_data, shading_ambient, sizeof(char)*shading_rect.w*shading_rect.h );
+    }
+    updatingalphamap = true;
 
+    //Light globe around the avatar
+    if( UseOriginalLighting )
+        drawalphamap8globe( 5, 5, opacity/64+3 ); //range (0..3)+3 or (3..6)
+    else
+        drawalphamap8globe( 5, 5, 3 );
 }
 
 void Screen::buildalphamap8()
 {
-	//Build three globes for 3 intensities
-	//16x16, 32x32, 64x64
-	shading_globe[0] = (uint8*)malloc(sqr(globeradius[0]));
-	shading_globe[1] = (uint8*)malloc(sqr(globeradius[1]));
-	shading_globe[2] = (uint8*)malloc(sqr(globeradius[2]));
+    //Build three globes for 3 intensities
+    //16x16, 32x32, 64x64
+    shading_globe[0] = (uint8*)malloc(sqr(globeradius[0]));
+    shading_globe[1] = (uint8*)malloc(sqr(globeradius[1]));
+    shading_globe[2] = (uint8*)malloc(sqr(globeradius[2]));
 
-	for( int i = 0; i < 3; i++ )
-		for( int y = 0; y < globeradius[i]; y++ )
-			for( int x = 0; x < globeradius[i]; x++ )
-			{
-				float r;
-				//Distance from center
-				r  = sqrt( sqr((y-globeradius_2[i]))+sqr((x-globeradius_2[i])) );
-				//Unitize
-				r /= sqrt( sqr(globeradius_2[i])+sqr(globeradius_2[i]) );
-				//Calculate brightness
-				r  = (float)exp(-(10*r*r));
-				//Fit into a byte
-				r *= 255;
-				//Place it
-				shading_globe[i][y*globeradius[i]+x] = (uint8)r;
-			}
+    for( int i = 0; i < 3; i++ )
+        for( int y = 0; y < globeradius[i]; y++ )
+            for( int x = 0; x < globeradius[i]; x++ )
+            {
+                float r;
+                //Distance from center
+                r  = sqrt( sqr((y-globeradius_2[i]))+sqr((x-globeradius_2[i])) );
+                //Unitize
+                r /= sqrt( sqr(globeradius_2[i])+sqr(globeradius_2[i]) );
+                //Calculate brightness
+                r  = (float)exp(-(10*r*r));
+                //Fit into a byte
+                r *= 255;
+                //Place it
+                shading_globe[i][y*globeradius[i]+x] = (uint8)r;
+            }
+
+    //Get the three shading tiles (for original-style dithered lighting)
+    Game *game = Game::get_game();
+    int game_type;
+    config->value("config/GameType",game_type);
+ 
+    if(game_type == NUVIE_GAME_U6)
+    {
+        shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(444)->data;
+        shading_tile[1] = game->get_map_window()->get_tile_manager()->get_tile(445)->data;
+        shading_tile[2] = game->get_map_window()->get_tile_manager()->get_tile(446)->data;
+        shading_tile[3] = game->get_map_window()->get_tile_manager()->get_tile(447)->data;
+    }
+    else
+    {
+        shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(268)->data;
+        shading_tile[1] = game->get_map_window()->get_tile_manager()->get_tile(269)->data;
+        shading_tile[2] = game->get_map_window()->get_tile_manager()->get_tile(270)->data;
+        shading_tile[3] = game->get_map_window()->get_tile_manager()->get_tile(271)->data;
+    }
 }
+
 
 void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 {
-	if( shading_ambient == 0xFF )
-		return;
-	r--;
-	//The x and y are relative to (0,0) of the screen itself, and are absolute coordinates, so are i and j
-	sint16 i,j;
-	for(i=-globeradius_2[r];i<globeradius_2[r];i++)
-		for(j=-globeradius_2[r];j<globeradius_2[r];j++)
-		{
-			if( (y-shading_rect.y+i)-1 < 0 ||
-				(x-shading_rect.x+j)-1 < 0 ||
-				(y-shading_rect.y+i)+1 > shading_rect.h ||
-				(x-shading_rect.x+j)+1 > shading_rect.w )
-				continue;
-			shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + shading_globe[r][(i+globeradius_2[r])*globeradius[r]+(j+globeradius_2[r])], 255 );
-			//shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = 0xFF;
-		}
+    sint16 i,j, globe;
+    if( shading_ambient == 0xFF )
+        return;
+    if( UseOriginalLighting )
+    {        
+		globe = r+1;
+		if( r > 5 )
+			r = 5;
+		for( j = 0; j <= r*2; j++ )
+			for( i = 0; i <= r*2; i++ )
+			{
+				if( x + i - r < 0 || x + i - r >= 11 )
+					continue;
+				if( y + j - r < 0 || y + j - r >= 11  )
+					continue;
+				shading_data[(y+j-r)*11+(x+i-r)] = min( shading_data[(y+j-r)*11+(x+i-r)] + TileGlobe[globe-2][j*(r*2+1)+i], 4 );
+			}
+        return;
+    }
+    r--;
+    x = x*16+8;
+    y = y*16+8;
+    //The x and y are relative to (0,0) of the screen itself, and are absolute coordinates, so are i and j
+    for(i=-globeradius_2[r];i<globeradius_2[r];i++)
+        for(j=-globeradius_2[r];j<globeradius_2[r];j++)
+        {
+            if( (y-shading_rect.y+i)-1 < 0 ||
+                (x-shading_rect.x+j)-1 < 0 ||
+                (y-shading_rect.y+i)+1 > shading_rect.h ||
+                (x-shading_rect.x+j)+1 > shading_rect.w )
+                continue;
+            shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = min( shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + shading_globe[r][(i+globeradius_2[r])*globeradius[r]+(j+globeradius_2[r])], 255 );
+        }
 }
 
 
 void Screen::blitalphamap8()
 {
-	//pixel = (dst*(1-alpha))+(src*alpha)   for an interpolation
-	//pixel = pixel * alpha                 for a reduction
-	//We use a reduction here
+    //pixel = (dst*(1-alpha))+(src*alpha)   for an interpolation
+    //pixel = pixel * alpha                 for a reduction
+    //We use a reduction here
 
-	if( shading_ambient == 0xFF )
-		return;
+    if( shading_ambient == 0xFF )
+        return;
 
-	updatingalphamap = false;
+    uint16 i,j;
+    Game *game = Game::get_game();
+    updatingalphamap = false;
 
-	uint16 i,j;
+    if( UseOriginalLighting )
+    {
+        for( j = 0; j < 11; j++ )
+        {
+            for( i = 0; i < 11; i++ )
+            {
+                if( shading_data[j*11+i] < 4 )
+                    blit(i*16,j*16,shading_tile[shading_data[j*11+i]],8,16,16,16,true,game->get_map_window()->get_clip_rect());
+            }
+        }
+        return;
+    }
 
-	switch( surface->bits_per_pixel )
-	{
-	case 16:
-		uint16 *pixels16;
-		pixels16 = (uint16 *)surface->pixels;
+    switch( surface->bits_per_pixel )
+    {
+    case 16:
+        uint16 *pixels16;
+        pixels16 = (uint16 *)surface->pixels;
 
-		pixels16 += shading_rect.y*surface->w;
+        pixels16 += shading_rect.y*surface->w;
 
-		for(i=shading_rect.y;i<shading_rect.h+shading_rect.y;i++)
-		{
-			for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
-			{
-				pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & 0xF800 ) >> 11)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 11) | //R
-							  ( ( (unsigned char)(( (float)(( pixels16[j] & 0x07E0 ) >> 5 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 5 ) | //G
-							  ( ( (unsigned char)(( (float)(( pixels16[j] & 0x001F ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
-			
-				//Red = 0xF800 = 1111 1000 0000 0000
-				//Grn = 0x07E0 = 0000 0111 1110 0000
-				//Blu = 0x001F = 0000 0000 0001 1111
-			}
-			pixels16 += surface->w;
-		}
-		return;
-		break;
-	case 24:
-	case 32:
-		uint32 *pixels;
-		pixels = (uint32 *)surface->pixels;
+        for(i=shading_rect.y;i<shading_rect.h+shading_rect.y;i++)
+        {
+            for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
+            {
+                pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & 0xF800 ) >> 11)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 11) | //R
+                              ( ( (unsigned char)(( (float)(( pixels16[j] & 0x07E0 ) >> 5 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 5 ) | //G
+                              ( ( (unsigned char)(( (float)(( pixels16[j] & 0x001F ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
+            
+                //Red = 0xF800 = 1111 1000 0000 0000
+                //Grn = 0x07E0 = 0000 0111 1110 0000
+                //Blu = 0x001F = 0000 0000 0001 1111
+            }
+            pixels16 += surface->w;
+        }
+        return;
+        break;
+    case 24:
+    case 32:
+        uint32 *pixels;
+        pixels = (uint32 *)surface->pixels;
 
-		pixels += shading_rect.y*surface->w;
+        pixels += shading_rect.y*surface->w;
 
-		for(i=shading_rect.y;i<shading_rect.h+shading_rect.y;i++)
-		{
-			for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
-			{
-				pixels[j] = ( ( (unsigned char)(( (float)(( pixels[j] & 0xFF0000 ) >> 16)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 16) | //R
-							( ( (unsigned char)(( (float)(( pixels[j] & 0x00FF00 ) >> 8 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 8 ) | //G
-							( ( (unsigned char)(( (float)(( pixels[j] & 0x0000FF ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
-			}
-			pixels += surface->w;
-		}
-		return;
-		break;
-	default:
-		std::cout << "Screen::blitalphamap8() cannot handle your screen surface depth of " << surface->bits_per_pixel << std::endl;
-		break;
-		return;
-	}	
+        for(i=shading_rect.y;i<shading_rect.h+shading_rect.y;i++)
+        {
+            for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
+            {
+                pixels[j] = ( ( (unsigned char)(( (float)(( pixels[j] & 0xFF0000 ) >> 16)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 16) | //R
+                            ( ( (unsigned char)(( (float)(( pixels[j] & 0x00FF00 ) >> 8 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 8 ) | //G
+                            ( ( (unsigned char)(( (float)(( pixels[j] & 0x0000FF ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
+            }
+            pixels += surface->w;
+        }
+        return;
+        break;
+    default:
+        std::cout << "Screen::blitalphamap8() cannot handle your screen surface depth of " << surface->bits_per_pixel << std::endl;
+        break;
+        return;
+    }    
+
 }
 
 SDL_Surface *Screen::create_sdl_surface_from(unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch)

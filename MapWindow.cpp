@@ -337,10 +337,6 @@ if(!screen)
  //Clear the opacity map
  screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
  
- //Light globe around the avatar
- screen->drawalphamap8globe( 88, 88, 3 );
-
-
 }
 
 void MapWindow::Display(bool full_redraw)
@@ -506,6 +502,14 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
 
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
+   //Draw a lightglobe in the middle of the 16x16 tile.
+   if( !draw_lowertiles &&
+       toptile &&
+       tile->flags2 & 0x3 && 
+       Game::get_game()->get_screen()->updatingalphamap )
+   screen->drawalphamap8globe( obj->x - cur_x, obj->y - cur_y, (tile->flags2 & 0x3) );
+
+
  if(draw_lowertiles == false && (tile->flags3 & 0x4) && toptile == false) //don't display force lower tiles.
    return;
  
@@ -525,10 +529,7 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
       }
     }
 
-  //Draw a lightglobe in the middle of the 16x16 tile.
-  if((tile->flags2 & 0x3) > 0 && screen->should_update_alphamap())
-	 screen->drawalphamap8globe( 8 + (obj->x - cur_x)*16, 8 + (obj->y - cur_y)*16 , (tile->flags2 & 0x3) );
-      
+     
   drawTile(tile,obj->x - cur_x, obj->y - cur_y, toptile);
   
 }
