@@ -1,4 +1,8 @@
 2004-05-30  Eric Fry <efry at users.sourceforge.net>
+	* Removed absolute paths from XCode project files. Thanks to Fortran
+	  Dragon for spotting them.
+
+2004-05-30  Eric Fry <efry at users.sourceforge.net>
 	* Some compiler fixes.
 	* Reworked save logic to allow a game to be loaded whilst another
 	  game is being played. (I haven't finished with this yet.) There

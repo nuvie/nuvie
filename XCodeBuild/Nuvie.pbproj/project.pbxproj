@@ -17,7 +17,7 @@
 			buildSettings = {
 				CC = "";
 				CPLUSPLUS = "";
-				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\" /Users/eric/Library/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_GENERATE_PROFILING_CODE = YES;
@@ -25,7 +25,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers $(HOME)/Library/Frameworks/SDL_mixer.framework/Headers";
+				HEADER_SEARCH_PATHS = "$(HOME)/Library/Frameworks/SDL.framework/Headers $(HOME)/Library/Frameworks/SDL_mixer.framework/Headers /usr/local/SDL ..";
 				INFOPLIST_FILE = "Info-Nuvie.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
@@ -123,7 +123,6 @@
 				0703C0A5054BE5660003D6CB,
 				0703C0A6054BE5660003D6CB,
 				0703C0A7054BE5660003D6CB,
-				073C4A360568DC54003B7A20,
 				078CE6690582F64100EC127A,
 				079A4265058748A2003627C9,
 				07F10D2805C7D27A0029E1F1,
@@ -152,7 +151,8 @@
 				07656EEF065F177400EEE5C1,
 				07B0117F0668765B000771BC,
 				07B011810668765B000771BC,
-				07B0119206687698000771BC,
+				07132C7E066968A200F0A38E,
+				07132CA70669694A00F0A38E,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -707,7 +707,7 @@
 				07656EEE065F177400EEE5C1,
 				07B0117E0668765B000771BC,
 				07B011800668765B000771BC,
-				07B0119106687698000771BC,
+				07132C7D066968A200F0A38E,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1263,6 +1263,51 @@
 			path = ../actors/U6Actor.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+		};
+		07132C7B066968A200F0A38E = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = AnimManager.cpp;
+			path = ../AnimManager.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07132C7C066968A200F0A38E = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = AnimManager.h;
+			path = ../AnimManager.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07132C7D066968A200F0A38E = {
+			fileRef = 07132C7B066968A200F0A38E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07132C7E066968A200F0A38E = {
+			fileRef = 07132C7C066968A200F0A38E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07132CA60669694A00F0A38E = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = nuvieDefs.h;
+			path = ../nuvieDefs.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07132CA70669694A00F0A38E = {
+			fileRef = 07132CA60669694A00F0A38E;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		0717C7B90467B00900A8000A = {
 			fileEncoding = 4;
@@ -1942,27 +1987,12 @@
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = SDL.framework;
-			path = /Users/eric/Library/Frameworks/SDL.framework;
+			path = "$(HOME)/Library/Frameworks/SDL.framework";
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		073C469105664B2E003B7A20 = {
 			fileRef = 073C469005664B2E003B7A20;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		073C4A350568DC54003B7A20 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = nuvieDefs.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/nuvieDefs.h;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		073C4A360568DC54003B7A20 = {
-			fileRef = 073C4A350568DC54003B7A20;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2285,7 +2315,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = SDL_mixer.framework;
-			path = /Users/eric/Library/Frameworks/SDL_mixer.framework;
+			path = "$(HOME)/Library/Frameworks/SDL_mixer.framework";
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
@@ -2766,9 +2796,9 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = U6objects.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/U6objects.h;
-			refType = 0;
-			sourceTree = "<absolute>";
+			path = ../U6objects.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
 		};
 		079A4265058748A2003627C9 = {
 			fileRef = 079A4264058748A2003627C9;
@@ -2975,36 +3005,6 @@
 		};
 		07B011810668765B000771BC = {
 			fileRef = 07B0117D0668765B000771BC;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		07B0118F06687698000771BC = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = AnimManager.cpp;
-			path = /Users/eric/Projects/Ultima6/nuvie/AnimManager.cpp;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		07B0119006687698000771BC = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = AnimManager.h;
-			path = /Users/eric/Projects/Ultima6/nuvie/AnimManager.h;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		07B0119106687698000771BC = {
-			fileRef = 07B0118F06687698000771BC;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		07B0119206687698000771BC = {
-			fileRef = 07B0119006687698000771BC;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -3635,8 +3635,8 @@
 				0761765605D100B2001B6450,
 				07B16F5904873BFA00A8000A,
 				072599AC0471126B00A8000A,
-				07B0119006687698000771BC,
-				07B0118F06687698000771BC,
+				07132C7C066968A200F0A38E,
+				07132C7B066968A200F0A38E,
 				07D6E0F204F89B0300A8000A,
 				07D6E0F104F89B0300A8000A,
 				07D14A91044449E400A8000A,
@@ -3665,7 +3665,7 @@
 				0740D535042AA97500A8000A,
 				0725669F04272B7B00A8000A,
 				0725669E04272B7B00A8000A,
-				073C4A350568DC54003B7A20,
+				07132CA60669694A00F0A38E,
 				072566A104272B7B00A8000A,
 				072566A004272B7B00A8000A,
 				0717C7B90467B00900A8000A,
