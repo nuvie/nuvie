@@ -1,3 +1,9 @@
+2003-09-07  Eric Fry <efry@users.sourceforge.net>
+	* MapWindow: You can now drop objects into containers on the map.
+	* Event: Fixed the Get method. The object is now referenced by
+	  Actor instead of being copied.
+	* Added some more items to the TODO file.
+
 2003-09-06  Eric Fry <efry@users.sourceforge.net>
 	* Some win32 compile fixes (Thanks vividos)
 	* More Drag and Drop work.

@@ -803,20 +803,34 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
 void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 {
- Obj *obj;
+ uint16 map_width;
+ Obj *obj, *target_obj;
  
  x -= area.x;
  y -= area.y;
  
  if(message == GUI_DRAG_OBJ)
    {
-    printf("Drop (%d,%d)\n", x / 16, y / 16);
+    map_width = map->get_width(cur_level);
+ 
+    x = (cur_x + x / 16) % map_width;
+    y = (cur_y + y / 16) % map_width;
+
+    printf("Drop (%x,%x,%x)\n", x, y, cur_level);
     obj = (Obj *)data;
-    obj->x = cur_x + x / 16;
-    obj->y = cur_y + y / 16;
-    obj->z = cur_level;
+    target_obj = obj_manager->get_obj(x,y, cur_level);
+    if(target_obj && target_obj->container) //drop object into a container.
+      {
+       target_obj->container->addAtPos(0,obj);
+      }
+    else //drop object onto map
+      {   
+       obj->x = x;
+       obj->y = y;
+       obj->z = cur_level;
     
-    obj_manager->add_obj(obj,true);
+       obj_manager->add_obj(obj,true);
+      }
    }
    
  return;

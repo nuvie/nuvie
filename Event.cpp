@@ -373,7 +373,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
        //float max = pc->inventory_get_max_weight();
        if(total <= pc->inventory_get_max_weight())
          {
-           pc->inventory_add_object(obj->obj_n, obj->qty, obj->quality);
+           pc->inventory_add_object(obj);
            obj_manager->remove_obj(obj);
          }
       else
