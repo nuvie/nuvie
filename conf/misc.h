@@ -17,4 +17,4 @@
 #include <string>
 #define PERR(x) printf(x)
 
-
+extern bool string_i_compare(const std::string &s1, const std::string &s2);

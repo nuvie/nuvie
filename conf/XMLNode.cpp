@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "nuvieDefs.h"
 
 #include <cassert>
+#include <cstring>
+#include <string>
 
 //#include "pent_include.h"
 #include "misc.h"
@@ -33,6 +35,11 @@ static	string	encode_entity(const string &s);
 static	string	close_tag(const string &s);
 
 static const std::string c_empty_string;
+
+bool string_i_compare(const std::string &s1, const std::string &s2)
+{
+ return strcasecmp(s1.c_str(), s2.c_str()) == 0;
+}
 
 XMLNode::~XMLNode()
 {
@@ -81,7 +88,7 @@ const XMLNode *XMLNode::subtree(const string &h) const
 	if(h.find('/') == string::npos)
 	{
 		// Must refer to me.
-		if(id == h)
+		if(string_i_compare(id,h))
 			return this;
 	}
 	else
@@ -96,8 +103,10 @@ const XMLNode *XMLNode::subtree(const string &h) const
 		for(std::vector<XMLNode*>::const_iterator it = nodelist.begin();
 			it != nodelist.end(); ++it)
 		{
-			if((*it)->id == k2)
+			if(string_i_compare((*it)->id,k2))
+            {
 				return (*it)->subtree(k);
+                }
 		}
 	}
 
@@ -380,3 +389,4 @@ void XMLNode::selectpairs(KeyTypeList &ktl, const std::string currkey)
 		(*i)->selectpairs(ktl, currkey + id + '/');
 	}
 }
+

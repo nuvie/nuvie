@@ -21,7 +21,7 @@
 #include <cstring>
 
 #include "nuvieDefs.h"
-
+#include "misc.h"
 #include "Scale.h"
 #include "Surface.h"
 // Include all the Template Scaler Code
@@ -199,7 +199,7 @@ int	ScalerRegistry::GetIndexForName(const std::string &name)
 	//	std::string sclr2 = to_uppercase(scaler_array[index].name);
 
 //		if (sclr == sclr2) return index;
-   if(name == scaler_array[index].name) return index;
+   if(string_i_compare(name,scaler_array[index].name)) return index;
 
 	}
 

@@ -32,7 +32,6 @@
 #include "U6misc.h"
 #include "U6LList.h"
 #include "EggManager.h"
-#include "misc.h"
 #include "NuvieIOFile.h"
 #include "GameClock.h"
 #include "Game.h"

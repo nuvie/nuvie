@@ -30,7 +30,6 @@
 #include "U6misc.h"
 #include "U6LList.h"
 #include "ActorManager.h"
-#include "misc.h"
 #include "NuvieIOFile.h"
 #include "GameClock.h"
 #include "Game.h"

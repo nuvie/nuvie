@@ -1,7 +1,7 @@
 #ifndef __U6misc_h__
 #define __U6misc_h__
 /*
- *  misc.h
+ *  U6misc.h
  *  Nuvie
  *
  *  Created by Eric Fry on Sat Jun 14 2003.
