@@ -421,7 +421,7 @@ void Event::get_scroll_input(const char *allowed, bool can_escape)
 
 /* Switch focus to PortraitView, display a portrait, and wait for user input.
  */
-void Event::display_portrait(Actor *actor, const char *name = NULL)
+void Event::display_portrait(Actor *actor, const char *name)
 {
    view_manager->set_portrait_mode(actor, (char *)name);
    set_view_focus(FOCUS_PORTRAITVIEW);

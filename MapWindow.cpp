@@ -31,7 +31,7 @@
 #include "MapWindow.h"
 #include "Map.h"
 #include "MsgScroll.h"
-#include "AnimManager.h"
+//#include "AnimManager.h"
 #include "GUI_widget.h"
 #include "Game.h"
 #include "GameClock.h"
@@ -64,7 +64,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 MapWindow::~MapWindow()
 {
  free(tmp_buf);
-#warning ANIMMANAGER
+//#warning ANIMMANAGER
 // delete anim_manager;
 }
 
@@ -76,7 +76,7 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  tile_manager = tm;
  obj_manager = om;
  actor_manager = am;
-#warning ANIMMANAGER
+//#warning ANIMMANAGER
 // anim_manager = new AnimManager();
 
  config->value("config/GameType",game_type);
@@ -138,7 +138,7 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
     clip_rect.h -= 16;
    }
 
-#warning ANIMMANAGER
+//#warning ANIMMANAGER
 // anim_manager->set_area(&clip_rect);
  
  updateBlacking();
@@ -1086,7 +1086,7 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
 void MapWindow::drawAnims()
 {
 static uint32 add_test = 0;
-#warning ANIMMANAGER
+//#warning ANIMMANAGER
 //if(add_test == 0)
 //    anim_manager->new_anim(new TextAnim());
 //add_test = 1;
