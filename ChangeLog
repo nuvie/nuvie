@@ -1,4 +1,4 @@
-2004-05-30  Jonathan Wright <nelno at nelno.com>
+2004-05-31  Jonathan Wright <nelno at nelno.com>
     * Fixed compilation error in MapWindow.h (wx defined twice in 
       get_movement_direction)
     * fixed Win32 uninitialized variable warning in MsgScroll::Display () in
@@ -16,7 +16,9 @@
       doesn't exist, instead of failing.
     * commented out code that fills in all empty save slots with "New save."
       Just seemed less confusing and aesthetically more pleasing to have that 
-      only in the first slot. 
+      only in the first slot.
+    * Added custom implementations for opendir, closedir and readdir on Win32 
+      in dirent.h and dirent.cpp in visualc7 directory.
     
 2004-05-31  Eric Fry <efry at users.sourceforge.net>
 	* You can save and load from the slots in the save dialog now. :)
