@@ -72,7 +72,10 @@ class ActorManager
  void twitchActors();
  void print_actor(Actor *actor);
  const char *get_worktype_string(uint32 wt);
-
+ 
+ void clear_actor(Actor *actor);
+ 
+ bool is_temp_actor(Actor *actor);
  bool create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype);
  
  protected:

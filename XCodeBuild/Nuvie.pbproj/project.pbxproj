@@ -1072,7 +1072,7 @@
 			};
 		};
 		0703C0F3054BE5660003D6CB = {
-			expectedFileType = wrapper.application;
+			explicitFileType = wrapper.application;
 			includeInIndex = 0;
 			isa = PBXFileReference;
 			path = Nuvie.app;
@@ -1080,63 +1080,63 @@
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		0704F9D40446B4E600A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Converse.cpp;
 			path = ../Converse.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0704F9D50446B4E600A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Converse.h;
 			path = ../Converse.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070823D3043EF72800A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Scale.cpp;
 			path = ../screen/Scale.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070823D4043EF72800A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Scale.h;
 			path = ../screen/Scale.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070823D5043EF72800A8000A = {
-			expectedFileType = text;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = text;
 			name = Scale.inl;
 			path = ../screen/Scale.inl;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070823D6043EF72800A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Surface.cpp;
 			path = ../screen/Surface.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070823D7043EF72800A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Surface.h;
 			path = ../screen/Surface.h;
 			refType = 2;
@@ -1158,126 +1158,126 @@
 			sourceTree = "<group>";
 		};
 		070B5A5804D3D7DC00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Actor.cpp;
 			path = ../actors/Actor.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070B5A5904D3D7DC00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Actor.h;
 			path = ../actors/Actor.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070B5A5A04D3D7DC00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ActorManager.cpp;
 			path = ../actors/ActorManager.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070B5A5B04D3D7DC00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = ActorManager.h;
 			path = ../actors/ActorManager.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070B5A6404D3DEDF00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = U6Actor.cpp;
 			path = ../actors/U6Actor.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		070B5A6504D3DEDF00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6Actor.h;
 			path = ../actors/U6Actor.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0717C7B90467B00900A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Party.h;
 			path = ../Party.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0717C7BA0467B00900A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Party.cpp;
 			path = ../Party.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		071DE9B404EBA52500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GUI_text.cpp;
 			path = ../GUI/GUI_text.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		071DE9B504EBA52500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_text.h;
 			path = ../GUI/GUI_text.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		071DE9F404F61F9000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ActorView.cpp;
 			path = ../views/ActorView.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		071DE9F504F61F9000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = ActorView.h;
 			path = ../views/ActorView.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		071DE9F604F61F9000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = PartyView.cpp;
 			path = ../views/PartyView.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		071DE9F704F61F9000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = PartyView.h;
 			path = ../views/PartyView.h;
 			refType = 2;
@@ -1300,234 +1300,234 @@
 			sourceTree = "<group>";
 		};
 		072191EE041DB2F000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = ConfigNode.h;
 			path = ../conf/ConfigNode.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072191EF041DB2F000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Configuration.cpp;
 			path = ../conf/Configuration.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072191F0041DB2F000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Configuration.h;
 			path = ../conf/Configuration.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072191F1041DB2F000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = XMLNode.cpp;
 			path = ../conf/XMLNode.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072191F2041DB2F000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = XMLNode.h;
 			path = ../conf/XMLNode.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072191F3041DB2F000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = XMLTree.cpp;
 			path = ../conf/XMLTree.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072191F4041DB2F000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = XMLTree.h;
 			path = ../conf/XMLTree.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072191FC041DB40100A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = misc.h;
 			path = ../conf/misc.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0725669804272B7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Game.cpp;
 			path = ../Game.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0725669904272B7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Game.h;
 			path = ../Game.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0725669A04272B7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = main.cpp;
 			path = ../main.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0725669B04272B7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = main.h;
 			path = ../main.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0725669C04272B7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Map.cpp;
 			path = ../Map.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0725669D04272B7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Map.h;
 			path = ../Map.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0725669E04272B7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MsgScroll.cpp;
 			path = ../MsgScroll.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0725669F04272B7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = MsgScroll.h;
 			path = ../MsgScroll.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566A004272B7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = nuvie.cpp;
 			path = ../nuvie.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566A104272B7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = nuvie.h;
 			path = ../nuvie.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566A204272B7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Text.cpp;
 			path = ../Text.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566A304272B7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Text.h;
 			path = ../Text.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566A404272B7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = TileManager.cpp;
 			path = ../TileManager.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566A504272B7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = TileManager.h;
 			path = ../TileManager.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566B404272BC000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ObjManager.cpp;
 			path = ../ObjManager.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566B504272BC000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = ObjManager.h;
 			path = ../ObjManager.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566B804272C0200A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = U6LList.cpp;
 			path = ../misc/U6LList.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072566B904272C0200A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6LList.h;
 			path = ../misc/U6LList.h;
 			refType = 2;
@@ -1559,36 +1559,36 @@
 			sourceTree = "<group>";
 		};
 		072599AD047112F000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = InventoryView.h;
 			path = ../views/InventoryView.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072599AE047112F000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = InventoryView.cpp;
 			path = ../views/InventoryView.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072BE3A5041ADE7D00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6Bmp.h;
 			path = ../files/U6Bmp.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072BE3A6041ADE7D00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = U6Bmp.cpp;
 			path = ../files/U6Bmp.cpp;
 			refType = 2;
@@ -1612,36 +1612,36 @@
 			sourceTree = "<group>";
 		};
 		072BE3AE041AFE3900A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Screen.cpp;
 			path = ../screen/Screen.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072BE3AF041AFE3900A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Screen.h;
 			path = ../screen/Screen.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072BE3B2041AFE8A00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GamePalette.h;
 			path = ../screen/GamePalette.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		072BE3B3041AFE8A00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GamePalette.cpp;
 			path = ../screen/GamePalette.cpp;
 			refType = 2;
@@ -1660,8 +1660,8 @@
 			sourceTree = "<group>";
 		};
 		073C469005664B2E003B7A20 = {
-			expectedFileType = wrapper.framework;
 			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
 			name = SDL.framework;
 			path = /Users/eric/Library/Frameworks/SDL.framework;
 			refType = 0;
@@ -1674,9 +1674,9 @@
 			};
 		};
 		073C4A350568DC54003B7A20 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = nuvieDefs.h;
 			path = /Users/eric/Projects/Ultima6/nuvie/nuvieDefs.h;
 			refType = 0;
@@ -1689,18 +1689,18 @@
 			};
 		};
 		0740D535042AA97500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MapWindow.cpp;
 			path = ../MapWindow.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0740D536042AA97500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = MapWindow.h;
 			path = ../MapWindow.h;
 			refType = 2;
@@ -1735,216 +1735,216 @@
 			sourceTree = "<group>";
 		};
 		074B913804E4C51500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GUI_area.cpp;
 			path = ../GUI/GUI_area.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B913904E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_area.h;
 			path = ../GUI/GUI_area.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B913A04E4C51500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GUI_button.cpp;
 			path = ../GUI/GUI_button.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B913B04E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_button.h;
 			path = ../GUI/GUI_button.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B913C04E4C51500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GUI_font.cpp;
 			path = ../GUI/GUI_font.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B913D04E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_font.h;
 			path = ../GUI/GUI_font.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B914204E4C51500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GUI_loadimage.cpp;
 			path = ../GUI/GUI_loadimage.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B914304E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_loadimage.h;
 			path = ../GUI/GUI_loadimage.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B914B04E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_status.h;
 			path = ../GUI/GUI_status.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B914E04E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_types.h;
 			path = ../GUI/GUI_types.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B914F04E4C51500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GUI_widget.cpp;
 			path = ../GUI/GUI_widget.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B915004E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_widget.h;
 			path = ../GUI/GUI_widget.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B915204E4C51500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GUI.cpp;
 			path = ../GUI/GUI.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B915304E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI.h;
 			path = ../GUI/GUI.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		074B915604E4C51500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = the_font.h;
 			path = ../GUI/the_font.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0762A334050361B500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_DragManager.h;
 			path = ../GUI/GUI_DragManager.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0762A335050361B500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GUI_DragManager.cpp;
 			path = ../GUI/GUI_DragManager.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0762A33805036D0E00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = DollWidget.cpp;
 			path = ../views/DollWidget.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0762A33905036D0E00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = DollWidget.h;
 			path = ../views/DollWidget.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0762A3500504C4B900A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GUI_DragArea.h;
 			path = ../GUI/GUI_DragArea.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0762A3540506027A00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = InventoryWidget.cpp;
 			path = ../views/InventoryWidget.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		0762A3550506027A00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = InventoryWidget.h;
 			path = ../views/InventoryWidget.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		078BA0A4049B327F00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6misc.h;
 			path = ../misc/U6misc.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		078BA0A5049B327F00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = U6misc.cpp;
 			path = ../misc/U6misc.cpp;
 			refType = 2;
@@ -1964,36 +1964,36 @@
 			sourceTree = "<group>";
 		};
 		078BA0BB049EA5AE00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ConverseInterpret.cpp;
 			path = ../ConverseInterpret.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		078BA0BC049EA5AE00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = ConverseInterpret.h;
 			path = ../ConverseInterpret.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		078CE6660582F64100EC127A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = EggManager.cpp;
 			path = ../EggManager.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		078CE6670582F64100EC127A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = EggManager.h;
 			path = ../EggManager.h;
 			refType = 2;
@@ -2012,45 +2012,45 @@
 			};
 		};
 		07938EA404B6C8B100A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = NuvieIOFile.h;
 			path = ../files/NuvieIOFile.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07938EA504B6C8B100A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = NuvieIOFile.cpp;
 			path = ../files/NuvieIOFile.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		079903C80481F21E00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = iAVLTree.cpp;
 			path = ../misc/iAVLTree.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		079903C90481F21E00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = iAVLTree.h;
 			path = ../misc/iAVLTree.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		079A4264058748A2003627C9 = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6objects.h;
 			path = /Users/eric/Projects/Ultima6/nuvie/U6objects.h;
 			refType = 0;
@@ -2078,9 +2078,9 @@
 			sourceTree = "<group>";
 		};
 		07A5001E052AE88D00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6ActorTypes.h;
 			path = ../actors/U6ActorTypes.h;
 			refType = 2;
@@ -2104,144 +2104,144 @@
 			sourceTree = "<group>";
 		};
 		07AD65EC04D34BEA00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = AStar.cpp;
 			path = ../pathfinder/AStar.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AD65ED04D34BEA00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = AStar.h;
 			path = ../pathfinder/AStar.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AD65EE04D34BEA00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = LPath.cpp;
 			path = ../pathfinder/LPath.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AD65EF04D34BEA00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = LPath.h;
 			path = ../pathfinder/LPath.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AD65F004D34BEA00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = PathFinder.cpp;
 			path = ../pathfinder/PathFinder.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AD65F104D34BEA00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = PathFinder.h;
 			path = ../pathfinder/PathFinder.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AD65F204D34BEA00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ZPath.cpp;
 			path = ../pathfinder/ZPath.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AD65F304D34BEA00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = ZPath.h;
 			path = ../pathfinder/ZPath.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AEE75A04B1727B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = NuvieIO.h;
 			path = ../files/NuvieIO.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07AEE75B04B1727B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = NuvieIO.cpp;
 			path = ../files/NuvieIO.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B16EC504834FD000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = U6Shape.cpp;
 			path = ../files/U6Shape.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B16EC604834FD000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6Shape.h;
 			path = ../files/U6Shape.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B16F3B0485E69D00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GameSelect.h;
 			path = ../GameSelect.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B16F3C0485E69D00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GameSelect.cpp;
 			path = ../GameSelect.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B16F550487352A00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = UseCode.h;
 			path = ../usecode/UseCode.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B16F560487352A00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = UseCode.cpp;
 			path = ../usecode/UseCode.cpp;
 			refType = 2;
@@ -2264,54 +2264,54 @@
 			sourceTree = "<group>";
 		};
 		07B16F5A0487529500A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = U6UseCode.cpp;
 			path = ../usecode/U6UseCode.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B16F5B0487529500A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6UseCode.h;
 			path = ../usecode/U6UseCode.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B4187504640AFB00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = GameClock.cpp;
 			path = ../GameClock.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B4187604640AFB00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = GameClock.h;
 			path = ../GameClock.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B8BE060419B94F00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = U6Lzw.cpp;
 			path = ../files/U6Lzw.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B8BE070419B94F00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6Lzw.h;
 			path = ../files/U6Lzw.h;
 			refType = 2;
@@ -2338,258 +2338,258 @@
 			sourceTree = "<group>";
 		};
 		07B8BE110419C49C00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			path = main.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
 		07B8BE130419DA1000A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = U6Lib_n.h;
 			path = ../files/U6Lib_n.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07B8BE140419DA1000A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = U6Lib_n.cpp;
 			path = ../files/U6Lib_n.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07BE4D79053EA33600A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = TimedEvent.cpp;
 			path = ../TimedEvent.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07BE4D7A053EA33600A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = TimedEvent.h;
 			path = ../TimedEvent.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07C3D1250474C34900A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = View.h;
 			path = ../views/View.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07C3D1260474C34900A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = View.cpp;
 			path = ../views/View.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07C3D12B047A1C7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = PortraitView.cpp;
 			path = ../views/PortraitView.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07C3D12C047A1C7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = PortraitView.h;
 			path = ../views/PortraitView.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07C3D12D047A1C7B00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ViewManager.cpp;
 			path = ../views/ViewManager.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07C3D12E047A1C7B00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = ViewManager.h;
 			path = ../views/ViewManager.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07C3D133047A4A3F00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Portrait.cpp;
 			path = ../Portrait.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07C3D134047A4A3F00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Portrait.h;
 			path = ../Portrait.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07D14A90044449E400A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Book.cpp;
 			path = ../Book.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07D14A91044449E400A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Book.h;
 			path = ../Book.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07D6E0F104F89B0300A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Background.cpp;
 			path = ../Background.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07D6E0F204F89B0300A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Background.h;
 			path = ../Background.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07DB53EA042DA0CF00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Player.cpp;
 			path = ../Player.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07DB53EB042DA0CF00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Player.h;
 			path = ../Player.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07DB546B042E8C1A00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Look.h;
 			path = ../Look.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07DB546C042E8C1A00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Look.cpp;
 			path = ../Look.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07DFDDB304A5BFE600A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = SEUseCode.cpp;
 			path = ../usecode/SEUseCode.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07DFDDB404A5BFE600A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = SEUseCode.h;
 			path = ../usecode/SEUseCode.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07E3229E046BEBC900A8000A = {
-			expectedFileType = image.icns;
 			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
 			path = nuvie.icns;
 			refType = 4;
 			sourceTree = "<group>";
 		};
 		07E87A11050E07AF00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = InventoryFont.h;
 			path = ../views/InventoryFont.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07EC223504A17C6E00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MDUseCode.cpp;
 			path = ../usecode/MDUseCode.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07EC223604A17C6E00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = MDUseCode.h;
 			path = ../usecode/MDUseCode.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07EF5321043137BF00A8000A = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			name = Event.h;
 			path = ../Event.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		07EF5322043137BF00A8000A = {
-			expectedFileType = sourcecode.cpp.cpp;
 			fileEncoding = 4;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Event.cpp;
 			path = ../Event.cpp;
 			refType = 2;
@@ -2623,9 +2623,9 @@
 			sourceTree = "<group>";
 		};
 		089C165DFE840E0CC02AAC07 = {
-			expectedFileType = text.plist.strings;
 			fileEncoding = 10;
 			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
 			name = English;
 			path = English.lproj/InfoPlist.strings;
 			refType = 4;
@@ -2652,9 +2652,9 @@
 			sourceTree = "<group>";
 		};
 		1058C7A1FEA54F0111CA2CBB = {
-			expectedFileType = wrapper.framework;
 			fallbackIsa = PBXFileReference;
 			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
 			name = Cocoa.framework;
 			path = /System/Library/Frameworks/Cocoa.framework;
 			refType = 0;
@@ -2813,18 +2813,18 @@
 			sourceTree = "<group>";
 		};
 		29B97324FDCFA39411CA2CEA = {
-			expectedFileType = wrapper.framework;
 			fallbackIsa = PBXFileReference;
 			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
 			name = AppKit.framework;
 			path = /System/Library/Frameworks/AppKit.framework;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
 		29B97325FDCFA39411CA2CEA = {
-			expectedFileType = wrapper.framework;
 			fallbackIsa = PBXFileReference;
 			isa = PBXFrameworkReference;
+			lastKnownFileType = wrapper.framework;
 			name = Foundation.framework;
 			path = /System/Library/Frameworks/Foundation.framework;
 			refType = 0;
@@ -2878,17 +2878,17 @@
 //F53
 //F54
 		F5A47A9D01A0482F01D3D55B = {
-			expectedFileType = sourcecode.c.h;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
 			path = SDLMain.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
 		F5A47A9E01A0483001D3D55B = {
-			expectedFileType = sourcecode.c.objc;
 			fileEncoding = 30;
 			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
 			path = SDLMain.m;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;

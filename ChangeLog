@@ -1,3 +1,8 @@
+2003-12-20  Eric Fry <efry@users.sourceforge.net>
+	* Work on horse usecode. Temporary Actors are used correctly when
+	  mounting/dismounting horses.
+	* The player can no longer use character horses eg Iolo's horse.
+ 
 2003-12-14  Eric Fry <efry@users.sourceforge.net>
 	* Fixed walk on pedastal bug. [ 791146 ]
 	* Fixed lockup when walking to the top or left of the map. This only

@@ -493,6 +493,24 @@ const char *ActorManager::get_worktype_string(uint32 wt)
     return(wt_string);
 }
 
+void ActorManager::clear_actor(Actor *actor)
+{
+ if(is_temp_actor(actor))
+   clean_temp_actor(actor);
+ else
+   actor->clear();
+
+ return;
+}
+
+bool ActorManager::is_temp_actor(Actor *actor)
+{
+ if(actor && actor->id_n >= TEMP_ACTOR_OFFSET)
+  return true;
+
+ return false;
+}
+
 bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype)
 {
  Actor *actor;

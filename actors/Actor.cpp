@@ -141,12 +141,6 @@ bool Actor::is_passable()
  return tile->passable;
 }
 
-bool is_temporary()
-{
- return false;
-}
-
-
 void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 {
  *ret_x = x;

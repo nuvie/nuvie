@@ -29,6 +29,7 @@
 #include "ViewManager.h"
 #include "ActorManager.h"
 #include "Actor.h"
+#include "U6Actor.h"
 #include "Party.h"
 #include "Player.h"
 #include "MsgScroll.h"
@@ -1408,8 +1409,7 @@ bool U6UseCode::use_horse(Obj *obj, uint8 ev)
  ActorManager *actor_manager = Game::get_game()->get_actor_manager();
  Actor *actor, *player_actor;
  Obj *actor_obj;
- static Actor *horse_actor = NULL; // HACK: save horse actor when riding
-                                    // will only work for 1 rider
+
  if(ev != USE_EVENT_USE)
     return(false);
  
@@ -1433,35 +1433,39 @@ bool U6UseCode::use_horse(Obj *obj, uint8 ev)
     scroll->display_string("You're already on a horse!\n");
     return false;
    }
-
- actor_obj = actor->make_obj();
- actor->clear();
  
- //FIX we need to save the horse and add it back to the map when dismounting
- // this will be handled by the new actor methods in actor_manager.
+ actor_obj = actor->make_obj();
+	 
+ //dismount from horse. revert to original actor type.
+ //Add a temporary horse actor onto the map.
  if(obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
    {
-    actor_obj->obj_n = player_actor->base_obj_n; //revert to normal old actor type
-    actor_obj->frame_n = player_actor->old_frame_n;
-    if(horse_actor) // HACK
-      {
-       horse_actor->move(actor_obj->x,actor_obj->y,actor_obj->z,ACTOR_FORCE_MOVE);
-       horse_actor->show();
-       horse_actor->set_worktype(0x0c);
-       horse_actor->init();
-       horse_actor = NULL;
-      }
+    actor->clear();
+	
+    actor_obj->obj_n = actor->base_obj_n; //revert to normal actor type
+    actor_obj->frame_n = actor->old_frame_n;
+
+	actor->init_from_obj(actor_obj);
+
+    // create a temporary horse on the map.
+	actor_manager->create_temp_actor(OBJ_U6_HORSE, obj->x, obj->y, obj->z, WORKTYPE_U6_ANIMAL_WANDER);
    }
- else // FIX Don't use Smith (Iolo's horse; "Horse not boardable!")
+ else if(!actor_manager->is_temp_actor(actor))// Try to mount horse. Don't use permenant Actors eg Smith, push-me pull-you
    {
-    actor_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER; // mount up.
-    horse_actor = actor; // HACK
+    scroll->display_string("\nHorse not boardable!\n");
    }
+ else // mount up.
+   {
+    actor_manager->clear_actor(actor); //clear the temp horse actor from the map.
+
+    actor_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER;
     
- player_actor->move(actor_obj->x,actor_obj->y,actor_obj->z); //this will center the map window
- player_actor->init_from_obj(actor_obj);
- delete actor_obj;
- 
+	player_actor->move(actor_obj->x,actor_obj->y,actor_obj->z); //this will center the map window
+    player_actor->init_from_obj(actor_obj);
+	
+	delete actor_obj;
+   }
+
  return true;
 }
 

@@ -154,7 +154,6 @@ class Actor
  bool is_nearby(MapCoord &where, uint8 thresh = 5);
  bool is_at_position(Obj *obj);
  bool is_passable();
- bool is_temporary();
  
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  MapCoord get_location();
