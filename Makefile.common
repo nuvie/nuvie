@@ -80,9 +80,22 @@ nuvie_SOURCES = \
 	sound/Sample.h \
 	sound/Song.cpp \
 	sound/Song.h \
+	sound/SongAdPlug.cpp \
+	sound/SongAdPlug.h \
 	sound/Sound.h \
 	sound/SoundManager.cpp \
 	sound/SoundManager.h \
+\
+	sound/adplug/emuopl.cpp \
+	sound/adplug/emuopl.h \
+	sound/adplug/fmopl.cpp \
+	sound/adplug/fmopl.h \
+	sound/adplug/opl.h \
+	sound/adplug/player.cpp \
+	sound/adplug/player.h \
+	sound/adplug/silentopl.h \
+	sound/adplug/u6m.cpp \
+	sound/adplug/u6m.h \
 \
 	usecode/UseCode.h \
 	usecode/UseCode.cpp \

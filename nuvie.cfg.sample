@@ -13,6 +13,10 @@
   <scale_factor>2</scale_factor>
  </video>
 
+ <audio>
+  <enabled>no</enabled>
+ </audio>
+
  <ultima6>
   <gamedir>./ultima6</gamedir>
   <skip_intro> no </skip_intro>

@@ -222,7 +222,7 @@ void Game::play()
      gui->Display();
 
      screen->preformUpdate();
-     //sound_manager->Update();
+     sound_manager->update();
      event->wait();
    }
   return;

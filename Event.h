@@ -42,7 +42,7 @@ class ViewManager;
 class UseCode;
 class GUI;
 
-#define NUVIE_INTERVAL    65
+#define NUVIE_INTERVAL    65 
 
 typedef enum {
  LOOK_MODE,

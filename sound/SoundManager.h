@@ -45,8 +45,8 @@ public:
 	~SoundManager();
 	
 	bool nuvieStartup(Configuration *config);
-	bool Init();
-	void Update(); //updates the active sounds
+	bool initAudio();
+	void update(); //updates the active sounds
 
 private:
 	bool LoadSongs(string directory, string scriptname);
@@ -70,6 +70,7 @@ private:
 	string m_CurrentGroup;
 	Sound *m_pCurrentSong;
 	list<Sound *> m_ActiveSounds;
+    bool audio_enabled;
 public:
 	static bool g_MusicFinished;
 };

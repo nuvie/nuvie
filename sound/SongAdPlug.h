@@ -1,9 +1,9 @@
 /*
- *  Song.h
+ *  SongAdPlug.h
  *  Nuvie
  *
- *  Created by Adrian Boeing on Wed Jan 21 2004.
- *  Copyright (c) 2003. All rights reserved.
+ *  Created by Eric Fry on Wed Feb 11 2004.
+ *  Copyright (c) 2004. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,22 +20,31 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-#ifndef SONG_H
-#define SONG_H
+#ifndef __SongAdPlug_h__
+#define __SongAdPlug_h__
 
-#include "Sound.h"
+#include "Song.h"
 
-class Song : public Sound {
+class CEmuopl;
+class CPlayer;
+
+class SongAdPlug : public Song {
 public:
-	Song();
-	virtual ~Song();
-	virtual bool Init(const char *filename);
-	virtual bool Play(bool looping = false);
-	virtual bool Stop();
-	bool FadeOut(float seconds);
-	bool SetVolume(float volume) {return false;}; //range 0..1
+	SongAdPlug();
+	~SongAdPlug();
+	bool Init(const char *filename);
+	bool Play(bool looping = false);
+	bool Stop();
+    
+    CPlayer *get_player() { return player; };
+    CEmuopl *get_opl() { return opl; };
+    
 private:
-	Mix_Music *m_pMusic;
+    CEmuopl *opl;
+	CPlayer *player;
+
+
+    
 };
 
-#endif
+#endif /* __SongAdPlug_h__ */

@@ -1,3 +1,22 @@
+2004-02-12  Eric Fry <efry at users.sourceforge.net>
+	* Added a striped down version of AdPlug into nuvie.
+	* Added an audio config section.
+	* It is possible to play the original ultima6 .m adlib music tracks 
+	  in Nuvie.
+	  
+	  Note! you will have to add entries into a song.cfg file in the 
+	  sounddir directory. I'll add proper support for native song files
+	  soon.
+	  The song.cfg file should look somthing like this.
+
+	  Castle;/fullpath_to_u6/BRIT.M;
+	  Random;/fullpath_to_u6/ULTIMA.M;
+	  Random;/fullpath_to_u6/FOREST.M;
+	  Random;/fullpath_to_u6/BOOTUP.M;
+	  Random;/fullpath_to_u6/STONES.M;
+	  Dungeon;/fullpath_to_u6/DUNGEON.M;
+	  Gargoyle;/fullpath_to_u6/GARGOYLE.M;
+ 
 2004-02-07  Jonathan Wright <nelno at nelno.com>
     * Lots of little changes for VisualC7 and MSCV 6 build: 
       - added #pragma warning for forcing value to bool (got this a

@@ -133,6 +133,13 @@
 				0761766F05D100EB001B6450,
 				0761767105D100EB001B6450,
 				0761777505D47ADB001B6450,
+				0761792E05D79146001B6450,
+				0761793005D79146001B6450,
+				0761793605D79146001B6450,
+				0761793805D79146001B6450,
+				0761794105D79146001B6450,
+				07617A6B05D7A067001B6450,
+				07617E4F05DBA903001B6450,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -672,6 +679,11 @@
 				0761766D05D100EB001B6450,
 				0761767005D100EB001B6450,
 				0761777405D47ADB001B6450,
+				0761792D05D79146001B6450,
+				0761792F05D79146001B6450,
+				0761793705D79146001B6450,
+				0761794005D79146001B6450,
+				07617E4E05DBA903001B6450,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1890,10 +1902,13 @@
 		};
 		0761765605D100B2001B6450 = {
 			children = (
+				076178FC05D79121001B6450,
 				0761766505D100EB001B6450,
 				0761766405D100EB001B6450,
 				0761766705D100EB001B6450,
 				0761766605D100EB001B6450,
+				07617E4D05DBA903001B6450,
+				07617E4C05DBA903001B6450,
 				0761766805D100EB001B6450,
 				0761766A05D100EB001B6450,
 				0761766905D100EB001B6450,
@@ -2049,6 +2064,244 @@
 		};
 		0761777505D47ADB001B6450 = {
 			fileRef = 0761777305D47ADB001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		076178FC05D79121001B6450 = {
+			children = (
+				0761790605D79146001B6450,
+				0761790505D79146001B6450,
+				0761790E05D79146001B6450,
+				0761790D05D79146001B6450,
+				0761791005D79146001B6450,
+				0761790F05D79146001B6450,
+				0761791605D79146001B6450,
+				0761791805D79146001B6450,
+				0761791705D79146001B6450,
+				0761791E05D79146001B6450,
+				0761791D05D79146001B6450,
+				07617A6A05D7A067001B6450,
+				0761792105D79146001B6450,
+				0761792005D79146001B6450,
+			);
+			isa = PBXGroup;
+			name = adplug;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0761790505D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = analopl.cpp;
+			path = ../sound/adplug/analopl.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761790605D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = analopl.h;
+			path = ../sound/adplug/analopl.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761790D05D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = emuopl.cpp;
+			path = ../sound/adplug/emuopl.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761790E05D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = emuopl.h;
+			path = ../sound/adplug/emuopl.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761790F05D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = fmopl.c;
+			path = ../sound/adplug/fmopl.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761791005D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = fmopl.h;
+			path = ../sound/adplug/fmopl.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761791605D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = opl.h;
+			path = ../sound/adplug/opl.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761791705D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = player.cpp;
+			path = ../sound/adplug/player.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761791805D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = player.h;
+			path = ../sound/adplug/player.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761791D05D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = realopl.cpp;
+			path = ../sound/adplug/realopl.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761791E05D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = realopl.h;
+			path = ../sound/adplug/realopl.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761792005D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = u6m.cpp;
+			path = ../sound/adplug/u6m.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761792105D79146001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = u6m.h;
+			path = ../sound/adplug/u6m.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761792D05D79146001B6450 = {
+			fileRef = 0761790D05D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761792E05D79146001B6450 = {
+			fileRef = 0761790E05D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761792F05D79146001B6450 = {
+			fileRef = 0761790F05D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761793005D79146001B6450 = {
+			fileRef = 0761791005D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761793605D79146001B6450 = {
+			fileRef = 0761791605D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761793705D79146001B6450 = {
+			fileRef = 0761791705D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761793805D79146001B6450 = {
+			fileRef = 0761791805D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761794005D79146001B6450 = {
+			fileRef = 0761792005D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761794105D79146001B6450 = {
+			fileRef = 0761792105D79146001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07617A6A05D7A067001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = silentopl.h;
+			path = ../sound/adplug/silentopl.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07617A6B05D7A067001B6450 = {
+			fileRef = 07617A6A05D7A067001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07617E4C05DBA903001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SongAdPlug.cpp;
+			path = ../sound/SongAdPlug.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07617E4D05DBA903001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SongAdPlug.h;
+			path = ../sound/SongAdPlug.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07617E4E05DBA903001B6450 = {
+			fileRef = 07617E4C05DBA903001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07617E4F05DBA903001B6450 = {
+			fileRef = 07617E4D05DBA903001B6450;
 			isa = PBXBuildFile;
 			settings = {
 			};
