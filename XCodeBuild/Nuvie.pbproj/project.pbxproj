@@ -150,6 +150,9 @@
 				07269048064F928A00F249E5,
 				072691AD065252D200F249E5,
 				07656EEF065F177400EEE5C1,
+				07B0117F0668765B000771BC,
+				07B011810668765B000771BC,
+				07B0119206687698000771BC,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -702,6 +705,9 @@
 				07269047064F928A00F249E5,
 				072691AC065252D200F249E5,
 				07656EEE065F177400EEE5C1,
+				07B0117E0668765B000771BC,
+				07B011800668765B000771BC,
+				07B0119106687698000771BC,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2901,6 +2907,108 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
+		07B011740668763B000771BC = {
+			children = (
+				07B0117B0668765B000771BC,
+				07B0117A0668765B000771BC,
+				07B0117D0668765B000771BC,
+				07B0117C0668765B000771BC,
+			);
+			isa = PBXGroup;
+			name = Effects;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		07B0117A0668765B000771BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Effect.cpp;
+			path = ../Effect.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07B0117B0668765B000771BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Effect.h;
+			path = ../Effect.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07B0117C0668765B000771BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = EffectManager.cpp;
+			path = ../EffectManager.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07B0117D0668765B000771BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = EffectManager.h;
+			path = ../EffectManager.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07B0117E0668765B000771BC = {
+			fileRef = 07B0117A0668765B000771BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07B0117F0668765B000771BC = {
+			fileRef = 07B0117B0668765B000771BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07B011800668765B000771BC = {
+			fileRef = 07B0117C0668765B000771BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07B011810668765B000771BC = {
+			fileRef = 07B0117D0668765B000771BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07B0118F06687698000771BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = AnimManager.cpp;
+			path = /Users/eric/Projects/Ultima6/nuvie/AnimManager.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		07B0119006687698000771BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = AnimManager.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/AnimManager.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		07B0119106687698000771BC = {
+			fileRef = 07B0118F06687698000771BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07B0119206687698000771BC = {
+			fileRef = 07B0119006687698000771BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		07B16EC504834FD000A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -3512,6 +3620,7 @@
 		};
 		29B97315FDCFA39411CA2CEA = {
 			children = (
+				07B011740668763B000771BC,
 				07F10D1D05C7D2490029E1F1,
 				072BE3BC041B07DD00A8000A,
 				074B913604E4C4BA00A8000A,
@@ -3526,6 +3635,8 @@
 				0761765605D100B2001B6450,
 				07B16F5904873BFA00A8000A,
 				072599AC0471126B00A8000A,
+				07B0119006687698000771BC,
+				07B0118F06687698000771BC,
 				07D6E0F204F89B0300A8000A,
 				07D6E0F104F89B0300A8000A,
 				07D14A91044449E400A8000A,

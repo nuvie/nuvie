@@ -39,7 +39,7 @@ class AnimManager
 
     uint8 tile_pitch;
 
-    AnimIterator get_anim_iterator(sint32 anim_id);
+    AnimIterator get_anim_iterator(uint32 anim_id);
 
 public:
     AnimManager(Screen *screen = NULL, SDL_Rect *clipto = NULL);
@@ -57,10 +57,10 @@ public:
 //new_anim(new ExplosiveAnim(speed));
     sint32 new_anim(NuvieAnim *new_anim);
     void destroy_all();
-    bool destroy_anim(sint32 anim_id);
+    bool destroy_anim(uint32 anim_id);
     bool destroy_anim(NuvieAnim *anim_pt);
 
-    NuvieAnim *get_anim(sint32 anim_id);
+    NuvieAnim *get_anim(uint32 anim_id);
 
     void drawTile(Tile *tile, uint16 x, uint16 y);
     void drawTileAtWorldCoords(Tile *tile, uint16 wx, uint16 wy, uint16 add_x = 0, uint16 add_y = 0);

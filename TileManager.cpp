@@ -557,7 +557,7 @@ Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
     memset(&tile_data, 255, 256); // fill output with transparent color
 
     Sint32 dy, sx, sy;
-    Sint16 x, y, rx, ry;
+    Sint16 rx, ry;
     Uint16 px = 8, py = 8; // rotate around these coordinates
     Uint16 xmin = 0, xmax = 15, ymin = 0, ymax = 15; // size
     Uint16 sxmin = xmin, sxmax = xmax, symin = ymin, symax = ymax;

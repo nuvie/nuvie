@@ -48,7 +48,7 @@ protected:
 
 public:
     CallBack()  { callback_user_data = NULL; callback_target = NULL; }
-    ~CallBack() { }
+    virtual ~CallBack() { }
 
     // receive message
     virtual uint16 callback(uint16 msg, CallBack *caller, void *data = NULL) { printf("Warning! Unhandled callback. msg (%x)\n", msg); return 0; }

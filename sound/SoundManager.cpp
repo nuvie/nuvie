@@ -431,7 +431,7 @@ void SoundManager::musicPlay()
     
 void SoundManager::update_map_sfx ()
 {
-  int i;
+  unsigned int i;
   uint16 x, y;
   uint8 l;
   
@@ -450,7 +450,7 @@ void SoundManager::update_map_sfx ()
   //m_ViewableTiles
 
   //get a list of all the sounds
-  for (i = 0; i < mw->m_ViewableObjects.size (); i++)
+  for (i = 0; i < mw->m_ViewableObjects.size(); i++)
     {
       //printf("%d %s",mw->m_ViewableObjects[i]->obj_n,Game::get_game()->get_obj_manager()->get_obj_name(mw->m_ViewableObjects[i]));
       Sound *sp = RequestObjectSound (mw->m_ViewableObjects[i]->obj_n); //does this object have an associated sound?
@@ -480,7 +480,7 @@ void SoundManager::update_map_sfx ()
           currentlyActiveSounds.push_back (sp);
         }
     }
-  for (i = 0; i < mw->m_ViewableTiles.size (); i++)
+  for (i = 0; i < mw->m_ViewableTiles.size(); i++)
     {
       Sound *sp = RequestTileSound (mw->m_ViewableTiles[i].t->tile_num);        //does this object have an associated sound?
       if (sp != NULL)
@@ -517,7 +517,7 @@ void SoundManager::update_map_sfx ()
     }
   //printf("\n");
   //is this sound new? - activate it.
-  for (i = 0; i < currentlyActiveSounds.size (); i++)
+  for (i = 0; i < currentlyActiveSounds.size(); i++)
     {
       std::list < Sound * >::iterator it;
       it = std::find (m_ActiveSounds.begin (), m_ActiveSounds.end (), currentlyActiveSounds[i]);        //is the sound already active?

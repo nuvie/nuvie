@@ -43,12 +43,27 @@ void config_get_path(Configuration *config, std::string filename, std::string &p
 
 ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c)
 {
+ uint16 i;
+ 
  config = cfg;
  map = m;
  tile_manager = tm;
  obj_manager = om;
  clock = c;
  
+ for(i = 0; i < 256; i++)
+   actors[i] = NULL;
+
+ init();
+}
+
+ActorManager::~ActorManager()
+{
+ clean();
+}
+
+void ActorManager::init()
+{
  game_hour = 0;
  
  player_actor = 1;
@@ -58,22 +73,36 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  last_obj_blk_z = OBJ_TEMP_INIT;
 
  update = true;
+
+ return;
 }
 
-ActorManager::~ActorManager()
+void ActorManager::clean()
 {
  uint16 i;
- 
- for(i = 0;i < 256;i++) //we assume actors[] have been created by a call to loadActors()
-   delete actors[i];
 
-}
+ //delete all actors
+ for(i = 0;i < 256;i++)
+  {
+   if(actors[i])
+     {
+      delete actors[i];
+      actors[i] = NULL;
+     }
+  }
+
+ init();
  
+ return; 
+}
+
 bool ActorManager::load(NuvieIO *objlist)
 {
  uint16 i;
  uint8 b1, b2, b3;
  int game_type;
+ 
+ clean();
  
  config->value("config/GameType",game_type);
 

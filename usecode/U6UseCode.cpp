@@ -242,8 +242,11 @@ bool U6UseCode::message_obj(Obj *obj, CallbackMessage msg, void *msg_data)
         case MESG_DATA_READY:
             items.data_ref = (char *)msg_data;
             break;
+
+        default : break;
     }
-    uc_event(type, USE_EVENT_MESSAGE, obj);
+    
+ return uc_event(type, USE_EVENT_MESSAGE, obj);
 }
 
 
@@ -660,8 +663,8 @@ bool U6UseCode::use_bell(Obj *obj, UseCodeEvent ev)
 Obj *U6UseCode::bell_find(Obj *chain_obj)
 {
     Obj *bell = NULL;
-    for(uint32 x = chain_obj->x-8; x <= chain_obj->x+8; x++)
-        for(uint32 y = chain_obj->y-8; y <= chain_obj->y+8 && !bell; y++)
+    for(uint16 x = chain_obj->x-8; x <= chain_obj->x+8; x++)
+        for(uint16 y = chain_obj->y-8; y <= chain_obj->y+8 && !bell; y++)
             bell = obj_manager->get_obj_of_type_from_location(OBJ_U6_BELL, x, y, chain_obj->z);
     return(bell);
 }
@@ -1274,7 +1277,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
  ship_actor->init_from_obj(obj);
  ship_actor->show(); // Swift!
  obj_manager->remove_obj(obj);
- obj_manager->delete_obj(obj);
+ delete_obj(obj);
 
  party->hide(); // set in-vehicle
  player->set_actor(ship_actor);
@@ -1799,7 +1802,9 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)
                 y = actor_manager->get_actor(obj->x)->get_location().y;
             }
             obj->frame_n = 0;
-            Effect *effect = new UseCodeExplosiveEffect(obj, x, y, 3, 16);
+            
+            new UseCodeExplosiveEffect(obj, x, y, 3, 16);
+            
             // waits for effect to complete
         }
         else if(*items.msg_ref == MESG_EFFECT_COMPLETE) // explosion finished
@@ -1808,7 +1813,7 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)
                 obj_manager->remove_obj(obj);
             else
                 actor_manager->get_actor(obj->x)->inventory_remove_obj(obj);
-            obj_manager->delete_obj(obj);
+            delete_obj(obj);
             lit_powder_keg = false;
         }
         return(true);

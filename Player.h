@@ -59,7 +59,7 @@ class Player
  Player(Configuration *cfg);
  
  bool init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p);
-
+ void init();
  bool load(NuvieIO *objlist);
  bool save(NuvieIO *objlist);
  

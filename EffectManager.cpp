@@ -72,8 +72,7 @@ void EffectManager::update_effects()
         if((*ei)->is_defunct()/* && !has_message(*ei)*/)
         {
             delete(*ei);
-            effects.erase(ei);
-            ei = effects.begin();
+            ei = effects.erase(ei);
         }
         else ++ei;
     }

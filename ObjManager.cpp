@@ -144,7 +144,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
  list = new U6LList();
 
  num_objs = chunk_buf->read2();
- printf("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
+ //printf("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
  
  for(i=0;i<num_objs;i++)
   {
@@ -370,10 +370,29 @@ void ObjManager::clean()
  for(i=0;i<5;i++)
   iAVLCleanTree(dungeon[i], clean_obj_tree_node);
 
-
+ clean_actor_inventories();
+ 
  return;
 }
 
+void ObjManager::clean_actor_inventories()
+{
+ U6Link *link;
+ uint16 i;
+ 
+ for(i=0; i < 256; i++)
+  {
+   if(actor_inventories[i])
+     {
+      for(link=actor_inventories[i]->start(); link != NULL; link=link->next)
+        delete (Obj *)link->data;
+      actor_inventories[i]->removeAll();
+     }
+  }
+
+ return;
+}
+ 
 void ObjManager::show_egg_objs(bool value)
 {
  if(value == true)
@@ -744,28 +763,6 @@ bool ObjManager::remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y,
  return objects_deleted;
 }
 
-void ObjManager::delete_obj(Obj *obj)
-{
- U6Link *link;
-
- if(obj == NULL)
-   return;
-
- if(obj->container)
-   {
-    link = obj->container->start();
-    for(;link != NULL;link=link->next)
-      {
-       delete_obj((Obj *)link->data);
-      }
-    delete obj->container;
-   }
-   
- delete obj;
- 
- return;
-}
-
 Obj *ObjManager::copy_obj(Obj *obj)
 {
  Obj *new_obj;
@@ -991,7 +988,7 @@ bool ObjManager::add_obj(Obj *obj, bool addOnTop)
    {
     obj_list = new U6LList();
 
-    node = (ObjTreeNode *)malloc(sizeof(struct ObjTreeNode));
+    node = new ObjTreeNode;
     node->key = key;
     node->obj_list = obj_list;
 

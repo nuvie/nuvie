@@ -178,7 +178,7 @@ QuakeEffect::~QuakeEffect()
  */
 uint16 QuakeEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 {
-    uint8 twice_strength = strength * 2;
+  //  uint8 twice_strength = strength * 2;
     if(msg != MESG_TIMED)
         return(0);
     if(game->get_clock()->get_ticks() >= stop_time)
@@ -366,7 +366,7 @@ bool UseCodeExplosiveEffect::hit_object(Obj *hit_obj)
         // FIXME: this doesn't belong here (U6/obj specific)
         uint16 x = hit_obj->x, y = hit_obj->y;
         game->get_obj_manager()->remove_obj(hit_obj);
-        game->get_obj_manager()->delete_obj(hit_obj);
+        delete_obj(hit_obj);
         if(obj) // pass our source obj on to next effect as original_obj
             new UseCodeExplosiveEffect(NULL, x, y, 2, hit_damage, obj);
         else // pass original_obj on to next effect

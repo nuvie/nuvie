@@ -463,7 +463,7 @@ bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
 	int xinc1, xinc2;
 	int yinc1, yinc2;
 	int dinc1, dinc2;
-	int count;
+	uint32 count;
 
 
 	if (deltax >= deltay)
@@ -502,7 +502,7 @@ bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
 		yinc2 = -yinc2;
 	}
 
-	for (int i = 0; i < count; i++)
+	for (uint32 i = 0; i < count; i++)
 	{
 		//	test the current location
 		if ((i >= skip) && (testIntersection(x, y, level, flags, Result) == true))

@@ -630,7 +630,7 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
        obj->qty += (stack_with->qty > 0) ? stack_with->qty : 1;
        // FIXME: how to determine max. stack size? (it varies)
        inventory_remove_obj(stack_with);
-       obj_manager->delete_obj(stack_with);
+       delete_obj(stack_with);
      }
    }
    // only objects outside containers are marked in_inventory

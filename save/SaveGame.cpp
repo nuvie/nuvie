@@ -120,6 +120,8 @@ bool SaveGame::load_original()
  
  config->value(key,path);
 
+ printf("Loading Original Game: %s/savegame/\n", path.c_str());
+ 
  filename = get_objblk_path((char *)path.c_str());
 
  len = strlen(filename);
@@ -246,10 +248,14 @@ bool SaveGame::load(const char *filename)
    return false;
   }
  
+ printf("Loading Game: %s\n", filename);
+ 
  loadfile->seek(15);
  
  num_saves = loadfile->read2();
  
+ obj_manager->clean();
+
  // load actor inventories
  obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, 0);
  

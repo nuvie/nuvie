@@ -33,7 +33,7 @@ struct Egg
 {
  bool seen_egg;
  Obj *obj;
- Egg() { seen_egg = false; obj = NULL; }
+ Egg() { seen_egg = false; obj = NULL; };
 };
 
 class Configuration;

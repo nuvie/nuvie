@@ -78,6 +78,11 @@ GUI_status SaveManager::callback(uint16 msg, GUI_CallBack *caller, void *data)
    switch(msg)
      {
        case SAVEDIALOG_CB_DELETE : dialog = NULL; break;
+
+       case SAVEDIALOG_CB_LOAD : if(savegame->load("nuvie01.sav") == false)
+                                    return GUI_PASS;
+                                 break;
+
        case SAVEDIALOG_CB_SAVE : if(savegame->save("nuvie01.sav") == false)
                                     return GUI_PASS;
                                  break;

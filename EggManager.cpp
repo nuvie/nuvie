@@ -44,15 +44,6 @@ EggManager::EggManager(Configuration *cfg, Map *m)
 
 EggManager::~EggManager()
 {
- std::list<Egg *>::iterator egg;
- std::list<Egg *>::iterator next_egg;
- 
- for(egg = egg_list.begin(); egg != egg_list.end();)
-   {
-    next_egg = egg_list.erase(egg);
-    delete *egg;
-    egg = next_egg;
-   }
 
 }
 
@@ -67,7 +58,8 @@ void EggManager::clean(bool keep_obj)
     
     if(keep_obj == false)
       delete_obj(egg->obj);
-      
+
+    delete *egg_iter;
     egg_iter = egg_list.erase(egg_iter);
    }
 
@@ -99,7 +91,8 @@ void EggManager::remove_egg(Obj *egg_obj, bool keep_obj)
        {
         if(keep_obj == false)
           delete_obj((*egg_iter)->obj);
-          
+        
+        delete *egg_iter;
         egg_list.erase(egg_iter);
         
         break;

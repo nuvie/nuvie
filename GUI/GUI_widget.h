@@ -79,8 +79,8 @@ protected:
 	/* The time of the last mouse press, and release (SDL_GetTicks()). */
 	unsigned int last_mousedown_time, last_mouseup_time;
 
-	unsigned int last_mouseup_x, last_mouseup_y;
-	unsigned int last_mousedown_x, last_mousedown_y;
+	int last_mouseup_x, last_mouseup_y;
+	int last_mousedown_x, last_mousedown_y;
 	int last_mouseup_button, last_mousedown_button;
 
 	bool mouse_over; // toggled by GUI; not guaranteed to be accurate

@@ -31,27 +31,26 @@ GameClock::GameClock(Configuration *cfg)
 {
  config = cfg;
 
- move_counter = 0;
- time_counter = 0;
- tick_counter = 0;
-
- active = true;
+ init();
 }
- 
+
 GameClock::~GameClock()
 {
 
 }
 
+void GameClock::init()
+{
+ move_counter = 0;
+ time_counter = 0;
+ tick_counter = 0;
+ 
+ active = true;
+}
+
 bool GameClock::load(NuvieIO *objlist)
 {
-/*
- std::string filename;
- 
- config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
- if(objlist.open(filename) == false)
-   return false;
-*/
+ init();
 
  objlist->seek(0x1bf3); // start of time data
 

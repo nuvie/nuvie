@@ -149,16 +149,21 @@ public:
  */
 class UseCodeExplosiveEffect : public ExplosiveEffect
 {
-    Obj *obj; // explosion came from this object (can be NULL)
-    Obj *original_obj; // don't hit this object (chain-reaction avoidance hack)
-public:
+     Obj *obj; // explosion came from this object (can be NULL)
+     Obj *original_obj; // don't hit this object (chain-reaction avoidance hack)
+     
+ public:
     UseCodeExplosiveEffect(Obj *src_obj, uint16 x, uint16 y, uint32 size, uint16 dmg = 0, Obj *dont_hit_me = NULL)
-                          : obj(src_obj), original_obj(dont_hit_me), ExplosiveEffect(x, y, size, dmg)
+                          : ExplosiveEffect(x, y, size, dmg), obj(src_obj), original_obj(dont_hit_me)
     {
     }
     void delete_self();
     bool hit_object(Obj *hit_obj); // explosion hit something
+
+
+     
 };
+
 
 
 /* Toss object tile from one location to another. The sprite is rotated towards

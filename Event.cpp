@@ -651,7 +651,7 @@ bool Event::use(Actor *actor)
         scroll->display_string("nothing\n");
         fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
     }
-    obj_manager->delete_obj(obj); // we were using an actor so free the temp Obj
+    delete_obj(obj); // we were using an actor so free the temp Obj
     map_window->updateBlacking();
     // if selecting (now in a select mode), select_obj will return to MOVE_MODE
     // else (mode is still USE_MODE) return to MOVE_MODE now
@@ -1798,7 +1798,7 @@ bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
 
     // all object management is contained in the effect (use requested quantity)
     obj->status |= OBJ_STATUS_OK_TO_TAKE;
-    Effect *effect = new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
+    new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
     return(true);
 }
 
@@ -1912,7 +1912,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
                 scroll->display_string("Use-nothing\n");
         }
         // we were using an actor so free the temp Obj
-        obj_manager->delete_obj(obj);
+        delete_obj(obj);
     }
     else if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_SIGN_ARROW))
     { /* usecode->is_sign(obj) */

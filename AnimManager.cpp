@@ -64,7 +64,7 @@ AnimManager::AnimManager(Screen *screen, SDL_Rect *clipto)
 
 /* Returns an iterator to the animation with requested id_n.
  */
-AnimIterator AnimManager::get_anim_iterator(sint32 anim_id)
+AnimIterator AnimManager::get_anim_iterator(uint32 anim_id)
 {
         AnimIterator i = anim_list.begin();
         while(i != anim_list.end())
@@ -79,7 +79,7 @@ AnimIterator AnimManager::get_anim_iterator(sint32 anim_id)
 
 /* Returns animation with requested id_n.
  */
-NuvieAnim *AnimManager::get_anim(sint32 anim_id)
+NuvieAnim *AnimManager::get_anim(uint32 anim_id)
 {
         AnimIterator i = get_anim_iterator(anim_id);
         if(i != anim_list.end())
@@ -158,7 +158,7 @@ void AnimManager::destroy_all()
 
 /* Delete an animation.
  */
-bool AnimManager::destroy_anim(sint32 anim_id)
+bool AnimManager::destroy_anim(uint32 anim_id)
 {
     if(anim_id >= 0)
         return(destroy_anim(get_anim(anim_id)));
@@ -341,8 +341,12 @@ void TileAnim::remove_tile(uint32 i)
 {
     if(i < tiles.size())
     {
-        vector<PositionedTile*>::iterator ti = &tiles[i];
-        delete tiles[i];
+      vector<PositionedTile*>::iterator ti = tiles.begin();
+      for(uint32 j = 0; j < i; j++)
+         ti++;
+
+        //vector<PositionedTile*>::iterator ti = &tiles[i];
+        delete *ti;
         tiles.erase(ti);
     }
 }
@@ -579,7 +583,7 @@ void TossAnim::update_position()
         if(py >= tile_center)
             old_loc.y += 1;
 
-        for(uint32 i = 0; i < count; i++)
+        for(sint32 i = 0; i < count; i++)
         {
             // move
             if(d < 0)
@@ -655,8 +659,9 @@ ExplosiveAnim::ExplosiveAnim(MapCoord *start, uint32 size)
  */
 ExplosiveAnim::~ExplosiveAnim()
 {
-    for(uint32 i = 0; i < tiles.size(); i++)
-        delete tiles[i]->tile;
+// removed - this is deleted in TileAnim
+//    for(uint32 i = 0; i < tiles.size(); i++)
+//        delete tiles[i]->tile;
 }
 
 
@@ -771,8 +776,8 @@ uint16 ExplosiveAnim::callback(uint16 msg, CallBack *caller, void *msg_data)
  */
 bool ExplosiveAnim::update()
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+   // ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+   // ObjManager *obj_manager = Game::get_game()->get_obj_manager();
     Map *map = Game::get_game()->get_game_map();
     uint8 mapwindow_level;
     LineTestResult lt;

@@ -1,3 +1,21 @@
+2004-05-30  Eric Fry <efry at users.sourceforge.net>
+	* Some compiler fixes.
+	* Reworked save logic to allow a game to be loaded whilst another
+	  game is being played. (I haven't finished with this yet.) There
+	  are probably more objects that need some resetting when loading
+	  a savegame.
+	* Fixed a double delete in ~ExplosiveAnim(). It was deleting tiles which
+	  were then deleted again in ~TileAnim().
+	* Fixed a number of compiler warnings. Unused variables, signed/unsigned
+	  conversion warnings etc.
+	* Added virtual destructors to some classes that have virtual methods.
+	* replaced malloc call with a new call in ObjManager when allocating
+	  the ObjTreeNode.
+	* Hooked up the "Load" button on the savedialog. It now attempts to load
+	  nuvie01.sav when pressed.
+	* Removed ObjManager::delete_obj() method. We have an independant
+	  function delete_obj() that can delete Objs.
+
 2004-05-29  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added CallBack AnimManager EffectManager & Effect. NuvieAnim and
 	  TileAnim could probably stand to have their differences negotiated.

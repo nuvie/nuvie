@@ -65,13 +65,13 @@ void TimeQueue::remove_timer(TimedEvent *tevent)
     std::list<TimedEvent *>::iterator t;
     t = tq.begin();
     while(t != tq.end())
+      {
         if(*t == tevent)
         {
-            tq.erase(t);
-            t = tq.begin();
-            continue; // in case there are repeats (?), remove all of them
+            t = tq.erase(t);
         }
         else ++t;
+      }
 }
 
 
@@ -120,8 +120,8 @@ bool TimeQueue::delete_timer(TimedEvent *tevent)
  * be queued afterwards to start.
  */
 TimedEvent::TimedEvent(uint32 reltime, bool immediate, bool realtime)
-            : delay(reltime), ignore_pause(false), repeat_count(0),
-              real_time(realtime), tq_can_delete(true)
+            : delay(reltime), ignore_pause(false), real_time(realtime),
+              tq_can_delete(true), repeat_count(0)
 {
     tq = NULL;
 
@@ -250,7 +250,7 @@ void TimedPartyMove::timed(uint32 evtime)
         if(moongate)
         {
             Game::get_game()->get_obj_manager()->remove_obj(moongate);
-            Game::get_game()->get_obj_manager()->delete_obj(moongate);
+            delete_obj(moongate);
         }
         party->move(target->x, target->y, target->z);
         party->show();

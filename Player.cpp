@@ -52,16 +52,25 @@ bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c,
  obj_manager = om;
  map_window = mw;
  party = p;
+
+ init();
+ 
+ return true;
+}
+
+void Player::init()
+{
  actor = NULL;
  
  party_mode = true;
  mapwindow_centered = true;
-  
- return true;
+
 }
 
 bool Player::load(NuvieIO *objlist)
 {
+ init();
+ 
  objlist->seek(0xf00);
  
  objlist->readToBuf((unsigned char *)name,14); // read in Player name. 

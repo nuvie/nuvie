@@ -446,7 +446,7 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
    char *user_data = callback_user_data;
    cancel_input_request(); // clear originals (callback may request again)
 
-   string input_str = string(input_buf);
+   std::string input_str = input_buf;
    requestor->set_user_data(user_data); // use temp requestor/user_data
    requestor->callback(MSGSCROLL_CB_TEXT_READY, this, &input_str);
  }

@@ -80,6 +80,8 @@ void ViewManager::reload()
 {
  actor_view->set_party_member(0);
  inventory_view->set_party_member(0);
+ 
+ set_current_view((View *)inventory_view);
 }
 
 bool ViewManager::set_current_view(View *view)

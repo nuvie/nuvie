@@ -93,6 +93,7 @@ class GameClock
 
  protected:
  
+ void init();
  inline void update_day_of_week();
 };
 

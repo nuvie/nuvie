@@ -78,7 +78,7 @@ SaveDialog::SaveDialog(GUI_CallBack *callback) : GUI_Dialog(10,10, 300, 180, 244
 
  AddWidget(scroller);
 
- load_button = new GUI_Button(this, 135, 152, 40, 18, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
+ load_button = new GUI_Button(this, 135, 152, 40, 18, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(load_button);
  
  save_button = new GUI_Button(this, 185, 152, 40, 18, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
@@ -118,6 +118,13 @@ GUI_status SaveDialog::callback(uint16 msg, GUI_CallBack *caller, void *data)
  if(caller == (GUI_CallBack *)cancel_button)
     return close_dialog();
 
+ if(caller == (GUI_CallBack *)load_button)
+    {
+     if(callback_object->callback(SAVEDIALOG_CB_LOAD, this, selected_slot) == GUI_YUM)
+        close_dialog();
+     return GUI_YUM;
+    }
+     
  if(caller == (GUI_CallBack *)save_button)
     {
      if(callback_object->callback(SAVEDIALOG_CB_SAVE, this, selected_slot) == GUI_YUM)

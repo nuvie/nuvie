@@ -1164,7 +1164,7 @@ GUI_status MapWindow::MouseUp(int x, int y, int button)
 
 GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 {
-	Event *event = Game::get_game()->get_event();
+//	Event *event = Game::get_game()->get_event();
 	Tile	*tile;
 
 	update_mouse_cursor((uint32)x, (uint32)y);

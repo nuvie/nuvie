@@ -56,6 +56,9 @@ class ActorManager
  ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c);
  ~ActorManager();
 
+ void init();
+ void clean();
+
  bool load(NuvieIO *objlist);
  bool save(NuvieIO *objlist);
  

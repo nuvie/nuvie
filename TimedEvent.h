@@ -58,7 +58,7 @@ protected:
 
 public:
     TimedEvent(uint32 reltime, bool immediate = TIMER_DELAYED, bool realtime = TIMER_REALTIME);
-    ~TimedEvent() { }
+    virtual ~TimedEvent() { }
     virtual void timed(uint32 evtime) { fprintf(stderr, "TimedEvent: undefined timer method\n"); }
 
     void queue(); // set tq, add to tq

@@ -219,7 +219,7 @@ Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
             removed = obj_manager->remove_obj(obj);
         if(removed)
         {
-            obj_manager->delete_obj(obj);
+            delete_obj(obj);
             obj = NULL;
         }
     }
