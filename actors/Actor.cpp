@@ -21,7 +21,7 @@
  *
  */
 #include <cstdlib>
-
+#include "Game.h"
 #include "Map.h"
 #include "ObjManager.h"
 #include "U6UseCode.h"
@@ -30,14 +30,6 @@
 #include "Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
-
-
-#warning inline Actor::stop_walking
-void Actor::stop_walking()
-{
-    delete pathfinder;
-    pathfinder = NULL;
-}
 
 
 Actor::Actor(Map *m, ObjManager *om, GameClock *c)
@@ -109,6 +101,9 @@ uint8 Actor::get_worktype()
  return worktype;
 }
 
+
+/* Set direction faced by actor and change walk frame.
+ */
 void Actor::set_direction(uint8 d)
 {
  if(d < 4)
@@ -121,8 +116,56 @@ void Actor::set_direction(uint8 d)
 }
 
 
-/* Re-orient actor to be facing an x,y location on the map (so they turn to
- * talk to others, etc)
+/* Set direction as if moving in relative direction rel_x,rel_y.
+ */
+void Actor::set_direction(sint16 rel_x, sint16 rel_y)
+{
+    if(rel_x == 0 && rel_y == 0) // nowhere
+        return;
+    if(rel_x == 0) // up,down
+        set_direction(rel_y < 0 ? ACTOR_DIR_U : ACTOR_DIR_D);
+    else if(rel_y == 0) // left,right
+        set_direction(rel_x < 0 ? ACTOR_DIR_L : ACTOR_DIR_R);
+    else if(rel_x < 0 && rel_y < 0) // up-left
+    {
+        if(direction != ACTOR_DIR_U && direction != ACTOR_DIR_L)
+            set_direction(direction + 2);
+        else
+            set_direction(direction);
+    }
+    else if(rel_x > 0 && rel_y < 0) // up-right
+    {
+        if(direction != ACTOR_DIR_U && direction != ACTOR_DIR_R)
+            set_direction(direction + 2);
+        else
+            set_direction(direction);
+    }
+    else if(rel_x < 0 && rel_y > 0) // down-left
+    {
+        if(direction != ACTOR_DIR_D && direction != ACTOR_DIR_L)
+            set_direction(direction + 2);
+        else
+            set_direction(direction);
+    }
+    else if(rel_x > 0 && rel_y > 0) // down-right
+    {
+        if(direction != ACTOR_DIR_D && direction != ACTOR_DIR_R)
+            set_direction(direction + 2);
+        else
+            set_direction(direction);
+    }
+}
+
+
+/* Set direction towards an x,y location on the map.
+ */
+void Actor::face_location(uint16 lx, uint16 ly)
+{
+    set_direction(lx - x, ly - y);
+}
+
+#if 0
+/* Set direction towards an x,y location on the map.
  */
 void Actor::face_location(uint16 lx, uint16 ly)
 {
@@ -142,6 +185,7 @@ void Actor::face_location(uint16 lx, uint16 ly)
             set_direction(3); // left
     }
 }
+#endif
 
 void Actor::face_actor(Actor *a)
 {
@@ -159,7 +203,7 @@ bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 }
 
 
-bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z)
+bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors)
 {
     if(z > 5)
         return(false);
@@ -173,18 +217,19 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z)
     if(map->is_passable(new_x,new_y,new_z) == false)
         return(false);
 
+    if(!ignore_actors && map->get_actor(new_x,new_y,new_z))
+        return(false);
     return(true);
 }
 
 
 bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
- if(!force_move && !check_move(new_x, new_y, new_z))
-   return false;
-   
- if(!force_move && map->actor_at_location(new_x, new_y, new_z))
-   return false;
+ // blocking actors are checked for later
+ if(!force_move && !check_move(new_x, new_y, new_z, ACTOR_IGNORE_OTHERS))
+    return false;
 
+ // usecode must allow movement
  usecode = obj_manager->get_usecode();
  Obj *obj = obj_manager->get_obj(new_x,new_y,new_z);
  if(obj)
@@ -198,15 +243,34 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
          return(false);
      }
   }
+
+ // switch position with party members (FIXME: move to own method?)
+ Actor *other = map->get_actor(new_x, new_y, new_z);
+ if(!force_move && other) // not forcing move, check actor
+ {
+     Party *party = Game::get_game()->get_party();
+     // don't switch with party leader or actors who have moved (unless leader)
+     if(!party->contains_actor(other) || (party->get_member_num(other) == 0)
+        || (other->moved && (party->get_member_num(this) != 0)))
+        return false; // blocked by actor
+     other->face_location(x, y);
+     other->move(x, y, z, ACTOR_FORCE_MOVE);
+ }
+
+ // move
  x = new_x;
  y = new_y;
  z = new_z;
-
+ // post-move
  if(obj)
   {
    if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
      frame_n = (obj->frame_n * 4) + 3;
   }
+ // re-center map if actor is player character
+ Game *game = Game::get_game();
+ if(id_n == game->get_player()->get_actor()->id_n)
+    game->get_map_window()->centerMapOnActor(this);
  moved = true;
  return true;
 }
@@ -214,6 +278,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 
 void Actor::update()
 {
+ moved = false;
 /*
  uint8 new_direction;
  
@@ -258,7 +323,7 @@ void Actor::update()
 
 /* Start walking to a short-range destination on the map (Follow).
  */
-void Actor::swalk(MapCoord &d, uint8 speed)
+void Actor::swalk(MapCoord &d, uint8 speed, uint8 delay)
 {
     if(pathfinder && (!pathfinder->can_follow()))
         stop_walking();
@@ -267,23 +332,27 @@ void Actor::swalk(MapCoord &d, uint8 speed)
     else
         pathfinder->set_dest(d); // use existing path-finder
     pathfinder->set_speed(speed);
+    pathfinder->wait(delay);
 }
 
 
 /* Start walking to a short-range destination on the map. Allow a secondary
  * destination (to follow another actor in formation, for example.)
  */
-void Actor::swalk(MapCoord &d, MapCoord &d2, uint8 speed)
+void Actor::swalk(MapCoord &d, MapCoord &d2, uint8 speed, uint8 delay)
 {
     swalk(d, speed);
     if(pathfinder)
+    {
         pathfinder->set_dest2(d2);
+        pathfinder->wait(delay);
+    }
 }
 
 
 /* Start walking to a long-range destination on the map (Travel).
  */
-void Actor::lwalk(MapCoord &d, uint8 speed)
+void Actor::lwalk(MapCoord &d, uint8 speed, uint8 delay)
 {
     if(pathfinder && (!pathfinder->can_travel()))
         stop_walking();
@@ -292,6 +361,14 @@ void Actor::lwalk(MapCoord &d, uint8 speed)
     else
         pathfinder->set_dest(d); // use existing path-finder
     pathfinder->set_speed(speed);
+    pathfinder->wait(delay);
+}
+
+
+void Actor::stop_walking()
+{
+    delete pathfinder;
+    pathfinder = NULL;
 }
 
 

@@ -17,10 +17,11 @@ protected:
     MapCoord *path; // list of tiles in the path
     uint32 step_count; // number of tiles in the path
     uint32 next_step;
-    uint32 max_cost; // absolute maximum cost for any path
+    uint8 delay; // number of walk_path() calls to skip walking
+    uint32 speed; // number of moves given per walk_path(), 0=default
 
 public:
-    PathFinder(Actor *a, MapCoord &d, uint32 speed = 1);
+    PathFinder(Actor *a, MapCoord &d, uint32 spd = 1);
     PathFinder();
     virtual ~PathFinder();
 
@@ -29,15 +30,15 @@ public:
     virtual bool can_follow() { return(false); }
     virtual bool can_travel() { return(false); }
 
-    virtual void walk_path(uint32 speed = 1) = 0;
+    virtual void walk_path(uint32 step_speed = 1) = 0;
     virtual void set_dest(MapCoord &d);
     virtual void set_dest2(MapCoord &d2) { dest2 = NULL; }
-    void set_speed(uint8 sp) { }
+    void set_speed(uint8 sp) { speed = sp; }
+    void wait(uint8 turns) { delay = turns; }
 
     bool reached_goal();
     void get_adjacent_dir(sint8 &xdir, sint8 &ydir, sint8 rotate);
     void delete_path();
-    uint32 get_max_cost(uint32 cost);
 
     virtual MapCoord get_next_step() { return(dest); }
 

@@ -38,9 +38,11 @@ protected:
 
     void delete_nodes();
 
-    uint32 estimate_cost(astar_node &n, MapCoord &g);
-    uint32 estimate_cost(astar_node &n1, astar_node &n2);
-    sint32 estimate_step_cost(MapCoord &c1, MapCoord &c2);
+    uint32 path_cost(MapCoord &s, MapCoord &g);
+    uint32 path_cost(astar_node &n1, astar_node &n2) { return(path_cost(n1.loc, n2.loc)); }
+    sint32 step_cost(MapCoord &c1, MapCoord &c2);
+
+    uint32 get_max_score(uint32 cost);
 };
 
 #endif /* __AStar_h__ */

@@ -12,8 +12,6 @@ class MapCoord;
  */
 class LPath : public AStar
 {
-uint32 wait_for;
-
 public:
     LPath(Actor *a, MapCoord &d, uint32 speed = 1);
     ~LPath() { }

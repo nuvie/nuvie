@@ -19,7 +19,7 @@ public:
     bool can_follow() { return(true); }
 
     void set_dest2(MapCoord &d2);
-    void walk_path(uint32 speed = 1);
+    void walk_path(uint32 step_speed = 1);
     MapCoord get_next_step() { return(dest); }
 };
 

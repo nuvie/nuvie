@@ -27,30 +27,35 @@ void AStar::create_path(astar_node *end)
         i = i->parent;
     }
     path = (MapCoord*)realloc(path, step_count * sizeof(MapCoord));
-    next_step = (step_count > 0) ? step_count - 1 : 0;
+    next_step = (step_count > 1) ? step_count - 2 : 0; // skip last
 }
 
 
-/* Do A* search of tiles to create a path from `start' to `goal'.
+/* Do A* search of tiles to create a path from `start' to `goal'. Don't search
+ * past nodes with a score over the max. score, and create a partial path to
+ * low-score nodes with a distance-to-start over the max. step count.
  * Returns true if a path is created, or false if it can't be.
  */
 bool AStar::node_search(MapCoord &start, MapCoord &goal)
 {
-printf("SEARCH: ACTOR %d\n", actor->get_actor_num());
-uint32 blocked_count = 0; // number of tiles blocked completely
+//printf("SEARCH: %d: %d,%d -> %d,%d\n",actor->get_actor_num(),start.x,start.y,goal.x,goal.y);
+    uint32 max_score, max_steps;
     astar_node *start_node = new astar_node;
-
     start_node->loc = start;
     start_node->to_start = 0;
-    start_node->to_goal = estimate_cost(*start_node, goal);
+    start_node->to_goal = path_cost(start, goal);
     start_node->score = start_node->to_start + start_node->to_goal;
     push_open_node(start_node);
 
-    while(!open_nodes.empty() && blocked_count < 300)
+    max_score = get_max_score(start_node->to_goal);
+    max_steps = 8*2*4; // walk up to four screen lengths before searching again
+
+    while(!open_nodes.empty()/* && blocked_count < 300*/)
     {
-        astar_node *nnode = pop_open_node();
-        if(nnode->loc == goal || nnode->score >= max_node_score)
+        astar_node *nnode = pop_open_node(); // next closest
+        if(nnode->loc == goal || nnode->to_start >= max_steps)
         {
+//printf("GOAL\n");
             create_path(nnode);
             delete_nodes();
             return(true); // reached goal - success
@@ -64,18 +69,17 @@ uint32 blocked_count = 0; // number of tiles blocked completely
             // get neighbor of nnode towards sx,sy
             neighbor->loc = nnode->loc.abs_coords(sx, sy);
             sint32 nnode_to_neighbor =
-                            estimate_step_cost(nnode->loc, neighbor->loc);
-            uint32 neighbor_to_start = nnode->to_start + nnode_to_neighbor;
-
+                            step_cost(nnode->loc, neighbor->loc);
             // this neighbor is blocked
             if(nnode_to_neighbor == -1)
             {
-                ++blocked_count;
+                //++blocked_count;
                 delete neighbor;
                 continue;
             }
+            uint32 neighbor_to_start = nnode->to_start + nnode_to_neighbor;
 
-            // ignore this neighbor if already checked and closer to goal
+            // ignore this neighbor if already checked and closer to start
             astar_node *in_open = find_open_node(neighbor),
                        *in_closed = find_closed_node(neighbor);
             if((in_open && in_open->to_start <= neighbor_to_start)
@@ -87,11 +91,11 @@ uint32 blocked_count = 0; // number of tiles blocked completely
 
             neighbor->parent = nnode;
             neighbor->to_start = neighbor_to_start;
-            neighbor->to_goal = estimate_cost(*neighbor, goal);
+            neighbor->to_goal = path_cost(neighbor->loc, goal);
             neighbor->score = neighbor->to_start + neighbor->to_goal;
 
             // too far away
-            if(neighbor->score > max_node_score)
+            if(neighbor->score > max_score)
             {
                 delete neighbor;
                 continue;
@@ -106,45 +110,58 @@ uint32 blocked_count = 0; // number of tiles blocked completely
         // node and neighbors checked, put into closed
         closed_nodes.push_back(nnode);
     }
-printf(" FAIL\n");
+//printf("FAIL\n");
     delete_nodes();
     return(false); // out of open nodes - failure
 }
 
 
-/* Return an estimate of the cost to location `g' from the location `n'.
- * Multiply by weight value of 1. (everything has the same terrain score)
+/* Take estimate of a path, and return the highest allowed score of any nodes
+ * in the search of that path.
  */
-uint32 AStar::estimate_cost(astar_node &n, MapCoord &g)
+uint32 AStar::get_max_score(uint32 cost)
 {
-    return(n.loc.distance(g));
+    uint32 max_score = cost * 2;
+    // search at least this far (else short paths will have too
+    //                           low of a maximum score to move around walls)
+    if(max_score < 8*2*3)
+        max_score = 8*2*3;
+    return(max_score);
 }
 
 
-/* Return an estimate of the cost to location `n2 from `n1'.
+/* Return a weighted estimate of the highest cost from location `s' to `n'.
  */
-uint32 AStar::estimate_cost(astar_node &n1, astar_node &n2)
+uint32 AStar::path_cost(MapCoord &s, MapCoord &g)
 {
-    return(estimate_cost(n1, n2.loc));
+    uint32 major = (s.xdistance(g) >= s.ydistance(g))
+                   ? s.xdistance(g) : s.ydistance(g);
+    uint32 minor = (s.xdistance(g) >= s.ydistance(g))
+                   ? s.ydistance(g) : s.xdistance(g);
+    return(2*major + minor);
 }
 
 
-/* Return an estimate of the cost from location `c1' to location `c2'. The two
- * tiles are assumed to be next to each other. Blocking objects are checked for
- * Returns -1 if c2 can not be stepped onto from c1, or the cost if it can.
+/* Return the cost of moving from location `c1' to neighboring location `c2'.
+ * Blocking objects are checked for, and doors may be passable
+ * Returns -1 if c2 is blocked. Returns the cost if it isn't blocked.
  */
-sint32 AStar::estimate_step_cost(MapCoord &c1, MapCoord &c2)
+sint32 AStar::step_cost(MapCoord &c1, MapCoord &c2)
 {
+    sint32 c = 1;
 //    if(!actor->check_move(c2, c1))
-    if(!actor->check_move(c2.x, c2.y, c2.z))
+    if(!actor->check_move(c2.x, c2.y, c2.z, ACTOR_IGNORE_OTHERS))
     {
-        ObjManager *om = Game::get_obj_manager();
-        UseCode *uc = Game::get_usecode();
-        Obj *block = om->get_obj(c2.x, c2.y, c2.z);
-        if(!block || !uc->is_unlocked_door(block))
+        // check for door
+        Game *game = Game::get_game();
+        Obj *block = game->get_obj_manager()->get_obj(c2.x, c2.y, c2.z);
+        if(!block || !game->get_usecode()->is_unlocked_door(block))
             return(-1);
+        c += 2;
     }
-    return((c1.x != c2.x && c1.y != c2.y) ? 2 : 1); // prefer non-diagonal
+    if(c1.x != c2.x && c1.y != c2.y) // prefer non-diagonal
+        ++c;
+    return(c); 
 }
 
 

@@ -34,15 +34,6 @@ void PathFinder::delete_path()
 }
 
 
-/* Take estimate of a path, and return the highest allowed cost of any nodes
- * in the search of that path.
- */
-uint32 PathFinder::get_max_cost(uint32 cost)
-{
-    return((cost * 3) <= max_cost ? max_cost : max_cost);
-}
-
-
 /* Returns true if actor is at the destination.
  */ 
 bool PathFinder::reached_goal()

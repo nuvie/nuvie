@@ -16,8 +16,8 @@ LPath::LPath(Actor *a, MapCoord &d, uint32 speed)
     actor = a;
     set_dest(d);
 
-    max_node_score = 8*2*3;
-wait_for = 0; // number of turns to wait until trying again
+    max_node_score = 8*2*10; // ten screenfulls
+    wait(0); // number of turns to wait until trying again when blocked
 }
 
 
@@ -34,50 +34,43 @@ void LPath::set_dest(MapCoord &d)
  */
 void LPath::walk_path(uint32 speed)
 {
+// FIXME: need to move all this to a few functions
     // teleport if both locations are off-screen
     if(!dest.is_visible() && !MapCoord(actor->x,actor->y,actor->z).is_visible())
     {
         actor->move(dest.x, dest.y, dest.z);
         return;
     }
-
-    if(wait_for)
+    if(delay)
     {
-        --wait_for;
+        --delay;
         return;
     }
-
     if(!path)
     {
         // don't loop back to original start if at end of partial path
         src.x = actor->x; src.y = actor->y; src.z = actor->z;
         if(!node_search(src, dest))
         {
-            wait_for = 10; // wait to try again
+            wait(10); // try again soon
             return;
         }
     }
     // have a path, take a step
     uint16 nx = path[next_step].x, ny = path[next_step].y;
     uint8 nz = path[next_step].z;
-//    actor->set_direction(MapCoord(actor->x, actor->y, actor->z), MapCoord(nx, ny, nz));
-    if(actor->x < nx)
-        actor->set_direction(ACTOR_DIR_R);
-    else if(actor->x > nx)
-        actor->set_direction(ACTOR_DIR_L);
-    else if(actor->y < ny)
-        actor->set_direction(ACTOR_DIR_D);
-    else
-        actor->set_direction(ACTOR_DIR_U);
-    Obj *door = NULL;
-    bool moved = actor->move(nx, ny, nz,ACTOR_FORCE_MOVE);
+    if(actor->check_move(nx, ny, nz))
+        actor->face_location(nx, ny);
+    bool moved = actor->move(nx, ny, nz);
     if(!moved) // check for unlocked door, and open it
     {
-        ObjManager *obj_manager = Game::get_obj_manager();
-        UseCode *uc = Game::get_usecode();
-        Obj *door = obj_manager->get_obj(nx, ny, nz);
+// FIXME: don't try to open top of door frame
+        Game *game = Game::get_game();
+        UseCode *uc = game->get_usecode();
+        Obj *door = game->get_obj_manager()->get_obj(nx, ny, nz);
         if(door && uc->is_unlocked_door(door) && uc->use_obj(door))
-            moved = actor->move(nx, ny, path[next_step].z); // try again
+//            moved = actor->move(nx, ny, nz); // try again
+            moved = actor->move(nx, ny, nz, ACTOR_FORCE_MOVE);
         else
             door = NULL;
     }
