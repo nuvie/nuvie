@@ -405,6 +405,14 @@ SOURCE=..\TileManager.cpp
 
 SOURCE=..\TileManager.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\TimedEvent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\TimedEvent.h
+# End Source File
 # End Group
 # Begin Group "msvc files"
 
