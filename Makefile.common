@@ -38,6 +38,8 @@ nuvie_SOURCES = \
 	usecode/UseCode.cpp \
 	usecode/U6UseCode.h \
 	usecode/U6UseCode.cpp \
+	usecode/MDUseCode.h \
+	usecode/MDUseCode.cpp \
 \
 	views/View.cpp \
 	views/View.h \

@@ -33,6 +33,7 @@
 #include "Look.h"
 
 #include "U6UseCode.h"
+#include "MDUseCode.h"
 
 #include "Game.h"
 
@@ -113,7 +114,11 @@ bool Game::loadGame(Screen *s, uint8 game_type)
  converse = new Converse();
  converse->init(config, scroll, actor_manager, clock, player, view_manager, obj_manager);
 
- usecode = (UseCode *) new U6UseCode(config);
+ // Correct usecode class for each game
+ if (game_type == NUVIE_GAME_U6)
+	 usecode = (UseCode *) new U6UseCode(config);
+ else if (game_type == NUVIE_GAME_MD)
+	 usecode = (UseCode *) new MDUseCode(config);
  usecode->init(obj_manager, game_map, player, scroll);
  
  event = new Event(config);
