@@ -102,7 +102,7 @@ bool Player::load(NuvieIO *objlist)
 
  if(solo_member_num == 0xff)
    {
-    party_mode = false;
+    party_mode = true;
     set_party_mode(actor);
    }
  else

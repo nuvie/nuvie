@@ -1,6 +1,8 @@
 2004-06-06  Joseph Applegate <sb-x at users.sourceforge.net>
 	* One line change to cleanup mouse cursor earlier, preventing GUI
 	  corruption by widgets being removed. Fixes [ 908994 ].
+	* Player: Set party mode to TRUE if saved party member is 0xFF.
+	* Only check Solo Mode in boat usecode when entering the vehicle.
 
 2004-06-02  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* GUI/GUI.*: fix crash when deleting the focused/locked widget

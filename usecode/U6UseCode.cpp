@@ -1210,11 +1210,6 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
  
  if(ev != USE_EVENT_USE)
     return(false);
- if(!player->in_party_mode())
-  {
-    scroll->display_string("\nNot in solo mode.\n");
-    return(true);
-  }
  ship_actor = actor_manager->get_actor(0); //get the vehicle actor.
  
  // get out of boat
@@ -1246,6 +1241,12 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
      
    return true;
   }
+
+  if(!player->in_party_mode())
+   {
+    scroll->display_string("\nNot in solo mode.\n");
+    return(true);
+   }
 
   if(obj->obj_n == OBJ_U6_SHIP) //If we are using a ship we need to use its center object.
    {
