@@ -240,7 +240,7 @@ bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsig
               if (cW != next_free_codeword)
               {
                  printf("cW != next_free_codeword!\n");
-                 return(NULL);
+                 return(false);
               }
               // add pW+C to the dictionary
               dict->add(C,pW);
