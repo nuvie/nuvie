@@ -1,3 +1,11 @@
+2003-05-25  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Actor/ObjManager: Update to inventory and statistic access methods.
+	(adding/deleting items works, and set_hp(), get_maxhp() added)
+	* ActorManager: New method actor_lookstr() to get generic description
+	* Converse: "Heal" in NPC scripts implemented, and name display with
+	portrait is limited to those NPC's that have met or follow the avatar
+	* U6Lib_n: now handling (read or skip) 4byte filesize at start of files
+
 2003-05-24  Eric Fry <efry@users.sourceforge.net>
 	* Get support thanks to a patch by Markus Niemistvo.
 
