@@ -34,52 +34,51 @@ ViewManager::~ViewManager()
  delete inventory_view;
 }
 
-bool ViewManager::init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *portrait)
+bool ViewManager::init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *portrait)
 {
- screen = s;
+ gui = g;
  text = t;
  party = p;
  tile_manager = tm;
  obj_manager = om;
 
  inventory_view = new InventoryView(config);
- inventory_view->init(176,8,screen, text, party, tile_manager, obj_manager);
+ inventory_view->init(176,8, text, party, tile_manager, obj_manager);
  
  portrait_view = new PortraitView(config);
- portrait_view->init(176,8,screen, text, party, tile_manager, obj_manager, portrait);
+ portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);
  
- current_view = (View *)inventory_view;
+ set_current_view((View *)inventory_view);
  
  return true;
 }
 
-bool ViewManager::handle_input(SDLKey *input)
+bool ViewManager::set_current_view(View *view)
 {
- return false;
-}
+ if(view == NULL || game_type != NUVIE_GAME_U6) //HACK! remove this when views support MD and SE
+   return false;
 
-void ViewManager::update_display()
-{
- if(game_type == NUVIE_GAME_U6) //HACK! remove this when views support MD and SE
-   {
-    screen->fill(0x31, 176, 8, 136, 96);
-    current_view->update_display();
-    screen->update(176, 8, 136, 96);
-   }
+ if(current_view != NULL)
+   gui->removeWidget((GUI_Widget *)current_view);//remove current widget from gui
+
+ current_view = view;
+ gui->AddWidget((GUI_Widget *)view);
+ 
+ return true;
 }
 
 void ViewManager::set_portrait_mode(uint8 actor_num, char *name)
 {
  portrait_view->set_portrait(actor_num, name);
  
- current_view = (View *)portrait_view;
- update_display();
+ set_current_view((View *)portrait_view);
+ portrait_view->Redraw();
 }
 
 void ViewManager::set_inventory_mode(uint8 actor_num)
 {
- current_view = (View *)inventory_view;
- update_display();
+ set_current_view((View *)inventory_view);
+ inventory_view->Redraw();
 }
 
 void ViewManager::set_party_mode()

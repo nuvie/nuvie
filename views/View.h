@@ -34,15 +34,13 @@
 #include "ObjManager.h"
 #include "Party.h"
 
-class View
+#include "GUI_Widget.h"
+
+class View: public GUI_Widget
 {
  protected:
- 
  Configuration *config;
- uint16 origin_x;
- uint16 origin_y;
  
- Screen *screen;
  Text *text;
  TileManager *tile_manager;
  ObjManager *obj_manager;
@@ -53,11 +51,8 @@ class View
  View(Configuration *cfg);
  virtual ~View();
  
- virtual bool init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ virtual bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
  
- virtual void update_display()=0;
- virtual bool handle_input(SDLKey *input);
-
 };
 
 #endif /* __View_h__ */

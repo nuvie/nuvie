@@ -118,7 +118,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    portrait->init();
  
    view_manager = new ViewManager(config);
-   view_manager->init(screen, text, party, tile_manager, obj_manager, portrait);
+   view_manager->init(gui, text, party, tile_manager, obj_manager, portrait);
  
    scroll = new MsgScroll(config);
    scroll->init(text, player->get_name());

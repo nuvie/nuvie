@@ -50,9 +50,8 @@ class PortraitView : public View {
  PortraitView(Configuration *cfg);
  ~PortraitView();
  
- bool init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
- void update_display();
- bool handle_input(SDLKey *input);
+ bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
+ void Display(bool full_redraw);
  
  void set_portrait(uint8 actor_num, char *name);
  

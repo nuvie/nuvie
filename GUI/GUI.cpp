@@ -92,6 +92,29 @@ GUI:: AddWidget(GUI_Widget *widget)
 	return(0);
 }
 
+/* remove widget from gui system but don't delete it */
+bool GUI::removeWidget(GUI_Widget *widget)
+{
+ int i;
+ 
+  for(i=0; i<numwidgets; ++i)
+    {
+     if(widgets[i] == widget)
+       {
+        for(int j=i+1; j<numwidgets; ++j ) //shuffle remaining widgets down.
+          {
+           widgets[j-1] = widgets[j];
+          }
+
+        --numwidgets;
+        Display(GUI_FULL_REDRAW);
+        return true;
+			 }
+    }
+ 
+ return false;
+}
+
 void
 GUI:: Display(bool full_redraw)
 {

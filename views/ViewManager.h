@@ -28,7 +28,7 @@
 
 #include "U6def.h"
 #include "Configuration.h"
-#include "Screen.h"
+#include "GUI.h"
 #include "Text.h"
 #include "TileManager.h"
 #include "ObjManager.h"
@@ -45,7 +45,7 @@ class ViewManager
  
  Configuration *config;
  int game_type;
- Screen *screen;
+ GUI *gui;
  Text *text;
  TileManager *tile_manager;
  ObjManager *obj_manager;
@@ -61,14 +61,15 @@ class ViewManager
  ViewManager(Configuration *cfg);
  virtual ~ViewManager();
  
- bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *portrait);
- 
- void update_display();
- bool handle_input(SDLKey *input);
+ bool init(GUI *g, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *portrait);
 
  void set_portrait_mode(uint8 actor_num, char *name);
  void set_inventory_mode(uint8 actor_num);
- void set_party_mode(); 
+ void set_party_mode();
+ 
+ protected:
+ 
+ bool set_current_view(View *view);
 };
 
 #endif /* __ViewManager_h__ */

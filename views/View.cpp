@@ -23,7 +23,7 @@
 
 #include "View.h"
 
-View::View(Configuration *cfg)
+View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
 }
@@ -32,12 +32,14 @@ View::~View()
 {
 }
 
-bool View::init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
- origin_x = x;
- origin_y = y;
+ area.x = x;
+ area.y = y;
  
- screen = s;
+ area.w = 136;
+ area.h = 96;
+ 
  text = t;
  party = p;
  tile_manager = tm;
@@ -45,9 +47,3 @@ bool View::init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *t
 
  return true;
 }
-
-bool View::handle_input(SDLKey *input)
-{
- return false;
-}
-

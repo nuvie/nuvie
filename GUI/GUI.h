@@ -47,6 +47,9 @@ public:
 	 */
 	int AddWidget(GUI_Widget *widget);
 
+  /* remove widget from gui system but don't delete it */
+  bool removeWidget(GUI_Widget *widget);
+
 	/* Display the GUI manually */
 	void Display(bool full_redraw=false);
 

@@ -34,9 +34,9 @@ PortraitView::~PortraitView()
    free(portrait_data);
 }
 
-bool PortraitView::init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
+bool PortraitView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
 {
- View::init(x,y,s,t,p,tm,om);
+ View::init(x,y,t,p,tm,om);
  
  portrait = port;
  cur_actor_num = 0;
@@ -44,19 +44,17 @@ bool PortraitView::init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileMa
  return true;
 }
 
-void PortraitView::update_display()
+void PortraitView::Display(bool full_redraw)
 {
- if(portrait_data != NULL)
+ if(portrait_data != NULL && (full_redraw || update_display))
   {
-   screen->blit(origin_x+40,origin_y+16,portrait_data,8,56,64,56,false);
+   update_display = false;
+   screen->fill(0x31, area.x, area.y, area.w, area.h);
+   screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
    display_name();
+   screen->update(area.x, area.y, area.w, area.h);
   }
-  
-}
-
-bool PortraitView::handle_input(SDLKey *input)
-{
- return true;
+ 
 }
 
 void PortraitView::set_portrait(uint8 actor_num, char *name)
@@ -73,6 +71,8 @@ void PortraitView::set_portrait(uint8 actor_num, char *name)
    name_string.assign("");  //FIX
  else
    name_string.assign(name);
+
+ Redraw();
 }
 
 void PortraitView::display_name()
@@ -81,7 +81,7 @@ void PortraitView::display_name()
  
  name = name_string.c_str();
  
- text->drawString(screen, name, origin_x + (136 - strlen(name) * 8) / 2, origin_y+80, 0);
+ text->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+80, 0);
  
  return;
 }

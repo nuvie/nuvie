@@ -1,3 +1,6 @@
+2003-08-18  Eric Fry <efry@users.sourceforge.net>
+	* Converted the views over to the new GUI system.
+
 2003-08-15  Eric Fry <efry@users.sourceforge.net>
 	* Added quit dialog. (Note! this still needs some work.)
 	* Merged GUI and Event event handlers.
