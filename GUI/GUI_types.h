@@ -39,5 +39,5 @@ class GUI_Color {
  
 };
  
-#endif _GUI_types_h
+#endif /* _GUI_types_h */
 
