@@ -1,6 +1,7 @@
 2003-05-07  Eric Fry <efry@users.sourceforge.net>
 	* Fixed memory leak in MsgScroll::input_buf_add_char()
 	* Fixed text rendering when in talk mode.
+	* Fixed boundary check on cream buildings.
 
 2003-05-07  Michael Fink <vividos@users.sourceforge.net>
 	* Changed some parameter and return types from "char*" to

@@ -101,6 +101,8 @@ class ObjManager
  
  U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
+ bool is_door(Obj * obj);
+ 
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);

@@ -142,9 +142,14 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
                 { tile_num -= 2; check_tile = true; }
              if(check_tile)
                {
-                tile1 = tile_manager->get_tile(tile_num);
-                if(tile1->boundary == true)
-                  return true;
+                if(is_door(obj))
+                  {
+                   tile1 = tile_manager->get_tile(tile_num);
+                   if(tile1->boundary == true)
+                      return true;
+                   else
+                      return false;
+                  }
                 check_tile = false;
                }
             }
@@ -155,6 +160,14 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+bool ObjManager::is_door(Obj * obj)
+{
+ //for U6
+ if(obj->obj_n >= 297 && obj->obj_n <= 300)
+   return true;
+ 
+ return false;
+}
 
 uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
 {

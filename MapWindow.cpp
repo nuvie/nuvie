@@ -308,7 +308,7 @@ void MapWindow::drawObjs()
  uint16 sc_x, sc_y;
  uint16 sc_w, sc_h;
  uint16 x,y;
- 
+
  if(cur_level == 0)
    {
     sc_y = cur_y / 128;
