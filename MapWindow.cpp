@@ -330,9 +330,9 @@ void MapWindow::drawObjSuperBlock(U6LList *superblock, bool toptile)
  Obj *obj;
  uint16 x,y;
  
-    for(y=cur_y;y <= cur_y + win_height;y++)
+    for(y=cur_y+win_height; y >= cur_y; y--)
       {
-       for(x=cur_x;x <= cur_x + win_width;x++)
+       for(x=cur_x+win_width;x >= cur_x; x--)
          {
           obj_list =obj_manager->get_obj_list(x,y,cur_level);
           if(obj_list)

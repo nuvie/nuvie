@@ -39,8 +39,14 @@ class Nuvie
    Nuvie();
    ~Nuvie();
 
+
    bool init();
    bool play();
+   
+   protected:
+   
+   bool initConfig();
+   bool loadConfigFile(std::string filename);
 };
 
 

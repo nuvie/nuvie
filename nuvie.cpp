@@ -21,21 +21,17 @@
  *
  */
  
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include <stdlib.h>
 #include <string.h>
 
 #include "SDL.h"
 
 #include "U6def.h"
-
 #include "Configuration.h"
-
 #include "Screen.h"
-#include "GamePalette.h"
-#include "U6Bmp.h"
-#include "TileManager.h"
-#include "Text.h"
-
 #include "Game.h"
 
 #include "nuvie.h"
@@ -51,19 +47,13 @@ Nuvie::~Nuvie()
  delete game;
 }
 
+
 bool Nuvie::init()
 {
   
- config = new Configuration();
- 
- // FIX! need to add support for finding nuvie.cfg file.
- 
- if(config->readConfigFile("nuvie.cfg","config") == false)
-   {
-    delete config;
-    return false;
-   }
-
+ if(initConfig() == false)
+   return false;
+   
  screen = new Screen(config);
  if(screen->init(320,200) == false)
    {
@@ -87,4 +77,61 @@ bool Nuvie::play()
  
 
  return true;
+}
+
+
+bool Nuvie::initConfig()
+{
+ std::string config_path;
+
+ 
+ config = new Configuration();
+ 
+ // ~/.nuvierc
+ 
+ config_path.assign(getenv("HOME"));
+// config_path.append(U6PATH_DELIMITER);
+ config_path.append("/.nuvierc");
+  
+ if(loadConfigFile(config_path))
+   return true;
+
+ // nuvie.cfg in the working dir
+ 
+ config_path.assign("nuvie.cfg");
+ 
+ if(loadConfigFile(config_path))
+   return true;
+
+ // standard share locations
+ 
+ config_path.assign("/usr/local/share/nuvie/nuvie.cfg");
+ 
+ if(loadConfigFile(config_path))
+   return true;
+
+ config_path.assign("/usr/share/nuvie/nuvie.cfg");
+ 
+ if(loadConfigFile(config_path))
+   return true;
+
+ delete config;
+ 
+ return false;
+}
+
+bool Nuvie::loadConfigFile(std::string filename)
+{
+ struct stat sb;
+  
+ // FIX! need to add support for finding nuvie.cfg file.
+ if(stat(filename.c_str(),&sb) == 0)
+  {
+    if(config->readConfigFile(filename,"config") == true)
+      {
+       return true;
+      }
+  }
+  
+ return false;
 }
