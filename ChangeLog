@@ -1,3 +1,23 @@
+2004-05-30  Jonathan Wright <nelno at nelno.com>
+    * Fixed compilation error in MapWindow.h (wx defined twice in 
+      get_movement_direction)
+    * fixed Win32 uninitialized variable warning in MsgScroll::Display () in
+      MessageScroll.cpp.
+    * fixed Win32 uninitialized variable warning in MsgScroll::MsgScroll.
+    * in AnimManager.cpp, fixed some cases where unary minus was being
+      used on unsigned integers.
+    * added <save_dir> section to nuvie.cfg.sample.    
+    * changed NUVIE_PATH_DELIMITER to '/' for WIN32.  As far as I know, WIN32
+      file io functions work perfectly well with '/' instead of '\', unless 
+      memory fails me and Win95 didn't like this.  I noticed the path delimiters 
+      in nuvie.cfg were all '/' and they never get converted anyway, so if '/'
+      didn't work, everything would already be failing to load on Win32.
+    * in SaveManager.cpp, made it auto-create the save game directory if it 
+      doesn't exist, instead of failing.
+    * commented out code that fills in all empty save slots with "New save."
+      Just seemed less confusing and aesthetically more pleasing to have that 
+      only in the first slot. 
+    
 2004-05-31  Eric Fry <efry at users.sourceforge.net>
 	* You can save and load from the slots in the save dialog now. :)
 	  I'll have to test this some more. I've used opendir/ readdir

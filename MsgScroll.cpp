@@ -157,12 +157,6 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
 
  switch(game_type)
    {
-    case NUVIE_GAME_U6 : scroll_width = MSGSCROLL_U6_WIDTH;
-                         scroll_height = MSGSCROLL_U6_HEIGHT;
-                         x = 176;
-                         y = 112;
-                         break;
-                         
     case NUVIE_GAME_MD : scroll_width = MSGSCROLL_MD_WIDTH;
                          scroll_height = MSGSCROLL_MD_HEIGHT;
                          x = 184;
@@ -173,6 +167,13 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
                          scroll_height = MSGSCROLL_SE_HEIGHT;
                          x = 184;
                          y = 128;
+                         break;
+    case NUVIE_GAME_U6 : 
+	default :
+						 scroll_width = MSGSCROLL_U6_WIDTH;
+                         scroll_height = MSGSCROLL_U6_HEIGHT;
+                         x = 176;
+                         y = 112;
                          break;
    }
 
@@ -611,7 +612,7 @@ void MsgScroll::Display(bool full_redraw)
 {
  uint16 i;
  std::list<MsgLine *>::iterator iter;
- MsgLine *msg_line;
+ MsgLine *msg_line = NULL;
  
  clearCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
 
@@ -633,7 +634,10 @@ void MsgScroll::Display(bool full_redraw)
    screen->update(area.x,area.y, scroll_width * 8, (scroll_height)*8);
    
    cursor_y = i-1;  
-   cursor_x = msg_line->total_length;
+   if (msg_line)
+     cursor_x = msg_line->total_length;
+   else
+     cursor_x = area.x;
   }
 else
  {

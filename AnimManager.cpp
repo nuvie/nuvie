@@ -235,7 +235,7 @@ void NuvieAnim::set_velocity_for_speed(sint16 xdir, sint16 ydir, uint32 spd)
 {
     uint16 max_dist, min_dist;
     uint16 xdist = abs(xdir), ydist = abs(ydir);
-    uint32 xvel = spd, yvel = spd;
+    sint32 xvel = spd, yvel = spd;
 
     if(xdir == 0 || ydir == 0)
     {
@@ -458,7 +458,7 @@ void TossAnim::start()
     move(src->x, src->y);
     add_tile(toss_tile, 0, 0);
 
-    uint32 velocity = 192;
+    sint32 velocity = 192;
     set_velocity((target->x == src->x) ? 0 : (target->x > src->x) ? velocity : -velocity,
                  (target->y == src->y) ? 0 : (target->y > src->y) ? velocity : -velocity);
 }
@@ -678,7 +678,7 @@ ExplosiveAnim::~ExplosiveAnim()
 void ExplosiveAnim::start()
 {
     TileManager *tile_manager = map_window->get_tile_manager();
-    uint32 s = 8; // how many pixels each new fireball is from the previous
+    sint32 s = 8; // how many pixels each new fireball is from the previous
 
     move(center.x, center.y);
     flame.resize(radius * 5);
