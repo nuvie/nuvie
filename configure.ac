@@ -48,7 +48,7 @@ else
         AM_CONDITIONAL(BUILD_TOOLS, true)
 fi
 
-# determining uwadv.cfg entries
+# determining nuvie.cfg entries
 #AC_ARG_WITH(u6, [  --with-u6=DIR          directory where U6 is installed ],U6PATH=$with_uw6,U6PATH=${datadir}/games/u6/)
 #AC_SUBST(U6PATH)
 
