@@ -53,15 +53,16 @@ Screen::Screen(Configuration *cfg)
  std::string x;
  config->value( "config/general/lighting", str_lighting_style );
 
- if( str_lighting_style == "original" )
-	 lighting_style = 2;
+ if( str_lighting_style == "none" )
+	 lighting_style = 0;
  else if( str_lighting_style == "smooth" )
 	 lighting_style = 1;
  else
-	 lighting_style = 0;
+	 lighting_style = 2;
  
  max_update_rects = 10;
  num_update_rects = 0;
+ memset( shading_globe, 0, sizeof(uint8*) * 3 );
 }
 
 Screen::~Screen()
