@@ -104,32 +104,10 @@ void Converse::print(const char *printstr)
  */
 Uint32 Converse::print_name()
 {
-    Uint32 len = 0, id = 0;
-    id = pop();
-    for(; isprint(script_pt[len]); len++);
-    output.append((const char *)script_pt, (unsigned int)len);
+    Uint32 id = get_val(0, 0);
     output.append("\n\n");
-    pop(len);
+    print();
     return(id);
-}
-
-
-/* Update the script pointer to past the NPC identification.
- */
-void Converse::seek_look()
-{
-    seek_byte(U6OP_SLOOK);
-    if(script_pt == script)
-        seek_byte(U6OP_SLOOKB);
-}
-
-
-/* Update the script pointer to past the NPC identification and look sections.
- */
-void Converse::seek_converse()
-{
-    seek_look();
-    seek_byte(U6OP_SCONVERSE);
 }
 
 
@@ -519,19 +497,19 @@ if(!args.empty() && !args[0].empty())
             }
             break;
         case U6OP_SIDENT:
-//            std::cerr << "Converse: IDENT section" << std::endl;
+            break_scope(); // SEEKIDENT
             print_name();
+            enter_scope(CONV_SCOPE_SEEKLOOK);
             break;
         case U6OP_SLOOK:
         case U6OP_SLOOKB:
-//            std::cerr << "Converse: LOOK section" << std::endl;
-            output.append("You see ");
+            break_scope(); // SEEKLOOK
+            print("You see ");
             break;
         case U6OP_SCONVERSE:
 //            std::cerr << "Converse: CONVERSE section" << std::endl;
             break;
         case U6OP_ASK:
-//            std::cerr << "Converse: ASK section" << std::endl;
             scroll->display_string("\nyou say: ");
             scroll->set_input_mode(true);
             wait(); donext = false;
@@ -541,7 +519,6 @@ if(!args.empty() && !args[0].empty())
             wait(); donext = false;
             break;
         case U6OP_SANSWER:
-//            std::cerr << "Converse: ANSWER (check KEYWORDS)" << std::endl;
             if(check_keywords())
             {
                 keywords.resize(0);
@@ -662,12 +639,6 @@ void Converse::step(Uint32 count)
         }
 
         cmd = pop();
-        if(cmd == U6OP_SIDENT)
-        {
-            print_name();
-            continue;
-        }
-
         if(cmd == U6OP_SLOOK || cmd == U6OP_SLOOKB)
             look_offset = (Uint32)(script_pt - 1 - script);
         if(cmd == U6OP_ASK || cmd == U6OP_ASKC)
@@ -679,6 +650,13 @@ void Converse::step(Uint32 count)
             args[0].resize(1);
             args[0][0].valt = 0;
             args[0][0].val = pop4();
+        }
+        else if(cmd == U6OP_SIDENT)
+        {
+            args[0].resize(1);
+            args[0][0].valt = 0;
+            args[0][0].val = pop(); // NPC id number
+            collect_text(false); // name
         }
         else if(cmd == U6OP_KEYWORD)
 	{
@@ -782,6 +760,7 @@ bool Converse::start(Actor *talkto)
         std::cerr << "Converse: begin" << std::endl;
         active = true;
         seek(0);
+        enter_scope(CONV_SCOPE_SEEKIDENT);
         return(true);
     }
     std::cerr << std::endl << "Converse: error loading script " << (int)script_num

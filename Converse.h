@@ -74,6 +74,8 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define CONV_SCOPE_IF 3 // at else change to endif, at endif break
 #define CONV_SCOPE_IFELSE 4 // at else change to if, at endif break
 #define CONV_SCOPE_ENDASK 5 // break at end-of-ask
+#define CONV_SCOPE_SEEKLOOK 6 // do nothing until looksection, then break
+#define CONV_SCOPE_SEEKIDENT 7 // after identsection change to SEEKLOOK
 
 #define CONV_VAR_SEX 0x10 // sex of npc: male=0 female=1
 #define CONV_VAR_WORKTYPE 0x20 // current activity of npc, from schedule
@@ -162,8 +164,6 @@ class Converse
 
     /* Seeking methods - update script pointer. */
     void seek(Uint32 offset = 0) { script_pt = script; script_pt += offset; }
-    void seek_look();
-    void seek_converse();
     void seek_byte(Uint8 val)
     {
         for(script_pt = script; !this->check_overflow(); script_pt++)
@@ -251,6 +251,16 @@ class Converse
         }
         if(scope.top() == CONV_SCOPE_IFELSE
            && (cmd != U6OP_ELSE && cmd != U6OP_ENDIF))
+        {
+            return(false);
+        }
+        if(scope.top() == CONV_SCOPE_SEEKLOOK
+           && (cmd != U6OP_SLOOK && cmd != U6OP_SLOOKB))
+        {
+            return(false);
+        }
+        if(scope.top() == CONV_SCOPE_SEEKIDENT
+           && (cmd != U6OP_SIDENT))
         {
             return(false);
         }
