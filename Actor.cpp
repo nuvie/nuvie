@@ -283,34 +283,69 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container)
 
 bool Actor::inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality)
 {
- U6LList *inventory;
-// U6Link *link;
- Obj *obj;
+ U6LList *inventory = 0;
+ U6Link *link = 0;
+ Obj *obj = 0;
+ uint8 origqty = 0, newqty = 0;
  
- inventory = obj_manager->get_actor_inventory(id_n);
- obj = new Obj;
- 
- obj->obj_n = obj_n;
- obj->qty = qty;
- obj->quality = quality;
- 
- inventory->addAtPos(0,obj);
- 
+ inventory = get_inventory_list();
+
+ // find same type of object in inventory, don't look in containers
+ for(link = inventory->start(); link != NULL; link = link->next)
+ {
+   obj = (Obj *)link->data;
+   if(obj->obj_n == obj_n && obj->quality == quality)
+     break;
+   obj = 0;
+ }
+ // define and link (when stacking, quantity of 0 is 1)
+ origqty = (obj && obj->qty) ? obj->qty : 1;
+ newqty = qty ? qty : 1;
+ if(obj && ((origqty + newqty) <= 255))
+ {
+    origqty += newqty;
+    obj->qty = origqty;
+ }
+ else // don't stack
+ {
+    obj = new Obj;
+    obj->obj_n = obj_n;
+    obj->qty = qty;
+    obj->quality = quality;
+    inventory->addAtPos(0, obj);
+ }
  return true;
 }
 
-bool Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality)
+
+uint32
+Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality, Obj *container)
 {
  U6LList *inventory;
  U6Link *link;
  Obj *obj;
+ uint8 oqty = 0;
+ uint32 deleted = 0;
  
- inventory = obj_manager->get_actor_inventory(id_n);
-
- //FIX ME here!
- 
- return false;
+ inventory = container ? container->container : get_inventory_list();
+ for(link = inventory->start(); deleted < qty && link != NULL; link = link->next)
+ {
+    obj = (Obj *)link->data;
+    if(obj->container)
+        deleted += inventory_del_object(obj_n, qty - deleted, quality, obj);
+    if((deleted < qty) && (obj->obj_n == obj_n) && (obj->quality == quality))
+    {
+        oqty = obj->qty ? obj->qty : 1;
+        if(oqty <= (qty - deleted))
+            inventory->remove(obj);
+        else
+            obj->qty = oqty - qty;
+        deleted += oqty;
+    }
+ }
+ return(deleted);
 }
+
 
 float Actor::get_inventory_weight()
 {

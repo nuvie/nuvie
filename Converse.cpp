@@ -572,9 +572,9 @@ printf("9B: weight of object %d * %d: %d\n", v[0], v[1], res);
             v[0] = opv->top(); opv->pop();
             // ??
             if(player->get_actor()->inventory_get_object(v[0], v[1]))
-                res = 0x8001;
-            else
                 res = 0xFFFF;
+            else
+                res = 0x8001;
             break;
         case 0xdd: // id of party member val1(0=leader), val2=??
             test_msg("-equals NPC(PARTYIDX)??-\n");
