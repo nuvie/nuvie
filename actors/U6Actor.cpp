@@ -148,7 +148,7 @@ void U6Actor::set_worktype(uint8 new_worktype)
  if(new_worktype == worktype)
    return;
 
- if(worktype == WORKTYPE_U6_SLEEP)
+ if(worktype == WORKTYPE_U6_SLEEP || worktype == WORKTYPE_U6_PLAY_LUTE)
    { 
     obj_n = old_obj_n;
     frame_n = old_frame_n;

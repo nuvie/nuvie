@@ -166,7 +166,7 @@ bool ActorManager::loadActors()
     actors[i]->hp = objlist.read1();
    }
    
- // Level
+ // Experience Level
  
  objlist.seek(0xff1);
  

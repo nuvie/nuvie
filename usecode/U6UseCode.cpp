@@ -72,11 +72,12 @@ void U6UseCode::init_objects()
     uc_objects[24].set(OBJ_U6_HORSE_CHOPS, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
     uc_objects[25].set(OBJ_U6_HONEY,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
     uc_objects[26].set(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
-
+/*
     uc_objects[27].set(OBJ_U6_OAKEN_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
     uc_objects[28].set(OBJ_U6_WINDOWED_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
     uc_objects[29].set(OBJ_U6_CEDAR_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
     uc_objects[30].set(OBJ_U6_STEEL_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_food);
+*/
 }
 
 

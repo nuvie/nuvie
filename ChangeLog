@@ -1,7 +1,8 @@
-2003-08-02  Eric Fry <efry@users.sourceforge.net>
+2003-08-03  Eric Fry <efry@users.sourceforge.net>
 	* Added Twitching to Actors.
 	* You can now sit on LB's throne correctly.
 	* Added lute playing worktype. 0x95
+	* Removed edible doors. ;)
 
 2003-08-02  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Use usecode when looking at some objects
