@@ -3,6 +3,7 @@
 	* Better blacking support for MD & SE.
 	* Added SEUseCode class.
 	* Added some MD use codes. It is now possible to leave the capsule.
+	* 0x is nolonger required on the hex numbers in ALT-214 teleport mode.
 
 2003-06-21  Eric Fry <efry@users.sourceforge.net>
 	* MD & SE now load their respective background graphics.
