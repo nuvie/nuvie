@@ -1,3 +1,6 @@
+2003-07-06  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Handle both upper and lower case y/n input (tracker item 765879)
+
 2003-07-06  Eric Fry <efry@users.sourceforge.net>
 	* Fixed some issues with NuvieIO classes. MD & SE now load again. ;)
 	* Fixed Stone lion rendering issue in U6. Added support for force
