@@ -755,6 +755,14 @@ void Event::alt_code(const char *cs)
             map_window->updateBlacking();
             active_alt_code = 0;
             break;
+
+        case 216:
+            scroll->display_string(clock->get_time_string());
+            scroll->display_string("\n");
+            scroll->display_prompt();
+            active_alt_code = 0;
+            break;
+
     }
 }
 

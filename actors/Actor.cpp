@@ -697,7 +697,7 @@ float Actor::get_inventory_weight()
    weight += obj_manager->get_obj_weight(obj);
   }
  
- return round(weight);
+ return roundf(weight);
 }
 
 float Actor::get_inventory_equip_weight()
@@ -719,7 +719,7 @@ float Actor::get_inventory_equip_weight()
       weight += obj_manager->get_obj_weight(obj);
   }
  
- return round(weight);
+ return roundf(weight);
 }
 
 

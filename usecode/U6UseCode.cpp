@@ -177,6 +177,8 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
     add_usecode(OBJ_U6_WELL,      255,0,USE_EVENT_USE,&U6UseCode::use_well);
     
+	add_usecode(OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive);
+	
     add_usecode(OBJ_U6_POTION,    255,0,USE_EVENT_USE,&U6UseCode::use_potion);
     add_usecode(OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_WINE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
@@ -194,7 +196,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_GARLIC,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_SNAKE_VENOM, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_HORSE_CHOPS, 0,0,USE_EVENT_USE,&U6UseCode::use_food);
-    add_usecode(OBJ_U6_HONEY,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
+    add_usecode(OBJ_U6_JAR_OF_HONEY,0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
 
     add_usecode(OBJ_U6_COW, 255, 0, USE_EVENT_USE,&U6UseCode::use_cow);
@@ -247,7 +249,7 @@ bool U6UseCode::is_food(Obj *obj)
            || n == OBJ_U6_BREAD || n == OBJ_U6_ROLLS || n == OBJ_U6_CAKE
            || n == OBJ_U6_MEAT_PORTION || n == OBJ_U6_MEAT || n == OBJ_U6_RIBS
            || n == OBJ_U6_HAM || n == OBJ_U6_HORSE_CHOPS
-           || n == OBJ_U6_GRAPES || n == OBJ_U6_HONEY || n == OBJ_U6_GARLIC
+           || n == OBJ_U6_GRAPES || n == OBJ_U6_JAR_OF_HONEY || n == OBJ_U6_GARLIC
            || n == OBJ_U6_SNAKE_VENOM || n == OBJ_U6_DRAGON_EGG);
 }
 
@@ -1432,6 +1434,44 @@ bool U6UseCode::use_churn(Obj *obj, uint8 ev)
  butter->obj_n = OBJ_U6_BUTTER;
  player_actor->inventory_add_object(butter);
  player_actor->inventory_add_object(bucket);
+ 
+ view_manager->set_inventory_mode();
+ 
+ view_manager->update(); //FIX this should be moved higher up in UseCode
+ 
+ scroll->display_string("\nDone\n");
+ return true;
+}
+
+bool U6UseCode::use_beehive(Obj *obj, uint8 ev)
+{
+ ViewManager *view_manager = Game::get_game()->get_view_manager();
+ Player *player = Game::get_game()->get_player();
+ Actor *player_actor;
+ Obj *honey_jar;
+ 
+ player_actor = player->get_actor();
+
+ if(!player_actor->inventory_has_object(OBJ_U6_HONEY_JAR))
+   {
+    if(player_actor->inventory_has_object(OBJ_U6_JAR_OF_HONEY))
+      {
+       scroll->display_string("\nYou need an empty honey jar.\n");
+	  }
+	else
+	  {
+       scroll->display_string("\nYou need a honey jar.\n");
+      }
+
+	return false;
+   }
+
+ honey_jar = player_actor->inventory_get_object(OBJ_U6_HONEY_JAR);
+ player_actor->inventory_remove_obj(honey_jar);
+
+ honey_jar->obj_n = OBJ_U6_JAR_OF_HONEY; //fill the empty jar with honey.
+ 
+ player_actor->inventory_add_object(honey_jar);   // add the filled jar back to the player's inventory
  
  view_manager->set_inventory_mode();
  

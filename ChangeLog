@@ -1,3 +1,11 @@
+2004-01-13  Eric Fry <efry at users.sourceforge.net>
+	* Added use:beehive.
+	* More work on eggs. There are two status flags that effect eggs.
+	  I'm still not sure what these flags do exactly. So their names
+	  in the source may change in the future.
+	* Changed round() to roundf() as we were dealing with floats anyway.
+	* Added a new alt-code. Alt-216 display current time. :-)
+
 2004-01-12  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Tools: unpack_conv working again. (broken files were being produced
 	  and repack -r didn't work because of U6Lib_n differences)

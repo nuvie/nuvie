@@ -101,7 +101,7 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
  Obj *obj;
  U6Link *link;
  uint8 hatch_probability;
- 
+
  for(egg = egg_list.begin(); egg != egg_list.end();)
    {
     dist_x = abs((sint16)(*egg)->obj->x - x);
@@ -110,9 +110,10 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
     if(dist_x <= 32 && dist_y <= 32 && (*egg)->obj->z == z)
       {
        
-       if((*egg)->seen_egg == false && (*egg)->obj->container)
+       if(((*egg)->obj->status & OBJ_STATUS_EGG_ACTIVE) == 0 || ((*egg)->obj->status & OBJ_STATUS_SEEN_EGG) == 0)
          {
-          (*egg)->seen_egg = true;
+          (*egg)->obj->status |= OBJ_STATUS_SEEN_EGG;
+		  (*egg)->obj->status |= OBJ_STATUS_EGG_ACTIVE;
           
           hatch_probability = NUVIE_RAND()%100;
           printf("Checking Egg (%x,%x,%x). Rand: %d Probability: %d%%\n",(*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z,hatch_probability,(*egg)->obj->qty);
@@ -132,7 +133,7 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
          }
       }
     else
-      (*egg)->seen_egg = false;
+      (*egg)->obj->status &= (0xff ^ OBJ_STATUS_EGG_ACTIVE);
 
     egg++;
    }

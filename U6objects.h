@@ -146,11 +146,12 @@
 #define OBJ_U6_BUCKET_OF_MILK      180
 #define OBJ_U6_CHURN               181
 
+#define OBJ_U6_BEEHIVE             182
+#define OBJ_U6_HONEY_JAR           183
+#define OBJ_U6_JAR_OF_HONEY        184
+
 #define OBJ_U6_BARREL              186
 #define OBJ_U6_BAG                 188
-#define OBJ_U6_HONEY_JAR           183
-
-#define OBJ_U6_HONEY               184
 
 #define OBJ_U6_CRATE               192
 

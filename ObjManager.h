@@ -37,12 +37,12 @@ class NuvieIOFileRead;
 
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1
-//#define OBJ_STATUS_UNKNOWN     0x2  // something to do wih eggs
+#define OBJ_STATUS_SEEN_EGG      0x2  // something to do wih eggs
 //#define OBJ_STATUS_UNKNOWN     0x4
 #define OBJ_STATUS_IN_CONTAINER  0x8
 #define OBJ_STATUS_IN_INVENTORY 0x10
 #define OBJ_STATUS_TEMPORARY    0x20
-//#define OBJ_STATUS_UNKNOWN    0x40  // something to do with eggs
+#define OBJ_STATUS_EGG_ACTIVE   0x40  // something to do with eggs
 //#define OBJ_STATUS_UNKNOWN    0x80
 // combined:
 #define OBJ_STATUS_READIED      0x18
