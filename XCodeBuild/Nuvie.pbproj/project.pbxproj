@@ -140,6 +140,8 @@
 				0761794105D79146001B6450,
 				07617A6B05D7A067001B6450,
 				07617E4F05DBA903001B6450,
+				076180FD05E84901001B6450,
+				0761811705E84B60001B6450,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -684,6 +686,7 @@
 				0761793705D79146001B6450,
 				0761794005D79146001B6450,
 				07617E4E05DBA903001B6450,
+				0761811605E84B60001B6450,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2266,6 +2269,51 @@
 			settings = {
 			};
 		};
+		076180FC05E84901001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = U6ObjectTypes.h;
+			path = ../usecode/U6ObjectTypes.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		076180FD05E84901001B6450 = {
+			fileRef = 076180FC05E84901001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761811405E84B60001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Cursor.cpp;
+			path = ../Cursor.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761811505E84B60001B6450 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Cursor.h;
+			path = ../Cursor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		0761811605E84B60001B6450 = {
+			fileRef = 0761811405E84B60001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0761811705E84B60001B6450 = {
+			fileRef = 0761811505E84B60001B6450;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		0762A334050361B500A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -2654,6 +2702,7 @@
 				07DFDDB304A5BFE600A8000A,
 				07B16F5B0487529500A8000A,
 				07B16F5A0487529500A8000A,
+				076180FC05E84901001B6450,
 			);
 			isa = PBXGroup;
 			name = UseCode;
@@ -3217,6 +3266,8 @@
 				07D6E0F104F89B0300A8000A,
 				07D14A91044449E400A8000A,
 				07D14A90044449E400A8000A,
+				0761811505E84B60001B6450,
+				0761811405E84B60001B6450,
 				078CE6670582F64100EC127A,
 				078CE6660582F64100EC127A,
 				07EF5321043137BF00A8000A,

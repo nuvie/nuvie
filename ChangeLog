@@ -1,3 +1,7 @@
+2004-02-22  Eric Fry <efry at users.sourceforge.net>
+	* Added a version of U6ObjectTypes.h to fix cvs compile.
+	* Added Cursor class to XCode build system.
+
 2004-02-21  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Eggs no longer try to line up actors of the same type (they might be
 	  grouped later by alignment), but try to toss actors within a smaller
