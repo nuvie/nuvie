@@ -45,6 +45,7 @@ TileManager::TileManager(Configuration *cfg)
 :desc_buf(NULL)
 {
  config = cfg;
+ game_counter = rgame_counter = 0;
  memset(tileindex,0,sizeof(tileindex));
 }
 

@@ -52,7 +52,6 @@ GUI_Widget::~GUI_Widget()
 void
 GUI_Widget:: Init(void *data, int x, int y, int w, int h)
 {
-//  int mx, my;
   gui_drag_manager = NULL; //set from placeOnScreen method
 	widget_data = data;
 	screen = NULL;
@@ -74,8 +73,9 @@ GUI_Widget:: Init(void *data, int x, int y, int w, int h)
  last_mouseup_x = last_mouseup_y = 0;
  last_mouseup_button = 0;
 
-// SDL_GetMouseState(&mx, &my);
-// mouse_over = HitRect(mx, my);
+ int mx, my;
+ SDL_GetMouseState(&mx, &my);
+ mouse_over = HitRect(mx, my);
 }
 
 int GUI_Widget:: AddWidget(GUI_Widget *widget)
