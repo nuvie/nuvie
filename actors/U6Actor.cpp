@@ -40,12 +40,13 @@
 
 //static const uint8 sleep_objects[8];
 
-static uint8 walk_frame_tbl[4] = {0,1,2,1}; //FIX
+//static uint8 walk_frame_tbl[4] = {0,1,2,1}; //FIX
 
 
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
  beg_mode = 0; // beggers are waiting for targets
+ walk_frame_inc = 1;
 }
 
 U6Actor::~U6Actor()
@@ -256,15 +257,16 @@ inline void U6Actor::discover_direction()
 
 void U6Actor::set_direction(uint8 d)
 {
+ uint8 frames_per_dir = (actor_type->frames_per_direction != 0)
+                         ? actor_type->frames_per_direction : 4;
  if(d >= 4)
    return;
 
-
- if(actor_type->frames_per_direction == 0)
-   walk_frame = (walk_frame + 1) % 4;
- else
-   walk_frame = (walk_frame + 1) % actor_type->frames_per_direction;
-
+ if(walk_frame == 0)
+   walk_frame_inc = 1; // loop forward
+ else if(walk_frame == (frames_per_dir - 1))
+   walk_frame_inc = -1; // loop backward
+ walk_frame = (walk_frame + walk_frame_inc)%frames_per_dir;
 
  if(has_surrounding_objs())
    {
@@ -282,7 +284,7 @@ void U6Actor::set_direction(uint8 d)
  //only change direction frame if the actor can twitch ie isn't sitting or in bed etc.
  if(can_move)
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction +
-             (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
+             (walk_frame * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
 
 }
 
@@ -1068,7 +1070,7 @@ inline void U6Actor::twitch_surrounding_hydra_objs()
 inline void U6Actor::twitch_obj(Obj *obj)
 {
  obj->frame_n = (obj->frame_n / (actor_type->frames_per_direction * 4) * (actor_type->frames_per_direction * 4)) + direction * actor_type->tiles_per_direction +
-                       walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame;
+                       walk_frame * actor_type->tiles_per_frame;
 
 }
 

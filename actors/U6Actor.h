@@ -71,6 +71,7 @@ class U6Actor: public Actor
  const U6ActorType *base_actor_type;
 
  uint8 beg_mode; // for WT_BEG
+ sint8 walk_frame_inc; // added to walk_frame each step
 
  public:
 
