@@ -21,6 +21,9 @@
  *
  */
 
+#include "U6def.h"
+#include "U6LList.h"
+
 #include "InventoryWidget.h"
 
 #include "InventoryFont.h"

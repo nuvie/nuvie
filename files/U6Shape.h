@@ -32,8 +32,8 @@
  */
 #include <string>
 #include <SDL.h>
-#include "U6def.h"
-#include "U6Lib_n.h"
+
+class U6Lib_n;
 
 /*
  * ==================

@@ -27,10 +27,10 @@
 
 #include <SDL.h>
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "Surface.h"
 #include "Scale.h"
+
+class Configuration;
 
 class Screen
 {

@@ -22,13 +22,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-#include "U6def.h"
-#include "Screen.h"
+
 #include "GUI_status.h"
 #include "GUI_DragArea.h"
 
 // Drag Messages.
 #define GUI_DRAG_OBJ 0
+
+class Screen;
 
 class GUI_DragManager {
 

@@ -21,6 +21,8 @@
  *
  */
 
+#include "U6def.h"
+#include "MsgScroll.h"
 #include "SEUseCode.h"
 
 SEUseCode::SEUseCode(Configuration *cfg) : UseCode(cfg)

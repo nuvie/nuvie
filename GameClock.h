@@ -24,11 +24,9 @@
  *
  */
 
-#include "U6def.h"
-
-#include "Configuration.h"
-
 #define GAMECLOCK_TICKS_PER_MINUTE   4
+
+class Configuration;
 
 class GameClock
 {

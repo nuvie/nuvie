@@ -19,6 +19,9 @@
 //#include "common_types.h"
 //#include "Application.h"
 #include <cstring>
+
+#include "U6def.h"
+
 #include "Scale.h"
 #include "Surface.h"
 // Include all the Template Scaler Code

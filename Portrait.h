@@ -24,10 +24,9 @@
  *
  */
 
-#include "U6def.h"
-
-#include "Configuration.h"
 #include "U6Lib_n.h"
+
+class Configuration;
 
 class Portrait
 {

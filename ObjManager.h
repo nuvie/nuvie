@@ -27,14 +27,13 @@
 #include <list>
 #include "iAVLTree.h"
 
-#include "U6def.h"
-#include "NuvieIOFile.h"
-#include "U6LList.h"
 #include "TileManager.h"
-#include "Configuration.h"
 
-class TileManager;
+
+class U6LList;
+class Configuration;
 class UseCode;
+class NuvieIOFileRead;
 
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1

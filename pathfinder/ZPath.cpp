@@ -1,3 +1,6 @@
+
+#include "U6def.h"
+
 #include "Actor.h"
 #include "ZPath.h"
 

@@ -21,10 +21,16 @@
  *
  */
 
+#include "U6def.h"
+
 #include "GUI_button.h"
 
 #include "View.h"
+#include "Actor.h"
+#include "Party.h"
+#include "Portrait.h"
 #include "ActorView.h"
+#include "Text.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status partyViewButtonCallback(void *data);

@@ -21,6 +21,9 @@
  *
  */
 #include <cstdlib>
+
+#include "U6def.h"
+
 #include "Game.h"
 #include "U6UseCode.h"
 #include "PathFinder.h"

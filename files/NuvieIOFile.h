@@ -25,8 +25,6 @@
 #include <stdio.h>
 #include <string>
 
-#include "U6def.h"
-
 #include "NuvieIO.h"
 
 

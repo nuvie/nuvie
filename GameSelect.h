@@ -24,11 +24,9 @@
  *
  */
 
-#include "U6def.h"
-
-#include "Configuration.h"
-#include "Screen.h"
-#include "Game.h"
+class Configuration;
+class Screen;
+class Game;
 
 class GameSelect
 {

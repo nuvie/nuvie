@@ -32,6 +32,7 @@
 #include <SDL_endian.h>
 #include "U6def.h"
 #include "U6Lzw.h"
+#include "U6Lib_n.h"
 #include "U6Shape.h"
 
 

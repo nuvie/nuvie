@@ -23,11 +23,7 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "ObjManager.h"
-#include "Map.h"
-#include "MsgScroll.h"
 #include "Player.h"
 
 #define USE_EVENT_USE     0x01
@@ -35,6 +31,10 @@
 #define USE_EVENT_PASS    0x04
 #define USE_EVENT_ON      0x08 // post-move/idle ??
 #define USE_EVENT_SEARCH  0x10
+
+class Configuration;
+class Map;
+class MsgScroll;
 
 class UseCode
 {

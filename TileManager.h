@@ -24,9 +24,8 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "Look.h"
+class Configuration;
+class Look;
 
 // tile types stored in masktype.vga
 

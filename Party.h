@@ -24,15 +24,13 @@
  */
 
 #include <string.h>
+#include "ObjManager.h"
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "U6LList.h"
-
-#include "ActorManager.h"
-#include "Actor.h"
-
+class Configuration;
 class Game;
+class Actor;
+class ActorManager;
+class MapCoord;
 
 struct PartyMember {
 char name[14];
@@ -82,16 +80,6 @@ class Party {
  
  bool init(Game *g, ActorManager *am);
  
- bool contains_actor(Actor *actor)
- {
-  if(get_member_num(actor) >= 0)
-   return(true);
-  return(false);
- }
- bool contains_actor(uint8 a)
- {
-  return(contains_actor(actor_manager->get_actor(a)));
- }
  bool add_actor(Actor *actor);
  bool remove_actor(Actor *actor);
  
@@ -103,18 +91,19 @@ class Party {
  Actor *get_actor(uint8 member_num);
  char *get_actor_name(uint8 member_num);
  sint8 get_member_num(Actor *actor);
- sint8 get_member_num(uint8 a)
- {
-  return(get_member_num(actor_manager->get_actor(a)));
- }
+ sint8 get_member_num(uint8 a);
  //get actor id_n from party_member num.
  uint8 get_actor_num(uint8 member_num);
  
  void reform_party();
  void follow();
  bool has_obj(uint16 obj_n, uint8 quality);
+
+ bool contains_actor(Actor *actor);
+ bool contains_actor(uint8 a);
+
  bool is_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);
- bool is_at(MapCoord &xyz, uint32 threshold = 0) { return(is_at(xyz.x,xyz.y,xyz.z,threshold)); }
+ bool is_at(MapCoord &xyz, uint32 threshold = 0);
 
  void show();
  void hide();

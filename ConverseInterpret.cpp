@@ -19,8 +19,13 @@
 
 #include <ctype.h>
 
+#include "U6def.h"
+
 #include "Player.h"
+#include "Party.h"
 #include "U6UseCode.h"
+#include "ActorManager.h"
+#include "GameClock.h"
 #include "ConverseInterpret.h"
 
 //#define CONVERSE_DEBUG

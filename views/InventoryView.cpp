@@ -20,9 +20,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-#include "GUI_button.h"
+ 
+#include "U6def.h"
 
+#include "U6LList.h"
+#include "GUI_button.h"
+#include "DollWidget.h"
+#include "InventoryWidget.h"
+#include "DollWidget.h"
 #include "InventoryView.h"
+#include "Party.h"
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
 

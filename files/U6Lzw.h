@@ -3,8 +3,7 @@
 
 #include <string>
 
-#include "NuvieIOFile.h"
-
+class NuvieIOFileRead;
 
 // LZW Stack 
 

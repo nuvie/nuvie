@@ -24,9 +24,11 @@
  *
  */
 
-#include "Configuration.h"
-#include "Screen.h"
-#include "Game.h"
+#include <string>
+
+class Configuration;
+class Screen;
+class Game;
 
 class Nuvie
 {

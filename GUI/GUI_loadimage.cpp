@@ -1,5 +1,7 @@
 
 #include <string.h>
+
+#include "U6def.h"
 #include "GUI_loadimage.h"
 
 extern "C" {

@@ -1,3 +1,6 @@
+
+#include "U6def.h"
+
 #include <cstdlib>
 #include "Actor.h"
 #include "Game.h"

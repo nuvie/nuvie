@@ -24,16 +24,15 @@
  *
  */
 #include <cstdlib>
-#include "U6def.h"
-#include "U6LList.h"
 
-#include "Configuration.h"
-#include "Screen.h"
 #include "ObjManager.h"
 
-class ActorManager;
+class Configuration;
+class U6LList;
 class Actor;
+class ActorManager;
 class TileManager;
+class Screen;
 
 #define MAP_ORIGINAL_TILE true
 

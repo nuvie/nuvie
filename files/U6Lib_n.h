@@ -23,12 +23,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-#include "U6def.h"
-#include "NuvieIO.h"
 #include <vector>
 
 using std::string;
 using std::vector;
+
+class NuvieIO;
 
 struct U6LibItem
 {

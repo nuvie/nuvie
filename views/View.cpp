@@ -21,6 +21,8 @@
  *
  */
 
+#include "U6def.h"
+#include "Party.h"
 #include "View.h"
 
 View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)

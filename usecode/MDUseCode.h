@@ -23,11 +23,7 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "ObjManager.h"
-#include "MsgScroll.h"
-#include "Player.h"
 #include "UseCode.h"
 
 //object numbers
@@ -41,6 +37,9 @@
 #define OBJ_MD_BRASS_TRUNK    304
 #define OBJ_MD_HATCH          421
 #define OBJ_MD_OUTER_HATCH    427
+
+class Configuration;
+class MsgScroll;
 
 class MDUseCode: public UseCode
 {

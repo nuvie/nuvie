@@ -26,15 +26,13 @@
 
 #include <string>
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "GameClock.h"
-#include "Map.h"
 #include "ObjManager.h"
 
+class Configuration;
 class Actor;
 class Map;
 class TileManager;
+class GameClock;
 
 class ActorManager
 {

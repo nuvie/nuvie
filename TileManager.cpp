@@ -21,12 +21,16 @@
  *
  */
 
+#include "U6def.h"
+
+#include "Configuration.h"
+
 #include "NuvieIOFile.h"
 #include "U6Lib_n.h"
 #include "U6Lzw.h"
 
 #include "U6misc.h"
-
+#include "Look.h"
 #include "TileManager.h"
 
 static char article_tbl[][5] = {"", "a ", "an ", "the "};

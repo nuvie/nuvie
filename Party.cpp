@@ -20,6 +20,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+ 
+#include "U6def.h"
+
 #include "U6misc.h"
 #include "NuvieIOFile.h"
 #include "Game.h"
@@ -49,7 +52,6 @@ bool Party::init(Game *g, ActorManager *am)
  
  return true;
 }
-
 
 bool Party::add_actor(Actor *actor)
 {
@@ -135,6 +137,11 @@ sint8 Party::get_member_num(Actor *actor)
             return(i);
     }
     return(-1);
+}
+
+sint8 Party::get_member_num(uint8 a)
+{
+ return(get_member_num(actor_manager->get_actor(a)));
 }
 
 uint8 Party::get_actor_num(uint8 member_num)
@@ -311,6 +318,24 @@ bool Party::is_at(uint16 x, uint16 y, uint8 z, uint32 threshold)
             return(false);
     }
     return(true);
+}
+
+bool Party::is_at(MapCoord &xyz, uint32 threshold)
+{
+ return(is_at(xyz.x,xyz.y,xyz.z,threshold));
+}
+ 
+bool Party::contains_actor(Actor *actor)
+{
+ if(get_member_num(actor) >= 0)
+    return(true);
+
+ return(false);
+}
+
+bool Party::contains_actor(uint8 a)
+{
+ return(contains_actor(actor_manager->get_actor(a)));
 }
 
 

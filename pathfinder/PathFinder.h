@@ -1,7 +1,6 @@
 #ifndef	__PathFinder_h__
 #define	__PathFinder_h__
 
-#include "U6def.h"
 #include "Map.h"
 
 class Actor;

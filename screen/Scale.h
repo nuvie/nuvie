@@ -21,8 +21,6 @@
 
 #include <string>
 
-#include "U6def.h"
-
 #define SCALER_FLAG_2X_ONLY			1
 #define SCALER_FLAG_16BIT_ONLY		2
 #define SCALER_FLAG_32BIT_ONLY		4

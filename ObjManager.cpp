@@ -22,10 +22,15 @@
  */
 
 #include "U6def.h"
+
+#include "Configuration.h"
+
 #include "TileManager.h"
 #include "ObjManager.h"
 
 #include "U6misc.h"
+#include "U6LList.h"
+#include "NuvieIOFile.h"
 
 static const int obj_egg_table[4] = {0,   // NUVIE_GAME_NONE
                                      335, // NUVIE_GAME_U6

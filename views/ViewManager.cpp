@@ -21,7 +21,17 @@
  *
  */
 
+#include "U6def.h"
+#include "Configuration.h"
+
+#include "GUI.h"
+
 #include "ViewManager.h"
+
+#include "ActorView.h"
+#include "PortraitView.h"
+#include "InventoryView.h"
+#include "PartyView.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {

@@ -21,6 +21,10 @@
  *
  */
 
+#include <cstdio>
+
+#include "U6def.h"
+
 #include "GUI_DragArea.h"
 #include "GUI_DragManager.h"
 

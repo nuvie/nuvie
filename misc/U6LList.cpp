@@ -21,6 +21,8 @@
  *
  */
 
+#include "U6def.h"
+
 #include "U6LList.h"
 
  U6LList::U6LList()

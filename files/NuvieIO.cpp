@@ -21,6 +21,11 @@
  *
  */
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+#include "U6def.h"
+
 #include "NuvieIO.h"
 
 NuvieIO::NuvieIO()

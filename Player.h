@@ -24,16 +24,14 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "GameClock.h"
-
-#include "Actor.h"
-#include "ActorManager.h"
 #include "ObjManager.h"
-#include "MapWindow.h"
 
-#include "Party.h"
+class Configuration;
+class GameClock;
+class Actor;
+class ActorManager;
+class MapWindow;
+class Party;
 
 class Player
 {
@@ -64,7 +62,7 @@ class Player
  Party *get_party() { return(party); }
  bool get_uncontrolled() { return(uncontrolled); }
  void uncontrol() { uncontrolled = true; }
- void control() { uncontrolled = false; map_window->centerMapOnActor(actor); }
+ void control();
  
  void set_karma(uint8 val) { karma = val; }
  uint8 get_karma() { return(karma); }

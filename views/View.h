@@ -26,19 +26,17 @@
 
 #include <SDL.h>
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "Screen.h"
-#include "Text.h"
-#include "ObjManager.h"
-#include "Party.h"
-
 #include "GUI_widget.h"
 
 GUI_status viewLeftButtonCallback(void *data);
 GUI_status viewRightButtonCallback(void *data);
 
+class Configuration;
 class TileManager;
+class Screen;
+class Text;
+class ObjManager;
+class Party;
 
 class View: public GUI_Widget
 {

@@ -11,8 +11,7 @@
 
 #include <string>
 
-#include "U6def.h"
-#include "Configuration.h"
+class Configuration;
 
 std::string config_get_game_key(Configuration *config);
 void config_get_path(Configuration *config, std::string filename, std::string &path);

@@ -26,7 +26,6 @@
 
 #include <string>
 
-#include "U6def.h"
 #include "Configuration.h"
 #include "GUI_widget.h"
 #include "ObjManager.h"

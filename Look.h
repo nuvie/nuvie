@@ -23,8 +23,7 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
+class Configuration;
 
 class Look
 {

@@ -21,6 +21,8 @@
  *
  */
 #include <cstdlib>
+#include "U6def.h"
+#include "U6LList.h"
 #include "Game.h"
 #include "Map.h"
 #include "ObjManager.h"
@@ -203,7 +205,11 @@ void Actor::set_direction(sint16 rel_x, sint16 rel_y)
     }
 }
 
-
+void Actor::face_location(MapCoord &loc)
+{
+ face_location(loc.x, loc.y);
+}
+ 
 /* Set direction towards an x,y location on the map.
  */
 void Actor::face_location(uint16 lx, uint16 ly)

@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //#include "common_types.h"
 
-#include "U6def.h"
 
 struct SDL_Surface;
 struct SDL_PixelFormat;

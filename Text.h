@@ -24,10 +24,10 @@
  *
  */
  
-#include <string>
+//#include <string>
 
-#include "Configuration.h"
-#include "Screen.h"
+class Configuration;
+class Screen;
 
 class Text
 {

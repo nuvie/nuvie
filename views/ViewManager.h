@@ -26,22 +26,20 @@
 
 #include <SDL.h>
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "GUI.h"
-#include "Text.h"
-#include "ObjManager.h"
-#include "Party.h"
-#include "Player.h"
-#include "Portrait.h"
-
-#include "View.h"
-#include "ActorView.h"
-#include "InventoryView.h"
-#include "PartyView.h"
-#include "PortraitView.h"
-
+class Configuration;
+class GUI;
 class TileManager;
+class ObjManager;
+class Portrait;
+class Party;
+class Player;
+class Text;
+
+class View;
+class PartyView;
+class PortraitView;
+class InventoryView;
+class ActorView;
 
 class ViewManager
 {

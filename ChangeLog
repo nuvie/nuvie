@@ -1,3 +1,6 @@
+2003-11-16  Eric Fry <efry@users.sourceforge.net>
+	* Header #include cleanup.
+
 2003-11-15  Eric Fry <efry@users.sourceforge.net>
 	* Fixed crash when entering caves on the gargoyle plane.
 	* Added usecode for entering the red moongates.

@@ -28,11 +28,7 @@
 
 using std::list;
 
-#include "U6def.h"
-#include "U6LList.h"
-#include "Map.h"
 #include "ObjManager.h"
-#include "GameClock.h"
 
 #define ACTOR_HEAD   0
 #define ACTOR_NECK   1
@@ -57,6 +53,8 @@ class Map;
 class MapCoord;
 class UseCode;
 class PathFinder;
+class U6LList;
+class GameClock;
 
 typedef struct {
 uint16 x;
@@ -179,7 +177,7 @@ class Actor
  uint8 get_direction() { return(direction); }
  void set_direction(sint16 rel_x, sint16 rel_y);
  virtual void set_direction(uint8 d);
- void face_location(MapCoord &loc) { face_location(loc.x, loc.y); }
+ void face_location(MapCoord &loc);
  void face_location(uint16 lx, uint16 ly);
  void face_actor(Actor *a);
 

@@ -24,18 +24,17 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "View.h"
-#include "Screen.h"
-#include "Text.h"
-#include "ObjManager.h"
-#include "Actor.h"
-#include "Party.h"
-#include "DollWidget.h"
-#include "InventoryWidget.h"
 
+class Configuration;
 class TileManager;
+class ObjManager;
+class Screen;
+class Actor;
+class Text;
+class Party;
+class DollWidget;
+class InventoryWidget;
 
 class InventoryView : public View {
  

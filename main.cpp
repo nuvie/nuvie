@@ -23,6 +23,8 @@
 #include <time.h>
 #include <cstdlib>
 
+#include "U6def.h"
+
 #include "nuvie.h"
 
 #include "main.h"

@@ -21,6 +21,8 @@
  *
  */
 
+#include "U6def.h"
+
 #include "NuvieIOFile.h"
 
 NuvieIOFile::NuvieIOFile(): NuvieIO()

@@ -19,9 +19,14 @@
 #include <cstdlib>
 #include <cctype>
 #include <cstring>
+
+#include "U6def.h"
+#include "Configuration.h"
 #include "U6Lzw.h"
 #include "Player.h"
+#include "Party.h"
 #include "ViewManager.h"
+#include "ActorManager.h"
 
 #include "ConverseInterpret.h"
 #include "Converse.h"

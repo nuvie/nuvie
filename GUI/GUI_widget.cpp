@@ -22,6 +22,7 @@
     slouken@devolution.com
 */
 
+#include "U6def.h"
 #include "GUI_widget.h"
 
 

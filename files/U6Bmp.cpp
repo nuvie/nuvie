@@ -26,6 +26,8 @@
 
 #include <string>
 
+#include "U6def.h"
+
 #include "U6Lzw.h"
 #include "U6Bmp.h"
 

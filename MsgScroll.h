@@ -25,11 +25,6 @@
  */
 #include "SDL.h"
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "Screen.h"
-#include "Text.h"
-
 #include "GUI_widget.h"
 
 #define MSGSCROLL_U6_WIDTH 17
@@ -42,6 +37,9 @@
 #define MSGSCROLL_SE_HEIGHT 8
 
 #define MSGSCROLL_CURSOR_DELAY 6 // used to slow down the animated cursor
+
+class Configuration;
+class Text;
 
 class MsgScroll: public GUI_Widget
 {

@@ -7,7 +7,11 @@
  *
  */
 #include <cstdio>
+
+#include "U6def.h"
+
 #include "U6misc.h"
+#include "Configuration.h"
 
 std::string config_get_game_key(Configuration *config)
 {

@@ -23,6 +23,8 @@
 
 // FIX need to subclass this class for U6, MD & SE
 
+#include "U6def.h"
+
 #include "Actor.h" 
 #include "DollWidget.h"
 

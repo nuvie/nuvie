@@ -26,14 +26,13 @@
 
 #include <string>
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "GUI_widget.h"
 #include "ObjManager.h"
-#include "Actor.h"
 #include "TileManager.h"
 
+class Configuration;
 class TileManager;
+class Actor;
 
 class DollWidget : public GUI_Widget {
  

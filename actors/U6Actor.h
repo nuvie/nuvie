@@ -24,7 +24,6 @@
  *
  */
 
-#include "U6def.h"
 #include "Actor.h"
 
 // Worktype codes

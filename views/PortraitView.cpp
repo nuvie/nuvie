@@ -21,6 +21,10 @@
  *
  */
 
+#include "U6def.h"
+
+#include "Portrait.h"
+#include "Text.h"
 #include "PortraitView.h"
 
 PortraitView::PortraitView(Configuration *cfg) : View(cfg)

@@ -24,11 +24,11 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "Screen.h"
 
 #include <SDL.h>
+
+class Configuration;
 
 class GamePalette
 {

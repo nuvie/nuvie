@@ -26,7 +26,6 @@
 
 #include <string>
 
-#include "U6def.h"
 #include "U6Shape.h"
 
 class U6Bmp: public U6Shape

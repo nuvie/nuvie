@@ -26,16 +26,15 @@
 
 #include <string>
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "View.h"
-#include "Screen.h"
-#include "Text.h"
-#include "ObjManager.h"
-#include "Party.h"
-#include "Portrait.h"
 
+class Configuration;
 class TileManager;
+class Portrait;
+class Screen;
+class Text;
+class ObjManager;
+class Party;
 
 class PortraitView : public View {
  

@@ -21,6 +21,10 @@
  *
  */
 
+#include "U6def.h"
+
+#include "U6LList.h"
+#include "MsgScroll.h"
 #include "UseCode.h"
 
 UseCode::UseCode(Configuration *cfg)

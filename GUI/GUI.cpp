@@ -26,6 +26,8 @@
 
 #include <stdlib.h>
 
+#include "U6def.h"
+
 #include "GUI.h"
 
 /* Number of widget elements to allocate at once */

@@ -23,11 +23,7 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "ObjManager.h"
-#include "MsgScroll.h"
-#include "Player.h"
 #include "UseCode.h"
 
 //object numbers
@@ -279,6 +275,8 @@
 #define OBJ_U6__LAST_              431
 
 class U6UseCode;
+class Configuration;
+class MsgScroll;
 
 struct u6_uc_s // usecode definition (object)
 {

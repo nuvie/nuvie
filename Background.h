@@ -25,11 +25,9 @@
  */
 #include "SDL.h"
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "U6Shape.h"
-
 #include "GUI_widget.h"
+
+class Configuration;
 
 class Background: public GUI_Widget
 {

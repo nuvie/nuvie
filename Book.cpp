@@ -21,6 +21,11 @@
  *
  */
 
+#include <string>
+
+#include "U6def.h"
+#include "Configuration.h"
+
 #include "Book.h"
 
 Book::Book(Configuration *cfg)

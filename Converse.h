@@ -22,7 +22,7 @@
 #include <string>
 #include <stack>
 #include <vector>
-#include "misc/U6def.h"
+
 #include "Actor.h"
 #include "MsgScroll.h"
 #include "U6Lib_n.h"

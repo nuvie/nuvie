@@ -21,7 +21,13 @@
  *
  */
 
+#include "U6def.h"
+
+#include "Actor.h"
+#include "Party.h"
+#include "Player.h"
 #include "PartyView.h"
+#include "Text.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 

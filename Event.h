@@ -24,22 +24,21 @@
  *
  */
 #include <list>
-#include "U6def.h"
 
-#include "Configuration.h"
 #include "ObjManager.h"
-#include "MapWindow.h"
-#include "MsgScroll.h"
-#include "GameClock.h"
-#include "Player.h"
-#include "Converse.h"
-#include "ViewManager.h"
-#include "UseCode.h"
-#include "GUI.h"
 
+class Configuration;
 class Book;
 class Game;
 class TimeQueue;
+class MapWindow;
+class MsgScroll;
+class GameClock;
+class Player;
+class Converse;
+class ViewManager;
+class UseCode;
+class GUI;
 
 #define NUVIE_INTERVAL    65
 

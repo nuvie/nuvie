@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #include "SDL.h"
+
+#include "U6def.h"
 #include "GUI_font.h"
 #include "GUI_loadimage.h"
 

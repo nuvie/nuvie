@@ -20,8 +20,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+ 
+#include "U6def.h"
+
+#include "Configuration.h"
 #include "U6misc.h"
 #include "NuvieIOFile.h"
+#include "ActorManager.h"
+#include "Actor.h"
+#include "ObjManager.h"
+#include "MapWindow.h"
+#include "GameClock.h"
+#include "Party.h"
 
 #include "Player.h"
 
@@ -52,7 +62,12 @@ bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c,
  return true;
 }
 
-
+void Player::control()
+{
+ uncontrolled = false;
+ map_window->centerMapOnActor(actor);
+}
+ 
 void Player::set_actor(Actor *new_actor)
 {
  actor = new_actor;

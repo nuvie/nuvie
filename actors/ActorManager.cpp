@@ -20,11 +20,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include "U6def.h"
+#include "Configuration.h"
+ 
 #include "Actor.h"
 #include "U6Actor.h"
 #include "TileManager.h"
 #include "ActorManager.h"
 #include "misc.h"
+#include "NuvieIOFile.h"
 
 void config_get_path(Configuration *config, std::string filename, std::string &path);
 

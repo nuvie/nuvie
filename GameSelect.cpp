@@ -21,6 +21,8 @@
  *
  */
 
+#include "U6def.h"
+#include "Configuration.h"
 #include "U6misc.h"
 #include "GameSelect.h"
 

@@ -23,15 +23,14 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
 #include "ObjManager.h"
-#include "MsgScroll.h"
-#include "Player.h"
 #include "UseCode.h"
 
 //object numbers
 #define OBJ_SE_DOOR           234
+
+class Configuration;
+class MsgScroll;
 
 class SEUseCode: public UseCode
 {
