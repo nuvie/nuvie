@@ -100,7 +100,8 @@ const char *Converse::npc_name(uint8 num)
     // load script if not for current NPC
     if(num != npc_num)
     {
-        temp_script = read_script((Uint32)num);
+        Uint32 temp_num = num;
+        temp_script = read_script(temp_num);
         s_pt = temp_script.buf;
     }
     else
