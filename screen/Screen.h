@@ -74,6 +74,10 @@ class Screen
 
 protected:
 
+inline bool Screen::blit16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans);
+
+inline bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans);
+
 void set_screen_mode();
 bool try_scaler(int w, int h, uint32 flags, int hwdepth);
 };

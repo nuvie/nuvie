@@ -117,17 +117,17 @@ bool Screen::rotate_palette(uint8 pos, uint8 length)
 
 bool Screen::clear(uint16 x, uint16 y, uint16 w, uint16 h)
 {
- uint32 *pixels;
+ uint8 *pixels;
  uint16 i;
   
- pixels = (uint32 *)surface->pixels;
+ pixels = (uint8 *)surface->pixels;
  
- pixels += y * surface->w + x;
+ pixels += y * surface->pitch + (x * surface->bytes_per_pixel);
 
  for(i=0;i<h;i++)
     {
      memset(pixels,0,w*surface->bytes_per_pixel);
-     pixels += surface->w;
+     pixels += surface->pitch;
     }
 
  return true; 
@@ -143,6 +143,52 @@ void *Screen::get_pixels()
 }
 
 bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
+{
+ if(surface->bits_per_pixel == 16)
+   return blit16(dest_x, dest_y, src_buf, src_bpp, src_w, src_h, src_pitch, trans);
+
+ return blit32(dest_x, dest_y, src_buf, src_bpp, src_w, src_h, src_pitch, trans);
+}
+
+inline bool Screen::blit16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
+{
+ uint16 *pixels;
+ uint16 i,j;
+  
+ pixels = (uint16 *)surface->pixels;
+ 
+ pixels += dest_y * surface->w + dest_x;
+
+ if(trans)
+  {
+   for(i=0;i<src_h;i++)
+     {
+      for(j=0;j<src_w;j++)
+        {
+         if(src_buf[j] != 0xff)
+           pixels[j] = (uint16)surface->colour32[src_buf[j]];
+        }
+      src_buf += src_pitch;
+      pixels += surface->w; //pitch;
+     }
+  }
+ else
+  {
+   for(i=0;i<src_h;i++)
+     {
+      for(j=0;j<src_w;j++)
+        {
+         pixels[j] = (uint16)surface->colour32[src_buf[j]];
+        }
+      src_buf += src_pitch;
+      pixels += surface->w; //surface->pitch;
+     }
+  }
+
+ return true;
+}
+
+bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
 {
  uint32 *pixels;
  uint16 i,j;
@@ -175,15 +221,6 @@ bool Screen::blit(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 s
       src_buf += src_pitch;
       pixels += surface->w; //surface->pitch;
      }
-
-/*
-   for(i=0;i<src_h;i++)
-     {
-      memcpy(pixels,src_buf,src_w);
-      src_buf += src_pitch;
-      pixels += pitch;
-     }
-*/
   }
 
  return true;
@@ -299,6 +336,8 @@ void Screen::set_screen_mode()
 	// If we can't use the format, force 16 bit
 	if (bpp != 16 && bpp != 32)
 		bpp = 16;
+
+bpp = 16;
 
 	std::cout << "Attempting to set vid mode: " << width << "x" << height << "x" << bpp << "x" << scale_factor;
 
