@@ -62,6 +62,8 @@ clean:
 install: all
 	mkdir -p $(U6PATH)
 	strip nuvie.exe -o $(U6PATH)/nuvie.exe
+	mkdir -p $(U6PATH)/data
+	cp data/*.bmp $(U6PATH)/data
 
 tools: u6decomp.exe unpack_conv.exe unpack.exe
 	mkdir -p $(U6PATH)
