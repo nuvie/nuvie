@@ -12,6 +12,7 @@
  	* Fixed InventoryWidget bug [ 881842 ] where every inventory slot
 	  displayed the empty slot tile.
 	* Fixed leak when viewing temp actor portraits.
+	* Eggs now spawn on load / level change. 
 
 2004-01-30  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added ability to MOVE actors (with the keyboard).

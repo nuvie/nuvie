@@ -88,6 +88,9 @@ Game::~Game()
 bool Game::loadGame(Screen *s, uint8 type)
 {
  EggManager *egg_manager;
+ uint16 px, py;
+ uint8 pz;
+ 
  screen = s;
  game_type = type;
  
@@ -166,7 +169,9 @@ bool Game::loadGame(Screen *s, uint8 type)
    usecode->init(obj_manager, game_map, player, scroll);
    obj_manager->set_usecode(usecode);
 
- 
+   player->get_location(&px, &py, &pz);
+   obj_manager->update(px, py, pz); // spawn eggs. 
+
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
   }
@@ -183,7 +188,7 @@ void Game::play()
 {
   bool game_play = true;
   pause_flags = PAUSE_UNPAUSED;
-
+ 
   scroll->display_prompt();
   
   //view_manager->set_inventory_mode(1); //FIX
@@ -195,7 +200,7 @@ void Game::play()
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
   map_window->updateBlacking();
-
+    
   for( ; game_play ; ) 
    {
      game_play = event->update();

@@ -262,7 +262,7 @@ inline uint16 InventoryWidget::get_list_position(int x, int y)
  return list_pos;
 }
 
-inline Obj *InventoryWidget::get_obj_at_location(int x, int y)
+Obj *InventoryWidget::get_obj_at_location(int x, int y)
 {
  uint8 location;
  U6LList *inventory;

@@ -944,20 +944,24 @@ iAVLKey ObjManager::get_obj_tree_key(uint16 x, uint16 y, uint8 level)
 void ObjManager::update(uint16 x, uint16 y, uint8 z)
 {
  uint16 cur_blk_x, cur_blk_y;
+
+ cur_blk_x = x >> 5; // x / 32;
+ cur_blk_y = y >> 5; // y / 32;
  
  // We're changing levels so clean out all temp objects on the current level.
  if(last_obj_blk_z != z)
    {
     if(last_obj_blk_z != OBJ_TEMP_INIT)
       temp_obj_list_clean_level(last_obj_blk_z);
-
+    
+    egg_manager->spawn_eggs(x, y, z);
+    
+    last_obj_blk_x = cur_blk_x;
+    last_obj_blk_y = cur_blk_y;
     last_obj_blk_z = z;
     
     return;
    }
-
- cur_blk_x = x >> 5; // x / 32;
- cur_blk_y = y >> 5; // y / 32;
  
  //FIX for level change. we want to remove all temps on level change.
  if(cur_blk_x != last_obj_blk_x || cur_blk_y != last_obj_blk_y)
@@ -967,6 +971,7 @@ void ObjManager::update(uint16 x, uint16 y, uint8 z)
 
     temp_obj_list_clean_area(x, y);
     egg_manager->spawn_eggs(x, y, z);
+    
    }
 
  return;

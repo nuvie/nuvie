@@ -389,8 +389,9 @@ bool MsgScroll::set_prompt(const char *new_prompt, Font *f)
 
 void MsgScroll::display_prompt()
 {
- line_count = 0;
+ //line_count = 0;
  display_string(prompt.s.c_str(), prompt.font);
+ line_count = 0;
 }
  
 void MsgScroll::set_keyword_highlight(bool state)
@@ -545,7 +546,7 @@ MsgText *MsgScroll::get_token_at_pos(uint16 x, uint16 y)
    }
  else
    {
-    buf_y = msg_buf.size() - scroll_height + buf_y;
+    buf_y = display_pos + buf_y;
    }
 
  for(i=0,iter=msg_buf.begin(); i < buf_y && iter != msg_buf.end();)
@@ -643,9 +644,10 @@ void MsgScroll::drawCursor(uint16 x, uint16 y)
 void MsgScroll::set_page_break()
 {
  line_count = 0;
+ page_break = true;
+
  if(!input_mode)
    {
-    page_break = true;
     Game::get_game()->get_gui()->lock_input(this);
    }
 

@@ -46,6 +46,7 @@ Player::Player(Configuration *cfg)
 
 bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
 {
+
  clock = c;
  actor_manager = am;
  obj_manager = om;
@@ -58,7 +59,7 @@ bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c,
  actor_manager->set_player(actor);
  party_mode = true;
  uncontrolled = false;
-
+  
  return true;
 }
 
