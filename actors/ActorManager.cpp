@@ -33,6 +33,9 @@
 #include "NuvieIOFile.h"
 #include "GameClock.h"
 
+#define TEMP_ACTOR_OFFSET 224
+#define ACTOR_TEMP_INIT 255
+
 void config_get_path(Configuration *config, std::string filename, std::string &path);
 
 ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c)
@@ -46,6 +49,10 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  game_hour = 0;
  
  player_actor = 1;
+
+ last_obj_blk_x = 0;
+ last_obj_blk_y = 0;
+ last_obj_blk_z = OBJ_TEMP_INIT;
 
  update = true;
 }
@@ -135,8 +142,9 @@ bool ActorManager::loadActors()
 
     if(actors[i]->obj_n == 0)
      {
-      actors[i]->obj_n = actors[i]->base_obj_n;
-      actors[i]->frame_n = actors[i]->old_frame_n;
+      //actors[i]->obj_n = actors[i]->base_obj_n;
+      //actors[i]->frame_n = actors[i]->old_frame_n;
+      actors[i]->hide();
      }
 
     if(actors[i]->base_obj_n == 0)
@@ -285,13 +293,15 @@ const char *ActorManager::look_actor(Actor *a)
 }
 
 
-void ActorManager::updateActors()
+void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
 {
  uint8 cur_hour;
  uint16 i;
 
  if(!update)
   return;
+
+ update_temp_actors(x,y,z); // Remove out of range temp actors
 
  cur_hour = clock->get_hour();
 
@@ -481,4 +491,123 @@ const char *ActorManager::get_worktype_string(uint32 wt)
     else if(wt == 0x99) wt_string = "spar";
     else if(wt == 0x9a) wt_string = "mousing";
     return(wt_string);
+}
+
+bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype)
+{
+ Actor *actor;
+ 
+ actor = find_free_temp_actor();
+
+ if(actor)
+  {
+   actor->base_obj_n = obj_n;
+   actor->obj_n = obj_n;
+   actor->frame_n = 0;
+   
+   actor->x = x;
+   actor->y = y;
+   actor->z = z;
+   
+   actor->init();
+   
+   actor->set_worktype(worktype);
+   actor->show();
+
+   printf("Adding Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
+ 
+   return true;
+  }
+ else
+  printf("***All Temp Actor Slots Full***\n");
+  
+ return false;
+}
+
+inline Actor *ActorManager::find_free_temp_actor()
+{
+ uint16 i;
+ 
+ for(i = TEMP_ACTOR_OFFSET;i<256;i++)
+  {
+   if(actors[i]->obj_n == 0)
+     return actors[i];
+  }
+
+ return NULL;
+}
+
+//FIX? should this be in Player??
+
+void ActorManager::update_temp_actors(uint16 x, uint16 y, uint8 z)
+{
+ uint16 cur_blk_x, cur_blk_y;
+ 
+ // We're changing levels so clean out all temp actors on the current level.
+ if(last_obj_blk_z != z)
+   {
+    if(last_obj_blk_z != ACTOR_TEMP_INIT) //don't clean actors on startup.
+      clean_temp_actors_from_level(last_obj_blk_z);
+
+    last_obj_blk_z = z;
+    
+    return;
+   }
+
+ cur_blk_x = x >> 5; // x / 32;
+ cur_blk_y = y >> 5; // y / 32;
+ 
+ if(cur_blk_x != last_obj_blk_x || cur_blk_y != last_obj_blk_y)
+   {
+    last_obj_blk_x = cur_blk_x;
+    last_obj_blk_y = cur_blk_y;
+
+    clean_temp_actors_from_area(x,y);
+   }
+
+ return;
+}
+
+void ActorManager::clean_temp_actors_from_level(uint8 level)
+{
+ uint16 i;
+ 
+ for(i=TEMP_ACTOR_OFFSET;i<256;i++)
+   {
+    if(actors[i]->is_visible() && actors[i]->z == level)
+      clean_temp_actor(actors[i]);
+   }
+
+ return;
+}
+
+void ActorManager::clean_temp_actors_from_area(uint16 x, uint16 y)
+{
+ uint16 i;
+ uint16 dist_x, dist_y;
+ 
+ for(i=TEMP_ACTOR_OFFSET;i<256;i++)
+   {
+    if(actors[i]->is_visible())
+      {
+       dist_x = abs((sint16)actors[i]->x - x);
+       dist_y = abs((sint16)actors[i]->y - y);
+
+       if(dist_x > 32 || dist_y > 32)
+         {
+          clean_temp_actor(actors[i]);
+         }
+      }
+   }
+
+ return;
+}
+
+inline void ActorManager::clean_temp_actor(Actor *actor)
+{
+ printf("Removing Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
+ actor->obj_n = 0;
+ actor->hide();
+
+ return;
 }

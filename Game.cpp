@@ -29,6 +29,7 @@
 #include "Screen.h"
 #include "GamePalette.h"
 #include "GameClock.h"
+#include "EggManager.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
 #include "Player.h"
@@ -83,7 +84,8 @@ Game::~Game()
 }
  
 bool Game::loadGame(Screen *s, uint8 type)
-{  
+{
+ EggManager *egg_manager;
  screen = s;
  game_type = type;
  
@@ -91,12 +93,6 @@ bool Game::loadGame(Screen *s, uint8 type)
 
  try
   {
-   tile_manager = new TileManager(config);
-   tile_manager->loadTiles();
-
-   obj_manager = new ObjManager(config);
-   obj_manager->loadObjs(tile_manager);
- 
    palette = new GamePalette(screen,config);
  
    clock = new GameClock(config);
@@ -110,12 +106,23 @@ bool Game::loadGame(Screen *s, uint8 type)
    text->loadFont();
 
    game_map = new Map(config);
+
+   egg_manager = new EggManager(config, game_map);
+         
+   tile_manager = new TileManager(config);
+   tile_manager->loadTiles();
+
+   obj_manager = new ObjManager(config, egg_manager);
+   obj_manager->loadObjs(tile_manager);
+
    game_map->loadMap(tile_manager, obj_manager);
  
    actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
    actor_manager->loadActors();
+
    game_map->set_actor_manager(actor_manager);
-  
+   egg_manager->set_actor_manager(actor_manager);
+   
    map_window = new MapWindow(config);
    map_window->init(game_map, tile_manager, obj_manager, actor_manager);
    gui->AddWidget(map_window);

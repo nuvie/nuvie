@@ -404,7 +404,8 @@ void U6Actor::preform_worktype()
    case WORKTYPE_U6_WALK_TO_LOCATION : wt_walk_to_location();
                                       break;
                                       
-
+   case WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH :
+   case WORKTYPE_U6_GUARD_WALK_EAST_WEST   :
    case WORKTYPE_U6_WALK_NORTH_SOUTH :
    case WORKTYPE_U6_WALK_EAST_WEST   : wt_walk_straight(); break;
 
@@ -461,7 +462,7 @@ void U6Actor::wt_walk_straight()
 {
  uint8 dir = get_direction();
  set_direction(dir); //update walk frame FIX this!
- if(worktype == WORKTYPE_U6_WALK_NORTH_SOUTH)
+ if(worktype == WORKTYPE_U6_WALK_NORTH_SOUTH || worktype == WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH)
    {
     if(dir != ACTOR_DIR_U && dir != ACTOR_DIR_D)
       dir = ACTOR_DIR_D;
@@ -476,7 +477,7 @@ void U6Actor::wt_walk_straight()
           set_direction(ACTOR_DIR_U);
        }
    }
- else //WORKTYPE_U6_WALK_EAST_WEST
+ else //WORKTYPE_U6_WALK_EAST_WEST, WORKTYPE_U6_GUARD_WALK_EAST_WEST
    {
     if(dir != ACTOR_DIR_L && dir != ACTOR_DIR_R)
       dir = ACTOR_DIR_R;

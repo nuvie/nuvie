@@ -172,7 +172,8 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_CLOCK,     255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
     add_usecode(OBJ_U6_SUNDIAL,   255,0,USE_EVENT_LOOK,&U6UseCode::look_clock);
     add_usecode(OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror);
-
+    add_usecode(OBJ_U6_WELL,      255,0,USE_EVENT_USE,&U6UseCode::use_well);
+    
     add_usecode(OBJ_U6_POTION,    255,0,USE_EVENT_USE,&U6UseCode::use_potion);
     add_usecode(OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_WINE,        0,0,USE_EVENT_USE,&U6UseCode::use_food);
@@ -193,6 +194,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_HONEY,       0,0,USE_EVENT_USE,&U6UseCode::use_food);
     add_usecode(OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food);
 
+    add_usecode(OBJ_U6_COW, 255, 0, USE_EVENT_USE,&U6UseCode::use_cow);
     add_usecode(OBJ_U6_HORSE, 255,0,USE_EVENT_USE,&U6UseCode::use_horse);
     add_usecode(OBJ_U6_HORSE_WITH_RIDER, 255,0,USE_EVENT_USE,&U6UseCode::use_horse);
     
@@ -1346,6 +1348,60 @@ inline bool U6UseCode::use_boat_find_land(uint16 *x, uint16 *y, uint8 *z)
  return false;
 }
 
+/* using a cow fills an empty bucket in the player's inventory with milk */
+bool U6UseCode::use_cow(Obj *obj, uint8 ev)
+{
+ if(ev != USE_EVENT_USE)
+    return(false);
+ 
+ return fill_bucket(OBJ_U6_BUCKET_OF_MILK);
+}
+
+/* using a well fills an empty bucket in the player's inventory with water */
+bool U6UseCode::use_well(Obj *obj, uint8 ev)
+{
+ if(ev != USE_EVENT_USE)
+    return(false);
+ 
+ return fill_bucket(OBJ_U6_BUCKET_OF_WATER);
+}
+
+bool U6UseCode::fill_bucket(uint16 filled_bucket_obj_n)
+{
+ Player *player = Game::get_game()->get_player();
+ Actor *player_actor;
+ Obj *bucket;
+
+ player_actor = player->get_actor();
+ 
+ if(!player_actor->inventory_has_object(OBJ_U6_BUCKET))
+   {
+    if(player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_MILK) || 
+       player_actor->inventory_has_object(OBJ_U6_BUCKET_OF_WATER) )
+      {
+       scroll->display_string("\nYou need an empty bucket.\n");
+       return false;
+      }
+    else
+      {
+       scroll->display_string("\nYou need a bucket.\n");
+       return false;
+      }
+   }
+ 
+ // Fill the first empty bucket in player's inventory.
+ 
+ bucket = player_actor->inventory_get_object(OBJ_U6_BUCKET);
+ player_actor->inventory_remove_obj(bucket);
+ 
+ bucket->obj_n = filled_bucket_obj_n;
+ 
+ player_actor->inventory_add_object(bucket);
+ 
+ scroll->display_string("\nDone\n");
+ 
+ return true;
+}
 
 bool U6UseCode::use_horse(Obj *obj, uint8 ev)
 {

@@ -48,6 +48,9 @@ class ActorManager
  GameClock *clock;
  uint8 game_hour;
  
+ uint16 last_obj_blk_x, last_obj_blk_y;
+ uint8 last_obj_blk_z;
+ 
  public:
   
  ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c);
@@ -65,15 +68,23 @@ class ActorManager
 
  void set_update(bool u) { update = u; }
 
- void updateActors();
+ void updateActors(uint16 x, uint16 y, uint8 z);
  void twitchActors();
  void print_actor(Actor *actor);
  const char *get_worktype_string(uint32 wt);
 
+ bool create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype);
+ 
  protected:
  
- bool ActorManager::loadActorSchedules();
+ bool loadActorSchedules();
+ inline Actor *find_free_temp_actor();
  
+ void update_temp_actors(uint16 x, uint16 y, uint8 z);
+ void clean_temp_actors_from_level(uint8 level);
+ void clean_temp_actors_from_area(uint16 x, uint16 y);
+
+ inline void clean_temp_actor(Actor *actor);
 };
 
 #endif /* __ActorManager_h__ */

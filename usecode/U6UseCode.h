@@ -97,6 +97,9 @@ class U6UseCode: public UseCode
  bool use_boat(Obj *obj, uint8 ev);
  inline Obj *use_boat_find_center(Obj *obj);
  inline bool use_boat_find_land(uint16 *x, uint16 *y, uint8 *z);
+ bool use_cow(Obj *obj, uint8 ev);
+ bool use_well(Obj *obj, uint8 ev);
+ bool fill_bucket(uint16 filled_bucket_obj_n);
  bool use_horse(Obj *obj, uint8 ev);
  bool use_potion(Obj *obj, uint8 ev);
  bool use_bell(Obj *obj, uint8 ev);

@@ -135,6 +135,11 @@
 #define OBJ_U6_SWITCH              174
 #define OBJ_U6_ELECTRIC_FIELD      175
 #define OBJ_U6_DRAWER              176
+
+#define OBJ_U6_BUCKET              178
+#define OBJ_U6_BUCKET_OF_WATER     179
+#define OBJ_U6_BUCKET_OF_MILK      180
+
 #define OBJ_U6_BARREL              186
 #define OBJ_U6_BAG                 188
 #define OBJ_U6_HONEY_JAR           183
@@ -154,6 +159,7 @@
 #define OBJ_U6_DEAD_ANIMAL         211
 
 #define OBJ_U6_MOUSEHOLE           213
+#define OBJ_U6_WELL                233
 #define OBJ_U6_FOUNTAIN            234
 #define OBJ_U6_SUNDIAL             235
 #define OBJ_U6_BELL                236

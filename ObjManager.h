@@ -31,6 +31,7 @@
 
 class U6LList;
 class Configuration;
+class EggManager;
 class UseCode;
 class NuvieIOFileRead;
 
@@ -88,6 +89,7 @@ class ObjManager
 {
  Configuration *config;
  int game_type;
+ EggManager *egg_manager;
  TileManager *tile_manager;
  iAVLTree *surface;
  iAVLTree *dungeon[5];
@@ -101,12 +103,12 @@ class ObjManager
  UseCode *usecode;
 
  std::list<Obj *> temp_obj_list;
- uint16 temp_obj_blk_x, temp_obj_blk_y;
- uint8 temp_obj_blk_z;
+ uint16 last_obj_blk_x, last_obj_blk_y;
+ uint8 last_obj_blk_z;
  
  public:
 
- ObjManager(Configuration *cfg);
+ ObjManager(Configuration *cfg, EggManager *em);
  ~ObjManager();
 
  bool loadObjs(TileManager *tm);
@@ -152,7 +154,7 @@ class ObjManager
  void animate_forwards(Obj *obj, uint32 loop_count = 1);
  void animate_backwards(Obj *obj, uint32 loop_count = 1);
 
- void temp_obj_list_update(uint16 x, uint16 y, uint8 z);
+ void update(uint16 x, uint16 y, uint8 z);
 
  protected:
 
@@ -172,8 +174,8 @@ class ObjManager
 
  bool temp_obj_list_add(Obj *obj);
  bool temp_obj_list_remove(Obj *obj);
- void temp_obj_list_clean(uint8 z);
- void temp_obj_list_clean(uint16 x, uint16 y);
+ void temp_obj_list_clean_level(uint8 z);
+ void temp_obj_list_clean_area(uint16 x, uint16 y);
 
  public:
  void print_object_list();

@@ -1,3 +1,16 @@
+2003-12-08  Eric Fry <efry@users.sourceforge.net>
+	* Added egg support. Eggs now spawn Actors as you pass them by. :)
+	  I've still got a bit to do on this. Eggs need to throw their contents
+	  around the map. At the moment Actors are all spawning on top of their
+	  egg. This is causing some problems for multi-tile actors. I'll fix 
+	  this soon. I've also got to handle the creation of non Actor objects.
+	  This includes Reagents.
+	* Added temp actor mangagement. Added the ability to create temp actors.
+	* Added Use Cow. Using a cow will fill an empty bucket in the player's
+	  inventory with milk.
+	* Added Use Well. This will fill a bucket with water.
+	* Added Apple XCode build configuration.
+
 2003-12-04  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Fixed closed containers dumping contents.
 	* Temp. fix added for horses disappearing after riding.

@@ -25,6 +25,7 @@
 
 #include "Configuration.h"
 
+#include "EggManager.h"
 #include "TileManager.h"
 #include "ObjManager.h"
 
@@ -42,11 +43,13 @@ iAVLKey get_iAVLKey(const void *item)
  return ((ObjTreeNode *)item)->key;
 }
 
-ObjManager::ObjManager(Configuration *cfg)
+ObjManager::ObjManager(Configuration *cfg, EggManager *em)
 {
  uint8 i;
- config = cfg;
  std::string show_eggs_key;
+
+ config = cfg;
+ egg_manager = em;
  
  memset(actor_inventories,0,sizeof(actor_inventories));
 
@@ -57,9 +60,9 @@ ObjManager::ObjManager(Configuration *cfg)
    dungeon[i] = iAVLAllocTree(get_iAVLKey);
   }
 
- temp_obj_blk_x = 0;
- temp_obj_blk_y = 0;
- temp_obj_blk_z = OBJ_TEMP_INIT;
+ last_obj_blk_x = 0;
+ last_obj_blk_y = 0;
+ last_obj_blk_z = OBJ_TEMP_INIT;
  
  show_eggs_key = config_get_game_key(config);
  show_eggs_key.append("/show_eggs");
@@ -67,6 +70,7 @@ ObjManager::ObjManager(Configuration *cfg)
  config->value(show_eggs_key, show_eggs);
 
  config->value("config/GameType",game_type);
+ 
 }
 
 ObjManager::~ObjManager()
@@ -434,6 +438,11 @@ bool ObjManager::remove_obj(Obj *obj)
  if(obj->status & OBJ_STATUS_TEMPORARY)
    temp_obj_list_remove(obj);
 
+ if(obj->obj_n == obj_egg_table[game_type])
+   {
+    egg_manager->remove_egg(obj);
+   }
+
  return true;
 }
 
@@ -726,7 +735,7 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
    
    if(obj->obj_n == obj_egg_table[game_type])
      {
-      //add to egg manager here.
+      egg_manager->add_egg(obj);
      }
 
    if(obj->status & OBJ_STATUS_IN_INVENTORY) //object in actor's inventory
@@ -895,17 +904,17 @@ iAVLKey ObjManager::get_obj_tree_key(uint16 x, uint16 y, uint8 level)
    return y * 256 + x;
 }
 
-void ObjManager::temp_obj_list_update(uint16 x, uint16 y, uint8 z)
+void ObjManager::update(uint16 x, uint16 y, uint8 z)
 {
  uint16 cur_blk_x, cur_blk_y;
  
  // We're changing levels so clean out all temp objects on the current level.
- if(temp_obj_blk_z != z)
+ if(last_obj_blk_z != z)
    {
-    if(temp_obj_blk_z != OBJ_TEMP_INIT)
-      temp_obj_list_clean(temp_obj_blk_z);
+    if(last_obj_blk_z != OBJ_TEMP_INIT)
+      temp_obj_list_clean_level(last_obj_blk_z);
 
-    temp_obj_blk_z = z;
+    last_obj_blk_z = z;
     
     return;
    }
@@ -914,11 +923,13 @@ void ObjManager::temp_obj_list_update(uint16 x, uint16 y, uint8 z)
  cur_blk_y = y >> 5; // y / 32;
  
  //FIX for level change. we want to remove all temps on level change.
- if(cur_blk_x != temp_obj_blk_x || cur_blk_y != temp_obj_blk_y)
+ if(cur_blk_x != last_obj_blk_x || cur_blk_y != last_obj_blk_y)
    {
-    temp_obj_blk_x = cur_blk_x;
-    temp_obj_blk_y = cur_blk_y;
-    temp_obj_list_clean(x,y);
+    last_obj_blk_x = cur_blk_x;
+    last_obj_blk_y = cur_blk_y;
+
+    temp_obj_list_clean_area(x, y);
+    egg_manager->spawn_eggs(x, y, z);
    }
 
  return;
@@ -941,7 +952,7 @@ bool ObjManager::temp_obj_list_remove(Obj *obj)
 }
 
 // clean objects from a whole level.
-void ObjManager::temp_obj_list_clean(uint8 z)
+void ObjManager::temp_obj_list_clean_level(uint8 z)
 {
  std::list<Obj *>::iterator obj;
  std::list<Obj *>::iterator tmp_obj;
@@ -966,7 +977,7 @@ void ObjManager::temp_obj_list_clean(uint8 z)
 
 
 // Clean objects more than 32 tiles from position
-void ObjManager::temp_obj_list_clean(uint16 x, uint16 y)
+void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
 {
  std::list<Obj *>::iterator obj;
  std::list<Obj *>::iterator tmp_obj;
@@ -985,7 +996,7 @@ void ObjManager::temp_obj_list_clean(uint16 x, uint16 y)
        remove_obj(*obj);
        delete *obj;
        obj = tmp_obj;
-      } 
+      }
     else
       obj++;
    }

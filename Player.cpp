@@ -163,9 +163,9 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
      MapCoord new_xyz = actor->get_location();
      party->move(new_xyz.x, new_xyz.y, new_xyz.z);
    }
-   actor_manager->updateActors();
+   actor_manager->updateActors(x, y, z);
    clock->inc_move_counter(); // SB-X move to gameclock
-   obj_manager->temp_obj_list_update(x, y, z); // remove temporary objs
+   obj_manager->update(x, y, z); // remove temporary objs, spawn eggs
    //actor_manager->cache_update(x,y,z); // clean actor cache remove temp actors
  }
 }
@@ -184,8 +184,8 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
        party->move(new_x, new_y, new_level); // center everyone first
        party->follow(); // then try to move them to correct positions
       }
-    actor_manager->updateActors();
-    obj_manager->temp_obj_list_update(new_x, new_y, new_level); // remove temporary objs
+    actor_manager->updateActors(new_x, new_y, new_level);
+    obj_manager->update(new_x, new_y, new_level); // remove temporary objs, spawn eggs
    }
 }
 
@@ -211,11 +211,16 @@ void Player::moveDown()
 
 void Player::pass()
 {
+ uint16 x,y;
+ uint8 z;
+ 
  if(uncontrolled)
     return;
+ 
  clock->inc_move_counter_by_a_minute();
  party->follow();
- actor_manager->updateActors(); // SB-X move to gameclock
+ get_location(&x, &y, &z);
+ actor_manager->updateActors(x,y,z); // SB-X move to gameclock
 }
 
 bool Player::loadObjlistData()

@@ -103,6 +103,8 @@ nuvie_SOURCES = \
 	Converse.h \
 	ConverseInterpret.cpp \
 	ConverseInterpret.h \
+	EggManager.cpp \
+	EggManager.h \
 	Event.cpp \
 	Event.h \
 	Game.cpp \
