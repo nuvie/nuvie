@@ -44,6 +44,7 @@
 
 #define OBJ_U6_CHEST           98
 #define OBJ_U6_CANDLE         122
+#define OBJ_U6_PICTURE        143
 #define OBJ_U6_BOOK           151
 #define OBJ_U6_SCROLL         152
 #define OBJ_U6_V_PASSTHROUGH  278

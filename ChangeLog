@@ -1,3 +1,7 @@
+2003-05-02  Eric Fry <efry@users.sourceforge.net>
+	* Ladders work correctly now. Thanks Jim. ;)
+	* Look Picture.
+
 2003-04-23  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Text: need <cctype> for isalpha()
 

@@ -262,12 +262,15 @@ bool Event::look()
  scroll->display_string("Thou dost see ");
  scroll->display_string(map_window->lookAtCursor());
  obj = map_window->get_objAtCursor();
- if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || obj->obj_n == OBJ_U6_SCROLL))
+ if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || obj->obj_n == OBJ_U6_SCROLL || obj->obj_n == OBJ_U6_PICTURE))
    {
-    scroll->display_string(":\n\n");
-    data = book->get_book_data(obj->quality-1);
-    scroll->display_string(data);
-    free(data);
+    if(obj->quality != 0)
+      {
+       scroll->display_string(":\n\n");
+       data = book->get_book_data(obj->quality-1);
+       scroll->display_string(data);
+       free(data);
+      }
    }
 
  scroll->display_string("\n\n");
