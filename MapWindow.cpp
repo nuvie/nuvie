@@ -1464,11 +1464,12 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
     {
         // We can place an object on a bench or table. Or on any other object if
         // the object is passable and not on a boundary.
-        if(!lt.hitObj) // (but if unpassable isn't an object, nothing we can do)
+        Obj *obj = lt.hitObj ? lt.hitObj : obj_manager->get_obj(x, y, cur_level);
+        if(!obj) // (but if unpassable isn't an object, nothing we can do)
             return(false);
-        Tile *obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
+        Tile *obj_tile = obj_manager->get_obj_tile(obj->obj_n, obj->frame_n);
         if(!(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
-            (obj_tile->passable && !map->is_boundary(lt.hitObj->x, lt.hitObj->y, cur_level))))
+            (obj_tile->passable && !map->is_boundary(obj->x, obj->y, cur_level))))
             return(false);
     }
     return(true);
