@@ -962,7 +962,8 @@ void Converse::collect_args()
             args.resize(ai + 1); args[ai].resize(0);
             continue;
         }
-        if(is_print(val) || is_cmd(val))
+        if((is_print(val) || is_cmd(val))
+           && (check_overflow(1) || !is_valtype(peek(1)))) // next is not 0xb2,0xb3)
         {
 //          std::cerr << "val is printable or cmd, done" << std::endl;
             break;
