@@ -122,6 +122,7 @@
 				0703C0A7054BE5660003D6CB,
 				073C4A360568DC54003B7A20,
 				078CE6690582F64100EC127A,
+				079A4265058748A2003627C9,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2046,6 +2047,21 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
+		079A4264058748A2003627C9 = {
+			expectedFileType = sourcecode.c.h;
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = U6objects.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/U6objects.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		079A4265058748A2003627C9 = {
+			fileRef = 079A4264058748A2003627C9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		079CA1D204230A2B00A8000A = {
 			children = (
 				079903C90481F21E00A8000A,
@@ -2766,6 +2782,7 @@
 				072566A404272B7B00A8000A,
 				072566B504272BC000A8000A,
 				072566B404272BC000A8000A,
+				079A4264058748A2003627C9,
 			);
 			isa = PBXGroup;
 			name = "Other Sources";

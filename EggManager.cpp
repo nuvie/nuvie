@@ -123,7 +123,7 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
                 obj = (Obj *)link->data;
                 for(i = 0;i < obj->qty;i++)
                  {
-                  actor_manager->create_temp_actor(obj->obj_n,(*egg)->obj->x,(*egg)->obj->y,(*egg)->obj->z,obj->quality);
+                  actor_manager->create_temp_actor(obj->obj_n,(*egg)->obj->x+i,(*egg)->obj->y,(*egg)->obj->z,obj->quality);
                  }
                }
             }   

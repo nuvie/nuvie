@@ -607,7 +607,7 @@ inline void ActorManager::clean_temp_actor(Actor *actor)
 {
  printf("Removing Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
  actor->obj_n = 0;
- actor->hide();
+ actor->clear();
 
  return;
 }

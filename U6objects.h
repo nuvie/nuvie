@@ -180,6 +180,7 @@
 #define OBJ_U6_POTION              275
 #define OBJ_U6_V_PASSTHROUGH       278
 #define OBJ_U6_H_PASSTHROUGH       280
+#define OBJ_U6_FENCE               281
 #define OBJ_U6_CRANK               288
 #define OBJ_U6_CHAIN               293
 

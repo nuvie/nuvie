@@ -105,6 +105,7 @@ class U6Actor: public Actor
  void wt_walk_to_location();
  void wt_walk_straight();
  void wt_wander_around();
+ void wt_farm_animal_wander();
  void wt_beg();
  void wt_sleep();
  void wt_play_lute();

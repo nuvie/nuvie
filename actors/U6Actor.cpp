@@ -139,7 +139,7 @@ bool U6Actor::init_splitactor()
   }
   
  obj = obj_manager->get_obj(obj_x,obj_y,z);
- if(obj == NULL || obj->obj_n != obj_n) // create a new back object
+ if(obj == NULL || obj->obj_n != obj_n || (obj->quality != 0 && obj->quality != id_n)) // create a new back object
    {
     obj = new Obj();
     obj->x = obj_x;
@@ -409,9 +409,9 @@ void U6Actor::preform_worktype()
    case WORKTYPE_U6_WALK_NORTH_SOUTH :
    case WORKTYPE_U6_WALK_EAST_WEST   : wt_walk_straight(); break;
 
-   case WORKTYPE_U6_WORK :
-   case WORKTYPE_U6_ANIMAL_WANDER :
+   case WORKTYPE_U6_WORK : 
    case WORKTYPE_U6_WANDER_AROUND   : wt_wander_around(); break;
+   case WORKTYPE_U6_ANIMAL_WANDER : wt_farm_animal_wander(); break;
    case WORKTYPE_U6_BEG : wt_beg(); break;
 //   case WORKTYPE_U6_
 //                     break;
@@ -515,6 +515,36 @@ void U6Actor::wt_wander_around()
        case 2 : if(ydist < +4) moveRelative(0,1); break;
        case 3 : if(xdist > -4) moveRelative(-1,0); break;
       }
+   }
+
+ return;
+}
+
+// wander around but don't cross boundaries or fences. Used for cows and horses.
+
+void U6Actor::wt_farm_animal_wander()
+{
+ uint8 new_direction;
+ sint8 rel_x = 0, rel_y = 0;
+ 
+ if(NUVIE_RAND()%8 == 1)
+   {
+    new_direction = NUVIE_RAND()%4;
+
+    switch(new_direction)
+      {
+       case ACTOR_DIR_U : rel_y = -1; break;
+       case ACTOR_DIR_R : rel_x = 1; break;
+       case ACTOR_DIR_D : rel_y = 1; break;
+       case ACTOR_DIR_L : rel_x = -1; break;
+      }
+
+    if(obj_manager->get_obj_of_type_from_location(OBJ_U6_FENCE,x + rel_x, y + rel_y, z) == NULL)
+        {
+         if(moveRelative(rel_x,rel_y))
+            set_direction(new_direction);
+        }
+
    }
 
  return;
@@ -652,7 +682,7 @@ inline void U6Actor::remove_surrounding_objs_from_map()
 inline void U6Actor::add_surrounding_objs_to_map()
 {
  std::list<Obj *>::iterator obj;
- 
+
  for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
     obj_manager->add_obj((*obj),OBJ_ADD_TOP);
 

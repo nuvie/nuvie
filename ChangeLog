@@ -1,3 +1,11 @@
+2003-12-10  Eric Fry <efry@users.sourceforge.net>
+	* Added proper worktype for cows and horses. They keep within the fenced
+	  areas now.
+	* Some minor tweeks for multi-tile actors. 
+	* Note! I've got a crash when I create two multi-tile
+	  actors on the same spot. eg over an egg. I haven't tracked down
+	  what's causing this crash yet. :(
+
 2003-12-08  Eric Fry <efry@users.sourceforge.net>
 	* Added egg support. Eggs now spawn Actors as you pass them by. :)
 	  I've still got a bit to do on this. Eggs need to throw their contents
