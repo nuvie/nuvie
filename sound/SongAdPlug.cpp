@@ -59,16 +59,9 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
          printf("Music Finished!\n");
        }
 
-     if(i < 735)
-       {
-         song->samples_left = 735 - i;
-         j = i;
-       }
-     else
-       {
-         song->samples_left = 0;
-         j = 735;
-       }
+	 j = i;
+	 if (j > 735) j = 735;
+	 song->samples_left = 735 - j;
 
      opl->update(data, j);
 
