@@ -27,6 +27,8 @@ nuvie_SOURCES = \
 	screen/Surface.cpp \
 	screen/Surface.h \
 \
+	views/View.cpp \
+	views/View.h \
 	views/InventoryView.cpp \
 	views/InventoryView.h \
 	views/PortraitView.cpp \
