@@ -21,6 +21,7 @@
  *
  */
 
+#include <cassert>
 #include "nuvieDefs.h"
 
 #include "Configuration.h"
