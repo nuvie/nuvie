@@ -85,6 +85,8 @@ Game::Game(Configuration *cfg)
  usecode = NULL;
  effect_manager = NULL;
 
+ pause_flags = PAUSE_UNPAUSED;
+ ignore_event_delay = 0;
 }
 
 Game::~Game()

@@ -1,3 +1,10 @@
+2005-02-08  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Firing a cannon or tossing an object no longer results in superspeed.
+	  (forgot to init. a couple of variables)
+	* The "Move" command works like the one in U6. You can no longer move
+	  things out of range. (doesn't apply to dragndrop) The mouse cursor
+	  will update with an arrow, showing the direction
+
 2005-02-06  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed TossAnim/ThrowAnim movement mentioned in last update. It looks
 	  completely different when compared to the old animation. The slightly

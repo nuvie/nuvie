@@ -70,6 +70,7 @@ class MapWindow: public GUI_Widget
 
  sint16 cur_x, cur_y;
  uint16 cursor_x, cursor_y;
+ sint16 mousecenter_x, mousecenter_y; // location mousecursor rotates around, relative to cur_x&cur_y
  Tile *cursor_tile;
  Tile *use_tile;
 
@@ -113,6 +114,8 @@ class MapWindow: public GUI_Widget
  void moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add = 0, uint8 new_y_add = 0);
  void moveMapRelative(sint16 rel_x, sint16 rel_y);
  void shiftMapRelative(sint16 rel_x, sint16 rel_y);
+ void set_mousecenter(sint16 new_x, sint16 new_y) { mousecenter_x = new_x; mousecenter_y = new_y; }
+ void reset_mousecenter() { mousecenter_x = win_width / 2; mousecenter_y = win_height / 2; }
 
  void centerMapOnActor(Actor *actor);
  void centerMap(uint16 x, uint16 y, uint8 z);

@@ -65,8 +65,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  //surface = NULL;
  anim_manager = NULL;
 
- cur_x = 0;
- cur_y = 0;
+ cur_x = 0; mousecenter_x = 0;
+ cur_y = 0; mousecenter_y = 0;
  cur_x_add = cur_y_add = 0;
  vel_x = vel_y = 0;
 
@@ -183,6 +183,8 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
    }
 
  anim_manager->set_area(&clip_rect);
+
+ reset_mousecenter();
 
  updateBlacking();
 
@@ -1351,7 +1353,7 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
     sint16 rel_x, rel_y;
     uint8 mptr; // mouse-pointer is set here in get_movement_direction()
 
-    if(event->get_mode() != MOVE_MODE)
+    if(event->get_mode() != MOVE_MODE && event->get_mode() != PUSH_MODE)
         return;
 
     // MousePos->WorldCoord->Direction&MousePointer
@@ -1364,14 +1366,14 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
 }
 
 
-/* Get relative movement direction from the center of the MapWindow to the
+/* Get relative movement direction from the MouseCenter coordinates to the
  * world coordinates wx,wy, for walking with the mouse, etc. The mouse-pointer
  * number that should be used for that direction will be set to mptr.
  */
 void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y, uint8 *mptr)
 {
-    uint16 cent_x = cur_x + (win_width / 2),
-           cent_y = cur_y + (win_height / 2);
+    uint16 cent_x = cur_x + mousecenter_x, //+ (win_width / 2),
+           cent_y = cur_y + mousecenter_y; //+ (win_height / 2);
     uint16 dist_x = abs(wx - cent_x), dist_y = abs(wy - cent_y);
 
     rel_x = rel_y = 0;

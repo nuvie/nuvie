@@ -107,8 +107,8 @@ public:
     virtual void stop()                     { updated = running = false; }
     virtual void start()                    { }
     uint16 message(uint16 msg, void *msg_data = NULL, void *my_data = NULL)
-                                    { if(callback_target)
-                                      CallBack::message(msg,msg_data,my_data); }
+                                    { if(callback_target) return(CallBack::message(msg,msg_data,my_data));
+                                      else return(0); }
 
     virtual void move(uint32 x, uint32 y)    { px = x; py = y; }
     virtual void shift(sint32 sx, sint32 sy) { px += sx; py += sy; }

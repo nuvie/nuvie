@@ -496,7 +496,7 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
      }
    else if(mode == PUSH_MODE)
      {
-      pushTo(rel_x,rel_y);
+      pushTo(rel_x,rel_y,PUSH_FROM_OBJECT);
      }
    else if(mode == PUSHSELECT_MODE)
      {
@@ -895,19 +895,46 @@ bool Event::look()
 }
 
 
-/* Move selected object in direction.
+/* Move selected object in direction relative to object.
+ * (coordinates can be relative to player or object)
  */
-bool Event::pushTo(sint16 rel_x, sint16 rel_y)
+bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 {
     Tile *obj_tile;
     bool can_move = false; // some checks must determine if object can_move
     Map *map = Game::get_game()->get_game_map();
+    MapCoord pusher = player->get_actor()->get_location();
+    MapCoord from, to; // absolute locations: object, target
+    sint16 pushrel_x, pushrel_y; // direction relative to object
     LineTestResult lt;
 
     if(mode == WAIT_MODE)
         return(false);
 
-    scroll->display_string(get_direction_name(rel_x, rel_y));
+    if(selected_actor)
+        from = selected_actor->get_location();
+    else
+        from = MapCoord(use_obj->x, use_obj->y, use_obj->z);
+    // you can only push one space at a time
+//    rel_x = (rel_x == 0) ? 0 : (rel_x < 0) ? -1 : 1;
+//    rel_y = (rel_y == 0) ? 0 : (rel_y < 0) ? -1 : 1;
+    if(push_from == PUSH_FROM_PLAYER) // coordinates must be converted
+    {
+        to.x = pusher.x + rel_x;
+        to.y = pusher.y + rel_y;
+    }
+    else
+    {
+        to.x = from.x + rel_x;
+        to.y = from.y + rel_y;
+    }
+    pushrel_x = to.x - from.x; pushrel_y = to.y - from.y;
+    // you can only push one space at a time
+    pushrel_x = (pushrel_x == 0) ? 0 : (pushrel_x < 0) ? -1 : 1;
+    pushrel_y = (pushrel_y == 0) ? 0 : (pushrel_y < 0) ? -1 : 1;
+    to.x = from.x + pushrel_x; to.y = from.y + pushrel_y;
+
+    scroll->display_string(get_direction_name(pushrel_x, pushrel_y));
     scroll->display_string(".\n\n");
 
     // FIXME: the random chance here is just made up, I don't know what
@@ -915,22 +942,19 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
     if(selected_actor)
     {
         // if actor can take a step, do so; else 50% chance of pushing them
-        MapCoord from(selected_actor->get_location());
-        if(map->lineTest(from.x+rel_x, from.y+rel_y, from.x+rel_x, from.y+rel_y,
-                         from.z, LT_HitActors | LT_HitUnpassable, lt))
+        if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
             scroll->display_string("Blocked.\n\n");
-        else if(!selected_actor->moveRelative(rel_x, rel_y))
+        else if(!selected_actor->moveRelative(pushrel_x, pushrel_y))
         {
             if(selected_actor->can_be_moved() && NUVIE_RAND() % 2) // already checked if target is passable
-                selected_actor->move(from.x+rel_x, from.y+rel_y, from.z, ACTOR_FORCE_MOVE);
+                selected_actor->move(to.x, to.y, from.z, ACTOR_FORCE_MOVE);
             else
                 scroll->display_string("Failed.\n\n");
         }
     }
     else
     {
-        if(map->lineTest(use_obj->x+rel_x, use_obj->y+rel_y, use_obj->x+rel_x, use_obj->y+rel_y,
-                         use_obj->z, LT_HitActors | LT_HitUnpassable, lt))
+        if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
             {
              if(lt.hitObj)
               {
@@ -947,13 +971,14 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
            can_move = true;
 
         /* do normal move if no usecode or return from usecode was true */
-        if((!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y)) && can_move)
-          can_move = obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
+        if((!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,to.x-from.y,pushrel_y)) && can_move)
+          can_move = obj_manager->move(use_obj,to.x,to.y,from.z);
 
         if(!can_move)
           scroll->display_string("Blocked.\n\n");
     }
     scroll->display_prompt();
+    map_window->reset_mousecenter(); // FIXME: put this in endAction()?
     endAction();
     return(true);
 }
@@ -981,15 +1006,35 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
 
     if(selected_actor)
     {
+        MapCoord target(selected_actor->get_location());
         scroll->display_string(selected_actor->get_name());
+        if(from.distance(target) > 1)
+        {
+            scroll->display_string("\n\nOut of range!\n\n");
+            scroll->display_prompt();
+            endAction();
+            return(true);
+        }
         scroll->display_string("\nTo ");
         mode = PUSH_MODE;
+        // FIXME: not taking win_width into account
+        map_window->set_mousecenter(target.x - from.x + 5, target.y - from.y + 5);
     }
     else if(use_obj)
     {
+        MapCoord target(MapCoord(use_obj->x, use_obj->y, use_obj->z));
         scroll->display_string(obj_manager->look_obj(use_obj));
+        if(from.distance(target) > 1)
+        {
+            scroll->display_string("\n\nOut of range!\n\n");
+            scroll->display_prompt();
+            endAction();
+            return(true);
+        }
         scroll->display_string("\nTo ");
         mode = PUSH_MODE;
+        // FIXME: not taking win_width into account
+        map_window->set_mousecenter(target.x - from.x + 5, target.y - from.y + 5);
     }
     else
     {

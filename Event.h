@@ -45,6 +45,8 @@ class UseCode;
 class GUI;
 
 #define NUVIE_INTERVAL    65
+#define PUSH_FROM_PLAYER false
+#define PUSH_FROM_OBJECT true
 
 typedef enum {
  LOOK_MODE,
@@ -142,7 +144,7 @@ class Event : public GUI_CallBack
  bool talk(Obj *obj);
  bool perform_talk(Actor *actor);
  bool pushFrom(sint16 rel_x, sint16 rel_y);
- bool pushTo(sint16 rel_x, sint16 rel_y);
+ bool pushTo(sint16 rel_x, sint16 rel_y, bool push_from=PUSH_FROM_PLAYER);
  bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
  bool select_obj(sint16 rel_x, sint16 rel_y);
  void solo_mode(uint32 actor_num);
