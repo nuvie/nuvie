@@ -664,25 +664,25 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
         case U6OP_GT: // 0x81 ??
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            if(v[0] > v[1])
+            if(v[0] > v[1]) // ?? <=
                 out = 1;
             break;
         case U6OP_GT2: // 0x82 ??
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            if(v[0] > v[1])
+            if(v[0] > v[1]) // ?? <
                 out = 1;
             break;
         case U6OP_LT: // 0x83 ??
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            if(v[0] < v[1])
+            if(v[0] < v[1]) // ?? >=
                 out = 1;
             break;
         case U6OP_LT2: // 0x84 ??
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            if(v[0] < v[1])
+            if(v[0] < v[1]) // ?? >
                 out = 1;
             break;
         case U6OP_NE: // 0x85
@@ -730,12 +730,12 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 out = 1;
             break;
         case U6OP_RAND: // 0xa0
-            v[1] = pop_arg(i);
-            v[0] = pop_arg(i);
-            if(v[0] == v[1])
+            v[1] = pop_arg(i); // max.
+            v[0] = pop_arg(i); // min.
+            if(v[0] >= v[1])
                 out = v[0];
             else
-                out = (NUVIE_RAND() + v[0]) % (v[1] + 1);
+                out = v[0] + (NUVIE_RAND()%(v[1]-v[0]+1));
             break;
         case U6OP_FLAG: // 0xab (npc, flag)
             v[1] = pop_arg(i);
