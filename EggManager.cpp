@@ -86,6 +86,8 @@ void EggManager::remove_egg(Obj *egg_obj)
         
         break;
        }
+
+    egg++;
    }
 
  return;

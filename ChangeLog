@@ -1,3 +1,6 @@
+2003-12-13  Eric Fry <efry@users.sourceforge.net>
+	* A fix for an infinite loop when removing temporary eggs.
+
 2003-12-10  Eric Fry <efry@users.sourceforge.net>
 	* Added proper worktype for cows and horses. They keep within the fenced
 	  areas now.
