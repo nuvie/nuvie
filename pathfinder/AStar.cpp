@@ -158,7 +158,11 @@ sint32 AStar::step_cost(MapCoord &c1, MapCoord &c2)
         // check for door
         Game *game = Game::get_game();
         Obj *block = game->get_obj_manager()->get_obj(c2.x, c2.y, c2.z);
-        if(!block || !game->get_usecode()->is_unlocked_door(block))
+        // HACK: check the neighboring tiles for the "real" door
+        Obj *real = game->get_obj_manager()->get_obj(c2.x + 1, c2.y, c2.z);
+        if(!real || !game->get_usecode()->is_unlocked_door(real))
+            real = game->get_obj_manager()->get_obj(c2.x, c2.y + 1, c2.z);
+        if(!block || !game->get_usecode()->is_unlocked_door(block) || real)
             return(-1);
         c += 2;
     }

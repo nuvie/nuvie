@@ -321,8 +321,6 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
     if(new_y < 0 || new_y >= pitch)
         return(false);
 
-
-
     if(!ignore_actors)
        {
         a = map->get_actor(new_x,new_y,new_z);
@@ -333,7 +331,6 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
 
 //    if(map->is_passable(new_x,new_y,new_z) == false)
 //        return(false);
-
     return(true);
 }
 
@@ -345,17 +342,24 @@ bool Actor::can_be_moved()
 
 bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
+ Obj *obj = NULL;
+ MapCoord oldpos(x, y, z);
+ usecode = obj_manager->get_usecode();
  // no moves left (FIXME: ignore for any player-actor)
  if(!force_move && moves == 0 && id_n != 0) // vehicle actor has no move limit
     return false;
 
  // blocking actors are checked for later
  if(!force_move && !check_move(new_x, new_y, new_z, ACTOR_IGNORE_OTHERS))
-    return false;
+   {
+    // open door if pathfinding (FIXME: check worktype)
+    Obj *obj = obj_manager->get_obj(new_x,new_y,new_z);
+    if(!(obj && usecode->is_unlocked_door(obj) && pathfinder && pathfinder->can_travel())
+       || !usecode->use_obj(obj, this))
+       return false; // blocked by object or map tile
+   }
 
  // usecode must allow movement
- usecode = obj_manager->get_usecode();
- Obj *obj = obj_manager->get_obj(new_x,new_y,new_z);
  if(obj && usecode->has_passcode(obj))
   {
     if(!usecode->pass_obj(obj, this)) // calling item is this actor
@@ -377,6 +381,13 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
     --moves;
 
  // post-move
+ // close door if pathfinding (FIXME: check worktype, and make sure we don't reopen it)
+ if(pathfinder && pathfinder->can_travel())
+   {
+    obj = obj_manager->get_obj(oldpos.x, oldpos.y, z);
+    if(obj && usecode->is_door(obj))
+       usecode->use_obj(obj, this);
+   }
  // update known location of leader, for party members
  Game *game = Game::get_game();
  if(in_party)

@@ -13,8 +13,6 @@ Finish eggs:
 We don't fully understand the egg data (Y, Z, Quality).
 How does U6 determine where to spawn the contents? Some monsters seem
 grouped together, others spawn a distance from eachother. (if fighting)
-Figure out remaining flags. Only "Silent-0x01" and "Nocturnal-0x10" are known.
-(These need to be checked for in EggManager.)
 
 Add these options to the command line:
 nuvie [options] game(from config)

@@ -1,3 +1,7 @@
+2005-02-11  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Actors now always open through the correct part of a doorway when
+	  passing through it (not the doorframe) and close it on the other side.
+
 2005-02-08  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Firing a cannon or tossing an object no longer results in superspeed.
 	  (forgot to init. a couple of variables)

@@ -322,43 +322,44 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
    if(has_surrounding_objs())
       move_surrounding_objs_relative(rel_x, rel_y);
 
-   if(actor_type->can_sit)
+   Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
+   if(obj)
      {
-      Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
-      if(obj)
+      if(actor_type->can_sit)
         {
          sit_on_chair(obj); // make the Actor sit if they are on top of a chair.
+        }
 
-         if(obj->obj_n == OBJ_U6_FIRE_FIELD) // ouch
+      if(obj->obj_n == OBJ_U6_FIRE_FIELD) // ouch
+        {
+         hit(5); // -?? hp?
+         if(in_party)
+            scroll->message("Ouch!\n");
+        }
+      if(obj->obj_n == OBJ_U6_POISON_FIELD/* && not poisoned*/) // ick
+        {
+         new HitEffect(this); // no direct hp loss
+         if(in_party)
            {
-            hit(5); // -?? hp?
-            if(in_party)
-               scroll->message("Ouch!\n");
+            scroll->display_string(party->get_actor_name(party->get_member_num(this)));
+            scroll->display_string(" poisoned!\n");
+            scroll->display_prompt();
            }
-         if(obj->obj_n == OBJ_U6_POISON_FIELD/* && not poisoned*/) // ick
-           {
-            new HitEffect(this); // no direct hp loss
-            if(in_party)
-              {
-               scroll->display_string(party->get_actor_name(party->get_member_num(this)));
-               scroll->display_string(" poisoned!\n");
-               scroll->display_prompt();
-              }
-//          Avatar:
-//          >%s poisoned!
+//       Avatar:
+//       >%s poisoned!
 //
-//          Avatar:
-//          >
-           }
-         if(obj->obj_n == OBJ_U6_SLEEP_FIELD) // Zzz
-           {
-            new HitEffect(this); // no hp loss
-            //fall asleep (change worktype?)
-            if(in_party)
-               scroll->message("Zzz...\n");
-           }
+//       Avatar:
+//       >
+        }
+      if(obj->obj_n == OBJ_U6_SLEEP_FIELD) // Zzz
+        {
+         new HitEffect(this); // no hp loss
+         //fall asleep (change worktype?)
+         if(in_party)
+            scroll->message("Zzz...\n");
         }
      }
+
      // temp. fix; this too should be done with UseCode (and don't move the mirror)
      if(old_pos.y > 0 && new_y > 0)
      {
