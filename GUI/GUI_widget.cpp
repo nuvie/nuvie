@@ -365,8 +365,10 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 			if ( focused || HitRect(x, y) )
 			{
 				button = event->button.button;
-				RegisterMouseUp(x, y, button);
-				return(MouseUp(x, y, button));
+				GUI_status ret = MouseUp(x, y, button);
+				if(ret != GUI_QUIT)
+					ret = RegisterMouseUp(x, y, button);
+				return(ret);
 			}
 			/* if widget was clicked before we must let it deactivate itself*/
 			else if (ClickState(1)) return(MouseUp(-1,-1,button));
