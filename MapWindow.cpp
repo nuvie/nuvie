@@ -517,9 +517,9 @@ void MapWindow::reshapeBoundary()
  uint8 flag;
  Tile *tile;
  
- for(y=1;y <= win_height + 1;y++)
+ for(y=1;y <= win_height;y++)
    {
-    for(x=1;x <= win_width + 1;x++)
+    for(x=1;x <= win_width;x++)
       {
        if(tmpBufTileIsBoundary(x,y))
          {
