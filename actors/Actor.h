@@ -228,10 +228,10 @@ class Actor
  virtual void die();
  
  U6LList *get_inventory_list();
- bool inventory_has_object(uint16 obj_n, uint8 qual = 0);
+ bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_zero_qual = true);
  uint32 inventory_count_objects(bool inc_readied_objects);
  uint32 inventory_count_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
- Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0, bool search_containers = true);
+ Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0, bool search_containers = true, bool match_zero_qual = true);
  Obj *inventory_get_readied_object(uint8 location);
  Obj *inventory_get_obj_container(Obj *obj, Obj *container = 0);
  bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack = false);

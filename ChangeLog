@@ -1,3 +1,12 @@
+2004-06-17  Eric Fry <efry at users.sourceforge.net>
+	* Added some npc_num() calls into ConverseInterpret. HASOBJ and OBJCOUNT
+	  weren't handling actor SELF (0xEB) correctly. This should fix some
+	  issues with buying ship deeds from Arty and probably other npc
+	  dialogs.
+	* Added a match_zero_flag to Actor::inventory_get_object() when set to
+	  false any quality is matched if a search quality of 0 is entered.
+	  Some converse scripts don't care which quaility is returned.
+
 2004-06-15  Eric Fry <efry at users.sourceforge.net>
 	* Fixed GUI bug where hidden widgets were being passed events.
 	  This fixes the scroller widget top slot bug.

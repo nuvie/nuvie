@@ -785,8 +785,8 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             v[2] = pop_arg(i); // quality
             v[1] = pop_arg(i); // object
             v[0] = pop_arg(i); // npc
-            cnpc = converse->actors->get_actor(v[0]);
-            if(cnpc && cnpc->inventory_has_object(v[1], v[2]))
+            cnpc = converse->actors->get_actor(npc_num(v[0]));
+            if(cnpc && cnpc->inventory_has_object(v[1], v[2], false)) //don't search quality if quality is 0
                 out = 1;
             break;
         case U6OP_RAND: // 0xa0
@@ -854,7 +854,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
         case U6OP_OBJCOUNT: // 0xbb
             v[1] = pop_arg(i); // object
             v[0] = pop_arg(i); // npc
-            cnpc = converse->actors->get_actor(v[0]);
+            cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
                 out = cnpc->inventory_count_object(v[1], 0);
             break;
