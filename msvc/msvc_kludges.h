@@ -27,6 +27,7 @@
 
 
 #define snprintf _snprintf
+#define strcasecmp _stricmp
 
 
 // Using STLport?
