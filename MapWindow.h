@@ -52,7 +52,7 @@ class MapWindow
  void set_show_use_cursor(bool state);
  
  void moveLevel(uint8 new_level);
- void moveMap(uint16 new_x, uint16 new_y);
+ void moveMap(sint16 new_x, sint16 new_y, sint8 new_level);
  void moveMapRelative(sint16 rel_x, sint16 rel_y);
  
  void centerMapOnActor(Actor *actor);
@@ -65,9 +65,11 @@ class MapWindow
  
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);
-
+ 
+ void updateBlacking();
+ 
  void drawMap();
-  
+ 
 protected:
 
  void drawObjs();

@@ -40,6 +40,8 @@
 #define OBJ_STATUS_NOT_PASSABLE 4
 #define OBJ_STATUS_PASSABLE     5
 
+#define OBJ_U6_LADDER 305
+
 typedef struct
 {
  uint16 x;

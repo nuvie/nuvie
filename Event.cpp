@@ -128,6 +128,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  
  obj_manager->use_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
  map_window->set_show_use_cursor(false);
+ map_window->updateBlacking();
  mode = MOVE_MODE;
        
 }

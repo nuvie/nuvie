@@ -325,7 +325,11 @@ bool ObjManager::use_obj(uint16 x, uint16 y, uint8 level)
     else
       obj->frame_n -= 4;
    }
-   
+ if(obj->obj_n == OBJ_U6_LADDER)
+  {
+   printf("Use: ladder\n");
+  }
+    
  return true;
 }
 
