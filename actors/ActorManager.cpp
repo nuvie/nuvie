@@ -26,6 +26,7 @@
 
 #include "Actor.h"
 #include "U6Actor.h"
+#include "U6WorkTypes.h"
 #include "TileManager.h"
 #include "U6misc.h"
 #include "U6LList.h"

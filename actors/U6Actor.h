@@ -26,29 +26,6 @@
 
 #include "Actor.h"
 
-// Worktype codes
-#define WORKTYPE_U6_IN_PARTY 0x1
-#define WORKTYPE_U6_ANIMAL_WANDER 0xc
-
-#define WORKTYPE_U6_GUARD_WALK_EAST_WEST 0xf
-#define WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH 0x10
-
-#define WORKTYPE_U6_WALK_TO_LOCATION 0x84
-
-#define WORKTYPE_U6_FACE_NORTH 0x87
-#define WORKTYPE_U6_FACE_EAST 0x88
-#define WORKTYPE_U6_FACE_SOUTH 0x89
-#define WORKTYPE_U6_FACE_WEST 0x8a
-
-#define WORKTYPE_U6_WALK_NORTH_SOUTH 0x8b
-#define WORKTYPE_U6_WALK_EAST_WEST 0x8c
-
-#define WORKTYPE_U6_WANDER_AROUND 0x8f
-#define WORKTYPE_U6_WORK 0x90
-#define WORKTYPE_U6_SLEEP 0x91
-#define WORKTYPE_U6_PLAY_LUTE 0x95
-#define WORKTYPE_U6_BEG 0x96
-
 #define MOVETYPE_U6_LAND       1
 #define MOVETYPE_U6_WATER_LOW  2 // skiffs, rafts
 #define MOVETYPE_U6_WATER_HIGH 3 // ships
@@ -114,6 +91,8 @@ class U6Actor: public Actor
  void die();
 
  uint8 get_object_readiable_location(uint16 obj_n);
+ virtual bool is_immobile(); // frozen by worktype or status
+ bool is_sleeping();
 
  protected:
  bool init_ship();

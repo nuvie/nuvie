@@ -32,7 +32,6 @@
 #include "ViewManager.h"
 #include "ActorManager.h"
 #include "Actor.h"
-#include "U6Actor.h"
 #include "Party.h"
 #include "Player.h"
 #include "MsgScroll.h"
@@ -48,6 +47,7 @@
 
 #include "U6UseCode.h"
 #include "U6ObjectTypes.h"
+#include "U6WorkTypes.h"
 
 #define MESG_ANIM_HIT_WORLD  ANIM_CB_HIT_WORLD
 #define MESG_ANIM_HIT        ANIM_CB_HIT

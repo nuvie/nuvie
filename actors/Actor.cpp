@@ -344,10 +344,16 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
  Obj *obj = NULL;
  MapCoord oldpos(x, y, z);
- usecode = obj_manager->get_usecode();
+
+ clear_error();
+ if(!usecode)
+   usecode = obj_manager->get_usecode();
  // no moves left (FIXME: ignore for any player-actor)
  if(!force_move && moves == 0 && id_n != 0) // vehicle actor has no move limit
+ {
+    set_error(ACTOR_OUT_OF_MOVES);
     return false;
+ }
 
  // blocking actors are checked for later
  obj = obj_manager->get_obj(new_x,new_y,new_z);
@@ -356,20 +362,29 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
     // open door if pathfinding (FIXME: check worktype)
     if(!(obj && usecode->is_unlocked_door(obj) && pathfinder && pathfinder->can_travel())
        || !usecode->use_obj(obj, this))
+      {
+       set_error(ACTOR_BLOCKED_BY_OBJECT);
        return false; // blocked by object or map tile
+      }
    }
 
  // usecode must allow movement
  if(obj && usecode->has_passcode(obj))
-  {
+   {
     if(!usecode->pass_obj(obj, this)) // calling item is this actor
-       return(false);
-  }
+      {
+       set_error(ACTOR_BLOCKED_BY_OBJECT);
+       return false;
+      }
+   }
 
  // switch position with party members
  Actor *other = map->get_actor(new_x, new_y, new_z);
  if(other && other->is_visible() && !force_move && !other->is_passable() && !is_passable() && !other->push(this, ACTOR_PUSH_HERE, x, y, z))
+   {
+    set_error(ACTOR_BLOCKED_BY_ACTOR);
     return false; // blocked by actor
+   }
 
  // move
  x = new_x;
@@ -1235,7 +1250,7 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
     else if(where == ACTOR_PUSH_ANYWHERE) // go to any neighboring direction
     {
         MapCoord from(get_location());
-        uint16 square = 1;
+        const uint16 square = 1;
         for(uint16 x=(from.x-square); x<=(from.x+square); x+=square)
             for(uint16 y=(from.y-square); y<=(from.y+square); y+=square)
                 if(x != from.x && y != from.y && move(x, y, from.z))
@@ -1337,4 +1352,27 @@ void Actor::subtract_light(uint8 val)
         light -= val;
     else
         light = 0;
+}
+
+/* Set error/status information. */
+void Actor::set_error(ActorErrorCode err)
+{
+    clear_error();
+    error_struct.err = err;
+}
+
+void Actor::clear_error()
+{
+    error_struct.err = ACTOR_NO_ERROR;
+}
+
+ActorError *Actor::get_error()
+{
+    return(&error_struct);
+}
+
+// frozen by worktype or status
+bool Actor::is_immobile()
+{
+    return(false);
 }

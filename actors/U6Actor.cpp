@@ -36,6 +36,7 @@
 #include "Effect.h"
 
 #include "U6ActorTypes.h"
+#include "U6WorkTypes.h"
 
 //static const uint8 sleep_objects[8];
 
@@ -1168,13 +1169,25 @@ void U6Actor::die()
 
  // FIX
 //    if I am the Player, fade-out, restore party, move to castle, fade-in
-//    ...of course, that is just in U6
     if(this != game->get_player()->get_actor())
     {
-        move(0,0,0,ACTOR_FORCE_MOVE); // ??
+        move(0,0,0,ACTOR_FORCE_MOVE); // ?? not sure if dead actors get moved
         game->get_party()->remove_actor(this);
     }
 //    add some blood? or do that in hit?
 
 }
 
+// frozen by worktype or status
+bool U6Actor::is_immobile()
+{
+    return(worktype == WORKTYPE_U6_MOTIONLESS
+           || worktype == WORKTYPE_U6_IMMOBILE
+           || can_move == false);
+}
+
+
+bool U6Actor::is_sleeping()
+{
+    return(worktype == WORKTYPE_U6_SLEEP);
+}

@@ -49,9 +49,11 @@ using std::string;
 #define ACTOR_DIR_D 2
 #define ACTOR_DIR_L 3
 
+// move-flags
 #define ACTOR_FORCE_MOVE true
 #define ACTOR_IGNORE_OTHERS true
 
+// push-flags
 #define ACTOR_PUSH_ANYWHERE 0
 #define ACTOR_PUSH_HERE     1
 #define ACTOR_PUSH_FORWARD  2
@@ -61,6 +63,12 @@ using std::string;
 
 #define ACTOR_STATUS_DEAD 0x10
 #define ACTOR_STATUS_IN_PARTY 0xc0
+
+#define ACTOR_NO_ERROR 0
+#define ACTOR_OUT_OF_MOVES 1
+#define ACTOR_BLOCKED 2
+#define ACTOR_BLOCKED_BY_OBJECT 3
+#define ACTOR_BLOCKED_BY_ACTOR 4
 
 class Map;
 class MapCoord;
@@ -77,6 +85,11 @@ uint8 hour;
 uint8 day_of_week; // 0 = any day 1..7
 uint8 worktype;
 } Schedule;
+
+typedef uint8 ActorErrorCode;
+typedef struct {
+    ActorErrorCode err;
+} ActorError;
 
 class Actor
 {
@@ -126,6 +139,8 @@ class Actor
  uint8 moves; // number of moves actor has this turn
  uint8 light; // level of light around actor (normally 0)
 
+ ActorError error_struct; // error/status; result of previous action
+
  uint8 strength;
  uint8 dex;
  uint8 intelligence;
@@ -169,6 +184,8 @@ class Actor
  bool is_passable();
  //for lack of a better name:
  bool is_met() { return(flags & 0x01); }
+ virtual bool is_immobile(); // frozen by worktype or status
+ virtual bool is_sleeping() { return(false); }
 
  void set_name(const char *actor_name) {  name=actor_name; }
  const char *get_name();
@@ -215,6 +232,9 @@ class Actor
  void clear_flag(uint8 bitflag);
  void show() { visible_flag = true; }
  void hide() { visible_flag = false; }
+ void set_error(ActorErrorCode err);
+ void clear_error();
+ ActorError *get_error();
 
  bool is_visible() { return visible_flag; }
 

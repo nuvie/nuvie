@@ -403,6 +403,13 @@ bool Event::perform_talk(Actor *actor)
         scroll->display_string("\n");
         scroll->display_string("Not in solo mode.\n");
     }
+    if(actor->is_sleeping())
+    {
+        // always display look-string on failure
+        scroll->display_string(actor_manager->look_actor(actor));
+        scroll->display_string("\n");
+        scroll->display_string("No response.\n");
+    }
     else if(converse->start(actor))    // load and begin npc script
     {
         // try to use real name
@@ -410,7 +417,8 @@ bool Event::perform_talk(Actor *actor)
         scroll->display_string("\n");
         // turn towards eachother
         pc->face_actor(actor);
-        actor->face_actor(pc);
+        if(!actor->is_immobile())
+            actor->face_actor(pc);
         return(true);
     }
     else    // some actor that has no script
