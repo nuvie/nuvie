@@ -153,7 +153,7 @@ bool NuvieIOBuffer::readToBuf(unsigned char *buf, uint32 buf_size)
  if(pos + buf_size > size || buf == NULL)
    return false;
 
- memcpy(buf,data,buf_size);
+ memcpy(buf,&data[pos],buf_size);
  
  return true;
 }
@@ -212,4 +212,11 @@ uint32 NuvieIOBuffer::writeBuf(unsigned char *src, uint32 src_size)
 uint32 NuvieIOBuffer::write(NuvieIO *src)
 {
  return 0;
+}
+
+
+void NuvieIOBuffer::seek(uint32 new_pos)
+{
+    if(data && new_pos < size)
+        pos = new_pos;
 }

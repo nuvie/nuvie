@@ -32,6 +32,7 @@
 #include "Scale.h"
 
 class Configuration;
+class Cursor;
 
 class Screen
 {
@@ -60,6 +61,8 @@ class Screen
  uint8 *shading_globe[3];
  uint8 shading_ambient;
  uint8 *shading_tile[4];
+
+ Cursor *cursor;
 
  public:
    Screen(Configuration *cfg);
@@ -100,6 +103,8 @@ class Screen
    void unlock();
    
    bool initScaler();
+
+   bool set_pointer(uint8 ptr_num);
 
 protected:
 

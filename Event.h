@@ -87,6 +87,7 @@ class Event
 
  TimeQueue *time_queue, *game_time_queue;
  Obj *use_obj;
+ Actor *selected_actor; // for PUSHSELECT
 
  public:
  Event(Configuration *cfg);

@@ -1051,6 +1051,11 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 {
 	Tile	*tile;
 
+//	if(dragging || (x == -1 || y == -1))
+//		screen->set_pointer(0);
+//	else
+//		screen->set_pointer(1);
+
 	//	printf ("MapWindow::MouseMotion\n");
 	if (selected_obj && !dragging)
 	{
@@ -1071,14 +1076,19 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 
 	if(walking)
         {
+//		if((x == -1 || y == -1))
+//			walking == false;
 		// wait for possible double-click before starting
 		uint32 time_passed = SDL_GetTicks() - last_mousedown_time;
 
 		walk_start_delay -= ((sint32)(walk_start_delay - time_passed) > 0) ? time_passed : walk_start_delay;
 		if(walk_start_delay)
 			return(GUI_PASS);
+		// use real mouse coords not -1,-1
+		state = SDL_GetMouseState(&x, &y);
 		if(state & SDL_BUTTON(1))
-			player_walk_to_mouse_cursor((uint32)x, (uint32)y);
+			player_walk_to_mouse_cursor((uint32)x / screen->get_scale_factor(),
+                                                    (uint32)y / screen->get_scale_factor());
         }
 
 	return	GUI_PASS;
@@ -1196,8 +1206,8 @@ void MapWindow::player_walk_to_mouse_cursor(uint32 mx, uint32 my)
             walk_delay -= (this_time - last_time);
         last_time = this_time;
         mouseToWorldCoords((int)mx, (int)my, wx, wy);
-        if(wx <= cur_x || wx > (cur_x + win_width) || wy <= cur_y || wy > (cur_y + win_height)
-           || walk_delay > 0)
+        if(/*wx <= cur_x || wx > (cur_x + win_width) || wy <= cur_y || wy > (cur_y + win_height)
+           || */walk_delay > 0)
             return;
         player->get_location(&px, &py, &pz);
         rx = wx - px;
@@ -1298,7 +1308,7 @@ void MapWindow::player_multiuse(uint16 wx, uint16 wy)
 
         if(player->get_location().distance(target) > 1)
         {
-            scroll->display_string("\nToo far away!\n");
+            scroll->display_string("\nOut of range!\n");
             fprintf(stderr, "distance to object: %d\n", player->get_location().distance(target));
         }
         else if(uc->has_usecode(obj))

@@ -90,7 +90,9 @@ class NuvieIOBuffer: public NuvieIO
    bool write1(uint8 src);
    bool write2(uint16 src);
    bool write4(uint32 src);
-   uint32 writeBuf(unsigned char *src, uint32 src_size)=0;
+   uint32 writeBuf(unsigned char *src, uint32 src_size);
    uint32 write(NuvieIO *src);
+
+   void seek(uint32 new_pos);
 };
 #endif /* __NuvieIO_h__ */

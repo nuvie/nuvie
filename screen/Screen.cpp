@@ -34,6 +34,7 @@
 #include "Scale.h"
 #include "Screen.h"
 #include "MapWindow.h"
+//#include "Cursor.h"
 
 #define sqr(a) ((a)*(a))
 
@@ -76,6 +77,8 @@ Screen::~Screen()
     if(shading_globe[i])
        free(shading_globe[i]);
    }
+
+// if(cursor) delete cursor;
 
  SDL_Quit();
 }
@@ -120,8 +123,28 @@ fullscreen = false;
  
  set_screen_mode();
 
+// string pointers;
+// config->value("config/ultima6/gamedir", pointers);
+// pointers += "u6mcga.ptr";
+// cursor = new Cursor();
+// if(cursor->init(this, pointers))
+//    SDL_ShowCursor(false); // won't need the system default
+// else
+// {
+//    delete cursor;
+//    cursor = NULL; // no game cursor
+// }
+
  return true;
 }
+
+
+bool Screen::set_pointer(uint8 ptr_num)
+{
+//    return(cursor && cursor->set_pointer(ptr_num));
+return(false);
+}
+
 
 bool Screen::set_palette(uint8 *p)
 {
@@ -867,6 +890,9 @@ void Screen::update(uint16 x, uint16 y, uint16 w, uint16 h)
 
 void Screen::preformUpdate()
 {
+// if(cursor) // using game cursor
+//  cursor->display();
+
  SDL_UpdateRects(sdl_surface,num_update_rects,update_rects);
  num_update_rects = 0;
 }

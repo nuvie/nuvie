@@ -160,7 +160,7 @@ class Actor
  bool is_met() { return(flags & 0x01); }
 
  void set_name(const char *actor_name) {  name=actor_name; }
- const char *get_name() {return name.c_str(); }
+ const char *get_name();
 
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  MapCoord get_location();

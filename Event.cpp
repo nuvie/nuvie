@@ -67,6 +67,7 @@ Event::Event(Configuration *cfg)
  alt_code_input_num = 0;
 
  use_obj = NULL;
+ selected_actor = NULL;
 
  book = NULL;
  time_queue = game_time_queue = NULL;
@@ -401,6 +402,7 @@ bool Event::talk()
     else if(converse->start(npc))
     {
         // print npc name if met-flag is set, or npc is in avatar's party
+//        scroll->display_string(npc->get_name());
         name = converse->npc_name(id); // get name
         if(name &&
            (npc->is_met() || player->get_party()->contains_actor(npc)))
@@ -565,7 +567,7 @@ bool Event::use(Obj *obj)
 
     if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player->get_actor()->get_location().distance(target) > 1)
     {
-        scroll->display_string("\nToo far away!\n");
+        scroll->display_string("\nOut of range!\n");
         fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
     }
     else if(usecode->has_usecode(obj))
@@ -584,6 +586,7 @@ bool Event::use(Obj *obj)
         scroll->display_prompt();
         endAction();
     }
+    return(true);
 }
 
 
@@ -619,6 +622,7 @@ bool Event::use(Actor *actor)
         scroll->display_prompt();
         endAction();
     }
+    return(true);
 }
 
 
@@ -813,6 +817,7 @@ bool Event::look()
  */
 bool Event::pushTo(sint16 rel_x, sint16 rel_y)
 {
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     Map *map = Game::get_game()->get_game_map();
     LineTestResult lt;
     if(rel_x == 0 && rel_y == -1) // FIXME: move direction names somewhere else
@@ -835,12 +840,31 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
         scroll->display_string("nowhere.");
     scroll->display_string("\n\n");
 
-    if(map->lineTest(use_obj->x+rel_x, use_obj->y+rel_y, use_obj->x+rel_x, use_obj->y+rel_y,
-                     use_obj->z, LT_HitActors | LT_HitUnpassable, lt))
-        scroll->display_string("Blocked.\n\n");
-    else // FIXME: there is some test or random chance here ("Failed.\n\n")
-        if(!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y))
-            obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
+    // FIXME: the random chance here is just made up, I don't know what
+    //        kind of check U6 did ("Failed.\n\n")
+    if(selected_actor)
+    {
+        MapCoord from(selected_actor->get_location());
+        if(map->lineTest(from.x+rel_x, from.y+rel_y, from.x+rel_x, from.y+rel_y,
+                         from.z, LT_HitActors | LT_HitUnpassable, lt))
+            scroll->display_string("Blocked.\n\n");
+        else if(!selected_actor->moveRelative(rel_x, rel_y))
+        {
+            if(NUVIE_RAND() % 2) // already checked if target is passable
+                selected_actor->move(from.x+rel_x, from.y+rel_y, from.z, ACTOR_FORCE_MOVE);
+            else
+                scroll->display_string("Failed.\n\n");
+        }
+    }
+    else
+    {
+        if(map->lineTest(use_obj->x+rel_x, use_obj->y+rel_y, use_obj->x+rel_x, use_obj->y+rel_y,
+                         use_obj->z, LT_HitActors | LT_HitUnpassable, lt))
+            scroll->display_string("Blocked.\n\n");
+        else /* do normal move if no usecode or return from usecode was true */
+            if(!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y))
+                obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
+    }
     scroll->display_prompt();
     endAction();
     return(true);
@@ -851,15 +875,25 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
  */
 bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
 {
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     MapCoord from = player->get_actor()->get_location();
     map_window->set_show_use_cursor(false);
-    // FIXME: you can move actors too
     if(rel_x || rel_y)
+    {
         use_obj = obj_manager->get_obj((uint16)(from.x+rel_x), (uint16)(from.y+rel_y), from.z);
+        selected_actor = actor_manager->get_actor((uint16)(from.x+rel_x), (uint16)(from.y+rel_y), from.z);
+    }
     if(use_obj
        && (obj_manager->get_obj_weight(use_obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS) == 0))
         use_obj = NULL;
-    if(use_obj)
+
+    if(selected_actor)
+    {
+        scroll->display_string(selected_actor->get_name());
+        scroll->display_string("\nTo ");
+        mode = PUSH_MODE;
+    }
+    else if(use_obj)
     {
         scroll->display_string(obj_manager->look_obj(use_obj));
         scroll->display_string("\nTo ");
@@ -1451,6 +1485,8 @@ void Event::solo_mode(uint32 party_member)
         scroll->set_prompt((char *)prompt.c_str());
         scroll->display_prompt();
         map_window->centerMapOnActor(actor);
+        if(view_manager->get_inventory_view()->set_party_member(party_member))
+            view_manager->set_inventory_mode(); // reset inventoryview
     }
 }
 
@@ -1476,6 +1512,8 @@ void Event::party_mode()
             prompt += ":\n>";
             scroll->set_prompt((char *)prompt.c_str());
             map_window->centerMapOnActor(actor);
+            if(view_manager->get_inventory_view()->set_party_member(0))
+                view_manager->set_inventory_mode(); // reset inventoryview
         }
     }
     else
@@ -1683,5 +1721,6 @@ void Event::endAction()
     map_window->set_show_cursor(false);
     view_manager->get_inventory_view()->set_show_cursor(false);
     use_obj = NULL;
+    selected_actor = NULL;
     map_window->updateBlacking();
 }

@@ -1,3 +1,13 @@
+2004-01-30  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Added ability to MOVE actors (with the keyboard).
+	* Fixed: obvious logical AND/OR error in ConverseInterpret (shortcut
+	  left values on the opstack) that caused a freeze.
+	  assertion in inventory (don't assume ready-items are in inventory)
+	  These were in bugtracker item [ 886597 ].
+	  NuvieIOBuffer (write/seek)
+	* A few compile fixes for MSVC.
+	* Upcoming mouse pointer stuff in but commented out.
+
 2004-01-28  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Replaced the quantity loop for things hatched from eggs. My last egg
 	"fix" removed that, but now that fix is fixed. You can get multiple

@@ -470,7 +470,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
 
     switch(in = pop_arg(i))
     {
-        case U6OP_SLEEP: // 0x9e
+        case U6OP_SLEEP: {// 0x9e
             converse->print("You're getting sleepy...*\nvery sleepy...*\n...you can barely keep your eyes open...*\n...*\n\nAt least pretend you're asleep!*\n");
             for(uint32 hour = 0; hour < 8; hour++) // FIXME
             {
@@ -478,7 +478,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
                 Game::get_game()->get_map_window()->updateBlacking();
                 Game::get_game()->get_map_window()->Display(true);
             }
-            break;
+            } break;
         case U6OP_HORSE: // 0x9c
             // FIXME: probably need to do more real actor/object set-up here
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
@@ -761,11 +761,15 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 out = v[0] / v[1];
             break;
         case U6OP_LOR: // 0x94
-            if(pop_arg(i) || pop_arg(i))
+            v[1] = pop_arg(i);
+            v[0] = pop_arg(i);
+            if(v[0] || v[1])
                 out = 1;
             break;
         case U6OP_LAND: // 0x95
-            if(pop_arg(i) && pop_arg(i))
+            v[1] = pop_arg(i);
+            v[0] = pop_arg(i);
+            if(v[0] && v[1])
                 out = 1;
             break;
         case U6OP_CANCARRY: // 0x9a

@@ -144,7 +144,7 @@ unsigned char *U6Lib_n::get_item(uint32 item_number, unsigned char *ret_buf)
    return NULL;
    
  item = &items[item_number];
- 
+
  if(item->size == 0 || item->offset == 0)
    return NULL;
 
@@ -197,7 +197,7 @@ void U6Lib_n::parse_lib()
  
  if(lib_size != 2 && lib_size != 4)
    return;
- 
+
  data->seekStart();
  
  if(game_type != NUVIE_GAME_U6) //U6 doesn't have a 4 byte filesize header.
@@ -209,7 +209,7 @@ void U6Lib_n::parse_lib()
     filesize = data->get_size();
     
  num_offsets = calculate_num_offsets(skip4);
- 
+
  items = (U6LibItem *)malloc(sizeof(U6LibItem) * (num_offsets + 1));
  memset(items, 0, sizeof(U6LibItem) * (num_offsets + 1));
 
@@ -223,7 +223,7 @@ void U6Lib_n::parse_lib()
     else
       {
        items[i].offset = data->read4();
-#warning U6 converse files dont have flag?
+       // U6 converse files dont have flag?
        items[i].flag = (items[i].offset & 0xff000000) >> 24; //extract flag byte
        items[i].offset &= 0xffffff;
       }

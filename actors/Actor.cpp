@@ -20,10 +20,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include "nuvieDefs.h" /* include before cmath to get roundf() */
 #include <cstdlib>
 #include <cmath>
 #include <cassert>
-#include "nuvieDefs.h"
 #include "U6LList.h"
 #include "Game.h"
 #include "GameClock.h"
@@ -34,6 +34,7 @@
 #include "Party.h"
 #include "LPath.h"
 #include "ZPath.h"
+#include "Converse.h"
 #include "Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
@@ -271,6 +272,28 @@ void Actor::face_actor(Actor *a)
 }
 
 
+/* Returns the proper (NPC) name of this actor if the Player knows it, or their
+ * description if the name is unknown. If the name field is already set, that
+ * will be returned instead.
+ */
+const char *Actor::get_name()
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    Converse *converse = Game::get_game()->get_converse();
+    Party *party = Game::get_game()->get_party();
+    const char *talk_name = NULL;
+
+    if(name == "")
+    {
+        if(in_party)
+            name = party->get_actor_name(party->get_member_num(this));
+        else if(is_met() && (talk_name = converse->npc_name(id_n)))
+            name = talk_name;
+        else
+            name = actor_manager->look_actor(this, false);
+    }
+    return(name.c_str());
+}
 
 
 bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
@@ -794,8 +817,6 @@ void Actor::inventory_parse_readied_objects()
 bool Actor::add_readied_object(Obj *obj)
 {
  uint8 location;
-
- assert(obj->is_in_inventory());
 
  location =  get_object_readiable_location(obj->obj_n);
 
