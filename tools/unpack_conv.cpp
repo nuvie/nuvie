@@ -222,7 +222,7 @@ int main(int argc, char **argv)
     converse_a.open(filename, 4);
     unpack_converse_file(&converse_a, &lzw, "converse.a.index");
     std::cout << "--converse.b--" << std::endl;
-    config.pathFromValue("config/ultima6/gamedir", "/converse.b", filename);
+    config.pathFromValue("config/ultima6/gamedir", "converse.b", filename);
     converse_b.open(filename, 4);
     unpack_converse_file(&converse_b, &lzw, "converse.b.index");
  }
