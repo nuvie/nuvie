@@ -42,6 +42,20 @@
 #include "Game.h"
 #include "GameClock.h"
 
+// This should make the mouse-cursor hovering identical to that in U6.
+static const uint8 movement_array[9 * 9] =
+{
+    9, 9, 2, 2, 2, 2, 2, 3, 3,
+    9, 9, 9, 2, 2, 2, 3, 3, 3,
+    8, 9, 9, 2, 2, 2, 3, 3, 4,
+    8, 8, 8, 9, 2, 3, 4, 4, 4,
+    8, 8, 8, 8, 1, 4, 4, 4, 4,
+    8, 8, 8, 7, 6, 5, 4, 4, 4,
+    8, 7, 7, 6, 6, 6, 5, 5, 4,
+    7, 7, 7, 6, 6, 6, 5, 5, 5,
+    7, 7, 6, 6, 6, 6, 6, 5, 5
+};
+
 
 MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
@@ -1154,7 +1168,6 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
     return(GUI_PASS);
 }
 
-
 GUI_status MapWindow::MouseDown (int x, int y, int button)
 {
 	//printf ("MapWindow::MouseDown, button = %i\n", button);
@@ -1163,8 +1176,14 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	Obj	*obj = get_objAtMousePos (x, y);
 	int wx, wy;
 
-	if(event->get_mode() == MOVE_MODE)
+	mouseToWorldCoords(x, y, wx, wy);
+	if(event->get_mode() == MOVE_MODE) // PASS if Avatar is hit
 	{
+		if(wx == player->x && wy == player->y)
+		{
+			event->cancelAction(); // MOVE_MODE, so this should work
+			return GUI_PASS;
+		}
 		walking = true;
 		walk_start_delay = (obj || get_actorAtMousePos(x, y))
 					? mousedouble_delay : 0;
@@ -1314,9 +1333,9 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
  */
 void MapWindow::drawAnims()
 {
-    if(!screen)
+    if(!screen) // screen should be set early on
         return;
-    else if(!anim_manager->get_surface())
+    else if(!anim_manager->get_surface()) // screen must be assigned to AnimManager
         anim_manager->set_surface(screen);
     anim_manager->display();
 }
@@ -1330,100 +1349,106 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
     Event *event = game->get_event();
     int wx, wy;
     sint16 rel_x, rel_y;
-    mouseToWorldCoords((int)mx, (int)my, wx, wy);
-    get_movement_direction((uint16)wx, (uint16)wy, rel_x, rel_y);
+    uint8 mptr; // mouse-pointer is set here in get_movement_direction()
 
     if(event->get_mode() != MOVE_MODE)
         return;
+
+    // MousePos->WorldCoord->Direction&MousePointer
+    mouseToWorldCoords((int)mx, (int)my, wx, wy);
+    get_movement_direction((uint16)wx, (uint16)wy, rel_x, rel_y, &mptr);
     if(dragging || wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1) || wy == (cur_y+win_height-1))
         game->set_mouse_pointer(0); // arrow
-    else if(rel_x == 0 && rel_y == 0)
-        game->set_mouse_pointer(1); // crosshairs
-    else if(rel_x == 0 && rel_y == -1)
-        game->set_mouse_pointer(2);
-    else if(rel_x == 1 && rel_y == -1)
-        game->set_mouse_pointer(3);
-    else if(rel_x == 1 && rel_y == 0)
-        game->set_mouse_pointer(4);
-    else if(rel_x == 1 && rel_y == 1)
-        game->set_mouse_pointer(5);
-    else if(rel_x == 0 && rel_y == 1)
-        game->set_mouse_pointer(6);
-    else if(rel_x == -1 && rel_y == 1)
-        game->set_mouse_pointer(7);
-    else if(rel_x == -1 && rel_y == 0)
-        game->set_mouse_pointer(8);
-    else if(rel_x == -1 && rel_y == -1)
-        game->set_mouse_pointer(9);
+    else
+        game->set_mouse_pointer(mptr); // 1=crosshairs, 2to9=arrows
 }
 
 
 /* Get relative movement direction from the center of the MapWindow to the
- * world coordinates wx,wy, for walking with the mouse, etc.
+ * world coordinates wx,wy, for walking with the mouse, etc. The mouse-pointer
+ * number that should be used for that direction will be set to mptr.
  */
-void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y)
+void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y, uint8 *mptr)
 {
     uint16 cent_x = cur_x + (win_width / 2),
            cent_y = cur_y + (win_height / 2);
     uint16 dist_x = abs(wx - cent_x), dist_y = abs(wy - cent_y);
-    uint16 diff = abs(dist_x - dist_y);
 
     rel_x = rel_y = 0;
-    if(wx == cent_x && wy == cent_y) // nowhere
-        return;
-    if(wx == cent_x) // up or down
-    {
-        rel_x = 0;
-        rel_y = (wy < cent_y) ? -1 : 1;
-    }
-    else if(wy == cent_y) // left or right
-    {
-        rel_x = (wx < cent_x) ? -1 : 1;
-        rel_y = 0;
-    }
-    else if(wx > cent_x && wy < cent_y)
-    {
-        if(diff < 2) // up right
+    if(dist_x <= 4 && dist_y <= 4)
+    {   // use mapwindow coords (4,4 is center of mapwindow)
+        uint8 cursor_num = movement_array[(9 * (4 + (wy - cent_y))) + (4 + (wx - cent_x))];
+        if(mptr) // set mouse-pointer number
+            *mptr = cursor_num;
+        if(cursor_num == 1) // nowhere
+            return;
+        if(cursor_num == 2) // up
+            rel_y = -1;
+        else if(cursor_num == 6) // down
+            rel_y = 1;
+        else if(cursor_num == 8) // left
+            rel_x = -1;
+        else if(cursor_num == 4) // right
+            rel_x = 1;
+        else if(cursor_num == 3) // up-right
         {
             rel_x = 1; rel_y = -1;
         }
-        else if(dist_x < dist_y)  // up or right
-            rel_y = -1;
-        else
-            rel_x = 1;
-    }
-    else if(wx > cent_x && wy > cent_y)
-    {
-        if(diff < 2) // down right
+        else if(cursor_num == 5) // down-right
         {
             rel_x = 1; rel_y = 1;
         }
-        else if(dist_x < dist_y) // down or right
-            rel_y = 1;
-        else
-            rel_x = 1;
-    }
-    else if(wx < cent_x && wy > cent_y)
-    {
-        if(diff < 2) // down left
+        else if(cursor_num == 7) // down-left
         {
             rel_x = -1; rel_y = 1;
         }
-        else if(dist_x < dist_y) // down or left
-            rel_y = 1;
-        else
-            rel_x = -1;
-    }
-    else if(wx < cent_x && wy < cent_y)
-    {
-        if(diff < 2) // up left
+        else if(cursor_num == 9) // up-left
         {
             rel_x = -1; rel_y = -1;
         }
-        else if(dist_x < dist_y) // up or left
+    }
+    else // mapwindow is larger than the array; use 4 squares around center array
+    {
+        if(dist_x <= 4 && wy < cent_y) // up
+        {
             rel_y = -1;
-        else
+            if(mptr) *mptr = 2;
+        }
+        else if(dist_x <= 4 && wy > cent_y) // down
+        {
+            rel_y = 1;
+            if(mptr) *mptr = 6;
+        }
+        else if(wx < cent_x && dist_y <= 4) // left
+        {
             rel_x = -1;
+            if(mptr) *mptr = 8;
+        }
+        else if(wx > cent_x && dist_y <= 4) // right
+        {
+            rel_x = 1;
+            if(mptr) *mptr = 4;
+        }
+        else if(wx > cent_x && wy < cent_y) // up-right
+        {
+            rel_x = 1; rel_y = -1;
+            if(mptr) *mptr = 3;
+        }
+        else if(wx > cent_x && wy > cent_y) // down-right
+        {
+            rel_x = 1; rel_y = 1;
+            if(mptr) *mptr = 5;
+        }
+        else if(wx < cent_x && wy > cent_y) // down-left
+        {
+            rel_x = -1; rel_y = 1;
+            if(mptr) *mptr = 7;
+        }
+        else if(wx < cent_x && wy < cent_y) // up-left
+        {
+            rel_x = -1; rel_y = -1;
+            if(mptr) *mptr = 9;
+        }
     }
 }
 

@@ -25,6 +25,7 @@
 #include <cstdio>
 #include "nuvieDefs.h"
 #include "U6LList.h"
+#include "U6misc.h"
 #include "MapEntity.h"
 
 #include "Game.h"
@@ -1119,27 +1120,10 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
     // print direction (FIXME: relative dir is what should have been returned)
     sint8 xdir = (dig_at.x == from.x) ? 0 : (dig_at.x < from.x) ? -1 : 1;
     sint8 ydir = (dig_at.y == from.y) ? 0 : (dig_at.y < from.y) ? -1 : 1;
-    if(xdir == 0 && ydir == -1) // and also, move direction names somewhere else
-        scroll->display_string("North.\n\n");
-    else if(xdir == 1 && ydir == -1)
-        scroll->display_string("Northeast.\n\n");
-    else if(xdir == 1 && ydir == 0)
-        scroll->display_string("East.\n\n");
-    else if(xdir == 1 && ydir == 1)
-        scroll->display_string("Southeast.\n\n");
-    else if(xdir == 0 && ydir == 1)
-        scroll->display_string("South.\n\n");
-    else if(xdir == -1 && ydir == 1)
-        scroll->display_string("Southwest.\n\n");
-    else if(xdir == -1 && ydir == 0)
-        scroll->display_string("West.\n\n");
-    else if(xdir == -1 && ydir == -1)
-        scroll->display_string("Northwest.\n\n");
-    else
-    {
-        scroll->display_string("nowhere.\n\n");
+    scroll->display_string(get_direction_name(xdir, ydir));
+    scroll->display_string(".\n\n");
+    if(xdir == 0 && ydir == 0)
         return(true); // ??
-    }
     // FIX: how are dig-able tiles determined?
     if(!game->get_map_window()->in_dungeon_level())
     {

@@ -194,3 +194,28 @@ bool subtract_rect(SDL_Rect *rect1, SDL_Rect *rect2, SDL_Rect *sub_rect)
     }
     return(true);
 }
+
+
+/* Returns name of relative direction. 0,0 prints "nowhere".
+ */
+const char *get_direction_name(sint16 rel_x, sint16 rel_y)
+{
+    if(rel_x == 0 && rel_y < 0)
+        return("North");
+    else if(rel_x > 0 && rel_y < 0)
+        return("Northeast");
+    else if(rel_x > 0 && rel_y == 0)
+        return("East");
+    else if(rel_x > 0 && rel_y > 0)
+        return("Southeast");
+    else if(rel_x == 0 && rel_y > 0)
+        return("South");
+    else if(rel_x < 0 && rel_y > 0)
+        return("Southwest");
+    else if(rel_x < 0 && rel_y == 0)
+        return("West");
+    else if(rel_x < 0 && rel_y < 0)
+        return("Northwest");
+    else
+        return("nowhere");
+}

@@ -543,25 +543,30 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
  uint16 i;
  MsgText *token;
 
- if(input_mode)
-   {
-    token = get_token_at_pos(x,y);
-    if(token)
-     {
-      for(i=0;i < token->s.length(); i++)
-        {
-         if(isalpha(token->s[i]))
-           input_buf_add_char(token->s[i]);
-        }
-     }
-   }
-
     if(page_break) // any click == scroll-to-end
     {
         page_break = false;
+
         if(!input_mode)
             Game::get_game()->get_gui()->unlock_input();
+
+        process_holding_buffer(); // Process any text in the holding buffer.
         return(GUI_YUM);
+    }
+    else if(button == 1) // left click == select word
+    {
+     if(input_mode)
+       {
+        token = get_token_at_pos(x,y);
+        if(token)
+         {
+          for(i=0;i < token->s.length(); i++)
+            {
+             if(isalpha(token->s[i]))
+               input_buf_add_char(token->s[i]);
+            }
+         }
+       }
     }
     else if(button == 3) // right click == send input
         if(permit_inputescape && input_mode)

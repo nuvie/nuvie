@@ -129,7 +129,7 @@ class MapWindow: public GUI_Widget
  Obj *get_objAtMousePos(int x, int y);
  Actor *get_actorAtMousePos(int x, int y);
  void mouseToWorldCoords (int mx, int my, int &wx, int &wy);
- void get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y);
+ void get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y, uint8 *mptr = NULL);
 
  TileManager *get_tile_manager() { return tile_manager; }
  AnimManager *get_anim_manager() { return anim_manager; }

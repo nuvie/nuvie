@@ -26,6 +26,7 @@
 #include "SDL.h"
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "Configuration.h"
 #include "Game.h"
 #include "GameClock.h"
@@ -1796,22 +1797,11 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     MapCoord drop_loc(x, y, actor_loc.z);
     sint16 rel_x = x - actor_loc.x;
     sint16 rel_y = y - actor_loc.y;
-    if(rel_x == 0 && rel_y < 0) // FIXME: move direction names somewhere else
-        scroll->display_string("North.\n");
-    else if(rel_x > 0 && rel_y < 0)
-        scroll->display_string("Northeast.\n");
-    else if(rel_x > 0 && rel_y == 0)
-        scroll->display_string("East.\n");
-    else if(rel_x > 0 && rel_y > 0)
-        scroll->display_string("Southeast.\n");
-    else if(rel_x == 0 && rel_y > 0)
-        scroll->display_string("South.\n");
-    else if(rel_x < 0 && rel_y > 0)
-        scroll->display_string("Southwest.\n");
-    else if(rel_x < 0 && rel_y == 0)
-        scroll->display_string("West.\n");
-    else if(rel_x < 0 && rel_y < 0)
-        scroll->display_string("Northwest.\n");
+    if(rel_x != 0 || rel_y != 0)
+    {
+        scroll->display_string(get_direction_name(rel_x, rel_y));
+        scroll->display_string(".\n");
+    }
 //    else
 //        scroll->display_string("nowhere");
 
@@ -1842,6 +1832,7 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
  */
 void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
 {
+// FIXME: might add generic walk_to() action to Player
 // player->walk_to(uint16 x, uint16 y, uint16 move_max, uint16 timeout_seconds);
     int wx, wy;
     uint16 px, py;
@@ -1851,13 +1842,9 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
     if(mode == WAIT_MODE || !player->check_walk_delay())
         return;
 
+    // Mouse->World->RelativeDirection
     map_window->mouseToWorldCoords((int)mx, (int)my, wx, wy);
-    player->get_location(&px, &py, &pz);
-    rx = wx - px;
-    ry = wy - py;
-    if(abs(rx) > (abs(ry)+1)) ry = 0; // ...trying to emulate U6
-    else if(abs(ry) > (abs(rx)+1)) rx = 0;
-
+    map_window->get_movement_direction((uint16)wx, (uint16)wy, rx, ry);
     player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
                          (ry == 0) ? 0 : ry < 0 ? -1 : 1);
 }
@@ -2126,6 +2113,7 @@ bool Event::newAction(EventMode new_mode)
 
 /* Revert to default MOVE_MODE. (walking)
  * This clears visible cursors, and resets all variables used by actions.
+ * This is called at the end of any action, AND when an action is cancelled.
  */
 void Event::endAction(bool prompt)
 {

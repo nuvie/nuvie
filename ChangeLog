@@ -1,3 +1,12 @@
+2005-01-20  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Fixed scroll-to-end when clicking the MsgScroll with the mouse.
+	  Keywords can only be selected with the left mousebutton.
+	* Clicking on the Avatar now passes. This conflicts with double-click.
+	  so I still need to change this.
+	* Changed mousewalking look/feel just slightly. You probably won't
+	  notice any difference, but it should be more like U6 now.
+	* Cardinal direction names moved to U6misc.cpp.
+
 2005-01-02  Eric Fry <efry at users.sourceforge.net>
 	* Fixed red moongate bug. [1091114] There was a small typo in the last 
 	  moon gate location. X was 0x296 where it should have been 0x29b.
