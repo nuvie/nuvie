@@ -1015,23 +1015,13 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
  uint16 lx, ly;
  uint8 lz;
  
-    if(ev != USE_EVENT_USE)
-        return(false);
+ if(ev != USE_EVENT_USE)
+    return(false);
 
  ship_actor = actor_manager->get_actor(0); //get the vehicle actor.
-
- if(obj->obj_n == OBJ_U6_SHIP) //If we are using a ship we need to use its center object.
-   {
-    obj = use_boat_find_center(obj); //return the center object
-    if(obj == NULL)
-     {
-      scroll->display_string("\nShip not usable\n");
-      return false;
-     }
-   }
  
  // get out of boat
- if(ship_actor->obj_n == obj->obj_n && ship_actor->is_at_position(obj)) 
+ if(party->is_in_vehicle()) 
   {
    ship_actor->get_location(&lx,&ly,&lz); //retrieve actor position for land check.
    
@@ -1054,6 +1044,8 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
       scroll->display_string("\nOnly next to land.\n");
       return false;
      }
+   
+   party->set_in_vehicle(false);
      
    return true;
   }
@@ -1068,6 +1060,16 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
       }
    }
 
+ if(obj->obj_n == OBJ_U6_SHIP) //If we are using a ship we need to use its center object.
+   {
+    obj = use_boat_find_center(obj); //return the center object
+    if(obj == NULL)
+     {
+      scroll->display_string("\nShip not usable\n");
+      return false;
+     }
+   }
+
  // walk to vehicle if necessary
  if(!party->is_at(obj->x, obj->y, obj->z))
     party->enter_vehicle(obj);
@@ -1080,6 +1082,7 @@ bool U6UseCode::use_boat(Obj *obj, uint8 ev)
 
     party->hide(); // set in-vehicle
     player->set_actor(ship_actor);
+    party->set_in_vehicle(true);
    }
  return(true);
 }
@@ -1120,7 +1123,7 @@ inline Obj *U6UseCode::use_boat_find_center(Obj *obj)
       }
    }
 
- new_obj = obj_manager->get_obj(x,y,obj->z);
+ new_obj = obj_manager->get_objBasedAt(x,y,obj->z,true);
  
  if(new_obj != NULL && new_obj->obj_n == OBJ_U6_SHIP)
    return new_obj;

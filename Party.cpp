@@ -43,6 +43,7 @@ Party::Party(Configuration *cfg)
  num_in_party = 0;
  formation = PARTY_FORM_STANDARD;
  autowalk = false;
+ in_vehicle = false;
 }
 
 Party::~Party()

@@ -89,6 +89,8 @@ class Party {
  uint8 formation; // walking formation
  bool autowalk; // party is automatically walking to a destination
  
+ bool in_vehicle; //Party is in a vehicle.
+ 
  public:
  
  Party(Configuration *cfg);
@@ -126,6 +128,9 @@ class Party {
  bool is_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);
  bool is_at(MapCoord &xyz, uint32 threshold = 0);
 
+ void set_in_vehicle(bool value) { in_vehicle = value; }
+ bool is_in_vehicle() { return in_vehicle; }
+ 
  void show();
  void hide();
  
