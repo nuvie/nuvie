@@ -47,6 +47,8 @@ bool selected;
 bool new_save;
 
 std::string filename;
+std::string save_description;
+
 SDL_Surface *thumbnail;
 
 public:
@@ -57,7 +59,7 @@ SaveSlot(GUI_CallBack *callback, GUI_Color bg_color);
 
 bool init(const char *directory, std::string *filename);
 
-
+std::string get_save_description() { return save_description; };
 std::string *get_filename();
 
 void deselect() { selected = false; };

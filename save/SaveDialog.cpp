@@ -177,6 +177,12 @@ GUI_status SaveDialog::callback(uint16 msg, GUI_CallBack *caller, void *data)
 
        selected_slot = (SaveSlot *)caller;
       }
+      
+    if(msg == SAVESLOT_CB_SAVE)
+      {
+       if(callback_object->callback(SAVEDIALOG_CB_SAVE, this, caller) == GUI_YUM) //caller = slot to save in
+         close_dialog();
+      }
    }
 /*
  if(caller == (GUI_CallBack *)no_button)

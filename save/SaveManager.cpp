@@ -161,7 +161,7 @@ bool SaveManager::save(SaveSlot *save_slot)
    
  build_path(savedir, save_filename, save_fullpath);
 
- save_desc.assign("Save desc will go here."); 
+ save_desc = save_slot->get_save_description(); 
  return savegame->save(save_fullpath.c_str(), &save_desc);
 }
 

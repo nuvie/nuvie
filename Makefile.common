@@ -46,6 +46,8 @@ nuvie_SOURCES = \
 	GUI/GUI_loadimage.h \
 	GUI/GUI_text.cpp \
 	GUI/GUI_text.h \
+	GUI/GUI_TextInput.cpp \
+	GUI/GUI_TextInput.h \
 	GUI/GUI_widget.cpp \
 	GUI/GUI_widget.h \
 	GUI/GUI_DragManager.cpp \

@@ -112,7 +112,6 @@
 				0703C09A054BE5660003D6CB,
 				0703C09B054BE5660003D6CB,
 				0703C09C054BE5660003D6CB,
-				0703C09D054BE5660003D6CB,
 				0703C09E054BE5660003D6CB,
 				0703C09F054BE5660003D6CB,
 				0703C0A0054BE5660003D6CB,
@@ -154,6 +153,8 @@
 				07132C7E066968A200F0A38E,
 				07132CA70669694A00F0A38E,
 				078B44500669B9B5000EFE27,
+				07E25F5D06A171EA009E8571,
+				07E2601C06AA5FE3009E8571,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -530,12 +531,6 @@
 			settings = {
 			};
 		};
-		0703C09D054BE5660003D6CB = {
-			fileRef = 074B914304E4C51500A8000A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		0703C09E054BE5660003D6CB = {
 			fileRef = 071DE9F504F61F9000A8000A;
 			isa = PBXBuildFile;
@@ -710,6 +705,7 @@
 				07B011800668765B000771BC,
 				07132C7D066968A200F0A38E,
 				078B444F0669B9B5000EFE27,
+				07E2601E06AA5FE4009E8571,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2032,6 +2028,8 @@
 				074B913C04E4C51500A8000A,
 				071DE9B504EBA52500A8000A,
 				071DE9B404EBA52500A8000A,
+				07906ABD068D616D00C74729,
+				07906ABC068D616D00C74729,
 				074B914304E4C51500A8000A,
 				074B914204E4C51500A8000A,
 				074B914B04E4C51500A8000A,
@@ -2787,6 +2785,24 @@
 			settings = {
 			};
 		};
+		07906ABC068D616D00C74729 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = GUI_TextInput.cpp;
+			path = ../GUI/GUI_TextInput.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07906ABD068D616D00C74729 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = GUI_TextInput.h;
+			path = ../GUI/GUI_TextInput.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
 		07938EA404B6C8B100A8000A = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -3393,6 +3409,24 @@
 			path = ../usecode/SEUseCode.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+		};
+		07E25F5D06A171EA009E8571 = {
+			fileRef = 074B914304E4C51500A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07E2601C06AA5FE3009E8571 = {
+			fileRef = 07906ABD068D616D00C74729;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07E2601E06AA5FE4009E8571 = {
+			fileRef = 07906ABC068D616D00C74729;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		07E3229E046BEBC900A8000A = {
 			isa = PBXFileReference;

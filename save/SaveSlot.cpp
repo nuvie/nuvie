@@ -28,6 +28,8 @@
 #include "GUI.h"
 #include "GUI_types.h"
 #include "GUI_text.h"
+#include "GUI_TextInput.h"
+
 #include "GUI_CallBack.h"
 
 #include "Game.h"
@@ -71,8 +73,7 @@ bool SaveSlot::init(const char *directory, std::string *file)
 
  if(new_save)
    {
-    widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, "New Save.", gui->get_font());
-    AddWidget(widget);
+    save_description.assign("New Save.");
    }
 
  if(!new_save)
@@ -80,6 +81,9 @@ bool SaveSlot::init(const char *directory, std::string *file)
     load_info(directory);
    }
 
+ widget = (GUI_Widget *) new GUI_TextInput(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, (char *)save_description.c_str(), gui->get_font(),26,2, this);
+ AddWidget(widget);
+ 
  return true;
 }
 
@@ -106,10 +110,11 @@ bool SaveSlot::load_info(const char *directory)
  
  header = savegame->load_info(&loadfile);
  
+ save_description = header->save_description;
+ 
  thumbnail = SDL_ConvertSurface(header->thumbnail, header->thumbnail->format, SDL_SWSURFACE);
 
- widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, (char *)header->save_description.c_str(), gui->get_font());
- AddWidget(widget);
+
  
  widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 20, 200, 200, 200, (char *)filename.c_str(), gui->get_font()); //evil const cast lets remove this
  AddWidget(widget);
@@ -186,12 +191,12 @@ GUI_status SaveSlot::MouseUp(int x, int y, int button)
 
 GUI_status SaveSlot::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
- //if(caller == (GUI_CallBack *)cancel_button)
- //   return close_dialog();
-
-/*
- if(caller == (GUI_CallBack *)no_button)
-   return no_callback_object->callback(YESNODIALOG_CB_NO, this, this);
-*/
+ if(msg == TEXTINPUT_CB_TEXT_READY) //we should probably make sure the caller is a GUI_TextInput object
+   {
+    save_description.assign((char *)data);
+    
+    return callback_object->callback(SAVESLOT_CB_SAVE, this, this);
+   }
+   
  return GUI_PASS;
 }

@@ -1,12 +1,12 @@
-#ifndef __GUI_text_h__
-#define __GUI_text_h__
+#ifndef __GUI_TextInput_h__
+#define __GUI_TextInput_h__
 
 /*
- *  GUI_text.h
+ *  GUI_TextInput.h
  *  Nuvie
  *
- *  Created by Eric Fry on Thr Aug 14 2003.
- *  Copyright (c) Nuvie Team 2003. All rights reserved.
+ *  Created by Eric Fry on Sat Jun 26 2004.
+ *  Copyright (c) Nuvie Team 2004. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,27 +24,43 @@
  *
  */
 
-#include "GUI_widget.h"
+#include "GUI_text.h"
 
 class GUI_Font;
 
-class GUI_Text : public GUI_Widget 
-{
-protected:
-	Uint8 R, G, B;
-	char *text;
-	GUI_Font *font;
-    uint16 max_width; //max line width. No limit if set to 0
 
-public:
-GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, GUI_Font *gui_font, uint16 line_length);
-GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font *gui_font, uint16 line_length=0);
-~GUI_Text();
+#define TEXTINPUT_CB_TEXT_READY 0x1
+
+class GUI_TextInput : public GUI_Text 
+{
+ protected:
+ uint16 max_height;
+ uint16 pos;
+ uint16 length;
+ 
+ GUI_CallBack *callback_object;
+ 
+ Uint32 cursor_color;
+ 
+ public:
+
+ GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b,
+               char *str, GUI_Font *gui_font, uint16 width, uint16 height, GUI_CallBack *callback);
+ ~GUI_TextInput();
+
+ GUI_status MouseUp(int x, int y, int button);
+ GUI_status KeyDown(SDL_keysym key);
+
+ void add_char(char c);
+ void remove_char();
+
+void SetDisplay(Screen *s);
+void display_cursor();
 
 	/* Show the widget  */
 	virtual void Display(bool full_redraw);
 
 };
 
-#endif /* __GUI_text_h__ */
+#endif /* __GUI_TextInput_h__ */
 

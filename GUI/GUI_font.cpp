@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <cmath>
 
 #include "SDL.h"
 
@@ -84,9 +85,10 @@ void GUI_Font::SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 br, Uint8 bg, Uin
 }
 
 /* put the text onto the given surface using the preset mode and colors */
-void GUI_Font::TextOut(SDL_Surface* context,int x, int y, char* text)
+void GUI_Font::TextOut(SDL_Surface* context,int x, int y, char* text, int line_wrap)
 {
   int i;
+  int j;
   Uint8 ch;
   SDL_Rect src;
   SDL_Rect dst;
@@ -96,21 +98,41 @@ void GUI_Font::TextOut(SDL_Surface* context,int x, int y, char* text)
   dst.w = charw;
   dst.h = charh-1;
   i=0;
+  j=0;
   while ( (ch=text[i]) )  // single "=" is correct!
   {
+    if(line_wrap && j == line_wrap)
+       {
+        j=0;
+        y += charh;
+       }
+
     src.x = (ch%16)*charw;
     src.y = (ch/16)*charh;
-    dst.x = x+(i*charw);
+    dst.x = x+(j*charw);
     dst.y = y;
     SDL_BlitSurface(fontStore, &src, context, &dst);
     i++;
+    j++;
   }
 }
 
-void GUI_Font:: TextExtent(char *text, int *w, int *h)
+void GUI_Font:: TextExtent(char *text, int *w, int *h, int line_wrap)
 {
- *w=strlen(text) * charw;
- *h=charh-1;
+ int len = strlen(text);
+ 
+ if(line_wrap && len > line_wrap)
+   *w = line_wrap * charw;
+ else
+   *w=len * charw;
+
+ if(line_wrap && len > line_wrap)
+   {
+    *h = (int)ceil((float)len / (float)line_wrap);
+    *h *= charh-1;
+   }
+ else
+    *h=charh-1;
 
  return;
 }

@@ -26,7 +26,20 @@
 #include "GUI_text.h"
 #include "GUI_font.h"
 
-GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font *gui_font)
+GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, GUI_Font *gui_font, uint16 line_length)
+ : GUI_Widget(NULL, x, y, 0, 0)
+{
+ R = r;
+ G = g;
+ B = b;
+ text = NULL;
+ max_width = line_length;
+ 
+ font = gui_font;
+}
+
+
+GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font *gui_font, uint16 line_length)
  : GUI_Widget(NULL, x, y, 0, 0)
 {
  int w,h;
@@ -35,8 +48,10 @@ GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font
  G = g;
  B = b;
  text = NULL;
-
+ max_width = line_length;
+ 
  font = gui_font;
+ 
  text = (char *)strdup(str);
 
  if(text == NULL)
@@ -45,7 +60,7 @@ GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font
    return;
   }
 
- font->TextExtent(text, &w, &h);
+ font->TextExtent(text, &w, &h, max_width);
 
  area.w = w;
  area.h = h;
@@ -66,7 +81,7 @@ GUI_Text:: Display(bool full_redraw)
 {
  font->SetTransparency(1);
  font->SetColoring(R,G,B);
- font->TextOut(surface,area.x,area.y,text);
+ font->TextOut(surface,area.x,area.y,text,max_width);
 
  DisplayChildren();
 }

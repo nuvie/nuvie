@@ -1,3 +1,10 @@
+2004-07-18  Eric Fry <efry at users.sourceforge.net>
+	* Added GUI_TextInput class.
+	* You can now add a textual description along with your save game.
+	  There are still a few issues with this. You can't type capitals
+	  properly. Escape isn't working correctly either. It should return
+	  the text to its original state before editing was started.
+
 2004-07-06  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed a bug in 84-Stivus' conversation (possibly others) which always
 	  gave the "I don't know" answer when asked about "wine". (which just
