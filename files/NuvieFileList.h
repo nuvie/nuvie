@@ -42,7 +42,7 @@ class NuvieFileDesc
  std::string filename;
  time_t m_time;
 
- bool operator<(const NuvieFileDesc &rhs) { return (this->m_time < rhs.m_time); };
+ bool operator<(const NuvieFileDesc &rhs) { return (rhs.m_time < this->m_time); };
  bool operator()(const NuvieFileDesc &lhs, const NuvieFileDesc &rhs) { return (lhs.m_time > rhs.m_time); };
 };
 

@@ -430,14 +430,14 @@ MapCoord Party::get_formation_coords(uint8 m)
     MapCoord l(member[0].actor->get_location()); // leader location
     uint8 ldir = member[0].actor->get_direction(); // leader direciton
     // intended location
-    return(MapCoord((ldir == ACTOR_DIR_U) ? l.x + member[m].form_x : // X
-                    (ldir == ACTOR_DIR_R) ? l.x - member[m].form_y :
-                    (ldir == ACTOR_DIR_D) ? l.x - member[m].form_x :
-                    (ldir == ACTOR_DIR_L) ? l.x + member[m].form_y : a.x,
-                    (ldir == ACTOR_DIR_U) ? l.y + member[m].form_y : // Y
-                    (ldir == ACTOR_DIR_R) ? l.y + member[m].form_x :
-                    (ldir == ACTOR_DIR_D) ? l.y - member[m].form_y :
-                    (ldir == ACTOR_DIR_L) ? l.y - member[m].form_x : a.y,
+    return(MapCoord((ldir == NUVIE_DIR_N) ? l.x + member[m].form_x : // X
+                    (ldir == NUVIE_DIR_E) ? l.x - member[m].form_y :
+                    (ldir == NUVIE_DIR_S) ? l.x - member[m].form_x :
+                    (ldir == NUVIE_DIR_W) ? l.x + member[m].form_y : a.x,
+                    (ldir == NUVIE_DIR_N) ? l.y + member[m].form_y : // Y
+                    (ldir == NUVIE_DIR_E) ? l.y + member[m].form_x :
+                    (ldir == NUVIE_DIR_S) ? l.y - member[m].form_y :
+                    (ldir == NUVIE_DIR_W) ? l.y - member[m].form_x : a.y,
                     a.z // Z
                    ));
 }

@@ -202,28 +202,28 @@ void Actor::set_direction(sint16 rel_x, sint16 rel_y)
     if(rel_x == 0 && rel_y == 0) // nowhere (just update frame)
         new_direction = direction;
     else if(rel_x == 0) // up or down
-        new_direction = (rel_y < 0) ? ACTOR_DIR_U : ACTOR_DIR_D;
+        new_direction = (rel_y < 0) ? NUVIE_DIR_N : NUVIE_DIR_S;
     else if(rel_y == 0) // left or right
-        new_direction = (rel_x < 0) ? ACTOR_DIR_L : ACTOR_DIR_R;
+        new_direction = (rel_x < 0) ? NUVIE_DIR_W : NUVIE_DIR_E;
 // Add 2 to current direction if it is opposite the new direction
     else if(rel_x < 0 && rel_y < 0) // up-left
     {
-        if(direction != ACTOR_DIR_U && direction != ACTOR_DIR_L)
+        if(direction != NUVIE_DIR_N && direction != NUVIE_DIR_W)
             new_direction = direction + 2;
     }
     else if(rel_x > 0 && rel_y < 0) // up-right
     {
-        if(direction != ACTOR_DIR_U && direction != ACTOR_DIR_R)
+        if(direction != NUVIE_DIR_N && direction != NUVIE_DIR_E)
             new_direction = direction + 2;
     }
     else if(rel_x < 0 && rel_y > 0) // down-left
     {
-        if(direction != ACTOR_DIR_D && direction != ACTOR_DIR_L)
+        if(direction != NUVIE_DIR_S && direction != NUVIE_DIR_W)
             new_direction = direction + 2;
     }
     else if(rel_x > 0 && rel_y > 0) // down-right
     {
-        if(direction != ACTOR_DIR_D && direction != ACTOR_DIR_R)
+        if(direction != NUVIE_DIR_S && direction != NUVIE_DIR_E)
             new_direction = direction + 2;
     }
     // wrap

@@ -32,6 +32,16 @@
 #define clamp_max(v, c)  (((v) > (c)) ? (c) : (v))
 #define clamp(v, c1, c2) ( ((v) < (c1)) ? (c1) : (((v) > (c2)) ? c2 : (v)) )
 
+#define NUVIE_DIR_N  0
+#define NUVIE_DIR_E  1
+#define NUVIE_DIR_S  2
+#define NUVIE_DIR_W  3
+
+#define NUVIE_DIR_NE 4
+#define NUVIE_DIR_SE 5
+#define NUVIE_DIR_SW 6
+#define NUVIE_DIR_NW 7
+
 /*
 #ifndef BOOL
 typedef unsigned char BOOL;

@@ -593,10 +593,10 @@ void ActorManager::print_actor(Actor *actor)
     printf("base_obj_n: %03d    old_frame_n: %d\n", actor->base_obj_n, actor->old_frame_n);
 
     uint8 direction = actor->direction;
-    printf("direction: %d (%s)\n", direction, (direction==ACTOR_DIR_U)?"north":
-                                              (direction==ACTOR_DIR_R)?"east":
-                                              (direction==ACTOR_DIR_D)?"south":
-                                              (direction==ACTOR_DIR_L)?"west":"???");
+    printf("direction: %d (%s)\n", direction, (direction==NUVIE_DIR_N)?"north":
+                                              (direction==NUVIE_DIR_E)?"east":
+                                              (direction==NUVIE_DIR_S)?"south":
+                                              (direction==NUVIE_DIR_W)?"west":"???");
     printf("walk_frame: %d\n", actor->walk_frame);
 
     printf("can_move: %s\n", actor->can_move ? "true" : "false");
@@ -737,7 +737,7 @@ bool ActorManager::resurrect_actor(Obj *actor_obj, MapCoord new_position)
    
    actor->frame_n = 0;
    
-   actor->set_direction(ACTOR_DIR_U);
+   actor->set_direction(NUVIE_DIR_N);
 
    actor->set_hp(1);
    //actor->set_worktype(0x1);

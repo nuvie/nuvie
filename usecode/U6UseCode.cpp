@@ -1493,10 +1493,10 @@ inline Obj *U6UseCode::use_boat_find_center(Obj *obj)
    {
     switch(ship_direction)
       {
-       case ACTOR_DIR_U : y++; break;
-       case ACTOR_DIR_R : x--; break;
-       case ACTOR_DIR_D : y--; break;
-       case ACTOR_DIR_L : x++; break;
+       case NUVIE_DIR_N : y++; break;
+       case NUVIE_DIR_E : x--; break;
+       case NUVIE_DIR_S : y--; break;
+       case NUVIE_DIR_W : x++; break;
       }
    }
  else
@@ -1505,10 +1505,10 @@ inline Obj *U6UseCode::use_boat_find_center(Obj *obj)
       {
        switch(ship_direction)
          {
-          case ACTOR_DIR_U : y--; break;
-          case ACTOR_DIR_R : x++; break;
-          case ACTOR_DIR_D : y++; break;
-          case ACTOR_DIR_L : x--; break;
+          case NUVIE_DIR_N : y--; break;
+          case NUVIE_DIR_E : x++; break;
+          case NUVIE_DIR_S : y++; break;
+          case NUVIE_DIR_W : x--; break;
          }
       }
    }

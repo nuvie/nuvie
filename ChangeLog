@@ -1,3 +1,14 @@
+2005-03-06  Eric Fry <efry at users.sourceforge.net>
+	* Fixed the boundary fill logic when sherry goes through a mousehole.
+	* I've done some more work on the wall reshaping logic. The wall bug
+	  [ 821711 ] is almost fixed. There is still one tile out of place. :(
+	* Added new direction defines. eg. NUVIE_DIR_NE
+	* Removed existing ACTOR_DIR_x defines. They've been replaced by the
+	  general NUVIE_DIR_x defines.
+	* Converted some magic direction numbers into NUVIE_DIR_x values.
+	* Fixed Savegame filelist bug. The latest savegame should load at 
+	  start up. The savedialog should be listed in descending order now.
+
 2005-03-06  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* builds/linux/*: added fedora .spec file, .desktop file and icon
 	* various: fixed 'make dist', install data
@@ -8,7 +19,7 @@
 
 2005-03-05  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a bug with stackable objects. Objects with qty > 255 would
-	  lose their high byte of data when beeing saved. The correct value
+	  lose their high byte of data when being saved. The correct value
 	  was being saved but it was cutting the qty when returning control
 	  to the player.
 	* Updated the OS X specific SDLMain.m cocoa wrapper.

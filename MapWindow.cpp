@@ -797,13 +797,31 @@ void MapWindow::generateTmpMap()
 {
  unsigned char *map_ptr;
  uint16 pitch;
-
+ uint16 x, y;
+ Tile *tile;
+ 
  map_ptr = map->get_map_data(cur_level);
  pitch = map->get_width(cur_level);
 
  memset(tmp_map_buf, 0, tmp_map_width * tmp_map_height * sizeof(uint16));
 
- boundaryFill(map_ptr, pitch, cur_x + ((win_width - 1) / 2), cur_y + ((win_height - 1) / 2));
+ x = cur_x + ((win_width - 1) / 2);
+ y = cur_y + ((win_height - 1) / 2);
+ 
+ //This is for U6. Sherry needs to pass through walls
+ //We shift the boundary fill start location off the wall tile so it flood
+ //fills correctly. We move east for vertical wall tiles and south for
+ //horizontal wall tiles. 
+ if(game_type == NUVIE_GAME_U6 && obj_manager->is_boundary(x,y,cur_level))
+  {
+   tile = obj_manager->get_obj_tile(x, y, cur_level, false);
+   if((tile->flags1 & TILEFLAG_WALL_MASK) == (TILEFLAG_WALL_NORTH | TILEFLAG_WALL_SOUTH))
+     x++;
+   else
+     y++;
+  }
+  
+ boundaryFill(map_ptr, pitch, x, y);
 
  reshapeBoundary();
 }
@@ -915,17 +933,18 @@ void MapWindow::reshapeBoundary()
             continue;
 
           //generate the required wall flags
-          if(tmpBufTileIsWall(x,y-1))
+          if(tmpBufTileIsWall(x, y-1, NUVIE_DIR_N))
             flag |= TILEFLAG_WALL_NORTH;
-          if(tmpBufTileIsWall(x+1,y))
+          if(tmpBufTileIsWall(x+1, y, NUVIE_DIR_E))
             flag |= TILEFLAG_WALL_EAST;
-          if(tmpBufTileIsWall(x,y+1))
+          if(tmpBufTileIsWall(x, y+1, NUVIE_DIR_S))
             flag |= TILEFLAG_WALL_SOUTH;
-          if(tmpBufTileIsWall(x-1,y))
+          if(tmpBufTileIsWall(x-1, y, NUVIE_DIR_W))
             flag |= TILEFLAG_WALL_WEST;
 
           //we want to keep existing tile if it is pointing to non-wall tiles which are not blacked
           //this is used to support cookfire walls which aren't considered walls in tileflags.
+          
           if(tmpBufTileIsBlack(x,y-1) == false && (original_flag & TILEFLAG_WALL_NORTH))
             flag |= TILEFLAG_WALL_NORTH;
           if(tmpBufTileIsBlack(x+1,y) == false && (original_flag & TILEFLAG_WALL_EAST))
@@ -963,22 +982,23 @@ void MapWindow::reshapeBoundary()
 
           // Look for a suitable tile to transform into
 
-          flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
+        // ERIC 05/03/05 flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
 
           if(((tile->flags1) & TILEFLAG_WALL_MASK) > flag && flag != 144) // 1001 _| corner
             {
-             flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
-             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag;)
+             //flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
+             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag && tile->flags1 & TILEFLAG_WALL_MASK;)
                tile = tile_manager->get_tile(tile->tile_num - 1);
             }
           else
             {
-             flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
-             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag;)
+             //flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
+             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag && tile->flags1 & TILEFLAG_WALL_MASK;)
                tile = tile_manager->get_tile(tile->tile_num + 1);
             }
 
-          tmp_map_buf[y*tmp_map_width + x] = tile->tile_num;
+          if((tile->flags1 & TILEFLAG_WALL_MASK) == flag)
+             tmp_map_buf[y*tmp_map_width + x] = tile->tile_num;
          }
       }
    }
@@ -1013,21 +1033,33 @@ bool MapWindow::tmpBufTileIsBoundary(uint16 x, uint16 y)
  return false;
 }
 
-bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y)
+bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
 {
  uint16 tile_num;
  Tile *tile;
-
+ uint8 mask = 0;
+  
  tile_num = tmp_map_buf[y*tmp_map_width + x];
 
  if(tile_num == 0)
    return false;
 
+ switch(direction)
+ {
+  case NUVIE_DIR_N : mask = TILEFLAG_WALL_SOUTH; break;
+  case NUVIE_DIR_S : mask = TILEFLAG_WALL_NORTH; break;
+  case NUVIE_DIR_E : mask = TILEFLAG_WALL_WEST; break;
+  case NUVIE_DIR_W : mask = TILEFLAG_WALL_EAST; break;
+ }
+
  tile = tile_manager->get_tile(tile_num);
 
  if(tile->flags1 & TILEFLAG_WALL)
-   return true;
-
+   {
+    if(tile->flags1 & mask)
+      return true;
+   }
+   
 // if(obj_manager->is_boundary(cur_x-1+x, cur_y-1+y, cur_level))
 //  return true;
 
@@ -1035,7 +1067,10 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y)
  if(tile != NULL)
    {
     if(tile->flags2 & TILEFLAG_BOUNDARY)
-      return true;
+     {
+      if(tile->flags1 & mask)
+        return true;
+     }
    }
 
  return false;

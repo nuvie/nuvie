@@ -68,13 +68,13 @@ CannonballEffect::CannonballEffect(Obj *src_obj, sint8 direction)
         direction = obj->frame_n;
 
     uint8 target_dist = 5; // distance that cannonball will fly
-    if(direction == 0)
+    if(direction == NUVIE_DIR_N)
         target_loc.y -= target_dist;
-    else if(direction == 1)
+    else if(direction == NUVIE_DIR_E)
         target_loc.x += target_dist;
-    else if(direction == 2)
+    else if(direction == NUVIE_DIR_S)
         target_loc.y += target_dist;
-    else if(direction == 3)
+    else if(direction == NUVIE_DIR_W)
         target_loc.x -= target_dist;
 
     start_anim();
@@ -248,37 +248,17 @@ void QuakeEffect::init_directions()
 {
     uint8 dir = NUVIE_RAND() % 8;
     sx = 0; sy = 0;
-    if(dir == 0) // up
+
+    switch(dir)
     {
-        sy = -(strength*2);
-    }
-    else if(dir == 1) // up-right
-    {
-        sx = (strength*4); sy = -(strength*2);
-    }
-    else if(dir == 2) // right
-    {
-        sx = (strength*4);
-    }
-    else if(dir == 3) // down-right
-    {
-        sx = (strength*4); sy = (strength*2);
-    }
-    else if(dir == 4) // down
-    {
-        sy = (strength*2);
-    }
-    else if(dir == 5) // down-left
-    {
-        sx = -(strength*4); sy = (strength*2);
-    }
-    else if(dir == 6) // left
-    {
-        sx = -(strength*4);
-    }
-    else if(dir == 7) // up-left
-    {
-        sx = -(strength*4); sy = -(strength*2);
+     case NUVIE_DIR_N : sy = -(strength*2); break;
+     case NUVIE_DIR_NE : sx = (strength*4); sy = -(strength*2); break;
+     case NUVIE_DIR_E : sx = (strength*4); break;
+     case NUVIE_DIR_SE : sx = (strength*4); sy = (strength*2); break;
+     case NUVIE_DIR_S : sy = (strength*2); break;
+     case NUVIE_DIR_SW : sx = -(strength*4); sy = (strength*2); break;
+     case NUVIE_DIR_W : sx = -(strength*4); break;
+     case NUVIE_DIR_NW : sx = -(strength*4); sy = -(strength*2); break;
     }
 }
 

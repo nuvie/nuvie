@@ -108,16 +108,16 @@ bool U6Actor::init_ship()
 
  switch(direction)
   {
-   case ACTOR_DIR_U : obj1_y = y+1;
+   case NUVIE_DIR_N : obj1_y = y+1;
                       obj2_y = y-1;
                       break;
-   case ACTOR_DIR_R : obj1_x = x+1;
+   case NUVIE_DIR_E : obj1_x = x+1;
                       obj2_x = x-1;
                       break;
-   case ACTOR_DIR_D : obj1_y = y-1;
+   case NUVIE_DIR_S : obj1_y = y-1;
                       obj2_y = y+1;
                       break;
-   case ACTOR_DIR_L : obj1_x = x-1;
+   case NUVIE_DIR_W : obj1_x = x-1;
                       obj2_x = x+1;
                       break;
   }
@@ -144,13 +144,13 @@ bool U6Actor::init_splitactor()
 
  switch(direction) //FIX for world wrapping
   {
-   case ACTOR_DIR_U : obj_y = y+1;
+   case NUVIE_DIR_N : obj_y = y+1;
                       break;
-   case ACTOR_DIR_R : obj_x = x-1;
+   case NUVIE_DIR_E : obj_x = x-1;
                       break;
-   case ACTOR_DIR_D : obj_y = y-1;
+   case NUVIE_DIR_S : obj_y = y-1;
                       break;
-   case ACTOR_DIR_L : obj_x = x+1;
+   case NUVIE_DIR_W : obj_x = x+1;
                       break;
   }
 
@@ -171,22 +171,22 @@ bool U6Actor::init_dragon()
 
  switch(direction)
   {
-   case ACTOR_DIR_U : head_y = y-1;
+   case NUVIE_DIR_N : head_y = y-1;
                       tail_y = y+1;
                       wing1_x = x-1;
                       wing2_x = x+1;
                       break;
-   case ACTOR_DIR_R : head_x = x+1;
+   case NUVIE_DIR_E : head_x = x+1;
                       tail_x = x-1;
                       wing1_y = y-1;
                       wing2_y = y+1;
                       break;
-   case ACTOR_DIR_D : head_y = y+1;
+   case NUVIE_DIR_S : head_y = y+1;
                       tail_y = y-1;
                       wing1_x = x+1;
                       wing2_x = x-1;
                       break;
-   case ACTOR_DIR_L : head_x = x-1;
+   case NUVIE_DIR_W : head_x = x-1;
                       tail_x = x+1;
                       wing1_y = y+1;
                       wing2_y = y-1;
@@ -224,7 +224,7 @@ uint16 U6Actor::get_downward_facing_tile_num()
  if(base_actor_type->frames_per_direction > 1) //we want the second frame for most actor types.
    shift = 1;
 
- return obj_manager->get_obj_tile_num(base_actor_type->base_obj_n) + base_actor_type->tile_start_offset + (ACTOR_DIR_D * base_actor_type->tiles_per_direction + base_actor_type->tiles_per_frame - 1) + shift;
+ return obj_manager->get_obj_tile_num(base_actor_type->base_obj_n) + base_actor_type->tile_start_offset + (NUVIE_DIR_S * base_actor_type->tiles_per_direction + base_actor_type->tiles_per_frame - 1) + shift;
 }
 
 void U6Actor::update()
@@ -252,7 +252,7 @@ inline void U6Actor::discover_direction()
  if(actor_type->frames_per_direction != 0)
    direction = (frame_n - actor_type->tile_start_offset ) / actor_type->tiles_per_direction;
  else
-   direction = ACTOR_DIR_D;
+   direction = NUVIE_DIR_S;
 }
 
 void U6Actor::set_direction(uint8 d)
@@ -443,7 +443,7 @@ bool U6Actor::sit_on_chair(Obj *obj)
          if(obj->obj_n == OBJ_U6_THRONE  && obj->frame_n == 3) //make actor sit on LB's throne.
            {
             frame_n = 8 + 3; //sitting facing south.
-            direction = 2;
+            direction = NUVIE_DIR_S;
             can_move = false;
             return true;
            }
@@ -544,10 +544,10 @@ void U6Actor::set_worktype(uint8 new_worktype)
 
  switch(worktype)
   {
-   case WORKTYPE_U6_FACE_NORTH : set_direction(ACTOR_DIR_U); break;
-   case WORKTYPE_U6_FACE_EAST  : set_direction(ACTOR_DIR_R); break;
-   case WORKTYPE_U6_FACE_SOUTH : set_direction(ACTOR_DIR_D); break;
-   case WORKTYPE_U6_FACE_WEST  : set_direction(ACTOR_DIR_L); break;
+   case WORKTYPE_U6_FACE_NORTH : set_direction(NUVIE_DIR_N); break;
+   case WORKTYPE_U6_FACE_EAST  : set_direction(NUVIE_DIR_E); break;
+   case WORKTYPE_U6_FACE_SOUTH : set_direction(NUVIE_DIR_S); break;
+   case WORKTYPE_U6_FACE_WEST  : set_direction(NUVIE_DIR_W); break;
 
    case WORKTYPE_U6_SLEEP : wt_sleep(); break;
    case WORKTYPE_U6_PLAY_LUTE : wt_play_lute(); break;
@@ -569,32 +569,32 @@ void U6Actor::wt_walk_straight()
  set_direction(dir); //update walk frame FIX this!
  if(worktype == WORKTYPE_U6_WALK_NORTH_SOUTH || worktype == WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH)
    {
-    if(dir != ACTOR_DIR_U && dir != ACTOR_DIR_D)
-      dir = ACTOR_DIR_D;
-    if(dir == ACTOR_DIR_U) // move up if blocked face down
+    if(dir != NUVIE_DIR_N && dir != NUVIE_DIR_S)
+      dir = NUVIE_DIR_S;
+    if(dir == NUVIE_DIR_N) // move up if blocked face down
        {
         if(moveRelative(0,-1) == false)
-          set_direction(ACTOR_DIR_D);
+          set_direction(NUVIE_DIR_S);
        }
     else // move down if blocked face up
        {
         if(moveRelative(0,1) == false)
-          set_direction(ACTOR_DIR_U);
+          set_direction(NUVIE_DIR_N);
        }
    }
  else //WORKTYPE_U6_WALK_EAST_WEST, WORKTYPE_U6_GUARD_WALK_EAST_WEST
    {
-    if(dir != ACTOR_DIR_L && dir != ACTOR_DIR_R)
-      dir = ACTOR_DIR_R;
-    if(dir == ACTOR_DIR_L) //move left if blocked face right
+    if(dir != NUVIE_DIR_W && dir != NUVIE_DIR_E)
+      dir = NUVIE_DIR_E;
+    if(dir == NUVIE_DIR_W) //move left if blocked face right
        {
         if(moveRelative(-1,0) == false)
-          set_direction(ACTOR_DIR_R);
+          set_direction(NUVIE_DIR_E);
        }
     else  //move right if blocked face left
        {
         if(moveRelative(1,0) == false)
-          set_direction(ACTOR_DIR_L);
+          set_direction(NUVIE_DIR_W);
        }
    }
 }
@@ -638,10 +638,10 @@ void U6Actor::wt_farm_animal_wander()
 
     switch(new_direction)
       {
-       case ACTOR_DIR_U : rel_y = -1; break;
-       case ACTOR_DIR_R : rel_x = 1; break;
-       case ACTOR_DIR_D : rel_y = 1; break;
-       case ACTOR_DIR_L : rel_x = -1; break;
+       case NUVIE_DIR_N : rel_y = -1; break;
+       case NUVIE_DIR_E : rel_x = 1; break;
+       case NUVIE_DIR_S : rel_y = 1; break;
+       case NUVIE_DIR_W : rel_x = -1; break;
       }
 
     if(obj_manager->get_obj_of_type_from_location(OBJ_U6_FENCE,x + rel_x, y + rel_y, z) == NULL)
@@ -863,25 +863,25 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
  (*obj)->frame_n =  new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1;
  switch(new_direction)
   {
-   case ACTOR_DIR_U : if(y == 0)
+   case NUVIE_DIR_N : if(y == 0)
                         (*obj)->y = pitch - 1;
                       else
                         (*obj)->y = y - 1;
                       break;
 
-   case ACTOR_DIR_R : if(x == pitch - 1)
+   case NUVIE_DIR_E : if(x == pitch - 1)
                         (*obj)->x = 0;
                       else
                         (*obj)->x = x + 1;
                       break;
 
-   case ACTOR_DIR_D : if(y == pitch - 1)
+   case NUVIE_DIR_S : if(y == pitch - 1)
                         (*obj)->y = 0;
                       else
                         (*obj)->y = y + 1;
                       break;
 
-   case ACTOR_DIR_L : if(x == 0)
+   case NUVIE_DIR_W : if(x == 0)
                         (*obj)->x = pitch - 1;
                       else
                         (*obj)->x = x - 1;
@@ -898,25 +898,25 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
  (*obj)->frame_n =  16 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
  switch(new_direction)
   {
-   case ACTOR_DIR_U : if(y == pitch - 1)
+   case NUVIE_DIR_N : if(y == pitch - 1)
                         (*obj)->y = 0;
                       else
                         (*obj)->y = y + 1;
                       break;
 
-   case ACTOR_DIR_R : if(x == 0)
+   case NUVIE_DIR_E : if(x == 0)
                         (*obj)->x = pitch - 1;
                       else
                         (*obj)->x = x - 1;
                       break;
 
-   case ACTOR_DIR_D : if(y == 0)
+   case NUVIE_DIR_S : if(y == 0)
                         (*obj)->y = pitch - 1;
                       else
                         (*obj)->y = y - 1;
                       break;
 
-   case ACTOR_DIR_L : if(x == pitch - 1)
+   case NUVIE_DIR_W : if(x == pitch - 1)
                         (*obj)->x = 0;
                       else
                         (*obj)->x = x + 1;
@@ -942,25 +942,25 @@ inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_dire
 
  switch(new_direction)
   {
-   case ACTOR_DIR_U : if(y == pitch - 1)
+   case NUVIE_DIR_N : if(y == pitch - 1)
                         obj->y = 0;
                       else
                         obj->y = y + 1;
                       break;
 
-   case ACTOR_DIR_R : if(x == 0)
+   case NUVIE_DIR_E : if(x == 0)
                         obj->x = pitch - 1;
                       else
                         obj->x = x - 1;
                       break;
 
-   case ACTOR_DIR_D : if(y == 0)
+   case NUVIE_DIR_S : if(y == 0)
                         obj->y = pitch - 1;
                       else
                         obj->y = y - 1;
                       break;
 
-   case ACTOR_DIR_L : if(x == pitch - 1)
+   case NUVIE_DIR_W : if(x == pitch - 1)
                         obj->x = 0;
                       else
                         obj->x = x + 1;
@@ -1011,25 +1011,25 @@ inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_directio
 
  switch(new_direction)
   {
-   case ACTOR_DIR_U : head->y = y - 1;
+   case NUVIE_DIR_N : head->y = y - 1;
                       tail->y = y + 1;
 					  wing1->x = x - 1;
 					  wing2->x = x + 1;
 					  break;
 
-   case ACTOR_DIR_R : head->x = x + 1;
+   case NUVIE_DIR_E : head->x = x + 1;
                       tail->x = x - 1;
 					  wing1->y = y - 1;
 					  wing2->y = y + 1;
 					  break;
 
-   case ACTOR_DIR_D : head->y = y + 1;
+   case NUVIE_DIR_S : head->y = y + 1;
                       tail->y = y - 1;
 					  wing1->x = x + 1;
 					  wing2->x = x - 1;
 					  break;
 
-   case ACTOR_DIR_L : head->x = x - 1;
+   case NUVIE_DIR_W : head->x = x - 1;
                       tail->x = x + 1;
 					  wing1->y = y + 1;
 					  wing2->y = y - 1;

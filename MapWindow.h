@@ -197,7 +197,7 @@ protected:
  void reshapeBoundary();
  inline bool tmpBufTileIsBlack(uint16 x, uint16 y);
  bool tmpBufTileIsBoundary(uint16 x, uint16 y);
- bool tmpBufTileIsWall(uint16 x, uint16 y);
+ bool tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction);
 };
 
 #endif /* __MapWindow_h__ */

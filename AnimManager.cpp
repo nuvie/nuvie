@@ -733,28 +733,28 @@ void ExplosiveAnim::start()
         uint8 dir = (t < 8) ? t : NUVIE_RAND() % 8;
         switch(dir)
         {
-            case 0:
+            case NUVIE_DIR_N:
                 flame[t].direction = MapCoord(0, -s);
                 break;
-            case 1:
+            case NUVIE_DIR_NE:
                 flame[t].direction = MapCoord(s, -s);
                 break;
-            case 2:
+            case NUVIE_DIR_E:
                 flame[t].direction = MapCoord(s, 0);
                 break;
-            case 3:
+            case NUVIE_DIR_SE:
                 flame[t].direction = MapCoord(s, s);
                 break;
-            case 4:
+            case NUVIE_DIR_S:
                 flame[t].direction = MapCoord(0, s);
                 break;
-            case 5:
+            case NUVIE_DIR_SW:
                 flame[t].direction = MapCoord(-s, s);
                 break;
-            case 6:
+            case NUVIE_DIR_W:
                 flame[t].direction = MapCoord(-s, 0);
                 break;
-            case 7:
+            case NUVIE_DIR_NW:
                 flame[t].direction = MapCoord(-s, -s);
         }
         if(t >= 8) // after the cardinals, randomly alter direction

@@ -3269,14 +3269,6 @@
 			settings = {
 			};
 		};
-		07BBAF9807D8817D00F2792A = {
-			explicitFileType = wrapper.framework;
-			isa = PBXFileReference;
-			name = SDL.framework;
-			path = "/Users/eric/Library/Frameworks/$(LOCAL_LIBRARY_DIR)/Frameworks/SDL.framework";
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
 		07BBAFFA07D8824500F2792A = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -3769,7 +3761,6 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
-				07BBAF9807D8817D00F2792A,
 				080E96DDFE201D6D7F000001,
 				29B97315FDCFA39411CA2CEA,
 				29B97317FDCFA39411CA2CEA,

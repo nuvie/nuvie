@@ -43,12 +43,6 @@ using std::string;
 #define ACTOR_FOOT   7
 #define ACTOR_NOT_READIABLE 8
 
-// directions
-#define ACTOR_DIR_U 0
-#define ACTOR_DIR_R 1
-#define ACTOR_DIR_D 2
-#define ACTOR_DIR_L 3
-
 // move-flags
 #define ACTOR_FORCE_MOVE true
 #define ACTOR_IGNORE_OTHERS true
