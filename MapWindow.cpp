@@ -42,6 +42,8 @@
 #include "Game.h"
 #include "GameClock.h"
 
+#include <cassert>
+
 MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
