@@ -54,6 +54,7 @@ Game::~Game()
     delete background;
     delete converse;
     delete clock;
+    delete party;
 }
  
 bool Game::loadGame(Screen *s, uint8 game_type)
