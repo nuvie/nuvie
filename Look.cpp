@@ -3,13 +3,29 @@
  *  Nuive
  *
  *  Created by Eric Fry on Mon Mar 24 2003.
- *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
+ *  Copyright (c) 2003. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
 #include <ctype.h>
 
 #include "U6def.h"
 #include "Configuration.h"
+
+#include "U6misc.h"
 
 #include "U6Lzw.h"
 
@@ -38,14 +54,27 @@ bool Look::init()
  const char *s;
  uint16 i,j;
  unsigned int len;
+ int game_type;
+ U6File look_file;
  
- config->pathFromValue("config/ultima6/gamedir","look.lzd",filename);
+ config->value("config/GameType",game_type);
  
- look_data = lzw.decompress_file(filename,decomp_size);
- if(look_data == NULL)
-    return false;
-
- ptr = look_data;
+ switch(game_type)
+   {
+    case NUVIE_GAME_U6 : config_get_path(config,"look.lzd",filename);
+                         look_data = lzw.decompress_file(filename,decomp_size);
+                         if(look_data == NULL)
+                           return false;
+                          ptr = look_data;
+                          break;
+    case NUVIE_GAME_MD :
+    case NUVIE_GAME_SE : config_get_path(config,"look.lzc",filename);
+                         if(look_file.open(filename,"rb") == false)
+                           return false;
+                         look_data = look_file.readFile();
+                         ptr = &look_data[0x8]; //skip the filesize, offset DWORDS
+                         break;
+   }
 
  // i: current string pos, j: last string pos
  for(i=0,j=0;i < 2048;)

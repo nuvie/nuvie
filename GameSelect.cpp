@@ -39,7 +39,7 @@ bool GameSelect::load(Screen *s)
  
  game = new Game(config);
  
- if(game->loadGame(screen,NUVIE_GAME_ULTIMA6))
+ if(game->loadGame(screen,NUVIE_GAME_U6))
    game->play();
 
  delete game;

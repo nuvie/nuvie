@@ -48,10 +48,6 @@
 #include "Portrait.h"
 #include "UseCode.h"
 
-#define NUVIE_GAME_ULTIMA6 1
-#define NUVIE_GAME_MARTIAN 2
-#define NUVIE_GAME_SAVAGE  4
-
 class Game
 {
  uint8 type;
@@ -90,6 +86,9 @@ class Game
  void drawBackground();
  
  void play();
+ 
+ protected:
+ void assignGameConfigValues(uint8 game_type);
  
 };
 

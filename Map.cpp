@@ -30,6 +30,9 @@
 
 #include "Map.h"
 
+#include "U6misc.h"
+
+
 Map::Map(Configuration *cfg)
 {
  config = cfg;
@@ -153,12 +156,12 @@ bool Map::loadMap(TileManager *tm, ObjManager *om)
  
  tile_manager = tm;
  obj_manager = om;
- 
- config->pathFromValue("config/ultima6/gamedir","map",filename);
+
+ config_get_path(config,"map",filename);
  if(map_file.open(filename,"rb") == false)
    return false;
 
- config->pathFromValue("config/ultima6/gamedir","chunks",filename);
+ config_get_path(config,"chunks",filename);
  if(chunks_file.open(filename,"rb") == false)
    return false;
 

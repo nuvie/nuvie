@@ -704,6 +704,32 @@
 			settings = {
 			};
 		};
+		078BA0A4049B327F00A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = U6misc.h;
+			path = /Users/eric/Projects/Ultima6/nuvie/misc/U6misc.h;
+			refType = 0;
+		};
+		078BA0A5049B327F00A8000A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = U6misc.cpp;
+			path = /Users/eric/Projects/Ultima6/nuvie/misc/U6misc.cpp;
+			refType = 0;
+		};
+		078BA0A6049B327F00A8000A = {
+			fileRef = 078BA0A4049B327F00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		078BA0A7049B327F00A8000A = {
+			fileRef = 078BA0A5049B327F00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		079903C80481F21E00A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -737,6 +763,8 @@
 				079CA1D704232F3100A8000A,
 				072566B904272C0200A8000A,
 				072566B804272C0200A8000A,
+				078BA0A4049B327F00A8000A,
+				078BA0A5049B327F00A8000A,
 			);
 			isa = PBXGroup;
 			name = misc;
@@ -1557,6 +1585,7 @@
 				07B16F3D0485E69D00A8000A,
 				07B16F570487352A00A8000A,
 				07B16F5D0487529500A8000A,
+				078BA0A6049B327F00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1616,6 +1645,7 @@
 				07B16F3E0485E69D00A8000A,
 				07B16F580487352A00A8000A,
 				07B16F5C0487529500A8000A,
+				078BA0A7049B327F00A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

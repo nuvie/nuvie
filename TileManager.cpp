@@ -24,7 +24,7 @@
 #include "U6File.h"
 #include "U6Lzw.h"
 
-//#include "misc.h"
+#include "U6misc.h"
 
 #include "TileManager.h"
 
@@ -51,39 +51,78 @@ TileManager::~TileManager()
 
 bool TileManager::loadTiles()
 {
- std::string path;
+ std::string maptiles_path, masktype_path, path;
  U6File objtiles_vga;
  U6File tileindx_vga;
+ U6File file;
  U6Lzw *lzw;
  uint32 tile_offset;
  
  unsigned char *tile_data;
- uint32 decomp_size;
+ uint32 maptiles_size;
  uint32 objtiles_size;
- 
+
  unsigned char *masktype;
  uint32 masktype_size;
  uint16 i;
+ int game_type;
+ 
+ config->value("config/GameType",game_type);
+ config_get_path(config,"maptiles.vga",maptiles_path);
+ config_get_path(config,"masktype.vga",masktype_path);
  
  lzw = new U6Lzw();
  
- config->pathFromValue("config/ultima6/gamedir","maptiles.vga",path);
- tile_data = lzw->decompress_file(path,decomp_size);
+ switch(game_type)
+   {
+    case NUVIE_GAME_U6 : 
+                         tile_data = lzw->decompress_file(maptiles_path,maptiles_size);
+                         if(tile_data == NULL)
+                           return false;
+                         masktype = lzw->decompress_file(masktype_path,masktype_size);
+                         break;
+    case NUVIE_GAME_MD :
+    case NUVIE_GAME_SE : if(file.open(maptiles_path,"rb") == false)
+                           return false;
+                         maptiles_size = file.read4();
+                         maptiles_size -= 8;
+                         
+                         tile_data = (unsigned char *)malloc(maptiles_size);
+                         if(tile_data == NULL)
+                           return false;
+
+                         file.seek(0x8);
+                         file.readToBuf(tile_data,maptiles_size);
+                         
+                         file.close();
+                         
+                         if(file.open(masktype_path,"rb") == false)
+                           return false;
+                         masktype_size = file.read4();
+                         masktype_size -= 8;
+                         
+                         masktype = (unsigned char *)malloc(masktype_size);
+                         if(masktype == NULL)
+                           return false;
+
+                         file.seek(0x8);
+                         file.readToBuf(masktype, masktype_size);
+
+                         break;
+   }
  
- config->pathFromValue("config/ultima6/gamedir","objtiles.vga",path);
+ config_get_path(config,"objtiles.vga",path);
  objtiles_vga.open(path,"rb");
  
  objtiles_size = objtiles_vga.filesize();
  
- tile_data = (unsigned char *)realloc(tile_data,decomp_size + objtiles_size);
+ tile_data = (unsigned char *)realloc(tile_data,maptiles_size + objtiles_size);
   
- objtiles_vga.readToBuf(&tile_data[decomp_size], objtiles_size);
+ objtiles_vga.readToBuf(&tile_data[maptiles_size], objtiles_size);
  
  
- config->pathFromValue("config/ultima6/gamedir","masktype.vga",path);
- masktype = lzw->decompress_file(path,masktype_size);
+ config_get_path(config,"tileindx.vga",path);
 
- config->pathFromValue("config/ultima6/gamedir","tileindx.vga",path);
  tileindx_vga.open(path,"rb");
  
  for(i=0;i<2048;i++)
@@ -210,8 +249,8 @@ bool TileManager::loadTileFlag()
  U6File file;
  uint16 i;
  
- config->pathFromValue("config/ultima6/gamedir","tileflag",filename);
-
+ config_get_path(config,"tileflag",filename);
+ 
  if(file.open(filename,"rb") == false)
    return false;
  
@@ -272,7 +311,7 @@ bool TileManager::loadAnimData()
  U6File file;
  uint8 i;
  
- config->pathFromValue("config/ultima6/gamedir","animdata",filename);
+ config_get_path(config,"animdata",filename);
 
  if(file.open(filename,"rb") == false)
    return false;
@@ -346,8 +385,6 @@ void TileManager::decodePixelBlockTile(unsigned char *tile_data, uint16 tile_num
 }
 
 
-//FIX this is U6 specific.
-
 bool TileManager::loadAnimMask()
 {
  std::string filename;
@@ -360,8 +397,14 @@ bool TileManager::loadAnimMask()
  unsigned char *tile_data;
  uint16 bytes2clear;
  uint16 displacement;
+ int game_type;
  
- config->pathFromValue("config/ultima6/gamedir","animmask.vga",filename);
+ config->value("config/GameType",game_type);
+ if(game_type != NUVIE_GAME_U6)                //only U6 has animmask.vga
+   return true;
+
+ config_get_path(config,"animmask.vga",filename);
+
  animmask = lzw.decompress_file(filename,animmask_size);
  
  if(animmask == NULL)

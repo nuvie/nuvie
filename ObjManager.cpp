@@ -25,6 +25,7 @@
 
 #include "ObjManager.h"
 
+#include "U6misc.h"
 
 iAVLKey get_iAVLKey(const void *item)
 {
@@ -53,7 +54,7 @@ ObjManager::~ObjManager()
 
 bool ObjManager::loadObjs(TileManager *tm)
 {
- std::string path;
+ std::string path, key, game_name;
  char *filename;
  char x,y;
  uint16 len;
@@ -61,7 +62,13 @@ bool ObjManager::loadObjs(TileManager *tm)
 
  tile_manager = tm;
 
- config->value("config/ultima6/gamedir",path);
+ config->value("config/GameName",game_name);
+ 
+ key.assign("config/");
+ key.append(game_name);
+ key.append("/gamedir");
+ 
+ config->value(key,path);
 
  filename = get_objblk_path((char *)path.c_str());
 
@@ -597,8 +604,8 @@ bool ObjManager::loadBaseTile()
  U6File basetile;
  uint16 i;
 
- config->pathFromValue("config/ultima6/gamedir","basetile",filename);
-
+ config_get_path(config,"basetile",filename);
+  
  if(basetile.open(filename,"rb") == false)
    return false;
 
@@ -613,7 +620,7 @@ bool ObjManager::loadWeightTable()
  std::string filename;
  U6File tileflag;
 
- config->pathFromValue("config/ultima6/gamedir","tileflag",filename);
+ config_get_path(config,"tileflag",filename);
 
  if(tileflag.open(filename,"rb") == false)
    return false;
@@ -757,9 +764,6 @@ Obj *ObjManager::loadObj(U6File *file, uint16 objblk_n)
  obj->qty = file->read1();
  obj->quality = file->read1();
 
- if(obj->obj_n == 335)
-  printf("egg status = %d, qty = %d qual = %d\n",obj->status,obj->qty,obj->quality);
- 
  return obj;
 }
 

@@ -22,7 +22,8 @@
  */
 
 #include "ActorManager.h"
-
+#include "misc.h"
+ void config_get_path(Configuration *config, std::string filename, std::string &path);
 
 ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManager *om, GameClock *c)
 {
@@ -52,7 +53,7 @@ bool ActorManager::loadActors()
  U6File objlist;
  U6File schedule;
  
- config->pathFromValue("config/ultima6/gamedir","savegame/objlist",filename);
+ config_get_path(config,"/savegame/objlist",filename);
  if(objlist.open(filename,"rb") == false)
    return false;
 
@@ -85,7 +86,7 @@ bool ActorManager::loadActors()
 */     
    }
 
- objlist.seek(0x15f1);
+// objlist.seek(0x15f1);
  
  for(i=0;i < 256; i++)
    {
@@ -232,7 +233,7 @@ bool ActorManager::loadActorSchedules()
  unsigned char *sched_data;
  unsigned char *s_ptr;
  
- config->pathFromValue("config/ultima6/gamedir","schedule",filename);
+ config_get_path(config,"schedule",filename);
  if(schedule.open(filename,"rb") == false)
    return false;
  

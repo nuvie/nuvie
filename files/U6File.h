@@ -43,6 +43,8 @@ class U6File
    bool open(std::string &directory, std::string &filename, char *mode=NULL);
    bool open(std::string filename, char *mode); // default constructor
    bool open(char *filename, char *mode);
+
+   void close();
   
    uint8 read1();
    uint16 read2();

@@ -35,8 +35,7 @@ U6File::U6File()
 
 U6File::~U6File()
 {
- if(f != NULL)
-  fclose(f);
+ close();
 }
 
 
@@ -107,6 +106,12 @@ bool U6File::open(char *filename, char *mode)
  return true;
 }
 
+void U6File::close()
+{
+ if(f != NULL)
+  fclose(f);
+ f = NULL;
+}
 
 uint8 U6File::read1()
 {

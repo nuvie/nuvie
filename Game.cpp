@@ -64,7 +64,9 @@ bool Game::loadGame(Screen *s, uint8 game_type)
 {
  
  screen = s;
-
+ 
+ assignGameConfigValues(game_type);
+ 
  tile_manager = new TileManager(config);
  tile_manager->loadTiles();
 
@@ -182,3 +184,30 @@ void Game::play()
    }
   return;
 }
+
+
+void Game::assignGameConfigValues(uint8 game_type)
+{
+ std::string game_name, game_id;
+ 
+ config->set("config/GameType",game_type);
+
+ switch(game_type)
+  {
+   case NUVIE_GAME_U6 : game_name.assign("ultima6");
+                        game_id.assign("u6");
+                        break;
+   case NUVIE_GAME_MD : game_name.assign("martian");
+                        game_id.assign("md");
+                        break;
+   case NUVIE_GAME_SE : game_name.assign("savage");
+                        game_id.assign("se");
+                        break;
+  }
+
+ config->set("config/GameName",game_name);
+ config->set("config/GameID",game_id);
+ 
+ return;
+}
+ 

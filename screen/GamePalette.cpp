@@ -61,8 +61,19 @@ bool GamePalette::loadPalette()
  U6File file;
  unsigned char *buf;
  uint8 *pal_ptr;
+ std::string key, game_name, game_id, pal_name;
  
- config->pathFromValue("config/ultima6/gamedir","u6pal",filename);
+ config->value("config/GameName",game_name);
+ config->value("config/GameID",game_id);
+
+ pal_name.assign(game_id);
+ pal_name.append("pal");
+ 
+ key.assign("config/");
+ key.append(game_name);
+ key.append("/gamedir");
+    
+ config->pathFromValue(key,pal_name,filename);
  
  if(file.open(filename,"rb") == false)
   {
