@@ -32,6 +32,13 @@ class ConfigNode
  public:
 	~ConfigNode() { }
 
+	// fix "assignment operator could not be generated" warning
+	const ConfigNode& operator = (const ConfigNode &other) {
+		config = other.config;
+		key = other.key;
+		return *this;
+	}
+
 	std::string get_string(const char *defaultvalue="") {
 		std::string s;
 		config.value(key, s, defaultvalue);
