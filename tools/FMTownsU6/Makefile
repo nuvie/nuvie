@@ -1,6 +1,6 @@
 CC=g++
 
-CFLAGS= -g -Wall -I ../../files -I ../../conf -I ../../misc
+CFLAGS= -g -Wall -I ../.. -I ../../files -I ../../conf -I ../../misc
 
 LDFLAGS= 
 

@@ -1,4 +1,5 @@
-#include "NuvieIO.h"
+#include "nuvieDefs.h"
+#include "NuvieIOFile.h"
 #include "U6Lzw.h"
 #include "U6Lib_n.h"
 
@@ -16,7 +17,9 @@ int main(int argc, char *argv[])
  unsigned char *item;
  unsigned char *raw_audio;
  uint16 *converted_audio;
+#ifdef BIG_ENDIAN
  uint16 temp_sample;
+#endif
  char wave_file[16]; // "char000_000.wav"
  uint16 conv_number;
 
