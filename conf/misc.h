@@ -7,6 +7,7 @@
  *
  */
 
+#include <cstdio>
 #include <string>
 #define PERR(x) printf(x)
 

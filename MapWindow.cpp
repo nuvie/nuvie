@@ -526,9 +526,15 @@ bool MapWindow::boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y)
  actor = actor_manager->get_player();
  actor->get_location(&a_x,&a_y,&a_z);
  
- if(a_x >= x - 1 && a_x <= x + 1)
+ if(a_x == x)
    {
-    if(a_y >= y - 1 && a_y <= y + 1)
+    if(a_y == y - 1 || a_y == y + 1)
+      return true;
+   }
+   
+ if(a_y == y)
+   {
+    if(a_x == x - 1 || a_x == x + 1)
        return true;
    }
 
