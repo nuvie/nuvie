@@ -39,6 +39,7 @@
 #include "ViewManager.h"
 #include "PortraitView.h"
 #include "TimedEvent.h"
+#include "InventoryView.h"
 #include "Event.h"
 
 #include "UseCode.h"
@@ -63,12 +64,16 @@ Event::Event(Configuration *cfg)
  alt_code_input_num = 0;
 
  use_obj = NULL;
+
+ book = NULL;
+ time_queue = game_time_queue = NULL;
 }
 
 Event::~Event()
 {
  delete book;
  delete time_queue;
+ delete game_time_queue;
 }
 
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
@@ -91,20 +96,16 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  if(book->init() == false)
    return false;
  time_queue = new TimeQueue;
+ game_time_queue = new TimeQueue;
  return true;
 }
 
 bool Event::update()
 {
  // timed
- uint32 now = clock->get_ticks();
- uint32 game_now = clock->get_turn();
- while(!time_queue->empty() && time_queue->call_timer(now, game_now))
- {
-    TimedEvent *tevent = time_queue->pop_timer(); // remove from timequeue
-    if(!tevent->repeat)
-        delete tevent; // if not repeated, safe to delete
- }
+ time_queue->call_timers(clock->get_ticks());
+ game_time_queue->call_timers(clock->get_game_ticks());
+
  // polled
  SDL_Event event;
  while(SDL_PollEvent(&event))
@@ -116,7 +117,7 @@ bool Event::update()
                       break;
 
       case GUI_QUIT : return false;
-   
+
       default : break;
      }
   }
@@ -132,10 +133,14 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
             set_view_focus(FOCUS_NONE);
 
 	// alt-code input
-	if((event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9)
-		&& (SDL_GetModState() & KMOD_ALT))
+	if((SDL_GetModState() & KMOD_ALT)
+	   && ((event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9) ||
+	      (event->key.keysym.sym >= SDLK_KP0 && event->key.keysym.sym <= SDLK_KP9)))
 	{
-		alt_code_str[alt_code_len++] = (char)event->key.keysym.sym;
+		if(event->key.keysym.sym >= SDLK_0 && event->key.keysym.sym <= SDLK_9)
+			alt_code_str[alt_code_len++] = (char)event->key.keysym.sym;
+		else
+			alt_code_str[alt_code_len++] = (char)(event->key.keysym.sym-208);
 		alt_code_str[alt_code_len] = '\0';
 		if(alt_code_len == 3)
 		{
@@ -148,8 +153,6 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 	switch (event->key.keysym.sym)
 	{
 		//	keypad arrow keys
-		//	separated these out from normal arrow keys because 
-		//	they eventually need to account for alt-214, etc. cheats
 		case SDLK_KP7   :
 			move(-1,-1);
 			break;
@@ -188,9 +191,24 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_RIGHT :
 			move(1,0);
 			break;
-		case SDLK_TAB   : 
-			view_manager->set_inventory_mode(); //show inventory view
-			break;
+#if 0 /* not working, will change with PlayerAction anyway */
+		case SDLK_TAB :
+                        if(view_focus == FOCUS_INVENTORYVIEW)
+                        {
+                            set_view_focus(FOCUS_NONE);
+                            if(mode == USE_MODE)
+                                map_window->set_show_use_cursor(true);
+                            else
+                                map_window->set_show_cursor(true);
+                        }
+                        else
+                        {
+                            set_view_focus(FOCUS_INVENTORYVIEW);
+                            if(mode == MOVE_MODE)
+                                mode = EQUIP_MODE;
+                        }
+                        break;
+#endif
 		case SDLK_q     : 
 			if(!showingQuitDialog)
 			{
@@ -238,6 +256,21 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			map_window->centerCursor();
 			map_window->set_show_use_cursor(true);
 			break;
+                case SDLK_F1:
+                case SDLK_F2:
+                case SDLK_F3:
+                case SDLK_F4:
+                case SDLK_F5:
+                case SDLK_F6:
+                case SDLK_F7:
+                case SDLK_F8:
+                            if(view_manager->get_inventory_view()
+                                ->set_party_member(event->key.keysym.sym - 282))
+                                view_manager->set_inventory_mode();
+                        break;
+                case SDLK_F10:
+                            view_manager->set_party_mode();
+                        break;
 		case SDLK_RETURN  :
 		case SDLK_KP_ENTER   :
 			map_window->set_show_use_cursor(false);
@@ -315,7 +348,6 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			}
 			break;
 	}	//	switch (event->key.keysym.sym)
-
 	return	true;
 }
 
@@ -353,7 +385,7 @@ bool Event::handleEvent(const SDL_Event *event)
 
 	if(active_alt_code && scroll->get_input())
 		alt_code_input(scroll->get_input());
-	
+
 	return true;
 }
 
@@ -394,11 +426,13 @@ void Event::set_view_focus(ViewFocus focus)
         if(!view_manager->get_portrait_view()->get_waiting())
             scroll->set_show_cursor(true);
     }
+
     if(view_focus != FOCUS_NONE) // NONE = MapWindow
     {
         map_window->set_show_cursor(false);
         map_window->set_show_use_cursor(false);
     }
+
 printf("Event focus=%s\n", (view_focus == FOCUS_NONE)?"NONE":
                           (view_focus == FOCUS_MSGSCROLL)?"MSGSCROLL":
                           (view_focus == FOCUS_PORTRAITVIEW)?"PORTRAIT":
@@ -609,6 +643,8 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  return true;
 }
 
+
+#if 0
 bool Event::use(sint16 rel_x, sint16 rel_y)
 {
  Actor *actor = NULL;
@@ -629,6 +665,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
 
  if(obj)
  {
+  MapCoord target(obj->x, obj->y, obj->z);
   bool can_use = usecode->has_usecode(obj);
   if(!using_actor || can_use)
   {
@@ -639,7 +676,12 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
    usecode->use_obj(obj, player->get_actor());
   else
   {
-   if(using_actor)
+   if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player->get_actor()->get_location().distance(target) > 1)
+    {
+      scroll->display_string("\nToo far away!\n");
+      fprintf(stderr, "distance to object: %d\n", player->get_actor()->get_location().distance(target));
+    }
+   else if(using_actor)
       scroll->display_string("nothing\n");
    else
       scroll->display_string("\nNot usable\n");
@@ -660,8 +702,25 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  
  if(using_actor) //we were using an actor so free the temp Obj
   obj_manager->delete_obj(obj);
-
+ if(scroll->get_page_break())
+  set_view_focus(FOCUS_MSGSCROLL);
  return true;
+}
+#endif
+// ABOEING
+bool Event::use(sint16 rel_x, sint16 rel_y)
+{
+ printf("called use\n");
+ Actor *actor = NULL;
+ Obj *obj = NULL;
+ Map *map = Game::get_game()->get_game_map();
+ uint16 x,y;
+ uint8 level;
+ bool using_actor = false;
+
+ player->get_location(&x,&y,&level);
+ obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
+ return doUse(obj);
 }
 
 
@@ -710,6 +769,7 @@ bool Event::select_obj(sint16 rel_x, sint16 rel_y)
 }
 
 
+#if 0
 bool Event::look()
 {
  bool can_search = true; // can object be searched? return from LOOK
@@ -783,6 +843,47 @@ bool Event::look()
   set_view_focus(FOCUS_MSGSCROLL);
  return true;
 }
+#endif
+// ABOEING
+bool Event::look()
+{
+ 
+ Obj *obj = map_window->get_objAtCursor();
+ Actor *actor = map_window->get_actorAtCursor();
+ 
+ scroll->display_string("Thou dost see ");
+ 
+ bool can_search;
+ if (obj) {
+  can_search = doLookObj(obj);
+ }  else 
+ if (actor) {
+  can_search = doLookActor(actor);
+ } else 
+  scroll->display_string(map_window->lookAtCursor());
+ scroll->display_string("\n");
+ // search
+ MapCoord player_loc = player->get_actor()->get_location(),
+  target_loc = map_window->get_cursorCoord();
+ if(can_search && player_loc.distance(target_loc) <= 1)
+ {
+  scroll->display_string("\nSearching here, you find ");
+  if(!obj || !usecode->search_obj(obj, player->get_actor()))
+   scroll->display_string("nothing.\n");
+  else
+  {
+   scroll->display_string(".\n");
+   map_window->updateBlacking(); // secret doors
+  }
+ }
+ 
+ scroll->display_string("\n");
+ scroll->display_prompt(); 
+
+ if(scroll->get_page_break())
+  set_view_focus(FOCUS_MSGSCROLL);
+ return can_search;
+}
 
 
 /* Move selected object in direction.
@@ -849,6 +950,118 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         mode = MOVE_MODE;
     }
     return(true);
+}
+
+
+// ABOEING
+bool Event::doLookObj(Obj *obj, bool inventory) {
+ bool can_search = true; // can object be searched? return from LOOK
+ bool display_prompt = true;
+ sint16 p_id = -1; // party member number of actor
+ char weight_string[32];
+ float weight;
+ if(obj) // don't display weight or do usecode for obj under actor
+ {
+  if (inventory) {
+   scroll->display_string(Game::get_game()->get_tile_manager()->lookAtTile(Game::get_game()->get_obj_manager()->get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
+   return false;
+  }
+  scroll->display_string(map_window->lookAtCursor());
+  weight = obj_manager->get_obj_weight(obj);
+  if(weight != 0)
+  {
+   if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
+    snprintf(weight_string,31,". They weigh %0.1f stones.",obj_manager->get_obj_weight(obj));
+   else
+    snprintf(weight_string,31,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj));
+   scroll->display_string(weight_string);
+  }
+  // check for special description
+  if(usecode->has_lookcode(obj)) {
+   can_search = usecode->look_obj(obj, player->get_actor());
+  }
+ }
+ return can_search;
+}
+
+
+// ABOEING
+bool Event::doLookActor(Actor *actor) {
+ 
+ bool can_search = true; // can object be searched? return from LOOK
+ bool display_prompt = true;
+ sint16 p_id = -1; // party member number of actor
+ char weight_string[32];
+ float weight;
+ 
+ if(actor) // display portrait, move cursor, will wait for input to continue
+ {
+  display_portrait(actor);
+  if(view_manager->get_portrait_view()->get_waiting()) // there was a portrait
+   display_prompt = false;
+  can_search = false;
+   // Game::get_game()->get_actor_manager()->print_actor(actor); //DEBUG
+   // show real actor name and portrait if in avatar's party
+   if((p_id = player->get_party()->get_member_num(actor)) >= 0)
+    scroll->display_string(player->get_party()->get_actor_name(p_id));
+   else
+    scroll->display_string(map_window->lookAtCursor());
+ }
+ return can_search;
+}
+
+
+// ABOEING
+bool Event::doUse(Obj *obj) {
+ Actor *actor = NULL;
+ Map *map = Game::get_game()->get_game_map();
+ uint16 x,y;
+ uint8 level;
+ bool using_actor = false;
+
+ player->get_location(&x,&y,&level);
+ actor = map->get_actor((uint16)(x), (uint16)(y), level);
+ if(!obj && actor && actor->is_visible())
+   {
+    obj = actor->make_obj();
+    using_actor = true;
+   }
+
+ if(obj)
+ {
+  bool can_use = usecode->has_usecode(obj);
+  if(!using_actor || can_use)
+  {
+   scroll->display_string(obj_manager->look_obj(obj));
+   scroll->display_string("\n");
+  }
+  if(can_use)
+   usecode->use_obj(obj, player->get_actor());
+  else
+  {
+   if(using_actor)
+      scroll->display_string("nothing\n");
+   else
+      scroll->display_string("\nNot usable\n");
+   fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
+  }
+ }
+ else
+  scroll->display_string("nothing\n");
+
+ if(mode == USE_MODE) // if selecting, select_obj will return to MOVE_MODE
+ {
+     scroll->display_string("\n");
+     scroll->display_prompt();
+     map_window->set_show_use_cursor(false);
+     mode = MOVE_MODE;
+ }
+ map_window->updateBlacking();
+ 
+ if(using_actor) //we were using an actor so free the temp Obj
+  obj_manager->delete_obj(obj);
+
+ return true;
 }
 
 

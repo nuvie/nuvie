@@ -39,8 +39,9 @@ class GameClock
  uint16 year;
  uint8 day_of_week;
  
- uint32 move_counter;
- uint32 time_counter; // game minutes passed since start
+ uint32 move_counter; // turns passed since start
+ uint32 time_counter; // game minutes
+ uint32 tick_counter; // gameclock ticks
  
  char date_string[11];
  char time_string[11];
@@ -78,7 +79,8 @@ class GameClock
  char *get_date_string();
  char *get_time_string();
 
- uint32 get_ticks() { return(SDL_GetTicks()); }
+ uint32 get_ticks() { return(SDL_GetTicks()); } // milliseconds since start
+ uint32 get_game_ticks() { return(tick_counter); }
  uint32 get_time()  { return(time_counter); }
  uint32 get_turn()  { return(move_counter); }
 

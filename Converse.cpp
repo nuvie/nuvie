@@ -328,6 +328,7 @@ void Converse::stop()
     scroll->display_string("\n");
     scroll->display_prompt();
     views->set_inventory_mode();
+    Game::get_game()->get_event()->set_view_focus(FOCUS_NONE);
 
     active = false;
     fprintf(stderr, "End conversation\n");
@@ -444,6 +445,10 @@ const char *Converse::npc_name(uint8 num)
     convscript_buffer s_pt;
     aname[15] = '\0';
 
+// FIX (crashing)
+//    if(actors->get_actor(num))
+//        actors->get_actor(num)->set_name(name);
+
     if(num == 0 || num == 1)
         strncpy(aname, player->get_name(), 15);
     // load another script, or use NPC name
@@ -455,6 +460,8 @@ const char *Converse::npc_name(uint8 num)
         num = load_conv(num); // get idx number; won't actually reload file
         temp_script = new ConvScript(src, num);
         s_pt = temp_script->get_buffer();
+        if(!s_pt)
+            return(NULL);
 
         // read name up to LOOK section, convert "_" to "."
         uint32 c;

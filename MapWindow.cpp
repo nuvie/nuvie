@@ -30,7 +30,13 @@
 #include "ActorManager.h"
 #include "MapWindow.h"
 #include "Map.h"
+// dont need all these includes (for Useobj.. move to player actions)
 #include "MsgScroll.h"
+#include "Player.h"
+#include "Party.h"
+#include "Converse.h"
+#include "UseCode.h"
+#include "Event.h"
 //#include "AnimManager.h"
 #include "GUI_widget.h"
 #include "Game.h"
@@ -59,6 +65,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  selected_obj = NULL;
  selected_actor = NULL;
  config->value("config/enable_hackmove", hackmove);
+ walking = false;
 }
 
 MapWindow::~MapWindow()
@@ -232,14 +239,14 @@ void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
 }
 
 
-const char *MapWindow::lookAtCursor(bool show_prefix)
+const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 {
  Actor *actor;
  
- if(tmp_buf[(cursor_y+1) * (win_width+2) + (cursor_x+1)] == 0) //black area
+ if(tmp_buf[(y+1) * (win_width+2) + (x+1)] == 0) //black area
    return tile_manager->lookAtTile(0,0,true); // nothing to see here. ;)
 
- actor = actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
+ actor = actor_manager->get_actor(x, y, cur_level);
  if(actor != NULL)
    {
     uint16 tile_num = obj_manager->get_obj_tile_num(actor->get_tile_num());
@@ -260,7 +267,7 @@ const char *MapWindow::lookAtCursor(bool show_prefix)
     return tile_manager->lookAtTile(tile_num,0,show_prefix);
    }
    
- return map->look(cur_x + cursor_x, cur_y + cursor_y, cur_level);
+ return map->look(x, y, cur_level);
 }
  
 
@@ -404,7 +411,56 @@ void MapWindow::Display(bool full_redraw)
 // screen->blit(8,8,ptr,8,(win_width-1) * 16,(win_height-1) * 16, win_width * 16, false);
  
  screen->update(8,8,win_width*16-16,win_height*16-16);
- 
+
+
+    // Idle events (should be in update or Idle)
+    int mx, my;
+    static uint32 walk_delay = 100, last_time = Game::get_game()->get_clock()->get_ticks(),
+                  walk_start_delay = 500;
+    uint32 this_time = Game::get_game()->get_clock()->get_ticks();
+
+    // wait for double-click (FIXME)
+    if(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(1))
+    {
+        if((sint32)(walk_start_delay - (this_time - last_time)) < 0)
+            walk_start_delay = 0;
+        else
+            walk_start_delay -= (this_time - last_time);
+    }
+    else
+        walk_start_delay = 500;
+    // avoid walking if ViewFocus is elsewhere,
+    //               or if dragging an object (and not walking)
+    if(walking && (SDL_GetMouseState(&mx, &my) & SDL_BUTTON(1)) && Game::get_game()->get_event()->get_view_focus() == FOCUS_NONE && !walk_start_delay)
+    {
+        // walk towards mouse cursor (just 1 space for now)
+        // player->walk_to(uint16 x, uint16 y, uint16 move_max, uint16 timeout_seconds);
+        Player *player = Game::get_game()->get_player();
+        int wx, wy;
+        uint16 px, py;
+        uint8 pz;
+        sint16 rx, ry;
+        mx /= screen->get_scale_factor();
+        my /= screen->get_scale_factor();
+        if((sint32)(walk_delay - (this_time - last_time)) < 0)
+            walk_delay = 0;
+        else
+            walk_delay -= (this_time - last_time);
+        last_time = this_time;
+        mouseToWorldCoords((int)mx, (int)my, wx, wy);
+        if(wx <= cur_x || wx > (cur_x + win_width) || wy <= cur_y || wy > (cur_y + win_height)
+           || walk_delay > 0)
+            return;
+        player->get_location(&px, &py, &pz);
+        rx = wx - px;
+        ry = wy - py;
+        if(abs(rx) > (abs(ry)+1)) ry = 0;
+        else if(abs(ry) > (abs(rx)+1)) rx = 0;
+        player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
+                             (ry == 0) ? 0 : ry < 0 ? -1 : 1);
+    }
+
+    walk_delay = 100;
 }
 
 void MapWindow::drawActors()
@@ -963,13 +1019,179 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
  return;
 }
 
+
+// single-click (press and release button)
+// (FIXME: need to add Idle and wait for dbl-click before doing this)
+GUI_status MapWindow::MouseClick(uint32 x, uint32 y, uint8 button)
+{
+    printf("Thou dost see the console.\n");
+    return(GUI_PASS);
+}
+
+
+// double-click
+GUI_status MapWindow::MouseDouble(uint32 x, uint32 y, uint8 button)
+{
+#define DBLCLICK_USE_BUTTON 1
+    UseCode *uc = Game::get_game()->get_usecode();
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+    Converse *converse = Game::get_game()->get_converse();
+    Event *event = Game::get_game()->get_event();
+    Obj *obj = get_objAtMousePos(x, y);
+    Actor *actor = get_actorAtMousePos(x, y), *player = actor_manager->get_player();
+    bool using_actor = false;
+    uint16 wx = 0, wy = 0;
+    MapCoord target(player->get_location());
+    const char *target_name = "nothing";
+
+    // only USE if ViewFocus is not elsewhere, and not doing anything in event
+    if(button != DBLCLICK_USE_BUTTON || event->get_mode() != MOVE_MODE || event->get_view_focus() != FOCUS_NONE)
+        return(GUI_PASS);
+    // use object or actor?
+    if(actor && actor->is_visible())
+    {
+        obj = actor->make_obj();
+        using_actor = true;
+        target.x = actor->x;
+        target.y = actor->y;
+        fprintf(stderr, "Use actor at %d,%d\n", actor->x, actor->y);
+    }
+    else if(obj)
+    {
+        target.x = obj->x;
+        target.y = obj->y;
+        fprintf(stderr, "Use object at %d,%d\n", obj->x, obj->y);
+    }
+
+    if(using_actor)
+    {
+        // confirm look 
+        target_name = converse->npc_name(actor->get_actor_num());
+        if(!target_name && !(actor->get_flags() & 1)
+           && !Game::get_game()->get_player()->get_party()->contains_actor(actor))
+            target_name = look(target.x, target.y, false);
+        bool can_use = uc->has_usecode(obj);
+        if(can_use)
+        {
+            scroll->display_string("Use-");
+            scroll->display_string(target_name);
+            scroll->display_string("\n");
+            uc->use_obj(obj, player);
+        }
+        else
+        {
+            fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
+            if(actor->get_actor_num() == player->get_actor_num())
+            {
+                scroll->display_string("Talk-");
+                scroll->display_string(target_name);
+                scroll->display_string("\n");
+                scroll->display_string("\nTalking to yourself?\n");
+            }
+            else if(converse->start(actor)) // try to talk to actor
+            {
+                scroll->display_string("Talk-");
+                scroll->display_string(target_name);
+                scroll->display_string("\n");
+                player->face_actor(actor);
+                actor->face_actor(player);
+            }
+            else
+                scroll->display_string("Use-nothing\n");
+        }
+        // we were using an actor so free the temp Obj
+        obj_manager->delete_obj(obj);
+    }
+    else if(obj)
+    {
+        target_name = obj_manager->look_obj(obj);
+        scroll->display_string("Use-");
+        scroll->display_string(target_name);
+        scroll->display_string("\n");
+
+        if(player->get_location().distance(target) > 1)
+        {
+            scroll->display_string("\nToo far away!\n");
+            fprintf(stderr, "distance to object: %d\n", player->get_location().distance(target));
+        }
+        else if(uc->has_usecode(obj))
+            uc->use_obj(obj, player);
+        else
+        {
+            fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
+            scroll->display_string("\nNot usable\n");
+        }
+    }
+    else
+        scroll->display_string("Use-nothing\n");
+
+    updateBlacking();
+
+    // if selecting, select_obj will return to MOVE_MODE
+    if(event->get_mode() == MOVE_MODE)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        event->set_mode(MOVE_MODE);
+    }
+
+    return(GUI_PASS);
+}
+
+
 GUI_status	MapWindow::MouseDown (int x, int y, int button)
 {
 	//printf ("MapWindow::MouseDown, button = %i\n", button);
+	Event *event = Game::get_game()->get_event();
+        Actor *player = actor_manager->get_player();
 	Obj	*obj = get_objAtMousePos (x, y);
 
+        // only do something if ViewFocus is not elsewhere
+	if (event->get_view_focus() == FOCUS_NONE)
+	{
+			int wx, wy;
+                        uint16 px, py; uint8 pz;
+			mouseToWorldCoords(x, y, wx, wy);
+			show_cursor = show_use_cursor = false;
+                        moveCursor(wx-cur_x, wy-cur_y);
+                        sint8 rel_x = wx - player->x, rel_y = wy - player->y;
+			switch(event->get_mode())
+			{
+				case MOVE_MODE:
+					if(!get_actorAtMousePos(x, y))
+						walking = true;
+					break;
+				case LOOK_MODE:
+					event->look();
+					event->set_mode(MOVE_MODE);
+					break;
+				case TALK_MODE:
+					event->talk();
+					event->set_mode(MOVE_MODE);
+					break;
+				case USESELECT_MODE:
+				case FREESELECT_MODE:
+					event->select_obj();
+					break;
+				case PUSHSELECT_MODE:
+					event->pushFrom(rel_x,rel_y);
+					break;
+				case USE_MODE:
+					event->use(rel_x,rel_y);
+					break;
+				case GET_MODE:
+					event->get(rel_x,rel_y);
+					break;
+				case PUSH_MODE:
+					event->pushTo(rel_x,rel_y);
+					break;
+			}
+	}
+
 	if (!obj)
+	{
 		return	GUI_PASS;
+	}
 
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
@@ -983,11 +1205,24 @@ GUI_status	MapWindow::MouseDown (int x, int y, int button)
 
 GUI_status	MapWindow::MouseUp (int x, int y, int button)
 {
+#define DBLCLICK_TIME 300
+    static uint32 last_click_time = 0;
 	//printf ("MapWindow::MouseUp\n");
 	if (selected_obj)
 	{
 		selected_obj = NULL;
 	}
+	walking = false;
+
+    // register double-click (FIXME: will need to delay first for MouseClick)
+    uint32 click_time = Game::get_game()->get_clock()->get_ticks();
+    if(last_click_time && (click_time - last_click_time) <= DBLCLICK_TIME)
+    {
+        last_click_time = 0;
+        return(MouseDouble(x, y, button));
+    }
+    else
+        last_click_time = click_time;
 
 	return	GUI_PASS;
 }
@@ -995,15 +1230,13 @@ GUI_status	MapWindow::MouseUp (int x, int y, int button)
 GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 {
 	Tile	*tile;
-
 	//	printf ("MapWindow::MouseMotion\n");
 	if (selected_obj && !dragging)
 	{
+		int wx, wy;
 		// ensure that the player can reach the selected object before
 		// letting them drag it
-		int wx, wy;
-		mouseToWorldCoords (x, y, wx, wy);
-
+		mouseToWorldCoords(x, y, wx, wy);
 		LineTestResult result;
 		Actor* player = actor_manager->get_player();
 
@@ -1043,6 +1276,16 @@ Obj *MapWindow::get_objAtMousePos (int mx, int my)
 
     return	obj_manager->get_obj (wx, wy, cur_level);
 }
+
+
+Actor *MapWindow::get_actorAtMousePos(int mx, int my)
+{
+	int wx, wy;
+	mouseToWorldCoords (mx, my, wx, wy);
+
+    return	actor_manager->get_actor (wx, wy, cur_level);
+}
+
 
 void MapWindow::mouseToWorldCoords (int mx, int my, int &wx, int &wy)
 {

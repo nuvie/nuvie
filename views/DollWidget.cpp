@@ -24,6 +24,12 @@
 // FIX need to subclass this class for U6, MD & SE
 
 #include "nuvieDefs.h"
+// wont need all these includes with PlayerActions
+#include "MsgScroll.h"
+#include "MapWindow.h"
+#include "Player.h"
+#include "UseCode.h"
+#include "Event.h"
 
 #include "Actor.h" 
 #include "DollWidget.h"
@@ -136,6 +142,9 @@ inline void DollWidget::display_readied_object(uint8 location, uint16 x, uint16 
 
 GUI_status DollWidget::MouseDown(int x, int y, int button)
 {
+ Event *event = Game::get_game()->get_event();
+ MsgScroll *scroll = Game::get_game()->get_scroll();
+ MapWindow *map_window = Game::get_game()->get_map_window();
  uint8 location;
  Obj *obj;
  
@@ -153,7 +162,22 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
           if(obj)
            {
             selected_obj = obj;
-            return GUI_YUM;
+     // ABOEING
+     switch (event->get_mode()) {
+     case LOOK_MODE:
+      event->doLookObj(selected_obj,true);
+      scroll->display_string("\nThou dost see ");
+      event->doLookObj(selected_obj,true);
+      scroll->display_string("\n\n");
+      scroll->display_prompt();
+      map_window->set_show_cursor(false);
+      break;
+     case USE_MODE:
+      event->doUse(selected_obj);
+      break;
+     default:
+      break;
+     }            return GUI_YUM;
            }
          }
       }
@@ -162,8 +186,19 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
 	return GUI_PASS;
 }
 
+
+
+
 GUI_status DollWidget::MouseUp(int x,int y,int button)
 {
+ Event *event = Game::get_game()->get_event();
+ // ABOEING
+ if (event->get_mode() == LOOK_MODE) {
+  event->set_mode(MOVE_MODE);
+  selected_obj = NULL;
+  return GUI_YUM;
+ }
+
  if(selected_obj) // un-ready selected item.
    {
     actor->remove_readied_object(selected_obj);

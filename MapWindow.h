@@ -69,7 +69,8 @@ class MapWindow: public GUI_Widget
  Obj* selected_obj;
  Actor *selected_actor;
  bool hackmove;
- 
+ bool walking;
+
  public:
  
  MapWindow(Configuration *cfg);
@@ -91,14 +92,17 @@ class MapWindow: public GUI_Widget
  void moveCursor(sint16 new_x, sint16 new_y);
  void moveCursorRelative(sint16 rel_x, sint16 rel_y);
  
- const char *lookAtCursor(bool show_prefix = true);
+ const char *look(uint16 x, uint16 y, bool show_prefix = true);
+ const char *lookAtCursor(bool show_prefix = true) { return(look(cur_x + cursor_x, cur_y + cursor_y, show_prefix)); }
  Obj *get_objAtCursor();
  Actor *get_actorAtCursor();
  MapCoord get_cursorCoord();
  Obj *get_objAtMousePos(int x, int y);
+ Actor *get_actorAtMousePos(int x, int y);
+ void mouseToWorldCoords (int mx, int my, int &wx, int &wy);
+
  TileManager *get_tile_manager() { return tile_manager; }
  SDL_Rect *get_clip_rect() { return &clip_rect; }
- void mouseToWorldCoords (int mx, int my, int &wx, int &wy);
 
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y);
@@ -113,6 +117,8 @@ class MapWindow: public GUI_Widget
  virtual GUI_status	MouseDown (int x, int y, int button);
  virtual GUI_status	MouseUp (int x, int y, int button);
  virtual GUI_status	MouseMotion (int x, int y, Uint8 state);
+ GUI_status MouseDouble(uint32 x, uint32 y, uint8 button);
+ GUI_status MouseClick(uint32 x, uint32 y, uint8 button);
 
  void drag_drop_success (int x, int y, int message, void *data);
  void drag_drop_failed (int x, int y, int message, void *data);

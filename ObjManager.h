@@ -112,9 +112,11 @@ class ObjManager
  ~ObjManager();
 
  bool loadObjs(TileManager *tm);
+ void startObjs();
 
  void set_usecode(UseCode *uc) { usecode = uc; }
  UseCode *get_usecode()        { return(usecode); }
+ EggManager *get_egg_manager() { return(egg_manager); }
 
  //U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);

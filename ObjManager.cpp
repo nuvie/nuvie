@@ -28,7 +28,7 @@
 #include "EggManager.h"
 #include "TileManager.h"
 #include "ObjManager.h"
-
+#include "UseCode.h"
 #include "U6misc.h"
 #include "U6LList.h"
 #include "NuvieIOFile.h"
@@ -703,7 +703,7 @@ bool ObjManager::loadBaseTile()
    return false;
 
  for(i=0;i<1024;i++)
-  obj_to_tile[i] = basetile.read2();
+   obj_to_tile[i] = basetile.read2();
 
  return true;
 }
@@ -1191,4 +1191,35 @@ Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z)
  obj->z = z;
  
  return obj; 
+}
+
+
+/* Call load usecode for all objects (after loading them). This should be in
+ * loadObj() but that was crashing when usecode tried to use timers.
+ */
+void ObjManager::startObjs()
+{
+ iAVLTree *obj_tree;
+ ObjTreeNode *tree_node;
+ iAVLCursor cursor;
+ U6LList *obj_list;
+ U6Link *link;
+ Obj *obj;
+ uint8 i;
+ 
+    for(i=0;i <= 5;i++)
+    {
+        obj_tree = get_obj_tree(i);
+        tree_node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
+        for(;tree_node != NULL;tree_node = (ObjTreeNode *)iAVLNext(&cursor) )
+        {
+            obj_list = (U6LList *)tree_node->obj_list;
+            for(link = obj_list->start(); link != NULL; link = link->next)
+            {
+                obj = (Obj *)link->data;
+                if(usecode->has_loadcode(obj))
+                    usecode->load_obj(obj);
+            }
+        }
+    }
 }

@@ -11,6 +11,12 @@
 
 #endif
 
+#if defined(__GNUC__) && (__GNUC__ < 3)
+# ifndef _GNU_SOURCE
+# define _GNU_SOURCE
+# endif
+#endif
+
 #define NUVIE_GAME_NONE  0
 #define NUVIE_GAME_U6    1
 #define NUVIE_GAME_MD    2

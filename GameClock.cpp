@@ -33,6 +33,7 @@ GameClock::GameClock(Configuration *cfg)
 
  move_counter = 0;
  time_counter = 0;
+ tick_counter = 0;
 }
  
 GameClock::~GameClock()
@@ -67,10 +68,12 @@ bool GameClock::init()
 void GameClock::inc_move_counter()
 {
  move_counter++;
- 
+
  if((move_counter % GAMECLOCK_TICKS_PER_MINUTE) == 0)
    inc_minute();
- 
+ else
+   tick_counter++;
+
  return;
 }
 
@@ -79,7 +82,7 @@ void GameClock::inc_move_counter()
 void GameClock::inc_move_counter_by_a_minute()
 {
  move_counter += GAMECLOCK_TICKS_PER_MINUTE;
- 
+
  inc_minute();
 }
 
@@ -104,6 +107,7 @@ void GameClock::inc_minute()
    {
     minute++;
     time_counter += 1;
+    tick_counter += GAMECLOCK_TICKS_PER_MINUTE;
    }
  return;
 }
@@ -120,6 +124,7 @@ void GameClock::inc_hour()
    {
     hour++;
     time_counter += 60;
+    tick_counter += (60 * GAMECLOCK_TICKS_PER_MINUTE);
    }
  printf("%s\n",get_time_string());
 
@@ -139,6 +144,7 @@ void GameClock::inc_day()
    {
     day++;
     time_counter += 1440;
+    tick_counter += (1440 * GAMECLOCK_TICKS_PER_MINUTE);
    }
  update_day_of_week();
  
@@ -160,6 +166,7 @@ void GameClock::inc_month()
    {
     month++;
     time_counter += 40320;
+    tick_counter += (40320 * GAMECLOCK_TICKS_PER_MINUTE);
    }
  return;
 }
@@ -168,6 +175,7 @@ void GameClock::inc_year()
 {
  year++;
  time_counter += 483840;
+ tick_counter += (483840 * GAMECLOCK_TICKS_PER_MINUTE);
  return;
 }
 

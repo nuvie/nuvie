@@ -27,7 +27,7 @@
 #include "Configuration.h"
 #include "U6misc.h"
 #include "Text.h"
-
+#include "GUI.h"
 #include "MsgScroll.h"
 
 MsgScroll::MsgScroll(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
@@ -289,7 +289,7 @@ bool MsgScroll::handle_input(const SDL_keysym *input)
                               set_input_mode(false);
                           }
                           return(true);
-		case SDLK_KP_ENTER:
+        case SDLK_KP_ENTER:
         case SDLK_RETURN: if(permit_inputescape)
                           {
                             if(input_mode)
@@ -317,6 +317,32 @@ bool MsgScroll::handle_input(const SDL_keysym *input)
     }
     
  return(true);
+}
+
+
+GUI_status MsgScroll::HandleEvent(SDL_Event *event)
+{
+    if(event->type == SDL_MOUSEBUTTONUP)
+        return(MouseUp(event->button.x, event->button.y, event->button.button));
+    return(GUI_PASS);
+}
+
+
+GUI_status MsgScroll::MouseUp(int x, int y, int button)
+{
+    if(page_break) // any click == scroll-to-end
+    {
+        page_break = false;
+        display_string(NULL);
+        return(GUI_YUM);
+    }
+    else if(button == 3) // right click == send input
+        if(permit_inputescape && input_mode)
+        {
+            set_input_mode(false);
+            return(GUI_YUM);
+        }
+    return(GUI_PASS);
 }
 
 

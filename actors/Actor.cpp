@@ -59,6 +59,9 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  
  memset(readied_objects,0,sizeof(readied_objects));
  moves = 1;
+
+ name ="";
+
 }
  
 Actor::~Actor()

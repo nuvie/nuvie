@@ -70,11 +70,13 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
  bool search_obj(Obj *obj, Actor *actor);
  void timed_callback(void *obj_data);
  bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y);
+ bool load_obj(Obj *obj);
 
  bool has_usecode(Obj *obj);
  bool has_lookcode(Obj *obj);
  bool has_passcode(Obj *obj);
  bool has_movecode(Obj *obj);
+ bool has_loadcode(Obj *obj);
 
  bool is_unlocked_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n != 9 && obj->frame_n != 11); }
  bool is_locked_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && (obj->frame_n == 9 || obj->frame_n == 11)); }
@@ -122,6 +124,8 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
 // bool search_container(Obj *obj, uint8 ev);
  bool use_powder_keg(Obj *obj, uint8 ev);
  bool use_cannon(Obj *obj, uint8 ev);
+ bool use_egg(Obj *obj, uint8 ev);
+ bool sundial(Obj *obj, uint8 ev);
 
 // supplementary
  Obj *drawbridge_find(Obj *crank_obj);
@@ -131,6 +135,8 @@ class U6UseCode: public UseCode, public TimedCallbackTarget
  bool use_firedevice_message(Obj *obj, bool lit);
  void lock_door(Obj *obj);
  void unlock_door(Obj *obj);
+ Obj *bell_find(Obj *chain_obj);
+ void sundial_set_shadow(Obj *sundial, uint8 hour);
 
 #if 0 /* names for other events? */
  bool approach_mirror(Obj *obj, uint8 ev); // change to reflect frame

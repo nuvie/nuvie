@@ -28,9 +28,10 @@
 #include "NuvieIOFile.h"
 #include "U6Lib_n.h"
 #include "U6Lzw.h"
-
+#include "Game.h"
 #include "U6misc.h"
 #include "Look.h"
+#include "GameClock.h"
 #include "TileManager.h"
 
 static char article_tbl[][5] = {"", "a ", "an ", "the "};
@@ -196,6 +197,13 @@ Tile *TileManager::get_original_tile(uint16 tile_num)
 }
 
 
+// set entry in tileindex[] to tile num
+void TileManager::set_tile_index(uint16 tile_index, uint16 tile_num)
+{
+    tileindex[tile_index] = tile_num;
+}
+
+
 void TileManager::set_anim_loop(uint16 tile_num, sint8 loopc, uint8 loop)
 {
     for(uint32 i = 0; i < 32; i++)
@@ -243,6 +251,8 @@ void TileManager::update()
  uint16 i;
  uint16 current_anim_frame = 0;
  uint16 prev_tileindex;
+ uint8 current_hour = Game::get_game()->get_clock()->get_hour();
+ static sint8 last_hour = -1;
  
  // cycle animated tiles
 
@@ -273,6 +283,10 @@ void TileManager::update()
    rgame_counter = 65535;
  else
    rgame_counter--;
+ // cycle time-based animations
+ if(current_hour != last_hour)
+   update_timed_tiles(current_hour);
+ last_hour = current_hour;
 }
 
 
@@ -386,7 +400,7 @@ bool TileManager::loadAnimData()
    else
     animdata.loop_count[i] = -1; // infinite animation
   }
-  
+
  return true;
 }
 
@@ -491,5 +505,37 @@ bool TileManager::loadAnimMask()
  
  return true;
 }
-   
+
+
+/* Update tiles for timed-based animations.
+ */
+void TileManager::update_timed_tiles(uint8 hour)
+{
+    uint16 new_tile;
+//    switch(Game::get_game()->get_game_type())
+//    {
+//        case NUVIE_GAME_U6:
+            // sundials
+            if(hour >= 5 && hour <= 6)
+                new_tile = 328;
+            else if(hour >= 7 && hour <= 8)
+                new_tile = 329;
+            else if(hour >= 9 && hour <= 10)
+                new_tile = 330;
+            else if(hour >= 11 && hour <= 12)
+                new_tile = 331;
+            else if(hour >= 13 && hour <= 14)
+                new_tile = 332;
+            else if(hour >= 15 && hour <= 16)
+                new_tile = 333;
+            else if(hour >= 17 && hour <= 18)
+                new_tile = 334;
+            else if(hour >= 19 && hour <= 20)
+                new_tile = 335;
+            else // 9pm to 5am
+                new_tile = 861;
+            set_tile_index(861, new_tile);
+//            break;
+//    }
+}
 

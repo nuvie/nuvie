@@ -631,7 +631,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             break;
         case U6OP_SLOOK: // 0xf1, description follows
             converse->desc = strdup(get_text()); // collected
-            converse->print("You see ");
+            converse->print("\nYou see ");
             converse->print(converse->desc);
             converse->print("\n");
             break;

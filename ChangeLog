@@ -1,3 +1,28 @@
+2004-01-20  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Alt-214 codes can be entered with the numeric keypad now.
+	* Keys F1-F10 enabled to switch between party members and roster.
+	* Fixed Sundials (allowing potentially other timed animations in
+	  TileManager.
+	* Added testing usecode for Eggs, and a new LOAD event. (unused)
+	* Changed the way game-timers work, now having two queues in Event,
+	  and using new game_ticks counter in GameClock. Game ticks are updating
+	  with the game time, unlike moves.
+	* Fun with GUI_Widget... (this is barely tested and will be cleaned up)
+	  Left-click MsgScroll during conversation to keep scrolling,
+	  Right-click to say bye (or say whatever is typed).
+	  Double-click InventoryWidget to use an item.
+	  Hold left mouse button in MapWindow to walk towards cursor.
+	  Double-click left button MapWindow to use an object (not working
+	  correctly yet) or talk to an actor.
+	  Left-click in MapWindow to select an object or actor for the current
+	  action (use, look, talk, get).
+	* ADEMAS! (more fun with GUI_Widget)
+	  Merged inventory-look/use changes from Adrian Boeing:
+	  Left-click in InventoryWidget or DollWidget to select an object to
+	  look at or use. (after entering the appropriate mode)
+	  Divided Event::look() and use() into smaller, more modular functions.
+	  (everything needs more testing)
+
 2004-01-20  Eric Fry <efry at users.sourceforge.net>
 	* Moved egg spawning code into its own method 
 	  spawn_egg(Obj *egg, uint8 hatch_probability);

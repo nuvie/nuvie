@@ -45,6 +45,15 @@ class UseCode;
 class Event;
 class GUI;
 
+typedef enum
+{
+    PAUSE_UNPAUSED = 0x00,
+    PAUSE_USER     = 0x01, /* Don't allow user-input */
+    PAUSE_ANIMS    = 0x02, /* TileManager & AnimManager */
+    PAUSE_WORLD    = 0x04, /* game time doesn't pass, freeze actors */
+    PAUSE_ALL      = 0xFF
+} GamePauseState;
+
 class Game
 {
  uint8 game_type;
@@ -74,6 +83,8 @@ class Game
  Event *event;
  
  GUI *gui;
+
+ GamePauseState pause_flags;
  
  public:
  
@@ -83,6 +94,11 @@ class Game
  bool loadGame(Screen *screen, uint8 type);
  
  void play();
+
+ GamePauseState get_pause_flags()            { return(pause_flags); }
+ void set_pause_flags(GamePauseState state)  { pause_flags = state; }
+ void unpause()    { pause_flags = PAUSE_UNPAUSED; }
+ void pause_all()  { pause_flags = PAUSE_ALL; }
 
  /* Pass back instance of Game classes... and why not? */
  static Game *get_game()           { return(game); }

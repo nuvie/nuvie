@@ -25,8 +25,10 @@
  */
 
 #include <list>
+#include <string>
 
 using std::list;
+using std::string;
 
 #include "Map.h"
 #include "ObjManager.h"
@@ -126,7 +128,7 @@ class Actor
 
  uint8 flags;
  
- char *name;
+ string name;
  
  U6LList *obj_inventory;
  
@@ -154,7 +156,12 @@ class Actor
  bool is_nearby(MapCoord &where, uint8 thresh = 5);
  bool is_at_position(Obj *obj);
  bool is_passable();
- 
+ //for lack of a better name:
+ bool is_met() { return(flags & 0x01); }
+
+ void set_name(const char *actor_name) {  name=actor_name; }
+ const char *get_name() {return name.c_str(); }
+
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  MapCoord get_location();
  uint16 get_tile_num();

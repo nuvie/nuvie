@@ -51,11 +51,11 @@ typedef enum {
  GET_MODE,
  MOVE_MODE,
  DROP_MODE,
- TALK_MODE,
+ TALK_MODE, /* finding an actor to talk to */
  PUSH_MODE,
  PUSHSELECT_MODE,
  USESELECT_MODE,
- FREESELECT_MODE /*...or use a single free-move mode for get,talk,select?*/
+ FREESELECT_MODE, /*...or use a single free-move mode for get,talk,select?*/
 } EventMode;
 
 typedef enum {
@@ -91,7 +91,7 @@ class Event
  uint16 active_alt_code; // alt-code that needs more input
  uint8 alt_code_input_num; // alt-code can get multiple inputs
 
- TimeQueue *time_queue;
+ TimeQueue *time_queue, *game_time_queue;
  Obj *use_obj;
 
  public:
@@ -102,13 +102,12 @@ class Event
            GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g);
  Book *get_book() { return(book); }
  TimeQueue *get_time_queue() { return(time_queue); }
+ TimeQueue *get_game_time_queue() { return(game_time_queue); }
 
  bool update();
  bool handleEvent(const SDL_Event *event);
- bool pass_input(const SDL_Event *event);
  void useselect_mode(Obj *src, const char *prompt = NULL);
  void freeselect_mode(Obj *src, const char *prompt = NULL);
- void set_view_focus(ViewFocus focus = FOCUS_NONE);
  void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
  void display_portrait(Actor *actor, const char *name = NULL);
 
@@ -121,6 +120,9 @@ class Event
  bool pushTo(sint16 rel_x, sint16 rel_y);
  bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
  bool select_obj(sint16 rel_x, sint16 rel_y);
+ bool doUse(Obj *obj);
+ bool doLookObj(Obj *obj, bool inventory=false);
+ bool doLookActor(Actor *actor);
 
  void alt_code(const char *cs);
  void alt_code_input(const char *in);
@@ -129,6 +131,12 @@ class Event
  void alt_code_infostring();
 
  void wait();
+
+ EventMode get_mode() { return(mode); }
+ void set_mode(EventMode new_mode) { mode = new_mode; }
+ bool pass_input(const SDL_Event *event);
+ void set_view_focus(ViewFocus focus = FOCUS_NONE);
+ ViewFocus get_view_focus() { return(view_focus); }
 
  protected:
 

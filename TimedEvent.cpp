@@ -14,6 +14,20 @@
 #include "TimedEvent.h"
 
 
+/* Activate all events for the current time, deleting those that have fired
+ * and are of no more use.
+ */
+void TimeQueue::call_timers(uint32 now)
+{
+    while(!empty() && call_timer(now))
+    {
+        TimedEvent *tevent = pop_timer(); // remove
+        if(!tevent->repeat)
+            delete tevent; // if not repeated, safe to delete
+    }
+}
+
+
 /* Add new timed event to queue, which will activate `event' when time is
  * `evtime'.
  */
@@ -46,19 +60,17 @@ TimedEvent *TimeQueue::pop_timer()
 }
 
 
-/* Call timed event at front of queue, whose time is <= `ev[g]time'.
+/* Call timed event at front of queue, whose time is <= `now'.
  * Returns true if an event handler was called. (false if time isn't up yet)
  */
-bool TimeQueue::call_timer(uint32 evtime, uint32 evgtime)
+bool TimeQueue::call_timer(uint32 now)
 {
-    uint32 now = 0;
     if(empty())
         return(false);
     TimedEvent *first = tq.front();
-    now = (first->real_time) ? evtime : evgtime; // use real time or game time?
-
     if(first->time > now)
         return(false);
+
     first->timed(now);
     if(first->repeat) // repeat! same delay, add time
     {
@@ -80,7 +92,12 @@ TimedEvent::TimedEvent(uint32 reltime, bool immediate, bool realtime)
     time = reltime + (real_time ? clock->get_ticks() : clock->get_turn());
     if(immediate)
         time = 0; // start now (useful if repeat == true)
-    event->get_time_queue()->add_timer(this);
+    if(real_time)
+        event->get_time_queue()->add_timer(this);
+    else
+        event->get_game_time_queue()->add_timer(this);
+//    if(immediate)
+//        this->timed(now);
 }
 
 
@@ -245,5 +262,4 @@ void TimedCallback::timed(uint32 evtime)
 GameTimedCallback::GameTimedCallback(TimedCallbackTarget *t, void *d, uint32 wait_time, bool repeating)
                                      : TimedCallback(t, d, wait_time, repeating)
 {
-
 }

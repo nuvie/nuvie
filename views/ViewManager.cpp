@@ -91,8 +91,11 @@ bool ViewManager::set_current_view(View *view)
    {
     gui->removeWidget((GUI_Widget *)current_view);//remove current widget from gui
 
-    cur_party_member = current_view->get_party_member_num();
-    view->set_party_member(cur_party_member);
+    if(current_view != party_view) // party_view doesn't use member num
+       {
+        cur_party_member = current_view->get_party_member_num();
+        view->set_party_member(cur_party_member);
+       }
    }
    
  current_view = view;

@@ -39,6 +39,7 @@
 #include "Event.h"
 #include "MapWindow.h"
 #include "TimedEvent.h"
+#include "EggManager.h"
 #include "U6UseCode.h"
 
 // numbered by entrance quality, "" = no name
@@ -117,6 +118,8 @@ void U6UseCode::init_objects()
     uc_objects_size = 0; uc_object_count = 0;
 
 // (object,frame,distance to trigger,event(s),function)
+    add_usecode(OBJ_U6_EGG,0,0,USE_EVENT_USE/*|USE_EVENT_LOAD*/,&U6UseCode::use_egg);
+
     add_usecode(OBJ_U6_OAKEN_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
     add_usecode(OBJ_U6_WINDOWED_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_door);
     add_usecode(OBJ_U6_CEDAR_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door);
@@ -133,11 +136,11 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_CODEX,       0,0,USE_EVENT_LOOK,&U6UseCode::look_sign);
 
     add_usecode(OBJ_U6_CRATE,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_CRATE,      255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_CRATE,      255,0,USE_EVENT_USE,   &U6UseCode::use_container);
     add_usecode(OBJ_U6_BARREL,       0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_BARREL,     255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_BARREL,     255,0,USE_EVENT_USE,   &U6UseCode::use_container);
     add_usecode(OBJ_U6_CHEST,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
-    add_usecode(OBJ_U6_CHEST,      255,0,USE_EVENT_USE,&U6UseCode::use_container);
+    add_usecode(OBJ_U6_CHEST,      255,0,USE_EVENT_USE,   &U6UseCode::use_container);
     add_usecode(OBJ_U6_SECRET_DOOR,255,0,USE_EVENT_USE|USE_EVENT_SEARCH,&U6UseCode::use_secret_door);
     add_usecode(OBJ_U6_BAG,        255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
     add_usecode(OBJ_U6_DRAWER,     255,0,USE_EVENT_SEARCH,&U6UseCode::use_container);
@@ -178,7 +181,7 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_WELL,      255,0,USE_EVENT_USE,&U6UseCode::use_well);
     add_usecode(OBJ_U6_POWDER_KEG,255,0,USE_EVENT_USE|USE_EVENT_TIMED,&U6UseCode::use_powder_keg);
     
-	add_usecode(OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive);
+    add_usecode(OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive);
 	
     add_usecode(OBJ_U6_POTION,    255,0,USE_EVENT_USE,&U6UseCode::use_potion);
     add_usecode(OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food);
@@ -301,6 +304,17 @@ bool U6UseCode::has_movecode(Obj *obj)
 }
 
 
+/* Is there LOAD usecode for an object?
+ */
+bool U6UseCode::has_loadcode(Obj *obj)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_LOAD);
+    if(uc < 0)
+        return(false);
+    return(true);
+}
+
+
 /* USE object. Actor is the actor using the object.
  * Returns false if there is no usecode for that object.
  */
@@ -386,6 +400,18 @@ bool U6UseCode::move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
 }
 
 
+/* Call post-LOAD or UNLOAD usecode for an object.
+ * Returns false if there is no usecode for that object.
+ */
+bool U6UseCode::load_obj(Obj *obj)
+{
+    sint16 uc = get_ucobject_index(obj->obj_n, obj->frame_n, USE_EVENT_LOAD);
+    if(uc < 0)
+        return(false);
+    return(uc_event(uc, USE_EVENT_LOAD, obj));
+}
+
+
 /* Return index of usecode definition in list for object N:F, or -1 if none.
  */
 sint16 U6UseCode::get_ucobject_index(uint16 n, uint8 f, uint8 ev)
@@ -411,13 +437,14 @@ bool U6UseCode::uc_event(sint16 uco, uint8 ev, Obj *obj)
     if(uc_objects[uco].trigger & ev)
     {
 //        printf("Usecode #%02d (%d:%d), event %d (%s)\n", uco, obj->obj_n,
-        printf("Object %d:%d, event %s\n", obj->obj_n,
-               obj->frame_n, (ev == USE_EVENT_USE) ? "USE"
+        printf("Object %d:%d, event %s\n", obj->obj_n, obj->frame_n,
+                               (ev == USE_EVENT_USE) ? "USE"
                              : (ev == USE_EVENT_LOOK) ? "LOOK"
                              : (ev == USE_EVENT_PASS) ? "PASS"
                              : (ev == USE_EVENT_SEARCH) ? "SEARCH"
                              : (ev == USE_EVENT_TIMED) ? "TIMED"
                              : (ev == USE_EVENT_MOVE) ? "MOVE"
+                             : (ev == USE_EVENT_LOAD) ? "LOAD"
                              : "???");
         bool ucret = (this->*uc_objects[uco].ucf)(obj, ev);
         int_ref = 0;
@@ -721,15 +748,23 @@ bool U6UseCode::use_bell(Obj *obj, uint8 ev)
         return(false);
     if(obj->obj_n == OBJ_U6_BELL)
         bell = obj;
-    else // FIXME: bell isn't always next to chain (Tomb of Kings)
-    {
-        bell = obj_manager->get_obj_of_type_from_location(OBJ_U6_BELL, obj->x + 1, obj->y, obj->z);
-        if(!bell)
-            bell = obj_manager->get_obj_of_type_from_location(OBJ_U6_BELL, obj->x - 1, obj->y, obj->z);
-    }
+    else
+        bell = bell_find(obj);
     if(bell)
         obj_manager->animate_forwards(bell, 2);
     return(true);
+}
+
+
+/* Find bell near its pull-chain.
+ */
+Obj *U6UseCode::bell_find(Obj *chain_obj)
+{
+    Obj *bell = NULL;
+    for(uint32 x = chain_obj->x-8; x <= chain_obj->x+8; x++)
+        for(uint32 y = chain_obj->y-8; y <= chain_obj->y+8 && !bell; y++)
+            bell = obj_manager->get_obj_of_type_from_location(OBJ_U6_BELL, x, y, chain_obj->z);
+    return(bell);
 }
 
 
@@ -1862,4 +1897,16 @@ bool U6UseCode::use_cannon(Obj *obj, uint8 ev)
         }
     }
     return(false);
+}
+
+
+/* Hatch egg.
+ */
+bool U6UseCode::use_egg(Obj *obj, uint8 ev)
+{
+    EggManager *egg_manager = obj_manager->get_egg_manager();
+    bool success = egg_manager->spawn_egg(obj, NUVIE_RAND() % 100);
+    if(actor_ref)
+        scroll->display_string(success ? "\nSpawned!\n" : "\nNo effect.\n");
+    return(true);
 }

@@ -27,6 +27,13 @@
 #include "InventoryWidget.h"
 #include "Actor.h"
 #include "Text.h"
+#include "GameClock.h"
+// dont need all these includes with PlayerActions
+#include "MsgScroll.h"
+#include "MapWindow.h"
+#include "Player.h"
+#include "UseCode.h"
+#include "Event.h"
 
 #include "InventoryFont.h"
 
@@ -133,6 +140,17 @@ void InventoryWidget::display_inventory_list()
       i++;
    }
 
+ // ABOEING
+ //clear the screen first
+  tile = empty_tile;
+ for(i=0;i<3;i++)
+ {
+  for(j=0;j<4;j++)
+  {
+   screen->blit((area.x+8)+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
+  }
+ }
+
   for(i=0;i<3;i++)
    {
     for(j=0;j<4;j++)
@@ -203,15 +221,34 @@ void InventoryWidget::display_arrows()
 
 GUI_status InventoryWidget::MouseDown(int x, int y, int button)
 { 
+ Event *event = Game::get_game()->get_event();
+ MsgScroll *scroll = Game::get_game()->get_scroll();
+ MapWindow *map_window = Game::get_game()->get_map_window();
  x -= area.x;
  y -= area.y;
  
+ // ABOEING
  if(actor)
    {
-    if((selected_obj = get_obj_at_location(x,y)) != NULL)
-       return GUI_YUM;
+  if((selected_obj = get_obj_at_location(x,y)) != NULL) {
+   switch (event->get_mode()) {
+   case LOOK_MODE:
+   event->doLookObj(selected_obj,true);
+   scroll->display_string("\nThou dost see ");
+   event->doLookObj(selected_obj,true);
+   scroll->display_string("\n\n");
+   scroll->display_prompt();
+   map_window->set_show_cursor(false);
+   break;
+   case USE_MODE:
+   event->doUse(selected_obj);
+   break;
+   default:
+    break;
    }
-
+   return GUI_YUM;
+  }
+   }
 	return GUI_PASS;
 }
 
@@ -258,12 +295,25 @@ inline Obj *InventoryWidget::get_obj_at_location(int x, int y)
 
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 { 
+#define DBLCLICK_TIME 300
+ static uint32 last_click_time = 0, last_click_button = 0;
+ bool selected = false;
+ Event *event = Game::get_game()->get_event();
+
+ // ABOEING
+ if (event->get_mode() == LOOK_MODE) {
+  event->set_mode(MOVE_MODE);
+  selected_obj = NULL;
+  return GUI_YUM;
+ }
+
  if(selected_obj && selected_obj->container) // open up the container.
    {
     container_obj = selected_obj;
     Redraw();
+    selected = true;
    }
- else
+ else if(button == 1)
    {
     x -= area.x;
     y -= area.y;
@@ -289,13 +339,45 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
     
     if(selected_obj) // attempt to ready selected object.
       {
-       actor->add_readied_object(selected_obj);
+       selected = actor->add_readied_object(selected_obj);
        Redraw();
       }
    }
-  
+ else if(button == 3)
+   {
+    x -= area.x;
+    y -= area.y;
+    if(selected_obj) // attempt to drop selected object.
+      {
+       selected = true;
+       actor->inventory_remove_obj(selected_obj);
+       selected_obj->x = actor->get_location().x;
+       selected_obj->y = actor->get_location().y;
+       obj_manager->add_obj(selected_obj);
+       Redraw();
+      }
+   }
+
  selected_obj = NULL;
-	
+
+ if(!selected)
+ {
+    // register double-click
+    uint32 click_time = Game::get_game()->get_clock()->get_ticks();
+    if(last_click_time && (click_time - last_click_time) <= DBLCLICK_TIME
+       && last_click_button == button)
+    {
+        last_click_time = 0;
+        last_click_button = 0;
+        return(MouseDouble(x + area.x, y + area.y, button));
+    }
+    else
+    {
+        last_click_time = click_time;
+        last_click_button = button;
+    }
+ }
+
  return GUI_YUM;
 }
 
@@ -428,3 +510,46 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
 	screen->blit(nx, ny, tile->data, 8, 16, 16, 16, true);
 	screen->update(nx, ny, 16, 16);
 }
+
+
+/* Use object.
+ */
+GUI_status InventoryWidget::MouseDouble(uint32 x, uint32 y, uint8 button)
+{
+    UseCode *uc = Game::get_game()->get_usecode();
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+    Converse *converse = Game::get_game()->get_converse();
+    MapWindow *map_window = Game::get_game()->get_map_window();
+    Event *event = Game::get_game()->get_event();
+    const char *target_name;
+    Obj *obj = get_obj_at_location(x - area.x, y - area.y);
+
+    if(!(actor && obj && button == 1 && event->get_mode() == MOVE_MODE))
+        return(GUI_YUM);
+
+    target_name = obj_manager->look_obj(obj);
+    scroll->display_string("Use-");
+    scroll->display_string(target_name);
+    scroll->display_string("\n");
+
+    if(uc->has_usecode(obj))
+        uc->use_obj(obj, Game::get_game()->get_player()->get_actor());
+    else
+    {
+        fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
+        scroll->display_string("\nNot usable\n");
+    }
+
+    map_window->updateBlacking();
+
+    // if selecting, select_obj will return to MOVE_MODE
+    if(event->get_mode() == USE_MODE || event->get_mode() == MOVE_MODE)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        event->set_mode(MOVE_MODE);
+    }
+
+    return(GUI_PASS);
+}
+

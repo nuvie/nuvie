@@ -26,7 +26,8 @@ public:
 
     void add_timer(TimedEvent *tevent);
     TimedEvent *pop_timer();
-    bool call_timer(uint32 evtime, uint32 evgtime); // activate
+    bool call_timer(uint32 now); // activate
+    void call_timers(uint32 now); // activate all
 };
 
 
