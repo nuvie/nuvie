@@ -16,6 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "nuvieDefs.h"
+
 #include <ctype.h>
 
 #include <string>
@@ -39,7 +41,7 @@ std::string to_uppercase(std::string s)
         std::string str = s;
         std::string::iterator X;
         for(X = str.begin(); X != str.end(); ++X) {
-#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
+#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__) || defined(_MSC_VER))
                 if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
                 *X = std::toupper(*X);
