@@ -44,6 +44,7 @@ class MsgScroll;
 #define OBJTYPE_NONE      0x0000
 #define OBJTYPE_FOOD      0x0001 /* food or drink */
 #define OBJTYPE_CONTAINER 0x0002 /* must be set on empty bag,crate,backpack */
+#define OBJTYPE_BOOK      0x0004 /* has book data (signs, paintings, books) */
 
 typedef struct // object properties & usecode
 {
@@ -80,6 +81,7 @@ class U6UseCode: public UseCode, public CallBack
  bool is_closed_door(Obj *obj)   { return(obj->obj_n >= 297 && obj->obj_n <= 300 && obj->frame_n > 3); }
  bool is_food(Obj *obj);
  bool is_container(Obj *obj);
+ bool is_book(Obj *obj);
 
  uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
 

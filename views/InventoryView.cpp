@@ -583,6 +583,9 @@ bool InventoryView::select_obj(Obj *obj)
         case DROP_MODE:
             event->drop_select(obj);
             break;
+        case TALK_MODE:
+            event->talk(obj);
+            break;
         default:
             if(!obj) // don't cancelAction() and "Pass!" if selected an object
                 event->cancelAction();

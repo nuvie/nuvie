@@ -284,17 +284,19 @@ const char *Actor::get_name()
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     Converse *converse = Game::get_game()->get_converse();
     Party *party = Game::get_game()->get_party();
+    Actor *player = Game::get_game()->get_player()->get_actor();
     const char *talk_name = NULL; // name from conversation script
 
-    if(name == "")
-    {
+//    if(name == "") commented out so we always return the correct name
+//    {
         if(in_party)
             name = party->get_actor_name(party->get_member_num(this));
-        else if(is_met() && (talk_name = converse->npc_name(id_n)))
+        else if(((id_n == player->id_n) || is_met())
+                && (talk_name = converse->npc_name(id_n)))
             name = talk_name;
         else
             name = actor_manager->look_actor(this, false);
-    }
+//    }
     return(name.c_str());
 }
 

@@ -340,9 +340,9 @@ bool Player::set_solo_mode(Actor *new_actor)
  */
 uint32 Player::get_walk_delay()
 {
-/*    if(actor->obj_n == OBJ_U6_BALLOON?)
-        return(??); // ???
-    else */if(actor->obj_n == OBJ_U6_SHIP)
+    if(actor->obj_n == OBJ_U6_BALLOON_BASKET)
+        return(10); // 10x normal (wow!)
+    else if(actor->obj_n == OBJ_U6_SHIP)
         return(20); // 5x normal
     else if(actor->obj_n == OBJ_U6_SKIFF)
         return(50); // 2x normal
@@ -351,5 +351,31 @@ uint32 Player::get_walk_delay()
     else if(actor->obj_n == OBJ_U6_HORSE_WITH_RIDER)
         return(50); // 2x normal
     else
-        return(100); // normal movement about ?? spaces per second
+        return(100); // normal movement about 10 spaces per second?
 }
+
+
+/* Returns true if it's time for the player to take another step.
+ * (call during continuous movement)
+ */
+bool Player::check_walk_delay()
+{
+    static uint32 walk_delay = 0, // start with no delay
+                  last_time = clock->get_ticks();
+    uint32 this_time = clock->get_ticks();
+    uint32 time_passed = this_time - last_time;
+
+    // subtract time_passed until delay is 0
+    if(sint32(walk_delay - time_passed) < 0)
+        walk_delay = 0;
+    else
+        walk_delay -= time_passed;
+    last_time = this_time; // set each call to get time_passed
+    if(walk_delay == 0)
+    {
+        walk_delay = get_walk_delay(); // reset
+        return(true);
+    }
+    return(false); // not time yet
+}
+

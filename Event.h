@@ -121,6 +121,12 @@ class Event : public GUI_CallBack
  void endAction();
  void endWaitMode(); // change to MOVE_MODE, hide cursors, display prompt
 
+ /* The upper-level calls (look/talk/use) encapsulate everything about the
+    action, except printing the action name ("Talk-"). The lower-level methods
+    (perform_look/perform_talk/perform_use) only contain the core functionality
+    for any type of target. (object, action, or location) */
+ // FIXME: but barely anything follows this scheme yet
+
  bool move(sint16 rel_x, sint16 rel_y);
  bool use(sint16 rel_x, sint16 rel_y);
  bool use(Obj *obj);
@@ -132,6 +138,9 @@ class Event : public GUI_CallBack
  bool look(Actor *actor);
  bool search(Obj *obj);
  bool talk();
+ bool talk(Actor *actor);
+ bool talk(Obj *obj);
+ bool perform_talk(Actor *actor);
  bool pushFrom(sint16 rel_x, sint16 rel_y);
  bool pushTo(sint16 rel_x, sint16 rel_y);
  bool select_obj(Obj *obj = NULL, Actor *actor = NULL);

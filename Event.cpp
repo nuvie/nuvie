@@ -374,75 +374,105 @@ void Event::freeselect_mode(Obj *src, const char *prompt)
 }
 
 
-/* Get ID of Actor at cursor and check to see if him/her/it is willing to talk
- * to the player character.
- * Returns true if conversation starts, false if they don't talk, or if there
- * is no Actor at the requested location.
+/* Begin a conversation with an actor if him/her/it is willing to talk.
+ * Returns true if conversation starts.
  */
-bool Event::talk()
+bool Event::perform_talk(Actor *actor)
 {
-    Actor *npc = map_window->get_actorAtCursor(),
-          *pc = player->get_actor();
-    uint8 id = 0;
-    const char *name = NULL;
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    Actor *pc = player->get_actor();
+    uint8 id = actor->get_actor_num();
 
-    if(mode == WAIT_MODE)
-        return(false);
-
-    if(!npc)
+    if(id == pc->get_actor_num())    // actor is controlled by player
     {
-        scroll->display_string("nothing!\n\n");
-        scroll->display_prompt();
-        return(false);
-    }
-    id = npc->get_actor_num();
-    // actor is controlled by player
-    if(id == pc->get_actor_num())
-    {
-        // print name or look-string if actor has no name
-        name = converse->npc_name(id); // get name
-        if(!name)
-            name = map_window->lookAtCursor();
-        scroll->display_string(name);
-        scroll->display_string("\nTalking to yourself?\n\n");
-        scroll->display_prompt();
+        // Note: being the player, this should ALWAYS use the real name
+        scroll->display_string(actor->get_name());
+        scroll->display_string("\n");
+        scroll->display_string("Talking to yourself?\n");
         return(false);
     }
     // FIXME: this check and the "no response" messages should be in Converse
     if(!player->in_party_mode())
     {
-        scroll->display_string(map_window->lookAtCursor(false));
-        scroll->display_string("\nNot in solo mode.\n");
+        // always display look-string on failure
+        scroll->display_string(actor_manager->look_actor(actor));
+        scroll->display_string("\n");
+        scroll->display_string("Not in solo mode.\n");
     }
-    // load and begin npc script
-    else if(converse->start(npc))
+    else if(converse->start(actor))    // load and begin npc script
     {
-        // print npc name if met-flag is set, or npc is in avatar's party
-//        scroll->display_string(npc->get_name());
-        name = converse->npc_name(id); // get name
-        if(name &&
-           (npc->is_met() || player->get_party()->contains_actor(npc)))
-            scroll->display_string(name);
-        else
-            scroll->display_string(map_window->lookAtCursor(false));
+        // try to use real name
+        scroll->display_string(actor->get_name());
         scroll->display_string("\n");
         // turn towards eachother
-        pc->face_actor(npc);
-        npc->face_actor(pc);
+        pc->face_actor(actor);
+        actor->face_actor(pc);
         return(true);
     }
-    // some actor that has no script
-    else
+    else    // some actor that has no script
     {
-        scroll->display_string(map_window->lookAtCursor(false));
-        scroll->display_string("\nFunny, no response.\n");
+        // always display look-string on failure
+        scroll->display_string(actor_manager->look_actor(actor));
+        scroll->display_string("\n");
+        scroll->display_string("Funny, no response.\n");
     }
+    return(false);
+}
+
+
+/* Talk to `actor'. Return to the prompt if no conversation starts.
+ * Returns the result of the talk function.
+ */
+bool Event::talk(Actor *actor)
+{
+    bool talking = true;
+    if(mode == WAIT_MODE)
+        return(false);
+
+    endAction();
+
+    if(!actor)
+    {
+        scroll->display_string("nothing!\n");
+        talking = false;
+    }
+    else if(!perform_talk(actor))
+        talking = false;
+
+    if(!talking)
+    {
+        scroll->display_string("\n");
+        scroll->display_prompt();
+    }
+    return(talking);
+}
+
+
+bool Event::talk()
+{
+    return(talk(map_window->get_actorAtCursor()));
+}
+
+/* You can talk to some objects using their quality as actor number.
+ */
+bool Event::talk(Obj *obj)
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    if(obj)
+    {
+        // FIXME: U6
+        if(obj->obj_n == 393) // OBJ_U6_SHRINE
+            return(talk(actor_manager->get_actor(obj->quality)));
+    }
+    scroll->display_string("nothing!\n");
+    endAction();
     scroll->display_string("\n");
     scroll->display_prompt();
     return(false);
 }
 
 
+// move the cursor or walk around; do action for direction-targeted modes
 bool Event::move(sint16 rel_x, sint16 rel_y)
 {
  if(mode == WAIT_MODE)
@@ -475,20 +505,8 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
      }
    else
      {
-        static uint32 walk_delay = 0, // unlike mouse-move, start with no delay
-                      last_time = SDL_GetTicks();
-        uint32 this_time = SDL_GetTicks();
-        uint32 time_passed = this_time - last_time;
-        if(sint32(walk_delay - time_passed) < 0)
-            walk_delay = 0;
-        else
-            walk_delay -= time_passed;
-        last_time = this_time;
-        if(!walk_delay)
-        {
+        if(player->check_walk_delay())
             player->moveRelative(rel_x, rel_y);
-            walk_delay = player->get_walk_delay();
-        }
      }
   }
  return true;
@@ -1817,56 +1835,42 @@ bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
 void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
 {
 // player->walk_to(uint16 x, uint16 y, uint16 move_max, uint16 timeout_seconds);
-    static uint32 walk_delay = player->get_walk_delay(),
-                  last_time = clock->get_ticks();
-    uint32 this_time = clock->get_ticks();
     int wx, wy;
     uint16 px, py;
     uint8 pz;
     sint16 rx, ry;
 
-    if(mode == WAIT_MODE)
+    if(mode == WAIT_MODE || !player->check_walk_delay())
         return;
 
-    if((sint32)(walk_delay - (this_time - last_time)) < 0)
-        walk_delay = 0;
-    else
-        walk_delay -= (this_time - last_time);
-    last_time = this_time;
     map_window->mouseToWorldCoords((int)mx, (int)my, wx, wy);
-    if(/*wx <= cur_x || wx > (cur_x + win_width) || wy <= cur_y || wy > (cur_y + win_height)
-       || */walk_delay > 0)
-        return;
     player->get_location(&px, &py, &pz);
     rx = wx - px;
     ry = wy - py;
-    if(abs(rx) > (abs(ry)+1)) ry = 0;
+    if(abs(rx) > (abs(ry)+1)) ry = 0; // ...trying to emulate U6
     else if(abs(ry) > (abs(rx)+1)) rx = 0;
+
     player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
                          (ry == 0) ? 0 : ry < 0 ? -1 : 1);
-
-    walk_delay = player->get_walk_delay();
 }
 
 
 /* Talk to NPC, read a sign, or use an object at map coordinates.
- * FIXME: modularize
+ * FIXME: should be able to handle objects from inventory
  */
 void Event::multiuse(uint16 wx, uint16 wy)
 {
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-    UseCode *uc = usecode;
     Obj *obj = NULL;
-    Actor *actor = NULL, *player_actor = actor_manager->get_player();
+    Actor *actor = NULL, *player_actor = player->get_actor();
     bool using_actor = false, talking = false;
-    MapCoord target(player_actor->get_location());
-    const char *target_name = "nothing";
-
-    obj = obj_manager->get_obj(wx, wy, target.z);
-    actor = actor_manager->get_actor(wx, wy, target.z);
+    MapCoord target(player_actor->get_location()); // changes to target location
 
     if(mode == WAIT_MODE)
         return;
+
+    obj = obj_manager->get_obj(wx, wy, target.z);
+    actor = actor_manager->get_actor(wx, wy, target.z);
 
     // use object or actor?
     if(actor && actor->is_visible())
@@ -1884,85 +1888,34 @@ void Event::multiuse(uint16 wx, uint16 wy)
         fprintf(stderr, "Use object at %d,%d\n", obj->x, obj->y);
     }
 
-    if(using_actor)
+    if(using_actor) // use or talk to an actor
     {
-        target_name = converse->npc_name(actor->get_actor_num());
-        if(!target_name && !(actor->get_flags() & 1)
-           && !player->get_party()->contains_actor(actor))
-            target_name = map_window->look(target.x, target.y, false);
-        bool can_use = uc->has_usecode(obj);
+        bool can_use = usecode->has_usecode(obj);
         if(can_use)
         {
-            scroll->display_string("Use-");
-            scroll->display_string(target_name);
-            scroll->display_string("\n");
-            uc->use_obj(obj, player_actor);
+            newAction(USE_MODE);
+            use(obj);
         }
         else
         {
-            fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
-            if(actor->get_actor_num() == player_actor->get_actor_num())
-            {
-                scroll->display_string("Talk-");
-                scroll->display_string(target_name);
-                scroll->display_string("\n");
-                scroll->display_string("\nTalking to yourself?\n");
-            }
-            else if(converse->start(actor)) // try to talk to actor
-            {
-                scroll->display_string("Talk-");
-                scroll->display_string(target_name);
-                scroll->display_string("\n");
-                player_actor->face_actor(actor);
-                actor->face_actor(player_actor);
-                talking = true;
-            }
-            else
-                scroll->display_string("Use-nothing\n");
+            newAction(TALK_MODE);
+            talk(actor);
         }
         // we were using an actor so free the temp Obj
         delete_obj(obj);
     }
-    else if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_SIGN_ARROW))
-    { /* usecode->is_sign(obj) */
-        scroll->display_string("Look-");
+    else if(obj && usecode->is_sign(obj)) // look at a sign
+    {
+        newAction(LOOK_MODE);
         look(obj);
+        endAction(); // FIXME: should be in look()
     }
-    else if(obj)
+    else if(obj) // use a real object
     {
-        target_name = obj_manager->look_obj(obj);
-        scroll->display_string("Use-");
-        scroll->display_string(target_name);
-        scroll->display_string("\n");
-
-        if(player_actor->get_location().distance(target) > 1)
-        {
-            scroll->display_string("\nOut of range!\n");
-            fprintf(stderr, "distance to object: %d\n", player_actor->get_location().distance(target));
-        }
-        else if(uc->has_usecode(obj))
-            uc->use_obj(obj, player_actor);
-        else
-        {
-            fprintf(stderr, "Obj %d:%d, (no usecode)\n", obj->obj_n, obj->frame_n);
-            scroll->display_string("\nNot usable\n");
-        }
+        newAction(USE_MODE);
+        use(obj);
     }
-    else
-        scroll->display_string("Use-nothing\n");
-
-    map_window->updateBlacking();
-
-    // if selecting another use-obj, select_obj will return to MOVE_MODE
-    // else display the prompt
-    if(mode == MOVE_MODE && !talking)
-    {
-        scroll->display_string("\n");
-        scroll->display_prompt();
-    }
-    //endAction();?
 }
-
 
 
 /* Do the "finishing action" for the current mode, based on cursor coordinates,
@@ -2040,6 +1993,12 @@ void Event::doAction(Obj *obj)
 	{
 		mode = MOVE_MODE;
 		look(obj);
+	}
+	else if(mode == TALK_MODE)
+	{
+		mode = MOVE_MODE;
+		if(talk(obj))
+			scroll->set_talking(true);
 	}
 	else if(mode == USE_MODE)
 	{
@@ -2179,5 +2138,5 @@ void Event::endWaitMode()
 {
     scroll->display_string("\n");
     scroll->display_prompt();
-        endAction();
+    endAction();
 }

@@ -100,6 +100,7 @@ class Player
  void pass();
 
  uint32 get_walk_delay();
+ bool check_walk_delay();
 
  protected:
 

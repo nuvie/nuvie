@@ -348,7 +348,7 @@ void MapWindow::update()
 
     anim_manager->update();
 
-    if(vel_x || vel_y)
+    if(vel_x || vel_y) // this slides the map
     {
         if((update_time - last_update_time) >= 100) // only move every 10th sec
         {
@@ -1096,22 +1096,6 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 
 GUI_status MapWindow::Idle(void)
 {
-#if 0 /* moved to update() */
-    Event *event = Game::get_game()->get_event();
-    if(walking)
-    {
-        // wait for possible double-click before starting
-        uint32 time_passed = SDL_GetTicks() - last_mousedown_time;
-        int mx, my;
-        walk_start_delay -= ((sint32)(walk_start_delay - time_passed) > 0) ? time_passed : walk_start_delay;
-        if(walk_start_delay)
-            return(GUI_PASS);
-        if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(1) | SDL_BUTTON(3)))
-            event->walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
-                                        (uint32)my / screen->get_scale_factor());
-    }
-    return(GUI_PASS);
-#endif
     return(GUI_PASS);
 }
 
@@ -1156,7 +1140,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		walk_start_delay = (obj || get_actorAtMousePos(x, y))
 					? mousedouble_delay : 0;
 	}
-	else
+	else // finish whatever action is being done, with mouse coordinates
 	{
 		mouseToWorldCoords(x, y, wx, wy);
 		moveCursor(wx - cur_x, wy - cur_y);
@@ -1219,22 +1203,6 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 		return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
 	}
 
-#if 0 /* moved to update() */
-	if(walking)
-        {
-		// wait for possible double-click before starting
-		uint32 time_passed = SDL_GetTicks() - last_mousedown_time;
-
-		walk_start_delay -= ((sint32)(walk_start_delay - time_passed) > 0) ? time_passed : walk_start_delay;
-		if(walk_start_delay)
-			return(GUI_PASS);
-		// use real mouse coords not -1,-1
-		state = SDL_GetMouseState(&x, &y);
-		if(state & (SDL_BUTTON(1) | SDL_BUTTON(3)))
-			event->walk_to_mouse_cursor((uint32)x / screen->get_scale_factor(),
-                                                    (uint32)y / screen->get_scale_factor());
-        }
-#endif
 	return	GUI_PASS;
 }
 

@@ -150,6 +150,13 @@ bool U6UseCode::is_container(Obj *obj)
 }
 
 
+bool U6UseCode::is_book(Obj *obj)
+{
+    const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n);
+    return(type && (type->flags & OBJTYPE_BOOK));
+}
+
+
 /* Is there `ev' usecode for an object?
  */
 bool U6UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
@@ -1487,7 +1494,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
    {
     obj->obj_n = OBJ_U6_INFLATED_BALLOON;
     obj->frame_n = 3;
-
+    scroll->display_string("\nDone!\n");
     return true;
    }
    
