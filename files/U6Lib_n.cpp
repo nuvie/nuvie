@@ -182,7 +182,8 @@ void U6Lib_n::parse_lib()
  num_offsets = calculate_num_offsets(skip4);
  
  items = (U6LibItem *)malloc(sizeof(U6LibItem) * (num_offsets + 1));
- 
+ memset(items, 0, sizeof(U6LibItem) * (num_offsets + 1));
+
  data->seekStart();
  if(skip4)
     data->seek(0x4);
