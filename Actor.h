@@ -102,9 +102,12 @@ class Actor
  uint8 get_dexterity() { return(dex); }
  uint8 get_intelligence() { return(intelligence); }
  uint8 get_hp() { return(hp); }
+ uint8 get_maxhp() { return(((level * 30) <= 255) ? (level * 30) : 255); }
  uint8 get_level() { return(level); }
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
+
+ void set_hp(uint8 val) { hp = val; }
 
  uint8 get_worktype();
  void set_worktype(uint8 new_worktype);
@@ -130,7 +133,7 @@ class Actor
  bool inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality);
  bool inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);
  float inventory_get_total_weight() { return(get_inventory_weight() + get_inventory_equip_weight()); }
- float inventory_get_max_weight() { return(strength * 2); }
+ float inventory_get_max_weight() { return((strength * 2)); }
  float get_inventory_weight();
  float get_inventory_equip_weight();
 
