@@ -1536,8 +1536,22 @@ void MapWindow::free_thumbnail()
 }
 
 
-/* Returns the overlay surface. A new 8bit overlay is created if necessary.
- */
+/* Returns a new 8bit copy of the mapwindow as displayed. Caller must free it. */
+SDL_Surface *MapWindow::get_sdl_surface()
+{
+ SDL_Surface *new_surface = NULL;
+ unsigned char *screen_area;
+
+ GUI::get_gui()->Display();
+ screen_area = screen->copy_area(&area);
+
+ new_surface = screen->create_sdl_surface_8(screen_area, area.w, area.h);
+ delete [] screen_area;
+ return(new_surface);
+}
+
+
+/* Returns the overlay surface. A new 8bit overlay is created if necessary. */
 SDL_Surface *MapWindow::get_overlay()
 {
     if(!overlay)
@@ -1547,8 +1561,7 @@ SDL_Surface *MapWindow::get_overlay()
 }
 
 
-/* Set the overlay surface. The current overlay is deleted if necessary.
- */
+/* Set the overlay surface. The current overlay is deleted if necessary. */
 void MapWindow::set_overlay(SDL_Surface *surfpt)
 {
     if(overlay && (overlay != surfpt))

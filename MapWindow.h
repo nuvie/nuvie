@@ -172,6 +172,7 @@ class MapWindow: public GUI_Widget
 
  unsigned char *make_thumbnail();
  void free_thumbnail();
+ SDL_Surface *get_sdl_surface();
 
  std::vector<Obj *> m_ViewableObjects; //^^ dodgy public buffer
  std::vector<TileInfo> m_ViewableTiles; //^^ dodgy public buffer

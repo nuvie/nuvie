@@ -149,7 +149,7 @@ void ConverseInterpret::step()
         else
         {
 #ifdef CONVERSE_DEBUG
-            fprintf(stderr, "Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
+            printf("Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
 #endif
             converse->print("[Tried to print a control char.]\n");
             cs->skip();
@@ -197,7 +197,7 @@ void ConverseInterpret::leave()
     {
         struct convi_frame_s *fp = b_frame->top();
 #ifdef CONVERSE_DEBUG
-fprintf(stderr, "Converse: ...leave %02x...\n", fp->start_c);
+printf("Converse: ...leave %02x...\n", fp->start_c);
 #endif
         delete fp; fp = NULL;
         b_frame->pop();
@@ -222,7 +222,7 @@ void ConverseInterpret::enter(converse_value c)
         b_frame = new stack<struct convi_frame_s *>;
     b_frame->push(ef);
 #ifdef CONVERSE_DEBUG
-fprintf(stderr, "Converse: ...enter %02x...\n", ef->start_c);
+printf("Converse: ...enter %02x...\n", ef->start_c);
 #endif
 }
 
@@ -267,7 +267,7 @@ void ConverseInterpret::exec()
     }
 #ifdef CONVERSE_DEBUG
     else if(get_val(0) != 0x00) // show stepped over ctrl code (not text)
-        fprintf(stderr, "Converse: %04x ----: %02x\n", in_start, get_val(0));
+        printf("Converse: %04x ----: %02x\n", in_start, get_val(0));
 #endif
     flush();
     converse->set_output(""); // clear output
@@ -352,10 +352,10 @@ void ConverseInterpret::do_ctrl()
 {
     stack<converse_value> st;
 #ifdef CONVERSE_DEBUG
-    fprintf(stderr, "Converse: %04x INSTR:", in_start);
+    printf("Converse: %04x INSTR:", in_start);
     for(uint32 v = 0; v < val_count(); v++)
-        fprintf(stderr, " 0x%02x", get_val(v));
-    fprintf(stderr, "\n");
+        printf(" 0x%02x", get_val(v));
+    printf("\n");
 #endif
 
     while(val_count())
@@ -485,7 +485,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             // Note: It's usually unecessary to wait for the effect, as it
             // pauses input and the user can't continue the conversation until
             // the effect is complete.
-            new SleepEffect("5:46"); // sleep until sunrise
+            new SleepEffect(5); // sleep until sunrise
             break;
         case U6OP_HORSE: // 0x9c
             // FIXME: probably need to do more real actor/object set-up here
@@ -551,7 +551,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         case U6OP_JUMP: // 0xb0
             v[0] = pop_arg(i);
 #ifdef CONVERSE_DEBUG
-            fprintf(stderr, "Converse: JUMP 0x%04x\n", v[0]);
+            printf("Converse: JUMP 0x%04x\n", v[0]);
 #endif
             cs->seek(v[0]);
             leave_all(); // always run
@@ -1031,9 +1031,9 @@ void ConverseInterpret::eval(uint32 vi)
     stack<converse_value> op_stk, r_stk;
     uint32 v = vi;
 #ifdef CONVERSE_DEBUG
-    fprintf(stderr, "Converse: EVAL");
+    printf("Converse: EVAL");
     for(uint32 w = 0; w < val_count(); w++)
-        fprintf(stderr, " %s0x%02x%s", (w == vi) ? "(" : "", get_val(w), (w == val_count() - 1) ? ")" : "");
+        printf(" %s0x%02x%s", (w == vi) ? "(" : "", get_val(w), (w == val_count() - 1) ? ")" : "");
 #endif
 
     while(v < val_count())
@@ -1056,12 +1056,12 @@ void ConverseInterpret::eval(uint32 vi)
     }
 
 #ifdef CONVERSE_DEBUG
-    fprintf(stderr, " ->");
+    printf(, " ->");
     if(val_count())
     {
         for(uint32 w = 0; w < val_count(); w++)
-            fprintf(stderr, " 0x%02x", get_val(w));
-        fprintf(stderr, "\n");
+            printf(" 0x%02x", get_val(w));
+        printf("\n");
     }
 #endif
 }
@@ -1240,7 +1240,7 @@ converse_value ConverseInterpret::find_db_string(uint32 loc, const char *dstring
            p = 0, /* pointer into db */
            i = 0; /* item index */
 #ifdef CONVERSE_DEBUG
-fprintf(stderr, "\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
+printf("\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
 #endif
     while((converse_value)(db[p]) != U6OP_ENDDATA)
     {
@@ -1273,7 +1273,7 @@ fprintf(stderr, "\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
         ++i;
     }
 #ifdef CONVERSE_DEBUG
-fprintf(stderr, "\nConverse: find_db_string: not found; returning %d\n", i);
+printf("\nConverse: find_db_string: not found; returning %d\n", i);
 #endif
     return(i);
 }

@@ -522,6 +522,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
         default: // alphanumeric characters
                  if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
                    ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
+                 else printf("warning: unhandled unicode value (%d)\n",key.unicode);
                  if(input_mode && isprint(ascii))
                   {
                    if(permit_input == NULL)

@@ -562,10 +562,25 @@ uint16 MissileEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 
 
 /*** SleepEffect ***/
+/* The TimedAdvance is started after the fade-out completes. */
 SleepEffect::SleepEffect(std::string until)
-                         : timer(NULL),stop_hour(0),stop_minute(0),stop_time("")
+                         : timer(NULL),
+                           stop_hour(0),
+                           stop_minute(0),
+                           stop_time("")
 {
     stop_time = until;
+    game->pause_user();
+    effect_manager->watch_effect(this, new FadeEffect(FADE_PIXELATED, FADE_OUT));
+}
+
+
+SleepEffect::SleepEffect(uint8 to_hour)
+                       : timer(NULL),
+                         stop_hour(to_hour),
+                         stop_minute(0),
+                         stop_time("")
+{
     game->pause_user();
     effect_manager->watch_effect(this, new FadeEffect(FADE_PIXELATED, FADE_OUT));
 }
@@ -590,6 +605,7 @@ void SleepEffect::delete_self()
 
 /* Resume normal play when requested time has been reached.
  */
+//FIXME: need to handle TimedAdvance() errors and fade-in
 uint16 SleepEffect::callback(uint16 msg, CallBack *caller, void *data)
 {
     uint8 hour = Game::get_game()->get_clock()->get_hour();
@@ -600,10 +616,22 @@ uint16 SleepEffect::callback(uint16 msg, CallBack *caller, void *data)
     {
         if(timer == NULL) // starting
         {
-            timer = new TimedAdvance(stop_time, 360); // 6 hours per second
-            timer->set_target(this);
-            timer->get_time_from_string(stop_hour, stop_minute, stop_time);
-            // stop_hour & stop_minute are checked each hour
+            if(stop_time != "") // advance to start time
+            {
+                timer = new TimedAdvance(stop_time, 360); // 6 hours per second FIXME: it isnt going anywhere near that fast
+                timer->set_target(this);
+                timer->get_time_from_string(stop_hour, stop_minute, stop_time);
+                // stop_hour & stop_minute are checked each hour
+            }
+            else // advance a number of hours
+            {
+                uint16 advance_h = (hour == stop_hour) ? 24
+                                 : (hour < stop_hour) ? (stop_hour-hour)
+                                 : (24-(hour-stop_hour));
+                timer = new TimedAdvance(advance_h, 360);
+                timer->set_target(this);
+                stop_minute = minute;
+            }
         }
         else // stopping
         {
@@ -623,15 +651,35 @@ uint16 SleepEffect::callback(uint16 msg, CallBack *caller, void *data)
 /*** FadeEffect ***/
 FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, uint32 color, uint32 speed)
 {
+    speed = speed ? speed : 256000;
+    init(fade, dir, color, NULL, speed);
+}
+
+
+/* Takes an image to fade from/to. */
+FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, SDL_Surface *capture, uint32 speed)
+{
+    speed = speed ? speed : 196000;
+    init(fade, dir, 0, capture, speed); // color=black
+}
+
+
+void FadeEffect::init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surface *capture, uint32 speed)
+{
     screen = game->get_screen();
     map_window = game->get_map_window();
     viewport = new SDL_Rect(map_window->GetRect());
 
     fade_type = fade;
     fade_dir = dir;
-    fade_speed = speed ? speed : 256000; // pixels-per-second (to check, not draw)
+    fade_speed = speed; // pixels-per-second (to check, not draw)
 
     evtime = prev_evtime = 0;
+    fade_x = fade_y = 0;
+    fade_from = NULL;
+    if(capture)
+        fade_from = SDL_CreateRGBSurfaceFrom(capture->pixels, capture->w, capture->h,
+                                             capture->format->BitsPerPixel, capture->pitch, 0, 0, 0, 0);
 
     if(fade_type == FADE_PIXELATED || fade_type == FADE_PIXELATED_ONTOP)
     {
@@ -648,6 +696,8 @@ FadeEffect::~FadeEffect()
     delete viewport;
     if(fade_dir == FADE_IN) // overlay should be empty now, so just delete it
         map_window->set_overlay(NULL);
+    if(fade_from)
+        SDL_FreeSurface(fade_from);
 }
 
 
@@ -659,12 +709,28 @@ void FadeEffect::init_pixelated_fade()
     overlay = map_window->get_overlay();
     if(overlay != NULL)
     {
-        pixel_count = overlay->w * overlay->h;
+        pixel_count = fade_from ? fade_from->w * fade_from->h
+                                : overlay->w * overlay->h;
         // clear overlay to fill color or transparent
         if(fade_dir == FADE_OUT)
-            fillret = SDL_FillRect(overlay, NULL, uint32(TRANSPARENT_COLOR));
+        {
+            if(fade_from) // fade from captured surface to transparent
+            {
+                SDL_Rect fade_from_rect = { 0, 0, fade_from->w, fade_from->h };
+                SDL_Rect overlay_rect = { fade_x, fade_y, fade_from->w, fade_from->h };
+                fillret = SDL_BlitSurface(fade_from, &fade_from_rect,
+                                          overlay, &overlay_rect);
+            }
+            else // fade from transparent to color
+                fillret = SDL_FillRect(overlay, NULL, uint32(TRANSPARENT_COLOR));
+        }
         else
-            fillret = SDL_FillRect(overlay, NULL, uint32(pixelated_color));
+        {
+            if(fade_from) // fade from transparent to captured surface
+                fillret = SDL_FillRect(overlay, NULL, uint32(TRANSPARENT_COLOR));
+            else // fade from color to transparent
+                fillret = SDL_FillRect(overlay, NULL, uint32(pixelated_color));
+        }
     }
     if(fillret == -1)
     {
@@ -701,23 +767,16 @@ uint16 FadeEffect::callback(uint16 msg, CallBack *caller, void *data)
 
     // do effect
     if(fade_type == FADE_PIXELATED || fade_type == FADE_PIXELATED_ONTOP)
-    {
-        if(fade_dir == FADE_OUT)
-            fade_complete = pixelated_fade_out();
-        else
-            fade_complete = pixelated_fade_in();
-    }
+        fade_complete = (fade_dir == FADE_OUT) ? pixelated_fade_out() : pixelated_fade_in();
     else /* CIRCLE */
-    {
-        if(fade_dir == FADE_OUT)
-            fade_complete = circle_fade_out();
-        else
-            fade_complete = circle_fade_in();
-    }
+        fade_complete = (fade_dir == FADE_OUT) ? circle_fade_out() : circle_fade_in();
 
     // done
     if(fade_complete == true)
+    {
         delete_self();
+        return(1);
+    }
     return(0);
 }
 
@@ -748,19 +807,43 @@ inline bool FadeEffect::find_free_pixel(uint32 &rnum, uint32 pixel_count)
 }
 
 
-/* Randomly add pixels of the appropriate color to the overlay.
+/* Returns the next pixel to check/colorize. */
+#if 0
+#warning this crashes if x,y is near boundary
+#warning make sure center_thresh doesnt go over boundary
+inline uint32 FadeEffect::get_random_pixel(uint16 center_thresh)
+{
+    if(center_x == -1 || center_y == -1)
+        return(NUVIE_RAND()%pixel_count);
+
+    uint16 x = center_x, y = center_y;
+    if(center_thresh == 0)
+        center_thresh = overlay->w / 2;
+    x += (NUVIE_RAND()%(center_thresh * 2)) - center_thresh,
+    y += (NUVIE_RAND()%(center_thresh * 2)) - center_thresh;
+    return((y * overlay->w) + x);
+}
+#endif
+
+/* Randomly add pixels of the appropriate color to the overlay. If the color
+ * is -1, it will be taken from the "fade_from" surface.
  * Returns true when the overlay is completely colored.
  */
-bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, uint8 fade_to)
+bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, sint16 fade_to)
 {
     uint8 *pixels = (uint8 *)(overlay->pixels);
+    uint8 *from_pixels = fade_from ? (uint8 *)(fade_from->pixels) : NULL;
     uint32 p = 0; // scan counter
     uint32 rnum = 0; // pixel index
     uint32 colored = 0; // number of pixels that get colored
+    uint16 fade_width = fade_from ? fade_from->w : overlay->w;
+    uint16 fade_start = fade_from ? fade_y*overlay->w + fade_x : 0;
 
     while(p < pixels_to_check)
     {
-        rnum = NUVIE_RAND()%pixel_count;
+        rnum = NUVIE_RAND()%pixel_count + fade_start;
+        if(fade_to == -1) // get color from "fade_from"
+            fade_to == from_pixels[rnum - fade_start];
         if(pixels[rnum] != fade_to)
         {
             pixels[rnum] = fade_to;
@@ -768,9 +851,17 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, uint8 fade_to)
         }
         ++p;
     }
-    if(colored_total >= (pixel_count - overlay->w*2)) // fill the rest
+    // all but two lines colored
+    if(colored_total >= (pixel_count - fade_width*2)) // fill the rest
     {
-        SDL_FillRect(overlay, NULL, (uint32)fade_to);
+        if(fade_to >= 0)
+            SDL_FillRect(overlay, NULL, (uint32)fade_to);
+        else
+        {
+            SDL_Rect fade_from_rect = { 0, 0, fade_from->w, fade_from->h };
+            SDL_Rect overlay_rect = { fade_x, fade_y, fade_from->w, fade_from->h };
+            SDL_BlitSurface(fade_from, &fade_from_rect, overlay, &overlay_rect);
+        }
         return(true);
     }
     else return(false);
@@ -782,7 +873,8 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, uint8 fade_to)
  */
 bool FadeEffect::pixelated_fade_out()
 {
-    //bool all_clear = false; // completely faded to pixelated_color
+    if(fade_from)
+        return(pixelated_fade_core(pixels_to_check(), TRANSPARENT_COLOR));
     return(pixelated_fade_core(pixels_to_check(), pixelated_color));
 }
 
@@ -793,7 +885,8 @@ bool FadeEffect::pixelated_fade_out()
  */
 bool FadeEffect::pixelated_fade_in()
 {
-    //bool all_clear = false; // completely faded to transparent color
+    if(fade_from)
+        return(pixelated_fade_core(pixels_to_check(), -1));
     return(pixelated_fade_core(pixels_to_check(), TRANSPARENT_COLOR));
 }
 
@@ -849,21 +942,8 @@ GameFadeInEffect::~GameFadeInEffect()
  */
 uint16 GameFadeInEffect::callback(uint16 msg, CallBack *caller, void *data)
 {
-    bool fade_complete = false;
-
-    // warning: msg is assumed to be CB_TIMED and data is set
-    evtime = *(uint32 *)(data);
-
-    if(fade_dir == FADE_OUT)
-        fade_complete = pixelated_fade_out();
-    else
-        fade_complete = pixelated_fade_in();
-
     // done
-    if(fade_complete == true)
-    {
+    if(FadeEffect::callback(msg, caller, data) != 0)
         game->unpause_user();
-        delete_self();
-    }
     return(0);
 }

@@ -266,6 +266,7 @@ class SleepEffect : public Effect
     std::string stop_time;
 public:
     SleepEffect(std::string until);
+    SleepEffect(uint8 to_hour);
     ~SleepEffect();
 
     uint16 callback(uint16 msg, CallBack *caller, void *data);
@@ -292,7 +293,8 @@ protected:
     FadeDirection fade_dir; // IN (removing color) or OUT (adding color)
     uint32 fade_speed; // meaning of this depends on fade_type
     uint8 pixelated_color; // color from palette that is being faded to/from
-    SDL_Surface *fade_from; // image being faded from (or NULL if coloring)
+    SDL_Surface *fade_from; // image being faded from or to (or NULL if coloring)
+    uint16 fade_x, fade_y; // start fade from this point (to fade_from size)
 
     uint32 evtime, prev_evtime; // time of last message to callback()
     uint32 pixel_count, colored_total; // number of pixels total/colored
@@ -302,8 +304,6 @@ public:
 // get capture or do it outself?
     FadeEffect(FadeType fade, FadeDirection dir, SDL_Surface *capture, uint32 speed = 0);
     ~FadeEffect();
-    void init_pixelated_fade();
-    void init_circle_fade();
     virtual uint16 callback(uint16 msg, CallBack *caller, void *data);
     
     bool pixelated_fade_out();
@@ -312,9 +312,14 @@ public:
     bool circle_fade_in();
 
 protected:
+    void init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surface *capture, uint32 speed);
+    void init_pixelated_fade();
+    void init_circle_fade();
+
     inline bool find_free_pixel(uint32 &rnum, uint32 pixel_count);
     uint32 pixels_to_check();
-    bool pixelated_fade_core(uint32 pixels_to_check, uint8 fade_to);
+    bool pixelated_fade_core(uint32 pixels_to_check, sint16 fade_to);
+    inline uint32 get_random_pixel(uint16 center_thresh = 0);
 };
 
 

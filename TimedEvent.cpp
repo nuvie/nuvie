@@ -1,4 +1,4 @@
-
+#include <cassert>
 #include "nuvieDefs.h"
 
 #include "Game.h"
@@ -11,23 +11,29 @@
 #include "U6LList.h"
 #include "MsgScroll.h"
 #include "GameClock.h"
+// FIXME: effects use timers, not the other way around (make a movement effect?)
+#include "EffectManager.h"
+#include "Effect.h"
+
 #include "TimedEvent.h"
 
 #define MESG_TIMED CB_TIMED
-
 
 /* Activate all events for the current time, deleting those that have fired
  * and are of no more use. Repeated timers are requeued.
  */
 void TimeQueue::call_timers(uint32 now)
 {
+    GameClock *clock = Game::get_game()->get_clock();
     while(!empty() && call_timer(now))
     {
         TimedEvent *tevent = pop_timer(); // remove
 
         if(tevent->repeat_count != 0) // repeat! same delay, add time
         {
-            tevent->time = now + tevent->delay;
+            // use updated time so it isn't repeated too soon
+            tevent->time = clock->get_ticks() + tevent->delay;
+//            tevent->time = now + tevent->delay;
             add_timer(tevent);
             if(tevent->repeat_count > 0) // don't reduce count if infinite (-1)
                 --tevent->repeat_count;
@@ -53,7 +59,7 @@ void TimeQueue::add_timer(TimedEvent *tevent)
     remove_timer(tevent);
     // add after events with earlier/equal time
     t = tq.begin();
-    while(t != tq.end() && (*t++)->time <= tevent->time);
+    while(t != tq.end() && (*t)->time <= tevent->time) t++;
     tq.insert(t, tevent);
 }
 
@@ -70,7 +76,7 @@ void TimeQueue::remove_timer(TimedEvent *tevent)
         {
             t = tq.erase(t);
         }
-        else ++t;
+        else ++t; // this deletes all duplicates
       }
 }
 
@@ -98,6 +104,12 @@ bool TimeQueue::call_timer(uint32 now)
     if(empty())
         return(false);
     TimedEvent *first = tq.front();
+    if(first->defunct)
+    {
+        assert(pop_timer() == first);
+        delete_timer(first);
+        return(false);
+    }
     if(first->time > now)
         return(false);
 
@@ -124,7 +136,7 @@ bool TimeQueue::delete_timer(TimedEvent *tevent)
  */
 TimedEvent::TimedEvent(uint32 reltime, bool immediate, bool realtime)
             : delay(reltime), ignore_pause(false), real_time(realtime),
-              tq_can_delete(true), repeat_count(0)
+              tq_can_delete(true), repeat_count(0), defunct(false)
 {
     tq = NULL;
 
@@ -209,6 +221,7 @@ void TimedPartyMove::init(MapCoord *d, MapCoord *t, Obj *use_obj)
     party = Game::get_game()->get_party();
     target = NULL;
     moves_left = party->get_party_size() * 2; // step timeout
+    wait_for_effect = false;
 
     dest = new MapCoord(*d);
     if(t)
@@ -220,10 +233,16 @@ void TimedPartyMove::init(MapCoord *d, MapCoord *t, Obj *use_obj)
 
 
 /* Party movement to/from dungeon or to moongate. Repeated until everyone has
- * entered, then the entire party is moved to the destination.
+ * entered, then the entire party is moved to the destination, and this waits
+ * until the visual effects complete.
  */
 void TimedPartyMove::timed(uint32 evtime)
 {
+    if(wait_for_effect)
+    {
+        repeat(); // repeat once more (callback() must call stop())
+        return;
+    }
     stop(); // cancelled further down with repeat(), if still moving
     for(uint32 a = 0; a < party->get_party_size(); a++)
     {
@@ -248,6 +267,8 @@ void TimedPartyMove::timed(uint32 evtime)
     }
     if(repeat_count == 0) // everyone is ready to go to the target area
     {
+        // get image before deleting moongate
+        SDL_Surface *mapwindow_capture = Game::get_game()->get_map_window()->get_sdl_surface();
         // must delete moongate here because dest may be the same as target...
         // remove moongate before moving so the tempobj cleanup doesn't bite us
         if(moongate)
@@ -256,12 +277,34 @@ void TimedPartyMove::timed(uint32 evtime)
             delete_obj(moongate);
         }
         party->move(target->x, target->y, target->z);
-        party->show();
-        party->stop_walking(); // return control
+        party->show(); // unhide everyone
+
+        // start fade-to
+        Game::get_game()->get_effect_manager()->watch_effect(this, new FadeEffect(FADE_PIXELATED, FADE_OUT, mapwindow_capture));
+        SDL_FreeSurface(mapwindow_capture);
+
+        party->stop_walking(); // return control (and change viewpoint)
+        Game::get_game()->pause_user(); // Party called unpause_user()
+        wait_for_effect = true;
+        repeat(); // don't stop yet! (waiting for effects)
     }
 
     if(moves_left > 0)
         --moves_left;
+}
+
+
+/* Assume the teleport-effect is complete. (don't bother checking)
+ */
+// FIXME: will also be used for each actor's dissappear-effect?
+uint16 TimedPartyMove::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(wait_for_effect)
+    {
+        Game::get_game()->unpause_user();
+        stop_timer();
+    }
+    return(0);
 }
 
 
@@ -382,7 +425,6 @@ GameTimedCallback::GameTimedCallback(CallBack *t, void *d, uint32 wait_time, boo
     real_time = TIMER_GAMETIME;
     set_time();// change to game time
     queue(); // start
-printf("new GameTimedCallback(callback=%x, user_data=%x, delay=%d, repeat=%d)\n", callback_target, callback_user_data, delay, repeat_count);
 }
 
 
@@ -394,7 +436,6 @@ TimedAdvance::TimedAdvance(uint8 hours, uint16 r)
                             clock(Game::get_game()->get_clock()), minutes(0),
                             minutes_this_hour(0)
 {
-printf("TimedAdvance(%d):", hours);
     init(hours * 60, r);
 }
 
@@ -409,7 +450,7 @@ TimedAdvance::TimedAdvance(std::string timestring, uint16 r)
     uint8 hour = 0, minute = 0;
 
     get_time_from_string(hour, minute, timestring); // set stop time
-printf("TimedAdvance(%02d:%02d):", hour, minute);
+
     // set number of hours and minutes to advance
     uint16 advance_h = (clock->get_hour() == hour) ? 24
                        : (clock->get_hour() < hour) ? (hour-clock->get_hour())
@@ -443,7 +484,7 @@ void TimedAdvance::init(uint16 min, uint16 r)
     advance = min;
     rate = r;
     prev_evtime = clock->get_ticks();
-printf(" %02d:%02d + %02d:%02d (rate=%d)\n",
+printf("TimedAdvance(): %02d:%02d + %02d:%02d (rate=%d)\n",
        clock->get_hour(), clock->get_minute(), advance/60, advance%60, rate);
 }
 

@@ -766,6 +766,39 @@ void Screen::blitalphamap8()
 
 }
 
+
+/* Return an 8bit surface. Source format is assumed to be identical to screen. */
+SDL_Surface *Screen::create_sdl_surface_8(unsigned char *src_buf, uint16 src_w, uint16 src_h)
+{
+    SDL_Surface *new_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, src_w, src_h, 8, 0, 0, 0, 0);
+    unsigned char *pixels = (unsigned char *)new_surface->pixels;
+
+    if(surface->bits_per_pixel == 16)
+    {
+        uint16 *src = (uint16 *)src_buf;
+        for(int p = 0; p < (src_w * src_h); p++)
+            for(int i = 0; i < 256; i++) // convert to 8bpp
+                if(src[p] == (uint16)surface->colour32[i])
+                {
+                    pixels[p] = i;
+                    break;
+                }
+    }
+    else
+    {
+        uint32 *src = (uint32 *)src_buf;
+        for(int p = 0; p < (src_w * src_h); p++)
+            for(int i = 0; i < 256; i++)
+                if(src[p] == surface->colour32[i])
+                {
+                    pixels[p] = i;
+                    break;
+                }
+    }
+    return(new_surface);
+}
+
+
 SDL_Surface *Screen::create_sdl_surface_from(unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch)
 {
  SDL_Surface *new_surface;

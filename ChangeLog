@@ -1,3 +1,15 @@
+2005-02-17  Joseph Applegate <sb-x at users.sourceforge.net>
+	* There was a bug with moongates/passable-objects I introduced. This is
+	  fixed.
+	* Nearly completed visual effects for map change. All that is
+	  left is the actor-dissappear-effect when stepping into a moongate.
+	* Sleeping at inns now always advances the hour to 5AM, and leaves the
+	  minutes alone. (identical to U6)
+	* MapWindow: New function get_sdl_surface() returns 8bit capture of
+	  the MapWindow display. (similiar to create_thumbnail())
+	* Fixed TimeQueue. It wasn't handling multiple events correctly.
+	  (or at all)
+
 2005-02-11  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Actors now always open through the correct part of a doorway when
 	  passing through it (not the doorframe) and close it on the other side.

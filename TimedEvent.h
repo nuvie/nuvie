@@ -6,6 +6,7 @@
 #include <cstdio>
 #include "CallBack.h"
 
+class CallBack;
 class Event;
 class GameClock;
 class MapCoord;
@@ -52,24 +53,30 @@ friend class Event;
 protected:
     TimeQueue *tq; // the TimeQueue; so we can add ourself
     uint32 delay, time; // timer delay, and next absolute time to activate
+    sint8 repeat_count; // repeat how many times? (-1=infinite;0=stop)
     bool ignore_pause; // activates even if game is paused
     bool real_time; // time and delay is in milliseconds (false=game ticks/turns)
     bool tq_can_delete; // can TimeQueue delete this TimedEvent when done?
-    sint8 repeat_count; // repeat how many times? (-1=infinite;0=stop)
+    bool defunct; // deleted; don't activate (use to stop timers from outside)
 
 public:
     TimedEvent(uint32 reltime, bool immediate = TIMER_DELAYED, bool realtime = TIMER_REALTIME);
     virtual ~TimedEvent() { }
     virtual void timed(uint32 evtime) { fprintf(stderr, "TimedEvent: undefined timer method\n"); }
 
-    void queue(); // set tq, add to tq
-    void dequeue(); // remove from tq, clear tq
+protected:
     // stop repeating, remove from tq if it won't delete it
+    // NOTE: potential for bug here, this doesn't prevent it from being called once more
     void stop() { repeat_count = 0; if(!tq_can_delete) dequeue(); }
     // repeat once (or for requested count)
     void repeat(uint32 count = 1) { repeat_count = count; }
 
+public:
+    void queue(); // set tq, add to tq
+    void dequeue(); // remove from tq, clear tq
+
     void set_time(); // set `time' from `delay'
+    void stop_timer() { stop(); defunct = true; }
 };
 
 
@@ -91,7 +98,7 @@ public:
 /* Move the party to/from a dungeon or ladder or moongate. Characters off-screen
  * will teleport.
  */
-class TimedPartyMove : public TimedEvent
+class TimedPartyMove : public TimedEvent, public CallBack
 {
 protected:
     Party *party; // the party
@@ -99,12 +106,16 @@ protected:
     MapCoord *target; // where they reappear at the new plane
     uint32 moves_left; // walk timeout
     Obj *moongate; // if using a moongate
+    bool wait_for_effect; // waiting for a visual effect to complete
+
 public:
     TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay = 500);
     TimedPartyMove(MapCoord *d, MapCoord *t, Obj *use_obj, uint32 step_delay = 500);
     ~TimedPartyMove();
     void init(MapCoord *d, MapCoord *t, Obj *use_obj);
     void timed(uint32 evtime);
+
+    uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
 };
 
 
@@ -132,6 +143,7 @@ public:
 #endif
 
 
+//FIXME: It isnt container search. Its a msgscroll effect to print one line at a time.
 /* Dump one item at a time out of a container, and print it's name to MsgScroll.
  */
 class TimedContainerSearch : public TimedEvent

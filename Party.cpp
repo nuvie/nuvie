@@ -764,7 +764,8 @@ void Party::set_in_vehicle(bool value)
 void Party::stop_walking()
 {
     game->get_player()->set_mapwindow_centered(true);
-    game->unpause_all(); // allow user input, unfreeze actors
+    game->unpause_world(); // allow user input, unfreeze actors
+    game->unpause_user();
     autowalk = false;
     update_music();
 }

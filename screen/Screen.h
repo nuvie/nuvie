@@ -74,6 +74,7 @@ class Screen
    const unsigned char *get_surface_pixels() { return(surface->get_pixels()); }
    uint16 get_pitch();
    SDL_Surface *create_sdl_surface_from(unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch);
+   SDL_Surface *create_sdl_surface_8(unsigned char *src_buf, uint16 src_w, uint16 src_h);
    uint16 get_bpp();
    int get_scale_factor() { return scale_factor; }
    SDL_Surface *get_sdl_surface();
