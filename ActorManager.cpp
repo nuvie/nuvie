@@ -77,14 +77,11 @@ bool ActorManager::loadActors()
 /* Force avatar to gargoyle world 
     if(i == 1)
      {
-//      actors[i]->x = 215;
-  //    actors[i]->y = 222;
-    //  actors[i]->z = 5;
-      actors[i]->x = 50;
-      actors[i]->y = 50;
-      actors[i]->z = 1;
+      actors[i]->x = 605;
+      actors[i]->y = 285;
+      actors[i]->z = 0;
      }
-*/
+*/     
    }
 
  for(i=0;i < 256; i++)

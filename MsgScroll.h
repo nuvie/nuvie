@@ -65,6 +65,10 @@ class MsgScroll
  uint16 string_buf_len;
  uint16 string_buf_pos;
  
+ char *input_buf;
+ uint16 input_buf_len;
+ uint16 input_buf_pos;
+ 
  public:
  
  MsgScroll(Configuration *cfg);
@@ -90,6 +94,7 @@ class MsgScroll
  
  bool buf_addString(char *string, uint8 length);
  bool buf_next();
+ bool buf_prev();
  
  bool set_string_buf(char *string);
  bool set_string_buf_append(char *string);
@@ -97,6 +102,9 @@ class MsgScroll
  
  void set_page_break(uint16 pos);
  void set_converse(Converse *conv_pt) { converse = conv_pt; }
+ 
+ bool input_buf_add_char(char c);
+ bool input_buf_remove_char();
 };
 
 

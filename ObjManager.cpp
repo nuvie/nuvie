@@ -561,7 +561,7 @@ Obj *ObjManager::loadObj(U6File *file, uint16 objblk_n)
    
  obj->qty = file->read1();
  obj->quality = file->read1();
-
+   
  return obj;
 }
 

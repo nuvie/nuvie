@@ -21,6 +21,8 @@
  *
  */
 
+#include <ctype.h>
+
 #include "MsgScroll.h"
 
 MsgScroll::MsgScroll(Configuration *cfg)
@@ -48,6 +50,10 @@ MsgScroll::MsgScroll(Configuration *cfg)
  string_buf = NULL;
  string_buf_len = 0;
  string_buf_pos = 0;
+ 
+ input_buf = NULL;
+ input_buf_len = 0;
+ input_buf_pos = 0;
  
  page_break = false;
 }
@@ -160,6 +166,9 @@ void MsgScroll::set_keyword_highlight(bool state)
 void MsgScroll::set_input_mode(bool state)
 {
  input_mode = state;
+
+ if(input_mode == true)
+   input_buf_pos = 0;
 }
 
 bool MsgScroll::set_prompt(char *new_prompt)
@@ -188,22 +197,35 @@ bool MsgScroll::set_prompt(char *new_prompt)
  */
 bool MsgScroll::handle_input(SDLKey *input)
 {
-    if(page_break == false)
+    if(page_break == false && input_mode == false)
         return(false);
         
     switch(*input)
     {
         case SDLK_ESCAPE:
-        case SDLK_RETURN: page_break = false;
-                          display_string(NULL);
-                          if(converse)
-                            converse->unwait();
+        case SDLK_RETURN: if(page_break)
+                            {
+                             page_break = false;
+                             display_string(NULL);
+                            }
+                          
+                          if(input_mode)
+                            set_input_mode(false);
+                            
                           return(true);
+        case SDLK_BACKSPACE :
+                            if(input_mode)
+                              input_buf_remove_char();
+                            break;
         default: // alphanumeric characters
-//            if(
+                 if(input_mode && isascii(*input)) //(isalnum(*input) || *input == ' '))
+                  {
+                   input_buf_add_char((char)*input);
+                  }
             break;
     }
-    return(false);
+    
+ return(true);
 }
 
 
@@ -298,6 +320,20 @@ bool MsgScroll::buf_next()
  return true;
 }
 
+bool MsgScroll::buf_prev()
+{
+ if(buf_pos == 0)
+  {
+   buf_pos = MSGSCROLL_HEIGHT-1;
+  }
+ else
+  {
+   buf_pos--;
+  }
+  
+ return true;
+}
+
 bool MsgScroll::set_string_buf(char *string)
 {
  uint16 len;
@@ -355,4 +391,61 @@ void MsgScroll::set_page_break(uint16 pos)
  page_break = true;
 
  return;
+}
+
+bool MsgScroll::input_buf_add_char(char c)
+{
+ uint16 buf_len;
+ 
+ if(input_buf_len < input_buf_pos + 2)
+   {
+    input_buf = (char *)realloc(input_buf,input_buf_len + 16);
+    if(input_buf == NULL)
+      return false;
+   }
+ 
+ input_buf[input_buf_pos] = c;
+ 
+ input_buf_pos++;
+ input_buf[input_buf_pos] = '\0';
+
+ buf_len = strlen(msg_buf[buf_pos]);
+ 
+ if(buf_len + 1 >= MSGSCROLL_WIDTH)
+   {
+    buf_next();
+    buf_len = 0;
+   }
+
+ msg_buf[buf_pos][buf_len] = c;
+ msg_buf[buf_pos][buf_len+1] = '\0';
+
+ scroll_updated = true;
+ 
+ return true;
+}
+
+bool MsgScroll::input_buf_remove_char()
+{
+ uint16 buf_len;
+ 
+ if(input_buf_pos == 0)
+  return false;
+
+ input_buf_pos--;
+ input_buf[input_buf_pos] = '\0';
+ 
+ buf_len = strlen(msg_buf[buf_pos]);
+ 
+ if(buf_len == 0)
+   {
+    buf_prev();
+    buf_len = strlen(msg_buf[buf_pos]);
+   }
+
+ msg_buf[buf_pos][buf_len-1] = '\0';
+
+ scroll_updated = true;
+ 
+ return true;
 }

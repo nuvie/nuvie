@@ -78,6 +78,10 @@ bool Event::update()
                                map_window->centerCursor();
                                map_window->set_show_cursor(true);
                                break;
+             case SDLK_p     :
+                               scroll->display_string("\nYou say:");
+                               scroll->set_input_mode(true);
+                               break;
              case SDLK_t     :
                                mode = TALK_MODE;
                                scroll->display_string("Talk-");
