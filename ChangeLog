@@ -1,3 +1,8 @@
+2003-07-11  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Conversation interpreter is correctly skipping "buffer size" at start
+	of non-Lzw-encoded scripts now. Should've been done already but maybe I
+	rewrote that part and overlooked it.
+
 2003-07-06  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Handle both upper and lower case y/n input (tracker item 765879)
 
