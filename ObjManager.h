@@ -75,7 +75,7 @@ struct Obj
  uint16 y;
  uint8 z;
 
- uint8 qty;
+ uint16 qty;
  uint8 quality;
 
  U6LList *container;
@@ -105,6 +105,7 @@ class ObjManager
 
  uint16 obj_to_tile[1024]; //maps object number (index) to tile number.
  uint8 obj_weight[1024];
+ uint8 obj_stackable[1024];
  U6LList *actor_inventories[256];
 
  bool show_eggs;
@@ -174,6 +175,8 @@ class ObjManager
  const char *look_obj(Obj *obj, bool show_prefix = false);
  Obj *get_obj_from_stack(Obj *obj, uint32 count);
  Obj *get_obj_container(Obj *obj);
+
+ bool list_add_obj(U6LList *list, Obj *obj);
 
  const char *get_obj_name(Obj *obj);
  float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, bool scale=true);

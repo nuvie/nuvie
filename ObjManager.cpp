@@ -103,7 +103,10 @@ bool ObjManager::load_basetile()
    return false;
 
  for(i=0;i<1024;i++)
-   obj_to_tile[i] = basetile.read2();
+   {
+    obj_to_tile[i] = basetile.read2();
+    obj_stackable[i] = (uint8)tile_manager->tile_is_stackable(obj_to_tile[i]);
+   }
 
  return true;
 }
@@ -342,7 +345,13 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
 
  save_buf->write1(b);
 
- save_buf->write1(obj->qty);
+ if(is_stackable(obj))
+  {
+   obj->quality = obj->qty >> 8;
+   obj->qty = obj->qty & 0xff;
+  }
+
+ save_buf->write1((uint8)obj->qty);
  save_buf->write1(obj->quality);
 
  if(obj->container)
@@ -565,17 +574,19 @@ bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
 
 bool ObjManager::is_stackable(Obj *obj)
 {
- Tile *tile;
+// Tile *tile;
 
  if(obj == NULL)
    return false;
-
+/*
  tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
  if(tile_manager->tile_is_stackable(tile->tile_num))
    return true;
 
  return false;
+*/
+ return (bool)obj_stackable[obj->obj_n];
 }
 
 //gets the linked list of objects at a perticular location.
@@ -836,8 +847,8 @@ float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool sc
 
  weight = obj_weight[obj->obj_n];
 
- if(obj->qty > 1 && is_stackable(obj))
-   weight *= obj->qty;
+ if(is_stackable(obj))
+   { weight *= obj->qty; weight /= 10; }
 
  //weight /= 10;
  if(obj->container != NULL && include_container_items == true)
@@ -851,7 +862,6 @@ float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool sc
 
  return weight;
 }
-
 
 uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :)
 {
@@ -1072,6 +1082,11 @@ Obj *ObjManager::loadObj(NuvieIO *buf, uint16 objblk_n)
 
  obj->qty = buf->read1();
  obj->quality = buf->read1();
+ if(is_stackable(obj))
+   obj->qty = (uint16)(obj->quality << 8) + obj->qty;
+
+ if(obj->qty == 0)
+   obj->qty = 1;
 
  return obj;
 }
@@ -1387,6 +1402,42 @@ void delete_obj(Obj *obj)
  delete obj;
 
  return;
+}
+
+// add object to list, stacking with exisiting objects if possible
+bool ObjManager::list_add_obj(U6LList *list, Obj *obj)
+{
+ Obj *stack_with;
+ uint16 new_qty;
+ U6Link *link;
+ 
+ if(!list || !obj)
+   return false;
+   
+ if(is_stackable(obj))
+  {
+   for(link=list->start();link != NULL; )
+    {
+     stack_with = (Obj *)link->data;
+     link = link->next;
+
+     if(stack_with->obj_n == obj->obj_n)
+       {
+        new_qty = obj->qty + stack_with->qty;
+        obj->qty = new_qty;
+        list->addAtPos(list->findPos(stack_with), obj);
+
+        list->remove(stack_with);
+        delete_obj(stack_with);
+
+        return true;
+       }
+    }
+  }
+
+ list->addAtPos(0,obj);
+
+ return true;
 }
 
 /* Call load usecode for all objects (after loading them). This should be in

@@ -37,6 +37,8 @@ class InventoryWidget : public GUI_Widget {
 
  Configuration *config;
 
+ int game_type;
+
  TileManager *tile_manager;
  ObjManager *obj_manager;
  Text *text;
@@ -78,7 +80,8 @@ class InventoryWidget : public GUI_Widget {
  inline uint16 get_list_position(int x, int y);
  void display_inventory_container();
  void display_inventory_list();
- inline void display_qty_string(uint16 x, uint16 y, uint8 qty);
+ inline void display_qty_string(uint16 x, uint16 y, uint16 qty);
+ inline void display_special_char(uint16 x, uint16 y, uint8 quality);
  void display_arrows();
 
  public:

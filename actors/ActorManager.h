@@ -33,6 +33,7 @@ class Actor;
 class Map;
 class TileManager;
 class GameClock;
+class MapCoord;
 
 class ActorManager
 {
@@ -80,8 +81,10 @@ class ActorManager
  const char *get_worktype_string(uint32 wt);
 
  void clear_actor(Actor *actor);
+ bool resurrect_actor(Obj *actor_obj, MapCoord new_position);
 
  bool is_temp_actor(Actor *actor);
+ bool is_temp_actor(uint8 id_n);
  bool create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype, Actor **new_actor = NULL);
  bool toss_actor(Actor *actor, uint16 xrange, uint16 yrange);
 

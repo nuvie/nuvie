@@ -105,6 +105,20 @@ bool U6LList::add(void *data)
  return true;
 }
 
+uint32 U6LList::findPos(void *data)
+{
+ U6Link *link;
+ uint32 pos;
+ 
+ for(pos=0,link = start(); link != NULL; link = link->next,pos++)
+  {
+   if(link->data == data)
+     return pos;
+  }
+  
+ return 0;
+}
+ 
 bool U6LList::remove(void *data)
 {
  U6Link *link;

@@ -123,7 +123,7 @@ class Party {
  void follow();
  void find_leader(uint8 m);
 
- bool has_obj(uint16 obj_n, uint8 quality);
+ bool has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual=true);
  bool remove_obj(uint16 obj_n, uint8 quality);
  uint16 who_has_obj(uint16 obj_n, uint8 quality);
 

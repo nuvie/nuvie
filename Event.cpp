@@ -555,7 +555,7 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
                 }
                 obj_manager->remove_obj(obj); //remove object from map.
 
-                actor->inventory_add_object(obj, container_obj, true);
+                actor->inventory_add_object(obj, container_obj);
 #if 0 /* inventory_add_object() will stack now */
                 // add to container (assume the actor is holding container)
                 if(container_obj)
@@ -1709,7 +1709,7 @@ bool Event::unready(Obj *obj)
 /* Print object name and select it as object to be dropped. If qty is 0, the
  * amount to drop may be requested.
  */
-bool Event::drop_select(Obj *obj, uint8 qty)
+bool Event::drop_select(Obj *obj, uint16 qty)
 {
     if(mode == WAIT_MODE)
         return(false);
@@ -1744,7 +1744,7 @@ bool Event::drop_select(Obj *obj, uint8 qty)
 
 /* Select quantity of `use_obj' to be dropped. (qty 0 = drop nothing)
  */
-bool Event::drop_count(uint8 qty)
+bool Event::drop_count(uint16 qty)
 {
     if(mode == WAIT_MODE)
         return(false);
@@ -1783,7 +1783,7 @@ bool Event::drop()
 
 /* Make actor holding object drop it at x,y.
  */
-bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
+bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
 {
    // Map *map = Game::get_game()->get_game_map();
     if(mode == WAIT_MODE)
@@ -1826,12 +1826,14 @@ bool Event::drop(Obj *obj, uint8 qty, uint16 x, uint16 y)
     }
 
     // all object management is contained in the effect (use requested quantity)
+
     if(!usecode->has_dropcode(obj)
        || usecode->drop_obj(obj, actor, drop_loc.x, drop_loc.y, qty ? qty : obj->qty))
     {
         obj->status |= OBJ_STATUS_OK_TO_TAKE;
         new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
     }
+
     return(true);
 }
 
@@ -1869,7 +1871,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     Obj *obj = NULL;
     Actor *actor = NULL, *player_actor = player->get_actor();
-    bool using_actor = false, talking = false;
+    bool using_actor = false; //, talking = false;
     MapCoord target(player_actor->get_location()); // changes to target location
 
     if(mode == WAIT_MODE)

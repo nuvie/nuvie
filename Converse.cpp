@@ -31,6 +31,7 @@
 #include "SoundManager.h"
 #include "Event.h"
 #include "ConverseInterpret.h"
+#include "ConverseSpeech.h"
 #include "Converse.h"
 
 //#define CONVERSE_DEBUG
@@ -59,6 +60,7 @@ Converse::Converse()
     active = false;
     variables = NULL;
     party_all_the_time = false;
+    speech = NULL;
 }
 
 
@@ -78,6 +80,9 @@ Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
     gametype = t;
 
     cfg->value("config/party_all_the_time", party_all_the_time);
+    
+    speech = new ConverseSpeech();
+    speech->init(config);
 }
 
 
@@ -124,7 +129,13 @@ void Converse::reset()
 void Converse::load_conv(const std::string &convfilename)
 {
     string conv_lib_str;
-    config->pathFromValue("config/ultima6/gamedir", convfilename, conv_lib_str);
+    config->value("config/ultima6/townsdir", conv_lib_str, "unset"); //FIXME we need a config key check function.
+
+    if(conv_lib_str != "unset")
+      config->pathFromValue("config/ultima6/townsdir", convfilename, conv_lib_str);
+    else
+      config->pathFromValue("config/ultima6/gamedir", convfilename, conv_lib_str);
+
     unload_conv();
     src_num = 0;
     if(gametype == NUVIE_GAME_U6)
@@ -511,6 +522,8 @@ bool Converse::override_input()
  */
 void Converse::continue_script()
 {
+ speech->update();
+ 
     if(running())
     {
         if(!conv_i->waiting())

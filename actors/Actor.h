@@ -239,11 +239,11 @@ class Actor
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_zero_qual = true);
  uint32 inventory_count_objects(bool inc_readied_objects);
- uint32 inventory_count_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
+ uint32 inventory_count_object(uint16 obj_n, Obj *container = 0);
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0, bool search_containers = true, bool match_zero_qual = true);
  Obj *inventory_get_readied_object(uint8 location);
  Obj *inventory_get_obj_container(Obj *obj, Obj *container = 0);
- bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack = false);
+ bool inventory_add_object(Obj *obj, Obj *container = 0);
  bool inventory_remove_obj(Obj *obj, Obj *container = 0);
  Obj *inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality = 0);
  uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container = 0);

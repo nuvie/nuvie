@@ -30,6 +30,7 @@
 #include "MapWindow.h"
 #include "Effect.h"
 #include "ConverseInterpret.h"
+#include "ConverseSpeech.h"
 
 //#define CONVERSE_DEBUG
 
@@ -286,44 +287,60 @@ void ConverseInterpret::do_text()
 
     while(i < len)
     {
-        if(c_str[i] == '$' || c_str[i] == '#')
+        switch(c_str[i])
         {
-            // copy symbol
-            strncpy(symbol, &c_str[i], 2);
-            // evaluate
-            if(!strcmp(symbol, "$G")) // gender title
-                output.append(converse->player->get_gender_title());
-            else if(!strcmp(symbol, "$N")) // npc name
-                output.append(converse->name);
-            else if(!strcmp(symbol, "$P")) // player name
-                output.append(converse->player->get_name());
-            else if(!strcmp(symbol, "$T")) // time of day
-                output.append(converse->clock->get_time_of_day_string());
-            else if(!strcmp(symbol, "$Y")) // Y-string
-                output.append(get_ystr());
-            else if(!strcmp(symbol, "$Z")) // previous input
-                output.append(converse->get_svar(U6TALK_VAR_INPUT));
-            else if(symbol[0] == '$' // value of a string variable
-                    && isdigit(symbol[1]))
-                output.append(converse->get_svar(strtol(&symbol[1], NULL, 10)));
-            else if(symbol[0] == '#' // value of a variable
-                    && isdigit(symbol[1]))
-            {
-                snprintf(intval, 16, "%d",
-                         converse->get_var(strtol(&symbol[1], NULL, 10)));
-                output.append((char *)intval);
-                output.append("");
-            }
-            else
-                output.append(symbol);
-            i += 2;
-        }
-        else
-        {
-           output.append(1,c_str[i]);
-           i += 1;
+        
+         case '$' :
+         case '#' : // copy symbol
+                    strncpy(symbol, &c_str[i], 2);
+                   // evaluate
+                   if(!strcmp(symbol, "$G")) // gender title
+                      output.append(converse->player->get_gender_title());
+                   else if(!strcmp(symbol, "$N")) // npc name
+                      output.append(converse->name);
+                   else if(!strcmp(symbol, "$P")) // player name
+                      output.append(converse->player->get_name());
+                   else if(!strcmp(symbol, "$T")) // time of day
+                      output.append(converse->clock->get_time_of_day_string());
+                   else if(!strcmp(symbol, "$Y")) // Y-string
+                      output.append(get_ystr());
+                   else if(!strcmp(symbol, "$Z")) // previous input
+                      output.append(converse->get_svar(U6TALK_VAR_INPUT));
+                   else if(symbol[0] == '$' // value of a string variable
+                           && isdigit(symbol[1]))
+                      output.append(converse->get_svar(strtol(&symbol[1], NULL, 10)));
+                   else if(symbol[0] == '#' // value of a variable
+                           && isdigit(symbol[1]))
+                     {
+                      snprintf(intval, 16, "%d",
+                               converse->get_var(strtol(&symbol[1], NULL, 10)));
+                      output.append((char *)intval);
+                      output.append("");
+                     }
+                   else
+                      output.append(symbol);
+
+                   i += 2;
+                   break;
+
+         case '~' :
+                   if(i+3 <= len)
+                     {
+                      i++;
+                      if(c_str[i] == 'P')
+                        converse->get_speech()->play_speech(converse->npc_num, (int)strtol(&c_str[i+1], NULL, 10));
+                        
+                      for(i++;isdigit(c_str[i]) && i < len;)
+                        i++;
+                     }
+                   break;
+                   
+         default :  output.append(1,c_str[i]);
+                    i += 1;
+                    break;
         }
     }
+
     converse->print(output.c_str());
 }
 
@@ -596,7 +613,17 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             break;
         case U6OP_RESURRECT: // 0xd6
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
-            converse->print("!resurrect\n"); // CREATE actor
+            //converse->print("!resurrect\n"); // CREATE actor
+            //converse->actors->resurrect_actor(obj, pos);
+            cnpc_obj = converse->player->get_actor()->inventory_get_object(OBJ_U6_DEAD_BODY, 0, NULL, true, false);
+            if(cnpc_obj != NULL)
+              {
+               if(converse->actors->resurrect_actor(cnpc_obj, converse->player->get_actor()->get_location()))
+                 {
+                  converse->player->get_actor()->inventory_remove_obj(cnpc_obj);
+                  delete_obj(cnpc_obj);
+                 }
+              }
             break;
         case U6OP_HEAL: // 0xd9
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
@@ -866,9 +893,9 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
         case U6OP_OBJCOUNT: // 0xbb
             v[1] = pop_arg(i); // object
             v[0] = pop_arg(i); // npc
-            cnpc = converse->actors->get_actor(npc_num(v[0]));
+            cnpc = converse->actors->get_actor(npc_num(v[0])); //FIXME should this be party?
             if(cnpc)
-                out = cnpc->inventory_count_object(v[1], 0);
+                out = cnpc->inventory_count_object(v[1]);
             break;
         case U6OP_INPARTY: // 0xc6
             if(player->get_party()->contains_actor(npc_num(pop_arg(i))))
@@ -877,7 +904,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
         case U6OP_OBJINPARTY: // 0xc7 ?? check if party has object
             v[1] = pop_arg(i); // qual
             v[0] = pop_arg(i); // obj
-            if(!player->get_party()->has_obj(v[0], v[1]))
+            if(!player->get_party()->has_obj(v[0], v[1], false))
                 out = 0x8001; // something OR'ed or u6val version of "no npc"?
             else
             {

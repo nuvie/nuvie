@@ -147,8 +147,8 @@ inline void DollWidget::display_readied_object(uint8 location, uint16 x, uint16 
 
 GUI_status DollWidget::MouseDown(int x, int y, int button)
 {
- Event *event = Game::get_game()->get_event();
- MsgScroll *scroll = Game::get_game()->get_scroll();
+ //Event *event = Game::get_game()->get_event();
+ //MsgScroll *scroll = Game::get_game()->get_scroll();
  uint8 location;
  Obj *obj;
  x -= area.x;

@@ -557,7 +557,7 @@ uint32 Actor::inventory_count_objects(bool inc_readied_objects)
 /* Returns the number of objects in the actor's inventory with matching object
  * number and quality.
  */
-uint32 Actor::inventory_count_object(uint16 obj_n, uint8 qual, Obj *container)
+uint32 Actor::inventory_count_object(uint16 obj_n, Obj *container)
 {
     uint32 qty = 0;
     U6Link *link = 0;
@@ -569,9 +569,9 @@ uint32 Actor::inventory_count_object(uint16 obj_n, uint8 qual, Obj *container)
     {
         obj = (Obj *)link->data;
         if(obj->container)
-            qty += inventory_count_object(obj_n, qual, obj);
-        if(obj->obj_n == obj_n && obj->quality == qual)
-            qty += (obj->qty > 0) ? obj->qty : 1; // quantity 0 counts as 1
+            qty += inventory_count_object(obj_n, obj);
+        if(obj->obj_n == obj_n)
+            qty += obj->qty;
     }
     return(qty);
 }
@@ -612,7 +612,7 @@ Obj *Actor::inventory_get_readied_object(uint8 location)
 }
 
 
-bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
+bool Actor::inventory_add_object(Obj *obj, Obj *container)
 {
  U6LList *inventory = get_inventory_list(), *add_to = inventory;
 
@@ -624,27 +624,33 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
  }
  else
  {
-   if(stack && obj_manager->is_stackable(obj)) // find similiar objects outside containers
+
+ /*
+   if(obj_manager->is_stackable(obj)) // find similiar objects outside containers
    {
-     Obj *stack_with = inventory_get_object(obj->obj_n, obj->quality, NULL, false);
+     Obj *stack_with = inventory_get_object(obj->obj_n, 0, NULL, false, false);
      if(stack_with) // we stack onto the new object, and delete the old one
      {
-       if(obj->qty == 0) // quantity 0 adds as 1
-         obj->qty = 1;
-       obj->qty += (stack_with->qty > 0) ? stack_with->qty : 1;
-       // FIXME: how to determine max. stack size? (it varies)
+      new_qty = obj_manager->get_obj_qty(obj) + obj_manager->get_obj_qty(stack_with);
+      obj_manager->set_obj_qty(obj, new_qty);
+      
        inventory_remove_obj(stack_with);
        delete_obj(stack_with);
      }
    }
+  */
    // only objects outside containers are marked in_inventory
    obj->status |= OBJ_STATUS_IN_INVENTORY;
+   
+   if(obj->status & OBJ_STATUS_IN_CONTAINER)
+     obj->status ^= OBJ_STATUS_IN_CONTAINER;
    
    // we have the item now so we don't consider it stealing if we get it at any time in the future.
    obj->status |= OBJ_STATUS_OK_TO_TAKE;
    obj->x = id_n;
  }
- return add_to->addAtPos(0, obj);
+
+ return obj_manager->list_add_obj(add_to, obj);
 }
 
 
@@ -664,9 +670,9 @@ Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
  obj = new Obj;
  obj->obj_n = obj_n;
  obj->frame_n = frame_n;
- obj->qty = qty;
  obj->quality = quality;
- inventory_add_object(obj, NULL, true);
+ obj->qty = qty;
+ inventory_add_object(obj, NULL);
 
  return(obj);
 }
@@ -679,13 +685,13 @@ uint32
 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container)
 {
  Obj *obj;
- uint8 oqty = 0;
+ uint16 oqty = 0;
  uint32 deleted = 0;
 
- while((obj = inventory_get_object(obj_n, quality, container, true))
+ while((obj = inventory_get_object(obj_n, quality, container, true, false))
        && (deleted < qty))
  {
-    oqty = obj->qty ? obj->qty : 1;
+    oqty = obj->qty;
     if(oqty <= (qty - deleted))
         inventory_remove_obj(obj, container);
     else
@@ -1237,16 +1243,15 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
 void Actor::defend(uint8 attack, uint8 weapon_damage)
 {
  uint8 damage;
- uint8 ac;
    
  if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
    {
     damage = NUVIE_RAND() % weapon_damage;
 
 
-    if(damage > ac)
+    if(damage > armor_class)
       {
-       hit(damage - ac);
+       hit(damage - armor_class);
       }
    }
 

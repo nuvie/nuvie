@@ -788,7 +788,7 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, uint8 fade_to)
  */
 bool FadeEffect::pixelated_fade_out()
 {
-    bool all_clear = false; // completely faded to pixelated_color
+    //bool all_clear = false; // completely faded to pixelated_color
     return(pixelated_fade_core(pixels_to_check(), pixelated_color));
 }
 
@@ -799,7 +799,7 @@ bool FadeEffect::pixelated_fade_out()
  */
 bool FadeEffect::pixelated_fade_in()
 {
-    bool all_clear = false; // completely faded to transparent color
+    //bool all_clear = false; // completely faded to transparent color
     return(pixelated_fade_core(pixels_to_check(), TRANSPARENT_COLOR));
 }
 

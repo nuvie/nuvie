@@ -34,6 +34,7 @@
 #include "NuvieIOFile.h"
 #include "GameClock.h"
 #include "Game.h"
+#include "Party.h"
 
 #define TEMP_ACTOR_OFFSET 224
 #define ACTOR_TEMP_INIT 255
@@ -702,9 +703,58 @@ void ActorManager::clear_actor(Actor *actor)
  return;
 }
 
+bool ActorManager::resurrect_actor(Obj *actor_obj, MapCoord new_position)
+{
+ Actor *actor;
+ U6Link *link;
+ 
+ if(!is_temp_actor(actor_obj->quality))
+  {
+   actor = get_actor(actor_obj->quality);
+   actor->alive = true;
+   actor->show();
+
+   actor->x = new_position.x;
+   actor->y = new_position.y;
+   actor->z = new_position.z;
+   actor->obj_n = actor->base_obj_n;
+   actor->init();
+   
+   actor->frame_n = 0;
+   
+   actor->set_direction(ACTOR_DIR_U);
+
+   actor->set_hp(1);
+   //actor->set_worktype(0x1);
+   
+   if(actor->flags & 0x1) //actor in party
+     Game::get_game()->get_party()->add_actor(actor);
+   
+   //add body container objects back into actor's inventory.
+   if(actor_obj->container)
+     {
+      for(link = actor_obj->container->start(); link != NULL; link = link->next)
+        actor->inventory_add_object((Obj *)link->data);
+
+      actor_obj->container->removeAll();
+     }
+
+  }
+
+ return true;
+}
+
 bool ActorManager::is_temp_actor(Actor *actor)
 {
- if(actor && actor->id_n >= TEMP_ACTOR_OFFSET)
+ if(actor)
+  return is_temp_actor(actor->id_n);
+
+ return false;
+}
+
+bool ActorManager::is_temp_actor(uint8 id_n)
+{
+ if(id_n >= TEMP_ACTOR_OFFSET)
   return true;
 
  return false;

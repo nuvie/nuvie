@@ -127,7 +127,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
   return true;
 }
 
-bool SoundManager::initAudio ()
+bool SoundManager::initAudio()
 {
   int ret;
   int audio_rate = 44100;

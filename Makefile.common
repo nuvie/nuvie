@@ -155,6 +155,8 @@ nuvie_SOURCES = \
 	Converse.h \
 	ConverseInterpret.cpp \
 	ConverseInterpret.h \
+	ConverseSpeech.cpp \
+	ConverseSpeech.h \
 	Cursor.cpp \
 	Cursor.h \
 	Effect.cpp \

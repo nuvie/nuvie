@@ -222,7 +222,7 @@ public:
 
     /* value tests */
     virtual bool is_print(converse_value check)
-     { return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a)) ); }
+     { return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a) || (check == 0x7e)) ); } //added '~' 0x7e for fm towns.
     virtual bool is_ctrl(converse_value code)
      { return(((code >= 0xa1 || code == 0x9c || code == 0x9e) && !is_valop(code) && !is_datasize(code))); }
     virtual bool is_datasize(converse_value check)

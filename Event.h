@@ -148,10 +148,10 @@ class Event : public GUI_CallBack
  void party_mode();
  bool ready(Obj *obj);
  bool unready(Obj *obj);
- bool drop_select(Obj *obj, uint8 qty = 0);
- bool drop_count(uint8 qty);
+ bool drop_select(Obj *obj, uint16 qty = 0);
+ bool drop_count(uint16 qty);
  bool drop();
- bool drop(Obj *obj, uint8 qty, uint16 x, uint16 y);
+ bool drop(Obj *obj, uint16 qty, uint16 x, uint16 y);
  bool drop(uint16 x, uint16 y) { return(drop(use_obj, drop_qty, x, y)); }
  void walk_to_mouse_cursor(uint32 mx, uint32 my);
  void multiuse(uint16 wx, uint16 wy);

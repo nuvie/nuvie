@@ -516,7 +516,7 @@ Obj *InventoryView::get_objAtCursor()
  */
 void InventoryView::select_objAtCursor()
 {
-    Event *event = Game::get_game()->get_event();
+    //Event *event = Game::get_game()->get_event();
     ViewManager *view_manager = Game::get_game()->get_view_manager();
     Obj *obj = get_objAtCursor();
 

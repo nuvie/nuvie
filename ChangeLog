@@ -1,3 +1,32 @@
+2004-09-25  Eric Fry <efry at users.sourceforge.net>
+	* Added ObjManager::list_add_obj() Adds an Obj into a U6LList combining
+	  with existing objects if stackable.
+	* Added ActorManager::resurrect_actor() This converts a dead body Obj
+	  back into the corresponding Actor record. It also transfers the dead
+	  body's contents back into the Actor inventory.
+	* Added obj_stackable[] table into ObjManager. This is now used by
+	  ObjManager::is_stackable() to determine if an Obj is stackable.
+	* Changed Obj.qty from uint8 to uint16.
+	* Added support for Obj quantities greater than 255.
+	* Added FM-Towns audio dialog support. To use this feature put the 
+	  following line inside your <ultima6></ultima6> config block.
+
+	  <townsdir>/the/path/to/your/fmtowns/u6/dir</townsdir>
+
+	  The FM-Towns audio is sampled at 16KHz and will need up converting to
+	  play correctly with the Nuvie audio system. This hasn't been done yet
+	  so the voices will sound wrong. If you want to hear how the voices
+	  should sound. Change the audio_rate in SoundManager::initAudio() from
+	  44100 to 16000.
+	* Added ConverseSpeech class. This is used for playing the FM-Towns
+	  audio samples when in Talk mode.
+	* Hooked up the actor ressurection action in the Converse system.
+	* Added U6LList::findPos() This method finds the position in the list
+	  holding the reference pointed to by void *data.
+	* Added InventoryWidget::display_special_char() This prints the special
+	  char under keys in U6.
+	* Added the inventory key letter fonts to InventoryFont.h
+	
 2004-09-25  Jonathan Wright <nelno at idsoftware.com>
 	* Updated project files for Visual C 7.1 (.NET 2003)
 

@@ -538,13 +538,13 @@ void Party::find_leader(uint8 m)
 }
 
 
-bool Party::has_obj(uint16 obj_n, uint8 quality)
+bool Party::has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual)
 {
  uint16 i;
 
  for(i=0;i<num_in_party;i++)
   {
-   if(member[i].actor->inventory_get_object(obj_n, quality) != NULL) // we got a match
+   if(member[i].actor->inventory_get_object(obj_n, quality, 0, true, match_zero_qual) != NULL) // we got a match
      return true;
   }
 

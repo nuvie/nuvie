@@ -23,6 +23,7 @@
 
 #include "nuvieDefs.h"
 #include "U6LList.h"
+#include "Configuration.h"
 
 #include "InventoryWidget.h"
 #include "Actor.h"
@@ -46,6 +47,8 @@ InventoryWidget::InventoryWidget(Configuration *cfg, GUI_CallBack *callback): GU
  target_obj = NULL;
  ready_obj = NULL;
  row_offset = 0;
+ 
+ config->value("config/GameType",game_type);
 }
 
 InventoryWidget::~InventoryWidget()
@@ -173,16 +176,20 @@ void InventoryWidget::display_inventory_list()
        //draw qty string for stackable items
        if(tile != empty_tile && obj_manager->is_stackable(obj))
          display_qty_string((area.x+8)+j*16,area.y+16+i*16,obj->qty);
+       
+       //draw special char for Keys.
+       if(game_type == NUVIE_GAME_U6 && obj->obj_n == 64)
+         display_special_char((area.x+8)+j*16,area.y+16+i*16,obj->quality);
 
        screen->blit((area.x+8)+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
       }
    }
 }
 
-void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint8 qty)
+void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint16 qty)
 {
  uint8 len, i, offset;
- char buf[4];
+ char buf[6];
 
  sprintf(buf,"%d",qty);
  len = strlen(buf);
@@ -193,6 +200,14 @@ void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint8 qty)
   screen->blitbitmap(x+offset+4*i,y+11,inventory_font[buf[i]-48],3,5,0x48,0x31);
 
  return;
+}
+
+void InventoryWidget::display_special_char(uint16 x, uint16 y, uint8 quality)
+{
+ if(quality + 9 >= NUVIE_MICRO_FONT_COUNT)
+   return;
+
+ screen->blitbitmap(x+6,y+11,inventory_font[quality + 9],3,5,0x48,0x31);
 }
 
 void InventoryWidget::display_arrows()
@@ -213,8 +228,8 @@ void InventoryWidget::display_arrows()
 
 GUI_status InventoryWidget::MouseDown(int x, int y, int button)
 {
- Event *event = Game::get_game()->get_event();
- MsgScroll *scroll = Game::get_game()->get_scroll();
+ //Event *event = Game::get_game()->get_event();
+ //MsgScroll *scroll = Game::get_game()->get_scroll();
  x -= area.x;
  y -= area.y;
 
@@ -436,7 +451,8 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
     if(!container_obj)
      actor->inventory_add_object(obj);
     else
-     container_obj->container->addAtPos(0,obj);
+     obj_manager->list_add_obj(container_obj->container, obj);
+
     Redraw();
    }
 

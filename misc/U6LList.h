@@ -50,6 +50,8 @@ class U6LList
  bool add(void *data);
  bool addAtPos(uint32 pos, void *data);
 
+ uint32 findPos(void *data);
+ 
  bool remove(void *data);
  bool removeAll();
 

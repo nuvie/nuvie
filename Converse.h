@@ -39,6 +39,7 @@ class U6Lib_n;
 class U6Lzw;
 
 class ConverseInterpret;
+class ConverseSpeech;
 class ConvScript;
 
 using std::string;
@@ -103,6 +104,7 @@ class Converse
         char *sv;
     } *variables; /* initialized for [U6TALK_VAR__LAST_+1] items */
 
+    ConverseSpeech *speech;
     void reset();
 
 public:
@@ -143,6 +145,8 @@ public:
     void set_svar(uint8 varnum, const char *set);
     void init_variables();
     void delete_variables();
+
+    ConverseSpeech *get_speech() { return speech; };
 };
 
 

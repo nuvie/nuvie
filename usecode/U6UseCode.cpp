@@ -1293,6 +1293,8 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
 
       party->show();
       ship_actor->hide();
+      ship_actor->set_worktype(0);
+
       player->set_actor(party->get_actor(0));
       player->move(lx,ly,lz);
       ship_actor->obj_n = OBJ_U6_NO_VEHICLE;
@@ -1514,6 +1516,8 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
 
       party->show();
       balloon_actor->hide();
+      balloon_actor->set_worktype(0);
+
       player->set_actor(party->get_actor(0));
       player->move(lx,ly,lz);
       balloon_actor->obj_n = OBJ_U6_NO_VEHICLE;

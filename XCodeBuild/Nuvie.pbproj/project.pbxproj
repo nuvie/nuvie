@@ -155,6 +155,7 @@
 				078B44500669B9B5000EFE27,
 				07E25F5D06A171EA009E8571,
 				07E2601C06AA5FE3009E8571,
+				07A7120906D897CD00EC7D32,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -706,6 +707,7 @@
 				07132C7D066968A200F0A38E,
 				078B444F0669B9B5000EFE27,
 				07E2601E06AA5FE4009E8571,
+				07A7120806D897CD00EC7D32,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2728,6 +2730,8 @@
 			children = (
 				078BA0BC049EA5AE00A8000A,
 				078BA0BB049EA5AE00A8000A,
+				07A7120706D897CD00EC7D32,
+				07A7120606D897CD00EC7D32,
 				0704F9D50446B4E600A8000A,
 				0704F9D40446B4E600A8000A,
 			);
@@ -2877,6 +2881,36 @@
 			path = ../actors/U6ActorTypes.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+		};
+		07A7120606D897CD00EC7D32 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ConverseSpeech.cpp;
+			path = ../ConverseSpeech.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07A7120706D897CD00EC7D32 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = ConverseSpeech.h;
+			path = ../ConverseSpeech.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07A7120806D897CD00EC7D32 = {
+			fileRef = 07A7120606D897CD00EC7D32;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07A7120906D897CD00EC7D32 = {
+			fileRef = 07A7120706D897CD00EC7D32;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		07AD65EB04D34BCA00A8000A = {
 			children = (
@@ -3610,8 +3644,7 @@
 			sourceTree = "<group>";
 		};
 		1058C7A1FEA54F0111CA2CBB = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = Cocoa.framework;
 			path = /System/Library/Frameworks/Cocoa.framework;
@@ -3779,8 +3812,7 @@
 			sourceTree = "<group>";
 		};
 		29B97324FDCFA39411CA2CEA = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = AppKit.framework;
 			path = /System/Library/Frameworks/AppKit.framework;
@@ -3788,8 +3820,7 @@
 			sourceTree = "<absolute>";
 		};
 		29B97325FDCFA39411CA2CEA = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = Foundation.framework;
 			path = /System/Library/Frameworks/Foundation.framework;
@@ -3807,8 +3838,6 @@
 //4A3
 //4A4
 		4A9504CCFFE6A4B311CA0CBA = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3822,8 +3851,6 @@
 			name = Development;
 		};
 		4A9504CDFFE6A4B311CA0CBA = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;

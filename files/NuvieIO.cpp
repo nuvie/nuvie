@@ -82,7 +82,7 @@ bool NuvieIOBuffer::open(unsigned char *buf, uint32 buf_size, bool copy_buf)
  if(data != NULL)
    return false;
 
- if(NUVIE_BUF_COPY)
+ if(copy_buf == NUVIE_BUF_COPY)
   {
    copied_data = true;
    data = (unsigned char *)malloc(buf_size);
