@@ -1726,7 +1726,7 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
 	actor->init_from_obj(actor_obj);
 
     // create a temporary horse on the map.
-	actor_manager->create_temp_actor(OBJ_U6_HORSE, obj->x, obj->y, obj->z, WORKTYPE_U6_GRAZE);
+	actor_manager->create_temp_actor(OBJ_U6_HORSE, obj->x, obj->y, obj->z, WORKTYPE_U6_ANIMAL_WANDER);
    }
  else if(!actor_manager->is_temp_actor(actor))// Try to mount horse. Don't use permenant Actors eg Smith, push-me pull-you
    {
