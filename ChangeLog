@@ -1,3 +1,6 @@
+2004-09-25  Jonathan Wright <nelno at idsoftware.com>
+	* Updated project files for Visual C 7.1 (.NET 2003)
+
 2004-09-24  Michael Fink <vividos at users.sourceforge.net>
 	* Compile fixes and updated project files for msvc6
 

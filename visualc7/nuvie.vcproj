@@ -1674,6 +1674,12 @@
 				RelativePath="..\Gui\GUI_text.h">
 			</File>
 			<File
+				RelativePath="..\Gui\GUI_TextInput.cpp">
+			</File>
+			<File
+				RelativePath="..\Gui\GUI_TextInput.h">
+			</File>
+			<File
 				RelativePath="..\Gui\GUI_types.h">
 			</File>
 			<File
