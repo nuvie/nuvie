@@ -23,6 +23,8 @@
 
 #include "InventoryWidget.h"
 
+#include "InventoryFont.h"
+
 InventoryWidget::InventoryWidget(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
@@ -142,10 +144,31 @@ void InventoryWidget::display_inventory_list()
           tile = empty_tile;
           
        //tile = tile_manager->get_tile(actor->indentory_tile());
+       
+       if(tile != empty_tile && obj->qty > 0) //draw qty string for stackable items
+         display_qty_string((area.x+8)+j*16,area.y+16+i*16,obj->qty);
+         
        screen->blit((area.x+8)+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
       }
    }
 }
+
+void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint8 qty)
+{
+ uint8 len, i, offset;
+ char buf[4];
+ 
+ sprintf(buf,"%d",qty);
+ len = strlen(buf);
+ 
+ offset = (16 - len*4) / 2;
+ 
+ for(i=0;i<len;i++)
+  screen->blitbitmap(x+offset+4*i,y+11,inventory_font[buf[i]-48],3,5,0x48,0x31);
+
+ return;
+}
+
 
 GUI_status InventoryWidget::MouseDown(int x, int y, int button)
 { 
@@ -293,7 +316,7 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
     printf("Drop into inventory");
     obj = (Obj *)data;
 
-    if(target_obj && target_obj->container)
+    if(target_obj && target_obj->container && target_obj != obj)
       {
        container_obj = target_obj; //swap to container ready to drop item inside
       }

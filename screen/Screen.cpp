@@ -364,6 +364,66 @@ bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16
  return true;
 }
 
+void Screen::blitbitmap(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
+{
+ if(surface->bits_per_pixel == 16)
+   blitbitmap16(dest_x, dest_y, src_buf, src_w, src_h, fg_color, bg_color);
+ else
+   blitbitmap32(dest_x, dest_y, src_buf, src_w, src_h, fg_color, bg_color);
+
+ return;
+}
+
+void Screen::blitbitmap16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
+{
+ uint16 *pixels;
+ uint16 i,j;
+  
+ pixels = (uint16 *)surface->pixels;
+ 
+ pixels += dest_y * surface->w + dest_x;
+
+ for(i=0;i<src_h;i++)
+  {
+   for(j=0;j<src_w;j++)
+    {
+     if(src_buf[j])
+       pixels[j] = (uint16)surface->colour32[fg_color];
+     else
+       pixels[j] = (uint16)surface->colour32[bg_color];
+    }
+   src_buf += src_w;
+   pixels += surface->w; //surface->pitch;
+  }
+
+ return;
+}
+
+void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
+{
+ uint32 *pixels;
+ uint16 i,j;
+  
+ pixels = (uint32 *)surface->pixels;
+ 
+ pixels += dest_y * surface->w + dest_x;
+
+ for(i=0;i<src_h;i++)
+  {
+   for(j=0;j<src_w;j++)
+    {
+     if(src_buf[j])
+       pixels[j] = surface->colour32[fg_color];
+     else
+       pixels[j] = surface->colour32[bg_color];
+    }
+   src_buf += src_w;
+   pixels += surface->w; //surface->pitch;
+  }
+
+ return;
+}
+
 SDL_Surface *Screen::create_sdl_surface_from(unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch)
 {
  SDL_Surface *new_surface;

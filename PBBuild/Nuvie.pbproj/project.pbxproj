@@ -678,6 +678,7 @@
 				07C3D12D047A1C7B00A8000A,
 				0762A33905036D0E00A8000A,
 				0762A33805036D0E00A8000A,
+				07E87A11050E07AF00A8000A,
 				0762A3550506027A00A8000A,
 				0762A3540506027A00A8000A,
 			);
@@ -1905,6 +1906,19 @@
 			settings = {
 			};
 		};
+		07E87A11050E07AF00A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = InventoryFont.h;
+			path = ../views/InventoryFont.h;
+			refType = 2;
+		};
+		07E87A12050E07AF00A8000A = {
+			fileRef = 07E87A11050E07AF00A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		07EC223504A17C6E00A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -2320,6 +2334,7 @@
 				0762A33B05036D0E00A8000A,
 				0762A3510504C4B900A8000A,
 				0762A3570506027A00A8000A,
+				07E87A12050E07AF00A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

@@ -69,6 +69,7 @@ class InventoryWidget : public GUI_Widget {
  inline Obj *get_obj_at_location(int x, int y);
  void display_inventory_container();
  void display_inventory_list();
+ void display_qty_string(uint16 x, uint16 y, uint8 qty);
 };
 
 #endif /* __InventoryWidget_h__ */
