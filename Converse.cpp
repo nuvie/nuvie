@@ -150,19 +150,19 @@ bool Converse::check_keywords()
 bool Converse::do_cmd()
 {
     bool donext = true;
-    fprintf(stderr, "Converse: cmd=0x%02x\n", cmd);
-    fprintf(stderr, "Converse: args: ");
-    for(unsigned int a = 0; a < args.size(); a++)
-        for(unsigned int v = 0; v < args[a].size(); v++)
-            fprintf(stderr, "%d,%d=(0x%02x)0x%02x\n", a, v,
-                    args[a][v].valt, args[a][v].val);
-    fprintf(stderr, "\n");
+//    fprintf(stderr, "Converse: cmd=0x%02x\n", cmd);
+//    fprintf(stderr, "Converse: args: ");
+//    for(unsigned int a = 0; a < args.size(); a++)
+//        for(unsigned int v = 0; v < args[a].size(); v++)
+//            fprintf(stderr, "%d,%d=(0x%02x)0x%02x\n", a, v,
+//                    args[a][v].valt, args[a][v].val);
+//    fprintf(stderr, "\n");
     if(keywords.size()
        && (cmd != U6OP_KEYWORD && cmd != U6OP_SANSWER && cmd != U6OP_ENDASK))
     {
-        fprintf(stderr, "Converse: skip cmd\n");
-        fprintf(stderr, "Converse: keywords(%d)=\"%s\" skip cmd\n",
-                keywords.size(), keywords.c_str());
+//        fprintf(stderr, "Converse: skip cmd\n");
+//        fprintf(stderr, "Converse: keywords(%d)=\"%s\" skip cmd\n",
+//                keywords.size(), keywords.c_str());
         return(donext);
     }
     switch(cmd)
@@ -217,7 +217,7 @@ bool Converse::do_cmd()
             break;
         case U6OP_SASK:
             std::cerr << "Converse: ASK section" << std::endl;
-            cout << "Input" << endl;
+//            std::cerr << "Input" << std::endl;
 //            cin >> input_s;
             wait(); donext = false;
             break;
@@ -229,7 +229,7 @@ bool Converse::do_cmd()
                 // continue, no skip
             }
             else
-                cerr << "Converse: skip to next keyword" << endl;
+                std::cerr << "Converse: skip to next keyword" << std::endl;
             break;
         case 0x00:
             output.append("\nNull command\n");
@@ -312,22 +312,22 @@ void Converse::step(Uint32 count)
 
     while(stepping && !check_overflow() && ((count > 0) ? c++ < count : true))
     {
-        cerr << "new statement" << endl;
+//        std::cerr << "new statement" << std::endl;
         if(is_print(peek()))
         {
-            cerr << "GET TEXT" << endl;
+            std::cerr << "GET TEXT" << std::endl;
             do_text();
             continue;
         }
         cmd = pop();
-        cerr << "popped cmd" << endl;
+//        std::cerr << "popped cmd" << std::endl;
         if(cmd == U6OP_SIDENT)
         {
-            cerr << "sident" << endl;
+//            std::cerr << "sident" << std::endl;
             print_name();
             continue;
         }
-        cerr << "get args" << endl;
+//        std::cerr << "get args" << std::endl;
         ai = vi = 0;
         args.clear(); args.resize(ai + 1);
         if(cmd == U6OP_JUMP)
@@ -339,52 +339,52 @@ void Converse::step(Uint32 count)
         }
         while(!check_overflow())
         {
-            cerr << "check next val" << endl;
+//            std::cerr << "check next val" << std::endl;
             val = peek();
             if(val == U6OP_ARGSTOP)
             {
-                cerr << "val is 0xa7, skip, next arg" << endl;
+//                std::cerr << "val is 0xa7, skip, next arg" << std::endl;
                 skip(); ++ai;
                 args.resize(ai + 1);
                 continue;
             }
             if(is_print(val) || is_cmd(val))
             {
-                cerr << "val is printable or cmd, done" << endl;
+//                std::cerr << "val is printable or cmd, done" << std::endl;
                 break;
             }
-            cerr << "skip, get val" << endl;
+//            std::cerr << "skip, get val" << std::endl;
             skip();
             if(val == 0xd2)
             {
                 args[ai].resize(vi + 1);
                 args[ai][vi++].val = pop4();
-                cerr << "popped 4, next val" << endl;
+//                std::cerr << "popped 4, next val" << std::endl;
             }
             else if(val == 0xd3)
             {
                 args[ai].resize(vi + 1);
                 args[ai][vi++].val = pop();
-                cerr << "popped 1, next val" << endl;
+//                std::cerr << "popped 1, next val" << std::endl;
             }
             else if(val == 0xd4)
             {
                 args[ai].resize(vi + 1);
                 args[ai][vi++].val = pop2();
-                cerr << "popped 2, next val" << endl;
+ //               std::cerr << "popped 2, next val" << std::endl;
             }
             else
             {
                 args[ai].resize(vi + 1);
-                cerr << "val is val" << endl;
+//                std::cerr << "val is val" << std::endl;
                 args[ai][vi].val = val;
                 if(peek() == 0xb2)
                 {
                     args[ai][vi].valt = pop();
-                    cerr << "0xb2 follows, popped" << endl;
+//                    std::cerr << "0xb2 follows, popped" << std::endl;
                 }
                 ++vi;
-                cerr << "next val" << endl;
+//                std::cerr << "next val" << std::endl;
             }
         }
         stepping = do_cmd();
