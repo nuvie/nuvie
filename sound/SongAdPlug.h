@@ -30,12 +30,11 @@ class CPlayer;
 
 class SongAdPlug : public Song {
 public:
-	SongAdPlug();
+	SongAdPlug(CEmuopl *o);
 	~SongAdPlug();
 	bool Init(const char *filename);
 	bool Play(bool looping = false);
 	bool Stop();
-    
     CPlayer *get_player() { return player; };
     CEmuopl *get_opl() { return opl; };
     

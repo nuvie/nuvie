@@ -22,7 +22,7 @@
  */
 
 //Mix_HookMusicFinished
-
+#include "nuvieDefs.h"
 #include "Song.h"
 
 
@@ -64,21 +64,21 @@ bool Song::Stop() {
 	return true;
 }
 
-/*
+
 bool Song::Pause() {
-	if (m_pMusic==NULL) return false;
+	if (!Mix_PlayingMusic()) return false;
 	Mix_PauseMusic();
-	m_Paused=true;
+//	m_Paused=true;
 	return true;
 }
 
 bool Song::Resume() {
-	if (m_pMusic==NULL) return false;
+	if (!Mix_PlayingMusic()) return false;
 	Mix_ResumeMusic();
-	m_Paused=false;
+	//m_Paused=false;
 	return true;
 }
-*/
+
 
 bool Song::FadeOut(float seconds) {
 	int ret;

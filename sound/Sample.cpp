@@ -21,6 +21,7 @@
  *
  */
 
+#include "nuvieDefs.h"
 #include "Sample.h"
 
 Sample::Sample() {

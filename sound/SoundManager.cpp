@@ -21,6 +21,9 @@
  *
  */
 
+#include "nuvieDefs.h"
+#include "U6misc.h"
+#include "emuopl.h"
 #include "SoundManager.h"
 #include "SongAdPlug.h"
 #include "Sample.h"
@@ -43,6 +46,7 @@ SoundManager::SoundManager ()
   m_pCurrentSong = NULL;
   g_MusicFinished = false;
   audio_enabled = false;
+  opl = NULL;
 }
 
 SoundManager::~SoundManager ()
@@ -82,8 +86,9 @@ bool SoundManager::nuvieStartup (Configuration * config)
   printf ("should load script from %s\n", scriptdirectory.c_str ());
   string filename;
   filename = scriptdirectory + "songs.cfg";
-  LoadSongs (scriptdirectory, filename);
-  filename = scriptdirectory + "obj_samples.cfg";
+  //LoadCustomSongs (scriptdirectory, filename);
+  LoadNativeU6Songs();
+   filename = scriptdirectory + "obj_samples.cfg";
   LoadObjectSamples (scriptdirectory, filename);
   filename = scriptdirectory + "tile_samples.cfg";
   LoadTileSamples (scriptdirectory, filename);
@@ -107,58 +112,128 @@ bool SoundManager::initAudio ()
   if (ret)
     return false;
   Mix_HookMusicFinished (musicFinished);
+  
+  opl = new CEmuopl(audio_rate, true, true); // 16bit stereo
+  
   return true;
 }
 
-bool SoundManager::LoadSongs (string directory, string scriptname)
+bool SoundManager::LoadNativeU6Songs()
 {
-  NuvieIOFileRead niof;
-  niof.open (scriptname);
-  char * sz = (char *) niof.readAll ();
+ Song *song;
+ 
+ string filename;
+ 
+ config_get_path(m_Config, "brit.m", filename);
+ song = new SongAdPlug(opl);
+ loadSong(song, filename.c_str());
+ groupAddSong("random", song);
+
+ config_get_path(m_Config, "forest.m", filename);
+ song = new SongAdPlug(opl);
+ loadSong(song, filename.c_str());
+ groupAddSong("random", song);
+
+ config_get_path(m_Config, "stones.m", filename);
+ song = new SongAdPlug(opl);
+ loadSong(song, filename.c_str());
+ groupAddSong("random", song);
+
+ config_get_path(m_Config, "ultima.m", filename);
+ song = new SongAdPlug(opl);
+ loadSong(song, filename.c_str());
+ groupAddSong("random", song);
+
+ config_get_path(m_Config, "engage.m", filename);
+ song = new SongAdPlug(opl);
+ loadSong(song, filename.c_str());
+ groupAddSong("engage", song);
+
+ config_get_path(m_Config, "hornpipe.m", filename);
+ song = new SongAdPlug(opl);
+ loadSong(song, filename.c_str());
+ groupAddSong("hornpipe", song);
+
+ config_get_path(m_Config, "gargoyle.m", filename);
+ song = new SongAdPlug(opl);
+ loadSong(song, filename.c_str());
+ groupAddSong("gargoyle", song);
+ 
+ return true;
+}
+
+bool SoundManager::LoadCustomSongs (string directory, string scriptname)
+{
   char seps[] = ";\r\n";
   char *token1;
   char *token2;
-//      char sz[] = "Castle;U6-BRIT.MID;\nCastle;ULTIMA_Ba.MOD;\nRandom;U6-BRIT.MID;\n";
+  char *sz;
+  NuvieIOFileRead niof;
+  Song *song;
+  
+  if(niof.open (scriptname) == false)
+    return false;
+
+  sz = (char *)niof.readAll();
+  
+  if(sz == NULL)
+    return false;
+
   token1 = strtok (sz, seps);
-  while ((token1 != NULL) && ((token2 = strtok (NULL, seps)) != NULL))
+  for( ; (token1 != NULL) && ((token2 = strtok(NULL, seps)) != NULL) ; token1 = strtok(NULL, seps))
     {
-      printf ("%s : %s\n", token1, token2);
-      Sound *ps;
-      ps = SoundExists (token2);
-      if (ps == NULL)
+      song = (Song *)SongExists(token2);
+      if(song == NULL)
         {
-          Song *s;
-          s = new SongAdPlug;
-          string songname;
-          songname = directory + token2;
-          if (!s->Init (songname.c_str ()))
-            {
-              printf ("could not load %s\n", songname.c_str ());
-            }
-          ps = s;
-          m_Songs.push_back (ps);       //add it to our global list 
+          song = new Song;
+          if(!loadSong(song, token2))
+            continue; //error loading song
         }
-      if (ps != NULL)
-        {                       //we have a valid sound
-          SoundCollection *psc;
-          std::map < string, SoundCollection * >::iterator it;
-          it = m_MusicMap.find (token1);
-          if (it == m_MusicMap.end ())
-            {                   //is there already a collection for this entry?
-              psc = new SoundCollection;        //no, create a new sound collection
-              psc->m_Sounds.push_back (ps);     //add this sound to the collection
-              m_MusicMap.insert (std::make_pair (token1, psc)); //insert this pair into the map
-            }
-          else
-            {
-              psc = (*it).second;       //yes, get the existing
-              psc->m_Sounds.push_back (ps);     //add this sound to the collection
-            }
-        }
-      token1 = strtok (NULL, seps);
+
+      if(groupAddSong(token1, song))
+        printf ("%s : %s\n", token1, token2);
     }
-//      for (int i=0;i<10;i++)
-//      printf("%s\n",RequestSong("Castle")->GetName().c_str());
+
+  free(sz);
+  
+  return true;
+}
+
+bool SoundManager::loadSong(Song *song, const char *filename)
+{
+  if(song->Init (filename))
+    {
+      m_Songs.push_back(song);       //add it to our global list
+      return true;
+    }
+  else
+    {
+      printf ("could not load %s\n", filename);
+    }
+
+ return false;
+}
+
+bool SoundManager::groupAddSong (char *group, Song *song)
+{
+  if(song != NULL)
+    {                       //we have a valid song
+      SoundCollection *psc;
+      std::map < string, SoundCollection * >::iterator it;
+      it = m_MusicMap.find(group);
+      if(it == m_MusicMap.end())
+        {                   //is there already a collection for this entry?
+          psc = new SoundCollection;        //no, create a new sound collection
+          psc->m_Sounds.push_back(song);     //add this sound to the collection
+          m_MusicMap.insert(std::make_pair (group, psc)); //insert this pair into the map
+        }
+      else
+        {
+          psc = (*it).second;       //yes, get the existing
+          psc->m_Sounds.push_back(song);     //add this sound to the collection
+        }
+    }
+
   return true;
 };
 
@@ -179,7 +254,7 @@ bool SoundManager::LoadObjectSamples (string directory, string scriptname)
       int id = atoi (token1);
       printf ("%d : %s\n", id, token2);
       Sound *ps;
-      ps = SoundExists (token2);
+      ps = SampleExists (token2);
       if (ps == NULL)
         {
           Sample *s;
@@ -231,7 +306,7 @@ bool SoundManager::LoadTileSamples (string directory, string scriptname)
       int id = atoi (token1);
       printf ("%d : %s\n", id, token2);
       Sound *ps;
-      ps = SoundExists (token2);
+      ps = SampleExists (token2);
       if (ps == NULL)
         {
           Sample *s;
@@ -267,6 +342,18 @@ bool SoundManager::LoadTileSamples (string directory, string scriptname)
   return true;
 };
 
+void SoundManager::musicPlayFrom(string group)
+{
+}
+
+void SoundManager::musicPause()
+{
+}
+
+void SoundManager::musicPlay()
+{
+}
+    
 void SoundManager::update ()
 {
   int i;
@@ -389,6 +476,7 @@ void SoundManager::update ()
 
   //decide song according to level first
 //      printf("%d %d %d\n",x,y,l);
+/*
   switch (l)
     {
     case 0:                    //player in Britannia
@@ -404,13 +492,17 @@ void SoundManager::update ()
       next_group = "Dungeon";
       break;
     }
+*/
+
+next_group = "random";
+
   if ((m_pCurrentSong == NULL) || (m_CurrentGroup != next_group)
       || (g_MusicFinished))
     {
       g_MusicFinished = false;
       if (m_pCurrentSong != NULL)
         {
-          m_pCurrentSong->Stop ();
+          m_pCurrentSong->Stop();
         }
       m_pCurrentSong = SoundManager::RequestSong (next_group);
       printf ("assinging new song! %x\n", m_pCurrentSong);
@@ -425,7 +517,7 @@ void SoundManager::update ()
 }
 
 
-Sound *SoundManager::SoundExists (string name)
+Sound *SoundManager::SongExists (string name)
 {
   std::list < Sound * >::iterator it;
   for (it = m_Songs.begin (); it != m_Songs.end (); ++it)
@@ -433,11 +525,19 @@ Sound *SoundManager::SoundExists (string name)
       if ((*it)->GetName () == name)
         return *it;
     }
+
+  return NULL;
+}
+
+Sound *SoundManager::SampleExists (string name)
+{
+  std::list < Sound * >::iterator it;
   for (it = m_Samples.begin (); it != m_Samples.end (); ++it)
     {
       if ((*it)->GetName () == name)
         return *it;
     }
+
   return NULL;
 }
 

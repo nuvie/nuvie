@@ -61,7 +61,7 @@ protected:
 class SoundCollection {
 public:
 	Sound *Select() {
-		int i=rand()  % m_Sounds.size();
+		int i=NUVIE_RAND()  % m_Sounds.size();
 		return m_Sounds[i];
 	}; //randomly select one from the list
 	vector<Sound *> m_Sounds;

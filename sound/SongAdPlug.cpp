@@ -23,10 +23,12 @@
 
 //Mix_HookMusicFinished
 
+#include "nuvieDefs.h"
 #include "adplug/emuopl.h"
 #include "adplug/u6m.h"
 
 #include "SongAdPlug.h"
+#include "Soundmanager.h"
 
 #define DEFAULT_BUF_LEN 512
 
@@ -40,7 +42,10 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
  len /= 4;
  
  if(!player->update())
-   player->rewind();
+   {
+    player->rewind();
+    SoundManager::g_MusicFinished = true;
+   }
 
  opl->update((short *)stream, len);
 
@@ -48,9 +53,8 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
 }
 
 
-SongAdPlug::SongAdPlug() {
- opl = new CEmuopl(44100, true, true);
-
+SongAdPlug::SongAdPlug(CEmuopl *o) {
+ opl = o;
 }
 
 SongAdPlug::~SongAdPlug() {
@@ -67,7 +71,6 @@ bool SongAdPlug::Init(const char *filename) {
 }
 
 bool SongAdPlug::Play(bool looping) {
-
     Mix_HookMusic(adplug_mixer_callback, this);
 	return true;
 }
@@ -77,7 +80,7 @@ bool SongAdPlug::Stop() {
 	if (!Mix_PlayingMusic()) return false;
 	
     Mix_HookMusic(NULL,NULL);
-    
+
 	return true;
 }
 

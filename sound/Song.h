@@ -32,6 +32,8 @@ public:
 	virtual bool Init(const char *filename);
 	virtual bool Play(bool looping = false);
 	virtual bool Stop();
+    bool Pause();
+    bool Resume();
 	bool FadeOut(float seconds);
 	bool SetVolume(float volume) {return false;}; //range 0..1
 private:

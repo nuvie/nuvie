@@ -1,3 +1,8 @@
+2004-02-16  Eric Fry <efry at users.sourceforge.net>
+	* More work on U6 music. Native songs no longer require the songs.cfg
+	  file. Song changes aren't very smooth at the moment. I'll probably
+	  add some fading when changing songs.
+
 2004-02-12  Eric Fry <efry at users.sourceforge.net>
 	* Added a striped down version of AdPlug into nuvie.
 	* Added an audio config section.

@@ -34,10 +34,12 @@
 #ifndef SOUNDMANAGER_H
 #define SOUNDMANAGER_H
 #include "Sound.h"
+#include "Song.h"
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "NuvieIOFile.h"
 
+class CEmuopl;
 
 class SoundManager {
 public:
@@ -48,12 +50,23 @@ public:
 	bool initAudio();
 	void update(); //updates the active sounds
 
+    void musicPlayFrom(string group);
+    
+    void musicPause();
+    void musicPlay();
+    
 private:
-	bool LoadSongs(string directory, string scriptname);
+	bool LoadCustomSongs(string directory, string scriptname);
+    bool LoadNativeU6Songs();
+    bool loadSong(Song *song, const char *filename);
+    bool groupAddSong(char *group, Song *song);
+    
 	bool LoadObjectSamples(string directory, string scriptname);
 	bool LoadTileSamples(string directory, string scriptname);
 
-	Sound* SoundExists(string name); //have we loaded this sound before?
+	Sound* SongExists(string name); //have we loaded this sound before?
+	Sound* SampleExists(string name); //have we loaded this sound before?
+    
 
 	Sound* RequestTileSound(int id);
 	Sound* RequestObjectSound(int id);
@@ -71,6 +84,7 @@ private:
 	Sound *m_pCurrentSong;
 	list<Sound *> m_ActiveSounds;
     bool audio_enabled;
+    CEmuopl *opl;
 public:
 	static bool g_MusicFinished;
 };
