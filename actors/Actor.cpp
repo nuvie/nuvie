@@ -230,16 +230,10 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  // usecode must allow movement
  usecode = obj_manager->get_usecode();
  Obj *obj = obj_manager->get_obj(new_x,new_y,new_z);
- if(obj)
+ if(obj && usecode->can_pass(obj))
   {
-   // check usecode table for a step-to function to call for this object
-   sint16 uc = usecode->get_ucobject_index(obj->obj_n, obj->frame_n);
-   if(uc >= 0)
-     {
-      usecode->set_itemref(id_n); // calling item is this actor
-      if(!usecode->uc_event(uc, USECODE_EVENT_STEPTO, obj))
-         return(false);
-     }
+    if(!usecode->pass_obj(obj, this)) // calling item is this actor
+       return(false);
   }
 
  // switch position with party members (FIXME: move to own method?)
