@@ -22,7 +22,7 @@
  */
 #include <cstdlib>
 #include <cassert>
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "U6LList.h"
 #include "Game.h"
 #include "ViewManager.h"

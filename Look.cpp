@@ -22,7 +22,7 @@
  */
 #include <ctype.h>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "Configuration.h"
 #include "NuvieIOFile.h"
 

@@ -24,7 +24,7 @@
 #include <ctype.h>
 #include <string>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "Configuration.h"
 #include "U6misc.h"
 #include "U6Lib_n.h"

@@ -23,7 +23,7 @@
 
 #include <cstdio>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "GUI_DragArea.h"
 #include "GUI_DragManager.h"

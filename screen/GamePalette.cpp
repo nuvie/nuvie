@@ -27,7 +27,7 @@
 
 #include <SDL.h>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "NuvieIOFile.h"
 #include "Configuration.h"
 #include "Screen.h"

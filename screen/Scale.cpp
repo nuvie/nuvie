@@ -20,7 +20,7 @@
 //#include "Application.h"
 #include <cstring>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "Scale.h"
 #include "Surface.h"

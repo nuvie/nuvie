@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "misc.h"
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "Configuration.h"
 #include "XMLTree.h"

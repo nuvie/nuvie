@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <SDL.h>
 #include <SDL_endian.h>
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "U6Lzw.h"
 #include "U6Lib_n.h"
 #include "U6Shape.h"

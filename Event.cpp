@@ -24,7 +24,7 @@
 #include <SDL.h>
 
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "Configuration.h"
 #include "Game.h"
 #include "MapWindow.h"

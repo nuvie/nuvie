@@ -13,7 +13,7 @@
 
 #include <string>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"
 

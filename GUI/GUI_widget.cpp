@@ -22,7 +22,7 @@
     slouken@devolution.com
 */
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "GUI_widget.h"
 
 

@@ -21,7 +21,7 @@
  *
  */
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "Portrait.h"
 #include "Text.h"

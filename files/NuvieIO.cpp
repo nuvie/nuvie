@@ -24,7 +24,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "NuvieIO.h"
 

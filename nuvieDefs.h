@@ -1,5 +1,5 @@
-#ifndef __U6def_h__
-#define __U6def_h__
+#ifndef __nuvieDefs_h__
+#define __nuvieDefs_h__
 
 #ifdef _MSC_VER
 #include "../msvc/msvc_kludges.h"
@@ -48,4 +48,4 @@ typedef signed int sint32;
 #define NUVIE_RAND rand
 #endif
 
-#endif /* __U6def_h__ */
+#endif /* __nuvieDefs_h__ */

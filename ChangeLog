@@ -1,3 +1,8 @@
+2003-11-17  Eric Fry <efry@users.sourceforge.net>
+	* Renamed U6def.h to nuvieDefs.h and moved it to the root dir.
+	* Fixed Actor blocking. You can now move over and under certain actors.
+	  Eg. you can walk over mice and under birds, dragons etc.
+
 2003-11-16  Eric Fry <efry@users.sourceforge.net>
 	* Header #include cleanup.
 

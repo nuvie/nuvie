@@ -1,7 +1,7 @@
 
 #include <string.h>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "GUI_loadimage.h"
 
 extern "C" {

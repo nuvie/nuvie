@@ -21,7 +21,7 @@
  *
  */
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "U6LList.h"
 
 #include "InventoryWidget.h"
@@ -109,7 +109,7 @@ void InventoryWidget::display_inventory_list()
  Tile *tile, *empty_tile;
  U6LList *inventory;
  U6Link *link;
- Obj *obj;
+ Obj *obj = NULL;
  uint16 i,j;
  uint16 skip_num;
 

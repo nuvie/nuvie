@@ -21,7 +21,7 @@
  *
  */
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "Configuration.h"
 
@@ -64,11 +64,11 @@ bool TileManager::loadTiles()
  U6Lzw *lzw;
  uint32 tile_offset;
  
- unsigned char *tile_data;
- uint32 maptiles_size;
+ unsigned char *tile_data = NULL;
+ uint32 maptiles_size = 0;
  uint32 objtiles_size;
 
- unsigned char *masktype;
+ unsigned char *masktype = NULL;
  uint32 masktype_size;
  uint16 i;
  int game_type;
@@ -241,7 +241,8 @@ bool TileManager::tile_is_stackable(uint16 tile_num)
 void TileManager::update()
 {
  uint16 i;
- uint16 current_anim_frame, prev_tileindex;
+ uint16 current_anim_frame = 0;
+ uint16 prev_tileindex;
  
  // cycle animated tiles
 

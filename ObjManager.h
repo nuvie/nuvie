@@ -121,6 +121,7 @@ class ObjManager
  bool is_forced_passable(uint16 x, uint16 y, uint8 level);
  U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);
 
+ Tile *get_obj_tile(uint16 obj_n, uint8 frame_n);
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);

@@ -23,7 +23,7 @@
 */
 
 #include <cmath>
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "GUI_area.h"
 //#include "GUI_utils.h"
 

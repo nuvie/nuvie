@@ -3,7 +3,7 @@
 
 #include "SDL.h"
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "GUI_font.h"
 #include "GUI_loadimage.h"
 

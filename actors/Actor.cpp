@@ -21,7 +21,7 @@
  *
  */
 #include <cstdlib>
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "U6LList.h"
 #include "Game.h"
 #include "Map.h"
@@ -120,6 +120,15 @@ bool Actor::is_at_position(Obj *obj)
    return true;
    
  return false;
+}
+
+bool Actor::is_passable()
+{
+ Tile *tile;
+ 
+ tile = obj_manager->get_obj_tile(obj_n,frame_n);
+
+ return tile->passable;
 }
 
 void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
@@ -260,6 +269,8 @@ bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 
 bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors)
 {
+ Actor *a;
+ 
     if(z > 5)
         return(false);
 
@@ -269,11 +280,18 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
     if(new_y < 0 || new_y >= pitch)
         return(false);
 
-    if(map->is_passable(new_x,new_y,new_z) == false)
-        return(false);
 
-    if(!ignore_actors && map->get_actor(new_x,new_y,new_z))
-        return(false);
+
+    if(!ignore_actors)
+       {
+        a = map->get_actor(new_x,new_y,new_z);
+        if(a)
+          return a->is_passable(); // we can move over or under some actors. eg mice, dragons etc.
+       }
+
+//    if(map->is_passable(new_x,new_y,new_z) == false)
+//        return(false);
+        
     return(true);
 }
 
@@ -303,7 +321,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
      if(!party->contains_actor(other) || (party->get_member_num(other) == 0)
         || (other->moved && (party->get_member_num(this) != 0)))
         {
-         if(other->is_visible())
+         if(other->is_visible() && other->is_passable() == false)
            return false; // blocked by actor
         }
      else

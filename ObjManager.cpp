@@ -21,7 +21,7 @@
  *
  */
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "Configuration.h"
 
@@ -301,6 +301,11 @@ U6LList *ObjManager::get_obj_list(uint16 x, uint16 y, uint8 level)
   return item->obj_list;
 
  return NULL;
+}
+
+Tile *ObjManager::get_obj_tile(uint16 obj_n, uint8 frame_n)
+{
+ return  tile_manager->get_tile(get_obj_tile_num(obj_n)+frame_n);
 }
 
 Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj)

@@ -22,7 +22,7 @@
  */
 #include <cstdlib>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "Game.h"
 #include "U6UseCode.h"
@@ -286,14 +286,8 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_ac
 {
  Tile *map_tile;
 
-    if(z > 5)
-        return(false);
-
-    uint16 pitch = map->get_width(new_z);
-    if(new_x < 0 || new_x >= pitch)
-        return(false);
-    if(new_y < 0 || new_y >= pitch)
-        return(false);
+ if(Actor::check_move(new_x, new_y, new_z, ignore_actors) == false)
+    return false;
  
     switch(actor_type->movetype)
       {
@@ -314,9 +308,6 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_ac
        default : if(map->is_passable(new_x,new_y,new_z) == false)
                     return(false);
       }
-      
-    if(!ignore_actors && map->get_actor(new_x,new_y,new_z))
-        return(false);
 
  return(true);
 }

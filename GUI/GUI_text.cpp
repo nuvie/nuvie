@@ -21,7 +21,7 @@
  *
  */
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "GUI_text.h"
 #include "GUI_font.h"

@@ -26,7 +26,7 @@
 #include <iostream>
 #include <SDL.h>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "Configuration.h"
 
 #include "Surface.h"

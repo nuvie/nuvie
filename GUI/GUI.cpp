@@ -26,7 +26,7 @@
 
 #include <stdlib.h>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 
 #include "GUI.h"
 

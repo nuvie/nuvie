@@ -21,7 +21,7 @@
  *
  */
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "Configuration.h"
 #include "U6Bmp.h"
 #include "U6misc.h"

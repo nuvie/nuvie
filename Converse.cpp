@@ -20,7 +20,7 @@
 #include <cctype>
 #include <cstring>
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "Configuration.h"
 #include "U6Lzw.h"
 #include "Player.h"

@@ -26,7 +26,7 @@
 
 #include "SDL.h"
 
-#include "U6def.h"
+#include "nuvieDefs.h"
 #include "GUI_button.h"
 #include "GUI_loadimage.h"
 
@@ -306,7 +306,8 @@ void GUI_Button::Enable(int flag)
 SDL_Surface* GUI_Button::CreateTextButtonImage(int style, char *text, int alignment)
 {
   SDL_Rect fillrect;
-  int th,tw,tx,ty;
+  int th,tw;
+  int tx = 0, ty = 0;
   SDL_Surface *img=SDL_AllocSurface(SDL_SWSURFACE,area.w,area.h,
 				    16,31 << 11,63 << 5,31,0);
   Uint32 color1=SDL_MapRGB(img->format,BL_R,BL_G,BL_B);
