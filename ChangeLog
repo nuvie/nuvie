@@ -1,4 +1,9 @@
 2004-06-15  Eric Fry <efry at users.sourceforge.net>
+	* Fixed GUI bug where hidden widgets were being passed events.
+	  This fixes the scroller widget top slot bug.
+	* Added 16bpp thumbnail support.
+
+2004-06-15  Eric Fry <efry at users.sourceforge.net>
 	* Added thumbnails to the save slots.
 	  I haven't tested this on little endian machines. I have a feeling
 	  it might not work. I also think it might not work correctly on 16bpp

@@ -341,6 +341,9 @@ GUI_status GUI_Widget::MouseMotion(int x, int y, Uint8 state)
  */
 GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 {
+ if(status == WIDGET_HIDDEN) //we don't care for events if we are hidden.
+   return GUI_PASS;
+
  if(children.empty() == false)
   {
    std::list<GUI_Widget *>::iterator child;

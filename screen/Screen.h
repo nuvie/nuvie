@@ -121,6 +121,9 @@ inline void Screen::blitbitmap16(uint16 dest_x, uint16 dest_y, unsigned char *sr
 
 inline void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
+   unsigned char *copy_area16(SDL_Rect *area, uint16 down_scale);
+   unsigned char *copy_area32(SDL_Rect *area, uint16 down_scale);
+   
    unsigned char *copy_area16(SDL_Rect *area);
    unsigned char *copy_area32(SDL_Rect *area);
    void restore_area16(unsigned char *pixels, SDL_Rect *area, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
