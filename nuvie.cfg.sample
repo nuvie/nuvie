@@ -2,7 +2,7 @@
 
  <loadgame>ultima6</loadgame>
 
- <datadir>./data/</datadir>
+ <datadir>./data</datadir>
 
  <video>
   <scale_method>Point</scale_method>
@@ -10,17 +10,17 @@
  </video>
 
  <ultima6>
-  <gamedir>./ultima6/</gamedir>
+  <gamedir>./ultima6</gamedir>
   <skip_intro> no </skip_intro>
  </ultima6>
 
  <martian>
-  <gamedir>./martian/</gamedir>
+  <gamedir>./martian</gamedir>
   <skip_intro> no </skip_intro>
  </martian>
 
  <savage>
-  <gamedir>./savage/</gamedir>
+  <gamedir>./savage</gamedir>
   <skip_intro> no </skip_intro>
  </savage>
 
