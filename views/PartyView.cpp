@@ -44,30 +44,50 @@ PartyView::~PartyView()
 bool PartyView::init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl, TileManager *tm, ObjManager *om)
 {
  View::init(x,y,t,p,tm,om);
+ // PartyView is 8px bigger than other Views, for the arrows
+ SetRect(area.x, area.y, area.w+8, area.h);
 
  view_manager = vm;
  player = pl;
+ row_offset = 0;
 
  return true;
 }
 
 GUI_status PartyView::MouseUp(int x,int y,int button)
 {
+printf("PartyView:%x\n",this);
  x -= area.x;
  y -= area.y;
 
- if(x >= 16 || y < 16)
+ if(x >= 8+16 || y < 16) // clicked right of actors or on skydisplay
    return GUI_PASS;
 
  uint8 party_size = party->get_party_size();
+ if(party_size > 5) party_size = 5; // can only display/handle 5 at a time
 
- if(y > party_size * 16 + 16)
-	 return GUI_PASS;
+ SDL_Rect arrow_rects[2] = {{0,17,8,8},{0,89,8,8}};
+ if(HitRect(x,y,arrow_rects[0])) //up arrow hit rect
+   {
+    if(up_arrow())
+      Redraw();
+    return GUI_YUM;
+   }
+  if(HitRect(x,y,arrow_rects[1])) //down arrow hit rect
+   {
+    if(down_arrow())
+      Redraw();
+    return GUI_YUM;
+   }
 
- set_party_member((y - 16) / 16);
+ if(y > party_size * 16 + 16) // clicked below actors
+   return GUI_YUM;
 
- inventoryViewButtonCallback(view_manager);
-
+ if(x >= 8) // clicked an actor icon
+   {
+    set_party_member(((y - 16) / 16) + row_offset);
+    inventoryViewButtonCallback(view_manager);
+   }
  return GUI_YUM;
 }
 
@@ -87,20 +107,19 @@ void PartyView::Display(bool full_redraw)
 
    display_sun_moon_strip();
 
-   if(party_size > 5)
-     party_size = 5; //only show the first 5 party members.
-
-   for(i=0;i<party_size;i++)
+   for(i=row_offset;i<((party_size>=5)?5:party_size)+row_offset;i++)
      {
       actor = party->get_actor(i);
       actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
-      screen->blit(area.x,area.y+16+1+i*16,actor_tile->data,8,16,16,16,true);
+      screen->blit(area.x+8,area.y+16+1+(i-row_offset)*16,actor_tile->data,8,16,16,16,true);
 
       actor_name = party->get_actor_name(i);
-      text->drawString(screen, actor_name, area.x + 16 + 8, area.y + 16 + 1 + i * 16 + 8, 0);
+      text->drawString(screen, actor_name, area.x+8 + 16 + 8, area.y + 16 + 1 + (i-row_offset) * 16 + 8, 0);
       sprintf(hp_string,"%3d",actor->get_hp());
-      text->drawString(screen, hp_string, area.x + 112, area.y + 16 + 1 + i * 16, 0);
+      text->drawString(screen, hp_string, area.x+8 + 112, area.y + 16 + 1 + (i-row_offset) * 16, 0);
      }
+
+   display_arrows();
 
    screen->update(area.x, area.y, area.w, area.h);
   }
@@ -128,7 +147,7 @@ void PartyView::display_surface_strip()
  for(i=0;i<9;i++)
    {
     tile = tile_manager->get_tile(352+i);
-    screen->blit(area.x+i*16,area.y,tile->data,8,16,16,16,true);
+    screen->blit(area.x+8 +i*16,area.y,tile->data,8,16,16,16,true);
    }
 
  return;
@@ -140,17 +159,54 @@ void PartyView::display_dungeon_strip()
  Tile *tile;
 
  tile = tile_manager->get_tile(372);
- screen->blit(area.x,area.y,tile->data,8,16,16,16,true);
+ screen->blit(area.x+8,area.y,tile->data,8,16,16,16,true);
 
  tile = tile_manager->get_tile(373);
 
  for(i=1;i<8;i++)
    {
-    screen->blit(area.x+i*16,area.y,tile->data,8,16,16,16,true);
+    screen->blit(area.x+8 +i*16,area.y,tile->data,8,16,16,16,true);
    }
 
  tile = tile_manager->get_tile(374);
- screen->blit(area.x+7*16+8,area.y,tile->data,8,16,16,16,true);
+ screen->blit(area.x+8 +7*16+8,area.y,tile->data,8,16,16,16,true);
 
  return;
 }
+
+
+bool PartyView::up_arrow()
+{
+    if(row_offset > 0)
+    {
+        row_offset--;
+        return(true);
+    }
+    return(false);
+}
+
+
+bool PartyView::down_arrow()
+{
+    if((row_offset+5) < party->get_party_size())
+    {
+        row_offset++;
+        return(true);
+    }
+    return(false);
+}
+
+
+void PartyView::display_arrows()
+{
+    uint8 party_size = party->get_party_size();
+    if(party_size <= 5) // reset
+        row_offset = 0;
+
+    if(row_offset > 0) // display top arrow
+        text->drawChar(screen, 24, area.x, area.y + 16 + 1, 0x48);
+
+    if((party_size - row_offset) > 5) // display bottom arrow
+        text->drawChar(screen, 25, area.x, area.y + 88 + 1, 0x48);
+}
+ 

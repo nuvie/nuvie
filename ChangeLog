@@ -1,3 +1,6 @@
+2004-10-04  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Add scroll-arrows to Party Roster.
+
 2004-10-02  Eric Fry <efry at users.sourceforge.net>
 	* Enable unicode support when GUI_TextInput widget grabs focus.
 	* Disable unicode support when GUI_TextInput widget releases focus.

@@ -38,6 +38,7 @@ class PartyView : public View {
 
  Player *player;
  void *view_manager;
+ uint16 row_offset; // first party member displayed
 
  public:
  PartyView(Configuration *cfg);
@@ -45,6 +46,7 @@ class PartyView : public View {
 
  bool init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl, TileManager *tm, ObjManager *om);
  GUI_status MouseUp(int x,int y,int button);
+ GUI_status MouseDown(int x,int y,int button) { return(GUI_YUM); }
  void Display(bool full_redraw);
 
  protected:
@@ -52,6 +54,10 @@ class PartyView : public View {
  void display_sun_moon_strip();
  void display_surface_strip();
  void display_dungeon_strip();
+ void display_arrows();
+
+ bool up_arrow();
+ bool down_arrow();
 
 };
 

@@ -387,7 +387,10 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 				button = event->button.button;
 				GUI_status ret = MouseUp(x, y, button);
 				if(ret != GUI_QUIT)
-					ret = RegisterMouseUp(x, y, button);
+				{
+					// reassigning RET forces widgets to have a MouseDouble() function to block events
+					/*ret = */RegisterMouseUp(x, y, button);
+				}
 				return(ret);
 			}
 			/* if widget was clicked before we must let it deactivate itself*/
