@@ -63,6 +63,10 @@ class Party {
  void split_gold();
  void gather_gold();
  
+ uint8 get_party_size();
+ Actor *get_actor(uint8 member_num);
+ char *get_actor_name(uint8 member_num);
+ 
  protected:
  
  bool loadParty();

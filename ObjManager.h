@@ -74,8 +74,8 @@ struct Obj
  uint8 status;
  uint16 x;
  uint16 y;
- uint8 z; // ??
- 
+ uint8 z;
+  
  uint8 qty;
  uint8 quality;
  

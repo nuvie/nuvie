@@ -108,6 +108,28 @@ void Party::gather_gold()
 {
 }
 
+uint8 Party::get_party_size()
+{
+ return num_in_party;
+}
+
+Actor *Party::get_actor(uint8 member_num)
+{
+ if(num_in_party <= member_num)
+   return NULL;
+
+ return member[member_num].actor;
+}
+
+char *Party::get_actor_name(uint8 member_num)
+{
+ if(num_in_party <= member_num)
+   return NULL;
+
+ return member[member_num].name;
+}
+
+
 bool Party::loadParty()
 {
  std::string filename;
