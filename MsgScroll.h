@@ -33,6 +33,8 @@
 #define MSGSCROLL_WIDTH 17
 #define MSGSCROLL_HEIGHT 10
 
+#define MSGSCROLL_CURSOR_DELAY 6 // used to slow down the animated cursor
+
 class MsgScroll
 {
  Configuration *config;
@@ -45,7 +47,7 @@ class MsgScroll
  uint16 prompt_buf_len;
  
  
- char msg_buf[MSGSCROLL_HEIGHT][18];
+ char msg_buf[MSGSCROLL_HEIGHT][MSGSCROLL_WIDTH+1];
  uint8 buf_pos;
  uint8 start_pos;
  bool buf_full;

@@ -5,6 +5,32 @@
 	};
 	objectVersion = 38;
 	objects = {
+		0704F9D40446B4E600A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Converse.cpp;
+			path = ../Converse.cpp;
+			refType = 2;
+		};
+		0704F9D50446B4E600A8000A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Converse.h;
+			path = ../Converse.h;
+			refType = 2;
+		};
+		0704F9D60446B4E600A8000A = {
+			fileRef = 0704F9D40446B4E600A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0704F9D70446B4E600A8000A = {
+			fileRef = 0704F9D50446B4E600A8000A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		070823D3043EF72800A8000A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -999,6 +1025,8 @@
 				072BE3AD041AFE1100A8000A,
 				07D14A91044449E400A8000A,
 				07D14A90044449E400A8000A,
+				0704F9D50446B4E600A8000A,
+				0704F9D40446B4E600A8000A,
 				07EF5321043137BF00A8000A,
 				07EF5322043137BF00A8000A,
 				0725669904272B7B00A8000A,
@@ -1152,6 +1180,7 @@
 				070823D9043EF72800A8000A,
 				070823DC043EF72800A8000A,
 				07D14A93044449E400A8000A,
+				0704F9D70446B4E600A8000A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1197,6 +1226,7 @@
 				070823D8043EF72800A8000A,
 				070823DB043EF72800A8000A,
 				07D14A92044449E400A8000A,
+				0704F9D60446B4E600A8000A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

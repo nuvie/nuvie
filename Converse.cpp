@@ -19,6 +19,10 @@
 #include "U6Lzw.h"
 #include "Converse.h"
 
+// argument counts (256args * 256values)
+static Uint8 converse_cmd_args[256];
+// for each command, 1 if can accept multiple values in 0xa7 terminated args
+static Uint8 converse_cmd_multival[256];
 
 /* Load converse.a as src.
  */
@@ -125,18 +129,18 @@ bool Converse::do_cmd()
     switch(cmd)
     {
         case 0xa4: // set npc flag
-            cerr << "Converse: SET" << endl;
+            std::cerr << "Converse: SET" << std::endl;
             break;
         case 0xa5: // clear npc flag
-            cerr << "Converse: CLEAR" << endl;
+            std::cerr << "Converse: CLEAR" << std::endl;
             break;
         case 0xb6: // bye
-            cerr << "Converse: BYE" << endl;
+            std::cerr << "Converse: BYE" << std::endl;
             this->stop();
             donext = false;
             break;
         case 0xcb: // wait
-            cerr << "Converse: WAIT" << endl;
+            std::cerr << "Converse: WAIT" << std::endl;
             this->wait();
             donext = false;
             break;
@@ -213,7 +217,7 @@ void Converse::collect_args(Uint32 cmd, Uint32 argc, unsigned char *strt,
  * is required to continue. A count of 0 means to go on until the latter, or
  * until the end of the conversation.
  */
-void Converse::step(Uint32 count = 0)
+void Converse::step(Uint32 count)
 {
     Uint32 c = 0, arg_c = 0, len = 0;
     bool stepping = true;
@@ -313,7 +317,7 @@ void Converse::stop()
     is_waiting = false;
     npc = 0;
     active = false;
-    cerr << "Converse: stopped script" << endl;
+    std::cerr << "Converse: stopped script" << std::endl;
 }
 
 
@@ -337,32 +341,32 @@ bool Converse::start(Actor *talkto)
     if(undec_script_len > 4)
     {
         undec_script = src->get_item(actor_num);
-        cerr << "Converse: loading";
+        std::cerr << "Converse: loading";
         // decode
         if(!(undec_script[0] == 0 && undec_script[1] == 0
              && undec_script[2] == 0 && undec_script[3] == 0))
         {
-            cerr << " encoded script";
+            std::cerr << " encoded script";
             script = decoder.decompress_buffer(undec_script, undec_script_len,
                                                script_len);
         }
         else
         {
-            cerr << " unencoded script";
+            std::cerr << " unencoded script";
             script = undec_script;
             script_len = undec_script_len;
         }
     }
-    cerr << " for NPC " << (int)actor_num << endl;
+    std::cerr << " for NPC " << (int)actor_num << std::endl;
     // start script (makes step() available)
     if(script)
     {
-        cerr << "Converse: begin" << endl;
+        std::cerr << "Converse: begin" << std::endl;
         active = true;
         script_pt = this->seek_section(0);
         return(true);
     }
-    cerr << endl << "Converse: error loading actor " << (int)actor_num
-                 << " script" << endl;
+    std::cerr << std::endl << "Converse: error loading actor " << (int)actor_num
+                 << " script" << std::endl;
     return(false);
 }

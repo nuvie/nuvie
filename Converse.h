@@ -130,9 +130,5 @@ public:
     void print_name();
 };
 
-// argument counts (256args * 256values)
-static Uint8 converse_cmd_args[256];
-// for each command, 1 if can accept multiple values in 0xa7 terminated args
-static Uint8 converse_cmd_multival[256];
 
 #endif /* CONVERSE_H */

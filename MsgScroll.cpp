@@ -84,7 +84,7 @@ void MsgScroll::display_string(char *string)
    {
     if(string[i] == '\n' || string[i] == '*' || string[i] == ' ' || string[i] == '\0')
       {
-       if(row_length > MSGSCROLL_WIDTH)
+       if(row_length >= MSGSCROLL_WIDTH)
          {
           buf_addString(&string[j],word_start - j);
           j = word_start;
@@ -212,7 +212,7 @@ void MsgScroll::drawCursor(uint16 x, uint16 y)
   text->drawChar(screen, cursor_char + 5, x, y);
   
   screen->update(x, y, 8, 8);
-  if(cursor_wait == 6)
+  if(cursor_wait == MSGSCROLL_CURSOR_DELAY)
     {
      cursor_char = (cursor_char + 1) % 4;
      cursor_wait = 0;
