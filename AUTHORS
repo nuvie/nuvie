@@ -1,0 +1,25 @@
+The Nuvie Team
+--------------
+
+Joesph. Applegate  <sb-x@users.sourceforge.net>
+	* Developer.
+
+Michael Fink  <vividos@users.sourceforge.net>
+	* MSVC port maintainer.
+
+Eric Fry  <efry@users.sourceforge.net>
+	* Project admin
+	* Developer.
+
+Travis Howell  <kirben@users.sourceforge.net>
+	* MingGW Port maintainer.
+	* Win32 snapshots.
+
+Jeremy Newman  <laxdragon@users.sourceforge.net>
+	* Website
+	* #nuvie IRC channel maintainer.
+
+Willem Jan Palenstijn  <wjpalenstijn@users.sourceforge.net>
+	* Linux port maintainer.
+	* autoconf/automake.
+

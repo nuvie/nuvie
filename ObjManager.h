@@ -49,6 +49,9 @@
 #define OBJ_U6_V_PASSTHROUGH  278
 #define OBJ_U6_H_PASSTHROUGH  280
 #define OBJ_U6_LADDER         305
+#define OBJ_U6_HOLE           308
+#define OBJ_U6_CAVE           326
+
 #define OBJ_U6_SIGN           332
 #define OBJ_U6_SECRET_DOOR    334
 

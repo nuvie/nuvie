@@ -1,0 +1,59 @@
+Nuvie - An Engine for Ultima6, Martian Dreams and Savage Empire.
+
+What is Nuvie
+-------------
+
+Nuvie is an open source engine for Origin's games Ultima 6, Martian Dreams
+and The Savage Empire. It uses the original data files from the games. Nuvie
+currently runs on Linux, Mac OS X and Windows.
+
+Nuvie is in the early stages of development. We are currently focusing on
+Ultima 6 we hope to fully support Martian Dreams and Savage Empire at a
+later date.
+
+Compiling Nuvie
+---------------
+
+Unix (various)
+
+Compiling should (hopefully) be as simple as
+
+./configure
+make
+
+Win32
+
+Nuvie can be compiled for win32 using either MinGW or MSVC
+
+
+Using Nuvie
+-----------
+
+Nuvie requires some configuration. You will at least need to set the path
+to your ultima6 directory in nuvie.cfg
+
+
+Credits and Thanks
+------------------
+
+See the "AUTHORS" file for info on the Nuvie team.
+
+Nuvie would not have been possible without help from the following people.
+
+J. P. Morris aka DOUG the Eagle <jpm@it-he.org>
+http://www.it-he.org/ultima6.htm
+
+Rackne <rackne@red5.graf.torun.pl>
+http://www.graf.torun.pl/~rackne/u6like.html
+
+Nodling <nodling@yahoo.com> 
+http://www.geocities.com/nodling/ultima/ultima.html
+
+Jim Ursetto <jim@3e8.org>
+http://3e8.org/hacks/ultima6/
+
+The exult team.
+http://exult.sourceforge.net/
+
+And of course Lord British along with all the talented people at Origin.
+

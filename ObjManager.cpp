@@ -58,6 +58,7 @@ bool ObjManager::loadObjs(TileManager *tm)
     {
      filename[len-1] = y;
      filename[len-2] = x;
+     //printf("Loading %s\n",filename);
      surface[i] = loadObjSuperChunk(filename);
      i++;
     }
@@ -68,6 +69,7 @@ bool ObjManager::loadObjs(TileManager *tm)
  for(i=0,x = 'a';x < 'f';x++,i++) //Load dungeons
   {
    filename[len-2] = x;
+   //printf("Loading %s\n",filename);
    dungeon[i] = loadObjSuperChunk(filename);
   }
    
@@ -563,6 +565,15 @@ Obj *ObjManager::loadObj(U6File *file, uint16 objblk_n)
    
  obj->qty = file->read1();
  obj->quality = file->read1();
+
+/*
+ if(obj->status == 0 && (obj->obj_n == OBJ_U6_LADDER || obj->obj_n == OBJ_U6_HOLE || obj->obj_n == OBJ_U6_CAVE) && obj->z == 0) //&& obj->frame_n == 0)
+
+// if(obj->status == 0 && (obj->obj_n == OBJ_U6_LADDER ) && obj->z == 1 && obj->frame_n == 1)
+   {
+    printf("%03d: (%03d,%03d) (%03d,%03d) %d qty = %d quality = %d\n",obj->obj_n,obj->x,obj->y,obj->x/4, obj->y/4, obj->objblk_n, obj->qty, obj->quality);
+   }
+*/
    
  return obj;
 }

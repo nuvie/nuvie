@@ -74,10 +74,10 @@ bool ActorManager::loadActors()
    
     actors[i]->z = (b3 & 0xf0) >> 4;
     actors[i]->id_n = (uint8)i;
-/* Force avatar to gargoyle world 
+/* Force avatar to gargoyle world
     if(i == 1)
      {
-      actors[i]->x = 605;
+      actors[i]->x = 607;
       actors[i]->y = 285;
       actors[i]->z = 0;
      }
