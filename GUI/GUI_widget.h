@@ -33,6 +33,7 @@
 
 #include "SDL.h"
 #include "GUI_status.h"
+#include "Screen.h"
 
 
 class GUI_Widget {
@@ -57,7 +58,7 @@ public:
 	/* Mark the widget as free, so it will be deleted by the GUI */
 	virtual void Delete(void);
   
-  void PlaceOnScreen(SDL_Surface *display, int x, int y);
+  void PlaceOnScreen(Screen *s, int x, int y);
   
 	virtual int  Status(void);	/* Reports status to GUI */
 
@@ -83,18 +84,21 @@ public:
 	virtual int HitRect(int x, int y, SDL_Rect &rect);
 
 	/* Set the display surface for this widget */
-	virtual void SetDisplay(SDL_Surface *display);
+	virtual void SetDisplay(Screen *s);
 
 	/* Show the widget.
 	   If the surface needs to be locked, it will be locked
 	   before this call, and unlocked after it returns.
 	 */
-	virtual void Display(void);
-  void DisplayChildren(void);
+	virtual void Display(bool full_redraw=false);
+  void DisplayChildren(bool full_redraw=false);
 
 	/* Redraw the widget and only the widget */
 	virtual void Redraw(void);
 
+  /* should this widget be redrawn */
+  inline bool needs_redraw() { return update_display; }
+  
 	/* GUI idle function -- run when no events pending */
 	virtual GUI_status Idle(void);
 
@@ -131,23 +135,30 @@ protected:
 	/* The constructor, separated out for both access constructors */
 	void Init(void *data, int x, int y, int w, int h);
 
+  void setParent(GUI_Widget *widget);
+
 	/* A generic pointer to user-specified data for the widget.
 	 */
 	void *widget_data;
 
+  Screen *screen;
 	/* The display surface for the widget */
-	SDL_Surface *screen;
+	SDL_Surface *surface;
 
   int real_x, real_y; /* x,y in screen coords */
   
 	/* Flag -- whether or not the widget should be freed */
 	int status;
 
+  /* should we redraw this widget */
+  bool update_display;
+  
 	/* the button states for theoretically 3 buttons */
 	int pressed[3];
   
   std::list<GUI_Widget *>children;
-
+  GUI_Widget *parent;
+  
 	/* Useful for getting error feedback */
 	void SetError(char *fmt, ...) {
 		va_list ap;

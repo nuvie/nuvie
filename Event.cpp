@@ -54,7 +54,7 @@ Event::Event(Configuration *cfg)
  clear_alt_code();
  active_alt_code = 0;
  alt_code_input_num = 0;
- showingQuitDialog = false;
+
 }
 
 Event::~Event()

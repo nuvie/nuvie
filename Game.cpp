@@ -77,6 +77,9 @@ bool Game::loadGame(Screen *s, uint8 type)
   
  screen = s;
  game_type = type;
+ 
+ gui = new GUI(screen);
+
  try
   {
    tile_manager = new TileManager(config);
@@ -103,8 +106,9 @@ bool Game::loadGame(Screen *s, uint8 type)
    game_map->set_actor_manager(actor_manager);
   
    map_window = new MapWindow(config);
-   map_window->init(screen, game_map, tile_manager, obj_manager, actor_manager);
-
+   map_window->init(game_map, tile_manager, obj_manager, actor_manager);
+   gui->AddWidget(map_window);
+   
    player = new Player(config);
    party = new Party(config);
    player->init(actor_manager, map_window, clock, party);
@@ -117,7 +121,8 @@ bool Game::loadGame(Screen *s, uint8 type)
    view_manager->init(screen, text, party, tile_manager, obj_manager, portrait);
  
    scroll = new MsgScroll(config);
-   scroll->init(screen, text, player->get_name());
+   scroll->init(text, player->get_name());
+   gui->AddWidget(scroll);
 
    map_window->set_windowSize(11,11);
    //map_window->move(0x12e,0x16b);
@@ -137,7 +142,6 @@ bool Game::loadGame(Screen *s, uint8 type)
    usecode->init(obj_manager, game_map, player, scroll);
    obj_manager->set_usecode(usecode);
 
-   gui = new GUI(screen);
  
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
@@ -216,7 +220,7 @@ void Game::play()
   
   screen->update();
   
-  map_window->drawMap();
+  //map_window->drawMap();
   
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
@@ -226,9 +230,9 @@ void Game::play()
      palette->rotatePalette();
      tile_manager->update();
      actor_manager->twitchActors();
-     map_window->drawMap();
+     //map_window->drawMap();
      converse->continue_script();
-     scroll->updateScroll();
+     //scroll->updateScroll();
 
      gui->Display();
 

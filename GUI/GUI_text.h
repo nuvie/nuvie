@@ -40,7 +40,7 @@ GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font *gui_font)
 ~GUI_Text();
 
 	/* Show the widget  */
-	virtual void Display(void);
+	virtual void Display(bool full_redraw);
 
 };
 

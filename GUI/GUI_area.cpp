@@ -56,17 +56,17 @@ GUI_Area:: GUI_Area(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b,
 
 /* Map the color to the display */
 void
-GUI_Area:: SetDisplay(SDL_Surface *display)
+GUI_Area:: SetDisplay(Screen *s)
 {
-	GUI_Widget::SetDisplay(display);
-	color = SDL_MapRGB(screen->format, R, G, B);
+	GUI_Widget::SetDisplay(s);
+	color = SDL_MapRGB(surface->format, R, G, B);
 	if (useFrame)
-	  frameColor = SDL_MapRGB(screen->format, fR, fG, fB);
+	  frameColor = SDL_MapRGB(surface->format, fR, fG, fB);
 }
 
 /* Show the widget  */
 void
-GUI_Area:: Display(void)
+GUI_Area:: Display(bool full_redraw)
 {
 	SDL_Rect framerect;
 	int x,dy,r1,r2,x0,y0;
@@ -84,17 +84,17 @@ GUI_Area:: Display(void)
 	    dy=(int)((double) r2*sin(acos((double) (x-x0)/(double) r1)));
 	    framerect.x=x; framerect.y=y0-dy;
 	    framerect.w=1; framerect.h=dy << 1;
-	    SDL_FillRect(screen,&framerect,color);
+	    SDL_FillRect(surface,&framerect,color);
 	    if (useFrame)
 	    {
 	      if ((x==area.x) || (x==area.x+area.w-1))
 	      {
-	        SDL_FillRect(screen,&framerect,frameColor);
+	        SDL_FillRect(surface,&framerect,frameColor);
 	      }
 	      framerect.h=frameThickness;
-	      SDL_FillRect(screen,&framerect,frameColor);
+	      SDL_FillRect(surface,&framerect,frameColor);
 	      framerect.y=y0+dy-frameThickness;
-	      SDL_FillRect(screen,&framerect,frameColor);
+	      SDL_FillRect(surface,&framerect,frameColor);
 	    }
 	  }
 /*
@@ -111,25 +111,29 @@ GUI_Area:: Display(void)
 	  break;
 
 	case AREA_ANGULAR:
-	  SDL_FillRect(screen, &area, color);
+	  SDL_FillRect(surface, &area, color);
 
 	  /* draw frame */
 	  if (useFrame)
 	  {
 	    framerect=area;
 	    framerect.h=frameThickness;
-	    SDL_FillRect(screen, &framerect, frameColor);
+	    SDL_FillRect(surface, &framerect, frameColor);
 	    framerect.y+=area.h-frameThickness;
-	    SDL_FillRect(screen, &framerect, frameColor);
+	    SDL_FillRect(surface, &framerect, frameColor);
 	    framerect.y=area.y;
 	    framerect.h=area.h;
 	    framerect.w=frameThickness;
-	    SDL_FillRect(screen, &framerect, frameColor);
+	    SDL_FillRect(surface, &framerect, frameColor);
 	    framerect.x+=area.w-frameThickness;
-	    SDL_FillRect(screen, &framerect, frameColor);
+	    SDL_FillRect(surface, &framerect, frameColor);
 	  }
 	  break;
 	}
 
  DisplayChildren();
+ 
+ screen->update(area.x,area.y,area.w,area.h);
+
+ return;
 }

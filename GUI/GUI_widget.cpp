@@ -53,6 +53,7 @@ GUI_Widget:: Init(void *data, int x, int y, int w, int h)
 {
 	widget_data = data;
 	screen = NULL;
+  surface = NULL;
 	SetRect(x, y, w, h);
   real_x = real_y = 0;
 	Show();
@@ -60,11 +61,13 @@ GUI_Widget:: Init(void *data, int x, int y, int w, int h)
 	for (int n=0;n<3; ++n ) {
 		pressed[n]=0;
 	}
+ parent = NULL;
 }
 
 int GUI_Widget:: AddWidget(GUI_Widget *widget)
 {
  children.push_back(widget);
+ widget->setParent(this);
  
  return 0; //success.
 }
@@ -92,18 +95,18 @@ GUI_Widget:: Delete(void)
 }
 
 void
-GUI_Widget:: PlaceOnScreen(SDL_Surface *display, int x, int y)
+GUI_Widget:: PlaceOnScreen(Screen *s, int x, int y)
 {
  std::list<GUI_Widget *>::iterator child;
 
  area.x += x;
  area.y += y;
  
- SetDisplay(display);
+ SetDisplay(s);
  
  /* place our children relative to ourself */
  for(child = children.begin(); child != children.end(); child++)
-    (*child)->PlaceOnScreen(display, area.x, area.y);
+    (*child)->PlaceOnScreen(screen, area.x, area.y);
  return;
 }
 
@@ -185,9 +188,15 @@ GUI_Widget:: HitRect(int x, int y, SDL_Rect &rect)
 
 /* Set the display surface for this widget */
 void
-GUI_Widget:: SetDisplay(SDL_Surface *display)
+GUI_Widget:: SetDisplay(Screen *s)
 {
-	screen = display;
+	screen = s;
+  surface = screen->get_sdl_surface();
+}
+
+void GUI_Widget::setParent(GUI_Widget *widget)
+{
+ parent = widget;
 }
 
 /* Show the widget.
@@ -198,13 +207,13 @@ GUI_Widget:: SetDisplay(SDL_Surface *display)
 ******OTHERWISE YOU COULDN'T FILLRECT in Display(), ETC!!!! ***********
  */
 void
-GUI_Widget:: Display(void)
+GUI_Widget:: Display(bool full_redraw)
 {
- DisplayChildren();
+ DisplayChildren(full_redraw);
 }
 
 void
-GUI_Widget:: DisplayChildren(void)
+GUI_Widget:: DisplayChildren(bool full_redraw)
 {
  if(children.empty() == false)
   {
@@ -212,7 +221,7 @@ GUI_Widget:: DisplayChildren(void)
 
    /* display our children */
    for(child = children.begin(); child != children.end(); child++)
-     (*child)->Display();
+      (*child)->Display(full_redraw);
   }
 
  return;
@@ -221,9 +230,13 @@ GUI_Widget:: DisplayChildren(void)
 /* Redraw the widget and only the widget */
 void GUI_Widget::Redraw(void)
 {
+ 
   if (status==WIDGET_VISIBLE)
   {
-    Display();
+   update_display = true;
+   if(parent != NULL)
+     parent->Redraw();
+    //Display();
     //SDL_UpdateRects(screen,1,&area);
   }
 }

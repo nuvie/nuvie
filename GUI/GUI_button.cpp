@@ -175,14 +175,14 @@ void GUI_Button::ChangeTextButton(int x, int y, int w, int h, char* text, int al
 }
 
 /* Show the widget  */
-void GUI_Button:: Display(void)
+void GUI_Button:: Display(bool full_redraw)
 {
 	if (button)
 	{
 	  if ((button2!=NULL) && (pressed[0])==1)
-	    SDL_BlitSurface(button2,NULL,screen,&area);
+	    SDL_BlitSurface(button2,NULL,surface,&area);
 	  else
-	    SDL_BlitSurface(button,NULL,screen,&area);
+	    SDL_BlitSurface(button,NULL,surface,&area);
 	}
 	if (is_checkable)
 	{
@@ -192,7 +192,7 @@ void GUI_Button:: Display(void)
 	  {
 	    buttonFont->SetTransparency(1);
 	    buttonFont->SetColoring(255,0,0);
-	    buttonFont->TextOut(screen,area.x+4,area.y+4,textmark);
+	    buttonFont->TextOut(surface,area.x+4,area.y+4,textmark);
 	  }
 */
 	  SDL_Rect src,dest=area;
@@ -200,19 +200,19 @@ void GUI_Button:: Display(void)
 	  src.w=8; src.h=10;
 	  dest.x+=4; dest.y+=4;
 	  dest.w=8; dest.h=10;
-	  SDL_BlitSurface(checkmarks,&src,screen,&dest);
+	  SDL_BlitSurface(checkmarks,&src,surface,&dest);
 	}
 	if (!enabled)
 	{
 	  Uint8 *pointer;
-	  int pixel=SDL_MapRGB(screen->format,0,0,0);;
-	  Uint8 bytepp=screen->format->BytesPerPixel;
+	  int pixel=SDL_MapRGB(surface->format,0,0,0);;
+	  Uint8 bytepp=surface->format->BytesPerPixel;
 
-	  if (!SDL_LockSurface(screen))
+	  if (!SDL_LockSurface(surface))
 	  {
 	    for (int y=0;y<area.h;y+=2)
 	    {
-	      pointer=(Uint8*)screen->pixels+screen->pitch*(area.y+y)+(area.x*bytepp);
+	      pointer=(Uint8*)surface->pixels+surface->pitch*(area.y+y)+(area.x*bytepp);
 	      for (int x=0;x<area.w>>1;x++)
 	      {
 	        switch (bytepp)
@@ -228,12 +228,12 @@ void GUI_Button:: Display(void)
 	        case 3:  /* Format/endian independent */
 		  Uint8 r, g, b;
 
-		  r = (pixel>>screen->format->Rshift)&0xFF;
-		  g = (pixel>>screen->format->Gshift)&0xFF;
-		  b = (pixel>>screen->format->Bshift)&0xFF;
-		  *((pointer)+screen->format->Rshift/8) = r; 
-		  *((pointer)+screen->format->Gshift/8) = g;
-		  *((pointer)+screen->format->Bshift/8) = b;
+		  r = (pixel>>surface->format->Rshift)&0xFF;
+		  g = (pixel>>surface->format->Gshift)&0xFF;
+		  b = (pixel>>surface->format->Bshift)&0xFF;
+		  *((pointer)+surface->format->Rshift/8) = r; 
+		  *((pointer)+surface->format->Gshift/8) = g;
+		  *((pointer)+surface->format->Bshift/8) = b;
 		  pointer+=6;
 		  break;
 	        case 4:
@@ -243,7 +243,7 @@ void GUI_Button:: Display(void)
 	        }
 	      }
 	    }
-	    SDL_UnlockSurface(screen);
+	    SDL_UnlockSurface(surface);
 	  }
 	}
 

@@ -87,20 +87,20 @@ GUI:: AddWidget(GUI_Widget *widget)
 		++numwidgets;
 	}
 	widgets[i] = widget;
-  widget->PlaceOnScreen(screen->get_sdl_surface(),0,0);
+  widget->PlaceOnScreen(screen,0,0);
 
 	return(0);
 }
 
 void
-GUI:: Display(void)
+GUI:: Display(bool full_redraw)
 {
 	int i;
 
 	for ( i=0; i<numwidgets; ++i ) {
 		if ( widgets[i]->Status() == WIDGET_VISIBLE ) {
-			widgets[i]->Display();
-      screen->update(widgets[i]->area.x,widgets[i]->area.y,widgets[i]->area.w,widgets[i]->area.h);
+			widgets[i]->Display(full_redraw);
+      //screen->update(widgets[i]->area.x,widgets[i]->area.y,widgets[i]->area.w,widgets[i]->area.h);
 		}
 	}
 	//SDL_UpdateRect(screen, 0, 0, 0, 0);
@@ -172,7 +172,24 @@ GUI:: HandleEvent(SDL_Event *event)
 	}
 
 	HandleStatus(status);
-  
+
+  /* Garbage collection */
+  for(i=0; i<numwidgets; ++i)
+    {
+     if(widgets[i]->Status() == WIDGET_DELETED)
+       {
+        delete widgets[i];
+
+        for(int j=i+1; j<numwidgets; ++j ) //shuffle remaining widgets down.
+          {
+           widgets[j-1] = widgets[j];
+          }
+
+        --numwidgets;
+        if(status != GUI_QUIT) //no point redrawing if we're going to quit.
+          Display(GUI_FULL_REDRAW);
+			 }
+    } 
  return status;
 }
 

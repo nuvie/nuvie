@@ -19,11 +19,12 @@
 #include "ObjManager.h"
 #include "ActorManager.h"
 
-class MapWindow
+#include "GUI.h"
+
+class MapWindow: public GUI_Widget
 {
  Configuration *config;
  int game_type;
- Screen *screen;
  
  Map *map;
  
@@ -51,7 +52,7 @@ class MapWindow
  MapWindow(Configuration *cfg);
  ~MapWindow();
  
- bool init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorManager *am);
+ bool init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am);
  
  bool set_windowSize(uint16 width, uint16 height);
  void set_show_cursor(bool state);
@@ -78,7 +79,7 @@ class MapWindow
 
  void updateBlacking();
  
- void drawMap();
+ void Display(bool full_redraw);
  
 protected:
 

@@ -10,7 +10,9 @@
 #include "Actor.h"
 #include "MapWindow.h"
 
-MapWindow::MapWindow(Configuration *cfg)
+#include "GUI_Widget.h"
+
+MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
  config->value("config/GameType",game_type);
@@ -36,11 +38,10 @@ MapWindow::~MapWindow()
  free(tmp_buf);
 }
 
-bool MapWindow::init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
+bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
 {
  int game_type;
- 
- screen = s;
+
  map = m;
  tile_manager = tm;
  obj_manager = om;
@@ -63,6 +64,9 @@ bool MapWindow::init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorMa
                          break;
    }
 
+ area.x = 0;
+ area.y = 0;
+
  set_windowSize(11,11);
  
  return true;
@@ -72,6 +76,9 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
 {
  win_width = width;
  win_height = height;
+ 
+ area.w = win_width * 16;
+ area.h = win_height * 16;
  
  //we make the map +1 bigger all around for the boundary fill function
  //this enables edges of the map window to display correctly.
@@ -252,7 +259,7 @@ void MapWindow::updateBlacking()
  generateTmpMap();
 }
 
-void MapWindow::drawMap()
+void MapWindow::Display(bool full_redraw)
 {
  uint16 i,j;
  uint16 *map_ptr;

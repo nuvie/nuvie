@@ -28,6 +28,7 @@
 #define _GUI_area_h
 
 #include "GUI_widget.h"
+#include "Screen.h"
 
 #define AREA_ROUND 1
 #define AREA_ANGULAR 2
@@ -43,10 +44,10 @@ public:
 			Uint8 fr, Uint8 fg, Uint8 fb, int fthick, int aShape = AREA_ANGULAR);
 
 	/* Map the color to the display */
-	virtual void SetDisplay(SDL_Surface *display);
+	virtual void SetDisplay(Screen *s);
 
 	/* Show the widget  */
-	virtual void Display(void);
+	virtual void Display(bool full_redraw);
 
 protected:
 	Uint8 R, G, B;

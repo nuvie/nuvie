@@ -34,6 +34,7 @@
 
 #include "Screen.h"
 
+#define GUI_FULL_REDRAW true
 class GUI {
 
 public:
@@ -47,7 +48,7 @@ public:
 	int AddWidget(GUI_Widget *widget);
 
 	/* Display the GUI manually */
-	void Display(void);
+	void Display(bool full_redraw=false);
 
 	/* Returns will return true if the GUI is still ready to handle
 	   events after a call to Run(), and false if a widget or idle

@@ -30,6 +30,8 @@
 #include "Screen.h"
 #include "Text.h"
 
+#include "GUI_Widget.h"
+
 #define MSGSCROLL_U6_WIDTH 17
 #define MSGSCROLL_U6_HEIGHT 10
 
@@ -41,11 +43,10 @@
 
 #define MSGSCROLL_CURSOR_DELAY 6 // used to slow down the animated cursor
 
-class MsgScroll
+class MsgScroll: public GUI_Widget
 {
  Configuration *config;
  int game_type;
- Screen *screen;
  uint16 screen_x; //x offset to top left corner of MsgScroll
  uint16 screen_y; //y offset to top left corner of MsgScroll
  
@@ -87,7 +88,7 @@ class MsgScroll
  MsgScroll(Configuration *cfg);
  ~MsgScroll();
  
- bool init(Screen *s, Text *txt, char *player_name);
+ bool init(Text *txt, char *player_name);
  
  void display_string(const char *string);
  void display_prompt();
@@ -104,7 +105,8 @@ class MsgScroll
 
  bool handle_input(const SDL_keysym *input);
 
- void updateScroll();
+ //void updateScroll();
+ void Display(bool full_redraw);
  
  void clearCursor(uint16 x, uint16 y);
  void drawCursor(uint16 x, uint16 y);

@@ -26,7 +26,7 @@
 
 #include "MsgScroll.h"
 
-MsgScroll::MsgScroll(Configuration *cfg)
+MsgScroll::MsgScroll(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
  uint16 i;
  
@@ -39,23 +39,26 @@ MsgScroll::MsgScroll(Configuration *cfg)
    {
     case NUVIE_GAME_U6 : scroll_width = MSGSCROLL_U6_WIDTH;
                          scroll_height = MSGSCROLL_U6_HEIGHT;
-                         screen_x = 176;
-                         screen_y = 112;
+                         area.x = 176;
+                         area.y = 112;
                          break;
                          
     case NUVIE_GAME_MD : scroll_width = MSGSCROLL_MD_WIDTH;
                          scroll_height = MSGSCROLL_MD_HEIGHT;
-                         screen_x = 184;
-                         screen_y = 128;
+                         area.x = 184;
+                         area.y = 128;
                          break;
                          
     case NUVIE_GAME_SE : scroll_width = MSGSCROLL_SE_WIDTH;
                          scroll_height = MSGSCROLL_SE_HEIGHT;
-                         screen_x = 184;
-                         screen_y = 128;
+                         area.x = 184;
+                         area.y = 128;
                          break;
    }
 
+ area.w = scroll_width * 8;
+ area.h = scroll_height * 8;
+ 
  msg_buf = (char **)malloc(scroll_height * sizeof(char *));
  for(i=0;i<scroll_height;i++)
   {
@@ -100,10 +103,9 @@ MsgScroll::~MsgScroll()
  free(prompt);
 }
 
-bool MsgScroll::init(Screen *s, Text *txt, char *player_name)
+bool MsgScroll::init(Text *txt, char *player_name)
 {
  std::string prompt_string;
- screen = s;
  text = txt;
  
  prompt_string.append(player_name);
@@ -298,31 +300,33 @@ bool MsgScroll::handle_input(const SDL_keysym *input)
 }
 
 
-void MsgScroll::updateScroll()
+void MsgScroll::Display(bool full_redraw)
 {
  uint16 i,j;
 
- clearCursor(screen_x + 8 * cursor_x, screen_y + cursor_y * 8);
+ clearCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
 
- if(scroll_updated)
+ if(scroll_updated || full_redraw)
   {
    if(buf_full == true)
      {
-      j = (buf_pos + 1) % scroll_height;
-      screen->fill(0x31,screen_x, screen_y, scroll_width * 8, (scroll_height)*8); //clear whole scroll
+      j = (buf_pos + 1) % scroll_height;      
      }
    else
       j = 0;
-         
+
+   if(buf_full || full_redraw)
+     screen->fill(0x31,area.x, area.y, scroll_width * 8, (scroll_height)*8); //clear whole scroll
+     
    for(i=0;i< scroll_height;i++)
      {
       if(msg_buf[j][0] != '\0')
-         text->drawString(screen, msg_buf[j], screen_x, screen_y+i*8, 0);
+         text->drawString(screen, msg_buf[j], area.x, area.y+i*8, 0);
       j = (j + 1) % scroll_height;
      }
    scroll_updated = false;
    
-   screen->update(screen_x,screen_y, scroll_width * 8, (scroll_height)*8);
+   screen->update(area.x,area.y, scroll_width * 8, (scroll_height)*8);
    
    if(buf_full)
     cursor_y = scroll_height-1;
@@ -334,7 +338,7 @@ void MsgScroll::updateScroll()
 else
  {
   
-  drawCursor(screen_x + 8 * cursor_x, screen_y + cursor_y * 8); 
+  drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8); 
  }
  
  // spin cursor here.

@@ -60,11 +60,11 @@ GUI_Text::~GUI_Text()
 
 /* Show the widget  */
 void
-GUI_Text:: Display(void)
+GUI_Text:: Display(bool full_redraw)
 {
  font->SetTransparency(1);
  font->SetColoring(R,G,B);
- font->TextOut(screen,area.x,area.y,text);
+ font->TextOut(surface,area.x,area.y,text);
 
  DisplayChildren();
 }

@@ -82,7 +82,7 @@ public:
 	virtual void ChangeTextButton(int x, int y, int w, int h, char* text, int alignment);
 
 	/* Show the widget  */
-	virtual void Display(void);
+	virtual void Display(bool full_redraw);
 
 	/* Mouse hits activate us */
 	virtual GUI_status MouseDown(int x, int y, int button);
