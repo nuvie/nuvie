@@ -53,6 +53,7 @@ tools: u6decomp.exe
 	strip u6decomp.exe -o $(U6PATH)/tools/u6decomp.exe
 
 dist: install tools
+	cp nuvie.cfg.sample $(U6PATH)
 	cp AUTHORS $(U6PATH)/AUTHORS.txt
 	cp ChangeLog $(U6PATH)/ChangeLog.txt
 	cp COPYING $(U6PATH)/COPYING.txt
