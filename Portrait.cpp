@@ -89,6 +89,7 @@ unsigned char *Portrait::get_portrait_data(uint16 num)
 
  lzw_data = portrait->get_item(num);
  new_portrait = lzw.decompress_buffer(lzw_data, portrait->get_item_size(num), new_length);
- 
+ free(lzw_data);
+
  return new_portrait;
 }

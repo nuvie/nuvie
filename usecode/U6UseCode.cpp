@@ -34,6 +34,7 @@ U6UseCode::U6UseCode(Configuration *cfg) : UseCode(cfg)
 
 U6UseCode::~U6UseCode()
 {
+    delete uc_objects;
 }
 
 

@@ -45,6 +45,7 @@ Screen::Screen(Configuration *cfg)
 Screen::~Screen()
 {
  delete surface;
+ if (update_rects) free(update_rects);
  SDL_Quit();
 }
 

@@ -38,6 +38,8 @@ GUI:: GUI(Screen *s)
 	numwidgets = 0;
 	maxwidgets = 0;
 	widgets = NULL;
+	display = 1;
+
   screen_scale_factor = screen->get_scale_factor();
   dragging = false;
   
@@ -55,6 +57,7 @@ GUI:: ~GUI()
 	}
 
  delete gui_font;
+ delete gui_drag_manager;
 }
 
 /* Add a widget to the GUI.
