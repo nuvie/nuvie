@@ -105,10 +105,7 @@ bool Event::update()
                                  {
                                   mode = MOVE_MODE;
                                   if(talk())
-                                  {
                                     scroll->set_talking(true);
-                                    scroll->display_string(converse->get_output());
-                                  }
                                   map_window->set_show_cursor(false);
                                  }
                                if(mode == USE_MODE)
