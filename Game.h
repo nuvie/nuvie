@@ -90,7 +90,7 @@ class Game
  /* Pass back instance of Game classes... and why not? */
  Configuration *get_config()       { return(config); }
  Screen *get_screen()              { return(screen); }
- U6Bmp *get_background()           { return(background); }
+ U6Shape *get_background()         { return(background); }
  GamePalette *get_palette()        { return(palette); }
  Text *get_text()                  { return(text); }
  TileManager *get_tile_manager()   { return(tile_manager); }
