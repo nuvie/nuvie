@@ -10,7 +10,7 @@
 #include "Actor.h"
 #include "MapWindow.h"
 
-#include "GUI_Widget.h"
+#include "GUI_widget.h"
 
 MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {

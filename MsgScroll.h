@@ -30,7 +30,7 @@
 #include "Screen.h"
 #include "Text.h"
 
-#include "GUI_Widget.h"
+#include "GUI_widget.h"
 
 #define MSGSCROLL_U6_WIDTH 17
 #define MSGSCROLL_U6_HEIGHT 10

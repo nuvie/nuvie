@@ -21,7 +21,7 @@
  *
  */
 
-#include "GUI_Button.h"
+#include "GUI_button.h"
 
 #include "View.h"
 #include "ActorView.h"

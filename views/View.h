@@ -34,7 +34,7 @@
 #include "ObjManager.h"
 #include "Party.h"
 
-#include "GUI_Widget.h"
+#include "GUI_widget.h"
 
 GUI_status viewLeftButtonCallback(void *data);
 GUI_status viewRightButtonCallback(void *data);

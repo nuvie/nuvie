@@ -151,4 +151,3 @@ GUI_status inventoryViewButtonCallback(void *data)
   
  return GUI_YUM;
 }
-  
