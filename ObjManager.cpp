@@ -131,8 +131,6 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
  bool check_tile;
  uint16 i,j;
 
-
-
  for(j=y;j<=y+1;j++)
    {
     for(i=x;i<=x+1;i++)
@@ -159,14 +157,10 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
                 { tile_num -= 2; check_tile = true; }
              if(check_tile)
                {
-                if(is_door(obj))
-                  {
-                   tile1 = tile_manager->get_tile(tile_num);
-                   if(tile1->boundary == true)
-                      return true;
-                   else
-                      return false;
-                  }
+                tile1 = tile_manager->get_tile(tile_num);
+                if(tile1->flags2 & TILEFLAG_WALL)
+                  return true;
+
                 check_tile = false;
                }
             }
@@ -177,6 +171,7 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+/* no longer needed.
 //FIX this needs to be moved magicnumbers :(
 bool ObjManager::is_door(Obj * obj)
 {
@@ -186,7 +181,7 @@ bool ObjManager::is_door(Obj * obj)
 
  return false;
 }
-
+*/
 
 uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
 {

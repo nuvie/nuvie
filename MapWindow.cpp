@@ -38,14 +38,30 @@ MapWindow::~MapWindow()
 
 bool MapWindow::init(Screen *s, Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
 {
+ int game_type;
+ 
  screen = s;
  map = m;
  tile_manager = tm;
  obj_manager = om;
  actor_manager = am;
 
- cursor_tile = tile_manager->get_tile(365); // might change in MD, SE
- use_tile = tile_manager->get_tile(364); // might change in MD, SE
+ config->value("config/GameType",game_type);
+
+ switch(game_type)
+   {
+    case NUVIE_GAME_U6 : cursor_tile = tile_manager->get_tile(365);
+                         use_tile = tile_manager->get_tile(364);
+                         break;
+ 
+    case NUVIE_GAME_MD : cursor_tile = tile_manager->get_tile(265);
+                         use_tile = tile_manager->get_tile(264);
+                         break;
+
+    case NUVIE_GAME_SE : cursor_tile = tile_manager->get_tile(381);
+                         use_tile = tile_manager->get_tile(380);
+                         break;
+   }
 
  set_windowSize(11,11);
  

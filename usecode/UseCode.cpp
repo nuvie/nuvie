@@ -61,4 +61,34 @@ void UseCode::toggle_frame(Obj *obj)
  else
    obj->frame_n = 1;
 }
+
+bool UseCode::use_container(Obj *obj)
+{
+ Obj *temp_obj;
+ U6Link *obj_link;
  
+ /* Test whether this object has items inside it. */
+ if((obj->container != NULL) &&
+   ((obj_link = obj->container->end()) != NULL))
+    {
+     U6LList *obj_list = obj_manager->get_obj_list(obj->x, obj->y, obj->z);
+
+     /* Add objects to obj_list. */
+     for(; obj_link != NULL; obj_link = obj_link->prev)
+      {
+       temp_obj = (Obj*)obj_link->data;
+       obj_list->add(temp_obj);
+       temp_obj->status = OBJ_STATUS_OK_TO_TAKE;
+       temp_obj->x = obj->x;
+       temp_obj->y = obj->y;
+       temp_obj->z = obj->z;
+      }
+
+     /* Remove objects from the container. */
+     obj->container->removeAll();
+     return true;
+    }
+
+ return false;
+}
+

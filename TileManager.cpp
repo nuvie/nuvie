@@ -22,6 +22,7 @@
  */
 
 #include "U6File.h"
+#include "U6Lib_n.h"
 #include "U6Lzw.h"
 
 #include "U6misc.h"
@@ -55,6 +56,7 @@ bool TileManager::loadTiles()
  U6File objtiles_vga;
  U6File tileindx_vga;
  U6File file;
+ U6Lib_n lib_file;
  U6Lzw *lzw;
  uint32 tile_offset;
  
@@ -82,32 +84,19 @@ bool TileManager::loadTiles()
                          masktype = lzw->decompress_file(masktype_path,masktype_size);
                          break;
     case NUVIE_GAME_MD :
-    case NUVIE_GAME_SE : if(file.open(maptiles_path,"rb") == false)
+    case NUVIE_GAME_SE : if(lib_file.open(maptiles_path,4,game_type) == false)
                            return false;
-                         maptiles_size = file.read4();
-                         maptiles_size -= 8;
-                         
-                         tile_data = (unsigned char *)malloc(maptiles_size);
-                         if(tile_data == NULL)
-                           return false;
+                         maptiles_size = lib_file.get_item_size(0);
 
-                         file.seek(0x8);
-                         file.readToBuf(tile_data,maptiles_size);
+                         tile_data = lib_file.get_item(0);
+                         lib_file.close();
                          
-                         file.close();
-                         
-                         if(file.open(masktype_path,"rb") == false)
+                         if(lib_file.open(masktype_path,4,game_type) == false)
                            return false;
-                         masktype_size = file.read4();
-                         masktype_size -= 8;
-                         
-                         masktype = (unsigned char *)malloc(masktype_size);
-                         if(masktype == NULL)
-                           return false;
+                         //masktype_size = lib_file.get_item_size(0);
 
-                         file.seek(0x8);
-                         file.readToBuf(masktype, masktype_size);
-
+                         masktype = lib_file.get_item(0);
+                         lib_file.close();
                          break;
    }
  
@@ -174,7 +163,7 @@ bool TileManager::loadTiles()
    print_b(tile[i].flags2);
    printf(" ");
    print_b(tile[i].flags3);
-   printf(" %s\n",look->get_description(i));
+   printf(" %s\n",look->get_description(i,false));
   }
 #endif
  
@@ -277,7 +266,7 @@ bool TileManager::loadTileFlag()
    else
      tile[i].toptile = false;
 
-   if(tile[i].flags2 & 0x4 || tile[i].flags2 & 0x8) // 0x4 normal boundary, 0x8 window FIX to handle these properly.
+   if(tile[i].flags2 & 0x4 || tile[i].flags2 & 0x8)
      tile[i].boundary = true;
    else
      tile[i].boundary = false;

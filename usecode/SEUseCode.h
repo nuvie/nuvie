@@ -1,10 +1,10 @@
-#ifndef __MDUseCode_h__
-#define __MDUseCode_h__
+#ifndef __SEUseCode_h__
+#define __SEUseCode_h__
 /*
- *  MDUseCode.h
+ *  SEUseCode.h
  *  Nuive
  *
- *  Created by Markus Niemistö on Wed Jun 18 2003.
+ *  Created by Eric Fry on Sun Jun 22 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -31,24 +31,15 @@
 #include "UseCode.h"
 
 //object numbers
-#define OBJ_MD_WOODEN_CRATE    86
-#define OBJ_MD_STEAMER_TRUNK   87
-#define OBJ_MD_BARREL         104
-#define OBJ_MD_DOOR           152
-#define OBJ_MD_CLOSED_DOOR    179 /* Half-closed-door frame = 5 */
-#define OBJ_MD_LEVER          196
-#define OBJ_MD_BAG            285
-#define OBJ_MD_BRASS_TRUNK    304
-#define OBJ_MD_HATCH          421
-#define OBJ_MD_OUTER_HATCH    427
+#define OBJ_SE_DOOR           234
 
-class MDUseCode: public UseCode
+class SEUseCode: public UseCode
 {
  
  public:
  
- MDUseCode(Configuration *cfg);
- ~MDUseCode();
+ SEUseCode(Configuration *cfg);
+ ~SEUseCode();
  
  bool use_obj(Obj *obj, Obj *src_obj=NULL);
  
@@ -56,4 +47,5 @@ class MDUseCode: public UseCode
 
 };
 
-#endif /* __MDUseCode_h__ */
+#endif /* __SEUseCode_h__ */
+

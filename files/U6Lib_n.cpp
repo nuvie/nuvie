@@ -38,8 +38,7 @@ U6Lib_n::U6Lib_n()
 
 U6Lib_n::~U6Lib_n(void)
 {
- if(items)
-   free(items);
+ close();
 }
 
 
@@ -212,7 +211,20 @@ bool U6Lib_n::open(std::string &filename, uint8 size, uint8 type)
 
  return true;
 }
+
+void U6Lib_n::close()
+{
+ if(items)
+  free(items);
+ items = NULL;
  
+ file.close();
+ 
+ num_offsets = 0;
+ 
+ return;
+}
+
 uint32 U6Lib_n::get_num_items(void)
 {
  return num_offsets;
@@ -370,13 +382,13 @@ uint32 U6Lib_n::calculate_item_uncomp_size(U6LibItem *item)
                uncomp_size = file.read4();
                break;
 
-               //uncompressed 4 byte item size header
-   case 0x2  :
+               //FIX check this. uncompressed 4 byte item size header
    case 0xc1 : uncomp_size = item->size - 4;
                 break;
 
               // uncompressed
    case 0x0  :
+   case 0x2  :
    case 0xe0 :
    default   : uncomp_size = item->size;
                break;

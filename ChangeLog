@@ -1,3 +1,9 @@
+2003-06-22  Eric Fry <efry@users.sourceforge.net>
+	* Removed U6 is_door method from ObjManager.
+	* Better blacking support for MD & SE.
+	* Added SEUseCode class.
+	* Added some MD use codes. It is now possible to leave the capsule.
+
 2003-06-21  Eric Fry <efry@users.sourceforge.net>
 	* MD & SE now load their respective background graphics.
 	* Reworked U6Shape, U6Lib_n and U6Bmp.

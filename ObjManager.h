@@ -89,7 +89,7 @@ class ObjManager
 
  //U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
- bool is_door(Obj * obj);
+ //bool is_door(Obj * obj);
 
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  bool is_forced_passable(uint16 x, uint16 y, uint8 level);

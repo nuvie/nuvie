@@ -1,10 +1,8 @@
-#ifndef __UseCode_h__
-#define __UseCode_h__
 /*
- *  UseCode.h
+ *  SEUseCode.cpp
  *  Nuive
  *
- *  Created by Eric Fry on Fri May 30 2003.
+ *  Created by Eric Fry on Sun Jun 22 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -23,37 +21,34 @@
  *
  */
 
-#include "U6def.h"
-#include "Configuration.h"
-#include "ObjManager.h"
-#include "Map.h"
-#include "MsgScroll.h"
-#include "Player.h"
+#include "SEUseCode.h"
 
-class UseCode
+SEUseCode::SEUseCode(Configuration *cfg) : UseCode(cfg)
 {
- protected:
- 
- Configuration *config;
- ObjManager *obj_manager;
- Map *map;
- Player *player;
- MsgScroll *scroll;
- 
- public:
- 
- UseCode(Configuration *cfg);
- virtual ~UseCode();
- 
- virtual bool init(ObjManager *om, Map *m, Player *p, MsgScroll *ms);
- 
- bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
- virtual bool use_obj(Obj *obj, Obj *src_obj=NULL)=0;
- 
- protected:
- 
- void toggle_frame(Obj *obj);
- bool use_container(Obj *obj);
-};
 
-#endif /* __UseCode_h__ */
+}
+
+SEUseCode::~SEUseCode()
+{
+}
+
+bool SEUseCode::use_obj(Obj *obj, Obj *src_obj)
+{
+ 
+ if(obj == NULL)
+   return false;
+
+  switch(obj->obj_n)
+   {
+    case OBJ_SE_DOOR : break;
+                  
+    default : scroll->display_string("\nnot usable\n");
+              break;
+   }
+
+
+ printf("Use Obj #%d Frame #%d\n",obj->obj_n, obj->frame_n);
+
+ return true;
+}
+

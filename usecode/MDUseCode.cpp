@@ -40,7 +40,29 @@ bool MDUseCode::use_obj(Obj *obj, Obj *src_obj)
 
   switch(obj->obj_n)
    {
+    case OBJ_MD_DOOR :
+    case OBJ_MD_HATCH : if(obj->frame_n < 3)
+                        {
+                         obj->frame_n = 3;
+                        }
+                      else
+                        {
+                         obj->frame_n = 1;
+                        }
+                      break;
+                      
+    case OBJ_MD_OUTER_HATCH : if(obj->frame_n == 1) //Blast the hatch open... cutscene here FIX
+                                {
+                                 obj_manager->move(obj,obj->x+1,obj->y+1,obj->z);
+                                 obj->frame_n = 2;
+                                }
+                              break;
+                          
+    case OBJ_MD_WOODEN_CRATE : if(obj->frame_n == 2) //we can't open nailed crates by hand.
+                                 break;
     case OBJ_MD_BRASS_TRUNK :
+    case OBJ_MD_STEAMER_TRUNK :
+    case OBJ_MD_BARREL :
                       toggle_frame(obj); //open / close object
     case OBJ_MD_BAG : use_container(obj);
                       break;
@@ -54,61 +76,3 @@ bool MDUseCode::use_obj(Obj *obj, Obj *src_obj)
 
  return true;
 }
-
-bool MDUseCode::use_ladder(Obj *obj)
-{
- if(obj->frame_n == 0) // DOWN
-   {
-    if(obj->z == 0) //handle the transition from the surface to the first dungeon level
-      {
-       player->move(((obj->x & 0x07) | (obj->x >> 2 & 0xF8)), ((obj->y & 0x07) | (obj->y >> 2 & 0xF8)), obj->z+1);
-      }
-    else
-       player->move(obj->x,obj->y,obj->z+1); //dungeon ladders line up so we simply drop straight down
-   }
- else //UP
-  {
-    if(obj->z == 1)
-      {
-       //we use obj->quality to tell us which surface chunk to come up in.
-      player->move(obj->x / 8 * 8 * 4 + ((obj->quality & 0x03) * 8) + (obj->x - obj->x / 8 * 8),
-                    obj->y / 8 * 8 * 4 + ((obj->quality >> 2 & 0x03) * 8) + (obj->y - obj->y / 8 * 8),
-                    obj->z-1);
-      }
-    else
-       player->move(obj->x,obj->y,obj->z-1);
-   }
-
- return true;
-}
-
-bool MDUseCode::use_container(Obj *obj)
-{
- Obj *temp_obj;
- U6Link *obj_link;
- 
- /* Test whether this object has items inside it. */
- if((obj->container != NULL) &&
-   ((obj_link = obj->container->end()) != NULL))
-    {
-     U6LList *obj_list = obj_manager->get_obj_list(obj->x, obj->y, obj->z);
-
-     /* Add objects to obj_list. */
-     for(; obj_link != NULL; obj_link = obj_link->prev)
-      {
-       temp_obj = (Obj*)obj_link->data;
-       obj_list->add(temp_obj);
-       temp_obj->status = OBJ_STATUS_OK_TO_TAKE;
-       temp_obj->x = obj->x;
-       temp_obj->y = obj->y;
-       temp_obj->z = obj->z;
-      }
-
-     /* Remove objects from the container. */
-     obj->container->removeAll();
-     return true;
-    }
-
- return false;
-}
-

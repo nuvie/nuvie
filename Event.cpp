@@ -487,9 +487,9 @@ bool Event::alt_code_teleport(const char *location_string)
  char *next_num;
  uint16 x, y, z;
 
- x = strtol(location_string,&next_num,0);
- y = strtol(next_num,&next_num,0);
- z = strtol(next_num,&next_num,0);
+ x = strtol(location_string,&next_num,16);
+ y = strtol(next_num,&next_num,16);
+ z = strtol(next_num,&next_num,16);
 
  player->move(x,y,z);
 

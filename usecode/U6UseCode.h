@@ -85,7 +85,6 @@ class U6UseCode: public UseCode
  
  bool use_door(Obj *obj);
  bool use_ladder(Obj *obj);
- bool use_container(Obj *obj);
  bool use_passthrough(Obj *obj);
  bool use_switch(Obj *obj, uint16 target_obj_n);
  bool use_crank(Obj *obj);

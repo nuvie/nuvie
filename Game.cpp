@@ -35,6 +35,7 @@
 
 #include "U6UseCode.h"
 #include "MDUseCode.h"
+#include "SEUseCode.h"
 
 #include "Game.h"
 
@@ -121,7 +122,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    { 
     case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(config); break;
     case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(config); break;
-    case NUVIE_GAME_SE : usecode = (UseCode *) new U6UseCode(config); break; // FIX
+    case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(config); break;
    }
 
  usecode->init(obj_manager, game_map, player, scroll);
