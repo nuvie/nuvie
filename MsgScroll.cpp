@@ -176,6 +176,7 @@ MsgScroll::MsgScroll(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
  cursor_char = 0;
  cursor_x = 0;
  cursor_y = scroll_height-1;
+ line_count = 0;
  
  cursor_wait = 0;
  
