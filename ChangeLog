@@ -1,3 +1,13 @@
+2003-07-18  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Usecode system extended to allow multiple "event" functions. Each
+	object may have usecode executed when its event criteria are met.
+	* Actor: Usecode event STEPTO checked when actors move toward an object.
+	* ActorManager: Renamed actor_lookstr to look_actor.
+	* Converse Player: Sacred Quest flag now being loaded, and is accessible
+	in conversations.
+	* U6UseCode: The guardian's barrier on the isle of the avatar blocks
+	correctly when the avatar hasn't been given a quest.
+
 2003-07-16  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Random strings said by Beh Lem and other NPC's (try patients in Cove)
 	are printed correctly now, instead of resulting in "Unknown command."
