@@ -96,6 +96,8 @@ class MapWindow: public GUI_Widget
  Actor *get_actorAtCursor();
  MapCoord get_cursorCoord();
  Obj *get_objAtMousePos(int x, int y);
+ TileManager *get_tile_manager() { return tile_manager; }
+ SDL_Rect *get_clip_rect() { return &clip_rect; }
  void mouseToWorldCoords (int mx, int my, int &wx, int &wy);
 
  void get_level(uint8 *level);

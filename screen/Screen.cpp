@@ -618,7 +618,7 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 					continue;
 				if( y + j - r < 0 || y + j - r >= 11  )
 					continue;
-				shading_data[(y+j-r)*11+(x+i-r)] = min( shading_data[(y+j-r)*11+(x+i-r)] + TileGlobe[globe-2][j*(r*2+1)+i], 4 );
+				shading_data[(y+j-r)*11+(x+i-r)] = MIN( shading_data[(y+j-r)*11+(x+i-r)] + TileGlobe[globe-2][j*(r*2+1)+i], 4 );
 			}
         return;
     }
@@ -634,7 +634,7 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
                 (y-shading_rect.y+i)+1 > shading_rect.h ||
                 (x-shading_rect.x+j)+1 > shading_rect.w )
                 continue;
-            shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = min( shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + shading_globe[r][(i+globeradius_2[r])*globeradius[r]+(j+globeradius_2[r])], 255 );
+            shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + shading_globe[r][(i+globeradius_2[r])*globeradius[r]+(j+globeradius_2[r])], 255 );
         }
 }
 
