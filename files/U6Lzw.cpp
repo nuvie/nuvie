@@ -177,7 +177,7 @@ bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsig
     long bytes_written = 0;
  
     int cW;
-    int pW;
+    int pW = 0;  // get rid of uninitialized warning.
     unsigned char C;
 
     source += 4; //skip the filesize dword.
