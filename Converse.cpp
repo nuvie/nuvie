@@ -30,14 +30,12 @@
 using std::cerr;
 using std::cin;
 using std::endl;
+using std::stack;
 
-// TODO: work flawlessly with every u6 npc
-//       ifnpcinparty
-//       ifnpcnear
+// TODO: don't read npc name if in party, get from party information
 //       uniform (better) text output
-//       show/remove portraits
 //       fix overflow at end of Chuckles(10) script
-//       the "scope" system is strange looking
+//       the "scope" system for skipping blocks of script is annoying
 
 /* Load `convfilename' as src.
  */
@@ -80,6 +78,8 @@ Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
     src = 0; src_num = 0;
     npc = 0;
     script.buf = 0;
+    strings = 0;
+    rstr = 0;
     stop();
 }
 
@@ -164,6 +164,56 @@ uint32 Converse::get_val(uint8 arg_i, sint8 val_i)
 }
 
 
+/* Returns string data from block at `loc', element index `i'.
+ * FIXME: doesn't handle script overflow in an element
+ * Returns NULL if the location or the requested item are out of script range.
+ */
+char *Converse::get_dbstr(uint32 loc, uint32 i)
+{
+    convscript_p db = &(script.buf[loc]); /* start of element */
+    char *val = NULL; /* buffer */
+    uint32 len = 0, e = 0; /* length of buffer, element index */
+    do
+    {
+        // get element length (at least 1)
+        // skip required first byte (it can be 0)
+        for(len = 1; db[len] != 0x00; len++);
+        // copy and return
+        if(e++ == i)
+        {
+            val = (char *)malloc(len + 1);
+            memcpy(val, db, len);
+            val[len] = '\0';
+            return(val);
+        }
+        db += (len + 1); // skip to start of next
+    } while(db < (script.buf + script.buf_len));
+    return(NULL);
+}
+
+
+/* Returns integer data from block at `loc', element index `i'.
+ * FIXME: doesn't handle script overflow in an element
+ * Returns 0 if the location or the requested item are out of script range.
+ */
+uint8 Converse::get_dbint(uint32 loc, uint32 i)
+{
+    convscript_p db = &(script.buf[loc]); /* start of element */
+    uint32 len = 0, e = 0; /* length of buffer, element index */
+    do
+    {
+        // get element length (at least 1)
+        // skip required first byte (it can be 0)
+        for(len = 1; db[len] != 0x00; len++);
+        // copy and return
+        if(e++ == i)
+            return((uint8)(db[0]));
+        db += (len + 1); // skip to start of next
+    } while(db < (script.buf + script.buf_len));
+    return(0);
+}
+
+
 /* Handle script text. Evaluate as output text, get as keywords, or skip.
  * FIXME: collect text up to symbol or EOS all at once instead of 1charatatime
  */
@@ -201,14 +251,21 @@ void Converse::collect_text(bool eval = false)
                 else if(!strcmp(symbol, "$Z")) // previous input
                     output.append(input_s);
                 // FIXME: only converts 1 character variable numbers
-                else if(symbol[0] == '#') // value of a variable
-                    if(isdigit(symbol[1])
-                       && strtol(&symbol[1], NULL, 10) <= CONV_VAR__LAST_)
-                    {
-                        snprintf(intval, 16, "%d",
-                                 heap[strtol(&symbol[1], NULL, 10)].val);
-                        output.append(intval);
-                    }
+                else if(symbol[0] == '$' // value of a string variable
+                        && isdigit(symbol[1]))
+                {
+                    if(get_svar(strtol(&symbol[1], NULL, 10)))
+                        output.append(get_svar(strtol(&symbol[1], NULL, 10)));
+                    else
+                        output.append("");
+                }
+                else if(symbol[0] == '#' // value of a variable
+                        && isdigit(symbol[1]))
+                {
+                    snprintf(intval, 16, "%d",
+                             get_var(strtol(&symbol[1], NULL, 10)));
+                    output.append(intval);
+                }
                 else
                     output.append(symbol);
                 c += 2;
@@ -304,55 +361,86 @@ void Converse::break_scope(uint8 levels)
 #endif /* CONVERSE_DEBUG */
 
 
-/* Tests/Compares values from the argument 0 list, starting at `va', using a
- * comparison function code, and returns true or false.
+/* Tests/Compares values from a stack, using a comparison function code. The
+ * number of values needed for the comparison will be popped from the stack. An
+ * evaluation code can also be used.
+ * Returns the result of the comparison. True returns 1 and false returns 0.
  */
-bool Converse::u6op_if_test(uint32 cmpf, uint32 va)
+uint32 Converse::u6op_if_test(uint32 cmpf, stack<uint32> *cmpv)
 {
-    bool ifcomp = false;
+    uint32 ifcomp = 0;
     Actor *cnpc = 0;
     uint16 x, y, x2, y2;
     uint8 l, l2;
-    uint32 v[6] = // vals, not including cmpfunc val
+    uint32 v[2]; // popped vals
+#ifdef CONVERSE_DEBUG
+    fprintf(stderr, "Converse: cmp: func=0x%02x", cmpf);
+    stack<uint32> p_stk; // have to copy values here to print stack
+    while(!cmpv->empty())
     {
-        get_val(0, va), // v[0] == val1
-        (val_count(0) > 2) ? get_val(0, va + 1) : 0,
-        (val_count(0) > 3) ? get_val(0, va + 2) : 0,
-        (val_count(0) > 4) ? get_val(0, va + 3) : 0,
-        (val_count(0) > 5) ? get_val(0, va + 4) : 0,
-        (val_count(0) > 6) ? get_val(0, va + 5) : 0
-    };
+        p_stk.push(cmpv->top());
+        cmpv->pop();
+    }
+    int vi = 1;
+    while(!p_stk.empty())
+    {
+        cmpv->push(p_stk.top());
+        p_stk.pop();
+        fprintf(stderr, " v%d=0x%02x", vi++, cmpv->top());
+    }
+    fprintf(stderr, "\n");
+#endif
     switch(cmpf)
     {
         case 0x81: // val1 > val2
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
             if(v[0] > v[1])
-                ifcomp = true;
+                ifcomp = 1;
+            break;
+        case 0x82: // ?? >=
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
             break;
         case 0x83: // val1 < val2 ??
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
             if(v[0] < v[1])
-                ifcomp = true;
+                ifcomp = 1;
             break;
         case 0x84: // val1 < val2
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
             if(v[0] < v[1])
-                ifcomp = true;
+                ifcomp = 1;
             break;
         case 0x85: // val1 != val2
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
             if(v[0] != v[1])
-                ifcomp = true;
+                ifcomp = 1;
             break;
         case 0x86: // val1 == val2
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
             if(v[0] == v[1])
-                ifcomp = true;
+                ifcomp = 1;
             break;
-        case 0x94: // if (val1 ?val3? val2) OR (val4 ?val6? val5)
-            if(u6op_if_test(v[2], va) || u6op_if_test(v[5], va + 3))
-                ifcomp = true;
+        case 0x94: // (val1) OR (val2)
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
+            if(v[0] || v[1])
+                ifcomp = 1;
             break;
-        case 0x95: // if (val1 ?val3? val2) AND (val4 ?val6? val5)
-            if(u6op_if_test(v[2], va) && u6op_if_test(v[5], va + 3))
-                ifcomp = true;
+        case 0x95: // (val1) AND (val2)
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
+            if(v[0] && v[1])
+                ifcomp = 1;
             break;
         case 0xab: // is npc(val1) flag(val2) set?
+            v[1] = cmpv->top(); cmpv->pop();
+            v[0] = cmpv->top(); cmpv->pop();
             if(v[1] <= 7)
             {
                 if(v[0] == 0xeb)
@@ -360,31 +448,125 @@ bool Converse::u6op_if_test(uint32 cmpf, uint32 va)
                 else
                     cnpc = actors->get_actor(v[0]);
                 if(cnpc->get_flags() & (1 << v[1]))
-                    ifcomp = true;
+                    ifcomp = 1;
             }
             break;
         case 0xc6: // is val1 # of npc in party?
+            v[0] = cmpv->top(); cmpv->pop();
             if(player->get_party()->contains_actor(v[0]))
-                ifcomp = true;
+                ifcomp = 1;
             break;
         case 0xd7: // is val1 # of an npc nearby self?
+            v[0] = cmpv->top(); cmpv->pop();
             cnpc = actors->get_actor(v[0]);
             if(cnpc)
             {
                 fprintf(stderr, "Converse: warning: if(nearby(%d)) untested\n",
                         cnpc->get_actor_num());
+                // FIXME: move to Actor or Map
                 npc->get_location(&x, &y, &l);
                 cnpc->get_location(&x2, &y2, &l2);
                 if(abs(x - x2) <= 18 && abs(y - y2) <= 18 && l == l2)
-                    ifcomp = true;
+                    ifcomp = 1;
             }
             break;
-        case 0x82: // ?? >=
-        default:
-            print("\nError: Unknown test\n");
+        default: // try eval op, or just return 0
+            ifcomp = u6op_assign_eval(cmpf, cmpv);
             break;
     }
+#ifdef CONVERSE_DEBUG
+    fprintf(stderr, "Converse: cmp: result=0x%02x\n", ifcomp);
+#endif
     return(ifcomp);
+}
+
+
+/* Combine values from a stack, using a math function code.
+ * The number of values needed for the operation will be popped from the stack.
+ * Returns the operation result.
+ */
+uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
+{
+    Actor *cnpc = 0;
+    uint32 res = 0, v[2]; // result, popped vals
+#ifdef CONVERSE_DEBUG
+    fprintf(stderr, "Converse: eval: func=0x%02x", opf);
+    stack<uint32> p_stk; // have to copy values here to print stack
+    while(!opv->empty())
+    {
+        p_stk.push(opv->top());
+        opv->pop();
+    }
+    int vi = 1;
+    while(!p_stk.empty())
+    {
+        opv->push(p_stk.top());
+        p_stk.pop();
+        fprintf(stderr, " v%d=0x%02x", vi++, opv->top());
+    }
+    fprintf(stderr, "\n");
+#endif
+    // evaluate
+    switch(opf)
+    {
+        case 0x90: // val1 + val2
+            test_msg("-equals X + Y-\n");
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            res = v[0] + v[1];
+            break;
+        case 0x91: // val1 - val2
+            test_msg("-equals X - Y-\n");
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            res = v[0] - v[1];
+            break;
+        case 0xa0: // random number between val1 and val2 inclusive
+            test_msg("-equals rnd(X to Y)-\n");
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            res = rnd(v[0], v[1]);
+            break;
+        case 0xab: // flag val2 of npc val1
+            test_msg("-equals npc(flag)-\n");
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            cnpc = actors->get_actor(v[0]);
+            if(cnpc)
+                res = (cnpc->get_flags() & (1 << v[1]))
+                       ? 1 : 0;
+            else
+            {
+                print("\nError: No such NPC\n");
+                res = 0;    
+            }
+            break;
+        case 0xb4: // indexed data val2 at script location val1
+            test_msg("-listX[Y]-\n");
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            if(declared >= 0 && declared_t == 0xb3)
+                set_rstr(get_dbstr(v[0], v[1]));
+            else
+                res = get_dbint(v[0], v[1]);
+            break;
+        case 0xdd: // id of party member val1(0=leader), val2=??
+            test_msg("-equals NPC(PARTYIDX)??-\n");
+            v[1] = opv->top(); opv->pop();
+            v[0] = opv->top(); opv->pop();
+            cnpc = player->get_party()->get_actor(v[0]);
+            res = cnpc ? cnpc->get_actor_num() : 0;
+            break;
+        default:
+            print("\nError: Unknown assignment\n");
+            break;
+    }
+#ifdef CONVERSE_DEBUG
+    fprintf(stderr, "Converse: eval: result=0x%02x\n", res);
+    if(rstr)
+        fprintf(stderr, "Converse: eval: sresult=\"%s\"\n", rstr);
+#endif
+    return(res);
 }
 
 
@@ -398,7 +580,8 @@ bool Converse::do_cmd()
     bool donext = true, ifcomp = false;
     Actor *cnpc = 0;
     Party *group = 0;
-    Uint32 res = 0; // some operation result
+    uint32 res = 0, op_v = 0, op_vi = 0; // some operation result
+    stack<uint32> *op_stk = 0; // stack of values
 #ifdef CONVERSE_DEBUG
 fprintf(stderr, "Converse: %04x: cmd=0x%02x\n", script_pt-script.buf-1, cmd);
 if(!args.empty() && !args[0].empty())
@@ -419,16 +602,23 @@ if(!args.empty() && !args[0].empty())
     switch(cmd)
     {
         case U6OP_IF: // 1 arg, with multiple vals last val is test type
-            test_msg("-if-");
-            if(val_count(0) == 1) // is val1 "true"?
+            test_msg("-if-\n");
+            op_stk = new stack<uint32>;
+            // add values left to right to op-stack
+            do
             {
-                if(get_val(0, 0))
-                    ifcomp = true;
-            }
-            else if(val_count(0) >= 2) // test vals
-                ifcomp = u6op_if_test(get_val(0, -1), 0);
+                op_v = get_val(0, op_vi);
+                // do cmp-func. with stack values and push result
+                if(is_test((Uint8)op_v) && !get_valt(0, op_vi))
+                    op_stk->push(u6op_if_test(op_v, op_stk));
+                else
+                    op_stk->push(op_v);
+            } while(++op_vi < args[0].size());
+            // result of last op, and "if(val)" if only one value
+            ifcomp = op_stk->top() ? true : false;
             enter_scope(ifcomp ? CONV_SCOPE_IF : CONV_SCOPE_IFELSE);
-            test_msg((char *)(ifcomp ? "-TRUE-" : "-FALSE-"));
+            test_msg((char *)(ifcomp ? "-TRUE-\n" : "-FALSE-\n"));
+            delete op_stk;
             break;
         case U6OP_ENDIF:
             break_scope();
@@ -446,76 +636,53 @@ if(!args.empty() && !args[0].empty())
             }
             break;
         case U6OP_DECL:
-            declared = get_rval(0, 0);
-            if(declared < 0 || declared > CONV_VAR__LAST_)
+            let(get_rval(0, 0), get_valt(0, 0));
+            if(declared > CONV_VAR__LAST_)
             {
                 print("\nError: Illegal var. num\n");
                 break;
             }
-            test_msg("-let X-");
+            test_msg("-let X-\n");
             break;
         case U6OP_ASSIGN: // 1 arg with assignment values/operations
         case U6OP_YASSIGN:
-            // simple assignment
-            if(val_count(0) == 1)
+            op_stk = new stack<uint32>;
+            // add values left to right to op-stack
+            do
             {
-                test_msg("- = X-");
-                res = get_val(0, 0);
-            }
-            // assignment of expression with two values and an operation
-            else if(val_count(0) == 3)
-            {
-                switch(get_val(0, -1))
-                {
-                    case 0x90: // val1 + val2
-                        test_msg("- = X + Y-");
-                        res = get_val(0, 0) + get_val(0, 1);
-                        break;
-                    case 0x91: // val1 - val2
-                        test_msg("- = X - Y-");
-                        res = get_val(0, 0) - get_val(0, 1);
-                        break;
-                    case 0xa0: // random number between val1 and val2 inclusive
-                        test_msg("- = rnd(X to Y)-");
-                        res = rnd(get_val(0, 0), get_val(0, 1));
-                        break;
-                    case 0xab: // flag val2 of npc val1
-                        test_msg("- = npc(flag)-");
-                        cnpc = actors->get_actor(get_val(0, 0));
-                        if(cnpc)
-                            res = (cnpc->get_flags() & (1 << get_val(0, 1)))
-                                  ? 1 : 0;
-                        else
-                        {
-                            print("\nError: No such NPC\n");
-                            res = 0;
-                        }
-                        break;
-                    case 0xdd: // id of party member val1(0=leader), val2=??
-                        test_msg("- = NPC(PARTYIDX)??-");
-                        cnpc = player->get_party()->get_actor(get_val(0, 0));
-                        res = cnpc ? cnpc->get_actor_num() : 0;
-                        break;
-                    default:
-                        print("\nError: Unknown assignment\n");
-                        break;
-                }
-            }
-            else
-                print("\nAssignment error\n");
+                op_v = get_val(0, op_vi);
+                // do math-func. with stack values and push result
+                if(is_test((Uint8)op_v) && !get_valt(0, op_vi))
+                    op_stk->push(u6op_assign_eval(op_v, op_stk));
+                else
+                    op_stk->push(op_v);
+            } while(++op_vi < args[0].size());
+            // result of last op
+            res = op_stk->top();
+            // assign result to declared var or str
             if(cmd == U6OP_ASSIGN)
             {
                 if(declared >= 0 && declared <= CONV_VAR__LAST_)
-                    heap[declared].val = res;
+                {
+                    if(declared_t == 0xb3)
+                        set_svar(declared, rstr);
+                    else
+                        set_var(declared, res);
+                }
                 else
                     print("\nError: Unknown variable\n");
             }
-            else
-                ystr = npc_name(res);
-            declared = -1;
+            else // assign name of npc `result' to ystr
+            {
+                // FIXME: get from party information if in party
+                set_ystr(npc_name(res)); // read from script
+            }
+            delete op_stk;
+            let(-1);
+            set_rstr(NULL);
             break;
-        case U6OP_ARGSTOP:
-            test_msg("-EOA-");
+        case U6OP_ARGSTOP: // should be removed by parser
+            test_msg("\n-EOA-\n");
             break;
         case U6OP_SETF: // 0,0=npc 1,0=flagnum
             if(get_val(0, 0) == 0xeb) // "this npc"
@@ -615,12 +782,12 @@ if(!args.empty() && !args[0].empty())
             }
             break;
         case U6OP_INPUT: // 1 val, variable to store input at
-            declared = get_rval(0, 0);
+            let(get_rval(0, 0), 0xb2);
             scroll->set_input_mode(true);
             wait(); donext = false;
             break;
         case U6OP_INPUTC: // 1 val, variable to store input at
-            declared = get_rval(0, 0);
+            let(get_rval(0, 0), 0xb2);
             scroll->set_input_mode(true, "0123456789");
             wait(); donext = false;
             break;
@@ -657,7 +824,7 @@ void Converse::collect_args()
             continue;
         }
         if((is_print(val) || is_cmd(val))
-           && (check_overflow(1) || peek(1) != 0xb2))
+           && (check_overflow(1) || !is_valtype(peek(1)))) // next is not 0xb2,0xb3
         {
 //          std::cerr << "val is printable or cmd, done" << std::endl;
             break;
@@ -667,21 +834,21 @@ void Converse::collect_args()
         if(val == U6OP_UINT32)
         {
             args[ai].resize(vi + 1);
-			args[ai][vi].valt = 0;
+            args[ai][vi].valt = U6OP_UINT32;
             args[ai][vi++].val = pop4();
 //          std::cerr << "popped 4, next val" << std::endl;
         }
         else if(val == U6OP_UINT8)
         {
             args[ai].resize(vi + 1);
-			args[ai][vi].valt = 0;
+            args[ai][vi].valt = U6OP_UINT8;
             args[ai][vi++].val = pop();
 //			fprintf(stderr, "popped 1 as val: 0x%02x\n", args[ai][vi-1].val);
         }
         else if(val == U6OP_UINT16)
         {
             args[ai].resize(vi + 1);
-			args[ai][vi].valt = 0;
+            args[ai][vi].valt = U6OP_UINT16;
             args[ai][vi++].val = pop2();
  //         std::cerr << "popped 2, next val" << std::endl;
         }
@@ -691,7 +858,7 @@ void Converse::collect_args()
             args[ai].resize(vi + 1);
 			args[ai][vi].valt = 0;
             args[ai][vi].val = val;
-            if(peek() == 0xb2)
+            if(is_valtype(peek())) // 0xb2,0xb3
             {
                 args[ai][vi].valt = pop();
 //              std::cerr << "0xb2 follows, popped" << std::endl;
@@ -785,8 +952,16 @@ void Converse::stop()
     if(!heap.empty())
         save_variables();
     heap.clear();
-    declared = -1;
-    ystr = NULL;
+    if(strings)
+    {
+        int s = 0;
+        while(s < strings->size())
+            set_svar(s++, NULL);
+        delete strings; strings = 0;
+    }
+    let(-1);
+    set_rstr(NULL);
+    set_ystr(NULL);
 
     input_s.resize(0); // input_s.erase();
     keywords.resize(0);

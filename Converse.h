@@ -84,9 +84,11 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
 typedef struct
 {
-    Uint8 valt; // value type
-                // 0x00 = integer constant
-                // 0xb2 = numbered variable
+    Uint8 valt; // value type/modifier
+                // 0x00 = value is an integer constant or something else
+                // 0xb2 = value is number of a variable
+                // 0xb3 = value is number of a character string
+                // 0xd2,0xd3,0xd4 = value is an integer constant
     Uint32 val;
 } converse_arg;
 typedef unsigned char* convscript_p;
@@ -115,8 +117,11 @@ class Converse
     bool is_waiting; // paused, waiting for user input?
     string output; // where text goes to be printed
     vector<converse_arg> heap; // random-access variable data
+    vector<const char *> *strings; // string variables
     sint16 declared; // declared variable number, target of next assignment
+    uint8 declared_t; // 0xb3 if declared variable is string, else it is integer
     const char *ystr; // value of $Y in text
+    char *rstr; // result of expressions returning strings
     char aname[16]; // last name of NPC copied from script
 
     // statement parameters
@@ -162,7 +167,59 @@ class Converse
         else // -1 = last value in argument
             return(args[arg_i][args[arg_i].size()-1].val);
     }
+    /* Returns "type" of a value from the argument list.
+     */
+    uint32 get_valt(uint8 arg_i, sint8 val_i)
+    {
+        if(val_i >= 0)
+            return(args[arg_i][val_i].valt);
+        else // -1 = last value in argument
+            return(args[arg_i][args[arg_i].size()-1].valt);
+    }
     uint8 val_count(uint8 arg_i) { return(args[arg_i].size()); }
+    /* Return value stored at a normal variable. */
+    uint32 get_var(uint8 varnum)
+    {
+        return(varnum <= CONV_VAR__LAST_ ? heap[varnum].val : 0x00);
+    }
+    /* Set the value of a normal variable. */
+    void set_var(uint8 varnum, uint32 val, uint8 valt = 0x00)
+    {
+        if(varnum <= CONV_VAR__LAST_)
+        {
+            heap[varnum].valt = valt;
+            heap[varnum].val = val;
+        }
+    }
+    /* Return value stored at a string variable. */
+    const char *get_svar(uint8 varnum)
+    {
+        if(!strings)
+            return(NULL);
+        if(varnum < strings->size())
+            return((*strings)[varnum]);
+        else
+            return(NULL);
+    }
+    /* Set the value of a string variable. */
+    void set_svar(uint8 varnum, const char *set)
+    {
+        if(!strings)
+            strings = new vector<const char *>;
+        if(varnum >= strings->size())
+            strings->resize(varnum + 1);
+        if((*strings)[varnum])
+            free((char *)(*strings)[varnum]);
+        (*strings)[varnum] = set ? strdup(set) : 0;
+    }
+    /* Declare(or clear) variable number and its type/modifier. */
+    void let(sint16 n, uint8 t = 0) { declared = n; declared_t = t; }
+    /* Set RStr (string result) value. It contains its own string. */
+    void set_rstr(char *v) { if(rstr) free(rstr); rstr = v; }
+    /* Set YStr (NPC Name) value. It points to a string contained elsewhere. */
+    void set_ystr(const char *v) { ystr = v; }
+    char *get_dbstr(uint32 loc, uint32 i);
+    uint8 get_dbint(uint32 loc, uint32 i);
     /* Returns a randomly chosen number from `rnd_lo' to `rnd_hi'. */
     uint32 rnd(uint32 rnd_lo, uint32 rnd_hi)
     {
@@ -170,7 +227,8 @@ class Converse
             return(rnd_lo);
         return((NUVIE_RAND() + rnd_lo) % (rnd_hi + 1));
     }
-    bool u6op_if_test(uint32 cmpf, uint32 va);
+    uint32 u6op_if_test(uint32 cmpf, stack<uint32> *cmpv);
+    uint32 u6op_assign_eval(uint32 opf, stack<uint32> *opv);
 
     /* Seeking methods - update script pointer. */
     void seek(Uint32 offset = 0) { script_pt = script.buf; script_pt += offset; }
@@ -224,6 +282,11 @@ class Converse
     {
         return((valcpy == 0xd3 || valcpy == 0xd2 || valcpy == 0xd4));
     }
+    /* Returns true if byte is a value-type suffix. */
+    bool is_valtype(Uint8 valcpy)
+    {
+        return((valcpy == 0xb2 || valcpy == 0xb3));
+    }
     /* Returns true if `check' can be part of a text string. */
     bool is_print(Uint8 check)
     {
@@ -233,10 +296,13 @@ class Converse
      * that is part of some statements. */
     bool is_test(Uint8 check)
     {
-        return(((check == 0x81) || (check == 0x84) || (check == 0x85)
-               || (check == 0x86) || (check == 0xab) || (check == 0xc6)
-               || (check == 0xc7) || (check == 0xd7) || (check == 0xdd)
-               || (check == 0xbb) || (check == 0xe3)));
+        return( ((check == 0x81) || (check == 0x82) || (check == 0x83)
+                 || (check == 0x84) || (check == 0x85) || (check == 0x86)
+                 || (check == 0x90) || (check == 0x91) || (check == 0x94)
+                 || (check == 0x95) || (check == 0xa0) || (check == 0xab)
+                 || (check == 0xc6) || (check == 0xc7) || (check == 0xb4)
+                 || (check == 0xbb) || (check == 0xd7) || (check == 0xdd)
+                 || (check == 0xe3)) );
     }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)
@@ -313,20 +379,6 @@ public:
         input_s.assign(new_input);
     }
     void continue_script();
-    /* Return value stored at a normal variable. */
-    uint32 get_var(uint8 varnum)
-    {
-        return(varnum <= CONV_VAR__LAST_ ? heap[varnum].val : 0x00);
-    }
-    /* Set the value of a normal variable. */
-    void set_var(uint8 varnum, uint32 val, uint8 valt = 0x00)
-    {
-        if(varnum <= CONV_VAR__LAST_)
-        {
-            heap[varnum].valt = valt;
-            heap[varnum].val = val;
-        }
-    }
     const char *npc_name(uint8 num);
 };
 

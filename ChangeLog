@@ -1,3 +1,7 @@
+2003-05-15  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Converse: Many (most?) shopkeepers should work to some degree now, but
+	the player can't actually get the items yet.
+
 2003-05-13  Eric Fry <efry@users.sourceforge.net>
 	* Event: Alt-213 info string & Alt-125 advance hour added.
 	* InventoryView: Started work on inventory view.
