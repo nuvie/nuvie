@@ -26,7 +26,7 @@
 MsgScroll::MsgScroll(Configuration *cfg)
 {
  config = cfg;
- 
+ converse = NULL; 
  prompt_buf_len = 0;
 
  memset(msg_buf,0,sizeof(msg_buf));
@@ -196,8 +196,11 @@ bool MsgScroll::handle_input(SDLKey *input)
         case SDLK_ESCAPE:
         case SDLK_RETURN: page_break = false;
                           display_string(NULL);
+                          if(converse)
+                            converse->unwait();
                           return(true);
         default: // alphanumeric characters
+//            if(
             break;
     }
     return(false);
@@ -209,7 +212,7 @@ void MsgScroll::updateScroll()
  uint16 i,j;
 
  clearCursor(176 + 8 * cursor_x, 112 + cursor_y * 8);
- 
+
  if(scroll_updated)
   {
    if(buf_full == true)

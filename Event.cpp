@@ -105,7 +105,6 @@ bool Event::update()
                                     scroll->set_talking(true);
                                     scroll->display_string(converse->get_output());
                                   }
-                                  scroll->display_string("\n");
                                   map_window->set_show_cursor(false);
                                  }
                                if(mode == USE_MODE)
@@ -141,11 +140,8 @@ bool Event::talk()
     Actor *npc = map_window->get_actorAtCursor();
     // load npc script
     if(npc && converse->start(npc))
-    {
-        converse->print_name();
         return(true);
-    }
-    scroll->display_string("nothing!");
+    scroll->display_string("nothing!\n");
     return(false);
 }
 

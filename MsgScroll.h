@@ -29,6 +29,7 @@
 #include "Configuration.h"
 #include "Screen.h"
 #include "Text.h"
+#include "Converse.h"
 
 #define MSGSCROLL_WIDTH 17
 #define MSGSCROLL_HEIGHT 10
@@ -40,6 +41,7 @@ class MsgScroll
  Configuration *config;
  Screen *screen;
  Text *text;
+ Converse *converse;
  bool keyword_highlight;
  bool input_mode;
  bool talking;
@@ -94,6 +96,7 @@ class MsgScroll
  bool set_string_buf_pos(uint16 pos);
  
  void set_page_break(uint16 pos);
+ void set_converse(Converse *conv_pt) { converse = conv_pt; }
 };
 
 

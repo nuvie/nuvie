@@ -26,6 +26,22 @@
 
 enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
+
+/* Control codes for U6, as far as I know work with the others too... */
+#define U6OP_SETF 0xa4
+#define U6OP_CLEARF 0xa5
+#define U6OP_JUMP 0xb0
+#define U6OP_BYE 0xb6
+#define U6OP_WAIT 0xcb
+#define U6OP_ENDASK 0xee
+#define U6OP_KEYWORD 0xef
+#define U6OP_SIDENT 0xff
+#define U6OP_SLOOK 0xf1
+#define U6OP_SLOOKB 0xf3
+#define U6OP_SCONVERSE 0xf2
+#define U6OP_SANSWER 0xf6
+#define U6OP_SASK 0xf7
+
 typedef struct
 {
     Uint32 val_c; // number of values
@@ -46,53 +62,70 @@ class Converse
     unsigned char *script_pt; // points to next command/string in script
     bool active; // running npc script? (paused or unpaused)
     bool is_waiting; // paused, waiting for user input?
+    Uint32 prompt; // 0 = not waiting
+                   // 1 = just waiting for any input to continue
+                   // 2 = need input character or string, ENTER, or ESC
+    char *allowed_input; // NULL if any input is allowed
     string output; // where text goes until something grabs it
-    char *output_cpy; // "safe" buffer of text until get_text() calls again
-    Uint32 cmd;
-    vector <converse_arg> args;
-    Uint32 section; // 0 = look, 1 = converse
+    char *output_cpy; // "safe" buffer of text until checked again
+    Uint32 cmd, skip_to_cmd;
+    string input_s; // last input from player
+    string keywords; // keyword list from last KEYWORD statement
+
     bool do_cmd(); // do cmd with args and clear cmd and args
     bool do_text(Uint32 text_len);
-    unsigned char *seek_section(Uint32 section_id);
-    /* Get a Converse command-argument value from `loc' and place it at the
-     * requested argument and value index.
-     * Returns the number of bytes copied.
-     */
-    Uint32 readval(Uint32 arg_i, Uint32 val_i, unsigned char *loc)
+
+    /* Seeking methods - update script pointer. */
+    void seek(Uint32 offset = 0) { script_pt = script; script_pt += offset; }
+    void seek_look();
+    void seek_converse();
+    void seek_byte(Uint8 val)
     {
-        // values are written as: 00 b2 or d3 00 or d2 00000000
-        if(is_valsize(*script_pt))
-        {
-            args[arg_i].val_t[val_i] = *script_pt;
-            switch(args[arg_i].val_t[val_i])
-            {
-                case 0xd3:
-                    memcpy(&args[arg_i].val[val_i], script_pt + 1, 1);
-                    return(2);
-                case 0xd2:
-                    memcpy(&args[arg_i].val[val_i], script_pt + 1, 4);
-                    return(5);
-            }
-            args[arg_i].val_t[val_i] = *script_pt;
-        }
-        else
-        {
-            args[arg_i].val[val_i] = *script_pt;
-            args[arg_i].val_t[val_i] = *(script_pt + 1);
-        }
-        return(2);
+        for(script_pt = script; !this->check_overflow(); script_pt++)
+            if(pop() == val)
+                return;
+        script_pt = script;
     }
+    void skip(Uint32 bytes = 1) { pop(bytes); }
+
+    /* Read methods - Return a number of bytes and update script pointer. */
+    Uint8 pop(Uint32 bytes = 1)
+    {
+        Uint8 val = 0;
+        while(bytes--)
+        {
+            val = *script_pt;
+            ++script_pt;
+        }
+        return(val);
+    }
+    Uint16 pop2()
+    {
+        Uint16 val = 0;
+        memcpy(&val, script_pt, 2);
+        script_pt += 2;
+        return(val);
+    }
+    Uint32 pop4()
+    {
+        Uint32 val = 0;
+        memcpy(&val, script_pt, 4);
+        script_pt += 4;
+        return(val);
+    }
+    Uint8 peek(Uint32 peekahead = 0) { return((Uint8)*(script_pt+peekahead)); }
+
     /* Returns true if byte is a value-size definition. */
     bool is_valsize(Uint8 valcpy)
     {
         return((valcpy == 0xd3 || valcpy == 0xd2 || valcpy == 0xd4));
     }
-    /* Returns true if the address `pt' is greater than the length of the
+    /* Returns true if the script pointer is greater than the length of the
      * script.
      */
-    bool check_overflow(unsigned char *pt)
+    bool check_overflow(Uint32 ptadd = 0)
     {
-       return((pt > (script + script_len)));
+       return(((script_pt + ptadd) > (script + script_len)));
     }
 public:
     Converse(Configuration *cfg, Converse_interpreter engine_type);
@@ -105,17 +138,25 @@ public:
     void loadConv();
     /* Returns true if a script is active (paused or unpaused). */
     bool running() { return(active); }
-    /* Returns true if script is waiting for input. */
-    bool waiting() { return(is_waiting); }
+    /* Returns 0 if the script is not waiting for input, or
+        1 if any key will continue the script,
+        2 if some character/string input is needed.
+    */
+    Uint32 waiting()
+    {
+        if(!is_waiting)
+            return(0);
+        return(prompt);
+    }
     /* Tell script to pause. */
-    void wait() { is_waiting = true; }
+    void wait() { is_waiting = true; prompt = 1; }
     /* Tell script to resume. */
-    void unwait() { is_waiting = false; }
+    void unwait() { is_waiting = false; prompt = 0; }
     bool start(Actor *talkto); // makes step() available
     void stop();
     void step(Uint32 count = 0);
     /* Returns text to print or NULL if no text is available. **The string
-     * pointer returned becomes invalid when get_text() is called again.**
+     * pointer returned becomes invalid when get_output() is called again.**
      */
     char *get_output()
     {
@@ -123,11 +164,17 @@ public:
         if(output_cpy)
             strcpy(output_cpy, (char *)output.c_str());
         output.resize(0);
+        fprintf(stderr, "Converse: output=\"%s\"\n", output_cpy);
         return(output_cpy);
     }
     /* Return true if there is output text ready to be printed. */
     bool has_output() { return(!output.empty()); }
-    void print_name();
+    Uint32 print_name();
+    /* Set input buffer (replacing what is already there.) */
+    void input(const char *new_input)
+    {
+        input_s.assign(new_input);
+    }
 };
 
 

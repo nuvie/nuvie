@@ -82,6 +82,7 @@ bool Game::loadGame(Screen *s, uint8 game_type)
 
  converse = new Converse(config, CONV_U6);
  converse->loadConv();
+ scroll->set_converse(converse);
 
  event = new Event(config);
  event->init(obj_manager, map_window, scroll, player, converse);
@@ -149,10 +150,12 @@ void Game::play()
             scroll->display_string(converse->get_output());
 //        script has stopped itself:
 //        if(!converse->running())
-//            remove portrait [& name [& inventory display]]
-//        script has paused itself
-//        else if(converse->waiting())
-//            display newline + down arrow if msgscroll not already waiting
+//            remove portrait [& name [& inventory display]] unset talking mode
+//      script has paused itself
+        if(converse->waiting() == 1) // script has page break
+            scroll->display_string("*");
+//        else if(converse->waiting() == 2) // need input
+//            show newline and prompt (you say: )
      }
      scroll->updateScroll();
      //screen->update();

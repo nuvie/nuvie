@@ -19,10 +19,9 @@
 #include "U6Lzw.h"
 #include "Converse.h"
 
-// argument counts (256args * 256values)
+// argument counts (256args * 256values), if args are collected first
 static Uint8 converse_cmd_args[256];
-// for each command, 1 if can accept multiple values in 0xa7 terminated args
-static Uint8 converse_cmd_multival[256];
+
 
 /* Load converse.a as src.
  */
@@ -36,7 +35,7 @@ void Converse::loadConv()
 
 
 /* Set the interpreter type, and point to an opened converse library. Initialize
- * data.
+ * data. FIXME: call stop() to do most of the work
  */
 Converse::Converse(Configuration *cfg, Converse_interpreter engine_type)
 {
@@ -45,54 +44,52 @@ Converse::Converse(Configuration *cfg, Converse_interpreter engine_type)
     src = 0;
     npc = 0;
     active = is_waiting = false;
+    prompt = 0;
+    allowed_input = NULL;
     script_pt = script = 0;
     script_len = 0;
     output_cpy = 0;
     cmd = 0x00; // no command
-    section = 0; // look section
 
     // argument count to each command:
     memset(&converse_cmd_args, 0, sizeof(Uint8) * 256);
-    converse_cmd_args[0xa4] = 2;
-    // "is multival" setting to each command (applies when args > 0):
-    memset(&converse_cmd_multival, 1, sizeof(Uint8) * 256);
-    converse_cmd_multival[0xa6] = 0;
-    converse_cmd_multival[0xfc] = 0;
+    converse_cmd_args[U6OP_SETF] = 2;
+    converse_cmd_args[U6OP_CLEARF] = 2;
 }
 
 
-/* Output the NPC name at the start of the script (to the output buffer.)
+/* Output the NPC name at the start of the script (to the output buffer) with
+ * a newline, and return their id number.
  */
-void Converse::print_name()
+Uint32 Converse::print_name()
 {
-    Uint32 len = 0;
-    unsigned char *old_pt = script_pt;
-    script_pt = &script[2];
+    Uint32 len = 0, id = 0;
+    id = pop();
     for(; isprint(script_pt[len]); len++);
     output.append((const char *)script_pt, (unsigned int)len);
     output.append("\n");
-    script_pt = old_pt;
+    pop(len);
+    fprintf(stderr, "Converse: got name of npc 0x%02x\n", id);
+    return(id);
 }
 
 
-/* Returns a pointer to the start of section `section_id'. Look section is 0,
- * Converse is 1.
+/* Update the script pointer to past the NPC identification.
  */
-unsigned char *Converse::seek_section(Uint32 section_id)
+void Converse::seek_look()
 {
-    unsigned char *pt = script;
-    if(section_id == 0)
-    {
-        for(; *pt != 0xf1; pt++);
-        return(pt);
-    }
-    else if(section_id == 1)
-    {
-        pt = this->seek_section(0);
-        for(; *pt != 0xf2 && *pt != 0xf3; pt++);
-        return(pt);
-    }
-    return(pt);
+    seek_byte(U6OP_SLOOK);
+    if(script_pt == script)
+        seek_byte(U6OP_SLOOKB);
+}
+
+
+/* Update the script pointer to past the NPC identification and look sections.
+ */
+void Converse::seek_converse()
+{
+    seek_look();
+    seek_byte(U6OP_SCONVERSE);
 }
 
 
@@ -113,36 +110,75 @@ bool Converse::do_text(Uint32 print_len)
 //    {
 //    }
     output.append((const char *)script_pt, (unsigned int)print_len);
+    skip(print_len);
     return(true);
 }
 
 
-/* Interpret a statement from an NPC script. Executes the command/instruction,
- * with optional values (which make up the arguments of a defined statement.)
- * This will pause or stop the script if required.
- * Returns true if stepping can continue, and false if the script is stopped,
- * or user input is requested.
+/* Execute a command code from the parsed script, with optional arguments
+ * already collected. Some commands have arguments that will be collected here.
+ * Returns false if user input is requested, or the script has stopped, and true
+ * otherwise.
  */
 bool Converse::do_cmd()
 {
     bool donext = true;
     switch(cmd)
     {
-        case 0xa4: // set npc flag
+        case U6OP_SETF: // set (npc, flag)
             std::cerr << "Converse: SET" << std::endl;
             break;
-        case 0xa5: // clear npc flag
+        case U6OP_CLEARF: // clear (npc, flag)
             std::cerr << "Converse: CLEAR" << std::endl;
             break;
-        case 0xb6: // bye
+        case U6OP_JUMP: // goto (4byte offset)
+            std::cerr << "Converse: JUMP" << std::endl;
+            seek(pop4());
+            break;
+        case U6OP_BYE: // bye
             std::cerr << "Converse: BYE" << std::endl;
-            this->stop();
+            stop();
             donext = false;
             break;
-        case 0xcb: // wait
+        case U6OP_WAIT: // wait
             std::cerr << "Converse: WAIT" << std::endl;
-            this->wait();
+            wait();
+            prompt = 1;
             donext = false;
+            break;
+        case U6OP_ENDASK: // endask
+            std::cerr << "Converse: end of ASK section" << std::endl;
+            break;
+        case U6OP_KEYWORD: // keywords (keyword list)
+            std::cerr << "Converse: get KEYWORDS" << std::endl;
+            keywords = "";
+            while(!check_overflow() && peek() > 0 && peek() < 0xa0)
+                keywords.push_back((char)pop());
+            std::cerr << "Converse: got \"" << keywords << "\"" << std::endl;
+            break;
+        case U6OP_SIDENT:// npc (1byte npc, name)
+            std::cerr << "Converse: start IDENT section" << std::endl;
+            print_name();
+            break;
+        case U6OP_SLOOK:
+        case U6OP_SLOOKB: // description start
+            std::cerr << "Converse: start LOOK section" << std::endl;
+            output.append("You see ");
+            break;
+        case U6OP_SCONVERSE: // conversation start
+            std::cerr << "Converse: start CONVERSE section" << std::endl;
+            break;
+        case U6OP_SASK: // ask section start
+            std::cerr << "Converse: start ASK section" << std::endl;
+            wait();
+            prompt = 2; allowed_input = NULL; // any
+            donext = false;
+            break;
+        case U6OP_SANSWER: // answer section start
+            std::cerr << "Converse: check KEYWORDS" << std::endl;
+//            if(check_keywords())
+//                keywords = "";
+//            else(
             break;
         case 0x00:
             output.append("\nNull command\n");
@@ -151,17 +187,15 @@ bool Converse::do_cmd()
             output.append("\nUnknown command\n");
     }
     cmd = 0x00;
-    args.clear();
+//    args.clear();
     return(donext);
 }
 
 
 #if 0
-/* Read in the argument list for the command from `strt' which is the start of
- * a buffer of `len' bytes. If the command is variadic, each argument can
- * contain any number of values and value types, and each argument will be
- * terminated with 0xa7 (U6). If the command is not variadic, each argument can
- * contain 1 value and type, and does not have to be terminated with 0xa7.
+/* Read in the argument list for the command. Each 0xa7 starts the next, and
+ * ends the final argument.
+ * If the command has 1 argument it does not have to be terminated with 0xa7.
  */
 void Converse::collect_args(Uint32 cmd, Uint32 argc, unsigned char *strt,
                             unsigned int len)
@@ -212,86 +246,57 @@ void Converse::collect_args(Uint32 cmd, Uint32 argc, unsigned char *strt,
 #endif
 
 
-/* Execute commands/print text from the active script. Stop when `count'
- * statements or entire strings of text have been interpreted, or if user input
- * is required to continue. A count of 0 means to go on until the latter, or
- * until the end of the conversation.
+/* Interpret `count' statements from the NPC script. These are control codes
+ * (command with optional arguments, each with variable number of values), or
+ * text. A count of 0 means to keep going if possible.
+ * Returns true if stepping can continue, and false if the script is stopped,
+ * or user input is requested.
  */
 void Converse::step(Uint32 count)
 {
-    Uint32 c = 0, arg_c = 0, len = 0;
+    Uint32 c = 0, a = 0, arg_c = 0, len = 0;
     bool stepping = true;
     if(!active)
         return;
 
     do
     {
-        if(this->check_overflow(script_pt))
+        cmd = peek();
+        if(cmd == 0 || cmd > 0xa0) // FIXME: change istextorcontrol comparison
         {
-            output.append("\nEOF\n");
-            this->stop();
-            break;
-        }
-        if(*script_pt == 0xf1)
-        {
-            section = 0;
-            output.append("You see ");
-            ++c; ++script_pt;
-        }
-        else if(*script_pt == 0xf2 || *script_pt == 0xf3)
-        {
-            section = 1;
-            ++c; ++script_pt;
-        }
-        if(isprint(*script_pt)) // FIXME: change isprintable comparison
-        {
-            // grab text length and parse it
-            for(len = 1; (&script_pt[len] < (script_pt + script_len))
-                         && (isprint(script_pt[len - 1])); ++len);
-            if(!do_text(len))
-                output.append("\nPrint error\n");
-            script_pt += len;
-            ++c;
-            break;
-        }
-        else if(cmd == 0x00)
-        {
-            cmd = *script_pt;
-            ++script_pt;
+            skip();
             fprintf(stderr, "Converse: cmd is 0x%02x\n", cmd);
             arg_c = converse_cmd_args[cmd <= 255 ? cmd : 0x00];
-            args.reserve(arg_c);
+//            args.reserve(arg_c);
             fprintf(stderr, "Converse: cmd has %d arg(s)\n", arg_c);
             if(arg_c == 0)
             {
                 stepping = do_cmd();
-                c++;
             }
+            else
+            {
+                if(arg_c == 1)
+                    skip(2);
+                else
+                    for(a = 0; a < arg_c; a++)
+                        skip(3);
+                arg_c = 0;
+                output.append("\nUnimplemented\n");
+            }
+            ++c; continue;
         }
-        else
-        {
-            // get values until 0xa7
-            if(converse_cmd_multival[cmd] == 1)
-            {
-                int val_i = 0;
-                while(!this->check_overflow(script_pt) && (*script_pt != 0xa7))
-                {
-                    script_pt += this->readval(arg_c, val_i, script_pt);
-                }
-            }
-            else // get 1 value
-            {
-                args[arg_c].val_c = 1;
-                script_pt += this->readval(arg_c, 0, script_pt);
-                ++arg_c;
-            }
-            if(args.size() == arg_c)
-            {
-                stepping = do_cmd();
-                c++;
-            }
-        }
-    } while(((count != 0) ? c < count : true) && stepping);
+        std::cerr << "Converse: print" << std::endl;
+        // grab text length and parse it
+        for(len = 1; peek(len) > 0 && peek(len) < 0xa0 && !check_overflow(len); ++len);
+        if(!do_text(len))
+            output.append("\nPrint error\n");
+        ++c;
+    } while(((count != 0) ? c < count : true) && stepping && !check_overflow());
+    if(check_overflow())
+    {
+        output.append("\nEOF\n");
+        stop();
+    }
 }
 
 
@@ -313,8 +318,11 @@ void Converse::stop()
         output_cpy = NULL;
     }
     cmd = 0x00;
-    args.clear();
+//    args.clear();
     is_waiting = false;
+    prompt = 0;
+    allowed_input = 0;
+    input_s.resize(0); // input_s.erase();
     npc = 0;
     active = false;
     std::cerr << "Converse: stopped script" << std::endl;
@@ -363,7 +371,7 @@ bool Converse::start(Actor *talkto)
     {
         std::cerr << "Converse: begin" << std::endl;
         active = true;
-        script_pt = this->seek_section(0);
+        seek(0);
         return(true);
     }
     std::cerr << std::endl << "Converse: error loading actor " << (int)actor_num
