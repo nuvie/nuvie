@@ -20,6 +20,10 @@
 #include "U6Lzw.h"
 #include "Converse.h"
 
+using std::cerr;
+using std::cin;
+using std::endl;
+
 //#define CONVERSE_DEBUG
 #ifdef CONVERSE_DEBUG
 # define test_msg(S) print(S)
@@ -27,15 +31,11 @@
 # define test_msg(S) scroll->display_string("")
 #endif
 
-using std::cerr;
-using std::cin;
-using std::endl;
-using std::stack;
-
-// TODO: don't read npc name if in party, get from party information
-//       uniform (better) text output
+// TODO: uniform (better) text output
 //       fix overflow at end of Chuckles(10) script
-//       the "scope" system for skipping blocks of script is annoying
+//       the "scope" system for skipping blocks of script is annoying, change it
+//       everything you know about u6-scripting is wrong! need to rewrite this
+//        with new knowledge
 
 /* Load `convfilename' as src.
  */
@@ -521,6 +521,10 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
             v[0] = opv->top(); opv->pop();
             res = v[0] - v[1];
             break;
+        case 0x9a: // weight that npc val1 is free to carry
+            break;
+        case 0x9b: // weight of object val1, times val2(quantity)
+            break;
         case 0xa0: // random number between val1 and val2 inclusive
             test_msg("-equals rnd(X to Y)-\n");
             v[1] = opv->top(); opv->pop();
@@ -550,6 +554,8 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
             else
                 res = get_dbint(v[0], v[1]);
             break;
+        case 0xbb: // quantity of object val2 on npc val1
+            break;
         case 0xdd: // id of party member val1(0=leader), val2=??
             test_msg("-equals NPC(PARTYIDX)??-\n");
             v[1] = opv->top(); opv->pop();
@@ -558,7 +564,7 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
             res = cnpc ? cnpc->get_actor_num() : 0;
             break;
         default:
-            print("\nError: Unknown assignment\n");
+            print("\nError: Unknown operation\n");
             break;
     }
 #ifdef CONVERSE_DEBUG
@@ -567,6 +573,36 @@ uint32 Converse::u6op_assign_eval(uint32 opf, stack<uint32> *opv)
         fprintf(stderr, "Converse: eval: sresult=\"%s\"\n", rstr);
 #endif
     return(res);
+}
+
+
+/* Stack all values from an argument in the argument list and run an assign
+ * -evaluation on them. The original values are replaced with the result.
+ */
+void Converse::eval_arg(uint8 argn, bool test_first)
+{
+    uint8 v = 0; // value index
+    uint32 op_v = 0; // value
+    converse_arg replace;
+    stack<uint32> *op_stk = new stack<uint32>;
+    // add values left to right to op-stack
+    do
+    {
+        op_v = get_val(argn, v);
+        // do op-func. with stack values and push result
+        if(is_test((Uint8)op_v) && !get_valt(argn, v))
+            op_stk->push(test_first ? u6op_if_test(op_v, op_stk)
+                                    : u6op_assign_eval(op_v, op_stk));
+        else
+            op_stk->push(op_v);
+    } while(++v < val_count(argn));
+    // result of last op is new value
+    replace.val = op_stk->top();
+    replace.valt = U6OP_UINT32;
+    // remove all values but first, and replace it
+    args[argn].resize(1);
+    set_val(argn, 0, replace);
+    delete op_stk;
 }
 
 
@@ -580,8 +616,7 @@ bool Converse::do_cmd()
     bool donext = true, ifcomp = false;
     Actor *cnpc = 0;
     Party *group = 0;
-    uint32 res = 0, op_v = 0, op_vi = 0; // some operation result
-    stack<uint32> *op_stk = 0; // stack of values
+    uint32 res = 0; // some operation result
 #ifdef CONVERSE_DEBUG
 fprintf(stderr, "Converse: %04x: cmd=0x%02x\n", script_pt-script.buf-1, cmd);
 if(!args.empty() && !args[0].empty())
@@ -603,22 +638,10 @@ if(!args.empty() && !args[0].empty())
     {
         case U6OP_IF: // 1 arg, with multiple vals last val is test type
             test_msg("-if-\n");
-            op_stk = new stack<uint32>;
-            // add values left to right to op-stack
-            do
-            {
-                op_v = get_val(0, op_vi);
-                // do cmp-func. with stack values and push result
-                if(is_test((Uint8)op_v) && !get_valt(0, op_vi))
-                    op_stk->push(u6op_if_test(op_v, op_stk));
-                else
-                    op_stk->push(op_v);
-            } while(++op_vi < args[0].size());
-            // result of last op, and "if(val)" if only one value
-            ifcomp = op_stk->top() ? true : false;
+            eval_arg(0, true);
+            ifcomp = get_val(0, 0) ? true : false;
             enter_scope(ifcomp ? CONV_SCOPE_IF : CONV_SCOPE_IFELSE);
             test_msg((char *)(ifcomp ? "-TRUE-\n" : "-FALSE-\n"));
-            delete op_stk;
             break;
         case U6OP_ENDIF:
             break_scope();
@@ -646,19 +669,8 @@ if(!args.empty() && !args[0].empty())
             break;
         case U6OP_ASSIGN: // 1 arg with assignment values/operations
         case U6OP_YASSIGN:
-            op_stk = new stack<uint32>;
-            // add values left to right to op-stack
-            do
-            {
-                op_v = get_val(0, op_vi);
-                // do math-func. with stack values and push result
-                if(is_test((Uint8)op_v) && !get_valt(0, op_vi))
-                    op_stk->push(u6op_assign_eval(op_v, op_stk));
-                else
-                    op_stk->push(op_v);
-            } while(++op_vi < args[0].size());
-            // result of last op
-            res = op_stk->top();
+            eval_arg(0);
+            res = get_val(0, 0);
             // assign result to declared var or str
             if(cmd == U6OP_ASSIGN)
             {
@@ -674,10 +686,15 @@ if(!args.empty() && !args[0].empty())
             }
             else // assign name of npc `result' to ystr
             {
-                // FIXME: get from party information if in party
-                set_ystr(npc_name(res)); // read from script
+                // get name from party information
+                if(player->get_party()->contains_actor(res))
+                {
+                    res = player->get_party()->get_member_num(res);
+                    set_ystr(player->get_party()->get_actor_name(res));
+                }
+                else
+                    set_ystr(npc_name(res)); // read from script
             }
-            delete op_stk;
             let(-1);
             set_rstr(NULL);
             break;
@@ -711,13 +728,39 @@ if(!args.empty() && !args[0].empty())
             donext = false;
             break;
         case U6OP_NEW: // 4 args, npc, objnum, qual, quant
-            print("-!new obj.-");
+//bool Actor::inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality);
+            eval_arg(0);
+            eval_arg(1);
+            eval_arg(2);
+            eval_arg(3);
+            cnpc = actors->get_actor(get_val(0, 0));
+            if(cnpc)
+                cnpc->inventory_add_object(get_val(1, 0), get_val(3, 0),
+                                           get_val(2, 0));
             break;
         case U6OP_DELETE: // 4 args, npc, objnum, qual, quant
-            print("-!delete obj.-");
+//bool Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);
+            eval_arg(0);
+            eval_arg(1);
+            eval_arg(2);
+            eval_arg(3);
+            cnpc = actors->get_actor(get_val(0, 0));
+            if(cnpc)
+                cnpc->inventory_del_object(get_val(1, 0), get_val(3, 0),
+                                           get_val(2, 0));
             break;
         case U6OP_GIVE: // 4 args, objnum, qual, fromnpc, tonpc
-            print("-!give obj.-");
+            eval_arg(0);
+            eval_arg(1);
+            eval_arg(2);
+            eval_arg(3);
+            cnpc = actors->get_actor(get_val(2, 0));
+            if(!cnpc)
+                break;
+            cnpc->inventory_del_object(get_val(0, 0), 1, get_val(1, 0));
+            cnpc = actors->get_actor(get_val(3, 0));
+            if(cnpc)
+                cnpc->inventory_add_object(get_val(0, 0), 1, get_val(1, 0));
             break;
         case U6OP_WORKTYPE: // 2 args, npc number, new worktype
             print("-!worktype-");

@@ -31,6 +31,8 @@
 #include "Player.h"
 #include "U6def.h"
 
+using std::stack;
+
 enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 
 /* Control codes for U6; as far as I know work with the other games too... */
@@ -177,6 +179,12 @@ class Converse
             return(args[arg_i][args[arg_i].size()-1].valt);
     }
     uint8 val_count(uint8 arg_i) { return(args[arg_i].size()); }
+    /* Set contents of a certain value. */
+    void set_val(uint8 arg_i, sint8 val_i, converse_arg &set)
+    {
+        args[arg_i][val_i].val = set.val;
+        args[arg_i][val_i].valt = set.valt;
+    }
     /* Return value stored at a normal variable. */
     uint32 get_var(uint8 varnum)
     {
@@ -229,6 +237,7 @@ class Converse
     }
     uint32 u6op_if_test(uint32 cmpf, std::stack<uint32> *cmpv);
     uint32 u6op_assign_eval(uint32 opf, std::stack<uint32> *opv);
+    void eval_arg(uint8 argn, bool test_first = false);
 
     /* Seeking methods - update script pointer. */
     void seek(Uint32 offset = 0) { script_pt = script.buf; script_pt += offset; }
@@ -299,10 +308,10 @@ class Converse
         return( ((check == 0x81) || (check == 0x82) || (check == 0x83)
                  || (check == 0x84) || (check == 0x85) || (check == 0x86)
                  || (check == 0x90) || (check == 0x91) || (check == 0x94)
-                 || (check == 0x95) || (check == 0xa0) || (check == 0xab)
-                 || (check == 0xc6) || (check == 0xc7) || (check == 0xb4)
-                 || (check == 0xbb) || (check == 0xd7) || (check == 0xdd)
-                 || (check == 0xe3)) );
+                 || (check == 0x95) || (check == 0x9a) || (check == 0x9b)
+                 || (check == 0xa0) || (check == 0xab) || (check == 0xb4)
+                 || (check == 0xbb) || (check == 0xc6) || (check == 0xc7)
+                 || (check == 0xd7) || (check == 0xdd) || (check == 0xe3)) );
     }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)

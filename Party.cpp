@@ -44,18 +44,6 @@ bool Party::init(ActorManager *am)
  return true;
 }
 
-bool Party::contains_actor(Actor *actor)
-{
- uint8 i;
- 
- for(i=0;i< num_in_party;i++)
-  {
-   if(member[i].actor->id_n == actor->id_n)
-     return true;
-  }
-  
- return false;
-}
 
 bool Party::add_actor(Actor *actor)
 {
@@ -123,6 +111,19 @@ char *Party::get_actor_name(uint8 member_num)
    return NULL;
 
  return member[member_num].name;
+}
+
+
+/* Returns position of actor in party or -1.
+ */
+sint8 Party::get_member_num(Actor *actor)
+{
+    for(int i=0; i < num_in_party; i++)
+    {
+        if(member[i].actor->id_n == actor->id_n)
+            return(i);
+    }
+    return(-1);
 }
 
 

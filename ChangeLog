@@ -1,3 +1,10 @@
+2003-05-16  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Converse: Few more test-ops added to further improve shopkeepers'
+	abilities.
+	* New/Delete/Transfer object commands implemented.
+	* Party: Functionality of contains_actor() moved to get_member_num(),
+	and former method changed to call new one (and made inline.)
+
 2003-05-15  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Converse: Many (most?) shopkeepers should work to some degree now, but
 	the player can't actually get the items yet.
