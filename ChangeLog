@@ -1,3 +1,7 @@
+2003-11-25  Eric Fry <efry@users.sourceforge.net>
+	* Added Sam Matthew's Alpha blended darkness. :-) This is still a 
+	  little rough around the edges but it is looking really nice!
+
 2003-11-24  Eric Fry <efry@users.sourceforge.net>
 	* Added Pieter Luteijn's Use orb code.
 	* A small OS X compile fix. Added #ifdef check for _MSC_VER in 

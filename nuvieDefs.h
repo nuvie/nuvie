@@ -20,6 +20,9 @@
 #define NUVIE_CONFIG_NAME_MD "martian"
 #define NUVIE_CONFIG_NAME_SE "savage"
 
+#define MAX(x, y)      ((x) > (y) ? (x) : (y))
+#define MIN(x, y)      ((x) < (y) ? (x) : (y))
+
 /*
 #ifndef BOOL
 typedef unsigned char BOOL;

@@ -34,6 +34,7 @@
 
 #include "GUI_widget.h"
 #include "Game.h"
+#include "GameClock.h"
 
 MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
@@ -287,6 +288,32 @@ bool MapWindow::in_window(uint16 x, uint16 y, uint8 z)
 void MapWindow::updateBlacking()
 {
  generateTmpMap();
+      //Dusk starts at 19:00
+     //It's completely dark by 20:00
+     //Dawn starts at 5:00
+     //It's completely bright by 6:00
+     //Dusk and dawn operate by changing the ambient light, not by changing the radius of the avatar's light globe
+ 
+     GameClock *clock = Game::get_game()->get_clock();
+     int h = clock->get_hour();
+if(screen)
+{
+     if( h == 19 ) //Dusk
+         screen->set_ambient( 255*(float)(60-clock->get_minute())/60.0 );
+     else if( h == 5 ) //Dawn
+         screen->set_ambient( 255*(float)clock->get_minute()/60.0 );
+     else if( h > 5 && h < 19 ) //Day
+         screen->set_ambient( 0xFF );
+     else //Night
+         screen->set_ambient( 0x00 );
+         
+ //Clear the opacity map
+ screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
+ 
+ //Light globe around the avatar
+ screen->drawalphamap8globe( 88, 88, 64 );
+}
+
 }
 
 void MapWindow::Display(bool full_redraw)
@@ -296,6 +323,8 @@ void MapWindow::Display(bool full_redraw)
  uint16 map_width;
  Tile *tile;
  //unsigned char *ptr;
+
+
  
  //map_ptr = map->get_map_data(cur_level);
  map_width = map->get_width(cur_level);
@@ -341,6 +370,7 @@ void MapWindow::Display(bool full_redraw)
 
 // screen->fill(0,8,8,win_height*16-16,win_height*16-16);
  
+ screen->blitalphamap8();
  drawBorder();
  
 // ptr = (unsigned char *)screen->get_pixels();
@@ -432,6 +462,10 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  x = obj->x - cur_x;
  
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+
+ //Draw a lightglobe in the middle of the 16x16 tile.
+ if(tile->flags2 & 0x3 > 0 && screen->should_update_alphamap())
+	 screen->drawalphamap8globe( 8 + (obj->x - cur_x)*16, 8 + (obj->y - cur_y)*16 , (tile->flags2 & 0x3)*16 );
 
  if(draw_lowertiles == false && (tile->flags3 & 0x4) && toptile == false) //don't display force lower tiles.
    return;

@@ -38,6 +38,9 @@ Screen::Screen(Configuration *cfg)
  config = cfg;
  
  update_rects = NULL;
+ shading_data = NULL;
+ updatingAlphaMap = true;
+ 
  max_update_rects = 10;
  num_update_rects = 0;
 }
@@ -46,6 +49,7 @@ Screen::~Screen()
 {
  delete surface;
  if (update_rects) free(update_rects);
+ if (shading_data) free(shading_data);
  SDL_Quit();
 }
 
@@ -422,6 +426,147 @@ void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, 
   }
 
  return;
+}
+
+void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity )
+{
+	shading_ambient = opacity;
+	if( shading_data == NULL )
+	{
+		shading_rect.x = x;
+		shading_rect.y = y;
+		shading_rect.w = w;
+		shading_rect.h = h;
+		shading_data = (unsigned char*)malloc(sizeof(char)*shading_rect.w*shading_rect.h);
+		if( shading_data == NULL )
+		{
+			/* We couldn't allocate memory for the opacity map, so just disable lighting */
+			shading_ambient = 0xFF;
+			return;
+		}
+	}
+	if( shading_ambient == 0xFF )
+	{
+	}
+	else
+	{
+		memset( shading_data, shading_ambient, sizeof(char)*shading_rect.w*shading_rect.h );
+	}
+
+ updatingAlphaMap = true;
+}
+
+void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 radius )
+{
+ if( shading_ambient == 0xFF )
+    return;
+ //The x and y are relative to (0,0) of the screen itself, and are absolute coordinates, so are i and j
+ sint16 i,j;
+ for(i=-radius;i<radius;i++)
+	for(j=-radius;j<radius;j++)
+	{
+		if( (y-shading_rect.y+i)-1 < 0 ||
+			(x-shading_rect.x+j)-1 < 0 ||
+			(y-shading_rect.y+i)+1 > shading_rect.h ||
+			(x-shading_rect.x+j)+1 > shading_rect.w )
+			continue;
+#if 1 //Linear attenuation
+		/*
+		float r;
+		//Distance from center
+		r  = sqrt( i*i+j*j );
+		//Unitize
+		r /= (float)radius;
+		//Fit into a byte
+		r *= 255;
+		//Place it
+		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = min( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + max( 0, 255 - r ) );
+		*/
+
+		//The condensed version
+		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + MAX( 0, 255 - sqrt( i*i+j*j ) / (float)radius * 255 ) );
+#else //Gaussian attenuation
+		/*
+		float r;
+		//Distance from center
+		r  = sqrt( i*i+j*j );
+		//Unitize
+		r /= sqrt( sqr(radius)+sqr(radius) );
+		//Calculate brightness
+		r  = (float)exp(-(10*r*r));
+		//Fit into a byte
+		r *= 255;
+		//Place it
+		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)]+r );
+		//*/
+
+		//The condensed version
+		shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( 255, shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)]+exp( -10*pow( sqrt( i*i + j*j ) / sqrt( 2*pow( radius, 2 ) ), 2 ) ) * 255 );
+#endif
+	}
+}
+
+void Screen::blitalphamap8()
+{
+ updatingAlphaMap = false;
+ 
+	//pixel = (dst*(1-alpha))+(src*alpha)   for an interpolation
+	//pixel = pixel * alpha                 for a reduction
+	//We use a reduction here
+
+	if( shading_ambient == 0xFF )
+		return;
+
+	uint16 i,j;
+
+	switch( surface->bits_per_pixel )
+	{
+	case 16:
+		uint16 *pixels16;
+		pixels16 = (uint16 *)surface->pixels;
+
+		pixels16 += shading_rect.y*surface->w;
+
+		for(i=shading_rect.y;i<shading_rect.h+shading_rect.y;i++)
+		{
+			for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
+			{
+				pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & 0xF800 ) >> 11)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 11) | //R
+							  ( ( (unsigned char)(( (float)(( pixels16[j] & 0x07E0 ) >> 5 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 5 ) | //G
+							  ( ( (unsigned char)(( (float)(( pixels16[j] & 0x001F ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
+			
+				//Red = 0xF800 = 1111 1000 0000 0000
+				//Grn = 0x07E0 = 0000 0111 1110 0000
+				//Blu = 0x001F = 0000 0000 0001 1111
+			}
+			pixels16 += surface->w;
+		}
+		return;
+		break;
+	case 24:
+	case 32:
+		uint32 *pixels;
+		pixels = (uint32 *)surface->pixels;
+
+		pixels += shading_rect.y*surface->w;
+
+		for(i=shading_rect.y;i<shading_rect.h+shading_rect.y;i++)
+		{
+			for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
+			{
+				pixels[j] = ( ( (unsigned char)(( (float)(( pixels[j] & 0xFF0000 ) >> 16)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 16) | //R
+							( ( (unsigned char)(( (float)(( pixels[j] & 0x00FF00 ) >> 8 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 8 ) | //G
+							( ( (unsigned char)(( (float)(( pixels[j] & 0x0000FF ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
+			}
+			pixels += surface->w;
+		}
+		return;
+		break;
+	default:
+		std::cout << "Screen::blitalphamap8() cannot handle your screen surface depth of " << surface->bits_per_pixel << std::endl;
+		break;
+		return;
+	}	
 }
 
 SDL_Surface *Screen::create_sdl_surface_from(unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch)
