@@ -379,7 +379,6 @@ void GUI::Run(GUI_IdleProc idle, int once, int multitaskfriendly)
 				HandleStatus(idle());
 			}
 			for ( i=numwidgets-1; i>=0; --i ) {
-				HandleStatus(widgets[i]->MouseIdle());
 				HandleStatus(widgets[i]->Idle());
 			}
 		}
@@ -398,14 +397,12 @@ void GUI::Idle()
 {
 	if(locked_widget)
 	{
-		locked_widget->MouseIdle();
 		locked_widget->Idle();
 		return;
 	}
 
 	for(int i = numwidgets - 1; i >= 0; --i)
 	{
-		HandleStatus(widgets[i]->MouseIdle());
 		HandleStatus(widgets[i]->Idle());
 	}
 }

@@ -82,6 +82,8 @@ protected:
   GUI_Color *selected_color;
 
 public:
+  static const int mouseclick_delay = 300; /* SB-X */
+
 	GUI(Configuration *c, Screen *s);
 	~GUI();
 

@@ -73,17 +73,14 @@ protected:
   GUI_DragManager *gui_drag_manager;
 
 	// SB-X
-	/* Maximum time between two clicks to get a double-click.
-	   (0 = double-click disabled) */
-	uint32 mousedouble_delay;
-	/* The time of the last mouse press, and release (SDL_GetTicks()). */
-	unsigned int last_mousedown_time, last_mouseup_time;
+	/* The time of the last mouse click (SDL_GetTicks()). */
+	unsigned int mouseup_time[3]; /* for 3 buttons */
+	bool accept_mouseclick[3]; /* which buttons can be [double]clicked */
+	bool mousedown[3]; /* waiting for MouseUp */
 
-	int last_mouseup_x, last_mouseup_y;
-	int last_mousedown_x, last_mousedown_y;
-	int last_mouseup_button, last_mousedown_button;
+	bool mouse_over; // initialized here; toggled by GUI
 
-	bool mouse_over; // toggled by GUI; not guaranteed to be accurate
+
 
 public:
 
@@ -166,14 +163,13 @@ public:
 	virtual GUI_status MouseDown(int x, int y, int button);
 	virtual GUI_status MouseUp(int x, int y, int button);
 	virtual GUI_status MouseMotion(int x, int y, Uint8 state);
-	// SB-X
+	// <SB-X>
 	virtual GUI_status MouseEnter(Uint8 state);
 	virtual GUI_status MouseLeave(Uint8 state);
 	virtual GUI_status MouseClick(int x, int y, int button);
 	virtual GUI_status MouseDouble(int x, int y, int button);
-	GUI_status MouseIdle();
-	GUI_status RegisterMouseDown(int x, int y, int button);
-	GUI_status RegisterMouseUp(int x, int y, int button);
+//	GUI_status MouseIdle();
+	// </SB-X>
 
   bool drag_accept_drop(int x, int y, int message, void *data);
   void drag_perform_drop(int x, int y, int message, void *data);
@@ -213,10 +209,11 @@ protected:
 	}
 
 	// SB-X
-	void enable_mousedouble(uint32 delay = 300)
-					{ mousedouble_delay = delay; }
-	void disable_mousedouble()	{ mousedouble_delay = 0; }
-	void cancel_mouseclick()        { last_mouseup_time = last_mousedown_time = 0; }
+	void set_accept_mouseclick(bool set, int button = -1);
+	void set_mouseclick_time(int set, int button = -1);
+	GUI_status RegisterMouseDown(int x, int y, int button);
+	GUI_status RegisterMouseUp(int x, int y, int button);
+
 };
 
 #endif /* _GUI_widget_h */

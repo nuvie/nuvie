@@ -66,6 +66,7 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  GUI_Widget::Init(NULL, x, y, 72, 64);
 
  set_actor(a);
+ set_accept_mouseclick(true, 1); // accept [double]clicks from button1
 
  return true;
 }
@@ -293,6 +294,7 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
  return NULL;
 }
 
+// change container, ready/unready object, activate arrows
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 {
  Event *event = Game::get_game()->get_event();
@@ -322,10 +324,9 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
          Redraw();
       }
 
-    // only act now if not usable, else wait for possible double-click
+    // only act now if not usable
     if(selected_obj && !usecode->has_usecode(selected_obj))
       {
-        ready_obj = NULL;
         if(selected_obj->container) // open up the container.
           {
             container_obj = selected_obj;
@@ -333,16 +334,14 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
           }
         else // attempt to ready selected object.
           {
-//            actor->add_readied_object(selected_obj);
             event->ready(selected_obj);
             Redraw();
           }
       }
-    else
-        ready_obj = selected_obj;
 
    }
 
+ ready_obj = NULL;
  selected_obj = NULL;
 
  return GUI_YUM;
@@ -497,41 +496,22 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
 GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 {
     Event *event = Game::get_game()->get_event();
-    Obj *obj = ready_obj;
-    ready_obj = NULL;
+    Obj *obj = selected_obj;
 
-    if(!(actor && obj && button == 1))
+    ready_obj = NULL;
+    selected_obj = NULL;
+
+    if(!actor)
         return(GUI_YUM);
+    if(!obj)
+        return(MouseUp(x, y, button)); // probably hit an arrow
 
     if(event->newAction(USE_MODE))
         event->doAction(obj);
     return(GUI_PASS);
 }
 
-
-// waited for double-click
 GUI_status InventoryWidget::MouseClick(int x, int y, int button)
 {
- Event *event = Game::get_game()->get_event();
-
- if(button != 1)
-   return GUI_YUM;
-
- // change to or from a container, ready/unready object
- if(ready_obj && ready_obj->container) // open up the container.
-   {
-    container_obj = ready_obj;
-    Redraw();
-   }
- else if(ready_obj) // attempt to ready selected object.
-   {
-//     actor->add_readied_object(selected_obj);
-     event->ready(ready_obj);
-     Redraw();
-   }
-
- ready_obj = NULL;
-
- return GUI_YUM;
+    return(MouseUp(x, y, button));
 }
-

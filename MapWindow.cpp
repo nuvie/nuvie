@@ -42,6 +42,8 @@
 #include "Game.h"
 #include "GameClock.h"
 
+#define DBLCLICK_USE_BUTTON 1 /* FIXME: this should be in a common location */
+
 // This should make the mouse-cursor hovering identical to that in U6.
 static const uint8 movement_array[9 * 9] =
 {
@@ -136,6 +138,8 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  get_overlay(); // this allocates `overlay`
  overlay_level = MAP_OVERLAY_ONTOP;
  assert(SDL_FillRect(overlay, NULL, 0x31) == 0);
+
+ set_accept_mouseclick(true, DBLCLICK_USE_BUTTON); // allow double-clicks
 
  return true;
 }
@@ -400,12 +404,14 @@ void MapWindow::update()
 
     if(walking)
     {
+        int mx, my;
+#if 0
         // wait for possible double-click before starting
         uint32 time_passed = update_time - last_mousedown_time;
-        int mx, my;
         walk_start_delay -= ((sint32)(walk_start_delay - time_passed) > 0) ? time_passed : walk_start_delay;
         if(walk_start_delay)
             return;
+#endif
         if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(1) | SDL_BUTTON(3)))
             event->walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
                                         (uint32)my / screen->get_scale_factor());
@@ -1148,26 +1154,25 @@ GUI_status MapWindow::Idle(void)
 // single-click (press and release button)
 GUI_status MapWindow::MouseClick(int x, int y, int button)
 {
-    printf("Thou dost see the console.\n");
+    printf("MouseClick(%d,%d,%d): Thou dost see the console.\n",x,y,button);
 // FIXME: LOOK here
-    return(GUI_PASS);
+    return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
 
 
 // double-click
 GUI_status MapWindow::MouseDouble(int x, int y, int button)
 {
-#define DBLCLICK_USE_BUTTON 1
     Event *event = Game::get_game()->get_event();
 
     // only USE if not doing anything in event
-    if(button == DBLCLICK_USE_BUTTON && event->get_mode() == MOVE_MODE)
+    if(event->get_mode() == MOVE_MODE)
     {
         int wx, wy;
         mouseToWorldCoords(x, y, wx, wy);
         event->multiuse((uint16)wx, (uint16)wy);
     }
-    return(GUI_PASS);
+    return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
 
 GUI_status MapWindow::MouseDown (int x, int y, int button)
@@ -1188,13 +1193,14 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		}
 		walking = true;
 		walk_start_delay = (obj || get_actorAtMousePos(x, y))
-					? mousedouble_delay : 0;
+					? GUI::mouseclick_delay : 0;
 	}
 	else // finish whatever action is being done, with mouse coordinates
 	{
 		mouseToWorldCoords(x, y, wx, wy);
 		moveCursor(wx - cur_x, wy - cur_y);
 		event->doAction(sint16(wx - player->x), sint16(wy - player->y));
+		return  GUI_PASS;
 	}
 
 	if (!obj)

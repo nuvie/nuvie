@@ -51,6 +51,7 @@ class EffectManager;
 class SoundManager;
 class SaveManager;
 class EggManager;
+class CommandBar;
 
 typedef enum
 {
@@ -80,6 +81,7 @@ class Game
  Player *player;
  Party *party;
  Converse *converse;
+ CommandBar *command_bar;
 
  ViewManager *view_manager;
  EffectManager *effect_manager;
@@ -160,6 +162,7 @@ class Game
  Cursor *get_cursor()              { return(cursor); }
  EffectManager *get_effect_manager()
                                    { return(effect_manager); }
+ CommandBar *get_command_bar()     { return(command_bar); }
 
  protected:
 

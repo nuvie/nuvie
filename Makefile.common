@@ -151,6 +151,8 @@ nuvie_SOURCES = \
 	Background.h \
 	Book.cpp \
 	Book.h \
+	CommandBar.cpp \
+	CommandBar.h \
 	Converse.cpp \
 	Converse.h \
 	ConverseInterpret.cpp \

@@ -30,6 +30,7 @@
 #include "ObjManager.h"
 #include "GUI_CallBack.h"
 
+class Actor;
 class CallbackTarget;
 class Configuration;
 class Book;

@@ -564,10 +564,14 @@ bool InventoryView::select_obj(Obj *obj)
                 inventory_widget->set_container(obj);
             else if(obj)
             {
-                if(cursor_pos.area == INVAREA_LIST)
-                    event->ready(obj);
-                else if(cursor_pos.area == INVAREA_DOLL)
+                if(obj->is_readied())
                     event->unready(obj);
+                else
+                    event->ready(obj);
+//                if(cursor_pos.area == INVAREA_LIST)
+//                    event->ready(obj);
+//                else if(cursor_pos.area == INVAREA_DOLL)
+//                    event->unready(obj);
             }
             break;
         case LOOK_MODE:
@@ -596,6 +600,7 @@ bool InventoryView::select_obj(Obj *obj)
 
 
 /* Messages from child widgets.
+ * Returns GUI_PASS if the data was not used.
  */
 GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {

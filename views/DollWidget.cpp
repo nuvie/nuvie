@@ -64,6 +64,7 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  GUI_Widget::Init(NULL, x, y, 64, 64);
 
  set_actor(a);
+ set_accept_mouseclick(true, 1); // accept [double]clicks from button1
 
  return true;
 }
@@ -176,46 +177,28 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
  return GUI_YUM;
 }
 
-
-
-
+// un-ready selected item
 GUI_status DollWidget::MouseUp(int x,int y,int button)
 {
  Event *event = Game::get_game()->get_event();
  UseCode *usecode = Game::get_game()->get_usecode();
 
- // only act now if not usable, else wait for possible double-click
- if(selected_obj && !usecode->has_usecode(selected_obj)) // un-ready selected item.
+ // only act now if not usable
+ if(selected_obj && !usecode->has_usecode(selected_obj))
    {
-//    actor->remove_readied_object(selected_obj);
     event->unready(selected_obj);
-    unready_obj = NULL;
-    Redraw();
-   }
- else
-    unready_obj = selected_obj;
-
- selected_obj = NULL;
- return GUI_PASS;
-}
-
-
-// waited for double-click
-GUI_status DollWidget::MouseClick(int x, int y, int button)
-{
- Event *event = Game::get_game()->get_event();
-
- if(unready_obj) // un-ready selected item.
-   {
-//    actor->remove_readied_object(selected_obj);
-    event->unready(unready_obj);
     Redraw();
    }
 
  unready_obj = NULL;
- return GUI_YUM;
+ selected_obj = NULL;
+ return GUI_PASS;
 }
 
+GUI_status DollWidget::MouseClick(int x, int y, int button)
+{
+    return(MouseUp(x, y, button));
+}
 
 GUI_status DollWidget::MouseMotion(int x,int y,Uint8 state)
 {
@@ -324,10 +307,12 @@ void DollWidget::drag_draw(int x, int y, int message, void* data)
 GUI_status DollWidget::MouseDouble(int x, int y, int button)
 {
     Event *event = Game::get_game()->get_event();
-    Obj *obj = unready_obj;
-    unready_obj = NULL;
+    Obj *obj = selected_obj;
 
-    if(!(actor && obj && button == 1))
+    unready_obj = NULL;
+    selected_obj = NULL;
+
+    if(!(actor && obj))
         return(GUI_YUM);
 
     if(event->newAction(USE_MODE))

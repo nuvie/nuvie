@@ -49,6 +49,7 @@
 #include "Event.h"
 #include "Portrait.h"
 #include "Background.h"
+#include "CommandBar.h"
 
 #include "U6UseCode.h"
 #include "MDUseCode.h"
@@ -195,6 +196,9 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    scroll = new MsgScroll(config, font_manager->get_font(0));
    gui->AddWidget(scroll);
+
+   command_bar = new CommandBar(this);
+   gui->AddWidget(command_bar);
 
    map_window->set_windowSize(11,11);
 
