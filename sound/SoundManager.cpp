@@ -77,7 +77,6 @@ bool SoundManager::nuvieStartup (Configuration * config)
 
   if(!initAudio ())
     {
-     printf("Error: Failed to initiate audio!");
      return false;
     }
 
@@ -112,11 +111,13 @@ bool SoundManager::initAudio ()
 #endif
 
   int audio_channels = 2;
-  int audio_buffers = 734;        //4096;
+  int audio_buffers = 1024;        //4096; // Note: must be a power of two
   SDL_Init (SDL_INIT_AUDIO);
   ret = Mix_OpenAudio (audio_rate, audio_format, audio_channels, audio_buffers);
-  if (ret)
+  if (ret) {
+    printf("Error: Failed to initialize audio: %s\n", Mix_GetError());
     return false;
+  }
   Mix_HookMusicFinished (musicFinished);
   
   opl = new CEmuopl(audio_rate, true, true); // 16bit stereo

@@ -1,3 +1,8 @@
+2004-02-16  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* sound/*, Makefile.am: fixed build (include case, include dirs)
+	* sound/SoundManager.cpp: show SDL_Mixer error when init fails
+	* sound/SoundManager.cpp: changed buffer size to power of two
+
 2004-02-16  Eric Fry <efry at users.sourceforge.net>
 	* More work on U6 music. Native songs no longer require the songs.cfg
 	  file. Song changes aren't very smooth at the moment. I'll probably
