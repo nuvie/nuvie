@@ -1,6 +1,5 @@
 Nuvie TODO List
 ---------------
-
 Command line:
 nuvie [options] game(from config)
 -h, --help
@@ -15,48 +14,82 @@ MD SE talking
 
 Event:
 Move "now" time to Game or GameClock, add some type to handle ticks
-Move TimeQueue/Timer functions to new class file(s)
 Take low-level input handling out of Event and make a keybinder.
+PlayerAction class(es) (ActorActions?)
+Use/drop/move objects from inventory
+Use and other actions aren't supposed to work when Player is uncontrolled
+Action sync.: After an input event is processed, don't allow any more. (right
+now you can press keys after doing certain things and quickly get another action
+in)
+Dragndrop: When releasing object after move, commands should go through some
+action queue or through Event, so that the proper checks are performed and the
+number of turns are passed that it would take to get to the original location.
+Should be able to drop objects on other non-passable objects (move rope to table)
+Don't drag skiffs to land (check object's passable?)
+When dragging object, show cursor as indicator if object can be dropped in a
+location.
 
 Actors: There must be a uniform way to set all actors direction and frame, and
 to animate them, no matter what size they are.
+Improve Party following
+Implement speed in LPath (actors walking to work location get up to 4 moves)
+And with LPath, NPCs travel wide angles along roads instead of shortest path
+to destination (it is not solely based on terrain score).
+New Follow pathfinder, follow an actor (if on same plane), with give-up distance
+
+UseCode:
+Execute Usecode for post-move actions (frame changes)?
+Ex: call an event on "chair" when actor steps on it, to change to sit frame
+ (This can be used to implement poison/sleep fields.)
+Mirror usecode (enter-area, leave-area, and drop)
+move u6ucobject stuff up to UseCode, needs to be generic to avoid duplication
+
+MsgScroll: Give message scroller and other GUI areas some high-level I/O methods
+Textlines aren't wide enough, or wrapping behaves differently than original.
+Breaks look different than in original. Screenfulls of text should pause even if
+not indicated in data, but a break indicated in the data + a screenfull of text
+should not cause two breaks (requiring player to ESC twice).
+PgUp/Dn
+
+fix start-in-vehicle
 
 Iolo "gather" gets gold in containers eg in bags, backpacks (need to do more
 testing)
 
-Execute Usecode for post-move actions (frame changes)?
-Ex: call an event on "chair" when actor steps on it, to change to sit frame
-(This can be used to implement poison/sleep fields.)
-
-Mirror usecode (enter-area, leave-area, and drop)
-
-Improve Party following, make NPCs travel wide angles along roads instead of
-shortest path to destination
-
-Use/drop/move objects from inventory
-
-Give message scroller and other GUI areas some high-level I/O methods
-
-Use and other actions aren't supposed to work when Player is uncontrolled
-
 Don't try to dump container contents if CLOSING the container
 
-Restrict farm animals to within fenced areas.
+Restrict farm animals to within fenced areas. (and other actors)
 Fix actor draw order issues.
 
+Move static mode out of U6Actor::wt_beg because it affects all actors with that
+worktype. Change worktype to wander after talked to player.
+
+Replace some actor info with pointer to an Obj?
+Actor::[check]move error/status struct? (so that calling function can check)
+Actor::[check]move: take move_flags argument (replace current bools force_move/ignore_others)
+
 things to do:
-skiff
-ship
+raft
 balloon
 combat
 weapons
 music
 sfx
-darkness
 weather/ wind direction
 map wrapping
-saving
+saving!
 eggs
-non human actors
 magic
 sprite animations
+intro/end sequences
+game/gameselect menu(s)
+
+wishlist:
+real-time mode (but not during combat)
+smooth map/actor movement (see SNES U6)
+DIAMOND, CROWD (random), and COMBAT party formations
+full-screen map w/multiple scales
+movable Views
+command console
+setup screen/config menu (start with on first run)
+enhanced & classic modes: enable/disable several options at once

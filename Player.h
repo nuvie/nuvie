@@ -66,8 +66,8 @@ class Player
  
  void set_karma(uint8 val) { karma = val; }
  uint8 get_karma() { return(karma); }
- void add_karma(uint8 val);
- void subtract_karma(uint8 val);
+ void add_karma(uint8 val = 1);
+ void subtract_karma(uint8 val = 1);
 
  void set_quest_flag(uint8 val) { questf = val; }
  uint8 get_quest_flag()         { return(questf); }

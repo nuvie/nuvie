@@ -90,6 +90,7 @@ class Converse
 
     bool active; // running npc script? (either paused or unpaused)
     bool need_input; // waiting for text input
+    bool party_all_the_time; // force NPCs to join player's party?
 
     string *in_str; // last input from player
     string *out_str; // text that is to be printed
@@ -123,6 +124,7 @@ public:
     bool running()    { return(active); }
     void unwait();
     void poll_input(const char *allowed = NULL, bool nonblock = true);
+    bool override_input();
 
     bool input();
     void print(const char *s = NULL);

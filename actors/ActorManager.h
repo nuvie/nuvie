@@ -67,7 +67,9 @@ class ActorManager
 
  void updateActors();
  void twitchActors();
- 
+ void print_actor(Actor *actor);
+ const char *get_worktype_string(uint32 wt);
+
  protected:
  
  bool ActorManager::loadActorSchedules();

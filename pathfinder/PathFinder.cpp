@@ -9,11 +9,17 @@
 PathFinder::PathFinder(Actor *a, MapCoord &d, uint32 speed)
                        : src(0,0,0), dest(0,0,0)
 {
+    path = NULL;
+    step_count = next_step = 0;
+    dest2 = NULL;
 }
 
 
 PathFinder::PathFinder() : src(0, 0, 0), dest(0, 0, 0)
 {
+    path = NULL;
+    step_count = next_step = 0;
+    dest2 = NULL;
 }
 
 
@@ -62,7 +68,7 @@ bool PathFinder::reached_goal()
         if(neighbors[start].x == xdir && neighbors[start].y == ydir)
         {
             sint32 dest = start + rotate;
-            if(dest < 0 || dest > 7) // FIXME: won't work on larger rotations
+            while(dest < 0 || dest > 7)
                 dest += (dest < 0) ? 8 : -8;
             xdir = neighbors[dest].x; ydir = neighbors[dest].y;
             break;
@@ -70,15 +76,28 @@ bool PathFinder::reached_goal()
 }
 
 
-/* Set new destination.
+/* Set new destination. Any existing path is cleared.
  */
 void PathFinder::set_dest(MapCoord &d)
 {
+    if(d != dest)
+        delete_path();
     dest.x = d.x;
     dest.y = d.y;
     dest.z = d.z;
+}
 
-    if(path)
-        free(path);
-    path = NULL;
+
+/* Secondary destination.
+ */
+void PathFinder::set_dest2(MapCoord &d2)
+{
+    if(!dest2)
+        dest2 = new MapCoord(d2.x, d2.y, d2.z);
+    else
+    {
+        dest2->x = d2.x;
+        dest2->y = d2.y;
+        dest2->z = d2.z;
+    }
 }

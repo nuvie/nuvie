@@ -30,7 +30,6 @@
 
 //#define CONVERSE_DEBUG
 
-
 ConverseInterpret::ConverseInterpret(Converse *owner)
 {
     converse = owner;
@@ -808,17 +807,18 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             if(player->get_party()->contains_actor(npc_num(pop_arg(i))))
                 out = 1;
             break;
-        case U6OP_OBJINPARTY: // 0xc7 ?? unknown, related to in-inventory check
-            v[1] = pop_arg(i);
-            v[0] = pop_arg(i);
-            // ?? FIXME
-            if(player->get_actor()->inventory_get_object(v[0], v[1]))
-                out = 0xFFFF;
+        case U6OP_OBJINPARTY: // 0xc7 ?? check if party has object
+            v[1] = pop_arg(i); // qual
+            v[0] = pop_arg(i); // obj
+            if(!player->get_party()->has_obj(v[0], v[1]))
+                out = 0x8001; // something OR'ed or u6val version of "no npc"?
             else
-                out = 0x8001;
+            {
+                out = player->get_party()->who_has_obj(v[0], v[1]);
+                out = npc_num(out); // first NPC that has object (sometimes 0xFFFF?)
+            }
             break;
         case U7OP_JOIN: // 0xca
-            // FIXME: on ship or balloon or skiff, return 1
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
             {
@@ -827,7 +827,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 else if(player->get_party()->get_party_size() >=
                         player->get_party()->get_party_max())
                     out = 2; // 2: PARTY TOO LARGE
-                else if(false)
+                else if(player->get_actor()->get_actor_num() == 0) // vehicle
                     out = 1; // 1: NOT ON LAND
                 else
                     player->get_party()->add_actor(cnpc);
@@ -835,13 +835,12 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             }
             break;
         case U7OP_LEAVE: // 0xcc
-            // FIXME: on ship or balloon or skiff, return 1
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
             {
                 if(!player->get_party()->contains_actor(cnpc))
                     out = 2; // 2: NOT IN PARTY
-                else if(false)
+                else if(player->get_actor()->get_actor_num() == 0) // vehicle
                     out = 1; // 1: NOT ON LAND
                 else
                     player->get_party()->remove_actor(cnpc);

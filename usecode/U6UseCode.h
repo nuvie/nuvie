@@ -196,6 +196,12 @@
 #define OBJ_U6_HOLE                308
 #define OBJ_U6_PORTCULLIS          310
 #define OBJ_U6_STONE_LION          312
+
+#define OBJ_U6_FIRE_FIELD          317
+#define OBJ_U6_POISON_FIELD        318
+#define OBJ_U6_PROTECTION_FIELD    319
+#define OBJ_U6_SLEEP_FIELD         320
+
 #define OBJ_U6_CAVE                326
 
 #define OBJ_U6_THRONE              327

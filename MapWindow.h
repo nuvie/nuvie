@@ -64,6 +64,8 @@ class MapWindow: public GUI_Widget
  SDL_Rect clip_rect;
 
  Obj* selected_obj;
+ Actor *selected_actor;
+ bool hackmove;
  
  public:
  
@@ -97,6 +99,7 @@ class MapWindow: public GUI_Widget
  void get_pos(uint16 *x, uint16 *y);
 
  bool in_window(uint16 x, uint16 y, uint8 z);
+ bool in_dungeon_level() { return(cur_level != 0 && cur_level != 5); }
 
  void updateBlacking();
  

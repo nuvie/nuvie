@@ -89,6 +89,7 @@ TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay)
         target = new MapCoord(*t);
     else
         target = NULL;
+    moves_left = party->get_party_size() * 2;
 }
 
 TimedPartyMove::~TimedPartyMove()
@@ -110,24 +111,27 @@ void TimedPartyMove::timed(uint32 evtime)
     {
         Actor *person = party->get_actor(a);
         MapCoord loc(person->get_location());
-        // if not at target area (FIXME: only checks Z for now)
-	if(loc.z != target->z || loc.x != target->x || loc.y != target->y) //FIXED for moongate teleport on the same plane.
+        // if not at target area
+	if(!person->is_nearby(*target))
         {
-            // at destination or offscreen, teleport to target
+            // at destination or offscreen (or timed out), teleport to target
             MapWindow *map_window = Game::get_game()->get_map_window();
-            if(loc == *dest || !map_window->in_window(loc.x, loc.y, loc.z))
+            if(loc == *dest || !map_window->in_window(loc.x, loc.y, loc.z)
+               || moves_left == 0)
                 person->move(target->x, target->y, target->z, ACTOR_FORCE_MOVE);
             else // keep walking to destination
                 person->swalk(*dest);
             person->update();
             repeat = true;
         }
-        // at target area (FIXME: only checks Z for now)
-        if(loc.z == target->z)
+        // at target area
+        if(person->is_nearby(*target))
             person->stop_walking(); // return control
     }
     if(!repeat) // everyone is at target area
         party->stop_walking();
+    if(moves_left > 0)
+        --moves_left;
 }
 
 
@@ -155,9 +159,9 @@ void TimedPartyMoveToVehicle::timed(uint32 evtime)
         // not at boat location
         if(loc != *dest)
         {
-            // offscreen, teleport to target
+            // offscreen (or timed out), teleport to target
             MapWindow *map_window = Game::get_game()->get_map_window();
-            if(!map_window->in_window(loc.x, loc.y, loc.z))
+            if(!map_window->in_window(loc.x, loc.y, loc.z) || moves_left == 0)
                 person->move(dest->x, dest->y, dest->z, ACTOR_FORCE_MOVE);
             else // keep walking
                 person->swalk(*dest);
@@ -176,4 +180,6 @@ void TimedPartyMoveToVehicle::timed(uint32 evtime)
         Game::get_game()->get_usecode()->use_obj(ship_obj);
         party->stop_walking(); // return control to player
     }
+    if(moves_left > 0)
+        --moves_left;
 }

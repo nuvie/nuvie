@@ -130,7 +130,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 
  // change direction only if we can move there
  //if(actor->check_move(x + rel_x, y + rel_y, z, ACTOR_IGNORE_OTHERS))
-
+ actor->moves = 1; // player can always move (FIXME: check in Actor::move()?)
  if(actor->moveRelative(rel_x,rel_y))
  {
   actor->set_direction(rel_x, rel_y);
@@ -147,12 +147,14 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 {
    if(uncontrolled)
     return;
+   actor->moves = 1; // player can always move (FIXME: check in Actor::move()?)
    if(actor->move(new_x, new_y, new_level))
    {
     //map_window->centerMapOnActor(actor);
-// center everyone first, so we don't try to path-find between planes if blocked
+    // center everyone first, then try to move them to correct positions
     party->move(new_x, new_y, new_level);
     party->follow();
+    actor_manager->updateActors();
     obj_manager->temp_obj_list_update(new_x, new_y, new_level); // remove temporary objs
    }
 }
@@ -179,7 +181,10 @@ void Player::moveDown()
 
 void Player::pass()
 {
+ if(uncontrolled)
+    return;
  clock->inc_move_counter_by_a_minute();
+ party->follow();
  actor_manager->updateActors(); // SB-X move to gameclock
 }
 

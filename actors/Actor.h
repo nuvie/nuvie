@@ -28,6 +28,7 @@
 
 using std::list;
 
+#include "Map.h"
 #include "ObjManager.h"
 
 #define ACTOR_HEAD   0
@@ -48,6 +49,11 @@ using std::list;
 
 #define ACTOR_FORCE_MOVE true
 #define ACTOR_IGNORE_OTHERS true
+
+#define ACTOR_PUSH_ANYWHERE 0
+#define ACTOR_PUSH_HERE     1
+#define ACTOR_PUSH_FORWARD  2
+#define ACTOR_PUSH_TO       3
 
 class Map;
 class MapCoord;
@@ -90,7 +96,8 @@ class Actor
  uint16 z;
  
  uint8 worktype;
- 
+ MapCoord work_location;
+
  uint16 obj_n;
  uint16 frame_n;
  uint16 base_obj_n;
@@ -106,7 +113,7 @@ class Actor
  bool in_party;
  bool visible_flag;
  
- bool moved; // actor has moved this turn (FIXME: unused)
+ uint8 moves; // number of moves actor has this turn
 
  uint8 strength;
  uint8 dex;
@@ -144,6 +151,7 @@ class Actor
  bool is_alive();
  bool is_nearby(Actor *other);
  bool is_nearby(uint8 actor_num);
+ bool is_nearby(MapCoord &where, uint8 thresh = 5);
  bool is_at_position(Obj *obj);
  bool is_passable();
  bool is_temporary();
@@ -224,6 +232,7 @@ class Actor
  void remove_readied_object(uint8 location);
  
  virtual void twitch() { return; }
+ bool push(Actor *pusher, uint8 where = ACTOR_PUSH_ANYWHERE, uint16 tx = 0, uint16 ty = 0, uint16 tz = 0);
  
  Obj *make_obj();
  virtual void clear();

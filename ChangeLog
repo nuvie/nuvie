@@ -1,3 +1,44 @@
+2003-12-01  Joseph Applegate <sb-x@users.sourceforge.net>
+	* Minor improvements made to how the party follows, in Party, PathFinder
+	  and ZPath. They are a little more jumpy now, but that will be fixed in
+	  the future. PathFinder path isn't cleared unless dest changes.
+	* Timeouts added when you enter a dungon or vehicle, use a ladder, or
+	  walk to a vehicle. If the party isn't at the target within a limited
+	  number of moves, they will be moved there. Original U6 did this too.
+	* Fixed infinite loop bug in money exchange with Teri at the mint.
+	  (and potentially other NPCs) [ 841963 ]
+	* New configuration options: party_all_the_time allows you to add/remove
+	  anyone in the world to/from your party if you can talk to them (for
+	  test purposes only of course ;)) and enable_hackmove lets any object
+	  get moved with the mouse.
+	* Karma is now reduced when taking objects owned by someone else (but
+	  some objects don't have their OK_TO_TAKE flag set when they should).
+	* Unusable actors aren't used. An object at the same location is always
+	  used first.
+	* New method in MapWindow to check if "in_dungeon_level()".
+	* Party: Besides changes to following, new is_leader() method checks to
+	  see if an actor is the party leader. Actor::set_in_party() is called
+	  for maintenance when actors join/leave.
+	* Actor U6Actor: Move counter added to help pathfinders, so
+	  that actors may only walk a limited number of spaces per turn. This is
+	  really touchy, so any future code changes that affect actor movement
+	  should be done carefully. Forced moves won't check/alter the counter,
+	  and vehicles have no move limit.
+	* Fixed a glitch in set_direction(uint8) that wasn't updating direction
+	  at all in some cases. But the actors now appear to loop walking frames
+	  incorrectly. (don't know if this is a new issue)
+	* Worktype location added to keep actors within a small area around
+	  their schedule destination. *Actor::set_worktype() updates location.*
+	  The activities Beg and Wander are now limited to a small area.
+	* Player: Had to add a workaround for above movecounter limitation, so
+	  that player can always move.
+	* Karma add/subtract functions given default values.
+	* TimedPartyMove TimedPartMoveToVehicle: Fix for walking to moongates
+	  now uses new Actor::is_nearby() test.
+	* ActorManager: Don't do scheduled activities if in the party.
+	* UseCode: Holy flames can't be doused.
+	  Object numbers of fire,poison,sleep,protection fields added.
+
 2003-11-28  Eric Fry <efry@users.sourceforge.net>
 	* Added proper check when using orb of moons. You can only use the
 	  orb after saying 'orb' to Lord British.

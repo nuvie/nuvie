@@ -158,7 +158,6 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_KP3   :
 			move(1,1);
 			break;
-
 		case SDLK_KP8   :
 			move(0,-1);
 			break;
@@ -171,6 +170,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_KP6   :
 			move(1,0);
 			break;
+
 		//	standard arrow keys
 		case SDLK_UP    :
 			move(0,-1);
@@ -490,6 +490,14 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
             }
            else
              pc->inventory_add_object(obj);
+          // object is someone else's
+          if(!(obj->status & OBJ_STATUS_OK_TO_TAKE))
+          {
+             scroll->display_string("\n\nStealing!!!"); // or "Stop Thief!!!"
+             player->subtract_karma();
+          }
+          obj->status |= OBJ_STATUS_OK_TO_TAKE; // move to DROP
+          //obj->status &= ~OBJ_STATUS_TEMPORARY; // move to DROP
          }
       else
          scroll->display_string("\n\nThe total is too heavy.");
@@ -519,27 +527,33 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  Map *map = Game::get_game()->get_game_map();
  uint16 x,y;
  uint8 level;
+ bool using_actor = false;
 
  player->get_location(&x,&y,&level);
-
+ obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
  actor = map->get_actor((uint16)(x+rel_x), (uint16)(y+rel_y), level);
- if(actor && actor->is_visible())
+ if(!obj && actor && actor->is_visible())
    {
     obj = actor->make_obj();
+    using_actor = true;
    }
- else
-    obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
 
  if(obj)
  {
-  scroll->display_string(obj_manager->look_obj(obj));
-  scroll->display_string("\n");
-
-  if(usecode->can_use(obj))
+  bool can_use = usecode->can_use(obj);
+  if(!using_actor || can_use)
+  {
+   scroll->display_string(obj_manager->look_obj(obj));
+   scroll->display_string("\n");
+  }
+  if(can_use)
    usecode->use_obj(obj, player->get_actor());
   else
   {
-   scroll->display_string("\nNot usable\n");
+   if(using_actor)
+      scroll->display_string("nothing\n");
+   else
+      scroll->display_string("\nNot usable\n");
    fprintf(stderr, "Object %d:%d\n", obj->obj_n, obj->frame_n);
   }
  }
@@ -555,7 +569,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  }
  map_window->updateBlacking();
  
- if(actor) //we were using an actor so free the temp Obj
+ if(using_actor) //we were using an actor so free the temp Obj
   obj_manager->delete_obj(obj);
 
  return true;
@@ -608,9 +622,7 @@ bool Event::select_obj(sint16 rel_x, sint16 rel_y)
 bool Event::look()
 {
  bool can_search = true; // can object be searched? return from LOOK
- //uint16 ax, ay; // player location
- //uint8 az;
- Obj *obj;
+ Obj *obj = map_window->get_objAtCursor();
  Actor *actor = map_window->get_actorAtCursor();
  sint16 p_id = -1; // party member number of actor
  char weight_string[26];
@@ -622,16 +634,20 @@ bool Event::look()
    can_search = false;
  }
  scroll->display_string("Thou dost see ");
- // show real actor name and portrait if in avatar's party
- if(actor && ((p_id = player->get_party()->get_member_num(actor)) >= 0))
-     scroll->display_string(player->get_party()->get_actor_name(p_id));
- else
-     scroll->display_string(map_window->lookAtCursor());
- obj = map_window->get_objAtCursor();
- if(obj && !actor) // don't display weight or do usecode for obj under actor
+ if(actor)
+   {
+    Game::get_game()->get_actor_manager()->print_actor(actor); //DEBUG
+    // show real actor name and portrait if in avatar's party
+    if((p_id = player->get_party()->get_member_num(actor)) >= 0)
+       scroll->display_string(player->get_party()->get_actor_name(p_id));
+    else
+       scroll->display_string(map_window->lookAtCursor());
+   }
+ else if(obj) // don't display weight or do usecode for obj under actor
   {
    obj_manager->print_obj(obj,false); //DEBUG
-   
+   scroll->display_string(map_window->lookAtCursor());
+
    weight = obj_manager->get_obj_weight(obj);
    if(weight != 0)
      {
@@ -642,6 +658,8 @@ bool Event::look()
   if(usecode->can_look(obj))
      can_search = usecode->look_obj(obj, player->get_actor());
   }
+ else // ground
+   scroll->display_string(map_window->lookAtCursor());
  scroll->display_string("\n");
  // search
  MapCoord player_loc(player->get_actor()->get_location()), target_loc(map_window->get_cursorCoord());

@@ -57,6 +57,7 @@ Converse::Converse()
 
     active = false;
     variables = NULL;
+    party_all_the_time = false;
 }
 
 
@@ -74,6 +75,8 @@ Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
     views = v;
     objects = o;
     gametype = t;
+
+    cfg->value("config/party_all_the_time", party_all_the_time);
 }
 
 
@@ -470,6 +473,38 @@ void Converse::unwait()
 }
 
 
+/* Check talk input and determine if it needs to be handled before being passed
+ * to the interpreter.
+ * Returns false if the conversation should be stopped.
+ */
+bool Converse::override_input()
+{
+    if(in_str->empty())
+        in_str->assign("bye");
+    else if((*in_str) == "look")
+    {
+        print("You see ");
+        print(desc);
+        script->seek(script->pos() - 1); // back to ASK command
+    }
+    else if(party_all_the_time && (*in_str) == "join")
+    {
+        if(!player->get_party()->contains_actor(npc))
+            player->get_party()->add_actor(npc);
+        print("\"Friends of Nuvie? Sure, I'll come along!\"\n");
+        return(false);
+    }
+    else if(party_all_the_time && (*in_str) == "leave")
+    {
+        if(player->get_party()->contains_actor(npc))
+            player->get_party()->remove_actor(npc);
+        print("\"For Nuvie!\"\n");
+        return(false);
+    }
+    return(true);
+}
+
+
 /* If not waiting, continue the active script. If waiting for input, check i/o
  * object (scroll), taking the input if available. Else wait until the scroll's
  * page is unbroken.
@@ -483,13 +518,10 @@ void Converse::continue_script()
         else if(need_input && input())
         {
             print("\n\n");
-            if(in_str->empty())
-                in_str->assign("bye");
-            else if((*in_str) == "look")
+            if(!override_input())
             {
-                print("You see ");
-                print(desc);
-                script->seek(script->pos() - 1); // back to ASK command
+                stop();
+                return;
             }
             // assign value to declared input variable
             if(conv_i->var_input())

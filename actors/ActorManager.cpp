@@ -26,6 +26,8 @@
 #include "Actor.h"
 #include "U6Actor.h"
 #include "TileManager.h"
+#include "U6misc.h"
+#include "U6LList.h"
 #include "ActorManager.h"
 #include "misc.h"
 #include "NuvieIOFile.h"
@@ -298,7 +300,8 @@ void ActorManager::updateActors()
     game_hour = cur_hour;
 
     for(i=0;i<256;i++)
-      actors[i]->updateSchedule(cur_hour);
+      if(!actors[i]->in_party) // don't do scheduled activities while partying
+        actors[i]->updateSchedule(cur_hour);
    }
 
  for(i=0;i<256;i++)
@@ -355,3 +358,127 @@ bool ActorManager::loadActorSchedules()
  return true;
 }
 
+
+/* Print Actor data to stdout.
+ */
+void ActorManager::print_actor(Actor *actor)
+{
+    printf("\n");
+    printf("%s at %x, %x, %x\n", look_actor(actor), actor->x, actor->y, actor->z);
+    printf("id_n: %d\n", actor->id_n);
+
+    printf("obj_n: %03d    frame_n: %d\n", actor->obj_n, actor->frame_n);
+    printf("base_obj_n: %03d    old_frame_n: %d\n", actor->base_obj_n, actor->old_frame_n);
+
+    uint8 direction = actor->direction;
+    printf("direction: %d (%s)\n", direction, (direction==ACTOR_DIR_U)?"north":
+                                              (direction==ACTOR_DIR_R)?"east":
+                                              (direction==ACTOR_DIR_D)?"south":
+                                              (direction==ACTOR_DIR_L)?"west":"???");
+    printf("walk_frame: %d\n", actor->walk_frame);
+
+    printf("can_twitch: %s\n", actor->can_twitch ? "true" : "false");
+//    printf("alive: %s\n", actor->alive ? "true" : "false");
+    printf("in_party: %s\n", actor->in_party ? "true" : "false");
+    printf("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
+//    printf("met_player: %s\n", actor->met_player ? "true" : "false");
+
+    printf("moves: %d\n", actor->moves);
+
+    const char *wt_string = get_worktype_string(actor->worktype);
+    if(!wt_string) wt_string = "???";
+    printf("worktype: 0x%02x/%03d (%s)\n", actor->worktype, actor->worktype, wt_string);
+
+    printf("NPC stats:\n");
+    printf(" level: %d    exp: %d    hp: %d / %d\n", actor->level, actor->exp,
+           actor->hp, actor->get_maxhp());
+    printf(" strength: %d    dex: %d    int: %d\n", actor->strength, actor->dex,
+           actor->intelligence);
+    printf(" magic: %d\n", actor->magic);
+
+    uint8 combat_mode = actor->combat_mode;
+    printf("combat_mode: %d (%s)\n", combat_mode,
+           (combat_mode == 0x02) ? "command"
+           : (combat_mode == 0x03) ? "front"
+           : (combat_mode == 0x04) ? "rear"
+           : (combat_mode == 0x05) ? "flank"
+           : (combat_mode == 0x06) ? "berserk"
+           : (combat_mode == 0x07) ? "retreat"
+           : (combat_mode == 0x08) ? "assault" : "???");
+
+    printf("NPC flags: ");
+    print_b(actor->flags);
+    printf("\n");
+//    printf("Status flags: ");
+//    print_b();
+//    printf("\n");
+
+    uint32 inv = actor->inventory_count_objects(true);
+    if(inv)
+    {
+        printf("Inventory (+readied): %d objects\n", inv);
+        U6LList *inv_list = actor->get_inventory_list();
+        for(U6Link *link = inv_list->start(); link != NULL; link=link->next)
+        {
+            Obj *obj = (Obj *)link->data;
+            printf(" %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
+                   obj_manager->look_obj(obj), obj->obj_n, obj->frame_n, obj->quality,
+                   obj->qty, obj_manager->get_obj_weight(obj, false));
+        }
+        printf("(weight %f / %f)\n", actor->get_inventory_weight(),
+               actor->inventory_get_max_weight());
+    }
+    if(actor->sched && *actor->sched)
+    {
+        printf("Schedule:\n");
+        Schedule **s = actor->sched;
+        uint32 sp = 0;
+        do
+        {
+            wt_string = get_worktype_string(s[sp]->worktype);
+            if(!wt_string) wt_string = "???";
+            if(sp == actor->sched_pos && s[sp]->worktype == actor->worktype)
+                printf("*%d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)*\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
+            else
+                printf(" %d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
+        } while(s[++sp]);
+    }
+
+    if(!actor->surrounding_objects.empty())
+        printf("Actor has multiple tiles\n");
+    if(actor->pathfinder)
+        printf("Actor is walking\n");
+    printf("\n");
+}
+
+
+/* Returns name of NPC worktype/activity (game specific) or NULL.
+ */
+const char *ActorManager::get_worktype_string(uint32 wt)
+{
+    const char *wt_string = NULL;
+    if(wt == WORKTYPE_U6_IN_PARTY) wt_string = "in_party";
+    else if(wt == WORKTYPE_U6_ANIMAL_WANDER) wt_string = "a_wander";
+    else if(wt == WORKTYPE_U6_WALK_TO_LOCATION) wt_string = "walkto";
+    else if(wt == WORKTYPE_U6_FACE_NORTH) wt_string = "face_n";
+    else if(wt == WORKTYPE_U6_FACE_SOUTH) wt_string = "face_s";
+    else if(wt == WORKTYPE_U6_FACE_EAST) wt_string = "face_e";
+    else if(wt == WORKTYPE_U6_FACE_WEST) wt_string = "face_w";
+    else if(wt == WORKTYPE_U6_WALK_NORTH_SOUTH) wt_string = "v_walk";
+    else if(wt == WORKTYPE_U6_WALK_EAST_WEST) wt_string = "h_walk";
+    else if(wt == WORKTYPE_U6_WANDER_AROUND) wt_string = "wander";
+    else if(wt == WORKTYPE_U6_WORK) wt_string = "work_move";
+    else if(wt == WORKTYPE_U6_SLEEP) wt_string = "sleep";
+    else if(wt == WORKTYPE_U6_PLAY_LUTE) wt_string = "play_lute";
+    else if(wt == WORKTYPE_U6_BEG) wt_string = "beg";
+    else if(wt == 0x02) wt_string = "player";
+    else if(wt >= 0x03 && wt <= 0x08) wt_string = "combat";
+    else if(wt == 0x8e) wt_string = "waiter?";
+    else if(wt == 0x92) wt_string = "work_still";
+    else if(wt == 0x93) wt_string = "eat";
+    else if(wt == 0x94) wt_string = "farmer";
+    else if(wt == 0x98) wt_string = "bell";
+    else if(wt == 0x99) wt_string = "spar";
+    else if(wt == 0x9a) wt_string = "mousing";
+    return(wt_string);
+}

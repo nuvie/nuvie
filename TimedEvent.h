@@ -69,6 +69,7 @@ protected:
     Party *party; // the party
     MapCoord *dest; // destination, where all actors walk to and disappear
     MapCoord *target; // where they reappear at the new plane
+    uint32 moves_left; // walk timeout
 public:
     TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay = 500);
     ~TimedPartyMove();
@@ -85,6 +86,17 @@ class TimedPartyMoveToVehicle : public TimedPartyMove
 public:
     TimedPartyMoveToVehicle(MapCoord *d, Obj *obj, uint32 step_delay = 125);
     void timed(uint32 evtime);
+};
+
+
+class TimedRTC : public TimedEvent
+{
+public:
+    TimedRTC() : TimedEvent(1000) { repeat = true; }
+    void timed(uint32 evtime)
+    {
+//        Game::get_game()->get_player()->pass();
+    }
 };
 
 

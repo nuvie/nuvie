@@ -25,7 +25,6 @@
 #include "U6LList.h"
 #include "Game.h"
 #include "GameClock.h"
-#include "Map.h"
 #include "MapWindow.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
@@ -58,7 +57,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  sched_pos = 0;
  
  memset(readied_objects,0,sizeof(readied_objects));
- 
+ moves = 1;
 }
  
 Actor::~Actor()
@@ -102,15 +101,21 @@ bool Actor::is_alive()
 }
 
 
-/* Returns true if another NPC `n' is in proximity to this one.
+/* Returns true if another NPC `n' is in proximity to location `where'.
  */
-bool Actor::is_nearby(Actor *other)
+bool Actor::is_nearby(MapCoord &where, uint8 thresh)
 {
-    MapCoord here(x,y,z), where(0,0,0);
-    other->get_location(&where.x, &where.y, &where.z);
-    if(here.xdistance(where) < 5 && here.ydistance(where) < 5 && z == where.z)
+    MapCoord here(x, y, z);
+    if(here.xdistance(where) <= thresh && here.ydistance(where) <= thresh && z == where.z)
         return(true);
     return(false);
+}
+
+
+bool Actor::is_nearby(Actor *other)
+{
+    MapCoord there(other->get_location());
+    return(is_nearby(there));
 }
 
 
@@ -189,40 +194,38 @@ void Actor::set_direction(uint8 d)
  */
 void Actor::set_direction(sint16 rel_x, sint16 rel_y)
 {
-    if(rel_x == 0 && rel_y == 0) // nowhere
-        return;
-    if(rel_x == 0) // up,down
-        set_direction(rel_y < 0 ? ACTOR_DIR_U : ACTOR_DIR_D);
-    else if(rel_y == 0) // left,right
-        set_direction(rel_x < 0 ? ACTOR_DIR_L : ACTOR_DIR_R);
+    uint8 new_direction = direction;
+    if(rel_x == 0 && rel_y == 0) // nowhere (just update frame)
+        new_direction = direction;
+    else if(rel_x == 0) // up or down
+        new_direction = (rel_y < 0) ? ACTOR_DIR_U : ACTOR_DIR_D;
+    else if(rel_y == 0) // left or right
+        new_direction = (rel_x < 0) ? ACTOR_DIR_L : ACTOR_DIR_R;
+// Add 2 to current direction if it is opposite the new direction
     else if(rel_x < 0 && rel_y < 0) // up-left
     {
         if(direction != ACTOR_DIR_U && direction != ACTOR_DIR_L)
-            set_direction(direction + 2);
-        else
-            set_direction(direction);
+            new_direction = direction + 2;
     }
     else if(rel_x > 0 && rel_y < 0) // up-right
     {
         if(direction != ACTOR_DIR_U && direction != ACTOR_DIR_R)
-            set_direction(direction + 2);
-        else
-            set_direction(direction);
+            new_direction = direction + 2;
     }
     else if(rel_x < 0 && rel_y > 0) // down-left
     {
         if(direction != ACTOR_DIR_D && direction != ACTOR_DIR_L)
-            set_direction(direction + 2);
-        else
-            set_direction(direction);
+            new_direction = direction + 2;
     }
     else if(rel_x > 0 && rel_y > 0) // down-right
     {
         if(direction != ACTOR_DIR_D && direction != ACTOR_DIR_R)
-            set_direction(direction + 2);
-        else
-            set_direction(direction);
+            new_direction = direction + 2;
     }
+    // wrap
+    if(new_direction >= 4)
+        new_direction -= 4;
+    set_direction(new_direction);
 }
 
 void Actor::face_location(MapCoord &loc)
@@ -236,7 +239,6 @@ void Actor::face_location(uint16 lx, uint16 ly)
 {
     set_direction(lx - x, ly - y);
 }
-
 #if 0
 /* Set direction towards an x,y location on the map.
  */
@@ -309,6 +311,10 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
 
 bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
+ // no moves left (FIXME: ignore for any player-actor)
+ if(!force_move && moves == 0 && id_n != 0) // vehicle actor has no move limit
+    return false;
+
  // blocking actors are checked for later
  if(!force_move && !check_move(new_x, new_y, new_z, ACTOR_IGNORE_OTHERS))
     return false;
@@ -322,25 +328,10 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
        return(false);
   }
 
-
- // switch position with party members (FIXME: move to own method?)
+ // switch position with party members
  Actor *other = map->get_actor(new_x, new_y, new_z);
- if(!force_move && other) // not forcing move, check actor
- {
-     Party *party = Game::get_game()->get_party();
-     // don't switch with party leader or actors who have moved (unless leader)
-     if(!party->contains_actor(other) || (party->get_member_num(other) == 0)
-        || (other->moved && (party->get_member_num(this) != 0)))
-        {
-         if(other->is_visible() && other->is_passable() == false)
-           return false; // blocked by actor
-        }
-     else
-       {
-        other->face_location(x, y);
-        other->move(x, y, z, ACTOR_FORCE_MOVE);
-       }
- }
+ if(other && other->is_visible() && !force_move && !other->push(this, ACTOR_PUSH_HERE, x, y, z))
+    return false; // blocked by actor
 
  // move
  x = new_x;
@@ -348,27 +339,30 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  z = new_z;
 
  can_twitch = true;
-  
+ if(!force_move && moves > 0)
+    --moves;
+
  // post-move
-/*
- if(obj)
-  {
-   if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
-     frame_n = (obj->frame_n * 4) + 3;
-  }
-*/
- // re-center map if actor is player character
+ // update known location of leader, for party members
  Game *game = Game::get_game();
+ if(in_party)
+ {
+    Party *party = game->get_party();
+    uint8 party_member = party->get_member_num(this);
+    if(party_member != 0)
+        party->find_leader(party_member);
+ }
+ // re-center map if actor is player character
  if(id_n == game->get_player()->get_actor()->id_n && !game->get_player()->get_uncontrolled())
     game->get_map_window()->centerMapOnActor(this);
- moved = true;
  return true;
 }
 
 
 void Actor::update()
 {
- moved = false;
+    if(moves == 0)
+        moves = 1;
 /*
  uint8 new_direction;
 
@@ -400,6 +394,7 @@ void Actor::update()
     }
   }
 */
+ //if(!in_party) // don't do scheduled activities while partying
  //updateSchedule();
  if(pathfinder)
  {
@@ -464,8 +459,35 @@ void Actor::stop_walking()
 
 void Actor::set_in_party(bool state)
 {
- in_party = state;
+    in_party = state;
+    stop_walking();
+    if(state == true) // joined
+    {
+//        obj_n = base_obj_n; U6Actor::set_worktype
+        can_twitch = true;
+        set_worktype(0x01); // U6_IN_PARTY
+    }
+    else // left
+    {
+#if 0 /* CRASHING */
+        // drop everything
+        U6LList *inv = get_inventory_list();
+        for(U6Link *link = inv->start(); link != NULL; link = link->next)
+        {
+            Obj *obj = (Obj *)link->data;
+            obj->x = x; obj->y = y; obj->z = z;
+            if(obj->status & 0x18)
+                remove_readied_object(obj);
+//            obj->status &= ~OBJ_STATUS_IN_INVENTORY;
+            obj->status |= OBJ_STATUS_OK_TO_TAKE;
+            obj_manager->add_obj(obj, true); // add to map
+        }
+        inv->removeAll();
+#endif
+        set_worktype(0x8f); // U6_WANDER_AROUND
+    }
 }
+
 
 U6LList *Actor::get_inventory_list()
 {
@@ -565,6 +587,7 @@ Obj *Actor::inventory_get_readied_object(uint8 location)
 bool Actor::inventory_add_object(Obj *obj)
 {
  U6LList *inventory = get_inventory_list();
+ obj->status |= OBJ_STATUS_IN_INVENTORY;
  return inventory->addAtPos(0, obj);
 }
  
@@ -600,6 +623,7 @@ bool Actor::inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality)
      obj->obj_n = obj_n;
      obj->quality = quality;
      obj->qty = newqty <= 255 ? newqty : 255;
+     obj->status |= OBJ_STATUS_IN_INVENTORY;
      inventory->addAtPos(0, obj);
      newqty -= obj->qty;
    }
@@ -626,7 +650,10 @@ Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *contai
     {
         oqty = obj->qty ? obj->qty : 1;
         if(oqty <= (qty - deleted))
+        {
+            obj->status &= ~OBJ_STATUS_IN_INVENTORY;
             inventory->remove(obj);
+        }
         else
             obj->qty = oqty - qty;
         deleted += oqty;
@@ -640,6 +667,9 @@ bool Actor::inventory_remove_obj(Obj *obj)
  U6LList *inventory;
 
  inventory = get_inventory_list();
+ if((obj->status & 0x18) == 0x18)
+    remove_readied_object(obj);
+ obj->status &= ~OBJ_STATUS_IN_INVENTORY;
  return inventory->remove(obj);
 }
  
@@ -819,7 +849,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     printf("#%04d %03x,%03x,%x hour %2d day of week %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->day_of_week,sched[i]->worktype);
 #endif
    }
-   
+
  sched[i] = NULL;
  
 /*
@@ -839,7 +869,7 @@ bool Actor::updateSchedule(uint8 hour)
 {
  uint8 day_of_week;
  uint16 new_pos;
- 
+
  //hour = clock->get_hour();
  day_of_week = clock->get_day_of_week();
  
@@ -857,6 +887,7 @@ bool Actor::updateSchedule(uint8 hour)
                      sched[sched_pos]->z);
  lwalk(sched_dest);
  set_worktype(sched[sched_pos]->worktype);
+ work_location = sched_dest;
  return true;
 }
 
@@ -959,7 +990,9 @@ inline uint16 Actor::getSchedulePos(uint8 hour)
 void Actor::set_worktype(uint8 new_worktype)
 {
  worktype = new_worktype;
- 
+ work_location.x = x;
+ work_location.y = y;
+ work_location.z = z;
  return ;
 }
 
@@ -1005,7 +1038,48 @@ void Actor::clear()
  y = 0;
  z = 0;
  hide();
- worktype = 0;
- 
+ Actor::set_worktype(0);
+
 }
 
+
+/* Get pushed by `pusher' to location determined by `where' (with optional
+ * coordinates).
+ */
+bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
+{
+    Party *party = Game::get_game()->get_party();
+    Actor *player_actor = Game::get_game()->get_player()->get_actor();
+    // prevent multiple pushes when move was forced (and didn't check moves)
+    if(moves == 0 && pusher != player_actor)
+        return(false);
+    if(where == ACTOR_PUSH_HERE)
+    {
+        MapCoord to(tx, ty, tz), from(get_location());
+        if(to.distance(from) > 1 || z != tz)
+            return(false);
+        Actor *other = map->get_actor(tx, ty, tz);
+        if(!other || !other->is_visible() || (in_party && other->in_party && this != player_actor))
+        {
+            // move only if both in party
+            face_location(to.x, to.y);
+            bool push_ret = move(to.x, to.y, to.z, ACTOR_FORCE_MOVE);
+            if(push_ret && moves > 0)
+                --moves; // we can't get pushed again this turn
+            return(push_ret);
+        }
+    }
+    else if(where == ACTOR_PUSH_ANYWHERE)
+    {
+// FIXME: scan all neigboring directions for an opening and go there
+    }
+    else if(where == ACTOR_PUSH_FORWARD)
+    {
+// FIXME: only move forward, assuming tx,ty is behind actor (or use pusher coords?)
+    }
+    else if(where == ACTOR_PUSH_TO)
+    {
+// FIXME: replaces HERE, HERE will use pusher's loc
+    }
+    return(false);
+}

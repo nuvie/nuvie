@@ -27,6 +27,7 @@
 #include "Game.h"
 #include "U6UseCode.h"
 #include "PathFinder.h"
+#include "MsgScroll.h"
 #include "U6Actor.h"
 
 #include "Party.h"
@@ -244,6 +245,8 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
  bool ret;
  sint16 rel_x, rel_y;
+ MsgScroll *scroll = Game::get_game()->get_scroll();
+ Party *party = Game::get_game()->get_party();
  
  if(actor_type->has_surrounding_objs)
    remove_surrounding_objs_from_map();
@@ -275,6 +278,35 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
             frame_n = 8 + 3; //sitting facing south.
             direction = 2;
             can_twitch = false;
+           }
+         if(obj->obj_n == OBJ_U6_FIRE_FIELD) // ouch
+           {
+            //hit animation
+            //-?? hp
+            if(in_party)
+               scroll->message("Ouch!\n");
+           }
+         if(obj->obj_n == OBJ_U6_POISON_FIELD/* && not poisoned*/) // ick
+           {
+            //hit animation
+            if(in_party)
+              {
+               scroll->display_string(party->get_actor_name(party->get_member_num(this)));
+               scroll->display_string(" poisoned!\n");
+               scroll->display_prompt();
+              }
+//          Avatar:
+//          >%s poisoned!
+//
+//          Avatar:
+//          >
+           }
+         if(obj->obj_n == OBJ_U6_SLEEP_FIELD) // Zzz
+           {
+            //hit animation
+            //fall asleep (change worktype?)
+            if(in_party)
+               scroll->message("Zzz...\n");
            }
         }
      }
@@ -353,7 +385,8 @@ void U6Actor::twitch()
 
 void U6Actor::preform_worktype()
 {
-
+ if(in_party) // do nothing here
+  return;
  switch(worktype)
   {
    case WORKTYPE_U6_FACE_NORTH :
@@ -457,17 +490,23 @@ void U6Actor::wt_walk_straight()
 void U6Actor::wt_wander_around()
 {
  uint8 new_direction;
- 
+ sint32 xdist = 0, ydist = 0;
+ if(work_location.x || work_location.y)
+   {
+    xdist = x - work_location.x;
+    ydist = y - work_location.y;
+   }
+
  if(NUVIE_RAND()%8 == 1)
    {
     new_direction = NUVIE_RAND()%4;
     set_direction(new_direction);
     switch(new_direction)
       {
-       case 0 : moveRelative(0,-1); break;
-       case 1 : moveRelative(1,0); break;
-       case 2 : moveRelative(0,1); break;
-       case 3 : moveRelative(-1,0); break;
+       case 0 : if(ydist > -4) moveRelative(0,-1); break;
+       case 1 : if(xdist < +4) moveRelative(1,0); break;
+       case 2 : if(ydist < +4) moveRelative(0,1); break;
+       case 3 : if(xdist > -4) moveRelative(-1,0); break;
       }
    }
 
@@ -482,6 +521,9 @@ void U6Actor::wt_beg()
     static uint8 mode = 0;// 0 = waiting for target, 1 = following,
     Player *player = Game::get_game()->get_player();          // 2 = just loiter
     Actor *actor = player->get_actor();
+    uint32 dist_from_start = 0;
+    if(work_location.x || work_location.y)
+        dist_from_start = get_location().distance(work_location);
 
     if(mode == 0)
         if(is_nearby(actor)) // look for victi... er, player
@@ -494,19 +536,26 @@ void U6Actor::wt_beg()
         for(uint32 p = 0; p < party->get_party_size(); p++)
         {
             party->get_actor(p)->get_location(&them.x, &them.y, &them.z);
-            if(me.xdistance(them) <= 1 && me.ydistance(them) <= 1
-               && z == them.z)
+            if(me.distance(them) <= 1 && z == them.z)
             {
                 // talk to me :)
                 stop_walking();
-                Game::get_game()->get_converse()->start(this);
+                if(Game::get_game()->get_converse()->start(this))
+                {
+                    actor->face_actor(this);
+                    face_actor(actor);
+                }
                 mode = 2;
                 return; // done
             }
         }
         // get closer
-        actor->get_location(&them.x, &them.y, &them.z);
-        swalk(them, 1);
+        if(dist_from_start < 4)
+        {
+            actor->get_location(&them.x, &them.y, &them.z);
+            swalk(them, 1);
+        }
+        else swalk(work_location, 1);
     }
     else
         wt_wander_around();

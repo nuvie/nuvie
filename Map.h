@@ -73,7 +73,8 @@ public:
     union { uint16 y; sint16 sy; };
     uint8 z; // plane
 
-    MapCoord(uint16 nx, uint16 ny, uint16 nz) { x = nx; y = ny; z = nz; }
+    MapCoord(uint16 nx, uint16 ny, uint16 nz = 0) { x = nx; y = ny; z = nz; }
+    MapCoord() : x(0), y(0), z(0) { }
 
     uint32 xdistance(MapCoord &c2) { return(abs(c2.x - x)); }
     uint32 ydistance(MapCoord &c2) { return(abs(c2.y - y)); }
@@ -91,6 +92,7 @@ public:
 
     bool operator==(MapCoord &c2) {return(x == c2.x && y == c2.y && z == c2.z);}
     bool operator!=(MapCoord &c2) { return(!(*this == c2)); }
+//    MapCoord operator+(MapCoord &c2) { return(abs_coords(c2)); }
 };
 
 

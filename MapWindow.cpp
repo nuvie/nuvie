@@ -56,7 +56,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  tmp_buf = NULL;
 
  selected_obj = NULL;
-   
+ selected_actor = NULL;
+ config->value("config/enable_hackmove", hackmove);
 }
 
 MapWindow::~MapWindow()
@@ -854,7 +855,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
  
  if(message == GUI_DRAG_OBJ)
    {
-    if(tmpBufTileIsBlack(x,y))
+    if(tmpBufTileIsBlack(x,y) && !hackmove)
       {
        printf("Cannot drop onto nothing!");
        return false;
@@ -865,13 +866,13 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     x = (cur_x + x) % map_width;
     y = (cur_y + y) % map_width;
 
-    if(map->is_passable(x,y,cur_level))
+    if(map->is_passable(x,y,cur_level) || hackmove)
 	{
 	  LineTestResult result;
 
       // make sure the player can reach the drop point
 	  Actor* player = actor_manager->get_player();
-	  if (!map->lineTest(player->x, player->y, x, y, cur_level, LT_HitUnpassable, result))
+	  if (!map->lineTest(player->x, player->y, x, y, cur_level, LT_HitUnpassable, result) || hackmove)
 	  {
         return true;
 	  }
@@ -887,7 +888,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 {
  uint16 map_width;
- Obj *obj, *target_obj;
+ Obj *obj = NULL, *target_obj;
  
  x -= area.x;
  y -= area.y;
@@ -902,7 +903,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
     //printf("Drop (%x,%x,%x)\n", x, y, cur_level);
     obj = (Obj *)data;
     target_obj = obj_manager->get_obj(x,y, cur_level);
-    if(target_obj && target_obj->container) //drop object into a container. FIX for locked chests.
+    if(obj && target_obj && target_obj->container) //drop object into a container. FIX for locked chests.
       {
        target_obj->container->addAtPos(0,obj);
       }
@@ -924,7 +925,6 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 GUI_status	MapWindow::MouseDown (int x, int y, int button)
 {
 	//printf ("MapWindow::MouseDown, button = %i\n", button);
-
 	Obj	*obj = get_objAtMousePos (x, y);
 
 	if (!obj)
@@ -932,7 +932,7 @@ GUI_status	MapWindow::MouseDown (int x, int y, int button)
 
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
-	if (weight == 0)
+	if (weight == 0 && !hackmove)
 		return	GUI_PASS;
 
 	selected_obj = obj;
@@ -966,15 +966,13 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 		LineTestResult result;
 		Actor* player = actor_manager->get_player();
 
-		if (map->lineTest(player->x, player->y, wx, wy, cur_level, LT_HitUnpassable, result))
+		if (map->lineTest(player->x, player->y, wx, wy, cur_level, LT_HitUnpassable, result) && !hackmove)
 			// something was in the way, so don't allow a drag
 			return GUI_PASS;
-
 		dragging = true;
 		tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
 		return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
 	}
-
 	return	GUI_PASS;
 }
 

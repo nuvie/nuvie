@@ -146,7 +146,8 @@ void U6UseCode::init_objects()
     add_usecode(OBJ_U6_FIREPLACE, 255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
     add_usecode(OBJ_U6_CANDLE,    255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
     add_usecode(OBJ_U6_CANDELABRA,255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
-    add_usecode(OBJ_U6_BRAZIER,   255,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
+    add_usecode(OBJ_U6_BRAZIER,   0,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
+    add_usecode(OBJ_U6_BRAZIER,   1,0,USE_EVENT_USE,&U6UseCode::use_firedevice);
 
     add_usecode(OBJ_U6_ORB_OF_THE_MOONS,255,0,USE_EVENT_USE,&U6UseCode::use_orb);
     add_usecode(OBJ_U6_RED_GATE,  1,0,USE_EVENT_PASS,&U6UseCode::enter_red_moongate); //FIX we only want to go through frame_n 1
@@ -368,17 +369,18 @@ void U6UseCode::unlock_door(Obj *obj)
 bool U6UseCode::use_door(Obj *obj, uint8 ev)
 {
  Obj *key_obj;
- 
+ bool print = (actor_ref == player->get_actor());
+
  if(is_locked_door(obj)) // locked door
    {
     key_obj = player->get_actor()->inventory_get_object(OBJ_U6_KEY, obj->quality);
     if(key_obj != NULL) // we have the key for this door so lets unlock it.
       {
        unlock_door(obj);
-       scroll->display_string("\nunlocked\n");
+       if(print) scroll->display_string("\nunlocked\n");
       }
     else
-       scroll->display_string("\nlocked\n");
+       if(print) scroll->display_string("\nlocked\n");
 
     return true;
    }
@@ -387,18 +389,18 @@ bool U6UseCode::use_door(Obj *obj, uint8 ev)
    {
     if(!map->is_passable(obj->x,obj->y,obj->z) || map->actor_at_location(obj->x, obj->y, obj->z)) //don't close door if blocked
       {
-       scroll->display_string("\nNot now!\n");
+       if(print) scroll->display_string("\nNot now!\n");
       }
     else //close the door
       {
        obj->frame_n += 4;
-       scroll->display_string("\nclosed!\n");
+       if(print) scroll->display_string("\nclosed!\n");
       }
    }
  else
    {
     obj->frame_n -= 4;
-    scroll->display_string("\nopened!\n");
+    if(print) scroll->display_string("\nopened!\n");
    }
    
  return true;
@@ -428,7 +430,7 @@ bool U6UseCode::use_ladder(Obj *obj, uint8 ev)
     z = obj->z - 1;
    }
  MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
- party->walk(&ladder, &destination);
+ party->walk(&ladder, &destination, 100);
  return true;
 }
 
@@ -438,6 +440,7 @@ bool U6UseCode::use_passthrough(Obj *obj, uint8 ev)
  uint16 new_x, new_y;
  uint8 new_frame_n;
  char action_string[6]; // either 'Open' or 'Close'
+ bool print = (actor_ref == player->get_actor());
  
  new_x = obj->x;
  new_y = obj->y;
@@ -468,11 +471,14 @@ bool U6UseCode::use_passthrough(Obj *obj, uint8 ev)
     {
      obj_manager->move(obj, new_x, new_y, obj->z);
      obj->frame_n = new_frame_n;
-     scroll->display_string("\n");
-     scroll->display_string(action_string);
-     scroll->display_string(" the passthrough.\n");
+     if(print)
+       {
+        scroll->display_string("\n");
+        scroll->display_string(action_string);
+        scroll->display_string(" the passthrough.\n");
+       }
     }
- else
+ else if(print)
     scroll->display_string("\nNot now!\n");
   
  return true;
@@ -487,6 +493,7 @@ bool U6UseCode::use_switch(Obj *obj, uint8 ev)
  U6Link *link;
  uint16 target_obj_n = 0;
  char *message = NULL;
+ bool print = (actor_ref == player->get_actor());
 
  if(obj->obj_n == OBJ_U6_LEVER)
  {
@@ -536,13 +543,16 @@ bool U6UseCode::use_switch(Obj *obj, uint8 ev)
    }
  
  toggle_frame(obj);
- scroll->display_string(message);
+ if(print)
+   scroll->display_string(message);
  return true;
 }
 
 
 bool U6UseCode::use_firedevice(Obj *obj, uint8 ev)
 {
+    if(obj->obj_n == OBJ_U6_BRAZIER && obj->frame_n == 2)
+        return(false); // holy flames can't be doused
     if(obj->obj_n == OBJ_U6_FIREPLACE)
     {
         if(obj->frame_n == 1 || obj->frame_n == 3)
@@ -864,6 +874,8 @@ void U6UseCode::drawbridge_remove(uint16 x, uint16 y, uint8 level, uint16 *bridg
 
 bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
 {
+ if(actor_ref != player->get_actor())
+   return true;
  scroll->display_string("\n");
  scroll->display_string(obj_manager->get_obj_name(obj));
  if(lit)
@@ -1315,7 +1327,10 @@ bool U6UseCode::enter_dungeon(Obj *obj, uint8 ev)
           z -= 1;
 
         MapCoord exit(x, y, z);
-        party->walk(&entrance, &exit);
+        if(obj->obj_n == OBJ_U6_HOLE) // fall down hole faster
+            party->walk(&entrance, &exit, 100);
+        else
+            party->walk(&entrance, &exit);
         return(true);
     }
     else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
