@@ -20,11 +20,6 @@
 #include "U6Lzw.h"
 #include "Converse.h"
 
-// handling of the argument list
-#define get_val(AN, VI) ((VI >= 0) \
-                         ? args[AN][VI].val : args[AN][args[AN].size()-1].val)
-#define val_count(AN) (args[AN].size())
-
 using std::cerr;
 using std::cin;
 using std::endl;
@@ -54,7 +49,6 @@ void Converse::loadConv(std::string convfilename)
 Converse::~Converse()
 {
     delete src;
-    // FIXME: free and delete heap .. oops.. one doesn't exist yet :P
     if(active)
         this->stop();
 }
@@ -64,10 +58,11 @@ Converse::~Converse()
  * object to send output to and get input from.
  */
 Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
-                   MsgScroll *ioobj)
+                   MsgScroll *ioobj, ActorManager *actormgr)
 {
     config = cfg;
     scroll = ioobj;
+	actors = actormgr;
     interpreter = engine_type;
     src = 0; src_num = 0;
     npc = 0;
@@ -115,36 +110,51 @@ void Converse::seek_converse()
 }
 
 
-/* Handle script text. Print it, get it as keywords, or skip it.
+/* Returns requested value from the argument list, which may actually be at a
+ * variable location.
  */
-bool Converse::do_text()
+uint32 Converse::get_val(uint8 arg_i, sint8 val_i)
+{
+	if(val_i >= 0)
+        return(args[arg_i][val_i].valt != 0xb2
+			   ? args[arg_i][val_i].val : get_var(args[arg_i][val_i].val));
+	else // -1 = last value in argument
+	{
+        if(args[arg_i][args[arg_i].size()-1].valt != 0xb2)
+            return(args[arg_i][args[arg_i].size()-1].val);
+        else
+            return(get_var(args[arg_i][args[arg_i].size()-1].val));
+	}
+}
+
+
+/* Handle script text. Evaluate as output text, get as keywords, or skip.
+ */
+void Converse::collect_text(uint8 text_op = CONV_TEXTOP_PRINT)
 {
 // loop to print len
-// when symbol is encountered, print up to c, update p_strt
+// when symbol is encountered, collect up to c, update p_strt
 //  parse symbol
-//  print evaluated string
-// if p_strt is before c, print up to c
+//  collect evaluated string
+// if p_strt is before c, collect up to c
 //    int c = 0;
 //    unsigned char *p_strt = script_pt;
 //    while(c < print_len)
 //    {
 //    }
     int c;
+	output.resize(0);
     for(c = 0; !check_overflow(c) && is_print(peek(c)); c++);
     output.append((const char *)script_pt, (unsigned int)c);
     skip(c);
 
-    if(text_op == CONV_TEXTOP_PRINT && check_scope())
-        print();
-    else if(text_op == CONV_TEXTOP_KEYWORD)
-    {
-        keywords = output;
-        output.resize(0);
-        text_op = CONV_TEXTOP_PRINT;
-    }
-    else
-        output.resize(0);
-    return(true);
+	switch(text_op)
+	{
+		case CONV_TEXTOP_PRINT:
+			break;
+		case CONV_TEXTOP_KEYWORD:
+			break;
+	}
 }
 
 
@@ -189,17 +199,21 @@ bool Converse::check_keywords()
 
 
 /* Execute a command code from the parsed script, with optional arguments
- * already collected. Some commands have arguments that will be collected here.
+ * already collected.
  * Returns false if user input is requested, or the script has stopped, and true
  * otherwise.
  */
 bool Converse::do_cmd()
 {
     bool donext = true, ifcomp = false;
+	Actor *cnpc = 0;
+	uint8 flagnum = 0, flags = 0x00;
 #if 0
     fprintf(stderr, "Converse: cmd=0x%02x\n", cmd);
-    fprintf(stderr, "Converse: args:");
-    for(unsigned int a = 0; a < args.size(); a++)
+if(!args.empty() && !args[0].empty())
+{
+	fprintf(stderr, "Converse: args:");
+    for(unsigned int a = 0; a < args.size() && !args[a].empty(); a++)
     {
         fprintf(stderr, " (");
         for(unsigned int v = 0; v < args[a].size(); v++)
@@ -207,6 +221,7 @@ bool Converse::do_cmd()
         fprintf(stderr, ")");
     }
     fprintf(stderr, "\n");
+}
 #endif
     if(!check_scope())
         return(donext);
@@ -216,21 +231,33 @@ bool Converse::do_cmd()
             switch(get_val(0, -1))
             {
                 case 0x84: // val1 < val2
+					scroll->display_string("\n-if ? < ?-\n");
                     if((val_count(0) > 2) && get_val(0, 0) < get_val(0, 1))
                         ifcomp = true;
                     break;
                 case 0x85: // val1 != val2
+					scroll->display_string("\n-if ? != ?-\n");
                     if((val_count(0) > 2) && get_val(0, 0) != get_val(0, 1))
                         ifcomp = true;
                     break;
                 case 0x86: // val1 == val2
+					scroll->display_string("\n-if ? == ?-\n");
                     if((val_count(0) > 2) && get_val(0, 0) == get_val(0, 1))
                         ifcomp = true;
                     break;
-                case 0xab: // is flag(val1) of npc(val2) set?
-                    scroll->display_string("\n!:ifflag\n");
+                case 0xab: // is npc(val1) flag(val2) set?
+					scroll->display_string("\n-if npc(flag)-\n");
+					if(val_count(0) > 2 && get_val(0, 1) <= 7)
+					{
+						if(get_val(0, 0) == 0xeb)
+							cnpc = npc;
+						else
+							cnpc = actors->get_actor(get_val(0, 0));
+						if(cnpc->get_flags() & (1 << get_val(0, 1)))
+							ifcomp = true;
+					}
                     break;
-                case 0xc6: // is val0 # of npc in party?
+                case 0xc6: // is val1 # of npc in party?
                     scroll->display_string("\n!:ifinparty\n");
                     break;
                 case 0x81: // ??
@@ -241,6 +268,7 @@ bool Converse::do_cmd()
                     break;
             }
             enter_scope(ifcomp ? CONV_SCOPE_IF : CONV_SCOPE_IFELSE);
+			scroll->display_string(ifcomp ? "-TRUE" : "-FALSE" "-\n");
             break;
         case U6OP_ENDIF:
             break_scope();
@@ -252,25 +280,26 @@ bool Converse::do_cmd()
         case U6OP_ARGSTOP:
 //            std::cerr << "Converse: END-OF-ARGUMENT" << std::endl;
             break;
-        case U6OP_SETF:
-//            npcmanager->set_flag(get_val(0, 0), get_val(1, 0));
-//            fprintf(stderr, "Converse: npc=%x flag=%x\n", get_val(0, 0),
-//                    get_val(1, 0));
-            scroll->display_string("\n!:set\n");
+        case U6OP_SETF: // 0,0=npc 1,0=flagnum
+			if(get_val(0, 0) == 0xeb) // "this npc"
+				cnpc = npc;
+			else
+				cnpc = actors->get_actor(get_val(0, 0));
+			cnpc->set_flag(get_val(1, 0));
             break;
-        case U6OP_CLEARF:
-//            npcmanager->clear_flag(get_val(0, 0), get_val(1, 0));
-//            fprintf(stderr, "Converse: npc=%x flag=%x\n", args[0][0].val,
-//                    args[1][0].val);
-            scroll->display_string("\n!:clear\n");
+        case U6OP_CLEARF: // 0,0=npc 1,0=flagnum
+			if(get_val(0, 0) == 0xeb) // "this npc"
+				cnpc = npc;
+			else
+				cnpc = actors->get_actor(get_val(0, 0));
+			cnpc->clear_flag(get_val(1, 0));
             break;
         case U6OP_JUMP:
-            fprintf(stderr, "Converse: JUMP offset=%08x\n", args[0][0].val);
-            seek(args[0][0].val);
-//            seek(get_val(0, 0));
+            seek(get_val(0, 0));
             if(++jump_count == 5)
             {
                 fprintf(stderr, "Converse: infinite loop detected!\n");
+                scroll->display_string("\nError\n");
                 stop();
                 donext = false;
             }
@@ -279,6 +308,9 @@ bool Converse::do_cmd()
             stop();
             donext = false;
             break;
+		case U6OP_PORTRAIT:
+			scroll->display_string("\n!:portrait\n");
+			break;
         case U6OP_WAIT:
             scroll->display_string("*");
             break;
@@ -288,8 +320,8 @@ bool Converse::do_cmd()
             break_scope(2);
             break;
         case U6OP_KEYWORD:
-//            std::cerr << "Converse: KEYWORDS" << std::endl;
-            text_op = CONV_TEXTOP_KEYWORD;
+		    keywords.assign(output);
+			output.resize(0);
             break;
         case U6OP_SIDENT:
 //            std::cerr << "Converse: IDENT section" << std::endl;
@@ -319,7 +351,6 @@ bool Converse::do_cmd()
             {
                 keywords.resize(0);
                 // continue, no skip
-                text_op = CONV_TEXTOP_PRINT;
                 enter_scope(CONV_SCOPE_ANSWER);
                 jump_count = 0;
             }
@@ -352,8 +383,8 @@ void Converse::collect_args()
         if(val == U6OP_ARGSTOP)
         {
 //          std::cerr << "val is 0xa7, skip, next arg" << std::endl;
-            skip(); ++ai;
-            args.resize(ai + 1);
+            skip(); ++ai; vi = 0;
+            args.resize(ai + 1); args[ai].resize(0);
             continue;
         }
         if(is_print(val) || is_cmd(val))
@@ -366,25 +397,29 @@ void Converse::collect_args()
         if(val == 0xd2)
         {
             args[ai].resize(vi + 1);
+			args[ai][vi].valt = 0;
             args[ai][vi++].val = pop4();
 //          std::cerr << "popped 4, next val" << std::endl;
         }
         else if(val == 0xd3)
         {
             args[ai].resize(vi + 1);
+			args[ai][vi].valt = 0;
             args[ai][vi++].val = pop();
-//          std::cerr << "popped 1, next val" << std::endl;
+//			fprintf(stderr, "popped 1 as val: 0x%02x\n", args[ai][vi-1].val);
         }
         else if(val == 0xd4)
         {
             args[ai].resize(vi + 1);
+			args[ai][vi].valt = 0;
             args[ai][vi++].val = pop2();
  //         std::cerr << "popped 2, next val" << std::endl;
         }
         else
         {
-            args[ai].resize(vi + 1);
 //          std::cerr << "val is val" << std::endl;
+            args[ai].resize(vi + 1);
+			args[ai][vi].valt = 0;
             args[ai][vi].val = val;
             if(peek() == 0xb2)
             {
@@ -411,7 +446,12 @@ void Converse::step(Uint32 count)
     {
         if(is_print(peek()))
         {
-            do_text();
+            collect_text();
+			if(check_scope())
+			{
+//				fprintf(stderr, "Converse: print\n");
+				print();
+			}
             continue;
         }
 
@@ -431,12 +471,22 @@ void Converse::step(Uint32 count)
         if(cmd == U6OP_JUMP)
         {
             args[0].resize(1);
+			args[0][0].valt = 0;
             args[0][0].val = pop4();
         }
+		else if(cmd == U6OP_KEYWORD)
+		{
+			collect_text(CONV_TEXTOP_KEYWORD);
+		}
         else
             collect_args();
         stepping = do_cmd();
     }
+	if(check_overflow())
+	{
+		scroll->display_string("\n-EOF-\n");
+		stop();
+	}
     print();
 }
 
@@ -449,16 +499,27 @@ void Converse::stop()
     free(script);
     script_pt = script = 0;
     script_len = 0;
+	heap.clear();
 
     input_s.resize(0); // input_s.erase();
     keywords.resize(0);
-    text_op = CONV_TEXTOP_PRINT;
     args.clear();
     while(!scope.empty())
         scope.pop();
 
     active = is_waiting = false;
     std::cerr << "Converse: script is stopped" << std::endl;
+}
+
+
+/* Set the initial variables that an npc script can access.
+ */
+void Converse::init_variables()
+{
+	heap.resize(CONV_VAR__LAST_ + 1); // FIXME: the U6 max. var num is unknown
+	for(int v = 0; v <= CONV_VAR__LAST_; v++)
+		heap[v].valt = heap[v].val = 0x00;
+	//	heap[CONV_VAR_WORKTYPE].val = npc->get_worktype();
 }
 
 
@@ -478,6 +539,8 @@ bool Converse::start(Actor *talkto)
     if(active)
         this->stop();
     script_num = actor_num = talkto->get_actor_num();
+	npc = talkto;
+	init_variables();
     set_conv(script_num);
     undec_script_len = src->get_item_size(script_num);
     if(undec_script_len > 4)
@@ -546,8 +609,8 @@ void Converse::continue_script()
         {
             scroll->set_talking(false);
             scroll->display_string("\n");
-            scroll->display_prompt();
 //            remove portrait [& name [& inventory display]]
+            scroll->display_prompt();
         }
     }
 }

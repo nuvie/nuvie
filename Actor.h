@@ -62,8 +62,8 @@ class Actor
  uint8 strength;
  uint8 dex;
  uint8 inteligence;
- 
  uint8 hp;
+ uint8 flags;
  
  char *name;
  
@@ -78,9 +78,13 @@ class Actor
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  uint16 get_tile_num();
  uint8 get_actor_num() { return(id_n); }
+ uint8 get_flags() { return(flags); }
 
  void set_direction(uint8 d);
- 
+ void set_flags(uint8 newflags) { flags = newflags; }
+ void set_flag(uint8 bitflag);
+ void clear_flag(uint8 bitflag);
+
  bool moveRelative(sint16 rel_x, sint16 rel_y);
  bool move(sint16 new_x, sint16 new_y, sint8 new_z);
  
@@ -90,7 +94,6 @@ class Actor
  protected:
  
  void loadSchedule(unsigned char *schedule_data, uint16 num);
- 
 };
 
 #endif /* __Actor_h__ */

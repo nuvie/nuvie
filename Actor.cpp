@@ -174,3 +174,30 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
  
  return;
 }
+
+
+/* Set NPC flag `bitflag' to 1.
+ */
+void Actor::set_flag(uint8 bitflag)
+{
+	if(bitflag > 7)
+		return;
+	this->set_flags(this->get_flags() | (1 << bitflag));
+}
+
+
+/* Set NPC flag `bitflag' to 0.
+ */
+void Actor::clear_flag(uint8 bitflag)
+{
+	uint8 f = 0;
+	if(bitflag > 7)
+		return;
+	this->set_flags(0x00);
+	do
+	{
+		if(f != bitflag)
+			this->set_flags(this->get_flags() | (f << bitflag));
+	} while(++f < 8);
+}
+

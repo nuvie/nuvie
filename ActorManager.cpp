@@ -82,6 +82,8 @@ bool ActorManager::loadActors()
       actors[i]->z = 0;
      }
 */     
+	// FIXME: load flags?
+	actors[i]->flags = 0x00;
    }
 
  for(i=0;i < 256; i++)

@@ -21,6 +21,7 @@
 #include <iostream>
 #include <cstring>
 #include <stack>
+#include "ActorManager.h"
 #include "Actor.h"
 #include "U6Lib_n.h"
 #include "Configuration.h"
@@ -33,24 +34,39 @@ enum Converse_interpreter {CONV_U6 = 0, CONV_MD, CONV_SE};
 #define U6OP_IF 0xa1
 #define U6OP_ENDIF 0xa2
 #define U6OP_ELSE 0xa3
-#define U6OP_SETF 0xa4
-#define U6OP_CLEARF 0xa5
-#define U6OP_ARGSTOP 0xa7
-#define U6OP_JUMP 0xb0
-#define U6OP_BYE 0xb6
-#define U6OP_WAIT 0xcb
+#define U6OP_SETF 0xa4 // set flag
+#define U6OP_CLEARF 0xa5 // clear flag
+#define U6OP_ARGSTOP 0xa7 // optional argument terminator
+#define U6OP_JUMP 0xb0 // go to location (absolute, from start of script)
+#define U6OP_BYE 0xb6 // end conversation
+#define U6OP_PORTRAIT 0xbf // show portrait
+#define U6OP_WAIT 0xcb // insert page-break/wait for input to continue
 #define U6OP_UINT8 0xd3
 #define U6OP_UINT16 0xd4
 #define U6OP_UINT32 0xd2
-#define U6OP_ENDASK 0xee
-#define U6OP_KEYWORD 0xef
-#define U6OP_SIDENT 0xff
-#define U6OP_SLOOK 0xf1
+#define U6OP_ENDASK 0xee // end of response(s) to previous input
+#define U6OP_KEYWORD 0xef // keyword(s) to trigger next response follows
+#define U6OP_SIDENT 0xff // start of script; npc identification section
+#define U6OP_SLOOK 0xf1 // start of look section
 #define U6OP_SLOOKB 0xf3
-#define U6OP_SCONVERSE 0xf2
-#define U6OP_SANSWER 0xf6
-#define U6OP_SASK 0xf7
-#define U6OP_SASKC 0xf8
+#define U6OP_SCONVERSE 0xf2 // start of main conversation section
+#define U6OP_SANSWER 0xf6 // start of response
+#define U6OP_SASK 0xf7 // get input string and choose response
+#define U6OP_SASKC 0xf8 // get one character and choose response
+
+#define CONV_TEXTOP_PRINT 0
+#define CONV_TEXTOP_KEYWORD 1
+#define CONV_TEXTOP_LOOK 2
+
+#define CONV_SCOPE_MAIN 0
+#define CONV_SCOPE_ASK 1 // break at endask
+#define CONV_SCOPE_ANSWER 2 // break at keywords or endask
+#define CONV_SCOPE_IF 3 // at else change to endif, at endif break
+#define CONV_SCOPE_IFELSE 4 // at else change to if, at endif break
+
+#define CONV_VAR_SEX 0x10 // sex of npc: male=0 female=1
+#define CONV_VAR_WORKTYPE 0x20 // current activity of npc, from schedule
+#define CONV_VAR__LAST_ 0x20
 
 typedef struct
 {
@@ -64,6 +80,7 @@ class Converse
 {
     Configuration *config;
     Converse_interpreter interpreter;
+    ActorManager *actors;
     Actor *npc;
     MsgScroll *scroll; // i/o object
     U6Lib_n *src; // points to opened converse.[ab] library
@@ -75,22 +92,14 @@ class Converse
     bool active; // running npc script? (paused or unpaused)
     bool is_waiting; // paused, waiting for user input?
     string output; // where text goes to be printed
+	vector<converse_arg> heap; // random-access variable data
 
     // statement parameters
     uint32 cmd; // previously read command code
     // fixed # of args with variable # values each
-    vector <vector<converse_arg> > args;
+    vector<vector<converse_arg> > args;
     string input_s; // last input from player
     string keywords; // keyword list from last KEYWORD statement
-#define CONV_TEXTOP_PRINT 0
-#define CONV_TEXTOP_KEYWORD 1
-#define CONV_TEXTOP_LOOK 2
-    uint8 text_op; // one of CONV_TEXTOP_[012]
-#define CONV_SCOPE_MAIN 0
-#define CONV_SCOPE_ASK 1 // break at endask
-#define CONV_SCOPE_ANSWER 2 // break at keywords or endask
-#define CONV_SCOPE_IF 3 // at else change to endif, at endif break
-#define CONV_SCOPE_IFELSE 4 // at else change to if, at endif break
     std::stack <uint8> scope; // what "scope" is the script in?
     Uint32 getinput_offset; // location of last input-request statement
     Uint32 look_offset; // location of "look" section
@@ -109,10 +118,14 @@ class Converse
                 loadConv("converse.b");
         }
     }
+	void init_variables();
 
     bool do_cmd(); // do cmd with args and clear cmd and args
+	// handling of the argument list
     void collect_args();
-    bool do_text();
+    void collect_text(uint8 text_op);
+	uint32 get_val(uint8 arg_i, sint8 val_i);
+    uint8 val_count(uint8 arg_i) { return(args[arg_i].size()); }
 
     /* Seeking methods - update script pointer. */
     void seek(Uint32 offset = 0) { script_pt = script; script_pt += offset; }
@@ -174,8 +187,8 @@ class Converse
     /* Returns true if `check' is an "if" test type. */
     bool is_test(Uint8 check)
     {
-        return(((check == 0x81) || (check == 0x85) || (check == 0x86)
-               || (check == 0xc6)));
+        return(((check == 0x81) || (check == 0x84) || (check == 0x85) || (check == 0x86)
+               || (check == 0xab) || (check == 0xc6)));
     }
     /* Returns true if the control code starts a statement (is the command). */
     bool is_cmd(Uint8 code)
@@ -213,10 +226,15 @@ class Converse
         return(true);
     }
     void enter_scope(uint8 scopedef) { scope.push(scopedef); }
+	//void enter_scope(uint8 scopedef) { scope.push(scopedef); fprintf(stderr, "Converse: ...enter...\n"); }
     void break_scope(uint8 levels = 1)
-    { while(levels--) if(!scope.empty()) scope.pop(); else break; }
+	{ while(levels--) if(!scope.empty()) scope.pop(); else break; }
+    //void break_scope(uint8 levels = 1)
+	//{ while(levels--) if(!scope.empty()) scope.pop(); else break; fprintf(stderr, "Converse: ...leave...\n"); }
+
 public:
-    Converse(Configuration *cfg, Converse_interpreter engine_type, MsgScroll *ioobj);
+    Converse(Configuration *cfg, Converse_interpreter engine_type,
+		     MsgScroll *ioobj, ActorManager *actormgr);
     ~Converse();
     void loadConv(std::string convfilename="converse.a");
     /* Returns true if a script is active (paused or unpaused). */
@@ -239,6 +257,20 @@ public:
         input_s.assign(new_input);
     }
     void continue_script();
+	/* Return value stored at a normal variable. */
+	uint32 get_var(uint8 varnum)
+	{
+		return(varnum <= CONV_VAR__LAST_ ? heap[varnum].val : 0x00);
+	}
+	/* Set the value of a normal variable. */
+	void set_var(uint8 varnum, uint32 val, uint8 valt = 0x00)
+	{
+		if(varnum <= CONV_VAR__LAST_)
+		{
+			heap[varnum].valt = valt;
+			heap[varnum].val = val;
+		}
+	}
 };
 
 
