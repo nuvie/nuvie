@@ -33,6 +33,7 @@
 #include "GameClock.h"
 #include "Player.h"
 #include "U6def.h"
+#include "ViewManager.h"
 
 using std::stack;
 
@@ -112,6 +113,7 @@ class Converse
     ActorManager *actors;
     Actor *npc;
     Player *player;
+    ViewManager *views;
     MsgScroll *scroll; // i/o object
     U6Lib_n *src; // points to opened converse.[ab] library
     Uint32 src_num; // 0=none 1="converse.a" 2="converse.b"
@@ -121,6 +123,7 @@ class Converse
     Uint8 npc_num; // number of loaded npc script
     bool active; // running npc script? (paused or unpaused)
     bool is_waiting; // paused, waiting for user input?
+    bool need_input; // wait is for text input, else for continuing after pause
     string output; // where text goes to be printed
     vector<converse_arg> heap; // random-access variable data
     vector<const char *> *strings; // string variables
@@ -307,8 +310,7 @@ class Converse
     /* Returns true if `check' can be part of a text string. */
     bool is_print(Uint8 check)
     {
-        return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a)
-                 || (check == 0xcb)) );
+        return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a)) );
     }
     /* Returns true if `check' is the number of a test or a special function
      * that is part of some statements. */
@@ -376,7 +378,8 @@ class Converse
     { return(!scope.empty() ? scope.top() : CONV_SCOPE_MAIN); }
 public:
     Converse(Configuration *cfg, Converse_interpreter engine_type,
-             MsgScroll *ioobj, ActorManager *actormgr, GameClock *c, Player *p);
+             MsgScroll *ioobj, ActorManager *actormgr, GameClock *c, Player *p,
+             ViewManager *viewmgr);
     ~Converse();
     void loadConv(std::string convfilename="converse.a");
     /* Returns true if a script is active (paused or unpaused). */
@@ -386,7 +389,9 @@ public:
     /* Tell script to pause. */
     void wait() { is_waiting = true; }
     /* Tell script to resume. */
-    void unwait() { is_waiting = false; }
+    void unwait() { need_input = is_waiting = false; }
+    /* Pause to wait for input. */
+    void wait_for_input() { need_input = true; wait(); }
     bool start(Actor *talkto); // makes step() available
     bool start(uint8 n)
     {

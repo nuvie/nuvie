@@ -67,7 +67,7 @@ Converse::~Converse()
  */
 Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
                    MsgScroll *ioobj, ActorManager *actormgr, GameClock *c,
-                   Player *p)
+                   Player *p, ViewManager *viewmgr)
 {
     // get global objects
     config = cfg;
@@ -75,6 +75,7 @@ Converse::Converse(Configuration *cfg, Converse_interpreter engine_type,
     actors = actormgr;
     clock = c;
     player = p;
+    views = viewmgr;
     // initialization
     interpreter = engine_type;
     src = 0; src_num = 0;
@@ -129,6 +130,8 @@ void Converse::print(const char *printstr)
     if(!printstr)
     {
         scroll->display_string((char *)output.c_str());
+        // FIXME: HACK-since 0xcb is turned into *, it must be checked for here
+        
         output.resize(0);
     }
     else
@@ -220,10 +223,7 @@ void Converse::collect_text(bool eval = false)
     output.resize(0);
     if(!eval)
     {
-        for(c = 0; !check_overflow(c) && is_print(peek(c)); c++)
-            // hack - replace alternate wait 0xcb so scroller will break page
-            if(script_pt[c] == 0xcb)
-                script_pt[c] = '*';
+        for(c = 0; !check_overflow(c) && is_print(peek(c)); c++);
         output.append((const char *)script_pt, (unsigned int)c);
     }
     else
@@ -269,8 +269,7 @@ void Converse::collect_text(bool eval = false)
             }
             else
             {
-                output.append(1,((unsigned char)peek(c) != 0xcb)
-                                 ? (unsigned char)peek(c) : (unsigned char)'*');
+                output.append(1, (unsigned char)peek(c));
                 ++c;
             }
         }
@@ -761,14 +760,32 @@ if(!args.empty() && !args[0].empty())
         case U6OP_WORKTYPE: // 2 args, npc number, new worktype
             print("-!worktype-");
             break;
-        case U6OP_PORTRAIT:
-            print("-!portrait-");
+        case U6OP_PORTRAIT: // 1 arg, npc number
+            // use current name
+            if(get_val(0, 0) == 0xeb)
+                views->set_portrait_mode(npc_num, (char *)my_name);
+            else
+            {
+                // use name from party information
+                if(player->get_party()->contains_actor(get_val(0, 0)))
+                {
+                    res = player->get_party()->get_member_num(res);
+                    views->set_portrait_mode(get_val(0, 0),
+                                      player->get_party()->get_actor_name(res));
+                }
+                // read name from script
+                else
+                    views->set_portrait_mode(get_val(0, 0),
+                                             (char *)npc_name(get_val(0, 0)));
+            }
             break;
         case U6OP_INVENTORY:
             print("-!inventory-");
-        case U6OP_WAIT: // FIXME - this even a control code? handled as
-                        // alternate paragraph marker (text)
+            break;
+        case U6OP_WAIT: // set page-break on scroller and wait
             scroll->display_string("*");
+            wait();
+            donext = false;
             break;
         case U6OP_ENDASK:
             keywords.resize(0);
@@ -818,11 +835,13 @@ if(!args.empty() && !args[0].empty())
         case U6OP_ASK:
             scroll->display_string("\nyou say:");
             scroll->set_input_mode(true);
-            wait(); donext = false;
+            wait_for_input();
+            donext = false;
             break;
         case U6OP_ASKC:
             scroll->set_input_mode(true, get_text(), false);
-            wait(); donext = false;
+            wait_for_input();
+            donext = false;
             break;
         case U6OP_SANSWER:
             if(check_keywords())
@@ -835,12 +854,14 @@ if(!args.empty() && !args[0].empty())
         case U6OP_INPUT: // 1 val, variable to store input at
             let(get_rval(0, 0), 0xb2);
             scroll->set_input_mode(true);
-            wait(); donext = false;
+            wait_for_input();
+            donext = false;
             break;
         case U6OP_INPUTC: // 1 val, variable to store input at
             let(get_rval(0, 0), 0xb2);
             scroll->set_input_mode(true, "0123456789");
-            wait(); donext = false;
+            wait_for_input();
+            donext = false;
             break;
         case 0x00: // incorrectly parsed
             print("\nNull command\n");
@@ -1018,7 +1039,7 @@ void Converse::reset()
     while(!scope.empty())
         scope.pop();
 
-    active = is_waiting = false;
+    active = is_waiting = need_input = false;
 }
 
 
@@ -1132,6 +1153,7 @@ bool Converse::start(Actor *talkto)
 #ifdef CONVERSE_DEBUG
         fprintf(stderr, "Converse: script=%08x, script_len=%d\n", script.buf, script.buf_len);
 #endif
+        views->set_portrait_mode(npc_num, (char *)my_name);
         return(true);
     }
     fprintf(stderr, "Error loading npc %d, script %s:%d\n", actor_num,
@@ -1150,7 +1172,7 @@ void Converse::continue_script()
     {
         if(!waiting())
             step();
-        else if(scroll->get_input())
+        else if(need_input && scroll->get_input())
         {
             scroll->display_string("\n\n");
             input_s.assign(scroll->get_input());
@@ -1165,6 +1187,11 @@ void Converse::continue_script()
             // assign value to declared input variable
             set_var(declared, strtol(input_s.c_str(), NULL, 10));
             let(-1);
+            unwait();
+        }
+        else if(!need_input && !scroll->get_page_break())
+        {
+            // if page unbroken, unpause script
             unwait();
         }
         // script has stopped itself:
