@@ -282,12 +282,12 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container)
 }
 
 
-bool Actor::inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality)
+bool Actor::inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality)
 {
  U6LList *inventory = 0;
  U6Link *link = 0;
  Obj *obj = 0;
- uint8 origqty = 0, newqty = 0;
+ uint32 origqty = 0, newqty = 0;
  
  inventory = get_inventory_list();
 
@@ -308,19 +308,21 @@ bool Actor::inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality)
     obj->qty = origqty;
  }
  else // don't stack
- {
-    obj = new Obj;
-    obj->obj_n = obj_n;
-    obj->qty = qty;
-    obj->quality = quality;
-    inventory->addAtPos(0, obj);
- }
+   while(newqty)
+   {
+     obj = new Obj;
+     obj->obj_n = obj_n;
+     obj->quality = quality;
+     obj->qty = newqty <= 255 ? newqty : 255;
+     inventory->addAtPos(0, obj);
+     newqty -= obj->qty;
+   }
  return true;
 }
 
 
 uint32
-Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality, Obj *container)
+Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container)
 {
  U6LList *inventory;
  U6Link *link;

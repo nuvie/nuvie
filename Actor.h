@@ -136,8 +136,8 @@ class Actor
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0);
  uint32 inventory_count_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
- bool inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality);
- uint32 inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality, Obj *container = 0);
+ bool inventory_add_object(uint16 obj_n, uint32 qty, uint8 quality);
+ uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container = 0);
  float inventory_get_max_weight() { return((strength * 2)); }
  float get_inventory_weight();
  float get_inventory_equip_weight();
