@@ -25,6 +25,7 @@
 #include "nuvieDefs.h"
 
 #include "GUI.h"
+#include "GUI_types.h"
 #include "GUI_button.h"
 #include "GUI_text.h"
 #include "GUI_Scroller.h"
@@ -32,6 +33,7 @@
 #include "GUI_area.h"
 
 #include "GUI_Dialog.h"
+#include "SaveSlot.h"
 #include "SaveDialog.h"
 
 
@@ -39,32 +41,41 @@ SaveDialog::SaveDialog(GUI_CallBack *callback) : GUI_Dialog(10,10, 300, 180, 244
 {
  GUI_Widget *widget;
  GUI *gui = GUI::get_gui();
-
+ GUI_Color bg_color = GUI_Color(162,144,87);
+ GUI_Color bg_color1 = GUI_Color(147,131,74);
+ 
  callback_object = callback;
+ selected_slot = NULL;
  
  scroller = new GUI_Scroller(10,25, 280, 120, 135,119,76, 20 );
  widget = (GUI_Widget *) new GUI_Text(10, 12, 0, 0, 0, "Nuvie Load/Save Manager", gui->get_font());
  AddWidget(widget);
  
- widget = new GUI_Area(0, 0, 266, 20, 225, 225, 225, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color);
  scroller->AddWidget(widget);
- widget = new GUI_Area(0, 0, 266, 20, 50, 50, 50, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color1);
  scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 25, 25, 25, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color);
  scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 50, 50, 50, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color1);
  scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 25, 25, 25, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color);
  scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 50, 50, 50, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color1);
  scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 25, 25, 25, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color);
  scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 50, 50, 50, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color1);
  scroller->AddWidget(widget);
-  widget = new GUI_Area(0, 0, 266, 20, 25, 25, 25, AREA_ANGULAR);
+ widget = new SaveSlot(this, bg_color);
  scroller->AddWidget(widget);
-  
+ widget = new SaveSlot(this, bg_color1);
+ scroller->AddWidget(widget);
+ widget = new SaveSlot(this, bg_color);
+ scroller->AddWidget(widget);
+ widget = new SaveSlot(this, bg_color1);
+ scroller->AddWidget(widget);
+
  AddWidget(scroller);
 
  load_button = new GUI_Button(this, 135, 152, 40, 18, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, NULL, 0);
@@ -106,7 +117,17 @@ GUI_status SaveDialog::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
  if(caller == (GUI_CallBack *)cancel_button)
     return close_dialog();
+ 
+ if(dynamic_cast<SaveSlot*>(caller))
+   {
+    if(msg == SAVESLOT_CB_SELECTED)
+      {
+       if(selected_slot != NULL)
+         selected_slot->deselect();
 
+       selected_slot = (SaveSlot *)caller;
+      }
+   }
 /*
  if(caller == (GUI_CallBack *)no_button)
    return no_callback_object->callback(YESNODIALOG_CB_NO, this, this);

@@ -66,8 +66,7 @@ GUI_Area:: SetDisplay(Screen *s)
 }
 
 /* Show the widget  */
-void
-GUI_Area:: Display(bool full_redraw)
+void GUI_Area::Display(bool full_redraw)
 {
 	SDL_Rect framerect;
 	int x,dy,r1,r2,x0,y0;

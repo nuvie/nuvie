@@ -148,6 +148,7 @@
 				0787F20B064390F60028223C,
 				0726903E064E749600F249E5,
 				07269048064F928A00F249E5,
+				072691AD065252D200F249E5,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -698,6 +699,7 @@
 				072B4D200632953700CC3368,
 				0726903D064E749600F249E5,
 				07269047064F928A00F249E5,
+				072691AC065252D200F249E5,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1621,6 +1623,8 @@
 		};
 		0726902F064E745B00F249E5 = {
 			children = (
+				072691AB065252D200F249E5,
+				072691AA065252D200F249E5,
 				07269046064F928A00F249E5,
 				07269045064F928A00F249E5,
 				0726903C064E749600F249E5,
@@ -1687,6 +1691,36 @@
 		};
 		07269048064F928A00F249E5 = {
 			fileRef = 07269046064F928A00F249E5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072691AA065252D200F249E5 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SaveSlot.cpp;
+			path = ../save/SaveSlot.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072691AB065252D200F249E5 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SaveSlot.h;
+			path = ../save/SaveSlot.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		072691AC065252D200F249E5 = {
+			fileRef = 072691AA065252D200F249E5;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		072691AD065252D200F249E5 = {
+			fileRef = 072691AB065252D200F249E5;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -1,3 +1,8 @@
+2004-05-18  Eric Fry <efry at users.sourceforge.net>
+	* ObjManager: Split the main surface object index into 64 smaller 
+	  chunk indexes. This should help with saving.
+	* Added SaveSlot class. This is the save data widget in the SaveDialog.
+
 2004-05-10  Eric Fry <efry at users.sourceforge.net>
 	* Added SaveDialog class.
 	* Moved save dialog code into the new SaveDialog class.

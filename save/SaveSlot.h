@@ -1,10 +1,10 @@
-#ifndef __SaveDialog_h__
-#define __SaveDialog_h__
+#ifndef __SaveSlot_h__
+#define __SaveSlot_h__
 /*
- *  SaveDialog.h
+ *  SaveSlot.h
  *  Nuvie
  *
- *  Created by Eric Fry on Mon May 10 2004.
+ *  Created by Eric Fry on Wed May 12 2004.
  *  Copyright (c) 2004. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -23,41 +23,42 @@
  *
  */
 
-#include "GUI_Dialog.h"
+#include "GUI_widget.h"
 
 class GUI;
 class GUI_CallBack;
-class GUI_Button;
-class GUI_Scroller;
-class SaveSlot;
+class GUI_Color;
 
 // Callback message types
 
-#define SAVEDIALOG_CB_SAVE    0x1
-#define SAVEDIALOG_CB_LOAD    0x2
-#define SAVEDIALOG_CB_CANCEL  0x3
-#define SAVEDIALOG_CB_DELETE  0x4
+#define SAVESLOT_CB_SAVE     0x1
+#define SAVESLOT_CB_CANCEL   0x2
+#define SAVESLOT_CB_SELECTED 0x3
 
-class SaveDialog : public GUI_Dialog {
+class SaveSlot : public GUI_Widget {
 protected:
 
-GUI_Scroller *scroller;
-
 GUI_CallBack *callback_object;
-GUI_Button *save_button, *load_button, *cancel_button;
-
-SaveSlot *selected_slot;
+GUI_Color background_color;
+bool selected;
 
 public:
 
-SaveDialog(GUI_CallBack *callback);
+SaveSlot(GUI_CallBack *callback, GUI_Color bg_color);
 
-~SaveDialog();
+~SaveSlot();
 
-GUI_status close_dialog();
+void deselect() { selected = false; };
+
+void SetDisplay(Screen *s);
+
+void Display(bool full_redraw);
+
 GUI_status KeyDown(SDL_keysym key);
+GUI_status MouseDown(int x, int y, int button);
+GUI_status MouseUp(int x, int y, int button);
 
 GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 
-#endif /* __SaveDialog_h__ */
+#endif /* __SaveSlot_h__ */

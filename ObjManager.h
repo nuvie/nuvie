@@ -96,7 +96,8 @@ class ObjManager
  int game_type;
  EggManager *egg_manager;
  TileManager *tile_manager;
- iAVLTree *surface;
+ //chunk object trees.
+ iAVLTree *surface[64];
  iAVLTree *dungeon[5];
 
  uint16 obj_to_tile[1024]; //maps object number (index) to tile number.
@@ -113,12 +114,12 @@ class ObjManager
  
  public:
 
- ObjManager(Configuration *cfg, EggManager *em);
+ ObjManager(Configuration *cfg, TileManager *tm, EggManager *em);
  ~ObjManager();
 
- bool loadObjs(TileManager *tm);
+ bool loadObjs();
  void startObjs();
-
+ 
  void set_usecode(UseCode *uc) { usecode = uc; }
  UseCode *get_usecode()        { return(usecode); }
  EggManager *get_egg_manager() { return(egg_manager); }
@@ -172,12 +173,12 @@ class ObjManager
  bool loadBaseTile();
  bool loadWeightTable();
 
- bool loadObjSuperChunk(char *filename, uint8 level);
+ bool loadObjSuperChunk(char *filename, iAVLTree *obj_tree);
  bool add_obj(iAVLTree *obj_tree, Obj *obj, bool addOnTop=false);
  bool addObjToContainer(U6LList *list, Obj *obj);
  Obj *loadObj(NuvieIOFileRead *file, uint16 objblk_n);
  char *get_objblk_path(char *path);
- iAVLTree *get_obj_tree(uint8 level);
+ iAVLTree *get_obj_tree(uint16 x, uint16 y, uint8 level);
 
  iAVLKey get_obj_tree_key(Obj *obj);
  iAVLKey get_obj_tree_key(uint16 x, uint16 y, uint8 level);
@@ -187,6 +188,10 @@ class ObjManager
  bool temp_obj_list_remove(Obj *obj);
  void temp_obj_list_clean_level(uint8 z);
  void temp_obj_list_clean_area(uint16 x, uint16 y);
+
+ inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree, bool *passed_prev_obj);
+ inline void start_obj_usecode(iAVLTree *obj_tree);
+ inline void print_egg_tree(iAVLTree *obj_tree);
 
  public:
  void print_object_list();

@@ -36,6 +36,7 @@
 
 class Configuration;
 class Screen;
+class GUI_Color;
 
 #define GUI_FULL_REDRAW true
 
@@ -74,6 +75,9 @@ protected:
   bool dragging;
   
   bool full_redraw; //this forces all widgets to redraw on the next call to Display()
+  
+  // some default colours
+  GUI_Color *selected_color;
   
 public:
 	GUI(Configuration *c, Screen *s);
@@ -121,6 +125,9 @@ public:
   GUI_Font *get_font();
   Screen *get_screen() {return screen;}
   
+  //colors
+  GUI_Color *get_selected_color() { return selected_color; }
+
   /* Function to pass an event to the GUI widgets */
 	GUI_status HandleEvent(SDL_Event *event);
 

@@ -30,6 +30,7 @@
 #include "Configuration.h"
 
 #include "GUI.h"
+#include "GUI_types.h"
 
 /* Number of widget elements to allocate at once */
 #define WIDGET_ARRAYCHUNK	32
@@ -38,6 +39,8 @@ GUI *GUI::gui = NULL;
 
 GUI:: GUI(Configuration *c, Screen *s)
 {
+ SDL_Surface *sdl_surface;
+ 
     gui = this;
     config = c;
 	screen = s;
@@ -50,6 +53,11 @@ GUI:: GUI(Configuration *c, Screen *s)
   dragging = false;
   full_redraw = true;
   focused_widget = locked_widget = NULL;
+  
+  sdl_surface = screen->get_sdl_surface();
+  
+  selected_color = new GUI_Color(10,10,50);
+  selected_color->map_color(sdl_surface);
   
   gui_font = new GUI_Font();
   gui_drag_manager = new GUI_DragManager(screen);
@@ -428,4 +436,5 @@ std::string GUI::get_data_dir()
  
  return datadir;
 }
+
 

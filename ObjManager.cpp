@@ -44,18 +44,22 @@ iAVLKey get_iAVLKey(const void *item)
  return ((ObjTreeNode *)item)->key;
 }
 
-ObjManager::ObjManager(Configuration *cfg, EggManager *em)
+ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
 {
  uint8 i;
  std::string show_eggs_key;
 
  config = cfg;
+ tile_manager = tm;
  egg_manager = em;
  
  memset(actor_inventories,0,sizeof(actor_inventories));
 
- surface = iAVLAllocTree(get_iAVLKey);
-
+ for(i=0;i<64;i++)
+  { 
+   surface[i] = iAVLAllocTree(get_iAVLKey);
+  }
+  
  for(i=0;i<5;i++)
   {
    dungeon[i] = iAVLAllocTree(get_iAVLKey);
@@ -72,6 +76,7 @@ ObjManager::ObjManager(Configuration *cfg, EggManager *em)
 
  config->value("config/GameType",game_type);
  
+ loadBaseTile();
 }
 
 ObjManager::~ObjManager()
@@ -79,17 +84,13 @@ ObjManager::~ObjManager()
  //FIX ME. need to free objects.
 }
 
-bool ObjManager::loadObjs(TileManager *tm)
+bool ObjManager::loadObjs()
 {
  std::string path, key;
  char *filename;
  char x,y;
  uint16 len;
  uint8 i;
-
- tile_manager = tm;
-
- loadBaseTile();
 
  key = config_get_game_key(config);
  key.append("/gamedir");
@@ -109,7 +110,7 @@ bool ObjManager::loadObjs(TileManager *tm)
      filename[len-1] = y;
      filename[len-2] = x;
      //printf("Loading %s\n",filename);
-     if(loadObjSuperChunk(filename,0) == false)
+     if(loadObjSuperChunk(filename,surface[i]) == false)
        throw "Loading objects";
      i++;
     }
@@ -117,11 +118,11 @@ bool ObjManager::loadObjs(TileManager *tm)
 
  filename[len-1] = 'i';
 
- for(i=1,x = 'a';x < 'f';x++,i++) //Load dungeons
+ for(i=0,x = 'a';x < 'f';x++,i++) //Load dungeons
   {
    filename[len-2] = x;
    //printf("Loading %s\n",filename);
-   loadObjSuperChunk(filename,i);
+   loadObjSuperChunk(filename,dungeon[i]);
   }
 
 
@@ -314,7 +315,7 @@ U6LList *ObjManager::get_obj_list(uint16 x, uint16 y, uint8 level)
  iAVLKey key;
  ObjTreeNode *item;
 
- obj_tree = get_obj_tree(level);
+ obj_tree = get_obj_tree(x,y,level);
  key = get_obj_tree_key(x,y,level);
 
  item = (ObjTreeNode *)iAVLSearch(obj_tree,key);
@@ -438,7 +439,7 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
 
 bool ObjManager::add_obj(Obj *obj, bool addOnTop)
 {
- return add_obj(get_obj_tree(obj->z), obj, addOnTop);
+ return add_obj(get_obj_tree(obj->x,obj->y,obj->z), obj, addOnTop);
 }
 
 bool ObjManager::remove_obj(Obj *obj)
@@ -555,7 +556,7 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  obj->y = y;
  obj->z = level;
 
- add_obj(get_obj_tree(level),obj,true); // add the object on top of the stack
+ add_obj(get_obj_tree(obj->x, obj->y, level),obj,true); // add the object on top of the stack
 
  return true;
 }
@@ -658,15 +659,38 @@ Obj *ObjManager::find_next_obj(Obj *prev_obj)
 
 Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_obj)
 {
- iAVLTree *obj_tree = get_obj_tree(level);
- iAVLCursor cursor;
- ObjTreeNode *node;
- U6Link *link;
+ uint8 i;
  Obj *new_obj;
  bool passed_prev_obj = false;
 
  if(prev_obj == NULL)
    passed_prev_obj = true;
+ 
+ if(level == 0)
+   {
+    for(i=0;i<64;i++)
+      {
+       new_obj = find_obj_in_tree(obj_n, quality, prev_obj, surface[i], &passed_prev_obj);
+       if(new_obj != NULL)
+         return new_obj;
+      }
+   }
+ else
+   {
+    new_obj = find_obj_in_tree(obj_n, quality, prev_obj, dungeon[level-1], &passed_prev_obj);
+    if(new_obj != NULL)
+      return new_obj;
+   }
+
+ return NULL;
+}
+
+inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree, bool *passed_prev_obj)
+{ 
+ iAVLCursor cursor;
+ ObjTreeNode *node;
+ U6Link *link;
+ Obj *new_obj;
 
  node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
    
@@ -679,10 +703,10 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
        {
         new_obj = (Obj *)link->data;
         if(new_obj == prev_obj)
-          passed_prev_obj = true;
+          *passed_prev_obj = true;
         else
           {
-           if(passed_prev_obj)  
+           if(*passed_prev_obj)  
              return new_obj;
           }
        }
@@ -729,7 +753,7 @@ bool ObjManager::loadWeightTable()
 }
 
 
-bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
+bool ObjManager::loadObjSuperChunk(char *filename, iAVLTree *obj_tree)
 {
  NuvieIOFileRead file;
  U6LList *list;
@@ -737,11 +761,6 @@ bool ObjManager::loadObjSuperChunk(char *filename, uint8 level)
  Obj *obj;
  uint16 i;
  U6LList *inventory_list;
- iAVLTree *obj_tree;
-
- obj_tree = get_obj_tree(level);
- if(obj_tree == NULL)
-   throw "Getting obj_tree";
 
  if(file.open(filename) == false)
    return false;
@@ -923,10 +942,15 @@ char *ObjManager::get_objblk_path(char *path)
  return filename;
 }
 
-iAVLTree *ObjManager::get_obj_tree(uint8 level)
+iAVLTree *ObjManager::get_obj_tree(uint16 x, uint16 y, uint8 level)
 {
  if(level == 0)
-   return surface;
+  {
+   x >>= 7; // x = floor(x / 128)   128 = superchunk width
+   y >>= 7; // y = floor(y / 128)   128 = superchunk height
+
+   return surface[x + y * 8];
+  }
 
  if(level > 5)
    return NULL;
@@ -1083,17 +1107,25 @@ void ObjManager::print_object_list()
 
 void ObjManager::print_egg_list()
 {
- iAVLTree *obj_tree;
+ uint8 i;
+ 
+ for(i=0;i < 64;i++)
+   print_egg_tree(surface[i]);
+
+ for(i=0;i < 5;i++)
+   print_egg_tree(dungeon[i]);
+
+ return;
+}
+
+inline void ObjManager::print_egg_tree(iAVLTree *obj_tree)
+{
  ObjTreeNode *tree_node;
  iAVLCursor cursor;
  U6LList *obj_list;
  U6Link *link;
  Obj *obj;
- uint8 i;
- 
- for(i=0;i <= 5;i++)
- {
-  obj_tree = get_obj_tree(i);
+
   tree_node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
   
   for(;tree_node != NULL;tree_node = (ObjTreeNode *)iAVLNext(&cursor) )
@@ -1108,7 +1140,6 @@ void ObjManager::print_egg_list()
        }
      }
    }
- }
 
  return;
 }
@@ -1214,29 +1245,37 @@ Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z)
  */
 void ObjManager::startObjs()
 {
- iAVLTree *obj_tree;
+ uint8 i;
+
+ //iterate through surface chunks.
+ for(i = 0;i < 64; i++)
+   start_obj_usecode(surface[i]);
+
+ //iterate through dungeon chunks.
+ for(i=0;i < 5;i++)
+   start_obj_usecode(dungeon[i]);
+
+}
+
+inline void ObjManager::start_obj_usecode(iAVLTree *obj_tree)
+{
  ObjTreeNode *tree_node;
  iAVLCursor cursor;
  U6LList *obj_list;
  U6Link *link;
  Obj *obj;
- uint8 i;
- 
-    for(i=0;i <= 5;i++)
-    {
-        obj_tree = get_obj_tree(i);
-        tree_node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
-        for(;tree_node != NULL;tree_node = (ObjTreeNode *)iAVLNext(&cursor) )
-        {
-            obj_list = (U6LList *)tree_node->obj_list;
-            for(link = obj_list->start(); link != NULL; link = link->next)
-            {
-                obj = (Obj *)link->data;
-                if(usecode->has_loadcode(obj))
-                    usecode->load_obj(obj);
-            }
-        }
-    }
+
+ tree_node = (ObjTreeNode *)iAVLFirst(&cursor,obj_tree);
+ for(;tree_node != NULL;tree_node = (ObjTreeNode *)iAVLNext(&cursor) )
+   {
+    obj_list = (U6LList *)tree_node->obj_list;
+    for(link = obj_list->start(); link != NULL; link = link->next)
+      {
+        obj = (Obj *)link->data;
+        if(usecode->has_loadcode(obj))
+           usecode->load_obj(obj);
+      }
+   }
 }
 
 

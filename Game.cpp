@@ -136,7 +136,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    tile_manager = new TileManager(config);
    tile_manager->loadTiles();
 
-   obj_manager = new ObjManager(config, egg_manager);
+   obj_manager = new ObjManager(config, tile_manager, egg_manager);
 
    // Correct usecode class for each game
    switch (game_type)
@@ -147,7 +147,7 @@ bool Game::loadGame(Screen *s, uint8 type)
      }
    
    obj_manager->set_usecode(usecode);
-   obj_manager->loadObjs(tile_manager);
+   obj_manager->loadObjs();
    
    game_map->loadMap(tile_manager, obj_manager);
    egg_manager->set_obj_manager(obj_manager);
