@@ -34,6 +34,7 @@
 
 class Configuration;
 class ActorManager;
+class ObjManager;
 class Actor;
 class Map;
 class NuvieIO;
@@ -55,7 +56,7 @@ class SaveGame
  SaveGame(Configuration *cfg);
  ~SaveGame();
 
- void init();
+ void init(ObjManager *obj_manager);
 
  bool load_new();
  bool load_original();

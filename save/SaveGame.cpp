@@ -43,14 +43,14 @@
 SaveGame::SaveGame(Configuration *cfg)
 {
  config = cfg;
- init();
+ init(NULL); //we don't need ObjManager here as there will be nothing to clean at this stage. :-)
 }
 
 SaveGame::~SaveGame()
 {
 }
 
-void SaveGame::init()
+void SaveGame::init(ObjManager *obj_manager)
 {
  num_saves = 0;
  actual_play_time = 0;
@@ -61,6 +61,9 @@ void SaveGame::init()
  if(objlist.get_size() > 0)
    objlist.close();
 
+ if(obj_manager)
+   obj_manager->clean();
+  
  return;
 }
 
@@ -77,7 +80,7 @@ bool SaveGame::load_new()
 
  obj_manager = Game::get_game()->get_obj_manager();
 
- init();
+ init(obj_manager);
  
  // load surface chunks
   
@@ -130,10 +133,10 @@ bool SaveGame::load_original()
  
  objblk_file = new NuvieIOFileRead();
 
- init();
-  
  obj_manager = Game::get_game()->get_obj_manager();
  
+ init(obj_manager);
+  
  key = config_get_game_key(config);
  key.append("/gamedir");
  
@@ -231,9 +234,9 @@ bool SaveGame::load_objlist()
  clock->load(&objlist);
  actor_manager->load(&objlist);
  
- player->load(&objlist);
  party->load(&objlist);
- 
+ player->load(&objlist);
+  
  view_manager->reload();
 
  
@@ -262,7 +265,7 @@ bool SaveGame::load(const char *filename)
  //char game_tag[3];
  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
  
- init();
+ init(obj_manager);
  
  config->value("config/GameType",game_type);
 
@@ -279,8 +282,6 @@ bool SaveGame::load(const char *filename)
  loadfile->seek(15);
  
  num_saves = loadfile->read2();
- 
- obj_manager->clean();
 
  // load actor inventories
  obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, 0);

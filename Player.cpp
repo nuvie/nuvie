@@ -93,8 +93,7 @@ bool Player::load(NuvieIO *objlist)
     gender = objlist->read1();
    }
 
- actor = find_actor();
- actor_manager->set_player(actor);
+ set_actor(find_actor());
   
  return true;
 }
@@ -154,6 +153,7 @@ void Player::set_mapwindow_centered(bool state)
 void Player::set_actor(Actor *new_actor)
 {
  actor = new_actor;
+ actor->set_worktype(0x2); // WT_U6_PLAYER
  actor_manager->set_player(actor);
  map_window->centerMapOnActor(actor);
 }

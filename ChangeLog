@@ -1,3 +1,11 @@
+2004-06-01  Eric Fry <efry at users.sourceforge.net>
+	* We now call ObjManager::clean() from all load types. This fixes
+	  some issues that occured when loading a new game.
+	* Fixed Player worktype bug. An actor's worktype is changed to
+	  WT_U6_PLAYER (0x2) when set to the player actor. This fixes some
+	  issues with ships when loading from a save. You'll need to create
+	  a new save while in ship to test this.
+
 2004-05-31  Jonathan Wright <nelno at nelno.com>
     * Fixed compilation error in MapWindow.h (wx defined twice in 
       get_movement_direction)

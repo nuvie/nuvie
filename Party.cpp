@@ -41,10 +41,10 @@ Party::Party(Configuration *cfg)
  config = cfg;
  map = NULL;
 
- num_in_party = 0;
+
  formation = PARTY_FORM_STANDARD;
- autowalk = false;
- in_vehicle = false;
+ num_in_party = 0;
+ 
 }
 
 Party::~Party()
@@ -60,7 +60,8 @@ bool Party::init(Game *g, ActorManager *am)
  map = g->get_game_map();
  
  autowalk=false;
- 
+ in_vehicle = false;
+
  config->value("config/party_formation", formation_string, "");
  if(formation_string == "row")
    formation = PARTY_FORM_ROW;
@@ -80,7 +81,10 @@ bool Party::load(NuvieIO *objlist)
 {
  uint8 actor_num;
  uint16 i;
- 
+
+ autowalk = false;
+ in_vehicle = false;
+  
  objlist->seek(0xff0);
  num_in_party = objlist->read1();
  
