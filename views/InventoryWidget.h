@@ -32,6 +32,8 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Actor.h"
+#include "Text.h"
+
 
 class InventoryWidget : public GUI_Widget {
  
@@ -39,6 +41,7 @@ class InventoryWidget : public GUI_Widget {
  
  TileManager *tile_manager;
  ObjManager *obj_manager;
+ Text *text;
  
  Actor *actor;
  Obj *container_obj;
@@ -50,7 +53,7 @@ class InventoryWidget : public GUI_Widget {
  InventoryWidget(Configuration *cfg);
  ~InventoryWidget();
  
- bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om);
+ bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
  void set_actor(Actor *a);
  void Display(bool full_redraw);
  
@@ -69,7 +72,12 @@ class InventoryWidget : public GUI_Widget {
  inline Obj *get_obj_at_location(int x, int y);
  void display_inventory_container();
  void display_inventory_list();
- void display_qty_string(uint16 x, uint16 y, uint8 qty);
+ inline void display_qty_string(uint16 x, uint16 y, uint8 qty);
+ void display_arrows();
+ 
+ bool up_arrow();
+ bool down_arrow();
+ 
 };
 
 #endif /* __InventoryWidget_h__ */

@@ -403,7 +403,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 
  map_window->set_show_use_cursor(false);
  map_window->updateBlacking();
- //view_manager->update_display();
+ view_manager->update(); //redraw views to show new item.
  mode = MOVE_MODE;
 
  return true;
@@ -664,7 +664,7 @@ TimedEvent::TimedEvent(uint32 reltime) : delay(reltime),
 /* Party movement to/from dungeon or to vehicle, two tiles per second.
  * Construct & Set destination.
  */
-TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t = NULL) : TimedEvent(500)
+TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t) : TimedEvent(500)
 {
     party = Game::get_game()->get_party();
     dest = new MapCoord(*d);

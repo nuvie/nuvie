@@ -173,7 +173,20 @@ bool U6LList::removeAll()
  
  return true;  
 }
-  
+
+uint32 U6LList::count()
+{
+ uint32 i;
+ U6Link *link;
+ 
+ for(i=0,link=head; link != NULL; link=link->next)
+  {
+   i++;
+  }
+
+ return i;
+}
+ 
  U6Link *U6LList::start()
 {
  cur = head;

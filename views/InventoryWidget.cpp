@@ -25,6 +25,8 @@
 
 #include "InventoryFont.h"
 
+static SDL_Rect arrow_rects[2] = {{0,16,8,8},{0,3*16+8,8,8}};
+
 InventoryWidget::InventoryWidget(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
@@ -39,10 +41,11 @@ InventoryWidget::~InventoryWidget()
 
 }
 
-bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om)
+bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t)
 {
  tile_manager = tm;
  obj_manager = om;
+ text = t;
  
  area.x = x;
  area.y = y;
@@ -63,17 +66,24 @@ void InventoryWidget::set_actor(Actor *a)
 
 void InventoryWidget::Display(bool full_redraw)
 {
-// if(full_redraw || update_display)
-//  {
-   update_display = false;
+ if(full_redraw || update_display)
+  {
    screen->fill(0x31, area.x, area.y, area.w, area.h);
-   //screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
    display_inventory_container();
-   display_inventory_list();
-   
+   display_arrows();
+  }
+   //screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
+ display_inventory_list();
+    
+ if(full_redraw || update_display)
+  {
+   update_display = false;
    screen->update(area.x, area.y, area.w, area.h);
-//  }
- 
+  }
+ else
+  {
+   screen->update(area.x+8,area.y+16,area.w-8,area.h-16); // update only the inventory list
+  }
 }
 
 //either an Actor or an object container.
@@ -169,6 +179,21 @@ void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint8 qty)
  return;
 }
 
+void InventoryWidget::display_arrows()
+{
+ uint32 num_objects;
+ 
+ num_objects = actor->inventory_count_objects(false);
+
+ if(num_objects <= 12) //reset row_offset if we only have one page of objects
+   row_offset = 0;
+
+ if(row_offset > 0) //display top arrow
+    text->drawChar(screen, 24, area.x, area.y + 16, 0x48);
+
+ if(num_objects - row_offset * 4 > 12) //display bottom arrow
+    text->drawChar(screen, 25, area.x, area.y + 3 * 16 + 8, 0x48);
+}
 
 GUI_status InventoryWidget::MouseDown(int x, int y, int button)
 { 
@@ -241,8 +266,21 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
        y >= 0 && y <= 16)
       {
        container_obj = NULL; //return to main Actor inventory
+       Redraw();
+      }
+      
+    if(HitRect(x,y,arrow_rects[0]))
+      {
+       if(up_arrow())
+         Redraw();
       }
 
+    if(HitRect(x,y,arrow_rects[1]))
+      {
+       if(down_arrow())
+         Redraw();
+      }
+    
     if(selected_obj) // attempt to ready selected object.
       {
        actor->add_readied_object(selected_obj);
@@ -253,6 +291,32 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
  selected_obj = NULL;
 	
  return GUI_YUM;
+}
+
+bool InventoryWidget::up_arrow()
+{
+ if(row_offset > 0)
+  {
+   row_offset--;
+   return true;
+  }
+
+ return false;
+}
+
+bool InventoryWidget::down_arrow()
+{
+ uint32 num_objects;
+ 
+ num_objects = actor->inventory_count_objects(false);
+
+ if(num_objects - row_offset * 4 > 12)
+   {
+    row_offset++;
+    return true;
+   }
+
+ return false;
 }
 
 GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)

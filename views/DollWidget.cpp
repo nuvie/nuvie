@@ -26,7 +26,7 @@
 #include "Actor.h" 
 #include "DollWidget.h"
 
-SDL_Rect item_hit_rects[8] = { {24, 0,16,16},   // ACTOR_HEAD
+static SDL_Rect item_hit_rects[8] = { {24, 0,16,16},   // ACTOR_HEAD
                                      { 0, 8,16,16},   // ACTOR_NECK
                                      {48, 8,16,16},   // ACTOR_BODY
                                      { 0,24,16,16},   // ACTOR_ARM

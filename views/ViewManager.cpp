@@ -91,6 +91,15 @@ bool ViewManager::set_current_view(View *view)
  return true;
 }
 
+void ViewManager::update()
+{
+ if(current_view)
+   current_view->Redraw();
+
+ return;
+}
+
+ 
 void ViewManager::set_portrait_mode(uint8 actor_num, char *name)
 {
  portrait_view->set_portrait(actor_num, name);

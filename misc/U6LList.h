@@ -53,6 +53,8 @@ class U6LList
  bool remove(void *data, bool free_data=false);
  bool removeAll();
  
+ uint32 count();
+ 
  U6Link *start();
  U6Link *end();
  

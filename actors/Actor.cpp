@@ -397,6 +397,30 @@ bool Actor::inventory_has_object(uint16 obj_n, uint8 qual)
     return(false);
 }
 
+uint32 Actor::inventory_count_objects(bool inc_readied_objects)
+{
+ Obj *obj;
+ uint32 count = 0;
+ U6Link *link;
+ U6LList *inventory = get_inventory_list();
+ 
+ if(inc_readied_objects)
+  {
+   return inventory->count();
+  }
+ else
+  {
+   for(link=inventory->start();link != NULL;link=link->next)
+     {
+      obj = (Obj *)link->data;
+      if((obj->status & 0x18) != 0x18)
+        count++;
+     }
+  }
+
+ return count;
+}
+
 
 /* Returns the number of objects in the actor's inventory with matching object
  * number and quality.

@@ -1,3 +1,6 @@
+2003-09-11  Eric Fry <efry@users.sourceforge.net>
+	* Added arrows to InventoryWidget.
+
 2003-09-10  Joseph Applegate <sb-x@users.sourceforge.net>
 	* TimeQueue and Timers added to Event files. These should probably be
 	moved into their own file(s).

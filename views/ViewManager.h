@@ -68,6 +68,8 @@ class ViewManager
  
  bool init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *portrait);
 
+ void update();
+ 
  void set_portrait_mode(uint8 actor_num, char *name);
  void set_inventory_mode();
  void set_party_mode();

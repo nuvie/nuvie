@@ -187,6 +187,7 @@ class Actor
  
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0);
+ uint32 inventory_count_objects(bool inc_readied_objects);
  uint32 inventory_count_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0);
  Obj *inventory_get_readied_object(uint8 location);
