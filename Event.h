@@ -95,6 +95,7 @@ class Event : public GUI_CallBack
  uint16 drop_qty;
 
  bool showingQuitDialog;
+ bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
 
  public:
  Event(Configuration *cfg);
@@ -165,6 +166,7 @@ class Event : public GUI_CallBack
  bool alt_code_teleport_to_person(uint32 npc);
 
  void wait();
+ void set_ignore_timeleft(bool newsetting) { ignore_timeleft = newsetting; }
 
 /* FIXME: Some of the above (action) functions can be removed from public, so
    that we don't need to check for WAIT mode in all of them. */

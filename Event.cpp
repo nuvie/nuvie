@@ -55,7 +55,6 @@
 #include "GUI.h"
 #include "GUI_YesNoDialog.h"
 
-
 Event::Event(Configuration *cfg)
 {
  config = cfg;
@@ -69,6 +68,7 @@ Event::Event(Configuration *cfg)
  book = NULL;
  time_queue = game_time_queue = NULL;
  showingQuitDialog = false;
+ ignore_timeleft = false;
 }
 
 Event::~Event()
@@ -900,32 +900,15 @@ bool Event::look()
 bool Event::pushTo(sint16 rel_x, sint16 rel_y)
 {
     Tile *obj_tile;
-    bool can_move = false;
+    bool can_move = false; // some checks must determine if object can_move
     Map *map = Game::get_game()->get_game_map();
     LineTestResult lt;
 
     if(mode == WAIT_MODE)
         return(false);
 
-    if(rel_x == 0 && rel_y == -1) // FIXME: move direction names somewhere else
-        scroll->display_string("North.");
-    else if(rel_x == 1 && rel_y == -1)
-        scroll->display_string("Northeast.");
-    else if(rel_x == 1 && rel_y == 0)
-        scroll->display_string("East.");
-    else if(rel_x == 1 && rel_y == 1)
-        scroll->display_string("Southeast.");
-    else if(rel_x == 0 && rel_y == 1)
-        scroll->display_string("South.");
-    else if(rel_x == -1 && rel_y == 1)
-        scroll->display_string("Southwest.");
-    else if(rel_x == -1 && rel_y == 0)
-        scroll->display_string("West.");
-    else if(rel_x == -1 && rel_y == -1)
-        scroll->display_string("Northwest.");
-    else
-        scroll->display_string("nowhere.");
-    scroll->display_string("\n\n");
+    scroll->display_string(get_direction_name(rel_x, rel_y));
+    scroll->display_string(".\n\n");
 
     // FIXME: the random chance here is just made up, I don't know what
     //        kind of check U6 did ("Failed.\n\n")
@@ -964,15 +947,11 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y)
            can_move = true;
 
         /* do normal move if no usecode or return from usecode was true */
-
-        if(can_move)
-          {
-           if(!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y))
-                can_move = obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
-          }
+        if((!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,rel_x,rel_y)) && can_move)
+          can_move = obj_manager->move(use_obj,use_obj->x+rel_x,use_obj->y+rel_y,use_obj->z);
 
         if(!can_move)
-           scroll->display_string("Blocked.\n\n");
+          scroll->display_string("Blocked.\n\n");
     }
     scroll->display_prompt();
     endAction();
@@ -1528,7 +1507,8 @@ void Event::alt_code_teleport_menu(uint32 selection)
 
 void Event::wait()
 {
- SDL_Delay(TimeLeft());
+ if(!ignore_timeleft)
+   SDL_Delay(TimeLeft());
 }
 
 //Protected

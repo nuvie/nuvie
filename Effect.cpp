@@ -87,10 +87,11 @@ void CannonballEffect::start_anim()
     MapCoord obj_loc(obj->x, obj->y, obj->z);
 
     game->pause_world();
+    game->pause_anims();
     game->pause_user();
 
     anim = new TossAnim(game->get_tile_manager()->get_tile(399),
-                        &obj_loc, &target_loc);
+                        &obj_loc, &target_loc, TOSS_TO_BLOCKING | TOSS_TO_ACTOR | TOSS_TO_OBJECT);
     add_anim(anim);
 }
 
@@ -106,7 +107,7 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
         {
             MapCoord *hit_loc = static_cast<MapCoord *>(msg_data);
             uint16 tile_num = game->get_game_map()->get_tile(hit_loc->x,hit_loc->y,hit_loc->z)->tile_num;
-            // main U6 wall tiles FIX for WOU games
+            // main U6 wall tiles FIX for WOU games (and this is probably a tileflag)
             if(tile_num >= 140 && tile_num <= 187)
             {
                 new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
@@ -136,7 +137,7 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 
     if(stop_effect)
     {
-        if(msg != MESG_ANIM_DONE)
+        if(msg != MESG_ANIM_DONE) // this msg means anim stopped itself
             anim->stop();
         game->unpause_all();
         usecode->message_obj(obj, MESG_EFFECT_COMPLETE, this);
@@ -415,6 +416,7 @@ ThrowObjectEffect::ThrowObjectEffect()
 
 void ThrowObjectEffect::start_anim()
 {
+    game->pause_anims();
     game->pause_world();
     game->pause_user();
     anim = new ThrowObjectAnim(throw_obj, &start_at, &stop_at, throw_speed);
@@ -446,7 +448,7 @@ DropEffect::DropEffect(Obj *obj, uint16 qty, Actor *actor, MapCoord *drop_loc)
 
     if(start_at != stop_at)
     {
-        throw_speed = 296; // animation speed
+        throw_speed = 192; // animation speed
         start_anim();
     }
     else

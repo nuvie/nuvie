@@ -100,7 +100,7 @@ bool GamePalette::loadPalette()
 
 void GamePalette::rotatePalette()
 {
- if(Game::get_game()->get_pause_flags() & PAUSE_ANIMS)
+ if(Game::get_game()->anims_paused())
   return;
 
  screen->rotate_palette(0xe0,8); // Fires, braziers, candles

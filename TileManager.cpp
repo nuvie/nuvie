@@ -257,9 +257,6 @@ void TileManager::update()
  uint8 current_hour = Game::get_game()->get_clock()->get_hour();
  static sint8 last_hour = -1;
 
- if(Game::get_game()->anims_paused())
-   return;
-
  // cycle animated tiles
 
  for(i = 0; i < animdata.number_of_tiles_to_animate; i++)
@@ -281,14 +278,18 @@ void TileManager::update()
      else // not animating
         tileindex[animdata.tile_to_animate[i]] = tileindex[animdata.first_anim_frame[i]];
     }
- if(game_counter == 65535)
-   game_counter = 0;
- else
-   game_counter++;
- if(rgame_counter == 0)
-   rgame_counter = 65535;
- else
-   rgame_counter--;
+
+ if(Game::get_game()->anims_paused() == false) // update counter
+ {
+    if(game_counter == 65535)
+      game_counter = 0;
+    else
+      game_counter++;
+    if(rgame_counter == 0)
+      rgame_counter = 65535;
+    else
+      rgame_counter--;
+ }
  // cycle time-based animations
  if(current_hour != last_hour)
    update_timed_tiles(current_hour);

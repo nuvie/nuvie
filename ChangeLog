@@ -1,3 +1,18 @@
+2005-02-05  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Fixed a cannon moving bug where movement towards a blocked tile would
+	  not let you turn the cannon. You can do that now.
+	* Animating tiles (water) and palette effects (fire) now stop when an
+	  effect (a tossed object) is on the screen.
+	* Added functions to Game to ignore the Event delay. Animations look
+	  smoother when not on Event's timing. (as if NUVIE_INTERVAL==0)
+	* Rewrote TossAnim so it looks and animates better. Dropping an object
+	  doesn't always look correct:
+	  1: I only apply speed to the X-movement in diagonal throws, and base
+	  Y-movement on that. This results in faster diagonal throws when
+	  movement favors the Y-axis.
+	  2: The top-left of a tile is its location; not the center of the tile.
+	  Cannonball animations are still accurate.
+
 2005-01-20  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fixed scroll-to-end when clicking the MsgScroll with the mouse.
 	  Keywords can only be selected with the left mousebutton.

@@ -17,12 +17,24 @@
 #define MESG_ANIM_HIT       ANIM_CB_HIT
 #define MESG_ANIM_DONE      ANIM_CB_DONE
 
+/* Defines:
+ * this_time: THIS_TIME
+ * ms_passed: milliseconds since LAST_TIME_VAR
+ * fraction: fraction of a second since LAST_TIME
+ */
+//DIVIDE_TIME(THIS_TIME, LAST_TIME_VAR) ( \
+//    uint32 this_time = THIS_TIME; \
+//    uint32 ms_passed = (this_time - LAST_TIME_VAR) > 0 ? (this_time - LAST_TIME_VAR) : 1; \
+//    uint32 fraction = 1000 / ms_passed; // % of second \
+//)
+
 static float get_relative_degrees(sint16 sx, sint16 sy, float angle_up = 0);
 
 
 /* Convert a non-normalized relative direction (difference) from any center
  * point to degrees, where direction 0,-1 (up) is `angle_up' degrees.
  * Returns the angle.
+ * FIXME: this should only be a few lines
  */
 static float get_relative_degrees(sint16 sx, sint16 sy, float angle_up)
 {
@@ -427,58 +439,135 @@ bool HitAnim::update()
 /*** TossAnim ***/
 TossAnim::TossAnim(Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags)
 {
-    toss_tile = tile;
-    src = new MapCoord(*start);
-    target = new MapCoord(*stop);
-    blocking = stop_flags;
+    init(tile, start, stop, 192, stop_flags);
 }
 
 
 TossAnim::TossAnim(CallBack *t, void *d, Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags)
 {
+    init(tile, start, stop, 192, stop_flags);
     set_target(t);
     set_user_data(d);
-
-    toss_tile = tile;
-    src = new MapCoord(*start);
-    target = new MapCoord(*stop);
-    blocking = stop_flags;
 }
 
 
 TossAnim::~TossAnim()
 {
+    if(running)
+    {
+        printf("anim warning: deleting active TossAnim!\n");
+        stop();
+    }
+
     delete src;
     delete target;
 }
 
 
-/* Start tile at source. Set velocity.
+void TossAnim::init(Tile *tile, MapCoord *start, MapCoord *stop, uint16 sp, uint8 stop_flags)
+{
+    toss_tile = tile;
+    src = new MapCoord(*start);
+    target = new MapCoord(*stop);
+    blocking = stop_flags;
+    start_px = start_py = target_px = target_py = 0;
+
+    map_window->get_level(&mapwindow_level);
+    tanS = 0;
+    old_rely = 0;
+    x_left = 0; y_left = 0;
+
+    speed = sp;
+}
+
+
+/* Start tile at source. Get a tangent for velocity.
  */
 void TossAnim::start()
 {
-    move(src->x, src->y);
-    add_tile(toss_tile, 0, 0);
+    uint8 pitch = anim_manager->get_tile_pitch(); // AnimManager not set until start
+    tile_center = pitch / 2;
 
-    sint32 velocity = 320;
-    set_velocity((target->x == src->x) ? 0 : (target->x > src->x) ? velocity : -velocity,
-                 (target->y == src->y) ? 0 : (target->y > src->y) ? velocity : -velocity);
+    add_tile(toss_tile, 0, 0);
+    move(src->x, src->y);
+
+    // pixel-line movement constants
+    start_px = src->x * pitch + tile_center;
+    start_py = src->y * pitch + tile_center;
+    target_px = target->x * pitch + tile_center;
+    target_py = target->y * pitch + tile_center;
+    if(target_px-start_px) // will move in X direction
+        tanS = float(sint32(target_py-start_py)) / sint32(target_px-start_px);
+//printf("start: tanS = %d / %d = %f\n", target_py-start_py, target_px-start_px, tanS);
+    Game::get_game()->dont_wait_for_interval();
+}
+
+
+/* Return to normal Event timing.
+ */
+void TossAnim::stop()
+{
+    if(running) // were stop() called twice, Event might start waiting even when more animations are left
+    {
+        TileAnim::stop();
+        Game::get_game()->wait_for_interval();
+    }
 }
 
 
 /* Slide tile. Check map for interception. (stop if hit target)
+ * Possible things to hit are actors and objects. Possible locations to hit are
+ * boundary tiles (blocking) and the target.
  */
 bool TossAnim::update()
 {
-    update_position();
-    MapCoord new_loc = get_location();
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+    Map *map = Game::get_game()->get_game_map();
+    uint32 moves_left = 0;
 
-    // update_position() can miss the exact target; don't go too far from src
-    if((new_loc != *target) && (new_loc.distance(*src) >= src->distance(*target)))
+    do // move (no more than) one tile at a time, and check for intercept
     {
-        move(target->x, target->y);
-        hit_target();
-    }
+        MapCoord old_loc = get_location(); // record old location
+        moves_left = update_position(anim_manager->get_tile_pitch()); /** MOVE **/
+        MapCoord new_loc = get_location();
+
+        // test the current location, check for intercept
+        if(new_loc != old_loc)
+        {
+//printf("Toss: %x,%x,%x->%x,%x,%x\n",old_loc.x,old_loc.y,old_loc.z,new_loc.x,new_loc.y,new_loc.z);
+            // hit actor or object? (can be one or the other)
+            Actor *hitActor = actor_manager->get_actor(new_loc.x, new_loc.y, mapwindow_level);
+            Obj *hitObj = obj_manager->get_obj(new_loc.x, new_loc.y, mapwindow_level);
+
+            // blocking tile/object
+            if(map->is_boundary(new_loc.x, new_loc.y, mapwindow_level))
+//               || (hitObj && !map->is_passable(new_loc.x, new_loc.y, mapwindow_level)))
+            {
+                if(!hitActor) // NOTE: no effect if actor is also at location
+                    hit_blocking(MapCoord(new_loc.x, new_loc.y, mapwindow_level));
+                else
+                    stop(); // this mimics U6 in appearance and results in no effect
+            }
+            else if(hitActor)
+                hit_actor(hitActor);
+            else if(hitObj)
+                hit_object(hitObj);
+
+            if(running) // one of the interceptors could have stopped us
+            {
+                // target (mandatory stop)
+                if(new_loc.x == target->x && new_loc.y == target->y)
+                    hit_target();
+                else if (new_loc.distance(*src) >= src->distance(*target))
+                {   // overshot target (move and stop)
+                    printf("anim warning: TossAnim missed the target\n");
+                    move(target->x, target->y);
+                    hit_target();
+                }
+            }
+        }
+    } while(running && moves_left > 0);
     return(true);
 }
 
@@ -491,24 +580,22 @@ void TossAnim::hit_target()
     message(MESG_ANIM_DONE, NULL);
 }
 
-void TossAnim::hit_something(Obj *obj)
+void TossAnim::hit_object(Obj *obj)
 {
     if(!running)
         return;
     MapEntity obj_ent(obj);
     if(blocking & TOSS_TO_OBJECT)
-        stop();
-    message(MESG_ANIM_HIT, &obj_ent);
+        message(MESG_ANIM_HIT, &obj_ent);
 }
 
-void TossAnim::hit_something(Actor *actor)
+void TossAnim::hit_actor(Actor *actor)
 {
     if(!running)
         return;
     MapEntity actor_ent(actor);
     if(blocking & TOSS_TO_ACTOR)
-        stop();
-    message(MESG_ANIM_HIT, &actor_ent);
+        message(MESG_ANIM_HIT, &actor_ent);
 }
 
 void TossAnim::hit_blocking(MapCoord obj_loc)
@@ -516,138 +603,72 @@ void TossAnim::hit_blocking(MapCoord obj_loc)
     if(!running)
         return;
     if(blocking & TOSS_TO_BLOCKING)
-        stop();
-    message(MESG_ANIM_HIT_WORLD, &obj_loc);
+        message(MESG_ANIM_HIT_WORLD, &obj_loc);
 }
 
 
-/* Update position (move per velocity) and "hit" certain locations in the path.
- * Possible things to hit are actors and objects. Possible locations to hit are
- * boundary tiles (blocking) and the target.
+/* Get velocity from tangent & speed, and move the tile.
+ * FIXME: for diagonal movement the speed is only applied to X-axis, which is modified for Y-axis (so some tosses look faster than others)
  */
-void TossAnim::update_position()
+uint32 TossAnim::update_position(uint32 max_move)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
-    Map *map = Game::get_game()->get_game_map();
-    sint32 deltax, deltay; // line plotting is from Map::lineTest()
-    sint32 xinc1, xinc2;
-    sint32 yinc1, yinc2;
-    sint32 dinc1, dinc2;
-    sint32 d, count;
+//    DIVIDE_TIME(SDL_GetTicks(), last_move_time); // defines fraction
+    /* divide time */
     uint32 this_time = SDL_GetTicks();
-    uint8 tile_center = anim_manager->get_tile_pitch() / 2; // 8
-
-    if(this_time - last_move_time >= 100) // only move every 10th sec
+    uint32 ms_passed = (this_time - last_move_time) > 0 ? (this_time - last_move_time) : 1;
+    uint32 fraction = 1000 / ms_passed; // % of second
+    last_move_time = this_time;
+    /* get number of moves(pixels) this fraction, and movement direction */
+    uint32 moves_left = 0;
+    float moves = (float)speed / (fraction > 0 ? fraction : 1);
+    if(moves > max_move) // WARNING: this drops the decimal value, but it doesn't matter if moving more than 16px per call (also I'm not even saving the remainder now)
     {
-        sint32 vel_x_incr = vel_x / 10, vel_y_incr = vel_y / 10;
-        // no movement, just stop and hit_target()
-        if(vel_x_incr == 0 && vel_y_incr == 0)
-        {
-            hit_target();
-            return;
-        }
-        deltax = abs(vel_x_incr); // line settings
-        deltay = abs(vel_y_incr);
-        if(deltax >= deltay)
-        {
-            d = (deltay << 1) - deltax;
-            count = deltax + 1;
-            dinc1 = deltay << 1;
-            dinc2 = (deltay - deltax) << 1;
-            xinc1 = 1;
-            xinc2 = 1;
-            yinc1 = 0;
-            yinc2 = 1;
-        }
-        else
-        {
-            d = (deltax << 1) - deltay;
-            count = deltay + 1;
-            dinc1 = deltax << 1;
-            dinc2 = (deltax - deltay) << 1;
-            xinc1 = 0;
-            xinc2 = 1;
-            yinc1 = 1;
-            yinc2 = 1;
-        }
-        if(vel_x_incr < 0) // moving left
-        {
-            xinc1 = -xinc1;
-            xinc2 = -xinc2;
-        }
-        if(vel_y_incr < 0) // moving up
-        {
-            yinc1 = -yinc1;
-            yinc2 = -yinc2;
-        }
+        moves_left = (uint32)floorf(moves) - max_move;
+        moves = max_move;
+    }
+    sint8 xdir = (start_px == target_px) ? 0 : (start_px < target_px) ? 1 : -1;
+    sint8 ydir = (start_py == target_py) ? 0 : (start_py < target_py) ? 1 : -1;
+    sint32 x_move = (uint32)floorf(moves) * xdir; // modifies per direction
+    sint32 y_move = (uint32)floorf(moves) * ydir;
 
-        // plotted direction of a line of pixels from starting location to
-        //  the distance we can move in this time increment
-        // (move one pixel at a time, check when hitting a new tile)
-        MapCoord old_loc = get_location(); // record
-        // if center of anim/tile is not at old_loc, change old_loc to fit
-        if(px >= tile_center) // 8
-            old_loc.x += 1;
-        if(py >= tile_center)
-            old_loc.y += 1;
+    // collect the remainder (amount of movement less than 1)
+    accumulate_moves(moves, x_move, y_move, xdir, ydir);
+//printf("(%d) moves:%f x_move:%d y_move:%d x_left:%f y_left:%f\n",ms_passed,moves,x_move,y_move,x_left,y_left);
+    // too slow for movement, just return
+    if(x_move == 0 && y_move == 0)
+        return(moves_left);
 
-        for(sint32 i = 0; i < count; i++)
-        {
-            // move
-            if(d < 0)
-            {
-               d += dinc1;
-               shift(xinc1, yinc1);
-            }
-            else
-            {
-               d += dinc2;
-               shift(xinc2, yinc2);
-            }
-            MapCoord new_loc = get_location(); // record
-            // if center of anim/tile is not at new_loc, change new_loc to fit
-            if(px >= tile_center) // 8
-                new_loc.x += 1;
-            if(py >= tile_center)
-                new_loc.y += 1;
+    if(x_move != 0)
+    {
+        uint32 xpos = tx * 16 + px; // pixel location
+        sint32 relx = (xpos + x_move) - start_px; // new relative position
+        sint32 rely = (uint32)roundf(relx * tanS);
+        shift(x_move, rely - old_rely); // **MOVE**
+        old_rely = rely;
+    }
+    else // only moving along Y
+        shift(0, y_move); // **MOVE**
+    return(moves_left);
+}
 
-            // test the current location
-            // FIXME: check for hit edge of visible area (or left the mapwindow)
-            if(new_loc != old_loc)
-            {
-                old_loc = new_loc;
-                uint8 mapwindow_level;
-                map_window->get_level(&mapwindow_level);
 
-                // actor or object (can be one or the other)
-                Actor *hitActor = actor_manager->get_actor(new_loc.x, new_loc.y, mapwindow_level);
-                Obj *hitObj = obj_manager->get_obj(new_loc.x, new_loc.y, mapwindow_level);
-                if(hitActor)
-                {
-                    hit_something(hitActor);
-                }
-                else if(hitObj)
-                {
-                    hit_something(hitObj);
-                }
-
-                // blocking tile/object
-                if(map->is_boundary(new_loc.x, new_loc.y, mapwindow_level)
-                   || (hitObj && !map->is_passable(new_loc.x, new_loc.y, mapwindow_level)))
-                {
-                    hit_blocking(MapCoord(new_loc.x, new_loc.y, mapwindow_level));
-                }
-
-                // target (mandatory stop)
-                if(new_loc.x == target->x && new_loc.y == target->y && mapwindow_level == target->z)
-                    hit_target();
-                if(!running) // don't bother moving any more
-                    return;
-            }
-        }
-
-        last_move_time = this_time;
+/* Update x_left/y_left from incremental moves adding the decimal of
+ * moves to them. If any integer value has been collected, move it to
+ * the passed x_move/y_move references.
+ */
+void TossAnim::accumulate_moves(float moves, sint32 &x_move, sint32 &y_move, sint8 xdir, sint8 ydir)
+{
+    x_left += (float)moves - (uint32)floorf(moves); // get decimal component
+    y_left += (float)moves - (uint32)floorf(moves);
+    if(x_left >= 1.0)
+    {
+        x_move += (uint32)floorf(x_left) * xdir; // add integer to movement
+        x_left -= (uint32)floorf(x_left); // remove from collection
+    }
+    if(y_left >= 1.0)
+    {
+        y_move += (uint32)floorf(y_left) * ydir; // add integer to movement
+        y_left -= (uint32)floorf(y_left); // remove from collection
     }
 }
 
@@ -809,11 +830,11 @@ bool ExplosiveAnim::update()
         if(map->lineTest(center.x, center.y, edge.x, edge.y, mapwindow_level,
                          LT_HitActors, lt, 1)
            && !already_hit(MapEntity(lt.hitActor)))
-            hit_something(lt.hitActor);
+            hit_actor(lt.hitActor);
         else if(map->lineTest(center.x, center.y, edge.x, edge.y, mapwindow_level,
                               LT_HitObjects, lt, 1)
                 && !already_hit(MapEntity(lt.hitObj)))
-            hit_something(lt.hitObj);
+            hit_object(lt.hitObj);
 
         // stop in this direction
         // FIXME: more things than boundaries (walls) stop explosions
@@ -845,7 +866,7 @@ bool ExplosiveAnim::already_hit(MapEntity ent)
 
 /* Also adds object to hit_items list for already_hit() to check.
  */
-void ExplosiveAnim::hit_something(Obj *obj)
+void ExplosiveAnim::hit_object(Obj *obj)
 {
     if(!running)
         return;
@@ -857,7 +878,7 @@ void ExplosiveAnim::hit_something(Obj *obj)
 
 /* Also adds actor to hit_items list for already_hit() to check.
  */
-void ExplosiveAnim::hit_something(Actor *actor)
+void ExplosiveAnim::hit_actor(Actor *actor)
 {
     if(!running)
         return;
@@ -899,7 +920,8 @@ ThrowObjectAnim::ThrowObjectAnim(Obj *obj, MapCoord *from, MapCoord *to, uint32 
                                                                  direction.sy, 90));
 
     // set velocity (x,y) based on direction & speed
-    set_velocity_for_speed(direction.sx, direction.sy, vel);
+//    set_velocity_for_speed(direction.sx, direction.sy, vel);
+    speed = vel;
 }
 
 
@@ -911,6 +933,7 @@ ThrowObjectAnim::~ThrowObjectAnim()
 
 void ThrowObjectAnim::start()
 {
-    move(src->x, src->y);
-    add_tile(toss_tile, 0, 0);
+    TossAnim::start();
+/*  move(src->x, src->y);
+    add_tile(toss_tile, 0, 0);*/
 }

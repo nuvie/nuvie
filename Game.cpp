@@ -281,6 +281,23 @@ void Game::set_pause_flags(GamePauseState state)
 }
 
 
+void Game::dont_wait_for_interval()
+{
+    if(ignore_event_delay < 255)
+        ++ignore_event_delay;
+    event->set_ignore_timeleft(true);
+}
+
+
+void Game::wait_for_interval()
+{
+    if(ignore_event_delay > 0)
+        --ignore_event_delay;
+    if(ignore_event_delay == 0)
+        event->set_ignore_timeleft(false);
+}
+
+
 void Game::play()
 {
   bool game_play = true;

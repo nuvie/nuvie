@@ -56,7 +56,7 @@ typedef enum
 {
     PAUSE_UNPAUSED = 0x00,
     PAUSE_USER     = 0x01, /* Don't allow user-input */
-    PAUSE_ANIMS    = 0x02, /* TileManager & AnimManager */
+    PAUSE_ANIMS    = 0x02, /* TileManager & Palette */
     PAUSE_WORLD    = 0x04, /* game time doesn't pass, freeze actors */
     PAUSE_ALL      = 0xFF
 } GamePauseState;
@@ -98,6 +98,7 @@ class Game
  GUI *gui;
 
  GamePauseState pause_flags;
+ uint8 ignore_event_delay; // (stack) if non-zero, Event will not periodically wait for NUVIE_INTERVAL
 
  public:
 
@@ -124,6 +125,8 @@ class Game
  bool world_paused() { return(pause_flags & PAUSE_WORLD); }
 
  bool set_mouse_pointer(uint8 ptr_num);
+ void dont_wait_for_interval();
+ void wait_for_interval();
 
  /* Pass back instance of Game classes... and why not? */
  static Game *get_game()           { return(game); }
