@@ -428,7 +428,7 @@ void Converse::show_portrait(uint8 n)
          || (n >= 188 && n <= 200)) // always known NPCs
         nameret = npc_name(n);
     else
-        nameret = actors->look_actor(actor);
+        nameret = actors->look_actor(actor, false);
     views->set_portrait_mode(actor, (char *)nameret);
 }
 

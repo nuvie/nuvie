@@ -1,4 +1,9 @@
 2004-01-24  Joseph Applegate <sb-x at users.sourceforge.net>
+	* New alt-codes: 314-teleport to NPC,
+	                 414-destination menu for lazy teleporters,
+	                 456-morph npc appearance (forgot to mention last time)
+
+2004-01-24  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Contents of eggs are now tossed out to a random location, if the egg
 	  location is occupied by an actor. (the original U6 did some
 	  interesting things with eggs; added a note to the TODO list)

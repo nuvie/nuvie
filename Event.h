@@ -133,6 +133,7 @@ class Event
  bool alt_code_teleport(const char *location_string);
  void alt_code_infostring();
  void alt_code_teleport_menu(uint32 selection);
+ bool alt_code_teleport_to_person(uint32 npc);
 
  void wait();
 

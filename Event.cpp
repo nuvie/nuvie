@@ -22,6 +22,7 @@
  */
 
 #include <cassert>
+#include <cstring>
 #include <SDL.h>
 
 #include "nuvieDefs.h"
@@ -269,7 +270,13 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		default :
 			if (event->key.keysym.sym != SDLK_LALT
 				&& event->key.keysym.sym != SDLK_RALT)
-				cancelAction();
+				if(mode != MOVE_MODE)
+					cancelAction();
+				else
+				{
+					scroll->display_string("what?\n\n");
+					scroll->display_prompt();
+				}
 			break;
 	}	//	switch (event->key.keysym.sym)
 	return	true;
@@ -910,9 +917,7 @@ void Event::alt_code_input(const char *in)
 
         case 314: // teleport player & party to selected location
             if(strtol(in, NULL, 10) != 0)
-            {
                 alt_code_teleport_menu((uint32)strtol(in, NULL, 10));
-            }
             if(strtol(in, NULL, 10) == 0 || alt_code_input_num > 2)
             {
                 scroll->display_string("\n");
@@ -920,6 +925,13 @@ void Event::alt_code_input(const char *in)
                 alt_code_input_num = 0;
                 active_alt_code = 0;
             }
+            break;
+
+        case 414: // teleport player & party to NPC location
+            alt_code_teleport_to_person((uint32)strtol(in, NULL, 10));
+            scroll->display_string("\n\n");
+            scroll->display_prompt();
+            active_alt_code = 0;
             break;
 
         case 500: // control/watch anyone
@@ -1032,7 +1044,7 @@ void Event::alt_code(const char *cs)
             active_alt_code = 0;
             break;
 
-        case 314:
+        case 314: // teleport player & party to selected location
             if(player->get_actor()->get_actor_num() == 0)
             {
                 scroll->display_string("\n<nat uail abord wip!>\n");
@@ -1044,6 +1056,12 @@ void Event::alt_code(const char *cs)
                 alt_code_teleport_menu(0);
                 active_alt_code = c;
             }
+            break;
+
+        case 414: // teleport player & party to NPC location
+            scroll->display_string("Npc number? ");
+            get_scroll_input();
+            active_alt_code = c;
             break;
 
     }
@@ -1088,103 +1106,243 @@ void Event::alt_code_infostring()
 }
 
 
+/* Move player to NPC location.
+ */
+bool Event::alt_code_teleport_to_person(uint32 npc)
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    MapCoord actor_location = actor_manager->get_actor(npc)->get_location();
+    player->move(actor_location.x, actor_location.y, actor_location.z);
+    if(!actor_manager->toss_actor(player->get_actor(), 2, 2))
+        actor_manager->toss_actor(player->get_actor(), 4, 4);
+    return(true);
+}
+
+
 /* Display teleport destinations, get input.
  */
 void Event::alt_code_teleport_menu(uint32 selection)
 {
     static uint8 category = 0;
-    char teleport_dest[11] = "";
-    if(alt_code_input_num == 0)
+    char *teleport_dest = "";
+    if(alt_code_input_num == 0) // select category
     {
         scroll->display_string("\nLazy Teleporters' Menu!\n");
         scroll->display_string(" 1) Cities\n");
-        scroll->display_string(" 2) Merchants\n");
+        scroll->display_string(" 2) Major Areas\n");
         scroll->display_string(" 3) Shrines\n");
-        scroll->display_string(" 4) Moon Orb\n");
-        scroll->display_string(" 5) Gargoyles\n");
+        scroll->display_string(" 4) Gargoyles\n");
+        scroll->display_string(" 5) Dungeons\n");
         scroll->display_string(" 6) Other\n");
         scroll->display_string("Category? ");
         get_scroll_input("0123456");
     }
-    else if(alt_code_input_num == 1) // selected category
+    else if(alt_code_input_num == 1) // selected category, select location
     {
         category = selection;
+        scroll->display_string("\n");
         switch(selection)
         {
             case 1:
                 scroll->display_string("Cities\n");
+                scroll->display_string(" 1) Britain\n");
+                scroll->display_string(" 2) Trinsic\n");
+                scroll->display_string(" 3) Yew\n");
+                scroll->display_string(" 4) Minoc\n");
+                scroll->display_string(" 5) Moonglow\n");
+                scroll->display_string(" 6) Jhelom\n");
+                scroll->display_string(" 7) Skara Brae\n");
+                scroll->display_string(" 8) New Magincia\n");
+                scroll->display_string(" 9) Buc's Den\n");
                 scroll->display_string("Location? ");
                 get_scroll_input("0123456789");
                 break;
             case 2:
-                scroll->display_string("Merchants\n");
+                scroll->display_string("Major Areas\n");
+                scroll->display_string(" 1) Cove\n");
+                scroll->display_string(" 2) Paws\n");
+                scroll->display_string(" 3) The Hold\n");
+                scroll->display_string(" 4) The Abbey\n");
+                scroll->display_string(" 5) Lycaeum\n");
+                scroll->display_string(" 6) Library\n");
+                scroll->display_string(" 7) Sutek\n");
+                scroll->display_string(" 8) Stonegate\n");
+                scroll->display_string(" 9) The Codex\n");
                 scroll->display_string("Location? ");
                 get_scroll_input("0123456789");
                 break;
             case 3:
                 scroll->display_string("Shrines\n");
+                scroll->display_string(" 1) Honesty\n");
+                scroll->display_string(" 2) Compassion\n");
+                scroll->display_string(" 3) Valor\n");
+                scroll->display_string(" 4) Justice\n");
+                scroll->display_string(" 5) Sacrifice\n");
+                scroll->display_string(" 6) Honor\n");
+                scroll->display_string(" 7) Humility\n");
+                scroll->display_string(" 8) Spirituality\n");
                 scroll->display_string("Location? ");
-                get_scroll_input("0123456789");
+                get_scroll_input("012345678");
                 break;
             case 4:
-                scroll->display_string("Moon Orb\n");
+                scroll->display_string("Gargoyles\n");
+                scroll->display_string(" 1) Hall\n");
+                scroll->display_string(" 2) Singularity\n");
+                scroll->display_string(" 3) King's Temple\n");
+                scroll->display_string(" 4) Tomb of Kings\n");
+                scroll->display_string(" 5) Hythloth\n");
+                scroll->display_string(" 6) Control\n");
+                scroll->display_string(" 7) Passion\n");
+                scroll->display_string(" 8) Diligence\n");
                 scroll->display_string("Location? ");
-                get_scroll_input("0123456789");
+                get_scroll_input("012345678");
                 break;
             case 5:
-                scroll->display_string("Gargoyles\n");
+                scroll->display_string("Dungeons\n");
+                scroll->display_string(" 1) Wrong\n");
+                scroll->display_string(" 2) Covetous\n");
+                scroll->display_string(" 3) Destard\n");
+                scroll->display_string(" 4) Shame\n");
+                scroll->display_string(" 5) Heftimus\n");
+                scroll->display_string(" 6) Ant Mound\n");
+                scroll->display_string(" 7) Hythloth\n");
+                scroll->display_string(" 8) Buc's Cave\n");
+                scroll->display_string(" 9) Pirate Cave\n");
                 scroll->display_string("Location? ");
                 get_scroll_input("0123456789");
                 break;
             case 6:
-                scroll->display_string("Other\n"
-                                       " 1) Castle\n"
-                                       " 2) Royal Mint\n"
-                                       " 3) Lumberjack\n"
-                                       " 4) Saw Mill\n"
-                                       " 5) Thieves Guild\n"
-                                       " 6) Wisps\n"
-                                       " 7) Iolo's Hut\n"
-                                       " 8) Lycaeum\n"
-                                       "Location? ");
-                get_scroll_input("012345678");
+                scroll->display_string("Other\n");
+                scroll->display_string(" 1) Iolo's Hut\n");
+                scroll->display_string(" 2) Lumberjack\n");
+                scroll->display_string(" 3) Saw Mill\n");
+                scroll->display_string(" 4) Thieves Guild\n");
+                scroll->display_string(" 5) Wisps\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("012345");
                 break;
         }
     }
-    else if(alt_code_input_num == 2) // selected location
+    else if(alt_code_input_num == 2) // selected location, teleport
     {
         switch(category)
         {
             case 1:
+                if(selection == 1) // Britain
+                    teleport_dest = "133 1a3 0";
+                else if(selection == 2) // Trinsic
+                    teleport_dest = "19b 2e2 0";
+                else if(selection == 3) // Yew
+                    teleport_dest = "ec a7 0";
+                else if(selection == 4) // Minoc
+                    teleport_dest = "254 63 0";
+                else if(selection == 5) // Moonglow
+                    teleport_dest = "38a 203 0";
+                else if(selection == 6) // Jhelom
+                    teleport_dest = "a0 36b 0";
+                else if(selection == 7) // Skara Brae
+                    teleport_dest = "54 203 0";
+                else if(selection == 8) // New Magincia
+                    teleport_dest = "2e3 2ab 0";
+                else if(selection == 9) // Buc's Den
+                    teleport_dest = "246 274 0";
                 break;
             case 2:
+                if(selection == 1) // Cove
+                    teleport_dest = "83 db 0";
+                else if(selection == 2) // Paws
+                    teleport_dest = "198 264 0";
+                else if(selection == 3) // Serpent's Hold
+                    teleport_dest = "22e 3bc 0";
+                else if(selection == 4) // Empath Abbey
+                    teleport_dest = "83 db 0";
+                else if(selection == 5) // Lycaeum
+                    teleport_dest = "37b 1a4 0";
+                else if(selection == 6) // Library
+                    teleport_dest = "37b 1b4 0";
+                else if(selection == 7) // Sutek's Island
+                    teleport_dest = "316 3d4 0";
+                else if(selection == 8) // Stonegate
+                    teleport_dest = "25f 11d 0";
+                else if(selection == 9) // The Codex
+                    teleport_dest = "39b 354 0";
                 break;
             case 3:
+                if(selection == 1) // Honesty
+                    teleport_dest = "3a7 109 0";
+                else if(selection == 2) // Compassion
+                    teleport_dest = "1f7 168 0";
+                else if(selection == 3) // Valor
+                    teleport_dest = "9f 3b1 0";
+                else if(selection == 4) // Justice
+                    teleport_dest = "127 28 0";
+                else if(selection == 5) // Sacrifice
+                    teleport_dest = "33f a6 0";
+                else if(selection == 6) // Honor
+                    teleport_dest = "147 339 0";
+                else if(selection == 7) // Humility
+                    teleport_dest = "397 3a8 0";
+                else if(selection == 8) // Spirituality
+                    teleport_dest = "17 16 1";
                 break;
             case 4:
+                if(selection == 1) // Hall of Knowledge
+                    teleport_dest = "7f af 5";
+                else if(selection == 2) // Temple of Singularity
+                    teleport_dest = "7f 37 5";
+                else if(selection == 3) // Temple of Kings
+                    teleport_dest = "7f 50 5";
+                else if(selection == 4) // Tomb of Kings
+                    teleport_dest = "7f 9 4";
+                else if(selection == 5) // Hythloth exit
+                    teleport_dest = "dc db 5";
+                else if(selection == 6) // Shrine of Control
+                    teleport_dest = "43 2c 5";
+                else if(selection == 7) // Shrine of Passion
+                    teleport_dest = "bc 2c 5";
+                else if(selection == 8) // Shrine of Diligence
+                    teleport_dest = "6c dc 5";
                 break;
             case 5:
+                if(selection == 1) // Wrong
+                    teleport_dest = "1f4 53 0";
+                else if(selection == 2) // Covetous
+                    teleport_dest = "273 73 0";
+                else if(selection == 3) // Destard
+                    teleport_dest = "120 29d 0";
+                else if(selection == 4) // Shame
+                    teleport_dest = "eb 19b 0";
+                else if(selection == 5) // Heftimus
+                    teleport_dest = "84 35b 0";
+                else if(selection == 6) // Ant Mound
+                    teleport_dest = "365 bb 0";
+                else if(selection == 7) // Hythloth
+                    teleport_dest = "384 3a4 0";
+                else if(selection == 8) // Buccaneer's Cave
+                    teleport_dest = "234 253 0";
+                else if(selection == 9) // Pirate Cave
+                    teleport_dest = "2c3 342 0";
                 break;
             case 6:
-                if(selection == 1) // Castle British
-                    teleport_dest = "133 15f 0";
-                else if(selection == 2) // Royal Mint
-                    teleport_dest = "144 18c 0";
-                else if(selection == 3) // Lumberjack (Yew)
-                    teleport_dest = "b2 94 0";
-                else if(selection == 4) // Saw Mill (Minoc)
-                    teleport_dest = "2a4 65 0";
-                else if(selection == 5) // Thieves Guild
-                    teleport_dest = "233 25e 0";
-                else if(selection == 6) // Wisps
-                    teleport_dest = "a5 115 0";
-                else if(selection == 7) // Iolo's Hut
+                if(selection == 1) // Iolo's Hut
                     teleport_dest = "c3 e8 0";
-                else if(selection == 8) // Mariah (Lycaeum)
-                    teleport_dest = "37b 1aa 0";
+                else if(selection == 2) // Lumberjack (Yew)
+                    teleport_dest = "b2 94 0";
+                else if(selection == 3) // Saw Mill (Minoc)
+                    teleport_dest = "2a4 65 0";
+                else if(selection == 4) // Thieves Guild
+                    teleport_dest = "233 25e 0";
+                else if(selection == 5) // Wisps
+                    teleport_dest = "a5 115 0";
                 break;
         }
-        alt_code_teleport(teleport_dest);
+        if(strlen(teleport_dest))
+        {
+            scroll->display_string("\n(");
+            scroll->display_string(teleport_dest);
+            scroll->display_string(")\n");
+            alt_code_teleport(teleport_dest);
+        }
     }
     ++alt_code_input_num;
 }
