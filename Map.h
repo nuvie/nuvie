@@ -88,6 +88,7 @@ class Map
  unsigned char *get_map_data(uint8 level);
  uint16 get_width(uint8 level);
  bool is_passable(uint16 x, uint16 y, uint8 level);
+ bool is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects=false);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
  bool actor_at_location(uint16 x, uint16 y, uint8 level);
 

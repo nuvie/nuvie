@@ -145,6 +145,7 @@ class ObjManager
  iAVLKey get_obj_tree_key(uint16 x, uint16 y, uint8 level);
  //inline U6LList *ObjManager::get_schunk_list(uint16 x, uint16 y, uint8 level);
 
+ public:
  void print_object_list();
  void print_egg_list();
  void print_obj(Obj *obj, bool in_container, uint8 indent=0);

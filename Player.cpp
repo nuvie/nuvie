@@ -114,10 +114,11 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
  actor->get_location(&x, &y, &z);
 
  // change direction only if we can move there
- if(actor->check_move(x + rel_x, y + rel_y, z, ACTOR_IGNORE_OTHERS))
-    actor->set_direction(rel_x, rel_y);
+ //if(actor->check_move(x + rel_x, y + rel_y, z, ACTOR_IGNORE_OTHERS))
+
  if(actor->moveRelative(rel_x,rel_y))
  {
+  actor->set_direction(rel_x, rel_y);
 //   map_window->moveMapRelative(rel_x,rel_y);
    party->follow();
    actor_manager->updateActors();

@@ -47,15 +47,23 @@
 #define WORKTYPE_U6_PLAY_LUTE 0x95
 #define WORKTYPE_U6_BEG 0x96
 
+#define MOVETYPE_U6_LAND     1
+#define MOVETYPE_U6_WATER    2
+#define MOVETYPE_U6_AIR_LOW  3 // balloon, birds... this movetype cannot cross mountain tops.
+#define MOVETYPE_U6_AIR_HIGH 4 // dragons
+
 typedef struct {
  uint16 base_obj_n;
  uint8 frames_per_direction;
  uint8 tiles_per_direction;
  uint8 tiles_per_frame;
+ uint8 tile_start_offset; //used for ships where the frame_n starts at 8
  uint16 dead_obj_n;
  uint8 dead_frame_n;
  bool can_laydown;
  bool can_sit;
+ bool has_surrounding_objs;
+ uint8 movetype;
  uint16 twitch_rand; //used to control how frequently an actor twitches, lower numbers twitch more
 } U6ActorType;
 
@@ -76,11 +84,14 @@ class U6Actor: public Actor
  void preform_worktype();
  void set_direction(uint8 d);
  bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
+ bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
  void twitch();
  
  uint8 get_object_readiable_location(uint16 obj_n);
  
  protected:
+ bool init_ship();
+ 
  void wt_walk_to_location();
  void wt_walk_straight();
  void wt_wander_around();
@@ -89,6 +100,12 @@ class U6Actor: public Actor
  void wt_play_lute();
 
  void set_actor_obj_n(uint16 new_obj_n);
+ 
+ inline void remove_surrounding_objs_from_map();
+ inline void add_surrounding_objs_to_map();
+ inline void move_surrounding_objs_relative(sint16 rel_x, sint16 rel_y);
+ inline void set_direction_of_surrounding_objs(uint8 new_direction);
+ inline void set_direction_of_surrounding_ship_objs(uint8 new_direction);
 };
 
 #endif /* __U6Actor_h__ */

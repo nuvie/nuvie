@@ -24,6 +24,10 @@
  *
  */
 
+#include <list>
+
+using std::list;
+
 #include "U6def.h"
 #include "U6LList.h"
 #include "Map.h"
@@ -126,6 +130,8 @@ class Actor
  //current schedule pos;
  uint16 sched_pos;
 
+ list<Obj *> surrounding_objects; //used for multi-tile actors.
+ 
  public:
  
  Actor(Map *m, ObjManager *om, GameClock *c);
@@ -176,7 +182,7 @@ class Actor
 
  bool moveRelative(sint16 rel_x, sint16 rel_y);
  virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
- bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
+ virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
  
  virtual void update();
  void set_in_party(bool state);

@@ -481,6 +481,8 @@ bool Event::look()
  obj = map_window->get_objAtCursor();
  if(obj)
   {
+   obj_manager->print_obj(obj,false); //DEBUG
+   
    weight = obj_manager->get_obj_weight(obj);
    if(weight != 0)
      {

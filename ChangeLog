@@ -1,3 +1,9 @@
+2003-10-06  Eric Fry <efry@users.sourceforge.net>
+	* More work on multi-tile actors.
+	* Added different movetypes for actors.
+	* Added support for ships and skiffs. They can't be used yet 
+	  but it's a start. :)
+
 2003-10-05  Eric Fry <efry@users.sourceforge.net>
 	* Moved Actor walk info into a table. Most Actor types should move 
 	  around correctly now. This should fix the Sherry bug. [ 716209 ]

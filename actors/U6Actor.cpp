@@ -47,9 +47,54 @@ bool U6Actor::init()
  set_actor_obj_n(obj_n); //set actor_type
  
  if(actor_type->frames_per_direction != 0) 
-   direction = frame_n / actor_type->tiles_per_direction;
+   direction = (frame_n - actor_type->tile_start_offset ) / actor_type->tiles_per_direction;
  else
    direction = ACTOR_DIR_D;
+
+ switch(obj_n)
+  {
+   case OBJ_U6_SHIP : init_ship(); break;
+   default : break;
+  }
+
+ return true;
+}
+
+bool U6Actor::init_ship()
+{
+ Obj *obj;
+ uint16 obj1_x, obj1_y, obj2_x, obj2_y;
+ 
+ obj1_x = x;
+ obj1_y = y;
+ obj2_x = x;
+ obj2_y = y;
+   
+ switch(direction)
+  {
+   case ACTOR_DIR_U : obj1_y = y+1;
+                      obj2_y = y-1;
+                      break;
+   case ACTOR_DIR_R : obj1_x = x+1;
+                      obj2_x = x-1;
+                      break;
+   case ACTOR_DIR_D : obj1_y = y-1;
+                      obj2_y = y+1;
+                      break;
+   case ACTOR_DIR_L : obj1_x = x-1;
+                      obj2_x = x+1;
+                      break;
+  }
+  
+ obj = obj_manager->get_obj(obj1_x,obj1_y,z);
+ if(obj == NULL)
+   return false;
+ surrounding_objects.push_back(obj);
+
+ obj = obj_manager->get_obj(obj2_x,obj2_y,z);
+ if(obj == NULL)
+   return false;
+ surrounding_objects.push_back(obj);
 
  return true;
 }
@@ -75,45 +120,101 @@ bool U6Actor::updateSchedule()
 
 void U6Actor::set_direction(uint8 d)
 {
- if(d < 4)
-   direction = d;
+ if(d >= 4)
+   return;
+   
+
+ if(actor_type->has_surrounding_objs && direction != d)
+    set_direction_of_surrounding_objs(d);
+
+ direction = d;
+
 
  if(actor_type->frames_per_direction == 0)
    walk_frame = (walk_frame + 1) % 4;
  else
    walk_frame = (walk_frame + 1) % actor_type->frames_per_direction;
  
- frame_n = direction * actor_type->tiles_per_direction + 
-           (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1;
+ frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + 
+           (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
  
 }
 
 bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 {
- bool ret = Actor::move(new_x,new_y,new_z,force_move);
+ bool ret;
+ sint16 rel_x, rel_y;
+ 
+ if(actor_type->has_surrounding_objs)
+   remove_surrounding_objs_from_map();
+
+ rel_x = new_x - x;
+ rel_y = new_y - y;
+  
+ ret = Actor::move(new_x,new_y,new_z,force_move);
  
  if(ret == true)
   {
-   Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
-   if(obj && actor_type->can_sit)
+   if(actor_type->has_surrounding_objs)
+      move_surrounding_objs_relative(rel_x, rel_y);
+   
+   if(actor_type->can_sit)
      {
-      if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
-       {
-        frame_n = (obj->frame_n * 4) + 3;
-        direction = obj->frame_n;
-        can_twitch = false;
-       }
+      Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
+      if(obj && actor_type->can_sit)
+        {
+         if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
+           {
+            frame_n = (obj->frame_n * 4) + 3;
+            direction = obj->frame_n;
+            can_twitch = false;
+           }
        
-      if(obj->obj_n == OBJ_U6_THRONE  && obj->frame_n == 3) //make actor sit on LB's throne.
-       {
-        frame_n = 8 + 3; //sitting facing south.
-        direction = 2;
-        can_twitch = false;
-       }
+         if(obj->obj_n == OBJ_U6_THRONE  && obj->frame_n == 3) //make actor sit on LB's throne.
+           {
+            frame_n = 8 + 3; //sitting facing south.
+            direction = 2;
+            can_twitch = false;
+           }
+        }
      }
   }
 
+ if(actor_type->has_surrounding_objs) //add our surrounding objects back onto the map.
+   add_surrounding_objs_to_map();
+
  return ret;
+}
+
+bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors)
+{
+    if(z > 5)
+        return(false);
+
+    uint16 pitch = map->get_width(new_z);
+    if(new_x < 0 || new_x >= pitch)
+        return(false);
+    if(new_y < 0 || new_y >= pitch)
+        return(false);
+ 
+    switch(actor_type->movetype)
+      {
+       case MOVETYPE_U6_WATER : if(!map->is_water(new_x, new_y, new_z))
+                                  return false;
+                                break;
+       case MOVETYPE_U6_AIR_LOW : 
+       case MOVETYPE_U6_AIR_HIGH : if(map->is_boundary(new_x, new_y, new_z))
+                                    return false; //FIX for proper air boundary
+                                  break;
+       case MOVETYPE_U6_LAND :
+       default : if(map->is_passable(new_x,new_y,new_z) == false)
+                    return(false);
+      }
+      
+    if(!ignore_actors && map->get_actor(new_x,new_y,new_z))
+        return(false);
+
+ return(true);
 }
 
 uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
@@ -142,7 +243,7 @@ void U6Actor::twitch()
      walk_frame = (walk_frame + 1) % 4;
    else
      walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
-   frame_n = direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1;
+   frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1);
   }
 
 /* 
@@ -400,3 +501,129 @@ void U6Actor::set_actor_obj_n(uint16 new_obj_n)
  return;
 }
 
+inline void U6Actor::remove_surrounding_objs_from_map()
+{
+ std::list<Obj *>::iterator obj;
+ 
+ for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
+    obj_manager->remove_obj((*obj));
+
+ return;
+}
+
+inline void U6Actor::add_surrounding_objs_to_map()
+{
+ std::list<Obj *>::iterator obj;
+ 
+ for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
+    obj_manager->add_obj((*obj));
+
+ return;
+}
+
+inline void U6Actor::move_surrounding_objs_relative(sint16 rel_x, sint16 rel_y)
+{
+ std::list<Obj *>::iterator obj;
+ 
+ for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
+    {
+     (*obj)->x += rel_x;
+     (*obj)->y += rel_y;
+    }
+
+ return;
+}
+
+
+inline void U6Actor::set_direction_of_surrounding_objs(uint8 new_direction)
+{
+ remove_surrounding_objs_from_map();
+ 
+ switch(obj_n)
+   {
+    case OBJ_U6_SHIP : set_direction_of_surrounding_ship_objs(new_direction); break;
+   }
+
+ add_surrounding_objs_to_map();
+ 
+ return;
+}
+
+inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
+{
+ std::list<Obj *>::iterator obj;
+ uint16 pitch = map->get_width(z);
+ 
+ obj = surrounding_objects.begin();
+ if(obj == surrounding_objects.end())
+  return;
+
+ (*obj)->frame_n =  new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1;
+ switch(new_direction)
+  {
+   case ACTOR_DIR_U : (*obj)->x = x;
+                      if(y == 0)
+                        (*obj)->y = pitch - 1;
+                      else
+                        (*obj)->y = y - 1;
+                      break;
+
+   case ACTOR_DIR_R : if(x == pitch - 1)
+                        (*obj)->x = 0;
+                      else
+                        (*obj)->x = x + 1;
+                      (*obj)->y = y;
+                      break;
+
+   case ACTOR_DIR_D : (*obj)->x = x;
+                      if(y == pitch - 1)
+                        (*obj)->y = 0;
+                      else
+                        (*obj)->y = y + 1;
+                      break;
+
+   case ACTOR_DIR_L : if(x == 0)
+                        (*obj)->x = pitch - 1;
+                      else
+                        (*obj)->x = x - 1;
+                      (*obj)->y = y;
+                      break;
+  }                   
+    
+ obj++;
+ if(obj == surrounding_objects.end())
+  return;
+ 
+ (*obj)->frame_n =  16 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
+ switch(new_direction)
+  {
+   case ACTOR_DIR_U : (*obj)->x = x;
+                      if(y == pitch - 1)
+                        (*obj)->y = 0;
+                      else
+                        (*obj)->y = y + 1;
+                      break;
+
+   case ACTOR_DIR_R : if(x == 0)
+                        (*obj)->x = pitch - 1;
+                      else
+                        (*obj)->x = x - 1;
+                      (*obj)->y = y;
+                      break;
+
+   case ACTOR_DIR_D : (*obj)->x = x;
+                      if(y == 0)
+                        (*obj)->y = pitch - 1;
+                      else
+                        (*obj)->y = y - 1;
+                      break;
+
+   case ACTOR_DIR_L : if(x == pitch - 1)
+                        (*obj)->x = 0;
+                      else
+                        (*obj)->x = x + 1;
+                      (*obj)->y = y;
+                      break;
+  }                   
+
+}

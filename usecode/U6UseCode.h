@@ -251,6 +251,10 @@
 #define OBJ_U6_MUSICIAN_PLAYING    392
 #define OBJ_U6_LORD_BRITISH        409
 #define OBJ_U6_AVATAR              410
+#define OBJ_U6_SHIP                412
+
+#define OBJ_U6_SKIFF               414
+#define OBJ_U6_RAFT                415
 
 #define OBJ_U6_QUEST_GATE          416
 

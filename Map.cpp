@@ -114,6 +114,28 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+bool Map::is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects)
+{
+ uint8 *ptr;
+ Tile *map_tile;
+ Obj *obj;
+
+ if(!ignore_objects)
+   {
+    obj = obj_manager->get_obj(x, y, level);
+    if(obj != NULL)
+      return false;
+   }
+
+ ptr = get_map_data(level);
+ map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
+
+ if(map_tile->water)
+   return true;
+
+ return false;
+}
+
 bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
 {
  //check for blocking Actor at location.
