@@ -263,6 +263,14 @@ SOURCE=..\Game.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\GameClock.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\GameClock.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Look.cpp
 # End Source File
 # Begin Source File
@@ -316,6 +324,14 @@ SOURCE=..\ObjManager.cpp
 # Begin Source File
 
 SOURCE=..\ObjManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Party.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Party.h
 # End Source File
 # Begin Source File
 
