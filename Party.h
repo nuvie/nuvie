@@ -72,6 +72,7 @@ class Party {
  void gather_gold();
  
  uint8 get_party_size();
+ uint8 get_party_max() { return(8); } // U6
  Actor *get_actor(uint8 member_num);
  char *get_actor_name(uint8 member_num);
  sint8 get_member_num(Actor *actor);

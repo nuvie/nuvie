@@ -38,6 +38,7 @@ using std::vector;
 #define U6OP_LAND       0x95
 #define U6OP_CANCARRY   0x9a
 #define U6OP_WEIGHT     0x9b
+#define U6OP_HORSED     0x9d
 #define U6OP_RAND       0xa0
 #define U6OP_EVAL       0xa7
 #define U6OP_FLAG       0xab
@@ -47,6 +48,8 @@ using std::vector;
 #define U6OP_OBJCOUNT   0xbb
 #define U6OP_INPARTY    0xc6
 #define U6OP_OBJINPARTY 0xc7
+#define U7OP_JOIN       0xca
+#define U7OP_LEAVE      0xcc
 #define U6OP_NPCNEARBY  0xd7
 #define U6OP_WOUNDED    0xda
 #define U6OP_POISONED   0xdc
@@ -57,6 +60,7 @@ using std::vector;
 #define U6OP_INT        0xe3
 #define U6OP_DEX        0xe4
 
+#define U6OP_HORSE     0x9c
 #define U6OP_IF        0xa1
 #define U6OP_ENDIF     0xa2
 #define U6OP_ELSE      0xa3
@@ -203,7 +207,7 @@ public:
     bool is_print(converse_value check)
      { return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a)) ); }
     bool is_ctrl(converse_value code)
-     { return((code >= 0xa1 && !is_valop(code) && !is_datasize(code))); }
+     { return(((code >= 0xa1 || code == 0x9c) && !is_valop(code) && !is_datasize(code))); }
     bool is_datasize(converse_value check)
      { return((check == 0xd3 || check == 0xd2 || check == 0xd4)); }
     bool is_valop(converse_value check)
@@ -212,13 +216,14 @@ public:
                  || (check == 0x84) || (check == 0x85) || (check == 0x86)
                  || (check == 0x90) || (check == 0x91) || (check == 0x92)
                  || (check == 0x94) || (check == 0x95) || (check == 0x9a)
-                 || (check == 0x9b) || (check == 0xa0) || (check == 0xa7)
+                 || (check == 0x9b) || (check == 0x9d) || (check == 0xa0)
+                 || (check == 0xa7)
                  || (check == 0xab) || (check == 0xb2) || (check == 0xb3)
                  || (check == 0xb4) || (check == 0xbb) || (check == 0xc6)
-                 || (check == 0xc7) || (check == 0xd7) || (check == 0xda)
-                 || (check == 0xdc) || (check == 0xdd) || (check == 0xe0)
-                 || (check == 0xe1) || (check == 0xe2) || (check == 0xe3)
-                 || (check == 0xe4)) );
+                 || (check == 0xc7) || (check == 0xca) || (check == 0xcc)
+                 || (check == 0xd7) || (check == 0xda) || (check == 0xdc)
+                 || (check == 0xdd) || (check == 0xe0) || (check == 0xe1)
+                 || (check == 0xe2) || (check == 0xe3) || (check == 0xe4)) );
     }
 
 };

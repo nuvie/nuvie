@@ -111,7 +111,10 @@ void ConverseInterpret::collect_input()
         if(cs->peek() == U6OP_EVAL) // 0xa7
         {
             cs->skip();
-            eval(arg_num++);
+            // HACK forced by this input-collection design, don't eval if not
+            // running (but this was supposed to be checked only in exec())
+            if(!top_frame() || top_frame()->run) // "no frame" == run
+                eval(arg_num++);
         }
         else
         {
@@ -437,6 +440,10 @@ void ConverseInterpret::op(stack<converse_value> &i)
 
     switch(in = pop_arg(i))
     {
+        case U6OP_HORSE: // 0x9c
+            converse->print("!horse\n");
+            npc_num(pop_arg(i)); // FIXME: give horse to npc
+            break;
         case U6OP_IF: // 0xa1 (test val)
             set_break(U6OP_ELSE);
             set_run(pop_arg(i) ? true : false);
@@ -692,6 +699,12 @@ void ConverseInterpret::evop(stack<converse_value> &i)
             v[0] = pop_arg(i); // object
             out = converse->objects->get_obj_weight(v[0]) * v[1];
             break;
+        case U6OP_HORSED: // 0x9d
+//            converse->print("!horsed\n");
+            pop_arg(i);
+            if(false) // FIXME: check for horse
+                out = 1;
+            break;
         case U6OP_RAND: // 0xa0
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
@@ -752,6 +765,37 @@ void ConverseInterpret::evop(stack<converse_value> &i)
                 out = 0xFFFF;
             else
                 out = 0x8001;
+            break;
+        case U7OP_JOIN: // 0xca
+            // FIXME: on ship or balloon or skiff, return 1
+            cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
+            if(cnpc)
+            {
+                if(player->get_party()->contains_actor(cnpc))
+                    out = 3; // 3: ALREADY IN PARTY
+                else if(player->get_party()->get_party_size() >=
+                        player->get_party()->get_party_max())
+                    out = 2; // 2: PARTY TOO LARGE
+                else if(false)
+                    out = 1; // 1: NOT ON LAND
+                else
+                    player->get_party()->add_actor(cnpc);
+                    // 0: SUCCESS
+            }
+            break;
+        case U7OP_LEAVE: // 0xcc
+            // FIXME: on ship or balloon or skiff, return 1
+            cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
+            if(cnpc)
+            {
+                if(!player->get_party()->contains_actor(cnpc))
+                    out = 2; // 2: NOT IN PARTY
+                else if(false)
+                    out = 1; // 1: NOT ON LAND
+                else
+                    player->get_party()->remove_actor(cnpc);
+                    // 0: SUCCESS
+            }
             break;
         case U6OP_NPCNEARBY: // 0xd7
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
