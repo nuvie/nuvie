@@ -21,6 +21,7 @@ Cursor::Cursor()
     cleanup_area.w = cleanup_area.h = 0;
     update_area.x = update_area.y = 0;
     update_area.w = update_area.h = 0;
+    hidden = false;
 }
 
 

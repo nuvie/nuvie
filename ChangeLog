@@ -1,3 +1,6 @@
+2004-02-22  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
+	* Cursor.cpp: initialize Cursor::hidden
+
 2004-02-22  Eric Fry <efry at users.sourceforge.net>
 	* Added a version of U6ObjectTypes.h to fix cvs compile.
 	* Added Cursor class to XCode build system.
