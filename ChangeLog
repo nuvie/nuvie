@@ -1,3 +1,9 @@
+2003-05-23  Eric Fry <efry@users.sourceforge.net>
+	* Work done on object weight. "you see blah. I weighs x.x stones."
+	* More stats loaded for actors. Str, Int, Dex, level, exp etc.
+	* Work on InventoryView, weights and actor icon are now displayed.
+	* name support added to PortraitView.
+
 2003-05-21  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Portraits now display during conversations (at the start and when
 	requested.)

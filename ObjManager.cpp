@@ -79,6 +79,8 @@ bool ObjManager::loadObjs(TileManager *tm)
    
  loadBaseTile();
  
+ loadWeightTable();
+ 
  delete filename;
 
  return true;
@@ -163,7 +165,7 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
 bool ObjManager::is_door(Obj * obj)
 {
  //for U6
- if((obj->obj_n >= 297 && obj->obj_n <= 300) || obj->obj_n == 334)
+ if((obj->obj_n >= 297 && obj->obj_n <= 300) || obj->obj_n == 334 || obj->obj_n == OBJ_U6_MOUSEHOLE)
    return true;
  
  return false;
@@ -444,6 +446,27 @@ const char *ObjManager::look_obj(Obj *obj)
  return desc;
 }
 
+float ObjManager::get_obj_weight(Obj *obj)
+{
+ float weight;
+ U6Link *link;
+ 
+ weight = obj_weight[obj->obj_n];
+ 
+ if(obj->qty > 1)
+   weight *= obj->qty;
+
+ //weight /= 10;
+ if(obj->container != NULL)
+   {
+    for(link=obj->container->start();link != NULL;link=link->next)
+      weight += get_obj_weight(reinterpret_cast<Obj*>(link->data));
+   }
+      
+ return weight;
+}
+
+
 uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :)
 {   
  return obj_to_tile[obj_num];
@@ -462,6 +485,17 @@ U6LList *ObjManager::get_actor_inventory(uint16 actor_num)
  return actor_inventories[actor_num];
 }
 
+bool ObjManager::actor_has_inventory(uint16 actor_num)
+{
+ if(actor_inventories[actor_num] != NULL)
+  {
+   if(actor_inventories[actor_num]->start() != NULL)
+     return true;
+  }
+
+ return false;
+}
+
 bool ObjManager::loadBaseTile()
 {
  std::string filename;
@@ -478,7 +512,25 @@ bool ObjManager::loadBaseTile()
  
  return true;
 }
+
+bool ObjManager::loadWeightTable()
+{
+ std::string filename;
+ U6File tileflag;
  
+ config->pathFromValue("config/ultima6/gamedir","tileflag",filename);
+ 
+ if(tileflag.open(filename,"rb") == false)
+   return false;
+ 
+ tileflag.seek(0x1000);
+ 
+ tileflag.readToBuf(obj_weight,1024);
+ 
+ return true;
+}
+
+  
 U6LList *ObjManager::loadObjSuperChunk(char *filename)
 {
  U6File file;

@@ -129,6 +129,15 @@ void Actor::face_location(uint16 lx, uint16 ly)
     }
 }
 
+void Actor::face_actor(Actor *a)
+{
+ uint16 ax, ay;
+ uint8 al;
+    
+ a->get_location(&ax, &ay, &al);
+ face_location(ax, ay);
+}
+
 
 bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 {
@@ -234,7 +243,7 @@ bool Actor::inventory_has_object(uint16 obj_n)
 bool Actor::inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality)
 {
  U6LList *inventory;
- U6Link *link;
+// U6Link *link;
  Obj *obj;
  
  inventory = obj_manager->get_actor_inventory(id_n);
@@ -261,6 +270,54 @@ bool Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality)
  
  return false;
 }
+
+float Actor::get_inventory_weight()
+{
+ U6LList *inventory;
+ U6Link *link;
+ Obj *obj;
+ float weight = 0;
+ 
+ if(obj_manager->actor_has_inventory(id_n) == false)
+   return 0;
+
+ inventory = obj_manager->get_actor_inventory(id_n);
+
+ for(link=inventory->start();link != NULL;link=link->next)
+  {
+   obj = (Obj *)link->data;
+   weight += obj_manager->get_obj_weight(obj);
+  }
+
+ weight /= 10;
+ 
+ return weight;
+}
+
+float Actor::get_inventory_equip_weight()
+{
+ U6LList *inventory;
+ U6Link *link;
+ Obj *obj;
+ float weight = 0;
+ 
+ if(obj_manager->actor_has_inventory(id_n) == false)
+   return 0;
+
+ inventory = obj_manager->get_actor_inventory(id_n);
+
+ for(link=inventory->start();link != NULL;link=link->next)
+  {
+   obj = (Obj *)link->data;
+   if((obj->status & 0x18) == 0x18) //object readied
+      weight += obj_manager->get_obj_weight(obj);
+  }
+
+ weight /= 10;
+ 
+ return weight;
+}
+
 
 void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
 {
@@ -296,7 +353,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
  sched_pos = getSchedulePos(clock->get_hour());
  
  if(sched[sched_pos] != NULL)
-    setWorktype(sched[sched_pos]->worktype);
+    set_worktype(sched[sched_pos]->worktype);
 
  return;
 }
@@ -310,7 +367,7 @@ void Actor::updateSchedule()
  
  new_pos = getSchedulePos(hour);
  
- if(new_pos == sched_pos)
+ if(new_pos == sched_pos) // schedules are the same so we do nothing.
   return;
 
  sched_pos = new_pos;
@@ -320,7 +377,7 @@ void Actor::updateSchedule()
  
  move(sched[sched_pos]->x,sched[sched_pos]->y,sched[sched_pos]->z);
  
- setWorktype(sched[sched_pos]->worktype);
+ set_worktype(sched[sched_pos]->worktype);
  
 }
 
@@ -347,11 +404,11 @@ uint16 Actor::getSchedulePos(uint8 hour)
  return i-1;
 }
 
-bool Actor::setWorktype(uint8 new_worktype)
+void Actor::set_worktype(uint8 new_worktype)
 {
  worktype = new_worktype;
  
- return true;
+ return ;
 }
 
 /* Set NPC flag `bitflag' to 1.

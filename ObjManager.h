@@ -47,6 +47,7 @@
 #define OBJ_U6_PICTURE        143
 #define OBJ_U6_BOOK           151
 #define OBJ_U6_SCROLL         152
+#define OBJ_U6_MOUSEHOLE      213
 #define OBJ_U6_CHAIR          252
 #define OBJ_U6_CROSS          254
 #define OBJ_U6_TOMBSTONE      255
@@ -92,6 +93,7 @@ class ObjManager
  U6LList *surface[64];
  U6LList *dungeon[5];
  uint16 obj_to_tile[1024]; //maps object number (index) to tile number.
+ uint8 obj_weight[1024];
  U6LList *actor_inventories[256];
  
  public:
@@ -113,15 +115,19 @@ class ObjManager
  uint16 get_obj_tile_num(uint16 obj_num);
 
  U6LList *get_actor_inventory(uint16 actor_num);
+ bool actor_has_inventory(uint16 actor_num);
  
  bool use_obj(Obj *obj);
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
  const char *look_obj(Obj *obj);
  
+ float get_obj_weight(Obj *obj);
+ 
  protected:
  
  bool loadBaseTile();
-
+ bool loadWeightTable();
+ 
  U6LList *loadObjSuperChunk(char *filename);
  void addObj(U6LList *list, Obj *obj);
  bool addObjToContainer(U6LList *list, Obj *obj);

@@ -42,10 +42,10 @@ bool ViewManager::init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager
  obj_manager = om;
 
  inventory_view = new InventoryView(config);
- inventory_view->init(screen, text, party, tile_manager, obj_manager);
+ inventory_view->init(176,8,screen, text, party, tile_manager, obj_manager);
  
  portrait_view = new PortraitView(config);
- portrait_view->init(screen, text, party, tile_manager, obj_manager, portrait);
+ portrait_view->init(176,8,screen, text, party, tile_manager, obj_manager, portrait);
  
  current_view = (View *)inventory_view;
  
@@ -59,9 +59,9 @@ bool ViewManager::handle_input(SDLKey *input)
 
 void ViewManager::update_display()
 {
- screen->fill(0x31, 176, 8, 136, 100);
+ screen->fill(0x31, 176, 8, 136, 96);
  current_view->update_display();
- screen->update(176, 8, 136, 100);
+ screen->update(176, 8, 136, 96);
 }
 
 void ViewManager::set_portrait_mode(uint8 actor_num, char *name)

@@ -1049,6 +1049,7 @@ void Converse::stop()
 {
     reset();
     fprintf(stderr, "End conversation\n");
+    views->set_inventory_mode(0);
 }
 
 

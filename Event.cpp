@@ -342,6 +342,8 @@ bool Event::look()
  Actor *actor = map_window->get_actorAtCursor();
  sint16 p_id = -1; // party member number of actor
  char *data;
+ char weight_string[26];
+ float weight;
  
  if(actor)
    view_manager->set_portrait_mode(actor->get_actor_num(),NULL);
@@ -353,19 +355,29 @@ bool Event::look()
  else
      scroll->display_string(map_window->lookAtCursor());
  obj = map_window->get_objAtCursor();
- if(obj && (obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || 
-            obj->obj_n == OBJ_U6_SCROLL || obj->obj_n == OBJ_U6_PICTURE ||
-            obj->obj_n == OBJ_U6_TOMBSTONE || obj->obj_n == OBJ_U6_CROSS ))
-   {
-    if(obj->quality != 0)
-      {
-       scroll->display_string(":\n\n");
-       data = book->get_book_data(obj->quality-1);
-       scroll->display_string(data);
-       free(data);
-      }
-   }
+ if(obj)
+  {
+   weight = obj_manager->get_obj_weight(obj);
+   if(weight != 0)
+     {
+      snprintf(weight_string,25,". It weighs %0.1f stones.",obj_manager->get_obj_weight(obj) / 10.0);
+      scroll->display_string(weight_string);
+     }
 
+   if(obj->obj_n == OBJ_U6_SIGN || obj->obj_n == OBJ_U6_BOOK || 
+      obj->obj_n == OBJ_U6_SCROLL || obj->obj_n == OBJ_U6_PICTURE ||
+      obj->obj_n == OBJ_U6_TOMBSTONE || obj->obj_n == OBJ_U6_CROSS)
+      {
+       if(obj->quality != 0)
+         {
+          scroll->display_string(":\n\n");
+          data = book->get_book_data(obj->quality-1);
+          scroll->display_string(data);
+          free(data);
+         }
+      }
+  }
+   
  scroll->display_string("\n\n");
  scroll->display_prompt();
 

@@ -98,9 +98,34 @@ bool ActorManager::loadActors()
     actors[i]->direction = actors[i]->frame_n / 4;
    }
 
+ // Strength
+ 
+ objlist.seek(0x900);
+ 
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->strength = objlist.read1();
+   }
+ 
+ // Dexterity
+ 
+ objlist.seek(0xa00);
+ 
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->dex = objlist.read1();
+   }
+ 
+ // Intelligence
+ 
+ objlist.seek(0xb00);
+ 
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->intelligence = objlist.read1();
+   }
 
-
- // Experience
+  // Experience
  
  objlist.seek(0xc00);
  
@@ -117,7 +142,25 @@ bool ActorManager::loadActors()
    {
     actors[i]->hp = objlist.read1();
    }
+   
+ // Level
  
+ objlist.seek(0xff1);
+ 
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->level = objlist.read1();
+   }
+ 
+ // Magic Points
+ 
+ objlist.seek(0x13f1);
+ 
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->magic = objlist.read1();
+   }
+
  objlist.seek(0x17f1); // Start of Actor flags
 
  for(i=0;i < 256; i++)

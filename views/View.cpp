@@ -32,8 +32,11 @@ View::~View()
 {
 }
 
-bool View::init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool View::init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
+ origin_x = x;
+ origin_y = y;
+ 
  screen = s;
  text = t;
  party = p;

@@ -39,6 +39,8 @@ class View
  protected:
  
  Configuration *config;
+ uint16 origin_x;
+ uint16 origin_y;
  
  Screen *screen;
  Text *text;
@@ -51,7 +53,7 @@ class View
  View(Configuration *cfg);
  virtual ~View();
  
- virtual bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ virtual bool init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
  
  virtual void update_display()=0;
  virtual bool handle_input(SDLKey *input);

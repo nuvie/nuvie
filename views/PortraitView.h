@@ -24,6 +24,8 @@
  *
  */
 
+#include <string>
+
 #include "U6def.h"
 #include "Configuration.h"
 #include "View.h"
@@ -38,6 +40,7 @@ class PortraitView : public View {
  
  uint8 cur_actor_num;
  Portrait *portrait;
+ std::string name_string;
  
  unsigned char *portrait_data;
  
@@ -47,13 +50,15 @@ class PortraitView : public View {
  PortraitView(Configuration *cfg);
  ~PortraitView();
  
- bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
+ bool init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
  void update_display();
  bool handle_input(SDLKey *input);
  
  void set_portrait(uint8 actor_num, char *name);
  
  protected:
+ 
+ void display_name();
  
 };
 

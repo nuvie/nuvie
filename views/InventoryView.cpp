@@ -32,11 +32,11 @@ InventoryView::~InventoryView()
 {
 }
 
-bool InventoryView::init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool InventoryView::init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
- View::init(s,t,p,tm,om);
+ View::init(x,y,s,t,p,tm,om);
  
- cur_actor_num = 3;
+ cur_actor_num = 0;
  
  return true;
 }
@@ -45,8 +45,10 @@ void InventoryView::update_display()
 {
  display_name();
  display_command_icons();
- display_doll(192,32);
+ display_doll(origin_x,origin_y+8);
  display_inventory_list();
+ display_inventory_weights();
+ display_actor_icon();
 }
 
 bool InventoryView::handle_input(SDLKey *input)
@@ -61,10 +63,10 @@ void InventoryView::display_doll(uint16 x, uint16 y)
  
  for(i=0;i<2;i++)
    {
-    for(j=0;j<2;j++)
+    for(j=0;j<2;j++) // draw doll
       {
        tile = tile_manager->get_tile(368+i*2+j);
-       screen->blit(x+j*16,y+i*16,tile->data,8,16,16,16,true);
+       screen->blit(x+16+j*16,y+16+i*16,tile->data,8,16,16,16,true);
       }
    }
 
@@ -72,12 +74,14 @@ void InventoryView::display_doll(uint16 x, uint16 y)
  
  for(i=0;i<3;i++)
    {
-    screen->blit(x-16,(y-8)+i*16,tile->data,8,16,16,16,true);
-    screen->blit(x+2*16,(y-8)+i*16,tile->data,8,16,16,16,true);
+    screen->blit(x,(y+8)+i*16,tile->data,8,16,16,16,true); //left slots
+    screen->blit(x+3*16,(y+8)+i*16,tile->data,8,16,16,16,true); //right slots
    }
 
- screen->blit(x+8,y-16,tile->data,8,16,16,16,true);
- screen->blit(x+8,y+2*16,tile->data,8,16,16,16,true);
+ screen->blit(x+16+8,y,tile->data,8,16,16,16,true); //top slot
+ screen->blit(x+16+8,y+3*16,tile->data,8,16,16,16,true); //bottom slot
+
+ return;
 }
 
 void InventoryView::display_name()
@@ -89,7 +93,7 @@ void InventoryView::display_name()
  if(name == NULL)
   return;
   
- text->drawString(screen, name, 168 + (152 - strlen(name) * 8) / 2, 8, 0);
+ text->drawString(screen, name, origin_x + ((136) - strlen(name) * 8) / 2, origin_y, 0);
  
  return;
 }
@@ -125,7 +129,7 @@ void InventoryView::display_inventory_list()
           tile = empty_tile;
           
        //tile = tile_manager->get_tile(actor->indentory_tile());
-       screen->blit((184+4*16)+j*16,2*16+i*16,tile->data,8,16,16,16,true);
+       screen->blit((origin_x+4*16+8)+j*16,origin_y+16+8+i*16,tile->data,8,16,16,16,true);
       }
    }
 }
@@ -135,19 +139,47 @@ void InventoryView::display_command_icons()
  Tile *tile;
  
  tile = tile_manager->get_tile(387); //left arrow icon
- screen->blit(176,88,tile->data,8,16,16,16,true);
+ screen->blit(origin_x,origin_y+80,tile->data,8,16,16,16,true);
 
  tile = tile_manager->get_tile(384); //party icon
- screen->blit(176+16,88,tile->data,8,16,16,16,true);
+ screen->blit(origin_x+16,origin_y+80,tile->data,8,16,16,16,true);
 
  tile = tile_manager->get_tile(385); //actor icon
- screen->blit(176+2*16,88,tile->data,8,16,16,16,true);
+ screen->blit(origin_x+2*16,origin_y+80,tile->data,8,16,16,16,true);
 
  tile = tile_manager->get_tile(388); //actor icon
- screen->blit(176+3*16,88,tile->data,8,16,16,16,true);
+ screen->blit(origin_x+3*16,origin_y+80,tile->data,8,16,16,16,true);
 
  tile = tile_manager->get_tile(391); //battle icon
- screen->blit(176+4*16,88,tile->data,8,16,16,16,true);
+ screen->blit(origin_x+4*16,origin_y+80,tile->data,8,16,16,16,true);
 
 }
 
+void InventoryView::display_inventory_weights()
+{
+ uint8 strength;
+ float inv_weight;
+ float equip_weight;
+ Actor *actor = party->get_actor(cur_actor_num);
+ char string[9]; //  "E:xx/xx"
+ 
+ strength = actor->get_strength();
+ inv_weight = actor->get_inventory_weight();
+ equip_weight = actor->get_inventory_equip_weight();
+  
+ snprintf(string,8,"E:%d/%d",(int)equip_weight,strength);
+ text->drawString(screen, string, origin_x, origin_y+72, 0);
+ 
+ snprintf(string,8,"I:%d/%d",(int)inv_weight,strength*2);
+ text->drawString(screen, string, origin_x+4*16+8, origin_y+72, 0);
+}
+
+void InventoryView::display_actor_icon()
+{
+ Actor *actor = party->get_actor(cur_actor_num);
+ Tile *actor_tile;
+  
+ actor_tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->get_tile_num())+9); //FIX here for sherry
+ 
+ screen->blit(origin_x+6*16,origin_y+8,actor_tile->data,8,16,16,16,true);
+}

@@ -69,9 +69,11 @@ class Actor
  
  uint8 strength;
  uint8 dex;
- uint8 inteligence;
+ uint8 intelligence;
  uint8 hp;
+ uint8 level;
  uint16 exp;
+ uint8 magic;
  
  uint8 flags;
  
@@ -95,16 +97,21 @@ class Actor
  uint16 get_tile_num();
  uint8 get_actor_num() { return(id_n); }
  uint8 get_flags() { return(flags); }
- uint8 get_worktype();
  
+ uint8 get_strength() { return(strength); }
+ uint8 get_dexterity() { return(dex); }
+ uint8 get_intelligence() { return(intelligence); }
+ uint8 get_hp() { return(hp); }
+ uint8 get_level() { return(level); }
+ uint16 get_exp() { return(exp); }
+ uint8 get_magic() { return(magic); }
+
+ uint8 get_worktype();
+ void set_worktype(uint8 new_worktype);
+  
  void set_direction(uint8 d);
  void face_location(uint16 lx, uint16 ly);
- void face_actor(Actor *a)
- {
-    uint16 ax, ay; uint8 al;
-    a->get_location(&ax, &ay, &al);
-    face_location(ax, ay);
- }
+ void face_actor(Actor *a);
 
  void set_flags(uint8 newflags) { flags = newflags; }
  void set_flag(uint8 bitflag);
@@ -120,6 +127,8 @@ class Actor
  bool inventory_has_object(uint16 obj_n);
  bool inventory_add_object(uint16 obj_n, uint8 qty, uint8 quality);
  bool inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);
+ float get_inventory_weight();
+ float get_inventory_equip_weight();
  
  protected:
  
@@ -127,9 +136,6 @@ class Actor
  void updateSchedule();
  uint16 getSchedulePos(uint8 hour);
  
- bool setWorktype(uint8 new_worktype);
- public:
- void set_worktype(uint8 new_worktype) { setWorktype(new_worktype); }
 };
 
 #endif /* __Actor_h__ */

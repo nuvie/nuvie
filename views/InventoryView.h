@@ -43,7 +43,7 @@ class InventoryView : public View {
  InventoryView(Configuration *cfg);
  ~InventoryView();
  
- bool init(Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ bool init(uint16 x, uint16 y, Screen *s, Text *t, Party *p, TileManager *tm, ObjManager *om);
  void update_display();
  bool handle_input(SDLKey *input);
  void display_doll(uint16 x, uint16 y);
@@ -53,6 +53,8 @@ class InventoryView : public View {
  void display_name();
  void display_inventory_list();
  void display_command_icons();
+ void display_inventory_weights();
+ void display_actor_icon();
 };
 
 #endif /* __InventoryView_h__ */
