@@ -262,6 +262,14 @@ void ActorManager::updateActors()
   
 }
 
+void ActorManager::twitchActors()
+{
+ uint16 i;
+ 
+ for(i=0;i<256;i++)
+  actors[i]->twitch();
+}
+
 bool ActorManager::loadActorSchedules()
 {
  std::string filename;

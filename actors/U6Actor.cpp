@@ -57,21 +57,73 @@ bool U6Actor::updateSchedule()
  return ret;
 }
 
+bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
+{
+ bool ret = Actor::move(new_x,new_y,new_z,force_move);
+ 
+ if(ret == true)
+  {
+   Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
+   if(obj)
+     {
+      if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
+       {
+        frame_n = (obj->frame_n * 4) + 3;
+        direction = obj->frame_n;
+        can_twitch = false;
+       }
+       
+      if(obj->obj_n == OBJ_U6_THRONE  && obj->frame_n == 3) //make actor sit on LB's throne.
+       {
+        frame_n = 8 + 3; //sitting facing south.
+        direction = 2;
+        can_twitch = false;
+       }
+     }
+  }
+
+ return ret;
+}
+
+void U6Actor::twitch()
+{
+ // twitch
+ switch(obj_n)
+  {
+   case OBJ_U6_MUSICIAN : if(NUVIE_RAND()%3 == 1)
+                            {
+                             walk_frame = NUVIE_RAND()%2;
+                             frame_n = direction * 2 + walk_frame;
+                            }
+                           break;
+   case OBJ_U6_JESTER : if(can_twitch && NUVIE_RAND()%5 == 1) //jester's move around a lot!
+                          {
+                           walk_frame = NUVIE_RAND()%3;
+                           frame_n = direction * 4 + walk_frame;
+                          }
+                        break;
+
+   default : if(can_twitch && NUVIE_RAND()%50 == 1)
+               {
+                walk_frame = NUVIE_RAND()%3;
+                frame_n = direction * 4 + walk_frame;
+               }
+             break;
+  }
+
+ return;
+}
+
 void U6Actor::preform_worktype()
 {
  uint8 walk_frame_tbl[4] = {0,1,2,1};
+
  switch(worktype)
   {
    case WORKTYPE_U6_FACE_NORTH :
    case WORKTYPE_U6_FACE_EAST  :
    case WORKTYPE_U6_FACE_SOUTH :
    case WORKTYPE_U6_FACE_WEST  :
-     // twitch
-     if(NUVIE_RAND()%15 == 1)
-       {
-        walk_frame = NUVIE_RAND()%4;
-        frame_n = direction * 4 + walk_frame_tbl[walk_frame];
-       }
      break;
    case WORKTYPE_U6_IN_PARTY :
    case WORKTYPE_U6_WALK_TO_LOCATION : wt_walk_to_location();
@@ -113,6 +165,7 @@ void U6Actor::set_worktype(uint8 new_worktype)
    case WORKTYPE_U6_FACE_WEST  : set_direction(ACTOR_DIR_L); break;
 
    case WORKTYPE_U6_SLEEP : wt_sleep(); break;
+   case WORKTYPE_U6_PLAY_LUTE : wt_play_lute(); break;
   }
 }
 
@@ -221,10 +274,7 @@ void U6Actor::wt_beg()
 
 
 void U6Actor::wt_sleep()
-{
- if(id_n == 5)
-    printf("%d Sleep\n",id_n);
- 
+{ 
  Obj *obj = obj_manager->get_obj(x,y,z);
  if(obj)
    {
@@ -247,5 +297,18 @@ void U6Actor::wt_sleep()
       }
    }
 
+ can_twitch = false;
+
+ return;
+}
+
+void U6Actor::wt_play_lute()
+{
+ old_obj_n = obj_n;
+ old_frame_n = frame_n;
+ 
+ obj_n = OBJ_U6_MUSICIAN;
+ frame_n = 4;
+ 
  return;
 }

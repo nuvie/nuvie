@@ -42,6 +42,7 @@
 #define WORKTYPE_U6_WANDER_AROUND 0x8f
 #define WORKTYPE_U6_WORK 0x90
 #define WORKTYPE_U6_SLEEP 0x91
+#define WORKTYPE_U6_PLAY_LUTE 0x95
 #define WORKTYPE_U6_BEG 0x96
 
 class U6Actor: public Actor
@@ -57,6 +58,8 @@ class U6Actor: public Actor
  bool updateSchedule();
  void set_worktype(uint8 new_worktype);
  void preform_worktype();
+ bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
+ void twitch();
  
  protected:
  void wt_walk_to_location();
@@ -64,6 +67,8 @@ class U6Actor: public Actor
  void wt_wander_around();
  void wt_beg();
  void wt_sleep();
+ void wt_play_lute();
+
 };
 
 #endif /* __U6Actor_h__ */

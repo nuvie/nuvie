@@ -1,3 +1,8 @@
+2003-08-02  Eric Fry <efry@users.sourceforge.net>
+	* Added Twitching to Actors.
+	* You can now sit on LB's throne correctly.
+	* Added lute playing worktype. 0x95
+
 2003-08-02  Joseph Applegate <sb-x@users.sourceforge.net>
 	* Use usecode when looking at some objects
 	* New usecode objects (still being tested): Several food items, mirrors

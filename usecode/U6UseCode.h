@@ -100,8 +100,14 @@
 #define OBJ_U6_PORTCULLIS      310
 #define OBJ_U6_CAVE            326
 
+#define OBJ_U6_THRONE          327
+
 #define OBJ_U6_SIGN            332
 #define OBJ_U6_SECRET_DOOR     334
+
+#define OBJ_U6_JESTER          383
+#define OBJ_U6_MUSICIAN        392
+
 #define OBJ_U6_QUEST_GATE      416
 
 #define OBJ_U6_DRAGON_EGG      417

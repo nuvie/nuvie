@@ -43,7 +43,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 
  direction = 0;
  walk_frame = 0;
- standing = true;
+ can_twitch = true;
  in_party = false;
  worktype = 0;
  sched_pos = 0;
@@ -236,6 +236,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
        return(false);
   }
 
+
  // switch position with party members (FIXME: move to own method?)
  Actor *other = map->get_actor(new_x, new_y, new_z);
  if(!force_move && other) // not forcing move, check actor
@@ -253,12 +254,17 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  x = new_x;
  y = new_y;
  z = new_z;
+
+ can_twitch = true;
+  
  // post-move
+/*
  if(obj)
   {
    if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
      frame_n = (obj->frame_n * 4) + 3;
   }
+*/
  // re-center map if actor is player character
  Game *game = Game::get_game();
  if(id_n == game->get_player()->get_actor()->id_n)

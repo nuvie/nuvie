@@ -63,6 +63,7 @@ class ActorManager
  const char *look_actor(Actor *a);
 
  void updateActors();
+ void twitchActors();
  
  protected:
  

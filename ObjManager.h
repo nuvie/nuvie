@@ -44,6 +44,9 @@ class UseCode;
 #define OBJ_STATUS_NOT_PASSABLE 4
 #define OBJ_STATUS_PASSABLE     5
 
+#define OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS true
+#define OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS false
+
 
 struct ObjTreeNode
 {
@@ -124,7 +127,7 @@ class ObjManager
  const char *look_obj(Obj *obj);
 
  const char *get_obj_name(Obj *obj);
- float get_obj_weight(Obj *obj);
+ float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS);
  uint8 get_obj_weight(uint16 obj_n) { return(obj_weight[obj_n]); }
  protected:
 

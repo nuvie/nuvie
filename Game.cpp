@@ -216,7 +216,7 @@ void Game::play()
      game_play = event->update();
      palette->rotatePalette();
      tile_manager->update();
-     //actor_manager->updateActors();
+     actor_manager->twitchActors();
      map_window->drawMap();
      converse->continue_script();
      scroll->updateScroll();

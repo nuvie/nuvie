@@ -319,11 +319,15 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  {
   scroll->display_string(obj_manager->look_obj(obj));
 
-  weight = obj_manager->get_obj_weight(obj);
+  weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
   weight /= 10;
-  
+
+  // objects with 0 weight aren't gettable. 
   if(weight != 0)
     {
+     weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS);
+     weight /= 10;
+     
        Actor *pc = player->get_actor();
        float total = (weight*(obj->qty?obj->qty:1)) + pc->get_inventory_weight();
        //float max = pc->inventory_get_max_weight();

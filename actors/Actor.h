@@ -85,7 +85,7 @@ class Actor
  uint8 direction;
  uint8 walk_frame;
  
- bool standing;
+ bool can_twitch;
  bool alive;
  bool met_player;
  
@@ -158,7 +158,7 @@ class Actor
  void clear_flag(uint8 bitflag);
 
  bool moveRelative(sint16 rel_x, sint16 rel_y);
- bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
+ virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
  
  virtual void update();
@@ -180,6 +180,8 @@ class Actor
  float get_inventory_weight();
  float get_inventory_equip_weight();
 
+ virtual void twitch() { return; }
+ 
  protected:
  
  void loadSchedule(unsigned char *schedule_data, uint16 num);
