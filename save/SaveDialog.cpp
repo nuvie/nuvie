@@ -37,11 +37,11 @@
 #include "SaveDialog.h"
 #include "NuvieFileList.h"
 
-#define NUVIE_SAVE_SCROLLER_ROWS   4
+#define NUVIE_SAVE_SCROLLER_ROWS   3
 #define NUVIE_SAVE_SCROLLER_HEIGHT NUVIE_SAVE_SCROLLER_ROWS * NUVIE_SAVESLOT_HEIGHT
 
 SaveDialog::SaveDialog(GUI_CallBack *callback) 
-          : GUI_Dialog(10,10, 300, 180, 244, 216, 131, GUI_DIALOG_MOVABLE)
+          : GUI_Dialog(10,4, 300, 192, 244, 216, 131, GUI_DIALOG_MOVABLE)
 {
  callback_object = callback;
  selected_slot = NULL;
@@ -62,8 +62,8 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
    return false;
 
  
- scroller = new GUI_Scroller(10,23, 280, NUVIE_SAVE_SCROLLER_HEIGHT, 135,119,76, NUVIE_SAVESLOT_HEIGHT );
- widget = (GUI_Widget *) new GUI_Text(10, 12, 0, 0, 0, "Nuvie Load/Save Manager", gui->get_font());
+ scroller = new GUI_Scroller(10,26, 280, NUVIE_SAVE_SCROLLER_HEIGHT, 135,119,76, NUVIE_SAVESLOT_HEIGHT );
+ widget = (GUI_Widget *) new GUI_Text(10, 12, 0, 0, 0, "Load/Save", gui->get_font());
  AddWidget(widget);
 
  num_saves = filelist.get_num_files();
@@ -72,7 +72,7 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 
 // Add an empty slot at the top.
  widget = new SaveSlot(this, bg_color1);
- ((SaveSlot *)widget)->init(NULL);
+ ((SaveSlot *)widget)->init(NULL, NULL);
     
  scroller->AddWidget(widget);
        
@@ -82,7 +82,7 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
    {
     filename = filelist.next();
     widget = new SaveSlot(this, *color_ptr);
-    ((SaveSlot *)widget)->init(filename);
+    ((SaveSlot *)widget)->init(save_directory, filename);
     
     scroller->AddWidget(widget);
 
@@ -112,13 +112,13 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 */
  AddWidget(scroller);
 
- load_button = new GUI_Button(this, 135, 154, 40, 18, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ load_button = new GUI_Button(this, 135, 8, 40, 16, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(load_button);
  
- save_button = new GUI_Button(this, 185, 154, 40, 18, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ save_button = new GUI_Button(this, 185, 8, 40, 16, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(save_button);
 
- cancel_button = new GUI_Button(this, 235, 154, 55, 18, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ cancel_button = new GUI_Button(this, 235, 8, 55, 16, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0); //154
  AddWidget(cancel_button);
 
  filelist.close();

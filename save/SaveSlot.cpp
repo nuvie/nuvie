@@ -23,12 +23,18 @@
 
 #include "SDL.h"
 #include "nuvieDefs.h"
+#include "U6misc.h"
 
 #include "GUI.h"
 #include "GUI_types.h"
 #include "GUI_text.h"
 #include "GUI_CallBack.h"
 
+#include "Game.h"
+#include "NuvieIOFile.h"
+#include "MapWindow.h"
+
+#include "SaveGame.h"
 #include "SaveSlot.h"
 
 
@@ -38,13 +44,16 @@ SaveSlot::SaveSlot(GUI_CallBack *callback, GUI_Color bg_color) : GUI_Widget(NULL
  background_color = bg_color;
  
  selected = false;
+ thumbnail = NULL;
 }
 
 SaveSlot::~SaveSlot()
 {
+ if(thumbnail)
+  SDL_FreeSurface(thumbnail);
 }
 
-bool SaveSlot::init(std::string *file)
+bool SaveSlot::init(const char *directory, std::string *file)
 { 
  GUI_Widget *widget;
  GUI *gui = GUI::get_gui();
@@ -61,19 +70,56 @@ bool SaveSlot::init(std::string *file)
   }
 
  if(new_save)
-   widget = (GUI_Widget *) new GUI_Text(2, 2, 255, 255, 255, "New Save.", gui->get_font());
- else
-   widget = (GUI_Widget *) new GUI_Text(2, 2, 255, 255, 255, (char *)filename.c_str(), gui->get_font()); //evil const cast lets remove this
-
- AddWidget(widget);
-
- if(!new_save)
    {
-    //widget = (GUI_Widget *) new GUI_Text(2, 10, 255, 255, 255, "Eric GT: 98:45 Saves: 5", gui->get_font());
-    widget = (GUI_Widget *) new GUI_Text(2, 10, 200, 200, 200, "GT 300:55,RT 50,P 5", gui->get_font());
+    widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, "New Save.", gui->get_font());
     AddWidget(widget);
    }
 
+ if(!new_save)
+   {
+    load_info(directory);
+   }
+
+ return true;
+}
+
+bool SaveSlot::load_info(const char *directory)
+{
+ NuvieIOFileRead loadfile;
+ SaveGame *savegame;
+ SaveHeader *header;
+ GUI_Widget *widget;
+ GUI *gui = GUI::get_gui();
+ std::string full_path;
+ char buf[30];
+ 
+ savegame = new SaveGame(Game::get_game()->get_config());
+ 
+ build_path(directory, filename.c_str(), full_path);
+ 
+ if(loadfile.open(full_path.c_str()) == false)
+   {
+    printf("Error: Reading header from %s\n", filename.c_str());
+    delete savegame;
+    return false;
+   }
+ 
+ header = savegame->load_info(&loadfile);
+ 
+ thumbnail = SDL_ConvertSurface(header->thumbnail, header->thumbnail->format, SDL_SWSURFACE);
+
+ widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, (char *)header->save_description.c_str(), gui->get_font());
+ AddWidget(widget);
+ 
+ widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 20, 200, 200, 200, (char *)filename.c_str(), gui->get_font()); //evil const cast lets remove this
+ AddWidget(widget);
+ 
+ sprintf(buf, "Num Saves: %d", header->num_saves);
+ widget = (GUI_Widget *) new GUI_Text(MAPWINDOW_THUMBNAIL_SIZE + 2, 29, 200, 200, 200, buf, gui->get_font());
+ AddWidget(widget);
+
+ delete savegame;
+ 
  return true;
 }
 
@@ -92,7 +138,7 @@ void SaveSlot::SetDisplay(Screen *s)
 void SaveSlot::Display(bool full_redraw)
 {
  SDL_Rect framerect = area;
-
+ SDL_Rect destrect = area;
  if(selected)
    {
     GUI *gui = GUI::get_gui();
@@ -100,6 +146,11 @@ void SaveSlot::Display(bool full_redraw)
    }
  else
    SDL_FillRect(surface, &framerect, background_color.sdl_color);
+
+ if(thumbnail)
+   {
+    SDL_BlitSurface(thumbnail, NULL, surface, &destrect);
+   }
 
  DisplayChildren();
  

@@ -23,11 +23,15 @@
 
 #include <list>
 #include <cassert>
+
+#include "SDL.h"
+
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "NuvieIO.h"
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"
+#include "GUI.h"
 #include "SaveGame.h"
 #include "Configuration.h"
 #include "Game.h"
@@ -41,6 +45,14 @@
 #include "Portrait.h"
 #include "GameClock.h"
 
+#ifdef WIN32
+  #define OBJLIST_FILENAME "savegame\\objlist"
+  #define OBJBLK_FILENAME  "savegame\\objblkxx"
+#else
+  #define OBJLIST_FILENAME "savegame/objlist"
+  #define OBJBLK_FILENAME  "savegame/objblkxx"
+#endif
+
 SaveGame::SaveGame(Configuration *cfg)
 {
  config = cfg;
@@ -49,24 +61,22 @@ SaveGame::SaveGame(Configuration *cfg)
 
 SaveGame::~SaveGame()
 {
+ clean_up();
 }
 
 void SaveGame::init(ObjManager *obj_manager)
-{
- num_saves = 0;
- actual_play_time = 0;
- game_play_time = 0; 
- 
- save_description.assign("");
+{ 
+ header.save_description.assign("");
  
  if(objlist.get_size() > 0)
    objlist.close();
 
  if(obj_manager)
    obj_manager->clean();
-  
+
  return;
 }
+
 
 bool SaveGame::load_new()
 {
@@ -143,7 +153,7 @@ bool SaveGame::load_original()
  
  config->value(key,path);
 
- printf("Loading Original Game: %s/savegame/\n", path.c_str());
+ printf("Loading Original Game: %s%csavegame%c\n", path.c_str(), U6PATH_DELIMITER, U6PATH_DELIMITER);
  
  filename = get_objblk_path((char *)path.c_str());
 
@@ -196,7 +206,7 @@ bool SaveGame::load_original()
  delete[] filename;
 
  //print_egg_list();
- config_get_path(config, "/savegame/objlist", objlist_filename);
+ config_get_path(config, OBJLIST_FILENAME, objlist_filename);
  if(objlist_file.open(objlist_filename)==false)
    return false;
 
@@ -264,6 +274,42 @@ bool SaveGame::load_objlist()
  return true;
 }
 
+SaveHeader *SaveGame::load_info(NuvieIOFileRead *loadfile)
+{
+ uint32 rmask, gmask, bmask;
+ unsigned char save_desc[MAX_SAVE_DESC_LENGTH+1];
+ 
+ #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    rmask = 0x00ff0000;
+    gmask = 0x0000ff00;
+    bmask = 0x000000ff;
+ #else
+    rmask = 0x000000ff;
+    gmask = 0x0000ff00;
+    bmask = 0x00ff0000;
+ #endif
+
+ clean_up();
+ 
+ loadfile->seek(15); //skip version, textual id string and game tag
+ 
+ header.num_saves = loadfile->read2();
+ 
+ loadfile->readToBuf(save_desc, MAX_SAVE_DESC_LENGTH);
+ save_desc[MAX_SAVE_DESC_LENGTH+1] = '\0';
+ header.save_description.assign((const char *)save_desc);
+ 
+ //should we load the thumbnail here!?
+ 
+ header.thumbnail_data = new unsigned char[MAPWINDOW_THUMBNAIL_SIZE * MAPWINDOW_THUMBNAIL_SIZE * 3];
+ 
+ loadfile->readToBuf(header.thumbnail_data, MAPWINDOW_THUMBNAIL_SIZE * MAPWINDOW_THUMBNAIL_SIZE * 3); //seek past thumbnail data.
+
+ header.thumbnail = SDL_CreateRGBSurfaceFrom(header.thumbnail_data, MAPWINDOW_THUMBNAIL_SIZE, MAPWINDOW_THUMBNAIL_SIZE, 24, MAPWINDOW_THUMBNAIL_SIZE * 3, rmask, gmask, bmask, 0);
+ 
+ return &header;
+}
+
 bool SaveGame::load(const char *filename)
 {
  uint8 i;
@@ -289,10 +335,8 @@ bool SaveGame::load(const char *filename)
  
  printf("Loading Game: %s\n", filename);
  
- loadfile->seek(15);
+ load_info(loadfile); //load header info
  
- num_saves = loadfile->read2();
-
  // load actor inventories
  obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, 0);
  
@@ -326,12 +370,13 @@ bool SaveGame::load(const char *filename)
  return true;
 }
 
-bool SaveGame::save(const char *filename)
+bool SaveGame::save(const char *filename, std::string *save_description)
 {
  uint8 i;
  NuvieIOFileWrite *savefile;
  int game_type;
  char game_tag[3];
+ unsigned char save_desc[MAX_SAVE_DESC_LENGTH];
  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
  
  config->value("config/GameType",game_type);
@@ -358,9 +403,15 @@ bool SaveGame::save(const char *filename)
  
  savefile->writeBuf((const unsigned char *)game_tag, 2);
  
- num_saves++;
- savefile->write2(num_saves);
+ header.num_saves++;
+ savefile->write2(header.num_saves);
+
+ memset(save_desc, 0, MAX_SAVE_DESC_LENGTH);
+ strncpy((char *)save_desc, save_description->c_str(), MAX_SAVE_DESC_LENGTH);
+ savefile->writeBuf(save_desc, MAX_SAVE_DESC_LENGTH);
  
+ save_thumbnail(savefile);
+  
  obj_manager->save_inventories(savefile);
  
  obj_manager->save_eggs(savefile);
@@ -412,6 +463,35 @@ bool SaveGame::save_objlist()
  return true;
 }
 
+bool SaveGame::save_thumbnail(NuvieIOFileWrite *savefile)
+{
+ unsigned char *thumbnail;
+ 
+ MapWindow *map_window = Game::get_game()->get_map_window();
+ 
+ thumbnail = map_window->make_thumbnail();
+ 
+ savefile->writeBuf(thumbnail, MAPWINDOW_THUMBNAIL_SIZE * MAPWINDOW_THUMBNAIL_SIZE * 3);
+ map_window->free_thumbnail();
+ 
+ return true;
+}
+
+void SaveGame::clean_up()
+{
+ //clean up old header if required
+ if(header.thumbnail)
+   {
+    SDL_FreeSurface(header.thumbnail);
+    delete header.thumbnail_data;
+    
+    header.thumbnail = NULL;
+    header.thumbnail_data = NULL;
+   }
+
+ return;
+}
+
 char *SaveGame::get_objblk_path(char *path)
 {
  char *filename;
@@ -434,8 +514,8 @@ char *SaveGame::get_objblk_path(char *path)
     filename[len+1] = '\0';
    }
 
- strcat(filename,"savegame/objblkxx");
-
+ strcat(filename,OBJBLK_FILENAME);
+  
  return filename;
 }
 

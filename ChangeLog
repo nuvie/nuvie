@@ -1,3 +1,17 @@
+2004-06-15  Eric Fry <efry at users.sourceforge.net>
+	* Added thumbnails to the save slots.
+	  I haven't tested this on little endian machines. I have a feeling
+	  it might not work. I also think it might not work correctly on 16bpp
+	  displays. I'll have to do some more testing.
+	* Fixed up some paths added WIN32 \ delimiter into more paths.
+	* Added save description field into save game. Note this isn't editable
+	  yet.
+	* NOTE! please delete any existing savegames before running this 
+	  version. As the savefile structure has changed. I'll add a save 
+	  version check some time in the future. ;-)
+	* There is a bug when selecting the top slot in the save dialog
+	  scroller widget. I'll look at this soon.
+
 2004-06-14  Eric Fry <efry at users.sourceforge.net>
 	* Partial fix for bug [ 932493 ] Can get some objects "Not possible" 
 	  to get. It is nolonger possible to get sundials or drawers. 

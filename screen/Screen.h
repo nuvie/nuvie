@@ -103,6 +103,8 @@ class Screen
    bool initScaler();
 
    unsigned char *copy_area(SDL_Rect *area = NULL);
+   unsigned char *copy_area(SDL_Rect *area, uint16 down_scale);
+   
    void restore_area(unsigned char *pixels, SDL_Rect *area = NULL, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
 
 protected:

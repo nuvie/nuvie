@@ -36,6 +36,7 @@
 #include "AnimManager.h"
 #include "SoundManager.h"
 
+#include "GUI.h"
 #include "GUI_widget.h"
 #include "Game.h"
 #include "GameClock.h"
@@ -57,7 +58,10 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  cursor_y = 0;
  show_cursor = false;
  show_use_cursor = false;
-  
+ 
+ new_thumbnail = false;
+ thumbnail = NULL;
+ 
  cur_level = 0;
 
  tmp_map_buf = NULL;
@@ -471,6 +475,10 @@ void MapWindow::Display(bool full_redraw)
 // screen->fill(0,8,8,win_height*16-16,win_height*16-16);
  
  screen->blitalphamap8();
+
+ if(new_thumbnail)
+   create_thumbnail();
+   
  drawBorder();
  
 // ptr = (unsigned char *)screen->get_pixels();
@@ -1475,3 +1483,40 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
     return(true);
 }
 
+unsigned char *MapWindow::make_thumbnail()
+{
+ if(thumbnail)
+   return false;
+
+ new_thumbnail = true;
+
+ GUI::get_gui()->Display(); // this calls MapWindow::display() which in turn calls create_thumbnail(). :-)
+ 
+ return thumbnail;  
+}
+
+void MapWindow::create_thumbnail()
+{
+ SDL_Rect src_rect;
+
+ src_rect.w = MAPWINDOW_THUMBNAIL_SIZE * MAPWINDOW_THUMBNAIL_SCALE;
+ src_rect.h = src_rect.w;
+ 
+ src_rect.x = area.x + win_width * 8 - (src_rect.w/2);  // area.x + (win_width * 16) / 2 - 120 / 2
+ src_rect.y = area.y + win_height * 8 - (src_rect.h/2); // area.y + (win_height * 16) / 2 - 120 / 2
+
+ thumbnail = screen->copy_area(&src_rect, MAPWINDOW_THUMBNAIL_SCALE); //scale down x3
+ 
+ new_thumbnail = false;
+}
+
+void MapWindow::free_thumbnail()
+{
+ if(thumbnail)
+   {
+    delete thumbnail;
+    thumbnail = NULL;
+   }
+
+ return;
+}

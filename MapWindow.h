@@ -39,6 +39,9 @@ class Map;
 class MapCoord;
 class Screen;
 
+#define MAPWINDOW_THUMBNAIL_SIZE 52
+#define MAPWINDOW_THUMBNAIL_SCALE 3
+
 typedef struct {
 	Tile *t;
 	uint16 x,y;
@@ -67,6 +70,9 @@ class MapWindow: public GUI_Widget
  
  bool show_cursor;
  bool show_use_cursor;
+ 
+ unsigned char *thumbnail;
+ bool new_thumbnail;
  
  uint16 win_width, win_height;
  uint8 cur_level;
@@ -153,10 +159,14 @@ class MapWindow: public GUI_Widget
 
  void update_mouse_cursor(uint32 mx, uint32 my);
 
+ unsigned char *make_thumbnail();
+ void free_thumbnail();
+
  std::vector<Obj *> m_ViewableObjects; //^^ dodgy public buffer
  std::vector<TileInfo> m_ViewableTiles; //^^ dodgy public buffer
 
 protected:
+ void create_thumbnail();
 
  void drawActors();
  void drawAnims();

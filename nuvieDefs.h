@@ -46,8 +46,8 @@ typedef unsigned char BOOL;
 #ifndef WIN32
   #define U6PATH_DELIMITER '/'
 #else
-  //#define U6PATH_DELIMITER '\\'
-  #define U6PATH_DELIMITER '/' // win32 file functions work fine with /
+  #define U6PATH_DELIMITER '\\'
+  //#define U6PATH_DELIMITER '/' // win32 file functions work fine with /
 #endif
 
 typedef unsigned char uint8;

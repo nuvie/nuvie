@@ -30,7 +30,7 @@ using std::string;
 class GUI;
 class GUI_CallBack;
 
-#define NUVIE_SAVESLOT_HEIGHT 32
+#define NUVIE_SAVESLOT_HEIGHT 52
 
 // Callback message types
 
@@ -47,6 +47,7 @@ bool selected;
 bool new_save;
 
 std::string filename;
+SDL_Surface *thumbnail;
 
 public:
 
@@ -54,7 +55,9 @@ SaveSlot(GUI_CallBack *callback, GUI_Color bg_color);
 
 ~SaveSlot();
 
-bool init(std::string *filename);
+bool init(const char *directory, std::string *filename);
+
+
 std::string *get_filename();
 
 void deselect() { selected = false; };
@@ -68,6 +71,11 @@ GUI_status MouseDown(int x, int y, int button);
 GUI_status MouseUp(int x, int y, int button);
 
 GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
+
+protected:
+
+bool load_info(const char *directory);
+
 };
 
 #endif /* __SaveSlot_h__ */

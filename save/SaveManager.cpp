@@ -137,7 +137,7 @@ void SaveManager::create_dialog()
 bool SaveManager::load(SaveSlot *save_slot)
 {
  std::string save_filename;
-
+ 
  if(save_slot->get_filename()->size() == 0)
    return savegame->load_new();
 
@@ -150,6 +150,9 @@ bool SaveManager::save(SaveSlot *save_slot)
 {
  std::string save_filename;
  std::string save_fullpath;
+ std::string save_desc;
+ 
+
  
  save_filename.assign(save_slot->get_filename()->c_str());
  
@@ -157,8 +160,9 @@ bool SaveManager::save(SaveSlot *save_slot)
    save_filename = get_new_savefilename();
    
  build_path(savedir, save_filename, save_fullpath);
- 
- return savegame->save(save_fullpath.c_str());
+
+ save_desc.assign("Save desc will go here."); 
+ return savegame->save(save_fullpath.c_str(), &save_desc);
 }
 
 std::string SaveManager::get_new_savefilename()

@@ -1140,6 +1140,70 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 	return false;
 }
 
+//Note! assumes area divides evenly by down_scale factor
+unsigned char *Screen::copy_area(SDL_Rect *area, uint16 down_scale)
+{
+ SDL_PixelFormat *fmt;
+ SDL_Surface *main_surface = get_sdl_surface();
+ unsigned char *dst_pixels = NULL;
+ unsigned char *ptr;
+ uint32 *src_pixels;
+ uint32 r,g,b;
+ uint32 ra, ga, ba;
+ uint16 x, y;
+ uint8 x1, y1;
+ 
+ dst_pixels = new unsigned char[((area->w / down_scale) * (area->h / down_scale)) * 3];
+ ptr = dst_pixels;
+ 
+ fmt = main_surface->format;
+ 
+ for(y = 0; y < area->h; y += down_scale)
+  {
+   for(x = 0; x < area->w; x += down_scale)
+    {
+     r = 0;
+     g = 0;
+     b = 0;
+
+     src_pixels = (uint32 *)main_surface->pixels;
+     src_pixels += ((area->y + y) * surface->w + (area->x + x));
+
+     for(y1 = 0; y1 < down_scale; y1++)
+      {
+       for(x1 = 0; x1 < down_scale; x1++)
+        {
+         ra = *src_pixels & fmt->Rmask;
+         ra >>= fmt->Rshift;
+         ra <<= fmt->Rloss;
+         
+         ga = *src_pixels & fmt->Gmask;
+         ga >>= fmt->Gshift;
+         ga <<= fmt->Gloss;         
+         
+         ba = *src_pixels & fmt->Bmask;
+         ba >>= fmt->Bshift;
+         ba <<= fmt->Bloss;
+                  
+         r += ra;
+         g += ga;
+         b += ba;
+         
+         src_pixels++;
+        }
+       src_pixels += surface->w;
+      }
+
+     ptr[0] = (uint8)(r/(down_scale*down_scale));
+     ptr[1] = (uint8)(g/(down_scale*down_scale));
+     ptr[2] = (uint8)(b/(down_scale*down_scale));
+     ptr += 3;
+    }
+  }
+
+ return dst_pixels;
+}
+
 
 // surface -> unsigned char *
 // (NULL area = entire screen)

@@ -120,8 +120,8 @@ bool SoundManager::nuvieStartup (Configuration * config)
 
   if(sfx_enabled)
     {
-     LoadObjectSamples (sound_dir);
-     LoadTileSamples (sound_dir);
+     LoadObjectSamples(sound_dir);
+     LoadTileSamples(sound_dir);
     }
 
   return true;
@@ -355,7 +355,10 @@ bool SoundManager::LoadTileSamples (string sound_dir)
   build_path(sound_dir, "tile_samples.cfg", scriptname);
   
   if(niof.open (scriptname) == false)
-    return false;
+    {
+     printf("Error: opening %s\n",scriptname.c_str());
+     return false;
+    }
 
   sz = (char *) niof.readAll ();
 

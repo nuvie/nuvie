@@ -25,12 +25,14 @@
  */
 
 #define NUVIE_SAVE_VERSION_MAJOR 0
-#define NUVIE_SAVE_VERSION_MINOR 1
+#define NUVIE_SAVE_VERSION_MINOR 2
 
 #define NUVIE_SAVE_VERSION       NUVIE_SAVE_VERSION_MAJOR * 256 + NUVIE_SAVE_VERSION_MINOR
 
-#include <string>
+#define MAX_SAVE_DESC_LENGTH    52
 
+#include <string>
+#include "SDL.h"
 
 class Configuration;
 class ActorManager;
@@ -38,17 +40,27 @@ class ObjManager;
 class Actor;
 class Map;
 class NuvieIO;
+class NuvieIOFileWrite;
 
+struct SaveHeader
+{
+ uint16 num_saves;
+ uint32 actual_play_time; //total play time for this save game in minutes.
+ uint32 game_play_time; //total play time for this save game measured in game turns.
+ std::string save_description;
+
+ SDL_Surface *thumbnail;
+ unsigned char *thumbnail_data;
+
+ SaveHeader() { num_saves = 0; actual_play_time = 0; game_play_time = 0; thumbnail = NULL; thumbnail_data = NULL; };
+};
+ 
 class SaveGame
 {
  Configuration *config;
  
- uint16 num_saves;
- uint32 actual_play_time; //total play time for this save game in minutes.
- uint32 game_play_time; //total play time for this save game measured in game turns.
- 
- std::string save_description;
- 
+ SaveHeader header;
+
  NuvieIOBuffer objlist;
  
  public:
@@ -60,18 +72,21 @@ class SaveGame
 
  bool load_new();
  bool load_original();
+ SaveHeader *load_info(NuvieIOFileRead *loadfile);
  bool load(const char *filename);
 
- bool save(const char *filename);
+ bool save(const char *filename, std::string *save_description);
 
  
- uint16 get_num_saves() { return num_saves; };
+ uint16 get_num_saves() { return header.num_saves; };
  
  protected:
 
  bool load_objlist();
  bool save_objlist();
+ bool save_thumbnail(NuvieIOFileWrite *savefile);
   
+ void clean_up();
  char *get_objblk_path(char *path);
 };
 
