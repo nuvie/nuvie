@@ -287,7 +287,6 @@ uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
 void U6Actor::twitch()
 {
  
- // twitch
  if(can_twitch == false || actor_type->twitch_rand == 0)
    return;
 
@@ -304,37 +303,11 @@ void U6Actor::twitch()
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1);
   }
 
-/* 
- switch(obj_n) //FIX twitch frequency should go in type table. :)
-  {
-   case OBJ_U6_MUSICIAN_PLAYING : if(NUVIE_RAND()%3 == 1)
-                            {
-                             walk_frame = NUVIE_RAND()%2;
-                             frame_n = direction * 2 + walk_frame;
-                            }
-                           break;
-   case OBJ_U6_JESTER : if(can_twitch && NUVIE_RAND()%5 == 1) //jester's move around a lot!
-                          {
-                           walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
-                           frame_n = direction * actor_type->frames_per_direction + walk_frame;
-                          }
-                        break;
-
-   default : if(can_twitch && NUVIE_RAND()%50 == 1)
-               {
-                walk_frame = NUVIE_RAND()%actor_type->frames_per_direction;
-                frame_n = direction * actor_type->frames_per_direction + walk_frame;
-               }
-             break;
-  }
-*/
-
  return;
 }
 
 void U6Actor::preform_worktype()
 {
- // uint8 walk_frame_tbl[4] = {0,1,2,1};
 
  switch(worktype)
   {
@@ -504,14 +477,12 @@ void U6Actor::wt_sleep()
       {
        if(obj->frame_n == 1 || obj->frame_n == 5) //horizontal bed
          {
-          //old_obj_n = obj_n;
           old_frame_n = frame_n;
           obj_n = OBJ_U6_PERSON_SLEEPING;
           frame_n = 0;
          }
        if(obj->frame_n == 7 || obj->frame_n == 10) //vertical bed
          {
-          //old_obj_n = obj_n;
           old_frame_n = frame_n;
           obj_n = OBJ_U6_PERSON_SLEEPING;
           frame_n = 1;
@@ -521,7 +492,6 @@ void U6Actor::wt_sleep()
       {
        if(actor_type->can_laydown)
         {
-         //old_obj_n = obj_n;
          old_frame_n = frame_n;
          obj_n = actor_type->dead_obj_n;
          frame_n = actor_type->dead_frame_n;
@@ -536,7 +506,6 @@ void U6Actor::wt_sleep()
 
 void U6Actor::wt_play_lute()
 {
- //old_obj_n = obj_n;
  old_frame_n = frame_n;
 
  set_actor_obj_n(OBJ_U6_MUSICIAN_PLAYING);
@@ -633,11 +602,13 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
  if(obj == surrounding_objects.end())
   return;
 
+ (*obj)->x = x;
+ (*obj)->y = y;
+ 
  (*obj)->frame_n =  new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1;
  switch(new_direction)
   {
-   case ACTOR_DIR_U : (*obj)->x = x;
-                      if(y == 0)
+   case ACTOR_DIR_U : if(y == 0)
                         (*obj)->y = pitch - 1;
                       else
                         (*obj)->y = y - 1;
@@ -647,11 +618,9 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
                         (*obj)->x = 0;
                       else
                         (*obj)->x = x + 1;
-                      (*obj)->y = y;
                       break;
 
-   case ACTOR_DIR_D : (*obj)->x = x;
-                      if(y == pitch - 1)
+   case ACTOR_DIR_D : if(y == pitch - 1)
                         (*obj)->y = 0;
                       else
                         (*obj)->y = y + 1;
@@ -661,19 +630,20 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
                         (*obj)->x = pitch - 1;
                       else
                         (*obj)->x = x - 1;
-                      (*obj)->y = y;
                       break;
   }                   
     
  obj++;
  if(obj == surrounding_objects.end())
   return;
+
+ (*obj)->x = x;
+ (*obj)->y = y;
  
  (*obj)->frame_n =  16 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
  switch(new_direction)
   {
-   case ACTOR_DIR_U : (*obj)->x = x;
-                      if(y == pitch - 1)
+   case ACTOR_DIR_U : if(y == pitch - 1)
                         (*obj)->y = 0;
                       else
                         (*obj)->y = y + 1;
@@ -683,11 +653,9 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
                         (*obj)->x = pitch - 1;
                       else
                         (*obj)->x = x - 1;
-                      (*obj)->y = y;
                       break;
 
-   case ACTOR_DIR_D : (*obj)->x = x;
-                      if(y == 0)
+   case ACTOR_DIR_D : if(y == 0)
                         (*obj)->y = pitch - 1;
                       else
                         (*obj)->y = y - 1;
@@ -697,7 +665,6 @@ inline void U6Actor::set_direction_of_surrounding_ship_objs(uint8 new_direction)
                         (*obj)->x = 0;
                       else
                         (*obj)->x = x + 1;
-                      (*obj)->y = y;
                       break;
   }                   
 
@@ -743,17 +710,12 @@ inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_dire
                         (*obj)->x = x + 1;
                       break;
   }                   
-/*
- (*obj)->frame_n = 8 + (new_direction * actor_type->tiles_per_direction + 
-                   (walk_frame_tbl[walk_frame] * actor_type->tiles_per_frame ) + 
-                    actor_type->tiles_per_frame - 1);
-*/
+
 }
 
 inline void U6Actor::twitch_surrounding_objs()
 {
  std::list<Obj *>::iterator obj;
- //uint16 pitch = map->get_width(z);
  
  for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
    {
