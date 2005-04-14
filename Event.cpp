@@ -611,7 +611,10 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
 
         // objects with 0 weight aren't gettable.
         weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
-        if(weight != 0 && weight != 25.5) //25.5 is the max weight and means an object is movable but not getable.
+
+        //25.5 is the max weight and means an object is movable but not getable.
+        //we can't get object that contain toptiles either. This makes dragon bits ungettable etc.
+        if(weight != 0 && weight != 25.5 && obj_manager->has_toptile(obj) == false) 
         {
             if(actor->can_carry_weight(weight))
             {

@@ -595,6 +595,34 @@ bool ObjManager::is_stackable(Obj *obj)
  return (bool)obj_stackable[obj->obj_n];
 }
 
+bool ObjManager::has_toptile(Obj *obj)
+{
+ Tile *tile;
+ uint8 i = 1;
+ 
+ tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+  
+ if(tile->dbl_width)
+   i++;
+   
+ if(tile->dbl_height)
+   i++;
+   
+ if(tile->dbl_width && tile->dbl_height)
+   i++;
+
+  for(; i > 0; i--) 
+   {
+    if(tile->toptile)
+      return true;
+
+    if(i != 1)
+      tile = tile_manager->get_tile(tile->tile_num - 1);
+   }
+
+ return false;
+}
+
 //gets the linked list of objects at a perticular location.
 
 U6LList *ObjManager::get_obj_list(uint16 x, uint16 y, uint8 level)

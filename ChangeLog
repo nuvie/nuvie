@@ -1,3 +1,9 @@
+2005-04-14  Eric Fry <efry at users.sourceforge.net>
+	* Fixed bug 'Can get some objects "Not possible" to get' [932493].
+	  You shouldn't be able to pickup objects that contain toptiles. Eg
+	  the dragon bits in the museum in Britain.
+	  Added ObjManager::has_toptile(Obj *obj)
+
 2005-03-24  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added sun & moons with correct phase changes to sky display. PartyView
 	  was resized by 3 pixels to these extra tiles.
