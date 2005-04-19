@@ -49,6 +49,7 @@ public:
 
 protected:
 NuvieIOBuffer *load_speech(std::string filename, uint16 sample_num);
+inline sint16 convert_sample(uint16 raw_sample);
 void wav_init_header(NuvieIOBuffer *wav_buffer, uint32 audio_length);    
 };
 

@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <cctype>
 #include <cstring>
+#include <cmath>
 
 #include "nuvieDefs.h"
 #include "Game.h"
@@ -114,52 +115,95 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
 NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_num)
 {
  unsigned char *compressed_data, *raw_audio, *wav_data;
- uint16 *converted_audio;
+ sint16 *converted_audio;
  uint32 decomp_size;
-#ifdef BIG_ENDIAN
- uint16 temp_sample;
-#endif
+ uint32 upsampled_size;
+ sint16 sample, prev_sample;
  U6Lib_n sam_file;
  U6Lzw lzw;
-// NuvieIOBuffer *wav_buffer;
  NuvieIOBuffer *wav_buffer = 0;
- uint32 j;
+ uint32 j, k;
  
  sam_file.open(filename, 4);
  
  compressed_data = sam_file.get_item(sample_num, NULL);
  raw_audio = lzw.decompress_buffer(compressed_data, sam_file.get_item_size(sample_num), decomp_size);
  
- 
  free(compressed_data);
  
  if(raw_audio != NULL)
   {
    wav_buffer = new NuvieIOBuffer();
-   wav_data = (unsigned char *)malloc(decomp_size * sizeof(uint16) + 44); // 44 = size of wav header
-   
-   wav_buffer->open(wav_data, decomp_size * sizeof(uint16) + 44, false);
-   wav_init_header(wav_buffer, decomp_size);
-   
-   converted_audio = (uint16 *)&wav_data[44];
-   
-   for(j=0;j<decomp_size;j++)
+   upsampled_size = decomp_size + floor((decomp_size - 1) / 4) * (2 + 2 + 2 + 1);
+
+   switch((decomp_size - 1) % 4)
     {
-     if(raw_audio[j] & 128)
-       converted_audio[j] = ((sint16)(abs(128 - raw_audio[j]) * 256) ^ 0xffff)  + 1;
-     else
-       converted_audio[j] = (uint16)raw_audio[j] * 256;
-#ifdef BIG_ENDIAN
-     temp_sample = converted_audio[j] >> 8;
-     temp_sample |= (converted_audio[j] & 0xff) << 8;
-     converted_audio[j] = temp_sample;
-#endif
+     case 1 : upsampled_size += 2; break;
+     case 2 : upsampled_size += 4; break;
+     case 3 : upsampled_size += 6; break;
+    }
+   
+   printf("decomp_size %d, upsampled_size %d\n", decomp_size, upsampled_size);
+   
+   wav_data = (unsigned char *)malloc(upsampled_size * sizeof(sint16) + 44); // 44 = size of wav header
+   
+   wav_buffer->open(wav_data, upsampled_size * sizeof(sint16) + 44, false);
+   wav_init_header(wav_buffer, upsampled_size);
+   
+   converted_audio = (sint16 *)&wav_data[44];
+   
+   prev_sample = convert_sample(raw_audio[0]); 
+   
+   for(j=1,k=0;j<decomp_size;j++,k++)
+    {
+     converted_audio[k] = prev_sample;
+
+     sample = convert_sample(raw_audio[j]);
+
+     if(j < decomp_size - 1)
+      {
+       switch(j % 4) // calculate the in-between samples using linear interpolation.
+       {
+        case 0 : 
+        case 1 : 
+        case 2 : 
+                 converted_audio[k+1] = (sint16)(0.666 * (float)prev_sample + 0.333 * (float)sample);
+                 converted_audio[k+2] = (sint16)(0.333 * (float)prev_sample + 0.666 * (float)sample);             
+                 k += 2;
+                 break;
+        case 3 : converted_audio[k+1] = (sint16)(0.5 * (float)(prev_sample + sample));
+                 k += 1;
+                 break;
+       }
+      }
+     prev_sample = sample;
     }
   }
  
  free(raw_audio);
- 
+  
  return wav_buffer;
+}
+
+inline sint16 ConverseSpeech::convert_sample(uint16 raw_sample)
+{
+ sint16 sample;
+#ifdef BIG_ENDIAN
+ sint16 temp_sample;
+#endif
+ 
+ if(raw_sample & 128)
+   sample = ((sint16)(abs(128 - raw_sample) * 256) ^ 0xffff)  + 1;
+ else
+   sample = raw_sample * 256;
+
+#ifdef BIG_ENDIAN
+   temp_sample = sample >> 8;
+   temp_sample |= (sample & 0xff) << 8;
+   sample = temp_sample;
+#endif
+
+ return sample;
 }
 
 void ConverseSpeech::wav_init_header(NuvieIOBuffer *wav_buffer, uint32 audio_length)
@@ -171,8 +215,8 @@ void ConverseSpeech::wav_init_header(NuvieIOBuffer *wav_buffer, uint32 audio_len
  wav_buffer->write4(16); // length of format chunk
  wav_buffer->write2(1); // PCM encoding
  wav_buffer->write2(1); // mono
- wav_buffer->write4(16000); // sample frequency 16KHz
- wav_buffer->write4(16000 * 2); // sample rate
+ wav_buffer->write4(44100); // sample frequency 16KHz
+ wav_buffer->write4(44100 * 2); // sample rate
  wav_buffer->write2(2); // BlockAlign 
  wav_buffer->write2(16); // Bits per sample 
 
