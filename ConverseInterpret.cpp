@@ -330,7 +330,7 @@ void ConverseInterpret::do_text()
                      {
                       i++;
                       if(c_str[i] == 'P')
-                        converse->get_speech()->play_speech(converse->npc_num, (int)strtol(&c_str[i+1], NULL, 10));
+                        converse->get_speech()->play_speech(converse->script_num, (int)strtol(&c_str[i+1], NULL, 10));
                         
                       for(i++;isdigit(c_str[i]) && i < len;)
                         i++;

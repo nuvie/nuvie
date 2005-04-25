@@ -51,6 +51,7 @@ Converse::Converse()
     script = NULL;
     npc = NULL;
     npc_num = 0;
+    script_num = 0;
     name = desc = NULL;
     src = NULL;
     src_num = 0;
@@ -61,6 +62,7 @@ Converse::Converse()
     variables = NULL;
     party_all_the_time = false;
     speech = NULL;
+    using_fmtowns = false;
 }
 
 
@@ -70,6 +72,8 @@ void
 Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
                GameClock *c, Player *p, ViewManager *v, ObjManager *o)
 {
+    std::string townsdir;
+
     config = cfg;
     scroll = s;
     actors = a;
@@ -80,6 +84,10 @@ Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
     gametype = t;
 
     cfg->value("config/party_all_the_time", party_all_the_time);
+
+    cfg->value("config/ultima6/townsdir", townsdir, "");
+    if(townsdir != "")
+      using_fmtowns = true;
     
     speech = new ConverseSpeech();
     speech->init(config);
@@ -131,9 +139,8 @@ void Converse::reset()
 void Converse::load_conv(const std::string &convfilename)
 {
     string conv_lib_str;
-    config->value("config/ultima6/townsdir", conv_lib_str, "unset"); //FIXME we need a config key check function.
 
-    if(conv_lib_str != "unset")
+    if(using_fmtowns)
       config->pathFromValue("config/ultima6/townsdir", convfilename, conv_lib_str);
     else
       config->pathFromValue("config/ultima6/gamedir", convfilename, conv_lib_str);
@@ -170,30 +177,40 @@ uint32 Converse::load_conv(uint8 a)
     {
         if(src_num != 1)
             load_conv("converse.a");
-        return(a);
     }
     else // a >= 99
     {
         if(src_num != 2)
             load_conv("converse.b");
-        if(a > 200) // (quick fix for U6: anything over 200 is a temporary npc)
-        {
-            Actor *npc = actors->get_actor(a);
-            if(npc->get_obj_n() == 373) // OBJ_U6_WISP
+        
+        if(gametype == NUVIE_GAME_U6)
+          {
+           if(a > 200) // (quick fix for U6: anything over 200 is a temporary npc)
+             {
+              Actor *npc = actors->get_actor(a);
+              if(npc->get_obj_n() == 373) // OBJ_U6_WISP
                 a = 201;
-            else if(npc->get_obj_n() == 382) // OBJ_U6_GUARD
+              else if(npc->get_obj_n() == 382) // OBJ_U6_GUARD
                 a = 202;
-        }
-        else if(a == 188)  // U6: temp. fix for shrines
-            a = 191; // ??? -> Exodus
-        else if(a >= 191 && a <= 197) // shrines except spirituality & humility
-            a += 2;
-        else if(a == 198)
-            a = 192; // Spirituality -> Honesty
-        else if(a == 199)
-            a = 200; // Humility -> Singularity
-        return(a - 99);
+             }
+           else if(a == 188)  // U6: temp. fix for shrines
+              a = 191; // ??? -> Exodus
+           else if(a >= 191 && a <= 197) // shrines except spirituality & humility
+              a += 2;
+           else if(a == 198)
+              a = 192; // Spirituality -> Honesty
+           else if(a == 199)
+              a = 200; // Humility -> Singularity
+          }
     }
+
+ script_num = a;
+ 
+ // we want to return the real item number in the converse file.
+ if(gametype == NUVIE_GAME_U6 && a > 98)
+   a -= 99;
+
+ return a;
 }
 
 
@@ -295,7 +312,7 @@ ConverseInterpret *Converse::new_interpreter()
  */
 bool Converse::start(uint8 n)
 {
-    uint32 script_num = 0;
+    uint32 real_script_num = 0; // The script number in the converse file.
 
     // load, but make sure previous script is unloaded first
     if(running())
@@ -303,11 +320,12 @@ bool Converse::start(uint8 n)
     if(!(npc = actors->get_actor(n)))
         return(false);
     // get script num for npc number (and open file)
-    script_num = load_conv(n);
+    real_script_num = load_conv(n);
     if(!src)
         return(false);
-    script = load_script(script_num);
 
+    script = load_script(real_script_num);
+    
     // begin
     if(script)
     {

@@ -87,6 +87,7 @@ class Converse
     ConvScript *script;
     Actor *npc;
     uint8 npc_num;
+    uint8 script_num; //this could differ from npc_num when talking to guards or wisps etc.
     char *name, *desc;
 
     bool active; // running npc script? (either paused or unpaused)
@@ -105,6 +106,8 @@ class Converse
     } *variables; /* initialized for [U6TALK_VAR__LAST_+1] items */
 
     ConverseSpeech *speech;
+    bool using_fmtowns;
+
     void reset();
 
 public:

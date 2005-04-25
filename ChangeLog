@@ -1,3 +1,10 @@
+2005-04-25  Eric Fry <efry at users.sourceforge.net>
+	* Fixed FM-Towns audio. The interpolation routine was leaving off the
+	  last sample.
+	* Added script_num and using_fmtowns variables into the Converse class.
+	* Fixed crash when trying to talk to guards or wisps when using FM-Towns
+	  speech.
+
 2005-04-19  Eric Fry <efry at users.sourceforge.net>
 	* Fixed the FM-Towns audio sample rate. FMTowns audio uses a 16Khz
 	  sample rate this had to be upscaled to 44.1Khz which is the rate our

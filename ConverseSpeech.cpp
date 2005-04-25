@@ -85,6 +85,14 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
  if(!audio_enabled)
    return;
 
+ //translate the converse sample number into the CHAR number in the SPEECH directory if required.
+ 
+ if(actor_num == 202) //GUARDS
+  actor_num = 228; 
+
+ if(actor_num == 201) //WISPS
+  actor_num = 229;
+
  sample_num--;
  
  sprintf(filename, "speech%cchar%d.sam", U6PATH_DELIMITER, actor_num);
@@ -160,9 +168,7 @@ NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_n
 
      sample = convert_sample(raw_audio[j]);
 
-     if(j < decomp_size - 1)
-      {
-       switch(j % 4) // calculate the in-between samples using linear interpolation.
+     switch(j % 4) // calculate the in-between samples using linear interpolation.
        {
         case 0 : 
         case 1 : 
@@ -175,9 +181,11 @@ NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_n
                  k += 1;
                  break;
        }
-      }
+
      prev_sample = sample;
     }
+    
+   converted_audio[k] = sample;
   }
  
  free(raw_audio);
