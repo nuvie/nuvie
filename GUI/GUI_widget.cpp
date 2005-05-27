@@ -68,7 +68,10 @@ void GUI_Widget::Init(void *data, int x, int y, int w, int h)
  parent = NULL;
 
  update_display = true;
- set_accept_mouseclick(false); // initializes mouseclick_time; SB-X
+ set_accept_mouseclick(false); // initializes mouseclick time; SB-X
+ delayed_button = 0; // optional mouseclick-delay; SB-X
+ held_button = 0; // optional mousedown-delay; SB-X
+ mouse_moved = false;
 
  int mx, my;
  SDL_GetMouseState(&mx, &my);
@@ -294,11 +297,24 @@ void GUI_Widget::Redraw(void)
 }
 
 /* GUI idle function -- run when no events pending */
+// Idle and HandleEvent produce delayed clicks. Don't override if using those. -- SB-X
 GUI_status GUI_Widget::Idle(void)
 {
+	if(children.empty() == false)
+	{
+		std::list<GUI_Widget *>::iterator child;
+		/* idle our children */
+		for(child = children.begin(); child != children.end(); child++)
+		{
+			GUI_status status = (*child)->Idle();
+			if(status != GUI_PASS)
+				return(status);
+		}
+	}
+	if(delayed_button != 0 || held_button != 0)
+		return(try_mouse_delayed());
 	return(GUI_PASS);
 }
-
 
 /* Widget event handlers.
    These functions should return a status telling the GUI whether
@@ -334,6 +350,7 @@ GUI_status GUI_Widget::MouseMotion(int x, int y, Uint8 state)
 /* Main event handler function.
    This function gets raw SDL events from the GUI.
  */
+// Idle and HandleEvent produce delayed clicks. Don't override if using those. -- SB-X
 GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 {
  if(status == WIDGET_HIDDEN) //we don't care for events if we are hidden.
@@ -343,7 +360,7 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
   {
    std::list<GUI_Widget *>::iterator child;
 
-   /* display our children */
+   /* handle our children */
    for(child = children.begin(); child != children.end(); child++)
      {
       GUI_status status = (*child)->HandleEvent(event);
@@ -351,6 +368,13 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
         return status;
      }
   }
+
+  if(delayed_button != 0 || held_button != 0)
+   {
+    GUI_status status = try_mouse_delayed();
+    if(status != GUI_PASS)
+      return status;
+   }
 
 	switch (event->type) {
 		case SDL_KEYDOWN: {
@@ -367,7 +391,7 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 			y = event->button.y;
 			button = event->button.button;
 			if ( focused || HitRect(x, y) ) {
-				mousedown[button] = true;
+				set_mousedown(SDL_GetTicks(), button);
 				return(MouseDown(x, y, button));
 			}
 		}
@@ -379,19 +403,23 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 			button = event->button.button;
 			if ( focused || HitRect(x, y) )	{
 				int rel_time = SDL_GetTicks();
-				int last_rel_time = mouseup_time[button];
-                                bool do_mouseclick = mousedown[button];
-				set_mouseclick_time(rel_time, button);
-				if(accept_mouseclick[button] && do_mouseclick && (rel_time-last_rel_time < GUI::mouseclick_delay))
+				int last_rel_time = get_mouseup(button);
+                                bool do_mouseclick = get_mousedown(button);
+				set_mouseup(rel_time, button);
+				if(accept_mouseclick[button-1] && do_mouseclick && (rel_time-last_rel_time < GUI::mouseclick_delay))
+				{
+				        // before a Double or Delayed click, mouseup_time is reset so another click isn't possible
+					set_mouseup(0, button);
 					return(MouseDouble(x, y, button));
-				else if(accept_mouseclick[button] && do_mouseclick)
+				}
+				else if(accept_mouseclick[button-1] && do_mouseclick)
 					return(MouseClick(x, y, button));
 				else
 					return(MouseUp(x, y, button));
 			}
 			/* if widget was clicked before we must let it deactivate itself*/
 			else if (ClickState(1)) {
-				set_mouseclick_time(0, button);
+				set_mouseup(0, button);
 				return(MouseUp(-1,-1,button));
 			}
 		}
@@ -402,7 +430,8 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 			x = event->motion.x;
 			y = event->motion.y;
 			state = event->motion.state;
-			set_mouseclick_time(0); // any mousemotion resets click
+			if(event->button.button > 0) // mousemotion resets Click
+				mouse_moved = true;
 			if ( focused || HitRect(x, y) )
 			{
   			  if ( !mouse_over )
@@ -474,41 +503,6 @@ void GUI_Widget::drag_perform_drop(int x, int y, int message, void *data)
  return;
 }
 
-
-// SB-X
-#if 0
-GUI_status GUI_Widget::MouseIdle()
-{
-	// idle children
-	std::list<GUI_Widget *>::iterator child;
-	for(child = children.begin(); child != children.end(); child++)
-		(*child)->MouseIdle();
-
-	if(mousedouble_delay && last_mouseup_time)
-		if((SDL_GetTicks() - last_mouseup_time) > mousedouble_delay)
-		{
-			// delay passed with no second click
-			cancel_mouseclick(); // don't try MouseDouble()
-			if(last_mouseup_x == last_mousedown_x && last_mouseup_y == last_mousedown_y)
-				return(MouseClick(last_mouseup_x, last_mouseup_y, last_mouseup_button));
-		}
-	return(GUI_PASS);
-}
-#endif
-
-GUI_status GUI_Widget::RegisterMouseDown(int x, int y, int button)
-{
-        mousedown[button] = true;
-	return(GUI_PASS);
-}
-
-
-GUI_status GUI_Widget::RegisterMouseUp(int x, int y, int button)
-{
-        set_mouseclick_time(SDL_GetTicks(), button);
-	return(GUI_PASS);
-}
-
 /* Mouse button was pressed and released over the widget.
  */
 GUI_status GUI_Widget::MouseClick(int x, int y, int button)
@@ -516,7 +510,7 @@ GUI_status GUI_Widget::MouseClick(int x, int y, int button)
     return(GUI_PASS);
 }
 
-/* Mouse button was clicked twice over the widget, within mousedouble_delay.
+/* Mouse button was clicked twice over the widget, within a certain time period.
  */
 GUI_status GUI_Widget::MouseDouble(int x, int y, int button)
 {
@@ -553,27 +547,94 @@ bool GUI_Widget::widget_has_focus()
     return(true);
 }
 
-// button -1 = all
+// button 0 = all
 void GUI_Widget::set_accept_mouseclick(bool set, int button)
 {
-    if(button == -1)
+    if(button <= 0)
         accept_mouseclick[0]=accept_mouseclick[1]=accept_mouseclick[2] = set;
-    else if(button < 3)
-        accept_mouseclick[button] = set;
-    set_mouseclick_time(0, button);
+    else if(button < 4)
+        accept_mouseclick[button-1] = set;
+    set_mouseup(0, button);
+    set_mousedown(0, button);
 }
 
-// time 0 = reset; button -1 = all
-void GUI_Widget::set_mouseclick_time(int set, int button)
+// time 0 = reset; button 0 = all
+// mousedown is always cleared
+void GUI_Widget::set_mouseup(int set, int button)
 {
-    if(button == -1)
+    mouse_moved = false;
+    if(button <= 0)
     {
-        mouseup_time[0]=mouseup_time[1]=mouseup_time[2] = set;
-        mousedown[0]=mousedown[1]=mousedown[2] = false;
+        mouseup[0]=mouseup[1]=mouseup[2] = set;
+        mousedown[0]=mousedown[1]=mousedown[2] = 0;
     }
-    else if(button < 3)
+    else if(button < 4)
     {
-        mouseup_time[button] = set;
-        mousedown[button] = false;
+        mouseup[button-1] = set;
+        mousedown[button-1] = 0;
     }
+}
+
+// time 0 = reset; button 0 = all
+// mouseup is not cleared because two mouseup times are compared for mouseclicks
+void GUI_Widget::set_mousedown(int set, int button)
+{
+    if(button <= 0)
+    {
+//        mouseup[0]=mouseup[1]=mouseup[2] = 0;
+        mousedown[0]=mousedown[1]=mousedown[2] = set;
+    }
+    else if(button < 4)
+    {
+//        mouseup[button-1] = 0;
+        mousedown[button-1] = set;
+    }
+}
+
+// check to see if time has passed for a MouseDelayed or MouseHeld
+GUI_status GUI_Widget::try_mouse_delayed()
+{
+    int mousedown_time = get_mousedown(held_button);
+    int mouseup_time = get_mouseup(delayed_button);
+    int time_to_hold = SDL_GetTicks()-mousedown_time;
+    int time_to_click = SDL_GetTicks()-mouseup_time;
+
+    if(mousedown_time != 0 && time_to_hold >= GUI::mouseclick_delay)
+    {
+        int button = held_button;
+        int x, y; // position isn't saved anywhere so we get it here
+        SDL_GetMouseState(&x, &y); // hopefully it hasn't changed since MouseDown
+        x /= screen->get_scale_factor();
+        y /= screen->get_scale_factor();
+	held_button = 0; // no need to clear mousedown time, MouseUp does that
+        return(MouseHeld(x, y, button));
+    }
+
+    if(mouseup_time != 0 && time_to_click >= GUI::mouseclick_delay)
+    {
+        int button = delayed_button;
+        int x, y; // position isn't saved anywhere so we get it here
+        SDL_GetMouseState(&x, &y); // hopefully it hasn't changed since MouseClick/MouseUp
+        x /= screen->get_scale_factor();
+        y /= screen->get_scale_factor();
+	delayed_button = 0;
+        // before a Double or Delayed click, mouseup time is reset
+        set_mouseup(0, button);
+        return(MouseDelayed(x, y, button));
+    }
+    return(GUI_PASS);
+}
+
+// like a MouseClick but called only after waiting for MouseDouble, if
+// wait_for_mouseclick(button) was called
+GUI_status GUI_Widget::MouseDelayed(int x, int y, int button)
+{
+    return(GUI_PASS);
+}
+
+// like a MouseDown but called only after waiting for MouseUp, if
+// wait_for_mousedown(button) was called
+GUI_status GUI_Widget::MouseHeld(int x, int y, int button)
+{
+    return(GUI_PASS);
 }

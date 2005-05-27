@@ -22,7 +22,7 @@
  */
 
 // FIX need to subclass this class for U6, MD & SE
-
+#include "Configuration.h"
 #include "nuvieDefs.h"
 
 #include "MsgScroll.h"
@@ -31,6 +31,10 @@
 
 #include "Actor.h"
 #include "DollWidget.h"
+
+#define USE_BUTTON 1 /* FIXME: put this in a common location */
+#define ACTION_BUTTON 3
+#define DRAG_BUTTON 1
 
 static SDL_Rect item_hit_rects[8] = { {24, 0,16,16},   // ACTOR_HEAD
                                      { 0, 8,16,16},   // ACTOR_NECK
@@ -49,6 +53,8 @@ DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(N
  actor = NULL;
  selected_obj = NULL;
  unready_obj = NULL;
+
+ config->value("config/input/enable_doubleclick",enable_doubleclick,true);
 }
 
 DollWidget::~DollWidget()
@@ -64,7 +70,7 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  GUI_Widget::Init(NULL, x, y, 64, 64);
 
  set_actor(a);
- set_accept_mouseclick(true, 1); // accept [double]clicks from button1
+ set_accept_mouseclick(true, USE_BUTTON); // accept [double]clicks from button1 (even if double-click disabled we need clicks)
 
  return true;
 }
@@ -155,7 +161,7 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
  x -= area.x;
  y -= area.y;
 
- if(actor && selected_obj == NULL)
+ if(actor && selected_obj == NULL && (button == USE_BUTTON || button == ACTION_BUTTON || button == DRAG_BUTTON))
    {
     for(location=0;location<8;location++)
       {
@@ -166,8 +172,9 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
           if(obj)
            {
              // send to View
-             if(callback_object->callback(INVSELECT_CB, this, obj) == GUI_PASS)
-                 selected_obj = obj;
+             if(callback_object->callback(INVSELECT_CB, this, obj) == GUI_PASS
+                && button == DRAG_BUTTON)
+                 selected_obj = obj; // start dragging
              return GUI_YUM;
            }
          }
@@ -183,14 +190,19 @@ GUI_status DollWidget::MouseUp(int x,int y,int button)
  Event *event = Game::get_game()->get_event();
  UseCode *usecode = Game::get_game()->get_usecode();
 
- // only act now if not usable
- if(selected_obj && !usecode->has_usecode(selected_obj))
+ // only act now if double-click is disabled
+ if(selected_obj && !enable_doubleclick)
    {
     event->unready(selected_obj);
     Redraw();
+    unready_obj = NULL;
+   }
+ else if(selected_obj)
+   {
+    wait_for_mouseclick(USE_BUTTON);
+    unready_obj = selected_obj;
    }
 
- unready_obj = NULL;
  selected_obj = NULL;
  return GUI_PASS;
 }
@@ -306,6 +318,9 @@ void DollWidget::drag_draw(int x, int y, int message, void* data)
  */
 GUI_status DollWidget::MouseDouble(int x, int y, int button)
 {
+    // we have to check if double-clicks are allowed here, since we use single-clicks
+    if(!enable_doubleclick)
+        return(GUI_PASS);
     Event *event = Game::get_game()->get_event();
     Obj *obj = selected_obj;
 
@@ -318,4 +333,16 @@ GUI_status DollWidget::MouseDouble(int x, int y, int button)
     if(event->newAction(USE_MODE))
         event->doAction(obj);
     return(GUI_PASS);
+}
+
+// change container, ready/unready object, activate arrows
+GUI_status DollWidget::MouseDelayed(int x, int y, int button)
+{
+    Event *event = Game::get_game()->get_event();
+    if(unready_obj)
+    {
+        event->unready(unready_obj);
+        Redraw();
+        unready_obj = NULL;
+    }
 }

@@ -42,7 +42,10 @@
 #include "Game.h"
 #include "GameClock.h"
 
-#define DBLCLICK_USE_BUTTON 1 /* FIXME: this should be in a common location */
+#define USE_BUTTON 1 /* FIXME: put this in a common location */
+#define WALK_BUTTON 3
+#define ACTION_BUTTON 3
+#define DRAG_BUTTON 1
 
 // This should make the mouse-cursor hovering identical to that in U6.
 static const uint8 movement_array[9 * 9] =
@@ -88,9 +91,9 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 
  selected_obj = NULL;
  selected_actor = NULL;
- config->value("config/enable_hackmove", hackmove);
+ config->value("config/general/enable_hackmove", hackmove);
  walking = false;
- walk_start_delay = 0;
+ config->value("config/input/enable_doubleclick",enable_doubleclick,true);
 
  window_updated = true;
 }
@@ -104,7 +107,7 @@ MapWindow::~MapWindow()
 
 bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
 {
- int game_type;
+// int game_type; Why is this local, and retrieved again here? --SB-X
 
  map = m;
  tile_manager = tm;
@@ -112,7 +115,7 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  actor_manager = am;
  anim_manager = new AnimManager();
 
- config->value("config/GameType",game_type);
+// config->value("config/GameType",game_type);
 
  switch(game_type)
    {
@@ -139,7 +142,8 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  overlay_level = MAP_OVERLAY_ONTOP;
  assert(SDL_FillRect(overlay, NULL, 0x31) == 0);
 
- set_accept_mouseclick(true, DBLCLICK_USE_BUTTON); // allow double-clicks
+ if(enable_doubleclick)
+   set_accept_mouseclick(true, USE_BUTTON); // allow double-clicks (single-clicks aren't used for anything)
 
  return true;
 }
@@ -404,15 +408,8 @@ void MapWindow::update()
 
     if(walking)
     {
-        int mx, my;
-#if 0
-        // wait for possible double-click before starting
-        uint32 time_passed = update_time - last_mousedown_time;
-        walk_start_delay -= ((sint32)(walk_start_delay - time_passed) > 0) ? time_passed : walk_start_delay;
-        if(walk_start_delay)
-            return;
-#endif
-        if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(1) | SDL_BUTTON(3)))
+        int mx, my; // bit-AND buttons with mouse state to test
+        if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(USE_BUTTON) | SDL_BUTTON(ACTION_BUTTON)))
             event->walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
                                         (uint32)my / screen->get_scale_factor());
     }
@@ -1182,18 +1179,45 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 
 GUI_status MapWindow::Idle(void)
 {
-    return(GUI_PASS);
+    return(GUI_Widget::Idle());
 }
 
 
 // single-click (press and release button)
 GUI_status MapWindow::MouseClick(int x, int y, int button)
 {
-    printf("MouseClick(%d,%d,%d): Thou dost see the console.\n",x,y,button);
-// FIXME: LOOK here
+#if 0
+    if(button == USE_BUTTON) // see MouseDelayed
+        wait_for_mouseclick(button);
+#endif
     return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
 
+// single-click; waited for double-click
+GUI_status MapWindow::MouseDelayed(int x, int y, int button)
+{
+#if 0 /* enable this once I can negotiate between Click,DoubleClick,Delayed and
+         can get a MouseDelayed even if the cursor is moved */
+    Event *event = Game::get_game()->get_event();
+    int wx, wy;
+    mouseToWorldCoords(x, y, wx, wy);
+    if(event->newAction(LOOK_MODE))
+    {
+        moveCursor(wx - cur_x, wy - cur_y);
+        event->look();
+        centerCursor();
+        event->endAction();
+    }
+#endif
+    return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
+}
+
+// MouseDown; waited for MouseUp
+GUI_status MapWindow::MouseHeld(int x, int y, int button)
+{
+    walking = true;
+    return(GUI_PASS);
+}
 
 // double-click
 GUI_status MapWindow::MouseDouble(int x, int y, int button)
@@ -1218,6 +1242,9 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	Obj	*obj = get_objAtMousePos (x, y);
 	int wx, wy;
 
+	if(button != USE_BUTTON && button != WALK_BUTTON && button != DRAG_BUTTON)
+		return GUI_PASS;
+
 	mouseToWorldCoords(x, y, wx, wy);
 	if(event->get_mode() == MOVE_MODE) // PASS if Avatar is hit
 	{
@@ -1226,9 +1253,10 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 			event->cancelAction(); // MOVE_MODE, so this should work
 			return GUI_PASS;
 		}
-		walking = true;
-		walk_start_delay = (obj || get_actorAtMousePos(x, y))
-					? GUI::mouseclick_delay : 0;
+		if(button == WALK_BUTTON)
+			walking = true;
+		else if(button == USE_BUTTON) // you can also walk by holding the USE button
+			wait_for_mousedown(button);
 	}
 	else // finish whatever action is being done, with mouse coordinates
 	{
@@ -1248,19 +1276,21 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	if (weight == 0 && !hackmove)
 		return	GUI_PASS;
 
-	selected_obj = obj;
+	if(button == DRAG_BUTTON)
+		selected_obj = obj;
 
 	return	GUI_PASS;
 }
 
 GUI_status MapWindow::MouseUp(int x, int y, int button)
 {
-	//printf ("MapWindow::MouseUp\n");
-	if (selected_obj)
+	// cancel dragging and movement no matter what button is released
+	if(selected_obj)
 	{
 		selected_obj = NULL;
 	}
 	walking = false;
+	dragging = false;
 
 	return	GUI_PASS;
 }
@@ -1268,28 +1298,38 @@ GUI_status MapWindow::MouseUp(int x, int y, int button)
 GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 {
 //	Event *event = Game::get_game()->get_event();
+	Game *game = Game::get_game();
 	Tile	*tile;
 
 	update_mouse_cursor((uint32)x, (uint32)y);
 
 	//	printf ("MapWindow::MouseMotion\n");
 
-    if(selected_obj) // We don't want to walk if we are selecting an object to move.
-      walking = false;
+//	if(selected_obj) // We don't want to walk if we are selecting an object to move.
+//		walking = false;
+	if(walking) // No, we don't want to select an object to move if we are walking.
+	{
+		selected_obj = false;
+		dragging = false;
+	}
 
 	if (selected_obj && !dragging)
 	{
 		int wx, wy;
 		// ensure that the player can reach the selected object before
 		// letting them drag it
-		mouseToWorldCoords(x, y, wx, wy);
+		//mouseToWorldCoords(x, y, wx, wy);
+                wx = selected_obj->x; wy = selected_obj->y;
 		LineTestResult result;
 		Actor* player = actor_manager->get_player();
 
-		if (map->lineTest(player->x, player->y, wx, wy, cur_level, LT_HitUnpassable, result) && !hackmove)
+		if (map->lineTest(player->x, player->y, wx, wy, cur_level, LT_HitUnpassable, result)
+                    && !(result.hitObj && result.hitObj->x == wx && result.hitObj->y == wy) && !hackmove)
 			// something was in the way, so don't allow a drag
 			return GUI_PASS;
 		dragging = true;
+		set_mousedown(0, DRAG_BUTTON); // cancel MouseHeld
+		game->set_mouse_pointer(0); // arrow
 		tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
 		return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
 	}
@@ -1502,6 +1542,9 @@ GUI_status MapWindow::MouseLeave(Uint8 state)
 {
     Game::get_game()->set_mouse_pointer(0);
     walking = false;
+    dragging = false;
+    // NOTE: Don't clear selected_obj here! It's used to remove the object after
+    // dragging.
     return(GUI_PASS);
 }
 

@@ -1,3 +1,15 @@
+2005-05-27  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Double-clicking objects to use them is working again. I'm sure it has
+	  a few problems, but it works much better than in the past.
+	* Dragging and selection can only be performed with left mousebutton.
+	* New nuvie.cfg option: input/enable_doubleclick. This removes the delay
+	  when equipping objects.
+	* There is now always a delay when walking with the left mousebutton.
+	* You can clear the default action on the command icons by right it.
+	  But default action isn't implemented yet.
+	* New GUI_widget methods: MouseDelayed(), MouseHeld(), and a few new
+	  state variables for these. Idle() now calls itself on child widgets.
+
 2005-04-25  Eric Fry <efry at users.sourceforge.net>
 	* Fixed FM-Towns audio. The interpolation routine was leaving off the
 	  last sample.

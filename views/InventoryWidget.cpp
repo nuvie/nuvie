@@ -25,6 +25,7 @@
 #include "U6LList.h"
 #include "Configuration.h"
 
+#include "GUI.h"
 #include "InventoryWidget.h"
 #include "Actor.h"
 #include "Text.h"
@@ -32,8 +33,13 @@
 #include "Event.h"
 #include "MsgScroll.h"
 #include "UseCode.h"
+#include "TimedEvent.h"
 
 #include "InventoryFont.h"
+
+#define USE_BUTTON 1 /* FIXME: put this in a common location */
+#define ACTION_BUTTON 3
+#define DRAG_BUTTON 1
 
 static SDL_Rect arrow_rects[2] = {{0,16,8,8},{0,3*16+8,8,8}};
 
@@ -45,10 +51,11 @@ InventoryWidget::InventoryWidget(Configuration *cfg, GUI_CallBack *callback): GU
  container_obj = NULL;
  selected_obj = NULL;
  target_obj = NULL;
- ready_obj = NULL;
+ ready_obj = NULL; // FIXME: this is unused but I might need it again -- SB-X
  row_offset = 0;
  
  config->value("config/GameType",game_type);
+ config->value("config/input/enable_doubleclick",enable_doubleclick,true);
 }
 
 InventoryWidget::~InventoryWidget()
@@ -66,7 +73,7 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  GUI_Widget::Init(NULL, x, y, 72, 64);
 
  set_actor(a);
- set_accept_mouseclick(true, 1); // accept [double]clicks from button1
+ set_accept_mouseclick(true, USE_BUTTON); // accept [double]clicks from button1 (even if double-click disabled we need clicks)
 
  return true;
 }
@@ -239,14 +246,15 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
  y -= area.y;
 
  // ABOEING
- if(actor)
+ if(actor && (button == USE_BUTTON || button == ACTION_BUTTON || button == DRAG_BUTTON))
    {
     Obj *obj; // FIXME: duplicating code in DollWidget
     if((obj = get_obj_at_location(x,y)) != NULL)
       {
        // send to View
-       if(callback_object->callback(INVSELECT_CB, this, obj) == GUI_PASS)
-           selected_obj = obj;
+       if(callback_object->callback(INVSELECT_CB, this, obj) == GUI_PASS
+          && button == DRAG_BUTTON)
+           selected_obj = obj; // start dragging
        return GUI_YUM;
       }
    }
@@ -300,7 +308,7 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
  Event *event = Game::get_game()->get_event();
  UseCode *usecode = Game::get_game()->get_usecode();
 
- if(button == 1)
+ if(button == USE_BUTTON)
    {
     x -= area.x;
     y -= area.y;
@@ -324,8 +332,8 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
          Redraw();
       }
 
-    // only act now if not usable
-    if(selected_obj && !usecode->has_usecode(selected_obj))
+    // only act now if objects can't be used with DoubleClick
+    if(selected_obj && !enable_doubleclick)
       {
         if(selected_obj->container) // open up the container.
           {
@@ -337,11 +345,15 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
             event->ready(selected_obj);
             Redraw();
           }
+        ready_obj = NULL;
       }
-
+    else if(selected_obj)
+      {
+        wait_for_mouseclick(USE_BUTTON);
+        ready_obj = selected_obj;
+      }
    }
 
- ready_obj = NULL;
  selected_obj = NULL;
 
  return GUI_YUM;
@@ -495,6 +507,9 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
  */
 GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 {
+    // we have to check if double-clicks are allowed here, since we use single-clicks
+    if(!enable_doubleclick)
+        return(GUI_PASS);
     Event *event = Game::get_game()->get_event();
     Obj *obj = selected_obj;
 
@@ -514,4 +529,24 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 GUI_status InventoryWidget::MouseClick(int x, int y, int button)
 {
     return(MouseUp(x, y, button));
+}
+
+// change container, ready/unready object, activate arrows
+GUI_status InventoryWidget::MouseDelayed(int x, int y, int button)
+{
+    Event *event = Game::get_game()->get_event();
+    if(ready_obj)
+    {
+        if(ready_obj->container) // open up the container.
+        {
+            container_obj = ready_obj;
+            Redraw();
+        }
+        else // attempt to ready selected object.
+        {
+            event->ready(ready_obj);
+            Redraw();
+        }
+        ready_obj = NULL;
+    }
 }

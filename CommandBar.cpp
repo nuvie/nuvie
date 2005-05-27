@@ -32,6 +32,9 @@
 #include "GameClock.h"
 #include "CommandBar.h"
 
+#define USE_BUTTON 1
+#define ACTION_BUTTON 3
+
 using std::string;
 
 CommandBar::CommandBar(Game *g) : GUI_Widget(NULL, 8, 168, 0, 0)
@@ -70,12 +73,14 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
     y -= area.y;
     if(y >= 8 && y <= 24)
     {
-        uint8 activate = x / 16;
-        if(button == 1)
+        uint8 activate = x / 16; // icon selected
+        if(button == USE_BUTTON)
             return(hit(activate));
-        else if(button == 3)
+        else if(button == ACTION_BUTTON)
         {
-	    if(try_default_action(activate))
+            if(default_action == activate) // clear if already selected
+                set_default_action(-1);
+	    else if(try_default_action(activate)) // set in Event and here
                 set_default_action(activate);
         }
     }

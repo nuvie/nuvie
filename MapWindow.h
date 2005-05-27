@@ -55,6 +55,7 @@ class MapWindow: public GUI_Widget
  friend class AnimManager;
  Configuration *config;
  int game_type;
+ bool enable_doubleclick;
 
  Map *map;
 
@@ -92,7 +93,6 @@ class MapWindow: public GUI_Widget
  Actor *selected_actor;
  bool hackmove;
  bool walking;
- uint32 walk_start_delay;
 
  bool window_updated;
 
@@ -159,6 +159,8 @@ class MapWindow: public GUI_Widget
  GUI_status MouseClick(int x, int y, int button);
  GUI_status Idle(void);
  GUI_status MouseLeave(Uint8 state);
+ GUI_status MouseDelayed(int x, int y, int button);
+ GUI_status MouseHeld(int x, int y, int button);
 
  void drag_drop_success (int x, int y, int message, void *data);
  void drag_drop_failed (int x, int y, int message, void *data);

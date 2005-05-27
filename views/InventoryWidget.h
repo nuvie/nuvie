@@ -38,6 +38,7 @@ class InventoryWidget : public GUI_Widget {
  Configuration *config;
 
  int game_type;
+ bool enable_doubleclick;
 
  TileManager *tile_manager;
  ObjManager *obj_manager;
@@ -64,6 +65,7 @@ class InventoryWidget : public GUI_Widget {
  virtual GUI_status MouseMotion(int x,int y,Uint8 state);
  GUI_status MouseDouble(int x, int y, int button);
  GUI_status MouseClick(int x,int y,int button);
+ GUI_status MouseDelayed(int x, int y, int button);
 
  void drag_drop_success(int x, int y, int message, void *data);
  void drag_drop_failed(int x, int y, int message, void *data);

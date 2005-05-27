@@ -42,48 +42,47 @@ typedef GUI_status (*GUI_CallbackProc)(void *data);
 class GUI_Widget : public GUI_DragArea {
 
 protected:
-
 	/* A generic pointer to user-specified data for the widget.
 	 */
 	void *widget_data;
 
-  Screen *screen;
+	Screen *screen;
 	/* The display surface for the widget */
 	SDL_Surface *surface;
 
-    int offset_x, offset_y; /* original offsets to parent */
+	int offset_x, offset_y; /* original offsets to parent */
 
 	/* Flag -- whether or not the widget should be freed */
 	int status;
 
-  /* should we redraw this widget */
-  bool update_display;
+	/* should we redraw this widget */
+	bool update_display;
 
 	/* the button states for theoretically 3 buttons */
 	int pressed[3];
 
-  bool focused;
+	bool focused;
 
-  std::list<GUI_Widget *>children;
-  GUI_Widget *parent;
+	std::list<GUI_Widget *>children;
+	GUI_Widget *parent;
 
  	char *error;
 	char  errbuf[BUFSIZ];
 
-  GUI_DragManager *gui_drag_manager;
+	GUI_DragManager *gui_drag_manager;
 
 	// SB-X
 	/* The time of the last mouse click (SDL_GetTicks()). */
-	unsigned int mouseup_time[3]; /* for 3 buttons */
+	unsigned int mouseup[3]; /* for 3 buttons */
+	unsigned int mousedown[3]; /* waiting for MouseUp */
 	bool accept_mouseclick[3]; /* which buttons can be [double]clicked */
-	bool mousedown[3]; /* waiting for MouseUp */
+	unsigned int delayed_button; /* a MouseClick can be delayed on one button; 0=none */
+	unsigned int held_button; /* a MouseDown can be delayed on one button; 0=none */
+	bool mouse_moved; /* true if mouse moves while button is pressed */
 
 	bool mouse_over; // initialized here; toggled by GUI
 
-
-
 public:
-
 	/* The area covered by the widget */
 	SDL_Rect area;
 
@@ -91,7 +90,7 @@ public:
 	GUI_Widget(void *data, int x, int y, int w, int h);
 	virtual ~GUI_Widget();
 
-  int AddWidget(GUI_Widget *widget);
+	int AddWidget(GUI_Widget *widget);
 
 	/* Mark the widget as visible -- this is the default state */
 	virtual void Show(void);
@@ -102,12 +101,12 @@ public:
 	/* Mark the widget as free, so it will be deleted by the GUI */
 	virtual void Delete(void);
 
-    virtual void MoveRelative(int dx,int dy);
-    virtual void Move(int new_x, int new_y);
-    void grab_focus();
-    virtual void release_focus();
+	virtual void MoveRelative(int dx,int dy);
+	virtual void Move(int new_x, int new_y);
+	void grab_focus();
+	virtual void release_focus();
 
-  virtual void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
+	virtual void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
 
 	virtual int  Status(void);	/* Reports status to GUI */
 
@@ -140,15 +139,15 @@ public:
 	   before this call, and unlocked after it returns.
 	 */
 	virtual void Display(bool full_redraw=false);
-  void DisplayChildren(bool full_redraw=false);
+	void DisplayChildren(bool full_redraw=false);
 
 	/* Redraw the widget and only the widget */
 	virtual void Redraw(void);
 
-  /* should this widget be redrawn */
-  inline bool needs_redraw() { return update_display; }
-  /* widget has focus or no widget is focused */
-  bool widget_has_focus(); // SB-X
+	/* should this widget be redrawn */
+	inline bool needs_redraw() { return update_display; }
+	/* widget has focus or no widget is focused */
+	bool widget_has_focus(); // SB-X
 
 	/* GUI idle function -- run when no events pending */
 	virtual GUI_status Idle(void);
@@ -168,11 +167,12 @@ public:
 	virtual GUI_status MouseLeave(Uint8 state);
 	virtual GUI_status MouseClick(int x, int y, int button);
 	virtual GUI_status MouseDouble(int x, int y, int button);
-//	GUI_status MouseIdle();
+	virtual GUI_status MouseDelayed(int x, int y, int button);
+	virtual GUI_status MouseHeld(int x, int y, int button);
 	// </SB-X>
 
-  bool drag_accept_drop(int x, int y, int message, void *data);
-  void drag_perform_drop(int x, int y, int message, void *data);
+	bool drag_accept_drop(int x, int y, int message, void *data);
+	void drag_perform_drop(int x, int y, int message, void *data);
 
 	/* Main event handler function.
 	   This function gets raw SDL events from the GUI.
@@ -196,7 +196,7 @@ protected:
 	/* The constructor, separated out for both access constructors */
 	void Init(void *data, int x, int y, int w, int h);
 
-  void setParent(GUI_Widget *widget);
+	void setParent(GUI_Widget *widget);
 
 	/* Useful for getting error feedback */
 	void SetError(char *fmt, ...) {
@@ -209,11 +209,14 @@ protected:
 	}
 
 	// SB-X
-	void set_accept_mouseclick(bool set, int button = -1);
-	void set_mouseclick_time(int set, int button = -1);
-	GUI_status RegisterMouseDown(int x, int y, int button);
-	GUI_status RegisterMouseUp(int x, int y, int button);
-
+	void set_accept_mouseclick(bool set, int button = 0);
+	void set_mouseup(int set, int button = 0);
+	void set_mousedown(int set, int button = 0);
+	int get_mouseup(int button)  { if(button > 0 && button < 4) return(mouseup[button-1]); else return(0); }
+	int get_mousedown(int button){ if(button > 0 && button < 4) return(mousedown[button-1]); else return(0); }
+	void wait_for_mouseclick(int button){ if(button >= 0 && button < 4) delayed_button = button; }
+	void wait_for_mousedown(int button) { if(button >= 0 && button < 4) held_button = button; }
+	virtual GUI_status try_mouse_delayed();
 };
 
 #endif /* _GUI_widget_h */

@@ -377,7 +377,7 @@ bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
  if(is_locked_door(obj)) // locked door
    {
     key_obj = player->get_actor()->inventory_get_object(OBJ_U6_KEY, obj->quality);
-    if(key_obj != NULL) // we have the key for this door so lets unlock it.
+    if(obj->quality != 0 && key_obj != NULL) // we have the key for this door so lets unlock it.
       {
        unlock_door(obj);
        if(print) scroll->display_string("\nunlocked\n");
@@ -1367,7 +1367,7 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
         {
             scroll->display_string(obj_manager->get_obj_name(obj_ref));
             scroll->display_string("\n");
-            if(obj_ref->quality == obj->quality && is_closed_door(obj_ref))
+            if(obj_ref->quality != 0 && obj_ref->quality == obj->quality && is_closed_door(obj_ref))
             {
                 if(is_locked_door(obj_ref))
                 {
