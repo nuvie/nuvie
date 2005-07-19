@@ -126,7 +126,7 @@ NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_n
  sint16 *converted_audio;
  uint32 decomp_size;
  uint32 upsampled_size;
- sint16 sample, prev_sample;
+ sint16 sample=0, prev_sample;
  U6Lib_n sam_file;
  U6Lzw lzw;
  NuvieIOBuffer *wav_buffer = 0;
@@ -142,7 +142,7 @@ NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_n
  if(raw_audio != NULL)
   {
    wav_buffer = new NuvieIOBuffer();
-   upsampled_size = decomp_size + floor((decomp_size - 1) / 4) * (2 + 2 + 2 + 1);
+   upsampled_size = decomp_size + (int)floor((decomp_size - 1) / 4) * (2 + 2 + 2 + 1);
 
    switch((decomp_size - 1) % 4)
     {

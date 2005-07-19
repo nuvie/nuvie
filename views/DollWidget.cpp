@@ -26,7 +26,6 @@
 #include "nuvieDefs.h"
 
 #include "MsgScroll.h"
-#include "UseCode.h"
 #include "Event.h"
 
 #include "Actor.h"
@@ -188,7 +187,6 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
 GUI_status DollWidget::MouseUp(int x,int y,int button)
 {
  Event *event = Game::get_game()->get_event();
- UseCode *usecode = Game::get_game()->get_usecode();
 
  // only act now if double-click is disabled
  if(selected_obj && !enable_doubleclick)
@@ -345,4 +343,5 @@ GUI_status DollWidget::MouseDelayed(int x, int y, int button)
         Redraw();
         unready_obj = NULL;
     }
+    return GUI_PASS;
 }

@@ -581,7 +581,7 @@ void SoundManager::update()
       m_pCurrentSong = SoundManager::RequestSong (m_CurrentGroup);
       if(m_pCurrentSong)
         {
-          printf ("assigning new song! %x\n", m_pCurrentSong);
+          printf ("assigning new song! %x\n", (unsigned int)m_pCurrentSong);
           if(!m_pCurrentSong->Play (false))
             {
               printf ("play failed!\n");

@@ -1,5 +1,8 @@
 2005-07-19  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* views/InventoryWidget.cpp: fix undefined return value causing crashes
+	* views/DollWidget.cpp: fix undefined return value causing crashes
+	* various: fixed warnings
+	* configure.ac: enable -Wall by default
 
 2005-06-19  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added white potion visual-effect.

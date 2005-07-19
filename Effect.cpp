@@ -1037,10 +1037,10 @@ uint16 VanishEffect::callback(uint16 msg, CallBack *caller, void *data)
 }
 
 U6WhitePotionEffect::U6WhitePotionEffect(uint32 eff_ms, uint32 delay_ms, Obj *callback_obj)
-                                       : state(0), start_length(1000),
+                                       : map_window(game->get_map_window()),
+                                         state(0), start_length(1000),
                                          eff1_length(eff_ms), eff2_length(800),
                                          xray_length(delay_ms), capture(0),
-                                         map_window(game->get_map_window()),
                                          potion(callback_obj)
 {
     game->pause_user();
@@ -1102,6 +1102,6 @@ uint16 U6WhitePotionEffect::callback(uint16 msg, CallBack *caller, void *data)
 void U6WhitePotionEffect::xor_capture(uint8 mod)
 {
     uint8 *pixels = (uint8 *)(capture->pixels);
-    for(uint32 p = 0; p < (capture->w*capture->h); p++)
+    for(int p = 0; p < (capture->w*capture->h); p++)
         pixels[p] ^= mod;
 }

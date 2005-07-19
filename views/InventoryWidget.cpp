@@ -32,7 +32,6 @@
 #include "GameClock.h"
 #include "Event.h"
 #include "MsgScroll.h"
-#include "UseCode.h"
 #include "TimedEvent.h"
 
 #include "InventoryFont.h"
@@ -306,7 +305,6 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 {
  Event *event = Game::get_game()->get_event();
- UseCode *usecode = Game::get_game()->get_usecode();
 
  if(button == USE_BUTTON)
    {

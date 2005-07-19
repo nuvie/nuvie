@@ -43,12 +43,13 @@ fi
 # debugging
 DEBUG_FLAGS="-O2"
 AC_MSG_CHECKING(for debug options)
-AC_ARG_ENABLE(debug,
-  [  --enable-debug          enable debugging (disables optimizations)],
-  [ DEBUG_FLAGS="-O -g -Wall"
-    AC_MSG_RESULT(yes)
-  ], AC_MSG_RESULT(no)
-)
+AC_ARG_ENABLE(debug, [  --disable-debug         disable debugging/warnings],,enable_debug=yes)
+if test x$enable_debug = xyes; then
+	DEBUG_FLAGS="-O -g -Wall"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
 
 # Build the tools?
 AC_ARG_ENABLE(tools,    [  --disable-tools         Don't build the tools],,enable_tools=yes)
