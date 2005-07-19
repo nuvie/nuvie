@@ -549,4 +549,5 @@ GUI_status InventoryWidget::MouseDelayed(int x, int y, int button)
         }
         ready_obj = NULL;
     }
+    return GUI_PASS;
 }
