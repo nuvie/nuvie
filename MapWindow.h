@@ -56,6 +56,7 @@ class MapWindow: public GUI_Widget
  Configuration *config;
  int game_type;
  bool enable_doubleclick;
+ bool x_ray_view;
 
  Map *map;
 
@@ -72,6 +73,7 @@ class MapWindow: public GUI_Widget
  sint16 cur_x, cur_y;
  uint16 cursor_x, cursor_y;
  sint16 mousecenter_x, mousecenter_y; // location mousecursor rotates around, relative to cur_x&cur_y
+ uint16 last_boundary_fill_x, last_boundary_fill_y; // start of boundary-fill in previous blacking update
  Tile *cursor_tile;
  Tile *use_tile;
 
@@ -95,6 +97,7 @@ class MapWindow: public GUI_Widget
  bool walking;
 
  bool window_updated;
+ bool freeze_blacking_location;
 
  public:
 
@@ -109,6 +112,8 @@ class MapWindow: public GUI_Widget
  void set_velocity(sint16 vx, sint16 vy) { vel_x = vx; vel_y = vy; }
  void set_overlay(SDL_Surface *surfpt);
  void set_overlay_level(int level = MAP_OVERLAY_DEFAULT) { overlay_level = level; }
+ void set_x_ray_view(bool state);
+ void set_freeze_blacking_location(bool state);
 
  void moveLevel(uint8 new_level);
  void moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add = 0, uint8 new_y_add = 0);

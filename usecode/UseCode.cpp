@@ -171,7 +171,7 @@ void UseCode::dbg_print_event(UseCodeEvent event, Obj *obj)
             do_string = "Load";
             break;
         case USE_EVENT_MESSAGE:
-            do_string = "Internal message sent to";
+            do_string = "Message";
             break;
         case USE_EVENT_READY:
             do_string = "(Un)Equip";

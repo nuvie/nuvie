@@ -74,11 +74,14 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  cur_y = 0; mousecenter_y = 0;
  cur_x_add = cur_y_add = 0;
  vel_x = vel_y = 0;
+ last_boundary_fill_x = last_boundary_fill_y = 0;
 
  cursor_x = 0;
  cursor_y = 0;
  show_cursor = false;
  show_use_cursor = false;
+ x_ray_view = false;
+ freeze_blacking_location = false;
 
  new_thumbnail = false;
  thumbnail = NULL;
@@ -207,6 +210,16 @@ void MapWindow::set_show_cursor(bool state)
 void MapWindow::set_show_use_cursor(bool state)
 {
  show_use_cursor = state;
+}
+
+void MapWindow::set_x_ray_view(bool state)
+{
+    x_ray_view = state;
+}
+
+void MapWindow::set_freeze_blacking_location(bool state)
+{
+    freeze_blacking_location = state;
 }
 
 void MapWindow::moveLevel(uint8 new_level)
@@ -802,9 +815,16 @@ void MapWindow::generateTmpMap()
 
  memset(tmp_map_buf, 0, tmp_map_width * tmp_map_height * sizeof(uint16));
 
- x = cur_x + ((win_width - 1) / 2);
- y = cur_y + ((win_height - 1) / 2);
- 
+ if(freeze_blacking_location == false)
+  {
+   x = cur_x + ((win_width - 1) / 2);
+   y = cur_y + ((win_height - 1) / 2);
+  }
+ else // SB-X
+  {
+   x = last_boundary_fill_x;
+   y = last_boundary_fill_y;
+  }
  //This is for U6. Sherry needs to pass through walls
  //We shift the boundary fill start location off the wall tile so it flood
  //fills correctly. We move east for vertical wall tiles and south for
@@ -817,7 +837,7 @@ void MapWindow::generateTmpMap()
    else
      y++;
   }
-  
+ last_boundary_fill_x = x; last_boundary_fill_y = y;
  boundaryFill(map_ptr, pitch, x, y);
 
  reshapeBoundary();
@@ -846,7 +866,7 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
 
  *ptr = (uint16)current;
 
- if(map->is_boundary(x,y,cur_level)) //hit the boundary wall tiles
+ if(!x_ray_view && map->is_boundary(x,y,cur_level)) //hit the boundary wall tiles
   {
    if(boundaryLookThroughWindow(*ptr, x, y) == false)
       return;

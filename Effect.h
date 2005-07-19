@@ -31,6 +31,7 @@ class ObjManager;
  * *Palette - do something with the color palette
  * Vanish - fade from an image of the mapwindow to the real mapwindow
  * *FadeObject - might not need this since Vanish can be used
+ * U6WhitePotion - will probably make PaletteEffect to do this
  */
 
 
@@ -291,7 +292,7 @@ class FadeEffect : public TimedEffect
 protected:
     static FadeEffect *current_fade; // do nothing if already active
 
-    MapWindow *map_window; // for CIRCLE, the MapWindow handles the fade
+    MapWindow *map_window;
     Screen *screen; // for PIXELATED, the overlay is blitted to the screen...
     SDL_Rect *viewport; // ...at the MapWindow coordinates set here
     SDL_Surface *overlay; // this is what gets blitted
@@ -370,4 +371,26 @@ public:
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
+/* Briefly modify the mapwindow colors, disable map-blacking and player
+ * movement for a few seconds, then enable both.
+ */
+class U6WhitePotionEffect : public TimedEffect
+{
+    MapWindow *map_window;
+    uint8 state; // 0=start, 1=eff1, 2=eff2, 3=x-ray, 4=complete
+    uint32 start_length, eff1_length, eff2_length, xray_length;
+    SDL_Surface *capture; // this is what gets blitted
+    Obj *potion; // allows effect to call usecode and delete object
+
+    void xor_capture(uint8 mod);
+    void init_effect();
+
+public:
+    /* eff_ms=length of visual effect; delay_ms=length of x-ray effect */
+    U6WhitePotionEffect(uint32 eff_ms, uint32 delay_ms, Obj *callback_obj=NULL);
+    ~U6WhitePotionEffect() { }
+
+    /* Called by the timer between each effect stage. */
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
 #endif /* __Effect_h__ */

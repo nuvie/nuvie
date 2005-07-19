@@ -1318,10 +1318,11 @@ bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
 {
     ActorManager *am = actor_manager;
+
     if(ev == USE_EVENT_USE)
     {
         if(!items.actor2_ref && !items.obj_ref)
-            game->get_event()->freeselect_mode(obj, "On whom? ");
+            game->get_event()->freeselect_mode(obj, "On whom: ");
         else if(!items.actor2_ref) // no selection
         {
             scroll->display_string("nobody\n");
@@ -1333,16 +1334,31 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
             scroll->display_string(party_num >= 0 ? party->get_actor_name(party_num)
                                    : am->look_actor(items.actor2_ref));
             scroll->display_string("\n");
-            if(obj->frame_n <= 7)
+            if(obj->frame_n == 7)
             {
-                scroll->display_string("Drink ");
-                scroll->display_string(u6_potions[obj->frame_n]);
-                scroll->display_string(" potion!\n");
+                new U6WhitePotionEffect(2500, 6000, obj);
+                // wait for message to delete potion
             }
             else
-                scroll->display_string("No effect\n");
-            destroy_obj(obj);
+            {
+                if(obj->frame_n <= 7)
+                {
+                    scroll->display_string("Drink ");
+                    scroll->display_string(u6_potions[obj->frame_n]);
+                    scroll->display_string(" potion!\n");
+                }
+                else
+                    scroll->display_string("No effect\n");
+                destroy_obj(obj);
+            }
             return(true);
+        }
+    }
+    else if(ev == USE_EVENT_MESSAGE) // assume message is from potion effect
+    {
+        if(*items.msg_ref == MESG_EFFECT_COMPLETE && obj->frame_n == 7) // white
+        {
+            destroy_obj(obj);
         }
     }
     return(false);

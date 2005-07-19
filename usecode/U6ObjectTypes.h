@@ -73,7 +73,7 @@ const U6ObjectType U6ObjectTypes[] =
 
     { OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive,OBJTYPE_NONE },
 
-    { OBJ_U6_POTION,    255,0,USE_EVENT_USE,&U6UseCode::use_potion,OBJTYPE_NONE },
+    { OBJ_U6_POTION,    255,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_potion,OBJTYPE_NONE },
     { OBJ_U6_BUTTER,      0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
     { OBJ_U6_WINE,        0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
     { OBJ_U6_MEAD,        0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },

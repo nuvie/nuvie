@@ -192,6 +192,7 @@ QuakeEffect::QuakeEffect(uint8 magnitude, uint32 duration, Actor *keep_on)
     map_window->get_pos(&orig.x, &orig.y);
     map_window->get_level(&orig.z);
     orig_actor = keep_on;
+    map_window->set_freeze_blacking_location(true);
 
     start_timer(strength * 5);
 }
@@ -237,6 +238,7 @@ uint16 QuakeEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 void QuakeEffect::stop_quake()
 {
     current_quake = NULL;
+    map_window->set_freeze_blacking_location(false);
     recenter_map();
     delete_self();
 }
@@ -1034,3 +1036,72 @@ uint16 VanishEffect::callback(uint16 msg, CallBack *caller, void *data)
     return(0);
 }
 
+U6WhitePotionEffect::U6WhitePotionEffect(uint32 eff_ms, uint32 delay_ms, Obj *callback_obj)
+                                       : state(0), start_length(1000),
+                                         eff1_length(eff_ms), eff2_length(800),
+                                         xray_length(delay_ms), capture(0),
+                                         map_window(game->get_map_window()),
+                                         potion(callback_obj)
+{
+    game->pause_user();
+    game->pause_anims();
+
+    init_effect();
+}
+
+void U6WhitePotionEffect::init_effect()
+{
+    // FIXME: play sound, and change state to 1 when sound is complete
+    capture = map_window->get_sdl_surface();
+    map_window->set_overlay_level(MAP_OVERLAY_DEFAULT);
+    map_window->set_overlay(capture);
+    start_timer(start_length);
+}
+
+/* The state is changed from current to next when this is called. */
+uint16 U6WhitePotionEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(msg == MESG_TIMED)
+    {
+        stop_timer();
+
+        if(state == 0) // start/sound effect
+        { // FIXME: make start_length a timeout, force sound to stop
+            xor_capture(0xd); // changes black to pink
+            start_timer(eff1_length);
+            state = 1;
+        }
+        else if(state == 1) // xor-effect
+        {
+            map_window->set_overlay(NULL);
+            start_timer(eff2_length);
+            state = 2;
+        }
+        else if(state == 2) // character outline
+        {
+            game->unpause_anims();
+            map_window->set_x_ray_view(true);
+            map_window->updateBlacking();
+            start_timer(xray_length);
+            state = 3;
+        }
+        else if(state == 3) // x-ray
+        {
+            map_window->set_x_ray_view(false);
+            map_window->updateBlacking();
+            game->unpause_user();
+            if(potion)
+                game->get_usecode()->message_obj(potion, MESG_EFFECT_COMPLETE, this);
+            state = 4;
+        }
+    }
+    return 0;
+}
+
+/* Do binary-xor on each pixel of the mapwindow image.*/
+void U6WhitePotionEffect::xor_capture(uint8 mod)
+{
+    uint8 *pixels = (uint8 *)(capture->pixels);
+    for(uint32 p = 0; p < (capture->w*capture->h); p++)
+        pixels[p] ^= mod;
+}

@@ -1,3 +1,10 @@
+2005-06-19  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Added white potion visual-effect.
+	* Fixed bug in Quake effect that would cause the map-blacking to change
+	  if you stood near a wall during a Cyclops quake.
+	* New settings "freeze_blacking_location", to lock where boundary-fills
+	  begin, and "xray_view", to disable map-blacking all together.
+
 2005-05-27  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Double-clicking objects to use them is working again. I'm sure it has
 	  a few problems, but it works much better than in the past.
