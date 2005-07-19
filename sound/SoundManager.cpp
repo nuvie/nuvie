@@ -148,7 +148,7 @@ bool SoundManager::initAudio()
 {
   int ret;
   int audio_rate = 44100;
-#ifdef BIG_ENDIAN
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
   Uint16 audio_format = AUDIO_S16MSB;        //AUDIO_S16; /* 16-bit stereo */
 #else
   Uint16 audio_format = AUDIO_S16LSB;        //AUDIO_S16; /* 16-bit stereo */
