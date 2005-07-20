@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
  unsigned char *item;
  unsigned char *raw_audio;
  uint16 *converted_audio;
-#ifdef BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
  uint16 temp_sample;
 #endif
  char wave_file[16]; // "char000_000.wav"
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
          converted_audio[j] = ((sint16)(abs(128 - raw_audio[j]) * 256) ^ 0xffff) + 1;
        else
          converted_audio[j] = (uint16)raw_audio[j] * 256;
-#ifdef BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
        temp_sample = converted_audio[j] >> 8;
        temp_sample |= (converted_audio[j] & 0xff) << 8;
        converted_audio[j] = temp_sample;

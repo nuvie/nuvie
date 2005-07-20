@@ -196,7 +196,7 @@ NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_n
 inline sint16 ConverseSpeech::convert_sample(uint16 raw_sample)
 {
  sint16 sample;
-#ifdef BIG_ENDIAN
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
  sint16 temp_sample;
 #endif
  
@@ -205,7 +205,7 @@ inline sint16 ConverseSpeech::convert_sample(uint16 raw_sample)
  else
    sample = raw_sample * 256;
 
-#ifdef BIG_ENDIAN
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
    temp_sample = sample >> 8;
    temp_sample |= (sample & 0xff) << 8;
    sample = temp_sample;
