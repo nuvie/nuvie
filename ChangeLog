@@ -1,3 +1,6 @@
+2005-07-20  Joseph Applegate <sb-x at users.sourceforge.net>
+	* ConverseSpeech.cpp,tools/FMTownsU6/unpack.cpp: fixed endianness check
+
 2005-07-19  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net>
 	* views/InventoryWidget.cpp: fix undefined return value causing crashes
 	* views/DollWidget.cpp: fix undefined return value causing crashes
@@ -5,7 +8,7 @@
 	* configure.ac: enable -Wall by default
 	* sound/SoundManager.cpp: fixed endianness check
 
-2005-06-19  Joseph Applegate <sb-x at users.sourceforge.net>
+2005-07-19  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added white potion visual-effect.
 	* Fixed bug in Quake effect that would cause the map-blacking to change
 	  if you stood near a wall during a Cyclops quake.
