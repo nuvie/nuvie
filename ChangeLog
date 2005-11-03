@@ -1,3 +1,71 @@
+2005-11-02   Eric Fry <efry at users.sourceforge.net>
+	* Added Actor ready position. ACTOR_NO_READIABLE_LOCATION -1 this is used for attack with 
+	  hands.
+	* Changed some calls to sint8 for readiable location, see above.
+	* Added Actor::get_hand_combat_type()
+	* Don't display hit messages when using force hit. Eg Poison hits.
+	* Force hit when taking damage from poison.
+	* Added const CombatType u6combat_hand. I'm not too sure what the exact values need to be 
+	  here.
+	* Fixed bug with palette cycling. I was incorrectly cycling the wrong set of values at 0xfb
+	  which should have been 0xf8. :) This fixes the poison field animation.
+	* Fixed Event so it cycles through all the weapons that the player has readied when
+	  attacking.
+	* Added ObjManager::get_obj_name(uint16 obj_n) used to display the weapon name when the
+	  player is attacking.
+	* Changed the variable current_weapon from CombatType to sint8 in Player class. This stores
+	  the current weapon using the readied location defined in Actor.
+	* More work done on the Player class to help with combat.
+	* Added Player::attack_select_init()
+	* Added Player::attack_select_next_weapon()
+	* Added Player::attack_select_weapon_at_location(sint8 location)
+	* Added Player::attack(Actor *a)
+
+2005-10-03  Eric Fry <efry at users.sourceforge.net>
+	* Added virtual destructor stub to GUI_CallBack class.
+	* Added virtual destructor stub to Adplug Copl class.
+	* Added use:campfire.
+	* Connected Attack icon to the event attack functionality.
+	* More work on Event attack functionality. The player can now select a target
+	  within the valid range for the given weapon. At the moment the weapon is 
+	  hardcoded to be in the players first arm slot.
+	* The player can now attack other actors with whatever weapon is readied in their
+	* first arm slot.
+	* Added Player::weapon_can_hit()
+	* Added Actor::attack(uint8 readied_obj_location, Actor *actor)
+	* Added Actor::get_weapon(uint8 readied_obj_location)
+	* Added Actor::inventory_get_readied_object_combat_type(uint8 location)
+	* Calculate the actors armor class based on their readied armor.
+	  weapons with damage=255 kill everytime.
+	* Changed Actor::defend() to return bool wether the actor actually took damage.
+	* Added ReadiedObj struct for use in Actor class.
+	* Added Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)
+	* Don't update or preform worktype for dead actors.
+	* Killing a horse will create a horse carcass.
+	* Added the U6 weapon hitrange and combat data.
+	* Added worktype WORKTYPE_U6_ATTACK_PARTY 0x9b
+	* Updated OS X SDLMain.m file with latest changes from SDL 1.2.9
+
+not-sure-when  Eric Fry <efry at users.sourceforge.net>
+	* Added Attack event type.
+	* Reworked pathfinders to take out calls to actor movement methods. This will stop
+	  crashes that occured when an actor died when moving inside a pathfinder.
+	  ZPath still needs work to get it back to normal party formation. 
+	* Added Actor::heal()
+	* Added Text::drawString method which takes a color argument.
+	* Added U6WorkTypes.h into the XCode build environment.
+	* Added Actor::check_moveRelative(sint16 rel_x, sint16 rel_y, bool ignore_actors)
+	* Added start of actor combat datatypes. These will probably change a lot while
+	  we get combat sorted out.
+	* Added Actor::is_poisoned()
+	* Added U6Actor::updatePoison()
+	* Added support for poison. Actors will now take damge if they step on a poison 
+	* cloud or drink a poison potion. I've still got to fix stepping on swamp map 
+	  tiles.
+	* Added support for red, yellow and green potion use code.
+	* Added text colors for HP display when in party view mode. Poisoned actors show 
+	  green. Critically wounded actors eg < 10 HP show red.
+
 2005-07-20  Joseph Applegate <sb-x at users.sourceforge.net>
 	* ConverseSpeech.cpp,tools/FMTownsU6/unpack.cpp: fixed endianness check
 

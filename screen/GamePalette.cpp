@@ -110,7 +110,7 @@ void GamePalette::rotatePalette()
   {
    screen->rotate_palette(0xf0,4); //
    screen->rotate_palette(0xf4,4); // Kitchen Cauldrons
-   screen->rotate_palette(0xfb,4); //
+   screen->rotate_palette(0xf8,4); // Poison Field
    counter = 1;
   }
  else

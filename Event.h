@@ -57,6 +57,7 @@ typedef enum {
  MOVE_MODE,
  DROP_MODE,
  TALK_MODE, /* finding an actor to talk to */
+ ATTACK_MODE,
  PUSHSELECT_MODE,
  EQUIP_MODE,
  USESELECT_MODE,
@@ -143,6 +144,7 @@ class Event : public GUI_CallBack
  bool talk();
  bool talk(Actor *actor);
  bool talk(Obj *obj);
+ bool attack();
  bool perform_talk(Actor *actor);
  bool pushFrom(sint16 rel_x, sint16 rel_y);
  bool pushTo(sint16 rel_x, sint16 rel_y, bool push_from=PUSH_FROM_PLAYER);

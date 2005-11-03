@@ -334,6 +334,11 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_acto
     return(true);
 }
 
+bool Actor::check_moveRelative(sint16 rel_x, sint16 rel_y, bool ignore_actors)
+{
+ return check_move(x + rel_x, y + rel_y, z, ignore_actors);
+}
+
 
 bool Actor::can_be_moved()
 {
@@ -421,6 +426,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
 
 void Actor::update()
 {
+    MapCoord next_step;
     if(moves == 0)
         moves = 1;
 /*
@@ -461,7 +467,14 @@ void Actor::update()
     if(pathfinder->reached_goal()) // check schedule after walk, before stopping
        stop_walking();
     else
-        pathfinder->walk_path();
+     {
+      if(pathfinder->walk_path(next_step))
+       {
+        face_location(next_step.x, next_step.y);
+        moves=1;
+        move(next_step.x, next_step.y, next_step.z);//, ACTOR_FORCE_MOVE);
+       }
+     }
  }
 }
 
@@ -542,6 +555,38 @@ void Actor::set_in_party(bool state)
 void Actor::attack(MapCoord pos)
 {
  return;
+}
+
+void Actor::attack(sint8 readied_obj_location, Actor *actor)
+{
+ Obj *weapon_obj;
+ const CombatType *combat_type;
+
+ combat_type = get_weapon(readied_obj_location);
+ 
+ if(combat_type == NULL)
+   return;
+ 
+ if(actor->defend(dex, combat_type->attack) == false)
+  {
+   if(combat_type->breaks_on_contact)
+     {
+      weapon_obj = readied_objects[readied_obj_location]->obj;
+      remove_readied_object(readied_obj_location);
+      inventory_remove_obj(weapon_obj);
+     }
+  } 
+}
+
+const CombatType *Actor::get_weapon(sint8 readied_obj_location)
+{
+ if(readied_obj_location == ACTOR_NO_READIABLE_LOCATION)
+   return get_hand_combat_type();
+
+ if(readied_objects[readied_obj_location])
+   return readied_objects[readied_obj_location]->combat_type;
+
+ return NULL;
 }
 
 U6LList *Actor::get_inventory_list()
@@ -634,7 +679,15 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container, bool 
 Obj *Actor::inventory_get_readied_object(uint8 location)
 {
  if(readied_objects[location] != NULL)
-   return readied_objects[location];
+   return readied_objects[location]->obj;
+
+ return NULL;
+}
+
+const CombatType *Actor::inventory_get_readied_object_combat_type(uint8 location)
+{
+ if(readied_objects[location] != NULL)
+   return readied_objects[location]->combat_type;
 
  return NULL;
 }
@@ -870,34 +923,25 @@ bool Actor::add_readied_object(Obj *obj)
    {
     case ACTOR_NOT_READIABLE : return false;
 
-    case ACTOR_ARM : if(readied_objects[ACTOR_ARM] == NULL)
-                       readied_objects[ACTOR_ARM] = obj;
-                     else
-                      {
-                       if(readied_objects[ACTOR_ARM_2] == NULL)
-                         readied_objects[ACTOR_ARM_2] = obj;
-                       else
-                         return false;
-                      }
+    case ACTOR_ARM : if(readied_objects[ACTOR_ARM] != NULL) //if full try other arm
+                         location = ACTOR_ARM_2;
                      break;
 
-    case ACTOR_HAND : if(readied_objects[ACTOR_HAND] == NULL)
-                        readied_objects[ACTOR_HAND] = obj;
-                      else
-                       {
-                        if(readied_objects[ACTOR_HAND_2] == NULL)
-                          readied_objects[ACTOR_HAND_2] = obj;
-                        else
-                          return false;
-                       }
+    case ACTOR_HAND : if(readied_objects[ACTOR_HAND] != NULL) // if full try other hand
+                          location = ACTOR_HAND_2;
                       break;
-
-    default : if(readied_objects[location] == NULL)
-                readied_objects[location] = obj;
-              else
-                return false;
-              break;
    }
+
+ if(readied_objects[location] != NULL)
+   return false;
+                
+ readied_objects[location] = new ReadiedObj;
+ 
+ readied_objects[location]->obj = obj;
+ readied_objects[location]->combat_type = get_object_combat_type(obj->obj_n);
+
+ if(readied_objects[location]->combat_type != NULL)
+   armor_class += readied_objects[location]->combat_type->defence;
 
  obj->status |= 0x18; //set object to readied status
  return true;
@@ -907,9 +951,9 @@ void Actor::remove_readied_object(Obj *obj)
 {
  uint8 location;
 
- for(location=0;location<8;location++)
+ for(location=0; location < ACTOR_MAX_READIED_OBJECTS; location++)
    {
-    if(readied_objects[location] == obj)
+    if(readied_objects[location] != NULL && readied_objects[location]->obj == obj)
       {
        remove_readied_object(location);
        break;
@@ -927,9 +971,19 @@ void Actor::remove_readied_object(uint8 location)
 
  if(obj)
    {
+    if(readied_objects[location]->combat_type)
+      armor_class -= readied_objects[location]->combat_type->defence;
+
+    delete readied_objects[location];
     readied_objects[location] = NULL;
     obj->status ^= 0x18; // remove "readied" bit flag.
     obj->status |= OBJ_STATUS_IN_INVENTORY; // keep "in inventory"
+
+    if(location == ACTOR_ARM && readied_objects[ACTOR_ARM_2] != NULL) //move contents of left hand to right hand.
+      {
+       readied_objects[ACTOR_ARM] = readied_objects[ACTOR_ARM_2];
+       readied_objects[ACTOR_ARM_2] = NULL;
+      }
    }
 
  return;
@@ -939,7 +993,7 @@ void Actor::remove_all_readied_objects()
 {
  uint8 location;
 
- for(location=0;location<8;location++)
+ for(location=0; location < ACTOR_MAX_READIED_OBJECTS; location++)
    {
     if(readied_objects[location] != NULL)
       remove_readied_object(location);
@@ -994,7 +1048,7 @@ void Actor::all_items_to_container(Obj *container_obj)
     container_obj->container->add(obj);
    }
  
- for(i=0;i<8;i++)
+ for(i=0; i < ACTOR_MAX_READIED_OBJECTS; i++)
    {
     if(readied_objects[i])
       {
@@ -1280,23 +1334,33 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
     return(false);
 }
 
-
-void Actor::defend(uint8 attack, uint8 weapon_damage)
+//returns true if successfully defended
+//false if damage incurred
+bool Actor::defend(uint8 attack, uint8 weapon_damage)
 {
  uint8 damage;
+ 
+ printf("attack=%d, weapon_damage=%d defenders ac=%d", attack, weapon_damage, armor_class);
+
    
  if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
    {
-    damage = NUVIE_RAND() % weapon_damage;
+    if(weapon_damage == 255) // A weapon that does 255 damage kills every time.
+      {
+       hit(255, ACTOR_FORCE_HIT);
+       return false;
+      }
 
+    damage = NUVIE_RAND() % weapon_damage;
 
     if(damage > armor_class)
       {
        hit(damage - armor_class);
+       return false; // actor took damage
       }
    }
 
- return;
+ return true; // actor defended this attack
 }
 
 /* Subtract amount from hp. May die if hp is too low.
@@ -1326,31 +1390,28 @@ void Actor::die()
 
 /* Get hit and take damage by some indirect effect. (no source)
  */
-void Actor::hit(uint8 dmg)
+void Actor::hit(uint8 dmg, bool force_hit)
 {
- uint8 ac = 0;
  MsgScroll *scroll = Game::get_game()->get_scroll();
-
- if(armor_class > 0)
-  ac = NUVIE_RAND() % armor_class;
-     
- if(dmg > ac)
+      
+ if(dmg > armor_class || force_hit)
    {
     new HitEffect(this);
-    reduce_hp(dmg - ac);
-        
-    scroll->display_string(get_name());
-                         
-    if(hp == 0)
-      scroll->display_string(" Killed!\n");
-    else
+    reduce_hp(force_hit ? dmg : dmg - armor_class);
+    
+    if(!force_hit)
       {
-       if(hp < 15)
-         scroll->display_string(" Critical!\n");
+       scroll->display_string(get_name());
+       if(hp == 0)
+          scroll->display_string(" Killed!\n");
        else
-         scroll->display_string(" hit.\n"); // FIX string based on dmg amount
+         {
+          if(hp < 15)
+            scroll->display_string(" Critical!\n");
+          else
+            scroll->display_string(" hit.\n"); // FIX string based on dmg amount
+         }
       }
-
    }
 }
 

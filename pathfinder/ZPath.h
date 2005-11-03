@@ -15,6 +15,7 @@ class ZPath : public PathFinder
 {
     Map *map;
     ActorManager *actor_manager;
+    MapCoord cur_location;
 
 public:
     ZPath(Actor *a, MapCoord &d, uint32 speed = 0);
@@ -26,7 +27,7 @@ public:
     MapCoord pop_dest();
     inline MapCoord get_next_step(); // return dest or next in path
 
-    void walk_path(uint32 step_speed = 0);
+    bool walk_path(MapCoord &returned_step, uint32 step_speed = 0);
     uint32 try_step(MapCoord &d, uint32 count = 1);
     bool move_actor(uint16 x, uint16 y);
 

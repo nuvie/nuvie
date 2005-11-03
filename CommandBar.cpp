@@ -92,7 +92,7 @@ GUI_status CommandBar::hit(uint8 num)
     if(!event) event = game->get_event();
     switch(num) // hit button
     {
-        case 0: printf("Attack\n"); break;
+        case 0: event->newAction(ATTACK_MODE); break;
         case 1: event->newAction(CAST_MODE); break;
         case 2: event->newAction(TALK_MODE); break;
         case 3: event->newAction(LOOK_MODE); break;

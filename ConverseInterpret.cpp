@@ -647,7 +647,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         case U6OP_HEAL: // 0xd9
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
-                cnpc->set_hp(cnpc->get_maxhp());
+                cnpc->heal();
             break;
         case U6OP_CURE: // 0xdb
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));

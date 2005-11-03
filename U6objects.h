@@ -120,6 +120,7 @@
 #define OBJ_U6_CAKE                131
 #define OBJ_U6_CHEESE              132
 #define OBJ_U6_HAM                 133
+#define OBJ_U6_HORSE_CARCASS       134
 #define OBJ_U6_HORSE_CHOPS         135
 
 #define OBJ_U6_PLANT               138
@@ -196,6 +197,7 @@
 #define OBJ_U6_RUNE_HUMILITY       249
 
 #define OBJ_U6_CHAIR               252
+#define OBJ_U6_CAMPFIRE            253
 #define OBJ_U6_CROSS               254
 #define OBJ_U6_TOMBSTONE           255
 

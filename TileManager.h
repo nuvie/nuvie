@@ -53,6 +53,10 @@ class Look;
 #define TILEFLAG_CAN_PLACE_ONTOP 0x2
 #define TILEFLAG_FORCED_PASSABLE 0x4
 
+// FIXME These should probably go else where.
+#define TILE_U6_SLING_STONE 398
+#define TILE_U6_ARROW       566
+#define TILE_U6_BOLT        567
 
 typedef struct {
 uint16 tile_num;

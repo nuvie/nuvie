@@ -32,6 +32,7 @@
 #include "ViewManager.h"
 #include "ActorManager.h"
 #include "Actor.h"
+#include "U6Actor.h"
 #include "Party.h"
 #include "Player.h"
 #include "MsgScroll.h"
@@ -114,7 +115,16 @@ static const struct { uint16 x; uint16 y; uint8 z; } red_moongate_tbl[] =
   {0x29b, 0x43,  0x0}
  };
 
-// numbered by potion quality
+#define USE_U6_POTION_BLUE   0x0
+#define USE_U6_POTION_RED    0x1
+#define USE_U6_POTION_YELLOW 0x2
+#define USE_U6_POTION_GREEN  0x3
+#define USE_U6_POTION_ORANGE 0x4
+#define USE_U6_POTION_PURPLE 0x5
+#define USE_U6_POTION_BLACK  0x6
+#define USE_U6_POTION_WHITE  0x7
+
+// numbered by potion object frame number
 static const char *u6_potions[8] =
 {
     "an awaken", // blue
@@ -126,6 +136,7 @@ static const char *u6_potions[8] =
     "an invisibility", // black
     "an xray vision" // white
 };
+
 
 
 U6UseCode::U6UseCode(Game *g, Configuration *cfg) : UseCode(g, cfg)
@@ -1334,23 +1345,30 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
             scroll->display_string(party_num >= 0 ? party->get_actor_name(party_num)
                                    : am->look_actor(items.actor2_ref));
             scroll->display_string("\n");
-            if(obj->frame_n == 7)
-            {
-                new U6WhitePotionEffect(2500, 6000, obj);
-                // wait for message to delete potion
-            }
-            else
-            {
-                if(obj->frame_n <= 7)
+
+             switch(obj->frame_n)
+              {
+               case  USE_U6_POTION_RED    : ((U6Actor *)items.actor2_ref)->set_poisoned(false);
+                                            break;
+               case  USE_U6_POTION_YELLOW : ((U6Actor *)items.actor2_ref)->heal();
+                                            break;
+               case  USE_U6_POTION_GREEN  : ((U6Actor *)items.actor2_ref)->set_poisoned(true);
+                                            break;
+               case USE_U6_POTION_WHITE   : new U6WhitePotionEffect(2500, 6000, obj);
+                                            // wait for message to delete potion
+                                            break;
+              }
+
+              if(obj->frame_n <= 7)
                 {
                     scroll->display_string("Drink ");
                     scroll->display_string(u6_potions[obj->frame_n]);
                     scroll->display_string(" potion!\n");
                 }
-                else
+              else
                     scroll->display_string("No effect\n");
-                destroy_obj(obj);
-            }
+              destroy_obj(obj);
+
             return(true);
         }
     }

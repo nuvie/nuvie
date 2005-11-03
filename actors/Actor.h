@@ -33,6 +33,7 @@ using std::string;
 #include "Map.h"
 #include "ObjManager.h"
 
+#define ACTOR_NO_READIABLE_LOCATION -1
 #define ACTOR_HEAD   0
 #define ACTOR_NECK   1
 #define ACTOR_BODY   2
@@ -47,6 +48,8 @@ using std::string;
 #define ACTOR_FORCE_MOVE true
 #define ACTOR_IGNORE_OTHERS true
 
+#define ACTOR_FORCE_HIT true
+
 // push-flags
 #define ACTOR_PUSH_ANYWHERE 0
 #define ACTOR_PUSH_HERE     1
@@ -55,6 +58,7 @@ using std::string;
 
 #define ACTOR_SHOW_BLOOD true
 
+#define ACTOR_STATUS_POISONED 0x8
 #define ACTOR_STATUS_DEAD 0x10
 #define ACTOR_STATUS_IN_PARTY 0xc0
 
@@ -63,6 +67,8 @@ using std::string;
 #define ACTOR_BLOCKED 2
 #define ACTOR_BLOCKED_BY_OBJECT 3
 #define ACTOR_BLOCKED_BY_ACTOR 4
+
+#define ACTOR_MAX_READIED_OBJECTS 8
 
 class Map;
 class MapCoord;
@@ -80,10 +86,32 @@ uint8 day_of_week; // 0 = any day 1..7
 uint8 worktype;
 } Schedule;
 
+typedef enum { ATTACK_TYPE_NONE, ATTACK_TYPE_HAND, ATTACK_TYPE_THROWN, ATTACK_TYPE_MISSLE } AttackType;
+
+typedef struct {
+uint16 obj_n;
+
+uint8 defence;
+uint8 attack;
+
+uint16 hit_range;
+AttackType attack_type; 
+
+uint16 missle_tile_num;
+uint16 thrown_obj_n;
+
+bool breaks_on_contact;
+} CombatType;
+
 typedef uint8 ActorErrorCode;
 typedef struct {
     ActorErrorCode err;
 } ActorError;
+
+typedef struct {
+Obj *obj;
+const CombatType *combat_type;
+} ReadiedObj;
 
 class Actor
 {
@@ -152,7 +180,7 @@ class Actor
 
  U6LList *obj_inventory;
 
- Obj *readied_objects[8];
+ ReadiedObj *readied_objects[ACTOR_MAX_READIED_OBJECTS];
 
  Schedule **sched;
 
@@ -178,6 +206,7 @@ class Actor
  bool is_passable();
  //for lack of a better name:
  bool is_met() { return(flags & 0x01); }
+ bool is_poisoned() { return(status_flags & ACTOR_STATUS_POISONED); }
  virtual bool is_immobile(); // frozen by worktype or status
  virtual bool is_sleeping() { return(false); }
 
@@ -210,7 +239,8 @@ class Actor
  void set_magic(uint8 val) { magic = val; }
  void add_light(uint8 val);
  void subtract_light(uint8 val);
-
+ void heal() { set_hp(get_maxhp()); }
+ 
  uint8 get_worktype();
  virtual void set_worktype(uint8 new_worktype);
 
@@ -235,6 +265,8 @@ class Actor
  bool moveRelative(sint16 rel_x, sint16 rel_y);
  virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
  virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
+ bool check_moveRelative(sint16 rel_x, sint16 rel_y, bool ignore_actors=false);
+
  virtual bool Actor::can_be_moved();
  virtual void update();
  void set_in_party(bool state);
@@ -247,13 +279,16 @@ class Actor
  
  // combat methods
  void attack(MapCoord pos); // attack at a given map location
- void defend(uint8 hit, uint8 weapon_damage); // defend against a hit
+ void attack(sint8 readied_obj_location, Actor *actor);
+ bool defend(uint8 hit, uint8 weapon_damage); // defend against a hit
+ const CombatType *get_weapon(sint8 readied_obj_location);
  
- void hit(uint8 dmg);
+ void hit(uint8 dmg, bool force_hit=false);
  void hit(uint8 dmg, Actor *attacker) { hit(dmg); }
  void hit(uint8 dmg, Obj *src_obj)    { hit(dmg); }
  void reduce_hp(uint8 amount);
  virtual void die();
+ virtual bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y) { return true; }
  
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_zero_qual = true);
@@ -261,6 +296,7 @@ class Actor
  uint32 inventory_count_object(uint16 obj_n, Obj *container = 0);
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0, bool search_containers = true, bool match_zero_qual = true);
  Obj *inventory_get_readied_object(uint8 location);
+ const CombatType *inventory_get_readied_object_combat_type(uint8 location);
  Obj *inventory_get_obj_container(Obj *obj, Obj *container = 0);
  bool inventory_add_object(Obj *obj, Obj *container = 0);
  bool inventory_remove_obj(Obj *obj, Obj *container = 0);
@@ -276,6 +312,8 @@ class Actor
  bool can_carry_object(Obj *obj) { return(can_carry_weight(obj_manager->get_obj_weight(obj, true))); }
 
  virtual uint8 get_object_readiable_location(uint16 obj_n) { return ACTOR_NOT_READIABLE; }
+ virtual const CombatType *get_object_combat_type(uint16 obj_n) { return NULL; }
+ 
  bool add_readied_object(Obj *obj);
  void remove_readied_object(Obj *obj);
  void remove_readied_object(uint8 location);
@@ -297,6 +335,9 @@ class Actor
 // inline uint16 Actor::getSchedulePos(uint8 hour);
 
  void inventory_parse_readied_objects(); //this is used to initialise the readied_objects array on load.
+ 
+ virtual const CombatType *get_hand_combat_type() { return NULL; }
+
 };
 
 #endif /* __Actor_h__ */

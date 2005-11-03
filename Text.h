@@ -44,6 +44,7 @@ class Text
 //   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y, uint8 lang_num=0);
    bool drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 lang_num=0);
    bool drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 lang_num);
+   bool drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 lang_num, uint8 color);
 
    uint8 get_char_num(uint8 c, uint8 lang_num);
    void drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,

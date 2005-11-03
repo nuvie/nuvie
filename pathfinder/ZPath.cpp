@@ -25,13 +25,19 @@ ZPath::ZPath(Actor *a, MapCoord &d, uint32 spd)
  */
 bool ZPath::move_actor(uint16 x, uint16 y)
 {
-    sint8 xdir = (actor->x < x) ? 1 : (actor->x == x) ? 0 : -1;
-    sint8 ydir = (actor->y < y) ? 1 : (actor->y == y) ? 0 : -1;
+    sint8 xdir = (cur_location.x < x) ? 1 : (cur_location.x == x) ? 0 : -1;
+    sint8 ydir = (cur_location.y < y) ? 1 : (cur_location.y == y) ? 0 : -1;
     if(xdir == 0 && ydir == 0)
         return(true);
-    if(!actor->moveRelative(xdir, ydir))
+    if(!actor->check_moveRelative(xdir, ydir))
         return(false);
-    actor->set_direction(xdir, ydir);
+
+//actor->moves--;
+
+    cur_location.x = x;
+    cur_location.y = y;
+
+    //ERIC actor->set_direction(xdir, ydir);
     return(true);
 }
 
@@ -41,23 +47,23 @@ bool ZPath::move_actor(uint16 x, uint16 y)
 uint32 ZPath::try_step(MapCoord &d, uint32 count)
 {
     uint32 steps_taken = 0;
-    sint8 xdir = (actor->x < d.x) ? 1 : (actor->x == d.x) ? 0 : -1;
-    sint8 ydir = (actor->y < d.y) ? 1 : (actor->y == d.y) ? 0 : -1;
+    sint8 xdir = (cur_location.x < d.x) ? 1 : (cur_location.x == d.x) ? 0 : -1;
+    sint8 ydir = (cur_location.y < d.y) ? 1 : (cur_location.y == d.y) ? 0 : -1;
 // FIXME: this actor check is so that actors in a line don't push someone who is
 // in position back out of the way, taking their moves, but sometimes actors in
 // position can be pushed; at least replace with a no-push move flag
-    while((!actor_manager->get_actor(actor->x+xdir,actor->y+ydir,actor->z)
-           || actor_manager->get_actor(actor->x+xdir,actor->y+ydir,actor->z)->id_n == 1)
+    while((!actor_manager->get_actor(cur_location.x+xdir,cur_location.y+ydir,cur_location.z)
+           || actor_manager->get_actor(cur_location.x+xdir,cur_location.y+ydir,cur_location.z)->id_n == 1)
           && move_actor(d.x, d.y))
-        if(++steps_taken >= count || (d.x == actor->x && d.y == actor->y)) // moved in primary direction
+        if(++steps_taken >= count || (d.x == cur_location.x && d.y == cur_location.y)) // moved in primary direction
             return(steps_taken); // out of moves
     // will try to move around obstacle (and not come back to second_start)
-    MapCoord second_start(actor->x, actor->y, actor->z), here(second_start);
+    MapCoord second_start(cur_location.x, cur_location.y, cur_location.z), here(second_start);
     if(steps_taken < count && here != d)
     {
         // original vector (from second_start)
-        xdir = (actor->x < d.x) ? 1 : (actor->x == d.x) ? 0 : -1;
-        ydir = (actor->y < d.y) ? 1 : (actor->y == d.y) ? 0 : -1;
+        xdir = (cur_location.x < d.x) ? 1 : (cur_location.x == d.x) ? 0 : -1;
+        ydir = (cur_location.y < d.y) ? 1 : (cur_location.y == d.y) ? 0 : -1;
         // find secondary direction to `d' (left or right from primary)
         uint8 dir = get_closest_dir(second_start, d);
         // just wait (don't go backwards) if blocked by party member
@@ -71,25 +77,25 @@ uint32 ZPath::try_step(MapCoord &d, uint32 count)
         if(dir)
         {
             get_adjacent_dir(xdir, ydir, dir); // modify vector
-            if(move_actor(actor->x + xdir, actor->y + ydir)) // try again
+            if(move_actor(cur_location.x + xdir, cur_location.y + ydir)) // try again
                 ++steps_taken;
-            here.x = actor->x; here.y = actor->y;
+            here.x = cur_location.x; here.y = cur_location.y;
             if(here == d) return(steps_taken); // easy!
             if(steps_taken < count && move_actor(d.x, d.y)) // try primary once more
             {
-                here.x = actor->x; here.y = actor->y;
+                here.x = cur_location.x; here.y = cur_location.y;
                 if(here != second_start || here == d) // havn't gone backwards
                     return(++steps_taken); // still easy (don't search yet)
             }
         }
         // second step failed, or third didn't reach goal (search below)
-        here.x = actor->x; here.y = actor->y;
+        here.x = cur_location.x; here.y = cur_location.y;
     }
     else if(here == d) return(steps_taken); // got to destination on first try!
     // will have to find some path-nodes to walk around
 // FIXME: use dir to original move instead?
-    xdir = (actor->x < d.x) ? 1 : (actor->x == d.x) ? 0 : -1;
-    ydir = (actor->y < d.y) ? 1 : (actor->y == d.y) ? 0 : -1;
+    xdir = (cur_location.x < d.x) ? 1 : (cur_location.x == d.x) ? 0 : -1;
+    ydir = (cur_location.y < d.y) ? 1 : (cur_location.y == d.y) ? 0 : -1;
     MapCoord blocked = here.abs_coords(xdir, ydir);
     if((blocked != d)
        && !actor_manager->get_actor(blocked.x, blocked.y, blocked.z))
@@ -103,19 +109,24 @@ uint32 ZPath::try_step(MapCoord &d, uint32 count)
 }
 
 
-void ZPath::walk_path(uint32 step_speed)
+bool ZPath::walk_path(MapCoord &returned_step, uint32 step_speed)
 {
     uint32 s = 0;
     if(delay)// don't walk yet
     {
         --delay;
-        return;
+        return false;
     }
     step_speed = (step_speed != 0) ? step_speed : speed;
     actor->moves = step_speed;
+
+    cur_location.x = actor->x;
+    cur_location.y = actor->y;
+    cur_location.z = actor->z;
+    
     do
     {
-        MapCoord start(actor->x, actor->y, actor->z);
+        MapCoord start(cur_location.x, cur_location.y, cur_location.z);
         MapCoord goal = get_next_step();
         if(start == goal)
         {
@@ -126,12 +137,20 @@ void ZPath::walk_path(uint32 step_speed)
         }
         uint32 s_add = try_step(goal, step_speed - s);
         s += (s_add != 0) ? s_add : 1; // count unsuccessful tries
-        MapCoord result(actor->x, actor->y, actor->z);
+        MapCoord result(cur_location.x, cur_location.y, cur_location.z);
         // if at goal and it's an obstacle-avoidance node, remove it from path
         if(result == goal && using_path())
             pop_dest();
     } while(s < step_speed);
     if(s) actor->moves = 0; // can't move again this turn
+
+ if(cur_location.x != actor->x || cur_location.y != actor->y)
+  {
+   returned_step = cur_location;
+   return true;
+  }
+
+ return false;
 }
 
 

@@ -18,7 +18,7 @@ public:
     bool can_travel() { return(true); }
 
     //MapCoord *find_path(uint32 *sc, MapCoord start, MapCoord goal, uint32 max_steps);
-    void walk_path(uint32 speed = 1);
+    bool walk_path(MapCoord &returned_step, uint32 speed = 1);
     void set_dest(MapCoord &d);
 };
 

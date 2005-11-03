@@ -287,6 +287,9 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_d     :
 			newAction(DROP_MODE);
 			break;
+        case SDLK_a     :
+            newAction(ATTACK_MODE);
+            break;
                 case SDLK_F1:
                 case SDLK_F2:
                 case SDLK_F3:
@@ -537,49 +540,77 @@ bool Event::talk(Obj *obj)
     return(false);
 }
 
+bool Event::attack()
+{
+    Actor *actor = map_window->get_actorAtCursor();
+    if(actor)
+        {
+            scroll->display_string(actor->get_name());
+            scroll->display_string(".\n");
+            player->attack(actor);
+        }
+    else
+        {
+            scroll->display_string("nothing!\n");
+        }
+
+    if(player->attack_select_next_weapon() == false)
+      endAction(true);
+    else
+	  map_window->set_show_cursor(true);
+    
+    return true;
+}
 
 // move the cursor or walk around; do action for direction-targeted modes
 bool Event::move(sint16 rel_x, sint16 rel_y)
 {
+ MapCoord cursor_coord;
+ 
  if(mode == WAIT_MODE)
     return false;
 
- if(mode == LOOK_MODE || mode == TALK_MODE || mode == FREESELECT_MODE
-    || mode == EQUIP_MODE || mode == DROP_MODE || mode == DROPTARGET_MODE)
-    map_window->moveCursorRelative(rel_x,rel_y);
- else
+ switch(mode)
   {
-   if(mode == USE_MODE)
-     {
-      use(rel_x,rel_y);
-     }
-   else if(mode == USESELECT_MODE)
-     {
-      select_obj(rel_x,rel_y);
-     }
-   else if(mode == PUSH_MODE)
-     {
-      pushTo(rel_x,rel_y,PUSH_FROM_OBJECT);
-     }
-   else if(mode == PUSHSELECT_MODE)
-     {
-      pushFrom(rel_x,rel_y);
-     }
-   else if(mode == GET_MODE)
-     {
-      get(rel_x,rel_y);
-     }
-   else
-     {
-        if(player->check_walk_delay())
-          {
-            player->moveRelative(rel_x, rel_y);
-            // time changed
-            Game::get_game()->get_command_bar()->update(); // date & wind
-            view_manager->get_party_view()->update(); // sky
-          }
-     }
+   case ATTACK_MODE     : cursor_coord = map_window->get_cursorCoord();
+                          cursor_coord.x += rel_x;
+                          cursor_coord.y += rel_y;
+                          if(player->weapon_can_hit(cursor_coord.x, cursor_coord.y) == false)
+                            break;
+                          printf("attack select(%d,%d)\n", cursor_coord.x, cursor_coord.y); //FIX need to contrain movement here for weapon range.
+   case LOOK_MODE       :
+   case TALK_MODE       :
+   case FREESELECT_MODE :
+   case EQUIP_MODE      :
+   case DROP_MODE       :
+   case DROPTARGET_MODE : map_window->moveCursorRelative(rel_x,rel_y);
+                          break;
+
+   case USE_MODE        : use(rel_x,rel_y);
+                          break;
+                   
+   case USESELECT_MODE  : select_obj(rel_x,rel_y);
+                          break;
+                         
+   case PUSH_MODE       : pushTo(rel_x,rel_y,PUSH_FROM_OBJECT);
+                          break;
+                    
+   case PUSHSELECT_MODE : pushFrom(rel_x,rel_y);
+                          break;
+                          
+   case GET_MODE        : get(rel_x,rel_y);
+                          break;
+                   
+   default              : if(player->check_walk_delay())
+                            {
+                             player->moveRelative(rel_x, rel_y);
+                             // time changed
+                             Game::get_game()->get_command_bar()->update(); // date & wind
+                             view_manager->get_party_view()->update(); // sky
+                            }
+                          break;
   }
+
  return true;
 }
 
@@ -2047,6 +2078,11 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 		mode = MOVE_MODE;
 		get(rel_x,rel_y);
 	}
+	else if(mode == ATTACK_MODE)
+	{
+		//mode = MOVE_MODE;
+		attack();
+	}
 	else if(mode == PUSHSELECT_MODE)
 	{
 		pushFrom(rel_x,rel_y);
@@ -2190,6 +2226,10 @@ bool Event::newAction(EventMode new_mode)
 			map_window->centerCursor();
 			map_window->set_show_use_cursor(true);
 			break;
+        case ATTACK_MODE:
+            player->attack_select_init();
+            map_window->set_show_cursor(true);
+            break;
 		case PUSHSELECT_MODE:
 			scroll->display_string("Move-");
 			map_window->centerCursor();

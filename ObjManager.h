@@ -181,6 +181,8 @@ class ObjManager
  bool list_add_obj(U6LList *list, Obj *obj);
 
  const char *get_obj_name(Obj *obj);
+ const char *get_obj_name(uint16 obj_n);
+ 
  float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, bool scale=true);
  uint8 get_obj_weight(uint16 obj_n) { return(obj_weight[obj_n]); }
 

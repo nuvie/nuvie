@@ -31,6 +31,7 @@
 #include "ObjManager.h"
 #include "MapWindow.h"
 #include "GameClock.h"
+#include "MsgScroll.h"
 #include "Party.h"
 #include "U6objects.h"
 #include "Player.h"
@@ -52,7 +53,9 @@ bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c,
  obj_manager = om;
  map_window = mw;
  party = p;
-
+ 
+ current_weapon = -1;
+ 
  init();
 
  return true;
@@ -379,3 +382,63 @@ bool Player::check_walk_delay()
     return(false); // not time yet
 }
 
+bool Player::weapon_can_hit(uint16 x, uint16 y)
+{   
+ return actor->weapon_can_hit(actor->get_weapon(current_weapon), x, y);
+}
+
+void Player::attack_select_init()
+{
+ map_window->centerCursor();
+ 
+ current_weapon = ACTOR_NO_READIABLE_LOCATION;
+ 
+ if(attack_select_next_weapon() == false)
+   attack_select_weapon_at_location(ACTOR_NO_READIABLE_LOCATION); // attack with hands.
+ 
+ return;
+}
+
+bool Player::attack_select_next_weapon()
+{
+ sint8 i;
+
+ for(i=current_weapon + 1; i < ACTOR_MAX_READIED_OBJECTS;i++)
+   {
+    if(attack_select_weapon_at_location(i) == true)
+      return true;
+   }
+
+ return false;
+}
+
+bool Player::attack_select_weapon_at_location(sint8 location)
+{
+ const CombatType *weapon;
+ MsgScroll *scroll = Game::get_game()->get_scroll();
+ 
+ if(location == ACTOR_NO_READIABLE_LOCATION)
+   {
+    current_weapon = location;
+    scroll->display_string("Attack with hands-");
+    return true;
+   }
+
+ weapon = actor->get_weapon(location);
+    
+ if(weapon && weapon->attack > 0)
+   {
+    current_weapon = location;
+    scroll->display_string("Attack with ");
+    scroll->display_string(obj_manager->get_obj_name(weapon->obj_n));
+    scroll->display_string("-");
+    return true;
+   }
+
+ return false;
+}
+
+void Player::attack(Actor *a)
+{
+ actor->attack(current_weapon, a);
+}

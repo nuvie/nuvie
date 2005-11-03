@@ -72,7 +72,7 @@ class U6Actor: public Actor
 
  uint8 beg_mode; // for WT_BEG
  sint8 walk_frame_inc; // added to walk_frame each step
-
+ uint8 poison_counter;
  public:
 
  U6Actor(Map *m, ObjManager *om, GameClock *c);
@@ -90,8 +90,13 @@ class U6Actor: public Actor
  bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
  void twitch();
  void die();
+ void set_poisoned(bool poisoned);
 
  uint8 get_object_readiable_location(uint16 obj_n);
+ const CombatType *get_object_combat_type(uint16 obj_n);
+
+ bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
+
  virtual bool is_immobile(); // frozen by worktype or status
  bool is_sleeping();
 
@@ -115,6 +120,8 @@ class U6Actor: public Actor
  inline const U6ActorType *get_actor_type(uint16 new_obj_n);
  void set_actor_obj_n(uint16 new_obj_n);
 
+ inline void updatePoison();
+
  inline bool has_surrounding_objs();
  inline void remove_surrounding_objs_from_map();
  inline void add_surrounding_objs_to_map();
@@ -132,6 +139,7 @@ class U6Actor: public Actor
  inline void clear_surrounding_objs_list(bool delete_objs=false);
  inline void init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 actor_obj_n, uint16 obj_frame_n);
 
+ const CombatType *U6Actor::get_hand_combat_type();
 };
 
 #endif /* __U6Actor_h__ */

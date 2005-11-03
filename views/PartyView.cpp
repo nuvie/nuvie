@@ -98,6 +98,7 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
 void PartyView::Display(bool full_redraw)
 {
  uint8 i;
+ uint8 hp_text_color;
  Actor *actor;
  Tile *actor_tile;
  char *actor_name;
@@ -113,6 +114,7 @@ void PartyView::Display(bool full_redraw)
 
    for(i=row_offset;i<((party_size>=5)?5:party_size)+row_offset;i++)
      {
+      hp_text_color = 0x48; //standard text color
       actor = party->get_actor(i);
       actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
       screen->blit(area.x+8,area.y+19+1+(i-row_offset)*16,actor_tile->data,8,16,16,16,true);
@@ -120,7 +122,14 @@ void PartyView::Display(bool full_redraw)
       actor_name = party->get_actor_name(i);
       text->drawString(screen, actor_name, area.x+8 + 16 + 8, area.y + 19 + 1 + (i-row_offset) * 16 + 8, 0);
       sprintf(hp_string,"%3d",actor->get_hp());
-      text->drawString(screen, hp_string, area.x+8 + 112, area.y + 19 + 1 + (i-row_offset) * 16, 0);
+      if(actor->is_poisoned()) //actor is poisoned, display their hp in green
+        hp_text_color = 0xa;
+      else
+       {
+        if(actor->get_hp() < 10) //actor is critical, display their hp in red.
+          hp_text_color = 0x0c; 
+       }
+      text->drawString(screen, hp_string, strlen(hp_string), area.x+8 + 112, area.y + 19 + 1 + (i-row_offset) * 16, 0, hp_text_color);
      }
 
    display_arrows();

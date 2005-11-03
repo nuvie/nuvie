@@ -32,6 +32,7 @@
 
 #include "Party.h"
 #include "ActorManager.h"
+#include "ViewManager.h"
 #include "Converse.h"
 #include "Effect.h"
 
@@ -47,6 +48,7 @@ U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
  beg_mode = 0; // beggers are waiting for targets
  walk_frame_inc = 1;
+ poison_counter = 0;
 }
 
 U6Actor::~U6Actor()
@@ -229,8 +231,15 @@ uint16 U6Actor::get_downward_facing_tile_num()
 
 void U6Actor::update()
 {
+ if(!alive)  //we don't need to update dead actors.
+   return;
+
  Actor::update();
  preform_worktype();
+
+ if(is_poisoned())
+  updatePoison();
+
  return;
 }
 
@@ -244,6 +253,17 @@ bool U6Actor::updateSchedule(uint8 hour)
    }
 
  return ret;
+}
+
+inline void U6Actor::updatePoison()
+{
+ if(poison_counter == 0)
+  {
+   poison_counter = NUVIE_RAND() % 35;
+   hit(1, ACTOR_FORCE_HIT);
+  }
+ else
+   poison_counter--;
 }
 
 // workout our direction based on actor_type and frame_n
@@ -339,11 +359,12 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
          if(in_party)
             scroll->message("Ouch!\n");
         }
-      if(obj->obj_n == OBJ_U6_POISON_FIELD/* && not poisoned*/) // ick
+      if(obj->obj_n == OBJ_U6_POISON_FIELD && !is_poisoned()) // ick
         {
-         new HitEffect(this); // no direct hp loss
+         
          if(in_party)
            {
+            set_poisoned(true);
             scroll->display_string(party->get_actor_name(party->get_member_num(this)));
             scroll->display_string(" poisoned!\n");
             scroll->display_prompt();
@@ -465,6 +486,43 @@ uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
  return ACTOR_NOT_READIABLE;
 }
 
+const CombatType *U6Actor::get_object_combat_type(uint16 obj_n)
+{
+ uint16 i;
+
+ for(i=0;u6combat_objects[i].obj_n != OBJ_U6_NOTHING;i++)
+   {
+    if(obj_n == u6combat_objects[i].obj_n)
+      return &u6combat_objects[i];
+   }
+
+ return NULL;
+}
+
+const CombatType *U6Actor::get_hand_combat_type()
+{
+ return &u6combat_hand;
+}
+
+bool U6Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)
+{
+ sint16 off_x, off_y;
+
+ if(!weapon)
+   return false;
+
+ off_x = x - target_x;
+ off_y = y - target_y;
+ 
+ if(abs(off_x) > 5 || abs(off_y) > 5)
+   return false;
+  
+ if(weapon->hit_range == 0)
+   return true;
+
+ return (bool)u6combat_hitrange_tbl[weapon->hit_range - 1][(5 + off_y) * 11 + (5 + off_x)];
+}
+
 void U6Actor::twitch()
 {
 
@@ -492,6 +550,21 @@ void U6Actor::twitch()
   }
 
  return;
+}
+
+void U6Actor::set_poisoned(bool poisoned)
+{
+ if(poisoned)
+  {
+   status_flags |= ACTOR_STATUS_POISONED;
+   new HitEffect(this); // no direct hp loss
+   Game::get_game()->get_view_manager()->update();
+  }
+ else
+  {
+   status_flags &= (0xff ^ ACTOR_STATUS_POISONED);
+   poison_counter = 0;
+  }
 }
 
 void U6Actor::preform_worktype()

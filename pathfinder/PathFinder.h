@@ -29,7 +29,7 @@ public:
     virtual bool can_follow() { return(false); }
     virtual bool can_travel() { return(false); }
 
-    virtual void walk_path(uint32 step_speed = 0) = 0;
+    virtual bool walk_path(MapCoord &returned_step, uint32 step_speed = 0) = 0;
     virtual void set_dest(MapCoord &d);
     virtual void set_dest2(MapCoord &d2);
     void set_speed(uint8 sp) { speed = sp; }

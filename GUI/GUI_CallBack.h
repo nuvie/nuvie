@@ -32,7 +32,7 @@ class GUI_CallBack
  public:
 
  GUI_CallBack() { return; }
-
+ virtual ~GUI_CallBack() { return; }
  virtual GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data) { printf("Warning! Unhandled callback. msg (%x)\n", msg); return GUI_PASS; }
 
 };

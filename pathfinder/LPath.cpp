@@ -35,19 +35,19 @@ void LPath::set_dest(MapCoord &d)
 
 /* Move the actor along the path. Find a new path if blocked (except by actors.)
  */
-void LPath::walk_path(uint32 speed)
+bool LPath::walk_path(MapCoord &returned_step, uint32 speed)
 {
 // FIXME: need to move all this to a few functions
     // teleport if both locations are off-screen
     if(!dest.is_visible() && !MapCoord(actor->x,actor->y,actor->z).is_visible())
     {
         actor->move(dest.x, dest.y, dest.z);
-        return;
+        return true;
     }
     if(delay)
     {
         --delay;
-        return;
+        return false;
     }
     if(!path)
     {
@@ -56,17 +56,16 @@ void LPath::walk_path(uint32 speed)
         if(!node_search(src, dest))
         {
             wait(10); // try again soon
-            return;
+            return false;
         }
     }
     // have a path, take a step
     uint16 nx = path[next_step].x, ny = path[next_step].y;
     uint8 nz = path[next_step].z;
     if(actor->check_move(nx, ny, nz))
-        actor->face_location(nx, ny);
-    bool moved = actor->move(nx, ny, nz);
-    if(moved)
     {
+     returned_step = path[next_step];
+
         if(next_step > 0)
             next_step--;
         else
@@ -74,6 +73,10 @@ void LPath::walk_path(uint32 speed)
             free(path); // out of steps
             path = NULL;
         }
+        
+     return true;
     }
+
+ return false; 
 }
 

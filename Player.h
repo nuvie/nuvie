@@ -25,6 +25,7 @@
  */
 
 #include "ObjManager.h"
+#include "Actor.h"
 
 class Configuration;
 class GameClock;
@@ -53,7 +54,9 @@ class Player
  uint8 karma;
 
  MapWindow *map_window;
-
+ 
+ sint8 current_weapon;
+ 
  public:
 
  Player(Configuration *cfg);
@@ -102,8 +105,15 @@ class Player
  uint32 get_walk_delay();
  bool check_walk_delay();
 
- protected:
+ bool weapon_can_hit(uint16 x, uint16 y);
+ void attack_select_init();
+ bool attack_select_next_weapon();
 
+ void attack(Actor *a);
+ 
+ protected:
+ 
+ bool attack_select_weapon_at_location(sint8 location);
 };
 
 #endif /* __Player_h__ */

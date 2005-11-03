@@ -101,6 +101,22 @@ bool Text::drawString(Screen *screen, const char *str, uint16 string_len, uint16
  return true;
 }
 
+//draw a string ignoring @ for highlighting using a specified color.
+bool Text::drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 lang_num, uint8 color)
+{
+ uint16 i;
+
+ if(font_data == NULL)
+   return false;
+
+ for(i=0;i<string_len;i++)
+   {
+    drawChar(screen, get_char_num(str[i],lang_num), x + i * 8, y, color);
+   }
+
+ return true;
+}
+
 uint8 Text::get_char_num(uint8 c, uint8 lang_num)
 {
  if(c < 32 || c > 126) // lock char into ascii chars supported by U6 font.

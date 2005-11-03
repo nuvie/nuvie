@@ -158,6 +158,7 @@
 				07E2601C06AA5FE3009E8571,
 				07A7120906D897CD00EC7D32,
 				07BBAF1407D8750700F2792A,
+				07E9A046081CD4A1009FA3BE,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1205,6 +1206,7 @@
 				070B5A6504D3DEDF00A8000A,
 				070B5A6404D3DEDF00A8000A,
 				07A5001E052AE88D00A8000A,
+				07E9A045081CD4A1009FA3BE,
 				070B5A5B04D3D7DC00A8000A,
 				070B5A5A04D3D7DC00A8000A,
 			);
@@ -3533,6 +3535,21 @@
 			path = ../views/InventoryFont.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+		};
+		07E9A045081CD4A1009FA3BE = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = U6WorkTypes.h;
+			path = ../actors/U6WorkTypes.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		07E9A046081CD4A1009FA3BE = {
+			fileRef = 07E9A045081CD4A1009FA3BE;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		07EC223504A17C6E00A8000A = {
 			fileEncoding = 30;
