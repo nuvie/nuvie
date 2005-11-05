@@ -174,7 +174,8 @@ class Actor
 
  uint8 flags;
 
- uint8 armor_class;
+ uint8 body_armor_class;
+ uint8 readied_armor_class;
  
  string name;
 
@@ -207,6 +208,7 @@ class Actor
  //for lack of a better name:
  bool is_met() { return(flags & 0x01); }
  bool is_poisoned() { return(status_flags & ACTOR_STATUS_POISONED); }
+ virtual void set_poisoned(bool poisoned) { return; }
  virtual bool is_immobile(); // frozen by worktype or status
  virtual bool is_sleeping() { return(false); }
 

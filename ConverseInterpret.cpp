@@ -651,7 +651,8 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             break;
         case U6OP_CURE: // 0xdb
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
-            converse->print("!cure\n"); // UNPOISON actor
+            if(cnpc)
+              cnpc->set_poisoned(false);
             break;
         case U6OP_WORKTYPE: // 0xcd
             v[0] = pop_arg(i); // npc
@@ -973,8 +974,8 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             break;
         case U6OP_POISONED: // 0xdc
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
-            converse->print("!poisoned\n");
-            out = 0;
+            if(cnpc)
+              out = cnpc->is_poisoned() ? 1 : 0;
             break;
         case U6OP_NPC: // 0xdd (val2=??)
             v[1] = pop_arg(i);

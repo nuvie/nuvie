@@ -60,7 +60,17 @@ bool U6Actor::init()
  set_actor_obj_n(obj_n); //set actor_type
 
  base_actor_type = get_actor_type(base_obj_n);
-
+ 
+ body_armor_class = base_actor_type->body_armor_class;
+ 
+ if(temp_actor)
+   {
+    strength = base_actor_type->str;
+    dex = base_actor_type->dex;
+    intelligence = base_actor_type->intelligence;
+    hp = base_actor_type->hp;
+   }
+   
  if(actor_type->tile_type == ACTOR_QT && frame_n == 0) //set the two quad tile actors to correct frame number.
    frame_n = 3;
 
@@ -361,10 +371,10 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
         }
       if(obj->obj_n == OBJ_U6_POISON_FIELD && !is_poisoned()) // ick
         {
+         set_poisoned(true);
          
          if(in_party)
            {
-            set_poisoned(true);
             scroll->display_string(party->get_actor_name(party->get_member_num(this)));
             scroll->display_string(" poisoned!\n");
             scroll->display_prompt();

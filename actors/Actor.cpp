@@ -67,7 +67,8 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 
  name ="";
  flags = 0;
- armor_class = 0;
+ body_armor_class = 0;
+ readied_armor_class = 0;
 }
 
 Actor::~Actor()
@@ -941,7 +942,7 @@ bool Actor::add_readied_object(Obj *obj)
  readied_objects[location]->combat_type = get_object_combat_type(obj->obj_n);
 
  if(readied_objects[location]->combat_type != NULL)
-   armor_class += readied_objects[location]->combat_type->defence;
+   readied_armor_class += readied_objects[location]->combat_type->defence;
 
  obj->status |= 0x18; //set object to readied status
  return true;
@@ -972,7 +973,7 @@ void Actor::remove_readied_object(uint8 location)
  if(obj)
    {
     if(readied_objects[location]->combat_type)
-      armor_class -= readied_objects[location]->combat_type->defence;
+      readied_armor_class -= readied_objects[location]->combat_type->defence;
 
     delete readied_objects[location];
     readied_objects[location] = NULL;
@@ -1339,10 +1340,16 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
 bool Actor::defend(uint8 attack, uint8 weapon_damage)
 {
  uint8 damage;
+ uint8 total_armor_class = /*body_armor_class +*/ readied_armor_class;
  
- printf("attack=%d, weapon_damage=%d defenders ac=%d", attack, weapon_damage, armor_class);
+/* 
+ if(readied_armor_class > 0)
+  total_armor_class = readied_armor_class;
+ else
+  total_armor_class = body_armor_class;
+*/
+ printf("attack=%d, weapon_damage=%d defenders ac=%d(%d,%d)'body,armor'", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
 
-   
  if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
    {
     if(weapon_damage == 255) // A weapon that does 255 damage kills every time.
@@ -1353,9 +1360,11 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
 
     damage = NUVIE_RAND() % weapon_damage;
 
-    if(damage > armor_class)
+    printf("actual damage = %d\n",damage);
+
+    if(damage > total_armor_class)
       {
-       hit(damage - armor_class);
+       hit(damage);
        return false; // actor took damage
       }
    }
@@ -1393,11 +1402,12 @@ void Actor::die()
 void Actor::hit(uint8 dmg, bool force_hit)
 {
  MsgScroll *scroll = Game::get_game()->get_scroll();
+ uint8 total_armor_class = body_armor_class; //+ readied_armor_class;
       
- if(dmg > armor_class || force_hit)
+ if(dmg > total_armor_class || force_hit)
    {
     new HitEffect(this);
-    reduce_hp(force_hit ? dmg : dmg - armor_class);
+    reduce_hp(force_hit ? dmg : dmg - total_armor_class);
     
     if(!force_hit)
       {

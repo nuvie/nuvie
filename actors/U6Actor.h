@@ -61,6 +61,13 @@ typedef struct {
  U6ActorTileType tile_type;
  uint8 movetype;
  uint16 twitch_rand; //used to control how frequently an actor twitches, lower numbers twitch more
+ uint8 str;
+ uint8 dex;
+ uint8 intelligence;
+ uint8 body_armor_class;
+ uint8 attack_hands;
+ uint8 hp;
+ U6ActorAlignment alignment;
 } U6ActorType;
 
 class U6Actor: public Actor
