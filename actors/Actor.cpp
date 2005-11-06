@@ -1340,7 +1340,8 @@ bool Actor::push(Actor *pusher, uint8 where, uint16 tx, uint16 ty, uint16 tz)
 bool Actor::defend(uint8 attack, uint8 weapon_damage)
 {
  uint8 damage;
- uint8 total_armor_class = /*body_armor_class +*/ readied_armor_class;
+ uint8 total_armor_class = body_armor_class + readied_armor_class;
+ uint8 ac_saving_throw;
  
 /* 
  if(readied_armor_class > 0)
@@ -1359,12 +1360,14 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
       }
 
     damage = NUVIE_RAND() % weapon_damage;
+    
+    ac_saving_throw = NUVIE_RAND() % total_armor_class;
+    
+    printf("actual damage = %d ac_save = %d\n",damage, ac_saving_throw);
 
-    printf("actual damage = %d\n",damage);
-
-    if(damage > total_armor_class)
+    if(damage > ac_saving_throw)
       {
-       hit(damage);
+       hit(damage-ac_saving_throw, true);
        return false; // actor took damage
       }
    }

@@ -1,3 +1,23 @@
+2005-11-07   Eric Fry <efry at users.sourceforge.net>
+	* Don't show objects that have status bit 0x2 set. They are invisible.
+	  Don't include them when Looking at the map.
+	* Added support for the trap object. Initially it is invisible but it is
+	  made visible when stepped on. I'm not too sure what damage
+	  value the trap object should have. At the moment it is set to 25
+	  points.
+	* You can also Use:trap although I'm not too sure why anyone would want
+	  to do this. ;) Using the trap will inflict damage on the player and
+	  make the trap visible. The original U6 didn't have use:trap. I thought
+	  I'd add because you could use the square to check it had a trap in the
+	  original game.
+	* Added obj define OBJ_STATUS_INVISIBLE 0x2 this should probably replace
+	  OBJ_STATUS_SEEN_EGG which I think might be irrelevant now.
+	* Added Party::heal() which restores all party members to full health.
+	* More work on combat routines. Added AC saving roll.
+	* Fixed looking at dead gargoyle and cyclops objects.
+	* Show Avatar when ressurecting party at Lord British's throne room.
+	* Heal party when avatar dies.
+
 2005-11-06   Eric Fry <efry at users.sourceforge.net>
 	* Added Actor is Poisoned check in the Converse Interpreter.
 	* Added Actor cure poison instruction in the Converse Interpreter.

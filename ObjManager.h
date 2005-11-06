@@ -36,7 +36,8 @@ class NuvieIO;
 
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1
-#define OBJ_STATUS_SEEN_EGG      0x2  // something to do with eggs
+#define OBJ_STATUS_SEEN_EGG      0x2  // something to do with eggs <- not sure about this one.
+#define OBJ_STATUS_INVISIBLE     0x2  // I think this is correct
 //#define OBJ_STATUS_UNKNOWN     0x4
 #define OBJ_STATUS_IN_CONTAINER  0x8
 #define OBJ_STATUS_IN_INVENTORY 0x10

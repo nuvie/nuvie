@@ -149,6 +149,8 @@
 
 #define OBJ_U6_RUBBER_DUCKY        169
 
+#define OBJ_U6_SPIKES              172
+#define OBJ_U6_TRAP                173
 #define OBJ_U6_SWITCH              174
 #define OBJ_U6_ELECTRIC_FIELD      175
 #define OBJ_U6_DRAWER              176

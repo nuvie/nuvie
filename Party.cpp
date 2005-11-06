@@ -656,6 +656,19 @@ void Party::update_music()
  return;
 }
 
+void Party::heal()
+{
+ uint16 i;
+
+ for(i=0;i<num_in_party;i++)
+  {
+   member[i].actor->heal();
+  }
+
+ return;
+ 
+}
+
 void Party::show()
 {
  uint16 i;

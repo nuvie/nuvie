@@ -976,7 +976,7 @@ bool Event::look()
 
  if(actor)
    display_prompt = !look(actor);
- else if(obj) // don't display weight or do usecode for obj under actor
+ else if(obj && !(obj->status & OBJ_STATUS_INVISIBLE)) // don't display weight or do usecode for obj under actor or invisible objects
   {
    if(look(obj))
      search(obj);

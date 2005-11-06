@@ -188,7 +188,7 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
 
 
     obj = obj_manager->get_obj(x, y, level);
-    if(obj != NULL)
+    if(obj != NULL && !(obj->status & OBJ_STATUS_INVISIBLE)) //only show visible objects.
      {
 //      tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
 //      tile_num = tile->tile_num;

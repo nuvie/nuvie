@@ -140,6 +140,8 @@ class Party {
  bool is_in_combat_mode() { return in_combat_mode; }
 
  void update_music();
+ 
+ void heal();
 
  void show();
  void hide();

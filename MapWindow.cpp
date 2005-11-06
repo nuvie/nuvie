@@ -655,6 +655,10 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  if(window_updated)
    m_ViewableObjects.push_back(obj);
 
+ //don't show invisible objects. 
+ if(obj->status & OBJ_STATUS_INVISIBLE)
+    return;
+    
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
    //Draw a lightglobe in the middle of the 16x16 tile.

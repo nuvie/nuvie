@@ -392,6 +392,17 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
          if(in_party)
             scroll->message("Zzz...\n");
         }
+
+      if(obj->obj_n == OBJ_U6_TRAP)
+        {
+         hit(25); //FIXME find proper amount.
+         obj->status &= (0xff ^ OBJ_STATUS_INVISIBLE); //show trap. FIXME should this logic go else ware.
+        }
+
+      if(obj->obj_n == OBJ_U6_SPIKES)
+        {
+         hit(15); //FIXME find proper amount.
+        }
      }
 
      // temp. fix; this too should be done with UseCode (and don't move the mirror)
@@ -1225,6 +1236,9 @@ void U6Actor::die()
       player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
       player->move(0x133,0x160,0); //move to LB's castle.
       //move party to LB's castle
+
+      party->heal();
+      party->show();
      }
    else
      {

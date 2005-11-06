@@ -1302,6 +1302,20 @@ bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
  return true;
 }
 
+/* USE: trap. Ouch!
+ */
+bool U6UseCode::use_trap(Obj *obj, UseCodeEvent ev)
+{
+    if(ev == USE_EVENT_USE)
+    {
+        if(items.actor_ref == player->get_actor())
+        {
+         items.actor_ref->hit(25); //FIXME what value goes here. Also this should be shared with Actor->move onto trap.
+         obj->status &= (0xff ^ OBJ_STATUS_INVISIBLE); //show the trap once it goes off. ;)
+        }
+    }
+    return(true);
+}
 
 /* USE: Eat/drink food object. Hic!
  */
