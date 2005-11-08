@@ -1,3 +1,15 @@
+2005-11-09   Eric Fry <efry at users.sourceforge.net>
+	* Added some scripts to automate the creation of a Nuvie snapshot build
+	  on Mac OS X.
+	* Added Mac OS X diskimage build template.
+	* Removed some absolute paths from the XCode build environment.
+	* Fixed bug when trying to attack Actors with an armor class of 0.
+	  (Thanks to Luteijn for spotting that one)
+	* Changed Actor type table for OBJ_U6_MOUSE. It now returns a mouse 
+	  object upon death. It was producing a mouse Actor with a body of type
+	  of OBJ_U6_BLOOD before. This was causing problems for Sherry who is
+	  a permanent actor.
+
 2005-11-07   Eric Fry <efry at users.sourceforge.net>
 	* Don't show objects that have status bit 0x2 set. They are invisible.
 	  Don't include them when Looking at the map.

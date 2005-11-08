@@ -1341,8 +1341,10 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
 {
  uint8 damage;
  uint8 total_armor_class = body_armor_class + readied_armor_class;
- uint8 ac_saving_throw;
+ uint8 ac_saving_throw = 0;
  
+ if(weapon_damage == 0)
+   return true;
 /* 
  if(readied_armor_class > 0)
   total_armor_class = readied_armor_class;
@@ -1361,8 +1363,9 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
 
     damage = NUVIE_RAND() % weapon_damage;
     
-    ac_saving_throw = NUVIE_RAND() % total_armor_class;
-    
+    if(total_armor_class > 0)
+      ac_saving_throw = NUVIE_RAND() % total_armor_class;
+
     printf("actual damage = %d ac_save = %d\n",damage, ac_saving_throw);
 
     if(damage > ac_saving_throw)

@@ -60,7 +60,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_RABBIT,           0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         25,   3,   9,   3,   0,   2,   5, ALIGNMENT_NEUTRAL},
  {OBJ_U6_ROT_WORMS,        0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         50,   3,  17,   2,   0,   2,   5, ALIGNMENT_CHAOTIC},
  {OBJ_U6_HYDRA,            0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,          5,  26,  11,   2,   0,  15,  50, ALIGNMENT_CHAOTIC},
- {OBJ_U6_MOUSE,            1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,          0,   2,  25,   3,   0,   2,   5, ALIGNMENT_NEUTRAL},
+ {OBJ_U6_MOUSE,            1, 1, 1, 0, OBJ_U6_MOUSE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,          0,   2,  25,   3,   0,   2,   5, ALIGNMENT_NEUTRAL},
  {OBJ_U6_CAT,              1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         40,   4,  18,   8,   0,   2,   6, ALIGNMENT_NEUTRAL},
 
  // 4x2

@@ -191,6 +191,8 @@
 		0761811705E84B60001B6450 /* Cursor.h in Headers */ = {isa = PBXBuildFile; fileRef = 0761811505E84B60001B6450 /* Cursor.h */; };
 		07656EEE065F177400EEE5C1 /* SaveGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07656EEC065F177400EEE5C1 /* SaveGame.cpp */; };
 		07656EEF065F177400EEE5C1 /* SaveGame.h in Headers */ = {isa = PBXBuildFile; fileRef = 07656EED065F177400EEE5C1 /* SaveGame.h */; };
+		0780DBF7091F92F40019F059 /* SDL.framework in Add SDL to App */ = {isa = PBXBuildFile; fileRef = 0701134C08EE53B500D9B9F4 /* SDL.framework */; };
+		0780DC15091F92FB0019F059 /* SDL_mixer.framework in Add SDL to App */ = {isa = PBXBuildFile; fileRef = 0701134808EE539100D9B9F4 /* SDL_mixer.framework */; };
 		0787F20B064390F60028223C /* GUI_CallBack.h in Headers */ = {isa = PBXBuildFile; fileRef = 0787F20A064390F60028223C /* GUI_CallBack.h */; };
 		078B444F0669B9B5000EFE27 /* NuvieFileList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078B444D0669B9B5000EFE27 /* NuvieFileList.cpp */; };
 		078B44500669B9B5000EFE27 /* NuvieFileList.h in Headers */ = {isa = PBXBuildFile; fileRef = 078B444E0669B9B5000EFE27 /* NuvieFileList.h */; };
@@ -242,13 +244,16 @@
 /* End PBXBuildStyle section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		07BBB03B07D88B6700F2792A /* CopyFiles */ = {
+		07BBB03B07D88B6700F2792A /* Add SDL to App */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				0780DC15091F92FB0019F059 /* SDL_mixer.framework in Add SDL to App */,
+				0780DBF7091F92F40019F059 /* SDL.framework in Add SDL to App */,
 			);
+			name = "Add SDL to App";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1010,7 +1015,9 @@
 				0703C0A8054BE5660003D6CB /* Resources */,
 				0703C0AC054BE5660003D6CB /* Sources */,
 				0703C0EF054BE5660003D6CB /* Frameworks */,
-				07BBB03B07D88B6700F2792A /* CopyFiles */,
+				07BBB03B07D88B6700F2792A /* Add SDL to App */,
+				0780DC38091F990A0019F059 /* Strip Binary */,
+				0780DC2F091F965C0019F059 /* Build Disk Image */,
 			);
 			buildRules = (
 			);
@@ -1089,6 +1096,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0780DC2F091F965C0019F059 /* Build Disk Image */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			comments = "Make Nuvie.dmg";
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Disk Image";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "$TARGET_BUILD_DIR/../../misc/mknuviedmg.sh $TARGET_BUILD_DIR";
+		};
+		0780DC38091F990A0019F059 /* Strip Binary */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			comments = "Strip Nuvie binary";
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Strip Binary";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "strip $TARGET_BUILD_DIR/Nuvie.app/Contents/MacOS/Nuvie";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0703C0AC054BE5660003D6CB /* Sources */ = {
@@ -1205,16 +1245,66 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		0780DBF1091F91180019F059 /* SnapShot */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CC = "";
+				COPY_PHASE_STRIP = YES;
+				CPLUSPLUS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_PROFILING_CODE = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
+					"$(HOME)/Library/Frameworks/SDL_mixer.framework/Headers",
+					/usr/local/include/SDL,
+					..,
+				);
+				INFOPLIST_FILE = "Info-Nuvie.plist";
+				INSTALL_PATH = build;
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					SDL,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Nuvie;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wall";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = SnapShot;
+		};
+		0780DBF2091F91180019F059 /* SnapShot */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = NO;
+				DEPLOYMENT_LOCATION = NO;
+				DEPLOYMENT_POSTPROCESSING = NO;
+				DSTROOT = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "";
+			};
+			name = SnapShot;
+		};
 		07CD0D58088E817600E552A7 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CC = "";
 				COPY_PHASE_STRIP = NO;
 				CPLUSPLUS = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					/Users/eric/Library/Frameworks,
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1255,10 +1345,7 @@
 				CC = "";
 				COPY_PHASE_STRIP = YES;
 				CPLUSPLUS = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					/Users/eric/Library/Frameworks,
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -1296,10 +1383,7 @@
 			buildSettings = {
 				CC = "";
 				CPLUSPLUS = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					/Users/eric/Library/Frameworks,
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_GENERATE_PROFILING_CODE = YES;
@@ -1333,18 +1417,27 @@
 		07CD0D5C088E817600E552A7 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_MODEL_TUNING = G5;
 			};
 			name = Development;
 		};
 		07CD0D5D088E817600E552A7 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_MODEL_TUNING = G5;
 			};
 			name = Deployment;
 		};
 		07CD0D5E088E817600E552A7 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_MODEL_TUNING = G5;
 			};
 			name = Default;
 		};
@@ -1356,6 +1449,7 @@
 			buildConfigurations = (
 				07CD0D58088E817600E552A7 /* Development */,
 				07CD0D59088E817600E552A7 /* Deployment */,
+				0780DBF1091F91180019F059 /* SnapShot */,
 				07CD0D5A088E817600E552A7 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1366,6 +1460,7 @@
 			buildConfigurations = (
 				07CD0D5C088E817600E552A7 /* Development */,
 				07CD0D5D088E817600E552A7 /* Deployment */,
+				0780DBF2091F91180019F059 /* SnapShot */,
 				07CD0D5E088E817600E552A7 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
