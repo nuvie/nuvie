@@ -166,24 +166,9 @@ void Converse::load_conv(const std::string &convfilename)
 #endif
 }
 
-
-/* Check that loaded converse library (if any) has script for npc `a'. Load
- * another file if it doesn't.
- * Returns the real item number in the source.
- */
-uint32 Converse::load_conv(uint8 a)
+uint32 Converse::get_script_num(uint8 a)
 {
-    if(a <= 98)
-    {
-        if(src_num != 1)
-            load_conv("converse.a");
-    }
-    else // a >= 99
-    {
-        if(src_num != 2)
-            load_conv("converse.b");
-        
-        if(gametype == NUVIE_GAME_U6)
+         if(gametype == NUVIE_GAME_U6)
           {
            if(a > 200) // (quick fix for U6: anything over 200 is a temporary npc)
              {
@@ -202,9 +187,26 @@ uint32 Converse::load_conv(uint8 a)
            else if(a == 199)
               a = 200; // Humility -> Singularity
           }
-    }
 
- script_num = a;
+ return a;
+}
+
+/* Check that loaded converse library (if any) has script for npc `a'. Load
+ * another file if it doesn't.
+ * Returns the real item number in the source.
+ */
+uint32 Converse::load_conv(uint8 a)
+{
+    if(a <= 98)
+    {
+        if(src_num != 1)
+            load_conv("converse.a");
+    }
+    else // a >= 99
+    {
+        if(src_num != 2)
+            load_conv("converse.b");        
+    }
  
  // we want to return the real item number in the converse file.
  if(gametype == NUVIE_GAME_U6 && a > 98)
@@ -320,7 +322,8 @@ bool Converse::start(uint8 n)
     if(!(npc = actors->get_actor(n)))
         return(false);
     // get script num for npc number (and open file)
-    real_script_num = load_conv(n);
+    script_num = get_script_num(n);
+    real_script_num = load_conv(script_num);
     if(!src)
         return(false);
 
@@ -461,7 +464,7 @@ const char *Converse::npc_name(uint8 num)
     else
     {
 //        uint32 temp_num = num;
-        num = load_conv(num); // get idx number; won't actually reload file
+        num = load_conv(get_script_num(num)); // get idx number; won't actually reload file
         temp_script = new ConvScript(src, num);
         s_pt = temp_script->get_buffer();
         if(!s_pt)

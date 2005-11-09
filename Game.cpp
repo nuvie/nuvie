@@ -151,6 +151,8 @@ bool Game::loadGame(Screen *s, uint8 type)
    font_manager = new FontManager(config);
    font_manager->init();
 
+   scroll = new MsgScroll(config, font_manager->get_font(0));
+
    game_map = new Map(config);
 
    egg_manager = new EggManager(config, game_map);
@@ -197,7 +199,7 @@ bool Game::loadGame(Screen *s, uint8 type)
    view_manager = new ViewManager(config);
    view_manager->init(gui, text, party, player, tile_manager, obj_manager, portrait);
 
-   scroll = new MsgScroll(config, font_manager->get_font(0));
+
    gui->AddWidget(scroll);
 
    map_window->set_windowSize(11,11);

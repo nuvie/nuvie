@@ -115,6 +115,8 @@ public:
     ~Converse();
     void init(Configuration *cfg, nuvie_game_t t, MsgScroll *s, ActorManager *a,
               GameClock *c,Player *p, ViewManager *v, ObjManager *o);
+              
+    uint32 get_script_num(uint8 a);
     void load_conv(const std::string &convfilename);
     uint32 load_conv(uint8 a);
     void unload_conv() { delete src; src = NULL; }

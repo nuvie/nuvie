@@ -22,6 +22,9 @@ cp -r $DIR/Nuvie.app $DIR/nuvie-$DATE
 ## strip out the CVS directories.
 rm -rf `find $DIR/nuvie-$DATE | grep "CVS$"`
 
-$DIR/../../misc/buildDMG.pl -dmgName Nuvie -buildDir $DIR -volName Nuvie-$DATE  -compressionLevel 9 $DIR/nuvie-$DATE -deleteHeaders $DIR/../../misc/README_MacOSX.txt
+cp  $DIR/../../../ChangeLog $DIR/ChangeLog.txt
+
+$DIR/../../misc/buildDMG.pl -dmgName Nuvie -buildDir $DIR -volName Nuvie-$DATE  -compressionLevel 9 $DIR/nuvie-$DATE -deleteHeaders $DIR/../../misc/README_MacOSX.txt $DIR/ChangeLog.txt
 
 rm -rf $DIR/nuvie-$DATE
+rm $DIR/ChangeLog.txt

@@ -314,8 +314,14 @@ void Player::pass()
  */
 bool Player::set_party_mode(Actor *new_actor)
 {
+ MsgScroll *scroll = Game::get_game()->get_scroll();
+ 
     if(party->contains_actor(new_actor))
     {
+        std::string prompt = get_party()->get_actor_name(0);
+        prompt += ":\n>";
+        scroll->set_prompt((char *)prompt.c_str());
+
         party_mode = true;
         actor = new_actor;
         return(true);

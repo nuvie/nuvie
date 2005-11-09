@@ -1762,9 +1762,6 @@ void Event::party_mode()
         if(player->set_party_mode(player->get_party()->get_actor(0)))
         {
             scroll->display_string("\nParty mode\n");
-            std::string prompt = player->get_party()->get_actor_name(0);
-            prompt += ":\n>";
-            scroll->set_prompt((char *)prompt.c_str());
             map_window->centerMapOnActor(actor);
             if(view_manager->get_inventory_view()->set_party_member(0))
                 view_manager->set_inventory_mode(); // reset inventoryview

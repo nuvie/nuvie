@@ -246,7 +246,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		07BBB03B07D88B6700F2792A /* Add SDL to App */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
@@ -254,7 +254,7 @@
 				0780DBF7091F92F40019F059 /* SDL.framework in Add SDL to App */,
 			);
 			name = "Add SDL to App";
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -1100,7 +1100,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		0780DC2F091F965C0019F059 /* Build Disk Image */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			comments = "Make Nuvie.dmg";
 			files = (
 			);
@@ -1109,13 +1109,13 @@
 			name = "Build Disk Image";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "$TARGET_BUILD_DIR/../../misc/mknuviedmg.sh $TARGET_BUILD_DIR";
 		};
 		0780DC38091F990A0019F059 /* Strip Binary */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			comments = "Strip Nuvie binary";
 			files = (
 			);
@@ -1124,7 +1124,7 @@
 			name = "Strip Binary";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "strip $TARGET_BUILD_DIR/Nuvie.app/Contents/MacOS/Nuvie";
 		};

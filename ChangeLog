@@ -1,4 +1,17 @@
 2005-11-09   Eric Fry <efry at users.sourceforge.net>
+	* Fixed a bug in Converse class which resulted in a crash when loading
+	  FM towns speech data. The script_num variable was being overwritten
+	  when collecting an actors name from a different script location.
+	  This could happen when we switch portraits in the middle of a
+	  conversation.
+	* Added Converse::get_script_num() I've moved some logic from
+	  load_conv(uint8 a) into this new method.
+	* Fixed a bug that happened when you died in solo mode. Nuvie would
+	  ressurect you in party mode but the message scroll prompt hadn't been
+	  updated from the old solo mode.
+	* Added ChangeLog to Mac OS X snapshot build.
+
+2005-11-09   Eric Fry <efry at users.sourceforge.net>
 	* Added some scripts to automate the creation of a Nuvie snapshot build
 	  on Mac OS X.
 	* Added Mac OS X diskimage build template.
