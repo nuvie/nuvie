@@ -1121,8 +1121,8 @@ inline bool U6UseCode::use_find_water(uint16 *x, uint16 *y, uint8 *z)
 bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 {
     Obj *dug_up_obj = NULL;
-    MapCoord from = items.actor_ref->get_location(),
-             dig_at;
+    Obj *ladder_obj;
+    MapCoord from = items.actor_ref->get_location(), dig_at, ladder;
 
     if(!items.mapcoord_ref) // get direction (FIXME: should return relative dir)
     {
@@ -1143,33 +1143,63 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
     scroll->display_string(".\n\n");
     if(xdir == 0 && ydir == 0)
         return(true); // ??
-    // FIX: how are dig-able tiles determined?
-    if(!game->get_map_window()->in_dungeon_level())
+
+    if(dig_at.z == 5) // we can't go anywhere from the gargoyle world.
     {
         scroll->display_string("No effect\n");
         return(true); // ??
     }
 
-    // 10% chance of anything
-    if(NUVIE_RAND() % 10)
-    {
-        scroll->display_string("Failed\n");
-        return(true);
-    }
-    // Door #1 or Door #2?
-    scroll->display_string("You dig a hole.\n");
-    Obj *fountain = obj_manager->get_obj_of_type_from_location(OBJ_U6_FOUNTAIN,dig_at.x,dig_at.y,dig_at.z);
-    if((NUVIE_RAND() % 2) && !fountain)
-    {
-        scroll->display_string("You find a water fountain.\n");
-        dug_up_obj = new_obj(OBJ_U6_FOUNTAIN,0, dig_at.x,dig_at.y,dig_at.z);
-    }
-    else
-    {
-        scroll->display_string("You find a gold nugget.\n");
-        dug_up_obj = new_obj(OBJ_U6_GOLD_NUGGET,0, dig_at.x,dig_at.y,dig_at.z);
-    }
-    dug_up_obj->status |= OBJ_STATUS_OK_TO_TAKE;
+    // try to conenct with a ladder on a lower level.
+    ladder = dig_at;
+    if(dig_at.z == 0)//handle the transition from the surface to the first dungeon level
+      {
+       ladder.x = (dig_at.x & 0x07) | (dig_at.x >> 2 & 0xF8);
+       ladder.y = (dig_at.y & 0x07) | (dig_at.y >> 2 & 0xF8);
+      }
+      
+    ladder.z = dig_at.z + 1;
+
+    if(dig_at.z != 5)
+      {
+       ladder_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_LADDER, ladder.x, ladder.y, ladder.z);
+       if(ladder_obj && ladder_obj->frame_n == 1) // ladder up.
+         {
+          scroll->display_string("You dig a hole.\n");
+          dug_up_obj = new_obj(OBJ_U6_HOLE, 0, dig_at.x, dig_at.y,dig_at.z); //found a connecting ladder, dig a hole
+         }
+      }
+
+    if(!dug_up_obj && (dig_at.z == 0 || dig_at.z == 5))
+      {
+       scroll->display_string("No Effect.\n");
+       return(true);
+      }
+    
+    if(!dug_up_obj)
+      {
+       // 10% chance of anything
+       if(NUVIE_RAND() % 10)
+         {
+          scroll->display_string("Failed\n");
+          return(true);
+         }
+         
+       // Door #1 or Door #2?
+       Obj *fountain = obj_manager->get_obj_of_type_from_location(OBJ_U6_FOUNTAIN,dig_at.x,dig_at.y,dig_at.z);
+       if((NUVIE_RAND() % 2) && !fountain)
+         {
+          scroll->display_string("You find a water fountain.\n");
+          dug_up_obj = new_obj(OBJ_U6_FOUNTAIN,0, dig_at.x,dig_at.y,dig_at.z);
+         }
+       else
+         {
+          scroll->display_string("You find a gold nugget.\n");
+          dug_up_obj = new_obj(OBJ_U6_GOLD_NUGGET,0, dig_at.x,dig_at.y,dig_at.z);
+          dug_up_obj->status |= OBJ_STATUS_OK_TO_TAKE;
+         }
+      }
+
     obj_manager->add_obj(dug_up_obj, true);
     return(true);
 }

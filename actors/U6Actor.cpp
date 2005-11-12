@@ -1248,6 +1248,8 @@ void U6Actor::die()
      }
   }
   
+   if(has_surrounding_objs())
+     clear_surrounding_objs_list(true);
 
   
     // we don't generate a dead body if the avatar dies because they will be ressurrected.  

@@ -1,3 +1,10 @@
+2005-11-13   Eric Fry <efry at users.sourceforge.net>
+	* Fixed use:shovel You can now dig a hole on the surface map. This is
+	  used to enter the pirate's cave. A hole object is placed on the map
+	  if a correcponding up ladder is found on the next layer down.
+	* Fixed a crash when multi-tile actors die. Remove surrounding tiles
+	  upon death.
+
 2005-11-09   Eric Fry <efry at users.sourceforge.net>
 	* Fixed a bug in Converse class which resulted in a crash when loading
 	  FM towns speech data. The script_num variable was being overwritten
