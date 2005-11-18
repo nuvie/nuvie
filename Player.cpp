@@ -426,7 +426,7 @@ bool Player::attack_select_weapon_at_location(sint8 location)
  if(location == ACTOR_NO_READIABLE_LOCATION)
    {
     current_weapon = location;
-    scroll->display_string("Attack with hands-");
+    scroll->display_string("Attack with bare hands-");
     return true;
    }
 
@@ -446,5 +446,12 @@ bool Player::attack_select_weapon_at_location(sint8 location)
 
 void Player::attack(Actor *a)
 {
- actor->attack(current_weapon, a);
+ MsgScroll *scroll = Game::get_game()->get_scroll();
+ 
+ if(weapon_can_hit(a->x,a->y))
+   actor->attack(current_weapon, a);
+ else
+   scroll->display_string("\nOut of range!\n");
+   
+ return;
 }

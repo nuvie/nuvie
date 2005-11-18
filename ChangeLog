@@ -1,3 +1,10 @@
+2005-11-19   Eric Fry <efry at users.sourceforge.net>
+	* Added a weapon range check when selecting a target with the mouse.
+	  If the target is too far away for a given weapon the string
+	  "\nOut of range!\n" is displayed in the message scroll.
+	* Changed "hands" to "bare hands" in
+	  Player::attack_select_weapon_at_location()
+
 2005-11-13   Eric Fry <efry at users.sourceforge.net>
 	* Fixed use:shovel You can now dig a hole on the surface map. This is
 	  used to enter the pirate's cave. A hole object is placed on the map
