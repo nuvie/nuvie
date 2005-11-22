@@ -131,6 +131,22 @@ void GUI_Widget::Move(int new_x,int new_y)
  return;
 }
 
+void GUI_Widget::MoveRelativeToParent(int dx, int dy)
+{
+ std::list<GUI_Widget *>::iterator child;
+
+ area.x = (area.x - offset_x) + dx;
+ area.y = (area.y - offset_y) + dy;
+ 
+ offset_x = dx;
+ offset_y = dy;
+ 
+ for(child = children.begin(); child != children.end(); child++)
+    (*child)->Move(area.x, area.y);
+
+ return;
+}
+ 
 void GUI_Widget::grab_focus()
 {
  if(GUI::get_gui()->set_focus(this))

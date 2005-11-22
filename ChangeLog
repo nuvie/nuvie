@@ -1,3 +1,15 @@
+2005-11-23   Eric Fry <efry at users.sourceforge.net>
+	* Added GUI_Widget::MoveRelativeToParent() This moves the child to
+	  new coords which are relative to the parent widget.
+	* Added Actor::has_readied_objects() This checks to see if the
+	  Actor has any readied objects in their inventory. We use this
+	  when displaying actor portraits.
+	* Added readied object display to the Portrait view. Nuvie will
+	  now display the actor's readied objects. They are displayed
+	  alongside the actor's portrait when you are either talking or
+	  looking at them. Just readied objects are shown when an actor
+	  doesn't have a portrait.
+
 2005-11-19   Eric Fry <efry at users.sourceforge.net>
 	* Added a weapon range check when selecting a target with the mouse.
 	  If the target is too far away for a given weapon the string

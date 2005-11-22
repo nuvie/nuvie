@@ -103,6 +103,7 @@ public:
 
 	virtual void MoveRelative(int dx,int dy);
 	virtual void Move(int new_x, int new_y);
+    void MoveRelativeToParent(int dx, int dy);
 	void grab_focus();
 	virtual void release_focus();
 

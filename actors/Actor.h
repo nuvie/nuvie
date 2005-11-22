@@ -321,6 +321,7 @@ class Actor
  void remove_readied_object(uint8 location);
 
  void remove_all_readied_objects();
+ bool has_readied_objects();
 
  virtual void twitch() { return; }
  bool push(Actor *pusher, uint8 where = ACTOR_PUSH_ANYWHERE, uint16 tx = 0, uint16 ty = 0, uint16 tz = 0);

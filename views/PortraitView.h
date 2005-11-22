@@ -35,6 +35,7 @@ class Text;
 class ObjManager;
 class Party;
 class Actor;
+class DollWidget;
 
 class PortraitView : public View {
 
@@ -47,6 +48,9 @@ class PortraitView : public View {
  bool waiting; // waiting for input, then will return to previous view
  bool show_cursor; // indicate waiting for input
 // uint16 cursor_x, cursor_y;
+
+ DollWidget *doll_widget;
+ bool display_doll;
 
  public:
  PortraitView(Configuration *cfg);

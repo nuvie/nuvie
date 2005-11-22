@@ -1003,6 +1003,20 @@ void Actor::remove_all_readied_objects()
  return;
 }
 
+// returns true if the actor has one or more readied objects
+bool Actor::has_readied_objects()
+{
+ uint8 location;
+
+ for(location=0; location < ACTOR_MAX_READIED_OBJECTS; location++)
+   {
+    if(readied_objects[location] != NULL)
+      return true;
+   }
+
+ return false;
+ 
+}
 
 void Actor::inventory_drop_all()
 {
