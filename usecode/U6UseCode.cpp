@@ -643,6 +643,8 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
             toggle_frame(obj); //open / close object
         if(obj->frame_n == 0)
         {
+            process_effects(obj); //run any effects that might be stored in this container. Eg Poison explosion.
+
             scroll->display_string("\nSearching here, you find ");
             bool found_objects = search_obj(obj, items.actor_ref);
             scroll->display_string(found_objects ? ".\n" : "nothing.\n");
@@ -2457,4 +2459,36 @@ void U6UseCode::extinguish_torch(Obj *obj)
     scroll->display_string("\nA torch burned out.\n");
 // FIXME: deleting the object is crashing
 //    destroy_obj(obj);
+}
+
+bool U6UseCode::process_effects(Obj *container_obj)
+{
+ Obj *temp_obj;
+ U6Link *obj_link, *temp_link;
+
+ /* Test whether this object has items inside it. */
+ if(container_obj->container != NULL)
+    {
+     for(obj_link = container_obj->container->end(); obj_link != NULL; )
+       {
+        temp_obj = (Obj*)obj_link->data;
+
+        if(temp_obj->obj_n == OBJ_U6_EFFECT)
+          {
+           switch(temp_obj->quality) // process the effect.
+             {
+              case 22 : printf("BIG Poison explosion!\n"); break;
+              default : printf("Unknown Effect!!\n"); break;
+             }
+
+           temp_link = obj_link->prev;
+           container_obj->container->remove(temp_obj); //remove the used effect from the container.
+           obj_link = temp_link;
+          }
+        else
+           obj_link = obj_link->prev;
+      }
+    }
+
+ return true;
 }

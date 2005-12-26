@@ -138,6 +138,7 @@ class U6UseCode: public UseCode, public CallBack
  bool sundial(Obj *obj, UseCodeEvent ev);
  bool torch(Obj *obj, UseCodeEvent ev);
 
+ 
  protected:
 // supplementary
  Obj *drawbridge_find(Obj *crank_obj);
@@ -150,7 +151,9 @@ class U6UseCode: public UseCode, public CallBack
  Obj *bell_find(Obj *chain_obj);
  void sundial_set_shadow(Obj *sundial, uint8 hour);
  void extinguish_torch(Obj *obj);
+ bool process_effects(Obj *container_obj);
 
+ 
  inline bool use_find_water(uint16 *x, uint16 *y, uint8 *z);
 };
 

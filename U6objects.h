@@ -251,6 +251,7 @@
 
 #define OBJ_U6_EGG                 335
 
+#define OBJ_U6_EFFECT              337
 #define OBJ_U6_BLOOD               338
 #define OBJ_U6_DEAD_BODY           339
 #define OBJ_U6_DEAD_CYCLOPS        340

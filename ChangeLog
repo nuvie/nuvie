@@ -1,3 +1,10 @@
+2005-12-27   Eric Fry <efry at users.sourceforge.net>
+	* Added OBJ_U6_EFFECT define to U6objects.h
+	* Added process_effects() to U6UseCode class. This is called from
+	  U6UseCode::use_container(). It will process effect objects that are
+	  loaded into a container when the container is used. Eg a big poison
+	  explosion. At the moment it just prints text to the console.
+
 2005-11-23   Eric Fry <efry at users.sourceforge.net>
 	* Added GUI_Widget::MoveRelativeToParent() This moves the child to
 	  new coords which are relative to the parent widget.
