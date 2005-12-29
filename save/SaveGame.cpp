@@ -482,6 +482,8 @@ bool SaveGame::save(const char *filename, std::string *save_description)
 
  savefile->close();
 
+ delete savefile;
+
  return true;
 }
 

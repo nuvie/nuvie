@@ -1,3 +1,8 @@
+2005-12-30   Michael Fink <vividos at users.sourceforge.net>
+	* fixed compiling with msvc6
+	* fixed some memory leaks
+	* simplified visualc7\dirent.cpp code
+
 2005-12-27   Eric Fry <efry at users.sourceforge.net>
 	* Added OBJ_U6_EFFECT define to U6objects.h
 	* Added process_effects() to U6UseCode class. This is called from

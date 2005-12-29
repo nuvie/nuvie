@@ -279,6 +279,14 @@ SOURCE=..\Book.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\CommandBar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\CommandBar.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Converse.cpp
 # End Source File
 # Begin Source File
@@ -292,6 +300,14 @@ SOURCE=..\ConverseInterpret.cpp
 # Begin Source File
 
 SOURCE=..\ConverseInterpret.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\ConverseSpeech.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\ConverseSpeech.h
 # End Source File
 # Begin Source File
 
@@ -917,6 +933,10 @@ SOURCE=..\save\SaveSlot.h
 # Begin Group "visualc7 files"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\visualc7\dirent.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=..\visualc7\dirent.h

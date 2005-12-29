@@ -1062,7 +1062,7 @@ bool ObjManager::add_obj(Obj *obj, bool addOnTop)
  return true;
 }
 
-bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
+bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
 {
  U6Link *link;
  Obj *c_obj = NULL; //container object
@@ -1073,7 +1073,7 @@ bool ObjManager::addObjToContainer(U6LList *list, Obj *obj)
  if(obj->y & 0x1)
    index += 1024;
 
- link = list->gotoPos(index);
+ link = llist->gotoPos(index);
  if(link != NULL)
 	c_obj = (Obj *)link->data;
 
@@ -1444,18 +1444,18 @@ void delete_obj(Obj *obj)
 }
 
 // add object to list, stacking with exisiting objects if possible
-bool ObjManager::list_add_obj(U6LList *list, Obj *obj)
+bool ObjManager::list_add_obj(U6LList *llist, Obj *obj)
 {
  Obj *stack_with;
  uint16 new_qty;
  U6Link *link;
  
- if(!list || !obj)
+ if(!llist || !obj)
    return false;
    
  if(is_stackable(obj))
   {
-   for(link=list->start();link != NULL; )
+   for(link=llist->start();link != NULL; )
     {
      stack_with = (Obj *)link->data;
      link = link->next;
@@ -1464,9 +1464,9 @@ bool ObjManager::list_add_obj(U6LList *list, Obj *obj)
        {
         new_qty = obj->qty + stack_with->qty;
         obj->qty = new_qty;
-        list->addAtPos(list->findPos(stack_with), obj);
+        llist->addAtPos(llist->findPos(stack_with), obj);
 
-        list->remove(stack_with);
+        llist->remove(stack_with);
         delete_obj(stack_with);
 
         return true;
@@ -1474,7 +1474,7 @@ bool ObjManager::list_add_obj(U6LList *list, Obj *obj)
     }
   }
 
- list->addAtPos(0,obj);
+ llist->addAtPos(0,obj);
 
  return true;
 }

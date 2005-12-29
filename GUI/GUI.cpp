@@ -32,6 +32,10 @@
 #include "GUI.h"
 #include "GUI_types.h"
 
+
+const int GUI::mouseclick_delay = 300; /* SB-X */
+
+
 /* Number of widget elements to allocate at once */
 #define WIDGET_ARRAYCHUNK	32
 

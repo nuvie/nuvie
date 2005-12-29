@@ -383,7 +383,11 @@ inline MsgLine *MsgScroll::add_new_line()
  line_count++;
 
  if(msg_buf.size() > MSGSCROLL_SCROLLBACK_HEIGHT)
+ {
+   MsgLine* msg_line_front = msg_buf.front();
    msg_buf.pop_front();
+   delete msg_line_front;
+ }
 
  if(line_count > scroll_height - 1)
      set_page_break();

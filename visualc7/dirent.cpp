@@ -25,98 +25,11 @@
 
 #include "NuvieDefs.h"
 #include "dirent.h"
+#include <vector>
+#include <algorithm>
+#include <assert.h>
 #include <io.h>
 
-//	template for a searching class
-template< class _class_ >
-class TListCompare
-{
-	public:
-		static	bool	Matches (const _class_* pClass, void* pData);
-};
-
-//	simple list template for managing DIR records
-template< class _class_ >
-class	TList
-{
-	template< class _class_ >
-	class TListNode	:	public	_class_
-	{
-		public:
-			TListNode*	m_pNext;
-	};
-
-	typedef	TListNode< _class_ >	CListNode;
-	typedef TListCompare< _class_ >	CListCompare;
-
-	public:
-		TList ()
-		{
-			m_pHead = NULL;
-		}
-
-		~TList ()
-		{
-			//	free all allocated nodes
-			while (m_pHead != NULL)
-			{
-				CListNode* pNext = m_pHead->m_pNext;
-				delete m_pHead;
-				m_pHead = pNext;
-			}
-		}
-
-		_class_*	Add ()
-		{
-			CListNode*	pLastHead = m_pHead;
-			m_pHead = new CListNode;
-			m_pHead->m_pNext = pLastHead;
-
-			return	m_pHead;
-		}
-
-		bool	Remove (_class_* pItem)
-		{
-			CListNode*	pCur = m_pHead;
-			CListNode*	pPrev = NULL;
-
-			while (pCur != NULL)
-			{
-				if (pCur == pItem)
-				{
-					if (pPrev == NULL)
-						m_pHead = pCur->m_pNext;
-					else
-						pPrev->m_pNext = pCur->m_pNext;
-
-					delete pCur;
-
-					return	true;
-				}
-
-				pPrev = pCur;
-				pCur = pCur->m_pNext;
-			}
-
-			return	false;
-		}
-
-		_class_*	Find (void* pData) const
-		{
-			CListNode*	pCur = m_pHead;
-			while (pCur != NULL)
-			{
-				if (CListCompare::Matches (pCur, pData))
-					return	pCur;
-				pCur = pCur->m_pNext;
-			}
-
-			return	NULL;
-		}
-
-	protected:
-		CListNode*	m_pHead;
-};
 
 //	NOTE:	don't add any virtual methods to this so that it remains 
 //			structurally compatible with the _dircontents struct.
@@ -269,47 +182,68 @@ class	CDIR	:	public	DIR
 		//	m_DirData is filled in by readdir and then a a pointer to m_DirData 
 		//	is returned.  This matches the spec I found somewhere of how readdir
 		//	is supposed to work (one dirent per directory stream)
-		dirent	m_DirData;		
+		dirent	m_DirData;
 };
 
-typedef	TList<CDIR>	CDIRList;
 
-//	just a linked list of DIRs that are open.  This may not suitable for LOTS
+// a vector with CDIR pointer; it additionally has a destructor that
+// does auto deletion of pointers still in the list
+class CDIRList: public std::vector<CDIR*>
+{
+public:
+   ~CDIRList()
+   {
+      std::for_each(begin(), end(), item_deleter);
+   }
+
+   static void item_deleter(CDIR* pDir){ delete pDir; }
+};
+
+//	just a list of DIRs that are open.  This may not suitable for LOTS
 //	of dirs being opened at once, but should suffice for Nuvie.
-static	CDIRList	g_OpenDirs;
+static CDIRList g_OpenDirs;
+
 
 
 
 //=============================================================================
-//	Interface
+// Interface
 //=============================================================================
 
 DIR* opendir (const char* pDirName)
 {
-	CDIR* pDir = g_OpenDirs.Add ();
-	if (pDir == NULL)
-		return	NULL;
+   CDIR* pDir = new CDIR;
+   if (pDir == NULL)
+      return NULL;
 
-	if (pDir->Open (pDirName) == false)
-	{
-		g_OpenDirs.Remove (pDir);
-		return	NULL;
-	}
+   if (pDir->Open (pDirName) == false)
+      return NULL;
 
-	return	pDir;
+   g_OpenDirs.push_back(pDir);
+
+   return (DIR*)pDir;
 }
 
-int	closedir (DIR* pDir)
+int closedir (DIR* pDir)
 {
-	if (pDir == NULL)
-		return	-1;
-	
-	_findclose (pDir->dd_id);
-	
-	if (g_OpenDirs.Remove ((CDIR*)(pDir)) == true)
-		return	0;
+   if (pDir == NULL)
+      return -1;
 
-	return	-1;
+   _findclose (pDir->dd_id);
+
+   CDIR* pRealDir = (CDIR*)(pDir);
+
+   std::vector<CDIR*>::iterator iter =
+      std::find(g_OpenDirs.begin(), g_OpenDirs.end(), pRealDir);
+
+   if (iter == g_OpenDirs.end())
+      return -1;
+
+   g_OpenDirs.erase(iter);
+
+   delete pRealDir;
+
+   return 0;
 }
 
 dirent* readdir (DIR* pDir)
