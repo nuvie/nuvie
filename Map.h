@@ -100,8 +100,10 @@ public:
     // get absolute coordinates for relative destination (dx,dy)
     MapCoord abs_coords(sint16 dx, sint16 dy);
     // location is on screen?
-//    bool is_visible() { return(Game::get_map_window()->in_window(x, y, z)); }
     bool is_visible();
+    int print_d() { return(printf("%d, %d, %d",x,y,z)); }
+    int print_h() { return(printf("%x, %x, %x",x,y,z)); }
+    int print_s() { return(printf("%d, %d",sx,sy)); }
 
     bool operator==(MapCoord &c2) {return(x == c2.x && y == c2.y && z == c2.z);}
     bool operator!=(MapCoord &c2) { return(!(*this == c2)); }
@@ -134,6 +136,7 @@ class Map
  bool is_passable(uint16 x, uint16 y, uint8 level);
  bool is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects=false);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
+ bool is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
  bool actor_at_location(uint16 x, uint16 y, uint8 level);
 
  const char *look(uint16 x, uint16 y, uint8 level);

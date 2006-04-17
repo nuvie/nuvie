@@ -24,6 +24,8 @@
  *
  */
 
+#include "nuvieDefs.h"
+
 class Configuration;
 class Look;
 
@@ -39,15 +41,17 @@ class Look;
 #define TILEFLAG_WALL_EAST  0x40
 #define TILEFLAG_WALL_SOUTH 0x20
 #define TILEFLAG_WALL_WEST  0x10
-#define TILEFLAG_WALL 0x4
+#define TILEFLAG_DAMAGING 0x8
+#define TILEFLAG_WALL     0x4
+#define TILEFLAG_BLOCKING 0x2
+#define TILEFLAG_WATER    0x1
 
 //flags2
 #define TILEFLAG_BOUNDARY         0x4
-#define TILEFLAG_MISSLE_BOUNDARY  0x20
+#define TILEFLAG_WINDOW           0x8
+#define TILEFLAG_MISSILE_BOUNDARY  0x20
 #define TILEFLAG_DOUBLE_HEIGHT    0x40
 #define TILEFLAG_DOUBLE_WIDTH     0x80
-
-#define TILEFLAG_WINDOW 0x8 // flags2
 
 //flags3
 #define TILEFLAG_CAN_PLACE_ONTOP 0x2
@@ -67,6 +71,7 @@ bool dbl_width;
 bool dbl_height;
 bool transparent;
 bool boundary;
+bool damages;
 uint8 article_n;
 //uint8 qty;
 //uint8 flags;

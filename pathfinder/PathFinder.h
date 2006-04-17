@@ -1,46 +1,44 @@
-#ifndef	__PathFinder_h__
-#define	__PathFinder_h__
+#ifndef __PathFinder_h__
+#define __PathFinder_h__
 
 #include "Map.h"
 
-class Actor;
-class MapCoord;
+class Path;
 
-/* Generic interface and support for short and long range path-finders.
- */
 class PathFinder
 {
 protected:
-    Actor *actor; // the actor can be moved directly
-    MapCoord src, dest, *dest2; // source, destinations
-    MapCoord *path; // list of tiles in the path
-    uint32 step_count; // number of tiles in the path
-    uint32 next_step;
-    uint8 delay; // number of walk_path() calls to skip walking
-    uint32 speed; // number of moves given per walk_path(), 0=default
+    MapCoord start, goal, loc; /* source, destination, current location */
+
+    Path *search; /* contains path-search algorithms, and
+                                 game-specific step costs */
+
+    void new_search(Path *new_path);
+//    bool is_hazardous(MapCoord &loc); will have to check objects and tiles
 
 public:
-    PathFinder(Actor *a, MapCoord &d, uint32 spd = 1);
     PathFinder();
+    PathFinder(MapCoord s, MapCoord g);
     virtual ~PathFinder();
+    void set_search(Path *new_path) { new_search(new_path); }
 
-    // fast direction finder for following? (Actor::swalk())
-    // or slower path-finder for travel? (Actor::lwalk())
-    virtual bool can_follow() { return(false); }
-    virtual bool can_travel() { return(false); }
+    virtual void set_start(const MapCoord &s);
+    virtual void set_goal(const MapCoord &g);
+    virtual void set_location(const MapCoord &l) { loc = l; }
 
-    virtual bool walk_path(MapCoord &returned_step, uint32 step_speed = 0) = 0;
-    virtual void set_dest(MapCoord &d);
-    virtual void set_dest2(MapCoord &d2);
-    void set_speed(uint8 sp) { speed = sp; }
-    void wait(uint8 turns) { delay = turns; }
+    virtual MapCoord get_location() { return loc; }
+    virtual MapCoord get_goal()     { return goal; }
+    virtual bool reached_goal()     { return(loc.x == goal.x && loc.y == goal.y
+                                             && loc.z == goal.z); }
 
-    bool reached_goal();
-    void get_adjacent_dir(sint8 &xdir, sint8 &ydir, sint8 rotate);
-    void delete_path();
+    virtual bool check_dir(const MapCoord &from, const MapCoord &rel);
+    virtual bool check_loc(const MapCoord &loc) = 0;
+    bool check_loc(uint16 x, uint16 y, uint8 z);
 
-    virtual MapCoord get_next_step() { return(dest); }
-
+    virtual bool find_path(); /* get path to goal if one doesn't already exist */
+    virtual bool have_path(); /* a working path exists */
+    virtual bool is_path_clear(); /* recheck each location in path */
+    virtual bool get_next_move(MapCoord &step) = 0;
 };
 
 #endif /* __PathFinder_h__ */

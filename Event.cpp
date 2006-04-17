@@ -964,7 +964,7 @@ bool Event::search(Obj *obj)
     return(false);
 }
 
-
+// looks at the whatever is at MapWindow cursor location
 bool Event::look()
 {
  bool display_prompt = true;
@@ -1073,7 +1073,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
            can_move = true;
 
         /* do normal move if no usecode or return from usecode was true */
-        if((!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,to.x-from.y,pushrel_y)) && can_move)
+        if((!usecode->has_movecode(use_obj) || usecode->move_obj(use_obj,pushrel_x,pushrel_y)) && can_move)
           can_move = obj_manager->move(use_obj,to.x,to.y,from.z);
 
         if(!can_move)
@@ -1757,7 +1757,7 @@ void Event::party_mode()
         return;
 
     leader_loc = actor->get_location();
-    if(player->get_party()->is_at(leader_loc, 8))
+    if(player->get_party()->is_anyone_at(leader_loc, 6))
     {
         if(player->set_party_mode(player->get_party()->get_actor(0)))
         {

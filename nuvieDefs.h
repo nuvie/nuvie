@@ -30,7 +30,7 @@
 #define MIN(x, y)      ((x) < (y) ? (x) : (y))
 #define clamp_min(v, c)  (((v) < (c)) ? (c) : (v))
 #define clamp_max(v, c)  (((v) > (c)) ? (c) : (v))
-#define clamp(v, c1, c2) ( ((v) < (c1)) ? (c1) : (((v) > (c2)) ? c2 : (v)) )
+#define clamp(v, c1, c2) ( ((v) < (c1)) ? (c1) : (((v) > (c2)) ? (c2) : (v)) )
 
 #define NUVIE_DIR_N  0
 #define NUVIE_DIR_E  1

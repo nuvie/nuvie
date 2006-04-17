@@ -20,7 +20,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 #include "nuvieDefs.h"
 
 #include "U6misc.h"
@@ -34,17 +33,18 @@
 #include "Player.h"
 #include "Map.h"
 #include "U6UseCode.h"
+#include "PartyPathFinder.h"
 #include "Party.h"
 
 Party::Party(Configuration *cfg)
 {
  config = cfg;
  map = NULL;
-
+ pathfinder = NULL;
 
  formation = PARTY_FORM_STANDARD;
  num_in_party = 0;
-
+ prev_leader_x = prev_leader_y = 0;
 }
 
 Party::~Party()
@@ -58,6 +58,8 @@ bool Party::init(Game *g, ActorManager *am)
  game = g;
  actor_manager = am;
  map = g->get_game_map();
+ if(!pathfinder)
+   pathfinder = new PartyPathFinder(this);
 
  autowalk=false;
  in_vehicle = false;
@@ -69,8 +71,6 @@ bool Party::init(Game *g, ActorManager *am)
    formation = PARTY_FORM_COLUMN;
  else if(formation_string == "delta")
    formation = PARTY_FORM_DELTA;
- else if(formation_string == "phalanx")
-   formation = PARTY_FORM_PHALANX;
  else
    formation = PARTY_FORM_STANDARD;
 
@@ -100,10 +100,15 @@ bool Party::load(NuvieIO *objlist)
    actor_num = objlist->read1();
    member[i].actor = actor_manager->get_actor(actor_num);
    member[i].actor->set_in_party(true);
+   member[i].inactive = false; // false unless actor is asleep, or paralyzed (is_immobile)
   }
 
  objlist->seek(0x1c12); // combat mode flag
  in_combat_mode = (bool)objlist->read1();
+
+ MapCoord leader_loc = get_leader_location(); // previous leader location
+ prev_leader_x = leader_loc.x;
+ prev_leader_y = leader_loc.y;
 
  reform_party();
 
@@ -156,13 +161,14 @@ bool Party::add_actor(Actor *actor)
    {
     actor->set_in_party(true);
     member[num_in_party].actor = actor;
+    member[num_in_party].inactive = false;
     strncpy(member[num_in_party].name, converse->npc_name(actor->id_n), 14);
-    member[num_in_party].name[13] = '\0';
+    member[num_in_party].name[13] = '\0'; // make sure name is terminated
     member[num_in_party].combat_position = 0;
-    member[num_in_party].leader_x = member[0].actor->get_location().x;
-    member[num_in_party].leader_y = member[0].actor->get_location().y;
-    num_in_party++;
+//    member[num_in_party].leader_x = member[0].actor->get_location().x;
+//    member[num_in_party].leader_y = member[0].actor->get_location().y;
 
+    num_in_party++;
     reform_party();
     return true;
    }
@@ -259,12 +265,15 @@ void Party::reform_party()
     uint32 n;
     sint32 x, y, max_x;
     bool even_row;
-    member[0].form_x = 0; member[0].form_y = 0;
+    sint8 leader = get_leader();
+    if(leader < 0 || num_in_party == 1)
+        return;
+    member[leader].form_x = 0; member[leader].form_y = 0;
     switch(formation)
     {
         case PARTY_FORM_COLUMN: // line up behind Avatar
             x = 0; y = 1;
-            for(n = 1; n < num_in_party; n++)
+            for(n = leader+1; n < num_in_party; n++)
             {
                 member[n].form_x = x;
                 member[n].form_y = y++;
@@ -277,7 +286,7 @@ void Party::reform_party()
             break;
         case PARTY_FORM_ROW: // line up left of Avatar
             x = -1; y = 0;
-            for(n = 1; n < num_in_party; n++)
+            for(n = leader+1; n < num_in_party; n++)
             {
                 member[n].form_x = x--;
                 member[n].form_y = y;
@@ -288,84 +297,9 @@ void Party::reform_party()
                 }
             }
             break;
-        case PARTY_FORM_PHALANX: // surround Avatar in close formation
-            /*203
-               1*/
-            if(num_in_party <= 4)
-            {
-                member[1].form_x = 0; member[1].form_y = 1;
-                member[2].form_x = -1; member[2].form_y = 0;
-                member[3].form_x = 1; member[3].form_y = 0;
-            }
-            /*102
-              354*/
-            else if(num_in_party <= 6)
-            {
-                member[1].form_x = -1; member[1].form_y = 0;
-                member[2].form_x = 1; member[2].form_y = 0;
-                member[3].form_x = -1; member[3].form_y = 1;
-                member[4].form_x = 1; member[4].form_y = 1;
-                member[5].form_x = 0; member[5].form_y = 1;
-            }
-            /*1 2
-              304
-              576*/
-            else if(num_in_party <= 8)
-            {
-                member[1].form_x = -1; member[1].form_y = -1;
-                member[2].form_x = 1; member[2].form_y = -1;
-                member[3].form_x = -1; member[3].form_y = 0;
-                member[4].form_x = 1; member[4].form_y = 0;
-                member[5].form_x = -1; member[5].form_y = 1;
-                member[6].form_x = 1; member[6].form_y = 1;
-                member[7].form_x = 0; member[7].form_y = 1;
-            }
-            else
-            {
-                member[1].form_x = -1; member[1].form_y = 0;
-                member[2].form_x = 1; member[2].form_y = 0;
-                member[3].form_x = -1; member[3].form_y = 1;
-                member[4].form_x = 1; member[4].form_y = 1;
-                member[5].form_x = 0; member[5].form_y = 1;
-                member[6].form_x = -1; member[6].form_y = 2;
-                member[7].form_x = 1; member[7].form_y = 2;
-                member[8].form_x = 0; member[8].form_y = 2;
-                x = -2; y = 1;
-                for(n = 9; n < num_in_party; n++)
-                {
-                    member[n].form_x = x; member[n].form_y = y;
-                    if(n <= 12) // alternate the first 4 extras on the sides
-                    {
-                        if(x == -2)
-                            x = 2;
-                        else
-                        {
-                            x = -2;
-                            y += 1;
-                        }
-                    }
-                    else // line the rest in rows behind the group (alternate columns)
-                    {
-                        if(x == -2)
-                            x = 2;
-                        else if(x == 2)
-                            x = -1;
-                        else if(x == -1)
-                            x = 1;
-                        else if(x == 1)
-                            x = 0;
-                        else
-                        {
-                            x = -2;
-                            y += 1;
-                        }
-                    }
-                }
-            }
-            break;
         case PARTY_FORM_DELTA: // open triangle formation with Avatar at front
             x = -1; y = 1;
-            for(n = 1; n < num_in_party; n++)
+            for(n = leader+1; n < num_in_party; n++)
             {
                 member[n].form_x = x;
                 member[n].form_y = y;
@@ -383,20 +317,16 @@ void Party::reform_party()
                 }
             }
             break;
-//        case PARTY_FORM_DIAMOND: // like DELTA but... a diamond
-//            break;
-//        case PARTY_FORM_CROWD: // random positions
-//            break;
 //        case PARTY_FORM_COMBAT: // positions determined by COMBAT mode
 //            break;
         case PARTY_FORM_STANDARD: // U6
         default:
             // put first follower behind or behind and to the left of Avatar
-            member[1].form_x = (num_in_party >= 3) ? -1 : 0;
-            member[1].form_y = 1;
+            member[leader+1].form_x = (num_in_party >= 3) ? -1 : 0;
+            member[leader+1].form_y = 1;
             x = y = 1;
             even_row = false;
-            for(n = 2, max_x = 1; n < num_in_party; n++)
+            for(n = leader+2, max_x = 1; n < num_in_party; n++)
             {
                 member[n].form_x = x;
                 member[n].form_y = y;
@@ -412,23 +342,42 @@ void Party::reform_party()
     }
 }
 
+/* Returns number of person leading the party (the first active member), or -1
+ * if the party has no leader and can't move. */
+sint8 Party::get_leader()
+{
+    for(int m = 0; m < num_in_party; m++)
+        if(!member[m].inactive)
+            return m;
+    return -1;
+}
 
-/* Get map location of a party member.
- */
-inline MapCoord Party::get_location(uint8 m)
+/* Get map location of a party member. */
+MapCoord Party::get_location(uint8 m)
 {
     return(member[m].actor->get_location());
 }
 
+/* Get map location of the first active party member. */
+inline MapCoord Party::get_leader_location()
+{
+    sint8 m = get_leader();
+    MapCoord loc;
+    if(m >= 0)
+        loc = member[m].actor->get_location();
+    return(loc);
+}
 
 /* Returns absolute location where party member `m' SHOULD be (based on party
  * formation and leader location.
  */
 MapCoord Party::get_formation_coords(uint8 m)
 {
-    MapCoord a(member[m].actor->get_location()); // my location
-    MapCoord l(member[0].actor->get_location()); // leader location
-    uint8 ldir = member[0].actor->get_direction(); // leader direciton
+    MapCoord a = get_location(m); // my location
+    MapCoord l = get_leader_location(); // leader location
+    if(get_leader() < 0)
+        return(a);
+    uint8 ldir = member[get_leader()].actor->get_direction(); // leader direciton
     // intended location
     return(MapCoord((ldir == NUVIE_DIR_N) ? l.x + member[m].form_x : // X
                     (ldir == NUVIE_DIR_E) ? l.x - member[m].form_y :
@@ -444,100 +393,40 @@ MapCoord Party::get_formation_coords(uint8 m)
 
 
 /* Update the actual locations of the party actors on the map, so that they are
- * in the proper formation.
- */
-void Party::follow()
+ * in the proper formation. */
+void Party::follow(sint8 rel_x, sint8 rel_y)
 {
-    LineTestResult lt;
-    MapCoord leader = member[0].actor->get_location();
-
-    for(uint32 m = 1; m < num_in_party; m++)
-    {
-        if(!member[m].actor->is_visible()) // hidden, no point walking there
-        {
-            member[m].actor->stop_walking(); // in case we were searching
-            member[m].actor->move(leader.x, leader.y, leader.z, ACTOR_FORCE_MOVE);
-            continue;
-        }
-        MapCoord here = member[m].actor->get_location();
-        MapCoord target = get_formation_coords(m); // target in formation
-        MapCoord dest = target; // where we decide to move to
-        bool target_can_see_leader = !map->lineTest(target.x,target.y,leader.x,leader.y,leader.z,LT_HitUnpassable,lt);
-        //bool member_can_see_target = !map->lineTest(here.x,here.y,target.x,target.y,leader.z,LT_HitUnpassable,lt);
-        if(target_can_see_leader && here == target) // Do nothing if already there
-        {
-            member[m].leader_x = leader.x; // update known location of leader
-            member[m].leader_y = leader.y;
-            member[m].actor->stop_walking(); // in case we were searching
-            continue; // next
-        }
-        // use assumed leader location
-        find_leader(m);
-        MapCoord follow(member[m].leader_x, member[m].leader_y, leader.z);
-        // If there is no clear line-of-site from target position to the leader,
-        // the two positions are probably in different rooms, and we prefer the
-        // room with the leader.
-        if(!target_can_see_leader)
-        {
-            // Add to speed if a few spaces from target and leader
-            // Add more if offscreen or at last known leader location and leader
-            // isn't there
-            uint32 speed = (here.distance(follow) > 2 && here.distance(dest) > 1) ? 2 : 1;
-            if(here.distance(follow) > 5 || (follow != leader && here.x == follow.x && here.y == follow.y))
-                speed += (here.distance(follow)/4);
-            member[m].actor->swalk(follow, dest, speed);
-        }
-        else
-        {
-            // Add to speed if a few spaces from target
-            // Add more if offscreen
-            uint32 speed = here.distance(dest) > 1 ? 2 : 1;
-            if(here.distance(follow) > 5)
-                speed += (here.distance(follow)/4);
-            member[m].actor->swalk(dest, leader, speed);
-        }
-    }
-}
-
-
-/* Update known location of leader for party member `m'. This should be done
- * when any party member has moved to help following.
- */
-void Party::find_leader(uint8 m)
-{
-    MapCoord to = member[0].actor->get_location(), from = member[m].actor->get_location();
-    MapCoord follow = to;
-    LineTestResult lt;
-
-    // can/should I go straight to leader?
-    // (at last known position, or leader is visible, or leader is too far away)
-    if(!map->lineTest(from.x, from.y, to.x, to.y, to.z, LT_HitUnpassable, lt)
-       || from.distance(to) > 6 || (from.x == member[m].leader_x && from.y == member[m].leader_y))
-    {
-        member[m].leader_x = to.x;
-        member[m].leader_y = to.y;
+    bool try_again[get_party_max()]; // true if a member needs to try first pass again
+    sint8 leader = get_leader();
+    if(leader <= -1)
         return;
-    }
-#if 0 // FIXME: this doesn't work as well as I wanted, and U6 didn't do it
-    // determine person to follow
-    assert(num_in_party);
-    for(uint32 n = num_in_party - 1; n > 0; n--)
+    // set previous leader location first, just in case the leader changed
+    prev_leader_x = member[get_leader()].actor->x - rel_x;
+    prev_leader_y = member[get_leader()].actor->y - rel_y;
+    // PASS 1: Keep actors chained together.
+    for(uint32 p = (leader+1); p < num_in_party; p++)
     {
-        if(n == m) continue;
-        follow = member[n].actor->get_location();
-        // they can see leader AND I can see them
-        if(!map->lineTest(follow.x,follow.y,to.x,to.y,to.z,LT_HitUnpassable,lt)
-           && !map->lineTest(from.x,from.y,follow.x,follow.y,to.z,LT_HitUnpassable,lt))
-        {
-            member[m].leader_x = follow.x;
-            member[m].leader_y = follow.y;
-            return;
-        }
+        try_again[p] = false;
+        if(!pathfinder->follow_passA(p))
+            try_again[p] = true;
     }
-#endif
+    // PASS 2: Catch up to party.
+    for(uint32 p = (leader+1); p < num_in_party; p++)
+    {
+        if(try_again[p])
+            pathfinder->follow_passA(p);
+        pathfinder->follow_passB(p);
+        if(!pathfinder->is_contiguous(p))
+        {
+            printf("%s is looking for %s.\n", get_actor_name(p), get_actor_name(get_leader()));
+            pathfinder->seek_leader(p); // enter/update seek mode
+        }
+        else if(member[p].actor->get_pathfinder())
+            pathfinder->end_seek(p);
+    }
 }
 
-
+// Returns true if anyone in the party has a matching object.
 bool Party::has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual)
 {
  uint16 i;
@@ -573,7 +462,7 @@ bool Party::remove_obj(uint16 obj_n, uint8 quality)
  return false;
 }
 
-
+// Returns the actor id of the first person in the party to have a matching object.
 uint16 Party::who_has_obj(uint16 obj_n, uint8 quality)
 {
     uint16 i;
@@ -586,7 +475,7 @@ uint16 Party::who_has_obj(uint16 obj_n, uint8 quality)
 }
 
 
-/* Is everyone in the party at the coordinates?
+/* Is EVERYONE in the party at or near the coordinates?
  */
 bool Party::is_at(uint16 x, uint16 y, uint8 z, uint32 threshold)
 {
@@ -602,6 +491,23 @@ bool Party::is_at(uint16 x, uint16 y, uint8 z, uint32 threshold)
 bool Party::is_at(MapCoord &xyz, uint32 threshold)
 {
  return(is_at(xyz.x,xyz.y,xyz.z,threshold));
+}
+
+/* Is ANYONE in the party at or near the coordinates? */
+bool Party::is_anyone_at(uint16 x, uint16 y, uint8 z, uint32 threshold)
+{
+    for(uint32 p = 0; p < num_in_party; p++)
+    {
+        MapCoord loc(x, y, z);
+        if(member[p].actor->is_nearby(loc, threshold))
+            return(true);
+    }
+    return(false);
+}
+
+bool Party::is_anyone_at(MapCoord &xyz, uint32 threshold)
+{
+ return(is_anyone_at(xyz.x,xyz.y,xyz.z,threshold));
 }
 
 bool Party::contains_actor(Actor *actor)
@@ -644,7 +550,7 @@ void Party::update_music()
     return;
    }
 
- pos = get_location(0); // FIX we need to get the position of the party leader.
+ pos = get_leader_location();
 
  switch(pos.z)
   {

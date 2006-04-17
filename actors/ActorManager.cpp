@@ -604,6 +604,7 @@ void ActorManager::print_actor(Actor *actor)
     printf("in_party: %s\n", actor->in_party ? "true" : "false");
     printf("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
 //    printf("met_player: %s\n", actor->met_player ? "true" : "false");
+    printf("is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
 
     printf("moves: %d\n", actor->moves);
 
@@ -670,7 +671,7 @@ void ActorManager::print_actor(Actor *actor)
     if(!actor->surrounding_objects.empty())
         printf("Actor has multiple tiles\n");
     if(actor->pathfinder)
-        printf("Actor is walking\n");
+        printf("Actor is on a path\n");
     printf("\n");
 }
 
@@ -825,7 +826,7 @@ inline Actor *ActorManager::find_free_temp_actor()
  return NULL;
 }
 
-//FIX? should this be in Player??
+//FIX? should this be in Player??
 
 void ActorManager::update_temp_actors(uint16 x, uint16 y, uint8 z)
 {

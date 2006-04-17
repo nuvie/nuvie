@@ -93,8 +93,8 @@ class U6Actor: public Actor
  void preform_worktype();
  void set_direction(uint8 d);
  void clear();
- bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
- bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
+ bool move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
+ bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
  void twitch();
  void die();
  void set_poisoned(bool poisoned);
@@ -123,6 +123,7 @@ class U6Actor: public Actor
  void wt_beg();
  void wt_sleep();
  void wt_play_lute();
+ void wt_combat();
 
  inline const U6ActorType *get_actor_type(uint16 new_obj_n);
  void set_actor_obj_n(uint16 new_obj_n);

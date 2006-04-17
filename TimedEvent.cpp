@@ -255,7 +255,7 @@ void TimedPartyMove::timed(uint32 evtime)
     }
     else // timed out, make sure nobody is walking
         for(uint32 m = 0; m < party->get_party_size(); m++)
-            party->get_actor(m)->stop_walking();
+            party->get_actor(m)->delete_pathfinder();
 
     // NOTE: set by repeat() or stop()
     if(repeat_count == 0) // everyone is in position
@@ -338,17 +338,17 @@ bool TimedPartyMove::move_party()
                 // nobody has just used the gate (who may still be vanishing)
                 if(!used_gate || loc.distance(*dest) > 1) // or we aren't close to gate yet
                 {
-                    person->swalk(*dest); // start (or continue) going to gate
+                    person->pathfind_to(*dest); // start (or continue) going to gate
                     person->update(); // ActorManager is paused
                     loc = person->get_location(); // don't use the old location
                 }
                 else
-                    person->stop_walking(); // wait for whoever is at gate
+                    person->delete_pathfinder(); // wait for whoever is at gate
             }
             if(loc == *dest // actor may have just arrived this turn
                || !really_visible)
             {
-                person->stop_walking();
+                person->delete_pathfinder();
                 if(moongate) used_gate = person; // hide after this turn
                 else if(!actor_to_hide) actor_to_hide = person; // hide before next turn
             }
@@ -418,7 +418,7 @@ void TimedPartyMove::change_location()
 bool TimedPartyMove::fall_in()
 {
     bool not_in_position = false; // assume false until someone checks true
-    party->follow();
+    party->follow(0, 0);
     for(uint8 p = 1; p < party->get_party_size(); p++)
     {
         Actor *follower = party->get_actor(p);
@@ -462,13 +462,13 @@ void TimedPartyMoveToVehicle::timed(uint32 evtime)
             if(!map_window->in_window(loc.x, loc.y, loc.z) || moves_left == 0)
                 person->move(dest->x, dest->y, dest->z, ACTOR_FORCE_MOVE);
             else // keep walking
-                person->swalk(*dest);
+                person->pathfind_to(*dest);
             person->update();
             repeat(); // repeat once more
         }
         else // at destination
         {
-            person->stop_walking();
+            person->delete_pathfinder();
             person->hide(); // set in-vehicle
         }
     }

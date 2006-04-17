@@ -45,18 +45,17 @@ using std::string;
 #define ACTOR_NOT_READIABLE 8
 
 // move-flags
-#define ACTOR_FORCE_MOVE true
-#define ACTOR_IGNORE_OTHERS true
+#define ACTOR_FORCE_MOVE    1
+#define ACTOR_IGNORE_OTHERS 2
+#define ACTOR_OPEN_DOORS    4
 
-#define ACTOR_FORCE_HIT true
-
-// push-flags
+// push-flags (exclusive)
 #define ACTOR_PUSH_ANYWHERE 0
 #define ACTOR_PUSH_HERE     1
 #define ACTOR_PUSH_FORWARD  2
-#define ACTOR_PUSH_TO       3
 
 #define ACTOR_SHOW_BLOOD true
+#define ACTOR_FORCE_HIT true
 
 #define ACTOR_STATUS_POISONED 0x8
 #define ACTOR_STATUS_DEAD 0x10
@@ -73,9 +72,10 @@ using std::string;
 class Map;
 class MapCoord;
 class UseCode;
-class PathFinder;
+class ActorPathFinder;
 class U6LList;
 class GameClock;
+class Path;
 
 typedef struct {
 uint16 x;
@@ -103,25 +103,26 @@ uint16 thrown_obj_n;
 bool breaks_on_contact;
 } CombatType;
 
-typedef uint8 ActorErrorCode;
-typedef struct {
-    ActorErrorCode err;
-} ActorError;
-
 typedef struct {
 Obj *obj;
 const CombatType *combat_type;
 } ReadiedObj;
 
+typedef uint8 ActorErrorCode;
+typedef struct {
+    ActorErrorCode err;
+    Obj *blocking_obj;
+    Actor *blocking_actor;
+} ActorError;
+
+typedef uint8 ActorMoveFlags;
+
 class Actor
 {
  friend class ActorManager;
  friend class MapWindow;
- friend class LPath;
  friend class Party;
  friend class Player;
- friend class PathFinder;
- friend class ZPath;
  friend class U6UseCode;
  protected:
 
@@ -131,7 +132,7 @@ class Actor
  ObjManager *obj_manager;
  GameClock *clock;
  UseCode *usecode;
- PathFinder *pathfinder;
+ ActorPathFinder *pathfinder;
 
  uint16 x;
  uint16 y;
@@ -158,7 +159,7 @@ class Actor
  bool in_party;
  bool visible_flag;
 
- uint8 moves; // number of moves actor has this turn
+ sint8 moves; // number of moves actor has this turn
  uint8 light; // level of light around actor (normally 0)
 
  ActorError error_struct; // error/status; result of previous action
@@ -217,6 +218,7 @@ class Actor
 
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  MapCoord get_location();
+
  uint16 get_tile_num();
  virtual uint16 get_downward_facing_tile_num();
  uint8 get_actor_num() { return(id_n); }
@@ -231,6 +233,7 @@ class Actor
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
  uint8 get_combat_mode() { return combat_mode; }
+ sint8 get_moves_left() { return(moves); }
 
  void set_strength(uint8 val) { strength = val; }
  void set_dexterity(uint8 val) { dex = val; }
@@ -242,7 +245,9 @@ class Actor
  void add_light(uint8 val);
  void subtract_light(uint8 val);
  void heal() { set_hp(get_maxhp()); }
- 
+ void set_moves_left(sint8 val);
+ void update_moves_left() { set_moves_left(get_moves_left() + get_dexterity()); }
+
  uint8 get_worktype();
  virtual void set_worktype(uint8 new_worktype);
 
@@ -265,25 +270,28 @@ class Actor
  bool is_visible() { return visible_flag; }
 
  bool moveRelative(sint16 rel_x, sint16 rel_y);
- virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move=false);
- virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors=false);
- bool check_moveRelative(sint16 rel_x, sint16 rel_y, bool ignore_actors=false);
+ virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
+ virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
+ bool check_moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags=0);
 
  virtual bool Actor::can_be_moved();
  virtual void update();
  void set_in_party(bool state);
- void swalk(MapCoord &d, uint8 speed = 1, uint8 delay = 0);
- void swalk(MapCoord &d, MapCoord &d2, uint8 speed = 1, uint8 delay = 0);
- void lwalk(MapCoord &d, uint8 speed = 1, uint8 delay = 0);
-// void stop_walking() { delete pathfinder; pathfinder = NULL; }
- void stop_walking();
+ void set_pathfinder(ActorPathFinder *new_pf, Path *path_type=0);
+ ActorPathFinder *get_pathfinder() { return(pathfinder); }
+ void delete_pathfinder();
+ virtual void pathfind_to(MapCoord &d);
+ void pathfind_to(uint16 gx, uint16 gy, uint8 gz=255);
+ bool walk_path();
  virtual void preform_worktype() { return; }
- 
+
  // combat methods
  void attack(MapCoord pos); // attack at a given map location
  void attack(sint8 readied_obj_location, Actor *actor);
  bool defend(uint8 hit, uint8 weapon_damage); // defend against a hit
  const CombatType *get_weapon(sint8 readied_obj_location);
+ void attract_to(Actor *target);
+ void repel_from(Actor *target);
  
  void hit(uint8 dmg, bool force_hit=false);
  void hit(uint8 dmg, Actor *attacker) { hit(dmg); }
@@ -324,7 +332,7 @@ class Actor
  bool has_readied_objects();
 
  virtual void twitch() { return; }
- bool push(Actor *pusher, uint8 where = ACTOR_PUSH_ANYWHERE, uint16 tx = 0, uint16 ty = 0, uint16 tz = 0);
+ bool push(Actor *pusher, uint8 where = ACTOR_PUSH_ANYWHERE);
 
  Obj *make_obj();
  uint16 get_obj_n() { return(obj_n); }

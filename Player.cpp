@@ -229,50 +229,55 @@ char *Player::get_gender_title()
 // walk to adjacent square
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
- uint16 x, y;
- uint8 z;
- actor->get_location(&x, &y, &z);
+    uint16 x, y;
+    uint8 z;
+    actor->get_location(&x, &y, &z);
 
- // don't allow diagonal move between blocked tiles (player only)
- if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS)
-                   && !actor->check_move(x + 0, y + rel_y, z, ACTOR_IGNORE_OTHERS))
-  return;
-
- // change direction only if we can move there
- //if(actor->check_move(x + rel_x, y + rel_y, z, ACTOR_IGNORE_OTHERS))
- actor->moves = 1; // player can always move (FIXME: check in Actor::move()?)
- if(actor->moveRelative(rel_x,rel_y))
- {
-  actor->set_direction(rel_x, rel_y);
-//   map_window->moveMapRelative(rel_x,rel_y);
-   if(party_mode && party->is_leader(actor)) // lead party
-     party->follow();
-   else if(actor->id_n == 0) // using vehicle; drag party along
-   {
-     MapCoord new_xyz = actor->get_location();
-     party->move(new_xyz.x, new_xyz.y, new_xyz.z);
-   }
-   actor_manager->updateActors(x, y, z);
-   clock->inc_move_counter(); // SB-X move to gameclock
-   obj_manager->update(x, y, z); // remove temporary objs, spawn eggs
-   //actor_manager->cache_update(x,y,z); // clean actor cache remove temp actors
- }
+    // don't allow diagonal move between blocked tiles (player only)
+    if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS)
+                      && !actor->check_move(x + 0, y + rel_y, z, ACTOR_IGNORE_OTHERS))
+        return;
+    if(actor->is_immobile())
+        return;
+    if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/
+    {
+        ActorError *ret = actor->get_error();
+        if(ret->err == ACTOR_BLOCKED_BY_ACTOR
+           && party->contains_actor(ret->blocking_actor))
+        {
+            ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
+        }
+        if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/
+           return;
+    }
+    // post-move
+    actor->set_direction(rel_x, rel_y);
+    if(party_mode && party->is_leader(actor)) // lead party
+        party->follow(rel_x, rel_y);
+    else if(actor->id_n == 0) // using vehicle; drag party along
+    {
+        MapCoord new_xyz = actor->get_location();
+        party->move(new_xyz.x, new_xyz.y, new_xyz.z);
+    }
+    // update world around player
+    actor_manager->updateActors(x, y, z);
+    obj_manager->update(x, y, z); // remove temporary objs, hatch eggs
+    clock->inc_move_counter();
 }
 
 // teleport-type move
 void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
 {
-   actor->moves = 1; // player can always move (FIXME: check in Actor::move()?)
    if(actor->move(new_x, new_y, new_level, ACTOR_FORCE_MOVE))
    {
     //map_window->centerMapOnActor(actor);
     if(party->is_leader(actor)) // lead party
       {
        party->move(new_x, new_y, new_level); // center everyone first
-       party->follow(); // then try to move them to correct positions
+       party->follow(0, 0); // then try to move them to correct positions
       }
     actor_manager->updateActors(new_x, new_y, new_level);
-    obj_manager->update(new_x, new_y, new_level); // remove temporary objs, spawn eggs
+    obj_manager->update(new_x, new_y, new_level); // remove temporary objs, hatch eggs
    }
 }
 
@@ -298,14 +303,14 @@ void Player::moveDown()
 
 void Player::pass()
 {
- uint16 x,y;
- uint8 z;
+ uint16 x = actor->x, y = actor->y;
+ uint8 z = actor->z;
 
- clock->inc_move_counter_by_a_minute();
+ // update world around player
  if(party_mode && party->is_leader(actor)) // lead party
-    party->follow();
- get_location(&x, &y, &z);
- actor_manager->updateActors(x,y,z); // SB-X move to gameclock
+   party->follow(0, 0);
+ actor_manager->updateActors(x, y, z);
+ clock->inc_move_counter_by_a_minute();
 }
 
 
@@ -338,7 +343,7 @@ bool Player::set_solo_mode(Actor *new_actor)
     {
         party_mode = false;
         actor = new_actor;
-        actor->stop_walking();
+        actor->delete_pathfinder();
         return(true);
     }
     return(false);

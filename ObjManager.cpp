@@ -578,6 +578,29 @@ bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+bool ObjManager::is_damaging(uint16 x, uint16 y, uint8 level)
+{
+ U6LList *obj_list;
+ U6Link *link;
+ Obj *obj;
+ Tile *tile;
+
+ obj_list = get_obj_list(x,y,level);
+
+ if(obj_list)
+  {
+   for(link=obj_list->start();link!=NULL;link=link->next)
+     {
+      obj = (Obj *)link->data;
+      tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+      if(tile->flags1 & TILEFLAG_DAMAGING)
+        return true;
+     }
+  }
+
+ return false;
+}
+
 bool ObjManager::is_stackable(Obj *obj)
 {
 // Tile *tile;

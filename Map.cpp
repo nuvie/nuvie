@@ -155,6 +155,22 @@ bool Map::is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects)
  return false;
 }
 
+bool Map::is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects)
+{
+    uint8 *ptr=get_map_data(level);
+    Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
+
+    if(map_tile->damages)
+        return true;
+
+    if(!ignore_objects)
+    {
+        if(obj_manager->is_damaging(x, y, level))
+            return true;
+    }
+    return false;
+}
+
 bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
 {
  //check for blocking Actor at location.

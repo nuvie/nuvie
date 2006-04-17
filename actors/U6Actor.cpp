@@ -26,7 +26,8 @@
 
 #include "Game.h"
 #include "U6UseCode.h"
-#include "PathFinder.h"
+#include "SchedPathFinder.h"
+#include "U6AStarPath.h"
 #include "MsgScroll.h"
 #include "U6Actor.h"
 
@@ -57,6 +58,7 @@ U6Actor::~U6Actor()
 
 bool U6Actor::init()
 {
+ Actor::init();
  set_actor_obj_n(obj_n); //set actor_type
 
  base_actor_type = get_actor_type(base_obj_n);
@@ -333,8 +335,9 @@ void U6Actor::clear()
 
 
 
-bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
+bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
 {
+// bool force_move = flags & ACTOR_FORCE_MOVE;
  bool ret;
  sint16 rel_x, rel_y;
  MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -348,7 +351,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  rel_x = new_x - x;
  rel_y = new_y - y;
 
- ret = Actor::move(new_x,new_y,new_z,force_move);
+ ret = Actor::move(new_x,new_y,new_z,flags);
 
  if(ret == true)
   {
@@ -425,11 +428,12 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, bool force_move)
  return ret;
 }
 
-bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, bool ignore_actors)
+bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
 {
+// bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
  Tile *map_tile;
 
- if(Actor::check_move(new_x, new_y, new_z, ignore_actors) == false)
+ if(Actor::check_move(new_x, new_y, new_z, flags) == false)
     return false;
 
     switch(actor_type->movetype)
@@ -594,12 +598,23 @@ void U6Actor::preform_worktype()
   return;
  switch(worktype)
   {
+   case WORKTYPE_U6_COMBAT_FRONT :
+   case WORKTYPE_U6_COMBAT_REAR :
+   case WORKTYPE_U6_COMBAT_FLANK :
+   case WORKTYPE_U6_COMBAT_BERSERK :
+   case WORKTYPE_U6_COMBAT_RETREAT :
+   case WORKTYPE_U6_COMBAT_ASSAULT :
+   case WORKTYPE_U6_COMBAT_SHY :
+   case WORKTYPE_U6_COMBAT_LIKE :
+   case WORKTYPE_U6_COMBAT_UNFRIENDLY :
+   case WORKTYPE_U6_ANIMAL_WANDER : wt_combat(); break;
    case WORKTYPE_U6_FACE_NORTH :
    case WORKTYPE_U6_FACE_EAST  :
    case WORKTYPE_U6_FACE_SOUTH :
    case WORKTYPE_U6_FACE_WEST  :
      break;
    case WORKTYPE_U6_IN_PARTY :
+   case WORKTYPE_U6_PLAYER :
    case WORKTYPE_U6_WALK_TO_LOCATION : wt_walk_to_location();
                                       break;
 
@@ -610,7 +625,7 @@ void U6Actor::preform_worktype()
 
    case WORKTYPE_U6_WORK :
    case WORKTYPE_U6_WANDER_AROUND   : wt_wander_around(); break;
-   case WORKTYPE_U6_ANIMAL_WANDER : wt_farm_animal_wander(); break;
+//   case WORKTYPE_U6_ANIMAL_WANDER : wt_farm_animal_wander(); break;
    case WORKTYPE_U6_BEG : wt_beg(); break;
 //   case WORKTYPE_U6_
 //                     break;
@@ -651,44 +666,69 @@ void U6Actor::set_worktype(uint8 new_worktype)
 
 void U6Actor::wt_walk_to_location()
 {
- if(pathfinder && pathfinder->reached_goal() && sched[sched_pos] != NULL)
-    set_worktype(sched[sched_pos]->worktype);
- return;
+    if(sched[sched_pos] != NULL)
+    {
+        if(x == sched[sched_pos]->x && y == sched[sched_pos]->y
+                                    && z == sched[sched_pos]->z)
+        {
+            set_worktype(sched[sched_pos]->worktype);
+            delete_pathfinder();
+            return;
+        }
+        if(!pathfinder)
+        {
+            work_location.x = sched[sched_pos]->x;
+            work_location.y = sched[sched_pos]->y;
+            work_location.z = sched[sched_pos]->z;
+//            if(!work_location.is_visible() || !get_location().is_visible())
+//                set_pathfinder(new OffScreenPathFinder(this, work_location, new U6AStarPath));
+//            else
+                set_pathfinder(new SchedPathFinder(this, work_location, new U6AStarPath));
+        }
+    }
 }
 
 
 void U6Actor::wt_walk_straight()
 {
  uint8 dir = get_direction();
- set_direction(dir); //update walk frame FIX this!
+// set_direction(dir); //update walk frame FIX this!
  if(worktype == WORKTYPE_U6_WALK_NORTH_SOUTH || worktype == WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH)
    {
-    if(dir != NUVIE_DIR_N && dir != NUVIE_DIR_S)
-      dir = NUVIE_DIR_S;
+//    if(dir != NUVIE_DIR_N && dir != NUVIE_DIR_S)
+//      dir = NUVIE_DIR_S;
     if(dir == NUVIE_DIR_N) // move up if blocked face down
        {
         if(moveRelative(0,-1) == false)
           set_direction(NUVIE_DIR_S);
+        else
+          set_direction(NUVIE_DIR_N);
        }
     else // move down if blocked face up
        {
         if(moveRelative(0,1) == false)
           set_direction(NUVIE_DIR_N);
+        else
+          set_direction(NUVIE_DIR_S);
        }
    }
  else //WORKTYPE_U6_WALK_EAST_WEST, WORKTYPE_U6_GUARD_WALK_EAST_WEST
    {
-    if(dir != NUVIE_DIR_W && dir != NUVIE_DIR_E)
-      dir = NUVIE_DIR_E;
+//    if(dir != NUVIE_DIR_W && dir != NUVIE_DIR_E)
+//      dir = NUVIE_DIR_E;
     if(dir == NUVIE_DIR_W) //move left if blocked face right
        {
         if(moveRelative(-1,0) == false)
           set_direction(NUVIE_DIR_E);
+        else
+          set_direction(NUVIE_DIR_W);
        }
     else  //move right if blocked face left
        {
         if(moveRelative(1,0) == false)
           set_direction(NUVIE_DIR_W);
+        else
+          set_direction(NUVIE_DIR_E);
        }
    }
 }
@@ -776,7 +816,7 @@ void U6Actor::wt_beg()
             if(me.distance(them) <= 1 && z == them.z)
             {
                 // talk to me :)
-                stop_walking();
+                delete_pathfinder();
                 // FIXME: this check should be in Converse
                 if(!player->in_party_mode())
                 {
@@ -796,11 +836,9 @@ void U6Actor::wt_beg()
         }
         // get closer
         if(dist_from_start < 4)
-        {
-            actor->get_location(&them.x, &them.y, &them.z);
-            swalk(them, 1);
-        }
-        else swalk(work_location, 1);
+            attract_to(actor);
+        else
+            pathfind_to(work_location); // U6 probably doesn't even do this
     }
     else
         wt_wander_around();
@@ -852,6 +890,21 @@ void U6Actor::wt_play_lute()
  frame_n = direction * actor_type->tiles_per_direction;
 
  return;
+}
+
+// Combat worktypes/strategies
+// Monsters are always in "combat-mode", but that isn't apparent
+// unless an enemy is nearby.
+void U6Actor::wt_combat()
+{
+    Player *player = Game::get_game()->get_player();
+    Actor *pactor = player->get_actor();
+    MapCoord loc = pactor->get_location();
+    if(is_nearby(loc, 2))
+    {
+        repel_from(pactor);
+        walk_path();
+    }
 }
 
 void U6Actor::set_actor_obj_n(uint16 new_obj_n)
@@ -1291,7 +1344,7 @@ bool U6Actor::is_immobile()
 {
     return(worktype == WORKTYPE_U6_MOTIONLESS
            || worktype == WORKTYPE_U6_IMMOBILE
-           || can_move == false);
+           /*|| can_move == false*/); // can_move really means can_twitch/animate
 }
 
 

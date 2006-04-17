@@ -78,14 +78,26 @@ nuvie_SOURCES = \
 	misc/iAVLTree.h \
 	misc/MapEntity.h \
 \
-	pathfinder/AStar.cpp \
-	pathfinder/AStar.h \
-	pathfinder/LPath.cpp \
-	pathfinder/LPath.h \
+	pathfinder/AStarPath.cpp \
+	pathfinder/AStarPath.h \
+	pathfinder/ActorPathFinder.cpp \
+	pathfinder/ActorPathFinder.h \
+        pathfinder/CombatPathFinder.cpp \
+        pathfinder/CombatPathFinder.h \
+	pathfinder/DirFinder.cpp \
+	pathfinder/DirFinder.h \
+	pathfinder/PartyPathFinder.cpp \
+	pathfinder/PartyPathFinder.h \
+	pathfinder/Path.cpp \
+	pathfinder/Path.h \
 	pathfinder/PathFinder.cpp \
 	pathfinder/PathFinder.h \
-	pathfinder/ZPath.cpp \
-	pathfinder/ZPath.h \
+	pathfinder/SchedPathFinder.cpp \
+	pathfinder/SchedPathFinder.h \
+	pathfinder/SeekPath.cpp \
+	pathfinder/SeekPath.h \
+	pathfinder/U6AStarPath.cpp \
+	pathfinder/U6AStarPath.h \
 \
 	save/SaveDialog.cpp \
 	save/SaveDialog.h \

@@ -322,6 +322,10 @@ bool TileManager::loadTileFlag()
    else
      tile[i].water = false;
 
+   if(tile[i].flags1 & 0x8)
+     tile[i].damages = true;
+   else
+     tile[i].damages = false;
   }
 
  for(i=0;i < 2048; i++)

@@ -33,25 +33,24 @@ class ActorManager;
 class MapCoord;
 class Map;
 class NuvieIO;
+class PartyPathFinder;
+class PartySeek;
 
 struct PartyMember {
 char name[14];
 Actor *actor;
+bool inactive; // true if not in formation
 uint8 combat_position;
 sint8 form_x; // relative position left or right of leader
 sint8 form_y; // relative position in front or in back of leader
               // (leader is at 0,0 in formation)
-uint16 leader_x, leader_y; // last seen location of leader
 };
 
 /* party walking formations: */
 #define PARTY_FORM_STANDARD 0
 #define PARTY_FORM_COLUMN   1
 #define PARTY_FORM_ROW      2
-#define PARTY_FORM_PHALANX  3
 #define PARTY_FORM_DELTA    4
-#define PARTY_FORM_DIAMOND  5
-#define PARTY_FORM_CROWD    6
 #define PARTY_FORM_COMBAT   7
 
 /*   0 <- standard  *
@@ -64,90 +63,87 @@ uint16 leader_x, leader_y; // last seen location of leader
  * 2                *
  * 3...             *
  *                  *
- *  102             *    0 <- delta
- * 9354A <- phalanx *   172
- * B687C            *  38 94
- * DFHGE            * 5A   B6
- * I   J            *
- *
- *   0 <- diamond
- *  182
- * 39 A4
- *  5B6
- *   7
+ *    0 <- delta
+ *   172
+ *  38 94
+ * 5A   B6
  *
  * (Combat positions are dynamic, based on combat mode)
  */
 
 class Party {
+ protected:
+ friend class PartyPathFinder;
  Game *game; // get pointers here to avoid construct order issues in loadGame()
  Configuration *config;
  ActorManager *actor_manager;
  Map *map;
+ PartyPathFinder *pathfinder;
 
  PartyMember member[16];
  uint8 num_in_party; // number of party members.
  uint8 formation; // walking formation
- bool autowalk; // party is automatically walking to a destination
+ uint16 prev_leader_x; // last location of leader
+ uint16 prev_leader_y;
 
+ bool autowalk; // party is automatically walking to a destination
  bool in_vehicle; //Party is in a vehicle.
  bool in_combat_mode;
 
  public:
 
  Party(Configuration *cfg);
- ~Party();
+ virtual ~Party();
 
- bool init(Game *g, ActorManager *am);
- bool load(NuvieIO *objlist);
- bool save(NuvieIO *objlist);
+ virtual bool init(Game *g, ActorManager *am);
+ virtual bool load(NuvieIO *objlist);
+ virtual bool save(NuvieIO *objlist);
 
+ // Basic methods
+ void follow(sint8 rel_x, sint8 rel_y); // follow in direction leader moved
+ bool move(uint16 dx, uint16 dy, uint8 dz);
+ void show(); // Actor::show()
+ void hide(); // Actor::hide()
+ virtual void dismount_from_horses();
+ virtual void update_music(); // set music depending on party location
+ virtual void split_gold();
+ virtual void gather_gold();
  bool add_actor(Actor *actor);
  bool remove_actor(Actor *actor);
+ void heal();
 
- void split_gold();
- void gather_gold();
-
+ // Properties
  uint8 get_party_size();
- uint8 get_party_max() { return(8); } // U6
+ virtual uint8 get_party_max() { return(8); } // U6
+ sint8 get_leader(); // returns -1 if party has no leader and can't move
+ MapCoord get_leader_location();
+ MapCoord get_location(uint8 m = 0);
+ MapCoord get_formation_coords(uint8 m);
+ void set_in_vehicle(bool value);
+ void set_in_combat_mode(bool value);
+ bool is_in_vehicle() { return in_vehicle; }
+ bool is_in_combat_mode() { return in_combat_mode; }
+
+ // Check specific actors
+ uint8 get_actor_num(uint8 member_num); //get actor id_n from party_member num.
  Actor *get_actor(uint8 member_num);
- char *get_actor_name(uint8 member_num);
  sint8 get_member_num(Actor *actor);
  sint8 get_member_num(uint8 a);
- //get actor id_n from party_member num.
- uint8 get_actor_num(uint8 member_num);
- MapCoord get_formation_coords(uint8 m);
- inline MapCoord get_location(uint8 m = 0);
+ char *get_actor_name(uint8 member_num);
+ bool is_leader(Actor *actor) { return(get_member_num(actor) == get_leader()); }
+ bool contains_actor(Actor *actor);
+ bool contains_actor(uint8 actor_num);
 
- void reform_party();
- void follow();
- void find_leader(uint8 m);
-
+ // Check entire party
+ bool is_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);
+ bool is_at(MapCoord &xyz, uint32 threshold = 0);
+ bool is_anyone_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);
+ bool is_anyone_at(MapCoord &xyz, uint32 threshold = 0);
  bool has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual=true);
  bool remove_obj(uint16 obj_n, uint8 quality);
  uint16 who_has_obj(uint16 obj_n, uint8 quality);
 
- bool is_leader(Actor *actor) { return(get_member_num(actor) == 0); }
- bool contains_actor(Actor *actor);
- bool contains_actor(uint8 actor_num);
- bool is_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);
- bool is_at(MapCoord &xyz, uint32 threshold = 0);
-
- void set_in_vehicle(bool value);
- bool is_in_vehicle() { return in_vehicle; }
-
- void set_in_combat_mode(bool value);
- bool is_in_combat_mode() { return in_combat_mode; }
-
- void update_music();
- 
- void heal();
-
- void show();
- void hide();
-
- bool move(uint16 dx, uint16 dy, uint8 dz);
-
+ // Automatic-walking. These methods should be replaced with ActorActions.
  void walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay = 0);
  void walk(MapCoord *walkto, uint32 step_delay = 0) { walk(walkto, NULL, step_delay); }
  void walk(Obj *moongate, MapCoord *teleport, uint32 step_delay = 0);
@@ -155,10 +151,8 @@ class Party {
  void stop_walking();
  bool get_autowalk() { return(autowalk); }
 
- void dismount_from_horses();
-
  protected:
-
+ void reform_party(); // call when adding or removing members
 };
 
 #endif /* _PARTY_H_ */

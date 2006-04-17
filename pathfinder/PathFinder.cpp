@@ -1,103 +1,78 @@
 
-#include "nuvieDefs.h"
-
-#include "Actor.h"
-#include "Map.h"
+#include "Path.h"
 #include "PathFinder.h"
 
-
-PathFinder::PathFinder(Actor *a, MapCoord &d, uint32 speed)
-                       : src(0,0,0), dest(0,0,0)
+PathFinder::PathFinder() : start(0,0,0), goal(0,0,0), loc(0,0,0), search(0)
 {
-    path = NULL;
-    step_count = next_step = 0;
-    dest2 = NULL;
+
 }
 
-
-PathFinder::PathFinder() : src(0, 0, 0), dest(0, 0, 0)
+PathFinder::PathFinder(MapCoord s, MapCoord g)
+                   : start(s), goal(g), search(0), loc(0, 0, 0)
 {
-    path = NULL;
-    step_count = next_step = 0;
-    dest2 = NULL;
-}
 
+}
 
 PathFinder::~PathFinder()
 {
-    if(path)
-        free(path);
-    if(dest2)
-        delete(dest2);
+    delete search;
 }
 
-
-/* Free and zero path/steps.
- */
-void PathFinder::delete_path()
+bool PathFinder::check_dir(const MapCoord &from, const MapCoord &rel)
 {
-    if(path)
-        free(path);
-    path = NULL;
-    step_count = next_step = 0;
+    return check_loc(MapCoord(from.x+rel.sx,from.y+rel.sy,from.z));
 }
 
-
-/* Returns true if actor is at the destination.
- */
-bool PathFinder::reached_goal()
+bool PathFinder::check_loc(uint16 x, uint16 y, uint8 z)
 {
-    return(actor->x == dest.x && actor->y == dest.y && actor->z == dest.z);
+    return check_loc(MapCoord(x,y,z));
 }
 
-
-/* From a normalized direction xdir,ydir as base, get the normalized direction
- * towards one of the seven nearby tiles to the left or right of base.
- * For rotate: -n = left n tiles, n = right n tiles
- */
- void PathFinder::get_adjacent_dir(sint8 &xdir, sint8 &ydir, sint8 rotate)
+void PathFinder::new_search(Path *new_path)
 {
-    struct
+    delete search;
+    search = new_path;
+    search->set_pathfinder(this);
+}
+
+bool PathFinder::find_path()
+{
+    if(search)
     {
-        sint8 x, y;
-    } neighbors[8] = { {-1,-1}, {+0,-1}, {+1,-1},
-                       {+1,+0},/*ACTOR*/ {+1,+1},
-                       {+0,+1}, {-1,+1}, {-1,+0} };
-
-    for(uint32 start = 0; start < 8; start++)
-        if(neighbors[start].x == xdir && neighbors[start].y == ydir)
-        {
-            sint32 dest = start + rotate;
-            while(dest < 0 || dest > 7)
-                dest += (dest < 0) ? 8 : -8;
-            xdir = neighbors[dest].x; ydir = neighbors[dest].y;
-            break;
-        }
-}
-
-
-/* Set new destination. Any existing path is cleared.
- */
-void PathFinder::set_dest(MapCoord &d)
-{
-    if(d != dest)
-        delete_path();
-    dest.x = d.x;
-    dest.y = d.y;
-    dest.z = d.z;
-}
-
-
-/* Secondary destination.
- */
-void PathFinder::set_dest2(MapCoord &d2)
-{
-    if(!dest2)
-        dest2 = new MapCoord(d2.x, d2.y, d2.z);
-    else
-    {
-        dest2->x = d2.x;
-        dest2->y = d2.y;
-        dest2->z = d2.z;
+        if(search->have_path())
+            search->delete_path();
+        return(search->path_search(loc, goal));
     }
+    return false; // no path-search object
+}
+
+bool PathFinder::have_path()
+{
+    return(search && search->have_path());
+}
+
+void PathFinder::set_goal(const MapCoord &g)
+{
+    goal = g;
+    if(have_path())
+        search->delete_path();
+}
+
+void PathFinder::set_start(const MapCoord &s)
+{
+    start = s;
+    if(have_path())
+        search->delete_path();
+}
+
+bool PathFinder::is_path_clear()
+{
+    uint32 num_steps = search->get_num_steps();
+    for(int n=0; n<num_steps;n++)
+    {
+        MapCoord loc = search->get_step(n);
+        if(!check_loc(loc))
+            return false;
+    }
+    return true;
 }
