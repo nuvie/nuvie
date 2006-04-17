@@ -1,0 +1,952 @@
+## spells.nsl 
+#
+## This is the spell-list for nuvie
+# 
+## use syntax highlighting to make this more readable (tools/nsl.vim)
+#
+## Reagent bitvector
+# REAGENT_U6_MANDRAKE_ROOT 0x01 (  1) increase power
+# REAGENT_U6_NIGHTSHADE    0x02 (  2) illusion and poison
+# REAGENT_U6_BLACK_PEARL   0x04 (  4) kinetic propellent
+# REAGENT_U6_BLOOD_MOSS    0x08 (  8) enhance mobility and movement
+# REAGENT_U6_SPIDER_SILK   0x10 ( 16) binding
+# REAGENT_U6_GARLIC        0x20 ( 32) warding and negating
+# REAGENT_U6_GINSENG       0x40 ( 64) curative
+# REAGENT_U6_SULFUROUS_ASH 0x80 (128) energy
+#
+## Syllable            Meaning     Syllable            Meaning
+#  An .......... Negate/Dispel     Nox ................ Poison
+#  Bet ................. Small     Ort ................. Magic
+#  Corp ................ Death     Por ......... Move/Movement
+#  Des ............ Lower/Down     Quas ............. Illusion
+#  Ex ................ Freedom     Rel ................ Change
+#  Flam ................ Flame     Sanct .. Protect/Protection
+#  Grav ......... Energy/Field     Tym .................. Time
+#  Hur .................. Wind     Uus .............. Raise/Up
+#  In ...... Make/Create/Cause     Vas ................. Great
+#  Jux ...... Danger/Trap/Harm     Wis ........ Know/Knowledge
+#  Kal ......... Summon/Invoke     Xen .............. Creature
+#  Lor ................. Light     Ylem ............... Matter
+#  Mani ......... Life/Healing     Zu .................. Sleep
+#
+## Original spell data collected from game.exe:
+#
+##1ST Circle 
+# Create Food  IMY  0x61 # Harm         AM   0x12
+# Detect Magic WO   0x82 # Heal         IM   0x50
+# Detect Trap  WJ   0x82 # Help         KL   0x00
+# Dispel Magic AJO  0x60 # Ignite       IF   0x84
+# Douse        AF   0x24 # Light        IL   0x80
+##2ND Circle 
+# Infravision  QL   0x82 # Telekinesis  OPY  0x0d
+# Magic Arrow  OJ   0x84 # Trap         IJ   0x12
+# Poison       INP  0x0e # Unlock Magic EP   0x88
+# Reappear     IY   0x1c # Untrap       AJ   0x88
+# Sleep        IZ   0x16 # Vanish       AY   0x2c
+##3RD Circle
+# Curse        AS   0xa2 # Mass Awaken  AVZ  0x60
+# Dispel Field AG   0x84 # Mass Sleep   VZ   0x52
+# Fireball     PF   0x84 # Peer         VWY  0x03
+# Great Light  VL   0x81 # Protection   IS   0xe0
+# Lock         AP   0xa8 # Repel Undead AXC  0xa0
+##4TH Circle
+# Animate      OY   0x89 # Locate       IW   0x02
+# Conjure      KX   0x11 # Mass Dispel  VAJO 0x60
+# Disable      AVM  0x13 # Poison Field ING  0x56
+# Fire Field   IFG  0x94 # Sleep Field  IZG  0x54
+# Great Heal   VM   0x51 # Wind Change  RH   0x88
+##5TH Circle
+# Energy Field ISG  0x15 # Paralyze     AXP  0x96
+# Explosion    VPF  0x8d # Pickpocket   PY   0x1a
+# Insect Swarm KBX  0x98 # Reveal       ASL  0x13
+# Invisibility SL   0x0a # Seance       KMC  0x9b
+# Lightning    OG   0x85 # X-ray        WY   0x81
+##6TH Circle
+# Charm        AXE  0x16 # Mass Protect VIS  0xe8
+# Clone        IQX  0xdb # Negate Magic AO   0xa1
+# Confuse      VQ   0x03 # Poison Wind  NH   0x8a
+# Flame Wind   FH   0x89 # Replicate    IQY  0xda
+# Hail Storm   KDY  0x0d # Web          IDP  0x10
+##7TH Circle
+# Chain Bolt   VOG  0x8d # Kill         IC   0x86
+# Enchant      IOY  0x91 # Mass Curse   VAS  0xa3
+# Energy Wind  GH   0x8b # Mass Invis   VSL  0x0f
+# Fear         QC   0x23 # Wing Strike  KOX  0x99
+# Gate Travel  VRP  0x85 # Wizard Eye   POW  0x9f
+##8TH Circle
+# Armageddon   VCBM 0xff # Resurrect    IMC  0xf9
+# Death Wind   CH   0x8b # Slime        VRX  0x0b
+# Eclipse      VAL  0xab # Summon       KXC  0x39
+# Mass Charm   VAXE 0x17 # Time Stop    AT   0x29
+# Mass Kill    VC   0x87 # Tremor       VPY  0x89
+########################################
+##1ST CIRCLE SPELLS
+# 0
+name: Create Food
+invocation: imy
+reagents: 0x61
+# creates 5-9 pieces of meat (obj 129) and gives them to caster
+# spell fails if caster can't carry the weight.
+#TODO: 
+##figure out the right random values.
+##figure out the right messages to display.
+script:\
+5 _random 5 _add _dup\
+0 _swap 0 _swap 129 _new_obj\
+caster _give_obj\
+_jmp\
+:failure\
+  _delete_obj\
+" Spell failed! " _display\
+_end\
+:success\
+" _swap Created _swap food! " _display\
+_end
+~
+# 1
+name: Detect Magic
+invocation: WO
+reagents: 0x82
+script:\
+++ This is the Detect Magic spell stub ++ _display _end
+~
+# 2 
+name: Detect Trap
+invocation: WJ
+reagents: 0x82
+script:\
+++ This is the Detect Trap spell stub ++ _display _end
+~
+# 3 
+name: Dispel Magic
+invocation: AJO
+reagents: 0x60
+script:\
+++ This is the Dispel Magic spell stub ++ _display _end
+~
+# 4 
+name: Douse
+invocation: AF
+reagents: 0x24
+script:\
+++ This is the Douse spell stub ++ _display _end
+~
+# 5 
+name: Harm
+invocation: AM
+reagents: 0x12
+script:\
+++ This is the Harm spell stub ++ _display _end
+~
+# 6 
+name: Heal
+invocation: IM
+reagents: 0x50
+script:\
+++ This is the Heal spell stub ++ _display _end
+~
+# 7 
+name: Help
+invocation: KL
+reagents: 0x00
+script:\
+++ This is the Help spell stub ++ _display _end
+~
+# 8 
+name: Ignite
+invocation: IF
+reagents: 0x84
+script:\
+++ This is the Ignite spell stub ++ _display _end
+~
+# 9 
+name: Light
+invocation: IL
+reagents: 0x80
+script:\
+++ This is the Light spell stub ++ _display _end
+~
+# 10
+~
+# 11
+name: Sub And Loop Test
+invocation: kow
+reagents: 0x00
+script:\
+" _newline +++ _newline " _display\
+5 5 _random _add 0 :do\
+back _over sub _jmp :back\
+:loop 1 _add _over _over _sub do _swap _jmptrue\
+" _newline --- _newline " _display  _end\
+:sub " _swap _newline " _display _jmp
+~
+# 12
+name: Create Spell
+invocation: iow
+reagents: 0x00
+script:\
+" Reagents:     " _display _input \
+" Script:       " _display _input \
+" Invocation:   " _display _input \
+" Name:         " _display _input \
+" Circle (1-16):" _display _input \
+1 _sub 16 _mul \
+" Slot (0-15):  " _display _input \
+_add \
+_define_spell \
+_end
+~
+# 13
+name: Save Spell
+invocation: sow
+reagents: 0x00
+script:\
+" Save by index (y/n)? " _display _input \
+ _jmp \
+:y \
+" Circle: " _display _input \
+1 _sub 16 _mul \
+" Slot: " _display _input \
+_add \ 
+_save_spell \
+_end \
+:n\
+" Invocation: " _display _input \
+_inv_to_spell \
+_jmp \
+:success \
+_save_spell \
+_end \
+:failure \
+" Spell Not Found " \
+_display \
+_end
+~
+# 14
+name: Save All 
+invocation: vsow
+reagents: 0x00
+script:\
+255 0 :do _dup _save_spell \
+:loop 1 _add _over _over _sub do _swap _jmptrue \
+_end
+~
+# 15
+name: Load All
+invocation: kro
+reagents: 0x00
+script:\
+" _newline reloading spell list: _load _newline " _display _end
+~
+#
+##2ND CIRCLE SPELLS
+# 16
+name: Infravision
+invocation: QL
+reagents: 0x82
+script:\
+++ This is the Infravision spell stub ++ _display _end
+~
+# 17 
+name: Magic Arrow
+invocation: OJ
+reagents: 0x84
+script:\
+++ This is the Magic Arrow spell stub ++ _display _end
+~
+# 18 
+name: Poison
+invocation: INP
+reagents: 0x0e
+script:\
+++ This is the Poison spell stub ++ _display _end
+~
+# 19 
+name: Reappear
+invocation: IY
+reagents: 0x1c
+script:\
+++ This is the Reappear spell stub ++ _display _end
+~
+# 20 
+name: Sleep
+invocation: IZ
+reagents: 0x16
+script:\
+++ This is the Sleep spell stub ++ _display _end
+~
+# 21 
+name: Telekinesis
+invocation: OPY
+reagents: 0x0d
+script:\
+++ This is the Telekinesis spell stub ++ _display _end
+~
+# 22 
+name: Trap
+invocation: IJ
+reagents: 0x12
+script:\
+++ This is the Trap spell stub ++ _display _end
+~
+# 23 
+name: Unlock Magic
+invocation: EP
+reagents: 0x88
+script:\
+++ This is the Unlock Magic spell stub ++ _display _end
+~
+# 24 
+name: Untrap
+invocation: AJ
+reagents: 0x88
+script:\
+++ This is the Untrap spell stub ++ _display _end
+~
+# 25 
+name: Vanish
+invocation: AY
+reagents: 0x2c
+script:\
+++ This is the Vanish spell stub ++ _display _end
+~
+# 26
+~
+# 27
+~
+# 28
+~
+# 29
+~
+# 30
+~
+# 31
+~
+##3RD CIRCLE SPELLS
+# 32 
+name: Curse
+invocation: AS
+reagents: 0xa2
+script:\
+++ This is the Curse spell stub ++ _display _end
+~
+# 33 
+name: Dispel Field
+invocation: AG
+reagents: 0x84
+script:\
+++ This is the Dispel Field spell stub ++ _display _end
+~
+# 34 
+name: Fireball
+invocation: PF
+reagents: 0x84
+script:\
+++ This is the Fireball spell stub ++ _display _end
+~
+# 35 
+name: Great Light
+invocation: VL
+reagents: 0x81
+script:\
+++ This is the Great Light spell stub ++ _display _end
+~
+# 36 
+name: Lock
+invocation: AP
+reagents: 0xa8
+script:\
+++ This is the Lock spell stub ++ _display _end
+~
+# 37 
+name: Mass Awaken
+invocation: AVZ
+reagents: 0x60
+script:\
+++ This is the Mass Awaken spell stub ++ _display _end
+~
+# 38 
+name: Mass Sleep
+invocation: VZ
+reagents: 0x52
+script:\
+++ This is the Mass Sleep spell stub ++ _display _end
+~
+# 39 
+name: Peer
+invocation: VWY
+reagents: 0x03
+script:\
+++ This is the Peer spell stub ++ _display _end
+~
+# 40 
+name: Protection
+invocation: IS
+reagents: 0xe0
+script:\
+++ This is the Protection spell stub ++ _display _end
+~
+# 41 
+name: Repel Undead
+invocation: AXC
+reagents: 0xa0
+script:\
+++ This is the Repel Undead spell stub ++ _display _end
+~
+# 42
+~
+# 43
+~
+# 44
+~
+# 45
+~
+# 46
+~
+# 47
+~
+#4TH CIRCLE SPELLS
+# 48 
+name: Animate
+invocation: OY
+reagents: 0x89
+script:\
+++ This is the Animate spell stub ++ _display _end
+~
+# 49 
+name: Conjure
+invocation: KX
+reagents: 0x11
+script:\
+++ This is the Conjure spell stub ++ _display _end
+~
+# 50 
+name: Disable
+invocation: AVM
+reagents: 0x13
+script:\
+++ This is the Disable spell stub ++ _display _end
+~
+# 51 
+name: Fire Field
+invocation: IFG
+reagents: 0x94
+script:\
+++ This is the Fire Field spell stub ++ _display _end
+~
+# 52 
+name: Great Heal
+invocation: VM
+reagents: 0x51
+script:\
+++ This is the Great Heal spell stub ++ _display _end
+~
+# 53 
+name: Locate
+invocation: IW
+reagents: 0x02
+script:\
+++ This is the Locate spell stub ++ _display _end
+~
+# 54 
+name: Mass Dispel
+invocation: VAJO
+reagents: 0x60
+script:\
+++ This is the Mass Dispel spell stub ++ _display _end
+~
+# 55 
+name: Poison Field
+invocation: ING
+reagents: 0x56
+script:\
+++ This is the Poison Field spell stub ++ _display _end
+~
+# 56 
+name: Sleep Field
+invocation: IZG
+reagents: 0x54
+script:\
+++ This is the Sleep Field spell stub ++ _display _end
+~
+# 57 
+name: Wind Change
+invocation: RH
+reagents: 0x88
+script:\
+++ This is the Wind Change spell stub ++ _display _end
+~
+# 58
+~
+# 59
+~
+# 60
+~
+# 61
+~
+# 62
+~
+# 63
+~
+#5TH CIRCLE SPELLS
+# 64 
+name: Energy Field
+invocation: ISG
+reagents: 0x15
+script:\
+++ This is the Energy Field spell stub ++ _display _end
+~
+# 65 
+name: Explosion
+invocation: VPF
+reagents: 0x8d
+script:\
+++ This is the Explosion spell stub ++ _display _end
+~
+# 66 
+name: Insect Swarm
+invocation: KBX
+reagents: 0x98
+script:\
+++ This is the Insect Swarm spell stub ++ _display _end
+~
+# 67 
+name: Invisibility
+invocation: SL
+reagents: 0x0a
+script:\
+++ This is the Invisibility spell stub ++ _display _end
+~
+# 68 
+name: Lightning
+invocation: OG
+reagents: 0x85
+script:\
+++ This is the Lightning spell stub ++ _display _end
+~
+# 69 
+name: Paralyze
+invocation: AXP
+reagents: 0x96
+script:\
+++ This is the Paralyze spell stub ++ _display _end
+~
+# 70 
+name: Pickpocket
+invocation: PY
+reagents: 0x1a
+script:\
+++ This is the Pickpocket spell stub ++ _display _end
+~
+# 71 
+name: Reveal
+invocation: ASL
+reagents: 0x13
+script:\
+++ This is the Reveal spell stub ++ _display _end
+~
+# 72 
+name: Seance
+invocation: KMC
+reagents: 0x9b
+script:\
+++ This is the Seance spell stub ++ _display _end
+~
+# 73 
+name: X-ray
+invocation: WY
+reagents: 0x81
+script:\
+++ This is the X-ray spell stub ++ _display _end
+~
+# 74
+~
+# 75
+~
+# 76
+~
+# 77
+~
+# 78
+~
+# 79
+~
+#6TH CIRCLE SPELLS
+# 80 
+name: Charm
+invocation: AXE
+reagents: 0x16
+script:\
+++ This is the Charm spell stub ++ _display _end
+~
+# 81 
+name: Clone
+invocation: IQX
+reagents: 0xdb
+script:\
+++ This is the Clone spell stub ++ _display _end
+~
+# 82 
+name: Confuse
+invocation: VQ
+reagents: 0x03
+script:\
+++ This is the Confuse spell stub ++ _display _end
+~
+# 83 
+name: Flame Wind
+invocation: FH
+reagents: 0x89
+script:\
+++ This is the Flame Wind spell stub ++ _display _end
+~
+# 84 
+name: Hail Storm
+invocation: KDY
+reagents: 0x0d
+script:\
+++ This is the Hail Storm spell stub ++ _display _end
+~
+# 85 
+name: Mass Protect
+invocation: VIS
+reagents: 0xe8
+script:\
+++ This is the Mass Protect spell stub ++ _display _end
+~
+# 86 
+name: Negate Magic
+invocation: AO
+reagents: 0xa1
+script:\
+++ This is the Negate Magic spell stub ++ _display _end
+~
+# 87 
+name: Poison Wind
+invocation: NH
+reagents: 0x8a
+script:\
+++ This is the Poison Wind spell stub ++ _display _end
+~
+# 88 
+name: Replicate
+invocation: IQY
+reagents: 0xda
+script:\
+++ This is the Replicate spell stub ++ _display _end
+~
+# 89 
+name: Web
+invocation: IDP
+reagents: 0x10
+script:\
+++ This is the Web spell stub ++ _display _end
+~
+# 90
+~
+# 91
+~
+# 92
+~
+# 93
+~
+# 94
+~
+# 95
+~
+#7TH CIRCLE SPELLS
+# 96 
+name: Chain Bolt
+invocation: VOG
+reagents: 0x8d
+script:\
+++ This is the Chain Bolt spell stub ++ _display _end
+~
+# 97 
+name: Enchant
+invocation: IOY
+reagents: 0x91
+script:\
+++ This is the Enchant spell stub ++ _display _end
+~
+# 98 
+name: Energy Wind
+invocation: GH
+reagents: 0x8b
+script:\
+++ This is the Energy Wind spell stub ++ _display _end
+~
+# 99 
+name: Fear
+invocation: QC
+reagents: 0x23
+script:\
+++ This is the Fear spell stub ++ _display _end
+~
+# 100 
+name: Gate Travel
+invocation: VRP
+reagents: 0x85
+script:\
+++ This is the Gate Travel spell stub ++ _display _end
+~
+# 101 
+name: Kill
+invocation: IC
+reagents: 0x86
+script:\
+++ This is the Kill spell stub ++ _display _end
+~
+# 102 
+name: Mass Curse
+invocation: VAS
+reagents: 0xa3
+script:\
+++ This is the Mass Curse spell stub ++ _display _end
+~
+# 103 
+name: Mass Invis
+invocation: VSL
+reagents: 0x0f
+script:\
+++ This is the Mass Invis spell stub ++ _display _end
+~
+# 104 
+name: Wing Strike
+invocation: KOX
+reagents: 0x99
+script:\
+++ This is the Wing Strike spell stub ++ _display _end
+~
+# 105 
+name: Wizard Eye
+invocation: POW
+reagents: 0x9f
+script:\
+++ This is the Wizard Eye spell stub ++ _display _end
+~
+# 106
+~
+# 107
+~
+# 108
+~
+# 109
+~
+# 110
+~
+# 111
+~
+#8TH CIRCLE SPELLS
+# 112 
+name: Armageddon
+invocation: VCBM
+reagents: 0xff
+script:\
+++ This is the Armageddon spell stub ++ _display _end
+~
+# 113 
+name: Death Wind
+invocation: CH
+reagents: 0x8b
+script:\
+++ This is the Death Wind spell stub ++ _display _end
+~
+# 114 
+name: Eclipse
+invocation: VAL
+reagents: 0xab
+script:\
+++ This is the Eclipse spell stub ++ _display _end
+~
+# 115 
+name: Mass Charm
+invocation: VAXE
+reagents: 0x17
+script:\
+++ This is the Mass Charm spell stub ++ _display _end
+~
+# 116 
+name: Mass Kill
+invocation: VC
+reagents: 0x87
+script:\
+++ This is the Mass Kill spell stub ++ _display _end
+~
+# 117 
+name: Resurrect
+invocation: IMC
+reagents: 0xf9
+script:\
+++ This is the Resurrect spell stub ++ _display _end
+~
+# 118 
+name: Slime
+invocation: VRX
+reagents: 0x0b
+script:\
+++ This is the Slime spell stub ++ _display _end
+~
+# 119 
+name: Summon
+invocation: KXC
+reagents: 0x39
+script:\
+++ This is the Summon spell stub ++ _display _end
+~
+# 120 
+name: Time Stop
+invocation: AT
+reagents: 0x29
+script:\
+++ This is the Time Stop spell stub ++ _display _end
+~
+# 121 
+name: Tremor
+invocation: VPY
+reagents: 0x89
+script:\
+++ This is the Tremor spell stub ++ _display _end
+~
+# 122
+~
+# 123
+~
+# 124
+~
+# 125
+~
+# 126
+~
+# 127
+~
+##128 more empty slots
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+# End of File

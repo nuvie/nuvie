@@ -44,6 +44,7 @@ class Converse;
 class ViewManager;
 class UseCode;
 class GUI;
+class Magic;
 
 #define NUVIE_INTERVAL    65
 #define PUSH_FROM_PLAYER false
@@ -73,6 +74,7 @@ extern uint32 nuvieGameCounter;
 
 class Event : public GUI_CallBack
 {
+ friend class Magic;
  Configuration *config;
  GUI *gui;
  ObjManager *obj_manager;
@@ -85,6 +87,7 @@ class Event : public GUI_CallBack
  Converse *converse;
  ViewManager *view_manager;
  UseCode *usecode;
+ Magic *magic;
 
  SDL_Event event;
  int ts; //timestamp for TimeLeft() method.

@@ -137,6 +137,7 @@ class U6UseCode: public UseCode, public CallBack
  bool use_egg(Obj *obj, UseCodeEvent ev);
  bool sundial(Obj *obj, UseCodeEvent ev);
  bool torch(Obj *obj, UseCodeEvent ev);
+ bool use_spellbook(Obj *obj, UseCodeEvent ev);
 
  
  protected:

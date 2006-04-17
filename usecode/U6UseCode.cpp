@@ -2350,6 +2350,31 @@ bool U6UseCode::use_egg(Obj *obj, UseCodeEvent ev)
     return(true);
 }
 
+/* USE: Ready (Ready already used to look inside, unready works as expected)
+ */
+bool U6UseCode::use_spellbook(Obj *obj, UseCodeEvent ev)
+{
+//  Event *event = Game::get_game()->get_event();
+  if(ev == USE_EVENT_USE)
+  {
+    if (!obj->is_readied() && obj->is_in_inventory()) 
+    {
+      Actor *actor = actor_manager->get_actor_holding_obj(obj);
+      actor->add_readied_object(obj);
+    } 
+    else
+    if (obj->is_readied()) 
+    {
+      /* TODO open spellbook for casting */
+    }
+  }
+  else
+    if(ev == USE_EVENT_LOOK)
+  {
+    /* TODO open spellbook for reading */
+  }
+  return(true);
+}
 
 /* Use: Light torch if readied or on the ground.
  * Ready: Get a torch from a stack and equip it.

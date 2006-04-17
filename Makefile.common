@@ -82,8 +82,8 @@ nuvie_SOURCES = \
 	pathfinder/AStarPath.h \
 	pathfinder/ActorPathFinder.cpp \
 	pathfinder/ActorPathFinder.h \
-        pathfinder/CombatPathFinder.cpp \
-        pathfinder/CombatPathFinder.h \
+	pathfinder/CombatPathFinder.cpp \
+	pathfinder/CombatPathFinder.h \
 	pathfinder/DirFinder.cpp \
 	pathfinder/DirFinder.h \
 	pathfinder/PartyPathFinder.cpp \
@@ -200,6 +200,8 @@ nuvie_SOURCES = \
 	GameSelect.h \
 	Look.cpp \
 	Look.h \
+	Magic.cpp \
+	Magic.h \
 	Map.cpp \
 	Map.h \
 	MapWindow.cpp \

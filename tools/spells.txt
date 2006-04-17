@@ -1,0 +1,40 @@
+# Create Food  IMY  0x61 # Harm         AM   0x12
+# Detect Magic WO   0x82 # Heal         IM   0x50
+# Detect Trap  WJ   0x82 # Help         KL   0x00
+# Dispel Magic AJO  0x60 # Ignite       IF   0x84
+# Douse        AF   0x24 # Light        IL   0x80
+# Infravision  QL   0x82 # Telekinesis  OPY  0x0d
+# Magic Arrow  OJ   0x84 # Trap         IJ   0x12
+# Poison       INP  0x0e # Unlock Magic EP   0x88
+# Reappear     IY   0x1c # Untrap       AJ   0x88
+# Sleep        IZ   0x16 # Vanish       AY   0x2c
+# Curse        AS   0xa2 # Mass Awaken  AVZ  0x60
+# Dispel Field AG   0x84 # Mass Sleep   VZ   0x52
+# Fireball     PF   0x84 # Peer         VWY  0x03
+# Great Light  VL   0x81 # Protection   IS   0xe0
+# Lock         AP   0xa8 # Repel Undead AXC  0xa0
+# Animate      OY   0x89 # Locate       IW   0x02
+# Conjure      KX   0x11 # Mass Dispel  VAJO 0x60
+# Disable      AVM  0x13 # Poison Field ING  0x56
+# Fire Field   IFG  0x94 # Sleep Field  IZG  0x54
+# Great Heal   VM   0x51 # Wind Change  RH   0x88
+# Energy Field ISG  0x15 # Paralyze     AXP  0x96
+# Explosion    VPF  0x8d # Pickpocket   PY   0x1a
+# Insect Swarm KBX  0x98 # Reveal       ASL  0x13
+# Invisibility SL   0x0a # Seance       KMC  0x9b
+# Lightning    OG   0x85 # X-ray        WY   0x81
+# Charm        AXE  0x16 # Mass Protect VIS  0xe8
+# Clone        IQX  0xdb # Negate Magic AO   0xa1
+# Confuse      VQ   0x03 # Poison Wind  NH   0x8a
+# Flame Wind   FH   0x89 # Replicate    IQY  0xda
+# Hail Storm   KDY  0x0d # Web          IDP  0x10
+# Chain Bolt   VOG  0x8d # Kill         IC   0x86
+# Enchant      IOY  0x91 # Mass Curse   VAS  0xa3
+# Energy Wind  GH   0x8b # Mass Invis   VSL  0x0f
+# Fear         QC   0x23 # Wing Strike  KOX  0x99
+# Gate Travel  VRP  0x85 # Wizard Eye   POW  0x9f
+# Armageddon   VCBM 0xff # Resurrect    IMC  0xf9
+# Death Wind   CH   0x8b # Slime        VRX  0x0b
+# Eclipse      VAL  0xab # Summon       KXC  0x39
+# Mass Charm   VAXE 0x17 # Time Stop    AT   0x29
+# Mass Kill    VC   0x87 # Tremor       VPY  0x89

@@ -58,12 +58,20 @@
 #define OBJ_U6_ARROW                55
 #define OBJ_U6_BOLT                 56
 #define OBJ_U6_SPELLBOOK            57
+#define OBJ_U6_SPELL	            58
 
 #define OBJ_U6_CODEX                59
 #define OBJ_U6_VORTEX_CUBE          62
 #define OBJ_U6_KEY                  64
 
+#define OBJ_U6_BLACK_PEARL          65
+#define OBJ_U6_BLOOD_MOSS           66
 #define OBJ_U6_GARLIC               67
+#define OBJ_U6_GINSENG              68
+#define OBJ_U6_MANDRAKE_ROOT        69
+#define OBJ_U6_NIGHTSHADE           70
+#define OBJ_U6_SPIDER_SILK          71   
+#define OBJ_U6_SULFUROUS_ASH        72     
 
 #define OBJ_U6_MOONSTONE            73
 #define OBJ_U6_ANKH_AMULET          74

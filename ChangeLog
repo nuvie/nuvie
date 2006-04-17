@@ -1,3 +1,39 @@
+2006-04-17  Joseph Applegate <sb-x at users.sourceforge.net>
+	* The magic system by Pieter Luteijn has finally been added. It
+	  is still unfinished, so there aren't many (any?) usable spells yet.
+	  I've also fixed Readying objects so that you can ready the spellbook
+	  with the mouse or the keyboard. You can't put spells into the book
+	  yet. (or move any object into any container) The spell list at the
+	  upper-right isn't implemented, so spells have to be "spoken" with the
+	  keyboard.
+	* Event: FIX: was using y coord in place of x coord in move-object code
+	* Party: Extensive changes, including removal of a formation type, a new
+	  inactive flag for party members, and use of PartyPathFinder for
+	  formation movement. References of member 0 changed to get_leader().
+	  The inactive flag is set when someone is unconscious.
+	* The entire party formation/following code has been rewritten to more
+	  closely resembly U6. Thanks to documents posted on the Nuvie forum.
+	* Added Party::is_anyone_at(), similiar to Party::is_at().
+	* Removed old pathfinders and added new ones, rewriting the entire
+	  pathfinder system. It is made up of smaller, easier to manage classes.
+	  I was able to fix some old broken code at the same time.
+	* Actor/U6Actor: Rewrote some of update() and move(). Actors now use
+	  the WALK_TO_LOCATION worktype correctly, when moving to their next
+	  scheduled location. Changed move/check_move to use bitflags, and added
+	  a flag to tell the actor to open and close doors. Actors now check
+	  their moves left on each update(). It's based on dexterity.
+	* Added Actor::set_pathfinder(), and walk_path(). Replaced swalk() with
+	  pathfind_to() and attract_to(), and stop_walking() with
+	  delete_pathfinder(). Actor::push() has been changed.
+	* Also added an incomplete wt_combat() method, and combat worktypes.
+	* New ActorError pointers, to blocking object or blocking actor.
+	* Player: Not allowing movement if actor is_immobile(). Removed can_move
+	  check in U6Actor::is_immobile(). (can_move really means can twitch)
+	* FIX: Call Actor::init() from U6Actor.
+	* FIX: changed WORKTYPE_U6_WALK_TO_LOCATION
+	* TileManager: Added "damages" tileflag and boolean, and is_damaging()
+	  functions to Map and ObjManager.
+
 2005-12-30   Michael Fink <vividos at users.sourceforge.net>
 	* fixed compiling with msvc6
 	* fixed some memory leaks

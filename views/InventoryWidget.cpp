@@ -33,6 +33,7 @@
 #include "Event.h"
 #include "MsgScroll.h"
 #include "TimedEvent.h"
+#include "UseCode.h"
 
 #include "InventoryFont.h"
 
@@ -305,6 +306,7 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 {
  Event *event = Game::get_game()->get_event();
+ UseCode *usecode = Game::get_game()->get_usecode();
 
  if(button == USE_BUTTON)
    {
@@ -333,7 +335,7 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
     // only act now if objects can't be used with DoubleClick
     if(selected_obj && !enable_doubleclick)
       {
-        if(selected_obj->container) // open up the container.
+        if(usecode->is_container(selected_obj)) // open up the container.
           {
             container_obj = selected_obj;
             Redraw();
@@ -533,9 +535,11 @@ GUI_status InventoryWidget::MouseClick(int x, int y, int button)
 GUI_status InventoryWidget::MouseDelayed(int x, int y, int button)
 {
     Event *event = Game::get_game()->get_event();
+    UseCode *usecode = Game::get_game()->get_usecode();
+
     if(ready_obj)
     {
-        if(ready_obj->container) // open up the container.
+        if(usecode->is_container(ready_obj)) // open up the container.
         {
             container_obj = ready_obj;
             Redraw();

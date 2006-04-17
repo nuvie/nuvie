@@ -35,6 +35,7 @@
 #include "Event.h"
 #include "MapWindow.h"
 #include "MsgScroll.h"
+#include "UseCode.h"
 #include "ViewManager.h"
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
@@ -560,7 +561,7 @@ bool InventoryView::select_obj(Obj *obj)
     switch(event->get_mode())
     {
         case EQUIP_MODE:
-            if(obj && obj->container)
+            if(obj && Game::get_game()->get_usecode()->is_container(obj))
                 inventory_widget->set_container(obj);
             else if(obj)
             {

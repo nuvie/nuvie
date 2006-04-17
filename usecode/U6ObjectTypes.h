@@ -60,6 +60,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_BRAZIER,   0,0,USE_EVENT_USE,&U6UseCode::use_firedevice,OBJTYPE_NONE },
     { OBJ_U6_BRAZIER,   1,0,USE_EVENT_USE,&U6UseCode::use_firedevice,OBJTYPE_NONE },
     { OBJ_U6_TORCH,     255,0,USE_EVENT_USE|USE_EVENT_READY|USE_EVENT_GET|USE_EVENT_DROP,&U6UseCode::torch,OBJTYPE_NONE },
+    { OBJ_U6_SPELLBOOK, 255,0,USE_EVENT_USE|USE_EVENT_LOOK,&U6UseCode::use_spellbook,OBJTYPE_NONE },
 
     { OBJ_U6_ORB_OF_THE_MOONS,255,0,USE_EVENT_USE,&U6UseCode::use_orb,OBJTYPE_NONE },
     { OBJ_U6_RED_GATE,  1,0,USE_EVENT_PASS,&U6UseCode::enter_red_moongate,OBJTYPE_NONE },

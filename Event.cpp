@@ -50,9 +50,11 @@
 #include "U6objects.h"
 #include "Effect.h"
 #include "EffectManager.h"
+#include "NuvieIOFile.h"
 
 #include "UseCode.h"
 #include "SaveManager.h"
+#include "Magic.h"
 
 #include "GUI.h"
 #include "GUI_YesNoDialog.h"
@@ -66,6 +68,7 @@ Event::Event(Configuration *cfg)
 
  use_obj = NULL;
  selected_actor = NULL;
+ magic = new Magic(); 
 
  book = NULL;
  time_queue = game_time_queue = NULL;
@@ -100,6 +103,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
    return false;
  time_queue = new TimeQueue;
  game_time_queue = new TimeQueue;
+ magic->init(this);
  return true;
 }
 
@@ -209,7 +213,14 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		return true;
 	}
 
-	switch (event->key.keysym.sym)
+	// when casting the magic class will events
+	if(mode == CAST_MODE)
+	{
+	  if (magic->handleSDL_KEYDOWN(event))
+	  {
+	    return true;
+	  } 
+	} else switch (event->key.keysym.sym)
 	{
 		//	keypad arrow keys
 		case SDLK_KP7   :
@@ -268,6 +279,10 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 				showingQuitDialog = true;
 				quitDialog();
 			}
+			break;
+		case SDLK_c     :
+			/* TODO check if spellbook ready before changing mode */
+			newAction(CAST_MODE);
 			break;
 		case SDLK_l     :
 			newAction(LOOK_MODE);
@@ -2053,7 +2068,12 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 	map_window->set_show_use_cursor(false);
 	map_window->set_show_cursor(false);
 	Game::get_game()->set_mouse_pointer(0);
-	if(mode == LOOK_MODE)
+	if(mode == CAST_MODE)
+	{
+		mode = MOVE_MODE;
+		magic->cast(); 
+	}
+	else if(mode == LOOK_MODE)
 	{
 		mode = MOVE_MODE;
 		look();
@@ -2119,7 +2139,12 @@ void Event::doAction(Obj *obj)
 	map_window->set_show_use_cursor(false);
 	map_window->set_show_cursor(false);
 	Game::get_game()->set_mouse_pointer(0);
-	if(mode == LOOK_MODE)
+	if(mode == CAST_MODE)
+	{
+		mode = MOVE_MODE;
+		magic->cast(obj);
+	}
+	else if(mode == LOOK_MODE)
 	{
 		mode = MOVE_MODE;
 		look(obj);
@@ -2203,6 +2228,14 @@ bool Event::newAction(EventMode new_mode)
 	mode = new_mode;
 	switch(new_mode)
 	{
+	  	case CAST_MODE:
+			scroll->display_string("Cast-");
+		  	if (!magic->start_new_spell())
+			{
+			  mode=MOVE_MODE;
+			} 
+			/* TODO show the spellbook view */
+		  	break;
 		case LOOK_MODE:
 			scroll->display_string("Look-");
 			map_window->centerCursor();
