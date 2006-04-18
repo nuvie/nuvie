@@ -184,11 +184,11 @@ void UseCode::dbg_print_event(UseCodeEvent event, Obj *obj)
             break;
     }
     if(do_string != "")
-        fprintf(stderr, "UseCode: %s object %d:%d (%03x,%03x,%x)\n", do_string.c_str(),
-                obj->obj_n, obj->frame_n, obj->x, obj->y, obj->z);
+        printf("UseCode: %s object %d:%d (%03x,%03x,%x)\n", do_string.c_str(),
+               obj->obj_n, obj->frame_n, obj->x, obj->y, obj->z);
     else
-        fprintf(stderr, "UseCode: Event 0x%04x sent to object %d:%d (%03x,%03x,%x)\n",
-                event, obj->obj_n, obj->frame_n, obj->x, obj->y, obj->z);
+        printf("UseCode: Event 0x%04x sent to object %d:%d (%03x,%03x,%x)\n",
+               event, obj->obj_n, obj->frame_n, obj->x, obj->y, obj->z);
 }
 
 

@@ -99,7 +99,7 @@ Converse::~Converse()
     if(running())
     {
         reset();
-        fprintf(stderr, "End conversation\n");
+        printf("End conversation\n");
     }
     unload_conv();
 
@@ -162,7 +162,7 @@ void Converse::load_conv(const std::string &convfilename)
     {
     } */
 #ifdef CONVERSE_DEBUG
-    fprintf(stderr, "Converse: load \"%s\"\n", convfilename.c_str());
+    printf("Converse: load \"%s\"\n", convfilename.c_str());
 #endif
 }
 
@@ -245,7 +245,7 @@ ConvScript *Converse::load_script(uint32 n)
         loaded = NULL;
     }
     else
-        fprintf(stderr, "Read %s npc script (%s:%d)\n",
+        printf("Read %s npc script (%s:%d)\n",
                 loaded->compressed ? "encoded" : "unencoded", src_name(), (unsigned int)n);
     return(loaded);
 }
@@ -343,10 +343,11 @@ bool Converse::start(uint8 n)
         init_variables();
         scroll->set_talking(true);
         show_portrait(npc_num);
+//        Game::get_game()->get_sound_manager()->musicStop();
         Game::get_game()->get_sound_manager()->musicPause();
         Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         unwait();
-        fprintf(stderr, "Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
+        printf("Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
         return(true);
     }
     fprintf(stderr, "Error loading npc %d from %s:%d\n",
@@ -369,7 +370,7 @@ void Converse::stop()
     Game::get_game()->get_event()->set_mode(MOVE_MODE); // return control to player
 
     active = false;
-    fprintf(stderr, "End conversation\n");
+    printf("End conversation\n");
 }
 
 
@@ -382,7 +383,7 @@ bool Converse::input()
      std::string s = scroll->get_input();
         set_input(s);
 #ifdef CONVERSE_DEBUG
-        fprintf(stderr, "Converse: INPUT \"%s\"\n\n", get_input().c_str());
+        printf("Converse: INPUT \"%s\"\n\n", get_input().c_str());
 #endif
         return(true);
     }
@@ -395,7 +396,7 @@ bool Converse::input()
 void Converse::print(const char *s)
 {
 #ifdef CONVERSE_DEBUG
-    fprintf(stderr, "Converse: PRINT \"%s\"\n\n",s ? s : get_output().c_str());
+    printf("Converse: PRINT \"%s\"\n\n",s ? s : get_output().c_str());
 #endif
     if(s)
         scroll->display_string(s);
