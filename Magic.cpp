@@ -758,7 +758,7 @@ bool Magic::function_random()
    * Stack effect: 1 value popped, random number in range [0,value> pushed
    */
   char buffer[MAX_TOKEN_LENGTH+1];
-  snprintf(buffer,MAX_TOKEN_LENGTH,"%d",(int)(random()%(atoi(stack->pop()))));
+  snprintf(buffer,MAX_TOKEN_LENGTH,"%d",(int)(rand()%(atoi(stack->pop()))));
   stack->push(buffer);
   return true;
 };

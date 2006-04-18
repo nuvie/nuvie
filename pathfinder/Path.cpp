@@ -3,7 +3,7 @@
 #include "Path.h"
 
 Path::Path()
-    : path(0), path_size(0), step_count(0), pf(0)
+    : path(0), step_count(0), path_size(0), pf(0)
 {
 }
 

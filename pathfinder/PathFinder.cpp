@@ -8,7 +8,7 @@ PathFinder::PathFinder() : start(0,0,0), goal(0,0,0), loc(0,0,0), search(0)
 }
 
 PathFinder::PathFinder(MapCoord s, MapCoord g)
-                   : start(s), goal(g), search(0), loc(0, 0, 0)
+                   : start(s), goal(g), loc(0, 0, 0), search(0)
 {
 
 }
@@ -68,7 +68,7 @@ void PathFinder::set_start(const MapCoord &s)
 bool PathFinder::is_path_clear()
 {
     uint32 num_steps = search->get_num_steps();
-    for(int n=0; n<num_steps;n++)
+    for(unsigned int n=0; n<num_steps;n++)
     {
         MapCoord loc = search->get_step(n);
         if(!check_loc(loc))

@@ -155,7 +155,7 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
      // write data that couldn't be decoded
      if(buf_size)
      {
-        snprintf(outfilename, 100, "item%03d.unk", i, buf_loc);
+        snprintf(outfilename, 100, "item%03d.unk", i);
         out_file = fopen(outfilename, "wb");
         fwrite(buf, 1, buf_size, out_file);
         printf("Wrote item data to %s\n", outfilename);
@@ -195,7 +195,7 @@ int main(int argc, char **argv)
  U6Lib_n converse_a, converse_b, converse_a_out, converse_b_out;
  U6Lzw lzw;
  string filename;
- uint32 arg = 1;
+ int arg = 1;
  bool repack = false; // Repack files instead of Unpack?
  // get args
  while(arg < argc)
