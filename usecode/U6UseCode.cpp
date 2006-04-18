@@ -1392,35 +1392,38 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                                    : am->look_actor(items.actor2_ref));
             scroll->display_string("\n");
 
-             switch(obj->frame_n)
-              {
-               case  USE_U6_POTION_RED    : ((U6Actor *)items.actor2_ref)->set_poisoned(false);
-                                            break;
-               case  USE_U6_POTION_YELLOW : ((U6Actor *)items.actor2_ref)->heal();
-                                            break;
-               case  USE_U6_POTION_GREEN  : ((U6Actor *)items.actor2_ref)->set_poisoned(true);
-                                            break;
-               case USE_U6_POTION_WHITE   : new U6WhitePotionEffect(2500, 6000, obj);
-                                            // wait for message to delete potion
-                                            break;
-              }
-
-              if(obj->frame_n <= 7)
+            if(party_num < 0) // can't force potions on non-party members
+                scroll->display_string("No effect\n");
+            else
+            {
+                switch(obj->frame_n)
                 {
-                    scroll->display_string("Drink ");
-                    scroll->display_string(u6_potions[obj->frame_n]);
-                    scroll->display_string(" potion!\n");
+                    case USE_U6_POTION_RED: ((U6Actor *)items.actor2_ref)->set_poisoned(false);
+                        destroy_obj(obj); break;
+                    case USE_U6_POTION_YELLOW: ((U6Actor *)items.actor2_ref)->heal();
+                        destroy_obj(obj); break;
+                    case USE_U6_POTION_GREEN: ((U6Actor *)items.actor2_ref)->set_poisoned(true);
+                        destroy_obj(obj); break;
+                    case USE_U6_POTION_WHITE: new U6WhitePotionEffect(2500, 6000, obj);
+                        break; // wait for message to delete potion
+                    default:
+                        if(obj->frame_n <= 7)
+                        {
+                            scroll->display_string("Drink ");
+                            scroll->display_string(u6_potions[obj->frame_n]);
+                            scroll->display_string(" potion!\n");
+                        }
+                        else
+                            scroll->display_string("\nNo effect\n");
+                        destroy_obj(obj);
                 }
-              else
-                    scroll->display_string("No effect\n");
-              destroy_obj(obj);
-
+            }
             return(true);
         }
     }
     else if(ev == USE_EVENT_MESSAGE) // assume message is from potion effect
     {
-        if(*items.msg_ref == MESG_EFFECT_COMPLETE && obj->frame_n == 7) // white
+        if(*items.msg_ref == MESG_EFFECT_COMPLETE && obj->frame_n == USE_U6_POTION_WHITE) // white
         {
             destroy_obj(obj);
         }
