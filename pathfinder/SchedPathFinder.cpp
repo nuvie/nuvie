@@ -8,8 +8,7 @@
 
 /* NOTE: Path_type must always be valid. */
 SchedPathFinder::SchedPathFinder(Actor *a, MapCoord g, Path *path_type)
-                               : prev_step_i(0), next_step_i(0),
-                                 ActorPathFinder(a, g)
+                               : ActorPathFinder(a, g), prev_step_i(0), next_step_i(0)
 {
     new_search(path_type);
     assert(search && actor);

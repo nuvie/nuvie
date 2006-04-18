@@ -299,7 +299,7 @@ bool Magic::handleSDL_KEYDOWN(const SDL_Event * sdl_event)
       { 
 	cast_buffer_len--; // back up a syllable FIXME, doesn't handle automatically inserted newlines, so we need to keep track more.
 	size_t len=strlen(syllable[cast_buffer_str[cast_buffer_len]-SDLK_a]);
-	for (len;len>0;len--) event->scroll->remove_char();
+	while(len--) event->scroll->remove_char();
 	event->scroll->Display(true);
 	return true; // handled the event
       }
