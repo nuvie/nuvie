@@ -359,7 +359,7 @@ MapCoord Party::get_location(uint8 m)
 }
 
 /* Get map location of the first active party member. */
-inline MapCoord Party::get_leader_location()
+MapCoord Party::get_leader_location()
 {
     sint8 m = get_leader();
     MapCoord loc;

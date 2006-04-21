@@ -26,6 +26,7 @@
 #include <iostream>
 #include "SDL.h"
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "Party.h"
 #include "MsgScroll.h"
 #include "Configuration.h"
@@ -212,7 +213,14 @@ void Magic::read_spell_list()
   char script[MAX_SCRIPT_LENGTH+1]="_end";
   char buf[MAX_SCRIPT_LENGTH+1];
 
-  if (!spells->open("spells.nsl")) // FIXME get name from configuration instead
+  //read spell file from nuvie data directory.
+
+  std::string datadir = GUI::get_gui()->get_data_dir();
+  std::string spellfile;
+  
+  build_path(datadir, "spells.nsl", spellfile);
+  
+  if (!spells->open(spellfile)) 
   {
     throw "error opening spells.nsl";
   }

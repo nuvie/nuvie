@@ -127,6 +127,9 @@ bool PortraitView::set_portrait(Actor *actor, char *name)
    name_string->assign("");  //FIX
  else
    name_string->assign(name);
+ 
+ if(screen)
+   screen->fill(0x31, area.x, area.y, area.w, area.h);
    
  Redraw();
  return true;

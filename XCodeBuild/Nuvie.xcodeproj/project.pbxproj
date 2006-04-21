@@ -55,10 +55,7 @@
 		0703C08A054BE5660003D6CB /* SEUseCode.h in Headers */ = {isa = PBXBuildFile; fileRef = 07DFDDB404A5BFE600A8000A /* SEUseCode.h */; };
 		0703C08B054BE5660003D6CB /* NuvieIO.h in Headers */ = {isa = PBXBuildFile; fileRef = 07AEE75A04B1727B00A8000A /* NuvieIO.h */; };
 		0703C08C054BE5660003D6CB /* NuvieIOFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 07938EA404B6C8B100A8000A /* NuvieIOFile.h */; };
-		0703C08D054BE5660003D6CB /* AStar.h in Headers */ = {isa = PBXBuildFile; fileRef = 07AD65ED04D34BEA00A8000A /* AStar.h */; };
-		0703C08E054BE5660003D6CB /* LPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 07AD65EF04D34BEA00A8000A /* LPath.h */; };
 		0703C08F054BE5660003D6CB /* PathFinder.h in Headers */ = {isa = PBXBuildFile; fileRef = 07AD65F104D34BEA00A8000A /* PathFinder.h */; };
-		0703C090054BE5660003D6CB /* ZPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 07AD65F304D34BEA00A8000A /* ZPath.h */; };
 		0703C091054BE5660003D6CB /* Actor.h in Headers */ = {isa = PBXBuildFile; fileRef = 070B5A5904D3D7DC00A8000A /* Actor.h */; };
 		0703C092054BE5660003D6CB /* ActorManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 070B5A5B04D3D7DC00A8000A /* ActorManager.h */; };
 		0703C093054BE5660003D6CB /* U6Actor.h in Headers */ = {isa = PBXBuildFile; fileRef = 070B5A6504D3DEDF00A8000A /* U6Actor.h */; };
@@ -128,10 +125,7 @@
 		0703C0D7054BE5660003D6CB /* SEUseCode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DFDDB304A5BFE600A8000A /* SEUseCode.cpp */; };
 		0703C0D8054BE5660003D6CB /* NuvieIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AEE75B04B1727B00A8000A /* NuvieIO.cpp */; };
 		0703C0D9054BE5660003D6CB /* NuvieIOFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07938EA504B6C8B100A8000A /* NuvieIOFile.cpp */; };
-		0703C0DA054BE5660003D6CB /* AStar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AD65EC04D34BEA00A8000A /* AStar.cpp */; };
-		0703C0DB054BE5660003D6CB /* LPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AD65EE04D34BEA00A8000A /* LPath.cpp */; };
 		0703C0DC054BE5660003D6CB /* PathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AD65F004D34BEA00A8000A /* PathFinder.cpp */; };
-		0703C0DD054BE5660003D6CB /* ZPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AD65F204D34BEA00A8000A /* ZPath.cpp */; };
 		0703C0DE054BE5660003D6CB /* Actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 070B5A5804D3D7DC00A8000A /* Actor.cpp */; };
 		0703C0DF054BE5660003D6CB /* ActorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 070B5A5A04D3D7DC00A8000A /* ActorManager.cpp */; };
 		0703C0E0054BE5660003D6CB /* U6Actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 070B5A6404D3DEDF00A8000A /* U6Actor.cpp */; };
@@ -159,6 +153,26 @@
 		07269048064F928A00F249E5 /* SaveDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 07269046064F928A00F249E5 /* SaveDialog.h */; };
 		072691AC065252D200F249E5 /* SaveSlot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072691AA065252D200F249E5 /* SaveSlot.cpp */; };
 		072691AD065252D200F249E5 /* SaveSlot.h in Headers */ = {isa = PBXBuildFile; fileRef = 072691AB065252D200F249E5 /* SaveSlot.h */; };
+		0727DDF809F91D470004E639 /* ActorPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DDF209F91D470004E639 /* ActorPathFinder.cpp */; };
+		0727DDF909F91D470004E639 /* ActorPathFinder.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DDF309F91D470004E639 /* ActorPathFinder.h */; };
+		0727DDFA09F91D470004E639 /* AStarPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DDF409F91D470004E639 /* AStarPath.cpp */; };
+		0727DDFB09F91D470004E639 /* AStarPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DDF509F91D470004E639 /* AStarPath.h */; };
+		0727DDFC09F91D470004E639 /* CombatPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DDF609F91D470004E639 /* CombatPathFinder.cpp */; };
+		0727DDFD09F91D470004E639 /* CombatPathFinder.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DDF709F91D470004E639 /* CombatPathFinder.h */; };
+		0727DE0409F91D610004E639 /* DirFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DDFE09F91D610004E639 /* DirFinder.cpp */; };
+		0727DE0509F91D610004E639 /* DirFinder.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DDFF09F91D610004E639 /* DirFinder.h */; };
+		0727DE0609F91D610004E639 /* PartyPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DE0009F91D610004E639 /* PartyPathFinder.cpp */; };
+		0727DE0709F91D610004E639 /* PartyPathFinder.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DE0109F91D610004E639 /* PartyPathFinder.h */; };
+		0727DE0809F91D610004E639 /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DE0209F91D610004E639 /* Path.cpp */; };
+		0727DE0909F91D610004E639 /* Path.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DE0309F91D610004E639 /* Path.h */; };
+		0727DE1009F91D770004E639 /* SchedPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DE0A09F91D770004E639 /* SchedPathFinder.cpp */; };
+		0727DE1109F91D770004E639 /* SchedPathFinder.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DE0B09F91D770004E639 /* SchedPathFinder.h */; };
+		0727DE1209F91D770004E639 /* SeekPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DE0C09F91D770004E639 /* SeekPath.cpp */; };
+		0727DE1309F91D770004E639 /* SeekPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DE0D09F91D770004E639 /* SeekPath.h */; };
+		0727DE1409F91D770004E639 /* U6AStarPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DE0E09F91D770004E639 /* U6AStarPath.cpp */; };
+		0727DE1509F91D770004E639 /* U6AStarPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DE0F09F91D770004E639 /* U6AStarPath.h */; };
+		0727DE1A09F91DCD0004E639 /* Magic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0727DE1809F91DCD0004E639 /* Magic.cpp */; };
+		0727DE1B09F91DCD0004E639 /* Magic.h in Headers */ = {isa = PBXBuildFile; fileRef = 0727DE1909F91DCD0004E639 /* Magic.h */; };
 		072B48CC061E86AB00CC3368 /* adplug_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072B48CA061E86AB00CC3368 /* adplug_player.cpp */; };
 		072B48CD061E86AB00CC3368 /* adplug_player.h in Headers */ = {isa = PBXBuildFile; fileRef = 072B48CB061E86AB00CC3368 /* adplug_player.h */; };
 		072B48F9061EEBDA00CC3368 /* GUI_Dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072B48F7061EEBDA00CC3368 /* GUI_Dialog.cpp */; };
@@ -320,6 +334,26 @@
 		07269046064F928A00F249E5 /* SaveDialog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SaveDialog.h; path = ../save/SaveDialog.h; sourceTree = SOURCE_ROOT; };
 		072691AA065252D200F249E5 /* SaveSlot.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SaveSlot.cpp; path = ../save/SaveSlot.cpp; sourceTree = SOURCE_ROOT; };
 		072691AB065252D200F249E5 /* SaveSlot.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SaveSlot.h; path = ../save/SaveSlot.h; sourceTree = SOURCE_ROOT; };
+		0727DDF209F91D470004E639 /* ActorPathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ActorPathFinder.cpp; path = ../pathfinder/ActorPathFinder.cpp; sourceTree = SOURCE_ROOT; };
+		0727DDF309F91D470004E639 /* ActorPathFinder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ActorPathFinder.h; path = ../pathfinder/ActorPathFinder.h; sourceTree = SOURCE_ROOT; };
+		0727DDF409F91D470004E639 /* AStarPath.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AStarPath.cpp; path = ../pathfinder/AStarPath.cpp; sourceTree = SOURCE_ROOT; };
+		0727DDF509F91D470004E639 /* AStarPath.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AStarPath.h; path = ../pathfinder/AStarPath.h; sourceTree = SOURCE_ROOT; };
+		0727DDF609F91D470004E639 /* CombatPathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CombatPathFinder.cpp; path = ../pathfinder/CombatPathFinder.cpp; sourceTree = SOURCE_ROOT; };
+		0727DDF709F91D470004E639 /* CombatPathFinder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CombatPathFinder.h; path = ../pathfinder/CombatPathFinder.h; sourceTree = SOURCE_ROOT; };
+		0727DDFE09F91D610004E639 /* DirFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirFinder.cpp; path = ../pathfinder/DirFinder.cpp; sourceTree = SOURCE_ROOT; };
+		0727DDFF09F91D610004E639 /* DirFinder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirFinder.h; path = ../pathfinder/DirFinder.h; sourceTree = SOURCE_ROOT; };
+		0727DE0009F91D610004E639 /* PartyPathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PartyPathFinder.cpp; path = ../pathfinder/PartyPathFinder.cpp; sourceTree = SOURCE_ROOT; };
+		0727DE0109F91D610004E639 /* PartyPathFinder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PartyPathFinder.h; path = ../pathfinder/PartyPathFinder.h; sourceTree = SOURCE_ROOT; };
+		0727DE0209F91D610004E639 /* Path.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Path.cpp; path = ../pathfinder/Path.cpp; sourceTree = SOURCE_ROOT; };
+		0727DE0309F91D610004E639 /* Path.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Path.h; path = ../pathfinder/Path.h; sourceTree = SOURCE_ROOT; };
+		0727DE0A09F91D770004E639 /* SchedPathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SchedPathFinder.cpp; path = ../pathfinder/SchedPathFinder.cpp; sourceTree = SOURCE_ROOT; };
+		0727DE0B09F91D770004E639 /* SchedPathFinder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SchedPathFinder.h; path = ../pathfinder/SchedPathFinder.h; sourceTree = SOURCE_ROOT; };
+		0727DE0C09F91D770004E639 /* SeekPath.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SeekPath.cpp; path = ../pathfinder/SeekPath.cpp; sourceTree = SOURCE_ROOT; };
+		0727DE0D09F91D770004E639 /* SeekPath.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SeekPath.h; path = ../pathfinder/SeekPath.h; sourceTree = SOURCE_ROOT; };
+		0727DE0E09F91D770004E639 /* U6AStarPath.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = U6AStarPath.cpp; path = ../pathfinder/U6AStarPath.cpp; sourceTree = SOURCE_ROOT; };
+		0727DE0F09F91D770004E639 /* U6AStarPath.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = U6AStarPath.h; path = ../pathfinder/U6AStarPath.h; sourceTree = SOURCE_ROOT; };
+		0727DE1809F91DCD0004E639 /* Magic.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Magic.cpp; path = ../Magic.cpp; sourceTree = SOURCE_ROOT; };
+		0727DE1909F91DCD0004E639 /* Magic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Magic.h; path = ../Magic.h; sourceTree = SOURCE_ROOT; };
 		072B48CA061E86AB00CC3368 /* adplug_player.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = adplug_player.cpp; path = ../sound/adplug/adplug_player.cpp; sourceTree = SOURCE_ROOT; };
 		072B48CB061E86AB00CC3368 /* adplug_player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = adplug_player.h; path = ../sound/adplug/adplug_player.h; sourceTree = SOURCE_ROOT; };
 		072B48F7061EEBDA00CC3368 /* GUI_Dialog.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = GUI_Dialog.cpp; path = ../GUI/GUI_Dialog.cpp; sourceTree = SOURCE_ROOT; };
@@ -401,14 +435,8 @@
 		07A5001E052AE88D00A8000A /* U6ActorTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = U6ActorTypes.h; path = ../actors/U6ActorTypes.h; sourceTree = SOURCE_ROOT; };
 		07A7120606D897CD00EC7D32 /* ConverseSpeech.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ConverseSpeech.cpp; path = ../ConverseSpeech.cpp; sourceTree = SOURCE_ROOT; };
 		07A7120706D897CD00EC7D32 /* ConverseSpeech.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ConverseSpeech.h; path = ../ConverseSpeech.h; sourceTree = SOURCE_ROOT; };
-		07AD65EC04D34BEA00A8000A /* AStar.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AStar.cpp; path = ../pathfinder/AStar.cpp; sourceTree = SOURCE_ROOT; };
-		07AD65ED04D34BEA00A8000A /* AStar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AStar.h; path = ../pathfinder/AStar.h; sourceTree = SOURCE_ROOT; };
-		07AD65EE04D34BEA00A8000A /* LPath.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LPath.cpp; path = ../pathfinder/LPath.cpp; sourceTree = SOURCE_ROOT; };
-		07AD65EF04D34BEA00A8000A /* LPath.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LPath.h; path = ../pathfinder/LPath.h; sourceTree = SOURCE_ROOT; };
 		07AD65F004D34BEA00A8000A /* PathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PathFinder.cpp; path = ../pathfinder/PathFinder.cpp; sourceTree = SOURCE_ROOT; };
 		07AD65F104D34BEA00A8000A /* PathFinder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PathFinder.h; path = ../pathfinder/PathFinder.h; sourceTree = SOURCE_ROOT; };
-		07AD65F204D34BEA00A8000A /* ZPath.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ZPath.cpp; path = ../pathfinder/ZPath.cpp; sourceTree = SOURCE_ROOT; };
-		07AD65F304D34BEA00A8000A /* ZPath.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ZPath.h; path = ../pathfinder/ZPath.h; sourceTree = SOURCE_ROOT; };
 		07AEE75A04B1727B00A8000A /* NuvieIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NuvieIO.h; path = ../files/NuvieIO.h; sourceTree = SOURCE_ROOT; };
 		07AEE75B04B1727B00A8000A /* NuvieIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NuvieIO.cpp; path = ../files/NuvieIO.cpp; sourceTree = SOURCE_ROOT; };
 		07B0117A0668765B000771BC /* Effect.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Effect.cpp; path = ../Effect.cpp; sourceTree = SOURCE_ROOT; };
@@ -681,14 +709,26 @@
 		07AD65EB04D34BCA00A8000A /* pathfinder */ = {
 			isa = PBXGroup;
 			children = (
-				07AD65ED04D34BEA00A8000A /* AStar.h */,
-				07AD65EC04D34BEA00A8000A /* AStar.cpp */,
+				0727DE0A09F91D770004E639 /* SchedPathFinder.cpp */,
+				0727DE0B09F91D770004E639 /* SchedPathFinder.h */,
+				0727DE0C09F91D770004E639 /* SeekPath.cpp */,
+				0727DE0D09F91D770004E639 /* SeekPath.h */,
+				0727DE0E09F91D770004E639 /* U6AStarPath.cpp */,
+				0727DE0F09F91D770004E639 /* U6AStarPath.h */,
+				0727DDFE09F91D610004E639 /* DirFinder.cpp */,
+				0727DDFF09F91D610004E639 /* DirFinder.h */,
+				0727DE0009F91D610004E639 /* PartyPathFinder.cpp */,
+				0727DE0109F91D610004E639 /* PartyPathFinder.h */,
+				0727DE0209F91D610004E639 /* Path.cpp */,
+				0727DE0309F91D610004E639 /* Path.h */,
+				0727DDF209F91D470004E639 /* ActorPathFinder.cpp */,
+				0727DDF309F91D470004E639 /* ActorPathFinder.h */,
+				0727DDF409F91D470004E639 /* AStarPath.cpp */,
+				0727DDF509F91D470004E639 /* AStarPath.h */,
+				0727DDF609F91D470004E639 /* CombatPathFinder.cpp */,
+				0727DDF709F91D470004E639 /* CombatPathFinder.h */,
 				07AD65F104D34BEA00A8000A /* PathFinder.h */,
 				07AD65F004D34BEA00A8000A /* PathFinder.cpp */,
-				07AD65EF04D34BEA00A8000A /* LPath.h */,
-				07AD65EE04D34BEA00A8000A /* LPath.cpp */,
-				07AD65F304D34BEA00A8000A /* ZPath.h */,
-				07AD65F204D34BEA00A8000A /* ZPath.cpp */,
 			);
 			name = pathfinder;
 			sourceTree = "<group>";
@@ -838,6 +878,8 @@
 				07B16F3C0485E69D00A8000A /* GameSelect.cpp */,
 				07DB546B042E8C1A00A8000A /* Look.h */,
 				07DB546C042E8C1A00A8000A /* Look.cpp */,
+				0727DE1909F91DCD0004E639 /* Magic.h */,
+				0727DE1809F91DCD0004E639 /* Magic.cpp */,
 				0725669B04272B7B00A8000A /* main.h */,
 				0725669A04272B7B00A8000A /* main.cpp */,
 				0725669D04272B7B00A8000A /* Map.h */,
@@ -939,10 +981,7 @@
 				0703C08A054BE5660003D6CB /* SEUseCode.h in Headers */,
 				0703C08B054BE5660003D6CB /* NuvieIO.h in Headers */,
 				0703C08C054BE5660003D6CB /* NuvieIOFile.h in Headers */,
-				0703C08D054BE5660003D6CB /* AStar.h in Headers */,
-				0703C08E054BE5660003D6CB /* LPath.h in Headers */,
 				0703C08F054BE5660003D6CB /* PathFinder.h in Headers */,
-				0703C090054BE5660003D6CB /* ZPath.h in Headers */,
 				0703C091054BE5660003D6CB /* Actor.h in Headers */,
 				0703C092054BE5660003D6CB /* ActorManager.h in Headers */,
 				0703C093054BE5660003D6CB /* U6Actor.h in Headers */,
@@ -1001,6 +1040,16 @@
 				07A7120906D897CD00EC7D32 /* ConverseSpeech.h in Headers */,
 				07BBAF1407D8750700F2792A /* CommandBar.h in Headers */,
 				07E9A046081CD4A1009FA3BE /* U6WorkTypes.h in Headers */,
+				0727DDF909F91D470004E639 /* ActorPathFinder.h in Headers */,
+				0727DDFB09F91D470004E639 /* AStarPath.h in Headers */,
+				0727DDFD09F91D470004E639 /* CombatPathFinder.h in Headers */,
+				0727DE0509F91D610004E639 /* DirFinder.h in Headers */,
+				0727DE0709F91D610004E639 /* PartyPathFinder.h in Headers */,
+				0727DE0909F91D610004E639 /* Path.h in Headers */,
+				0727DE1109F91D770004E639 /* SchedPathFinder.h in Headers */,
+				0727DE1309F91D770004E639 /* SeekPath.h in Headers */,
+				0727DE1509F91D770004E639 /* U6AStarPath.h in Headers */,
+				0727DE1B09F91DCD0004E639 /* Magic.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1180,10 +1229,7 @@
 				0703C0D7054BE5660003D6CB /* SEUseCode.cpp in Sources */,
 				0703C0D8054BE5660003D6CB /* NuvieIO.cpp in Sources */,
 				0703C0D9054BE5660003D6CB /* NuvieIOFile.cpp in Sources */,
-				0703C0DA054BE5660003D6CB /* AStar.cpp in Sources */,
-				0703C0DB054BE5660003D6CB /* LPath.cpp in Sources */,
 				0703C0DC054BE5660003D6CB /* PathFinder.cpp in Sources */,
-				0703C0DD054BE5660003D6CB /* ZPath.cpp in Sources */,
 				0703C0DE054BE5660003D6CB /* Actor.cpp in Sources */,
 				0703C0DF054BE5660003D6CB /* ActorManager.cpp in Sources */,
 				0703C0E0054BE5660003D6CB /* U6Actor.cpp in Sources */,
@@ -1228,6 +1274,16 @@
 				07E2601E06AA5FE4009E8571 /* GUI_TextInput.cpp in Sources */,
 				07A7120806D897CD00EC7D32 /* ConverseSpeech.cpp in Sources */,
 				07BBAF1307D8750700F2792A /* CommandBar.cpp in Sources */,
+				0727DDF809F91D470004E639 /* ActorPathFinder.cpp in Sources */,
+				0727DDFA09F91D470004E639 /* AStarPath.cpp in Sources */,
+				0727DDFC09F91D470004E639 /* CombatPathFinder.cpp in Sources */,
+				0727DE0409F91D610004E639 /* DirFinder.cpp in Sources */,
+				0727DE0609F91D610004E639 /* PartyPathFinder.cpp in Sources */,
+				0727DE0809F91D610004E639 /* Path.cpp in Sources */,
+				0727DE1009F91D770004E639 /* SchedPathFinder.cpp in Sources */,
+				0727DE1209F91D770004E639 /* SeekPath.cpp in Sources */,
+				0727DE1409F91D770004E639 /* U6AStarPath.cpp in Sources */,
+				0727DE1A09F91DCD0004E639 /* Magic.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

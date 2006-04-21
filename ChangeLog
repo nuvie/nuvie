@@ -1,3 +1,12 @@
+2006-04-22   Eric Fry <efry at users.sourceforge.net>
+	* Changed Magic class to read spells.nsl file from the Nuvie data
+	  directory.
+	* Removed inline directive from method in Party. This was causing
+	  compile problems with gcc 4.0.1
+	* Updated XCode build environment to reflect Joseph's changes.
+	* Fixed bug when changing portraits from doll to non doll type while
+	  in a conversation.
+
 2006-04-17  Joseph Applegate <sb-x at users.sourceforge.net>
 	* The magic system by Pieter Luteijn has finally been added. It
 	  is still unfinished, so there aren't many (any?) usable spells yet.
