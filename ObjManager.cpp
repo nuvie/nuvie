@@ -166,6 +166,9 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
    if(obj->obj_n == obj_egg_table[game_type])
      {
       egg_manager->add_egg(obj);
+      // unhide eggs
+      if(show_eggs && (obj->status & OBJ_STATUS_INVISIBLE))
+         obj->status ^= OBJ_STATUS_INVISIBLE;
      }
 
    if(usecode->is_container(obj) && !obj->container) //object type is container, but may be empty
@@ -187,11 +190,12 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
         }
       else
         {
-         if(show_eggs || obj->obj_n != obj_egg_table[game_type]) // show remaining objects, hiding eggs if neccecary.
+         add_obj(obj); // show remaining objects
+/*         if(show_eggs || obj->obj_n != obj_egg_table[game_type]) // show remaining objects, hiding eggs if neccecary.
             {
              add_obj(obj);
             // print_obj(obj,false);
-            }
+            }*/
         }
 
      }
