@@ -130,10 +130,9 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
     if(dist_x <= 32 && dist_y <= 32 && (*egg)->obj->z == z)
       {
 
-       if(((*egg)->obj->status & OBJ_STATUS_EGG_ACTIVE) == 0 || ((*egg)->obj->status & OBJ_STATUS_SEEN_EGG) == 0)
+       if(((*egg)->obj->status & OBJ_STATUS_EGG_ACTIVE) == 0)
          {
-          (*egg)->obj->status |= OBJ_STATUS_SEEN_EGG;
-		  (*egg)->obj->status |= OBJ_STATUS_EGG_ACTIVE;
+          (*egg)->obj->status |= OBJ_STATUS_EGG_ACTIVE;
 
           hatch_probability = NUVIE_RAND()%100;
           const char *align_str = get_alignment_str(quality);
