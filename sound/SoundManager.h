@@ -56,10 +56,13 @@ public:
     void musicPause();
     void musicPlay();
 
+    void musicStop(); // SB-X
+
 private:
 	bool LoadCustomSongs(string scriptname);
     bool LoadNativeU6Songs();
     bool loadSong(Song *song, const char *filename);
+    bool loadSong(Song *song, const char *filename, const char *title);
     bool groupAddSong(char *group, Song *song);
 
 	bool LoadObjectSamples(string sound_dir);

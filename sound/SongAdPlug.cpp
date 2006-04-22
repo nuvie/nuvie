@@ -82,6 +82,8 @@ SongAdPlug::~SongAdPlug() {
 }
 
 bool SongAdPlug::Init(const char *filename) {
+    if(filename) m_Filename = filename; // SB-X
+
     player = new Cu6mPlayer(opl);
     player->load(filename);
     if(!player)
@@ -97,11 +99,12 @@ bool SongAdPlug::Play(bool looping) {
 
 bool SongAdPlug::Stop() {
 
-	//if (!Mix_PlayingMusic()) return false;
+    //if (!Mix_PlayingMusic()) return false;
 
+    player->rewind(); // SB-X
     Mix_HookMusic(NULL,NULL);
 
-	return true;
+    return true;
 }
 
 /*

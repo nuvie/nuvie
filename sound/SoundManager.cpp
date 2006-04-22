@@ -177,42 +177,43 @@ bool SoundManager::LoadNativeU6Songs()
 
  config_get_path(m_Config, "brit.m", filename);
  song = new SongAdPlug(opl);
- loadSong(song, filename.c_str());
+// loadSong(song, filename.c_str());
+ loadSong(song, filename.c_str(), "Rule Britannia");
  groupAddSong("random", song);
 
  config_get_path(m_Config, "forest.m", filename);
  song = new SongAdPlug(opl);
- loadSong(song, filename.c_str());
+ loadSong(song, filename.c_str(), "Wanderer (Forest)");
  groupAddSong("random", song);
 
  config_get_path(m_Config, "stones.m", filename);
  song = new SongAdPlug(opl);
- loadSong(song, filename.c_str());
+ loadSong(song, filename.c_str(), "Stones");
  groupAddSong("random", song);
 
  config_get_path(m_Config, "ultima.m", filename);
  song = new SongAdPlug(opl);
- loadSong(song, filename.c_str());
+ loadSong(song, filename.c_str(), "Ultima VI Theme");
  groupAddSong("random", song);
 
  config_get_path(m_Config, "engage.m", filename);
  song = new SongAdPlug(opl);
- loadSong(song, filename.c_str());
+ loadSong(song, filename.c_str(), "Engagement and Melee");
  groupAddSong("combat", song);
 
  config_get_path(m_Config, "hornpipe.m", filename);
  song = new SongAdPlug(opl);
- loadSong(song, filename.c_str());
+ loadSong(song, filename.c_str(), "Captain Johne's Hornpipe");
  groupAddSong("boat", song);
 
  config_get_path(m_Config, "gargoyle.m", filename);
  song = new SongAdPlug(opl);
- loadSong(song, filename.c_str());
+ loadSong(song, filename.c_str(), "Audchar Gargl Zenmur");
  groupAddSong("gargoyle", song);
 
  config_get_path(m_Config, "dungeon.m", filename);
  song = new SongAdPlug(opl);
- loadSong(song, filename.c_str());
+ loadSong(song, filename.c_str(), "Dungeon");
  groupAddSong("dungeon", song);
 
  return true;
@@ -274,6 +275,17 @@ bool SoundManager::loadSong(Song *song, const char *filename)
     }
 
  return false;
+}
+
+// (SB-X)
+bool SoundManager::loadSong(Song *song, const char *filename, const char *title)
+{
+    if(loadSong(song, filename) == true)
+    {
+        song->SetName(title);
+        return true;
+    }
+    return false;
 }
 
 bool SoundManager::groupAddSong (char *group, Song *song)
@@ -442,11 +454,23 @@ void SoundManager::musicPause()
 void SoundManager::musicPlay()
 {
 // Mix_ResumeMusic();
+
+ // (SB-X) Get a new song if stopped.
+ if(m_pCurrentSong == NULL)
+        m_pCurrentSong = RequestSong(m_CurrentGroup);
+
  if (m_pCurrentSong != NULL)
         {
           m_pCurrentSong->Play();
         }
 
+}
+
+// (SB-X) Stop the current song so a new song will play when resumed.
+void SoundManager::musicStop()
+{
+    musicPause();
+    m_pCurrentSong = NULL;
 }
 
 void SoundManager::update_map_sfx ()

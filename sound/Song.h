@@ -36,6 +36,7 @@ public:
     bool Resume();
 	bool FadeOut(float seconds);
 	bool SetVolume(float volume) {return false;}; //range 0..1
+	void SetName(const char *name) { if(name) m_Filename = name; } // SB-X
 private:
 	Mix_Music *m_pMusic;
 };
