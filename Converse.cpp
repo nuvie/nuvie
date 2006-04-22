@@ -343,8 +343,7 @@ bool Converse::start(uint8 n)
         init_variables();
         scroll->set_talking(true);
         show_portrait(npc_num);
-//        Game::get_game()->get_sound_manager()->musicStop();
-        Game::get_game()->get_sound_manager()->musicPause();
+        Game::get_game()->get_sound_manager()->musicStop();
         Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         unwait();
         printf("Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
