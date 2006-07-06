@@ -25,3 +25,18 @@ unpack_conv_SOURCES = \
 	../files/U6Lib_n.h \
 	../files/U6Lzw.cpp \
 	../files/U6Lzw.h
+
+unpack_portraits_SOURCES = \
+	unpack_portraits.cpp \
+\
+	../files/NuvieIO.cpp \
+	../files/NuvieIO.h \
+	../files/NuvieIOFile.cpp \
+	../files/NuvieIOFile.h \
+	../files/U6Lib_n.cpp \
+	../files/U6Lib_n.h \
+	../files/U6Lzw.cpp \
+	../files/U6Lzw.h \
+	../files/U6Shape.h \
+	../files/U6Shape.cpp
+

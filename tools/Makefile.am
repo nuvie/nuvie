@@ -1,5 +1,5 @@
 if BUILD_TOOLS
-noinst_PROGRAMS = u6decomp unpack_conv
+noinst_PROGRAMS = u6decomp unpack_conv unpack_portraits
 else
 noinst_PROGRAMS =
 endif
