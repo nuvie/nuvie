@@ -45,6 +45,9 @@ int main(int argc, char **argv)
 {
  U6Lib_n faces;
  U6Shape *shp;
+ unsigned char *shp_data;
+ NuvieIOBuffer shp_buf;
+ U6Lib_n shp_lib;
  SDL_Surface *s;
  uint16 w, h;
  string name;
@@ -97,7 +100,11 @@ int main(int argc, char **argv)
 
   shp = new U6Shape();
 
-  shp->load(&faces, i);
+  shp_data = faces.get_item(i, NULL);
+  shp_buf.open(shp_data, faces.get_item_size(i), NUVIE_BUF_NOCOPY); 
+  shp_lib.open(&shp_buf, 4, NUVIE_GAME_SE);
+
+  shp->load(&shp_lib, 0);
   shp->get_size(&w,&h);
   s = shp->get_shape_surface();
   SDL_SetPalette(s, SDL_LOGPAL|SDL_PHYSPAL, c, 0, 256);
@@ -105,8 +112,12 @@ int main(int argc, char **argv)
   SDL_SaveBMP(s, bmp_file);
  
   printf("Portrait %03d: width = %d, height = %d\n", i, w, h); 
+
   SDL_FreeSurface(s);
   delete shp;
+  shp_lib.close();
+  free(shp_data);
+
  }
 
  faces.close();
