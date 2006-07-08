@@ -385,6 +385,12 @@ bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
  Obj *key_obj;
  bool print = (items.actor_ref == player->get_actor());
 
+ if(is_magically_locked_door(obj))
+   {
+    if(print) scroll->display_string("\nmagically locked\n");
+    return true;
+   }
+
  if(is_locked_door(obj)) // locked door
    {
     key_obj = player->get_actor()->inventory_get_object(OBJ_U6_KEY, obj->quality);
@@ -639,6 +645,12 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
+        if(obj->obj_n == OBJ_U6_CHEST && obj->frame_n == 3)
+        {
+            scroll->display_string("\nno effect\n");
+            return(true);
+        }
+        
         if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
             toggle_frame(obj); //open / close object
         if(obj->frame_n == 0)
