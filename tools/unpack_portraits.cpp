@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "../nuvieDefs.h"
-#include "../files/U6lzw.h"
-#include "../files/U6lib_n.h"
+#include "../files/U6Lzw.h"
+#include "../files/U6Lib_n.h"
 #include "../files/U6Shape.h"
 #include "../files/NuvieIOFile.h"
 
