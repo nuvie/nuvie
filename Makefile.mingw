@@ -48,6 +48,12 @@ UNPACKCONV_OBJS = $(UNPACKCONV_CPPs:%.cpp=tools/%.o)
 unpack_conv.exe: $(UNPACKCONV_OBJS)
 	$(CXX) -o $@ $+
 
+UNPACKPORTRAITS_CPPs = $(filter %.cpp,$(unpack_portraits_SOURCES))
+UNPACKPORTRAITS_OBJS = $(UNPACKPORTRAITS_CPPs:%.cpp=tools/%.o)
+
+unpack_portraits.exe: $(UNPACKPORTRAITS_OBJS)
+	$(CXX) -o $@ $+ $(LIBS)
+
 include tools/FMTownsU6/Makefile.common
 
 UNPACK_OBJS = $(unpack_OBJS:%=tools/FMTownsU6/%)
@@ -66,12 +72,13 @@ install: all
 	cp data/*.bmp $(U6PATH)/data
 	cp data/spells.nsl $(U6PATH)/data
 
-tools: u6decomp.exe unpack_conv.exe unpack.exe
+tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_portraits.exe
 	mkdir -p $(U6PATH)
 	mkdir -p $(U6PATH)/tools
 	strip u6decomp.exe -o $(U6PATH)/tools/u6decomp.exe
-	strip unpack_conv.exe -o $(U6PATH)/tools/unpack_conv.exe
 	strip unpack.exe -o $(U6PATH)/tools/unpack.exe
+	strip unpack_conv.exe -o $(U6PATH)/tools/unpack_conv.exe
+	strip unpack_portraits.exe -o $(U6PATH)/tools/unpack_portraits.exe
 
 dist: install tools
 	cp nuvie.cfg.sample $(U6PATH)
@@ -81,5 +88,6 @@ dist: install tools
 	cp README $(U6PATH)/README.txt
 	cp SDL/README-SDL.txt $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)
+	cp SDL/lib/SDL.dll $(U6PATH)/tools
 	cp SDL/lib/SDL_mixer.dll $(U6PATH)
 	u2d $(U6PATH)/*.txt
