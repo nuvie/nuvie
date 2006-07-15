@@ -1,10 +1,10 @@
 #include <cassert>
 #include <vector>
 #include "Actor.h"
-#include "PartyPathFinder.h"
-
+#include "Party.h"
 #include "SeekPath.h"
 #include "ActorPathFinder.h"
+#include "PartyPathFinder.h"
 
 using std::vector;
 
@@ -420,7 +420,7 @@ bool PartyPathFinder::move_member(uint32 member_num, sint16 relx, sint16 rely, b
 
     if(is_contiguous(member_num, target) || ignore_position)
     {
-        if(actor->moveRelative(relx, rely))
+        if(actor->move(target.x, target.y, target.z, ACTOR_IGNORE_MOVES))
         {
             actor->set_direction(relx, rely);
             return true;
@@ -434,7 +434,7 @@ bool PartyPathFinder::move_member(uint32 member_num, sint16 relx, sint16 rely, b
             if(blocking_member_num < sint32(member_num))
                 return false; // blocked by an actor not in the party
             if(bump_member(uint32(blocking_member_num), member_num)
-               && actor->move(target.x, target.y, target.z, ACTOR_IGNORE_OTHERS))
+               && actor->move(target.x, target.y, target.z, ACTOR_IGNORE_OTHERS|ACTOR_IGNORE_MOVES))
             {
                 actor->set_direction(relx, rely);
                 return true;
