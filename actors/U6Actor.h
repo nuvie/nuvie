@@ -25,6 +25,7 @@
  */
 
 #include "Actor.h"
+#include "ActorList.h"
 
 #define MOVETYPE_U6_LAND       1
 #define MOVETYPE_U6_WATER_LOW  2 // skiffs, rafts
@@ -41,13 +42,6 @@ typedef enum {
  ALIGNMENT_EVIL
 } U6ActorAlignment;
 
-typedef enum {
- ACTOR_ST, // single tile
- ACTOR_DT, // double tile
- ACTOR_QT, // quad tile
- ACTOR_MT  // multi tile
-} U6ActorTileType;
-
 typedef struct {
  uint16 base_obj_n;
  uint8 frames_per_direction;
@@ -58,7 +52,7 @@ typedef struct {
  uint8 dead_frame_n;
  bool can_laydown;
  bool can_sit;
- U6ActorTileType tile_type;
+ ActorTileType tile_type;
  uint8 movetype;
  uint16 twitch_rand; //used to control how frequently an actor twitches, lower numbers twitch more
  uint8 str;
@@ -80,6 +74,10 @@ class U6Actor: public Actor
  uint8 beg_mode; // for WT_BEG
  sint8 walk_frame_inc; // added to walk_frame each step
  uint8 poison_counter;
+
+ U6Actor *foe; // enemy being attacked or approached by this actor
+ U6Actor *attacker; // last enemy to attack this actor
+
  public:
 
  U6Actor(Map *m, ObjManager *om, GameClock *c);
@@ -98,14 +96,21 @@ class U6Actor: public Actor
  void twitch();
  void die();
  void set_poisoned(bool poisoned);
+ bool combat_try_attack(ActorList *enemies);
+ bool combat_try_attack(U6Actor *enemy);
 
  uint8 get_object_readiable_location(uint16 obj_n);
  const CombatType *get_object_combat_type(uint16 obj_n);
+ ActorTileType get_tile_type() { return(actor_type->tile_type); }
 
  bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
+ ActorList *find_enemies();
+ ActorList *find_players();
+ ActorList *filter_alignment(ActorList *list, U6ActorAlignment align);
 
- virtual bool is_immobile(); // frozen by worktype or status
+ bool is_immobile(); // frozen by worktype or status
  bool is_sleeping();
+ bool can_be_passed(Actor *other);
 
  protected:
  bool init_ship();
@@ -124,6 +129,8 @@ class U6Actor: public Actor
  void wt_sleep();
  void wt_play_lute();
  void wt_combat();
+ void wt_player();
+ void wt_party();
 
  inline const U6ActorType *get_actor_type(uint16 new_obj_n);
  void set_actor_obj_n(uint16 new_obj_n);
@@ -148,6 +155,9 @@ class U6Actor: public Actor
  inline void init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 actor_obj_n, uint16 obj_frame_n);
 
  const CombatType *U6Actor::get_hand_combat_type();
+
+ void print();
+ const char *get_worktype_string(uint32 wt);
 };
 
 #endif /* __U6Actor_h__ */

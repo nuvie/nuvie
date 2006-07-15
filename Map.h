@@ -138,6 +138,7 @@ class Map
  bool is_boundary(uint16 x, uint16 y, uint8 level);
  bool is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
  bool actor_at_location(uint16 x, uint16 y, uint8 level);
+ uint8 get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
 
  const char *look(uint16 x, uint16 y, uint8 level);
 
