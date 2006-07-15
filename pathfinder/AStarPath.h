@@ -8,8 +8,9 @@ typedef struct astar_node_s
     uint32 to_start; // costs from this node to start and to goal
     uint32 to_goal;
     uint32 score; // node score
+    uint32 len; // number of nodes before this one, regardless of score
     struct astar_node_s *parent;
-    astar_node_s() : loc(0,0,0), to_start(0), to_goal(0), score(0),
+    astar_node_s() : loc(0,0,0), to_start(0), to_goal(0), score(0), len(0),
                      parent(NULL) { }
 } astar_node;
 /* Provides A* search and cost methods for PathFinder and subclasses.
@@ -30,6 +31,8 @@ public:
     AStarPath();
     ~AStarPath() { }
     bool path_search(MapCoord &start, MapCoord &goal);
+    virtual uint32 path_cost_est(MapCoord &s, MapCoord &g)  { return(Path::path_cost_est(s, g)); }
+    virtual uint32 get_max_score(uint32 cost) { return(Path::get_max_score(cost)); }
     uint32 path_cost_est(astar_node &n1, astar_node &n2) { return(Path::path_cost_est(n1.loc, n2.loc)); }
     sint32 step_cost(MapCoord &c1, MapCoord &c2);
 protected:

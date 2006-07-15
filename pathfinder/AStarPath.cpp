@@ -60,8 +60,9 @@ bool AStarPath::search_node_neighbors(astar_node *nnode, MapCoord &goal,
         if(!compare_neighbors(nnode, neighbor, nnode_to_neighbor, in_open, in_closed))
             continue;
         neighbor->parent = nnode;
-        neighbor->to_goal = Path::path_cost_est(neighbor->loc, goal);
+        neighbor->to_goal = path_cost_est(neighbor->loc, goal);
         neighbor->score = neighbor->to_start + neighbor->to_goal;
+        neighbor->len = nnode->len + 1;
         if(neighbor->score > max_score)
         {
             delete neighbor; // too far away
@@ -84,16 +85,19 @@ bool AStarPath::search_node_neighbors(astar_node *nnode, MapCoord &goal,
     astar_node *start_node = new astar_node;
     start_node->loc = start;
     start_node->to_start = 0;
-    start_node->to_goal = Path::path_cost_est(start, goal);
+    start_node->to_goal = path_cost_est(start, goal);
     start_node->score = start_node->to_start + start_node->to_goal;
+    start_node->len = 0;
     push_open_node(start_node);
     const uint32 max_score = get_max_score(start_node->to_goal);
     const uint32 max_steps = 8*2*4; // walk up to four screen lengths before searching again
     while(!open_nodes.empty())
     {
         astar_node *nnode = pop_open_node(); // next closest
-        if(nnode->loc == goal || nnode->to_start >= max_steps)
+        if(nnode->loc == goal || nnode->len >= max_steps)
         {
+if(nnode->loc != goal)
+printf("out of steps, making partial path (nnode->len=%d)\n",nnode->len);
 //printf("GOAL\n");
             final_node = nnode;
             create_path();
@@ -148,18 +152,25 @@ sint32 AStarPath::step_cost(MapCoord &c1, MapCoord &c2)
 {    astar_node *best = open_nodes.front();
     open_nodes.pop_front(); // remove it
     return(best);
-}/* Find item in the list of closed nodes whose location matched `ncmp', and
+}
+
+/* Find item in the list of closed nodes whose location matched `ncmp', and
  * remove it from the list.
- */void AStarPath::remove_closed_node(astar_node *ncmp)
-{    std::list<astar_node *>::iterator n;
+ */
+void AStarPath::remove_closed_node(astar_node *ncmp)
+{
+    std::list<astar_node *>::iterator n;
     for(n = closed_nodes.begin(); n != closed_nodes.end(); n++)
         if((*n)->loc == ncmp->loc)
         {
-            *n = closed_nodes.front(); // copy front to current
-            closed_nodes.pop_front(); // and remove front
+            closed_nodes.erase(n);
+            return;
         }
-}/* Delete nodes dereferenced from pointers in the lists.
- */void AStarPath::delete_nodes()
+}
+
+/* Delete nodes dereferenced from pointers in the lists.
+ */
+void AStarPath::delete_nodes()
 {    while(!open_nodes.empty())
     {
         astar_node *delnode = open_nodes.front();
