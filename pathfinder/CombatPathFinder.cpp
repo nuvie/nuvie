@@ -1,6 +1,7 @@
 #include "Actor.h"
 #include "CombatPathFinder.h"
 
+
 CombatPathFinder::CombatPathFinder(Actor *a)
                                     : ActorPathFinder(a, a->get_location())
 {
@@ -8,6 +9,7 @@ CombatPathFinder::CombatPathFinder(Actor *a)
     max_dist = 0;
 }
 
+/* Without a mode set, CombatPathFinder is identical to ActorPathFinder. */
 CombatPathFinder::CombatPathFinder(Actor *a, Actor *t)
                                     : ActorPathFinder(a, t->get_location())
 {
@@ -19,6 +21,15 @@ CombatPathFinder::CombatPathFinder(Actor *a, Actor *t)
 CombatPathFinder::~CombatPathFinder()
 {
 
+}
+
+bool CombatPathFinder::reached_goal()
+{
+    if(target_mode == PATHFINDER_CHASE)
+        return(loc.distance(goal) <= 1);
+    if(target_mode == PATHFINDER_FLEE)
+        return(max_dist != 0 && loc.distance(goal) > max_dist);
+    return true;
 }
 
 bool CombatPathFinder::set_flee_mode(Actor *actor)
@@ -34,6 +45,13 @@ bool CombatPathFinder::set_chase_mode(Actor *actor)
     target_mode = PATHFINDER_CHASE;
     target = actor;
     update_location();
+    return true;
+}
+
+bool CombatPathFinder::set_mode(CombatPathFinderMode mode, Actor *actor)
+{
+    target_mode = mode;
+    target = actor;
     return true;
 }
 
