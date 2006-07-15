@@ -41,8 +41,13 @@ bool SchedPathFinder::get_next_move(MapCoord &step)
 
 bool SchedPathFinder::find_path()
 {
+    if(search->have_path())
+        search->delete_path();
     if(!search->path_search(loc, goal))
+    {
+        printf("warning: actor %d failed to find a path to %x,%x\n", actor->get_actor_num(), goal.x, goal.y);
         return false;
+    }
     prev_step_i = next_step_i = 0;
     incr_step(); // the first step is the start location, so skip it
     return true;
