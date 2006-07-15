@@ -6,7 +6,7 @@
 
 class Actor;
 
-class ActorPathFinder: public PathFinder, DirFinder
+class ActorPathFinder: public PathFinder, public DirFinder
 {
 protected:
     Actor *actor;
