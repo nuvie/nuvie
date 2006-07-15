@@ -913,10 +913,10 @@ void U6Actor::wt_combat()
     if(worktype == WORKTYPE_U6_COMBAT_SHY
        || worktype == WORKTYPE_U6_COMBAT_RETREAT)
     {
-        ActorList *actors = find_players();
+        ActorList *actors = in_party?find_enemies():find_players();
         if(actors)
         {
-printf("\n%s yells \"Aiee!", get_name());
+printf("%s yells \"Aiee!", get_name());
             actor_mgr->sort_nearest(actors,x,y,z);
             if(worktype == WORKTYPE_U6_COMBAT_RETREAT)
             {
@@ -958,7 +958,7 @@ printf("\"\n");
     // turn wild if near player
     if(worktype == WORKTYPE_U6_COMBAT_UNFRIENDLY)
     {
-printf("\n%s looks threatening.\n", get_name());
+printf("%s looks threatening.\n", get_name());
         ActorList *actors = find_players();
         if(actors)
         {
@@ -975,7 +975,7 @@ printf("\n%s looks threatening.\n", get_name());
        || worktype == WORKTYPE_U6_COMBAT_ASSAULT
        || worktype == WORKTYPE_U6_COMBAT_REAR)
     {
-printf("\n%s is looking for trouble", get_name());
+printf("%s is looking for trouble", get_name());
         ActorList *actors = find_enemies();
         if(actors)
         {
@@ -1515,6 +1515,16 @@ ActorList *U6Actor::find_enemies()
         }
         else
             filter_alignment(actors, ALIGNMENT_NEUTRAL);
+    }
+
+    // remove party members FIXME: find out why party members' alignments are conflicting
+    if(in_party)
+    {
+        ActorIterator a = actors->begin();
+        while(a != actors->end())
+            if(static_cast<U6Actor*>(*a)->in_party)
+                a = actors->erase(a);
+            else ++a;
     }
     if(actors->empty())
     {
