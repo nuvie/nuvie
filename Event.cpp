@@ -1778,7 +1778,7 @@ void Event::party_mode()
 
     if(player->get_party()->is_in_combat_mode())
         scroll->display_string("Not in combat mode!\n");
-    else if(player->get_party()->is_anyone_at(leader_loc, 6))
+    else if(player->get_party()->is_at(leader_loc, 6))
     {
         if(player->set_party_mode(player->get_party()->get_actor(0)))
         {
@@ -1818,7 +1818,11 @@ bool Event::toggle_combat()
         if(combat_mode)
             scroll->display_string("Begin combat!\n\n");
         else
+        {
             scroll->display_string("Break off combat!\n\n");
+            player->set_actor(party->get_actor(party->get_leader())); // return control to leader
+            player->set_mapwindow_centered(true); // center mapwindow
+        }
         scroll->display_prompt();
         Game::get_game()->get_command_bar()->set_combat_mode(combat_mode);
         return true;
