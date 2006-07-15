@@ -302,9 +302,12 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_d     :
 			newAction(DROP_MODE);
 			break;
-        case SDLK_a     :
-            newAction(ATTACK_MODE);
-            break;
+		case SDLK_b     :
+			toggle_combat();
+			break;
+		case SDLK_a     :
+			newAction(ATTACK_MODE);
+			break;
                 case SDLK_F1:
                 case SDLK_F2:
                 case SDLK_F3:
@@ -619,9 +622,7 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
    default              : if(player->check_walk_delay())
                             {
                              player->moveRelative(rel_x, rel_y);
-                             // time changed
-                             Game::get_game()->get_command_bar()->update(); // date & wind
-                             view_manager->get_party_view()->update(); // sky
+                             Game::get_game()->time_changed();
                             }
                           break;
   }
@@ -695,6 +696,12 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
         }
         else
             scroll->display_string("\n\nNot possible.");
+
+        if(obj_manager->is_damaging(obj->x,obj->y,obj->z))
+        {
+            scroll->display_string("\n");
+            actor->display_condition(); // indicate that object hurt the player
+        }
     }
     else
         scroll->display_string("nothing");
@@ -1053,7 +1060,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 
     scroll->display_string(get_direction_name(pushrel_x, pushrel_y));
     scroll->display_string(".\n\n");
-
+printf("warning: deduct moves from player\n");
     // FIXME: the random chance here is just made up, I don't know what
     //        kind of check U6 did ("Failed.\n\n")
     if(selected_actor)
@@ -1243,7 +1250,7 @@ void Event::alt_code_input(const char *in)
 
         case 500: // control/watch anyone
             player->set_actor(a);
-            map_window->centerMapOnActor(a);
+            player->set_mapwindow_centered(true);
             scroll->display_string("\n");
             scroll->display_prompt();
             active_alt_code = 0;
@@ -1340,10 +1347,7 @@ void Event::alt_code(const char *cs)
             scroll->display_string(clock->get_time_string());
             scroll->display_string("\n");
             scroll->display_prompt();
-            map_window->updateBlacking();
-            // time changed
-            Game::get_game()->get_command_bar()->update(); // date & wind
-            view_manager->get_party_view()->update(); // sky
+            Game::get_game()->time_changed();
             active_alt_code = 0;
             break;
 
@@ -1740,20 +1744,19 @@ void Event::solo_mode(uint32 party_member)
     if(mode == WAIT_MODE)
         return;
 
-    if(player->get_actor()->get_actor_num() == 0) // vehicle
+    if(!actor || player->get_actor()->get_actor_num() == 0) // vehicle
         return;
 
-    if(actor && player->set_solo_mode(actor))
+    if(player->get_party()->is_in_combat_mode())
+        scroll->display_string("Not in combat mode!\n\n");
+    else if(player->set_solo_mode(actor))
     {
         scroll->display_string("\nSolo mode\n\n");
-        std::string prompt = player->get_party()->get_actor_name(party_member);
-        prompt += ":\n>";
-        scroll->set_prompt((char *)prompt.c_str());
-        scroll->display_prompt();
-        map_window->centerMapOnActor(actor);
+        player->set_mapwindow_centered(true);
         if(view_manager->get_inventory_view()->set_party_member(party_member))
             view_manager->set_inventory_mode(); // reset inventoryview
     }
+    scroll->display_prompt();
 }
 
 
@@ -1772,12 +1775,15 @@ void Event::party_mode()
         return;
 
     leader_loc = actor->get_location();
-    if(player->get_party()->is_anyone_at(leader_loc, 6))
+
+    if(player->get_party()->is_in_combat_mode())
+        scroll->display_string("Not in combat mode!\n");
+    else if(player->get_party()->is_anyone_at(leader_loc, 6))
     {
         if(player->set_party_mode(player->get_party()->get_actor(0)))
         {
             scroll->display_string("\nParty mode\n");
-            map_window->centerMapOnActor(actor);
+            player->set_mapwindow_centered(true);
             if(view_manager->get_inventory_view()->set_party_member(0))
                 view_manager->set_inventory_mode(); // reset inventoryview
         }
@@ -1788,6 +1794,38 @@ void Event::party_mode()
     scroll->display_prompt();
 }
 
+/* Switch to or from combat mode. */
+bool Event::toggle_combat()
+{
+    Party *party = player->get_party();
+    bool combat_mode = !party->is_in_combat_mode();
+
+    if(!player->in_party_mode())
+    {
+        scroll->display_string("Not in solo mode.\n\n");
+        scroll->display_prompt();
+    }
+    else if(party->is_in_vehicle())
+    {
+         scroll->display_string("\nNot while aboard ship!\n\n");
+         scroll->display_prompt();
+    }
+    else
+        party->set_in_combat_mode(combat_mode);
+
+    if(party->is_in_combat_mode() == combat_mode)
+    {
+        if(combat_mode)
+            scroll->display_string("Begin combat!\n\n");
+        else
+            scroll->display_string("Break off combat!\n\n");
+        scroll->display_prompt();
+        Game::get_game()->get_command_bar()->set_combat_mode(combat_mode);
+        return true;
+    }
+//REST="-Not while in Combat!"
+    return false;
+}
 
 /* Make actor wear an object they are holding.
  */
@@ -1988,9 +2026,7 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
     // FIXME: With U6 mouse-move, Avatar tries to move left or right around obstacles.
     player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
                          (ry == 0) ? 0 : ry < 0 ? -1 : 1);
-    // time changed
-    Game::get_game()->get_command_bar()->update(); // date & wind
-    view_manager->get_party_view()->update(); // sky
+    Game::get_game()->time_changed();
 }
 
 
@@ -2302,7 +2338,5 @@ void Event::endAction(bool prompt)
     selected_actor = NULL;
     drop_qty = 0;
     Game::get_game()->set_mouse_pointer(0);
-    Game::get_game()->get_command_bar()->update(); // date&wind
-    view_manager->get_party_view()->update(); // sky
     map_window->updateBlacking();
 }

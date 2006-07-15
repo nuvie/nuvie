@@ -1,3 +1,50 @@
+2006-07-15  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Combat mode is now available, and can be toggled with the B key or the
+	  button on the command bar. The COMMAND combat strategy works, but the
+	  others all do the same thing (attack nearest or strongest enemy, or
+	  retreat)
+	* Improved combat strategies. (wt_combat() is still a stub function)
+	* GameClock: Removed time change when mover_counter changes, because game
+	  time is now independent of player movement. Also removed tick_counter
+	  because - without a constant GAMECLOCK_TICKS_PER_MINUTE - minutes are the
+	  highest precision units of game time available.
+	* I found the proper amount of damage that traps cause. (hopefully)
+	* Temp. actors with double-tiles are spawned facing west. (but a horse in
+	  Trinsic is broken and only has a front!)
+	* I've changed the way actors are updated and move, to resemble more
+	  closely the turn based system of U6. All actor movement is based on move
+	  count and dexterity, and actors move in order of fraction of moves left.
+	  The player only gets to move when it's their turn and time updates only
+	  when all actors have moved. (end of the turn)
+	  This has resulted in the addition of these methods to ActorManager:
+	  startActors(): end player turn, start moving actors
+	  stopActors(): stop moving actors, return control to player
+	  updateTime(): refresh all actors' movement points and add time
+	  moveActors(): does the actual update and moves actors with update_actor()
+	               (Called continuously by game, it returns to the player if
+	               can_party_move() returns true, or an actor wants command.)
+	  activate_actor()/deactivate_actor(): add/remove actor to/from active list
+	  update_active_actors(): check active area for actors to add to the active
+	                          list, and sort by fraction of moves left
+	* updateActors() has been changed, and now just sets the current active
+	  area. Use when the player/mapwindow moves.
+	* Map: Added get_impedance() to return the impendance of a map tile plus
+	  all objects at that location.
+	* Actor: Actors can now avoid moving onto dangerous squares, but I'm
+	  ignoring this flag now until the effects can be tested.
+	  Moved U6ActorTileType to Actor.
+	  New virtual function can_be_passed() checks another actor can be passed.
+	  (the two actors can occupy the same square) Drakes still aren't working
+	  properly!
+	  New method display_condition() prints actor health estimate.
+	* ActorManager: Added new functions to handle a list of actors.
+	  get_actor_list(), and get_active_actors() each return a new list. (active
+	  actors are those which are cached in and can move)
+	  sort_nearest() sorts a list by distance to an arbitrary location.
+	  filter_distance() removes actors out of a certain range
+	* U6Actor: New functions filter_alignment(), find_enemies(),
+	  combat_try_attack(), find_players(), wt_player(): Take control of Player.
+
 2006-07-09   Eric Fry <efry at users.sourceforge.net>
 	* Fixed case when calling include files in unpack_portrats.cpp
 	  I was using lowercase 'l' instead of 'L'. Thanks to Pieter for

@@ -164,6 +164,7 @@ class Event : public GUI_CallBack
  bool drop(uint16 x, uint16 y) { return(drop(use_obj, drop_qty, x, y)); }
  void walk_to_mouse_cursor(uint32 mx, uint32 my);
  void multiuse(uint16 wx, uint16 wy);
+ bool toggle_combat();
 
  void alt_code(const char *cs);
  void alt_code_input(const char *in);

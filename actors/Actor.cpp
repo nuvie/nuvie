@@ -24,6 +24,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <cassert>
+#include "U6misc.h"
 #include "U6LList.h"
 #include "Game.h"
 #include "GameClock.h"
@@ -57,9 +58,11 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  in_party = false;
  temp_actor = false;
  visible_flag = true;
+// active = false;
 
  worktype = 0;
  sched_pos = 0;
+ update_time = 0;
 
  memset(readied_objects,0,sizeof(readied_objects));
  moves = 0;
@@ -306,6 +309,8 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags f
 {
  Actor *a;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
+// bool ignore_danger = flags & ACTOR_IGNORE_DANGER;
+ bool ignore_danger = true;
 
     if(z > 5)
         return(false);
@@ -326,6 +331,11 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags f
 
 //    if(map->is_passable(new_x,new_y,new_z) == false)
 //        return(false);
+
+    if(!ignore_danger)
+        if(map->is_damaging(new_x, new_y, new_z))
+            return false;
+
     return(true);
 }
 
@@ -340,11 +350,20 @@ bool Actor::can_be_moved()
  return can_move;
 }
 
+bool Actor::can_be_passed(Actor *other)
+{
+    return(other->is_passable() || is_passable());
+}
+
 bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
 {
+ const uint8 move_cost = 5; // base cost to move
  bool force_move = flags & ACTOR_FORCE_MOVE;
  bool open_doors = flags & ACTOR_OPEN_DOORS;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
+// bool ignore_danger = flags & ACTOR_IGNORE_DANGER;
+ bool ignore_moves = flags & ACTOR_IGNORE_MOVES;
+ bool ignore_danger = true;
  Obj *obj = NULL;
  MapCoord oldpos(x, y, z);
 
@@ -352,10 +371,11 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
  if(!usecode)
    usecode = obj_manager->get_usecode();
  // no moves left
- if(!force_move && moves <= 0 && id_n != 0) // vehicle actor has no move limit
+ if(!(force_move||ignore_moves) && moves <= 0)
  {
     set_error(ACTOR_OUT_OF_MOVES);
-    return false;
+//    return false;
+    printf("warning: actor %d is out of moves\n", id_n);
  }
 
  // blocking actors are checked for later
@@ -371,6 +391,13 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
        return false; // blocked by object or map tile
       }
    }
+ // avoid dangerous objects
+ if(!ignore_danger && obj && obj_manager->is_damaging(new_x, new_y, new_z))
+   {
+    set_error(ACTOR_BLOCKED_BY_OBJECT);
+    error_struct.blocking_obj = obj;
+    return false;
+   }
  // usecode must allow movement
  if(obj && usecode->has_passcode(obj))
    {
@@ -384,7 +411,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
 
  Actor *other = map->get_actor(new_x, new_y, new_z);
  if(!ignore_actors && !force_move
-    && other && other->is_visible() && !other->is_passable() && !is_passable())
+    && other && other->is_visible() && !other->can_be_passed(this))
    {
     set_error(ACTOR_BLOCKED_BY_ACTOR);
     error_struct.blocking_actor = other;
@@ -397,8 +424,12 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
  z = new_z;
 
  can_move = true;
- if(!force_move) // subtract from moves left
-    set_moves_left(moves - 1);
+ if(!(force_move || ignore_moves)) // subtract from moves left
+ {
+    set_moves_left(moves - (move_cost+map->get_impedance(oldpos.x, oldpos.y, oldpos.z)));
+    if(oldpos.x != x && oldpos.y != y) // diagonal move, double cost
+        set_moves_left(moves - (move_cost+map->get_impedance(oldpos.x, oldpos.y, oldpos.z)));
+ }
 
  // post-move
  // close door
@@ -413,14 +444,14 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
  // re-center map if actor is player character
  if(id_n == game->get_player()->get_actor()->id_n && game->get_player()->is_mapwindow_centered())
     game->get_map_window()->centerMapOnActor(this);
+ // allows a delay to be set on actor movement, in lieu of using animations
+ update_time = clock->get_ticks();
  return true;
 }
 
 
 void Actor::update()
 {
-    update_moves_left();
-
     if(pathfinder)
     {
         // NOTE: don't delete pathfinder right after walking, because the scheduled
@@ -429,6 +460,8 @@ void Actor::update()
             delete_pathfinder();
         else walk_path();
     }
+
+//    update_time = clock->get_ticks(); moved to move()
 }
 
 /* Returns true if actor moved. */
@@ -440,6 +473,7 @@ bool Actor::walk_path()
     MapCoord next_loc, loc(x, y, z);
     if(!pathfinder->get_next_move(next_loc)) // nothing to do here
         return false;
+    // FIXME: move to SchedPathFinder (or delete; worktype will handle refresh)
     if(next_loc == loc) // ran out of steps? get a new path
     {
         if(pathfinder->have_path())
@@ -519,6 +553,7 @@ void Actor::attack(MapCoord pos)
 
 void Actor::attack(sint8 readied_obj_location, Actor *actor)
 {
+ const uint8 attack_cost = 10; // base cost to attack
  Obj *weapon_obj;
  const CombatType *combat_type;
 
@@ -536,6 +571,7 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
       inventory_remove_obj(weapon_obj);
      }
   } 
+ set_moves_left(moves - attack_cost);
 }
 
 const CombatType *Actor::get_weapon(sint8 readied_obj_location)
@@ -1349,9 +1385,6 @@ void Actor::reduce_hp(uint8 amount)
         die();
 }
 
-
-/* Replace actor object with dead body, complete with matching wardrobe.
- */
 void Actor::die()
 {
     hp = 0;
@@ -1360,6 +1393,25 @@ void Actor::die()
     status_flags |= ACTOR_STATUS_DEAD;
 }
 
+void Actor::display_condition()
+{
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+
+    scroll->display_string(get_name());
+    scroll->display_string(" ");
+    if(hp < get_maxhp()/4) // 25%
+        scroll->display_string("critical!\n");
+    else
+    {
+        if(hp < get_maxhp()/2) // 50%
+            scroll->display_string("heavily");
+        else if(hp < get_maxhp()/1.33) // 75%
+            scroll->display_string("lightly");
+        else
+            scroll->display_string("barely");
+        scroll->display_string(" wounded.\n");
+    }
+}
 
 /* Get hit and take damage by some indirect effect. (no source)
  */
@@ -1368,24 +1420,28 @@ void Actor::hit(uint8 dmg, bool force_hit)
  MsgScroll *scroll = Game::get_game()->get_scroll();
  uint8 total_armor_class = body_armor_class; //+ readied_armor_class;
       
- if(dmg > total_armor_class || force_hit)
+ if(dmg == 0)
+   {
+    scroll->display_string(get_name());
+    scroll->display_string(" grazed!\n");
+   }
+ else if(dmg > total_armor_class || force_hit)
    {
     new HitEffect(this);
     reduce_hp(force_hit ? dmg : dmg - total_armor_class);
     
-    if(!force_hit)
-      {
-       scroll->display_string(get_name());
+//    if(!force_hit)
+//      {
        if(hp == 0)
-          scroll->display_string(" Killed!\n");
+         {
+          scroll->display_string(get_name());
+          scroll->display_string(" killed!\n");
+         }
        else
          {
-          if(hp < 15)
-            scroll->display_string(" Critical!\n");
-          else
-            scroll->display_string(" hit.\n"); // FIX string based on dmg amount
+          display_condition();
          }
-      }
+//      }
    }
 }
 
@@ -1443,4 +1499,92 @@ ActorError *Actor::get_error()
 bool Actor::is_immobile()
 {
     return(false);
+}
+
+void Actor::print()
+{
+    Actor *actor = this;
+    printf("\n");
+    printf("%s at %x, %x, %x\n", get_name(), actor->x, actor->y, actor->z);
+    printf("id_n: %d\n", actor->id_n);
+
+    printf("obj_n: %03d    frame_n: %d\n", actor->obj_n, actor->frame_n);
+    printf("base_obj_n: %03d    old_frame_n: %d\n", actor->base_obj_n, actor->old_frame_n);
+
+    uint8 direction = actor->direction;
+    printf("direction: %d (%s)\n", direction, (direction==NUVIE_DIR_N)?"north":
+                                              (direction==NUVIE_DIR_E)?"east":
+                                              (direction==NUVIE_DIR_S)?"south":
+                                              (direction==NUVIE_DIR_W)?"west":"???");
+    printf("walk_frame: %d\n", actor->walk_frame);
+
+    printf("can_move: %s\n", actor->can_move ? "true" : "false");
+//    printf("alive: %s\n", actor->alive ? "true" : "false");
+    printf("in_party: %s\n", actor->in_party ? "true" : "false");
+    printf("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
+//    printf("met_player: %s\n", actor->met_player ? "true" : "false");
+    printf("is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
+
+    printf("moves: %d\n", actor->moves);
+
+    const char *wt_string = get_worktype_string(actor->worktype);
+    if(!wt_string) wt_string = "???";
+    printf("worktype: 0x%02x/%03d %s\n", actor->worktype, actor->worktype, wt_string);
+
+    printf("NPC stats:\n");
+    printf(" level: %d    exp: %d    hp: %d / %d\n", actor->level, actor->exp,
+           actor->hp, actor->get_maxhp());
+    printf(" strength: %d    dex: %d    int: %d\n", actor->strength, actor->dex,
+           actor->intelligence);
+    printf(" magic: %d\n", actor->magic);
+
+    uint8 combat_mode = actor->combat_mode;
+    wt_string = get_worktype_string(actor->combat_mode);
+    if(!wt_string) wt_string = "???";
+    printf("combat_mode: %d %s\n", combat_mode, wt_string);
+
+    printf("NPC flags: ");
+    print_b(actor->flags);
+    printf("\n");
+
+    printf("Status flags: ");
+    print_b(actor->status_flags);
+    printf("\n");
+
+    uint32 inv = actor->inventory_count_objects(true);
+    if(inv)
+    {
+        printf("Inventory (+readied): %d objects\n", inv);
+        U6LList *inv_list = actor->get_inventory_list();
+        for(U6Link *link = inv_list->start(); link != NULL; link=link->next)
+        {
+            Obj *obj = (Obj *)link->data;
+            printf(" %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
+                   obj_manager->look_obj(obj), obj->obj_n, obj->frame_n, obj->quality,
+                   obj->qty, obj_manager->get_obj_weight(obj, false));
+        }
+        printf("(weight %f / %f)\n", actor->get_inventory_weight(),
+               actor->inventory_get_max_weight());
+    }
+    if(actor->sched && *actor->sched)
+    {
+        printf("Schedule:\n");
+        Schedule **s = actor->sched;
+        uint32 sp = 0;
+        do
+        {
+            wt_string = get_worktype_string(s[sp]->worktype);
+            if(!wt_string) wt_string = "???";
+            if(sp == actor->sched_pos && s[sp]->worktype == actor->worktype)
+                printf("*%d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)*\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
+            else
+                printf(" %d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
+        } while(s[++sp]);
+    }
+
+    if(!actor->surrounding_objects.empty())
+        printf("Actor has multiple tiles\n");
+    if(actor->pathfinder)
+        printf("Actor is on a path\n");
+    printf("\n");
 }

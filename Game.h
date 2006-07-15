@@ -132,6 +132,7 @@ class Game
  bool set_mouse_pointer(uint8 ptr_num);
  void dont_wait_for_interval();
  void wait_for_interval();
+ void time_changed();
 
  /* Pass back instance of Game classes... and why not? */
  static Game *get_game()           { return(game); }

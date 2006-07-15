@@ -101,12 +101,10 @@ bool Player::load(NuvieIO *objlist)
     gender = objlist->read1();
    }
 
- set_actor(find_actor());
-
  if(solo_member_num == 0xff)
    {
     party_mode = true;
-    set_party_mode(actor);
+    set_party_mode(find_actor());
    }
  else
     set_solo_mode(party->get_actor(solo_member_num));
@@ -143,17 +141,15 @@ bool Player::save(NuvieIO *objlist)
  return true;
 }
 
-/* Returns the first actor set as Player.
- */
 Actor *Player::find_actor()
 {
-    for(uint32 p = 0; p < 255; p++)
+    for(uint32 p=0; p < 256; p++)
     {
         Actor *actor = actor_manager->get_actor(p);
         if(actor->get_worktype() == 0x02) // WT_U6_PLAYER
             return(actor);
     }
-    return(actor_manager->get_actor(1)); // U6NPC_AVATAR
+    return(actor_manager->get_actor(1));
 }
 
 
@@ -166,18 +162,21 @@ void Player::set_mapwindow_centered(bool state)
  mapwindow_centered = state;
  if(mapwindow_centered == false)
     return;
- map_window->centerMapOnActor(actor);
+ map_window->centerMapOnActor(actor); // center immediately
 
  get_location(&x,&y,&z);
  obj_manager->update(x,y,z); // spawn eggs when teleporting. eg red moongate.
+ actor_manager->updateActors(x,y,z);
 }
 
 void Player::set_actor(Actor *new_actor)
 {
- actor = new_actor;
- actor->set_worktype(0x2); // WT_U6_PLAYER
- actor_manager->set_player(actor);
- map_window->centerMapOnActor(actor);
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+    actor = new_actor;
+    actor_manager->set_player(actor);
+    std::string prompt = actor->get_name();
+    prompt += ":\n>";
+    scroll->set_prompt((char *)prompt.c_str());
 }
 
 Actor *Player::get_actor()
@@ -239,6 +238,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
         return;
     if(actor->is_immobile())
         return;
+
     if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/
     {
         ActorError *ret = actor->get_error();
@@ -253,7 +253,9 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     // post-move
     actor->set_direction(rel_x, rel_y);
     if(party_mode && party->is_leader(actor)) // lead party
+    {
         party->follow(rel_x, rel_y);
+    }
     else if(actor->id_n == 0) // using vehicle; drag party along
     {
         MapCoord new_xyz = actor->get_location();
@@ -262,7 +264,8 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     // update world around player
     actor_manager->updateActors(x, y, z);
     obj_manager->update(x, y, z); // remove temporary objs, hatch eggs
-    clock->inc_move_counter();
+    clock->inc_move_counter(); // doesn't update time
+    actor_manager->startActors(); // end player turn
 }
 
 // teleport-type move
@@ -278,6 +281,7 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
       }
     actor_manager->updateActors(new_x, new_y, new_level);
     obj_manager->update(new_x, new_y, new_level); // remove temporary objs, hatch eggs
+    // it's still the player's turn
    }
 }
 
@@ -303,14 +307,18 @@ void Player::moveDown()
 
 void Player::pass()
 {
- uint16 x = actor->x, y = actor->y;
- uint8 z = actor->z;
+// uint16 x = actor->x, y = actor->y;
+// uint8 z = actor->z;
+
+ if(actor->get_moves_left() > 0)
+   actor->set_moves_left(0); // Pass and use up moves
 
  // update world around player
  if(party_mode && party->is_leader(actor)) // lead party
    party->follow(0, 0);
- actor_manager->updateActors(x, y, z);
- clock->inc_move_counter_by_a_minute();
+// actor_manager->updateActors(x, y, z); // not needed because position is unchanged
+ clock->inc_move_counter_by_a_minute(); // doesn't update time
+ actor_manager->startActors(); // end player turn
 }
 
 
@@ -319,16 +327,10 @@ void Player::pass()
  */
 bool Player::set_party_mode(Actor *new_actor)
 {
- MsgScroll *scroll = Game::get_game()->get_scroll();
- 
     if(party->contains_actor(new_actor))
     {
-        std::string prompt = get_party()->get_actor_name(0);
-        prompt += ":\n>";
-        scroll->set_prompt((char *)prompt.c_str());
-
         party_mode = true;
-        actor = new_actor;
+        set_actor(new_actor);
         return(true);
     }
     return(false);
@@ -342,8 +344,7 @@ bool Player::set_solo_mode(Actor *new_actor)
     if(party->contains_actor(new_actor))
     {
         party_mode = false;
-        actor = new_actor;
-        actor->delete_pathfinder();
+        set_actor(new_actor);
         return(true);
     }
     return(false);
@@ -457,6 +458,17 @@ void Player::attack(Actor *a)
    actor->attack(current_weapon, a);
  else
    scroll->display_string("\nOut of range!\n");
-   
+
+ actor_manager->startActors(); // end player turn
  return;
+}
+
+// Switch to controlling another actor
+void Player::update_player(Actor *next_player)
+{
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+    set_actor(next_player); // redirects to ActorManager::set_player()
+    set_mapwindow_centered(true);
+    scroll->display_string("\n");
+    scroll->display_prompt();
 }

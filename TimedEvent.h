@@ -217,4 +217,23 @@ public:
     void get_time_from_string(uint8 &hour, uint8 &minute, std::string timestring);
 };
 
+#if 0
+/* Camping in the wilderness. First confirm that we are in the wilderness (no
+ * visible wall tiles), then move everyone into a circle and place a campfire
+ * in the center. Get number of hours to rest and who will guard from the player.
+ * Do a SleepEffect until the requested time. The camp can be broken by nearby
+ * foes.
+ */
+class TimedRest : public TimedPartyMove
+{
+protected:
+    bool party_in_town();
+public:
+    void init(uint16 min, uint16 r); // start time advance
+
+    void timed(uint32 evtime);
+    bool time_passed(); // stop time has passed
+};
+#endif
+
 #endif /* __TimedEvent_h__ */

@@ -67,6 +67,7 @@ class Player
  bool save(NuvieIO *objlist);
 
  Actor *find_actor();
+ void update_player(Actor *next_player);
 
  bool is_mapwindow_centered()            { return(mapwindow_centered); }
  void set_mapwindow_centered(bool state);

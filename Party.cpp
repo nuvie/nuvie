@@ -33,6 +33,7 @@
 #include "Player.h"
 #include "Map.h"
 #include "U6UseCode.h"
+#include "CommandBar.h"
 #include "PartyPathFinder.h"
 #include "Party.h"
 
@@ -400,6 +401,14 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
     sint8 leader = get_leader();
     if(leader <= -1)
         return;
+
+    if(is_in_combat_mode()) // just update everyone's combat mode
+    {
+        for(int p=0; p<get_party_size();p++)
+            get_actor(p)->set_worktype(get_actor(p)->get_combat_mode());
+        return;
+    }
+
     // set previous leader location first, just in case the leader changed
     prev_leader_x = member[get_leader()].actor->x - rel_x;
     prev_leader_y = member[get_leader()].actor->y - rel_y;
@@ -423,6 +432,9 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
         }
         else if(member[p].actor->get_pathfinder())
             pathfinder->end_seek(p);
+
+        get_actor(p)->set_moves_left(get_actor(p)->get_moves_left() - 10);
+        get_actor(p)->set_worktype(0x01); // revert to normal worktype
     }
 }
 
@@ -525,11 +537,8 @@ bool Party::contains_actor(uint8 actor_num)
 
 void Party::set_in_combat_mode(bool value)
 {
-  // You can't enter combat mode while in a vehicle.
-  if(value && in_vehicle)
-     return;
-
   in_combat_mode = value;
+  actor_manager->set_combat_movement(value);
 
   update_music();
 }
@@ -674,6 +683,11 @@ void Party::set_in_vehicle(bool value)
  in_vehicle = value;
 
  update_music();
+ if(value)
+ {
+  set_in_combat_mode(false); // break off combat when boarding a vehicle
+  game->get_command_bar()->set_combat_mode(false);
+ }
 
  return;
 }
@@ -704,4 +718,25 @@ void Party::dismount_from_horses()
    }
 
  return;
+}
+
+Actor *Party::get_slowest_actor()
+{
+    Actor *actor = 0;
+    sint8 begin = get_leader();
+    if(begin >= 0)
+    {
+        actor = member[begin].actor;
+        sint8 moves = actor->get_moves_left();
+        for(uint32 m = begin+1; m < num_in_party; m++)
+        {
+            sint8 select_moves = member[m].actor->get_moves_left();
+            if(!member[m].inactive && (select_moves < moves))
+            {
+                moves = select_moves;
+                actor = member[m].actor;
+            }
+        }
+    }
+    return actor;
 }

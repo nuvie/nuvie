@@ -36,13 +36,10 @@
 #include "ViewManager.h"
 #include "Converse.h"
 #include "Effect.h"
+#include "CombatPathFinder.h"
 
 #include "U6ActorTypes.h"
 #include "U6WorkTypes.h"
-
-//static const uint8 sleep_objects[8];
-
-//static uint8 walk_frame_tbl[4] = {0,1,2,1}; //FIX
 
 
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
@@ -50,6 +47,8 @@ U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
  beg_mode = 0; // beggers are waiting for targets
  walk_frame_inc = 1;
  poison_counter = 0;
+
+ foe = attacker = 0;
 }
 
 U6Actor::~U6Actor()
@@ -243,10 +242,15 @@ uint16 U6Actor::get_downward_facing_tile_num()
 
 void U6Actor::update()
 {
+// Party *party = Game::get_game()->get_party();
  if(!alive)  //we don't need to update dead actors.
    return;
 
  Actor::update();
+// moved to Party::follow(), but I think it should be here
+// if(in_party && !party->is_in_combat_mode() && party->get_actor(party->get_leader()) != this)
+//  set_worktype(WORKTYPE_U6_IN_PARTY); // revert to normal worktype
+
  preform_worktype();
 
  if(is_poisoned())
@@ -351,6 +355,8 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags
  rel_x = new_x - x;
  rel_y = new_y - y;
 
+ if(flags&ACTOR_OPEN_DOORS && worktype != WORKTYPE_U6_WALK_TO_LOCATION)
+    flags^=ACTOR_OPEN_DOORS; // only use doors when walking to schedule location
  ret = Actor::move(new_x,new_y,new_z,flags);
 
  if(ret == true)
@@ -369,8 +375,8 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags
       if(obj->obj_n == OBJ_U6_FIRE_FIELD) // ouch
         {
          hit(5); // -?? hp?
-         if(in_party)
-            scroll->message("Ouch!\n");
+         scroll->display_string("\n");
+         scroll->display_prompt();
         }
       if(obj->obj_n == OBJ_U6_POISON_FIELD && !is_poisoned()) // ick
         {
@@ -379,14 +385,9 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags
          if(in_party)
            {
             scroll->display_string(party->get_actor_name(party->get_member_num(this)));
-            scroll->display_string(" poisoned!\n");
+            scroll->display_string(" poisoned!\n\n");
             scroll->display_prompt();
            }
-//       Avatar:
-//       >%s poisoned!
-//
-//       Avatar:
-//       >
         }
       if(obj->obj_n == OBJ_U6_SLEEP_FIELD) // Zzz
         {
@@ -404,7 +405,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags
 
       if(obj->obj_n == OBJ_U6_SPIKES)
         {
-         hit(15); //FIXME find proper amount.
+         hit(NUVIE_RAND()%8+1); // I think this is the proper amount. (SB-X)
         }
      }
 
@@ -594,27 +595,25 @@ void U6Actor::set_poisoned(bool poisoned)
 
 void U6Actor::preform_worktype()
 {
- if(in_party) // do nothing here
-  return;
  switch(worktype)
   {
+//   case WORKTYPE_U6_IN_PARTY : wt_party(); break;
+   case WORKTYPE_U6_PLAYER : wt_player(); break;
    case WORKTYPE_U6_COMBAT_FRONT :
    case WORKTYPE_U6_COMBAT_REAR :
    case WORKTYPE_U6_COMBAT_FLANK :
    case WORKTYPE_U6_COMBAT_BERSERK :
    case WORKTYPE_U6_COMBAT_RETREAT :
-   case WORKTYPE_U6_COMBAT_ASSAULT :
+   case WORKTYPE_U6_COMBAT_ASSAULT : // WILD
    case WORKTYPE_U6_COMBAT_SHY :
    case WORKTYPE_U6_COMBAT_LIKE :
-   case WORKTYPE_U6_COMBAT_UNFRIENDLY :
-   case WORKTYPE_U6_ANIMAL_WANDER : wt_combat(); break;
+//   case WORKTYPE_U6_COMBAT_IMMOBILE : immobile actors can fight, but wt_combat can't handle them yet
+   case WORKTYPE_U6_COMBAT_UNFRIENDLY : wt_combat(); break;
    case WORKTYPE_U6_FACE_NORTH :
    case WORKTYPE_U6_FACE_EAST  :
    case WORKTYPE_U6_FACE_SOUTH :
    case WORKTYPE_U6_FACE_WEST  :
      break;
-   case WORKTYPE_U6_IN_PARTY :
-   case WORKTYPE_U6_PLAYER :
    case WORKTYPE_U6_WALK_TO_LOCATION : wt_walk_to_location();
                                       break;
 
@@ -625,7 +624,7 @@ void U6Actor::preform_worktype()
 
    case WORKTYPE_U6_WORK :
    case WORKTYPE_U6_WANDER_AROUND   : wt_wander_around(); break;
-//   case WORKTYPE_U6_ANIMAL_WANDER : wt_farm_animal_wander(); break;
+   case WORKTYPE_U6_ANIMAL_WANDER : wt_farm_animal_wander(); break;
    case WORKTYPE_U6_BEG : wt_beg(); break;
 //   case WORKTYPE_U6_
 //                     break;
@@ -693,10 +692,10 @@ void U6Actor::wt_walk_straight()
 {
  uint8 dir = get_direction();
 // set_direction(dir); //update walk frame FIX this!
+ if(NUVIE_RAND()%2) // sometimes guards do stop, even if they can move (SB-X)
+   {
  if(worktype == WORKTYPE_U6_WALK_NORTH_SOUTH || worktype == WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH)
    {
-//    if(dir != NUVIE_DIR_N && dir != NUVIE_DIR_S)
-//      dir = NUVIE_DIR_S;
     if(dir == NUVIE_DIR_N) // move up if blocked face down
        {
         if(moveRelative(0,-1) == false)
@@ -714,8 +713,6 @@ void U6Actor::wt_walk_straight()
    }
  else //WORKTYPE_U6_WALK_EAST_WEST, WORKTYPE_U6_GUARD_WALK_EAST_WEST
    {
-//    if(dir != NUVIE_DIR_W && dir != NUVIE_DIR_E)
-//      dir = NUVIE_DIR_E;
     if(dir == NUVIE_DIR_W) //move left if blocked face right
        {
         if(moveRelative(-1,0) == false)
@@ -731,36 +728,40 @@ void U6Actor::wt_walk_straight()
           set_direction(NUVIE_DIR_E);
        }
    }
+   } else set_moves_left(moves - 5); // FIXME: might use tile cost
 }
 
+// Loitering/Working actors stay close to their schedule location. (SB-X)
 void U6Actor::wt_wander_around()
 {
+ const int area = (worktype == WORKTYPE_U6_WORK) ? 1 : 8;
  uint8 new_direction;
  sint32 xdist = 0, ydist = 0;
+
  if(work_location.x || work_location.y)
    {
-    xdist = x - work_location.x;
-    ydist = y - work_location.y;
+    xdist = (sint32)x - work_location.x;
+    ydist = (sint32)y - work_location.y;
    }
-
  if(NUVIE_RAND()%8 == 1)
    {
     new_direction = NUVIE_RAND()%4;
     set_direction(new_direction);
     switch(new_direction)
       {
-       case 0 : if(ydist > -4) moveRelative(0,-1); break;
-       case 1 : if(xdist < +4) moveRelative(1,0); break;
-       case 2 : if(ydist < +4) moveRelative(0,1); break;
-       case 3 : if(xdist > -4) moveRelative(-1,0); break;
+       case 0 : if(ydist > -area) moveRelative(0,-1); break;
+       case 1 : if(xdist < +area) moveRelative(1,0); break;
+       case 2 : if(ydist < +area) moveRelative(0,1); break;
+       case 3 : if(xdist > -area) moveRelative(-1,0); break;
       }
    }
+ else set_moves_left(moves - 5);
 
  return;
 }
 
 // wander around but don't cross boundaries or fences. Used for cows and horses.
-
+// FIX: once we've tested that hazards are working properly, this won't be needed
 void U6Actor::wt_farm_animal_wander()
 {
  uint8 new_direction;
@@ -785,6 +786,7 @@ void U6Actor::wt_farm_animal_wander()
         }
 
    }
+ else set_moves_left(moves - 5);
 
  return;
 }
@@ -792,7 +794,7 @@ void U6Actor::wt_farm_animal_wander()
 
 /* Wander around, approach and talk to the player character if visible.
  * Beg modes: 0 = waiting for target, 1 = following, 2 = just loiter
- * FIXME: Might also be done using 3 worktypes.
+ * FIXME: This is really done using 2 worktypes. (CONV, then LOIT)
  */
 void U6Actor::wt_beg()
 {
@@ -897,14 +899,144 @@ void U6Actor::wt_play_lute()
 // unless an enemy is nearby.
 void U6Actor::wt_combat()
 {
+    bool attacking = false;
+    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
     Player *player = Game::get_game()->get_player();
     Actor *pactor = player->get_actor();
-    MapCoord loc = pactor->get_location();
-    if(is_nearby(loc, 2))
+    MapCoord ploc = pactor->get_location();
+
+// FIXME: This needs to be replaced with special cases for each worktype.
+//        Player combat modes are especially more involved. It should also call
+//        specific methods for different monster types. (that do various idle and attack actions)
+
+    // retreat
+    if(worktype == WORKTYPE_U6_COMBAT_SHY
+       || worktype == WORKTYPE_U6_COMBAT_RETREAT)
     {
-        repel_from(pactor);
-        walk_path();
+        ActorList *actors = find_players();
+        if(actors)
+        {
+printf("\n%s yells \"Aiee!", get_name());
+            actor_mgr->sort_nearest(actors,x,y,z);
+            if(worktype == WORKTYPE_U6_COMBAT_RETREAT)
+            {
+printf(" %s is trying to get me!\"", actors->front()->get_name());
+                repel_from(actors->front());
+            }
+            else // shy creatures only flee if very close
+            {
+                ActorIterator a = actors->begin();
+                while(a != actors->end())
+                {
+                    pactor = *a;
+                    ploc = pactor->get_location();
+                    if(is_nearby(ploc, 2))
+                    {
+printf(" %s is trying to get me!", pactor->get_name());
+                        repel_from(pactor);
+                        break;
+                    }
+                    ++a;
+                }
+            }
+            delete actors;
+printf("\"\n");
+        }
     }
+    // follow
+    if(worktype == WORKTYPE_U6_COMBAT_LIKE)
+    {
+        ActorList *actors = find_players();
+        if(actors)
+        {
+            actor_mgr->sort_nearest(actors,x,y,z);
+            if(worktype == WORKTYPE_U6_COMBAT_LIKE && !pathfinder)
+                attract_to(actors->front());
+            delete actors;
+        }
+    }
+    // turn wild if near player
+    if(worktype == WORKTYPE_U6_COMBAT_UNFRIENDLY)
+    {
+printf("\n%s looks threatening.\n", get_name());
+        ActorList *actors = find_players();
+        if(actors)
+        {
+            delete actors;
+            if(NUVIE_RAND()%4)
+                set_worktype(WORKTYPE_U6_COMBAT_ASSAULT);
+        }
+    }
+    // attack or chase enemies
+    if(worktype == WORKTYPE_U6_COMBAT_FRONT
+       || worktype == WORKTYPE_U6_COMBAT_REAR
+       || worktype == WORKTYPE_U6_COMBAT_FLANK
+       || worktype == WORKTYPE_U6_COMBAT_BERSERK
+       || worktype == WORKTYPE_U6_COMBAT_ASSAULT
+       || worktype == WORKTYPE_U6_COMBAT_REAR)
+    {
+printf("\n%s is looking for trouble", get_name());
+        ActorList *actors = find_enemies();
+        if(actors)
+        {
+printf(", and finds someone to fight!\n");
+            if(worktype == WORKTYPE_U6_COMBAT_BERSERK)
+                sort(actors->begin(), actors->end(), cmp_level());
+            else
+                actor_mgr->sort_nearest(actors,x,y,z);
+            attacking = combat_try_attack(actors);
+            if(!attacking && !pathfinder)
+            {
+                foe = (U6Actor*)actors->front();
+                attract_to(actors->front());
+            }
+            delete actors;
+        }
+else printf(".\n");
+    }
+
+    if(!attacking && !pathfinder)
+        wt_wander_around();
+}
+
+// switch to the next person
+void U6Actor::wt_player()
+{
+    Player *player = Game::get_game()->get_player();
+    if(player->get_actor()->get_actor_num() != id_n)
+    {
+        delete_pathfinder();
+        player->update_player(this);
+    }
+
+    // else do player update, raft, balloon, etc
+    printf("U6Actor: Player (%d)\n", id_n);
+}
+
+// Returns true if the enemy could be attacked. If false is returned, the actor
+// probably needs to be closer. (or use a long-range weapon)
+bool U6Actor::combat_try_attack(U6Actor *enemy)
+{
+    if(weapon_can_hit(get_weapon(ACTOR_NO_READIABLE_LOCATION), enemy->x,enemy->y))
+    {
+        face_actor(enemy);
+        attack(ACTOR_NO_READIABLE_LOCATION, enemy);
+        foe = enemy;
+        return true;
+    }
+    return false;
+}
+
+// Try to attack anyone in the enemies list, which must not be empty.
+bool U6Actor::combat_try_attack(ActorList *enemies)
+{
+    ActorIterator a = enemies->begin();
+    do
+    {
+        if(combat_try_attack((U6Actor*)*a))
+            return true;
+    } while(++a != enemies->end());
+    return false;
 }
 
 void U6Actor::set_actor_obj_n(uint16 new_obj_n)
@@ -1285,10 +1417,12 @@ void U6Actor::die()
      {
       scroll->display_string("\nAn unending darkness engulfs thee...\n\n");
       scroll->display_string("A voice in the darkness intones, \"KAL LOR!\"\n");
-      
+
+      party->set_in_combat_mode(false);
+//      game->get_command_bar()->set_combat_mode(false);
       player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
       player->move(0x133,0x160,0); //move to LB's castle.
-      //move party to LB's castle
+      set_direction(NUVIE_DIR_N);
 
       party->heal();
       party->show();
@@ -1325,18 +1459,13 @@ void U6Actor::die()
           all_items_to_container(dead_body);
 
           obj_manager->add_obj(dead_body, true);
+
+// FIX: add some blood? or do that in hit?
          }
     }
 
- // FIX
-//    if I am the Player, fade-out, restore party, move to castle, fade-in
-    if(this != game->get_player()->get_actor())
-    {
-        move(0,0,0,ACTOR_FORCE_MOVE); // ?? not sure if dead actors get moved
-        game->get_party()->remove_actor(this);
-    }
-//    add some blood? or do that in hit?
-
+    if(party->get_member_num(this) != 0)
+        move(0,0,0,ACTOR_FORCE_MOVE); // FIXME: move to another plane, same coords
 }
 
 // frozen by worktype or status
@@ -1351,4 +1480,118 @@ bool U6Actor::is_immobile()
 bool U6Actor::is_sleeping()
 {
     return(worktype == WORKTYPE_U6_SLEEP);
+}
+
+// Remove actors with a certain alignment from the list. Returns the same list.
+ActorList *U6Actor::filter_alignment(ActorList *list, U6ActorAlignment align)
+{
+    ActorIterator i=list->begin();
+    while(i != list->end())
+    {
+        U6Actor *actor = (U6Actor*)(*i);
+        if(actor->actor_type->alignment == align)
+            i = list->erase(i);
+        else ++i;
+    }
+    return list;
+}
+
+// GOOD->CHAOTIC,EVIL
+// NEUTRAL->CHAOTIC
+// EVIL->GOOD,CHAOTIC
+// CHAOTIC->ALL except CHAOTIC
+ActorList *U6Actor::find_enemies()
+{
+    const uint8 in_range = 5;
+    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
+    ActorList *actors = actor_mgr->filter_distance(actor_mgr->get_actor_list(), x,y,z, in_range);
+    filter_alignment(actors, actor_type->alignment); // filter own alignment
+    if(actor_type->alignment != ALIGNMENT_CHAOTIC)
+    {
+        if(actor_type->alignment == ALIGNMENT_NEUTRAL)
+        {
+            filter_alignment(actors, ALIGNMENT_GOOD); // filter other friendlies
+            filter_alignment(actors, ALIGNMENT_EVIL);
+        }
+        else
+            filter_alignment(actors, ALIGNMENT_NEUTRAL);
+    }
+    if(actors->empty())
+    {
+        delete actors;
+        return NULL; // no enemies in range
+    }
+    return actors;
+}
+
+/* Find Party members. */
+ActorList *U6Actor::find_players()
+{
+    const uint8 in_range = 5;
+    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
+    Party *party = Game::get_game()->get_party();
+    uint8 psize = party->get_party_size();
+    ActorList *actors = new ActorList;
+
+    for(uint32 p = 0; p < psize; p++)
+        actors->push_back(party->get_actor(p));
+    actors = actor_mgr->filter_distance(actors, x,y,z, in_range);
+    if(actors->empty())
+    {
+        delete actors;
+        return NULL;
+    }
+    return actors;
+}
+
+bool U6Actor::can_be_passed(Actor *other)
+{
+    U6Actor *other_ = static_cast<U6Actor *>(other);
+    return(Actor::can_be_passed(other_) && other_->actor_type->movetype != actor_type->movetype);
+}
+
+void U6Actor::print()
+{
+    Actor::print();
+// might print U6Actor members here
+}
+
+/* Returns name of NPC worktype/activity (game specific) or NULL. */
+const char *U6Actor::get_worktype_string(uint32 wt)
+{
+    const char *wt_string = NULL;
+    if(wt == WORKTYPE_U6_MOTIONLESS) wt_string = "Motionless";
+    else if(wt == WORKTYPE_U6_PLAYER) wt_string = "Player";
+    else if(wt == WORKTYPE_U6_IN_PARTY) wt_string = "In Party";
+    else if(wt == WORKTYPE_U6_ANIMAL_WANDER) wt_string = "Graze (animal wander)";
+    else if(wt == WORKTYPE_U6_WALK_TO_LOCATION) wt_string = "Walk to Schedule";
+    else if(wt == WORKTYPE_U6_FACE_NORTH) wt_string = "Stand (North)";
+    else if(wt == WORKTYPE_U6_FACE_SOUTH) wt_string = "Stand (South)";
+    else if(wt == WORKTYPE_U6_FACE_EAST) wt_string = "Stand (East)";
+    else if(wt == WORKTYPE_U6_FACE_WEST) wt_string = "Stand (West)";
+    else if(wt == WORKTYPE_U6_WALK_NORTH_SOUTH) wt_string = "Guard North/South";
+    else if(wt == WORKTYPE_U6_WALK_EAST_WEST) wt_string = "Guard East/West";
+    else if(wt == WORKTYPE_U6_WANDER_AROUND) wt_string = "Wander";
+    else if(wt == WORKTYPE_U6_WORK) wt_string = "Loiter (work)";
+    else if(wt == WORKTYPE_U6_SLEEP) wt_string = "Sleep";
+    else if(wt == WORKTYPE_U6_PLAY_LUTE) wt_string = "Play";
+    else if(wt == WORKTYPE_U6_BEG) wt_string = "Converse";
+    else if(wt == WORKTYPE_U6_COMBAT_FRONT) wt_string = "Combat Front";
+    else if(wt == 0x04) wt_string = "Combat Rear";
+    else if(wt == 0x05) wt_string = "Combat Flank";
+    else if(wt == 0x06) wt_string = "Combat Berserk";
+    else if(wt == 0x07) wt_string = "Combat Retreat";
+    else if(wt == 0x08) wt_string = "Combat Assault/Wild";
+    else if(wt == 0x09) wt_string = "Shy";
+    else if(wt == 0x0a) wt_string = "Like";
+    else if(wt == 0x0b) wt_string = "Unfriendly";
+    else if(wt == 0x0d) wt_string = "Tangle";
+    else if(wt == 0x0e) wt_string = "Immobile";
+    else if(wt == 0x92) wt_string = "Sit";
+    else if(wt == 0x93) wt_string = "Eat";
+    else if(wt == 0x94) wt_string = "Farm";
+    else if(wt == 0x98) wt_string = "Ring Bell";
+    else if(wt == 0x99) wt_string = "Brawl";
+    else if(wt == 0x9a) wt_string = "Mousing";
+    return(wt_string);
 }

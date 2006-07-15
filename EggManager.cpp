@@ -182,8 +182,6 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
                 for(i = 0; i < obj->qty; i++)
                  {
 				  if(obj->quality != 0) /* spawn temp actor we know it's an actor if it has a non-zero worktype. */
-                     // line actors up in a row
-//                     actor_manager->create_temp_actor(obj->obj_n,egg->x+i,egg->y,egg->z,obj->quality);
 				  {
 				  	// group new actors randomly if egg space already occupied
 				  	Actor *prev_actor = actor_manager->get_actor(egg->x, egg->y, egg->z);
@@ -202,11 +200,10 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 					{ /* spawn temp object */
 					 spawned_obj = new Obj();
 					 spawned_obj->obj_n = obj->obj_n;
-//					 spawned_obj->x = egg->x+i; // line objects up in a row
-					 spawned_obj->x = egg->x;
+					 //spawned_obj->x = egg->x+i; // line objects up in a row
+					 spawned_obj->x = egg->x; // regeants all grow at the same location
 					 spawned_obj->y = egg->y;
 					 spawned_obj->z = egg->z;
-//					 spawned_obj->qty = obj->qty;
 					 spawned_obj->qty = 1; // (it already spawns qty objects with the loop)
 					 spawned_obj->status |= OBJ_STATUS_TEMPORARY | OBJ_STATUS_OK_TO_TAKE;
 

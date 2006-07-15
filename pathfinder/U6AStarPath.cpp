@@ -5,14 +5,14 @@
 #include "UseCode.h"
 #include "U6AStarPath.h"
 
-/* Return the cost of moving one step from `c1' to `c2'. An optional first of
- * three steps can be passed to avoid bending paths.
+/* Return the cost of moving one step from `c1' to `c2'.
  * Blocking objects are checked for, and doors may be passable
  * Returns -1 if c2 is blocked.
  */
 sint32 U6AStarPath::step_cost(MapCoord &c1, MapCoord &c2)
 {
-    sint32 c = 1;
+    Game *game = Game::get_game();
+    sint32 c = 1; // final cost is not necessarily the actual move cost
 
     // FIXME: need an actor->check_move(loc2, loc1) to check one step only
     if(c2.distance(c1) > 1)
@@ -20,7 +20,6 @@ sint32 U6AStarPath::step_cost(MapCoord &c1, MapCoord &c2)
     if(!pf->check_loc(c2.x, c2.y, c2.z))
     {
         // check for door
-        Game *game = Game::get_game();
         Obj *block = game->get_obj_manager()->get_obj(c2.x, c2.y, c2.z);
         // HACK: check the neighboring tiles for the "real" door
         Obj *real = game->get_obj_manager()->get_obj(c2.x + 1, c2.y, c2.z);
@@ -30,7 +29,16 @@ sint32 U6AStarPath::step_cost(MapCoord &c1, MapCoord &c2)
             return(-1);
         c += 2;
     }
-    if(c1.x != c2.x && c1.y != c2.y) // prefer non-diagonal
-        ++c;
+    // add cost of *original* step
+//    c += game->get_game_map()->get_impedance(c1.x, c1.y, c1.z);
+
+    if(c2.x != c2.x && c1.y != c2.y) // prefer non-diagonal
+        c *= 2;
     return(c);
+}
+
+// Possible step cost is 1 to 16.
+uint32 U6AStarPath::path_cost_est(MapCoord &s, MapCoord &g)
+{
+    return(Path::path_cost_est(s, g));
 }

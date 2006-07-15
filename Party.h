@@ -123,6 +123,7 @@ class Party {
  void set_in_combat_mode(bool value);
  bool is_in_vehicle() { return in_vehicle; }
  bool is_in_combat_mode() { return in_combat_mode; }
+ Actor *get_slowest_actor(); // actor with lowest move count
 
  // Check specific actors
  uint8 get_actor_num(uint8 member_num); //get actor id_n from party_member num.

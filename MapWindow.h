@@ -154,6 +154,7 @@ class MapWindow: public GUI_Widget
  bool can_drop_obj(uint16 x, uint16 y, Actor *actor = NULL);
 
  void updateBlacking();
+ void updateAmbience();
  void update();
  void Display(bool full_redraw);
 

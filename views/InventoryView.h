@@ -40,6 +40,7 @@ class InventoryView : public View {
 
  DollWidget *doll_widget;
  InventoryWidget *inventory_widget;
+ GUI_Button *combat_button;
 
  enum invarea
  {

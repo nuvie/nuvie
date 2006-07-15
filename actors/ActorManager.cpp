@@ -28,7 +28,6 @@
 #include "U6Actor.h"
 #include "U6WorkTypes.h"
 #include "TileManager.h"
-#include "U6misc.h"
 #include "U6LList.h"
 #include "ActorManager.h"
 #include "NuvieIOFile.h"
@@ -69,11 +68,14 @@ void ActorManager::init()
 
  player_actor = 1;
 
- last_obj_blk_x = 0;
- last_obj_blk_y = 0;
- last_obj_blk_z = OBJ_TEMP_INIT;
+ last_obj_blk_x = cur_x = 0;
+ last_obj_blk_y = cur_y = 0;
+ last_obj_blk_z = cur_z = OBJ_TEMP_INIT;
+ cmp_actor_loc = 0;
 
  update = true;
+ wait_for_player = true;
+ combat_movement = false;
 
  return;
 }
@@ -255,6 +257,15 @@ bool ActorManager::load(NuvieIO *objlist)
     actors[i]->magic = objlist->read1();
    }
 
+ // Moves
+
+ objlist->seek(0x14f1);
+
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->moves = objlist->read1();
+   }
+
  objlist->seek(0x17f1); // Start of Actor flags
 
  for(i=0;i < 256; i++)
@@ -399,6 +410,15 @@ bool ActorManager::save(NuvieIO *objlist)
     objlist->write1(actors[i]->magic);
    }
 
+ // Moves
+
+ objlist->seek(0x14f1);
+
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->moves);
+   }
+
  objlist->seek(0x17f1); // Start of Actor flags
 
  for(i=0;i < 256; i++)
@@ -424,6 +444,22 @@ bool ActorManager::save(NuvieIO *objlist)
    }
 
  return true;
+}
+
+ActorList *ActorManager::get_actor_list()
+{
+    ActorList *_actors = new ActorList(256);
+    for(uint16 i=0;i<256;i++)
+        (*_actors)[i] = actors[i];
+    return _actors;
+}
+
+ActorList *ActorManager::get_active_actors()
+{
+    if(active_actors.empty())
+        update_active_actors(cur_x, cur_y, cur_z);
+    ActorList *_actors = new ActorList(active_actors);
+    return _actors;
 }
 
 Actor *ActorManager::get_actor(uint8 actor_num)
@@ -455,7 +491,7 @@ void ActorManager::set_player(Actor *a)
 }
 
 /* Returns an actor's "look-string," a general description of their occupation
- * or appearance.
+ * or appearance. (the tile description)
  */
 const char *ActorManager::look_actor(Actor *a, bool show_prefix)
 {
@@ -477,17 +513,34 @@ const char *ActorManager::look_actor(Actor *a, bool show_prefix)
     return tile_manager->lookAtTile(tile_num,0,show_prefix);
 }
 
-
+// Update area, and spawn or remove actors.
 void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
 {
- uint8 cur_hour;
- uint16 i;
+// uint8 cur_hour;
+// uint16 i;
 
- if(!update || (Game::get_game()->get_pause_flags() & PAUSE_WORLD))
+ if(!update)
   return;
+//printf("updateActors()\n");
+
+ cur_x = x; cur_y = y; cur_z = z;
+
+ uint16 cur_blk_x = x >> 5; // x / 32;
+ uint16 cur_blk_y = y >> 5; // y / 32;
 
  update_temp_actors(x,y,z); // Remove out of range temp actors
 
+ // Add new actors to active list, Remove out of range actors
+ if(active_actors.empty() || cur_blk_x != last_obj_blk_x || cur_blk_y != last_obj_blk_y || z != last_obj_blk_z)
+    update_active_actors(cur_x,cur_y,cur_z);
+ // The active actors list will remain empty if nobody can move, and time will
+ // be added in moveActors().
+
+ last_obj_blk_x = cur_blk_x; // moved from update_temp_actors() (SB-X)
+ last_obj_blk_y = cur_blk_y;
+ last_obj_blk_z = z;
+
+/*// moved to updateTime() (SB-X)
  cur_hour = clock->get_hour();
 
  if(cur_hour != game_hour)
@@ -497,12 +550,52 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
     for(i=0;i<256;i++)
       if(!actors[i]->in_party) // don't do scheduled activities while partying
         actors[i]->updateSchedule(cur_hour);
-   }
-
- for(i=0;i<256;i++)
-  actors[i]->update();
+   }*/
 
  return;
+}
+
+// After player/party moves, continue moving actors.
+void ActorManager::startActors()
+{
+//printf("startActors()\n");
+    // add player after they move (if they have any moves left)
+    if(combat_movement == true)
+        activate_actor(active_actors.begin(), actors[player_actor]);
+
+    wait_for_player = false;
+    Game::get_game()->pause_user();
+}
+
+// After all actors move, refresh move counts and add time.
+void ActorManager::updateTime()
+{
+    if(!update)
+        return;
+
+//printf("updateTime(): ");
+    for(int i=0; i<256; i++)
+        actors[i]->update_moves_left();
+    clock->inc_minute(); // **UPDATE TIME**
+//printf("%d:%02d\n",clock->get_hour(),clock->get_minute());
+    uint8 cur_hour = clock->get_hour();
+    if(cur_hour != game_hour) // moved from updateActors() (SB-X)
+    {
+        game_hour = cur_hour;
+
+        for(int i=0;i<256;i++)
+            if(!actors[i]->in_party) // don't do scheduled activities while partying
+                actors[i]->updateSchedule(cur_hour);
+    }
+
+}
+
+// Return control to player.
+void ActorManager::stopActors()
+{
+//printf("stopActors()\n\n\n\n\n");
+    Game::get_game()->unpause_user();
+    wait_for_player = true;
 }
 
 void ActorManager::twitchActors()
@@ -515,6 +608,128 @@ void ActorManager::twitchActors()
 
  for(i=0;i<256;i++)
   actors[i]->twitch();
+
+}
+
+// Update actors. StopActors() if no one can move.
+void ActorManager::moveActors()
+{
+    if(!update)
+        return;// nothing to do
+
+    while(!wait_for_player)
+    {
+        if(can_party_move())
+            stopActors(); // wait_for_player=true
+        else
+        {
+            if(!active_actors.empty())
+            {
+                Actor *actor = active_actors.front();
+                if(!update_actor(actor)) // actor==player: wait_for_player=true
+                    break;
+
+                // resort by moves after update
+                deactivate_actor(actor);
+                if(actor->id_n != player_actor)
+                    activate_actor(active_actors.begin(), actor);
+            // We don't re-add the player because they didn't update, or their update
+            // doesn't use up any moves, and only needs to be called once per turn.
+            // If stopActors() was called, the player will be re-added after moving.
+            }
+            else // just ran out of actors, or never found any
+            {
+                updateTime(); // refresh moves
+                update_active_actors(cur_x,cur_y,cur_z);
+                if(active_actors.empty())
+                {
+                    // make sure display updates when player isn't moving
+                    Game::get_game()->time_changed();
+                    break; // break instead of continue, so main loop can update world
+                }
+            }
+        }
+    }
+}
+
+inline void ActorManager::deactivate_actor(Actor *actor)
+{
+    ActorIterator a = active_actors.begin();
+    while(a != active_actors.end())
+        if((*a)->id_n == actor->id_n)
+        {
+            active_actors.erase(a);
+            return; // assume the actor is only listed once
+        }
+        else ++a;
+}
+
+// Update actor. Return false if actor can't move yet.
+inline bool ActorManager::update_actor(Actor *actor)
+{
+    sint8 moves_pre_update = actor->moves;
+    if(actor->id_n != player_actor)
+        if(actor->get_location().is_visible()
+           && (clock->get_ticks()-actor->update_time) < 66) // FIXME: Replace with animation.
+            return false; // Don't move again so soon, and block others.
+//printf("update_actor(%d) %d moves",actor->id_n,actor->moves);
+    actor->update(); // *UPDATE*
+    if(actor->id_n == player_actor)
+    {
+//printf(" -> player\n");
+        stopActors(); // Player's turn
+    }
+    else if(actor->moves == moves_pre_update && actor->moves > 0)
+        actor->set_moves_left(0); // Pass - use up moves (prevents endless loop)
+//else printf(" -> %d moves left\n",actor->moves);
+    return true;
+}
+
+inline ActorIterator ActorManager::activate_actor(const ActorIterator &start_at, Actor *actor)
+{
+    ActorIterator a = start_at;
+    if(actor->moves > 0)
+    {
+        struct Actor::cmp_move_fraction cmpfunc; // comparison function object
+        while(a != active_actors.end() && cmpfunc(*a, actor)) ++a;
+        a = active_actors.insert(a, actor);
+    }
+    return a;
+}
+
+/* Returns true if the party can move before the next actor in active_actors.
+ * (switching to player in combat is handled after actor update) */
+inline bool ActorManager::can_party_move()
+{
+    Party *party = Game::get_game()->get_party();
+    Actor *pActor = party->get_slowest_actor();
+    sint8 party_moves_left = pActor ? pActor->get_moves_left() : 0;
+
+    if(combat_movement || party_moves_left <= 0)
+        return false;
+    if(active_actors.empty())
+        return true;
+
+    Actor *actor = active_actors.front();
+    // pM/pD > M/D
+    if((actor->in_party
+        || party_moves_left*actor->dex > actor->moves*pActor->get_dexterity()))
+        return true; // Player's turn
+    return false;
+}
+
+// Sort actors by order of movement.
+void ActorManager::update_active_actors(uint16 x, uint16 y, uint8 z)
+{
+//printf("update_active_actors(): ");
+    ActorList *new_active_actors = get_actor_list(); // sorted by actor number
+    filter_active_actors(new_active_actors, x,y,z);
+//printf("%d can move\n",new_active_actors->size());
+    stable_sort(new_active_actors->begin(), new_active_actors->end(),
+                Actor::cmp_move_fraction()); // sorted by movement order
+
+    active_actors = *new_active_actors;
+    delete new_active_actors;
 }
 
 bool ActorManager::loadActorSchedules()
@@ -578,133 +793,6 @@ bool ActorManager::loadActorSchedules()
  free(sched_offsets);
 
  return true;
-}
-
-
-/* Print Actor data to stdout.
- */
-void ActorManager::print_actor(Actor *actor)
-{
-    printf("\n");
-    printf("%s at %x, %x, %x\n", look_actor(actor), actor->x, actor->y, actor->z);
-    printf("id_n: %d\n", actor->id_n);
-
-    printf("obj_n: %03d    frame_n: %d\n", actor->obj_n, actor->frame_n);
-    printf("base_obj_n: %03d    old_frame_n: %d\n", actor->base_obj_n, actor->old_frame_n);
-
-    uint8 direction = actor->direction;
-    printf("direction: %d (%s)\n", direction, (direction==NUVIE_DIR_N)?"north":
-                                              (direction==NUVIE_DIR_E)?"east":
-                                              (direction==NUVIE_DIR_S)?"south":
-                                              (direction==NUVIE_DIR_W)?"west":"???");
-    printf("walk_frame: %d\n", actor->walk_frame);
-
-    printf("can_move: %s\n", actor->can_move ? "true" : "false");
-//    printf("alive: %s\n", actor->alive ? "true" : "false");
-    printf("in_party: %s\n", actor->in_party ? "true" : "false");
-    printf("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
-//    printf("met_player: %s\n", actor->met_player ? "true" : "false");
-    printf("is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
-
-    printf("moves: %d\n", actor->moves);
-
-    const char *wt_string = get_worktype_string(actor->worktype);
-    if(!wt_string) wt_string = "???";
-    printf("worktype: 0x%02x/%03d (%s)\n", actor->worktype, actor->worktype, wt_string);
-
-    printf("NPC stats:\n");
-    printf(" level: %d    exp: %d    hp: %d / %d\n", actor->level, actor->exp,
-           actor->hp, actor->get_maxhp());
-    printf(" strength: %d    dex: %d    int: %d\n", actor->strength, actor->dex,
-           actor->intelligence);
-    printf(" magic: %d\n", actor->magic);
-
-    uint8 combat_mode = actor->combat_mode;
-    printf("combat_mode: %d (%s)\n", combat_mode,
-           (combat_mode == 0x02) ? "command"
-           : (combat_mode == 0x03) ? "front"
-           : (combat_mode == 0x04) ? "rear"
-           : (combat_mode == 0x05) ? "flank"
-           : (combat_mode == 0x06) ? "berserk"
-           : (combat_mode == 0x07) ? "retreat"
-           : (combat_mode == 0x08) ? "assault" : "???");
-
-    printf("NPC flags: ");
-    print_b(actor->flags);
-    printf("\n");
-
-    printf("Status flags: ");
-    print_b(actor->status_flags);
-    printf("\n");
-
-    uint32 inv = actor->inventory_count_objects(true);
-    if(inv)
-    {
-        printf("Inventory (+readied): %d objects\n", inv);
-        U6LList *inv_list = actor->get_inventory_list();
-        for(U6Link *link = inv_list->start(); link != NULL; link=link->next)
-        {
-            Obj *obj = (Obj *)link->data;
-            printf(" %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
-                   obj_manager->look_obj(obj), obj->obj_n, obj->frame_n, obj->quality,
-                   obj->qty, obj_manager->get_obj_weight(obj, false));
-        }
-        printf("(weight %f / %f)\n", actor->get_inventory_weight(),
-               actor->inventory_get_max_weight());
-    }
-    if(actor->sched && *actor->sched)
-    {
-        printf("Schedule:\n");
-        Schedule **s = actor->sched;
-        uint32 sp = 0;
-        do
-        {
-            wt_string = get_worktype_string(s[sp]->worktype);
-            if(!wt_string) wt_string = "???";
-            if(sp == actor->sched_pos && s[sp]->worktype == actor->worktype)
-                printf("*%d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)*\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
-            else
-                printf(" %d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
-        } while(s[++sp]);
-    }
-
-    if(!actor->surrounding_objects.empty())
-        printf("Actor has multiple tiles\n");
-    if(actor->pathfinder)
-        printf("Actor is on a path\n");
-    printf("\n");
-}
-
-
-/* Returns name of NPC worktype/activity (game specific) or NULL.
- */
-const char *ActorManager::get_worktype_string(uint32 wt)
-{
-    const char *wt_string = NULL;
-    if(wt == WORKTYPE_U6_IN_PARTY) wt_string = "in_party";
-    else if(wt == WORKTYPE_U6_ANIMAL_WANDER) wt_string = "a_wander";
-    else if(wt == WORKTYPE_U6_WALK_TO_LOCATION) wt_string = "walkto";
-    else if(wt == WORKTYPE_U6_FACE_NORTH) wt_string = "face_n";
-    else if(wt == WORKTYPE_U6_FACE_SOUTH) wt_string = "face_s";
-    else if(wt == WORKTYPE_U6_FACE_EAST) wt_string = "face_e";
-    else if(wt == WORKTYPE_U6_FACE_WEST) wt_string = "face_w";
-    else if(wt == WORKTYPE_U6_WALK_NORTH_SOUTH) wt_string = "v_walk";
-    else if(wt == WORKTYPE_U6_WALK_EAST_WEST) wt_string = "h_walk";
-    else if(wt == WORKTYPE_U6_WANDER_AROUND) wt_string = "wander";
-    else if(wt == WORKTYPE_U6_WORK) wt_string = "work_move";
-    else if(wt == WORKTYPE_U6_SLEEP) wt_string = "sleep";
-    else if(wt == WORKTYPE_U6_PLAY_LUTE) wt_string = "play_lute";
-    else if(wt == WORKTYPE_U6_BEG) wt_string = "beg";
-    else if(wt == 0x02) wt_string = "player";
-    else if(wt >= 0x03 && wt <= 0x08) wt_string = "combat";
-    else if(wt == 0x8e) wt_string = "waiter?";
-    else if(wt == 0x92) wt_string = "work_still";
-    else if(wt == 0x93) wt_string = "eat";
-    else if(wt == 0x94) wt_string = "farmer";
-    else if(wt == 0x98) wt_string = "bell";
-    else if(wt == 0x99) wt_string = "spar";
-    else if(wt == 0x9a) wt_string = "mousing";
-    return(wt_string);
 }
 
 void ActorManager::clear_actor(Actor *actor)
@@ -793,9 +881,12 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    actor->z = z;
    
    actor->temp_actor = true;
-   
+
    actor->init();
 
+   // spawn double-tiled actors, like cows, facing west (SB-X)
+   if(actor->get_tile_type() == ACTOR_DT)
+    actor->set_direction(-1, 0);
    actor->set_worktype(worktype);
    actor->show();
 
@@ -827,7 +918,7 @@ inline Actor *ActorManager::find_free_temp_actor()
 }
 
 //FIX? should this be in Player??
-
+// NO!
 void ActorManager::update_temp_actors(uint16 x, uint16 y, uint8 z)
 {
  uint16 cur_blk_x, cur_blk_y;
@@ -838,7 +929,7 @@ void ActorManager::update_temp_actors(uint16 x, uint16 y, uint8 z)
     if(last_obj_blk_z != ACTOR_TEMP_INIT) //don't clean actors on startup.
       clean_temp_actors_from_level(last_obj_blk_z);
 
-    last_obj_blk_z = z;
+//    last_obj_blk_z = z;
 
     return;
    }
@@ -848,8 +939,8 @@ void ActorManager::update_temp_actors(uint16 x, uint16 y, uint8 z)
 
  if(cur_blk_x != last_obj_blk_x || cur_blk_y != last_obj_blk_y)
    {
-    last_obj_blk_x = cur_blk_x;
-    last_obj_blk_y = cur_blk_y;
+//    last_obj_blk_x = cur_blk_x;
+//    last_obj_blk_y = cur_blk_y;
 
     clean_temp_actors_from_area(x,y);
    }
@@ -908,13 +999,12 @@ inline void ActorManager::clean_temp_actor(Actor *actor)
 bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
 {
     // maximum number of tries
-    uint32 toss_max = MAX(xrange, yrange) * MIN(xrange, yrange) * 2;
+    const uint32 toss_max = MAX(xrange, yrange) * MIN(xrange, yrange) * 2;
+    uint32 t = 0;
     LineTestResult lt;
-    if(toss_max == 0)
-        return(false);
     if(xrange > 0) --xrange; // range includes the starting location
     if(yrange > 0) --yrange;
-    while(toss_max--)
+    while(t++ < toss_max) // TRY RANDOM LOCATION
     {
         sint16 x = (actor->x-xrange) + (NUVIE_RAND() % ((actor->x+xrange) - (actor->x-xrange) + 1)),
                y = (actor->y-yrange) + (NUVIE_RAND() % ((actor->y+yrange) - (actor->y-yrange) + 1));
@@ -922,6 +1012,12 @@ bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
             if(!get_actor(x, y, actor->z))
                 return(actor->move(x, y, actor->z));
     }
+    // TRY ANY LOCATION
+    for(int y = actor->y-yrange; y < actor->y+yrange; y++)
+        for(int x = actor->x-xrange; x < actor->x+xrange; x++)
+            if(!map->lineTest(actor->x, actor->y, x, y, actor->z, LT_HitUnpassable, lt))
+                if(!get_actor(x, y, actor->z))
+                    return(actor->move(x, y, actor->z));
     return(false);
 }
 
@@ -932,4 +1028,67 @@ Actor *ActorManager::get_actor_holding_obj(Obj *obj)
 {
     assert(obj->is_in_inventory());
     return(get_actor(obj->x));
+}
+
+// Remove list actors who fall out of a certain range from a location.
+ActorList *ActorManager::filter_distance(ActorList *list, uint16 x, uint16 y, uint8 z, uint16 dist)
+{
+    ActorIterator i=list->begin();
+    while(i != list->end())
+    {
+        Actor *actor = *i;
+        MapCoord loc(x, y, z);
+        MapCoord actor_loc(actor->x, actor->y, actor->z);
+        if(loc.distance(actor_loc) > dist || loc.z != actor_loc.z)
+            i = list->erase(i);
+        else ++i;
+    }
+    return list;
+}
+
+// Remove actors who don't need to move in this turn. That includes anyone not
+// in a certain range of xyz, and actors that are already out of moves.
+inline ActorList *ActorManager::filter_active_actors(ActorList *list, uint16 x, uint16 y, uint8 z)
+{
+    const uint8 dist = 24;
+    ActorIterator i=list->begin();
+    while(i != list->end())
+    {
+        Actor *actor = *i;
+        MapCoord loc(x, y, z);
+        MapCoord actor_loc(actor->x, actor->y, actor->z);
+        if(!actor->in_party)
+        {
+            if((loc.distance(actor_loc) > dist || loc.z != actor_loc.z)
+               && actor->worktype != WORKTYPE_U6_WALK_TO_LOCATION)
+                actor->set_moves_left(0);
+            if(actor->is_sleeping() || actor->is_immobile() || !actor->alive)
+                actor->set_moves_left(0);
+        }
+        if((actor->in_party == true && combat_movement == false) || actor->moves <= 0)
+            i = list->erase(i);
+        else ++i;
+    }
+    return list;
+}
+
+// Sort list by distance to a location. Remove actors on different planes.
+ActorList *ActorManager::sort_nearest(ActorList *list, uint16 x, uint16 y, uint8 z)
+{
+    struct Actor::cmp_distance_to_loc cmp_func; // comparison function object
+    MapCoord loc(x, y, z);
+    cmp_func(loc); // set location in function object
+    sort(list->begin(), list->end(), cmp_func);
+
+    ActorIterator a = list->begin();
+    while(a != list->end())
+        if((*a)->z != z)
+            a = list->erase(a); // only return actors on the same map
+        else ++a;
+    return list;
+}
+
+void ActorManager::print_actor(Actor *actor)
+{
+    actor->print();
 }

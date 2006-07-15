@@ -50,6 +50,7 @@
 #include "Portrait.h"
 #include "Background.h"
 #include "CommandBar.h"
+#include "PartyView.h"
 
 #include "U6UseCode.h"
 #include "MDUseCode.h"
@@ -307,6 +308,14 @@ void Game::wait_for_interval()
 }
 
 
+void Game::time_changed()
+{
+    get_command_bar()->update(); // date & wind
+    get_view_manager()->get_party_view()->update(); // sky
+    get_map_window()->updateAmbience();
+}
+
+
 void Game::play()
 {
   bool game_play = true;
@@ -330,6 +339,7 @@ void Game::play()
      palette->rotatePalette();
      tile_manager->update();
      actor_manager->twitchActors();
+     actor_manager->moveActors(); // update/move actors for this turn
      map_window->update();
      //map_window->drawMap();
      converse->continue_script();

@@ -8,6 +8,7 @@ class U6AStarPath: public AStarPath
 {
 public:
     sint32 step_cost(MapCoord &c1, MapCoord &c2);
+    uint32 path_cost_est(MapCoord &s, MapCoord &g);
 };
 
 

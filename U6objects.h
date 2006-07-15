@@ -78,6 +78,7 @@
 #define OBJ_U6_SNAKE_AMULET         75
 #define OBJ_U6_AMULET_OF_SUBMISSION 76
 
+#define OBJ_U6_GEM                  77
 #define OBJ_U6_STAFF                78
 #define OBJ_U6_LIGHTNING_WAND       79
 #define OBJ_U6_FIRE_WAND            80

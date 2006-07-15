@@ -429,11 +429,10 @@ void MapWindow::update()
 
 }
 
-
-void MapWindow::updateBlacking()
+// moved from updateBlacking() so you don't have to update all blacking (SB-X)
+void MapWindow::updateAmbience()
 {
- generateTmpMap();
-      //Dusk starts at 19:00
+     //Dusk starts at 19:00
      //It's completely dark by 20:00
      //Dawn starts at 5:00
      //It's completely bright by 6:00
@@ -441,8 +440,8 @@ void MapWindow::updateBlacking()
 
      GameClock *clock = Game::get_game()->get_clock();
      int h = clock->get_hour();
-if(!screen)
- return;
+     if(!screen)
+         return;
 
      if(x_ray_view == true)
          screen->set_ambient( 0xFF );
@@ -457,8 +456,16 @@ if(!screen)
      else //Night
          screen->set_ambient( 0x00 );
 
- //Clear the opacity map
- screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
+     //Clear the opacity map
+     screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
+
+}
+
+void MapWindow::updateBlacking()
+{
+ generateTmpMap();
+
+ updateAmbience();
 
  m_ViewableObjects.clear();
  m_ViewableTiles.clear();

@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <cassert>
 #include "nuvieDefs.h"
 
 #include "Screen.h"
@@ -39,6 +39,8 @@
 #include "ViewManager.h"
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
+static const int first_combat_mode = 0x2;
+static const int last_combat_mode = 0x8;
 
 InventoryView::InventoryView(Configuration *cfg) : View(cfg),
    doll_widget(NULL), inventory_widget(NULL)
@@ -199,7 +201,6 @@ void InventoryView::add_command_icons(Screen *tmp_screen, void *view_manager)
  Tile *tile;
  SDL_Surface *button_image;
  SDL_Surface *button_image2;
- GUI_Button *combat_button;
  //FIX need to handle clicked button image, check image free on destruct.
 
  tile = tile_manager->get_tile(387); //left arrow icon
@@ -532,11 +533,8 @@ void InventoryView::select_objAtCursor()
             View::callback(BUTTON_CB, actor_button, view_manager);
         if(cursor_pos.x == 3) // right
             View::callback(BUTTON_CB, right_button, view_manager);
-        if(cursor_pos.x == 4) // combat mode
-        {
-//            View::callback(BUTTON_CB, combat_button, view_manager);
-            printf("Combat mode!\n");
-        }
+        if(cursor_pos.x == 4) // strategy
+            callback(BUTTON_CB, combat_button, view_manager);
         return;
     }
     else if(cursor_pos.area == INVAREA_TOP)
@@ -606,7 +604,23 @@ bool InventoryView::select_obj(Obj *obj)
 GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
     if(msg != INVSELECT_CB) // hit one of the command buttons
-        return(View::callback(msg, caller, data));
+    {
+        if(caller == combat_button)
+        {
+            Actor *actor = party->get_actor(cur_party_member);
+            uint8 combat_mode = actor->get_combat_mode();
+            combat_mode++;
+            if(combat_mode > last_combat_mode)
+                combat_mode = first_combat_mode;
+            actor->set_combat_mode(combat_mode);
+            update_display = true;
+bool HIDE_PLAYER_COMBAT_BUTTON = !(cur_party_member == 0);
+assert(HIDE_PLAYER_COMBAT_BUTTON); // FIXME: ;-)
+            return GUI_YUM;
+        }
+        else
+            return(View::callback(msg, caller, data));
+    }
 
     if(select_obj((Obj *)data))
         return(GUI_YUM);

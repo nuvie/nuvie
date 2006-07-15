@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <vector>
 #include <list>
 #include <string>
 
@@ -48,6 +48,8 @@ using std::string;
 #define ACTOR_FORCE_MOVE    1
 #define ACTOR_IGNORE_OTHERS 2
 #define ACTOR_OPEN_DOORS    4
+#define ACTOR_IGNORE_DANGER 8
+#define ACTOR_IGNORE_MOVES 0x10
 
 // push-flags (exclusive)
 #define ACTOR_PUSH_ANYWHERE 0
@@ -117,6 +119,13 @@ typedef struct {
 
 typedef uint8 ActorMoveFlags;
 
+typedef enum {
+ ACTOR_ST, // single tile
+ ACTOR_DT, // double tile
+ ACTOR_QT, // quad tile
+ ACTOR_MT  // multi tile
+} ActorTileType;
+
 class Actor
 {
  friend class ActorManager;
@@ -124,6 +133,28 @@ class Actor
  friend class Party;
  friend class Player;
  friend class U6UseCode;
+
+ public:
+ struct cmp_level {
+    bool operator()(Actor *a1, Actor *a2) const { return(a1->level > a2->level); } };
+
+ struct cmp_dex {
+    bool operator()(Actor *a1, Actor *a2) const { return(a1->dex > a2->dex); } };
+
+ struct cmp_moves {
+    bool operator()(Actor *a1, Actor *a2) const { return(a1->moves > a2->moves); } };
+
+ struct cmp_move_fraction {
+    bool operator()(Actor *a1, Actor *a2) const { assert(a1->dex>0); assert(a2->dex>0); return(a1->moves/a1->dex > a2->moves/a2->dex); } };
+
+ struct cmp_distance_to_loc {
+    MapCoord cmp_loc;
+    void operator()(const MapCoord &cmp_loc2) { cmp_loc = cmp_loc2; }
+    bool operator()(Actor *a1, Actor *a2) {
+        MapCoord loc1(a1->x, a1->y, a1->z);
+        MapCoord loc2(a2->x, a2->y, a2->z);
+        return(loc1.distance(cmp_loc) < loc2.distance(cmp_loc)); } };
+
  protected:
 
  uint8 id_n;
@@ -140,7 +171,8 @@ class Actor
 
  uint8 worktype;
  MapCoord work_location;
-
+ uint32 update_time; // time (in clock ticks) of last update() (for display)
+                     // FIXME: replace with animation
  uint16 obj_n;
  uint16 frame_n;
  uint16 base_obj_n;
@@ -158,6 +190,7 @@ class Actor
 
  bool in_party;
  bool visible_flag;
+// bool active; // "cached in"
 
  sint8 moves; // number of moves actor has this turn
  uint8 light; // level of light around actor (normally 0)
@@ -223,6 +256,7 @@ class Actor
  virtual uint16 get_downward_facing_tile_num();
  uint8 get_actor_num() { return(id_n); }
  uint8 get_flags() { return(flags); }
+ virtual ActorTileType get_tile_type() { return(ACTOR_ST); }
 
  uint8 get_strength() { return(strength); }
  uint8 get_dexterity() { return(dex); }
@@ -232,7 +266,6 @@ class Actor
  uint8 get_level() { return(level); }
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
- uint8 get_combat_mode() { return combat_mode; }
  sint8 get_moves_left() { return(moves); }
 
  void set_strength(uint8 val) { strength = val; }
@@ -246,10 +279,12 @@ class Actor
  void subtract_light(uint8 val);
  void heal() { set_hp(get_maxhp()); }
  void set_moves_left(sint8 val);
- void update_moves_left() { set_moves_left(get_moves_left() + get_dexterity()); }
+ virtual void update_moves_left() { set_moves_left(get_moves_left() + get_dexterity()); }
 
  uint8 get_worktype();
  virtual void set_worktype(uint8 new_worktype);
+ uint8 get_combat_mode() { return combat_mode; }
+ void set_combat_mode(uint8 new_mode)  { combat_mode = new_mode; }
 
  uint8 get_direction() { return(direction); }
  void set_direction(sint16 rel_x, sint16 rel_y);
@@ -274,7 +309,8 @@ class Actor
  virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
  bool check_moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags=0);
 
- virtual bool Actor::can_be_moved();
+ virtual bool can_be_moved();
+ virtual bool can_be_passed(Actor *other);
  virtual void update();
  void set_in_party(bool state);
  void set_pathfinder(ActorPathFinder *new_pf, Path *path_type=0);
@@ -299,6 +335,7 @@ class Actor
  void reduce_hp(uint8 amount);
  virtual void die();
  virtual bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y) { return true; }
+ void display_condition();
  
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_zero_qual = true);
@@ -337,6 +374,7 @@ class Actor
  Obj *make_obj();
  uint16 get_obj_n() { return(obj_n); }
  virtual void clear();
+
  protected:
 
  void loadSchedule(unsigned char *schedule_data, uint16 num);
@@ -348,6 +386,9 @@ class Actor
  void inventory_parse_readied_objects(); //this is used to initialise the readied_objects array on load.
  
  virtual const CombatType *get_hand_combat_type() { return NULL; }
+
+ virtual void print();
+ virtual const char *get_worktype_string(uint32 wt) { return NULL; }
 
 };
 

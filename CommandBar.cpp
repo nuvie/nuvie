@@ -102,12 +102,12 @@ GUI_status CommandBar::hit(uint8 num)
         case 7: event->newAction(USE_MODE); break;
         case 8: printf("Rest\n"); break;
         case 9:
-//            if(event->toggle_combat())
-//            {
+/*            if(event->toggle_combat())
+            {
                 if(combat_mode == false) set_combat_mode(true);
                 else                     set_combat_mode(false);
-//            }
-            printf("%s Combat!\n",combat_mode?"Begin":"Break off");
+            }*/
+            event->toggle_combat();
     }
     return(GUI_PASS);
 }

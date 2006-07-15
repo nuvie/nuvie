@@ -20,6 +20,7 @@
 #define MESG_ANIM_HIT        ANIM_CB_HIT
 #define MESG_ANIM_DONE       ANIM_CB_DONE
 #define MESG_EFFECT_COMPLETE EFFECT_CB_COMPLETE
+#define MESG_INPUT_READY     EVENT_CB_INPUT_READY
 
 #define TRANSPARENT_COLOR 0xFF /* transparent pixel color */
 
@@ -1092,7 +1093,7 @@ uint16 U6WhitePotionEffect::callback(uint16 msg, CallBack *caller, void *data)
             game->unpause_user();
             if(potion)
                 game->get_usecode()->message_obj(potion, MESG_EFFECT_COMPLETE, this);
-            state = 4;
+            state = 4; // finished
         }
     }
     return 0;
@@ -1105,3 +1106,34 @@ void U6WhitePotionEffect::xor_capture(uint8 mod)
     for(int p = 0; p < (capture->w*capture->h); p++)
         pixels[p] ^= mod;
 }
+
+#if 0
+PeerEffect::PeerEffect(Obj *callback_obj)
+                     : map_window(game->get_map_window()), gem(callback_obj),
+                       capture(0)
+{
+//    game->pause_user();
+//    game->pause_anims();
+
+    init_effect();
+}
+
+void PeerEffect::init_effect()
+{
+    capture = map_window->get_sdl_surface();
+    map_window->set_overlay_level(MAP_OVERLAY_DEFAULT);
+    map_window->set_overlay(capture);
+}
+
+/* The effect ends when this is called. (if input is correct) */
+uint16 PeerEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(msg == MESG_INPUT_READY)
+    {
+//            game->unpause_user();
+        if(gem)
+            game->get_usecode()->message_obj(gem, MESG_EFFECT_COMPLETE, this);
+    }
+    return 0;
+}
+#endif
