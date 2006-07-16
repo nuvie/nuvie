@@ -236,7 +236,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS)
                       && !actor->check_move(x + 0, y + rel_y, z, ACTOR_IGNORE_OTHERS))
         return;
-    if(actor->is_immobile())
+    if(actor->is_immobile() && actor->id_n != 0)
         return;
 
     if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/

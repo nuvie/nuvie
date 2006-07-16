@@ -1753,8 +1753,10 @@ void Event::solo_mode(uint32 party_member)
     {
         scroll->display_string("\nSolo mode\n\n");
         player->set_mapwindow_centered(true);
+        actor->set_worktype(0x02); // Player
         if(view_manager->get_inventory_view()->set_party_member(party_member))
             view_manager->set_inventory_mode(); // reset inventoryview
+        // FIXME: make inventory view show ONLY this actor
     }
     scroll->display_prompt();
 }

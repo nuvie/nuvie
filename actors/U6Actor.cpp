@@ -1471,8 +1471,8 @@ void U6Actor::die()
 // frozen by worktype or status
 bool U6Actor::is_immobile()
 {
-    return(worktype == WORKTYPE_U6_MOTIONLESS
-           || worktype == WORKTYPE_U6_IMMOBILE
+    return((worktype == WORKTYPE_U6_MOTIONLESS
+           || worktype == WORKTYPE_U6_IMMOBILE) && !in_party
            /*|| can_move == false*/); // can_move really means can_twitch/animate
 }
 
