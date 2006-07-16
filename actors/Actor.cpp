@@ -97,6 +97,9 @@ bool Actor::init()
 
 void Actor::init_from_obj(Obj *obj)
 {
+ x = obj->x;
+ y = obj->y;
+ z = obj->z;
 
  obj_n = obj->obj_n;
  frame_n = obj->frame_n;
