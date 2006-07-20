@@ -12,6 +12,7 @@
 #include "UseCode.h"
 #include "ViewManager.h"
 #include "MsgScroll.h"
+#include "ActorManager.h"
 #include "Effect.h"
 
 #include <cassert>
@@ -20,7 +21,8 @@
 #define MESG_ANIM_HIT        ANIM_CB_HIT
 #define MESG_ANIM_DONE       ANIM_CB_DONE
 #define MESG_EFFECT_COMPLETE EFFECT_CB_COMPLETE
-#define MESG_INPUT_READY     EVENT_CB_INPUT_READY
+//#define MESG_INPUT_READY     EVENT_CB_INPUT_READY
+#define MESG_INPUT_READY     MSGSCROLL_CB_TEXT_READY
 
 #define TRANSPARENT_COLOR 0xFF /* transparent pixel color */
 
@@ -1094,6 +1096,7 @@ uint16 U6WhitePotionEffect::callback(uint16 msg, CallBack *caller, void *data)
             if(potion)
                 game->get_usecode()->message_obj(potion, MESG_EFFECT_COMPLETE, this);
             state = 4; // finished
+            delete_self();
         }
     }
     return 0;
@@ -1107,33 +1110,108 @@ void U6WhitePotionEffect::xor_capture(uint8 mod)
         pixels[p] ^= mod;
 }
 
-#if 0
-PeerEffect::PeerEffect(Obj *callback_obj)
-                     : map_window(game->get_map_window()), gem(callback_obj),
-                       capture(0)
-{
-//    game->pause_user();
-//    game->pause_anims();
 
+PauseEffect::PauseEffect()
+{
+    game->pause_world();
+    // FIXME: need a way to detect any keyboard/mouse input
+    game->get_scroll()->set_input_mode(true, "\n", true);
+    game->get_scroll()->request_input(this, 0);
+}
+
+/* The effect ends when this is called. (if input is correct) */
+uint16 PauseEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(msg == MESG_INPUT_READY)
+    {
+        game->unpause_world();
+        delete_self();
+    }
+    return 0;
+}
+
+
+PeerEffect::PeerEffect(uint16 x, uint16 y, uint8 z, Obj *callback_obj)
+                     : map_window(game->get_map_window()), overlay(0),
+                       gem(callback_obj), area(x, y, z), tile_trans(0)
+{
     init_effect();
 }
 
 void PeerEffect::init_effect()
 {
-    capture = map_window->get_sdl_surface();
+    overlay = map_window->get_sdl_surface();
     map_window->set_overlay_level(MAP_OVERLAY_DEFAULT);
-    map_window->set_overlay(capture);
+    map_window->set_overlay(overlay);
+    assert(overlay->w%PEER_TILEW == 0); // overlay must be a multiple of tile size
+    SDL_FillRect(overlay, NULL, 0);
+    
+    peer();
 }
 
-/* The effect ends when this is called. (if input is correct) */
-uint16 PeerEffect::callback(uint16 msg, CallBack *caller, void *data)
+void PeerEffect::delete_self()
 {
-    if(msg == MESG_INPUT_READY)
+    map_window->set_overlay(NULL);
+    if(gem)
+        game->get_usecode()->message_obj(gem, MESG_EFFECT_COMPLETE, this);
+    else // FIXME: I don't want prompt display here, so it's also in UseCode,
+         // but it has to be here if no object was set. (until we have another
+         // way to tell caller effect is complete, and return to player)
     {
-//            game->unpause_user();
-        if(gem)
-            game->get_usecode()->message_obj(gem, MESG_EFFECT_COMPLETE, this);
+        game->get_scroll()->display_string("\n");
+        game->get_scroll()->display_prompt();
     }
-    return 0;
+    Effect::delete_self();
 }
-#endif
+
+void PeerEffect::peer()
+{
+    uint16 w = overlay->w, h = overlay->h;
+    // effect is limited to 48x48 area
+    if(overlay->w > 48*PEER_TILEW) w = 48*PEER_TILEW;
+    if(overlay->h > 48*PEER_TILEW) h = 48*PEER_TILEW;
+    for(int x = 0; x < w; x += PEER_TILEW)
+        for(int y = 0; y < h; y += PEER_TILEW)
+        {
+            uint16 wx = area.x+x/PEER_TILEW, wy = area.y+y/PEER_TILEW;
+            blit_tile(x,y, get_tilemap_type(wx,wy,area.z));
+            Actor *actor = game->get_actor_manager()->get_actor(wx,wy,area.z);
+            if(actor)
+                blit_actor(actor);
+        }
+}
+
+inline void PeerEffect::blit_tile(uint16 x, uint16 y, uint8 c)
+{
+    uint8 *pixels = (uint8*)overlay->pixels;
+    for(int j=0;j<PEER_TILEW && j<overlay->h;j++)
+        for(int i=0;i<PEER_TILEW && i<overlay->w;i++)
+        {
+            if(peer_tile[i*PEER_TILEW+j] != tile_trans)
+                pixels[overlay->w*(y+j)+(x+i)] = c;
+        }
+}
+
+inline void PeerEffect::blit_actor(Actor *actor)
+{
+    tile_trans = 1;
+    blit_tile((actor->get_location().x-area.x)*PEER_TILEW,
+              (actor->get_location().y-area.y)*PEER_TILEW, 0x0F);
+    tile_trans = 0;
+    if(game->get_player()->get_actor() == actor)
+        blit_tile((actor->get_location().x-area.x)*PEER_TILEW,
+                  (actor->get_location().y-area.y)*PEER_TILEW, 0x0F);
+}
+
+inline uint8 PeerEffect::get_tilemap_type(uint16 wx, uint16 wy, uint8 wz)
+{
+    Map *map = game->get_game_map();
+    // ignore objects (bridges and docks), and show coasts as land
+    if(map->is_water(wx, wy, wz, true) && !map->get_tile(wx, wy, wz, true)->passable)
+        return peer_tilemap[1];
+    if(!map->is_passable(wx, wy, wz))
+        return peer_tilemap[2];
+    if(map->is_damaging(wx, wy, wz))
+        return peer_tilemap[3];
+    return peer_tilemap[0]; // ground/passable
+}

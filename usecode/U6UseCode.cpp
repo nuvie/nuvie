@@ -1953,6 +1953,8 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
  if(obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
    {
     actor->clear();
+    if(actor == player_actor)
+        actor->set_worktype(0x02); // PLAYER
 
     actor_obj->obj_n = actor->base_obj_n; //revert to normal actor type
     actor_obj->frame_n = actor->old_frame_n;
@@ -2403,7 +2405,6 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     {
         if(obj->frame_n == 1)
         {
-// FIXME: remove lightglobe from actor
             extinguish_torch(obj);
             return(true);
         }
@@ -2411,83 +2412,94 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
         // light
         if(!obj->is_in_inventory() && obj->is_in_container())
             scroll->display_string("\nNot now!\n");
+        else if(!obj->is_in_inventory())
+        {
+            Obj *torch = obj_manager->get_obj_from_stack(obj, 1);
+            if(torch != obj)
+                obj_manager->add_obj(torch, true); // keep new one on map
+            toggle_frame(torch); // light
+            scroll->display_string("\nTorch is lit.\n");
+            return true;
+        }
         else
         {
             Obj *torch = obj;
+            Actor *actor = actor_manager->get_actor_holding_obj(obj);
             bool can_light_it = true; // only set FALSE on some error
 
             if(!obj->is_readied())
             {
                 torch = obj_manager->get_obj_from_stack(obj, 1);
-                if(torch != obj && obj->is_in_inventory()) // keep new one in inventory
-                    actor_manager->get_actor_holding_obj(torch)->inventory_add_object(torch);
+                toggle_frame(torch); // change frame here so object doesn't restack when added back to inventory
+                if(torch != obj) // keep new one in inventory
+                    actor->inventory_add_object(torch);
 
-                if(torch->is_in_inventory()) // ready it
-                {
-                    Actor *actor = actor_manager->get_actor_holding_obj(torch);
-                    can_light_it = actor->add_readied_object(torch);
-                    actor->add_light(TORCH_LIGHT_LEVEL); // add lightglobe to actor
-                }
-                else if(torch != obj) // keep new one on map
-                    can_light_it = obj_manager->add_obj(torch, true);
+                // ready it
+                actor = actor_manager->get_actor_holding_obj(torch);
+                can_light_it = actor->add_readied_object(torch);
             }
-            else // already being held; just light
-                actor_manager->get_actor_holding_obj(torch)->add_light(TORCH_LIGHT_LEVEL);
+            else toggle_frame(torch); // assume it's not stacked
 
             if(can_light_it)
             {
-                toggle_frame(torch);
+                actor->add_light(TORCH_LIGHT_LEVEL); // add lightglobe to actor
                 scroll->display_string("\nTorch is lit.\n");
             }
             else
+            {
+                toggle_frame(torch); // go back to unlit frame
+                if(torch->is_in_inventory())
+                {
+                    actor->inventory_remove_obj(torch);
+                    actor->inventory_add_object(torch); // restack here
+                }
                 scroll->display_string("\nNo free hand to hold the torch.\n");
+            }
         }
     }
     else if(ev == USE_EVENT_READY)
     {
         if(obj->is_readied() && obj->frame_n == 1) // remove
         {
-// FIXME: remove lightglobe from actor
             extinguish_torch(obj);
             return(false); // destroyed
         }
-        if(!obj->is_readied()) // equip (remove excess torches)
+        if(!obj->is_readied()) // equip (get one from the stack)
         {
             if(obj->qty > 1)
             {
                 Obj *torch = obj_manager->get_obj_from_stack(obj, obj->qty - 1);
                 if(torch != obj && obj->is_in_inventory()) // keep extras in inventory
+                {
+                    toggle_frame(torch); // hack to avoid restacking torch
                     actor_manager->get_actor_holding_obj(torch)->inventory_add_object(torch);
+                    toggle_frame(torch);
+                }
             }
         }
         return(true); // equip or remove to inventory
     }
     else if(ev == USE_EVENT_GET)
     {
-        if(obj->frame_n == 0) // unlit: may get
+        if(obj->frame_n == 0) // unlit: may get normally
             return(true);
-        if(items.actor_ref->add_readied_object(obj)) // FIXME: hopefully we can add after readying (need can_ready()?)
-        {
-            obj_manager->remove_obj(obj); // remove from map
-            items.actor_ref->inventory_add_object(obj);
-            items.actor_ref->add_light(TORCH_LIGHT_LEVEL); // add lightglobe to actor
-        }
-        else
-            scroll->display_string("\nNo free hand to hold the torch.\n");
+        toggle_frame(obj); // unlight
+        obj_manager->remove_obj(obj); // add to inventory and USE
+        items.actor_ref->inventory_add_object(obj);
+        scroll->display_string("\n");
+        torch(obj, USE_EVENT_USE);
         return(false); // ready or not, handled by usecode
     }
     else if(ev == USE_EVENT_DROP)
     {
         if(obj->frame_n == 0) // unlit: normal drop
             return(true);
-// FIXME: remove lightglobe from actor
         extinguish_torch(obj);
         return(false); // destroyed
     }
 
     return(true);
 }
-
 
 /* Torches disappear when extinguished.
  */
@@ -2497,8 +2509,7 @@ void U6UseCode::extinguish_torch(Obj *obj)
         actor_manager->get_actor_holding_obj(obj)->subtract_light(TORCH_LIGHT_LEVEL);
     toggle_frame(obj);
     scroll->display_string("\nA torch burned out.\n");
-// FIXME: deleting the object is crashing
-//    destroy_obj(obj);
+    destroy_obj(obj);
 }
 
 bool U6UseCode::process_effects(Obj *container_obj)
@@ -2531,4 +2542,27 @@ bool U6UseCode::process_effects(Obj *container_obj)
     }
 
  return true;
+}
+
+/* Use: Display Peer effect, showing a map of the area around the player.
+   Message: Delete 1 gem. */
+bool U6UseCode::use_peer_gem(Obj *obj, UseCodeEvent ev)
+{
+    if(ev == USE_EVENT_MESSAGE && *items.msg_ref == MESG_EFFECT_COMPLETE)
+    {
+        destroy_obj(obj, 1);
+        scroll->display_string("\n");
+        scroll->display_prompt();
+        return true;
+    }
+
+    if(ev != USE_EVENT_USE)
+        return true;
+
+    uint16 x, y;
+    uint8 z;
+    player->get_location(&x, &y, &z);
+    new PeerEffect(x-(x%8)-18,y-(y%8)-18,z, obj); // wrap to chunk boundary,
+                                                  // and center in 11x11 MapWindow
+    return false; // no prompt
 }

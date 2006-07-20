@@ -371,6 +371,7 @@ public:
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
+
 /* Briefly modify the mapwindow colors, disable map-blacking and player
  * movement for a few seconds, then enable both.
  */
@@ -393,39 +394,58 @@ public:
     /* Called by the timer between each effect stage. */
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
-#if 0
-/* Display an overview of the current area in the MapWindow. Any new actions
- * cancel the effect and return to the prompt.
- * (area is 4 superchunks around the player)
- */
-class PeerEffect : public Effect
+
+
+/* Pause the game, create an effect, and wait for user input to continue. */
+class PauseEffect: public Effect
 {
-    const struct { uint8 c0, uint8 c1 } tilemap[6] =
-    {
-        { 0x00, 0x02 }, // GROUND/PASSABLE
-        { 0x00, 0x01 }, // WATER
-        { 0x00, 0x07 }, // WALLS/BLOCKED
-        { 0x0F, 0x02 }, // ACTORS
-        { 0x0F, 0x0F }, // PLAYER
-        { 0x00, 0x04 }  // DANGER/DAMAGING
-    };
-    const uint8 tile_w = 4;
-    const uint8 tile[tile_w*tile_w] = { 0,1,0,1,
-                                        1,0,1,0,
-                                        0,1,0,1,
-                                        1,0,1,0 };
-    MapWindow *map_window;
-    SDL_Surface *capture; // this is what gets blitted
-    Obj *gem; // allows effect to call usecode and delete object
-
 public:
-    PeerEffect(Obj *callback_obj);
-    ~PeerEffect() { }
-    void init_effect();
-    void blit_tile(uint16 x, uint16 y, uint8 tilenum);
-
     /* Called by the Effect handler when input is available. */
     uint16 callback(uint16 msg, CallBack *caller, void *data);
+    virtual void delete_self() { Effect::delete_self(); }
+    PauseEffect();
+    ~PauseEffect() { }
 };
-#endif
+
+
+/* colors for PeerEffect */
+const uint8 peer_tilemap[4] =
+{
+    0x0A, // GROUND/PASSABLE
+    0x09, // WATER
+    0x07, // WALLS/BLOCKED
+    0x0C  // DANGER/DAMAGING
+};
+
+#define PEER_TILEW 4
+const uint8 peer_tile[PEER_TILEW*PEER_TILEW] =
+    { 0,1,0,1,
+      1,0,1,0,
+      0,1,0,1,
+      1,0,1,0 };
+
+/* Display an overview of the current area in the MapWindow. Any new actions
+ * cancel the effect and return to the prompt.
+ * (area is 48x48 tiles around the player, regardless of MapWindow size)
+ */
+class PeerEffect : public PauseEffect
+{
+    MapWindow *map_window;
+    SDL_Surface *overlay; // this is what gets blitted
+    Obj *gem; // allows effect to call usecode and delete object
+    MapCoord area; // area to display (top-left corner)
+    uint8 tile_trans; // peer_tile transparency mask (0 or 1)
+
+    inline void blit_tile(uint16 x, uint16 y, uint8 c);
+    inline void blit_actor(Actor *actor);
+    inline uint8 get_tilemap_type(uint16 wx, uint16 wy, uint8 wz);
+    void peer();
+
+public:
+    PeerEffect(uint16 x, uint16 y, uint8 z, Obj *callback_obj=0);
+    ~PeerEffect() { }
+    void init_effect();
+    void delete_self();
+};
+
 #endif /* __Effect_h__ */

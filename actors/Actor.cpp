@@ -704,21 +704,6 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container)
  }
  else
  {
-
- /*
-   if(obj_manager->is_stackable(obj)) // find similiar objects outside containers
-   {
-     Obj *stack_with = inventory_get_object(obj->obj_n, 0, NULL, false, false);
-     if(stack_with) // we stack onto the new object, and delete the old one
-     {
-      new_qty = obj_manager->get_obj_qty(obj) + obj_manager->get_obj_qty(stack_with);
-      obj_manager->set_obj_qty(obj, new_qty);
-      
-       inventory_remove_obj(stack_with);
-       delete_obj(stack_with);
-     }
-   }
-  */
    // only objects outside containers are marked in_inventory
    obj->status |= OBJ_STATUS_IN_INVENTORY;
    

@@ -1315,8 +1315,6 @@ void Event::alt_code(const char *cs)
 
         case 213:
             alt_code_infostring();
-            scroll->display_string("\n");
-            scroll->display_prompt();
             active_alt_code = 0;
             break;
 
@@ -1424,8 +1422,8 @@ void Event::alt_code_infostring()
  sprintf(buf, "%02d%02d%02d%04d%03x%03x%x", karma, month, day, year, x,y,z);
 
  scroll->display_string(buf);
-
- return;
+ new PeerEffect((x-x%8)-18,(y-y%8)-18,z); // wrap to chunk boundary, and center
+                                          // in 11x11 MapWindow
 }
 
 
@@ -2002,15 +2000,18 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     }
 
     // all object management is contained in the effect (use requested quantity)
-
     if(!usecode->has_dropcode(obj)
        || usecode->drop_obj(obj, actor, drop_loc.x, drop_loc.y, qty ? qty : obj->qty))
     {
         obj->status |= OBJ_STATUS_OK_TO_TAKE;
         new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
+        return true;
     }
-
-    return(true);
+    // handled by usecode
+    scroll->display_string("\n");
+    scroll->display_prompt();
+    endAction(); // because the DropEffect is never called to do this
+    return false;
 }
 
 
@@ -2343,6 +2344,6 @@ void Event::endAction(bool prompt)
     use_obj = NULL;
     selected_actor = NULL;
     drop_qty = 0;
-    Game::get_game()->set_mouse_pointer(0);
+//    Game::get_game()->set_mouse_pointer(0);
     map_window->updateBlacking();
 }

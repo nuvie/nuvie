@@ -1471,6 +1471,8 @@ void delete_obj(Obj *obj)
 }
 
 // add object to list, stacking with exisiting objects if possible
+// This is used for adding objects to inventory OR a container.
+// *It will stack onto the new object and delete the existing object!*
 bool ObjManager::list_add_obj(U6LList *llist, Obj *obj)
 {
  Obj *stack_with;
@@ -1487,7 +1489,8 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj)
      stack_with = (Obj *)link->data;
      link = link->next;
 
-     if(stack_with->obj_n == obj->obj_n)
+     if(stack_with->obj_n == obj->obj_n && stack_with->frame_n == obj->frame_n
+        && stack_with->quality == obj->quality)
        {
         new_qty = obj->qty + stack_with->qty;
         obj->qty = new_qty;

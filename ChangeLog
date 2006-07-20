@@ -1,3 +1,13 @@
+2006-07-20  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Added Peer gem effect, also viewable without gems by using ALT-213.
+	  -> Currently you can only end the effect with ESCAPE or ENTER keys.
+	* Fixed torches. They behave very much the way they did in U6, except for
+	  the light they cast. **DON'T USE DRAGNDROP!** Like other objects, there
+	  are problems when dragging to inventory, and this has yet to be fixed.
+	* Slow down actor movement in combat to more closely resembly U6.
+	* Fixed mouse cursor not updating over mapwindow after certain events.
+	* Now checking object frame and quality before adding objects to inventory.
+
 2006-07-15  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Combat mode is now available, and can be toggled with the B key or the
 	  button on the command bar. The COMMAND combat strategy works, but the

@@ -909,6 +909,12 @@ void U6Actor::wt_combat()
 //        Player combat modes are especially more involved. It should also call
 //        specific methods for different monster types. (that do various idle and attack actions)
 
+    if(NUVIE_RAND()%4 != 0) // only move 1/4th of the time; looks closer to U6
+    {
+        set_moves_left(moves-10);
+        return;
+    }
+
     // retreat
     if(worktype == WORKTYPE_U6_COMBAT_SHY
        || worktype == WORKTYPE_U6_COMBAT_RETREAT)

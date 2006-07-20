@@ -140,7 +140,7 @@ class U6UseCode: public UseCode, public CallBack
  bool sundial(Obj *obj, UseCodeEvent ev);
  bool torch(Obj *obj, UseCodeEvent ev);
  bool use_spellbook(Obj *obj, UseCodeEvent ev);
-
+ bool use_peer_gem(Obj *obj, UseCodeEvent ev);
  
  protected:
 // supplementary

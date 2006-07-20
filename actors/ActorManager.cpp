@@ -670,7 +670,7 @@ inline bool ActorManager::update_actor(Actor *actor)
     sint8 moves_pre_update = actor->moves;
     if(actor->id_n != player_actor)
         if(actor->get_location().is_visible()
-           && (clock->get_ticks()-actor->update_time) < 66) // FIXME: Replace with animation.
+           && (clock->get_ticks()-actor->update_time) < (combat_movement?250:66)) // FIXME: Replace with animation.
             return false; // Don't move again so soon, and block others.
 //printf("update_actor(%d) %d moves",actor->id_n,actor->moves);
     actor->update(); // *UPDATE*

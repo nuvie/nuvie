@@ -73,6 +73,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_MIRROR,    255,0,USE_EVENT_LOOK,&U6UseCode::look_mirror,OBJTYPE_NONE },
     { OBJ_U6_WELL,      255,0,USE_EVENT_USE,&U6UseCode::use_well,OBJTYPE_NONE },
     { OBJ_U6_POWDER_KEG,255,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_powder_keg,OBJTYPE_NONE },
+    { OBJ_U6_GEM,         0,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_peer_gem,OBJTYPE_NONE },
 
     { OBJ_U6_BEEHIVE,   255,0,USE_EVENT_USE,&U6UseCode::use_beehive,OBJTYPE_NONE },
 
