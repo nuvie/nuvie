@@ -71,7 +71,7 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  portrait_view = new PortraitView(config);
  portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);
 
- set_current_view((View *)inventory_view);
+ set_current_view((View *)party_view);
 
  return true;
 }
@@ -81,7 +81,7 @@ void ViewManager::reload()
  actor_view->set_party_member(0);
  inventory_view->set_party_member(0);
 
- set_current_view((View *)inventory_view);
+ set_current_view((View *)party_view);
 }
 
 bool ViewManager::set_current_view(View *view)

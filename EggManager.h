@@ -67,9 +67,7 @@ class EggManager
  std::list<Egg *> *get_egg_list() { return &egg_list; };
 
  protected:
-
- const char *get_alignment_str(uint8 quality);
-
+ 
 };
 
 #endif /* __EggManager_h__ */

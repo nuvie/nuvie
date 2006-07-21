@@ -99,7 +99,7 @@ class ActorManager
 
  bool is_temp_actor(Actor *actor);
  bool is_temp_actor(uint8 id_n);
- bool create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype, Actor **new_actor = NULL);
+ bool create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 alignment, uint8 worktype, Actor **new_actor = NULL);
  bool toss_actor(Actor *actor, uint16 xrange, uint16 yrange);
  void print_actor(Actor *actor);
 

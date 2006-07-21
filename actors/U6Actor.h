@@ -35,13 +35,6 @@
 
 #define REMOVE_SURROUNDING_OBJS true
 
-typedef enum {
- ALIGNMENT_GOOD,
- ALIGNMENT_NEUTRAL,
- ALIGNMENT_CHAOTIC,
- ALIGNMENT_EVIL
-} U6ActorAlignment;
-
 typedef struct {
  uint16 base_obj_n;
  uint8 frames_per_direction;
@@ -61,7 +54,7 @@ typedef struct {
  uint8 body_armor_class;
  uint8 attack_hands;
  uint8 hp;
- U6ActorAlignment alignment;
+ uint8 alignment;
 } U6ActorType;
 
 class U6Actor: public Actor
@@ -106,7 +99,7 @@ class U6Actor: public Actor
  bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
  ActorList *find_enemies();
  ActorList *find_players();
- ActorList *filter_alignment(ActorList *list, U6ActorAlignment align);
+ ActorList *filter_alignment(ActorList *list, uint8 align);
 
  bool is_immobile(); // frozen by worktype or status
  bool is_sleeping();

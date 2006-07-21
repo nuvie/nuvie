@@ -65,6 +65,14 @@ bool InventoryView::set_party_member(uint8 party_member)
    if(inventory_widget)
      inventory_widget->set_actor(party->get_actor(cur_party_member));
 
+   if(combat_button)
+   {
+     if(party_member == 0)
+       combat_button->Hide();
+     else
+       combat_button->Show();
+   }
+   
    return true;
   }
  return false;
@@ -497,6 +505,15 @@ void InventoryView::update_cursor()
     }
 }
 
+void InventoryView::set_show_cursor(bool state)
+{
+    
+    show_cursor = state;
+    update_display = true;
+    if(state == true)
+        Game::get_game()->get_view_manager()->set_inventory_mode();
+    
+}
 
 /* Returns pointer to object at cursor position, or NULL.
  */
@@ -607,15 +624,17 @@ GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
     {
         if(caller == combat_button)
         {
-            Actor *actor = party->get_actor(cur_party_member);
-            uint8 combat_mode = actor->get_combat_mode();
-            combat_mode++;
-            if(combat_mode > last_combat_mode)
-                combat_mode = first_combat_mode;
-            actor->set_combat_mode(combat_mode);
-            update_display = true;
-bool HIDE_PLAYER_COMBAT_BUTTON = !(cur_party_member == 0);
-assert(HIDE_PLAYER_COMBAT_BUTTON); // FIXME: ;-)
+            if(cur_party_member != 0) // You can't change combat modes for the avatar.
+            {
+                Actor *actor = party->get_actor(cur_party_member);
+                uint8 combat_mode = actor->get_combat_mode();
+                combat_mode++;
+                if(combat_mode > last_combat_mode)
+                    combat_mode = first_combat_mode;
+                actor->set_combat_mode(combat_mode);
+                update_display = true;
+            }
+
             return GUI_YUM;
         }
         else

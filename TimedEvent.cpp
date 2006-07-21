@@ -399,6 +399,8 @@ void TimedPartyMove::change_location()
         party->move(target->x, target->y, target->z);
         party->show(); // unhide everyone
 
+        Game::get_game()->get_view_manager()->update(); // we do this to update party view sun moon display if visible.
+
         if(mapwindow_capture) // could check this or moongate again
         {
             // start fade-to

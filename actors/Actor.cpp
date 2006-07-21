@@ -63,7 +63,9 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  worktype = 0;
  sched_pos = 0;
  update_time = 0;
-
+ 
+ alignment = ACTOR_ALIGNMENT_NEUTRAL;
+ 
  memset(readied_objects,0,sizeof(readied_objects));
  moves = 0;
  light = 0;
@@ -1526,6 +1528,8 @@ void Actor::print()
            actor->intelligence);
     printf(" magic: %d\n", actor->magic);
 
+    printf(" alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
+
     uint8 combat_mode = actor->combat_mode;
     wt_string = get_worktype_string(actor->combat_mode);
     if(!wt_string) wt_string = "???";
@@ -1575,4 +1579,20 @@ void Actor::print()
     if(actor->pathfinder)
         printf("Actor is on a path\n");
     printf("\n");
+}
+
+
+const char *get_actor_alignment_str(uint8 alignment)
+{
+ switch(alignment)
+ {
+  case ACTOR_ALIGNMENT_DEFAULT : return "default";
+  case ACTOR_ALIGNMENT_NEUTRAL : return "neutral";
+  case ACTOR_ALIGNMENT_EVIL : return "evil";
+  case ACTOR_ALIGNMENT_GOOD : return "good";
+  case ACTOR_ALIGNMENT_CHAOTIC : return "chaotic";
+  default : break;
+ }
+ 
+ return "unknown";
 }

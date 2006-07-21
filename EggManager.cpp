@@ -135,12 +135,10 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
           (*egg)->obj->status |= OBJ_STATUS_EGG_ACTIVE;
 
           hatch_probability = NUVIE_RAND()%100;
-          const char *align_str = get_alignment_str(quality);
           printf("Checking Egg (%x,%x,%x). Rand: %d Probability: %d%%",(*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z,hatch_probability,(*egg)->obj->qty);
-          if(align_str)
-             printf(" Align: %s", align_str);
-          else
-             printf(" Quality: %d", quality);
+
+          printf(" Align: %s", get_actor_alignment_str(quality % 10));
+
           if(quality < 10)      printf(" (always)");    // 0-9
           else if(quality < 20) printf(" (day)");       // 10-19
           else if(quality < 30) printf(" (night)");     // 20-29
@@ -165,7 +163,8 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
  uint16 i;
  Obj *obj, *spawned_obj;
  uint8 hour = Game::get_game()->get_clock()->get_hour();
-
+ uint8 alignment = egg->quality % 10;
+ 
     // check time that the egg will hach
     egg_hatch_time period = EGG_HATCH_TIME(egg->quality);
     if( period==EGG_HATCH_ALWAYS
@@ -186,7 +185,7 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 				  	// group new actors randomly if egg space already occupied
 				  	Actor *prev_actor = actor_manager->get_actor(egg->x, egg->y, egg->z);
 				  	Actor *new_actor = NULL;
-				  	if(actor_manager->create_temp_actor(obj->obj_n,egg->x,egg->y,egg->z,obj->quality,&new_actor) && prev_actor)
+				  	if(actor_manager->create_temp_actor(obj->obj_n,egg->x,egg->y,egg->z,alignment,obj->quality,&new_actor) && prev_actor)
 					{
 						// try to group actors of the same type first (FIXME: maybe this should use alignment/quality)
 						if(prev_actor->get_obj_n() != new_actor->get_obj_n() || !actor_manager->toss_actor(new_actor, 3, 2) || !actor_manager->toss_actor(new_actor, 2, 3))
@@ -215,23 +214,4 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
             }
     }
  return false;
-}
-
-
-/* Returns monster alignment from egg quality.
- */
-const char *EggManager::get_alignment_str(uint8 quality)
-{
-    quality %= 10;
-    if(quality == 0)
-        return("default");
-    else if(quality == 1)
-        return("neutral");
-    else if(quality == 2)
-        return("evil");
-    else if(quality == 3)
-        return("good");
-    else if(quality == 4)
-        return("chaotic");
-    return(NULL);
 }

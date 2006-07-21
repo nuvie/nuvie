@@ -71,7 +71,10 @@ bool U6Actor::init()
     intelligence = base_actor_type->intelligence;
     hp = base_actor_type->hp;
    }
-   
+
+ if(alignment == ACTOR_ALIGNMENT_DEFAULT)
+   set_alignment(base_actor_type->alignment);
+      
  if(actor_type->tile_type == ACTOR_QT && frame_n == 0) //set the two quad tile actors to correct frame number.
    frame_n = 3;
 
@@ -1489,13 +1492,13 @@ bool U6Actor::is_sleeping()
 }
 
 // Remove actors with a certain alignment from the list. Returns the same list.
-ActorList *U6Actor::filter_alignment(ActorList *list, U6ActorAlignment align)
+ActorList *U6Actor::filter_alignment(ActorList *list, uint8 align)
 {
     ActorIterator i=list->begin();
     while(i != list->end())
     {
         U6Actor *actor = (U6Actor*)(*i);
-        if(actor->actor_type->alignment == align)
+        if(actor->alignment == align)
             i = list->erase(i);
         else ++i;
     }
@@ -1511,16 +1514,16 @@ ActorList *U6Actor::find_enemies()
     const uint8 in_range = 5;
     ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
     ActorList *actors = actor_mgr->filter_distance(actor_mgr->get_actor_list(), x,y,z, in_range);
-    filter_alignment(actors, actor_type->alignment); // filter own alignment
-    if(actor_type->alignment != ALIGNMENT_CHAOTIC)
+    filter_alignment(actors, alignment); // filter own alignment
+    if(alignment != ACTOR_ALIGNMENT_CHAOTIC)
     {
-        if(actor_type->alignment == ALIGNMENT_NEUTRAL)
+        if(alignment == ACTOR_ALIGNMENT_NEUTRAL)
         {
-            filter_alignment(actors, ALIGNMENT_GOOD); // filter other friendlies
-            filter_alignment(actors, ALIGNMENT_EVIL);
+            filter_alignment(actors, ACTOR_ALIGNMENT_GOOD); // filter other friendlies
+            filter_alignment(actors, ACTOR_ALIGNMENT_EVIL);
         }
         else
-            filter_alignment(actors, ALIGNMENT_NEUTRAL);
+            filter_alignment(actors, ACTOR_ALIGNMENT_NEUTRAL);
     }
 
     // remove party members FIXME: find out why party members' alignments are conflicting

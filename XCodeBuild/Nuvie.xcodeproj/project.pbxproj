@@ -181,6 +181,7 @@
 		072B4A5C0620107A00CC3368 /* GUI_ScrollBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 072B4A5A0620107A00CC3368 /* GUI_ScrollBar.h */; };
 		072B4D200632953700CC3368 /* GUI_Scroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072B4D1E0632953700CC3368 /* GUI_Scroller.cpp */; };
 		072B4D210632953700CC3368 /* GUI_Scroller.h in Headers */ = {isa = PBXBuildFile; fileRef = 072B4D1F0632953700CC3368 /* GUI_Scroller.h */; };
+		0730E61C0A69D32C005AB87E /* ActorList.h in Headers */ = {isa = PBXBuildFile; fileRef = 0730E61B0A69D32C005AB87E /* ActorList.h */; };
 		0761766B05D100EB001B6450 /* Sample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0761766405D100EB001B6450 /* Sample.cpp */; };
 		0761766C05D100EB001B6450 /* Sample.h in Headers */ = {isa = PBXBuildFile; fileRef = 0761766505D100EB001B6450 /* Sample.h */; };
 		0761766D05D100EB001B6450 /* Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0761766605D100EB001B6450 /* Song.cpp */; };
@@ -230,32 +231,6 @@
 		07F10D2905C7D27A0029E1F1 /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2505C7D27A0029E1F1 /* FontManager.cpp */; };
 		07F10D2A05C7D27A0029E1F1 /* FontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2605C7D27A0029E1F1 /* FontManager.h */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildStyle section */
-		4A9504CCFFE6A4B311CA0CBA /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		4A9504CDFFE6A4B311CA0CBA /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		07BBB03B07D88B6700F2792A /* Add SDL to App */ = {
@@ -368,6 +343,7 @@
 		072BE3AF041AFE3900A8000A /* Screen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Screen.h; path = ../screen/Screen.h; sourceTree = SOURCE_ROOT; };
 		072BE3B2041AFE8A00A8000A /* GamePalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamePalette.h; path = ../screen/GamePalette.h; sourceTree = SOURCE_ROOT; };
 		072BE3B3041AFE8A00A8000A /* GamePalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamePalette.cpp; path = ../screen/GamePalette.cpp; sourceTree = SOURCE_ROOT; };
+		0730E61B0A69D32C005AB87E /* ActorList.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ActorList.h; path = ../actors/ActorList.h; sourceTree = SOURCE_ROOT; };
 		0740D535042AA97500A8000A /* MapWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MapWindow.cpp; path = ../MapWindow.cpp; sourceTree = SOURCE_ROOT; };
 		0740D536042AA97500A8000A /* MapWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MapWindow.h; path = ../MapWindow.h; sourceTree = SOURCE_ROOT; };
 		074B913804E4C51500A8000A /* GUI_area.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = GUI_area.cpp; path = ../GUI/GUI_area.cpp; sourceTree = SOURCE_ROOT; };
@@ -518,6 +494,7 @@
 			children = (
 				070B5A5904D3D7DC00A8000A /* Actor.h */,
 				070B5A5804D3D7DC00A8000A /* Actor.cpp */,
+				0730E61B0A69D32C005AB87E /* ActorList.h */,
 				070B5A6504D3DEDF00A8000A /* U6Actor.h */,
 				070B5A6404D3DEDF00A8000A /* U6Actor.cpp */,
 				07A5001E052AE88D00A8000A /* U6ActorTypes.h */,
@@ -1050,6 +1027,7 @@
 				0727DE1309F91D770004E639 /* SeekPath.h in Headers */,
 				0727DE1509F91D770004E639 /* U6AStarPath.h in Headers */,
 				0727DE1B09F91DCD0004E639 /* Magic.h in Headers */,
+				0730E61C0A69D32C005AB87E /* ActorList.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1070,41 +1048,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				CC = "";
-				CPLUSPLUS = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					/Users/eric/Library/Frameworks,
-				);
-				GCC_DEBUGGING_SYMBOLS = full;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_GENERATE_PROFILING_CODE = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					"$(HOME)/Library/Frameworks/SDL_mixer.framework/Headers",
-					/usr/local/include/SDL,
-					..,
-				);
-				INFOPLIST_FILE = "Info-Nuvie.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SDL,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = Nuvie;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wall";
-				WRAPPER_EXTENSION = app;
-				ZERO_LINK = NO;
-			};
 			dependencies = (
 			);
 			name = Nuvie;
@@ -1119,12 +1062,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 07CD0D5B088E817600E552A7 /* Build configuration list for PBXProject "Nuvie" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				4A9504CCFFE6A4B311CA0CBA /* Development */,
-				4A9504CDFFE6A4B311CA0CBA /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SDL App */;
 			projectDirPath = "";
@@ -1475,6 +1412,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_MODEL_TUNING = G5;
 			};
 			name = Development;

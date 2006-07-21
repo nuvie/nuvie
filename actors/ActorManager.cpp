@@ -155,7 +155,7 @@ bool ActorManager::load(NuvieIO *objlist)
    {
     actors[i]->status_flags = objlist->read1();
     actors[i]->alive = (bool)!(actors[i]->status_flags & ACTOR_STATUS_DEAD);
-    
+    actors[i]->alignment = ((actors[i]->status_flags & ACTOR_STATUS_ALIGNMENT_MASK) >> 5) + 1;
    }
 
  //old obj_n & frame_n values
@@ -864,7 +864,7 @@ bool ActorManager::is_temp_actor(uint8 id_n)
  return false;
 }
 
-bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 worktype, Actor **new_actor)
+bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 alignment, uint8 worktype, Actor **new_actor)
 {
  Actor *actor;
 
@@ -883,6 +883,9 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    actor->temp_actor = true;
 
    actor->init();
+
+   if(alignment != ACTOR_ALIGNMENT_DEFAULT)
+    actor->set_alignment(alignment);
 
    // spawn double-tiled actors, like cows, facing west (SB-X)
    if(actor->get_tile_type() == ACTOR_DT)

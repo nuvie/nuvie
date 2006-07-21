@@ -44,6 +44,13 @@ using std::string;
 #define ACTOR_FOOT   7
 #define ACTOR_NOT_READIABLE 8
 
+// actor alignment
+#define ACTOR_ALIGNMENT_DEFAULT 0
+#define ACTOR_ALIGNMENT_NEUTRAL 1
+#define ACTOR_ALIGNMENT_EVIL    2
+#define ACTOR_ALIGNMENT_GOOD    3 
+#define ACTOR_ALIGNMENT_CHAOTIC 4
+
 // move-flags
 #define ACTOR_FORCE_MOVE    1
 #define ACTOR_IGNORE_OTHERS 2
@@ -62,6 +69,7 @@ using std::string;
 #define ACTOR_STATUS_POISONED 0x8
 #define ACTOR_STATUS_DEAD 0x10
 #define ACTOR_STATUS_IN_PARTY 0xc0
+#define ACTOR_STATUS_ALIGNMENT_MASK 0x60
 
 #define ACTOR_NO_ERROR 0
 #define ACTOR_OUT_OF_MOVES 1
@@ -205,7 +213,8 @@ class Actor
  uint16 exp;
  uint8 magic;
  uint8 combat_mode;
-
+ uint8 alignment;
+ 
  uint8 flags;
 
  uint8 body_armor_class;
@@ -266,6 +275,7 @@ class Actor
  uint8 get_level() { return(level); }
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
+ uint8 get_alignment() { return(alignment); }
  sint8 get_moves_left() { return(moves); }
 
  void set_strength(uint8 val) { strength = val; }
@@ -275,6 +285,7 @@ class Actor
  void set_level(uint8 val) { level = val; }
  void set_exp(uint16 val) { exp = val; }
  void set_magic(uint8 val) { magic = val; }
+ void set_alignment(uint8 a) { alignment = a; }
  void add_light(uint8 val);
  void subtract_light(uint8 val);
  void heal() { set_hp(get_maxhp()); }
@@ -391,5 +402,7 @@ class Actor
  virtual const char *get_worktype_string(uint32 wt) { return NULL; }
 
 };
+
+const char *get_actor_alignment_str(uint8 alignment);
 
 #endif /* __Actor_h__ */

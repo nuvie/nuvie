@@ -27,10 +27,13 @@
 #include "View.h"
 
 #include "GUI_widget.h"
+#include "GUI_button.h"
 
 View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
+ left_button = NULL;
+ right_button = NULL;
 }
 
 View::~View()
@@ -54,9 +57,25 @@ bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManag
 
 bool View::set_party_member(uint8 party_member)
 {
- if(party_member < party->get_party_size())
+ uint16 size = party->get_party_size();
+ 
+ if(party_member < size)
    {
     cur_party_member = party_member;
+    
+    if(left_button && right_button)
+      {
+       if(party_member == 0)
+         left_button->Hide();
+        else
+         left_button->Show();
+
+       if(party_member == size - 1)
+         right_button->Hide();
+       else
+         right_button->Show();
+      }
+
     Redraw();
     return true;
    }

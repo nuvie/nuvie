@@ -1,3 +1,21 @@
+2006-07-22  Eric Fry <efry at users.sourceforge.net>
+	* Changes to actor alignment. Alignment is now loaded from objlist.
+	* Eggs spawn actor's with correct alignment now.
+	* Changed alignment datatype from U6ActorAlignment enum to uint8. This
+	  is so we can load and save alignment data from the objlist.
+	* Added ACTOR_ prefix to alignment defines. e.g. ACTOR_ALIGNMENT_GOOD.
+	* Added get_actor_alignment_str(uint8 alignment)
+	* Removed get_alignment_str(uint8 quality) from the EggManager class.
+	* Changes for XCode 2.3 build system.
+	* Added Actor::get_alignment() Actor::set_alignment()
+	* Fixed stats for dragon actor type.
+	* Added fish object to use_food()
+	* Made PartyView the default view when loading Nuvie.
+	* Fixed problems when tabbing between inventory view and mapwindow.
+	* Changed view left and right buttons to hide if at the first or last
+	  party member.
+	* Don't try to change combat modes for the avatar.
+	
 2006-07-20  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added Peer gem effect, also viewable without gems by using ALT-213.
 	  -> Currently you can only end the effect with ESCAPE or ENTER keys.
