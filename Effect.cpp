@@ -1170,15 +1170,63 @@ void PeerEffect::peer()
     // effect is limited to 48x48 area
     if(overlay->w > 48*PEER_TILEW) w = 48*PEER_TILEW;
     if(overlay->h > 48*PEER_TILEW) h = 48*PEER_TILEW;
+
+    MapCoord player_loc = game->get_player()->get_actor()->get_location();
+    uint16 cx = player_loc.x-area.x; // center of area
+    uint16 cy = player_loc.y-area.y;
+    uint8 *mapbuffer = new uint8[48*48]; // array of tile types/colors
+    memset(mapbuffer, 0x00, sizeof(uint8)*48*48); // fill with black
+    fill_buffer(mapbuffer, cx, cy);
+
     for(int x = 0; x < w; x += PEER_TILEW)
         for(int y = 0; y < h; y += PEER_TILEW)
         {
             uint16 wx = area.x+x/PEER_TILEW, wy = area.y+y/PEER_TILEW;
-            blit_tile(x,y, get_tilemap_type(wx,wy,area.z));
-            Actor *actor = game->get_actor_manager()->get_actor(wx,wy,area.z);
-            if(actor)
-                blit_actor(actor);
+            uint8 tile_type = mapbuffer[(wy-area.y)*48 + (wx-area.x)];
+            blit_tile(x,y, tile_type);
+            if(tile_type != 0x00)
+            {
+                Actor *actor = game->get_actor_manager()->get_actor(wx,wy,area.z);
+                if(actor)
+                    blit_actor(actor);
+            }
         }
+
+    delete [] mapbuffer;
+}
+
+void PeerEffect::fill_buffer(uint8 *mapbuffer, uint16 x, uint16 y)
+{
+    uint16 wx = area.x+x, wy = area.y+y;
+    uint8 *tile = &mapbuffer[y*48 + x];
+
+    if(*tile != 0x00)
+        return; // already filled
+
+    *tile = get_tilemap_type(wx, wy, area.z);
+
+    // stop at unpassable tiles
+    // FIXME: stop at Nothing/black tiles
+    if(*tile != peer_tilemap[2]
+       || game->get_game_map()->get_tile(wx, wy, area.z, true)->passable)
+    {
+        if(y > 0)
+        {
+            if(x > 0) fill_buffer(mapbuffer,x-1,y-1); // +-+-+
+            if(y > 0) fill_buffer(mapbuffer,x,  y-1); // |\|/|
+            if(x+1 < 48) fill_buffer(mapbuffer,x+1,y-1);
+        }
+
+        if(x > 0)     fill_buffer(mapbuffer,x-1,y);   // +-+-+
+        if(x+1 < 48)  fill_buffer(mapbuffer,x+1,y);
+
+        if(y+1 < 48)
+        {
+            if(x > 0) fill_buffer(mapbuffer,x-1,y+1); // |/|\|
+                      fill_buffer(mapbuffer,x,  y+1); // +-+-+
+            if(x+1 < 48) fill_buffer(mapbuffer,x+1,y+1);
+        }
+    }
 }
 
 inline void PeerEffect::blit_tile(uint16 x, uint16 y, uint8 c)

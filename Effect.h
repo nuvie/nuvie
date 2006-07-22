@@ -439,6 +439,7 @@ class PeerEffect : public PauseEffect
     inline void blit_tile(uint16 x, uint16 y, uint8 c);
     inline void blit_actor(Actor *actor);
     inline uint8 get_tilemap_type(uint16 wx, uint16 wy, uint8 wz);
+    void fill_buffer(uint8 *mapbuffer, uint16 x, uint16 y);
     void peer();
 
 public:
