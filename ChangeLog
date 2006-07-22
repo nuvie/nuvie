@@ -25,6 +25,7 @@
 	* Slow down actor movement in combat to more closely resembly U6.
 	* Fixed mouse cursor not updating over mapwindow after certain events.
 	* Now checking object frame and quality before adding objects to inventory.
+	* Fixed a vehicle crash, caused by vehicle location not being updated.
 
 2006-07-15  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Combat mode is now available, and can be toggled with the B key or the
