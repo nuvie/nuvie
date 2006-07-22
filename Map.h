@@ -154,6 +154,8 @@ class Map
  void insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 level);
 
  bool testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result);
+
+ inline void wrap_coords(uint16 x, uint16 y, uint8 z, uint16 &wx, uint16 &wy);
 };
 
 #endif /* __Map_h__ */

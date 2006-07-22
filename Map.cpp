@@ -77,7 +77,7 @@ Tile *Map::get_tile(uint16 x, uint16 y, uint8 level, bool original_tile)
    return NULL;
 
  ptr = get_map_data(level);
-
+ wrap_coords(x,y,level, x,y);
  if(original_tile)
     map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
  else
@@ -98,9 +98,10 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
 {
  uint8 *ptr;
  Tile *map_tile;
- uint8 obj_status;
 
- obj_status = obj_manager->is_passable(x, y, level);
+ wrap_coords(x,y,level, x,y);
+
+ uint8 obj_status = obj_manager->is_passable(x, y, level);
  if(obj_status == OBJ_NOT_PASSABLE)
   {
    return false;
@@ -121,6 +122,8 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
  uint8 *ptr;
  Tile *map_tile;
 
+ wrap_coords(x,y,level, x,y);
+
  ptr = get_map_data(level);
  map_tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
 
@@ -138,6 +141,8 @@ bool Map::is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects)
  uint8 *ptr;
  Tile *map_tile;
  Obj *obj;
+
+ wrap_coords(x,y,level, x,y);
 
  if(!ignore_objects)
    {
@@ -158,6 +163,7 @@ bool Map::is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects)
 bool Map::is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects)
 {
     uint8 *ptr=get_map_data(level);
+    wrap_coords(x,y,level, x,y);
     Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
 
     if(map_tile->damages)
@@ -174,6 +180,7 @@ bool Map::is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects)
 uint8 Map::get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects)
 {
     uint8 *ptr=get_map_data(level);
+    wrap_coords(x,y,level, x,y);
     Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
     uint8 impedance = 0;
 
@@ -190,6 +197,7 @@ uint8 Map::get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects)
 
 bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
 {
+ wrap_coords(x,y,level, x,y);
  //check for blocking Actor at location.
  if(actor_manager->get_actor(x,y,level) != NULL)
    return true;
@@ -201,6 +209,7 @@ bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
  */
 Actor *Map::get_actor(uint16 x, uint16 y, uint8 z)
 {
+    wrap_coords(x,y,z, x,y);
     return(actor_manager->get_actor(x,y,z));
 }
 
@@ -219,7 +228,7 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
  else
    ptr = dungeons[level - 1];
 
-
+    wrap_coords(x,y,level, x,y);
     obj = obj_manager->get_obj(x, y, level);
     if(obj != NULL && !(obj->status & OBJ_STATUS_INVISIBLE)) //only show visible objects.
      {
@@ -376,7 +385,7 @@ void Map::insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 lev
  */
 MapCoord MapCoord::abs_coords(sint16 dx, sint16 dy)
 {
-//    uint16 pitch = Map::get_width(z);
+//    uint16 pitch = Map::get_width(z); cannot call function without object
     uint16 pitch = (z == 0) ? 1024 : 256;
     dx += x;
     dy += y;
@@ -556,4 +565,18 @@ bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
 	}
 
 	return	false;
+}
+
+/* Wrap coordinates that have rolled over from the left edge of the map to the
+   right side of the map. */
+inline void Map::wrap_coords(uint16 x, uint16 y, uint8 z, uint16 &wx, uint16 &wy)
+{
+    const int coord_max = 65535; // hopefully uint16 is really 16 bits
+    uint16 map_width = get_width(z);
+    if(x >= map_width)
+        x = map_width - (coord_max-x);
+    if(y >= map_width)
+        y = map_width - (coord_max-y);
+    wx = x;
+    wy = y;
 }
