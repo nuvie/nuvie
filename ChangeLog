@@ -1,3 +1,11 @@
+2006-07-22  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Now filling unreachable areas with black on the Peer effect. Peering
+	  through windows isn't considered yet.
+	* Added some very basic Map wrapping, so Nuvie wont crash when the player
+	  is near the map's edge. It still crashes if one attempts to fly over the
+	  edge of the world in a balloon. Further improvements will require more
+	  extensive code changes.
+
 2006-07-22  Eric Fry <efry at users.sourceforge.net>
 	* Changes to actor alignment. Alignment is now loaded from objlist.
 	* Eggs spawn actor's with correct alignment now.
@@ -15,7 +23,7 @@
 	* Changed view left and right buttons to hide if at the first or last
 	  party member.
 	* Don't try to change combat modes for the avatar.
-	
+
 2006-07-20  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added Peer gem effect, also viewable without gems by using ALT-213.
 	  -> Currently you can only end the effect with ESCAPE or ENTER keys.
