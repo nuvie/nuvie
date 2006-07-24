@@ -1215,13 +1215,7 @@ printf("MapWindow::drag_perform_drop()\n");
 //        Obj *target_obj = obj_manager->get_obj(x,y, cur_level);
 //        Actor *target_actor = actor_manager->get_actor(x,y,cur_level);
 
-        if(obj->is_readied())
-        {
-            if(!event->unready(obj))
-                return;
-            updateBlacking();
-        }
-        else
+        if(!obj->is_readied())
         {
             assert(!obj->is_in_container()); // FIXME: need ObjManager::get_obj_container()
     // else if obj is in container: remove from container; put in inventory
