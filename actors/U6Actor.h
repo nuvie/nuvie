@@ -99,7 +99,6 @@ class U6Actor: public Actor
  bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
  ActorList *find_enemies();
  ActorList *find_players();
- ActorList *filter_alignment(ActorList *list, uint8 align);
 
  bool is_immobile(); // frozen by worktype or status
  bool is_sleeping();

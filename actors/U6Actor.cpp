@@ -1491,20 +1491,6 @@ bool U6Actor::is_sleeping()
     return(worktype == WORKTYPE_U6_SLEEP);
 }
 
-// Remove actors with a certain alignment from the list. Returns the same list.
-ActorList *U6Actor::filter_alignment(ActorList *list, uint8 align)
-{
-    ActorIterator i=list->begin();
-    while(i != list->end())
-    {
-        U6Actor *actor = (U6Actor*)(*i);
-        if(actor->alignment == align)
-            i = list->erase(i);
-        else ++i;
-    }
-    return list;
-}
-
 // GOOD->CHAOTIC,EVIL
 // NEUTRAL->CHAOTIC
 // EVIL->GOOD,CHAOTIC
@@ -1514,27 +1500,26 @@ ActorList *U6Actor::find_enemies()
     const uint8 in_range = 5;
     ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
     ActorList *actors = actor_mgr->filter_distance(actor_mgr->get_actor_list(), x,y,z, in_range);
-    filter_alignment(actors, alignment); // filter own alignment
+    actor_mgr->filter_alignment(actors, alignment); // filter own alignment
     if(alignment != ACTOR_ALIGNMENT_CHAOTIC)
     {
         if(alignment == ACTOR_ALIGNMENT_NEUTRAL)
         {
-            filter_alignment(actors, ACTOR_ALIGNMENT_GOOD); // filter other friendlies
-            filter_alignment(actors, ACTOR_ALIGNMENT_EVIL);
+            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_GOOD); // filter other friendlies
+            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_EVIL);
         }
         else
-            filter_alignment(actors, ACTOR_ALIGNMENT_NEUTRAL);
+            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_NEUTRAL);
     }
 
-    // remove party members FIXME: find out why party members' alignments are conflicting
-    if(in_party)
-    {
-        ActorIterator a = actors->begin();
-        while(a != actors->end())
-            if(static_cast<U6Actor*>(*a)->in_party)
-                a = actors->erase(a);
-            else ++a;
-    }
+    // remove party members and invisible actors FIXME: set party members to leader's alignment
+    ActorIterator a = actors->begin();
+    while(a != actors->end())
+        if(in_party && static_cast<U6Actor*>(*a)->in_party)
+            a = actors->erase(a);
+        else if((*a)->is_invisible())
+            a = actors->erase(a);
+        else ++a;
     if(actors->empty())
     {
         delete actors;
@@ -1553,7 +1538,8 @@ ActorList *U6Actor::find_players()
     ActorList *actors = new ActorList;
 
     for(uint32 p = 0; p < psize; p++)
-        actors->push_back(party->get_actor(p));
+        if(!party->get_actor(p)->is_invisible())
+            actors->push_back(party->get_actor(p));
     actors = actor_mgr->filter_distance(actors, x,y,z, in_range);
     if(actors->empty())
     {
