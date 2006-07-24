@@ -34,6 +34,7 @@
 #define FELUCCA_PHASE 1.1666666666666667
 
 extern GUI_status inventoryViewButtonCallback(void *data);
+extern GUI_status actorViewButtonCallback(void *data);
 
 PartyView::PartyView(Configuration *cfg) : View(cfg)
 {
@@ -64,7 +65,7 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
  x -= area.x;
  y -= area.y;
 
- if(x >= 8+16 || y < 19) // clicked right of actors or on skydisplay
+ if(y < 19) // clicked on skydisplay
    return GUI_PASS;
 
  uint8 party_size = party->get_party_size();
@@ -87,11 +88,18 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
  if(y > party_size * 16 + 19) // clicked below actors
    return GUI_YUM;
 
- if(x >= 8) // clicked an actor icon
-   {
-    set_party_member(((y - 19) / 16) + row_offset);
-    inventoryViewButtonCallback(view_manager);
-   }
+ if(x >= 8)
+  {
+   set_party_member(((y - 19) / 16) + row_offset);
+   if(x >= 8+20) // clicked an actor name
+     {
+      actorViewButtonCallback(view_manager);
+     }
+   else // clicked an actor icon
+     {
+      inventoryViewButtonCallback(view_manager);
+     }
+  }
  return GUI_YUM;
 }
 
