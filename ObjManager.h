@@ -179,7 +179,7 @@ class ObjManager
  Obj *get_obj_from_stack(Obj *obj, uint32 count);
  Obj *get_obj_container(Obj *obj);
 
- bool list_add_obj(U6LList *list, Obj *obj);
+ bool list_add_obj(U6LList *list, Obj *obj, bool stack_objects=true);
 
  const char *get_obj_name(Obj *obj);
  const char *get_obj_name(uint16 obj_n);

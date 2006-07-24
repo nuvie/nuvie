@@ -611,6 +611,8 @@ bool ObjManager::is_stackable(Obj *obj)
 
  if(obj == NULL)
    return false;
+ if(obj->is_readied()) // readied objects cannot be stacked --SB-X
+   return false;
 /*
  tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
@@ -845,8 +847,8 @@ Obj *ObjManager::copy_obj(Obj *obj)
  if(obj == NULL)
    return NULL;
 
- new_obj = new Obj;
-
+ new_obj = new Obj(*obj);
+/* changed to direct copy in case we add new members to Obj --SB-X
  new_obj->obj_n = obj->obj_n;
  new_obj->frame_n = obj->frame_n;
 
@@ -856,9 +858,10 @@ Obj *ObjManager::copy_obj(Obj *obj)
 
  new_obj->x = obj->x;
  new_obj->y = obj->y;
- new_obj->z = obj->z;
+ new_obj->z = obj->z;*/
 
  // should we copy container???
+ new_obj->container = 0;
 
  return new_obj;
 }
@@ -1391,14 +1394,28 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  if(obj->status != 0)
   {
    printf(" ( ");
-   if(obj->status & OBJ_STATUS_IN_CONTAINER)
-     printf("CONT ");
-   if(obj->status & OBJ_STATUS_IN_INVENTORY)
-     printf("INV ");
+   if(obj->is_readied())
+     printf("POS:Ready ");
+   else
+    {
+       if(obj->status & OBJ_STATUS_IN_CONTAINER)
+         printf("POS:Cont ");
+       else if(obj->status & OBJ_STATUS_IN_INVENTORY)
+         printf("POS:Inv ");
+    }
    if(obj->status & OBJ_STATUS_OK_TO_TAKE)
      printf("OK ");
    if(obj->status & OBJ_STATUS_TEMPORARY)
      printf("TEMP ");
+   if(obj->status & OBJ_STATUS_INVISIBLE)
+     printf("INVIS ");
+   if(obj->status & OBJ_STATUS_EGG_ACTIVE)
+    {
+     if(obj->obj_n < 256)
+      printf("MUTANT ");
+     else
+      printf("BROKEN ");
+    }
 
    printf(")");
   }
@@ -1473,7 +1490,7 @@ void delete_obj(Obj *obj)
 // add object to list, stacking with exisiting objects if possible
 // This is used for adding objects to inventory OR a container.
 // *It will stack onto the new object and delete the existing object!*
-bool ObjManager::list_add_obj(U6LList *llist, Obj *obj)
+bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects)
 {
  Obj *stack_with;
  uint16 new_qty;
@@ -1482,7 +1499,7 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj)
  if(!llist || !obj)
    return false;
    
- if(is_stackable(obj))
+ if(stack_objects && is_stackable(obj))
   {
    for(link=llist->start();link != NULL; )
     {
@@ -1490,7 +1507,7 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj)
      link = link->next;
 
      if(stack_with->obj_n == obj->obj_n && stack_with->frame_n == obj->frame_n
-        && stack_with->quality == obj->quality)
+        && stack_with->quality == obj->quality && is_stackable(stack_with))
        {
         new_qty = obj->qty + stack_with->qty;
         obj->qty = new_qty;
