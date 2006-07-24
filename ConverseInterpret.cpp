@@ -862,7 +862,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             if(v[1] <= 7)
             {
                 cnpc = converse->actors->get_actor(npc_num(v[0]));
-                if(cnpc && (cnpc->get_flags() & (1 << v[1])))
+                if(cnpc && (cnpc->get_talk_flags() & (1 << v[1])))
                     out = 1;
             }
             break;

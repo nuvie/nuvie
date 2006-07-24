@@ -66,8 +66,11 @@ using std::string;
 #define ACTOR_SHOW_BLOOD true
 #define ACTOR_FORCE_HIT true
 
-#define ACTOR_STATUS_POISONED 0x8
-#define ACTOR_STATUS_DEAD 0x10
+#define ACTOR_STATUS_PROTECTED 0x1
+#define ACTOR_STATUS_PARALYZED 0x2
+#define ACTOR_STATUS_ASLEEP    0x4
+#define ACTOR_STATUS_POISONED  0x8
+#define ACTOR_STATUS_DEAD      0x10
 #define ACTOR_STATUS_IN_PARTY 0xc0
 #define ACTOR_STATUS_ALIGNMENT_MASK 0x60
 
@@ -189,7 +192,9 @@ class Actor
  uint8 direction;
  uint8 walk_frame;
  
+ uint8 obj_flags;
  uint8 status_flags;
+ uint8 talk_flags;
  
  bool can_move;
  bool alive;
@@ -215,8 +220,6 @@ class Actor
  uint8 combat_mode;
  uint8 alignment;
  
- uint8 flags;
-
  uint8 body_armor_class;
  uint8 readied_armor_class;
  
@@ -249,9 +252,9 @@ class Actor
  bool is_at_position(Obj *obj);
  bool is_passable();
  //for lack of a better name:
- bool is_met() { return(flags & 0x01); }
+ bool is_met() { return(talk_flags & 0x01); }
  bool is_poisoned() { return(status_flags & ACTOR_STATUS_POISONED); }
- virtual void set_poisoned(bool poisoned) { return; }
+ bool is_invisible() { return(obj_flags & OBJ_STATUS_INVISIBLE); }
  virtual bool is_immobile(); // frozen by worktype or status
  virtual bool is_sleeping() { return(false); }
 
@@ -264,7 +267,7 @@ class Actor
  uint16 get_tile_num();
  virtual uint16 get_downward_facing_tile_num();
  uint8 get_actor_num() { return(id_n); }
- uint8 get_flags() { return(flags); }
+ uint8 get_talk_flags() { return(talk_flags); }
  virtual ActorTileType get_tile_type() { return(ACTOR_ST); }
 
  uint8 get_strength() { return(strength); }
@@ -291,6 +294,8 @@ class Actor
  void heal() { set_hp(get_maxhp()); }
  void set_moves_left(sint8 val);
  virtual void update_moves_left() { set_moves_left(get_moves_left() + get_dexterity()); }
+ virtual void set_poisoned(bool poisoned) { return; }
+ void set_invisible(bool invisible);
 
  uint8 get_worktype();
  virtual void set_worktype(uint8 new_worktype);
@@ -304,7 +309,7 @@ class Actor
  void face_location(uint16 lx, uint16 ly);
  void face_actor(Actor *a);
 
- void set_flags(uint8 newflags) { flags = newflags; }
+ void set_talk_flags(uint8 newflags) { talk_flags = newflags; }
  void set_flag(uint8 bitflag);
  void clear_flag(uint8 bitflag);
  void show() { visible_flag = true; }
@@ -356,7 +361,8 @@ class Actor
  Obj *inventory_get_readied_object(uint8 location);
  const CombatType *inventory_get_readied_object_combat_type(uint8 location);
  Obj *inventory_get_obj_container(Obj *obj, Obj *container = 0);
- bool inventory_add_object(Obj *obj, Obj *container = 0);
+ bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack=true);
+ bool inventory_add_object_nostack(Obj *obj, Obj *container = 0) { return inventory_add_object(obj, container, false); }
  bool inventory_remove_obj(Obj *obj, Obj *container = 0);
  Obj *inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality = 0);
  uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container = 0);
@@ -378,6 +384,7 @@ class Actor
 
  void remove_all_readied_objects();
  bool has_readied_objects();
+ sint8 count_readied_objects(sint32 obj_n = -1, sint16 frame_n = -1, sint16 quality = -1);
 
  virtual void twitch() { return; }
  bool push(Actor *pusher, uint8 where = ACTOR_PUSH_ANYWHERE);

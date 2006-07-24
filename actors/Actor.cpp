@@ -71,7 +71,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  light = 0;
 
  name ="";
- flags = 0;
+ talk_flags = 0;
  body_armor_class = 0;
  readied_armor_class = 0;
 }
@@ -105,6 +105,7 @@ void Actor::init_from_obj(Obj *obj)
 
  obj_n = obj->obj_n;
  frame_n = obj->frame_n;
+ obj_flags = obj->status;
 
  init();
  show();
@@ -694,30 +695,31 @@ const CombatType *Actor::inventory_get_readied_object_combat_type(uint8 location
 }
 
 
-bool Actor::inventory_add_object(Obj *obj, Obj *container)
+bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
 {
  U6LList *inventory = get_inventory_list(), *add_to = inventory;
 
+ // we have the item now so we don't consider it stealing if we get it at any time in the future.
+ obj->status |= OBJ_STATUS_OK_TO_TAKE;
  if(container) // assumes actor is holding the container
  {
    add_to = container->container;
    obj->status |= OBJ_STATUS_IN_CONTAINER;
    obj->x = container->objblk_n;
+
+   if(obj->status & OBJ_STATUS_IN_INVENTORY)
+     obj->status ^= OBJ_STATUS_IN_CONTAINER;
  }
  else
  {
    // only objects outside containers are marked in_inventory
    obj->status |= OBJ_STATUS_IN_INVENTORY;
-   
+   obj->x = id_n;
+
    if(obj->status & OBJ_STATUS_IN_CONTAINER)
      obj->status ^= OBJ_STATUS_IN_CONTAINER;
-   
-   // we have the item now so we don't consider it stealing if we get it at any time in the future.
-   obj->status |= OBJ_STATUS_OK_TO_TAKE;
-   obj->x = id_n;
  }
-
- return obj_manager->list_add_obj(add_to, obj);
+ return obj_manager->list_add_obj(add_to, obj, stack);
 }
 
 
@@ -969,6 +971,12 @@ void Actor::remove_readied_object(uint8 location)
       {
        readied_objects[ACTOR_ARM] = readied_objects[ACTOR_ARM_2];
        readied_objects[ACTOR_ARM_2] = NULL;
+      }
+
+    if(location == ACTOR_HAND && readied_objects[ACTOR_HAND_2] != NULL) //move contents of left hand to right hand.
+      {
+       readied_objects[ACTOR_HAND] = readied_objects[ACTOR_HAND_2];
+       readied_objects[ACTOR_HAND_2] = NULL;
       }
    }
 
@@ -1236,7 +1244,7 @@ void Actor::set_flag(uint8 bitflag)
 {
     if(bitflag > 7)
         return;
-    this->set_flags(this->get_flags() | (1 << bitflag));
+    talk_flags = talk_flags | (1 << bitflag);
 }
 
 
@@ -1246,7 +1254,7 @@ void Actor::clear_flag(uint8 bitflag)
 {
     if(bitflag > 7)
         return;
-    this->set_flags(this->get_flags() & ~(1 << bitflag));
+    talk_flags = talk_flags & ~(1 << bitflag);
 }
 
 Obj *Actor::make_obj()
@@ -1262,6 +1270,7 @@ Obj *Actor::make_obj()
  obj->obj_n = obj_n;
  obj->frame_n = frame_n;
  obj->quality = id_n;
+ obj->status = obj_flags;
 
  return obj;
 }
@@ -1535,19 +1544,23 @@ void Actor::print()
     if(!wt_string) wt_string = "???";
     printf("combat_mode: %d %s\n", combat_mode, wt_string);
 
-    printf("NPC flags: ");
-    print_b(actor->flags);
+    printf("Object flags: ");
+    print_b(actor->obj_flags);
     printf("\n");
 
-    printf("Status flags: ");
+    printf("NPC flags: ");
     print_b(actor->status_flags);
+    printf("\n");
+
+    printf("Talk flags: ");
+    print_b(actor->talk_flags);
     printf("\n");
 
     uint32 inv = actor->inventory_count_objects(true);
     if(inv)
     {
         printf("Inventory (+readied): %d objects\n", inv);
-        U6LList *inv_list = actor->get_inventory_list();
+/*        U6LList *inv_list = actor->get_inventory_list();
         for(U6Link *link = inv_list->start(); link != NULL; link=link->next)
         {
             Obj *obj = (Obj *)link->data;
@@ -1556,7 +1569,7 @@ void Actor::print()
                    obj->qty, obj_manager->get_obj_weight(obj, false));
         }
         printf("(weight %f / %f)\n", actor->get_inventory_weight(),
-               actor->inventory_get_max_weight());
+               actor->inventory_get_max_weight());*/
     }
     if(actor->sched && *actor->sched)
     {
@@ -1595,4 +1608,27 @@ const char *get_actor_alignment_str(uint8 alignment)
  }
  
  return "unknown";
+}
+
+void Actor::set_invisible(bool invisible)
+{
+    if(invisible)
+        obj_flags |= OBJ_STATUS_INVISIBLE;
+    else
+        obj_flags &= ~OBJ_STATUS_INVISIBLE;
+}
+
+sint8 Actor::count_readied_objects(sint32 obj_n, sint16 frame_n, sint16 quality)
+{
+    sint8 count = 0;
+    for(int o=0; o<ACTOR_MAX_READIED_OBJECTS; o++)
+    {
+        if(readied_objects[o] == 0) continue;
+        if(obj_n == -1
+           || (readied_objects[o]->obj->obj_n == obj_n
+               && (frame_n == -1 || frame_n == readied_objects[o]->obj->frame_n)
+               && (quality == -1 || quality == readied_objects[o]->obj->quality)))
+            ++count;
+    }
+    return count;
 }

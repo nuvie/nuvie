@@ -147,6 +147,15 @@ bool ActorManager::load(NuvieIO *objlist)
     actors[i]->direction = actors[i]->frame_n / 4;
    }
 
+ // Object flags.
+
+ objlist->seek(0x000);
+
+ for(i=0; i < 256; i++)
+   {
+    actors[i]->obj_flags = objlist->read1();
+   }
+ 
  // Actor status flags.
  
  objlist->seek(0x800);
@@ -257,20 +266,11 @@ bool ActorManager::load(NuvieIO *objlist)
     actors[i]->magic = objlist->read1();
    }
 
- // Moves
-
- objlist->seek(0x14f1);
+ objlist->seek(0x17f1); // Start of Talk flags
 
  for(i=0;i < 256; i++)
    {
-    actors[i]->moves = objlist->read1();
-   }
-
- objlist->seek(0x17f1); // Start of Actor flags
-
- for(i=0;i < 256; i++)
-   {
-    actors[i]->flags = objlist->read1();
+    actors[i]->talk_flags = objlist->read1();
    }
 
  loadActorSchedules();
@@ -280,6 +280,15 @@ bool ActorManager::load(NuvieIO *objlist)
     actors[i]->inventory_parse_readied_objects();
 
     actors[i]->init(); //let the actor object do some init
+   }
+
+ // Moves
+
+ objlist->seek(0x14f1);
+
+ for(i=0;i < 256; i++)
+   {
+    actors[i]->moves = objlist->read1();
    }
 
  // Current Worktype
@@ -419,11 +428,18 @@ bool ActorManager::save(NuvieIO *objlist)
     objlist->write1(actors[i]->moves);
    }
 
- objlist->seek(0x17f1); // Start of Actor flags
+ objlist->seek(0); // Start of Obj flags
 
  for(i=0;i < 256; i++)
    {
-    objlist->write1(actors[i]->flags);
+    objlist->write1(actors[i]->obj_flags);
+   }
+
+ objlist->seek(0x17f1); // Start of Talk flags
+
+ for(i=0;i < 256; i++)
+   {
+    objlist->write1(actors[i]->talk_flags);
    }
 
 /*
@@ -1094,4 +1110,18 @@ ActorList *ActorManager::sort_nearest(ActorList *list, uint16 x, uint16 y, uint8
 void ActorManager::print_actor(Actor *actor)
 {
     actor->print();
+}
+
+// Remove actors with a certain alignment from the list. Returns the same list.
+ActorList *ActorManager::filter_alignment(ActorList *list, uint8 align)
+{
+    ActorIterator i=list->begin();
+    while(i != list->end())
+    {
+        Actor *actor = *i;
+        if(actor->alignment == align)
+            i = list->erase(i);
+        else ++i;
+    }
+    return list;
 }

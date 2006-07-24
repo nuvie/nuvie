@@ -433,7 +433,7 @@ void Converse::show_portrait(uint8 n)
     const char *nameret = 0;
     if(!actor)
         return;
-    if((actor->get_flags() & 1) || player->get_party()->contains_actor(actor)
+    if((actor->is_met()) || player->get_party()->contains_actor(actor)
          || (n >= 188 && n <= 200)) // always known NPCs
         nameret = npc_name(n);
     else
