@@ -565,7 +565,6 @@ void MapWindow::Display(bool full_redraw)
 void MapWindow::drawActors()
 {
  uint16 i;
- Tile *tile;
  Actor *actor;
 
  for(i=0;i < 256;i++)
@@ -578,24 +577,46 @@ void MapWindow::drawActors()
          {
           if(actor->y >= cur_y && actor->y < cur_y + win_height)
             {
-             if(tmp_map_buf[(actor->y - cur_y + 1) * tmp_map_width + (actor->x - cur_x + 1)] != 0 &&
-                actor->is_visible() && actor->obj_n != 0)
+             if(tmp_map_buf[(actor->y - cur_y + 1) * tmp_map_width + (actor->x - cur_x + 1)] != 0)
                {
-                tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
-                //FIX need a function for multi-tile actors.
-                drawTile(tile,actor->x - cur_x, actor->y - cur_y, false);
-                drawTile(tile,actor->x - cur_x, actor->y - cur_y, true);
-                //screen->blit((actor->x - cur_x)*16,(actor->y - cur_y)*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
- 
-                // draw light coming from actor
-                if(actor->light > 0 && screen->updatingalphamap)
-                   screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light>5?5:actor->light);
-
+                drawActor(actor);
                }
             }
          }
       }
    }
+}
+
+//FIX need a function for multi-tile actors.
+inline void MapWindow::drawActor(Actor *actor)
+{
+    if(actor->is_visible()/* && actor->obj_n != 0*/
+       && (!(actor->obj_flags&OBJ_STATUS_INVISIBLE) || actor->in_party || actor == actor_manager->get_player()))
+    {
+        Tile *tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
+        Tile *rtile = new Tile(*tile);
+
+        if(actor->obj_flags&OBJ_STATUS_INVISIBLE)
+            for(int x = 0; x < 256; x++)
+                if(rtile->data[x] != 0x00)
+                    rtile->data[x] = 0xFF;
+                else
+                    rtile->data[x] = 0x0B;
+        else if(actor->status_flags&ACTOR_STATUS_PROTECTED) // actually this doesn't appear when using a protection ring
+            for(int x = 0; x < 256; x++)
+                if(rtile->data[x] == 0x00)
+                    rtile->data[x] = 0x0C;
+        // drawTile() wont read our tile data
+        drawTopTile(rtile, actor->x-cur_x,actor->y-cur_y, false);
+        drawTopTile(rtile, actor->x-cur_x,actor->y-cur_y, true);
+        delete rtile;
+ 
+        // draw light coming from actor
+        // FIXME: this isn't working when lighting mode is smooth
+        if(actor->light > 0 && screen->updatingalphamap)
+            screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light>5?5:actor->light);
+
+    }
 }
 
 void MapWindow::drawObjs()
@@ -1106,8 +1127,46 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
  return false;
 }
 
+/* Returns true if any object could be placed at world coordinates x,y.
+ * If actor is set a line-of-site check must pass. (z is always cur_level)
+ */
+bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
+{
+    LineTestResult lt;
+    MapCoord actor_loc;
+    if(hackmove)
+        return true;
+
+    if(actor)
+    {
+        actor_loc = actor->get_location();
+        // can't ever drop at the actor location
+        if(actor_loc.x == x && actor_loc.y == y)
+            return false;
+    }
+
+    if(tmpBufTileIsBlack(x - cur_x, y - cur_y))
+        return false;
+
+    if(!map->is_passable(x, y, cur_level)
+       || (actor && map->lineTest(actor_loc.x, actor_loc.y, x, y, cur_level, LT_HitUnpassable, lt)))
+    {
+        // We can place an object on a bench or table. Or on any other object if
+        // the object is passable and not on a boundary.
+        Obj *obj = lt.hitObj ? lt.hitObj : obj_manager->get_obj(x, y, cur_level);
+        Tile *obj_tile;
+        if(!obj) obj_tile = map->get_tile(x, y, cur_level);
+        else     obj_tile = obj_manager->get_obj_tile(obj->obj_n,obj->frame_n);
+        if(!(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
+            (obj_tile->passable && !map->is_boundary(obj->x, obj->y, cur_level))))
+            return false;
+    }
+    return true;
+}
+
 bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 {
+ printf("MapWindow::drag_accept_drop()\n");
  uint16 map_width;
 
  x -= area.x;
@@ -1118,44 +1177,17 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
  if(message == GUI_DRAG_OBJ)
    {
-/*
-    if(tmpBufTileIsBlack(x,y) && !hackmove)
-      {
-       printf("Cannot drop onto nothing!\n");
-       return false;
-      }
-*/
     map_width = map->get_width(cur_level);
-
     x = (cur_x + x) % map_width;
     y = (cur_y + y) % map_width;
-/*
-    Obj *block_obj = NULL; // blocking object
-    if(map->is_passable(x,y,cur_level) || hackmove)
-	{
-	  LineTestResult result;
-	// make sure the player can reach the drop point
-	  Actor* player = actor_manager->get_player();
-	  if (!map->lineTest(player->x, player->y, x, y, cur_level, LT_HitUnpassable, result) || hackmove)
-	  {
-		return true;
-	  }
-          else if(result.hitObj)
-		block_obj = result.hitObj;
-	}
-    else
-	block_obj = obj_manager->get_obj(x,y,cur_level);
 
-    if(block_obj)
-    {
-        // We can place an object on a bench or table. Or on any other object if
-        // the object is passable and not on a boundary.
-        Tile *obj_tile = obj_manager->get_obj_tile(block_obj->obj_n, block_obj->frame_n);
-        if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
-           (obj_tile->passable && !map->is_boundary(block_obj->x, block_obj->y, cur_level)) )
-            return true;
-    }
-*/
+    Obj *obj = static_cast<Obj*>(data);
+    if(!obj->is_readied() && obj->is_in_container())
+      {
+       printf("MapWindow: Not from a container!\n");
+       return false; // FIXME: need ObjManager::get_obj_container()
+      }
+
     if(can_drop_obj(x, y, actor_manager->get_player()))
       return true;
 
@@ -1168,45 +1200,46 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
 void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 {
- uint16 map_width;
- Obj *obj = NULL, *target_obj;
+printf("MapWindow::drag_perform_drop()\n");
+    Event *event = Game::get_game()->get_event();
+    uint16 map_width = map->get_width(cur_level);
 
- x -= area.x;
- y -= area.y;
+    x -= area.x;
+    y -= area.y;
 
- if(message == GUI_DRAG_OBJ)
-   {
-    map_width = map->get_width(cur_level);
+    if(message == GUI_DRAG_OBJ)
+    {
+        x = (cur_x + x / 16) % map_width;
+        y = (cur_y + y / 16) % map_width;
+        Obj *obj = (Obj *)data;
+//        Obj *target_obj = obj_manager->get_obj(x,y, cur_level);
+//        Actor *target_actor = actor_manager->get_actor(x,y,cur_level);
 
-    x = (cur_x + x / 16) % map_width;
-    y = (cur_y + y / 16) % map_width;
+        if(obj->is_readied())
+        {
+            if(!event->unready(obj))
+                return;
+            updateBlacking();
+        }
+        else
+        {
+            assert(!obj->is_in_container()); // FIXME: need ObjManager::get_obj_container()
+    // else if obj is in container: remove from container; put in inventory
+            if(!obj->is_in_inventory())
+                obj_manager->remove_obj(obj);
+        }
 
-    //printf("Drop (%x,%x,%x)\n", x, y, cur_level);
-    obj = (Obj *)data;
-    target_obj = obj_manager->get_obj(x,y, cur_level);
-    if(obj && target_obj && target_obj->container) //drop object into a container. FIX for locked chests.
-      {
-       target_obj->container->addAtPos(0,obj);
-      }
-    else //drop object onto map
-      {
-//       obj->x = x;
-//       obj->y = y;
-//       obj->z = cur_level;
+        // drop on ground or into a container
+        event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
+        event->drop_select(obj, obj->qty);
+        event->drop(x, y);
 
-//       obj_manager->add_obj(obj,true);
-         Event *event = Game::get_game()->get_event();
-// if(dropping)
-         event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
-         event->drop_select(obj, obj->qty);
-         event->drop(x, y);
-// else move
-      }
-   }
-
- updateBlacking();
-
- return;
+        // FIXME: need to re-add dropping onto a container or actor
+//        if(target_obj && target_obj->container)
+//            obj_manager->list_add_obj(target_obj->container, obj);
+        // FIXME: a method to prevent exploiting this would be to subtract the
+        //        number of moves that are necessary to reach the object
+    }
 }
 
 
@@ -1375,8 +1408,9 @@ void	MapWindow::drag_drop_success (int x, int y, int message, void *data)
 	//printf ("MapWindow::drag_drop_success\n");
 	dragging = false;
 
-	if (selected_obj)
-		obj_manager->remove_obj (selected_obj);
+// handled by drop target
+//	if (selected_obj)
+//		obj_manager->remove_obj (selected_obj);
 
 	selected_obj = NULL;
 	Redraw();
@@ -1579,39 +1613,6 @@ GUI_status MapWindow::MouseLeave(Uint8 state)
     // NOTE: Don't clear selected_obj here! It's used to remove the object after
     // dragging.
     return(GUI_PASS);
-}
-
-
-/* Returns true if any object could be placed at world coordinates x,y.
- * If actor is set a line-of-site check must pass. (z is always cur_level)
- */
-bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
-{
-    LineTestResult lt;
-    MapCoord actor_loc;
-    if(actor)
-    {
-        actor_loc = actor->get_location();
-        // can't ever drop at the actor location
-        if(actor_loc.x == x && actor_loc.y == y)
-            return(false);
-    }
-
-    if(tmpBufTileIsBlack(x - cur_x, y - cur_y)
-       || !map->is_passable(x, y, cur_level)
-       || (actor && map->lineTest(actor_loc.x, actor_loc.y, x, y, cur_level, LT_HitUnpassable, lt)))
-    {
-        // We can place an object on a bench or table. Or on any other object if
-        // the object is passable and not on a boundary.
-        Obj *obj = lt.hitObj ? lt.hitObj : obj_manager->get_obj(x, y, cur_level);
-        if(!obj) // (but if unpassable isn't an object, nothing we can do)
-            return(false);
-        Tile *obj_tile = obj_manager->get_obj_tile(obj->obj_n, obj->frame_n);
-        if(!(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
-            (obj_tile->passable && !map->is_boundary(obj->x, obj->y, cur_level))))
-            return(false);
-    }
-    return(true);
 }
 
 unsigned char *MapWindow::make_thumbnail()
