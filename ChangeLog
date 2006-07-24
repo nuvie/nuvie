@@ -1,3 +1,29 @@
+2006-07-24  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Finally fixed DragNDrop between inventory and the map, so that it now
+	  calls usecode and you *can* move torches with the mouse again! Dropping
+	  into containers doesn't work yet.
+	* Added object status flags to Actor, which are saved to and loaded from
+	  objlist, and used in init_from_obj() and make_obj(). Renamed Actor::flags
+	  to talk_flags.
+	* Actors are now drawn with an effect if they are protected or invisible.
+	* Added invisibility check when looking for nearby enemies or party members.
+	* New function Actor::count_readied_objects().
+	* New usecode: Amulet of Submission, Black Potion, and Protect/Regen/Invis
+	  Rings.
+	* Move rings on hand2 to hand1 if hand1 is empty.
+	* Fixed actors not being properly switched to when selecting their icon in
+	  the party roster. Also added ability to switch to ActorView (Stats) when
+	  selecting a person's name in the party roster.
+	* Fixed another lingering bug in Torch usecode, where newly lit torches
+	  were being stacked with readied lit torches.
+	* Fixed alt-213 infostring. It shows the time instead of the date.
+	* Moved U6Actor::filter_alignment() to ActorManager.
+	* No longer allowing readied objects to be stacked in
+	  ObjManager::is_stackable(). You must check it on both objects in stack.
+	* Stacking objects when in actor inventory is now optional.
+	* Setting WAIT_MODE to disallow new actions while dragging. I'm not sure
+	  if this is the correct location to set this.
+
 2006-07-22  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Now filling unreachable areas with black on the Peer effect. Peering
 	  through windows isn't considered yet.
