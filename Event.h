@@ -82,7 +82,6 @@ class Event : public GUI_CallBack
  MsgScroll *scroll;
  GameClock *clock;
  Player *player;
- EventMode mode;
  Book *book;
  Converse *converse;
  ViewManager *view_manager;
@@ -90,6 +89,7 @@ class Event : public GUI_CallBack
  Magic *magic;
 
  SDL_Event event;
+ EventMode mode, last_mode;
  int ts; //timestamp for TimeLeft() method.
  char alt_code_str[4]; // string representation of alt-code input
  uint8 alt_code_len; // how many characters have been input for alt-code
@@ -114,7 +114,7 @@ class Event : public GUI_CallBack
  TimeQueue *get_time_queue() { return(time_queue); }
  TimeQueue *get_game_time_queue() { return(game_time_queue); }
  EventMode get_mode() { return(mode); }
- void set_mode(EventMode new_mode) { mode = new_mode; }
+ void set_mode(EventMode new_mode);
 
  bool update();
  bool handleEvent(const SDL_Event *event);

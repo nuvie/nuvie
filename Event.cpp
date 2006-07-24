@@ -97,6 +97,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  usecode = uc;
 
  mode = MOVE_MODE;
+ last_mode = MOVE_MODE;
 
  book = new Book(config);
  if(book->init() == false)
@@ -931,7 +932,7 @@ bool Event::look(Obj *obj)
                 snprintf(weight_string,31,". It weighs %0.1f stones.",weight);
             scroll->display_string(weight_string);
         }
-        scroll->display_string("\n\n");
+        scroll->display_string("\n");
         return(true);
     }
 }
@@ -1402,26 +1403,26 @@ bool Event::alt_code_teleport(const char *location_string)
  return true;
 }
 
+// changed to show time instead of date (SB-X)
 void Event::alt_code_infostring()
 {
- char buf[18]; // kkmmddyyyyxxxyyyz
+ char buf[14]; // kkhhmmxxxyyyz
  uint8 karma;
- uint8 day;
- uint8 month;
- uint8 year;
+ uint8 hour;
+ uint8 minute;
  uint16 x, y;
  uint8 z;
 
  karma = player->get_karma();
  player->get_location(&x,&y,&z);
 
- day = clock->get_day();
- month = clock->get_month();
- year = clock->get_year();
+ hour = clock->get_hour();
+ minute = clock->get_minute();
 
- sprintf(buf, "%02d%02d%02d%04d%03x%03x%x", karma, month, day, year, x,y,z);
+ sprintf(buf, "%02d%02d%02d%03x%03x%x", karma, hour,minute, x,y,z);
 
  scroll->display_string(buf);
+ scroll->display_string("\n");
  new PeerEffect((x-x%8)-18,(y-y%8)-18,z); // wrap to chunk boundary, and center
                                           // in 11x11 MapWindow
 }
@@ -2090,7 +2091,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
     {
         newAction(LOOK_MODE);
         look(obj);
-        endAction(); // FIXME: should be in look()
+        endAction(true); // FIXME: should be in look()
     }
     else if(obj) // use a real object
     {
@@ -2337,7 +2338,10 @@ void Event::endAction(bool prompt)
         scroll->display_prompt();
     }
 
-    mode = MOVE_MODE;
+    if(mode == WAIT_MODE)
+        mode = last_mode;
+    else
+        mode = MOVE_MODE;
     map_window->set_show_use_cursor(false);
     map_window->set_show_cursor(false);
     view_manager->get_inventory_view()->set_show_cursor(false);
@@ -2346,4 +2350,11 @@ void Event::endAction(bool prompt)
     drop_qty = 0;
 //    Game::get_game()->set_mouse_pointer(0);
     map_window->updateBlacking();
+}
+
+void Event::set_mode(EventMode new_mode)
+{
+    if(new_mode == WAIT_MODE && last_mode == EQUIP_MODE)
+        last_mode = mode;
+    mode = new_mode;
 }
