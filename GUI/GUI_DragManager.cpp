@@ -28,6 +28,9 @@
 #include "GUI_DragArea.h"
 #include "GUI_DragManager.h"
 
+#include "Game.h"  // -+- Included so we can set WAIT_MODE while dragging.
+#include "Event.h" // /
+
  GUI_DragManager::GUI_DragManager(Screen *s)
  {
   screen = s;
@@ -44,12 +47,15 @@ GUI_status GUI_DragManager::start_drag(GUI_DragArea *src, int msg, void *d, unsi
  drag_source = src;
  message = msg;
  data = d;
+ Game::get_game()->get_event()->set_mode(WAIT_MODE);
  return GUI_DRAG_AND_DROP;
 }
 
 void GUI_DragManager::drop(GUI_DragArea *drag_target, int x, int y)
 {
  printf("Drop\n");
+
+ Game::get_game()->get_event()->endAction(); // WAIT_MODE
 
  if(drag_target->drag_accept_drop(x,y,message,data))
   {
@@ -59,6 +65,7 @@ void GUI_DragManager::drop(GUI_DragArea *drag_target, int x, int y)
   }
  else
    drag_source->drag_drop_failed(x,y,message,data);
+
 
  drag_source = NULL;
 
