@@ -975,7 +975,7 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  // The player must ask Lord British about the orb before it can be used.
  // This sets the flag 0x20 in LB's flags field which allows the orb to be used.
 
- if((lord_british->get_flags() & U6_LORD_BRITISH_ORB_CHECK_FLAG) == 0)
+ if((lord_british->get_talk_flags() & U6_LORD_BRITISH_ORB_CHECK_FLAG) == 0)
    {
     scroll->display_string("\nYou can't figure out how to use it.\n");
     return true;
@@ -1418,6 +1418,11 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         destroy_obj(obj); break;
                     case USE_U6_POTION_WHITE: new U6WhitePotionEffect(2500, 6000, obj);
                         break; // wait for message to delete potion
+                    case USE_U6_POTION_BLACK:
+                        //new SpellTargetEffect(items.actor2_ref, obj);
+                        // or effect_mgr->wait_for_effect(new SpellTargetEffect(items.actor2_ref), this, obj);
+                        items.actor2_ref->set_invisible(true);
+                        destroy_obj(obj); break;
                     default:
                         if(obj->frame_n <= 7)
                         {
@@ -2408,7 +2413,6 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             extinguish_torch(obj);
             return(true);
         }
-
         // light
         if(!obj->is_in_inventory() && obj->is_in_container())
             scroll->display_string("\nNot now!\n");
@@ -2431,8 +2435,9 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             {
                 torch = obj_manager->get_obj_from_stack(obj, 1);
                 toggle_frame(torch); // change frame here so object doesn't restack when added back to inventory
+                                     // FIXME: after adding Actor::inventory_add_object_nostack() I should rewrite this
                 if(torch != obj) // keep new one in inventory
-                    actor->inventory_add_object(torch);
+                    actor->inventory_add_object_nostack(torch);
 
                 // ready it
                 actor = actor_manager->get_actor_holding_obj(torch);
@@ -2448,7 +2453,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             else
             {
                 toggle_frame(torch); // go back to unlit frame
-                if(torch->is_in_inventory())
+                if(torch->is_in_inventory()) // assume it's not stacked
                 {
                     actor->inventory_remove_obj(torch);
                     actor->inventory_add_object(torch); // restack here
@@ -2471,9 +2476,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
                 Obj *torch = obj_manager->get_obj_from_stack(obj, obj->qty - 1);
                 if(torch != obj && obj->is_in_inventory()) // keep extras in inventory
                 {
-                    toggle_frame(torch); // hack to avoid restacking torch
-                    actor_manager->get_actor_holding_obj(torch)->inventory_add_object(torch);
-                    toggle_frame(torch);
+                    actor_manager->get_actor_holding_obj(torch)->inventory_add_object_nostack(torch);
                 }
             }
         }
@@ -2565,4 +2568,31 @@ bool U6UseCode::use_peer_gem(Obj *obj, UseCodeEvent ev)
     new PeerEffect(x-(x%8)-18,y-(y%8)-18,z, obj); // wrap to chunk boundary,
                                                   // and center in 11x11 MapWindow
     return false; // no prompt
+}
+
+/* Ready: Apply ring's status effect to actor.
+   Unready: Cancel status effect. */
+bool U6UseCode::magic_ring(Obj *obj, UseCodeEvent ev)
+{
+    Actor *actor = actor_manager->get_actor_holding_obj(obj);
+    uint8 num_readied = actor->count_readied_objects(obj->obj_n, 0);
+//    if(obj->obj_n == OBJ_U6_REGENERATION_RING)
+//        actor_manager->get_actor_holding_obj(obj)->??? no visual effect
+//    if(obj->obj_n == OBJ_U6_PROTECTION_RING)
+//        actor_manager->get_actor_holding_obj(obj)->??? no visual effect
+    if(obj->obj_n == OBJ_U6_INVISIBILITY_RING)
+        actor->set_invisible((obj->is_readied()&&num_readied==1)?false:true);
+    return true; // do normal ready/unready
+}
+
+
+/* Unready/Drop/Move: Don't allow removal. */
+bool U6UseCode::amulet_of_submission(Obj *obj, UseCodeEvent ev)
+{
+    if(obj->is_readied())
+    {
+        scroll->display_string("\nMagical energy prevents you from removing the amulet.\n");
+        return false;
+    }
+    return true;
 }

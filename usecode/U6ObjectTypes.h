@@ -11,6 +11,10 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_STEEL_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door,OBJTYPE_NONE },
     { OBJ_U6_KEY,          255,0,USE_EVENT_USE,&U6UseCode::use_key,OBJTYPE_NONE },
 
+    { OBJ_U6_PROTECTION_RING,0,0,USE_EVENT_READY,&U6UseCode::magic_ring,OBJTYPE_NONE },
+    { OBJ_U6_REGENERATION_RING,0,0,USE_EVENT_READY,&U6UseCode::magic_ring,OBJTYPE_NONE },
+    { OBJ_U6_INVISIBILITY_RING,0,0,USE_EVENT_READY,&U6UseCode::magic_ring,OBJTYPE_NONE },
+
     { OBJ_U6_SIGN,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
     { OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
     { OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
@@ -133,6 +137,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_FOUNTAIN,    0,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_fountain,OBJTYPE_NONE },
     { OBJ_U6_RUBBER_DUCKY,0,0,USE_EVENT_USE,&U6UseCode::use_rubber_ducky,OBJTYPE_NONE },
     { OBJ_U6_CANNON,    255,0,USE_EVENT_USE|USE_EVENT_MOVE|USE_EVENT_MESSAGE,&U6UseCode::use_cannon,OBJTYPE_NONE },
+    { OBJ_U6_AMULET_OF_SUBMISSION, 0,0,USE_EVENT_READY|USE_EVENT_DROP|USE_EVENT_MOVE,&U6UseCode::amulet_of_submission,OBJTYPE_NONE },
 
     { OBJ_U6_PANPIPES,   0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },
     { OBJ_U6_HARPSICHORD,0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },
