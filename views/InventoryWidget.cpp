@@ -401,12 +401,14 @@ GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
 
 void InventoryWidget::drag_drop_success(int x, int y, int message, void *data)
 {
+printf("InventoryWidget::drag_drop_success()\n");
  dragging = false;
 
- if(container_obj)
-   container_obj->container->remove(selected_obj);
- else
-   actor->inventory_remove_obj(selected_obj, container_obj);
+// handled by drop target
+// if(container_obj)
+//   container_obj->container->remove(selected_obj);
+// else
+//   actor->inventory_remove_obj(selected_obj, container_obj);
 
  selected_obj = NULL;
  Redraw();
@@ -414,28 +416,49 @@ void InventoryWidget::drag_drop_success(int x, int y, int message, void *data)
 
 void InventoryWidget::drag_drop_failed(int x, int y, int message, void *data)
 {
- printf("Drop Failed\n");
+printf("InventoryWidget::drag_drop_failed()\n");
  dragging = false;
  selected_obj = NULL;
 }
 
 bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
+printf("InventoryWidget::drag_accept_drop()\n");
  if(message == GUI_DRAG_OBJ)
    {
+    Obj *obj = (Obj*)data;
     x -= area.x;
     y -= area.y;
-
     if(target_obj == NULL) //we need to check this so we don't screw up target_obj on subsequent calls
       target_obj = get_obj_at_location(x,y);
+
+    if(!obj->is_readied() && obj->is_in_container())
+    {
+        printf("InventoryWidget: Not from a container!\n");
+        return false;
+    }
+    if(obj->is_in_inventory() && obj->x != actor->get_actor_num())
+    {
+        printf("InventoryWidget: Cannot Move between party members!\n");
+        return false;
+    }
+    if(obj->is_in_inventory() && !obj->is_readied())
+    {
+        printf("InventoryWidget: Already holding object!\n");
+        return false;
+    }
+
+    printf("Drop Accepted\n");
     return true;
    }
 
+ printf("Drop Refused\n");
  return false;
 }
 
 void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
+printf("InventoryWidget::drag_perform_drop()\n");
  Obj *obj;
 
  x -= area.x;
@@ -443,30 +466,41 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 
  if(message == GUI_DRAG_OBJ)
    {
-    printf("Drop into inventory\n");
+    printf("Drop into inventory.\n");
     obj = (Obj *)data;
+    bool have_object = false;
 
     if(target_obj && target_obj->container && target_obj != obj)
       {
        container_obj = target_obj; //swap to container ready to drop item inside
       }
 
-#if 0 /* trying to connect dragndrop to Actions, but it cant be done yet */
-    if((obj->status & OBJ_STATUS_READIED) == OBJ_STATUS_READIED) // unready
+    if(obj->is_readied()) // unready
       {
        assert(obj->x == actor->get_actor_num());
-       event->unready(obj);
+       have_object = Game::get_game()->get_event()->unready(obj);
       }
-    else if(!(obj->status & OBJ_STATUS_IN_INVENTORY)) // get
+    else // get
       {
-       scroll->display_string("Get-");
-       event->get(obj, container_obj, actor);
+       assert(!obj->is_in_inventory());
+       assert(!obj->is_in_container());
+       // event->newAction(GET_MODE);
+       Game::get_game()->get_scroll()->display_string("Get-");
+       have_object = Game::get_game()->get_event()->get(obj, container_obj, actor);
       }
-#endif
-    if(!container_obj)
-     actor->inventory_add_object(obj);
-    else
-     obj_manager->list_add_obj(container_obj->container, obj);
+
+    if(have_object)
+      {
+       if(container_obj != 0) // looking into a container, so place it there
+         {
+          actor->inventory_remove_obj(obj);
+          actor->inventory_add_object(obj, container_obj);
+         }
+      }
+//    if(!container_obj)
+//     actor->inventory_add_object(obj);
+//    else
+//     obj_manager->list_add_obj(container_obj->container, obj);
 
     Redraw();
    }

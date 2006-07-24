@@ -29,6 +29,7 @@
 #include "Event.h"
 
 #include "Actor.h"
+#include "ActorManager.h"
 #include "DollWidget.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
@@ -226,32 +227,55 @@ GUI_status DollWidget::MouseMotion(int x,int y,Uint8 state)
 
 void DollWidget::drag_drop_success(int x, int y, int message, void *data)
 {
+ printf("DollWidget::drag_drop_success()\n");
  dragging = false;
- actor->remove_readied_object(selected_obj);
- actor->inventory_remove_obj(selected_obj);
+// handled by drop target
+// actor->remove_readied_object(selected_obj);
+// actor->inventory_remove_obj(selected_obj);
  selected_obj = NULL;
  Redraw();
 }
 
 void DollWidget::drag_drop_failed(int x, int y, int message, void *data)
 {
- printf("Drop Failed\n");
+ printf("DollWidget::drag_drop_failed()\n");
  dragging = false;
  selected_obj = NULL;
 }
 
 bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
- if(message == GUI_DRAG_OBJ) //FIX add weight check and ready check
-   {
-    return true;
-   }
+    printf("DollWidget::drag_accept_drop()\n");
+    if(message == GUI_DRAG_OBJ)
+    {
+        Obj *obj = (Obj*)data;
+        if(obj->is_readied() && obj->x == actor->get_actor_num())
+        {
+            // FIXME: need to detect ready location so player can switch hands
+            printf("DollWidget: Object already equipped!\n");
+            return false;
+        }
+        if(obj->is_in_container())
+        {
+            printf("DollWidget: Not from a container!\n");
+            return false;
+        }
+        if(obj->is_in_inventory() && obj->x != actor->get_actor_num())
+        {
+            printf("DollWidget: Must be holding object!\n");
+            return false;
+        }
+        printf("Drop Accepted\n");
+        return true;
+    }
 
- return false;
+    printf("Drop Refused\n");
+    return false;
 }
 
 void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
+printf("DollWidget::drag_perform_drop()\n");
  Obj *obj;
 
  x -= area.x;
@@ -262,23 +286,26 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
     printf("Ready item.\n");
     obj = (Obj *)data;
 
-#if 0 /* trying to connect dragndrop to Actions, but it cant be done yet */
-    if(!(obj->status & OBJ_STATUS_IN_INVENTORY)) // get
+    bool can_equip = true;
+    if(!obj->is_in_inventory()) // get
       {
-       scroll->display_string("Get-");
-       event->get(obj, NULL, actor);
+       assert(!obj->is_in_container());
+       // event->newAction(GET_MODE);
+       Game::get_game()->get_scroll()->display_string("Get-");
+       can_equip = Game::get_game()->get_event()->get(obj, NULL, actor);
+//       if(!can_equip)
+//       {
+//        assert(!(obj->status & OBJ_STATUS_IN_CONTAINER));
+//        obj_manager->add_obj(obj); // add back to map
+//       }
       }
-    if(obj->status & OBJ_STATUS_IN_INVENTORY) // ready
+    if(can_equip) // ready
       {
-       if((obj->status & OBJ_STATUS_READIED) != OBJ_STATUS_READIED)
-         {
-          assert(obj->x == actor->get_actor_num());
-          event->ready(obj);
-         }
+       assert(obj->status & OBJ_STATUS_IN_INVENTORY);
+       assert(obj->x == actor->get_actor_num());
+       assert(!obj->is_readied());
+       Game::get_game()->get_event()->ready(obj);
       }
-#endif
-    actor->inventory_add_object(obj);
-    actor->add_readied_object(obj);
     Redraw();
    }
 
