@@ -239,7 +239,7 @@ bool U6Actor::init_silver_serpent()
 {
  uint16 sx, sy, sz;
  Obj *obj;
- uint8 tmp_frame_n;
+ uint8 tmp_frame_n=0;
  
  sx = x;
  sy = y;
@@ -894,13 +894,12 @@ void U6Actor::wt_wander_around()
  if(NUVIE_RAND()%8 == 1)
    {
     new_direction = NUVIE_RAND()%4;
-    set_direction(new_direction);
     switch(new_direction)
       {
-       case 0 : if(ydist > -area) moveRelative(0,-1); break;
-       case 1 : if(xdist < +area) moveRelative(1,0); break;
-       case 2 : if(ydist < +area) moveRelative(0,1); break;
-       case 3 : if(xdist > -area) moveRelative(-1,0); break;
+       case 0 : if(ydist > -area) if(moveRelative(0,-1)) set_direction(new_direction); break;
+       case 1 : if(xdist < +area) if(moveRelative(1,0)) set_direction(new_direction); break;
+       case 2 : if(ydist < +area) if(moveRelative(0,1)) set_direction(new_direction); break;
+       case 3 : if(xdist > -area) if(moveRelative(-1,0)) set_direction(new_direction); break;
       }
    }
  else set_moves_left(moves - 5);

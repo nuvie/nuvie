@@ -70,6 +70,8 @@ bool ActorPathFinder::search_towards_target(const MapCoord &g, MapCoord &rel_ste
         return true;
     bool try_ccw = check_dir_and_distance(loc, g, ccw_rel_step, -1); // check adjacent directions
     bool try_cw = check_dir_and_distance(loc, g, cw_rel_step, 1);
+    if(!try_ccw) try_ccw = check_dir_and_distance(loc, g, ccw_rel_step, -2); // check perpendicular directions
+    if(!try_cw) try_cw = check_dir_and_distance(loc, g, cw_rel_step, 2);
     if(!try_ccw && !try_cw) 
         return false;
     rel_step = ccw_rel_step;
