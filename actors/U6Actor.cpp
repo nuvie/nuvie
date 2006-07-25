@@ -91,6 +91,8 @@ bool U6Actor::init()
 
    case OBJ_U6_DRAGON : init_dragon(); break;
 
+   case OBJ_U6_SILVER_SERPENT : init_silver_serpent(); break;
+
    case OBJ_U6_GIANT_SCORPION :
    case OBJ_U6_GIANT_ANT :
    case OBJ_U6_COW :
@@ -233,6 +235,117 @@ bool U6Actor::init_hydra()
  return true;
 }
 
+bool U6Actor::init_silver_serpent()
+{
+ uint16 sx, sy, sz;
+ Obj *obj;
+ uint8 tmp_frame_n;
+ 
+ sx = x;
+ sy = y;
+ sz = z;
+ 
+ switch(direction)
+ {
+   case NUVIE_DIR_N : sy++;
+                      tmp_frame_n = 1;
+                      break;
+   case NUVIE_DIR_E : sx--;
+                      tmp_frame_n = 3;
+                      break;
+   case NUVIE_DIR_S : sy--;
+                      tmp_frame_n = 5;
+                      break;
+   case NUVIE_DIR_W : sx++;
+                      tmp_frame_n = 7;
+                      break;
+ }
+
+ obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_SILVER_SERPENT, 1, id_n, sx, sy, sz);
+
+ if(obj != NULL) //old snake
+  gather_snake_objs_from_map(obj, x, y, z);
+ else //new snake
+  { //FIXME we need to make long, randomly layed out snakes here!
+   init_surrounding_obj(sx, sy, sz, OBJ_U6_SILVER_SERPENT, tmp_frame_n);
+  }
+ 
+ return true;
+}
+
+void U6Actor::gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, uint16 az)
+{
+ Obj *obj;
+ uint16 px, py, pz;
+ uint16 nx, ny, nz;
+ uint8 seg_num;
+ 
+ px = ax;
+ py = ay;
+ pz = az;
+ 
+ obj = start_obj;
+ surrounding_objects.push_back(obj);
+
+ for(seg_num = 2;obj && obj->frame_n >= 8;seg_num++)
+  {
+
+   nx = obj->x;
+   ny = obj->y;
+   nz = obj->z;
+   //work out the location of the next obj based on the current frame_n and relative movement.
+   switch(obj->frame_n)
+    {
+     //up down
+     case  8 : if(ny - 1 == py)
+                 ny++;
+              else
+                 ny--;
+               break;
+     //left right
+     case  9 : if(nx - 1 == px)
+                 nx++;
+               else
+                 nx--;
+               break;
+     //up right
+     case 10 : if(ny - 1 == py)
+                 nx++;
+               else
+                 ny--;
+               break;
+     //down right
+     case 11 : if(ny + 1 == py)
+                 nx++;
+               else
+                 ny++;
+               break;
+     //left down
+     case 12 : if(nx - 1 == px)
+                 ny++;
+               else
+                 nx--;
+               break;
+     //left up
+     case 13 : if(nx - 1 == px)
+                 ny--;
+               else
+                 nx--;
+               break;
+    }
+    
+    px = obj->x;
+    py = obj->y;
+    pz = obj->z;
+
+    obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_SILVER_SERPENT, seg_num, id_n, nx, ny, nz);
+
+    if(obj)
+      surrounding_objects.push_back(obj);
+  }
+     
+}
+
 uint16 U6Actor::get_downward_facing_tile_num()
 {
  uint8 shift = 0;
@@ -325,6 +438,14 @@ void U6Actor::set_direction(uint8 d)
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction +
              (walk_frame * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
 
+}
+
+void U6Actor::face_location(uint16 lx, uint16 ly)
+{
+ if(obj_n != OBJ_U6_SILVER_SERPENT) //snakes cannot turn on the spot.
+   Actor::face_location(lx, ly);
+
+ return;
 }
 
 void U6Actor::clear()
@@ -440,6 +561,9 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags
  if(Actor::check_move(new_x, new_y, new_z, flags) == false)
     return false;
 
+ if(obj_n == OBJ_U6_SILVER_SERPENT && check_move_silver_serpent(new_x, new_y) == false)
+   return false;
+   
     switch(actor_type->movetype)
       {
        case MOVETYPE_U6_WATER_HIGH : // for HIGH we only want to move to open water.
@@ -468,12 +592,33 @@ bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags
                                   break;
        case MOVETYPE_U6_LAND :
        default : if(map->is_passable(new_x,new_y,new_z) == false)
-                    if(obj_n != OBJ_U6_MOUSE /* try to go through mousehole */
-                       || obj_manager->get_obj_of_type_from_location(OBJ_U6_MOUSEHOLE,new_x,new_y,new_z) == NULL)
-                       return(false);
+       {
+                    if(obj_n == OBJ_U6_MOUSE // try to go through mousehole
+                       && obj_manager->get_obj_of_type_from_location(OBJ_U6_MOUSEHOLE,new_x,new_y,new_z) != NULL)
+                       return(true);
+                    if(obj_n == OBJ_U6_SILVER_SERPENT //silver serpents can crossover themselves
+                       && obj_manager->get_obj_of_type_from_location(OBJ_U6_SILVER_SERPENT,new_x,new_y,new_z) != NULL)
+                       return(true);
+                       
+                    return false;
+       }                 
+
       }
 
  return(true);
+}
+
+bool U6Actor::check_move_silver_serpent(uint16 new_x, uint16 new_y)
+{
+ if(new_x != x && new_y != y) //snakes can't move diagonally
+  return false;
+
+ Obj *obj = (Obj *)surrounding_objects.front(); //retrieve the first body segment.
+ 
+ if(obj->x == new_x && obj->y == new_y) //snakes can't move backwards.
+  return false;
+  
+ return true;
 }
 
 // attempt to sit if obj is a chair.
@@ -1091,9 +1236,9 @@ inline void U6Actor::remove_surrounding_objs_from_map()
 
 inline void U6Actor::add_surrounding_objs_to_map()
 {
- std::list<Obj *>::iterator obj;
+ std::list<Obj *>::reverse_iterator obj;
 
- for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
+ for(obj = surrounding_objects.rbegin(); obj != surrounding_objects.rend(); obj++)
     obj_manager->add_obj((*obj),OBJ_ADD_TOP);
 
  return;
@@ -1102,12 +1247,86 @@ inline void U6Actor::add_surrounding_objs_to_map()
 inline void U6Actor::move_surrounding_objs_relative(sint16 rel_x, sint16 rel_y)
 {
  std::list<Obj *>::iterator obj;
-
- for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
+ 
+ if(obj_n == OBJ_U6_SILVER_SERPENT)
+  {
+   move_silver_serpent_objs_relative(rel_x, rel_y);
+  }
+ else
+  { 
+   for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
     {
-     (*obj)->x += rel_x;
-     (*obj)->y += rel_y;
+      (*obj)->x += rel_x;
+      (*obj)->y += rel_y;
     }
+  }
+
+ return;
+}
+
+inline void U6Actor::move_silver_serpent_objs_relative(sint16 rel_x, sint16 rel_y)
+{
+ std::list<Obj *>::iterator obj;
+ uint8 old_frame_n;
+ uint8 tmp_frame_n;
+ uint16 old_x, old_y;
+ uint16 tmp_x, tmp_y;
+ sint8 new_pos;
+ sint8 old_pos;
+
+ const uint8 new_frame_n_tbl[5][5] = 
+ {{ 8,10, 0,13, 0},
+  {12, 9, 0, 0,13},
+  { 0, 0, 0, 0, 0},
+  {11, 0, 0, 9,10},
+  { 0,11, 0,12, 8}};
+ 
+  const uint8 new_tail_frame_n_tbl[8][6] =
+ {{0,0,0,0,0,0},
+  {1,0,0,3,7,0},
+  {0,0,0,0,0,0},
+  {0,3,0,0,5,1},
+  {0,0,0,0,0,0},
+  {5,0,3,0,0,7},
+  {0,0,0,0,0,0},
+  {0,7,1,5,0,0}};
+
+ if(surrounding_objects.empty())
+   return;
+
+ obj = surrounding_objects.begin();
+
+ new_pos = 2 + rel_x + (rel_y * 2);
+
+ old_x = (*obj)->x;
+ old_y = (*obj)->y;
+
+ (*obj)->x = x - rel_x; // old actor x
+ (*obj)->y = y - rel_y; // old actor y
+ 
+ old_pos = 2 + ((*obj)->x - old_x) + (((*obj)->y - old_y) * 2);
+ 
+ old_frame_n = (*obj)->frame_n;
+ (*obj)->frame_n = new_frame_n_tbl[new_pos][old_pos];
+ obj++; 
+ for(;obj != surrounding_objects.end(); obj++)
+  {
+    tmp_x = (*obj)->x;
+    tmp_y = (*obj)->y;
+    tmp_frame_n = (*obj)->frame_n;
+
+    (*obj)->x = old_x;
+    (*obj)->y = old_y;
+
+    if(tmp_frame_n < 8) //tail, work out new tail direction
+      (*obj)->frame_n = new_tail_frame_n_tbl[tmp_frame_n][old_frame_n-8];
+    else
+      (*obj)->frame_n = old_frame_n;
+
+    old_x = tmp_x;
+    old_y = tmp_y;
+    old_frame_n = tmp_frame_n;
+  }
 
  return;
 }
@@ -1418,6 +1637,9 @@ void U6Actor::die()
  MapCoord actor_loc = get_location();
  MsgScroll *scroll = game->get_scroll();
  
+ if(has_surrounding_objs())
+   clear_surrounding_objs_list(true);
+     
  Actor::die();
     
  if(in_party)
@@ -1443,10 +1665,6 @@ void U6Actor::die()
         player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
      }
   }
-  
-   if(has_surrounding_objs())
-     clear_surrounding_objs_list(true);
-
   
     // we don't generate a dead body if the avatar dies because they will be ressurrected.  
     if(actor_type->dead_obj_n != OBJ_U6_NOTHING)

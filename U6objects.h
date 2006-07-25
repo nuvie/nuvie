@@ -322,6 +322,7 @@
 #define OBJ_U6_DRAGON              411
 
 #define OBJ_U6_SHIP                412
+#define OBJ_U6_SILVER_SERPENT      413
 #define OBJ_U6_SKIFF               414
 #define OBJ_U6_RAFT                415
 #define OBJ_U6_NO_VEHICLE          416

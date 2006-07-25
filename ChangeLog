@@ -1,3 +1,17 @@
+2006-07-25  Eric Fry <efry at users.sourceforge.net>
+	* Started work on silver serpent actors. At the moment nuvie will only
+	  create a serpent that is 2 tiles long. If you want to see long
+	  serpents in nuvie just load an original save game with serpents
+	  nearby.
+	* Added new overloaded ObjManager::get_obj_of_type_from_location()
+	  method which allows searching by qty and quality.
+	* Added U6Actor::face_location() to stop serpents from changing
+	  direction while standing still.
+	* Reversed the order that surrounding objects are added to the map
+	  in U6Actor::add_surrounding_objs_to_map()
+	* Clear surrounding objects from an actor before moving to 0,0,0
+	  upon death.
+ 
 2006-07-24  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Finally fixed DragNDrop between inventory and the map, so that it now
 	  calls usecode and you *can* move torches with the mouse again! Dropping

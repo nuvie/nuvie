@@ -83,6 +83,7 @@ class U6Actor: public Actor
  void set_worktype(uint8 new_worktype);
  void preform_worktype();
  void set_direction(uint8 d);
+ void face_location(uint16 lx, uint16 ly);
  void clear();
  bool move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
  bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
@@ -109,7 +110,9 @@ class U6Actor: public Actor
  bool init_splitactor(); //cows, horses etc.
  bool init_dragon();
  bool init_hydra();
-
+ bool init_silver_serpent();
+ void gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, uint16 az);
+ inline bool check_move_silver_serpent(uint16 x, uint16 y);
  bool sit_on_chair(Obj *obj);
 
  inline void discover_direction();
@@ -133,6 +136,7 @@ class U6Actor: public Actor
  inline void remove_surrounding_objs_from_map();
  inline void add_surrounding_objs_to_map();
  inline void move_surrounding_objs_relative(sint16 rel_x, sint16 rel_y);
+ inline void move_silver_serpent_objs_relative(sint16 rel_x, sint16 rel_y);
  inline void set_direction_of_surrounding_objs(uint8 new_direction);
  inline void set_direction_of_surrounding_ship_objs(uint8 new_direction);
  inline void set_direction_of_surrounding_splitactor_objs(uint8 new_direction);

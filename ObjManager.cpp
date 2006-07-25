@@ -737,6 +737,11 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
 
 Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z)
 {
+ return get_obj_of_type_from_location(obj_n, -1, -1, x, y, z);
+}
+
+Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, sint16 quality, sint32 qty, uint16 x, uint16 y, uint8 z)
+{
  U6LList *obj_list;
  U6Link *link;
  Obj *obj;
@@ -750,7 +755,15 @@ Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y,
    {
     obj = (Obj *)link->data;
     if(obj->obj_n == obj_n)
+     {
+      if(quality != -1 && obj->quality != (uint8)quality)
+        continue;
+        
+      if(qty != -1 && obj->qty != (uint16)qty)
+        continue;
+    
       return obj;
+     }
    }
 
  return NULL;

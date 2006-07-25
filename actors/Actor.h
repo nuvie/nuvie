@@ -306,7 +306,7 @@ class Actor
  void set_direction(sint16 rel_x, sint16 rel_y);
  virtual void set_direction(uint8 d);
  void face_location(MapCoord &loc);
- void face_location(uint16 lx, uint16 ly);
+ virtual void face_location(uint16 lx, uint16 ly);
  void face_actor(Actor *a);
 
  void set_talk_flags(uint8 newflags) { talk_flags = newflags; }

@@ -158,6 +158,7 @@ class ObjManager
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Obj *get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
+ Obj *get_obj_of_type_from_location(uint16 obj_n, sint16 quality, sint32 qty, uint16 x, uint16 y, uint8 z);
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj);
 
  uint16 get_obj_tile_num(uint16 obj_num);

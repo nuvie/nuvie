@@ -115,6 +115,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_HORSE_WITH_RIDER, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         20,  22,  27,   7,   0,   3,  15, ACTOR_ALIGNMENT_NEUTRAL},
 
  {OBJ_U6_DRAGON,           2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_AIR_LOW,    10,  40,  35,  27,  12,  30, 150, ACTOR_ALIGNMENT_EVIL},
+ {OBJ_U6_SILVER_SERPENT,   1, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,        0,  60,  21,   8,  15,  60, 200, ACTOR_ALIGNMENT_CHAOTIC},
 
  {OBJ_U6_NOTHING, 0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 0, 0, 0, 0, 0, 0, 0, ACTOR_ALIGNMENT_NEUTRAL} //end indicator
 };
