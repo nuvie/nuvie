@@ -26,7 +26,6 @@ public:
     virtual bool get_next_move(MapCoord &step);
 
 protected:
-    bool seek_target(MapCoord &rel_step);
     bool search_towards_target(const MapCoord &g, MapCoord &rel_step);
     bool check_dir(const MapCoord &loc, MapCoord &rel, sint8 rot=0);
     bool check_dir_and_distance(MapCoord loc, MapCoord g, MapCoord &rel_step, sint8 rotate);
