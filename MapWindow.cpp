@@ -1158,7 +1158,8 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
         if(!obj) obj_tile = map->get_tile(x, y, cur_level);
         else     obj_tile = obj_manager->get_obj_tile(obj->obj_n,obj->frame_n);
         if(!(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
-            (obj_tile->passable && !map->is_boundary(obj->x, obj->y, cur_level))))
+            (obj_tile->passable && ((obj && !map->is_boundary(obj->x, obj->y, cur_level))
+                                   || !obj_tile->boundary))))
             return false;
     }
     return true;
