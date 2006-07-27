@@ -20,6 +20,7 @@ public:
     bool find_path(); /* gets a NEW path from location->goal */
     void actor_moved(); /* update location and step counters */
 
+    virtual bool check_loc(const MapCoord &loc); // ignores other actors
 protected:
     bool is_location_in_path();
     void incr_step();

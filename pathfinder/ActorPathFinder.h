@@ -20,7 +20,7 @@ public:
     virtual void actor_moved(); /* the actor moved ON PATH...
                                    (use after get_next_move()) */
 
-    bool check_loc(const MapCoord &loc);
+    virtual bool check_loc(const MapCoord &loc);
 
     void get_closest_dir(MapCoord &rel_step); // relative dir loc->goal
     virtual bool get_next_move(MapCoord &step);

@@ -81,3 +81,9 @@ void SchedPathFinder::actor_moved()
     if(search->have_path())
         incr_step();
 }
+
+/* Don't bother moving around other actors. They will probably move soon. */
+bool SchedPathFinder::check_loc(const MapCoord &loc)
+{
+    return actor->check_move(loc.x, loc.y, loc.z, ACTOR_IGNORE_OTHERS);
+}

@@ -57,7 +57,10 @@ void ActorPathFinder::get_closest_dir(MapCoord &rel_step)
 
 bool ActorPathFinder::check_loc(const MapCoord &loc)
 {
-    return actor->check_move(loc.x, loc.y, loc.z, ACTOR_IGNORE_OTHERS);
+    // FIXME: party members run around ladders if ACTOR_IGNORE_OTHERS isn't set
+    if(actor->is_in_party())
+        return actor->check_move(loc.x, loc.y, loc.z, ACTOR_IGNORE_OTHERS);
+    return actor->check_move(loc.x, loc.y, loc.z);
 }
 
 /* Find a move from actor to g, starting with rel_step. Replace
