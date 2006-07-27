@@ -1014,21 +1014,20 @@ void U6Actor::wt_sleep()
           obj_n = OBJ_U6_PERSON_SLEEPING;
           frame_n = 1;
          }
+       return;
       }
-    else // lay down on the ground using the dead body frame
-      {
-       if(actor_type->can_laydown)
-        {
-         old_frame_n = frame_n;
-         obj_n = actor_type->dead_obj_n;
-         frame_n = actor_type->dead_frame_n;
-        }
-      }
+   }
+
+ // lay down on the ground using the dead body frame
+ if(actor_type->can_laydown)
+   {
+    old_frame_n = frame_n;
+    obj_n = actor_type->dead_obj_n;
+    frame_n = actor_type->dead_frame_n;
    }
 
  can_move = false;
 
- return;
 }
 
 void U6Actor::wt_play_lute()
