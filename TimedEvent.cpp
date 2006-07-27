@@ -764,7 +764,7 @@ TimedRest::TimedRest(uint8 hours, Actor *who_will_guard)
                       print_message(0)
 {
     lookout = who_will_guard;
-    printf("TimedRest(%d, %s)\n",hours,who_will_guard->get_name());
+//    printf("TimedRest(%d, %s)\n",hours,who_will_guard->get_name());
 }
 
 /* This is the only place we know that the TimedAdvance has completed. */
