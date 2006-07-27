@@ -98,6 +98,7 @@ class MsgScroll: public GUI_Widget, public CallBack
 
  bool page_break;
  bool show_cursor;
+ bool autobreak; // if true, a page break will be added when the scroll is full
 
  std::list<MsgLine *> msg_buf;
 
@@ -151,6 +152,8 @@ class MsgScroll: public GUI_Widget, public CallBack
  void set_talking(bool state) { talking = state; }
 
  void set_show_cursor(bool state) { show_cursor = state; }
+
+ void set_autobreak(bool state) { autobreak = state; }
 
  bool get_page_break() { return(page_break); }
 

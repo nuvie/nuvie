@@ -191,6 +191,7 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
  page_break = false;
  show_cursor = true;
  talking = false;
+ autobreak = false;
 
  add_new_line();
  display_pos = 0;
@@ -389,7 +390,7 @@ inline MsgLine *MsgScroll::add_new_line()
    delete msg_line_front;
  }
 
- if(line_count > scroll_height - 1)
+ if(autobreak && line_count > scroll_height - 1)
      set_page_break();
 
  return msg_line;
