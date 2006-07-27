@@ -96,6 +96,7 @@ class U6Actor: public Actor
  uint8 get_object_readiable_location(uint16 obj_n);
  const CombatType *get_object_combat_type(uint16 obj_n);
  ActorTileType get_tile_type() { return(actor_type->tile_type); }
+ Obj *inventory_get_food(Obj *container=0);
 
  bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
  ActorList *find_enemies();
@@ -104,6 +105,8 @@ class U6Actor: public Actor
  bool is_immobile(); // frozen by worktype or status
  bool is_sleeping();
  bool can_be_passed(Actor *other);
+
+ void set_actor_obj_n(uint16 new_obj_n);
 
  protected:
  bool init_ship();
@@ -128,7 +131,6 @@ class U6Actor: public Actor
  void wt_party();
 
  inline const U6ActorType *get_actor_type(uint16 new_obj_n);
- void set_actor_obj_n(uint16 new_obj_n);
 
  inline void updatePoison();
 

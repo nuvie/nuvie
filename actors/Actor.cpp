@@ -62,7 +62,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 
  worktype = 0;
  sched_pos = 0;
- update_time = 0;
+ move_time = 0;
  
  alignment = ACTOR_ALIGNMENT_NEUTRAL;
  
@@ -451,7 +451,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
  if(id_n == game->get_player()->get_actor()->id_n && game->get_player()->is_mapwindow_centered())
     game->get_map_window()->centerMapOnActor(this);
  // allows a delay to be set on actor movement, in lieu of using animations
- update_time = clock->get_ticks();
+ move_time = clock->get_ticks();
  return true;
 }
 

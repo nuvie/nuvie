@@ -182,7 +182,7 @@ class Actor
 
  uint8 worktype;
  MapCoord work_location;
- uint32 update_time; // time (in clock ticks) of last update() (for display)
+ uint32 move_time; // time (in clock ticks) of last update() (for display)
                      // FIXME: replace with animation
  uint16 obj_n;
  uint16 frame_n;
@@ -244,7 +244,9 @@ class Actor
  virtual bool init();
  void init_from_obj(Obj *obj);
 
-// bool is_visible() { return(MapCoord(x,y,z).is_visible()); }
+ bool is_onscreen() { return(MapCoord(x,y,z).is_visible()); }
+ bool is_in_party() { return in_party; }
+ bool is_visible() { return visible_flag; }
  bool is_alive();
  bool is_nearby(Actor *other);
  bool is_nearby(uint8 actor_num);
@@ -256,7 +258,7 @@ class Actor
  bool is_poisoned() { return(status_flags & ACTOR_STATUS_POISONED); }
  bool is_invisible() { return(obj_flags & OBJ_STATUS_INVISIBLE); }
  virtual bool is_immobile(); // frozen by worktype or status
- virtual bool is_sleeping() { return(false); }
+ virtual bool is_sleeping() { return(status_flags & ACTOR_STATUS_ASLEEP); }
 
  void set_name(const char *actor_name) {  name=actor_name; }
  const char *get_name();
@@ -293,7 +295,7 @@ class Actor
  void subtract_light(uint8 val);
  void heal() { set_hp(get_maxhp()); }
  void set_moves_left(sint8 val);
- virtual void update_moves_left() { set_moves_left(get_moves_left() + get_dexterity()); }
+ virtual void update_time() { set_moves_left(get_moves_left() + get_dexterity()); }
  virtual void set_poisoned(bool poisoned) { return; }
  void set_invisible(bool invisible);
 
@@ -317,8 +319,6 @@ class Actor
  void set_error(ActorErrorCode err);
  void clear_error();
  ActorError *get_error();
-
- bool is_visible() { return visible_flag; }
 
  bool moveRelative(sint16 rel_x, sint16 rel_y);
  virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
@@ -359,6 +359,7 @@ class Actor
  uint32 inventory_count_object(uint16 obj_n, Obj *container = 0);
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0, bool search_containers = true, bool match_zero_qual = true);
  Obj *inventory_get_readied_object(uint8 location);
+ virtual Obj *inventory_get_food(Obj *container=0) { return 0; }
  const CombatType *inventory_get_readied_object_combat_type(uint8 location);
  Obj *inventory_get_obj_container(Obj *obj, Obj *container = 0);
  bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack=true);

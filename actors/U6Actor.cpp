@@ -23,6 +23,7 @@
 #include <cstdlib>
 
 #include "nuvieDefs.h"
+#include "U6LList.h"
 
 #include "Game.h"
 #include "U6UseCode.h"
@@ -1816,4 +1817,22 @@ const char *U6Actor::get_worktype_string(uint32 wt)
     else if(wt == 0x99) wt_string = "Brawl";
     else if(wt == 0x9a) wt_string = "Mousing";
     return(wt_string);
+}
+
+/* Return the first food or drink object in inventory. */
+Obj *U6Actor::inventory_get_food(Obj *container)
+{
+    U6UseCode *uc = (U6UseCode*)Game::get_game()->get_usecode();
+    U6LList *inv=container?container->container:get_inventory_list();
+    U6Link *link=0;
+    Obj *obj=0;
+    for(link=inv->start(); link!=NULL; link=link->next)
+    {
+        obj = (Obj*)link->data;
+        if(uc->is_food(obj))
+            return obj;
+        if(obj->container) // search within container
+            return inventory_get_food(obj);
+    }
+    return 0;
 }

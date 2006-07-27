@@ -74,6 +74,7 @@ class ActorManager
  ActorList *sort_nearest(ActorList *list, uint16 x, uint16 y, uint8 z); // ascending distance
  ActorList *filter_distance(ActorList *list, uint16 x, uint16 y, uint8 z, uint16 dist);
  ActorList *filter_alignment(ActorList *list, uint8 align);
+ ActorList *filter_party(ActorList *list);
 
  Actor *get_actor(uint8 actor_num);
  Actor *get_actor(uint16 x, uint16 y, uint8 z);

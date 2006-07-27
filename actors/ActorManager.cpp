@@ -591,7 +591,7 @@ void ActorManager::updateTime()
 
 //printf("updateTime(): ");
     for(int i=0; i<256; i++)
-        actors[i]->update_moves_left();
+        actors[i]->update_time(); // **UPDATE MOVES LEFT**
     clock->inc_minute(); // **UPDATE TIME**
 //printf("%d:%02d\n",clock->get_hour(),clock->get_minute());
     uint8 cur_hour = clock->get_hour();
@@ -686,7 +686,7 @@ inline bool ActorManager::update_actor(Actor *actor)
     sint8 moves_pre_update = actor->moves;
     if(actor->id_n != player_actor)
         if(actor->get_location().is_visible()
-           && (clock->get_ticks()-actor->update_time) < (combat_movement?250:66)) // FIXME: Replace with animation.
+           && (clock->get_ticks()-actor->move_time) < (combat_movement?250:66)) // FIXME: Replace with animation.
             return false; // Don't move again so soon, and block others.
 //printf("update_actor(%d) %d moves",actor->id_n,actor->moves);
     actor->update(); // *UPDATE*
@@ -1120,6 +1120,20 @@ ActorList *ActorManager::filter_alignment(ActorList *list, uint8 align)
     {
         Actor *actor = *i;
         if(actor->alignment == align)
+            i = list->erase(i);
+        else ++i;
+    }
+    return list;
+}
+
+// Remove actors in the party. Returns the original list pointer.
+ActorList *ActorManager::filter_party(ActorList *list)
+{
+    ActorIterator i=list->begin();
+    while(i != list->end())
+    {
+        Actor *actor = *i;
+        if(actor->in_party == true)
             i = list->erase(i);
         else ++i;
     }
