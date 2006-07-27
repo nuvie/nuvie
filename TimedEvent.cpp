@@ -208,6 +208,12 @@ TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t, Obj *use_obj, uint32 st
     init(d, t, use_obj);
 }
 
+TimedPartyMove::TimedPartyMove(uint32 step_delay)
+                              : TimedEvent(step_delay, true)
+{
+
+}
+
 TimedPartyMove::~TimedPartyMove()
 {
     delete dest;
@@ -559,8 +565,8 @@ GameTimedCallback::GameTimedCallback(CallBack *t, void *d, uint32 wait_time, boo
 #define TIMEADVANCE_PER_SECOND 1000 /* frequency of timer calls */
 TimedAdvance::TimedAdvance(uint8 hours, uint16 r)
                           : TimedCallback(NULL, NULL, 1000/TIMEADVANCE_PER_SECOND, true),
-                            clock(Game::get_game()->get_clock()), minutes(0),
-                            minutes_this_hour(0)
+                            clock(Game::get_game()->get_clock()),
+                            minutes_this_hour(0), minutes(0)
 {
     init(hours * 60, r);
 }
@@ -570,8 +576,8 @@ TimedAdvance::TimedAdvance(uint8 hours, uint16 r)
  */
 TimedAdvance::TimedAdvance(std::string timestring, uint16 r)
                           : TimedCallback(NULL, NULL, 1000/TIMEADVANCE_PER_SECOND, true),
-                            clock(Game::get_game()->get_clock()), minutes(0),
-                            minutes_this_hour(0)
+                            clock(Game::get_game()->get_clock()),
+                            minutes_this_hour(0), minutes(0)
 {
     uint8 hour = 0, minute = 0;
 
@@ -595,13 +601,6 @@ TimedAdvance::TimedAdvance(std::string timestring, uint16 r)
     // go
     init((advance_h * 60) + advance_m, r);
 }
-
-
-TimedAdvance::~TimedAdvance()
-{
-
-}
-
 
 /* Set time advance.
  */
@@ -687,3 +686,153 @@ void TimedAdvance::get_time_from_string(uint8 &hour, uint8 &minute, std::string 
     }
 }
 
+
+TimedRestGather::TimedRestGather(uint16 x, uint16 y)
+                                 : TimedPartyMove(50)
+{
+    MapCoord center = MapCoord(x, y);
+    init(&center, 0, 0); // set dest to campfire location
+}
+
+/* Repeat until everyone is in the circle. */
+void TimedRestGather::timed(uint32 evtime)
+{
+    stop(); // cancelled further down with repeat(), if still moving
+
+    if(moves_left)
+    {
+        if(move_party())
+            repeat(); // still moving
+    }
+    else // timed out, make sure nobody is walking
+        for(uint32 m = 0; m < party->get_party_size(); m++)
+            party->get_actor(m)->delete_pathfinder();
+
+    if(repeat_count == 0)
+    {
+        // sort of a hack to tell Event we're finished, without changing modes
+        Game::get_game()->get_event()->set_mode(REST_MODE);
+        Game::get_game()->get_event()->doAction(dest->x, dest->y);
+    }
+
+    if(moves_left > 0)
+        --moves_left;
+}
+
+bool TimedRestGather::move_party()
+{
+    bool moving = false; // moving or waiting
+    const sint16 positions[3*3] =
+    {
+        7, 0, 4, // list of party members arranged by location
+        3,-1, 2, // campfire is at positions[1][1]
+        5, 1, 6
+    };
+
+    // check everyone in party because they might not be in the positions list
+    for(sint32 a = 0; a < party->get_party_size(); a++)
+    {
+        for(int x=0; x<3; x++)
+            for(int y=0; y<3; y++)
+                if(positions[x+y*3] == a)
+                {
+                    Actor *actor = party->get_actor(a);
+                    MapCoord loc = actor->get_location();
+                    MapCoord actor_dest(dest->x + x-1, dest->y + y-1, loc.z);
+                    if(actor_dest == loc)
+                    {
+                        if(actor->get_pathfinder() != 0)
+                            actor->face_location(dest->x,dest->y); // look at camp
+                        actor->delete_pathfinder();
+                    }
+                    else
+                    {
+                        moving = true; // still moving to circle
+                        if(actor->get_pathfinder() == 0)
+                            actor->pathfind_to(actor_dest.x, actor_dest.y);
+                        actor->update(); // ActorManager is paused
+                    }
+                    x=3;y=3; break; // break to first loop
+                }
+    }
+    return moving;
+}
+
+TimedRest::TimedRest(uint8 hours, Actor *who_will_guard)
+                    : TimedAdvance(hours), party(Game::get_game()->get_party()),
+                      scroll(Game::get_game()->get_scroll()), sleeping(0),
+                      print_message(0)
+{
+    lookout = who_will_guard;
+    printf("TimedRest(%d, %s)\n",hours,who_will_guard->get_name());
+}
+
+/* This is the only place we know that the TimedAdvance has completed. */
+TimedRest::~TimedRest()
+{
+    scroll->display_prompt();
+    scroll->display_string("\n");
+}
+
+void TimedRest::timed(uint32 evtime)
+{
+    if(sleeping == false) // mealtime
+    {
+        if(evtime-prev_evtime > 500) // print the next message
+        {
+            prev_evtime = evtime; // normally set by TimedAdvance::timed()
+
+            eat(party->get_actor(print_message));
+            ++print_message;
+            if(print_message == party->get_party_size())
+            {
+                sleeping = true; // finished eating
+                sleep();
+            }
+        }
+    }
+    else // sleeping
+    {
+        TimedAdvance::timed(evtime);
+    }
+}
+
+/* Check if actor has any food, and consume it, allowing the actor to heal. */
+void TimedRest::eat(Actor *actor)
+{
+    Obj *food = actor->inventory_get_food();
+    scroll->display_string(actor->get_name());
+    if(food)
+    {
+        scroll->display_string(" has food.\n");
+        if(food->qty <= 1)
+        {
+            actor->inventory_remove_obj(food);
+            delete_obj(food);
+        }
+        else --food->qty;
+    }
+    else
+        scroll->display_string(" has no food.\n");
+}
+
+/* Look for a bard in the party and have them play a tune. */
+void TimedRest::bard_play()
+{
+}
+
+/* Start sleeping until the requested time. One person can stand guard. */
+void TimedRest::sleep()
+{
+    for(int s=0; s<party->get_party_size(); s++)
+    {
+        Actor *actor = party->get_actor(s);
+        if(actor == lookout)
+            actor->set_worktype(0x11); // WORKTYPE_U6_LOOKOUT
+        else
+        {
+            actor->set_worktype(0x91); // WORKTYPE_U6_SLEEP
+            actor->update(); // update frame
+        }
+    }
+}

@@ -59,6 +59,7 @@ typedef enum {
  DROP_MODE,
  TALK_MODE, /* finding an actor to talk to */
  ATTACK_MODE,
+ REST_MODE,
  PUSHSELECT_MODE,
  EQUIP_MODE,
  USESELECT_MODE,
@@ -100,6 +101,8 @@ class Event : public GUI_CallBack
  Obj *use_obj; // used for many things right now (use/move/drop)
  Actor *selected_actor; // for PUSHSELECT
  uint16 drop_qty;
+ uint8 rest_time; // How many hours?
+ uint8 rest_guard; // Who will guard?
 
  bool showingQuitDialog;
  bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
@@ -162,6 +165,8 @@ class Event : public GUI_CallBack
  bool drop();
  bool drop(Obj *obj, uint16 qty, uint16 x, uint16 y);
  bool drop(uint16 x, uint16 y) { return(drop(use_obj, drop_qty, x, y)); }
+ bool rest();
+ bool rest_input(uint16 input);
  void walk_to_mouse_cursor(uint32 mx, uint32 my);
  void multiuse(uint16 wx, uint16 wy);
  bool toggle_combat();

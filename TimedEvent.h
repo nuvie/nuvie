@@ -116,6 +116,7 @@ protected:
 public:
     TimedPartyMove(MapCoord *d, MapCoord *t, uint32 step_delay = 500);
     TimedPartyMove(MapCoord *d, MapCoord *t, Obj *use_obj, uint32 step_delay = 500);
+    TimedPartyMove(uint32 step_delay = 500);
     ~TimedPartyMove();
     void init(MapCoord *d, MapCoord *t, Obj *use_obj);
     void timed(uint32 evtime);
@@ -200,40 +201,57 @@ class TimedAdvance : public TimedCallback
 {
     GameClock *clock;
     uint16 advance; // minutes requested
+    uint8 minutes_this_hour;
+protected:
     uint16 minutes; // minutes advanced
     uint16 rate; // rate is minutes-per-second
     uint32 prev_evtime; // last time the timer was called
-    uint8 minutes_this_hour;
 
 public:
     TimedAdvance(uint8 hours, uint16 r = 60);
     TimedAdvance(std::string timestring, uint16 r = 60); // "HH:MM"
-    ~TimedAdvance();
+    virtual ~TimedAdvance() { }
 
     void init(uint16 min, uint16 r); // start time advance
 
-    void timed(uint32 evtime);
-    bool time_passed(); // stop time has passed
+    virtual void timed(uint32 evtime);
+    bool time_passed(); // returns true if stop time has passed
     void get_time_from_string(uint8 &hour, uint8 &minute, std::string timestring);
 };
 
-#if 0
-/* Camping in the wilderness. First confirm that we are in the wilderness (no
- * visible wall tiles), then move everyone into a circle and place a campfire
- * in the center. Get number of hours to rest and who will guard from the player.
- * Do a SleepEffect until the requested time. The camp can be broken by nearby
- * foes.
+
+/* Camping in the wilderness. Move everyone into a circle and place a campfire
+ * in the center.
  */
-class TimedRest : public TimedPartyMove
+class TimedRestGather : public TimedPartyMove
 {
-protected:
-    bool party_in_town();
 public:
-    void init(uint16 min, uint16 r); // start time advance
+    TimedRestGather(uint16 x, uint16 y);
 
     void timed(uint32 evtime);
-    bool time_passed(); // stop time has passed
+
+protected:
+    bool move_party();
 };
-#endif
+
+/* Camping in the wilderness. Do a TimedAdvance until the requested time. The
+ * camp can be broken by nearby foes.
+ */
+class TimedRest : public TimedAdvance
+{
+    Party *party;
+    MsgScroll *scroll;
+    Actor *lookout;
+    bool sleeping; // false: mealtime, true: sleeping
+    uint8 print_message; // which message is to be printed next
+public:
+    TimedRest(uint8 hours, Actor *lookout);
+    ~TimedRest();
+
+    void timed(uint32 evtime);
+    void eat(Actor *actor);
+    void bard_play();
+    void sleep();
+};
 
 #endif /* __TimedEvent_h__ */

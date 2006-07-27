@@ -68,7 +68,9 @@ Event::Event(Configuration *cfg)
 
  use_obj = NULL;
  selected_actor = NULL;
- magic = new Magic(); 
+ drop_qty = 0;
+ rest_time = 0;
+ rest_guard = 0;
 
  book = NULL;
  time_queue = game_time_queue = NULL;
@@ -104,6 +106,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
    return false;
  time_queue = new TimeQueue;
  game_time_queue = new TimeQueue;
+ magic = new Magic();
  magic->init(this);
  return true;
 }
@@ -264,12 +267,12 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			break;
 
 		case SDLK_TAB :
-                        map_window->set_show_cursor(false);
-                        if(mode == MOVE_MODE)
-                            newAction(EQUIP_MODE);
-                        else
-                            view_manager->get_inventory_view()->set_show_cursor(true);
-                        break;
+		        map_window->set_show_cursor(false);
+		        if(mode == MOVE_MODE)
+		            newAction(EQUIP_MODE);
+		        else
+		            view_manager->get_inventory_view()->set_show_cursor(true);
+		        break;
 		case SDLK_s     :
 				saveDialog();
 			break;
@@ -309,33 +312,36 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_a     :
 			newAction(ATTACK_MODE);
 			break;
-                case SDLK_F1:
-                case SDLK_F2:
-                case SDLK_F3:
-                case SDLK_F4:
-                case SDLK_F5:
-                case SDLK_F6:
-                case SDLK_F7:
-                case SDLK_F8:
-                        if(view_manager->get_inventory_view()
-                           ->set_party_member(event->key.keysym.sym - 282))
-                            view_manager->set_inventory_mode();
-                        break;
-                case SDLK_F10:
-                            view_manager->set_party_mode();
-                        break;
-                case SDLK_1:
-                case SDLK_2:
-                case SDLK_3:
-                case SDLK_4:
-                case SDLK_5:
-                case SDLK_6:
-                case SDLK_7:
-                case SDLK_8:
+		case SDLK_r     :
+            newAction(REST_MODE);
+            break;
+case SDLK_F1:
+		case SDLK_F2:
+		case SDLK_F3:
+		case SDLK_F4:
+		case SDLK_F5:
+		case SDLK_F6:
+		case SDLK_F7:
+		case SDLK_F8:
+		        if(view_manager->get_inventory_view()
+		           ->set_party_member(event->key.keysym.sym - 282))
+		            view_manager->set_inventory_mode();
+		        break;
+		case SDLK_F10:
+		            view_manager->set_party_mode();
+		        break;
+		case SDLK_1:
+		case SDLK_2:
+		case SDLK_3:
+		case SDLK_4:
+		case SDLK_5:
+		case SDLK_6:
+		case SDLK_7:
+		case SDLK_8:
 			solo_mode(event->key.keysym.sym - 48 - 1);
 			break;
-                case SDLK_0:
-                case SDLK_9:
+		case SDLK_0:
+		case SDLK_9:
 			party_mode();
 			break;
 		case SDLK_RETURN  :
@@ -399,9 +405,13 @@ bool Event::handleEvent(const SDL_Event *event)
 
 	if(active_alt_code && scroll->has_input())
 		alt_code_input(scroll->get_input().c_str());
-	else if(mode == DROPCOUNT_MODE && scroll->has_input())
-		drop_count(strtol(scroll->get_input().c_str(), NULL, 10));
-
+    else if(scroll->has_input())
+    {
+		if(mode == DROPCOUNT_MODE)
+			drop_count(strtol(scroll->get_input().c_str(), NULL, 10));
+		if(mode == REST_MODE)
+			rest_input(strtol(scroll->get_input().c_str(), NULL, 10));
+	}
 	return true;
 }
 
@@ -2015,6 +2025,91 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     return false;
 }
 
+bool Event::rest()
+{
+    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
+    Party *party = player->get_party();
+    if(rest_time != 0) // started the campfire; time to Rest
+    {
+        party->rest_sleep(rest_time, rest_guard-1);
+        endAction();
+        return true;
+    }
+
+    Actor *player_actor = player->get_actor();
+    MapCoord player_loc = player_actor->get_location();
+    ActorList *all_actors = actor_mgr->filter_party(actor_mgr->filter_distance(actor_mgr->get_actor_list(),
+                                                                               player_loc.x,player_loc.y,player_loc.z, 5));
+//    ActorList *enemies = ((U6Actor*)player_actor)->find_enemies();
+    if(all_actors->empty()) { delete all_actors; all_actors=0; }
+//    if(enemies->empty())    { delete enemies; enemies=0; }
+    uint8 level = 0;
+    string err_str;
+    scroll->display_string("Rest");
+    map_window->get_level(&level);
+    if(party->is_in_combat_mode())
+        err_str = "-Not while in Combat!";
+    else if(player_actor->get_actor_num() == 0
+            && player_actor->get_obj_n() != OBJ_U6_SHIP) // player is a vehicle
+        err_str = "-Can not be repaired!";
+//    else if(level != 0 && level != 5 && any_wall_tiles_nearby)
+//        err_str = "-Only in the wilderness!";
+//    else if(enemies)
+//        err_str = "-Not while foes are near!";
+//    else if(all_actors)
+//        err_str = "-Not while others are near!";
+    else if(!player->in_party_mode())
+        err_str = "-Not in solo mode!";
+//    else if(any_unpassable_tiles_in_3x3_area)
+//        err_str = "-Not enough room!";
+//    else if(party->horsed()/anyone in party == OBJ_U6_HORSE)
+//        err_str = "-Dismount first!";
+    else
+    {
+        scroll->display_string("\nHow many hours? ");
+        get_scroll_input("0123456789");
+        return true;
+    }
+    scroll->display_string(err_str);
+    scroll->display_string("\n");
+    endAction(true);
+    return false;
+}
+
+/* Get hours to Rest, or number of party member who will guard. These must be
+   entered in order. */
+bool Event::rest_input(uint16 input)
+{
+    Party *party = player->get_party();
+    scroll->set_input_mode(false);
+    scroll->display_string("\n");
+    if(rest_time == 0)
+    {
+        rest_time = input;
+        if(rest_time == 0)
+        {
+            endAction(true);
+            return false;
+        }
+        scroll->display_string("Who will guard? ");
+        get_scroll_input("0123456789");
+    }
+    else
+    {
+        rest_guard = input;
+        if(rest_guard > party->get_party_size())
+            rest_guard = 0;
+        if(rest_guard == 0)
+            scroll->display_string("(none)\n");
+        else
+        {
+            scroll->display_string(party->get_actor(rest_guard-1)->get_name());
+            scroll->display_string("\n");
+        }
+        party->rest_gather();
+    }
+    return true;
+}
 
 /* Walk the player towards the mouse cursor. (just 1 space for now)
  */
@@ -2160,6 +2255,12 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 	else if(mode == DROPTARGET_MODE)
 	{
 		drop();
+	}
+	else if(mode == REST_MODE) // sort of a hack to signal that the party has
+	{                          // gathered around the campfire
+        Game::get_game()->unpause_user();
+		mode = MOVE_MODE;
+		rest();
 	}
 	else if(mode == MOVE_MODE)
 	{
@@ -2318,6 +2419,9 @@ bool Event::newAction(EventMode new_mode)
 		case DROPCOUNT_MODE:
 			get_scroll_input(); /* "How many?" */
 			break;
+        case REST_MODE:
+            rest();
+            break;
 		default:
 			cancelAction();
 			return(false);
@@ -2348,6 +2452,7 @@ void Event::endAction(bool prompt)
     use_obj = NULL;
     selected_actor = NULL;
     drop_qty = 0;
+    rest_time = rest_guard = 0;
 //    Game::get_game()->set_mouse_pointer(0);
     map_window->updateBlacking();
 }

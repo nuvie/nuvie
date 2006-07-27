@@ -740,3 +740,39 @@ Actor *Party::get_slowest_actor()
     }
     return actor;
 }
+
+/* Gather everyone around a campfire to Rest. */
+void Party::rest_gather()
+{
+    Actor *player_actor = member[get_leader()].actor;
+    MapCoord player_loc = player_actor->get_location();
+    new TimedRestGather(player_loc.x, player_loc.y);
+}
+
+/* Start Resting for the specified number of hours, optionally with a party
+ * member standing guard. */
+void Party::rest_sleep(uint8 hours, sint16 guard)
+{
+    MsgScroll *scroll = game->get_scroll();
+    Actor *player_actor = member[get_leader()].actor;
+    MapCoord player_loc = player_actor->get_location();
+    Obj *campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y+1,player_loc.z);
+    game->get_obj_manager()->add_obj(campfire, true);
+    scroll->display_string("Mealtime!\n");
+    Actor *bard = 0;
+    for(int b=0; b<num_in_party; b++)
+        if(member[b].actor->get_obj_n() == OBJ_U6_MUSICIAN)
+        {
+            bard = member[b].actor;
+            break;
+        }
+    if(bard != 0)
+    {
+        Obj *musician_obj = bard->make_obj();
+        musician_obj->obj_n = OBJ_U6_MUSICIAN_PLAYING;
+        bard->init_from_obj(musician_obj);
+        scroll->display_string(bard->get_name());
+        scroll->display_string(" plays a tune.\n");
+    }
+    new TimedRest(hours, guard >= 0 ? member[guard].actor : 0);
+}

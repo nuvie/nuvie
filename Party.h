@@ -151,6 +151,8 @@ class Party {
  void enter_vehicle(Obj *ship_obj, uint32 step_delay = 0);
  void stop_walking();
  bool get_autowalk() { return(autowalk); }
+ void rest_gather();
+ void rest_sleep(uint8 hours, sint16 guard);
 
  protected:
  void reform_party(); // call when adding or removing members

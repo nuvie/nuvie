@@ -100,7 +100,7 @@ GUI_status CommandBar::hit(uint8 num)
         case 5: event->newAction(DROP_MODE); break;
         case 6: event->newAction(PUSHSELECT_MODE); break;
         case 7: event->newAction(USE_MODE); break;
-        case 8: printf("Rest\n"); break;
+        case 8: event->newAction(REST_MODE); break;
         case 9:
 /*            if(event->toggle_combat())
             {
