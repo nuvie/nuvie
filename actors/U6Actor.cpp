@@ -998,6 +998,8 @@ void U6Actor::wt_beg()
 void U6Actor::wt_sleep()
 {
  Obj *obj = obj_manager->get_obj(x,y,z);
+
+ can_move = false;
  if(obj)
    {
     if(obj->obj_n == OBJ_U6_BED)
@@ -1025,8 +1027,6 @@ void U6Actor::wt_sleep()
     obj_n = actor_type->dead_obj_n;
     frame_n = actor_type->dead_frame_n;
    }
-
- can_move = false;
 
 }
 
