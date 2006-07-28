@@ -435,6 +435,16 @@ bool ActorManager::save(NuvieIO *objlist)
     objlist->write1(actors[i]->obj_flags);
    }
 
+ objlist->seek(0x800); // Start of Status flags
+ 
+ for(i=0;i < 256; i++)
+   {
+    if(!actors[i]->alive) actors[i]->status_flags |= ACTOR_STATUS_DEAD;
+    else                  actors[i]->status_flags ^= ACTOR_STATUS_DEAD;
+    actors[i]->status_flags |= (actors[i]->alignment-1)<<5;
+    objlist->write1(actors[i]->status_flags);
+   }
+
  objlist->seek(0x17f1); // Start of Talk flags
 
  for(i=0;i < 256; i++)
