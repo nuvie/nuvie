@@ -341,9 +341,9 @@ bool MsgScroll::add_token(MsgText *token)
                    {
                     msg_line = add_new_line();
                    }
-
-                 if(msg_line->total_length + token->length() == scroll_width) //we add a new line but write to the old line.
-                    add_new_line();
+// This adds extra newlines. (SB-X)
+//                 if(msg_line->total_length + token->length() == scroll_width) //we add a new line but write to the old line.
+//                    add_new_line();
 
                  if(msg_line->total_length == 0 && token->s[0] == ' ') // discard whitespace at the start of a line.
                     return true;
@@ -649,8 +649,15 @@ void MsgScroll::Display(bool full_redraw)
    screen->update(area.x,area.y, scroll_width * 8, (scroll_height)*8);
 
    cursor_y = i-1;
-   if (msg_line)
+   if(msg_line)
+    {
      cursor_x = msg_line->total_length;
+     if(msg_line->total_length == scroll_width) // don't draw the cursor outside the scroll (SB-X)
+       {
+        cursor_y++;
+        cursor_x = 0;
+       }
+    }
    else
      cursor_x = area.x;
   }
