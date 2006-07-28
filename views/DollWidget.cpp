@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <cassert>
 // FIX need to subclass this class for U6, MD & SE
 #include "Configuration.h"
 #include "nuvieDefs.h"
