@@ -117,6 +117,16 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
  return map_tile->passable;
 }
 
+/* Returns true if an entire area is_passable(). */
+bool Map::is_passable(uint16 x1, uint16 y1, uint16 x2, uint16 y2, uint8 level)
+{
+    for(int x = x1; x<=x2; x++)
+        for(int y = y1; y<=y2; y++)
+            if(!is_passable((uint16)x,(uint16)y,level))
+                return false;
+    return true;
+}
+
 bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
 {
  uint8 *ptr;

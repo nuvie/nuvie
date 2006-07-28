@@ -150,6 +150,7 @@ class MapWindow: public GUI_Widget
 
  bool in_window(uint16 x, uint16 y, uint8 z);
  bool in_dungeon_level() { return(cur_level != 0 && cur_level != 5); }
+ bool in_town();
  // can put object at world location x,y?
  bool can_drop_obj(uint16 x, uint16 y, Actor *actor = NULL);
 

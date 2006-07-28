@@ -29,7 +29,7 @@
 
 using std::list;
 using std::string;
-
+#include "ActorList.h"
 #include "Map.h"
 #include "ObjManager.h"
 
@@ -156,7 +156,12 @@ class Actor
     bool operator()(Actor *a1, Actor *a2) const { return(a1->moves > a2->moves); } };
 
  struct cmp_move_fraction {
-    bool operator()(Actor *a1, Actor *a2) const { assert(a1->dex>0); assert(a2->dex>0); return(a1->moves/a1->dex > a2->moves/a2->dex); } };
+    bool operator()(Actor *a1, Actor *a2) const {
+    if(a1->dex==0) { a1->dex=1;
+                     printf("warning: %s (%d) has 0 dex!\n",a1->get_name(),a1->id_n); }
+    if(a2->dex==0) { a2->dex=1;
+                     printf("warning: %s (%d) has 0 dex!\n",a2->get_name(),a2->id_n); }
+    return(a1->moves/a1->dex > a2->moves/a2->dex); } };
 
  struct cmp_distance_to_loc {
     MapCoord cmp_loc;
@@ -303,6 +308,7 @@ class Actor
  virtual void set_worktype(uint8 new_worktype);
  uint8 get_combat_mode() { return combat_mode; }
  void set_combat_mode(uint8 new_mode)  { combat_mode = new_mode; }
+ virtual void revert_worktype() { }
 
  uint8 get_direction() { return(direction); }
  void set_direction(sint16 rel_x, sint16 rel_y);
@@ -352,6 +358,7 @@ class Actor
  virtual void die();
  virtual bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y) { return true; }
  void display_condition();
+ ActorList *find_enemies(); // returns list or 0 if no enemies nearby
  
  U6LList *get_inventory_list();
  bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_zero_qual = true);

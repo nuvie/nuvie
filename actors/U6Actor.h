@@ -81,6 +81,7 @@ class U6Actor: public Actor
  void update();
  bool updateSchedule(uint8 hour);
  void set_worktype(uint8 new_worktype);
+ void revert_worktype();
  void preform_worktype();
  void set_direction(uint8 d);
  void face_location(uint16 lx, uint16 ly);
@@ -99,7 +100,6 @@ class U6Actor: public Actor
  Obj *inventory_get_food(Obj *container=0);
 
  bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
- ActorList *find_enemies();
  ActorList *find_players();
 
  bool is_immobile(); // frozen by worktype or status

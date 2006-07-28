@@ -331,8 +331,7 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags f
        {
         a = map->get_actor(new_x,new_y,new_z);
         if(a)
-          return (a->is_passable() || is_passable()); // we can move over or under some actors. eg mice, dragons etc.
-        // FIXME: but I dont think we can pass dogs/cats/mongbats can we?
+          return a->can_be_passed(this); // we can move over or under some actors. eg mice, dragons etc.
        }
 
 //    if(map->is_passable(new_x,new_y,new_z) == false)
@@ -1235,6 +1234,8 @@ void Actor::set_worktype(uint8 new_worktype)
  work_location.x = x;
  work_location.y = y;
  work_location.z = z;
+
+ status_flags ^= ACTOR_STATUS_ASLEEP;
  return ;
 }
 
@@ -1631,4 +1632,41 @@ sint8 Actor::count_readied_objects(sint32 obj_n, sint16 frame_n, sint16 quality)
             ++count;
     }
     return count;
+}
+
+// GOOD->CHAOTIC,EVIL
+// NEUTRAL->CHAOTIC
+// EVIL->GOOD,CHAOTIC
+// CHAOTIC->ALL except CHAOTIC
+ActorList *Actor::find_enemies()
+{
+    const uint8 in_range = 24;
+    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
+    ActorList *actors = actor_mgr->filter_distance(actor_mgr->get_actor_list(), x,y,z, in_range);
+    actor_mgr->filter_alignment(actors, alignment); // filter own alignment
+    if(alignment != ACTOR_ALIGNMENT_CHAOTIC)
+    {
+        if(alignment == ACTOR_ALIGNMENT_NEUTRAL)
+        {
+            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_GOOD); // filter other friendlies
+            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_EVIL);
+        }
+        else
+            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_NEUTRAL);
+    }
+
+    // remove party members and invisible actors FIXME: set party members to leader's alignment
+    ActorIterator a = actors->begin();
+    while(a != actors->end())
+        if(in_party && (*a)->in_party)
+            a = actors->erase(a);
+        else if((*a)->is_invisible())
+            a = actors->erase(a);
+        else ++a;
+    if(actors->empty())
+    {
+        delete actors;
+        return NULL; // no enemies in range
+    }
+    return actors;
 }

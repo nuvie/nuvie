@@ -52,6 +52,7 @@ sint8 form_y; // relative position in front or in back of leader
 #define PARTY_FORM_ROW      2
 #define PARTY_FORM_DELTA    4
 #define PARTY_FORM_COMBAT   7
+#define PARTY_FORM_REST     8
 
 /*   0 <- standard  *
  *  1 2             *
@@ -143,6 +144,7 @@ class Party {
  bool has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual=true);
  bool remove_obj(uint16 obj_n, uint8 quality);
  uint16 who_has_obj(uint16 obj_n, uint8 quality);
+ bool is_horsed(); // is anyone on a horse?
 
  // Automatic-walking. These methods should be replaced with ActorActions.
  void walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay = 0);

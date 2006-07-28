@@ -692,6 +692,7 @@ TimedRestGather::TimedRestGather(uint16 x, uint16 y)
 {
     MapCoord center = MapCoord(x, y);
     init(&center, 0, 0); // set dest to campfire location
+    Game::get_game()->get_map_window()->updateAmbience();
 }
 
 /* Repeat until everyone is in the circle. */
@@ -741,8 +742,7 @@ bool TimedRestGather::move_party()
                     MapCoord actor_dest(dest->x + x-1, dest->y + y-1, loc.z);
                     if(actor_dest == loc)
                     {
-                        if(actor->get_pathfinder() != 0)
-                            actor->face_location(dest->x,dest->y); // look at camp
+                        actor->face_location(dest->x,dest->y); // look at camp
                         actor->delete_pathfinder();
                     }
                     else
@@ -750,6 +750,7 @@ bool TimedRestGather::move_party()
                         moving = true; // still moving to circle
                         if(actor->get_pathfinder() == 0)
                             actor->pathfind_to(actor_dest.x, actor_dest.y);
+                        actor->set_moves_left(actor->get_dexterity());
                         actor->update(); // ActorManager is paused
                     }
                     x=3;y=3; break; // break to first loop
@@ -759,19 +760,31 @@ bool TimedRestGather::move_party()
 }
 
 TimedRest::TimedRest(uint8 hours, Actor *who_will_guard)
-                    : TimedAdvance(hours), party(Game::get_game()->get_party()),
+                    : TimedAdvance(hours, 80), party(Game::get_game()->get_party()),
                       scroll(Game::get_game()->get_scroll()), sleeping(0),
                       print_message(0)
 {
     lookout = who_will_guard;
-//    printf("TimedRest(%d, %s)\n",hours,who_will_guard->get_name());
+    Game::get_game()->pause_world();
 }
 
 /* This is the only place we know that the TimedAdvance has completed. */
 TimedRest::~TimedRest()
 {
-    scroll->display_prompt();
+    MapCoord loc = Game::get_game()->get_player()->get_actor()->get_location();
+    Obj *campfire = Game::get_game()->get_obj_manager()->get_obj_of_type_from_location(253, loc.x, loc.y+1, loc.z);
+    assert(campfire != 0);
+    campfire->frame_n = 0; // extinguish campfire
+
+    for(int s=0; s<party->get_party_size(); s++)
+    {
+        party->get_actor(s)->revert_worktype();
+    }
+    Game::get_game()->unpause_world();
+    Game::get_game()->get_player()->set_mapwindow_centered(true);
+    Game::get_game()->unpause_user();
     scroll->display_string("\n");
+    scroll->display_prompt();
 }
 
 void TimedRest::timed(uint32 evtime)
@@ -782,18 +795,21 @@ void TimedRest::timed(uint32 evtime)
         {
             prev_evtime = evtime; // normally set by TimedAdvance::timed()
 
-            eat(party->get_actor(print_message));
-            ++print_message;
-            if(print_message == party->get_party_size())
+            if(print_message < party->get_party_size())
+                eat(party->get_actor(print_message));
+            else
             {
                 sleeping = true; // finished eating
                 sleep();
             }
+            ++print_message;
         }
     }
     else // sleeping
     {
         TimedAdvance::timed(evtime);
+        for(int s=0; s<party->get_party_size(); s++)
+            party->get_actor(s)->update_time();
     }
 }
 
@@ -824,15 +840,31 @@ void TimedRest::bard_play()
 /* Start sleeping until the requested time. One person can stand guard. */
 void TimedRest::sleep()
 {
+    // FIXME: changing to SLEEP worktype should automatically do this
+    Actor *musician = 0; // bard stops playing
+    for(int b=0; b<party->get_party_size(); b++)
+        if(party->get_actor(b)->get_obj_n() == 392) // OBJ_U6_MUSICIAN_PLAYING
+        {
+            musician = party->get_actor(b);
+            Obj *bard_obj = musician->make_obj();
+            bard_obj->obj_n = 386; // OBJ_U6_MUSICIAN
+            musician->init_from_obj(bard_obj);
+            break;
+        }
+
     for(int s=0; s<party->get_party_size(); s++)
     {
         Actor *actor = party->get_actor(s);
         if(actor == lookout)
+        {
             actor->set_worktype(0x11); // WORKTYPE_U6_LOOKOUT
+            scroll->display_string("\n");
+            scroll->display_string(actor->get_name());
+            scroll->display_string(" stands guard while the party rests.\n");
+        }
         else
         {
             actor->set_worktype(0x91); // WORKTYPE_U6_SLEEP
-            actor->update(); // update frame
         }
     }
 }

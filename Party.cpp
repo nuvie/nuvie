@@ -320,6 +320,15 @@ void Party::reform_party()
             break;
 //        case PARTY_FORM_COMBAT: // positions determined by COMBAT mode
 //            break;
+        case PARTY_FORM_REST: // special formation used while Resting
+            member[1].form_x = 0; member[1].form_y = -2;
+            member[2].form_x = 1; member[2].form_y = -1;
+            member[3].form_x = -1; member[3].form_y = -1;
+            member[4].form_x = 1; member[4].form_y = 0;
+            member[5].form_x = -1; member[5].form_y = -2;
+            member[6].form_x = 1; member[6].form_y = -2;
+            member[7].form_x = -1; member[7].form_y = 0;
+            break;
         case PARTY_FORM_STANDARD: // U6
         default:
             // put first follower behind or behind and to the left of Avatar
@@ -746,6 +755,11 @@ void Party::rest_gather()
 {
     Actor *player_actor = member[get_leader()].actor;
     MapCoord player_loc = player_actor->get_location();
+    Obj *campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y,player_loc.z);
+    game->get_obj_manager()->add_obj(campfire, true);
+
+    game->get_player()->set_mapwindow_centered(false);
+    game->pause_user();
     new TimedRestGather(player_loc.x, player_loc.y);
 }
 
@@ -756,8 +770,7 @@ void Party::rest_sleep(uint8 hours, sint16 guard)
     MsgScroll *scroll = game->get_scroll();
     Actor *player_actor = member[get_leader()].actor;
     MapCoord player_loc = player_actor->get_location();
-    Obj *campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y+1,player_loc.z);
-    game->get_obj_manager()->add_obj(campfire, true);
+
     scroll->display_string("Mealtime!\n");
     Actor *bard = 0;
     for(int b=0; b<num_in_party; b++)
@@ -775,4 +788,13 @@ void Party::rest_sleep(uint8 hours, sint16 guard)
         scroll->display_string(" plays a tune.\n");
     }
     new TimedRest(hours, guard >= 0 ? member[guard].actor : 0);
+}
+
+
+bool Party::is_horsed()
+{
+    for(int p=0; p<num_in_party; p++)
+        if(member[p].actor->get_obj_n() == OBJ_U6_HORSE_WITH_RIDER)
+            return true;
+    return false;
 }

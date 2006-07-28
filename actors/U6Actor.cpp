@@ -1000,6 +1000,7 @@ void U6Actor::wt_sleep()
  Obj *obj = obj_manager->get_obj(x,y,z);
 
  can_move = false;
+ status_flags |= ACTOR_STATUS_ASLEEP;
  if(obj)
    {
     if(obj->obj_n == OBJ_U6_BED)
@@ -1705,44 +1706,7 @@ bool U6Actor::is_immobile()
 
 bool U6Actor::is_sleeping()
 {
-    return(worktype == WORKTYPE_U6_SLEEP);
-}
-
-// GOOD->CHAOTIC,EVIL
-// NEUTRAL->CHAOTIC
-// EVIL->GOOD,CHAOTIC
-// CHAOTIC->ALL except CHAOTIC
-ActorList *U6Actor::find_enemies()
-{
-    const uint8 in_range = 5;
-    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
-    ActorList *actors = actor_mgr->filter_distance(actor_mgr->get_actor_list(), x,y,z, in_range);
-    actor_mgr->filter_alignment(actors, alignment); // filter own alignment
-    if(alignment != ACTOR_ALIGNMENT_CHAOTIC)
-    {
-        if(alignment == ACTOR_ALIGNMENT_NEUTRAL)
-        {
-            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_GOOD); // filter other friendlies
-            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_EVIL);
-        }
-        else
-            actor_mgr->filter_alignment(actors, ACTOR_ALIGNMENT_NEUTRAL);
-    }
-
-    // remove party members and invisible actors FIXME: set party members to leader's alignment
-    ActorIterator a = actors->begin();
-    while(a != actors->end())
-        if(in_party && static_cast<U6Actor*>(*a)->in_party)
-            a = actors->erase(a);
-        else if((*a)->is_invisible())
-            a = actors->erase(a);
-        else ++a;
-    if(actors->empty())
-    {
-        delete actors;
-        return NULL; // no enemies in range
-    }
-    return actors;
+    return(Actor::is_sleeping() || worktype == WORKTYPE_U6_SLEEP);
 }
 
 /* Find Party members. */
@@ -1834,4 +1798,14 @@ Obj *U6Actor::inventory_get_food(Obj *container)
             return inventory_get_food(obj);
     }
     return 0;
+}
+
+/* Set worktype to normal non-combat activity. */
+void U6Actor::revert_worktype()
+{
+    Party *party = Game::get_game()->get_party();
+    if(in_party)
+        set_worktype(WORKTYPE_U6_IN_PARTY);
+    if(party->get_leader() >= 0 && party->get_actor(party->get_leader()) == this)
+        set_worktype(WORKTYPE_U6_PLAYER);
 }

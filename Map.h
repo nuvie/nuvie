@@ -140,6 +140,8 @@ class Map
  bool actor_at_location(uint16 x, uint16 y, uint8 level);
  uint8 get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
 
+ bool is_passable(uint16 x1, uint16 y1, uint16 x2, uint16 y2, uint8 level);
+
  const char *look(uint16 x, uint16 y, uint8 level);
 
  bool lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,

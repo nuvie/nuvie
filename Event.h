@@ -167,6 +167,7 @@ class Event : public GUI_CallBack
  bool drop(uint16 x, uint16 y) { return(drop(use_obj, drop_qty, x, y)); }
  bool rest();
  bool rest_input(uint16 input);
+ bool can_rest(std::string &err_str);
  void walk_to_mouse_cursor(uint32 mx, uint32 my);
  void multiuse(uint16 wx, uint16 wy);
  bool toggle_combat();

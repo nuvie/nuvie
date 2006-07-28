@@ -1672,7 +1672,6 @@ SDL_Surface *MapWindow::get_sdl_surface(uint16 x, uint16 y, uint16 w, uint16 h)
  return(new_surface);
 }
 
-
 /* Returns the overlay surface. A new 8bit overlay is created if necessary. */
 SDL_Surface *MapWindow::get_overlay()
 {
@@ -1682,11 +1681,20 @@ SDL_Surface *MapWindow::get_overlay()
     return(overlay);
 }
 
-
 /* Set the overlay surface. The current overlay is deleted if necessary. */
 void MapWindow::set_overlay(SDL_Surface *surfpt)
 {
     if(overlay && (overlay != surfpt))
         SDL_FreeSurface(overlay);
     overlay = surfpt;
+}
+
+/* Returns true if town tiles are visible in the MapWindow. */ 
+bool MapWindow::in_town()
+{
+    for(std::vector<TileInfo>::iterator ti = m_ViewableTiles.begin();
+        ti != m_ViewableTiles.end(); ti++)
+        if((*ti).t->flags1&TILEFLAG_WALL)
+            return true;
+    return false;
 }

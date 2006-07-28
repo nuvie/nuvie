@@ -2025,55 +2025,66 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     return false;
 }
 
-bool Event::rest()
+bool Event::can_rest(std::string &err_str)
 {
-    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
+    Map *map = Game::get_game()->get_game_map();
     Party *party = player->get_party();
-    if(rest_time != 0) // started the campfire; time to Rest
-    {
-        party->rest_sleep(rest_time, rest_guard-1);
-        endAction();
-        return true;
-    }
-
+    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
     Actor *player_actor = player->get_actor();
     MapCoord player_loc = player_actor->get_location();
-    ActorList *all_actors = actor_mgr->filter_party(actor_mgr->filter_distance(actor_mgr->get_actor_list(),
-                                                                               player_loc.x,player_loc.y,player_loc.z, 5));
-//    ActorList *enemies = ((U6Actor*)player_actor)->find_enemies();
-    if(all_actors->empty()) { delete all_actors; all_actors=0; }
-//    if(enemies->empty())    { delete enemies; enemies=0; }
+
+    ActorList *enemies = 0;
+    ActorList *all_actors = 0;
     uint8 level = 0;
-    string err_str;
-    scroll->display_string("Rest");
     map_window->get_level(&level);
     if(party->is_in_combat_mode())
         err_str = "-Not while in Combat!";
-    else if(player_actor->get_actor_num() == 0
+    else if(party->is_in_vehicle()
             && player_actor->get_obj_n() != OBJ_U6_SHIP) // player is a vehicle
         err_str = "-Can not be repaired!";
-//    else if(level != 0 && level != 5 && any_wall_tiles_nearby)
-//        err_str = "-Only in the wilderness!";
-//    else if(enemies)
-//        err_str = "-Not while foes are near!";
-//    else if(all_actors)
-//        err_str = "-Not while others are near!";
+    else if((level != 0 && level != 5) || map_window->in_town())
+        err_str = "-Only in the wilderness!";
+    else if((enemies = player_actor->find_enemies()))
+        err_str = "-Not while foes are near!";
+    else if((all_actors = actor_mgr->filter_party(actor_mgr->filter_distance(actor_mgr->get_actor_list(),
+                                                    player_loc.x,player_loc.y,player_loc.z, 5)))
+            && !all_actors->empty())
+        err_str = "-Not while others are near!";
     else if(!player->in_party_mode())
         err_str = "-Not in solo mode!";
-//    else if(any_unpassable_tiles_in_3x3_area)
-//        err_str = "-Not enough room!";
-//    else if(party->horsed()/anyone in party == OBJ_U6_HORSE)
-//        err_str = "-Dismount first!";
+    else if(!map->is_passable(player_loc.x-1,player_loc.y-1,
+                              player_loc.x+1,player_loc.y+1,player_loc.z))
+        err_str = "-Not enough room!";
+    else if(party->is_horsed())
+        err_str = "-Dismount first!";
     else
+        return true;
+    delete enemies;
+    delete all_actors;
+    return false;
+}
+
+bool Event::rest()
+{
+    if(rest_time != 0) // already got time & started the campfire; time to Rest
     {
-        scroll->display_string("\nHow many hours? ");
-        get_scroll_input("0123456789");
+        player->get_party()->rest_sleep(rest_time, rest_guard-1);
         return true;
     }
-    scroll->display_string(err_str);
-    scroll->display_string("\n");
-    endAction(true);
-    return false;
+    scroll->display_string("Rest");
+
+    string err_str;
+    if(!can_rest(err_str))
+    {
+        scroll->display_string(err_str);
+        scroll->display_string("\n");
+        endAction(true);
+        return false;
+    }
+
+    scroll->display_string("\nHow many hours? ");
+    get_scroll_input("0123456789");
+    return true;
 }
 
 /* Get hours to Rest, or number of party member who will guard. These must be
@@ -2091,8 +2102,12 @@ bool Event::rest_input(uint16 input)
             endAction(true);
             return false;
         }
-        scroll->display_string("Who will guard? ");
-        get_scroll_input("0123456789");
+        if(party->get_party_size() > 1)
+        {
+            scroll->display_string("Who will guard? ");
+            get_scroll_input("0123456789");
+        }
+        else party->rest_gather(); // nobody can guard; start now
     }
     else
     {
@@ -2100,10 +2115,11 @@ bool Event::rest_input(uint16 input)
         if(rest_guard > party->get_party_size())
             rest_guard = 0;
         if(rest_guard == 0)
-            scroll->display_string("(none)\n");
+            scroll->display_string("none\n");
         else
         {
             scroll->display_string(party->get_actor(rest_guard-1)->get_name());
+            scroll->display_string("\n");
             scroll->display_string("\n");
         }
         party->rest_gather();
@@ -2258,8 +2274,7 @@ void Event::doAction(sint16 rel_x, sint16 rel_y)
 	}
 	else if(mode == REST_MODE) // sort of a hack to signal that the party has
 	{                          // gathered around the campfire
-        Game::get_game()->unpause_user();
-		mode = MOVE_MODE;
+        set_mode(WAIT_MODE);
 		rest();
 	}
 	else if(mode == MOVE_MODE)
