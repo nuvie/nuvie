@@ -1237,7 +1237,8 @@ void Actor::set_worktype(uint8 new_worktype)
  work_location.y = y;
  work_location.z = z;
 
- status_flags ^= ACTOR_STATUS_ASLEEP;
+ if(status_flags & ACTOR_STATUS_ASLEEP)
+   status_flags ^= ACTOR_STATUS_ASLEEP;
  return ;
 }
 
@@ -1521,10 +1522,10 @@ void Actor::print()
     printf("walk_frame: %d\n", actor->walk_frame);
 
     printf("can_move: %s\n", actor->can_move ? "true" : "false");
-//    printf("alive: %s\n", actor->alive ? "true" : "false");
+    printf("alive: %s\n", actor->alive ? "true" : "false");
     printf("in_party: %s\n", actor->in_party ? "true" : "false");
     printf("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
-//    printf("met_player: %s\n", actor->met_player ? "true" : "false");
+    printf("met_player: %s\n", actor->met_player ? "true" : "false");
     printf("is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
 
     printf("moves: %d\n", actor->moves);
@@ -1540,7 +1541,7 @@ void Actor::print()
            actor->intelligence);
     printf(" magic: %d\n", actor->magic);
 
-    printf(" alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
+    printf("alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
 
     uint8 combat_mode = actor->combat_mode;
     wt_string = get_worktype_string(actor->combat_mode);

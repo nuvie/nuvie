@@ -87,7 +87,7 @@ class ActorManager
 
  void set_update(bool u) { update = u; }
  bool get_update()       { return(update); }
- void set_combat_movement(bool c) { combat_movement = c; }
+ void set_combat_movement(bool c);
 
  void updateActors(uint16 x, uint16 y, uint8 z);
  void twitchActors();

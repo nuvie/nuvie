@@ -439,8 +439,6 @@ bool ActorManager::save(NuvieIO *objlist)
  
  for(i=0;i < 256; i++)
    {
-    if(!actors[i]->alive) actors[i]->status_flags |= ACTOR_STATUS_DEAD;
-    else                  actors[i]->status_flags ^= ACTOR_STATUS_DEAD;
     actors[i]->status_flags |= (actors[i]->alignment-1)<<5;
     objlist->write1(actors[i]->status_flags);
    }
@@ -1148,4 +1146,10 @@ ActorList *ActorManager::filter_party(ActorList *list)
         else ++i;
     }
     return list;
+}
+
+void ActorManager::set_combat_movement(bool c)
+{
+    combat_movement = c;
+    update_active_actors(cur_x,cur_y,cur_z);
 }
