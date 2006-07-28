@@ -2038,7 +2038,7 @@ bool U6UseCode::use_sextant(Obj *obj, UseCodeEvent ev)
       lat = 'N';
      }
 
-    sprintf(buf, "\n%2d{%c, %2d{%c\n", y, lat, x, lon);
+    sprintf(buf, "\n%d{%c, %d{%c\n", y, lat, x, lon);
     scroll->display_string(buf);
    }
  else
