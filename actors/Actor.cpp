@@ -71,7 +71,9 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  light = 0;
 
  name ="";
+ status_flags = 0;
  talk_flags = 0;
+ obj_flags = 0;
  body_armor_class = 0;
  readied_armor_class = 0;
 }
