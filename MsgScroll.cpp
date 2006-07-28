@@ -652,9 +652,10 @@ void MsgScroll::Display(bool full_redraw)
    if(msg_line)
     {
      cursor_x = msg_line->total_length;
-     if(msg_line->total_length == scroll_width) // don't draw the cursor outside the scroll (SB-X)
+     if(cursor_x == scroll_width) // don't draw the cursor outside the scroll (SB-X)
        {
-        cursor_y++;
+        if(cursor_y+1 < scroll_height)
+         cursor_y++;
         cursor_x = 0;
        }
     }
