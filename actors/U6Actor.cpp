@@ -1070,11 +1070,11 @@ void U6Actor::wt_combat()
         ActorList *actors = in_party?find_enemies():find_players();
         if(actors)
         {
-printf("%s yells \"Aiee!", get_name());
+//printf("%s yells \"Aiee!", get_name());
             actor_mgr->sort_nearest(actors,x,y,z);
             if(worktype == WORKTYPE_U6_COMBAT_RETREAT)
             {
-printf(" %s is trying to get me!\"", actors->front()->get_name());
+//printf(" %s is trying to get me!\"", actors->front()->get_name());
                 repel_from(actors->front());
             }
             else // shy creatures only flee if very close
@@ -1086,7 +1086,7 @@ printf(" %s is trying to get me!\"", actors->front()->get_name());
                     ploc = pactor->get_location();
                     if(is_nearby(ploc, 2))
                     {
-printf(" %s is trying to get me!", pactor->get_name());
+//printf(" %s is trying to get me!", pactor->get_name());
                         repel_from(pactor);
                         break;
                     }
@@ -1094,7 +1094,7 @@ printf(" %s is trying to get me!", pactor->get_name());
                 }
             }
             delete actors;
-printf("\"\n");
+//printf("\"\n");
         }
     }
     // follow
@@ -1112,7 +1112,7 @@ printf("\"\n");
     // turn wild if near player
     if(worktype == WORKTYPE_U6_COMBAT_UNFRIENDLY)
     {
-printf("%s looks threatening.\n", get_name());
+//printf("%s looks threatening.\n", get_name());
         ActorList *actors = find_players();
         if(actors)
         {
@@ -1129,11 +1129,11 @@ printf("%s looks threatening.\n", get_name());
        || worktype == WORKTYPE_U6_COMBAT_ASSAULT
        || worktype == WORKTYPE_U6_COMBAT_REAR)
     {
-printf("%s is looking for trouble", get_name());
+//printf("%s is looking for trouble", get_name());
         ActorList *actors = find_enemies();
         if(actors)
         {
-printf(", and finds someone to fight!\n");
+//printf(", and finds someone to fight!\n");
             if(worktype == WORKTYPE_U6_COMBAT_BERSERK)
                 sort(actors->begin(), actors->end(), cmp_level());
             else
@@ -1146,7 +1146,7 @@ printf(", and finds someone to fight!\n");
             }
             delete actors;
         }
-else printf(".\n");
+//else printf(".\n");
     }
 
     if(!attacking && !pathfinder)
@@ -1576,6 +1576,13 @@ inline void U6Actor::twitch_surrounding_hydra_objs()
 
 inline void U6Actor::twitch_obj(Obj *obj)
 {
+ if(actor_type->frames_per_direction == 0)
+   {
+    printf("warning: %s frames_per_direction == 0\n",get_name());
+    obj->frame_n = (obj->frame_n / (1 * 4) * (1 * 4)) + direction * actor_type->tiles_per_direction +
+                       walk_frame * actor_type->tiles_per_frame;
+    return;
+   }
  obj->frame_n = (obj->frame_n / (actor_type->frames_per_direction * 4) * (actor_type->frames_per_direction * 4)) + direction * actor_type->tiles_per_direction +
                        walk_frame * actor_type->tiles_per_frame;
 
