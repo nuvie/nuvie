@@ -3,7 +3,7 @@ class U6UseCode;
 const U6ObjectType U6ObjectTypes[] =
 {
 // (object,frame,distance to trigger,event(s),function,properties)
-    { OBJ_U6_EGG,0,0,USE_EVENT_USE/*|USE_EVENT_LOAD*/,&U6UseCode::use_egg,OBJTYPE_NONE },
+    { OBJ_U6_EGG,0,0,USE_EVENT_USE/*|USE_EVENT_LOAD*/,&U6UseCode::use_egg,OBJTYPE_CONTAINER },
 
     { OBJ_U6_OAKEN_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door,OBJTYPE_NONE },
     { OBJ_U6_WINDOWED_DOOR,255,0,USE_EVENT_USE,&U6UseCode::use_door,OBJTYPE_NONE },
