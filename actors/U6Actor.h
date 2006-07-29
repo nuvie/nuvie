@@ -116,6 +116,7 @@ class U6Actor: public Actor
  bool init_dragon();
  bool init_hydra();
  bool init_silver_serpent();
+ void init_new_silver_serpent();
  void gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, uint16 az);
  inline bool check_move_silver_serpent(uint16 x, uint16 y);
  bool sit_on_chair(Obj *obj);

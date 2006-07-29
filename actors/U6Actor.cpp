@@ -268,10 +268,47 @@ bool U6Actor::init_silver_serpent()
   gather_snake_objs_from_map(obj, x, y, z);
  else //new snake
   { //FIXME we need to make long, randomly layed out snakes here!
-   init_surrounding_obj(sx, sy, sz, OBJ_U6_SILVER_SERPENT, tmp_frame_n);
+   init_new_silver_serpent();
   }
  
  return true;
+}
+
+void U6Actor::init_new_silver_serpent()
+{
+ const struct 
+  {
+   uint8 body_frame_n;
+   uint8 tail_frame_n;
+   sint8 x_offset;
+   sint8 y_offset;
+  } movetbl[4] = { {10,1,0,1}, {13,7,1,0}, {12,5,0,-1}, {11,3,-1,0} };
+
+ uint8 i,j;
+ uint16 nx, ny;
+ Obj *obj;
+ uint8 length = 5 + NUVIE_RAND() % 5; //FIXME. The original worked out length from qty in the serpent embryo obj.
+ 
+ nx = x;
+ ny = y;
+ 
+ set_direction(NUVIE_DIR_N); //make sure we are facing north.
+ 
+ for(i=0,j=0;i<length;i++)
+ {
+   nx += movetbl[j].x_offset;
+   ny += movetbl[j].y_offset;
+
+   init_surrounding_obj(nx, ny, z, OBJ_U6_SILVER_SERPENT, (i == length - 1 ? movetbl[j].tail_frame_n : movetbl[j].body_frame_n));
+   
+   obj = (Obj *)surrounding_objects.back();
+   obj->quality = i + 1; //body segment number
+   obj->qty = id_n; //actor id number
+   
+   j = (j + 1) % 4;
+ }
+ 
+ return;
 }
 
 void U6Actor::gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, uint16 az)

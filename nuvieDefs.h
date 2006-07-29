@@ -17,6 +17,16 @@
 # endif
 #endif
 
+typedef unsigned char uint8;
+typedef unsigned short uint16;
+typedef unsigned int uint32;
+
+typedef signed char sint8;
+typedef signed short sint16;
+typedef signed int sint32;
+
+typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
+
 #define NUVIE_GAME_NONE  0
 #define NUVIE_GAME_U6    1
 #define NUVIE_GAME_MD    2
@@ -63,13 +73,6 @@ typedef unsigned char BOOL;
   //#define U6PATH_DELIMITER '/' // win32 file functions work fine with /
 #endif
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-
-typedef signed char sint8;
-typedef signed short sint16;
-typedef signed int sint32;
 
 #ifdef MACOSX
 #define NUVIE_RAND random

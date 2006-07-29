@@ -64,7 +64,7 @@ typedef enum
 
 class Game
 {
- uint8 game_type;
+ nuvie_game_t game_type;
  static Game *game;
  Configuration *config;
  Screen *screen;
@@ -107,7 +107,7 @@ class Game
  Game(Configuration *cfg);
  ~Game();
 
- bool loadGame(Screen *screen, uint8 type);
+ bool loadGame(Screen *screen, nuvie_game_t type);
  void init_cursor();
 
  void play();

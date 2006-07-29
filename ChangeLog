@@ -1,3 +1,14 @@
+2006-07-29  Eric Fry <efry at users.sourceforge.net>
+	* Added support for longer silver serpents. New serpents are added to
+	  the map in a coil.
+	* Only allow one serpent to hatch per egg.
+	* New serpents are a random length ranging from 5 to 9 tiles long
+	  not including the head tile.
+	* Changed location of ActorList.h in XCode build config.
+	* removed nuvie_game_t typedef from Converse.h and moved it to
+	  nuvieDefs.h
+	* Added gametype to EggManger
+
 2006-07-29  Joseph Applegate <sb-x at users.sourceforge.net>
 	* New function MsgScroll::set_autobreak() is now required to add new
 	  page breaks to the scroll automatically.

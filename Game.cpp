@@ -121,7 +121,7 @@ Game::~Game()
     if(egg_manager) delete egg_manager;
 }
 
-bool Game::loadGame(Screen *s, uint8 type)
+bool Game::loadGame(Screen *s, nuvie_game_t type)
 {
  screen = s;
  game_type = type;
@@ -156,7 +156,7 @@ bool Game::loadGame(Screen *s, uint8 type)
 
    game_map = new Map(config);
 
-   egg_manager = new EggManager(config, game_map);
+   egg_manager = new EggManager(config, game_type, game_map);
 
    tile_manager = new TileManager(config);
    tile_manager->loadTiles();

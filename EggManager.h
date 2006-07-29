@@ -47,12 +47,13 @@ class EggManager
  Map *map;
  ActorManager *actor_manager;
  ObjManager *obj_manager;
-
+ nuvie_game_t gametype; // what game is being played?
+ 
  std::list<Egg *> egg_list;
 
  public:
 
- EggManager(Configuration *cfg, Map *m);
+ EggManager(Configuration *cfg, nuvie_game_t type, Map *m);
  ~EggManager();
 
  void set_actor_manager(ActorManager *am) { actor_manager = am; }

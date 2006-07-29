@@ -44,7 +44,7 @@ class ConvScript;
 
 using std::string;
 
-typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
+
 typedef uint32 converse_value; // any single value read from a script
 typedef unsigned char* convscript_buffer;
 

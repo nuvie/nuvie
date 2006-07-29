@@ -35,7 +35,7 @@
 #include "NuvieIOFile.h"
 #include "GameClock.h"
 #include "Game.h"
-
+#include "U6objects.h" //needed for silver serpent exception
 
 /* ALWAYS means the time is unset, is unknown, or day and night are both set */
 typedef enum
@@ -49,9 +49,10 @@ typedef enum
                             : (EQ < 30) ? EGG_HATCH_NIGHT : EGG_HATCH_ALWAYS;
 
 
-EggManager::EggManager(Configuration *cfg, Map *m)
+EggManager::EggManager(Configuration *cfg, nuvie_game_t type, Map *m)
 {
  config = cfg;
+ gametype = type;
  map = m;
 }
 
@@ -162,6 +163,7 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
  U6Link *link;
  uint16 i;
  Obj *obj, *spawned_obj;
+ uint16 qty;
  uint8 hour = Game::get_game()->get_clock()->get_hour();
  uint8 alignment = egg->quality % 10;
  
@@ -178,7 +180,12 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
              for(link = egg->container->start(); link != NULL; link = link->next)
                {
                 obj = (Obj *)link->data;
-                for(i = 0; i < obj->qty; i++)
+                qty = obj->qty;
+
+                if(gametype == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_SILVER_SERPENT) //U6 silver serpents only hatch once per egg.
+                  qty = 1;
+
+                for(i = 0; i < qty; i++)
                  {
 				  if(obj->quality != 0) /* spawn temp actor we know it's an actor if it has a non-zero worktype. */
 				  {
