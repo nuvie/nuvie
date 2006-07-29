@@ -750,8 +750,8 @@ Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, sint16 quality, sin
 
  if(obj_list == NULL)
   return NULL;
-
- for(link=obj_list->start();link != NULL; link=link->next)
+ // start from the top of the stack
+ for(link=obj_list->end();link != NULL; link=link->prev)
    {
     obj = (Obj *)link->data;
     if(obj->obj_n == obj_n)
