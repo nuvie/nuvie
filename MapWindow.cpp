@@ -606,9 +606,8 @@ inline void MapWindow::drawActor(Actor *actor)
             for(int x = 0; x < 256; x++)
                 if(rtile->data[x] == 0x00)
                     rtile->data[x] = 0x0C;
-        // drawTile() wont read our tile data
-        drawTopTile(rtile, actor->x-cur_x,actor->y-cur_y, false);
-        drawTopTile(rtile, actor->x-cur_x,actor->y-cur_y, true);
+        drawTile(rtile, actor->x-cur_x,actor->y-cur_y, false);
+        drawTile(rtile, actor->x-cur_x,actor->y-cur_y, true);
         delete rtile;
  
         // draw light coming from actor
@@ -742,7 +741,7 @@ inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile)
  dbl_height = tile->dbl_height;
 
  if(x < win_width && y < win_height)
-   drawTopTile(tile_manager->get_tile(tile_num),x,y,toptile);
+   drawTopTile(tile,x,y,toptile);
 
  if(dbl_width)
    {
