@@ -1816,3 +1816,18 @@ void U6Actor::revert_worktype()
     if(party->get_leader() >= 0 && party->get_actor(party->get_leader()) == this)
         set_worktype(WORKTYPE_U6_PLAYER);
 }
+
+/* Maximum magic points is derived from Intelligence and actor type. */
+uint8 U6Actor::get_maxmagic()
+{
+    // FIXME: Handle other classes. If we discover the magic factor varies
+    // greatly between types, we'll need to put it in U6ActorType.
+    uint16 obj_n = actor_type->base_obj_n;
+    if(obj_n == OBJ_U6_MUSICIAN || obj_n == OBJ_U6_SWASHBUCKLER)
+        return uint8(intelligence*0.5);
+    if(obj_n == OBJ_U6_MAGE)
+        return uint8(intelligence);
+    if(obj_n == OBJ_U6_AVATAR)
+        return uint8(intelligence*2);
+    return 0;
+}

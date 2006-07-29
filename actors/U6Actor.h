@@ -98,6 +98,8 @@ class U6Actor: public Actor
  const CombatType *get_object_combat_type(uint16 obj_n);
  ActorTileType get_tile_type() { return(actor_type->tile_type); }
  Obj *inventory_get_food(Obj *container=0);
+ uint8 get_maxhp() { return(((level * 30) <= 255) ? (level * 30) : 255); } // U6
+ uint8 get_maxmagic();
 
  bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
  ActorList *find_players();

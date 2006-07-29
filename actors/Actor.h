@@ -281,12 +281,13 @@ class Actor
  uint8 get_dexterity() { return(dex); }
  uint8 get_intelligence() { return(intelligence); }
  uint8 get_hp() { return(hp); }
- uint8 get_maxhp() { return(((level * 30) <= 255) ? (level * 30) : 255); } // U6
  uint8 get_level() { return(level); }
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
  uint8 get_alignment() { return(alignment); }
  sint8 get_moves_left() { return(moves); }
+ virtual uint8 get_maxhp() { return 0; }
+ virtual uint8 get_maxmagic() { return 0; }
 
  void set_strength(uint8 val) { strength = val; }
  void set_dexterity(uint8 val) { dex = val; }
