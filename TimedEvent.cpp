@@ -8,6 +8,8 @@
 #include "Party.h"
 #include "Event.h"
 #include "UseCode.h"
+#include "U6objects.h"
+#include "U6WorkTypes.h"
 #include "U6LList.h"
 #include "MsgScroll.h"
 #include "GameClock.h"
@@ -344,7 +346,8 @@ bool TimedPartyMove::move_party()
                 // nobody has just used the gate (who may still be vanishing)
                 if(!used_gate || loc.distance(*dest) > 1) // or we aren't close to gate yet
                 {
-                    person->pathfind_to(*dest); // start (or continue) going to gate
+                    if(!person->get_pathfinder())
+                        person->pathfind_to(*dest); // start (or continue) going to gate
                     person->update(); // ActorManager is paused
                     loc = person->get_location(); // don't use the old location
                 }
@@ -765,7 +768,6 @@ TimedRest::TimedRest(uint8 hours, Actor *who_will_guard)
                       print_message(0)
 {
     lookout = who_will_guard;
-    Game::get_game()->pause_world();
 }
 
 /* This is the only place we know that the TimedAdvance has completed. */
@@ -780,7 +782,6 @@ TimedRest::~TimedRest()
     {
         party->get_actor(s)->revert_worktype();
     }
-    Game::get_game()->unpause_world();
     Game::get_game()->get_player()->set_mapwindow_centered(true);
     Game::get_game()->unpause_user();
     scroll->display_string("\n");
@@ -795,8 +796,10 @@ void TimedRest::timed(uint32 evtime)
         {
             prev_evtime = evtime; // normally set by TimedAdvance::timed()
 
-            if(print_message < party->get_party_size())
-                eat(party->get_actor(print_message));
+            if(print_message == 0)
+                bard_play(); // Iolo plays a tune.
+            else if(print_message <= party->get_party_size())
+                eat(party->get_actor(print_message-1)); // print each person's message
             else
             {
                 sleeping = true; // finished eating
@@ -835,6 +838,19 @@ void TimedRest::eat(Actor *actor)
 /* Look for a bard in the party and have them play a tune. */
 void TimedRest::bard_play()
 {
+    scroll->display_string("Mealtime!\n");
+    for(int b=0; b<party->get_party_size(); b++)
+        if(party->get_actor(b)->get_obj_n() == OBJ_U6_MUSICIAN)
+        {
+            Actor *bard = party->get_actor(b);
+            uint8 old_dir = bard->get_direction(); // FIXME: this should get saved through init_from_obj()
+            Obj *musician_obj = bard->make_obj();
+            musician_obj->obj_n = OBJ_U6_MUSICIAN_PLAYING;
+            bard->init_from_obj(musician_obj);
+            bard->set_direction(old_dir); // FIXME: this should get saved through init_from_obj()
+            scroll->display_string(bard->get_name());
+            scroll->display_string(" plays a tune.\n");
+        }
 }
 
 /* Start sleeping until the requested time. One person can stand guard. */
@@ -843,11 +859,11 @@ void TimedRest::sleep()
     // FIXME: changing to SLEEP worktype should automatically do this
     Actor *musician = 0; // bard stops playing
     for(int b=0; b<party->get_party_size(); b++)
-        if(party->get_actor(b)->get_obj_n() == 392) // OBJ_U6_MUSICIAN_PLAYING
+        if(party->get_actor(b)->get_obj_n() == OBJ_U6_MUSICIAN_PLAYING)
         {
             musician = party->get_actor(b);
             Obj *bard_obj = musician->make_obj();
-            bard_obj->obj_n = 386; // OBJ_U6_MUSICIAN
+            bard_obj->obj_n = OBJ_U6_MUSICIAN;
             musician->init_from_obj(bard_obj);
             break;
         }
@@ -857,14 +873,14 @@ void TimedRest::sleep()
         Actor *actor = party->get_actor(s);
         if(actor == lookout)
         {
-            actor->set_worktype(0x11); // WORKTYPE_U6_LOOKOUT
+            actor->set_worktype(WORKTYPE_U6_LOOKOUT);
             scroll->display_string("\n");
             scroll->display_string(actor->get_name());
             scroll->display_string(" stands guard while the party rests.\n");
         }
         else
         {
-            actor->set_worktype(0x91); // WORKTYPE_U6_SLEEP
+            actor->set_worktype(WORKTYPE_U6_SLEEP);
         }
     }
 }

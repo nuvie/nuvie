@@ -756,7 +756,8 @@ void Party::rest_gather()
     Actor *player_actor = member[get_leader()].actor;
     MapCoord player_loc = player_actor->get_location();
     Obj *campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y,player_loc.z);
-    game->get_obj_manager()->add_obj(campfire, true);
+    campfire->status |= OBJ_STATUS_TEMPORARY;
+    game->get_obj_manager()->add_obj(campfire, true); // addOnTop
 
     game->get_player()->set_mapwindow_centered(false);
     game->pause_user();
@@ -771,22 +772,6 @@ void Party::rest_sleep(uint8 hours, sint16 guard)
     Actor *player_actor = member[get_leader()].actor;
     MapCoord player_loc = player_actor->get_location();
 
-    scroll->display_string("Mealtime!\n");
-    Actor *bard = 0;
-    for(int b=0; b<num_in_party; b++)
-        if(member[b].actor->get_obj_n() == OBJ_U6_MUSICIAN)
-        {
-            bard = member[b].actor;
-            break;
-        }
-    if(bard != 0)
-    {
-        Obj *musician_obj = bard->make_obj();
-        musician_obj->obj_n = OBJ_U6_MUSICIAN_PLAYING;
-        bard->init_from_obj(musician_obj);
-        scroll->display_string(bard->get_name());
-        scroll->display_string(" plays a tune.\n");
-    }
     new TimedRest(hours, guard >= 0 ? member[guard].actor : 0);
 }
 

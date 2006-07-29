@@ -908,8 +908,10 @@ bool Event::select_obj(sint16 rel_x, sint16 rel_y)
  */
 bool Event::look(Obj *obj)
 {
-    char weight_string[32];
-    float weight;
+    std::string desc;
+    char out_string[48];
+    float weight=0.0;
+    uint8 damage=0,defense=0;
     bool special_desc = false;
 
     if(mode == WAIT_MODE)
@@ -937,11 +939,27 @@ bool Event::look(Obj *obj)
         if(weight != 0)
         {
             if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
-                snprintf(weight_string,31,". They weigh %0.1f stones.",weight);
+                desc = ". They weigh";
             else
-                snprintf(weight_string,31,". It weighs %0.1f stones.",weight);
-            scroll->display_string(weight_string);
+                desc = ". It weighs";
+
+            snprintf(out_string,31," %0.1f stones",weight);
+            desc += out_string;
         }
+        if(damage != 0)
+        {
+            if(weight != 0) desc += " and";
+            else            desc += ". It";
+            snprintf(out_string,31," can do %d point\\s of damage",damage);
+            desc += out_string;
+            if(defense != 0)
+            {
+                snprintf(out_string,31," and can absorb %d point\\s of damage",defense);
+                desc += out_string;
+            }
+        }
+
+        scroll->display_string(desc);
         scroll->display_string("\n");
         return(true);
     }
@@ -1891,7 +1909,7 @@ bool Event::unready(Obj *obj)
     {
         scroll->display_string("\n");
         scroll->display_prompt();
-        return(true); // handled by usecode
+        return(!obj->is_readied()); // handled by usecode
     }
 
     actor->remove_readied_object(obj);
@@ -2030,8 +2048,8 @@ bool Event::can_rest(std::string &err_str)
     Map *map = Game::get_game()->get_game_map();
     Party *party = player->get_party();
     ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
-    Actor *player_actor = player->get_actor();
-    MapCoord player_loc = player_actor->get_location();
+    Actor *pActor = player->get_actor();
+    MapCoord loc = pActor->get_location();
 
     ActorList *enemies = 0;
     ActorList *all_actors = 0;
@@ -2040,27 +2058,28 @@ bool Event::can_rest(std::string &err_str)
     if(party->is_in_combat_mode())
         err_str = "-Not while in Combat!";
     else if(party->is_in_vehicle()
-            && player_actor->get_obj_n() != OBJ_U6_SHIP) // player is a vehicle
+            && pActor->get_obj_n() != OBJ_U6_SHIP) // player is a vehicle
         err_str = "-Can not be repaired!";
     else if((level != 0 && level != 5) || map_window->in_town())
         err_str = "-Only in the wilderness!";
-    else if((enemies = player_actor->find_enemies()))
+    else if((enemies = pActor->find_enemies()))
         err_str = "-Not while foes are near!";
     else if((all_actors = actor_mgr->filter_party(actor_mgr->filter_distance(actor_mgr->get_actor_list(),
-                                                    player_loc.x,player_loc.y,player_loc.z, 5)))
-            && !all_actors->empty())
+                                                  loc.x,loc.y,loc.z, 5)))
+            && !all_actors->empty() && !party->is_in_vehicle())
+    {
         err_str = "-Not while others are near!";
+        delete all_actors;
+    }
     else if(!player->in_party_mode())
         err_str = "-Not in solo mode!";
-    else if(!map->is_passable(player_loc.x-1,player_loc.y-1,
-                              player_loc.x+1,player_loc.y+1,player_loc.z))
-        err_str = "-Not enough room!";
+    else if(!map->is_passable(loc.x-1,loc.y-1,loc.x+1,loc.y+1,loc.z))
+        err_str = "-Not enough room!"; // FIXME: for ships check all squares around the ship
     else if(party->is_horsed())
         err_str = "-Dismount first!";
     else
         return true;
     delete enemies;
-    delete all_actors;
     return false;
 }
 
@@ -2082,8 +2101,17 @@ bool Event::rest()
         return false;
     }
 
-    scroll->display_string("\nHow many hours? ");
-    get_scroll_input("0123456789");
+    if(player->get_actor()->get_obj_n() == OBJ_U6_SHIP)
+    {
+        scroll->display_string("\n");
+        player->repairShip();
+        endAction(true);
+    }
+    else
+    {
+        scroll->display_string("\nHow many hours? ");
+        get_scroll_input("0123456789");
+    }
     return true;
 }
 
@@ -2120,8 +2148,8 @@ bool Event::rest_input(uint16 input)
         {
             scroll->display_string(party->get_actor(rest_guard-1)->get_name());
             scroll->display_string("\n");
-            scroll->display_string("\n");
         }
+        scroll->display_string("\n");
         party->rest_gather();
     }
     return true;
