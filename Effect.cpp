@@ -100,8 +100,7 @@ void CannonballEffect::start_anim()
 }
 
 
-/* Handle messages from animation. Hit actors & walls.
- */
+/* Handle messages from animation. Hit actors & walls. */
 uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 {
     bool stop_effect = false;
@@ -110,9 +109,9 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
         case MESG_ANIM_HIT_WORLD:
         {
             MapCoord *hit_loc = static_cast<MapCoord *>(msg_data);
-            uint16 tile_num = game->get_game_map()->get_tile(hit_loc->x,hit_loc->y,hit_loc->z)->tile_num;
-            // main U6 wall tiles FIX for WOU games (and this is probably a tileflag)
-            if(tile_num >= 140 && tile_num <= 187)
+            Tile *tile = game->get_game_map()->get_tile(hit_loc->x,hit_loc->y,
+                                                        hit_loc->z);
+            if(tile->flags1 & TILEFLAG_WALL)
             {
                 new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
                 stop_effect = true;
@@ -130,6 +129,20 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
             if(hit_ent->entity_type == ENT_OBJ)
             {
                 printf("hit object %d at %x,%x,%x\n", hit_ent->obj->obj_n, hit_ent->obj->x, hit_ent->obj->y, hit_ent->obj->z);
+                // FIX: U6 specific
+                // FIX: hit any part of ship, and reduce qty of center
+                if(hit_ent->obj->obj_n == 412)
+                {
+                    uint8 f = hit_ent->obj->frame_n;
+                    if(f == 9 || f == 15 || f == 11 || f == 13) // directions
+                    {
+                        if(hit_ent->obj->qty < 20) hit_ent->obj->qty = 0;
+                        else                      hit_ent->obj->qty -= 20;
+                        if(hit_ent->obj->qty == 0)
+                            game->get_scroll()->display_string("Ship broke!\n");
+                        stop_effect = true;
+                    }
+                }
             }
             break;
         }
