@@ -320,9 +320,6 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags f
 // bool ignore_danger = flags & ACTOR_IGNORE_DANGER;
  bool ignore_danger = true;
 
-    if(z > 5)
-        return(false);
-
     uint16 pitch = map->get_width(new_z);
     if(new_x < 0 || new_x >= pitch)
         return(false);
@@ -332,7 +329,7 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags f
     if(!ignore_actors)
        {
         a = map->get_actor(new_x,new_y,new_z);
-        if(a)
+        if(a && a->is_visible())
           return a->can_be_passed(this); // we can move over or under some actors. eg mice, dragons etc.
        }
 
