@@ -604,7 +604,7 @@ inline void MapWindow::drawActor(Actor *actor)
                     rtile->data[x] = 0xFF;
                 else
                     rtile->data[x] = 0x0B;
-        {
+        }
         else if(actor->status_flags&ACTOR_STATUS_PROTECTED) // actually this doesn't appear when using a protection ring
         {
             rtile = new Tile(*tile);
@@ -620,8 +620,8 @@ inline void MapWindow::drawActor(Actor *actor)
         }
         else
         {
-            drawTile(rtile, actor->x-cur_x,actor->y-cur_y, false);
-            drawTile(rtile, actor->x-cur_x,actor->y-cur_y, true);
+            drawTile(tile, actor->x-cur_x,actor->y-cur_y, false);
+            drawTile(tile, actor->x-cur_x,actor->y-cur_y, true);
         }
  
         // draw light coming from actor
