@@ -52,6 +52,7 @@ class Player
 
  uint8 questf;
  uint8 karma;
+ uint8 gargishf; // learned Gargish
 
  MapWindow *map_window;
  
@@ -84,6 +85,8 @@ class Player
 
  void set_quest_flag(uint8 val) { questf = val; }
  uint8 get_quest_flag()         { return(questf); }
+ void set_gargish_flag(uint8 val) { gargishf = val; }
+ uint8 get_gargish_flag()          { return(gargishf); }
 
  void set_actor(Actor *new_actor);
  Actor *get_actor();
@@ -102,6 +105,7 @@ class Player
  void moveUp();
  void moveDown();
  void pass();
+ void repairShip();
 
  uint32 get_walk_delay();
  bool check_walk_delay();

@@ -88,6 +88,9 @@ bool Player::load(NuvieIO *objlist)
     objlist->seek(0x1bf9); // Player Karma.
     karma = objlist->read1();
 
+    objlist->seek(0x1c5f); // U6 Gargish Flag
+    gargishf = objlist->read1();
+
     objlist->seek(0x1c71); // Player Gender.
     gender = objlist->read1();
 
@@ -471,4 +474,23 @@ void Player::update_player(Actor *next_player)
     set_mapwindow_centered(true);
     scroll->display_string("\n");
     scroll->display_prompt();
+}
+
+/* Rest and repair ship. */
+void Player::repairShip()
+{
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+    Actor *ship = get_actor();
+    char hp[6] = { '\0' };
+    if(ship->get_obj_n() != OBJ_U6_SHIP)
+        return;
+    // ship actor's health is hull strength
+    if(ship->get_hp()+5 > 100) ship->set_hp(100);
+    else                       ship->set_hp(ship->get_hp()+5);
+
+    snprintf(hp, 6, "%d%%\n", ship->get_hp());
+    scroll->display_string("Hull Strength: ");
+    scroll->display_string(hp);
+    for(int t=0;t<5;t++) clock->inc_minute();
+    Game::get_game()->time_changed();
 }
