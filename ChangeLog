@@ -18,6 +18,10 @@
 	  a problem with the party not moving to a dungeon exit or ladder, so
 	  they no longer have to ignore other actors when pathfinding.
 	* Slight tweak to hardware key repeat makes movement more responsive.
+	* Fixed multi-tile actors not being completely drawn, caused by my
+	  previous change to MapWindow::drawTile to draw custom tiles. This
+	  simple fix modifies drawTile to accept custom tiles with an extra bool
+	  argument. Don't use with animated tiles.
 
 2006-07-29  Eric Fry <efry at users.sourceforge.net>
 	* Added support for longer silver serpents. New serpents are added to
