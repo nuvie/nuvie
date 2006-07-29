@@ -1141,7 +1141,7 @@ ActorList *ActorManager::filter_party(ActorList *list)
     while(i != list->end())
     {
         Actor *actor = *i;
-        if(actor->in_party == true)
+        if(actor->in_party == true || actor->id_n == 0) // also remove vehicle
             i = list->erase(i);
         else ++i;
     }
