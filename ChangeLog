@@ -1,3 +1,29 @@
+2006-07-29  Joseph Applegate <sb-x at users.sourceforge.net>
+	* New function MsgScroll::set_autobreak() is now required to add new
+	  page breaks to the scroll automatically.
+	* Fixed MsgScroll printing extra newlines. You can write text on the edge
+	  of the scroll, but don't draw the cursor off the scroll.
+	* Continuing work on Rest. (camping in the wilderness) You can press R to
+	  Rest, and the party will gather together and start a campfire.
+	* Event now disallows any movement if MOVE_MODE is not set.
+	* Added new overloaded Map::is_passable() to check an entire area.
+	* Added MapWindow::in_town() which checks for visible wall tiles.
+	* Added Party::is_horsed() which returns true if anyone is on a horse.
+	* Actor: Changed is_sleeping() to use flags. Added filter_party() to
+	  remove party members from a list. Added get_food().
+	* Added revert_worktype() which should set an actor to their normal
+	  non-combat worktype. Required to "wake up". (get out of temp worktypes)
+	* Fixed wt_sleep(). An object isn't required for an actor to lay down.
+	* Now clearing sleep status in Actor::set_worktype().
+	* Moved find_enemies() to Actor since it has access to alignment now.
+	* Replaced assert() statements in Actor.h with warnings. Added warnings
+	  when actors have 0 frames_per_direction (Hydras) in U6Actor.
+	* Fixed Actor::check_move() to use can_be_passed(). (pathfinding issue)
+	* Made pathfinder check_loc() virtual, and ActorPathFinder no longer
+	  always ignores other actors.
+	* Fixed saving/loading in ActorManager. It wasn't saving status flags.
+	* Added missing cassert includes in InventoryWidget.cpp & DollWidget.cpp.
+
 2006-07-25  Eric Fry <efry at users.sourceforge.net>
 	* Started work on silver serpent actors. At the moment nuvie will only
 	  create a serpent that is 2 tiles long. If you want to see long
