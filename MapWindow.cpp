@@ -594,21 +594,35 @@ inline void MapWindow::drawActor(Actor *actor)
        && (!(actor->obj_flags&OBJ_STATUS_INVISIBLE) || actor->in_party || actor == actor_manager->get_player()))
     {
         Tile *tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
-        Tile *rtile = new Tile(*tile);
+        Tile *rtile = 0;
 
         if(actor->obj_flags&OBJ_STATUS_INVISIBLE)
+        {
+            rtile = new Tile(*tile);
             for(int x = 0; x < 256; x++)
                 if(rtile->data[x] != 0x00)
                     rtile->data[x] = 0xFF;
                 else
                     rtile->data[x] = 0x0B;
+        {
         else if(actor->status_flags&ACTOR_STATUS_PROTECTED) // actually this doesn't appear when using a protection ring
+        {
+            rtile = new Tile(*tile);
             for(int x = 0; x < 256; x++)
                 if(rtile->data[x] == 0x00)
                     rtile->data[x] = 0x0C;
-        drawTile(rtile, actor->x-cur_x,actor->y-cur_y, false);
-        drawTile(rtile, actor->x-cur_x,actor->y-cur_y, true);
-        delete rtile;
+        }
+        if(rtile != 0)
+        {
+            drawNewTile(rtile, actor->x-cur_x,actor->y-cur_y, false);
+            drawNewTile(rtile, actor->x-cur_x,actor->y-cur_y, true);
+            delete rtile;
+        }
+        else
+        {
+            drawTile(rtile, actor->x-cur_x,actor->y-cur_y, false);
+            drawTile(rtile, actor->x-cur_x,actor->y-cur_y, true);
+        }
  
         // draw light coming from actor
         // FIXME: this isn't working when lighting mode is smooth
@@ -721,7 +735,12 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
 
 }
 
-inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile)
+/* The pixeldata in the passed Tile pointer will be used if use_tile_data is
+ * true, otherwise the current tile is derived from tile_num. This can't be
+ * used with animated tiles. It only applies to the base tile in multi-tiles.
+ */
+inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile,
+                                bool use_tile_data)
 {
  bool dbl_width, dbl_height;
  uint16 tile_num;
@@ -741,7 +760,7 @@ inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile)
  dbl_height = tile->dbl_height;
 
  if(x < win_width && y < win_height)
-   drawTopTile(tile,x,y,toptile);
+   drawTopTile(use_tile_data?tile:tile_manager->get_tile(tile_num),x,y,toptile);
 
  if(dbl_width)
    {
@@ -770,6 +789,11 @@ inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile)
     drawTopTile(tile,x-1,y-1,toptile);
    }
 
+}
+
+inline void MapWindow::drawNewTile(Tile *tile, uint16 x, uint16 y, bool toptile)
+{
+    drawTile(tile, x,y, toptile, true);
 }
 
 inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile)

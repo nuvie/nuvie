@@ -195,7 +195,8 @@ protected:
  void drawObjs();
  void drawObjSuperBlock(bool draw_lowertiles, bool toptile);
  inline void drawObj(Obj *obj, bool draw_lowertiles, bool toptile);
- inline void drawTile(Tile *tile, uint16 x, uint16 y, bool toptile);
+ inline void drawTile(Tile *tile, uint16 x, uint16 y, bool toptile, bool use_tile_data=false);
+ inline void drawNewTile(Tile *tile, uint16 x, uint16 y, bool toptile);
  void drawBorder();
  inline void drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);
  inline void drawActor(Actor *actor);
