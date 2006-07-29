@@ -8,6 +8,10 @@
 	* removed nuvie_game_t typedef from Converse.h and moved it to
 	  nuvieDefs.h
 	* Added gametype to EggManger
+	* Added a small fix to get large actors working again. They were broken
+	  when adding support for invisible party members. We will need to add
+	  proper support for actor effects in the future.
+	* Added Pieter Luteijn to the AUTHORS file.
 
 2006-07-29  Joseph Applegate <sb-x at users.sourceforge.net>
 	* New function MsgScroll::set_autobreak() is now required to add new
