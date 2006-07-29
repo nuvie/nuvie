@@ -768,10 +768,6 @@ void Party::rest_gather()
  * member standing guard. */
 void Party::rest_sleep(uint8 hours, sint16 guard)
 {
-    MsgScroll *scroll = game->get_scroll();
-    Actor *player_actor = member[get_leader()].actor;
-    MapCoord player_loc = player_actor->get_location();
-
     new TimedRest(hours, guard >= 0 ? member[guard].actor : 0);
 }
 
