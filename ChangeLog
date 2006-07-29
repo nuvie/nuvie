@@ -1,3 +1,24 @@
+2006-07-29  Joseph Applegate <sb-x at users.sourceforge.net>
+	* New function Actor::get_maxmagic(), it returns the correct Max. magic
+	  points for characters that can join the party, but not for any monsters
+	  yet. Also virtualized get_maxhp() as that may be game-specific.
+	* Further improvements to Rest. It's now complete except for healing, and
+	  repairing a ship. (the ship tiles cause Not enough room! message)
+	  World/time passes while resting, but monsters won't attack the camp
+	  yet. Campfire is now temporary. Iolo/musicians always faces the
+	  campfire while playing music.
+	* Cannons will now crash into ships, causing 20pts of damage.
+	* Player: Added repairShip() which repairs 5% damage and adds 5 minutes
+	  to the clock.
+	  Added gargish flag, set true if the player learned Gargish.
+	* Eggs now get a container list even if empty. Fixes assertion failure.
+	* New worktype: Lookout (camp guard), suggested by original U6 docs.
+	* Start from the top of the stack in get_obj_type_from_location().
+	* Hidden actors may no longer block other actors from moving. This fixes
+	  a problem with the party not moving to a dungeon exit or ladder, so
+	  they no longer have to ignore other actors when pathfinding.
+	* Slight tweak to hardware key repeat makes movement more responsive.
+
 2006-07-29  Eric Fry <efry at users.sourceforge.net>
 	* Added support for longer silver serpents. New serpents are added to
 	  the map in a coil.
