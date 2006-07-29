@@ -1536,7 +1536,7 @@ void Actor::print()
            actor->hp, actor->get_maxhp());
     printf(" strength: %d    dex: %d    int: %d\n", actor->strength, actor->dex,
            actor->intelligence);
-    printf(" magic: %d\n", actor->magic);
+    printf(" magic: %d / %d\n", actor->magic, actor->get_maxmagic());
 
     printf("alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
 

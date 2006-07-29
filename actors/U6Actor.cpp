@@ -1866,5 +1866,6 @@ uint8 U6Actor::get_maxmagic()
         return uint8(intelligence);
     if(obj_n == OBJ_U6_AVATAR)
         return uint8(intelligence*2);
+    if(!in_party) printf("warning: %s (%d) has unknown max. magic points\n", get_name(), id_n);
     return 0;
 }
