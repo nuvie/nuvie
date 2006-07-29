@@ -650,7 +650,7 @@ bool Magic::function_string2npc()
 {
   /*
    * Stack effect: victim -- *npc "success" OR "failure"
-   * valid victims are 'caster' or an npc number.
+   * valid victims are 'caster', 'target' or (TODO) an npc number.
    */
   char token[MAX_TOKEN_LENGTH+1];
   strncpy(token,stack->pop(),MAX_TOKEN_LENGTH); 
@@ -990,7 +990,6 @@ bool Magic::function_add_hp()
   */
 
 //adds up to amount hp to the victim, respecting max hp
-//  char victim_name[MAX_TOKEN_LENGTH+1];
   
   function_string2npc();
   if (strcmp("failure",stack->pop()))
@@ -1009,11 +1008,10 @@ bool Magic::function_add_hp()
 bool Magic::function_add_mp()
 {
  /*
-  * Stack effect: 
+  * Stack effect: amount victim --
   */
+
 //adds up to amount mp to the victim, respecting max mp
-//
-//  char victim_name[MAX_TOKEN_LENGTH+1];
   
   function_string2npc();
   if (strcmp("failure",stack->pop()))

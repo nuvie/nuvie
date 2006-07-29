@@ -99,6 +99,9 @@ class Magic {
     Obj *target_object;
     uint8 state;
     size_t IP;
+    /* TODO
+     * add a register array, or a pointer to a list of variables?
+     */
   public: 
     Magic();
     ~Magic();
