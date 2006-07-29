@@ -213,7 +213,7 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 					 spawned_obj->qty = 1; // (it already spawns qty objects with the loop)
 					 spawned_obj->status |= OBJ_STATUS_TEMPORARY | OBJ_STATUS_OK_TO_TAKE;
 
-					 obj_manager->add_obj(spawned_obj);
+					 obj_manager->add_obj(spawned_obj, true); // addOnTop
 					}
                  }
                }
