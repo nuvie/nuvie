@@ -370,8 +370,9 @@ bool Magic::cast()
     event->scroll->display_string("\nThat spell is not in thy spellbook!\n"); // FIXME correct text
     return false;
   }
-  event->scroll->display_string(spell[index]->name); // FIXME correct text
-  event->scroll->display_string("\n");
+  event->scroll->display_string("\n(");
+  event->scroll->display_string(spell[index]->name);
+  event->scroll->display_string(")\n");
 
 
   /* debug block */
@@ -1022,11 +1023,8 @@ bool Magic::function_add_mp()
   }
   
   Actor *victim=(Actor*) stack->popptr();
-// FIXME Nuvie doesn't seem to keep track of max mp yet!
-  //victim->set_magic(MAX((victim->get_magic()+stack->pop()),victim->get_maxmagic()));
-  victim->set_magic(victim->get_magic()+atoi(stack->pop()));
+  victim->set_magic(MAX((victim->get_magic()+atoi(stack->pop())),victim->get_maxmagic()));
 
-  
   return true;
 }
 

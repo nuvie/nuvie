@@ -160,7 +160,7 @@ void ActorView::display_actor_stats()
  text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 2 * 8, 0);
 
  text->drawString(screen, "Magic", area.x + 5 * 16, area.y + 16 + 4 * 8, 0);
- sprintf(buf,"%d/%d",actor->get_magic(),0);
+ sprintf(buf,"%d/%d",actor->get_magic(),actor->get_maxmagic());
  text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 5 * 8, 0);
 
  text->drawString(screen, "Health", area.x + 5 * 16, area.y + 16 + 6 * 8, 0);
