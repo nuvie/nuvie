@@ -50,6 +50,7 @@ typedef unsigned char* convscript_buffer;
 
 #define U6TALK_VAR_SEX       0x10 // sex of avatar: male=0 female=1
 #define U6TALK_VAR_KARMA     0x14 // avatar's karma
+#define U6TALK_VAR_GARGF     0x15 // 1=player knows Gargish
 #define U6TALK_VAR_PARTYLIVE 0x17 // number of people (living) following avatar
 #define U6TALK_VAR_PARTYALL  0x18 // number of people (total) following avatar
 #define U6TALK_VAR_HP        0x19 // avatar's health

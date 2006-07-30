@@ -263,6 +263,7 @@ void Converse::init_variables()
     }
     set_var(U6TALK_VAR_SEX, player->get_gender());
     set_var(U6TALK_VAR_KARMA, player->get_karma());
+    set_var(U6TALK_VAR_GARGF, player->get_gargish_flag());
     set_var(U6TALK_VAR_PARTYLIVE, player->get_party()->get_party_size() - 1);
     // FIXME: count dead party members in PARTYALL, not in PARTYLIVE
     set_var(U6TALK_VAR_PARTYALL, get_var(U6TALK_VAR_PARTYLIVE));
@@ -277,6 +278,7 @@ void Converse::init_variables()
 void Converse::delete_variables()
 {
     player->set_quest_flag((uint8)get_var(U6TALK_VAR_QUESTF));
+    player->set_gargish_flag((uint8)get_var(U6TALK_VAR_GARGF));
 
     for(uint32 v = 0; v <= U6TALK_VAR__LAST_; v++)
         if(variables[v].sv)
