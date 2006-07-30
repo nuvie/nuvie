@@ -401,6 +401,7 @@ class Actor
  Obj *make_obj();
  uint16 get_obj_n() { return(obj_n); }
  virtual void clear();
+ virtual bool morph(uint16 obj_n); // change actor type
 
  protected:
 

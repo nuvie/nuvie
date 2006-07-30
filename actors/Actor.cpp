@@ -651,8 +651,7 @@ uint32 Actor::inventory_count_object(uint16 obj_n, Obj *container)
 
 
 /* Returns object descriptor of object in the actor's inventory, or NULL if no
- * matching object is found.
- */
+ * matching object is found. */
 Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container, bool search_containers, bool match_zero_qual)
 {
  U6LList *inventory;
@@ -668,7 +667,7 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container, bool 
       return(obj);
     else if(obj->container && search_containers)
     {
-      if((obj = inventory_get_object(obj_n, qual, obj)))
+      if( (obj = inventory_get_object(obj_n, qual, obj)) )
         return(obj);
     }
    }
@@ -716,13 +715,15 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
 
    if(obj->status & OBJ_STATUS_IN_CONTAINER)
      obj->status ^= OBJ_STATUS_IN_CONTAINER;
+
+   if(obj->status & OBJ_STATUS_LIT) // light up actor
+     add_light(3);
  }
  return obj_manager->list_add_obj(add_to, obj, stack);
 }
 
-
-/* Returns a pointer to new or old object. (already added to inventory)
- */
+/* Stacks the new object with existing objects if possible.
+   Returns a pointer to the new object in inventory. */
 Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
 {
  Obj *obj = 0;
@@ -738,16 +739,18 @@ Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
  obj->obj_n = obj_n;
  obj->frame_n = frame_n;
  obj->quality = quality;
- obj->qty = qty;
+ obj->qty = obj_manager->is_stackable(obj) ? 1 : 0; // stackable objects must have a quantity
+ if(qty > 1) // this will combine with others, only if object is stackable
+    for(uint32 q=1;q<qty;q++)
+    {
+        inventory_add_object(obj_manager->copy_obj(obj), NULL);
+    }
  inventory_add_object(obj, NULL);
-
- return(obj);
+ return inventory_get_object(obj_n, quality);
 }
 
-
 /* Delete `qty' objects of type from inventory (or from a container).
- * Returns the number removed (may be less than requested).
- */
+ * Returns the number removed (may be less than requested). */
 uint32
 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container)
 {
@@ -785,6 +788,8 @@ bool Actor::inventory_remove_obj(Obj *obj, Obj *container)
     return container->container->remove(obj);
  }
  obj->status &= ~OBJ_STATUS_IN_INVENTORY;
+ if(obj->status |= OBJ_STATUS_LIT) // remove light from actor
+    subtract_light(3);
  return inventory->remove(obj);
 }
 
@@ -889,9 +894,13 @@ void Actor::inventory_parse_readied_objects()
  for(link=inventory->start();link != NULL;link=link->next)
   {
    obj = (Obj *)link->data;
-   if((obj->status & 0x18) == 0x18) //object readied
+   if(obj->is_readied()) //object readied
       {
        add_readied_object(obj);
+      }
+   if(obj->status & OBJ_STATUS_LIT) // torch
+      {
+       add_light(3); // light up actor
       }
   }
 
@@ -1348,7 +1357,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
  else
   total_armor_class = body_armor_class;
 */
- printf("attack=%d, weapon_damage=%d defenders ac=%d(%d,%d)'body,armor'", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
+ printf("attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
 
  if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
    {
@@ -1363,7 +1372,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
     if(total_armor_class > 0)
       ac_saving_throw = NUVIE_RAND() % total_armor_class;
 
-    printf("actual damage = %d ac_save = %d\n",damage, ac_saving_throw);
+    printf(", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
 
     if(damage > ac_saving_throw)
       {
@@ -1371,7 +1380,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
        return false; // actor took damage
       }
    }
-
+ else printf("\n");
  return true; // actor defended this attack
 }
 
@@ -1672,4 +1681,10 @@ ActorList *Actor::find_enemies()
         return NULL; // no enemies in range
     }
     return actors;
+}
+
+/* Change actor type. */
+bool Actor::morph(uint16 obj_n)
+{
+    return false;
 }
