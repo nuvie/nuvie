@@ -1522,6 +1522,7 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects)
      if(stack_with->obj_n == obj->obj_n && stack_with->frame_n == obj->frame_n
         && stack_with->quality == obj->quality && is_stackable(stack_with))
        {
+        assert(obj->qty != 0 && stack_with->qty != 0); // stackable objects must have a quantity
         new_qty = obj->qty + stack_with->qty;
         obj->qty = new_qty;
         llist->addAtPos(llist->findPos(stack_with), obj);
