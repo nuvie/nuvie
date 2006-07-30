@@ -981,6 +981,12 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
     return true;
    }
 
+// if(!orb_activated)
+//   {
+//    scroll->display_string("\nYou must recharge it first!\n");
+//    return true;
+//   }
+
  if(!mapcoord_ref)
   {
    game->get_event()->freeselect_mode(obj, "Where: ");
@@ -1371,8 +1377,14 @@ bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)
         {
             if(obj->obj_n == OBJ_U6_WINE || obj->obj_n == OBJ_U6_MEAD
                || obj->obj_n == OBJ_U6_ALE || obj->obj_n == OBJ_U6_SNAKE_VENOM)
+            {
                 scroll->display_string("\nYou drink it.\n");
-            else // FIXME: if object is alcoholic drink, add to drunkeness
+                if(obj->obj_n == OBJ_U6_SNAKE_VENOM)
+                { // FIXME snake venom
+                }
+                else player->add_alcohol(); // add to drunkeness
+            }
+            else
                 scroll->display_string("\nYou eat the food.\n");
         }
         destroy_obj(obj, 1);
@@ -1509,6 +1521,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
    if(use_boat_find_land(&lx,&ly,&lz)) //we must be next to land to disembark
      {
       Obj *obj = ship_actor->make_obj();
+      obj->qty = ship_actor->get_hp(); // Hull Strength
 
       party->show();
       ship_actor->hide();
@@ -1567,6 +1580,8 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
 
  // use it (replace ship with vehicle actor)
  ship_actor->init_from_obj(obj);
+ if(obj->obj_n == OBJ_U6_SHIP)
+    ship_actor->set_hp(obj->qty); // Hull Strength
  ship_actor->show(); // Swift!
  obj_manager->remove_obj(obj);
  delete_obj(obj);
@@ -2092,16 +2107,18 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
              else
                 {
 */
-                 scroll->display_string(data,strlen(data)); //normal font
-                 scroll->display_string("\n"); // normal font
+             scroll->set_autobreak(true);
+             scroll->display_string(data,strlen(data)); //normal font
+             scroll->display_string("\n"); // normal font
+             scroll->set_autobreak(false);
 //                }
              free(data);
             }
 
         }
-        return(false);
+        return true;
     }
-    return(true);
+    return false;
 }
 
 
@@ -2248,6 +2265,13 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
             z = red_moongate_tbl[obj->quality].z;
            }
         MapCoord exit(x, y, z);
+
+//        if(exit.z != obj->z)
+//        {
+//            scroll->display_string("\nDestination too far away!\n\n");
+//            scroll->display_prompt();
+//            return true;
+//        }
 
         party->walk(obj, &exit);
         return(true);
@@ -2422,6 +2446,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             if(torch != obj)
                 obj_manager->add_obj(torch, true); // keep new one on map
             toggle_frame(torch); // light
+            torch->status |= OBJ_STATUS_LIT;
             scroll->display_string("\nTorch is lit.\n");
             return true;
         }
@@ -2448,6 +2473,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             if(can_light_it)
             {
                 actor->add_light(TORCH_LIGHT_LEVEL); // add lightglobe to actor
+                torch->status |= OBJ_STATUS_LIT;
                 scroll->display_string("\nTorch is lit.\n");
             }
             else
@@ -2510,9 +2536,9 @@ void U6UseCode::extinguish_torch(Obj *obj)
 {
     if(obj->is_in_inventory())
         actor_manager->get_actor_holding_obj(obj)->subtract_light(TORCH_LIGHT_LEVEL);
-    toggle_frame(obj);
     scroll->display_string("\nA torch burned out.\n");
     destroy_obj(obj);
+    game->get_map_window()->updateBlacking();
 }
 
 bool U6UseCode::process_effects(Obj *container_obj)
@@ -2593,6 +2619,18 @@ bool U6UseCode::amulet_of_submission(Obj *obj, UseCodeEvent ev)
     {
         scroll->display_string("\nMagical energy prevents you from removing the amulet.\n");
         return false;
+    }
+    return true;
+}
+
+/* Use: Learn Gargish! */
+bool U6UseCode::gargish_vocabulary(Obj *obj, UseCodeEvent ev)
+{
+    if(ev == USE_EVENT_USE)
+    {
+        scroll->display_string("\n");
+        scroll->display_string("You study the scroll!\n");
+        player->set_gargish_flag(true);
     }
     return true;
 }

@@ -101,6 +101,8 @@
 #define OBJ_U6_GRAPES               95
 #define OBJ_U6_BUTTER               96
 
+#define OBJ_U6_GARGISH_VOCABULARY   97
+
 #define OBJ_U6_CHEST                98
 #define OBJ_U6_BACKPACK             99
 
