@@ -1839,7 +1839,10 @@ Obj *U6Actor::inventory_get_food(Obj *container)
         if(uc->is_food(obj))
             return obj;
         if(obj->container) // search within container
-            return inventory_get_food(obj);
+        {
+            if( (obj = inventory_get_food(obj)) )
+                return obj;
+        }
     }
     return 0;
 }
