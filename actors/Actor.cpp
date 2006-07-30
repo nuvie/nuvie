@@ -1107,6 +1107,9 @@ bool Actor::updateSchedule(uint8 hour)
  uint8 day_of_week;
  uint16 new_pos;
 
+ if(alive == false) //don't update schedule for dead actors.
+   return false;
+
  //hour = clock->get_hour();
  day_of_week = clock->get_day_of_week();
 
