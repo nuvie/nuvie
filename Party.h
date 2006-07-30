@@ -145,6 +145,7 @@ class Party {
  bool remove_obj(uint16 obj_n, uint8 quality);
  uint16 who_has_obj(uint16 obj_n, uint8 quality);
  bool is_horsed(); // is anyone on a horse?
+ Obj *get_food(); // used while resting
 
  // Automatic-walking. These methods should be replaced with ActorActions.
  void walk(MapCoord *walkto, MapCoord *teleport, uint32 step_delay = 0);

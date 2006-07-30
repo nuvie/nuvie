@@ -768,6 +768,8 @@ void Party::rest_gather()
  * member standing guard. */
 void Party::rest_sleep(uint8 hours, sint16 guard)
 {
+    // FIXME: change music to Stones when asking "How many hours?", change to
+    // a random song when finished camping (or if cancelled)
     new TimedRest(hours, guard >= 0 ? member[guard].actor : 0);
 }
 
@@ -778,4 +780,15 @@ bool Party::is_horsed()
         if(member[p].actor->get_obj_n() == OBJ_U6_HORSE_WITH_RIDER)
             return true;
     return false;
+}
+
+Obj *Party::get_food()
+{
+    for(int p=0; p<num_in_party; p++)
+    {
+        Obj *food = member[p].actor->inventory_get_food();
+        if(food)
+            return food;
+    }
+    return 0;
 }
