@@ -511,6 +511,15 @@ void MapWindow::Display(bool full_redraw)
 
          tile = tile_manager->get_tile(map_ptr[j]);
          screen->blit(draw_x,draw_y,(unsigned char *)tile->data,8,16,16,16,tile->transparent,&clip_rect);
+
+         if(window_updated)
+           {
+            TileInfo ti;
+            ti.t=tile;
+            ti.x=j+cur_x;
+            ti.y=i+cur_y;
+            m_ViewableTiles.push_back(ti);
+           }
         }
 
      }
