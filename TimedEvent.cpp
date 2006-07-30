@@ -780,7 +780,11 @@ TimedRest::~TimedRest()
 
     for(int s=0; s<party->get_party_size(); s++)
     {
-        party->get_actor(s)->revert_worktype();
+        if(party->get_actor(s)->is_sleeping())
+        {
+            // FIXME: heal
+        }
+        party->get_actor(s)->revert_worktype(); // "wake up"
     }
     Game::get_game()->get_player()->set_mapwindow_centered(true);
     Game::get_game()->unpause_user();
@@ -812,24 +816,23 @@ void TimedRest::timed(uint32 evtime)
     {
         TimedAdvance::timed(evtime);
         for(int s=0; s<party->get_party_size(); s++)
-            party->get_actor(s)->update_time();
+            party->get_actor(s)->update_time(); // checks status effects
+
+        // FIXME: chance for random enemies to attack
     }
 }
 
-/* Check if actor has any food, and consume it, allowing the actor to heal. */
+/* Check if party has any food, and consume it, allowing the actor to heal. */
 void TimedRest::eat(Actor *actor)
 {
-    Obj *food = actor->inventory_get_food();
+    Obj *food = actor->inventory_get_food(); // search actor's inventory first
+    if(!food)
+        food = party->get_food();
     scroll->display_string(actor->get_name());
     if(food)
     {
         scroll->display_string(" has food.\n");
-        if(food->qty <= 1)
-        {
-            actor->inventory_remove_obj(food);
-            delete_obj(food);
-        }
-        else --food->qty;
+        Game::get_game()->get_usecode()->destroy_obj(food, 1);
     }
     else
         scroll->display_string(" has no food.\n");
@@ -850,6 +853,7 @@ void TimedRest::bard_play()
             bard->set_direction(old_dir); // FIXME: this should get saved through init_from_obj()
             scroll->display_string(bard->get_name());
             scroll->display_string(" plays a tune.\n");
+            break;
         }
 }
 
@@ -865,7 +869,6 @@ void TimedRest::sleep()
             Obj *bard_obj = musician->make_obj();
             bard_obj->obj_n = OBJ_U6_MUSICIAN;
             musician->init_from_obj(bard_obj);
-            break;
         }
 
     for(int s=0; s<party->get_party_size(); s++)
