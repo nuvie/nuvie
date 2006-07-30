@@ -1,3 +1,17 @@
+2006-07-30  Joseph Applegate <sb-x at users.sourceforge.net>
+	* New UseCode: Gargish Vocabulary.
+	* Added alcohol level to Player. After drinking something alcoholic, the
+	  Avatar will stumble around, and alcohol level will reduce gradually.
+	* Added Gargish flag to Converse.
+	* Actors now light up if holding torches when the game is loaded.
+	* Misc. Rest fixes. All bards in the party will go to sleep now. Actors
+	  will eat food from their own inventory first.
+	* New function Party::get_food() returns first found food object in actor
+	  inventories.
+	* Fixed wall tiles not being added to MapWindow::m_ViewableTiles.
+	* Added OBJ_STATUS_LIT and OBJ_STATUS_BROKEN.
+	* New objects added to inventory no longer stack if not stackable.
+
 2006-07-30  Eric Fry <efry at users.sourceforge.net>
 	* Fixed a bug with actor schedules. We don't want to update schedules
 	  for dead actors.
