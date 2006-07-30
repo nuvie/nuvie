@@ -43,7 +43,8 @@ class NuvieIO;
 #define OBJ_STATUS_IN_INVENTORY 0x10
 #define OBJ_STATUS_TEMPORARY    0x20
 #define OBJ_STATUS_EGG_ACTIVE   0x40  // something to do with eggs
-//#define OBJ_STATUS_UNKNOWN    0x80
+#define OBJ_STATUS_BROKEN       0x40
+#define OBJ_STATUS_LIT          0x80
 // combined:
 #define OBJ_STATUS_READIED      0x18
 
