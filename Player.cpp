@@ -43,6 +43,8 @@ Player::Player(Configuration *cfg)
 
  karma = 0;
  questf = 0;
+ gargishf = 0;
+ alcohol = 0;
 }
 
 bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
@@ -67,7 +69,7 @@ void Player::init()
 
  party_mode = true;
  mapwindow_centered = true;
-
+ drunk = false;
 }
 
 bool Player::load(NuvieIO *objlist)
@@ -87,6 +89,9 @@ bool Player::load(NuvieIO *objlist)
 
     objlist->seek(0x1bf9); // Player Karma.
     karma = objlist->read1();
+
+    objlist->seek(0x1c17); // Alcohol consumed
+    alcohol = objlist->read1();
 
     objlist->seek(0x1c5f); // U6 Gargish Flag
     gargishf = objlist->read1();
@@ -203,16 +208,13 @@ char *Player::get_name()
 }
 
 
-/* Add to Player karma. Handle appropriately the karma min/max limits.
- */
+/* Add to Player karma. Handle appropriately the karma min/max limits. */
 void Player::add_karma(uint8 val)
 {
     karma = ((karma + val) <= 99) ? karma + val : 99;
 }
 
-
-/* Subtract from Player karma. Handle appropriately the karma min/max limits.
- */
+/* Subtract from Player karma. Handle appropriately the karma min/max limits. */
 void Player::subtract_karma(uint8 val)
 {
     karma = ((karma - val) >= 0) ? karma - val : 0;
@@ -241,6 +243,16 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
         return;
     if(actor->is_immobile() && actor->id_n != 0)
         return;
+
+    if(alcohol > 3) drunk = true;
+    if(drunk && NUVIE_RAND()%4 != 0)
+    {
+        rel_x = NUVIE_RAND()%3 - 1; // stumble and change direction
+        rel_y = NUVIE_RAND()%3 - 1;
+        Game::get_game()->get_scroll()->display_string("Hic!\n");
+    }
+    if(alcohol>0 && NUVIE_RAND()%20 == 0) // FIXME: I havn't checked how U6 reduces alcohol level.
+        if(--alcohol == 0) drunk = false;
 
     if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/
     {
