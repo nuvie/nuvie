@@ -213,8 +213,11 @@ Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
         if(obj->is_in_inventory())
             removed = actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj);
         else if(obj->is_in_container())
+        {
 //            removed = obj_manager->get_obj_container(obj);
             removed = false; // FIXME
+            printf("warning: tried to remove %s (%d:%d) from a container\n",obj_manager->look_obj(obj,true),obj->obj_n,obj->frame_n);
+        }
         else
             removed = obj_manager->remove_obj(obj);
         if(removed)
