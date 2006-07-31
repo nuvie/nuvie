@@ -1686,5 +1686,13 @@ ActorList *Actor::find_enemies()
 /* Change actor type. */
 bool Actor::morph(uint16 obj_n)
 {
-    return false;
+    uint8 old_dir = get_direction(); // FIXME: this should get saved through init_from_obj()
+
+    Obj *actor_obj = make_obj();
+    actor_obj->obj_n = obj_n;
+    actor_obj->frame_n = 0;
+    init_from_obj(actor_obj);
+
+    set_direction(old_dir); // FIXME: this should get saved through init_from_obj()
+    return true;
 }

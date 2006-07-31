@@ -846,11 +846,7 @@ void TimedRest::bard_play()
         if(party->get_actor(b)->get_obj_n() == OBJ_U6_MUSICIAN)
         {
             Actor *bard = party->get_actor(b);
-            uint8 old_dir = bard->get_direction(); // FIXME: this should get saved through init_from_obj()
-            Obj *musician_obj = bard->make_obj();
-            musician_obj->obj_n = OBJ_U6_MUSICIAN_PLAYING;
-            bard->init_from_obj(musician_obj);
-            bard->set_direction(old_dir); // FIXME: this should get saved through init_from_obj()
+            bard->morph(OBJ_U6_MUSICIAN_PLAYING);
             scroll->display_string(bard->get_name());
             scroll->display_string(" plays a tune.\n");
             break;
@@ -861,15 +857,9 @@ void TimedRest::bard_play()
 void TimedRest::sleep()
 {
     // FIXME: changing to SLEEP worktype should automatically do this
-    Actor *musician = 0; // bard stops playing
     for(int b=0; b<party->get_party_size(); b++)
         if(party->get_actor(b)->get_obj_n() == OBJ_U6_MUSICIAN_PLAYING)
-        {
-            musician = party->get_actor(b);
-            Obj *bard_obj = musician->make_obj();
-            bard_obj->obj_n = OBJ_U6_MUSICIAN;
-            musician->init_from_obj(bard_obj);
-        }
+            party->get_actor(b)->morph(OBJ_U6_MUSICIAN);
 
     for(int s=0; s<party->get_party_size(); s++)
     {
