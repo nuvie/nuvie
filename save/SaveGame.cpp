@@ -45,6 +45,7 @@
 #include "Player.h"
 #include "Portrait.h"
 #include "GameClock.h"
+#include "CommandBar.h"
 
 #ifdef WIN32
   #define OBJLIST_FILENAME "savegame\\objlist"
@@ -233,6 +234,7 @@ bool SaveGame::load_objlist()
  ViewManager *view_manager;
  MapWindow *map_window;
  MsgScroll *scroll;
+ CommandBar *command_bar;
  Player *player;
  Party *party;
  Portrait *portrait;
@@ -246,6 +248,7 @@ bool SaveGame::load_objlist()
  obj_manager = game->get_obj_manager();
  scroll = game->get_scroll();
  map_window = game->get_map_window();
+ command_bar = game->get_command_bar();
 
  player = game->get_player();
  party = game->get_party();
@@ -257,6 +260,8 @@ bool SaveGame::load_objlist()
 
  party->load(&objlist);
  player->load(&objlist);
+
+ command_bar->set_combat_mode(party->is_in_combat_mode()); // update CommandBar
 
  portrait->load(&objlist); //load avatar portrait number.
 
@@ -270,7 +275,7 @@ bool SaveGame::load_objlist()
 
  scroll->display_string("\nGame Loaded\n\n");
 
- scroll->init(player->get_name());
+ scroll->init((char *)player->get_name());
 
  scroll->display_prompt();
 

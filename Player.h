@@ -47,7 +47,7 @@ class Player
  ActorManager *actor_manager;
  ObjManager *obj_manager;
 
- char name[14];
+// char name[14]; We can get the name from the player actor. --SB-X
  uint8 gender;
 
  uint8 questf;
@@ -96,7 +96,7 @@ class Player
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  uint8 get_location_level();
 
- char *get_name();
+ const char *get_name();
  void set_gender(uint8 val) { gender = val; }
  char *get_gender_title();
  uint8 get_gender()         { return(gender); }

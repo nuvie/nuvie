@@ -78,9 +78,10 @@ bool Player::load(NuvieIO *objlist)
 
  init();
 
- objlist->seek(0xf00);
+// We can get the name from the player actor. --SB-X
+/* objlist->seek(0xf00);
 
- objlist->readToBuf((unsigned char *)name,14); // read in Player name.
+ objlist->readToBuf((unsigned char *)name,14); // read in Player name.*/
 
  if(game_type == NUVIE_GAME_U6)
    {
@@ -202,9 +203,9 @@ uint8 Player::get_location_level()
  return actor->z;
 }
 
-char *Player::get_name()
+const char *Player::get_name()
 {
- return name;
+ return actor->get_name();
 }
 
 
