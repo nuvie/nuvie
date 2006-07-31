@@ -299,7 +299,7 @@ const char *Actor::get_name()
     if(in_party)
         name = party->get_actor_name(party->get_member_num(this));
     else if(id_n == player->id_n)
-        name = party->get_actor_name(party->get_member_num(0)); // the player, not necessarily the "active" leader
+        name = party->get_actor_name(party->get_member_num(uint8(0))); // the player, not necessarily the "active" leader
     else if(is_met()
             && (talk_name = converse->npc_name(id_n)) ) // assignment
         name = talk_name;
