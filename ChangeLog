@@ -1,3 +1,20 @@
+2006-07-31  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Fix for ObjManager::is_passable() reading objects on the edge of the
+	  map.
+	* Fixed PeerEffect buffer being corrupted by not wrapping coordinates
+	  over the edge of the map.
+	* Solo mode prompt and CommandBar combat icon are now updated when
+	  loading a game. Player no longer reads name from party roster.
+	* Fixed infinite loop when using a ship, caused by that change to
+	  Player name. (Player::get_name()->Actor::get_name()->
+	                Converse::npc_name()->Player::get_name()) Converse no
+	  longer uses Actor::get_name(), and Actor now gets the first party
+	  member's name as the ship's name.
+	* Toggle Combat has its own mode and cancels any pending actions.
+	* New function Actor::morph() changes actor type.
+	* Fix for stepping onto the wrong moongate tile. You can only enter
+	  from the right tile.
+
 2006-08-01  Eric Fry <efry at users.sourceforge.net>
 	* Fixed bug with U6Actor set_worktype(). It was overwriting the frame_n
 	  with the dead body frame_n when returning from the sleep work type.
