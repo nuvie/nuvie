@@ -8,7 +8,7 @@
 	* Fixed infinite loop when using a ship, caused by that change to
 	  Player name. (Player::get_name()->Actor::get_name()->
 	                Converse::npc_name()->Player::get_name()) Converse no
-	  longer uses Actor::get_name(), and Actor now gets the first party
+	  longer uses Player::get_name(), and Actor now gets the first party
 	  member's name as the ship's name.
 	* Toggle Combat has its own mode and cancels any pending actions.
 	* New function Actor::morph() changes actor type.
