@@ -67,6 +67,7 @@ typedef enum {
  PUSH_MODE,
  DROPTARGET_MODE,
  DROPCOUNT_MODE, /* select how many objects to drop */
+ COMBAT_MODE, /* only used to cancel previous actions */
  WAIT_MODE /* waiting for something, optionally display prompt when finished */
 } EventMode;
 

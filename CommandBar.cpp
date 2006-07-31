@@ -101,13 +101,7 @@ GUI_status CommandBar::hit(uint8 num)
         case 6: event->newAction(PUSHSELECT_MODE); break;
         case 7: event->newAction(USE_MODE); break;
         case 8: event->newAction(REST_MODE); break;
-        case 9:
-/*            if(event->toggle_combat())
-            {
-                if(combat_mode == false) set_combat_mode(true);
-                else                     set_combat_mode(false);
-            }*/
-            event->toggle_combat();
+        case 9: event->newAction(COMBAT_MODE); break;
     }
     return(GUI_PASS);
 }

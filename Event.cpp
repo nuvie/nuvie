@@ -175,6 +175,10 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			case SDLK_x: // quit
 				scroll->display_string("Exit!\n");
 				return false;
+			case SDLK_KP_ENTER:
+			case SDLK_RETURN:
+				Game::get_game()->get_screen()->toggleFullScreen();
+				break;
 			default: return true;
 		}
 		if(alt_code_len != 0)
@@ -307,7 +311,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			newAction(DROP_MODE);
 			break;
 		case SDLK_b     :
-			toggle_combat();
+			newAction(COMBAT_MODE);
 			break;
 		case SDLK_a     :
 			newAction(ATTACK_MODE);
@@ -1289,17 +1293,13 @@ void Event::alt_code_input(const char *in)
             if(alt_code_input_num == 0)
             {
                 obj.obj_n = strtol(in, NULL, 10);
-                obj.frame_n = 0;
                 scroll->display_string("\nNpc number? ");
                 get_scroll_input();
                 ++alt_code_input_num;
             }
             else
             {
-                obj.x = a->get_location().x;
-                obj.y = a->get_location().y;
-                obj.z = a->get_location().z;
-                a->init_from_obj(&obj);
+                a->morph(obj.obj_n);
                 scroll->display_string("\nMorphed!\n\n");
                 scroll->display_prompt();
                 alt_code_input_num = 0;
@@ -2465,6 +2465,10 @@ bool Event::newAction(EventMode new_mode)
         case REST_MODE:
             rest();
             break;
+        case COMBAT_MODE:
+   			toggle_combat();
+   			mode = MOVE_MODE;
+   			break;
 		default:
 			cancelAction();
 			return(false);
