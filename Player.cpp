@@ -131,6 +131,12 @@ bool Player::save(NuvieIO *objlist)
     objlist->seek(0x1bf9); // Player Karma.
     objlist->write1(karma);
 
+    objlist->seek(0x1c17); // Alcohol consumed
+    objlist->write1(alcohol);
+
+    objlist->seek(0x1c5f); // U6 Gargish Flag
+    objlist->write1(gargishf);
+
     objlist->seek(0x1c71); // Player Gender.
     objlist->write1(gender);
 
