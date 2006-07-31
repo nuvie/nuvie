@@ -446,8 +446,7 @@ void Converse::show_portrait(uint8 n)
 
 /* Copy the NPC num's name from their conversation script. This is very U6
  * specific.
- * Returns the name as a non-modifiable string of 16 characters maximum.
- */
+ * Returns the name as a non-modifiable string of 16 characters maximum. */
 const char *Converse::npc_name(uint8 num)
 {
     ConvScript *temp_script;
@@ -458,12 +457,9 @@ const char *Converse::npc_name(uint8 num)
 //    if(actors->get_actor(num))
 //        actors->get_actor(num)->set_name(name);
 
-    if(num == 0 || num == 1)
-        strncpy(aname, player->get_name(), 15);
-    // load another script, or use NPC name
-    else if((num == npc_num) && name)
+    if((num == npc_num) && name) // use NPC name
         strncpy(aname, name, 15);
-    else
+    else                              // or load another script
     {
 //        uint32 temp_num = num;
         num = load_conv(get_script_num(num)); // get idx number; won't actually reload file
