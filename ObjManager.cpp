@@ -512,10 +512,12 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
  bool check_tile;
  bool object_at_location = false;
  uint16 i,j;
+ uint16 x2 = (x+1)%(level==0?1024:256); // wrap on map edge
+ uint16 y2 = (y+1)%(level==0?1024:256);
 
- for(i=x;i<=x+1;i++)
+ for(i=x;;i=x2) // only checks x and x2
    {
-    for(j=y;j<=y+1;j++)
+    for(j=y;;j=y2) // only checks y and y2
       {
        obj_list = get_obj_list(i,j,level);
        if(i == x && j == y && obj_list)
@@ -535,11 +537,11 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
 
              if(obj->x == x && obj->y == y)
                { check_tile = true; }
-             if(tile->dbl_width && obj->x == x+1 && obj->y == y)
+             if(tile->dbl_width && obj->x == x2 && obj->y == y)
                 { tile_num--; check_tile = true; }
-             if(tile->dbl_height && obj->x == x && obj->y == y+1)
+             if(tile->dbl_height && obj->x == x && obj->y == y2)
                 { tile_num--; check_tile = true; }
-             if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
+             if(obj->x == x2 && obj->y == y2 && tile->dbl_width && tile->dbl_height)
                 { tile_num -= 3; check_tile = true; }
              if(check_tile)
                {
@@ -550,7 +552,9 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
                }
             }
          }
+         if(j == y) j = y2; else break;
       }
+    if(i == x) i = x2; else break;
    }
 
  if(object_at_location)
