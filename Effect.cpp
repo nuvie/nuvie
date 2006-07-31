@@ -1146,8 +1146,13 @@ uint16 PauseEffect::callback(uint16 msg, CallBack *caller, void *data)
 
 PeerEffect::PeerEffect(uint16 x, uint16 y, uint8 z, Obj *callback_obj)
                      : map_window(game->get_map_window()), overlay(0),
-                       gem(callback_obj), area(x, y, z), tile_trans(0)
+                       gem(callback_obj), area(x, y, z), tile_trans(0),
+                       map_pitch(0)
 {
+    uint8 lvl=0;
+    map_window->get_level(&lvl);
+    map_pitch = (lvl==0) ? 1024 : 256;
+
     init_effect();
 }
 
@@ -1185,8 +1190,10 @@ void PeerEffect::peer()
     if(overlay->h > 48*PEER_TILEW) h = 48*PEER_TILEW;
 
     MapCoord player_loc = game->get_player()->get_actor()->get_location();
-    uint16 cx = player_loc.x-area.x; // center of area
+    uint16 cx = player_loc.x-area.x; // rough center of area
     uint16 cy = player_loc.y-area.y;
+    area.x%=map_pitch; // we have to wrap here because we use a map buffer
+    area.y%=map_pitch;
     uint8 *mapbuffer = new uint8[48*48]; // array of tile types/colors
     memset(mapbuffer, 0x00, sizeof(uint8)*48*48); // fill with black
     fill_buffer(mapbuffer, cx, cy);
@@ -1216,6 +1223,8 @@ void PeerEffect::fill_buffer(uint8 *mapbuffer, uint16 x, uint16 y)
     if(*tile != 0x00)
         return; // already filled
 
+    wx %= map_pitch; // we have to wrap here because we use a map buffer
+    wy %= map_pitch;
     *tile = get_tilemap_type(wx, wy, area.z);
 
     // stop at unpassable tiles

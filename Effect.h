@@ -435,6 +435,7 @@ class PeerEffect : public PauseEffect
     Obj *gem; // allows effect to call usecode and delete object
     MapCoord area; // area to display (top-left corner)
     uint8 tile_trans; // peer_tile transparency mask (0 or 1)
+    uint16 map_pitch;
 
     inline void blit_tile(uint16 x, uint16 y, uint8 c);
     inline void blit_actor(Actor *actor);
