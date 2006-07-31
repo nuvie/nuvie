@@ -1,3 +1,6 @@
+2006-08-01  Pieter Luteijn <luteijn at users.sourceforge.net>
+        * Fix crash when entering vehicle.
+
 2006-07-31  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fix for ObjManager::is_passable() reading objects on the edge of the
 	  map.
