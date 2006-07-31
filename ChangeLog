@@ -1,3 +1,9 @@
+2006-08-01  Eric Fry <efry at users.sourceforge.net>
+	* Fixed bug with U6Actor set_worktype(). It was overwriting the frame_n
+	  with the dead body frame_n when returning from the sleep work type.
+	* Changed XCode 'Development' build target to fix issues with gdb.
+	  Turned on full debug symbols and turned off optimisation.
+
 2006-07-30  Joseph Applegate <sb-x at users.sourceforge.net>
 	* New UseCode: Gargish Vocabulary.
 	* Added alcohol level to Player. After drinking something alcoholic, the

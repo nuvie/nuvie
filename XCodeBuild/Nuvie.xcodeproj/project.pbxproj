@@ -1297,6 +1297,7 @@
 				CC = "";
 				COPY_PHASE_STRIP = NO;
 				CPLUSPLUS = "";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1413,7 +1414,9 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
 			};
 			name = Development;
 		};

@@ -824,14 +824,15 @@ void U6Actor::set_worktype(uint8 new_worktype)
  if(new_worktype == worktype)
    return;
 
- //reset to base obj_n
- if(worktype > 2) //don't revert for party worktypes as they might be riding a horse.
-   set_actor_obj_n(base_actor_type->base_obj_n);
-
  if(worktype == WORKTYPE_U6_SLEEP || worktype == WORKTYPE_U6_PLAY_LUTE)
    {
     frame_n = old_frame_n;
    }
+
+ //reset to base obj_n
+ if(worktype > 2) //don't revert for party worktypes as they might be riding a horse.
+   set_actor_obj_n(base_actor_type->base_obj_n);
+
  Actor::set_worktype(new_worktype);
 
  //FIX from here.
