@@ -177,7 +177,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 				return false;
 			case SDLK_KP_ENTER:
 			case SDLK_RETURN:
-				Game::get_game()->get_screen()->toggleFullScreen();
+//				Game::get_game()->get_screen()->toggleFullScreen();
 				break;
 			default: return true;
 		}
@@ -483,7 +483,7 @@ bool Event::perform_talk(Actor *actor)
         scroll->display_string(actor->get_name());
         scroll->display_string("\n");
         scroll->display_string("Talking to yourself?\n");
-        return(false);
+        return false;
     }
     // FIXME: this check and the "no response" messages should be in Converse
     if(!player->in_party_mode())
@@ -493,7 +493,7 @@ bool Event::perform_talk(Actor *actor)
         scroll->display_string("\n");
         scroll->display_string("Not in solo mode.\n");
     }
-    if(actor->is_sleeping())
+    else if(actor->is_sleeping())
     {
         // always display look-string on failure
         scroll->display_string(actor_manager->look_actor(actor));
