@@ -2238,6 +2238,8 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
 
     if(party->is_in_vehicle())
       return true;
+    if(items.actor_ref->get_location().x != x)
+      return true; // don't step onto the left tile of a moongate
 
     if (obj->frame_n != 1) return false; // FIXME is this check needed?
     if(!player->in_party_mode())
