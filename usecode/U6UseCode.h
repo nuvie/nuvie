@@ -65,7 +65,7 @@ class U6UseCode: public UseCode, public CallBack
 
  bool use_obj(Obj *obj, Actor *actor);
  bool look_obj(Obj *obj, Actor *actor);
- bool pass_obj(Obj *obj, Actor *actor);
+ bool pass_obj(Obj *obj, Actor *actor, uint16 x, uint16 y);
  bool search_obj(Obj *obj, Actor *actor);
  bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y);
  bool load_obj(Obj *obj);

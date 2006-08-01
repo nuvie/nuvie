@@ -58,6 +58,7 @@ typedef uint16 UseCodeEvent;
  * Returns: True if actor may move, False if object blocks
  * Called when an actor attempts to step onto an object.
  * actor_ref - actor trying to pass
+ * mapcoord_ref - location the actor is trying to pass (for multi-tile objects)
  *
  * LOOK (signs)
  * Returns: True if an object can be searched
@@ -171,7 +172,7 @@ class UseCode
 
  virtual bool use_obj(Obj *obj, Actor *actor)    { return(false); }
  virtual bool look_obj(Obj *obj, Actor *actor)   { return(false); }
- virtual bool pass_obj(Obj *obj, Actor *actor)   { return(false); }
+ virtual bool pass_obj(Obj *obj, Actor *actor, uint16 x, uint16 y) { return(false); }
  virtual bool search_obj(Obj *obj, Actor *actor) { return(false); }
  virtual bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y) { return(false); }
  virtual bool load_obj(Obj *obj)                 { return(false); }

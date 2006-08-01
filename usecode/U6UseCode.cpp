@@ -202,12 +202,16 @@ bool U6UseCode::look_obj(Obj *obj, Actor *actor)
 }
 
 
-/* PASS object. Actor is the actor trying to pass the object.
- */
-bool U6UseCode::pass_obj(Obj *obj, Actor *actor)
+/* PASS object. Actor is the actor trying to pass the object. It takes
+   target coordinates in case the object has multiple tiles. */
+bool U6UseCode::pass_obj(Obj *obj, Actor *actor, uint16 x, uint16 y)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_PASS);
+    static MapCoord loc;
+    loc.x = x; loc.y = y;
+    loc.z = obj->z;
     set_itemref(actor);
+    set_itemref(&loc);
     return(uc_event(type, USE_EVENT_PASS, obj));
 }
 
@@ -2238,10 +2242,9 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
 
     if(party->is_in_vehicle())
       return true;
-    if(items.actor_ref->get_location().x != x)
+    if(items.mapcoord_ref->x != x)
       return true; // don't step onto the left tile of a moongate
 
-    if (obj->frame_n != 1) return false; // FIXME is this check needed?
     if(!player->in_party_mode())
     {
         scroll->display_string("\nNot in solo mode.\n\n");
