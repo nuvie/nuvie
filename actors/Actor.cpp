@@ -299,7 +299,7 @@ const char *Actor::get_name()
     if(in_party)
         name = party->get_actor_name(party->get_member_num(this));
     else if(id_n == player->id_n)
-        name = party->get_actor_name(uint8(0)); // the player, not necessarily the "active" leader
+        name = party->get_actor_name(0); // the player, not necessarily the "active" leader
     else if(is_met()
             && (talk_name = converse->npc_name(id_n)) ) // assignment
         name = talk_name;
@@ -319,8 +319,8 @@ bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags f
 {
  Actor *a;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
-// bool ignore_danger = flags & ACTOR_IGNORE_DANGER;
- bool ignore_danger = true;
+ bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || in_party;
+// bool ignore_danger = true;
 
     uint16 pitch = map->get_width(new_z);
     if(new_x < 0 || new_x >= pitch)
@@ -367,9 +367,9 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
  bool force_move = flags & ACTOR_FORCE_MOVE;
  bool open_doors = flags & ACTOR_OPEN_DOORS;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
-// bool ignore_danger = flags & ACTOR_IGNORE_DANGER;
+ bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || in_party;
+// bool ignore_danger = true;
  bool ignore_moves = flags & ACTOR_IGNORE_MOVES;
- bool ignore_danger = true;
  Obj *obj = NULL;
  MapCoord oldpos(x, y, z);
 
@@ -407,7 +407,7 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
  // usecode must allow movement
  if(obj && usecode->has_passcode(obj))
    {
-    if(!usecode->pass_obj(obj, this)) // calling item is this actor
+    if(!usecode->pass_obj(obj, this, new_x,new_y)) // calling item is this actor
       {
        set_error(ACTOR_BLOCKED_BY_OBJECT);
        error_struct.blocking_obj = obj;
