@@ -5,6 +5,7 @@
 #include "CallBack.h"
 #include "Map.h"
 #include "ObjManager.h"
+#include "AnimManager.h"
 
 //class Actor;
 class EffectManager;
@@ -16,13 +17,15 @@ class TimedAdvance;
 class TimedCallback;
 class ObjManager;
 
+// Effects add themselves to EffectManager and most start immediately.
+
 /* Effects: * = unwritten or untested
  * Quake - earthquake from cyclops or volcanos
  * Hit - hit actor anim + sfx
  * Explosive - explosion caused by powder keg, volcanos, or cannonball hit
- * ThrowObject - any thrown object
+ * ThrowObject - any thrown object or tile
  * Cannonball (FIX: change to UseCodeThrow)
- * *Missile - throw object to *ground or actor; optionally cause damage
+ * Missile - throw object to ground or actor; optionally cause damage
  * *Boomerang - spin Missile and return to sender
  * Drop - throw obj from inventory to ground
  * Sleep - pause game & advance time quickly
@@ -55,7 +58,7 @@ public:
                        { return(0); }
 };
 
-
+#define CANNON_SPEED 320
 /* Toss a cannon ball from one actor to another, or from an object towards
  * a numbered direction.
  */
@@ -176,9 +179,9 @@ class UseCodeExplosiveEffect : public ExplosiveEffect
 };
 
 
-
-/* Toss object tile from one location to another. The sprite is rotated towards
- * the toss direction. This utilizes a ThrowObjectAnim.
+/* Toss object tile from one location to another with a TossAnim, and play a
+ * sound effect. The ThrowObjectEffect is constructed with uninitialized
+ * parameters and isn't started until start_anim() is called.
  */
 class ThrowObjectEffect : public Effect
 {
@@ -188,10 +191,14 @@ protected:
 //  *sfx;
     MapCoord start_at, stop_at; // start_at -> stop_at
     Obj *throw_obj; // object being thrown
-    uint32 throw_speed; // used in animation
+    Tile *throw_tile; // graphic to use (default is object's tile)
+    uint16 throw_speed; // used in animation
+    uint16 degrees; // rotation of tile
+    uint8 stop_flags; // TossAnim blocking flags
 
 public:
     ThrowObjectEffect();
+    virtual ~ThrowObjectEffect() { }
 
     void hit_target(); // stops effect
     void start_anim();
@@ -216,37 +223,46 @@ public:
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
+#define MISSILE_DEFAULT_SPEED 200
+#define MISSILE_HIT_TARGET  TOSS_TO_BLOCKING
+#define MISSILE_HIT_OBJECTS (TOSS_TO_BLOCKING|TOSS_TO_OBJECT)
+#define MISSILE_HIT_ACTORS  (TOSS_TO_BLOCKING|TOSS_TO_ACTOR)
+#define MISSILE_HIT_ALL     (TOSS_TO_BLOCKING|TOSS_TO_OBJECT|TOSS_TO_ACTOR)
 
-
-/* Throw an object towards an actor or location. If the target is an actor, it
- * will be hit for the requested damage. Attacking objects is not handled here.
- * If the target is an empty map location, the object will be added to the map.
- * (this isn't implemented yet, try a DropEffect)
+/* Throw a missile towards a target location. If the target is an actor or
+ * object, it will be hit for the requested damage. If the target is an empty
+ * map location, the object will be added to the map. The missile always stops
+ * if hitting a blocking tile.
  *
  * Decide in the attack logic, before constructing this, whether or not it was
- * successful, and use the appropriate constructor.
+ * successful, and use the appropriate constructor. You can set the effect to
+ * hit any actors or objects in the way if the attack missed.
  */
 class MissileEffect : public ThrowObjectEffect
 {
-    uint16 hit_damage; // hp taken off actor(s) hit by object
-    Actor *hit_actor; // if targeting an actor
+    ActorManager *actor_manager;
+
+    uint16 hit_damage; // hp taken off actor/object hit by missile
+    Actor *hit_actor;
+    Obj *hit_obj;
 
 public:
-    MissileEffect(Obj *obj, MapCoord *source, Actor *target, uint32 dmg, uint32 spd = 0);
-    MissileEffect(Obj *obj, MapCoord *source, MapCoord *target, uint32 dmg, uint32 spd = 0);
+    MissileEffect(uint16 tile_num, uint16 obj_n, const MapCoord &source,
+                  const MapCoord &target, uint8 dmg, uint8 intercept = MISSILE_HIT_TARGET, uint16 speed = MISSILE_DEFAULT_SPEED);
 
-    void init(Obj *obj, MapCoord *src, MapCoord *target, Actor *a, uint32 dmg, uint32 spd);
-
+    void init(uint16 tile_num, uint16 obj_n, const MapCoord &source,
+              const MapCoord &target, uint32 dmg, uint8 intercept, uint32 speed);
+    void hit_target();
+    void hit_blocking();
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
-
-
 
 #if 0
 /* Throw an object and bring it back.
  */
 class BoomerangEffect : public ThrowObjectEffect
 {
+// I might even add an arc from the center line for a cool effect.
 };
 
 

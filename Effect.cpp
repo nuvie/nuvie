@@ -13,6 +13,7 @@
 #include "ViewManager.h"
 #include "MsgScroll.h"
 #include "ActorManager.h"
+#include "U6objects.h"
 #include "Effect.h"
 
 #include <cassert>
@@ -84,8 +85,7 @@ CannonballEffect::CannonballEffect(Obj *src_obj, sint8 direction)
 }
 
 
-/* Pause world & start animation.
- */
+/* Pause world & start animation. */
 void CannonballEffect::start_anim()
 {
     MapCoord obj_loc(obj->x, obj->y, obj->z);
@@ -95,7 +95,7 @@ void CannonballEffect::start_anim()
     game->pause_user();
 
     anim = new TossAnim(game->get_tile_manager()->get_tile(399),
-                        &obj_loc, &target_loc, TOSS_TO_BLOCKING | TOSS_TO_ACTOR | TOSS_TO_OBJECT);
+                        obj_loc, target_loc, CANNON_SPEED, TOSS_TO_BLOCKING|TOSS_TO_ACTOR|TOSS_TO_OBJECT);
     add_anim(anim);
 }
 
@@ -409,7 +409,10 @@ ThrowObjectEffect::ThrowObjectEffect()
 
     anim = NULL;
     throw_obj = NULL;
+    throw_tile = 0;
     throw_speed = 0;
+    degrees = 0;
+    stop_flags = 0;
 }
 
 
@@ -418,13 +421,19 @@ void ThrowObjectEffect::start_anim()
     game->pause_anims();
     game->pause_world();
     game->pause_user();
-    anim = new ThrowObjectAnim(throw_obj, &start_at, &stop_at, throw_speed);
+
+    assert(throw_tile || throw_obj); // make sure it was properly initialized
+    assert(throw_speed != 0);
+
+    if(throw_obj)
+        anim = new TossAnim(throw_obj->obj_n, degrees, start_at, stop_at, throw_speed, stop_flags);
+    else
+        anim = new TossAnim(throw_tile, start_at, stop_at, throw_speed, stop_flags);
     add_anim(anim);
 }
 
 
-/* Object has stopped.
- */
+/* Object has stopped. */
 void ThrowObjectEffect::hit_target()
 {
     if(anim)
@@ -442,6 +451,7 @@ DropEffect::DropEffect(Obj *obj, uint16 qty, Actor *actor, MapCoord *drop_loc)
     drop_from_actor = actor;
     start_at = drop_from_actor ? drop_from_actor->get_location() : MapCoord(obj->x, obj->y, obj->z);
     stop_at = *drop_loc;
+    degrees = 90;
 
     get_obj(obj, qty); // remove from actor, set throw_obj
 
@@ -484,14 +494,19 @@ uint16 DropEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 }
 
 
-/* Add object to map. (call before completing effect)
- */
+/* Add object to map. (call before completing effect) */
 void DropEffect::hit_target()
 {
     throw_obj->x = stop_at.x;
     throw_obj->y = stop_at.y;
     throw_obj->z = stop_at.z;
-    obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
+/*    if(throw_obj->is_breakable() && start_at.distance(stop_at) > 1)
+    {
+        delete_obj(throw_obj);
+        display_string("\nIt broke!\n");
+    }
+    else*/// FIXME
+        obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
     throw_obj = NULL; // set as dropped
 
     // not appropriate to do "Event::endAction(true)" from here to display
@@ -506,57 +521,125 @@ void DropEffect::hit_target()
 
 
 /*** MissileEffect ***/
-/* Using an actor as the target.
- */
-MissileEffect::MissileEffect(Obj *obj, MapCoord *source, Actor *target,
-                             uint32 dmg, uint32 spd)
+MissileEffect::MissileEffect(uint16 tile_num, uint16 obj_n, const MapCoord &source,
+                             const MapCoord &target, uint8 dmg,
+                             uint8 intercept, uint16 speed)
 {
-    init(obj, source, NULL, target, dmg, spd);
+    actor_manager = game->get_actor_manager();
+    hit_actor = 0;
+    hit_obj = 0;
+
+    init(tile_num, obj_n, source, target, dmg, intercept, speed);
 }
 
-
-MissileEffect::MissileEffect(Obj *obj, MapCoord *source, MapCoord *target,
-                             uint32 dmg, uint32 spd)
+/* Start effect. If target is unset then the actor is the target. */
+void MissileEffect::init(uint16 tile_num, uint16 obj_n,
+                         const MapCoord &source, const MapCoord &target,
+                         uint32 dmg, uint8 intercept, uint32 speed)
 {
-    init(obj, source, target, NULL, dmg, spd);
-}
+    assert(tile_num != 0 || obj_n != 0);
+    assert(speed != 0);
+    assert(intercept != 0); // must hit target
 
-
-/* Start effect. If target is unset then the actor is the target.
- */
-void MissileEffect::init(Obj *obj, MapCoord *src, MapCoord *target, Actor *a,
-                         uint32 dmg, uint32 spd)
-{
-    assert(obj && src);
-    throw_obj = obj;
-    hit_actor = a;
-    throw_speed = spd;
+    if(obj_n != 0)
+        throw_obj = new_obj(obj_n, 0, 0,0,0);
+    if(tile_num != 0)
+        throw_tile = game->get_tile_manager()->get_tile(tile_num);
+    else
+        throw_tile = obj_manager->get_obj_tile(throw_obj->obj_n,0);
+    throw_speed = speed;
     hit_damage = dmg;
 
-    start_at = *src;
-    stop_at = target ? *target : a->get_location();
+    start_at = source;
+    stop_at = target;
+    stop_flags = intercept;
+    assert(stop_at != start_at);
 
+    // set tile rotation here based on obj_num
+    if(throw_obj != 0)
+    {
+        if(throw_obj->obj_n == OBJ_U6_SPEAR)
+            degrees = 315;
+        if(throw_obj->obj_n == OBJ_U6_THROWING_AXE)
+            degrees = 0;
+        if(throw_obj->obj_n == OBJ_U6_DAGGER)
+            degrees = 315;
+        if(throw_obj->obj_n == OBJ_U6_ARROW)
+            degrees = 270;
+        if(throw_obj->obj_n == OBJ_U6_BOLT)
+            degrees = 270;
+    }
     start_anim();
 }
 
-
-/* On HIT: hit Actor and end
+/* On HIT: hit Actor or Obj and end
+ * On HIT_WORLD: end at hit location, hit Actor or Obj, else place obj
+ * On DONE: end
  */
 uint16 MissileEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 {
-    if(msg == MESG_ANIM_HIT && ((MapEntity *)msg_data)->entity_type == ENT_ACTOR)
+    if(msg != MESG_ANIM_DONE && msg != MESG_ANIM_HIT_WORLD && msg != MESG_ANIM_HIT)
+        return 0;
+
+    if(msg == MESG_ANIM_DONE)
     {
-        if(hit_actor && hit_damage != 0) // stop at actor if effect causes damage
-        {
-            if(anim)
-                anim->stop();
-            ((MapEntity *)msg_data)->actor->hit(hit_damage);
-            hit_target();
-        }
-    }
-    else if(msg == MESG_ANIM_DONE)
+        // will always hit anything at the target
+        // FIXME: only hit breakable objects like doors
+//        hit_obj = obj_manager->get_obj(stop_at.x,stop_at.y,stop_at.z);
+        hit_actor = actor_manager->get_actor(stop_at.x,stop_at.y,stop_at.z);
         hit_target();
-    return(0);
+    }    
+    else if(msg == MESG_ANIM_HIT && ((MapEntity *)msg_data)->entity_type == ENT_ACTOR)
+    {
+        if(hit_damage != 0)
+            hit_actor = ((MapEntity*)msg_data)->actor;
+        hit_target();
+    }
+    else if(msg == MESG_ANIM_HIT && ((MapEntity *)msg_data)->entity_type == ENT_OBJ)
+    {
+        // FIXME: only hit breakable objects like doors
+/*        if(hit_damage != 0)
+            hit_obj = ((MapEntity*)msg_data)->obj;
+        hit_target();*/
+    }
+    // MESG_ANIM_HIT_WORLD
+    hit_blocking();
+    return 0;
+}
+
+/* Hit target or add object to map. (call before completing effect) */
+void MissileEffect::hit_target()
+{
+    if(hit_actor)
+    {
+        hit_actor->hit(hit_damage, ACTOR_FORCE_HIT);
+        delete throw_obj; throw_obj = 0; // don't drop
+    }
+    else if(hit_obj)
+    {
+        if(hit_obj->qty < hit_damage)
+            hit_obj->qty = 0;
+        else hit_obj->qty -= hit_damage;
+        delete throw_obj; throw_obj = 0; // don't drop
+    }
+    if(throw_obj != 0)
+    {
+        throw_obj->x = stop_at.x; throw_obj->y = stop_at.y;
+        throw_obj->z = stop_at.z;
+        throw_obj->status |= OBJ_STATUS_OK_TO_TAKE | OBJ_STATUS_TEMPORARY;
+        if(obj_manager->is_stackable(throw_obj))
+            throw_obj->qty = 1; // stackable objects must have a quantity
+        obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
+        throw_obj = 0;
+    }
+
+    ThrowObjectEffect::hit_target(); // calls delete_self()
+}
+
+void MissileEffect::hit_blocking()
+{
+    delete throw_obj;
+    ThrowObjectEffect::hit_target();
 }
 
 
@@ -723,8 +806,7 @@ FadeEffect::~FadeEffect()
 }
 
 
-/* Start effect.
- */
+/* Start effect. */
 void FadeEffect::init_pixelated_fade()
 {
     int fillret = -1; // check error
