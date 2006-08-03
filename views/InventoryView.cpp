@@ -274,8 +274,8 @@ void InventoryView::display_combat_mode()
  */
 GUI_status InventoryView::KeyDown(SDL_keysym key)
 {
-    Event *event = Game::get_game()->get_event();
-    ViewManager *view_manager = Game::get_game()->get_view_manager();
+//    Event *event = Game::get_game()->get_event();
+//    ViewManager *view_manager = Game::get_game()->get_view_manager();
 
     if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
         return(GUI_PASS);
@@ -302,7 +302,7 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
             Game::get_game()->get_map_window()->centerCursor();
             Game::get_game()->get_map_window()->set_show_cursor(true);
             break;
-        case SDLK_F1: // FIXME: these should pass down to Event (global actions)
+/*        case SDLK_F1: // FIXME: these should pass down to Event (global actions)
         case SDLK_F2:
         case SDLK_F3:
         case SDLK_F4:
@@ -323,7 +323,10 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
         case SDLK_ESCAPE:
         default:
             event->cancelAction();
-            break;
+            break;*/
+        default:
+            set_show_cursor(false); // newAction() can move cursor here
+            return GUI_PASS;
     }
     return(GUI_YUM);
 }
