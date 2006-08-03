@@ -153,25 +153,35 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		switch(event->key.keysym.sym)
 		{
 			case SDLK_KP0:
-                        case SDLK_0: alt_code_str[alt_code_len++] = '0'; break;
+			case SDLK_0: alt_code_str[alt_code_len++] = '0'; break;
+
 			case SDLK_KP1:
-	                case SDLK_1: alt_code_str[alt_code_len++] = '1'; break;
+			case SDLK_1: alt_code_str[alt_code_len++] = '1'; break;
+
 			case SDLK_KP2:
-	                case SDLK_2: alt_code_str[alt_code_len++] = '2'; break;
+			case SDLK_2: alt_code_str[alt_code_len++] = '2'; break;
+
 			case SDLK_KP3:
-	                case SDLK_3: alt_code_str[alt_code_len++] = '3'; break;
+			case SDLK_3: alt_code_str[alt_code_len++] = '3'; break;
+
 			case SDLK_KP4:
-	                case SDLK_4: alt_code_str[alt_code_len++] = '4'; break;
+			case SDLK_4: alt_code_str[alt_code_len++] = '4'; break;
+
 			case SDLK_KP5:
-	                case SDLK_5: alt_code_str[alt_code_len++] = '5'; break;
+			case SDLK_5: alt_code_str[alt_code_len++] = '5'; break;
+
 			case SDLK_KP6:
-	                case SDLK_6: alt_code_str[alt_code_len++] = '6'; break;
+			case SDLK_6: alt_code_str[alt_code_len++] = '6'; break;
+
 			case SDLK_KP7:
-	                case SDLK_7: alt_code_str[alt_code_len++] = '7'; break;
+			case SDLK_7: alt_code_str[alt_code_len++] = '7'; break;
+
 			case SDLK_KP8:
-	                case SDLK_8: alt_code_str[alt_code_len++] = '8'; break;
+			case SDLK_8: alt_code_str[alt_code_len++] = '8'; break;
+
 			case SDLK_KP9:
 			case SDLK_9: alt_code_str[alt_code_len++] = '9'; break;
+
 			case SDLK_x: // quit
 				scroll->display_string("Exit!\n");
 				return false;
@@ -221,7 +231,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		return true;
 	}
 
-	// when casting the magic class will events
+	// when casting the magic class will handle events
 	if(mode == CAST_MODE)
 	{
 	  if (magic->handleSDL_KEYDOWN(event))
@@ -438,8 +448,7 @@ void Event::display_portrait(Actor *actor, const char *name)
 }
 
 
-/* Allow use-cursor move to grab a target for `use_obj'.
- */
+/* Allow use-cursor move to grab a target for `use_obj'. */
 void Event::useselect_mode(Obj *src, const char *prompt)
 {
     use_obj = src;
@@ -453,8 +462,7 @@ void Event::useselect_mode(Obj *src, const char *prompt)
 }
 
 
-/* Allow free-cursor move to grab a target for `use_obj'.
- */
+/* Allow free-cursor move to grab a target for `use_obj'. */
 void Event::freeselect_mode(Obj *src, const char *prompt)
 {
     use_obj = src;
@@ -874,7 +882,7 @@ bool Event::select_obj(Obj *obj, Actor *actor)
         return(false);
 
     usecode->set_itemref(obj);
-    usecode->set_itemref(NULL, actor);
+    usecode->set_itemref(NULL, actor); // actor2 (target actor)
     loc=map_window->get_cursorCoord();
     usecode->set_itemref(&loc);
     //if(use_obj && (obj || actor))  // removed so it works with location only.
@@ -1891,8 +1899,7 @@ bool Event::ready(Obj *obj)
 }
 
 
-/* Make actor hold an object they are wearing.
- */
+/* Make actor hold an object they are wearing. */
 bool Event::unready(Obj *obj)
 {
     Actor *actor = Game::get_game()->get_actor_manager()->get_actor(obj->x);
@@ -1955,9 +1962,7 @@ bool Event::drop_select(Obj *obj, uint16 qty)
     return(true);
 }
 
-
-/* Select quantity of `use_obj' to be dropped. (qty 0 = drop nothing)
- */
+/* Select quantity of `use_obj' to be dropped. (qty 0 = drop nothing) */
 bool Event::drop_count(uint16 qty)
 {
     if(mode == WAIT_MODE)
@@ -1995,8 +2000,7 @@ bool Event::drop()
 }
 
 
-/* Make actor holding object drop it at x,y.
- */
+/* Make actor holding object drop it at x,y. */
 bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
 {
    // Map *map = Game::get_game()->get_game_map();
@@ -2406,7 +2410,7 @@ bool Event::newAction(EventMode new_mode)
 		doAction();
 		return(false); // although this is success, we reverted to MOVE_MODE
 	}
-	else if(mode != MOVE_MODE) // in another mode, exit
+	else if(mode != MOVE_MODE && mode != EQUIP_MODE) // in another mode, exit
 	{
 		cancelAction();
 		return(false);
