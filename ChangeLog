@@ -1,5 +1,32 @@
+2006-08-03  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Better fix for calling UseCode::pass_obj() on multi-tile objects. You
+	  now have to pass x,y coords to pass_obj().
+	* Ignore-danger move flag is now checked. (for non-party actors)
+	  Monsters no longer follow the party into a swamp.
+	* New UseCode: holy_flame() is called when looking at one of the holy
+	  flames. This is not in U6 so may be optional.
+	* Changed Actor::defend() to return hit amount, and moved hit to
+	  Actor::attack().
+	* Finished implementing MissileEffect, which takes an object and tile
+	  number. If the target location is not an actor or object, the missile
+	  object will be added to the map, otherwise the target object will take
+	  damage.
+	  Misc. fixes to TossAnim and ThrowObjectEffect.
+	* Also added the missile animation to Actor's attack. It works for
+	  lightning wands and bows at least, but probably crashes for other
+	  weapons that don't have a tile set.
+	* New actions can be started from the InventoryView, by passing the input
+	  back to Event. This fixes the "what?" message when the user presses a
+	  command key while the cursor is in inventory.
+	* Added tiles to lightning and fire wand combat_type, and drake's body to
+	  drake actor_type.
+	* Added individual Actor alignment bits.
+	* New method stats_changed() updates ViewManager if an actor's stats
+	  change. Should this be in ViewManager?
+	  Added update() function for Game::stats_changed(). (like PartyView has)
+
 2006-08-01  Pieter Luteijn <luteijn at users.sourceforge.net>
-        * Fix crash when entering vehicle.
+	* Fix crash when entering vehicle.
 
 2006-07-31  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Fix for ObjManager::is_passable() reading objects on the edge of the
