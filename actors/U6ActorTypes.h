@@ -72,7 +72,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_WOLF,             2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,   8,  16,   8,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL},
  {OBJ_U6_SNAKE,            2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,   3,   7,   6,   1,   2,   5, ACTOR_ALIGNMENT_CHAOTIC},
  {OBJ_U6_GIANT_SPIDER,     2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,   9,  11,   4,   0,   8,  10, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_DRAKE,            2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,       15,  22,  22,  13,   4,  10,  50, ACTOR_ALIGNMENT_EVIL},
+ {OBJ_U6_DRAKE,            2, 2, 1, 0, OBJ_U6_DRAKE, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,       15,  22,  22,  13,   4,  10,  50, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_MONGBAT,          2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          15,  20,  27,  13,   4,  20,  30, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_DAEMON,           2, 2, 1, 0, OBJ_U6_DEAD_BODY, 0, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       30,  35,  26,  31,  10,  20, 100, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_SKELETON,         2, 2, 1, 0, OBJ_U6_DEAD_BODY, 9, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       30,  10,  14,   7,   0,   6,  20, ACTOR_ALIGNMENT_EVIL},
@@ -264,8 +264,8 @@ const CombatType u6combat_objects[] = {
 {OBJ_U6_MAGIC_BOW, 0, 20, 0, ATTACK_TYPE_MISSLE, TILE_U6_ARROW, OBJ_U6_NOTHING, false },
 
 {OBJ_U6_STAFF, 0, 4, 0, ATTACK_TYPE_HAND, 0, OBJ_U6_NOTHING, false },
-{OBJ_U6_LIGHTNING_WAND, 0, 30, 0, ATTACK_TYPE_MISSLE, 0/*lightning bolt*/, OBJ_U6_NOTHING, false },
-{OBJ_U6_FIRE_WAND, 0, 20, 0, ATTACK_TYPE_MISSLE, 0/*fire bolt*/, OBJ_U6_NOTHING, false },
+{OBJ_U6_LIGHTNING_WAND, 0, 30, 0, ATTACK_TYPE_MISSLE, TILE_U6_LIGHTNING, OBJ_U6_NOTHING, false },
+{OBJ_U6_FIRE_WAND, 0, 20, 0, ATTACK_TYPE_MISSLE, TILE_U6_FIREBALL, OBJ_U6_NOTHING, false },
 {OBJ_U6_FLASK_OF_OIL, 0, 4, 0, ATTACK_TYPE_THROWN, 0, OBJ_U6_NOTHING, false },
 
 {OBJ_U6_ROLLING_PIN, 0, 2, 1, ATTACK_TYPE_HAND, 0, OBJ_U6_NOTHING, false },
