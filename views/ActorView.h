@@ -49,6 +49,7 @@ class ActorView : public View {
  bool set_party_member(uint8 party_member);
 
  void Display(bool full_redraw);
+ void update() { update_display = true; }
 
  protected:
 
