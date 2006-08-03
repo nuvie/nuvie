@@ -144,6 +144,7 @@ class U6UseCode: public UseCode, public CallBack
  bool magic_ring(Obj *obj, UseCodeEvent ev);
  bool amulet_of_submission(Obj *obj, UseCodeEvent ev);
  bool gargish_vocabulary(Obj *obj, UseCodeEvent ev);
+ bool holy_flame(Obj *obj, UseCodeEvent ev);
  
  protected:
 // supplementary

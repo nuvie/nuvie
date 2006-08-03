@@ -2639,3 +2639,19 @@ bool U6UseCode::gargish_vocabulary(Obj *obj, UseCodeEvent ev)
     }
     return true;
 }
+
+/* LOOK: Print the name of a holy brazier, and not the normal description. */
+bool U6UseCode::holy_flame(Obj *obj, UseCodeEvent ev)
+{
+    if(obj->quality == 0 || obj->quality > 3)
+        return true; // use normal description
+    scroll->display_string("\nThe flame of ");
+    if(obj->quality == 1)
+        scroll->display_string("truth");
+    if(obj->quality == 2)
+        scroll->display_string("love");
+    if(obj->quality == 3)
+        scroll->display_string("courage");
+    scroll->display_string(".\n");
+    return false;
+}
