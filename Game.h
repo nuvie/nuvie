@@ -133,6 +133,7 @@ class Game
  void dont_wait_for_interval();
  void wait_for_interval();
  void time_changed();
+ void stats_changed();
 
  /* Pass back instance of Game classes... and why not? */
  static Game *get_game()           { return(game); }

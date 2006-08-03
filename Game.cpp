@@ -51,6 +51,7 @@
 #include "Background.h"
 #include "CommandBar.h"
 #include "PartyView.h"
+#include "ActorView.h"
 
 #include "U6UseCode.h"
 #include "MDUseCode.h"
@@ -313,6 +314,13 @@ void Game::time_changed()
     get_command_bar()->update(); // date & wind
     get_view_manager()->get_party_view()->update(); // sky
     get_map_window()->updateAmbience();
+}
+
+// FIXME: should this be in ViewManager?
+void Game::stats_changed()
+{
+    get_view_manager()->get_actor_view()->update();
+    get_view_manager()->get_party_view()->update();
 }
 
 
