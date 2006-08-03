@@ -60,6 +60,8 @@ class Look;
 #define TILEFLAG_FORCED_PASSABLE 0x4
 
 // FIXME These should probably go else where.
+#define TILE_U6_LIGHTNING   392
+#define TILE_U6_FIREBALL    397
 #define TILE_U6_SLING_STONE 398
 #define TILE_U6_ARROW       566
 #define TILE_U6_BOLT        567
