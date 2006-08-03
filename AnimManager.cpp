@@ -19,6 +19,10 @@
 #define MESG_ANIM_DONE      ANIM_CB_DONE
 
 static float get_relative_degrees(sint16 sx, sint16 sy, float angle_up = 0);
+struct tossanim_tile_shifts_s tossanim_tile_shifts[] = {
+    { TILE_U6_BOLT, 4 },
+    { TILE_U6_ARROW, 4 },
+    { 0, 0} }; // end-list pointer
 
 
 /* Convert a non-normalized relative direction (difference) from any center
@@ -413,8 +417,7 @@ HitAnim::HitAnim(Actor *actor)
 }
 
 
-/* Keep effect over actor.
- */
+/* Keep effect over actor. */
 bool HitAnim::update()
 {
     if(hit_actor)
@@ -427,53 +430,61 @@ bool HitAnim::update()
 
 
 /*** TossAnim ***/
-TossAnim::TossAnim(Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags)
+TossAnim::TossAnim(Tile *tile, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags)
 {
-    init(tile, start, stop, 320, stop_flags);
+    actor_manager = Game::get_game()->get_actor_manager();
+    obj_manager = Game::get_game()->get_obj_manager();
+    map = Game::get_game()->get_game_map();
+
+    init(tile, 0, start, stop, pixels_per_sec, stop_flags);
 }
-
-
-TossAnim::TossAnim(CallBack *t, void *d, Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags)
+TossAnim::TossAnim(uint16 obj_n, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags)
 {
-    init(tile, start, stop, 320, stop_flags);
-    set_target(t);
-    set_user_data(d);
-}
+    actor_manager = Game::get_game()->get_actor_manager();
+    obj_manager = Game::get_game()->get_obj_manager();
+    map = Game::get_game()->get_game_map();
 
+    init(obj_manager->get_obj_tile(obj_n, 0), degrees,
+         start, stop, pixels_per_sec, stop_flags);
+}
 
 TossAnim::~TossAnim()
 {
     if(running)
     {
-        printf("anim warning: deleting active TossAnim!\n");
+        printf("warning: deleting active TossAnim!\n");
         stop();
     }
 
     delete src;
     delete target;
+    delete toss_tile;
 }
 
-
-void TossAnim::init(Tile *tile, MapCoord *start, MapCoord *stop, uint16 sp, uint8 stop_flags)
+void TossAnim::init(Tile *tile, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags)
 {
-    toss_tile = tile;
-    src = new MapCoord(*start);
-    target = new MapCoord(*stop);
+    src = new MapCoord(start);
+    target = new MapCoord(stop);
     blocking = stop_flags;
-    start_px = start_py = target_px = target_py = 0;
-
+    speed = pixels_per_sec;
     map_window->get_level(&mapwindow_level);
+
+    TileManager *tile_mgr = Game::get_game()->get_tile_manager();
+    MapCoord direction; // relative direction from->to
+    direction.sx = target->x - src->x;
+    direction.sy = target->y - src->y;
+    toss_tile = tile_mgr->get_rotated_tile(tile, get_relative_degrees(direction.sx,direction.sy,degrees));
+
+    // these are set in start()
+    start_px = start_py = target_px = target_py = 0;
     tanS = 0;
     old_relpos = 0;
     x_left = 0; y_left = 0;
     x_dist = 0; y_dist = 0;
-
-    speed = sp;
 }
 
 
-/* Start tile at source. Get a tangent for velocity.
- */
+/* Start tile at source. Get a tangent for velocity. */
 void TossAnim::start()
 {
     uint8 pitch = anim_manager->get_tile_pitch(); // AnimManager not set until start
@@ -493,6 +504,25 @@ void TossAnim::start()
         tanS = float(sint32(target_py-start_py)) / sint32(target_px-start_px);
 //printf("start: tanS = %d / %d = %f\n", target_py-start_py, target_px-start_px, tanS);
     Game::get_game()->dont_wait_for_interval();
+
+// adjust tile appearance but not anim location
+    uint16 t = 0;
+    while(tossanim_tile_shifts[t].tile_num != 0)
+    {
+        if(tossanim_tile_shifts[t].tile_num == toss_tile->tile_num)
+        {
+            sint8 shift = tossanim_tile_shifts[t].shift;
+            if(sint32(target_px-start_px) < 0) // going left
+                shift_tile(0,0,-shift);
+            if(sint32(target_px-start_px) > 0) // going right
+                shift_tile(0,0,shift);
+            if(sint32(target_py-start_py) < 0) // going up
+                shift_tile(0,shift,0);
+            if(sint32(target_py-start_py) > 0) // going down
+                shift_tile(0,-shift,0);
+        }
+        ++t;
+    }
 }
 
 
@@ -532,9 +562,6 @@ MapCoord TossAnim::get_location()
  */
 bool TossAnim::update()
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
-    Map *map = Game::get_game()->get_game_map();
     uint32 moves_left = 0;
 
     do // move (no more than) one tile at a time, and check for intercept
@@ -551,9 +578,8 @@ bool TossAnim::update()
             Actor *hitActor = actor_manager->get_actor(new_loc.x, new_loc.y, mapwindow_level);
             Obj *hitObj = obj_manager->get_obj(new_loc.x, new_loc.y, mapwindow_level);
 
-            // blocking tile/object
+            // blocking tile
             if(map->is_boundary(new_loc.x, new_loc.y, mapwindow_level))
-//               || (hitObj && !map->is_passable(new_loc.x, new_loc.y, mapwindow_level)))
             {
                 if(!hitActor) // NOTE: no effect if actor is also at location
                     hit_blocking(MapCoord(new_loc.x, new_loc.y, mapwindow_level));
@@ -572,7 +598,7 @@ bool TossAnim::update()
                     hit_target();
                 else if(new_loc.distance(*src) > src->distance(*target))
                 {   // overshot target (move and stop)
-                    printf("anim warning: TossAnim missed the target\n");
+                    printf("warning: TossAnim missed the target\n");
                     move(target->x, target->y);
                     hit_target();
                 }
@@ -585,16 +611,16 @@ bool TossAnim::update()
 
 void TossAnim::hit_target()
 {
-    if(!running)
-        return;
+    assert(running == true);
+
     stop();
     message(MESG_ANIM_DONE, NULL);
 }
 
 void TossAnim::hit_object(Obj *obj)
 {
-    if(!running)
-        return;
+    assert(running == true);
+
     MapEntity obj_ent(obj);
     if(blocking & TOSS_TO_OBJECT)
         message(MESG_ANIM_HIT, &obj_ent);
@@ -602,8 +628,8 @@ void TossAnim::hit_object(Obj *obj)
 
 void TossAnim::hit_actor(Actor *actor)
 {
-    if(!running)
-        return;
+    assert(running == true);
+
     MapEntity actor_ent(actor);
     if(blocking & TOSS_TO_ACTOR)
         message(MESG_ANIM_HIT, &actor_ent);
@@ -611,8 +637,8 @@ void TossAnim::hit_actor(Actor *actor)
 
 void TossAnim::hit_blocking(MapCoord obj_loc)
 {
-    if(!running)
-        return;
+    assert(running == true);
+
     if(blocking & TOSS_TO_BLOCKING)
         message(MESG_ANIM_HIT_WORLD, &obj_loc);
 }
@@ -693,8 +719,6 @@ void TossAnim::accumulate_moves(float moves, sint32 &x_move, sint32 &y_move, sin
 
 
 /*** ExplosiveAnim ***/
-
-
 ExplosiveAnim::ExplosiveAnim(MapCoord *start, uint32 size)
 {
     exploding_tile_num = 393; // U6 FIREBALL_EFFECT
@@ -825,8 +849,6 @@ uint16 ExplosiveAnim::callback(uint16 msg, CallBack *caller, void *msg_data)
  */
 bool ExplosiveAnim::update()
 {
-   // ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-   // ObjManager *obj_manager = Game::get_game()->get_obj_manager();
     Map *map = Game::get_game()->get_game_map();
     uint8 mapwindow_level;
     LineTestResult lt;
@@ -883,8 +905,7 @@ bool ExplosiveAnim::already_hit(MapEntity ent)
 }
 
 
-/* Also adds object to hit_items list for already_hit() to check.
- */
+/* Also adds object to hit_items list for already_hit() to check. */
 void ExplosiveAnim::hit_object(Obj *obj)
 {
     if(!running)
@@ -895,8 +916,7 @@ void ExplosiveAnim::hit_object(Obj *obj)
 }
 
 
-/* Also adds actor to hit_items list for already_hit() to check.
- */
+/* Also adds actor to hit_items list for already_hit() to check. */
 void ExplosiveAnim::hit_actor(Actor *actor)
 {
     if(!running)
@@ -922,37 +942,4 @@ void ExplosiveAnim::get_shifted_location(uint16 &x, uint16 &y, uint16 &px, uint1
     y = total_py / tile_pitch;
     px = total_px % tile_pitch;
     px = total_py % tile_pitch;
-}
-
-
-/*** ThrowObjectAnim ***/
-ThrowObjectAnim::ThrowObjectAnim(Obj *obj, MapCoord *from, MapCoord *to, uint32 vel)
-                                 : TossAnim(NULL, from, to)
-{
-    direction.sx = target->x - src->x;
-    direction.sy = target->y - src->y;
-
-    toss_tile = Game::get_game()->get_obj_manager()->get_obj_tile(obj->obj_n, obj->frame_n);
-    toss_tile = Game::get_game()->get_tile_manager()
-                         ->get_rotated_tile(toss_tile,
-                                            get_relative_degrees(direction.sx,
-                                                                 direction.sy, 90));
-
-    // set velocity (x,y) based on direction & speed
-//    set_velocity_for_speed(direction.sx, direction.sy, vel);
-    speed = vel;
-}
-
-
-ThrowObjectAnim::~ThrowObjectAnim()
-{
-    delete toss_tile;
-}
-
-
-void ThrowObjectAnim::start()
-{
-    TossAnim::start();
-/*  move(src->x, src->y);
-    add_tile(toss_tile, 0, 0);*/
 }

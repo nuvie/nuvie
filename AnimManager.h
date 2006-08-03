@@ -25,9 +25,6 @@ typedef std::list<NuvieAnim *>::iterator AnimIterator;
 
 /* Each viewable area has it's own AnimManager. (but I can only think of
  * animations in the MapWindow using this, so that could very well change)
- * FIXME: The return of TileAnim::update() is not very useful. If an anim isn't
- * redrawn then it just disappears on next MapWindow::Display(). If you don't
- * want it to appear just delete it.
  */
 class AnimManager
 {
@@ -71,6 +68,9 @@ public:
 /* Contains methods to support management, continuous display, and movement of
  * animation across viewport.
  */
+/* FIXME: The return of update() is not very useful. If an anim isn't
+ * redrawn then it just disappears on next MapWindow::Display(). If you don't
+ * want it to appear just delete it.*/
 class NuvieAnim: public CallBack
 {
 protected:
@@ -177,22 +177,25 @@ public:
 
 
 // OR these together to tell a TossAnim what to intercept
-#define TOSS_TO_BLOCKING 0x01 /* boundary tile */
+#define TOSS_TO_BLOCKING 0x01
 #define TOSS_TO_ACTOR    0x02
 #define TOSS_TO_OBJECT   0x04
 
 /* A TileAnim that can intercept objects in the world. Start selected tile at
- * source, and move across viewport to target. Virtual functions are called when
- * the tile hits something. If callback target and data are passed to constructor,
- * messages can be sent to a target. ***It only stops when at the target.***
+ * source, and move across viewport to target. The tile is rotated by the
+ * degrees argument passed to the constructor.
  */
 class TossAnim : public TileAnim
 {
 protected:
+    ActorManager *actor_manager;
+    ObjManager *obj_manager;
+    Map *map;
+
     MapCoord *src, *target;
     uint32 start_px, start_py, target_px, target_py;
     uint8 mapwindow_level; // level of map being viewed
-    sint32 speed; // movement speed in pixels per second (X and Y speed can't be set independently)
+    uint16 speed; // movement speed in pixels per second (X and Y speed can't be set independently)
 
     Tile *toss_tile;
     uint8 blocking; // stop_flags
@@ -206,37 +209,31 @@ protected:
     MapCoord get_location();
 
 public:
-    TossAnim(Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags = 0);
-    TossAnim(CallBack *t, void *d, Tile *tile, MapCoord *start, MapCoord *stop, uint8 stop_flags = 0);
+    TossAnim(Tile *tile, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags = 0);
+    TossAnim(uint16 obj_n, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags = 0);
     ~TossAnim();
 
-    void init(Tile *tile, MapCoord *start, MapCoord *stop, uint16 sp, uint8 stop_flags);
+    void init(Tile *tile, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags);
     void start();
     void stop();
     uint32 update_position(uint32 max_move = 0);
     inline void accumulate_moves(float moves, sint32 &x_move, sint32 &y_move, sint8 xdir, sint8 ydir);
 
+    // Virtual functions are called when the tile hits something.
     virtual void hit_target();
     virtual void hit_object(Obj *obj);
     virtual void hit_actor(Actor *actor);
     virtual void hit_blocking(MapCoord obj_loc);
 };
 
-
-/* Rotate object frame based on source and target, and move between locations.
- */
-class ThrowObjectAnim : public TossAnim
+// This is for off-center tiles. The tile will be moved down by the
+// shift amount if moving right, and up if moving left. (and rotated)
+struct tossanim_tile_shifts_s
 {
-    MapCoord direction; // relative direction from->to
-public:
-    // vel = pixels per second
-    ThrowObjectAnim(Obj *obj, MapCoord *from, MapCoord *to, uint32 vel);
-    ~ThrowObjectAnim();
-
-    void start();
-
+    uint16 tile_num;
+    sint8 shift; // plus or minus vertical position
 };
-
+extern struct tossanim_tile_shifts_s tossanim_tile_shifts[];
 
 /* a line of fire */
 typedef struct
@@ -245,7 +242,6 @@ typedef struct
     MapCoord direction; // where the explosion sprites are going
     uint32 travelled; // distance this fire line has travelled
 } ExplosiveAnimSegment;
-
 
 /* SuperBomberman! Toss fireballs in multiple directions from source out.
  */
