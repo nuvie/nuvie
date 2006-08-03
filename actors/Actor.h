@@ -71,6 +71,8 @@ using std::string;
 #define ACTOR_STATUS_ASLEEP    0x4
 #define ACTOR_STATUS_POISONED  0x8
 #define ACTOR_STATUS_DEAD      0x10
+#define ACTOR_STATUS_ATTACK_MONSTERS 0x20
+#define ACTOR_STATUS_ATTACK_PLAYER   0x40
 #define ACTOR_STATUS_IN_PARTY  0x80
 #define ACTOR_STATUS_ALIGNMENT_MASK 0x60
 
@@ -347,7 +349,8 @@ class Actor
  // combat methods
  void attack(MapCoord pos); // attack at a given map location
  void attack(sint8 readied_obj_location, Actor *actor);
- bool defend(uint8 hit, uint8 weapon_damage); // defend against a hit
+// bool defend(uint8 hit, uint8 weapon_damage); // defend against a hit
+ uint8 defend(uint8 hit, uint8 weapon_damage); // defend against a hit
  const CombatType *get_weapon(sint8 readied_obj_location);
  void attract_to(Actor *target);
  void repel_from(Actor *target);

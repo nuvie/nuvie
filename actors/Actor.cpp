@@ -246,8 +246,7 @@ void Actor::face_location(MapCoord &loc)
  face_location(loc.x, loc.y);
 }
 
-/* Set direction towards an x,y location on the map.
- */
+/* Set direction towards an x,y location on the map. */
 void Actor::face_location(uint16 lx, uint16 ly)
 {
     set_direction(lx - x, ly - y);
@@ -557,6 +556,7 @@ void Actor::attack(MapCoord pos)
  return;
 }
 
+// attack another actor with melee attack or a weapon (short or long range)
 void Actor::attack(sint8 readied_obj_location, Actor *actor)
 {
  const uint8 attack_cost = 10; // base cost to attack
@@ -564,11 +564,14 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
  const CombatType *combat_type;
 
  combat_type = get_weapon(readied_obj_location);
- 
- if(combat_type == NULL)
-   return;
- 
- if(actor->defend(dex, combat_type->attack) == false)
+
+ assert(combat_type != NULL); // this should be set 
+// if(combat_type == NULL)
+//   return;
+
+ face_actor(actor);
+
+/* if(actor->defend(dex, combat_type->attack) == false)
   {
    if(combat_type->breaks_on_contact)
      {
@@ -576,7 +579,56 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
       remove_readied_object(readied_obj_location);
       inventory_remove_obj(weapon_obj);
      }
-  } 
+  }*/
+ // using new defend() method
+ uint8 damage = actor->defend(dex, combat_type->attack);
+ // FIXME: properly handle missile weapons
+ // they still hit if they do 0 damage, and miss if the defender saved
+ // and should we calculate who else the attack could hit so they can defend?
+ if(combat_type->attack_type == ATTACK_TYPE_THROWN
+    || combat_type->attack_type == ATTACK_TYPE_MISSLE)
+  {
+   MapCoord start(this->get_location());
+   MapCoord target(actor->get_location());
+   // effect hits actor for damage
+   if(damage > 0)
+     new MissileEffect(combat_type->missle_tile_num,
+                       combat_type->thrown_obj_n, start, target, damage);
+   else // miss (potentially hitting anything in the way)
+    {
+     // randomly move target to another square
+     if((target.x-start.x)==0 || (target.x-start.x)>(target.y-start.y)) // moving more vertically
+         target.x += NUVIE_RAND()%3 - 1;
+     else if((target.y-start.y)==0 || (target.y-start.y)>(target.x-start.x)) // moving more horizontally
+         target.y += NUVIE_RAND()%3 - 1;
+     else // moving diagonally
+      {
+       target.x += NUVIE_RAND()%3 - 1;
+       target.y += NUVIE_RAND()%3 - 1;
+      }
+     new MissileEffect(combat_type->missle_tile_num,
+                       combat_type->thrown_obj_n, start, target, combat_type->attack,
+                       MISSILE_HIT_ACTORS);
+    }
+  }
+ else if(damage > 0)
+  {
+   if(combat_type->breaks_on_contact)
+     {
+      weapon_obj = readied_objects[readied_obj_location]->obj;
+      remove_readied_object(readied_obj_location);
+      inventory_remove_obj(weapon_obj);
+     }
+   if(damage == 255) // A weapon that does 255 damage kills every time.
+     {
+      hit(255, ACTOR_FORCE_HIT);
+     }
+   else
+     {
+      hit(damage, ACTOR_FORCE_HIT);
+     }
+  }
+
  set_moves_left(moves - attack_cost);
 }
 
@@ -1301,8 +1353,7 @@ void Actor::clear()
 }
 
 
-/* Get pushed by `pusher' to location determined by `where'.
- */
+/* Get pushed by `pusher' to location determined by `where'. */
 bool Actor::push(Actor *pusher, uint8 where)
 {
     if(where == ACTOR_PUSH_HERE) // move to pusher's square and use up moves
@@ -1345,6 +1396,7 @@ bool Actor::push(Actor *pusher, uint8 where)
 
 //returns true if successfully defended
 //false if damage incurred
+#if 0
 bool Actor::defend(uint8 attack, uint8 weapon_damage)
 {
  uint8 damage;
@@ -1385,9 +1437,49 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
  else printf("\n");
  return true; // actor defended this attack
 }
+#endif
+//returns amount of damage to be incurred
+uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
+{
+ uint8 damage;
+ uint8 total_armor_class = body_armor_class + readied_armor_class;
+ uint8 ac_saving_throw = 0;
+ 
+ if(weapon_damage == 0)
+   return 0;
+/* 
+ if(readied_armor_class > 0)
+  total_armor_class = readied_armor_class;
+ else
+  total_armor_class = body_armor_class;
+*/
+ printf("attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
 
-/* Subtract amount from hp. May die if hp is too low.
- */
+ if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
+   {
+    if(weapon_damage == 255) // A weapon that does 255 damage kills every time.
+      {
+       return 255;
+      }
+
+    damage = NUVIE_RAND() % weapon_damage;
+    
+    if(total_armor_class > 0)
+      ac_saving_throw = NUVIE_RAND() % total_armor_class;
+
+    printf(", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
+
+    if(damage > ac_saving_throw)
+      {
+       return damage-ac_saving_throw; // actor took damage
+      }
+   }
+ else printf("\n");
+ return 0; // actor defended this attack
+}
+
+
+/* Subtract amount from hp. May die if hp is too low. */
 void Actor::reduce_hp(uint8 amount)
 {
  printf("hit %s for %d points\n", get_name(), amount);
@@ -1397,6 +1489,7 @@ void Actor::reduce_hp(uint8 amount)
 // FIX... game specific?
     if(hp == 0)
         die();
+    Game::get_game()->stats_changed();
 }
 
 void Actor::die()
@@ -1427,8 +1520,7 @@ void Actor::display_condition()
     }
 }
 
-/* Get hit and take damage by some indirect effect. (no source)
- */
+/* Get hit and take damage by some indirect effect. (no source) */
 void Actor::hit(uint8 dmg, bool force_hit)
 {
  MsgScroll *scroll = Game::get_game()->get_scroll();
