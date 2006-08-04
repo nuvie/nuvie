@@ -568,7 +568,7 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
  assert(combat_type != NULL); // this should be set 
 // if(combat_type == NULL)
 //   return;
-
+ printf("%s (%d) attacking %s (%d)\n",get_name(),id_n,actor->get_name(),actor->id_n);
  face_actor(actor);
 
 /* if(actor->defend(dex, combat_type->attack) == false)
@@ -621,11 +621,11 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
      }
    if(damage == 255) // A weapon that does 255 damage kills every time.
      {
-      hit(255, ACTOR_FORCE_HIT);
+      actor->hit(255, ACTOR_FORCE_HIT);
      }
    else
      {
-      hit(damage, ACTOR_FORCE_HIT);
+      actor->hit(damage, ACTOR_FORCE_HIT);
      }
   }
 
