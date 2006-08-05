@@ -2,6 +2,7 @@
 #define __AnimManager_h__
 
 #include <list>
+#include <cassert>
 #include "SDL.h"
 #include "nuvieDefs.h"
 #include "MapWindow.h"

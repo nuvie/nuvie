@@ -1,3 +1,10 @@
+2006-08-05  Pieter Luteijn <luteijn at users.sourceforge.net>
+	* info string capital letters fo hex digits.
+	* use of AND to blindly mask map coordinates to wrap, instead of
+  	  conditionaly using -.
+	* improved (but not perfect) usage of balloon.
+	* include <cassert> was misssing form AnimManager.h; added
+
 2006-08-03  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Better fix for calling UseCode::pass_obj() on multi-tile objects. You
 	  now have to pass x,y coords to pass_obj().

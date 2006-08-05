@@ -580,12 +580,13 @@ bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
    right side of the map. */
 inline void Map::wrap_coords(uint16 x, uint16 y, uint8 z, uint16 &wx, uint16 &wy)
 {
-    const int coord_max = 65535; // hopefully uint16 is really 16 bits
-    uint16 map_width = get_width(z);
-    if(x >= map_width)
-        x = map_width - (coord_max-x);
-    if(y >= map_width)
-        y = map_width - (coord_max-y);
-    wx = x;
-    wy = y;
+    //const int coord_max = 65535; // hopefully uint16 is really 16 bits
+    //uint16 map_width = get_width(z);
+    //if(x >= map_width)
+//        x = map_width - (coord_max-x);
+//    if(y >= map_width)
+//        y = map_width - (coord_max-y);
+    uint16 mask=z?255:1023;
+    wx = x&mask;
+    wy = y&mask;
 }

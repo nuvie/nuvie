@@ -1430,7 +1430,6 @@ bool Event::alt_code_teleport(const char *location_string)
 
  if(x == 0 && y == 0)
    return false;
-
  player->move(x,y,z);
 
  // This is a bit of a hack but we would like to update the music when teleporting.
@@ -1455,7 +1454,7 @@ void Event::alt_code_infostring()
  hour = clock->get_hour();
  minute = clock->get_minute();
 
- sprintf(buf, "%02d%02d%02d%03x%03x%x", karma, hour,minute, x,y,z);
+ sprintf(buf, "%02d%02d%02d%03X%03X%x", karma, hour,minute, x,y,z);
 
  scroll->display_string(buf);
  scroll->display_string("\n");
