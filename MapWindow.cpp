@@ -41,6 +41,7 @@
 #include "GUI_widget.h"
 #include "Game.h"
 #include "GameClock.h"
+#include "Weather.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define WALK_BUTTON 3
@@ -439,6 +440,8 @@ void MapWindow::updateAmbience()
      //Dusk and dawn operate by changing the ambient light, not by changing the radius of the avatar's light globe
 
      GameClock *clock = Game::get_game()->get_clock();
+	Weather *weather = Game::get_game()->get_weather();
+	
      int h = clock->get_hour();
      if(!screen)
          return;
@@ -447,6 +450,8 @@ void MapWindow::updateAmbience()
          screen->set_ambient( 0xFF );
      else if(in_dungeon_level())
          screen->set_ambient( 0x00 );
+		 else if( weather->is_eclipse() ) //solar eclipse
+		     screen->set_ambient( 0x00 );
      else if( h == 19 ) //Dusk
          screen->set_ambient( (uint8)(255*(float)(60-clock->get_minute())/60.0) );
      else if( h == 5 ) //Dawn

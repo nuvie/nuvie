@@ -59,6 +59,7 @@
 
 #include "Cursor.h"
 #include "SaveManager.h"
+#include "Weather.h"
 
 #include "Game.h"
 
@@ -87,7 +88,8 @@ Game::Game(Configuration *cfg)
  gui = NULL;
  usecode = NULL;
  effect_manager = NULL;
-
+ weather = NULL;
+ 
  pause_flags = PAUSE_UNPAUSED;
  ignore_event_delay = 0;
 }
@@ -120,6 +122,7 @@ Game::~Game()
     if(save_manager) delete save_manager;
     if(cursor) delete cursor;
     if(egg_manager) delete egg_manager;
+    if(weather) delete weather;
 }
 
 bool Game::loadGame(Screen *s, nuvie_game_t type)
@@ -187,6 +190,8 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    map_window->init(game_map, tile_manager, obj_manager, actor_manager);
    gui->AddWidget(map_window);
 
+   weather = new Weather(config, game_type);
+
    command_bar = new CommandBar(this);
    gui->AddWidget(command_bar);
 
@@ -218,6 +223,8 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
 
+   weather->init();
+   
    save_manager->load_latest_save();
 
   }

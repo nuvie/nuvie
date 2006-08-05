@@ -290,6 +290,7 @@
 #define OBJ_U6_WINGED_GARGOYLE     362
 #define OBJ_U6_GARGOYLE            363
 #define OBJ_U6_ACID_SLUG           364
+#define OBJ_U6_TANGLE_VINE_POD     365
 #define OBJ_U6_DAEMON              367
 #define OBJ_U6_SKELETON            368
 #define OBJ_U6_DRAKE               369

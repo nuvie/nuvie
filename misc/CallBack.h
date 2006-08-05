@@ -53,7 +53,14 @@ public:
     // receive message
     virtual uint16 callback(uint16 msg, CallBack *caller, void *data = NULL) { printf("Warning! Unhandled callback. msg (%x)\n", msg); return 0; }
     // send message
-    uint16 message(uint16 msg, void *msg_data = NULL, void *my_data = NULL)  { if(my_data) set_user_data(my_data); callback_target->set_user_data(callback_user_data); return(callback_target->callback(msg, this, msg_data)); }
+    uint16 message(uint16 msg, void *msg_data = NULL, void *my_data = NULL)
+    {
+        if(my_data)
+            set_user_data(my_data);
+        callback_target->set_user_data(callback_user_data);
+        
+        return(callback_target->callback(msg, this, msg_data));
+    }
 
     void set_user_data(void *user_data) { callback_user_data = (char*)user_data; }
     void set_target(CallBack *t) { callback_target = t; }

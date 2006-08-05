@@ -36,6 +36,7 @@
 #include "CommandBar.h"
 #include "PartyPathFinder.h"
 #include "Party.h"
+#include "Objlist.h"
 
 Party::Party(Configuration *cfg)
 {
@@ -104,7 +105,7 @@ bool Party::load(NuvieIO *objlist)
    member[i].inactive = false; // false unless actor is asleep, or paralyzed (is_immobile)
   }
 
- objlist->seek(0x1c12); // combat mode flag
+ objlist->seek(OBJLIST_OFFSET_U6_COMBAT_MODE); // combat mode flag. NOTE! this offset is probably U6 specifix FIXME
  in_combat_mode = (bool)objlist->read1();
 
  MapCoord leader_loc = get_leader_location(); // previous leader location
@@ -148,7 +149,7 @@ bool Party::save(NuvieIO *objlist)
    objlist->write1(member[i].actor->get_actor_num());
   }
 
- objlist->seek(0x1c12); // combat mode flag
+ objlist->seek(OBJLIST_OFFSET_U6_COMBAT_MODE); // combat mode flag. NOTE! this offset is probably U6 specifix FIXME
  objlist->write1((uint8)in_combat_mode);
 
  return true;

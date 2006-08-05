@@ -5,6 +5,7 @@
 #include <string>
 #include <cstdio>
 #include "CallBack.h"
+#include "ObjManager.h"
 
 class Actor;
 class CallBack;

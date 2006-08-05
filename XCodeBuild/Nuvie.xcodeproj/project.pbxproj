@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0700C6B70A837D170039FD03 /* CallBack.h in Headers */ = {isa = PBXBuildFile; fileRef = 0700C6B60A837D170039FD03 /* CallBack.h */; };
+		0700C6C80A84303D0039FD03 /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0700C6C60A84303D0039FD03 /* Weather.cpp */; };
+		0700C6C90A84303D0039FD03 /* Weather.h in Headers */ = {isa = PBXBuildFile; fileRef = 0700C6C70A84303D0039FD03 /* Weather.h */; };
+		0700C71F0A8442490039FD03 /* Objlist.h in Headers */ = {isa = PBXBuildFile; fileRef = 0700C71E0A8442490039FD03 /* Objlist.h */; };
 		0701134908EE539100D9B9F4 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0701134808EE539100D9B9F4 /* SDL_mixer.framework */; };
 		0701134D08EE53B500D9B9F4 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0701134C08EE53B500D9B9F4 /* SDL.framework */; };
 		0703C05E054BE5660003D6CB /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A47A9D01A0482F01D3D55B /* SDLMain.h */; };
@@ -248,6 +252,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0700C6B60A837D170039FD03 /* CallBack.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CallBack.h; path = ../misc/CallBack.h; sourceTree = SOURCE_ROOT; };
+		0700C6C60A84303D0039FD03 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Weather.cpp; path = ../Weather.cpp; sourceTree = SOURCE_ROOT; };
+		0700C6C70A84303D0039FD03 /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Weather.h; path = ../Weather.h; sourceTree = SOURCE_ROOT; };
+		0700C71E0A8442490039FD03 /* Objlist.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Objlist.h; path = ../save/Objlist.h; sourceTree = SOURCE_ROOT; };
 		0701134808EE539100D9B9F4 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = ../../../../Library/Frameworks/SDL_mixer.framework; sourceTree = SOURCE_ROOT; };
 		0701134C08EE53B500D9B9F4 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../../Library/Frameworks/SDL.framework; sourceTree = SOURCE_ROOT; };
 		0703C0F3054BE5660003D6CB /* Nuvie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nuvie.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -546,6 +554,7 @@
 		0726902F064E745B00F249E5 /* Save */ = {
 			isa = PBXGroup;
 			children = (
+				0700C71E0A8442490039FD03 /* Objlist.h */,
 				07656EED065F177400EEE5C1 /* SaveGame.h */,
 				07656EEC065F177400EEE5C1 /* SaveGame.cpp */,
 				072691AB065252D200F249E5 /* SaveSlot.h */,
@@ -673,6 +682,7 @@
 			isa = PBXGroup;
 			children = (
 				0730EF110A7790D6005AB87E /* ActorList.h */,
+				0700C6B60A837D170039FD03 /* CallBack.h */,
 				079903C90481F21E00A8000A /* iAVLTree.h */,
 				079903C80481F21E00A8000A /* iAVLTree.cpp */,
 				072566B904272C0200A8000A /* U6LList.h */,
@@ -881,6 +891,8 @@
 				072566B504272BC000A8000A /* ObjManager.h */,
 				072566B404272BC000A8000A /* ObjManager.cpp */,
 				079A4264058748A2003627C9 /* U6objects.h */,
+				0700C6C70A84303D0039FD03 /* Weather.h */,
+				0700C6C60A84303D0039FD03 /* Weather.cpp */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -1028,6 +1040,9 @@
 				0727DE1509F91D770004E639 /* U6AStarPath.h in Headers */,
 				0727DE1B09F91DCD0004E639 /* Magic.h in Headers */,
 				0730EF120A7790D6005AB87E /* ActorList.h in Headers */,
+				0700C6B70A837D170039FD03 /* CallBack.h in Headers */,
+				0700C6C90A84303D0039FD03 /* Weather.h in Headers */,
+				0700C71F0A8442490039FD03 /* Objlist.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1221,6 +1236,7 @@
 				0727DE1209F91D770004E639 /* SeekPath.cpp in Sources */,
 				0727DE1409F91D770004E639 /* U6AStarPath.cpp in Sources */,
 				0727DE1A09F91DCD0004E639 /* Magic.cpp in Sources */,
+				0700C6C80A84303D0039FD03 /* Weather.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

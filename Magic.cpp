@@ -41,6 +41,8 @@
 #include "ObjManager.h"
 #include "U6objects.h"
 #include "Magic.h"
+#include "Game.h"
+#include "Weather.h"
 
 using std::cerr;
 using std::cin;
@@ -553,6 +555,8 @@ if (!strcmp(function,"sub")) { return function_sub(); }
 if (!strcmp(function,"swap")) { return function_swap(); }
 if (!strcmp(function,"template")) { return function_template(); }
 if (!strcmp(function,"underscore")) { return function_underscore(); }
+if (!strcmp(function,"eclipse")) { return function_eclipse(); }
+	
   return false; // unknown function
 }
 
@@ -767,7 +771,7 @@ bool Magic::function_random()
    * Stack effect: 1 value popped, random number in range [0,value> pushed
    */
   char buffer[MAX_TOKEN_LENGTH+1];
-  snprintf(buffer,MAX_TOKEN_LENGTH,"%d",(int)(rand()%(atoi(stack->pop()))));
+  snprintf(buffer,MAX_TOKEN_LENGTH,"%d",(int)(NUVIE_RAND()%(atoi(stack->pop()))));
   stack->push(buffer);
   return true;
 };
@@ -1024,6 +1028,14 @@ bool Magic::function_add_mp()
   victim->set_magic(MAX((victim->get_magic()+atoi(stack->pop())),victim->get_maxmagic()));
 
   return true;
+}
+
+bool Magic::function_eclipse()
+{
+	Weather *weather = Game::get_game()->get_weather();
+	weather->start_eclipse((uint8)atoi(stack->pop()));
+	
+	return true;
 }
 
 bool Magic::function_template()

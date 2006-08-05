@@ -29,6 +29,7 @@
 #include "GameClock.h"
 #include "PartyView.h"
 #include "Text.h"
+#include "Weather.h"
 
 #define TRAMMEL_PHASE 1.75
 #define FELUCCA_PHASE 1.1666666666666667
@@ -165,9 +166,13 @@ void PartyView::display_surface_strip()
  uint8 i;
  Tile *tile;
  GameClock *clock = Game::get_game()->get_clock();
+ Weather *weather = Game::get_game()->get_weather();
+ bool eclipse = weather->is_eclipse();
+ 
+ display_sun(clock->get_hour(), 0/*minutes*/, eclipse);
 
- display_sun(clock->get_hour());
- display_moons(clock->get_day(), clock->get_hour());
+ if(!eclipse)
+	 display_moons(clock->get_day(), clock->get_hour());
 
  for(i=0;i<9;i++)
    {
@@ -223,12 +228,17 @@ void PartyView::display_sun_moon(Tile *tile, uint8 pos)
     screen->blit(x,y, tile->data,8,16,16,16,true);
 }
 
-void PartyView::display_sun(uint8 hour, uint8 minute)
+void PartyView::display_sun(uint8 hour, uint8 minute, bool eclipse)
 {
-    if(hour == 5 || hour == 19)
-        display_sun_moon(tile_manager->get_tile(361), hour - 5); // orange sun
-    else if(hour > 5 && hour < 19)
-        display_sun_moon(tile_manager->get_tile(362), hour - 5); // yellow sun
+	uint16 sun_tile = 0;
+	if(eclipse)
+		sun_tile = 363; //eclipsed sun
+	else if(hour == 5 || hour == 19)
+		sun_tile = 361; //orange sun
+	else if(hour > 5 && hour < 19)
+		sun_tile = 362; //yellow sun
+	
+	display_sun_moon(tile_manager->get_tile(sun_tile), hour - 5);
 }
 
 void PartyView::display_moons(uint8 day, uint8 hour, uint8 minute)

@@ -24,6 +24,7 @@
  */
 #include <string>
 #include "GUI_widget.h"
+#include "CallBack.h"
 
 class Event;
 class Game;
@@ -37,7 +38,7 @@ class Text;
  * Right click: Set default action.
  * Information: [A]M-DD-YYYY Wind: W[B]
  */
-class CommandBar: public GUI_Widget
+class CommandBar: public GUI_Widget, public CallBack
 {
 protected:
     Game *game;
@@ -66,6 +67,8 @@ public:
     void set_default_action(sint8 action) { default_action = action;
                                             update_display = true; }
     bool try_default_action(uint8 activate);
+    
+    uint16 callback(uint16 msg, CallBack *caller, void * data);
 };
 
 #endif /* __CommandBar_h__ */

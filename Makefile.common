@@ -99,6 +99,7 @@ nuvie_SOURCES = \
 	pathfinder/U6AStarPath.cpp \
 	pathfinder/U6AStarPath.h \
 \
+	save/Objlist.h \
 	save/SaveDialog.cpp \
 	save/SaveDialog.h \
 	save/SaveGame.cpp \
@@ -223,6 +224,8 @@ nuvie_SOURCES = \
 	TimedEvent.cpp \
 	TimedEvent.h \
 	U6objects.h \
+	Weather.cpp \
+	Weather.h \
 	main.cpp \
 	main.h \
 	nuvie.cpp \

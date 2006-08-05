@@ -52,6 +52,7 @@ class SoundManager;
 class SaveManager;
 class EggManager;
 class CommandBar;
+class Weather;
 
 typedef enum
 {
@@ -93,6 +94,8 @@ class Game
  Portrait *portrait;
  UseCode *usecode;
 
+ Weather *weather;
+ 
  Cursor *cursor;
 
  Event *event;
@@ -165,6 +168,7 @@ class Game
  EffectManager *get_effect_manager()
                                    { return(effect_manager); }
  CommandBar *get_command_bar()     { return(command_bar); }
+ Weather *get_weather()            { return(weather); }
 
  protected:
 

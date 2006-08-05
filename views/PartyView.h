@@ -57,7 +57,7 @@ class PartyView : public View {
  void display_dungeon_strip();
  void display_arrows();
  void display_sun_moon(Tile *tile, uint8 pos);
- void display_sun(uint8 hour, uint8 minute=0);
+ void display_sun(uint8 hour, uint8 minute, bool eclipse);
  void display_moons(uint8 day, uint8 hour, uint8 minute=0);
 
  bool up_arrow();

@@ -46,6 +46,7 @@
 #include "Portrait.h"
 #include "GameClock.h"
 #include "CommandBar.h"
+#include "Weather.h"
 
 #ifdef WIN32
   #define OBJLIST_FILENAME "savegame\\objlist"
@@ -238,6 +239,7 @@ bool SaveGame::load_objlist()
  Player *player;
  Party *party;
  Portrait *portrait;
+ Weather *weather;
  uint16 px, py;
  uint8 pz;
 
@@ -254,13 +256,16 @@ bool SaveGame::load_objlist()
  party = game->get_party();
  portrait = game->get_portrait();
  view_manager = game->get_view_manager();
-
+ weather = game->get_weather();
+ 
  clock->load(&objlist);
  actor_manager->load(&objlist);
 
  party->load(&objlist);
  player->load(&objlist);
-
+ 
+ weather->load(&objlist);
+ 
  command_bar->set_combat_mode(party->is_in_combat_mode()); // update CommandBar
 
  portrait->load(&objlist); //load avatar portrait number.
@@ -500,7 +505,8 @@ bool SaveGame::save_objlist()
  Player *player;
  Party *party;
  MsgScroll *scroll;
-
+ Weather *weather;
+ 
  game = Game::get_game();
 
  clock = game->get_clock();
@@ -509,13 +515,16 @@ bool SaveGame::save_objlist()
  player = game->get_player();
  party = game->get_party();
  scroll = game->get_scroll();
+ weather = game->get_weather();
 
  clock->save(&objlist);
  actor_manager->save(&objlist);
 
  player->save(&objlist);
  party->save(&objlist);
-
+ 
+ weather->save(&objlist);
+ 
  scroll->display_string("\nGame Saved\n\n");
  scroll->display_prompt();
 

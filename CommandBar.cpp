@@ -31,6 +31,7 @@
 #include "Text.h"
 #include "GameClock.h"
 #include "CommandBar.h"
+#include "Weather.h"
 
 #define USE_BUTTON 1
 #define ACTION_BUTTON 3
@@ -39,10 +40,14 @@ using std::string;
 
 CommandBar::CommandBar(Game *g) : GUI_Widget(NULL, 8, 168, 0, 0)
 {
+    Weather *weather;
+    
     game = g;
     event = NULL; // it's not set yet
     text = game->get_text();
-
+    
+    weather = game->get_weather();
+    
     area.w = 16 * 10; // space for 10 icons
     area.h = 24 + 1; // extra space for the underlined default action
 
@@ -51,6 +56,8 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL, 8, 168, 0, 0)
     wind = "?";
 
     init_buttons();
+    
+    weather->add_wind_change_notification_callback((CallBack *)this); //we want to know when the wind direction changes.
 }
 
 CommandBar::~CommandBar()
@@ -159,4 +166,17 @@ void CommandBar::display_information()
     infostring += " Wind:";
     infostring += wind;
     text->drawString(screen, infostring.c_str(), area.x + 8, area.y, 0);
+}
+
+uint16 CommandBar::callback(uint16 msg, CallBack *caller, void * data)
+{
+    Weather *weather = game->get_weather();
+
+    if(caller == (CallBack *)weather && msg == WEATHER_CB_CHANGE_WIND_DIR)
+    {
+        wind = weather->get_wind_dir_str();
+        update_display = true;
+    }
+    
+    return 1;
 }

@@ -757,7 +757,7 @@ name: Eclipse
 invocation: VAL
 reagents: 0xab
 script:\
-++ This is the Eclipse spell stub ++ _display _end
+20 _random 10 _add _eclipse _end
 ~
 # 115 
 name: Mass Charm

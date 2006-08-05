@@ -153,6 +153,7 @@ bool function_sub();
 bool function_swap();
 bool function_template();
 bool function_underscore();
+bool function_eclipse();
 };
 
 

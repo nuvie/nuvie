@@ -1,9 +1,32 @@
+2006-08-06  Eric Fry <efry at users.sourceforge.net>
+	* Added new Weather class. This looks after wind direction and solar
+	  eclipses in U6. In the future it will be expanded to coordinate
+	  more weather effects like rain, snow, fog etc. It still needs some
+	  work. You can see the surface wind direction while in dungeons.
+	* Added Solar Eclipse spell. The eclipse will last between 10 and 29
+	  turns.
+	* CommandBar now displays wind direction gathered from the Weather
+	  class.
+	* CommandBar now inherits from CallBack class.
+	* Changed _random function from rand() to NUVIE_RAND() in Magic.
+	* Added eclipse function to Magic.
+	* Wired up eclipse spell in spells.nsl
+	* Added new Objlist.h file to define offsets in the objlist file.
+	* Fixed bug with combat mode in Party class. It was being read from the
+	  eclipse length field.
+	* Added NUVIE_DIR_NONE define.
+	* Added CallBack.h to XCode build config.
+	* Changed PartyView to display an eclipsed sun while the eclipse is
+	  active.
+	* Set the ambient light to night levels while eclipse is active in
+	  MapWindow.
+
 2006-08-05  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* info string capital letters fo hex digits.
 	* use of AND to blindly mask map coordinates to wrap, instead of
   	  conditionaly using -.
 	* improved (but not perfect) usage of balloon.
-	* include <cassert> was misssing form AnimManager.h; added
+	* include <cassert> was misssing from AnimManager.h; added
 
 2006-08-03  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Better fix for calling UseCode::pass_obj() on multi-tile objects. You
