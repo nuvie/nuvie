@@ -39,8 +39,8 @@
 
 //Ultima 6 light globe sizes.
 
-static const uint8 globeradius[]   = { 32, 64, 128 };
-static const uint8 globeradius_2[] = { 16, 32,  64 };
+static const uint8 globeradius[]   = { 64, 96, 160, 224, 240, 255 };
+static const uint8 globeradius_2[] = { 32, 48,  80, 112, 120, 127 };
 
 Screen::Screen(Configuration *cfg)
 {
@@ -71,7 +71,7 @@ Screen::~Screen()
  if (update_rects) free(update_rects);
  if (shading_data) free(shading_data);
 
- for( int i = 0; i < 3; i++ )
+ for( int i = 0; i < 6; i++ )
    {
     if(shading_globe[i])
        free(shading_globe[i]);
@@ -492,9 +492,9 @@ void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, 
 static const char TileGlobe[][11*11] =
 {
 {
-	1,1,1,
-	1,2,1,
-	1,1,1
+    1,1,1,
+    1,2,1,
+    1,1,1
 },
 {
     0,0,0,0,0,
@@ -525,9 +525,9 @@ static const char TileGlobe[][11*11] =
 },
 {
     0,0,1,1,2,2,2,1,1,0,0,
-    0,1,1,2,3,3,2,2,1,1,0,
-    1,1,2,3,3,3,3,2,2,1,1,
-    1,2,3,3,4,4,4,3,2,2,1,
+    0,1,1,2,2,2,2,2,1,1,0,
+    1,1,2,2,3,3,3,2,2,1,1,
+    1,2,2,3,4,4,4,3,2,2,1,
     2,2,3,4,4,4,4,4,3,2,2,
     2,2,3,4,4,4,4,4,3,2,2,
     2,2,3,4,4,4,4,4,3,2,2,
@@ -544,9 +544,9 @@ static const char TileGlobe[][11*11] =
     2,3,4,4,4,4,4,4,4,3,2,
     2,3,4,4,4,4,4,4,4,3,2,
     2,3,4,4,4,4,4,4,4,3,2,
-	2,3,3,4,4,4,4,4,3,3,2,
-	2,2,3,3,4,4,4,3,3,2,2,
-	1,2,2,3,3,3,3,3,2,2,1,
+    2,3,3,4,4,4,4,4,3,3,2,
+    2,2,3,3,4,4,4,3,3,2,2,
+    1,2,2,3,3,3,3,3,2,2,1,
     1,1,2,2,2,2,2,2,2,1,1
 }
 };
@@ -602,14 +602,12 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
 
 void Screen::buildalphamap8()
 {
-    //Build three globes for 3 intensities
-    //16x16, 32x32, 64x64
-    shading_globe[0] = (uint8*)malloc(sqr(globeradius[0]));
-    shading_globe[1] = (uint8*)malloc(sqr(globeradius[1]));
-    shading_globe[2] = (uint8*)malloc(sqr(globeradius[2]));
-
-    for( int i = 0; i < 3; i++ )
+    //Build three globes for 6 intensities
+    for( int i = 0; i < 6; i++ )
+    {
+        shading_globe[i] = (uint8*)malloc(sqr(globeradius[i]));
         for( int y = 0; y < globeradius[i]; y++ )
+        {
             for( int x = 0; x < globeradius[i]; x++ )
             {
                 float r;
@@ -624,6 +622,8 @@ void Screen::buildalphamap8()
                 //Place it
                 shading_globe[i][y*globeradius[i]+x] = (uint8)r;
             }
+        }
+    }
 
     //Get the three shading tiles (for original-style dithered lighting)
     Game *game = Game::get_game();
@@ -649,16 +649,19 @@ void Screen::buildalphamap8()
 
 void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 {
-    sint16 i,j, globe;
+    sint16 i,j;
+    //Clamp lighting globe size to 0-5 (6 levels)
+    if( r > 5 )
+        r = 5;
+    if( r < 1 )
+        return;
     if( shading_ambient == 0xFF )
         return;
 	if( lighting_style == 0 )
 		return;
     if( lighting_style == 2 )
     {
-		globe = r+1;
-		if( r > 5 )
-			r = 5;
+        //Draw using "original" lighting
 		for( j = 0; j <= r*2; j++ )
 			for( i = 0; i <= r*2; i++ )
 			{
@@ -666,14 +669,15 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 					continue;
 				if( y + j - r < 0 || y + j - r >= 11  )
 					continue;
-				shading_data[(y+j-r)*11+(x+i-r)] = MIN( shading_data[(y+j-r)*11+(x+i-r)] + TileGlobe[globe-2][j*(r*2+1)+i], 4 );
+				shading_data[(y+j-r)*11+(x+i-r)] = MIN( shading_data[(y+j-r)*11+(x+i-r)] + TileGlobe[r-1][j*(r*2+1)+i], 4 );
 			}
         return;
     }
-    r--;
     x = x*16+8;
     y = y*16+8;
+    //Draw using "smooth" lighting
     //The x and y are relative to (0,0) of the screen itself, and are absolute coordinates, so are i and j
+    r--;
     for(i=-globeradius_2[r];i<globeradius_2[r];i++)
         for(j=-globeradius_2[r];j<globeradius_2[r];j++)
         {

@@ -771,7 +771,7 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
      obj->status ^= OBJ_STATUS_IN_CONTAINER;
 
    if(obj->status & OBJ_STATUS_LIT) // light up actor
-     add_light(3);
+     add_light(TORCH_LIGHT_LEVEL);
  }
  return obj_manager->list_add_obj(add_to, obj, stack);
 }
@@ -842,8 +842,8 @@ bool Actor::inventory_remove_obj(Obj *obj, Obj *container)
     return container->container->remove(obj);
  }
  obj->status &= ~OBJ_STATUS_IN_INVENTORY;
- if(obj->status |= OBJ_STATUS_LIT) // remove light from actor
-    subtract_light(3);
+ if(!(obj->status & OBJ_STATUS_LIT)) // remove light from actor
+    subtract_light(TORCH_LIGHT_LEVEL);
  return inventory->remove(obj);
 }
 
@@ -954,7 +954,7 @@ void Actor::inventory_parse_readied_objects()
       }
    if(obj->status & OBJ_STATUS_LIT) // torch
       {
-       add_light(3); // light up actor
+       add_light(TORCH_LIGHT_LEVEL); // light up actor
       }
   }
 

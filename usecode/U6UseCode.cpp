@@ -57,8 +57,6 @@
 #define MESG_EFFECT_COMPLETE EFFECT_CB_COMPLETE
 #define MESG_TIMED           CB_TIMED
 
-#define TORCH_LIGHT_LEVEL    4
-
 // numbered by entrance quality, "" = no name
 static const char *u6_dungeons[21] =
 {

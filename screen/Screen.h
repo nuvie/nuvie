@@ -57,7 +57,7 @@ class Screen
 
  SDL_Rect shading_rect;
  uint8 *shading_data;
- uint8 *shading_globe[3];
+ uint8 *shading_globe[6];
  uint8 shading_ambient;
  uint8 *shading_tile[4];
 

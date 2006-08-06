@@ -1,3 +1,6 @@
+2006-08-06  Pieter Luteijn <luteijn at users.sourceforge.net>
+	* Added in Sam Matthews' lighting fixes.
+	
 2006-08-06  Eric Fry <efry at users.sourceforge.net>
 	* Added new Weather class. This looks after wind direction and solar
 	  eclipses in U6. In the future it will be expanded to coordinate

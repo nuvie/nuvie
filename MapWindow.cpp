@@ -639,10 +639,11 @@ inline void MapWindow::drawActor(Actor *actor)
         }
  
         // draw light coming from actor
-        // FIXME: this isn't working when lighting mode is smooth
         if(actor->light > 0 && screen->updatingalphamap)
-            screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light>5?5:actor->light);
-
+        {
+            //printf("Actor %s calls drawalphamap8globe(%d,%d,%d);\n",actor->get_name(),actor->x-cur_x, actor->y-cur_y, actor->light);
+            screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light);
+        }
     }
 }
 
