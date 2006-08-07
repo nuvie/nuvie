@@ -49,7 +49,8 @@ Weather::Weather(Configuration *cfg, nuvie_game_t type)
 	gametype = type;
  
 	wind_dir = NUVIE_DIR_NONE;
- 
+	wind_timer = NULL;
+	
 	eclipse_start = 0;
 	eclipse_length = 0;
 	eclipse_timer = NULL;
@@ -59,22 +60,18 @@ Weather::~Weather()
 {
 
 }
-
-bool Weather::init()
-{
-	set_wind_change_callback();
-	return true;
-}
  
 bool Weather::load(NuvieIO *objlist)
 {
 	uint8 eclipse_length;
-    
+
+	clear_wind();
 	clear_eclipse();
     
 	if(gametype == NUVIE_GAME_U6)
 	{
 		wind_dir = load_wind(objlist);
+		set_wind_change_callback(); //set a timer to change the wind direction in the future.
 		send_wind_change_notification_callback();
 		
 		eclipse_length = load_eclipse_length(objlist);
@@ -114,6 +111,16 @@ void Weather::clear_eclipse()
 		eclipse_timer->stop_timer(); //stop current timer
 	
 	end_eclipse();
+}
+
+void Weather::clear_wind()
+{
+	if(wind_timer)
+		wind_timer->stop_timer();
+	
+	wind_dir = NUVIE_DIR_NONE;
+	
+	return;
 }
 
 //returns any eclipse time saved in the objlist. (measured in game ticks)
@@ -173,7 +180,7 @@ bool Weather::save_eclipse(NuvieIO *objlist)
 
 string Weather::get_wind_dir_str()
 {
-	const char names[9][3] = {"N","S","E","W","NE","SE","SW","NW","C"};
+	const char names[9][3] = {"N","E","S","W","NE","SE","SW","NW","C"};
 	string s;
  
 	s = names[wind_dir];
@@ -186,23 +193,37 @@ void Weather::change_wind_dir()
 	uint8 new_wind_dir;
 
 	new_wind_dir = NUVIE_RAND() % 9;
-    
-	if(new_wind_dir == wind_dir)
-		return;
-    
+
+  set_wind_dir(new_wind_dir);
+	return;
+}
+
+bool Weather::set_wind_dir(uint8 new_wind_dir)
+{
+	uint8 old_wind_dir = wind_dir;
+	
+	if(new_wind_dir >= 9)
+		return false;
+
+	clear_wind();
+	
 	wind_dir = new_wind_dir;
-    
-	send_wind_change_notification_callback();
+
+	if(wind_dir != old_wind_dir)
+		send_wind_change_notification_callback();
+
 	set_wind_change_callback();
 
-	return;
+	return true;
 }
 
 inline void Weather::set_wind_change_callback()
 {
+	uint16 length = (NUVIE_RAND() % WEATHER_MAX_WIND) + 1;
 	uint8 *cb_msgid = new uint8;
 	*cb_msgid = WEATHER_CB_CHANGE_WIND_DIR;
-	new GameTimedCallback((CallBack *)this, cb_msgid, (NUVIE_RAND() % WEATHER_MAX_WIND) + 1);
+	wind_timer = new GameTimedCallback((CallBack *)this, cb_msgid, length);
+	printf("Adding wind change timer. Length = %d\n",length);
 }
 
 inline void Weather::send_wind_change_notification_callback()
@@ -266,7 +287,7 @@ uint16 Weather::callback(uint16 msg, CallBack *caller, void *data)
  
 	switch(*cb_msgid)
 	{
-		case WEATHER_CB_CHANGE_WIND_DIR : change_wind_dir(); break;
+		case WEATHER_CB_CHANGE_WIND_DIR : wind_timer = NULL; change_wind_dir(); break;
 		case WEATHER_CB_END_ECLIPSE : end_eclipse(); break;
 		default : printf("Weather: Unknown callback!\n"); break;
 	}

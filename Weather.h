@@ -51,19 +51,19 @@ class Weather: public CallBack
 	uint32 eclipse_start;
 	uint8 eclipse_length;
 	GameTimedCallback *eclipse_timer;
+	GameTimedCallback *wind_timer;
  
 	public:
 
 	Weather(Configuration *cfg, nuvie_game_t type);
 	~Weather();
 
-	bool init();
- 
 	bool load(NuvieIO *objlist);
 	bool save(NuvieIO *objlist);
  
 	std::string get_wind_dir_str();
 	uint8 get_wind_dir() { return wind_dir; }
+	bool set_wind_dir(uint8 new_wind_dir);
 	bool add_wind_change_notification_callback(CallBack *caller);
   
 	bool is_eclipse() { return((eclipse_timer != NULL ? true : false)); }
@@ -78,7 +78,8 @@ class Weather: public CallBack
 	void change_wind_dir();
 	inline void set_wind_change_callback();
 	inline void send_wind_change_notification_callback();
-
+	void clear_wind();
+	
 	void clear_eclipse();
 	uint8 load_eclipse_length(NuvieIO *objlist);
 	bool save_eclipse(NuvieIO *objlist);

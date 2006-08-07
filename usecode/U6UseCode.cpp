@@ -45,6 +45,7 @@
 #include "EggManager.h"
 #include "AnimManager.h"
 #include "Effect.h"
+#include "Weather.h"
 
 #include "U6UseCode.h"
 #include "U6ObjectTypes.h"
@@ -2058,9 +2059,18 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
 
 bool U6UseCode::use_fan(Obj *obj, UseCodeEvent ev)
 {
- scroll->display_string("\nYou feel a breeze.\n");
+	uint8 wind_tbl[] = {4,5,6,7,1,2,3,0};
+	uint8 wind_dir;
+	Weather *weather = game->get_weather();
+	scroll->display_string("\nYou feel a breeze.\n");
 
- //FIX! change wind direction here.
+	wind_dir = weather->get_wind_dir();
+
+	if(wind_dir == NUVIE_DIR_NONE)
+		wind_dir = NUVIE_DIR_NW;
+	
+	//cycle through the wind directions.
+	weather->set_wind_dir(wind_tbl[wind_dir]);
 
  return true;
 }

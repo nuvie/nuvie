@@ -1,3 +1,11 @@
+2006-08-08  Eric Fry <efry at users.sourceforge.net>
+	* Using a fan now changes the wind direction in a clockwise direction.
+	* Added Weather::set_wind_dir() and Weather::clear_wind()
+	* Fixed bug with wind dir string.
+	* Stopped wind change timer when loading a save game.
+	* Removed Weather::init() This is no longer needed as we set our wind
+	  change callback in the new set_wind_dir() method.
+
 2006-08-06  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* Added in Sam Matthews' lighting fixes.
 	
