@@ -237,7 +237,7 @@ void PartyView::display_sun(uint8 hour, uint8 minute, bool eclipse)
 		sun_tile = 361; //orange sun
 	else if(hour > 5 && hour < 19)
 		sun_tile = 362; //yellow sun
-	
+	else return; //no sun
 	display_sun_moon(tile_manager->get_tile(sun_tile), hour - 5);
 }
 
