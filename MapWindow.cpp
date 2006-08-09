@@ -641,7 +641,8 @@ inline void MapWindow::drawActor(Actor *actor)
         // draw light coming from actor
         if(actor->light > 0 && screen->updatingalphamap)
         {
-            //printf("Actor %s calls drawalphamap8globe(%d,%d,%d);\n",actor->get_name(),actor->x-cur_x, actor->y-cur_y, actor->light);
+            if(actor->light > 5)
+                printf("warning: %s's light level is %d\n",actor->get_name(),actor->light);
             screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light);
         }
     }
