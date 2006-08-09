@@ -1,3 +1,17 @@
+2006-08-08  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Don't try to display a sun tile at night. Fixes fireplace moon.
+	* Added use orange potion. (sleeping potion)
+	* Fixed torch lighting to prevent double lighting effects; don't
+	  toggle_frame() before actually lighting the torch, and don't remove
+	  lighting effect in usecode. **There is a double or invalid free or
+	  being detected somewhere.**
+	* Now setting and checking Party member inactive flag. (Party::set_active)
+	* Another small light fix in Actor, and now using a list to prevent
+	  adding double light effects. (Actor::light_source)
+	* New function Actor::is_paralyzed() checks associated flag.
+	* Renamed actor alignment flags. (to be shorter and more accurate)
+	* Added Tangle Vine actor types.
+
 2006-08-08  Eric Fry <efry at users.sourceforge.net>
 	* Using a fan now changes the wind direction in a clockwise direction.
 	* Added Weather::set_wind_dir() and Weather::clear_wind()
