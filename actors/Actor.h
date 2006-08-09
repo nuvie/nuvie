@@ -333,8 +333,8 @@ class Actor
  ActorError *get_error();
 
  bool moveRelative(sint16 rel_x, sint16 rel_y);
- virtual bool move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
- virtual bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
+ virtual bool move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
+ virtual bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  bool check_moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags=0);
 
  virtual bool can_be_moved();

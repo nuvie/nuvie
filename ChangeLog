@@ -1,3 +1,9 @@
+2006-08-09  Pieter Luteijn <luteijn at users.sourceforge.net>
+        * use balloon from other's inventory.
+	* disallow balloon use underground
+        * move to edge of map without crashing.
+	* wrap around map (at least works with balloon, need to test more)
+	
 2006-08-08  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Don't try to display a sun tile at night. Fixes fireplace moon.
 	* Added use orange potion. (sleeping potion)

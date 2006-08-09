@@ -501,7 +501,7 @@ void U6Actor::clear()
 
 
 
-bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
+bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
 // bool force_move = flags & ACTOR_FORCE_MOVE;
  bool ret;
@@ -591,7 +591,7 @@ bool U6Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags
  return ret;
 }
 
-bool U6Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
+bool U6Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
 // bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
  Tile *map_tile;

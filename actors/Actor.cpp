@@ -311,19 +311,19 @@ bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
 }
 
 
-bool Actor::check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
+bool Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
  Actor *a;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
  bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || in_party;
 // bool ignore_danger = true;
-
+/*
     uint16 pitch = map->get_width(new_z);
     if(new_x < 0 || new_x >= pitch)
         return(false);
     if(new_y < 0 || new_y >= pitch)
         return(false);
-
+*/
     if(!ignore_actors)
        {
         a = map->get_actor(new_x,new_y,new_z);
@@ -357,7 +357,7 @@ bool Actor::can_be_passed(Actor *other)
     return(other->is_passable() || is_passable());
 }
 
-bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
+bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
  const uint8 move_cost = 5; // base cost to move
  bool force_move = flags & ACTOR_FORCE_MOVE;
@@ -421,8 +421,8 @@ bool Actor::move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags)
    }
 
  // move
- x = new_x;
- y = new_y;
+ x = (new_x&(z?255:1023));
+ y = (new_y&(z?255:1023));
  z = new_z;
 
  can_move = true;

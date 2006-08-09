@@ -86,8 +86,8 @@ class U6Actor: public Actor
  void set_direction(uint8 d);
  void face_location(uint16 lx, uint16 ly);
  void clear();
- bool move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
- bool check_move(sint16 new_x, sint16 new_y, sint8 new_z, ActorMoveFlags flags=0);
+ bool move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
+ bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  void twitch();
  void die();
  void set_poisoned(bool poisoned);

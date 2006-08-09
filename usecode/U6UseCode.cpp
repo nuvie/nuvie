@@ -1733,13 +1733,28 @@ bool U6UseCode::use_balloon_plans(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
 {
  Actor *balloon_actor;
+ Actor *balloonist;
+ MapCoord spot(0,0,0);
  uint16 lx, ly;
  uint8 lz;
 
  if(ev != USE_EVENT_USE)
     return(false);
 
-
+ if (Game::get_game()->get_player()->in_party_mode())
+ {
+   balloonist=Game::get_game()->get_party()->get_actor(Game::get_game()->get_party()->get_leader());
+ } else
+ {
+   balloonist=Game::get_game()->get_player()->get_actor();
+ }
+ spot=balloonist->get_location();
+ if ((spot.z>0) && (spot.z<5)) 
+ {
+   scroll->display_string("\nNot usable\n");
+   return(true);
+ }
+ 
  if(obj->obj_n == OBJ_U6_BALLOON)
    {
      if (obj->is_in_inventory()) 
@@ -1747,23 +1762,13 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
        // if in party mode, find a spot around the avatar that is_passable,
        // else a spot around the person using it.
        // drop the balloon there, and inflate it.
-       MapCoord spot(0,0,0);
-       Actor * balloonist;
-       if (Game::get_game()->get_player()->in_party_mode())
-       {
-	 balloonist=Game::get_game()->get_party()->get_actor(Game::get_game()->get_party()->get_leader());
-       } else
-       {
-	 balloonist=Game::get_game()->get_player()->get_actor();
-       }
-       spot=balloonist->get_location();
        
        uint16 x,y;
        x=spot.x;
        y=spot.y;
        
        bool dropped=false;
-       for (sint8 iy=-1;iy<2;iy++) 
+       for (sint8 iy=-1;iy<2;iy++) // FIXME scan order
        {
 	 for (sint8 ix=-1;ix<2;ix++) 
 	 {
@@ -1771,6 +1776,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
 	   if (Game::get_game()->get_map_window()->can_drop_obj(x+ix,y+iy,balloonist)) 
 	   {
 	     fprintf(stderr,"yes, can drop at %d %d.\n",x+ix,y+iy); 
+	     actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj);
 	     obj->x=x+ix;
 	     obj->y=y+iy;
 	     obj->z=spot.z;
@@ -1783,12 +1789,12 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
        if (!dropped) 
        {
 // drop on 'spot' instead. 
+	     actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj);
 	     obj->x=spot.x;
 	     obj->y=spot.y;;
 	     obj->z=spot.z;
 	     dropped=true;
        }
-       items.actor_ref->inventory_remove_obj(obj);
        obj->status |= OBJ_STATUS_OK_TO_TAKE;
        obj_manager->add_obj(obj, OBJ_ADD_TOP);
      }
