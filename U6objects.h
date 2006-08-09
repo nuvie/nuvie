@@ -292,6 +292,8 @@
 #define OBJ_U6_ACID_SLUG           364
 #define OBJ_U6_TANGLE_VINE_POD     365
 #define OBJ_U6_DAEMON              367
+#define OBJ_U6_TANGLE_VINE_POD     365
+#define OBJ_U6_TANGLE_VINE         366
 #define OBJ_U6_SKELETON            368
 #define OBJ_U6_DRAKE               369
 #define OBJ_U6_HEADLESS            370
