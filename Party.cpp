@@ -425,6 +425,8 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
     // PASS 1: Keep actors chained together.
     for(uint32 p = (leader+1); p < num_in_party; p++)
     {
+        if(member[p].inactive) continue;
+
         try_again[p] = false;
         if(!pathfinder->follow_passA(p))
             try_again[p] = true;
@@ -432,6 +434,8 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
     // PASS 2: Catch up to party.
     for(uint32 p = (leader+1); p < num_in_party; p++)
     {
+        if(member[p].inactive) continue;
+
         if(try_again[p])
             pathfinder->follow_passA(p);
         pathfinder->follow_passB(p);

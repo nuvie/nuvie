@@ -112,6 +112,7 @@ class Party {
  bool add_actor(Actor *actor);
  bool remove_actor(Actor *actor);
  void heal();
+ void set_active(uint8 member_num, bool state) { member[member_num].inactive = !state; }
 
  // Properties
  uint8 get_party_size();
