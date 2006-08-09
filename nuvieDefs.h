@@ -42,6 +42,9 @@ typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
 #define clamp_max(v, c)  (((v) > (c)) ? (c) : (v))
 #define clamp(v, c1, c2) ( ((v) < (c1)) ? (c1) : (((v) > (c2)) ? (c2) : (v)) )
 
+#define WRAPPED_COORD(c,level) ((c)&((level)?255:1023))
+#define WRAP_COORD(c,level) ((c)&=((level)?255:1023))
+
 #define NUVIE_DIR_N    0
 #define NUVIE_DIR_E    1
 #define NUVIE_DIR_S    2

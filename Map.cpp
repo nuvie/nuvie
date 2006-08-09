@@ -77,7 +77,10 @@ Tile *Map::get_tile(uint16 x, uint16 y, uint8 level, bool original_tile)
    return NULL;
 
  ptr = get_map_data(level);
- wrap_coords(x,y,level, x,y);
+ 
+ WRAP_COORD(x,level);
+ WRAP_COORD(y,level);
+ 
  if(original_tile)
     map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
  else
@@ -99,7 +102,8 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
  uint8 *ptr;
  Tile *map_tile;
 
- wrap_coords(x,y,level, x,y);
+ WRAP_COORD(x,level);
+ WRAP_COORD(y,level);
 
  uint8 obj_status = obj_manager->is_passable(x, y, level);
  if(obj_status == OBJ_NOT_PASSABLE)
@@ -132,7 +136,8 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
  uint8 *ptr;
  Tile *map_tile;
 
- wrap_coords(x,y,level, x,y);
+ WRAP_COORD(x,level);
+ WRAP_COORD(y,level);
 
  ptr = get_map_data(level);
  map_tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
@@ -152,7 +157,8 @@ bool Map::is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects)
  Tile *map_tile;
  Obj *obj;
 
- wrap_coords(x,y,level, x,y);
+ WRAP_COORD(x,level);
+ WRAP_COORD(y,level);
 
  if(!ignore_objects)
    {
@@ -172,55 +178,61 @@ bool Map::is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects)
 
 bool Map::is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects)
 {
-    uint8 *ptr=get_map_data(level);
-    wrap_coords(x,y,level, x,y);
-    Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
+  uint8 *ptr=get_map_data(level);
 
-    if(map_tile->damages)
-        return true;
+  WRAP_COORD(x,level);
+  WRAP_COORD(y,level);
 
-    if(!ignore_objects)
-    {
-        if(obj_manager->is_damaging(x, y, level))
-            return true;
-    }
-    return false;
+  Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
+
+  if(map_tile->damages)
+    return true;
+
+  if(!ignore_objects)
+  {
+    if(obj_manager->is_damaging(x, y, level))
+      return true;
+  }
+  return false;
 }
 
 uint8 Map::get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects)
 {
-    uint8 *ptr=get_map_data(level);
-    wrap_coords(x,y,level, x,y);
-    Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
-    uint8 impedance = 0;
+  uint8 *ptr=get_map_data(level);
+  WRAP_COORD(x,level);
+  WRAP_COORD(y,level);
+  Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
+  uint8 impedance = 0;
 
-    if(!ignore_objects)
-    {
-        Obj *obj = obj_manager->get_obj(x, y, level);
-        if(obj != 0)
-            impedance += (obj_manager->get_obj_tile(obj->obj_n, obj->frame_n)->flags1 & TILEFLAG_IMPEDANCE)>>TILEFLAG_IMPEDANCE_SHIFT;
-    }
+  if(!ignore_objects)
+  {
+    Obj *obj = obj_manager->get_obj(x, y, level);
+    if(obj != 0)
+      impedance += (obj_manager->get_obj_tile(obj->obj_n, obj->frame_n)->flags1 & TILEFLAG_IMPEDANCE)>>TILEFLAG_IMPEDANCE_SHIFT;
+  }
 
-    impedance += (map_tile->flags1 & TILEFLAG_IMPEDANCE)>>TILEFLAG_IMPEDANCE_SHIFT;
-    return impedance;
+  impedance += (map_tile->flags1 & TILEFLAG_IMPEDANCE)>>TILEFLAG_IMPEDANCE_SHIFT;
+  return impedance;
 }
 
 bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
 {
- wrap_coords(x,y,level, x,y);
- //check for blocking Actor at location.
- if(actor_manager->get_actor(x,y,level) != NULL)
-   return true;
+  WRAP_COORD(x,level);
+  WRAP_COORD(y,level);
+  //check for blocking Actor at location.
+  if(actor_manager->get_actor(x,y,level) != NULL)
+    return true;
 
- return false;
+  return false;
 }
 
 /* Return pointer to actor standing at map coordinates.
  */
 Actor *Map::get_actor(uint16 x, uint16 y, uint8 z)
 {
-    wrap_coords(x,y,z, x,y);
-    return(actor_manager->get_actor(x,y,z));
+  WRAP_COORD(x,z);
+  WRAP_COORD(y,z);
+  return(actor_manager->get_actor(x,y,z));
 }
 
 
@@ -238,15 +250,16 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
  else
    ptr = dungeons[level - 1];
 
-   wrap_coords(x,y,level, x,y);
-   obj = obj_manager->get_obj(x, y, level);
-   if(obj != NULL && !(obj->status & OBJ_STATUS_INVISIBLE)) //only show visible objects.
-     {
-//      tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-//      tile_num = tile->tile_num;
-//      qty = obj->qty;
-      return obj_manager->look_obj(obj);
-     }
+ WRAP_COORD(x,level);
+ WRAP_COORD(y,level);
+ obj = obj_manager->get_obj(x, y, level);
+ if(obj != NULL && !(obj->status & OBJ_STATUS_INVISIBLE)) //only show visible objects.
+ {
+   //      tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+   //      tile_num = tile->tile_num;
+   //      qty = obj->qty;
+   return obj_manager->look_obj(obj);
+ }
  tile_num =  ptr[y * get_width(level) + x];
  return tile_manager->lookAtTile(tile_num,qty,true);
 }
@@ -576,17 +589,3 @@ bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
 	return	false;
 }
 
-/* Wrap coordinates that have rolled over from the left edge of the map to the
-   right side of the map. */
-inline void Map::wrap_coords(uint16 x, uint16 y, uint8 z, uint16 &wx, uint16 &wy)
-{
-    //const int coord_max = 65535; // hopefully uint16 is really 16 bits
-    //uint16 map_width = get_width(z);
-    //if(x >= map_width)
-//        x = map_width - (coord_max-x);
-//    if(y >= map_width)
-//        y = map_width - (coord_max-y);
-    uint16 mask=z?255:1023;
-    wx = x&mask;
-    wy = y&mask;
-}

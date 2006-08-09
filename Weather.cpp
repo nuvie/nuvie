@@ -296,3 +296,4 @@ uint16 Weather::callback(uint16 msg, CallBack *caller, void *data)
     
 	return 1;
 }
+

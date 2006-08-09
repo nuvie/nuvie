@@ -1,3 +1,10 @@
+2006-08-10  Pieter Luteijn <luteijn at users.sourceforge.net>
+        * Added newline at end of file Weather.cpp (fix a warning)
+        * Added macros WRAPPED_COORD(c,level), WRAP_COORD(c,level)
+	  The first returns wrapped version of c, without changing c itself;
+	  the other does modify c. Use the first version for things
+	  like (x+1) or when you still need the unwrapped version.
+	  
 2006-08-09  Pieter Luteijn <luteijn at users.sourceforge.net>
         * use balloon from other's inventory.
 	* disallow balloon use underground

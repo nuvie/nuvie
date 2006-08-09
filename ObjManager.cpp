@@ -513,8 +513,8 @@ uint8 ObjManager::is_passable(uint16 x, uint16 y, uint8 level)
  bool object_at_location = false;
  uint16 i,j;
  
- uint16 x2 = (x+1)&(level?255:1023); // wrap on map edge
- uint16 y2 = (y+1)&(level?255:1023); // FIXME: magic numbers
+ uint16 x2 = WRAPPED_COORD((x+1),level); // wrap on map edge
+ uint16 y2 = WRAPPED_COORD((y+1),level); 
 
  for(i=x;;i=x2) // only checks x and x2
    {
@@ -665,8 +665,8 @@ U6LList *ObjManager::get_obj_list(uint16 x, uint16 y, uint8 level)
  iAVLKey key;
  ObjTreeNode *item;
 
- x &=(level?255:1023); // wrap on map edge
- y &=(level?255:1023); // FIXME: magic numbers
+ WRAP_COORD(x,level); // wrap on map edge
+ WRAP_COORD(y,level);
  
  obj_tree = get_obj_tree(x,y,level);
  key = get_obj_tree_key(x,y,level);
