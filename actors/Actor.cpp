@@ -189,8 +189,7 @@ uint16 Actor::get_downward_facing_tile_num()
  return obj_manager->get_obj_tile_num(obj_n) + frame_n;
 }
 
-/* Set direction faced by actor and change walk frame.
- */
+/* Set direction faced by actor and change walk frame. */
 void Actor::set_direction(uint8 d)
 {
  if(d < 4)
@@ -202,9 +201,7 @@ void Actor::set_direction(uint8 d)
 
 }
 
-
-/* Set direction as if moving in relative direction rel_x,rel_y.
- */
+/* Set direction as if moving in relative direction rel_x,rel_y. */
 void Actor::set_direction(sint16 rel_x, sint16 rel_y)
 {
     uint8 new_direction = direction;
@@ -842,7 +839,7 @@ bool Actor::inventory_remove_obj(Obj *obj, Obj *container)
     return container->container->remove(obj);
  }
  obj->status &= ~OBJ_STATUS_IN_INVENTORY;
- if(!(obj->status & OBJ_STATUS_LIT)) // remove light from actor
+ if(obj->status & OBJ_STATUS_LIT) // remove light from actor
     subtract_light(TORCH_LIGHT_LEVEL);
  return inventory->remove(obj);
 }
@@ -1568,15 +1565,29 @@ void Actor::repel_from(Actor *target)
 
 void Actor::add_light(uint8 val)
 {
-    light += val;
+//    light += val;
+    light_source.push_back(val);
+    if(val > light)
+        light = val;
 }
 
 void Actor::subtract_light(uint8 val)
 {
-    if(light >= val)
-        light -= val;
-    else
-        light = 0;
+//    if(light >= val)
+//        light -= val;
+//    else
+//        light = 0;
+    vector<uint8>::iterator l = light_source.begin();
+    for(;l!=light_source.end();l++)
+        if(*l == val)
+        {
+            light_source.erase(l);
+            break;
+        }
+    light = 0; // change to next highest light source
+    for(unsigned int l=0;l<light_source.size();l++)
+        if(light_source[l] > light)
+            light = light_source[l];
 }
 
 void Actor::set_moves_left(sint8 val)

@@ -29,6 +29,7 @@
 
 using std::list;
 using std::string;
+using std::vector;
 #include "ActorList.h"
 #include "Map.h"
 #include "ObjManager.h"
@@ -71,8 +72,8 @@ using std::string;
 #define ACTOR_STATUS_ASLEEP    0x4
 #define ACTOR_STATUS_POISONED  0x8
 #define ACTOR_STATUS_DEAD      0x10
-#define ACTOR_STATUS_ATTACK_MONSTERS 0x20
-#define ACTOR_STATUS_ATTACK_PLAYER   0x40
+#define ACTOR_STATUS_ATTACK_EVIL 0x20
+#define ACTOR_STATUS_ATTACK_GOOD 0x40
 #define ACTOR_STATUS_IN_PARTY  0x80
 #define ACTOR_STATUS_ALIGNMENT_MASK 0x60
 
@@ -214,6 +215,7 @@ class Actor
 
  sint8 moves; // number of moves actor has this turn
  uint8 light; // level of light around actor (normally 0)
+ vector<uint8> light_source;
 
  ActorError error_struct; // error/status; result of previous action
 
@@ -266,6 +268,7 @@ class Actor
  bool is_invisible() { return(obj_flags & OBJ_STATUS_INVISIBLE); }
  virtual bool is_immobile(); // frozen by worktype or status
  virtual bool is_sleeping() { return(status_flags & ACTOR_STATUS_ASLEEP); }
+ virtual bool is_paralyzed() { return(status_flags & ACTOR_STATUS_PARALYZED); }
 
  void set_name(const char *actor_name) {  name=actor_name; }
  const char *get_name();
