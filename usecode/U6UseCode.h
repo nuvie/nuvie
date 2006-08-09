@@ -160,6 +160,7 @@ class U6UseCode: public UseCode, public CallBack
  Obj *bell_find(Obj *chain_obj);
  void sundial_set_shadow(Obj *sundial, uint8 hour);
  void extinguish_torch(Obj *obj);
+ void light_torch(Obj *obj);
  bool process_effects(Obj *container_obj);
 
  

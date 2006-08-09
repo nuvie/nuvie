@@ -1438,6 +1438,13 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         // or effect_mgr->wait_for_effect(new SpellTargetEffect(items.actor2_ref), this, obj);
                         items.actor2_ref->set_invisible(true);
                         destroy_obj(obj); break;
+                    case USE_U6_POTION_ORANGE:
+                        items.actor2_ref->set_worktype(WORKTYPE_U6_SLEEP);
+                        party->set_active(party_num, !(items.actor2_ref->is_sleeping() || items.actor2_ref->is_paralyzed()));
+                        player->set_actor(party->get_actor(party->get_leader()));
+                        player->set_mapwindow_centered(true);
+                        destroy_obj(obj);
+                        break;
                     default:
                         if(obj->frame_n <= 7)
                         {
@@ -2509,9 +2516,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             Obj *torch = obj_manager->get_obj_from_stack(obj, 1);
             if(torch != obj)
                 obj_manager->add_obj(torch, true); // keep new one on map
-            toggle_frame(torch); // light
-            torch->status |= OBJ_STATUS_LIT;
-            scroll->display_string("\nTorch is lit.\n");
+            light_torch(torch);
             return true;
         }
         else
@@ -2523,8 +2528,6 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             if(!obj->is_readied())
             {
                 torch = obj_manager->get_obj_from_stack(obj, 1);
-                toggle_frame(torch); // change frame here so object doesn't restack when added back to inventory
-                                     // FIXME: after adding Actor::inventory_add_object_nostack() I should rewrite this
                 if(torch != obj) // keep new one in inventory
                     actor->inventory_add_object_nostack(torch);
 
@@ -2532,17 +2535,14 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
                 actor = actor_manager->get_actor_holding_obj(torch);
                 can_light_it = actor->add_readied_object(torch);
             }
-            else toggle_frame(torch); // assume it's not stacked
 
             if(can_light_it)
             {
-                actor->add_light(TORCH_LIGHT_LEVEL); // add lightglobe to actor
-                torch->status |= OBJ_STATUS_LIT;
-                scroll->display_string("\nTorch is lit.\n");
+                light_torch(torch);
             }
             else
             {
-                toggle_frame(torch); // go back to unlit frame
+                assert(torch->qty == 1);
                 if(torch->is_in_inventory()) // assume it's not stacked
                 {
                     actor->inventory_remove_obj(torch);
@@ -2578,7 +2578,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             return(true);
         toggle_frame(obj); // unlight
         obj_manager->remove_obj(obj); // add to inventory and USE
-        items.actor_ref->inventory_add_object(obj);
+        items.actor_ref->inventory_add_object(obj); // will unstack in USE
         scroll->display_string("\n");
         torch(obj, USE_EVENT_USE);
         return(false); // ready or not, handled by usecode
@@ -2594,14 +2594,30 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     return(true);
 }
 
-/* Torches disappear when extinguished.
- */
+/* Torches disappear when extinguished. */
 void U6UseCode::extinguish_torch(Obj *obj)
 {
-    if(obj->is_in_inventory())
-        actor_manager->get_actor_holding_obj(obj)->subtract_light(TORCH_LIGHT_LEVEL);
+    assert(obj->qty == 1);
+    assert(obj->frame_n == 1);
+
+//  handled by Actor::inventory_remove_obj()
+//    if(obj->is_in_inventory())
+//        actor_manager->get_actor_holding_obj(obj)->subtract_light(TORCH_LIGHT_LEVEL);
     scroll->display_string("\nA torch burned out.\n");
     destroy_obj(obj);
+    game->get_map_window()->updateBlacking();
+}
+
+void U6UseCode::light_torch(Obj *obj)
+{
+    assert(obj->qty == 1);
+    assert(obj->frame_n == 0);
+    toggle_frame(obj); // light
+    obj->status |= OBJ_STATUS_LIT;
+
+    if(obj->is_in_inventory())
+        actor_manager->get_actor_holding_obj(obj)->add_light(TORCH_LIGHT_LEVEL);
+    scroll->display_string("\nTorch is lit.\n");
     game->get_map_window()->updateBlacking();
 }
 
