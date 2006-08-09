@@ -62,6 +62,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_HYDRA,            0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,          5,  26,  11,   2,   0,  15,  50, ACTOR_ALIGNMENT_CHAOTIC},
  {OBJ_U6_MOUSE,            1, 1, 1, 0, OBJ_U6_MOUSE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,          0,   2,  25,   3,   0,   2,   5, ACTOR_ALIGNMENT_NEUTRAL},
  {OBJ_U6_CAT,              1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         40,   4,  18,   8,   0,   2,   6, ACTOR_ALIGNMENT_NEUTRAL},
+ {OBJ_U6_TANGLE_VINE,      0, 0, 1, 0, OBJ_U6_TANGLE_VINE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,    0,  20,   5,   1,   4,   1,  30, ACTOR_ALIGNMENT_CHAOTIC},
 
  // 4x2
  {OBJ_U6_SEA_SERPENT,      2, 2, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH,  60,  17,  17,   9,   2,  30,  70, ACTOR_ALIGNMENT_EVIL},
@@ -104,7 +105,6 @@ const U6ActorType u6ActorTypes[] = {
 
  {OBJ_U6_SHIP,             1, 2, 2, 8, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_WATER_HIGH,  0,  30,  30,  30,  30,  30,  30, ACTOR_ALIGNMENT_NEUTRAL},
  {OBJ_U6_SKIFF,            1, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_RAFT,             0, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL}, // FIX might need to fix this
  {OBJ_U6_INFLATED_BALLOON, 0, 0, 0, 4, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,     0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL},
 
  {OBJ_U6_GIANT_SCORPION,   2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         30,  13,  13,   3,   3,   8,  20, ACTOR_ALIGNMENT_CHAOTIC},
@@ -117,7 +117,9 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_DRAGON,           2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_AIR_LOW,    10,  40,  35,  27,  12,  30, 150, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_SILVER_SERPENT,   1, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,        0,  60,  21,   8,  15,  60, 200, ACTOR_ALIGNMENT_CHAOTIC},
 
- {OBJ_U6_TANGLE_VINE_POD,  0, 0, 1, 0, OBJ_U6_TANGLE_VINE_POD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,40, 20,  25,  1,  4,  1,  30, ACTOR_ALIGNMENT_CHAOTIC},
+ // 2x1 FIXME
+ {OBJ_U6_RAFT,             0, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL}, // FIX might need to fix this
+// {OBJ_U6_TANGLE_VINE_POD,  0, 0, 1, 0, OBJ_U6_TANGLE_VINE_POD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,40, 20,  25,   1,   4,   1,  30, ACTOR_ALIGNMENT_CHAOTIC},
 
  {OBJ_U6_NOTHING, 0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 0, 0, 0, 0, 0, 0, 0, ACTOR_ALIGNMENT_NEUTRAL} //end indicator
 };
