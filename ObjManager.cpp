@@ -321,7 +321,21 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
 {
  uint8 b;
  U6Link *link;
-
+ 
+/* // to be activated when parent_obj is used for real
+ if (obj->parent_obj && !parent) 
+ {
+   printf("WARNING non-NULL Obj *obj->parent_obj, but no Obj *parent set in call to save_obj\n");
+   printf("setting parent to parent_obj\n");
+   parent=obj->parent_obj;
+ }
+ if (obj->parent_obj != parent) 
+ {
+   printf("WARNING Obj *obj->parent_obj differs from non-NULL Obj *parent set in call to save_obj\n");
+   printf("Trusting parent, but keeping parent_obj\n");
+ }
+ */
+   
  if(parent) //obj is in a container
   {
    obj->status |= OBJ_STATUS_IN_CONTAINER;
@@ -1112,7 +1126,6 @@ bool ObjManager::add_obj(Obj *obj, bool addOnTop)
 
  return true;
 }
-
 bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
 {
  U6Link *link;
@@ -1392,10 +1405,15 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  printf("\n");
  print_indent(indent);
  printf("%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
-
+ 
  if(in_container == false)
    printf("at %x, %x, %x (%d,%d,%d)",obj->x, obj->y, obj->z, obj->x, obj->y, obj->z);
  printf("\n");
+ 
+ print_indent(indent);
+ printf("object (Obj *) %p\n", obj);
+ print_indent(indent);
+ printf("parent (Obj *) %p\n", obj->parent_obj);
 
  print_indent(indent);
  printf("objblk_n: %d\n", obj->objblk_n);
@@ -1511,7 +1529,7 @@ void delete_obj(Obj *obj)
 // add object to list, stacking with exisiting objects if possible
 // This is used for adding objects to inventory OR a container.
 // *It will stack onto the new object and delete the existing object!*
-bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects)
+bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects, uint32 pos)
 {
  Obj *stack_with;
  uint16 new_qty;
@@ -1519,6 +1537,8 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects)
  
  if(!llist || !obj)
    return false;
+ 
+ clamp_min(pos,llist->count());
    
  if(stack_objects && is_stackable(obj))
   {
@@ -1543,10 +1563,43 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects)
     }
   }
 
- llist->addAtPos(0,obj);
+ llist->addAtPos(pos,obj);
 
  return true;
 }
+// wrapper to the above to work with an existing c_obj instead
+bool ObjManager::obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects, uint32 pos)
+{
+  if(!c_obj) // || !obj is not needed as already checked in list_add_obj(U6LList *...) 
+  {
+   return false;
+  }
+  
+  if (!c_obj->container)
+  {
+    c_obj->container = new U6LList();
+  }
+  
+  
+  // and add it.
+  if (list_add_obj(c_obj->container, obj, stack_objects, pos))
+  {
+    obj->status|=OBJ_STATUS_IN_CONTAINER;
+    // FIXME may have to set x etc?
+    
+    obj->parent_obj=c_obj;
+    
+    // update should be done by higher level function 
+    // Game::get_game()->get_view_manager()->update();
+    
+    return true;
+  } 
+  else 
+  {
+    return false;
+  }
+}
+
 
 /* Call load usecode for all objects (after loading them). This should be in
  * loadObj() but that was crashing when usecode tried to use timers.

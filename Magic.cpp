@@ -398,7 +398,6 @@ bool Magic::cast()
     return false;
   
   // TODO "No magic at this time!" error
-
   // book(s) equipped? Maybe should check all locations?
   Actor *caster=event->player->get_actor();
   Obj *right=caster->inventory_get_readied_object(ACTOR_ARM); 
@@ -420,9 +419,9 @@ bool Magic::cast()
   bool spell_ready=false;  
 
   if ( 
-      ((books&1) && (caster->inventory_get_object(OBJ_U6_SPELL,index,right,true,true) || caster->inventory_get_object(OBJ_U6_SPELL,255,right,true,true)))
+      ((books&1) && right->container && (caster->inventory_get_object(OBJ_U6_SPELL,index,right,true,true) || caster->inventory_get_object(OBJ_U6_SPELL,255,right,true,true)))
       ||
-      ((books&2) && (caster->inventory_get_object(OBJ_U6_SPELL,index,left,true,true) || caster->inventory_get_object(OBJ_U6_SPELL,255,left,true,true)))
+      ((books&2) && left->container && (caster->inventory_get_object(OBJ_U6_SPELL,index,left,true,true) || caster->inventory_get_object(OBJ_U6_SPELL,255,left,true,true)))
      )
   {
     spell_ready=true;
@@ -556,6 +555,7 @@ if (!strcmp(function,"swap")) { return function_swap(); }
 if (!strcmp(function,"template")) { return function_template(); }
 if (!strcmp(function,"underscore")) { return function_underscore(); }
 if (!strcmp(function,"eclipse")) { return function_eclipse(); }
+if (!strcmp(function,"quake")) { return function_quake(); }
 	
   return false; // unknown function
 }
@@ -978,12 +978,12 @@ bool Magic::function_input()
  /*
   * Stack effect: pushes string entered by user.
   */
-//  event->scroll->set_input_mode(true);
-//  stack->push(event->scroll->get_input().c_str()); 
+  event->scroll->set_input_mode(true);
+  stack->push(event->scroll->get_input().c_str()); 
   // FIXME don't read from stdin, but use MsgScroll;
-  char str[MAX_SCRIPT_LENGTH+1];
-  cin.get(str,MAX_SCRIPT_LENGTH);
-  stack->push(str); 
+//  char str[MAX_SCRIPT_LENGTH+1];
+//  cin.get(str,MAX_SCRIPT_LENGTH);
+//  stack->push(str); 
   return true;
 }
 
@@ -1035,6 +1035,13 @@ bool Magic::function_eclipse()
 	Weather *weather = Game::get_game()->get_weather();
 	weather->start_eclipse((uint8)atoi(stack->pop()));
 	
+	return true;
+}
+
+bool Magic::function_quake()
+{
+        new QuakeEffect((uint8)atoi(stack->pop()),(uint32)atoi(stack->pop()),event->player->get_actor());
+
 	return true;
 }
 

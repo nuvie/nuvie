@@ -79,9 +79,9 @@ struct Obj
 
  uint16 qty;
  uint8 quality;
-
+ Obj * parent_obj;
  U6LList *container;
- Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; container = NULL; };
+ Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; parent_obj = NULL; container = NULL; };
 
  bool is_ok_to_take()   { return(status & OBJ_STATUS_OK_TO_TAKE); }
  bool is_in_container() { return(status & OBJ_STATUS_IN_CONTAINER); }
@@ -181,7 +181,9 @@ class ObjManager
  Obj *get_obj_from_stack(Obj *obj, uint32 count);
  Obj *get_obj_container(Obj *obj);
 
- bool list_add_obj(U6LList *list, Obj *obj, bool stack_objects=true);
+ bool list_add_obj(U6LList *list, Obj *obj, bool stack_objects=true, uint32 pos=0);
+ bool obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects=true, uint32 pos=0); 
+  
 
  const char *get_obj_name(Obj *obj);
  const char *get_obj_name(uint16 obj_n);

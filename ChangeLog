@@ -1,4 +1,16 @@
 2006-08-10  Pieter Luteijn <luteijn at users.sourceforge.net>
+	* added position parameter to list_add_obj (defaults to 0)
+        * added Obj *parent_obj to Obj struct.
+  	* added a obj_add_obj that uses list_add_obj to add an object to a
+	  container, to allow updating the parent_obj.
+	  nothing uses this yet but can call the function from
+	  debugger and move e.g. spells into the spellbook.
+	* added printing of (Obj *) obj (and prepared for (Obj *) parent_obj) to
+	  print_obj to help with debugging this.
+	* fixes to magic system regarding looking into empty books..
+	* added an effect to the Tremor spell script and some initial stuff to
+	  the gate travel spell. This will need function_input to be fixed.
+	  
         * Added newline at end of file Weather.cpp (fix a warning)
         * Added macros WRAPPED_COORD(c,level), WRAP_COORD(c,level)
 	  The first returns wrapped version of c, without changing c itself;

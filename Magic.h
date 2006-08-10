@@ -25,6 +25,7 @@
  */
 
 #include "Event.h"
+#include "Effect.h"
 
 #define REAGENT_U6_MANDRAKE_ROOT 0x01
 #define REAGENT_U6_NIGHTSHADE    0x02
@@ -154,6 +155,7 @@ bool function_swap();
 bool function_template();
 bool function_underscore();
 bool function_eclipse();
+bool function_quake();
 };
 
 

@@ -688,7 +688,7 @@ name: Gate Travel
 invocation: VRP
 reagents: 0x85
 script:\
-++ This is the Gate Travel spell stub ++ _display _end
+++ To phase ++ _display _input _phase_to_location _jmp :success _teleport :failure _end
 ~
 # 101 
 name: Kill
@@ -806,7 +806,7 @@ name: Tremor
 invocation: VPY
 reagents: 0x89
 script:\
-++ This is the Tremor spell stub ++ _display _end
+200 1 _quake ++ Need to actually damage victims here ++ _display _end
 ~
 # 122
 ~
