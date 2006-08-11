@@ -1146,6 +1146,7 @@ bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
     if(c_obj->container == NULL)
 	  c_obj->container = new U6LList();
     c_obj->container->addAtPos(0,obj);
+    obj->parent_obj=c_obj;
 
 	//printf("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
 	//printf(" -> %s (%x,%x,%x)\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false),c_obj->x,c_obj->y,c_obj->z);
@@ -1574,19 +1575,27 @@ bool ObjManager::obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects, uint32 po
   {
    return false;
   }
-  
+  if (c_obj==obj) {
+    printf("WARNING: Tried to put container into itself.\n");
+    return false;
+  }
   if (!c_obj->container)
   {
     c_obj->container = new U6LList();
   }
   
-  
+  remove_obj(obj); 
   // and add it.
   if (list_add_obj(c_obj->container, obj, stack_objects, pos))
   {
     obj->status|=OBJ_STATUS_IN_CONTAINER;
+    if(obj->status & OBJ_STATUS_IN_INVENTORY) //object was in actor's inventory
+    {
+      obj->status ^= OBJ_STATUS_IN_INVENTORY;
+    }
     // FIXME may have to set x etc?
-    
+    // but objblk_n is not guaranteed to be unique.
+
     obj->parent_obj=c_obj;
     
     // update should be done by higher level function 
@@ -1667,7 +1676,7 @@ Obj *ObjManager::get_obj_container(Obj *obj)
 {
     assert(obj->is_in_container());
     // FIXME: We must be able to use obj->x/y/z.
-    return(NULL);
+    return(obj->parent_obj);
 }
 
 void clean_obj_tree_node(void *node)

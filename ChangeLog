@@ -1,3 +1,9 @@
+2006-08-11  Pieter Luteijn <luteijn at users.sourceforge.net>
+	* Magic fixes (error messages, logic)
+        * fixed an obj duplication bug in obj_add_obj
+	* added setting of obj->parent_obj when loading a game
+	  needs more testing I think.
+
 2006-08-10  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* added position parameter to list_add_obj (defaults to 0)
         * added Obj *parent_obj to Obj struct.

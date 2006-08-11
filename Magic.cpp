@@ -42,6 +42,8 @@
 #include "U6objects.h"
 #include "Magic.h"
 #include "Game.h"
+#include "misc/U6LList.h"
+#include "Effect.h"
 #include "Weather.h"
 
 using std::cerr;
@@ -341,7 +343,7 @@ bool Magic::start_new_spell()
     clear_cast_buffer();
     return true;
   }
-  event->scroll->display_string("No spellbook is readied.\n"); // FIXME correct text
+  event->scroll->display_string("\nNo spellbook is readied.\n"); 
   state=MAGIC_STATE_READY;
   return false;
 }
@@ -360,6 +362,8 @@ bool Magic::cast()
   cast_buffer_str[cast_buffer_len]='\0';
   cerr<<"Trying to cast "<<cast_buffer_str<<endl;
   /* decode the invocation */
+  // FIXME? original allows random order of syllables, do we want that?
+
   uint16 index;
   for (index=0;index<256;index++) 
   {
@@ -369,7 +373,7 @@ bool Magic::cast()
   }
   if (index>=256) {
     cerr<<"didn't find spell in spell list"<<endl;
-    event->scroll->display_string("\nThat spell is not in thy spellbook!\n"); // FIXME correct text
+    event->scroll->display_string("\nThat spell is not in thy spellbook!\n"); 
     return false;
   }
   event->scroll->display_string("\n(");
@@ -397,27 +401,39 @@ bool Magic::cast()
   if(event->mode == WAIT_MODE)
     return false;
   
-  // TODO "No magic at this time!" error
+  // TODO "No magic at this time!" error. 
+  
   // book(s) equipped? Maybe should check all locations?
   Actor *caster=event->player->get_actor();
   Obj *right=caster->inventory_get_readied_object(ACTOR_ARM); 
   Obj *left=caster->inventory_get_readied_object(ACTOR_ARM_2); 
   uint8 books=0;
-
   if (right!=NULL && right->obj_n==OBJ_U6_SPELLBOOK) { books+=1; }; 
   if (left!=NULL && left->obj_n==OBJ_U6_SPELLBOOK) { books+=2; }; 
 
   if (!books) { 
-    event->scroll->display_string("No spellbook is readied.\n"); // FIXME correct text
+    event->scroll->display_string("\nNo spellbook is readied.\n"); 
     return false;
   }
 
-  // TODO "No spells in the spellbook!" error
+  // any spells available?
+  uint32 spells=0;
+  if ((books&1) && right->container) // hmm, relying on shortcut logic here.
+  {
+    spells=right->container->count();
+  }
+  if ((books&2) && left->container) 
+  {
+    spells+=left->container->count();
+  }
+  if (!spells)
+  {
+    event->scroll->display_string("\nNo spells in the spellbook.\n"); 
+    return false;
+  }
   
-  // spell in (either) book, or spell 255 available
-
+  // spell (or catch all spell 255) in (one of the) book(s)?
   bool spell_ready=false;  
-
   if ( 
       ((books&1) && right->container && (caster->inventory_get_object(OBJ_U6_SPELL,index,right,true,true) || caster->inventory_get_object(OBJ_U6_SPELL,255,right,true,true)))
       ||
@@ -429,7 +445,7 @@ bool Magic::cast()
   
   if (!spell_ready) 
   {
-    event->scroll->display_string("\nThat spell is not in thy spellbook!\n"); // FIXME correct text
+    event->scroll->display_string("\nThat spell is not in thy spellbook!\n"); 
     return false;
   }
 
@@ -437,14 +453,14 @@ bool Magic::cast()
   uint8 spell_level=MIN(8,(index/16)+1); 
   if (caster->get_level()<spell_level)
   {
-    event->scroll->display_string("\nYour level is not high enough.\n"); // FIXME correct text
+    event->scroll->display_string("\nYour level is not high enough.\n"); 
     return false;
   }
   
   // enough Magic Points available
   if (caster->get_magic()<spell_level)
   {
-    event->scroll->display_string("\nNot enough magic points.\n"); // FIXME correct text
+    event->scroll->display_string("\nNot enough magic points.\n");
     return false;
   }
 
@@ -456,7 +472,7 @@ bool Magic::cast()
       if (!caster->inventory_has_object(obj_n_reagent[shift],0,true))
       {
 	cerr<<"Didn't have "<<reagent[shift]<<endl;
-	event->scroll->display_string("\nNo reagents.\n"); // FIXME correct text
+	event->scroll->display_string("\nNo Reagents.\n");
 	return false;
       }
       cerr<<"Ok, has "<<reagent[shift]<<endl;

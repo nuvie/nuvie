@@ -25,7 +25,6 @@
  */
 
 #include "Event.h"
-#include "Effect.h"
 
 #define REAGENT_U6_MANDRAKE_ROOT 0x01
 #define REAGENT_U6_NIGHTSHADE    0x02
