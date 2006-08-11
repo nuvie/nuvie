@@ -176,7 +176,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
       obj->container = new U6LList();
      }
 
-   if(obj->status & OBJ_STATUS_IN_INVENTORY) //object in actor's inventory
+   if(obj->status & OBJ_STATUS_IN_INVENTORY) //triggered when object in actor's inventory OR equipped
      {
       inventory_list = get_actor_inventory(obj->x);
       inventory_list->add(obj);
@@ -184,7 +184,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
      }
    else
      {
-      if(obj->status & OBJ_STATUS_IN_CONTAINER)
+      if(obj->is_in_container()) //object in container (was |=, so also triggered when readied, but doesn't seem needed)
         {
          addObjToContainer(list,obj);
         }
@@ -322,7 +322,7 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
  uint8 b;
  U6Link *link;
  
-/* // to be activated when parent_obj is used for real
+// if these warnings never pop-up, we can trust parent_obj and rely on it instead of even passing parent...
  if (obj->parent_obj && !parent) 
  {
    printf("WARNING non-NULL Obj *obj->parent_obj, but no Obj *parent set in call to save_obj\n");
@@ -334,11 +334,10 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
    printf("WARNING Obj *obj->parent_obj differs from non-NULL Obj *parent set in call to save_obj\n");
    printf("Trusting parent, but keeping parent_obj\n");
  }
- */
    
  if(parent) //obj is in a container
   {
-   obj->status |= OBJ_STATUS_IN_CONTAINER;
+   obj->in_container(); // in container 
    obj->x = parent->objblk_n;
    obj->y &= (0xff ^ 0x1); //clean zeroth bit in y which is used for objblk_n > 1024
    if(obj->x >= 1024)
@@ -349,8 +348,10 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
   }
  else
   {
-   if((obj->status & OBJ_STATUS_READIED) != OBJ_STATUS_READIED)
+   if(!(obj->is_readied()))
+   {
      obj->status &= (0xff ^ OBJ_STATUS_IN_CONTAINER);
+   }
   }
 
  save_buf->write1(obj->status);
@@ -1436,20 +1437,17 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
    printf(" ( ");
    if(obj->is_readied())
      printf("POS:Ready ");
-   else
-    {
-       if(obj->status & OBJ_STATUS_IN_CONTAINER)
-         printf("POS:Cont ");
-       else if(obj->status & OBJ_STATUS_IN_INVENTORY)
-         printf("POS:Inv ");
-    }
-   if(obj->status & OBJ_STATUS_OK_TO_TAKE)
+   else if(obj->is_in_container())
+     printf("POS:Cont ");
+   else if(obj->is_in_inventory())
+     printf("POS:Inv ");
+   if(obj->is_ok_to_take())
      printf("OK ");
-   if(obj->status & OBJ_STATUS_TEMPORARY)
+   if(obj->is_temporary())
      printf("TEMP ");
-   if(obj->status & OBJ_STATUS_INVISIBLE)
+   if(obj->is_invisible())
      printf("INVIS ");
-   if(obj->status & OBJ_STATUS_EGG_ACTIVE)
+   if(obj->is_egg_active())
     {
      if(obj->obj_n < 256)
       printf("MUTANT ");
@@ -1588,19 +1586,11 @@ bool ObjManager::obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects, uint32 po
   // and add it.
   if (list_add_obj(c_obj->container, obj, stack_objects, pos))
   {
-    obj->status|=OBJ_STATUS_IN_CONTAINER;
-    if(obj->status & OBJ_STATUS_IN_INVENTORY) //object was in actor's inventory
-    {
-      obj->status ^= OBJ_STATUS_IN_INVENTORY;
-    }
-    // FIXME may have to set x etc?
-    // but objblk_n is not guaranteed to be unique.
-
+    obj->in_container();
     obj->parent_obj=c_obj;
-    
-    // update should be done by higher level function 
-    // Game::get_game()->get_view_manager()->update();
-    
+    // FIXME? may have to set x etc?
+    // but objblk_n is not guaranteed to be unique, eventually will be fixed at 
+    // save-time
     return true;
   } 
   else 

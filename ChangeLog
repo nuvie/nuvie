@@ -1,13 +1,18 @@
 2006-08-11  Pieter Luteijn <luteijn at users.sourceforge.net>
-	* Magic fixes (error messages, logic)
+        * cleaned(?) up confusion with on_map, in_inventory, in_container,
+	 equipped status 'flags' as these are mutually exclusive, so use a 2
+	 bit field instead of 4 bit flags. Because of this they can't be just
+	 or-red in / and-ed out. 
+
+        * Magic fixes (error messages, logic)
         * fixed an obj duplication bug in obj_add_obj
 	* added setting of obj->parent_obj when loading a game
 	  needs more testing I think.
 
 2006-08-10  Pieter Luteijn <luteijn at users.sourceforge.net>
-	* added position parameter to list_add_obj (defaults to 0)
+        * added position parameter to list_add_obj (defaults to 0)
         * added Obj *parent_obj to Obj struct.
-  	* added a obj_add_obj that uses list_add_obj to add an object to a
+        * added a obj_add_obj that uses list_add_obj to add an object to a
 	  container, to allow updating the parent_obj.
 	  nothing uses this yet but can call the function from
 	  debugger and move e.g. spells into the spellbook.
@@ -22,13 +27,13 @@
 	  The first returns wrapped version of c, without changing c itself;
 	  the other does modify c. Use the first version for things
 	  like (x+1) or when you still need the unwrapped version.
-	  
+	
 2006-08-09  Pieter Luteijn <luteijn at users.sourceforge.net>
         * use balloon from other's inventory.
 	* disallow balloon use underground
         * move to edge of map without crashing.
 	* wrap around map (at least works with balloon, need to test more)
-	
+
 2006-08-08  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Don't try to display a sun tile at night. Fixes fireplace moon.
 	* Added use orange potion. (sleeping potion)
@@ -53,7 +58,7 @@
 
 2006-08-06  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* Added in Sam Matthews' lighting fixes.
-	
+
 2006-08-06  Eric Fry <efry at users.sourceforge.net>
 	* Added new Weather class. This looks after wind direction and solar
 	  eclipses in U6. In the future it will be expanded to coordinate
@@ -234,7 +239,7 @@
 	  in U6Actor::add_surrounding_objs_to_map()
 	* Clear surrounding objects from an actor before moving to 0,0,0
 	  upon death.
- 
+
 2006-07-24  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Finally fixed DragNDrop between inventory and the map, so that it now
 	  calls usecode and you *can* move torches with the mouse again! Dropping

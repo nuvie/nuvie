@@ -561,7 +561,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
 
       if(obj->obj_n == OBJ_U6_TRAP)
         {
-         hit(25); //FIXME find proper amount.
+         hit(25); //FIXME find proper amount. share with U6UseCode::use_trap
          obj->status &= (0xff ^ OBJ_STATUS_INVISIBLE); //show trap. FIXME should this logic go else ware.
         }
 

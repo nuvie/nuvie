@@ -38,15 +38,24 @@ class NuvieIO;
 #define OBJ_STATUS_OK_TO_TAKE    0x1
 //#define OBJ_STATUS_SEEN_EGG      0x2  // something to do with eggs <- not sure about this one.
 #define OBJ_STATUS_INVISIBLE     0x2  // I think this is correct
-//#define OBJ_STATUS_UNKNOWN     0x4
+//#define OBJ_STATUS_UNKNOWN     0x4  // objlist.txt says 'charmed'
+#define OBJ_STATUS_CHARMED	 0x4 // objlist.txt says 'charmed'
+
+// A 2 bit field, so can't use plain | to check / |= to set these. 
+// FIXME: check to make sure we don't do this anywhere anymore
+#define OBJ_STATUS_ON_MAP	 0x0
 #define OBJ_STATUS_IN_CONTAINER  0x8
 #define OBJ_STATUS_IN_INVENTORY 0x10
+#define OBJ_STATUS_READIED      0x18
+#define OBJ_STATUS_MASK_GET	0x18
+#define OBJ_STATUS_MASK_SET	0xE7
+
 #define OBJ_STATUS_TEMPORARY    0x20
 #define OBJ_STATUS_EGG_ACTIVE   0x40  // something to do with eggs
-#define OBJ_STATUS_BROKEN       0x40
+#define OBJ_STATUS_BROKEN       0x40  
+#define OBJ_STATUS_MUTANT       0x40  
+#define OBJ_STATUS_CURSED       0x40  
 #define OBJ_STATUS_LIT          0x80
-// combined:
-#define OBJ_STATUS_READIED      0x18
 
 //is_passable return codes
 #define OBJ_NO_OBJ       0
@@ -84,10 +93,27 @@ struct Obj
  Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; parent_obj = NULL; container = NULL; };
 
  bool is_ok_to_take()   { return(status & OBJ_STATUS_OK_TO_TAKE); }
- bool is_in_container() { return(status & OBJ_STATUS_IN_CONTAINER); }
- bool is_in_inventory() { return(status & OBJ_STATUS_IN_INVENTORY); }
+ bool is_invisible()	{ return(status & OBJ_STATUS_INVISIBLE); } 
+ bool is_charmed()	{ return(status & OBJ_STATUS_CHARMED); } 
+ bool is_on_map()       { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_ON_MAP); }
+ bool is_in_container() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_CONTAINER); }
+ bool is_in_inventory() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_INVENTORY); }
+ bool is_readied()      { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_READIED); }
  bool is_temporary()    { return(status & OBJ_STATUS_TEMPORARY); }
- bool is_readied()      { return((status & OBJ_STATUS_READIED) == OBJ_STATUS_READIED); }
+ bool is_egg_active()   { return(status & OBJ_STATUS_EGG_ACTIVE); }
+ bool is_broken()       { return(status & OBJ_STATUS_BROKEN); }
+ bool is_mutant()       { return(status & OBJ_STATUS_MUTANT); }
+ bool is_cursed()       { return(status & OBJ_STATUS_CURSED); }
+ bool is_lit()          { return(status & OBJ_STATUS_LIT); }
+
+ void on_map()       { status &= OBJ_STATUS_MASK_SET; 
+                       status |= OBJ_STATUS_ON_MAP; }
+ void in_container() { status &= OBJ_STATUS_MASK_SET;
+                       status |= OBJ_STATUS_IN_CONTAINER; }
+ void in_inventory() { status &= OBJ_STATUS_MASK_SET; 
+   		       status |= OBJ_STATUS_IN_INVENTORY; }
+ void readied()      { status &= OBJ_STATUS_MASK_SET;
+                       status |= OBJ_STATUS_READIED; }
 };
 
 Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z);

@@ -1827,6 +1827,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
       balloon_actor->move(0,0,0,ACTOR_FORCE_MOVE);
 
       obj = new_obj(OBJ_U6_BALLOON, 0, lx, ly, lz);
+      obj->status|=OBJ_STATUS_OK_TO_TAKE; 
       obj_manager->add_obj(obj, OBJ_ADD_TOP);
      }
    else
