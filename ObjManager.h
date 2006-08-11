@@ -96,8 +96,13 @@ struct Obj
  bool is_invisible()	{ return(status & OBJ_STATUS_INVISIBLE); } 
  bool is_charmed()	{ return(status & OBJ_STATUS_CHARMED); } 
  bool is_on_map()       { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_ON_MAP); }
+ /* old, until replaced everywhere prperly */
+ bool is_in_container() { return(status & OBJ_STATUS_IN_CONTAINER); }
+ bool is_in_inventory() { return(status & OBJ_STATUS_IN_INVENTORY); }
+ /* new
  bool is_in_container() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_CONTAINER); }
  bool is_in_inventory() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_INVENTORY); }
+ */
  bool is_readied()      { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_READIED); }
  bool is_temporary()    { return(status & OBJ_STATUS_TEMPORARY); }
  bool is_egg_active()   { return(status & OBJ_STATUS_EGG_ACTIVE); }
