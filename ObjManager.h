@@ -25,6 +25,7 @@
  */
 
 #include <list>
+#include <cassert> // for paranoid checks in Obj::is_held 
 #include "iAVLTree.h"
 #include "TileManager.h"
 
@@ -96,13 +97,16 @@ struct Obj
  bool is_invisible()	{ return(status & OBJ_STATUS_INVISIBLE); } 
  bool is_charmed()	{ return(status & OBJ_STATUS_CHARMED); } 
  bool is_on_map()       { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_ON_MAP); }
- /* old, until replaced everywhere prperly */
- bool is_in_container() { return(status & OBJ_STATUS_IN_CONTAINER); }
- bool is_in_inventory() { return(status & OBJ_STATUS_IN_INVENTORY); }
- /* new
- bool is_in_container() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_CONTAINER); }
- bool is_in_inventory() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_INVENTORY); }
- */
+ /* old, until replaced everywhere properly */
+ bool is_in_container_old() { printf("Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_CONTAINER); }
+ bool is_in_inventory_old() { printf("Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_INVENTORY); }
+ /* new, to replace the above two (redoing the logic) */
+ bool is_in_container_new() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_CONTAINER); }
+ bool is_in_inventory_new() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_INVENTORY); }
+ /* links, disable to find instances while renaming, eventually swing over and change to _new when renaming back.. */
+ bool is_in_container() { return is_in_container_old();}
+ bool is_in_inventory() { return is_in_inventory_old();}
+ /* */
  bool is_readied()      { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_READIED); }
  bool is_temporary()    { return(status & OBJ_STATUS_TEMPORARY); }
  bool is_egg_active()   { return(status & OBJ_STATUS_EGG_ACTIVE); }
@@ -119,6 +123,17 @@ struct Obj
    		       status |= OBJ_STATUS_IN_INVENTORY; }
  void readied()      { status &= OBJ_STATUS_MASK_SET;
                        status |= OBJ_STATUS_READIED; }
+
+ /* Returns true if an object is in an actor inventory, including containers and readied items. */
+
+ bool is_held() { if(is_on_map()) return false;
+                  if(is_readied()) return true;
+		  if(is_in_inventory_new()) return true;
+		  // none of the above, so must be in a container. 
+		  assert(is_in_container_new()); // check anyway, paranoia is a way of life
+		  assert(parent_obj); // should be non-NULL for contained objects. 
+		  // tail recurse:
+		  return parent_obj->is_held(); }
 };
 
 Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z);

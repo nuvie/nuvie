@@ -210,9 +210,9 @@ Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
         obj->qty -= count;
     else // destroy
     {
-        if(obj->is_in_inventory())
+        if(obj->is_readied() || obj->is_in_inventory_new())
             removed = actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj);
-        else if(obj->is_in_container())
+        else if(obj->is_in_container_new())
         {
 //            removed = obj_manager->get_obj_container(obj);
             removed = false; // FIXME

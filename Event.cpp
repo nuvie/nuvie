@@ -2006,7 +2006,7 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     if(mode == WAIT_MODE)
         return(false);
 
-    Actor *actor = obj->is_in_inventory()
+    Actor *actor = (obj->is_in_inventory_new()||obj->is_readied()) // FIXME when using containers.
                    ? Game::get_game()->get_actor_manager()->get_actor(obj->x)
                     : player->get_actor();
     MapCoord actor_loc = actor->get_location();

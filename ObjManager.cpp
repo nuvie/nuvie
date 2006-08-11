@@ -167,8 +167,8 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
      {
       egg_manager->add_egg(obj);
       // unhide eggs
-      if(show_eggs && (obj->status & OBJ_STATUS_INVISIBLE))
-         obj->status ^= OBJ_STATUS_INVISIBLE;
+      if(show_eggs && obj->is_invisible())
+         obj->status ^= OBJ_STATUS_INVISIBLE; // FIXME? don't directly manipulate
      }
 
    if(usecode->is_container(obj) && !obj->container) //object type is container, but may be empty
@@ -176,7 +176,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
       obj->container = new U6LList();
      }
 
-   if(obj->status & OBJ_STATUS_IN_INVENTORY) //triggered when object in actor's inventory OR equipped
+   if(obj->is_in_inventory_new() || obj->is_readied()) //triggered when object in actor's inventory OR equipped
      {
       inventory_list = get_actor_inventory(obj->x);
       inventory_list->add(obj);
@@ -184,7 +184,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
      }
    else
      {
-      if(obj->is_in_container()) //object in container (was |=, so also triggered when readied, but doesn't seem needed)
+      if(obj->is_in_container_new()) //object in container
         {
          addObjToContainer(list,obj);
         }
@@ -1437,9 +1437,9 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
    printf(" ( ");
    if(obj->is_readied())
      printf("POS:Ready ");
-   else if(obj->is_in_container())
+   else if(obj->is_in_container_new())
      printf("POS:Cont ");
-   else if(obj->is_in_inventory())
+   else if(obj->is_in_inventory_new())
      printf("POS:Inv ");
    if(obj->is_ok_to_take())
      printf("OK ");
@@ -1664,9 +1664,7 @@ Obj *ObjManager::get_obj_from_stack(Obj *obj, uint32 count)
  */
 Obj *ObjManager::get_obj_container(Obj *obj)
 {
-    assert(obj->is_in_container());
-    // FIXME: We must be able to use obj->x/y/z.
-    return(obj->parent_obj);
+    return(obj->parent_obj); // will be NULL if not a contained object.
 }
 
 void clean_obj_tree_node(void *node)
@@ -1684,16 +1682,9 @@ void clean_obj_tree_node(void *node)
 }
 
 
-/* Returns true if an object is in an actor inventory, including containers. */
-bool ObjManager::is_held(Obj *obj)
+/* Returns true if an object is in an actor inventory, including containers and readied items. */
+/* now that we have a working? parent_obj, moved to Obj itself */
+bool ObjManager::is_held(Obj *obj) 
 {
-    while(!obj->is_in_inventory())
-    {
-        if(!obj->is_in_container())
-            return false;
-        obj = get_obj_container(obj);
-        if(!obj) // FIXME: TODO: get_obj_container()
-            return false;
-    }
-    return true;
+  return obj->is_held();
 }

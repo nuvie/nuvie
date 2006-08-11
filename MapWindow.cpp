@@ -1222,7 +1222,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     y = (cur_y + y) % map_width;
 
     Obj *obj = static_cast<Obj*>(data);
-    if(!obj->is_readied() && obj->is_in_container())
+    if(obj->is_in_container_new())
       {
        printf("MapWindow: Not from a container!\n");
        return false; // FIXME: need ObjManager::get_obj_container()
@@ -1257,9 +1257,9 @@ printf("MapWindow::drag_perform_drop()\n");
 
         if(!obj->is_readied())
         {
-            assert(!obj->is_in_container()); // FIXME: need ObjManager::get_obj_container()
+            assert(!obj->is_in_container_new()); // FIXME: need ObjManager::get_obj_container()
     // else if obj is in container: remove from container; put in inventory
-            if(!obj->is_in_inventory())
+            if(!obj->is_in_inventory_new())
                 obj_manager->remove_obj(obj);
         }
 

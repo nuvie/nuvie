@@ -432,17 +432,17 @@ printf("InventoryWidget::drag_accept_drop()\n");
     if(target_obj == NULL) //we need to check this so we don't screw up target_obj on subsequent calls
       target_obj = get_obj_at_location(x,y);
 
-    if(!obj->is_readied() && obj->is_in_container())
+    if(obj->is_in_container_new())
     {
         printf("InventoryWidget: Not from a container!\n");
         return false;
     }
-    if(obj->is_in_inventory() && obj->x != actor->get_actor_num())
+    if((obj->is_in_inventory_new() || obj->is_readied() ) && obj->x != actor->get_actor_num())
     {
-        printf("InventoryWidget: Cannot Move between party members!\n");
+        printf("InventoryWidget: Cannot Move between party members!\n"); 
         return false;
     }
-    if(obj->is_in_inventory() && !obj->is_readied())
+    if(obj->is_in_inventory_new())
     {
         printf("InventoryWidget: Already holding object!\n");
         return false;
@@ -482,8 +482,7 @@ printf("InventoryWidget::drag_perform_drop()\n");
       }
     else // get
       {
-       assert(!obj->is_in_inventory());
-       assert(!obj->is_in_container());
+       assert(obj->is_on_map());
        // event->newAction(GET_MODE);
        Game::get_game()->get_scroll()->display_string("Get-");
        have_object = Game::get_game()->get_event()->get(obj, container_obj, actor);

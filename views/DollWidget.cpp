@@ -255,12 +255,12 @@ bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
             printf("DollWidget: Object already equipped!\n");
             return false;
         }
-        if(obj->is_in_container())
+        if(obj->is_in_container_new())
         {
             printf("DollWidget: Not from a container!\n");
             return false;
         }
-        if(obj->is_in_inventory() && obj->x != actor->get_actor_num())
+        if(obj->is_in_inventory_new() && obj->x != actor->get_actor_num())
         {
             printf("DollWidget: Must be holding object!\n");
             return false;
@@ -287,9 +287,9 @@ printf("DollWidget::drag_perform_drop()\n");
     obj = (Obj *)data;
 
     bool can_equip = true;
-    if(!obj->is_in_inventory()) // get
+    if(obj->is_on_map()) // get
       {
-       assert(!obj->is_in_container());
+       assert(!obj->is_in_container_new()); // won't happen since 'is_on_map' FIXME need to make work with containers
        // event->newAction(GET_MODE);
        Game::get_game()->get_scroll()->display_string("Get-");
        can_equip = Game::get_game()->get_event()->get(obj, NULL, actor);

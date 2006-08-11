@@ -1053,7 +1053,7 @@ bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
  */
 Actor *ActorManager::get_actor_holding_obj(Obj *obj)
 {
-    assert(obj->is_in_inventory());
+    assert(obj->is_in_inventory_new()||obj->is_readied()); // FIXME for containers. (search up using parent_obj)
     return(get_actor(obj->x));
 }
 
