@@ -320,6 +320,21 @@ if(surface == NULL)
  free(map_data);
  free(chunk_data);
 
+/* ERIC Useful for testing map wrapping
+   I plan to add a map patch function
+   to allow custom map changes to be
+   loaded easily into nuvie.
+   
+ uint16 mx,my;
+ for(my=100;my<130;my++)
+	 for(mx=0;mx<30;mx++)
+		 surface[my * 1024 + mx] = 1;
+ 
+ for(my=100;my<130;my++)
+	 for(mx=1000;mx<1024;mx++)
+		 surface[my * 1024 + mx] = 111;
+*/
+ 
  return true;
 }
 

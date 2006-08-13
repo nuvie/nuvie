@@ -1798,12 +1798,13 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
        obj->status |= OBJ_STATUS_OK_TO_TAKE;
        obj_manager->add_obj(obj, OBJ_ADD_TOP);
      }
+
     obj->obj_n = OBJ_U6_INFLATED_BALLOON;
     obj->frame_n = 3;
     scroll->display_string("\nDone!\n");
     return true;
-   }
-   
+	}
+	
  balloon_actor = actor_manager->get_actor(0); //get the vehicle actor.
 
  // get out of balloon

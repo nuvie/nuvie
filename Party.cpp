@@ -87,16 +87,16 @@ bool Party::load(NuvieIO *objlist)
  autowalk = false;
  in_vehicle = false;
 
- objlist->seek(0xff0);
+ objlist->seek(OBJLIST_OFFSET_NUM_IN_PARTY);
  num_in_party = objlist->read1();
 
 
- objlist->seek(0xf00);
+ objlist->seek(OBJLIST_OFFSET_PARTY_NAMES);
  for(i=0;i<num_in_party;i++)
   {
-   objlist->readToBuf((unsigned char *)member[i].name,14); // read in Player name.
+   objlist->readToBuf((unsigned char *)member[i].name,PARTY_NAME_MAX_LENGTH + 1); // read in Player name.
   }
- objlist->seek(0xfe0);
+ objlist->seek(OBJLIST_OFFSET_PARTY_ROSTER);
  for(i=0;i<num_in_party;i++)
   {
    actor_num = objlist->read1();
@@ -115,10 +115,8 @@ bool Party::load(NuvieIO *objlist)
  reform_party();
 
  autowalk=false;
- // this may not be the proper way to get in_vehicle at start, but we havn't
- // found the relevant data in objlist yet (maybe only vehicle worktype?)
- MapCoord vehicle_loc = actor_manager->get_actor(0)->get_location();
- if(is_at(vehicle_loc.x, vehicle_loc.y, vehicle_loc.z))
+   
+ if(actor_manager->get_actor(ACTOR_VEHICLE_ID_N)->get_worktype() == 0x02) // WT_U6_PLAYER
   {
    set_in_vehicle(true);
    hide();
@@ -133,17 +131,17 @@ bool Party::save(NuvieIO *objlist)
 {
  uint16 i;
 
- objlist->seek(0xff0);
+ objlist->seek(OBJLIST_OFFSET_NUM_IN_PARTY);
  objlist->write1(num_in_party);
 
 
- objlist->seek(0xf00);
+ objlist->seek(OBJLIST_OFFSET_PARTY_NAMES);
  for(i=0;i<num_in_party;i++)
   {
-   objlist->writeBuf((unsigned char *)member[i].name,14);
+   objlist->writeBuf((unsigned char *)member[i].name,PARTY_NAME_MAX_LENGTH + 1);
   }
 
- objlist->seek(0xfe0);
+ objlist->seek(OBJLIST_OFFSET_PARTY_ROSTER);
  for(i=0;i<num_in_party;i++)
   {
    objlist->write1(member[i].actor->get_actor_num());
@@ -159,13 +157,13 @@ bool Party::add_actor(Actor *actor)
 {
  Converse *converse = game->get_converse();
 
- if(num_in_party < 16)
+ if(num_in_party < PARTY_MAX_MEMBERS)
    {
     actor->set_in_party(true);
     member[num_in_party].actor = actor;
     member[num_in_party].inactive = false;
-    strncpy(member[num_in_party].name, converse->npc_name(actor->id_n), 14);
-    member[num_in_party].name[13] = '\0'; // make sure name is terminated
+    strncpy(member[num_in_party].name, converse->npc_name(actor->id_n), PARTY_NAME_MAX_LENGTH + 1);
+    member[num_in_party].name[PARTY_NAME_MAX_LENGTH] = '\0'; // make sure name is terminated
     member[num_in_party].combat_position = 0;
 //    member[num_in_party].leader_x = member[0].actor->get_location().x;
 //    member[num_in_party].leader_y = member[0].actor->get_location().y;

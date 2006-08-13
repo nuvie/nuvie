@@ -35,6 +35,9 @@ class TileManager;
 class GameClock;
 class MapCoord;
 
+#define ACTOR_VEHICLE_ID_N 0
+#define ACTOR_AVATAR_ID_N  1
+
 class ActorManager
 {
  Configuration *config;

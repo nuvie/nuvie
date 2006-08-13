@@ -46,6 +46,9 @@ sint8 form_y; // relative position in front or in back of leader
               // (leader is at 0,0 in formation)
 };
 
+#define PARTY_MAX_MEMBERS 16
+#define PARTY_NAME_MAX_LENGTH 13
+
 /* party walking formations: */
 #define PARTY_FORM_STANDARD 0
 #define PARTY_FORM_COLUMN   1
@@ -81,7 +84,7 @@ class Party {
  Map *map;
  PartyPathFinder *pathfinder;
 
- PartyMember member[16];
+ PartyMember member[PARTY_MAX_MEMBERS];
  uint8 num_in_party; // number of party members.
  uint8 formation; // walking formation
  uint16 prev_leader_x; // last location of leader

@@ -379,15 +379,14 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
  else
    save_buf->write1(obj->quality);
 
+ obj->objblk_n = obj_save_count;
+ obj_save_count += 1;
+  
  if(obj->container)
   {
-   obj->objblk_n = obj_save_count;
-
    for(link = obj->container->end(); link != NULL; link=link->prev)
      save_obj(save_buf, (Obj *)link->data, obj);
   }
-
- obj_save_count += 1;
 
  return true;
 }
@@ -464,12 +463,16 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
  uint16 tile_num;
  bool check_tile;
  uint16 i,j;
-
+ uint16 next_x, next_y;
+ 
+ next_x = WRAPPED_COORD(x+1,level);
+ next_y = WRAPPED_COORD(y+1,level);
+ 
  for(j=y;j<=y+1;j++)
    {
     for(i=x;i<=x+1;i++)
       {
-       obj_list = get_obj_list(i,j,level);
+       obj_list = get_obj_list(WRAPPED_COORD(i,level), WRAPPED_COORD(j,level), level);
 
        if(obj_list != NULL)
          {
@@ -483,11 +486,11 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
 
              if(obj->x == x && obj->y == y)
                { check_tile = true; }
-             if(tile->dbl_width && obj->x == x+1 && obj->y == y)
+             if(tile->dbl_width && obj->x == next_x && obj->y == y)
                 { tile_num--; check_tile = true; }
-             if(tile->dbl_height && obj->x == x && obj->y == y+1)
+             if(tile->dbl_height && obj->x == x && obj->y == next_y)
                 { tile_num--; check_tile = true; }
-             if(obj->x == x+1 && obj->y == y+1 && tile->dbl_width && tile->dbl_height)
+             if(obj->x == next_x && obj->y == next_y && tile->dbl_width && tile->dbl_height)
                 { tile_num -= 2; check_tile = true; }
              if(check_tile)
                {

@@ -161,15 +161,15 @@ bool U6Actor::init_splitactor()
  obj_x = x;
  obj_y = y;
 
- switch(direction) //FIX for world wrapping
+ switch(direction)
   {
-   case NUVIE_DIR_N : obj_y = y+1;
+   case NUVIE_DIR_N : obj_y = WRAPPED_COORD(y+1,z);
                       break;
-   case NUVIE_DIR_E : obj_x = x-1;
+   case NUVIE_DIR_E : obj_x = WRAPPED_COORD(x-1,z);
                       break;
-   case NUVIE_DIR_S : obj_y = y-1;
+   case NUVIE_DIR_S : obj_y = WRAPPED_COORD(y-1,z);
                       break;
-   case NUVIE_DIR_W : obj_x = x+1;
+   case NUVIE_DIR_W : obj_x = WRAPPED_COORD(x+1,z);
                       break;
   }
 
@@ -522,72 +522,92 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
  ret = Actor::move(new_x,new_y,new_z,flags);
 
  if(ret == true)
-  {
+ {
    if(has_surrounding_objs())
-      move_surrounding_objs_relative(rel_x, rel_y);
-
-   Obj *obj = obj_manager->get_obj(new_x,new_y,new_z); // Ouch, we get obj in Actor::move() too :(
+     move_surrounding_objs_relative(rel_x, rel_y);
+   
+   Obj *obj = obj_manager->get_obj(new_x,new_y,new_z,false); // Ouch, we get obj in Actor::move() too :(
    if(obj)
+   {
+     if(actor_type->can_sit)
+       sit_on_chair(obj); // make the Actor sit if they are on top of a chair.
+     
+     switch(obj->obj_n)
      {
-      if(actor_type->can_sit)
-        {
-         sit_on_chair(obj); // make the Actor sit if they are on top of a chair.
-        }
-
-      if(obj->obj_n == OBJ_U6_FIRE_FIELD) // ouch
-        {
+       case OBJ_U6_FIRE_FIELD : 
+       {
          hit(5); // -?? hp?
          scroll->display_string("\n");
          scroll->display_prompt();
-        }
-      if(obj->obj_n == OBJ_U6_POISON_FIELD && !is_poisoned()) // ick
-        {
-         set_poisoned(true);
+         break;
+       }
          
-         if(in_party)
+       case OBJ_U6_POISON_FIELD :
+       {
+         if(!is_poisoned()) // ick
+         {
+           set_poisoned(true);
+           
+           if(in_party) //FIXME Should this be moved to set_poisoned?
            {
-            scroll->display_string(party->get_actor_name(party->get_member_num(this)));
-            scroll->display_string(" poisoned!\n\n");
-            scroll->display_prompt();
+             scroll->display_string(party->get_actor_name(party->get_member_num(this)));
+             scroll->display_string(" poisoned!\n\n");
+             scroll->display_prompt();
            }
-        }
-      if(obj->obj_n == OBJ_U6_SLEEP_FIELD) // Zzz
-        {
+         }
+         break;
+       }
+         
+       case OBJ_U6_SLEEP_FIELD :
+       {
          new HitEffect(this); // no hp loss
-         //fall asleep (change worktype?)
+                              //fall asleep (change worktype?)
          if(in_party)
-            scroll->message("Zzz...\n");
-        }
-
-      if(obj->obj_n == OBJ_U6_TRAP)
-        {
+           scroll->message("Zzz...\n");
+         break;
+       }
+         
+       case OBJ_U6_TRAP :
+       {
          hit(25); //FIXME find proper amount. share with U6UseCode::use_trap
          obj->status &= (0xff ^ OBJ_STATUS_INVISIBLE); //show trap. FIXME should this logic go else ware.
-        }
-
-      if(obj->obj_n == OBJ_U6_SPIKES)
-        {
+         
+         break;
+       }
+         
+       case OBJ_U6_SPIKES :
+       {
          hit(NUVIE_RAND()%8+1); // I think this is the proper amount. (SB-X)
-        }
-     }
+         break;
+       }
+        
+       case OBJ_U6_LOG_SAW :
+       {
+         hit(NUVIE_RAND()%31+1); //Ouch that hurts!
+         break;
+       }
 
-     // temp. fix; this too should be done with UseCode (and don't move the mirror)
-     if(old_pos.y > 0 && new_y > 0)
-     {
-         Obj *old_mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,old_pos.x,old_pos.y-1,old_pos.z);
-         Obj *mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,new_x,new_y-1,new_z);
-         if(old_mirror) old_mirror->frame_n = 0;
-         if(mirror)     mirror->frame_n = 1;
+       default : break;
      }
-
+   }
+   
+   // temp. fix; this too should be done with UseCode (and don't move the mirror)
+   if(old_pos.y > 0 && new_y > 0)
+   {
+     Obj *old_mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,old_pos.x,old_pos.y-1,old_pos.z);
+     Obj *mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,new_x,new_y-1,new_z);
+     if(old_mirror) old_mirror->frame_n = 0;
+     if(mirror)     mirror->frame_n = 1;
+   }
+   
    // Cyclops: shake ground if player is near
    if(actor_type->base_obj_n == OBJ_U6_CYCLOPS && is_nearby(player->get_actor()))
-      new QuakeEffect(1, 200, player->get_actor());
+     new QuakeEffect(1, 200, player->get_actor());
   }
 
  if(has_surrounding_objs()) //add our surrounding objects back onto the map.
    add_surrounding_objs_to_map();
-
+ 
  return ret;
 }
 
@@ -672,8 +692,9 @@ bool U6Actor::sit_on_chair(Obj *obj)
             can_move = false;
             return true;
            }
-
-         if(obj->obj_n == OBJ_U6_THRONE  && obj->frame_n == 3) //make actor sit on LB's throne.
+     
+         //make actor sit on LB's throne.
+         if(obj->obj_n == OBJ_U6_THRONE  && obj->x != x) //throne is a double width obj. We only it on the left tile.
            {
             frame_n = 8 + 3; //sitting facing south.
             direction = NUVIE_DIR_S;
@@ -719,18 +740,46 @@ const CombatType *U6Actor::get_hand_combat_type()
 bool U6Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)
 {
  sint16 off_x, off_y;
-
+ uint16 map_pitch = map->get_width(z);
+	
  if(!weapon)
    return false;
 
- off_x = x - target_x;
- off_y = y - target_y;
+ if(weapon->hit_range == 0)
+   return true;
+ 
+ if(target_x <= x)
+	 off_x = x - target_x;
+ else //target_x > x
+ {
+	 if(target_x - x < 5) //small positive offset
+		 off_x = target_x - x;
+	 else // target wrapped around the map.
+	 {
+		 if(map_pitch - target_x + x < 11)
+			 off_x = target_x - map_pitch - x; //negative offset
+		 else
+			 return false; // x out of range
+	 }
+ }
+
+ if(target_y <= y)
+	 off_y = y - target_y;
+	else //target_y > y
+	{
+		if(target_y - y < 5) //small positive offset
+			off_y = target_y - y;
+		else // target wrapped around the map.
+		{
+			if(map_pitch - target_y + y < 11)
+				off_y = target_y - map_pitch - y; //negative offset
+			else
+				return false; // y out of range
+		}
+	}
  
  if(abs(off_x) > 5 || abs(off_y) > 5)
    return false;
-  
- if(weapon->hit_range == 0)
-   return true;
 
  return (bool)u6combat_hitrange_tbl[weapon->hit_range - 1][(5 + off_y) * 11 + (5 + off_x)];
 }
@@ -1284,18 +1333,20 @@ inline void U6Actor::add_surrounding_objs_to_map()
 
 inline void U6Actor::move_surrounding_objs_relative(sint16 rel_x, sint16 rel_y)
 {
- std::list<Obj *>::iterator obj;
- 
+ std::list<Obj *>::iterator obj_iter;
+ Obj *obj;
+
  if(obj_n == OBJ_U6_SILVER_SERPENT)
   {
    move_silver_serpent_objs_relative(rel_x, rel_y);
   }
  else
   { 
-   for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
+   for(obj_iter = surrounding_objects.begin(); obj_iter != surrounding_objects.end(); obj_iter++)
     {
-      (*obj)->x += rel_x;
-      (*obj)->y += rel_y;
+		  obj = *obj_iter;
+      obj->x = WRAPPED_COORD(obj->x + rel_x,z);
+      obj->y = WRAPPED_COORD(obj->y + rel_y,z);
     }
   }
 

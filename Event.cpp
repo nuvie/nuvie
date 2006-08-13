@@ -614,8 +614,8 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
  switch(mode)
   {
    case ATTACK_MODE     : cursor_coord = map_window->get_cursorCoord();
-                          cursor_coord.x += rel_x;
-                          cursor_coord.y += rel_y;
+                          cursor_coord.x = WRAPPED_COORD(cursor_coord.x + rel_x,cursor_coord.z);
+                          cursor_coord.y = WRAPPED_COORD(cursor_coord.y + rel_y,cursor_coord.z);
                           if(player->weapon_can_hit(cursor_coord.x, cursor_coord.y) == false)
                             break;
                           printf("attack select(%d,%d)\n", cursor_coord.x, cursor_coord.y); //FIX need to contrain movement here for weapon range.

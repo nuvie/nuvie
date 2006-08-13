@@ -36,6 +36,7 @@
 #include "UseCode.h"
 
 #include "InventoryFont.h"
+#include "ViewManager.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define ACTION_BUTTON 3
@@ -83,6 +84,16 @@ void InventoryWidget::set_actor(Actor *a)
  actor = a;
  container_obj = NULL;
  Redraw();
+}
+
+void InventoryWidget::set_prev_container()
+{
+  if(!container_obj)
+    return;
+  
+  set_container(container_obj->parent_obj);
+  
+  return;
 }
 
 void InventoryWidget::Display(bool full_redraw)
@@ -226,7 +237,15 @@ void InventoryWidget::display_arrows()
 {
  uint32 num_objects;
 
- num_objects = actor->inventory_count_objects(false);
+ if(is_showing_container())
+ {
+	 if(container_obj->container)
+		 num_objects = container_obj->container->count();
+	 else
+		 num_objects = 0;
+ }
+ else
+	 num_objects = actor->inventory_count_objects(false);
 
  if(num_objects <= 12) //reset row_offset if we only have one page of objects
    row_offset = 0;
@@ -316,7 +335,11 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
     if(x >= 32 && x <= 48 && // hit top icon either actor or container
        y >= 0 && y <= 16)
       {
-       container_obj = NULL; //return to main Actor inventory
+			 if(is_showing_container())
+				 set_prev_container(); //return to previous container or main actor inventory
+			 else
+				 Game::get_game()->get_view_manager()->set_party_mode();
+
        Redraw();
       }
 

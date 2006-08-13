@@ -23,11 +23,30 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
- 
+
+#define OBJLIST_OFFSET_PARTY_NAMES     0xf00
+#define OBJLIST_OFFSET_PARTY_ROSTER    0xfe0
+#define OBJLIST_OFFSET_NUM_IN_PARTY    0xff0
+
 //U6 specific offsets
-#define OBJLIST_OFFSET_U6_WIND_DIR    0x1bfa
-#define OBJLIST_OFFSET_U6_ECLIPSE     0x1c12
-#define OBJLIST_OFFSET_U6_COMBAT_MODE 0x1c69
+
+#define OBJLIST_OFFSET_U6_QUEST_FLAG   0x1bf1
+#define OBJLIST_OFFSET_U6_KARMA        0x1bf9
+
+#define OBJLIST_OFFSET_U6_WIND_DIR     0x1bfa
+#define OBJLIST_OFFSET_U6_ECLIPSE      0x1c12
+#define OBJLIST_OFFSET_U6_ALCOHOL      0x1c17
+#define OBJLIST_OFFSET_U6_GARGISH_LANG 0x1c5f
+
+#define OBJLIST_OFFSET_U6_COMBAT_MODE  0x1c69
+#define OBJLIST_OFFSET_U6_SOLO_MODE    0x1c6a
+#define OBJLIST_OFFSET_U6_GENDER       0x1c71
+
+//MD specific offsets
+
+#define OBJLIST_OFFSET_MD_GENDER       0x1d27
+
+#define OBJLIST_PARTY_MODE 0xff
 
 //u6 wind direction
 #define OBJLIST_U6_WIND_DIR_N  0

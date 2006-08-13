@@ -953,6 +953,8 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, sint16 fade_to)
         if(x >= overlay->w) x = overlay->w-1; // prevent overflow if fade_from is too big
         if(y >= overlay->h) y = overlay->h-1;
         rnum = y*overlay->w + x;
+//ERIC        rnum = y*overlay->pitch + x;
+				
         if(fade_to == -1) // get color from "fade_from"
         {
             x -= fade_x; y -= fade_y;

@@ -898,6 +898,10 @@ void MapWindow::generateTmpMap()
    x = last_boundary_fill_x;
    y = last_boundary_fill_y;
   }
+ 
+ WRAP_COORD(x,cur_level);
+ WRAP_COORD(y,cur_level);
+ 
  //This is for U6. Sherry needs to pass through walls
  //We shift the boundary fill start location off the wall tile so it flood
  //fills correctly. We move east for vertical wall tiles and south for
@@ -906,9 +910,9 @@ void MapWindow::generateTmpMap()
   {
    tile = obj_manager->get_obj_tile(x, y, cur_level, false);
    if((tile->flags1 & TILEFLAG_WALL_MASK) == (TILEFLAG_WALL_NORTH | TILEFLAG_WALL_SOUTH))
-     x++;
+     x = WRAPPED_COORD(x + 1, cur_level);
    else
-     y++;
+     y = WRAPPED_COORD(y + 1, cur_level);
   }
  last_boundary_fill_x = x; last_boundary_fill_y = y;
  boundaryFill(map_ptr, pitch, x, y);
@@ -921,14 +925,28 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  unsigned char current;
  uint16 *ptr;
  uint16 pos;
-
- if((x < cur_x - 1) || (x >= (cur_x-1) + tmp_map_width) || x >= pitch)
+ uint16 p_cur_x, p_cur_y; //wrapped cur_x - 1 and wrapped cur_y - 1
+ 
+ p_cur_x = WRAPPED_COORD(cur_x - 1,cur_level);
+ p_cur_y = WRAPPED_COORD(cur_y - 1,cur_level);
+	
+ if(x == WRAPPED_COORD(p_cur_x - 1, cur_level) || x == WRAPPED_COORD(p_cur_x + tmp_map_width, cur_level))
    return;
 
- if((y < cur_y - 1) || (y >= (cur_y-1) + tmp_map_height) || y >= pitch)
+ if(y == WRAPPED_COORD(p_cur_y - 1, cur_level) || y == WRAPPED_COORD(p_cur_y + tmp_map_height, cur_level))
    return;
-
- pos = (y - (cur_y-1)) * tmp_map_width + (x - (cur_x-1));
+ 
+ if(p_cur_y > y)
+	 pos = pitch - p_cur_y + y;
+ else
+	 pos = y - p_cur_y;
+ 
+ pos *= tmp_map_width;
+ 
+ if(p_cur_x > x)
+	 pos += pitch - p_cur_x + x;
+	else
+		pos += x - p_cur_x;
 
  ptr = &tmp_map_buf[pos];
 
@@ -945,14 +963,23 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
       return;
   }
 
- boundaryFill(map_ptr, pitch, x+1, y);
- boundaryFill(map_ptr, pitch, x, y+1);
- boundaryFill(map_ptr, pitch, x+1, y+1);
- boundaryFill(map_ptr, pitch, x-1, y-1);
- boundaryFill(map_ptr, pitch, x-1, y);
- boundaryFill(map_ptr, pitch, x, y-1);
- boundaryFill(map_ptr, pitch, x+1, y-1);
- boundaryFill(map_ptr, pitch, x-1, y+1);
+ uint16 xp1,xm1;
+ uint16 yp1,ym1;
+ 
+ xp1 = WRAPPED_COORD(x+1,cur_level);
+ xm1 = WRAPPED_COORD(x-1,cur_level);
+
+ yp1 = WRAPPED_COORD(y+1,cur_level);
+ ym1 = WRAPPED_COORD(y-1,cur_level);
+ 
+ boundaryFill(map_ptr, pitch, xp1,   y);
+ boundaryFill(map_ptr, pitch,   x, yp1);
+ boundaryFill(map_ptr, pitch, xp1, yp1);
+ boundaryFill(map_ptr, pitch, xm1, ym1);
+ boundaryFill(map_ptr, pitch, xm1,   y);
+ boundaryFill(map_ptr, pitch,   x, ym1);
+ boundaryFill(map_ptr, pitch, xp1, ym1);
+ boundaryFill(map_ptr, pitch, xm1, yp1);
 
 
  return;
@@ -985,13 +1012,13 @@ bool MapWindow::boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y)
 
  if(a_x == x)
    {
-    if(a_y == y - 1 || a_y == y + 1)
+    if(a_y == WRAPPED_COORD(y - 1,cur_level) || a_y == WRAPPED_COORD(y + 1,cur_level))
       return true;
    }
 
  if(a_y == y)
    {
-    if(a_x == x - 1 || a_x == x + 1)
+    if(a_x == WRAPPED_COORD(x - 1,cur_level) || a_x == WRAPPED_COORD(x + 1,cur_level))
        return true;
    }
 
@@ -1117,7 +1144,7 @@ bool MapWindow::tmpBufTileIsBoundary(uint16 x, uint16 y)
  if(tile->boundary)
    return true;
 
- if(obj_manager->is_boundary(cur_x-1+x, cur_y-1+y, cur_level))
+ if(obj_manager->is_boundary(WRAPPED_COORD(cur_x-1+x, cur_level), WRAPPED_COORD(cur_y-1+y, cur_level), cur_level))
    return true;
 
  return false;
@@ -1153,7 +1180,7 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
 // if(obj_manager->is_boundary(cur_x-1+x, cur_y-1+y, cur_level))
 //  return true;
 
- tile = obj_manager->get_obj_tile(cur_x-1+x, cur_y-1+y, cur_level, false);
+ tile = obj_manager->get_obj_tile(WRAPPED_COORD(cur_x+x-1, cur_level), WRAPPED_COORD(cur_y+y-1, cur_level), cur_level, false);
  if(tile != NULL)
    {
     if(tile->flags2 & TILEFLAG_BOUNDARY)

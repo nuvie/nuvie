@@ -1,3 +1,35 @@
+2006-08-14  Eric Fry <efry at users.sourceforge.net>
+	* More work done on map wrapping. You should be able to cross over the
+	  ether in a balloon now. More work still needs to be done on wrapping.
+	* Fixed bug while saving nested containers. A container in a container
+	  wasn't saving properly. This was because we weren't incrementing
+	  the object count before saving the container items.
+	* Removed some more magic numbers from Party. Added more objlist offset
+	  defines.
+	* Changed they way we check for in vehicle status when loading the
+	  Party class. We now check for the player worktype(0x2) on the vehicle
+	  actor(0).
+	* Set actor to worktype 0x2 when selected as the player actor.
+	* Fixed bug when loading a save game in vehicle. We weren't making the
+	  vehicle actor the player when loading because it wasn't deemed to be
+	  in the party. We now add it as the player if party is set to
+	  in_vehicle.
+	* Removed duplicate OBJ_U6_TANGLE_VINE_POD define.
+	* Changed the search order when looking for seats/dangerous objects in
+	  U6Actor::move() to fix a bug when sitting on stools. Hopefuly this 
+	  doesn't break anything.
+	* Fixed bug when sitting on LB's throne. You could sit on the tile next
+	  to the actual seat. This was because the throne obj is a double width
+	  obj. restricted seat to left tile.
+	* Changed U6Actor::move() obj check from if's to a switch statement.
+	* Added log saw as a dangerous object in U6Actor::move() stepping
+	  on this object will cause the actor to be hit for up to 32 points.
+	* Selecting the actor tile in the inventory widget shows the party view
+	* Returning from a container nolonger jumps back to the top level
+	  inventory. Added InventoryWidget::set_prev_container() which shows
+	  the parent object when returning from a container.
+	* Reset the InventoryWidget to the top when returning from a container.
+	
 2006-08-11  Pieter Luteijn <luteijn at users.sourceforge.net>
         * cleaned(?) up confusion with on_map, in_inventory, in_container,
 	 equipped status 'flags' as these are mutually exclusive, so use a 2

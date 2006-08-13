@@ -559,7 +559,11 @@ void InventoryView::select_objAtCursor()
     }
     else if(cursor_pos.area == INVAREA_TOP)
     {
-        inventory_widget->set_container(NULL);
+				if(inventory_widget->is_showing_container())
+					inventory_widget->set_prev_container();
+				else
+					Game::get_game()->get_view_manager()->set_party_mode();
+
         return;
     }
 

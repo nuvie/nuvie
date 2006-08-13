@@ -33,6 +33,7 @@
 #include "GameClock.h"
 #include "MsgScroll.h"
 #include "Party.h"
+#include "Objlist.h"
 #include "U6objects.h"
 #include "Player.h"
 
@@ -74,7 +75,7 @@ void Player::init()
 
 bool Player::load(NuvieIO *objlist)
 {
- uint8 solo_member_num = 0xff;
+ uint8 solo_member_num = OBJLIST_PARTY_MODE;
 
  init();
 
@@ -85,32 +86,32 @@ bool Player::load(NuvieIO *objlist)
 
  if(game_type == NUVIE_GAME_U6)
    {
-    objlist->seek(0x1bf1); // U6 Quest Flag
+    objlist->seek(OBJLIST_OFFSET_U6_QUEST_FLAG); // U6 Quest Flag
     questf = objlist->read1();
 
-    objlist->seek(0x1bf9); // Player Karma.
+    objlist->seek(OBJLIST_OFFSET_U6_KARMA); // Player Karma.
     karma = objlist->read1();
 
-    objlist->seek(0x1c17); // Alcohol consumed
+    objlist->seek(OBJLIST_OFFSET_U6_ALCOHOL); // Alcohol consumed
     alcohol = objlist->read1();
 
-    objlist->seek(0x1c5f); // U6 Gargish Flag
+    objlist->seek(OBJLIST_OFFSET_U6_GARGISH_LANG); // U6 Gargish Flag
     gargishf = objlist->read1();
 
-    objlist->seek(0x1c71); // Player Gender.
-    gender = objlist->read1();
-
-    objlist->seek(0x1c6a); //Party Mode = 0xff other wise it is solo mode party member number starting from 0.
+    objlist->seek(OBJLIST_OFFSET_U6_SOLO_MODE); //Party Mode = 0xff other wise it is solo mode party member number starting from 0.
     solo_member_num = objlist->read1();
+    
+    objlist->seek(OBJLIST_OFFSET_U6_GENDER); // Player Gender.
+    gender = objlist->read1();
    }
 
  if(game_type == NUVIE_GAME_MD)
    {
-    objlist->seek(0x1d27); // Player Gender.
+    objlist->seek(OBJLIST_OFFSET_MD_GENDER); // Player Gender.
     gender = objlist->read1();
    }
 
- if(solo_member_num == 0xff)
+ if(solo_member_num == OBJLIST_PARTY_MODE)
    {
     party_mode = true;
     set_party_mode(find_actor());
@@ -125,31 +126,31 @@ bool Player::save(NuvieIO *objlist)
 {
  if(game_type == NUVIE_GAME_U6)
    {
-    objlist->seek(0x1bf1); // U6 Quest Flag
+    objlist->seek(OBJLIST_OFFSET_U6_QUEST_FLAG); // U6 Quest Flag
     objlist->write1(questf);
 
-    objlist->seek(0x1bf9); // Player Karma.
+    objlist->seek(OBJLIST_OFFSET_U6_KARMA); // Player Karma.
     objlist->write1(karma);
 
-    objlist->seek(0x1c17); // Alcohol consumed
+    objlist->seek(OBJLIST_OFFSET_U6_ALCOHOL); // Alcohol consumed
     objlist->write1(alcohol);
 
-    objlist->seek(0x1c5f); // U6 Gargish Flag
+    objlist->seek(OBJLIST_OFFSET_U6_GARGISH_LANG); // U6 Gargish Flag
     objlist->write1(gargishf);
 
-    objlist->seek(0x1c71); // Player Gender.
-    objlist->write1(gender);
-
-    objlist->seek(0x1c6a); // solo member num.
+    objlist->seek(OBJLIST_OFFSET_U6_SOLO_MODE); // solo member num.
     if(party_mode)
-      objlist->write1(0xff); // 0xff = party mode
+      objlist->write1(OBJLIST_PARTY_MODE); // 0xff
     else
       objlist->write1(party->get_member_num(actor)); //write the party member number of the solo actor
+    
+    objlist->seek(OBJLIST_OFFSET_U6_GENDER); // Player Gender.
+    objlist->write1(gender);
    }
 
  if(game_type == NUVIE_GAME_MD)
    {
-    objlist->seek(0x1d27); // Player Gender.
+    objlist->seek(OBJLIST_OFFSET_MD_GENDER); // Player Gender.
     objlist->write1(gender);
    }
 
@@ -164,7 +165,7 @@ Actor *Player::find_actor()
         if(actor->get_worktype() == 0x02) // WT_U6_PLAYER
             return(actor);
     }
-    return(actor_manager->get_actor(1));
+    return(actor_manager->get_actor(ACTOR_AVATAR_ID_N));
 }
 
 
@@ -187,7 +188,19 @@ void Player::set_mapwindow_centered(bool state)
 void Player::set_actor(Actor *new_actor)
 {
     MsgScroll *scroll = Game::get_game()->get_scroll();
+    
+    if(actor != NULL)
+    {
+      if(party->contains_actor(actor))
+        actor->set_worktype(0x01); //WT_U6_IN_PARTY
+      else
+        actor->set_worktype(0x00); //no worktype
+    }
+
     actor = new_actor;
+
+    actor->set_worktype(0x02); // WT_U6_PLAYER
+    
     actor_manager->set_player(actor);
     std::string prompt = actor->get_name();
     prompt += ":\n>";
@@ -349,7 +362,7 @@ void Player::pass()
  */
 bool Player::set_party_mode(Actor *new_actor)
 {
-    if(party->contains_actor(new_actor))
+    if(party->contains_actor(new_actor) || party->is_in_vehicle())
     {
         party_mode = true;
         set_actor(new_actor);

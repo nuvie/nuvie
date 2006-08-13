@@ -58,7 +58,7 @@
 #define OBJ_U6_ARROW                55
 #define OBJ_U6_BOLT                 56
 #define OBJ_U6_SPELLBOOK            57
-#define OBJ_U6_SPELL	            58
+#define OBJ_U6_SPELL                58
 
 #define OBJ_U6_CODEX                59
 #define OBJ_U6_VORTEX_CUBE          62
@@ -232,6 +232,7 @@
 #define OBJ_U6_FENCE               281
 #define OBJ_U6_ROPE                284
 #define OBJ_U6_CRANK               288
+#define OBJ_U6_LOG_SAW             289 
 #define OBJ_U6_CHAIN               293
 
 #define OBJ_U6_XYLOPHONE           296
@@ -291,16 +292,15 @@
 #define OBJ_U6_GARGOYLE            363
 #define OBJ_U6_ACID_SLUG           364
 #define OBJ_U6_TANGLE_VINE_POD     365
-#define OBJ_U6_DAEMON              367
-#define OBJ_U6_TANGLE_VINE_POD     365
 #define OBJ_U6_TANGLE_VINE         366
+#define OBJ_U6_DAEMON              367
 #define OBJ_U6_SKELETON            368
 #define OBJ_U6_DRAKE               369
 #define OBJ_U6_HEADLESS            370
 #define OBJ_U6_TROLL               371
 #define OBJ_U6_MONGBAT             372
 #define OBJ_U6_WISP                373
-#define OBJ_U6_HYDRA			   374
+#define OBJ_U6_HYDRA               374
 
 #define OBJ_U6_FIGHTER             376
 #define OBJ_U6_SWASHBUCKLER        377
