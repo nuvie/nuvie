@@ -752,22 +752,25 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
  if(container) // assumes actor is holding the container
  {
    add_to = container->container;
-   obj->status |= OBJ_STATUS_IN_CONTAINER;
-   obj->x = container->objblk_n;
+   /* obj->status |= OBJ_STATUS_IN_CONTAINER; */ // luteijn: don't manipulate this directly!
+   obj->in_container(); 
+   obj->parent_obj = container;
+   obj->x = container->objblk_n; // luteijn: I think this should only be done when saving..
 
-   if(obj->status & OBJ_STATUS_IN_INVENTORY)
-     obj->status ^= OBJ_STATUS_IN_CONTAINER;
+   /* if(obj->status & OBJ_STATUS_IN_INVENTORY)
+     obj->status ^= OBJ_STATUS_IN_CONTAINER; */ // luteijn: won't happen anymore as using in_container() now
  }
  else
  {
    // only objects outside containers are marked in_inventory
-   obj->status |= OBJ_STATUS_IN_INVENTORY;
+   /* obj->status |= OBJ_STATUS_IN_INVENTORY; */ // luteijn: don't manipulate this directly!
+   obj->in_inventory();
    obj->x = id_n;
 
-   if(obj->status & OBJ_STATUS_IN_CONTAINER)
-     obj->status ^= OBJ_STATUS_IN_CONTAINER;
+   /* if(obj->status & OBJ_STATUS_IN_CONTAINER)
+     obj->status ^= OBJ_STATUS_IN_CONTAINER; */ // luteijn: won't happen anymore as using in_container() now
 
-   if(obj->status & OBJ_STATUS_LIT) // light up actor
+   if(obj->is_lit()) // light up actor
      add_light(TORCH_LIGHT_LEVEL);
  }
  return obj_manager->list_add_obj(add_to, obj, stack);

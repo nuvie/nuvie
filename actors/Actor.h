@@ -107,8 +107,12 @@ typedef enum { ATTACK_TYPE_NONE, ATTACK_TYPE_HAND, ATTACK_TYPE_THROWN, ATTACK_TY
 typedef struct {
 uint16 obj_n;
 
-uint8 defence;
-uint8 attack;
+union { uint8 defence;
+        uint8 defense;
+};
+union {uint8 attack;
+       uint8 damage;
+};
 
 uint16 hit_range;
 AttackType attack_type; 

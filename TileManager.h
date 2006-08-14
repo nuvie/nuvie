@@ -49,15 +49,24 @@ class Look;
 #define TILEFLAG_WATER    0x1
 
 //flags2
-#define TILEFLAG_BOUNDARY         0x4
-#define TILEFLAG_WINDOW           0x8
-#define TILEFLAG_MISSILE_BOUNDARY  0x20
-#define TILEFLAG_DOUBLE_HEIGHT    0x40
 #define TILEFLAG_DOUBLE_WIDTH     0x80
+#define TILEFLAG_DOUBLE_HEIGHT    0x40
+#define TILEFLAG_MISSILE_BOUNDARY 0x20
+#define TILEFLAG_TOPTILE          0x10
+#define TILEFLAG_WINDOW           0x8
+#define TILEFLAG_BOUNDARY         0x4
+#define TILEFLAG_LIGHT_MSB        0x2 
+#define TILEFLAG_LIGHT_LSB        0x1
 
 //flags3
-#define TILEFLAG_CAN_PLACE_ONTOP 0x2
+#define TILEFLAG_ARTICLE_MSB     0x80 // 00 01 10 11
+#define TILEFLAG_ARTICLE_LSB     0x40 // -  a  an the
+#define TILEFLAG_UNKNOWN_3_5     0x20
+#define TILEFLAG_UNKNOWN_3_4     0x10 
+#define TILEFLAG_UNKNOWN_3_3     0x8 // Flammable? Mostly_non_metal_object (not affected by acid-slug)?
 #define TILEFLAG_FORCED_PASSABLE 0x4
+#define TILEFLAG_CAN_PLACE_ONTOP 0x2
+#define TILEFLAG_UNKNOWN_LAVA    0x1 // associated with some lava tiles
 
 // FIXME These should probably go else where.
 #define TILE_U6_DIRECTION_CURSOR  364
@@ -69,7 +78,7 @@ class Look;
 #define TILE_U6_BLUE_MAGIC  383
 #define TILE_U6_LIGHTNING   392
 #define TILE_U6_FIREBALL    393
-#define TILE_U6_SOME_KIND_OF_BLUE_FIELD 394
+#define TILE_U6_SOME_KIND_OF_BLUE_FIELD 394 // ghost's outline for casting/going invis
 #define TILE_U6_IS_THIS_AN_ICE_SHOT 395
 #define TILE_U6_KILL_SHOT   396
 #define TILE_U6_FIRE_SHOT   397

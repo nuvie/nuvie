@@ -31,8 +31,10 @@
 #include "ObjManager.h"
 #include "UseCode.h"
 #include "U6misc.h"
+#include "U6objects.h"
 #include "U6LList.h"
 #include "NuvieIOFile.h"
+#include "Game.h"
 
 static const int obj_egg_table[4] = {0,   // NUVIE_GAME_NONE
                                      335, // NUVIE_GAME_U6
@@ -114,7 +116,7 @@ bool ObjManager::load_basetile()
    {
     obj_to_tile[i] = basetile.read2();
     obj_stackable[i] = (uint8)tile_manager->tile_is_stackable(obj_to_tile[i]);
-   }
+   } // FIXME: tile_manager's tile_is_stackable is incorrect for (at least) Zu Ylem, silver snake venom.
 
  return true;
 }
@@ -647,6 +649,28 @@ bool ObjManager::is_stackable(Obj *obj)
  return (bool)obj_stackable[obj->obj_n];
 }
 
+bool ObjManager::has_reduced_weight(Obj *obj)
+{
+  // FIXME: HERE BE HARDCODED VALUES! FIXME: not sure if this list is complete!
+  if (game_type==NUVIE_GAME_U6) // luteijn: I only know about U6...
+  {
+    if (   (obj->obj_n == OBJ_U6_GOLD) 
+	|| (obj->obj_n == OBJ_U6_BLACK_PEARL) // not using range because don't want to depend on underlying magic numbers relations
+	|| (obj->obj_n == OBJ_U6_BLOOD_MOSS) 
+	|| (obj->obj_n == OBJ_U6_GARLIC) 
+	|| (obj->obj_n == OBJ_U6_GINSENG) 
+	|| (obj->obj_n == OBJ_U6_MANDRAKE_ROOT) 
+	|| (obj->obj_n == OBJ_U6_NIGHTSHADE) 
+	|| (obj->obj_n == OBJ_U6_SPIDER_SILK) 
+	|| (obj->obj_n == OBJ_U6_SULFUROUS_ASH) 
+       )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool ObjManager::has_toptile(Obj *obj)
 {
  Tile *tile;
@@ -956,17 +980,28 @@ float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool sc
  weight = obj_weight[obj->obj_n];
 
  if(is_stackable(obj))
-   { weight *= obj->qty; weight /= 10; }
+ {
+   weight *= obj->qty; 
+   /* luteijn: only some need to be divided by an extra 10 for a total of 100.
+    * unfortunately can't seem to find a tileflag that controls this so would have to be hardcoded!
+    */
+   if (has_reduced_weight(obj))
+   {
+     weight /= 10; // luteijn: regardless of the scaling flag!
+   }
+ }
 
- //weight /= 10;
- if(obj->container != NULL && include_container_items == true)
+ if(obj->container != NULL && include_container_items == OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS)
    {
     for(link=obj->container->start();link != NULL;link=link->next)
-      weight += get_obj_weight(reinterpret_cast<Obj*>(link->data), false); //don't scale container objects yet.
+      /* weight += get_obj_weight(reinterpret_cast<Obj*>(link->data), false);*/ //don't scale container objects yet.
+      weight += get_obj_weight(reinterpret_cast<Obj*>(link->data), OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, OBJ_WEIGHT_DONT_SCALE); //don't scale container objects yet. luteijn: and use the right flag to do so!
    }
 
- if(scale)
+ if(scale == OBJ_WEIGHT_DO_SCALE)
+ {  
    weight /= 10;
+ }
 
  return weight;
 }
@@ -1406,6 +1441,7 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
 {
  U6Link *link;
  Obj *container_obj;
+ const CombatType *c_type=Game::get_game()->get_player()->get_actor()->get_object_combat_type(obj->obj_n);
 
  printf("\n");
  print_indent(indent);
@@ -1473,6 +1509,10 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  printf("Quantity: %d\n",obj->qty);
  print_indent(indent);
  printf("Quality: %d\n",obj->quality);
+ if(c_type!=NULL)
+  {
+   printf("attack/damage = %d, defence/defense = %d\n", c_type->damage, c_type->defense); // FIXME add the rest of the combat values
+  }
 
  if(obj->container)
    {

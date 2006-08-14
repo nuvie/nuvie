@@ -51,6 +51,8 @@
 #include "U6ObjectTypes.h"
 #include "U6WorkTypes.h"
 
+#include <math.h> // floorf (used in part which I think ought to be moved out of here)
+
 #define MESG_ANIM_HIT_WORLD  ANIM_CB_HIT_WORLD
 #define MESG_ANIM_HIT        ANIM_CB_HIT
 #define MESG_TEXT_READY      MSGSCROLL_CB_TEXT_READY
@@ -2496,7 +2498,30 @@ bool U6UseCode::use_spellbook(Obj *obj, UseCodeEvent ev)
   else
     if(ev == USE_EVENT_LOOK)
   {
-    /* TODO open spellbook for reading */
+    // FIXME: Ripped from Event.cpp, duplicating code!! Make this part a separate function.
+    float weight = obj_manager->get_obj_weight(obj,OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
+    std::string desc;
+    char out_string[48];
+    weight = floorf(weight); //get rid of the tiny fraction
+    weight /= 10; //now scale.
+
+    /* if(weight != 0)
+    {
+      if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
+	desc = ". They weigh";
+      else */ // doesn't apply
+	desc = ". It weighs";
+
+      snprintf(out_string,31," %0.1f stones",weight);
+      desc += out_string;
+      // some more non applicable stuff skipped here,
+      desc += ".";
+      scroll->display_string(desc);
+      scroll->display_string("\n");
+    /*}*/ // from the commented out if.
+    // end ripped coode
+    /* TODO open spellbook for reading (FIXME: check original, read only if wielded?) */
+
   }
   return(true);
 }

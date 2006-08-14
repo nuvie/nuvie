@@ -66,6 +66,9 @@ class NuvieIO;
 #define OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS true
 #define OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS false
 
+#define OBJ_WEIGHT_DO_SCALE true
+#define OBJ_WEIGHT_DONT_SCALE false
+
 #define OBJ_ADD_TOP true
 
 #define OBJ_TEMP_INIT 255 // this is used to stop temporary objects from being cleaned upon startup.
@@ -196,6 +199,7 @@ class ObjManager
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  bool is_forced_passable(uint16 x, uint16 y, uint8 level);
  bool is_stackable(Obj *obj);
+ bool has_reduced_weight(Obj *obj);
  bool is_held(Obj *obj);
  bool has_toptile(Obj *obj);
 

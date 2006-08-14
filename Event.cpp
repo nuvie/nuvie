@@ -59,6 +59,8 @@
 #include "GUI.h"
 #include "GUI_YesNoDialog.h"
 
+#include <math.h>
+
 Event::Event(Configuration *cfg)
 {
  config = cfg;
@@ -693,7 +695,7 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
                 {
                     scroll->display_string("\n\nStealing!!!"); // or "Stop Thief!!!"
                     player->subtract_karma();
-                    obj->status |= OBJ_STATUS_OK_TO_TAKE;
+		    /* obj->status |= OBJ_STATUS_OK_TO_TAKE; */ // duplicated in inventory_add_object. 
                 }
                 obj_manager->remove_obj(obj); //remove object from map.
 
@@ -925,11 +927,21 @@ bool Event::look(Obj *obj)
     float weight=0.0;
     uint8 damage=0,defense=0;
     bool special_desc = false;
+    const CombatType * c_type;
+    
+    c_type=player->get_actor()->get_object_combat_type(obj->obj_n);
+    if (c_type!=NULL) 
+    {
+      damage=c_type->damage; // FIXME: spelling issue.. attack/damage, defence/defense
+      defense=c_type->defense; // FIXME: spelling issue solved by union.
+    }
 
     if(mode == WAIT_MODE)
         return(false);
 
     obj_manager->print_obj(obj, false); // DEBUG
+
+    
     scroll->display_string("Thou dost see ");
     scroll->display_string(obj_manager->look_obj(obj, true));
 
@@ -947,7 +959,10 @@ bool Event::look(Obj *obj)
     }
     else
     {
-        weight = obj_manager->get_obj_weight(obj);
+        weight = obj_manager->get_obj_weight(obj,OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
+	weight = floorf(weight); //get rid of the tiny fraction
+	weight /= 10; //now scale.
+
         if(weight != 0)
         {
             if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
@@ -958,19 +973,22 @@ bool Event::look(Obj *obj)
             snprintf(out_string,31," %0.1f stones",weight);
             desc += out_string;
         }
-        if(damage != 0)
-        {
+	if(damage != 0)
+	{
             if(weight != 0) desc += " and";
             else            desc += ". It";
-            snprintf(out_string,31," can do %d point\\s of damage",damage);
+            snprintf(out_string,31," can do %d point%s of damage",damage,damage==1?"":"s");
             desc += out_string;
-            if(defense != 0)
-            {
-                snprintf(out_string,31," and can absorb %d point\\s of damage",defense);
-                desc += out_string;
-            }
-        }
+	}
+	if(defense != 0)
+	{
+	  if((weight != 0) || (damage != 0)) desc += " and";
+	  else            desc += ". It";
+	  snprintf(out_string,33," can absorb %d point%s of damage",defense,defense==1?"":"s"); // 31 was to short.
+	  desc += out_string;
+	}
 
+	desc += ".";
         scroll->display_string(desc);
         scroll->display_string("\n");
         return(true);

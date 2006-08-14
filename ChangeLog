@@ -1,3 +1,101 @@
+2006-08-11  Pieter Luteijn <luteijn at users.sourceforge.net>
+	* Bug in adding up weights of contained objects in a container, the
+	  recursive call was setting the wrong flag (include containers was
+	  set to false, scale was not set so defaulted to true). Also added 
+	  some defines to hide the 'magic numbers'
+	* When checking if container weights were now the same as in the
+	  original I found bugs in ObjManager::get_obj_weight() and related
+	  stuff.
+  
+	  The original: 
+	   Thou dost see 1 torch. It weighs 0.5 stones.
+	   Thou dost see 5 torches. They weigh 2.5 stones.
+	   Thou dost see 8 portions of meat. They weigh 1.6 stones.
+	   Thou dost see 20 gold coins. They weigh 0.2 stones.
+	   Thou dost see 1 gold coin.
+	   Thou dost see 10 bits of sulfurous ash. They weigh 0.1 stones.
+	   Thou dost see 9 bits of sulfurous ash.
+	   Thou dost see 1 bit of sulfurous ash.
+	   Thou dost see 10 silver snake venom. They weigh 5.0 stones.
+	   
+	  Nuvie (before): 
+	   Thou dost see 1 torch. It weighs 0.1 stones
+	   Thou dost see 5 torches. They weigh 0.2 stones
+	   Thou dost see 8 portions of meat. They weigh 0.2 stones
+	   Thou dost see 20 gold coins. They weigh 0.2 stones
+	   Thou dost see 1 gold coin. It weighs 0.0 stones
+	   Thou dost see 10 bits of sulfurous ash. They weigh 0.1 stones
+	   Thou dost see 9 bits of sulfurous ash. They weigh 0.1 stones
+	   Thou dost see 1 bit of sulfurous ash. It weighs 0.0 stones
+	   [doesn't allow stacking of silver snake venom, Zu Ylem]
+
+	  So Nuvie was:
+	     A displaying spurious searching here messages when objects are on
+	     the floor, and not displaying the attack/defense values. 
+             This bug is not shown above for clarity/brevity
+	     B rounding incorrectly
+  	     C not putting the final period.
+	     D showing weight when 0<weight<0.1 (because not rounding
+		 properly?)
+	     E dividing all stackables' weight by 10, not just reagents, gold
+	       coins (anything else?)
+	       to decide if object needs division by 10 or by 100, I hoped to
+	       be able to use a tileflag, not just hardcode it. There's only 3
+	       unknown tileflags left; stackability is based on having plural,
+	       this is wrong, as original allows you to stack silver snake
+	       venom. Here's an overview of most (all?) stackable items and
+               their tileflags. (R=has reduced weight in original, U = Unit
+               Weight from TileManager)
+	         tile R U NESWDMBw hvAtlbLL Ar???fo!
+		 0566 n 1 00000000 00000000 10000000 arrow\s
+		 0567 n 1 00000000 00000000 01000000 bolt\s
+		 0574 n 1 00000000 00000000 01000000 lock pick\s
+		 0576 y 1 00000000 00000000 01000000 black pearl\s
+		 0577 y 1 00000000 00000000 00000000 bit\s of blood moss
+		 0578 y 1 00000000 00000000 00000000 bulb\s of garlic
+		 0579 y 1 00000000 00000000 00000000 ginseng root\s
+		 0580 y 1 00000000 00000000 00000000 mandrake root\s
+		 0581 y 1 00000000 00000000 00000000 nightshade mushroom\s
+		 0582 y 1 00000000 00000000 00000000 strand\s of spidersilk
+		 0583 y 1 00000000 00000000 00000000 bit\s of sulfurous ash
+		 0595 n 2 00000000 00000001 01000000 gem\s
+		 0601 n 5 00000000 00000000 01001000 flask\s of oil
+		 0608 y 1 00000000 00000000 00000000 gold coin\s
+		 0609 n 1 00000000 00000000 01000000 gold nugget\s
+		 0610 n 5 00000000 00000000 01001000 torch\es
+		 0612 n 5 00000000 00000000 11001000 Zu Ylem
+		 0613 n 5 00000000 00000000 11001000 silver snake venom
+		 0656 n 3 00000000 00000000 01001000 loa/f\ves of bread
+		 0657 n 2 00000000 00000000 11001000 portion\s of meat
+	       there's no difference between lock pick and black pearl, except
+	       for the latter being 10x lighter.. So can't use tileflags to
+	       decide. Also there seems to be no 'stackable' tile flag, which
+	       is probablt why the 'has_plural' hack is used
+	       
+          Nuvie (after):   
+	    A Searching here bugs still present.
+	      attack/defense values already has some code and I think I
+	      improved it a little, e.g. actually looking up the values, and
+	      working properly for items that just have defense..
+	      print_obj() needs to print the combat values too (now only
+	      made it print damage and defense ratings.)
+	    B Fixed  
+	    C Fixed
+	    D Fixed because B fixed.
+	    E Fixed, although I've hardcoded the items that have reduced
+	      weight, and might have missed some. FIXME should be a file in
+	      the data directory so can be patched for new games.
+	      Didn't fix is_stackable yet, but probably will eventually.
+
+  	* tileflag definitions completed (still some unknows) and re-ordered
+	* look at spellbook slightly improved
+	* Main_Gauche defense value set to 1 instead of 0. Had to do this in 2
+	  places (hopefully not in more, because only did 2) should be fixed
+	  to be central location, hopefully as an external file (hardcoding is
+	  evil)
+	* 
+	    
+
 2006-08-14  Eric Fry <efry at users.sourceforge.net>
 	* More work done on map wrapping. You should be able to cross over the
 	  ether in a balloon now. More work still needs to be done on wrapping.
@@ -29,7 +127,7 @@
 	  inventory. Added InventoryWidget::set_prev_container() which shows
 	  the parent object when returning from a container.
 	* Reset the InventoryWidget to the top when returning from a container.
-	
+
 2006-08-11  Pieter Luteijn <luteijn at users.sourceforge.net>
         * cleaned(?) up confusion with on_map, in_inventory, in_container,
 	 equipped status 'flags' as these are mutually exclusive, so use a 2
