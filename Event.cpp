@@ -59,6 +59,8 @@
 #include "GUI.h"
 #include "GUI_YesNoDialog.h"
 
+#include "views/InventoryWidget.h"
+
 #include <math.h>
 
 Event::Event(Configuration *cfg)
@@ -681,13 +683,18 @@ bool Event::get(Obj *obj, Obj *container_obj, Actor *actor)
             return(false); // ???
         }
 
-        // objects with 0 weight aren't gettable.
-        weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
-        //25.5 is the max weight and means an object is movable but not getable.
-        //we can't get object that contain toptiles either. This makes dragon bits ungettable etc.
-        if(weight != 0 && weight != 25.5 && obj_manager->has_toptile(obj) == false) 
+        // objects with 0 weight aren't gettable.
+        //255 is the max weight and means an object is movable but not getable.
+        //we can't get object that contains toptiles either. This makes dragon bits ungettable etc.
+        // excluding container items here, we just want the object itself to
+	// check if it weighs 0 or 255. no need to scale as we don't compare
+	// with other weights 
+	weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE); 
+        if(weight != 0 && weight != 255 && obj_manager->has_toptile(obj) == false) 
         {
+	  // now get the real weight (and include) the contained items. 
+	  weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DO_SCALE); 
             if(actor->can_carry_weight(weight))
             {
                 // object is someone else's
@@ -749,7 +756,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  player->get_location(&x,&y,&level);
 
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
- bool got_object = get(obj, NULL, player->get_actor());
+ bool got_object = get(obj, view_manager->get_inventory_view()->get_inventory_widget()->get_container(), player->get_actor());
 
  view_manager->update(); //redraw views to show new item.
  endAction();

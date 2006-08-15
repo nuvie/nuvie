@@ -1,4 +1,13 @@
-2006-08-11  Pieter Luteijn <luteijn at users.sourceforge.net>
+2006-08-15  Pieter Luteijn <luteijn at users.sourceforge.net>
+        * Get can now get into containers. (doesn't help with the spellbook,
+	  as you can't 'open' that; still need to fix move/push for this)
+	  Move/Push needs to be fixed anyway so it can be used to move stuff
+	  between partmembers. Planning to 'fix' usecode to also work with
+	  containers but no time yet.
+        * Get weight check fixed for containers to not allow you to get more
+	  than your allowance by getting a light bag with heavy content. 
+
+2006-08-14  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* Bug in adding up weights of contained objects in a container, the
 	  recursive call was setting the wrong flag (include containers was
 	  set to false, scale was not set so defaulted to true). Also added 
@@ -93,8 +102,10 @@
 	  places (hopefully not in more, because only did 2) should be fixed
 	  to be central location, hopefully as an external file (hardcoding is
 	  evil)
-	* 
-	    
+	* a few direct manipulations of obj->status changed to calls to
+	  obj->in_inventory etc. This also meant some checks could be removed.
+	  didn't finish this yet as ran into the weight bugs and wanted to fix
+	  those to help with further debugging ;)
 
 2006-08-14  Eric Fry <efry at users.sourceforge.net>
 	* More work done on map wrapping. You should be able to cross over the

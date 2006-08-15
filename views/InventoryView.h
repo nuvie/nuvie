@@ -73,6 +73,7 @@ class InventoryView : public View {
  bool select_obj(Obj *obj);
  void select_objAtCursor();
  Obj *get_objAtCursor();
+ InventoryWidget *get_inventory_widget(){return(inventory_widget);};
 
  void Display(bool full_redraw);
  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);

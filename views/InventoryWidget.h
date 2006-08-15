@@ -57,6 +57,7 @@ class InventoryWidget : public GUI_Widget {
  bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
  void set_actor(Actor *a);
  Actor *get_actor() { return(actor); }
+ Obj *get_container() { return(container_obj); }
  void set_container(Obj *obj) { container_obj = obj; row_offset = 0; Redraw(); }
  void set_prev_container();
  bool is_showing_container() { return (container_obj != NULL ? true : false); }
