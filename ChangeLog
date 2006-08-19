@@ -1,3 +1,9 @@
+2006-08-20  Eric Fry <efry at users.sourceforge.net>
+	* Removed Silver Serpent Venom from use_food()
+	* Changed use rubber ducky message to 'Squeak!' as per the original.
+	* Added a note to the TODO document telling readers about our new
+	  progress documents which are located in the docs/ cvs repository.
+
 2006-08-15  Pieter Luteijn <luteijn at users.sourceforge.net>
         * Get can now get into containers. (doesn't help with the spellbook,
 	  as you can't 'open' that; still need to fix move/push for this)

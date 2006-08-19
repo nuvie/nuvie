@@ -1317,7 +1317,7 @@ bool U6UseCode::use_fountain(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::use_rubber_ducky(Obj *obj, UseCodeEvent ev)
 {
     if(items.actor_ref == player->get_actor())
-        scroll->display_string("- Quack! Quack!\n");
+        scroll->display_string("Squeak!\n");
     return(true);
 }
 

@@ -1,5 +1,11 @@
 Nuvie TODO List
 ---------------
+
+**Note**
+We have a new set of progress documents. They are kept in the docs repository. Accessible via cvs.
+
+
+
 Cursors:
 In normal/move mode (no pending action), cursor is standard arrow over ever
 area but the MapWindow. Above the MapWindow it is a directional arrow, or the

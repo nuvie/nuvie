@@ -97,7 +97,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_GRAPES,      0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
     { OBJ_U6_HAM,         0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
     { OBJ_U6_GARLIC,      0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
-    { OBJ_U6_SNAKE_VENOM, 0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
+//    { OBJ_U6_SNAKE_VENOM, 0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
     { OBJ_U6_HORSE_CHOPS, 0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
     { OBJ_U6_JAR_OF_HONEY,0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
     { OBJ_U6_DRAGON_EGG,  0,0,USE_EVENT_USE,&U6UseCode::use_food,OBJTYPE_FOOD },
