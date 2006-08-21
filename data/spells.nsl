@@ -806,7 +806,7 @@ name: Tremor
 invocation: VPY
 reagents: 0x89
 script:\
-200 1 _quake ++ Need to actually damage victims here ++ _display _end
+1024 1 _quake ++ Need to actually damage victims here ++ _display _end
 ~
 # 122
 ~

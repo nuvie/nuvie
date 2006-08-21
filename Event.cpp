@@ -1106,7 +1106,17 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     if(selected_actor)
         from = selected_actor->get_location();
     else
-        from = MapCoord(use_obj->x, use_obj->y, use_obj->z);
+    {
+        if (use_obj->is_on_map())
+	{
+	  from = MapCoord(use_obj->x, use_obj->y, use_obj->z);
+	} 
+	else
+	{
+	  printf("Can only push things around on the map.\n");
+	  return(false);
+	}
+    }
     if(push_from == PUSH_FROM_PLAYER) // coordinates must be converted
     {
         to.x = pusher.x + rel_x;

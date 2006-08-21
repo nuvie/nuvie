@@ -85,7 +85,7 @@
 	       there's no difference between lock pick and black pearl, except
 	       for the latter being 10x lighter.. So can't use tileflags to
 	       decide. Also there seems to be no 'stackable' tile flag, which
-	       is probablt why the 'has_plural' hack is used
+	       is probably why the 'has_plural' hack is used
 	       
           Nuvie (after):   
 	    A Searching here bugs still present.

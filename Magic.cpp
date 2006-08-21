@@ -1056,9 +1056,11 @@ bool Magic::function_eclipse()
 
 bool Magic::function_quake()
 {
-        new QuakeEffect((uint8)atoi(stack->pop()),(uint32)atoi(stack->pop()),event->player->get_actor());
 
-	return true;
+  uint8 magnitude=(uint8)atoi(stack->pop());
+  uint32 duration=(uint32)atoi(stack->pop());
+  new QuakeEffect(magnitude,duration,event->player->get_actor());
+  return true;
 }
 
 bool Magic::function_template()
