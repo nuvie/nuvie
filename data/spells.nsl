@@ -446,7 +446,22 @@ name: Locate
 invocation: IW
 reagents: 0x02
 script:\
-++ This is the Locate spell stub ++ _display _end
+caster _string2npc _drop locy _get_actor_attrib _drop 8 _div _dup 45 _gt _jmp\
+:success\
+45 _swap _sub ++ _swap { S ++ _null _join ++ _swap\
+continue _jmp\
+:failure\
+45 _sub ++ _swap { N ++ _null _join ++ _swap\
+:continue\
+, ++ _null _join ++ _swap\
+caster _string2npc _drop locx _get_actor_attrib _drop 8 _div _dup 38 _gt _jmp\
+:success\
+38 _swap _sub ++ _swap { E ++ _null _join\
+finish _jmp\
+:failure\
+38 _sub ++ _swap { W ++ _null _join\
+:finish\
+++ _display _end
 ~
 # 54 
 name: Mass Dispel

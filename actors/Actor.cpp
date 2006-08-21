@@ -162,9 +162,9 @@ bool Actor::is_passable()
 
 void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 {
- *ret_x = x;
- *ret_y = y;
- *ret_level = z;
+ if(ret_x) *ret_x = x;
+ if(ret_y) *ret_y = y;
+ if(ret_level) *ret_level = z;
 }
 
 

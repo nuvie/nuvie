@@ -38,6 +38,7 @@
 #include "GUI_YesNoDialog.h"
 
 #include "Actor.h"
+#include "ActorManager.h"
 #include "ObjManager.h"
 #include "U6objects.h"
 #include "Magic.h"
@@ -548,9 +549,12 @@ if (!strcmp(function,"colon")) { return function_colon(); }
 if (!strcmp(function,"define_spell")) { return function_define_spell(); }
 if (!strcmp(function,"delete_obj"))  { return function_delete_obj() ; }
 if (!strcmp(function,"display")) { return function_display(); }
+if (!strcmp(function,"div")) { return function_div(); }
 if (!strcmp(function,"drop")) { return function_drop(); }
 if (!strcmp(function,"dup")) { return function_dup(); }
+if (!strcmp(function,"get_actor_attrib")) { return function_get_actor_attrib(); }
 if (!strcmp(function,"give_obj")) { return function_give_obj(); }
+if (!strcmp(function,"gt")) { return function_gt(); }
 if (!strcmp(function,"input")) { return function_input(); }
 if (!strcmp(function,"inv_to_spell")) { return function_inv_to_spell(); }
 if (!strcmp(function,"join")) { return function_join(); }
@@ -673,23 +677,73 @@ bool Magic::function_string2npc()
    * valid victims are 'caster', 'target' or (TODO) an npc number.
    */
   char token[MAX_TOKEN_LENGTH+1];
-  strncpy(token,stack->pop(),MAX_TOKEN_LENGTH); 
+  char buffer[MAX_TOKEN_LENGTH+1];
+  
+  strncpy(token,stack->pop(),MAX_TOKEN_LENGTH);
+  Actor *a = NULL;
   
   if (!strcmp(token,"caster")) 
   {
-    stack->pushptr(event->player->get_actor());
-    stack->push("success");
+    a = event->player->get_actor();
   }
 
   if (!strcmp(token,"target")) 
   {
-    stack->pushptr(target_actor);
-    stack->push("success");
+    a = target_actor;
   }
 
+  if(a)
+  {
+    snprintf(buffer, MAX_TOKEN_LENGTH, "%d", a->get_actor_num());
+    stack->push(buffer);
+    stack->push("success");
+  }
+  else
+    stack->push("failure");
   
+  return true;
+}
+
+bool Magic::function_get_actor_attrib()
+{
+  Actor *a;
+  char token[MAX_TOKEN_LENGTH+1];
+  char buffer[MAX_TOKEN_LENGTH+1];
+  uint16 i;
+  uint8 z;
+  
+  strncpy(token,stack->pop(),MAX_TOKEN_LENGTH);
+  
+  a = Game::get_game()->get_actor_manager()->get_actor(atoi(stack->pop()));
+  if(a == NULL)
+  {
     stack->push("failure");
     return true;
+  }
+  
+  if(!strcmp(token,"locx"))
+  {
+    a->get_location(&i,NULL,NULL);
+    snprintf(buffer, MAX_TOKEN_LENGTH, "%d", i);
+    stack->push(buffer);
+  }
+  
+  if(!strcmp(token,"locy"))
+  {
+    a->get_location(NULL,&i,NULL);
+    snprintf(buffer, MAX_TOKEN_LENGTH, "%d", i);
+    stack->push(buffer);
+  }
+  
+  if(!strcmp(token,"locz"))
+  {
+    a->get_location(NULL,NULL,&z);
+    snprintf(buffer, MAX_TOKEN_LENGTH, "%d", z);
+    stack->push(buffer);
+  }
+  
+  stack->push("success"); //FIXME for unhandled string.
+  return true;
 }
 
 bool Magic::function_underscore()
@@ -831,6 +885,23 @@ bool Magic::function_sub()
   stack->push(buffer);
   return true;
 };
+bool Magic::function_div()
+{
+  uint32 x, y;
+  
+  /*
+   * Stack effect: 2 values popped, division of them pushed
+   */
+  char buffer[MAX_TOKEN_LENGTH+1];
+  y = atoi(stack->pop());
+  x = atoi(stack->pop());
+  
+  assert(y != 0); //division by zero!
+  
+  snprintf(buffer,MAX_TOKEN_LENGTH,"%d",(int)(x / y));
+  stack->push(buffer);
+  return true;
+};
 bool Magic::function_load()
 {
   /*
@@ -838,6 +909,14 @@ bool Magic::function_load()
    */
   read_spell_list(); 
   stack->push("success");
+  return true;
+};
+bool Magic::function_gt()
+{
+  if(atoi(stack->pop()) < atoi(stack->pop()))
+    stack->push("success");
+  else
+    stack->push("failure");
   return true;
 };
 

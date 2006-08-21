@@ -1,3 +1,13 @@
+2006-08-22  Eric Fry <efry at users.sourceforge.net>
+	* Changed Actor::get_location() to accept NULL values. It doesn't
+	  return coord variables if NULL is passed.
+	* Added _div _gt _get_actor_attrib to Magic. They do integer division,
+	  greater than comparison and retrieve Actor attributes respectively.
+	* Added Locate spell script. Note! I'm not handling the dungeon levels
+	  at the moment.
+	* Changed string2npc to push the actor number not a pointer to the
+	  Actor object.
+
 2006-08-20  Eric Fry <efry at users.sourceforge.net>
 	* Removed Silver Serpent Venom from use_food()
 	* Changed use rubber ducky message to 'Squeak!' as per the original.
