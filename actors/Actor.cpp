@@ -421,8 +421,8 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
    }
 
  // move
- x = WRAPPED_COORD(new_x,z);
- y = WRAPPED_COORD(new_y,z);
+ x = WRAPPED_COORD(new_x,new_z);
+ y = WRAPPED_COORD(new_y,new_z);
  z = new_z;
 
  can_move = true;
