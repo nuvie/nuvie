@@ -1,3 +1,7 @@
+2006-08-25  Pieter Luteijn <luteijn at users.sourceforge.net>
+        * Started on Blue Moongate support
+	* Small improvement to thrown weapon support
+
 2006-08-22  Eric Fry <efry at users.sourceforge.net>
 	* Changed Actor::get_location() to accept NULL values. It doesn't
 	  return coord variables if NULL is passed.
@@ -184,7 +188,7 @@
 	  The first returns wrapped version of c, without changing c itself;
 	  the other does modify c. Use the first version for things
 	  like (x+1) or when you still need the unwrapped version.
-	
+
 2006-08-09  Pieter Luteijn <luteijn at users.sourceforge.net>
         * use balloon from other's inventory.
 	* disallow balloon use underground
@@ -931,7 +935,7 @@ not-sure-when  Eric Fry <efry at users.sourceforge.net>
 	  *WARNING* This breaks compatibility with old nuvie savegames.
 	* Fixed crash with empty inventory's.
 	* added variable assignment for cur_party_member in View.
- 
+
 2004-10-04  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Add scroll-arrows to Party Roster.
 
@@ -973,7 +977,7 @@ not-sure-when  Eric Fry <efry at users.sourceforge.net>
 	* Added InventoryWidget::display_special_char() This prints the special
 	  char under keys in U6.
 	* Added the inventory key letter fonts to InventoryFont.h
-	
+
 2004-09-25  Jonathan Wright <nelno at idsoftware.com>
 	* Updated project files for Visual C 7.1 (.NET 2003)
 
