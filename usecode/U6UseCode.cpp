@@ -961,6 +961,46 @@ void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width
  scroll->display_string("\nClose the drawbridge.\n");
 }
 
+bool U6UseCode::use_moonstone(Obj *obj, UseCodeEvent ev)
+{
+/* GET: clear buried moonstone location
+ * (we never know if it is buried or just lying there)
+ * USE: drop at user's current location, and update buried location 
+ */
+    if(ev == USE_EVENT_GET) 
+    {
+      Weather *weather = game->get_weather();
+       /* FIXME: need to check weights here already? 
+	* Check original's behavior when moonstone cannot be gotten due 
+	* to weight limitations. Moving it normally doesn't unbury it,
+	* so probably failing to get it shouldn't either.
+	*/ 
+      weather->set_moonstone(obj->frame_n,MapCoord(0,0,0)) ;
+      scroll->display_string("\nMoonstone dug up. (FIXME)\n");
+      // TODO weather->update_moongates();
+      return true;
+    } else if(ev == USE_EVENT_USE)
+    {
+      /* TODO: check if the moonstone can be buried here.
+       * TODO: figure out what locations are valid
+       * FIXME: message-text check
+       */
+	Weather *weather = game->get_weather();
+	MapCoord loc=Game::get_game()->get_player()->get_actor()->get_location();
+	weather->set_moonstone(obj->frame_n,loc) ;
+	scroll->display_string("\nMoonstone buried. (FIXME)\n");
+	// FIXME: *properly* drop the moonstone at this location
+	actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj); // fixme make this work with containers
+	obj->x=loc.x;
+	obj->y=loc.y;
+	obj->z=loc.z;
+        obj->status |= OBJ_STATUS_OK_TO_TAKE;
+        obj_manager->add_obj(obj, OBJ_ADD_TOP);
+	// TODO weather->update_moongates();
+	return true;
+    }
+  return false;
+}
 
 /* USE: select location on ground to bury orb; when location is passed, open
  *      a red moongate to a new location
@@ -2308,6 +2348,11 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
 }
 
 
+bool U6UseCode::enter_blue_moongate(Obj *obj, UseCodeEvent ev)
+{
+//  should share code with the red_moongate!
+  return true;
+}
 /* PASS: if not in party mode, say that you cannot enter and do normal move
  * else walk all party members to moongate and teleport.
  */

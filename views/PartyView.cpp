@@ -260,6 +260,11 @@ void PartyView::display_moons(uint8 day, uint8 hour, uint8 minute)
         display_sun_moon(tileA, posA - 5);
     if(posB >= 5 && posB <= 19)
         display_sun_moon(tileB, posB - 5);
+    // TODO update blue gates here
+    /*
+    Weather *weather = Game::get_game()->get_weather();
+    weather->update_blue_gates(posA,posB);
+    */
 }
 
 bool PartyView::up_arrow()

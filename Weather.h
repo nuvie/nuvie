@@ -26,6 +26,7 @@
 
 #include "nuvieDefs.h"
 #include "CallBack.h"
+#include "Map.h"
 
 class Configuration;
 class NuvieIO;
@@ -52,6 +53,7 @@ class Weather: public CallBack
 	uint8 eclipse_length;
 	GameTimedCallback *eclipse_timer;
 	GameTimedCallback *wind_timer;
+	MapCoord moonstones[8]; //FIXME hardcoded constant!
  
 	public:
 
@@ -65,6 +67,8 @@ class Weather: public CallBack
 	uint8 get_wind_dir() { return wind_dir; }
 	bool set_wind_dir(uint8 new_wind_dir);
 	bool add_wind_change_notification_callback(CallBack *caller);
+	bool set_moonstone(uint8 moonstone,MapCoord where);
+	MapCoord get_moonstone(uint8 moonstone);
   
 	bool is_eclipse() { return((eclipse_timer != NULL ? true : false)); }
 	void start_eclipse(uint8 length = 0);
@@ -74,6 +78,8 @@ class Weather: public CallBack
 	protected:
  
 	uint8 load_wind(NuvieIO *objlist);
+        bool load_moonstones(NuvieIO *objlist);
+        bool save_moonstones(NuvieIO *objlist);
 	bool save_wind(NuvieIO *objlist);
 	void change_wind_dir();
 	inline void set_wind_change_callback();

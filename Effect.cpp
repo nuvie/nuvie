@@ -537,7 +537,7 @@ void MissileEffect::init(uint16 tile_num, uint16 obj_n,
                          const MapCoord &source, const MapCoord &target,
                          uint32 dmg, uint8 intercept, uint32 speed)
 {
-    assert(tile_num != 0 || obj_n != 0);
+    //assert(tile_num != 0 || obj_n != 0); // breaks thrown weapons
     assert(speed != 0);
     assert(intercept != 0); // must hit target
 

@@ -589,8 +589,8 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
    MapCoord target(actor->get_location());
    // effect hits actor for damage
    if(damage > 0)
-     new MissileEffect(combat_type->missle_tile_num,
-                       combat_type->thrown_obj_n, start, target, damage);
+       new MissileEffect(combat_type->missle_tile_num,
+	   combat_type->thrown_obj_n, start, target, damage);
    else // miss (potentially hitting anything in the way)
     {
      // randomly move target to another square

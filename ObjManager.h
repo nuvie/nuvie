@@ -34,6 +34,7 @@ class Configuration;
 class EggManager;
 class UseCode;
 class NuvieIO;
+class MapCoord;
 
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1

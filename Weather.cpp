@@ -37,6 +37,7 @@
 #include "TimedEvent.h"
 #include "ViewManager.h"
 #include "MapWindow.h"
+#include "Map.h"
 
 //the longest we will go before having a change in wind direction
 #define WEATHER_MAX_WIND 30 
@@ -77,9 +78,57 @@ bool Weather::load(NuvieIO *objlist)
 		eclipse_length = load_eclipse_length(objlist);
 		if(eclipse_length > 0)
 			start_eclipse(eclipse_length);
+		load_moonstones(objlist);
 	}
 
 	return true;
+}
+
+bool Weather::load_moonstones(NuvieIO *objlist)
+{
+
+ objlist->seek(OBJLIST_OFFSET_U6_MOONSTONES);
+
+ // endian issues, and size of z coordinate doesn't match, so can't do a straight read to buffer
+ for (uint8 moonstone=0;moonstone<8;moonstone++)
+ {
+   uint8 little;
+   uint8 bigend;
+   uint16 x,y;
+   uint8 z;
+   little=objlist->read1();//little endian..
+   bigend=objlist->read1();//little endian..
+   x=little+(256*bigend);
+   little=objlist->read1();//little endian..
+   bigend=objlist->read1();//little endian..
+   y=little+(256*bigend);
+   little=objlist->read1();//little endian..
+   bigend=objlist->read1();//little endian..
+   assert(!bigend);
+   z=little; //bigend should be zero
+   printf("Read moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
+   moonstones[moonstone]=MapCoord(x,y,z);
+ }
+ return true;
+
+}
+
+MapCoord Weather::get_moonstone(uint8 moonstone) 
+{
+  if (moonstone<8) // FIXME: hardcoded constant
+    return moonstones[moonstone];
+  printf("get_moonstone(%d): Moonstone out of range\n",moonstone);
+  return MapCoord(0,0,0);
+}
+bool Weather::set_moonstone(uint8 moonstone,MapCoord where) 
+{
+  if (moonstone<8) // FIXME: hardcoded constant
+  {
+    moonstones[moonstone]=where;
+    return true;
+  }
+  printf("set_moonstone(%d): Moonstone out of range\n",moonstone);
+  return false;
 }
 
 uint8 Weather::load_wind(NuvieIO *objlist)
@@ -136,6 +185,7 @@ bool Weather::save(NuvieIO *objlist)
 	{
 		save_wind(objlist);
 		save_eclipse(objlist);
+		save_moonstones(objlist);
 	}
 	
     return true;
@@ -176,6 +226,26 @@ bool Weather::save_eclipse(NuvieIO *objlist)
   objlist->write1(new_length);
 
 	return true;
+}
+bool Weather::save_moonstones(NuvieIO *objlist)
+{
+  objlist->seek(OBJLIST_OFFSET_U6_MOONSTONES);
+  for (uint8 moonstone=0;moonstone<8;moonstone++)
+  {
+    uint16 x,y;
+    uint8 z;
+    x=moonstones[moonstone].x;
+    y=moonstones[moonstone].y;
+    z=moonstones[moonstone].z;
+    objlist->write1((uint8)(x&255));//little endian..
+    objlist->write1((uint8)(x>>8));
+    objlist->write1((uint8)(y&255));//little endian..
+    objlist->write1((uint8)(y>>8));
+    objlist->write1(z);//little endian..
+    objlist->write1(0);
+    printf("Wrote moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
+  }
+  return true;
 }
 
 string Weather::get_wind_dir_str()
