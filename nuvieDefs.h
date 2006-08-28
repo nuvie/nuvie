@@ -57,6 +57,9 @@ typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
 
 #define NUVIE_DIR_NONE 8
 
+#define TRAMMEL_PHASE 1.75
+#define FELUCCA_PHASE 1.1666666666666667
+
 /*
 #ifndef BOOL
 typedef unsigned char BOOL;

@@ -135,8 +135,7 @@ class U6UseCode: public UseCode, public CallBack
  bool look_clock(Obj *obj, UseCodeEvent ev);
  bool pass_quest_barrier(Obj *obj, UseCodeEvent ev);
  bool enter_dungeon(Obj *obj, UseCodeEvent ev);
- bool enter_blue_moongate(Obj *obj, UseCodeEvent ev);
- bool enter_red_moongate(Obj *obj, UseCodeEvent ev);
+ bool enter_moongate(Obj *obj, UseCodeEvent ev);
 // bool search_container(Obj *obj, UseCodeEvent ev);
  bool use_powder_keg(Obj *obj, UseCodeEvent ev);
  bool use_cannon(Obj *obj, UseCodeEvent ev);

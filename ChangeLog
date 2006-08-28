@@ -1,3 +1,11 @@
+2006-08-28  Pieter Luteijn <luteijn at users.sourceforge.net>
+        * Moongates don't (dis)appear yet based if there are(n't) any moons in
+	the sky, but they do work now, since their usecode is in. Try the
+	permanent moongate at the Spirituality shrine.
+	* Moonstone usecode needs fine tuning but basic usecode functionality
+	is there. You can bury the moonstones somewhere else and the
+	destination/burial table is updated.
+
 2006-08-25  Pieter Luteijn <luteijn at users.sourceforge.net>
         * Started on Blue Moongate support
 	* Small improvement to thrown weapon support

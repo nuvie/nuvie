@@ -2347,19 +2347,15 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
     return(false);
 }
 
-
-bool U6UseCode::enter_blue_moongate(Obj *obj, UseCodeEvent ev)
+bool U6UseCode::enter_moongate(Obj *obj, UseCodeEvent ev)
 {
-//  should share code with the red_moongate!
-  return true;
-}
+ /* shared between blue and red gates */
 /* PASS: if not in party mode, say that you cannot enter and do normal move
  * else walk all party members to moongate and teleport.
  */
-bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
-{
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
+    MapCoord exit(0,0,0);
 
     if(party->is_in_vehicle())
       return true;
@@ -2376,30 +2372,57 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
     // don't activate if autowalking from linking exit
     if(ev == USE_EVENT_PASS && items.actor_ref == player->get_actor() && !party->get_autowalk())
     {
-        MapCoord entrance(x, y, z);
-        if(obj->quality > 25)
-           {
-            printf("Error: invalid moongate destination %d\n",obj->quality);
-            return false;
-           }
+	if (obj->obj_n == OBJ_U6_RED_GATE ) 
+	{
+	  if(obj->quality > 25)
+	  {
+	    printf("Error: invalid moongate destination %d\n",obj->quality);
+	    return false;
+	  }
 
-        if((obj->quality > 0 && obj->quality < 12) ||
-           (obj->quality > 14 && obj->quality < 26) ) //positions 0, 12, 13 and 14 go noware.
-           {
-            x = red_moongate_tbl[obj->quality].x; // set our moongate destination from the lookup table.
-            y = red_moongate_tbl[obj->quality].y;
-            z = red_moongate_tbl[obj->quality].z;
-           }
-        MapCoord exit(x, y, z);
-
-//        if(exit.z != obj->z)
-//        {
-//            scroll->display_string("\nDestination too far away!\n\n");
-//            scroll->display_prompt();
-//            return true;
-//        }
-
-        party->walk(obj, &exit);
+	  if((obj->quality > 0 && obj->quality < 12) ||
+	      (obj->quality > 14 && obj->quality < 26) ) //positions 0, 12, 13 and 14 go nowhere.
+	  {
+	    x = red_moongate_tbl[obj->quality].x; // set our moongate destination from the lookup table.
+	    y = red_moongate_tbl[obj->quality].y;
+	    z = red_moongate_tbl[obj->quality].z;
+	  }
+	  exit=MapCoord(x,y,z);
+	} 
+	else if (obj->obj_n == OBJ_U6_MOONGATE )
+	{ 
+	  // FIXME: Duplication from PartyView, this ought to be separated
+	  /* we don't care if the moons are in the sky, 
+	   * (to make permanent moongates work)
+	   * if the moongate is there, it goes somewhere
+	   */
+	  Weather *weather = game->get_weather();
+	  GameClock *clock = Game::get_game()->get_clock();
+	  uint8 day=clock->get_day();
+	  uint8 hour=clock->get_hour();
+	  uint8 phaseTrammel=uint8(nearbyint((day-1)/TRAMMEL_PHASE)) % 8;
+	  sint8 phaseb = (day-1) % uint8(nearbyint(FELUCCA_PHASE*8)) - 1;
+	  uint8 phaseFelucca = (phaseb >= 0) ? phaseb : 0;
+	  uint8 posTrammel = ((hour + 1) + 3*phaseTrammel) % 24;
+	  uint8 posFelucca = ((hour - 1) + 3*phaseFelucca) % 24;
+	  uint8 absTrammel=abs(posTrammel-12);
+	  uint8 absFelucca=abs(posFelucca-12);
+	  if (absTrammel<absFelucca) 
+	  {
+	    // Trammel wins. 
+	    exit=weather->get_moonstone(8-phaseTrammel);
+	  }
+	  else
+	  {
+	    // Feluccality!
+	    exit=weather->get_moonstone(8-phaseFelucca);
+	  }
+	  if (exit.x==0&&exit.y==0&&exit.z==0)
+	  {
+	    exit=MapCoord(x,y,z); // stay put.
+	  }
+	}
+	party->walk(obj, &exit);
         return(true);
     }
     else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
@@ -2407,7 +2430,6 @@ bool U6UseCode::enter_red_moongate(Obj *obj, UseCodeEvent ev)
             return(true);
     return(true);
 }
-
 
 
 /* USE: Light powder keg if unlit

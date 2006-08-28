@@ -395,7 +395,7 @@ void TimedPartyMove::change_location()
     SDL_Surface *mapwindow_capture = NULL;
     if(wait_for_effect != 1)
     {
-        if(moongate)
+        if(moongate&&moongate->obj_n==OBJ_U6_RED_GATE) // leave blue moongates
         {
             // get image before deleting moongate
             mapwindow_capture = map_window->get_sdl_surface();
