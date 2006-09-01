@@ -107,8 +107,8 @@ struct Obj
  bool is_lit()          { return(status & OBJ_STATUS_LIT); }
 
  /* old, until replaced everywhere properly */
- bool is_in_container_old() { printf("Depricated is_in_container used (obj=%d:%d)\n",obj_n,frame_n); return(status & OBJ_STATUS_IN_CONTAINER); }
- bool is_in_inventory_old() { printf("Depricated is_in_inventory used (obj=%d:%d)\n",obj_n,frame_n); return(status & OBJ_STATUS_IN_INVENTORY); }
+ bool is_in_container_old() { printf("warning: Deprecated is_in_container used (obj=%d:%d)\n",obj_n,frame_n); return(status & OBJ_STATUS_IN_CONTAINER); }
+ bool is_in_inventory_old() { printf("warning: Deprecated is_in_inventory used (obj=%d:%d)\n",obj_n,frame_n); return(status & OBJ_STATUS_IN_INVENTORY); }
  /* new, to replace the above two (redoing the logic) */
  bool is_in_container_new() { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_IN_CONTAINER); }
  bool is_in_inventory_new() { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_IN_INVENTORY); }
