@@ -1285,8 +1285,9 @@ printf("MapWindow::drag_perform_drop()\n");
         if(!obj->is_readied())
         {
             assert(!obj->is_in_container_new()); // FIXME: need ObjManager::get_obj_container()
-    // else if obj is in container: remove from container; put in inventory
-            if(!obj->is_in_inventory_new())
+            // if obj is in container: remove from container; put in inventory
+
+            if(!obj->is_in_inventory_new()) // remove from map
                 obj_manager->remove_obj(obj);
         }
 
