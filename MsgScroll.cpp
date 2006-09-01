@@ -785,8 +785,7 @@ void MsgScroll::clear_page_break()
 
 
 /* Set callback & callback_user_data so that a message will be sent to the
- * caller when input has been gathered.
- */
+ * caller when input has been gathered. */
 void MsgScroll::request_input(CallBack *caller, void *user_data)
 {
     callback_target = caller;
