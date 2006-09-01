@@ -537,7 +537,8 @@ void MissileEffect::init(uint16 tile_num, uint16 obj_n,
                          const MapCoord &source, const MapCoord &target,
                          uint32 dmg, uint8 intercept, uint32 speed)
 {
-    //assert(tile_num != 0 || obj_n != 0); // breaks thrown weapons
+    assert(tile_num || obj_n); // at least obj_n must be set
+                               // (although it might work if throw_obj is already set)
     assert(speed != 0);
     assert(intercept != 0); // must hit target
 
@@ -545,7 +546,7 @@ void MissileEffect::init(uint16 tile_num, uint16 obj_n,
         throw_obj = new_obj(obj_n, 0, 0,0,0);
     if(tile_num != 0)
         throw_tile = game->get_tile_manager()->get_tile(tile_num);
-    else
+    else if(throw_obj != 0)
         throw_tile = obj_manager->get_obj_tile(throw_obj->obj_n,0);
     throw_speed = speed;
     hit_damage = dmg;
