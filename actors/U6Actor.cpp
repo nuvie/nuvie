@@ -93,6 +93,8 @@ bool U6Actor::init()
    case OBJ_U6_DRAGON : init_dragon(); break;
 
    case OBJ_U6_SILVER_SERPENT : init_silver_serpent(); break;
+   // These aren't really surrounding objects.
+   case OBJ_U6_TANGLE_VINE_POD : init_tangle_vine(); break;
 
    case OBJ_U6_GIANT_SCORPION :
    case OBJ_U6_GIANT_ANT :
@@ -287,27 +289,27 @@ void U6Actor::init_new_silver_serpent()
  uint8 i,j;
  uint16 nx, ny;
  Obj *obj;
- uint8 length = 5 + NUVIE_RAND() % 5; //FIXME. The original worked out length from qty in the serpent embryo obj.
- 
+ uint8 length = 4 + NUVIE_RAND() % 5; //FIXME. The original worked out length from qty in the serpent embryo obj.
+
  nx = x;
  ny = y;
- 
+
  set_direction(NUVIE_DIR_N); //make sure we are facing north.
- 
+
  for(i=0,j=0;i<length;i++)
  {
    nx += movetbl[j].x_offset;
    ny += movetbl[j].y_offset;
 
    init_surrounding_obj(nx, ny, z, OBJ_U6_SILVER_SERPENT, (i == length - 1 ? movetbl[j].tail_frame_n : movetbl[j].body_frame_n));
-   
+
    obj = (Obj *)surrounding_objects.back();
    obj->quality = i + 1; //body segment number
    obj->qty = id_n; //actor id number
-   
+
    j = (j + 1) % 4;
  }
- 
+
  return;
 }
 
@@ -382,6 +384,40 @@ void U6Actor::gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, u
       surrounding_objects.push_back(obj);
   }
      
+}
+
+// when spawning new tangle vine pods/centers/frags, spawn up to four vine
+// actors around the pod
+// FIXME: bugged, being called multiple times, not spawning vines, spawning as fireplaces!
+bool U6Actor::init_tangle_vine()
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    uint8 num_vines = NUVIE_RAND()%4+1;
+printf("init_tangle_vine() %d at %x,%x with %d vines\n",id_n,x,y,num_vines);
+    const struct { sint8 x, y; } vine_pos[4] = { {-1,0},{+1,0},{0,-1},{0,+1} };
+    // Pod may have already been initialized, so just add vines where none
+    // currently exist.
+    uint8 v = 0;
+    do
+    {
+        uint16 vx = x+vine_pos[v].x, vy = y+vine_pos[v].y;
+        Actor *vine = actor_manager->get_actor(vx,vy,z);
+        if(!vine)
+        {
+            if(actor_manager->create_temp_actor(OBJ_U6_TANGLE_VINE,vx,vy,z,alignment,WORKTYPE_U6_TANGLE,&vine))
+            {
+                vine->set_direction((v==0)?NUVIE_DIR_W:(v==1)?NUVIE_DIR_E:(v==2)?NUVIE_DIR_N:NUVIE_DIR_S);
+if(vine) printf("    new vine %d at %x,%x\n",v,vine->get_location().x,vine->get_location().y);
+            }
+
+        }
+        else
+        {
+if(vine) printf("    preexisting vine %d at %x,%x\n",v,vine->get_location().x,vine->get_location().y);
+            return true; // no room!
+        }
+    } while(++v < num_vines);
+    return true;
 }
 
 uint16 U6Actor::get_downward_facing_tile_num()
@@ -476,11 +512,17 @@ void U6Actor::set_direction(uint8 d)
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction +
              (walk_frame * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
 
+ // tangle vines' north and east frames are in the wrong direction
+ // FIXME: see if the ActorType values can be changed to fix this
+ if(obj_n == OBJ_U6_TANGLE_VINE)
+    if(direction == NUVIE_DIR_N || direction == NUVIE_DIR_E)
+        frame_n += 3;
 }
 
 void U6Actor::face_location(uint16 lx, uint16 ly)
 {
- if(obj_n != OBJ_U6_SILVER_SERPENT) //snakes cannot turn on the spot.
+ if(obj_n != OBJ_U6_SILVER_SERPENT //snakes cannot turn on the spot.
+    && obj_n != OBJ_U6_TANGLE_VINE && obj_n != OBJ_U6_TANGLE_VINE_POD)
    Actor::face_location(lx, ly);
 
  return;
@@ -534,19 +576,20 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
      
      switch(obj->obj_n)
      {
-       case OBJ_U6_FIRE_FIELD : 
+       case OBJ_U6_FIRE_FIELD : // ouch, fire
        {
+         printf("warning: find correct fire damage amount\n");
          hit(5); // -?? hp?
          scroll->display_string("\n");
          scroll->display_prompt();
          break;
        }
-         
+
        case OBJ_U6_POISON_FIELD :
        {
-         if(!is_poisoned()) // ick
+         if(!is_poisoned())
          {
-           set_poisoned(true);
+           set_poisoned(true); // ick, poisoned!
            
            if(in_party) //FIXME Should this be moved to set_poisoned?
            {
@@ -557,40 +600,70 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
          }
          break;
        }
-         
+
        case OBJ_U6_SLEEP_FIELD :
        {
          new HitEffect(this); // no hp loss
-                              //fall asleep (change worktype?)
+         set_worktype(WORKTYPE_U6_SLEEP); // fall asleep
          if(in_party)
-           scroll->message("Zzz...\n");
+           {
+            party->set_active(party->get_member_num(this), !(is_sleeping() || is_paralyzed()));
+            player->set_actor(party->get_actor(party->get_leader()));
+            player->set_mapwindow_centered(true);
+           }
          break;
        }
-         
+
        case OBJ_U6_TRAP :
        {
          hit(25); //FIXME find proper amount. share with U6UseCode::use_trap
          obj->status &= (0xff ^ OBJ_STATUS_INVISIBLE); //show trap. FIXME should this logic go else ware.
-         
          break;
        }
-         
+
        case OBJ_U6_SPIKES :
        {
          hit(NUVIE_RAND()%8+1); // I think this is the proper amount. (SB-X)
          break;
        }
-        
-       case OBJ_U6_LOG_SAW :
+
+       case OBJ_U6_TANGLE_VINE :
        {
-         hit(NUVIE_RAND()%31+1); //Ouch that hurts!
+         hit(5); // FIXME find proper amount.
          break;
        }
 
+       case OBJ_U6_LOG_SAW :
+       {
+         hit(NUVIE_RAND()%31+1); // Ouch that hurts!
+         break;
+       }
        default : break;
      }
    }
-   
+   Tile *tile = map->get_tile(new_x,new_y,new_z);
+   if(tile->tile_num>=221&&tile->tile_num<=223) // lava
+     {
+      printf("warning: find correct lava damage amount\n");
+      hit(5);
+      scroll->display_string("\n");
+      scroll->display_prompt();
+     }
+   // swamp
+   else if(tile->tile_num>=2&&tile->tile_num<=4 && !is_poisoned()
+           && (!readied_objects[ACTOR_FOOT] || readied_objects[ACTOR_FOOT]->obj->obj_n != OBJ_U6_SWAMP_BOOTS))
+     {
+      set_poisoned(true);
+         
+      if(in_party)
+        {
+         scroll->display_string(party->get_actor_name(party->get_member_num(this)));
+         scroll->display_string(" poisoned!\n\n");
+         scroll->display_prompt();
+        }
+     }
+  }
+
    // temp. fix; this too should be done with UseCode (and don't move the mirror)
    if(old_pos.y > 0 && new_y > 0)
    {
@@ -603,7 +676,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
    // Cyclops: shake ground if player is near
    if(actor_type->base_obj_n == OBJ_U6_CYCLOPS && is_nearby(player->get_actor()))
      new QuakeEffect(1, 200, player->get_actor());
-  }
+
 
  if(has_surrounding_objs()) //add our surrounding objects back onto the map.
    add_surrounding_objs_to_map();
@@ -859,8 +932,9 @@ void U6Actor::preform_worktype()
 
    case WORKTYPE_U6_WORK :
    case WORKTYPE_U6_WANDER_AROUND   : wt_wander_around(); break;
-   case WORKTYPE_U6_ANIMAL_WANDER : wt_farm_animal_wander(); break;
-   case WORKTYPE_U6_BEG : wt_beg(); break;
+   case WORKTYPE_U6_ANIMAL_WANDER : wt_wander_around(); break;
+   case WORKTYPE_U6_BEG : wt_converse(); break;
+   case WORKTYPE_U6_TANGLE : wt_tangle_vine(); break;
 //   case WORKTYPE_U6_
 //                     break;
   }
@@ -996,8 +1070,8 @@ void U6Actor::wt_wander_around()
 }
 
 // wander around but don't cross boundaries or fences. Used for cows and horses.
-// FIX: once we've tested that hazards are working properly, this won't be needed
-void U6Actor::wt_farm_animal_wander()
+// now that hazards are working properly, this isn't needed --SB-X
+/*void U6Actor::wt_farm_animal_wander()
 {
  uint8 new_direction;
  sint8 rel_x = 0, rel_y = 0;
@@ -1024,14 +1098,10 @@ void U6Actor::wt_farm_animal_wander()
  else set_moves_left(moves - 5);
 
  return;
-}
+}*/
 
-
-/* Wander around, approach and talk to the player character if visible.
- * Beg modes: 0 = waiting for target, 1 = following, 2 = just loiter
- * FIXME: This is really done using 2 worktypes. (CONV, then LOIT)
- */
-void U6Actor::wt_beg()
+/* Wander around, approach and talk to the player character if visible. */
+void U6Actor::wt_converse()
 {
     Player *player = Game::get_game()->get_player();
     Actor *actor = player->get_actor();
@@ -1067,7 +1137,7 @@ void U6Actor::wt_beg()
                     actor->face_actor(this);
                     face_actor(actor);
                 }
-                beg_mode = 2;
+                set_worktype(WORKTYPE_U6_WANDER_AROUND);
                 return; // done
             }
         }
@@ -1130,8 +1200,6 @@ void U6Actor::wt_play_lute()
 }
 
 // Combat worktypes/strategies
-// Monsters are always in "combat-mode", but that isn't apparent
-// unless an enemy is nearby.
 void U6Actor::wt_combat()
 {
     bool attacking = false;
@@ -1252,6 +1320,129 @@ void U6Actor::wt_player()
 
     // else do player update, raft, balloon, etc
     printf("U6Actor: Player (%d)\n", id_n);
+}
+
+// move towards enemies, dropping tangle vines as we go
+// attack adjacent enemies
+// FIXME: this is a combat worktype
+void U6Actor::wt_tangle_vine()
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    ActorList *foes = find_enemies();
+    if(foes)
+    {
+        actor_manager->sort_nearest(foes,x,y,z);
+        if(combat_try_attack(foes))
+            return;
+    }
+
+    MapCoord old_pos(x,y,z);
+    if(!foes)
+        wt_wander_around(); // move somewhere
+    else // move manually because moving with pathfinder wouldn't drop vines
+    {
+        if(NUVIE_RAND()%4 != 0) // vines aren't constantly moving
+            return;
+
+        U6Actor *foe = (U6Actor *)foes->front();
+        sint16 rel_x = clamp(foe->x-x,-1,1);
+        sint16 rel_y = clamp(foe->y-y,-1,1);
+        if(rel_x && rel_y) // don't allow diagonals
+        {
+            if(abs(foe->x-x) < abs(foe->y-y)) rel_x = 0;
+                                         else rel_y = 0;
+        }
+        // creepy random movement towards enemy
+        if(NUVIE_RAND()%2 == 0)
+        {
+            if(rel_x) { rel_y = rel_x; rel_x = 0; }
+            else      { rel_x = rel_y; rel_y = 0; }
+        }
+
+        if(moveRelative(rel_x, rel_y))
+            Actor::set_direction(rel_x,rel_y);
+    }
+
+    MapCoord new_pos(x,y,z);
+    if(new_pos != old_pos) // moved; extend a tangle vine
+        tangle_drop_vine(old_pos, new_pos);
+}
+
+// drop a vine at moved_from connecting to moved_to and any previous vine
+void U6Actor::tangle_drop_vine(const MapCoord &moved_from, const MapCoord &moved_to)
+{
+    // -- = 366:0 //  | = 366:1
+    // |_ = 366:2 // |^ = 366:3
+    // ^| = 366:4 // _| = 366:5
+    Obj *vine = new_obj(OBJ_U6_TANGLE_VINE,0,
+                        moved_from.x,moved_from.y,moved_from.z);
+    // FIXME: we should be able to use current direction, but it doesn't always seem reliable
+    uint8 dir = ((moved_to.x-moved_from.x)==0) ? (moved_to.y<moved_from.y?NUVIE_DIR_N:NUVIE_DIR_S)
+                                      : (moved_to.x<moved_from.x?NUVIE_DIR_W:NUVIE_DIR_E);
+    if(dir == NUVIE_DIR_W || dir == NUVIE_DIR_E)
+        vine->frame_n = 0;
+    if(dir == NUVIE_DIR_N || dir == NUVIE_DIR_S)
+        vine->frame_n = 1;
+
+    MapCoord connecting_vine; // old vine position
+    if(tangle_get_connecting_vine(moved_from, connecting_vine))
+    {
+        uint8 old_dir = ((moved_from.x-connecting_vine.x)==0) ? (moved_from.y<connecting_vine.y?NUVIE_DIR_N:NUVIE_DIR_S)
+                                          : (moved_from.x<connecting_vine.x?NUVIE_DIR_W:NUVIE_DIR_E);
+        if(old_dir != dir)
+        {
+            if(dir == NUVIE_DIR_E && old_dir == NUVIE_DIR_S)
+                vine->frame_n = 2; // was going down and turned right, ll-bend
+            if(dir == NUVIE_DIR_N && old_dir == NUVIE_DIR_W)
+                vine->frame_n = 2; // was going left and turned up, ll-bend
+            if(dir == NUVIE_DIR_E && old_dir == NUVIE_DIR_N)
+                vine->frame_n = 3; // was going up and turned right, ul-bend
+            if(dir == NUVIE_DIR_S && old_dir == NUVIE_DIR_W)
+                vine->frame_n = 3; // was going left and turned down, ul-bend
+            if(dir == NUVIE_DIR_S && old_dir == NUVIE_DIR_E)
+                vine->frame_n = 4; // was going right and turned down, ur-bend
+            if(dir == NUVIE_DIR_W && old_dir == NUVIE_DIR_N)
+                vine->frame_n = 4; // was going up and turned left, ur-bend
+            if(dir == NUVIE_DIR_W && old_dir == NUVIE_DIR_S)
+                vine->frame_n = 5; // was going down and turned left, lr-bend
+            if(dir == NUVIE_DIR_N && old_dir == NUVIE_DIR_E)
+                vine->frame_n = 5; // was going right and turned up, lr-bend
+        }
+    }
+
+    vine->quality = id_n; // vine points to me
+    vine->qty = 1; // vine has 1 hp
+    vine->status |= OBJ_STATUS_TEMPORARY | OBJ_STATUS_OK_TO_TAKE;
+    obj_manager->add_obj(vine,OBJ_ADD_TOP);
+}
+
+// find a connecting vine adjacent to new_vine_pos, and store the location in
+// old_vine_pos
+// FIXME: maybe I should be using surrounding_objs after all
+bool U6Actor::tangle_get_connecting_vine(const MapCoord &new_vine_pos, MapCoord &old_vine_pos)
+{
+    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    Obj *old_vine = 0;
+    Actor *pod = 0;
+    const struct{sint8 x,y;} connecting_vines[4] = { { -1,0 },{ +1,0 },{ 0,-1 },{ 0,+1 } };
+
+    int squares_checked=0;
+    while(squares_checked < 4)
+    {
+        uint16 x2 = new_vine_pos.x + connecting_vines[squares_checked].x,
+               y2 = new_vine_pos.y + connecting_vines[squares_checked].y;
+        // return vines with a quality equal to our id_n, or the center pod
+        old_vine = obj_manager->get_obj_of_type_from_location(OBJ_U6_TANGLE_VINE,id_n,1,x2,y2,z);
+        pod = actor_manager->get_actor(x2,y2,z);
+        if((old_vine && old_vine->obj_n == OBJ_U6_TANGLE_VINE)
+           || (pod && pod->get_obj_n() == OBJ_U6_TANGLE_VINE_POD))
+        {
+            old_vine_pos.x = x2; old_vine_pos.y = y2;
+            return true;
+        }
+        ++squares_checked;
+    }
+    return false;
 }
 
 // Returns true if the enemy could be attacked. If false is returned, the actor

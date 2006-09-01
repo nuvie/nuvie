@@ -116,6 +116,7 @@ class U6Actor: public Actor
  bool init_dragon();
  bool init_hydra();
  bool init_silver_serpent();
+ bool init_tangle_vine();
  void init_new_silver_serpent();
  void gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, uint16 az);
  inline bool check_move_silver_serpent(uint16 x, uint16 y);
@@ -125,13 +126,14 @@ class U6Actor: public Actor
  void wt_walk_to_location();
  void wt_walk_straight();
  void wt_wander_around();
- void wt_farm_animal_wander();
- void wt_beg();
+// void wt_farm_animal_wander();
+ void wt_converse();
  void wt_sleep();
  void wt_play_lute();
  void wt_combat();
  void wt_player();
  void wt_party();
+ void wt_tangle_vine();
 
  inline const U6ActorType *get_actor_type(uint16 new_obj_n);
 
@@ -146,6 +148,8 @@ class U6Actor: public Actor
  inline void set_direction_of_surrounding_ship_objs(uint8 new_direction);
  inline void set_direction_of_surrounding_splitactor_objs(uint8 new_direction);
  inline void set_direction_of_surrounding_dragon_objs(uint8 new_direction);
+ void tangle_drop_vine(const MapCoord &moved_from, const MapCoord &moved_to);
+ inline bool tangle_get_connecting_vine(const MapCoord &new_vine_pos, MapCoord &old_vine_pos);
 
  inline void twitch_surrounding_objs();
  inline void twitch_surrounding_dragon_objs();
