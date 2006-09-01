@@ -241,6 +241,14 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
  else
    sprintf(desc_buf,"%s%s",article_tbl[tile->article_n], desc);
 
+ printf("%s (%d): flags1:",desc_buf,tile_num);
+ print_b(tile->flags1);
+ printf(" f2:");
+ print_b(tile->flags2);
+ printf(" f3:");
+ print_b(tile->flags3);
+ printf("\n");
+ 
  return desc_buf;
 }
 
