@@ -421,7 +421,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
    }
 
  // move
- x = WRAPPED_COORD(new_x,new_z);
+ x = WRAPPED_COORD(new_x,new_z); // FIXME: this is probably needed because PathFinder is not wrapping coords
  y = WRAPPED_COORD(new_y,new_z);
  z = new_z;
 
@@ -753,22 +753,15 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
  {
    add_to = container->container;
    /* obj->status |= OBJ_STATUS_IN_CONTAINER; */ // luteijn: don't manipulate this directly!
-   obj->in_container(); 
-   obj->parent_obj = container;
-   obj->x = container->objblk_n; // luteijn: I think this should only be done when saving..
-
-   /* if(obj->status & OBJ_STATUS_IN_INVENTORY)
-     obj->status ^= OBJ_STATUS_IN_CONTAINER; */ // luteijn: won't happen anymore as using in_container() now
+   obj->set_in_container(); 
+   obj->parent_obj = container; // obj->x is set when saving
  }
  else
  {
    // only objects outside containers are marked in_inventory
    /* obj->status |= OBJ_STATUS_IN_INVENTORY; */ // luteijn: don't manipulate this directly!
-   obj->in_inventory();
+   obj->set_in_inventory();
    obj->x = id_n;
-
-   /* if(obj->status & OBJ_STATUS_IN_CONTAINER)
-     obj->status ^= OBJ_STATUS_IN_CONTAINER; */ // luteijn: won't happen anymore as using in_container() now
 
    if(obj->is_lit()) // light up actor
      add_light(TORCH_LIGHT_LEVEL);
