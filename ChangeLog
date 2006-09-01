@@ -1,13 +1,57 @@
+2006-09-01  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Added TangleVines and some tangle vine dropping code. Initializing new
+	  tangle vines is still very broken.
+	* Added TangleVine actor to U6ActorTypes list. Please review the animation
+	  settings here.
+	* Renamed U6Actor::wt_beg() to wt_converse. Actors with this worktype now
+	  change to wt_wander after talking to the player.
+	* Also in U6Actor: Removed wt_farm_animal_wander().
+	  Changed new silver serpent length from 5-9 to 4-8.
+	  Added tangle vines to list of damaging objects, and added damaging tiles
+	  lava and swamp, which doesn't poison the player while wearing swamp
+	  boots. All of this code should probably be in update(), update_time(),
+	  or pass() so it hurts actors who are standing still.
+	* Sleep fields make the actor fall asleep.
+	* U6UseCode: Disallow powder kegs being lit from inside containers. (for
+	  now)
+	  Replaced redundant and dangerous (could have been called on kegs in
+	  containers) code destroying powder kegs with destroy_obj().
+	* Added more paranoid assertions to torch usecode, and removed some
+	  negative logic there.
+	  Removed incorrect obj->is_in_inventory_new() check when lighting a 
+	  torch.
+	* UseCode::destroy_obj: Make sure objects to be destroyed are on the map
+	  before removing them. Clarified commented out code, to be uncommented
+	  when obj_remove_obj() exists.
+	* Renamed Obj::in_container/in_inventory/on_map/readied to
+	  Obj::set_in_container/set_in_inventory/set_on_map/set_readied per Nuvie
+	  convention, and because the functions are more obvious that way.
+	* ObjManager: Moved some status flag definitions. Replaced
+	  OBJ_STATUS_MASK_GET and OBJ_STATUS_MASK_SET with OBJ_STATUS_POS_MASK,
+	  which is simply inverted to clear the relevant flags. The meaning of
+	  the one mask is more obvious this way.
+	* Moved the Obj position checks around so they're closer to the new set
+	  functions.
+	* More paranoid assertions in ObjManager. (replacing an incorrectly used
+	  clamp_min, and to make sure we dont try to remove objects that aren't
+	  on the map)
+	* Replaced the assertion that an object is in a container in
+	  ObjManager::get_obj_container(). If this breaks something or needs to
+	  return NULL, we can change it back.
+	* Tried to clarify how Pieter's WRAP_COORD works, and make it not rely so
+	  much on actual plane number, but it looks even more confusing now.
+	* Removed no longer needed code in Actor.cpp.
+
 2006-08-28  Pieter Luteijn <luteijn at users.sourceforge.net>
-        * Moongates don't (dis)appear yet based if there are(n't) any moons in
-	the sky, but they do work now, since their usecode is in. Try the
-	permanent moongate at the Spirituality shrine.
+	* Moongates don't (dis)appear yet based if there are(n't) any moons in
+	  the sky, but they do work now, since their usecode is in. Try the
+	  permanent moongate at the Spirituality shrine.
 	* Moonstone usecode needs fine tuning but basic usecode functionality
-	is there. You can bury the moonstones somewhere else and the
-	destination/burial table is updated.
+	  is there. You can bury the moonstones somewhere else and the
+	  destination/burial table is updated.
 
 2006-08-25  Pieter Luteijn <luteijn at users.sourceforge.net>
-        * Started on Blue Moongate support
+	* Started on Blue Moongate support
 	* Small improvement to thrown weapon support
 
 2006-08-22  Eric Fry <efry at users.sourceforge.net>
@@ -27,12 +71,12 @@
 	  progress documents which are located in the docs/ cvs repository.
 
 2006-08-15  Pieter Luteijn <luteijn at users.sourceforge.net>
-        * Get can now get into containers. (doesn't help with the spellbook,
+	* Get can now get into containers. (doesn't help with the spellbook,
 	  as you can't 'open' that; still need to fix move/push for this)
 	  Move/Push needs to be fixed anyway so it can be used to move stuff
 	  between partmembers. Planning to 'fix' usecode to also work with
 	  containers but no time yet.
-        * Get weight check fixed for containers to not allow you to get more
+	* Get weight check fixed for containers to not allow you to get more
 	  than your allowance by getting a light bag with heavy content. 
 
 2006-08-14  Pieter Luteijn <luteijn at users.sourceforge.net>
@@ -168,20 +212,20 @@
 	* Reset the InventoryWidget to the top when returning from a container.
 
 2006-08-11  Pieter Luteijn <luteijn at users.sourceforge.net>
-        * cleaned(?) up confusion with on_map, in_inventory, in_container,
+	* cleaned(?) up confusion with on_map, in_inventory, in_container,
 	 equipped status 'flags' as these are mutually exclusive, so use a 2
 	 bit field instead of 4 bit flags. Because of this they can't be just
 	 or-red in / and-ed out. 
 
-        * Magic fixes (error messages, logic)
-        * fixed an obj duplication bug in obj_add_obj
+	* Magic fixes (error messages, logic)
+	* fixed an obj duplication bug in obj_add_obj
 	* added setting of obj->parent_obj when loading a game
 	  needs more testing I think.
 
 2006-08-10  Pieter Luteijn <luteijn at users.sourceforge.net>
-        * added position parameter to list_add_obj (defaults to 0)
-        * added Obj *parent_obj to Obj struct.
-        * added a obj_add_obj that uses list_add_obj to add an object to a
+	* added position parameter to list_add_obj (defaults to 0)
+	* added Obj *parent_obj to Obj struct.
+	* added a obj_add_obj that uses list_add_obj to add an object to a
 	  container, to allow updating the parent_obj.
 	  nothing uses this yet but can call the function from
 	  debugger and move e.g. spells into the spellbook.
@@ -191,16 +235,16 @@
 	* added an effect to the Tremor spell script and some initial stuff to
 	  the gate travel spell. This will need function_input to be fixed.
 	  
-        * Added newline at end of file Weather.cpp (fix a warning)
-        * Added macros WRAPPED_COORD(c,level), WRAP_COORD(c,level)
+	* Added newline at end of file Weather.cpp (fix a warning)
+	* Added macros WRAPPED_COORD(c,level), WRAP_COORD(c,level)
 	  The first returns wrapped version of c, without changing c itself;
 	  the other does modify c. Use the first version for things
 	  like (x+1) or when you still need the unwrapped version.
 
 2006-08-09  Pieter Luteijn <luteijn at users.sourceforge.net>
-        * use balloon from other's inventory.
+	* use balloon from other's inventory.
 	* disallow balloon use underground
-        * move to edge of map without crashing.
+	* move to edge of map without crashing.
 	* wrap around map (at least works with balloon, need to test more)
 
 2006-08-08  Joseph Applegate <sb-x at users.sourceforge.net>
