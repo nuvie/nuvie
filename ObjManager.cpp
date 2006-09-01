@@ -339,7 +339,7 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
    
  if(parent) //obj is in a container
   {
-   obj->in_container(); // in container 
+   obj->set_in_container(); // in container 
    obj->x = parent->objblk_n;
    obj->y &= (0xff ^ 0x1); //clean zeroth bit in y which is used for objblk_n > 1024
    if(obj->x >= 1024)
@@ -853,9 +853,8 @@ bool ObjManager::add_obj(Obj *obj, bool addOnTop)
 */
 bool ObjManager::remove_obj(Obj *obj)
 {
- U6LList *obj_list;
-
- obj_list = get_obj_list(obj->x,obj->y,obj->z);
+ assert(obj->is_on_map());
+ U6LList *obj_list = get_obj_list(obj->x,obj->y,obj->z);
 
  if(obj_list != NULL)
    {
@@ -1018,16 +1017,15 @@ void ObjManager::set_obj_tile_num(uint16 obj_num, uint16 tile_num)
 }
 
 
-/* Animate all visible tiles of an object `loop_count' times.
- */
+/* Animate all visible tiles of an object `loop_count' times. */
 void ObjManager::animate_forwards(Obj *obj, uint32 loop_count)
 {
+    // In U6 there is no place where one object must animate and nearby objects
+    // of the same type don't also animate, so just forward to TileManager.
     tile_manager->set_anim_loop(get_obj_tile_num(obj->obj_n), loop_count, 0);
 }
 
-
-/* Animate in reverse all visible tiles of an object `loop_count' times.
- */
+/* Animate in reverse all visible tiles of an object `loop_count' times. */
 void ObjManager::animate_backwards(Obj *obj, uint32 loop_count)
 {
     tile_manager->set_anim_loop(get_obj_tile_num(obj->obj_n), loop_count, 1);
@@ -1580,7 +1578,7 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects, uint
  if(!llist || !obj)
    return false;
  
- clamp_min(pos,llist->count());
+ assert(pos < llist->count());
    
  if(stack_objects && is_stackable(obj))
   {
@@ -1626,14 +1624,11 @@ bool ObjManager::obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects, uint32 po
   }
   
   remove_obj(obj); 
-  // and add it.
+  // and add it to the container.
   if (list_add_obj(c_obj->container, obj, stack_objects, pos))
   {
-    obj->in_container();
+    obj->set_in_container();
     obj->parent_obj=c_obj;
-    // FIXME? may have to set x etc?
-    // but objblk_n is not guaranteed to be unique, eventually will be fixed at 
-    // save-time
     return true;
   } 
   else 
@@ -1701,13 +1696,11 @@ Obj *ObjManager::get_obj_from_stack(Obj *obj, uint32 count)
     return(new_obj);
 }
 
-
-
-/* Returns the object which contains another object.
- */
+/* Returns the object which contains another object. */
 Obj *ObjManager::get_obj_container(Obj *obj)
 {
-    return(obj->parent_obj); // will be NULL if not a contained object.
+    assert(obj->parent_obj != NULL);
+    return(obj->parent_obj); // must not be NULL
 }
 
 void clean_obj_tree_node(void *node)

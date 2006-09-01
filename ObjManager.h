@@ -40,17 +40,16 @@ class MapCoord;
 #define OBJ_STATUS_OK_TO_TAKE    0x1
 //#define OBJ_STATUS_SEEN_EGG      0x2  // something to do with eggs <- not sure about this one.
 #define OBJ_STATUS_INVISIBLE     0x2  // I think this is correct
-//#define OBJ_STATUS_UNKNOWN     0x4  // objlist.txt says 'charmed'
-#define OBJ_STATUS_CHARMED	 0x4 // objlist.txt says 'charmed'
+#define OBJ_STATUS_CHARMED	     0x4 // objlist.txt says 'charmed'
 
-// A 2 bit field, so can't use plain | to check / |= to set these. 
+// position: A 2 bit field, so can't use plain | to check / |= to set these. 
 // FIXME: check to make sure we don't do this anywhere anymore
-#define OBJ_STATUS_ON_MAP	 0x0
-#define OBJ_STATUS_IN_CONTAINER  0x8
-#define OBJ_STATUS_IN_INVENTORY 0x10
-#define OBJ_STATUS_READIED      0x18
-#define OBJ_STATUS_MASK_GET	0x18
-#define OBJ_STATUS_MASK_SET	0xE7
+#define OBJ_STATUS_ON_MAP        0x0 // 0 << 3
+#define OBJ_STATUS_IN_CONTAINER  0x8 // 1
+#define OBJ_STATUS_IN_INVENTORY 0x10 // 2
+#define OBJ_STATUS_READIED      0x18 // 3
+#define OBJ_STATUS_POS_MASK     0x18
+//#define OBJ_STATUS_POS_MASK_SET 0xE7
 
 #define OBJ_STATUS_TEMPORARY    0x20
 #define OBJ_STATUS_EGG_ACTIVE   0x40  // something to do with eggs
@@ -100,18 +99,6 @@ struct Obj
  bool is_ok_to_take()   { return(status & OBJ_STATUS_OK_TO_TAKE); }
  bool is_invisible()	{ return(status & OBJ_STATUS_INVISIBLE); } 
  bool is_charmed()	{ return(status & OBJ_STATUS_CHARMED); } 
- bool is_on_map()       { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_ON_MAP); }
- /* old, until replaced everywhere properly */
- bool is_in_container_old() { printf("Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_CONTAINER); }
- bool is_in_inventory_old() { printf("Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_INVENTORY); }
- /* new, to replace the above two (redoing the logic) */
- bool is_in_container_new() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_CONTAINER); }
- bool is_in_inventory_new() { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_IN_INVENTORY); }
- /* links, disable to find instances while renaming, eventually swing over and change to _new when renaming back.. */
- bool is_in_container() { return is_in_container_old();}
- bool is_in_inventory() { return is_in_inventory_old();}
- /* */
- bool is_readied()      { return((status & OBJ_STATUS_MASK_GET) == OBJ_STATUS_READIED); }
  bool is_temporary()    { return(status & OBJ_STATUS_TEMPORARY); }
  bool is_egg_active()   { return(status & OBJ_STATUS_EGG_ACTIVE); }
  bool is_broken()       { return(status & OBJ_STATUS_BROKEN); }
@@ -119,25 +106,37 @@ struct Obj
  bool is_cursed()       { return(status & OBJ_STATUS_CURSED); }
  bool is_lit()          { return(status & OBJ_STATUS_LIT); }
 
- void on_map()       { status &= OBJ_STATUS_MASK_SET; 
-                       status |= OBJ_STATUS_ON_MAP; }
- void in_container() { status &= OBJ_STATUS_MASK_SET;
-                       status |= OBJ_STATUS_IN_CONTAINER; }
- void in_inventory() { status &= OBJ_STATUS_MASK_SET; 
-   		       status |= OBJ_STATUS_IN_INVENTORY; }
- void readied()      { status &= OBJ_STATUS_MASK_SET;
+ /* old, until replaced everywhere properly */
+ bool is_in_container_old() { printf("Depricated is_in_container used (obj=%d:%d)\n",obj_n,frame_n); return(status & OBJ_STATUS_IN_CONTAINER); }
+ bool is_in_inventory_old() { printf("Depricated is_in_inventory used (obj=%d:%d)\n",obj_n,frame_n); return(status & OBJ_STATUS_IN_INVENTORY); }
+ /* new, to replace the above two (redoing the logic) */
+ bool is_in_container_new() { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_IN_CONTAINER); }
+ bool is_in_inventory_new() { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_IN_INVENTORY); }
+ /* links, disable to find instances while renaming, eventually swing over and change to _new when renaming back.. */
+ bool is_in_container() { return is_in_container_old();}
+ bool is_in_inventory() { return is_in_inventory_old();}
+ bool is_on_map()       { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_ON_MAP); }
+ bool is_readied()      { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_READIED); }
+
+ void set_on_map()   { status &= ~OBJ_STATUS_POS_MASK; // clear position bits
+                       status |= OBJ_STATUS_ON_MAP; }  // set
+ void set_in_container() { status &= ~OBJ_STATUS_POS_MASK;
+                           status |= OBJ_STATUS_IN_CONTAINER; }
+ void set_in_inventory() { status &= ~OBJ_STATUS_POS_MASK;
+   		                   status |= OBJ_STATUS_IN_INVENTORY; }
+ void set_readied()  { status &= ~OBJ_STATUS_POS_MASK;
                        status |= OBJ_STATUS_READIED; }
 
  /* Returns true if an object is in an actor inventory, including containers and readied items. */
 
  bool is_held() { if(is_on_map()) return false;
                   if(is_readied()) return true;
-		  if(is_in_inventory_new()) return true;
-		  // none of the above, so must be in a container. 
-		  assert(is_in_container_new()); // check anyway, paranoia is a way of life
-		  assert(parent_obj); // should be non-NULL for contained objects. 
-		  // tail recurse:
-		  return parent_obj->is_held(); }
+                  if(is_in_inventory_new()) return true;
+                  // none of the above, so must be in a container. 
+                  assert(is_in_container_new()); // check anyway, paranoia is a way of life
+                  assert(parent_obj); // should be non-NULL for contained objects. 
+                  // tail recurse:
+                  return parent_obj->is_held(); }
 };
 
 Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z);
