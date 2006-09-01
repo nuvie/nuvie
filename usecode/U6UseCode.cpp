@@ -961,20 +961,20 @@ void U6UseCode::drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width
  scroll->display_string("\nClose the drawbridge.\n");
 }
 
-bool U6UseCode::use_moonstone(Obj *obj, UseCodeEvent ev)
-{
 /* GET: clear buried moonstone location
- * (we never know if it is buried or just lying there)
+ *      (we never know if it is buried or just lying there)
  * USE: drop at user's current location, and update buried location 
  */
+bool U6UseCode::use_moonstone(Obj *obj, UseCodeEvent ev)
+{
     if(ev == USE_EVENT_GET) 
     {
       Weather *weather = game->get_weather();
        /* FIXME: need to check weights here already? 
-	* Check original's behavior when moonstone cannot be gotten due 
-	* to weight limitations. Moving it normally doesn't unbury it,
-	* so probably failing to get it shouldn't either.
-	*/ 
+        * Check original's behavior when moonstone cannot be gotten due 
+        * to weight limitations. Moving it normally doesn't unbury it,
+        * so probably failing to get it shouldn't either.
+        */ 
       weather->set_moonstone(obj->frame_n,MapCoord(0,0,0)) ;
       scroll->display_string("\nMoonstone dug up. (FIXME)\n");
       // TODO weather->update_moongates();
@@ -2442,7 +2442,7 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)// FIXME when in contai
 
     if(ev == USE_EVENT_USE)
     {
-        if(lit_powder_keg)
+        if(lit_powder_keg || obj->is_in_container()) // FIXME: doesn't work for objects in containers
         {
             scroll->display_string("\nNot now!\n");
             return(true);
@@ -2457,7 +2457,7 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)// FIXME when in contai
     {
         if(*items.msg_ref == MESG_TIMED) // explode
         {
-            uint16 x = obj->x, y = obj->y;
+            uint16 x = obj->x, y = obj->y; // FIXME: doesn't work for objects in containers
             if(obj->is_readied() || obj->is_in_inventory_new()) // explode over actor carrying keg 
             {
                 x = actor_manager->get_actor(obj->x)->get_location().x;
@@ -2470,11 +2470,7 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)// FIXME when in contai
         }
         else if(*items.msg_ref == MESG_EFFECT_COMPLETE) // explosion finished
         {
-            if(obj->is_on_map())
-                obj_manager->remove_obj(obj);
-            else
-                actor_manager->get_actor(obj->x)->inventory_remove_obj(obj);
-            delete_obj(obj);
+            destroy_obj(obj);
             lit_powder_keg = false;
         }
         return(true);
@@ -2609,7 +2605,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             return(true);
         }
         // light
-        if(obj->is_in_container_new()) 
+        if(obj->is_in_container_new())
             scroll->display_string("\nNot now!\n"); // FIXME make this just work.
         else if(obj->is_on_map()) 
         {
@@ -2636,8 +2632,9 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
                 can_light_it = actor->add_readied_object(torch);
             }
 
-            if(can_light_it)
+            if(can_light_it) // assume torch is readied
             {
+                assert(torch->is_readied());
                 light_torch(torch);
             }
             else
@@ -2654,17 +2651,21 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     }
     else if(ev == USE_EVENT_READY)
     {
-        if(obj->is_readied() && obj->frame_n == 1) // remove
+        if(obj->is_readied()) // remove
         {
-            extinguish_torch(obj);
-            return(false); // destroyed
+            if(obj->frame_n == 1)
+            {
+                extinguish_torch(obj);
+                return(false); // destroyed
+            }
         }
-        if(!obj->is_readied()) // equip (get one from the stack)
+        else // equip (get one from the stack)
         {
             if(obj->qty > 1)
             {
                 Obj *torch = obj_manager->get_obj_from_stack(obj, obj->qty - 1);
-                if(torch != obj && obj->is_in_inventory_new()) // keep extras in inventory
+                assert(torch != obj); // got a new object from the obj stack
+                if(obj->is_in_inventory_new()) // keep extras in inventory
                 {
                     actor_manager->get_actor_holding_obj(torch)->inventory_add_object_nostack(torch);
                 }
@@ -2712,10 +2713,11 @@ void U6UseCode::light_torch(Obj *obj)
 {
     assert(obj->qty == 1);
     assert(obj->frame_n == 0);
+    assert(obj->is_readied() || obj->is_on_map());
     toggle_frame(obj); // light
     obj->status |= OBJ_STATUS_LIT;
 
-    if(obj->is_readied() || obj->is_in_inventory_new())
+    if(obj->is_readied())
         actor_manager->get_actor_holding_obj(obj)->add_light(TORCH_LIGHT_LEVEL);
     scroll->display_string("\nTorch is lit.\n");
     game->get_map_window()->updateBlacking();
