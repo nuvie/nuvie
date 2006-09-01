@@ -214,11 +214,11 @@ Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
             removed = actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj);
         else if(obj->is_in_container_new())
         {
-//            removed = obj_manager->get_obj_container(obj);
+//            removed = obj_manager->obj_remove_obj(obj_manager->get_obj_container(obj), obj);
             removed = false; // FIXME
             printf("warning: tried to remove %s (%d:%d) from a container\n",obj_manager->look_obj(obj,true),obj->obj_n,obj->frame_n);
         }
-        else
+        else if(obj->is_on_map())
             removed = obj_manager->remove_obj(obj);
         if(removed)
         {
