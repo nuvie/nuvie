@@ -45,7 +45,7 @@ alignment
 */
 
 const U6ActorType u6ActorTypes[] = {
-// 4x1 tile actors                                                                                            STR, DEX, INT,  AC, DMG,  HP, ALIGNMENT
+ // 4x1 tile actors                                                                                            STR, DEX, INT,  AC, DMG,  HP, ALIGNMENT
  {OBJ_U6_INSECTS,          0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,     20,   1,  40,   1,   0,   1,   1, ACTOR_ALIGNMENT_CHAOTIC},
  {OBJ_U6_GIANT_SQUID,      0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH, 50,  24,  20,   8,   0,  20,  50, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_GHOST,            0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       45,   1,  10,   9,   0,  12,  20, ACTOR_ALIGNMENT_EVIL},
@@ -62,7 +62,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_HYDRA,            0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,          5,  26,  11,   2,   0,  15,  50, ACTOR_ALIGNMENT_CHAOTIC},
  {OBJ_U6_MOUSE,            1, 1, 1, 0, OBJ_U6_MOUSE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,          0,   2,  25,   3,   0,   2,   5, ACTOR_ALIGNMENT_NEUTRAL},
  {OBJ_U6_CAT,              1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         40,   4,  18,   8,   0,   2,   6, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_TANGLE_VINE,      0, 0, 1, 0, OBJ_U6_TANGLE_VINE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,    0,  20,   5,   1,   4,   1,  30, ACTOR_ALIGNMENT_CHAOTIC},
+ {OBJ_U6_TANGLE_VINE,      1, 1, 1, 0, OBJ_U6_TANGLE_VINE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,    0,  20,   5,   1,   4,   1,  30, ACTOR_ALIGNMENT_CHAOTIC},
 
  // 4x2
  {OBJ_U6_SEA_SERPENT,      2, 2, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH,  60,  17,  17,   9,   2,  30,  70, ACTOR_ALIGNMENT_EVIL},
