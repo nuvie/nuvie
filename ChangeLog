@@ -1,3 +1,7 @@
+2006-09-06  Pieter Luteijn <luteijn at users.sourceforge.net>
+	* Don't try to get ultima6 native music when loading martian or
+	  savage.
+
 2006-09-01  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Added TangleVines and some tangle vine dropping code. Initializing new
 	  tangle vines is still very broken.

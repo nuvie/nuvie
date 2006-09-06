@@ -125,8 +125,13 @@ bool SoundManager::nuvieStartup (Configuration * config)
 
   if(music_enabled)
     {
-     if(music_style == "native")
-       LoadNativeU6Songs(); //FIX need to handle MD & SE music too.
+     if(music_style == "native") 
+       {
+         int game_type; //FIXME there's a nuvie_game_t, but almost everything uses int game_type (or gametype)
+         config->value("config/GameType",game_type);
+         if (game_type == NUVIE_GAME_U6)
+	   LoadNativeU6Songs(); //FIX need to handle MD & SE music too.
+       }
      else if (music_style == "custom")
        LoadCustomSongs(sound_dir);
      else
