@@ -41,7 +41,7 @@ bool Cursor::init(Configuration *c, Screen *s)
     
     if(!enable_cursors)
       return false;
-    
+    //FIXME secursor.ptr, mdcursor.ptr 
     config_get_path(config, "u6mcga.ptr", filename);
     
     if(filename != "")

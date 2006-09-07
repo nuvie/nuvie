@@ -169,17 +169,27 @@ bool U6Shape::load(unsigned char *buf)
 
   /* Allocate memory for shape and make it all transperent. */
   raw = (unsigned char*)malloc(width * height);
-  memset(raw, 255, width * height);
+  if (raw == NULL)
+  {
+    printf("malloc failed to allocate space for shape\n");
+    return false;
+  }
+  memset(raw, 255, width*height);
 
   /* Get the pixel data. */
   while ((num_pixels = SDL_SwapLE16(*(uint16*)data)) != 0)
     {
+
      data += 2;
 
      /* Coordinates relative to hot spot. */
      xpos = SDL_SwapLE16(*(uint16*)data); data += 2;
      ypos = SDL_SwapLE16(*(uint16*)data); data += 2;
 
+     if (((hotx+xpos)>=width) || ((hoty+ypos)>=height)) 
+     {
+       break;
+     }
      /*
       * Test if this block of pixels is encoded
       * (bit0 is set).
@@ -188,7 +198,7 @@ bool U6Shape::load(unsigned char *buf)
 
      /* Divide it by 2. */
      num_pixels >>= 1;
-
+     
      /* Normal pixel:
       * =============
       *
