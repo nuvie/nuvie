@@ -285,7 +285,7 @@ uint32 U6Lib_n::calculate_item_uncomp_size(U6LibItem *item)
                break;
 
                //FIX check this. uncompressed 4 byte item size header
-   case 0xc1 : uncomp_size = item->size - 4;
+   case 0xc1 : uncomp_size = item->size; // - 4;
                 break;
 
               // uncompressed

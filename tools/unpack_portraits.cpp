@@ -57,7 +57,7 @@ int main(int argc, char **argv)
  uint16 num_portraits;
  char bmp_file[8]; // 'xxx.bmp\0'
  char gametype[3]; // 'xx\0'
-
+ uint8 game=0;
  if(argc != 2 || (strcmp(argv[1], "md") != 0 && strcmp(argv[1], "se") != 0))
  {
   printf("Usage: %s gametype\n\ngametype = either md or se\n\n",argv[0]);
@@ -67,9 +67,15 @@ int main(int argc, char **argv)
  strcpy(gametype, argv[1]);
 
  if(strcmp(gametype, "md") == 0)
+ {
   name = "mdfaces.lzc";
+  game = NUVIE_GAME_MD;
+ }
  else
+ {
   name = "faces.lzc";
+  game = NUVIE_GAME_MD;
+ }
 
  SDL_Init(SDL_INIT_VIDEO);
 
@@ -88,7 +94,7 @@ int main(int argc, char **argv)
 
  free(pal);
 
- if(faces.open(name, 4, NUVIE_GAME_SE) == false)
+ if(faces.open(name, 4, game) == false)
   exit(1);
 
  num_portraits = faces.get_num_items();
@@ -102,7 +108,7 @@ int main(int argc, char **argv)
 
   shp_data = faces.get_item(i, NULL);
   shp_buf.open(shp_data, faces.get_item_size(i), NUVIE_BUF_NOCOPY); 
-  shp_lib.open(&shp_buf, 4, NUVIE_GAME_SE);
+  shp_lib.open(&shp_buf, 4, game);
 
   shp->load(&shp_lib, 0);
   shp->get_size(&w,&h);
