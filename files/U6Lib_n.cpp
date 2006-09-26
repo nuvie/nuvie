@@ -279,6 +279,7 @@ uint32 U6Lib_n::calculate_item_uncomp_size(U6LibItem *item)
  switch(item->flag)
   {
    case 0x01 : //compressed
+   case 0x20 : //MD fonts.lzc, MDD_MUS.LZC use this tag among others
                data->seek(item->offset);
                uncomp_size = data->read4();
                break;
