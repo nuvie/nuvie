@@ -42,9 +42,17 @@ typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
 #define clamp_max(v, c)  (((v) > (c)) ? (c) : (v))
 #define clamp(v, c1, c2) ( ((v) < (c1)) ? (c1) : (((v) > (c2)) ? (c2) : (v)) )
 
-const uint8 map_pitch[2] = { 1024, 256 }; // width of 0:surface plane, and 1:all other planes // FIXME: U6 only?
+#define WRAPPED_COORD(c,level) ((c)&((level)?255:1023))
+#define WRAP_COORD(c,level) ((c)&=((level)?255:1023))
+/* 
+ * on all levels, except level 0 (conveniently 'false') the map pitch is 256.
+ * to properly wrap, mask the coordinate with the relevant bit-mask. 
+ * Another way to write this would be:
+ 
+const uint16 map_pitch[2] = { 1024, 256 }; // width of 0:surface plane, and 1:all other planes 
 #define WRAPPED_COORD(c,level) ((c)&(map_pitch[(level==0)?0:1]-1)) // mask high bit, wrap C to map_pitch
 #define WRAP_COORD(c,level) ((c)&=(map_pitch[(level==0)?0:1]-1)) // modifies C
+*/
 
 #define NUVIE_DIR_N    0
 #define NUVIE_DIR_E    1
