@@ -60,6 +60,7 @@ public:
    bool open(NuvieIO *new_data, uint8 size, uint8 type=NUVIE_GAME_U6);
    void close();
    bool create(std::string &filename, uint8 size, uint8 type=NUVIE_GAME_U6);
+   uint8 get_game_type() { return game_type;}
 
    unsigned char *get_item(uint32 item_number, unsigned char *buf=NULL); // read
    void set_item_data(uint32 item_number, unsigned char *src, uint32 src_len);

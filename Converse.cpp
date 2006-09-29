@@ -34,7 +34,7 @@
 #include "ConverseSpeech.h"
 #include "Converse.h"
 
-//#define CONVERSE_DEBUG
+// #define CONVERSE_DEBUG
 
 
 Converse::Converse()
@@ -139,12 +139,16 @@ void Converse::reset()
 void Converse::load_conv(const std::string &convfilename)
 {
     string conv_lib_str;
-
-    if(using_fmtowns)
-      config->pathFromValue("config/ultima6/townsdir", convfilename, conv_lib_str);
+    if (gametype == NUVIE_GAME_U6) {
+	if(using_fmtowns)
+	    config->pathFromValue("config/ultima6/townsdir", convfilename, conv_lib_str);
+	else
+	    config->pathFromValue("config/ultima6/gamedir", convfilename, conv_lib_str);
+    } 
     else
-      config->pathFromValue("config/ultima6/gamedir", convfilename, conv_lib_str);
-
+    {
+	config->pathFromValue((gametype==NUVIE_GAME_MD)?"config/martian/gamedir":"config/savage/gamedir", convfilename, conv_lib_str);
+    }
     unload_conv();
     src_num = 0;
     if(gametype == NUVIE_GAME_U6)
@@ -153,14 +157,13 @@ void Converse::load_conv(const std::string &convfilename)
         src->open(conv_lib_str, 4);
         src_num = (convfilename == "converse.a") ? 1 : (convfilename == "converse.b") ? 2 : 0;
     }
-/*  else if(gametype == NUVIE_GAME_MD)
+    else // MD or SE gametype
     {
-        src = new U6Lib_n(?);
-        src->open(conv_lib_str, ?);
+        src = new U6Lib_n;
+        src->open(conv_lib_str, 4, gametype);
+	src_num=1;
     }
-    else if(gametype == NUVIE_GAME_SE)
-    {
-    } */
+
 #ifdef CONVERSE_DEBUG
     printf("Converse: load \"%s\"\n", convfilename.c_str());
 #endif
@@ -197,6 +200,7 @@ uint32 Converse::get_script_num(uint8 a)
  */
 uint32 Converse::load_conv(uint8 a)
 {
+  if (gametype == NUVIE_GAME_U6){
     if(a <= 98)
     {
         if(src_num != 1)
@@ -207,11 +211,21 @@ uint32 Converse::load_conv(uint8 a)
         if(src_num != 2)
             load_conv("converse.b");        
     }
- 
+  }
+  else 
+  {
+        if(src_num != 1)
+      	    load_conv("talk.lzc");
+  }
  // we want to return the real item number in the converse file.
  if(gametype == NUVIE_GAME_U6 && a > 98)
+ {
    a -= 99;
-
+ }
+ else if (gametype==NUVIE_GAME_SE)
+ {
+   a-=2; 
+ }
  return a;
 }
 
@@ -299,12 +313,12 @@ ConverseInterpret *Converse::new_interpreter()
         case NUVIE_GAME_U6:
             ci = (ConverseInterpret*)new U6ConverseInterpret(this);
             break;
-//        case NUVIE_GAME_MD:
-//            ci = (ConverseInterpret *)new MDTalkInterpret(this);
-//            break;
-//        case NUVIE_GAME_SE:
-//            ci = (ConverseInterpret *)new SETalkInterpret(this);
-//            break;
+        case NUVIE_GAME_MD:
+            ci = (ConverseInterpret *)new MDTalkInterpret(this);
+            break;
+        case NUVIE_GAME_SE:
+            ci = (ConverseInterpret *)new SETalkInterpret(this);
+            break;
     }
     return(ci);
 }
@@ -627,28 +641,38 @@ void ConvScript::read_script()
     unsigned char *dec_script = 0; // decoded
     uint32 undec_len = 0, dec_len = 0;
     U6Lzw decoder;
+    uint8 gametype=src->get_game_type();
 
     undec_len = src->get_item_size(src_index);
     if(undec_len > 4)
     {
-        undec_script = src->get_item(src_index);
-        // decode
-        if(!(undec_script[0] == 0 && undec_script[1] == 0
-             && undec_script[2] == 0 && undec_script[3] == 0))
-        {
-            compressed = true;
-            dec_script =
-                    decoder.decompress_buffer(undec_script, undec_len, dec_len);
-            free(undec_script);
-        }
-        else
-        {
-            compressed = false;
-            dec_len = undec_len - 4;
-            dec_script = (unsigned char *)malloc(dec_len);
-            memcpy(dec_script, undec_script + 4, dec_len);
-            free(undec_script);
-        }
+	undec_script = src->get_item(src_index);
+	if (gametype==NUVIE_GAME_U6) {
+	    // decode
+	    if(!(undec_script[0] == 0 && undec_script[1] == 0
+			&& undec_script[2] == 0 && undec_script[3] == 0))
+	    {
+		compressed = true;
+		dec_script =
+		    decoder.decompress_buffer(undec_script, undec_len, dec_len);
+		free(undec_script);
+	    }
+	    else
+	    {
+		compressed = false;
+		dec_len = undec_len - 4;
+		dec_script = (unsigned char *)malloc(dec_len);
+		memcpy(dec_script, undec_script + 4, dec_len);
+		free(undec_script);
+	    }
+	}
+	else
+	{
+	    // MD/SE compression handled by lzc library
+		compressed = false;
+		dec_len = undec_len;
+		dec_script = undec_script;
+	}
     }
     if(dec_len)
     {

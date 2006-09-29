@@ -1,3 +1,7 @@
+2006-09-29  Pieter Luteijn <luteijn at users.sourceforge.net>
+	* MD/SE dialogue gets loaded and used. Basic support, but probably
+	  needs further work to make it fully work.
+
 2006-09-06  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* Don't try to get ultima6 native music when loading martian or
 	  savage.
