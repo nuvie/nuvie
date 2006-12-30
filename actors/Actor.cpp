@@ -615,6 +615,8 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
       weapon_obj = readied_objects[readied_obj_location]->obj;
       remove_readied_object(readied_obj_location);
       inventory_remove_obj(weapon_obj);
+      if(id_n == Game::get_game()->get_player()->get_actor()->id_n)
+        nuprint("Thy sword hath shattered!\n");
      }
    if(damage == 255) // A weapon that does 255 damage kills every time.
      {
