@@ -28,7 +28,8 @@
 #include "SDL.h"
 
 #include "ObjManager.h"
-#include "GUI_CallBack.h"
+//#include "GUI_CallBack.h"
+#include "CallBack.h"
 
 class Actor;
 class CallbackTarget;
@@ -60,23 +61,47 @@ typedef enum {
  TALK_MODE, /* finding an actor to talk to */
  ATTACK_MODE,
  REST_MODE,
- PUSHSELECT_MODE,
  EQUIP_MODE,
- USESELECT_MODE,
- FREESELECT_MODE, /*...or use a single free-move mode for get,talk,select?*/
  PUSH_MODE,
- DROPTARGET_MODE,
- DROPCOUNT_MODE, /* select how many objects to drop */
  COMBAT_MODE, /* only used to cancel previous actions */
- WAIT_MODE /* waiting for something, optionally display prompt when finished */
+ WAIT_MODE, /* waiting for something, optionally display prompt when finished */
+ INPUT_MODE,
+ KEYINPUT_MODE
 } EventMode;
 
 extern uint32 nuvieGameCounter;
 
-
-class Event : public GUI_CallBack
+// type of input that event may collect and send somewhere
+#define EVENTINPUT_MAPCOORD 0
+#define EVENTINPUT_KEY      1
+#define EVENTINPUT_STRING   2
+#define EVENTINPUT_OBJECT   3
+struct EventInput_s
 {
- friend class Magic;
+    uint8 type; // 0=loc,1=key,2=str,3=obj,4=actor
+//    union
+//    {
+        SDLKey key; // last key entered, if capturing input
+        MapCoord *loc; // target location, or direction if relative ???
+        std::string *str; // ???
+//    };
+    void set_loc(MapCoord c);
+    EventInput_s() : loc(0), str(0), obj(0), actor(0), get_direction(false), get_text(false), target_init(0), select_from_inventory(false), select_range(0) { }
+    ~EventInput_s();
+
+    Obj *obj; // top object at loc (or object from inventory)
+    Actor *actor; // actor at loc
+    bool get_direction; // if true, entering directions selects a target
+    bool get_text; // if true, the MsgScroll is polled for text input
+    MapCoord *target_init; // where MapWindow cursor is centered when targeting
+    bool select_from_inventory; // if true, objects from inventory will be selected (and not from the map)
+    uint8 select_range; // limits movement of MapWindow cursor from center
+};
+typedef struct EventInput_s EventInput;
+
+class Event : public CallBack
+{
+friend class Magic; // FIXME
  Configuration *config;
  GUI *gui;
  ObjManager *obj_manager;
@@ -92,6 +117,8 @@ class Event : public GUI_CallBack
 
  SDL_Event event;
  EventMode mode, last_mode;
+ EventInput input; // collected/received input (of any type)
+// std::vector<EventMode> mode_stack; // current mode is at the end of the list
  int ts; //timestamp for TimeLeft() method.
  char alt_code_str[4]; // string representation of alt-code input
  uint8 alt_code_len; // how many characters have been input for alt-code
@@ -99,11 +126,12 @@ class Event : public GUI_CallBack
  uint8 alt_code_input_num; // alt-code can get multiple inputs
 
  TimeQueue *time_queue, *game_time_queue;
- Obj *use_obj; // used for many things right now (use/move/drop)
- Actor *selected_actor; // for PUSHSELECT
+ Obj *drop_obj;
  uint16 drop_qty;
  uint8 rest_time; // How many hours?
  uint8 rest_guard; // Who will guard?
+ Obj *push_obj;
+ Actor *push_actor;
 
  bool showingQuitDialog;
  bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
@@ -122,56 +150,91 @@ class Event : public GUI_CallBack
 
  bool update();
  bool handleEvent(const SDL_Event *event);
- void useselect_mode(Obj *src, const char *prompt = NULL);
- void freeselect_mode(Obj *src, const char *prompt = NULL);
+ void request_input(CallBack *caller, void *user_data=NULL);
+// Prompt for input.
+// obsolete:
+// void useselect_mode(Obj *src, const char *prompt = NULL); // deprecated
+// void freeselect_mode(Obj *src, const char *prompt = NULL); // deprecated
  void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
+// void get_amount();
+ void get_direction(const char *prompt);
+ void get_direction(const MapCoord &from, const char *prompt);
+ void get_target(const char *prompt);
+ void get_target(const MapCoord &init, const char *prompt);
+ void get_obj_from_inventory(Actor *actor, const char *prompt);
  void display_portrait(Actor *actor, const char *name = NULL);
+// Start a new action, setting a new mode and prompting for input.
  bool newAction(EventMode new_mode);
- void doAction(sint16 rel_x = 0, sint16 rel_y = 0);
- void doAction(Obj *obj);
+// void doAction(sint16 rel_x = 0, sint16 rel_y = 0);
+// void doAction(Obj *obj);
+ void doAction();
  void cancelAction();
  void endAction(bool prompt = false);
+// Send input back to Event, performing an action for the current mode.
+ bool select_obj(Obj *obj);
+ bool select_actor(Actor *actor);
+ bool select_direction(sint16 rel_x, sint16 rel_y);
+ bool select_target(uint16 x, uint16 y);
+ bool select_party_member(uint8 num);
+// bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
+// bool select_obj(sint16 rel_x, sint16 rel_y);
+// There is no "select_text", as Event polls MsgScroll for new input.
+// Similiarly, a "select_key" is unnecessary. The following method
+// starts sending all keyboard input to 'caller'. (with the CB_DATA_READY message)
+ void key_redirect(CallBack *caller, void *user_data);
+ void cancel_key_redirect();
 
- /* The upper-level calls (look/talk/use) encapsulate everything about the
-    action, except printing the action name ("Talk-"). The lower-level methods
-    (perform_look/perform_talk/perform_use) only contain the core functionality
-    for any type of target. (object, action, or location) */
- // FIXME: but barely anything follows this scheme yet
-
+ /* These will be replaced in the future with an InputAction class. */
  bool move(sint16 rel_x, sint16 rel_y);
+
+ bool use_start();
  bool use(sint16 rel_x, sint16 rel_y);
  bool use(Obj *obj);
  bool use(Actor *actor);
+
+ bool get_start();
  bool get(sint16 rel_x, sint16 rel_y);
- bool get(Obj *obj, Obj *container_obj = NULL, Actor *actor = NULL);
- bool look();
+ bool perform_get(Obj *obj, Obj *container_obj = NULL, Actor *actor = NULL);
+
+ bool look_start();
+ bool look_cursor();
  bool look(Obj *obj);
  bool look(Actor *actor);
  bool search(Obj *obj);
- bool talk();
+
+ bool talk_start();
+ bool talk_cursor();
  bool talk(Actor *actor);
  bool talk(Obj *obj);
- bool attack();
  bool perform_talk(Actor *actor);
+
+ bool attack();
+
+ bool push_start();
  bool pushFrom(sint16 rel_x, sint16 rel_y);
  bool pushTo(sint16 rel_x, sint16 rel_y, bool push_from=PUSH_FROM_PLAYER);
- bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
- bool select_obj(sint16 rel_x, sint16 rel_y);
+
  void solo_mode(uint32 actor_num);
  void party_mode();
+ bool toggle_combat();
+
  bool ready(Obj *obj);
  bool unready(Obj *obj);
+
+ bool drop_start();
  bool drop_select(Obj *obj, uint16 qty = 0);
  bool drop_count(uint16 qty);
- bool drop();
+ bool perform_drop();
  bool drop(Obj *obj, uint16 qty, uint16 x, uint16 y);
- bool drop(uint16 x, uint16 y) { return(drop(use_obj, drop_qty, x, y)); }
+ bool drop(uint16 x, uint16 y) { return(drop(drop_obj, drop_qty, x, y)); }
+
  bool rest();
  bool rest_input(uint16 input);
  bool can_rest(std::string &err_str);
+
+ // these are both for mouse-using convenience
  void walk_to_mouse_cursor(uint32 mx, uint32 my);
  void multiuse(uint16 wx, uint16 wy);
- bool toggle_combat();
 
  void alt_code(const char *cs);
  void alt_code_input(const char *in);
@@ -192,9 +255,13 @@ class Event : public GUI_CallBack
 
  void quitDialog();
  void saveDialog();
- GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
+ uint16 callback(uint16 msg, CallBack *caller, void *data);
  bool handleSDL_KEYDOWN (const SDL_Event *event);
-
+ // These cursor methods are use to make sure Event knows where the cursor is
+ // when objects are selected with ENTER. (since MapWindow and InventoryView
+ // may each independantly show/hide their own cursors)
+ void moveCursorToMapWindow();
+ void moveCursorToInventory();
 };
 
 
