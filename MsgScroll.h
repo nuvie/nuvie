@@ -136,14 +136,12 @@ class MsgScroll: public GUI_Widget, public CallBack
  void set_font(Font *f);
 
  void display_string(std::string s, Font *f);
-
  void display_string(std::string s, uint16 length, uint8 lang_num);
-
  void display_string(std::string s, uint8 lang_num=0);
+ void message(const char *string) { display_string(string); display_prompt(); }
+
  bool set_prompt(const char *new_prompt, Font *f=NULL);
  void display_prompt();
-
- void message(const char *string) { display_string(string); display_prompt(); }
 
  void set_keyword_highlight(bool state);
 

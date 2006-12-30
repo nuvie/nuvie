@@ -665,7 +665,7 @@ void MsgScroll::Display(bool full_redraw)
 else
  {
   if(show_cursor && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height)
-     && widget_has_focus() ) // hide cursor when scroll loses input
+     /*&& widget_has_focus()*/ ) // hide cursor when scroll loses input
     drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
  }
 
