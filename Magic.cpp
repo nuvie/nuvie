@@ -276,6 +276,7 @@ void Magic::read_spell_list()
   delete spells;
 }
 
+#if 0
 bool Magic::handleSDL_KEYDOWN(const SDL_Event * sdl_event)
 {
   if (state == MAGIC_STATE_SELECT_SPELL) {
@@ -320,7 +321,62 @@ bool Magic::handleSDL_KEYDOWN(const SDL_Event * sdl_event)
     }
   }
   return false; // didn't handle the event
-} 
+}
+#endif
+uint16 Magic::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(event->input.type != EVENTINPUT_KEY)
+        return 0;
+    SDLKey sym = event->input.key;
+    if(msg == CB_DATA_READY)
+    {
+printf("Data ready\n");
+        if(state == MAGIC_STATE_SELECT_SPELL) {
+printf("    select spell\n");
+            if(sym>=SDLK_a && sym<=SDLK_z)
+            {
+printf("    letter\n");
+                if(cast_buffer_len<25)
+                { 
+                	cast_buffer_str[cast_buffer_len++]=sym;
+                	event->scroll->display_string(syllable[sym - SDLK_a]);
+                	return 1; // handled the event
+                }
+                return 1; // handled the event
+            }
+            else if(sym==SDLK_BACKSPACE)
+            {
+printf("    backspace\n");
+                if(cast_buffer_len>0)
+                { 
+                  	cast_buffer_len--; // back up a syllable FIXME, doesn't handle automatically inserted newlines, so we need to keep track more. (THAT SHOULD BE DONE BY MSGSCROLL)
+                    size_t len=strlen(syllable[cast_buffer_str[cast_buffer_len]-SDLK_a]);
+                	while(len--) event->scroll->remove_char();
+                    	event->scroll->Display(true);
+                	return 1; // handled the event
+                }
+                return 1; // handled the event
+            }
+        } // MAGIC_STATE_SELECT_SPELL
+        if(state == MAGIC_STATE_ACQUIRE_TARGET) {
+            if(sym>=SDLK_1 && sym<=SDLK_8)
+            {
+printf("    select actor by number\n");
+                cast(event->player->get_party()->get_actor(sym - 48-1));
+                event->cancel_key_redirect();
+                return 1; // handled the event
+            } 
+        }
+
+        // We must handle all keys even those we may not want or else
+        // we'll lose input focus, except for these three which end
+        // Casting. (besides, not handling all keys means they go back
+        // to global which could start another action)
+        if(sym != SDLK_RETURN && sym != SDLK_ESCAPE && sym != SDLK_SPACE)
+            return 1;
+    }
+    return 0;
+}
 
 uint8 Magic::book_equipped()
 {

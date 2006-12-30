@@ -25,6 +25,7 @@
  */
 
 #include "Event.h"
+#include "CallBack.h"
 
 #define REAGENT_U6_MANDRAKE_ROOT 0x01
 #define REAGENT_U6_NIGHTSHADE    0x02
@@ -88,7 +89,7 @@ class Spell {
 	}
 };
 
-class Magic {
+class Magic: public CallBack {
   private:
     Spell *spell[256]; // spell list;
     char cast_buffer_str[26]; // buffer for spell syllables typed.
@@ -121,7 +122,8 @@ class Magic {
     bool cast();
     bool cast(Actor *Act);
     bool cast(Obj *Obj);
-    bool handleSDL_KEYDOWN(const SDL_Event *sdl_event);
+//    bool handleSDL_KEYDOWN(const SDL_Event *sdl_event);
+    uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
 
     // Support functions for spells (generated with fhdr.sh)
 bool function_add();
