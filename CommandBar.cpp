@@ -87,7 +87,7 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
         {
             if(default_action == activate) // clear if already selected
                 set_default_action(-1);
-	    else if(try_default_action(activate)) // set in Event and here
+            else if(try_default_action(activate)) // set in Event and here
                 set_default_action(activate);
         }
     }
@@ -105,7 +105,7 @@ GUI_status CommandBar::hit(uint8 num)
         case 3: event->newAction(LOOK_MODE); break;
         case 4: event->newAction(GET_MODE); break;
         case 5: event->newAction(DROP_MODE); break;
-        case 6: event->newAction(PUSHSELECT_MODE); break;
+        case 6: event->newAction(PUSH_MODE); break;
         case 7: event->newAction(USE_MODE); break;
         case 8: event->newAction(REST_MODE); break;
         case 9: event->newAction(COMBAT_MODE); break;
