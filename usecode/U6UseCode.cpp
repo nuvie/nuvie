@@ -138,6 +138,56 @@ static const char *u6_potions[8] =
     "an xray vision" // white
 };
 
+// convenient macro to grab a target object - when first called the player will
+// be prompted with P, and upon target selection the object will be set to O
+#define USECODE_SELECT_OBJ(O, P) \
+({ \
+    static bool selected_obj = false; \
+    if(!selected_obj) \
+    { \
+        game->get_event()->get_direction(P); \
+        game->get_event()->request_input(this, obj); \
+        selected_obj = true; \
+        return false; \
+    } \
+    else { O = items.obj_ref; selected_obj = false; } \
+})
+#define USECODE_SELECT_ACTOR(O, P) \
+({ \
+    static bool selected_obj = false; \
+    if(!selected_obj) \
+    { \
+        game->get_event()->get_target(P); \
+        game->get_event()->request_input(this, obj); \
+        selected_obj = true; \
+        return false; \
+    } \
+    else { A = items.actor2_ref; selected_obj = false; } \
+})
+#define USECODE_SELECT_TARGET(T, P) \
+({ \
+    static bool selected_obj = false; \
+    if(!selected_obj) \
+    { \
+        game->get_event()->get_target(P); \
+        game->get_event()->request_input(this, obj); \
+        selected_obj = true; \
+        return false; \
+    } \
+    else { T = items.mapcoord_ref; selected_obj = false; } \
+})
+#define USECODE_SELECT_DIRECTION(T, P) \
+({ \
+    static bool selected_obj = false; \
+    if(!selected_obj) \
+    { \
+        game->get_event()->get_target(P); \
+        game->get_event()->request_input(this, obj); \
+        selected_obj = true; \
+        return false; \
+    } \
+    else { T = items.mapcoord_ref; selected_obj = false; } \
+})
 
 
 U6UseCode::U6UseCode(Game *g, Configuration *cfg) : UseCode(g, cfg)
@@ -149,8 +199,7 @@ U6UseCode::~U6UseCode()
 }
 
 
-/* Is the object a food (or drink) item?
- */
+/* Is the object a food (or drink) item? */
 bool U6UseCode::is_food(Obj *obj)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n);
@@ -172,8 +221,7 @@ bool U6UseCode::is_book(Obj *obj)
 }
 
 
-/* Is there `ev' usecode for an object?
- */
+/* Is there `ev' usecode for an object? */
 bool U6UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, ev);
@@ -183,8 +231,7 @@ bool U6UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* USE object. Actor is the actor using the object.
- */
+/* USE object. Actor is the actor using the object. */
 bool U6UseCode::use_obj(Obj *obj, Actor *actor)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_USE);
@@ -192,16 +239,13 @@ bool U6UseCode::use_obj(Obj *obj, Actor *actor)
     return(uc_event(type, USE_EVENT_USE, obj));
 }
 
-
-/* LOOK at object. Actor is the actor looking at the object.
- */
+/* LOOK at object. Actor is the actor looking at the object. */
 bool U6UseCode::look_obj(Obj *obj, Actor *actor)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_LOOK);
     set_itemref(actor);
     return(uc_event(type, USE_EVENT_LOOK, obj));
 }
-
 
 /* PASS object. Actor is the actor trying to pass the object. It takes
    target coordinates in case the object has multiple tiles. */
@@ -216,9 +260,7 @@ bool U6UseCode::pass_obj(Obj *obj, Actor *actor, uint16 x, uint16 y)
     return(uc_event(type, USE_EVENT_PASS, obj));
 }
 
-
-/* SEARCH nearby object. Actor is the actor searching.
- */
+/* SEARCH nearby object. Actor is the actor searching. */
 bool U6UseCode::search_obj(Obj *obj, Actor *actor)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_SEARCH);
@@ -228,8 +270,7 @@ bool U6UseCode::search_obj(Obj *obj, Actor *actor)
 
 
 /* Callback from timer or other class. User_data is the object which will
- * receive the message (if applicable).
- */
+ * receive the message (if applicable). */
 uint16 U6UseCode::callback(uint16 msg, CallBack *caller, void *msg_data)
 {
     Obj *obj = (Obj *)callback_user_data;
@@ -238,13 +279,12 @@ uint16 U6UseCode::callback(uint16 msg, CallBack *caller, void *msg_data)
         fprintf(stderr, "UseCode: internal message %d sent to NULL object\n", msg);
         return(0);
     }
-    message_obj(obj, (CallbackMessage)msg, msg_data);
-    return(0);
+    return(message_obj(obj, (CallbackMessage)msg, msg_data));
 }
 
 
 /* Call MESSAGE function for an object. Msg_data is assigned to the appropriate
- * itemref.
+ * itemref. The USE function is called in response to a DATA_READY message.
  * Returns false if there is no usecode for that object.
  */
 bool U6UseCode::message_obj(Obj *obj, CallbackMessage msg, void *msg_data)
@@ -266,9 +306,13 @@ bool U6UseCode::message_obj(Obj *obj, CallbackMessage msg, void *msg_data)
             items.string_ref = (string *)msg_data;
             break;
         case MESG_DATA_READY:
-            items.data_ref = (char *)msg_data;
-            break;
-
+            items.data_ref = (char *)msg_data; // pointer to EventInput structure
+            items.obj_ref = ((EventInput*)items.data_ref)->obj;
+            items.actor2_ref = ((EventInput*)items.data_ref)->actor;
+            items.mapcoord_ref = ((EventInput*)items.data_ref)->loc;
+            items.string_ref = ((EventInput*)items.data_ref)->str;
+            return uc_event(get_object_type(obj->obj_n,obj->frame_n),
+                            USE_EVENT_USE, obj);
         default : break;
     }
 
@@ -276,8 +320,7 @@ bool U6UseCode::message_obj(Obj *obj, CallbackMessage msg, void *msg_data)
 }
 
 
-/* MOVE nearby object in a relative direction.
- */
+/* MOVE nearby object in a relative direction. */
 bool U6UseCode::move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_MOVE);
@@ -290,8 +333,7 @@ bool U6UseCode::move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
 
 
 /* Call post-LOAD or UNLOAD usecode for an object.
- * Returns false if there is no usecode for that object.
- */
+ * Returns false if there is no usecode for that object. */
 bool U6UseCode::load_obj(Obj *obj)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_LOAD);
@@ -299,8 +341,7 @@ bool U6UseCode::load_obj(Obj *obj)
 }
 
 
-/* Call READY or UNREADY usecode for an object.
- */
+/* Call READY or UNREADY usecode for an object. */
 bool U6UseCode::ready_obj(Obj *obj, Actor *actor)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_READY);
@@ -309,8 +350,7 @@ bool U6UseCode::ready_obj(Obj *obj, Actor *actor)
 }
 
 
-/* Call GET usecode for an object.
- */
+/* Call GET usecode for an object. */
 bool U6UseCode::get_obj(Obj *obj, Actor *actor)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_GET);
@@ -319,8 +359,7 @@ bool U6UseCode::get_obj(Obj *obj, Actor *actor)
 }
 
 
-/* Call DROP usecode for an object.
- */
+/* Call DROP usecode for an object. */
 bool U6UseCode::drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y, uint16 qty)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_DROP);
@@ -335,8 +374,7 @@ bool U6UseCode::drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y, uint16 qty)
 }
 
 
-/* Return pointer to object-type in list for object N:F, or NULL if none.
- */
+/* Return pointer to object-type in list for object N:F, or NULL if none. */
 inline const U6ObjectType *U6UseCode::get_object_type(uint16 n, uint8 f, UseCodeEvent ev)
 {
     const U6ObjectType *type = U6ObjectTypes;
@@ -376,13 +414,11 @@ void U6UseCode::lock_door(Obj *obj)
         obj->frame_n += 4;
 }
 
-
 void U6UseCode::unlock_door(Obj *obj)
 {
     if(is_locked_door(obj))
         obj->frame_n -= 4;
 }
-
 
 // USE: unlock locked doors, open/close other doors
 bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
@@ -431,7 +467,6 @@ bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
  return true;
 }
 
-
 // USE: climb up or down a ladder (entire party)
 bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
 {
@@ -465,12 +500,6 @@ bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
  party->dismount_from_horses();
 
  MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
- MapCoord from(items.actor_ref->get_location());
- if(from != ladder) // take the first step to object so party members don't get in the way during walk-action (FIXME: consequence of ZPath logic preventing party members from pushing eachother out of the way)
-     player->moveRelative(((ladder.x - from.x) < 0) ? -1
-                        : ((ladder.x - from.x) > 0) ? 1 : 0,
-                                             ((ladder.y - from.y) < 0) ? -1
-                                           : ((ladder.y - from.y) > 0) ? 1 : 0);
  party->walk(&ladder, &destination, 100);
  return false;
 }
@@ -1034,7 +1063,8 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
 
  if(!mapcoord_ref)
   {
-   game->get_event()->freeselect_mode(obj, "Where: ");
+   game->get_event()->get_target(MapCoord(x,y,z), "Where: ");
+   game->get_event()->request_input(this, obj);
    return false; // no prompt
   }
 
@@ -1196,7 +1226,9 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
             scroll->display_string("\nNot readied.\n");
             return(true);
         }
-        game->get_event()->useselect_mode(obj, "Direction: ");
+//        game->get_event()->useselect_mode(obj, "Direction: ");
+        game->get_event()->get_direction(from, "Direction: ");
+        game->get_event()->request_input(this, obj);
         return(false);
     }
     dig_at = *items.mapcoord_ref;
@@ -1352,33 +1384,46 @@ bool U6UseCode::use_fountain(Obj *obj, UseCodeEvent ev)
 }
 
 
-/* USE: Make a rubber ducky sound.
- */
+/* USE: Make a rubber ducky sound. */
 bool U6UseCode::use_rubber_ducky(Obj *obj, UseCodeEvent ev)
 {
     if(items.actor_ref == player->get_actor())
         scroll->display_string("Squeak!\n");
+    printf("FIXME: rubberducky sound\n");
     return(true);
 }
 
 
-/* USE: Enter instrument playing mode, with sound for used object.
- */
+/* USE: Enter instrument playing mode, with sound for used object. */
 bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)
 {
-    if(items.actor_ref == player->get_actor())
+// FIXME: need intrument sounds AND a config option to simply change music
+// track when an instrument is played
+// FIXME: also some floating music note icons like in U7
+    const char *musicmsg = (obj->obj_n == OBJ_U6_PANPIPES) ? "panpipes"
+                 : (obj->obj_n == OBJ_U6_HARPSICHORD) ? "harpsichord"
+                 : (obj->obj_n == OBJ_U6_HARP) ? "harp"
+                 : (obj->obj_n == OBJ_U6_LUTE) ? "lute"
+                 : (obj->obj_n == OBJ_U6_XYLOPHONE) ? "xylophone"
+                 : "musical instrument";
+    if(items.data_ref)
     {
-        char musicmsg[256];
-        snprintf(musicmsg, 256, "You'd be playing %s right now...*if Nuvie had sound effects.\n",
-                 obj->obj_n == OBJ_U6_PANPIPES ? "panpipes"
-                 : obj->obj_n == OBJ_U6_HARPSICHORD ? "a harpsichord"
-                 : obj->obj_n == OBJ_U6_HARP ? "a harp"
-                 : obj->obj_n == OBJ_U6_LUTE ? "a lute"
-                 : obj->obj_n == OBJ_U6_XYLOPHONE ? "a xylophone"
-                 : "a musical instrument");
-        scroll->display_string(musicmsg);
+            SDLKey key = ((EventInput*)items.data_ref)->key;
+            if(key == SDLK_0) printf("FIXME: %s: modulate 0\n", musicmsg);
+            if(key == SDLK_1) printf("FIXME: %s: modulate 1\n", musicmsg);
+            if(key == SDLK_2) printf("FIXME: %s: modulate 2\n", musicmsg);
+            if(key == SDLK_3) printf("FIXME: %s: modulate 3\n", musicmsg);
+            if(key == SDLK_4) printf("FIXME: %s: modulate 4\n", musicmsg);
+            if(key == SDLK_5) printf("FIXME: %s: modulate 5\n", musicmsg);
+            if(key == SDLK_6) printf("FIXME: %s: modulate 6\n", musicmsg);
+            if(key == SDLK_7) printf("FIXME: %s: modulate 7\n", musicmsg);
+            if(key == SDLK_8) printf("FIXME: %s: modulate 8\n", musicmsg);
+            if(key == SDLK_9) printf("FIXME: %s: modulate 9\n", musicmsg);
+            return(key != SDLK_RETURN && key != SDLK_KP_ENTER && key != SDLK_SPACE);
     }
-    return(true);
+    else
+        game->get_event()->key_redirect(this, obj);
+    return false;
 }
 
 
@@ -1439,8 +1484,7 @@ bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)
 
 
 /* USE: Use potion. If actor2 is passed, give them the potion, else select
- * actor2.
- */
+ * actor2. */
 bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
 {
     ActorManager *am = actor_manager;
@@ -1448,7 +1492,10 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
     if(ev == USE_EVENT_USE)
     {
         if(!items.actor2_ref && !items.obj_ref)
-            game->get_event()->freeselect_mode(obj, "On whom: ");
+        {
+            game->get_event()->get_target(items.actor_ref->get_location(), "On whom: ");
+            game->get_event()->request_input(this, obj);
+        }
         else if(!items.actor2_ref) // no selection
         {
             scroll->display_string("nobody\n");
@@ -1499,7 +1546,7 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         destroy_obj(obj);
                 }
             }
-            return(true);
+            return true;
         }
     }
     else if(ev == USE_EVENT_MESSAGE) // assume message is from potion effect
@@ -1509,47 +1556,45 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
             destroy_obj(obj);
         }
     }
-    return(false);
+    return false;
 }
 
 
-/* Use a key on obj_ref (a door).
- */
+/* Use a key on obj_ref (a door). */
 bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
 {
-    Obj *obj_ref = items.obj_ref;
+    Obj *door_obj = NULL;
     if(ev == USE_EVENT_USE)
     {
-        if(!obj_ref && !items.actor2_ref)
-            game->get_event()->useselect_mode(obj, "On ");
-        else if(!obj_ref)
+        USECODE_SELECT_OBJ(door_obj, "On "); // door_obj <- items.obj_ref or from user
+        if(!door_obj)
         {
-            scroll->display_string("nothing\n");
-            return(true);
+            nuprint("nothing\n");
+            return true;
         }
         else
         {
-            scroll->display_string(obj_manager->get_obj_name(obj_ref));
+            scroll->display_string(obj_manager->get_obj_name(door_obj));
             scroll->display_string("\n");
-            if(obj_ref->quality != 0 && obj_ref->quality == obj->quality && is_closed_door(obj_ref))
+            if(door_obj->quality != 0 && door_obj->quality == obj->quality && is_closed_door(door_obj))
             {
-                if(is_locked_door(obj_ref))
+                if(is_locked_door(door_obj))
                 {
-                    unlock_door(obj_ref);
+                    unlock_door(door_obj);
                     scroll->display_string("\nunlocked!\n");
                 }
                 else
                 {
-                    lock_door(obj_ref);
+                    lock_door(door_obj);
                     scroll->display_string("\nlocked!\n");
                 }
             }
             else
                 scroll->display_string("No effect\n");
-            return(true);
+            return true;
         }
     }
-    return(false);
+    return false;
 }
 
 
