@@ -1,3 +1,38 @@
+2006-12-31  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Targeting and input has been changed to remove excess Event modes.
+	* The various modes have been replaced with an EventInput state, and
+	  pointers to all aquired input. Usually a mapcoord is all that is needed.
+	  Event actions (or an external class) call one of the get_target methods
+	  to enter INPUT_MODE and aquire a certain type of input. This changes the
+	  type of prompt the player sees. (such as targeting-cursor or use-cursor)
+	  When the player selects some object or entering input, one of the select
+	  methods is called. This stores the input, returns to the previous mode
+	  (pops back), and calls doAction() for that mode.
+	* Other changes to Event:
+	  Added moveCursorToInventory() and moveCursorToMapWindow() to be the one
+	  true method of showing the targeting cursor.
+	  Several subtle fixes, likely replaced with more subtle bugs.
+	  Now you can use the plus and minus keys on the numpad to change which
+	  party member's inventory is shown. This was possible in U6.
+	  Keys 1 through 9 can now be used to select party members for certain
+	  actions, like Talk.
+	  The obsolete useselect(), freeselect(), and select_obj() functions have
+	  been removed.
+	  Can no longer talk to party members offscreen.
+	  Can now only Get objects that are on the ground, to prevent it being
+	  called for objects in inventory. This will cause a problem when we
+	  implement container view.
+	* U6UseCode: Targeting and input changes. Replaced Event::freeselect() and
+	  Event::useselect() with get_target(), and get_direction(), respectively.
+	  You must also call Event::request_input() to get input from Event.
+	* A MESG_DATA_READY message to an object now causes the object to be used,
+	  not messaged. (easier to get input in UseCode functions this way) A
+	  pointer to the EventInput structure from Event is passed as data.
+	* Musical instruments (play_instrument) now take key input.
+	* InventoryView.cpp: Handle numpad keys. No longer handles the TAB key.
+	* Actor: Prints a message when player's glass sword breaks while attacking.
+	* MapWindow: Mouse pointer is now set to crosshairs when getting input.
+
 2006-09-29  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* MD/SE dialogue gets loaded and used. Basic support, but probably
 	  needs further work to make it fully work.
