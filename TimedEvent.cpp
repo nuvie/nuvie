@@ -714,9 +714,7 @@ void TimedRestGather::timed(uint32 evtime)
 
     if(repeat_count == 0)
     {
-        // sort of a hack to tell Event we're finished, without changing modes
-        Game::get_game()->get_event()->set_mode(REST_MODE);
-        Game::get_game()->get_event()->doAction(dest->x, dest->y);
+        Game::get_game()->get_event()->rest();
     }
 
     if(moves_left > 0)
@@ -788,8 +786,7 @@ TimedRest::~TimedRest()
     }
     Game::get_game()->get_player()->set_mapwindow_centered(true);
     Game::get_game()->unpause_user();
-    scroll->display_string("\n");
-    scroll->display_prompt();
+    Game::get_game()->get_event()->endAction(true); // exit Rest mode
 }
 
 void TimedRest::timed(uint32 evtime)
