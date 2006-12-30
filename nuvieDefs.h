@@ -97,4 +97,9 @@ typedef unsigned char BOOL;
 #define NUVIE_RAND rand
 #endif
 
+
+#define nuprint(T) Game::get_game()->get_scroll()->display_string(T)
+/*#define nuprint(T) Game::get_game()->get_scroll()->display_string(T); \
+                     Game::get_game()->get_scroll()->display_string("\n");*/
+
 #endif /* __nuvieDefs_h__ */
