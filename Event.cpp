@@ -473,7 +473,6 @@ bool Event::handleEvent(const SDL_Event *event)
         }
         else
         {
-            endAction();
             doAction();
         }
 	}
@@ -2500,12 +2499,16 @@ void Event::doAction()
             drop_select(input.obj);
         }
     	else if(!drop_qty)
+    	{
+    	    assert(input.str);
     		drop_count(strtol(input.str->c_str(), NULL, 10));
+        }
     	else
     		perform_drop();
     }
     else if(mode == REST_MODE)
     {
+        assert(input.str);
         rest_input(strtol(input.str->c_str(), NULL, 10));
     }
     else if(mode == CAST_MODE)
