@@ -281,26 +281,40 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
         return(GUI_PASS);
     switch(key.sym)
     {
+		//	keypad arrow keys (moveCursorRelative doesn't accept diagonals)
+        case SDLK_KP1:
+            moveCursorRelative(0, 1); moveCursorRelative(-1, 0);
+            break;
+        case SDLK_KP3:
+            moveCursorRelative(0, 1); moveCursorRelative(1, 0);
+            break;
+        case SDLK_KP7:
+            moveCursorRelative(0, -1); moveCursorRelative(-1, 0);
+            break;
+        case SDLK_KP9:
+            moveCursorRelative(0, -1); moveCursorRelative(1, 0);
+            break;
+
         case SDLK_UP:
+        case SDLK_KP8:
             moveCursorRelative(0, -1);
             break;
         case SDLK_DOWN:
+        case SDLK_KP2:
             moveCursorRelative(0, 1);
             break;
         case SDLK_LEFT:
+        case SDLK_KP4:
             moveCursorRelative(-1, 0);
             break;
         case SDLK_RIGHT:
+        case SDLK_KP6:
             moveCursorRelative(1, 0);
             break;
         case SDLK_SPACE:
         case SDLK_RETURN:
+        case SDLK_KP_ENTER:
             select_objAtCursor();
-            break;
-        case SDLK_TAB:
-            set_show_cursor(false);
-            Game::get_game()->get_map_window()->centerCursor();
-            Game::get_game()->get_map_window()->set_show_cursor(true);
             break;
 /*        case SDLK_F1: // FIXME: these should pass down to Event (global actions)
         case SDLK_F2:
@@ -332,17 +346,14 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
 }
 
 
-/* Put cursor over one of the readied-item slots.
- */
+/* Put cursor over one of the readied-item slots. */
 void InventoryView::moveCursorToSlot(uint8 slot_num)
 {
     cursor_pos.area = INVAREA_DOLL;
     cursor_pos.x = slot_num;
 }
 
-
-/* Put cursor over one of the visible inventory slots. (column inv_x, row inv_y)
- */
+/* Put cursor over one of the visible inventory slots. (column inv_x, row inv_y) */
 void InventoryView::moveCursorToInventory(uint8 inv_x, uint8 inv_y)
 {
     cursor_pos.area = INVAREA_LIST;
@@ -350,26 +361,20 @@ void InventoryView::moveCursorToInventory(uint8 inv_x, uint8 inv_y)
     cursor_pos.y = inv_y;
 }
 
-
-/* Put cursor over one of the command icons.
- */
+/* Put cursor over one of the command icons. */
 void InventoryView::moveCursorToButton(uint8 button_num)
 {
     cursor_pos.area = INVAREA_COMMAND;
     cursor_pos.x = button_num;
 }
 
-
-/* Put cursor over the container or actor icon above the inventory widget.
- */
+/* Put cursor over the container or actor icon above the inventory widget. */
 void InventoryView::moveCursorToTop()
 {
     cursor_pos.area = INVAREA_TOP;
 }
 
-
-/* Put cursor over the next slot or icon in relative direction new_x, new_y.
- */
+/* Put cursor over the next slot or icon in relative direction new_x, new_y. */
 void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
 {
     uint32 x = cursor_pos.x, y = cursor_pos.y;
@@ -534,8 +539,8 @@ Obj *InventoryView::get_objAtCursor()
 }
 
 
-/* Do the action for the current EventMode with the object under the cursor.
- */
+/* Do an action with the object under the cursor, or call the function for a
+   selected button. This is called when pressing ENTER. */
 void InventoryView::select_objAtCursor()
 {
     //Event *event = Game::get_game()->get_event();
@@ -559,10 +564,10 @@ void InventoryView::select_objAtCursor()
     }
     else if(cursor_pos.area == INVAREA_TOP)
     {
-				if(inventory_widget->is_showing_container())
-					inventory_widget->set_prev_container();
-				else
-					Game::get_game()->get_view_manager()->set_party_mode();
+        if(inventory_widget->is_showing_container())
+            inventory_widget->set_prev_container();
+        else
+            Game::get_game()->get_view_manager()->set_party_mode();
 
         return;
     }
@@ -571,58 +576,39 @@ void InventoryView::select_objAtCursor()
 }
 
 
-/* Do the action for the current EventMode with an object (presumably accessed
- * from inventory). Pass NULL if an empty space is selected.
- * Returns false if no action was performed.
+/* Ready an object or pass it to Event. Pass NULL if an empty space is selected.
+ * Returns true if the object was "used". The caller is free to handle the
+ * object if false is returned.
  */
 bool InventoryView::select_obj(Obj *obj)
 {
     Event *event = Game::get_game()->get_event();
-    MsgScroll *scroll = Game::get_game()->get_scroll();
 
     switch(event->get_mode())
     {
+        case MOVE_MODE:
         case EQUIP_MODE:
             if(obj && Game::get_game()->get_usecode()->is_container(obj))
                 inventory_widget->set_container(obj);
             else if(obj)
             {
                 if(obj->is_readied())
-                    event->unready(obj);
+                    return event->unready(obj);
                 else
-                    event->ready(obj);
-//                if(cursor_pos.area == INVAREA_LIST)
-//                    event->ready(obj);
-//                else if(cursor_pos.area == INVAREA_DOLL)
-//                    event->unready(obj);
+                    return event->ready(obj);
             }
             break;
-        case LOOK_MODE:
-            if(obj)
-                if(event->look(obj)) // returns FALSE if prompt already displayed
-                    scroll->display_prompt();
-            event->endAction(); // FIXME: should be done in look()
-            break;
-        case USE_MODE:
-            if(obj)
-                event->use(obj);
-            break;
-        case DROP_MODE:
-            event->drop_select(obj);
-            break;
-        case TALK_MODE:
-            event->talk(obj);
-            break;
         default:
-            if(!obj) // don't cancelAction() and "Pass!" if selected an object
-                event->cancelAction();
-            return(false);
+            event->select_obj(obj);
+            return true;
     }
-    return(true);
+    return false;
 }
 
 
-/* Messages from child widgets.
+/* Messages from child widgets, Inventory & Doll.
+ **INVSELECT is called when an object is selected with MouseDown.*
+ **BUTTON is called when one of the command buttons is selected.*
  * Returns GUI_PASS if the data was not used.
  */
 GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
@@ -645,11 +631,16 @@ GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
             return GUI_YUM;
         }
         else
-            return(View::callback(msg, caller, data));
+            return View::callback(msg, caller, data);
     }
 
-    if(select_obj((Obj *)data))
-        return(GUI_YUM);
-    return(GUI_PASS);
+    // selecting an object from InventoryWidget only works while getting input
+    Event *event = Game::get_game()->get_event();
+    if(event->get_mode() == INPUT_MODE)
+    {
+        if(select_obj((Obj *)data))
+            return GUI_YUM;
+    }
+    return GUI_PASS;
 }
 
