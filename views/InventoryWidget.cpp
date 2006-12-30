@@ -508,7 +508,7 @@ printf("InventoryWidget::drag_perform_drop()\n");
        assert(obj->is_on_map());
        // event->newAction(GET_MODE);
        Game::get_game()->get_scroll()->display_string("Get-");
-       have_object = Game::get_game()->get_event()->get(obj, container_obj, actor);
+       have_object = Game::get_game()->get_event()->perform_get(obj, container_obj, actor);
       }
 
     if(have_object)
@@ -559,8 +559,7 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
 }
 
 
-/* Use object.
- */
+/* Use object. */
 GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
 {
     // we have to check if double-clicks are allowed here, since we use single-clicks
@@ -578,7 +577,7 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
         return(MouseUp(x, y, button)); // probably hit an arrow
 
     if(event->newAction(USE_MODE))
-        event->doAction(obj);
+        event->select_obj(obj);
     return(GUI_PASS);
 }
 

@@ -151,11 +151,11 @@ inline void DollWidget::display_readied_object(uint8 location, uint16 x, uint16 
  return;
 }
 
-
+// when no action is pending the Use button may be used to start dragging,
+// otherwise it has the same effect as ENTER (using InventoryView's callback)
 GUI_status DollWidget::MouseDown(int x, int y, int button)
 {
- //Event *event = Game::get_game()->get_event();
- //MsgScroll *scroll = Game::get_game()->get_scroll();
+ Event *event = Game::get_game()->get_event();
  uint8 location;
  Obj *obj;
  x -= area.x;
@@ -171,11 +171,11 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
           obj = actor->inventory_get_readied_object(location);
           if(obj)
            {
-             // send to View
-             if(callback_object->callback(INVSELECT_CB, this, obj) == GUI_PASS
-                && button == DRAG_BUTTON)
+             if((event->get_mode()==MOVE_MODE || event->get_mode()==EQUIP_MODE)
+                && button==DRAG_BUTTON)
                  selected_obj = obj; // start dragging
-             return GUI_YUM;
+             else // send to View
+                 callback_object->callback(INVSELECT_CB, this, obj);
            }
          }
       }
@@ -292,7 +292,7 @@ printf("DollWidget::drag_perform_drop()\n");
        assert(!obj->is_in_container_new()); // won't happen since 'is_on_map' FIXME need to make work with containers
        // event->newAction(GET_MODE);
        Game::get_game()->get_scroll()->display_string("Get-");
-       can_equip = Game::get_game()->get_event()->get(obj, NULL, actor);
+       can_equip = Game::get_game()->get_event()->perform_get(obj, NULL, actor);
 //       if(!can_equip)
 //       {
 //        assert(!(obj->status & OBJ_STATUS_IN_CONTAINER));
@@ -356,7 +356,7 @@ GUI_status DollWidget::MouseDouble(int x, int y, int button)
         return(GUI_YUM);
 
     if(event->newAction(USE_MODE))
-        event->doAction(obj);
+        event->select_obj(obj);
     return(GUI_PASS);
 }
 
