@@ -1388,9 +1388,9 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	}
 	else // finish whatever action is being done, with mouse coordinates
 	{
-		mouseToWorldCoords(x, y, wx, wy);
-		moveCursor(wx - cur_x, wy - cur_y);
-		event->doAction(sint16(wx - player->x), sint16(wy - player->y));
+		mouseToWorldCoords(x, y, wx, wy);   // some Event functions still use
+		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
+		event->select_target(uint16(wx), uint16(wy)); // the returned location
 		return  GUI_PASS;
 	}
 
@@ -1485,6 +1485,17 @@ void	MapWindow::drag_drop_failed (int x, int y, int message, void *data)
 	selected_obj = NULL;
 }
 
+// this does nothing
+GUI_status MapWindow::KeyDown(SDL_keysym key)
+{
+/*    if(key.sym == SDLK_RETURN)
+    {
+		Game::get_game()->get_event()->select_target(cur_x+cursor_x, cur_y+cursor_y);
+        return GUI_YUM;
+    }*/
+    return GUI_PASS;
+}
+
 Obj *MapWindow::get_objAtMousePos (int mx, int my)
 {
 	int wx, wy;
@@ -1541,8 +1552,7 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
 }
 
 
-/* Display MapWindow animations.
- */
+/* Display MapWindow animations. */
 void MapWindow::drawAnims()
 {
     if(!screen) // screen should be set early on
@@ -1553,8 +1563,7 @@ void MapWindow::drawAnims()
 }
 
 
-/* Set mouse pointer to a movement-arrow for walking, or a crosshair.
- */
+/* Set mouse pointer to a movement-arrow for walking, or a crosshair. */
 void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
 {
     Game *game = Game::get_game();
@@ -1563,18 +1572,19 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
     sint16 rel_x, rel_y;
     uint8 mptr; // mouse-pointer is set here in get_movement_direction()
 
-    if(event->get_mode() != MOVE_MODE && event->get_mode() != PUSH_MODE)
+    if(event->get_mode() != MOVE_MODE && event->get_mode() != INPUT_MODE)
         return;
 
     // MousePos->WorldCoord->Direction&MousePointer
     mouseToWorldCoords((int)mx, (int)my, wx, wy);
     get_movement_direction((uint16)wx, (uint16)wy, rel_x, rel_y, &mptr);
-    if(dragging || wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1) || wy == (cur_y+win_height-1))
+    if(event->get_mode() == INPUT_MODE && mousecenter_x == (win_width/2) && mousecenter_y == (win_height/2))
+        game->set_mouse_pointer(1); // crosshairs
+    else if(dragging || wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1) || wy == (cur_y+win_height-1))
         game->set_mouse_pointer(0); // arrow
     else
         game->set_mouse_pointer(mptr); // 1=crosshairs, 2to9=arrows
 }
-
 
 /* Get relative movement direction from the MouseCenter coordinates to the
  * world coordinates wx,wy, for walking with the mouse, etc. The mouse-pointer
@@ -1665,8 +1675,7 @@ void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint
 }
 
 
-/* Revert mouse cursor to normal arrow. Stop walking.
- */
+/* Revert mouse cursor to normal arrow. Stop walking. */
 GUI_status MapWindow::MouseLeave(Uint8 state)
 {
     Game::get_game()->set_mouse_pointer(0);

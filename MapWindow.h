@@ -168,6 +168,7 @@ class MapWindow: public GUI_Widget
  GUI_status MouseLeave(Uint8 state);
  GUI_status MouseDelayed(int x, int y, int button);
  GUI_status MouseHeld(int x, int y, int button);
+ GUI_status KeyDown(SDL_keysym key);
 
  void drag_drop_success (int x, int y, int message, void *data);
  void drag_drop_failed (int x, int y, int message, void *data);
