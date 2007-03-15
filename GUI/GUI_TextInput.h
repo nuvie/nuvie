@@ -54,7 +54,7 @@ class GUI_TextInput : public GUI_Text
  GUI_status MouseUp(int x, int y, int button);
  GUI_status KeyDown(SDL_keysym key);
 
- void GUI_TextInput::add_char(char c);
+ void add_char(char c);
  void remove_char();
 
 void SetDisplay(Screen *s);

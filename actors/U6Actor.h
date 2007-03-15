@@ -159,7 +159,7 @@ class U6Actor: public Actor
  inline void clear_surrounding_objs_list(bool delete_objs=false);
  inline void init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 actor_obj_n, uint16 obj_frame_n);
 
- const CombatType *U6Actor::get_hand_combat_type();
+ const CombatType *get_hand_combat_type();
 
  void print();
  const char *get_worktype_string(uint32 wt);

@@ -74,7 +74,7 @@ class DollWidget : public GUI_Widget {
 
  GUI_CallBack *callback_object; // object-selected callback
 
- void DollWidget::display_doll();
+ void display_doll();
  void display_readied_object(uint8 location, uint16 x, uint16 y, Actor *actor, Tile *empty_tile);
 };
 

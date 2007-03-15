@@ -265,7 +265,7 @@ class ObjManager
  void temp_obj_list_clean_level(uint8 z);
  void temp_obj_list_clean_area(uint16 x, uint16 y);
 
- inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree, bool *passed_prev_obj);
+ inline Obj *find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree, bool *passed_prev_obj);
  inline void start_obj_usecode(iAVLTree *obj_tree);
  inline void print_egg_tree(iAVLTree *obj_tree);
 

@@ -41,7 +41,7 @@ class GamePalette
 
    GamePalette(Screen *s, Configuration *cfg);
    ~GamePalette();
-   void GamePalette::rotatePalette();
+   void rotatePalette();
 
  protected:
 
