@@ -2696,6 +2696,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     }
     else if(ev == USE_EVENT_READY)
     {
+        assert(!obj->is_in_container()); // FIXME make this just work
         if(obj->is_readied()) // remove
         {
             if(obj->frame_n == 1)
