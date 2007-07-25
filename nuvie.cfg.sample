@@ -25,7 +25,6 @@
   <sounddir>./u6_sounds</sounddir>
   <savedir>./u6_save</savedir>
   <skip_intro> no </skip_intro>
-  <show_eggs> yes </show_eggs>
   <music>native</music>
  </ultima6>
 
