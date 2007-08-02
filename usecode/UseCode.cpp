@@ -115,7 +115,7 @@ bool UseCode::search_container(Obj *obj)
        temp_obj = (Obj*)obj_link->data;
        obj_list->add(temp_obj);
        temp_obj->status |= OBJ_STATUS_OK_TO_TAKE;
-       temp_obj->on_map(obj_list); //ERIC temp_obj->status &= ~OBJ_STATUS_IN_CONTAINER;
+       temp_obj->set_on_map(obj_list); //ERIC temp_obj->status &= ~OBJ_STATUS_IN_CONTAINER;
        temp_obj->x = obj->x;
        temp_obj->y = obj->y;
        temp_obj->z = obj->z;

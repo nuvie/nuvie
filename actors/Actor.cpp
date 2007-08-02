@@ -751,14 +751,14 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
  {
    add_to = container->container;
    /* obj->status |= OBJ_STATUS_IN_CONTAINER; */ // luteijn: don't manipulate this directly!
-   obj->in_container(container); 
+   obj->set_in_container(container); 
    obj->parent = (void *)container; // obj->x is set when saving
  }
  else
  {
    // only objects outside containers are marked in_inventory
    /* obj->status |= OBJ_STATUS_IN_INVENTORY; */ // luteijn: don't manipulate this directly!
-   obj->in_inventory();
+   obj->set_in_inventory();
    obj->x = id_n;
    obj->parent = (void *)this;
 
@@ -999,7 +999,7 @@ void Actor::remove_readied_object(uint8 location)
     readied_objects[location] = NULL;
     //ERIC obj->status ^= 0x18; // remove "readied" bit flag.
     //ERIC obj->status |= OBJ_STATUS_IN_INVENTORY; // keep "in inventory"
-    obj->in_inventory();
+    obj->set_in_inventory();
 
     if(location == ACTOR_ARM && readied_objects[ACTOR_ARM_2] != NULL) //move contents of left hand to right hand.
       {

@@ -1166,7 +1166,7 @@ bool ObjManager::add_obj(Obj *obj, bool addOnTop)
  if(obj->status & OBJ_STATUS_TEMPORARY)
    temp_obj_list_add(obj);
 
- obj->on_map(obj_list); //mark object as on map.
+ obj->set_on_map(obj_list); //mark object as on map.
  
  return true;
 }
@@ -1675,7 +1675,7 @@ bool ObjManager::obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects, uint32 po
   // and add it.
   if (list_add_obj(c_obj->container, obj, stack_objects, pos))
   {
-    obj->in_container(c_obj);
+    obj->set_in_container(c_obj);
     obj->parent=(void *)c_obj;
     // FIXME? may have to set x etc?
     // but objblk_n is not guaranteed to be unique, eventually will be fixed at 

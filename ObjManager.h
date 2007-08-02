@@ -151,27 +151,27 @@ struct Obj
  bool is_readied()      { return((nuvie_status & NUVIE_OBJ_STATUS_LOC_MASK_GET) == OBJ_LOC_READIED); }
 
  
- void on_map(U6LList *map_list) { parent = map_list;
+ void set_on_map(U6LList *map_list) { parent = map_list;
                                   nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
                                   nuvie_status |= OBJ_LOC_MAP; }
  
  Obj *get_container_obj() { return is_in_container() ? (Obj *)parent : NULL; }
  
- void in_container(Obj *container_obj)
+ void set_in_container(Obj *container_obj)
  {
    parent = (void *)container_obj;
    nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
    nuvie_status |= OBJ_LOC_CONT;
  }
 
- void in_inventory() { nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+ void set_in_inventory() { nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
                        nuvie_status |= OBJ_LOC_INV; }
  void readied()      { nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
                        nuvie_status |= OBJ_LOC_READIED; }
  
  void set_noloc()   { parent = NULL; nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; } //clear location bits 0 = no loc
  
- void in_script() { nuvie_status |= NUVIE_OBJ_STATUS_SCRIPTING; }
+ void set_in_script() { nuvie_status |= NUVIE_OBJ_STATUS_SCRIPTING; }
  
  /* Returns true if an object is in an actor inventory, including containers and readied items. */
 
@@ -215,7 +215,7 @@ struct Obj
    
    container->add(obj);
    
-   obj->in_container(this);
+   obj->set_in_container(this);
    
    return true;
  }
