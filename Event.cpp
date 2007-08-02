@@ -2605,6 +2605,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		  	if(!magic->start_new_spell())
 			{
 			  mode=MOVE_MODE;
+			  scroll->display_prompt();
 			}
 			else
 				key_redirect((CallBack*)magic, NULL);
