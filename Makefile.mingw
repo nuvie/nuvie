@@ -75,6 +75,29 @@ install: all
 	mkdir -p $(U6PATH)/data
 	cp data/*.bmp $(U6PATH)/data
 	cp data/spells.nsl $(U6PATH)/data
+	mkdir -p $(U6PATH)/data
+	mkdir -p $(U6PATH)/data/scripts
+	mkdir -p $(U6PATH)/data/scripts/u6
+	mkdir -p $(U6PATH)/data/scripts/u6/magic
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_01
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_02
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_03
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_04
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_05
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_06
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_07
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_08
+	cp data/scripts/u6/magic/circle_01/*.lua $(U6PATH)/data/scripts/u6/magic/circle_01
+	cp data/scripts/u6/magic/circle_02/*.lua $(U6PATH)/data/scripts/u6/magic/circle_02
+	cp data/scripts/u6/magic/circle_03/*.lua $(U6PATH)/data/scripts/u6/magic/circle_03
+	cp data/scripts/u6/magic/circle_04/*.lua $(U6PATH)/data/scripts/u6/magic/circle_04
+	cp data/scripts/u6/magic/circle_05/*.lua $(U6PATH)/data/scripts/u6/magic/circle_05
+	cp data/scripts/u6/magic/circle_06/*.lua $(U6PATH)/data/scripts/u6/magic/circle_06
+	cp data/scripts/u6/magic/circle_07/*.lua $(U6PATH)/data/scripts/u6/magic/circle_07
+	cp data/scripts/u6/magic/circle_08/*.lua $(U6PATH)/data/scripts/u6/magic/circle_08
+	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
+	cp data/*.bmp $(U6PATH)/data
+	cp data/spells.nsl $(U6PATH)/data
 
 tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_portraits.exe
 	mkdir -p $(U6PATH)
