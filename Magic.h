@@ -46,28 +46,7 @@
 #define MAGIC_STATE_ACQUIRE_TARGET 0x03
 #define MAGIC_STATE_ACQUIRE_INPUT  0x04
 
-class Stack {
-  private:
-    char token[MAX_TOKEN_LENGTH+1];
-    size_t SP;
-    char *element[MAX_STACK_DEPTH];
-  public:
-    Stack(){SP=0;}
-    void empty();
-    void dump();
-    void push(const char*);
-    void pushptr(const void*);
-    void* popptr();
-    char* pop();
-    void drop();
-    void dup();
-    void swap();
-    void over();
-    void rot();
-     
-    ~Stack(){this->empty();}
-};
-
+class ScriptThread;
 
 class Spell {
   public: /* saves using dumb get / set functions */
@@ -89,17 +68,18 @@ class Spell {
 	}
 };
 
-class Magic: public CallBack {
+class Magic : public CallBack {
   private:
     Spell *spell[256]; // spell list;
     char cast_buffer_str[26]; // buffer for spell syllables typed.
     uint8 cast_buffer_len; // how many characters typed in the spell buffer.
-    Stack *stack;
     Event *event;
     Actor *target_actor;
     Obj *target_object;
     uint8 state;
     size_t IP;
+    
+    ScriptThread *magic_script;
     /* TODO
      * add a register array, or a pointer to a list of variables?
      */
@@ -107,14 +87,11 @@ class Magic: public CallBack {
     Magic();
     ~Magic();
     void init(Event *evt);
-    void lc(char * str); 
-    bool call(char *function);
-    bool jump(char *label,size_t * OIP, char * script);
+    void lc(char * str);
 
     bool read_line(NuvieIOFileRead *file, char *buf, size_t maxlen);
-
-    bool process_script(char * a_script, bool from_start=true);
-    bool next_token(char *token, size_t *IP, char *script);
+    bool read_script(NuvieIOFileRead *file, char *buf, size_t maxlen);
+    
     void read_spell_list();
     void clear_cast_buffer() { cast_buffer_str[0] = '\0'; cast_buffer_len = 0; }
     bool start_new_spell();
@@ -124,42 +101,11 @@ class Magic: public CallBack {
     bool cast(Obj *Obj);
 //    bool handleSDL_KEYDOWN(const SDL_Event *sdl_event);
     uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
+    bool process_script_return(uint8 ret);
+    
+private:
+    bool spellbook_has_spell(Obj *book, uint8 spell_index);
 
-    // Support functions for spells (generated with fhdr.sh)
-bool function_add();
-bool function_add_hp();
-bool function_add_mp();
-bool function_colon();
-bool function_define_spell();
-bool function_delete_obj() ;
-bool function_div();
-bool function_display();
-bool function_drop();
-bool function_dup();
-bool function_give_obj();
-bool function_input();
-bool function_inv_to_spell();
-bool function_join();
-bool function_load();
-bool function_gt();
-bool function_mod();
-bool function_mul();
-bool function_new_obj();
-bool function_newline();
-bool function_null();
-bool function_over();
-bool function_random();
-bool function_save_spell();
-bool function_space();
-bool function_strcmp();
-bool function_string2npc();
-bool function_get_actor_attrib();
-bool function_sub();
-bool function_swap();
-bool function_template();
-bool function_underscore();
-bool function_eclipse();
-bool function_quake();
 };
 
 

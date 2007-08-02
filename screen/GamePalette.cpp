@@ -31,6 +31,7 @@
 #include "NuvieIOFile.h"
 #include "Configuration.h"
 #include "Screen.h"
+#include "Dither.h"
 #include "GamePalette.h"
 
 GamePalette::GamePalette(Screen *s, Configuration *cfg)
@@ -62,7 +63,8 @@ bool GamePalette::loadPalette()
  unsigned char *buf;
  uint8 *pal_ptr;
  std::string key, game_name, game_id, pal_name;
-
+ uint8 dither_mode;
+ 
  config->value("config/GameName",game_name);
  config->value("config/GameID",game_id);
 
@@ -95,6 +97,13 @@ bool GamePalette::loadPalette()
 
  free(buf);
 
+ dither_mode = Game::get_game()->get_dither()->get_mode();
+ 
+ if(dither_mode == DITHER_NONE)
+   bg_color = 0x31;
+ else
+   bg_color = 0xf;
+  
  return true;
 }
 

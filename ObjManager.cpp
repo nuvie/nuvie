@@ -26,6 +26,7 @@
 
 #include "Configuration.h"
 
+#include "ActorManager.h"
 #include "EggManager.h"
 #include "TileManager.h"
 #include "ObjManager.h"
@@ -41,7 +42,7 @@ static const int obj_egg_table[4] = {0,   // NUVIE_GAME_NONE
                                      0,   // NUVIE_GAME_MD
                                      230};  // NUVIE_GAME_SE
 
-iAVLKey get_iAVLKey(const void *item)
+static iAVLKey get_iAVLKey(const void *item)
 {
  return ((ObjTreeNode *)item)->key;
 }
@@ -148,7 +149,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
  uint16 i;
  U6LList *inventory_list;
  iAVLTree *obj_tree;
-
+ 
  if(level == 0)
    obj_tree = surface[chunk_offset];
  else
@@ -161,7 +162,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
 
  for(i=0;i<num_objs;i++)
   {
-   obj = loadObj(chunk_buf,i);
+   obj = loadObj(chunk_buf);
 
    list->add(obj);
 
@@ -178,15 +179,15 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
       obj->container = new U6LList();
      }
 
-   if(obj->is_in_inventory_new() || obj->is_readied()) //triggered when object in actor's inventory OR equipped
+   if(obj->get_engine_loc() == OBJ_LOC_INV || obj->get_engine_loc() == OBJ_LOC_READIED) //triggered when object in actor's inventory OR equipped
      {
+      //FIXME need to add to inventory properly!! eg set engine loc.
       inventory_list = get_actor_inventory(obj->x);
       inventory_list->add(obj);
-
      }
    else
      {
-      if(obj->is_in_container_new()) //object in container
+      if(obj->is_in_container()) //object in container
         {
          addObjToContainer(list,obj);
         }
@@ -239,7 +240,7 @@ bool ObjManager::save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_of
    for(link = item->obj_list->end(); link != NULL; link=link->prev)
     {
      if(((Obj *)link->data)->obj_n != egg_type) // we don't save eggs here. They are saved in save_eggs()
-       save_obj(save_buf, (Obj *)link->data, NULL);
+       save_obj(save_buf, (Obj *)link->data, obj_save_count);
     }
 
    item = (ObjTreeNode *)iAVLNext(&node);
@@ -271,7 +272,7 @@ bool ObjManager::save_eggs(NuvieIO *save_buf)
  obj_save_count = 0;
 
  for(egg = egg_list->begin(); egg != egg_list->end();egg++)
-   save_obj(save_buf, (*egg)->obj, NULL);
+   save_obj(save_buf, (*egg)->obj, obj_save_count);
 
  finish_pos = save_buf->position();
  save_buf->seek(start_pos);
@@ -303,7 +304,7 @@ bool ObjManager::save_inventories(NuvieIO *save_buf)
       {
        for(link=actor_inventories[i]->start(); link != NULL; link=link->next)
          {
-          save_obj(save_buf, (Obj *)link->data, NULL);
+          save_obj(save_buf, (Obj *)link->data, obj_save_count);
          }
       }
    }
@@ -319,43 +320,40 @@ bool ObjManager::save_inventories(NuvieIO *save_buf)
  return true;
 }
 
-bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
+bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, uint16 parent_objblk_n)
 {
  uint8 b;
  U6Link *link;
+ uint16 objblk_n;
  
-// if these warnings never pop-up, we can trust parent_obj and rely on it instead of even passing parent...
- if (obj->parent_obj && !parent) 
- {
-   printf("WARNING non-NULL Obj *obj->parent_obj, but no Obj *parent set in call to save_obj\n");
-   printf("setting parent to parent_obj\n");
-   parent=obj->parent_obj;
- }
- if (obj->parent_obj != parent) 
- {
-   printf("WARNING Obj *obj->parent_obj differs from non-NULL Obj *parent set in call to save_obj\n");
-   printf("Trusting parent, but keeping parent_obj\n");
- }
-   
- if(parent) //obj is in a container
+ if(obj->is_in_container()) //obj is in a container
   {
-   obj->set_in_container(); // in container 
-   obj->x = parent->objblk_n;
-   obj->y &= (0xff ^ 0x1); //clean zeroth bit in y which is used for objblk_n > 1024
-   if(obj->x >= 1024)
-     {
-      obj->y |= 0x1;
-      obj->x -= 1024;
-     }
+   //obj->in_container(); // in container 
+   obj->x = parent_objblk_n & 0x3ff; //save 10bits in x
+   obj->y &= 0xffc0; //clear lower 6 bits
+   obj->y |= (parent_objblk_n >> 10); //save top 6bits
   }
  else
   {
-   if(!(obj->is_readied()))
+   if(!obj->is_readied())
    {
      obj->status &= (0xff ^ OBJ_STATUS_IN_CONTAINER);
    }
   }
 
+ if(obj->is_in_inventory(OBJ_DONT_CHECK_PARENT))
+   obj->x = obj->get_actor_holding_obj()->get_actor_num();
+ 
+ //set original status location bits.
+ obj->status &= OBJ_STATUS_MASK_SET;
+ switch(obj->get_engine_loc())
+ {
+   case OBJ_LOC_MAP : obj->status |= OBJ_STATUS_ON_MAP; break;
+   case OBJ_LOC_CONT : obj->status |= OBJ_STATUS_IN_CONTAINER; break;
+   case OBJ_LOC_INV : obj->status |= OBJ_STATUS_IN_INVENTORY; break;
+   case OBJ_LOC_READIED : obj->status |= OBJ_STATUS_READIED; break;
+ }
+ 
  save_buf->write1(obj->status);
  save_buf->write1(obj->x & 0xff);
  b = obj->x >> 8;
@@ -381,13 +379,14 @@ bool ObjManager::save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent)
  else
    save_buf->write1(obj->quality);
 
- obj->objblk_n = obj_save_count;
+ objblk_n = obj_save_count;
+
  obj_save_count += 1;
-  
+ 
  if(obj->container)
   {
    for(link = obj->container->end(); link != NULL; link=link->prev)
-     save_obj(save_buf, (Obj *)link->data, obj);
+     save_obj(save_buf, (Obj *)link->data, objblk_n);
   }
 
  return true;
@@ -851,25 +850,38 @@ bool ObjManager::add_obj(Obj *obj, bool addOnTop)
  return add_obj(get_obj_tree(obj->x,obj->y,obj->z), obj, addOnTop);
 }
 */
-bool ObjManager::remove_obj(Obj *obj)
+
+bool ObjManager::remove_obj_from_map(Obj *obj)
 {
- assert(obj->is_on_map());
- U6LList *obj_list = get_obj_list(obj->x,obj->y,obj->z);
+  U6LList *obj_list;
 
- if(obj_list != NULL)
-   {
-    obj_list->remove(obj);
-   }
+  if(obj->get_engine_loc() != OBJ_LOC_MAP)
+    return false;
+  
+  obj_list = (U6LList *)obj->parent;
 
- if(obj->status & OBJ_STATUS_TEMPORARY)
-   temp_obj_list_remove(obj);
+  if(obj_list == NULL)
+    return false;
+  
+  obj_list->remove(obj);
+  remove_obj(obj);
 
- if(obj->obj_n == obj_egg_table[game_type])
-   {
+  return true;
+}
+
+void ObjManager::remove_obj(Obj *obj)
+{
+  if(obj->status & OBJ_STATUS_TEMPORARY)
+    temp_obj_list_remove(obj);
+  
+  if(obj->obj_n == obj_egg_table[game_type])
+  {
     egg_manager->remove_egg(obj);
-   }
+  }
 
- return true;
+  obj->set_noloc();
+  
+  return;
 }
 
 // remove all objects of type obj_n from location (x,y,z)
@@ -892,7 +904,7 @@ bool ObjManager::remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y,
 
       if(obj->obj_n == obj_n)
         {
-         obj_list->remove(obj);
+         remove_obj_from_map(obj);
          delete_obj(obj);
          objects_deleted = true;
         }
@@ -930,14 +942,8 @@ Obj *ObjManager::copy_obj(Obj *obj)
 
 bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
 {
- U6LList *list;
-
- list = get_obj_list(obj->x, obj->y, obj->z);
-
- if(list == NULL)
-  return false;
-
- list->remove(obj);
+ if(remove_obj_from_map(obj) == false)
+   return false;
 
  obj->x = x;
  obj->y = y;
@@ -1068,23 +1074,19 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
 {
  uint8 i;
  Obj *new_obj;
- bool passed_prev_obj = false;
-
- if(prev_obj == NULL)
-   passed_prev_obj = true;
 
  if(level == 0)
    {
     for(i=0;i<64;i++)
       {
-       new_obj = find_obj_in_tree(obj_n, quality, prev_obj, surface[i], &passed_prev_obj);
+       new_obj = find_obj_in_tree(obj_n, quality, prev_obj, surface[i]);
        if(new_obj != NULL)
          return new_obj;
       }
    }
  else
    {
-    new_obj = find_obj_in_tree(obj_n, quality, prev_obj, dungeon[level-1], &passed_prev_obj);
+    new_obj = find_obj_in_tree(obj_n, quality, prev_obj, dungeon[level-1]);
     if(new_obj != NULL)
       return new_obj;
    }
@@ -1092,7 +1094,7 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
  return NULL;
 }
 
-inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree, bool *passed_prev_obj)
+inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree)
 {
  iAVLCursor cursor;
  ObjTreeNode *node;
@@ -1106,17 +1108,21 @@ inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_
    link = ((U6LList *)(node->obj_list))->start();
    for(;link != NULL;link=link->next)
     {
-     if( ((Obj *)(link->data))->obj_n == obj_n && ((Obj *)(link->data))->quality == quality )
+     new_obj = (Obj *)link->data;
+     if( new_obj->obj_n == obj_n && new_obj->quality == quality )
        {
-        new_obj = (Obj *)link->data;
         if(new_obj == prev_obj)
-          *passed_prev_obj = true;
+          prev_obj = NULL;
         else
           {
-           if(*passed_prev_obj)
+           if(prev_obj == NULL)
              return new_obj;
           }
        }
+
+     new_obj = new_obj->find_in_container(obj_n, quality, OBJ_MATCH_QUALITY, prev_obj);
+     if(new_obj)
+       return new_obj;
     }
 
    node = (ObjTreeNode *)iAVLNext(&cursor);
@@ -1124,7 +1130,6 @@ inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_
 
  return NULL;
 }
-
 
 bool ObjManager::add_obj(Obj *obj, bool addOnTop)
 {
@@ -1161,6 +1166,8 @@ bool ObjManager::add_obj(Obj *obj, bool addOnTop)
  if(obj->status & OBJ_STATUS_TEMPORARY)
    temp_obj_list_add(obj);
 
+ obj->on_map(obj_list); //mark object as on map.
+ 
  return true;
 }
 bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
@@ -1168,12 +1175,9 @@ bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
  U6Link *link;
  Obj *c_obj = NULL; //container object
  uint16 index;
-
- index = obj->x;
-
- if(obj->y & 0x1)
-   index += 1024;
-
+ 
+ index = ((obj->y & 0x3f) << 10) + obj->x; //10 bits from x and 6 bits from y
+  
  link = llist->gotoPos(index);
  if(link != NULL)
 	c_obj = (Obj *)link->data;
@@ -1183,27 +1187,36 @@ bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
     if(c_obj->container == NULL)
 	  c_obj->container = new U6LList();
     c_obj->container->addAtPos(0,obj);
-    obj->parent_obj=c_obj;
+    obj->parent=(void *)c_obj;
 
-	//printf("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
+    //printf("Cont: %s\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false));
+  //printf("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
 	//printf(" -> %s (%x,%x,%x)\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false),c_obj->x,c_obj->y,c_obj->z);
-
     return true;
    }
 
  return false;
 }
 
-Obj *ObjManager::loadObj(NuvieIO *buf, uint16 objblk_n)
+Obj *ObjManager::loadObj(NuvieIO *buf)
 {
  uint8 b1,b2;
  Obj *obj;
 
  obj = new Obj;
- obj->objblk_n = objblk_n;
+ //obj->objblk_n = objblk_n;
 
  obj->status = buf->read1();
-
+ 
+ //set new nuvie location bits.
+ switch(obj->status & OBJ_STATUS_MASK_GET)
+ {
+   case OBJ_STATUS_ON_MAP : obj->nuvie_status |= OBJ_LOC_MAP; break;
+   case OBJ_STATUS_IN_CONTAINER : obj->nuvie_status |= OBJ_LOC_CONT; break;
+   case OBJ_STATUS_IN_INVENTORY : obj->nuvie_status |= OBJ_LOC_INV; break;
+   case OBJ_STATUS_READIED : obj->nuvie_status |= OBJ_LOC_READIED; break;
+ }
+     
  obj->x = buf->read1(); // h
  b1 = buf->read1();
  obj->x += (b1 & 0x3) << 8;
@@ -1327,7 +1340,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
        printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
        tmp_obj = obj;
        tmp_obj++;
-       remove_obj(*obj); // this calls temp_obj_list_remove()
+       remove_obj_from_map(*obj); // this calls temp_obj_list_remove()
        delete *obj;
        obj = tmp_obj;
       }
@@ -1356,7 +1369,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
        printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
        tmp_obj = obj;
        tmp_obj++;
-       remove_obj(*obj);
+       remove_obj_from_map(*obj);
        delete *obj;
        obj = tmp_obj;
       }
@@ -1439,8 +1452,12 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
 {
  U6Link *link;
  Obj *container_obj;
- const CombatType *c_type=Game::get_game()->get_player()->get_actor()->get_object_combat_type(obj->obj_n);
-
+ const CombatType *c_type=NULL;
+ Actor *a = Game::get_game()->get_player()->get_actor();
+ 
+ if(a != NULL)
+   c_type = a->get_object_combat_type(obj->obj_n);
+ 
  printf("\n");
  print_indent(indent);
  printf("%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
@@ -1452,10 +1469,34 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  print_indent(indent);
  printf("object (Obj *) %p\n", obj);
  print_indent(indent);
- printf("parent (Obj *) %p\n", obj->parent_obj);
+ 
+ printf("engine loc: ");
+ switch(obj->get_engine_loc())
+ {
+   case OBJ_LOC_MAP : printf("MAP"); break;
+   case OBJ_LOC_CONT : printf("CONTAINER"); break;
+   case OBJ_LOC_INV : printf("INVENTORY"); break;
+   case OBJ_LOC_READIED : printf("INVENTORY READIED"); break;
+   case OBJ_LOC_NONE : printf("NONE"); break;
+
+   default : printf("**UNKNOWN**"); break;
+ }
+ 
+ printf("\n");
+ 
+ printf("parent (");
+ switch(obj->get_engine_loc())
+ {
+   case OBJ_LOC_MAP : printf("U6LList"); break;
+   case OBJ_LOC_CONT : printf("Obj"); break;
+   case OBJ_LOC_INV :
+   case OBJ_LOC_READIED : printf("Actor"); break;
+   default : printf("void"); break;
+ }
+ printf(" *) %p\n", obj->parent);
 
  print_indent(indent);
- printf("objblk_n: %d\n", obj->objblk_n);
+// printf("objblk_n: %d\n", obj->objblk_n);
 
  print_indent(indent);
  printf("obj_n: %d\n",obj->obj_n);
@@ -1474,9 +1515,9 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
    printf(" ( ");
    if(obj->is_readied())
      printf("POS:Ready ");
-   else if(obj->is_in_container_new())
+   else if(obj->is_in_container())
      printf("POS:Cont ");
-   else if(obj->is_in_inventory_new())
+   else if(obj->is_in_inventory())
      printf("POS:Inv ");
    if(obj->is_ok_to_take())
      printf("OK ");
@@ -1560,8 +1601,12 @@ void delete_obj(Obj *obj)
      delete_obj((Obj *)link->data);
   }
 
- delete obj->container;
- delete obj;
+ if(obj->is_script_obj() == false)
+ {
+   if(obj->container)
+     delete obj->container;
+   delete obj;
+ }
 
  return;
 }
@@ -1569,6 +1614,9 @@ void delete_obj(Obj *obj)
 // add object to list, stacking with exisiting objects if possible
 // This is used for adding objects to inventory OR a container.
 // *It will stack onto the new object and delete the existing object!*
+
+//FIXME!!!!! We need to set on_map() etc if going to the map.
+
 bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects, uint32 pos)
 {
  Obj *stack_with;
@@ -1623,12 +1671,15 @@ bool ObjManager::obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects, uint32 po
     c_obj->container = new U6LList();
   }
   
-  remove_obj(obj); 
-  // and add it to the container.
+  remove_obj_from_map(obj); 
+  // and add it.
   if (list_add_obj(c_obj->container, obj, stack_objects, pos))
   {
-    obj->set_in_container();
-    obj->parent_obj=c_obj;
+    obj->in_container(c_obj);
+    obj->parent=(void *)c_obj;
+    // FIXME? may have to set x etc?
+    // but objblk_n is not guaranteed to be unique, eventually will be fixed at 
+    // save-time
     return true;
   } 
   else 
@@ -1696,13 +1747,6 @@ Obj *ObjManager::get_obj_from_stack(Obj *obj, uint32 count)
     return(new_obj);
 }
 
-/* Returns the object which contains another object. */
-Obj *ObjManager::get_obj_container(Obj *obj)
-{
-    assert(obj->parent_obj != NULL);
-    return(obj->parent_obj); // must not be NULL
-}
-
 void clean_obj_tree_node(void *node)
 {
  U6Link *link;
@@ -1717,10 +1761,66 @@ void clean_obj_tree_node(void *node)
  return;
 }
 
-
-/* Returns true if an object is in an actor inventory, including containers and readied items. */
-/* now that we have a working? parent_obj, moved to Obj itself */
-bool ObjManager::is_held(Obj *obj) 
+bool ObjManager::unlink_from_engine(Obj *obj)
 {
-  return obj->is_held();
+  Actor *a;
+  Obj *cont_obj;
+  
+  switch(obj->get_engine_loc())
+  {
+    case OBJ_LOC_NONE : break;
+    case OBJ_LOC_MAP : remove_obj_from_map(obj); break;
+
+    case OBJ_LOC_READIED : a = (Actor *)obj->parent;
+                           a->remove_readied_object(obj);
+                           a->inventory_remove_obj(obj);
+                           break;
+
+    case OBJ_LOC_INV : a = (Actor *)obj->parent;
+                       a->inventory_remove_obj(obj);
+                       break;
+
+    case OBJ_LOC_CONT : cont_obj = obj->get_container_obj();
+                        if(cont_obj)
+                          cont_obj->remove(obj); //remove from parent container.
+                        break;
+      break;
+  }
+
+  return true;
 }
+
+bool ObjManager::moveto_map(Obj *obj)
+{
+  unlink_from_engine(obj);
+  add_obj(obj);
+  
+  return true;
+}
+
+bool ObjManager::moveto_inventory(Obj *obj, uint16 actor_num)
+{
+  ActorManager *am = Game::get_game()->get_actor_manager();
+  if(!am)
+    return false;
+  
+  return moveto_inventory(obj, am->get_actor(actor_num));
+}
+
+bool ObjManager::moveto_inventory(Obj *obj, Actor *actor)
+{
+  unlink_from_engine(obj);
+  actor->inventory_add_object(obj);
+  
+  return true;
+}
+
+bool ObjManager::moveto_container(Obj *obj, Obj *container_obj)
+{
+  unlink_from_engine(obj);
+  container_obj->add(obj);
+
+  return true;
+}
+
+

@@ -23,6 +23,7 @@
 
 #include "nuvieDefs.h"
 #include "Party.h"
+#include "GamePalette.h"
 #include "ViewManager.h"
 #include "View.h"
 
@@ -51,6 +52,8 @@ bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManag
  cur_party_member = 0;
  
  set_party_member(0);
+
+ bg_color = Game::get_game()->get_palette()->get_bg_color();
 
  return true;
 }

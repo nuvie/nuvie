@@ -26,6 +26,7 @@
 #include "Configuration.h"
 
 #include "GUI.h"
+#include "GamePalette.h"
 #include "InventoryWidget.h"
 #include "Actor.h"
 #include "Text.h"
@@ -57,6 +58,8 @@ InventoryWidget::InventoryWidget(Configuration *cfg, GUI_CallBack *callback): GU
  
  config->value("config/GameType",game_type);
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
+ 
+ bg_color = Game::get_game()->get_palette()->get_bg_color();
 }
 
 InventoryWidget::~InventoryWidget()
@@ -91,8 +94,11 @@ void InventoryWidget::set_prev_container()
   if(!container_obj)
     return;
   
-  set_container(container_obj->parent_obj);
-  
+  if(container_obj->get_engine_loc() == OBJ_LOC_CONT)
+    set_container((Obj *)container_obj->parent);
+  else
+    set_container(NULL);
+
   return;
 }
 
@@ -100,7 +106,7 @@ void InventoryWidget::Display(bool full_redraw)
 {
  if(full_redraw || update_display)
   {
-   screen->fill(0x31, area.x, area.y, area.w, area.h);
+   screen->fill(bg_color, area.x, area.y, area.w, area.h);
    display_inventory_container();
    display_arrows();
   }
@@ -157,13 +163,13 @@ void InventoryWidget::display_inventory_list()
  for(i=0;link != NULL && i < skip_num; link = link->next)
    {
     obj = (Obj *)link->data;
-    if((obj->status & 0x18) != 0x18)
+    if(obj->is_readied() == false)
       i++;
    }
 
   //clear the screen first inventory icons, 4 x 3 tiles
 
-  screen->fill(0x31, area.x +8, area.y + 16, 16 * 4, 16 * 3);
+  screen->fill(bg_color, area.x +8, area.y + 16, 16 * 4, 16 * 3);
 
   for(i=0;i<3;i++)
    {
@@ -172,9 +178,9 @@ void InventoryWidget::display_inventory_list()
        if(link != NULL)
          {
           obj = (Obj *)link->data;
-          if((obj->status & 0x18) == 0x18) //skip any readied objects
+          if(obj->is_readied()) //skip any readied objects
             {
-             for(;link != NULL && (obj->status & 0x18) == 0x18; link = link->next)
+             for(;link != NULL && obj->is_readied(); link = link->next)
                 obj = (Obj *)link->data;
             }
           else
@@ -183,7 +189,7 @@ void InventoryWidget::display_inventory_list()
           tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
           if(link == NULL)
             {
-             if((obj->status & 0x18) == 0x18) //last object is readied so skip it.
+             if(obj->is_readied()) //last object is readied so skip it.
                 tile = empty_tile;
             }
          }
@@ -220,7 +226,7 @@ void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint16 qty)
  offset = (16 - len*4) / 2;
 
  for(i=0;i<len;i++)
-  screen->blitbitmap(x+offset+4*i,y+11,inventory_font[buf[i]-48],3,5,0x48,0x31);
+  screen->blitbitmap(x+offset+4*i,y+11,inventory_font[buf[i]-48],3,5,0x48,bg_color);
 
  return;
 }
@@ -230,7 +236,7 @@ void InventoryWidget::display_special_char(uint16 x, uint16 y, uint8 quality)
  if(quality + 9 >= NUVIE_MICRO_FONT_COUNT)
    return;
 
- screen->blitbitmap(x+6,y+11,inventory_font[quality + 9],3,5,0x48,0x31);
+ screen->blitbitmap(x+6,y+11,inventory_font[quality + 9],3,5,0x48,bg_color);
 }
 
 void InventoryWidget::display_arrows()
@@ -310,11 +316,11 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
     for(i=0,link = inventory->start();link != NULL && i <= location;link=link->next)
      {
       obj = (Obj *)link->data;
-      if((obj->status & 0x18) != 0x18)
+      if(obj->is_readied() == false)
         i++;
      }
 
-    if(i >= location && obj && (obj->status & 0x18) != 0x18) // don't return readied or non existent objects
+    if(i >= location && obj && obj->is_readied() == false) // don't return readied or non existent objects
       return obj;
    }
 
@@ -431,7 +437,7 @@ printf("InventoryWidget::drag_drop_success()\n");
 // if(container_obj)
 //   container_obj->container->remove(selected_obj);
 // else
-//   actor->inventory_remove_obj(selected_obj, container_obj);
+//   actor->inventory_remove_obj(selected_obj);
 
  selected_obj = NULL;
  Redraw();
@@ -455,17 +461,17 @@ printf("InventoryWidget::drag_accept_drop()\n");
     if(target_obj == NULL) //we need to check this so we don't screw up target_obj on subsequent calls
       target_obj = get_obj_at_location(x,y);
 
-    if(obj->is_in_container_new())
+    if(obj->is_in_container())
     {
         printf("InventoryWidget: Not from a container!\n");
         return false;
     }
-    if((obj->is_in_inventory_new() || obj->is_readied() ) && obj->x != actor->get_actor_num())
+    if((obj->is_in_inventory() || obj->is_readied()) && obj->get_actor_holding_obj() != actor)
     {
         printf("InventoryWidget: Cannot Move between party members!\n"); 
         return false;
     }
-    if(obj->is_in_inventory_new())
+    if(obj->is_in_inventory())
     {
         printf("InventoryWidget: Already holding object!\n");
         return false;
@@ -500,7 +506,7 @@ printf("InventoryWidget::drag_perform_drop()\n");
 
     if(obj->is_readied()) // unready
       {
-       assert(obj->x == actor->get_actor_num());
+       assert(obj->get_actor_holding_obj() == actor);
        have_object = Game::get_game()->get_event()->unready(obj);
       }
     else // get

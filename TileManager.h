@@ -130,6 +130,8 @@ class TileManager
  char *desc_buf; // for look
  Configuration *config;
 
+ uint8 *dither;
+ 
  public:
 
    TileManager(Configuration *cfg);

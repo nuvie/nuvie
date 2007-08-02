@@ -26,11 +26,13 @@
 #include <vector>
 
 class Configuration;
+class Script;
 class Screen;
 class Background;
 class GamePalette;
 class Text;
 class FontManager;
+class Dither;
 class TileManager;
 class ObjManager;
 class ActorManager;
@@ -68,10 +70,12 @@ class Game
  nuvie_game_t game_type;
  static Game *game;
  Configuration *config;
+ Script *script;
  Screen *screen;
  Background *background;
  GamePalette *palette;
  Text *text;
+ Dither *dither;
  FontManager *font_manager;
  TileManager *tile_manager;
  ObjManager *obj_manager;
@@ -107,7 +111,7 @@ class Game
 
  public:
 
- Game(Configuration *cfg);
+ Game(Configuration *cfg, Script *s);
  ~Game();
 
  bool loadGame(Screen *screen, nuvie_game_t type);
@@ -141,10 +145,12 @@ class Game
  /* Pass back instance of Game classes... and why not? */
  static Game *get_game()           { return(game); }
  Configuration *get_config()       { return(config); }
+ Script *get_script()              { return(script); }
  Screen *get_screen()              { return(screen); }
 // U6Shape *get_background()         { return(background); }
  GamePalette *get_palette()        { return(palette); }
  Text *get_text()                  { return(text); }
+ Dither *get_dither()                  { return(dither); } 
  FontManager *get_font_manager()   { return(font_manager); }
  TileManager *get_tile_manager()   { return(tile_manager); }
  ObjManager *get_obj_manager()     { return(obj_manager); }

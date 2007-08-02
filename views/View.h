@@ -50,6 +50,7 @@ class View: public GUI_Widget
  Party *party;
 
  uint8 cur_party_member;
+ uint8 bg_color;
 
  public:
 

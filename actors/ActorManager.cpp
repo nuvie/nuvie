@@ -51,7 +51,7 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
  obj_manager = om;
  clock = c;
 
- for(i = 0; i < 256; i++)
+ for(i = 0; i < ACTORMANAGER_MAX_ACTORS; i++)
    actors[i] = NULL;
 
  init();
@@ -85,7 +85,7 @@ void ActorManager::clean()
  uint16 i;
 
  //delete all actors
- for(i = 0;i < 256;i++)
+ for(i = 0;i < ACTORMANAGER_MAX_ACTORS;i++)
   {
    if(actors[i])
      {
@@ -111,7 +111,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0x100); // Start of Actor position info
 
- for(i=0; i < 256; i++)
+ for(i=0; i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     switch(game_type)
      {
@@ -136,7 +136,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
 // objlist.seek(0x15f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     b1 = objlist->read1();
     b2 = objlist->read1();
@@ -151,7 +151,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0x000);
 
- for(i=0; i < 256; i++)
+ for(i=0; i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->obj_flags = objlist->read1();
    }
@@ -160,7 +160,7 @@ bool ActorManager::load(NuvieIO *objlist)
  
  objlist->seek(0x800);
  
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->status_flags = objlist->read1();
     actors[i]->alive = (bool)!(actors[i]->status_flags & ACTOR_STATUS_DEAD);
@@ -171,7 +171,7 @@ bool ActorManager::load(NuvieIO *objlist)
  
  objlist->seek(0x15f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     b1 = objlist->read1();
     b2 = objlist->read1();
@@ -197,7 +197,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0x900);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->strength = objlist->read1();
    }
@@ -206,7 +206,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0xa00);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->dex = objlist->read1();
    }
@@ -215,7 +215,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0xb00);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->intelligence = objlist->read1();
    }
@@ -224,7 +224,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0xc00);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->exp = objlist->read2();
    }
@@ -233,7 +233,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0xe00);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->hp = objlist->read1();
    }
@@ -242,7 +242,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0xff1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->level = objlist->read1();
    }
@@ -252,7 +252,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0x12f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->combat_mode = objlist->read1();
    }
@@ -261,21 +261,21 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0x13f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->magic = objlist->read1();
    }
 
  objlist->seek(0x17f1); // Start of Talk flags
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->talk_flags = objlist->read1();
    }
 
  loadActorSchedules();
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->inventory_parse_readied_objects();
 
@@ -286,7 +286,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0x14f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->moves = objlist->read1();
    }
@@ -295,7 +295,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  objlist->seek(0x11f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->set_worktype(objlist->read1());
    }
@@ -313,7 +313,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0x100); // Start of Actor position info
 
- for(i=0; i < 256; i++)
+ for(i=0; i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->x & 0xff);
 
@@ -326,7 +326,7 @@ bool ActorManager::save(NuvieIO *objlist)
     objlist->write1(b);
    }
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->obj_n & 0xff);
     b = actors[i]->obj_n >> 8;
@@ -338,7 +338,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0x15f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->base_obj_n & 0xff);
     b = actors[i]->base_obj_n >> 8;
@@ -350,7 +350,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0x900);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->strength);
    }
@@ -359,7 +359,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0xa00);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->dex);
    }
@@ -368,7 +368,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0xb00);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->intelligence);
    }
@@ -377,7 +377,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0xc00);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write2(actors[i]->exp);
    }
@@ -386,7 +386,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0xe00);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->hp);
    }
@@ -395,7 +395,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0xff1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->level);
    }
@@ -405,7 +405,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0x12f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->combat_mode);
    }
@@ -414,7 +414,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0x13f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->magic);
    }
@@ -423,21 +423,21 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0x14f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->moves);
    }
 
  objlist->seek(0); // Start of Obj flags
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->obj_flags);
    }
 
  objlist->seek(0x800); // Start of Status flags
  
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->status_flags |= (actors[i]->alignment-1)<<5;
     objlist->write1(actors[i]->status_flags);
@@ -445,13 +445,13 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0x17f1); // Start of Talk flags
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->talk_flags);
    }
 
 /*
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->inventory_parse_readied_objects();
 
@@ -462,7 +462,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  objlist->seek(0x11f1);
 
- for(i=0;i < 256; i++)
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     objlist->write1(actors[i]->get_worktype());
    }
@@ -472,8 +472,8 @@ bool ActorManager::save(NuvieIO *objlist)
 
 ActorList *ActorManager::get_actor_list()
 {
-    ActorList *_actors = new ActorList(256);
-    for(uint16 i=0;i<256;i++)
+    ActorList *_actors = new ActorList(ACTORMANAGER_MAX_ACTORS);
+    for(uint16 i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
         (*_actors)[i] = actors[i];
     return _actors;
 }
@@ -495,7 +495,7 @@ Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z)
 {
  uint16 i;
 
- for(i=0;i<256;i++)
+ for(i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
   {
    if(actors[i]->x == x && actors[i]->y == y && actors[i]->z == z)
      return actors[i];
@@ -571,7 +571,7 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
    {
     game_hour = cur_hour;
 
-    for(i=0;i<256;i++)
+    for(i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
       if(!actors[i]->in_party) // don't do scheduled activities while partying
         actors[i]->updateSchedule(cur_hour);
    }*/
@@ -598,7 +598,7 @@ void ActorManager::updateTime()
         return;
 
 //printf("updateTime(): ");
-    for(int i=0; i<256; i++)
+    for(int i=0; i<ACTORMANAGER_MAX_ACTORS; i++)
         actors[i]->update_time(); // **UPDATE MOVES LEFT**
     clock->inc_minute(); // **UPDATE TIME**
 //printf("%d:%02d\n",clock->get_hour(),clock->get_minute());
@@ -607,8 +607,8 @@ void ActorManager::updateTime()
     {
         game_hour = cur_hour;
 
-        for(int i=0;i<256;i++)
-            if(!actors[i]->in_party) // don't do scheduled activities while partying
+        for(int i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
+            if(!actors[i]->is_in_party()) // don't do scheduled activities while partying
                 actors[i]->updateSchedule(cur_hour);
     }
 
@@ -630,7 +630,7 @@ void ActorManager::twitchActors()
  if(Game::get_game()->anims_paused())
   return;
 
- for(i=0;i<256;i++)
+ for(i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
   actors[i]->twitch();
 
 }
@@ -736,7 +736,7 @@ inline bool ActorManager::can_party_move()
 
     Actor *actor = active_actors.front();
     // pM/pD > M/D
-    if((actor->in_party
+    if((actor->is_in_party()
         || party_moves_left*actor->dex > actor->moves*pActor->get_dexterity()))
         return true; // Player's turn
     return false;
@@ -762,7 +762,7 @@ bool ActorManager::loadActorSchedules()
  NuvieIOFileRead schedule;
  uint16 i;
  uint16 total_schedules;
- uint16 num_schedules[256]; // an array to hold the number of schedule entries for each Actor.
+ uint16 num_schedules[ACTORMANAGER_MAX_ACTORS]; // an array to hold the number of schedule entries for each Actor.
  uint32 bytes_read;
  unsigned char *sched_data;
  uint16 *sched_offsets;
@@ -772,14 +772,14 @@ bool ActorManager::loadActorSchedules()
  if(schedule.open(filename) == false)
    return false;
 
- sched_offsets = (uint16 *)malloc(256*sizeof(uint16));
+ sched_offsets = (uint16 *)malloc(ACTORMANAGER_MAX_ACTORS*sizeof(uint16));
 
- for (i = 0; i < 256; i++)
+ for (i = 0; i < ACTORMANAGER_MAX_ACTORS; i++)
   sched_offsets[i] = schedule.read2();
 
  total_schedules = schedule.read2();
 
- for (i = 0; i < 256; i++)
+ for (i = 0; i < ACTORMANAGER_MAX_ACTORS; i++)
  {
     //if (sched_offsets[i] == 0)
     //    num_schedules[i] = 0;
@@ -789,7 +789,7 @@ bool ActorManager::loadActorSchedules()
     else
     // sched_offsets[i] is valid
     {
-        if (i == 255)
+        if (i == ACTORMANAGER_MAX_ACTORS - 1)
             num_schedules[i] = total_schedules - sched_offsets[i];
         else if (sched_offsets[i+1] > (total_schedules-1))
             num_schedules[i] = total_schedules - sched_offsets[i];
@@ -807,7 +807,7 @@ bool ActorManager::loadActorSchedules()
     return false;
    }
 
- for(i=0;i<256;i++)
+ for(i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
   {
    s_ptr = sched_data + (sched_offsets[i] * SCHEDULE_SIZE);
    actors[i]->loadSchedule(s_ptr,num_schedules[i]);
@@ -832,41 +832,11 @@ void ActorManager::clear_actor(Actor *actor)
 bool ActorManager::resurrect_actor(Obj *actor_obj, MapCoord new_position)
 {
  Actor *actor;
- U6Link *link;
  
  if(!is_temp_actor(actor_obj->quality))
   {
    actor = get_actor(actor_obj->quality);
-   actor->alive = true;
-   actor->status_flags = actor->status_flags ^ ACTOR_STATUS_DEAD;
-   
-   actor->show();
-
-   actor->x = new_position.x;
-   actor->y = new_position.y;
-   actor->z = new_position.z;
-   actor->obj_n = actor->base_obj_n;
-   actor->init();
-   
-   actor->frame_n = 0;
-   
-   actor->set_direction(NUVIE_DIR_N);
-
-   actor->set_hp(1);
-   //actor->set_worktype(0x1);
-   
-   if((actor->status_flags & ACTOR_STATUS_IN_PARTY) == ACTOR_STATUS_IN_PARTY) //actor in party
-     Game::get_game()->get_party()->add_actor(actor);
-   
-   //add body container objects back into actor's inventory.
-   if(actor_obj->container)
-     {
-      for(link = actor_obj->container->start(); link != NULL; link = link->next)
-        actor->inventory_add_object((Obj *)link->data);
-
-      actor_obj->container->removeAll();
-     }
-
+   actor->resurrect(new_position, actor_obj);
   }
 
  return true;
@@ -935,7 +905,7 @@ inline Actor *ActorManager::find_free_temp_actor()
 {
  uint16 i;
 
- for(i = TEMP_ACTOR_OFFSET;i<256;i++)
+ for(i = TEMP_ACTOR_OFFSET;i<ACTORMANAGER_MAX_ACTORS;i++)
   {
    if(actors[i]->obj_n == 0)
      return actors[i];
@@ -979,7 +949,7 @@ void ActorManager::clean_temp_actors_from_level(uint8 level)
 {
  uint16 i;
 
- for(i=TEMP_ACTOR_OFFSET;i<256;i++)
+ for(i=TEMP_ACTOR_OFFSET;i<ACTORMANAGER_MAX_ACTORS;i++)
    {
     if(actors[i]->is_visible() && actors[i]->z == level)
       clean_temp_actor(actors[i]);
@@ -993,7 +963,7 @@ void ActorManager::clean_temp_actors_from_area(uint16 x, uint16 y)
  uint16 i;
  uint16 dist_x, dist_y;
 
- for(i=TEMP_ACTOR_OFFSET;i<256;i++)
+ for(i=TEMP_ACTOR_OFFSET;i<ACTORMANAGER_MAX_ACTORS;i++)
    {
     if(actors[i]->is_visible())
       {
@@ -1049,12 +1019,12 @@ bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
 }
 
 
-/* Returns the actor whose inventory contains an object.
- */
+/* Returns the actor whose inventory contains an object. */
 Actor *ActorManager::get_actor_holding_obj(Obj *obj)
 {
-    assert(obj->is_in_inventory_new()||obj->is_readied()); // FIXME for containers. (search up using parent_obj)
-    return(get_actor(obj->x));
+  assert(obj->is_in_inventory(false));
+    
+  return (Actor *)obj->parent;
 }
 
 // Remove list actors who fall out of a certain range from a location.
@@ -1084,7 +1054,7 @@ inline ActorList *ActorManager::filter_active_actors(ActorList *list, uint16 x, 
         Actor *actor = *i;
         MapCoord loc(x, y, z);
         MapCoord actor_loc(actor->x, actor->y, actor->z);
-        if(!actor->in_party)
+        if(!actor->is_in_party())
         {
             if((loc.distance(actor_loc) > dist || loc.z != actor_loc.z)
                && actor->worktype != WORKTYPE_U6_WALK_TO_LOCATION)
@@ -1092,7 +1062,7 @@ inline ActorList *ActorManager::filter_active_actors(ActorList *list, uint16 x, 
             if(actor->is_sleeping() || actor->is_immobile() || !actor->alive)
                 actor->set_moves_left(0);
         }
-        if((actor->in_party == true && combat_movement == false) || actor->moves <= 0)
+        if((actor->is_in_party() == true && combat_movement == false) || actor->moves <= 0)
             i = list->erase(i);
         else ++i;
     }
@@ -1141,7 +1111,7 @@ ActorList *ActorManager::filter_party(ActorList *list)
     while(i != list->end())
     {
         Actor *actor = *i;
-        if(actor->in_party == true || actor->id_n == 0) // also remove vehicle
+        if(actor->is_in_party() == true || actor->id_n == 0) // also remove vehicle
             i = list->erase(i);
         else ++i;
     }

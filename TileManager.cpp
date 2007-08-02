@@ -30,6 +30,7 @@
 #include "U6Lib_n.h"
 #include "U6Lzw.h"
 #include "Game.h"
+#include "Dither.h"
 #include "U6misc.h"
 #include "Look.h"
 #include "GameClock.h"
@@ -78,6 +79,10 @@ bool TileManager::loadTiles()
  uint16 i;
  int game_type;
 
+ Dither *dither;
+ 
+ dither = Game::get_game()->get_dither();
+ 
  config->value("config/GameType",game_type);
  config_get_path(config,"maptiles.vga",maptiles_path);
  config_get_path(config,"masktype.vga",masktype_path);
@@ -145,6 +150,8 @@ bool TileManager::loadTiles()
                          break;
     }
 
+   dither->dither_bitmap(tile[i].data,16,16,tile[i].transparent);
+   
    tileindex[i] = i; //set all tile indexs to default value. this is changed in update() for animated tiles
   }
 
@@ -660,3 +667,4 @@ Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
     return(new_tile);
 }
 #endif
+

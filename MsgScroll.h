@@ -87,6 +87,7 @@ class MsgScroll: public GUI_Widget, public CallBack
  uint16 screen_y; //y offset to top left corner of MsgScroll
 
  Font *font;
+ uint8 bg_color;
  bool keyword_highlight;
  bool input_mode;
  const char *permit_input; // character list, or 0 = any string

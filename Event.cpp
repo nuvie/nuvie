@@ -87,6 +87,7 @@ Event::Event(Configuration *cfg)
 
  drop_obj = NULL;
  drop_qty = 0;
+ drop_x = drop_y = -1;
  rest_time = 0;
  rest_guard = 0;
  push_obj = NULL;
@@ -901,7 +902,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
                     player->subtract_karma();
 		    /* obj->status |= OBJ_STATUS_OK_TO_TAKE; */ // duplicated in inventory_add_object. 
                 }
-                obj_manager->remove_obj(obj); //remove object from map.
+                obj_manager->remove_obj_from_map(obj); //remove object from map.
 
                 actor->inventory_add_object(obj, container_obj);
                 got_object = true;
@@ -970,7 +971,7 @@ bool Event::use(Obj *obj)
     scroll->display_string(obj_manager->look_obj(obj));
     scroll->display_string("\n");
 
-    if(!obj_manager->is_held(obj)
+    if(!obj->is_in_inventory()
         && player->get_actor()->get_location().distance(target) > 1)
     {
         scroll->display_string("\nOut of range!\n");
@@ -2081,6 +2082,7 @@ bool Event::drop_start()
         return false;
     drop_obj = NULL;
     drop_qty = 0;
+    drop_x = drop_y = -1;
 
 //    get_obj_from_inventory(some actor, "Drop-");
 //    get_obj_from_inventory("Drop-");
@@ -2127,9 +2129,17 @@ bool Event::drop_count(uint16 qty)
     scroll->display_string("\n");
 
     if(drop_qty != 0)
-        get_target("Location:");
+    {
+        if(drop_x == -1)
+            get_target("Location:");
+        else // h4x0r3d by SB-X... eventually integrate MapWindow dragndrop better with this drop-action
+        {
+            scroll->display_string("Location:");
+            perform_drop(); // use already selected target: drop_x,drop_y
+        }
+    }
     else
-        endAction(true);
+        endAction(true); // cancelled
 
     return true;
 }
@@ -2142,7 +2152,9 @@ bool Event::perform_drop()
 {
     if(mode == WAIT_MODE)
         return false;
-    return(drop(drop_obj, drop_qty, input.loc->x, input.loc->y));
+    if(drop_x == -1) drop_x = input.loc->x;
+    if(drop_y == -1) drop_y = input.loc->y;
+    return(drop(drop_obj, drop_qty, uint16(drop_x), uint16(drop_y)));
 }
 
 
@@ -2152,8 +2164,8 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     if(mode == WAIT_MODE)
         return false;
 
-    Actor *actor = (obj->is_in_inventory_new()||obj->is_readied()) // FIXME when using containers.
-                   ? Game::get_game()->get_actor_manager()->get_actor(obj->x)
+    Actor *actor = (obj->is_in_inventory()) // includes held containers
+                   ? obj->get_actor_holding_obj()
                     : player->get_actor();
     MapCoord actor_loc = actor->get_location();
     MapCoord drop_loc(x, y, actor_loc.z);
@@ -2602,10 +2614,10 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		case TALK_MODE: talk_start(); break;
 		case USE_MODE:  use_start();  break;
 		case GET_MODE:  get_start();  break;
-        case ATTACK_MODE:
-            player->attack_select_init();
-            map_window->set_show_cursor(true);
-            break;
+		case ATTACK_MODE:
+			player->attack_select_init();
+			map_window->set_show_cursor(true);
+			break;
 		case PUSH_MODE: push_start(); break;
 		case DROP_MODE: drop_start();
                         // drop to EQUIP_MODE (move cursor to inventory)

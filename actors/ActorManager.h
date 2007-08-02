@@ -38,6 +38,8 @@ class MapCoord;
 #define ACTOR_VEHICLE_ID_N 0
 #define ACTOR_AVATAR_ID_N  1
 
+#define ACTORMANAGER_MAX_ACTORS 256
+
 class ActorManager
 {
  Configuration *config;
@@ -49,7 +51,7 @@ class ActorManager
  bool combat_movement; // Defines actor movement type (individual/party)
 
  Map *map;
- Actor *actors[256];
+ Actor *actors[ACTORMANAGER_MAX_ACTORS];
  uint8 player_actor;
  GameClock *clock;
  uint8 game_hour;

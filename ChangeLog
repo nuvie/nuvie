@@ -1,3 +1,90 @@
+2007-08-02  Eric Fry <efry at users.sourceforge.net>
+	* Merged changes from ERIC_SCRIPING_BRANCH into main branch.
+
+	* Added ObjManager::remove_obj_from_map()
+	* Removed ObjManager::is_held() Obj::is_held() replaced with 
+	  Obj::is_in_inventory()
+	* Changed Obj *Obj::parent_obj to void *Obj::parent
+	* Removed need for Obj::objblk_n replaced with Obj::parent
+	* Obj::parent now contains a pointer to either an Actor, Obj or map U6LList 
+	  object
+	  Added Obj::get_actor_holding_obj()
+	* Fixed Obj::is_in_ methods
+	* Added nuvie_status variable to Obj This holds info on the obj's location 
+	  in the engine and whether the object is being used by the scripting 
+	  engine. Possible obj locations are OBJ_LOC_NONE, OBJ_LOC_MAP, 
+	  OBJ_LOC_CONT, OBJ_LOC_INV and OBJ_LOC_READIED
+	* Increased container parent index from 11 to 16 bits. 
+	* Added the ability to search desks.
+	* Moved partyView up one pixel.
+	* Fixed sun/moon locations.
+	* Added Obj::remove(Obj *obj) which removes children from a container.
+	* Changed spell incantation buffer from 25 to 4.
+	* Added contents of data/ directory into XCode build environment resource
+	  section.
+	* Replaced ObjManager::get_obj_container() with Obj::get_container_obj()
+	* ObjManager find object now searches containers on maps. I needed this for 
+	  the new resurrection functionality. (finding lost body objects from the 
+	  map)
+	* Changed Party::remove_actor() so that it doesn't remove party status from 
+	  the actor if they are being removed due to death. This allows the Party 
+	  object to resurrect them at a later stage. By looking for dead actors with
+	  is_in_party() set to true.
+	* Added Party::resurrect_dead_members() this gets called when the avatar dies
+	  and all dead party members are resurrected.
+	* Added Actor::resurrect() this function takes the body object and moves and
+	  inventory back to the actor as well as setting the actor back into a live 
+	  state.
+	* Added Actor::find_body() this method looks on the map for the dead actor's
+	  body object. This is used by the new resurrection code.
+	* Added define ACTORMANAGER_MAX_ACTORS to ActorManager to get rid of some 
+	  magic numbers.
+	* Added U6Actor::add_blood() which adds some random blood at the actor's
+	  current position. Still need to do some work on blood handling in nuvie.
+	* Added Magic::spellbook_has_spell() which checks a given spellbook obj for a
+	  certain spell. Added define MAGIC_ALL_SPELLS
+	* Look inside containers in inventory for items. This enables converse
+	  resurrection to find actors carried in a container in a party member's
+	  inventory.
+	* Added CGA/EGA graphics support to Nuvie. You can activate it with
+	  <general><dither_mode>cga|ega|none</dither_mode></general>
+	* Added new class Dither. This is used to dither bitmaps down to the correct
+	  dithering mode. Called from tilemanager, background and portrait.
+	* Added new bg_color variable to GamePalette so we can change the index
+	  of the background color. This is then passed to views and other widgets.
+	  So they don't need the magic number 0x31 anymore.
+	* Added nuvie.cfg.sample into XCode build environment.
+	* U6Usecode, fix torch and powder keg usecode for new Obj::is_in_container()
+	  check, explode kegs over actor or container holding them, don't allow
+	  equipping a torch from a container (for now)
+	* Added new lua based magic scripting system.
+	* Added support for the following spells. (Note magic target location is
+	  currently hard coded for the tile directly above the avatar.)
+
+	  Create Food - (imy)
+	  Detect Trap - (wj)
+	  Douse - (af)
+	  Harm - (am)
+	  Heal - (im)
+	  Ignite - (if)
+	  Poison - (inp)
+	  Telekinesis - (opy)
+	  Trap - (ij)
+	  Unlock Magic - (ep)
+	  Untrap - (aj)
+	  Dispel Field - (ag)
+	  Magic Lock - (ap)
+	  Fire Field - (ifg)
+	  Locate - (iw)
+	  Poison Field - (ing)
+	  Sleep Field - (izg)
+	  Energy Field - (isg)
+	  Kill - (ic)
+	  Eclipse - (val)
+	  Resurrect - (imc)
+	  Summon - (kxc)
+	  Tremor - (vpy)
+
 2006-12-31  Joseph Applegate <sb-x at users.sourceforge.net>
 	* Targeting and input has been changed to remove excess Event modes.
 	* The various modes have been replaced with an EventInput state, and

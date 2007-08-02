@@ -25,16 +25,18 @@
  */
 
 #include <list>
-#include <cassert> // for paranoid checks in Obj::is_held 
+#include <cstring>
 #include "iAVLTree.h"
 #include "TileManager.h"
+#include "U6LList.h"
 
-class U6LList;
+//class U6LList;
 class Configuration;
 class EggManager;
 class UseCode;
 class NuvieIO;
 class MapCoord;
+class Actor;
 
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1
@@ -44,12 +46,12 @@ class MapCoord;
 
 // position: A 2 bit field, so can't use plain | to check / |= to set these. 
 // FIXME: check to make sure we don't do this anywhere anymore
-#define OBJ_STATUS_ON_MAP        0x0 // 0 << 3
-#define OBJ_STATUS_IN_CONTAINER  0x8 // 1
-#define OBJ_STATUS_IN_INVENTORY 0x10 // 2
-#define OBJ_STATUS_READIED      0x18 // 3
-#define OBJ_STATUS_POS_MASK     0x18
-//#define OBJ_STATUS_POS_MASK_SET 0xE7
+#define OBJ_STATUS_ON_MAP        0x0
+#define OBJ_STATUS_IN_CONTAINER  0x8
+#define OBJ_STATUS_IN_INVENTORY 0x10
+#define OBJ_STATUS_READIED      0x18
+#define OBJ_STATUS_MASK_GET     0x18
+#define OBJ_STATUS_MASK_SET     0xE7
 
 #define OBJ_STATUS_TEMPORARY    0x20
 #define OBJ_STATUS_EGG_ACTIVE   0x40  // something to do with eggs
@@ -57,6 +59,22 @@ class MapCoord;
 #define OBJ_STATUS_MUTANT       0x40  
 #define OBJ_STATUS_CURSED       0x40  
 #define OBJ_STATUS_LIT          0x80
+
+
+//first 3 bits of nuvie_status code object location
+//in the nuvie engine.
+
+//Nuvie engine obj locations
+#define OBJ_LOC_NONE    0
+#define OBJ_LOC_INV     1
+#define OBJ_LOC_MAP     2
+#define OBJ_LOC_READIED 3
+#define OBJ_LOC_CONT    4
+
+#define NUVIE_OBJ_STATUS_LOC_MASK_GET 0x7
+#define NUVIE_OBJ_STATUS_LOC_MASK_SET 0xf8
+
+#define NUVIE_OBJ_STATUS_SCRIPTING 0x8
 
 //is_passable return codes
 #define OBJ_NO_OBJ       0
@@ -70,8 +88,13 @@ class MapCoord;
 #define OBJ_WEIGHT_DONT_SCALE false
 
 #define OBJ_ADD_TOP true
+#define OBJ_MATCH_QUALITY true
 
 #define OBJ_TEMP_INIT 255 // this is used to stop temporary objects from being cleaned upon startup.
+
+
+//We use this in Obj::is_in_inventory()
+#define OBJ_DONT_CHECK_PARENT false
 
 struct ObjTreeNode
 {
@@ -81,7 +104,8 @@ struct ObjTreeNode
 
 struct Obj
 {
- uint16 objblk_n;
+ //uint16 objblk_n;
+ uint8 nuvie_status;
  uint16 obj_n;
  uint8 frame_n;
 
@@ -92,13 +116,21 @@ struct Obj
 
  uint16 qty;
  uint8 quality;
- Obj * parent_obj;
+ void * parent; //either an Obj pointer or an Actor pointer depending on engine_loc.
  U6LList *container;
- Obj() {obj_n = 0; status = 0; frame_n = 0; qty = 0; quality = 0; parent_obj = NULL; container = NULL; };
+ Obj() {obj_n = 0; status = 0; nuvie_status = 0; frame_n = 0; qty = 0; quality = 0; parent = NULL; container = NULL; };
+ Obj(Obj *sobj)
+ {
+   memcpy(this, sobj, sizeof(Obj));
 
+   parent = NULL; container = NULL;
+ };
+
+ bool is_script_obj()    { return(nuvie_status & NUVIE_OBJ_STATUS_SCRIPTING); }
+ 
  bool is_ok_to_take()   { return(status & OBJ_STATUS_OK_TO_TAKE); }
- bool is_invisible()	{ return(status & OBJ_STATUS_INVISIBLE); } 
- bool is_charmed()	{ return(status & OBJ_STATUS_CHARMED); } 
+ bool is_invisible()	  { return(status & OBJ_STATUS_INVISIBLE); } 
+ bool is_charmed()	    { return(status & OBJ_STATUS_CHARMED); }
  bool is_temporary()    { return(status & OBJ_STATUS_TEMPORARY); }
  bool is_egg_active()   { return(status & OBJ_STATUS_EGG_ACTIVE); }
  bool is_broken()       { return(status & OBJ_STATUS_BROKEN); }
@@ -106,37 +138,166 @@ struct Obj
  bool is_cursed()       { return(status & OBJ_STATUS_CURSED); }
  bool is_lit()          { return(status & OBJ_STATUS_LIT); }
 
+ bool is_on_map()       { return((nuvie_status & OBJ_LOC_MAP) == OBJ_LOC_MAP); }
  /* old, until replaced everywhere properly */
- bool is_in_container_old() { printf("warning: Deprecated is_in_container used (obj=%d:%d)\n",obj_n,frame_n); return(status & OBJ_STATUS_IN_CONTAINER); }
- bool is_in_inventory_old() { printf("warning: Deprecated is_in_inventory used (obj=%d:%d)\n",obj_n,frame_n); return(status & OBJ_STATUS_IN_INVENTORY); }
+// bool is_in_container_old() { printf("Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_CONTAINER); }
+// bool is_in_inventory_old() { printf("Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_INVENTORY); }
  /* new, to replace the above two (redoing the logic) */
- bool is_in_container_new() { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_IN_CONTAINER); }
- bool is_in_inventory_new() { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_IN_INVENTORY); }
+ bool is_in_container() { return((nuvie_status & NUVIE_OBJ_STATUS_LOC_MASK_GET) == OBJ_LOC_CONT); }
+ 
  /* links, disable to find instances while renaming, eventually swing over and change to _new when renaming back.. */
- bool is_in_container() { return is_in_container_old();}
- bool is_in_inventory() { return is_in_inventory_old();}
- bool is_on_map()       { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_ON_MAP); }
- bool is_readied()      { return((status & OBJ_STATUS_POS_MASK) == OBJ_STATUS_READIED); }
+// bool is_in_container() { return is_in_container_old();}
+// bool is_in_inventory() { return is_in_inventory_old();}
+ bool is_readied()      { return((nuvie_status & NUVIE_OBJ_STATUS_LOC_MASK_GET) == OBJ_LOC_READIED); }
 
- void set_on_map()   { status &= ~OBJ_STATUS_POS_MASK; // clear position bits
-                       status |= OBJ_STATUS_ON_MAP; }  // set
- void set_in_container() { status &= ~OBJ_STATUS_POS_MASK;
-                           status |= OBJ_STATUS_IN_CONTAINER; }
- void set_in_inventory() { status &= ~OBJ_STATUS_POS_MASK;
-   		                   status |= OBJ_STATUS_IN_INVENTORY; }
- void set_readied()  { status &= ~OBJ_STATUS_POS_MASK;
-                       status |= OBJ_STATUS_READIED; }
+ 
+ void on_map(U6LList *map_list) { parent = map_list;
+                                  nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+                                  nuvie_status |= OBJ_LOC_MAP; }
+ 
+ Obj *get_container_obj() { return is_in_container() ? (Obj *)parent : NULL; }
+ 
+ void in_container(Obj *container_obj)
+ {
+   parent = (void *)container_obj;
+   nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+   nuvie_status |= OBJ_LOC_CONT;
+ }
 
+ void in_inventory() { nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+                       nuvie_status |= OBJ_LOC_INV; }
+ void readied()      { nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+                       nuvie_status |= OBJ_LOC_READIED; }
+ 
+ void set_noloc()   { parent = NULL; nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; } //clear location bits 0 = no loc
+ 
+ void in_script() { nuvie_status |= NUVIE_OBJ_STATUS_SCRIPTING; }
+ 
  /* Returns true if an object is in an actor inventory, including containers and readied items. */
 
- bool is_held() { if(is_on_map()) return false;
-                  if(is_readied()) return true;
-                  if(is_in_inventory_new()) return true;
-                  // none of the above, so must be in a container. 
-                  assert(is_in_container_new()); // check anyway, paranoia is a way of life
-                  assert(parent_obj); // should be non-NULL for contained objects. 
-                  // tail recurse:
-                  return parent_obj->is_held(); }
+ bool is_in_inventory(bool check_parent=true)
+ { 
+   switch(get_engine_loc())
+   {
+     case OBJ_LOC_INV :
+     case OBJ_LOC_READIED : return true;
+     case OBJ_LOC_CONT : if(check_parent)
+                           return ((Obj *)parent)->is_in_inventory(check_parent);
+                         break;
+     default : break;
+   }
+   
+   return false;
+ }
+ 
+ uint8 get_engine_loc() { return (nuvie_status & NUVIE_OBJ_STATUS_LOC_MASK_GET); }
+ 
+ Actor *get_actor_holding_obj()
+ {
+   switch(get_engine_loc())
+   {
+     case OBJ_LOC_INV :
+     case OBJ_LOC_READIED : return (Actor *)this->parent;
+       
+     case OBJ_LOC_CONT : return ((Obj *)parent)->get_actor_holding_obj();
+       
+     default : break;
+   }
+   
+   return NULL;
+ }
+
+ //Add child object into container
+ bool add(Obj *obj)
+ {
+   if(container == NULL)
+     container = new U6LList();
+   
+   container->add(obj);
+   
+   obj->in_container(this);
+   
+   return true;
+ }
+
+ //Remove child object from container.
+ bool remove(Obj *obj)
+ {
+   if(container == NULL)
+     return false;
+   
+   if(container->remove(obj) == false)
+     return false;
+   
+   obj->x = 0;
+   obj->y = 0;
+   obj->z = 0;
+   
+   obj->set_noloc();
+   
+   return true;
+ }
+ 
+ Obj *find_in_container(uint16 obj_n, uint8 quality, bool match_quality=OBJ_MATCH_QUALITY, Obj *prev_obj=NULL)
+ {
+   U6Link *link;
+   Obj *obj;
+
+   if(container == NULL)
+     return NULL;
+   
+   for(link = container->start();link != NULL;link=link->next)
+   {
+     obj = (Obj *)link->data;
+     if(obj && obj->obj_n == obj_n && (match_quality == false || obj->quality == quality))
+     {
+       if(obj == prev_obj)
+         prev_obj = NULL;
+       else
+       {
+         if(prev_obj == NULL)
+           return obj;
+       }
+     }
+     
+    if(obj->container)
+    {
+      obj = obj->find_in_container(obj_n, quality, match_quality, prev_obj);
+      if(obj)
+        return obj;
+    }
+   }
+
+   return NULL;
+ }
+ 
+ uint32 get_total_qty(uint16 match_obj_n)
+ {
+   U6Link *link;
+   Obj *obj;
+   uint16 total_qty = 0;
+
+   if(obj_n == match_obj_n)
+     total_qty += qty;
+
+   if(container != NULL)
+   {
+     for(link = container->start();link != NULL;link=link->next)
+     {
+       obj = (Obj *)link->data;
+       if(obj)
+       {
+         if(obj->container)
+           total_qty += obj->get_total_qty(match_obj_n);
+         else if(obj->obj_n == match_obj_n)
+           total_qty += obj->qty;
+       }
+     }
+   }
+   
+   return total_qty;
+ }
+ 
 };
 
 Obj *new_obj(uint16 obj_n, uint8 frame_n, uint16 x, uint16 y, uint16 z);
@@ -186,7 +347,7 @@ class ObjManager
  bool save_super_chunk(NuvieIO *save_buf, uint8 level, uint8 chunk_offset);
  bool save_eggs(NuvieIO *save_buf);
  bool save_inventories(NuvieIO *save_buf);
- bool save_obj(NuvieIO *save_buf, Obj *obj, Obj *parent);
+ bool save_obj(NuvieIO *save_buf, Obj *obj, uint16 parent_objblk_n);
 
  void set_usecode(UseCode *uc) { usecode = uc; }
  UseCode *get_usecode()        { return(usecode); }
@@ -200,7 +361,6 @@ class ObjManager
  bool is_forced_passable(uint16 x, uint16 y, uint8 level);
  bool is_stackable(Obj *obj);
  bool has_reduced_weight(Obj *obj);
- bool is_held(Obj *obj);
  bool has_toptile(Obj *obj);
 
  U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);
@@ -223,17 +383,16 @@ class ObjManager
 
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
  bool add_obj(Obj *obj, bool addOnTop=false);
- bool remove_obj(Obj *obj);
+ bool remove_obj_from_map(Obj *obj);
  bool remove_obj_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
 
+ 
  Obj *copy_obj(Obj *obj);
  const char *look_obj(Obj *obj, bool show_prefix = false);
  Obj *get_obj_from_stack(Obj *obj, uint32 count);
- Obj *get_obj_container(Obj *obj);
 
  bool list_add_obj(U6LList *list, Obj *obj, bool stack_objects=true, uint32 pos=0);
  bool obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects=true, uint32 pos=0); 
-  
 
  const char *get_obj_name(Obj *obj);
  const char *get_obj_name(uint16 obj_n);
@@ -246,14 +405,23 @@ class ObjManager
 
  void update(uint16 x, uint16 y, uint8 z);
 
+ bool unlink_from_engine(Obj *obj);
+ 
+ bool moveto_map(Obj *obj);
+ bool moveto_inventory(Obj *obj, uint16 actor_num);
+ bool moveto_inventory(Obj *obj, Actor *actor);
+ bool moveto_container(Obj *obj, Obj *container_obj);
+   
  protected:
 
+ void remove_obj(Obj *obj);
+ 
  bool load_basetile();
  bool load_weight_table();
 
 
  bool addObjToContainer(U6LList *list, Obj *obj);
- Obj *loadObj(NuvieIO *buf, uint16 objblk_n);
+ Obj *loadObj(NuvieIO *buf);
  iAVLTree *get_obj_tree(uint16 x, uint16 y, uint8 level);
 
  iAVLKey get_obj_tree_key(Obj *obj);
@@ -265,7 +433,7 @@ class ObjManager
  void temp_obj_list_clean_level(uint8 z);
  void temp_obj_list_clean_area(uint16 x, uint16 y);
 
- inline Obj *find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree, bool *passed_prev_obj);
+ inline Obj *find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree);
  inline void start_obj_usecode(iAVLTree *obj_tree);
  inline void print_egg_tree(iAVLTree *obj_tree);
 

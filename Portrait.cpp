@@ -26,6 +26,8 @@
 #include "Configuration.h"
 
 #include "NuvieIOFile.h"
+#include "Dither.h"
+#include "Game.h"
 
 #include "Actor.h"
 #include "Portrait.h"
@@ -129,5 +131,7 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
  new_portrait = lzw.decompress_buffer(lzw_data, portrait->get_item_size(num), new_length);
  free(lzw_data);
 
+ Game::get_game()->get_dither()->dither_bitmap(new_portrait,56,64,true);
+ 
  return new_portrait;
 }

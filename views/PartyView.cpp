@@ -63,13 +63,13 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
  x -= area.x;
  y -= area.y;
 
- if(y < 19) // clicked on skydisplay
+ if(y < 18) // clicked on skydisplay
    return GUI_PASS;
 
  uint8 party_size = party->get_party_size();
  if(party_size > 5) party_size = 5; // can only display/handle 5 at a time
 
- SDL_Rect arrow_rects[2] = {{0,20,8,8},{0,92,8,8}};
+ SDL_Rect arrow_rects[2] = {{0,18,8,8},{0,90,8,8}};
  if(HitRect(x,y,arrow_rects[0])) //up arrow hit rect
    {
     if(up_arrow())
@@ -83,13 +83,13 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
     return GUI_YUM;
    }
 
- if(y > party_size * 16 + 19) // clicked below actors
+ if(y > party_size * 16 + 18) // clicked below actors
    return GUI_YUM;
 
  if(x >= 8)
   {
-   set_party_member(((y - 19) / 16) + row_offset);
-   if(x >= 8+20) // clicked an actor name
+   set_party_member(((y - 18) / 16) + row_offset);
+   if(x >= 8+18) // clicked an actor name
      {
       actorViewButtonCallback(view_manager);
      }
@@ -114,7 +114,7 @@ void PartyView::Display(bool full_redraw)
  if(full_redraw || update_display)
   {
    update_display = false;
-   screen->fill(0x31, area.x, area.y, area.w, area.h);
+   screen->fill(bg_color, area.x, area.y, area.w, area.h);
 
    display_sun_moon_strip();
 
@@ -123,10 +123,10 @@ void PartyView::Display(bool full_redraw)
       hp_text_color = 0x48; //standard text color
       actor = party->get_actor(i);
       actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
-      screen->blit(area.x+8,area.y+19+1+(i-row_offset)*16,actor_tile->data,8,16,16,16,true);
+      screen->blit(area.x+8,area.y+18+(i-row_offset)*16,actor_tile->data,8,16,16,16,true);
 
       actor_name = party->get_actor_name(i);
-      text->drawString(screen, actor_name, area.x+8 + 16 + 8, area.y + 19 + 1 + (i-row_offset) * 16 + 8, 0);
+      text->drawString(screen, actor_name, area.x+8 + 16 + 8, area.y + 18 + (i-row_offset) * 16 + 8, 0);
       sprintf(hp_string,"%3d",actor->get_hp());
       if(actor->is_poisoned()) //actor is poisoned, display their hp in green
         hp_text_color = 0xa;
@@ -135,7 +135,7 @@ void PartyView::Display(bool full_redraw)
         if(actor->get_hp() < 10) //actor is critical, display their hp in red.
           hp_text_color = 0x0c; 
        }
-      text->drawString(screen, hp_string, strlen(hp_string), area.x+8 + 112, area.y + 19 + 1 + (i-row_offset) * 16, 0, hp_text_color);
+      text->drawString(screen, hp_string, strlen(hp_string), area.x+8 + 112, area.y + 18 + (i-row_offset) * 16, 0, hp_text_color);
      }
 
    display_arrows();
@@ -174,7 +174,7 @@ void PartyView::display_surface_strip()
  for(i=0;i<9;i++)
    {
     tile = tile_manager->get_tile(352+i);
-    screen->blit(area.x+8 +i*16,area.y+3,tile->data,8,16,16,16,true);
+    screen->blit(area.x+8 +i*16,area.y,tile->data,8,16,16,16,true);
    }
 
  return;
@@ -186,17 +186,17 @@ void PartyView::display_dungeon_strip()
  Tile *tile;
 
  tile = tile_manager->get_tile(372);
- screen->blit(area.x+8,area.y+3,tile->data,8,16,16,16,true);
+ screen->blit(area.x+8,area.y,tile->data,8,16,16,16,true);
 
  tile = tile_manager->get_tile(373);
 
  for(i=1;i<8;i++)
    {
-    screen->blit(area.x+8 +i*16,area.y+3,tile->data,8,16,16,16,true);
+    screen->blit(area.x+8 +i*16,area.y,tile->data,8,16,16,16,true);
    }
 
  tile = tile_manager->get_tile(374);
- screen->blit(area.x+8 +7*16+8,area.y+3,tile->data,8,16,16,16,true);
+ screen->blit(area.x+8 +7*16+8,area.y,tile->data,8,16,16,16,true);
 
  return;
 }
@@ -205,22 +205,23 @@ void PartyView::display_sun_moon(Tile *tile, uint8 pos)
 {
     struct { sint16 x, y; } skypos[15] = // sky positions relative to area
     {
-        { 8 + 7*16 - 0*8, 8 }, // 7*16 is the first position on the right side
-        { 8 + 7*16 - 1*8, 4 },
-        { 8 + 7*16 - 2*8, 2 },
-        { 8 + 7*16 - 3*8, 0 },
-        { 8 + 7*16 - 4*8, -1 },
-        { 8 + 7*16 - 5*8, -2 },
-        { 8 + 7*16 - 6*8, -3 },
-        { 8 + 7*16 - 7*8, -3 },
-        { 8 + 7*16 - 8*8, -3 },
-        { 8 + 7*16 - 9*8, -2 },
-        { 8 + 7*16 - 10*8, -1 },
-        { 8 + 7*16 - 11*8, 0 },
-        { 8 + 7*16 - 12*8, 2 },
-        { 8 + 7*16 - 13*8, 4 },
-        { 8 + 7*16 - 14*8, 8 }
+        { 8 + 7*16 - 0*8, 6 }, // 7*16 is the first position on the right side
+        { 8 + 7*16 - 1*8, 3 },
+        { 8 + 7*16 - 2*8, 1 },
+        { 8 + 7*16 - 3*8, -1 },
+        { 8 + 7*16 - 4*8, -2 },
+        { 8 + 7*16 - 5*8, -3 },
+        { 8 + 7*16 - 6*8, -4 },
+        { 8 + 7*16 - 7*8, -4 },
+        { 8 + 7*16 - 8*8, -4 },
+        { 8 + 7*16 - 9*8, -3 },
+        { 8 + 7*16 - 10*8, -2 },
+        { 8 + 7*16 - 11*8, -1 },
+        { 8 + 7*16 - 12*8, 1 },
+        { 8 + 7*16 - 13*8, 3 },
+        { 8 + 7*16 - 14*8, 6 }
     };
+
     uint16 x = area.x + skypos[pos].x, y = area.y + skypos[pos].y;
     screen->blit(x,y, tile->data,8,16,16,16,true);
 }
@@ -288,9 +289,9 @@ void PartyView::display_arrows()
         row_offset = 0;
 
     if(row_offset > 0) // display top arrow
-        text->drawChar(screen, 24, area.x, area.y + 19 + 1, 0x48);
+        text->drawChar(screen, 24, area.x, area.y + 18, 0x48);
 
     if((party_size - row_offset) > 5) // display bottom arrow
-        text->drawChar(screen, 25, area.x, area.y + 91 + 1, 0x48);
+        text->drawChar(screen, 25, area.x, area.y + 90, 0x48);
 }
 // </SB-X> 

@@ -45,6 +45,8 @@ class DollWidget : public GUI_Widget {
 
  Obj *selected_obj, *unready_obj;
 
+ uint8 bg_color;
+ 
  public:
  DollWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~DollWidget();

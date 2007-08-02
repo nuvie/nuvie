@@ -86,7 +86,7 @@ void PortraitView::Display(bool full_redraw)
   }
   if(show_cursor) // FIXME: should we be using scroll's drawCursor?
    {
-    screen->fill(0x31, area.x, area.y + area.h - 8, 8, 8);
+    screen->fill(bg_color, area.x, area.y + area.h - 8, 8, 8);
     Game::get_game()->get_scroll()->drawCursor(area.x, area.y + area.h - 8);
    } 
    DisplayChildren(full_redraw);
@@ -129,7 +129,7 @@ bool PortraitView::set_portrait(Actor *actor, char *name)
    name_string->assign(name);
  
  if(screen)
-   screen->fill(0x31, area.x, area.y, area.w, area.h);
+   screen->fill(bg_color, area.x, area.y, area.w, area.h);
    
  Redraw();
  return true;

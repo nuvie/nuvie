@@ -186,6 +186,9 @@
 		072B4D200632953700CC3368 /* GUI_Scroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072B4D1E0632953700CC3368 /* GUI_Scroller.cpp */; };
 		072B4D210632953700CC3368 /* GUI_Scroller.h in Headers */ = {isa = PBXBuildFile; fileRef = 072B4D1F0632953700CC3368 /* GUI_Scroller.h */; };
 		0730EF120A7790D6005AB87E /* ActorList.h in Headers */ = {isa = PBXBuildFile; fileRef = 0730EF110A7790D6005AB87E /* ActorList.h */; };
+		0746DC360C50B9300034A045 /* nuvie.cfg.sample in Resources */ = {isa = PBXBuildFile; fileRef = 0746DC350C50B9300034A045 /* nuvie.cfg.sample */; };
+		0746DC490C50BED20034A045 /* Dither.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0746DC470C50BED20034A045 /* Dither.cpp */; };
+		0746DC4A0C50BED20034A045 /* Dither.h in Headers */ = {isa = PBXBuildFile; fileRef = 0746DC480C50BED20034A045 /* Dither.h */; };
 		0761766B05D100EB001B6450 /* Sample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0761766405D100EB001B6450 /* Sample.cpp */; };
 		0761766C05D100EB001B6450 /* Sample.h in Headers */ = {isa = PBXBuildFile; fileRef = 0761766505D100EB001B6450 /* Sample.h */; };
 		0761766D05D100EB001B6450 /* Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0761766605D100EB001B6450 /* Song.cpp */; };
@@ -230,6 +233,60 @@
 		07E2601C06AA5FE3009E8571 /* GUI_TextInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 07906ABD068D616D00C74729 /* GUI_TextInput.h */; };
 		07E2601E06AA5FE4009E8571 /* GUI_TextInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07906ABC068D616D00C74729 /* GUI_TextInput.cpp */; };
 		07E9A046081CD4A1009FA3BE /* U6WorkTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 07E9A045081CD4A1009FA3BE /* U6WorkTypes.h */; };
+		07EF826A0A9C636B00872DBE /* lapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82350A9C636A00872DBE /* lapi.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF826B0A9C636B00872DBE /* lapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82360A9C636A00872DBE /* lapi.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF826C0A9C636B00872DBE /* lauxlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82370A9C636A00872DBE /* lauxlib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF826D0A9C636B00872DBE /* lauxlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82380A9C636A00872DBE /* lauxlib.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF826E0A9C636B00872DBE /* lbaselib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82390A9C636A00872DBE /* lbaselib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF826F0A9C636B00872DBE /* lcode.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF823A0A9C636A00872DBE /* lcode.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82700A9C636B00872DBE /* lcode.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF823B0A9C636A00872DBE /* lcode.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82710A9C636B00872DBE /* ldblib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF823C0A9C636A00872DBE /* ldblib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82720A9C636B00872DBE /* ldebug.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF823D0A9C636A00872DBE /* ldebug.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82730A9C636B00872DBE /* ldebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF823E0A9C636A00872DBE /* ldebug.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82740A9C636B00872DBE /* ldo.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF823F0A9C636A00872DBE /* ldo.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82750A9C636B00872DBE /* ldo.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82400A9C636A00872DBE /* ldo.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82760A9C636B00872DBE /* ldump.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82410A9C636A00872DBE /* ldump.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82770A9C636B00872DBE /* lfunc.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82420A9C636A00872DBE /* lfunc.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82780A9C636B00872DBE /* lfunc.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82430A9C636A00872DBE /* lfunc.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82790A9C636B00872DBE /* lgc.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82440A9C636A00872DBE /* lgc.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF827A0A9C636B00872DBE /* lgc.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82450A9C636A00872DBE /* lgc.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF827B0A9C636B00872DBE /* linit.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82460A9C636A00872DBE /* linit.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF827C0A9C636B00872DBE /* liolib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82470A9C636A00872DBE /* liolib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF827D0A9C636B00872DBE /* llex.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82480A9C636A00872DBE /* llex.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF827E0A9C636B00872DBE /* llex.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82490A9C636A00872DBE /* llex.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF827F0A9C636B00872DBE /* llimits.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF824A0A9C636B00872DBE /* llimits.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82800A9C636B00872DBE /* lmathlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF824B0A9C636B00872DBE /* lmathlib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82810A9C636B00872DBE /* lmem.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF824C0A9C636B00872DBE /* lmem.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82820A9C636B00872DBE /* lmem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF824D0A9C636B00872DBE /* lmem.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82830A9C636B00872DBE /* loadlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF824E0A9C636B00872DBE /* loadlib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82840A9C636B00872DBE /* lobject.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF824F0A9C636B00872DBE /* lobject.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82850A9C636B00872DBE /* lobject.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82500A9C636B00872DBE /* lobject.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82860A9C636B00872DBE /* lopcodes.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82510A9C636B00872DBE /* lopcodes.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82870A9C636B00872DBE /* lopcodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82520A9C636B00872DBE /* lopcodes.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82880A9C636B00872DBE /* loslib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82530A9C636B00872DBE /* loslib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82890A9C636B00872DBE /* lparser.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82540A9C636B00872DBE /* lparser.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF828A0A9C636B00872DBE /* lparser.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82550A9C636B00872DBE /* lparser.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF828B0A9C636B00872DBE /* lstate.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82560A9C636B00872DBE /* lstate.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF828C0A9C636B00872DBE /* lstate.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82570A9C636B00872DBE /* lstate.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF828D0A9C636B00872DBE /* lstring.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82580A9C636B00872DBE /* lstring.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF828E0A9C636B00872DBE /* lstring.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82590A9C636B00872DBE /* lstring.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF828F0A9C636B00872DBE /* lstrlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF825A0A9C636B00872DBE /* lstrlib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82900A9C636B00872DBE /* ltable.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF825B0A9C636B00872DBE /* ltable.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82910A9C636B00872DBE /* ltable.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF825C0A9C636B00872DBE /* ltable.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82920A9C636B00872DBE /* ltablib.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF825D0A9C636B00872DBE /* ltablib.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82930A9C636B00872DBE /* ltm.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF825E0A9C636B00872DBE /* ltm.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82940A9C636B00872DBE /* ltm.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF825F0A9C636B00872DBE /* ltm.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82960A9C636B00872DBE /* lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82610A9C636B00872DBE /* lua.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82970A9C636B00872DBE /* luaconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82620A9C636B00872DBE /* luaconf.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82980A9C636B00872DBE /* lualib.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82630A9C636B00872DBE /* lualib.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82990A9C636B00872DBE /* lundump.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82640A9C636B00872DBE /* lundump.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF829A0A9C636B00872DBE /* lundump.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82650A9C636B00872DBE /* lundump.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF829B0A9C636B00872DBE /* lvm.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82660A9C636B00872DBE /* lvm.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF829C0A9C636B00872DBE /* lvm.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82670A9C636B00872DBE /* lvm.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF829D0A9C636B00872DBE /* lzio.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82680A9C636B00872DBE /* lzio.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF829E0A9C636B00872DBE /* lzio.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82690A9C636B00872DBE /* lzio.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
+		07EF82B30A9C792300872DBE /* Script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82B10A9C792300872DBE /* Script.cpp */; };
+		07EF82B40A9C792300872DBE /* Script.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82B20A9C792300872DBE /* Script.h */; };
 		07F10D2705C7D27A0029E1F1 /* Font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2305C7D27A0029E1F1 /* Font.cpp */; };
 		07F10D2805C7D27A0029E1F1 /* Font.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2405C7D27A0029E1F1 /* Font.h */; };
 		07F10D2905C7D27A0029E1F1 /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2505C7D27A0029E1F1 /* FontManager.cpp */; };
@@ -354,6 +411,9 @@
 		0730EF110A7790D6005AB87E /* ActorList.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ActorList.h; path = ../misc/ActorList.h; sourceTree = SOURCE_ROOT; };
 		0740D535042AA97500A8000A /* MapWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MapWindow.cpp; path = ../MapWindow.cpp; sourceTree = SOURCE_ROOT; };
 		0740D536042AA97500A8000A /* MapWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MapWindow.h; path = ../MapWindow.h; sourceTree = SOURCE_ROOT; };
+		0746DC350C50B9300034A045 /* nuvie.cfg.sample */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = nuvie.cfg.sample; path = ../nuvie.cfg.sample; sourceTree = SOURCE_ROOT; };
+		0746DC470C50BED20034A045 /* Dither.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Dither.cpp; path = ../screen/Dither.cpp; sourceTree = SOURCE_ROOT; };
+		0746DC480C50BED20034A045 /* Dither.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Dither.h; path = ../screen/Dither.h; sourceTree = SOURCE_ROOT; };
 		074B913804E4C51500A8000A /* GUI_area.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = GUI_area.cpp; path = ../GUI/GUI_area.cpp; sourceTree = SOURCE_ROOT; };
 		074B913904E4C51500A8000A /* GUI_area.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = GUI_area.h; path = ../GUI/GUI_area.h; sourceTree = SOURCE_ROOT; };
 		074B913A04E4C51500A8000A /* GUI_button.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = GUI_button.cpp; path = ../GUI/GUI_button.cpp; sourceTree = SOURCE_ROOT; };
@@ -471,10 +531,159 @@
 		07EC223604A17C6E00A8000A /* MDUseCode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MDUseCode.h; path = ../usecode/MDUseCode.h; sourceTree = SOURCE_ROOT; };
 		07EF5321043137BF00A8000A /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Event.h; path = ../Event.h; sourceTree = SOURCE_ROOT; };
 		07EF5322043137BF00A8000A /* Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Event.cpp; path = ../Event.cpp; sourceTree = SOURCE_ROOT; };
+		07EF82350A9C636A00872DBE /* lapi.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lapi.c; path = ../lua/lapi.c; sourceTree = SOURCE_ROOT; };
+		07EF82360A9C636A00872DBE /* lapi.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lapi.h; path = ../lua/lapi.h; sourceTree = SOURCE_ROOT; };
+		07EF82370A9C636A00872DBE /* lauxlib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lauxlib.c; path = ../lua/lauxlib.c; sourceTree = SOURCE_ROOT; };
+		07EF82380A9C636A00872DBE /* lauxlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lauxlib.h; path = ../lua/lauxlib.h; sourceTree = SOURCE_ROOT; };
+		07EF82390A9C636A00872DBE /* lbaselib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lbaselib.c; path = ../lua/lbaselib.c; sourceTree = SOURCE_ROOT; };
+		07EF823A0A9C636A00872DBE /* lcode.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lcode.c; path = ../lua/lcode.c; sourceTree = SOURCE_ROOT; };
+		07EF823B0A9C636A00872DBE /* lcode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lcode.h; path = ../lua/lcode.h; sourceTree = SOURCE_ROOT; };
+		07EF823C0A9C636A00872DBE /* ldblib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ldblib.c; path = ../lua/ldblib.c; sourceTree = SOURCE_ROOT; };
+		07EF823D0A9C636A00872DBE /* ldebug.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ldebug.c; path = ../lua/ldebug.c; sourceTree = SOURCE_ROOT; };
+		07EF823E0A9C636A00872DBE /* ldebug.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ldebug.h; path = ../lua/ldebug.h; sourceTree = SOURCE_ROOT; };
+		07EF823F0A9C636A00872DBE /* ldo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ldo.c; path = ../lua/ldo.c; sourceTree = SOURCE_ROOT; };
+		07EF82400A9C636A00872DBE /* ldo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ldo.h; path = ../lua/ldo.h; sourceTree = SOURCE_ROOT; };
+		07EF82410A9C636A00872DBE /* ldump.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ldump.c; path = ../lua/ldump.c; sourceTree = SOURCE_ROOT; };
+		07EF82420A9C636A00872DBE /* lfunc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lfunc.c; path = ../lua/lfunc.c; sourceTree = SOURCE_ROOT; };
+		07EF82430A9C636A00872DBE /* lfunc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lfunc.h; path = ../lua/lfunc.h; sourceTree = SOURCE_ROOT; };
+		07EF82440A9C636A00872DBE /* lgc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lgc.c; path = ../lua/lgc.c; sourceTree = SOURCE_ROOT; };
+		07EF82450A9C636A00872DBE /* lgc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lgc.h; path = ../lua/lgc.h; sourceTree = SOURCE_ROOT; };
+		07EF82460A9C636A00872DBE /* linit.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = linit.c; path = ../lua/linit.c; sourceTree = SOURCE_ROOT; };
+		07EF82470A9C636A00872DBE /* liolib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = liolib.c; path = ../lua/liolib.c; sourceTree = SOURCE_ROOT; };
+		07EF82480A9C636A00872DBE /* llex.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = llex.c; path = ../lua/llex.c; sourceTree = SOURCE_ROOT; };
+		07EF82490A9C636A00872DBE /* llex.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = llex.h; path = ../lua/llex.h; sourceTree = SOURCE_ROOT; };
+		07EF824A0A9C636B00872DBE /* llimits.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = llimits.h; path = ../lua/llimits.h; sourceTree = SOURCE_ROOT; };
+		07EF824B0A9C636B00872DBE /* lmathlib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lmathlib.c; path = ../lua/lmathlib.c; sourceTree = SOURCE_ROOT; };
+		07EF824C0A9C636B00872DBE /* lmem.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lmem.c; path = ../lua/lmem.c; sourceTree = SOURCE_ROOT; };
+		07EF824D0A9C636B00872DBE /* lmem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lmem.h; path = ../lua/lmem.h; sourceTree = SOURCE_ROOT; };
+		07EF824E0A9C636B00872DBE /* loadlib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = loadlib.c; path = ../lua/loadlib.c; sourceTree = SOURCE_ROOT; };
+		07EF824F0A9C636B00872DBE /* lobject.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lobject.c; path = ../lua/lobject.c; sourceTree = SOURCE_ROOT; };
+		07EF82500A9C636B00872DBE /* lobject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lobject.h; path = ../lua/lobject.h; sourceTree = SOURCE_ROOT; };
+		07EF82510A9C636B00872DBE /* lopcodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lopcodes.c; path = ../lua/lopcodes.c; sourceTree = SOURCE_ROOT; };
+		07EF82520A9C636B00872DBE /* lopcodes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lopcodes.h; path = ../lua/lopcodes.h; sourceTree = SOURCE_ROOT; };
+		07EF82530A9C636B00872DBE /* loslib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = loslib.c; path = ../lua/loslib.c; sourceTree = SOURCE_ROOT; };
+		07EF82540A9C636B00872DBE /* lparser.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lparser.c; path = ../lua/lparser.c; sourceTree = SOURCE_ROOT; };
+		07EF82550A9C636B00872DBE /* lparser.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lparser.h; path = ../lua/lparser.h; sourceTree = SOURCE_ROOT; };
+		07EF82560A9C636B00872DBE /* lstate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lstate.c; path = ../lua/lstate.c; sourceTree = SOURCE_ROOT; };
+		07EF82570A9C636B00872DBE /* lstate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lstate.h; path = ../lua/lstate.h; sourceTree = SOURCE_ROOT; };
+		07EF82580A9C636B00872DBE /* lstring.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lstring.c; path = ../lua/lstring.c; sourceTree = SOURCE_ROOT; };
+		07EF82590A9C636B00872DBE /* lstring.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lstring.h; path = ../lua/lstring.h; sourceTree = SOURCE_ROOT; };
+		07EF825A0A9C636B00872DBE /* lstrlib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lstrlib.c; path = ../lua/lstrlib.c; sourceTree = SOURCE_ROOT; };
+		07EF825B0A9C636B00872DBE /* ltable.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ltable.c; path = ../lua/ltable.c; sourceTree = SOURCE_ROOT; };
+		07EF825C0A9C636B00872DBE /* ltable.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ltable.h; path = ../lua/ltable.h; sourceTree = SOURCE_ROOT; };
+		07EF825D0A9C636B00872DBE /* ltablib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ltablib.c; path = ../lua/ltablib.c; sourceTree = SOURCE_ROOT; };
+		07EF825E0A9C636B00872DBE /* ltm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ltm.c; path = ../lua/ltm.c; sourceTree = SOURCE_ROOT; };
+		07EF825F0A9C636B00872DBE /* ltm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ltm.h; path = ../lua/ltm.h; sourceTree = SOURCE_ROOT; };
+		07EF82610A9C636B00872DBE /* lua.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lua.h; path = ../lua/lua.h; sourceTree = SOURCE_ROOT; };
+		07EF82620A9C636B00872DBE /* luaconf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = luaconf.h; path = ../lua/luaconf.h; sourceTree = SOURCE_ROOT; };
+		07EF82630A9C636B00872DBE /* lualib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lualib.h; path = ../lua/lualib.h; sourceTree = SOURCE_ROOT; };
+		07EF82640A9C636B00872DBE /* lundump.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lundump.c; path = ../lua/lundump.c; sourceTree = SOURCE_ROOT; };
+		07EF82650A9C636B00872DBE /* lundump.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lundump.h; path = ../lua/lundump.h; sourceTree = SOURCE_ROOT; };
+		07EF82660A9C636B00872DBE /* lvm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lvm.c; path = ../lua/lvm.c; sourceTree = SOURCE_ROOT; };
+		07EF82670A9C636B00872DBE /* lvm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lvm.h; path = ../lua/lvm.h; sourceTree = SOURCE_ROOT; };
+		07EF82680A9C636B00872DBE /* lzio.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lzio.c; path = ../lua/lzio.c; sourceTree = SOURCE_ROOT; };
+		07EF82690A9C636B00872DBE /* lzio.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lzio.h; path = ../lua/lzio.h; sourceTree = SOURCE_ROOT; };
+		07EF82B10A9C792300872DBE /* Script.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Script.cpp; path = ../Script.cpp; sourceTree = SOURCE_ROOT; };
+		07EF82B20A9C792300872DBE /* Script.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Script.h; path = ../Script.h; sourceTree = SOURCE_ROOT; };
 		07F10D2305C7D27A0029E1F1 /* Font.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Font.cpp; path = ../fonts/Font.cpp; sourceTree = SOURCE_ROOT; };
 		07F10D2405C7D27A0029E1F1 /* Font.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Font.h; path = ../fonts/Font.h; sourceTree = SOURCE_ROOT; };
 		07F10D2505C7D27A0029E1F1 /* FontManager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FontManager.cpp; path = ../fonts/FontManager.cpp; sourceTree = SOURCE_ROOT; };
 		07F10D2605C7D27A0029E1F1 /* FontManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FontManager.h; path = ../fonts/FontManager.h; sourceTree = SOURCE_ROOT; };
+		07F5D2B80C12507F002B06FC /* BorderU6_1.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = BorderU6_1.bmp; path = ../data/BorderU6_1.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2B90C12507F002B06FC /* BorderU6_2.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = BorderU6_2.bmp; path = ../data/BorderU6_2.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2BA0C12507F002B06FC /* BorderU6_3.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = BorderU6_3.bmp; path = ../data/BorderU6_3.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2BB0C12507F002B06FC /* BorderU6_4.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = BorderU6_4.bmp; path = ../data/BorderU6_4.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2BC0C12507F002B06FC /* BorderU6_5.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = BorderU6_5.bmp; path = ../data/BorderU6_5.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2BD0C12507F002B06FC /* BorderU6_6.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = BorderU6_6.bmp; path = ../data/BorderU6_6.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2BE0C12507F002B06FC /* BorderU6_7.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = BorderU6_7.bmp; path = ../data/BorderU6_7.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2BF0C12507F002B06FC /* BorderU6_8.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = BorderU6_8.bmp; path = ../data/BorderU6_8.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2CB0C1250F9002B06FC /* ScrollBarDown_1.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = ScrollBarDown_1.bmp; path = ../data/ScrollBarDown_1.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2CC0C1250F9002B06FC /* ScrollBarDown_2.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = ScrollBarDown_2.bmp; path = ../data/ScrollBarDown_2.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2CD0C1250F9002B06FC /* ScrollBarUp_1.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = ScrollBarUp_1.bmp; path = ../data/ScrollBarUp_1.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2CE0C1250F9002B06FC /* ScrollBarUp_2.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = ScrollBarUp_2.bmp; path = ../data/ScrollBarUp_2.bmp; sourceTree = SOURCE_ROOT; };
+		07F5D2D30C125131002B06FC /* init.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = init.lua; path = ../data/scripts/u6/init.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D60C125131002B06FC /* create_food.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = create_food.lua; path = ../data/scripts/u6/magic/circle_01/create_food.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D70C125131002B06FC /* detect_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = detect_magic.lua; path = ../data/scripts/u6/magic/circle_01/detect_magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D80C125131002B06FC /* detect_trap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = detect_trap.lua; path = ../data/scripts/u6/magic/circle_01/detect_trap.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D90C125131002B06FC /* dispel_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = dispel_magic.lua; path = ../data/scripts/u6/magic/circle_01/dispel_magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DA0C125131002B06FC /* douse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = douse.lua; path = ../data/scripts/u6/magic/circle_01/douse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DB0C125131002B06FC /* harm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = harm.lua; path = ../data/scripts/u6/magic/circle_01/harm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DC0C125131002B06FC /* heal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = heal.lua; path = ../data/scripts/u6/magic/circle_01/heal.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DD0C125131002B06FC /* help.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = help.lua; path = ../data/scripts/u6/magic/circle_01/help.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DE0C125131002B06FC /* ignite.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = ignite.lua; path = ../data/scripts/u6/magic/circle_01/ignite.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DF0C125131002B06FC /* light.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = light.lua; path = ../data/scripts/u6/magic/circle_01/light.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E10C125131002B06FC /* infravision.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = infravision.lua; path = ../data/scripts/u6/magic/circle_02/infravision.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E20C125131002B06FC /* magic_arrow.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = magic_arrow.lua; path = ../data/scripts/u6/magic/circle_02/magic_arrow.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E30C125131002B06FC /* poison.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = poison.lua; path = ../data/scripts/u6/magic/circle_02/poison.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E40C125131002B06FC /* reappear.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = reappear.lua; path = ../data/scripts/u6/magic/circle_02/reappear.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E50C125131002B06FC /* sleep.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = sleep.lua; path = ../data/scripts/u6/magic/circle_02/sleep.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E60C125131002B06FC /* telekinesis.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = telekinesis.lua; path = ../data/scripts/u6/magic/circle_02/telekinesis.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E70C125131002B06FC /* trap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = trap.lua; path = ../data/scripts/u6/magic/circle_02/trap.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E80C125131002B06FC /* unlock_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = unlock_magic.lua; path = ../data/scripts/u6/magic/circle_02/unlock_magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E90C125131002B06FC /* untrap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = untrap.lua; path = ../data/scripts/u6/magic/circle_02/untrap.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2EA0C125131002B06FC /* vanish.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = vanish.lua; path = ../data/scripts/u6/magic/circle_02/vanish.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2EC0C125131002B06FC /* curse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = curse.lua; path = ../data/scripts/u6/magic/circle_03/curse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2ED0C125131002B06FC /* dispel_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = dispel_field.lua; path = ../data/scripts/u6/magic/circle_03/dispel_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2EE0C125131002B06FC /* fireball.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = fireball.lua; path = ../data/scripts/u6/magic/circle_03/fireball.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2EF0C125131002B06FC /* great_light.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = great_light.lua; path = ../data/scripts/u6/magic/circle_03/great_light.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F00C125131002B06FC /* magic_lock.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = magic_lock.lua; path = ../data/scripts/u6/magic/circle_03/magic_lock.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F10C125131002B06FC /* mass_awaken.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_awaken.lua; path = ../data/scripts/u6/magic/circle_03/mass_awaken.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F20C125131002B06FC /* mass_sleep.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_sleep.lua; path = ../data/scripts/u6/magic/circle_03/mass_sleep.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F30C125131002B06FC /* peer.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = peer.lua; path = ../data/scripts/u6/magic/circle_03/peer.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F40C125131002B06FC /* protection.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = protection.lua; path = ../data/scripts/u6/magic/circle_03/protection.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F50C125131002B06FC /* repel_undead.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = repel_undead.lua; path = ../data/scripts/u6/magic/circle_03/repel_undead.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F70C125131002B06FC /* animate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = animate.lua; path = ../data/scripts/u6/magic/circle_04/animate.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F80C125131002B06FC /* conjure.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = conjure.lua; path = ../data/scripts/u6/magic/circle_04/conjure.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F90C125131002B06FC /* disable.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = disable.lua; path = ../data/scripts/u6/magic/circle_04/disable.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FA0C125131002B06FC /* fire_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = fire_field.lua; path = ../data/scripts/u6/magic/circle_04/fire_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FB0C125131002B06FC /* great_heal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = great_heal.lua; path = ../data/scripts/u6/magic/circle_04/great_heal.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FD0C125131002B06FC /* locate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = locate.lua; path = ../data/scripts/u6/magic/circle_04/locate.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FE0C125131002B06FC /* mass_dispel.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_dispel.lua; path = ../data/scripts/u6/magic/circle_04/mass_dispel.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FF0C125131002B06FC /* poison_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = poison_field.lua; path = ../data/scripts/u6/magic/circle_04/poison_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3000C125131002B06FC /* sleep_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = sleep_field.lua; path = ../data/scripts/u6/magic/circle_04/sleep_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3010C125131002B06FC /* wind_change.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = wind_change.lua; path = ../data/scripts/u6/magic/circle_04/wind_change.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3030C125131002B06FC /* energy_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = energy_field.lua; path = ../data/scripts/u6/magic/circle_05/energy_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3040C125131002B06FC /* explosion.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = explosion.lua; path = ../data/scripts/u6/magic/circle_05/explosion.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3050C125131002B06FC /* insect_swarm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = insect_swarm.lua; path = ../data/scripts/u6/magic/circle_05/insect_swarm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3060C125131002B06FC /* invisibility.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = invisibility.lua; path = ../data/scripts/u6/magic/circle_05/invisibility.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3070C125131002B06FC /* lightning.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = lightning.lua; path = ../data/scripts/u6/magic/circle_05/lightning.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3080C125131002B06FC /* paralyze.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = paralyze.lua; path = ../data/scripts/u6/magic/circle_05/paralyze.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3090C125131002B06FC /* pickpocket.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = pickpocket.lua; path = ../data/scripts/u6/magic/circle_05/pickpocket.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30A0C125131002B06FC /* reveal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = reveal.lua; path = ../data/scripts/u6/magic/circle_05/reveal.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30B0C125131002B06FC /* seance.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = seance.lua; path = ../data/scripts/u6/magic/circle_05/seance.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30C0C125131002B06FC /* xray.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = xray.lua; path = ../data/scripts/u6/magic/circle_05/xray.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30E0C125131002B06FC /* charm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = charm.lua; path = ../data/scripts/u6/magic/circle_06/charm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30F0C125131002B06FC /* clone.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = clone.lua; path = ../data/scripts/u6/magic/circle_06/clone.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3100C125131002B06FC /* confuse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = confuse.lua; path = ../data/scripts/u6/magic/circle_06/confuse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3110C125131002B06FC /* flame_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = flame_wind.lua; path = ../data/scripts/u6/magic/circle_06/flame_wind.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3120C125131002B06FC /* hail_storm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = hail_storm.lua; path = ../data/scripts/u6/magic/circle_06/hail_storm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3130C125131002B06FC /* mass_protect.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_protect.lua; path = ../data/scripts/u6/magic/circle_06/mass_protect.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3140C125131002B06FC /* negate_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = negate_magic.lua; path = ../data/scripts/u6/magic/circle_06/negate_magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3150C125131002B06FC /* poison_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = poison_wind.lua; path = ../data/scripts/u6/magic/circle_06/poison_wind.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3160C125131002B06FC /* replicate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = replicate.lua; path = ../data/scripts/u6/magic/circle_06/replicate.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3170C125131002B06FC /* web.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = web.lua; path = ../data/scripts/u6/magic/circle_06/web.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3190C125131002B06FC /* chain_bolt.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = chain_bolt.lua; path = ../data/scripts/u6/magic/circle_07/chain_bolt.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31A0C125131002B06FC /* enchant.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = enchant.lua; path = ../data/scripts/u6/magic/circle_07/enchant.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31B0C125131002B06FC /* energy_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = energy_wind.lua; path = ../data/scripts/u6/magic/circle_07/energy_wind.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31C0C125131002B06FC /* fear.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = fear.lua; path = ../data/scripts/u6/magic/circle_07/fear.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31D0C125131002B06FC /* gate_travel.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = gate_travel.lua; path = ../data/scripts/u6/magic/circle_07/gate_travel.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31E0C125131002B06FC /* kill.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = kill.lua; path = ../data/scripts/u6/magic/circle_07/kill.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31F0C125131002B06FC /* mass_curse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_curse.lua; path = ../data/scripts/u6/magic/circle_07/mass_curse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3200C125131002B06FC /* mass_invisibility.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_invisibility.lua; path = ../data/scripts/u6/magic/circle_07/mass_invisibility.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3210C125131002B06FC /* wing_strike.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = wing_strike.lua; path = ../data/scripts/u6/magic/circle_07/wing_strike.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3220C125131002B06FC /* wizard_eye.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = wizard_eye.lua; path = ../data/scripts/u6/magic/circle_07/wizard_eye.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3240C125131002B06FC /* armageddon.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = armageddon.lua; path = ../data/scripts/u6/magic/circle_08/armageddon.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3250C125131002B06FC /* death_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = death_wind.lua; path = ../data/scripts/u6/magic/circle_08/death_wind.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3270C125131002B06FC /* eclipse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = eclipse.lua; path = ../data/scripts/u6/magic/circle_08/eclipse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3280C125131002B06FC /* mass_charm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_charm.lua; path = ../data/scripts/u6/magic/circle_08/mass_charm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3290C125131002B06FC /* mass_kill.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_kill.lua; path = ../data/scripts/u6/magic/circle_08/mass_kill.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32A0C125132002B06FC /* resurrect.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = resurrect.lua; path = ../data/scripts/u6/magic/circle_08/resurrect.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32B0C125132002B06FC /* slime.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = slime.lua; path = ../data/scripts/u6/magic/circle_08/slime.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32C0C125132002B06FC /* summon.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = summon.lua; path = ../data/scripts/u6/magic/circle_08/summon.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32D0C125132002B06FC /* time_stop.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = time_stop.lua; path = ../data/scripts/u6/magic/circle_08/time_stop.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32E0C125132002B06FC /* tremor.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = tremor.lua; path = ../data/scripts/u6/magic/circle_08/tremor.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3300C125132002B06FC /* magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = magic.lua; path = ../data/scripts/u6/magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3890C125274002B06FC /* spells.nsl */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = spells.nsl; path = ../data/spells.nsl; sourceTree = SOURCE_ROOT; };
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -570,6 +779,8 @@
 		072BE3AD041AFE1100A8000A /* Screen */ = {
 			isa = PBXGroup;
 			children = (
+				0746DC480C50BED20034A045 /* Dither.h */,
+				0746DC470C50BED20034A045 /* Dither.cpp */,
 				072BE3AF041AFE3900A8000A /* Screen.h */,
 				072BE3AE041AFE3900A8000A /* Screen.cpp */,
 				072BE3B2041AFE8A00A8000A /* GamePalette.h */,
@@ -768,6 +979,65 @@
 			name = Files;
 			sourceTree = "<group>";
 		};
+		07EF82340A9C633900872DBE /* Lua */ = {
+			isa = PBXGroup;
+			children = (
+				07EF82350A9C636A00872DBE /* lapi.c */,
+				07EF82360A9C636A00872DBE /* lapi.h */,
+				07EF82370A9C636A00872DBE /* lauxlib.c */,
+				07EF82380A9C636A00872DBE /* lauxlib.h */,
+				07EF82390A9C636A00872DBE /* lbaselib.c */,
+				07EF823A0A9C636A00872DBE /* lcode.c */,
+				07EF823B0A9C636A00872DBE /* lcode.h */,
+				07EF823C0A9C636A00872DBE /* ldblib.c */,
+				07EF823D0A9C636A00872DBE /* ldebug.c */,
+				07EF823E0A9C636A00872DBE /* ldebug.h */,
+				07EF823F0A9C636A00872DBE /* ldo.c */,
+				07EF82400A9C636A00872DBE /* ldo.h */,
+				07EF82410A9C636A00872DBE /* ldump.c */,
+				07EF82420A9C636A00872DBE /* lfunc.c */,
+				07EF82430A9C636A00872DBE /* lfunc.h */,
+				07EF82440A9C636A00872DBE /* lgc.c */,
+				07EF82450A9C636A00872DBE /* lgc.h */,
+				07EF82460A9C636A00872DBE /* linit.c */,
+				07EF82470A9C636A00872DBE /* liolib.c */,
+				07EF82480A9C636A00872DBE /* llex.c */,
+				07EF82490A9C636A00872DBE /* llex.h */,
+				07EF824A0A9C636B00872DBE /* llimits.h */,
+				07EF824B0A9C636B00872DBE /* lmathlib.c */,
+				07EF824C0A9C636B00872DBE /* lmem.c */,
+				07EF824D0A9C636B00872DBE /* lmem.h */,
+				07EF824E0A9C636B00872DBE /* loadlib.c */,
+				07EF824F0A9C636B00872DBE /* lobject.c */,
+				07EF82500A9C636B00872DBE /* lobject.h */,
+				07EF82510A9C636B00872DBE /* lopcodes.c */,
+				07EF82520A9C636B00872DBE /* lopcodes.h */,
+				07EF82530A9C636B00872DBE /* loslib.c */,
+				07EF82540A9C636B00872DBE /* lparser.c */,
+				07EF82550A9C636B00872DBE /* lparser.h */,
+				07EF82560A9C636B00872DBE /* lstate.c */,
+				07EF82570A9C636B00872DBE /* lstate.h */,
+				07EF82580A9C636B00872DBE /* lstring.c */,
+				07EF82590A9C636B00872DBE /* lstring.h */,
+				07EF825A0A9C636B00872DBE /* lstrlib.c */,
+				07EF825B0A9C636B00872DBE /* ltable.c */,
+				07EF825C0A9C636B00872DBE /* ltable.h */,
+				07EF825D0A9C636B00872DBE /* ltablib.c */,
+				07EF825E0A9C636B00872DBE /* ltm.c */,
+				07EF825F0A9C636B00872DBE /* ltm.h */,
+				07EF82610A9C636B00872DBE /* lua.h */,
+				07EF82620A9C636B00872DBE /* luaconf.h */,
+				07EF82630A9C636B00872DBE /* lualib.h */,
+				07EF82640A9C636B00872DBE /* lundump.c */,
+				07EF82650A9C636B00872DBE /* lundump.h */,
+				07EF82660A9C636B00872DBE /* lvm.c */,
+				07EF82670A9C636B00872DBE /* lvm.h */,
+				07EF82680A9C636B00872DBE /* lzio.c */,
+				07EF82690A9C636B00872DBE /* lzio.h */,
+			);
+			name = Lua;
+			sourceTree = "<group>";
+		};
 		07F10D1D05C7D2490029E1F1 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -778,6 +1048,225 @@
 			);
 			name = Fonts;
 			sourceTree = "<group>";
+		};
+		07F5D2B70C12504C002B06FC /* data */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D3890C125274002B06FC /* spells.nsl */,
+				07F5D2CF0C125131002B06FC /* scripts */,
+				07F5D2CB0C1250F9002B06FC /* ScrollBarDown_1.bmp */,
+				07F5D2CC0C1250F9002B06FC /* ScrollBarDown_2.bmp */,
+				07F5D2CD0C1250F9002B06FC /* ScrollBarUp_1.bmp */,
+				07F5D2CE0C1250F9002B06FC /* ScrollBarUp_2.bmp */,
+				07F5D2B80C12507F002B06FC /* BorderU6_1.bmp */,
+				07F5D2B90C12507F002B06FC /* BorderU6_2.bmp */,
+				07F5D2BA0C12507F002B06FC /* BorderU6_3.bmp */,
+				07F5D2BB0C12507F002B06FC /* BorderU6_4.bmp */,
+				07F5D2BC0C12507F002B06FC /* BorderU6_5.bmp */,
+				07F5D2BD0C12507F002B06FC /* BorderU6_6.bmp */,
+				07F5D2BE0C12507F002B06FC /* BorderU6_7.bmp */,
+				07F5D2BF0C12507F002B06FC /* BorderU6_8.bmp */,
+			);
+			name = data;
+			sourceTree = "<group>";
+		};
+		07F5D2CF0C125131002B06FC /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D2D00C125131002B06FC /* md */,
+				07F5D2D10C125131002B06FC /* se */,
+				07F5D2D20C125131002B06FC /* u6 */,
+			);
+			name = scripts;
+			path = ../data/scripts;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D2D00C125131002B06FC /* md */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = md;
+			path = ../data/scripts/md;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D2D10C125131002B06FC /* se */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = se;
+			path = ../data/scripts/se;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D2D20C125131002B06FC /* u6 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D2D30C125131002B06FC /* init.lua */,
+				07F5D3300C125132002B06FC /* magic.lua */,
+				07F5D2D40C125131002B06FC /* magic */,
+			);
+			name = u6;
+			path = ../data/scripts/u6;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D2D40C125131002B06FC /* magic */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D2D50C125131002B06FC /* circle_01 */,
+				07F5D2E00C125131002B06FC /* circle_02 */,
+				07F5D2EB0C125131002B06FC /* circle_03 */,
+				07F5D2F60C125131002B06FC /* circle_04 */,
+				07F5D3020C125131002B06FC /* circle_05 */,
+				07F5D30D0C125131002B06FC /* circle_06 */,
+				07F5D3180C125131002B06FC /* circle_07 */,
+				07F5D3230C125131002B06FC /* circle_08 */,
+			);
+			name = magic;
+			path = ../data/scripts/u6/magic;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D2D50C125131002B06FC /* circle_01 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D2D60C125131002B06FC /* create_food.lua */,
+				07F5D2D70C125131002B06FC /* detect_magic.lua */,
+				07F5D2D80C125131002B06FC /* detect_trap.lua */,
+				07F5D2D90C125131002B06FC /* dispel_magic.lua */,
+				07F5D2DA0C125131002B06FC /* douse.lua */,
+				07F5D2DB0C125131002B06FC /* harm.lua */,
+				07F5D2DC0C125131002B06FC /* heal.lua */,
+				07F5D2DD0C125131002B06FC /* help.lua */,
+				07F5D2DE0C125131002B06FC /* ignite.lua */,
+				07F5D2DF0C125131002B06FC /* light.lua */,
+			);
+			name = circle_01;
+			path = ../data/scripts/u6/magic/circle_01;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D2E00C125131002B06FC /* circle_02 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D2E10C125131002B06FC /* infravision.lua */,
+				07F5D2E20C125131002B06FC /* magic_arrow.lua */,
+				07F5D2E30C125131002B06FC /* poison.lua */,
+				07F5D2E40C125131002B06FC /* reappear.lua */,
+				07F5D2E50C125131002B06FC /* sleep.lua */,
+				07F5D2E60C125131002B06FC /* telekinesis.lua */,
+				07F5D2E70C125131002B06FC /* trap.lua */,
+				07F5D2E80C125131002B06FC /* unlock_magic.lua */,
+				07F5D2E90C125131002B06FC /* untrap.lua */,
+				07F5D2EA0C125131002B06FC /* vanish.lua */,
+			);
+			name = circle_02;
+			path = ../data/scripts/u6/magic/circle_02;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D2EB0C125131002B06FC /* circle_03 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D2EC0C125131002B06FC /* curse.lua */,
+				07F5D2ED0C125131002B06FC /* dispel_field.lua */,
+				07F5D2EE0C125131002B06FC /* fireball.lua */,
+				07F5D2EF0C125131002B06FC /* great_light.lua */,
+				07F5D2F00C125131002B06FC /* magic_lock.lua */,
+				07F5D2F10C125131002B06FC /* mass_awaken.lua */,
+				07F5D2F20C125131002B06FC /* mass_sleep.lua */,
+				07F5D2F30C125131002B06FC /* peer.lua */,
+				07F5D2F40C125131002B06FC /* protection.lua */,
+				07F5D2F50C125131002B06FC /* repel_undead.lua */,
+			);
+			name = circle_03;
+			path = ../data/scripts/u6/magic/circle_03;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D2F60C125131002B06FC /* circle_04 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D2F70C125131002B06FC /* animate.lua */,
+				07F5D2F80C125131002B06FC /* conjure.lua */,
+				07F5D2F90C125131002B06FC /* disable.lua */,
+				07F5D2FA0C125131002B06FC /* fire_field.lua */,
+				07F5D2FB0C125131002B06FC /* great_heal.lua */,
+				07F5D2FD0C125131002B06FC /* locate.lua */,
+				07F5D2FE0C125131002B06FC /* mass_dispel.lua */,
+				07F5D2FF0C125131002B06FC /* poison_field.lua */,
+				07F5D3000C125131002B06FC /* sleep_field.lua */,
+				07F5D3010C125131002B06FC /* wind_change.lua */,
+			);
+			name = circle_04;
+			path = ../data/scripts/u6/magic/circle_04;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D3020C125131002B06FC /* circle_05 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D3030C125131002B06FC /* energy_field.lua */,
+				07F5D3040C125131002B06FC /* explosion.lua */,
+				07F5D3050C125131002B06FC /* insect_swarm.lua */,
+				07F5D3060C125131002B06FC /* invisibility.lua */,
+				07F5D3070C125131002B06FC /* lightning.lua */,
+				07F5D3080C125131002B06FC /* paralyze.lua */,
+				07F5D3090C125131002B06FC /* pickpocket.lua */,
+				07F5D30A0C125131002B06FC /* reveal.lua */,
+				07F5D30B0C125131002B06FC /* seance.lua */,
+				07F5D30C0C125131002B06FC /* xray.lua */,
+			);
+			name = circle_05;
+			path = ../data/scripts/u6/magic/circle_05;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D30D0C125131002B06FC /* circle_06 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D30E0C125131002B06FC /* charm.lua */,
+				07F5D30F0C125131002B06FC /* clone.lua */,
+				07F5D3100C125131002B06FC /* confuse.lua */,
+				07F5D3110C125131002B06FC /* flame_wind.lua */,
+				07F5D3120C125131002B06FC /* hail_storm.lua */,
+				07F5D3130C125131002B06FC /* mass_protect.lua */,
+				07F5D3140C125131002B06FC /* negate_magic.lua */,
+				07F5D3150C125131002B06FC /* poison_wind.lua */,
+				07F5D3160C125131002B06FC /* replicate.lua */,
+				07F5D3170C125131002B06FC /* web.lua */,
+			);
+			name = circle_06;
+			path = ../data/scripts/u6/magic/circle_06;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D3180C125131002B06FC /* circle_07 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D3190C125131002B06FC /* chain_bolt.lua */,
+				07F5D31A0C125131002B06FC /* enchant.lua */,
+				07F5D31B0C125131002B06FC /* energy_wind.lua */,
+				07F5D31C0C125131002B06FC /* fear.lua */,
+				07F5D31D0C125131002B06FC /* gate_travel.lua */,
+				07F5D31E0C125131002B06FC /* kill.lua */,
+				07F5D31F0C125131002B06FC /* mass_curse.lua */,
+				07F5D3200C125131002B06FC /* mass_invisibility.lua */,
+				07F5D3210C125131002B06FC /* wing_strike.lua */,
+				07F5D3220C125131002B06FC /* wizard_eye.lua */,
+			);
+			name = circle_07;
+			path = ../data/scripts/u6/magic/circle_07;
+			sourceTree = SOURCE_ROOT;
+		};
+		07F5D3230C125131002B06FC /* circle_08 */ = {
+			isa = PBXGroup;
+			children = (
+				07F5D3240C125131002B06FC /* armageddon.lua */,
+				07F5D3250C125131002B06FC /* death_wind.lua */,
+				07F5D3270C125131002B06FC /* eclipse.lua */,
+				07F5D3280C125131002B06FC /* mass_charm.lua */,
+				07F5D3290C125131002B06FC /* mass_kill.lua */,
+				07F5D32A0C125132002B06FC /* resurrect.lua */,
+				07F5D32B0C125132002B06FC /* slime.lua */,
+				07F5D32C0C125132002B06FC /* summon.lua */,
+				07F5D32D0C125132002B06FC /* time_stop.lua */,
+				07F5D32E0C125132002B06FC /* tremor.lua */,
+			);
+			name = circle_08;
+			path = ../data/scripts/u6/magic/circle_08;
+			sourceTree = SOURCE_ROOT;
 		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
@@ -826,6 +1315,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				07EF82340A9C633900872DBE /* Lua */,
 				07B011740668763B000771BC /* Effects */,
 				07F10D1D05C7D2490029E1F1 /* Fonts */,
 				072BE3BC041B07DD00A8000A /* MacOSX */,
@@ -884,6 +1374,8 @@
 				07DB53EA042DA0CF00A8000A /* Player.cpp */,
 				07C3D134047A4A3F00A8000A /* Portrait.h */,
 				07C3D133047A4A3F00A8000A /* Portrait.cpp */,
+				07EF82B20A9C792300872DBE /* Script.h */,
+				07EF82B10A9C792300872DBE /* Script.cpp */,
 				072566A304272B7B00A8000A /* Text.h */,
 				072566A204272B7B00A8000A /* Text.cpp */,
 				072566A504272B7B00A8000A /* TileManager.h */,
@@ -900,6 +1392,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0746DC350C50B9300034A045 /* nuvie.cfg.sample */,
+				07F5D2B70C12504C002B06FC /* data */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				07E3229E046BEBC900A8000A /* nuvie.icns */,
 			);
@@ -1043,6 +1537,31 @@
 				0700C6B70A837D170039FD03 /* CallBack.h in Headers */,
 				0700C6C90A84303D0039FD03 /* Weather.h in Headers */,
 				0700C71F0A8442490039FD03 /* Objlist.h in Headers */,
+				07EF826B0A9C636B00872DBE /* lapi.h in Headers */,
+				07EF826D0A9C636B00872DBE /* lauxlib.h in Headers */,
+				07EF82700A9C636B00872DBE /* lcode.h in Headers */,
+				07EF82730A9C636B00872DBE /* ldebug.h in Headers */,
+				07EF82750A9C636B00872DBE /* ldo.h in Headers */,
+				07EF82780A9C636B00872DBE /* lfunc.h in Headers */,
+				07EF827A0A9C636B00872DBE /* lgc.h in Headers */,
+				07EF827E0A9C636B00872DBE /* llex.h in Headers */,
+				07EF827F0A9C636B00872DBE /* llimits.h in Headers */,
+				07EF82820A9C636B00872DBE /* lmem.h in Headers */,
+				07EF82850A9C636B00872DBE /* lobject.h in Headers */,
+				07EF82870A9C636B00872DBE /* lopcodes.h in Headers */,
+				07EF828A0A9C636B00872DBE /* lparser.h in Headers */,
+				07EF828C0A9C636B00872DBE /* lstate.h in Headers */,
+				07EF828E0A9C636B00872DBE /* lstring.h in Headers */,
+				07EF82910A9C636B00872DBE /* ltable.h in Headers */,
+				07EF82940A9C636B00872DBE /* ltm.h in Headers */,
+				07EF82960A9C636B00872DBE /* lua.h in Headers */,
+				07EF82970A9C636B00872DBE /* luaconf.h in Headers */,
+				07EF82980A9C636B00872DBE /* lualib.h in Headers */,
+				07EF829A0A9C636B00872DBE /* lundump.h in Headers */,
+				07EF829C0A9C636B00872DBE /* lvm.h in Headers */,
+				07EF829E0A9C636B00872DBE /* lzio.h in Headers */,
+				07EF82B40A9C792300872DBE /* Script.h in Headers */,
+				0746DC4A0C50BED20034A045 /* Dither.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1093,6 +1612,7 @@
 			files = (
 				0703C0A9054BE5660003D6CB /* InfoPlist.strings in Resources */,
 				0703C0AB054BE5660003D6CB /* nuvie.icns in Resources */,
+				0746DC360C50B9300034A045 /* nuvie.cfg.sample in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1237,6 +1757,37 @@
 				0727DE1409F91D770004E639 /* U6AStarPath.cpp in Sources */,
 				0727DE1A09F91DCD0004E639 /* Magic.cpp in Sources */,
 				0700C6C80A84303D0039FD03 /* Weather.cpp in Sources */,
+				07EF826A0A9C636B00872DBE /* lapi.c in Sources */,
+				07EF826C0A9C636B00872DBE /* lauxlib.c in Sources */,
+				07EF826E0A9C636B00872DBE /* lbaselib.c in Sources */,
+				07EF826F0A9C636B00872DBE /* lcode.c in Sources */,
+				07EF82710A9C636B00872DBE /* ldblib.c in Sources */,
+				07EF82720A9C636B00872DBE /* ldebug.c in Sources */,
+				07EF82740A9C636B00872DBE /* ldo.c in Sources */,
+				07EF82760A9C636B00872DBE /* ldump.c in Sources */,
+				07EF82770A9C636B00872DBE /* lfunc.c in Sources */,
+				07EF82790A9C636B00872DBE /* lgc.c in Sources */,
+				07EF827B0A9C636B00872DBE /* linit.c in Sources */,
+				07EF827C0A9C636B00872DBE /* liolib.c in Sources */,
+				07EF827D0A9C636B00872DBE /* llex.c in Sources */,
+				07EF82800A9C636B00872DBE /* lmathlib.c in Sources */,
+				07EF82810A9C636B00872DBE /* lmem.c in Sources */,
+				07EF82830A9C636B00872DBE /* loadlib.c in Sources */,
+				07EF82840A9C636B00872DBE /* lobject.c in Sources */,
+				07EF82860A9C636B00872DBE /* lopcodes.c in Sources */,
+				07EF82880A9C636B00872DBE /* loslib.c in Sources */,
+				07EF82890A9C636B00872DBE /* lparser.c in Sources */,
+				07EF828B0A9C636B00872DBE /* lstate.c in Sources */,
+				07EF828D0A9C636B00872DBE /* lstring.c in Sources */,
+				07EF828F0A9C636B00872DBE /* lstrlib.c in Sources */,
+				07EF82900A9C636B00872DBE /* ltable.c in Sources */,
+				07EF82920A9C636B00872DBE /* ltablib.c in Sources */,
+				07EF82930A9C636B00872DBE /* ltm.c in Sources */,
+				07EF82990A9C636B00872DBE /* lundump.c in Sources */,
+				07EF829B0A9C636B00872DBE /* lvm.c in Sources */,
+				07EF829D0A9C636B00872DBE /* lzio.c in Sources */,
+				07EF82B30A9C792300872DBE /* Script.cpp in Sources */,
+				0746DC490C50BED20034A045 /* Dither.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

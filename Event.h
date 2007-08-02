@@ -128,6 +128,7 @@ friend class Magic; // FIXME
  TimeQueue *time_queue, *game_time_queue;
  Obj *drop_obj;
  uint16 drop_qty;
+ sint32 drop_x, drop_y; // only to allow pre-targeting from MapWindow, feel free to ignore this
  uint8 rest_time; // How many hours?
  uint8 rest_guard; // Who will guard?
  Obj *push_obj;
@@ -227,6 +228,7 @@ friend class Magic; // FIXME
  bool perform_drop();
  bool drop(Obj *obj, uint16 qty, uint16 x, uint16 y);
  bool drop(uint16 x, uint16 y) { return(drop(drop_obj, drop_qty, x, y)); }
+ void set_drop_target(uint16 x, uint16 y) { drop_x = sint32(x); drop_y = sint32(y); }
 
  bool rest();
  bool rest_input(uint16 input);

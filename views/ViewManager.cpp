@@ -66,7 +66,7 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  inventory_view->init(gui->get_screen(), this, 176,8, text, party, tile_manager, obj_manager);
 
  party_view = new PartyView(config);
- party_view->init(this,168,5, text, party, player, tile_manager, obj_manager);
+ party_view->init(this,168,6, text, party, player, tile_manager, obj_manager);
 
  portrait_view = new PortraitView(config);
  portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);

@@ -6,6 +6,7 @@
 
  <general>
   <lighting>original</lighting>
+  <dither_mode>none</dither_mode>
   <enable_cursors>yes</enable_cursors>
  </general>
 

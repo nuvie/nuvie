@@ -30,12 +30,14 @@
 #include "Configuration.h"
 #include "ActorManager.h"
 #include "SoundManager.h"
+#include "ViewManager.h"
 #include "Player.h"
 #include "Map.h"
 #include "U6UseCode.h"
 #include "CommandBar.h"
 #include "PartyPathFinder.h"
 #include "Party.h"
+#include "View.h"
 #include "Objlist.h"
 
 Party::Party(Configuration *cfg)
@@ -178,7 +180,7 @@ bool Party::add_actor(Actor *actor)
 
 
 // remove actor from member array shuffle remaining actors down if required.
-bool Party::remove_actor(Actor *actor)
+bool Party::remove_actor(Actor *actor, bool keep_party_flag)
 {
  uint8 i;
 
@@ -186,7 +188,8 @@ bool Party::remove_actor(Actor *actor)
   {
    if(member[i].actor->id_n == actor->id_n)
      {
-      member[i].actor->set_in_party(false);
+      if(keep_party_flag == false)
+        member[i].actor->set_in_party(false);
       if(i != (num_in_party - 1))
         {
          for(;i+1<num_in_party;i++)
@@ -195,12 +198,43 @@ bool Party::remove_actor(Actor *actor)
       num_in_party--;
 
       reform_party();
+
+      //FIXME this is a bit hacky we need a better way to refresh views when things change
+      //maybe using callbacks.
+      //If the last actor dies and was being displayed in a view then we need to set the
+      //view to the new last party member.
+      View *cur_view = Game::get_game()->get_view_manager()->get_current_view();
+      if(cur_view->get_party_member_num() >= num_in_party)
+        cur_view->set_party_member(num_in_party - 1);
+
       return true;
      }
   }
 
  return false;
 }
+
+bool Party::remove_dead_actor(Actor *actor)
+{
+  return remove_actor(actor, PARTY_KEEP_PARTY_FLAG);
+}
+
+bool Party::resurrect_dead_members()
+{
+  uint16 i;
+  Actor *actor;
+  MapCoord new_pos = get_leader_location();
+  
+  for(i = 0; i < ACTORMANAGER_MAX_ACTORS; i++)
+  {
+    actor = actor_manager->get_actor(i);
+    if(actor->is_in_party() && actor->is_alive() == false)
+      actor->resurrect(new_pos);
+  }
+  
+  return true;
+}
+
 
 void Party::split_gold()
 {
@@ -457,7 +491,7 @@ bool Party::has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual)
 
  for(i=0;i<num_in_party;i++)
   {
-   if(member[i].actor->inventory_get_object(obj_n, quality, 0, true, match_zero_qual) != NULL) // we got a match
+   if(member[i].actor->inventory_get_object(obj_n, quality, match_zero_qual) != NULL) // we got a match
      return true;
   }
 
@@ -487,15 +521,15 @@ bool Party::remove_obj(uint16 obj_n, uint8 quality)
 }
 
 // Returns the actor id of the first person in the party to have a matching object.
-uint16 Party::who_has_obj(uint16 obj_n, uint8 quality)
+Actor *Party::who_has_obj(uint16 obj_n, uint8 quality, bool match_qual_zero)
 {
     uint16 i;
     for(i = 0; i < num_in_party; i++)
     {
-        if(member[i].actor->inventory_get_object(obj_n, quality) != NULL)
-            return(member[i].actor->get_actor_num());
+        if(member[i].actor->inventory_get_object(obj_n, quality, match_qual_zero) != NULL)
+            return(member[i].actor);
     }
-    return(0);
+    return NULL;
 }
 
 

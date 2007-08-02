@@ -111,6 +111,21 @@ void print_b(uint8 num)
  return;
 }
 
+void print_b16(uint16 num)
+{
+  sint8 i;
+  
+  for(i=15;i>=0;i--)
+  {
+    if(num & (1<<i))
+      printf("1");
+    else
+      printf("0");
+  }
+  
+  return;
+}
+
 void print_indent(uint8 indent)
 {
  uint16 i;

@@ -36,12 +36,14 @@ class GamePalette
  Screen *screen;
  Configuration *config;
  uint8 counter;
+ uint8 bg_color;
 
  public:
 
    GamePalette(Screen *s, Configuration *cfg);
    ~GamePalette();
    void rotatePalette();
+   uint8 get_bg_color() { return bg_color; }
 
  protected:
 

@@ -50,6 +50,8 @@ class InventoryWidget : public GUI_Widget {
  Obj *selected_obj, *target_obj, *ready_obj;
  uint16 row_offset;
 
+ uint8 bg_color;
+ 
  public:
  InventoryWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~InventoryWidget();

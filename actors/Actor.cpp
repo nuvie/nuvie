@@ -55,7 +55,6 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  direction = 0;
  walk_frame = 0;
  can_move = true;
- in_party = false;
  temp_actor = false;
  visible_flag = true;
 // active = false;
@@ -292,7 +291,7 @@ const char *Actor::get_name()
     Actor *player = Game::get_game()->get_player()->get_actor();
     const char *talk_name = NULL; // name from conversation script
 
-    if(in_party)
+    if(is_in_party())
         name = party->get_actor_name(party->get_member_num(this));
     else if(id_n == player->id_n)
         name = party->get_actor_name(0); // the player, not necessarily the "active" leader
@@ -315,7 +314,7 @@ bool Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags f
 {
  Actor *a;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
- bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || in_party;
+ bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || is_in_party();
 // bool ignore_danger = true;
 /*
     uint16 pitch = map->get_width(new_z);
@@ -363,7 +362,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  bool force_move = flags & ACTOR_FORCE_MOVE;
  bool open_doors = flags & ACTOR_OPEN_DOORS;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
- bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || in_party;
+ bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || is_in_party();
 // bool ignore_danger = true;
  bool ignore_moves = flags & ACTOR_IGNORE_MOVES;
  Obj *obj = NULL;
@@ -528,7 +527,7 @@ void Actor::delete_pathfinder()
 
 void Actor::set_in_party(bool state)
 {
-    in_party = state;
+    //in_party = state;
     delete_pathfinder();
     if(state == true) // joined
     {
@@ -648,9 +647,9 @@ U6LList *Actor::get_inventory_list()
 }
 
 
-bool Actor::inventory_has_object(uint16 obj_n, uint8 qual, bool match_zero_qual)
+bool Actor::inventory_has_object(uint16 obj_n, uint8 qual, bool match_quality)
 {
-    if(inventory_get_object(obj_n, qual, NULL, true, match_zero_qual))
+    if(inventory_get_object(obj_n, qual, match_quality))
         return(true);
     return(false);
 }
@@ -671,7 +670,7 @@ uint32 Actor::inventory_count_objects(bool inc_readied_objects)
    for(link=inventory->start();link != NULL;link=link->next)
      {
       obj = (Obj *)link->data;
-      if((obj->status & 0x18) != 0x18)
+      if(!obj->is_readied())
         count++;
      }
   }
@@ -683,48 +682,45 @@ uint32 Actor::inventory_count_objects(bool inc_readied_objects)
 /* Returns the number of objects in the actor's inventory with matching object
  * number and quality.
  */
-uint32 Actor::inventory_count_object(uint16 obj_n, Obj *container)
+uint32 Actor::inventory_count_object(uint16 obj_n)
 {
     uint32 qty = 0;
     U6Link *link = 0;
     Obj *obj = 0;
-    U6LList *inv = container ? container->container
-                             : get_inventory_list();
+    U6LList *inv = get_inventory_list();
 
     for(link = inv->start(); link != NULL; link = link->next)
     {
         obj = (Obj *)link->data;
-        if(obj->container)
-            qty += inventory_count_object(obj_n, obj);
-        if(obj->obj_n == obj_n)
-            qty += obj->qty;
+        if(obj)
+          qty += obj->get_total_qty(obj_n);
     }
+
     return(qty);
 }
 
 
 /* Returns object descriptor of object in the actor's inventory, or NULL if no
  * matching object is found. */
-Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, Obj *container, bool search_containers, bool match_zero_qual)
+Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, bool match_quality)
 {
  U6LList *inventory;
  U6Link *link;
  Obj *obj;
 
- inventory = container ? container->container
-                       : get_inventory_list();
+ inventory = get_inventory_list();
  for(link=inventory->start();link != NULL;link=link->next)
+ {
+   obj = (Obj *)link->data;
+   if(obj->obj_n == obj_n && (match_quality == false || obj->quality == qual)) //FIXME should qual = 0 be an all quality search!?
+     return(obj);
+   else if(obj->container)
    {
-    obj = (Obj *)link->data;
-    if(obj->obj_n == obj_n && ((match_zero_qual == false && qual == 0) || obj->quality == qual)) //FIXME should qual = 0 be an all quality search!?
-      return(obj);
-    else if(obj->container && search_containers)
-    {
-      if( (obj = inventory_get_object(obj_n, qual, obj)) )
-        return(obj);
-    }
+     if( (obj = obj->find_in_container(obj_n, qual, match_quality)) )
+       return(obj);
    }
-
+ }
+ 
  return NULL;
 }
 
@@ -755,15 +751,16 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
  {
    add_to = container->container;
    /* obj->status |= OBJ_STATUS_IN_CONTAINER; */ // luteijn: don't manipulate this directly!
-   obj->set_in_container(); 
-   obj->parent_obj = container; // obj->x is set when saving
+   obj->in_container(container); 
+   obj->parent = (void *)container; // obj->x is set when saving
  }
  else
  {
    // only objects outside containers are marked in_inventory
    /* obj->status |= OBJ_STATUS_IN_INVENTORY; */ // luteijn: don't manipulate this directly!
-   obj->set_in_inventory();
+   obj->in_inventory();
    obj->x = id_n;
+   obj->parent = (void *)this;
 
    if(obj->is_lit()) // light up actor
      add_light(TORCH_LIGHT_LEVEL);
@@ -800,19 +797,18 @@ Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
 
 /* Delete `qty' objects of type from inventory (or from a container).
  * Returns the number removed (may be less than requested). */
-uint32
-Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container)
+uint32 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality)
 {
  Obj *obj;
  uint16 oqty = 0;
  uint32 deleted = 0;
 
- while((obj = inventory_get_object(obj_n, quality, container, true, false))
+ while((obj = inventory_get_object(obj_n, quality, false))
        && (deleted < qty))
  {
     oqty = obj->qty;
     if(oqty <= (qty - deleted))
-        inventory_remove_obj(obj, container);
+        inventory_remove_obj(obj);
     else
         obj->qty = oqty - qty;
     deleted += oqty;
@@ -821,49 +817,29 @@ Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *contai
 }
 
 
-bool Actor::inventory_remove_obj(Obj *obj, Obj *container)
+bool Actor::inventory_remove_obj(Obj *obj)
 {
  U6LList *inventory;
-
+ Obj *container = NULL;
+  
  inventory = get_inventory_list();
  if(obj->is_readied())
     remove_readied_object(obj);
- if(!container)
-    container = inventory_get_obj_container(obj);
+ if(obj->is_in_container())
+    container = obj->get_container_obj();
+ 
+ obj->set_noloc(); //remove engine location
 
  if(container)
  {
-    obj->status &= ~OBJ_STATUS_IN_CONTAINER;
-    return container->container->remove(obj);
+   return container->remove(obj);
  }
- obj->status &= ~OBJ_STATUS_IN_INVENTORY;
+
  if(obj->status & OBJ_STATUS_LIT) // remove light from actor
     subtract_light(TORCH_LIGHT_LEVEL);
+ 
  return inventory->remove(obj);
 }
-
-
-/* Search inventory for obj and return pointer to object it is contained in.
- * Returns NULL if obj is not in a container, or is not found.
- */
-Obj *Actor::inventory_get_obj_container(Obj *obj, Obj *container)
-{
-    U6LList *inventory = container ? container->container : get_inventory_list();
-    for(U6Link *link = inventory->start(); link != NULL; link = link->next)
-    {
-        Obj *this_obj = (Obj *)link->data;
-        if(this_obj == obj)
-            return(container);
-        else if(this_obj->container) // a new container to search in
-        {
-            Obj *result = inventory_get_obj_container(obj, this_obj);
-            if(result)
-                return(result);
-        }
-    }
-    return(NULL);
-}
-
 
 float Actor::get_inventory_weight()
 {
@@ -901,7 +877,7 @@ float Actor::get_inventory_equip_weight()
  for(link=inventory->start();link != NULL;link=link->next)
   {
    obj = (Obj *)link->data;
-   if((obj->status & 0x18) == 0x18) //object readied
+   if(obj->is_readied()) //object readied
       weight += obj_manager->get_obj_weight(obj);
   }
 
@@ -943,6 +919,7 @@ void Actor::inventory_parse_readied_objects()
  for(link=inventory->start();link != NULL;link=link->next)
   {
    obj = (Obj *)link->data;
+   obj->parent = (void *)this;
    if(obj->is_readied()) //object readied
       {
        add_readied_object(obj);
@@ -987,7 +964,7 @@ bool Actor::add_readied_object(Obj *obj)
  if(readied_objects[location]->combat_type != NULL)
    readied_armor_class += readied_objects[location]->combat_type->defence;
 
- obj->status |= 0x18; //set object to readied status
+ obj->readied(); //set object to readied status
  return true;
 }
 
@@ -1020,8 +997,9 @@ void Actor::remove_readied_object(uint8 location)
 
     delete readied_objects[location];
     readied_objects[location] = NULL;
-    obj->status ^= 0x18; // remove "readied" bit flag.
-    obj->status |= OBJ_STATUS_IN_INVENTORY; // keep "in inventory"
+    //ERIC obj->status ^= 0x18; // remove "readied" bit flag.
+    //ERIC obj->status |= OBJ_STATUS_IN_INVENTORY; // keep "in inventory"
+    obj->in_inventory();
 
     if(location == ACTOR_ARM && readied_objects[ACTOR_ARM_2] != NULL) //move contents of left hand to right hand.
       {
@@ -1495,6 +1473,60 @@ void Actor::die()
     status_flags |= ACTOR_STATUS_DEAD;
 }
 
+void Actor::resurrect(MapCoord new_position, Obj *body_obj)
+{
+  U6Link *link;
+  bool remove_obj = false;
+  
+  if(body_obj == NULL)
+  {
+    body_obj = find_body();
+    if(body_obj == NULL)
+      return;
+    
+    remove_obj = true;
+  }
+  
+
+
+  alive = true;
+  status_flags = status_flags ^ ACTOR_STATUS_DEAD;
+  
+  show();
+  
+  x = new_position.x;
+  y = new_position.y;
+  z = new_position.z;
+  obj_n = base_obj_n;
+  init();
+  
+  frame_n = 0;
+  
+  set_direction(NUVIE_DIR_N);
+  
+  set_hp(1);
+  //actor->set_worktype(0x1);
+  
+  if(is_in_party()) //actor in party
+    Game::get_game()->get_party()->add_actor(this);
+  
+  //add body container objects back into actor's inventory.
+  if(body_obj->container)
+  {
+    for(link = body_obj->container->start(); link != NULL; link = link->next)
+      inventory_add_object((Obj *)link->data);
+    
+    body_obj->container->removeAll();
+  }
+
+  obj_manager->unlink_from_engine(body_obj);
+
+  if(remove_obj)
+    delete_obj(body_obj);
+  
+  return;
+}
+
 void Actor::display_condition()
 {
     MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -1635,7 +1667,7 @@ void Actor::print()
 
     printf("can_move: %s\n", actor->can_move ? "true" : "false");
     printf("alive: %s\n", actor->alive ? "true" : "false");
-    printf("in_party: %s\n", actor->in_party ? "true" : "false");
+    printf("in_party: %s\n", is_in_party() ? "true" : "false");
     printf("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
     printf("met_player: %s\n", actor->met_player ? "true" : "false");
     printf("is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
@@ -1773,7 +1805,7 @@ ActorList *Actor::find_enemies()
     // remove party members and invisible actors FIXME: set party members to leader's alignment
     ActorIterator a = actors->begin();
     while(a != actors->end())
-        if(in_party && (*a)->in_party)
+        if(is_in_party() && (*a)->is_in_party())
             a = actors->erase(a);
         else if((*a)->is_invisible())
             a = actors->erase(a);
@@ -1784,6 +1816,26 @@ ActorList *Actor::find_enemies()
         return NULL; // no enemies in range
     }
     return actors;
+}
+
+Obj *Actor::find_body()
+{
+  Party *party;
+  Actor *actor;
+  Obj *body_obj = NULL;
+  uint8 level;
+  
+  party = Game::get_game()->get_party();
+  actor = party->who_has_obj(339,id_n,true);
+
+  if(actor) //get from collective party inventory if possible
+    return actor->inventory_get_object(339,id_n,true);
+    
+  // try to find on map.
+  for(level=0;level < 5 && body_obj == NULL;level++)
+    body_obj = obj_manager->find_obj(339, id_n, level, NULL);
+  
+  return body_obj;
 }
 
 /* Change actor type. */

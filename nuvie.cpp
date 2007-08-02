@@ -33,6 +33,7 @@
 #include "Configuration.h"
 #include "U6misc.h"
 #include "Screen.h"
+#include "Script.h"
 #include "Game.h"
 #include "GameSelect.h"
 
@@ -42,6 +43,7 @@ Nuvie::Nuvie()
 {
  config = NULL;
  screen = NULL;
+ script = NULL;
  game = NULL;
 }
 
@@ -52,6 +54,9 @@ Nuvie::~Nuvie()
 
  if(screen != NULL)
    delete screen;
+
+ if(script != NULL)
+    delete script;
 
  if(game != NULL)
    delete game;
@@ -100,7 +105,8 @@ bool Nuvie::init(int argc, char **argv)
  if(checkGameDir(game_type) == false)
    return false;
 
- game = new Game(config);
+ script = new Script(config, game_type);
+ game = new Game(config, script);
 
  if(game->loadGame(screen,game_type) == false)
    {

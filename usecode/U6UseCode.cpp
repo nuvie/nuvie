@@ -744,7 +744,7 @@ bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
        // make sure the player is right next to the force field.
        if(force_field && abs(player_location.x - force_field->x) < 2 && abs(player_location.y - force_field->y) < 2)
          {
-          obj_manager->remove_obj(force_field);
+          obj_manager->remove_obj_from_map(force_field);
           delete force_field;
 
           scroll->display_string("\nDone!\n");
@@ -798,7 +798,7 @@ bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 
           if(moonstone_check == 0xff) // have we got all 8 moonstones?
             {
-             obj_manager->remove_obj(codex);
+             obj_manager->remove_obj_from_map(codex);
              delete codex;
           
              scroll->display_string("\nThe Codex has vanished!\n");
@@ -1221,7 +1221,7 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 
     if(!items.mapcoord_ref) // get direction (FIXME: should return relative dir)
     {
-        if((obj->status & 0x18) != 0x18)
+        if(!obj->is_readied())
         {
             scroll->display_string("\nNot readied.\n");
             return(true);
@@ -1680,7 +1680,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
  if(obj->obj_n == OBJ_U6_SHIP)
     ship_actor->set_hp(obj->qty); // Hull Strength
  ship_actor->show(); // Swift!
- obj_manager->remove_obj(obj);
+ obj_manager->remove_obj_from_map(obj);
  delete_obj(obj);
 
  party->hide(); // set in-vehicle
@@ -1945,7 +1945,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
  // use it (replace ship with vehicle actor)
  balloon_actor->init_from_obj(obj);
  balloon_actor->show(); // Swift!
- obj_manager->remove_obj(obj);
+ obj_manager->remove_obj_from_map(obj);
  delete_obj(obj);
 
  party->hide(); // set in-vehicle
@@ -2502,11 +2502,21 @@ bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)// FIXME when in contai
     {
         if(*items.msg_ref == MESG_TIMED) // explode
         {
-            uint16 x = obj->x, y = obj->y; // FIXME: doesn't work for objects in containers
-            if(obj->is_readied() || obj->is_in_inventory_new()) // explode over actor carrying keg 
+            uint16 x = obj->x, y = obj->y;
+            if(obj->is_in_inventory()) // explode over actor carrying keg 
             {
-                x = actor_manager->get_actor(obj->x)->get_location().x;
-                y = actor_manager->get_actor(obj->x)->get_location().y;
+                Actor *actor = obj->get_actor_holding_obj();
+                x = actor->get_x();
+                y = actor->get_y();
+            }
+            else if(obj->is_in_container()) // use coordinates of container on map
+            {
+                Obj *root_obj=obj;
+                do
+                {
+                    root_obj = root_obj->get_container_obj();
+                } while(root_obj->is_in_container());
+                x = root_obj->x; y = root_obj->y;
             }
             obj->frame_n = 0;
 
@@ -2592,9 +2602,9 @@ bool U6UseCode::use_spellbook(Obj *obj, UseCodeEvent ev)
 //  Event *event = Game::get_game()->get_event();
   if(ev == USE_EVENT_USE)
   {
-    if (obj->is_in_inventory_new()) // FIXME to work when in container
+    if (obj->is_in_inventory()) // FIXME this now handles readied objects too. so the else if won't work anymore
     {
-      Actor *actor = actor_manager->get_actor_holding_obj(obj);
+      Actor *actor = obj->get_actor_holding_obj();
       actor->add_readied_object(obj);
     } 
     else
@@ -2650,7 +2660,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             return(true);
         }
         // light
-        if(obj->is_in_container_new())
+        if(obj->is_in_container())
             scroll->display_string("\nNot now!\n"); // FIXME make this just work.
         else if(obj->is_on_map()) 
         {
@@ -2685,7 +2695,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             else
             {
                 assert(torch->qty == 1);
-                if(torch->is_in_inventory_new()) //  assume it's not stacked
+                if(torch->is_in_inventory()) //  assume it's not stacked
                 {
                     actor->inventory_remove_obj(torch);
                     actor->inventory_add_object(torch); // restack here
@@ -2696,7 +2706,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     }
     else if(ev == USE_EVENT_READY)
     {
-        assert(!obj->is_in_container()); // FIXME make this just work
+        assert(!obj->is_in_container()); // FIXME make this just work.
         if(obj->is_readied()) // remove
         {
             if(obj->frame_n == 1)
@@ -2711,7 +2721,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             {
                 Obj *torch = obj_manager->get_obj_from_stack(obj, obj->qty - 1);
                 assert(torch != obj); // got a new object from the obj stack
-                if(obj->is_in_inventory_new()) // keep extras in inventory
+                if(obj->is_in_inventory()) // keep extras in inventory
                 {
                     actor_manager->get_actor_holding_obj(torch)->inventory_add_object_nostack(torch);
                 }
@@ -2724,7 +2734,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
         if(obj->frame_n == 0) // unlit: may get normally
             return(true);
         toggle_frame(obj); // unlight
-        obj_manager->remove_obj(obj); // add to inventory and USE
+        obj_manager->remove_obj_from_map(obj); // add to inventory and USE
         items.actor_ref->inventory_add_object(obj); // will unstack in USE
         scroll->display_string("\n");
         torch(obj, USE_EVENT_USE);

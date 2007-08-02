@@ -84,7 +84,7 @@ void ActorView::Display(bool full_redraw)
  if(portrait_data != NULL && (full_redraw || update_display))
   {
    update_display = false;
-   screen->fill(0x31, area.x, area.y, area.w, area.h);
+   screen->fill(bg_color, area.x, area.y, area.w, area.h);
    screen->blit(area.x,area.y+8,portrait_data,8,56,64,56,false);
    display_name();
    display_actor_stats();

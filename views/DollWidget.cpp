@@ -30,6 +30,7 @@
 
 #include "Actor.h"
 #include "ActorManager.h"
+#include "GamePalette.h"
 #include "DollWidget.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
@@ -55,6 +56,8 @@ DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(N
  unready_obj = NULL;
 
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
+ 
+ bg_color = Game::get_game()->get_palette()->get_bg_color();
 }
 
 DollWidget::~DollWidget()
@@ -95,7 +98,7 @@ void DollWidget::Display(bool full_redraw)
  //if(full_redraw || update_display)
  // {
    update_display = false;
-   screen->fill(0x31, area.x, area.y, area.w, area.h);
+   screen->fill(bg_color, area.x, area.y, area.w, area.h);
    if(actor != NULL)
      display_doll();
    screen->update(area.x, area.y, area.w, area.h);
@@ -249,18 +252,18 @@ bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
     if(message == GUI_DRAG_OBJ)
     {
         Obj *obj = (Obj*)data;
-        if(obj->is_readied() && obj->x == actor->get_actor_num())
+        if(obj->is_readied() && obj->get_actor_holding_obj() == actor)
         {
             // FIXME: need to detect ready location so player can switch hands
             printf("DollWidget: Object already equipped!\n");
             return false;
         }
-        if(obj->is_in_container_new())
+        if(obj->is_in_container())
         {
             printf("DollWidget: Not from a container!\n");
             return false;
         }
-        if(obj->is_in_inventory_new() && obj->x != actor->get_actor_num())
+        if(obj->is_in_inventory() && obj->get_actor_holding_obj() != actor)
         {
             printf("DollWidget: Must be holding object!\n");
             return false;
@@ -289,7 +292,7 @@ printf("DollWidget::drag_perform_drop()\n");
     bool can_equip = true;
     if(obj->is_on_map()) // get
       {
-       assert(!obj->is_in_container_new()); // won't happen since 'is_on_map' FIXME need to make work with containers
+       assert(!obj->is_in_container()); // won't happen since 'is_on_map' FIXME need to make work with containers
        // event->newAction(GET_MODE);
        Game::get_game()->get_scroll()->display_string("Get-");
        can_equip = Game::get_game()->get_event()->perform_get(obj, NULL, actor);
@@ -301,8 +304,8 @@ printf("DollWidget::drag_perform_drop()\n");
       }
     if(can_equip) // ready
       {
-       assert(obj->status & OBJ_STATUS_IN_INVENTORY);
-       assert(obj->x == actor->get_actor_num());
+       assert(obj->is_in_inventory());
+       assert(obj->get_actor_holding_obj() == actor);
        assert(!obj->is_readied());
        Game::get_game()->get_event()->ready(obj);
       }

@@ -49,6 +49,8 @@ sint8 form_y; // relative position in front or in back of leader
 #define PARTY_MAX_MEMBERS 16
 #define PARTY_NAME_MAX_LENGTH 13
 
+#define PARTY_KEEP_PARTY_FLAG true
+
 /* party walking formations: */
 #define PARTY_FORM_STANDARD 0
 #define PARTY_FORM_COLUMN   1
@@ -113,7 +115,9 @@ class Party {
  virtual void split_gold();
  virtual void gather_gold();
  bool add_actor(Actor *actor);
- bool remove_actor(Actor *actor);
+ bool remove_actor(Actor *actor, bool keep_party_flag=false);
+ bool remove_dead_actor(Actor *actor);
+ bool resurrect_dead_members();
  void heal();
  void set_active(uint8 member_num, bool state) { member[member_num].inactive = !state; }
 
@@ -147,7 +151,7 @@ class Party {
  bool is_anyone_at(MapCoord &xyz, uint32 threshold = 0);
  bool has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual=true);
  bool remove_obj(uint16 obj_n, uint8 quality);
- uint16 who_has_obj(uint16 obj_n, uint8 quality);
+ Actor *who_has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual=true);
  bool is_horsed(); // is anyone on a horse?
  Obj *get_food(); // used while resting
 
@@ -163,6 +167,7 @@ class Party {
 
  protected:
  void reform_party(); // call when adding or removing members
+
 };
 
 #endif /* _PARTY_H_ */

@@ -631,15 +631,19 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             player->subtract_karma(pop_arg(i));
             break;
         case U6OP_RESURRECT: // 0xd6
-            cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
-            //converse->print("!resurrect\n"); // CREATE actor
-            //converse->actors->resurrect_actor(obj, pos);
-            cnpc_obj = converse->player->get_actor()->inventory_get_object(OBJ_U6_DEAD_BODY, 0, NULL, true, false);
+            v[0] = npc_num(pop_arg(i));
+
+            if(v[0] == 0) // Party
+              cnpc = converse->player->get_party()->who_has_obj(OBJ_U6_DEAD_BODY,0,false);
+            else
+              cnpc = converse->actors->get_actor(v[0]);
+          
+            cnpc_obj = cnpc->inventory_get_object(OBJ_U6_DEAD_BODY, 0, false);
             if(cnpc_obj != NULL)
               {
                if(converse->actors->resurrect_actor(cnpc_obj, converse->player->get_actor()->get_location()))
                  {
-                  converse->player->get_actor()->inventory_remove_obj(cnpc_obj);
+                  converse->objects->unlink_from_engine(cnpc_obj);
                   delete_obj(cnpc_obj);
                  }
               }
@@ -928,8 +932,9 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 out = 0x8001; // something OR'ed or u6val version of "no npc"?
             else
             {
-                out = player->get_party()->who_has_obj(v[0], v[1]);
-                out = npc_num(out); // first NPC that has object (sometimes 0xFFFF?)
+                cnpc = player->get_party()->who_has_obj(v[0], v[1], false);
+                assert(cnpc);
+                out = cnpc->get_actor_num(); // first NPC that has object (sometimes 0xFFFF?)
             }
             break;
         case U6OP_JOIN: // 0xca

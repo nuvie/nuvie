@@ -165,7 +165,7 @@
 #define OBJ_U6_SWITCH              174
 #define OBJ_U6_ELECTRIC_FIELD      175
 #define OBJ_U6_DRAWER              176
-
+#define OBJ_U6_DESK                177
 #define OBJ_U6_BUCKET              178
 #define OBJ_U6_BUCKET_OF_WATER     179
 #define OBJ_U6_BUCKET_OF_MILK      180

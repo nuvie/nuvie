@@ -29,6 +29,7 @@
 #include "U6misc.h"
 #include "U6Lib_n.h"
 #include "U6Bmp.h"
+#include "Dither.h"
 #include "Background.h"
 
 Background::Background(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
@@ -82,6 +83,8 @@ bool Background::init()
  area.y = 0;
 
  background->get_size(&area.w,&area.h);
+
+ Game::get_game()->get_dither()->dither_bitmap(background->get_data(),area.w, area.h, DITHER_NO_TRANSPARENCY);
 
  return true;
 }

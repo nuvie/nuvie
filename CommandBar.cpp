@@ -30,6 +30,7 @@
 #include "TileManager.h"
 #include "Text.h"
 #include "GameClock.h"
+#include "GamePalette.h"
 #include "CommandBar.h"
 #include "Weather.h"
 
@@ -56,6 +57,8 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL, 8, 168, 0, 0)
     wind = "?";
 
     init_buttons();
+    
+    bg_color = game->get_palette()->get_bg_color();
     
     weather->add_wind_change_notification_callback((CallBack *)this); //we want to know when the wind direction changes.
 }
@@ -148,7 +151,7 @@ void CommandBar::Display(bool full_redraw)
     if(full_redraw || update_display)
     {
         update_display = false;
-        screen->fill(0x31, area.x, area.y, area.w, area.h);
+        screen->fill(bg_color, area.x, area.y, area.w, area.h);
 
         display_information();
         for(uint32 i = 0; i < 10; i++)

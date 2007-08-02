@@ -163,6 +163,7 @@ class U6Actor: public Actor
 
  void print();
  const char *get_worktype_string(uint32 wt);
+ void add_blood();
 };
 
 #endif /* __U6Actor_h__ */

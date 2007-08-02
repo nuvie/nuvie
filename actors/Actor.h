@@ -213,7 +213,6 @@ class Actor
  bool temp_actor;
  bool met_player;
 
- bool in_party;
  bool visible_flag;
 // bool active; // "cached in"
 
@@ -258,7 +257,7 @@ class Actor
  void init_from_obj(Obj *obj);
 
  bool is_onscreen() { return(MapCoord(x,y,z).is_visible()); }
- bool is_in_party() { return in_party; }
+ bool is_in_party() { return ((status_flags & ACTOR_STATUS_IN_PARTY) == ACTOR_STATUS_IN_PARTY); }
  bool is_visible() { return visible_flag; }
  bool is_alive();
  bool is_nearby(Actor *other);
@@ -286,6 +285,10 @@ class Actor
  uint8 get_talk_flags() { return(talk_flags); }
  virtual ActorTileType get_tile_type() { return(ACTOR_ST); }
 
+ uint16 get_x() { return(x); }
+ uint16 get_y() { return(y); }
+ uint8  get_z() { return(z); }
+ 
  uint8 get_strength() { return(strength); }
  uint8 get_dexterity() { return(dex); }
  uint8 get_intelligence() { return(intelligence); }
@@ -367,24 +370,24 @@ class Actor
  void hit(uint8 dmg, Obj *src_obj)    { hit(dmg); }
  void reduce_hp(uint8 amount);
  virtual void die();
+ void resurrect(MapCoord new_position, Obj *body_obj=NULL);
  virtual bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y) { return true; }
  void display_condition();
  ActorList *find_enemies(); // returns list or 0 if no enemies nearby
  
  U6LList *get_inventory_list();
- bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_zero_qual = true);
+ bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_quality = OBJ_MATCH_QUALITY);
  uint32 inventory_count_objects(bool inc_readied_objects);
- uint32 inventory_count_object(uint16 obj_n, Obj *container = 0);
- Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, Obj *container = 0, bool search_containers = true, bool match_zero_qual = true);
+ uint32 inventory_count_object(uint16 obj_n);
+ Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, bool match_quality = OBJ_MATCH_QUALITY);
  Obj *inventory_get_readied_object(uint8 location);
  virtual Obj *inventory_get_food(Obj *container=0) { return 0; }
  const CombatType *inventory_get_readied_object_combat_type(uint8 location);
- Obj *inventory_get_obj_container(Obj *obj, Obj *container = 0);
  bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack=true);
  bool inventory_add_object_nostack(Obj *obj, Obj *container = 0) { return inventory_add_object(obj, container, false); }
- bool inventory_remove_obj(Obj *obj, Obj *container = 0);
+ bool inventory_remove_obj(Obj *obj);
  Obj *inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality = 0);
- uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality, Obj *container = 0);
+ uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality);
  float inventory_get_max_weight() { return((strength * 2)); }
  float get_inventory_weight();
  float get_inventory_equip_weight();
@@ -428,6 +431,7 @@ class Actor
  virtual void print();
  virtual const char *get_worktype_string(uint32 wt) { return NULL; }
 
+ Obj *find_body();
 };
 
 const char *get_actor_alignment_str(uint8 alignment);

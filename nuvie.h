@@ -28,12 +28,14 @@
 
 class Configuration;
 class Screen;
+class Script;
 class Game;
 
 class Nuvie
 {
  Configuration *config;
  Screen *screen;
+ Script *script;
  Game *game;
 
  public:

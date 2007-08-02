@@ -27,8 +27,11 @@
 
 #include "GUI.h"
 
+#include "Dither.h"
+
 #include "SoundManager.h"
 
+#include "Script.h"
 #include "Screen.h"
 #include "GamePalette.h"
 #include "GameClock.h"
@@ -65,11 +68,13 @@
 
 Game *Game::game = NULL;
 
-Game::Game(Configuration *cfg)
+Game::Game(Configuration *cfg, Script *s)
 {
  game = this;
  config = cfg;
+ script = s;
  cursor = NULL;
+ dither = NULL;
  tile_manager = NULL;
  obj_manager = NULL;
  palette = NULL;
@@ -98,6 +103,7 @@ Game::~Game()
 {
     // note: don't delete objects that are added to the GUI object via
     // AddWidget()!
+    if(dither) delete dither;
     if(tile_manager) delete tile_manager;
     if(obj_manager) delete obj_manager;
     if(palette) delete palette;
@@ -134,6 +140,7 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
 
  try
   {
+   dither = new Dither(config);
    sound_manager = new SoundManager();
    sound_manager->nuvieStartup(config);
    //sound_manager->LoadSongs(NULL);

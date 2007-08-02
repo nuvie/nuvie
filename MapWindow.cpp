@@ -41,6 +41,7 @@
 #include "GUI_widget.h"
 #include "Game.h"
 #include "GameClock.h"
+#include "GamePalette.h"
 #include "Weather.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
@@ -144,7 +145,7 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  // hide the window until game is fully loaded and does fade-in
  get_overlay(); // this allocates `overlay`
  overlay_level = MAP_OVERLAY_ONTOP;
- assert(SDL_FillRect(overlay, NULL, 0x31) == 0);
+ assert(SDL_FillRect(overlay, NULL, Game::get_game()->get_palette()->get_bg_color()) == 0);
 
  if(enable_doubleclick)
    set_accept_mouseclick(true, USE_BUTTON); // allow double-clicks (single-clicks aren't used for anything)
@@ -399,7 +400,7 @@ void MapWindow::update()
     if(game_started == false)
     {
 //        new FadeEffect(FADE_PIXELATED_ONTOP, FADE_IN, 0x31);
-        new GameFadeInEffect(0x31);
+        new GameFadeInEffect(Game::get_game()->get_palette()->get_bg_color());
         game_started = true;
     }
 
@@ -605,7 +606,7 @@ void MapWindow::drawActors()
 inline void MapWindow::drawActor(Actor *actor)
 {
     if(actor->is_visible()/* && actor->obj_n != 0*/
-       && (!(actor->obj_flags&OBJ_STATUS_INVISIBLE) || actor->in_party || actor == actor_manager->get_player()))
+       && (!(actor->obj_flags&OBJ_STATUS_INVISIBLE) || actor->is_in_party() || actor == actor_manager->get_player()))
     {
         Tile *tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
         Tile *rtile = 0;
@@ -1248,18 +1249,10 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     x = (cur_x + x) % map_width;
     y = (cur_y + y) % map_width;
 
-    Obj *obj = static_cast<Obj*>(data);
-    if(obj->is_in_container_new())
-      {
-       printf("MapWindow: Not from a container!\n");
-       return false; // FIXME: need ObjManager::get_obj_container()
-      }
-
     if(can_drop_obj(x, y, actor_manager->get_player()))
       return true;
 
-    Game::get_game()->get_scroll()->display_string("\n\nNot Possible\n\n");
-    Game::get_game()->get_scroll()->display_prompt();
+    Game::get_game()->get_scroll()->message("\n\nNot Possible\n\n");
   }
 
  return false;
@@ -1278,23 +1271,17 @@ printf("MapWindow::drag_perform_drop()\n");
     {
         x = (cur_x + x / 16) % map_width;
         y = (cur_y + y / 16) % map_width;
-        Obj *obj = (Obj *)data;
 //        Obj *target_obj = obj_manager->get_obj(x,y, cur_level);
 //        Actor *target_actor = actor_manager->get_actor(x,y,cur_level);
-
-        if(!obj->is_readied())
-        {
-            assert(!obj->is_in_container_new()); // FIXME: need ObjManager::get_obj_container()
-            // if obj is in container: remove from container; put in inventory
-
-            if(!obj->is_in_inventory_new()) // remove from map
-                obj_manager->remove_obj(obj);
-        }
+        Obj *obj = (Obj *)data;
 
         // drop on ground or into a container
         event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
-        event->drop_select(obj, obj->qty);
-        event->drop(x, y);
+        event->select_obj(obj);
+        if(obj->qty == 0 || obj->qty == 1)
+            event->select_target(x, y);
+        else
+            event->set_drop_target(x, y); // pre-select target
 
         // FIXME: need to re-add dropping onto a container or actor
 //        if(target_obj && target_obj->container)

@@ -591,7 +591,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
          {
            set_poisoned(true); // ick, poisoned!
            
-           if(in_party) //FIXME Should this be moved to set_poisoned?
+           if(is_in_party()) //FIXME Should this be moved to set_poisoned?
            {
              scroll->display_string(party->get_actor_name(party->get_member_num(this)));
              scroll->display_string(" poisoned!\n\n");
@@ -605,7 +605,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
        {
          new HitEffect(this); // no hp loss
          set_worktype(WORKTYPE_U6_SLEEP); // fall asleep
-         if(in_party)
+         if(is_in_party())
            {
             party->set_active(party->get_member_num(this), !(is_sleeping() || is_paralyzed()));
             player->set_actor(party->get_actor(party->get_leader()));
@@ -655,7 +655,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
      {
       set_poisoned(true);
          
-      if(in_party)
+      if(is_in_party())
         {
          scroll->display_string(party->get_actor_name(party->get_member_num(this)));
          scroll->display_string(" poisoned!\n\n");
@@ -1222,7 +1222,7 @@ void U6Actor::wt_combat()
     if(worktype == WORKTYPE_U6_COMBAT_SHY
        || worktype == WORKTYPE_U6_COMBAT_RETREAT)
     {
-        ActorList *actors = in_party?find_enemies():find_players();
+        ActorList *actors = is_in_party() ? find_enemies() : find_players();
         if(actors)
         {
 //printf("%s yells \"Aiee!", get_name());
@@ -1507,7 +1507,7 @@ inline void U6Actor::remove_surrounding_objs_from_map()
  std::list<Obj *>::iterator obj;
 
  for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
-    obj_manager->remove_obj((*obj));
+    obj_manager->remove_obj_from_map((*obj));
 
  return;
 }
@@ -1885,7 +1885,7 @@ inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)
 
  for(;!surrounding_objects.empty();)
   {
-   obj_manager->remove_obj(*obj);
+   obj_manager->remove_obj_from_map(*obj);
    delete *obj;
    obj = surrounding_objects.erase(obj);
   }
@@ -1929,7 +1929,7 @@ void U6Actor::die()
      
  Actor::die();
     
- if(in_party)
+ if(is_in_party())
   {
    if(party->get_member_num(this) == 0) // Avatar
      {
@@ -1942,6 +1942,7 @@ void U6Actor::die()
       player->move(0x133,0x160,0); //move to LB's castle.
       set_direction(NUVIE_DIR_N);
 
+      party->resurrect_dead_members();
       party->heal();
       party->show();
      }
@@ -1952,11 +1953,13 @@ void U6Actor::die()
         player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
      }
   }
-  
+
+  add_blood();
+ 
     // we don't generate a dead body if the avatar dies because they will be ressurrected.  
     if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
     {
-        if(in_party && party->get_member_num(this) == 0) // unready all items on the avatar.
+        if(is_in_party() && party->get_member_num(this) == 0) // unready all items on the avatar.
           remove_all_readied_objects();
         else
          { //if not avatar then create a dead body and place on the map.
@@ -1986,7 +1989,7 @@ void U6Actor::die()
 bool U6Actor::is_immobile()
 {
     return((worktype == WORKTYPE_U6_MOTIONLESS
-           || worktype == WORKTYPE_U6_IMMOBILE) && !in_party
+           || worktype == WORKTYPE_U6_IMMOBILE) && !is_in_party()
            /*|| can_move == false*/); // can_move really means can_twitch/animate
 }
 
@@ -2094,7 +2097,7 @@ Obj *U6Actor::inventory_get_food(Obj *container)
 void U6Actor::revert_worktype()
 {
     Party *party = Game::get_game()->get_party();
-    if(in_party)
+    if(is_in_party())
         set_worktype(WORKTYPE_U6_IN_PARTY);
     if(party->get_leader() >= 0 && party->get_actor(party->get_leader()) == this)
         set_worktype(WORKTYPE_U6_PLAYER);
@@ -2112,6 +2115,23 @@ uint8 U6Actor::get_maxmagic()
         return uint8(intelligence);
     if(obj_n == OBJ_U6_AVATAR)
         return uint8(intelligence*2);
-    if(!in_party) printf("warning: %s (%d) has unknown max. magic points\n", get_name(), id_n);
+    if(!is_in_party()) printf("warning: %s (%d) has unknown max. magic points\n", get_name(), id_n);
     return 0;
+}
+
+//Add some blood to the map at the actor's location.
+void U6Actor::add_blood()
+{
+  Obj *blood;
+  
+  blood = new Obj();
+  blood->obj_n = OBJ_U6_BLOOD;
+  blood->frame_n = NUVIE_RAND() % 3;
+  blood->x = get_x();
+  blood->y = get_y();
+  blood->z = get_z();
+  
+  obj_manager->moveto_map(blood);
+  
+  return;
 }

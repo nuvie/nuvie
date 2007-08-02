@@ -401,7 +401,7 @@ void TimedPartyMove::change_location()
             mapwindow_capture = map_window->get_sdl_surface();
             // must delete moongate here because dest may be the same as target...
             // remove moongate before moving so the tempobj cleanup doesn't bite us
-            Game::get_game()->get_obj_manager()->remove_obj(moongate);
+            Game::get_game()->get_obj_manager()->remove_obj_from_map(moongate);
             delete_obj(moongate);
         }
 

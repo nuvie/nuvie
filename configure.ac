@@ -18,6 +18,14 @@ AC_PROG_CXX
 AC_LANG_CPLUSPLUS
 AC_HEADER_STDC
 
+case "$host_os" in
+	linux*)
+		CPPFLAGS="$CPPFLAGS -DLUA_USE_LINUX"
+		;;
+	*)
+		;;
+esac
+
 # SDL
 AC_LANG_C
 SDL_VERSION=1.2.0

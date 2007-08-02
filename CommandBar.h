@@ -50,6 +50,8 @@ protected:
     bool combat_mode; // state of combat icon
     std::string wind; // wind direction
 
+    uint8 bg_color;
+
     virtual void display_information();
     virtual GUI_status hit(uint8 num);
 

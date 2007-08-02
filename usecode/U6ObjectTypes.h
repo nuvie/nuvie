@@ -34,6 +34,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_BAG,        255,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
     { OBJ_U6_BACKPACK,   255,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
     { OBJ_U6_DRAWER,     255,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
+    { OBJ_U6_DESK,     255,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
     { OBJ_U6_STONE_LION,   1,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_NONE },
     { OBJ_U6_PLANT,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_NONE },
     { OBJ_U6_GRAVE,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_NONE },

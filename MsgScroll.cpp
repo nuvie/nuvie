@@ -28,6 +28,7 @@
 #include "U6misc.h"
 #include "FontManager.h"
 #include "Font.h"
+#include "GamePalette.h"
 #include "GUI.h"
 #include "MsgScroll.h"
 
@@ -195,6 +196,8 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
 
  add_new_line();
  display_pos = 0;
+ 
+ bg_color = Game::get_game()->get_palette()->get_bg_color();
 }
 
 MsgScroll::~MsgScroll()
@@ -633,7 +636,7 @@ void MsgScroll::Display(bool full_redraw)
 
  if(scroll_updated || full_redraw)
   {
-   screen->fill(0x31,area.x, area.y, scroll_width * 8, (scroll_height)*8); //clear whole scroll
+   screen->fill(bg_color,area.x, area.y, scroll_width * 8, (scroll_height)*8); //clear whole scroll
 
    iter=msg_buf.begin();
    for(i=0;i < display_pos; i++)
@@ -687,7 +690,7 @@ inline void MsgScroll::drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y
 
 void MsgScroll::clearCursor(uint16 x, uint16 y)
 {
- screen->fill(0x31, x, y, 8,8);
+ screen->fill(bg_color, x, y, 8,8);
 }
 
 void MsgScroll::drawCursor(uint16 x, uint16 y)

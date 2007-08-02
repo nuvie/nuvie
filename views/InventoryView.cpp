@@ -112,7 +112,7 @@ void InventoryView::Display(bool full_redraw)
 {
  if(full_redraw || update_display)
    {
-    screen->fill(0x31, area.x, area.y, area.w, area.h);
+    screen->fill(bg_color, area.x, area.y, area.w, area.h);
 
     display_name();
     //display_command_icons();
@@ -180,9 +180,9 @@ void InventoryView::display_inventory_list()
        if(link != NULL)
          {
           obj = (Obj *)link->data;
-          if((obj->status & 0x18) == 0x18) //skip any readied objects
+          if(obj->is_readied()) //skip any readied objects
             {
-             for(;link != NULL && (obj->status & 0x18) == 0x18; link = link->next)
+             for(;link != NULL && obj->is_readied(); link = link->next)
                 obj = (Obj *)link->data;
             }
           else
@@ -191,7 +191,7 @@ void InventoryView::display_inventory_list()
           tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
           if(link == NULL)
             {
-             if((obj->status & 0x18) == 0x18) //last object is readied so skip it.
+             if(obj->is_readied()) //last object is readied so skip it.
                 tile = empty_tile;
             }
          }

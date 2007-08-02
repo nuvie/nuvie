@@ -97,6 +97,7 @@ void UseCode::toggle_frame(Obj *obj)
 
 /* Print container contents and dump them on top of the container.
  */
+//FIXME! some of this logic should go elsewhere.
 bool UseCode::search_container(Obj *obj)
 {
  Obj *temp_obj;
@@ -114,7 +115,7 @@ bool UseCode::search_container(Obj *obj)
        temp_obj = (Obj*)obj_link->data;
        obj_list->add(temp_obj);
        temp_obj->status |= OBJ_STATUS_OK_TO_TAKE;
-       temp_obj->status &= ~OBJ_STATUS_IN_CONTAINER;
+       temp_obj->on_map(obj_list); //ERIC temp_obj->status &= ~OBJ_STATUS_IN_CONTAINER;
        temp_obj->x = obj->x;
        temp_obj->y = obj->y;
        temp_obj->z = obj->z;
@@ -202,29 +203,18 @@ void UseCode::dbg_print_event(UseCodeEvent event, Obj *obj)
  */
 Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-    bool removed = false;
-
-    // subtract
-    if(count > 0 && obj_manager->is_stackable(obj) && obj->qty > count)
-        obj->qty -= count;
-    else // destroy
-    {
-        if(obj->is_readied() || obj->is_in_inventory_new())
-            removed = actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj);
-        else if(obj->is_in_container_new())
-        {
-//            removed = obj_manager->obj_remove_obj(obj_manager->get_obj_container(obj), obj);
-            removed = false; // FIXME
-            printf("warning: tried to remove %s (%d:%d) from a container\n",obj_manager->look_obj(obj,true),obj->obj_n,obj->frame_n);
-        }
-        else if(obj->is_on_map())
-            removed = obj_manager->remove_obj(obj);
-        if(removed)
-        {
-            delete_obj(obj);
-            obj = NULL;
-        }
-    }
-    return(obj);
+  //ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+  //bool removed = false;
+  
+  // subtract
+  if(count > 0 && obj_manager->is_stackable(obj) && obj->qty > count)
+    obj->qty -= count;
+  else // destroy
+  {
+    obj_manager->unlink_from_engine(obj);
+    delete_obj(obj);
+    obj = NULL;
+  }
+  
+  return(obj);
 }

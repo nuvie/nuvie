@@ -20,6 +20,7 @@ uint8 get_game_type(const char *string);
 void build_path(std::string path, std::string filename, std::string &full_path);
 bool directory_exists(const char *directory);
 void print_b(uint8 num);
+void print_b16(uint16 num);
 void print_indent(uint8 indent);
 void print_bool(bool state, const char *yes = "true", const char *no = "false");
 void print_flags(uint8 num, const char *f[8]);
