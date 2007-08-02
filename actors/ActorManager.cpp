@@ -1022,7 +1022,7 @@ bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
 /* Returns the actor whose inventory contains an object. */
 Actor *ActorManager::get_actor_holding_obj(Obj *obj)
 {
-  assert(obj->is_in_inventory(false));
+  assert(obj->is_in_inventory(OBJ_DONT_CHECK_PARENT));
     
   return (Actor *)obj->parent;
 }
