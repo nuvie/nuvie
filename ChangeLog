@@ -1,3 +1,10 @@
+2007-08-02  Joseph Applegate <sb-x at users.sourceforge.net>
+	* Fix bug in spellbook, which was showing itself in the equipment list
+	  twice when used. You're not really supposed to be able to Use it.
+	* As discussed not long ago in #nuvie, replaced the "set" prefix on
+	  Obj::on_map/in_inventory/in_container. This must have been overlooked
+	  when merging the scripting branch in.
+
 2007-08-02  Eric Fry <efry at users.sourceforge.net>
 	* Merged changes from ERIC_SCRIPING_BRANCH into main branch.
 
