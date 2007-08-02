@@ -29,9 +29,12 @@ all: nuvie.exe
 include Makefile.common
 
 NUVIE_CPPs = $(filter %.cpp,$(nuvie_SOURCES))
-NUVIE_OBJS = $(NUVIE_CPPs:.cpp=.o)
+NUVIE_OBJS1 = $(NUVIE_CPPs:.cpp=.o)
 
-nuvie.exe: $(NUVIE_OBJS) sound/adplug/fmopl.o
+NUVIE_Cs = $(filter %.c,$(nuvie_SOURCES))
+NUVIE_OBJS2 = $(NUVIE_Cs:.c=.o)
+
+nuvie.exe: $(NUVIE_OBJS1) $(NUVIE_OBJS2)
 	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
 # tools/Makefile.common defines u6decomp_SOURCES
