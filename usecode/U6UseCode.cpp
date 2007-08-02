@@ -2595,22 +2595,19 @@ bool U6UseCode::use_egg(Obj *obj, UseCodeEvent ev)
     return(true);
 }
 
-/* USE: Ready (Ready already used to look inside, unready works as expected)
+/* USE: Open spellbook for casting, if equipped.
+ * LOOK: Open for spell inspection.
  */
 bool U6UseCode::use_spellbook(Obj *obj, UseCodeEvent ev)
 {
-//  Event *event = Game::get_game()->get_event();
   if(ev == USE_EVENT_USE)
   {
-    if (obj->is_in_inventory()) // FIXME this now handles readied objects too. so the else if won't work anymore
-    {
-      Actor *actor = obj->get_actor_holding_obj();
-      actor->add_readied_object(obj);
-    } 
-    else
-    if (obj->is_readied()) 
+    Game::get_game()->get_event()->endAction(); // FIXME: this should call Magic directly
+    Game::get_game()->get_event()->newAction(CAST_MODE);
+    if(obj->is_readied()) 
     {
       /* TODO open spellbook for casting */
+
     }
   }
   else
@@ -2638,7 +2635,7 @@ bool U6UseCode::use_spellbook(Obj *obj, UseCodeEvent ev)
       scroll->display_string("\n");
     /*}*/ // from the commented out if.
     // end ripped coode
-    /* TODO open spellbook for reading (FIXME: check original, read only if wielded?) */
+    /* TODO open spellbook for reading */
 
   }
   return(true);
