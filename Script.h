@@ -78,7 +78,7 @@ class Script
  Script(Configuration *cfg, nuvie_game_t type);
  ~Script();
 
- /* Pass back instance of Game classes... and why not? */
+ /* Return instance of self */
  static Script *get_script()           { return(script); }
  Configuration *get_config() { return(config); }
  

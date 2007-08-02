@@ -142,8 +142,8 @@ class Game
  void time_changed();
  void stats_changed();
 
- /* Pass back instance of Game classes... and why not? */
- static Game *get_game()           { return(game); }
+ /* Return instances of Game classes */
+ static Game *get_game()          { return(game); }
  Configuration *get_config()       { return(config); }
  Script *get_script()              { return(script); }
  Screen *get_screen()              { return(screen); }
