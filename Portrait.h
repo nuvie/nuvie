@@ -32,12 +32,14 @@ class Actor;
 class Portrait
 {
  Configuration *config;
+ int gametype;
 
  uint8 avatar_portrait_num;
 
  U6Lib_n portrait_a;
  U6Lib_n portrait_b;
  U6Lib_n portrait_z;
+ U6Lib_n faces;
 
  //unsigned char portrait_data[0xe00]; // 56x64 pixels
 

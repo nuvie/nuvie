@@ -34,7 +34,7 @@
 #include "ConverseSpeech.h"
 #include "Converse.h"
 
-// #define CONVERSE_DEBUG
+//#define CONVERSE_DEBUG
 
 
 Converse::Converse()
@@ -450,7 +450,7 @@ void Converse::show_portrait(uint8 n)
     if(!actor)
         return;
     if((actor->is_met()) || player->get_party()->contains_actor(actor)
-         || (n >= 188 && n <= 200)) // always known NPCs
+         || (gametype=NUVIE_GAME_U6 && n >= 188 && n <= 200)) // always known NPCs
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor, false);

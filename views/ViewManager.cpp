@@ -89,7 +89,7 @@ bool ViewManager::set_current_view(View *view)
  uint8 cur_party_member;
 
  //actor_view->set_party_member(cur_party_member);
- if(view == NULL || game_type != NUVIE_GAME_U6) //HACK! remove this when views support MD and SE
+ if(view == NULL ) // || game_type != NUVIE_GAME_U6) //HACK! remove this when views support MD and SE
    return false;
 
  if(current_view == view) // nothing to do if view is already the current_view.

@@ -53,24 +53,43 @@ bool Portrait::init()
  std::string filename;
 
  avatar_portrait_num = 0;
+ // U6, uses portrait.a,.b,.z SE uses faces.lzc, MD uses mdfaces.lzc
+ // need to know which game type we are playing.
+ config->value("config/GameType",gametype);
 
- config->pathFromValue("config/ultima6/gamedir","portrait.a",filename);
- if(portrait_a.open(filename,4) == false)
-    throw "Opening portrait.a";
+ if (gametype == NUVIE_GAME_U6) {
+  config->pathFromValue("config/ultima6/gamedir","portrait.a",filename);
+  if(portrait_a.open(filename,4) == false)
+   throw "Opening portrait.a";
 
- config->pathFromValue("config/ultima6/gamedir","portrait.b",filename);
- if(portrait_b.open(filename,4) == false)
-    throw "Opening portrait.b";
+  config->pathFromValue("config/ultima6/gamedir","portrait.b",filename);
+  if(portrait_b.open(filename,4) == false)
+   throw "Opening portrait.b";
 
- config->pathFromValue("config/ultima6/gamedir","portrait.z",filename);
- if(portrait_z.open(filename,4) == false)
-    throw "Opening portrait.z";
+  config->pathFromValue("config/ultima6/gamedir","portrait.z",filename);
+  if(portrait_z.open(filename,4) == false)
+   throw "Opening portrait.z";
 
- return true;
+ } 
+ else
+ {
+  if (gametype == NUVIE_GAME_MD) 
+  {
+   config->pathFromValue("config/martian/gamedir","mdfaces.lzc",filename);
+  }
+  if (gametype == NUVIE_GAME_SE)
+  {
+   config->pathFromValue("config/savage/gamedir","faces.lzc",filename);
+  }
+  if(faces.open(filename,4) == false)
+   throw "Opening (md)faces.lzc";
+ }
+  return true;
 }
 
 bool Portrait::load(NuvieIO *objlist)
 {
+  // U6 only?
  objlist->seek(0x1c72);
 
  avatar_portrait_num = objlist->read1(); //read in the avatar portrait number from objlist.
@@ -93,45 +112,47 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
    return NULL;
 
  num = actor->get_actor_num();
+ if (gametype==NUVIE_GAME_U6) {
+  if(num == 1) // avatar portrait
+  {
+   portrait = &portrait_z;
+   num = avatar_portrait_num;
+  }
+  else
+  {
+   num -= 1;
 
- if(num == 1) // avatar portrait
-    {
-     portrait = &portrait_z;
-     num = avatar_portrait_num;
-    }
- else
+   if(num == (188-1))
+    num = PORTRAIT_U6_EXODUS-1; // Exodus
+   else if(num >= (191-1) && num <= (198-1)) // Shrines, Temple of Singularity
+    return(NULL);
+   else if(num > 194) // there are 194 npc portraits
    {
-    num -= 1;
-
-    if(num == (188-1))
-        num = PORTRAIT_U6_EXODUS-1; // Exodus
-    else if(num >= (191-1) && num <= (198-1)) // Shrines, Temple of Singularity
-        return(NULL);
-    else if(num > 194) // there are 194 npc portraits
-      {
-	   switch(actor->get_obj_n()) //check for temporary actors with portraits. eg guards and wisps
-	    {
-		 case OBJ_U6_GUARD : num = PORTRAIT_U6_GUARD-1; break;
-		 case OBJ_U6_WISP : num = PORTRAIT_U6_WISP-1; break;
-		 case OBJ_U6_GARGOYLE : num = PORTRAIT_U6_GARGOYLE-1; break;
-		 default : return NULL;
-		}
-      }
-
-    if(num < 98)
-      portrait = &portrait_a;
-    else
-     {
-      num -= 98;
-      portrait = &portrait_b;
-     }
+    switch(actor->get_obj_n()) //check for temporary actors with portraits. eg guards and wisps
+    {
+     case OBJ_U6_GUARD : num = PORTRAIT_U6_GUARD-1; break;
+     case OBJ_U6_WISP : num = PORTRAIT_U6_WISP-1; break;
+     case OBJ_U6_GARGOYLE : num = PORTRAIT_U6_GARGOYLE-1; break;
+     default : return NULL;
+    }
    }
 
- lzw_data = portrait->get_item(num);
- new_portrait = lzw.decompress_buffer(lzw_data, portrait->get_item_size(num), new_length);
- free(lzw_data);
+   if(num < 98)
+    portrait = &portrait_a;
+   else
+   {
+    num -= 98;
+    portrait = &portrait_b;
+   }
+  }
 
- Game::get_game()->get_dither()->dither_bitmap(new_portrait,56,64,true);
- 
- return new_portrait;
+  lzw_data = portrait->get_item(num);
+  new_portrait = lzw.decompress_buffer(lzw_data, portrait->get_item_size(num), new_length);
+  free(lzw_data);
+  Game::get_game()->get_dither()->dither_bitmap(new_portrait,56,64,true);
+
+  return new_portrait;
+ }
+ // MD/SE
+ return faces.get_item(num);
 }
