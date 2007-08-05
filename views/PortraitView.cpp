@@ -25,6 +25,8 @@
 
 #include "nuvieDefs.h"
 
+#include "Configuration.h"
+
 #include "Game.h"
 #include "Actor.h"
 #include "Portrait.h"
@@ -73,13 +75,25 @@ bool PortraitView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, 
 
 void PortraitView::Display(bool full_redraw)
 {
+  //FIXME: Portraits in SE/MD are different size than in U6! 79x85 76x83
+  char w=0,h=0;
+  Configuration *config=Game::get_game()->get_config();
+  int gametype;
+
+  config->value("config/GameType",gametype);
+  switch(gametype)
+  {
+    case NUVIE_GAME_U6: w=56; h=64; break;
+    case NUVIE_GAME_SE: w=79; h=85; break;
+    case NUVIE_GAME_MD: w=76; h=83; break;
+  }
  if(portrait_data != NULL/* && (full_redraw || update_display)*/)
   {
    update_display = false;
    if(display_doll)
-   screen->blit(area.x+72,area.y+16,portrait_data,8,56,64,56,false);
+   screen->blit(area.x+72,area.y+16,portrait_data,8,w,h,w,false);
    else
-   screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
+   screen->blit(area.x+40,area.y+16,portrait_data,8,w,h,w,false);
    
    display_name();
    screen->update(area.x, area.y, area.w, area.h);

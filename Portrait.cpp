@@ -26,6 +26,7 @@
 #include "Configuration.h"
 
 #include "NuvieIOFile.h"
+#include "U6Shape.h"
 #include "Dither.h"
 #include "Game.h"
 
@@ -154,5 +155,26 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
   return new_portrait;
  }
  // MD/SE
- return faces.get_item(num);
+ if (gametype==NUVIE_GAME_MD) {
+ // FIXME select right avatar portrait, correct offset for MD (SE only has male)
+   num++;
+ }
+  U6Shape * shp;
+  unsigned char *shp_data;
+  NuvieIOBuffer shp_buf;
+  U6Lib_n shp_lib;
+
+  shp = new U6Shape();
+  shp_data = faces.get_item(num,NULL);
+  shp_buf.open(shp_data, faces.get_item_size(num), NUVIE_BUF_NOCOPY);
+  shp_lib.open(&shp_buf, 4, gametype);
+  shp->load(&shp_lib, 0);
+  new_portrait=shp->get_data(); // probably need to copy here
+  // FIXME shp deletion here is wrong, corrupts things, but if not deleted here
+  // would never be deleted.
+  //delete shp;
+  shp_lib.close();
+  free(shp_data);
+
+  return new_portrait;
 }
