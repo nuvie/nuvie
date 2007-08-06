@@ -12,7 +12,7 @@
 	* Added stacking support to Obj::add()
 	* Added Obj::add_and_stack() to help Obj::add() with stacking
 	* Added U6LList::replace() which replaces data directly in the list. 
-	* removed bad assert() in ObjManager::list_add_obj()
+	* fixed bad assert() in ObjManager::list_add_obj()
 
 2007-08-02  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* SE/MD portrait support. Functional (barely) but needs work.
