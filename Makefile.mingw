@@ -66,8 +66,9 @@ unpack.exe: $(UNPACK_OBJS)
 	$(CXX) -o $@ $+
 
 clean:
-	rm -f $(NUVIE_OBJS) nuvie.exe $(U6DECOMP_OBJS) u6decomp.exe \
-	$(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACK_OBJS) unpack.exe
+	rm -f $(NUVIE_OBJS1) $(NUVIE_OBJS2) nuvie.exe $(U6DECOMP_OBJS) u6decomp.exe \
+	$(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACKPORTRAITS_OBJS) unpack_portraits.exe \
+	$(UNPACK_OBJS) unpack.exe
 
 install: all
 	mkdir -p $(U6PATH)
