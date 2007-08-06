@@ -135,7 +135,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
      else if (music_style == "custom")
        LoadCustomSongs(sound_dir);
      else
-       printf("Warning: Unknown music style '%s'\n", music_style.c_str());
+       PERR("Warning: Unknown music style '%s'\n", music_style.c_str());
 
      musicPlayFrom("random");
     }
@@ -164,7 +164,7 @@ bool SoundManager::initAudio()
   SDL_InitSubSystem (SDL_INIT_AUDIO);
   ret = Mix_OpenAudio (audio_rate, audio_format, audio_channels, audio_buffers);
   if (ret) {
-    printf("Error: Failed to initialize audio: %s\n", Mix_GetError());
+    PERR("Error: Failed to initialize audio: %s\n", Mix_GetError());
     return false;
   }
   Mix_HookMusicFinished (musicFinished);
@@ -259,7 +259,7 @@ bool SoundManager::LoadCustomSongs (string sound_dir)
         }
 
       if(groupAddSong(token1, song))
-        printf ("%s : %s\n", token1, token2);
+        PERR("%s : %s\n", token1, token2);
     }
 
   free(sz);
@@ -276,7 +276,7 @@ bool SoundManager::loadSong(Song *song, const char *filename)
     }
   else
     {
-      printf ("could not load %s\n", filename);
+      PERR("could not load %s\n", filename);
     }
 
  return false;
@@ -339,7 +339,7 @@ bool SoundManager::LoadObjectSamples (string sound_dir)
   while ((token1 != NULL) && ((token2 = strtok (NULL, seps)) != NULL))
     {
       int id = atoi (token1);
-      printf ("%d : %s\n", id, token2);
+      PERR("%d : %s\n", id, token2);
       Sound *ps;
       ps = SampleExists (token2);
       if (ps == NULL)
@@ -349,7 +349,7 @@ bool SoundManager::LoadObjectSamples (string sound_dir)
           build_path(sound_dir, token2, samplename);
           if (!s->Init (samplename.c_str ()))
             {
-              printf ("could not load %s\n", samplename.c_str ());
+              PERR("could not load %s\n", samplename.c_str ());
             }
           ps = s;
           m_Samples.push_back (ps);     //add it to our global list
@@ -390,7 +390,7 @@ bool SoundManager::LoadTileSamples (string sound_dir)
 
   if(niof.open (scriptname) == false)
     {
-     printf("Error: opening %s\n",scriptname.c_str());
+     PERR("Error: opening %s\n",scriptname.c_str());
      return false;
     }
 
@@ -401,7 +401,7 @@ bool SoundManager::LoadTileSamples (string sound_dir)
   while ((token1 != NULL) && ((token2 = strtok (NULL, seps)) != NULL))
     {
       int id = atoi (token1);
-      printf ("%d : %s\n", id, token2);
+      PERR("%d : %s\n", id, token2);
       Sound *ps;
       ps = SampleExists (token2);
       if (ps == NULL)
@@ -411,7 +411,7 @@ bool SoundManager::LoadTileSamples (string sound_dir)
           build_path(sound_dir, token2, samplename);
           if (!s->Init (samplename.c_str ()))
             {
-              printf ("could not load %s\n", samplename.c_str ());
+              PERR("could not load %s\n", samplename.c_str ());
             }
           ps = s;
           m_Samples.push_back (ps);     //add it to our global list
@@ -501,7 +501,7 @@ void SoundManager::update_map_sfx ()
   //get a list of all the sounds
   for (i = 0; i < mw->m_ViewableObjects.size(); i++)
     {
-      //printf("%d %s",mw->m_ViewableObjects[i]->obj_n,Game::get_game()->get_obj_manager()->get_obj_name(mw->m_ViewableObjects[i]));
+      //PERR("%d %s",mw->m_ViewableObjects[i]->obj_n,Game::get_game()->get_obj_manager()->get_obj_name(mw->m_ViewableObjects[i]));
       Sound *sp = RequestObjectSound (mw->m_ViewableObjects[i]->obj_n); //does this object have an associated sound?
       if (sp != NULL)
         {
@@ -537,9 +537,9 @@ void SoundManager::update_map_sfx ()
           //calculate the volume
           short ox = mw->m_ViewableTiles[i].x - 5;
           short oy = mw->m_ViewableTiles[i].y - 5;
-//                      printf("%d %d\n",ox,oy);
+//                      PERR("%d %d\n",ox,oy);
           float dist = sqrtf ((float) (ox) * (ox) + (float) (oy) * (oy));
-//                      printf("%s %f\n",sp->GetName().c_str(),dist);
+//                      PERR("%s %f\n",sp->GetName().c_str(),dist);
           float vol = (7.0f - (dist - 1)) / 7.0f;
           if (vol < 0)
             vol = 0;
@@ -550,7 +550,7 @@ void SoundManager::update_map_sfx ()
           if (it != volumeLevels.end ())
             {
               float old = volumeLevels[sp];
-//                              printf("old:%f new:%f\n",old,vol);
+//                              PERR("old:%f new:%f\n",old,vol);
               if (old < vol)
                 {
                   volumeLevels[sp] = vol;
@@ -564,7 +564,7 @@ void SoundManager::update_map_sfx ()
           currentlyActiveSounds.push_back (sp);
         }
     }
-  //printf("\n");
+  //PERR("\n");
   //is this sound new? - activate it.
   for (i = 0; i < currentlyActiveSounds.size(); i++)
     {
@@ -610,10 +610,10 @@ void SoundManager::update()
       m_pCurrentSong = SoundManager::RequestSong (m_CurrentGroup);
       if(m_pCurrentSong)
         {
-          printf ("assigning new song! '%s'\n", m_pCurrentSong->GetName().c_str());
+          PERR("assigning new song! '%s'\n", m_pCurrentSong->GetName().c_str());
           if(!m_pCurrentSong->Play (false))
             {
-              printf ("play failed!\n");
+              PERR("play failed!\n");
             }
         }
     }

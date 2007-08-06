@@ -103,9 +103,9 @@ void print_b(uint8 num)
  for(i=7;i>=0;i--)
  {
   if(num & (1<<i))
-    printf("1");
+    PERR("1");
   else
-    printf("0");
+    PERR("0");
  }
 
  return;
@@ -118,9 +118,9 @@ void print_b16(uint16 num)
   for(i=15;i>=0;i--)
   {
     if(num & (1<<i))
-      printf("1");
+      PERR("1");
     else
-      printf("0");
+      PERR("0");
   }
   
   return;
@@ -131,7 +131,7 @@ void print_indent(uint8 indent)
  uint16 i;
 
  for(i=0;i < indent;i++)
-  printf(" ");
+  PERR(" ");
 
  return;
 }
@@ -139,7 +139,7 @@ void print_indent(uint8 indent)
 
 void print_bool(bool state, const char *yes, const char *no)
 {
-    printf("%s", state ? yes : no);
+    PERR("%s", state ? yes : no);
 }
 
 
@@ -154,7 +154,7 @@ void print_flags(uint8 num, const char *f[8])
             complete_flags += f[i];
     if(num != 0)
         complete_flags += ")";
-    printf("%s", complete_flags.c_str());
+    PERR("%s", complete_flags.c_str());
 }
 
 

@@ -37,7 +37,7 @@ GUI_TextInput:: GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str
 
  if(text == NULL)
   {
-   printf("Error: GUI_TextInput: allocating memory for text\n");
+   PERR("Error: GUI_TextInput: allocating memory for text\n");
    return;
   }
 

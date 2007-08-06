@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
  if(argc < 2)
   {
-   printf("Usage: unpack inputfile index_number\n");
+   fprintf(stderr,"Usage: unpack inputfile index_number\n");
    exit(1);
   }
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     {
      converted_audio = (uint16 *)malloc(decomp_size * sizeof(uint16));
 
-//   printf("uncompressed size = %d\n",decomp_size);
+//   fprintf(stderr,"uncompressed size = %d\n",decomp_size);
 
      for(j=0;j<decomp_size;j++)
       {

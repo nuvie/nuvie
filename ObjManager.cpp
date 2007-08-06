@@ -158,7 +158,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
  list = new U6LList();
 
  num_objs = chunk_buf->read2();
- //printf("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
+ //PERR("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
 
  for(i=0;i<num_objs;i++)
   {
@@ -280,7 +280,7 @@ bool ObjManager::save_eggs(NuvieIO *save_buf)
  save_buf->write2(obj_save_count);
  save_buf->seek(finish_pos);
 
- printf("Eggs: %d\n", obj_save_count);
+ PERR("Eggs: %d\n", obj_save_count);
 
  return true;
 }
@@ -309,7 +309,7 @@ bool ObjManager::save_inventories(NuvieIO *save_buf)
       }
    }
 
- printf("Actor Inventories: %d\n", obj_save_count);
+ PERR("Actor Inventories: %d\n", obj_save_count);
 
  finish_pos = save_buf->position();
  save_buf->seek(start_pos);
@@ -1189,9 +1189,9 @@ bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
     c_obj->container->addAtPos(0,obj);
     obj->parent=(void *)c_obj;
 
-    //printf("Cont: %s\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false));
-  //printf("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
-	//printf(" -> %s (%x,%x,%x)\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false),c_obj->x,c_obj->y,c_obj->z);
+    //PERR("Cont: %s\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false));
+  //PERR("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
+	//PERR(" -> %s (%x,%x,%x)\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false),c_obj->x,c_obj->y,c_obj->z);
     return true;
    }
 
@@ -1337,7 +1337,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
    {
     if((*obj)->z == z)
       {
-       printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
+       PERR("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
        tmp_obj = obj;
        tmp_obj++;
        remove_obj_from_map(*obj); // this calls temp_obj_list_remove()
@@ -1366,7 +1366,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
 
     if(dist_x > 32 || dist_y > 32)
       {
-       printf("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
+       PERR("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
        tmp_obj = obj;
        tmp_obj++;
        remove_obj_from_map(*obj);
@@ -1403,7 +1403,7 @@ void ObjManager::print_object_list()
 
  for(i=0;i<1024;i++)
   {
-   printf("%04d: %s\n",i,tile_manager->lookAtTile(get_obj_tile_num(i),0,false));
+   PERR("%04d: %s\n",i,tile_manager->lookAtTile(get_obj_tile_num(i),0,false));
   }
 
  return;
@@ -1458,107 +1458,107 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  if(a != NULL)
    c_type = a->get_object_combat_type(obj->obj_n);
  
- printf("\n");
+ PERR("\n");
  print_indent(indent);
- printf("%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
+ PERR("%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
  
  if(in_container == false)
-   printf("at %x, %x, %x (%d,%d,%d)",obj->x, obj->y, obj->z, obj->x, obj->y, obj->z);
- printf("\n");
+   PERR("at %x, %x, %x (%d,%d,%d)",obj->x, obj->y, obj->z, obj->x, obj->y, obj->z);
+ PERR("\n");
  
  print_indent(indent);
- printf("object (Obj *) %p\n", obj);
+ PERR("object (Obj *) %p\n", obj);
  print_indent(indent);
  
- printf("engine loc: ");
+ PERR("engine loc: ");
  switch(obj->get_engine_loc())
  {
-   case OBJ_LOC_MAP : printf("MAP"); break;
-   case OBJ_LOC_CONT : printf("CONTAINER"); break;
-   case OBJ_LOC_INV : printf("INVENTORY"); break;
-   case OBJ_LOC_READIED : printf("INVENTORY READIED"); break;
-   case OBJ_LOC_NONE : printf("NONE"); break;
+   case OBJ_LOC_MAP : PERR("MAP"); break;
+   case OBJ_LOC_CONT : PERR("CONTAINER"); break;
+   case OBJ_LOC_INV : PERR("INVENTORY"); break;
+   case OBJ_LOC_READIED : PERR("INVENTORY READIED"); break;
+   case OBJ_LOC_NONE : PERR("NONE"); break;
 
-   default : printf("**UNKNOWN**"); break;
+   default : PERR("**UNKNOWN**"); break;
  }
  
- printf("\n");
+ PERR("\n");
  
- printf("parent (");
+ PERR("parent (");
  switch(obj->get_engine_loc())
  {
-   case OBJ_LOC_MAP : printf("U6LList"); break;
-   case OBJ_LOC_CONT : printf("Obj"); break;
+   case OBJ_LOC_MAP : PERR("U6LList"); break;
+   case OBJ_LOC_CONT : PERR("Obj"); break;
    case OBJ_LOC_INV :
-   case OBJ_LOC_READIED : printf("Actor"); break;
-   default : printf("void"); break;
+   case OBJ_LOC_READIED : PERR("Actor"); break;
+   default : PERR("void"); break;
  }
- printf(" *) %p\n", obj->parent);
+ PERR(" *) %p\n", obj->parent);
 
  print_indent(indent);
-// printf("objblk_n: %d\n", obj->objblk_n);
+// PERR("objblk_n: %d\n", obj->objblk_n);
 
  print_indent(indent);
- printf("obj_n: %d\n",obj->obj_n);
+ PERR("obj_n: %d\n",obj->obj_n);
 
  print_indent(indent);
- printf("frame_n: %d\n",obj->frame_n);
+ PERR("frame_n: %d\n",obj->frame_n);
 
  print_indent(indent);
- printf("Tile: %d\n", get_obj_tile_num(obj->obj_n));
+ PERR("Tile: %d\n", get_obj_tile_num(obj->obj_n));
 
  print_indent(indent);
- printf("Status: ");
+ PERR("Status: ");
  print_b(obj->status);
  if(obj->status != 0)
   {
-   printf(" ( ");
+   PERR(" ( ");
    if(obj->is_readied())
-     printf("POS:Ready ");
+     PERR("POS:Ready ");
    else if(obj->is_in_container())
-     printf("POS:Cont ");
+     PERR("POS:Cont ");
    else if(obj->is_in_inventory())
-     printf("POS:Inv ");
+     PERR("POS:Inv ");
    if(obj->is_ok_to_take())
-     printf("OK ");
+     PERR("OK ");
    if(obj->is_temporary())
-     printf("TEMP ");
+     PERR("TEMP ");
    if(obj->is_invisible())
-     printf("INVIS ");
+     PERR("INVIS ");
    if(obj->is_egg_active())
     {
      if(obj->obj_n < 256)
-      printf("MUTANT ");
+      PERR("MUTANT ");
      else
-      printf("BROKEN ");
+      PERR("BROKEN ");
     }
 
-   printf(")");
+   PERR(")");
   }
 
- printf("\n");
+ PERR("\n");
 
  if(in_container)
   {
    print_indent(indent);
-   printf("parent_id = %d, y = %d, z = %d\n", obj->x, obj->y, obj->z);
+   PERR("parent_id = %d, y = %d, z = %d\n", obj->x, obj->y, obj->z);
   }
 
  print_indent(indent);
- printf("Quantity: %d\n",obj->qty);
+ PERR("Quantity: %d\n",obj->qty);
  print_indent(indent);
- printf("Quality: %d\n",obj->quality);
+ PERR("Quality: %d\n",obj->quality);
  if(c_type!=NULL)
   {
-   printf("attack/damage = %d, defence/defense = %d\n", c_type->damage, c_type->defense); // FIXME add the rest of the combat values
+   PERR("attack/damage = %d, defence/defense = %d\n", c_type->damage, c_type->defense); // FIXME add the rest of the combat values
   }
 
  if(obj->container)
    {
     print_indent(indent);
-    printf("Container\n");
+    PERR("Container\n");
     print_indent(indent);
-    printf("---------");
+    PERR("---------");
 
     for(link = obj->container->start(); link != NULL; link = link->next)
      {
@@ -1567,11 +1567,11 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
      }
 
     print_indent(indent);
-    printf("---------\n");
+    PERR("---------\n");
    }
 
  if(in_container == false)
-   printf("\n");
+   PERR("\n");
 
  return;
 }
@@ -1663,7 +1663,7 @@ bool ObjManager::obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects, uint32 po
    return false;
   }
   if (c_obj==obj) {
-    printf("WARNING: Tried to put container into itself.\n");
+    PERR("WARNING: Tried to put container into itself.\n");
     return false;
   }
   if (!c_obj->container)

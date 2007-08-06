@@ -60,7 +60,7 @@ int main(int argc, char **argv)
  uint8 game=0;
  if(argc != 2 || (strcmp(argv[1], "md") != 0 && strcmp(argv[1], "se") != 0))
  {
-  printf("Usage: %s gametype\n\ngametype = either md or se\n\n",argv[0]);
+  fprintf(stderr,"Usage: %s gametype\n\ngametype = either md or se\n\n",argv[0]);
   exit(1);
  }
 
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
   c[i].g=pal[i*3+1];
   c[i].b=pal[i*3+2];
  
-  printf("pal[%d] = [%d,%d,%d]\n", i, c[i].r, c[i].g, c[i].b);
+  fprintf(stderr,"pal[%d] = [%d,%d,%d]\n", i, c[i].r, c[i].g, c[i].b);
  }
 
  free(pal);
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
   sprintf(bmp_file, "%03d.bmp", i);
   SDL_SaveBMP(s, bmp_file);
  
-  printf("Portrait %03d: width = %d, height = %d\n", i, w, h); 
+  fprintf(stderr,"Portrait %03d: width = %d, height = %d\n", i, w, h); 
 
   SDL_FreeSurface(s);
   delete shp;

@@ -48,10 +48,10 @@ magic_init = nuvie_load("u6/magic.lua"); magic_init();
 --[[
 obj = Obj.new();
 
-io.write(obj.obj_n);
+io.stderr:write(obj.obj_n);
 obj.obj_n = 28;
 
 obj1 = Obj.new(1,2,3,4,20,30,5);
 
-io.write(obj1.obj_n);
+io.stderr:write(obj1.obj_n);
 --]]

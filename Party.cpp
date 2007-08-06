@@ -473,7 +473,7 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
         pathfinder->follow_passB(p);
         if(!pathfinder->is_contiguous(p))
         {
-            printf("%s is looking for %s.\n", get_actor_name(p), get_actor_name(get_leader()));
+            PERR("%s is looking for %s.\n", get_actor_name(p), get_actor_name(get_leader()));
             pathfinder->seek_leader(p); // enter/update seek mode
         }
         else if(member[p].actor->get_pathfinder())

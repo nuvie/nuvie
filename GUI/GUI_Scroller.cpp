@@ -172,7 +172,7 @@ void GUI_Scroller::move_down()
 
 void GUI_Scroller::move_percentage(float offset_percentage)
 {
- // printf("offset_percentage = %f\n", offset_percentage);
+ // PERR("offset_percentage = %f\n", offset_percentage);
 
  disp_offset = (int)((float)num_rows * offset_percentage);
  update_viewport(false);
@@ -194,7 +194,7 @@ GUI_status GUI_Scroller::callback(uint16 msg, GUI_CallBack *caller, void *data)
    case SCROLLBAR_CB_DOWN_BUTTON : move_down();
                                  break;
 
-   default : printf("Unhandled callback!\n"); break;
+   default : PERR("Unhandled callback!\n"); break;
   }
 
  return GUI_YUM;

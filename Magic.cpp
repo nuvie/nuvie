@@ -489,18 +489,18 @@ bool Magic::process_script_return(uint8 ret)
   switch(ret)
   {
     case NUVIE_SCRIPT_FINISHED : delete magic_script; magic_script = NULL; break;
-    case NUVIE_SCRIPT_GET_TARGET : printf("FIXME: Register Event get target callback here\n"); break;
-    case NUVIE_SCRIPT_GET_DIRECTION : printf("FIXME: Register Event get direction callback here\n"); break;
-    case NUVIE_SCRIPT_GET_INV_OBJ : printf("FIXME: Register Event get inv object callback here\n"); break;
+    case NUVIE_SCRIPT_GET_TARGET : PERR("FIXME: Register Event get target callback here\n"); break;
+    case NUVIE_SCRIPT_GET_DIRECTION : PERR("FIXME: Register Event get direction callback here\n"); break;
+    case NUVIE_SCRIPT_GET_INV_OBJ : PERR("FIXME: Register Event get inv object callback here\n"); break;
       
     case NUVIE_SCRIPT_ADVANCE_GAME_TIME : nturns = magic_script->get_data();
-      printf("Magic: Advance %d turns\n",nturns);
+      PERR("Magic: Advance %d turns\n",nturns);
       cb_msgid = new uint8;
       *cb_msgid = NUVIE_SCRIPT_CB_ADV_GAME_TIME;
       new GameTimedCallback((CallBack *)this, cb_msgid, nturns);
       break;
       
-    default : printf("Warning: Unknown ScriptThread return code!\n"); break;
+    default : PERR("Warning: Unknown ScriptThread return code!\n"); break;
   }
   
   return true;

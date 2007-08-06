@@ -106,7 +106,7 @@ bool SaveSlot::load_info(const char *directory)
 
  if(loadfile.open(full_path.c_str()) == false || savegame->check_version(&loadfile) == false)
    {
-    printf("Error: Reading header from %s\n", filename.c_str());
+    PERR("Error: Reading header from %s\n", filename.c_str());
     delete savegame;
     return false;
    }

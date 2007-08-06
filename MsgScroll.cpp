@@ -22,6 +22,7 @@
  */
 #include <string>
 #include <ctype.h>
+#include <iostream>
 
 #include "nuvieDefs.h"
 #include "Configuration.h"
@@ -31,6 +32,12 @@
 #include "GamePalette.h"
 #include "GUI.h"
 #include "MsgScroll.h"
+
+using std::cerr;
+using std::cin;
+using std::cout;
+using std::endl;
+
 
 // MsgText Class
 MsgText::MsgText()
@@ -251,6 +258,8 @@ void MsgScroll::display_string(std::string s, Font *f)
    f = font;
 
  msg_text = new MsgText(s, f);
+ cout<<msg_text->s;
+ fflush(stdout);
 
  holding_buffer.push_back(msg_text);
 
@@ -530,7 +539,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
         default: // alphanumeric characters
                  if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
                    ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
-                 else printf("warning: unhandled unicode value (%d)\n",key.unicode);
+                 else PERR("warning: unhandled unicode value (%d)\n",key.unicode);
                  if(input_mode && isprint(ascii))
                   {
                    if(permit_input == NULL)
@@ -620,7 +629,7 @@ MsgText *MsgScroll::get_token_at_pos(uint16 x, uint16 y)
    {
     token = (*iter)->get_text_at_pos(buf_x);
     if(token)
-       printf("Token at (%d,%d) = %s\n",buf_x, buf_y, token->s.c_str());
+       PERR("Token at (%d,%d) = %s\n",buf_x, buf_y, token->s.c_str());
    }
 
  return token;
@@ -774,7 +783,7 @@ std::string MsgScroll::get_input()
    {
     s.assign(input_buf);
    }
-
+ cout<<s;
  return s;
 }
 

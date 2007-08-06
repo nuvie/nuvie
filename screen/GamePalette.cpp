@@ -79,7 +79,7 @@ bool GamePalette::loadPalette()
 
  if(file.open(filename) == false)
   {
-   printf("Error: loading palette.\n");
+   PERR("Error: loading palette.\n");
    return false;
   }
 

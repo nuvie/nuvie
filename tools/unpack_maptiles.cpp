@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 
  if(argc != 2 || (strcmp(argv[1], "md") != 0 && strcmp(argv[1], "se") != 0))
  {
-  printf("Usage: %s gametype\n\ngametype = either md or se\n\n",argv[0]);
+  fprintf(stderr,"Usage: %s gametype\n\ngametype = either md or se\n\n",argv[0]);
   exit(1);
  }
 
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
   data = library.get_item(0, NULL);
   FILE * filed = fopen("item_masktype.vga","w");
-  printf("size: %ld\n",library.get_item_size(0));
+  fprintf(stderr,"size: %ld\n",library.get_item_size(0));
   fwrite(data,1,library.get_item_size(0), filed);
   fclose(filed);
   free(data);
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
   data = library.get_item(0, NULL);
   filed = fopen("item_maptiles.vga","w");
-  printf("size: %ld\n",library.get_item_size(0));
+  fprintf(stderr,"size: %ld\n",library.get_item_size(0));
   fwrite(data,1,library.get_item_size(0), filed);
   fclose(filed);
   free(data);

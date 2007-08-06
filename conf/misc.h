@@ -15,6 +15,7 @@
 
 #include <cstdio>
 #include <string>
-#define PERR(x) printf(x)
+// moved to nuvieDefs.h
+//#define PERR(x) fprintf(stderr,x)
 
 extern bool string_i_compare(const std::string &s1, const std::string &s2);

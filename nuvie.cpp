@@ -76,7 +76,7 @@ bool Nuvie::init(int argc, char **argv)
  //find and load config file
  if(initConfig() == false)
    {
-    printf("Error: No config file found!\n");
+    PERR("Error: No config file found!\n");
     return false;
    }
 
@@ -84,7 +84,7 @@ bool Nuvie::init(int argc, char **argv)
  screen = new Screen(config);
  if(screen->init(320,200) == false)
    {
-    printf("Error: Initializing screen!\n");
+    PERR("Error: Initializing screen!\n");
     return false;
    }
 
@@ -174,18 +174,18 @@ bool Nuvie::initConfig()
 bool Nuvie::loadConfigFile(std::string filename)
 {
  struct stat sb;
- printf("Loading Config from '%s': ", filename.c_str());
+ PERR("Loading Config from '%s': ", filename.c_str());
 
  if(stat(filename.c_str(),&sb) == 0)
   {
     if(config->readConfigFile(filename,"config") == true)
       {
-       printf("Done.\n");
+       PERR("Done.\n");
        return true;
       }
   }
 
- printf("Failed.\n");
+ PERR("Failed.\n");
  return false;
 }
 
@@ -227,7 +227,7 @@ bool Nuvie::checkGameDir(uint8 game_type)
    return true;
   }
 
- printf("Error: Invalid gamedir! '%s'\n", path.c_str());
+ PERR("Error: Invalid gamedir! '%s'\n", path.c_str());
 
  return false;
 #endif

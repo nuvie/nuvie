@@ -149,7 +149,7 @@ sint32 AnimManager::new_anim(NuvieAnim *new_anim)
             new_anim->start();
             return((uint32)new_anim->id_n);
         }
-        fprintf(stderr, "Anim: tried to add NULL anim\n");
+        PERR( "Anim: tried to add NULL anim\n");
         return(-1);
 }
 
@@ -187,7 +187,7 @@ bool AnimManager::destroy_anim(NuvieAnim *anim_pt)
             anim_list.erase(i);
             return(true);
         }
-        fprintf(stderr, "Anim: error deleting %d\n", anim_pt->id_n);
+        PERR( "Anim: error deleting %d\n", anim_pt->id_n);
         return(false);
 }
 
@@ -452,7 +452,7 @@ TossAnim::~TossAnim()
 {
     if(running)
     {
-        printf("warning: deleting active TossAnim!\n");
+        PERR("warning: deleting active TossAnim!\n");
         stop();
     }
 
@@ -502,7 +502,7 @@ void TossAnim::start()
     y_dist = abs(target_py-start_py);
     if(x_dist) // will move in X direction (and possibly diagonally)
         tanS = float(sint32(target_py-start_py)) / sint32(target_px-start_px);
-//printf("start: tanS = %d / %d = %f\n", target_py-start_py, target_px-start_px, tanS);
+//PERR("start: tanS = %d / %d = %f\n", target_py-start_py, target_px-start_px, tanS);
     Game::get_game()->dont_wait_for_interval();
 
 // adjust tile appearance but not anim location
@@ -573,7 +573,7 @@ bool TossAnim::update()
         // test the current location, check for intercept
         if(new_loc != old_loc)
         {
-//printf("Toss: %x,%x,%x->%x,%x,%x\n",old_loc.x,old_loc.y,old_loc.z,new_loc.x,new_loc.y,new_loc.z);
+//PERR("Toss: %x,%x,%x->%x,%x,%x\n",old_loc.x,old_loc.y,old_loc.z,new_loc.x,new_loc.y,new_loc.z);
             // hit actor or object? (can be one or the other)
             Actor *hitActor = actor_manager->get_actor(new_loc.x, new_loc.y, mapwindow_level);
             Obj *hitObj = obj_manager->get_obj(new_loc.x, new_loc.y, mapwindow_level);
@@ -598,7 +598,7 @@ bool TossAnim::update()
                     hit_target();
                 else if(new_loc.distance(*src) > src->distance(*target))
                 {   // overshot target (move and stop)
-                    printf("warning: TossAnim missed the target\n");
+                    PERR("warning: TossAnim missed the target\n");
                     move(target->x, target->y);
                     hit_target();
                 }
@@ -667,7 +667,7 @@ uint32 TossAnim::update_position(uint32 max_move)
 
     // collect the remainder (amount of movement less than 1)
     accumulate_moves(moves, x_move, y_move, xdir, ydir);
-//printf("(%d) moves:%f x_move:%d y_move:%d x_left:%f y_left:%f\n",ms_passed,moves,x_move,y_move,x_left,y_left);
+//PERR("(%d) moves:%f x_move:%d y_move:%d x_left:%f y_left:%f\n",ms_passed,moves,x_move,y_move,x_left,y_left);
     // too slow for movement, just return
     if(x_move == 0 && y_move == 0)
         return(moves_left);

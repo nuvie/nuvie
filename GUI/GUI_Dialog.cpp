@@ -57,7 +57,7 @@ void GUI_Dialog::loadBorderImages()
      border[i] = SDL_LoadBMP(imagefile.c_str());
      if(border[i] == NULL)
        {
-        printf("Error: Loading %s from '%s' directory\n", filename, datadir.c_str());
+        PERR("Error: Loading %s from '%s' directory\n", filename, datadir.c_str());
        }
    }
 }

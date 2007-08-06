@@ -42,12 +42,12 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
         if(strlen(converse->get_item_name(i)))
         {
             const char *item_name = converse->get_item_name(i);
-            printf("<- `%s'\n", item_name);
+            fprintf(stderr,"<- `%s'\n", item_name);
             // read source
             src_f = fopen(item_name, "rb");
             if(!src_f)
             {
-                printf("Item %d: Error opening data file (%s)\n", i, item_name);
+                fprintf(stderr,"Item %d: Error opening data file (%s)\n", i, item_name);
                 break;
             }
             while(!feof(src_f))
@@ -89,7 +89,7 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
         }
         else // the source does not exist or is empty, will just write index
         {
-            printf("<- (no data)\n");
+            fprintf(stderr,"<- (no data)\n");
             converse->set_item_data(i, NULL, 0);
         }
     }
@@ -122,7 +122,7 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
                      "# %d item(s)\n"
                      "# Offset  Filename\n", num_items);
  }
- printf("This file contains %d scripts.\n", num_items);
+ fprintf(stderr,"This file contains %d scripts.\n", num_items);
  for(i = 0; i < num_items; i++)
   {
    buf_size = converse->get_item_size(i);
@@ -150,15 +150,15 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
         uncomp_buf = lzw->decompress_buffer(buf,buf_size,uncomp_size);
     if(uncomp_buf == NULL)
     {
-     printf("Error: unpacking Lzw i = %d\n",i);
-     printf("Error: (%s)\n", lzw->strerror());
+     fprintf(stderr,"Error: unpacking Lzw i = %d\n",i);
+     fprintf(stderr,"Error: (%s)\n", lzw->strerror());
      // write data that couldn't be decoded
      if(buf_size)
      {
         snprintf(outfilename, 100, "item%03d.unk", i);
         out_file = fopen(outfilename, "wb");
         fwrite(buf, 1, buf_size, out_file);
-        printf("Wrote item data to %s\n", outfilename);
+        fprintf(stderr,"Wrote item data to %s\n", outfilename);
         free(buf);
         fclose(out_file);
         fprintf(indexfile, "%s", outfilename); // save output filename
@@ -176,7 +176,7 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
 
    strcat(outfilename,".conv");
 
-   printf("-> %s\n", outfilename);
+   fprintf(stderr,"-> %s\n", outfilename);
    out_file = fopen(outfilename,"wb");
    fwrite(uncomp_buf,1,uncomp_size,out_file); // write output file
    fclose(out_file);

@@ -165,9 +165,9 @@ class Actor
  struct cmp_move_fraction {
     bool operator()(Actor *a1, Actor *a2) const {
     if(a1->dex==0) { a1->dex=1;
-                     printf("warning: %s (%d) has 0 dex!\n",a1->get_name(),a1->id_n); }
+                     fprintf(stderr,"warning: %s (%d) has 0 dex!\n",a1->get_name(),a1->id_n); }
     if(a2->dex==0) { a2->dex=1;
-                     printf("warning: %s (%d) has 0 dex!\n",a2->get_name(),a2->id_n); }
+                     fprintf(stderr,"warning: %s (%d) has 0 dex!\n",a2->get_name(),a2->id_n); }
     return(a1->moves/a1->dex > a2->moves/a2->dex); } };
 
  struct cmp_distance_to_loc {

@@ -93,7 +93,7 @@ public:
     : TimedEvent(reltime), msg(m) { repeat_count = repeat ? -1 : 0; }
     void timed(uint32 evtime)
     {
-        printf("Activate! evtime=%d msg=\"%s\"\n", evtime, msg.c_str());
+        fprintf(stderr,"Activate! evtime=%d msg=\"%s\"\n", evtime, msg.c_str());
     }
 };
 

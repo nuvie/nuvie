@@ -220,7 +220,7 @@ static const struct {uint16 obj_n; uint8 readiable_location; uint8 defence; uint
 
 const CombatType u6combat_hand = {OBJ_U6_NOTHING, 0, 4, 1, ATTACK_TYPE_HAND, 0, OBJ_U6_NOTHING, false};
 
-const CombatType u6combat_objects[] = {
+const CombatType u6combat_objects[] ={ 
 {OBJ_U6_LEATHER_HELM, 1, 0, 0, ATTACK_TYPE_NONE, 0, OBJ_U6_NOTHING, false },
 {OBJ_U6_CHAIN_COIF, 2, 0, 0, ATTACK_TYPE_NONE, 0, OBJ_U6_NOTHING, false },
 {OBJ_U6_IRON_HELM, 3, 0, 0, ATTACK_TYPE_NONE, 0, OBJ_U6_NOTHING, false },

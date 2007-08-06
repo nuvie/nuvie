@@ -222,7 +222,7 @@ uint8 ScriptThread::resume(int narg)
     }
   }
   
-  printf("Error: %s\n", lua_tostring(L, lua_gettop(L)));
+  PERR("Error: %s\n", lua_tostring(L, lua_gettop(L)));
   
   return NUVIE_SCRIPT_ERROR;
 }
@@ -298,7 +298,7 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
   lua_gettable(L, -2);
  
   path = lua_tolstring(L,-1,&len);
-  printf("lua path = %s\n", path);
+  PERR("lua path = %s\n", path);
  
   run_script("init = nuvie_load(\"u6/init.lua\"); init()");
  
@@ -331,7 +331,7 @@ bool Script::run_script(const char *script)
   
   if(luaL_dostring(L,script) != 0)
   {
-    printf("Script Error: %s\n", luaL_checkstring(L,-1));
+    PERR("Script Error: %s\n", luaL_checkstring(L,-1));
   }
   
   return true;
@@ -566,7 +566,7 @@ inline bool nscript_obj_init_from_args(lua_State *L, int nargs, Obj *s_obj)
 
 static int nscript_obj_gc(lua_State *L)
 {
-  printf("\nObj garbage Collection!\n");
+  PERR("\nObj garbage Collection!\n");
   
   Obj **p_obj = (Obj **)lua_touserdata(L,1);
   Obj *obj;
@@ -914,7 +914,7 @@ static int nscript_container_get(lua_State *L)
   
   key = lua_tointeger(L, 2);
   
-  printf("Key = %d\n", key);
+  PERR("Key = %d\n", key);
   
   link = obj->container->gotoPos(key-1);
 

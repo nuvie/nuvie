@@ -643,7 +643,7 @@ inline void MapWindow::drawActor(Actor *actor)
         if(actor->light > 0 && screen->updatingalphamap)
         {
             if(actor->light > 5)
-                printf("warning: %s's light level is %d\n",actor->get_name(),actor->light);
+                PERR("warning: %s's light level is %d\n",actor->get_name(),actor->light);
             screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light);
         }
     }
@@ -1234,7 +1234,7 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
 
 bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 {
- printf("MapWindow::drag_accept_drop()\n");
+ PERR("MapWindow::drag_accept_drop()\n");
  uint16 map_width;
 
  x -= area.x;
@@ -1260,7 +1260,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
 void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 {
-printf("MapWindow::drag_perform_drop()\n");
+    PERR("MapWindow::drag_perform_drop()\n");
     Event *event = Game::get_game()->get_event();
     uint16 map_width = map->get_width(cur_level);
 
@@ -1351,7 +1351,7 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
 
 GUI_status MapWindow::MouseDown (int x, int y, int button)
 {
-	//printf ("MapWindow::MouseDown, button = %i\n", button);
+	//PERR("MapWindow::MouseDown, button = %i\n", button);
 	Event *event = Game::get_game()->get_event();
 	Actor *player = actor_manager->get_player();
 	Obj	*obj = get_objAtMousePos (x, y);
@@ -1418,7 +1418,7 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 
 	update_mouse_cursor((uint32)x, (uint32)y);
 
-	//	printf ("MapWindow::MouseMotion\n");
+	//	PERR("MapWindow::MouseMotion\n");
 
 //	if(selected_obj) // We don't want to walk if we are selecting an object to move.
 //		walking = false;
@@ -1454,7 +1454,7 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 
 void	MapWindow::drag_drop_success (int x, int y, int message, void *data)
 {
-	//printf ("MapWindow::drag_drop_success\n");
+	//PERR("MapWindow::drag_drop_success\n");
 	dragging = false;
 
 // handled by drop target
@@ -1467,7 +1467,7 @@ void	MapWindow::drag_drop_success (int x, int y, int message, void *data)
 
 void	MapWindow::drag_drop_failed (int x, int y, int message, void *data)
 {
-	printf ("MapWindow::drag_drop_failed\n");
+	PERR("MapWindow::drag_drop_failed\n");
 	dragging = false;
 	selected_obj = NULL;
 }

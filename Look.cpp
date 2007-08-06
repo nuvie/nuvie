@@ -190,7 +190,7 @@ void Look::print()
 
  for(i=0;i<2048;i++)
   {
-   printf("%04d :: %s\n",i,look_tbl[i]);
+   PERR("%04d :: %s\n",i,look_tbl[i]);
   }
 
  return;

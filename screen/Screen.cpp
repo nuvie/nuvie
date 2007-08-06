@@ -89,7 +89,7 @@ bool Screen::init(uint16 new_width, uint16 new_height)
 
   	/* Initialize the SDL library */
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-		fprintf(stderr, "Couldn't initialize SDL: %s\n",
+		PERR( "Couldn't initialize SDL: %s\n",
 			SDL_GetError());
    return false;
 	}
@@ -114,7 +114,7 @@ fullscreen = false;
  //pitch = scaled_surface->pitch;
  //bpp = scaled_surface->format->BitsPerPixel;
 
- //printf("surface pitch = %d\n",pitch);
+ //PERR("surface pitch = %d\n",pitch);
 
 // memcpy(palette,0,768);
 
@@ -763,7 +763,7 @@ void Screen::blitalphamap8()
         return;
         break;
     default:
-        std::cout << "Screen::blitalphamap8() cannot handle your screen surface depth of " << surface->bits_per_pixel << std::endl;
+        std::cerr << "Screen::blitalphamap8() cannot handle your screen surface depth of " << surface->bits_per_pixel << std::endl;
         break;
         return;
     }
@@ -931,7 +931,7 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
 
  //SDL_UpdateRect(sdl_surface,x*scale_factor,y*scale_factor,w*scale_factor,h*scale_factor);
 
- //printf("update rect(%d,%d::%d,%d)\n", update_rects[num_update_rects].x, update_rects[num_update_rects].y, update_rects[num_update_rects].w, update_rects[num_update_rects].h);
+ //PERR("update rect(%d,%d::%d,%d)\n", update_rects[num_update_rects].x, update_rects[num_update_rects].y, update_rects[num_update_rects].w, update_rects[num_update_rects].h);
 
  return;
 }
@@ -940,7 +940,7 @@ void Screen::preformUpdate()
 {
 /*
  uint16 i;
- //printf("Screen update %d.\n",num_update_rects);
+ //PERR("Screen update %d.\n",num_update_rects);
  if(!scaler)
   {
    uint8 *src = (uint8 *)surface->pixels;
@@ -1001,12 +1001,12 @@ void Screen::set_screen_mode()
         bpp = 16;          // I'll need to look into this further. For now we can just use 16bpp at x1 scale.
 #endif
 
-	std::cout << "Attempting to set vid mode: " << width << "x" << height << "x" << bpp << "x" << scale_factor;
+	std::cerr << "Attempting to set vid mode: " << width << "x" << height << "x" << bpp << "x" << scale_factor;
 
 	// Is Fullscreen?
 	if (fullscreen) {
 		flags |= SDL_FULLSCREEN;
-		std::cout << " Fullscreen";
+		std::cerr << " Fullscreen";
 	}
 //	else
 //		flags |= SDL_RESIZABLE;
@@ -1014,7 +1014,7 @@ void Screen::set_screen_mode()
 	// Opengl Stuff
 #ifdef WANT_OPENGL
 	if (useOpengl) {
-		std::cout << " OpenGL" << std::endl;
+		std::cerr << " OpenGL" << std::endl;
 
 		// Want double-buffering.
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -1033,7 +1033,7 @@ void Screen::set_screen_mode()
 			mouse->init_opengl(screen);
 			ShapeManager::get().init_opengl(screen);
 
-			std::cout << opengl->get_texture_mem_used() << " bytes of textures loaded so far" << std::endl;
+			std::cerr << opengl->get_texture_mem_used() << " bytes of textures loaded so far" << std::endl;
 
 			// Hide system mouse cursor
 			SDL_ShowCursor(0);
@@ -1041,17 +1041,17 @@ void Screen::set_screen_mode()
 			return;
 		}
 
-		std::cout <<  "Setting up OpenGL Failed. Trying" << std::endl;
+		std::cerr <<  "Setting up OpenGL Failed. Trying" << std::endl;
 	}
 #endif //WANT_OPENGL
 
 	if (vinfo->hw_available && doubleBuffer && fullscreen) {
 		flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
-		std::cout << " Hardware Double Buffered" << std::endl;
+		std::cerr << " Hardware Double Buffered" << std::endl;
 	}
 	else {
 		flags |= SDL_SWSURFACE;
-		std::cout << " Software Surface" << std::endl;
+		std::cerr << " Software Surface" << std::endl;
 	}
 
 	// Old Software rendering. Try a scaler_index first,
@@ -1082,7 +1082,7 @@ void Screen::set_screen_mode()
 		}
 
 		if (sdl_surface->flags & SDL_HWSURFACE) {
-			std::cout << "Created Double Buffered Surface" << std::endl;
+			std::cerr << "Created Double Buffered Surface" << std::endl;
 			surface = CreateRenderSurface (width, height, bpp);
 		}
 		else {
@@ -1113,24 +1113,24 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 
 		// If the scaler wasn't found, use the Point scaler
 		if (!scaler) {
-			std::cout << "Couldn't find scaler for scaler_index" << scaler_index << "." << std::endl;
+			std::cerr << "Couldn't find scaler for scaler_index" << scaler_index << "." << std::endl;
 			scaler = scaler_reg.GetPointScaler();
 		}
 		// If the scaler selected is 2x only, and we are in a > than 2x mode, use Point
 		else if (scale_factor > 2 && scaler->flags & SCALER_FLAG_2X_ONLY)
 		{
-			std::cout << "Scaler " << scaler->name << " only supports 2x. " << scale_factor << "x requested" << std::endl;
+			std::cerr << "Scaler " << scaler->name << " only supports 2x. " << scale_factor << "x requested" << std::endl;
 			scaler = scaler_reg.GetPointScaler();
 		}
 		// If it requires 16 bit, force that. However, if it fails use point
 		else if (scaler->flags & SCALER_FLAG_16BIT_ONLY)
 		{
 			if ( !SDL_VideoModeOK(w, h, 16, flags)) {
-				std::cout << scaler->name << " requires 16 bit colour. Couldn't set mode." << std::endl;
+				std::cerr << scaler->name << " requires 16 bit colour. Couldn't set mode." << std::endl;
 				scaler = scaler_reg.GetPointScaler();
 			}
 			else if (hwdepth != 16) {
-				std::cout << scaler->name << " requires 16 bit colour. Forcing." << std::endl;
+				std::cerr << scaler->name << " requires 16 bit colour. Forcing." << std::endl;
 				hwdepth = 16;
 			}
 		}
@@ -1138,16 +1138,16 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		else if (scaler->flags & SCALER_FLAG_32BIT_ONLY)
 		{
 			if ( !SDL_VideoModeOK(w, h, 32, flags)) {
-				std::cout << scaler->name << " requires 32 bit colour. Couldn't set mode." << std::endl;
+				std::cerr << scaler->name << " requires 32 bit colour. Couldn't set mode." << std::endl;
 				scaler = scaler_reg.GetPointScaler();
 			}
 			else if (hwdepth != 32) {
-				std::cout << scaler->name << " requires 32 bit colour. Forcing." << std::endl;
+				std::cerr << scaler->name << " requires 32 bit colour. Forcing." << std::endl;
 				hwdepth = 32;
 			}
 		}
 
-		std::cout << "Using scaler: " << scaler->name << std::endl;
+		std::cerr << "Using scaler: " << scaler->name << std::endl;
 
 		// Attempt to set Video mode
 		if ( !SDL_VideoModeOK(w, h, hwdepth, flags))
@@ -1165,7 +1165,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		// Oh no, it didn't work
 		if (hwdepth != 16 && hwdepth != 32)
 		{
-			std::cout << scaler->name << " requires 16/32 bit colour. Couldn't set mode." << std::endl;
+			std::cerr << scaler->name << " requires 16/32 bit colour. Couldn't set mode." << std::endl;
 		}
 		else if ((sdl_surface = SDL_SetVideoMode(w*scale_factor, h*scale_factor, hwdepth, flags)))
 		{
@@ -1175,7 +1175,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		}
 
 		// Output that scaled surface creation failed
-		std::cout << "Couldn't create " << scaler->name << " scaled surface" << std::endl;
+		std::cerr << "Couldn't create " << scaler->name << " scaled surface" << std::endl;
 		delete surface;
 		scaler = 0;
 		surface = 0;

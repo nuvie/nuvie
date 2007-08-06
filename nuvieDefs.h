@@ -69,6 +69,8 @@ const uint16 map_pitch[2] = { 1024, 256 }; // width of 0:surface plane, and 1:al
 #define TRAMMEL_PHASE 1.75
 #define FELUCCA_PHASE 1.1666666666666667
 
+#define PERR(x...) fprintf(stderr,x)
+
 /*
 #ifndef BOOL
 typedef unsigned char BOOL;

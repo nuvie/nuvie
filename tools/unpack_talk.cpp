@@ -15,7 +15,7 @@ int main(int argc, char **argv)
  uint8 game=0;
  if(argc != 2 || (strcmp(argv[1], "md") != 0 && strcmp(argv[1], "se") != 0))
  {
-  printf("Usage: %s gametype\n\ngametype = either md or se\n\n",argv[0]);
+  fprintf(stderr,"Usage: %s gametype\n\ngametype = either md or se\n\n",argv[0]);
   exit(1);
  }
 

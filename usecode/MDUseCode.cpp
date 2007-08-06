@@ -74,7 +74,7 @@ bool MDUseCode::use_obj(Obj *obj, Obj *src_obj)
    }
 
 
- printf("Use Obj #%d Frame #%d\n",obj->obj_n, obj->frame_n);
+ PERR("Use Obj #%d Frame #%d\n",obj->obj_n, obj->frame_n);
 
  return true;
 }

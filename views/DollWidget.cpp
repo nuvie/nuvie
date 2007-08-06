@@ -170,7 +170,7 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
       {
        if(HitRect(x,y,item_hit_rects[location]))  // FIXME: duplicating code in InventoryWidget
          {
-          printf("Hit %d\n",location);
+          PERR("Hit %d\n",location);
           obj = actor->inventory_get_readied_object(location);
           if(obj)
            {
@@ -230,7 +230,7 @@ GUI_status DollWidget::MouseMotion(int x,int y,Uint8 state)
 
 void DollWidget::drag_drop_success(int x, int y, int message, void *data)
 {
- printf("DollWidget::drag_drop_success()\n");
+ PERR("DollWidget::drag_drop_success()\n");
  dragging = false;
 // handled by drop target
 // actor->remove_readied_object(selected_obj);
@@ -241,38 +241,38 @@ void DollWidget::drag_drop_success(int x, int y, int message, void *data)
 
 void DollWidget::drag_drop_failed(int x, int y, int message, void *data)
 {
- printf("DollWidget::drag_drop_failed()\n");
+ PERR("DollWidget::drag_drop_failed()\n");
  dragging = false;
  selected_obj = NULL;
 }
 
 bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
-    printf("DollWidget::drag_accept_drop()\n");
+    PERR("DollWidget::drag_accept_drop()\n");
     if(message == GUI_DRAG_OBJ)
     {
         Obj *obj = (Obj*)data;
         if(obj->is_readied() && obj->get_actor_holding_obj() == actor)
         {
             // FIXME: need to detect ready location so player can switch hands
-            printf("DollWidget: Object already equipped!\n");
+            PERR("DollWidget: Object already equipped!\n");
             return false;
         }
         if(obj->is_in_container())
         {
-            printf("DollWidget: Not from a container!\n");
+            PERR("DollWidget: Not from a container!\n");
             return false;
         }
         if(obj->is_in_inventory() && obj->get_actor_holding_obj() != actor)
         {
-            printf("DollWidget: Must be holding object!\n");
+            PERR("DollWidget: Must be holding object!\n");
             return false;
         }
-        printf("Drop Accepted\n");
+        PERR("Drop Accepted\n");
         return true;
     }
 
-    printf("Drop Refused\n");
+    PERR("Drop Refused\n");
     return false;
 }
 
@@ -286,7 +286,7 @@ printf("DollWidget::drag_perform_drop()\n");
 
  if(message == GUI_DRAG_OBJ)
    {
-    printf("Ready item.\n");
+    PERR("Ready item.\n");
     obj = (Obj *)data;
 
     bool can_equip = true;

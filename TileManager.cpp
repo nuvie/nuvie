@@ -177,13 +177,13 @@ bool TileManager::loadTiles()
 
  for(i=0;i<2048;i++)
   {
-   printf("%04d : ",i);
+   PERR("%04d : ",i);
    print_b(tile[i].flags1);
-   printf(" ");
+   PERR(" ");
    print_b(tile[i].flags2);
-   printf(" ");
+   PERR(" ");
    print_b(tile[i].flags3);
-   printf(" %s\n",look->get_description(i,false));
+   PERR(" %s\n",look->get_description(i,false));
   }
 #endif
 
@@ -248,13 +248,13 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
  else
    sprintf(desc_buf,"%s%s",article_tbl[tile->article_n], desc);
 
- printf("%s (%d): flags1:",desc_buf,tile_num);
+ PERR("%s (%d): flags1:",desc_buf,tile_num);
  print_b(tile->flags1);
- printf(" f2:");
+ PERR(" f2:");
  print_b(tile->flags2);
- printf(" f3:");
+ PERR(" f3:");
  print_b(tile->flags3);
- printf("\n");
+ PERR("\n");
  
  return desc_buf;
 }

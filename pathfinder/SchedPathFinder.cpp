@@ -45,7 +45,7 @@ bool SchedPathFinder::find_path()
         search->delete_path();
     if(!search->path_search(loc, goal))
     {
-        printf("warning: actor %d failed to find a path to %x,%x\n", actor->get_actor_num(), goal.x, goal.y);
+        PERR("warning: actor %d failed to find a path to %x,%x\n", actor->get_actor_num(), goal.x, goal.y);
         return false;
     }
     prev_step_i = next_step_i = 0;

@@ -42,7 +42,7 @@
 
 GUI_status GUI_DragManager::start_drag(GUI_DragArea *src, int msg, void *d, unsigned char *icon_buf, uint16 w, uint16 h, uint8 bpp)
 {
- printf("Start Drag\n");
+ PERR("Start Drag\n");
 
  drag_source = src;
  message = msg;
@@ -53,7 +53,7 @@ GUI_status GUI_DragManager::start_drag(GUI_DragArea *src, int msg, void *d, unsi
 
 void GUI_DragManager::drop(GUI_DragArea *drag_target, int x, int y)
 {
- printf("Drop\n");
+ PERR("Drop\n");
 
  Game::get_game()->get_event()->endAction(); // WAIT_MODE
 

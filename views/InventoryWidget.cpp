@@ -463,25 +463,25 @@ printf("InventoryWidget::drag_accept_drop()\n");
 
     if(obj->is_in_container())
     {
-        printf("InventoryWidget: Not from a container!\n");
+        PERR("InventoryWidget: Not from a container!\n");
         return false;
     }
     if((obj->is_in_inventory() || obj->is_readied()) && obj->get_actor_holding_obj() != actor)
     {
-        printf("InventoryWidget: Cannot Move between party members!\n"); 
+        PERR("InventoryWidget: Cannot Move between party members!\n"); 
         return false;
     }
     if(obj->is_in_inventory())
     {
-        printf("InventoryWidget: Already holding object!\n");
+        PERR("InventoryWidget: Already holding object!\n");
         return false;
     }
 
-    printf("Drop Accepted\n");
+    PERR("Drop Accepted\n");
     return true;
    }
 
- printf("Drop Refused\n");
+ PERR("Drop Refused\n");
  return false;
 }
 
@@ -495,7 +495,7 @@ printf("InventoryWidget::drag_perform_drop()\n");
 
  if(message == GUI_DRAG_OBJ)
    {
-    printf("Drop into inventory.\n");
+    PERR("Drop into inventory.\n");
     obj = (Obj *)data;
     bool have_object = false;
 

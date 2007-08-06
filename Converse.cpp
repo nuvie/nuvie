@@ -99,7 +99,7 @@ Converse::~Converse()
     if(running())
     {
         reset();
-        printf("End conversation\n");
+        PERR("End conversation\n");
     }
     unload_conv();
 
@@ -165,7 +165,7 @@ void Converse::load_conv(const std::string &convfilename)
     }
 
 #ifdef CONVERSE_DEBUG
-    printf("Converse: load \"%s\"\n", convfilename.c_str());
+    PERR("Converse: load \"%s\"\n", convfilename.c_str());
 #endif
 }
 
@@ -259,7 +259,7 @@ ConvScript *Converse::load_script(uint32 n)
         loaded = NULL;
     }
     else
-        printf("Read %s npc script (%s:%d)\n",
+        PERR("Read %s npc script (%s:%d)\n",
                 loaded->compressed ? "encoded" : "unencoded", src_name(), (unsigned int)n);
     return(loaded);
 }
@@ -351,7 +351,7 @@ bool Converse::start(uint8 n)
         active = true;
         if(!(conv_i = new_interpreter()))
         {
-            fprintf(stderr, "Can't talk: Unimplemented or unknown game type\n");
+            PERR( "Can't talk: Unimplemented or unknown game type\n");
             return(false);
         }
         // set current NPC and start conversation
@@ -362,10 +362,10 @@ bool Converse::start(uint8 n)
         Game::get_game()->get_sound_manager()->musicStop();
         Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         unwait();
-        printf("Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
+        PERR("Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
         return(true);
     }
-    fprintf(stderr, "Error loading npc %d from %s:%d\n",
+    PERR( "Error loading npc %d from %s:%d\n",
             n, src_name(), script_num);
     return(false);
 }
@@ -385,7 +385,7 @@ void Converse::stop()
     Game::get_game()->get_event()->set_mode(MOVE_MODE); // return control to player
 
     active = false;
-    printf("End conversation\n");
+    PERR("End conversation\n");
 }
 
 
@@ -398,7 +398,7 @@ bool Converse::input()
      std::string s = scroll->get_input();
         set_input(s);
 #ifdef CONVERSE_DEBUG
-        printf("Converse: INPUT \"%s\"\n\n", get_input().c_str());
+        PERR("Converse: INPUT \"%s\"\n\n", get_input().c_str());
 #endif
         return(true);
     }
@@ -411,7 +411,7 @@ bool Converse::input()
 void Converse::print(const char *s)
 {
 #ifdef CONVERSE_DEBUG
-    printf("Converse: PRINT \"%s\"\n\n",s ? s : get_output().c_str());
+    PERR("Converse: PRINT \"%s\"\n\n",s ? s : get_output().c_str());
 #endif
     if(s)
         scroll->display_string(s);

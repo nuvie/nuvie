@@ -140,8 +140,8 @@ struct Obj
 
  bool is_on_map()       { return((nuvie_status & OBJ_LOC_MAP) == OBJ_LOC_MAP); }
  /* old, until replaced everywhere properly */
-// bool is_in_container_old() { printf("Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_CONTAINER); }
-// bool is_in_inventory_old() { printf("Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_INVENTORY); }
+// bool is_in_container_old() { fprintf(stderr,"Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_CONTAINER); }
+// bool is_in_inventory_old() { fprintf(stderr,"Depricated is_in_container used\n"); return(status & OBJ_STATUS_IN_INVENTORY); }
  /* new, to replace the above two (redoing the logic) */
  bool is_in_container() { return((nuvie_status & NUVIE_OBJ_STATUS_LOC_MASK_GET) == OBJ_LOC_CONT); }
  

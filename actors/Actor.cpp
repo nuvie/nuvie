@@ -376,7 +376,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  {
     set_error(ACTOR_OUT_OF_MOVES);
 //    return false;
-    printf("warning: actor %d is out of moves\n", id_n);
+    PERR("warning: actor %d is out of moves\n", id_n);
  }
 
  // blocking actors are checked for later
@@ -564,7 +564,7 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
  assert(combat_type != NULL); // this should be set 
 // if(combat_type == NULL)
 //   return;
- printf("%s (%d) attacking %s (%d)\n",get_name(),id_n,actor->get_name(),actor->id_n);
+ PERR("%s (%d) attacking %s (%d)\n",get_name(),id_n,actor->get_name(),actor->id_n);
  face_actor(actor);
 
 /* if(actor->defend(dex, combat_type->attack) == false)
@@ -1127,7 +1127,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     sched[i]->z = (sched_data_ptr[4] & 0xf0) >> 4;
     sched_data_ptr += 5;
 #ifdef DEBUG
-    printf("#%04d %03x,%03x,%x hour %2d day of week %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->day_of_week,sched[i]->worktype);
+    PERR("#%04d %03x,%03x,%x hour %2d day of week %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->day_of_week,sched[i]->worktype);
 #endif
    }
 
@@ -1162,7 +1162,7 @@ bool Actor::updateSchedule(uint8 hour)
  // U6: temp. fix for walking statues; they shouldn't have schedules
  if(id_n >= 188 && id_n <= 200)
   {
-   printf("warning: tried to update schedule for non-movable actor %d\n", id_n);
+   PERR("warning: tried to update schedule for non-movable actor %d\n", id_n);
    return(false);
   }
 
@@ -1199,7 +1199,7 @@ uint16 Actor::getSchedulePos(uint8 hour, uint8 day_of_week)
 {
  uint16 i,j;
  if(id_n == 133)
-  printf(".");
+  PERR(".");
 
  i = getSchedulePos(hour);
 
@@ -1384,7 +1384,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
  else
   total_armor_class = body_armor_class;
 */
- printf("attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
+ PERR("attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
 
  if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
    {
@@ -1399,7 +1399,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
     if(total_armor_class > 0)
       ac_saving_throw = NUVIE_RAND() % total_armor_class;
 
-    printf(", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
+    PERR(", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
 
     if(damage > ac_saving_throw)
       {
@@ -1407,7 +1407,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
        return false; // actor took damage
       }
    }
- else printf("\n");
+ else PERR("\n");
  return true; // actor defended this attack
 }
 #endif
@@ -1426,7 +1426,7 @@ uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
  else
   total_armor_class = body_armor_class;
 */
- printf("attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
+ PERR("attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
 
  if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
    {
@@ -1440,14 +1440,14 @@ uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
     if(total_armor_class > 0)
       ac_saving_throw = NUVIE_RAND() % total_armor_class;
 
-    printf(", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
+    PERR(", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
 
     if(damage > ac_saving_throw)
       {
        return damage-ac_saving_throw; // actor took damage
       }
    }
- else printf("\n");
+ else PERR("\n");
  return 0; // actor defended this attack
 }
 
@@ -1455,7 +1455,7 @@ uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
 /* Subtract amount from hp. May die if hp is too low. */
 void Actor::reduce_hp(uint8 amount)
 {
- printf("hit %s for %d points\n", get_name(), amount);
+ PERR("hit %s for %d points\n", get_name(), amount);
 
     if(amount <= hp) hp -= amount;
     else hp = 0;
@@ -1651,77 +1651,77 @@ bool Actor::is_immobile()
 void Actor::print()
 {
     Actor *actor = this;
-    printf("\n");
-    printf("%s at %x, %x, %x\n", get_name(), actor->x, actor->y, actor->z);
-    printf("id_n: %d\n", actor->id_n);
+    PERR("\n");
+    PERR("%s at %x, %x, %x\n", get_name(), actor->x, actor->y, actor->z);
+    PERR("id_n: %d\n", actor->id_n);
 
-    printf("obj_n: %03d    frame_n: %d\n", actor->obj_n, actor->frame_n);
-    printf("base_obj_n: %03d    old_frame_n: %d\n", actor->base_obj_n, actor->old_frame_n);
+    PERR("obj_n: %03d    frame_n: %d\n", actor->obj_n, actor->frame_n);
+    PERR("base_obj_n: %03d    old_frame_n: %d\n", actor->base_obj_n, actor->old_frame_n);
 
     uint8 direction = actor->direction;
-    printf("direction: %d (%s)\n", direction, (direction==NUVIE_DIR_N)?"north":
+    PERR("direction: %d (%s)\n", direction, (direction==NUVIE_DIR_N)?"north":
                                               (direction==NUVIE_DIR_E)?"east":
                                               (direction==NUVIE_DIR_S)?"south":
                                               (direction==NUVIE_DIR_W)?"west":"???");
-    printf("walk_frame: %d\n", actor->walk_frame);
+    PERR("walk_frame: %d\n", actor->walk_frame);
 
-    printf("can_move: %s\n", actor->can_move ? "true" : "false");
-    printf("alive: %s\n", actor->alive ? "true" : "false");
-    printf("in_party: %s\n", is_in_party() ? "true" : "false");
-    printf("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
-    printf("met_player: %s\n", actor->met_player ? "true" : "false");
-    printf("is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
+    PERR("can_move: %s\n", actor->can_move ? "true" : "false");
+    PERR("alive: %s\n", actor->alive ? "true" : "false");
+    PERR("in_party: %s\n", is_in_party() ? "true" : "false");
+    PERR("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
+    PERR("met_player: %s\n", actor->met_player ? "true" : "false");
+    PERR("is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
 
-    printf("moves: %d\n", actor->moves);
+    PERR("moves: %d\n", actor->moves);
 
     const char *wt_string = get_worktype_string(actor->worktype);
     if(!wt_string) wt_string = "???";
-    printf("worktype: 0x%02x/%03d %s\n", actor->worktype, actor->worktype, wt_string);
+    PERR("worktype: 0x%02x/%03d %s\n", actor->worktype, actor->worktype, wt_string);
 
-    printf("NPC stats:\n");
-    printf(" level: %d    exp: %d    hp: %d / %d\n", actor->level, actor->exp,
+    PERR("NPC stats:\n");
+    PERR(" level: %d    exp: %d    hp: %d / %d\n", actor->level, actor->exp,
            actor->hp, actor->get_maxhp());
-    printf(" strength: %d    dex: %d    int: %d\n", actor->strength, actor->dex,
+    PERR(" strength: %d    dex: %d    int: %d\n", actor->strength, actor->dex,
            actor->intelligence);
-    printf(" magic: %d / %d\n", actor->magic, actor->get_maxmagic());
+    PERR(" magic: %d / %d\n", actor->magic, actor->get_maxmagic());
 
-    printf("alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
+    PERR("alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
 
     uint8 combat_mode = actor->combat_mode;
     wt_string = get_worktype_string(actor->combat_mode);
     if(!wt_string) wt_string = "???";
-    printf("combat_mode: %d %s\n", combat_mode, wt_string);
+    PERR("combat_mode: %d %s\n", combat_mode, wt_string);
 
-    printf("Object flags: ");
+    PERR("Object flags: ");
     print_b(actor->obj_flags);
-    printf("\n");
+    PERR("\n");
 
-    printf("NPC flags: ");
+    PERR("NPC flags: ");
     print_b(actor->status_flags);
-    printf("\n");
+    PERR("\n");
 
-    printf("Talk flags: ");
+    PERR("Talk flags: ");
     print_b(actor->talk_flags);
-    printf("\n");
+    PERR("\n");
 
     uint32 inv = actor->inventory_count_objects(true);
     if(inv)
     {
-        printf("Inventory (+readied): %d objects\n", inv);
+        PERR("Inventory (+readied): %d objects\n", inv);
 /*        U6LList *inv_list = actor->get_inventory_list();
         for(U6Link *link = inv_list->start(); link != NULL; link=link->next)
         {
             Obj *obj = (Obj *)link->data;
-            printf(" %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
+            PERR(" %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
                    obj_manager->look_obj(obj), obj->obj_n, obj->frame_n, obj->quality,
                    obj->qty, obj_manager->get_obj_weight(obj, false));
         }
-        printf("(weight %f / %f)\n", actor->get_inventory_weight(),
+        PERR("(weight %f / %f)\n", actor->get_inventory_weight(),
                actor->inventory_get_max_weight());*/
     }
     if(actor->sched && *actor->sched)
     {
-        printf("Schedule:\n");
+        PERR("Schedule:\n");
         Schedule **s = actor->sched;
         uint32 sp = 0;
         do
@@ -1729,17 +1729,17 @@ void Actor::print()
             wt_string = get_worktype_string(s[sp]->worktype);
             if(!wt_string) wt_string = "???";
             if(sp == actor->sched_pos && s[sp]->worktype == actor->worktype)
-                printf("*%d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)*\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
+                PERR("*%d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)*\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
             else
-                printf(" %d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
+                PERR(" %d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
         } while(s[++sp]);
     }
 
     if(!actor->surrounding_objects.empty())
-        printf("Actor has multiple tiles\n");
+        PERR("Actor has multiple tiles\n");
     if(actor->pathfinder)
-        printf("Actor is on a path\n");
-    printf("\n");
+        PERR("Actor is on a path\n");
+    PERR("\n");
 }
 
 

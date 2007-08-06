@@ -1,15 +1,15 @@
-io.write("Magic init\n");
+io.stderr:write("Magic init\n");
 
 magic = {}
 magic_invocations = {}
 
 run_magic_script = function(invocation)
     if magic_invocations[invocation] == nil then
-      io.write("No magic script found for invocation \"" .. invocation .. "\"\n");
+      io.stderr:write("No magic script found for invocation \"" .. invocation .. "\"\n");
       return
     end
 
-io.write("Running script " .. magic_invocations[invocation].script);
+io.stderr:write("Running script " .. magic_invocations[invocation].script);
 
     run_script(magic_invocations[invocation].script)
 
@@ -22,7 +22,7 @@ magic_init = function(name, invocation, reagents, circle, num, script)
     magic[circle * 16 + num] = spell
     magic_invocations[string.lower(invocation)] = spell
 
-    io.write("Init Magic: " .. name .. " I: " .. invocation .. "\n")
+    io.stderr:write("Init Magic: " .. name .. " I: " .. invocation .. "\n")
 end
 
 select_actor = function()

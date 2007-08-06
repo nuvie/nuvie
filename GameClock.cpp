@@ -62,7 +62,7 @@ bool GameClock::load(NuvieIO *objlist)
 
  update_day_of_week();
 
- printf("Loaded game clock: %s %s\n",get_date_string(),get_time_string());
+ PERR("Loaded game clock: %s %s\n",get_date_string(),get_time_string());
 
  return true;
 }
@@ -145,7 +145,7 @@ void GameClock::inc_hour()
     hour++;
     time_counter += 60;
    }
- printf("%s\n",get_time_string());
+ PERR("%s\n",get_time_string());
 
 
  return;
@@ -168,7 +168,7 @@ void GameClock::inc_day()
    }
  update_day_of_week();
 
- printf("%s\n",get_date_string());
+ PERR("%s\n",get_date_string());
 
 
  return;

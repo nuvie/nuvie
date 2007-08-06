@@ -56,7 +56,7 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
        {
          player->rewind();
          SoundManager::g_MusicFinished = true;
-         printf("Music Finished!\n");
+         PERR("Music Finished!\n");
        }
 
 	 j = i;
@@ -85,11 +85,12 @@ bool SongAdPlug::Init(const char *filename) {
     if(filename) m_Filename = filename; // SB-X
 
     player = new Cu6mPlayer(opl);
-    player->load(filename);
-    if(!player)
-      printf("Argh!!\n");
+    if(!player) {
+      PERR("Argh!! Failed to allocate a new Cu6mPlayer. Assume crash positions.\n");
+    }
 
-	return true;
+    player->load(filename);
+    return true;
 }
 
 bool SongAdPlug::Play(bool looping) {

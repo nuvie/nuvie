@@ -94,7 +94,7 @@ bool NuvieIOBuffer::open(unsigned char *buf, uint32 buf_size, bool copy_buf)
    data = (unsigned char *)malloc(buf_size);
    if(data == NULL)
      {
-      printf("Error: NuvieIOBuffer::open() allocating %d bytes.\n",buf_size);
+      PERR("Error: NuvieIOBuffer::open() allocating %d bytes.\n",buf_size);
       return false;
      }
 

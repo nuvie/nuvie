@@ -276,7 +276,7 @@ uint16 U6UseCode::callback(uint16 msg, CallBack *caller, void *msg_data)
     Obj *obj = (Obj *)callback_user_data;
     if(!obj)
     {
-        fprintf(stderr, "UseCode: internal message %d sent to NULL object\n", msg);
+        PERR( "UseCode: internal message %d sent to NULL object\n", msg);
         return(0);
     }
     return(message_obj(obj, (CallbackMessage)msg, msg_data));
@@ -811,7 +811,7 @@ bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
       }
    }
 
- printf("moonstone_check = %d\n", moonstone_check);  
+ PERR("moonstone_check = %d\n", moonstone_check);  
  scroll->display_string("\nNo Effect!\n");
  
  return true;
@@ -1389,7 +1389,7 @@ bool U6UseCode::use_rubber_ducky(Obj *obj, UseCodeEvent ev)
 {
     if(items.actor_ref == player->get_actor())
         scroll->display_string("Squeak!\n");
-    printf("FIXME: rubberducky sound\n");
+    PERR("FIXME: rubberducky sound\n");
     return(true);
 }
 
@@ -1409,16 +1409,16 @@ bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)
     if(items.data_ref)
     {
             SDLKey key = ((EventInput*)items.data_ref)->key;
-            if(key == SDLK_0) printf("FIXME: %s: modulate 0\n", musicmsg);
-            if(key == SDLK_1) printf("FIXME: %s: modulate 1\n", musicmsg);
-            if(key == SDLK_2) printf("FIXME: %s: modulate 2\n", musicmsg);
-            if(key == SDLK_3) printf("FIXME: %s: modulate 3\n", musicmsg);
-            if(key == SDLK_4) printf("FIXME: %s: modulate 4\n", musicmsg);
-            if(key == SDLK_5) printf("FIXME: %s: modulate 5\n", musicmsg);
-            if(key == SDLK_6) printf("FIXME: %s: modulate 6\n", musicmsg);
-            if(key == SDLK_7) printf("FIXME: %s: modulate 7\n", musicmsg);
-            if(key == SDLK_8) printf("FIXME: %s: modulate 8\n", musicmsg);
-            if(key == SDLK_9) printf("FIXME: %s: modulate 9\n", musicmsg);
+            if(key == SDLK_0) PERR("FIXME: %s: modulate 0\n", musicmsg);
+            if(key == SDLK_1) PERR("FIXME: %s: modulate 1\n", musicmsg);
+            if(key == SDLK_2) PERR("FIXME: %s: modulate 2\n", musicmsg);
+            if(key == SDLK_3) PERR("FIXME: %s: modulate 3\n", musicmsg);
+            if(key == SDLK_4) PERR("FIXME: %s: modulate 4\n", musicmsg);
+            if(key == SDLK_5) PERR("FIXME: %s: modulate 5\n", musicmsg);
+            if(key == SDLK_6) PERR("FIXME: %s: modulate 6\n", musicmsg);
+            if(key == SDLK_7) PERR("FIXME: %s: modulate 7\n", musicmsg);
+            if(key == SDLK_8) PERR("FIXME: %s: modulate 8\n", musicmsg);
+            if(key == SDLK_9) PERR("FIXME: %s: modulate 9\n", musicmsg);
             return(key != SDLK_RETURN && key != SDLK_KP_ENTER && key != SDLK_SPACE);
     }
     else
@@ -1859,10 +1859,10 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
        {
 	 for (sint8 ix=-1;ix<2;ix++) 
 	 {
-	   fprintf(stderr,"can drop at %d %d?\n",ix,iy); 
+	   PERR("can drop at %d %d?\n",ix,iy); 
 	   if (Game::get_game()->get_map_window()->can_drop_obj(x+ix,y+iy,balloonist)) 
 	   {
-	     fprintf(stderr,"yes, can drop at %d %d.\n",x+ix,y+iy); 
+	     PERR("yes, can drop at %d %d.\n",x+ix,y+iy); 
 	     actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj); // fixme make this work with containers
 	     obj->x=x+ix;
 	     obj->y=y+iy;
@@ -2360,7 +2360,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
     {
         if(obj->quality != 0/* && Shamino is in party and alive*/)
         {
-            // scroll->printf("%s says, \"This is the %s%s.\"\n\n", prefix, dungeon_name);
+            // scroll->PERR("%s says, \"This is the %s%s.\"\n\n", prefix, dungeon_name);
             scroll->display_string("Shamino says, \"This is the ");
             scroll->display_string(prefix);
             scroll->display_string(dungeon_name);
@@ -2421,7 +2421,7 @@ bool U6UseCode::enter_moongate(Obj *obj, UseCodeEvent ev)
 	{
 	  if(obj->quality > 25)
 	  {
-	    printf("Error: invalid moongate destination %d\n",obj->quality);
+	    PERR("Error: invalid moongate destination %d\n",obj->quality);
 	    return false;
 	  }
 
@@ -2792,8 +2792,8 @@ bool U6UseCode::process_effects(Obj *container_obj)
           {
            switch(temp_obj->quality) // process the effect.
              {
-              case 22 : printf("BIG Poison explosion!\n"); break;
-              default : printf("Unknown Effect!!\n"); break;
+              case 22 : PERR("BIG Poison explosion!\n"); break;
+              default : PERR("Unknown Effect!!\n"); break;
              }
 
            temp_link = obj_link->prev;
