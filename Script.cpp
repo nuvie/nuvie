@@ -456,7 +456,7 @@ sint32 nscript_inc_obj_ref_count(Obj *obj)
   obj_ref = (ScriptObjRef *)iAVLSearch(script_obj_list, key);
   if(obj_ref == NULL)
   {
-    obj->nuvie_status |= NUVIE_OBJ_STATUS_SCRIPTING; // mark as being used by script engine.
+    obj->set_in_script(true); // mark as being used by script engine.
     obj_ref =  new ScriptObjRef();
     obj_ref->key = (iAVLKey)obj;
     iAVLInsert(script_obj_list,obj_ref);
@@ -483,7 +483,7 @@ sint32 nscript_dec_obj_ref_count(Obj *obj)
   {
     iAVLDelete(script_obj_list, key);
     delete obj_ref;
-    obj->nuvie_status ^= NUVIE_OBJ_STATUS_SCRIPTING; //nolonger being referenced by the script engine.
+    obj->set_in_script(false); //nolonger being referenced by the script engine.
     return 0;
   }
   

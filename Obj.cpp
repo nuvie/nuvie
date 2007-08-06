@@ -1,0 +1,266 @@
+/*
+ *  Obj.cpp
+ *  Nuvie
+ *
+ *  Created by Eric Fry on Sun Aug 05 2007.
+ *  Copyright (c) 2007. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+#include <string.h>
+
+#include "nuvieDefs.h"
+
+#include "ObjManager.h"
+
+Obj::Obj() {obj_n = 0; status = 0; nuvie_status = 0; frame_n = 0; qty = 0; quality = 0; parent = NULL; container = NULL; };
+Obj::Obj(Obj *sobj)
+{
+  memcpy(this, sobj, sizeof(Obj));
+  
+  parent = NULL; container = NULL;
+};
+
+void Obj::make_container()
+{
+  if(container == NULL)
+    container = new U6LList();
+  
+  return;
+}
+
+Obj *Obj::get_container_obj()
+{ 
+  return is_in_container() ? (Obj *)parent : NULL;
+}
+
+void Obj::set_on_map(U6LList *map_list) 
+{
+  parent = map_list;
+  nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+  nuvie_status |= OBJ_LOC_MAP; 
+
+  return;
+}
+
+void Obj::set_in_container(Obj *container_obj)
+{
+  parent = (void *)container_obj;
+  nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+  nuvie_status |= OBJ_LOC_CONT;
+  
+  return;
+}
+
+void Obj::set_invisible(bool flag)
+{
+  if(flag)
+    status |= OBJ_STATUS_INVISIBLE;
+  else if (is_invisible())
+    status ^= OBJ_STATUS_INVISIBLE;
+    
+  return;
+}
+
+void Obj::set_in_inventory()
+{ 
+  nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+  nuvie_status |= OBJ_LOC_INV;
+  
+  return;
+}
+
+void Obj::readied() //set_readied() ??
+{ 
+  nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 
+  nuvie_status |= OBJ_LOC_READIED;
+  
+  return;
+}
+
+void Obj::set_noloc()
+{
+  parent = NULL;
+  nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; //clear location bits 0 = no loc
+
+  return;
+}
+
+void Obj::set_in_script(bool flag)
+{
+  if(flag)
+    nuvie_status |= NUVIE_OBJ_STATUS_SCRIPTING;
+  else if( is_script_obj() )
+    nuvie_status ^= NUVIE_OBJ_STATUS_SCRIPTING;
+    
+  return;
+}
+
+
+/* Returns true if an object is in an actor inventory, including containers and readied items. */
+
+bool Obj::is_in_inventory(bool check_parent)
+{ 
+  switch(get_engine_loc())
+  {
+    case OBJ_LOC_INV :
+    case OBJ_LOC_READIED : return true;
+    case OBJ_LOC_CONT : if(check_parent)
+      return ((Obj *)parent)->is_in_inventory(check_parent);
+      break;
+    default : break;
+  }
+  
+  return false;
+}
+
+uint8 Obj::get_engine_loc() { return (nuvie_status & NUVIE_OBJ_STATUS_LOC_MASK_GET); }
+
+Actor *Obj::get_actor_holding_obj()
+{
+  switch(get_engine_loc())
+  {
+    case OBJ_LOC_INV :
+    case OBJ_LOC_READIED : return (Actor *)this->parent;
+      
+    case OBJ_LOC_CONT : return ((Obj *)parent)->get_actor_holding_obj();
+      
+    default : break;
+  }
+  
+  return NULL;
+}
+
+//Add child object into container, stacking if required
+void Obj::add(Obj *obj, bool stack)
+{
+  if(container == NULL)
+    make_container();
+  
+  if(stack)
+    add_and_stack(obj);
+  else
+    container->addAtPos(0, obj);
+  
+  obj->set_in_container(this);
+  
+  return;
+}
+
+void Obj::add_and_stack(Obj *obj)
+{
+  U6Link *link;
+  Obj *cont_obj;
+  
+  //should we recurse through nested containers?
+  for(link = container->start();link != NULL;link=link->next)
+  {
+    cont_obj = (Obj *)link->data;
+    //match on obj_n, frame_n and quality.
+    if(obj->obj_n == cont_obj->obj_n && obj->frame_n == cont_obj->frame_n && obj->quality == cont_obj->quality)
+    {
+      obj->qty += cont_obj->qty;
+      container->replace(cont_obj, obj); //replace cont_obj with obj in container list. should we do this to link->data directly?
+      delete_obj(cont_obj);
+      
+      return;
+    }
+  }
+  
+  container->addAtPos(0, obj); // add the object as we couldn't find another object to stack with.
+  
+  return;
+}
+
+//Remove child object from container.
+bool Obj::remove(Obj *obj)
+{
+  if(container == NULL)
+    return false;
+  
+  if(container->remove(obj) == false)
+    return false;
+  
+  obj->x = 0;
+  obj->y = 0;
+  obj->z = 0;
+  
+  obj->set_noloc();
+  
+  return true;
+}
+
+Obj *Obj::find_in_container(uint16 obj_n, uint8 quality, bool match_quality, Obj *prev_obj)
+{
+  U6Link *link;
+  Obj *obj;
+  
+  if(container == NULL)
+    return NULL;
+  
+  for(link = container->start();link != NULL;link=link->next)
+  {
+    obj = (Obj *)link->data;
+    if(obj && obj->obj_n == obj_n && (match_quality == false || obj->quality == quality))
+    {
+      if(obj == prev_obj)
+        prev_obj = NULL;
+      else
+      {
+        if(prev_obj == NULL)
+          return obj;
+      }
+    }
+    
+    if(obj->container)
+    {
+      obj = obj->find_in_container(obj_n, quality, match_quality, prev_obj);
+      if(obj)
+        return obj;
+    }
+  }
+  
+  return NULL;
+}
+
+uint32 Obj::get_total_qty(uint16 match_obj_n)
+{
+  U6Link *link;
+  Obj *obj;
+  uint16 total_qty = 0;
+  
+  if(obj_n == match_obj_n)
+    total_qty += qty;
+  
+  if(container != NULL)
+  {
+    for(link = container->start();link != NULL;link=link->next)
+    {
+      obj = (Obj *)link->data;
+      if(obj)
+      {
+        if(obj->container)
+          total_qty += obj->get_total_qty(match_obj_n);
+        else if(obj->obj_n == match_obj_n)
+          total_qty += obj->qty;
+      }
+    }
+  }
+  
+  return total_qty;
+}
+

@@ -264,6 +264,8 @@ nuvie_SOURCES = \
 	MapWindow.h \
 	MsgScroll.cpp \
 	MsgScroll.h \
+	Obj.cpp \
+	Obj.h \
 	ObjManager.cpp \
 	ObjManager.h \
 	Party.cpp \

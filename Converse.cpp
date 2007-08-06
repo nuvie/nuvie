@@ -115,6 +115,12 @@ void Converse::reset()
     delete conv_i; conv_i = NULL;
     set_input(""); // delete
     set_output(""); // clear output
+    if(script)
+    {
+      delete script;
+      script = NULL;
+    }
+    
     if(name)
     {
         free(name);

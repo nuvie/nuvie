@@ -1,3 +1,19 @@
+2007-08-06  Eric Fry <efry at users.sourceforge.net>
+	* Changed Obj from struct to class. Moved to its own file.
+	* Fixed memory leak in Converse with script not being freed on stop()
+	* Fixed bug [1766551] Killing party member crash.
+	  (problem with Actor::get_name() calling Party)
+	* Fixed copyright in GameClock.h
+	* Set GameClock variables to 0 on init
+	* Fixed crash when quitting caused by bad obj handling in EggManager.
+	  (Eggs are always loaded on the map now)
+	* Fixed up some Obj container functionality.
+	* Removed ObjManager::obj_add_obj()
+	* Added stacking support to Obj::add()
+	* Added Obj::add_and_stack() to help Obj::add() with stacking
+	* Added U6LList::replace() which replaces data directly in the list. 
+	* removed bad assert() in ObjManager::list_add_obj()
+
 2007-08-02  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* SE/MD portrait support. Functional (barely) but needs work.
 

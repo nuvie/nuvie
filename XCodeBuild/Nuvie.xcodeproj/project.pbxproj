@@ -232,6 +232,8 @@
 		07E25F5D06A171EA009E8571 /* GUI_loadimage.h in Headers */ = {isa = PBXBuildFile; fileRef = 074B914304E4C51500A8000A /* GUI_loadimage.h */; };
 		07E2601C06AA5FE3009E8571 /* GUI_TextInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 07906ABD068D616D00C74729 /* GUI_TextInput.h */; };
 		07E2601E06AA5FE4009E8571 /* GUI_TextInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07906ABC068D616D00C74729 /* GUI_TextInput.cpp */; };
+		07E986D20C6599BF00134DC7 /* Obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07E986D00C6599BF00134DC7 /* Obj.cpp */; };
+		07E986D30C6599BF00134DC7 /* Obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 07E986D10C6599BF00134DC7 /* Obj.h */; };
 		07E9A046081CD4A1009FA3BE /* U6WorkTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 07E9A045081CD4A1009FA3BE /* U6WorkTypes.h */; };
 		07EF826A0A9C636B00872DBE /* lapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82350A9C636A00872DBE /* lapi.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
 		07EF826B0A9C636B00872DBE /* lapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82360A9C636A00872DBE /* lapi.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
@@ -526,6 +528,8 @@
 		07DFDDB404A5BFE600A8000A /* SEUseCode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SEUseCode.h; path = ../usecode/SEUseCode.h; sourceTree = SOURCE_ROOT; };
 		07E3229E046BEBC900A8000A /* nuvie.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = nuvie.icns; sourceTree = "<group>"; };
 		07E87A11050E07AF00A8000A /* InventoryFont.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = InventoryFont.h; path = ../views/InventoryFont.h; sourceTree = SOURCE_ROOT; };
+		07E986D00C6599BF00134DC7 /* Obj.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Obj.cpp; path = ../Obj.cpp; sourceTree = SOURCE_ROOT; };
+		07E986D10C6599BF00134DC7 /* Obj.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Obj.h; path = ../Obj.h; sourceTree = SOURCE_ROOT; };
 		07E9A045081CD4A1009FA3BE /* U6WorkTypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = U6WorkTypes.h; path = ../actors/U6WorkTypes.h; sourceTree = SOURCE_ROOT; };
 		07EC223504A17C6E00A8000A /* MDUseCode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MDUseCode.cpp; path = ../usecode/MDUseCode.cpp; sourceTree = SOURCE_ROOT; };
 		07EC223604A17C6E00A8000A /* MDUseCode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MDUseCode.h; path = ../usecode/MDUseCode.h; sourceTree = SOURCE_ROOT; };
@@ -1380,6 +1384,8 @@
 				072566A204272B7B00A8000A /* Text.cpp */,
 				072566A504272B7B00A8000A /* TileManager.h */,
 				072566A404272B7B00A8000A /* TileManager.cpp */,
+				07E986D10C6599BF00134DC7 /* Obj.h */,
+				07E986D00C6599BF00134DC7 /* Obj.cpp */,
 				072566B504272BC000A8000A /* ObjManager.h */,
 				072566B404272BC000A8000A /* ObjManager.cpp */,
 				079A4264058748A2003627C9 /* U6objects.h */,
@@ -1562,6 +1568,7 @@
 				07EF829E0A9C636B00872DBE /* lzio.h in Headers */,
 				07EF82B40A9C792300872DBE /* Script.h in Headers */,
 				0746DC4A0C50BED20034A045 /* Dither.h in Headers */,
+				07E986D30C6599BF00134DC7 /* Obj.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1788,6 +1795,7 @@
 				07EF829D0A9C636B00872DBE /* lzio.c in Sources */,
 				07EF82B30A9C792300872DBE /* Script.cpp in Sources */,
 				0746DC490C50BED20034A045 /* Dither.cpp in Sources */,
+				07E986D20C6599BF00134DC7 /* Obj.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

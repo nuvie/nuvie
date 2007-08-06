@@ -118,7 +118,24 @@ uint32 U6LList::findPos(void *data)
   
  return 0;
 }
- 
+
+//replace the first instance of old with new.
+bool U6LList::replace(void *old_data, void *new_data)
+{
+  U6Link *link;
+  
+  for(link = start(); link != NULL; link = link->next)
+  {
+    if(link->data == old_data)
+    {
+      link->data = new_data;
+      return true;
+    }
+  }
+  
+  return false;
+}
+
 bool U6LList::remove(void *data)
 {
  U6Link *link;

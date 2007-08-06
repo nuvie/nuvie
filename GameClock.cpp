@@ -36,7 +36,7 @@ GameClock::GameClock(Configuration *cfg)
 
 GameClock::~GameClock()
 {
-
+  
 }
 
 void GameClock::init()
@@ -45,6 +45,12 @@ void GameClock::init()
  time_counter = 0;
 // tick_counter = 0;
 
+ minute = 0;
+ hour = 0;
+ day = 0;
+ month = 0;
+ year = 0;
+ 
  active = true;
 }
 

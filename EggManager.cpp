@@ -70,8 +70,9 @@ void EggManager::clean(bool keep_obj)
    {
     egg = *egg_iter;
 
-    if(keep_obj == false)
-      delete_obj(egg->obj);
+   // eggs are always on the map now.
+   // if(keep_obj == false)
+   //   delete_obj(egg->obj);
 
     delete *egg_iter;
     egg_iter = egg_list.erase(egg_iter);
@@ -103,8 +104,10 @@ void EggManager::remove_egg(Obj *egg_obj, bool keep_obj)
    {
     if((*egg_iter)->obj == egg_obj)
        {
-        if(keep_obj == false)
-          delete_obj((*egg_iter)->obj);
+        //if(keep_obj == false) eggs always on map now.
+
+        obj_manager->unlink_from_engine((*egg_iter)->obj);
+        delete_obj((*egg_iter)->obj);
 
         delete *egg_iter;
         egg_list.erase(egg_iter);

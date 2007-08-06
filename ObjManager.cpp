@@ -169,14 +169,13 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
    if(obj->obj_n == obj_egg_table[game_type])
      {
       egg_manager->add_egg(obj);
-      // unhide eggs
-      if(show_eggs && obj->is_invisible())
-         obj->status ^= OBJ_STATUS_INVISIBLE; // FIXME? don't directly manipulate
+      // set egg visibility
+      obj->set_invisible(!show_eggs);
      }
 
-   if(usecode->is_container(obj) && !obj->container) //object type is container, but may be empty
+   if(usecode->is_container(obj)) //object type is container, but may be empty
      {
-      obj->container = new U6LList();
+      obj->make_container();
      }
 
    if(obj->get_engine_loc() == OBJ_LOC_INV || obj->get_engine_loc() == OBJ_LOC_READIED) //triggered when object in actor's inventory OR equipped
@@ -1184,10 +1183,7 @@ bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
 
  if(c_obj) // we've found our container.
    {
-    if(c_obj->container == NULL)
-	  c_obj->container = new U6LList();
-    c_obj->container->addAtPos(0,obj);
-    obj->parent=(void *)c_obj;
+    c_obj->add(obj);
 
     //PERR("Cont: %s\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false));
   //PERR("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
@@ -1203,7 +1199,7 @@ Obj *ObjManager::loadObj(NuvieIO *buf)
  uint8 b1,b2;
  Obj *obj;
 
- obj = new Obj;
+ obj = new Obj();
  //obj->objblk_n = objblk_n;
 
  obj->status = buf->read1();
@@ -1211,12 +1207,12 @@ Obj *ObjManager::loadObj(NuvieIO *buf)
  //set new nuvie location bits.
  switch(obj->status & OBJ_STATUS_MASK_GET)
  {
-   case OBJ_STATUS_ON_MAP : obj->nuvie_status |= OBJ_LOC_MAP; break;
-   case OBJ_STATUS_IN_CONTAINER : obj->nuvie_status |= OBJ_LOC_CONT; break;
-   case OBJ_STATUS_IN_INVENTORY : obj->nuvie_status |= OBJ_LOC_INV; break;
-   case OBJ_STATUS_READIED : obj->nuvie_status |= OBJ_LOC_READIED; break;
+   case OBJ_STATUS_ON_MAP : obj->set_on_map(NULL); break;//obj->nuvie_status |= OBJ_LOC_MAP; break;
+   case OBJ_STATUS_IN_CONTAINER : obj->set_in_container(NULL); break;//obj->nuvie_status |= OBJ_LOC_CONT; break;
+   case OBJ_STATUS_IN_INVENTORY : obj->set_in_inventory(); break;//obj->nuvie_status |= OBJ_LOC_INV; break;
+   case OBJ_STATUS_READIED : obj->readied(); break;//obj->nuvie_status |= OBJ_LOC_READIED; break;
  }
-     
+ 
  obj->x = buf->read1(); // h
  b1 = buf->read1();
  obj->x += (b1 & 0x3) << 8;
@@ -1626,7 +1622,7 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects, uint
  if(!llist || !obj)
    return false;
  
- assert(pos < llist->count());
+ assert(pos == 0 || pos < llist->count());
    
  if(stack_objects && is_stackable(obj))
   {
@@ -1655,39 +1651,6 @@ bool ObjManager::list_add_obj(U6LList *llist, Obj *obj, bool stack_objects, uint
 
  return true;
 }
-// wrapper to the above to work with an existing c_obj instead
-bool ObjManager::obj_add_obj(Obj *c_obj, Obj *obj, bool stack_objects, uint32 pos)
-{
-  if(!c_obj) // || !obj is not needed as already checked in list_add_obj(U6LList *...) 
-  {
-   return false;
-  }
-  if (c_obj==obj) {
-    PERR("WARNING: Tried to put container into itself.\n");
-    return false;
-  }
-  if (!c_obj->container)
-  {
-    c_obj->container = new U6LList();
-  }
-  
-  remove_obj_from_map(obj); 
-  // and add it.
-  if (list_add_obj(c_obj->container, obj, stack_objects, pos))
-  {
-    obj->set_in_container(c_obj);
-    obj->parent=(void *)c_obj;
-    // FIXME? may have to set x etc?
-    // but objblk_n is not guaranteed to be unique, eventually will be fixed at 
-    // save-time
-    return true;
-  } 
-  else 
-  {
-    return false;
-  }
-}
-
 
 /* Call load usecode for all objects (after loading them). This should be in
  * loadObj() but that was crashing when usecode tried to use timers.

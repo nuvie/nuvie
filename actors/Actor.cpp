@@ -288,13 +288,11 @@ const char *Actor::get_name()
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     Converse *converse = Game::get_game()->get_converse();
     Party *party = Game::get_game()->get_party();
-    Actor *player = Game::get_game()->get_player()->get_actor();
+    //Actor *player = Game::get_game()->get_player()->get_actor();
     const char *talk_name = NULL; // name from conversation script
 
-    if(is_in_party())
+    if(is_alive() && is_in_party())
         name = party->get_actor_name(party->get_member_num(this));
-    else if(id_n == player->id_n)
-        name = party->get_actor_name(0); // the player, not necessarily the "active" leader
     else if(is_met()
             && (talk_name = converse->npc_name(id_n)) ) // assignment
         name = talk_name;
@@ -714,7 +712,7 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, bool match_quality)
    obj = (Obj *)link->data;
    if(obj->obj_n == obj_n && (match_quality == false || obj->quality == qual)) //FIXME should qual = 0 be an all quality search!?
      return(obj);
-   else if(obj->container)
+   else if(obj->has_container())
    {
      if( (obj = obj->find_in_container(obj_n, qual, match_quality)) )
        return(obj);
@@ -749,10 +747,7 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
  obj->status |= OBJ_STATUS_OK_TO_TAKE;
  if(container) // assumes actor is holding the container
  {
-   add_to = container->container;
-   /* obj->status |= OBJ_STATUS_IN_CONTAINER; */ // luteijn: don't manipulate this directly!
-   obj->set_in_container(container); 
-   obj->parent = (void *)container; // obj->x is set when saving
+   container->add(obj, stack);
  }
  else
  {
@@ -764,8 +759,11 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
 
    if(obj->is_lit()) // light up actor
      add_light(TORCH_LIGHT_LEVEL);
+   
+   obj_manager->list_add_obj(add_to, obj, stack);
  }
- return obj_manager->list_add_obj(add_to, obj, stack);
+ 
+ return true;
 }
 
 /* Stacks the new object with existing objects if possible.
@@ -1070,9 +1068,6 @@ void Actor::all_items_to_container(Obj *container_obj)
  Obj *obj;
  uint8 i;
 
- if(!container_obj->container)
-   container_obj->container = new U6LList();
-
  inventory = get_inventory_list();
 
  if(!inventory)
@@ -1087,7 +1082,7 @@ void Actor::all_items_to_container(Obj *container_obj)
     if(temp_actor)
       obj->status |= OBJ_STATUS_TEMPORARY;
       
-    container_obj->container->add(obj);
+    container_obj->add(obj);
    }
  
  for(i=0; i < ACTOR_MAX_READIED_OBJECTS; i++)
@@ -1511,7 +1506,7 @@ void Actor::resurrect(MapCoord new_position, Obj *body_obj)
     Game::get_game()->get_party()->add_actor(this);
   
   //add body container objects back into actor's inventory.
-  if(body_obj->container)
+  if(body_obj->has_container())
   {
     for(link = body_obj->container->start(); link != NULL; link = link->next)
       inventory_add_object((Obj *)link->data);
