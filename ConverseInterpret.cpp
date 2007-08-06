@@ -197,7 +197,7 @@ void ConverseInterpret::leave()
     {
         struct convi_frame_s *fp = b_frame->top();
 #ifdef CONVERSE_DEBUG
-printf("Converse: ...leave %02x...\n", fp->start_c);
+PERR("Converse: ...leave %02x...\n", fp->start_c);
 #endif
         delete fp; fp = NULL;
         b_frame->pop();
@@ -222,7 +222,7 @@ void ConverseInterpret::enter(converse_value c)
         b_frame = new stack<struct convi_frame_s *>;
     b_frame->push(ef);
 #ifdef CONVERSE_DEBUG
-printf("Converse: ...enter %02x...\n", ef->start_c);
+PERR("Converse: ...enter %02x...\n", ef->start_c);
 #endif
 }
 
@@ -1265,7 +1265,7 @@ converse_value ConverseInterpret::find_db_string(uint32 loc, const char *dstring
            p = 0, /* pointer into db */
            i = 0; /* item index */
 #ifdef CONVERSE_DEBUG
-printf("\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
+PERR("\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
 #endif
     while((converse_value)(db[p]) != U6OP_ENDDATA)
     {
@@ -1298,7 +1298,7 @@ printf("\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
         ++i;
     }
 #ifdef CONVERSE_DEBUG
-printf("\nConverse: find_db_string: not found; returning %d\n", i);
+PERR("\nConverse: find_db_string: not found; returning %d\n", i);
 #endif
     return(i);
 }

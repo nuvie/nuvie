@@ -101,9 +101,9 @@ public:
     MapCoord abs_coords(sint16 dx, sint16 dy);
     // location is on screen?
     bool is_visible();
-    int print_d() { return(fprintf(stderr,"%d, %d, %d",x,y,z)); }
-    int print_h() { return(fprintf(stderr,"%x, %x, %x",x,y,z)); }
-    int print_s() { return(fprintf(stderr,"%d, %d",sx,sy)); }
+    int print_d() { return(PERR("%d, %d, %d",x,y,z)); }
+    int print_h() { return(PERR("%x, %x, %x",x,y,z)); }
+    int print_s() { return(PERR("%d, %d",sx,sy)); }
 
     bool operator==(MapCoord &c2) {return(x == c2.x && y == c2.y && z == c2.z);}
     bool operator!=(MapCoord &c2) { return(!(*this == c2)); }

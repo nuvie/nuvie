@@ -65,7 +65,7 @@ protected:
 public:
     TimedEvent(uint32 reltime, bool immediate = TIMER_DELAYED, bool realtime = TIMER_REALTIME);
     virtual ~TimedEvent() { }
-    virtual void timed(uint32 evtime) { fprintf(stderr, "TimedEvent: undefined timer method\n"); }
+    virtual void timed(uint32 evtime) { PERR("TimedEvent: undefined timer method\n"); }
 
 protected:
     // stop repeating, remove from tq if it won't delete it
@@ -93,7 +93,7 @@ public:
     : TimedEvent(reltime), msg(m) { repeat_count = repeat ? -1 : 0; }
     void timed(uint32 evtime)
     {
-        fprintf(stderr,"Activate! evtime=%d msg=\"%s\"\n", evtime, msg.c_str());
+        PERR("Activate! evtime=%d msg=\"%s\"\n", evtime, msg.c_str());
     }
 };
 

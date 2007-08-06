@@ -51,7 +51,7 @@ public:
     virtual ~CallBack() { }
 
     // receive message
-    virtual uint16 callback(uint16 msg, CallBack *caller, void *data = NULL) { fprintf(stderr,"Warning! Unhandled callback. msg (%x)\n", msg); return 0; }
+    virtual uint16 callback(uint16 msg, CallBack *caller, void *data = NULL) {     PERR("Warning! Unhandled callback. msg (%x)\n", msg); return 0; }
     // send message
     uint16 message(uint16 msg, void *msg_data = NULL, void *my_data = NULL)
     {

@@ -430,7 +430,7 @@ GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
 
 void InventoryWidget::drag_drop_success(int x, int y, int message, void *data)
 {
-printf("InventoryWidget::drag_drop_success()\n");
+ PERR("InventoryWidget::drag_drop_success()\n");
  dragging = false;
 
 // handled by drop target
@@ -445,14 +445,14 @@ printf("InventoryWidget::drag_drop_success()\n");
 
 void InventoryWidget::drag_drop_failed(int x, int y, int message, void *data)
 {
-printf("InventoryWidget::drag_drop_failed()\n");
+ PERR("InventoryWidget::drag_drop_failed()\n");
  dragging = false;
  selected_obj = NULL;
 }
 
 bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
-printf("InventoryWidget::drag_accept_drop()\n");
+ PERR("InventoryWidget::drag_accept_drop()\n");
  if(message == GUI_DRAG_OBJ)
    {
     Obj *obj = (Obj*)data;
@@ -487,7 +487,7 @@ printf("InventoryWidget::drag_accept_drop()\n");
 
 void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
-printf("InventoryWidget::drag_perform_drop()\n");
+ PERR("InventoryWidget::drag_perform_drop()\n");
  Obj *obj;
 
  x -= area.x;

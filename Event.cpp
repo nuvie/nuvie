@@ -1262,7 +1262,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 
     scroll->display_string(get_direction_name(pushrel_x, pushrel_y));
     scroll->display_string(".\n\n");
-printf("warning: deduct moves from player\n");
+    PERR("warning: deduct moves from player\n");
     // FIXME: the random chance here is just made up, I don't know what
     //        kind of check U6 did ("Failed.\n\n")
     if(push_actor)

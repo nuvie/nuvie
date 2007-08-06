@@ -393,7 +393,7 @@ bool U6Actor::init_tangle_vine()
 {
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     uint8 num_vines = NUVIE_RAND()%4+1;
-printf("init_tangle_vine() %d at %x,%x with %d vines\n",id_n,x,y,num_vines);
+    PERR("init_tangle_vine() %d at %x,%x with %d vines\n",id_n,x,y,num_vines);
     const struct { sint8 x, y; } vine_pos[4] = { {-1,0},{+1,0},{0,-1},{0,+1} };
     // Pod may have already been initialized, so just add vines where none
     // currently exist.

@@ -96,8 +96,8 @@ bool AStarPath::search_node_neighbors(astar_node *nnode, MapCoord &goal,
         astar_node *nnode = pop_open_node(); // next closest
         if(nnode->loc == goal || nnode->len >= max_steps)
         {
-if(nnode->loc != goal)
-printf("out of steps, making partial path (nnode->len=%d)\n",nnode->len);
+	    if(nnode->loc != goal)
+	        PERR("out of steps, making partial path (nnode->len=%d)\n",nnode->len);
 //PERR("GOAL\n");
             final_node = nnode;
             create_path();

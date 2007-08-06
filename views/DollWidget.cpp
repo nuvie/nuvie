@@ -278,7 +278,7 @@ bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
 
 void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
-printf("DollWidget::drag_perform_drop()\n");
+ PERR("DollWidget::drag_perform_drop()\n");
  Obj *obj;
 
  x -= area.x;
