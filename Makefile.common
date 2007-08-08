@@ -240,6 +240,7 @@ nuvie_SOURCES = \
 	ConverseSpeech.h \
 	Cursor.cpp \
 	Cursor.h \
+	Debug.cpp \
 	Effect.cpp \
 	Effect.h \
 	EffectManager.cpp \

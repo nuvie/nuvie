@@ -38,7 +38,9 @@ int main(int argc, char **argv)
 #endif
 {
  Nuvie *nuvie;
-
+ DEBUG(LEVEL_INFORMATIONAL,"Debugging enabled\n");
+ DEBUG(LEVEL_DEBUGGING,"To disable debugging altogether, recompile with \"WITHOUT_DEBUG\" defined.\n");
+ DEBUG(LEVEL_DEBUGGING,"To just get less spam, set the default for CurrentDebugLevel in Debug.cpp lower.\n");
  #ifdef MACOSX
  srandom(time(NULL));
  #else

@@ -106,7 +106,7 @@ bool Weather::load_moonstones(NuvieIO *objlist)
    bigend=objlist->read1();//little endian..
    assert(!bigend);
    z=little; //bigend should be zero
-   PERR("Read moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
+   DEBUG(LEVEL_DEBUGGING,"Read moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
    moonstones[moonstone]=MapCoord(x,y,z);
  }
  return true;
@@ -117,7 +117,7 @@ MapCoord Weather::get_moonstone(uint8 moonstone)
 {
   if (moonstone<8) // FIXME: hardcoded constant
     return moonstones[moonstone];
-  PERR("get_moonstone(%d): Moonstone out of range\n",moonstone);
+  DEBUG(LEVEL_ERROR,"get_moonstone(%d): Moonstone out of range\n",moonstone);
   return MapCoord(0,0,0);
 }
 bool Weather::set_moonstone(uint8 moonstone,MapCoord where) 
@@ -127,7 +127,7 @@ bool Weather::set_moonstone(uint8 moonstone,MapCoord where)
     moonstones[moonstone]=where;
     return true;
   }
-  PERR("set_moonstone(%d): Moonstone out of range\n",moonstone);
+  DEBUG(LEVEL_ERROR,"set_moonstone(%d): Moonstone out of range\n",moonstone);
   return false;
 }
 
@@ -243,7 +243,7 @@ bool Weather::save_moonstones(NuvieIO *objlist)
     objlist->write1((uint8)(y>>8));
     objlist->write1(z);//little endian..
     objlist->write1(0);
-    PERR("Wrote moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
+    DEBUG(LEVEL_DEBUGGING,"Wrote moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
   }
   return true;
 }
@@ -293,7 +293,7 @@ inline void Weather::set_wind_change_callback()
 	uint8 *cb_msgid = new uint8;
 	*cb_msgid = WEATHER_CB_CHANGE_WIND_DIR;
 	wind_timer = new GameTimedCallback((CallBack *)this, cb_msgid, length);
-	PERR("Adding wind change timer. Length = %d\n",length);
+	DEBUG(LEVEL_DEBUGGING,"Adding wind change timer. Length = %d\n",length);
 }
 
 inline void Weather::send_wind_change_notification_callback()
@@ -320,7 +320,7 @@ void Weather::start_eclipse(uint8 length)
   view_manager->update();
 	map_window->updateAmbience();
 
-	PERR("Starting Eclipse. Length=%d\n",eclipse_length);
+	DEBUG(LEVEL_INFORMATIONAL,"Starting Eclipse. Length=%d\n",eclipse_length);
 	
 	return;
 }
@@ -338,7 +338,7 @@ void Weather::end_eclipse()
 	eclipse_length = 0;
 	eclipse_start = 0;
 	
-	PERR("Eclipse End.\n");
+	DEBUG(LEVEL_INFORMATIONAL,"Eclipse End.\n");
 
 	return;
 }
@@ -359,7 +359,7 @@ uint16 Weather::callback(uint16 msg, CallBack *caller, void *data)
 	{
 		case WEATHER_CB_CHANGE_WIND_DIR : wind_timer = NULL; change_wind_dir(); break;
 		case WEATHER_CB_END_ECLIPSE : end_eclipse(); break;
-		default : PERR("Weather: Unknown callback!\n"); break;
+		default : DEBUG(LEVEL_ERROR,"Weather: Unknown callback!\n"); break;
 	}
     
 	delete cb_msgid;
