@@ -251,11 +251,11 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
    sprintf(desc_buf,"%s%s",article_tbl[tile->article_n], desc);
 
  DEBUG(0,LEVEL_DEBUGGING,"%s (%d): flags1:",desc_buf,tile_num);
- print_b(tile->flags1);
+ print_b(LEVEL_INFORMATIONAL,tile->flags1);
  DEBUG(1,LEVEL_DEBUGGING," f2:");
- print_b(tile->flags2);
+ print_b(LEVEL_INFORMATIONAL,tile->flags2);
  DEBUG(1,LEVEL_DEBUGGING," f3:");
- print_b(tile->flags3);
+ print_b(LEVEL_INFORMATIONAL,tile->flags3);
  DEBUG(1,LEVEL_DEBUGGING,"\n");
  
  return desc_buf;

@@ -1688,15 +1688,15 @@ void Actor::print()
     DEBUG(1,LEVEL_INFORMATIONAL,"combat_mode: %d %s\n", combat_mode, wt_string);
 
     DEBUG(1,LEVEL_INFORMATIONAL,"Object flags: ");
-    print_b(actor->obj_flags);
+    print_b(LEVEL_INFORMATIONAL,actor->obj_flags);
     DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 
     DEBUG(1,LEVEL_INFORMATIONAL,"NPC flags: ");
-    print_b(actor->status_flags);
+    print_b(LEVEL_INFORMATIONAL,actor->status_flags);
     DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 
     DEBUG(1,LEVEL_INFORMATIONAL,"Talk flags: ");
-    print_b(actor->talk_flags);
+    print_b(LEVEL_INFORMATIONAL,actor->talk_flags);
     DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 
     uint32 inv = actor->inventory_count_objects(true);

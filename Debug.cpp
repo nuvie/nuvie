@@ -22,11 +22,12 @@
  */
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 #include <time.h>
 #include <nuvieDefs.h>
 #ifndef WITHOUT_DEBUG
 
-void debug(bool no_header=false,DebugLevelType level=LEVEL_DEBUGGING, const char *format="aarrgghh..", ...)
+void debug(bool no_header,DebugLevelType level, const char *format, ...)
 {
   static const char* DebugLevelNames[]= { "EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING" };
   static DebugLevelType CurrentDebugLevel=LEVEL_DEBUGGING;
@@ -38,6 +39,16 @@ void debug(bool no_header=false,DebugLevelType level=LEVEL_DEBUGGING, const char
   if (format==NULL) { 
     CurrentDebugLevel=level;
     return;
+  }
+  if (!strcmp(format,"!!increase!!\n")) { 
+    unsigned char c=(unsigned char) CurrentDebugLevel;
+    if (c<7) {c++;}
+    level=CurrentDebugLevel=(DebugLevelType) c;
+  }
+  if (!strcmp(format,"!!decrease!!\n")) { 
+    unsigned char c=(unsigned char) CurrentDebugLevel;
+    if (c>0) {c--;}
+    level=CurrentDebugLevel=(DebugLevelType) c;
   }
   if (level>CurrentDebugLevel) { return; } // Don't call ourselves here to log something like 'message suppressed'
   now=time(NULL);

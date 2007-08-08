@@ -1505,7 +1505,7 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
 
  print_indent(LEVEL_INFORMATIONAL,indent);
  DEBUG(1,LEVEL_INFORMATIONAL,"Status: ");
- print_b(obj->status);
+ print_b(LEVEL_INFORMATIONAL,obj->status);
  if(obj->status != 0)
   {
    DEBUG(1,LEVEL_INFORMATIONAL," ( ");

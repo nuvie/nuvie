@@ -96,31 +96,31 @@ bool directory_exists(const char *directory)
  return true;
 }
 
-void print_b(uint8 num)
+void print_b(DebugLevelType level,uint8 num)
 {
  sint8 i;
 
  for(i=7;i>=0;i--)
  {
   if(num & (1<<i))
-    PERR("1");
+    DEBUG(1,level,"1");
   else
-    PERR("0");
+    DEBUG(1,level,"0");
  }
 
  return;
 }
 
-void print_b16(uint16 num)
+void print_b16(DebugLevelType level,uint16 num)
 {
   sint8 i;
   
   for(i=15;i>=0;i--)
   {
     if(num & (1<<i))
-      PERR("1");
+      DEBUG(1,level,"1");
     else
-      PERR("0");
+      DEBUG(1,level,"0");
   }
   
   return;
@@ -137,16 +137,16 @@ void print_indent(DebugLevelType level,uint8 indent)
 }
 
 
-void print_bool(bool state, const char *yes, const char *no)
+void print_bool(DebugLevelType level,bool state, const char *yes, const char *no)
 {
-    PERR("%s", state ? yes : no);
+    DEBUG(1,level,"%s", state ? yes : no);
 }
 
 
-void print_flags(uint8 num, const char *f[8])
+void print_flags(DebugLevelType level,uint8 num, const char *f[8])
 {
     std::string complete_flags = "";
-    print_b(num);
+    print_b(level,num);
     if(num != 0)
         complete_flags += "(";
     for(uint32 i = 0; i < 8; i++)
@@ -154,7 +154,7 @@ void print_flags(uint8 num, const char *f[8])
             complete_flags += f[i];
     if(num != 0)
         complete_flags += ")";
-    PERR("%s", complete_flags.c_str());
+    DEBUG(1,level,"%s", complete_flags.c_str());
 }
 
 

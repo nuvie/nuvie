@@ -108,7 +108,7 @@ bool U6Lib_n::create(std::string &filename, uint8 size, uint8 type)
     NuvieIOFileWrite *file = new NuvieIOFileWrite();
     if(!file->open(filename))
     {
-        PERR("U6Lib: Error creating %s\n", filename.c_str());
+        DEBUG(0,LEVEL_ERROR,"U6Lib: Error creating %s\n", filename.c_str());
         delete file;
         return(false);
     }
@@ -430,8 +430,8 @@ void U6Lib_n::calc_item_offsets()
         items[0].offset = (num_offsets * lib_size);
     else
         items[0].offset = 0; // 0 = no data, no affect on other items
-//    PERR("calc_item_offsets: sizes[0] == %d\n", sizes[0]);
-//    PERR("calc_item_offsets: offsets[0] == %d\n", offsets[0]);
+//    DEBUG(0,LEVEL_DEBUGGING,"calc_item_offsets: sizes[0] == %d\n", sizes[0]);
+//    DEBUG(0,LEVEL_DEBUGGING,"calc_item_offsets: offsets[0] == %d\n", offsets[0]);
     for(uint32 i = 1; i < num_offsets; i++)
     {
         if(items[i].size)
@@ -450,8 +450,8 @@ void U6Lib_n::calc_item_offsets()
         }
         else
             items[i].offset = 0; // 0 = no data, no affect on other items
-//        PERR("calc_item_offsets: sizes[%d] == %d\n", i, sizes[i]);
-//        PERR("calc_item_offsets: offsets[%d] == %d\n", i, offsets[i]);
+//        DEBUG(0,LEVEL_DEBUGGING,"calc_item_offsets: sizes[%d] == %d\n", i, sizes[i]);
+//        DEBUG(0,LEVEL_DEBUGGING,"calc_item_offsets: offsets[%d] == %d\n", i, offsets[i]);
     }
 }
 

@@ -44,7 +44,7 @@ bool NuvieIOFile::openWithMode(const char *filename, const char *mode)
 
  if(fp == NULL)
   {
-   PERR("Error: Failed opening '%s'\n",filename);
+   DEBUG(0,LEVEL_ERROR,"Failed opening '%s'\n",filename);
    return false;
   }
 

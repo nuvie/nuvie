@@ -209,6 +209,14 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			case SDLK_x: // quit
 				scroll->display_string("Exit!\n");
 				return false;
+
+			case SDLK_d: 
+				DEBUG(0,LEVEL_DEBUGGING,"!!decrease!!\n");
+				return false;
+			case SDLK_i:
+				DEBUG(0,LEVEL_DEBUGGING,"!!increase!!\n");
+				return false;
+
 			case SDLK_KP_ENTER:
 			case SDLK_RETURN:
 //				Game::get_game()->get_screen()->toggleFullScreen();
