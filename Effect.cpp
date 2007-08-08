@@ -128,7 +128,7 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
             }
             if(hit_ent->entity_type == ENT_OBJ)
             {
-                PERR("hit object %d at %x,%x,%x\n", hit_ent->obj->obj_n, hit_ent->obj->x, hit_ent->obj->y, hit_ent->obj->z);
+                DEBUG(0,LEVEL_DEBUGGING,"hit object %d at %x,%x,%x\n", hit_ent->obj->obj_n, hit_ent->obj->x, hit_ent->obj->y, hit_ent->obj->z);
                 // FIX: U6 specific
                 // FIX: hit any part of ship, and reduce qty of center
                 if(hit_ent->obj->obj_n == 412)
@@ -350,7 +350,7 @@ uint16 ExplosiveEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
             }
             else if(hit_ent->entity_type == ENT_OBJ)
             {
-                PERR("Explosion hit object %d (%x,%x)\n", hit_ent->obj->obj_n, hit_ent->obj->x, hit_ent->obj->y);
+                DEBUG(0,LEVEL_DEBUGGING,"Explosion hit object %d (%x,%x)\n", hit_ent->obj->obj_n, hit_ent->obj->x, hit_ent->obj->y);
                 stop_effect = hit_object(hit_ent->obj);
             }
             break;
@@ -840,7 +840,7 @@ void FadeEffect::init_pixelated_fade()
     }
     if(fillret == -1)
     {
-        PERR( "FadeEffect: error creating overlay surface\n");
+        DEBUG(0,LEVEL_DEBUGGING,"FadeEffect: error creating overlay surface\n");
         delete_self();
         return;
     }

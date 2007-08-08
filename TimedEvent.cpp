@@ -612,7 +612,7 @@ void TimedAdvance::init(uint16 min, uint16 r)
     advance = min;
     rate = r;
     prev_evtime = clock->get_ticks();
-    PERR("TimedAdvance(): %02d:%02d + %02d:%02d (rate=%d)\n",
+    DEBUG(0,LEVEL_DEBUGGING,"TimedAdvance(): %02d:%02d + %02d:%02d (rate=%d)\n",
        clock->get_hour(), clock->get_minute(), advance/60, advance%60, rate);
 }
 
@@ -647,7 +647,7 @@ void TimedAdvance::timed(uint32 evtime)
 
     if(time_passed())
     {
-        PERR("~TimedAdvance(): now %02d:%02d\n", clock->get_hour(), clock->get_minute());
+        DEBUG(0,LEVEL_DEBUGGING,"~TimedAdvance(): now %02d:%02d\n", clock->get_hour(), clock->get_minute());
         if(callback_target && !hour_passed) // make sure to call target
             message(MESG_TIMED, &evtime);
         stop(); // done

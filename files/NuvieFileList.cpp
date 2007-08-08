@@ -56,7 +56,7 @@ bool NuvieFileList::open(const char *directory, const char *search, uint8 s_mode
  dir = opendir(directory);
  if(dir == NULL)
    {
-    PERR("Error: Failed to open %s\n", directory);
+    DEBUG(0,LEVEL_ERROR,"Error: Failed to open %s\n", directory);
     return false;
    }
 
@@ -101,7 +101,7 @@ bool NuvieFileList::add_filename(const char *directory, const char *filename)
 
  if(stat(fullpath.c_str(), &sb) != 0)
    {
-    PERR("Error: Couldn't stat() file %s\n", fullpath.c_str());
+    DEBUG(0,LEVEL_ERROR,"Couldn't stat() file %s\n", fullpath.c_str());
     return false;
    }
 

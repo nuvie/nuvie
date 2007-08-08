@@ -145,7 +145,7 @@ bool Configuration::set(std::string key, std::string value)
 		}
 	}
 
-	PERR("No writable config file found: unable to set value");
+	DEBUG(0,LEVEL_CRITICAL,"No writable config file found: unable to set value");
 	// we could maybe add a non-file XMLTree to the list and save to that?
 	// OTOH, that might make things very untransparent
 	return false;
@@ -173,7 +173,7 @@ bool Configuration::set(std::string key, int value)
 		}
 	}
 
-	PERR("No writable config file found: unable to set value");
+	DEBUG(0,LEVEL_CRITICAL,"No writable config file found: unable to set value");
 	return false;
 }
 
@@ -193,7 +193,7 @@ bool Configuration::set(std::string key, bool value)
 		}
 	}
 
-	PERR("No writable config file found: unable to set value");
+	DEBUG(0,LEVEL_CRITICAL,"No writable config file found: unable to set value");
 	return false;
 }
 

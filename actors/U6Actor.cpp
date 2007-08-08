@@ -393,7 +393,7 @@ bool U6Actor::init_tangle_vine()
 {
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     uint8 num_vines = NUVIE_RAND()%4+1;
-    PERR("init_tangle_vine() %d at %x,%x with %d vines\n",id_n,x,y,num_vines);
+    DEBUG(0,LEVEL_DEBUGGING,"init_tangle_vine() %d at %x,%x with %d vines\n",id_n,x,y,num_vines);
     const struct { sint8 x, y; } vine_pos[4] = { {-1,0},{+1,0},{0,-1},{0,+1} };
     // Pod may have already been initialized, so just add vines where none
     // currently exist.
@@ -407,13 +407,13 @@ bool U6Actor::init_tangle_vine()
             if(actor_manager->create_temp_actor(OBJ_U6_TANGLE_VINE,vx,vy,z,alignment,WORKTYPE_U6_TANGLE,&vine))
             {
                 vine->set_direction((v==0)?NUVIE_DIR_W:(v==1)?NUVIE_DIR_E:(v==2)?NUVIE_DIR_N:NUVIE_DIR_S);
-if(vine) PERR("    new vine %d at %x,%x\n",v,vine->get_location().x,vine->get_location().y);
+if(vine) DEBUG(0,LEVEL_DEBUGGING,"    new vine %d at %x,%x\n",v,vine->get_location().x,vine->get_location().y);
             }
 
         }
         else
         {
-if(vine) PERR("    preexisting vine %d at %x,%x\n",v,vine->get_location().x,vine->get_location().y);
+if(vine) DEBUG(0,LEVEL_DEBUGGING,"    preexisting vine %d at %x,%x\n",v,vine->get_location().x,vine->get_location().y);
             return true; // no room!
         }
     } while(++v < num_vines);
@@ -578,7 +578,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
      {
        case OBJ_U6_FIRE_FIELD : // ouch, fire
        {
-         PERR("warning: find correct fire damage amount\n");
+         DEBUG(0,LEVEL_WARNING,"FIXME: find correct fire field damage amount\n");
          hit(5); // -?? hp?
          scroll->display_string("\n");
          scroll->display_prompt();
@@ -644,7 +644,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
    Tile *tile = map->get_tile(new_x,new_y,new_z);
    if(tile->tile_num>=221&&tile->tile_num<=223) // lava
      {
-      PERR("warning: find correct lava damage amount\n");
+      DEBUG(0,LEVEL_WARNING,"FIXME: find correct lava damage amount\n");
       hit(5);
       scroll->display_string("\n");
       scroll->display_prompt();
@@ -1225,11 +1225,11 @@ void U6Actor::wt_combat()
         ActorList *actors = is_in_party() ? find_enemies() : find_players();
         if(actors)
         {
-//PERR("%s yells \"Aiee!", get_name());
+//DEBUG(0,LEVEL_DEBUGGING,"%s yells \"Aiee!", get_name());
             actor_mgr->sort_nearest(actors,x,y,z);
             if(worktype == WORKTYPE_U6_COMBAT_RETREAT)
             {
-//PERR(" %s is trying to get me!\"", actors->front()->get_name());
+//DEBUG(0,LEVEL_DEBUGGING," %s is trying to get me!\"", actors->front()->get_name());
                 repel_from(actors->front());
             }
             else // shy creatures only flee if very close
@@ -1241,7 +1241,7 @@ void U6Actor::wt_combat()
                     ploc = pactor->get_location();
                     if(is_nearby(ploc, 2))
                     {
-//PERR(" %s is trying to get me!", pactor->get_name());
+//DEBUG(0,LEVEL_DEBUGGING," %s is trying to get me!", pactor->get_name());
                         repel_from(pactor);
                         break;
                     }
@@ -1249,7 +1249,7 @@ void U6Actor::wt_combat()
                 }
             }
             delete actors;
-//PERR("\"\n");
+//DEBUG(0,LEVEL_DEBUGGING,"\"\n");
         }
     }
     // follow
@@ -1267,7 +1267,7 @@ void U6Actor::wt_combat()
     // turn wild if near player
     if(worktype == WORKTYPE_U6_COMBAT_UNFRIENDLY)
     {
-//PERR("%s looks threatening.\n", get_name());
+//DEBUG(0,LEVEL_DEBUGGING,"%s looks threatening.\n", get_name());
         ActorList *actors = find_players();
         if(actors)
         {
@@ -1284,11 +1284,11 @@ void U6Actor::wt_combat()
        || worktype == WORKTYPE_U6_COMBAT_ASSAULT
        || worktype == WORKTYPE_U6_COMBAT_REAR)
     {
-//PERR("%s is looking for trouble", get_name());
+//DEBUG(0,LEVEL_DEBUGGING,"%s is looking for trouble", get_name());
         ActorList *actors = find_enemies();
         if(actors)
         {
-//PERR(", and finds someone to fight!\n");
+//DEBUG(1,LEVEL_DEBUGGING,", and finds someone to fight!\n");
             if(worktype == WORKTYPE_U6_COMBAT_BERSERK)
                 sort(actors->begin(), actors->end(), cmp_level());
             else
@@ -1301,7 +1301,7 @@ void U6Actor::wt_combat()
             }
             delete actors;
         }
-//else PERR(".\n");
+//else DEBUG(1,LEVEL_DEBUGGING,".\n");
     }
 
     if(!attacking && !pathfinder)
@@ -1319,7 +1319,7 @@ void U6Actor::wt_player()
     }
 
     // else do player update, raft, balloon, etc
-    PERR("U6Actor: Player (%d)\n", id_n);
+    DEBUG(0,LEVEL_DEBUGGING,"U6Actor: Player (%d)\n", id_n);
 }
 
 // move towards enemies, dropping tangle vines as we go
@@ -1858,7 +1858,7 @@ inline void U6Actor::twitch_obj(Obj *obj)
 {
  if(actor_type->frames_per_direction == 0)
    {
-    PERR("warning: %s frames_per_direction == 0\n",get_name());
+    DEBUG(0,LEVEL_WARNING,"FIXME: %s frames_per_direction == 0\n",get_name());
     obj->frame_n = (obj->frame_n / (1 * 4) * (1 * 4)) + direction * actor_type->tiles_per_direction +
                        walk_frame * actor_type->tiles_per_frame;
     return;
@@ -2115,7 +2115,7 @@ uint8 U6Actor::get_maxmagic()
         return uint8(intelligence);
     if(obj_n == OBJ_U6_AVATAR)
         return uint8(intelligence*2);
-    if(!is_in_party()) PERR("warning: %s (%d) has unknown max. magic points\n", get_name(), id_n);
+    if(!is_in_party()) DEBUG(0,LEVEL_WARNING,"FIXME: %s (%d) has unknown max. magic points\n", get_name(), id_n);
     return 0;
 }
 

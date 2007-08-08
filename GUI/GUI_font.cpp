@@ -32,7 +32,7 @@ GUI_Font::GUI_Font(char *name)
   else
   {
     freefont=0;
-    PERR("Could not load font.\n");
+    DEBUG(0,LEVEL_EMERGENCY,"Could not load font.\n");
     exit(1);
   }
   SetTransparency(1);

@@ -149,7 +149,7 @@ void ConverseInterpret::step()
         else
         {
 #ifdef CONVERSE_DEBUG
-            PERR("Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
+            DEBUG(0,LEVEL_DEBUGGING"Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
 #endif
             converse->print("[Tried to print a control char.]\n");
             cs->skip();
@@ -197,7 +197,7 @@ void ConverseInterpret::leave()
     {
         struct convi_frame_s *fp = b_frame->top();
 #ifdef CONVERSE_DEBUG
-PERR("Converse: ...leave %02x...\n", fp->start_c);
+        DEBUG(0,LEVEL_DEBUGGING,"Converse: ...leave %02x...\n", fp->start_c);
 #endif
         delete fp; fp = NULL;
         b_frame->pop();
@@ -222,7 +222,7 @@ void ConverseInterpret::enter(converse_value c)
         b_frame = new stack<struct convi_frame_s *>;
     b_frame->push(ef);
 #ifdef CONVERSE_DEBUG
-PERR("Converse: ...enter %02x...\n", ef->start_c);
+DEBUG(0,LEVEL_DEBUGGING,"Converse: ...enter %02x...\n", ef->start_c);
 #endif
 }
 
@@ -267,7 +267,7 @@ void ConverseInterpret::exec()
     }
 #ifdef CONVERSE_DEBUG
     else if(get_val(0) != 0x00) // show stepped over ctrl code (not text)
-        PERR("Converse: %04x ----: %02x\n", in_start, get_val(0));
+        DEBUG(0,LEVEL_DEBUGGING,"Converse: %04x ----: %02x\n", in_start, get_val(0));
 #endif
     flush();
     converse->set_output(""); // clear output
@@ -371,10 +371,10 @@ void ConverseInterpret::do_ctrl()
 {
     stack<converse_value> st;
 #ifdef CONVERSE_DEBUG
-    PERR("Converse: %04x INSTR:", in_start);
+    DEBUG(0,LEVEL_DEBUGGING,"Converse: %04x INSTR:", in_start);
     for(uint32 v = 0; v < val_count(); v++)
-        PERR(" 0x%02x", get_val(v));
-    PERR("\n");
+        DEBUG(0,LEVEL_DEBUGGING," 0x%02x", get_val(v));
+    DEBUG(0,LEVEL_DEBUGGING,"\n");
 #endif
 
     while(val_count())
@@ -570,7 +570,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         case U6OP_JUMP: // 0xb0
             v[0] = pop_arg(i);
 #ifdef CONVERSE_DEBUG
-            PERR("Converse: JUMP 0x%04x\n", v[0]);
+            DEBUG(0,LEVEL_DEBUGGING,"Converse: JUMP 0x%04x\n", v[0]);
 #endif
             cs->seek(v[0]);
             leave_all(); // always run
@@ -688,8 +688,8 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         case U6OP_SIDENT: // 0xff, arg 1 is id number, name follows
             v[0] = pop_arg(i);
             if(v[0] != converse->npc_num)
-                PERR(
-                        "Converse: warning: npc number in script (%d) does not"
+                DEBUG(0,LEVEL_WARNING,
+                        "Converse: npc number in script (%d) does not"
                         " match actor number (%d)\n", v[0], converse->npc_num);
             converse->name = strdup(get_text().c_str()); // collected
             break;
@@ -737,7 +737,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             break;
         default:
             converse->print("[Unknown command]\n");
-            PERR( "Converse: UNK OP=%02x\n", in);
+            DEBUG(0,LEVEL_ERROR,"Converse: UNK OP=%02x\n", in);
             success = false;
     }
     return(success);
@@ -807,7 +807,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             v[0] = pop_arg(i);
             if(v[1] == 0)
             {
-                PERR( "Converse: Divide error\n");
+                DEBUG(0,LEVEL_ERROR,"Converse: Divide error\n");
                 success = false;
                 stop();
             }
@@ -1039,7 +1039,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             }
             break;
         default:
-            PERR( "Converse: UNK EVOP=%02x\n", in);
+            DEBUG(0,LEVEL_ERROR,"Converse: UNK EVOP=%02x\n", in);
             success = false;
     }
     i.push(out);
@@ -1056,9 +1056,9 @@ void ConverseInterpret::eval(uint32 vi)
     stack<converse_value> op_stk, r_stk;
     uint32 v = vi;
 #ifdef CONVERSE_DEBUG
-    PERR("Converse: EVAL");
+    DEBUG(0,LEVEL_DEBUGGING,"Converse: EVAL");
     for(uint32 w = 0; w < val_count(); w++)
-        PERR(" %s0x%02x%s", (w == vi) ? "(" : "", get_val(w), (w == val_count() - 1) ? ")" : "");
+        DEBUG(1,LEVEL_DEBUGGING," %s0x%02x%s", (w == vi) ? "(" : "", get_val(w), (w == val_count() - 1) ? ")" : "");
 #endif
 
     while(v < val_count())
@@ -1081,12 +1081,12 @@ void ConverseInterpret::eval(uint32 vi)
     }
 
 #ifdef CONVERSE_DEBUG
-    PERR(, " ->");
+    DEBUG(1,LEVEL_DEBUGGING, " ->");
     if(val_count())
     {
         for(uint32 w = 0; w < val_count(); w++)
-            PERR(" 0x%02x", get_val(w));
-        PERR("\n");
+            DEBUG(1,LEVEL_DEBUGGING," 0x%02x", get_val(w));
+        DEBUG(1,LEVEL_DEBUGGING,"\n");
     }
 #endif
 }
@@ -1265,7 +1265,7 @@ converse_value ConverseInterpret::find_db_string(uint32 loc, const char *dstring
            p = 0, /* pointer into db */
            i = 0; /* item index */
 #ifdef CONVERSE_DEBUG
-PERR("\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
+DEBUG(0,LEVEL_DEBUGGING,"\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
 #endif
     while((converse_value)(db[p]) != U6OP_ENDDATA)
     {
@@ -1298,7 +1298,7 @@ PERR("\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
         ++i;
     }
 #ifdef CONVERSE_DEBUG
-PERR("\nConverse: find_db_string: not found; returning %d\n", i);
+DEBUG(0,LEVEL_DEBUGGING,"\nConverse: find_db_string: not found; returning %d\n", i);
 #endif
     return(i);
 }

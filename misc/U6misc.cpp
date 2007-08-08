@@ -126,12 +126,12 @@ void print_b16(uint16 num)
   return;
 }
 
-void print_indent(uint8 indent)
+void print_indent(DebugLevelType level,uint8 indent)
 {
  uint16 i;
 
  for(i=0;i < indent;i++)
-  PERR(" ");
+  DEBUG(1,level," ");
 
  return;
 }

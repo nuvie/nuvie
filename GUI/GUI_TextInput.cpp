@@ -37,7 +37,7 @@ GUI_TextInput:: GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str
 
  if(text == NULL)
   {
-   PERR("Error: GUI_TextInput: allocating memory for text\n");
+   DEBUG(0,LEVEL_ERROR,"GUI_TextInput failed to allocate memory for text\n");
    return;
   }
 

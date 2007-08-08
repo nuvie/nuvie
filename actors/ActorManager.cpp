@@ -545,7 +545,7 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
 
  if(!update)
   return;
-//PERR("updateActors()\n");
+//DEBUG(0,LEVEL_DEBUGGING,"updateActors()\n");
 
  cur_x = x; cur_y = y; cur_z = z;
 
@@ -582,7 +582,7 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
 // After player/party moves, continue moving actors.
 void ActorManager::startActors()
 {
-//PERR("startActors()\n");
+//DEBUG(0,LEVEL_DEBUGGING,"startActors()\n");
     // add player after they move (if they have any moves left)
     if(combat_movement == true)
         activate_actor(active_actors.begin(), actors[player_actor]);
@@ -597,11 +597,11 @@ void ActorManager::updateTime()
     if(!update)
         return;
 
-//PERR("updateTime(): ");
+//DEBUG(0,LEVEL_DEBUGGING,"updateTime(): ");
     for(int i=0; i<ACTORMANAGER_MAX_ACTORS; i++)
         actors[i]->update_time(); // **UPDATE MOVES LEFT**
     clock->inc_minute(); // **UPDATE TIME**
-//PERR("%d:%02d\n",clock->get_hour(),clock->get_minute());
+//DEBUG(0,LEVEL_DEBUGGING,"%d:%02d\n",clock->get_hour(),clock->get_minute());
     uint8 cur_hour = clock->get_hour();
     if(cur_hour != game_hour) // moved from updateActors() (SB-X)
     {
@@ -617,7 +617,7 @@ void ActorManager::updateTime()
 // Return control to player.
 void ActorManager::stopActors()
 {
-//PERR("stopActors()\n\n\n\n\n");
+//DEBUG(0,LEVEL_DEBUGGING,"stopActors()\n\n\n\n\n");
     Game::get_game()->unpause_user();
     wait_for_player = true;
 }
@@ -696,16 +696,16 @@ inline bool ActorManager::update_actor(Actor *actor)
         if(actor->get_location().is_visible()
            && (clock->get_ticks()-actor->move_time) < (combat_movement?250:66)) // FIXME: Replace with animation.
             return false; // Don't move again so soon, and block others.
-//PERR("update_actor(%d) %d moves",actor->id_n,actor->moves);
+//DEBUG(0,LEVEL_DEBUGGING,"update_actor(%d) %d moves",actor->id_n,actor->moves);
     actor->update(); // *UPDATE*
     if(actor->id_n == player_actor)
     {
-//PERR(" -> player\n");
+//DEBUG(1,LEVEL_DEBUGGING," -> player\n");
         stopActors(); // Player's turn
     }
     else if(actor->moves == moves_pre_update && actor->moves > 0)
         actor->set_moves_left(0); // Pass - use up moves (prevents endless loop)
-//else PERR(" -> %d moves left\n",actor->moves);
+//else DEBUG(1,LEVEL_DEBUGGING," -> %d moves left\n",actor->moves);
     return true;
 }
 
@@ -745,10 +745,10 @@ inline bool ActorManager::can_party_move()
 // Sort actors by order of movement.
 void ActorManager::update_active_actors(uint16 x, uint16 y, uint8 z)
 {
-//PERR("update_active_actors(): ");
+//DEBUG(0,LEVEL_DEBUGGING,"update_active_actors(): ");
     ActorList *new_active_actors = get_actor_list(); // sorted by actor number
     filter_active_actors(new_active_actors, x,y,z);
-//PERR("%d can move\n",new_active_actors->size());
+//DEBUG(1,LEVEL_DEBUGGING,"%d can move\n",new_active_actors->size());
     stable_sort(new_active_actors->begin(), new_active_actors->end(),
                 Actor::cmp_move_fraction()); // sorted by movement order
 
@@ -803,7 +803,7 @@ bool ActorManager::loadActorSchedules()
 
  if(bytes_read != (uint32)(total_schedules * SCHEDULE_SIZE))
    {
-    PERR("Error: Reading schedules!\n");
+    DEBUG(0,LEVEL_ERROR,"Failed to read schedules!\n");
     return false;
    }
 
@@ -887,14 +887,14 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    actor->set_worktype(worktype);
    actor->show();
 
-   PERR("Adding Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
+   DEBUG(0,LEVEL_INFORMATIONAL,"Adding Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
 
    if(new_actor)
     *new_actor = actor;
    return true;
   }
  else
-  PERR("***All Temp Actor Slots Full***\n");
+  DEBUG(0,LEVEL_NOTIFICATION,"***All Temp Actor Slots Full***\n");
 
  if(new_actor)
   *new_actor = NULL;
@@ -982,7 +982,7 @@ void ActorManager::clean_temp_actors_from_area(uint16 x, uint16 y)
 
 inline void ActorManager::clean_temp_actor(Actor *actor)
 {
- PERR("Removing Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
+ DEBUG(0,LEVEL_INFORMATIONAL,"Removing Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
  actor->obj_n = 0;
  actor->clear();
 

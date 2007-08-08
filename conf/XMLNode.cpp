@@ -162,7 +162,7 @@ void XMLNode::xmlassign(const string &key, const string &value)
 		if(id==key)
 			content = value;
 		else
-			PERR("Walking the XML tree failed to create a final node.");
+			DEBUG(0,LEVEL_CRITICAL,"Walking the XML tree failed to create a final node.");
 		return;
 	}
 	string k;

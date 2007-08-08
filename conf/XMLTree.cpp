@@ -89,7 +89,7 @@ bool XMLTree::readConfigFile(std::string fname)
  f.open(fname.c_str(),std::ios::in);
  if(f.is_open() == false)
   {
-   PERR("Error opening config file");
+   DEBUG(0,LEVEL_CRITICAL,"Error opening config file");
    return false;
   }
 
@@ -118,7 +118,7 @@ bool XMLTree::readConfigString(std::string s)
 	while(isspace(s[nn])) ++nn;
 
 	if (s[nn] != '<') {
-		PERR("Error reading config file");
+		DEBUG(0,LEVEL_ERROR,"expected '<' while reading config file, found %c\n",s[nn]);
 		return false;
 	}
 	++nn;

@@ -235,7 +235,7 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
   }
  catch(const char *error_string)
   {
-   PERR("Error: %s\n",error_string);
+   DEBUG(0,LEVEL_ERROR,"%s\n",error_string);
    return false;
   }
 

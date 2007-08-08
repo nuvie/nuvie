@@ -374,7 +374,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  {
     set_error(ACTOR_OUT_OF_MOVES);
 //    return false;
-    PERR("warning: actor %d is out of moves\n", id_n);
+    DEBUG(0,LEVEL_WARNING,"actor %d is out of moves\n", id_n);
  }
 
  // blocking actors are checked for later
@@ -562,7 +562,7 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
  assert(combat_type != NULL); // this should be set 
 // if(combat_type == NULL)
 //   return;
- PERR("%s (%d) attacking %s (%d)\n",get_name(),id_n,actor->get_name(),actor->id_n);
+ DEBUG(0,LEVEL_DEBUGGING,"%s (%d) attacking %s (%d)\n",get_name(),id_n,actor->get_name(),actor->id_n);
  face_actor(actor);
 
 /* if(actor->defend(dex, combat_type->attack) == false)
@@ -1122,7 +1122,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
     sched[i]->z = (sched_data_ptr[4] & 0xf0) >> 4;
     sched_data_ptr += 5;
 #ifdef ACTOR_DEBUG
-    PERR("#%04d %03x,%03x,%x hour %2d day of week %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->day_of_week,sched[i]->worktype);
+    DEBUG(0,LEVEL_DEBUGGING,"#%04d %03x,%03x,%x hour %2d day of week %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->day_of_week,sched[i]->worktype);
 #endif
    }
 
@@ -1157,7 +1157,7 @@ bool Actor::updateSchedule(uint8 hour)
  // U6: temp. fix for walking statues; they shouldn't have schedules
  if(id_n >= 188 && id_n <= 200)
   {
-   PERR("warning: tried to update schedule for non-movable actor %d\n", id_n);
+   DEBUG(0,LEVEL_WARNING,"tried to update schedule for non-movable actor %d\n", id_n);
    return(false);
   }
 
@@ -1194,7 +1194,7 @@ uint16 Actor::getSchedulePos(uint8 hour, uint8 day_of_week)
 {
  uint16 i,j;
  if(id_n == 133)
-  PERR(".");
+  DEBUG(0,LEVEL_DEBUGGING,".");
 
  i = getSchedulePos(hour);
 
@@ -1379,7 +1379,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
  else
   total_armor_class = body_armor_class;
 */
- PERR("attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
+ DEBUG(0,LEVEL_DEBUGGING,"attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
 
  if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
    {
@@ -1394,7 +1394,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
     if(total_armor_class > 0)
       ac_saving_throw = NUVIE_RAND() % total_armor_class;
 
-    PERR(", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
+    DEBUG(1,LEVEL_DEBUGGING,", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
 
     if(damage > ac_saving_throw)
       {
@@ -1402,7 +1402,7 @@ bool Actor::defend(uint8 attack, uint8 weapon_damage)
        return false; // actor took damage
       }
    }
- else PERR("\n");
+ else DEBUG(1,LEVEL_DEBUGGING,"\n");
  return true; // actor defended this attack
 }
 #endif
@@ -1421,7 +1421,7 @@ uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
  else
   total_armor_class = body_armor_class;
 */
- PERR("attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
+ DEBUG(0,LEVEL_DEBUGGING,"attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
 
  if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
    {
@@ -1435,14 +1435,14 @@ uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
     if(total_armor_class > 0)
       ac_saving_throw = NUVIE_RAND() % total_armor_class;
 
-    PERR(", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
+    DEBUG(1,LEVEL_DEBUGGING,", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
 
     if(damage > ac_saving_throw)
       {
        return damage-ac_saving_throw; // actor took damage
       }
    }
- else PERR("\n");
+ else DEBUG(1,LEVEL_DEBUGGING,"\n");
  return 0; // actor defended this attack
 }
 
@@ -1450,7 +1450,7 @@ uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
 /* Subtract amount from hp. May die if hp is too low. */
 void Actor::reduce_hp(uint8 amount)
 {
- PERR("hit %s for %d points\n", get_name(), amount);
+ DEBUG(0,LEVEL_DEBUGGING,"hit %s for %d points\n", get_name(), amount);
 
     if(amount <= hp) hp -= amount;
     else hp = 0;
@@ -1646,77 +1646,77 @@ bool Actor::is_immobile()
 void Actor::print()
 {
     Actor *actor = this;
-    PERR("\n");
-    PERR("%s at %x, %x, %x\n", get_name(), actor->x, actor->y, actor->z);
-    PERR("id_n: %d\n", actor->id_n);
+    DEBUG(0,LEVEL_INFORMATIONAL,"\n");
+    DEBUG(1,LEVEL_INFORMATIONAL,"%s at %x, %x, %x\n", get_name(), actor->x, actor->y, actor->z);
+    DEBUG(1,LEVEL_INFORMATIONAL,"id_n: %d\n", actor->id_n);
 
-    PERR("obj_n: %03d    frame_n: %d\n", actor->obj_n, actor->frame_n);
-    PERR("base_obj_n: %03d    old_frame_n: %d\n", actor->base_obj_n, actor->old_frame_n);
+    DEBUG(1,LEVEL_INFORMATIONAL,"obj_n: %03d    frame_n: %d\n", actor->obj_n, actor->frame_n);
+    DEBUG(1,LEVEL_INFORMATIONAL,"base_obj_n: %03d    old_frame_n: %d\n", actor->base_obj_n, actor->old_frame_n);
 
     uint8 direction = actor->direction;
-    PERR("direction: %d (%s)\n", direction, (direction==NUVIE_DIR_N)?"north":
+    DEBUG(1,LEVEL_INFORMATIONAL,"direction: %d (%s)\n", direction, (direction==NUVIE_DIR_N)?"north":
                                               (direction==NUVIE_DIR_E)?"east":
                                               (direction==NUVIE_DIR_S)?"south":
                                               (direction==NUVIE_DIR_W)?"west":"???");
-    PERR("walk_frame: %d\n", actor->walk_frame);
+    DEBUG(1,LEVEL_INFORMATIONAL,"walk_frame: %d\n", actor->walk_frame);
 
-    PERR("can_move: %s\n", actor->can_move ? "true" : "false");
-    PERR("alive: %s\n", actor->alive ? "true" : "false");
-    PERR("in_party: %s\n", is_in_party() ? "true" : "false");
-    PERR("visible_flag: %s\n", actor->visible_flag ? "true" : "false");
-    PERR("met_player: %s\n", actor->met_player ? "true" : "false");
-    PERR("is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
+    DEBUG(1,LEVEL_INFORMATIONAL,"can_move: %s\n", actor->can_move ? "true" : "false");
+    DEBUG(1,LEVEL_INFORMATIONAL,"alive: %s\n", actor->alive ? "true" : "false");
+    DEBUG(1,LEVEL_INFORMATIONAL,"in_party: %s\n", is_in_party() ? "true" : "false");
+    DEBUG(1,LEVEL_INFORMATIONAL,"visible_flag: %s\n", actor->visible_flag ? "true" : "false");
+    DEBUG(1,LEVEL_INFORMATIONAL,"met_player: %s\n", actor->met_player ? "true" : "false");
+    DEBUG(1,LEVEL_INFORMATIONAL,"is_immobile: %s\n", actor->is_immobile() ? "true" : "false");
 
-    PERR("moves: %d\n", actor->moves);
+    DEBUG(1,LEVEL_INFORMATIONAL,"moves: %d\n", actor->moves);
 
     const char *wt_string = get_worktype_string(actor->worktype);
     if(!wt_string) wt_string = "???";
-    PERR("worktype: 0x%02x/%03d %s\n", actor->worktype, actor->worktype, wt_string);
+    DEBUG(1,LEVEL_INFORMATIONAL,"worktype: 0x%02x/%03d %s\n", actor->worktype, actor->worktype, wt_string);
 
-    PERR("NPC stats:\n");
-    PERR(" level: %d    exp: %d    hp: %d / %d\n", actor->level, actor->exp,
+    DEBUG(1,LEVEL_INFORMATIONAL,"NPC stats:\n");
+    DEBUG(1,LEVEL_INFORMATIONAL," level: %d    exp: %d    hp: %d / %d\n", actor->level, actor->exp,
            actor->hp, actor->get_maxhp());
-    PERR(" strength: %d    dex: %d    int: %d\n", actor->strength, actor->dex,
+    DEBUG(1,LEVEL_INFORMATIONAL," strength: %d    dex: %d    int: %d\n", actor->strength, actor->dex,
            actor->intelligence);
-    PERR(" magic: %d / %d\n", actor->magic, actor->get_maxmagic());
+    DEBUG(1,LEVEL_INFORMATIONAL," magic: %d / %d\n", actor->magic, actor->get_maxmagic());
 
-    PERR("alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
+    DEBUG(1,LEVEL_INFORMATIONAL,"alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
 
     uint8 combat_mode = actor->combat_mode;
     wt_string = get_worktype_string(actor->combat_mode);
     if(!wt_string) wt_string = "???";
-    PERR("combat_mode: %d %s\n", combat_mode, wt_string);
+    DEBUG(1,LEVEL_INFORMATIONAL,"combat_mode: %d %s\n", combat_mode, wt_string);
 
-    PERR("Object flags: ");
+    DEBUG(1,LEVEL_INFORMATIONAL,"Object flags: ");
     print_b(actor->obj_flags);
-    PERR("\n");
+    DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 
-    PERR("NPC flags: ");
+    DEBUG(1,LEVEL_INFORMATIONAL,"NPC flags: ");
     print_b(actor->status_flags);
-    PERR("\n");
+    DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 
-    PERR("Talk flags: ");
+    DEBUG(1,LEVEL_INFORMATIONAL,"Talk flags: ");
     print_b(actor->talk_flags);
-    PERR("\n");
+    DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 
     uint32 inv = actor->inventory_count_objects(true);
     if(inv)
     {
-        PERR("Inventory (+readied): %d objects\n", inv);
+        DEBUG(1,LEVEL_INFORMATIONAL,"Inventory (+readied): %d objects\n", inv);
 /*        U6LList *inv_list = actor->get_inventory_list();
         for(U6Link *link = inv_list->start(); link != NULL; link=link->next)
         {
             Obj *obj = (Obj *)link->data;
-            PERR(" %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
+            DEBUG(1,LEVEL_INFORMATIONAL," %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
                    obj_manager->look_obj(obj), obj->obj_n, obj->frame_n, obj->quality,
                    obj->qty, obj_manager->get_obj_weight(obj, false));
         }
-        PERR("(weight %f / %f)\n", actor->get_inventory_weight(),
+        DEBUG(1,LEVEL_INFORMATIONAL,"(weight %f / %f)\n", actor->get_inventory_weight(),
                actor->inventory_get_max_weight());*/
     }
     if(actor->sched && *actor->sched)
     {
-        PERR("Schedule:\n");
+        DEBUG(1,LEVEL_INFORMATIONAL,"Schedule:\n");
         Schedule **s = actor->sched;
         uint32 sp = 0;
         do
@@ -1724,17 +1724,17 @@ void Actor::print()
             wt_string = get_worktype_string(s[sp]->worktype);
             if(!wt_string) wt_string = "???";
             if(sp == actor->sched_pos && s[sp]->worktype == actor->worktype)
-                PERR("*%d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)*\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
+                DEBUG(1,LEVEL_INFORMATIONAL,"*%d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)*\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
             else
-                PERR(" %d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
+                DEBUG(1,LEVEL_INFORMATIONAL," %d: location=0x%03x,0x%03x,0x%x  time=%02d:00  day=%d  worktype=0x%02x(%s)\n", sp, s[sp]->x, s[sp]->y, s[sp]->z, s[sp]->hour, s[sp]->day_of_week, s[sp]->worktype, wt_string);
         } while(s[++sp]);
     }
 
     if(!actor->surrounding_objects.empty())
-        PERR("Actor has multiple tiles\n");
+        DEBUG(1,LEVEL_INFORMATIONAL,"Actor has multiple tiles\n");
     if(actor->pathfinder)
-        PERR("Actor is on a path\n");
-    PERR("\n");
+        DEBUG(1,LEVEL_INFORMATIONAL,"Actor is on a path\n");
+    DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 }
 
 

@@ -99,7 +99,7 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
  
  config->pathFromValue("config/ultima6/townsdir", filename, sample_file);
  
- PERR("Loading Speech Sample %s:%d\n", sample_file.c_str(), sample_num);
+ DEBUG(0,LEVEL_DEBUGGING,"Loading Speech Sample %s:%d\n", sample_file.c_str(), sample_num);
  
  wav_buffer = load_speech(sample_file, sample_num);
 
@@ -151,7 +151,7 @@ NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_n
      case 3 : upsampled_size += 6; break;
     }
    
-   PERR("decomp_size %d, upsampled_size %d\n", decomp_size, upsampled_size);
+   DEBUG(0,LEVEL_DEBUGGING,"decomp_size %d, upsampled_size %d\n", decomp_size, upsampled_size);
    
    wav_data = (unsigned char *)malloc(upsampled_size * sizeof(sint16) + 44); // 44 = size of wav header
    

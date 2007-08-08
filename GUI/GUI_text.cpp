@@ -56,7 +56,7 @@ GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font
 
  if(text == NULL)
   {
-   PERR("Error: GUI_Text: allocating memory for text\n");
+   DEBUG(0,LEVEL_ERROR,"GUI_Text: failed to allocate memory for text\n");
    return;
   }
 

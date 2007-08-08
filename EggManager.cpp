@@ -139,15 +139,15 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
           (*egg)->obj->status |= OBJ_STATUS_EGG_ACTIVE;
 
           hatch_probability = NUVIE_RAND()%100;
-          PERR("Checking Egg (%x,%x,%x). Rand: %d Probability: %d%%",(*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z,hatch_probability,(*egg)->obj->qty);
+          DEBUG(0,LEVEL_DEBUGGING,"Checking Egg (%x,%x,%x). Rand: %d Probability: %d%%",(*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z,hatch_probability,(*egg)->obj->qty);
 
-          PERR(" Align: %s", get_actor_alignment_str(quality % 10));
+          DEBUG(1,LEVEL_DEBUGGING," Align: %s", get_actor_alignment_str(quality % 10));
 
-          if(quality < 10)      PERR(" (always)");    // 0-9
-          else if(quality < 20) PERR(" (day)");       // 10-19
-          else if(quality < 30) PERR(" (night)");     // 20-29
-          else if(quality < 40) PERR(" (day+night)"); // 30-39
-          PERR("\n");
+          if(quality < 10)      DEBUG(1,LEVEL_DEBUGGING," (always)");    // 0-9
+          else if(quality < 20) DEBUG(1,LEVEL_DEBUGGING," (day)");       // 10-19
+          else if(quality < 30) DEBUG(1,LEVEL_DEBUGGING," (night)");     // 20-29
+          else if(quality < 40) DEBUG(1,LEVEL_DEBUGGING," (day+night)"); // 30-39
+          DEBUG(1,LEVEL_DEBUGGING,"\n");
           spawn_egg((*egg)->obj, hatch_probability);
          }
       }

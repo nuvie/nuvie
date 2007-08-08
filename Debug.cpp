@@ -24,8 +24,9 @@
 #include <stdarg.h>
 #include <time.h>
 #include <nuvieDefs.h>
+#ifndef WITHOUT_DEBUG
 
-void debug(DebugLevelType level, const char *format, ...)
+void debug(bool no_header=false,DebugLevelType level=LEVEL_DEBUGGING, const char *format="aarrgghh..", ...)
 {
   static const char* DebugLevelNames[]= { "EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING" };
   static DebugLevelType CurrentDebugLevel=LEVEL_DEBUGGING;
@@ -40,19 +41,21 @@ void debug(DebugLevelType level, const char *format, ...)
   }
   if (level>CurrentDebugLevel) { return; } // Don't call ourselves here to log something like 'message suppressed'
   now=time(NULL);
-  fprintf(stderr,"%zd [%s]>",(size_t)now,DebugLevelNames[(unsigned char)level]);
+  if (!no_header) {fprintf(stderr,"%zd [%s]>",(size_t)now,DebugLevelNames[(unsigned char)level]);}
   vfprintf(stderr,format,ap);
   va_end(ap);
 }
+#endif /* WITHOUT_DEBUG */
 
 /* test code / documentation.
 int main(char ** argv,int argc)
 {
-  DEBUG(LEVEL_EMERGENCY,NULL); // to set the debug cut-off rather high
-  DEBUG(LEVEL_EMERGENCY,"%d %c %s\n",1,'a',"aarrgghh..");
-  DEBUG(LEVEL_ALERT,"%d %c %s\n",1,'a',"RED"); // should be suppressed
-  DEBUG(LEVEL_DEBUGGING,NULL); // to allow all messages through.
-  DEBUG(LEVEL_DEBUGGING,"%d %c %s\n",1,'a',"debugging");
+  DEBUG(0,LEVEL_EMERGENCY,NULL); // to set the debug cut-off rather high
+  DEBUG(0,LEVEL_EMERGENCY,"%d %c %s\n",1,'a',"aarrgghh..");
+  DEBUG(1,LEVEL_EMERGENCY,"continuation of aarrgghh..");
+  DEBUG(0,LEVEL_ALERT,"%d %c %s\n",1,'a',"RED"); // should be suppressed
+  DEBUG(0,LEVEL_DEBUGGING,NULL); // to allow all messages through.
+  DEBUG(0,LEVEL_DEBUGGING,"%d %c %s\n",1,'a',"debugging");
   return 1;
 }
 */

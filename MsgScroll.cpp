@@ -539,7 +539,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
         default: // alphanumeric characters
                  if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
                    ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
-                 else PERR("warning: unhandled unicode value (%d)\n",key.unicode);
+                 else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
                  if(input_mode && isprint(ascii))
                   {
                    if(permit_input == NULL)
@@ -629,7 +629,7 @@ MsgText *MsgScroll::get_token_at_pos(uint16 x, uint16 y)
    {
     token = (*iter)->get_text_at_pos(buf_x);
     if(token)
-       PERR("Token at (%d,%d) = %s\n",buf_x, buf_y, token->s.c_str());
+       DEBUG(0,LEVEL_DEBUGGING,"Token at (%d,%d) = %s\n",buf_x, buf_y, token->s.c_str());
    }
 
  return token;

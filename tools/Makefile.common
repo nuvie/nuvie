@@ -9,6 +9,7 @@ u6decomp_SOURCES = \
 unpack_conv_SOURCES = \
 	unpack_conv.cpp \
 \
+  	../Debug.cpp \
 	../conf/Configuration.cpp \
 	../conf/Configuration.h \
 	../conf/XMLNode.cpp \
@@ -29,6 +30,7 @@ unpack_conv_SOURCES = \
 unpack_portraits_SOURCES = \
 	unpack_portraits.cpp \
 \
+  	../Debug.cpp \
 	../files/NuvieIO.cpp \
 	../files/NuvieIO.h \
 	../files/NuvieIOFile.cpp \

@@ -158,7 +158,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
  list = new U6LList();
 
  num_objs = chunk_buf->read2();
- //PERR("chunk %02d number of objects: %d\n", chunk_offset, num_objs);
+ //DEBUG(0,LEVEL_DEBUGGING,"chunk %02d number of objects: %d\n", chunk_offset, num_objs);
 
  for(i=0;i<num_objs;i++)
   {
@@ -279,7 +279,7 @@ bool ObjManager::save_eggs(NuvieIO *save_buf)
  save_buf->write2(obj_save_count);
  save_buf->seek(finish_pos);
 
- PERR("Eggs: %d\n", obj_save_count);
+ DEBUG(0,LEVEL_DEBUGGING,"Eggs: %d\n", obj_save_count);
 
  return true;
 }
@@ -308,7 +308,7 @@ bool ObjManager::save_inventories(NuvieIO *save_buf)
       }
    }
 
- PERR("Actor Inventories: %d\n", obj_save_count);
+ DEBUG(0,LEVEL_DEBUGGING,"Actor Inventories: %d\n", obj_save_count);
 
  finish_pos = save_buf->position();
  save_buf->seek(start_pos);
@@ -1185,9 +1185,9 @@ bool ObjManager::addObjToContainer(U6LList *llist, Obj *obj)
    {
     c_obj->add(obj);
 
-    //PERR("Cont: %s\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false));
-  //PERR("Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
-	//PERR(" -> %s (%x,%x,%x)\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false),c_obj->x,c_obj->y,c_obj->z);
+    //DEBUG(0,LEVEL_DEBUGGING,"Cont: %s\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false));
+  //DEBUG(0,LEVEL_DEBUGGING,"Add to container %s", tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
+	//DEBUG(1,LEVEL_DEBUGGING," -> %s (%x,%x,%x)\n", tile_manager->lookAtTile(get_obj_tile_num(c_obj->obj_n)+c_obj->frame_n,0,false),c_obj->x,c_obj->y,c_obj->z);
     return true;
    }
 
@@ -1333,7 +1333,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
    {
     if((*obj)->z == z)
       {
-       PERR("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
+       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
        tmp_obj = obj;
        tmp_obj++;
        remove_obj_from_map(*obj); // this calls temp_obj_list_remove()
@@ -1362,7 +1362,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
 
     if(dist_x > 32 || dist_y > 32)
       {
-       PERR("Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
+       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
        tmp_obj = obj;
        tmp_obj++;
        remove_obj_from_map(*obj);
@@ -1397,9 +1397,10 @@ void ObjManager::print_object_list()
 {
  uint16 i;
 
+   DEBUG(0,LEVEL_INFORMATIONAL,"print_object_list:\n");
  for(i=0;i<1024;i++)
   {
-   PERR("%04d: %s\n",i,tile_manager->lookAtTile(get_obj_tile_num(i),0,false));
+   DEBUG(1,LEVEL_INFORMATIONAL,"%04d: %s\n",i,tile_manager->lookAtTile(get_obj_tile_num(i),0,false));
   }
 
  return;
@@ -1454,107 +1455,106 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
  if(a != NULL)
    c_type = a->get_object_combat_type(obj->obj_n);
  
- PERR("\n");
- print_indent(indent);
- PERR("%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
+ DEBUG(1,LEVEL_INFORMATIONAL,"\n");
+ print_indent(LEVEL_INFORMATIONAL,indent);
+ DEBUG(1,LEVEL_INFORMATIONAL,"%s ",tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,0,false));
  
  if(in_container == false)
-   PERR("at %x, %x, %x (%d,%d,%d)",obj->x, obj->y, obj->z, obj->x, obj->y, obj->z);
- PERR("\n");
+   DEBUG(1,LEVEL_INFORMATIONAL,"at %x, %x, %x (%d,%d,%d)",obj->x, obj->y, obj->z, obj->x, obj->y, obj->z);
+ DEBUG(1,LEVEL_INFORMATIONAL,"\n");
  
- print_indent(indent);
- PERR("object (Obj *) %p\n", obj);
- print_indent(indent);
+ print_indent(LEVEL_INFORMATIONAL,indent);
+ DEBUG(1,LEVEL_INFORMATIONAL,"object (Obj *) %p\n", obj);
+ print_indent(LEVEL_INFORMATIONAL,indent);
  
- PERR("engine loc: ");
+ DEBUG(1,LEVEL_INFORMATIONAL,"engine loc: ");
  switch(obj->get_engine_loc())
  {
-   case OBJ_LOC_MAP : PERR("MAP"); break;
-   case OBJ_LOC_CONT : PERR("CONTAINER"); break;
-   case OBJ_LOC_INV : PERR("INVENTORY"); break;
-   case OBJ_LOC_READIED : PERR("INVENTORY READIED"); break;
-   case OBJ_LOC_NONE : PERR("NONE"); break;
-
-   default : PERR("**UNKNOWN**"); break;
+   case OBJ_LOC_MAP : DEBUG(1,LEVEL_INFORMATIONAL,"MAP"); break;
+   case OBJ_LOC_CONT : DEBUG(1,LEVEL_INFORMATIONAL,"CONTAINER"); break;
+   case OBJ_LOC_INV : DEBUG(1,LEVEL_INFORMATIONAL,"INVENTORY"); break;
+   case OBJ_LOC_READIED : DEBUG(1,LEVEL_INFORMATIONAL,"INVENTORY READIED"); break;
+   case OBJ_LOC_NONE : DEBUG(1,LEVEL_INFORMATIONAL,"NONE"); break;
+   default : DEBUG(1,LEVEL_INFORMATIONAL,"**UNKNOWN**"); break;
  }
  
- PERR("\n");
+ DEBUG(1,LEVEL_INFORMATIONAL,"\n");
  
- PERR("parent (");
+ DEBUG(1,LEVEL_INFORMATIONAL,"parent (");
  switch(obj->get_engine_loc())
  {
-   case OBJ_LOC_MAP : PERR("U6LList"); break;
-   case OBJ_LOC_CONT : PERR("Obj"); break;
+   case OBJ_LOC_MAP : DEBUG(1,LEVEL_INFORMATIONAL,"U6LList"); break;
+   case OBJ_LOC_CONT : DEBUG(1,LEVEL_INFORMATIONAL,"Obj"); break;
    case OBJ_LOC_INV :
-   case OBJ_LOC_READIED : PERR("Actor"); break;
-   default : PERR("void"); break;
+   case OBJ_LOC_READIED : DEBUG(1,LEVEL_INFORMATIONAL,"Actor"); break;
+   default : DEBUG(1,LEVEL_INFORMATIONAL,"void"); break;
  }
- PERR(" *) %p\n", obj->parent);
+ DEBUG(1,LEVEL_INFORMATIONAL," *) %p\n", obj->parent);
 
- print_indent(indent);
-// PERR("objblk_n: %d\n", obj->objblk_n);
+ print_indent(LEVEL_INFORMATIONAL,indent);
+// DEBUG(1,LEVEL_DEBUGGING,"objblk_n: %d\n", obj->objblk_n);
 
- print_indent(indent);
- PERR("obj_n: %d\n",obj->obj_n);
+ print_indent(LEVEL_INFORMATIONAL,indent);
+ DEBUG(1,LEVEL_INFORMATIONAL,"obj_n: %d\n",obj->obj_n);
 
- print_indent(indent);
- PERR("frame_n: %d\n",obj->frame_n);
+ print_indent(LEVEL_INFORMATIONAL,indent);
+ DEBUG(1,LEVEL_INFORMATIONAL,"frame_n: %d\n",obj->frame_n);
 
- print_indent(indent);
- PERR("Tile: %d\n", get_obj_tile_num(obj->obj_n));
+ print_indent(LEVEL_INFORMATIONAL,indent);
+ DEBUG(1,LEVEL_INFORMATIONAL,"Tile: %d\n", get_obj_tile_num(obj->obj_n));
 
- print_indent(indent);
- PERR("Status: ");
+ print_indent(LEVEL_INFORMATIONAL,indent);
+ DEBUG(1,LEVEL_INFORMATIONAL,"Status: ");
  print_b(obj->status);
  if(obj->status != 0)
   {
-   PERR(" ( ");
+   DEBUG(1,LEVEL_INFORMATIONAL," ( ");
    if(obj->is_readied())
-     PERR("POS:Ready ");
+     DEBUG(1,LEVEL_INFORMATIONAL,"POS:Ready ");
    else if(obj->is_in_container())
-     PERR("POS:Cont ");
+     DEBUG(1,LEVEL_INFORMATIONAL,"POS:Cont ");
    else if(obj->is_in_inventory())
-     PERR("POS:Inv ");
+     DEBUG(1,LEVEL_INFORMATIONAL,"POS:Inv ");
    if(obj->is_ok_to_take())
-     PERR("OK ");
+     DEBUG(1,LEVEL_INFORMATIONAL,"OK ");
    if(obj->is_temporary())
-     PERR("TEMP ");
+     DEBUG(1,LEVEL_INFORMATIONAL,"TEMP ");
    if(obj->is_invisible())
-     PERR("INVIS ");
+     DEBUG(1,LEVEL_INFORMATIONAL,"INVIS ");
    if(obj->is_egg_active())
     {
      if(obj->obj_n < 256)
-      PERR("MUTANT ");
+      DEBUG(1,LEVEL_INFORMATIONAL,"MUTANT ");
      else
-      PERR("BROKEN ");
+      DEBUG(1,LEVEL_INFORMATIONAL,"BROKEN ");
     }
 
-   PERR(")");
+   DEBUG(1,LEVEL_INFORMATIONAL,")");
   }
 
- PERR("\n");
+ DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 
  if(in_container)
   {
-   print_indent(indent);
-   PERR("parent_id = %d, y = %d, z = %d\n", obj->x, obj->y, obj->z);
+   print_indent(LEVEL_INFORMATIONAL,indent);
+   DEBUG(1,LEVEL_INFORMATIONAL,"parent_id = %d, y = %d, z = %d\n", obj->x, obj->y, obj->z);
   }
 
- print_indent(indent);
- PERR("Quantity: %d\n",obj->qty);
- print_indent(indent);
- PERR("Quality: %d\n",obj->quality);
+ print_indent(LEVEL_INFORMATIONAL,indent);
+ DEBUG(1,LEVEL_INFORMATIONAL,"Quantity: %d\n",obj->qty);
+ print_indent(LEVEL_INFORMATIONAL,indent);
+ DEBUG(1,LEVEL_INFORMATIONAL,"Quality: %d\n",obj->quality);
  if(c_type!=NULL)
   {
-   PERR("attack/damage = %d, defence/defense = %d\n", c_type->damage, c_type->defense); // FIXME add the rest of the combat values
+   DEBUG(1,LEVEL_INFORMATIONAL,"attack/damage = %d, defence/defense = %d\n", c_type->damage, c_type->defense); // FIXME add the rest of the combat values
   }
 
  if(obj->container)
    {
-    print_indent(indent);
-    PERR("Container\n");
-    print_indent(indent);
-    PERR("---------");
+    print_indent(LEVEL_INFORMATIONAL,indent);
+    DEBUG(1,LEVEL_INFORMATIONAL,"Container\n");
+    print_indent(LEVEL_INFORMATIONAL,indent);
+    DEBUG(1,LEVEL_INFORMATIONAL,"---------");
 
     for(link = obj->container->start(); link != NULL; link = link->next)
      {
@@ -1562,12 +1562,12 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
       print_obj(container_obj, true, indent + 2);
      }
 
-    print_indent(indent);
-    PERR("---------\n");
+    print_indent(LEVEL_INFORMATIONAL,indent);
+    DEBUG(1,LEVEL_INFORMATIONAL,"---------\n");
    }
 
  if(in_container == false)
-   PERR("\n");
+   DEBUG(1,LEVEL_INFORMATIONAL,"\n");
 
  return;
 }

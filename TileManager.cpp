@@ -175,16 +175,17 @@ bool TileManager::loadTiles()
 
  look->print();
 
+ DEBUG(0,LEVEL_DEBUGGING,"Dumping tile flags:");
  for(i=0;i<2048;i++)
   {
    bool plural;
-   PERR("%04d : ",i);
+   DEBUG(1,LEVEL_DEBUGGING,"%04d : ",i);
    print_b(tile[i].flags1);
-   PERR(" ");
+   DEBUG(1,LEVEL_DEBUGGING," ");
    print_b(tile[i].flags2);
-   PERR(" ");
+   DEBUG(1,LEVEL_DEBUGGING," ");
    print_b(tile[i].flags3);
-   PERR(" %s\n",look->get_description(i,&plural));
+   DEBUG(1,LEVEL_DEBUGGING," %s\n",look->get_description(i,&plural));
   }
 #endif
 
@@ -249,13 +250,13 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
  else
    sprintf(desc_buf,"%s%s",article_tbl[tile->article_n], desc);
 
- PERR("%s (%d): flags1:",desc_buf,tile_num);
+ DEBUG(0,LEVEL_DEBUGGING,"%s (%d): flags1:",desc_buf,tile_num);
  print_b(tile->flags1);
- PERR(" f2:");
+ DEBUG(1,LEVEL_DEBUGGING," f2:");
  print_b(tile->flags2);
- PERR(" f3:");
+ DEBUG(1,LEVEL_DEBUGGING," f3:");
  print_b(tile->flags3);
- PERR("\n");
+ DEBUG(1,LEVEL_DEBUGGING,"\n");
  
  return desc_buf;
 }
