@@ -171,19 +171,20 @@ bool TileManager::loadTiles()
 
  loadAnimMask();
 
-#ifdef DEBUG
+#ifdef TILEMANAGER_DEBUG
 
  look->print();
 
  for(i=0;i<2048;i++)
   {
+   bool plural;
    PERR("%04d : ",i);
    print_b(tile[i].flags1);
    PERR(" ");
    print_b(tile[i].flags2);
    PERR(" ");
    print_b(tile[i].flags3);
-   PERR(" %s\n",look->get_description(i,false));
+   PERR(" %s\n",look->get_description(i,&plural));
   }
 #endif
 

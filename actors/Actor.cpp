@@ -1121,7 +1121,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
 
     sched[i]->z = (sched_data_ptr[4] & 0xf0) >> 4;
     sched_data_ptr += 5;
-#ifdef DEBUG
+#ifdef ACTOR_DEBUG
     PERR("#%04d %03x,%03x,%x hour %2d day of week %2d worktype %02x\n",id_n,sched[i]->x,sched[i]->y,sched[i]->z,sched[i]->hour,sched[i]->day_of_week,sched[i]->worktype);
 #endif
    }
