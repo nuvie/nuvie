@@ -70,19 +70,19 @@ void SaveManager::init()
  if(savedir.size() == 0)
    {
 #ifdef WIN32
-    PERR("Warning: savedir config variable not found. Using current directory for saves!\n");
+    DEBUG(0,LEVEL_WARNING,"savedir config variable not found. Using current directory for saves!\n");
     savedir.assign("");
 #elif defined(__linux__)
-    PERR("savedir config variable not found. Using ~/.nuvie for saves.\n");
+    DEBUG(0,LEVEL_WARNING,"savedir config variable not found. Using ~/.nuvie for saves.\n");
     savedir = getenv("HOME");
     savedir += "/.nuvie";
     if(directory_exists(savedir.c_str()) == false && !savedir.empty()) {
       // try to create the save dir if it doesn't exist
-      PERR("creating directory ~/.nuvie\n");
+      DEBUG(0,LEVEL_NOTIFICATION,"creating directory ~/.nuvie\n");
       mkdir(savedir.c_str(), 0700);
     }
 #else
-    PERR("Warning: savedir config variable not found. Using current directory for saves!\n");
+    DEBUG(0,LEVEL_WARNING,"savedir config variable not found. Using current directory for saves!\n");
     savedir.assign(".");
 #endif
    }
@@ -95,7 +95,7 @@ void SaveManager::init()
 
    if(directory_exists(savedir.c_str()) == false)
    {
-    PERR("Error: savedir '%s' either not found or not accessible!\n", savedir.c_str());
+    DEBUG(0,LEVEL_ERROR,"savedir '%s' either not found or not accessible!\n", savedir.c_str());
     throw "Setting Save Directory!";
    }
 

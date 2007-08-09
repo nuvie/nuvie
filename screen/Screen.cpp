@@ -89,7 +89,7 @@ bool Screen::init(uint16 new_width, uint16 new_height)
 
   	/* Initialize the SDL library */
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-		PERR( "Couldn't initialize SDL: %s\n",
+		DEBUG(0,LEVEL_EMERGENCY, "Couldn't initialize SDL: %s\n",
 			SDL_GetError());
    return false;
 	}
@@ -114,7 +114,7 @@ fullscreen = false;
  //pitch = scaled_surface->pitch;
  //bpp = scaled_surface->format->BitsPerPixel;
 
- //PERR("surface pitch = %d\n",pitch);
+ //DEBUG(0,LEVEL_DEBUGGING,"surface pitch = %d\n",pitch);
 
 // memcpy(palette,0,768);
 
@@ -931,7 +931,7 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
 
  //SDL_UpdateRect(sdl_surface,x*scale_factor,y*scale_factor,w*scale_factor,h*scale_factor);
 
- //PERR("update rect(%d,%d::%d,%d)\n", update_rects[num_update_rects].x, update_rects[num_update_rects].y, update_rects[num_update_rects].w, update_rects[num_update_rects].h);
+ //DEBUG(0,LEVEL_DEBUGGING,"update rect(%d,%d::%d,%d)\n", update_rects[num_update_rects].x, update_rects[num_update_rects].y, update_rects[num_update_rects].w, update_rects[num_update_rects].h);
 
  return;
 }
@@ -940,7 +940,7 @@ void Screen::preformUpdate()
 {
 /*
  uint16 i;
- //PERR("Screen update %d.\n",num_update_rects);
+ //DEBUG(0,LEVEL_DEBUGGING,"Screen update %d.\n",num_update_rects);
  if(!scaler)
   {
    uint8 *src = (uint8 *)surface->pixels;

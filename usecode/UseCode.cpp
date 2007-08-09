@@ -185,10 +185,10 @@ void UseCode::dbg_print_event(UseCodeEvent event, Obj *obj)
             break;
     }
     if(do_string != "")
-        PERR("UseCode: %s object %d:%d (%03x,%03x,%x)\n", do_string.c_str(),
+        DEBUG(0,LEVEL_DEBUGGING,"UseCode: %s object %d:%d (%03x,%03x,%x)\n", do_string.c_str(),
                obj->obj_n, obj->frame_n, obj->x, obj->y, obj->z);
     else
-        PERR("UseCode: Event 0x%04x sent to object %d:%d (%03x,%03x,%x)\n",
+        DEBUG(0,LEVEL_DEBUGGING,"UseCode: Event 0x%04x sent to object %d:%d (%03x,%03x,%x)\n",
                event, obj->obj_n, obj->frame_n, obj->x, obj->y, obj->z);
 }
 

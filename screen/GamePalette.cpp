@@ -79,7 +79,7 @@ bool GamePalette::loadPalette()
 
  if(file.open(filename) == false)
   {
-   PERR("Error: loading palette.\n");
+   DEBUG(0,LEVEL_ERROR,"loading palette.\n");
    return false;
   }
 

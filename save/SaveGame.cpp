@@ -157,7 +157,7 @@ bool SaveGame::load_original()
 
  config->value(key,path);
 
- PERR("Loading Original Game: %s%csavegame%c\n", path.c_str(), U6PATH_DELIMITER, U6PATH_DELIMITER);
+ DEBUG(0,LEVEL_INFORMATIONAL,"Loading Original Game: %s%csavegame%c\n", path.c_str(), U6PATH_DELIMITER, U6PATH_DELIMITER);
 
  filename = get_objblk_path((char *)path.c_str());
 
@@ -344,7 +344,7 @@ bool SaveGame::check_version(NuvieIOFileRead *loadfile)
  version = loadfile->read2();
  if(version != NUVIE_SAVE_VERSION)
   {
-   PERR("Error: Incompatible savegame version. Savegame version '%d', current system version '%d'\n", version, NUVIE_SAVE_VERSION);
+   DEBUG(0,LEVEL_ERROR,"Incompatible savegame version. Savegame version '%d', current system version '%d'\n", version, NUVIE_SAVE_VERSION);
    return false;
   }
 
@@ -374,7 +374,7 @@ bool SaveGame::load(const char *filename)
    return false;
   }
 
- PERR("Loading Game: %s\n", filename);
+ DEBUG(0,LEVEL_NOTIFICATION,"Loading Game: %s\n", filename);
 
  if(!check_version(loadfile))
   {

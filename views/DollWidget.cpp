@@ -170,7 +170,7 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
       {
        if(HitRect(x,y,item_hit_rects[location]))  // FIXME: duplicating code in InventoryWidget
          {
-          PERR("Hit %d\n",location);
+          DEBUG(0,LEVEL_DEBUGGING,"Hit %d\n",location);
           obj = actor->inventory_get_readied_object(location);
           if(obj)
            {
@@ -230,7 +230,7 @@ GUI_status DollWidget::MouseMotion(int x,int y,Uint8 state)
 
 void DollWidget::drag_drop_success(int x, int y, int message, void *data)
 {
- PERR("DollWidget::drag_drop_success()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"DollWidget::drag_drop_success()\n");
  dragging = false;
 // handled by drop target
 // actor->remove_readied_object(selected_obj);
@@ -241,44 +241,44 @@ void DollWidget::drag_drop_success(int x, int y, int message, void *data)
 
 void DollWidget::drag_drop_failed(int x, int y, int message, void *data)
 {
- PERR("DollWidget::drag_drop_failed()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"DollWidget::drag_drop_failed()\n");
  dragging = false;
  selected_obj = NULL;
 }
 
 bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
-    PERR("DollWidget::drag_accept_drop()\n");
+    DEBUG(0,LEVEL_DEBUGGING,"DollWidget::drag_accept_drop()\n");
     if(message == GUI_DRAG_OBJ)
     {
         Obj *obj = (Obj*)data;
         if(obj->is_readied() && obj->get_actor_holding_obj() == actor)
         {
             // FIXME: need to detect ready location so player can switch hands
-            PERR("DollWidget: Object already equipped!\n");
+            DEBUG(0,LEVEL_WARNING,"DollWidget: Object already equipped!\n");
             return false;
         }
         if(obj->is_in_container())
         {
-            PERR("DollWidget: Not from a container!\n");
+            DEBUG(0,LEVEL_WARNING,"DollWidget: Not from a container!\n");
             return false;
         }
         if(obj->is_in_inventory() && obj->get_actor_holding_obj() != actor)
         {
-            PERR("DollWidget: Must be holding object!\n");
+            DEBUG(0,LEVEL_WARNING,"DollWidget: Must be holding object!\n");
             return false;
         }
-        PERR("Drop Accepted\n");
+        DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
         return true;
     }
 
-    PERR("Drop Refused\n");
+    DEBUG(0,LEVEL_DEBUGGING,"Drop Refused\n");
     return false;
 }
 
 void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
- PERR("DollWidget::drag_perform_drop()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"DollWidget::drag_perform_drop()\n");
  Obj *obj;
 
  x -= area.x;
@@ -286,7 +286,7 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
 
  if(message == GUI_DRAG_OBJ)
    {
-    PERR("Ready item.\n");
+    DEBUG(0,LEVEL_DEBUGGING,"Ready item.\n");
     obj = (Obj *)data;
 
     bool can_equip = true;

@@ -241,7 +241,7 @@ bool U6Lzw::decompress_buffer(unsigned char *source, uint32 source_length, unsig
               // if it doesn't, something is wrong with the lzw-compressed data.
               if (cW != next_free_codeword)
               {
-                 PERR("cW != next_free_codeword!\n");
+                 DEBUG(0,LEVEL_ERROR,"cW != next_free_codeword!\n");
                  return(false);
               }
               // add pW+C to the dictionary
@@ -352,7 +352,7 @@ int U6Lzw::get_next_codeword (long *bits_read, unsigned char *source, int codewo
          codeword = codeword & 0xfff;
          break;
      default:
-         PERR("U6Lzw Error: weird codeword size!\n");
+         DEBUG(0,LEVEL_ERROR,"U6Lzw Error: weird codeword size!\n");
          break;
     }
     *bits_read += codeword_size;

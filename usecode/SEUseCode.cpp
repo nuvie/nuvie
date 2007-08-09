@@ -49,7 +49,7 @@ bool SEUseCode::use_obj(Obj *obj, Obj *src_obj)
    }
 
 
- PERR("Use Obj #%d Frame #%d\n",obj->obj_n, obj->frame_n);
+ DEBUG(0,LEVEL_DEBUGGING,"Use Obj #%d Frame #%d\n",obj->obj_n, obj->frame_n);
 
  return true;
 }

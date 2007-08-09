@@ -171,7 +171,7 @@ bool U6Shape::load(unsigned char *buf)
   raw = (unsigned char*)malloc(width * height);
   if (raw == NULL)
   {
-    PERR("malloc failed to allocate space for shape\n");
+    DEBUG(0,LEVEL_ERROR,"malloc failed to allocate space for shape\n");
     return false;
   }
   memset(raw, 255, width*height);

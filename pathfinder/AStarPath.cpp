@@ -81,7 +81,7 @@ bool AStarPath::search_node_neighbors(astar_node *nnode, MapCoord &goal,
  * max_steps count, defined here. Actor may perform another search when needed.
  * Returns true if a path is created
  */bool AStarPath::path_search(MapCoord &start, MapCoord &goal)
-{//PERR("SEARCH: %d: %d,%d -> %d,%d\n",actor->get_actor_num(),start.x,start.y,goal.x,goal.y);
+{//DEBUG(0,LEVEL_DEBUGGING,"SEARCH: %d: %d,%d -> %d,%d\n",actor->get_actor_num(),start.x,start.y,goal.x,goal.y);
     astar_node *start_node = new astar_node;
     start_node->loc = start;
     start_node->to_start = 0;
@@ -97,8 +97,8 @@ bool AStarPath::search_node_neighbors(astar_node *nnode, MapCoord &goal,
         if(nnode->loc == goal || nnode->len >= max_steps)
         {
 	    if(nnode->loc != goal)
-	        PERR("out of steps, making partial path (nnode->len=%d)\n",nnode->len);
-//PERR("GOAL\n");
+	        DEBUG(0,LEVEL_DEBUGGING,"out of steps, making partial path (nnode->len=%d)\n",nnode->len);
+//DEBUG(0,LEVEL_DEBUGGING,"GOAL\n");
             final_node = nnode;
             create_path();
             delete_nodes();
@@ -109,7 +109,7 @@ bool AStarPath::search_node_neighbors(astar_node *nnode, MapCoord &goal,
         // node and neighbors checked, put into closed
         closed_nodes.push_back(nnode);
     }
-//PERR("FAIL\n");
+//DEBUG(0,LEVEL_DEBUGGING,"FAIL\n");
     delete_nodes();
     return(false); // out of open nodes - failure
 }/* Return the cost of moving one step from `c1' to `c2', which is always 1. This

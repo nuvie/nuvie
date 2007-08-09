@@ -430,7 +430,7 @@ GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
 
 void InventoryWidget::drag_drop_success(int x, int y, int message, void *data)
 {
- PERR("InventoryWidget::drag_drop_success()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_drop_success()\n");
  dragging = false;
 
 // handled by drop target
@@ -445,14 +445,14 @@ void InventoryWidget::drag_drop_success(int x, int y, int message, void *data)
 
 void InventoryWidget::drag_drop_failed(int x, int y, int message, void *data)
 {
- PERR("InventoryWidget::drag_drop_failed()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_drop_failed()\n");
  dragging = false;
  selected_obj = NULL;
 }
 
 bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
- PERR("InventoryWidget::drag_accept_drop()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_accept_drop()\n");
  if(message == GUI_DRAG_OBJ)
    {
     Obj *obj = (Obj*)data;
@@ -463,31 +463,31 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 
     if(obj->is_in_container())
     {
-        PERR("InventoryWidget: Not from a container!\n");
+        DEBUG(0,LEVEL_WARNING,"InventoryWidget: Not from a container!\n");
         return false;
     }
     if((obj->is_in_inventory() || obj->is_readied()) && obj->get_actor_holding_obj() != actor)
     {
-        PERR("InventoryWidget: Cannot Move between party members!\n"); 
+        DEBUG(0,LEVEL_WARNING,"InventoryWidget: Cannot Move between party members!\n"); 
         return false;
     }
     if(obj->is_in_inventory())
     {
-        PERR("InventoryWidget: Already holding object!\n");
+        DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget: Already holding object!\n");
         return false;
     }
 
-    PERR("Drop Accepted\n");
+    DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
     return true;
    }
 
- PERR("Drop Refused\n");
+ DEBUG(0,LEVEL_DEBUGGING,"Drop Refused\n");
  return false;
 }
 
 void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
- PERR("InventoryWidget::drag_perform_drop()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_perform_drop()\n");
  Obj *obj;
 
  x -= area.x;
@@ -495,7 +495,7 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 
  if(message == GUI_DRAG_OBJ)
    {
-    PERR("Drop into inventory.\n");
+    DEBUG(0,LEVEL_DEBUGGING,"Drop into inventory.\n");
     obj = (Obj *)data;
     bool have_object = false;
 

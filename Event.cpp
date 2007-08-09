@@ -668,7 +668,7 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
                           cursor_coord.y = WRAPPED_COORD(cursor_coord.y + rel_y,cursor_coord.z);
                           if(player->weapon_can_hit(cursor_coord.x, cursor_coord.y) == false)
                             break;
-                          PERR("attack select(%d,%d)\n", cursor_coord.x, cursor_coord.y);
+                          DEBUG(0,LEVEL_DEBUGGING,"attack select(%d,%d)\n", cursor_coord.x, cursor_coord.y);
 /* // (handled by INPUT_MODE)
    case LOOK_MODE       :
    case TALK_MODE       :
@@ -983,14 +983,14 @@ bool Event::use(Obj *obj)
         && player->get_actor()->get_location().distance(target) > 1)
     {
         scroll->display_string("\nOut of range!\n");
-        PERR("distance to object: %d\n", player->get_actor()->get_location().distance(target));
+        DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
     }
     else if(usecode->has_usecode(obj)) // Usable
         display_prompt = usecode->use_obj(obj, player->get_actor());
     else
     {
         scroll->display_string("\nNot usable\n");
-        PERR("Object %d:%d\n", obj->obj_n, obj->frame_n);
+        DEBUG(0,LEVEL_DEBUGGING,"Object %d:%d\n", obj->obj_n, obj->frame_n);
     }
 
     if(mode == USE_MODE) // check mode because UseCode may have changed it
@@ -1013,7 +1013,7 @@ bool Event::use(Actor *actor)
         if(player->get_actor()->get_location().distance(target) > 1)
         {
             scroll->display_string("\nOut of range!\n");
-            PERR("distance to object: %d\n", player->get_actor()->get_location().distance(target));
+            DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
         }
         else
             display_prompt = usecode->use_obj(obj, player->get_actor());
@@ -1021,7 +1021,7 @@ bool Event::use(Actor *actor)
     else
     {
         scroll->display_string("nothing\n");
-        PERR("Object %d:%d\n", obj->obj_n, obj->frame_n);
+        DEBUG(0,LEVEL_DEBUGGING,"Object %d:%d\n", obj->obj_n, obj->frame_n);
     }
 // FIXME: usecode might request input, causing the obj to be accessed again,
 // so we can't delete it in that case
@@ -1270,7 +1270,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 
     scroll->display_string(get_direction_name(pushrel_x, pushrel_y));
     scroll->display_string(".\n\n");
-    PERR("warning: deduct moves from player\n");
+    DEBUG(0,LEVEL_WARNING,"deduct moves from player\n");
     // FIXME: the random chance here is just made up, I don't know what
     //        kind of check U6 did ("Failed.\n\n")
     if(push_actor)
@@ -2368,13 +2368,13 @@ void Event::multiuse(uint16 wx, uint16 wy)
         using_actor = true;
         target.x = actor->get_location().x;
         target.y = actor->get_location().y;
-        PERR("Use actor at %d,%d\n", target.x, target.y);
+        DEBUG(0,LEVEL_DEBUGGING,"Use actor at %d,%d\n", target.x, target.y);
     }
     else if(obj)
     {
         target.x = obj->x;
         target.y = obj->y;
-        PERR("Use object at %d,%d\n", obj->x, obj->y);
+        DEBUG(0,LEVEL_DEBUGGING,"Use object at %d,%d\n", obj->x, obj->y);
     }
 
     if(using_actor) // use or talk to an actor

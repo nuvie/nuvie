@@ -56,7 +56,7 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
        {
          player->rewind();
          SoundManager::g_MusicFinished = true;
-         PERR("Music Finished!\n");
+         DEBUG(0,LEVEL_DEBUGGING,"Music Finished!\n");
        }
 
 	 j = i;
@@ -86,7 +86,7 @@ bool SongAdPlug::Init(const char *filename) {
 
     player = new Cu6mPlayer(opl);
     if(!player) {
-      PERR("Argh!! Failed to allocate a new Cu6mPlayer. Assume crash positions.\n");
+      DEBUG(0,LEVEL_EMERGENCY,"Argh!! Failed to allocate a new Cu6mPlayer. Assume crash positions.\n");
     }
 
     player->load(filename);
