@@ -29,7 +29,12 @@
 
 void debug(bool no_header,DebugLevelType level, const char *format, ...)
 {
-  static const char* DebugLevelNames[]= { "EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING" };
+// original
+//  static const char* DebugLevelNames[]= { "EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING" };
+//  shorter, because spammy enough as is.
+//  static const char* DebugLevelNames[]= { "EMERG", "ALERT", "CRIT.", "ERROR", "WARN.", "NOTE.", "INFO.", "DEBUG" };
+//  shorter, because spammy enough as is.
+  static const char* DebugLevelNames[]= { "!", "A", "C", "E", "W", "N", "I", "D" };
   static DebugLevelType CurrentDebugLevel=LEVEL_DEBUGGING;
 
   time_t now;
@@ -52,7 +57,7 @@ void debug(bool no_header,DebugLevelType level, const char *format, ...)
   }
   if (level>CurrentDebugLevel) { return; } // Don't call ourselves here to log something like 'message suppressed'
   now=time(NULL);
-  if (!no_header) {fprintf(stderr,"%zd [%s]>",(size_t)now,DebugLevelNames[(unsigned char)level]);}
+  if (!no_header) {fprintf(stderr,"%zd [%s]> ",(size_t)now,DebugLevelNames[(unsigned char)level]);}
   vfprintf(stderr,format,ap);
   va_end(ap);
 }

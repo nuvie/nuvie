@@ -763,7 +763,7 @@ void Screen::blitalphamap8()
         return;
         break;
     default:
-        std::cerr << "Screen::blitalphamap8() cannot handle your screen surface depth of " << surface->bits_per_pixel << std::endl;
+        DEBUG(0,LEVEL_ERROR,"Screen::blitalphamap8() cannot handle your screen surface depth of %d\n",surface->bits_per_pixel);
         break;
         return;
     }
@@ -1001,12 +1001,12 @@ void Screen::set_screen_mode()
         bpp = 16;          // I'll need to look into this further. For now we can just use 16bpp at x1 scale.
 #endif
 
-	std::cerr << "Attempting to set vid mode: " << width << "x" << height << "x" << bpp << "x" << scale_factor;
+	DEBUG(0,LEVEL_DEBUGGING,"Attempting to set vid mode: %dx%dx%dx%d",width,height,bpp,scale_factor);
 
 	// Is Fullscreen?
 	if (fullscreen) {
 		flags |= SDL_FULLSCREEN;
-		std::cerr << " Fullscreen";
+		DEBUG(1,LEVEL_DEBUGGING," Fullscreen");
 	}
 //	else
 //		flags |= SDL_RESIZABLE;
@@ -1014,7 +1014,7 @@ void Screen::set_screen_mode()
 	// Opengl Stuff
 #ifdef WANT_OPENGL
 	if (useOpengl) {
-		std::cerr << " OpenGL" << std::endl;
+		DEBUG(0,LEVEL_DEBUGGING," OpenGL\n");
 
 		// Want double-buffering.
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -1033,7 +1033,7 @@ void Screen::set_screen_mode()
 			mouse->init_opengl(screen);
 			ShapeManager::get().init_opengl(screen);
 
-			std::cerr << opengl->get_texture_mem_used() << " bytes of textures loaded so far" << std::endl;
+			DEBUG(0,LEVEL_DEBUGGING,"%d bytes of textures loaded so far\n",opengl->get_texture_mem_used());
 
 			// Hide system mouse cursor
 			SDL_ShowCursor(0);
@@ -1041,17 +1041,17 @@ void Screen::set_screen_mode()
 			return;
 		}
 
-		std::cerr <<  "Setting up OpenGL Failed. Trying" << std::endl;
+		DEBUG(0,LEVEL_DEBUGGING,"Setting up OpenGL Failed. Trying\n");
 	}
 #endif //WANT_OPENGL
 
 	if (vinfo->hw_available && doubleBuffer && fullscreen) {
 		flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
-		std::cerr << " Hardware Double Buffered" << std::endl;
+		DEBUG(1,LEVEL_DEBUGGING," Hardware Double Buffered\n");
 	}
 	else {
 		flags |= SDL_SWSURFACE;
-		std::cerr << " Software Surface" << std::endl;
+		DEBUG(1,LEVEL_DEBUGGING," Software Surface\n");
 	}
 
 	// Old Software rendering. Try a scaler_index first,
@@ -1071,18 +1071,18 @@ void Screen::set_screen_mode()
 		}
 
 		if (!sdl_surface) {
-			std::cerr << "Unable to create surface. Attempting 320x200x1 Software Surface" << std::endl;
+			DEBUG(0,LEVEL_NOTIFICATION,"Unable to create surface. Attempting 320x200x1 Software Surface\n");
 			width = 320;
 			height = 200;
 			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
 			if (!sdl_surface) {
-				std::cerr << "Unable to create surface. Exiting" << std::endl;
+				DEBUG(0,LEVEL_EMERGENCY,"Unable to create surface. Exiting\n");
 				exit (-1);
 			}
 		}
 
 		if (sdl_surface->flags & SDL_HWSURFACE) {
-			std::cerr << "Created Double Buffered Surface" << std::endl;
+			DEBUG(0,LEVEL_DEBUGGING,"Created Double Buffered Surface\n");
 			surface = CreateRenderSurface (width, height, bpp);
 		}
 		else {
@@ -1113,24 +1113,24 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 
 		// If the scaler wasn't found, use the Point scaler
 		if (!scaler) {
-			std::cerr << "Couldn't find scaler for scaler_index" << scaler_index << "." << std::endl;
+			DEBUG(0,LEVEL_NOTIFICATION,"Couldn't find scaler for scaler_index %d\n",scaler_index);
 			scaler = scaler_reg.GetPointScaler();
 		}
 		// If the scaler selected is 2x only, and we are in a > than 2x mode, use Point
 		else if (scale_factor > 2 && scaler->flags & SCALER_FLAG_2X_ONLY)
 		{
-			std::cerr << "Scaler " << scaler->name << " only supports 2x. " << scale_factor << "x requested" << std::endl;
+			DEBUG(0,LEVEL_NOTIFICATION,"Scaler %s only supports 2x. %dx requested\n", scaler->name, scale_factor);
 			scaler = scaler_reg.GetPointScaler();
 		}
 		// If it requires 16 bit, force that. However, if it fails use point
 		else if (scaler->flags & SCALER_FLAG_16BIT_ONLY)
 		{
 			if ( !SDL_VideoModeOK(w, h, 16, flags)) {
-				std::cerr << scaler->name << " requires 16 bit colour. Couldn't set mode." << std::endl;
+				DEBUG(0,LEVEL_NOTIFICATION,"%s requires 16 bit colour. Couldn't set mode.\n",scaler->name );
 				scaler = scaler_reg.GetPointScaler();
 			}
 			else if (hwdepth != 16) {
-				std::cerr << scaler->name << " requires 16 bit colour. Forcing." << std::endl;
+				DEBUG(0,LEVEL_NOTIFICATION,"%s requires 16 bit colour. Forcing.\n",scaler->name);
 				hwdepth = 16;
 			}
 		}
@@ -1138,16 +1138,16 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		else if (scaler->flags & SCALER_FLAG_32BIT_ONLY)
 		{
 			if ( !SDL_VideoModeOK(w, h, 32, flags)) {
-				std::cerr << scaler->name << " requires 32 bit colour. Couldn't set mode." << std::endl;
+				DEBUG(0,LEVEL_NOTIFICATION,"%s requires 32 bit colour. Couldn't set mode.\n",scaler->name );
 				scaler = scaler_reg.GetPointScaler();
 			}
 			else if (hwdepth != 32) {
-				std::cerr << scaler->name << " requires 32 bit colour. Forcing." << std::endl;
+				DEBUG(0,LEVEL_NOTIFICATION,"%s requires 32 bit colour. Forcing.\n",scaler->name);
 				hwdepth = 32;
 			}
 		}
 
-		std::cerr << "Using scaler: " << scaler->name << std::endl;
+		DEBUG(0,LEVEL_NOTIFICATION,"Using scaler: %s\n",scaler->name);
 
 		// Attempt to set Video mode
 		if ( !SDL_VideoModeOK(w, h, hwdepth, flags))
@@ -1165,7 +1165,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		// Oh no, it didn't work
 		if (hwdepth != 16 && hwdepth != 32)
 		{
-			std::cerr << scaler->name << " requires 16/32 bit colour. Couldn't set mode." << std::endl;
+			DEBUG(0,LEVEL_NOTIFICATION,"%s requires 16/32 bit colour. Couldn't set mode.\n",scaler->name);
 		}
 		else if ((sdl_surface = SDL_SetVideoMode(w*scale_factor, h*scale_factor, hwdepth, flags)))
 		{
@@ -1175,7 +1175,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		}
 
 		// Output that scaled surface creation failed
-		std::cerr << "Couldn't create " << scaler->name << " scaled surface" << std::endl;
+		DEBUG(0,LEVEL_ERROR,"Couldn't create %s scaled surface\n",scaler->name);
 		delete surface;
 		scaler = 0;
 		surface = 0;

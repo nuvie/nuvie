@@ -9,7 +9,7 @@ run_magic_script = function(invocation)
       return
     end
 
-io.stderr:write("Running script " .. magic_invocations[invocation].script);
+io.stderr:write("Running script \"" .. magic_invocations[invocation].script .."\"\n");
 
     run_script(magic_invocations[invocation].script)
 

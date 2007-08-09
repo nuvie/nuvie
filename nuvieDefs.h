@@ -69,13 +69,9 @@ const uint16 map_pitch[2] = { 1024, 256 }; // width of 0:surface plane, and 1:al
 #define TRAMMEL_PHASE 1.75
 #define FELUCCA_PHASE 1.1666666666666667
 
-//#define PERR(x...) fprintf(stderr,x)
-
 #ifdef WITHOUT_DEBUG
-#define PERR(x...) 
 #define DEBUG(x...)
 #else
-#define PERR(x...) debug(0,LEVEL_DEBUGGING,x)
 #define DEBUG(x...) debug(x)
 typedef enum { LEVEL_EMERGENCY=0, LEVEL_ALERT, LEVEL_CRITICAL, LEVEL_ERROR, LEVEL_WARNING, LEVEL_NOTIFICATION, LEVEL_INFORMATIONAL, LEVEL_DEBUGGING } DebugLevelType;
 void debug(bool no_header,DebugLevelType level, const char *format, ...);

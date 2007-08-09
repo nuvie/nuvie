@@ -1,3 +1,6 @@
+2007-08-09  Pieter Luteijn <luteijn at users.sourceforge.net>
+	* DEBUG macro, rewriting of (almost) all debug output to use it.
+
 2007-08-06  Eric Fry <efry at users.sourceforge.net>
 	* Changed Obj from struct to class. Moved to its own file.
 	* Fixed memory leak in Converse with script not being freed on stop()

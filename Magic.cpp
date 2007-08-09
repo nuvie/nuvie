@@ -23,7 +23,7 @@
 
 #include <cassert>
 #include <cstring>
-#include <iostream>
+//#include <iostream>
 #include "SDL.h"
 #include "nuvieDefs.h"
 #include "U6misc.h"
@@ -47,11 +47,6 @@
 #include "Effect.h"
 #include "Weather.h"
 #include "Script.h"
-
-using std::cerr;
-using std::cin;
-using std::cout;
-using std::endl;
 
 #define MAGIC_ALL_SPELLS 255
 
@@ -183,8 +178,8 @@ void Magic::read_spell_list()
       /* read a line */ 
       if (!read_line(spells,buf,sizeof(buf)))
       {
-	cerr<<"While reading spell "<<index<<":"<<endl;
-	throw "Line too long reading spell-list\n";
+	DEBUG(0,LEVEL_ERROR,"Line too long reading spell-list entry for spell %d:\n",index);
+	throw "Buffer overflow\n";
       };
       /* parse the line */ // TODO far to quick and dirty...
       switch (buf[0]) 
@@ -309,7 +304,7 @@ bool Magic::cast()
     return false;
   
   cast_buffer_str[cast_buffer_len]='\0';
-  cerr<<"Trying to cast "<<cast_buffer_str<<endl;
+  DEBUG(0,LEVEL_DEBUGGING,"Trying to cast '%s'\n",cast_buffer_str);
   /* decode the invocation */
   // FIXME? original allows random order of syllables, do we want that?
 
@@ -321,7 +316,7 @@ bool Magic::cast()
     }
   }
   if (index>=256) {
-    cerr<<"didn't find spell in spell list"<<endl;
+    DEBUG(0,LEVEL_DEBUGGING,"didn't find spell in spell list\n");
     event->scroll->display_string("\nThat spell is not in thy spellbook!\n"); 
     return false;
   }
@@ -331,19 +326,19 @@ bool Magic::cast()
 
 
   /* debug block */
-  cerr<<"matched spell #"<<index<<endl;
-  cerr<<"name: "<<spell[index]->name<<endl;
-  cerr<<"reagents: ";
+  DEBUG(0,LEVEL_DEBUGGING,"matched spell #%d\n",index);
+  DEBUG(0,LEVEL_DEBUGGING,"name: %s\n",spell[index]->name);
+  DEBUG(0,LEVEL_DEBUGGING,"reagents: ");
   char *comma="";
   for (uint8 shift=0;shift<8;shift++) 
   {
     if (1<<shift&spell[index]->reagents) {
-      cerr<<comma<<reagent[shift];
+      DEBUG(1,LEVEL_DEBUGGING,"%s%s",comma,reagent[shift]);
       comma=", ";
     }
   }
-  cerr<<endl;
-  cerr<<"script: "<<spell[index]->script<<endl;
+  DEBUG(1,LEVEL_DEBUGGING,"\n");
+  DEBUG(0,LEVEL_DEBUGGING,"script: %s\n",spell[index]->script);
   /* end debug block */
 
 
@@ -416,11 +411,11 @@ bool Magic::cast()
     if (1<<shift&spell[index]->reagents) {
       if (!caster->inventory_has_object(obj_n_reagent[shift],0,false))
       {
-	cerr<<"Didn't have "<<reagent[shift]<<endl;
+	DEBUG(0,LEVEL_DEBUGGING,"Didn't have %s\n",reagent[shift]);
 	event->scroll->display_string("\nNo Reagents.\n");
 	return false;
       }
-      cerr<<"Ok, has "<<reagent[shift]<<endl;
+      DEBUG(0,LEVEL_DEBUGGING,"Ok, has %s\n",reagent[shift]);
     }
   }
     

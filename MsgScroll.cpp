@@ -33,12 +33,6 @@
 #include "GUI.h"
 #include "MsgScroll.h"
 
-using std::cerr;
-using std::cin;
-using std::cout;
-using std::endl;
-
-
 // MsgText Class
 MsgText::MsgText()
 {
@@ -258,7 +252,7 @@ void MsgScroll::display_string(std::string s, Font *f)
    f = font;
 
  msg_text = new MsgText(s, f);
- cout<<msg_text->s;
+ fprintf(stdout,"%s",msg_text->s.c_str());
  fflush(stdout);
 
  holding_buffer.push_back(msg_text);
@@ -783,7 +777,8 @@ std::string MsgScroll::get_input()
    {
     s.assign(input_buf);
    }
- cout<<s;
+ fprintf(stdout,"%s",s.c_str());
+ fflush(stdout);
  return s;
 }
 
