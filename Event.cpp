@@ -211,10 +211,10 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 				return false;
 
 			case SDLK_d: 
-				DEBUG(0,LEVEL_DEBUGGING,"!!decrease!!\n");
+				DEBUG(0,LEVEL_EMERGENCY,"!!decrease!!\n");
 				return false;
 			case SDLK_i:
-				DEBUG(0,LEVEL_DEBUGGING,"!!increase!!\n");
+				DEBUG(0,LEVEL_EMERGENCY,"!!increase!!\n");
 				return false;
 
 			case SDLK_KP_ENTER:

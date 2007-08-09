@@ -74,7 +74,7 @@ const uint16 map_pitch[2] = { 1024, 256 }; // width of 0:surface plane, and 1:al
 #else
 #define DEBUG(x...) debug(x)
 typedef enum { LEVEL_EMERGENCY=0, LEVEL_ALERT, LEVEL_CRITICAL, LEVEL_ERROR, LEVEL_WARNING, LEVEL_NOTIFICATION, LEVEL_INFORMATIONAL, LEVEL_DEBUGGING } DebugLevelType;
-void debug(bool no_header,DebugLevelType level, const char *format, ...);
+DebugLevelType debug(const bool no_header,const DebugLevelType level, const char *format, ...);
 #endif /* WITHOUT_DEBUG */
 
 /*

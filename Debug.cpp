@@ -27,7 +27,7 @@
 #include <nuvieDefs.h>
 #ifndef WITHOUT_DEBUG
 
-void debug(bool no_header,DebugLevelType level, const char *format, ...)
+DebugLevelType debug(const bool no_header,const DebugLevelType level, const char *format, ...)
 {
 // original
 //  static const char* DebugLevelNames[]= { "EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING" };
@@ -43,23 +43,24 @@ void debug(bool no_header,DebugLevelType level, const char *format, ...)
   
   if (format==NULL) { 
     CurrentDebugLevel=level;
-    return;
+    return CurrentDebugLevel;
   }
   if (!strcmp(format,"!!increase!!\n")) { 
     unsigned char c=(unsigned char) CurrentDebugLevel;
     if (c<7) {c++;}
-    level=CurrentDebugLevel=(DebugLevelType) c;
+    CurrentDebugLevel=(DebugLevelType) c;
   }
   if (!strcmp(format,"!!decrease!!\n")) { 
     unsigned char c=(unsigned char) CurrentDebugLevel;
     if (c>0) {c--;}
-    level=CurrentDebugLevel=(DebugLevelType) c;
+    CurrentDebugLevel=(DebugLevelType) c;
   }
-  if (level>CurrentDebugLevel) { return; } // Don't call ourselves here to log something like 'message suppressed'
+  if (level>CurrentDebugLevel) { return CurrentDebugLevel; } // Don't call ourselves here to log something like 'message suppressed'
   now=time(NULL);
   if (!no_header) {fprintf(stderr,"%zd [%s]> ",(size_t)now,DebugLevelNames[(unsigned char)level]);}
   vfprintf(stderr,format,ap);
   va_end(ap);
+  return CurrentDebugLevel;
 }
 #endif /* WITHOUT_DEBUG */
 
