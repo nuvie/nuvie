@@ -60,7 +60,7 @@ unpack_portraits.exe: $(UNPACKPORTRAITS_OBJS)
 
 include tools/FMTownsU6/Makefile.common
 
-UNPACK_OBJS = $(unpack_OBJS:%=tools/FMTownsU6/%)
+UNPACK_OBJS = $(unpack_OBJS:%=tools/FMTownsU6/%) Debug.o
 
 unpack.exe: $(UNPACK_OBJS)
 	$(CXX) -o $@ $+
