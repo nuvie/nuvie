@@ -37,8 +37,8 @@ DebugLevelType debug(const bool no_header,const DebugLevelType level, const char
   static const char* DebugLevelNames[]= { "!", "A", "C", "E", "W", "N", "I", "D" };
   static DebugLevelType CurrentDebugLevel=LEVEL_DEBUGGING;
 
-  time_t now;
   va_list ap;
+  time_t now;
   va_start(ap,format);
   
   if (format==NULL) { 

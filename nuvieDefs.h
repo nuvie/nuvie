@@ -106,7 +106,8 @@ typedef unsigned char BOOL;
 #endif
 
 
-#define nuprint(T) Game::get_game()->get_scroll()->display_string(T)
+#define nuprint(T...) Game::get_game()->get_scroll()->printf(T)
+/*#define nuprint(T) Game::get_game()->get_scroll()->display_string(T)*/
 /*#define nuprint(T) Game::get_game()->get_scroll()->display_string(T); \
                      Game::get_game()->get_scroll()->display_string("\n");*/
 

@@ -2358,9 +2358,9 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
     // don't activate if autowalking from linking exit
     if(ev == USE_EVENT_PASS && items.actor_ref == player->get_actor() && !party->get_autowalk())
     {
-        if(obj->quality != 0/* && Shamino is in party and alive*/)
+        if(obj->quality != 0/* && Shamino is in party and alive*/) /* FIXME */
         {
-            // scroll->DEBUG(0,LEVEL_DEBUGGING,"%s says, \"This is the %s%s.\"\n\n", prefix, dungeon_name);
+            // scroll->printf("%s says, \"This is the %s%s.\"\n\n",blah->name, prefix, dungeon_name);
             scroll->display_string("Shamino says, \"This is the ");
             scroll->display_string(prefix);
             scroll->display_string(dungeon_name);

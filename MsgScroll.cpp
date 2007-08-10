@@ -231,6 +231,59 @@ bool MsgScroll::init(char *player_name)
  return true;
 }
 
+int MsgScroll::printf(std::string format, ...)
+{
+
+  va_list ap;
+  size_t printed=0;
+  static size_t bufsize=128; // will be resized if needed
+  static char * buffer=(char *) malloc(bufsize); // static so we don't have to reallocate all the time.
+  
+  while(1) {
+    if (buffer==NULL) {
+      DEBUG(0,LEVEL_ALERT,"MsgScroll::printf: Couldn't allocate %d bytes for buffer\n",bufsize);
+      /* try to shrink the buffer to at least have a change next time,
+       * but if we're low on memory probably have worse issues...
+       */
+      bufsize>>=1;
+      buffer=(char *) malloc(bufsize); // no need to check now.
+      /*
+       * We don't retry, or if we need e.g. 4 bytes for the format and
+       * there's only 3 available, we'd grow and shrink forever.
+       */
+      return printed;
+    }
+
+    /* try formatting */
+    va_start(ap,format);
+    printed=vsnprintf(buffer,bufsize,format.c_str(),ap);
+    va_end(ap);
+
+    if (printed<0) {
+      DEBUG(0,LEVEL_ERROR,"MsgScroll::printf: vsnprintf returned < 0: either output error or glibc < 2.1\n");
+      free(buffer);
+      bufsize*=2; // In case of an output error, we'll just keep doubling until the malloc fails.
+      buffer=(char *) malloc(bufsize); // if this fails, will be caught later on
+      /* try again */
+      continue;
+    } 
+    if (printed>=bufsize) {
+      DEBUG(0,LEVEL_DEBUGGING,"MsgScroll::printf: needed buffer of %d bytes, only had %d bytes.\n",printed+1,bufsize);
+      bufsize=printed+1; //this should be enough
+      free(buffer);
+      buffer=(char *) malloc(bufsize); // if this fails, will be caught later on
+      /* try again */
+      continue;
+    }
+    /* if we're here, formatting probably worked. We can stop looping */
+    break;
+  }
+  /* use the string */
+  display_string(buffer);
+
+  return printed;
+}
+
 void MsgScroll::display_string(std::string s, uint16 length, uint8 lang_num)
 {
 

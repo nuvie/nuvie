@@ -25,6 +25,7 @@
  */
 #include "CallBack.h"
 #include "GUI_widget.h"
+#include <stdarg.h>
 
 #define MSGSCROLL_U6_WIDTH 17
 #define MSGSCROLL_U6_HEIGHT 10
@@ -135,6 +136,8 @@ class MsgScroll: public GUI_Widget, public CallBack
  bool remove_char();
 
  void set_font(Font *f);
+
+ int printf(const std::string format,...);
 
  void display_string(std::string s, Font *f);
  void display_string(std::string s, uint16 length, uint8 lang_num);
