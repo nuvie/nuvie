@@ -25,9 +25,17 @@
 #include <string.h>
 #include <time.h>
 #include <nuvieDefs.h>
+
 #ifndef WITHOUT_DEBUG
 
-DebugLevelType debug(const bool no_header,const DebugLevelType level, const char *format, ...)
+// maybe make these configurable at runtime instead? 
+#define WITHOUT_DEBUG_TIMESTAMP_IN_HEADER
+//#define WITHOUT_DEBUG_LEVEL_IN_HEADER
+//#define WITHOUT_DEBUG_FUNC_IN_HEADER
+//#define WITHOUT_DEBUG_FILE_LINE_IN_HEADER
+//#define WITHOUT_DEBUG_NEWLINE_IN_HEADER
+
+DebugLevelType debug(const char * func, const char * file, const int line, const bool no_header,const DebugLevelType level, const char *format, ...)
 {
 // original
 //  static const char* DebugLevelNames[]= { "EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING" };
@@ -61,8 +69,24 @@ DebugLevelType debug(const bool no_header,const DebugLevelType level, const char
   if (!no_header) {
     time(&now);
     ts = *localtime(&now);
-    strftime(buf,128,"%s",&ts); // maybe make this configurable? 
-    fprintf(stderr,"%s [%s]> ",buf,DebugLevelNames[(unsigned char)level]);
+    strftime(buf,128,"%s",&ts); 
+    fprintf(stderr,"<");
+#ifndef WITHOUT_DEBUG_TIMESTAMP_IN_HEADER
+    fprintf(stderr,"%s ",buf); 
+#endif
+#ifndef WITHOUT_DEBUG_LEVEL_IN_HEADER
+    fprintf(stderr,"[%s] ",DebugLevelNames[(unsigned char)level]);
+#endif
+#ifndef WITHOUT_DEBUG_FUNC_IN_HEADER
+    fprintf(stderr,"%s ",func);
+#endif
+#ifndef WITHOUT_DEBUG_FILE_LINE_IN_HEADER
+    fprintf(stderr,"%s:%d",file,line);
+#endif
+    fprintf(stderr,"> ");
+#ifndef WITHOUT_DEBUG_NEWLINE_IN_HEADER
+    fprintf(stderr,"\n");
+#endif
   }
   vfprintf(stderr,format,ap);
   va_end(ap);

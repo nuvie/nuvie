@@ -1427,6 +1427,7 @@ uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
    {
     if(weapon_damage == 255) // A weapon that does 255 damage kills every time.
       {
+       DEBUG(1,LEVEL_DEBUGGING,", Fatality!\n");
        return 255;
       }
 
