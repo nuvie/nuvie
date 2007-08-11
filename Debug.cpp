@@ -36,9 +36,11 @@ DebugLevelType debug(const bool no_header,const DebugLevelType level, const char
 //  shorter, because spammy enough as is.
   static const char* DebugLevelNames[]= { "!", "A", "C", "E", "W", "N", "I", "D" };
   static DebugLevelType CurrentDebugLevel=LEVEL_DEBUGGING;
-
+  
   va_list ap;
   time_t now;
+  struct tm ts;
+  char buf[128]; 
   va_start(ap,format);
   
   if (format==NULL) { 
@@ -56,12 +58,17 @@ DebugLevelType debug(const bool no_header,const DebugLevelType level, const char
     CurrentDebugLevel=(DebugLevelType) c;
   }
   if (level>CurrentDebugLevel) { return CurrentDebugLevel; } // Don't call ourselves here to log something like 'message suppressed'
-  now=time(NULL);
-  if (!no_header) {fprintf(stderr,"%zd [%s]> ",(size_t)now,DebugLevelNames[(unsigned char)level]);}
+  if (!no_header) {
+    time(&now);
+    ts = *localtime(&now);
+    strftime(buf,128,"%s",&ts); // maybe make this configurable? 
+    fprintf(stderr,"%s [%s]> ",buf,DebugLevelNames[(unsigned char)level]);
+  }
   vfprintf(stderr,format,ap);
   va_end(ap);
   return CurrentDebugLevel;
 }
+
 #endif /* WITHOUT_DEBUG */
 
 /* test code / documentation.
@@ -74,5 +81,5 @@ int main(char ** argv,int argc)
   DEBUG(0,LEVEL_DEBUGGING,NULL); // to allow all messages through.
   DEBUG(0,LEVEL_DEBUGGING,"%d %c %s\n",1,'a',"debugging");
   return 1;
-}
+  }
 */
