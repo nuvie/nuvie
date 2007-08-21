@@ -9,7 +9,7 @@ SRC=.
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL -lSDL_mixer
+SDL_LIBS=-L$(SRC)/sdl/lib  -lSDL_mixer -lSDLmain -lSDL
 
 CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 	-I$(SRC)/conf -I$(SRC)/files -I$(SRC)/fonts -I$(SRC)/GUI \
@@ -21,7 +21,7 @@ CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 CXXFLAGS=-g
 
 LFLAGS=-mwindows
-LIBS=-lmingw32 $(SDL_LIBS)
+LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 
 all: nuvie.exe
 
@@ -117,5 +117,4 @@ dist: install tools
 	cp SDL/README-SDL.txt $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)/tools
-	cp SDL/lib/SDL_mixer.dll $(U6PATH)
 	u2d $(U6PATH)/*.txt
