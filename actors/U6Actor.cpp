@@ -1927,18 +1927,27 @@ void U6Actor::die()
  if(has_surrounding_objs())
    clear_surrounding_objs_list(true);
      
- Actor::die();
+ if(is_in_party() && party->get_member_num(this) == 0) {
+   // don't kill off Avatar, as it would cause 
+   // player->set_party_mode(party->get_actor(0)); 
+   // to use the look-string for name (turning you into Avatar)
+ } else {
+   Actor::die(); // unless we are the avatar.
+ }
     
  if(is_in_party())
   {
    if(party->get_member_num(this) == 0) // Avatar
      {
       scroll->display_string("\nAn unending darkness engulfs thee...\n\n");
+      // special effects?
       scroll->display_string("A voice in the darkness intones, \"KAL LOR!\"\n");
+      // special effects?
 
       party->set_in_combat_mode(false);
 //      game->get_command_bar()->set_combat_mode(false);
-      player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
+
+     player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
       player->move(0x133,0x160,0); //move to LB's castle.
       set_direction(NUVIE_DIR_N);
 

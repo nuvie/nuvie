@@ -1486,7 +1486,8 @@ void Actor::resurrect(MapCoord new_position, Obj *body_obj)
 
 
   alive = true;
-  status_flags = status_flags ^ ACTOR_STATUS_DEAD;
+  status_flags |= ACTOR_STATUS_DEAD; // set, make sure it is not 0 already
+  status_flags = status_flags ^ ACTOR_STATUS_DEAD; // now toggle off 
   
   show();
   

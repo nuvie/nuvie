@@ -554,7 +554,11 @@ void MissileEffect::init(uint16 tile_num, uint16 obj_n,
     start_at = source;
     stop_at = target;
     stop_flags = intercept;
-    assert(stop_at != start_at);
+    assert(stop_at != start_at); // Hmm, can't attack self with boomerang then
+//    if (stop_at != start_at) {
+//      start_at.x=WRAPPED_COORD(start_at.x+1,start_at.z);
+//      start_at.y=WRAPPED_COORD(start_at.y-1,start_at.z);
+//    }
 
     // set tile rotation here based on obj_num
     if(throw_obj != 0)
