@@ -21,7 +21,7 @@ CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 CXXFLAGS=-g
 
 LFLAGS=-mwindows
-LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
+LIBS=-lmingw32 $(SDL_LIBS)
 
 all: nuvie.exe
 
@@ -117,4 +117,5 @@ dist: install tools
 	cp SDL/README-SDL.txt $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)/tools
+	cp SDL/lib/SDL_mixer.dll $(U6PATH)
 	u2d $(U6PATH)/*.txt
