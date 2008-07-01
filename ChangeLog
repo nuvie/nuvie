@@ -1,3 +1,7 @@
+2008-07-01  Eric Fry <efry at users.sourceforge.net>
+	* Fixed XCode build script when used with XCode 3.0 Thanks
+	  to the_letter_m for supplying a patch.
+
 2007-08-10  Pieter Luteijn <luteijn at users.sourceforge.net>
 	* Added MsgScroll->printf(), and redefined nuprint to use it
 	  Only did minimal testing as nuprint is hardly used.

@@ -293,6 +293,7 @@
 		07F10D2805C7D27A0029E1F1 /* Font.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2405C7D27A0029E1F1 /* Font.h */; };
 		07F10D2905C7D27A0029E1F1 /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2505C7D27A0029E1F1 /* FontManager.cpp */; };
 		07F10D2A05C7D27A0029E1F1 /* FontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2605C7D27A0029E1F1 /* FontManager.h */; };
+		C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -315,8 +316,8 @@
 		0700C6C60A84303D0039FD03 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Weather.cpp; path = ../Weather.cpp; sourceTree = SOURCE_ROOT; };
 		0700C6C70A84303D0039FD03 /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Weather.h; path = ../Weather.h; sourceTree = SOURCE_ROOT; };
 		0700C71E0A8442490039FD03 /* Objlist.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Objlist.h; path = ../save/Objlist.h; sourceTree = SOURCE_ROOT; };
-		0701134808EE539100D9B9F4 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = ../../../../Library/Frameworks/SDL_mixer.framework; sourceTree = SOURCE_ROOT; };
-		0701134C08EE53B500D9B9F4 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../../Library/Frameworks/SDL.framework; sourceTree = SOURCE_ROOT; };
+		0701134808EE539100D9B9F4 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = ../../../Library/Frameworks/SDL_mixer.framework; sourceTree = SOURCE_ROOT; };
+		0701134C08EE53B500D9B9F4 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../Library/Frameworks/SDL.framework; sourceTree = SOURCE_ROOT; };
 		0703C0F3054BE5660003D6CB /* Nuvie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nuvie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0704F9D40446B4E600A8000A /* Converse.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Converse.cpp; path = ../Converse.cpp; sourceTree = SOURCE_ROOT; };
 		0704F9D50446B4E600A8000A /* Converse.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Converse.h; path = ../Converse.h; sourceTree = SOURCE_ROOT; };
@@ -605,93 +606,94 @@
 		07F5D2CC0C1250F9002B06FC /* ScrollBarDown_2.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = ScrollBarDown_2.bmp; path = ../data/ScrollBarDown_2.bmp; sourceTree = SOURCE_ROOT; };
 		07F5D2CD0C1250F9002B06FC /* ScrollBarUp_1.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = ScrollBarUp_1.bmp; path = ../data/ScrollBarUp_1.bmp; sourceTree = SOURCE_ROOT; };
 		07F5D2CE0C1250F9002B06FC /* ScrollBarUp_2.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = ScrollBarUp_2.bmp; path = ../data/ScrollBarUp_2.bmp; sourceTree = SOURCE_ROOT; };
-		07F5D2D30C125131002B06FC /* init.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = init.lua; path = ../data/scripts/u6/init.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2D60C125131002B06FC /* create_food.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = create_food.lua; path = ../data/scripts/u6/magic/circle_01/create_food.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2D70C125131002B06FC /* detect_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = detect_magic.lua; path = ../data/scripts/u6/magic/circle_01/detect_magic.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2D80C125131002B06FC /* detect_trap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = detect_trap.lua; path = ../data/scripts/u6/magic/circle_01/detect_trap.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2D90C125131002B06FC /* dispel_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = dispel_magic.lua; path = ../data/scripts/u6/magic/circle_01/dispel_magic.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2DA0C125131002B06FC /* douse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = douse.lua; path = ../data/scripts/u6/magic/circle_01/douse.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2DB0C125131002B06FC /* harm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = harm.lua; path = ../data/scripts/u6/magic/circle_01/harm.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2DC0C125131002B06FC /* heal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = heal.lua; path = ../data/scripts/u6/magic/circle_01/heal.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2DD0C125131002B06FC /* help.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = help.lua; path = ../data/scripts/u6/magic/circle_01/help.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2DE0C125131002B06FC /* ignite.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = ignite.lua; path = ../data/scripts/u6/magic/circle_01/ignite.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2DF0C125131002B06FC /* light.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = light.lua; path = ../data/scripts/u6/magic/circle_01/light.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E10C125131002B06FC /* infravision.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = infravision.lua; path = ../data/scripts/u6/magic/circle_02/infravision.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E20C125131002B06FC /* magic_arrow.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = magic_arrow.lua; path = ../data/scripts/u6/magic/circle_02/magic_arrow.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E30C125131002B06FC /* poison.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = poison.lua; path = ../data/scripts/u6/magic/circle_02/poison.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E40C125131002B06FC /* reappear.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = reappear.lua; path = ../data/scripts/u6/magic/circle_02/reappear.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E50C125131002B06FC /* sleep.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = sleep.lua; path = ../data/scripts/u6/magic/circle_02/sleep.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E60C125131002B06FC /* telekinesis.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = telekinesis.lua; path = ../data/scripts/u6/magic/circle_02/telekinesis.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E70C125131002B06FC /* trap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = trap.lua; path = ../data/scripts/u6/magic/circle_02/trap.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E80C125131002B06FC /* unlock_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = unlock_magic.lua; path = ../data/scripts/u6/magic/circle_02/unlock_magic.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2E90C125131002B06FC /* untrap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = untrap.lua; path = ../data/scripts/u6/magic/circle_02/untrap.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2EA0C125131002B06FC /* vanish.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = vanish.lua; path = ../data/scripts/u6/magic/circle_02/vanish.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2EC0C125131002B06FC /* curse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = curse.lua; path = ../data/scripts/u6/magic/circle_03/curse.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2ED0C125131002B06FC /* dispel_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = dispel_field.lua; path = ../data/scripts/u6/magic/circle_03/dispel_field.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2EE0C125131002B06FC /* fireball.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = fireball.lua; path = ../data/scripts/u6/magic/circle_03/fireball.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2EF0C125131002B06FC /* great_light.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = great_light.lua; path = ../data/scripts/u6/magic/circle_03/great_light.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F00C125131002B06FC /* magic_lock.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = magic_lock.lua; path = ../data/scripts/u6/magic/circle_03/magic_lock.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F10C125131002B06FC /* mass_awaken.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_awaken.lua; path = ../data/scripts/u6/magic/circle_03/mass_awaken.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F20C125131002B06FC /* mass_sleep.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_sleep.lua; path = ../data/scripts/u6/magic/circle_03/mass_sleep.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F30C125131002B06FC /* peer.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = peer.lua; path = ../data/scripts/u6/magic/circle_03/peer.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F40C125131002B06FC /* protection.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = protection.lua; path = ../data/scripts/u6/magic/circle_03/protection.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F50C125131002B06FC /* repel_undead.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = repel_undead.lua; path = ../data/scripts/u6/magic/circle_03/repel_undead.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F70C125131002B06FC /* animate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = animate.lua; path = ../data/scripts/u6/magic/circle_04/animate.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F80C125131002B06FC /* conjure.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = conjure.lua; path = ../data/scripts/u6/magic/circle_04/conjure.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2F90C125131002B06FC /* disable.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = disable.lua; path = ../data/scripts/u6/magic/circle_04/disable.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2FA0C125131002B06FC /* fire_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = fire_field.lua; path = ../data/scripts/u6/magic/circle_04/fire_field.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2FB0C125131002B06FC /* great_heal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = great_heal.lua; path = ../data/scripts/u6/magic/circle_04/great_heal.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2FD0C125131002B06FC /* locate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = locate.lua; path = ../data/scripts/u6/magic/circle_04/locate.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2FE0C125131002B06FC /* mass_dispel.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_dispel.lua; path = ../data/scripts/u6/magic/circle_04/mass_dispel.lua; sourceTree = SOURCE_ROOT; };
-		07F5D2FF0C125131002B06FC /* poison_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = poison_field.lua; path = ../data/scripts/u6/magic/circle_04/poison_field.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3000C125131002B06FC /* sleep_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = sleep_field.lua; path = ../data/scripts/u6/magic/circle_04/sleep_field.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3010C125131002B06FC /* wind_change.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = wind_change.lua; path = ../data/scripts/u6/magic/circle_04/wind_change.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3030C125131002B06FC /* energy_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = energy_field.lua; path = ../data/scripts/u6/magic/circle_05/energy_field.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3040C125131002B06FC /* explosion.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = explosion.lua; path = ../data/scripts/u6/magic/circle_05/explosion.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3050C125131002B06FC /* insect_swarm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = insect_swarm.lua; path = ../data/scripts/u6/magic/circle_05/insect_swarm.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3060C125131002B06FC /* invisibility.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = invisibility.lua; path = ../data/scripts/u6/magic/circle_05/invisibility.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3070C125131002B06FC /* lightning.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = lightning.lua; path = ../data/scripts/u6/magic/circle_05/lightning.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3080C125131002B06FC /* paralyze.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = paralyze.lua; path = ../data/scripts/u6/magic/circle_05/paralyze.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3090C125131002B06FC /* pickpocket.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = pickpocket.lua; path = ../data/scripts/u6/magic/circle_05/pickpocket.lua; sourceTree = SOURCE_ROOT; };
-		07F5D30A0C125131002B06FC /* reveal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = reveal.lua; path = ../data/scripts/u6/magic/circle_05/reveal.lua; sourceTree = SOURCE_ROOT; };
-		07F5D30B0C125131002B06FC /* seance.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = seance.lua; path = ../data/scripts/u6/magic/circle_05/seance.lua; sourceTree = SOURCE_ROOT; };
-		07F5D30C0C125131002B06FC /* xray.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = xray.lua; path = ../data/scripts/u6/magic/circle_05/xray.lua; sourceTree = SOURCE_ROOT; };
-		07F5D30E0C125131002B06FC /* charm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = charm.lua; path = ../data/scripts/u6/magic/circle_06/charm.lua; sourceTree = SOURCE_ROOT; };
-		07F5D30F0C125131002B06FC /* clone.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = clone.lua; path = ../data/scripts/u6/magic/circle_06/clone.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3100C125131002B06FC /* confuse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = confuse.lua; path = ../data/scripts/u6/magic/circle_06/confuse.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3110C125131002B06FC /* flame_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = flame_wind.lua; path = ../data/scripts/u6/magic/circle_06/flame_wind.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3120C125131002B06FC /* hail_storm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = hail_storm.lua; path = ../data/scripts/u6/magic/circle_06/hail_storm.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3130C125131002B06FC /* mass_protect.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_protect.lua; path = ../data/scripts/u6/magic/circle_06/mass_protect.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3140C125131002B06FC /* negate_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = negate_magic.lua; path = ../data/scripts/u6/magic/circle_06/negate_magic.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3150C125131002B06FC /* poison_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = poison_wind.lua; path = ../data/scripts/u6/magic/circle_06/poison_wind.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3160C125131002B06FC /* replicate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = replicate.lua; path = ../data/scripts/u6/magic/circle_06/replicate.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3170C125131002B06FC /* web.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = web.lua; path = ../data/scripts/u6/magic/circle_06/web.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3190C125131002B06FC /* chain_bolt.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = chain_bolt.lua; path = ../data/scripts/u6/magic/circle_07/chain_bolt.lua; sourceTree = SOURCE_ROOT; };
-		07F5D31A0C125131002B06FC /* enchant.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = enchant.lua; path = ../data/scripts/u6/magic/circle_07/enchant.lua; sourceTree = SOURCE_ROOT; };
-		07F5D31B0C125131002B06FC /* energy_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = energy_wind.lua; path = ../data/scripts/u6/magic/circle_07/energy_wind.lua; sourceTree = SOURCE_ROOT; };
-		07F5D31C0C125131002B06FC /* fear.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = fear.lua; path = ../data/scripts/u6/magic/circle_07/fear.lua; sourceTree = SOURCE_ROOT; };
-		07F5D31D0C125131002B06FC /* gate_travel.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = gate_travel.lua; path = ../data/scripts/u6/magic/circle_07/gate_travel.lua; sourceTree = SOURCE_ROOT; };
-		07F5D31E0C125131002B06FC /* kill.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = kill.lua; path = ../data/scripts/u6/magic/circle_07/kill.lua; sourceTree = SOURCE_ROOT; };
-		07F5D31F0C125131002B06FC /* mass_curse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_curse.lua; path = ../data/scripts/u6/magic/circle_07/mass_curse.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3200C125131002B06FC /* mass_invisibility.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_invisibility.lua; path = ../data/scripts/u6/magic/circle_07/mass_invisibility.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3210C125131002B06FC /* wing_strike.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = wing_strike.lua; path = ../data/scripts/u6/magic/circle_07/wing_strike.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3220C125131002B06FC /* wizard_eye.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = wizard_eye.lua; path = ../data/scripts/u6/magic/circle_07/wizard_eye.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3240C125131002B06FC /* armageddon.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = armageddon.lua; path = ../data/scripts/u6/magic/circle_08/armageddon.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3250C125131002B06FC /* death_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = death_wind.lua; path = ../data/scripts/u6/magic/circle_08/death_wind.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3270C125131002B06FC /* eclipse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = eclipse.lua; path = ../data/scripts/u6/magic/circle_08/eclipse.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3280C125131002B06FC /* mass_charm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_charm.lua; path = ../data/scripts/u6/magic/circle_08/mass_charm.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3290C125131002B06FC /* mass_kill.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = mass_kill.lua; path = ../data/scripts/u6/magic/circle_08/mass_kill.lua; sourceTree = SOURCE_ROOT; };
-		07F5D32A0C125132002B06FC /* resurrect.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = resurrect.lua; path = ../data/scripts/u6/magic/circle_08/resurrect.lua; sourceTree = SOURCE_ROOT; };
-		07F5D32B0C125132002B06FC /* slime.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = slime.lua; path = ../data/scripts/u6/magic/circle_08/slime.lua; sourceTree = SOURCE_ROOT; };
-		07F5D32C0C125132002B06FC /* summon.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = summon.lua; path = ../data/scripts/u6/magic/circle_08/summon.lua; sourceTree = SOURCE_ROOT; };
-		07F5D32D0C125132002B06FC /* time_stop.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = time_stop.lua; path = ../data/scripts/u6/magic/circle_08/time_stop.lua; sourceTree = SOURCE_ROOT; };
-		07F5D32E0C125132002B06FC /* tremor.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = tremor.lua; path = ../data/scripts/u6/magic/circle_08/tremor.lua; sourceTree = SOURCE_ROOT; };
-		07F5D3300C125132002B06FC /* magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.lua; name = magic.lua; path = ../data/scripts/u6/magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D30C125131002B06FC /* init.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = init.lua; path = ../data/scripts/u6/init.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D60C125131002B06FC /* create_food.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = create_food.lua; path = ../data/scripts/u6/magic/circle_01/create_food.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D70C125131002B06FC /* detect_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = detect_magic.lua; path = ../data/scripts/u6/magic/circle_01/detect_magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D80C125131002B06FC /* detect_trap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = detect_trap.lua; path = ../data/scripts/u6/magic/circle_01/detect_trap.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2D90C125131002B06FC /* dispel_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = dispel_magic.lua; path = ../data/scripts/u6/magic/circle_01/dispel_magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DA0C125131002B06FC /* douse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = douse.lua; path = ../data/scripts/u6/magic/circle_01/douse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DB0C125131002B06FC /* harm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = harm.lua; path = ../data/scripts/u6/magic/circle_01/harm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DC0C125131002B06FC /* heal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = heal.lua; path = ../data/scripts/u6/magic/circle_01/heal.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DD0C125131002B06FC /* help.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = help.lua; path = ../data/scripts/u6/magic/circle_01/help.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DE0C125131002B06FC /* ignite.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = ignite.lua; path = ../data/scripts/u6/magic/circle_01/ignite.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2DF0C125131002B06FC /* light.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = light.lua; path = ../data/scripts/u6/magic/circle_01/light.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E10C125131002B06FC /* infravision.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = infravision.lua; path = ../data/scripts/u6/magic/circle_02/infravision.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E20C125131002B06FC /* magic_arrow.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = magic_arrow.lua; path = ../data/scripts/u6/magic/circle_02/magic_arrow.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E30C125131002B06FC /* poison.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = poison.lua; path = ../data/scripts/u6/magic/circle_02/poison.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E40C125131002B06FC /* reappear.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = reappear.lua; path = ../data/scripts/u6/magic/circle_02/reappear.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E50C125131002B06FC /* sleep.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = sleep.lua; path = ../data/scripts/u6/magic/circle_02/sleep.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E60C125131002B06FC /* telekinesis.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = telekinesis.lua; path = ../data/scripts/u6/magic/circle_02/telekinesis.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E70C125131002B06FC /* trap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = trap.lua; path = ../data/scripts/u6/magic/circle_02/trap.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E80C125131002B06FC /* unlock_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = unlock_magic.lua; path = ../data/scripts/u6/magic/circle_02/unlock_magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2E90C125131002B06FC /* untrap.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = untrap.lua; path = ../data/scripts/u6/magic/circle_02/untrap.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2EA0C125131002B06FC /* vanish.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = vanish.lua; path = ../data/scripts/u6/magic/circle_02/vanish.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2EC0C125131002B06FC /* curse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = curse.lua; path = ../data/scripts/u6/magic/circle_03/curse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2ED0C125131002B06FC /* dispel_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = dispel_field.lua; path = ../data/scripts/u6/magic/circle_03/dispel_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2EE0C125131002B06FC /* fireball.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = fireball.lua; path = ../data/scripts/u6/magic/circle_03/fireball.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2EF0C125131002B06FC /* great_light.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = great_light.lua; path = ../data/scripts/u6/magic/circle_03/great_light.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F00C125131002B06FC /* magic_lock.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = magic_lock.lua; path = ../data/scripts/u6/magic/circle_03/magic_lock.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F10C125131002B06FC /* mass_awaken.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mass_awaken.lua; path = ../data/scripts/u6/magic/circle_03/mass_awaken.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F20C125131002B06FC /* mass_sleep.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mass_sleep.lua; path = ../data/scripts/u6/magic/circle_03/mass_sleep.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F30C125131002B06FC /* peer.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = peer.lua; path = ../data/scripts/u6/magic/circle_03/peer.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F40C125131002B06FC /* protection.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = protection.lua; path = ../data/scripts/u6/magic/circle_03/protection.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F50C125131002B06FC /* repel_undead.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = repel_undead.lua; path = ../data/scripts/u6/magic/circle_03/repel_undead.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F70C125131002B06FC /* animate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = animate.lua; path = ../data/scripts/u6/magic/circle_04/animate.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F80C125131002B06FC /* conjure.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = conjure.lua; path = ../data/scripts/u6/magic/circle_04/conjure.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2F90C125131002B06FC /* disable.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = disable.lua; path = ../data/scripts/u6/magic/circle_04/disable.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FA0C125131002B06FC /* fire_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = fire_field.lua; path = ../data/scripts/u6/magic/circle_04/fire_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FB0C125131002B06FC /* great_heal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = great_heal.lua; path = ../data/scripts/u6/magic/circle_04/great_heal.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FD0C125131002B06FC /* locate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = locate.lua; path = ../data/scripts/u6/magic/circle_04/locate.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FE0C125131002B06FC /* mass_dispel.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mass_dispel.lua; path = ../data/scripts/u6/magic/circle_04/mass_dispel.lua; sourceTree = SOURCE_ROOT; };
+		07F5D2FF0C125131002B06FC /* poison_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = poison_field.lua; path = ../data/scripts/u6/magic/circle_04/poison_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3000C125131002B06FC /* sleep_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = sleep_field.lua; path = ../data/scripts/u6/magic/circle_04/sleep_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3010C125131002B06FC /* wind_change.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = wind_change.lua; path = ../data/scripts/u6/magic/circle_04/wind_change.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3030C125131002B06FC /* energy_field.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = energy_field.lua; path = ../data/scripts/u6/magic/circle_05/energy_field.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3040C125131002B06FC /* explosion.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = explosion.lua; path = ../data/scripts/u6/magic/circle_05/explosion.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3050C125131002B06FC /* insect_swarm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = insect_swarm.lua; path = ../data/scripts/u6/magic/circle_05/insect_swarm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3060C125131002B06FC /* invisibility.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = invisibility.lua; path = ../data/scripts/u6/magic/circle_05/invisibility.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3070C125131002B06FC /* lightning.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = lightning.lua; path = ../data/scripts/u6/magic/circle_05/lightning.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3080C125131002B06FC /* paralyze.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = paralyze.lua; path = ../data/scripts/u6/magic/circle_05/paralyze.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3090C125131002B06FC /* pickpocket.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = pickpocket.lua; path = ../data/scripts/u6/magic/circle_05/pickpocket.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30A0C125131002B06FC /* reveal.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = reveal.lua; path = ../data/scripts/u6/magic/circle_05/reveal.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30B0C125131002B06FC /* seance.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = seance.lua; path = ../data/scripts/u6/magic/circle_05/seance.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30C0C125131002B06FC /* xray.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = xray.lua; path = ../data/scripts/u6/magic/circle_05/xray.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30E0C125131002B06FC /* charm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = charm.lua; path = ../data/scripts/u6/magic/circle_06/charm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D30F0C125131002B06FC /* clone.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = clone.lua; path = ../data/scripts/u6/magic/circle_06/clone.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3100C125131002B06FC /* confuse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = confuse.lua; path = ../data/scripts/u6/magic/circle_06/confuse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3110C125131002B06FC /* flame_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = flame_wind.lua; path = ../data/scripts/u6/magic/circle_06/flame_wind.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3120C125131002B06FC /* hail_storm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = hail_storm.lua; path = ../data/scripts/u6/magic/circle_06/hail_storm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3130C125131002B06FC /* mass_protect.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mass_protect.lua; path = ../data/scripts/u6/magic/circle_06/mass_protect.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3140C125131002B06FC /* negate_magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = negate_magic.lua; path = ../data/scripts/u6/magic/circle_06/negate_magic.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3150C125131002B06FC /* poison_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = poison_wind.lua; path = ../data/scripts/u6/magic/circle_06/poison_wind.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3160C125131002B06FC /* replicate.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = replicate.lua; path = ../data/scripts/u6/magic/circle_06/replicate.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3170C125131002B06FC /* web.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = web.lua; path = ../data/scripts/u6/magic/circle_06/web.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3190C125131002B06FC /* chain_bolt.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = chain_bolt.lua; path = ../data/scripts/u6/magic/circle_07/chain_bolt.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31A0C125131002B06FC /* enchant.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = enchant.lua; path = ../data/scripts/u6/magic/circle_07/enchant.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31B0C125131002B06FC /* energy_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = energy_wind.lua; path = ../data/scripts/u6/magic/circle_07/energy_wind.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31C0C125131002B06FC /* fear.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = fear.lua; path = ../data/scripts/u6/magic/circle_07/fear.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31D0C125131002B06FC /* gate_travel.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = gate_travel.lua; path = ../data/scripts/u6/magic/circle_07/gate_travel.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31E0C125131002B06FC /* kill.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = kill.lua; path = ../data/scripts/u6/magic/circle_07/kill.lua; sourceTree = SOURCE_ROOT; };
+		07F5D31F0C125131002B06FC /* mass_curse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mass_curse.lua; path = ../data/scripts/u6/magic/circle_07/mass_curse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3200C125131002B06FC /* mass_invisibility.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mass_invisibility.lua; path = ../data/scripts/u6/magic/circle_07/mass_invisibility.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3210C125131002B06FC /* wing_strike.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = wing_strike.lua; path = ../data/scripts/u6/magic/circle_07/wing_strike.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3220C125131002B06FC /* wizard_eye.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = wizard_eye.lua; path = ../data/scripts/u6/magic/circle_07/wizard_eye.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3240C125131002B06FC /* armageddon.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = armageddon.lua; path = ../data/scripts/u6/magic/circle_08/armageddon.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3250C125131002B06FC /* death_wind.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = death_wind.lua; path = ../data/scripts/u6/magic/circle_08/death_wind.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3270C125131002B06FC /* eclipse.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = eclipse.lua; path = ../data/scripts/u6/magic/circle_08/eclipse.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3280C125131002B06FC /* mass_charm.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mass_charm.lua; path = ../data/scripts/u6/magic/circle_08/mass_charm.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3290C125131002B06FC /* mass_kill.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mass_kill.lua; path = ../data/scripts/u6/magic/circle_08/mass_kill.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32A0C125132002B06FC /* resurrect.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = resurrect.lua; path = ../data/scripts/u6/magic/circle_08/resurrect.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32B0C125132002B06FC /* slime.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = slime.lua; path = ../data/scripts/u6/magic/circle_08/slime.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32C0C125132002B06FC /* summon.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = summon.lua; path = ../data/scripts/u6/magic/circle_08/summon.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32D0C125132002B06FC /* time_stop.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = time_stop.lua; path = ../data/scripts/u6/magic/circle_08/time_stop.lua; sourceTree = SOURCE_ROOT; };
+		07F5D32E0C125132002B06FC /* tremor.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = tremor.lua; path = ../data/scripts/u6/magic/circle_08/tremor.lua; sourceTree = SOURCE_ROOT; };
+		07F5D3300C125132002B06FC /* magic.lua */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = magic.lua; path = ../data/scripts/u6/magic.lua; sourceTree = SOURCE_ROOT; };
 		07F5D3890C125274002B06FC /* spells.nsl */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = spells.nsl; path = ../data/spells.nsl; sourceTree = SOURCE_ROOT; };
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Debug.cpp; path = ../Debug.cpp; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1345,6 +1347,7 @@
 				07BBAF1107D8750700F2792A /* CommandBar.cpp */,
 				0761811505E84B60001B6450 /* Cursor.h */,
 				0761811405E84B60001B6450 /* Cursor.cpp */,
+				C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */,
 				078CE6670582F64100EC127A /* EggManager.h */,
 				078CE6660582F64100EC127A /* EggManager.cpp */,
 				07EF5321043137BF00A8000A /* Event.h */,
@@ -1603,9 +1606,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 07CD0D5B088E817600E552A7 /* Build configuration list for PBXProject "Nuvie" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SDL App */;
 			projectDirPath = "";
+			projectRoot = ..;
 			targets = (
 				0703C05C054BE5660003D6CB /* Nuvie */,
 			);
@@ -1796,6 +1801,7 @@
 				07EF82B30A9C792300872DBE /* Script.cpp in Sources */,
 				0746DC490C50BED20034A045 /* Dither.cpp in Sources */,
 				07E986D20C6599BF00134DC7 /* Obj.cpp in Sources */,
+				C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
