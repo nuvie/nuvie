@@ -136,9 +136,9 @@ bool SaveGame::load_new()
 
 bool SaveGame::load_original()
 {
- std::string path, key, objlist_filename;
+ std::string path, key, objlist_filename, objblk_filename;
  unsigned char *data;
- char *filename;
+ //char *filename;
  char x,y;
  uint16 len;
  uint8 i;
@@ -152,16 +152,8 @@ bool SaveGame::load_original()
 
  init(obj_manager);
 
- key = config_get_game_key(config);
- key.append("/gamedir");
-
- config->value(key,path);
-
- DEBUG(0,LEVEL_INFORMATIONAL,"Loading Original Game: %s%csavegame%c\n", path.c_str(), U6PATH_DELIMITER, U6PATH_DELIMITER);
-
- filename = get_objblk_path((char *)path.c_str());
-
- len = strlen(filename);
+ objblk_filename = OBJBLK_FILENAME;
+ len = objblk_filename.length();
 
  i = 0;
 
@@ -169,19 +161,18 @@ bool SaveGame::load_original()
   {
    for(x = 'a';x < 'i'; x++)
     {
-     filename[len-1] = y;
-     filename[len-2] = x;
+     objblk_filename[len-1] = y;
+     objblk_filename[len-2] = x;
 
-     if(objblk_file->open(filename) == false)
+	 config_get_path(config, objblk_filename, path);
+     if(objblk_file->open(path) == false)
        {
-        delete[] filename;
         delete objblk_file;
         return false;
        }
 
      if(obj_manager->load_super_chunk((NuvieIO *)objblk_file,0,i) == false)
        {
-        delete[] filename;
         delete objblk_file;
         return false;
        }
@@ -190,16 +181,16 @@ bool SaveGame::load_original()
     }
   }
 
- filename[len-1] = 'i';
+ objblk_filename[len-1] = 'i';
 
  for(i=0,x = 'a';x < 'f';x++,i++) //Load dungeons
   {
-   filename[len-2] = x;
-   objblk_file->open(filename);
+   objblk_filename[len-2] = x;
+   config_get_path(config, objblk_filename, path);
+   objblk_file->open(path);
 
    if(obj_manager->load_super_chunk((NuvieIO *)objblk_file, i, 0) == false)
      {
-      delete[] filename;
       delete objblk_file;
       return false;
      }
@@ -207,7 +198,6 @@ bool SaveGame::load_original()
    objblk_file->close();
   }
 
- delete[] filename;
  delete objblk_file;
 
  //print_egg_list();
@@ -559,31 +549,3 @@ void SaveGame::clean_up()
 
  return;
 }
-
-char *SaveGame::get_objblk_path(char *path)
-{
- char *filename;
- uint16 len;
-
- if(path == NULL)
-   return NULL;
-
- len = strlen(path);
-
- if(len == 0)
-   return NULL;
-
- filename = new char [len+19]; // + room for /savegame/objblkxx\0
-
- strcpy(filename,path);
- if(filename[len-1] != U6PATH_DELIMITER)
-   {
-    filename[len] = U6PATH_DELIMITER;
-    filename[len+1] = '\0';
-   }
-
- strcat(filename,OBJBLK_FILENAME);
-
- return filename;
-}
-

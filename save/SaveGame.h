@@ -94,7 +94,6 @@ class SaveGame
  bool save_thumbnail(NuvieIOFileWrite *savefile);
 
  void clean_up();
- char *get_objblk_path(char *path);
 };
 
 #endif /* __SaveGame_h__ */

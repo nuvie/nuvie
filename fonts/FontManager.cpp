@@ -21,6 +21,8 @@
  *
  */
 
+#include <stdlib.h>
+
 #include "nuvieDefs.h"
 #include "Configuration.h"
 

@@ -8,13 +8,39 @@
  */
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <dirent.h>
 
 #include <cstdio>
 #include <string>
+#include <vector>
 #include "nuvieDefs.h"
 
 #include "U6misc.h"
 #include "Configuration.h"
+
+using namespace std;
+
+bool find_casesensitive_path(std::string path, std::string filename, std::string &new_path);
+bool find_path(std::string path, std::string &dir_str);
+
+void Tokenise( const std::string& str, std::vector<std::string>& tokens, char delimiter = ' ' )
+{
+   std::string delimiters = string();
+   delimiters = delimiter;
+
+   // Skip delimiters at beginning.
+   string::size_type lastPos = str.find_first_not_of( delimiters, 0 );
+
+   for( string::size_type pos = str.find_first_of( delimiters, lastPos ) ;
+        string::npos != pos || string::npos != lastPos ;
+        pos = str.find_first_of( delimiters, lastPos ) )
+   {
+      // Found a token, add it to the vector.
+      tokens.push_back( str.substr( lastPos, pos - lastPos ) );
+      // Skip delimiters.  Note the "not_of"
+      lastPos = str.find_first_not_of( delimiters, pos );
+   }
+}
 
 std::string config_get_game_key(Configuration *config)
 {
@@ -40,19 +66,95 @@ const char *get_game_tag(int game_type)
  return "";
 }
 
-void config_get_path(Configuration *config, std::string filename, std::string &path)
+void config_get_path( Configuration *config, std::string filename, std::string &path )
 {
- std::string key, game_name;
+   std::string key, game_name, game_dir, tmp_path;
 
- config->value("config/GameName",game_name);
+   config->value( "config/GameName", game_name );
 
- key.assign("config/");
- key.append(game_name);
- key.append("/gamedir");
+   key.assign( "config/" );
+   key.append( game_name );
+   key.append( "/gamedir" );
 
- config->pathFromValue(key, filename, path);
+   config->pathFromValue( key, "", game_dir );
 
- return;
+   tmp_path = game_dir + filename;
+
+   struct stat s;
+
+   if( stat( tmp_path.c_str(), &s ) == 0 )
+   {
+      path = tmp_path;
+      return;
+   }
+
+   find_casesensitive_path( game_dir, filename, tmp_path );
+
+   path = tmp_path;
+
+   return;
+}
+
+bool find_casesensitive_path( std::string path, std::string filename, std::string &new_path )
+{
+   vector<string> directories;
+   string tmp_path = path;
+
+   Tokenise( filename, directories, U6PATH_DELIMITER );
+
+   std::vector<string>::iterator dir_iter;
+
+   for( dir_iter = directories.begin(); dir_iter != directories.end(); )
+   {
+      string dir = *dir_iter;
+
+      printf( "%s, ", dir.c_str() );
+
+      if( find_path( tmp_path, dir ) == false )
+         return false;
+
+      dir_iter++;
+
+      if( dir_iter != directories.end() )
+         dir += U6PATH_DELIMITER;
+
+      tmp_path += dir;
+   }
+
+   new_path = tmp_path;
+
+   printf( "\nproper path = %s\n", new_path.c_str() );
+   return true;
+}
+
+bool find_path( std::string path, std::string &dir_str )
+{
+   DIR *dir;
+   struct dirent *item;
+
+   dir = opendir( path.c_str() );
+   if( dir == NULL )
+      return false;
+
+   for( item = readdir( dir ); item != NULL; item = readdir( dir ) )
+   {
+      printf( "trying %s, want %s\n", item->d_name, dir_str.c_str() );
+      if( strlen(item->d_name) == dir_str.length() && strcasecmp( item->d_name, dir_str.c_str() ) == 0 )
+      {
+         dir_str = item->d_name;
+         return true;
+      }
+   }
+
+   return false;
+}
+
+void stringToUpper(std::string &str)
+{
+	for (size_t i = 0; i < str.length(); ++i)
+    {
+        str[i]=toupper(str[i]);
+    }
 }
 
 //return the uint8 game_type from a char string

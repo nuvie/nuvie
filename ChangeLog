@@ -1,3 +1,11 @@
+2009-05-22  Eric Fry <efry at users.sourceforge.net>
+	* Reworked SaveGame::load_original() to use config_get_path()
+	* Removed SaveGame::get_objblk_path()
+	* Added includes to fix compiling on Ubuntu 9.04
+	* Added case insenstive file finding to config_get_path() Nuvie should
+	  now load game files even if they are the wrong case on case sensitive
+	  filesystems like Linux
+
 2008-07-01  Eric Fry <efry at users.sourceforge.net>
 	* Fixed XCode build script when used with XCode 3.0 Thanks
 	  to the_letter_m for supplying a patch.

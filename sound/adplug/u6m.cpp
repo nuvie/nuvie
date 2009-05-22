@@ -20,6 +20,7 @@
  * This code extends the Adlib Winamp plug-in by Simon Peter <dn.tlp@gmx.net>
  */
 
+#include <stdlib.h>
 #include "nuvieDefs.h"
 #include "U6Lzw.h"
 
