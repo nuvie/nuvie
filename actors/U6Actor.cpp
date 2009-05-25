@@ -56,6 +56,15 @@ U6Actor::~U6Actor()
 {
 }
 
+uint8 randomise_base_stat(uint8 stat)
+{
+   uint8 tmp = stat >> 2;
+   if(tmp == 0)
+      return 0;
+   
+   return (uint8)((NUVIE_RAND() % tmp) + (NUVIE_RAND() % tmp) + stat - tmp);
+}
+
 bool U6Actor::init()
 {
  Actor::init();
@@ -67,10 +76,11 @@ bool U6Actor::init()
  
  if(temp_actor)
    {
-    strength = base_actor_type->str;
-    dex = base_actor_type->dex;
-    intelligence = base_actor_type->intelligence;
-    hp = base_actor_type->hp;
+    strength = randomise_base_stat(base_actor_type->str);
+    dex = randomise_base_stat(base_actor_type->dex);
+    intelligence = randomise_base_stat(base_actor_type->intelligence);
+    hp = randomise_base_stat(base_actor_type->hp);
+    level = (uint8)((hp + 29) / 30);
    }
 
  if(alignment == ACTOR_ALIGNMENT_DEFAULT)
@@ -767,7 +777,7 @@ bool U6Actor::sit_on_chair(Obj *obj)
            }
      
          //make actor sit on LB's throne.
-         if(obj->obj_n == OBJ_U6_THRONE  && obj->x != x) //throne is a double width obj. We only it on the left tile.
+         if(obj->obj_n == OBJ_U6_THRONE  && obj->x != x) //throne is a double width obj. We only sit on the left tile.
            {
             frame_n = 8 + 3; //sitting facing south.
             direction = NUVIE_DIR_S;

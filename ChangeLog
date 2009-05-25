@@ -1,3 +1,7 @@
+2009-05-25  Eric Fry <efry at users.sourceforge.net>
+	* Added randomise_base_stat() to randomise new actor stats like the original. 
+	* Added level to new temp actor.
+
 2009-05-22  Eric Fry <efry at users.sourceforge.net>
 	* Reworked SaveGame::load_original() to use config_get_path()
 	* Removed SaveGame::get_objblk_path()
