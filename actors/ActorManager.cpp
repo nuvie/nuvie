@@ -21,6 +21,8 @@
  *
  */
 #include <cassert>
+#include <sstream>
+#include <cstdlib>
 #include "nuvieDefs.h"
 #include "Configuration.h"
 
@@ -34,6 +36,8 @@
 #include "GameClock.h"
 #include "Game.h"
 #include "Party.h"
+#include "Script.h"
+
 
 #define TEMP_ACTOR_OFFSET 224
 #define ACTOR_TEMP_INIT 255
@@ -861,8 +865,9 @@ bool ActorManager::is_temp_actor(uint8 id_n)
 bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 alignment, uint8 worktype, Actor **new_actor)
 {
  Actor *actor;
-
+   char actorNumStr[4];
  actor = find_free_temp_actor();
+   
 
  if(actor)
   {
@@ -878,6 +883,16 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
 
    actor->init();
 
+     sprintf(actorNumStr, "%d", actor->id_n);
+     
+     string runScript;
+     
+     runScript = "actor_init(Actor.get(";
+     runScript += actorNumStr;
+     runScript += "))";
+     
+     Game::get_game()->get_script()->run_script(runScript.c_str());
+     
    if(alignment != ACTOR_ALIGNMENT_DEFAULT)
     actor->set_alignment(alignment);
 

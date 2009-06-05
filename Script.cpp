@@ -122,6 +122,7 @@ static int nscript_actor_get(lua_State *L);
 static int nscript_actor_kill(lua_State *L);
 static int nscript_actor_hit(lua_State *L);
 static int nscript_actor_resurrect(lua_State *L);
+static int nscript_actor_inv_add_obj(lua_State *L);
 static int nscript_actor_move(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] = 
@@ -132,6 +133,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
   { "resurrect", nscript_actor_resurrect },
   { "move", nscript_actor_move },
   { "get", nscript_get_actor_from_num },
+{ "inv_add_obj", nscript_actor_inv_add_obj },
   { NULL, NULL }
 };
 static const struct luaL_Reg nscript_actorlib_m[] =
@@ -661,6 +663,12 @@ static int nscript_obj_set(lua_State *L)
     return 0;
   }
 
+   if(!strcmp(key, "status"))
+   {
+      obj->status = (uint8)lua_tointeger(L,3);
+      return 0;
+   }
+   
   return 0;
 }
 
@@ -1077,7 +1085,62 @@ static int nscript_actor_set(lua_State *L)
     //actor->frame_n = (uint8)lua_tointeger(L,3);
     return 0;
   }
+   
+   if(!strcmp(key, "str"))
+   {
+      actor->set_strength((uint8)lua_tointeger(L, 3));
+      return 0;
+   }
+   if(!strcmp(key, "int"))
+   {
+      actor->set_intelligence((uint8)lua_tointeger(L, 3));
+      return 0;
+   }
+   
+   if(!strcmp(key, "dex"))
+   {
+      actor->set_dexterity((uint8)lua_tointeger(L, 3));
+      return 0;
+   }
 
+   if(!strcmp(key, "wt"))
+   {
+      actor->set_worktype((uint8)lua_tointeger(L, 3));
+      return 0;
+   }
+   
+   if(!strcmp(key, "mpts"))
+   {
+      actor->set_moves_left((sint8)lua_tointeger(L, 3));
+      return 0;
+   }
+
+   if(!strcmp(key, "magic"))
+   {
+      actor->set_magic((sint8)lua_tointeger(L, 3));
+      return 0;
+   }
+   
+   if(!strcmp(key, "level"))
+   {
+      actor->set_level((uint16)lua_tointeger(L, 3));
+      return 0;
+   }
+   if(!strcmp(key, "exp"))
+   {
+      actor->set_exp((uint16)lua_tointeger(L, 3));
+      return 0;
+   }
+   if(!strcmp(key, "align"))
+   {
+      actor->set_alignment((uint8)lua_tointeger(L, 3));
+      return 0;
+   }
+   if(!strcmp(key, "combat_mode"))
+   {
+      actor->set_combat_mode((uint8)lua_tointeger(L, 3));
+      return 0;
+   }   
   return 0;
 }
 
@@ -1114,7 +1177,7 @@ static int nscript_actor_get(lua_State *L)
   
   if(!strcmp(key, "obj_n"))
   {
-    //lua_pushinteger(L,actor->obj_n); return 1;
+    lua_pushinteger(L,actor->get_obj_n()); return 1;
   }
   
   if(!strcmp(key, "frame_n"))
@@ -1122,6 +1185,14 @@ static int nscript_actor_get(lua_State *L)
    // lua_pushinteger(L,actor->frame_n); return 1;
   }
 
+   if(!strcmp(key, "int"))
+   {
+      lua_pushinteger(L,actor->get_intelligence()); return 1;
+   }
+   if(!strcmp(key, "dex"))
+   {
+      lua_pushinteger(L,actor->get_dexterity()); return 1;
+   }
   return 0;
 }
 
@@ -1187,6 +1258,26 @@ static int nscript_actor_resurrect(lua_State *L)
   actor->resurrect(loc);
   
   return 0;
+}
+
+static int nscript_actor_inv_add_obj(lua_State *L)
+{
+   Actor *actor;
+   MapCoord loc;
+   
+   actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+   
+   Obj **s_obj = (Obj **)luaL_checkudata(L, 2, "nuvie.Obj");
+   Obj *obj;
+   
+   obj = *s_obj;
+   
+   
+   actor->inventory_add_object(obj, NULL, false);
+   
+   return 0;
 }
 
 static int nscript_print(lua_State *L)

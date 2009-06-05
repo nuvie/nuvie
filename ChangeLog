@@ -1,3 +1,9 @@
+2009-06-05  Eric Fry <efry at users.sourceforge.net>
+	* Started work on temp actor inventories in lua.
+	* Added more variables to the Lua actor class.
+	* Started moving temp actor init over into lua.
+	* Added lua language association to source files in XCode build env.
+
 2009-05-25  Eric Fry <efry at users.sourceforge.net>
 	* Added randomise_base_stat() to randomise new actor stats like the original. 
 	* Added level to new temp actor.

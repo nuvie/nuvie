@@ -43,15 +43,15 @@ function run_script(script)
   t.body();
 end
 
+--load actor functions
+actor_load = nuvie_load("u6/actor.lua");
+if type(actor_load) == "function" then
+   actor_load()
+else
+   if type(actor_load) == "string" then
+      io.stderr:write(actor_load);
+   end
+end
+
 -- init magic
 magic_init = nuvie_load("u6/magic.lua"); magic_init();
---[[
-obj = Obj.new();
-
-io.stderr:write(obj.obj_n);
-obj.obj_n = 28;
-
-obj1 = Obj.new(1,2,3,4,20,30,5);
-
-io.stderr:write(obj1.obj_n);
---]]

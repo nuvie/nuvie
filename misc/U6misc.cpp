@@ -315,3 +315,24 @@ const char *get_direction_name(sint16 rel_x, sint16 rel_y)
     else
         return("nowhere");
 }
+
+int str_bsearch( char *str[], int max, char *value )
+{
+   int position;
+   int begin = 0;
+   int end = max - 1;
+   int cond = 0;
+
+   while( begin <= end )
+   {
+      position = ( begin + end ) / 2;
+      if( ( cond = strcmp( str[position], value ) ) == 0 )
+         return position;
+      else if( cond < 0 )
+         begin = position + 1;
+      else
+         end = position - 1;
+   }
+
+   return -1;
+}
