@@ -29,6 +29,7 @@
 
 #include "SDL.h"
 
+#include "Actor.h"
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "U6misc.h"

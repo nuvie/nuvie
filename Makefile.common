@@ -280,8 +280,6 @@ nuvie_SOURCES = \
 	Player.h \
 	Portrait.cpp \
 	Portrait.h \
-	Script.cpp \
-	Script.h \
 	Text.cpp \
 	Text.h \
 	TileManager.cpp \

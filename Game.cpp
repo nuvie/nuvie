@@ -31,6 +31,7 @@
 
 #include "SoundManager.h"
 
+#include "Actor.h"
 #include "Script.h"
 #include "Screen.h"
 #include "GamePalette.h"
