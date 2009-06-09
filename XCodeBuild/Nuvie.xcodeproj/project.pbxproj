@@ -287,14 +287,16 @@
 		07EF829C0A9C636B00872DBE /* lvm.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82670A9C636B00872DBE /* lvm.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
 		07EF829D0A9C636B00872DBE /* lzio.c in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82680A9C636B00872DBE /* lzio.c */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
 		07EF829E0A9C636B00872DBE /* lzio.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82690A9C636B00872DBE /* lzio.h */; settings = {COMPILER_FLAGS = "-ILUA_USE_MACOSX"; }; };
-		07EF82B30A9C792300872DBE /* Script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EF82B10A9C792300872DBE /* Script.cpp */; };
-		07EF82B40A9C792300872DBE /* Script.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EF82B20A9C792300872DBE /* Script.h */; };
 		07F10D2705C7D27A0029E1F1 /* Font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2305C7D27A0029E1F1 /* Font.cpp */; };
 		07F10D2805C7D27A0029E1F1 /* Font.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2405C7D27A0029E1F1 /* Font.h */; };
 		07F10D2905C7D27A0029E1F1 /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2505C7D27A0029E1F1 /* FontManager.cpp */; };
 		07F10D2A05C7D27A0029E1F1 /* FontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2605C7D27A0029E1F1 /* FontManager.h */; };
 		C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */; };
 		EC9361A80FD0D95800960AC6 /* actor.lua in Sources */ = {isa = PBXBuildFile; fileRef = EC9361A70FD0D95800960AC6 /* actor.lua */; };
+		ECA2EC8B0FDB423800D4BDDA /* Script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC870FDB423800D4BDDA /* Script.cpp */; };
+		ECA2EC8C0FDB423800D4BDDA /* Script.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA2EC880FDB423800D4BDDA /* Script.h */; };
+		ECA2EC8D0FDB423800D4BDDA /* ScriptActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */; };
+		ECA2EC8E0FDB423800D4BDDA /* ScriptActor.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA2EC8A0FDB423800D4BDDA /* ScriptActor.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -589,8 +591,6 @@
 		07EF82670A9C636B00872DBE /* lvm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lvm.h; path = ../lua/lvm.h; sourceTree = SOURCE_ROOT; };
 		07EF82680A9C636B00872DBE /* lzio.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lzio.c; path = ../lua/lzio.c; sourceTree = SOURCE_ROOT; };
 		07EF82690A9C636B00872DBE /* lzio.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lzio.h; path = ../lua/lzio.h; sourceTree = SOURCE_ROOT; };
-		07EF82B10A9C792300872DBE /* Script.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Script.cpp; path = ../Script.cpp; sourceTree = SOURCE_ROOT; };
-		07EF82B20A9C792300872DBE /* Script.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Script.h; path = ../Script.h; sourceTree = SOURCE_ROOT; };
 		07F10D2305C7D27A0029E1F1 /* Font.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Font.cpp; path = ../fonts/Font.cpp; sourceTree = SOURCE_ROOT; };
 		07F10D2405C7D27A0029E1F1 /* Font.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Font.h; path = ../fonts/Font.h; sourceTree = SOURCE_ROOT; };
 		07F10D2505C7D27A0029E1F1 /* FontManager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FontManager.cpp; path = ../fonts/FontManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -696,6 +696,10 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Debug.cpp; path = ../Debug.cpp; sourceTree = SOURCE_ROOT; };
 		EC9361A70FD0D95800960AC6 /* actor.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; name = actor.lua; path = ../data/scripts/u6/actor.lua; sourceTree = SOURCE_ROOT; };
+		ECA2EC870FDB423800D4BDDA /* Script.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Script.cpp; path = ../script/Script.cpp; sourceTree = SOURCE_ROOT; };
+		ECA2EC880FDB423800D4BDDA /* Script.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Script.h; path = ../script/Script.h; sourceTree = SOURCE_ROOT; };
+		ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScriptActor.cpp; path = ../script/ScriptActor.cpp; sourceTree = SOURCE_ROOT; };
+		ECA2EC8A0FDB423800D4BDDA /* ScriptActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScriptActor.h; path = ../script/ScriptActor.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1324,6 +1328,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				ECA2EC860FDB421200D4BDDA /* Script */,
 				07EF82340A9C633900872DBE /* Lua */,
 				07B011740668763B000771BC /* Effects */,
 				07F10D1D05C7D2490029E1F1 /* Fonts */,
@@ -1384,8 +1389,6 @@
 				07DB53EA042DA0CF00A8000A /* Player.cpp */,
 				07C3D134047A4A3F00A8000A /* Portrait.h */,
 				07C3D133047A4A3F00A8000A /* Portrait.cpp */,
-				07EF82B20A9C792300872DBE /* Script.h */,
-				07EF82B10A9C792300872DBE /* Script.cpp */,
 				072566A304272B7B00A8000A /* Text.h */,
 				072566A204272B7B00A8000A /* Text.cpp */,
 				072566A504272B7B00A8000A /* TileManager.h */,
@@ -1421,6 +1424,17 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ECA2EC860FDB421200D4BDDA /* Script */ = {
+			isa = PBXGroup;
+			children = (
+				ECA2EC870FDB423800D4BDDA /* Script.cpp */,
+				ECA2EC880FDB423800D4BDDA /* Script.h */,
+				ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */,
+				ECA2EC8A0FDB423800D4BDDA /* ScriptActor.h */,
+			);
+			name = Script;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1572,9 +1586,10 @@
 				07EF829A0A9C636B00872DBE /* lundump.h in Headers */,
 				07EF829C0A9C636B00872DBE /* lvm.h in Headers */,
 				07EF829E0A9C636B00872DBE /* lzio.h in Headers */,
-				07EF82B40A9C792300872DBE /* Script.h in Headers */,
 				0746DC4A0C50BED20034A045 /* Dither.h in Headers */,
 				07E986D30C6599BF00134DC7 /* Obj.h in Headers */,
+				ECA2EC8C0FDB423800D4BDDA /* Script.h in Headers */,
+				ECA2EC8E0FDB423800D4BDDA /* ScriptActor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1801,11 +1816,12 @@
 				07EF82990A9C636B00872DBE /* lundump.c in Sources */,
 				07EF829B0A9C636B00872DBE /* lvm.c in Sources */,
 				07EF829D0A9C636B00872DBE /* lzio.c in Sources */,
-				07EF82B30A9C792300872DBE /* Script.cpp in Sources */,
 				0746DC490C50BED20034A045 /* Dither.cpp in Sources */,
 				07E986D20C6599BF00134DC7 /* Obj.cpp in Sources */,
 				C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */,
 				EC9361A80FD0D95800960AC6 /* actor.lua in Sources */,
+				ECA2EC8B0FDB423800D4BDDA /* Script.cpp in Sources */,
+				ECA2EC8D0FDB423800D4BDDA /* ScriptActor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

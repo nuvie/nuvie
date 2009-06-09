@@ -1,3 +1,20 @@
+2009-06-09  Eric Fry <efry at users.sourceforge.net>
+	* Moved Script.cpp/h to new script dir
+	* Moved Script Actor code into new ScrptActor.cpp/h files
+	* Reworked lua actor_init call to remove need for lua compiler.
+	* Removed Actor stat initialisation from U6Actor class
+	* Delete object in Actor::inventory_del_object() if qty to delete
+	  is >= obj->qty
+	* Added Actor::inventory_del_all_objs()
+	* Delete old inventory objects when creating a new temp actor.
+	* Added get_frame_n(), set_obj_n() and set_frame_n() to Actor class.
+	  Used in scripting
+	* Fixed typo in actor.lua actor_init() when initialising spells.
+	* Set Torch qty to 1 when creating temp actors. Fixes a bug with a guards.
+	* Added Actor.inv_ready_obj() to lua scripting
+	* Ready weapon/armor objects in actor_init script
+	* Fixed build environments for new script dir.
+
 2009-06-05  Eric Fry <efry at users.sourceforge.net>
 	* Started work on temp actor inventories in lua.
 	* Added more variables to the Lua actor class.

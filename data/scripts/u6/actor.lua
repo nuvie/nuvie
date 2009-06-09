@@ -2,6 +2,7 @@ io.stderr:write("actor.lua get here\n");
 actor_wt_tbl = {}
 
 --Actor stats table
+--str,dex,int,hp,dmg,alignment,<actor flags x 15>,spell table,weapon table,armor table,treasure table
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}},
@@ -69,7 +70,7 @@ actor_tbl = {
 [263] = {11, 12, 12, 8, 4, ALIGNMENT_CHAOTIC, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}}
 }
 
-monster_inv_food = { 129, 133, 128 }
+monster_inv_food = { 129, 133, 128 } --portion of meat, ham, loaf of bread
 
 actor_randomise_stat = function(base_stat)
    tmp = math.floor(base_stat/2);
@@ -126,7 +127,7 @@ actor_init = function(actor)
    
    --add spells
    for i,v in ipairs(actor_base[22]) do
-        obj = obj_new(336); --charge
+        obj = Obj.new(336); --charge
         obj.quality = v
         obj.qty = 1
         obj.status = 56
@@ -146,8 +147,13 @@ actor_init = function(actor)
       for j=1,qty do
          obj = Obj.new(v)
          obj.status = 57
-         obj.qty = 0
+         if v == 90 then
+            obj.qty = 1
+         else
+            obj.qty = 0
+         end
          Actor.inv_add_obj(actor, obj);
+         Actor.inv_ready_obj(actor, obj);
          if v == 41 or v == 54 then --bow, magic bow
             obj = Obj.new(55) --arrow
             obj.status = 49
@@ -175,7 +181,7 @@ actor_init = function(actor)
         obj.qty = 1
         obj.status = 56
         Actor.inv_add_obj(actor, obj);
-        --add object into actor inventory
+        Actor.inv_ready_obj(actor, obj);
       end
       
       chance = chance * 2
@@ -185,8 +191,7 @@ actor_init = function(actor)
    chance = 2;
    for i,v in ipairs(actor_base[25]) do
       
-      if math.random(1,chance) == 1 then
-      
+      if math.random(1,chance) == 1 then    
          if v == 98 then --chest
             chest = Obj.new(v)
             chest.frame_n = 1

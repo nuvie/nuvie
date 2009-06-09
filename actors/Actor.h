@@ -285,6 +285,7 @@ class Actor
  uint8 get_talk_flags() { return(talk_flags); }
  virtual ActorTileType get_tile_type() { return(ACTOR_ST); }
 
+ uint16 get_frame_n() { return(frame_n); }
  uint16 get_x() { return(x); }
  uint16 get_y() { return(y); }
  uint8  get_z() { return(z); }
@@ -301,6 +302,8 @@ class Actor
  virtual uint8 get_maxhp() { return 0; }
  virtual uint8 get_maxmagic() { return 0; }
 
+ void set_obj_n(uint16 val) { obj_n = val; }
+ void set_frame_n(uint16 val) { frame_n = val; }
  void set_strength(uint8 val) { strength = val; }
  void set_dexterity(uint8 val) { dex = val; }
  void set_intelligence(uint8 val) { intelligence = val; }
@@ -385,6 +388,7 @@ class Actor
  const CombatType *inventory_get_readied_object_combat_type(uint8 location);
  bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack=true);
  bool inventory_add_object_nostack(Obj *obj, Obj *container = 0) { return inventory_add_object(obj, container, false); }
+ void inventory_del_all_objs();
  bool inventory_remove_obj(Obj *obj);
  Obj *inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality = 0);
  uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality);

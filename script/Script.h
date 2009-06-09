@@ -83,7 +83,8 @@ class Script
  Configuration *get_config() { return(config); }
  
  bool run_script(const char *script);
-
+   bool call_actor_init(Actor *actor);
+   
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);
  

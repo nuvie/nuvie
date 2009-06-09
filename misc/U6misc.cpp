@@ -323,12 +323,12 @@ int str_bsearch( char *str[], int max, char *value )
    int end = max - 1;
    int cond = 0;
 
-   while( begin <= end )
+   while(begin <= end)
    {
-      position = ( begin + end ) / 2;
-      if( ( cond = strcmp( str[position], value ) ) == 0 )
+      position = (begin + end) / 2;
+      if( (cond = strcmp( str[position], value ) ) == 0)
          return position;
-      else if( cond < 0 )
+      else if(cond < 0)
          begin = position + 1;
       else
          end = position - 1;

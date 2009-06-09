@@ -806,7 +806,10 @@ uint32 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality)
  {
     oqty = obj->qty;
     if(oqty <= (qty - deleted))
+    {
         inventory_remove_obj(obj);
+       delete_obj(obj);
+    }
     else
         obj->qty = oqty - qty;
     deleted += oqty;
@@ -814,6 +817,21 @@ uint32 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality)
  return(deleted);
 }
 
+void Actor::inventory_del_all_objs()
+{
+   U6LList *inventory = get_inventory_list();
+   if(!inventory)
+      return;
+   
+   U6Link *link = inventory->start();
+   for(;link != NULL; link = inventory->start())
+   {
+      Obj *obj = (Obj *)link->data;
+      inventory_remove_obj(obj);
+      delete_obj(obj);
+   }
+   
+}
 
 bool Actor::inventory_remove_obj(Obj *obj)
 {
@@ -1705,7 +1723,7 @@ void Actor::print()
     if(inv)
     {
         DEBUG(1,LEVEL_INFORMATIONAL,"Inventory (+readied): %d objects\n", inv);
-/*        U6LList *inv_list = actor->get_inventory_list();
+        U6LList *inv_list = actor->get_inventory_list();
         for(U6Link *link = inv_list->start(); link != NULL; link=link->next)
         {
             Obj *obj = (Obj *)link->data;
@@ -1714,7 +1732,7 @@ void Actor::print()
                    obj->qty, obj_manager->get_obj_weight(obj, false));
         }
         DEBUG(1,LEVEL_INFORMATIONAL,"(weight %f / %f)\n", actor->get_inventory_weight(),
-               actor->inventory_get_max_weight());*/
+               actor->inventory_get_max_weight());
     }
     if(actor->sched && *actor->sched)
     {

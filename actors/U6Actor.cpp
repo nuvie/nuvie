@@ -73,18 +73,9 @@ bool U6Actor::init()
  base_actor_type = get_actor_type(base_obj_n);
  
  body_armor_class = base_actor_type->body_armor_class;
- 
- if(temp_actor)
-   {
-    strength = randomise_base_stat(base_actor_type->str);
-    dex = randomise_base_stat(base_actor_type->dex);
-    intelligence = randomise_base_stat(base_actor_type->intelligence);
-    hp = randomise_base_stat(base_actor_type->hp);
-    level = (uint8)((hp + 29) / 30);
-   }
 
- if(alignment == ACTOR_ALIGNMENT_DEFAULT)
-   set_alignment(base_actor_type->alignment);
+ //if(alignment == ACTOR_ALIGNMENT_DEFAULT)
+ //  set_alignment(base_actor_type->alignment);
       
  if(actor_type->tile_type == ACTOR_QT && frame_n == 0) //set the two quad tile actors to correct frame number.
    frame_n = 3;

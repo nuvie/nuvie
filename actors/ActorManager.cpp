@@ -865,12 +865,13 @@ bool ActorManager::is_temp_actor(uint8 id_n)
 bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 alignment, uint8 worktype, Actor **new_actor)
 {
  Actor *actor;
-   char actorNumStr[4];
  actor = find_free_temp_actor();
    
 
  if(actor)
   {
+   actor->inventory_del_all_objs(); //We need to do this because the original game doesn't unset inventory flag when temp actors die.
+     
    actor->base_obj_n = obj_n;
    actor->obj_n = obj_n;
    actor->frame_n = 0;
@@ -883,15 +884,7 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
 
    actor->init();
 
-     sprintf(actorNumStr, "%d", actor->id_n);
-     
-     string runScript;
-     
-     runScript = "actor_init(Actor.get(";
-     runScript += actorNumStr;
-     runScript += "))";
-     
-     Game::get_game()->get_script()->run_script(runScript.c_str());
+     Game::get_game()->get_script()->call_actor_init(actor);
      
    if(alignment != ACTOR_ALIGNMENT_DEFAULT)
     actor->set_alignment(alignment);
