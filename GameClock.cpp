@@ -213,7 +213,7 @@ uint32 GameClock::get_move_count()
  return move_counter;
 }
 
-char *GameClock::get_time_of_day_string()
+const char *GameClock::get_time_of_day_string()
 {
  if(hour < 12)
    return "morning";

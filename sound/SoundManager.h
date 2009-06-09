@@ -63,7 +63,7 @@ private:
     bool LoadNativeU6Songs();
     bool loadSong(Song *song, const char *filename);
     bool loadSong(Song *song, const char *filename, const char *title);
-    bool groupAddSong(char *group, Song *song);
+    bool groupAddSong(const char *group, Song *song);
 
 	bool LoadObjectSamples(string sound_dir);
 	bool LoadTileSamples(string sound_dir);

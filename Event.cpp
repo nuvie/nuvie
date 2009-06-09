@@ -1641,7 +1641,7 @@ bool Event::alt_code_teleport_to_person(uint32 npc)
 void Event::alt_code_teleport_menu(uint32 selection)
 {
     static uint8 category = 0;
-    char *teleport_dest = "";
+    const char *teleport_dest = "";
     if(alt_code_input_num == 0) // select category
     {
         scroll->display_string("\nLazy Teleporters' Menu!\n");

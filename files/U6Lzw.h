@@ -55,7 +55,7 @@ class U6Lzw
 {
  U6LzwStack *stack;
  U6LzwDict *dict;
-    char *errstr; // error string
+ const char *errstr; // error string
  public:
 
   U6Lzw(void);

@@ -241,7 +241,7 @@ void Player::subtract_karma(uint8 val)
 }
 
 
-char *Player::get_gender_title()
+const char *Player::get_gender_title()
 {
  if(gender == 0)
    return "milord";

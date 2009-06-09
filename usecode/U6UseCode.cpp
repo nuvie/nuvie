@@ -563,7 +563,7 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
  U6LList *obj_list;
  U6Link *link;
  uint16 target_obj_n = 0;
- char *message = NULL;
+ const char *message = NULL;
  bool print = (items.actor_ref == player->get_actor());
 
  if(obj->obj_n == OBJ_U6_LEVER)
@@ -2330,7 +2330,7 @@ bool U6UseCode::look_mirror(Obj *obj, UseCodeEvent ev)
  */
 bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
 {
-    char *prefix = "", *dungeon_name = "";
+    const char *prefix = "", *dungeon_name = "";
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
 

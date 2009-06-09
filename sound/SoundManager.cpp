@@ -293,7 +293,7 @@ bool SoundManager::loadSong(Song *song, const char *filename, const char *title)
     return false;
 }
 
-bool SoundManager::groupAddSong (char *group, Song *song)
+bool SoundManager::groupAddSong (const char *group, Song *song)
 {
   if(song != NULL)
     {                       //we have a valid song

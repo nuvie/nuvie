@@ -98,7 +98,7 @@ class Player
 
  const char *get_name();
  void set_gender(uint8 val) { gender = val; }
- char *get_gender_title();
+ const char *get_gender_title();
  uint8 get_gender()         { return(gender); }
 
  void moveRelative(sint16 rel_x, sint16 rel_y);

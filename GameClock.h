@@ -73,7 +73,7 @@ class GameClock
 
  uint32 get_move_count();
 
- char *get_time_of_day_string();
+ const char *get_time_of_day_string();
 
  uint8 get_hour();
  uint8 get_minute();

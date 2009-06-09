@@ -329,7 +329,7 @@ bool Magic::cast()
   DEBUG(0,LEVEL_DEBUGGING,"matched spell #%d\n",index);
   DEBUG(0,LEVEL_DEBUGGING,"name: %s\n",spell[index]->name);
   DEBUG(0,LEVEL_DEBUGGING,"reagents: ");
-  char *comma="";
+  const char *comma="";
   for (uint8 shift=0;shift<8;shift++) 
   {
     if (1<<shift&spell[index]->reagents) {
