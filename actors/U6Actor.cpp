@@ -56,15 +56,6 @@ U6Actor::~U6Actor()
 {
 }
 
-uint8 randomise_base_stat(uint8 stat)
-{
-   uint8 tmp = stat >> 2;
-   if(tmp == 0)
-      return 0;
-   
-   return (uint8)((NUVIE_RAND() % tmp) + (NUVIE_RAND() % tmp) + stat - tmp);
-}
-
 bool U6Actor::init()
 {
  Actor::init();

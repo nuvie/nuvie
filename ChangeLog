@@ -1,3 +1,30 @@
+2009-06-24  Eric Fry <efry at users.sourceforge.net>
+	* Started moving actor attack logic into lua script.
+	* Removed actor.lua from compilable sources in XCode build env.
+	* removed C randomise_base_stat() this is handled in script now.
+	* Clamp actor experience at 9999 as per original game.
+	* Fixed targeting range on crossbow weapon.
+	* Added abs() lua function.
+	* Added new U6LList iterater into lua script.
+	  you can now iterate through object lists in script.
+	  nscript_u6llist_iter()
+	* Added actor_inventory() to lua
+	  eg.
+	    for obj in actor_inventory(actor) do
+	       print(obj.name)
+	    end
+	* Added Script::call_actor_attack() to hook new script based attack logic.
+	* Added 'readied' get variable to lua Obj class.
+	* Split actor set/get names into two arrays. We can now have get or set
+	  only members.
+	* Added new luatype member to lua Actor class. This is used to determine if
+	  a userdata obj is of type actor. There might be a better way to handle
+	  this.
+	  eg if actor.luatype == "actor" then
+	* Added actor name member. This is get only.
+	* Added Actor.inv_has_obj_n() this function checks a given actor's inventory
+	  for an obj_n It uses the Actor::inventory_has_object() method.
+
 2009-06-09  Eric Fry <efry at users.sourceforge.net>
 	* Moved Script.cpp/h to new script dir
 	* Moved Script Actor code into new ScrptActor.cpp/h files

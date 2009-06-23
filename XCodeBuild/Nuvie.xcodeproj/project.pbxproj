@@ -292,7 +292,6 @@
 		07F10D2905C7D27A0029E1F1 /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2505C7D27A0029E1F1 /* FontManager.cpp */; };
 		07F10D2A05C7D27A0029E1F1 /* FontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2605C7D27A0029E1F1 /* FontManager.h */; };
 		C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */; };
-		EC9361A80FD0D95800960AC6 /* actor.lua in Sources */ = {isa = PBXBuildFile; fileRef = EC9361A70FD0D95800960AC6 /* actor.lua */; };
 		ECA2EC8B0FDB423800D4BDDA /* Script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC870FDB423800D4BDDA /* Script.cpp */; };
 		ECA2EC8C0FDB423800D4BDDA /* Script.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA2EC880FDB423800D4BDDA /* Script.h */; };
 		ECA2EC8D0FDB423800D4BDDA /* ScriptActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */; };
@@ -1819,7 +1818,6 @@
 				0746DC490C50BED20034A045 /* Dither.cpp in Sources */,
 				07E986D20C6599BF00134DC7 /* Obj.cpp in Sources */,
 				C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */,
-				EC9361A80FD0D95800960AC6 /* actor.lua in Sources */,
 				ECA2EC8B0FDB423800D4BDDA /* Script.cpp in Sources */,
 				ECA2EC8D0FDB423800D4BDDA /* ScriptActor.cpp in Sources */,
 			);

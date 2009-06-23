@@ -38,6 +38,7 @@
 #include "Converse.h"
 #include "Effect.h"
 #include "Actor.h"
+#include "Script.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
 
@@ -554,7 +555,7 @@ void Actor::attack(MapCoord pos)
 void Actor::attack(sint8 readied_obj_location, Actor *actor)
 {
  const uint8 attack_cost = 10; // base cost to attack
- Obj *weapon_obj;
+ Obj *weapon_obj = NULL;
  const CombatType *combat_type;
 
  combat_type = get_weapon(readied_obj_location);
@@ -565,6 +566,11 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
  DEBUG(0,LEVEL_DEBUGGING,"%s (%d) attacking %s (%d)\n",get_name(),id_n,actor->get_name(),actor->id_n);
  face_actor(actor);
 
+   //FIXME just hacked in to test lua actor_attack()
+   if(readied_obj_location != ACTOR_NO_READIABLE_LOCATION && readied_objects[readied_obj_location] && readied_objects[readied_obj_location]->obj != NULL)
+      weapon_obj = readied_objects[readied_obj_location]->obj;
+   Game::get_game()->get_script()->call_actor_attack(this, actor, weapon_obj);
+   
 /* if(actor->defend(dex, combat_type->attack) == false)
   {
    if(combat_type->breaks_on_contact)

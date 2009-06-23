@@ -1,8 +1,7 @@
 io.stderr:write("actor.lua get here\n");
-actor_wt_tbl = {}
 
 --Actor stats table
---str,dex,int,hp,dmg,alignment,<actor flags x 15>,spell table,weapon table,armor table,treasure table
+--str,dex,int,hp,dmg,alignment,?,?,?,?,?,?,?,?,?,strength_based,?,?,?,?,?,spell table,weapon table,armor table,treasure table
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}},
@@ -96,6 +95,80 @@ actor_get_max_magic_points = function(actor)
    end
    
    return 0
+end
+
+actor_str_adj = function(actor)
+   --FIXME
+   --if actor flag bit 6 not set then
+   -- return strength unadjusted
+   
+   str = actor.str;
+   if str <= 3 then
+      return 1
+   end
+   
+   return str - 3
+end
+
+actor_dex_adj = function(actor)
+   --FIXME
+   --if actor flag bit 6 not set then
+   -- don't subtract 3 from dex
+   
+   dex = actor.dex
+   if dex <= 3 then
+      dex = 1
+   else
+      dex = dex - 3
+   end
+   
+   --FIXME
+   --if timestop and actor not in party then
+   -- dex = 1
+   
+   --FIXME
+   --if actor asleep then
+   -- dex = 1
+   
+   return dex
+end
+
+actor_combat_hit_check = function(attacker, foe, weapon_obj)
+
+	if foe.luatype ~= "actor" or weapon_obj.obj_n == 48 then --48 glass sword
+      io.stderr:write(foe.luatype)
+		return true
+	end
+
+	use_str = false
+	obj_n = weapon_obj.obj_n
+
+	if weapon_obj == attacker then
+		if actor_tbl[obj_n][16] == 1 then --actor uses strength
+			use_str = true
+		end
+	else
+		if obj_n == 4 or obj_n == 34 or obj_n == 39 or obj_n == 44 then --spiked helm, club, mace, two-handed hammer
+			use_str = true
+		end
+	end
+   
+   if use_str then
+      attack_role = actor_str_adj(attacker)
+   else
+      attack_role = actor_dex_adj(attacker)
+   end
+   
+   foe_dex = actor_dex_adj(foe)
+   roll = math.random(1,30)
+   
+   io.stderr:write("foe_dex = "..foe_dex.." attack_role = "..attack_role.." random(1,30) = "..roll.."\n\n");
+   
+   if math.floor((foe_dex + 30 - attack_role) / 2) >= roll then
+      return false
+   end
+   
+   return true
 end
 
 actor_init = function(actor)
@@ -265,6 +338,267 @@ actor_init = function(actor)
       
       chance = chance * 2
    end   
+end
+
+
+local get_attack_range = function(x,y,target_x,target_y)
+   local combat_range_tbl = {
+0, 1, 2, 3, 4, 5, 6, 7, 
+1, 1, 2, 3, 4, 5, 6, 7, 
+2, 2, 2, 3, 4, 5, 6, 7,
+3, 3, 3, 4, 5, 6, 7, 7,
+4, 4, 4, 5, 6, 7, 7, 8,
+5, 5, 5, 6, 7, 7, 8, 8,
+6, 6, 6, 7, 7, 8, 8, 8,
+7, 7, 7, 7, 8, 8, 8, 8}
+
+   local absx = abs(target_x - x)
+   absy = abs(target_y - y)
+   io.stderr:write("target_x="..target_x.." target_y="..target_y.." x="..x.." y="..y.." absx="..absx.." absy="..absy)
+   if absx < 8 and absy < 8 then
+      return combat_range_tbl[absx * 8 + absy + 1]
+   end
+   
+   return 9
+end
+
+local get_weapon_range = function(obj_n)
+   local range_weapon_tbl = {
+      [40] = 2, -- morning star
+      [47] = 2, -- halberd
+      [38] = 3, -- dagger
+      [83] = 5, -- flask of oil
+      [33] = 4, -- sling
+      [37] = 3, -- throwing axe
+      [36] = 4, -- spear
+      [41] = 5, -- bow
+      [42] = 7, -- crossbow
+      [57] = 7, -- spellbook
+      [336] = 5, -- charge
+      [49] = 5, -- boomerang
+      [50] = 7, -- triple crossbow
+      [412] = 5, -- ship
+      [91] = 4, -- Zu Ylem
+      [54] = 7, -- magic bow
+      [79] = 7, -- lightning wand
+      [80] = 7, -- fire wand
+   }
+   
+   range = range_weapon_tbl[obj_n]
+   
+   if range == nil then
+      return 1
+   end
+   
+   return range
+
+end
+
+local projectile_weapon_tbl = 
+{
+[33] = true, -- sling
+[37] = true, -- throwing axe
+[41] = true, -- bow
+[42] = true, -- crossbow
+[49] = true, -- boomerang
+[83] = true, -- flask of oil
+[50] = true, -- triple crossbow
+[91] = true, -- Zu Ylem
+[79] = true, -- lightning wand
+[80] = true, -- fire wand
+}
+
+weapon_dmg_tbl = {
+[4] = 4, --spiked helm
+[33] = 6, --sling
+[34] = 8, --club
+[35] = 8, --main gauche
+[36] = 10, --spear
+[37] = 10, --throwing axe
+[38] = 6, --dagger
+[39] = 15, --mace
+[40] = 15, --morning star
+[41] = 10, --bow
+[42] = 12, --crossbow
+[43] = 15, --sword
+[44] = 20, --two-handed hammer
+[45] = 20, --two-handed axe
+[46] = 20, --two-handed sword
+[47] = 30, --halberd
+[49] = 8, --boomerang
+[50] = 12, --triple crossbow
+[48] = 255, --glass sword
+[13] = 4, --spiked shield
+[221] = 90, --cannon
+[83] = 4, --flask of oil
+[54] = 20, --magic bow
+[109] = 2, --rolling pin
+[100] = 6, --scythe
+[101] = 4, --pitchfork
+[103] = 4, --pick
+[104] = 4, --shovel
+[105] = 4, --hoe
+[113] = 4, --cleaver
+[114] = 4, --knife
+[141] = 4, --decorative sword
+[412] = 30, --ship
+[91] = 0, --Zu Ylem
+[78] = 4, --staff
+[79] = 30, --lightning wand
+[80] = 20, --fire wand
+}
+
+armour_tbl =
+{
+[1] = 1, --leather helm
+[2] = 2, --chain coif
+[3] = 3, --iron helm
+[4] = 3, --spiked helm
+[5] = 2, --winged helm
+[6] = 2, --brass helm
+[7] = 3, --Gargoyle Helm
+[8] = 5, --magic helm
+[9] = 2, --wooden shield
+[10] = 3, --curved heater
+[11] = 3, --winged shield
+[12] = 3, --kite shield
+[13] = 2, --spiked shield
+[14] = 2, --black shield
+[15] = 4, --door shield
+[16] = 5, --magic shield
+[17] = 1, --cloth armour
+[18] = 2, --leather armor
+[19] = 3, --ring mail
+[20] = 4, --scale mail
+[21] = 5, --chain mail
+[22] = 7, --plate mail
+[23] = 10, --magic armour
+[35] = 1, --main gauche
+[24] = 2, --spiked collar
+[256] = 5, --protection ring
+}
+
+function get_weapon_dmg(weapon_obj_n)
+   dmg = weapon_dmg_tbl[weapon_obj_n]
+   
+   if dmg == nil then
+      dmg = actor_tbl[weapon_obj_n][5]
+   end
+   
+   if dmg == nil then
+      dmg = 1
+   end
+   
+   return dmg
+end
+
+function actor_get_ac(actor)
+
+   
+   --FIXME if cursed -3
+   --FIXME if protected + 3
+   local ac = 0;
+     
+   for obj in actor_inventory(actor) do
+      if obj.readied then
+      
+         local armour = armour_tbl[obj.obj_n]
+         if armour ~= nil then
+            ac = ac + armour
+         end
+      end
+   end
+
+   return ac
+end
+
+function actor_take_hit(attacker, defender, max_dmg)
+   if attacker.obj_n == 357 then --corpser
+      attacker.frame_n = 1 --reveal corpser.
+   end
+   if max_dmg == -1 then
+      max_dmg = 1
+   elseif max_dmg > 1 and max_dmg ~= 255 then
+      max_dmg = math.random(1, max_dmg)
+   end
+   
+   if defender.luatype == "actor" then
+      ac = actor_get_ac(defender)
+      if max_dmg ~= 255 and ac > 0 then
+         max_dmg = max_dmg - math.random(1, ac)
+      end
+      print("\nac = "..ac.."\n")
+   else
+      ac = 0 --object
+   end
+   
+   if max_dmg > 0 then
+      if defender.luatype == "actor" and defender.wt > 1 and defender.wt < 16 then
+         --FIXME defender now targets attacker. I think.
+      end
+      --FIXME hit defending actor properly here.
+      exp_gained = Actor.hit(defender, max_dmg)
+      if exp_gained == nil then
+         exp_gained = 0
+      end
+      
+      attacker.exp = attacker.exp + exp_gained
+   else
+      print(defender.name.." grazed.\n")
+   end
+end
+--
+-- actor_attack(attacker, foe, weapon)
+--
+
+actor_attack = function(attacker, foe, weapon)
+
+   weapon_obj_n = weapon.obj_n
+
+
+   io.stderr:write("actor_attack()\nrange = " .. get_attack_range(attacker.x,attacker.y, foe.x,foe.y).." weapon range="..get_weapon_range(weapon_obj_n));
+   
+   if get_attack_range(attacker.x,attacker.y, foe.x,foe.y) > get_weapon_range(weapon_obj_n) then
+      return
+   end
+   
+   --check for arrows or bolts is attacking with a bow or crossbow
+
+   if (weapon_obj_n == 41 or weapon_obj_n == 54) and Actor.inv_has_obj_n(attacker, 55) == false then --bow, magic bow, arrows
+      return --no arrows, bail out
+   end
+   if (weapon_obj_n == 42 or weapon_obj_n == 50) and Actor.inv_has_obj_n(attacker, 56) == false then --crossbow, triple crossbow, bolts
+      return --no bolts, bail out
+   end
+   
+
+   
+   --FIXME face foe here
+   --x = foe.x - attacker.x
+   --c = foe.y - attacker.y
+   is_range_weapon = false
+
+   if weapon_obj_n ~= 40 and weapon_obj_n ~= 47 then -- morning star, halberd
+      if abs(foe.x - attacker.x) > 1 or abs(foe.y - attacker.y) > 1 or projectile_weapon_tbl[weapon_obj_n] ~= nil then
+         is_range_weapon = true
+         --FIXME call sub_1D4AE
+      end
+   end
+   
+   --FIXME get triple crossbow bolts here.
+   
+   dmg = get_weapon_dmg(weapon_obj_n)
+   
+   --FIXME run unknown func sub_1EABC here.
+   
+   if weapon_obj_n == 336 or weapon_obj_n == 57 then
+      --FIXME cast spell here.
+   else
+      --weapon here.
+      if actor_combat_hit_check(attacker, foe, weapon) then
+         actor_take_hit(attacker, foe, dmg)
+      end
+   end
 end
 
 io.stderr:write("actor.lua loaded\n");

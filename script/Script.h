@@ -84,6 +84,7 @@ class Script
  
  bool run_script(const char *script);
    bool call_actor_init(Actor *actor);
+   bool call_actor_attack(Actor *actor, Actor *foe, Obj *weapon);
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);

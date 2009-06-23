@@ -6,6 +6,14 @@ ALIGNMENT_CHAOTIC = 4
 
 -- some common functions
 
+function abs(val)
+   if val < 0 then
+      return -val
+   end
+   
+   return val
+end
+
 function advance_game_time(nturns)
  if nturns == 0 then return end
 

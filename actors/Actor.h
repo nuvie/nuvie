@@ -309,7 +309,7 @@ class Actor
  void set_intelligence(uint8 val) { intelligence = val; }
  void set_hp(uint8 val) { hp = val; }
  void set_level(uint8 val) { level = val; }
- void set_exp(uint16 val) { exp = val; }
+ void set_exp(uint16 val) { exp = clamp_max(val, 9999); }
  void set_magic(uint8 val) { magic = val; }
  void set_alignment(uint8 a) { alignment = a; }
  void add_light(uint8 val);

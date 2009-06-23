@@ -72,7 +72,7 @@ bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z
 inline bool nscript_obj_init_from_obj(lua_State *L, Obj *dst_obj);
 inline bool nscript_obj_init_from_args(lua_State *L, int nargs, Obj *s_obj);
 static int nscript_obj_new(lua_State *L);
-static int nscript_obj_new(lua_State *L, Obj *obj);
+int nscript_obj_new(lua_State *L, Obj *obj);
 static int nscript_obj_gc(lua_State *L);
 static int nscript_obj_get(lua_State *L);
 static int nscript_obj_set(lua_State *L);
@@ -132,6 +132,9 @@ static int nscript_map_remove_obj(lua_State *L);
 static int nscript_eclipse_start(lua_State *L);
 static int nscript_quake_start(lua_State *L);
 static int nscript_explosion_start(lua_State *L);
+
+//Iterators
+int nscript_u6llist_iter(lua_State *L);
 
 Script *Script::script = NULL;
 
@@ -214,6 +217,8 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    L = lua_open();
    luaL_openlibs(L);
 
+   luaL_newmetatable(L, "nuvie.U6Link");
+
    luaL_newmetatable(L, "nuvie.Obj");
    //lua_pushvalue(L, -1); //duplicate metatable
    //lua_setfield(L, -2, "__index"); // add __index to metatable
@@ -228,7 +233,7 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_setglobal(L, "nuvie_load");
 
    nscript_init_actor(L);
-   
+
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
 
@@ -299,15 +304,34 @@ bool Script::call_actor_init(Actor *actor)
 {
    lua_getglobal(L, "actor_init");
    nscript_new_actor_var(L, actor->get_actor_num());
-  
+
    if(lua_pcall(L, 1, 0, 0) != 0)
    {
-       DEBUG(0, LEVEL_ERROR, "Script Error: actor_init() %s\n", luaL_checkstring(L, -1));
+      DEBUG(0, LEVEL_ERROR, "Script Error: actor_init() %s\n", luaL_checkstring(L, -1));
       return false;
    }
-   
+
    return true;
 }
+
+bool Script::call_actor_attack(Actor *actor, Actor *foe, Obj *weapon)
+{
+   lua_getglobal(L, "actor_attack");
+   nscript_new_actor_var(L, actor->get_actor_num());
+   nscript_new_actor_var(L, foe->get_actor_num());
+   if(weapon == NULL)
+      nscript_new_actor_var(L, actor->get_actor_num());
+   else
+      nscript_obj_new(L, weapon);
+   if(lua_pcall(L, 3, 0, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: actor_attack() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
+
+   return true;
+}
+
 
 ScriptThread *Script::new_thread(const char *scriptfile)
 {
@@ -389,7 +413,7 @@ static int nscript_obj_new(lua_State *L)
    return nscript_obj_new(L, NULL);
 }
 
-static int nscript_obj_new(lua_State *L, Obj *obj)
+int nscript_obj_new(lua_State *L, Obj *obj)
 {
    Obj **p_obj;
 
@@ -710,6 +734,11 @@ static int nscript_obj_get(lua_State *L)
    {
       if(nscript_container_new(L, obj))
          return 1;
+   }
+
+   if(!strcmp(key, "readied"))
+   {
+      lua_pushboolean(L, (int)obj->is_readied()); return 1;
    }
 
    return 0;
@@ -1066,5 +1095,22 @@ static int nscript_explosion_start(lua_State *L)
    new ExplosiveEffect(x, y, size, dmg);
 
    lua_pushboolean(L, true);
+   return 1;
+}
+
+int nscript_u6llist_iter(lua_State *L)
+{
+   U6Link **s_link = (U6Link **)luaL_checkudata(L, 1, "nuvie.U6Link");
+   U6Link *link = *s_link;
+
+   if(link == NULL)
+      return 0;
+
+   Obj *obj = (Obj *)link->data;
+
+   nscript_obj_new(L, obj);
+
+   *s_link = link->next;
+
    return 1;
 }
