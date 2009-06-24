@@ -124,6 +124,7 @@ static int nscript_load(lua_State *L);
 static int nscript_player_get_location(lua_State *L);
 
 //obj manager
+static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
 static int nscript_map_remove_obj(lua_State *L);
 
@@ -237,6 +238,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
 
+   lua_pushcfunction(L, nscript_objs_at_loc);
+   lua_setglobal(L, "objs_at_loc");
+   
    lua_pushcfunction(L, nscript_map_get_obj);
    lua_setglobal(L, "map_get_obj");
 
@@ -1113,4 +1117,33 @@ int nscript_u6llist_iter(lua_State *L)
    *s_link = link->next;
 
    return 1;
+}
+
+//lua function objs_at_loc(x,y,z)
+static int nscript_objs_at_loc(lua_State *L)
+{
+   ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+   
+   uint16 x, y;
+   uint8 z;
+   
+   if(nscript_get_location_from_args(L, &x, &y, &z) == false)
+      return 0;
+
+   
+   U6LList *obj_list = obj_manager->get_obj_list(x, y, z);
+   if(obj_list == NULL)
+      return 0;
+   
+   U6Link *link = obj_list->start();
+   
+   lua_pushcfunction(L, nscript_u6llist_iter);
+   
+   U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
+   *p_link = link;
+   
+   luaL_getmetatable(L, "nuvie.U6Link");
+   lua_setmetatable(L, -2);
+   
+   return 2;
 }

@@ -1,3 +1,13 @@
+2009-06-25  Eric Fry <efry at users.sourceforge.net>
+	* Added new lua function objs_at_loc() this is used to iterate
+	  through objects at a given map location.
+	  eg.
+	    for obj in objs_at_loc(x,y,z) do
+	       print(obj.name)
+	    end
+	* Disabled old C attack code. This disables missle animation
+	  it needs to be moved into the lua attack script.
+
 2009-06-24  Eric Fry <efry at users.sourceforge.net>
 	* Started moving actor attack logic into lua script.
 	* Removed actor.lua from compilable sources in XCode build env.

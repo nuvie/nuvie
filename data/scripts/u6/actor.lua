@@ -133,6 +133,10 @@ actor_dex_adj = function(actor)
    return dex
 end
 
+--
+-- actor_combat_hit_check(attacker, foe, weapon_obj)
+--
+
 actor_combat_hit_check = function(attacker, foe, weapon_obj)
 
 	if foe.luatype ~= "actor" or weapon_obj.obj_n == 48 then --48 glass sword
@@ -171,6 +175,10 @@ actor_combat_hit_check = function(attacker, foe, weapon_obj)
    return true
 end
 
+--
+-- actor_init(actor)
+--
+
 actor_init = function(actor)
 
  actor_base = actor_tbl[actor.obj_n];
@@ -205,7 +213,6 @@ actor_init = function(actor)
         obj.qty = 1
         obj.status = 56
         Actor.inv_add_obj(actor, obj);
-        --add object into actor inventory
    end
 
    --actor weapon
@@ -547,6 +554,7 @@ function actor_take_hit(attacker, defender, max_dmg)
       print(defender.name.." grazed.\n")
    end
 end
+
 --
 -- actor_attack(attacker, foe, weapon)
 --
@@ -554,7 +562,6 @@ end
 actor_attack = function(attacker, foe, weapon)
 
    weapon_obj_n = weapon.obj_n
-
 
    io.stderr:write("actor_attack()\nrange = " .. get_attack_range(attacker.x,attacker.y, foe.x,foe.y).." weapon range="..get_weapon_range(weapon_obj_n));
    
