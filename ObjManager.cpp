@@ -646,37 +646,33 @@ bool ObjManager::is_stackable(Obj *obj)
 */
  if(game_type==NUVIE_GAME_U6)
  {
-    const int stackable_objs_tbl[] =
-    {
-       0x5A, // torch 
-       0x3F, // lock pick
-       0x4D, // gem
-       0x37, // arrow
-       0x38, // bolt
-       0x41, // black pearl
-       0x42, // bit of blood moss
-       0x43, // bulb of garlic
-       0x44, // ginseng root
-       0x45, // mandrake root
-       0x46, // nightshade mushroom
-       0x47, // strand of spidersilk
-       0x48, // bit of sulfurous ash
-       0x151, // effect
-       0x80, // loaf of bread
-       0x81, // portion of meat
-       0x53, // flask of oil
-       0x14F, // egg
-       0x59, // gold nugget
-       0x5B, // Zu Ylem
-       0x5C, // silver snake venom
-       0x58  // Gold coin
-    };       
-    for(int i=0;i<22;i++)
-    {
-       if(stackable_objs_tbl[i] == obj->obj_n)
-          return true;
-    }
+  switch (obj->obj_n) {
+   case OBJ_U6_TORCH: // 0x5A, // torch 
+   case OBJ_U6_LOCK_PICK: // 0x3F, // lock pick
+   case OBJ_U6_GEM: // 0x4D, // gem
+   case OBJ_U6_ARROW: // 0x37, // arrow
+   case OBJ_U6_BOLT: // 0x38, // bolt
+   case OBJ_U6_BLACK_PEARL: // 0x41, // black pearl
+   case OBJ_U6_BLOOD_MOSS: // 0x42, // bit of blood moss
+   case OBJ_U6_GARLIC: // 0x43, // bulb of garlic
+   case OBJ_U6_GINSENG: // 0x44, // ginseng root
+   case OBJ_U6_MANDRAKE_ROOT: // 0x45, // mandrake root
+   case OBJ_U6_NIGHTSHADE: // 0x46, // nightshade mushroom
+   case OBJ_U6_SPIDER_SILK: // 0x47, // strand of spidersilk
+   case OBJ_U6_SULFUROUS_ASH: // 0x48, // bit of sulfurous ash
+   case OBJ_U6_EFFECT: // 0x151, // effect
+   case OBJ_U6_BREAD: // 0x80, // loaf of bread
+   case OBJ_U6_MEAT_PORTION: // 0x81, // portion of meat
+   case OBJ_U6_FLASK_OF_OIL: // 0x53, // flask of oil
+   case OBJ_U6_EGG: // 0x14F, // egg
+   case OBJ_U6_GOLD_NUGGET: // 0x59, // gold nugget
+   case OBJ_U6_ZU_YLEM: // 0x5B, // Zu Ylem
+   case OBJ_U6_SNAKE_VENOM: // 0x5C, // silver snake venom
+   case OBJ_U6_GOLD: // 0x58  // Gold coin
+    return true;
+   default:
     return false;
+  }
  }
 
  return (bool)obj_stackable[obj->obj_n];
