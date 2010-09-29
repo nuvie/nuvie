@@ -1,3 +1,17 @@
+--note nuvie direction values aren't the same as the original it uses the following scheme
+--701
+--6 2
+--543
+
+DIR_NORTH     = 0
+DIR_EAST      = 1
+DIR_SOUTH     = 2
+DIR_WEST      = 3
+DIR_NORTHEAST = 4
+DIR_SOUTHEAST = 5 
+DIR_SOUTHWEST = 6
+DIR_NORTHWEST = 7
+
 ALIGNMENT_DEFAULT = 0
 ALIGNMENT_NEUTRAL = 1
 ALIGNMENT_EVIL    = 2
@@ -6,6 +20,39 @@ ALIGNMENT_CHAOTIC = 4
 
 -- some common functions
 
+function alignment_is_evil(align)
+   if align == ALIGNMENT_EVIL or align == ALIGNMENT_CHAOTIC then return true end
+   
+   return false
+end
+
+function direction_string(dir)
+   if dir == DIR_NORTH then return "NORTH" end
+   if dir == DIR_NORTHEAST then return "NORTHEAST" end
+   if dir == DIR_EAST then return "EAST" end
+   if dir == DIR_SOUTHEAST then return "SOUTHEAST" end
+   if dir == DIR_SOUTH then return "SOUTH" end
+   if dir == DIR_SOUTHWEST then return "SOUTHWEST" end
+   if dir == DIR_WEST then return "WEST" end
+   if dir == DIR_NORTHWEST then return "NORTHWEST" end
+   
+   return "UNKNOWN"
+end
+
+local dir_rev_tbl =
+{
+   [DIR_NORTH] = DIR_SOUTH,
+   [DIR_NORTHEAST] = DIR_SOUTHWEST,
+   [DIR_EAST] = DIR_WEST,
+   [DIR_SOUTHEAST] = DIR_NORTHWEST,
+   [DIR_SOUTH] = DIR_NORTH,
+   [DIR_SOUTHWEST] = DIR_NORTHEAST,
+   [DIR_WEST] = DIR_EAST,
+   [DIR_NORTHWEST] = DIR_SOUTHEAST
+}
+   
+function direction_reverse(dir) return dir_rev_tbl[dir] end
+   
 function abs(val)
    if val < 0 then
       return -val
@@ -49,6 +96,56 @@ function run_script(script)
   setfenv(0, t);
   t.body = nuvie_load(script);
   t.body();
+end
+
+function look_obj(obj)
+   print("Thou dost see " .. obj.look_string);
+   weight = obj.weight; --FIXME this could be a problem if we want to change Lua_number type to int. 
+   if weight ~= 0 then
+      if obj.qty > 1 and obj.stackable then
+         print(". They weigh");
+      else
+         print(". It weighs");
+      end
+      
+      print(string.format(" %.1f", weight).." stones");
+   end
+
+   --FIXME usecode look description should be lua code.
+   if usecode_look(obj) then
+      print("\n")
+      return false
+   end
+   
+   dmg = weapon_dmg_tbl[obj.obj_n];
+   if dmg ~= nil then
+      if weight ~= 0 then
+         print(" and")
+      else
+         print(". It")
+      end
+      
+      print(" can do "..dmg.." point")
+      if dmg > 1 then print("s") end
+      print(" of damage")
+
+   end
+   
+   ac = armour_tbl[obj.obj_n]
+   if ac ~= nil then
+      if weight ~= 0 or dmg ~= 0 then
+         print(" and")
+      else
+         print(". It")
+      end
+      
+      print(" can absorb "..ac.." point")
+      if ac > 1 then print("s") end
+      print(" of damage")
+   end
+   
+   print(".\n");
+   return true
 end
 
 --load actor functions

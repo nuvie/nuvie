@@ -31,6 +31,7 @@
 #include "Effect.h"
 #include "MsgScroll.h"
 #include "Player.h"
+#include "Party.h"
 #include "ActorManager.h"
 #include "Actor.h"
 #include "Weather.h"
@@ -38,6 +39,8 @@
 
 #include "Script.h"
 #include "ScriptActor.h"
+
+#include <math.h>
 
 extern "C"
 {
@@ -133,9 +136,14 @@ static int nscript_map_remove_obj(lua_State *L);
 static int nscript_eclipse_start(lua_State *L);
 static int nscript_quake_start(lua_State *L);
 static int nscript_explosion_start(lua_State *L);
+static int nscript_usecode_look(lua_State *L);
 
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
+int nscript_party_iter(lua_State *L);
+
+
+static int nscript_party(lua_State *L);
 
 Script *Script::script = NULL;
 
@@ -238,6 +246,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
 
+   lua_pushcfunction(L, nscript_party);
+   lua_setglobal(L, "party_members");
+   
    lua_pushcfunction(L, nscript_objs_at_loc);
    lua_setglobal(L, "objs_at_loc");
    
@@ -259,6 +270,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_explosion_start);
    lua_setglobal(L, "explosion_start");
 
+   lua_pushcfunction(L, nscript_usecode_look);
+   lua_setglobal(L, "usecode_look");
+   
    seed_random();
 
    lua_getglobal(L, "package");
@@ -304,6 +318,19 @@ bool Script::run_script(const char *script)
    return true;
 }
 
+bool Script::call_actor_update_all()
+{
+   lua_getglobal(L, "actor_update_all");
+
+   if(lua_pcall(L, 0, 0, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: actor_update_all() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
+   
+   return true;
+}
+
 bool Script::call_actor_init(Actor *actor)
 {
    lua_getglobal(L, "actor_init");
@@ -334,6 +361,20 @@ bool Script::call_actor_attack(Actor *actor, Actor *foe, Obj *weapon)
    }
 
    return true;
+}
+
+bool Script::call_look_obj(Obj *obj)
+{
+   lua_getglobal(L, "look_obj");
+
+   nscript_obj_new(L, obj);
+   if(lua_pcall(L, 1, 1, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: look_obj() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
+   
+   return lua_toboolean(L,-1);
 }
 
 
@@ -740,11 +781,32 @@ static int nscript_obj_get(lua_State *L)
          return 1;
    }
 
+   if(!strcmp(key, "look_string"))
+   {
+      ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+      lua_pushstring(L, obj_manager->look_obj(obj, true)); return 1;
+   }
+   
    if(!strcmp(key, "readied"))
    {
       lua_pushboolean(L, (int)obj->is_readied()); return 1;
    }
 
+   if(!strcmp(key, "stackable"))
+   {
+      ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+      lua_pushboolean(L, (int)obj_manager->is_stackable(obj)); return 1;
+   }
+
+   if(!strcmp(key, "weight"))
+   {
+      ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+      float weight = obj_manager->get_obj_weight(obj,OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
+      weight = floorf(weight); //get rid of the tiny fraction
+      weight /= 10; //now scale.
+      lua_pushnumber(L, (lua_Number)weight); return 1;
+   }
+   
    return 0;
 }
 
@@ -1102,6 +1164,21 @@ static int nscript_explosion_start(lua_State *L)
    return 1;
 }
 
+//FIXME need to move this into lua script.
+static int nscript_usecode_look(lua_State *L)
+{
+   Obj **s_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
+   Obj *obj;
+   
+   obj = *s_obj;
+   
+   UseCode *usecode = Game::get_game()->get_usecode();
+   Player *player = Game::get_game()->get_player();
+   
+   lua_pushboolean(L, (int)usecode->look_obj(obj, player->get_actor()));
+   return 1;
+}
+
 int nscript_u6llist_iter(lua_State *L)
 {
    U6Link **s_link = (U6Link **)luaL_checkudata(L, 1, "nuvie.U6Link");
@@ -1116,6 +1193,30 @@ int nscript_u6llist_iter(lua_State *L)
 
    *s_link = link->next;
 
+   return 1;
+}
+
+int nscript_party_iter(lua_State *L)
+{
+   uint16 party_index = (uint16)lua_tointeger(L, lua_upvalueindex(1));
+   
+   if(party_index == Game::get_game()->get_party()->get_party_size())
+      return 0;
+   
+   uint8 actor_num = Game::get_game()->get_party()->get_actor_num(party_index);
+   
+   lua_pushinteger(L, party_index + 1);
+   lua_replace(L, lua_upvalueindex(1));
+   
+   nscript_new_actor_var(L, actor_num);
+   
+   return 1;
+}
+
+static int nscript_party(lua_State *L)
+{
+   lua_pushinteger(L, 0);
+   lua_pushcclosure(L, &nscript_party_iter, 1);
    return 1;
 }
 

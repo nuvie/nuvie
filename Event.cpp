@@ -60,6 +60,7 @@
 #include "GUI_YesNoDialog.h"
 
 #include "views/InventoryWidget.h"
+#include "Script.h"
 
 #include <math.h>
 
@@ -1064,81 +1065,20 @@ bool Event::look_start()
  */
 bool Event::look(Obj *obj)
 {
-    std::string desc;
-    char out_string[48];
-    float weight=0.0;
-    uint8 damage=0,defense=0;
-    bool special_desc = false;
-    const CombatType * c_type;
-
     if(mode == WAIT_MODE)
         return(false);
-    if(!obj)
-    {
-      scroll->display_string("Thou dost see nothing.\n");
-      return(true);
-    }
-
-    c_type=player->get_actor()->get_object_combat_type(obj->obj_n);
-    if (c_type!=NULL) 
-    {
-      damage=c_type->damage; // FIXME: spelling issue.. attack/damage, defence/defense
-      defense=c_type->defense; // FIXME: spelling issue solved by union.
-    }
-
-    obj_manager->print_obj(obj, false); // DEBUG
-    
-    scroll->display_string("Thou dost see ");
-    scroll->display_string(obj_manager->look_obj(obj, true));
-
-    // check for special description
-    if(usecode->has_lookcode(obj))
-    {
-        special_desc = usecode->look_obj(obj, player->get_actor());
-//        scroll->display_string("\n");
-    }
-    if(special_desc)
-    {
-        scroll->display_string("\n");
-        scroll->display_prompt();
-        return(false);
-    }
-    else
-    {
-        weight = obj_manager->get_obj_weight(obj,OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
-	weight = floorf(weight); //get rid of the tiny fraction
-	weight /= 10; //now scale.
-
-        if(weight != 0)
-        {
-            if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
-                desc = ". They weigh";
-            else
-                desc = ". It weighs";
-
-            snprintf(out_string,31," %0.1f stones",weight);
-            desc += out_string;
-        }
-	if(damage != 0)
-	{
-            if(weight != 0) desc += " and";
-            else            desc += ". It";
-            snprintf(out_string,31," can do %d point%s of damage",damage,damage==1?"":"s");
-            desc += out_string;
-	}
-	if(defense != 0)
-	{
-	  if((weight != 0) || (damage != 0)) desc += " and";
-	  else            desc += ". It";
-	  snprintf(out_string,33," can absorb %d point%s of damage",defense,defense==1?"":"s"); // 31 was to short.
-	  desc += out_string;
-	}
-
-	desc += ".";
-        scroll->display_string(desc);
-        scroll->display_string("\n");
-        return(true);
-    }
+   
+   if(obj)
+   {
+      obj_manager->print_obj(obj, false); // DEBUG
+      if(Game::get_game()->get_script()->call_look_obj(obj) == false)
+      {
+         scroll->display_prompt();
+         return false;
+      }
+   }
+   
+   return true;
 }
 
 

@@ -44,6 +44,8 @@ static int nscript_actor_kill(lua_State *L);
 static int nscript_actor_hit(lua_State *L);
 static int nscript_actor_resurrect(lua_State *L);
 static int nscript_actor_inv_add_obj(lua_State *L);
+static int nscript_actor_inv_remove_obj(lua_State *L);
+static int nscript_actor_inv_remove_obj_qty(lua_State *L);
 static int nscript_actor_inv_ready_obj(lua_State *L);
 static int nscript_actor_inv_has_obj_n(lua_State *L);
 static int nscript_actor_move(lua_State *L);
@@ -57,6 +59,8 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "move", nscript_actor_move },
    { "get", nscript_get_actor_from_num },
    { "inv_add_obj", nscript_actor_inv_add_obj },
+   { "inv_remove_obj", nscript_actor_inv_remove_obj },
+   { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },   
    { "inv_ready_obj", nscript_actor_inv_ready_obj },
    { "inv_has_obj_n", nscript_actor_inv_has_obj_n },
 
@@ -71,7 +75,7 @@ static const struct luaL_Reg nscript_actorlib_m[] =
 
 
 //Actor variables
-static char *actor_set_vars[] =
+static const char *actor_set_vars[] =
 {
    "align",
    "combat_mode",
@@ -93,15 +97,17 @@ static char *actor_set_vars[] =
 };
 
 //Actor variables
-static char *actor_get_vars[] =
+static const char *actor_get_vars[] =
 {
    "align",
+   "alive",
    "combat_mode",
    "dex",
    "direction",
    "exp",
    "frame_n",
    "hp",
+   "in_party",
    "int",
    "level",
    "luatype",
@@ -109,7 +115,9 @@ static char *actor_get_vars[] =
    "mpts",
    "name",
    "obj_n",
+   "sched_loc",
    "str",
+   "visible",
    "wt",
    "x",
    "y",
@@ -158,12 +166,14 @@ int (*actor_set_func[])(Actor *, lua_State *) =
 
 //Actor get
 static int nscript_actor_get_align(Actor *actor, lua_State *L);
+static int nscript_actor_get_alive(Actor *actor, lua_State *L);
 static int nscript_actor_get_combat_mode(Actor *actor, lua_State *L);
 static int nscript_actor_get_dexterity(Actor *actor, lua_State *L);
 static int nscript_actor_get_direction(Actor *actor, lua_State *L);
 static int nscript_actor_get_exp(Actor *actor, lua_State *L);
 static int nscript_actor_get_frame_n(Actor *actor, lua_State *L);
 static int nscript_actor_get_hp(Actor *actor, lua_State *L);
+static int nscript_actor_get_in_party_status(Actor *actor, lua_State *L);
 static int nscript_actor_get_intelligence(Actor *actor, lua_State *L);
 static int nscript_actor_get_level(Actor *actor, lua_State *L);
 static int nscript_actor_get_luatype(Actor *actor, lua_State *L);
@@ -171,7 +181,9 @@ static int nscript_actor_get_magic(Actor *actor, lua_State *L);
 static int nscript_actor_get_movement_pts(Actor *actor, lua_State *L);
 static int nscript_actor_get_name(Actor *actor, lua_State *L);
 static int nscript_actor_get_obj_n(Actor *actor, lua_State *L);
+static int nscript_actor_get_sched_loc(Actor *actor, lua_State *L);
 static int nscript_actor_get_strength(Actor *actor, lua_State *L);
+static int nscript_actor_get_visible(Actor *actor, lua_State *L);
 static int nscript_actor_get_worktype(Actor *actor, lua_State *L);
 static int nscript_actor_get_x(Actor *actor, lua_State *L);
 static int nscript_actor_get_y(Actor *actor, lua_State *L);
@@ -180,12 +192,14 @@ static int nscript_actor_get_z(Actor *actor, lua_State *L);
 int (*actor_get_func[])(Actor *, lua_State *) =
 {
    nscript_actor_get_align,
+   nscript_actor_get_alive,
    nscript_actor_get_combat_mode,
    nscript_actor_get_dexterity,
    nscript_actor_get_direction,
    nscript_actor_get_exp,
    nscript_actor_get_frame_n,
    nscript_actor_get_hp,
+   nscript_actor_get_in_party_status,
    nscript_actor_get_intelligence,
    nscript_actor_get_level,
    nscript_actor_get_luatype,
@@ -193,7 +207,9 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_movement_pts,
    nscript_actor_get_name,
    nscript_actor_get_obj_n,
+   nscript_actor_get_sched_loc,
    nscript_actor_get_strength,
+   nscript_actor_get_visible,
    nscript_actor_get_worktype,
    nscript_actor_get_x,
    nscript_actor_get_y,
@@ -484,6 +500,11 @@ static int nscript_actor_get_align(Actor *actor, lua_State *L)
    lua_pushinteger(L, actor->get_alignment()); return 1;
 }
 
+static int nscript_actor_get_alive(Actor *actor, lua_State *L)
+{
+   lua_pushboolean(L, actor->is_alive()); return 1;
+}
+
 static int nscript_actor_get_combat_mode(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_combat_mode()); return 1;
@@ -512,6 +533,11 @@ static int nscript_actor_get_frame_n(Actor *actor, lua_State *L)
 static int nscript_actor_get_hp(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_hp()); return 1;
+}
+
+static int nscript_actor_get_in_party_status(Actor *actor, lua_State *L)
+{
+   lua_pushboolean(L, (int)actor->is_in_party()); return 1;
 }
 
 static int nscript_actor_get_intelligence(Actor *actor, lua_State *L)
@@ -549,9 +575,37 @@ static int nscript_actor_get_obj_n(Actor *actor, lua_State *L)
    lua_pushinteger(L, actor->get_obj_n()); return 1;
 }
 
+static int nscript_actor_get_sched_loc(Actor *actor, lua_State *L)
+{
+   MapCoord sched_loc;
+   
+   if(actor->get_schedule_location(&sched_loc) == false)
+      return 0;
+
+   lua_newtable(L);
+   lua_pushstring(L, "x");
+   lua_pushinteger(L, sched_loc.x);
+   lua_settable(L, -3);
+   
+   lua_pushstring(L, "y");
+   lua_pushinteger(L, sched_loc.y);
+   lua_settable(L, -3);
+   
+   lua_pushstring(L, "z");
+   lua_pushinteger(L, sched_loc.z);
+   lua_settable(L, -3);
+   
+   return 1;
+}
+
 static int nscript_actor_get_strength(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_strength()); return 1;
+}
+
+static int nscript_actor_get_visible(Actor *actor, lua_State *L)
+{
+   lua_pushboolean(L, (int)actor->is_visible()); return 1;
 }
 
 static int nscript_actor_get_worktype(Actor *actor, lua_State *L)
@@ -598,7 +652,7 @@ static int nscript_actor_hit(lua_State *L)
 
    damage = (uint8)luaL_checkinteger(L, 2);
 
-   actor->hit(damage);
+   actor->hit(damage, true); //force hit
 
    return 0;
 }
@@ -616,9 +670,9 @@ static int nscript_actor_move(lua_State *L)
    if(nscript_get_location_from_args(L, &x, &y, &z, 2) == false)
       return 0;
 
-   actor->move(x, y, z);
+   lua_pushboolean(L, (int)actor->move(x, y, z));
 
-   return 0;
+   return 1;
 }
 
 static int nscript_actor_resurrect(lua_State *L)
@@ -641,7 +695,6 @@ static int nscript_actor_resurrect(lua_State *L)
 static int nscript_actor_inv_add_obj(lua_State *L)
 {
    Actor *actor;
-   MapCoord loc;
 
    actor = nscript_get_actor_from_args(L);
    if(actor == NULL)
@@ -656,6 +709,42 @@ static int nscript_actor_inv_add_obj(lua_State *L)
    actor->inventory_add_object(obj, NULL, false);
 
    return 0;
+}
+
+static int nscript_actor_inv_remove_obj(lua_State *L)
+{
+   Actor *actor;
+   
+   actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+   
+   Obj **s_obj = (Obj **)luaL_checkudata(L, 2, "nuvie.Obj");
+   Obj *obj;
+   
+   obj = *s_obj;
+   
+   
+   actor->inventory_remove_obj(obj);
+   
+   return 0;
+}
+
+static int nscript_actor_inv_remove_obj_qty(lua_State *L)
+{
+   Actor *actor;
+   
+   actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+   
+   uint16 obj_n = (uint16)lua_tointeger(L, 2);
+   uint16 qty = (uint16)lua_tointeger(L, 3);
+   
+   
+   lua_pushinteger(L, actor->inventory_del_object(obj_n, qty, 0));
+   
+   return 1;
 }
 
 static int nscript_actor_inv_ready_obj(lua_State *L)
