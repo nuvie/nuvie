@@ -213,6 +213,8 @@ static const struct {uint16 obj_n; uint8 readiable_location; uint8 defence; uint
 {OBJ_U6_REGENERATION_RING, ACTOR_HAND, 0, 0 },
 {OBJ_U6_INVISIBILITY_RING, ACTOR_HAND, 0, 0 },
 
+{OBJ_U6_ZU_YLEM, ACTOR_ARM, 0, 0},
+    
 {OBJ_U6_NOTHING, ACTOR_NOT_READIABLE, 0, 0 } }; // this last element terminates the array.
 
 
@@ -279,6 +281,8 @@ const CombatType u6combat_objects[] ={
 
 {OBJ_U6_PROTECTION_RING, {5}, {0}, 0, ATTACK_TYPE_NONE, 0, OBJ_U6_NOTHING, false },
 
+{OBJ_U6_ZU_YLEM, {0}, {1}, 0, ATTACK_TYPE_HAND, 0, OBJ_U6_NOTHING, false },
+   
 {OBJ_U6_NOTHING, {0}, {0} ,0, ATTACK_TYPE_NONE, 0, OBJ_U6_NOTHING, false} // this last element terminates the array.
 };
 

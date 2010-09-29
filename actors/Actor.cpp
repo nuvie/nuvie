@@ -807,10 +807,13 @@ uint32 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality)
     {
         inventory_remove_obj(obj);
        delete_obj(obj);
+       deleted += oqty;
     }
     else
-        obj->qty = oqty - qty;
-    deleted += oqty;
+    {
+       obj->qty = oqty - (qty - deleted);
+       deleted += (qty - deleted);
+    }
  }
  return(deleted);
 }
@@ -1864,3 +1867,14 @@ bool Actor::morph(uint16 obj_n)
     set_direction(old_dir); // FIXME: this should get saved through init_from_obj()
     return true;
 }
+
+bool Actor::get_schedule_location(MapCoord *loc)
+{
+   if(sched[sched_pos] == NULL)
+      return false;
+   
+   loc->x = sched[sched_pos]->x;
+   loc->y = sched[sched_pos]->y;
+   loc->z = sched[sched_pos]->z;   
+   return true;
+}   

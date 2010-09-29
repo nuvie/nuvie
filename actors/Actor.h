@@ -419,7 +419,9 @@ class Actor
  uint16 get_obj_n() { return(obj_n); }
  virtual void clear();
  virtual bool morph(uint16 obj_n); // change actor type
-
+ 
+ bool get_schedule_location(MapCoord *loc);
+   
  protected:
 
  void loadSchedule(unsigned char *schedule_data, uint16 num);

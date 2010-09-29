@@ -26,7 +26,7 @@ void print_bool(DebugLevelType level,bool state, const char *yes = "true", const
 void print_flags(DebugLevelType level,uint8 num, const char *f[8]);
 bool subtract_rect(SDL_Rect *rect1, SDL_Rect *rect2, SDL_Rect *sub_rect);
 const char *get_direction_name(sint16 rel_x, sint16 rel_y);
-int str_bsearch( char *str[], int max, char *value );
+int str_bsearch( const char *str[], int max, const char *value );
 
 /* Is point x,y within rect?
  */
