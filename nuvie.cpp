@@ -137,12 +137,16 @@ bool Nuvie::initConfig()
 #ifndef WIN32
  // ~/.nuvierc
 
- config_path.assign(getenv("HOME"));
-// config_path.append(U6PATH_DELIMITER);
- config_path.append("/.nuvierc");
+ char *home_env = getenv("HOME");
+ if(home_env != NULL)
+ {
+	 config_path.assign(home_env);
+	// config_path.append(U6PATH_DELIMITER);
+	 config_path.append("/.nuvierc");
 
- if(loadConfigFile(config_path))
-   return true;
+	 if(loadConfigFile(config_path))
+	   return true;
+ }
 #endif
 
  // nuvie.cfg in the working dir
