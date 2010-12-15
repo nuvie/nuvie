@@ -1,7 +1,69 @@
-io.stderr:write("actor.lua get here\n");
+io.stderr:write("actor.lua get here\n")
+
+
+--Worktypes      
+WT_NOTHING                = 0x0  --do nothing
+
+WT_FOLLOW                 = 0x1  --follow avatar (in party)
+
+WT_PLAYER                 = 0x2  --player mode
+
+WT_FRONT                  = 0x3  --combat front
+WT_REAR                   = 0x4  --combat rear
+WT_FLANK                  = 0x5  --combat flank
+WT_BERSERK                = 0x6  --combat berserk
+WT_RETREAT                = 0x7  --combat retreat
+WT_ASSAULT                = 0x8  --combat assault
+WT_FLEE                   = 0x9  --run away from party
+
+WT_TANGLE                 = 0xd  --tangle vine
+WT_STATIONARY             = 0xe  --stationary attack
+WT_GUARD_WALK_EAST_WEST   = 0xf
+WT_GUARD_WALK_NORTH_SOUTH = 0x10
+--10
+--11
+--12
+WT_UNK_13                 = 0x13
+
+WT_FACE_NORTH             = 0x87
+WT_FACE_EAST              = 0x88
+WT_FACE_SOUTH             = 0x89
+WT_FACE_WEST              = 0x8a
+WT_WALK_NORTH_SOUTH       = 0x8b
+WT_WALK_EAST_WEST         = 0x8c
+WT_WALK_SOUTH_NORTH       = 0x8d
+WT_WALK_WEST_EAST         = 0x8e
+WT_WANDER_AROUND          = 0x8f
+WT_WORK                   = 0x90
+WT_SLEEP                  = 0x91
+
+
+
+WT_PLAY_LUTE              = 0x95
+WT_BEG                    = 0x96
+
+WT_BELL_RINGER            = 0x98
+WT_FIGHTING               = 0x99
+WT_MOUSE                  = 0x9a
+WT_ATTACK_PARTY           = 0x9b
+
+
+wt_rear_max_monster = nil
+wt_rear_min_monster = nil
+wt_rear_max_party = nil
+wt_rear_min_party = nil
+      
+combat_avg_x, combat_avg_y, party_avg_x, party_avg_y = -1, -1, -1, -1
+      
+wt_front_target_actor = nil
+
+wt_num_monsters_near = 0
+
+movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1} 
+movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
 
 --Actor stats table
---str,dex,int,hp,dmg,alignment,?,?,?,?,?,?,?,?,?,strength_based,?,?,?,?,?,spell table,weapon table,armor table,treasure table
+--str,dex,int,hp,dmg,alignment,can talk,?,?,?,?,?,?,takes half dmg,?,strength_based,double dmg from fire,immune to magic,?,?,immune to sleep spell,spell table,weapon table,armor table,treasure table
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}},
@@ -71,16 +133,180 @@ actor_tbl = {
 
 monster_inv_food = { 129, 133, 128 } --portion of meat, ham, loaf of bread
 
-actor_randomise_stat = function(base_stat)
-   tmp = math.floor(base_stat/2);
+function actor_int_check(attacker, defender)
+
+   if (math.floor(actor_int_adj(attacker) / 2) + 15) - actor_int_adj(defender) > math.random(1, 30) then
+      return true
+   end
+   
+   return false
+-- if((actor1_int_adj / 2 + 15) - actor2_int_adj > random(1,30))
+--return 
+
+end
+
+function subtract_movement_pts(actor, pts)
+   if actor.obj_n == 0x1af then pts = math.floor(pts / 2) end --if horse with rider
+    
+   --fixme check with the original there are two timers that are check but never seem to be used.
+   
+   if pts < 1 then pts = 1 end
+   
+   actor.mpts = actor.mpts - pts
+end
+
+function subtract_map_movement_pts(actor)
+   subtract_movement_pts(actor, 5) --FIXME need to code this up.
+end
+
+function actor_find_max_xy_distance(actor, x, y)
+   x, y = abs(actor.x - x), abs(actor.y - y)
+   return (x > y) and x or y
+end
+
+function actor_move(actor, direction, flag)
+   print("actor_move("..actor.name..", "..direction_string(direction)..", "..flag..")\n");
+   x,y,z = actor.x, actor.y, actor.z
+   if direction == DIR_NORTH then y = y - 1 end
+   if direction == DIR_SOUTH then y = y + 1 end
+   if direction == DIR_EAST then x = x + 1 end
+   if direction == DIR_WEST then x = x - 1 end
+   
+   did_move = Actor.move(actor, x, y, z)
+   
+   --actor.direction = direction
+      
+   if did_move then
+      subtract_movement_pts(actor, 5)
+      actor.direction = direction
+      print("did move\n");
+   end --FIXME need to handle this properly with map movement pts.
+   
+   return did_move and 1 or 0
+end
+
+function actor_move_diagonal(actor, x_direction, y_direction)
+   x,y,z = actor.x, actor.y, actor.z
+   
+   if y_direction == DIR_NORTH then
+      y = y - 1
+      direction = x_direction == DIR_EAST and DIR_NORTHEAST or DIR_NORTHWEST
+   end
+   if y_direction == DIR_SOUTH then
+      y = y + 1
+      direction = x_direction == DIR_EAST and DIR_SOUTHEAST or DIR_SOUTHWEST
+   end
+   if x_direction == DIR_EAST then
+      x = x + 1
+      direction = y_direction == DIR_NORTH and DIR_NORTHEAST or DIR_SOUTHEAST
+   end
+   if x_direction == DIR_WEST then
+      x = x - 1
+      direction = y_direction == DIR_NORTH and DIR_NORTHWEST or DIR_SOUTHWEST
+   end
+
+   print("actor_move_diagonal("..actor.name..", "..direction_string(direction)..")\n");
+
+   did_move = Actor.move(actor, x, y, z)
+   
+   if did_move then
+      print("did move\n");
+      subtract_movement_pts(actor, 5)
+      actor.direction = y_direction
+   end --FIXME need to handle this properly with map movement pts.
+   
+   return did_move and 1 or 0
+end
+
+function actor_move_towards_loc(actor, map_x, map_y)
+   print("move actor from ("..actor.x..","..actor.y..") towards ("..map_x..","..map_y..")\n")
+   var_2 = (word_30A6B == 1) and 0 or 1
+   var_6 = 1
+   diff_x = map_x - actor.x
+   diff_y = map_y - actor.y 
+
+   if (diff_x == 0 and diff_y == 0) or actor.wt == 0xE then subtract_movement_pts(actor, 5) return 0 end
+
+   if diff_x ~= 0 then
+      x_direction = (diff_x >= 0) and DIR_EAST or DIR_WEST
+   else
+      x_direction = (math.random(0, 1) == 0) and DIR_WEST or DIR_EAST
+   end
+
+   if diff_y ~= 0 then
+      y_direction = (diff_y >= 0) and DIR_SOUTH or DIR_NORTH
+   else
+      y_direction = (math.random(0, 1) == 0) and DIR_SOUTH or DIR_NORTH
+   end
+
+   unk_30A72 = 0
+
+   if abs(diff_x) >= 4 or abs(diff_y) >= 4 then
+      var_4 = (math.random(1, abs(diff_x) + abs(diff_y)) <= abs(diff_x)) and 0 or 1
+   else
+      var_4 = (abs(diff_x) >= abs(diff_y) or abs(diff_x) ~= abs(diff_y) or math.random(0, 1) == 0) and 0 or 1
+   end
+
+   if var_4 == 0 then
+      if actor_move(actor, x_direction, var_2) == 0 and
+      actor_move_diagonal(actor, x_direction, y_direction) == 0 and
+      actor_move(actor, y_direction, var_2) == 0 and
+      math.random(0, 1) ~= 0 or actor_move(actor, (y_direction == DIR_NORTH) and DIR_SOUTH or DIR_NORTH, 1) == 0 then
+      
+         subtract_map_movement_pts(actor)
+         var_6 = 0 --didn't move anywhere
+      end
+
+   else
+
+      if actor_move(actor, y_direction, var_2) == 0 and
+      actor_move_diagonal(actor, x_direction, y_direction) == 0 and
+      actor_move(actor, x_direction, var_2) == 0 and
+      math.random(0, 1) ~= 0 or actor_move(actor, (x_direction == DIR_EAST) and DIR_WEST or DIR_EAST, 1) == 0 then
+      
+         subtract_map_movement_pts(actor)
+         var_6 = 0 --didn't move anywhere
+      end
+
+   end
+
+   unk_30A72 = 1
+
+   return var_6
+
+end
+
+function toss_actor(actor, from_x, from_y, from_z, arg_0)
+
+   local random = math.random
+   local player_loc = player_get_location()
+
+   for i=1,8 do
+
+      local new_x = random(1, 4) + random(1, 4) + from_x - 5
+      local new_y = random(1, 4) + random(1, 4) + from_y - 5
+      
+      if arg_0 == 0 
+         or player_loc.x - 5 > new_x or player_loc.x + 5 < new_x or player_loc.y - 5 > new_y or player_loc.y + 5 < new_y then
+         
+         if Actor.move(actor, new_x, new_y, from_z) == true then return true end
+         
+      end
+   end
+   
+   return false
+end
+
+function actor_randomise_stat(base_stat)
+   tmp = math.floor(base_stat/2)
    if tmp == 0 then
       return 0
    end
    
-   return math.random(0, tmp) + math.random(0, tmp)  + base_stat - tmp;
+   return math.random(0, tmp) + math.random(0, tmp)  + base_stat - tmp
 end
 
-actor_get_max_magic_points = function(actor)
+function actor_get_max_magic_points(actor)
    obj_n = actor.obj_n
    if obj_n == 410 then --avatar
       return actor.int * 2
@@ -97,12 +323,12 @@ actor_get_max_magic_points = function(actor)
    return 0
 end
 
-actor_str_adj = function(actor)
+function actor_str_adj(actor)
    --FIXME
    --if actor flag bit 6 not set then
    -- return strength unadjusted
    
-   str = actor.str;
+   local str = actor.str
    if str <= 3 then
       return 1
    end
@@ -110,12 +336,12 @@ actor_str_adj = function(actor)
    return str - 3
 end
 
-actor_dex_adj = function(actor)
+function actor_dex_adj(actor)
    --FIXME
    --if actor flag bit 6 not set then
    -- don't subtract 3 from dex
    
-   dex = actor.dex
+   local dex = actor.dex
    if dex <= 3 then
       dex = 1
    else
@@ -133,12 +359,24 @@ actor_dex_adj = function(actor)
    return dex
 end
 
+function actor_int_adj(actor)
+   local int = actor.int
+   
+   --FIXME if mutant/cursed actor flag 0x40 then subtract 3 points
+   
+   if int < 1 then int = 1 end
+   
+   return int
+end
+
 --
 -- actor_combat_hit_check(attacker, foe, weapon_obj)
 --
 
-actor_combat_hit_check = function(attacker, foe, weapon_obj)
+function actor_combat_hit_check(attacker, foe, weapon_obj)
 
+   if foe == nil then return false end
+      
 	if foe.luatype ~= "actor" or weapon_obj.obj_n == 48 then --48 glass sword
       io.stderr:write(foe.luatype)
 		return true
@@ -166,7 +404,7 @@ actor_combat_hit_check = function(attacker, foe, weapon_obj)
    foe_dex = actor_dex_adj(foe)
    roll = math.random(1,30)
    
-   io.stderr:write("foe_dex = "..foe_dex.." attack_role = "..attack_role.." random(1,30) = "..roll.."\n\n");
+   io.stderr:write("foe_dex = "..foe_dex.." attack_role = "..attack_role.." random(1,30) = "..roll.."\n\n")
    
    if math.floor((foe_dex + 30 - attack_role) / 2) >= roll then
       return false
@@ -181,15 +419,15 @@ end
 
 actor_init = function(actor)
 
- actor_base = actor_tbl[actor.obj_n];
+ local actor_base = actor_tbl[actor.obj_n]
  if actor_base ~= nil then
  
-   actor.str = actor_randomise_stat(actor_base[1]);
-   actor.dex = actor_randomise_stat(actor_base[2]);
-   actor.int = actor_randomise_stat(actor_base[3]);
-   hp = actor_randomise_stat(actor_base[4]);
-   actor.hp = hp;
-   actor.level = math.floor((hp + 29) / 30);
+   actor.str = actor_randomise_stat(actor_base[1])
+   actor.dex = actor_randomise_stat(actor_base[2])
+   actor.int = actor_randomise_stat(actor_base[3])
+   hp = actor_randomise_stat(actor_base[4])
+   actor.hp = hp
+   actor.level = math.floor((hp + 29) / 30)
    actor.align = actor_base[6]
  else
    actor.str = 10
@@ -200,23 +438,23 @@ actor_init = function(actor)
    --actor.status = 32
  end
  
-   actor.wt = 8;
-   actor.combat_mode = 8;
+   actor.wt = 8
+   actor.combat_mode = 8
    actor.magic = actor_get_max_magic_points(actor)
    actor.mpts = actor.dex
    actor.exp = 100
    
    --add spells
    for i,v in ipairs(actor_base[22]) do
-        obj = Obj.new(336); --charge
+        obj = Obj.new(336) --charge
         obj.quality = v
         obj.qty = 1
         obj.status = 56
-        Actor.inv_add_obj(actor, obj);
+        Actor.inv_add_obj(actor, obj)
    end
 
    --actor weapon
-   chance = 2;
+   chance = 2
    for i,v in ipairs(actor_base[23]) do
       if v >= 36 and v <= 38 then --spear, throwing axe, dagger
          qty = math.random(6, 12)
@@ -232,18 +470,18 @@ actor_init = function(actor)
          else
             obj.qty = 0
          end
-         Actor.inv_add_obj(actor, obj);
-         Actor.inv_ready_obj(actor, obj);
+         Actor.inv_add_obj(actor, obj)
+         Actor.inv_ready_obj(actor, obj)
          if v == 41 or v == 54 then --bow, magic bow
             obj = Obj.new(55) --arrow
             obj.status = 49
             obj.qty = math.random(12, 24)
-            Actor.inv_add_obj(actor, obj);
+            Actor.inv_add_obj(actor, obj)
          elseif v == 42 or v == 50 then --crossbow, triple crossbow
             obj = Obj.new(56) --bolt
             obj.status = 49
             obj.qty = math.random(12, 24)
-            Actor.inv_add_obj(actor, obj);           
+            Actor.inv_add_obj(actor, obj)           
          end
       end
 
@@ -251,24 +489,24 @@ actor_init = function(actor)
    end
    
    -- actor armor
-   chance = 2;
+   chance = 2
    for i,v in ipairs(actor_base[24]) do
       
       if math.random(1,chance) == 1 then
       
-        obj = Obj.new(v);
-        obj.status = 57;
+        obj = Obj.new(v)
+        obj.status = 57
         obj.qty = 1
         obj.status = 56
-        Actor.inv_add_obj(actor, obj);
-        Actor.inv_ready_obj(actor, obj);
+        Actor.inv_add_obj(actor, obj)
+        Actor.inv_ready_obj(actor, obj)
       end
       
       chance = chance * 2
    end
    
    --actor treasure
-   chance = 2;
+   chance = 2
    for i,v in ipairs(actor_base[25]) do
       
       if math.random(1,chance) == 1 then    
@@ -276,13 +514,13 @@ actor_init = function(actor)
             chest = Obj.new(v)
             chest.frame_n = 1
             chest.status = 41
-            chest.qty = math.random(1, 100);
-            Actor.inv_add_obj(actor, chest);
+            chest.qty = math.random(1, 100)
+            Actor.inv_add_obj(actor, chest)
             if math.random(0, 1) == 1 then
                obj = Obj.new(337) --effect
                obj.status = 41
                obj.qty = 1
-               obj.quality = 22;
+               obj.quality = 22
                Obj.moveToCont(obj, chest)
             end
             if math.random(0, 3) ~= 0 then
@@ -333,12 +571,12 @@ actor_init = function(actor)
             obj = Obj.new(v)
             obj.status = 49
             obj.qty = math.random(1,30) + math.random(1, 30)
-            Actor.inv_add_obj(actor, obj);
+            Actor.inv_add_obj(actor, obj)
          else
             obj = Obj.new(v)
             obj.quality = 49
             obj.qty = 1
-            Actor.inv_add_obj(actor, obj);
+            Actor.inv_add_obj(actor, obj)
          end
 
       end
@@ -403,16 +641,19 @@ end
 
 local projectile_weapon_tbl = 
 {
-[33] = true, -- sling
-[37] = true, -- throwing axe
-[41] = true, -- bow
-[42] = true, -- crossbow
-[49] = true, -- boomerang
-[83] = true, -- flask of oil
-[50] = true, -- triple crossbow
-[91] = true, -- Zu Ylem
-[79] = true, -- lightning wand
-[80] = true, -- fire wand
+--obj_n = {tile_num, speed, doesRotate}
+[33] = {398, 2, false}, -- sling
+[36] = {547, 3, false}, -- spear
+[37] = {548, 2, true}, -- throwing axe
+[38] = {549, 2, true}, -- dagger
+[41] = {566, 4, false}, -- bow
+[42] = {567, 4, false}, -- crossbow
+[49] = {560, 4, true}, -- boomerang
+[83] = {601, 2, false}, -- flask of oil
+[50] = {567, 4, false}, -- triple crossbow
+[91] = {612, 2, true}, -- Zu Ylem
+[79] = {392, 2, false}, -- lightning wand
+[80] = {393, 2, false}, -- fire wand
 }
 
 weapon_dmg_tbl = {
@@ -485,15 +726,41 @@ armour_tbl =
 [256] = 5, --protection ring
 }
 
+triple_crossbow_offset_tbl = 
+{
+ {
+  4,5,5,5,5,6,6,6,6,6,6,
+  4,4,5,5,5,6,6,6,6,6,7,
+  4,4,4,5,5,6,6,6,6,7,7,
+  4,4,4,4,5,6,6,6,7,7,7,
+  4,4,4,4,4,6,6,7,7,7,7,
+  4,4,4,4,4,0,0,0,0,0,0,
+  3,3,3,3,2,2,0,0,0,0,0,
+  3,3,3,2,2,2,1,0,0,0,0,
+  3,3,2,2,2,2,1,1,0,0,0,
+  3,2,2,2,2,2,1,1,1,0,0,
+  2,2,2,2,2,2,1,1,1,1,0
+ },
+ {
+  2,2,2,2,2,2,3,3,3,3,4,
+  1,2,2,2,2,2,3,3,3,4,4,
+  1,1,2,2,2,2,3,3,4,4,4,
+  1,1,1,2,2,2,3,4,4,4,4,
+  1,1,1,1,2,2,4,4,4,4,4,
+  0,0,0,0,0,0,4,4,4,4,4,
+  0,0,0,0,0,6,6,5,5,5,5,
+  0,0,0,0,7,6,6,6,5,5,5,
+  0,0,0,7,7,6,6,6,6,5,5,
+  0,0,7,7,7,6,6,6,6,6,5,
+  0,7,7,7,7,6,6,6,6,6,6
+ }
+}
+
 function get_weapon_dmg(weapon_obj_n)
    dmg = weapon_dmg_tbl[weapon_obj_n]
    
-   if dmg == nil then
+   if dmg == nil and actor_tbl[weapon_obj_n] ~= nil then
       dmg = actor_tbl[weapon_obj_n][5]
-   end
-   
-   if dmg == nil then
-      dmg = 1
    end
    
    return dmg
@@ -504,7 +771,7 @@ function actor_get_ac(actor)
    
    --FIXME if cursed -3
    --FIXME if protected + 3
-   local ac = 0;
+   local ac = 0
      
    for obj in actor_inventory(actor) do
       if obj.readied then
@@ -555,20 +822,51 @@ function actor_take_hit(attacker, defender, max_dmg)
    end
 end
 
+function combat_range_check_target(actor_attacking)
+
+   if actor_attacking.wt > 1 and actor_attacking.wt < 0x10 then
+--[[
+      target = actor_attacking.target_obj
+      if target ~= actor_attacking then
+      
+         if target.obj_n ~= 0 and target.alive == true and target.asleep == false and target.paralysed == false and target.corpser_flag == false then
+         
+            if abs(actor_attacking.x - target.x) < 2 then
+            
+               if abs(actor_attacking.y - target.y) < 2 and (time_stop_spell_timer == 0 or target.in_party == true) then
+               
+                  return false
+               end
+            end
+         end
+      end
+--]]
+   end
+   
+return true
+end
+
 --
 -- actor_attack(attacker, foe, weapon)
 --
 
-actor_attack = function(attacker, foe, weapon)
+function actor_attack(attacker, foe, weapon)
 
-   weapon_obj_n = weapon.obj_n
-
-   io.stderr:write("actor_attack()\nrange = " .. get_attack_range(attacker.x,attacker.y, foe.x,foe.y).." weapon range="..get_weapon_range(weapon_obj_n));
+   local random = math.random
+   local weapon_obj_n = weapon.obj_n
+   local weapon_quality = weapon.quality
+   local target_x = foe.x
+   local target_y = foe.y
    
-   if get_attack_range(attacker.x,attacker.y, foe.x,foe.y) > get_weapon_range(weapon_obj_n) then
-      return
+   io.stderr:write("\nactor_attack()\nrange = " .. get_attack_range(attacker.x,attacker.y, target_x, target_y).." weapon range="..get_weapon_range(weapon_obj_n))
+   if weapon_obj_n ~= attacker.obj_n then
+      io.stderr:write("\nweapon = "..weapon.name.."obj_n = "..weapon_obj_n.."\n")
    end
    
+   if get_attack_range(attacker.x,attacker.y, target_x, target_y) > get_weapon_range(weapon_obj_n) then
+      return
+   end
+
    --check for arrows or bolts is attacking with a bow or crossbow
 
    if (weapon_obj_n == 41 or weapon_obj_n == 54) and Actor.inv_has_obj_n(attacker, 55) == false then --bow, magic bow, arrows
@@ -577,35 +875,912 @@ actor_attack = function(attacker, foe, weapon)
    if (weapon_obj_n == 42 or weapon_obj_n == 50) and Actor.inv_has_obj_n(attacker, 56) == false then --crossbow, triple crossbow, bolts
       return --no bolts, bail out
    end
-   
+
+
+   local x_diff = target_x - attacker.x
+   local y_diff = target_y - attacker.y
+
+   if abs(x_diff) <= abs(y_diff) then
+     attacker_direction = (y_diff >= 0) and DIR_SOUTH or DIR_NORTH
+   else
+     attacker_direction = (x_diff >= 0) and DIR_EAST or DIR_WEST
+   end
+
+   local actor_obj_n = attacker.obj_n
+   --[[
+   if actor_obj_n == 0x19c then --ship
+
+      if(((*(&objlist_npc_movement_flags + actor_attacking) & 6 xor attacker_direction) & 2) == 0)
+      {
+         attacker_direction = attacker_direction xor 2;
+      }
+      else
+      {
+         attacker_direction = *(objlist_npc_movement_flags + actor_attacking) & 7;
+      }
+   end
+--]]
+
+   attacker.direction = attacker_direction
+   if actor_obj_n >= 0x170 and actor_obj_n <= 0x174 then -- skeleton, mongbat
+      local frame_n = attacker.frame_n
+      attacker.frame_n = (frame_n - (frame_n % 4)) + 2
+   end
 
    
-   --FIXME face foe here
-   --x = foe.x - attacker.x
-   --c = foe.y - attacker.y
    is_range_weapon = false
 
    if weapon_obj_n ~= 40 and weapon_obj_n ~= 47 then -- morning star, halberd
-      if abs(foe.x - attacker.x) > 1 or abs(foe.y - attacker.y) > 1 or projectile_weapon_tbl[weapon_obj_n] ~= nil then
+      if abs(x_diff) > 1 or abs(y_diff) > 1 or projectile_weapon_tbl[weapon_obj_n] ~= nil then
          is_range_weapon = true
-         --FIXME call sub_1D4AE
+         if combat_range_check_target(attacker) == false then return 1 end
       end
    end
-   
+  
    --FIXME get triple crossbow bolts here.
    
    dmg = get_weapon_dmg(weapon_obj_n)
+   if dmg == nil then
+      dmg = 1
+   end
    
    --FIXME run unknown func sub_1EABC here.
-   
-   if weapon_obj_n == 336 or weapon_obj_n == 57 then
+   local player_loc = player_get_location()  
+
+   if weapon_obj_n == 0x150 or weapon_obj_n == 0x39 then --charge, spellbook
+
+      if weapon_quality == 0x81 and actor_obj_n == 0x175 then -- special wisp magic (wisp teleport), wisp
+                  
+         if toss_actor(attacker, player_loc.x, player_loc.y, player_loc.z) == true then
+         
+            print("Wisp teleports!\n")
+         end
+
+         return
+      end
+      
+      local spell_retcode = 0
       --FIXME cast spell here.
+      --spell_retcode = cast_magic_spell(weapon_quality, 1)
+      
+      if weapon_quality == 0x50 and spell_retcode == 0xfe then
+         print(foe.name .. " is charmed.\n")
+      elseif weapon_quality == 0x45 and spell_retcode == 0 then
+         print(foe.name .. " is paralyzed.\n")
+      end
+      
+      return
+   end
+   
+   
+   --weapon here.
+   
+   local hit_actor = actor_combat_hit_check(attacker, foe, weapon)
+   local num_bolts
+   
+   if is_range_weapon == true then
+   
+      if hit_actor == false then
+         hit_actor = nil
+         target_x = target_x + random(0, 2) - 1
+         target_y = target_y + random(0, 2) - 1
+      end
+      
+      if weapon_obj_n == 0x32 then --triple crossbow
+         num_bolts = Actor.inv_remove_obj_qty(attacker, 0x38, 3)
+         print("num_bolts = "..num_bolts.."\n")
+      end
+      
+      --FIXME might need to get new foe here.
+      combat_range_weapon_1D5F9(attacker, target_x, target_y, foe, weapon)
+      
+   else --standard weapon
+      if actor_find_max_xy_distance(attacker, player_loc.x, player_loc.y) < 6 then
+         --play_sound_effect(0x11, 0);
+      end
+   end
+   
+   if hit_actor == nil then
+      hit_actor = actor_combat_hit_check(attacker, foe, weapon)
+   end
+   
+   
+   if weapon_obj_n == 0x32 then --triple crossbow
+
+      local off = (target_x - attacker.x) + ((target_y - attacker.y) + 5) * 11
+      
+      for i=1,num_bolts do
+      
+         if i > 1 then
+            print("num_bolts = "..num_bolts.." off = "..off.." target_x = "..target_x.." target_y = "..target_y.."attacker.x = "..attacker.x.." attacker.y = "..attacker.y.."\n\n")
+            local t = triple_crossbow_offset_tbl[i-1][off+1]
+            
+            foe = map_get_actor(target_x + movement_offset_x_tbl[t+1], target_y + movement_offset_y_tbl[t+1], player_loc.z)
+            print("new_x = "..target_x + movement_offset_x_tbl[t+1].." new_y = "..target_y + movement_offset_y_tbl[t+1].."\n");
+            hit_actor = actor_combat_hit_check(attacker, foe, weapon);
+         end
+
+         if hit_actor == true then
+            print("triple xbow hit actor dmg = "..dmg.."\n");
+            actor_take_hit(attacker, foe, dmg);
+         end
+
+      end
    else
-      --weapon here.
-      if actor_combat_hit_check(attacker, foe, weapon) then
-         actor_take_hit(attacker, foe, dmg)
+   
+      if hit_actor == true then
+      
+         local actor_base = actor_tbl[foe.obj_n]
+         if actor_base ~= nil and actor_base[14] == 1 -- takes half dmg
+            and weapon_obj_n ~= 0x30 and weapon_obj_n ~= 0x32 and weapon_obj_n ~= 0x36 then --glass sword, triple crossbow, magic bow
+            dmg = math.floor((dmg + 1) / 2)
+         end
+         
+         if weapon_obj_n ~= 0x5b then --Zu Ylem
+            actor_take_hit(attacker, foe, dmg)
+         end
+      
+         if weapon_obj_n == 0x30 then
+            print("Thy sword hath shattered!\n")
+            Actor.inv_remove_obj(attacker, weapon)
+         end
+      end
+      
+      if weapon_obj_n == 0x31 then --boomerang
+         --projectile_anim(attacker.x, attacker.y, 1, target_x, target_y, 0x64, *(&bastile_ptr_data + 0x62), 1)
+         projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][2], 0)
       end
    end
 end
 
-io.stderr:write("actor.lua loaded\n");
+
+function combat_range_weapon_1D5F9(attacker, target_x, target_y, foe, weapon)
+
+   local weapon_obj_n = weapon.obj_n
+   local random = math.random
+   local player_loc = player_get_location() --FIXME maybe we should just pass through target_z
+         
+   projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][2], 0)
+    
+   if weapon_obj_n == 0x5b then
+      --Zu Ylem
+      if foe ~= nil and foe.obj_n ~= 0 then
+         Actor.inv_remove_obj_qty(attacker, 0x5b, 1)
+         spell_put_actor_to_sleep(attacker, foe)
+      end
+   elseif weapon_obj_n == 0x4f or weapon_obj_n == 0x50 then
+      --lightning wand, fire wand
+      if random(1, 100) == 37 then
+      	Actor.inv_remove_obj(attacker, weapon)
+      	print("A wand has vanished!\n")
+      end
+   elseif weapon_obj_n == 0x53 then
+      --flask of oil
+
+      Actor.inv_remove_obj_qty(attacker, 0x53, 1)
+                  
+      if map_is_water(target_x,target_y,player_loc.z) == false then
+	      local obj = Obj.new(317); --fire field
+	      obj.x,obj.y,obj.z = target_x,target_y,player_loc.z
+	      Obj.moveToMap(obj)
+      end
+      
+   elseif weapon_obj_n == 0x24 or weapon_obj_n == 0x25 or weapon_obj_n == 0x26 then
+      --spear, throwing axe, dagger
+
+      if Actor.inv_remove_obj_qty(attacker, weapon_obj_n, 1) == 1 and map_is_water(target_x,target_y,player_loc.z) == false then
+	      local obj = Obj.new(weapon_obj_n);
+	      obj.x,obj.y,obj.z = target_x,target_y,player_loc.z
+		  Obj.moveToMap(obj)
+	  end
+      	      
+   elseif weapon_obj_n == 0x29 or weapon_obj_n == 0x2a or weapon_obj_n == 0x32 or weapon_obj_n == 0x36 then
+      --bow, crossbow, triple crossbow, magic bow
+      local projectile_obj = nil
+      if weapon_obj_n == 0x29 or weapon_obj_n == 0x36 then --bow, magic bow
+      	projectile_obj = 0x37 --arrow
+      else
+      	projectile_obj = 0x38 --bolt
+      end
+      
+      local qty = 1
+      if weapon_obj_n == 0x32 then -- triple crossbow
+      	qty = 3
+      end
+      
+      Actor.inv_remove_obj_qty(attacker, projectile_obj, qty)
+   end
+   
+   return 1
+end
+
+--
+-- actor_get_weapon()
+--
+function actor_get_weapon(attacker, foe)
+   
+   if foe == nil then return nil end
+   
+   range = get_attack_range(attacker.x, attacker.y, foe.x, foe.y)
+   print("range = "..range.."\n")
+   max_dmg = 0
+   
+   for obj in actor_inventory(attacker) do
+      if obj.readied and obj.obj_n == 57 or --spellbook
+      obj.obj_n == 336 and math.random(0,3) == 0 and math.random(0, obj.quality) < 16 then --charge (spell)
+         print("magic object qty = "..obj.qty.."\n");
+         return obj
+      else
+         dmg = get_weapon_dmg(obj.obj_n)
+         print("get here obj_n = "..obj.obj_n.." readied = "..(obj.readied and "true" or "false").."\n")         
+         if dmg ~= nil and dmg > max_dmg and get_weapon_range(obj.obj_n) >= range then
+            max_dmg = dmg
+            weapon = obj
+         end
+      end
+   end
+   
+   return weapon
+end
+
+--
+-- actor_calculate_avg_coords()
+--
+function actor_calculate_avg_coords()
+   n = 0
+   avg_x = 0
+   avg_y = 0
+   
+   player_loc = player_get_location()
+   
+   player_x = player_loc.x
+   player_y = player_loc.y
+   
+   for actor in party_members() do
+      if actor.wt ~= WT_FLANK and actor.wt ~= WT_BERSERK then
+         n = n + 1
+         avg_x = avg_x + actor.x
+         avg_y = avg_y + actor.y
+      end
+   end
+   
+   if n > 0 then
+      party_avg_x = math.floor(avg_x / n)
+      party_avg_y = math.floor(avg_y / n)
+   else
+      party_avg_x = player_x
+      party_avg_y = player_y
+   end
+  
+   n = 0
+   avg_x = 0
+   avg_y = 0
+    
+   for i=1,0x100 do
+      actor = Actor.get(i)
+      
+      if actor.obj_n ~= 0 then --and actor not dead
+         
+         if (actor.align == ALIGNMENT_EVIL or actor.align == ALIGNMENT_CHAOTIC) then
+            if actor.wt ~= WT_RETREAT or (abs(actor.x -  player_x) <= 5 and abs(actor.y - player_y) <= 5) then
+               if abs(actor.x - player_x) < 0x18 and abs(actor.y - player_y) < 0x18 then
+                  n = n + 1
+                  avg_x = avg_x + actor.x
+                  avg_y = avg_y + actor.y
+               end
+            end
+         end
+      end
+   end
+   
+   wt_num_monsters_near = n
+   
+   player_dir = 0 --FIXME load from party roster.
+         
+   if n > 0 then
+      combat_avg_x = math.floor((avg_x + n / 2) / n)
+      combat_avg_y = math.floor((avg_y + n / 2) / n)
+      
+      wt_rear_max_monster = nil
+      wt_rear_min_monster = nil
+      wt_rear_max_party = nil
+      wt_rear_min_party = nil
+      
+      tmp_x = combat_avg_x - party_avg_x
+      tmp_y = combat_avg_y - party_avg_y
+      
+      wt_front_target_actor = nil
+      min_m_pos = 0
+      max_m_pos = 0
+      min_p_pos = 0
+      max_p_pos = 0
+      --var_16 = 0x8000
+      
+      for i=1,0x100 do
+         actor = Actor.get(i)
+         if actor.obj_n ~= 0 and actor.alive and (actor.wt == WT_FRONT or actor.wt == WT_PLAYER) then
+            --var_C = ((actor.x - party_avg_x) * tmp_x) + ((actor.y - party_avg_y) * tmp_y)
+            var_A = ((actor.x - party_avg_x) * tmp_y) - ((actor.y - party_avg_y) * tmp_x)
+          --  print("ok "..actor.name.."\n")
+            if actor.in_party == false then
+               if wt_front_target_actor == nil then wt_front_target_actor = actor end
+               if var_A > max_m_pos then max_m_pos, wt_rear_max_monster = var_A, actor end
+               if var_A < min_m_pos then min_m_pos, wt_rear_min_monster = var_A, actor end
+            else
+           --print("yup var_A = "..var_A.."\n")
+               if var_A > max_p_pos then max_p_pos, wt_rear_max_party = var_A, actor end
+               if var_A < min_p_pos then min_p_pos, wt_rear_min_party = var_A, actor end
+               --if var_C > var_16 then var_16, unk_3DEAD = var_C, actor end           
+            end
+         end
+      end
+   else
+      combat_avg_x = player_x + movement_offset_x_tbl[player_dir + 1]
+      combat_avg_y = player_y + movement_offset_y_tbl[player_dir + 1]            
+   end
+   
+   if combat_avg_x == party_avg_x and combat_avg_y == party_avg_y then
+      combat_avg_x = combat_avg_x + movement_offset_x_tbl[player_dir + 1]
+      combat_avg_y = combat_avg_y + movement_offset_y_tbl[player_dir + 1]
+   end
+   
+end
+
+--
+-- actor_update_all()
+--
+function actor_update_all()
+print("actor_update_all()\n")
+   local player_loc = player_get_location()
+   actor_calculate_avg_coords()
+   repeat
+      local selected_actor = nil
+      local di = 0
+      local dex_6 = 1
+      repeat
+         local var_C = (player_loc.x - 16) - (player_loc.x - 16) % 8
+         local var_A = (player_loc.y - 16) - (player_loc.y - 16) % 8
+         
+         for actor in party_members() do
+            if actor.wt == WT_FOLLOW and actor.mpts < 0 then
+               actor.mpts = 0
+            end
+         end
+         
+         for i=1,0x100 do
+            local actor = Actor.get(i)
+            if actor.obj_n ~= 0 then --not paralysed not asleep
+               if actor.wt ~= WT_NOTHING and actor.alive == true and actor.mpts > 0 and actor.z == player_loc.z then
+                  if abs(actor.x - var_C) > 0x27 or abs(actor.y - var_A) > 0x27 then
+                     if actor.wt >= 0x83 and actor.wt <= 0x86 then
+                        --actor_move_to_sched_loc
+                     end
+                  else
+                     if actor.wt ~= WT_FOLLOW then
+                        if actor.wt == 0x80 then
+                           -- actor_set_worktype_from_schedule(actor)
+                        end
+                        
+                        dx = (actor.mpts * dex_6) - actor.dex * di
+                        if actor.mpts >= actor.dex or dx > 0 or dx == 0 and actor.dex > dex_6 then
+                           selected_actor = actor
+                           di = actor.mpts
+                           dex_6 = actor.dex
+                        end
+                        
+                        if actor.mpts >= actor.dex then
+                           break
+                        end
+                     end
+                  end
+               end
+            end
+         end
+         
+         if di <= 0 then
+            for i=1,0x100 do
+               local actor = Actor.get(i)
+               if actor.obj_n ~= 0 then
+                  if actor.mpts >= 0 then
+                     m = actor.dex
+                  else
+                     m = actor.mpts + actor.dex
+                  end
+                  
+                  actor.mpts = m
+               end
+            end
+            --advance_time(1)
+         end
+      until di > 0
+      
+      --if actor.corpser_bit == 0 then
+      if selected_actor.wt ~= WT_PLAYER and selected_actor.wt ~= WT_FOLLOW then
+         print("perform_worktype("..selected_actor.name.." dex = "..selected_actor.dex.." mpts = "..selected_actor.mpts..").\n")
+         perform_worktype(selected_actor)
+         --sub_1C34A() --update map window??
+         if selected_actor.wt > 1 and selected_actor.wt < 0x10 then
+            --do *(&objlist_ptr_unk_18f1 + actor_num) = actor_num
+         end
+      end
+      --sub_4726()
+      --end --corsper bit == 0
+
+   until selected_actor.obj_n ~= 0 and selected_actor.wt == WT_PLAYER -- and actor_num.corpser_bit not set.
+end
+
+local tangle_vine_frame_n_tbl = {
+1, 3, 1, 4,
+5, 0, 4, 0,
+1, 2, 1, 5,
+2, 0, 3, 0
+}
+
+function move_tanglevine(actor, new_direction)
+   local actor_x = actor.x
+   local actor_y = actor.y
+   local old_direction = actor.direction
+   
+   if new_direction ~= direction_reverse(old_direction) then
+
+      if move_actor(actor, new_direction, 1) ~= 0 then
+         local player_loc = player_get_location()
+
+         local tangle_obj = Obj.new(0x16e) --tanglevine
+
+         tangle_obj.frame_n = tangle_vine_frame_n_tbl[old_direction * 4 + new_direction + 1]
+         tangle_obj.status = 0x20
+         tangle_obj.quality = 0 --actor.id_n
+
+         Obj.moveToMap(tangle_obj, actor_x, actor_y, player_loc.z)
+         
+         actor.frame_n = tangle_vine_frame_n_tbl[new_direction * 4 + math.random(0, 3) + 1]
+
+         return true
+      end
+   end
+
+   return false
+end
+
+function actor_wt_rear(actor)
+   print("actor_wt_rear()\n")
+   var_C = 0
+   player_loc = player_get_location()
+   if actor.in_party == false then
+      
+      if wt_num_monsters_near == 0 then subtract_movement_pts(actor, 5) return end
+      
+      var_4 = wt_rear_min_monster
+      var_2 = wt_rear_max_monster
+      
+      if var_4 == nil then var_4 = actor end
+      if var_2 == nil then var_2 = actor end
+      
+      var_8 = combat_avg_x
+      var_6 = combat_avg_y
+      di = party_avg_x - combat_avg_x
+      var_14 = party_avg_y - combat_avg_y
+      
+   else
+      
+      if wt_num_monsters_near == 0 then actor_move_towards_loc(actor, player_loc.x, player_loc.y) return end
+      
+      var_4 = wt_rear_max_party
+      var_2 = wt_rear_min_party
+      var_8 = party_avg_x
+      var_6 = party_avg_y
+      di = combat_avg_x - party_avg_x
+      var_14 = combat_avg_y - party_avg_y
+   end
+   
+   var_10 = 0x7fff
+   var_E = actor.align
+   var_16 = 0
+   
+   for i=0,0x100 do
+      a = Actor.get(i)
+      
+      if a.alive and a.wt == WT_FRONT and a.align == var_E then
+         
+         dx = (a.x - var_8) * di
+         dx = dx + (a.y - var_6) * var_14
+         var_12 = dx
+         ax = dx
+         if ax < var_10 then var_10 = ax end
+         
+      end
+      
+   end
+   
+   dx = (actor.x - var_8) * di
+   var_12 = dx + (actor.y - var_6) * var_14
+   var_A = actor.mpts 
+   if actor.in_party == false and actor_find_max_xy_distance(actor, player_loc.x, player_loc.y) <= 3 then
+      
+      if var_12 < var_10 then
+         
+         dx = (actor.x - var_8) * var_14
+         var_12 = dx - (actor.y - var_6) * di
+         
+         dx = (var_4.x - var_8) * var_14
+         if dx - (var_4.y - var_6) * di >= var_12 then
+            
+            dx = (var_2.x - var_8) * var_14
+            ax = (var_2.y - var_6) * di
+            if dx - ax <= var_12 then
+               
+               var_C = 1
+               
+            else
+               
+               ax = (actor_move_towards_loc(actor, actor.x + var_14, actor.y - di) and -1 or 0) + 1
+               var_C = ax
+            end
+            
+         else
+            
+            ax = (actor_move_towards_loc(actor, actor.x - var_14, actor.y + di) and -1 or 0) + 1
+            var_C = ax
+         end
+         
+      else
+         
+         ax = (actor_move_towards_loc(actor, actor.x - di, actor.y - var_14) and -1 or 0) + 1
+         var_C = ax
+      end
+      
+   else
+      
+      ax = (actor_move_towards_loc(actor, player_loc.x, player_loc.y) and -1 or 0) + 1
+      var_C = ax
+   end
+   
+   if var_C ~= 0 then
+      
+      actor.mpts = var_A
+      actor_wt_attack(actor)
+   end
+
+
+end
+
+function actor_wt_combat_tanglevine(actor)
+   local random = math.random
+   local di
+   local abs = abs
+   
+   local target = actor_find_target(actor)
+   if target ~= nil then
+
+      local target_x = target.x
+      local target_y = target.y
+      local actor_x = actor.x
+      local actor_y = actor.y
+      if abs(target_x - actor_x) < 2 and abs(target_y - actor_y) < 2 and random(0, 1) ~= 0 then
+      
+         actor_attack(actor, target, actor)
+         subtract_movement_pts(actor, 10)
+         return
+      end
+
+      if abs(target_x - actor_x) < 5 and abs(target_y - actor_y) < 5 and random(0, 3) == 0 then
+      
+         target_x = target_x - actor_x
+         target_y = target_y - actor_y
+
+         if abs(target_x) <= abs(target_y) then
+         
+            di = (target_y <= 0) and DIR_NORTH or DIR_SOUTH
+
+            if move_tanglevine(actor, di) == 0  then
+            
+               di = (target_x <= 0) and DIR_WEST or DIR_EAST
+               move_tanglevine(actor, di)
+               return
+            end
+         
+         else
+         
+            di = (target_x <= 0) and DIR_WEST or DIR_EAST
+
+            if move_tanglevine(actor, di) == 0 then
+            
+               di = (target_y <= 0) and DIR_NORTH or DIR_SOUTH
+               move_tanglevine(actor, di)
+               return
+            end
+         end
+      end
+   end
+
+   if random(0, 3) == 0 then
+
+      di = random(0, 3) --random direction north south east west
+      if actor.direction == di then
+      
+         di = direction_reverse(di)
+      end 
+
+      move_tanglevine(actor, di)
+
+   else
+      actor.mpts = 0
+   end
+
+   return 
+end
+
+
+function actor_wt_combat_stationary(actor)
+   local rand = math.random
+   local align = actor.align
+   if align == ALIGNMENT_NEUTRAL then
+
+      subtract_movement_pts(actor, 5)
+      return
+   end
+
+   for i=1,0x10 do
+
+      local target_x = rand(0, 8) + actor.x - 4
+      local target_y = rand(0, 8) + actor.y - 4
+--      local g_obj = sub_1D351(actor, target_x, target_y)
+      local g_obj = map_get_actor(target_x, target_y, actor.z)
+
+      if g_obj.obj_n ~= 0 and actor_ok_to_attack(actor, g_obj) == true and g_obj.alive == true and g_obj.align ~= align and g_obj.align ~= ALIGNMENT_NEUTRAL then
+      
+         actor_attack(actor, g_obj, actor_get_weapon(actor, g_obj))
+         subtract_movement_pts(actor, 10)
+         break
+      end
+
+   end
+
+   return
+end
+
+function actor_wt_walk_straight(actor)
+   if math.random(0, 1) == 0 then subtract_movement_pts(actor, 5) return end
+   
+   local wt = actor.wt
+   local sched = actor.sched_loc
+   local dir
+   
+   if wt < WT_WALK_NORTH_SOUTH or actor.x ~= sched.x or actor.y ~= sched.y then
+      dir = actor.direction
+   else
+      if wt == WT_WALK_NORTH_SOUTH then dir = DIR_NORTH end
+      if wt == WT_WALK_EAST_WEST then dir = DIR_EAST end
+      if wt == WT_WALK_SOUTH_NORTH then dir = DIR_SOUTH end
+      if wt == WT_WALK_WEST_EAST then dir = DIR_WEST end
+      actor.direction = dir
+   end
+   
+   local mpts = actor.mpts
+
+   if actor_move(actor, dir, 1) == 0 then
+
+      dir = direction_reverse(dir)
+
+      actor.mpts = mpts
+      actor_move(actor, dir, 1)
+      actor.direction = dir
+   end
+   
+end
+
+function actor_wt_wander_around(actor)
+   local rand = math.random
+   if rand(0, 7) ~= 0 then subtract_movement_pts(actor, 5) return end
+
+   local random_wander_range = function ()
+      local i = 0 
+      while rand(0, 1) ~= 0 do i = i + 1 end
+      if rand(0, 1) ~= 0 then i = -i end
+      return i
+   end
+   
+   local abs=abs
+   local sched = actor.sched_loc
+   local sched_x_offset = actor.x - sched.x;
+   local sched_y_offset = actor.y - sched.y;
+   local direction
+   
+   if abs(sched_y_offset) - abs(sched_x_offset) >= random_wander_range() then
+      direction = (random_wander_range() <= sched_y_offset) and DIR_NORTH or DIR_SOUTH
+   else
+      direction = (random_wander_range() <= sched_x_offset) and DIR_WEST or DIR_EAST
+   end
+
+   actor.direction = direction
+   move_actor(actor, direction, 1)
+
+   return
+end
+
+function actor_move_towards_player(actor)
+local rand = math.random
+if actor.wt ~= WT_STATIONARY then
+   if actor.in_party == true then
+      local player_loc = player_get_location()
+      local x,y = player_loc.x, player_loc.y
+      if actor.x ~= x and actor.y ~= y and rand(0, 3) == 0 then
+         actor_move_towards_loc(actor, x, y)
+      else
+         if rand(0, 7) == 0 then
+            actor_move(actor, rand(0, 3), 1)
+         end
+      end
+   end
+end
+subtract_movement_pts(actor, 5)
+end
+
+wt_tbl = {
+[WT_NOTHING] = {"WT_NOTHING", perform_worktype},
+[WT_REAR] = {"WT_REAR", actor_wt_rear},
+[WT_TANGLE] = {"WT_TANGLE", actor_wt_combat_tanglevine},
+[WT_STATIONARY] = {"WT_STATIONARY", actor_wt_combat_stationary},
+[WT_GUARD_WALK_EAST_WEST] = {"WT_GUARD_WALK_EAST_WEST", actor_wt_walk_straight},
+[WT_GUARD_WALK_NORTH_SOUTH] = {"WT_GUARD_WALK_NORTH_SOUTH", actor_wt_walk_straight},
+[WT_WALK_NORTH_SOUTH] = {"WT_WALK_NORTH_SOUTH", actor_wt_walk_straight},
+[WT_WALK_EAST_WEST]   = {"WT_WALK_EAST_WEST", actor_wt_walk_straight},
+[WT_WALK_SOUTH_NORTH] = {"WT_WALK_SOUTH_NORTH", actor_wt_walk_straight},
+[WT_WALK_WEST_EAST]   = {"WT_WALK_WEST_EAST", actor_wt_walk_straight},
+[WT_WANDER_AROUND] = {"WT_WANDER_AROUND", actor_wt_wander_around}
+
+--[WT_] = {"WT_", actor_wt_rear}
+}
+
+function actor_ok_to_attack(actor, target_actor)
+
+   if target_actor.visible == false and (target_actor.in_party == false or actor.in_party == false) then return false end
+   
+   if target_actor.z ~= actor.z then return false end
+   
+   if target_actor.obj_n == 0x165 and target_actor.frame_n == 0 then return false end
+   
+   --need to check if target_actor's corpser bit is set eg dragged under
+   --need to check tileflag3 bit 4 is not set. The Ignore flag.
+   return true
+
+end
+
+function actor_find_target(actor)
+
+   target_actor = nil
+   align = actor.align
+   actor_x = actor.x
+   actor_y = actor.y
+   var_2 = 0x7fff
+
+   for i=1,0x100 do
+
+      tmp_actor = Actor.get(i)
+
+      if tmp_actor.obj_n ~= 0 and tmp_actor.alive == true and tmp_actor ~= actor and actor_ok_to_attack(actor, tmp_actor) == true then
+      
+         if actor.wt == WT_FLEE or
+            actor.wt == WT_MOUSE or 
+            actor.wt == WT_UNK_13 or
+            actor.wt == WT_RETREAT or
+            actor.wt == WT_FIGHTING or 
+            (align ~= ALIGNMENT_NEUTRAL or actor.wt == WT_ATTACK_PARTY and tmp_actor.align == ALIGNMENT_GOOD) and
+            (align ~= ALIGNMENT_CHAOTIC or tmp_actor.align ~= ALIGNMENT_CHAOTIC) and
+            tmp_actor.align ~= ALIGNMENT_NEUTRAL and
+            (align ~= ALIGNMENT_GOOD or alignment_is_evil(tmp_actor.align) == true) and
+            (align ~= ALIGNMENT_EVIL or tmp_actor.align == ALIGNMENT_GOOD or tmp_actor.align == ALIGNMENT_CHAOTIC) then
+         
+            target_x = tmp_actor.x
+            target_y = tmp_actor.y
+            if actor_find_max_xy_distance(actor, target_x, target_y) <= 8 and (tmp_actor.wt ~= 7 or abs(target_x - g_player_x) <= 5 and abs(target_y - g_player_y) <= 5) then
+            
+               var_6 = (target_x - actor_x)^2 + (target_y - actor_y)^2 
+               if var_6 < var_2 or var_6 == var_2 and math.random(0, 1) ~= 0 then
+               
+                  var_2 = var_6
+                  target_actor = tmp_actor
+               end
+            end
+         end
+      end
+
+   end
+
+   return target_actor
+end
+
+--FIXME this is a line of sight check for combat.
+function sub_1D59F(actor, target_x, target_y, weapon_obj)
+   return true
+end
+
+function actor_wt_attack(actor)
+print("actor_wt_attack()\n");
+
+   g_obj = actor_find_target(actor)
+   if g_obj ~= nil then print("target at ("..g_obj.x..","..g_obj.y..")\n") end
+   
+   weapon_obj = actor_get_weapon(actor, g_obj)
+   
+   if weapon_obj ~= nil then print("weapon obj = "..weapon_obj.obj_n.."\n") end
+   
+   if g_obj ~= nil then
+
+      target_x = g_obj.x
+      target_y = g_obj.y
+      actor_x = actor.x
+      actor_y = actor.y
+      weapon_range = get_weapon_range(weapon_obj)
+      if abs(target_x - actor_x) < 8 and abs(target_y - actor_y) < 8 and 
+       get_attack_range(actor_x, actor_y, target_x, target_y) <= weapon_range then
+      
+         if sub_1D59F(actor, target_x, target_y, weapon_range, 0) == true then
+            actor_attack(actor, g_obj, weapon_obj)
+            subtract_movement_pts(actor, 10)
+            return
+         end
+
+         if random(0, 1) == 0 then
+         
+            target_x = g_obj.y - actor_y + actor_x
+            target_y = actor_y - g_obj.x - actor_x
+         
+         else
+         
+            target_x = actor_x - g_obj.y - actor_y
+            target_y = g_obj.x - actor_x + actor_y
+         end
+
+         actor_move_towards_loc(actor, target_x, target_y)
+         return
+      end
+
+      if actor.wt ~= 3 then actor_move_towards_loc(actor, target_x, target_y) return end
+
+      subtract_movement_pts(actor, 5)
+      return
+   end
+
+   if actor.wt ~= 3 then actor_move_towards_player(actor) return end
+
+
+   subtract_movement_pts(actor, 5)
+
+end
+
+function perform_worktype(actor)
+   
+   if wt_tbl[actor.wt] == nil then
+      subtract_movement_pts(actor, 5)
+      return
+   end
+   
+   print("wt = "..wt_tbl[actor.wt][1].."\n")
+   
+   func = wt_tbl[actor.wt][2]
+   func(actor)
+   
+   if actor.mpts == 0 then subtract_movement_pts(actor, 0xa) end
+   
+end
+
+function spell_put_actor_to_sleep(attacker, foe)
+
+   print("spell_put_actor_to_sleep("..attacker.name..",foe)\n")
+   
+   local actor_base = actor_tbl[foe.obj_n]
+   if actor_base == nil or actor_base[21] == 0 then -- 21 is immune to sleep
+      if actor_int_check(attacker, foe) == false then
+         print("FIXME: put actor to sleep.\n")
+         return 0xfe
+      else
+         return 1
+      end
+   end
+   
+   return 2
+end
+
+io.stderr:write("actor.lua loaded\n")

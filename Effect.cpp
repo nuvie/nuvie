@@ -113,7 +113,8 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
                                                         hit_loc->z);
             if(tile->flags1 & TILEFLAG_WALL)
             {
-                new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
+                //new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
+            	new ExpEffect(MapCoord(hit_loc->x, hit_loc->y, hit_loc->z));
                 stop_effect = true;
             }
             break;
@@ -147,7 +148,8 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
             break;
         }
         case MESG_ANIM_DONE:
-            new ExplosiveEffect(target_loc.x, target_loc.y, 3);
+            //new ExplosiveEffect(target_loc.x, target_loc.y, 3);
+        	new ExpEffect(MapCoord(target_loc.x, target_loc.y, target_loc.z));
             stop_effect = true;
             break;
     }
@@ -159,6 +161,153 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
         game->unpause_all();
         usecode->message_obj(obj, MESG_EFFECT_COMPLETE, this);
         delete_self();
+    }
+    return(0);
+}
+
+#define EXP_EFFECT_SPEED 6
+#define EXP_EFFECT_TILE_NUM 382
+
+ExpEffect::ExpEffect(MapCoord location)
+{
+	start_loc = location;
+    finished_tiles = 0;
+
+    start_anim();
+}
+
+
+/* Pause world & start animation. */
+void ExpEffect::start_anim()
+{
+    game->pause_world();
+    game->pause_anims();
+    game->pause_user();
+
+    vector<MapCoord> t;
+
+    t.resize(16);
+
+	t[0] = MapCoord(start_loc.x+2,start_loc.y-1,start_loc.z);
+	t[1] = MapCoord(start_loc.x+1,start_loc.y+2,start_loc.z);
+	t[2] = MapCoord(start_loc.x,start_loc.y-2,start_loc.z);
+
+	t[3] = MapCoord(start_loc.x+1,start_loc.y-1,start_loc.z);
+	t[4] = MapCoord(start_loc.x-1,start_loc.y+2,start_loc.z);
+	t[5] = MapCoord(start_loc.x-1,start_loc.y-1,start_loc.z);
+
+	t[6] = MapCoord(start_loc.x-2,start_loc.y,start_loc.z);
+	t[7] = MapCoord(start_loc.x-1,start_loc.y+1,start_loc.z);
+	t[8] = MapCoord(start_loc.x,start_loc.y+2,start_loc.z);
+
+	t[9] = MapCoord(start_loc.x-1,start_loc.y-2,start_loc.z);
+	t[10] = MapCoord(start_loc.x-2,start_loc.y-1,start_loc.z);
+	t[11] = MapCoord(start_loc.x-2,start_loc.y+1,start_loc.z);
+
+	t[12] = MapCoord(start_loc.x+2,start_loc.y+1,start_loc.z);
+	t[13] = MapCoord(start_loc.x+2,start_loc.y,start_loc.z);
+	t[14] = MapCoord(start_loc.x+1,start_loc.y+1,start_loc.z);
+	t[15] = MapCoord(start_loc.x+1,start_loc.y-2,start_loc.z);
+
+
+    anim = new ProjectileAnim(EXP_EFFECT_TILE_NUM, &start_loc, t, EXP_EFFECT_SPEED, false);
+    add_anim(anim);
+
+}
+
+ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag)
+{
+    finished_tiles = 0;
+
+	tile_num = tileNum;
+	start_loc = start;
+	target_loc = target;
+	anim_speed = speed;
+	trail = trailFlag;
+
+	start_anim();
+}
+
+/* Pause world & start animation. */
+void ProjectileEffect::start_anim()
+{
+    game->pause_world();
+    game->pause_anims();
+    game->pause_user();
+
+    vector<MapCoord> t;
+
+    t.resize(1);
+
+	t[0] = target_loc;
+
+    add_anim(new ProjectileAnim(tile_num, &start_loc, t, anim_speed, trail));
+
+}
+/* Handle messages from animation. Hit actors & walls. */
+uint16 ProjectileEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
+{
+    bool stop_effect = false;
+    switch(msg)
+    {
+        case MESG_ANIM_HIT_WORLD:
+        {
+            MapCoord *hit_loc = static_cast<MapCoord *>(msg_data);
+            Tile *tile = game->get_game_map()->get_tile(hit_loc->x,hit_loc->y,
+                                                        hit_loc->z);
+            if(tile->flags1 & TILEFLAG_WALL)
+            {
+                //new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
+                stop_effect = true;
+            }
+            break;
+        }
+        case MESG_ANIM_HIT:
+        {
+            MapEntity *hit_ent = static_cast<MapEntity *>(msg_data);
+            if(hit_ent->entity_type == ENT_ACTOR)
+            {
+                hit_ent->actor->hit(32);
+                //stop_effect = true;
+            }
+            if(hit_ent->entity_type == ENT_OBJ)
+            {
+                DEBUG(0,LEVEL_DEBUGGING,"hit object %d at %x,%x,%x\n", hit_ent->obj->obj_n, hit_ent->obj->x, hit_ent->obj->y, hit_ent->obj->z);
+                // FIX: U6 specific
+                // FIX: hit any part of ship, and reduce qty of center
+                if(hit_ent->obj->obj_n == 412)
+                {
+                    uint8 f = hit_ent->obj->frame_n;
+                    if(f == 9 || f == 15 || f == 11 || f == 13) // directions
+                    {
+                        if(hit_ent->obj->qty < 20) hit_ent->obj->qty = 0;
+                        else                      hit_ent->obj->qty -= 20;
+                        if(hit_ent->obj->qty == 0)
+                            game->get_scroll()->display_string("Ship broke!\n");
+                        stop_effect = true;
+                    }
+                }
+            }
+            break;
+        }
+        case MESG_ANIM_DONE:
+            //new ExplosiveEffect(target_loc.x, target_loc.y, 3);
+            stop_effect = true;
+            break;
+    }
+
+    if(stop_effect)
+    {
+    	//finished_tiles++;
+
+        if(msg != MESG_ANIM_DONE) // this msg means anim stopped itself
+            ((NuvieAnim *)caller)->stop();
+        //if(finished_tiles == 16)
+       // {
+			game->unpause_all();
+			//usecode->message_obj(obj, MESG_EFFECT_COMPLETE, this);
+			delete_self();
+       // }
     }
     return(0);
 }
@@ -1373,4 +1522,37 @@ inline uint8 PeerEffect::get_tilemap_type(uint16 wx, uint16 wy, uint8 wz)
     if(map->is_damaging(wx, wy, wz))
         return peer_tilemap[3];
     return peer_tilemap[0]; // ground/passable
+}
+
+/*** AsyncEffect ***/
+AsyncEffect::AsyncEffect(Effect *e)
+{
+	effect_complete = false;
+    effect_manager->watch_effect(this, e);
+}
+
+AsyncEffect::~AsyncEffect()
+{
+	printf("get here");
+}
+
+void AsyncEffect::run()
+{
+	for(;effect_complete == false;)
+	{
+		//spin world
+		Game::get_game()->update_once();
+	}
+}
+
+uint16 AsyncEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+
+    // effect complete
+    if(msg == MESG_EFFECT_COMPLETE)
+    {
+    	effect_complete = true;
+    }
+
+    return 0;
 }

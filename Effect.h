@@ -80,6 +80,39 @@ public:
 
 };
 
+class ProjectileEffect : public Effect
+{
+protected:
+	uint16 tile_num;
+
+    MapCoord start_loc; // where explosion will start
+    MapCoord target_loc;
+    uint8 anim_speed;
+    bool trail;
+
+    uint16 finished_tiles;
+    virtual void start_anim();
+
+public:
+    ProjectileEffect() {}
+    ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag);
+
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
+
+class ExpEffect : public ProjectileEffect
+{
+    UseCode *usecode;
+    NuvieAnim *anim;
+
+    Obj *obj;
+
+protected:
+    void start_anim();
+public:
+    ExpEffect(MapCoord location);
+
+};
 
 /* Use to add an effect with timed activity. Self-contained timer must be
  * stopped/started with the included methods.
@@ -464,6 +497,19 @@ public:
     ~PeerEffect() { }
     void init_effect();
     void delete_self();
+};
+
+/* Run an effect asynchronously and keep updating the world until the effect completes. */
+class AsyncEffect : public Effect
+{
+protected:
+	bool effect_complete;
+
+public:
+    AsyncEffect(Effect *e);
+    ~AsyncEffect();
+    void run();
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
 #endif /* __Effect_h__ */

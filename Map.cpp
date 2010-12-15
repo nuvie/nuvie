@@ -111,7 +111,7 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
    return false;
   }
 
-//special case for bridges, hacked doors and dungeon enterances etc.
+//special case for bridges, hacked doors and dungeon entrances etc.
  if(obj_status != OBJ_NO_OBJ && obj_manager->is_forced_passable(x, y, level))
    return true;
 

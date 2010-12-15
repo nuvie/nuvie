@@ -393,6 +393,15 @@ void TileAnim::shift_tile(uint32 ptile_num, sint32 sx, sint32 sy)
     tiles[ptile_num]->py = total_py % tile_pitch;
 }
 
+void TileAnim::move_tile(PositionedTile *ptile, uint32 x, uint32 y)
+{
+	uint8 tile_pitch = anim_manager->get_tile_pitch();
+
+	ptile->pos_x = x / tile_pitch;
+	ptile->pos_y = y / tile_pitch;
+	ptile->px = x % tile_pitch;
+	ptile->py = y % tile_pitch;
+}
 
 /*** HitAnim ***/
 
@@ -579,7 +588,7 @@ bool TossAnim::update()
             Obj *hitObj = obj_manager->get_obj(new_loc.x, new_loc.y, mapwindow_level);
 
             // blocking tile
-            if(map->is_boundary(new_loc.x, new_loc.y, mapwindow_level))
+            if(!map->is_passable(new_loc.x, new_loc.y, mapwindow_level))
             {
                 if(!hitActor) // NOTE: no effect if actor is also at location
                     hit_blocking(MapCoord(new_loc.x, new_loc.y, mapwindow_level));
@@ -942,4 +951,147 @@ void ExplosiveAnim::get_shifted_location(uint16 &x, uint16 &y, uint16 &px, uint1
     y = total_py / tile_pitch;
     px = total_px % tile_pitch;
     px = total_py % tile_pitch;
+}
+
+
+/*** ProjectileAnim ***/
+ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrail)
+{
+    tile_num = tileNum; //382; // U6 FIREBALL_EFFECT
+
+    src = *start;
+    line.resize(target.size());
+
+    for(uint16 i=0;i<line.size();i++)
+    {
+    	line[i].target = target[i];
+    	line[i].lineWalker = new U6LineWalker(src.x*16,src.y*16,target[i].x*16, target[i].y*16);
+    	line[i].rotation = 0; //FXIME rotation should face target.
+    }
+
+    stopped_count = 0;
+
+    speed = animSpeed;
+
+    leaveTrailFlag = leaveTrail;
+
+}
+
+
+/* Delete the rotated tileset.
+ */
+ProjectileAnim::~ProjectileAnim()
+{
+
+    for(uint32 i = 0; i < line.size(); i++)
+    {
+        delete line[i].lineWalker;
+        delete line[i].p_tile->tile; //because we made a new rotated tile.
+    }
+}
+
+
+/* Set up how many fireballs shoot out and in what directions. Start them at
+ * the center.
+ */
+void ProjectileAnim::start()
+{
+    TileManager *tile_manager = map_window->get_tile_manager();
+    Tile *t = tile_manager->get_tile(tile_num);
+
+    move(0, 0);
+
+    for(uint16 i=0;i<line.size();i++)
+    {
+    	uint32 x, y;
+    	line[i].lineWalker->next(&x, &y);
+    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, get_relative_degrees(line[i].target.x - src.x, line[i].target.y - src.y)),x/16,y/16,x%16,y%16);
+    	line[i].update_idx = 0;
+    	line[i].isRunning = true;
+    }
+}
+
+
+
+/* Check map for interception with any flames. Stop exploding in direction of
+ * a blocked tile. Hit actors & volatile objects (powder kegs).
+ */
+bool ProjectileAnim::update()
+{
+	Map *map = Game::get_game()->get_game_map();
+	uint8 level;
+    LineTestResult lt;
+
+	map_window->get_level(&level);
+
+	for(uint16 i =0; i < line.size(); i++)
+	{
+		if(line[i].isRunning)
+		{
+			uint32 x, y;
+			bool canContinue = false;
+
+			for(uint16 j = 0; j < 6; j++)
+			{
+				canContinue = line[i].lineWalker->next(&x, &y);
+				if(!canContinue)//FIXME explosion boundary checks. || map->is_boundary((x + 10)/16,(y + 10)/16,level))
+				{
+					canContinue = false;
+					break;
+				}
+			}
+
+			if(leaveTrailFlag == true)
+			{
+				add_tile(line[i].p_tile->tile, x/16, y/16, x%16, y%16);
+			}
+			else
+			{
+				move_tile(line[i].p_tile, x, y);
+			}
+
+	        if(map->testIntersection(x/16, y/16, level, LT_HitActors, lt)
+	           && !already_hit(MapEntity(lt.hitActor)))
+	            hit_entity(MapEntity(lt.hitActor));
+	        else if(map->testIntersection(x/16, y/16, level, LT_HitObjects, lt)
+	                && !already_hit(MapEntity(lt.hitObj)))
+	            hit_entity(MapEntity(lt.hitObj));
+
+			if(canContinue == false)
+			{
+				line[i].isRunning = false;
+				stopped_count++;
+			}
+		}
+
+	}
+
+	if(stopped_count == line.size())
+	{
+		message(MESG_ANIM_DONE);
+		stop();
+	}
+
+    return(true);
+}
+
+/* Also adds actor/object to hit_items list for already_hit() to check. */
+void ProjectileAnim::hit_entity(MapEntity entity)
+{
+    if(!running)
+        return;
+    hit_items.push_back(entity);
+    message(MESG_ANIM_HIT, &entity);
+}
+
+/* Returns true if the explosion has already the particular thing this MapEntity
+ * points to. (and shouldn't hit it again)
+ */
+bool ProjectileAnim::already_hit(MapEntity ent)
+{
+    for(uint32 e = 0; e < hit_items.size(); e++)
+        if(hit_items[e].entity_type == ent.entity_type)
+            if(hit_items[e].data == ent.data)
+                return(true);
+    return(false);
 }

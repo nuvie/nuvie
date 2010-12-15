@@ -1788,7 +1788,7 @@ bool ObjManager::unlink_from_engine(Obj *obj)
 bool ObjManager::moveto_map(Obj *obj)
 {
   unlink_from_engine(obj);
-  add_obj(obj);
+  add_obj(obj, OBJ_ADD_TOP);
   
   return true;
 }

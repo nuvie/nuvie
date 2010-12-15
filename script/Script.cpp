@@ -130,12 +130,13 @@ static int nscript_player_get_location(lua_State *L);
 static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
 static int nscript_map_remove_obj(lua_State *L);
-
+static int nscript_map_is_water(lua_State *L);
 
 //Misc
 static int nscript_eclipse_start(lua_State *L);
 static int nscript_quake_start(lua_State *L);
 static int nscript_explosion_start(lua_State *L);
+static int nscript_projectile_anim(lua_State *L);
 static int nscript_usecode_look(lua_State *L);
 
 //Iterators
@@ -258,6 +259,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_map_remove_obj);
    lua_setglobal(L, "map_remove_obj");
 
+   lua_pushcfunction(L, nscript_map_is_water);
+   lua_setglobal(L, "map_is_water");
+
    lua_pushcfunction(L, nscript_player_get_location);
    lua_setglobal(L, "player_get_location");
 
@@ -269,6 +273,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_explosion_start);
    lua_setglobal(L, "explosion_start");
+
+   lua_pushcfunction(L, nscript_projectile_anim);
+   lua_setglobal(L, "projectile_anim");
 
    lua_pushcfunction(L, nscript_usecode_look);
    lua_setglobal(L, "usecode_look");
@@ -1125,7 +1132,18 @@ static int nscript_map_remove_obj(lua_State *L)
    return 1;
 }
 
+static int nscript_map_is_water(lua_State *L)
+{
+	Map *map = Game::get_game()->get_game_map();
 
+	uint16 x = (uint16) luaL_checkinteger(L, 1);
+	uint16 y = (uint16) luaL_checkinteger(L, 2);
+	uint8 z = (uint8) luaL_checkinteger(L, 3);
+
+	lua_pushboolean(L, map->is_water(x, y, z));
+
+	return 1;
+}
 
 static int nscript_eclipse_start(lua_State *L)
 {
@@ -1158,7 +1176,62 @@ static int nscript_explosion_start(lua_State *L)
    uint32 size = (uint32)luaL_checkinteger(L, 3);
    uint16 dmg = (uint16)luaL_checkinteger(L, 4);
 
-   new ExplosiveEffect(x, y, size, dmg);
+   AsyncEffect *e = new AsyncEffect(new ExpEffect(MapCoord(x, y)));
+   e->run();
+
+   lua_pushboolean(L, true);
+   return 1;
+}
+
+static int nscript_projectile_anim(lua_State *L)
+{
+uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
+   uint16 startx = (uint16)luaL_checkinteger(L, 2);
+   uint16 starty = (uint16)luaL_checkinteger(L, 3);
+   uint16 targetx = (uint16)luaL_checkinteger(L, 4);
+   uint16 targety = (uint16)luaL_checkinteger(L, 5);
+   uint16 speed = (uint16)luaL_checkinteger(L, 6);
+   bool trail = (bool)luaL_checkinteger(L, 7);
+
+   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail));
+   e->run();
+
+   lua_pushboolean(L, true);
+   return 1;
+}
+
+static int nscript_projectile_anim_multi(lua_State *L)
+{
+uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
+   uint16 startx = (uint16)luaL_checkinteger(L, 2);
+   uint16 starty = (uint16)luaL_checkinteger(L, 3);
+
+   if(!lua_istable(L, 4))
+   {
+	   lua_pushboolean(L, false);
+	   return 1;
+   }
+
+   lua_pushvalue(L, 4); //push table containing targets to top of stack
+
+   for(int i=1;;i++)
+   {
+	   lua_pushinteger(L, i);
+	   lua_gettable(L, -2);
+
+	   if(!lua_istable(L, -1)) //we've hit the end of our targets
+	   {
+		   lua_pop(L, 1);
+		   break;
+	   }
+	   //get target fields here.
+   }
+
+   uint16 speed = (uint16)luaL_checkinteger(L, 5);
+   bool trail = (bool)luaL_checkinteger(L, 6);
+
+   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail));
+   e->run();
 
    lua_pushboolean(L, true);
    return 1;

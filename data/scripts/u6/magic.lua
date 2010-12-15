@@ -80,6 +80,7 @@ magic_init("Poison Field", "ing", 0x56, 4, 8, "u6/magic/circle_04/poison_field.l
 magic_init("Sleep Field", "izg", 0x54, 4, 9, "u6/magic/circle_04/sleep_field.lua");
 
 magic_init("Energy Field", "isg", 0x15, 5, 1, "u6/magic/circle_05/energy_field.lua");
+magic_init("Explosion", "vpf", 0x8d, 5, 2, "u6/magic/circle_05/explosion.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 

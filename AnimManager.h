@@ -9,6 +9,7 @@
 #include "TimedEvent.h"
 #include "CallBack.h"
 #include "MapEntity.h"
+#include "U6LineWalker.h"
 
 using std::list;
 using std::string;
@@ -155,6 +156,7 @@ public:
                                      { tx = x; ty = y; px = add_x; py = add_y; }
     void shift(sint32 sx, sint32 sy);
     void shift_tile(uint32 ptile_num, sint32 sx, sint32 sy);
+    void move_tile(PositionedTile *ptile, uint32 x, uint32 y);
 
     PositionedTile *add_tile(Tile *tile, sint16 x, sint16 y, uint16 add_x = 0, uint16 add_y = 0);
     void remove_tile(uint32 i = 0);
@@ -267,6 +269,39 @@ public:
                               uint32 sx, uint32 sy);
 };
 
+typedef struct
+{
+	MapCoord target;
+	U6LineWalker *lineWalker;
+	PositionedTile *p_tile;
+	uint8 update_idx;
+	uint16 rotation;
+	bool isRunning;
+} ProjectileLine;
+
+class ProjectileAnim : public TileAnim
+{
+    MapCoord src;
+    vector<ProjectileLine> line;
+    uint16 tile_num; // fireball effect tile_num
+    vector<MapEntity> hit_items; // things the projectile has hit
+    uint16 stopped_count;
+    uint8 speed; //number of pixels to move in a single update.
+
+    bool leaveTrailFlag;
+    bool rotateFlag;
+public:
+    ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrailFlag = false);
+    ~ProjectileAnim();
+    void start();
+
+    bool update();
+
+protected:
+    void hit_entity(MapEntity entity);
+    bool already_hit(MapEntity ent);
+
+};
 
 /* Display hit effect over an actor or location for a certain duration.
  */

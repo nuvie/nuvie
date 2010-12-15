@@ -376,3 +376,21 @@ void Game::play()
    }
   return;
 }
+
+void Game::update_once()
+{
+    if(cursor) cursor->clear(); // restore cursor area before GUI events
+
+    palette->rotatePalette();
+    tile_manager->update();
+    actor_manager->twitchActors();
+    map_window->update();
+    effect_manager->update_effects();
+
+    gui->Display();
+    if(cursor) cursor->display();
+
+    screen->preformUpdate();
+    sound_manager->update();
+    event->wait();
+}

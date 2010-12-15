@@ -642,9 +642,14 @@ void ActorManager::twitchActors()
 // Update actors. StopActors() if no one can move.
 void ActorManager::moveActors()
 {
-    if(!update)
+    if(!update || wait_for_player)
         return;// nothing to do
 
+   Game::get_game()->get_script()->call_actor_update_all();
+   
+   stopActors();
+   return;
+   
     while(!wait_for_player)
     {
         if(can_party_move())
