@@ -123,6 +123,8 @@ nuvie_SOURCES = \
 	lua/lzio.h \
 \
 	misc/CallBack.h \
+	misc/U6LineWalker.cpp \
+	misc/U6LineWalker.h \
 	misc/U6LList.cpp \
 	misc/U6LList.h \
 	misc/U6misc.cpp \

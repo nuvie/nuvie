@@ -137,6 +137,7 @@ static int nscript_eclipse_start(lua_State *L);
 static int nscript_quake_start(lua_State *L);
 static int nscript_explosion_start(lua_State *L);
 static int nscript_projectile_anim(lua_State *L);
+static int nscript_projectile_anim_multi(lua_State *L);
 static int nscript_usecode_look(lua_State *L);
 
 //Iterators
@@ -276,6 +277,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_projectile_anim);
    lua_setglobal(L, "projectile_anim");
+
+   lua_pushcfunction(L, nscript_projectile_anim_multi);
+   lua_setglobal(L, "projectile_anim_multi");
 
    lua_pushcfunction(L, nscript_usecode_look);
    lua_setglobal(L, "usecode_look");
@@ -1214,6 +1218,12 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
 
    lua_pushvalue(L, 4); //push table containing targets to top of stack
 
+   uint16 x = 0;
+   uint16 y = 0;
+   uint8 z = 0;
+
+   vector<MapCoord> t;
+
    for(int i=1;;i++)
    {
 	   lua_pushinteger(L, i);
@@ -1221,16 +1231,25 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
 
 	   if(!lua_istable(L, -1)) //we've hit the end of our targets
 	   {
+		   printf("end = %d",i);
 		   lua_pop(L, 1);
 		   break;
 	   }
 	   //get target fields here.
+
+	   get_tbl_field_uint16(L, "x", &x);
+	   get_tbl_field_uint16(L, "y", &y);
+	   get_tbl_field_uint8(L, "z", &z);
+
+	   t.push_back(MapCoord(x,y,z));
+
+	   lua_pop(L, 1);
    }
 
    uint16 speed = (uint16)luaL_checkinteger(L, 5);
    bool trail = (bool)luaL_checkinteger(L, 6);
 
-   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail));
+   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), t, speed, trail));
    e->run();
 
    lua_pushboolean(L, true);

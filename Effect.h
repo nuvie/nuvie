@@ -86,7 +86,7 @@ protected:
 	uint16 tile_num;
 
     MapCoord start_loc; // where explosion will start
-    MapCoord target_loc;
+    vector<MapCoord> targets;
     uint8 anim_speed;
     bool trail;
 
@@ -96,6 +96,7 @@ protected:
 public:
     ProjectileEffect() {}
     ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag);
+    ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag);
 
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };

@@ -1039,8 +1039,15 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, foe, weapon)
    local weapon_obj_n = weapon.obj_n
    local random = math.random
    local player_loc = player_get_location() --FIXME maybe we should just pass through target_z
-         
-   projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][2], 0)
+   
+
+   
+   if weapon_obj_n == 0x32 then --triple cross bow
+      local test = {{x=target_x,y=target_y,z=player_loc.z}, {x=target_x+1,y=target_y,z=player_loc.z}} --FIXME need proper values here.
+      projectile_anim_multi(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, test, projectile_weapon_tbl[weapon_obj_n][2], 0)
+   else     
+      projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][2], 0)
+   end
     
    if weapon_obj_n == 0x5b then
       --Zu Ylem

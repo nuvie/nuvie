@@ -184,46 +184,53 @@ void ExpEffect::start_anim()
     game->pause_anims();
     game->pause_user();
 
-    vector<MapCoord> t;
+    targets.resize(16);
 
-    t.resize(16);
+    targets[0] = MapCoord(start_loc.x+2,start_loc.y-1,start_loc.z);
+    targets[1] = MapCoord(start_loc.x+1,start_loc.y+2,start_loc.z);
+    targets[2] = MapCoord(start_loc.x,start_loc.y-2,start_loc.z);
 
-	t[0] = MapCoord(start_loc.x+2,start_loc.y-1,start_loc.z);
-	t[1] = MapCoord(start_loc.x+1,start_loc.y+2,start_loc.z);
-	t[2] = MapCoord(start_loc.x,start_loc.y-2,start_loc.z);
+    targets[3] = MapCoord(start_loc.x+1,start_loc.y-1,start_loc.z);
+    targets[4] = MapCoord(start_loc.x-1,start_loc.y+2,start_loc.z);
+    targets[5] = MapCoord(start_loc.x-1,start_loc.y-1,start_loc.z);
 
-	t[3] = MapCoord(start_loc.x+1,start_loc.y-1,start_loc.z);
-	t[4] = MapCoord(start_loc.x-1,start_loc.y+2,start_loc.z);
-	t[5] = MapCoord(start_loc.x-1,start_loc.y-1,start_loc.z);
+    targets[6] = MapCoord(start_loc.x-2,start_loc.y,start_loc.z);
+    targets[7] = MapCoord(start_loc.x-1,start_loc.y+1,start_loc.z);
+    targets[8] = MapCoord(start_loc.x,start_loc.y+2,start_loc.z);
 
-	t[6] = MapCoord(start_loc.x-2,start_loc.y,start_loc.z);
-	t[7] = MapCoord(start_loc.x-1,start_loc.y+1,start_loc.z);
-	t[8] = MapCoord(start_loc.x,start_loc.y+2,start_loc.z);
+    targets[9] = MapCoord(start_loc.x-1,start_loc.y-2,start_loc.z);
+    targets[10] = MapCoord(start_loc.x-2,start_loc.y-1,start_loc.z);
+    targets[11] = MapCoord(start_loc.x-2,start_loc.y+1,start_loc.z);
 
-	t[9] = MapCoord(start_loc.x-1,start_loc.y-2,start_loc.z);
-	t[10] = MapCoord(start_loc.x-2,start_loc.y-1,start_loc.z);
-	t[11] = MapCoord(start_loc.x-2,start_loc.y+1,start_loc.z);
-
-	t[12] = MapCoord(start_loc.x+2,start_loc.y+1,start_loc.z);
-	t[13] = MapCoord(start_loc.x+2,start_loc.y,start_loc.z);
-	t[14] = MapCoord(start_loc.x+1,start_loc.y+1,start_loc.z);
-	t[15] = MapCoord(start_loc.x+1,start_loc.y-2,start_loc.z);
+    targets[12] = MapCoord(start_loc.x+2,start_loc.y+1,start_loc.z);
+    targets[13] = MapCoord(start_loc.x+2,start_loc.y,start_loc.z);
+    targets[14] = MapCoord(start_loc.x+1,start_loc.y+1,start_loc.z);
+    targets[15] = MapCoord(start_loc.x+1,start_loc.y-2,start_loc.z);
 
 
-    anim = new ProjectileAnim(EXP_EFFECT_TILE_NUM, &start_loc, t, EXP_EFFECT_SPEED, false);
+    anim = new ProjectileAnim(EXP_EFFECT_TILE_NUM, &start_loc, targets, EXP_EFFECT_SPEED, false);
     add_anim(anim);
 
 }
 
 ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag)
 {
+	vector<MapCoord> t;
+	t.push_back(target);
+
+	ProjectileEffect( tileNum,  start, t,  speed,  trailFlag);
+}
+
+ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag)
+{
     finished_tiles = 0;
 
 	tile_num = tileNum;
 	start_loc = start;
-	target_loc = target;
 	anim_speed = speed;
 	trail = trailFlag;
+
+    targets = t;
 
 	start_anim();
 }
@@ -235,13 +242,7 @@ void ProjectileEffect::start_anim()
     game->pause_anims();
     game->pause_user();
 
-    vector<MapCoord> t;
-
-    t.resize(1);
-
-	t[0] = target_loc;
-
-    add_anim(new ProjectileAnim(tile_num, &start_loc, t, anim_speed, trail));
+    add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail));
 
 }
 /* Handle messages from animation. Hit actors & walls. */
