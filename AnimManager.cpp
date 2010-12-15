@@ -955,7 +955,7 @@ void ExplosiveAnim::get_shifted_location(uint16 &x, uint16 &y, uint16 &px, uint1
 
 
 /*** ProjectileAnim ***/
-ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrail)
+ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrail, uint16 initialTileRotation)
 {
     tile_num = tileNum; //382; // U6 FIREBALL_EFFECT
 
@@ -966,7 +966,7 @@ ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord>
     {
     	line[i].target = target[i];
     	line[i].lineWalker = new U6LineWalker(src.x*16,src.y*16,target[i].x*16, target[i].y*16);
-    	line[i].rotation = 0; //FXIME rotation should face target.
+    	line[i].rotation = initialTileRotation;
     }
 
     stopped_count = 0;
@@ -1005,7 +1005,7 @@ void ProjectileAnim::start()
     {
     	uint32 x, y;
     	line[i].lineWalker->next(&x, &y);
-    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, get_relative_degrees(line[i].target.x - src.x, line[i].target.y - src.y)),x/16,y/16,x%16,y%16);
+    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, get_relative_degrees(line[i].target.x - src.x, line[i].target.y - src.y) - line[i].rotation),x/16,y/16,x%16,y%16);
     	line[i].update_idx = 0;
     	line[i].isRunning = true;
     }

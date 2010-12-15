@@ -213,15 +213,15 @@ void ExpEffect::start_anim()
 
 }
 
-ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag)
+ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation)
 {
 	vector<MapCoord> t;
 	t.push_back(target);
 
-	ProjectileEffect( tileNum,  start, t,  speed,  trailFlag);
+	ProjectileEffect( tileNum,  start, t,  speed,  trailFlag, initialTileRotation);
 }
 
-ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag)
+ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation)
 {
     finished_tiles = 0;
 
@@ -229,6 +229,7 @@ ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoo
 	start_loc = start;
 	anim_speed = speed;
 	trail = trailFlag;
+	initial_tile_rotation = initialTileRotation;
 
     targets = t;
 
@@ -242,7 +243,7 @@ void ProjectileEffect::start_anim()
     game->pause_anims();
     game->pause_user();
 
-    add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail));
+    add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation));
 
 }
 /* Handle messages from animation. Hit actors & walls. */

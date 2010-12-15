@@ -291,7 +291,7 @@ class ProjectileAnim : public TileAnim
     bool leaveTrailFlag;
     bool rotateFlag;
 public:
-    ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrailFlag = false);
+    ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrailFlag = false, uint16 initialTileRotation = 0);
     ~ProjectileAnim();
     void start();
 

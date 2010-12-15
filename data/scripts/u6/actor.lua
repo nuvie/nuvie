@@ -641,19 +641,19 @@ end
 
 local projectile_weapon_tbl = 
 {
---obj_n = {tile_num, speed, doesRotate}
-[33] = {398, 2, false}, -- sling
-[36] = {547, 3, false}, -- spear
-[37] = {548, 2, true}, -- throwing axe
-[38] = {549, 2, true}, -- dagger
-[41] = {566, 4, false}, -- bow
-[42] = {567, 4, false}, -- crossbow
-[49] = {560, 4, true}, -- boomerang
-[83] = {601, 2, false}, -- flask of oil
-[50] = {567, 4, false}, -- triple crossbow
-[91] = {612, 2, true}, -- Zu Ylem
-[79] = {392, 2, false}, -- lightning wand
-[80] = {393, 2, false}, -- fire wand
+--obj_n = {tile_num, initial_tile_rotation, speed, doesRotate}
+[33] = {398, 0, 2, false}, -- sling
+[36] = {547, 45,3, false}, -- spear
+[37] = {548, 0, 2, true}, -- throwing axe
+[38] = {549, 0, 2, true}, -- dagger
+[41] = {566, 90,4, false}, -- bow
+[42] = {567, 90,4, false}, -- crossbow
+[49] = {560, 0, 4, true}, -- boomerang
+[83] = {601, 0, 2, false}, -- flask of oil
+[50] = {567, 90,4, false}, -- triple crossbow
+[91] = {612, 0, 2, true}, -- Zu Ylem
+[79] = {392, 0, 2, false}, -- lightning wand
+[80] = {393, 0, 2, false}, -- fire wand
 }
 
 weapon_dmg_tbl = {
@@ -1043,10 +1043,22 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, foe, weapon)
 
    
    if weapon_obj_n == 0x32 then --triple cross bow
-      local test = {{x=target_x,y=target_y,z=player_loc.z}, {x=target_x+1,y=target_y,z=player_loc.z}} --FIXME need proper values here.
-      projectile_anim_multi(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, test, projectile_weapon_tbl[weapon_obj_n][2], 0)
+      local index = ((attacker.y - target_y + 5) * 11) + (attacker.x - target_x + 5) + 1
+      local triple_crossbow_targets = {
+                      {x=target_x,
+                       y=target_y,
+                       z=player_loc.z}, 
+                      {x=target_x + movement_offset_x_tbl[triple_crossbow_offset_tbl[1][index]+1],
+                       y=target_y + movement_offset_y_tbl[triple_crossbow_offset_tbl[1][index]+1],
+                       z=player_loc.z},
+                      {x=target_x + movement_offset_x_tbl[triple_crossbow_offset_tbl[2][index]+1],
+                       y=target_y + movement_offset_y_tbl[triple_crossbow_offset_tbl[2][index]+1],
+                       z=player_loc.z}
+                    }
+                    
+      projectile_anim_multi(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, triple_crossbow_targets, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
    else     
-      projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][2], 0)
+      projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
    end
     
    if weapon_obj_n == 0x5b then

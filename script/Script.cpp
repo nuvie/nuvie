@@ -1196,8 +1196,9 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
    uint16 targety = (uint16)luaL_checkinteger(L, 5);
    uint16 speed = (uint16)luaL_checkinteger(L, 6);
    bool trail = (bool)luaL_checkinteger(L, 7);
+   uint8 initial_tile_rotation = (uint8)luaL_checkinteger(L, 8);
 
-   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail));
+   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail, initial_tile_rotation));
    e->run();
 
    lua_pushboolean(L, true);
@@ -1248,8 +1249,9 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
 
    uint16 speed = (uint16)luaL_checkinteger(L, 5);
    bool trail = (bool)luaL_checkinteger(L, 6);
+   uint8 initial_tile_rotation = (uint8)luaL_checkinteger(L, 7);
 
-   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), t, speed, trail));
+   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), t, speed, trail, initial_tile_rotation));
    e->run();
 
    lua_pushboolean(L, true);

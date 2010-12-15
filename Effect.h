@@ -89,14 +89,14 @@ protected:
     vector<MapCoord> targets;
     uint8 anim_speed;
     bool trail;
-
+    uint16 initial_tile_rotation;
     uint16 finished_tiles;
     virtual void start_anim();
 
 public:
     ProjectileEffect() {}
-    ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag);
-    ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag);
+    ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation);
+    ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation);
 
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
