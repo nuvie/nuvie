@@ -218,10 +218,15 @@ ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord targ
 	vector<MapCoord> t;
 	t.push_back(target);
 
-	ProjectileEffect( tileNum,  start, t,  speed,  trailFlag, initialTileRotation);
+	init(tileNum, start, t, speed, trailFlag, initialTileRotation);
 }
 
 ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation)
+{
+	init(tileNum, start, t, speed, trailFlag, initialTileRotation);
+}
+
+void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation)
 {
     finished_tiles = 0;
 
