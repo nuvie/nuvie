@@ -802,7 +802,7 @@ uint32 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality)
  while((obj = inventory_get_object(obj_n, quality, false))
        && (deleted < qty))
  {
-    oqty = obj->qty;
+    oqty = obj->qty == 0 ? 1 : obj->qty;
     if(oqty <= (qty - deleted))
     {
         inventory_remove_obj(obj);
