@@ -485,12 +485,12 @@ bool Player::attack_select_weapon_at_location(sint8 location)
  return false;
 }
 
-void Player::attack(Actor *a)
+void Player::attack(MapCoord target)
 {
  MsgScroll *scroll = Game::get_game()->get_scroll();
  
- if(weapon_can_hit(a->x,a->y))
-   actor->attack(current_weapon, a);
+ if(weapon_can_hit(target.x,target.y))
+   actor->attack(current_weapon, target);
  else
    scroll->display_string("\nOut of range!\n");
 

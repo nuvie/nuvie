@@ -361,7 +361,7 @@ class Actor
 
  // combat methods
  void attack(MapCoord pos); // attack at a given map location
- void attack(sint8 readied_obj_location, Actor *actor);
+ void attack(sint8 readied_obj_location, MapCoord target);
 // bool defend(uint8 hit, uint8 weapon_damage); // defend against a hit
  uint8 defend(uint8 hit, uint8 weapon_damage); // defend against a hit
  const CombatType *get_weapon(sint8 readied_obj_location);

@@ -850,13 +850,14 @@ end
 -- actor_attack(attacker, foe, weapon)
 --
 
-function actor_attack(attacker, foe, weapon)
+function actor_attack(attacker, target_x, target_y, target_z, weapon)
 
    local random = math.random
    local weapon_obj_n = weapon.obj_n
    local weapon_quality = weapon.quality
-   local target_x = foe.x
-   local target_y = foe.y
+   --local target_x = foe.x
+   --local target_y = foe.y
+   local foe = map_get_actor(target_x, target_y, target_z)
    
    io.stderr:write("\nactor_attack()\nrange = " .. get_attack_range(attacker.x,attacker.y, target_x, target_y).." weapon range="..get_weapon_range(weapon_obj_n))
    if weapon_obj_n ~= attacker.obj_n then

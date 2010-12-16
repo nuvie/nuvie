@@ -826,17 +826,20 @@ bool Event::talk(Obj *obj)
 
 bool Event::attack()
 {
+	MapCoord target = map_window->get_cursorCoord();
     Actor *actor = map_window->get_actorAtCursor();
     if(actor)
         {
             scroll->display_string(actor->get_name());
             scroll->display_string(".\n");
-            player->attack(actor);
+
         }
     else
         {
             scroll->display_string("nothing!\n");
         }
+
+    player->attack(target);
 
     if(player->attack_select_next_weapon() == false)
       endAction(true);

@@ -356,16 +356,19 @@ bool Script::call_actor_init(Actor *actor)
    return true;
 }
 
-bool Script::call_actor_attack(Actor *actor, Actor *foe, Obj *weapon)
+bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
 {
    lua_getglobal(L, "actor_attack");
    nscript_new_actor_var(L, actor->get_actor_num());
-   nscript_new_actor_var(L, foe->get_actor_num());
+   //nscript_new_actor_var(L, foe->get_actor_num());
+   lua_pushnumber(L, (lua_Number)location.x);
+   lua_pushnumber(L, (lua_Number)location.y);
+   lua_pushnumber(L, (lua_Number)location.z);
    if(weapon == NULL)
       nscript_new_actor_var(L, actor->get_actor_num());
    else
       nscript_obj_new(L, weapon);
-   if(lua_pcall(L, 3, 0, 0) != 0)
+   if(lua_pcall(L, 5, 0, 0) != 0)
    {
       DEBUG(0, LEVEL_ERROR, "Script Error: actor_attack() %s\n", luaL_checkstring(L, -1));
       return false;

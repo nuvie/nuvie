@@ -117,7 +117,7 @@ class Player
  void attack_select_init();
  bool attack_select_next_weapon();
 
- void attack(Actor *a);
+ void attack(MapCoord target);
  
  protected:
  

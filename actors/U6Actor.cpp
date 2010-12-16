@@ -1444,7 +1444,7 @@ bool U6Actor::combat_try_attack(U6Actor *enemy)
     if(weapon_can_hit(get_weapon(ACTOR_NO_READIABLE_LOCATION), enemy->x,enemy->y))
     {
         face_actor(enemy);
-        attack(ACTOR_NO_READIABLE_LOCATION, enemy);
+        attack(ACTOR_NO_READIABLE_LOCATION, MapCoord(enemy->x,enemy->y,enemy->z));
         foe = enemy;
         return true;
     }

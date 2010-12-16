@@ -552,7 +552,7 @@ void Actor::attack(MapCoord pos)
 }
 
 // attack another actor with melee attack or a weapon (short or long range)
-void Actor::attack(sint8 readied_obj_location, Actor *actor)
+void Actor::attack(sint8 readied_obj_location, MapCoord target)
 {
    const uint8 attack_cost = 10; // base cost to attack
    Obj *weapon_obj = NULL;
@@ -563,13 +563,13 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
    assert(combat_type != NULL); // this should be set
 // if(combat_type == NULL)
 //   return;
-   DEBUG(0, LEVEL_DEBUGGING, "%s (%d) attacking %s (%d)\n", get_name(), id_n, actor->get_name(), actor->id_n);
-   face_actor(actor);
+   //DEBUG(0, LEVEL_DEBUGGING, "%s (%d) attacking %s (%d)\n", get_name(), id_n, actor->get_name(), actor->id_n);
+   face_location(target);
 
    //FIXME just hacked in to test lua actor_attack()
    if(readied_obj_location != ACTOR_NO_READIABLE_LOCATION && readied_objects[readied_obj_location] && readied_objects[readied_obj_location]->obj != NULL)
       weapon_obj = readied_objects[readied_obj_location]->obj;
-   Game::get_game()->get_script()->call_actor_attack(this, actor, weapon_obj);
+   Game::get_game()->get_script()->call_actor_attack(this, target, weapon_obj);
 
 /*
 // using new defend() method
