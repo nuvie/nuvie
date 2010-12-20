@@ -1005,7 +1005,11 @@ void ProjectileAnim::start()
     {
     	uint32 x, y;
     	line[i].lineWalker->next(&x, &y);
-    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, get_relative_degrees(line[i].target.x - src.x, line[i].target.y - src.y) - line[i].rotation),x/16,y/16,x%16,y%16);
+    	float deg = get_relative_degrees(line[i].target.x - src.x, line[i].target.y - src.y) - line[i].rotation;
+    	if(deg < 0)
+    		deg += 360;
+
+    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, deg), x/16, y/16, x%16, y%16);
     	line[i].update_idx = 0;
     	line[i].isRunning = true;
     }

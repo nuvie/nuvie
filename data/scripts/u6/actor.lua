@@ -811,7 +811,7 @@ function actor_take_hit(attacker, defender, max_dmg)
          --FIXME defender now targets attacker. I think.
       end
       --FIXME hit defending actor properly here.
-      exp_gained = Actor.hit(defender, max_dmg)
+      exp_gained = actor_hit(defender, max_dmg)
       if exp_gained == nil then
          exp_gained = 0
       end
@@ -820,6 +820,67 @@ function actor_take_hit(attacker, defender, max_dmg)
    else
       print(defender.name.." grazed.\n")
    end
+end
+
+function actor_hit(defender, max_dmg)
+	
+	local defender_obj_n = defender.obj_n
+	local exp_gained = 0
+	
+	if defender_obj_n == 0x1a7 then -- balloon.
+		return 0
+	end
+	
+	if defender.luatype == "actor" then
+		--actor logic here
+		if defender_obj_n == 409 then --lord british
+			defender.hp = 0xff
+		elseif defender_obj_n == 414 or defender_obj_n == 415 then --skiff, raft
+			-- FIXME hit random party member here.
+		else
+			-- actor hit logic here
+			exp_gained = Actor.hit(defender, max_dmg) --FIXME need to bring death function into script.
+			if defender.wt == 9 then --flee
+				defender.wt = 8 --assault
+			end
+			if defender_obj_n == 375 then --slime
+				--FIXME slime divide here
+			end
+		end
+	else
+		--object logic here
+		if defender_obj_n == 0x16e then -- tangle vine
+			--FIXME do something with tangle vine.
+		elseif defender.stackable == false and defender.qty ~= 0
+			and (defender_obj_n < 0x129 or defender_obj_n > 0x12c or defender.frame_n < 0xc) --check frame_n for door objects
+			and (defender_obj_n ~= 0x62 or defender.frame_n ~= 3) then --don't attack open chests
+			if defender.qty <= max_dmg then
+				print(defender.name .. " broken!\n")
+
+				local container = obj.container
+				local child, i
+				for i=1,#container do  -- look through container for effect object. 
+				  child = container[i]
+				  if child.obj_n == 337 then --effect
+				  	--FIXME use effect here.
+				  	break
+				  end
+				end
+				
+				if defender_obj_n == 0x7b then --mirror
+					--FIXME play mirror smashing sound
+					defender.frame_n = 2
+					player_subtract_karma(10)
+				else
+					map_remove_obj(defender)
+				end
+			else
+				defender.qty = defender.qty - max_dmg
+			end
+		end
+	end
+	
+	return exp_gained
 end
 
 function combat_range_check_target(actor_attacking)
@@ -858,6 +919,10 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
    --local target_x = foe.x
    --local target_y = foe.y
    local foe = map_get_actor(target_x, target_y, target_z)
+   
+   if foe == nil then
+      foe = map_get_obj(target_x, target_y, target_z);
+   end
    
    io.stderr:write("\nactor_attack()\nrange = " .. get_attack_range(attacker.x,attacker.y, target_x, target_y).." weapon range="..get_weapon_range(weapon_obj_n))
    if weapon_obj_n ~= attacker.obj_n then

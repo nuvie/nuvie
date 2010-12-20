@@ -148,6 +148,20 @@ function look_obj(obj)
    return true
 end
 
+function player_subtract_karma(k)
+	local karma = player_get_karma() - k
+	if karma < 0 then karma = 0 end
+	
+	player_set_karma(karma)
+end
+
+function player_add_karma(k)
+local karma = player_get_karma() + k
+if karma >= 100 then karma = 99 end
+
+player_set_karma(karma)
+end
+
 --load actor functions
 actor_load = nuvie_load("u6/actor.lua");
 if type(actor_load) == "function" then

@@ -35,6 +35,7 @@ FadeEffect *FadeEffect::current_fade = NULL;
  */
 Effect::Effect() : defunct(false)
 {
+	retain_count = 0;
     game = Game::get_game();
     effect_manager = game->get_effect_manager();
     effect_manager->add_effect(this);
@@ -272,29 +273,7 @@ uint16 ProjectileEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
         case MESG_ANIM_HIT:
         {
             MapEntity *hit_ent = static_cast<MapEntity *>(msg_data);
-            if(hit_ent->entity_type == ENT_ACTOR)
-            {
-                hit_ent->actor->hit(32);
-                //stop_effect = true;
-            }
-            if(hit_ent->entity_type == ENT_OBJ)
-            {
-                DEBUG(0,LEVEL_DEBUGGING,"hit object %d at %x,%x,%x\n", hit_ent->obj->obj_n, hit_ent->obj->x, hit_ent->obj->y, hit_ent->obj->z);
-                // FIX: U6 specific
-                // FIX: hit any part of ship, and reduce qty of center
-                if(hit_ent->obj->obj_n == 412)
-                {
-                    uint8 f = hit_ent->obj->frame_n;
-                    if(f == 9 || f == 15 || f == 11 || f == 13) // directions
-                    {
-                        if(hit_ent->obj->qty < 20) hit_ent->obj->qty = 0;
-                        else                      hit_ent->obj->qty -= 20;
-                        if(hit_ent->obj->qty == 0)
-                            game->get_scroll()->display_string("Ship broke!\n");
-                        stop_effect = true;
-                    }
-                }
-            }
+            hit_entities.push_back(*hit_ent);
             break;
         }
         case MESG_ANIM_DONE:
@@ -1535,12 +1514,14 @@ inline uint8 PeerEffect::get_tilemap_type(uint16 wx, uint16 wy, uint8 wz)
 AsyncEffect::AsyncEffect(Effect *e)
 {
 	effect_complete = false;
-    effect_manager->watch_effect(this, e);
+	effect = e;
+	effect->retain();
+    effect_manager->watch_effect(this, effect);
 }
 
 AsyncEffect::~AsyncEffect()
 {
-	printf("get here");
+	effect->release();
 }
 
 void AsyncEffect::run()

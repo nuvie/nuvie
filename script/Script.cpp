@@ -125,6 +125,8 @@ static int nscript_print(lua_State *L);
 static int nscript_load(lua_State *L);
 
 static int nscript_player_get_location(lua_State *L);
+static int nscript_player_get_karma(lua_State *L);
+static int nscript_player_set_karma(lua_State *L);
 
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
@@ -266,6 +268,12 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_player_get_location);
    lua_setglobal(L, "player_get_location");
 
+   lua_pushcfunction(L, nscript_player_get_karma);
+   lua_setglobal(L, "player_get_karma");
+
+   lua_pushcfunction(L, nscript_player_set_karma);
+   lua_setglobal(L, "player_set_karma");
+
    lua_pushcfunction(L, nscript_eclipse_start);
    lua_setglobal(L, "eclipse_start");
 
@@ -374,6 +382,7 @@ bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
       return false;
    }
 
+   Game::get_game()->get_map_window()->updateBlacking(); // the script might have updated the blocking objects. eg broken a door.
    return true;
 }
 
@@ -747,6 +756,11 @@ static int nscript_obj_get(lua_State *L)
 
    key = lua_tostring(L, 2);
 
+   if(!strcmp(key, "luatype"))
+   {
+      lua_pushstring(L, "obj"); return 1;
+   }
+
    if(!strcmp(key, "x"))
    {
       lua_pushinteger(L, obj->x); return 1;
@@ -1091,6 +1105,20 @@ static int nscript_player_get_location(lua_State *L)
    return 1;
 }
 
+static int nscript_player_get_karma(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	lua_pushinteger(L, player->get_karma());
+	return 1;
+}
+
+static int nscript_player_set_karma(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	player->set_karma((uint8)lua_tointeger(L, 1));
+	return 0;
+}
+
 static int nscript_map_get_obj(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -1201,7 +1229,8 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
    bool trail = (bool)luaL_checkinteger(L, 7);
    uint8 initial_tile_rotation = (uint8)luaL_checkinteger(L, 8);
 
-   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail, initial_tile_rotation));
+   ProjectileEffect *projectile_effect = new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail, initial_tile_rotation);
+   AsyncEffect *e = new AsyncEffect(projectile_effect);
    e->run();
 
    lua_pushboolean(L, true);

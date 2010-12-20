@@ -47,9 +47,16 @@ protected:
     EffectManager *effect_manager;
     bool defunct;
 
+    uint32 retain_count;
+
 public:
     Effect();
     ~Effect();
+
+    void retain() { retain_count++; }
+    void release() { if(retain_count > 0) retain_count--; }
+    bool is_retained() { return retain_count == 0 ? false : true; }
+
     void delete_self() { defunct = true; }
     void add_anim(NuvieAnim *anim);
 
@@ -91,6 +98,9 @@ protected:
     bool trail;
     uint16 initial_tile_rotation;
     uint16 finished_tiles;
+
+    vector<MapEntity> hit_entities;
+
     virtual void start_anim();
 
 public:
@@ -101,6 +111,8 @@ public:
     void init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation);
 
     uint16 callback(uint16 msg, CallBack *caller, void *data);
+
+    vector<MapEntity> *get_hit_entities() { return &hit_entities; }
 };
 
 class ExpEffect : public ProjectileEffect
@@ -506,6 +518,7 @@ public:
 class AsyncEffect : public Effect
 {
 protected:
+	Effect *effect;
 	bool effect_complete;
 
 public:
