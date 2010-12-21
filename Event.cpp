@@ -136,6 +136,12 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  return true;
 }
 
+void Event::update_timers()
+{
+	 time_queue->call_timers(clock->get_ticks());
+	 game_time_queue->call_timers(clock->get_game_ticks());
+}
+
 bool Event::update()
 {
  bool idle = true;
@@ -839,6 +845,7 @@ bool Event::attack()
             scroll->display_string("nothing!\n");
         }
 
+    map_window->set_show_cursor(false);
     player->attack(target);
 
     if(player->attack_select_next_weapon() == false)

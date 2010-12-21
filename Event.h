@@ -150,6 +150,7 @@ friend class Magic; // FIXME
  EventMode get_mode() { return(mode); }
  void set_mode(EventMode new_mode);
 
+ void update_timers();
  bool update();
  bool handleEvent(const SDL_Event *event);
  void request_input(CallBack *caller, void *user_data=NULL);

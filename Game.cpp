@@ -381,6 +381,8 @@ void Game::update_once()
 {
     if(cursor) cursor->clear(); // restore cursor area before GUI events
 
+    event->update_timers();
+
     palette->rotatePalette();
     tile_manager->update();
     actor_manager->twitchActors();

@@ -178,6 +178,7 @@ class HitEffect : public Effect
 {
 public:
     HitEffect(Actor *target, uint32 duration = 300);
+    HitEffect(MapCoord location);
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 

@@ -435,6 +435,10 @@ HitEffect::HitEffect(Actor *target, uint32 duration)
     add_anim(new HitAnim(target));
 }
 
+HitEffect::HitEffect(MapCoord location)
+{
+    add_anim(new HitAnim(&location));
+}
 
 /* On ANIM_DONE: end
  */
@@ -1531,6 +1535,8 @@ void AsyncEffect::run()
 		//spin world
 		Game::get_game()->update_once();
 	}
+
+	delete_self();
 }
 
 uint16 AsyncEffect::callback(uint16 msg, CallBack *caller, void *data)

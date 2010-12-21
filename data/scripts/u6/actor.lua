@@ -851,31 +851,33 @@ function actor_hit(defender, max_dmg)
 		--object logic here
 		if defender_obj_n == 0x16e then -- tangle vine
 			--FIXME do something with tangle vine.
-		elseif defender.stackable == false and defender.qty ~= 0
-			and (defender_obj_n < 0x129 or defender_obj_n > 0x12c or defender.frame_n < 0xc) --check frame_n for door objects
-			and (defender_obj_n ~= 0x62 or defender.frame_n ~= 3) then --don't attack open chests
-			if defender.qty <= max_dmg then
-				print(defender.name .. " broken!\n")
-
-				local container = obj.container
-				local child, i
-				for i=1,#container do  -- look through container for effect object. 
-				  child = container[i]
-				  if child.obj_n == 337 then --effect
-				  	--FIXME use effect here.
-				  	break
-				  end
-				end
-				
-				if defender_obj_n == 0x7b then --mirror
-					--FIXME play mirror smashing sound
-					defender.frame_n = 2
-					player_subtract_karma(10)
+		elseif defender.stackable == false and defender.qty ~= 0 then
+			hit_anim(defender.x, defender.y)
+			if (defender_obj_n < 0x129 or defender_obj_n > 0x12c or defender.frame_n < 0xc) --check frame_n for door objects
+				and (defender_obj_n ~= 0x62 or defender.frame_n ~= 3) then --don't attack open chests
+				if defender.qty <= max_dmg then
+					print(defender.name .. " broken!\n")
+	
+					local container = obj.container
+					local child, i
+					for i=1,#container do  -- look through container for effect object. 
+					  child = container[i]
+					  if child.obj_n == 337 then --effect
+					  	--FIXME use effect here.
+					  	break
+					  end
+					end
+					
+					if defender_obj_n == 0x7b then --mirror
+						--FIXME play mirror smashing sound
+						defender.frame_n = 2
+						player_subtract_karma(10)
+					else
+						map_remove_obj(defender)
+					end
 				else
-					map_remove_obj(defender)
+					defender.qty = defender.qty - max_dmg
 				end
-			else
-				defender.qty = defender.qty - max_dmg
 			end
 		end
 	end

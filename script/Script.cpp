@@ -140,6 +140,7 @@ static int nscript_quake_start(lua_State *L);
 static int nscript_explosion_start(lua_State *L);
 static int nscript_projectile_anim(lua_State *L);
 static int nscript_projectile_anim_multi(lua_State *L);
+static int nscript_hit_anim(lua_State *L);
 static int nscript_usecode_look(lua_State *L);
 
 //Iterators
@@ -288,6 +289,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_projectile_anim_multi);
    lua_setglobal(L, "projectile_anim_multi");
+
+   lua_pushcfunction(L, nscript_hit_anim);
+   lua_setglobal(L, "hit_anim");
 
    lua_pushcfunction(L, nscript_usecode_look);
    lua_setglobal(L, "usecode_look");
@@ -1289,6 +1293,19 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
    lua_pushboolean(L, true);
    return 1;
 }
+
+static int nscript_hit_anim(lua_State *L)
+{
+   uint16 targetx = (uint16)luaL_checkinteger(L, 1);
+   uint16 targety = (uint16)luaL_checkinteger(L, 2);
+
+   AsyncEffect *e = new AsyncEffect(new HitEffect(MapCoord(targetx,targety)));
+   e->run();
+
+   lua_pushboolean(L, true);
+   return 1;
+}
+
 
 //FIXME need to move this into lua script.
 static int nscript_usecode_look(lua_State *L)

@@ -315,7 +315,7 @@ public:
     HitAnim(MapCoord *loc);
     HitAnim(Actor *actor);
 
-    uint16 callback(uint16 msg, CallBack *caller, void *msg_data) { if(msg == MESG_TIMED) stop(); return(0); }
+    uint16 callback(uint16 msg, CallBack *caller, void *msg_data);
     void start()                    { start_timer(300); }
 };
 

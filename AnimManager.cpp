@@ -437,6 +437,16 @@ bool HitAnim::update()
     return(true);
 }
 
+uint16 HitAnim::callback(uint16 msg, CallBack *caller, void *msg_data)
+{
+	if(msg == MESG_TIMED)
+	{
+		message(MESG_ANIM_DONE);
+		stop();
+	}
+
+	return(0);
+}
 
 /*** TossAnim ***/
 TossAnim::TossAnim(Tile *tile, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags)

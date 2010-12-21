@@ -1266,8 +1266,8 @@ Obj *ObjManager::loadObj(NuvieIO *buf)
  if(is_stackable(obj))
    obj->qty = (uint16)(obj->quality << 8) + obj->qty;
 
- if(obj->qty == 0)
-   obj->qty = 1;
+ //if(obj->qty == 0)
+ //  obj->qty = 1;
 
  return obj;
 }
