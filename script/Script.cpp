@@ -149,6 +149,7 @@ int nscript_party_iter(lua_State *L);
 
 
 static int nscript_party(lua_State *L);
+static int nscript_container(lua_State *L);
 
 Script *Script::script = NULL;
 
@@ -253,6 +254,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_party);
    lua_setglobal(L, "party_members");
+
+   lua_pushcfunction(L, nscript_container);
+   lua_setglobal(L, "container_objs");
    
    lua_pushcfunction(L, nscript_objs_at_loc);
    lua_setglobal(L, "objs_at_loc");
@@ -806,13 +810,26 @@ static int nscript_obj_get(lua_State *L)
       lua_pushstring(L, obj_manager->get_obj_name(obj->obj_n));
       return 1;
    }
-
+/*
    if(!strcmp(key, "container"))
    {
-      if(nscript_container_new(L, obj))
-         return 1;
-   }
+	   U6LList *obj_list = obj->container;
+	   if(obj_list == NULL)
+	      return 0;
 
+	   U6Link *link = obj_list->start();
+
+	   lua_pushcfunction(L, nscript_u6llist_iter);
+
+	   U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
+	   *p_link = link;
+
+	   luaL_getmetatable(L, "nuvie.U6Link");
+	   lua_setmetatable(L, -2);
+
+	   return 2;
+   }
+*/
    if(!strcmp(key, "look_string"))
    {
       ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -851,9 +868,22 @@ static int nscript_obj_movetomap(lua_State *L)
 
    obj = *s_obj;
 
+   MapCoord loc;
+   if(lua_gettop(L) >= 2)
+   {
+	   if(nscript_get_location_from_args(L, &loc.x, &loc.y, &loc.z, 2) == false)
+		   return 0;
+   }
+   else
+   {
+	   loc.x = obj->x;
+	   loc.y = obj->y;
+	   loc.z = obj->z;
+   }
+
    if(obj)
    {
-      if(obj_manager->moveto_map(obj) == false)
+      if(obj_manager->moveto_map(obj, loc) == false)
       {
          //delete map_obj;
          return luaL_error(L, "moving obj to map!");
@@ -1366,6 +1396,7 @@ static int nscript_party(lua_State *L)
 //lua function objs_at_loc(x,y,z)
 static int nscript_objs_at_loc(lua_State *L)
 {
+   U6Link *link = NULL;
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
    
    uint16 x, y;
@@ -1376,10 +1407,8 @@ static int nscript_objs_at_loc(lua_State *L)
 
    
    U6LList *obj_list = obj_manager->get_obj_list(x, y, z);
-   if(obj_list == NULL)
-      return 0;
-   
-   U6Link *link = obj_list->start();
+   if(obj_list != NULL)
+	  link = obj_list->start();
    
    lua_pushcfunction(L, nscript_u6llist_iter);
    
@@ -1390,4 +1419,27 @@ static int nscript_objs_at_loc(lua_State *L)
    lua_setmetatable(L, -2);
    
    return 2;
+}
+
+static int nscript_container(lua_State *L)
+{
+	U6Link *link = NULL;
+	Obj **s_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
+	Obj *obj;
+
+	obj = *s_obj;
+
+	U6LList *obj_list = obj->container;
+    if(obj_list != NULL)
+       link = obj_list->start();
+
+	lua_pushcfunction(L, nscript_u6llist_iter);
+
+	U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
+	*p_link = link;
+
+	luaL_getmetatable(L, "nuvie.U6Link");
+	lua_setmetatable(L, -2);
+
+	return 2;
 }

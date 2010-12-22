@@ -87,6 +87,7 @@ public:
     uint8 z; // plane
 
     MapCoord(uint16 nx, uint16 ny, uint16 nz = 0) { x = nx; y = ny; z = nz; }
+    MapCoord(Obj *obj) {x = obj->x; y = obj->y; z = obj->z; }
     MapCoord() : x(0), y(0), z(0) { }
 
     uint32 xdistance(MapCoord &c2) { return(abs(c2.x - x)); }

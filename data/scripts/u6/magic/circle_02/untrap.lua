@@ -1,11 +1,10 @@
-obj = select_obj();
+local obj = select_obj();
 
-found = false
+local found = false
 
 if obj ~= nil then
-  container = obj.container
-  for i=1,#container do  -- look through container for effect object. 
-    child = container[i]
+  local child
+  for child in container_objs(obj) do  -- look through container for effect object. 
     if child.obj_n == 337 then --effect
       found = true
       Obj.removeFromCont(child)

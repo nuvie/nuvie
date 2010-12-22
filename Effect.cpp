@@ -1528,6 +1528,7 @@ AsyncEffect::~AsyncEffect()
 	effect->release();
 }
 
+/* The effect is marked as defunct after run finishes and will be removed from the system.*/
 void AsyncEffect::run()
 {
 	for(;effect_complete == false;)

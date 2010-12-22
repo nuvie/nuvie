@@ -858,13 +858,13 @@ function actor_hit(defender, max_dmg)
 				if defender.qty <= max_dmg then
 					print(defender.name .. " broken!\n")
 	
-					local container = obj.container
-					local child, i
-					for i=1,#container do  -- look through container for effect object. 
-					  child = container[i]
+					local child
+					for child in container_objs(defender) do  -- look through container for effect object. 
 					  if child.obj_n == 337 then --effect
 					  	--FIXME use effect here.
 					  	break
+					  else
+					  	Obj.moveToMap(child, defender.x, defender.y, defender.z)
 					  end
 					end
 					

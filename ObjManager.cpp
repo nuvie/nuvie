@@ -1785,9 +1785,14 @@ bool ObjManager::unlink_from_engine(Obj *obj)
   return true;
 }
 
-bool ObjManager::moveto_map(Obj *obj)
+bool ObjManager::moveto_map(Obj *obj, MapCoord location)
 {
   unlink_from_engine(obj);
+
+  obj->x = location.x;
+  obj->y = location.y;
+  obj->z = location.z;
+
   add_obj(obj, OBJ_ADD_TOP);
   
   return true;
