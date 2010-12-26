@@ -121,6 +121,8 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_RAFT,             0, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL}, // FIX might need to fix this
 // {OBJ_U6_TANGLE_VINE_POD,  0, 0, 1, 0, OBJ_U6_TANGLE_VINE_POD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,40, 20,  25,   1,   4,   1,  30, ACTOR_ALIGNMENT_CHAOTIC},
 
+ {OBJ_U6_SLIME,            0, 0, 0, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL},
+
  {OBJ_U6_NOTHING, 0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 0, 0, 0, 0, 0, 0, 0, ACTOR_ALIGNMENT_NEUTRAL} //end indicator
 };
 

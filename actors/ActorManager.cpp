@@ -1002,6 +1002,24 @@ inline void ActorManager::clean_temp_actor(Actor *actor)
  return;
 }
 
+bool ActorManager::clone_actor(Actor *actor, Actor **new_actor, MapCoord new_location)
+{
+	if(actor == NULL)
+		return false;
+
+	if(create_temp_actor(actor->obj_n, new_location.x, new_location.y, new_location.z, actor->alignment, actor->worktype, new_actor) == false)
+		return false;
+
+	(*new_actor)->strength = actor->strength;
+	(*new_actor)->dex = actor->dex;
+	(*new_actor)->intelligence = actor->intelligence;
+
+	(*new_actor)->magic = actor->magic;
+	(*new_actor)->exp = actor->exp;
+	(*new_actor)->hp = actor->hp;
+
+	return true;
+}
 
 /* Move an actor to a random location within range.
  * Returns true when tossed.
@@ -1101,6 +1119,17 @@ ActorList *ActorManager::sort_nearest(ActorList *list, uint16 x, uint16 y, uint8
 void ActorManager::print_actor(Actor *actor)
 {
     actor->print();
+}
+
+bool ActorManager::can_put_actor(MapCoord location)
+{
+	if(!map->is_passable(location.x, location.y, location.z))
+		return false;
+
+	if(get_actor(location.x, location.y, location.z) != NULL)
+		return false;
+
+	return true;
 }
 
 // Remove actors with a certain alignment from the list. Returns the same list.

@@ -35,6 +35,7 @@ extern int nscript_u6llist_iter(lua_State *L);
 bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
 
 static int nscript_actor_new(lua_State *L);
+static int nscript_actor_clone(lua_State *L);
 static int nscript_get_actor_from_num(lua_State *L);
 
 inline Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset=1);
@@ -53,6 +54,7 @@ static int nscript_actor_move(lua_State *L);
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
    { "new", nscript_actor_new },
+   { "clone", nscript_actor_clone },
    { "kill", nscript_actor_kill },
    { "hit", nscript_actor_hit },
    { "resurrect", nscript_actor_resurrect },
@@ -331,6 +333,28 @@ static int nscript_actor_new(lua_State *L)
    }
 
    return 1;
+}
+
+static int nscript_actor_clone(lua_State *L)
+{
+   Actor *actor, *new_actor;
+   uint16 x, y;
+   uint8 z;
+
+   actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+	  return 0;
+
+   if(nscript_get_location_from_args(L, &x, &y, &z, 2) == false)
+	  return 0;
+
+	if(Game::get_game()->get_actor_manager()->clone_actor(actor, &new_actor, MapCoord(x,y,z)))
+	{
+	  if(nscript_new_actor_var(L, actor->get_actor_num()) == true)
+		 return 1;
+	}
+
+	return 0;
 }
 
 static int nscript_get_actor_from_num(lua_State *L)

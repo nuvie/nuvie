@@ -25,6 +25,33 @@
 
 #include "U6LList.h"
 
+void retainU6Link(U6Link *link)
+{
+	if(link)
+	   link->ref_count++;
+}
+
+void releaseU6Link(U6Link *link)
+{
+	link->ref_count--;
+    if(link->ref_count == 0)
+       delete link;
+}
+
+//use locally to cleanup the pointers when unlinking from list.
+inline void deleteU6Link(U6Link *link)
+{
+
+    if(link->ref_count == 1)
+       delete link;
+    else
+    {
+    	link->ref_count--;
+    	link->data = NULL;
+    	link->prev = link->next = NULL;
+    }
+}
+
  U6LList::U6LList()
 {
  head = NULL;
@@ -153,7 +180,7 @@ bool U6LList::remove(void *data)
     else
       head->prev = NULL;
 
-    delete link;
+    deleteU6Link(link);
 
     return true;
    }
@@ -167,7 +194,7 @@ bool U6LList::remove(void *data)
      if(link == tail)
          tail = prev;
 
-     delete link;
+     deleteU6Link(link);
 
      if(prev->next)
       {
@@ -194,7 +221,7 @@ bool U6LList::removeAll()
    tmp_link = link;
    link=link->next;
 
-   delete tmp_link;
+   deleteU6Link(tmp_link);
   }
 
  head = NULL;
@@ -203,6 +230,8 @@ bool U6LList::removeAll()
 
  return true;
 }
+
+
 
 uint32 U6LList::count()
 {

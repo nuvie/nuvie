@@ -311,7 +311,7 @@
 #define OBJ_U6_MONGBAT             372
 #define OBJ_U6_WISP                373
 #define OBJ_U6_HYDRA               374
-
+#define OBJ_U6_SLIME               375
 #define OBJ_U6_FIGHTER             376
 #define OBJ_U6_SWASHBUCKLER        377
 #define OBJ_U6_MAGE                378

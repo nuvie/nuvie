@@ -840,11 +840,13 @@ function actor_hit(defender, max_dmg)
 		else
 			-- actor hit logic here
 			exp_gained = Actor.hit(defender, max_dmg) --FIXME need to bring death function into script.
-			if defender.wt == 9 then --flee
-				defender.wt = 8 --assault
-			end
-			if defender_obj_n == 375 then --slime
-				--FIXME slime divide here
+			if defender.alive == true then
+				if defender.wt == 9 then --flee
+					defender.wt = 8 --assault
+				end
+				if defender_obj_n == 375 then --slime
+					slime_divide(defender)
+				end
 			end
 		end
 	else
@@ -885,6 +887,26 @@ function actor_hit(defender, max_dmg)
 	return exp_gained
 end
 
+function slime_divide(slime)
+
+	local random = math.random
+	local from_x, from_y, from_z = slime.x, slime.y, slime.z
+	
+	for i=1,8 do
+
+		local new_x = random(1, 2) + from_x - 1
+		local new_y = random(1, 2) + from_y - 1
+
+		--FIXME 
+		if map_can_put(new_x, new_y, from_z) then
+		--clone slime actor
+			Actor.clone(slime, new_x, new_y, from_z)
+			print("Slime divides!\n")
+			return
+		end
+	end
+end
+
 function combat_range_check_target(actor_attacking)
 
    if actor_attacking.wt > 1 and actor_attacking.wt < 0x10 then
@@ -910,7 +932,7 @@ return true
 end
 
 --
--- actor_attack(attacker, foe, weapon)
+-- actor_attack(attacker, target, weapon)
 --
 
 function actor_attack(attacker, target_x, target_y, target_z, weapon)
@@ -918,8 +940,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
    local random = math.random
    local weapon_obj_n = weapon.obj_n
    local weapon_quality = weapon.quality
-   --local target_x = foe.x
-   --local target_y = foe.y
+
    local foe = map_get_actor(target_x, target_y, target_z)
    
    if foe == nil then

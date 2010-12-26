@@ -119,6 +119,13 @@ static const struct luaL_Reg nscript_containerlib_m[] =
    { NULL, NULL }
 };
 
+static int nscript_u6link_gc(lua_State *L);
+
+static const struct luaL_Reg nscript_u6linklib_m[] =
+{
+   { "__gc", nscript_u6link_gc },
+   { NULL, NULL }
+};
 
 static int nscript_print(lua_State *L);
 //no longer used -- static int nscript_get_target(lua_State *L);
@@ -133,6 +140,7 @@ static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
 static int nscript_map_remove_obj(lua_State *L);
 static int nscript_map_is_water(lua_State *L);
+static int nscript_map_can_put(lua_State *L);
 
 //Misc
 static int nscript_eclipse_start(lua_State *L);
@@ -233,6 +241,7 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    luaL_openlibs(L);
 
    luaL_newmetatable(L, "nuvie.U6Link");
+   luaL_register(L, NULL, nscript_u6linklib_m);
 
    luaL_newmetatable(L, "nuvie.Obj");
    //lua_pushvalue(L, -1); //duplicate metatable
@@ -269,6 +278,10 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_map_is_water);
    lua_setglobal(L, "map_is_water");
+
+   lua_pushcfunction(L, nscript_map_can_put);
+   lua_setglobal(L, "map_can_put");
+
 
    lua_pushcfunction(L, nscript_player_get_location);
    lua_setglobal(L, "player_get_location");
@@ -1085,6 +1098,21 @@ static int nscript_container_length(lua_State *L)
    return 1;
 }
 
+/* release last iter U6Link if required. */
+static int nscript_u6link_gc(lua_State *L)
+{
+   U6Link **s_link = (U6Link **)luaL_checkudata(L, 1, "nuvie.U6Link");
+   U6Link *link = *s_link;
+
+   if(link == NULL)
+      return 0;
+
+   releaseU6Link(link);
+
+   printf("U6Link garbage collector!!");
+   return 0;
+}
+
 
 static int nscript_print(lua_State *L)
 {
@@ -1197,6 +1225,20 @@ static int nscript_map_remove_obj(lua_State *L)
       lua_pushboolean(L, true);
    else
       lua_pushboolean(L, false);
+
+   return 1;
+}
+
+static int nscript_map_can_put(lua_State *L)
+{
+   ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+   uint16 x, y;
+   uint8 z;
+
+   if(nscript_get_location_from_args(L, &x, &y, &z) == false)
+	  return 0;
+
+   lua_pushboolean(L, actor_manager->can_put_actor(MapCoord(x,y,z)));
 
    return 1;
 }
@@ -1357,14 +1399,16 @@ int nscript_u6llist_iter(lua_State *L)
    U6Link **s_link = (U6Link **)luaL_checkudata(L, 1, "nuvie.U6Link");
    U6Link *link = *s_link;
 
-   if(link == NULL)
+   if(link == NULL || link->data == NULL)
       return 0;
 
    Obj *obj = (Obj *)link->data;
-
    nscript_obj_new(L, obj);
 
+   retainU6Link(link->next);
    *s_link = link->next;
+
+   releaseU6Link(link); // release old link object.
 
    return 1;
 }
@@ -1414,7 +1458,9 @@ static int nscript_objs_at_loc(lua_State *L)
    
    U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
    *p_link = link;
-   
+
+   retainU6Link(link);
+
    luaL_getmetatable(L, "nuvie.U6Link");
    lua_setmetatable(L, -2);
    
@@ -1437,6 +1483,8 @@ static int nscript_container(lua_State *L)
 
 	U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
 	*p_link = link;
+
+	retainU6Link(link);
 
 	luaL_getmetatable(L, "nuvie.U6Link");
 	lua_setmetatable(L, -2);
