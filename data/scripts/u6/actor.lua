@@ -1096,12 +1096,13 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       end
       
       if weapon_obj_n == 0x32 then --triple crossbow
-         num_bolts = Actor.inv_remove_obj_qty(attacker, 0x38, 3)
-         print("num_bolts = "..num_bolts.."\n")
+         num_bolts = Actor.inv_get_obj_total_qty(attacker, 0x38)
+         print("total num_bolts = "..num_bolts.."\n")
+         if num_bolts > 3 then num_bolts = 3 end
       end
       
       --FIXME might need to get new foe here.
-      combat_range_weapon_1D5F9(attacker, target_x, target_y, foe, weapon)
+      combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, weapon)
       
    else --standard weapon
       if actor_find_max_xy_distance(attacker, player_loc.x, player_loc.y) < 6 then
@@ -1116,7 +1117,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
    
    if weapon_obj_n == 0x32 then --triple crossbow
 
-      local off = (target_x - attacker.x) + ((target_y - attacker.y) + 5) * 11
+      local off = ((attacker.y - target_y + 5) * 11) + (attacker.x - target_x + 5)
       
       for i=1,num_bolts do
       
@@ -1163,26 +1164,23 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
 end
 
 
-function combat_range_weapon_1D5F9(attacker, target_x, target_y, foe, weapon)
+function combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, weapon)
 
    local weapon_obj_n = weapon.obj_n
    local random = math.random
-   local player_loc = player_get_location() --FIXME maybe we should just pass through target_z
-   
-
    
    if weapon_obj_n == 0x32 then --triple cross bow
       local index = ((attacker.y - target_y + 5) * 11) + (attacker.x - target_x + 5) + 1
       local triple_crossbow_targets = {
                       {x=target_x,
                        y=target_y,
-                       z=player_loc.z}, 
+                       z=target_z}, 
                       {x=target_x + movement_offset_x_tbl[triple_crossbow_offset_tbl[1][index]+1],
                        y=target_y + movement_offset_y_tbl[triple_crossbow_offset_tbl[1][index]+1],
-                       z=player_loc.z},
+                       z=target_z},
                       {x=target_x + movement_offset_x_tbl[triple_crossbow_offset_tbl[2][index]+1],
                        y=target_y + movement_offset_y_tbl[triple_crossbow_offset_tbl[2][index]+1],
-                       z=player_loc.z}
+                       z=target_z}
                     }
                     
       projectile_anim_multi(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, triple_crossbow_targets, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
@@ -1207,19 +1205,17 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, foe, weapon)
 
       Actor.inv_remove_obj_qty(attacker, 0x53, 1)
                   
-      if map_is_water(target_x,target_y,player_loc.z) == false then
+      if map_is_water(target_x,target_y,target_z) == false then
 	      local obj = Obj.new(317); --fire field
-	      obj.x,obj.y,obj.z = target_x,target_y,player_loc.z
-	      Obj.moveToMap(obj)
+	      Obj.moveToMap(obj, target_x, target_y, target_z)
       end
       
    elseif weapon_obj_n == 0x24 or weapon_obj_n == 0x25 or weapon_obj_n == 0x26 then
       --spear, throwing axe, dagger
 
-      if Actor.inv_remove_obj_qty(attacker, weapon_obj_n, 1) == 1 and map_is_water(target_x,target_y,player_loc.z) == false then
+      if Actor.inv_remove_obj_qty(attacker, weapon_obj_n, 1) == 1 and map_is_water(target_x,target_y,target_z) == false then
 	      local obj = Obj.new(weapon_obj_n);
-	      obj.x,obj.y,obj.z = target_x,target_y,player_loc.z
-		  Obj.moveToMap(obj)
+		  Obj.moveToMap(obj, target_x, target_y, target_z)
 	  end
       	      
    elseif weapon_obj_n == 0x29 or weapon_obj_n == 0x2a or weapon_obj_n == 0x32 or weapon_obj_n == 0x36 then

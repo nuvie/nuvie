@@ -655,7 +655,7 @@ inline bool nscript_obj_init_from_args(lua_State *L, int nargs, Obj *s_obj)
 
 static int nscript_obj_gc(lua_State *L)
 {
-   DEBUG(0, LEVEL_INFORMATIONAL, "\nObj garbage Collection!\n");
+   //DEBUG(0, LEVEL_INFORMATIONAL, "\nObj garbage Collection!\n");
 
    Obj **p_obj = (Obj **)lua_touserdata(L, 1);
    Obj *obj;

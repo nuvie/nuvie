@@ -49,6 +49,7 @@ static int nscript_actor_inv_remove_obj(lua_State *L);
 static int nscript_actor_inv_remove_obj_qty(lua_State *L);
 static int nscript_actor_inv_ready_obj(lua_State *L);
 static int nscript_actor_inv_has_obj_n(lua_State *L);
+static int nscript_actor_inv_get_obj_total_qty(lua_State *L);
 static int nscript_actor_move(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
@@ -65,6 +66,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },   
    { "inv_ready_obj", nscript_actor_inv_ready_obj },
    { "inv_has_obj_n", nscript_actor_inv_has_obj_n },
+   { "inv_get_obj_total_qty", nscript_actor_inv_get_obj_total_qty },
 
    { NULL, NULL }
 };
@@ -803,7 +805,23 @@ static int nscript_actor_inv_has_obj_n(lua_State *L)
 
    lua_pushboolean(L, (int)actor->inventory_has_object(obj_n, 0, false));
 
-   return 0;
+   return 1;
+}
+
+static int nscript_actor_inv_get_obj_total_qty(lua_State *L)
+{
+   Actor *actor;
+   uint16 obj_n;
+
+   actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+
+   obj_n = (uint16)luaL_checkinteger(L, 2);
+
+   lua_pushinteger(L, actor->inventory_count_object(obj_n));
+
+   return 1;
 }
 
 static int nscript_map_get_actor(lua_State *L)
