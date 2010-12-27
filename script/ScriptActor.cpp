@@ -881,21 +881,22 @@ static int nscript_actor_add_mp(lua_State *L)
 static int nscript_actor_inv(lua_State *L)
 {
    Actor *actor;
+   U6Link *link = NULL;
 
    actor = nscript_get_actor_from_args(L);
    if(actor == NULL)
       return 0;
 
    U6LList *inv = actor->get_inventory_list();
-   if(inv == NULL)
-      return 0;
-
-   U6Link *link = inv->start();
+   if(inv != NULL)
+      link = inv->start();
 
    lua_pushcfunction(L, nscript_u6llist_iter);
 
    U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
    *p_link = link;
+
+   retainU6Link(link);
 
    luaL_getmetatable(L, "nuvie.U6Link");
    lua_setmetatable(L, -2);

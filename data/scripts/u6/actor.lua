@@ -891,18 +891,58 @@ function slime_divide(slime)
 
 	local random = math.random
 	local from_x, from_y, from_z = slime.x, slime.y, slime.z
-	
+	local i
 	for i=1,8 do
 
 		local new_x = random(1, 2) + from_x - 1
 		local new_y = random(1, 2) + from_y - 1
 
-		--FIXME 
 		if map_can_put(new_x, new_y, from_z) then
-		--clone slime actor
 			Actor.clone(slime, new_x, new_y, from_z)
+			slime_update_frames()
 			print("Slime divides!\n")
 			return
+		end
+	end
+end
+
+function bitor(x, y)
+ local p = 1
+  while p < x do p = p + p end
+  while p < y do p = p + p end
+  local z = 0 
+  repeat
+   if p <= x or p <= y then
+     z = z + p 
+     if p <= x then 
+     x = x - p 
+     end 
+     if p <= y then y = y - p end
+   
+   end
+  p = p * 0.5
+  until p < 1
+  return z
+end 
+
+function slime_update_frames()
+
+	local i, j
+	local pow = math.pow
+	
+	for i=1,0x100 do
+		local actor = Actor.get(i)
+		if actor.obj_n == 0x177 and actor.alive then --slime
+			local new_frame_n = 0;
+			local idx = 0
+			for j = 1,8,2 do
+				local tmp_actor = map_get_actor(actor.x + movement_offset_x_tbl[j], actor.y + movement_offset_y_tbl[j], actor.z)
+				if tmp_actor ~= nil and tmp_actor.obj_n == 0x177 and tmp_actor.alive then
+					new_frame_n = new_frame_n + pow(2,idx)	
+				end
+				idx = idx + 1
+			end
+			actor.frame_n = new_frame_n
 		end
 	end
 end
@@ -1117,7 +1157,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       
       if weapon_obj_n == 0x31 then --boomerang
          --projectile_anim(attacker.x, attacker.y, 1, target_x, target_y, 0x64, *(&bastile_ptr_data + 0x62), 1)
-         projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][2], 0)
+         projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
       end
    end
 end
@@ -1567,7 +1607,7 @@ function actor_wt_combat_tanglevine(actor)
       local actor_y = actor.y
       if abs(target_x - actor_x) < 2 and abs(target_y - actor_y) < 2 and random(0, 1) ~= 0 then
       
-         actor_attack(actor, target, actor)
+         actor_attack(actor, target_x, target_y, target_z, actor)
          subtract_movement_pts(actor, 10)
          return
       end
@@ -1638,7 +1678,7 @@ function actor_wt_combat_stationary(actor)
 
       if g_obj.obj_n ~= 0 and actor_ok_to_attack(actor, g_obj) == true and g_obj.alive == true and g_obj.align ~= align and g_obj.align ~= ALIGNMENT_NEUTRAL then
       
-         actor_attack(actor, g_obj, actor_get_weapon(actor, g_obj))
+         actor_attack(actor, target_x, target_y, actor.z, actor_get_weapon(actor, g_obj))
          subtract_movement_pts(actor, 10)
          break
       end
@@ -1825,7 +1865,7 @@ print("actor_wt_attack()\n");
        get_attack_range(actor_x, actor_y, target_x, target_y) <= weapon_range then
       
          if sub_1D59F(actor, target_x, target_y, weapon_range, 0) == true then
-            actor_attack(actor, g_obj, weapon_obj)
+            actor_attack(actor, g_obj.x, g_obj.y, g_obj.z, weapon_obj)
             subtract_movement_pts(actor, 10)
             return
          end
