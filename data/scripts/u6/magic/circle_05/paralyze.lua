@@ -1,5 +1,10 @@
-magic_load({name="Paralyze", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
+  local actor = select_actor()
+  local caster = caster_get_location()
+  
+  if actor ~= nil then
+     projectile_anim(0x17f, caster.x, caster.y, actor.x, actor.y, 1, 0, 0)
 
+     hit_anim(actor.x, actor.y)
+     --FIXME set actor paralyzed flag here.
+     print(actor.name.." is paralyzed.\n")
   end
-})

@@ -209,7 +209,7 @@ void ExpEffect::start_anim()
     targets[15] = MapCoord(start_loc.x+1,start_loc.y-2,start_loc.z);
 
 
-    anim = new ProjectileAnim(EXP_EFFECT_TILE_NUM, &start_loc, targets, EXP_EFFECT_SPEED, false);
+    anim = new ProjectileAnim(EXP_EFFECT_TILE_NUM, &start_loc, targets, EXP_EFFECT_SPEED, true);
     add_anim(anim);
 
 }

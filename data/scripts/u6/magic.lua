@@ -16,16 +16,40 @@ io.stderr:write("Running script \"" .. magic_invocations[invocation].script .."\
     return
 end
 
+g_magic_target = nil
+g_magic_caster = nil
+
+function magic_cast_spell(spell_num, caster, target)
+	g_magic_target = target
+	g_magic_caster = caster
+	if magic[spell_num] ~= nil then
+		run_script(magic[spell_num].script)
+	end
+	g_magic_caster = nil
+	g_magic_target = nil
+end
+
 magic_init = function(name, invocation, reagents, circle, num, script)
     local spell = {name=name,invocation=invocation,reagents=reagents,circle=circle,num=num,script=script}
 
-    magic[circle * 16 + num] = spell
+    magic[(circle-1) * 16 + (num-1)] = spell
     magic_invocations[string.lower(invocation)] = spell
 
     io.stderr:write("Init Magic: " .. name .. " I: " .. invocation .. "\n")
 end
 
+
+
+function select_location()
+	if g_magic_target ~= nil then return g_magic_target end
+	
+	print("Location: ")
+	return get_target()
+end
+
 select_actor = function()
+	if g_magic_target ~= nil then return map_get_actor(g_magic_target) end
+	
 	print("On whom: ");
 
 	local loc = get_target()
@@ -34,13 +58,15 @@ select_actor = function()
 	if actor == nil then
 		print("nothing\n");
 	else
-		print("actor_type\n");
+		print(actor.name.."\n");
 	end
 
 	return actor
 end
 
 select_obj = function()
+	if g_magic_target ~= nil then return map_get_obj(g_magic_target) end
+	
 	print("On what: ");
 
 	local loc = get_target()
@@ -54,7 +80,15 @@ select_obj = function()
 
 	return obj 
 end
+
+function caster_get_location()	  
+	 if g_magic_caster ~= nil then
+	  	return g_magic_caster
+	  end
 	  
+	  return player_get_location()
+end
+
 do
 local init
 
@@ -81,6 +115,8 @@ magic_init("Sleep Field", "izg", 0x54, 4, 9, "u6/magic/circle_04/sleep_field.lua
 
 magic_init("Energy Field", "isg", 0x15, 5, 1, "u6/magic/circle_05/energy_field.lua");
 magic_init("Explosion", "vpf", 0x8d, 5, 2, "u6/magic/circle_05/explosion.lua");
+magic_init("Lightning", "og", 0x85, 5, 5, "u6/magic/circle_05/lightning.lua");
+magic_init("Paralyze", "axp", 0x96, 5, 6, "u6/magic/circle_05/paralyze.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 
