@@ -165,7 +165,7 @@ function actor_find_max_xy_distance(actor, x, y)
 end
 
 function actor_move(actor, direction, flag)
-   print("actor_move("..actor.name..", "..direction_string(direction)..", "..flag..")\n");
+   print("actor_move("..actor.name..", "..direction_string(direction)..", "..flag..") actor("..actor.x..","..actor.y..")\n");
    local x,y,z = actor.x, actor.y, actor.z
    if direction == DIR_NORTH then y = y - 1 end
    if direction == DIR_SOUTH then y = y + 1 end
@@ -179,7 +179,7 @@ function actor_move(actor, direction, flag)
    if did_move then
       subtract_movement_pts(actor, 5)
       actor.direction = direction
-      print("did move\n");
+      print("actor_move() did move actor("..actor.x..","..actor.y..")\n");
    end --FIXME need to handle this properly with map movement pts.
    
    return did_move and 1 or 0
@@ -250,32 +250,38 @@ function actor_move_towards_loc(actor, map_x, map_y)
    else
       var_4 = (abs(diff_x) >= abs(diff_y) or abs(diff_x) ~= abs(diff_y) or math.random(0, 1) == 0) and 0 or 1
    end
-
+print("var_4 = "..var_4.."\n")
    if var_4 == 0 then
-      if actor_move(actor, x_direction, var_2) == 0 and
-      actor_move_diagonal(actor, x_direction, y_direction) == 0 and
-      actor_move(actor, y_direction, var_2) == 0 and
-      math.random(0, 1) ~= 0 or actor_move(actor, (y_direction == DIR_NORTH) and DIR_SOUTH or DIR_NORTH, 1) == 0 then
+      if actor_move(actor, x_direction, var_2) == 0 then
+      	if actor_move_diagonal(actor, x_direction, y_direction) == 0 then
+      		if actor_move(actor, y_direction, var_2) == 0 then
+      			if math.random(0, 1) ~= 0 or actor_move(actor, (y_direction == DIR_NORTH) and DIR_SOUTH or DIR_NORTH, 1) == 0 then
       
-         subtract_map_movement_pts(actor)
-         var_6 = 0 --didn't move anywhere
+         			subtract_map_movement_pts(actor)
+         			var_6 = 0 --didn't move anywhere
+         		end
+         	end
+         end
       end
 
    else
 
-      if actor_move(actor, y_direction, var_2) == 0 and
-      actor_move_diagonal(actor, x_direction, y_direction) == 0 and
-      actor_move(actor, x_direction, var_2) == 0 and
-      math.random(0, 1) ~= 0 or actor_move(actor, (x_direction == DIR_EAST) and DIR_WEST or DIR_EAST, 1) == 0 then
+      if actor_move(actor, y_direction, var_2) == 0 then
+      	if actor_move_diagonal(actor, x_direction, y_direction) == 0 then
+      		if actor_move(actor, x_direction, var_2) == 0 then
+      			if math.random(0, 1) ~= 0 or actor_move(actor, (x_direction == DIR_EAST) and DIR_WEST or DIR_EAST, 1) == 0 then
       
-         subtract_map_movement_pts(actor)
-         var_6 = 0 --didn't move anywhere
+         			subtract_map_movement_pts(actor)
+         			var_6 = 0 --didn't move anywhere
+         		end
+         	end
+         end
       end
 
    end
 
    unk_30A72 = 1
-
+print("var_6 = "..var_6)
    return var_6
 
 end
@@ -1540,7 +1546,7 @@ end
 
 function actor_wt_front_1FB6E(actor)
    print("actor_wt_front_1FB6E()\n")
-   if (g_num_monsters_near == 0 or wt_front_target_actor == nil) and actor.in_party == false then
+   if (wt_num_monsters_near == 0 or wt_front_target_actor == nil) and actor.in_party == false then
       subtract_movement_pts(actor, 5)
       return 1
    end
@@ -1562,6 +1568,7 @@ function actor_wt_front_1FB6E(actor)
       diff_y = combat_avg_y - centre_y
    end
    
+   print("actor_wt_front_1FB6E() actor = ("..actor_x..","..actor_y..") centre = ("..centre_x..","..centre_y..") player = ("..player_loc.x..","..player_loc.y..")\n")
    var_1E = (actor_x - centre_x) * diff_y - (actor_y - centre_y) * diff_x
    if var_1E <= 0 then
       var_24 = 0
@@ -1590,13 +1597,15 @@ function actor_wt_front_1FB6E(actor)
       var_12 = -var_12
    end
    
+   local tmp_actor
    if actor.in_party == true then
       tmp_actor = objlist_party_roster --FIXME get player actor here.
    else
       tmp_actor = wt_front_target_actor
    end
    
-   var_20 = (tmp_actor.x - centre_x) * diff_x + ((tmp_actor.y) - centre_y) * diff_y
+   print("tmp_actor = "..tmp_actor.name.." at ("..tmp_actor.x..","..tmp_actor.y..")\n")
+   var_20 = (tmp_actor.x - centre_x) * diff_x + (tmp_actor.y - centre_y) * diff_y
    if actor.in_party == true then
       var_20 = var_20 + abs(diff_x) + abs(diff_y)
    end
@@ -1606,6 +1615,7 @@ function actor_wt_front_1FB6E(actor)
       var_1C = 1
    end
    
+   print("getting target var_20 = "..var_20.." diff_x = "..diff_x.." diff_y = "..diff_y.." var_1C = "..var_1C.."\n")
    target_x = (var_20 * diff_x) / var_1C + centre_x
    target_y = (var_20 * diff_y) / var_1C + centre_y
    
@@ -1621,6 +1631,7 @@ function actor_wt_front_1FB6E(actor)
    repeat
       if target_x < chunk_x or chunk_x + 0x27 < target_x or target_y < chunk_y or chunk_y + 0x27 < target_y or (actor_x == target_x and actor_y == target_y) then
          unk_30A72 = 1
+         print("combat_front returned. too far away. actor=("..actor_x..","..actor_y..") target=("..target_x..","..target_y..") chunk=("..chunk_x..","..chunk_y..")\n")
          return 1
       end
    
@@ -1647,7 +1658,7 @@ function actor_wt_front_1FB6E(actor)
          return 0
       end
    
-      if g_num_monsters_near == 0 then
+      if wt_num_monsters_near == 0 then
          actor.mpts = mpts
       end
    

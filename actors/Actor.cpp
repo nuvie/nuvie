@@ -1474,7 +1474,7 @@ void Actor::reduce_hp(uint8 amount)
 
     if(amount <= hp) hp -= amount;
     else hp = 0;
-// FIX... game specific?
+// FIXME... game specific?
     if(hp == 0)
         die();
     Game::get_game()->stats_changed();

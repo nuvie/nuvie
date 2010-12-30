@@ -75,7 +75,7 @@ function get_target()
 end
 
 function obj_new(obj_n, frame_n, status, qty, quality, x, y, z)
-  obj = {}
+  local obj = {}
   
   obj["obj_n"] = obj_n or 0
   obj["frame_n"] = frame_n or 0
@@ -100,7 +100,7 @@ end
 
 function look_obj(obj)
    print("Thou dost see " .. obj.look_string);
-   weight = obj.weight; --FIXME this could be a problem if we want to change Lua_number type to int. 
+   local weight = obj.weight; --FIXME this could be a problem if we want to change Lua_number type to int. 
    if weight ~= 0 then
       if obj.qty > 1 and obj.stackable then
          print(". They weigh");
@@ -117,7 +117,7 @@ function look_obj(obj)
       return false
    end
    
-   dmg = weapon_dmg_tbl[obj.obj_n];
+   local dmg = weapon_dmg_tbl[obj.obj_n];
    if dmg ~= nil then
       if weight ~= 0 then
          print(" and")
@@ -131,7 +131,7 @@ function look_obj(obj)
 
    end
    
-   ac = armour_tbl[obj.obj_n]
+   local ac = armour_tbl[obj.obj_n]
    if ac ~= nil then
       if weight ~= 0 or dmg ~= 0 then
          print(" and")
