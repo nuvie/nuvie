@@ -15,8 +15,8 @@ WT_BERSERK                = 0x6  --combat berserk
 WT_RETREAT                = 0x7  --combat retreat
 WT_ASSAULT                = 0x8  --combat assault
 WT_FLEE                   = 0x9  --run away from party
---a
---b
+WT_LIKE                   = 0xa  --like the party. eg dog
+WT_UNFRIENDLY             = 0xb  --wander around but attack if any party member gets too close.
 WT_WANDER_NEAR_PLAYER     = 0xc  --guards use this.
 WT_TANGLE                 = 0xd  --tangle vine
 WT_STATIONARY             = 0xe  --stationary attack
@@ -1504,7 +1504,7 @@ function move_tanglevine(actor, new_direction)
    
    if new_direction ~= direction_reverse(old_direction) then
 
-      if move_actor(actor, new_direction, 1) ~= 0 then
+      if actor_move(actor, new_direction, 1) ~= 0 then
          local player_loc = player_get_location()
 
          local tangle_obj = Obj.new(0x16e) --tanglevine
@@ -1864,17 +1864,19 @@ function actor_wt_combat_stationary(actor)
       local target_x = rand(0, 8) + actor.x - 4
       local target_y = rand(0, 8) + actor.y - 4
 --      local g_obj = sub_1D351(actor, target_x, target_y)
-      local g_obj = map_get_actor(target_x, target_y, actor.z)
+      local target_actor = map_get_actor(target_x, target_y, actor.z)
 
-      if g_obj.obj_n ~= 0 and actor_ok_to_attack(actor, g_obj) == true and g_obj.alive == true and g_obj.align ~= align and g_obj.align ~= ALIGNMENT_NEUTRAL then
+      if target_actor ~= nil and actor_ok_to_attack(actor, target_actor) == true and target_actor.alive == true and target_actor.align ~= align and target_actor.align ~= ALIGNMENT_NEUTRAL then
       
-         actor_attack(actor, target_x, target_y, actor.z, actor_get_weapon(actor, g_obj))
+         actor_attack(actor, target_x, target_y, actor.z, actor_get_weapon(actor, target_actor))
          subtract_movement_pts(actor, 10)
-         break
+         return
       end
 
    end
 
+   subtract_movement_pts(actor, 5)
+   
    return
 end
 
@@ -2053,10 +2055,91 @@ function actor_wt_timid(actor)
 	      end
 	
 	      if math.floor((actor.hp * 4) / actor.level) > 0 then
-	         --FIXME actor.wt = actor.combat_mode
+	         actor.wt = actor.combat_mode
 	      end
 	   end
 	end
+end
+
+function actor_wt_like(actor)
+	local actor_x = actor.x
+	local actor_y = actor.y
+	local party_actor
+	local random = math.random
+	
+	for party_actor in party_members() do
+
+	   if abs(party_actor.x - actor_x) < 3 and abs(party_actor.y - actor_y) < 3 then
+	      if random(0, 1) == 0 then
+	         actor_move_towards_loc(actor, party_avg_x, party_avg_y)
+	         return
+	      end
+	
+	      break
+	   end
+	end
+	
+	if random(0, 1) == 0 then
+	   subtract_movement_pts(actor, 5)
+	else
+	   if random(0, 1) == 0 then
+	      if random(0, 1) == 0 then
+	         actor_y = actor_y - 10
+	      else
+	         actor_y = actor_y + 10
+	      end
+	   else
+	      if random(0, 1) == 0 then
+	         actor_x = actor_x - 10
+	      else
+	         actor_x = actor_x + 10
+	      end
+	   end
+	   actor_move_towards_loc(actor, actor_x, actor_y)
+	end
+	
+	return
+end
+
+function actor_wt_unfriendly(actor)
+	local actor_x = actor.x
+	local actor_y = actor.y
+	local party_actor
+	local random = math.random
+	
+	for party_actor in party_members() do
+	   if abs(party_actor.x - actor_x) < 3 and abs(party_actor.y - actor_y) < 3 then
+	
+	      if random(0, 7) == 0 then
+	         actor.wt = WT_ASSAULT
+	         actor_wt_attack(actor)
+	         return 
+	      end
+	
+	      break
+	   end
+	end
+	
+	if random(0, 1) == 0 then
+	   subtract_movement_pts(actor, 5)
+	else
+	   if random(0, 1) == 0 then
+	      if random(0, 1) == 0 then
+	         actor_y = actor_y - 10
+	      else
+	         actor_y = actor_y + 10
+	      end
+	   else
+	      if random(0, 1) == 0 then
+	         actor_x = actor_x - 10
+	      else
+	         actor_x = actor_x + 10
+	      end
+	   end
+	   actor_move_towards_loc(actor, actor_x, actor_y)
+	end
+	
+	return
 end
 
 wt_tbl = {
@@ -2068,8 +2151,8 @@ wt_tbl = {
 [WT_RETREAT] = {"WT_RETREAT", actor_wt_timid},
 [WT_ASSAULT] = {"WT_ASSAULT", actor_wt_attack},
 [WT_FLEE] = {"WT_FLEE", actor_wt_timid},
---a
---b
+[WT_LIKE] = {"WT_LIKE", actor_wt_like},
+[WT_UNFRIENDLY] = {"WT_UNFRIENDLY", actor_wt_unfriendly},
 [WT_WANDER_NEAR_PLAYER] = {"WT_WANDER_NEAR_PLAYER", actor_move_towards_player},
 [WT_TANGLE] = {"WT_TANGLE", actor_wt_combat_tanglevine},
 [WT_STATIONARY] = {"WT_STATIONARY", actor_wt_combat_stationary},
