@@ -1878,7 +1878,7 @@ inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)
  for(;!surrounding_objects.empty();)
   {
    obj_manager->remove_obj_from_map(*obj);
-   delete *obj;
+   delete_obj(*obj);
    obj = surrounding_objects.erase(obj);
   }
 

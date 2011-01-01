@@ -609,7 +609,7 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
     else //delete barrier object.
      {
       obj_list->remove(portc_obj);
-      delete portc_obj;
+      delete_obj(portc_obj);
      }
    }
 
@@ -2153,7 +2153,7 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
 	player_actor->move(actor_obj->x,actor_obj->y,actor_obj->z); //this will center the map window
     player_actor->init_from_obj(actor_obj);
 
-	delete actor_obj;
+	delete_obj(actor_obj);
    }
 
  return true;

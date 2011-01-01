@@ -759,7 +759,7 @@ void Party::dismount_from_horses()
       {
        Obj *my_obj = member[m].actor->make_obj();
        usecode->use_obj(my_obj, member[m].actor);
-       delete my_obj;
+       delete_obj(my_obj);
       }
    }
 

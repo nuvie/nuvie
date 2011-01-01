@@ -106,8 +106,8 @@ void EggManager::remove_egg(Obj *egg_obj, bool keep_obj)
        {
         //if(keep_obj == false) eggs always on map now.
 
-        obj_manager->unlink_from_engine((*egg_iter)->obj);
-        delete_obj((*egg_iter)->obj);
+        //obj_manager->unlink_from_engine((*egg_iter)->obj);
+        //delete_obj((*egg_iter)->obj);
 
         delete *egg_iter;
         egg_list.erase(egg_iter);

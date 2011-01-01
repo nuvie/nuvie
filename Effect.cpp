@@ -757,14 +757,14 @@ void MissileEffect::hit_target()
     if(hit_actor)
     {
         hit_actor->hit(hit_damage, ACTOR_FORCE_HIT);
-        delete throw_obj; throw_obj = 0; // don't drop
+        delete_obj(throw_obj); throw_obj = 0; // don't drop
     }
     else if(hit_obj)
     {
         if(hit_obj->qty < hit_damage)
             hit_obj->qty = 0;
         else hit_obj->qty -= hit_damage;
-        delete throw_obj; throw_obj = 0; // don't drop
+        delete_obj(throw_obj); throw_obj = 0; // don't drop
     }
     if(throw_obj != 0)
     {
@@ -782,7 +782,7 @@ void MissileEffect::hit_target()
 
 void MissileEffect::hit_blocking()
 {
-    delete throw_obj;
+    delete_obj(throw_obj);
     ThrowObjectEffect::hit_target();
 }
 

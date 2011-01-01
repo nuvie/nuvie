@@ -513,7 +513,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             cnpc_obj->frame_n = 0; // FIX for actors orginal direction.
             cnpc_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER; // mount up.
             cnpc->init_from_obj(cnpc_obj);
-            delete cnpc_obj;
+            delete_obj(cnpc_obj);
             break;
         case U6OP_IF: // 0xa1 (test val)
             set_break(U6OP_ELSE);
@@ -842,7 +842,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             cnpc_obj = cnpc->make_obj();
             if(cnpc_obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
                 out = 1;
-            delete cnpc_obj;
+            delete_obj(cnpc_obj);
             break;
         case U6OP_HASOBJ: // 0x9f
             v[2] = pop_arg(i); // quality

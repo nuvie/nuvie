@@ -1329,7 +1329,7 @@ function actor_calculate_avg_coords()
    for i=1,0x100 do
       actor = Actor.get(i)
       
-      if actor.obj_n ~= 0 then --and actor not dead
+      if actor.obj_n ~= 0 and actor.alive then
          
          if (actor.align == ALIGNMENT_EVIL or actor.align == ALIGNMENT_CHAOTIC) then
             if actor.wt ~= WT_RETREAT or (abs(actor.x -  player_x) <= 5 and abs(actor.y - player_y) <= 5) then
@@ -1353,8 +1353,8 @@ function actor_calculate_avg_coords()
       
       wt_rear_max_monster = nil
       wt_rear_min_monster = nil
-      wt_rear_max_party = nil
-      wt_rear_min_party = nil
+      --wt_rear_max_party = nil
+      --wt_rear_min_party = nil
       
       local tmp_x = combat_avg_x - party_avg_x
       local tmp_y = combat_avg_y - party_avg_y
@@ -1378,9 +1378,15 @@ function actor_calculate_avg_coords()
                if var_A > max_m_pos then max_m_pos, wt_rear_max_monster = var_A, actor end
                if var_A < min_m_pos then min_m_pos, wt_rear_min_monster = var_A, actor end
             else
-           --print("yup var_A = "..var_A.."\n")
-               if var_A > max_p_pos then max_p_pos, wt_rear_max_party = var_A, actor end
-               if var_A < min_p_pos then min_p_pos, wt_rear_min_party = var_A, actor end
+           print("yup var_A["..i.."] = "..var_A.."\n") 
+               if var_A > max_p_pos then
+               	print("var_A > max_p_pos\n")
+               	max_p_pos, wt_rear_max_party = var_A, actor
+               end
+               if var_A < min_p_pos then
+                print("var_A < min_p_pos\n")
+               	min_p_pos, wt_rear_min_party = var_A, actor
+               end
                --if var_C > var_16 then var_16, unk_3DEAD = var_C, actor end           
             end
          end
@@ -1394,7 +1400,7 @@ function actor_calculate_avg_coords()
       combat_avg_x = combat_avg_x + movement_offset_x_tbl[player_dir + 1]
       combat_avg_y = combat_avg_y + movement_offset_y_tbl[player_dir + 1]
    end
-   
+   print("PartyAvg("..party_avg_x..","..party_avg_y..") CombatAvg("..combat_avg_x..","..combat_avg_y..") numMonsters = "..wt_num_monsters_near.."\n")
 end
 
 --
@@ -1433,7 +1439,7 @@ print("actor_update_all()\n")
                            -- actor_set_worktype_from_schedule(actor)
                         end
                         
-                        dx = (actor.mpts * dex_6) - actor.dex * di
+                        local dx = (actor.mpts * dex_6) - actor.dex * di
                         if actor.mpts >= actor.dex or dx > 0 or dx == 0 and actor.dex > dex_6 then
                            selected_actor = actor
                            di = actor.mpts
@@ -1518,7 +1524,7 @@ function move_tanglevine(actor, new_direction)
 end
 
 function actor_wt_front(actor)
-	print("actor_wt_front()\n")
+	print("actor_wt_front("..actor.name..")\n")
 	if actor_wt_front_1FB6E(actor) ~= 0 then
 		if actor.in_party == true then 
 			actor_wt_attack(actor)
@@ -1599,7 +1605,7 @@ function actor_wt_front_1FB6E(actor)
    
    local tmp_actor
    if actor.in_party == true then
-      tmp_actor = objlist_party_roster --FIXME get player actor here.
+      tmp_actor = Actor.get(1) --FIXME big hack here. --objlist_party_roster --FIXME get player actor here.
    else
       tmp_actor = wt_front_target_actor
    end
@@ -1616,8 +1622,8 @@ function actor_wt_front_1FB6E(actor)
    end
    
    print("getting target var_20 = "..var_20.." diff_x = "..diff_x.." diff_y = "..diff_y.." var_1C = "..var_1C.."\n")
-   target_x = (var_20 * diff_x) / var_1C + centre_x
-   target_y = (var_20 * diff_y) / var_1C + centre_y
+   target_x = math.floor((var_20 * diff_x) / var_1C) + centre_x
+   target_y = math.floor((var_20 * diff_y) / var_1C) + centre_y
    
    unk_30A72 = 0
    
@@ -1637,6 +1643,8 @@ function actor_wt_front_1FB6E(actor)
    
       if map_get_actor(target_x, target_y, player_loc.z) ~= nil then
          found_actor = true
+      else
+         found_actor = false
       end
    
       if found_actor then
@@ -1649,7 +1657,7 @@ function actor_wt_front_1FB6E(actor)
             target_x = target_x + var_14
          end
       end
-   until found_actor == true
+   until found_actor == false
    
    
    mpts = actor.mpts
@@ -1678,7 +1686,7 @@ function actor_wt_rear(actor)
    print("actor_wt_rear()\n")
    local var_C = 0
    local player_loc = player_get_location()
-   local var_2,var_4,var_6,var_8,di,dx,ax,avg_diff_y
+   local var_2,var_4,avg_y,avg_x,di,dx,ax,avg_diff_y
    if actor.in_party == false then
       
       if wt_num_monsters_near == 0 then subtract_movement_pts(actor, 5) return end
@@ -1689,8 +1697,8 @@ function actor_wt_rear(actor)
       if var_4 == nil then var_4 = actor end
       if var_2 == nil then var_2 = actor end
       
-      var_8 = combat_avg_x
-      var_6 = combat_avg_y
+      avg_x = combat_avg_x
+      avg_y = combat_avg_y
       di = party_avg_x - combat_avg_x
       avg_y_diff = party_avg_y - combat_avg_y
       
@@ -1700,8 +1708,8 @@ function actor_wt_rear(actor)
       
       var_4 = wt_rear_max_party
       var_2 = wt_rear_min_party
-      var_8 = party_avg_x
-      var_6 = party_avg_y
+      avg_x = party_avg_x
+      avg_y = party_avg_y
       di = combat_avg_x - party_avg_x
       avg_y_diff = combat_avg_y - party_avg_y
    end
@@ -1714,32 +1722,28 @@ function actor_wt_rear(actor)
       
       if a.alive and a.wt == WT_FRONT and a.align == align then
          
-         dx = (a.x - var_8) * di
-         dx = dx + (a.y - var_6) * avg_y_diff
-         var_12 = dx
-         local ax = dx
-         if ax < var_10 then var_10 = ax end
+         var_12 = (a.x - avg_x) * di + (a.y - avg_y) * avg_y_diff
+
+         if var_12 < var_10 then var_10 = var_12 end
          
       end
       
    end
    
-   dx = (actor.x - var_8) * di
-   var_12 = dx + (actor.y - var_6) * avg_y_diff
+   var_12 = (actor.x - avg_x) * di + (actor.y - avg_y) * avg_y_diff
    local mpts = actor.mpts
    local var_C 
-   if actor.in_party == false and actor_find_max_xy_distance(actor, player_loc.x, player_loc.y) <= 3 then
+   if actor.in_party == false or actor_find_max_xy_distance(actor, player_loc.x, player_loc.y) <= 3 then
       
       if var_12 < var_10 then
          
-         dx = (actor.x - var_8) * avg_y_diff
-         var_12 = dx - (actor.y - var_6) * di
+         var_12 = (actor.x - avg_x) * avg_y_diff - (actor.y - avg_y) * di
          
-         dx = (var_4.x - var_8) * avg_y_diff
-         if dx - (var_4.y - var_6) * di >= var_12 then
+         dx = (var_4.x - avg_x) * avg_y_diff
+         if dx - (var_4.y - avg_y) * di >= var_12 then
             
-            dx = (var_2.x - var_8) * avg_y_diff
-            ax = (var_2.y - var_6) * di
+            dx = (var_2.x - avg_x) * avg_y_diff
+            ax = (var_2.y - avg_y) * di
             if dx - ax <= var_12 then
                
                var_C = 1
@@ -1927,7 +1931,7 @@ function actor_wt_wander_around(actor)
    end
 
    actor.direction = direction
-   move_actor(actor, direction, 1)
+   actor_move(actor, direction, 1)
 
    return
 end
@@ -1950,10 +1954,65 @@ end
 subtract_movement_pts(actor, 5)
 end
 
+function actor_wt_attack(actor)
+print("actor_wt_attack()\n");
+
+   g_obj = actor_find_target(actor)
+   if g_obj ~= nil then print("target at ("..g_obj.x..","..g_obj.y..")\n") end
+   
+   local weapon_obj = actor_get_weapon(actor, g_obj)
+   
+   if g_obj ~= nil then
+
+      local target_x = g_obj.x
+      local target_y = g_obj.y
+      local actor_x = actor.x
+      local actor_y = actor.y
+      local weapon_range = get_weapon_range(weapon_obj.obj_n)
+
+      if abs(target_x - actor_x) < 8 and abs(target_y - actor_y) < 8 and 
+       get_attack_range(actor_x, actor_y, target_x, target_y) <= weapon_range then
+
+         if sub_1D59F(actor, target_x, target_y, weapon_range, 0) == true then
+            actor_attack(actor, g_obj.x, g_obj.y, g_obj.z, weapon_obj)
+            subtract_movement_pts(actor, 10)
+            return
+         end
+
+         if random(0, 1) == 0 then
+         
+            target_x = g_obj.y - actor_y + actor_x
+            target_y = actor_y - g_obj.x - actor_x
+         
+         else
+         
+            target_x = actor_x - g_obj.y - actor_y
+            target_y = g_obj.x - actor_x + actor_y
+         end
+
+         actor_move_towards_loc(actor, target_x, target_y)
+         return
+      end
+
+      if actor.wt ~= 3 then actor_move_towards_loc(actor, target_x, target_y) return end
+
+      subtract_movement_pts(actor, 5)
+      return
+   end
+
+   if actor.wt ~= 3 then actor_move_towards_player(actor) return end
+
+
+   subtract_movement_pts(actor, 5)
+
+end
+
+
 wt_tbl = {
 [WT_NOTHING] = {"WT_NOTHING", perform_worktype},
 [WT_FRONT] = {"WT_FRONT", actor_wt_front},
 [WT_REAR] = {"WT_REAR", actor_wt_rear},
+[WT_ASSAULT] = {"WT_ASSAULT", actor_wt_attack},
 [WT_TANGLE] = {"WT_TANGLE", actor_wt_combat_tanglevine},
 [WT_STATIONARY] = {"WT_STATIONARY", actor_wt_combat_stationary},
 [WT_GUARD_WALK_EAST_WEST] = {"WT_GUARD_WALK_EAST_WEST", actor_wt_walk_straight},
@@ -2031,58 +2090,7 @@ function sub_1D59F(actor, target_x, target_y, weapon_obj)
    return true
 end
 
-function actor_wt_attack(actor)
-print("actor_wt_attack()\n");
 
-   g_obj = actor_find_target(actor)
-   if g_obj ~= nil then print("target at ("..g_obj.x..","..g_obj.y..")\n") end
-   
-   local weapon_obj = actor_get_weapon(actor, g_obj)
-   
-   if g_obj ~= nil then
-
-      local target_x = g_obj.x
-      local target_y = g_obj.y
-      local actor_x = actor.x
-      local actor_y = actor.y
-      local weapon_range = get_weapon_range(weapon_obj.obj_n)
-
-      if abs(target_x - actor_x) < 8 and abs(target_y - actor_y) < 8 and 
-       get_attack_range(actor_x, actor_y, target_x, target_y) <= weapon_range then
-
-         if sub_1D59F(actor, target_x, target_y, weapon_range, 0) == true then
-            actor_attack(actor, g_obj.x, g_obj.y, g_obj.z, weapon_obj)
-            subtract_movement_pts(actor, 10)
-            return
-         end
-
-         if random(0, 1) == 0 then
-         
-            target_x = g_obj.y - actor_y + actor_x
-            target_y = actor_y - g_obj.x - actor_x
-         
-         else
-         
-            target_x = actor_x - g_obj.y - actor_y
-            target_y = g_obj.x - actor_x + actor_y
-         end
-
-         actor_move_towards_loc(actor, target_x, target_y)
-         return
-      end
-
-      if actor.wt ~= 3 then actor_move_towards_loc(actor, target_x, target_y) return end
-
-      subtract_movement_pts(actor, 5)
-      return
-   end
-
-   if actor.wt ~= 3 then actor_move_towards_player(actor) return end
-
-
-   subtract_movement_pts(actor, 5)
-
-end
 
 function perform_worktype(actor)
    

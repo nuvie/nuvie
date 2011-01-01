@@ -421,7 +421,7 @@ void ObjManager::clean_actor_inventories()
    if(actor_inventories[i])
      {
       for(link=actor_inventories[i]->start(); link != NULL; link=link->next)
-        delete (Obj *)link->data;
+        delete_obj((Obj *)link->data);
       actor_inventories[i]->removeAll();
      }
   }
@@ -1368,7 +1368,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
        tmp_obj = obj;
        tmp_obj++;
        remove_obj_from_map(*obj); // this calls temp_obj_list_remove()
-       delete *obj;
+       delete_obj(*obj);
        obj = tmp_obj;
       }
     else
@@ -1397,7 +1397,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
        tmp_obj = obj;
        tmp_obj++;
        remove_obj_from_map(*obj);
-       delete *obj;
+       delete_obj(*obj);
        obj = tmp_obj;
       }
     else
