@@ -15,12 +15,13 @@ WT_BERSERK                = 0x6  --combat berserk
 WT_RETREAT                = 0x7  --combat retreat
 WT_ASSAULT                = 0x8  --combat assault
 WT_FLEE                   = 0x9  --run away from party
-
+--a
+--b
+WT_WANDER_NEAR_PLAYER     = 0xc  --guards use this.
 WT_TANGLE                 = 0xd  --tangle vine
 WT_STATIONARY             = 0xe  --stationary attack
 WT_GUARD_WALK_EAST_WEST   = 0xf
 WT_GUARD_WALK_NORTH_SOUTH = 0x10
---10
 --11
 --12
 WT_UNK_13                 = 0x13
@@ -1944,11 +1945,13 @@ if actor.wt ~= WT_STATIONARY then
       local x,y = player_loc.x, player_loc.y
       if actor.x ~= x and actor.y ~= y and rand(0, 3) == 0 then
          actor_move_towards_loc(actor, x, y)
-      else
-         if rand(0, 7) == 0 then
-            actor_move(actor, rand(0, 3), 1)
-         end
+         return
       end
+   end
+      
+   if rand(0, 7) == 0 then
+      actor_move(actor, rand(0, 3), 1)
+      return
    end
 end
 subtract_movement_pts(actor, 5)
@@ -2007,21 +2010,80 @@ print("actor_wt_attack()\n");
 
 end
 
+function actor_wt_timid(actor)
+	local player_loc = player_get_location()
+	if actor_find_max_xy_distance(actor, player_loc.x, player_loc.y) > 7 then
+	   actor.mpts = 0
+	   return
+	end
+	local target = actor_find_target(actor)
+	if target ~= nil then
+	   actor_move_towards_player(actor)
+	   return
+	end
+	local diff_x = target.x - actor.x
+	local diff_y = target.y - actor.y
+	local var_4
+	if actor.wt ~= WT_RETREAT then
+	   var_4 = 3
+	else
+	   var_4 = 8
+	end
+	
+	if abs(diff_x) < var_4 and abs(diff_y) < var_4 then
+	   local var_2 = actor.mpts
+	   if actor_move_towards_loc(actor, actor.x - diff_x, actor.y - diff_y) == 0 then
+	      actor.mpts = var_2
+	      if actor.wt ~= WT_MOUSE and actor.wt ~= WT_FLEE then
+	         actor_wt_attack(actor)
+	      end
+	   end
+	else
+	   if actor.align == ALIGNMENT_GOOD and actor.wt ~= WT_FLEE and actor.wt ~= WT_MOUSE then
+	      move_actor_towards_loc(actor, party_avg_x, party_avg_y)
+	   else
+	      worktype_move_towards_player(actor)
+	   end
+	end
+	
+	if actor.wt == WT_RETREAT then
+	   if math.random(0, 3) == 0 then
+	      if actor.level > actor.hp then
+	         actor.hp = actor.hp + 1
+	      end
+	
+	      if math.floor((actor.hp * 4) / actor.level) > 0 then
+	         --FIXME actor.wt = actor.combat_mode
+	      end
+	   end
+	end
+end
 
 wt_tbl = {
 [WT_NOTHING] = {"WT_NOTHING", perform_worktype},
 [WT_FRONT] = {"WT_FRONT", actor_wt_front},
 [WT_REAR] = {"WT_REAR", actor_wt_rear},
+--WT_FLANK
+--WT_BERSERK
+[WT_RETREAT] = {"WT_RETREAT", actor_wt_timid},
 [WT_ASSAULT] = {"WT_ASSAULT", actor_wt_attack},
+[WT_FLEE] = {"WT_FLEE", actor_wt_timid},
+--a
+--b
+[WT_WANDER_NEAR_PLAYER] = {"WT_WANDER_NEAR_PLAYER", actor_move_towards_player},
 [WT_TANGLE] = {"WT_TANGLE", actor_wt_combat_tanglevine},
 [WT_STATIONARY] = {"WT_STATIONARY", actor_wt_combat_stationary},
 [WT_GUARD_WALK_EAST_WEST] = {"WT_GUARD_WALK_EAST_WEST", actor_wt_walk_straight},
 [WT_GUARD_WALK_NORTH_SOUTH] = {"WT_GUARD_WALK_NORTH_SOUTH", actor_wt_walk_straight},
+--11
+--12
+[WT_UNK_13] = {"WT_UNK_13", actor_wt_timid},
 [WT_WALK_NORTH_SOUTH] = {"WT_WALK_NORTH_SOUTH", actor_wt_walk_straight},
 [WT_WALK_EAST_WEST]   = {"WT_WALK_EAST_WEST", actor_wt_walk_straight},
 [WT_WALK_SOUTH_NORTH] = {"WT_WALK_SOUTH_NORTH", actor_wt_walk_straight},
 [WT_WALK_WEST_EAST]   = {"WT_WALK_WEST_EAST", actor_wt_walk_straight},
-[WT_WANDER_AROUND] = {"WT_WANDER_AROUND", actor_wt_wander_around}
+[WT_WANDER_AROUND] = {"WT_WANDER_AROUND", actor_move_towards_player},
+[WT_MOUSE] = {"WT_MOUSE", actor_wt_timid}
 
 --[WT_] = {"WT_", actor_wt_rear}
 }
