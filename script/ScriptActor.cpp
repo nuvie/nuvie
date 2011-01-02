@@ -24,6 +24,7 @@
 #include "U6misc.h"
 
 #include "ScriptActor.h"
+#include "Player.h"
 #include "Game.h"
 #include "ActorManager.h"
 #include "Actor.h"
@@ -41,6 +42,7 @@ static int nscript_get_actor_from_num(lua_State *L);
 inline Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset=1);
 static int nscript_actor_set(lua_State *L);
 static int nscript_actor_get(lua_State *L);
+static int nscript_get_player_actor(lua_State *L);
 static int nscript_actor_kill(lua_State *L);
 static int nscript_actor_hit(lua_State *L);
 static int nscript_actor_resurrect(lua_State *L);
@@ -61,6 +63,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "resurrect", nscript_actor_resurrect },
    { "move", nscript_actor_move },
    { "get", nscript_get_actor_from_num },
+   { "get_player_actor", nscript_get_player_actor },
    { "inv_add_obj", nscript_actor_inv_add_obj },
    { "inv_remove_obj", nscript_actor_inv_remove_obj },
    { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },   
@@ -378,6 +381,14 @@ inline Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset)
       actor = Game::get_game()->get_actor_manager()->get_actor(*actor_num);
 
    return actor;
+}
+
+
+static int nscript_get_player_actor(lua_State *L)
+{
+	Actor *player_actor = Game::get_game()->get_player()->get_actor();
+
+	return nscript_new_actor_var(L, player_actor->get_actor_num());
 }
 
 static int nscript_actor_set(lua_State *L)

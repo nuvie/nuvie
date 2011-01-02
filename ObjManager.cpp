@@ -678,6 +678,19 @@ bool ObjManager::is_stackable(Obj *obj)
  return (bool)obj_stackable[obj->obj_n];
 }
 
+bool ObjManager::can_store_obj(Obj *target, Obj *src)
+{
+	if(game_type==NUVIE_GAME_U6)
+	{
+		if(target->obj_n == OBJ_U6_BAG
+		   || (target->obj_n == OBJ_U6_CHEST && target->frame_n == 0)
+		   || (target->obj_n == OBJ_U6_SPELLBOOK && src->obj_n == OBJ_U6_SPELL))
+			return true;
+	}
+
+	return false;
+}
+
 bool ObjManager::has_reduced_weight(Obj *obj)
 {
   // FIXME: HERE BE HARDCODED VALUES! FIXME: not sure if this list is complete!

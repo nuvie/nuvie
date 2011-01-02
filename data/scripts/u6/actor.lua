@@ -178,6 +178,7 @@ function actor_move(actor, direction, flag)
    --actor.direction = direction
       
    if did_move then
+      if actor.obj_n == 0x177 then slime_update_frames() end
       subtract_movement_pts(actor, 5)
       actor.direction = direction
       print("actor_move() did move actor("..actor.x..","..actor.y..")\n");
@@ -212,6 +213,7 @@ function actor_move_diagonal(actor, x_direction, y_direction)
    
    if did_move then
       print("did move\n");
+      if actor.obj_n == 0x177 then slime_update_frames() end
       subtract_movement_pts(actor, 5)
       actor.direction = y_direction
    end --FIXME need to handle this properly with map movement pts.
@@ -1606,7 +1608,7 @@ function actor_wt_front_1FB6E(actor)
    
    local tmp_actor
    if actor.in_party == true then
-      tmp_actor = Actor.get(1) --FIXME big hack here. --objlist_party_roster --FIXME get player actor here.
+      tmp_actor = Actor.get_player_actor()
    else
       tmp_actor = wt_front_target_actor
    end

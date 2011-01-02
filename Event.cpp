@@ -1170,6 +1170,25 @@ bool Event::look_cursor()
  return true;
 }
 
+bool Event::pushTo(Obj *obj)
+{
+	scroll->display_string(obj_manager->look_obj(obj));
+	scroll->display_string("\n");
+	bool ok = false;
+	if(obj_manager->can_store_obj(obj,push_obj))
+	{
+		if(obj != push_obj)
+			ok = obj_manager->moveto_container(push_obj, obj);
+	}
+
+	if(!ok)
+		scroll->display_string("Not possible!\n");
+
+    scroll->display_prompt();
+    map_window->reset_mousecenter(); // FIXME: put this in endAction()?
+    endAction();
+    return(true);
+}
 
 /* Move selected object in direction relative to object.
  * (coordinates can be relative to player or object)
@@ -1242,21 +1261,32 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             {
              if(lt.hitObj)
               {
-               // We can place an object on a bench or table. Or on any other object if
-               // the object is passable and not on a boundary.
+               if(obj_manager->can_store_obj(lt.hitObj, push_obj))
+               {
+            	   can_move = obj_manager->moveto_container(push_obj, lt.hitObj);
+               }
+               else
+               {
+				   // We can place an object on a bench or table. Or on any other object if
+				   // the object is passable and not on a boundary.
 
-               obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
-               if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
-                  (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
-                 can_move = true;
+				   obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
+				   if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
+					  (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
+				   {
+					 /* do normal move if no usecode or return from usecode was true */
+					 if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+						can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
+				   }
+               }
               }
             }
          else
-           can_move = true;
-
-        /* do normal move if no usecode or return from usecode was true */
-        if((!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y)) && can_move)
-          can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
+         {
+           /* do normal move if no usecode or return from usecode was true */
+           if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+               can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
+         }
 
         if(!can_move)
           scroll->display_string("Blocked.\n\n");
@@ -1267,6 +1297,13 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     return(true);
 }
 
+bool Event::pushFrom(Obj *obj)
+{
+	scroll->display_string(obj_manager->look_obj(obj));
+	push_obj = obj;
+	get_target("\nTo ");
+	return true;
+}
 
 /* Select object to move. */
 bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
@@ -2455,11 +2492,23 @@ void Event::doAction()
     }
     else if(mode == PUSH_MODE)
     {
-        assert(input.type == EVENTINPUT_MAPCOORD);
-        if(!push_obj && !push_actor)
-            pushFrom(input.loc->sx,input.loc->sy);
-        else
-            pushTo(input.loc->sx,input.loc->sy,PUSH_FROM_OBJECT);
+        assert(input.type == EVENTINPUT_MAPCOORD || input.type == EVENTINPUT_OBJECT);
+        if(input.type == EVENTINPUT_MAPCOORD)
+        {
+			if(!push_obj && !push_actor)
+				pushFrom(input.loc->sx,input.loc->sy);
+			else
+				pushTo(input.loc->sx,input.loc->sy,PUSH_FROM_OBJECT);
+        }
+    	else
+    	{
+    		if(!push_obj)
+    			pushFrom(input.obj);
+    		else
+    		{
+    			pushTo(input.obj);
+    		}
+    	}
     }
     else if(mode == DROP_MODE) // called repeatedly
     {

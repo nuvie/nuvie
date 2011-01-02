@@ -214,7 +214,9 @@ friend class Magic; // FIXME
  bool attack();
 
  bool push_start();
+ bool pushFrom(Obj *obj);
  bool pushFrom(sint16 rel_x, sint16 rel_y);
+ bool pushTo(Obj *obj);
  bool pushTo(sint16 rel_x, sint16 rel_y, bool push_from=PUSH_FROM_PLAYER);
 
  void solo_mode(uint32 actor_num);
