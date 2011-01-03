@@ -2547,9 +2547,21 @@ void Event::doAction()
     }
     else if(mode == CAST_MODE)
     {
-        if(input.type == EVENTINPUT_OBJECT) magic->cast(input.obj);
-        else                                magic->cast();
-        endAction(true);
+    	if(input.type == EVENTINPUT_MAPCOORD)
+    	{
+    		magic->resume(MapCoord(input.loc->x, input.loc->y, input.loc->z));
+    	}
+    	else
+    	{
+			if(input.type == EVENTINPUT_OBJECT)
+				magic->cast(input.obj);
+			else
+				magic->cast();
+    	}
+		if(magic->is_waiting_for_location())
+			get_target("");
+		else
+			endAction(true);
     }
     else
         cancelAction();

@@ -20,6 +20,10 @@ ALIGNMENT_CHAOTIC = 4
 
 -- some common functions
 
+function dbg(msg_string)
+	--print(msg_string)
+end
+
 function alignment_is_evil(align)
    if align == ALIGNMENT_EVIL or align == ALIGNMENT_CHAOTIC then return true end
    

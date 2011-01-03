@@ -2128,6 +2128,7 @@ void U6Actor::add_blood()
   blood = new Obj();
   blood->obj_n = OBJ_U6_BLOOD;
   blood->frame_n = NUVIE_RAND() % 3;
+  blood->status |= OBJ_STATUS_TEMPORARY;
   
   obj_manager->moveto_map(blood, MapCoord(get_x(), get_y(), get_z()));
   

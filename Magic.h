@@ -102,6 +102,8 @@ class Magic : public CallBack {
 //    bool handleSDL_KEYDOWN(const SDL_Event *sdl_event);
     uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
     bool process_script_return(uint8 ret);
+    bool resume(MapCoord location);
+    bool is_waiting_for_location() { if(magic_script) return true; else return false; }
     
 private:
     bool spellbook_has_spell(Obj *book, uint8 spell_index);

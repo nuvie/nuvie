@@ -98,6 +98,7 @@ magic_init("Douse", "af", 0x24, 1, 5, "u6/magic/circle_01/douse.lua");
 magic_init("Harm", "am", 0x84, 1, 6, "u6/magic/circle_01/harm.lua");
 magic_init("Heal", "im", 0x84, 1, 7, "u6/magic/circle_01/heal.lua");
 magic_init("Ignite", "if", 0x84, 1, 9, "u6/magic/circle_01/ignite.lua");
+magic_init("Light", "il", 0x80, 1, 10, "u6/magic/circle_01/light.lua");
 
 magic_init("Poison", "inp", 0x0e, 2, 3, "u6/magic/circle_02/poison.lua");
 magic_init("Telekinesis", "opy", 0x0d, 2, 6, "u6/magic/circle_02/telekinesis.lua");
