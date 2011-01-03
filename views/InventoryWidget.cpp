@@ -471,7 +471,7 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
         DEBUG(0,LEVEL_WARNING,"InventoryWidget: Cannot Move between party members!\n"); 
         return false;
     }
-    if(obj->is_in_inventory())
+    if(obj->is_in_inventory() && obj->is_readied() == false && (target_obj == NULL || obj_manager->can_store_obj(target_obj, obj) == false))
     {
         DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget: Already holding object!\n");
         return false;
@@ -499,6 +499,19 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
     obj = (Obj *)data;
     bool have_object = false;
 
+
+    if(target_obj && obj_manager->can_store_obj(target_obj, obj))
+    {
+    	obj_manager->moveto_container(obj, target_obj);
+    }
+    else
+    {
+    	if(obj->is_readied())
+    		Game::get_game()->get_event()->unready(obj);
+    	else
+    		obj_manager->moveto_inventory(obj, actor);
+    }
+/*
     if(target_obj && target_obj->container && target_obj != obj)
       {
        container_obj = target_obj; //swap to container ready to drop item inside
@@ -529,7 +542,7 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
 //     actor->inventory_add_object(obj);
 //    else
 //     obj_manager->list_add_obj(container_obj->container, obj);
-
+*/
     Redraw();
    }
 

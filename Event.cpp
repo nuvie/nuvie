@@ -1261,7 +1261,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             {
              if(lt.hitObj)
               {
-               if(obj_manager->can_store_obj(lt.hitObj, push_obj))
+               if(obj_manager->can_store_obj(lt.hitObj, push_obj)) //if we are moving onto a container.
                {
             	   can_move = obj_manager->moveto_container(push_obj, lt.hitObj);
                }
@@ -1283,9 +1283,17 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             }
          else
          {
-           /* do normal move if no usecode or return from usecode was true */
-           if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
-               can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
+        	 Obj *obj = obj_manager->get_obj(to.x,to.y,to.z);
+        	 if(obj && obj_manager->can_store_obj(obj, push_obj)) //if we are moving onto a container.
+        	 {
+        		 can_move = obj_manager->moveto_container(push_obj, obj);
+        	 }
+        	 else
+        	 {
+        		 /* do normal move if no usecode or return from usecode was true */
+        		 if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+        			 can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
+        	 }
          }
 
         if(!can_move)
@@ -2158,6 +2166,13 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
 {
     if(mode == WAIT_MODE)
         return false;
+
+    if(obj->get_engine_loc() == OBJ_LOC_MAP) //we can't accept a map to map drag at the moment. FIXME
+    {
+        scroll->display_string("Not possible\n");
+        endAction(true);
+        return false;
+    }
 
     Actor *actor = (obj->is_in_inventory()) // includes held containers
                    ? obj->get_actor_holding_obj()

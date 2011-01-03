@@ -136,6 +136,8 @@ bool ActorManager::load(NuvieIO *objlist)
 
     actors[i]->z = (b3 & 0xf0) >> 4;
     actors[i]->id_n = (uint8)i;
+
+    actors[i]->temp_actor = is_temp_actor(actors[i]->id_n);
    }
 
 // objlist.seek(0x15f1);

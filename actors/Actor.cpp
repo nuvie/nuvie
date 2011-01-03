@@ -1096,20 +1096,11 @@ void Actor::all_items_to_container(Obj *container_obj)
    {
     obj = (Obj *)link->data;
     link = link->next;
-    inventory->remove(obj);
 
     if(temp_actor)
       obj->status |= OBJ_STATUS_TEMPORARY;
-      
-    container_obj->add(obj);
-   }
- 
- for(i=0; i < ACTOR_MAX_READIED_OBJECTS; i++)
-   {
-    if(readied_objects[i])
-      {
-       remove_readied_object(i);
-      }
+
+    obj_manager->moveto_container(obj, container_obj);
    }
 
  return;
