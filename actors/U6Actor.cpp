@@ -1946,6 +1946,7 @@ void U6Actor::die()
       party->resurrect_dead_members();
       party->heal();
       party->show();
+      set_moves_left(1);
      }
    else
      {

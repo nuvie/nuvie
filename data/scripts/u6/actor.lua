@@ -1411,7 +1411,7 @@ end
 --
 function actor_update_all()
 dbg("actor_update_all()\n")
-   local player_loc = player_get_location()
+   
    actor_calculate_avg_coords()
    local actor
    repeat
@@ -1419,6 +1419,7 @@ dbg("actor_update_all()\n")
       local di = 0
       local dex_6 = 1
       repeat
+         local player_loc = player_get_location()
          local var_C = (player_loc.x - 16) - (player_loc.x - 16) % 8
          local var_A = (player_loc.y - 16) - (player_loc.y - 16) % 8
          
