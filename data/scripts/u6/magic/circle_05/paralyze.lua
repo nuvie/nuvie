@@ -5,6 +5,6 @@
      projectile_anim(0x17f, caster.x, caster.y, actor.x, actor.y, 1, 0, 0)
 
      hit_anim(actor.x, actor.y)
-     --FIXME set actor paralyzed flag here.
+     actor.paralyzed = true
      print(actor.name.." is paralyzed.\n")
   end

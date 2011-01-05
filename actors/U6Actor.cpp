@@ -893,6 +893,66 @@ void U6Actor::set_poisoned(bool poisoned)
   }
 }
 
+void U6Actor::set_paralyzed(bool paralyzed)
+{
+	if(paralyzed)
+	{
+		status_flags |= ACTOR_STATUS_PARALYZED;
+	}
+	else
+	{
+		status_flags &= (0xff ^ ACTOR_STATUS_PARALYZED);
+	}
+}
+
+void U6Actor::set_protected(bool val)
+{
+	if(val)
+	{
+		status_flags |= ACTOR_STATUS_PROTECTED;
+	}
+	else
+	{
+		status_flags &= (0xff ^ ACTOR_STATUS_PROTECTED);
+	}
+}
+
+void U6Actor::set_charmed(bool val)
+{
+	if(val)
+	{
+		status_flags |= OBJ_STATUS_CHARMED;
+	}
+	else
+	{
+		status_flags &= (0xff ^ OBJ_STATUS_CHARMED);
+	}
+}
+
+void U6Actor::set_cursed(bool val)
+{
+	if(val)
+	{
+		status_flags |= OBJ_STATUS_CURSED;
+	}
+	else
+	{
+		status_flags &= (0xff ^ OBJ_STATUS_CURSED);
+	}
+}
+
+void U6Actor::set_asleep(bool val)
+{
+	if(val)
+	{
+		status_flags |= ACTOR_STATUS_ASLEEP;
+	}
+	else
+	{
+		status_flags &= (0xff ^ ACTOR_STATUS_ASLEEP);
+	}
+}
+
 void U6Actor::preform_worktype()
 {
  switch(worktype)

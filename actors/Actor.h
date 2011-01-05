@@ -77,6 +77,7 @@ using std::vector;
 #define ACTOR_STATUS_IN_PARTY  0x80
 #define ACTOR_STATUS_ALIGNMENT_MASK 0x60
 
+#define ACTOR_OBJ_FLAG_
 #define ACTOR_NO_ERROR 0
 #define ACTOR_OUT_OF_MOVES 1
 #define ACTOR_BLOCKED 2
@@ -272,6 +273,9 @@ class Actor
  virtual bool is_immobile(); // frozen by worktype or status
  virtual bool is_sleeping() { return(status_flags & ACTOR_STATUS_ASLEEP); }
  virtual bool is_paralyzed() { return(status_flags & ACTOR_STATUS_PARALYZED); }
+ virtual bool is_protected() { return(status_flags & ACTOR_STATUS_PROTECTED); }
+ virtual bool is_charmed() { return(obj_flags & OBJ_STATUS_CHARMED); }
+ virtual bool is_cursed() { return(obj_flags & OBJ_STATUS_CURSED); }
 
  void set_name(const char *actor_name) {  name=actor_name; }
  const char *get_name();
@@ -318,6 +322,12 @@ class Actor
  void set_moves_left(sint8 val);
  virtual void update_time() { set_moves_left(get_moves_left() + get_dexterity()); }
  virtual void set_poisoned(bool poisoned) { return; }
+ virtual void set_paralyzed(bool paralyzed) { return; }
+ virtual void set_protected(bool val) { return; }
+ virtual void set_charmed(bool val) { return; }
+ virtual void set_cursed(bool val) { return; }
+ virtual void set_asleep(bool val) { return; }
+
  void set_invisible(bool invisible);
 
  uint8 get_worktype();

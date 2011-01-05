@@ -91,6 +91,11 @@ class U6Actor: public Actor
  void twitch();
  void die();
  void set_poisoned(bool poisoned);
+ void set_paralyzed(bool paralyzed);
+ void set_protected(bool val);
+ void set_charmed(bool val);
+ void set_cursed(bool val);
+ void set_asleep(bool val);
  bool combat_try_attack(ActorList *enemies);
  bool combat_try_attack(U6Actor *enemy);
 

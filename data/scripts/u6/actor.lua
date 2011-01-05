@@ -338,11 +338,11 @@ function actor_get_max_magic_points(actor)
 end
 
 function actor_str_adj(actor)
-   --FIXME
-   --if actor flag bit 6 not set then
-   -- return strength unadjusted
    
    local str = actor.str
+
+   if actor.cursed == false then return str end
+   
    if str <= 3 then
       return 1
    end
@@ -375,8 +375,10 @@ end
 
 function actor_int_adj(actor)
    local int = actor.int
-   
-   --FIXME if mutant/cursed actor flag 0x40 then subtract 3 points
+
+   if actor.cursed == true then
+     int = int - 3
+   end
    
    if int < 1 then int = 1 end
    
@@ -1431,7 +1433,7 @@ dbg("actor_update_all()\n")
          
          for i=1,0x100 do
             local actor = Actor.get(i)
-            if actor.obj_n ~= 0 then --not paralysed not asleep
+            if actor.obj_n ~= 0 and actor.paralyzed == false and actor.asleep == false then
                if actor.wt ~= WT_NOTHING and actor.alive == true and actor.mpts > 0 and actor.z == player_loc.z then
                   if abs(actor.x - var_C) > 0x27 or abs(actor.y - var_A) > 0x27 then
                      if actor.wt >= 0x83 and actor.wt <= 0x86 then
@@ -1472,9 +1474,11 @@ dbg("actor_update_all()\n")
                   end
                   
                   actor.mpts = m
+                  actor_update_flags(actor);
                end
             end
-            --advance_time(1)
+            --FIXME advance_time(1)
+
          end
       until di > 0
       
@@ -1491,6 +1495,56 @@ dbg("actor_update_all()\n")
       --end --corsper bit == 0
 
    until selected_actor.obj_n ~= 0 and selected_actor.wt == WT_PLAYER -- and actor_num.corpser_bit not set.
+end
+
+function actor_update_flags(actor)
+
+	local random = math.random
+		
+	if actor.alive then
+	
+		if actor.visible == false and var_8 == 0 and random(0, 0x3f) == 0 then
+			if actor_int_adj(actor) <= random(1, 0x1e) then
+				actor.visible = true
+			end
+		end
+		
+		if actor.protected == true and random(0, 0x3f) == 0 then
+			if actor_int_adj(actor) <= random(1, 0x1e) then
+				actor.protected = false
+			end
+		end
+		
+		if actor.cursed == true and random(0, 15) == 0 then
+			if actor_int_adj(actor) >= random(1, 0x1e) then
+				actor.cursed = false
+			end
+		end
+		
+		if actor.charmed == true and random(0, 7) == 0 then
+			if actor_int_adj(actor) >= random(1, 0x1e) then
+				--FIXME spell_remove_charm(actor)
+			end
+		end
+		
+		if actor.paralyzed == true and random(0, 3) == 0 then
+			if actor_str_adj(actor) >= random(1, 0x1e) then
+				actor.paralyzed = false
+			end
+		end
+		
+		if actor.asleep == true and actor.wt ~= WT_SLEEP and random(0, 15) == 0 then
+			actor.asleep = false
+			--FIXME restore actor frame_n here.
+			--* (& objlist_npc_movement_flags + actor) = * (bx + actor) | 8
+			--actor.frame_n = actor.old_frame_n
+		end
+		
+		if actor.poisoned == true and actor.protected == false and random(0, 7) == 0 then
+			actor_hit(actor, 1) --FIXME we need to remove the poison hit from the C code now.
+		end
+	end
+
 end
 
 local tangle_vine_frame_n_tbl = {

@@ -85,7 +85,10 @@ static const struct luaL_Reg nscript_actorlib_m[] =
 static const char *actor_set_vars[] =
 {
    "align",
+   "asleep",
+   "charmed",
    "combat_mode",
+   "cursed",
    "dex",
    "direction",
    "exp",
@@ -96,6 +99,9 @@ static const char *actor_set_vars[] =
    "magic",
    "mpts",
    "obj_n",
+   "paralyzed",
+   "poisoned",
+   "protected",
    "str",
    "wt",
    "x",
@@ -108,7 +114,10 @@ static const char *actor_get_vars[] =
 {
    "align",
    "alive",
+   "asleep",
+   "charmed",
    "combat_mode",
+   "cursed",
    "dex",
    "direction",
    "exp",
@@ -122,6 +131,9 @@ static const char *actor_get_vars[] =
    "mpts",
    "name",
    "obj_n",
+   "paralyzed",
+   "poisoned",
+   "protected",
    "sched_loc",
    "str",
    "visible",
@@ -133,7 +145,10 @@ static const char *actor_get_vars[] =
 
 //Actor set
 static int nscript_actor_set_align(Actor *actor, lua_State *L);
+static int nscript_actor_set_asleep_flag(Actor *actor, lua_State *L);
+static int nscript_actor_set_charmed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_combat_mode(Actor *actor, lua_State *L);
+static int nscript_actor_set_cursed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_dexterity(Actor *actor, lua_State *L);
 static int nscript_actor_set_direction(Actor *actor, lua_State *L);
 static int nscript_actor_set_exp(Actor *actor, lua_State *L);
@@ -144,7 +159,11 @@ static int nscript_actor_set_level(Actor *actor, lua_State *L);
 static int nscript_actor_set_magic(Actor *actor, lua_State *L);
 static int nscript_actor_set_movement_pts(Actor *actor, lua_State *L);
 static int nscript_actor_set_obj_n(Actor *actor, lua_State *L);
+static int nscript_actor_set_paralyzed_flag(Actor *actor, lua_State *L);
+static int nscript_actor_set_poisoned_flag(Actor *actor, lua_State *L);
+static int nscript_actor_set_protected_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_strength(Actor *actor, lua_State *L);
+static int nscript_actor_set_visible_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_worktype(Actor *actor, lua_State *L);
 static int nscript_actor_set_x(Actor *actor, lua_State *L);
 static int nscript_actor_set_y(Actor *actor, lua_State *L);
@@ -153,7 +172,10 @@ static int nscript_actor_set_z(Actor *actor, lua_State *L);
 int (*actor_set_func[])(Actor *, lua_State *) =
 {
    nscript_actor_set_align,
+   nscript_actor_set_asleep_flag,
+   nscript_actor_set_charmed_flag,
    nscript_actor_set_combat_mode,
+   nscript_actor_set_cursed_flag,
    nscript_actor_set_dexterity,
    nscript_actor_set_direction,
    nscript_actor_set_exp,
@@ -164,7 +186,11 @@ int (*actor_set_func[])(Actor *, lua_State *) =
    nscript_actor_set_magic,
    nscript_actor_set_movement_pts,
    nscript_actor_set_obj_n,
+   nscript_actor_set_paralyzed_flag,
+   nscript_actor_set_poisoned_flag,
+   nscript_actor_set_protected_flag,
    nscript_actor_set_strength,
+   nscript_actor_set_visible_flag,
    nscript_actor_set_worktype,
    nscript_actor_set_x,
    nscript_actor_set_y,
@@ -174,7 +200,10 @@ int (*actor_set_func[])(Actor *, lua_State *) =
 //Actor get
 static int nscript_actor_get_align(Actor *actor, lua_State *L);
 static int nscript_actor_get_alive(Actor *actor, lua_State *L);
+static int nscript_actor_get_asleep_flag(Actor *actor, lua_State *L);
+static int nscript_actor_get_charmed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_combat_mode(Actor *actor, lua_State *L);
+static int nscript_actor_get_cursed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_dexterity(Actor *actor, lua_State *L);
 static int nscript_actor_get_direction(Actor *actor, lua_State *L);
 static int nscript_actor_get_exp(Actor *actor, lua_State *L);
@@ -188,9 +217,12 @@ static int nscript_actor_get_magic(Actor *actor, lua_State *L);
 static int nscript_actor_get_movement_pts(Actor *actor, lua_State *L);
 static int nscript_actor_get_name(Actor *actor, lua_State *L);
 static int nscript_actor_get_obj_n(Actor *actor, lua_State *L);
+static int nscript_actor_get_paralyzed_flag(Actor *actor, lua_State *L);
+static int nscript_actor_get_poisoned_flag(Actor *actor, lua_State *L);
+static int nscript_actor_get_protected_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_sched_loc(Actor *actor, lua_State *L);
 static int nscript_actor_get_strength(Actor *actor, lua_State *L);
-static int nscript_actor_get_visible(Actor *actor, lua_State *L);
+static int nscript_actor_get_visible_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_worktype(Actor *actor, lua_State *L);
 static int nscript_actor_get_x(Actor *actor, lua_State *L);
 static int nscript_actor_get_y(Actor *actor, lua_State *L);
@@ -200,7 +232,10 @@ int (*actor_get_func[])(Actor *, lua_State *) =
 {
    nscript_actor_get_align,
    nscript_actor_get_alive,
+   nscript_actor_get_asleep_flag,
+   nscript_actor_get_charmed_flag,
    nscript_actor_get_combat_mode,
+   nscript_actor_get_cursed_flag,
    nscript_actor_get_dexterity,
    nscript_actor_get_direction,
    nscript_actor_get_exp,
@@ -214,9 +249,12 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_movement_pts,
    nscript_actor_get_name,
    nscript_actor_get_obj_n,
+   nscript_actor_get_paralyzed_flag,
+   nscript_actor_get_poisoned_flag,
+   nscript_actor_get_protected_flag,
    nscript_actor_get_sched_loc,
    nscript_actor_get_strength,
-   nscript_actor_get_visible,
+   nscript_actor_get_visible_flag,
    nscript_actor_get_worktype,
    nscript_actor_get_x,
    nscript_actor_get_y,
@@ -418,10 +456,28 @@ static int nscript_actor_set_align(Actor *actor, lua_State *L)
    return 0;
 }
 
+static int nscript_actor_set_asleep_flag(Actor *actor, lua_State *L)
+{
+	actor->set_asleep(lua_toboolean(L, 3));
+	return 0;
+}
+
+static int nscript_actor_set_charmed_flag(Actor *actor, lua_State *L)
+{
+	actor->set_charmed(lua_toboolean(L, 3));
+	return 0;
+}
+
 static int nscript_actor_set_combat_mode(Actor *actor, lua_State *L)
 {
    actor->set_combat_mode((uint8)lua_tointeger(L, 3));
    return 0;
+}
+
+static int nscript_actor_set_cursed_flag(Actor *actor, lua_State *L)
+{
+	actor->set_cursed(lua_toboolean(L, 3));
+	return 0;
 }
 
 static int nscript_actor_set_dexterity(Actor *actor, lua_State *L)
@@ -484,10 +540,34 @@ static int nscript_actor_set_obj_n(Actor *actor, lua_State *L)
    return 0;
 }
 
+static int nscript_actor_set_paralyzed_flag(Actor *actor, lua_State *L)
+{
+	actor->set_paralyzed(lua_toboolean(L, 3));
+	return 0;
+}
+
+static int nscript_actor_set_poisoned_flag(Actor *actor, lua_State *L)
+{
+	actor->set_poisoned(lua_toboolean(L, 3));
+	return 0;
+}
+
+static int nscript_actor_set_protected_flag(Actor *actor, lua_State *L)
+{
+	actor->set_protected(lua_toboolean(L, 3));
+	return 0;
+}
+
 static int nscript_actor_set_strength(Actor *actor, lua_State *L)
 {
    actor->set_strength((uint8)lua_tointeger(L, 3));
    return 0;
+}
+
+static int nscript_actor_set_visible_flag(Actor *actor, lua_State *L)
+{
+	actor->set_invisible(!lua_toboolean(L, 3)); //negate value before passing back to actor.
+	return 0;
 }
 
 static int nscript_actor_set_worktype(Actor *actor, lua_State *L)
@@ -542,9 +622,24 @@ static int nscript_actor_get_alive(Actor *actor, lua_State *L)
    lua_pushboolean(L, actor->is_alive()); return 1;
 }
 
+static int nscript_actor_get_asleep_flag(Actor *actor, lua_State *L)
+{
+	lua_pushboolean(L, (int)actor->is_sleeping()); return 1;
+}
+
+static int nscript_actor_get_cursed_flag(Actor *actor, lua_State *L)
+{
+	lua_pushboolean(L, (int)actor->is_cursed()); return 1;
+}
+
 static int nscript_actor_get_combat_mode(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_combat_mode()); return 1;
+}
+
+static int nscript_actor_get_charmed_flag(Actor *actor, lua_State *L)
+{
+	lua_pushboolean(L, (int)actor->is_charmed()); return 1;
 }
 
 static int nscript_actor_get_dexterity(Actor *actor, lua_State *L)
@@ -612,6 +707,21 @@ static int nscript_actor_get_obj_n(Actor *actor, lua_State *L)
    lua_pushinteger(L, actor->get_obj_n()); return 1;
 }
 
+static int nscript_actor_get_paralyzed_flag(Actor *actor, lua_State *L)
+{
+	lua_pushboolean(L, (int)actor->is_paralyzed()); return 1;
+}
+
+static int nscript_actor_get_poisoned_flag(Actor *actor, lua_State *L)
+{
+	lua_pushboolean(L, (int)actor->is_poisoned()); return 1;
+}
+
+static int nscript_actor_get_protected_flag(Actor *actor, lua_State *L)
+{
+	lua_pushboolean(L, (int)actor->is_protected()); return 1;
+}
+
 static int nscript_actor_get_sched_loc(Actor *actor, lua_State *L)
 {
    MapCoord sched_loc;
@@ -640,7 +750,7 @@ static int nscript_actor_get_strength(Actor *actor, lua_State *L)
    lua_pushinteger(L, actor->get_strength()); return 1;
 }
 
-static int nscript_actor_get_visible(Actor *actor, lua_State *L)
+static int nscript_actor_get_visible_flag(Actor *actor, lua_State *L)
 {
    lua_pushboolean(L, (int)actor->is_visible()); return 1;
 }
