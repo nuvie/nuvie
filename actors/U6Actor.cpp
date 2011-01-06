@@ -500,7 +500,7 @@ void U6Actor::set_direction(uint8 d)
  direction = d;
 
  //only change direction frame if the actor can twitch ie isn't sitting or in bed etc.
- if(can_move)
+ if(can_move && obj_n != OBJ_U6_SLIME)
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction +
              (walk_frame * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
 
@@ -852,7 +852,7 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 t
 void U6Actor::twitch()
 {
 
- if(can_move == false || actor_type->twitch_rand == 0)
+ if(is_paralyzed() == true || can_move == false || actor_type->twitch_rand == 0)
    return;
 
  if(NUVIE_RAND()%actor_type->twitch_rand == 1)

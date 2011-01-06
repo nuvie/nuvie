@@ -1502,7 +1502,7 @@ function actor_update_flags(actor)
 	local random = math.random
 		
 	if actor.alive then
-	
+		local var_8 = 0 --FIXME get proper value for var_8.
 		if actor.visible == false and var_8 == 0 and random(0, 0x3f) == 0 then
 			if actor_int_adj(actor) <= random(1, 0x1e) then
 				actor.visible = true
@@ -1523,7 +1523,7 @@ function actor_update_flags(actor)
 		
 		if actor.charmed == true and random(0, 7) == 0 then
 			if actor_int_adj(actor) >= random(1, 0x1e) then
-				--FIXME spell_remove_charm(actor)
+				actor_remove_charm(actor)
 			end
 		end
 		
@@ -1545,6 +1545,27 @@ function actor_update_flags(actor)
 		end
 	end
 
+end
+
+function actor_remove_charm(actor)
+
+	actor.charm = false;
+	--FIXME actor.align = actor.old_align --stored in bits 5/6 in actor movement flags
+	
+	if actor.in_party == true then
+		actor.align = ALIGNMENT_GOOD
+	end
+	--[[ FIXME need to add functions to check for combat_mode and solo_mode
+	if party_in_combat_mode() then
+		actor.wt = combat_mode
+	else
+		if solo_mode() then
+			actor.wt = WT_NOTHING
+		else
+			actor.wt = WT_FOLLOW
+		end
+	end
+	--]]
 end
 
 local tangle_vine_frame_n_tbl = {
