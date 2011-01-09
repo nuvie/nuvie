@@ -331,6 +331,7 @@ class Actor
  void set_invisible(bool invisible);
 
  uint8 get_worktype();
+ uint8 get_sched_worktype();
  virtual void set_worktype(uint8 new_worktype);
  uint8 get_combat_mode() { return combat_mode; }
  void set_combat_mode(uint8 new_mode)  { combat_mode = new_mode; }
@@ -431,7 +432,7 @@ class Actor
  virtual bool morph(uint16 obj_n); // change actor type
  
  bool get_schedule_location(MapCoord *loc);
-   
+ bool is_at_scheduled_location();
  protected:
 
  void loadSchedule(unsigned char *schedule_data, uint16 num);

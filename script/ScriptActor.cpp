@@ -53,6 +53,8 @@ static int nscript_actor_inv_ready_obj(lua_State *L);
 static int nscript_actor_inv_has_obj_n(lua_State *L);
 static int nscript_actor_inv_get_obj_total_qty(lua_State *L);
 static int nscript_actor_move(lua_State *L);
+static int nscript_actor_walk_path(lua_State *L);
+static int nscript_actor_is_at_scheduled_location(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -62,6 +64,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "hit", nscript_actor_hit },
    { "resurrect", nscript_actor_resurrect },
    { "move", nscript_actor_move },
+   { "walk_path", nscript_actor_walk_path },
    { "get", nscript_get_actor_from_num },
    { "get_player_actor", nscript_get_player_actor },
    { "inv_add_obj", nscript_actor_inv_add_obj },
@@ -70,6 +73,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "inv_ready_obj", nscript_actor_inv_ready_obj },
    { "inv_has_obj_n", nscript_actor_inv_has_obj_n },
    { "inv_get_obj_total_qty", nscript_actor_inv_get_obj_total_qty },
+   { "is_at_scheduled_location", nscript_actor_is_at_scheduled_location },
 
    { NULL, NULL }
 };
@@ -103,6 +107,7 @@ static const char *actor_set_vars[] =
    "poisoned",
    "protected",
    "str",
+   "visible",
    "wt",
    "x",
    "y",
@@ -135,6 +140,7 @@ static const char *actor_get_vars[] =
    "poisoned",
    "protected",
    "sched_loc",
+   "sched_wt",
    "str",
    "visible",
    "wt",
@@ -221,6 +227,7 @@ static int nscript_actor_get_paralyzed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_poisoned_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_protected_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_sched_loc(Actor *actor, lua_State *L);
+static int nscript_actor_get_sched_worktype(Actor *actor, lua_State *L);
 static int nscript_actor_get_strength(Actor *actor, lua_State *L);
 static int nscript_actor_get_visible_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_worktype(Actor *actor, lua_State *L);
@@ -253,6 +260,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_poisoned_flag,
    nscript_actor_get_protected_flag,
    nscript_actor_get_sched_loc,
+   nscript_actor_get_sched_worktype,
    nscript_actor_get_strength,
    nscript_actor_get_visible_flag,
    nscript_actor_get_worktype,
@@ -745,6 +753,11 @@ static int nscript_actor_get_sched_loc(Actor *actor, lua_State *L)
    return 1;
 }
 
+static int nscript_actor_get_sched_worktype(Actor *actor, lua_State *L)
+{
+	lua_pushinteger(L, actor->get_sched_worktype()); return 1;
+}
+
 static int nscript_actor_get_strength(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_strength()); return 1;
@@ -820,6 +833,27 @@ static int nscript_actor_move(lua_State *L)
    lua_pushboolean(L, (int)actor->move(x, y, z));
 
    return 1;
+}
+
+static int nscript_actor_walk_path(lua_State *L)
+{
+	   Actor *actor = nscript_get_actor_from_args(L);
+	   if(actor == NULL)
+	      return 0;
+
+	   actor->update(); //FIXME this should be specific to pathfinding.
+
+	   return 0;
+}
+
+static int nscript_actor_is_at_scheduled_location(lua_State *L)
+{
+	   Actor *actor = nscript_get_actor_from_args(L);
+	   if(actor == NULL)
+	      return 0;
+
+	   lua_pushboolean(L, actor->is_at_scheduled_location());
+	   return 1;
 }
 
 static int nscript_actor_resurrect(lua_State *L)

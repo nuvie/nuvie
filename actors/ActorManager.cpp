@@ -113,6 +113,8 @@ bool ActorManager::load(NuvieIO *objlist)
 
  config->value("config/GameType",game_type);
 
+ game_hour = clock->get_hour(); //this assumes that clock->load() is called first.
+
  objlist->seek(0x100); // Start of Actor position info
 
  for(i=0; i < ACTORMANAGER_MAX_ACTORS; i++)
@@ -600,12 +602,12 @@ void ActorManager::startActors()
 // After all actors move, refresh move counts and add time.
 void ActorManager::updateTime()
 {
-    if(!update)
-        return;
+  //  if(!update)
+  //      return;
 
 //DEBUG(0,LEVEL_DEBUGGING,"updateTime(): ");
-    for(int i=0; i<ACTORMANAGER_MAX_ACTORS; i++)
-        actors[i]->update_time(); // **UPDATE MOVES LEFT**
+ //   for(int i=0; i<ACTORMANAGER_MAX_ACTORS; i++)
+ //       actors[i]->update_time(); // **UPDATE MOVES LEFT**
     clock->inc_minute(); // **UPDATE TIME**
 //DEBUG(0,LEVEL_DEBUGGING,"%d:%02d\n",clock->get_hour(),clock->get_minute());
     uint8 cur_hour = clock->get_hour();
@@ -648,7 +650,7 @@ void ActorManager::moveActors()
         return;// nothing to do
 
    Game::get_game()->get_script()->call_actor_update_all();
-   
+   updateTime();
    stopActors();
    return;
    

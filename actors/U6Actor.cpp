@@ -433,10 +433,10 @@ void U6Actor::update()
 // if(in_party && !party->is_in_combat_mode() && party->get_actor(party->get_leader()) != this)
 //  set_worktype(WORKTYPE_U6_IN_PARTY); // revert to normal worktype
 
- preform_worktype();
+ //preform_worktype();
 
- if(is_poisoned())
-  updatePoison();
+ //if(is_poisoned())
+ // updatePoison();
 
  return;
 }
@@ -447,7 +447,11 @@ bool U6Actor::updateSchedule(uint8 hour)
  if((ret = Actor::updateSchedule(hour)) == true) //walk to next schedule location if required.
    {
     if(sched[sched_pos] != NULL && (sched[sched_pos]->x != x || sched[sched_pos]->y != y || sched[sched_pos]->z != z))
+    {
        set_worktype(WORKTYPE_U6_WALK_TO_LOCATION);
+       MapCoord loc(sched[sched_pos]->x, sched[sched_pos]->y, sched[sched_pos]->z);
+       pathfind_to(loc);
+    }
    }
 
  return ret;
@@ -1024,6 +1028,19 @@ void U6Actor::set_worktype(uint8 new_worktype)
   }
 }
 
+
+void U6Actor::pathfind_to(MapCoord &d)
+{
+    if(pathfinder)
+    {
+        pathfinder->set_actor(this);
+        pathfinder->set_goal(d);
+    }
+    else
+        set_pathfinder(new SchedPathFinder(this, d, new U6AStarPath));
+
+    pathfinder->update_location();
+}
 
 void U6Actor::wt_walk_to_location()
 {

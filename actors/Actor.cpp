@@ -184,6 +184,14 @@ uint8 Actor::get_worktype()
  return worktype;
 }
 
+uint8 Actor::get_sched_worktype()
+{
+	if(sched[sched_pos])
+		return sched[sched_pos]->worktype;
+
+	return 0; //no worktype
+}
+
 uint16 Actor::get_downward_facing_tile_num()
 {
  return obj_manager->get_obj_tile_num(obj_n) + frame_n;
@@ -1869,3 +1877,11 @@ bool Actor::get_schedule_location(MapCoord *loc)
    loc->z = sched[sched_pos]->z;   
    return true;
 }   
+
+bool Actor::is_at_scheduled_location()
+{
+   if(sched[sched_pos] != NULL && x == sched[sched_pos]->x && y == sched[sched_pos]->y && z == sched[sched_pos]->z)
+	   return true;
+
+   return false;
+}

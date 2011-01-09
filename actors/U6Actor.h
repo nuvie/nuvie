@@ -114,6 +114,7 @@ class U6Actor: public Actor
  bool can_be_passed(Actor *other);
 
  void set_actor_obj_n(uint16 new_obj_n);
+ void pathfind_to(MapCoord &d);
 
  protected:
  bool init_ship();

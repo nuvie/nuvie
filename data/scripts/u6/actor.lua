@@ -26,6 +26,7 @@ WT_GUARD_WALK_NORTH_SOUTH = 0x10
 --12
 WT_UNK_13                 = 0x13
 
+WT_WALK_TO_LOCATION       = 0x86
 WT_FACE_NORTH             = 0x87
 WT_FACE_EAST              = 0x88
 WT_FACE_SOUTH             = 0x89
@@ -2220,6 +2221,15 @@ function actor_wt_unfriendly(actor)
 	return
 end
 
+function actor_wt_walk_to_location(actor)
+	Actor.walk_path(actor)
+	if Actor.is_at_scheduled_location(actor) then
+		actor.wt = actor.sched_wt
+	end
+
+	subtract_movement_pts(actor, 5) --FIXME what's the movement cost for pathfinding?
+end
+
 wt_tbl = {
 [WT_NOTHING] = {"WT_NOTHING", perform_worktype},
 [WT_FRONT] = {"WT_FRONT", actor_wt_front},
@@ -2239,6 +2249,7 @@ wt_tbl = {
 --11
 --12
 [WT_UNK_13] = {"WT_UNK_13", actor_wt_timid},
+[WT_WALK_TO_LOCATION] = {"WT_WALK_TO_LOCATION", actor_wt_walk_to_location},
 [WT_WALK_NORTH_SOUTH] = {"WT_WALK_NORTH_SOUTH", actor_wt_walk_straight},
 [WT_WALK_EAST_WEST]   = {"WT_WALK_EAST_WEST", actor_wt_walk_straight},
 [WT_WALK_SOUTH_NORTH] = {"WT_WALK_SOUTH_NORTH", actor_wt_walk_straight},
