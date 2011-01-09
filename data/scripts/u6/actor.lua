@@ -40,7 +40,7 @@ WT_WORK                   = 0x90
 WT_SLEEP                  = 0x91
 
 
-
+WT_UNK_94                 = 0x94
 WT_PLAY_LUTE              = 0x95
 WT_BEG                    = 0x96
 
@@ -2255,6 +2255,9 @@ wt_tbl = {
 [WT_WALK_SOUTH_NORTH] = {"WT_WALK_SOUTH_NORTH", actor_wt_walk_straight},
 [WT_WALK_WEST_EAST]   = {"WT_WALK_WEST_EAST", actor_wt_walk_straight},
 [WT_WANDER_AROUND] = {"WT_WANDER_AROUND", actor_move_towards_player},
+[WT_WORK] = {"WT_WORK", actor_wt_wander_around},
+[WT_UNK_94] = {"WT_UNK_94", actor_wt_wander_around},
+[WT_ATTACK_PARTY] = {"WT_ATTACK_PARTY", actor_wt_attack},
 [WT_MOUSE] = {"WT_MOUSE", actor_wt_timid}
 
 --[WT_] = {"WT_", actor_wt_rear}
