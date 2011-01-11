@@ -281,6 +281,13 @@ bool ActorManager::load(NuvieIO *objlist)
     actors[i]->talk_flags = objlist->read1();
    }
 
+ objlist->seek(0x19f1);
+
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++) //movement flags.
+   {
+    actors[i]->movement_flags = objlist->read1();
+   }
+
  loadActorSchedules();
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
@@ -458,6 +465,12 @@ bool ActorManager::save(NuvieIO *objlist)
     objlist->write1(actors[i]->talk_flags);
    }
 
+ objlist->seek(0x19f1);
+
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++) //movement flags.
+   {
+	objlist->write1(actors[i]->movement_flags);
+   }
 /*
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {

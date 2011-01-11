@@ -208,6 +208,7 @@ class Actor
  uint8 obj_flags;
  uint8 status_flags;
  uint8 talk_flags;
+ uint8 movement_flags; //0x19f1
  
  bool can_move;
  bool alive;
@@ -266,6 +267,8 @@ class Actor
  bool is_nearby(MapCoord &where, uint8 thresh = 5);
  bool is_at_position(Obj *obj);
  bool is_passable();
+ bool is_temp() { return temp_actor; }
+
  //for lack of a better name:
  bool is_met() { return(talk_flags & 0x01); }
  bool is_poisoned() { return(status_flags & ACTOR_STATUS_POISONED); }
@@ -276,6 +279,7 @@ class Actor
  virtual bool is_protected() { return(status_flags & ACTOR_STATUS_PROTECTED); }
  virtual bool is_charmed() { return(obj_flags & OBJ_STATUS_CHARMED); }
  virtual bool is_cursed() { return(obj_flags & OBJ_STATUS_CURSED); }
+ virtual bool get_corpser_flag() { return false; }
 
  void set_name(const char *actor_name) {  name=actor_name; }
  const char *get_name();
@@ -290,6 +294,7 @@ class Actor
  virtual ActorTileType get_tile_type() { return(ACTOR_ST); }
 
  uint16 get_frame_n() { return(frame_n); }
+ uint16 get_old_frame_n() { return(old_frame_n); }
  uint16 get_x() { return(x); }
  uint16 get_y() { return(y); }
  uint8  get_z() { return(z); }
@@ -325,6 +330,7 @@ class Actor
  virtual void set_paralyzed(bool paralyzed) { return; }
  virtual void set_protected(bool val) { return; }
  virtual void set_charmed(bool val) { return; }
+ virtual void set_corpser_flag(bool val) { return; }
  virtual void set_cursed(bool val) { return; }
  virtual void set_asleep(bool val) { return; }
 

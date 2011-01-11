@@ -35,6 +35,8 @@
 
 #define REMOVE_SURROUNDING_OBJS true
 
+#define ACTOR_MOVEMENT_FLAGS_CORPSER  0x10
+
 typedef struct {
  uint16 base_obj_n;
  uint8 frames_per_direction;
@@ -94,6 +96,7 @@ class U6Actor: public Actor
  void set_paralyzed(bool paralyzed);
  void set_protected(bool val);
  void set_charmed(bool val);
+ void set_corpser_flag(bool val);
  void set_cursed(bool val);
  void set_asleep(bool val);
  bool combat_try_attack(ActorList *enemies);
@@ -111,6 +114,7 @@ class U6Actor: public Actor
 
  bool is_immobile(); // frozen by worktype or status
  bool is_sleeping();
+ bool get_corpser_flag() { return(movement_flags & ACTOR_MOVEMENT_FLAGS_CORPSER); }
  bool can_be_passed(Actor *other);
 
  void set_actor_obj_n(uint16 new_obj_n);

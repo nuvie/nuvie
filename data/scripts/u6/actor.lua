@@ -819,7 +819,8 @@ function actor_take_hit(attacker, defender, max_dmg)
    end
    
    local ac
-   if defender.luatype == "actor" then
+   local defender_type = defender.luatype
+   if defender_type == "actor" then
       ac = actor_get_ac(defender)
       if max_dmg ~= 255 and ac > 0 then
          max_dmg = max_dmg - math.random(1, ac)
@@ -830,7 +831,7 @@ function actor_take_hit(attacker, defender, max_dmg)
    end
    
    if max_dmg > 0 then
-      if defender.luatype == "actor" and defender.wt > 1 and defender.wt < 16 then
+      if defender_type == "actor" and defender.wt > 1 and defender.wt < 16 then
          --FIXME defender now targets attacker. I think.
       end
       --FIXME hit defending actor properly here.
@@ -842,6 +843,28 @@ function actor_take_hit(attacker, defender, max_dmg)
       attacker.exp = attacker.exp + exp_gained
    else
       print(defender.name.." grazed.\n")
+   end
+   
+   if defender_type == "actor" then
+      actor_yell_for_help(attacker, defender, max_dmg)
+      
+      if defender.alive == true 
+        or defender.obj_n == 0x1a7 --balloon
+        or defender.obj_n == 0x19e --skiff
+        or defender.obj_n == 0x19f --raft
+        or defender.obj_n == 0x19c then --ship
+        
+         if attacker.obj_n == 0x165 then --corpser
+            print("`"..defender.name.." dragged under!\n")
+            defender.corpser_flag = true
+         end
+         --FIXME add more logic from combat_hit_actor here.
+         --acid slug disolves, gremlin, poison etc.
+      else
+         print("`"..defender.name.." killed!\n")
+         --FIXME do party roster change. maybe
+      end
+      
    end
 end
 
@@ -973,7 +996,7 @@ end
 function combat_range_check_target(actor_attacking)
 
    if actor_attacking.wt > 1 and actor_attacking.wt < 0x10 then
---[[
+--[[ FIXME
       target = actor_attacking.target_obj
       if target ~= actor_attacking then
       
@@ -1476,26 +1499,34 @@ dbg("actor_update_all()\n")
                   
                   actor.mpts = m
                   actor_update_flags(actor);
+                  if actor.wt == WT_FOLLOW and actor.corpser_flag == true then
+                     actor_corpser_regurgitation(actor) --hack the original does this in party_move() but we don't have that in script yet.
+                  end
                end
             end
             --FIXME advance_time(1)
 
          end
       until di > 0
-      
-      --if actor.corpser_bit == 0 then
-      if selected_actor.wt ~= WT_PLAYER and selected_actor.wt ~= WT_FOLLOW then
-         dbg("perform_worktype("..selected_actor.name.." dex = "..selected_actor.dex.." mpts = "..selected_actor.mpts..").\n")
-         perform_worktype(selected_actor)
-         --sub_1C34A() --update map window??
-         if selected_actor.wt > 1 and selected_actor.wt < 0x10 then
-            --do *(&objlist_ptr_unk_18f1 + actor_num) = actor_num
-         end
-      end
-      --sub_4726()
-      --end --corsper bit == 0
 
-   until selected_actor.obj_n ~= 0 and selected_actor.wt == WT_PLAYER -- and actor_num.corpser_bit not set.
+      if selected_actor.corpser_flag == true then
+         actor_corpser_regurgitation(selected_actor)
+      end
+      
+      if selected_actor.corpser_flag == false then
+         if selected_actor.wt ~= WT_PLAYER and selected_actor.wt ~= WT_FOLLOW then
+            dbg("perform_worktype("..selected_actor.name.." dex = "..selected_actor.dex.." mpts = "..selected_actor.mpts..").\n")
+            perform_worktype(selected_actor)
+            --sub_1C34A() --update map window??
+            if selected_actor.wt > 1 and selected_actor.wt < 0x10 then
+               --FIXME targetting?? do *(&objlist_ptr_unk_18f1 + actor_num) = actor_num
+            end
+         end
+         
+         --sub_4726()
+      end
+
+   until selected_actor.obj_n ~= 0 and selected_actor.wt == WT_PLAYER and selected_actor.corpser_flag == false
 end
 
 function actor_update_flags(actor)
@@ -1538,7 +1569,7 @@ function actor_update_flags(actor)
 			actor.asleep = false
 			--FIXME restore actor frame_n here.
 			--* (& objlist_npc_movement_flags + actor) = * (bx + actor) | 8
-			--actor.frame_n = actor.old_frame_n
+			actor.frame_n = actor.old_frame_n
 		end
 		
 		if actor.poisoned == true and actor.protected == false and random(0, 7) == 0 then
@@ -1546,6 +1577,28 @@ function actor_update_flags(actor)
 		end
 	end
 
+end
+
+function actor_corpser_regurgitation(actor)
+print("actor_corpser_regurgitation("..actor.name..")\n");
+   if actor.corpser_flag == false then return end
+   
+   if actor.wt == WT_PLAYER then
+      print("\n"..actor.name..":\nARGH!\n")
+   end
+   
+   local random = math.random
+   local val = random(1, 0x1e)
+     
+   if val < actor_str_adj(actor) then
+      --FIXME play sound effect
+      print(actor.name.." regurgitated!\n")
+      actor.corpser_flag = false
+   else
+      actor_hit(actor, random(1, 0xf))
+      actor.mpts = 0
+   end
+   
 end
 
 function actor_remove_charm(actor)
@@ -1567,6 +1620,44 @@ function actor_remove_charm(actor)
 		end
 	end
 	--]]
+end
+
+
+function actor_yell_for_help(attacking_actor, defending_actor, dmg)
+
+   if defending_actor.luatype == "actor" and defending_actor.align == ALIGNMENT_NEUTRAL and defending_actor.in_party == false then
+      local actor_base = actor_tbl[defending_actor.obj_n]
+
+      if attacking_actor.wt == WT_PLAYER and actor_base ~= nil then
+         if actor_base[7] ~= 0 and dmg > 0 then  --[7] == can_talk 
+            print("`"..defending_actor.name.." yells for help!\n")
+            --FIXME activate_city_guards()
+         end
+      end
+
+      if defending_actor.wt >= 0x80 then
+         if attacking_actor.wt == WT_PLAYER then
+            if defending_actor.obj_n == 0x188 then -- musician
+               defending_actor.frame_n = defending_actor.old_frame_n
+            end
+            defending_actor.wt = WT_ATTACK_PARTY
+         end
+
+      else
+
+         if attacking_actor.align ~= ALIGNMENT_GOOD then
+            defending_actor.align = ALIGNMENT_GOOD
+         else
+            defending_actor.align = ALIGNMENT_CHAOTIC
+         end
+
+         if defending_actor.temp == true then
+            defending_actor.wt = WT_ASSAULT
+         end
+      end
+
+   end
+
 end
 
 local tangle_vine_frame_n_tbl = {

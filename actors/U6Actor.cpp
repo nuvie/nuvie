@@ -42,7 +42,6 @@
 #include "U6ActorTypes.h"
 #include "U6WorkTypes.h"
 
-
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
  beg_mode = 0; // beggers are waiting for targets
@@ -930,6 +929,18 @@ void U6Actor::set_charmed(bool val)
 	else
 	{
 		status_flags &= (0xff ^ OBJ_STATUS_CHARMED);
+	}
+}
+
+void U6Actor::set_corpser_flag(bool val)
+{
+	if(val)
+	{
+		movement_flags |= ACTOR_MOVEMENT_FLAGS_CORPSER;
+	}
+	else
+	{
+		movement_flags &= (0xff ^ ACTOR_MOVEMENT_FLAGS_CORPSER);
 	}
 }
 
@@ -2069,6 +2080,7 @@ bool U6Actor::is_immobile()
 {
     return((worktype == WORKTYPE_U6_MOTIONLESS
            || worktype == WORKTYPE_U6_IMMOBILE) && !is_in_party()
+           || get_corpser_flag() == true
            /*|| can_move == false*/); // can_move really means can_twitch/animate
 }
 

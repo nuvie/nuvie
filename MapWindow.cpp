@@ -606,7 +606,8 @@ void MapWindow::drawActors()
 inline void MapWindow::drawActor(Actor *actor)
 {
     if(actor->is_visible()/* && actor->obj_n != 0*/
-       && (!(actor->obj_flags&OBJ_STATUS_INVISIBLE) || actor->is_in_party() || actor == actor_manager->get_player()))
+       && (!(actor->obj_flags&OBJ_STATUS_INVISIBLE) || actor->is_in_party() || actor == actor_manager->get_player())
+       && actor->get_corpser_flag() == false)
     {
         Tile *tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
         Tile *rtile = 0;
