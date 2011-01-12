@@ -23,7 +23,7 @@ WT_STATIONARY             = 0xe  --stationary attack
 WT_GUARD_WALK_EAST_WEST   = 0xf
 WT_GUARD_WALK_NORTH_SOUTH = 0x10
 --11
---12
+WT_GUARD_ARREST_PLAYER    = 0x12
 WT_UNK_13                 = 0x13
 
 WT_WALK_TO_LOCATION       = 0x86
@@ -1631,7 +1631,7 @@ function actor_yell_for_help(attacking_actor, defending_actor, dmg)
       if attacking_actor.wt == WT_PLAYER and actor_base ~= nil then
          if actor_base[7] ~= 0 and dmg > 0 then  --[7] == can_talk 
             print("`"..defending_actor.name.." yells for help!\n")
-            --FIXME activate_city_guards()
+            activate_city_guards()
          end
       end
 
@@ -1658,6 +1658,79 @@ function actor_yell_for_help(attacking_actor, defending_actor, dmg)
 
    end
 
+end
+
+function activate_city_guards()
+print("activate_city_guards()")
+   local i
+   local player_loc = player_get_location()
+   for i=1,0x100 do
+      local actor = Actor.get(i)
+   
+      if actor.alive == true and actor.z == player_loc.z and actor.in_party == false and actor.align == ALIGNMENT_NEUTRAL then
+         if actor.obj_n == 0x17e then -- guard
+            if actor_find_max_xy_distance(actor, player_loc.x, player_loc.y) < 0x20 then
+               actor.wt = WT_GUARD_ARREST_PLAYER
+            end
+         else
+            if actor.wt ~= WT_STATIONARY 
+             and actor.wt ~= WT_NOTHING
+             and actor.paralyzed == false
+             and actor.asleep == false
+             and actor.corpser_flag == false then
+               if actor_find_max_xy_distance(actor, player_loc.x, player_loc.y) < 0x6 then
+                  if actor.wt < 0x80 then
+                     actor.wt = WT_UNK_13
+                  else
+                     if actor.wt > 0x86 then
+                        if actor.obj_n == 0x188 then
+                           actor.frame_n = actor.old_frame_n
+                        end
+      
+                        actor.wt = WT_ATTACK_PARTY
+                     end
+                  end
+               end
+            end
+         end
+      end
+   end
+end
+
+function actor_catch_up_to_party(actor)
+   local target_actor = nil
+   local actor_x = actor.x
+   local actor_y = actor.y
+   local var_2 = 0x32
+   local party_actor
+   local random = math.random
+
+   for party_actor in party_members() do 
+
+      if party_actor.alive == true and actor_ok_to_attack(actor, party_actor) == true then
+   
+         local party_actor_x = party_actor.x
+         local party_actor_y = party_actor.y
+         local var_4 = (party_actor_x - actor_x) * (party_actor_x - actor_x) + (party_actor_y - actor_y) * (party_actor_y - actor_y)
+         if var_4 < var_2 or var_4 == var_2 and random(0, 1) ~= 0 then
+            var_2 = var_4
+            target_actor = party_actor
+         end
+      end
+   end
+
+   if target_actor == nil then
+      actor_move_towards_loc(actor, party_avg_x, party_avg_y)
+      return false 
+   end
+
+   actor_move_towards_loc(actor, target_actor.x, target_actor.y)
+
+   if abs(target_actor.x - actor.x) > 1 or abs(target_actor.y - actor.y) > 1 then
+     return false
+   end
+
+   return true --reached party
 end
 
 local tangle_vine_frame_n_tbl = {
@@ -1950,6 +2023,12 @@ function actor_wt_rear(actor)
    end
 
 
+end
+
+function actor_wt_guard_arrest_player(actor)
+	if actor_catch_up_to_party(actor) == true then
+		--FIXME caught by guard logic goes here.
+	end
 end
 
 function actor_wt_combat_tanglevine(actor)
@@ -2338,7 +2417,7 @@ wt_tbl = {
 [WT_GUARD_WALK_EAST_WEST] = {"WT_GUARD_WALK_EAST_WEST", actor_wt_walk_straight},
 [WT_GUARD_WALK_NORTH_SOUTH] = {"WT_GUARD_WALK_NORTH_SOUTH", actor_wt_walk_straight},
 --11
---12
+[WT_GUARD_ARREST_PLAYER] = {"WT_GUARD_ARREST_PLAYER", actor_wt_guard_arrest_player},
 [WT_UNK_13] = {"WT_UNK_13", actor_wt_timid},
 [WT_WALK_TO_LOCATION] = {"WT_WALK_TO_LOCATION", actor_wt_walk_to_location},
 [WT_WALK_NORTH_SOUTH] = {"WT_WALK_NORTH_SOUTH", actor_wt_walk_straight},
