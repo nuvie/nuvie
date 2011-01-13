@@ -135,6 +135,10 @@ static int nscript_player_get_location(lua_State *L);
 static int nscript_player_get_karma(lua_State *L);
 static int nscript_player_set_karma(lua_State *L);
 
+static int nscript_party_is_in_combat_mode(lua_State *L);
+static int nscript_party_set_combat_mode(lua_State *L);
+static int nscript_party_move(lua_State *L);
+
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
@@ -291,6 +295,15 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_player_set_karma);
    lua_setglobal(L, "player_set_karma");
+
+   lua_pushcfunction(L, nscript_party_is_in_combat_mode);
+   lua_setglobal(L, "party_is_in_combat_mode");
+
+   lua_pushcfunction(L, nscript_party_set_combat_mode);
+   lua_setglobal(L, "party_set_combat_mode");
+
+   lua_pushcfunction(L, nscript_party_move);
+   lua_setglobal(L, "party_move");
 
    lua_pushcfunction(L, nscript_eclipse_start);
    lua_setglobal(L, "eclipse_start");
@@ -1178,6 +1191,34 @@ static int nscript_player_set_karma(lua_State *L)
 {
 	Player *player = Game::get_game()->get_player();
 	player->set_karma((uint8)lua_tointeger(L, 1));
+	return 0;
+}
+
+static int nscript_party_is_in_combat_mode(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	lua_pushboolean(L, party->is_in_combat_mode());
+	return 1;
+}
+
+static int nscript_party_set_combat_mode(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	party->set_in_combat_mode(lua_toboolean(L, 1));
+	return 0;
+}
+
+static int nscript_party_move(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	uint16 x, y;
+	uint8 z;
+
+	if(nscript_get_location_from_args(L, &x, &y, &z) == false)
+		return 0;
+
+	player->move(x, y, z); //FIXME should this be party move?
+
 	return 0;
 }
 

@@ -1733,6 +1733,98 @@ function actor_catch_up_to_party(actor)
    return true --reached party
 end
 
+function caught_by_guard(actor)
+
+   local lord_british = Actor.get(6)
+   
+   --FIXME we don't want people going to jail before they answer the copy protection questions.
+   --if (objlist_talk_flags[5] & 0x80) == 0 then
+   --   actor.wt = 0x81
+   --   return
+   --end
+   
+   print("\n\"Thou art under arrest!\"\n\n\"Wilt thou come quietly?\"\n\n:")
+   
+   local var_6 = "Y"
+ --[[ FIXME I need to get the input
+   var_6 = input_loop()
+   while(ax != 'N' && ax != 'Y')
+   {
+      var_6 = input_loop()
+   }
+--]]
+   
+   actor.wt = 0x81
+   
+   if var_6 == "Y" then
+      print("Yes\n\nThe guard strikes thee unconscious!\n\nThou dost awaken to...\n")
+      --sub_2ACA1()
+   
+      if party_is_in_combat_mode() then
+         party_set_combat_mode(false)
+      end
+   
+      party_move(0xe7, 0xba, 0)
+      --FIXME party teleport. party_teleport(0xe7, 0xba, 0, 0)
+   
+      --FIXME get and update game time.
+      --while g_game_hour ~= 8 do
+      --   advance_time(0x3c)
+      --end
+   
+      for party_actor in party_members() do 
+         for var_4 in actor_inventory(party_actor) do
+            --if((*(var_4 + objlist_obj_flags) & 0x18) == 0 || sub_CC5E(var_4, *(di + objlist_party_roster)) == 0)
+            --   break
+   
+            if var_4.obj_n == 0x3f then --lockpick
+            
+               Actor.inv_remove_obj(party_actor, var_4)
+            end
+   
+            if var_4.obj_n == 0x40 and var_4.quality == 9 then --key
+            
+               local obj = map_get_obj(0xeb, 0xb7, 0)
+               if obj ~= nil and obj.obj_n == 0xb1 then --desk
+                  Obj.moveToCont(var_4, obj)
+               end
+            end
+            
+            local obj = map_get_obj(0xe7, 0xb8, 0)
+            if obj ~= nil and obj.obj_n == 0x12c then --steal door
+               obj.frame_n = 9
+            end         
+   
+         end
+      end
+   
+   --[[
+      word_31D08 = 1
+      sub_E5F2()
+      music_play_song()
+      ax = sub_46DC()
+   --]]
+   else
+   
+      print("No\n\n\"Then defend thyself, rogue!\"\n")
+      activate_city_guards()
+      actor.wt = 8
+      actor.align = ALIGNMENT_EVIL
+   
+      local i 
+      for i=1,0x100 do
+         local a = Actor.get(i)
+         if a.wt == 0x12 then
+            a.wt = 8
+            a.align = ALIGNMENT_EVIL
+         end
+      end
+   
+   end
+
+   return
+end
+
 local tangle_vine_frame_n_tbl = {
 1, 3, 1, 4,
 5, 0, 4, 0,
@@ -2027,7 +2119,7 @@ end
 
 function actor_wt_guard_arrest_player(actor)
 	if actor_catch_up_to_party(actor) == true then
-		--FIXME caught by guard logic goes here.
+		caught_by_guard(actor)
 	end
 end
 
