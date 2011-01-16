@@ -842,7 +842,7 @@ function actor_take_hit(attacker, defender, max_dmg)
       
       attacker.exp = attacker.exp + exp_gained
    else
-      print(defender.name.." grazed.\n")
+      print("`"..defender.name.." grazed.\n")
    end
    
    if defender_type == "actor" then
@@ -904,7 +904,7 @@ function actor_hit(defender, max_dmg)
 			if (defender_obj_n < 0x129 or defender_obj_n > 0x12c or defender.frame_n < 0xc) --check frame_n for door objects
 				and (defender_obj_n ~= 0x62 or defender.frame_n ~= 3) then --don't attack open chests
 				if defender.qty <= max_dmg then
-					print(defender.name .. " broken!\n")
+					print("`"..defender.name .. " broken!\n")
 	
 					local child
 					for child in container_objs(defender) do  -- look through container for effect object. 
@@ -1120,9 +1120,9 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       magic_cast_spell(weapon_quality, attacker, {x = target_x, y = target_y, z = target_z})
       
       if weapon_quality == 0x50 and spell_retcode == 0xfe then
-         print(foe.name .. " is charmed.\n")
+         print("`"..foe.name .. " is charmed.\n")
       elseif weapon_quality == 0x45 and spell_retcode == 0 then
-         print(foe.name .. " is paralyzed.\n")
+         print("`"..foe.name .. " is paralyzed.\n")
       end
       
       return
@@ -1580,7 +1580,7 @@ function actor_update_flags(actor)
 end
 
 function actor_corpser_regurgitation(actor)
-print("actor_corpser_regurgitation("..actor.name..")\n");
+   dbg("actor_corpser_regurgitation("..actor.name..")\n");
    if actor.corpser_flag == false then return end
    
    if actor.wt == WT_PLAYER then
@@ -1592,7 +1592,7 @@ print("actor_corpser_regurgitation("..actor.name..")\n");
      
    if val < actor_str_adj(actor) then
       --FIXME play sound effect
-      print(actor.name.." regurgitated!\n")
+      print("`"..actor.name.." regurgitated!\n")
       actor.corpser_flag = false
    else
       actor_hit(actor, random(1, 0xf))
@@ -1661,9 +1661,12 @@ function actor_yell_for_help(attacking_actor, defending_actor, dmg)
 end
 
 function activate_city_guards()
-print("activate_city_guards()")
+dbg("activate_city_guards()")
    local i
    local player_loc = player_get_location()
+   
+   player_subtract_karma(5)
+   
    for i=1,0x100 do
       local actor = Actor.get(i)
    
@@ -1778,26 +1781,24 @@ function caught_by_guard(actor)
             --   break
    
             if var_4.obj_n == 0x3f then --lockpick
-            
                Actor.inv_remove_obj(party_actor, var_4)
             end
    
             if var_4.obj_n == 0x40 and var_4.quality == 9 then --key
             
-               local obj = map_get_obj(0xeb, 0xb7, 0)
-               if obj ~= nil and obj.obj_n == 0xb1 then --desk
+               local obj = map_get_obj(0xeb, 0xb7, 0, 0xb1) --desk
+               if obj ~= nil then
                   Obj.moveToCont(var_4, obj)
                end
-            end
-            
-            local obj = map_get_obj(0xe7, 0xb8, 0)
-            if obj ~= nil and obj.obj_n == 0x12c then --steal door
-               obj.frame_n = 9
-            end         
-   
+            end   
          end
       end
-   
+ 
+      local obj = map_get_obj(0xe7, 0xb8, 0, 0x12c) --steal door
+      if obj ~= nil then
+         obj.frame_n = 9
+      end
+      
    --[[
       word_31D08 = 1
       sub_E5F2()

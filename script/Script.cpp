@@ -1235,7 +1235,15 @@ static int nscript_map_get_obj(lua_State *L)
       return 0;
 
 
-   obj = obj_manager->get_obj(x, y, z);
+   if(lua_gettop(L) > 3)
+   {
+	   uint16 obj_n = lua_tointeger(L, 4);
+	   obj = obj_manager->get_obj_of_type_from_location(obj_n, x, y, z);
+   }
+   else
+   {
+	   obj = obj_manager->get_obj(x, y, z);
+   }
 
    if(obj)
    {

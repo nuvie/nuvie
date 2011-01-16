@@ -849,7 +849,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             v[1] = pop_arg(i); // object
             v[0] = pop_arg(i); // npc
             cnpc = converse->actors->get_actor(npc_num(v[0]));
-            if(cnpc && cnpc->inventory_has_object(v[1], v[2], false)) //don't search quality if quality is 0
+            if(cnpc && cnpc->inventory_has_object(v[1], v[2], (v[2] != 0 ? true : false))) //don't search quality if quality is 0
                 out = 1;
             break;
         case U6OP_RAND: // 0xa0
