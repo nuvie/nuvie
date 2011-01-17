@@ -155,6 +155,9 @@ static int nscript_projectile_anim_multi(lua_State *L);
 static int nscript_hit_anim(lua_State *L);
 static int nscript_usecode_look(lua_State *L);
 
+static int nscript_fade_out(lua_State *L);
+static int nscript_fade_in(lua_State *L);
+
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
 int nscript_party_iter(lua_State *L);
@@ -325,7 +328,13 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_usecode_look);
    lua_setglobal(L, "usecode_look");
+
+   lua_pushcfunction(L, nscript_fade_out);
+   lua_setglobal(L, "fade_out");
    
+   lua_pushcfunction(L, nscript_fade_in);
+   lua_setglobal(L, "fade_in");
+
    seed_random();
 
    lua_getglobal(L, "package");
@@ -1441,6 +1450,22 @@ static int nscript_usecode_look(lua_State *L)
    
    lua_pushboolean(L, (int)usecode->look_obj(obj, player->get_actor()));
    return 1;
+}
+
+static int nscript_fade_out(lua_State *L)
+{
+	AsyncEffect *e = new AsyncEffect(new FadeEffect(FADE_PIXELATED, FADE_OUT));
+	e->run();
+
+	return 0;
+}
+
+static int nscript_fade_in(lua_State *L)
+{
+	AsyncEffect *e = new AsyncEffect(new FadeEffect(FADE_PIXELATED, FADE_IN));
+	e->run();
+
+	return 0;
 }
 
 int nscript_u6llist_iter(lua_State *L)

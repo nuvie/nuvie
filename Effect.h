@@ -384,6 +384,8 @@ public:
     bool circle_fade_out();
     bool circle_fade_in();
 
+    void delete_self();
+
 protected:
     void init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surface *capture, uint16 x, uint16 y, uint32 speed);
     void init_pixelated_fade();

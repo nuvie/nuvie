@@ -1762,7 +1762,9 @@ function caught_by_guard(actor)
    if var_6 == "Y" then
       print("Yes\n\nThe guard strikes thee unconscious!\n\nThou dost awaken to...\n")
       --sub_2ACA1()
-   
+      
+      fade_out()
+      
       if party_is_in_combat_mode() then
          party_set_combat_mode(false)
       end
@@ -1776,7 +1778,7 @@ function caught_by_guard(actor)
       --end
    
       for party_actor in party_members() do 
-         for var_4 in actor_inventory(party_actor) do
+         for var_4 in actor_inventory(party_actor) do --FIXME iterate through containers in inventory.
             --if((*(var_4 + objlist_obj_flags) & 0x18) == 0 || sub_CC5E(var_4, *(di + objlist_party_roster)) == 0)
             --   break
    
@@ -1796,8 +1798,10 @@ function caught_by_guard(actor)
  
       local obj = map_get_obj(0xe7, 0xb8, 0, 0x12c) --steal door
       if obj ~= nil then
-         obj.frame_n = 9
+         obj.frame_n = 9 --close and lock door.
       end
+      
+      fade_in()
       
    --[[
       word_31D08 = 1
@@ -1809,14 +1813,14 @@ function caught_by_guard(actor)
    
       print("No\n\n\"Then defend thyself, rogue!\"\n")
       activate_city_guards()
-      actor.wt = 8
+      actor.wt = WT_ASSAULT
       actor.align = ALIGNMENT_EVIL
    
       local i 
       for i=1,0x100 do
          local a = Actor.get(i)
-         if a.wt == 0x12 then
-            a.wt = 8
+         if a.wt == WT_GUARD_ARREST_PLAYER then
+            a.wt = WT_ASSAULT
             a.align = ALIGNMENT_EVIL
          end
       end

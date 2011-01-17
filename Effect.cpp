@@ -937,6 +937,11 @@ void FadeEffect::init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surfac
 
 FadeEffect::~FadeEffect()
 {
+  //moved to delete_self
+}
+
+void FadeEffect::delete_self()
+{
     if(current_fade == this) // these weren't init. if FadeEffect didn't start
     {
         delete viewport;
@@ -947,8 +952,9 @@ FadeEffect::~FadeEffect()
 
         current_fade = NULL;
     }
-}
 
+	TimedEffect::delete_self();
+}
 
 /* Start effect. */
 void FadeEffect::init_pixelated_fade()
@@ -1005,7 +1011,7 @@ void FadeEffect::init_circle_fade()
 
 
 /* Called by the timer as frequently as possible. Do the appropriate
- * fade method and stop when the effect is oomplete.
+ * fade method and stop when the effect is complete.
  */
 uint16 FadeEffect::callback(uint16 msg, CallBack *caller, void *data)
 {
