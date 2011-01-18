@@ -442,6 +442,27 @@ public:
 /* Briefly modify the mapwindow colors, disable map-blacking and player
  * movement for a few seconds, then enable both.
  */
+class XorEffect : public TimedEffect
+{
+    MapWindow *map_window;
+    uint32 length;
+    SDL_Surface *capture; // this is what gets blitted
+
+    void xor_capture(uint8 mod);
+    void init_effect();
+
+public:
+    /* eff_ms=length of visual effect */
+    XorEffect(uint32 eff_ms);
+    ~XorEffect() { }
+
+    /* Called by the timer between each effect stage. */
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
+
+/* Briefly modify the mapwindow colors, disable map-blacking and player
+ * movement for a few seconds, then enable both.
+ */
 class U6WhitePotionEffect : public TimedEffect
 {
     MapWindow *map_window;

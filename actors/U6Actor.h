@@ -113,6 +113,7 @@ class U6Actor: public Actor
  ActorList *find_players();
 
  bool is_immobile(); // frozen by worktype or status
+ bool can_twitch();
  bool is_sleeping();
  bool get_corpser_flag() { return(movement_flags & ACTOR_MOVEMENT_FLAGS_CORPSER); }
  bool can_be_passed(Actor *other);

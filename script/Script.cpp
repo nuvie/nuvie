@@ -158,6 +158,8 @@ static int nscript_usecode_look(lua_State *L);
 static int nscript_fade_out(lua_State *L);
 static int nscript_fade_in(lua_State *L);
 
+static int nscript_xor_effect(lua_State *L);
+
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
 int nscript_party_iter(lua_State *L);
@@ -334,6 +336,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    
    lua_pushcfunction(L, nscript_fade_in);
    lua_setglobal(L, "fade_in");
+
+   lua_pushcfunction(L, nscript_xor_effect);
+   lua_setglobal(L, "xor_effect");
 
    seed_random();
 
@@ -1463,6 +1468,16 @@ static int nscript_fade_out(lua_State *L)
 static int nscript_fade_in(lua_State *L)
 {
 	AsyncEffect *e = new AsyncEffect(new FadeEffect(FADE_PIXELATED, FADE_IN));
+	e->run();
+
+	return 0;
+}
+
+static int nscript_xor_effect(lua_State *L)
+{
+	uint16 duration = (uint16)luaL_checkinteger(L, 1);
+
+	AsyncEffect *e = new AsyncEffect(new XorEffect(duration));
 	e->run();
 
 	return 0;

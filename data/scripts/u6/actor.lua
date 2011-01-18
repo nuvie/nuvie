@@ -395,7 +395,7 @@ function actor_combat_hit_check(attacker, foe, weapon_obj)
    if foe == nil then return false end
       
 	if foe.luatype ~= "actor" or weapon_obj.obj_n == 48 then --48 glass sword
-      io.stderr:write(foe.luatype)
+      dbg(foe.luatype)
 		return true
 	end
 
@@ -423,7 +423,7 @@ function actor_combat_hit_check(attacker, foe, weapon_obj)
    local foe_dex = actor_dex_adj(foe)
    local roll = math.random(1,30)
    
-   io.stderr:write("foe_dex = "..foe_dex.." attack_role = "..attack_role.." random(1,30) = "..roll.."\n\n")
+   dbg("foe_dex = "..foe_dex.." attack_role = "..attack_role.." random(1,30) = "..roll.."\n\n")
    
    if math.floor((foe_dex + 30 - attack_role) / 2) >= roll then
       return false
@@ -620,7 +620,7 @@ local get_attack_range = function(x,y,target_x,target_y)
 
    local absx = abs(target_x - x)
    local absy = abs(target_y - y)
-   io.stderr:write("target_x="..target_x.." target_y="..target_y.." x="..x.." y="..y.." absx="..absx.." absy="..absy)
+   dbg("target_x="..target_x.." target_y="..target_y.." x="..x.." y="..y.." absx="..absx.." absy="..absy)
    if absx < 8 and absy < 8 then
       return combat_range_tbl[absx * 8 + absy + 1]
    end
@@ -1033,9 +1033,9 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       foe = map_get_obj(target_x, target_y, target_z);
    end
    
-   io.stderr:write("\nactor_attack()\nrange = " .. get_attack_range(attacker.x,attacker.y, target_x, target_y).." weapon range="..get_weapon_range(weapon_obj_n))
+   dbg("\nactor_attack()\nrange = " .. get_attack_range(attacker.x,attacker.y, target_x, target_y).." weapon range="..get_weapon_range(weapon_obj_n))
    if weapon_obj_n ~= attacker.obj_n then
-      io.stderr:write("\nweapon = "..weapon.name.."obj_n = "..weapon_obj_n.."\n")
+      dbg("\nweapon = "..weapon.name.."obj_n = "..weapon_obj_n.."\n")
    end
    
    if get_attack_range(attacker.x,attacker.y, target_x, target_y) > get_weapon_range(weapon_obj_n) then
@@ -2492,9 +2492,27 @@ function actor_wt_walk_to_location(actor)
 	Actor.walk_path(actor)
 	if Actor.is_at_scheduled_location(actor) then
 		actor.wt = actor.sched_wt
+		if actor.wt == WT_SLEEP then
+			actor_wt_sleep(actor)
+		end
 	end
 
 	subtract_movement_pts(actor, 5) --FIXME what's the movement cost for pathfinding?
+end
+
+function actor_wt_sleep(actor)
+	local obj = map_get_obj(actor.x, actor.y, actor.z, 0xa3) --bed
+	if obj ~= nil then
+		if obj.frame_n == 1 or obj.frame_n == 5 then --horizontal bed
+			actor.obj_n = 0x92 -- person sleeping
+			actor.frame_n = 0
+		else
+			if obj.frame_n == 7 or obj.frame_n == 10 then --vertical bed
+				actor.obj_n = 0x92 -- person sleeping
+				actor.frame_n = 1
+			end
+		end
+	end
 end
 
 wt_tbl = {

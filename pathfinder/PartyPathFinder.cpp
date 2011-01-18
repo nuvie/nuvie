@@ -48,7 +48,8 @@ bool PartyPathFinder::is_contiguous(uint32 member_num, MapCoord from)
 {
     for(uint32 q = 0; q < member_num; q++) // check lower-numbered members
     {
-        if(get_member(q).inactive == true) continue;
+    	Actor *actor = get_member(q).actor;
+        if(actor && actor->is_immobile() == true) continue;
 
         MapCoord loc = party->get_location(q);
         if(from.distance(loc) <= 1)

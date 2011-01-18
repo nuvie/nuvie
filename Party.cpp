@@ -104,7 +104,7 @@ bool Party::load(NuvieIO *objlist)
    actor_num = objlist->read1();
    member[i].actor = actor_manager->get_actor(actor_num);
    member[i].actor->set_in_party(true);
-   member[i].inactive = false; // false unless actor is asleep, or paralyzed (is_immobile)
+   //member[i].inactive = false; // false unless actor is asleep, or paralyzed (is_immobile)
   }
 
  objlist->seek(OBJLIST_OFFSET_U6_COMBAT_MODE); // combat mode flag. NOTE! this offset is probably U6 specifix FIXME
@@ -163,7 +163,7 @@ bool Party::add_actor(Actor *actor)
    {
     actor->set_in_party(true);
     member[num_in_party].actor = actor;
-    member[num_in_party].inactive = false;
+    //member[num_in_party].inactive = false;
     strncpy(member[num_in_party].name, converse->npc_name(actor->id_n), PARTY_NAME_MAX_LENGTH + 1);
     member[num_in_party].name[PARTY_NAME_MAX_LENGTH] = '\0'; // make sure name is terminated
     member[num_in_party].combat_position = 0;
@@ -390,7 +390,7 @@ void Party::reform_party()
 sint8 Party::get_leader()
 {
     for(int m = 0; m < num_in_party; m++)
-        if(!member[m].inactive)
+        if(member[m].actor->is_immobile() == false)
             return m;
     return -1;
 }
@@ -457,7 +457,7 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
     // PASS 1: Keep actors chained together.
     for(uint32 p = (leader+1); p < num_in_party; p++)
     {
-        if(member[p].inactive) continue;
+        if(member[p].actor->is_immobile()) continue;
 
         try_again[p] = false;
         if(!pathfinder->follow_passA(p))
@@ -466,7 +466,7 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
     // PASS 2: Catch up to party.
     for(uint32 p = (leader+1); p < num_in_party; p++)
     {
-        if(member[p].inactive) continue;
+        if(member[p].actor->is_immobile()) continue;
 
         if(try_again[p])
             pathfinder->follow_passA(p);
@@ -777,7 +777,7 @@ Actor *Party::get_slowest_actor()
         for(uint32 m = begin+1; m < num_in_party; m++)
         {
             sint8 select_moves = member[m].actor->get_moves_left();
-            if(!member[m].inactive && (select_moves < moves))
+            if(member[m].actor->is_immobile() == false && (select_moves < moves))
             {
                 moves = select_moves;
                 actor = member[m].actor;

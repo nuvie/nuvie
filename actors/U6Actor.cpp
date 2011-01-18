@@ -599,10 +599,11 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
        case OBJ_U6_SLEEP_FIELD :
        {
          new HitEffect(this); // no hp loss
-         set_worktype(WORKTYPE_U6_SLEEP); // fall asleep
+         //set_worktype(WORKTYPE_U6_SLEEP); // fall asleep
+         set_asleep(true);
          if(is_in_party())
            {
-            party->set_active(party->get_member_num(this), !(is_sleeping() || is_paralyzed()));
+            //party->set_active(party->get_member_num(this), !(is_sleeping() || is_paralyzed()));
             player->set_actor(party->get_actor(party->get_leader()));
             player->set_mapwindow_centered(true);
            }
@@ -855,7 +856,7 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 t
 void U6Actor::twitch()
 {
 
- if(is_paralyzed() == true || can_move == false || actor_type->twitch_rand == 0)
+ if(can_twitch() == false)
    return;
 
  if(NUVIE_RAND()%actor_type->twitch_rand == 1)
@@ -2081,9 +2082,19 @@ bool U6Actor::is_immobile()
     return((worktype == WORKTYPE_U6_MOTIONLESS
            || worktype == WORKTYPE_U6_IMMOBILE) && !is_in_party()
            || get_corpser_flag() == true
+           || is_sleeping() == true
+           || is_paralyzed() == true
            /*|| can_move == false*/); // can_move really means can_twitch/animate
 }
 
+bool U6Actor::can_twitch()
+{
+	return(can_move == true
+			   && actor_type->twitch_rand != 0
+			   && get_corpser_flag() == false
+	           && is_sleeping() == false
+	           && is_paralyzed() == false);
+}
 
 bool U6Actor::is_sleeping()
 {

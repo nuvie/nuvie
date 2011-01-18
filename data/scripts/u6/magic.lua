@@ -83,10 +83,22 @@ end
 
 function caster_get_location()	  
 	 if g_magic_caster ~= nil then
-	  	return g_magic_caster
+	  	return {x = g_magic_caster.x, y = g_magic_caster.y, z = g_magic_caster.z}
 	  end
 	  
 	  return player_get_location()
+end
+
+function magic_get_caster()
+	if g_magic_caster ~= nil then return g_magic_caster end
+
+	return Actor.get_player_actor()
+end
+
+function caster_is_player()
+	if g_magic_caster == nil then return true end
+	
+	return false
 end
 
 do
@@ -116,6 +128,7 @@ magic_init("Sleep Field", "izg", 0x54, 4, 9, "u6/magic/circle_04/sleep_field.lua
 
 magic_init("Energy Field", "isg", 0x15, 5, 1, "u6/magic/circle_05/energy_field.lua");
 magic_init("Explosion", "vpf", 0x8d, 5, 2, "u6/magic/circle_05/explosion.lua");
+magic_init("Insect Swarm", "kbx", 0x98, 5, 3, "u6/magic/circle_05/insect_swarm.lua");
 magic_init("Lightning", "og", 0x85, 5, 5, "u6/magic/circle_05/lightning.lua");
 magic_init("Paralyze", "axp", 0x96, 5, 6, "u6/magic/circle_05/paralyze.lua");
 

@@ -39,7 +39,7 @@ class PartySeek;
 struct PartyMember {
 char name[14];
 Actor *actor;
-bool inactive; // true if not in formation
+//bool inactive; // true if not in formation
 uint8 combat_position;
 sint8 form_x; // relative position left or right of leader
 sint8 form_y; // relative position in front or in back of leader
@@ -119,7 +119,7 @@ class Party {
  bool remove_dead_actor(Actor *actor);
  bool resurrect_dead_members();
  void heal();
- void set_active(uint8 member_num, bool state) { member[member_num].inactive = !state; }
+ //void set_active(uint8 member_num, bool state) { member[member_num].inactive = !state; }
 
  // Properties
  uint8 get_party_size();

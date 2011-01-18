@@ -46,7 +46,7 @@ alignment
 
 const U6ActorType u6ActorTypes[] = {
  // 4x1 tile actors                                                                                            STR, DEX, INT,  AC, DMG,  HP, ALIGNMENT
- {OBJ_U6_INSECTS,          0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,     20,   1,  40,   1,   0,   1,   1, ACTOR_ALIGNMENT_CHAOTIC},
+ {OBJ_U6_INSECTS,          0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      2,   1,  40,   1,   0,   1,   1, ACTOR_ALIGNMENT_CHAOTIC},
  {OBJ_U6_GIANT_SQUID,      0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH, 50,  24,  20,   8,   0,  20,  50, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_GHOST,            0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       45,   1,  10,   9,   0,  12,  20, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_ACID_SLUG,        0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       50,   5,   5,   2,   0,   1,  10, ACTOR_ALIGNMENT_CHAOTIC},

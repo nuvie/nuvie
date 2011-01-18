@@ -1286,6 +1286,49 @@ uint16 VanishEffect::callback(uint16 msg, CallBack *caller, void *data)
     return(0);
 }
 
+XorEffect::XorEffect(uint32 eff_ms)
+                                       : map_window(game->get_map_window()),
+                                         length(eff_ms)
+{
+    game->pause_user();
+    game->pause_anims();
+
+    init_effect();
+}
+
+void XorEffect::init_effect()
+{
+    capture = map_window->get_sdl_surface();
+    map_window->set_overlay_level(MAP_OVERLAY_DEFAULT);
+    map_window->set_overlay(capture);
+
+    xor_capture(0xd); // changes black to pink
+    start_timer(length);
+}
+
+/* Timer finished. Cleanup. */
+uint16 XorEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(msg == MESG_TIMED)
+    {
+        stop_timer();
+        game->unpause_anims();
+        game->unpause_user();
+        map_window->set_overlay(NULL);
+        delete_self();
+    }
+    return 0;
+}
+
+/* Do binary-xor on each pixel of the mapwindow image.*/
+void XorEffect::xor_capture(uint8 mod)
+{
+    uint8 *pixels = (uint8 *)(capture->pixels);
+    for(int p = 0; p < (capture->w*capture->h); p++)
+        pixels[p] ^= mod;
+}
+
+
 U6WhitePotionEffect::U6WhitePotionEffect(uint32 eff_ms, uint32 delay_ms, Obj *callback_obj)
                                        : map_window(game->get_map_window()),
                                          state(0), start_length(1000),

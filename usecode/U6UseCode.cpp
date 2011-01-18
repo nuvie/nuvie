@@ -1520,6 +1520,8 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         destroy_obj(obj); break;
                     case USE_U6_POTION_GREEN: ((U6Actor *)items.actor2_ref)->set_poisoned(true);
                         destroy_obj(obj); break;
+                    case USE_U6_POTION_BLUE: ((U6Actor *)items.actor2_ref)->set_asleep(false);
+                        destroy_obj(obj); break;
                     case USE_U6_POTION_WHITE: new U6WhitePotionEffect(2500, 6000, obj);
                         break; // wait for message to delete potion
                     case USE_U6_POTION_BLACK:
@@ -1528,12 +1530,14 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         items.actor2_ref->set_invisible(true);
                         destroy_obj(obj); break;
                     case USE_U6_POTION_ORANGE:
-                        items.actor2_ref->set_worktype(WORKTYPE_U6_SLEEP);
-                        party->set_active(party_num, !(items.actor2_ref->is_sleeping() || items.actor2_ref->is_paralyzed()));
+                        //items.actor2_ref->set_worktype(WORKTYPE_U6_SLEEP);
+                        items.actor2_ref->set_asleep(true);
+                        //party->set_active(party_num, !(items.actor2_ref->is_sleeping() || items.actor2_ref->is_paralyzed()));
                         player->set_actor(party->get_actor(party->get_leader()));
                         player->set_mapwindow_centered(true);
                         destroy_obj(obj);
                         break;
+
                     default:
                         if(obj->frame_n <= 7)
                         {
