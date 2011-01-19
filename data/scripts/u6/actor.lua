@@ -2122,6 +2122,74 @@ function actor_wt_rear(actor)
 
 end
 
+function actor_wt_berserk(actor)
+   local target_actor = nil
+   local alignment = actor.align
+   local actor_x = actor.x
+   local actor_y = actor.y
+   local max_stats = 0
+
+   local i
+   for i=1,0x100 do
+      local tmp_actor = Actor.get(i)
+
+      if tmp_actor ~= nil
+       and tmp_actor.alive == true
+       and tmp_actor ~= actor
+       and actor_find_max_xy_distance(tmp_actor, actor_x, actor_y) <= 8
+       and actor_ok_to_attack(actor, tmp_actor) == true
+       and (alignment ~= ALIGNMENT_GOOD or tmp_actor.align == ALIGNMENT_EVIL)
+       and (alignment ~= ALIGNMENT_EVIL or tmp_actor.align == ALIGNMENT_GOOD)
+       and (alignment ~= ALIGNMENT_CHAOTIC or tmp_actor.align ~= ALIGNMENT_CHAOTIC and tmp_actor.align ~= ALIGNMENT_NEUTRAL) then
+         combined_stats = tmp_actor.str + tmp_actor.dex + tmp_actor.int
+         if combined_stats > max_stats then
+            max_stats = combined_stats
+            target_actor = tmp_actor
+         end
+      end
+   end
+
+   if target_actor == nil then
+      actor_wt_attack(actor)
+      subtract_movement_pts(actor, 5)
+      return
+   end
+
+   local target_x = target_actor.x
+   local target_y = target_actor.y
+   local weapon_obj = actor_get_weapon(actor, target_actor)
+   local weapon_range = get_weapon_range(weapon_obj)
+   local attack_range = get_attack_range(actor_x, actor_y, target_x, target_y)
+
+   if attack_range < 9 and attack_range <= weapon_range then
+
+      --g_obj = target_actor
+      if false then--FIXME what are we doing here?? projectile_anim_from_actor(actor, &target_x, &target_y, weapon_range, 0) == 0 then
+         if math.random(0, 1) == 0 then
+            target_x = (g_obj.y) - actor_y + actor_x
+            target_y = actor_y - (g_obj.x) - actor_x
+         else
+            target_x = actor_x - (g_obj.y) - actor_y
+            target_y = (g_obj.x) - actor_x + actor_y
+         end
+      else
+         actor_attack(actor, target_x, target_y, actor.z, weapon_obj)
+         subtract_movement_pts(actor, 15)
+         return
+      end
+
+   end
+
+   local mpts = actor.mpts
+   if actor_move_towards_loc(actor, target_x, target_y) == 0 then
+      actor.mpts= mpts
+      actor_wt_attack(actor)
+   end
+
+   subtract_movement_pts(actor, 5)
+   return
+end
+
 function actor_wt_guard_arrest_player(actor)
 	if actor_catch_up_to_party(actor) == true then
 		caught_by_guard(actor)
@@ -2501,6 +2569,7 @@ function actor_wt_walk_to_location(actor)
 end
 
 function actor_wt_sleep(actor)
+dbg("actor_wt_sleep("..actor.name..") at "..actor.x..","..actor.y..","..actor.z.."\n")
 	local obj = map_get_obj(actor.x, actor.y, actor.z, 0xa3) --bed
 	if obj ~= nil then
 		if obj.frame_n == 1 or obj.frame_n == 5 then --horizontal bed
@@ -2520,7 +2589,7 @@ wt_tbl = {
 [WT_FRONT] = {"WT_FRONT", actor_wt_front},
 [WT_REAR] = {"WT_REAR", actor_wt_rear},
 --WT_FLANK
---WT_BERSERK
+[WT_BERSERK] = {"WT_BERSERK", actor_wt_berserk},
 [WT_RETREAT] = {"WT_RETREAT", actor_wt_timid},
 [WT_ASSAULT] = {"WT_ASSAULT", actor_wt_attack},
 [WT_FLEE] = {"WT_FLEE", actor_wt_timid},
