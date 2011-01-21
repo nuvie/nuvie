@@ -47,6 +47,8 @@ extern "C"
 #include "lualib.h"
 }
 
+extern bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
+
 struct ScriptObjRef
 {
    uint16 refcount;
@@ -1345,15 +1347,33 @@ static int nscript_quake_start(lua_State *L)
 
 static int nscript_explosion_start(lua_State *L)
 {
-   uint16 x = (uint16)luaL_checkinteger(L, 1);
-   uint16 y = (uint16)luaL_checkinteger(L, 2);
-   uint32 size = (uint32)luaL_checkinteger(L, 3);
-   uint16 dmg = (uint16)luaL_checkinteger(L, 4);
+   uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
+   uint16 x = (uint16)luaL_checkinteger(L, 2);
+   uint16 y = (uint16)luaL_checkinteger(L, 3);
 
-   AsyncEffect *e = new AsyncEffect(new ExpEffect(MapCoord(x, y)));
+   ExpEffect *effect = new ExpEffect(tile_num, MapCoord(x, y));
+   AsyncEffect *e = new AsyncEffect(effect);
    e->run();
 
-   lua_pushboolean(L, true);
+   vector<MapEntity> *hit_items = effect->get_hit_entities();
+
+   lua_newtable(L);
+
+   for(uint16 i=0;i<hit_items->size();i++)
+   {
+      lua_pushinteger(L, i);
+
+      MapEntity m = (*hit_items)[i];
+      if(m.entity_type == ENT_OBJ)
+    	  nscript_obj_new(L, m.obj);
+      else if(m.entity_type == ENT_ACTOR)
+      {
+    	  nscript_new_actor_var(L, m.actor->get_actor_num());
+      }
+
+      lua_settable(L, -3);
+   }
+
    return 1;
 }
 

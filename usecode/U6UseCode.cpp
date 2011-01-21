@@ -1522,6 +1522,8 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         destroy_obj(obj); break;
                     case USE_U6_POTION_BLUE: ((U6Actor *)items.actor2_ref)->set_asleep(false);
                         destroy_obj(obj); break;
+                    case USE_U6_POTION_PURPLE: ((U6Actor *)items.actor2_ref)->set_protected(true);
+                        destroy_obj(obj); break;
                     case USE_U6_POTION_WHITE: new U6WhitePotionEffect(2500, 6000, obj);
                         break; // wait for message to delete potion
                     case USE_U6_POTION_BLACK:

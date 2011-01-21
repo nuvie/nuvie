@@ -121,11 +121,12 @@ class ExpEffect : public ProjectileEffect
     NuvieAnim *anim;
 
     Obj *obj;
+    uint16 exp_tile_num;
 
 protected:
     void start_anim();
 public:
-    ExpEffect(MapCoord location);
+    ExpEffect(uint16 tileNum, MapCoord location);
 
 };
 

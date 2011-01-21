@@ -628,6 +628,13 @@ inline void MapWindow::drawActor(Actor *actor)
                 if(rtile->data[x] == 0x00)
                     rtile->data[x] = 0x0C;
         }
+        else if(actor->is_cursed())
+        {
+            rtile = new Tile(*tile);
+            for(int x = 0; x < 256; x++)
+                if(rtile->data[x] == 0x00)
+                    rtile->data[x] = 0x9;
+        }
         if(rtile != 0)
         {
             drawNewTile(rtile, actor->x-cur_x,actor->y-cur_y, false);

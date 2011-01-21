@@ -798,7 +798,7 @@ static int nscript_actor_get_temp_status(Actor *actor, lua_State *L)
 
 static int nscript_actor_get_visible_flag(Actor *actor, lua_State *L)
 {
-   lua_pushboolean(L, (int)actor->is_visible()); return 1;
+   lua_pushboolean(L, (int)(actor->is_invisible() ? false : true)); return 1;
 }
 
 static int nscript_actor_get_worktype(Actor *actor, lua_State *L)

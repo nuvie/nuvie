@@ -217,6 +217,7 @@ function actor_move_diagonal(actor, x_direction, y_direction)
       if actor.obj_n == 0x177 then slime_update_frames() end
       subtract_movement_pts(actor, 5)
       actor.direction = y_direction
+      dbg("set dir = "..direction_string(direction).." y_dir ="..direction_string(y_direction).." ")
    end --FIXME need to handle this properly with map movement pts.
    
    return did_move and 1 or 0
@@ -296,7 +297,7 @@ function actor_move_towards_loc(actor, map_x, map_y)
 
    unk_30A72 = 1
 --dbg("var_6 = "..var_6)
-dbg(" now at ("..actor.x..","..actor.y..")\n")
+dbg(" now at ("..actor.x..","..actor.y..") dir="..actor.direction.."\n")
    return var_6
 
 end
@@ -363,24 +364,23 @@ function actor_str_adj(actor)
 end
 
 function actor_dex_adj(actor)
-   --FIXME
-   --if actor flag bit 6 not set then
-   -- don't subtract 3 from dex
    
    local dex = actor.dex
-   if dex <= 3 then
-      dex = 1
-   else
-      dex = dex - 3
+   if actor.cursed == true then
+      if dex <= 3 then
+         dex = 1
+      else
+         dex = dex - 3
+      end
    end
    
    --FIXME
    --if timestop and actor not in party then
    -- dex = 1
    
-   --FIXME
-   --if actor asleep then
-   -- dex = 1
+   if actor.asleep == true then
+     dex = 1
+   end
    
    return dex
 end
@@ -800,9 +800,6 @@ end
 
 function actor_get_ac(actor)
 
-   
-   --FIXME if cursed -3
-   --FIXME if protected + 3
    local ac = 0
    local obj
      
@@ -816,6 +813,14 @@ function actor_get_ac(actor)
       end
    end
 
+   if actor.cursed == true then
+      ac = ac - 3
+   end
+   
+   if actor.protected == true then
+      ac = ac + 3
+   end
+   
    return ac
 end
 
@@ -1345,7 +1350,7 @@ function actor_calculate_avg_coords()
    local player_y = player_loc.y
    
    local player = Actor.get_player_actor()
-   local player_dir = player.direction * 2 --convert from 4 point into 8 point direction
+   local player_dir = player.direction
       
    local actor
    for actor in party_members() do
@@ -1434,13 +1439,13 @@ function actor_calculate_avg_coords()
       end
    else
       --this is used by party members when in combat_front worktype.
-      combat_avg_x = player_x + movement_offset_x_tbl[player_dir + 1]
-      combat_avg_y = player_y + movement_offset_y_tbl[player_dir + 1]            
+      combat_avg_x = player_x + movement_offset_x_tbl[(player_dir*2) + 1]
+      combat_avg_y = player_y + movement_offset_y_tbl[(player_dir*2) + 1]            
    end
    
    if combat_avg_x == party_avg_x and combat_avg_y == party_avg_y then
-      combat_avg_x = combat_avg_x + movement_offset_x_tbl[player_dir + 1]
-      combat_avg_y = combat_avg_y + movement_offset_y_tbl[player_dir + 1]
+      combat_avg_x = combat_avg_x + movement_offset_x_tbl[(player_dir*2) + 1]
+      combat_avg_y = combat_avg_y + movement_offset_y_tbl[(player_dir*2) + 1]
    end
    dbg("PartyAvg("..party_avg_x..","..party_avg_y..") CombatAvg("..combat_avg_x..","..combat_avg_y..") Player("..player_x..","..player_y..") Dir = "..player_dir.." numMonsters = "..wt_num_monsters_near.."\n")
 end
@@ -1783,7 +1788,6 @@ function caught_by_guard(actor)
       end
    
       party_move(0xe7, 0xba, 0)
-      --FIXME party teleport. party_teleport(0xe7, 0xba, 0, 0)
    
       --FIXME get and update game time.
       --while g_game_hour ~= 8 do
@@ -2884,7 +2888,7 @@ function spell_put_actor_to_sleep(attacker, foe)
    local actor_base = actor_tbl[foe.obj_n]
    if actor_base == nil or actor_base[21] == 0 then -- 21 is immune to sleep
       if actor_int_check(attacker, foe) == false then
-         dbg("FIXME: put actor to sleep.\n")
+         foe.asleep = true
          return 0xfe
       else
          return 1

@@ -1093,7 +1093,6 @@ void Actor::all_items_to_container(Obj *container_obj)
  U6LList *inventory;
  U6Link *link;
  Obj *obj;
- uint8 i;
 
  inventory = get_inventory_list();
 

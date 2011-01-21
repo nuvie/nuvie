@@ -27,6 +27,8 @@
 
 #define TRANSPARENT_COLOR 0xFF /* transparent pixel color */
 
+#define EXP_EFFECT_TILE_NUM 382
+
 QuakeEffect *QuakeEffect::current_quake = NULL;
 FadeEffect *FadeEffect::current_fade = NULL;
 
@@ -115,7 +117,7 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
             if(tile->flags1 & TILEFLAG_WALL)
             {
                 //new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
-            	new ExpEffect(MapCoord(hit_loc->x, hit_loc->y, hit_loc->z));
+            	new ExpEffect(EXP_EFFECT_TILE_NUM, MapCoord(hit_loc->x, hit_loc->y, hit_loc->z));
                 stop_effect = true;
             }
             break;
@@ -150,7 +152,7 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
         }
         case MESG_ANIM_DONE:
             //new ExplosiveEffect(target_loc.x, target_loc.y, 3);
-        	new ExpEffect(MapCoord(target_loc.x, target_loc.y, target_loc.z));
+        	new ExpEffect(EXP_EFFECT_TILE_NUM, MapCoord(target_loc.x, target_loc.y, target_loc.z));
             stop_effect = true;
             break;
     }
@@ -167,12 +169,13 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 }
 
 #define EXP_EFFECT_SPEED 6
-#define EXP_EFFECT_TILE_NUM 382
 
-ExpEffect::ExpEffect(MapCoord location)
+
+ExpEffect::ExpEffect(uint16 tileNum, MapCoord location)
 {
 	start_loc = location;
     finished_tiles = 0;
+    exp_tile_num = tileNum;
 
     start_anim();
 }
@@ -209,7 +212,7 @@ void ExpEffect::start_anim()
     targets[15] = MapCoord(start_loc.x+1,start_loc.y-2,start_loc.z);
 
 
-    anim = new ProjectileAnim(EXP_EFFECT_TILE_NUM, &start_loc, targets, EXP_EFFECT_SPEED, true);
+    anim = new ProjectileAnim(exp_tile_num, &start_loc, targets, EXP_EFFECT_SPEED, true);
     add_anim(anim);
 
 }

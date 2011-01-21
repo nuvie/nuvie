@@ -925,11 +925,11 @@ void U6Actor::set_charmed(bool val)
 {
 	if(val)
 	{
-		status_flags |= OBJ_STATUS_CHARMED;
+		obj_flags |= OBJ_STATUS_CHARMED;
 	}
 	else
 	{
-		status_flags &= (0xff ^ OBJ_STATUS_CHARMED);
+		obj_flags &= (0xff ^ OBJ_STATUS_CHARMED);
 	}
 }
 
@@ -949,11 +949,11 @@ void U6Actor::set_cursed(bool val)
 {
 	if(val)
 	{
-		status_flags |= OBJ_STATUS_CURSED;
+		obj_flags |= OBJ_STATUS_CURSED;
 	}
 	else
 	{
-		status_flags &= (0xff ^ OBJ_STATUS_CURSED);
+		obj_flags &= (0xff ^ OBJ_STATUS_CURSED);
 	}
 }
 
