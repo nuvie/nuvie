@@ -914,7 +914,8 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    // spawn double-tiled actors, like cows, facing west (SB-X)
    if(actor->get_tile_type() == ACTOR_DT)
     actor->set_direction(-1, 0);
-   actor->set_worktype(worktype);
+   if(worktype != 0)
+    actor->set_worktype(worktype);
    actor->show();
 
    DEBUG(0,LEVEL_INFORMATIONAL,"Adding Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);

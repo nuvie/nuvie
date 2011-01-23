@@ -10,7 +10,9 @@ for i=1,8 do
       local new_x = random(0, 10) + loc.x - 5
       local new_y = random(0, 10) + loc.y - 5
       if map_can_put(new_x, new_y, from_z) then
-         Actor.new(0x157, new_x, new_y, from_z, caster.align, WT_ASSAULT) --insect
+         actor = Actor.new(0x157, new_x, new_y, from_z) --insect
+         actor.align = caster.align
+         actor.wt = WT_ASSAULT
          break
       end
    end

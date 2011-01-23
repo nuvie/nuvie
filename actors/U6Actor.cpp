@@ -2045,7 +2045,7 @@ void U6Actor::die()
      }
   }
 
-  add_blood();
+  //moved to script add_blood();
  
     // we don't generate a dead body if the avatar dies because they will be ressurrected.  
     if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
