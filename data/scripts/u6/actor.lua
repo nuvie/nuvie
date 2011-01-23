@@ -851,7 +851,7 @@ function actor_take_hit(attacker, defender, max_dmg)
          --FIXME defender now targets attacker. I think.
       end
 
-      local exp_gained = actor_hit(defender, max_dmg)
+      local exp_gained = actor_hit(defender, max_dmg, attacker)
       
       attacker.exp = attacker.exp + exp_gained
    else
@@ -882,7 +882,7 @@ function actor_take_hit(attacker, defender, max_dmg)
    end
 end
 
-function actor_hit(defender, max_dmg)
+function actor_hit(defender, max_dmg, attacker)
 	
 	local defender_obj_n = defender.obj_n
 	local exp_gained = 0
@@ -948,8 +948,10 @@ function actor_hit(defender, max_dmg)
 	
 					local child
 					for child in container_objs(defender) do  -- look through container for effect object. 
-					  if child.obj_n == 337 then --effect
-					  	--FIXME use effect here.
+					  if child.obj_n == 0x151 then --effect
+					  	if attacker ~= nil then
+					  	  actor_use_effect(attacker, child)
+					  	end
 					  	break
 					  else
 					  	Obj.moveToMap(child, defender.x, defender.y, defender.z)
@@ -2963,5 +2965,44 @@ function spell_take_fire_dmg(attacker, foe)
    
    actor_yell_for_help(attacker, foe, 1)
 end
-   
+
+
+function actor_use_effect(actor, effect)
+	local random = math.random
+	local effect_type = random(0, 3)
+
+	if effect_type == 0 then
+		print("Acid!\n")
+		actor_hit(actor, random(1, 0x14))
+		
+	elseif effect_type == 1 then
+		print("Poison!\n")
+		actor.poisoned = true
+		hit_anim(actor.x, actor.y)
+		
+	elseif effect_type == 2 then
+		print("Bomb!\n")
+		local hit_items = explosion_start(0x17e, actor.x, actor.y)
+  
+		for k,v in pairs(hit_items) do
+			if v.luatype == "actor" then
+				actor_hit(v, random(1, 0x14))
+			end
+		end
+		
+	elseif effect_type == 3 then
+		print("Gas!\n")
+		local hit_items = explosion_start(0x17c, actor.x, actor.y)
+  
+		for k,v in pairs(hit_items) do
+			if v.luatype == "actor" then
+				v.poisoned = true
+				hit_anim(v.x, v.y)
+			end
+		end
+	end
+	
+	Obj.removeFromEngine(effect)
+end
+
 io.stderr:write("actor.lua loaded\n")

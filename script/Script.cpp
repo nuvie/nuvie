@@ -96,6 +96,7 @@ static const struct luaL_Reg nscript_objlib_f[] =
    { "moveToInv", nscript_obj_movetoinv },
    { "moveToCont", nscript_obj_movetocont },
    { "removeFromCont", nscript_container_remove_obj },
+   { "removeFromEngine", nscript_obj_removefromengine },
    { "use", nscript_obj_use },
 
    { NULL, NULL }
@@ -1046,9 +1047,17 @@ static int nscript_obj_use(lua_State *L)
 
 static int nscript_obj_removefromengine(lua_State *L)
 {
-   Obj *s_obj = (Obj *)luaL_checkudata(L, 1, "nuvie.Obj");
-   if(s_obj == NULL)
-      return luaL_error(L, "expected Obj\n");
+   ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+   Obj **s_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
+
+   Obj *obj;
+
+   obj = *s_obj;
+
+   if(obj)
+   {
+       obj_manager->unlink_from_engine(obj);
+   }
 
    return 0;
 }
