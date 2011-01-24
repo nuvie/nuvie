@@ -22,6 +22,7 @@
  */
 
 #include <list>
+#include <stack>
 #include <cassert>
 #include "nuvieDefs.h"
 #include "Configuration.h"
@@ -130,6 +131,14 @@ static const struct luaL_Reg nscript_u6linklib_m[] =
    { NULL, NULL }
 };
 
+static int nscript_u6link_recursive_gc(lua_State *L);
+
+static const struct luaL_Reg nscript_u6linkrecursivelib_m[] =
+{
+   { "__gc", nscript_u6link_recursive_gc },
+   { NULL, NULL }
+};
+
 static int nscript_print(lua_State *L);
 //no longer used -- static int nscript_get_target(lua_State *L);
 static int nscript_load(lua_State *L);
@@ -165,11 +174,13 @@ static int nscript_xor_effect(lua_State *L);
 
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
+int nscript_u6llist_iter_recursive(lua_State *L);
 int nscript_party_iter(lua_State *L);
 
 
 static int nscript_party(lua_State *L);
 static int nscript_container(lua_State *L);
+int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
 
 Script *Script::script = NULL;
 
@@ -254,6 +265,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    luaL_newmetatable(L, "nuvie.U6Link");
    luaL_register(L, NULL, nscript_u6linklib_m);
+
+   luaL_newmetatable(L, "nuvie.U6LinkRecursive");
+   luaL_register(L, NULL, nscript_u6linkrecursivelib_m);
 
    luaL_newmetatable(L, "nuvie.Obj");
    //lua_pushvalue(L, -1); //duplicate metatable
@@ -1151,6 +1165,28 @@ static int nscript_u6link_gc(lua_State *L)
    return 0;
 }
 
+/* free up resources for a recursive U6Link iterator. */
+static int nscript_u6link_recursive_gc(lua_State *L)
+{
+   std::stack<U6Link *> **s_stack = (std::stack<U6Link *> **)luaL_checkudata(L, 1, "nuvie.U6LinkRecursive");
+   std::stack<U6Link *> *s = *s_stack;
+
+   if(s->empty() == false)
+   {
+      for(; !s->empty(); s->pop())
+      {
+          U6Link *link = s->top();
+
+          if(link != NULL)
+             releaseU6Link(link);
+      }
+   }
+
+   delete s;
+
+   printf("U6LinkResursive garbage collector!!\n");
+   return 0;
+}
 
 static int nscript_print(lua_State *L)
 {
@@ -1531,6 +1567,37 @@ int nscript_u6llist_iter(lua_State *L)
    return 1;
 }
 
+int nscript_u6llist_iter_recursive(lua_State *L)
+{
+   std::stack<U6Link *> **s_stack = (std::stack<U6Link *> **)luaL_checkudata(L, 1, "nuvie.U6LinkRecursive");
+   std::stack<U6Link *> *s = *s_stack;
+
+   if(s->empty() || s->top() == NULL)
+      return 0;
+
+   U6Link *link = s->top();
+
+   Obj *obj = (Obj *)link->data;
+   nscript_obj_new(L, obj);
+
+   s->pop();
+   if(link->next != NULL)
+   {
+	   s->push(link->next);
+	   retainU6Link(link->next);
+   }
+
+   if(obj->container && obj->container->count() > 0)
+   {
+	   s->push(obj->container->start());
+	   retainU6Link(obj->container->start());
+   }
+
+   releaseU6Link(link); // release old link object.
+
+   return 1;
+}
+
 int nscript_party_iter(lua_State *L)
 {
    uint16 party_index = (uint16)lua_tointeger(L, lua_upvalueindex(1));
@@ -1587,24 +1654,49 @@ static int nscript_objs_at_loc(lua_State *L)
 
 static int nscript_container(lua_State *L)
 {
-	U6Link *link = NULL;
+	bool is_recursive = false;
 	Obj **s_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
 	Obj *obj;
 
 	obj = *s_obj;
 
 	U6LList *obj_list = obj->container;
-    if(obj_list != NULL)
-       link = obj_list->start();
 
-	lua_pushcfunction(L, nscript_u6llist_iter);
+    if(lua_gettop(L) >= 2)
+    	is_recursive = lua_toboolean(L, 2);
 
-	U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
-	*p_link = link;
+    return nscript_init_u6link_iter(L, obj_list, is_recursive);
+}
 
-	retainU6Link(link);
+int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive)
+{
+	U6Link *link;
 
-	luaL_getmetatable(L, "nuvie.U6Link");
+    if(list != NULL)
+       link = list->start();
+
+    retainU6Link(link);
+
+    if(is_recursive)
+    {
+    	lua_pushcfunction(L, nscript_u6llist_iter_recursive);
+
+    	std::stack<U6Link *> **p_stack = (std::stack<U6Link *> **)lua_newuserdata(L, sizeof(std::stack<U6Link *> *));
+		*p_stack = new std::stack<U6Link *>();
+		(*p_stack)->push(link);
+
+		luaL_getmetatable(L, "nuvie.U6LinkRecursive");
+    }
+    else
+    {
+    	lua_pushcfunction(L, nscript_u6llist_iter);
+
+		U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
+		*p_link = link;
+
+		luaL_getmetatable(L, "nuvie.U6Link");
+    }
+
 	lua_setmetatable(L, -2);
 
 	return 2;

@@ -1847,7 +1847,7 @@ function caught_by_guard(actor)
       --end
    
       for party_actor in party_members() do 
-         for var_4 in actor_inventory(party_actor) do --FIXME iterate through containers in inventory.
+         for var_4 in actor_inventory(party_actor, true) do -- recursively search containers in inventory.
             --if((*(var_4 + objlist_obj_flags) & 0x18) == 0 || sub_CC5E(var_4, *(di + objlist_party_roster)) == 0)
             --   break
    

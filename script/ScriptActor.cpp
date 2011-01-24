@@ -32,6 +32,7 @@
 extern bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
 extern int nscript_obj_new(lua_State *L, Obj *obj);
 extern int nscript_u6llist_iter(lua_State *L);
+extern int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
 
 bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
 
@@ -1083,29 +1084,20 @@ static int nscript_actor_add_mp(lua_State *L)
    return 0;
 }
 
-//lua function actor_inventory(actor)
+//lua function actor_inventory(actor, is_recursive)
 static int nscript_actor_inv(lua_State *L)
 {
    Actor *actor;
-   U6Link *link = NULL;
+   bool is_recursive = false;
 
    actor = nscript_get_actor_from_args(L);
    if(actor == NULL)
       return 0;
 
+   if(lua_gettop(L) >= 2)
+   	  is_recursive = lua_toboolean(L, 2);
+
    U6LList *inv = actor->get_inventory_list();
-   if(inv != NULL)
-      link = inv->start();
 
-   lua_pushcfunction(L, nscript_u6llist_iter);
-
-   U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
-   *p_link = link;
-
-   retainU6Link(link);
-
-   luaL_getmetatable(L, "nuvie.U6Link");
-   lua_setmetatable(L, -2);
-
-   return 2;
+   return nscript_init_u6link_iter(L, inv, is_recursive);
 }
