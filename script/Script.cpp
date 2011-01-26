@@ -110,19 +110,6 @@ static const struct luaL_Reg nscript_objlib_m[] =
    { NULL, NULL }
 };
 
-static bool nscript_container_new(lua_State *L, Obj *parent_obj);
-static int nscript_container_gc(lua_State *L);
-static int nscript_container_get(lua_State *L);
-static int nscript_container_length(lua_State *L);
-
-static const struct luaL_Reg nscript_containerlib_m[] =
-{
-   { "__len", nscript_container_length },
-   { "__index", nscript_container_get },
-   { "__gc", nscript_container_gc },
-   { NULL, NULL }
-};
-
 static int nscript_u6link_gc(lua_State *L);
 
 static const struct luaL_Reg nscript_u6linklib_m[] =
@@ -150,6 +137,9 @@ static int nscript_player_set_karma(lua_State *L);
 static int nscript_party_is_in_combat_mode(lua_State *L);
 static int nscript_party_set_combat_mode(lua_State *L);
 static int nscript_party_move(lua_State *L);
+static int nscript_party_get_size(lua_State *L);
+static int nscript_party_get_member(lua_State *L);
+static int nscript_party_update_leader(lua_State *L);
 
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
@@ -276,9 +266,6 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    luaL_register(L, "Obj", nscript_objlib_f);
 
-   luaL_newmetatable(L, "nuvie.Container");
-   luaL_register(L, NULL, nscript_containerlib_m);
-
    lua_pushcfunction(L, nscript_load);
    lua_setglobal(L, "nuvie_load");
 
@@ -318,6 +305,12 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_player_set_karma);
    lua_setglobal(L, "player_set_karma");
 
+   lua_pushcfunction(L, nscript_party_get_size);
+   lua_setglobal(L, "party_get_size");
+
+   lua_pushcfunction(L, nscript_party_get_member);
+   lua_setglobal(L, "party_get_member");
+
    lua_pushcfunction(L, nscript_party_is_in_combat_mode);
    lua_setglobal(L, "party_is_in_combat_mode");
 
@@ -326,6 +319,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_party_move);
    lua_setglobal(L, "party_move");
+
+   lua_pushcfunction(L, nscript_party_update_leader);
+   lua_setglobal(L, "party_update_leader");
 
    lua_pushcfunction(L, nscript_eclipse_start);
    lua_setglobal(L, "eclipse_start");
@@ -1076,80 +1072,6 @@ static int nscript_obj_removefromengine(lua_State *L)
    return 0;
 }
 
-static bool nscript_container_new(lua_State *L, Obj *parent_obj)
-{
-   Obj **p_obj;
-
-   p_obj = (Obj **)lua_newuserdata(L, sizeof(Obj *));
-
-   luaL_getmetatable(L, "nuvie.Container");
-   lua_setmetatable(L, -2);
-
-   *p_obj = parent_obj;
-
-   nscript_inc_obj_ref_count(parent_obj);
-
-   return true;
-}
-
-static int nscript_container_gc(lua_State *L)
-{
-   return nscript_obj_gc(L); //a container is just another Obj.
-}
-
-static int nscript_container_get(lua_State *L)
-{
-   Obj **s_obj;
-   Obj *obj;
-   U6Link *link;
-
-   int key;
-
-   s_obj = (Obj **)lua_touserdata(L, 1);
-   if(s_obj == NULL)
-      return 0;
-
-   obj = *s_obj;
-   if(obj == NULL)
-      return 0;
-
-   //ptr = nscript_get_obj_ptr(s_obj);
-   if(obj->container == NULL)
-      return 0;
-
-   key = lua_tointeger(L, 2);
-
-   DEBUG(0, LEVEL_DEBUGGING, "Key = %d\n", key);
-
-   link = obj->container->gotoPos(key - 1);
-
-   if(link && link->data)
-      return nscript_obj_new(L, (Obj *)link->data); //return container child Obj to script.
-
-   return 0;
-}
-
-static int nscript_container_length(lua_State *L)
-{
-   Obj **s_obj;
-   Obj *obj;
-   uint32 count = 0;
-
-   s_obj = (Obj **)lua_touserdata(L, 1);
-   if(s_obj == NULL)
-      return 0;
-
-   obj = *s_obj;
-   if(obj == NULL)
-      return 0;
-
-   if(obj->container != NULL)
-      count = obj->container->count();
-
-   lua_pushinteger(L, (int)count);
-   return 1;
-}
-
 /* release last iter U6Link if required. */
 static int nscript_u6link_gc(lua_State *L)
 {
@@ -1279,6 +1201,42 @@ static int nscript_party_move(lua_State *L)
 		return 0;
 
 	player->move(x, y, z); //FIXME should this be party move?
+
+	return 0;
+}
+
+static int nscript_party_get_size(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	lua_pushinteger(L, party->get_party_size());
+	return 1;
+}
+
+static int nscript_party_get_member(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	uint8 member_num = (uint8)lua_tointeger(L, 1);
+
+	Actor *actor = party->get_actor(member_num);
+
+	if(actor == NULL)
+		return 0;
+
+	nscript_new_actor_var(L, actor->get_actor_num());
+	return 1;
+}
+
+static int nscript_party_update_leader(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	Player *player = Game::get_game()->get_player();
+
+	Actor *leader = party->get_actor(party->get_leader());
+
+	if(leader)
+	{
+		player->update_player(leader);
+	}
 
 	return 0;
 }

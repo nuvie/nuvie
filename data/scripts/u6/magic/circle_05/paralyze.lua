@@ -7,4 +7,7 @@
      hit_anim(actor.x, actor.y)
      actor.paralyzed = true
      print(actor.name.." is paralyzed.\n")
+     if actor.in_party == true then
+        party_update_leader()
+     end
   end

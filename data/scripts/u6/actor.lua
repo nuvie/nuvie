@@ -871,6 +871,9 @@ function actor_take_hit(attacker, defender, max_dmg)
          if attacker.obj_n == 0x165 then --corpser
             print("`"..defender.name.." dragged under!\n")
             defender.corpser_flag = true
+            if defender.in_party == true then
+               party_update_leader()
+            end
          end
          --FIXME add more logic from combat_hit_actor here.
          --acid slug disolves, gremlin, poison etc.
@@ -897,10 +900,16 @@ function actor_hit(defender, max_dmg, attacker)
 		if defender_obj_n == 409 then --lord british
 			defender.hp = 0xff
 		elseif defender_obj_n == 414 or defender_obj_n == 415 then --skiff, raft
-			-- FIXME hit random party member here.
+			-- hit random party member.
+			local num_in_party = party_get_size()
+			local party_member_num = 0
+			if num_in_party > 1 then
+				party_member_num = math.random(0, num_in_party - 1)
+			end
+			
+			actor_hit(party_get_member(party_member_num), max_dmg, attacker)
 		else
 			-- actor hit logic here
-			--			exp_gained = Actor.hit(defender, max_dmg) --FIXME need to bring death function into script.
 			if max_dmg >= defender.hp then
 
 				if defender.hp ~= 0 then
@@ -921,7 +930,7 @@ function actor_hit(defender, max_dmg, attacker)
 					
 					defender.wt = WT_NOTHING
 					if defender.in_party == true then
-						--FIXME switch party leader if nececcary
+						party_update_leader()
 					end
 							
 				end
@@ -1632,6 +1641,7 @@ function actor_update_flags(actor)
 		if actor.paralyzed == true and random(0, 3) == 0 then
 			if actor_str_adj(actor) >= random(1, 0x1e) then
 				actor.paralyzed = false
+				party_update_leader()
 			end
 		end
 		
@@ -1664,6 +1674,9 @@ function actor_corpser_regurgitation(actor)
       --FIXME play sound effect
       print("`"..actor.name.." regurgitated!\n")
       actor.corpser_flag = false
+      if actor.in_party == true then
+         party_update_leader()
+      end
    else
       actor_hit(actor, random(1, 0xf))
       actor.mpts = 0
@@ -1679,6 +1692,7 @@ function actor_remove_charm(actor)
 	if actor.in_party == true then
 		actor.align = ALIGNMENT_GOOD
 	end
+	party_update_leader()
 	--[[ FIXME need to add functions to check for combat_mode and solo_mode
 	if party_in_combat_mode() then
 		actor.wt = combat_mode
