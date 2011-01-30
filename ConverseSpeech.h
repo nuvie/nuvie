@@ -23,7 +23,7 @@
 #include <list>
 
 #include "SDL.h"
-#include "SDL_mixer.h"
+#include "mixer.h"
 
 class Configuration;
 class U6Lib_n;
@@ -32,13 +32,18 @@ class NuvieIOBuffer;
 
 using std::string;
 
+typedef struct TownsSound {
+	std::string filename;
+	uint16 sample_num;
+} TownsSound;
+
 class ConverseSpeech
 {
     // game system objects from nuvie
     Configuration *config;
     bool audio_enabled;
-    int channel_num;
-    std::list<Mix_Chunk *> list;
+    Audio::SoundHandle handle;
+    std::list<TownsSound> list;
 
 public:
     ConverseSpeech();

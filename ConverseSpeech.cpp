@@ -29,6 +29,7 @@
 #include "U6Lzw.h"
 
 #include "ConverseSpeech.h"
+#include "SoundManager.h"
 
 ConverseSpeech::ConverseSpeech()
 {
@@ -52,23 +53,21 @@ ConverseSpeech::~ConverseSpeech()
 
 void ConverseSpeech::update()
 {
- Mix_Chunk *sample;
+ TownsSound sound;
  
  if(!audio_enabled)
    return;
 
  if(!list.empty())
    {
-    sample = list.front();
-    if(!Mix_Playing(channel_num) || Mix_GetChunk(channel_num) != sample)
+    if(Game::get_game()->get_sound_manager()->isSoundPLaying(handle) == false)
      {
-      list.pop_front();
-      Mix_FreeChunk(sample);
-      if(!list.empty())
-       {
-        sample = list.front();
-        channel_num = Mix_PlayChannel(-1, sample, 0);
-       }
+    	list.pop_front();
+    	if(!list.empty())
+    	{
+    	    sound = list.front();
+        	handle = Game::get_game()->get_sound_manager()->playTownsSound(sound.filename, sound.sample_num);
+    	}
      }
    }
 }
@@ -80,7 +79,7 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
  SDL_RWops *rw;
  NuvieIOBuffer *wav_buffer;
  unsigned char *raw_data;
- Mix_Chunk *sample;
+ TownsSound sound;
  
  if(!audio_enabled)
    return;
@@ -101,6 +100,16 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
  
  DEBUG(0,LEVEL_DEBUGGING,"Loading Speech Sample %s:%d\n", sample_file.c_str(), sample_num);
  
+ //sample_file = "/Users/efry/Ultima/townsU6/SOUNDS2.DAT";
+
+ sound.filename = sample_file;
+ sound.sample_num = sample_num;
+
+ if(list.empty())
+	 handle = Game::get_game()->get_sound_manager()->playTownsSound(sample_file, sample_num);
+
+ list.push_back(sound);
+ /*
  wav_buffer = load_speech(sample_file, sample_num);
 
  raw_data = wav_buffer->get_raw_data();
@@ -116,7 +125,7 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
    channel_num = Mix_PlayChannel(0, sample, 0);
     
  list.push_back(sample);
-
+*/
  return;
 }
 

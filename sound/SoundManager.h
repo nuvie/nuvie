@@ -38,6 +38,7 @@
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "NuvieIOFile.h"
+#include "sdl-mixer.h"
 
 class CEmuopl;
 
@@ -57,6 +58,8 @@ public:
     void musicPlay();
 
     void musicStop(); // SB-X
+    Audio::SoundHandle playTownsSound(std::string filename, uint16 sample_num);
+    bool isSoundPLaying(Audio::SoundHandle handle);
 
 private:
 	bool LoadCustomSongs(string scriptname);
@@ -90,6 +93,8 @@ private:
     bool audio_enabled;
     bool music_enabled;
     bool sfx_enabled;
+
+    SdlMixerManager *mixer;
 
     CEmuopl *opl;
 public:

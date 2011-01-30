@@ -34,7 +34,9 @@
 #include "Player.h"
 #include "MapWindow.h"
 
-
+#include "mixer.h"
+#include "doublebuffersdl-mixer.h"
+#include "decoder/FMtownsDecoderStream.h"
 bool SoundManager::g_MusicFinished;
 
 void musicFinished ()
@@ -153,10 +155,11 @@ bool SoundManager::initAudio()
 {
   int ret;
   int audio_rate = 44100;
+  /*
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  Uint16 audio_format = AUDIO_S16MSB;        //AUDIO_S16; /* 16-bit stereo */
+  Uint16 audio_format = AUDIO_S16MSB;        //AUDIO_S16; // 16-bit stereo
 #else
-  Uint16 audio_format = AUDIO_S16LSB;        //AUDIO_S16; /* 16-bit stereo */
+  Uint16 audio_format = AUDIO_S16LSB;        //AUDIO_S16; // 16-bit stereo
 #endif
 
   int audio_channels = 2;
@@ -168,6 +171,15 @@ bool SoundManager::initAudio()
     return false;
   }
   Mix_HookMusicFinished (musicFinished);
+*/
+
+#ifdef MACOSX
+  mixer = new DoubleBufferSDLMixerManager();
+#else
+  mixer = new SdlMixerManager();
+#endif
+
+  mixer->init();
 
   opl = new CEmuopl(audio_rate, true, true); // 16bit stereo
 
@@ -684,3 +696,16 @@ Sound *SoundManager::RequestSong (string group)
   return NULL;
 };
 
+Audio::SoundHandle SoundManager::playTownsSound(std::string filename, uint16 sample_num)
+{
+	FMtownsDecoderStream *stream = new FMtownsDecoderStream(filename, sample_num);
+	Audio::SoundHandle handle;
+	mixer->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &handle, stream);
+
+	return handle;
+}
+
+bool SoundManager::isSoundPLaying(Audio::SoundHandle handle)
+{
+	return mixer->getMixer()->isSoundHandleActive(handle);
+}
