@@ -22,7 +22,7 @@
 #include "emuopl.h"
 
 CEmuopl::CEmuopl(int rate, bool bit16, bool usestereo)
-  : use16bit(bit16), stereo(usestereo)
+  : oplRate(rate), use16bit(bit16), stereo(usestereo)
 {
   YM3812Init(1, 3579545, rate);
 }

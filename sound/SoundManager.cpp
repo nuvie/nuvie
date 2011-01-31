@@ -181,7 +181,7 @@ bool SoundManager::initAudio()
 
   mixer->init();
 
-  opl = new CEmuopl(audio_rate, true, true); // 16bit stereo
+  opl = new CEmuopl(mixer->getOutputRate(), true, true); // 16bit stereo
 
   return true;
 }
@@ -193,43 +193,43 @@ bool SoundManager::LoadNativeU6Songs()
  string filename;
 
  config_get_path(m_Config, "brit.m", filename);
- song = new SongAdPlug(opl);
+ song = new SongAdPlug(mixer->getMixer(), opl);
 // loadSong(song, filename.c_str());
  loadSong(song, filename.c_str(), "Rule Britannia");
  groupAddSong("random", song);
 
  config_get_path(m_Config, "forest.m", filename);
- song = new SongAdPlug(opl);
+ song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Wanderer (Forest)");
  groupAddSong("random", song);
 
  config_get_path(m_Config, "stones.m", filename);
- song = new SongAdPlug(opl);
+ song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Stones");
  groupAddSong("random", song);
 
  config_get_path(m_Config, "ultima.m", filename);
- song = new SongAdPlug(opl);
+ song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Ultima VI Theme");
  groupAddSong("random", song);
 
  config_get_path(m_Config, "engage.m", filename);
- song = new SongAdPlug(opl);
+ song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Engagement and Melee");
  groupAddSong("combat", song);
 
  config_get_path(m_Config, "hornpipe.m", filename);
- song = new SongAdPlug(opl);
+ song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Captain Johne's Hornpipe");
  groupAddSong("boat", song);
 
  config_get_path(m_Config, "gargoyle.m", filename);
- song = new SongAdPlug(opl);
+ song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Audchar Gargl Zenmur");
  groupAddSong("gargoyle", song);
 
  config_get_path(m_Config, "dungeon.m", filename);
- song = new SongAdPlug(opl);
+ song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Dungeon");
  groupAddSong("dungeon", song);
 
@@ -478,7 +478,7 @@ void SoundManager::musicPlay()
 
  if (m_pCurrentSong != NULL)
         {
-          m_pCurrentSong->Play();
+         m_pCurrentSong->Play();
         }
 
 }

@@ -62,6 +62,8 @@ public:
 	 */
 	virtual int resumeAudio();
 
+	uint32 getOutputRate() { return _mixer->getOutputRate(); }
+
 protected:
 	/** The mixer implementation */
 	Audio::MixerImpl *_mixer;

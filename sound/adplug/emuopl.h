@@ -34,6 +34,8 @@ public:
 	CEmuopl(int rate, bool bit16, bool usestereo);	// rate = sample rate
 	virtual ~CEmuopl();
 
+	int getRate() { return oplRate; }
+
 	void update(short *buf, int samples);	// fill buffer
 
 	// template methods
@@ -42,6 +44,7 @@ public:
 
 private:
 	bool	use16bit,stereo;
+	int oplRate;
 };
 
 #endif

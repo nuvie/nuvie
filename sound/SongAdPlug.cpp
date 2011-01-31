@@ -31,7 +31,7 @@
 #include "SoundManager.h"
 
 #define DEFAULT_BUF_LEN 512
-
+/*
 void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
 {
  sint32 i, j;
@@ -70,31 +70,32 @@ void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
 
  return;
 }
+*/
 
-
-SongAdPlug::SongAdPlug(CEmuopl *o) {
+SongAdPlug::SongAdPlug(Audio::Mixer *m, CEmuopl *o) {
+ mixer = m;
  opl = o;
  samples_left = 0;
+ stream = NULL;
 }
 
 SongAdPlug::~SongAdPlug() {
- delete player;
+ //delete player;
 }
 
 bool SongAdPlug::Init(const char *filename) {
     if(filename) m_Filename = filename; // SB-X
 
-    player = new Cu6mPlayer(opl);
-    if(!player) {
-      DEBUG(0,LEVEL_EMERGENCY,"Argh!! Failed to allocate a new Cu6mPlayer. Assume crash positions.\n");
-    }
+    stream = new U6AdPlugDecoderStream(opl, string(filename));
 
-    player->load(filename);
     return true;
 }
 
 bool SongAdPlug::Play(bool looping) {
-    Mix_HookMusic(adplug_mixer_callback, this);
+    if(stream)
+    {
+    	mixer->playStream(Audio::Mixer::kMusicSoundType, &handle, stream, -1, Audio::Mixer::kMaxChannelVolume, 0, DisposeAfterUse::NO);
+    }
 	return true;
 }
 
@@ -102,9 +103,10 @@ bool SongAdPlug::Stop() {
 
     //if (!Mix_PlayingMusic()) return false;
 
-    player->rewind(); // SB-X
-    Mix_HookMusic(NULL,NULL);
-
+    //player->rewind(); // SB-X
+    //Mix_HookMusic(NULL,NULL);
+	mixer->stopHandle(handle);
+	stream->rewind();
     return true;
 }
 
