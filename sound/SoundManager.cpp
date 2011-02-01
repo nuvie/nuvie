@@ -37,6 +37,9 @@
 #include "mixer.h"
 #include "doublebuffersdl-mixer.h"
 #include "decoder/FMtownsDecoderStream.h"
+
+#include "TownsSfxManager.h"
+
 bool SoundManager::g_MusicFinished;
 
 void musicFinished ()
@@ -52,6 +55,8 @@ SoundManager::SoundManager ()
   audio_enabled = false;
   music_enabled = false;
   sfx_enabled = false;
+
+  m_SfxManager = NULL;
 
   opl = NULL;
 }
@@ -93,11 +98,11 @@ SoundManager::~SoundManager ()
 
 bool SoundManager::nuvieStartup (Configuration * config)
 {
-  std::string music_key;
+  std::string config_key;
   std::string music_style;
   std::string music_cfg_file; //full path and filename to music.cfg
-  std::string sound_dir_key;
   std::string sound_dir;
+  std::string sfx_style;
 
   m_Config = config;
   m_Config->value ("config/audio/enabled", audio_enabled, true);
@@ -112,13 +117,17 @@ bool SoundManager::nuvieStartup (Configuration * config)
   m_Config->value ("config/audio/enable_music", music_enabled, true);
   m_Config->value ("config/audio/enable_sfx", sfx_enabled, true);
 
-  music_key = config_get_game_key(config);
-  music_key.append("/music");
-  config->value (music_key, music_style, "native");
+  config_key = config_get_game_key(config);
+  config_key.append("/music");
+  config->value (config_key, music_style, "native");
 
-  sound_dir_key = config_get_game_key(config);
-  sound_dir_key.append("/sounddir");
-  config->value (sound_dir_key, sound_dir, "");
+  config_key = config_get_game_key(config);
+  config_key.append("/sfx");
+  config->value (config_key, sfx_style, "pcspeaker");
+
+  config_key = config_get_game_key(config);
+  config_key.append("/sounddir");
+  config->value (config_key, sound_dir, "");
 
   if(!initAudio ())
     {
@@ -146,6 +155,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
     {
      LoadObjectSamples(sound_dir);
      LoadTileSamples(sound_dir);
+     LoadSfxManager(sfx_style);
     }
 
   return true;
@@ -153,25 +163,6 @@ bool SoundManager::nuvieStartup (Configuration * config)
 
 bool SoundManager::initAudio()
 {
-  int ret;
-  int audio_rate = 44100;
-  /*
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  Uint16 audio_format = AUDIO_S16MSB;        //AUDIO_S16; // 16-bit stereo
-#else
-  Uint16 audio_format = AUDIO_S16LSB;        //AUDIO_S16; // 16-bit stereo
-#endif
-
-  int audio_channels = 2;
-  int audio_buffers = 1024;        //4096; // Note: must be a power of two
-  SDL_InitSubSystem (SDL_INIT_AUDIO);
-  ret = Mix_OpenAudio (audio_rate, audio_format, audio_channels, audio_buffers);
-  if (ret) {
-    DEBUG(0,LEVEL_ERROR,"Failed to initialize audio: %s\n", Mix_GetError());
-    return false;
-  }
-  Mix_HookMusicFinished (musicFinished);
-*/
 
 #ifdef MACOSX
   mixer = new DoubleBufferSDLMixerManager();
@@ -450,6 +441,29 @@ bool SoundManager::LoadTileSamples (string sound_dir)
   return true;
 };
 
+bool SoundManager::LoadSfxManager(string sfx_style)
+{
+	if(m_SfxManager != NULL)
+	{
+		return false;
+	}
+
+	if(sfx_style == "pcspeaker")
+	{
+		//m_SfxManager = new PCSpeakerSfxManager(m_Config, mixer->getMixer());
+	}
+	else if(sfx_style == "towns")
+	{
+		m_SfxManager = new TownsSfxManager(m_Config, mixer->getMixer());
+	}
+	else if(sfx_style == "custom")
+	{
+		//m_SfxManager = new CustomSfxManager(m_Config, mixer->getMixer());
+	}
+
+	return true;
+}
+
 void SoundManager::musicPlayFrom(string group)
 {
  if(m_CurrentGroup != group)
@@ -708,4 +722,12 @@ Audio::SoundHandle SoundManager::playTownsSound(std::string filename, uint16 sam
 bool SoundManager::isSoundPLaying(Audio::SoundHandle handle)
 {
 	return mixer->getMixer()->isSoundHandleActive(handle);
+}
+
+bool SoundManager::playSfx(uint16 sfx_id)
+{
+	if(m_SfxManager == NULL || audio_enabled == false || sfx_enabled == false)
+		return false;
+
+	return m_SfxManager->playSfx(sfx_id);
 }

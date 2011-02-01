@@ -13,6 +13,7 @@
 #include "ViewManager.h"
 #include "MsgScroll.h"
 #include "ActorManager.h"
+#include "SoundManager.h"
 #include "U6objects.h"
 #include "Effect.h"
 
@@ -436,11 +437,13 @@ void QuakeEffect::recenter_map()
 HitEffect::HitEffect(Actor *target, uint32 duration)
 {
     add_anim(new HitAnim(target));
+    Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_HIT); //FIXME use NUVIE_SFX_SAMPLE defines here.
 }
 
 HitEffect::HitEffect(MapCoord location)
 {
     add_anim(new HitAnim(&location));
+    Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_HIT); //FIXME use NUVIE_SFX_SAMPLE defines here.
 }
 
 /* On ANIM_DONE: end

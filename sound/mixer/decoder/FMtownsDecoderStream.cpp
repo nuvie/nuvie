@@ -26,6 +26,14 @@
 
 inline sint16 convert_sample(uint16 raw_sample);
 
+FMtownsDecoderStream::FMtownsDecoderStream(unsigned char *buf, uint32 len)
+{
+	raw_audio_buf = buf;
+	buf_len = len;
+	buf_pos = 0;
+	should_free_raw_data = false;
+}
+
 FMtownsDecoderStream::FMtownsDecoderStream(std::string filename, uint16 sample_num)
 {
 	 unsigned char *compressed_data;
@@ -44,11 +52,12 @@ FMtownsDecoderStream::FMtownsDecoderStream(std::string filename, uint16 sample_n
 
 	 buf_len = decomp_size;
 	 buf_pos = 0;
+	 should_free_raw_data = true;
 }
 
 FMtownsDecoderStream::~FMtownsDecoderStream()
 {
-	if(raw_audio_buf)
+	if(raw_audio_buf && should_free_raw_data)
 		free(raw_audio_buf);
 }
 

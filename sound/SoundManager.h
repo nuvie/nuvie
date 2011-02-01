@@ -39,7 +39,9 @@
 #include "Configuration.h"
 #include "NuvieIOFile.h"
 #include "sdl-mixer.h"
+#include "sfx.h"
 
+class SfxManager;
 class CEmuopl;
 
 class SoundManager {
@@ -61,6 +63,8 @@ public:
     Audio::SoundHandle playTownsSound(std::string filename, uint16 sample_num);
     bool isSoundPLaying(Audio::SoundHandle handle);
 
+    bool playSfx(uint16 sfx_id);
+
 private:
 	bool LoadCustomSongs(string scriptname);
     bool LoadNativeU6Songs();
@@ -70,6 +74,7 @@ private:
 
 	bool LoadObjectSamples(string sound_dir);
 	bool LoadTileSamples(string sound_dir);
+	bool LoadSfxManager(string sfx_style);
 
 	Sound* SongExists(string name); //have we loaded this sound before?
 	Sound* SampleExists(string name); //have we loaded this sound before?
@@ -95,6 +100,7 @@ private:
     bool sfx_enabled;
 
     SdlMixerManager *mixer;
+    SfxManager *m_SfxManager;
 
     CEmuopl *opl;
 public:

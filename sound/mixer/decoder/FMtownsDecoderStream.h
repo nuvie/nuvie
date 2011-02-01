@@ -38,6 +38,7 @@ public:
 
 	}
 
+	FMtownsDecoderStream(unsigned char *buf, uint32 len);
 	FMtownsDecoderStream(std::string filename, uint16 sample_num);
 	~FMtownsDecoderStream();
 
@@ -60,6 +61,7 @@ public:
 
 protected:
 
+	bool should_free_raw_data;
 	unsigned char *raw_audio_buf;
 	uint32 buf_len;
 	uint32 buf_pos;
