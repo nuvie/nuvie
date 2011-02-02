@@ -35,6 +35,7 @@
 #include "Party.h"
 #include "Objlist.h"
 #include "U6objects.h"
+#include "SoundManager.h"
 #include "Player.h"
 
 Player::Player(Configuration *cfg)
@@ -283,7 +284,10 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
             ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
         }
         if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/
+        {
+           Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
            return;
+        }
     }
     // post-move
     actor->set_direction(rel_x, rel_y);

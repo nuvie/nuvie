@@ -37,6 +37,7 @@
 #include "Actor.h"
 #include "Weather.h"
 #include "UseCode.h"
+#include "SoundManager.h"
 
 #include "Script.h"
 #include "ScriptActor.h"
@@ -162,6 +163,8 @@ static int nscript_fade_in(lua_State *L);
 
 static int nscript_xor_effect(lua_State *L);
 
+static int nscript_play_sfx(lua_State *L);
+
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
 int nscript_u6llist_iter_recursive(lua_State *L);
@@ -273,6 +276,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
+
+   lua_pushcfunction(L, nscript_play_sfx);
+   lua_setglobal(L, "play_sfx");
 
    lua_pushcfunction(L, nscript_party);
    lua_setglobal(L, "party_members");
@@ -1506,6 +1512,14 @@ static int nscript_xor_effect(lua_State *L)
 	return 0;
 }
 
+static int nscript_play_sfx(lua_State *L)
+{
+	uint16 sfx_id = (uint16)luaL_checkinteger(L, 1);
+	Game::get_game()->get_sound_manager()->playSfx(sfx_id);
+
+	return 0;
+}
+
 int nscript_u6llist_iter(lua_State *L)
 {
    U6Link **s_link = (U6Link **)luaL_checkudata(L, 1, "nuvie.U6Link");
@@ -1628,7 +1642,7 @@ static int nscript_container(lua_State *L)
 
 int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive)
 {
-	U6Link *link;
+	U6Link *link = NULL;
 
     if(list != NULL)
        link = list->start();

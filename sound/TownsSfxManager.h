@@ -48,7 +48,7 @@ class TownsSfxManager : public SfxManager
  bool playSfx(uint16 sfx_id);
 
  private:
-
+ std::string sounds2dat_filepath;
  TownsSampleData sounds1_dat[TOWNS_SFX_SOUNDS1_SIZE];
 
  void loadSound1Dat();

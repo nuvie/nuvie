@@ -39,14 +39,18 @@ typedef struct // sfx lookup
     uint8 towns_sample_num;
 } TownsSfxLookup;
 
-#define TOWNS_SFX_TBL_SIZE 1
+#define TOWNS_SFX_TBL_SIZE 4
 
 static const TownsSfxLookup sfx_lookup_tbl[] = {
-		{NUVIE_SFX_HIT, 4}
+		{NUVIE_SFX_BLOCKED, 0},
+		{NUVIE_SFX_HIT, 4},
+		{NUVIE_SFX_BROKEN_GLASS, 13},
+		{NUVIE_SFX_BELL, 14},
 };
 
 TownsSfxManager::TownsSfxManager(Configuration *cfg, Audio::Mixer *m) : SfxManager(cfg, m)
 {
+	config->pathFromValue("config/ultima6/townsdir", "sounds2.dat", sounds2dat_filepath);
 	loadSound1Dat();
 }
 
@@ -66,7 +70,7 @@ void TownsSfxManager::loadSound1Dat()
 
     iobuf.open(slib32_data, slib32_len);
     free(slib32_data);
-//FIXME double free in here somewhere.
+
     if(!lib.open(&iobuf, 4))
         return;
 
@@ -110,5 +114,8 @@ void TownsSfxManager::playSounds1Sample(uint8 sample_num)
 
 void TownsSfxManager::playSounds2Sample(uint8 sample_num)
 {
+	Audio::SoundHandle handle;
 
+	FMtownsDecoderStream *stream = new FMtownsDecoderStream(sounds2dat_filepath, sample_num - TOWNS_SFX_SOUNDS1_SIZE, false); //not compressed
+	mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, stream);
 }

@@ -665,8 +665,8 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
    {
      Obj *old_mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,old_pos.x,old_pos.y-1,old_pos.z);
      Obj *mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,new_x,new_y-1,new_z);
-     if(old_mirror) old_mirror->frame_n = 0;
-     if(mirror)     mirror->frame_n = 1;
+     if(old_mirror && old_mirror->frame_n != 2) old_mirror->frame_n = 0;
+     if(mirror && mirror->frame_n != 2)     mirror->frame_n = 1;
    }
    
    // Cyclops: shake ground if player is near

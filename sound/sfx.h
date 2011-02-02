@@ -29,6 +29,8 @@
 #define NUVIE_SFX_FOUNTAIN 2
 #define NUVIE_SFX_DEATH 3
 #define NUVIE_SFX_RUBBER_DUCK 4
-#define NUVIE_SFX_ 5
+#define NUVIE_SFX_BROKEN_GLASS 5
+#define NUVIE_SFX_BELL 6
+
 
 #endif

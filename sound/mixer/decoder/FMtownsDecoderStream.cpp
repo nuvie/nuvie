@@ -34,23 +34,31 @@ FMtownsDecoderStream::FMtownsDecoderStream(unsigned char *buf, uint32 len)
 	should_free_raw_data = false;
 }
 
-FMtownsDecoderStream::FMtownsDecoderStream(std::string filename, uint16 sample_num)
+FMtownsDecoderStream::FMtownsDecoderStream(std::string filename, uint16 sample_num, bool isCompressed)
 {
-	 unsigned char *compressed_data;
+	 unsigned char *item_data;
 	 uint32 decomp_size;
 	 U6Lib_n sam_file;
 	 U6Lzw lzw;
 
 	 sam_file.open(filename, 4);
 
-	 compressed_data = sam_file.get_item(sample_num, NULL);
-	 //raw_audio_buf = compressed_data;
-	 //buf_len = sam_file.get_item_size(sample_num);
-	 raw_audio_buf = lzw.decompress_buffer(compressed_data, sam_file.get_item_size(sample_num), decomp_size);
+	 item_data = sam_file.get_item(sample_num, NULL);
 
-	 free(compressed_data);
+	 if(isCompressed)
+	 {
+		 raw_audio_buf = lzw.decompress_buffer(item_data, sam_file.get_item_size(sample_num), decomp_size);
 
-	 buf_len = decomp_size;
+		 free(item_data);
+
+		 buf_len = decomp_size;
+	 }
+	 else
+	 {
+		 raw_audio_buf = item_data;
+		 buf_len = sam_file.get_item_size(sample_num);
+	 }
+
 	 buf_pos = 0;
 	 should_free_raw_data = true;
 }

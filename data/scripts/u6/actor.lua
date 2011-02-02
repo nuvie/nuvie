@@ -968,7 +968,7 @@ function actor_hit(defender, max_dmg, attacker)
 					end
 					
 					if defender_obj_n == 0x7b then --mirror
-						--FIXME play mirror smashing sound
+						play_sfx(SFX_BROKEN_GLASS)
 						defender.frame_n = 2
 						player_subtract_karma(10)
 					else

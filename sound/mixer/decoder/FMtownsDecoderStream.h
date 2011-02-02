@@ -39,7 +39,7 @@ public:
 	}
 
 	FMtownsDecoderStream(unsigned char *buf, uint32 len);
-	FMtownsDecoderStream(std::string filename, uint16 sample_num);
+	FMtownsDecoderStream(std::string filename, uint16 sample_num, bool isCompressed = true);
 	~FMtownsDecoderStream();
 
 	int readBuffer(sint16 *buffer, const int numSamples);

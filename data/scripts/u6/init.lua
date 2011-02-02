@@ -18,6 +18,14 @@ ALIGNMENT_EVIL    = 2
 ALIGNMENT_GOOD    = 3 
 ALIGNMENT_CHAOTIC = 4
 
+
+SFX_BLOCKED = 0
+SFX_HIT = 1
+SFX_FOUNTAIN = 2
+SFX_DEATH = 3
+SFX_RUBBER_DUCK = 4
+SFX_BROKEN_GLASS = 5
+
 -- some common functions
 
 function dbg(msg_string)
