@@ -38,6 +38,7 @@ public:
 
 
 virtual bool playSfx(uint16 sfx_id) = 0;
+virtual bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle) = 0;
 
 protected:
 	Configuration *config;

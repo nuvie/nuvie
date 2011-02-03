@@ -1649,6 +1649,12 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
    return true;
   }
 
+  if(obj->is_on_map() == false)
+   {
+    scroll->display_string("\nNot usable\n");
+    return(true);
+   }
+
   if(!player->in_party_mode())
    {
     scroll->display_string("\nNot in solo mode.\n");

@@ -44,6 +44,11 @@
 class SfxManager;
 class CEmuopl;
 
+typedef struct {
+	SfxIdType sfx_id;
+	Audio::SoundHandle handle;
+} SoundManagerSfx;
+
 class SoundManager {
 public:
 	SoundManager();
@@ -84,6 +89,8 @@ private:
 	Sound* RequestObjectSound(int id);
 	Sound* RequestSong(string group); //request a song from this group
 
+	uint16 RequestObjectSfxId(uint16 obj_n);
+
 	map<int,SoundCollection *> m_TileSampleMap;
 	map<int,SoundCollection *> m_ObjectSampleMap;
 	map<string,SoundCollection *> m_MusicMap;
@@ -94,7 +101,7 @@ private:
 	//state info:
 	string m_CurrentGroup;
 	Sound *m_pCurrentSong;
-	list<Sound *> m_ActiveSounds;
+	list<SoundManagerSfx> m_ActiveSounds;
     bool audio_enabled;
     bool music_enabled;
     bool sfx_enabled;

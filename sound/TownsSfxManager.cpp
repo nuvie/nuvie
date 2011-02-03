@@ -39,13 +39,16 @@ typedef struct // sfx lookup
     uint8 towns_sample_num;
 } TownsSfxLookup;
 
-#define TOWNS_SFX_TBL_SIZE 4
+#define TOWNS_SFX_TBL_SIZE 7
 
 static const TownsSfxLookup sfx_lookup_tbl[] = {
 		{NUVIE_SFX_BLOCKED, 0},
 		{NUVIE_SFX_HIT, 4},
-		{NUVIE_SFX_BROKEN_GLASS, 13},
-		{NUVIE_SFX_BELL, 14},
+		{NUVIE_SFX_BROKEN_GLASS, 12},
+		{NUVIE_SFX_BELL, 13},
+		{NUVIE_SFX_FOUNTAIN, 46},
+		{NUVIE_SFX_CLOCK, 6},
+		{NUVIE_SFX_FIRE, 7}
 };
 
 TownsSfxManager::TownsSfxManager(Configuration *cfg, Audio::Mixer *m) : SfxManager(cfg, m)
@@ -84,38 +87,46 @@ void TownsSfxManager::loadSound1Dat()
 
 bool TownsSfxManager::playSfx(uint16 sfx_id)
 {
+	return playSfxLooping(sfx_id, NULL);
+}
+
+
+bool TownsSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle)
+{
 	uint16 i = 0;
 	for(i=0;i<TOWNS_SFX_TBL_SIZE;i++)
 	{
 		if(sfx_lookup_tbl[i].sfx_id == sfx_id)
 		{
-			if(sfx_lookup_tbl[i].towns_sample_num < TOWNS_SFX_SOUNDS1_SIZE)
-			{
-				playSounds1Sample(sfx_lookup_tbl[i].towns_sample_num);
-			}
-			else
-			{
-				playSounds2Sample(sfx_lookup_tbl[i].towns_sample_num);
-			}
-
+			playSoundSample(sfx_lookup_tbl[i].towns_sample_num, handle);
 			return true;
 		}
 	}
 	return false;
 }
 
-void TownsSfxManager::playSounds1Sample(uint8 sample_num)
+void TownsSfxManager::playSoundSample(uint8 sample_num, Audio::SoundHandle *looping_handle)
 {
-	Audio::SoundHandle handle;
+	FMtownsDecoderStream *stream = NULL;
 
-	FMtownsDecoderStream *stream = new FMtownsDecoderStream(sounds1_dat[sample_num].buf, sounds1_dat[sample_num].len);
-	mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, stream);
-}
+	if(sample_num < TOWNS_SFX_SOUNDS1_SIZE)
+	{
+		stream = new FMtownsDecoderStream(sounds1_dat[sample_num].buf, sounds1_dat[sample_num].len);
+	}
+	else
+	{
+		stream = new FMtownsDecoderStream(sounds2dat_filepath, sample_num - TOWNS_SFX_SOUNDS1_SIZE, false); //not compressed
+	}
 
-void TownsSfxManager::playSounds2Sample(uint8 sample_num)
-{
-	Audio::SoundHandle handle;
+	if(looping_handle)
+	{
+		Audio::LoopingAudioStream *looping_stream = new Audio::LoopingAudioStream((Audio::RewindableAudioStream *)stream, 0);
+		mixer->playStream(Audio::Mixer::kPlainSoundType, looping_handle, looping_stream);
+	}
+	else
+	{
+		Audio::SoundHandle handle;
+		mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, stream);
+	}
 
-	FMtownsDecoderStream *stream = new FMtownsDecoderStream(sounds2dat_filepath, sample_num - TOWNS_SFX_SOUNDS1_SIZE, false); //not compressed
-	mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, stream);
 }

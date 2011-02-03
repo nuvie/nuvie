@@ -30,7 +30,7 @@ class NuvieIOBuffer;
 
 using std::string;
 
-class FMtownsDecoderStream : public Audio::AudioStream
+class FMtownsDecoderStream : public Audio::RewindableAudioStream
 {
 public:
 	FMtownsDecoderStream()
@@ -58,6 +58,8 @@ public:
 	 * converting data or stop.
 	 */
 	bool endOfData() const { return (buf_pos >= buf_len); }
+
+	bool rewind() { buf_pos = 0; return true; }
 
 protected:
 

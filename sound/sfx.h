@@ -24,6 +24,10 @@
 #ifndef SFX_H
 #define SFX_H
 
+typedef uint16 SfxIdType;
+
+#define NUVIE_SFX_NONE 65535
+
 #define NUVIE_SFX_BLOCKED 0
 #define NUVIE_SFX_HIT 1
 #define NUVIE_SFX_FOUNTAIN 2
@@ -31,6 +35,8 @@
 #define NUVIE_SFX_RUBBER_DUCK 4
 #define NUVIE_SFX_BROKEN_GLASS 5
 #define NUVIE_SFX_BELL 6
+#define NUVIE_SFX_FIRE 7
+#define NUVIE_SFX_CLOCK 8
 
 
 #endif

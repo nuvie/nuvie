@@ -23,6 +23,7 @@
 
 #include "nuvieDefs.h"
 #include "U6misc.h"
+#include "U6objects.h"
 #include "emuopl.h"
 #include "SoundManager.h"
 #include "SongAdPlug.h"
@@ -39,6 +40,22 @@
 #include "decoder/FMtownsDecoderStream.h"
 
 #include "TownsSfxManager.h"
+
+typedef struct // obj sfx lookup
+{
+    uint16 obj_n;
+    uint16 sfx_id;
+} ObjSfxLookup;
+
+#define SOUNDMANANGER_OBJSFX_TBL_SIZE 3
+
+static const ObjSfxLookup u6_obj_lookup_tbl[] = {
+		{OBJ_U6_FOUNTAIN, NUVIE_SFX_FOUNTAIN},
+		{OBJ_U6_FIREPLACE, NUVIE_SFX_FIRE},
+		{OBJ_U6_CLOCK, NUVIE_SFX_CLOCK}
+};
+
+
 
 bool SoundManager::g_MusicFinished;
 
@@ -504,6 +521,16 @@ void SoundManager::musicStop()
     m_pCurrentSong = NULL;
 }
 
+std::list < SoundManagerSfx >::iterator SoundManagerSfx_find( std::list < SoundManagerSfx >::iterator first, std::list < SoundManagerSfx >::iterator last, const SfxIdType &value )
+  {
+    for ( ;first!=last; first++)
+    {
+    	if ( (*first).sfx_id==value )
+    		break;
+    }
+    return first;
+  }
+
 void SoundManager::update_map_sfx ()
 {
   unsigned int i;
@@ -517,8 +544,8 @@ void SoundManager::update_map_sfx ()
   Player *p = Game::get_game ()->get_player ();
   MapWindow *mw = Game::get_game ()->get_map_window ();
 
-  vector < Sound * >currentlyActiveSounds;
-  map < Sound *, float >volumeLevels;
+  vector < SfxIdType >currentlyActiveSounds;
+  map < SfxIdType, float >volumeLevels;
 
   p->get_location (&x, &y, &l);
 
@@ -528,8 +555,8 @@ void SoundManager::update_map_sfx ()
   for (i = 0; i < mw->m_ViewableObjects.size(); i++)
     {
       //DEBUG(0,LEVEL_DEBUGGING,"%d %s",mw->m_ViewableObjects[i]->obj_n,Game::get_game()->get_obj_manager()->get_obj_name(mw->m_ViewableObjects[i]));
-      Sound *sp = RequestObjectSound (mw->m_ViewableObjects[i]->obj_n); //does this object have an associated sound?
-      if (sp != NULL)
+      SfxIdType sfx_id = RequestObjectSfxId(mw->m_ViewableObjects[i]->obj_n); //does this object have an associated sound?
+      if (sfx_id != NUVIE_SFX_NONE)
         {
           //calculate the volume
           uint16 ox = mw->m_ViewableObjects[i]->x;
@@ -540,21 +567,22 @@ void SoundManager::update_map_sfx ()
             vol = 0;
           //sp->SetVolume(vol);
           //need the map to adjust volume according to number of active elements
-          std::map < Sound *, float >::iterator it;
-          it = volumeLevels.find (sp);
+          std::map < SfxIdType, float >::iterator it;
+          it = volumeLevels.find (sfx_id);
           if (it != volumeLevels.end ())
             {
-              if (volumeLevels[sp] < vol)
-                volumeLevels[sp] = vol;
+              if (volumeLevels[sfx_id] < vol)
+                volumeLevels[sfx_id] = vol;
             }
           else
             {
-              volumeLevels.insert (std::make_pair (sp, vol));
+              volumeLevels.insert (std::make_pair (sfx_id, vol));
             }
           //add to currently active list
-          currentlyActiveSounds.push_back (sp);
+          currentlyActiveSounds.push_back (sfx_id);
         }
     }
+  /*
   for (i = 0; i < mw->m_ViewableTiles.size(); i++)
     {
       Sound *sp = RequestTileSound (mw->m_ViewableTiles[i].t->tile_num);        //does this object have an associated sound?
@@ -590,35 +618,42 @@ void SoundManager::update_map_sfx ()
           currentlyActiveSounds.push_back (sp);
         }
     }
+    */
   //DEBUG(1,LEVEL_DEBUGGING,"\n");
   //is this sound new? - activate it.
   for (i = 0; i < currentlyActiveSounds.size(); i++)
     {
-      std::list < Sound * >::iterator it;
-      it = std::find (m_ActiveSounds.begin (), m_ActiveSounds.end (), currentlyActiveSounds[i]);        //is the sound already active?
+      std::list < SoundManagerSfx >::iterator it;
+      it = SoundManagerSfx_find(m_ActiveSounds.begin (), m_ActiveSounds.end (), currentlyActiveSounds[i]);        //is the sound already active?
       if (it == m_ActiveSounds.end ())
         {                       //this is a new sound, add it to the active list
-          currentlyActiveSounds[i]->Play (true);
-          currentlyActiveSounds[i]->SetVolume (0);
-          m_ActiveSounds.push_back (currentlyActiveSounds[i]);
+          //currentlyActiveSounds[i]->Play (true);
+          //currentlyActiveSounds[i]->SetVolume (0);
+          SoundManagerSfx sfx;
+          sfx.sfx_id = currentlyActiveSounds[i];
+          if(m_SfxManager->playSfxLooping(sfx.sfx_id, &sfx.handle))
+          {
+        	  m_ActiveSounds.push_back(sfx);//currentlyActiveSounds[i]);
+          }
         }
     }
   //is this sound old? - deactivate it
-  std::list < Sound * >::iterator it;
+  std::list < SoundManagerSfx >::iterator it;
   it = m_ActiveSounds.begin ();
   while (it != m_ActiveSounds.end ())
     {
-      std::vector < Sound * >::iterator fit;
-      Sound *sp = (*it);
-      fit = std::find (currentlyActiveSounds.begin (), currentlyActiveSounds.end (), sp);       //is the sound in the new active list?
+      std::vector < SfxIdType >::iterator fit;
+      SoundManagerSfx sfx = (*it);
+      fit = std::find (currentlyActiveSounds.begin (), currentlyActiveSounds.end (), sfx.sfx_id);       //is the sound in the new active list?
       if (fit == currentlyActiveSounds.end ())
         {                       //its not, stop this sound from playing.
-          sp->Stop ();
+          //sfx_id->Stop ();
+    	  mixer->getMixer()->stopHandle(sfx.handle);
           it = m_ActiveSounds.erase (it);
         }
       else
         {
-          sp->SetVolume (volumeLevels[sp]);
+    	  mixer->getMixer()->setChannelVolume(sfx.handle, (uint8)(volumeLevels[sfx.sfx_id]*255.0f));
           it++;
         }
     }
@@ -695,6 +730,20 @@ Sound *SoundManager::RequestObjectSound (int id)
       return psc->Select ();
     }
   return NULL;
+}
+
+uint16 SoundManager::RequestObjectSfxId(uint16 obj_n)
+{
+	uint16 i = 0;
+	for(i=0;i<SOUNDMANANGER_OBJSFX_TBL_SIZE;i++)
+	{
+		if(u6_obj_lookup_tbl[i].obj_n == obj_n)
+		{
+			return u6_obj_lookup_tbl[i].sfx_id;
+		}
+	}
+
+	return NUVIE_SFX_NONE;
 }
 
 Sound *SoundManager::RequestSong (string group)

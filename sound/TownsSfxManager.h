@@ -30,7 +30,7 @@
 #include "decoder/FMtownsDecoderStream.h"
 #include "SfxManager.h"
 
-#define TOWNS_SFX_SOUNDS1_SIZE 13
+#define TOWNS_SFX_SOUNDS1_SIZE 12
 
 typedef struct
 {
@@ -46,14 +46,14 @@ class TownsSfxManager : public SfxManager
 
 
  bool playSfx(uint16 sfx_id);
+ bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle);
 
  private:
  std::string sounds2dat_filepath;
  TownsSampleData sounds1_dat[TOWNS_SFX_SOUNDS1_SIZE];
 
  void loadSound1Dat();
- void playSounds1Sample(uint8 sample_num);
- void playSounds2Sample(uint8 sample_num);
+ void playSoundSample(uint8 sample_num, Audio::SoundHandle *looping_handle);
 
 };
 
