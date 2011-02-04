@@ -1172,13 +1172,17 @@ bool Event::look_cursor()
 
 bool Event::pushTo(Obj *obj)
 {
-	scroll->display_string(obj_manager->look_obj(obj));
-	scroll->display_string("\n");
 	bool ok = false;
-	if(obj_manager->can_store_obj(obj,push_obj))
+
+	if(obj)
 	{
-		if(obj != push_obj)
-			ok = obj_manager->moveto_container(push_obj, obj);
+		scroll->display_string(obj_manager->look_obj(obj));
+		scroll->display_string("\n");
+		if(obj_manager->can_store_obj(obj,push_obj))
+		{
+			if(obj != push_obj)
+				ok = obj_manager->moveto_container(push_obj, obj);
+		}
 	}
 
 	if(!ok)
@@ -1216,10 +1220,50 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     	} 
     	else
     	{
-            scroll->display_string("Can't exchange inventory!\n");
-            return(false);
+            // exchange inventory.
+            Actor *src_actor = push_obj->get_actor_holding_obj();
+            if(src_actor)
+            {
+            	from = src_actor->get_location();
+
+            	Actor *target_actor = map->get_actor(rel_x, rel_y, from.z);
+            	if(target_actor)
+            	{
+
+            		to = target_actor->get_location();
+
+            		scroll->display_string(target_actor == src_actor ? "yourself" : target_actor->get_name());
+            		scroll->display_string(".\n\n");
+
+            		if(map->lineTest(from.x, from.y, to.x, to.y, from.z, LT_HitUnpassable, lt) == false)
+            		{
+            			if(from.distance(to) < 5)
+            			{
+            				obj_manager->moveto_inventory(push_obj, target_actor);
+            			}
+            			else
+            			{
+            				scroll->display_string("Out of range!\n");
+            			}
+            		}
+            		else
+            		{
+            			scroll->display_string("Blocked!\n");
+            		}
+            	}
+            	else
+            	{
+            		scroll->display_string("nobody.\n\n");
+            	}
+            }
+
+            scroll->display_prompt();
+            map_window->reset_mousecenter(); // FIXME: put this in endAction()?
+            endAction();
+            return(true);
     	}
     }
+
     if(push_from == PUSH_FROM_PLAYER) // coordinates must be converted
     {
         to.x = pusher.x + rel_x;
