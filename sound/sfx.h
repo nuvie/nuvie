@@ -37,6 +37,11 @@ typedef uint16 SfxIdType;
 #define NUVIE_SFX_BELL 6
 #define NUVIE_SFX_FIRE 7
 #define NUVIE_SFX_CLOCK 8
+#define NUVIE_SFX_PROTECTION_FIELD 9
+#define NUVIE_SFX_WATER_WHEEL 10
+#define NUVIE_SFX_MISSLE 11
+#define NUVIE_SFX_EXPLOSION 12
+#define NUVIE_SFX_ATTACK_SWING 13
 
 
 #endif

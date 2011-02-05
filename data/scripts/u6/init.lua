@@ -25,6 +25,14 @@ SFX_FOUNTAIN = 2
 SFX_DEATH = 3
 SFX_RUBBER_DUCK = 4
 SFX_BROKEN_GLASS = 5
+SFX_BELL = 6
+SFX_FIRE = 7
+SFX_CLOCK = 8
+SFX_PROTECTION_FIELD = 9
+SFX_WATER_WHEEL = 10
+SFX_MISSLE = 11
+SFX_EXPLOSION = 12
+SFX_ATTACK_SWING = 13
 
 -- some common functions
 
@@ -172,6 +180,20 @@ local karma = player_get_karma() + k
 if karma >= 100 then karma = 99 end
 
 player_set_karma(karma)
+end
+
+function explosion(tile_num, x, y)
+	play_sfx(SFX_EXPLOSION)
+	return explosion_start(tile_num, x, y)
+end
+
+function projectile(tile_num, start_x, start_y, end_x, end_y, speed, spin, rotate_offset)
+
+	if spin == nil then spin = 0 end
+	if rotate_offset == nil then rotate_offset = 0 end
+	
+	play_sfx(SFX_MISSLE)
+	projectile_anim(tile_num, start_x, start_y, end_x, end_y, speed, spin, rotate_offset)
 end
 
 --load actor functions

@@ -39,16 +39,26 @@ typedef struct // sfx lookup
     uint8 towns_sample_num;
 } TownsSfxLookup;
 
-#define TOWNS_SFX_TBL_SIZE 7
-
+#define TOWNS_SFX_TBL_SIZE 13
+//15 hail effect
+//16 explosion
+//17 level not high enough, no effect etc.
+//18 cast magic sound
+//19 resurrection tune
 static const TownsSfxLookup sfx_lookup_tbl[] = {
 		{NUVIE_SFX_BLOCKED, 0},
 		{NUVIE_SFX_HIT, 4},
 		{NUVIE_SFX_BROKEN_GLASS, 12},
 		{NUVIE_SFX_BELL, 13},
 		{NUVIE_SFX_FOUNTAIN, 46},
+		{NUVIE_SFX_PROTECTION_FIELD, 47},
 		{NUVIE_SFX_CLOCK, 6},
-		{NUVIE_SFX_FIRE, 7}
+		{NUVIE_SFX_FIRE, 7},
+		{NUVIE_SFX_RUBBER_DUCK, 3},
+		{NUVIE_SFX_WATER_WHEEL, 48},
+		{NUVIE_SFX_MISSLE, 9},
+		{NUVIE_SFX_EXPLOSION, 16},
+		{NUVIE_SFX_ATTACK_SWING, 2}
 };
 
 TownsSfxManager::TownsSfxManager(Configuration *cfg, Audio::Mixer *m) : SfxManager(cfg, m)
@@ -85,7 +95,7 @@ void TownsSfxManager::loadSound1Dat()
     }
 }
 
-bool TownsSfxManager::playSfx(uint16 sfx_id)
+bool TownsSfxManager::playSfx(SfxIdType sfx_id)
 {
 	return playSfxLooping(sfx_id, NULL);
 }

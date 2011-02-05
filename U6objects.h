@@ -241,6 +241,7 @@
 #define OBJ_U6_H_PASSTHROUGH       280
 #define OBJ_U6_FENCE               281
 #define OBJ_U6_ROPE                284
+#define OBJ_U6_WATER_WHEEL         287
 #define OBJ_U6_CRANK               288
 #define OBJ_U6_LOG_SAW             289 
 #define OBJ_U6_CHAIN               293

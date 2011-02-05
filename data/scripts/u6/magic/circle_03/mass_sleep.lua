@@ -2,8 +2,8 @@
   if loc ~= nil then
      local caster = magic_get_caster()
   
-     projectile_anim(0x18b, caster.x, caster.y, loc.x, loc.y, 2, 0, 0)
-     local hit_items = explosion_start(0x17d,loc.x,loc.y)
+     projectile(0x18b, caster.x, caster.y, loc.x, loc.y, 2)
+     local hit_items = explosion(0x17d,loc.x,loc.y)
      
      local k,v
      

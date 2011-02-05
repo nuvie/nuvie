@@ -1231,6 +1231,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
    else --standard weapon
       if actor_find_max_xy_distance(attacker, player_loc.x, player_loc.y) < 6 then
          --play_sound_effect(0x11, 0);
+         play_sfx(SFX_ATTACK_SWING)
       end
    end
    
@@ -1282,7 +1283,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       
       if weapon_obj_n == 0x31 then --boomerang
          --projectile_anim(attacker.x, attacker.y, 1, target_x, target_y, 0x64, *(&bastile_ptr_data + 0x62), 1)
-         projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
+         projectile(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
       end
    end
 end
@@ -1309,7 +1310,7 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, 
                     
       projectile_anim_multi(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, triple_crossbow_targets, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
    else     
-      projectile_anim(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
+      projectile(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
    end
     
    if weapon_obj_n == 0x5b then
@@ -2996,7 +2997,7 @@ function actor_use_effect(actor, effect)
 		
 	elseif effect_type == 2 then
 		print("Bomb!\n")
-		local hit_items = explosion_start(0x17e, actor.x, actor.y)
+		local hit_items = explosion(0x17e, actor.x, actor.y)
   
 		for k,v in pairs(hit_items) do
 			if v.luatype == "actor" then
@@ -3006,7 +3007,7 @@ function actor_use_effect(actor, effect)
 		
 	elseif effect_type == 3 then
 		print("Gas!\n")
-		local hit_items = explosion_start(0x17c, actor.x, actor.y)
+		local hit_items = explosion(0x17c, actor.x, actor.y)
   
 		for k,v in pairs(hit_items) do
 			if v.luatype == "actor" then

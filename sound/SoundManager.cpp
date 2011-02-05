@@ -44,15 +44,17 @@
 typedef struct // obj sfx lookup
 {
     uint16 obj_n;
-    uint16 sfx_id;
+    SfxIdType sfx_id;
 } ObjSfxLookup;
 
-#define SOUNDMANANGER_OBJSFX_TBL_SIZE 3
+#define SOUNDMANANGER_OBJSFX_TBL_SIZE 5
 
 static const ObjSfxLookup u6_obj_lookup_tbl[] = {
 		{OBJ_U6_FOUNTAIN, NUVIE_SFX_FOUNTAIN},
 		{OBJ_U6_FIREPLACE, NUVIE_SFX_FIRE},
-		{OBJ_U6_CLOCK, NUVIE_SFX_CLOCK}
+		{OBJ_U6_CLOCK, NUVIE_SFX_CLOCK},
+		{OBJ_U6_PROTECTION_FIELD, NUVIE_SFX_PROTECTION_FIELD},
+		{OBJ_U6_WATER_WHEEL, NUVIE_SFX_WATER_WHEEL}
 };
 
 

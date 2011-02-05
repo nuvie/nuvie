@@ -44,6 +44,7 @@
 #include "TimedEvent.h"
 #include "EggManager.h"
 #include "AnimManager.h"
+#include "SoundManager.h"
 #include "Effect.h"
 #include "Weather.h"
 
@@ -1388,8 +1389,8 @@ bool U6UseCode::use_fountain(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::use_rubber_ducky(Obj *obj, UseCodeEvent ev)
 {
     if(items.actor_ref == player->get_actor())
-        scroll->display_string("Squeak!\n");
-    DEBUG(0,LEVEL_WARNING,"FIXME: rubberducky sound\n");
+        scroll->display_string("\nSqueak!\n");
+    Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_RUBBER_DUCK); //FIXME towns says "Quack! Quack!" and plays sfx twice.
     return(true);
 }
 

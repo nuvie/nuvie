@@ -45,7 +45,7 @@ class TownsSfxManager : public SfxManager
 	~TownsSfxManager() {}
 
 
- bool playSfx(uint16 sfx_id);
+ bool playSfx(SfxIdType sfx_id);
  bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle);
 
  private:
