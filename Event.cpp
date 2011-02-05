@@ -585,13 +585,14 @@ void Event::request_input(CallBack *caller, void *user_data)
 }
 
 // typically this will be coming from inventory
-bool Event::select_obj(Obj *obj)
+bool Event::select_obj(Obj *obj, Actor *actor)
 {
     assert(mode == INPUT_MODE);
     //assert(input.select_from_inventory == true);
 
     input.type = EVENTINPUT_OBJECT;
     input.obj = obj;
+    input.actor = actor;
     endAction(); // mode = prev_mode
     doAction();
     return true;
@@ -1170,7 +1171,7 @@ bool Event::look_cursor()
  return true;
 }
 
-bool Event::pushTo(Obj *obj)
+bool Event::pushTo(Obj *obj, Actor *actor)
 {
 	bool ok = false;
 
@@ -1182,6 +1183,15 @@ bool Event::pushTo(Obj *obj)
 		{
 			if(obj != push_obj)
 				ok = obj_manager->moveto_container(push_obj, obj);
+		}
+	}
+	else
+	{
+		if(actor)
+		{
+			scroll->display_string(actor->get_name());
+			scroll->display_string("\n");
+			ok = obj_manager->moveto_inventory(push_obj, actor);
 		}
 	}
 
@@ -2565,7 +2575,7 @@ void Event::doAction()
     			pushFrom(input.obj);
     		else
     		{
-    			pushTo(input.obj);
+    			pushTo(input.obj, input.actor);
     		}
     	}
     }

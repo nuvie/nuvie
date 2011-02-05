@@ -89,6 +89,14 @@ void InventoryWidget::set_actor(Actor *a)
  Redraw();
 }
 
+Obj *InventoryWidget::get_prev_container()
+{
+	if(container_obj && container_obj->get_engine_loc() == OBJ_LOC_CONT)
+		return (Obj *)container_obj->parent;
+
+	return NULL;
+}
+
 void InventoryWidget::set_prev_container()
 {
   if(!container_obj)
@@ -320,7 +328,7 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
         i++;
      }
 
-    if(i >= location && obj && obj->is_readied() == false) // don't return readied or non existent objects
+    if(i > location && obj && obj->is_readied() == false) // don't return readied or non existent objects
       return obj;
    }
 
@@ -450,6 +458,27 @@ void InventoryWidget::drag_drop_failed(int x, int y, int message, void *data)
  selected_obj = NULL;
 }
 
+//Returns the selected object or NULL if the target was the actor inventory.
+bool InventoryWidget::drag_set_target_obj(int x, int y)
+{
+	if(x >= 32 && x < 48 && y < 16)
+	{
+		target_obj = NULL;
+		target_cont = get_prev_container(); //returns parent container or NULL if we're back at the inventory.
+	}
+	else if(x >= 8 && y >= 16)
+	{
+		target_obj = get_obj_at_location(x,y);
+		target_cont = get_container();
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
 bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
  DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_accept_drop()\n");
@@ -459,21 +488,17 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
     x -= area.x;
     y -= area.y;
     if(target_obj == NULL) //we need to check this so we don't screw up target_obj on subsequent calls
-      target_obj = get_obj_at_location(x,y);
-
-    if(obj->is_in_container())
     {
-        DEBUG(0,LEVEL_WARNING,"InventoryWidget: Not from a container!\n");
-        return false;
+      if(drag_set_target_obj(x, y) == false)
+      {
+          DEBUG(0,LEVEL_WARNING,"InventoryWidget: Didn't hit any widget object targets!\n");
+          return false;
+      }
     }
+
     if((obj->is_in_inventory() || obj->is_readied()) && obj->get_actor_holding_obj() != actor)
     {
         DEBUG(0,LEVEL_WARNING,"InventoryWidget: Cannot Move between party members!\n"); 
-        return false;
-    }
-    if(obj->is_in_inventory() && obj->is_readied() == false && (target_obj == NULL || obj_manager->can_store_obj(target_obj, obj) == false))
-    {
-        DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget: Already holding object!\n");
         return false;
     }
 
@@ -497,10 +522,12 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
    {
     DEBUG(0,LEVEL_DEBUGGING,"Drop into inventory.\n");
     obj = (Obj *)data;
-    bool have_object = false;
 
-
-    if(target_obj && obj_manager->can_store_obj(target_obj, obj))
+	if(target_cont && obj_manager->can_store_obj(target_cont, obj))
+	{
+		obj_manager->moveto_container(obj, target_cont);
+	}
+	else if(target_obj && obj_manager->can_store_obj(target_obj, obj))
     {
     	obj_manager->moveto_container(obj, target_obj);
     }
@@ -511,38 +538,7 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
     	else
     		obj_manager->moveto_inventory(obj, actor);
     }
-/*
-    if(target_obj && target_obj->container && target_obj != obj)
-      {
-       container_obj = target_obj; //swap to container ready to drop item inside
-      }
 
-    if(obj->is_readied()) // unready
-      {
-       assert(obj->get_actor_holding_obj() == actor);
-       have_object = Game::get_game()->get_event()->unready(obj);
-      }
-    else // get
-      {
-       assert(obj->is_on_map());
-       // event->newAction(GET_MODE);
-       Game::get_game()->get_scroll()->display_string("Get-");
-       have_object = Game::get_game()->get_event()->perform_get(obj, container_obj, actor);
-      }
-
-    if(have_object)
-      {
-       if(container_obj != 0) // looking into a container, so place it there
-         {
-          actor->inventory_remove_obj(obj);
-          actor->inventory_add_object(obj, container_obj);
-         }
-      }
-//    if(!container_obj)
-//     actor->inventory_add_object(obj);
-//    else
-//     obj_manager->list_add_obj(container_obj->container, obj);
-*/
     Redraw();
    }
 

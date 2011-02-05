@@ -599,7 +599,7 @@ bool InventoryView::select_obj(Obj *obj)
             }
             break;
         default:
-            event->select_obj(obj);
+            event->select_obj(obj, inventory_widget->get_actor());
             return true;
     }
     return false;

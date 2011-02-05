@@ -174,7 +174,7 @@ friend class Magic; // FIXME
  void cancelAction();
  void endAction(bool prompt = false);
 // Send input back to Event, performing an action for the current mode.
- bool select_obj(Obj *obj);
+ bool select_obj(Obj *obj, Actor *actor=NULL);
  bool select_actor(Actor *actor);
  bool select_direction(sint16 rel_x, sint16 rel_y);
  bool select_target(uint16 x, uint16 y);
@@ -216,7 +216,7 @@ friend class Magic; // FIXME
  bool push_start();
  bool pushFrom(Obj *obj);
  bool pushFrom(sint16 rel_x, sint16 rel_y);
- bool pushTo(Obj *obj);
+ bool pushTo(Obj *obj, Actor *actor);
  bool pushTo(sint16 rel_x, sint16 rel_y, bool push_from=PUSH_FROM_PLAYER);
 
  void solo_mode(uint32 actor_num);
