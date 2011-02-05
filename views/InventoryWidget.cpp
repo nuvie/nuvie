@@ -458,7 +458,6 @@ void InventoryWidget::drag_drop_failed(int x, int y, int message, void *data)
  selected_obj = NULL;
 }
 
-//Returns the selected object or NULL if the target was the actor inventory.
 bool InventoryWidget::drag_set_target_obj(int x, int y)
 {
 	if(x >= 32 && x < 48 && y < 16)

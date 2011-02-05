@@ -735,7 +735,7 @@ bool Event::perform_talk(Actor *actor)
         return false;
     }
     // FIXME: this check and the "no response" messages should be in Converse
-    if(!player->in_party_mode())
+    if(!player->in_party_mode() && pc->get_actor_num() != 1) //only the avatar can talk in solo mode
     {
         // always display look-string on failure
         scroll->display_string(actor_manager->look_actor(actor));
