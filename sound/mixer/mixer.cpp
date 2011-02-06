@@ -445,8 +445,8 @@ int MixerImpl::getVolumeForSoundType(SoundType type) const {
 
 Channel::Channel(Mixer *mixer, Mixer::SoundType type, AudioStream *stream,
                  DisposeAfterUse::Flag autofreeStream, bool reverseStereo, int id, bool permanent)
-    : _type(type), _mixer(mixer), _id(id), _permanent(permanent), _volume(Mixer::kMaxChannelVolume),
-      _balance(0), _pauseLevel(0), _samplesConsumed(0), _samplesDecoded(0), _mixerTimeStamp(0),
+    : _type(type), _permanent(permanent), _pauseLevel(0), _id(id), _volume(Mixer::kMaxChannelVolume),
+      _balance(0), _mixer(mixer), _samplesConsumed(0), _samplesDecoded(0), _mixerTimeStamp(0),
       _pauseStartTime(0), _pauseTime(0), _autofreeStream(autofreeStream), _converter(0),
       _stream(stream) {
 	assert(mixer);
