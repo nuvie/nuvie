@@ -32,6 +32,7 @@
  */
 
 #include <assert.h>
+#include <cstdlib>
 #include "audiostream.h"
 #include "rate.h"
 #include "mixer.h"

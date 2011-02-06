@@ -37,7 +37,7 @@ class Screen;
 
 #define MAP_ORIGINAL_TILE true
 
-typedef enum LineTestFlags
+enum LineTestFlags
 {
 	LT_HitActors			= (1<<0),
 	LT_HitUnpassable		= (1<<1),
