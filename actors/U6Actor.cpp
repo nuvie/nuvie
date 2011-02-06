@@ -962,10 +962,20 @@ void U6Actor::set_asleep(bool val)
 	if(val)
 	{
 		status_flags |= ACTOR_STATUS_ASLEEP;
+		if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
+		{
+			obj_n = actor_type->dead_obj_n;
+			frame_n = actor_type->dead_frame_n;
+		}
 	}
 	else
 	{
 		status_flags &= (0xff ^ ACTOR_STATUS_ASLEEP);
+		if(obj_n == actor_type->dead_obj_n)
+		{
+			obj_n = actor_type->base_obj_n;
+			frame_n = 0;
+		}
 	}
 }
 
@@ -2068,7 +2078,6 @@ void U6Actor::die()
 
           obj_manager->add_obj(dead_body, true);
 
-// FIX: add some blood? or do that in hit?
          }
     }
 

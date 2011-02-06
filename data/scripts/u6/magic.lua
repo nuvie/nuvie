@@ -113,6 +113,7 @@ magic_init("Ignite", "if", 0x84, 1, 9, "u6/magic/circle_01/ignite.lua");
 magic_init("Light", "il", 0x80, 1, 10, "u6/magic/circle_01/light.lua");
 
 magic_init("Poison", "inp", 0x0e, 2, 3, "u6/magic/circle_02/poison.lua");
+magic_init("Sleep", "iz", 0x16, 2, 5, "u6/magic/circle_02/sleep.lua");
 magic_init("Telekinesis", "opy", 0x0d, 2, 6, "u6/magic/circle_02/telekinesis.lua");
 magic_init("Trap", "ij", 0x12, 2, 7, "u6/magic/circle_02/trap.lua");
 magic_init("Unlock Magic", "ep", 0x88, 2, 8, "u6/magic/circle_02/unlock_magic.lua");

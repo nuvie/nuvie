@@ -279,7 +279,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     {
         ActorError *ret = actor->get_error();
         if(ret->err == ACTOR_BLOCKED_BY_ACTOR
-           && party->contains_actor(ret->blocking_actor))
+           && party->contains_actor(ret->blocking_actor) && ret->blocking_actor->is_immobile() == false)
         {
             ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
         }
