@@ -45,15 +45,15 @@ class TownsSfxManager : public SfxManager
 	~TownsSfxManager() {}
 
 
- bool playSfx(SfxIdType sfx_id);
- bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle);
+ bool playSfx(SfxIdType sfx_id, uint8 volume);
+ bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle, uint8 volume);
 
  private:
  std::string sounds2dat_filepath;
  TownsSampleData sounds1_dat[TOWNS_SFX_SOUNDS1_SIZE];
 
  void loadSound1Dat();
- void playSoundSample(uint8 sample_num, Audio::SoundHandle *looping_handle);
+ void playSoundSample(uint8 sample_num, Audio::SoundHandle *looping_handle, uint8 volume);
 
 };
 

@@ -27,18 +27,16 @@
 
 class Song : public Sound {
 public:
-	Song();
-	virtual ~Song();
-	virtual bool Init(const char *filename);
-	virtual bool Play(bool looping = false);
-	virtual bool Stop();
-    bool Pause();
-    bool Resume();
-	bool FadeOut(float seconds);
-	bool SetVolume(float volume) {return false;}; //range 0..1
+
+	virtual bool Init(const char *filename) { return false; }
+	bool Play(bool looping = false) { return false; }
+	bool Stop() { return false; }
+	bool SetVolume(uint8 volume) { return false; }
+	bool FadeOut(float seconds) { return false; }
+
 	void SetName(const char *name) { if(name) m_Filename = name; } // SB-X
 private:
-	Mix_Music *m_pMusic;
+
 };
 
 #endif

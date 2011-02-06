@@ -1,3 +1,4 @@
+// NOT USED AT THE MOMENT
 /*
  *  Sample.cpp
  *  Nuvie
@@ -36,7 +37,8 @@ Sample::~Sample() {
 	}
 };
 
-bool Sample::SetVolume(float volume) {
+bool Sample::SetVolume(uint8 volume) {
+	/*
 	int ret;
 	if (m_Channel == -1) return false;
 	ret=Mix_Playing(m_Channel);
@@ -46,6 +48,7 @@ bool Sample::SetVolume(float volume) {
 	}
 	ret=Mix_Volume(m_Channel,(int)(volume*128.0f));
 	if (ret) return false;
+	*/
 	return true;
 }
 

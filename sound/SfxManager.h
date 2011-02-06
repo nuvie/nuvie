@@ -37,8 +37,8 @@ public:
 	~SfxManager() {};
 
 
-virtual bool playSfx(SfxIdType sfx_id) = 0;
-virtual bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle) = 0;
+virtual bool playSfx(SfxIdType sfx_id, uint8 volume) = 0;
+virtual bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle, uint8 volume) = 0;
 
 protected:
 	Configuration *config;

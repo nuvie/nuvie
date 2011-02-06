@@ -38,6 +38,8 @@ public:
 	bool Init(const char *filename);
 	bool Play(bool looping = false);
 	bool Stop();
+	bool SetVolume(uint8 volume);
+	bool FadeOut(float seconds) { return false; }
     CEmuopl *get_opl() { return opl; };
 
 private:

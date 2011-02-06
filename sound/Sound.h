@@ -32,7 +32,6 @@
 #endif
 
 #include "SDL.h"
-#include "SDL_mixer.h"
 
 #include <string>
 #include <list>
@@ -51,7 +50,7 @@ public:
 	virtual bool Play(bool looping = false) = 0;
 	virtual bool Stop() = 0;
 	virtual bool FadeOut(float seconds) = 0;
-	virtual bool SetVolume(float volume) = 0; //range 0..1
+	virtual bool SetVolume(uint8 volume) = 0; //range 0..255
 	string GetName() {return m_Filename;}
 protected:
 	string m_Filename;

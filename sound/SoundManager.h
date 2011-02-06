@@ -77,8 +77,8 @@ private:
     bool loadSong(Song *song, const char *filename, const char *title);
     bool groupAddSong(const char *group, Song *song);
 
-	bool LoadObjectSamples(string sound_dir);
-	bool LoadTileSamples(string sound_dir);
+	//bool LoadObjectSamples(string sound_dir);
+	//bool LoadTileSamples(string sound_dir);
 	bool LoadSfxManager(string sfx_style);
 
 	Sound* SongExists(string name); //have we loaded this sound before?
@@ -105,6 +105,9 @@ private:
     bool audio_enabled;
     bool music_enabled;
     bool sfx_enabled;
+
+    uint8 music_volume;
+    uint8 sfx_volume;
 
     SdlMixerManager *mixer;
     SfxManager *m_SfxManager;

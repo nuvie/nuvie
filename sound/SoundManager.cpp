@@ -112,7 +112,8 @@ SoundManager::~SoundManager ()
   std::for_each(m_MusicMap.begin(), m_MusicMap.end(), SoundCollectionMapDeleter<string>());
 
   if(audio_enabled)
-     Mix_CloseAudio ();
+	  mixer->suspendAudio();
+
 }
 
 bool SoundManager::nuvieStartup (Configuration * config)
@@ -130,11 +131,21 @@ bool SoundManager::nuvieStartup (Configuration * config)
      {
       music_enabled = false;
       sfx_enabled = false;
+      music_volume = 0;
+      sfx_volume = 0;
       return false;
      }
 
   m_Config->value ("config/audio/enable_music", music_enabled, true);
   m_Config->value ("config/audio/enable_sfx", sfx_enabled, true);
+
+  int volume;
+
+  m_Config->value("config/audio/music_volume", volume, Audio::Mixer::kMaxChannelVolume);
+  music_volume = clamp(volume, 0, 255);
+
+  m_Config->value("config/audio/sfx_volume", volume, Audio::Mixer::kMaxChannelVolume);
+  sfx_volume = clamp(volume, 0, 255);
 
   config_key = config_get_game_key(config);
   config_key.append("/music");
@@ -172,8 +183,8 @@ bool SoundManager::nuvieStartup (Configuration * config)
 
   if(sfx_enabled)
     {
-     LoadObjectSamples(sound_dir);
-     LoadTileSamples(sound_dir);
+     //LoadObjectSamples(sound_dir);
+     //LoadTileSamples(sound_dir);
      LoadSfxManager(sfx_style);
     }
 
@@ -338,7 +349,7 @@ bool SoundManager::groupAddSong (const char *group, Song *song)
   return true;
 };
 
-
+/*
 bool SoundManager::LoadObjectSamples (string sound_dir)
 {
   char seps[] = ";\r\n";
@@ -459,7 +470,7 @@ bool SoundManager::LoadTileSamples (string sound_dir)
     }
   return true;
 };
-
+*/
 bool SoundManager::LoadSfxManager(string sfx_style)
 {
 	if(m_SfxManager != NULL)
@@ -512,6 +523,7 @@ void SoundManager::musicPlay()
  if (m_pCurrentSong != NULL)
         {
          m_pCurrentSong->Play();
+         m_pCurrentSong->SetVolume(music_volume);
         }
 
 }
@@ -633,7 +645,7 @@ void SoundManager::update_map_sfx ()
           //currentlyActiveSounds[i]->SetVolume (0);
           SoundManagerSfx sfx;
           sfx.sfx_id = currentlyActiveSounds[i];
-          if(m_SfxManager->playSfxLooping(sfx.sfx_id, &sfx.handle))
+          if(m_SfxManager->playSfxLooping(sfx.sfx_id, &sfx.handle, 0))
           {
         	  m_ActiveSounds.push_back(sfx);//currentlyActiveSounds[i]);
           }
@@ -655,7 +667,7 @@ void SoundManager::update_map_sfx ()
         }
       else
         {
-    	  mixer->getMixer()->setChannelVolume(sfx.handle, (uint8)(volumeLevels[sfx.sfx_id]*255.0f));
+    	  mixer->getMixer()->setChannelVolume(sfx.handle, (uint8)(volumeLevels[sfx.sfx_id]*(sfx_volume/255.0f)*255.0f));
           it++;
         }
     }
@@ -678,6 +690,7 @@ void SoundManager::update()
             {
               DEBUG(0,LEVEL_ERROR,"play failed!\n");
             }
+          m_pCurrentSong->SetVolume(music_volume);
         }
     }
 
@@ -765,7 +778,7 @@ Audio::SoundHandle SoundManager::playTownsSound(std::string filename, uint16 sam
 {
 	FMtownsDecoderStream *stream = new FMtownsDecoderStream(filename, sample_num);
 	Audio::SoundHandle handle;
-	mixer->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &handle, stream);
+	mixer->getMixer()->playStream(Audio::Mixer::kPlainSoundType, &handle, stream, -1, music_volume);
 
 	return handle;
 }
@@ -780,5 +793,5 @@ bool SoundManager::playSfx(uint16 sfx_id)
 	if(m_SfxManager == NULL || audio_enabled == false || sfx_enabled == false)
 		return false;
 
-	return m_SfxManager->playSfx(sfx_id);
+	return m_SfxManager->playSfx(sfx_id, sfx_volume);
 }

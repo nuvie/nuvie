@@ -95,27 +95,27 @@ void TownsSfxManager::loadSound1Dat()
     }
 }
 
-bool TownsSfxManager::playSfx(SfxIdType sfx_id)
+bool TownsSfxManager::playSfx(SfxIdType sfx_id, uint8 volume)
 {
-	return playSfxLooping(sfx_id, NULL);
+	return playSfxLooping(sfx_id, NULL, volume);
 }
 
 
-bool TownsSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle)
+bool TownsSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle, uint8 volume)
 {
 	uint16 i = 0;
 	for(i=0;i<TOWNS_SFX_TBL_SIZE;i++)
 	{
 		if(sfx_lookup_tbl[i].sfx_id == sfx_id)
 		{
-			playSoundSample(sfx_lookup_tbl[i].towns_sample_num, handle);
+			playSoundSample(sfx_lookup_tbl[i].towns_sample_num, handle, volume);
 			return true;
 		}
 	}
 	return false;
 }
 
-void TownsSfxManager::playSoundSample(uint8 sample_num, Audio::SoundHandle *looping_handle)
+void TownsSfxManager::playSoundSample(uint8 sample_num, Audio::SoundHandle *looping_handle, uint8 volume)
 {
 	FMtownsDecoderStream *stream = NULL;
 
@@ -131,12 +131,12 @@ void TownsSfxManager::playSoundSample(uint8 sample_num, Audio::SoundHandle *loop
 	if(looping_handle)
 	{
 		Audio::LoopingAudioStream *looping_stream = new Audio::LoopingAudioStream((Audio::RewindableAudioStream *)stream, 0);
-		mixer->playStream(Audio::Mixer::kPlainSoundType, looping_handle, looping_stream);
+		mixer->playStream(Audio::Mixer::kPlainSoundType, looping_handle, looping_stream, -1, volume);
 	}
 	else
 	{
 		Audio::SoundHandle handle;
-		mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, stream);
+		mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, stream, -1, volume);
 	}
 
 }

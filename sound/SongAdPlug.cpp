@@ -30,48 +30,6 @@
 #include "SongAdPlug.h"
 #include "SoundManager.h"
 
-#define DEFAULT_BUF_LEN 512
-/*
-void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
-{
- sint32 i, j;
- SongAdPlug *song = (SongAdPlug *)udata;
- short *data = (short *)stream;
- CEmuopl *opl = song->get_opl();
- CPlayer *player = song->get_player();
-
- len /= 4;
-
- if(song->samples_left)
-    {
-      opl->update(data, song->samples_left);
-      data += song->samples_left * 2;
-    }
-
- len -= song->samples_left;
-
- for(i=len;i > 0; i -= 735)
-   {
-     if(!player->update())
-       {
-         player->rewind();
-         SoundManager::g_MusicFinished = true;
-         DEBUG(0,LEVEL_DEBUGGING,"Music Finished!\n");
-       }
-
-	 j = i;
-	 if (j > 735) j = 735;
-	 song->samples_left = 735 - j;
-
-     opl->update(data, j);
-
-     data += j * 2;
-   }
-
- return;
-}
-*/
-
 SongAdPlug::SongAdPlug(Audio::Mixer *m, CEmuopl *o) {
  mixer = m;
  opl = o;
@@ -101,13 +59,15 @@ bool SongAdPlug::Play(bool looping) {
 
 bool SongAdPlug::Stop() {
 
-    //if (!Mix_PlayingMusic()) return false;
-
-    //player->rewind(); // SB-X
-    //Mix_HookMusic(NULL,NULL);
 	mixer->stopHandle(handle);
 	stream->rewind();
     return true;
+}
+
+bool SongAdPlug::SetVolume(uint8 volume)
+{
+	mixer->setChannelVolume(handle, volume);
+	return true;
 }
 
 /*

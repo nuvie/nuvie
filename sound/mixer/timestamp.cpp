@@ -23,8 +23,30 @@
  *
  */
 
+#include <assert.h>
 #include "timestamp.h"
-#include "algorithm.h"
+//#include "algorithm.h"
+
+namespace Common {
+/**
+ * Euclid's algorithm to compute the greatest common divisor.
+ */
+template<class T>
+T gcd(T a, T b) {
+	if (a <= 0)
+		a = -a;
+	if (b <= 0)
+		b = -b;
+
+	while (a > 0) {
+		T tmp = a;
+		a = b % a;
+		b = tmp;
+	}
+
+	return b;
+}
+}
 
 namespace Audio {
 
