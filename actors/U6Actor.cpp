@@ -2088,8 +2088,8 @@ void U6Actor::die()
 // frozen by worktype or status
 bool U6Actor::is_immobile()
 {
-    return((worktype == WORKTYPE_U6_MOTIONLESS
-           || worktype == WORKTYPE_U6_IMMOBILE) && !is_in_party()
+    return(((worktype == WORKTYPE_U6_MOTIONLESS
+           || worktype == WORKTYPE_U6_IMMOBILE) && !is_in_party())
            || get_corpser_flag() == true
            || is_sleeping() == true
            || is_paralyzed() == true
