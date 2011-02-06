@@ -293,7 +293,7 @@ SDL_Surface* GUI_Button::CreateTextButtonImage(int style, const char *text, int 
   SDL_Rect fillrect;
   int th,tw;
   int tx = 0, ty = 0;
-  char *duptext;
+  char *duptext = 0;
 
   SDL_Surface *img=SDL_AllocSurface(SDL_SWSURFACE,area.w,area.h,
 				    16,31 << 11,63 << 5,31,0);
