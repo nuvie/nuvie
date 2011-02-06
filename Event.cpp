@@ -259,6 +259,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			default:
 				if(event->key.keysym.sym != SDLK_LCTRL
 				   && event->key.keysym.sym != SDLK_RCTRL)
+				{
 					if(mode != MOVE_MODE)
 						cancelAction();
 					else
@@ -266,6 +267,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 						scroll->display_string("what?\n\n");
 						scroll->display_prompt();
 					}
+				}
 		}
 		return true;
 	}
@@ -433,6 +435,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		default :
 			if (event->key.keysym.sym != SDLK_LALT
 				&& event->key.keysym.sym != SDLK_RALT)
+			{
 				if(mode != MOVE_MODE)
 					cancelAction();
 				else
@@ -440,6 +443,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 					scroll->display_string("what?\n\n");
 					scroll->display_prompt();
 				}
+			}
 			break;
 	}	//	switch (event->key.keysym.sym)
 	return	true;

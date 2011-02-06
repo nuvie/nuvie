@@ -203,10 +203,12 @@ static void Scale_2xSaI
 	for (int y = 0; y < srch; y++, prev1_yoff = sline_pixels)
 	{
 		if (y >= ybeforelast)	// Last/next-to-last row?
+		{
 			if (y == ybeforelast)
 				next2_yoff = sline_pixels;
 			else		// Very last line?
 				next2_yoff = next1_yoff = 0;
+		}
 
 		Pixel_type *bP = srcPtr;
 		Pixel_type *dP = dstPtr;
@@ -224,10 +226,12 @@ static void Scale_2xSaI
 
 				// Last/next-to-last row?
 			if (x >= xbeforelast)
+			{
 				if (x == xbeforelast)
 					next2_xoff = 1;
 				else
 					next2_xoff = next1_xoff = 0;
+			}
 
 			//---------------------------------------
 			// Map of the pixels:                    I|E F|J
