@@ -42,7 +42,7 @@ GUI_CallBack *yes_callback_object, *no_callback_object;
 
 public:
 
-GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback);
+GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, const char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback);
 
 ~GUI_YesNoDialog();
 

@@ -85,7 +85,7 @@ void GUI_Font::SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 br, Uint8 bg, Uin
 }
 
 /* put the text onto the given surface using the preset mode and colors */
-void GUI_Font::TextOut(SDL_Surface* context,int x, int y, char* text, int line_wrap)
+void GUI_Font::TextOut(SDL_Surface* context,int x, int y, const char* text, int line_wrap)
 {
   int i;
   int j;
@@ -117,7 +117,7 @@ void GUI_Font::TextOut(SDL_Surface* context,int x, int y, char* text, int line_w
   }
 }
 
-void GUI_Font:: TextExtent(char *text, int *w, int *h, int line_wrap)
+void GUI_Font:: TextExtent(const char *text, int *w, int *h, int line_wrap)
 {
  int len = strlen(text);
 
