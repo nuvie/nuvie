@@ -29,6 +29,7 @@
 #include "mixer.h"
 #include "decoder/FMtownsDecoderStream.h"
 #include "SfxManager.h"
+#include "audiostream.h"
 
 #define TOWNS_SFX_SOUNDS1_SIZE 12
 
@@ -42,7 +43,7 @@ class TownsSfxManager : public SfxManager
 {
  public:
 	TownsSfxManager(Configuration *cfg, Audio::Mixer *m);
-	~TownsSfxManager() {}
+	~TownsSfxManager();
 
 
  bool playSfx(SfxIdType sfx_id, uint8 volume);
@@ -51,6 +52,7 @@ class TownsSfxManager : public SfxManager
  private:
  std::string sounds2dat_filepath;
  TownsSampleData sounds1_dat[TOWNS_SFX_SOUNDS1_SIZE];
+ Audio::RandomCollectionAudioStream *fireStream;
 
  void loadSound1Dat();
  void playSoundSample(uint8 sample_num, Audio::SoundHandle *looping_handle, uint8 volume);

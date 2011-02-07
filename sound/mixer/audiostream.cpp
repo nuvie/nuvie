@@ -28,8 +28,10 @@
 //#include "common/file.h"
 //#include "common/queue.h"
 //#include "common/util.h"
+#include <queue>
 #include <assert.h>
 #include "audiostream.h"
+#include "mutex.h"
 //#include "sound/decoders/flac.h"
 #include "mixer.h"
 //#include "sound/decoders/mp3.h"
@@ -145,5 +147,214 @@ AudioStream *makeLoopingAudioStream(RewindableAudioStream *stream, uint32 loops)
 		return stream;
 }
 
+#pragma mark -
+#pragma mark --- Queueing audio stream ---
+#pragma mark -
+
+class QueuingAudioStreamImpl : public QueuingAudioStream {
+private:
+	/**
+	 * We queue a number of (pointers to) audio stream objects.
+	 * In addition, we need to remember for each stream whether
+	 * to dispose it after all data has been read from it.
+	 * Hence, we don't store pointers to stream objects directly,
+	 * but rather StreamHolder structs.
+	 */
+	struct StreamHolder {
+		AudioStream *_stream;
+		DisposeAfterUse::Flag _disposeAfterUse;
+		StreamHolder(AudioStream *stream, DisposeAfterUse::Flag disposeAfterUse)
+		    : _stream(stream),
+		      _disposeAfterUse(disposeAfterUse) {}
+	};
+
+	/**
+	 * The sampling rate of this audio stream.
+	 */
+	const int _rate;
+
+	/**
+	 * Whether this audio stream is mono (=false) or stereo (=true).
+	 */
+	const int _stereo;
+
+	/**
+	 * This flag is set by the finish() method only. See there for more details.
+	 */
+	bool _finished;
+
+	/**
+	 * A mutex to avoid access problems (causing e.g. corruption of
+	 * the linked list) in thread aware environments.
+	 */
+	Common::Mutex _mutex;
+
+	/**
+	 * The queue of audio streams.
+	 */
+	std::queue<StreamHolder> _queue;
+
+public:
+	QueuingAudioStreamImpl(int rate, bool stereo)
+	    : _rate(rate), _stereo(stereo), _finished(false) {}
+	~QueuingAudioStreamImpl();
+
+	// Implement the AudioStream API
+	virtual int readBuffer(sint16 *buffer, const int numSamples);
+	virtual bool isStereo() const { return _stereo; }
+	virtual int getRate() const { return _rate; }
+	virtual bool endOfData() const {
+		//Common::StackLock lock(_mutex);
+		return _queue.empty();
+	}
+	virtual bool endOfStream() const { return _finished && _queue.empty(); }
+
+	// Implement the QueuingAudioStream API
+	virtual void queueAudioStream(AudioStream *stream, DisposeAfterUse::Flag disposeAfterUse);
+	virtual void finish() { _finished = true; }
+
+	uint32 numQueuedStreams() const {
+		//Common::StackLock lock(_mutex);
+		return _queue.size();
+	}
+};
+
+QueuingAudioStreamImpl::~QueuingAudioStreamImpl() {
+	while (!_queue.empty()) {
+		StreamHolder tmp = _queue.front();
+		if (tmp._disposeAfterUse == DisposeAfterUse::YES)
+			delete tmp._stream;
+		_queue.pop();
+	}
+}
+
+void QueuingAudioStreamImpl::queueAudioStream(AudioStream *stream, DisposeAfterUse::Flag disposeAfterUse) {
+	assert(!_finished);
+	if ((stream->getRate() != getRate()) || (stream->isStereo() != isStereo()))
+		DEBUG(0, LEVEL_WARNING, "QueuingAudioStreamImpl::queueAudioStream: stream has mismatched parameters");
+
+	Common::StackLock lock(_mutex);
+	_queue.push(StreamHolder(stream, disposeAfterUse));
+}
+
+int QueuingAudioStreamImpl::readBuffer(sint16 *buffer, const int numSamples) {
+	Common::StackLock lock(_mutex);
+	int samplesDecoded = 0;
+
+	while (samplesDecoded < numSamples && !_queue.empty()) {
+		AudioStream *stream = _queue.front()._stream;
+		samplesDecoded += stream->readBuffer(buffer + samplesDecoded, numSamples - samplesDecoded);
+
+		if (stream->endOfData()) {
+			StreamHolder tmp = _queue.front();
+			if (tmp._disposeAfterUse == DisposeAfterUse::YES)
+				delete stream;
+			_queue.pop();
+		}
+	}
+
+	return samplesDecoded;
+}
+
+QueuingAudioStream *makeQueuingAudioStream(int rate, bool stereo) {
+	return new QueuingAudioStreamImpl(rate, stereo);
+}
+
+
+#pragma mark -
+#pragma mark --- random collection audio stream ---
+#pragma mark -
+
+class RandomCollectionAudioStreamImpl : public RandomCollectionAudioStream {
+private:
+	/**
+	 * The sampling rate of this audio stream.
+	 */
+	const int _rate;
+
+	/**
+	 * Whether this audio stream is mono (=false) or stereo (=true).
+	 */
+	const int _stereo;
+
+	/**
+	 * This flag is set by the finish() method only. See there for more details.
+	 */
+	bool _finished;
+
+	/**
+	 * An array of audio streams.
+	 */
+	std::vector<RewindableAudioStream *> _streams;
+
+	DisposeAfterUse::Flag _disposeAfterUse;
+
+	RewindableAudioStream *_currentStream;
+public:
+	RandomCollectionAudioStreamImpl(int rate, bool stereo, std::vector<RewindableAudioStream *> streams, DisposeAfterUse::Flag disposeAfterUse)
+	    : _rate(rate), _stereo(stereo), _finished(false), _streams(streams), _disposeAfterUse(disposeAfterUse)
+	{
+		if(_streams.size() > 0)
+			_currentStream = _streams[NUVIE_RAND() % _streams.size()];
+		else
+			_currentStream = NULL;
+	}
+
+	~RandomCollectionAudioStreamImpl();
+
+	// Implement the AudioStream API
+	virtual int readBuffer(sint16 *buffer, const int numSamples);
+	virtual bool isStereo() const { return _stereo; }
+	virtual int getRate() const { return _rate; }
+	virtual bool endOfData() const {
+		return false;
+	}
+	virtual bool endOfStream() const { return _finished; }
+
+	virtual void finish() { _finished = true; }
+};
+
+RandomCollectionAudioStreamImpl::~RandomCollectionAudioStreamImpl() {
+	if (_disposeAfterUse == DisposeAfterUse::YES)
+	{
+		while (!_streams.empty()) {
+			delete _streams.back();
+			_streams.pop_back();
+		}
+	}
+}
+
+int RandomCollectionAudioStreamImpl::readBuffer(sint16 *buffer, const int numSamples) {
+	int samplesDecoded = 0;
+
+	if(_currentStream)
+	{
+		while (samplesDecoded < numSamples) {
+			samplesDecoded += _currentStream->readBuffer(buffer + samplesDecoded, numSamples - samplesDecoded);
+
+			if (_currentStream->endOfData()) {
+				_currentStream->rewind();
+
+				//pseudo random we don't want to play the same stream twice in a row.
+				sint32 idx = NUVIE_RAND()%_streams.size();
+				RewindableAudioStream *tmp = _streams[idx];
+				if(_currentStream == tmp)
+				{
+					idx = (idx + (NUVIE_RAND()%1 == 1 ? 1 : _streams.size()-1)) % _streams.size();
+					_currentStream = _streams[idx];
+				}
+				else
+					_currentStream = tmp;
+
+				//DEBUG(0, LEVEL_INFORMATIONAL, "new sample_num = %d\n", idx);
+			}
+		}
+	}
+	return samplesDecoded;
+}
+
+RandomCollectionAudioStream *makeRandomCollectionAudioStream(int rate, bool stereo, std::vector<RewindableAudioStream *> streams, DisposeAfterUse::Flag disposeAfterUse) {
+	return new RandomCollectionAudioStreamImpl(rate, stereo, streams, disposeAfterUse);
+}
 
 } // End of namespace Audio

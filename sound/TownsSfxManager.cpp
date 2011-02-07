@@ -39,7 +39,7 @@ typedef struct // sfx lookup
     uint8 towns_sample_num;
 } TownsSfxLookup;
 
-#define TOWNS_SFX_TBL_SIZE 13
+#define TOWNS_SFX_TBL_SIZE 12
 //15 hail effect
 //16 explosion
 //17 level not high enough, no effect etc.
@@ -52,8 +52,8 @@ static const TownsSfxLookup sfx_lookup_tbl[] = {
 		{NUVIE_SFX_BELL, 13},
 		{NUVIE_SFX_FOUNTAIN, 46},
 		{NUVIE_SFX_PROTECTION_FIELD, 47},
-		{NUVIE_SFX_CLOCK, 6},
-		{NUVIE_SFX_FIRE, 7},
+		//FIXME {NUVIE_SFX_CLOCK, 1},
+		{NUVIE_SFX_FIRE, 6},
 		{NUVIE_SFX_RUBBER_DUCK, 3},
 		{NUVIE_SFX_WATER_WHEEL, 48},
 		{NUVIE_SFX_MISSLE, 9},
@@ -65,6 +65,13 @@ TownsSfxManager::TownsSfxManager(Configuration *cfg, Audio::Mixer *m) : SfxManag
 {
 	config->pathFromValue("config/ultima6/townsdir", "sounds2.dat", sounds2dat_filepath);
 	loadSound1Dat();
+}
+
+TownsSfxManager::~TownsSfxManager()
+{
+	//FIXME how do we make sure no sfxs are playing before deleting our resources?
+	//delete fireStream;
+	//free sounds1_dat[] buffers
 }
 
 void TownsSfxManager::loadSound1Dat()
@@ -93,6 +100,14 @@ void TownsSfxManager::loadSound1Dat()
     	sounds1_dat[i].buf = lib.get_item(i);
     	sounds1_dat[i].len = lib.get_item_size(i);
     }
+
+    //Fire SFX is made up of three individual samples played in a random sequence
+    std::vector<Audio::RewindableAudioStream *> streams;
+    streams.push_back(new FMtownsDecoderStream(sounds1_dat[6].buf, sounds1_dat[6].len));
+    streams.push_back(new FMtownsDecoderStream(sounds1_dat[7].buf, sounds1_dat[7].len));
+    streams.push_back(new FMtownsDecoderStream(sounds1_dat[8].buf, sounds1_dat[8].len));
+
+    fireStream = makeRandomCollectionAudioStream(mixer->getOutputRate(), false, streams, DisposeAfterUse::NO);
 }
 
 bool TownsSfxManager::playSfx(SfxIdType sfx_id, uint8 volume)
@@ -117,7 +132,14 @@ bool TownsSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handl
 
 void TownsSfxManager::playSoundSample(uint8 sample_num, Audio::SoundHandle *looping_handle, uint8 volume)
 {
-	FMtownsDecoderStream *stream = NULL;
+	Audio::AudioStream *stream = NULL;
+	Audio::SoundHandle handle;
+
+	if(sample_num > 5 && sample_num < 9) //fire samples
+	{
+		mixer->playStream(Audio::Mixer::kPlainSoundType, looping_handle ? looping_handle : &handle, fireStream, -1, volume, 0, DisposeAfterUse::NO);
+		return;
+	}
 
 	if(sample_num < TOWNS_SFX_SOUNDS1_SIZE)
 	{
@@ -135,7 +157,6 @@ void TownsSfxManager::playSoundSample(uint8 sample_num, Audio::SoundHandle *loop
 	}
 	else
 	{
-		Audio::SoundHandle handle;
 		mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, stream, -1, volume);
 	}
 
