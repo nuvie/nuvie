@@ -181,6 +181,8 @@ nuvie_SOURCES = \
 	script/ScriptActor.cpp \
 	script/ScriptActor.h \
 \
+	sound/CustomSfxManager.cpp \
+	sound/CustomSfxManager.h \
 	sound/SfxManager.h \
 	sound/Song.cpp \
 	sound/Song.h \
@@ -225,6 +227,21 @@ nuvie_SOURCES = \
 	sound/mixer/decoder/FMtownsDecoderStream.cpp \
 	sound/mixer/decoder/FMtownsDecoderStream.h \
 	sound/mixer/decoder/U6AdPlugDecoderStream.cpp \
+\
+	sound/mixer/decoder/wave/adpcm.cpp \
+	sound/mixer/decoder/wave/adpcm.h \
+	sound/mixer/decoder/wave/endian.h \
+	sound/mixer/decoder/wave/list.h \
+	sound/mixer/decoder/wave/list_intern.h \
+	sound/mixer/decoder/wave/memstream.h \
+	sound/mixer/decoder/wave/raw.cpp \
+	sound/mixer/decoder/wave/raw.h \
+	sound/mixer/decoder/wave/stdiostream.cpp \
+	sound/mixer/decoder/wave/stdiostream.h \
+	sound/mixer/decoder/wave/stream.cpp \
+	sound/mixer/decoder/wave/stream.h \
+	sound/mixer/decoder/wave/wave.cpp \
+	sound/mixer/decoder/wave/wave.h \
 \
 	usecode/UseCode.h \
 	usecode/UseCode.cpp \

@@ -40,6 +40,7 @@
 #include "decoder/FMtownsDecoderStream.h"
 
 #include "TownsSfxManager.h"
+#include "CustomSfxManager.h"
 
 typedef struct // obj sfx lookup
 {
@@ -488,7 +489,7 @@ bool SoundManager::LoadSfxManager(string sfx_style)
 	}
 	else if(sfx_style == "custom")
 	{
-		//m_SfxManager = new CustomSfxManager(m_Config, mixer->getMixer());
+		m_SfxManager = new CustomSfxManager(m_Config, mixer->getMixer());
 	}
 
 	return true;

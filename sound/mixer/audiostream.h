@@ -32,7 +32,7 @@
 #include "nuvieDefs.h"
 #include "types.h"
 
-//#include "timestamp.h"
+#include "timestamp.h"
 
 
 namespace Audio {
@@ -204,6 +204,63 @@ public:
  * Factory function for an QueuingAudioStream.
  */
 RandomCollectionAudioStream *makeRandomCollectionAudioStream(int rate, bool stereo, std::vector<RewindableAudioStream *>streams, DisposeAfterUse::Flag disposeAfterUse);
+
+
+/**
+ * A seekable audio stream. Subclasses of this class implement an
+ * interface for seeking. The seeking itself is not required to be
+ * working while the stream is being played by Mixer!
+ */
+class SeekableAudioStream : public RewindableAudioStream {
+public:
+	/**
+	 * Tries to load a file by trying all available formats.
+	 * In case of an error, the file handle will be closed, but deleting
+	 * it is still the responsibility of the caller.
+	 *
+	 * @param basename a filename without an extension
+	 * @return  an SeekableAudioStream ready to use in case of success;
+	 *          NULL in case of an error (e.g. invalid/nonexisting file)
+	 */
+	static SeekableAudioStream *openStreamFile(const std::string &basename);
+
+	/**
+	 * Seeks to a given offset in the stream.
+	 *
+	 * @param where offset in milliseconds
+	 * @return true on success, false on failure.
+	 */
+	bool seek(uint32 where) {
+		return seek(Timestamp(where, getRate()));
+	}
+
+	/**
+	 * Seeks to a given offset in the stream.
+	 *
+	 * @param where offset as timestamp
+	 * @return true on success, false on failure.
+	 */
+	virtual bool seek(const Timestamp &where) = 0;
+
+	/**
+	 * Returns the length of the stream.
+	 *
+	 * @return length as Timestamp.
+	 */
+	virtual Timestamp getLength() const = 0;
+
+	virtual bool rewind() { return seek(0); }
+};
+
+/**
+ * Converts a point in time to a precise sample offset
+ * with the given parameters.
+ *
+ * @param where    Point in time.
+ * @param rate     Rate of the stream.
+ * @param isStereo Is the stream a stereo stream?
+ */
+Timestamp convertTimeToStreamPos(const Timestamp &where, int rate, bool isStereo);
 
 } // End of namespace Audio
 
