@@ -855,6 +855,8 @@ RewindableAudioStream *makeADPCMStream(Common::SeekableReadStream *stream, Dispo
 		DEBUG(0, LEVEL_ERROR, "Unsupported ADPCM encoding");
 		break;
 	}
+
+	return NULL;
 }
 
 } // End of namespace Audio

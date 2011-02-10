@@ -26,11 +26,17 @@
 #ifndef COMMON_ENDIAN_H
 #define COMMON_ENDIAN_H
 
+#include <SDL.h>
 //#include "common/scummsys.h"
 #include "nuvieDefs.h"
 
-//ERIC FIXME
-#define SCUMM_LITTLE_ENDIAN
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	#define SCUMM_BIG_ENDIAN
+#else
+	#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+		#define SCUMM_LITTLE_ENDIAN
+	#endif
+#endif
 
 /**
  *  \file endian.h
