@@ -39,6 +39,7 @@
 #include "doublebuffersdl-mixer.h"
 #include "decoder/FMtownsDecoderStream.h"
 
+#include "PCSpeakerSfxManager.h"
 #include "TownsSfxManager.h"
 #include "CustomSfxManager.h"
 
@@ -481,7 +482,7 @@ bool SoundManager::LoadSfxManager(string sfx_style)
 
 	if(sfx_style == "pcspeaker")
 	{
-		//m_SfxManager = new PCSpeakerSfxManager(m_Config, mixer->getMixer());
+		m_SfxManager = new PCSpeakerSfxManager(m_Config, mixer->getMixer());
 	}
 	else if(sfx_style == "towns")
 	{
@@ -491,7 +492,7 @@ bool SoundManager::LoadSfxManager(string sfx_style)
 	{
 		m_SfxManager = new CustomSfxManager(m_Config, mixer->getMixer());
 	}
-
+//FIXME what to do if unknown sfx_style is entered in config file.
 	return true;
 }
 

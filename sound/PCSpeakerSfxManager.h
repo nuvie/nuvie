@@ -1,8 +1,8 @@
 /*
- *  sfx.h
+ *  PCSpeakerSfxManager.h
  *  Nuvie
  *
- *  Created by Eric Fry on Wed Feb 2 2011.
+ *  Created by Eric Fry on Sat Feb 12 2011.
  *  Copyright (c) 2011. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -21,29 +21,30 @@
  *
  */
 
-#ifndef SFX_H
-#define SFX_H
+#ifndef PCSPEAKERSFXMANAGER_H
+#define PCSPEAKERSFXMANAGER_H
 
-typedef uint16 SfxIdType;
+#include "nuvieDefs.h"
+#include "Configuration.h"
+#include "mixer.h"
+#include "SfxManager.h"
+#include "audiostream.h"
 
-#define NUVIE_SFX_NONE 65535
 
-#define NUVIE_SFX_BLOCKED 0
-#define NUVIE_SFX_HIT 1
-#define NUVIE_SFX_FOUNTAIN 2
-#define NUVIE_SFX_DEATH 3
-#define NUVIE_SFX_RUBBER_DUCK 4
-#define NUVIE_SFX_BROKEN_GLASS 5
-#define NUVIE_SFX_BELL 6
-#define NUVIE_SFX_FIRE 7
-#define NUVIE_SFX_CLOCK 8
-#define NUVIE_SFX_PROTECTION_FIELD 9
-#define NUVIE_SFX_WATER_WHEEL 10
-#define NUVIE_SFX_MISSLE 11
-#define NUVIE_SFX_EXPLOSION 12
-#define NUVIE_SFX_ATTACK_SWING 13
-#define NUVIE_SFX_SUCCESS 14
-#define NUVIE_SFX_FAILURE 15
+class PCSpeakerSfxManager : public SfxManager
+{
+ public:
+	PCSpeakerSfxManager(Configuration *cfg, Audio::Mixer *m);
+	~PCSpeakerSfxManager();
 
+
+
+ bool playSfx(SfxIdType sfx_id, uint8 volume);
+ bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle, uint8 volume);
+
+ private:
+ void playSoundSample(Audio::AudioStream *stream, Audio::SoundHandle *looping_handle, uint8 volume);
+
+};
 
 #endif

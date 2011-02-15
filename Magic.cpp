@@ -40,6 +40,7 @@
 #include "Actor.h"
 #include "ActorManager.h"
 #include "ObjManager.h"
+#include "SoundManager.h"
 #include "U6objects.h"
 #include "Magic.h"
 #include "Game.h"
@@ -413,6 +414,7 @@ bool Magic::cast()
       {
 	DEBUG(0,LEVEL_DEBUGGING,"Didn't have %s\n",reagent[shift]);
 	event->scroll->display_string("\nNo Reagents.\n");
+	Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_FAILURE);
 	return false;
       }
       DEBUG(0,LEVEL_DEBUGGING,"Ok, has %s\n",reagent[shift]);

@@ -1,9 +1,7 @@
-/*
- *  sfx.h
- *  Nuvie
- *
- *  Created by Eric Fry on Wed Feb 2 2011.
- *  Copyright (c) 2011. All rights reserved.
+#ifndef __PCSpeaker_h__
+#define __PCSpeaker_h__
+/* Created by Eric Fry 
+ * Copyright (C) 2011 The Nuvie Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,29 +19,26 @@
  *
  */
 
-#ifndef SFX_H
-#define SFX_H
+#define SPKR_OUTPUT_RATE 11025 //FIXME may need to fiddle with this.
 
-typedef uint16 SfxIdType;
+class PCSpeaker {
+private:
+uint32 rate;
+uint16 frequency;
 
-#define NUVIE_SFX_NONE 65535
+uint32 osc_length;
+uint32 osc_samples;
 
-#define NUVIE_SFX_BLOCKED 0
-#define NUVIE_SFX_HIT 1
-#define NUVIE_SFX_FOUNTAIN 2
-#define NUVIE_SFX_DEATH 3
-#define NUVIE_SFX_RUBBER_DUCK 4
-#define NUVIE_SFX_BROKEN_GLASS 5
-#define NUVIE_SFX_BELL 6
-#define NUVIE_SFX_FIRE 7
-#define NUVIE_SFX_CLOCK 8
-#define NUVIE_SFX_PROTECTION_FIELD 9
-#define NUVIE_SFX_WATER_WHEEL 10
-#define NUVIE_SFX_MISSLE 11
-#define NUVIE_SFX_EXPLOSION 12
-#define NUVIE_SFX_ATTACK_SWING 13
-#define NUVIE_SFX_SUCCESS 14
-#define NUVIE_SFX_FAILURE 15
+private:
 
+public:
+	PCSpeaker(uint32 mixer_rate);
+	~PCSpeaker() { }
+	void SetOn();
+	void SetOff();
+	void SetFrequency(uint16 freq);
 
-#endif
+	void PCSPEAKER_CallBack(sint16 *stream, const uint32 len);
+};
+
+#endif /* __PCSpeaker_h__ */
