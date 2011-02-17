@@ -46,7 +46,7 @@ protected:
 	bool _soundThreadShouldQuit;
 
 	uint8 _activeSoundBuf;
-	uint _soundBufSize;
+	uint32 _soundBufSize;
 	uint8 *_soundBuffers[2];
 
 	/**

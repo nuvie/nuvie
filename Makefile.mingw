@@ -15,8 +15,8 @@ CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 	-I$(SRC)/conf -I$(SRC)/files -I$(SRC)/fonts -I$(SRC)/GUI \
 	-I$(SRC)/lua \
 	-I$(SRC)/misc -I$(SRC)/pathfinder -I$(SRC)/save -I$(SRC)/screen \
-	-I$(SRC)/script -I$(SRC)/sound -I$(SRC)/sound/adplug -I$(SRC)/tools \
-	-I$(SRC)/usecode -I$(SRC)/views $(SDL_CFLAGS)
+	-I$(SRC)/script -I$(SRC)/sound -I$(SRC)/sound/adplug -I$(SRC)/sound/mixer \
+	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/views $(SDL_CFLAGS)
 
 CXXFLAGS=-g
 CC=gcc
@@ -118,5 +118,4 @@ dist: install tools
 	cp SDL/README-SDL.txt $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)/tools
-	cp SDL/lib/SDL_mixer.dll $(U6PATH)
 	u2d $(U6PATH)/*.txt
