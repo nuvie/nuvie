@@ -34,6 +34,7 @@
 #define OBJ_STATUS_INVISIBLE     0x2  // I think this is correct
 #define OBJ_STATUS_CHARMED	     0x4 // objlist.txt says 'charmed'
 
+
 // position: A 2 bit field, so can't use plain | to check / |= to set these. 
 // FIXME: check to make sure we don't do this anywhere anymore
 #define OBJ_STATUS_ON_MAP        0x0

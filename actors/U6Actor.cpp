@@ -42,7 +42,6 @@
 #include "U6ActorTypes.h"
 #include "U6WorkTypes.h"
 
-
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
  beg_mode = 0; // beggers are waiting for targets
@@ -433,10 +432,10 @@ void U6Actor::update()
 // if(in_party && !party->is_in_combat_mode() && party->get_actor(party->get_leader()) != this)
 //  set_worktype(WORKTYPE_U6_IN_PARTY); // revert to normal worktype
 
- preform_worktype();
+ //preform_worktype();
 
- if(is_poisoned())
-  updatePoison();
+ //if(is_poisoned())
+ // updatePoison();
 
  return;
 }
@@ -447,7 +446,11 @@ bool U6Actor::updateSchedule(uint8 hour)
  if((ret = Actor::updateSchedule(hour)) == true) //walk to next schedule location if required.
    {
     if(sched[sched_pos] != NULL && (sched[sched_pos]->x != x || sched[sched_pos]->y != y || sched[sched_pos]->z != z))
+    {
        set_worktype(WORKTYPE_U6_WALK_TO_LOCATION);
+       MapCoord loc(sched[sched_pos]->x, sched[sched_pos]->y, sched[sched_pos]->z);
+       pathfind_to(loc);
+    }
    }
 
  return ret;
@@ -500,7 +503,7 @@ void U6Actor::set_direction(uint8 d)
  direction = d;
 
  //only change direction frame if the actor can twitch ie isn't sitting or in bed etc.
- if(can_move)
+ if(can_move && obj_n != OBJ_U6_SLIME)
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction +
              (walk_frame * actor_type->tiles_per_frame ) + actor_type->tiles_per_frame - 1);
 
@@ -596,10 +599,11 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
        case OBJ_U6_SLEEP_FIELD :
        {
          new HitEffect(this); // no hp loss
-         set_worktype(WORKTYPE_U6_SLEEP); // fall asleep
+         //set_worktype(WORKTYPE_U6_SLEEP); // fall asleep
+         set_asleep(true);
          if(is_in_party())
            {
-            party->set_active(party->get_member_num(this), !(is_sleeping() || is_paralyzed()));
+            //party->set_active(party->get_member_num(this), !(is_sleeping() || is_paralyzed()));
             player->set_actor(party->get_actor(party->get_leader()));
             player->set_mapwindow_centered(true);
            }
@@ -661,8 +665,8 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
    {
      Obj *old_mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,old_pos.x,old_pos.y-1,old_pos.z);
      Obj *mirror = obj_manager->get_obj_of_type_from_location(OBJ_U6_MIRROR,new_x,new_y-1,new_z);
-     if(old_mirror) old_mirror->frame_n = 0;
-     if(mirror)     mirror->frame_n = 1;
+     if(old_mirror && old_mirror->frame_n != 2) old_mirror->frame_n = 0;
+     if(mirror && mirror->frame_n != 2)     mirror->frame_n = 1;
    }
    
    // Cyclops: shake ground if player is near
@@ -852,7 +856,7 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 t
 void U6Actor::twitch()
 {
 
- if(can_move == false || actor_type->twitch_rand == 0)
+ if(can_twitch() == false)
    return;
 
  if(NUVIE_RAND()%actor_type->twitch_rand == 1)
@@ -891,6 +895,88 @@ void U6Actor::set_poisoned(bool poisoned)
    status_flags &= (0xff ^ ACTOR_STATUS_POISONED);
    poison_counter = 0;
   }
+}
+
+void U6Actor::set_paralyzed(bool paralyzed)
+{
+	if(paralyzed)
+	{
+		status_flags |= ACTOR_STATUS_PARALYZED;
+	}
+	else
+	{
+		status_flags &= (0xff ^ ACTOR_STATUS_PARALYZED);
+	}
+}
+
+void U6Actor::set_protected(bool val)
+{
+	if(val)
+	{
+		status_flags |= ACTOR_STATUS_PROTECTED;
+	}
+	else
+	{
+		status_flags &= (0xff ^ ACTOR_STATUS_PROTECTED);
+	}
+}
+
+void U6Actor::set_charmed(bool val)
+{
+	if(val)
+	{
+		obj_flags |= OBJ_STATUS_CHARMED;
+	}
+	else
+	{
+		obj_flags &= (0xff ^ OBJ_STATUS_CHARMED);
+	}
+}
+
+void U6Actor::set_corpser_flag(bool val)
+{
+	if(val)
+	{
+		movement_flags |= ACTOR_MOVEMENT_FLAGS_CORPSER;
+	}
+	else
+	{
+		movement_flags &= (0xff ^ ACTOR_MOVEMENT_FLAGS_CORPSER);
+	}
+}
+
+void U6Actor::set_cursed(bool val)
+{
+	if(val)
+	{
+		obj_flags |= OBJ_STATUS_CURSED;
+	}
+	else
+	{
+		obj_flags &= (0xff ^ OBJ_STATUS_CURSED);
+	}
+}
+
+void U6Actor::set_asleep(bool val)
+{
+	if(val)
+	{
+		status_flags |= ACTOR_STATUS_ASLEEP;
+		if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
+		{
+			obj_n = actor_type->dead_obj_n;
+			frame_n = actor_type->dead_frame_n;
+		}
+	}
+	else
+	{
+		status_flags &= (0xff ^ ACTOR_STATUS_ASLEEP);
+		if(obj_n == actor_type->dead_obj_n)
+		{
+			obj_n = actor_type->base_obj_n;
+			frame_n = 0;
+		}
+	}
 }
 
 void U6Actor::preform_worktype()
@@ -964,6 +1050,19 @@ void U6Actor::set_worktype(uint8 new_worktype)
   }
 }
 
+
+void U6Actor::pathfind_to(MapCoord &d)
+{
+    if(pathfinder)
+    {
+        pathfinder->set_actor(this);
+        pathfinder->set_goal(d);
+    }
+    else
+        set_pathfinder(new SchedPathFinder(this, d, new U6AStarPath));
+
+    pathfinder->update_location();
+}
 
 void U6Actor::wt_walk_to_location()
 {
@@ -1444,7 +1543,7 @@ bool U6Actor::combat_try_attack(U6Actor *enemy)
     if(weapon_can_hit(get_weapon(ACTOR_NO_READIABLE_LOCATION), enemy->x,enemy->y))
     {
         face_actor(enemy);
-        attack(ACTOR_NO_READIABLE_LOCATION, enemy);
+        attack(ACTOR_NO_READIABLE_LOCATION, MapCoord(enemy->x,enemy->y,enemy->z));
         foe = enemy;
         return true;
     }
@@ -1878,7 +1977,7 @@ inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)
  for(;!surrounding_objects.empty();)
   {
    obj_manager->remove_obj_from_map(*obj);
-   delete *obj;
+   delete_obj(*obj);
    obj = surrounding_objects.erase(obj);
   }
 
@@ -1946,6 +2045,7 @@ void U6Actor::die()
       party->resurrect_dead_members();
       party->heal();
       party->show();
+      set_moves_left(1);
      }
    else
      {
@@ -1955,7 +2055,7 @@ void U6Actor::die()
      }
   }
 
-  add_blood();
+  //moved to script add_blood();
  
     // we don't generate a dead body if the avatar dies because they will be ressurrected.  
     if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
@@ -1978,7 +2078,6 @@ void U6Actor::die()
 
           obj_manager->add_obj(dead_body, true);
 
-// FIX: add some blood? or do that in hit?
          }
     }
 
@@ -1989,11 +2088,22 @@ void U6Actor::die()
 // frozen by worktype or status
 bool U6Actor::is_immobile()
 {
-    return((worktype == WORKTYPE_U6_MOTIONLESS
-           || worktype == WORKTYPE_U6_IMMOBILE) && !is_in_party()
+    return(((worktype == WORKTYPE_U6_MOTIONLESS
+           || worktype == WORKTYPE_U6_IMMOBILE) && !is_in_party())
+           || get_corpser_flag() == true
+           || is_sleeping() == true
+           || is_paralyzed() == true
            /*|| can_move == false*/); // can_move really means can_twitch/animate
 }
 
+bool U6Actor::can_twitch()
+{
+	return(can_move == true
+			   && actor_type->twitch_rand != 0
+			   && get_corpser_flag() == false
+	           && is_sleeping() == false
+	           && is_paralyzed() == false);
+}
 
 bool U6Actor::is_sleeping()
 {
@@ -2128,11 +2238,9 @@ void U6Actor::add_blood()
   blood = new Obj();
   blood->obj_n = OBJ_U6_BLOOD;
   blood->frame_n = NUVIE_RAND() % 3;
-  blood->x = get_x();
-  blood->y = get_y();
-  blood->z = get_z();
+  blood->status |= OBJ_STATUS_TEMPORARY;
   
-  obj_manager->moveto_map(blood);
+  obj_manager->moveto_map(blood, MapCoord(get_x(), get_y(), get_z()));
   
   return;
 }

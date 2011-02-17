@@ -123,6 +123,7 @@ class ObjManager
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  bool is_forced_passable(uint16 x, uint16 y, uint8 level);
  bool is_stackable(Obj *obj);
+ bool can_store_obj(Obj *target, Obj *src); // Bag, open chest, spellbook.
  bool has_reduced_weight(Obj *obj);
  bool has_toptile(Obj *obj);
 
@@ -169,7 +170,7 @@ class ObjManager
 
  bool unlink_from_engine(Obj *obj);
  
- bool moveto_map(Obj *obj);
+ bool moveto_map(Obj *obj, MapCoord location);
  bool moveto_inventory(Obj *obj, uint16 actor_num);
  bool moveto_inventory(Obj *obj, Actor *actor);
  bool moveto_container(Obj *obj, Obj *container_obj);

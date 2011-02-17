@@ -78,14 +78,14 @@ public:
 	/* Passed the button data, position, width, height, a caption, a font,
 	   an alignment (one of the constants above), if it should be a checkbutton (1/0),
 	   the callback and a flag if it should be 2D (1) or 3D (0) */
-	GUI_Button(void *data, int x, int y, int w, int h, char* text,
+	GUI_Button(void *data, int x, int y, int w, int h, const char* text,
 		   GUI_Font *font, int alignment, int is_checkbutton,
 		   GUI_CallBack *callback, int flat = 0);
 
 	~GUI_Button();
 
 	/* change features of a text button (if one of the dimensions is negativ, it's ignored) */
-	virtual void ChangeTextButton(int x, int y, int w, int h, char* text, int alignment);
+	virtual void ChangeTextButton(int x, int y, int w, int h, const char* text, int alignment);
 
 	/* Show the widget  */
 	virtual void Display(bool full_redraw);
@@ -109,7 +109,7 @@ public:
 
 protected:
 	/* yields an appropriate image */
-	virtual SDL_Surface* CreateTextButtonImage(int style, char *text, int alignment);
+	virtual SDL_Surface* CreateTextButtonImage(int style, const char *text, int alignment);
 
 	/* The button font */
 	GUI_Font *buttonFont;

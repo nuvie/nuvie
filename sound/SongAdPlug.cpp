@@ -30,82 +30,44 @@
 #include "SongAdPlug.h"
 #include "SoundManager.h"
 
-#define DEFAULT_BUF_LEN 512
-
-void adplug_mixer_callback(void *udata, Uint8 *stream, int len)
-{
- sint32 i, j;
- SongAdPlug *song = (SongAdPlug *)udata;
- short *data = (short *)stream;
- CEmuopl *opl = song->get_opl();
- CPlayer *player = song->get_player();
-
- len /= 4;
-
- if(song->samples_left)
-    {
-      opl->update(data, song->samples_left);
-      data += song->samples_left * 2;
-    }
-
- len -= song->samples_left;
-
- for(i=len;i > 0; i -= 735)
-   {
-     if(!player->update())
-       {
-         player->rewind();
-         SoundManager::g_MusicFinished = true;
-         DEBUG(0,LEVEL_DEBUGGING,"Music Finished!\n");
-       }
-
-	 j = i;
-	 if (j > 735) j = 735;
-	 song->samples_left = 735 - j;
-
-     opl->update(data, j);
-
-     data += j * 2;
-   }
-
- return;
-}
-
-
-SongAdPlug::SongAdPlug(CEmuopl *o) {
+SongAdPlug::SongAdPlug(Audio::Mixer *m, CEmuopl *o) {
+ mixer = m;
  opl = o;
  samples_left = 0;
+ stream = NULL;
 }
 
 SongAdPlug::~SongAdPlug() {
- delete player;
+ //delete player;
 }
 
 bool SongAdPlug::Init(const char *filename) {
     if(filename) m_Filename = filename; // SB-X
 
-    player = new Cu6mPlayer(opl);
-    if(!player) {
-      DEBUG(0,LEVEL_EMERGENCY,"Argh!! Failed to allocate a new Cu6mPlayer. Assume crash positions.\n");
-    }
+    stream = new U6AdPlugDecoderStream(opl, string(filename));
 
-    player->load(filename);
     return true;
 }
 
 bool SongAdPlug::Play(bool looping) {
-    Mix_HookMusic(adplug_mixer_callback, this);
+    if(stream)
+    {
+    	mixer->playStream(Audio::Mixer::kMusicSoundType, &handle, stream, -1, Audio::Mixer::kMaxChannelVolume, 0, DisposeAfterUse::NO);
+    }
 	return true;
 }
 
 bool SongAdPlug::Stop() {
 
-    //if (!Mix_PlayingMusic()) return false;
-
-    player->rewind(); // SB-X
-    Mix_HookMusic(NULL,NULL);
-
+	mixer->stopHandle(handle);
+	stream->rewind();
     return true;
+}
+
+bool SongAdPlug::SetVolume(uint8 volume)
+{
+	mixer->setChannelVolume(handle, volume);
+	return true;
 }
 
 /*

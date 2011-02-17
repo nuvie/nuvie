@@ -184,6 +184,14 @@ uint8 Actor::get_worktype()
  return worktype;
 }
 
+uint8 Actor::get_sched_worktype()
+{
+	if(sched[sched_pos])
+		return sched[sched_pos]->worktype;
+
+	return 0; //no worktype
+}
+
 uint16 Actor::get_downward_facing_tile_num()
 {
  return obj_manager->get_obj_tile_num(obj_n) + frame_n;
@@ -552,7 +560,7 @@ void Actor::attack(MapCoord pos)
 }
 
 // attack another actor with melee attack or a weapon (short or long range)
-void Actor::attack(sint8 readied_obj_location, Actor *actor)
+void Actor::attack(sint8 readied_obj_location, MapCoord target)
 {
    const uint8 attack_cost = 10; // base cost to attack
    Obj *weapon_obj = NULL;
@@ -563,13 +571,13 @@ void Actor::attack(sint8 readied_obj_location, Actor *actor)
    assert(combat_type != NULL); // this should be set
 // if(combat_type == NULL)
 //   return;
-   DEBUG(0, LEVEL_DEBUGGING, "%s (%d) attacking %s (%d)\n", get_name(), id_n, actor->get_name(), actor->id_n);
-   face_actor(actor);
+   //DEBUG(0, LEVEL_DEBUGGING, "%s (%d) attacking %s (%d)\n", get_name(), id_n, actor->get_name(), actor->id_n);
+   face_location(target);
 
    //FIXME just hacked in to test lua actor_attack()
    if(readied_obj_location != ACTOR_NO_READIABLE_LOCATION && readied_objects[readied_obj_location] && readied_objects[readied_obj_location]->obj != NULL)
       weapon_obj = readied_objects[readied_obj_location]->obj;
-   Game::get_game()->get_script()->call_actor_attack(this, actor, weapon_obj);
+   Game::get_game()->get_script()->call_actor_attack(this, target, weapon_obj);
 
 /*
 // using new defend() method
@@ -802,15 +810,18 @@ uint32 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality)
  while((obj = inventory_get_object(obj_n, quality, false))
        && (deleted < qty))
  {
-    oqty = obj->qty;
+    oqty = obj->qty == 0 ? 1 : obj->qty;
     if(oqty <= (qty - deleted))
     {
         inventory_remove_obj(obj);
        delete_obj(obj);
+       deleted += oqty;
     }
     else
-        obj->qty = oqty - qty;
-    deleted += oqty;
+    {
+       obj->qty = oqty - (qty - deleted);
+       deleted += (qty - deleted);
+    }
  }
  return(deleted);
 }
@@ -1082,7 +1093,6 @@ void Actor::all_items_to_container(Obj *container_obj)
  U6LList *inventory;
  U6Link *link;
  Obj *obj;
- uint8 i;
 
  inventory = get_inventory_list();
 
@@ -1093,20 +1103,11 @@ void Actor::all_items_to_container(Obj *container_obj)
    {
     obj = (Obj *)link->data;
     link = link->next;
-    inventory->remove(obj);
 
     if(temp_actor)
       obj->status |= OBJ_STATUS_TEMPORARY;
-      
-    container_obj->add(obj);
-   }
- 
- for(i=0; i < ACTOR_MAX_READIED_OBJECTS; i++)
-   {
-    if(readied_objects[i])
-      {
-       remove_readied_object(i);
-      }
+
+    obj_manager->moveto_container(obj, container_obj);
    }
 
  return;
@@ -1471,7 +1472,7 @@ void Actor::reduce_hp(uint8 amount)
 
     if(amount <= hp) hp -= amount;
     else hp = 0;
-// FIX... game specific?
+// FIXME... game specific?
     if(hp == 0)
         die();
     Game::get_game()->stats_changed();
@@ -1863,4 +1864,23 @@ bool Actor::morph(uint16 obj_n)
 
     set_direction(old_dir); // FIXME: this should get saved through init_from_obj()
     return true;
+}
+
+bool Actor::get_schedule_location(MapCoord *loc)
+{
+   if(sched[sched_pos] == NULL)
+      return false;
+   
+   loc->x = sched[sched_pos]->x;
+   loc->y = sched[sched_pos]->y;
+   loc->z = sched[sched_pos]->z;   
+   return true;
+}   
+
+bool Actor::is_at_scheduled_location()
+{
+   if(sched[sched_pos] != NULL && x == sched[sched_pos]->x && y == sched[sched_pos]->y && z == sched[sched_pos]->z)
+	   return true;
+
+   return false;
 }

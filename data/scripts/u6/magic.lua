@@ -16,16 +16,40 @@ io.stderr:write("Running script \"" .. magic_invocations[invocation].script .."\
     return
 end
 
+g_magic_target = nil
+g_magic_caster = nil
+
+function magic_cast_spell(spell_num, caster, target)
+	g_magic_target = target
+	g_magic_caster = caster
+	if magic[spell_num] ~= nil then
+		run_script(magic[spell_num].script)
+	end
+	g_magic_caster = nil
+	g_magic_target = nil
+end
+
 magic_init = function(name, invocation, reagents, circle, num, script)
     local spell = {name=name,invocation=invocation,reagents=reagents,circle=circle,num=num,script=script}
 
-    magic[circle * 16 + num] = spell
+    magic[(circle-1) * 16 + (num-1)] = spell
     magic_invocations[string.lower(invocation)] = spell
 
     io.stderr:write("Init Magic: " .. name .. " I: " .. invocation .. "\n")
 end
 
+
+
+function select_location()
+	if g_magic_target ~= nil then return g_magic_target end
+	
+	print("Location: ")
+	return get_target()
+end
+
 select_actor = function()
+	if g_magic_target ~= nil then return map_get_actor(g_magic_target) end
+	
 	print("On whom: ");
 
 	local loc = get_target()
@@ -34,13 +58,15 @@ select_actor = function()
 	if actor == nil then
 		print("nothing\n");
 	else
-		print("actor_type\n");
+		print(actor.name.."\n");
 	end
 
 	return actor
 end
 
 select_obj = function()
+	if g_magic_target ~= nil then return map_get_obj(g_magic_target) end
+	
 	print("On what: ");
 
 	local loc = get_target()
@@ -54,7 +80,27 @@ select_obj = function()
 
 	return obj 
 end
+
+function caster_get_location()	  
+	 if g_magic_caster ~= nil then
+	  	return {x = g_magic_caster.x, y = g_magic_caster.y, z = g_magic_caster.z}
+	  end
 	  
+	  return player_get_location()
+end
+
+function magic_get_caster()
+	if g_magic_caster ~= nil then return g_magic_caster end
+
+	return Actor.get_player_actor()
+end
+
+function caster_is_player()
+	if g_magic_caster == nil then return true end
+	
+	return false
+end
+
 do
 local init
 
@@ -64,15 +110,21 @@ magic_init("Douse", "af", 0x24, 1, 5, "u6/magic/circle_01/douse.lua");
 magic_init("Harm", "am", 0x84, 1, 6, "u6/magic/circle_01/harm.lua");
 magic_init("Heal", "im", 0x84, 1, 7, "u6/magic/circle_01/heal.lua");
 magic_init("Ignite", "if", 0x84, 1, 9, "u6/magic/circle_01/ignite.lua");
+magic_init("Light", "il", 0x80, 1, 10, "u6/magic/circle_01/light.lua");
 
 magic_init("Poison", "inp", 0x0e, 2, 3, "u6/magic/circle_02/poison.lua");
+magic_init("Sleep", "iz", 0x16, 2, 5, "u6/magic/circle_02/sleep.lua");
 magic_init("Telekinesis", "opy", 0x0d, 2, 6, "u6/magic/circle_02/telekinesis.lua");
 magic_init("Trap", "ij", 0x12, 2, 7, "u6/magic/circle_02/trap.lua");
 magic_init("Unlock Magic", "ep", 0x88, 2, 8, "u6/magic/circle_02/unlock_magic.lua");
 magic_init("Untrap", "aj", 0x88, 2, 9, "u6/magic/circle_02/untrap.lua");
 
+magic_init("Curse", "as", 0xa2, 3, 1, "u6/magic/circle_03/curse.lua");
 magic_init("Dispel Field", "ag", 0x84, 3, 2, "u6/magic/circle_03/dispel_field.lua");
 magic_init("Magic Lock", "ap", 0xa8, 3, 5, "u6/magic/circle_03/magic_lock.lua");
+magic_init("Mass Awaken", "avz", 0x60, 3, 6, "u6/magic/circle_03/mass_awaken.lua");
+magic_init("Mass Sleep", "vz", 0x52, 3, 7, "u6/magic/circle_03/mass_sleep.lua");
+magic_init("Protection", "is", 0xe0, 3, 9, "u6/magic/circle_03/protection.lua");
 
 magic_init("Fire Field", "ifg", 0x94, 4, 4, "u6/magic/circle_04/fire_field.lua");
 magic_init("Locate", "iw", 0x02, 4, 6, "u6/magic/circle_04/locate.lua");
@@ -80,6 +132,10 @@ magic_init("Poison Field", "ing", 0x56, 4, 8, "u6/magic/circle_04/poison_field.l
 magic_init("Sleep Field", "izg", 0x54, 4, 9, "u6/magic/circle_04/sleep_field.lua");
 
 magic_init("Energy Field", "isg", 0x15, 5, 1, "u6/magic/circle_05/energy_field.lua");
+magic_init("Explosion", "vpf", 0x8d, 5, 2, "u6/magic/circle_05/explosion.lua");
+magic_init("Insect Swarm", "kbx", 0x98, 5, 3, "u6/magic/circle_05/insect_swarm.lua");
+magic_init("Lightning", "og", 0x85, 5, 5, "u6/magic/circle_05/lightning.lua");
+magic_init("Paralyze", "axp", 0x96, 5, 6, "u6/magic/circle_05/paralyze.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 

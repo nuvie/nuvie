@@ -44,6 +44,7 @@
 #include "TimedEvent.h"
 #include "EggManager.h"
 #include "AnimManager.h"
+#include "SoundManager.h"
 #include "Effect.h"
 #include "Weather.h"
 
@@ -609,7 +610,7 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
     else //delete barrier object.
      {
       obj_list->remove(portc_obj);
-      delete portc_obj;
+      delete_obj(portc_obj);
      }
    }
 
@@ -1388,8 +1389,8 @@ bool U6UseCode::use_fountain(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::use_rubber_ducky(Obj *obj, UseCodeEvent ev)
 {
     if(items.actor_ref == player->get_actor())
-        scroll->display_string("Squeak!\n");
-    DEBUG(0,LEVEL_WARNING,"FIXME: rubberducky sound\n");
+        scroll->display_string("\nSqueak!\n");
+    Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_RUBBER_DUCK); //FIXME towns says "Quack! Quack!" and plays sfx twice.
     return(true);
 }
 
@@ -1520,6 +1521,10 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         destroy_obj(obj); break;
                     case USE_U6_POTION_GREEN: ((U6Actor *)items.actor2_ref)->set_poisoned(true);
                         destroy_obj(obj); break;
+                    case USE_U6_POTION_BLUE: ((U6Actor *)items.actor2_ref)->set_asleep(false);
+                        destroy_obj(obj); break;
+                    case USE_U6_POTION_PURPLE: ((U6Actor *)items.actor2_ref)->set_protected(true);
+                        destroy_obj(obj); break;
                     case USE_U6_POTION_WHITE: new U6WhitePotionEffect(2500, 6000, obj);
                         break; // wait for message to delete potion
                     case USE_U6_POTION_BLACK:
@@ -1528,12 +1533,14 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         items.actor2_ref->set_invisible(true);
                         destroy_obj(obj); break;
                     case USE_U6_POTION_ORANGE:
-                        items.actor2_ref->set_worktype(WORKTYPE_U6_SLEEP);
-                        party->set_active(party_num, !(items.actor2_ref->is_sleeping() || items.actor2_ref->is_paralyzed()));
+                        //items.actor2_ref->set_worktype(WORKTYPE_U6_SLEEP);
+                        items.actor2_ref->set_asleep(true);
+                        //party->set_active(party_num, !(items.actor2_ref->is_sleeping() || items.actor2_ref->is_paralyzed()));
                         player->set_actor(party->get_actor(party->get_leader()));
                         player->set_mapwindow_centered(true);
                         destroy_obj(obj);
                         break;
+
                     default:
                         if(obj->frame_n <= 7)
                         {
@@ -1642,6 +1649,12 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
 
    return true;
   }
+
+  if(obj->is_on_map() == false)
+   {
+    scroll->display_string("\nNot usable\n");
+    return(true);
+   }
 
   if(!player->in_party_mode())
    {
@@ -2153,7 +2166,7 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
 	player_actor->move(actor_obj->x,actor_obj->y,actor_obj->z); //this will center the map window
     player_actor->init_from_obj(actor_obj);
 
-	delete actor_obj;
+	delete_obj(actor_obj);
    }
 
  return true;

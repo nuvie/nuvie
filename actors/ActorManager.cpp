@@ -113,6 +113,8 @@ bool ActorManager::load(NuvieIO *objlist)
 
  config->value("config/GameType",game_type);
 
+ game_hour = clock->get_hour(); //this assumes that clock->load() is called first.
+
  objlist->seek(0x100); // Start of Actor position info
 
  for(i=0; i < ACTORMANAGER_MAX_ACTORS; i++)
@@ -136,6 +138,8 @@ bool ActorManager::load(NuvieIO *objlist)
 
     actors[i]->z = (b3 & 0xf0) >> 4;
     actors[i]->id_n = (uint8)i;
+
+    actors[i]->temp_actor = is_temp_actor(actors[i]->id_n);
    }
 
 // objlist.seek(0x15f1);
@@ -275,6 +279,13 @@ bool ActorManager::load(NuvieIO *objlist)
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->talk_flags = objlist->read1();
+   }
+
+ objlist->seek(0x19f1);
+
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++) //movement flags.
+   {
+    actors[i]->movement_flags = objlist->read1();
    }
 
  loadActorSchedules();
@@ -454,6 +465,12 @@ bool ActorManager::save(NuvieIO *objlist)
     objlist->write1(actors[i]->talk_flags);
    }
 
+ objlist->seek(0x19f1);
+
+ for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++) //movement flags.
+   {
+	objlist->write1(actors[i]->movement_flags);
+   }
 /*
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
@@ -598,12 +615,12 @@ void ActorManager::startActors()
 // After all actors move, refresh move counts and add time.
 void ActorManager::updateTime()
 {
-    if(!update)
-        return;
+  //  if(!update)
+  //      return;
 
 //DEBUG(0,LEVEL_DEBUGGING,"updateTime(): ");
-    for(int i=0; i<ACTORMANAGER_MAX_ACTORS; i++)
-        actors[i]->update_time(); // **UPDATE MOVES LEFT**
+ //   for(int i=0; i<ACTORMANAGER_MAX_ACTORS; i++)
+ //       actors[i]->update_time(); // **UPDATE MOVES LEFT**
     clock->inc_minute(); // **UPDATE TIME**
 //DEBUG(0,LEVEL_DEBUGGING,"%d:%02d\n",clock->get_hour(),clock->get_minute());
     uint8 cur_hour = clock->get_hour();
@@ -642,9 +659,14 @@ void ActorManager::twitchActors()
 // Update actors. StopActors() if no one can move.
 void ActorManager::moveActors()
 {
-    if(!update)
+    if(!update || wait_for_player)
         return;// nothing to do
 
+   Game::get_game()->get_script()->call_actor_update_all();
+   updateTime();
+   stopActors();
+   return;
+   
     while(!wait_for_player)
     {
         if(can_party_move())
@@ -892,7 +914,8 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    // spawn double-tiled actors, like cows, facing west (SB-X)
    if(actor->get_tile_type() == ACTOR_DT)
     actor->set_direction(-1, 0);
-   actor->set_worktype(worktype);
+   if(worktype != 0)
+    actor->set_worktype(worktype);
    actor->show();
 
    DEBUG(0,LEVEL_INFORMATIONAL,"Adding Temp Actor #%d: %s (%x,%x,%x).\n", actor->id_n,tile_manager->lookAtTile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n,0,false),actor->x,actor->y,actor->z);
@@ -997,6 +1020,24 @@ inline void ActorManager::clean_temp_actor(Actor *actor)
  return;
 }
 
+bool ActorManager::clone_actor(Actor *actor, Actor **new_actor, MapCoord new_location)
+{
+	if(actor == NULL)
+		return false;
+
+	if(create_temp_actor(actor->obj_n, new_location.x, new_location.y, new_location.z, actor->alignment, actor->worktype, new_actor) == false)
+		return false;
+
+	(*new_actor)->strength = actor->strength;
+	(*new_actor)->dex = actor->dex;
+	(*new_actor)->intelligence = actor->intelligence;
+
+	(*new_actor)->magic = actor->magic;
+	(*new_actor)->exp = actor->exp;
+	(*new_actor)->hp = actor->hp;
+
+	return true;
+}
 
 /* Move an actor to a random location within range.
  * Returns true when tossed.
@@ -1096,6 +1137,17 @@ ActorList *ActorManager::sort_nearest(ActorList *list, uint16 x, uint16 y, uint8
 void ActorManager::print_actor(Actor *actor)
 {
     actor->print();
+}
+
+bool ActorManager::can_put_actor(MapCoord location)
+{
+	if(!map->is_passable(location.x, location.y, location.z))
+		return false;
+
+	if(get_actor(location.x, location.y, location.z) != NULL)
+		return false;
+
+	return true;
 }
 
 // Remove actors with a certain alignment from the list. Returns the same list.

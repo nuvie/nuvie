@@ -1,3 +1,4 @@
+// NOT USED AT THE MOMENT
 /*
  *  Sample.h
  *  Nuvie
@@ -33,10 +34,8 @@ public:
 	bool Play(bool looping = false);
 	bool Stop();
 	bool FadeOut(float seconds);
-	bool SetVolume(float volume); //range 0..1
+	bool SetVolume(uint8 volume); //range 0..1
 private:
-	Mix_Chunk *m_pSample;
-	int m_Channel;
 };
 
 #endif

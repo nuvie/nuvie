@@ -22,6 +22,7 @@
  */
 
 #include <list>
+#include <stack>
 #include <cassert>
 #include "nuvieDefs.h"
 #include "Configuration.h"
@@ -31,18 +32,24 @@
 #include "Effect.h"
 #include "MsgScroll.h"
 #include "Player.h"
+#include "Party.h"
 #include "ActorManager.h"
 #include "Actor.h"
 #include "Weather.h"
 #include "UseCode.h"
+#include "SoundManager.h"
 
 #include "Script.h"
 #include "ScriptActor.h"
+
+#include <math.h>
 
 extern "C"
 {
 #include "lualib.h"
 }
+
+extern bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
 
 struct ScriptObjRef
 {
@@ -91,6 +98,7 @@ static const struct luaL_Reg nscript_objlib_f[] =
    { "moveToInv", nscript_obj_movetoinv },
    { "moveToCont", nscript_obj_movetocont },
    { "removeFromCont", nscript_container_remove_obj },
+   { "removeFromEngine", nscript_obj_removefromengine },
    { "use", nscript_obj_use },
 
    { NULL, NULL }
@@ -103,39 +111,69 @@ static const struct luaL_Reg nscript_objlib_m[] =
    { NULL, NULL }
 };
 
-static bool nscript_container_new(lua_State *L, Obj *parent_obj);
-static int nscript_container_gc(lua_State *L);
-static int nscript_container_get(lua_State *L);
-static int nscript_container_length(lua_State *L);
+static int nscript_u6link_gc(lua_State *L);
 
-static const struct luaL_Reg nscript_containerlib_m[] =
+static const struct luaL_Reg nscript_u6linklib_m[] =
 {
-   { "__len", nscript_container_length },
-   { "__index", nscript_container_get },
-   { "__gc", nscript_container_gc },
+   { "__gc", nscript_u6link_gc },
    { NULL, NULL }
 };
 
+static int nscript_u6link_recursive_gc(lua_State *L);
+
+static const struct luaL_Reg nscript_u6linkrecursivelib_m[] =
+{
+   { "__gc", nscript_u6link_recursive_gc },
+   { NULL, NULL }
+};
 
 static int nscript_print(lua_State *L);
 //no longer used -- static int nscript_get_target(lua_State *L);
 static int nscript_load(lua_State *L);
 
 static int nscript_player_get_location(lua_State *L);
+static int nscript_player_get_karma(lua_State *L);
+static int nscript_player_set_karma(lua_State *L);
+
+static int nscript_party_is_in_combat_mode(lua_State *L);
+static int nscript_party_set_combat_mode(lua_State *L);
+static int nscript_party_move(lua_State *L);
+static int nscript_party_get_size(lua_State *L);
+static int nscript_party_get_member(lua_State *L);
+static int nscript_party_update_leader(lua_State *L);
 
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
 static int nscript_map_remove_obj(lua_State *L);
-
+static int nscript_map_is_water(lua_State *L);
+static int nscript_map_can_put(lua_State *L);
 
 //Misc
 static int nscript_eclipse_start(lua_State *L);
 static int nscript_quake_start(lua_State *L);
 static int nscript_explosion_start(lua_State *L);
+static int nscript_projectile_anim(lua_State *L);
+static int nscript_projectile_anim_multi(lua_State *L);
+static int nscript_hit_anim(lua_State *L);
+static int nscript_usecode_look(lua_State *L);
+
+static int nscript_fade_out(lua_State *L);
+static int nscript_fade_in(lua_State *L);
+
+static int nscript_xor_effect(lua_State *L);
+
+static int nscript_play_sfx(lua_State *L);
 
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
+int nscript_u6llist_iter_recursive(lua_State *L);
+int nscript_party_iter(lua_State *L);
+
+
+static int nscript_party(lua_State *L);
+static int nscript_container(lua_State *L);
+int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
 
 Script *Script::script = NULL;
 
@@ -219,6 +257,10 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    luaL_openlibs(L);
 
    luaL_newmetatable(L, "nuvie.U6Link");
+   luaL_register(L, NULL, nscript_u6linklib_m);
+
+   luaL_newmetatable(L, "nuvie.U6LinkRecursive");
+   luaL_register(L, NULL, nscript_u6linkrecursivelib_m);
 
    luaL_newmetatable(L, "nuvie.Obj");
    //lua_pushvalue(L, -1); //duplicate metatable
@@ -226,9 +268,6 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    luaL_register(L, NULL, nscript_objlib_m);
 
    luaL_register(L, "Obj", nscript_objlib_f);
-
-   luaL_newmetatable(L, "nuvie.Container");
-   luaL_register(L, NULL, nscript_containerlib_m);
 
    lua_pushcfunction(L, nscript_load);
    lua_setglobal(L, "nuvie_load");
@@ -238,6 +277,15 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
 
+   lua_pushcfunction(L, nscript_play_sfx);
+   lua_setglobal(L, "play_sfx");
+
+   lua_pushcfunction(L, nscript_party);
+   lua_setglobal(L, "party_members");
+
+   lua_pushcfunction(L, nscript_container);
+   lua_setglobal(L, "container_objs");
+   
    lua_pushcfunction(L, nscript_objs_at_loc);
    lua_setglobal(L, "objs_at_loc");
    
@@ -247,8 +295,39 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_map_remove_obj);
    lua_setglobal(L, "map_remove_obj");
 
+   lua_pushcfunction(L, nscript_map_is_water);
+   lua_setglobal(L, "map_is_water");
+
+   lua_pushcfunction(L, nscript_map_can_put);
+   lua_setglobal(L, "map_can_put");
+
+
    lua_pushcfunction(L, nscript_player_get_location);
    lua_setglobal(L, "player_get_location");
+
+   lua_pushcfunction(L, nscript_player_get_karma);
+   lua_setglobal(L, "player_get_karma");
+
+   lua_pushcfunction(L, nscript_player_set_karma);
+   lua_setglobal(L, "player_set_karma");
+
+   lua_pushcfunction(L, nscript_party_get_size);
+   lua_setglobal(L, "party_get_size");
+
+   lua_pushcfunction(L, nscript_party_get_member);
+   lua_setglobal(L, "party_get_member");
+
+   lua_pushcfunction(L, nscript_party_is_in_combat_mode);
+   lua_setglobal(L, "party_is_in_combat_mode");
+
+   lua_pushcfunction(L, nscript_party_set_combat_mode);
+   lua_setglobal(L, "party_set_combat_mode");
+
+   lua_pushcfunction(L, nscript_party_move);
+   lua_setglobal(L, "party_move");
+
+   lua_pushcfunction(L, nscript_party_update_leader);
+   lua_setglobal(L, "party_update_leader");
 
    lua_pushcfunction(L, nscript_eclipse_start);
    lua_setglobal(L, "eclipse_start");
@@ -258,6 +337,27 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_explosion_start);
    lua_setglobal(L, "explosion_start");
+
+   lua_pushcfunction(L, nscript_projectile_anim);
+   lua_setglobal(L, "projectile_anim");
+
+   lua_pushcfunction(L, nscript_projectile_anim_multi);
+   lua_setglobal(L, "projectile_anim_multi");
+
+   lua_pushcfunction(L, nscript_hit_anim);
+   lua_setglobal(L, "hit_anim");
+
+   lua_pushcfunction(L, nscript_usecode_look);
+   lua_setglobal(L, "usecode_look");
+
+   lua_pushcfunction(L, nscript_fade_out);
+   lua_setglobal(L, "fade_out");
+   
+   lua_pushcfunction(L, nscript_fade_in);
+   lua_setglobal(L, "fade_in");
+
+   lua_pushcfunction(L, nscript_xor_effect);
+   lua_setglobal(L, "xor_effect");
 
    seed_random();
 
@@ -304,6 +404,19 @@ bool Script::run_script(const char *script)
    return true;
 }
 
+bool Script::call_actor_update_all()
+{
+   lua_getglobal(L, "actor_update_all");
+
+   if(lua_pcall(L, 0, 0, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: actor_update_all() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
+   
+   return true;
+}
+
 bool Script::call_actor_init(Actor *actor)
 {
    lua_getglobal(L, "actor_init");
@@ -318,22 +431,40 @@ bool Script::call_actor_init(Actor *actor)
    return true;
 }
 
-bool Script::call_actor_attack(Actor *actor, Actor *foe, Obj *weapon)
+bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
 {
    lua_getglobal(L, "actor_attack");
    nscript_new_actor_var(L, actor->get_actor_num());
-   nscript_new_actor_var(L, foe->get_actor_num());
+   //nscript_new_actor_var(L, foe->get_actor_num());
+   lua_pushnumber(L, (lua_Number)location.x);
+   lua_pushnumber(L, (lua_Number)location.y);
+   lua_pushnumber(L, (lua_Number)location.z);
    if(weapon == NULL)
       nscript_new_actor_var(L, actor->get_actor_num());
    else
       nscript_obj_new(L, weapon);
-   if(lua_pcall(L, 3, 0, 0) != 0)
+   if(lua_pcall(L, 5, 0, 0) != 0)
    {
       DEBUG(0, LEVEL_ERROR, "Script Error: actor_attack() %s\n", luaL_checkstring(L, -1));
       return false;
    }
 
+   Game::get_game()->get_map_window()->updateBlacking(); // the script might have updated the blocking objects. eg broken a door.
    return true;
+}
+
+bool Script::call_look_obj(Obj *obj)
+{
+   lua_getglobal(L, "look_obj");
+
+   nscript_obj_new(L, obj);
+   if(lua_pcall(L, 1, 1, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: look_obj() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
+   
+   return lua_toboolean(L,-1);
 }
 
 
@@ -570,7 +701,7 @@ inline bool nscript_obj_init_from_args(lua_State *L, int nargs, Obj *s_obj)
 
 static int nscript_obj_gc(lua_State *L)
 {
-   DEBUG(0, LEVEL_INFORMATIONAL, "\nObj garbage Collection!\n");
+   //DEBUG(0, LEVEL_INFORMATIONAL, "\nObj garbage Collection!\n");
 
    Obj **p_obj = (Obj **)lua_touserdata(L, 1);
    Obj *obj;
@@ -692,6 +823,11 @@ static int nscript_obj_get(lua_State *L)
 
    key = lua_tostring(L, 2);
 
+   if(!strcmp(key, "luatype"))
+   {
+      lua_pushstring(L, "obj"); return 1;
+   }
+
    if(!strcmp(key, "x"))
    {
       lua_pushinteger(L, obj->x); return 1;
@@ -733,18 +869,52 @@ static int nscript_obj_get(lua_State *L)
       lua_pushstring(L, obj_manager->get_obj_name(obj->obj_n));
       return 1;
    }
-
+/*
    if(!strcmp(key, "container"))
    {
-      if(nscript_container_new(L, obj))
-         return 1;
-   }
+	   U6LList *obj_list = obj->container;
+	   if(obj_list == NULL)
+	      return 0;
 
+	   U6Link *link = obj_list->start();
+
+	   lua_pushcfunction(L, nscript_u6llist_iter);
+
+	   U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
+	   *p_link = link;
+
+	   luaL_getmetatable(L, "nuvie.U6Link");
+	   lua_setmetatable(L, -2);
+
+	   return 2;
+   }
+*/
+   if(!strcmp(key, "look_string"))
+   {
+      ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+      lua_pushstring(L, obj_manager->look_obj(obj, true)); return 1;
+   }
+   
    if(!strcmp(key, "readied"))
    {
       lua_pushboolean(L, (int)obj->is_readied()); return 1;
    }
 
+   if(!strcmp(key, "stackable"))
+   {
+      ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+      lua_pushboolean(L, (int)obj_manager->is_stackable(obj)); return 1;
+   }
+
+   if(!strcmp(key, "weight"))
+   {
+      ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+      float weight = obj_manager->get_obj_weight(obj,OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
+      weight = floorf(weight); //get rid of the tiny fraction
+      weight /= 10; //now scale.
+      lua_pushnumber(L, (lua_Number)weight); return 1;
+   }
+   
    return 0;
 }
 
@@ -757,9 +927,22 @@ static int nscript_obj_movetomap(lua_State *L)
 
    obj = *s_obj;
 
+   MapCoord loc;
+   if(lua_gettop(L) >= 2)
+   {
+	   if(nscript_get_location_from_args(L, &loc.x, &loc.y, &loc.z, 2) == false)
+		   return 0;
+   }
+   else
+   {
+	   loc.x = obj->x;
+	   loc.y = obj->y;
+	   loc.z = obj->z;
+   }
+
    if(obj)
    {
-      if(obj_manager->moveto_map(obj) == false)
+      if(obj_manager->moveto_map(obj, loc) == false)
       {
          //delete map_obj;
          return luaL_error(L, "moving obj to map!");
@@ -880,87 +1063,58 @@ static int nscript_obj_use(lua_State *L)
 
 static int nscript_obj_removefromengine(lua_State *L)
 {
-   Obj *s_obj = (Obj *)luaL_checkudata(L, 1, "nuvie.Obj");
-   if(s_obj == NULL)
-      return luaL_error(L, "expected Obj\n");
+   ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+   Obj **s_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
+
+   Obj *obj;
+
+   obj = *s_obj;
+
+   if(obj)
+   {
+       obj_manager->unlink_from_engine(obj);
+   }
 
    return 0;
 }
 
-static bool nscript_container_new(lua_State *L, Obj *parent_obj)
+/* release last iter U6Link if required. */
+static int nscript_u6link_gc(lua_State *L)
 {
-   Obj **p_obj;
+   U6Link **s_link = (U6Link **)luaL_checkudata(L, 1, "nuvie.U6Link");
+   U6Link *link = *s_link;
 
-   p_obj = (Obj **)lua_newuserdata(L, sizeof(Obj *));
-
-   luaL_getmetatable(L, "nuvie.Container");
-   lua_setmetatable(L, -2);
-
-   *p_obj = parent_obj;
-
-   nscript_inc_obj_ref_count(parent_obj);
-
-   return true;
-}
-
-static int nscript_container_gc(lua_State *L)
-{
-   return nscript_obj_gc(L); //a container is just another Obj.
-}
-
-static int nscript_container_get(lua_State *L)
-{
-   Obj **s_obj;
-   Obj *obj;
-   U6Link *link;
-
-   int key;
-
-   s_obj = (Obj **)lua_touserdata(L, 1);
-   if(s_obj == NULL)
+   if(link == NULL)
       return 0;
 
-   obj = *s_obj;
-   if(obj == NULL)
-      return 0;
+   releaseU6Link(link);
 
-   //ptr = nscript_get_obj_ptr(s_obj);
-   if(obj->container == NULL)
-      return 0;
-
-   key = lua_tointeger(L, 2);
-
-   DEBUG(0, LEVEL_DEBUGGING, "Key = %d\n", key);
-
-   link = obj->container->gotoPos(key - 1);
-
-   if(link && link->data)
-      return nscript_obj_new(L, (Obj *)link->data); //return container child Obj to script.
-
+   printf("U6Link garbage collector!!");
    return 0;
 }
 
-static int nscript_container_length(lua_State *L)
+/* free up resources for a recursive U6Link iterator. */
+static int nscript_u6link_recursive_gc(lua_State *L)
 {
-   Obj **s_obj;
-   Obj *obj;
-   uint32 count = 0;
+   std::stack<U6Link *> **s_stack = (std::stack<U6Link *> **)luaL_checkudata(L, 1, "nuvie.U6LinkRecursive");
+   std::stack<U6Link *> *s = *s_stack;
 
-   s_obj = (Obj **)lua_touserdata(L, 1);
-   if(s_obj == NULL)
-      return 0;
+   if(s->empty() == false)
+   {
+      for(; !s->empty(); s->pop())
+      {
+          U6Link *link = s->top();
 
-   obj = *s_obj;
-   if(obj == NULL)
-      return 0;
+          if(link != NULL)
+             releaseU6Link(link);
+      }
+   }
 
-   if(obj->container != NULL)
-      count = obj->container->count();
+   delete s;
 
-   lua_pushinteger(L, (int)count);
-   return 1;
+   printf("U6LinkResursive garbage collector!!\n");
+   return 0;
 }
-
 
 static int nscript_print(lua_State *L)
 {
@@ -1015,6 +1169,84 @@ static int nscript_player_get_location(lua_State *L)
    return 1;
 }
 
+static int nscript_player_get_karma(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	lua_pushinteger(L, player->get_karma());
+	return 1;
+}
+
+static int nscript_player_set_karma(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	player->set_karma((uint8)lua_tointeger(L, 1));
+	return 0;
+}
+
+static int nscript_party_is_in_combat_mode(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	lua_pushboolean(L, party->is_in_combat_mode());
+	return 1;
+}
+
+static int nscript_party_set_combat_mode(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	party->set_in_combat_mode(lua_toboolean(L, 1));
+	return 0;
+}
+
+static int nscript_party_move(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	uint16 x, y;
+	uint8 z;
+
+	if(nscript_get_location_from_args(L, &x, &y, &z) == false)
+		return 0;
+
+	player->move(x, y, z); //FIXME should this be party move?
+
+	return 0;
+}
+
+static int nscript_party_get_size(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	lua_pushinteger(L, party->get_party_size());
+	return 1;
+}
+
+static int nscript_party_get_member(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	uint8 member_num = (uint8)lua_tointeger(L, 1);
+
+	Actor *actor = party->get_actor(member_num);
+
+	if(actor == NULL)
+		return 0;
+
+	nscript_new_actor_var(L, actor->get_actor_num());
+	return 1;
+}
+
+static int nscript_party_update_leader(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	Player *player = Game::get_game()->get_player();
+
+	Actor *leader = party->get_actor(party->get_leader());
+
+	if(leader)
+	{
+		player->update_player(leader);
+	}
+
+	return 0;
+}
+
 static int nscript_map_get_obj(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -1028,7 +1260,15 @@ static int nscript_map_get_obj(lua_State *L)
       return 0;
 
 
-   obj = obj_manager->get_obj(x, y, z);
+   if(lua_gettop(L) > 3)
+   {
+	   uint16 obj_n = lua_tointeger(L, 4);
+	   obj = obj_manager->get_obj_of_type_from_location(obj_n, x, y, z);
+   }
+   else
+   {
+	   obj = obj_manager->get_obj(x, y, z);
+   }
 
    if(obj)
    {
@@ -1063,7 +1303,32 @@ static int nscript_map_remove_obj(lua_State *L)
    return 1;
 }
 
+static int nscript_map_can_put(lua_State *L)
+{
+   ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+   uint16 x, y;
+   uint8 z;
 
+   if(nscript_get_location_from_args(L, &x, &y, &z) == false)
+	  return 0;
+
+   lua_pushboolean(L, actor_manager->can_put_actor(MapCoord(x,y,z)));
+
+   return 1;
+}
+
+static int nscript_map_is_water(lua_State *L)
+{
+	Map *map = Game::get_game()->get_game_map();
+
+	uint16 x = (uint16) luaL_checkinteger(L, 1);
+	uint16 y = (uint16) luaL_checkinteger(L, 2);
+	uint8 z = (uint8) luaL_checkinteger(L, 3);
+
+	lua_pushboolean(L, map->is_water(x, y, z));
+
+	return 1;
+}
 
 static int nscript_eclipse_start(lua_State *L)
 {
@@ -1091,15 +1356,168 @@ static int nscript_quake_start(lua_State *L)
 
 static int nscript_explosion_start(lua_State *L)
 {
-   uint16 x = (uint16)luaL_checkinteger(L, 1);
-   uint16 y = (uint16)luaL_checkinteger(L, 2);
-   uint32 size = (uint32)luaL_checkinteger(L, 3);
-   uint16 dmg = (uint16)luaL_checkinteger(L, 4);
+   uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
+   uint16 x = (uint16)luaL_checkinteger(L, 2);
+   uint16 y = (uint16)luaL_checkinteger(L, 3);
 
-   new ExplosiveEffect(x, y, size, dmg);
+   ExpEffect *effect = new ExpEffect(tile_num, MapCoord(x, y));
+   AsyncEffect *e = new AsyncEffect(effect);
+   e->run();
+
+   vector<MapEntity> *hit_items = effect->get_hit_entities();
+
+   lua_newtable(L);
+
+   for(uint16 i=0;i<hit_items->size();i++)
+   {
+      lua_pushinteger(L, i);
+
+      MapEntity m = (*hit_items)[i];
+      if(m.entity_type == ENT_OBJ)
+    	  nscript_obj_new(L, m.obj);
+      else if(m.entity_type == ENT_ACTOR)
+      {
+    	  nscript_new_actor_var(L, m.actor->get_actor_num());
+      }
+
+      lua_settable(L, -3);
+   }
+
+   return 1;
+}
+
+static int nscript_projectile_anim(lua_State *L)
+{
+uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
+   uint16 startx = (uint16)luaL_checkinteger(L, 2);
+   uint16 starty = (uint16)luaL_checkinteger(L, 3);
+   uint16 targetx = (uint16)luaL_checkinteger(L, 4);
+   uint16 targety = (uint16)luaL_checkinteger(L, 5);
+   uint16 speed = (uint16)luaL_checkinteger(L, 6);
+   bool trail = (bool)luaL_checkinteger(L, 7);
+   uint8 initial_tile_rotation = (uint8)luaL_checkinteger(L, 8);
+
+   ProjectileEffect *projectile_effect = new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail, initial_tile_rotation);
+   AsyncEffect *e = new AsyncEffect(projectile_effect);
+   e->run();
 
    lua_pushboolean(L, true);
    return 1;
+}
+
+static int nscript_projectile_anim_multi(lua_State *L)
+{
+uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
+   uint16 startx = (uint16)luaL_checkinteger(L, 2);
+   uint16 starty = (uint16)luaL_checkinteger(L, 3);
+
+   if(!lua_istable(L, 4))
+   {
+	   lua_pushboolean(L, false);
+	   return 1;
+   }
+
+   lua_pushvalue(L, 4); //push table containing targets to top of stack
+
+   uint16 x = 0;
+   uint16 y = 0;
+   uint8 z = 0;
+
+   vector<MapCoord> t;
+
+   for(int i=1;;i++)
+   {
+	   lua_pushinteger(L, i);
+	   lua_gettable(L, -2);
+
+	   if(!lua_istable(L, -1)) //we've hit the end of our targets
+	   {
+		   printf("end = %d",i);
+		   lua_pop(L, 1);
+		   break;
+	   }
+	   //get target fields here.
+
+	   get_tbl_field_uint16(L, "x", &x);
+	   get_tbl_field_uint16(L, "y", &y);
+	   get_tbl_field_uint8(L, "z", &z);
+
+	   t.push_back(MapCoord(x,y,z));
+
+	   lua_pop(L, 1);
+   }
+
+   uint16 speed = (uint16)luaL_checkinteger(L, 5);
+   bool trail = (bool)luaL_checkinteger(L, 6);
+   uint8 initial_tile_rotation = (uint8)luaL_checkinteger(L, 7);
+
+   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), t, speed, trail, initial_tile_rotation));
+   e->run();
+
+   lua_pushboolean(L, true);
+   return 1;
+}
+
+static int nscript_hit_anim(lua_State *L)
+{
+   uint16 targetx = (uint16)luaL_checkinteger(L, 1);
+   uint16 targety = (uint16)luaL_checkinteger(L, 2);
+
+   AsyncEffect *e = new AsyncEffect(new HitEffect(MapCoord(targetx,targety)));
+   e->run();
+
+   lua_pushboolean(L, true);
+   return 1;
+}
+
+
+//FIXME need to move this into lua script.
+static int nscript_usecode_look(lua_State *L)
+{
+   Obj **s_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
+   Obj *obj;
+   
+   obj = *s_obj;
+   
+   UseCode *usecode = Game::get_game()->get_usecode();
+   Player *player = Game::get_game()->get_player();
+   
+   lua_pushboolean(L, (int)usecode->look_obj(obj, player->get_actor()));
+   return 1;
+}
+
+static int nscript_fade_out(lua_State *L)
+{
+	AsyncEffect *e = new AsyncEffect(new FadeEffect(FADE_PIXELATED, FADE_OUT));
+	e->run();
+
+	return 0;
+}
+
+static int nscript_fade_in(lua_State *L)
+{
+	AsyncEffect *e = new AsyncEffect(new FadeEffect(FADE_PIXELATED, FADE_IN));
+	e->run();
+
+	return 0;
+}
+
+static int nscript_xor_effect(lua_State *L)
+{
+	uint16 duration = (uint16)luaL_checkinteger(L, 1);
+
+	AsyncEffect *e = new AsyncEffect(new XorEffect(duration));
+	e->run();
+
+	return 0;
+}
+
+static int nscript_play_sfx(lua_State *L)
+{
+	uint16 sfx_id = (uint16)luaL_checkinteger(L, 1);
+	Game::get_game()->get_sound_manager()->playSfx(sfx_id);
+
+	return 0;
 }
 
 int nscript_u6llist_iter(lua_State *L)
@@ -1107,21 +1525,79 @@ int nscript_u6llist_iter(lua_State *L)
    U6Link **s_link = (U6Link **)luaL_checkudata(L, 1, "nuvie.U6Link");
    U6Link *link = *s_link;
 
-   if(link == NULL)
+   if(link == NULL || link->data == NULL)
       return 0;
 
    Obj *obj = (Obj *)link->data;
-
    nscript_obj_new(L, obj);
 
+   retainU6Link(link->next);
    *s_link = link->next;
 
+   releaseU6Link(link); // release old link object.
+
+   return 1;
+}
+
+int nscript_u6llist_iter_recursive(lua_State *L)
+{
+   std::stack<U6Link *> **s_stack = (std::stack<U6Link *> **)luaL_checkudata(L, 1, "nuvie.U6LinkRecursive");
+   std::stack<U6Link *> *s = *s_stack;
+
+   if(s->empty() || s->top() == NULL)
+      return 0;
+
+   U6Link *link = s->top();
+
+   Obj *obj = (Obj *)link->data;
+   nscript_obj_new(L, obj);
+
+   s->pop();
+   if(link->next != NULL)
+   {
+	   s->push(link->next);
+	   retainU6Link(link->next);
+   }
+
+   if(obj->container && obj->container->count() > 0)
+   {
+	   s->push(obj->container->start());
+	   retainU6Link(obj->container->start());
+   }
+
+   releaseU6Link(link); // release old link object.
+
+   return 1;
+}
+
+int nscript_party_iter(lua_State *L)
+{
+   uint16 party_index = (uint16)lua_tointeger(L, lua_upvalueindex(1));
+   
+   if(party_index == Game::get_game()->get_party()->get_party_size())
+      return 0;
+   
+   uint8 actor_num = Game::get_game()->get_party()->get_actor_num(party_index);
+   
+   lua_pushinteger(L, party_index + 1);
+   lua_replace(L, lua_upvalueindex(1));
+   
+   nscript_new_actor_var(L, actor_num);
+   
+   return 1;
+}
+
+static int nscript_party(lua_State *L)
+{
+   lua_pushinteger(L, 0);
+   lua_pushcclosure(L, &nscript_party_iter, 1);
    return 1;
 }
 
 //lua function objs_at_loc(x,y,z)
 static int nscript_objs_at_loc(lua_State *L)
 {
+   U6Link *link = NULL;
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
    
    uint16 x, y;
@@ -1132,18 +1608,68 @@ static int nscript_objs_at_loc(lua_State *L)
 
    
    U6LList *obj_list = obj_manager->get_obj_list(x, y, z);
-   if(obj_list == NULL)
-      return 0;
-   
-   U6Link *link = obj_list->start();
+   if(obj_list != NULL)
+	  link = obj_list->start();
    
    lua_pushcfunction(L, nscript_u6llist_iter);
    
    U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
    *p_link = link;
-   
+
+   retainU6Link(link);
+
    luaL_getmetatable(L, "nuvie.U6Link");
    lua_setmetatable(L, -2);
    
    return 2;
+}
+
+static int nscript_container(lua_State *L)
+{
+	bool is_recursive = false;
+	Obj **s_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
+	Obj *obj;
+
+	obj = *s_obj;
+
+	U6LList *obj_list = obj->container;
+
+    if(lua_gettop(L) >= 2)
+    	is_recursive = lua_toboolean(L, 2);
+
+    return nscript_init_u6link_iter(L, obj_list, is_recursive);
+}
+
+int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive)
+{
+	U6Link *link = NULL;
+
+    if(list != NULL)
+       link = list->start();
+
+    retainU6Link(link);
+
+    if(is_recursive)
+    {
+    	lua_pushcfunction(L, nscript_u6llist_iter_recursive);
+
+    	std::stack<U6Link *> **p_stack = (std::stack<U6Link *> **)lua_newuserdata(L, sizeof(std::stack<U6Link *> *));
+		*p_stack = new std::stack<U6Link *>();
+		(*p_stack)->push(link);
+
+		luaL_getmetatable(L, "nuvie.U6LinkRecursive");
+    }
+    else
+    {
+    	lua_pushcfunction(L, nscript_u6llist_iter);
+
+		U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
+		*p_link = link;
+
+		luaL_getmetatable(L, "nuvie.U6Link");
+    }
+
+	lua_setmetatable(L, -2);
+
+	return 2;
 }

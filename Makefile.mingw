@@ -19,6 +19,7 @@ CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 	-I$(SRC)/usecode -I$(SRC)/views $(SDL_CFLAGS)
 
 CXXFLAGS=-g
+CC=gcc
 
 LFLAGS=-mwindows
 LIBS=-lmingw32 $(SDL_LIBS)

@@ -38,8 +38,16 @@
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "NuvieIOFile.h"
+#include "sdl-mixer.h"
+#include "sfx.h"
 
+class SfxManager;
 class CEmuopl;
+
+typedef struct {
+	SfxIdType sfx_id;
+	Audio::SoundHandle handle;
+} SoundManagerSfx;
 
 class SoundManager {
 public:
@@ -57,6 +65,10 @@ public:
     void musicPlay();
 
     void musicStop(); // SB-X
+    Audio::SoundHandle playTownsSound(std::string filename, uint16 sample_num);
+    bool isSoundPLaying(Audio::SoundHandle handle);
+
+    bool playSfx(uint16 sfx_id);
 
 private:
 	bool LoadCustomSongs(string scriptname);
@@ -65,8 +77,9 @@ private:
     bool loadSong(Song *song, const char *filename, const char *title);
     bool groupAddSong(const char *group, Song *song);
 
-	bool LoadObjectSamples(string sound_dir);
-	bool LoadTileSamples(string sound_dir);
+	//bool LoadObjectSamples(string sound_dir);
+	//bool LoadTileSamples(string sound_dir);
+	bool LoadSfxManager(string sfx_style);
 
 	Sound* SongExists(string name); //have we loaded this sound before?
 	Sound* SampleExists(string name); //have we loaded this sound before?
@@ -75,6 +88,8 @@ private:
 	Sound* RequestTileSound(int id);
 	Sound* RequestObjectSound(int id);
 	Sound* RequestSong(string group); //request a song from this group
+
+	uint16 RequestObjectSfxId(uint16 obj_n);
 
 	map<int,SoundCollection *> m_TileSampleMap;
 	map<int,SoundCollection *> m_ObjectSampleMap;
@@ -86,10 +101,16 @@ private:
 	//state info:
 	string m_CurrentGroup;
 	Sound *m_pCurrentSong;
-	list<Sound *> m_ActiveSounds;
+	list<SoundManagerSfx> m_ActiveSounds;
     bool audio_enabled;
     bool music_enabled;
     bool sfx_enabled;
+
+    uint8 music_volume;
+    uint8 sfx_volume;
+
+    SdlMixerManager *mixer;
+    SfxManager *m_SfxManager;
 
     CEmuopl *opl;
 public:

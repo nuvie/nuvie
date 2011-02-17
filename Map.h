@@ -37,7 +37,7 @@ class Screen;
 
 #define MAP_ORIGINAL_TILE true
 
-typedef enum LineTestFlags
+enum LineTestFlags
 {
 	LT_HitActors			= (1<<0),
 	LT_HitUnpassable		= (1<<1),
@@ -87,6 +87,7 @@ public:
     uint8 z; // plane
 
     MapCoord(uint16 nx, uint16 ny, uint16 nz = 0) { x = nx; y = ny; z = nz; }
+    MapCoord(Obj *obj) {x = obj->x; y = obj->y; z = obj->z; }
     MapCoord() : x(0), y(0), z(0) { }
 
     uint32 xdistance(MapCoord &c2) { return(abs(c2.x - x)); }
@@ -147,6 +148,8 @@ class Map
  bool lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
 	 	       uint8 flags, LineTestResult &Result, uint32 skip = 0);
 
+ bool testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result);
+
  protected:
 
  void insertSurfaceSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 schunk_num);
@@ -155,7 +158,7 @@ class Map
  void insertDungeonSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 level);
  void insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 level);
 
- bool testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result);
+
 
 };
 

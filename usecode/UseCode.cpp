@@ -107,24 +107,26 @@ bool UseCode::search_container(Obj *obj)
  if((obj->container != NULL) &&
    ((obj_link = obj->container->end()) != NULL))
     {
-     U6LList *obj_list = obj_manager->get_obj_list(obj->x, obj->y, obj->z);
-
      /* Add objects to obj_list. */
-     for(; obj_link != NULL; obj_link = obj_link->prev)
+     for(; obj_link != NULL; )
       {
        temp_obj = (Obj*)obj_link->data;
+       obj_link = obj_link->prev;
+       /*
        obj_list->add(temp_obj);
        temp_obj->status |= OBJ_STATUS_OK_TO_TAKE;
        temp_obj->set_on_map(obj_list); //ERIC temp_obj->status &= ~OBJ_STATUS_IN_CONTAINER;
        temp_obj->x = obj->x;
        temp_obj->y = obj->y;
        temp_obj->z = obj->z;
+       */
+       obj_manager->moveto_map(temp_obj, MapCoord(obj));
        scroll->display_string(obj_manager->look_obj(temp_obj,true));
-       if(obj_link->prev) // more objects left
-         scroll->display_string(obj_link->prev->prev ? ", " : ", and ");
+       if(obj_link) // more objects left
+         scroll->display_string(obj_link->prev ? ", " : ", and ");
       }
      /* Remove objects from the container. */
-     obj->container->removeAll();
+     //obj->container->removeAll();
      return true;
     }
  return false;

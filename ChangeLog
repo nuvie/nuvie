@@ -1,3 +1,610 @@
+2012-02-15  Eric Fry <efry at users.sourceforge.net> r1142
+
+	* Started work on PC Speaker SFX
+	* Added new PCSpeakerSfxManager class
+	* Added new PCSpeaker streaming classes
+	  PCSpeakerFreqStream - plays a given frequency for a set time.
+	  PCSpeakerSweepFreqStream - Plays a sound sweeping from one frequency to another
+	* Added PCSpeaker SFX. Blocked, Attack swing, success, failure and rubber ducky.
+	  I'm not really happy with the sound repoduction at the moment but it's a start.
+	* Added success sfx to magic insect swarm spell.
+	* Added failure sfx when trying to cast a spell with no reagents.
+
+
+2011-02-11  Eric Fry <efry at users.sourceforge.net> r1141
+
+	* Set scummvm endian to SDL endian
+	* Return NULL to makeADPCMStream()
+
+
+2011-02-10  Eric Fry <efry at users.sourceforge.net> r1140
+
+	* Added Custom SFX manager class.
+	  To use it you'll need a directory containing numbered wav files and a sfx_map.cfg file
+	  The sfx_map.cfg file should contain entries that look like this
+	  001;005
+	  002;002
+	  003;001
+	  The first number is the nuvie sfx_id. See sfx.h for those
+	  The second number corresponds to your wav file eg '2.wav'
+
+	  You then need to set the config/ultima6/sfxdir value to your new custom sfx dir.
+	  You will also need to set the config/ultima6/sfx value to "custom"
+	 
+
+
+2011-02-08  Eric Fry <efry at users.sourceforge.net> r1139
+
+	* Fixed Fm-Towns fire sfx. It now plays samples 6, 7 and 8 from sounds1.dat
+	  in a random order
+	* Added Audio::RandomCollectionAudioStream to implement the fm-towns fire effect.
+	* Added Audio::QueuingAudioStream class from scummvm for future use.
+	* Disabled FM-Towns clock sfx until I can find out how it works.
+
+
+2011-02-07  Eric Fry <efry at users.sourceforge.net> r1138
+
+	* Updated autoconf build environment. Thanks to WJP.
+
+
+2011-02-07  wjpalenstijn r1137
+
+	* Fix warnings
+
+2011-02-07  wjpalenstijn r1136
+
+	* Fix warning (from last commit)
+
+2011-02-06  wjpalenstijn r1135
+
+	* Add consts to many GUI constructors.
+
+	  This is necessary because string literals are passed to them,
+	  which are constant.
+
+
+
+2011-02-06  wjpalenstijn r1134
+
+	* Fix warnings
+
+2011-02-06  wjpalenstijn r1133
+
+	* Fix compilation/warning
+
+2011-02-06  Eric Fry <efry at users.sourceforge.net> r1132
+
+	* Added music and sfx volume settings. config/audio/sfx_volume and
+	  config/audio/music_volume
+	* Removed old SDL_Mixer code
+	* Removed mixer/algorithm.h
+	* Removed old custom obj/tile sound loader code. Need to replace this with
+	  CustomSfxManager class
+
+
+2011-02-06  Eric Fry <efry at users.sourceforge.net> r1131
+
+	* Don't bump/move immobile party members
+	* Actors now lay down while sleeping
+	* Added circle 2, sleep spell
+
+
+2011-02-06  Eric Fry <efry at users.sourceforge.net> r1130
+
+	* Fixed bug [1624976] Cant talk to anyone in solo mode
+
+
+2011-02-06  Eric Fry <efry at users.sourceforge.net> r1129
+
+	* Fixed bug [888112] Can't move stuff out of bags
+
+
+2011-02-05  Eric Fry <efry at users.sourceforge.net> r1128
+
+	* Added missle, explosion, water wheel, protection field and attack swing sfx
+	* Changed some instaces of uint16 to SfxIdType
+	* Added new convenience script functions explosion() and projectile() which
+	  play sfx along with the animation.
+	* Added rubber ducky sfx when you use the rubber duck.
+
+
+2011-02-04  Eric Fry <efry at users.sourceforge.net> r1127
+
+	* Fixed bug [852844] Rafts go crazy when used; morph to new things
+	* Added the ability to (m)ove objects between actor inventories.
+
+
+2011-02-04  Eric Fry <efry at users.sourceforge.net> r1126
+
+	* Added support for background sfx in new mixer.
+	* Added fountain, fireplace, clock sfx.
+	* Changed FmtownsDecoderStream into a rewindable stream.
+	* Added SfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle)
+	* Added NUVIE_SFX_NONE as as way to pass back 'no sfx found' status.
+	* SoundManager::update_map_sfx() uses SoundManangerSfx objects not Sound classes
+	  for processing background sfx.
+	* FM-Towns SOUNDS1.DAT has 12 sounds not 13.
+	* Combined towns decoder playsample functions.
+	* Fixed bug [1624965] Can use skiff from inventory
+
+
+2011-02-02  Eric Fry <efry at users.sourceforge.net> r1125
+
+	* Added player blocked sfx.
+	* Added mirror smashed sfx.
+	* Don't change mirror frame_n when it's broken.
+	* Added the ability for the FMtownsDecoderStream class to read uncompressed
+	  u6lib files.
+	* Added support for loading sfx from FM-Towns Sounds2.dat file.
+	* Added play_sfx(sfx_id) function to lua script system.
+	* Fixed bug when iterating an empty container in script.
+
+
+2011-02-02  Eric Fry <efry at users.sourceforge.net> r1124
+
+	* Started work on FM-Towns SFX.
+	* Hooked up sound efect to hit effect.
+	* Added new SfxManager abstract class.
+	* Started work on TownsSfxManager class. PCSpeaker and Custom classes to follow.
+	* Fixed potential double free on NuvieIOBuffer class.
+	* Added SoundManager::playSfx(uint16 sfx_id) method.
+	* Added the ability to play fm-towns streams from inmemory buffer.
+
+
+2011-02-01  Eric Fry <efry at users.sourceforge.net> r1123
+
+	* Added u6 music decoders into new mixer code. This is still a WIP.
+
+
+2011-01-31  Eric Fry <efry at users.sourceforge.net> r1122
+
+	* Started adding new scummvm mixer into Nuvie. I haven't updated the build scripts yet.
+
+
+2011-01-26  Eric Fry <efry at users.sourceforge.net> r1121
+
+	* Change party leader when player is rendered immobile.
+	* Added script functions party_get_size() party_get_member() and
+	  party_update_leader()
+	* Removed old script container manipulation code.
+	* When attacked in a skiff or raft randomly hit a party member.
+
+
+2011-01-24  Eric Fry <efry at users.sourceforge.net> r1120
+
+	* Added a new recursive obj iterator in lua script that allows searching through containers.
+	  You can now iterate through all items in an actor's inventory, even if they are in
+	  containers.
+
+
+2011-01-23  Eric Fry <efry at users.sourceforge.net> r1119
+
+	* Enabled trap effects when destroying a trapped object. I will link this into
+	  usecode at some later stage.
+	* Added Obj.removeFromEngine(obj) to script system. This unlinks the selected
+	  object from the engine so it can be deleted.
+
+
+2011-01-23  Eric Fry <efry at users.sourceforge.net> r1118
+
+	* Fixed explosion spell damage.
+	* Started moving actor hit/death logic into lua script.
+	* Add exp when killing evil actors
+	* Fixed issue with actor_randomise_stat() returning 0 where base_stat = 1
+
+
+2011-01-22  Eric Fry <efry at users.sourceforge.net> r1117
+
+	* Explosion spell now deals damage. This still needs some work.
+	* Fixed Actor::set_charmed() and Actor::set_cursed()
+	* ExpEffect now takes tile_num as an argument
+	* Added spells Curse, Protection, Mass Awaken, Mass Sleep
+	* Added modifiers for cursed and asleep actors to actor_dex_adj()
+	* Added modifiers for cursed and protected flags to actor_get_ac()
+	* Draw cursed actors with blue outline in MapWindow.
+	* Added purple potion.
+	* lua explosion_start() now returns a table containing all hit actors and objs
+	* Changed lua actor.visible getter method to call is_invisible() instead of 
+	  is_visible()
+
+
+2011-01-21  Eric Fry <efry at users.sourceforge.net> r1116
+
+	* Started work on combat flank worktype
+	* Fixed some bugs with actor movement in actor_move_towards_loc()
+	* Fixed some bugs in actor_calculate_avg_coords() player direction wasn't being
+	  set which was causing issues with combat front worktype.
+	* Fixed typo bug in actor_wt_timid()
+
+
+2011-01-20  Eric Fry <efry at users.sourceforge.net> r1115
+
+	* Started work on Berserk worktype.
+
+
+2011-01-19  Eric Fry <efry at users.sourceforge.net> r1114
+
+	* Added magic screen xor effect to script xor_effect(duration_in_milliseconds)
+	* Added circle 5 spell insect swarm
+	* Removed 'inactive' field from PartyMember struct. Replaced with calls to
+	  is_immobile()
+	* Don't move immobile party members. This should fix corpser logic.
+	* Return caster location not caster in caster_get_location()
+	* Added magic_get_caster() and caster_is_player() functions in magic.lua
+	* Converted io.stderr:write() calls to dbg() calls in actor.lua
+	* Added logic to set bed frame when pathfinding to WT_SLEEP
+	* Added blue potion "use logic"
+
+
+2011-01-17  Eric Fry <efry at users.sourceforge.net> r1113
+
+	* Added fade effects to caught by guard logic.
+	* Added fade_out() fade_in() functions to script system.
+	* Modified FadeEffect so it can work asynchronously.
+	* Removed some magic numbers in actor.lua script.
+
+
+2011-01-16  Eric Fry <efry at users.sourceforge.net> r1112
+
+	* Fixed bug with converse check for item. It wasn't checking quality.
+	  You should be able to get the keys to the jail cells from Pridgarm now.
+	* Added back tick token to the MsgScroll class. This forces the next char
+	  to be captialised. e.g. "`jester yells for help" becomes "Jester yells for
+	  help"
+	* subtract karma from player when guards are called.
+	* Added optional 4th argument to lua function map_get_obj(x, y, z, obj_n) this
+	  restricts the search to objs of type obj_n.
+	* Fixed bug when searching container objects.
+
+
+2011-01-14  Eric Fry <efry at users.sourceforge.net> r1111
+
+	* Started work on caught by guard logic. The party is now sent to jail.
+	  This is still very much a work in progress.
+	* Added script functions party_move(), party_set_combat_mode()
+	  and party_is_in_combat_mode()
+
+
+2011-01-13  Eric Fry <efry at users.sourceforge.net> r1110
+
+	* Added guard arrest player worktype 0x12. NPCs will now call guards when attacked.
+
+
+2011-01-12  Eric Fry <efry at users.sourceforge.net> r1109
+
+	* NPC's will now yell for help and attack when hit by the player.
+	* Added actor.temp, actor.corpser_flag and actor.old_frame_n to script system.
+	* Added movement flags to Actor class.
+	* Added Actor::get_corpser_flag()
+	* Added Actor::set_corpser_flag()
+	* Corpsers can now drag actors under and regurgitate them back. This is a work
+	  in progress. I still need to restrict party member movement when dragged
+	  under.
+
+
+2011-01-10  Eric Fry <efry at users.sourceforge.net> r1108
+
+	* Added 'work' worktype.
+
+
+2011-01-10  Eric Fry <efry at users.sourceforge.net> r1107
+
+	* Actors now walk to their scheduled locations again.
+	* Fixed bug with game_hour not being set in ActorManager on load.
+	* Added Actor.walk_path(actor) and Actor.is_at_scheduled_location(actor) to
+	  script.
+	* Fixed bug with setting worktype from script.
+	* Added actor.sched_wt to get the worktype from the current schedule record.
+
+
+2011-01-06  Eric Fry <efry at users.sourceforge.net> r1106
+
+	* Fixed bug with slime frames
+	* Don't twitch paralysed actors
+	* Added actor_remove_charm() This still needs some work.
+
+
+2011-01-06  Eric Fry <efry at users.sourceforge.net> r1105
+
+	* Added actor flags to the script system.
+	  -protected
+	  -cursed
+	  -charmed
+	  -paralyzed
+	  -asleep
+	* Fixed up paralyze spell.
+	* Added actor_update_flags(actor) This is called each game turn. It allows
+	  actors to update their flags e.g. come out of paralysed state. They need to
+	  beat a die roll to break the spell. This function also handles taking damage
+	  from poison.
+
+
+2011-01-04  Kirben r1104
+
+	* Small change for MinGW compile.
+
+2011-01-04  Eric Fry <efry at users.sourceforge.net> r1103
+
+	* Fixed freeze when the avatar died and was teleported back to LB's castle.
+
+
+2011-01-04  Eric Fry <efry at users.sourceforge.net> r1102
+
+	* Finally fixed targetting from magic spells. You can now select your target
+	  when casting.
+	* Made blood objects temporary.
+	* Added stub for first circle 'light' spell.
+	* Replaced debug print messages in actor.lua with calls to new dbg(msg)
+	  function.
+	* Fixed object status when searching a container.
+
+
+2011-01-03  Eric Fry <efry at users.sourceforge.net> r1101
+
+	* You can now drag and drop objects into containers in an actors inventory.
+	* Fixed bug where temp actors weren't being marked as temp when loading the game
+	* Fixed bug where engine location wasn't being updated when adding inventory to
+	  the dead body container object when an actor died.
+	* Fixed issue moving objects into bags on the map.
+	* Don't allow drag and drop map to map.
+
+
+2011-01-02  Eric Fry <efry at users.sourceforge.net> r1100
+
+	* Fixed moving objects into containers. You can now 'M'ove an object into
+	  a bag, open chest or spellbook.
+	* Update slime frames when moving.
+	* Added Actor.get_player_actor() to lua script.
+
+
+2011-01-01  Eric Fry <efry at users.sourceforge.net> r1099
+
+	* Added Like and Unfriendly worktypes.
+	* Fixed some issues with stationary worktype.
+	* Fixed typo in tangle worktype.
+
+
+2011-01-01  Eric Fry <efry at users.sourceforge.net> r1098
+
+	* Added Mouse, Retreat and Flee worktypes.
+	* Fixed bug with wander near player worktype.
+
+
+2011-01-01  Eric Fry <efry at users.sourceforge.net> r1097
+
+	* Added combat assault worktype. The opening fight with the gargoyles should work
+	  now.
+	* Fixed bug when removing temp egg object from the start of the game.
+	* Fixed some bugs in the new scripted combat worktypes.
+	* Replaced some instances of delete obj; with delete_obj(obj);
+
+
+2010-12-30  Eric Fry <efry at users.sourceforge.net> r1096
+
+	* Fixed some bugs with worktype movement.
+	* Added more local keyword to variables in init.lua
+
+
+2010-12-29  Eric Fry <efry at users.sourceforge.net> r1095
+
+	* Added magic to combat. magic_cast_spell(spell_num, caster, target)
+	* Added worktype combat front. This is a WIP. It still doesn't seem quite like
+	  the original. I'll have to check the logic.
+	* Fixed bug with range weapons in npc worktype attack. They were incorrectly
+	  set to a range of 1 because I was passing the weapon object not the obj_n to
+	  the range calculation routine.
+	* Fixed some issues with variables not being defined as local in lua script.
+	* Chamged loads of variables to local in actor.lua
+	* Added new magic support functions to help with casting spells from combat.
+	  select_location(), caster_get_location()
+	* Started spells lightning and paralyse.
+	* More work on spell explosion.
+	* Leave trail in projectile anim in ExpEffect.
+
+
+2010-12-28  Eric Fry <efry at users.sourceforge.net> r1094
+
+	* Added function Actor.inv_get_obj_total_qty(actor, obj_n) to script.
+	* Fixed several bugs in the triple cross bow logic.
+	* Some general cleanup in actor.lua
+
+
+2010-12-27  Eric Fry <efry at users.sourceforge.net> r1093
+
+	* Added U6Link reference counting to nscript_actor_inv()
+	* Fixed boomerang return animation.
+	* Fixed calls to actor_attack() from worktype scripts.
+	* Added slime frame update logic to script. (I might move this into the
+	  existing C++ U6Actor:move() function)
+
+
+2010-12-27  Eric Fry <efry at users.sourceforge.net> r1092
+
+	* Added "Slime Divides!" logic.
+	* Added ActorManager::clone_actor() which clones an actor as a new temp actor.
+	* Added ActorManager::can_put_actor() which checks if and actor could be placed
+	  a a given map location.
+	* Added a reference count retain/release locking system to the U6Link object.
+	  We use this to allow the scripting system to iterate over a U6LList while
+	  entries are being removed.
+	* Added new "__gc" method to nuvie.U6Link metatable in script.
+	* Added map_can_put(x, y, z) function to lua script.
+	* Added Actor.clone(actor, x, y, z) to lua script.
+
+
+2010-12-23  Eric Fry <efry at users.sourceforge.net> r1091
+
+	* Changed lua attack script to dump container contents to the map when the
+	  container is destroyed. e.g. when attacking crates, barels, chests etc.
+	* Changed ObjManager::moveto_map() to take location as an argument.
+	* Added MapCoord(Obj *obj) constructor.
+	* Added new container_objs() lua function. This provides an iterator
+	  across an object's container items.
+	  e.g.
+	  for child_obj in container_objs(obj) do
+	  end
+	* Removed the old obj.container get function.
+	* Changed the interator provider functions to return the iterator
+	  even in the obj_list returns null. This allows us to write code to
+	  iterate over empty object lists in lua.
+
+
+
+2010-12-22  Eric Fry <efry at users.sourceforge.net> r1090
+
+	* Added hit animation when attacking objects.
+	* Added HitEffect(MapCoord location) so we can show hit anim on objects.
+	* Removed code that set the obj->qty to 1 if it was 0 when being read in from
+	  the save file. (We'll need to be careful to make sure no existing
+	  functionality is broken by this change.) This fixes the bug where the player
+	  could attack steel doors.
+	* HitAnim no sends the MESG_ANIM_DONE message when it is finished. This allows
+	  us to use it in the AsyncEffect.
+	* Added Event::update_timers() and added it to Game::update_once() so we can
+	  update timedEvents from the AsyncEffect.
+	* Clear cursor before calling Player::attack() so it doesn't cover the hit
+	  animation.
+	* Added hit_anim(x, y) function  to lua script. which displays the hit tile
+	  at location then returns.
+
+
+2010-12-21  Eric Fry <efry at users.sourceforge.net> r1089
+
+	* Attacks can now hit objects. You can break doors and smash mirrors.
+	* Fixed tile rotation amount in projectile animation where rotation amount was
+	  less than initial tile rotation amount.
+	* Removed actor hit call from ProjectileEffect. The hit is now handled in 
+	  script
+	* Added retain/release system to Effect objects. This allows the AsyncEffect
+	  to hold onto an Effect after it would have been removed by the EffectManager.
+	  We need this to allow the ProjectileEffect to pass back hit obj/actor data
+	  to the caller.
+	* The ProjectileEffect object now keeps a vector of hit entities (objects
+	  and actors) and can pass this vector back to the caller after the effect is
+	  complete. We will use this for the explosion effect which hits multiple
+	  actors.
+	* Added player_get_karma() and player_set_karma() functions to lua script.
+	* Added player_subtract_karma() player_add_karma() functions to init.lua
+	* Added new actor_hit(defender, max_dmg) function to actor.lua This is based
+	  on the hit logic from the original game.exe
+	* Call Mapwindow::updateBlacking() after calling actor_attack() script. This is
+	  incase the actor attacked a door which broke.
+
+
+2010-12-17  Eric Fry <efry at users.sourceforge.net> r1088
+
+	* Fixed bug in Actor::inventory_del_object() It wasn't counting objects with 0 qty.
+	  They really have a qty of 1
+
+
+2010-12-16  Eric Fry <efry at users.sourceforge.net> r1087
+
+	* Started changing attack logic to be based on target location not actor.
+	  This will allow us to attack objects as well as actors.
+
+
+2010-12-16  Eric Fry <efry at users.sourceforge.net> r1086
+
+	* Fixed bug with single ProjectileEffect constructor.
+
+
+2010-12-16  Eric Fry <efry at users.sourceforge.net> r1085
+
+	* Added correct targets for triple crossbow animation
+	* Added an initial tile rotation amount to the projectile anim logic
+	  so tiles that not orientated straight up are drawn correctly when rotated.
+	  eg crossbow bolts, arrows and spears.
+
+
+2010-12-15  Eric Fry <efry at users.sourceforge.net> r1084
+
+	* Added the ability to specify multiple targets to ProjectileEffect class.
+	* Added misc/U6LineWalker.cpp/h files to Make build scripts.
+	* Added new projectile_anim_multi() function to lua script.
+	* Added stub support for triple crossbow animation. Need to fix values
+	  based on original game logic.
+
+
+2010-12-15  Eric Fry <efry at users.sourceforge.net> r1083
+
+	* Lots of work done on new lua scripted combat and actor movement logic.
+	* Changed ActorManager::moveActors() to call the new actor_update_all() lua
+	  script. This is still very much a work in progress.
+	* Changed blocking check on TossAnim class.
+	* Added U6LineWalker class which can plot a line using the original U6 line
+	  drawing algorithm.
+	* Added new ProjectileAnim class which should be closer to the original U6
+	  animation logic.
+	* Added new ProjectileEffect and ExpEffect classes which use the new
+	  ProjectileAnim class.
+	* Added a new effect class. AsyncEffect. Which allows for effects to be run
+	  while you wait. This is used to add inline effects to lua scripts.
+	* Added new Game::update_once() method which is used in the asynchronous
+	  effect class. This method updates the game objects without polling or
+	  handling events. It can be used within scripts.
+	* Changed ObjManager::moveto_map() to add objects to the top of the stack not
+	  the bottom. (firefield objects created by lua script were ending up under
+	  carpet in LB's throne room.)
+	* Added map_is_water() and projectile_anim() functions to the Script system.
+	* Added magic circle 5, explosion spell.
+
+2010-10-04  Eric Fry <efry at users.sourceforge.net> r1082
+
+	* Don't assume that the "HOME" environment variable will be defined when 
+	  checking for .nuvierc file.
+
+2010-09-30  Eric Fry <efry at users.sourceforge.net> r1081
+
+	* Moved event->look code into Lua script code.
+	* Added direction routines to u6/init.lua
+	* Script changes:
+	* Added the ability to iterate through party members.
+	  eg.
+
+	  for actor in party_members() do
+	     -- do something with actor here. 
+	   end
+	   
+	* Added usecode_look(obj) which calls the C usecode look function for a
+	  given object.
+	  At some stage we should move usecode into script.
+	* Added Script::call_actor_update_all(); in readiness for moving actor
+	  update/worktype logic into script.
+	  This routine calls the lua function "actor_update_all()" from C
+	* Added bool Script::call_look_obj(Obj *obj) which calls the new "look_obj"
+	  lua function.
+	* Added the following Obj script variables.
+	  obj.look_string - returns the look string as given by ObjManager::look_obj()
+	  obj.stackable - returns boolean whether the object is stackable
+	  obj.weight - returns the object's weight
+
+	* Added Actor.inv_remove_obj(actor, obj) which calls Actor::inventory_remove_obj(obj)
+	* Added Actor.inv_remove_obj_qty(actor, obj_n, qty) which removes qty from
+	  objects of type obj_n in the actor's inventory. It returns the number of
+	  objects actually removed.
+	* Added the following actor script variables.
+	  actor.alive - returns boolean whether the actor is alive
+	  actor.in_party - returns boolean whether the actor is in the party
+	  actor.sched_loc - returns the actor's current schedule location
+	  actor.visible - returns whether the actor is currently visible
+	* Changed nscript_actor_hit() to force hit.
+	* Changed nscript_actor_move() to return boolean whether the move was successful.
+
+2010-09-29  Eric Fry <efry at users.sourceforge.net> r1080
+
+	* Added Zu Ylem as a readiable object.
+	* Added "nbool Actor::get_schedule_location(MapCoord *loc)"
+	* Fixed bug in
+	  uint32 Actor::inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality)
+	  where qty wasn't being handled correctly.
+	* Changed str_bsearch() function to take const args.
+
+2010-09-28  luteijn r1077
+
+	* Added a couple of objects missing from U6objects.h to it, and used the
+	  definitions in that file to rewrite the routine that determines which
+	  objects are stackable for U6 as a case statement.
+
 2009-06-25  Eric Fry <efry at users.sourceforge.net>
 	* Added new lua function objs_at_loc() this is used to iterate
 	  through objects at a given map location.

@@ -23,27 +23,30 @@
 #ifndef __SongAdPlug_h__
 #define __SongAdPlug_h__
 
+#include "mixer.h"
 #include "Song.h"
+#include "decoder/U6AdPlugDecoderStream.h"
 
 class CEmuopl;
-class CPlayer;
 
 class SongAdPlug : public Song {
 public:
     uint16 samples_left;
 
-	SongAdPlug(CEmuopl *o);
+	SongAdPlug(Audio::Mixer *m, CEmuopl *o);
 	~SongAdPlug();
 	bool Init(const char *filename);
 	bool Play(bool looping = false);
 	bool Stop();
-    CPlayer *get_player() { return player; };
+	bool SetVolume(uint8 volume);
+	bool FadeOut(float seconds) { return false; }
     CEmuopl *get_opl() { return opl; };
 
 private:
+    Audio::Mixer *mixer;
     CEmuopl *opl;
-	CPlayer *player;
-
+    U6AdPlugDecoderStream *stream;
+    Audio::SoundHandle handle;
 
 
 };

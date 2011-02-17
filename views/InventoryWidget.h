@@ -48,6 +48,7 @@ class InventoryWidget : public GUI_Widget {
  Obj *container_obj;
 
  Obj *selected_obj, *target_obj, *ready_obj;
+ Obj *target_cont;
  uint16 row_offset;
 
  uint8 bg_color;
@@ -61,6 +62,7 @@ class InventoryWidget : public GUI_Widget {
  Actor *get_actor() { return(actor); }
  Obj *get_container() { return(container_obj); }
  void set_container(Obj *obj) { container_obj = obj; row_offset = 0; Redraw(); }
+ Obj *get_prev_container();
  void set_prev_container();
  bool is_showing_container() { return (container_obj != NULL ? true : false); }
  void Display(bool full_redraw);
@@ -90,6 +92,8 @@ class InventoryWidget : public GUI_Widget {
  inline void display_qty_string(uint16 x, uint16 y, uint16 qty);
  inline void display_special_char(uint16 x, uint16 y, uint8 quality);
  void display_arrows();
+
+ bool drag_set_target_obj(int x, int y);
 
  public:
  bool up_arrow();

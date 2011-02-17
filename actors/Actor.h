@@ -77,6 +77,7 @@ using std::vector;
 #define ACTOR_STATUS_IN_PARTY  0x80
 #define ACTOR_STATUS_ALIGNMENT_MASK 0x60
 
+#define ACTOR_OBJ_FLAG_
 #define ACTOR_NO_ERROR 0
 #define ACTOR_OUT_OF_MOVES 1
 #define ACTOR_BLOCKED 2
@@ -207,6 +208,7 @@ class Actor
  uint8 obj_flags;
  uint8 status_flags;
  uint8 talk_flags;
+ uint8 movement_flags; //0x19f1
  
  bool can_move;
  bool alive;
@@ -265,6 +267,8 @@ class Actor
  bool is_nearby(MapCoord &where, uint8 thresh = 5);
  bool is_at_position(Obj *obj);
  bool is_passable();
+ bool is_temp() { return temp_actor; }
+
  //for lack of a better name:
  bool is_met() { return(talk_flags & 0x01); }
  bool is_poisoned() { return(status_flags & ACTOR_STATUS_POISONED); }
@@ -272,6 +276,10 @@ class Actor
  virtual bool is_immobile(); // frozen by worktype or status
  virtual bool is_sleeping() { return(status_flags & ACTOR_STATUS_ASLEEP); }
  virtual bool is_paralyzed() { return(status_flags & ACTOR_STATUS_PARALYZED); }
+ virtual bool is_protected() { return(status_flags & ACTOR_STATUS_PROTECTED); }
+ virtual bool is_charmed() { return(obj_flags & OBJ_STATUS_CHARMED); }
+ virtual bool is_cursed() { return(obj_flags & OBJ_STATUS_CURSED); }
+ virtual bool get_corpser_flag() { return false; }
 
  void set_name(const char *actor_name) {  name=actor_name; }
  const char *get_name();
@@ -286,6 +294,7 @@ class Actor
  virtual ActorTileType get_tile_type() { return(ACTOR_ST); }
 
  uint16 get_frame_n() { return(frame_n); }
+ uint16 get_old_frame_n() { return(old_frame_n); }
  uint16 get_x() { return(x); }
  uint16 get_y() { return(y); }
  uint8  get_z() { return(z); }
@@ -318,9 +327,17 @@ class Actor
  void set_moves_left(sint8 val);
  virtual void update_time() { set_moves_left(get_moves_left() + get_dexterity()); }
  virtual void set_poisoned(bool poisoned) { return; }
+ virtual void set_paralyzed(bool paralyzed) { return; }
+ virtual void set_protected(bool val) { return; }
+ virtual void set_charmed(bool val) { return; }
+ virtual void set_corpser_flag(bool val) { return; }
+ virtual void set_cursed(bool val) { return; }
+ virtual void set_asleep(bool val) { return; }
+
  void set_invisible(bool invisible);
 
  uint8 get_worktype();
+ uint8 get_sched_worktype();
  virtual void set_worktype(uint8 new_worktype);
  uint8 get_combat_mode() { return combat_mode; }
  void set_combat_mode(uint8 new_mode)  { combat_mode = new_mode; }
@@ -361,7 +378,7 @@ class Actor
 
  // combat methods
  void attack(MapCoord pos); // attack at a given map location
- void attack(sint8 readied_obj_location, Actor *actor);
+ void attack(sint8 readied_obj_location, MapCoord target);
 // bool defend(uint8 hit, uint8 weapon_damage); // defend against a hit
  uint8 defend(uint8 hit, uint8 weapon_damage); // defend against a hit
  const CombatType *get_weapon(sint8 readied_obj_location);
@@ -419,7 +436,9 @@ class Actor
  uint16 get_obj_n() { return(obj_n); }
  virtual void clear();
  virtual bool morph(uint16 obj_n); // change actor type
-
+ 
+ bool get_schedule_location(MapCoord *loc);
+ bool is_at_scheduled_location();
  protected:
 
  void loadSchedule(unsigned char *schedule_data, uint16 num);

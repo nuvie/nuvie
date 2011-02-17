@@ -32,6 +32,10 @@
 #define OBJ_U6_GARGOYLE_BELT        26
 #define OBJ_U6_LEATHER_BOOTS        27
 #define OBJ_U6_SWAMP_BOOTS          28
+#define OBJ_U6_TILE_DIRT            29
+#define OBJ_U6_TILE_BOARDS          30
+#define OBJ_U6_TILE_TILES           31
+#define OBJ_U6_TILE_BLUE_TILES      32
 
 #define OBJ_U6_SLING                33
 #define OBJ_U6_CLUB                 34
@@ -51,17 +55,19 @@
 #define OBJ_U6_GLASS_SWORD          48
 #define OBJ_U6_BOOMERANG            49
 #define OBJ_U6_TRIPLE_CROSSBOW      50
-
 #define OBJ_U6_FORCE_FIELD          51
-
+#define OBJ_U6_WIZARD_EYE           52
+#define OBJ_U6_OBJECT_53            53
 #define OBJ_U6_MAGIC_BOW            54
 #define OBJ_U6_ARROW                55
 #define OBJ_U6_BOLT                 56
 #define OBJ_U6_SPELLBOOK            57
 #define OBJ_U6_SPELL                58
-
 #define OBJ_U6_CODEX                59
+#define OBJ_U6_BOOK_OF_PROPHECIES   60 
+#define OBJ_U6_BOOK_OF_CIRCLES      61
 #define OBJ_U6_VORTEX_CUBE          62
+#define OBJ_U6_LOCK_PICK            63
 #define OBJ_U6_KEY                  64
 
 #define OBJ_U6_BLACK_PEARL          65
@@ -72,12 +78,10 @@
 #define OBJ_U6_NIGHTSHADE           70
 #define OBJ_U6_SPIDER_SILK          71   
 #define OBJ_U6_SULFUROUS_ASH        72     
-
 #define OBJ_U6_MOONSTONE            73
 #define OBJ_U6_ANKH_AMULET          74
 #define OBJ_U6_SNAKE_AMULET         75
 #define OBJ_U6_AMULET_OF_SUBMISSION 76
-
 #define OBJ_U6_GEM                  77
 #define OBJ_U6_STAFF                78
 #define OBJ_U6_LIGHTNING_WAND       79
@@ -87,45 +91,51 @@
 #define OBJ_U6_FLASK_OF_OIL         83
 #define OBJ_U6_RED_GATE             84
 #define OBJ_U6_MOONGATE             85
-
+#define OBJ_U6_GAVEL                86
 #define OBJ_U6_ORB_OF_THE_MOONS     87
-
 #define OBJ_U6_GOLD                 88
 #define OBJ_U6_GOLD_NUGGET          89
 #define OBJ_U6_TORCH                90
-
+#define OBJ_U6_ZU_YLEM              91
 #define OBJ_U6_SNAKE_VENOM          92
-
 #define OBJ_U6_SEXTANT              93
-
+#define OBJ_U6_SPINNING_WHEEL       94
 #define OBJ_U6_GRAPES               95
 #define OBJ_U6_BUTTER               96
 
 #define OBJ_U6_GARGISH_VOCABULARY   97
-
 #define OBJ_U6_CHEST                98
 #define OBJ_U6_BACKPACK             99
-
 #define OBJ_U6_SCYTHE              100
 #define OBJ_U6_PITCHFORK           101
 #define OBJ_U6_RAKE                102
 #define OBJ_U6_PICK                103
 #define OBJ_U6_SHOVEL              104
 #define OBJ_U6_HOE                 105
-
+#define OBJ_U6_WOODEN_LADDER       106
+#define OBJ_U6_YOKE                107
+#define OBJ_U6_OVEN_SPATULA        108
 #define OBJ_U6_ROLLING_PIN         109
-
+#define OBJ_U6_SPATULA             110
+#define OBJ_U6_LADLE               111
+#define OBJ_U6_COOKING_SHEET       112
 #define OBJ_U6_CLEAVER             113
 #define OBJ_U6_KNIFE               114
-
 #define OBJ_U6_WINE                115
 #define OBJ_U6_MEAD                116
 #define OBJ_U6_ALE                 117
-
+#define OBJ_U6_WINE_GLASS          118
+#define OBJ_U6_PLATE               119
+#define OBJ_U6_MUG                 120
+#define OBJ_U6_SILVERWARE          121
 #define OBJ_U6_CANDLE              122
 #define OBJ_U6_MIRROR              123
-
+#define OBJ_U6_TUNIC               124
+#define OBJ_U6_HANGER              125
+#define OBJ_U6_DRESS               126
+#define OBJ_U6_SKILLET             127
 #define OBJ_U6_BREAD               128
+
 #define OBJ_U6_MEAT_PORTION        129
 #define OBJ_U6_ROLLS               130
 #define OBJ_U6_CAKE                131
@@ -231,6 +241,7 @@
 #define OBJ_U6_H_PASSTHROUGH       280
 #define OBJ_U6_FENCE               281
 #define OBJ_U6_ROPE                284
+#define OBJ_U6_WATER_WHEEL         287
 #define OBJ_U6_CRANK               288
 #define OBJ_U6_LOG_SAW             289 
 #define OBJ_U6_CHAIN               293
@@ -301,7 +312,7 @@
 #define OBJ_U6_MONGBAT             372
 #define OBJ_U6_WISP                373
 #define OBJ_U6_HYDRA               374
-
+#define OBJ_U6_SLIME               375
 #define OBJ_U6_FIGHTER             376
 #define OBJ_U6_SWASHBUCKLER        377
 #define OBJ_U6_MAGE                378

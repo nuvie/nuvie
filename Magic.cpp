@@ -40,6 +40,7 @@
 #include "Actor.h"
 #include "ActorManager.h"
 #include "ObjManager.h"
+#include "SoundManager.h"
 #include "U6objects.h"
 #include "Magic.h"
 #include "Game.h"
@@ -413,6 +414,7 @@ bool Magic::cast()
       {
 	DEBUG(0,LEVEL_DEBUGGING,"Didn't have %s\n",reagent[shift]);
 	event->scroll->display_string("\nNo Reagents.\n");
+	Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_FAILURE);
 	return false;
       }
       DEBUG(0,LEVEL_DEBUGGING,"Ok, has %s\n",reagent[shift]);
@@ -440,22 +442,22 @@ bool Magic::cast()
   lua += spell[index]->invocation;
   lua += "\")";
 
-  //magic_script = Game::get_game()->get_script()->new_thread("u6/magic/circle_04/sleep_field.lua");
   magic_script = Game::get_game()->get_script()->new_thread_from_string(lua.c_str());
 
   if(magic_script)
     process_script_return(magic_script->start());
-  
-  //FIXME simulating a callback here. remove this!
-  if(magic_script)
-  {
-    uint16 x, y;
-    uint8 z;
-    Game::get_game()->get_player()->get_actor()->get_location(&x, &y, &z);
-    y = WRAPPED_COORD(y - 1, z);
-    process_script_return(magic_script->resume_with_location(MapCoord(x,y,z)));
-  }
+
   return true;
+}
+
+bool Magic::resume(MapCoord location)
+{
+	if(magic_script)
+	{
+		process_script_return(magic_script->resume_with_location(location));
+	}
+
+	return true;
 }
 
 bool Magic::spellbook_has_spell(Obj *book, uint8 spell_index)

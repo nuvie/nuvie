@@ -48,7 +48,8 @@ bool PartyPathFinder::is_contiguous(uint32 member_num, MapCoord from)
 {
     for(uint32 q = 0; q < member_num; q++) // check lower-numbered members
     {
-        if(get_member(q).inactive == true) continue;
+    	Actor *actor = get_member(q).actor;
+        if(actor && actor->is_immobile() == true) continue;
 
         MapCoord loc = party->get_location(q);
         if(from.distance(loc) <= 1)
@@ -370,6 +371,8 @@ bool PartyPathFinder::bump_member(uint32 bumped_member_num, uint32 member_num)
     if(member_num >= party->get_party_size())
         return false;
     Actor *actor = get_member(bumped_member_num).actor;
+    if(actor->is_immobile())
+    	return false;
     Actor *push_actor = get_member(member_num).actor;
     MapCoord bump_from = party->get_location(bumped_member_num);
     MapCoord bump_target = party->get_formation_coords(bumped_member_num); // initial direction

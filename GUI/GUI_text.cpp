@@ -39,7 +39,7 @@ GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, GUI_Font *gui_font,
 }
 
 
-GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str, GUI_Font *gui_font, uint16 line_length)
+GUI_Text:: GUI_Text(int x, int y, Uint8 r, Uint8 g, Uint8 b, const char *str, GUI_Font *gui_font, uint16 line_length)
  : GUI_Widget(NULL, x, y, 0, 0)
 {
  int w,h;

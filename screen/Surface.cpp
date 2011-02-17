@@ -314,7 +314,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 ycounter = 0;
 
 		for ( ; ; ) {
-			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
+			if ((no_clip || (cury >= 0 && cury < height && curx >= 0 && curx < width)))
 				*pixptr = col32;
 			pixptr+=xinc;
 			if (curx == ex) break;
@@ -336,7 +336,7 @@ void RenderSurface::draw_line16 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 xcounter = 0;
 
 		for ( ; ; ) {
-			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
+			if ((no_clip || (cury >= 0 && cury < height && curx >= 0 && curx < width)))
 				*pixptr = col32;
 			pixptr+=pitch;
 			if (cury == ey) break;
@@ -435,7 +435,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 ycounter = 0;
 
 		for ( ; ; ) {
-			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
+			if ((no_clip || (cury >= 0 && cury < height && curx >= 0 && curx < width)))
 				*pixptr = col32;
 			pixptr+=xinc;
 			if (curx == ex) break;
@@ -457,7 +457,7 @@ void RenderSurface::draw_line32 (int sx, int sy, int ex, int ey, unsigned char c
 		uint32 xcounter = 0;
 
 		for ( ; ; ) {
-			if ((no_clip || cury >= 0 && cury < height && curx >= 0 && curx < width))
+			if ((no_clip || (cury >= 0 && cury < height && curx >= 0 && curx < width)))
 				*pixptr = col32;
 			pixptr+=pitch;
 			if (cury == ey) break;

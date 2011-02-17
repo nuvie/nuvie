@@ -122,6 +122,8 @@ class MsgScroll: public GUI_Widget, public CallBack
  CallBack *callback_target;
  char *callback_user_data;
 
+ bool capitalise_next_letter;
+
  public:
 
  MsgScroll(Configuration *cfg, Font *f);

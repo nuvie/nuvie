@@ -76,7 +76,7 @@ GUI_Button:: GUI_Button(void *data, int x, int y, int w, int h,
 	checked=0;
 }
 
-GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, char *text,
+GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, const char *text,
 		       GUI_Font *font, int alignment, int is_checkbutton,
 		       GUI_CallBack *callback, int flat)
  : GUI_Widget(data,x,y,w,h)
@@ -129,7 +129,7 @@ GUI_Button::~GUI_Button()
 }
 
 /* Resize/reposition/change text */
-void GUI_Button::ChangeTextButton(int x, int y, int w, int h, char* text, int alignment)
+void GUI_Button::ChangeTextButton(int x, int y, int w, int h, const char* text, int alignment)
 {
   if (x>=0)
     area.x=x;
@@ -288,11 +288,13 @@ void GUI_Button::Enable(int flag)
 	Redraw();
 }
 
-SDL_Surface* GUI_Button::CreateTextButtonImage(int style, char *text, int alignment)
+SDL_Surface* GUI_Button::CreateTextButtonImage(int style, const char *text, int alignment)
 {
   SDL_Rect fillrect;
   int th,tw;
   int tx = 0, ty = 0;
+  char *duptext = 0;
+
   SDL_Surface *img=SDL_AllocSurface(SDL_SWSURFACE,area.w,area.h,
 				    16,31 << 11,63 << 5,31,0);
   Uint32 color1=SDL_MapRGB(img->format,BL_R,BL_G,BL_B);
@@ -307,12 +309,16 @@ SDL_Surface* GUI_Button::CreateTextButtonImage(int style, char *text, int alignm
   buttonFont->TextExtent(text,&tw,&th);
   if (tw>(area.w-(4+is_checkable*16)))
   {
-    text[(area.w-(4+is_checkable*16))/buttonFont->CharWidth()]=0;
+    int n = (area.w-(4+is_checkable*16))/buttonFont->CharWidth();
+    duptext = new char[n+1];
+    strncpy(duptext, text, n);
+    duptext[n] = 0;
+    text = duptext;
     buttonFont->TextExtent(text,&tw,&th);
   }
   if (th>(area.h-4))
   {
-    text[0]=0;
+    text = "";
   }
   switch (alignment)
   {
@@ -372,5 +378,8 @@ SDL_Surface* GUI_Button::CreateTextButtonImage(int style, char *text, int alignm
     buttonFont->TextOut(img,tx,ty,text);
     break;
   }
+
+  delete[] duptext;
+
   return img;
 }

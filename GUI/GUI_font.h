@@ -38,10 +38,10 @@ public:
     {return charw;}
 
   /* put the text onto the given surface using the preset mode and colors */
-  virtual void TextOut(SDL_Surface *context, int x, int y, char* text, int line_wrap=0);
+  virtual void TextOut(SDL_Surface *context, int x, int y, const char* text, int line_wrap=0);
 
   /* yields pixel width and height of a string when printed with this font */
-  void TextExtent(char *text, int *w, int *h, int line_wrap=0);
+  void TextExtent(const char *text, int *w, int *h, int line_wrap=0);
 
 protected:
   /* the font source surface */

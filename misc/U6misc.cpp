@@ -316,7 +316,7 @@ const char *get_direction_name(sint16 rel_x, sint16 rel_y)
         return("nowhere");
 }
 
-int str_bsearch( char *str[], int max, char *value )
+int str_bsearch( const char *str[], int max, const char *value )
 {
    int position;
    int begin = 0;

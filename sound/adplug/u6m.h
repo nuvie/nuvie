@@ -20,6 +20,9 @@
  * This code extends the Adlib Winamp plug-in by Simon Peter <dn.tlp@gmx.net>
  */
 
+#ifndef H_ADPLUG_U6M
+#define H_ADPLUG_U6M
+
 #include <stack>
 
 #include "adplug_player.h"
@@ -131,3 +134,4 @@ class Cu6mPlayer: public CPlayer
 
 };
 
+#endif

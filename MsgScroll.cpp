@@ -199,6 +199,8 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
  display_pos = 0;
  
  bg_color = Game::get_game()->get_palette()->get_bg_color();
+
+ capitalise_next_letter = false;
 }
 
 MsgScroll::~MsgScroll()
@@ -354,7 +356,7 @@ void MsgScroll::display_string(std::string s, Font *f)
      return NULL;
     }
 
-  i = input->s.find_first_of(" \t\n*<>",0);
+  i = input->s.find_first_of(" \t\n*<>`",0);
   if(i == 0) i++;
 
   if(i == -1)
@@ -386,6 +388,9 @@ bool MsgScroll::add_token(MsgText *token)
     case '\n' :  add_new_line();
                  break;
 
+    case '`'  :  capitalise_next_letter = true;
+                 break;
+
     case '<'  :  font = Game::get_game()->get_font_manager()->get_font(1); // runic / gargoyle font
                  break;
 
@@ -410,7 +415,15 @@ bool MsgScroll::add_token(MsgText *token)
                  if(token->s[0] == '*')
                     set_page_break();
                  else
-			        msg_line->append(token);
+                 {
+                	if(capitalise_next_letter)
+                	{
+                		token->s[0] = std::toupper(token->s[0]);
+                		capitalise_next_letter = false;
+                	}
+
+                	msg_line->append(token);
+                 }
                  break;
    }
 

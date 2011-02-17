@@ -60,6 +60,7 @@
 #include "GUI_YesNoDialog.h"
 
 #include "views/InventoryWidget.h"
+#include "Script.h"
 
 #include <math.h>
 
@@ -133,6 +134,12 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  magic = new Magic();
  magic->init(this);
  return true;
+}
+
+void Event::update_timers()
+{
+	 time_queue->call_timers(clock->get_ticks());
+	 game_time_queue->call_timers(clock->get_game_ticks());
 }
 
 bool Event::update()
@@ -252,6 +259,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			default:
 				if(event->key.keysym.sym != SDLK_LCTRL
 				   && event->key.keysym.sym != SDLK_RCTRL)
+				{
 					if(mode != MOVE_MODE)
 						cancelAction();
 					else
@@ -259,6 +267,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 						scroll->display_string("what?\n\n");
 						scroll->display_prompt();
 					}
+				}
 		}
 		return true;
 	}
@@ -426,6 +435,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		default :
 			if (event->key.keysym.sym != SDLK_LALT
 				&& event->key.keysym.sym != SDLK_RALT)
+			{
 				if(mode != MOVE_MODE)
 					cancelAction();
 				else
@@ -433,6 +443,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 					scroll->display_string("what?\n\n");
 					scroll->display_prompt();
 				}
+			}
 			break;
 	}	//	switch (event->key.keysym.sym)
 	return	true;
@@ -578,13 +589,14 @@ void Event::request_input(CallBack *caller, void *user_data)
 }
 
 // typically this will be coming from inventory
-bool Event::select_obj(Obj *obj)
+bool Event::select_obj(Obj *obj, Actor *actor)
 {
     assert(mode == INPUT_MODE);
     //assert(input.select_from_inventory == true);
 
     input.type = EVENTINPUT_OBJECT;
     input.obj = obj;
+    input.actor = actor;
     endAction(); // mode = prev_mode
     doAction();
     return true;
@@ -727,7 +739,7 @@ bool Event::perform_talk(Actor *actor)
         return false;
     }
     // FIXME: this check and the "no response" messages should be in Converse
-    if(!player->in_party_mode())
+    if(!player->in_party_mode() && pc->get_actor_num() != 1) //only the avatar can talk in solo mode
     {
         // always display look-string on failure
         scroll->display_string(actor_manager->look_actor(actor));
@@ -825,17 +837,21 @@ bool Event::talk(Obj *obj)
 
 bool Event::attack()
 {
+	MapCoord target = map_window->get_cursorCoord();
     Actor *actor = map_window->get_actorAtCursor();
     if(actor)
         {
             scroll->display_string(actor->get_name());
             scroll->display_string(".\n");
-            player->attack(actor);
+
         }
     else
         {
             scroll->display_string("nothing!\n");
         }
+
+    map_window->set_show_cursor(false);
+    player->attack(target);
 
     if(player->attack_select_next_weapon() == false)
       endAction(true);
@@ -1064,81 +1080,20 @@ bool Event::look_start()
  */
 bool Event::look(Obj *obj)
 {
-    std::string desc;
-    char out_string[48];
-    float weight=0.0;
-    uint8 damage=0,defense=0;
-    bool special_desc = false;
-    const CombatType * c_type;
-
     if(mode == WAIT_MODE)
         return(false);
-    if(!obj)
-    {
-      scroll->display_string("Thou dost see nothing.\n");
-      return(true);
-    }
-
-    c_type=player->get_actor()->get_object_combat_type(obj->obj_n);
-    if (c_type!=NULL) 
-    {
-      damage=c_type->damage; // FIXME: spelling issue.. attack/damage, defence/defense
-      defense=c_type->defense; // FIXME: spelling issue solved by union.
-    }
-
-    obj_manager->print_obj(obj, false); // DEBUG
-    
-    scroll->display_string("Thou dost see ");
-    scroll->display_string(obj_manager->look_obj(obj, true));
-
-    // check for special description
-    if(usecode->has_lookcode(obj))
-    {
-        special_desc = usecode->look_obj(obj, player->get_actor());
-//        scroll->display_string("\n");
-    }
-    if(special_desc)
-    {
-        scroll->display_string("\n");
-        scroll->display_prompt();
-        return(false);
-    }
-    else
-    {
-        weight = obj_manager->get_obj_weight(obj,OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
-	weight = floorf(weight); //get rid of the tiny fraction
-	weight /= 10; //now scale.
-
-        if(weight != 0)
-        {
-            if(obj->qty > 1 && obj_manager->is_stackable(obj)) //use the plural sentance.
-                desc = ". They weigh";
-            else
-                desc = ". It weighs";
-
-            snprintf(out_string,31," %0.1f stones",weight);
-            desc += out_string;
-        }
-	if(damage != 0)
-	{
-            if(weight != 0) desc += " and";
-            else            desc += ". It";
-            snprintf(out_string,31," can do %d point%s of damage",damage,damage==1?"":"s");
-            desc += out_string;
-	}
-	if(defense != 0)
-	{
-	  if((weight != 0) || (damage != 0)) desc += " and";
-	  else            desc += ". It";
-	  snprintf(out_string,33," can absorb %d point%s of damage",defense,defense==1?"":"s"); // 31 was to short.
-	  desc += out_string;
-	}
-
-	desc += ".";
-        scroll->display_string(desc);
-        scroll->display_string("\n");
-        return(true);
-    }
+   
+   if(obj)
+   {
+      obj_manager->print_obj(obj, false); // DEBUG
+      if(Game::get_game()->get_script()->call_look_obj(obj) == false)
+      {
+         scroll->display_prompt();
+         return false;
+      }
+   }
+   
+   return true;
 }
 
 
@@ -1220,6 +1175,38 @@ bool Event::look_cursor()
  return true;
 }
 
+bool Event::pushTo(Obj *obj, Actor *actor)
+{
+	bool ok = false;
+
+	if(obj)
+	{
+		scroll->display_string(obj_manager->look_obj(obj));
+		scroll->display_string("\n");
+		if(obj_manager->can_store_obj(obj,push_obj))
+		{
+			if(obj != push_obj)
+				ok = obj_manager->moveto_container(push_obj, obj);
+		}
+	}
+	else
+	{
+		if(actor)
+		{
+			scroll->display_string(actor->get_name());
+			scroll->display_string("\n");
+			ok = obj_manager->moveto_inventory(push_obj, actor);
+		}
+	}
+
+	if(!ok)
+		scroll->display_string("Not possible!\n");
+
+    scroll->display_prompt();
+    map_window->reset_mousecenter(); // FIXME: put this in endAction()?
+    endAction();
+    return(true);
+}
 
 /* Move selected object in direction relative to object.
  * (coordinates can be relative to player or object)
@@ -1247,10 +1234,50 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     	} 
     	else
     	{
-            scroll->display_string("Can't exchange inventory!\n");
-            return(false);
+            // exchange inventory.
+            Actor *src_actor = push_obj->get_actor_holding_obj();
+            if(src_actor)
+            {
+            	from = src_actor->get_location();
+
+            	Actor *target_actor = map->get_actor(rel_x, rel_y, from.z);
+            	if(target_actor)
+            	{
+
+            		to = target_actor->get_location();
+
+            		scroll->display_string(target_actor == src_actor ? "yourself" : target_actor->get_name());
+            		scroll->display_string(".\n\n");
+
+            		if(map->lineTest(from.x, from.y, to.x, to.y, from.z, LT_HitUnpassable, lt) == false)
+            		{
+            			if(from.distance(to) < 5)
+            			{
+            				obj_manager->moveto_inventory(push_obj, target_actor);
+            			}
+            			else
+            			{
+            				scroll->display_string("Out of range!\n");
+            			}
+            		}
+            		else
+            		{
+            			scroll->display_string("Blocked!\n");
+            		}
+            	}
+            	else
+            	{
+            		scroll->display_string("nobody.\n\n");
+            	}
+            }
+
+            scroll->display_prompt();
+            map_window->reset_mousecenter(); // FIXME: put this in endAction()?
+            endAction();
+            return(true);
     	}
     }
+
     if(push_from == PUSH_FROM_PLAYER) // coordinates must be converted
     {
         to.x = pusher.x + rel_x;
@@ -1292,21 +1319,40 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             {
              if(lt.hitObj)
               {
-               // We can place an object on a bench or table. Or on any other object if
-               // the object is passable and not on a boundary.
+               if(obj_manager->can_store_obj(lt.hitObj, push_obj)) //if we are moving onto a container.
+               {
+            	   can_move = obj_manager->moveto_container(push_obj, lt.hitObj);
+               }
+               else
+               {
+				   // We can place an object on a bench or table. Or on any other object if
+				   // the object is passable and not on a boundary.
 
-               obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
-               if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
-                  (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
-                 can_move = true;
+				   obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
+				   if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
+					  (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
+				   {
+					 /* do normal move if no usecode or return from usecode was true */
+					 if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+						can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
+				   }
+               }
               }
             }
          else
-           can_move = true;
-
-        /* do normal move if no usecode or return from usecode was true */
-        if((!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y)) && can_move)
-          can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
+         {
+        	 Obj *obj = obj_manager->get_obj(to.x,to.y,to.z);
+        	 if(obj && obj_manager->can_store_obj(obj, push_obj)) //if we are moving onto a container.
+        	 {
+        		 can_move = obj_manager->moveto_container(push_obj, obj);
+        	 }
+        	 else
+        	 {
+        		 /* do normal move if no usecode or return from usecode was true */
+        		 if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+        			 can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
+        	 }
+         }
 
         if(!can_move)
           scroll->display_string("Blocked.\n\n");
@@ -1317,6 +1363,13 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     return(true);
 }
 
+bool Event::pushFrom(Obj *obj)
+{
+	scroll->display_string(obj_manager->look_obj(obj));
+	push_obj = obj;
+	get_target("\nTo ");
+	return true;
+}
 
 /* Select object to move. */
 bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
@@ -2172,6 +2225,13 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     if(mode == WAIT_MODE)
         return false;
 
+    if(obj->get_engine_loc() == OBJ_LOC_MAP) //we can't accept a map to map drag at the moment. FIXME
+    {
+        scroll->display_string("Not possible\n");
+        endAction(true);
+        return false;
+    }
+
     Actor *actor = (obj->is_in_inventory()) // includes held containers
                    ? obj->get_actor_holding_obj()
                     : player->get_actor();
@@ -2505,11 +2565,23 @@ void Event::doAction()
     }
     else if(mode == PUSH_MODE)
     {
-        assert(input.type == EVENTINPUT_MAPCOORD);
-        if(!push_obj && !push_actor)
-            pushFrom(input.loc->sx,input.loc->sy);
-        else
-            pushTo(input.loc->sx,input.loc->sy,PUSH_FROM_OBJECT);
+        assert(input.type == EVENTINPUT_MAPCOORD || input.type == EVENTINPUT_OBJECT);
+        if(input.type == EVENTINPUT_MAPCOORD)
+        {
+			if(!push_obj && !push_actor)
+				pushFrom(input.loc->sx,input.loc->sy);
+			else
+				pushTo(input.loc->sx,input.loc->sy,PUSH_FROM_OBJECT);
+        }
+    	else
+    	{
+    		if(!push_obj)
+    			pushFrom(input.obj);
+    		else
+    		{
+    			pushTo(input.obj, input.actor);
+    		}
+    	}
     }
     else if(mode == DROP_MODE) // called repeatedly
     {
@@ -2533,9 +2605,21 @@ void Event::doAction()
     }
     else if(mode == CAST_MODE)
     {
-        if(input.type == EVENTINPUT_OBJECT) magic->cast(input.obj);
-        else                                magic->cast();
-        endAction(true);
+    	if(input.type == EVENTINPUT_MAPCOORD)
+    	{
+    		magic->resume(MapCoord(input.loc->x, input.loc->y, input.loc->z));
+    	}
+    	else
+    	{
+			if(input.type == EVENTINPUT_OBJECT)
+				magic->cast(input.obj);
+			else
+				magic->cast();
+    	}
+		if(magic->is_waiting_for_location())
+			get_target("");
+		else
+			endAction(true);
     }
     else
         cancelAction();

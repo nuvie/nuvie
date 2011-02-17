@@ -47,9 +47,16 @@ protected:
     EffectManager *effect_manager;
     bool defunct;
 
+    uint32 retain_count;
+
 public:
     Effect();
     ~Effect();
+
+    void retain() { retain_count++; }
+    void release() { if(retain_count > 0) retain_count--; }
+    bool is_retained() { return retain_count == 0 ? false : true; }
+
     void delete_self() { defunct = true; }
     void add_anim(NuvieAnim *anim);
 
@@ -80,6 +87,48 @@ public:
 
 };
 
+class ProjectileEffect : public Effect
+{
+protected:
+	uint16 tile_num;
+
+    MapCoord start_loc; // where explosion will start
+    vector<MapCoord> targets;
+    uint8 anim_speed;
+    bool trail;
+    uint16 initial_tile_rotation;
+    uint16 finished_tiles;
+
+    vector<MapEntity> hit_entities;
+
+    virtual void start_anim();
+
+public:
+    ProjectileEffect() {}
+    ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation);
+    ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation);
+
+    void init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation);
+
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+
+    vector<MapEntity> *get_hit_entities() { return &hit_entities; }
+};
+
+class ExpEffect : public ProjectileEffect
+{
+    UseCode *usecode;
+    NuvieAnim *anim;
+
+    Obj *obj;
+    uint16 exp_tile_num;
+
+protected:
+    void start_anim();
+public:
+    ExpEffect(uint16 tileNum, MapCoord location);
+
+};
 
 /* Use to add an effect with timed activity. Self-contained timer must be
  * stopped/started with the included methods.
@@ -130,6 +179,7 @@ class HitEffect : public Effect
 {
 public:
     HitEffect(Actor *target, uint32 duration = 300);
+    HitEffect(MapCoord location);
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
@@ -335,6 +385,8 @@ public:
     bool circle_fade_out();
     bool circle_fade_in();
 
+    void delete_self();
+
 protected:
     void init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surface *capture, uint16 x, uint16 y, uint32 speed);
     void init_pixelated_fade();
@@ -387,6 +439,27 @@ public:
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
+
+/* Briefly modify the mapwindow colors, disable map-blacking and player
+ * movement for a few seconds, then enable both.
+ */
+class XorEffect : public TimedEffect
+{
+    MapWindow *map_window;
+    uint32 length;
+    SDL_Surface *capture; // this is what gets blitted
+
+    void xor_capture(uint8 mod);
+    void init_effect();
+
+public:
+    /* eff_ms=length of visual effect */
+    XorEffect(uint32 eff_ms);
+    ~XorEffect() { }
+
+    /* Called by the timer between each effect stage. */
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
 
 /* Briefly modify the mapwindow colors, disable map-blacking and player
  * movement for a few seconds, then enable both.
@@ -464,6 +537,20 @@ public:
     ~PeerEffect() { }
     void init_effect();
     void delete_self();
+};
+
+/* Run an effect asynchronously and keep updating the world until the effect completes. */
+class AsyncEffect : public Effect
+{
+protected:
+	Effect *effect;
+	bool effect_complete;
+
+public:
+    AsyncEffect(Effect *e);
+    ~AsyncEffect();
+    void run();
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
 #endif /* __Effect_h__ */

@@ -50,8 +50,12 @@ void EffectManager::update_effects()
         if((*ei)->is_defunct()/* && !has_message(*ei)*/)
         {
             signal_watch(*ei);
-            delete(*ei);
-            ei = effects.erase(ei);
+            if((*ei)->is_retained() == false) //if no longer needed by other objects we can delete.
+            {
+				delete(*ei);
+				ei = effects.erase(ei);
+            }
+            else ++ei;
         }
         else ++ei;
     }

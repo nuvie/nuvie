@@ -46,7 +46,7 @@ alignment
 
 const U6ActorType u6ActorTypes[] = {
  // 4x1 tile actors                                                                                            STR, DEX, INT,  AC, DMG,  HP, ALIGNMENT
- {OBJ_U6_INSECTS,          0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,     20,   1,  40,   1,   0,   1,   1, ACTOR_ALIGNMENT_CHAOTIC},
+ {OBJ_U6_INSECTS,          0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      2,   1,  40,   1,   0,   1,   1, ACTOR_ALIGNMENT_CHAOTIC},
  {OBJ_U6_GIANT_SQUID,      0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH, 50,  24,  20,   8,   0,  20,  50, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_GHOST,            0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       45,   1,  10,   9,   0,  12,  20, ACTOR_ALIGNMENT_EVIL},
  {OBJ_U6_ACID_SLUG,        0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       50,   5,   5,   2,   0,   1,  10, ACTOR_ALIGNMENT_CHAOTIC},
@@ -118,8 +118,10 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_SILVER_SERPENT,   1, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,        0,  60,  21,   8,  15,  60, 200, ACTOR_ALIGNMENT_CHAOTIC},
 
  // 2x1 FIXME
- {OBJ_U6_RAFT,             0, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL}, // FIX might need to fix this
+ {OBJ_U6_RAFT,             0, 0, 0, 1, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL}, // FIX might need to fix this
 // {OBJ_U6_TANGLE_VINE_POD,  0, 0, 1, 0, OBJ_U6_TANGLE_VINE_POD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,40, 20,  25,   1,   4,   1,  30, ACTOR_ALIGNMENT_CHAOTIC},
+
+ {OBJ_U6_SLIME,            0, 0, 0, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL},
 
  {OBJ_U6_NOTHING, 0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 0, 0, 0, 0, 0, 0, 0, ACTOR_ALIGNMENT_NEUTRAL} //end indicator
 };
@@ -213,6 +215,8 @@ static const struct {uint16 obj_n; uint8 readiable_location; uint8 defence; uint
 {OBJ_U6_REGENERATION_RING, ACTOR_HAND, 0, 0 },
 {OBJ_U6_INVISIBILITY_RING, ACTOR_HAND, 0, 0 },
 
+{OBJ_U6_ZU_YLEM, ACTOR_ARM, 0, 0},
+    
 {OBJ_U6_NOTHING, ACTOR_NOT_READIABLE, 0, 0 } }; // this last element terminates the array.
 
 
@@ -279,6 +283,8 @@ const CombatType u6combat_objects[] ={
 
 {OBJ_U6_PROTECTION_RING, {5}, {0}, 0, ATTACK_TYPE_NONE, 0, OBJ_U6_NOTHING, false },
 
+{OBJ_U6_ZU_YLEM, {0}, {1}, 0, ATTACK_TYPE_HAND, 0, OBJ_U6_NOTHING, false },
+   
 {OBJ_U6_NOTHING, {0}, {0} ,0, ATTACK_TYPE_NONE, 0, OBJ_U6_NOTHING, false} // this last element terminates the array.
 };
 

@@ -2,7 +2,7 @@ SUBDIRS = tools
 
 bin_PROGRAMS = nuvie
 
-CXXFLAGS = @CXXFLAGS@ -Iactors -IGUI -Imisc -Ifiles -Ifonts -Iconf -Ipathfinder -Isave -Iscreen -Iscript -Isound -Isound/adplug -Itools -Iusecode -Iviews -Ilua
+CXXFLAGS = @CXXFLAGS@ -Iactors -IGUI -Imisc -Ifiles -Ifonts -Iconf -Ipathfinder -Isave -Iscreen -Iscript -Isound -Isound/adplug -Isound/mixer -Itools -Iusecode -Iviews -Ilua
 LDFLAGS = @LIBS@
 
 # Makefile.common defines nuvie_SOURCES

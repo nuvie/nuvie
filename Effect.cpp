@@ -13,6 +13,7 @@
 #include "ViewManager.h"
 #include "MsgScroll.h"
 #include "ActorManager.h"
+#include "SoundManager.h"
 #include "U6objects.h"
 #include "Effect.h"
 
@@ -27,6 +28,8 @@
 
 #define TRANSPARENT_COLOR 0xFF /* transparent pixel color */
 
+#define EXP_EFFECT_TILE_NUM 382
+
 QuakeEffect *QuakeEffect::current_quake = NULL;
 FadeEffect *FadeEffect::current_fade = NULL;
 
@@ -35,6 +38,7 @@ FadeEffect *FadeEffect::current_fade = NULL;
  */
 Effect::Effect() : defunct(false)
 {
+	retain_count = 0;
     game = Game::get_game();
     effect_manager = game->get_effect_manager();
     effect_manager->add_effect(this);
@@ -113,7 +117,8 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
                                                         hit_loc->z);
             if(tile->flags1 & TILEFLAG_WALL)
             {
-                new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
+                //new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
+            	new ExpEffect(EXP_EFFECT_TILE_NUM, MapCoord(hit_loc->x, hit_loc->y, hit_loc->z));
                 stop_effect = true;
             }
             break;
@@ -147,7 +152,8 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
             break;
         }
         case MESG_ANIM_DONE:
-            new ExplosiveEffect(target_loc.x, target_loc.y, 3);
+            //new ExplosiveEffect(target_loc.x, target_loc.y, 3);
+        	new ExpEffect(EXP_EFFECT_TILE_NUM, MapCoord(target_loc.x, target_loc.y, target_loc.z));
             stop_effect = true;
             break;
     }
@@ -159,6 +165,139 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
         game->unpause_all();
         usecode->message_obj(obj, MESG_EFFECT_COMPLETE, this);
         delete_self();
+    }
+    return(0);
+}
+
+#define EXP_EFFECT_SPEED 6
+
+
+ExpEffect::ExpEffect(uint16 tileNum, MapCoord location)
+{
+	start_loc = location;
+    finished_tiles = 0;
+    exp_tile_num = tileNum;
+
+    start_anim();
+}
+
+
+/* Pause world & start animation. */
+void ExpEffect::start_anim()
+{
+    game->pause_world();
+    game->pause_anims();
+    game->pause_user();
+
+    targets.resize(16);
+
+    targets[0] = MapCoord(start_loc.x+2,start_loc.y-1,start_loc.z);
+    targets[1] = MapCoord(start_loc.x+1,start_loc.y+2,start_loc.z);
+    targets[2] = MapCoord(start_loc.x,start_loc.y-2,start_loc.z);
+
+    targets[3] = MapCoord(start_loc.x+1,start_loc.y-1,start_loc.z);
+    targets[4] = MapCoord(start_loc.x-1,start_loc.y+2,start_loc.z);
+    targets[5] = MapCoord(start_loc.x-1,start_loc.y-1,start_loc.z);
+
+    targets[6] = MapCoord(start_loc.x-2,start_loc.y,start_loc.z);
+    targets[7] = MapCoord(start_loc.x-1,start_loc.y+1,start_loc.z);
+    targets[8] = MapCoord(start_loc.x,start_loc.y+2,start_loc.z);
+
+    targets[9] = MapCoord(start_loc.x-1,start_loc.y-2,start_loc.z);
+    targets[10] = MapCoord(start_loc.x-2,start_loc.y-1,start_loc.z);
+    targets[11] = MapCoord(start_loc.x-2,start_loc.y+1,start_loc.z);
+
+    targets[12] = MapCoord(start_loc.x+2,start_loc.y+1,start_loc.z);
+    targets[13] = MapCoord(start_loc.x+2,start_loc.y,start_loc.z);
+    targets[14] = MapCoord(start_loc.x+1,start_loc.y+1,start_loc.z);
+    targets[15] = MapCoord(start_loc.x+1,start_loc.y-2,start_loc.z);
+
+
+    anim = new ProjectileAnim(exp_tile_num, &start_loc, targets, EXP_EFFECT_SPEED, true);
+    add_anim(anim);
+
+}
+
+ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation)
+{
+	vector<MapCoord> t;
+	t.push_back(target);
+
+	init(tileNum, start, t, speed, trailFlag, initialTileRotation);
+}
+
+ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation)
+{
+	init(tileNum, start, t, speed, trailFlag, initialTileRotation);
+}
+
+void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation)
+{
+    finished_tiles = 0;
+
+	tile_num = tileNum;
+	start_loc = start;
+	anim_speed = speed;
+	trail = trailFlag;
+	initial_tile_rotation = initialTileRotation;
+
+    targets = t;
+
+	start_anim();
+}
+
+/* Pause world & start animation. */
+void ProjectileEffect::start_anim()
+{
+    game->pause_world();
+    game->pause_anims();
+    game->pause_user();
+
+    add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation));
+
+}
+/* Handle messages from animation. Hit actors & walls. */
+uint16 ProjectileEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
+{
+    bool stop_effect = false;
+    switch(msg)
+    {
+        case MESG_ANIM_HIT_WORLD:
+        {
+            MapCoord *hit_loc = static_cast<MapCoord *>(msg_data);
+            Tile *tile = game->get_game_map()->get_tile(hit_loc->x,hit_loc->y,
+                                                        hit_loc->z);
+            if(tile->flags1 & TILEFLAG_WALL)
+            {
+                //new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
+                stop_effect = true;
+            }
+            break;
+        }
+        case MESG_ANIM_HIT:
+        {
+            MapEntity *hit_ent = static_cast<MapEntity *>(msg_data);
+            hit_entities.push_back(*hit_ent);
+            break;
+        }
+        case MESG_ANIM_DONE:
+            //new ExplosiveEffect(target_loc.x, target_loc.y, 3);
+            stop_effect = true;
+            break;
+    }
+
+    if(stop_effect)
+    {
+    	//finished_tiles++;
+
+        if(msg != MESG_ANIM_DONE) // this msg means anim stopped itself
+            ((NuvieAnim *)caller)->stop();
+        //if(finished_tiles == 16)
+       // {
+			game->unpause_all();
+			//usecode->message_obj(obj, MESG_EFFECT_COMPLETE, this);
+			delete_self();
+       // }
     }
     return(0);
 }
@@ -298,8 +437,14 @@ void QuakeEffect::recenter_map()
 HitEffect::HitEffect(Actor *target, uint32 duration)
 {
     add_anim(new HitAnim(target));
+    Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_HIT); //FIXME use NUVIE_SFX_SAMPLE defines here.
 }
 
+HitEffect::HitEffect(MapCoord location)
+{
+    add_anim(new HitAnim(&location));
+    Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_HIT); //FIXME use NUVIE_SFX_SAMPLE defines here.
+}
 
 /* On ANIM_DONE: end
  */
@@ -618,14 +763,14 @@ void MissileEffect::hit_target()
     if(hit_actor)
     {
         hit_actor->hit(hit_damage, ACTOR_FORCE_HIT);
-        delete throw_obj; throw_obj = 0; // don't drop
+        delete_obj(throw_obj); throw_obj = 0; // don't drop
     }
     else if(hit_obj)
     {
         if(hit_obj->qty < hit_damage)
             hit_obj->qty = 0;
         else hit_obj->qty -= hit_damage;
-        delete throw_obj; throw_obj = 0; // don't drop
+        delete_obj(throw_obj); throw_obj = 0; // don't drop
     }
     if(throw_obj != 0)
     {
@@ -643,7 +788,7 @@ void MissileEffect::hit_target()
 
 void MissileEffect::hit_blocking()
 {
-    delete throw_obj;
+    delete_obj(throw_obj);
     ThrowObjectEffect::hit_target();
 }
 
@@ -798,6 +943,11 @@ void FadeEffect::init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surfac
 
 FadeEffect::~FadeEffect()
 {
+  //moved to delete_self
+}
+
+void FadeEffect::delete_self()
+{
     if(current_fade == this) // these weren't init. if FadeEffect didn't start
     {
         delete viewport;
@@ -808,8 +958,9 @@ FadeEffect::~FadeEffect()
 
         current_fade = NULL;
     }
-}
 
+	TimedEffect::delete_self();
+}
 
 /* Start effect. */
 void FadeEffect::init_pixelated_fade()
@@ -866,7 +1017,7 @@ void FadeEffect::init_circle_fade()
 
 
 /* Called by the timer as frequently as possible. Do the appropriate
- * fade method and stop when the effect is oomplete.
+ * fade method and stop when the effect is complete.
  */
 uint16 FadeEffect::callback(uint16 msg, CallBack *caller, void *data)
 {
@@ -1141,6 +1292,49 @@ uint16 VanishEffect::callback(uint16 msg, CallBack *caller, void *data)
     return(0);
 }
 
+XorEffect::XorEffect(uint32 eff_ms)
+                                       : map_window(game->get_map_window()),
+                                         length(eff_ms)
+{
+    game->pause_user();
+    game->pause_anims();
+
+    init_effect();
+}
+
+void XorEffect::init_effect()
+{
+    capture = map_window->get_sdl_surface();
+    map_window->set_overlay_level(MAP_OVERLAY_DEFAULT);
+    map_window->set_overlay(capture);
+
+    xor_capture(0xd); // changes black to pink
+    start_timer(length);
+}
+
+/* Timer finished. Cleanup. */
+uint16 XorEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(msg == MESG_TIMED)
+    {
+        stop_timer();
+        game->unpause_anims();
+        game->unpause_user();
+        map_window->set_overlay(NULL);
+        delete_self();
+    }
+    return 0;
+}
+
+/* Do binary-xor on each pixel of the mapwindow image.*/
+void XorEffect::xor_capture(uint8 mod)
+{
+    uint8 *pixels = (uint8 *)(capture->pixels);
+    for(int p = 0; p < (capture->w*capture->h); p++)
+        pixels[p] ^= mod;
+}
+
+
 U6WhitePotionEffect::U6WhitePotionEffect(uint32 eff_ms, uint32 delay_ms, Obj *callback_obj)
                                        : map_window(game->get_map_window()),
                                          state(0), start_length(1000),
@@ -1373,4 +1567,42 @@ inline uint8 PeerEffect::get_tilemap_type(uint16 wx, uint16 wy, uint8 wz)
     if(map->is_damaging(wx, wy, wz))
         return peer_tilemap[3];
     return peer_tilemap[0]; // ground/passable
+}
+
+/*** AsyncEffect ***/
+AsyncEffect::AsyncEffect(Effect *e)
+{
+	effect_complete = false;
+	effect = e;
+	effect->retain();
+    effect_manager->watch_effect(this, effect);
+}
+
+AsyncEffect::~AsyncEffect()
+{
+	effect->release();
+}
+
+/* The effect is marked as defunct after run finishes and will be removed from the system.*/
+void AsyncEffect::run()
+{
+	for(;effect_complete == false;)
+	{
+		//spin world
+		Game::get_game()->update_once();
+	}
+
+	delete_self();
+}
+
+uint16 AsyncEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+
+    // effect complete
+    if(msg == MESG_EFFECT_COMPLETE)
+    {
+    	effect_complete = true;
+    }
+
+    return 0;
 }

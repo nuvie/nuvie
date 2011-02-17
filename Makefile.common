@@ -123,6 +123,8 @@ nuvie_SOURCES = \
 	lua/lzio.h \
 \
 	misc/CallBack.h \
+	misc/U6LineWalker.cpp \
+	misc/U6LineWalker.h \
 	misc/U6LList.cpp \
 	misc/U6LList.h \
 	misc/U6misc.cpp \
@@ -179,8 +181,11 @@ nuvie_SOURCES = \
 	script/ScriptActor.cpp \
 	script/ScriptActor.h \
 \
-	sound/Sample.cpp \
-	sound/Sample.h \
+	sound/CustomSfxManager.cpp \
+	sound/CustomSfxManager.h \
+	sound/PCSpeakerSfxManager.cpp \
+	sound/PCSpeakerSfxManager.h \
+	sound/SfxManager.h \
 	sound/Song.cpp \
 	sound/Song.h \
 	sound/SongAdPlug.cpp \
@@ -188,6 +193,8 @@ nuvie_SOURCES = \
 	sound/Sound.h \
 	sound/SoundManager.cpp \
 	sound/SoundManager.h \
+	sound/TownsSfxManager.h \
+	sound/TownsSfxManager.cpp \
 \
 	sound/adplug/emuopl.cpp \
 	sound/adplug/emuopl.h \
@@ -199,6 +206,48 @@ nuvie_SOURCES = \
 	sound/adplug/silentopl.h \
 	sound/adplug/u6m.cpp \
 	sound/adplug/u6m.h \
+\
+	sound/mixer/doublebuffersdl-mixer.h \
+	sound/mixer/rate.h \
+	sound/mixer/mutex.cpp \
+	sound/mixer/timestamp.cpp \
+	sound/mixer/sdl-mixer.cpp \
+	sound/mixer/mutex.h \
+	sound/mixer/timestamp.h \
+	sound/mixer/mixer_intern.h \
+	sound/mixer/types.h \
+	sound/mixer/sdl-mixer.h \
+	sound/mixer/audiostream.cpp \
+	sound/mixer/frac.h \
+	sound/mixer/audiostream.h \
+	sound/mixer/mixer.cpp \
+	sound/mixer/mixer.h \
+	sound/mixer/doublebuffersdl-mixer.cpp \
+	sound/mixer/rate.cpp \
+\
+	sound/mixer/decoder/FMtownsDecoderStream.cpp \
+	sound/mixer/decoder/FMtownsDecoderStream.h \
+	sound/mixer/decoder/PCSpeaker.cpp \
+	sound/mixer/decoder/PCSpeaker.h \
+	sound/mixer/decoder/PCSpeakerStream.cpp \
+	sound/mixer/decoder/PCSpeakerStream.h \
+	sound/mixer/decoder/U6AdPlugDecoderStream.cpp \
+	sound/mixer/decoder/U6AdPlugDecoderStream.h \
+\
+	sound/mixer/decoder/wave/adpcm.cpp \
+	sound/mixer/decoder/wave/adpcm.h \
+	sound/mixer/decoder/wave/endian.h \
+	sound/mixer/decoder/wave/list.h \
+	sound/mixer/decoder/wave/list_intern.h \
+	sound/mixer/decoder/wave/memstream.h \
+	sound/mixer/decoder/wave/raw.cpp \
+	sound/mixer/decoder/wave/raw.h \
+	sound/mixer/decoder/wave/stdiostream.cpp \
+	sound/mixer/decoder/wave/stdiostream.h \
+	sound/mixer/decoder/wave/stream.cpp \
+	sound/mixer/decoder/wave/stream.h \
+	sound/mixer/decoder/wave/wave.cpp \
+	sound/mixer/decoder/wave/wave.h \
 \
 	usecode/UseCode.h \
 	usecode/UseCode.cpp \

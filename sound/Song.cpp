@@ -24,7 +24,7 @@
 //Mix_HookMusicFinished
 #include "nuvieDefs.h"
 #include "Song.h"
-
+/*
 
 Song::Song() {
 	m_Filename="";
@@ -39,51 +39,5 @@ Song::~Song() {
 		m_pMusic=NULL;
 	}
 }
+*/
 
-bool Song::Init(const char *filename) {
-	if (filename==NULL) return false;
-	m_Filename=filename;
-	m_pMusic=Mix_LoadMUS(filename);
-	if (m_pMusic == NULL) return false;
-	return true;
-}
-
-bool Song::Play(bool looping) {
-	int ret;
-	if (m_pMusic==NULL) return false;
-	ret=Mix_PlayMusic(m_pMusic, looping ? -1 : 0);
-	if (ret) return false;
-	return true;
-}
-
-bool Song::Stop() {
-	int ret;
-	if (m_pMusic==NULL) return false;
-	ret=Mix_HaltMusic();
-	if (ret) return false;
-	return true;
-}
-
-
-bool Song::Pause() {
-	if (!Mix_PlayingMusic()) return false;
-	Mix_PauseMusic();
-//	m_Paused=true;
-	return true;
-}
-
-bool Song::Resume() {
-	if (!Mix_PlayingMusic()) return false;
-	Mix_ResumeMusic();
-	//m_Paused=false;
-	return true;
-}
-
-
-bool Song::FadeOut(float seconds) {
-	int ret;
-	//if (m_pMusic==NULL) return false;
-	ret=Mix_FadeOutMusic((int)(seconds*1000.0f));
-	if (ret) return false;
-	return true;
-}

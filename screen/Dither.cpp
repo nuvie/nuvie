@@ -114,7 +114,7 @@ bool Dither::dither_bitmap(unsigned char *src_buf, uint16 src_w, uint16 src_h, b
       if(pixel >= 0xe0 && pixel != 0xff)
         pixel &= 0xf;
       
-      if((x & 1) ^ (y & 1) == 0)
+      if(((x & 1) ^ (y & 1)) == 0)
         pixel = dither[0x100+pixel];
       else
         pixel = dither[pixel];

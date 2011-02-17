@@ -35,6 +35,7 @@
 #include "Party.h"
 #include "Objlist.h"
 #include "U6objects.h"
+#include "SoundManager.h"
 #include "Player.h"
 
 Player::Player(Configuration *cfg)
@@ -278,12 +279,15 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     {
         ActorError *ret = actor->get_error();
         if(ret->err == ACTOR_BLOCKED_BY_ACTOR
-           && party->contains_actor(ret->blocking_actor))
+           && party->contains_actor(ret->blocking_actor) && ret->blocking_actor->is_immobile() == false)
         {
             ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
         }
         if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/
+        {
+           Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
            return;
+        }
     }
     // post-move
     actor->set_direction(rel_x, rel_y);
@@ -485,12 +489,12 @@ bool Player::attack_select_weapon_at_location(sint8 location)
  return false;
 }
 
-void Player::attack(Actor *a)
+void Player::attack(MapCoord target)
 {
  MsgScroll *scroll = Game::get_game()->get_scroll();
  
- if(weapon_can_hit(a->x,a->y))
-   actor->attack(current_weapon, a);
+ if(weapon_can_hit(target.x,target.y))
+   actor->attack(current_weapon, target);
  else
    scroll->display_string("\nOut of range!\n");
 

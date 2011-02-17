@@ -28,13 +28,19 @@
 
 #define U6LLIST_FREE_DATA true
 
+
+
 struct U6Link
 {
  U6Link *next;
  U6Link *prev;
  void *data;
- U6Link() {next = NULL; prev = NULL; data = NULL;}
+ uint8 ref_count;
+ U6Link() {next = NULL; prev = NULL; data = NULL; ref_count = 1;}
 };
+
+void retainU6Link(U6Link *link);
+void releaseU6Link(U6Link *link);
 
 class U6LList
 {

@@ -32,7 +32,7 @@
 #include "GUI_YesNoDialog.h"
 
 
-GUI_YesNoDialog::GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback) :
+GUI_YesNoDialog::GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, const char *msg, GUI_CallBack *yesCallback, GUI_CallBack *noCallback) :
    GUI_Dialog(x, y, w, h, 244, 216, 131, GUI_DIALOG_MOVABLE)
 {
   GUI_Widget *widget;
