@@ -11,7 +11,6 @@
 		0700C6C80A84303D0039FD03 /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0700C6C60A84303D0039FD03 /* Weather.cpp */; };
 		0700C6C90A84303D0039FD03 /* Weather.h in Headers */ = {isa = PBXBuildFile; fileRef = 0700C6C70A84303D0039FD03 /* Weather.h */; };
 		0700C71F0A8442490039FD03 /* Objlist.h in Headers */ = {isa = PBXBuildFile; fileRef = 0700C71E0A8442490039FD03 /* Objlist.h */; };
-		0701134908EE539100D9B9F4 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0701134808EE539100D9B9F4 /* SDL_mixer.framework */; };
 		0701134D08EE53B500D9B9F4 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0701134C08EE53B500D9B9F4 /* SDL.framework */; };
 		0703C05E054BE5660003D6CB /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A47A9D01A0482F01D3D55B /* SDLMain.h */; };
 		0703C05F054BE5660003D6CB /* U6Lzw.h in Headers */ = {isa = PBXBuildFile; fileRef = 07B8BE070419B94F00A8000A /* U6Lzw.h */; };
@@ -189,8 +188,6 @@
 		0746DC360C50B9300034A045 /* nuvie.cfg.sample in Resources */ = {isa = PBXBuildFile; fileRef = 0746DC350C50B9300034A045 /* nuvie.cfg.sample */; };
 		0746DC490C50BED20034A045 /* Dither.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0746DC470C50BED20034A045 /* Dither.cpp */; };
 		0746DC4A0C50BED20034A045 /* Dither.h in Headers */ = {isa = PBXBuildFile; fileRef = 0746DC480C50BED20034A045 /* Dither.h */; };
-		0761766B05D100EB001B6450 /* Sample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0761766405D100EB001B6450 /* Sample.cpp */; };
-		0761766C05D100EB001B6450 /* Sample.h in Headers */ = {isa = PBXBuildFile; fileRef = 0761766505D100EB001B6450 /* Sample.h */; };
 		0761766D05D100EB001B6450 /* Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0761766605D100EB001B6450 /* Song.cpp */; };
 		0761766E05D100EB001B6450 /* Song.h in Headers */ = {isa = PBXBuildFile; fileRef = 0761766705D100EB001B6450 /* Song.h */; };
 		0761766F05D100EB001B6450 /* Sound.h in Headers */ = {isa = PBXBuildFile; fileRef = 0761766805D100EB001B6450 /* Sound.h */; };
@@ -214,7 +211,6 @@
 		07656EEE065F177400EEE5C1 /* SaveGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07656EEC065F177400EEE5C1 /* SaveGame.cpp */; };
 		07656EEF065F177400EEE5C1 /* SaveGame.h in Headers */ = {isa = PBXBuildFile; fileRef = 07656EED065F177400EEE5C1 /* SaveGame.h */; };
 		0780DBF7091F92F40019F059 /* SDL.framework in Add SDL to App */ = {isa = PBXBuildFile; fileRef = 0701134C08EE53B500D9B9F4 /* SDL.framework */; };
-		0780DC15091F92FB0019F059 /* SDL_mixer.framework in Add SDL to App */ = {isa = PBXBuildFile; fileRef = 0701134808EE539100D9B9F4 /* SDL_mixer.framework */; };
 		0787F20B064390F60028223C /* GUI_CallBack.h in Headers */ = {isa = PBXBuildFile; fileRef = 0787F20A064390F60028223C /* GUI_CallBack.h */; };
 		078B444F0669B9B5000EFE27 /* NuvieFileList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078B444D0669B9B5000EFE27 /* NuvieFileList.cpp */; };
 		078B44500669B9B5000EFE27 /* NuvieFileList.h in Headers */ = {isa = PBXBuildFile; fileRef = 078B444E0669B9B5000EFE27 /* NuvieFileList.h */; };
@@ -292,6 +288,56 @@
 		07F10D2905C7D27A0029E1F1 /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2505C7D27A0029E1F1 /* FontManager.cpp */; };
 		07F10D2A05C7D27A0029E1F1 /* FontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2605C7D27A0029E1F1 /* FontManager.h */; };
 		C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */; };
+		EC360B6A130DC4C200D4CAE6 /* CustomSfxManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */; };
+		EC360B6B130DC4C200D4CAE6 /* CustomSfxManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B69130DC4C200D4CAE6 /* CustomSfxManager.h */; };
+		EC360B72130DC4E800D4CAE6 /* PCSpeakerSfxManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B6C130DC4E800D4CAE6 /* PCSpeakerSfxManager.cpp */; };
+		EC360B73130DC4E800D4CAE6 /* PCSpeakerSfxManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B6D130DC4E800D4CAE6 /* PCSpeakerSfxManager.h */; };
+		EC360B74130DC4E800D4CAE6 /* sfx.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B6E130DC4E800D4CAE6 /* sfx.h */; };
+		EC360B75130DC4E800D4CAE6 /* SfxManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B6F130DC4E800D4CAE6 /* SfxManager.h */; };
+		EC360B76130DC4E800D4CAE6 /* TownsSfxManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B70130DC4E800D4CAE6 /* TownsSfxManager.cpp */; };
+		EC360B77130DC4E800D4CAE6 /* TownsSfxManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B71130DC4E800D4CAE6 /* TownsSfxManager.h */; };
+		EC360BA4130DC50500D4CAE6 /* audiostream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B79130DC50500D4CAE6 /* audiostream.cpp */; };
+		EC360BA5130DC50500D4CAE6 /* audiostream.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B7A130DC50500D4CAE6 /* audiostream.h */; };
+		EC360BA6130DC50500D4CAE6 /* FMtownsDecoderStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B7C130DC50500D4CAE6 /* FMtownsDecoderStream.cpp */; };
+		EC360BA7130DC50500D4CAE6 /* FMtownsDecoderStream.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B7D130DC50500D4CAE6 /* FMtownsDecoderStream.h */; };
+		EC360BA8130DC50500D4CAE6 /* PCSpeaker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B7E130DC50500D4CAE6 /* PCSpeaker.cpp */; };
+		EC360BA9130DC50500D4CAE6 /* PCSpeaker.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B7F130DC50500D4CAE6 /* PCSpeaker.h */; };
+		EC360BAA130DC50500D4CAE6 /* PCSpeakerStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B80130DC50500D4CAE6 /* PCSpeakerStream.cpp */; };
+		EC360BAB130DC50500D4CAE6 /* PCSpeakerStream.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B81130DC50500D4CAE6 /* PCSpeakerStream.h */; };
+		EC360BAC130DC50500D4CAE6 /* U6AdPlugDecoderStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B82130DC50500D4CAE6 /* U6AdPlugDecoderStream.cpp */; };
+		EC360BAD130DC50500D4CAE6 /* U6AdPlugDecoderStream.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B83130DC50500D4CAE6 /* U6AdPlugDecoderStream.h */; };
+		EC360BAE130DC50500D4CAE6 /* adpcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B85130DC50500D4CAE6 /* adpcm.cpp */; };
+		EC360BAF130DC50500D4CAE6 /* adpcm.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B86130DC50500D4CAE6 /* adpcm.h */; };
+		EC360BB0130DC50500D4CAE6 /* endian.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B87130DC50500D4CAE6 /* endian.h */; };
+		EC360BB1130DC50500D4CAE6 /* list.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B88130DC50500D4CAE6 /* list.h */; };
+		EC360BB2130DC50500D4CAE6 /* list_intern.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B89130DC50500D4CAE6 /* list_intern.h */; };
+		EC360BB3130DC50500D4CAE6 /* memstream.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B8A130DC50500D4CAE6 /* memstream.h */; };
+		EC360BB4130DC50500D4CAE6 /* raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B8B130DC50500D4CAE6 /* raw.cpp */; };
+		EC360BB5130DC50500D4CAE6 /* raw.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B8C130DC50500D4CAE6 /* raw.h */; };
+		EC360BB6130DC50500D4CAE6 /* stdiostream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B8D130DC50500D4CAE6 /* stdiostream.cpp */; };
+		EC360BB7130DC50500D4CAE6 /* stdiostream.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B8E130DC50500D4CAE6 /* stdiostream.h */; };
+		EC360BB8130DC50500D4CAE6 /* stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B8F130DC50500D4CAE6 /* stream.cpp */; };
+		EC360BB9130DC50500D4CAE6 /* stream.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B90130DC50500D4CAE6 /* stream.h */; };
+		EC360BBA130DC50500D4CAE6 /* wave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B91130DC50500D4CAE6 /* wave.cpp */; };
+		EC360BBB130DC50500D4CAE6 /* wave.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B92130DC50500D4CAE6 /* wave.h */; };
+		EC360BBC130DC50500D4CAE6 /* doublebuffersdl-mixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B93130DC50500D4CAE6 /* doublebuffersdl-mixer.cpp */; };
+		EC360BBD130DC50500D4CAE6 /* doublebuffersdl-mixer.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B94130DC50500D4CAE6 /* doublebuffersdl-mixer.h */; };
+		EC360BBE130DC50500D4CAE6 /* frac.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B95130DC50500D4CAE6 /* frac.h */; };
+		EC360BBF130DC50500D4CAE6 /* mixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B96130DC50500D4CAE6 /* mixer.cpp */; };
+		EC360BC0130DC50500D4CAE6 /* mixer.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B97130DC50500D4CAE6 /* mixer.h */; };
+		EC360BC1130DC50500D4CAE6 /* mixer_intern.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B98130DC50500D4CAE6 /* mixer_intern.h */; };
+		EC360BC2130DC50500D4CAE6 /* mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B99130DC50500D4CAE6 /* mutex.cpp */; };
+		EC360BC3130DC50500D4CAE6 /* mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B9A130DC50500D4CAE6 /* mutex.h */; };
+		EC360BC4130DC50500D4CAE6 /* rate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B9B130DC50500D4CAE6 /* rate.cpp */; };
+		EC360BC5130DC50500D4CAE6 /* rate.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B9C130DC50500D4CAE6 /* rate.h */; };
+		EC360BC8130DC50500D4CAE6 /* sdl-mixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B9F130DC50500D4CAE6 /* sdl-mixer.cpp */; };
+		EC360BC9130DC50500D4CAE6 /* sdl-mixer.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BA0130DC50500D4CAE6 /* sdl-mixer.h */; };
+		EC360BCA130DC50500D4CAE6 /* timestamp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360BA1130DC50500D4CAE6 /* timestamp.cpp */; };
+		EC360BCB130DC50500D4CAE6 /* timestamp.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BA2130DC50500D4CAE6 /* timestamp.h */; };
+		EC360BCC130DC50500D4CAE6 /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BA3130DC50500D4CAE6 /* types.h */; };
+		EC360BD0130DC55F00D4CAE6 /* MapEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BCD130DC55F00D4CAE6 /* MapEntity.h */; };
+		EC360BD1130DC55F00D4CAE6 /* U6LineWalker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */; };
+		EC360BD2130DC55F00D4CAE6 /* U6LineWalker.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */; };
 		ECA2EC8B0FDB423800D4BDDA /* Script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC870FDB423800D4BDDA /* Script.cpp */; };
 		ECA2EC8C0FDB423800D4BDDA /* Script.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA2EC880FDB423800D4BDDA /* Script.h */; };
 		ECA2EC8D0FDB423800D4BDDA /* ScriptActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */; };
@@ -305,7 +351,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				0780DC15091F92FB0019F059 /* SDL_mixer.framework in Add SDL to App */,
 				0780DBF7091F92F40019F059 /* SDL.framework in Add SDL to App */,
 			);
 			name = "Add SDL to App";
@@ -318,8 +363,7 @@
 		0700C6C60A84303D0039FD03 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Weather.cpp; path = ../Weather.cpp; sourceTree = SOURCE_ROOT; };
 		0700C6C70A84303D0039FD03 /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Weather.h; path = ../Weather.h; sourceTree = SOURCE_ROOT; };
 		0700C71E0A8442490039FD03 /* Objlist.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Objlist.h; path = ../save/Objlist.h; sourceTree = SOURCE_ROOT; };
-		0701134808EE539100D9B9F4 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = ../../../Library/Frameworks/SDL_mixer.framework; sourceTree = SOURCE_ROOT; };
-		0701134C08EE53B500D9B9F4 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../Library/Frameworks/SDL.framework; sourceTree = SOURCE_ROOT; };
+		0701134C08EE53B500D9B9F4 /* SDL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = SDL.framework; path = ../../../../../Library/Frameworks/SDL.framework; sourceTree = SOURCE_ROOT; };
 		0703C0F3054BE5660003D6CB /* Nuvie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nuvie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0704F9D40446B4E600A8000A /* Converse.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Converse.cpp; path = ../Converse.cpp; sourceTree = SOURCE_ROOT; };
 		0704F9D50446B4E600A8000A /* Converse.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Converse.h; path = ../Converse.h; sourceTree = SOURCE_ROOT; };
@@ -434,8 +478,6 @@
 		074B915204E4C51500A8000A /* GUI.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = GUI.cpp; path = ../GUI/GUI.cpp; sourceTree = SOURCE_ROOT; };
 		074B915304E4C51500A8000A /* GUI.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = GUI.h; path = ../GUI/GUI.h; sourceTree = SOURCE_ROOT; };
 		074B915604E4C51500A8000A /* the_font.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = the_font.h; path = ../GUI/the_font.h; sourceTree = SOURCE_ROOT; };
-		0761766405D100EB001B6450 /* Sample.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Sample.cpp; path = ../sound/Sample.cpp; sourceTree = SOURCE_ROOT; };
-		0761766505D100EB001B6450 /* Sample.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Sample.h; path = ../sound/Sample.h; sourceTree = SOURCE_ROOT; };
 		0761766605D100EB001B6450 /* Song.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Song.cpp; path = ../sound/Song.cpp; sourceTree = SOURCE_ROOT; };
 		0761766705D100EB001B6450 /* Song.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Song.h; path = ../sound/Song.h; sourceTree = SOURCE_ROOT; };
 		0761766805D100EB001B6450 /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Sound.h; path = ../sound/Sound.h; sourceTree = SOURCE_ROOT; };
@@ -694,6 +736,56 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Debug.cpp; path = ../Debug.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CustomSfxManager.cpp; path = ../sound/CustomSfxManager.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B69130DC4C200D4CAE6 /* CustomSfxManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomSfxManager.h; path = ../sound/CustomSfxManager.h; sourceTree = SOURCE_ROOT; };
+		EC360B6C130DC4E800D4CAE6 /* PCSpeakerSfxManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PCSpeakerSfxManager.cpp; path = ../sound/PCSpeakerSfxManager.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B6D130DC4E800D4CAE6 /* PCSpeakerSfxManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCSpeakerSfxManager.h; path = ../sound/PCSpeakerSfxManager.h; sourceTree = SOURCE_ROOT; };
+		EC360B6E130DC4E800D4CAE6 /* sfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sfx.h; path = ../sound/sfx.h; sourceTree = SOURCE_ROOT; };
+		EC360B6F130DC4E800D4CAE6 /* SfxManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SfxManager.h; path = ../sound/SfxManager.h; sourceTree = SOURCE_ROOT; };
+		EC360B70130DC4E800D4CAE6 /* TownsSfxManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TownsSfxManager.cpp; path = ../sound/TownsSfxManager.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B71130DC4E800D4CAE6 /* TownsSfxManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TownsSfxManager.h; path = ../sound/TownsSfxManager.h; sourceTree = SOURCE_ROOT; };
+		EC360B79130DC50500D4CAE6 /* audiostream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = audiostream.cpp; path = ../sound/mixer/audiostream.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B7A130DC50500D4CAE6 /* audiostream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = audiostream.h; path = ../sound/mixer/audiostream.h; sourceTree = SOURCE_ROOT; };
+		EC360B7C130DC50500D4CAE6 /* FMtownsDecoderStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FMtownsDecoderStream.cpp; path = ../sound/mixer/decoder/FMtownsDecoderStream.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B7D130DC50500D4CAE6 /* FMtownsDecoderStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMtownsDecoderStream.h; path = ../sound/mixer/decoder/FMtownsDecoderStream.h; sourceTree = SOURCE_ROOT; };
+		EC360B7E130DC50500D4CAE6 /* PCSpeaker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PCSpeaker.cpp; path = ../sound/mixer/decoder/PCSpeaker.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B7F130DC50500D4CAE6 /* PCSpeaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCSpeaker.h; path = ../sound/mixer/decoder/PCSpeaker.h; sourceTree = SOURCE_ROOT; };
+		EC360B80130DC50500D4CAE6 /* PCSpeakerStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PCSpeakerStream.cpp; path = ../sound/mixer/decoder/PCSpeakerStream.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B81130DC50500D4CAE6 /* PCSpeakerStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCSpeakerStream.h; path = ../sound/mixer/decoder/PCSpeakerStream.h; sourceTree = SOURCE_ROOT; };
+		EC360B82130DC50500D4CAE6 /* U6AdPlugDecoderStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = U6AdPlugDecoderStream.cpp; path = ../sound/mixer/decoder/U6AdPlugDecoderStream.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B83130DC50500D4CAE6 /* U6AdPlugDecoderStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = U6AdPlugDecoderStream.h; path = ../sound/mixer/decoder/U6AdPlugDecoderStream.h; sourceTree = SOURCE_ROOT; };
+		EC360B85130DC50500D4CAE6 /* adpcm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = adpcm.cpp; path = ../sound/mixer/decoder/wave/adpcm.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B86130DC50500D4CAE6 /* adpcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = adpcm.h; path = ../sound/mixer/decoder/wave/adpcm.h; sourceTree = SOURCE_ROOT; };
+		EC360B87130DC50500D4CAE6 /* endian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = endian.h; path = ../sound/mixer/decoder/wave/endian.h; sourceTree = SOURCE_ROOT; };
+		EC360B88130DC50500D4CAE6 /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = list.h; path = ../sound/mixer/decoder/wave/list.h; sourceTree = SOURCE_ROOT; };
+		EC360B89130DC50500D4CAE6 /* list_intern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = list_intern.h; path = ../sound/mixer/decoder/wave/list_intern.h; sourceTree = SOURCE_ROOT; };
+		EC360B8A130DC50500D4CAE6 /* memstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memstream.h; path = ../sound/mixer/decoder/wave/memstream.h; sourceTree = SOURCE_ROOT; };
+		EC360B8B130DC50500D4CAE6 /* raw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = raw.cpp; path = ../sound/mixer/decoder/wave/raw.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B8C130DC50500D4CAE6 /* raw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = raw.h; path = ../sound/mixer/decoder/wave/raw.h; sourceTree = SOURCE_ROOT; };
+		EC360B8D130DC50500D4CAE6 /* stdiostream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stdiostream.cpp; path = ../sound/mixer/decoder/wave/stdiostream.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B8E130DC50500D4CAE6 /* stdiostream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdiostream.h; path = ../sound/mixer/decoder/wave/stdiostream.h; sourceTree = SOURCE_ROOT; };
+		EC360B8F130DC50500D4CAE6 /* stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stream.cpp; path = ../sound/mixer/decoder/wave/stream.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B90130DC50500D4CAE6 /* stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stream.h; path = ../sound/mixer/decoder/wave/stream.h; sourceTree = SOURCE_ROOT; };
+		EC360B91130DC50500D4CAE6 /* wave.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = wave.cpp; path = ../sound/mixer/decoder/wave/wave.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B92130DC50500D4CAE6 /* wave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wave.h; path = ../sound/mixer/decoder/wave/wave.h; sourceTree = SOURCE_ROOT; };
+		EC360B93130DC50500D4CAE6 /* doublebuffersdl-mixer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "doublebuffersdl-mixer.cpp"; path = "../sound/mixer/doublebuffersdl-mixer.cpp"; sourceTree = SOURCE_ROOT; };
+		EC360B94130DC50500D4CAE6 /* doublebuffersdl-mixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "doublebuffersdl-mixer.h"; path = "../sound/mixer/doublebuffersdl-mixer.h"; sourceTree = SOURCE_ROOT; };
+		EC360B95130DC50500D4CAE6 /* frac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = frac.h; path = ../sound/mixer/frac.h; sourceTree = SOURCE_ROOT; };
+		EC360B96130DC50500D4CAE6 /* mixer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mixer.cpp; path = ../sound/mixer/mixer.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B97130DC50500D4CAE6 /* mixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mixer.h; path = ../sound/mixer/mixer.h; sourceTree = SOURCE_ROOT; };
+		EC360B98130DC50500D4CAE6 /* mixer_intern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mixer_intern.h; path = ../sound/mixer/mixer_intern.h; sourceTree = SOURCE_ROOT; };
+		EC360B99130DC50500D4CAE6 /* mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mutex.cpp; path = ../sound/mixer/mutex.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B9A130DC50500D4CAE6 /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mutex.h; path = ../sound/mixer/mutex.h; sourceTree = SOURCE_ROOT; };
+		EC360B9B130DC50500D4CAE6 /* rate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rate.cpp; path = ../sound/mixer/rate.cpp; sourceTree = SOURCE_ROOT; };
+		EC360B9C130DC50500D4CAE6 /* rate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rate.h; path = ../sound/mixer/rate.h; sourceTree = SOURCE_ROOT; };
+		EC360B9F130DC50500D4CAE6 /* sdl-mixer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "sdl-mixer.cpp"; path = "../sound/mixer/sdl-mixer.cpp"; sourceTree = SOURCE_ROOT; };
+		EC360BA0130DC50500D4CAE6 /* sdl-mixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "sdl-mixer.h"; path = "../sound/mixer/sdl-mixer.h"; sourceTree = SOURCE_ROOT; };
+		EC360BA1130DC50500D4CAE6 /* timestamp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = timestamp.cpp; path = ../sound/mixer/timestamp.cpp; sourceTree = SOURCE_ROOT; };
+		EC360BA2130DC50500D4CAE6 /* timestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = timestamp.h; path = ../sound/mixer/timestamp.h; sourceTree = SOURCE_ROOT; };
+		EC360BA3130DC50500D4CAE6 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = types.h; path = ../sound/mixer/types.h; sourceTree = SOURCE_ROOT; };
+		EC360BCD130DC55F00D4CAE6 /* MapEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEntity.h; path = ../misc/MapEntity.h; sourceTree = SOURCE_ROOT; };
+		EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = U6LineWalker.cpp; path = ../misc/U6LineWalker.cpp; sourceTree = SOURCE_ROOT; };
+		EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = U6LineWalker.h; path = ../misc/U6LineWalker.h; sourceTree = SOURCE_ROOT; };
 		EC9361A70FD0D95800960AC6 /* actor.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; name = actor.lua; path = ../data/scripts/u6/actor.lua; sourceTree = SOURCE_ROOT; };
 		ECA2EC870FDB423800D4BDDA /* Script.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Script.cpp; path = ../script/Script.cpp; sourceTree = SOURCE_ROOT; };
 		ECA2EC880FDB423800D4BDDA /* Script.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Script.h; path = ../script/Script.h; sourceTree = SOURCE_ROOT; };
@@ -709,7 +801,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0703C0F0054BE5660003D6CB /* Cocoa.framework in Frameworks */,
-				0701134908EE539100D9B9F4 /* SDL_mixer.framework in Frameworks */,
 				0701134D08EE53B500D9B9F4 /* SDL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -856,9 +947,16 @@
 		0761765605D100B2001B6450 /* Sound */ = {
 			isa = PBXGroup;
 			children = (
+				EC360B78130DC50500D4CAE6 /* mixer */,
+				EC360B6C130DC4E800D4CAE6 /* PCSpeakerSfxManager.cpp */,
+				EC360B6D130DC4E800D4CAE6 /* PCSpeakerSfxManager.h */,
+				EC360B6E130DC4E800D4CAE6 /* sfx.h */,
+				EC360B6F130DC4E800D4CAE6 /* SfxManager.h */,
+				EC360B70130DC4E800D4CAE6 /* TownsSfxManager.cpp */,
+				EC360B71130DC4E800D4CAE6 /* TownsSfxManager.h */,
+				EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */,
+				EC360B69130DC4C200D4CAE6 /* CustomSfxManager.h */,
 				076178FC05D79121001B6450 /* adplug */,
-				0761766505D100EB001B6450 /* Sample.h */,
-				0761766405D100EB001B6450 /* Sample.cpp */,
 				0761766705D100EB001B6450 /* Song.h */,
 				0761766605D100EB001B6450 /* Song.cpp */,
 				07617E4D05DBA903001B6450 /* SongAdPlug.h */,
@@ -903,6 +1001,9 @@
 		079CA1D204230A2B00A8000A /* misc */ = {
 			isa = PBXGroup;
 			children = (
+				EC360BCD130DC55F00D4CAE6 /* MapEntity.h */,
+				EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */,
+				EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */,
 				0730EF110A7790D6005AB87E /* ActorList.h */,
 				0700C6B60A837D170039FD03 /* CallBack.h */,
 				079903C90481F21E00A8000A /* iAVLTree.h */,
@@ -1418,12 +1519,76 @@
 			isa = PBXGroup;
 			children = (
 				0701134C08EE53B500D9B9F4 /* SDL.framework */,
-				0701134808EE539100D9B9F4 /* SDL_mixer.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
+		};
+		EC360B78130DC50500D4CAE6 /* mixer */ = {
+			isa = PBXGroup;
+			children = (
+				EC360B79130DC50500D4CAE6 /* audiostream.cpp */,
+				EC360B7A130DC50500D4CAE6 /* audiostream.h */,
+				EC360B7B130DC50500D4CAE6 /* decoder */,
+				EC360B93130DC50500D4CAE6 /* doublebuffersdl-mixer.cpp */,
+				EC360B94130DC50500D4CAE6 /* doublebuffersdl-mixer.h */,
+				EC360B95130DC50500D4CAE6 /* frac.h */,
+				EC360B96130DC50500D4CAE6 /* mixer.cpp */,
+				EC360B97130DC50500D4CAE6 /* mixer.h */,
+				EC360B98130DC50500D4CAE6 /* mixer_intern.h */,
+				EC360B99130DC50500D4CAE6 /* mutex.cpp */,
+				EC360B9A130DC50500D4CAE6 /* mutex.h */,
+				EC360B9B130DC50500D4CAE6 /* rate.cpp */,
+				EC360B9C130DC50500D4CAE6 /* rate.h */,
+				EC360B9F130DC50500D4CAE6 /* sdl-mixer.cpp */,
+				EC360BA0130DC50500D4CAE6 /* sdl-mixer.h */,
+				EC360BA1130DC50500D4CAE6 /* timestamp.cpp */,
+				EC360BA2130DC50500D4CAE6 /* timestamp.h */,
+				EC360BA3130DC50500D4CAE6 /* types.h */,
+			);
+			name = mixer;
+			path = ../sound/mixer;
+			sourceTree = SOURCE_ROOT;
+		};
+		EC360B7B130DC50500D4CAE6 /* decoder */ = {
+			isa = PBXGroup;
+			children = (
+				EC360B7C130DC50500D4CAE6 /* FMtownsDecoderStream.cpp */,
+				EC360B7D130DC50500D4CAE6 /* FMtownsDecoderStream.h */,
+				EC360B7E130DC50500D4CAE6 /* PCSpeaker.cpp */,
+				EC360B7F130DC50500D4CAE6 /* PCSpeaker.h */,
+				EC360B80130DC50500D4CAE6 /* PCSpeakerStream.cpp */,
+				EC360B81130DC50500D4CAE6 /* PCSpeakerStream.h */,
+				EC360B82130DC50500D4CAE6 /* U6AdPlugDecoderStream.cpp */,
+				EC360B83130DC50500D4CAE6 /* U6AdPlugDecoderStream.h */,
+				EC360B84130DC50500D4CAE6 /* wave */,
+			);
+			name = decoder;
+			path = ../sound/mixer/decoder;
+			sourceTree = SOURCE_ROOT;
+		};
+		EC360B84130DC50500D4CAE6 /* wave */ = {
+			isa = PBXGroup;
+			children = (
+				EC360B85130DC50500D4CAE6 /* adpcm.cpp */,
+				EC360B86130DC50500D4CAE6 /* adpcm.h */,
+				EC360B87130DC50500D4CAE6 /* endian.h */,
+				EC360B88130DC50500D4CAE6 /* list.h */,
+				EC360B89130DC50500D4CAE6 /* list_intern.h */,
+				EC360B8A130DC50500D4CAE6 /* memstream.h */,
+				EC360B8B130DC50500D4CAE6 /* raw.cpp */,
+				EC360B8C130DC50500D4CAE6 /* raw.h */,
+				EC360B8D130DC50500D4CAE6 /* stdiostream.cpp */,
+				EC360B8E130DC50500D4CAE6 /* stdiostream.h */,
+				EC360B8F130DC50500D4CAE6 /* stream.cpp */,
+				EC360B90130DC50500D4CAE6 /* stream.h */,
+				EC360B91130DC50500D4CAE6 /* wave.cpp */,
+				EC360B92130DC50500D4CAE6 /* wave.h */,
+			);
+			name = wave;
+			path = ../sound/mixer/decoder/wave;
+			sourceTree = SOURCE_ROOT;
 		};
 		ECA2EC860FDB421200D4BDDA /* Script */ = {
 			isa = PBXGroup;
@@ -1516,7 +1681,6 @@
 				079A4265058748A2003627C9 /* U6objects.h in Headers */,
 				07F10D2805C7D27A0029E1F1 /* Font.h in Headers */,
 				07F10D2A05C7D27A0029E1F1 /* FontManager.h in Headers */,
-				0761766C05D100EB001B6450 /* Sample.h in Headers */,
 				0761766E05D100EB001B6450 /* Song.h in Headers */,
 				0761766F05D100EB001B6450 /* Sound.h in Headers */,
 				0761767105D100EB001B6450 /* SoundManager.h in Headers */,
@@ -1589,6 +1753,36 @@
 				07E986D30C6599BF00134DC7 /* Obj.h in Headers */,
 				ECA2EC8C0FDB423800D4BDDA /* Script.h in Headers */,
 				ECA2EC8E0FDB423800D4BDDA /* ScriptActor.h in Headers */,
+				EC360B6B130DC4C200D4CAE6 /* CustomSfxManager.h in Headers */,
+				EC360B73130DC4E800D4CAE6 /* PCSpeakerSfxManager.h in Headers */,
+				EC360B74130DC4E800D4CAE6 /* sfx.h in Headers */,
+				EC360B75130DC4E800D4CAE6 /* SfxManager.h in Headers */,
+				EC360B77130DC4E800D4CAE6 /* TownsSfxManager.h in Headers */,
+				EC360BA5130DC50500D4CAE6 /* audiostream.h in Headers */,
+				EC360BA7130DC50500D4CAE6 /* FMtownsDecoderStream.h in Headers */,
+				EC360BA9130DC50500D4CAE6 /* PCSpeaker.h in Headers */,
+				EC360BAB130DC50500D4CAE6 /* PCSpeakerStream.h in Headers */,
+				EC360BAD130DC50500D4CAE6 /* U6AdPlugDecoderStream.h in Headers */,
+				EC360BAF130DC50500D4CAE6 /* adpcm.h in Headers */,
+				EC360BB0130DC50500D4CAE6 /* endian.h in Headers */,
+				EC360BB1130DC50500D4CAE6 /* list.h in Headers */,
+				EC360BB2130DC50500D4CAE6 /* list_intern.h in Headers */,
+				EC360BB3130DC50500D4CAE6 /* memstream.h in Headers */,
+				EC360BB5130DC50500D4CAE6 /* raw.h in Headers */,
+				EC360BB7130DC50500D4CAE6 /* stdiostream.h in Headers */,
+				EC360BB9130DC50500D4CAE6 /* stream.h in Headers */,
+				EC360BBB130DC50500D4CAE6 /* wave.h in Headers */,
+				EC360BBD130DC50500D4CAE6 /* doublebuffersdl-mixer.h in Headers */,
+				EC360BBE130DC50500D4CAE6 /* frac.h in Headers */,
+				EC360BC0130DC50500D4CAE6 /* mixer.h in Headers */,
+				EC360BC1130DC50500D4CAE6 /* mixer_intern.h in Headers */,
+				EC360BC3130DC50500D4CAE6 /* mutex.h in Headers */,
+				EC360BC5130DC50500D4CAE6 /* rate.h in Headers */,
+				EC360BC9130DC50500D4CAE6 /* sdl-mixer.h in Headers */,
+				EC360BCB130DC50500D4CAE6 /* timestamp.h in Headers */,
+				EC360BCC130DC50500D4CAE6 /* types.h in Headers */,
+				EC360BD0130DC55F00D4CAE6 /* MapEntity.h in Headers */,
+				EC360BD2130DC55F00D4CAE6 /* U6LineWalker.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1751,7 +1945,6 @@
 				078CE6680582F64100EC127A /* EggManager.cpp in Sources */,
 				07F10D2705C7D27A0029E1F1 /* Font.cpp in Sources */,
 				07F10D2905C7D27A0029E1F1 /* FontManager.cpp in Sources */,
-				0761766B05D100EB001B6450 /* Sample.cpp in Sources */,
 				0761766D05D100EB001B6450 /* Song.cpp in Sources */,
 				0761767005D100EB001B6450 /* SoundManager.cpp in Sources */,
 				0761777405D47ADB001B6450 /* GUI_YesNoDialog.cpp in Sources */,
@@ -1820,6 +2013,26 @@
 				C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */,
 				ECA2EC8B0FDB423800D4BDDA /* Script.cpp in Sources */,
 				ECA2EC8D0FDB423800D4BDDA /* ScriptActor.cpp in Sources */,
+				EC360B6A130DC4C200D4CAE6 /* CustomSfxManager.cpp in Sources */,
+				EC360B72130DC4E800D4CAE6 /* PCSpeakerSfxManager.cpp in Sources */,
+				EC360B76130DC4E800D4CAE6 /* TownsSfxManager.cpp in Sources */,
+				EC360BA4130DC50500D4CAE6 /* audiostream.cpp in Sources */,
+				EC360BA6130DC50500D4CAE6 /* FMtownsDecoderStream.cpp in Sources */,
+				EC360BA8130DC50500D4CAE6 /* PCSpeaker.cpp in Sources */,
+				EC360BAA130DC50500D4CAE6 /* PCSpeakerStream.cpp in Sources */,
+				EC360BAC130DC50500D4CAE6 /* U6AdPlugDecoderStream.cpp in Sources */,
+				EC360BAE130DC50500D4CAE6 /* adpcm.cpp in Sources */,
+				EC360BB4130DC50500D4CAE6 /* raw.cpp in Sources */,
+				EC360BB6130DC50500D4CAE6 /* stdiostream.cpp in Sources */,
+				EC360BB8130DC50500D4CAE6 /* stream.cpp in Sources */,
+				EC360BBA130DC50500D4CAE6 /* wave.cpp in Sources */,
+				EC360BBC130DC50500D4CAE6 /* doublebuffersdl-mixer.cpp in Sources */,
+				EC360BBF130DC50500D4CAE6 /* mixer.cpp in Sources */,
+				EC360BC2130DC50500D4CAE6 /* mutex.cpp in Sources */,
+				EC360BC4130DC50500D4CAE6 /* rate.cpp in Sources */,
+				EC360BC8130DC50500D4CAE6 /* sdl-mixer.cpp in Sources */,
+				EC360BCA130DC50500D4CAE6 /* timestamp.cpp in Sources */,
+				EC360BD1130DC55F00D4CAE6 /* U6LineWalker.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1893,6 +2106,8 @@
 		07CD0D58088E817600E552A7 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				CC = "";
 				COPY_PHASE_STRIP = NO;
 				CPLUSPLUS = "";
@@ -1903,7 +2118,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_GENERATE_PROFILING_CODE = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = MACOSX;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -1913,6 +2128,7 @@
 					"$(HOME)/Library/Frameworks/SDL_mixer.framework/Headers",
 					/usr/local/include/SDL,
 					..,
+					"$(SOURCE_ROOT)/../sound/mixer",
 				);
 				INFOPLIST_FILE = "Info-Nuvie.plist";
 				INSTALL_PATH = "$(HOME)/Applications";

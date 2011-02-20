@@ -24,7 +24,7 @@ rm -rf `find $DIR/nuvie-$DATE | grep "CVS$"`
 
 cp  $DIR/../../../ChangeLog $DIR/ChangeLog.txt
 
-$DIR/../../misc/buildDMG.pl -dmgName Nuvie -buildDir $DIR -volName Nuvie-$DATE  -compressionLevel 9 $DIR/nuvie-$DATE -deleteHeaders $DIR/../../misc/README_MacOSX.txt $DIR/ChangeLog.txt
+$DIR/../../misc/buildDMG.pl -debug -dmgName Nuvie -buildDir $DIR -volName Nuvie-$DATE  -compressionLevel 9 $DIR/nuvie-$DATE -deleteHeaders $DIR/../../misc/README_MacOSX.txt $DIR/ChangeLog.txt
 
 rm -rf $DIR/nuvie-$DATE
 rm $DIR/ChangeLog.txt

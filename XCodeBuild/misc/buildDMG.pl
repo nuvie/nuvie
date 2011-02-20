@@ -148,9 +148,10 @@ print "Changed dmgName to \"$dmgName\"\n" if $debug;
 # mount the dmg
 print "> hdiutil attach \"$buildDir/$dmgName\"\n" if $debug;
 $output = `hdiutil attach \"$buildDir/$dmgName\"`;
+print "> Output: $output\n" if $debug;
 die "FATAL: Couldn't mount DMG $dmgName (Error: $?)\n" if $?;
 
-my ($dev)  = ($output =~ /(\/dev\/.+?)\s*Apple_partition_scheme/im);
+my ($dev)  = ($output =~ /(\/dev\/.+?)\s*GUID_partition_scheme/im);
 my ($dest) = ($output =~ /Apple_HFS\s+(.+?)\s*$/im);
 
 # copy the files onto the dmg
