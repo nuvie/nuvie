@@ -1,3 +1,21 @@
+2012-03-07  Eric Fry <efry at users.sourceforge.net> r1147
+	* MACOSX: Check for config in $HOME/Library/Preferences/Nuvie Preferences
+	* MACOSX: If no config can be loaded try to create config with default values in
+	  $HOME/Library/Preferences/Nuvie Preferences
+	* MACOSX: If running from app bundle, change the default working directory to
+	  Resources/ directory inside the app bundle. This enables us to move the data/
+	  directory inside the app bundle.
+	* MACOSX: Changed XCode build setup to copy data/ dir into app bundle.
+	* MACOSX: Updated DMG build script and README file with new app paths.
+	* Try to create savegame directory if specified in cfg file but does not exist
+	  on disk.
+	* Added new mkdir_recursive() function.
+	* Changed the formatting on the config XML when it is written to the disk.
+	* Don't try to use FM-Towns conversation logic if the townsdir specified in the
+	  config does not exist.
+	* MACOSX: Added eclipse build files.
+
+
 2012-02-15  Eric Fry <efry at users.sourceforge.net> r1142
 
 	* Started work on PC Speaker SFX
