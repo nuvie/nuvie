@@ -62,4 +62,6 @@ inline uint32 divide_time(uint32 this_time, uint32 &last_time, uint32 *passed_ti
     return(fraction);
 }
 
+int mkdir_recursive(std::string path, int mode);
+
 #endif /* __U6misc_h__ */

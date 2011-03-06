@@ -33,6 +33,7 @@
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "U6misc.h"
+#include "NuvieIOFile.h"
 #include "Screen.h"
 #include "Script.h"
 #include "Game.h"
@@ -146,6 +147,15 @@ bool Nuvie::initConfig()
 
 	 if(loadConfigFile(config_path))
 	   return true;
+
+#ifdef MACOSX
+	 config_path.assign(home_env);
+	 config_path.append("/Library/Preferences/Nuvie Preferences");
+
+	 if(loadConfigFile(config_path))
+	   return true;
+#endif
+
  }
 #endif
 
@@ -170,20 +180,77 @@ bool Nuvie::initConfig()
    return true;
 #endif
 
+#ifdef MACOSX
+ if(home_env != NULL)
+ {
+	 if(initDefaultConfigMacOSX(home_env))
+		 return true;
+ }
+#endif
+
  delete config;
  config = NULL;
 
  return false;
 }
 
-bool Nuvie::loadConfigFile(std::string filename)
+bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
+{
+	const unsigned char cfg_stub[] = "<config></config>";
+	std::string config_path;
+   std::string home(home_env);
+	config_path = home;
+	config_path.append("/Library/Preferences/Nuvie Preferences");
+
+	NuvieIOFileWrite cfgFile;
+
+	if(cfgFile.open(config_path) == false)
+		return false;
+
+	cfgFile.writeBuf(cfg_stub, sizeof(cfg_stub));
+	cfgFile.close();
+
+	if(loadConfigFile(config_path, NUVIE_CONF_READWRITE) == false)
+		return false;
+
+	config->set("config/loadgame", "ultima6");
+	config->set("config/datadir", "./data");
+
+	config->set("config/video/scale_method", "point");
+	config->set("config/video/scale_factor", "2");
+
+	config->set("config/audio/enabled", true);
+	config->set("config/audio/enable_music", true);
+	config->set("config/audio/enable_sfx", true);
+	config->set("config/audio/music_volume", 100);
+	config->set("config/audio/sfx_volume", 255);
+
+	config->set("config/general/lighting", "original");
+	config->set("config/general/dither_mode", "none");
+	config->set("config/general/enable_cursors", false);
+
+	config->set("config/ultima6/gamedir", "/Library/Application Support/Nuvie Support/ultima6");
+	config->set("config/ultima6/townsdir", "/Library/Application Support/Nuvie Support/townsU6");
+	config->set("config/ultima6/savedir", home + "/Library/Application Support/Nuvie/savegames");
+	config->set("config/ultima6/sfxdir", home + "/Library/Application Support/Nuvie/custom_sfx");
+	config->set("config/ultima6/music", "native");
+	config->set("config/ultima6/sfx", "pcspeaker");
+	config->set("config/ultima6/skip_intro", false);
+	config->set("config/ultima6/show_eggs", true);
+
+	config->write();
+
+	return true;
+}
+
+bool Nuvie::loadConfigFile(std::string filename, bool readOnly)
 {
  struct stat sb;
  DEBUG(0,LEVEL_INFORMATIONAL,"Loading Config from '%s': ", filename.c_str());
 
  if(stat(filename.c_str(),&sb) == 0)
   {
-    if(config->readConfigFile(filename,"config") == true)
+    if(config->readConfigFile(filename,"config", readOnly) == true)
       {
        DEBUG(1,LEVEL_INFORMATIONAL,"Done.\n");
        return true;

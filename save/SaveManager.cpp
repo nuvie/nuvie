@@ -38,7 +38,7 @@
 #include "SaveGame.h"
 //#include <direct.h>
 
-#ifdef __linux__
+#if defined __linux__ || MACOSX
 #include <sys/stat.h>
 #endif
 
@@ -95,8 +95,12 @@ void SaveManager::init()
 
    if(directory_exists(savedir.c_str()) == false)
    {
-    DEBUG(0,LEVEL_ERROR,"savedir '%s' either not found or not accessible!\n", savedir.c_str());
-    throw "Setting Save Directory!";
+      DEBUG(0,LEVEL_NOTIFICATION,"creating directory %s\n", savedir.c_str());
+      if(mkdir_recursive(savedir.c_str(), 0700) != 0)
+      {
+         DEBUG(0,LEVEL_ERROR,"savedir '%s' either not found or not accessible!\n", savedir.c_str());
+         throw "Setting Save Directory!";
+      }
    }
 
  return;

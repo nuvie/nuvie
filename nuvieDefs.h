@@ -105,6 +105,7 @@ typedef unsigned char BOOL;
 #define NUVIE_RAND rand
 #endif
 
+#define MAXPATHLEN 256
 
 #define nuprint(T...) Game::get_game()->get_scroll()->printf(T)
 /*#define nuprint(T) Game::get_game()->get_scroll()->display_string(T)*/

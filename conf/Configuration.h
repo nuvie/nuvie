@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class XMLTree;
 class ConfigNode;
 
+#define NUVIE_CONF_READONLY true
+#define NUVIE_CONF_READWRITE false
 
 /*
 Configuration class.

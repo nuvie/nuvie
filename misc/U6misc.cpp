@@ -157,6 +157,36 @@ void stringToUpper(std::string &str)
     }
 }
 
+int mkdir_recursive(std::string path, int mode)
+{
+   vector<string> directories;
+   string tmp_path;
+   
+   Tokenise( path, directories, U6PATH_DELIMITER );
+   
+   std::vector<string>::iterator dir_iter;
+   
+   for( dir_iter = directories.begin(); dir_iter != directories.end(); )
+   {
+      string dir = *dir_iter;
+      
+      printf( "%s, ", dir.c_str() );
+      
+      tmp_path += U6PATH_DELIMITER;
+      tmp_path += dir;
+      
+      if(directory_exists(tmp_path.c_str()) == false)
+      {
+         int ret = mkdir(tmp_path.c_str(), mode);
+         if(ret != 0)
+            return ret;
+      }      
+      dir_iter++;
+   }
+   
+   return 0;
+}
+
 //return the uint8 game_type from a char string
 uint8 get_game_type(const char *string)
 {

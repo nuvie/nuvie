@@ -120,9 +120,11 @@ string XMLNode::dump(int depth)
 
 	s+="<";
 	s+=id;
-	s+=">\n";
+	s+=">";
 	if(id[id.length()-1] != '/')
 	{
+      if(nodelist.empty() == false)
+         s+="\n";
 		for(std::vector<XMLNode*>::const_iterator it = nodelist.begin();
 			it != nodelist.end(); ++it)
 		{
@@ -131,19 +133,20 @@ string XMLNode::dump(int depth)
 
 		if(content.length())
 		{
-			s += string(depth,' ');
+			//s += string(depth,' ');
 			s += encode_entity(content);
 		}
 		if(id[0] == '?')
 		{
 			return s;
 		}
-		if(content.length())
-			s += "\n";
+		//if(content.length())
+		//	s += "\n";
 
 		if(!no_close)
 		{
-			s += string(depth,' ');
+         if(!content.length())
+            s += string(depth,' ');
 
 			s += "</";
 			s += close_tag(id);

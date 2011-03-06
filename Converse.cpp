@@ -23,6 +23,7 @@
 #include "nuvieDefs.h"
 #include "Game.h"
 #include "Configuration.h"
+#include "U6misc.h"
 #include "U6Lzw.h"
 #include "Player.h"
 #include "Party.h"
@@ -86,7 +87,7 @@ Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
     cfg->value("config/party_all_the_time", party_all_the_time);
 
     cfg->value("config/ultima6/townsdir", townsdir, "");
-    if(townsdir != "")
+    if(townsdir != "" && directory_exists(townsdir.c_str()))
       using_fmtowns = true;
     
     speech = new ConverseSpeech();

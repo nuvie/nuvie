@@ -32,6 +32,7 @@
 #include "main.h"
 
 #ifdef MACOSX
+#include <CoreFoundation/CoreFoundation.h>
 int nuvieMain(int argc, char **argv)
 #else
 int main(int argc, char **argv)
@@ -43,6 +44,21 @@ int main(int argc, char **argv)
  DEBUG(1,LEVEL_DEBUGGING,"To just get less spam, set the default for CurrentDebugLevel in Debug.cpp lower.\n");
  #ifdef MACOSX
  srandom(time(NULL));
+ CFBundleRef bundle = CFBundleGetMainBundle();
+ if(bundle != NULL)
+ {
+	CFURLRef fileUrl = CFBundleCopyResourcesDirectoryURL(bundle);
+	if (fileUrl) {
+		// Try to convert the URL to an absolute path
+		uint8 buf[MAXPATHLEN];
+		if (CFURLGetFileSystemRepresentation(fileUrl, true, buf, sizeof(buf))) {
+			// Success: Add it to the search path
+         DEBUG(0,LEVEL_INFORMATIONAL, "Changing working dir to %s.\n", (const char *)buf);
+			chdir((const char *)buf);
+		}
+		CFRelease(fileUrl);
+	}
+ }
  #else
  srand(time(NULL));
  #endif
