@@ -76,9 +76,6 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
 {
  std::string sample_file;
  char filename[20]; // "/speech/charxxx.sam"
- SDL_RWops *rw;
- NuvieIOBuffer *wav_buffer;
- unsigned char *raw_data;
  TownsSound sound;
  
  if(!audio_enabled)
@@ -99,8 +96,6 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
  config->pathFromValue("config/ultima6/townsdir", filename, sample_file);
  
  DEBUG(0,LEVEL_DEBUGGING,"Loading Speech Sample %s:%d\n", sample_file.c_str(), sample_num);
- 
- //sample_file = "/Users/efry/Ultima/townsU6/SOUNDS2.DAT";
 
  sound.filename = sample_file;
  sound.sample_num = sample_num;
@@ -109,23 +104,7 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
 	 handle = Game::get_game()->get_sound_manager()->playTownsSound(sample_file, sample_num);
 
  list.push_back(sound);
- /*
- wav_buffer = load_speech(sample_file, sample_num);
 
- raw_data = wav_buffer->get_raw_data();
- 
- rw = SDL_RWFromMem(raw_data, wav_buffer->get_size());
-
- sample = Mix_LoadWAV_RW(rw, false);
- 
- wav_buffer->close();
- free(raw_data);
- 
- if(list.empty())
-   channel_num = Mix_PlayChannel(0, sample, 0);
-    
- list.push_back(sample);
-*/
  return;
 }
 

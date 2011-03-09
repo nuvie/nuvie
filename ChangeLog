@@ -1,3 +1,8 @@
+2012-03-09  Eric Fry <efry at users.sourceforge.net> r1148
+	* MACOSX: Changed development build config to use 10.5 SDK and target 10.4 (Thanks
+	  to Dominus for working on the build config)
+	* Cleaned up ConverseSpeech::play_speech() to remove some unused variables.
+
 2012-03-07  Eric Fry <efry at users.sourceforge.net> r1147
 	* MACOSX: Check for config in $HOME/Library/Preferences/Nuvie Preferences
 	* MACOSX: If no config can be loaded try to create config with default values in
