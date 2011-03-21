@@ -70,6 +70,14 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 	{
 		stream = new PCSpeakerSweepFreqStream(5000, 8000, 50, 1);
 	}
+	else if(sfx_id == NUVIE_SFX_HIT)
+	{
+		stream = new PCSpeakerRandomStream(0x2710, 0x320, 1);
+	}
+	else if(sfx_id == NUVIE_SFX_BROKEN_GLASS)
+	{
+		stream = new PCSpeakerGlassSfxStream();
+	}
 
 	if(stream)
 	{

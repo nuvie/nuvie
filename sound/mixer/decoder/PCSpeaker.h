@@ -19,24 +19,34 @@
  *
  */
 
-#define SPKR_OUTPUT_RATE 11025 //FIXME may need to fiddle with this.
+#include "NuvieIOFile.h"
+
+#define SPKR_OUTPUT_RATE 22050 //11025 //FIXME may need to fiddle with this.
+
 
 class PCSpeaker {
 private:
 uint32 rate;
 uint16 frequency;
+float half_period;
+float cur_vol;
+float want_vol;
+float time_left;
 
 uint32 osc_length;
 uint32 osc_samples;
 
 private:
 
+NuvieIOFileWrite dataFile;
+uint32 wav_length;
+
 public:
 	PCSpeaker(uint32 mixer_rate);
 	~PCSpeaker() { }
 	void SetOn();
 	void SetOff();
-	void SetFrequency(uint16 freq);
+	void SetFrequency(uint16 freq, float offset = 0.0f);
 
 	void PCSPEAKER_CallBack(sint16 *stream, const uint32 len);
 };

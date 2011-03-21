@@ -102,11 +102,67 @@ protected:
 	uint16 stepping;
 
 	uint32 freq_step;
-	uint32 samples_per_step;
-	uint32 sample_pos;
+	float samples_per_step;
+	float sample_pos;
 	uint32 total_samples_played;
 	uint32 num_steps;
 	uint32 cur_step;
     
+};
+
+class PCSpeakerRandomStream : public PCSpeakerStream
+{
+public:
+	PCSpeakerRandomStream()
+	{
+
+	}
+
+	PCSpeakerRandomStream(uint32 start, uint16 d, uint16 s);
+	~PCSpeakerRandomStream();
+	uint16 getNextFreqValue();
+	int readBuffer(sint16 *buffer, const int numSamples);
+
+protected:
+
+	uint16 base_val;
+	uint16 duration;
+	uint16 stepping;
+
+	uint32 rand_value;
+	uint32 sample_pos;
+	uint32 total_samples_played;
+	uint32 samples_per_step;
+	uint32 num_steps;
+	uint32 cur_step;
+
+};
+
+class PCSpeakerGlassSfxStream : public PCSpeakerStream
+{
+protected:
+	Audio::QueuingAudioStream *stream;
+
+public:
+	PCSpeakerGlassSfxStream()
+	{
+		stream = Audio::makeQueuingAudioStream(getRate(), isStereo());
+		for(uint16 i=0x7d0;i<0x4e20;i+=0x3e8)
+		{
+			stream->queueAudioStream(new PCSpeakerRandomStream(i,0x78, 0x28), DisposeAfterUse::YES);
+		}
+	}
+
+	~PCSpeakerGlassSfxStream()
+	{
+		delete stream;
+	}
+
+	int readBuffer(sint16 *buffer, const int numSamples)
+	{
+		return stream->readBuffer(buffer, numSamples);
+	}
+
+	bool endOfData() const { return stream->endOfData(); }
 };
 #endif /* __PCSpeakerStream_h__ */
