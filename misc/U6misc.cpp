@@ -177,7 +177,11 @@ int mkdir_recursive(std::string path, int mode)
       
       if(directory_exists(tmp_path.c_str()) == false)
       {
+#if defined(WIN32)
+         int ret = mkdir(tmp_path.c_str());
+#else
          int ret = mkdir(tmp_path.c_str(), mode);
+#endif
          if(ret != 0)
             return ret;
       }      
