@@ -1514,8 +1514,15 @@ static int nscript_xor_effect(lua_State *L)
 
 static int nscript_play_sfx(lua_State *L)
 {
+	bool play_mode = SFX_PLAY_SYNC;
 	uint16 sfx_id = (uint16)luaL_checkinteger(L, 1);
-	Game::get_game()->get_sound_manager()->playSfx(sfx_id);
+	if(lua_gettop(L) > 1)
+	{
+		if(lua_toboolean(L, 2) == true)
+			play_mode = SFX_PLAY_ASYNC;
+	}
+
+	Game::get_game()->get_sound_manager()->playSfx(sfx_id, play_mode);
 
 	return 0;
 }

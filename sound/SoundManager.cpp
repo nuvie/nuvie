@@ -34,6 +34,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "MapWindow.h"
+#include "Effect.h"
 
 #include "mixer.h"
 #include "doublebuffersdl-mixer.h"
@@ -790,10 +791,31 @@ bool SoundManager::isSoundPLaying(Audio::SoundHandle handle)
 	return mixer->getMixer()->isSoundHandleActive(handle);
 }
 
-bool SoundManager::playSfx(uint16 sfx_id)
+bool SoundManager::playSfx(uint16 sfx_id, bool async)
 {
+
 	if(m_SfxManager == NULL || audio_enabled == false || sfx_enabled == false)
 		return false;
 
-	return m_SfxManager->playSfx(sfx_id, sfx_volume);
+	if(async)
+	{
+		if(m_SfxManager->playSfx(sfx_id, sfx_volume))
+		{
+			uint32 duration = m_SfxManager->getLastSfxDuration();
+
+			TimedEffect *timer = new TimedEffect();
+
+			AsyncEffect *e = new AsyncEffect(timer);
+			timer->start_timer(duration);
+			e->run();
+
+			return true;
+		}
+	}
+	else
+	{
+		return m_SfxManager->playSfx(sfx_id, sfx_volume);
+	}
+
+	return false;
 }

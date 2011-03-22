@@ -81,6 +81,7 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 
 	if(stream)
 	{
+		sfx_duration = stream->getLengthInMsec();
 		playSoundSample(stream, handle, volume);
 		return true;
 	}

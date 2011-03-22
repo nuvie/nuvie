@@ -86,6 +86,8 @@ public:
 	 * By default this maps to endOfData()
 	 */
 	virtual bool endOfStream() const { return endOfData(); }
+
+	virtual uint32 getLengthInMsec() { return 0; }
 };
 
 /**

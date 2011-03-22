@@ -146,7 +146,7 @@ public:
 
     void delete_self() { stop_timer(); Effect::delete_self(); }
 
-    virtual uint16 callback(uint16 msg, CallBack *caller, void *data) = 0;
+    virtual uint16 callback(uint16 msg, CallBack *caller, void *data) { if(msg == MESG_TIMED) delete_self(); return(0); } //= 0;
 };
 
 

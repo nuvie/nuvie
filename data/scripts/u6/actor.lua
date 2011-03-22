@@ -1231,7 +1231,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
    else --standard weapon
       if actor_find_max_xy_distance(attacker, player_loc.x, player_loc.y) < 6 then
          --play_sound_effect(0x11, 0);
-         play_sfx(SFX_ATTACK_SWING)
+         play_sfx(SFX_ATTACK_SWING, true)
       end
    end
    

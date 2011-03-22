@@ -41,6 +41,9 @@
 #include "sdl-mixer.h"
 #include "sfx.h"
 
+#define SFX_PLAY_ASYNC true
+#define SFX_PLAY_SYNC false
+
 class SfxManager;
 class CEmuopl;
 
@@ -68,7 +71,7 @@ public:
     Audio::SoundHandle playTownsSound(std::string filename, uint16 sample_num);
     bool isSoundPLaying(Audio::SoundHandle handle);
 
-    bool playSfx(uint16 sfx_id);
+    bool playSfx(uint16 sfx_id, bool async = false);
 
 private:
 	bool LoadCustomSongs(string scriptname);

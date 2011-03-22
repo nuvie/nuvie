@@ -69,6 +69,11 @@ FMtownsDecoderStream::~FMtownsDecoderStream()
 		free(raw_audio_buf);
 }
 
+uint32 FMtownsDecoderStream::getLengthInMsec()
+{
+	return (uint32)(buf_len / (getRate()/1000.0f));
+}
+
 int FMtownsDecoderStream::readBuffer(sint16 *buffer, const int numSamples)
 {
 	int j=0;

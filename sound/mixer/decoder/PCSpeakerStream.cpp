@@ -41,6 +41,11 @@ PCSpeakerFreqStream::~PCSpeakerFreqStream()
 
 }
 
+uint32 PCSpeakerFreqStream::getLengthInMsec()
+{
+	return (uint32)(duration / (getRate()/1000.0f));
+}
+
 int PCSpeakerFreqStream::readBuffer(sint16 *buffer, const int numSamples)
 {
 	uint32 samples = (uint32)numSamples;
@@ -91,6 +96,11 @@ PCSpeakerSweepFreqStream::PCSpeakerSweepFreqStream(uint32 start, uint32 end, uin
 PCSpeakerSweepFreqStream::~PCSpeakerSweepFreqStream()
 {
 
+}
+
+uint32 PCSpeakerSweepFreqStream::getLengthInMsec()
+{
+	return (uint32)((num_steps * samples_per_step) / (getRate()/1000.0f));
 }
 
 int PCSpeakerSweepFreqStream::readBuffer(sint16 *buffer, const int numSamples)
@@ -185,6 +195,11 @@ PCSpeakerRandomStream::PCSpeakerRandomStream(uint32 freq, uint16 d, uint16 s)
 PCSpeakerRandomStream::~PCSpeakerRandomStream()
 {
 
+}
+
+uint32 PCSpeakerRandomStream::getLengthInMsec()
+{
+	return (uint32)((num_steps * samples_per_step) / (getRate()/1000.0f));
 }
 
 uint16 PCSpeakerRandomStream::getNextFreqValue()

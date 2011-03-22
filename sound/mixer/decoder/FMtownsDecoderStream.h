@@ -42,6 +42,8 @@ public:
 	FMtownsDecoderStream(std::string filename, uint16 sample_num, bool isCompressed = true);
 	~FMtownsDecoderStream();
 
+	uint32 getLengthInMsec();
+
 	int readBuffer(sint16 *buffer, const int numSamples);
 
 	/** Is this a stereo stream? */

@@ -1,3 +1,25 @@
+2012-03-22  Eric Fry <efry at users.sourceforge.net> r1152
+	* Added the ablility to wait while a sfx plays. (Still need to add support for
+	  custom wav files.)
+	* Added the ability to get the duration of the last played sfx from the
+	  SfxManager. This value is expressed in milliseconds.
+	* Added getLengthInMsec() to AudioStream class.
+	* Added play mode to SoundManager::playSfx() to allow asynchronous play.
+	* Changed lua script attack logic to wait while attack sfx is playing.
+	* Added callback method to TimedEffect class. (replacing pure virtual).
+	  This allows us to make an effect that does nothing but wait for a given
+	  amount of time.
+	* Changed lua script play_sfx() function to take optional argument play_async.
+
+
+2012-03-21  Eric Fry <efry at users.sourceforge.net> r1150
+	* More work on PC Speaker SFX
+	* Added PCSpeakerRandomStream and PCSpeakerGlassSfxStream classes
+	* Reworked PCSpeaker class to incorporate speaker cone speed.
+	* Added NUVIE_SFX_HIT and NUVIE_SFX_BROKEN_GLASS PC Speaker sfx.
+	* Changed PC Speaker output rate to 22050 Hz
+
+
 2012-03-09  Eric Fry <efry at users.sourceforge.net> r1148
 	* MACOSX: Changed development build config to use 10.5 SDK and target 10.4 (Thanks
 	  to Dominus for working on the build config)

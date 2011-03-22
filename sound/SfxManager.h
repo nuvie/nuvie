@@ -33,17 +33,19 @@
 
 class SfxManager {
 public:
-	SfxManager(Configuration *cfg, Audio::Mixer *m) : config(cfg), mixer(m) {};
+	SfxManager(Configuration *cfg, Audio::Mixer *m) : config(cfg), mixer(m) { sfx_duration = 0; };
 	~SfxManager() {};
 
 
 virtual bool playSfx(SfxIdType sfx_id, uint8 volume) = 0;
 virtual bool playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handle, uint8 volume) = 0;
 
+uint32 getLastSfxDuration() { return sfx_duration; }
+
 protected:
 	Configuration *config;
 	Audio::Mixer *mixer;
-
+	uint32 sfx_duration; //duration of the last sfx played in milliseconds.
 };
 
 #endif

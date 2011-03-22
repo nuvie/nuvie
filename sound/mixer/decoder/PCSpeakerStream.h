@@ -69,13 +69,13 @@ public:
 
 	PCSpeakerFreqStream(uint32 start, uint16 d);
 	~PCSpeakerFreqStream();
-
+	uint32 getLengthInMsec();
 	int readBuffer(sint16 *buffer, const int numSamples);
 
 protected:
 
 	uint32 frequency;
-	uint16 duration;
+	uint32 duration;
 	uint32 total_samples_played;
 
 };
@@ -90,7 +90,7 @@ public:
 
 	PCSpeakerSweepFreqStream(uint32 start, uint32 end, uint16 d, uint16 s);
 	~PCSpeakerSweepFreqStream();
-
+	uint32 getLengthInMsec();
 	int readBuffer(sint16 *buffer, const int numSamples);
 
 protected:
@@ -120,6 +120,7 @@ public:
 
 	PCSpeakerRandomStream(uint32 start, uint16 d, uint16 s);
 	~PCSpeakerRandomStream();
+	uint32 getLengthInMsec();
 	uint16 getNextFreqValue();
 	int readBuffer(sint16 *buffer, const int numSamples);
 
