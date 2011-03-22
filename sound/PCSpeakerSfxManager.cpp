@@ -78,6 +78,10 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 	{
 		stream = new PCSpeakerGlassSfxStream();
 	}
+	else if(sfx_id == NUVIE_SFX_CORPSER_DRAGGED_UNDER)
+	{
+		stream = new PCSpeakerSweepFreqStream(1200, 2000, 40, 1);
+	}
 
 	if(stream)
 	{

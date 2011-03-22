@@ -869,6 +869,7 @@ function actor_take_hit(attacker, defender, max_dmg)
         or defender.obj_n == 0x19c then --ship
         
          if attacker.obj_n == 0x165 then --corpser
+         	play_sfx(SFX_CORPSER_DRAGGED_UNDER, true)
             print("`"..defender.name.." dragged under!\n")
             defender.corpser_flag = true
             if defender.in_party == true then
