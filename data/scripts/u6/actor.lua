@@ -1674,6 +1674,7 @@ function actor_corpser_regurgitation(actor)
      
    if val < actor_str_adj(actor) then
       --FIXME play sound effect
+      play_sfx(SFX_CORPSER_REGURGITATE, true)
       print("`"..actor.name.." regurgitated!\n")
       actor.corpser_flag = false
       if actor.in_party == true then

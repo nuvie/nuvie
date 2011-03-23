@@ -165,5 +165,7 @@ public:
 	}
 
 	bool endOfData() const { return stream->endOfData(); }
+
+	uint32 getLengthInMsec() { return stream->getLengthInMsec(); }
 };
 #endif /* __PCSpeakerStream_h__ */

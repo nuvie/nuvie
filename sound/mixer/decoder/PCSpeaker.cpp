@@ -91,7 +91,7 @@ void PCSpeaker::SetFrequency(uint16 freq, float offset)
 	half_period = ((float)rate / (float)frequency) / 2;
 	//want_vol = SPKR_VOLUME;
 
-	DEBUG(0, LEVEL_DEBUGGING, "new_freq = %d half_period = %f time_left = %f", freq, half_period, time_left);
+	//DEBUG(0, LEVEL_DEBUGGING, "new_freq = %d half_period = %f time_left = %f", freq, half_period, time_left);
 
 	//time_left = offset; //half_period;
 

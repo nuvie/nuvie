@@ -194,9 +194,11 @@ private:
 	 */
 	std::queue<StreamHolder> _queue;
 
+	uint32 totalDuration;
+
 public:
 	QueuingAudioStreamImpl(int rate, bool stereo)
-	    : _rate(rate), _stereo(stereo), _finished(false) {}
+	    : _rate(rate), _stereo(stereo), _finished(false), totalDuration(0) {}
 	~QueuingAudioStreamImpl();
 
 	// Implement the AudioStream API
@@ -217,6 +219,8 @@ public:
 		//Common::StackLock lock(_mutex);
 		return _queue.size();
 	}
+
+	uint32 getLengthInMsec();
 };
 
 QueuingAudioStreamImpl::~QueuingAudioStreamImpl() {
@@ -235,6 +239,8 @@ void QueuingAudioStreamImpl::queueAudioStream(AudioStream *stream, DisposeAfterU
 
 	Common::StackLock lock(_mutex);
 	_queue.push(StreamHolder(stream, disposeAfterUse));
+
+	totalDuration += stream->getLengthInMsec();
 }
 
 int QueuingAudioStreamImpl::readBuffer(sint16 *buffer, const int numSamples) {
@@ -254,6 +260,11 @@ int QueuingAudioStreamImpl::readBuffer(sint16 *buffer, const int numSamples) {
 	}
 
 	return samplesDecoded;
+}
+
+uint32 QueuingAudioStreamImpl::getLengthInMsec()
+{
+	return totalDuration;
 }
 
 QueuingAudioStream *makeQueuingAudioStream(int rate, bool stereo) {
