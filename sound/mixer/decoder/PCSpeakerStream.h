@@ -34,7 +34,7 @@ public:
 		finished = false;
 	}
 
-	~PCSpeakerStream() { }
+	~PCSpeakerStream() { delete pcspkr; }
 
 	/** Is this a stereo stream? */
 	bool isStereo() const { return false; }

@@ -1,3 +1,4 @@
+play_sfx(SFX_CASTING_MAGIC)
 xor_effect(1700)
 
 local random = math.random

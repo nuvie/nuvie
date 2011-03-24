@@ -1,3 +1,7 @@
+2012-03-25  Eric Fry <efry at users.sourceforge.net> r1155
+	* Added SFX_CASTING_MAGIC PC Speaker sfx. (Hooked it up to 'insect swarm' IBX spell)
+	* Cleanup pc speaker object when closing audiostream
+
 2012-03-23  Eric Fry <efry at users.sourceforge.net> r1154
 	* Added SFX_CORPSER_REGURGITATED PC Speaker sfx.
 	* Added getLengthInMsec() method to PCSpeakerGlassSfxStream class.

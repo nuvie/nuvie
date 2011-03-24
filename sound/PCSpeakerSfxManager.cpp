@@ -86,6 +86,10 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 	{
 		stream = new PCSpeakerRandomStream(0x258, 0x1b58, 1);
 	}
+	else if(sfx_id == NUVIE_SFX_CASTING_MAGIC)
+	{
+		stream = new PCSpeakerRandomStream(0x2bc, 0x3e80, 0x320);
+	}
 
 	if(stream)
 	{
