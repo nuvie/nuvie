@@ -140,7 +140,7 @@ class Map
  bool is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
  bool actor_at_location(uint16 x, uint16 y, uint8 level);
  uint8 get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
-
+ Tile *get_dmg_tile(uint16 x, uint16 y, uint8 level);
  bool is_passable(uint16 x1, uint16 y1, uint16 x2, uint16 y2, uint8 level);
 
  const char *look(uint16 x, uint16 y, uint8 level);

@@ -790,6 +790,30 @@ Tile *ObjManager::get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj)
  return tile_manager->get_original_tile(tile_num);
 }
 
+Tile *ObjManager::get_obj_dmg_tile(uint16 x, uint16 y, uint8 level)
+{
+ Tile *tile;
+ U6LList *obj_list;
+ U6Link *link;
+ Obj *obj = NULL;
+
+ obj_list = get_obj_list(x,y,level);
+
+ if(obj_list != NULL)
+ {
+	 for(link=obj_list->end();link != NULL; link=link->prev)
+	 {
+		 obj = (Obj *)link->data;
+		 tile = get_obj_tile(obj->obj_n, obj->frame_n);
+
+		 if(tile->damages == true)
+			 return tile;
+	 }
+ }
+
+ return NULL;
+}
+
 Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
 {
  Obj *obj;

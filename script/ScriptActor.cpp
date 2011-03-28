@@ -30,6 +30,7 @@
 #include "Actor.h"
 
 extern bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
+extern void nscript_new_obj_var(lua_State *L, Obj *obj);
 extern int nscript_obj_new(lua_State *L, Obj *obj);
 extern int nscript_u6llist_iter(lua_State *L);
 extern int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
@@ -52,6 +53,7 @@ static int nscript_actor_inv_remove_obj(lua_State *L);
 static int nscript_actor_inv_remove_obj_qty(lua_State *L);
 static int nscript_actor_inv_ready_obj(lua_State *L);
 static int nscript_actor_inv_has_obj_n(lua_State *L);
+static int nscript_actor_inv_get_obj_n(lua_State *L);
 static int nscript_actor_inv_get_obj_total_qty(lua_State *L);
 static int nscript_actor_move(lua_State *L);
 static int nscript_actor_walk_path(lua_State *L);
@@ -73,6 +75,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },   
    { "inv_ready_obj", nscript_actor_inv_ready_obj },
    { "inv_has_obj_n", nscript_actor_inv_has_obj_n },
+   { "inv_get_obj_n", nscript_actor_inv_get_obj_n },
    { "inv_get_obj_total_qty", nscript_actor_inv_get_obj_total_qty },
    { "is_at_scheduled_location", nscript_actor_is_at_scheduled_location },
 
@@ -995,6 +998,28 @@ static int nscript_actor_inv_has_obj_n(lua_State *L)
    lua_pushboolean(L, (int)actor->inventory_has_object(obj_n, 0, false));
 
    return 1;
+}
+
+static int nscript_actor_inv_get_obj_n(lua_State *L)
+{
+   Actor *actor;
+   uint16 obj_n;
+   Obj *obj;
+   actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+
+   obj_n = (uint16)luaL_checkinteger(L, 2);
+
+   obj = actor->inventory_get_object(obj_n, 0, false);
+
+   if(obj)
+   {
+	   nscript_new_obj_var(L, obj);
+	   return 1;
+   }
+
+   return 0;
 }
 
 static int nscript_actor_inv_get_obj_total_qty(lua_State *L)

@@ -215,6 +215,16 @@ uint8 Map::get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects)
   return impedance;
 }
 
+Tile *Map::get_dmg_tile(uint16 x, uint16 y, uint8 level)
+{
+	Tile *tile = get_tile(x, y, level);
+
+	if(tile->damages)
+		return tile;
+
+	return obj_manager->get_obj_dmg_tile(x, y, level);
+}
+
 bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
 {
   WRAP_COORD(x,level);

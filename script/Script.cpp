@@ -34,6 +34,7 @@
 #include "Player.h"
 #include "Party.h"
 #include "ActorManager.h"
+#include "TileManager.h"
 #include "Actor.h"
 #include "Weather.h"
 #include "UseCode.h"
@@ -75,6 +76,8 @@ static sint32 nscript_inc_obj_ref_count(Obj *obj);
 static sint32 nscript_dec_obj_ref_count(Obj *obj);
 
 bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
+
+void nscript_new_obj_var(lua_State *L, Obj *obj);
 
 inline bool nscript_obj_init_from_obj(lua_State *L, Obj *dst_obj);
 inline bool nscript_obj_init_from_args(lua_State *L, int nargs, Obj *s_obj);
@@ -141,12 +144,16 @@ static int nscript_party_move(lua_State *L);
 static int nscript_party_get_size(lua_State *L);
 static int nscript_party_get_member(lua_State *L);
 static int nscript_party_update_leader(lua_State *L);
+static int nscript_party_resurrect_dead_members(lua_State *L);
+static int nscript_party_heal(lua_State *L);
 
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
 static int nscript_map_remove_obj(lua_State *L);
 static int nscript_map_is_water(lua_State *L);
+static int nscript_map_get_dmg_tile_num(lua_State *L);
+
 static int nscript_map_can_put(lua_State *L);
 
 //Misc
@@ -298,6 +305,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_map_is_water);
    lua_setglobal(L, "map_is_water");
 
+   lua_pushcfunction(L, nscript_map_get_dmg_tile_num);
+   lua_setglobal(L, "map_get_dmg_tile_num");
+
    lua_pushcfunction(L, nscript_map_can_put);
    lua_setglobal(L, "map_can_put");
 
@@ -328,6 +338,12 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_party_update_leader);
    lua_setglobal(L, "party_update_leader");
+
+   lua_pushcfunction(L, nscript_party_resurrect_dead_members);
+   lua_setglobal(L, "party_resurrect_dead_members");
+
+   lua_pushcfunction(L, nscript_party_heal);
+   lua_setglobal(L, "party_heal");
 
    lua_pushcfunction(L, nscript_eclipse_start);
    lua_setglobal(L, "eclipse_start");
@@ -541,6 +557,19 @@ bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z
    }
 
    return true;
+}
+
+void nscript_new_obj_var(lua_State *L, Obj *obj)
+{
+	Obj **p_obj;
+    p_obj = (Obj **)lua_newuserdata(L, sizeof(Obj *));
+
+    luaL_getmetatable(L, "nuvie.Obj");
+    lua_setmetatable(L, -2);
+
+    *p_obj = obj;
+
+    nscript_inc_obj_ref_count(obj);
 }
 
 static int nscript_obj_new(lua_State *L)
@@ -799,6 +828,12 @@ static int nscript_obj_set(lua_State *L)
    if(!strcmp(key, "status"))
    {
       obj->status = (uint8)lua_tointeger(L, 3);
+      return 0;
+   }
+
+   if(!strcmp(key, "invisible"))
+   {
+      obj->set_invisible((bool)lua_toboolean(L, 3));
       return 0;
    }
 
@@ -1247,10 +1282,25 @@ static int nscript_party_update_leader(lua_State *L)
 	return 0;
 }
 
+static int nscript_party_resurrect_dead_members(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	party->resurrect_dead_members();
+
+	return 0;
+}
+
+static int nscript_party_heal(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	party->heal();
+
+	return 0;
+}
+
 static int nscript_map_get_obj(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
-   Obj **p_obj;
    Obj *obj;
 
    uint16 x, y;
@@ -1272,14 +1322,7 @@ static int nscript_map_get_obj(lua_State *L)
 
    if(obj)
    {
-      p_obj = (Obj **)lua_newuserdata(L, sizeof(Obj *));
-
-      luaL_getmetatable(L, "nuvie.Obj");
-      lua_setmetatable(L, -2);
-
-      *p_obj = obj;
-
-      nscript_inc_obj_ref_count(obj);
+	  nscript_new_obj_var(L, obj);
       return 1;
    }
 
@@ -1328,6 +1371,24 @@ static int nscript_map_is_water(lua_State *L)
 	lua_pushboolean(L, map->is_water(x, y, z));
 
 	return 1;
+}
+
+static int nscript_map_get_dmg_tile_num(lua_State *L)
+{
+	Map *map = Game::get_game()->get_game_map();
+
+	uint16 x = (uint16) luaL_checkinteger(L, 1);
+	uint16 y = (uint16) luaL_checkinteger(L, 2);
+	uint8 z = (uint8) luaL_checkinteger(L, 3);
+
+	Tile *t = map->get_dmg_tile(x, y, z);
+	if(t != NULL)
+	{
+		lua_pushinteger(L, t->tile_num);
+		return 1;
+	}
+
+	return 0;
 }
 
 static int nscript_eclipse_start(lua_State *L)

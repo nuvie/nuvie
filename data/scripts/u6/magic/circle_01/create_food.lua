@@ -1,3 +1,4 @@
+magic_casting_effect()
 
 qty = math.random(4,9)
 

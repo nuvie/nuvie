@@ -264,4 +264,157 @@ int PCSpeakerRandomStream::readBuffer(sint16 *buffer, const int numSamples)
 	return s;
 }
 
+//**************** PCSpeakerStutterStream
 
+PCSpeakerStutterStream::PCSpeakerStutterStream(sint16 a0, uint16 a2, uint16 a4, uint16 a6, uint16 a8)
+{
+	arg_0 = a0;
+	arg_2 = a2;
+	arg_4 = a4;
+	arg_6 = a6;
+	arg_8 = a8;
+
+	cx = arg_4;
+	dx = 0;
+
+	pcspkr->SetOn();
+	pcspkr->SetFrequency(22096);
+
+	delay = (SPKR_OUTPUT_RATE / 22050) * arg_6; //FIXME this needs to be refined.
+	delay_remaining = 0;
+
+	//samples_per_step = s * (SPKR_OUTPUT_RATE / 20 / 800); //1255);
+	//total_samples_played = 0;
+	//DEBUG(0, LEVEL_DEBUGGING, "num_steps = %d samples_per_step = %d\n", num_steps, samples_per_step);
+
+}
+
+
+PCSpeakerStutterStream::~PCSpeakerStutterStream()
+{
+
+}
+
+uint32 PCSpeakerStutterStream::getLengthInMsec()
+{
+	return (uint32)((arg_4 * delay) / (getRate()/1000.0f));
+}
+
+
+int PCSpeakerStutterStream::readBuffer(sint16 *buffer, const int numSamples)
+{
+	uint32 s = 0;
+
+	for(; cx > 0 && s < (uint32)numSamples; cx--)
+	{
+		uint32 n = (uint32)floor(delay_remaining);
+		if(n > 0)
+		{
+			pcspkr->PCSPEAKER_CallBack(&buffer[s], n);
+			delay_remaining -= n;
+			s += n;
+		}
+
+	   dx = (dx + arg_8) & 0xffff;
+
+	   if(dx > arg_2)
+	   {
+		   pcspkr->SetOn();
+	   }
+	   else
+	   {
+		   pcspkr->SetOff();
+	   }
+
+	   arg_2 += arg_0;
+/*
+	   for(int i = arg_6; i > 0 ; i--)
+	   {
+	      for(int j = counter;j > 0;)
+	      {
+             j--;
+	      }
+	   }
+*/
+	   n = (uint32)floor(delay);
+	   if(s + n > (uint32)numSamples)
+		   n = numSamples - s;
+
+	   pcspkr->PCSPEAKER_CallBack(&buffer[s], n);
+	   delay_remaining = delay - n;
+	   s += n;
+	}
+
+	if(cx <= 0)
+	{
+		//DEBUG(0, LEVEL_DEBUGGING, "total_samples_played = %d\n", total_samples_played);
+		finished = true;
+		pcspkr->SetOff();
+	}
+
+	return s;
+}
+
+Audio::AudioStream *makePCSpeakerGlassSfxStream(uint32 rate)
+{
+	Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);
+	for(uint16 i=0x7d0;i<0x4e20;i+=0x3e8)
+	{
+		stream->queueAudioStream(new PCSpeakerRandomStream(i,0x78, 0x28), DisposeAfterUse::YES);
+	}
+
+	return stream;
+}
+
+
+Audio::AudioStream *makePCSpeakerMagicCastingP1SfxStream(uint32 rate, uint8 magic_circle)
+{
+	//Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);
+
+	return new PCSpeakerRandomStream(0x2bc, 0x640 * magic_circle + 0x1f40, 0x320);
+
+	//return stream;
+}
+
+Audio::AudioStream *makePCSpeakerMagicCastingP2SfxStream(uint32 rate, uint8 magic_circle)
+{
+	Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);
+
+	const sint16 word_30188[] = {3, 2, 2, 2, 1, 1, 1, 1, 1};
+
+	const uint16 word_30164[] = {0xA8C, 0xBB8, 0x3E8, 0x64, 0x1388, 0xFA0, 0x9C4, 0x3E8, 1};
+	const uint16 word_30176[] = {0x7FBC, 0x7918, 0x9088, 0xAFC8, 0x7918, 0x84D0, 0x8E94, 0x9858, 0xA410};
+
+	const uint16 word_30152[] = {0x226A, 0x1E96, 0x1B94, 0x1996, 0x173E, 0x15C2, 0x143C, 0x12D4, 0x1180};
+
+	stream->queueAudioStream(new PCSpeakerStutterStream(word_30188[magic_circle], word_30164[magic_circle], (magic_circle * 0xfa0) + 0x2710, 1, word_30152[magic_circle]));
+	stream->queueAudioStream(new PCSpeakerStutterStream(-word_30188[magic_circle], word_30176[magic_circle], (magic_circle * 0xfa0) + 0x2710, 1, word_30152[magic_circle]));
+
+	return stream;
+}
+
+Audio::AudioStream *makePCSpeakerAvatarDeathSfxStream(uint32 rate)
+{
+	const uint16 avatar_death_tune[] = {0x12C, 0x119, 0x12C, 0xFA, 0x119, 0xDE, 0xFA, 0xFA};
+
+	Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);
+	for(uint8 i=0;i<8;i++)
+	{
+		stream->queueAudioStream(new PCSpeakerStutterStream(3, 1, 0x4e20, 1, avatar_death_tune[i]));
+	}
+
+	return stream;
+}
+
+Audio::AudioStream *makePCSpeakerKalLorSfxStream(uint32 rate)
+{
+	Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);
+	for(uint8 i=0;i<0x32;i++)
+	{
+		stream->queueAudioStream(new PCSpeakerStutterStream((0x32 - i) << 2, 0x2710 - (i << 6), 0x3e8, 1, (i << 4) + 0x320));
+	}
+
+	stream->queueAudioStream(new PCSpeakerStutterStream(8, 0, 0x1f40, 1, 0x640));
+
+	return stream;
+}

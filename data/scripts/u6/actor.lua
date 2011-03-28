@@ -65,7 +65,7 @@ movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1}
 movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
 
 --Actor stats table
---str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,?,?,takes half dmg,?,strength_based,double dmg from fire,immune to magic,?,?,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
+--str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,?,?,takes half dmg,?,strength_based,double dmg from fire,immune to magic,immune to poison,?,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}, 0},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}, 6},
@@ -179,6 +179,7 @@ function actor_move(actor, direction, flag)
    --actor.direction = direction
       
    if did_move then
+      actor_map_dmg(actor, x, y, z)
       if actor.obj_n == 0x177 then slime_update_frames() end
       subtract_movement_pts(actor, 5)
       actor.direction = direction
@@ -214,6 +215,7 @@ function actor_move_diagonal(actor, x_direction, y_direction)
    
    if did_move then
       --dbg("did move\n");
+      actor_map_dmg(actor, x, y, z)
       if actor.obj_n == 0x177 then slime_update_frames() end
       subtract_movement_pts(actor, 5)
       actor.direction = y_direction
@@ -322,6 +324,75 @@ function toss_actor(actor, from_x, from_y, from_z, arg_0)
    end
    
    return false
+end
+
+function actor_map_dmg(actor, map_x, map_y, map_z)
+	local obj_n = actor.obj_n
+	local actor_type = actor_tbl[obj_n]
+	local dmg = 0
+	local random = math.random
+	
+	if obj_n ~= 0x1a7 and obj_n ~= 0x19e and obj_n ~= 0x19f and obj_n ~= 0x19c and (actor_type == nil or actor_type[13] == 0) and actor.protected == false then --balloon, skiff, raft, ship, immune to map dmg
+		local map_tile = map_get_dmg_tile_num(map_x, map_y, map_z)
+		if map_tile ~= nil then
+			if map_tile == 564 then
+				--web
+				if obj_n ~= 0x169 then --giant spider
+					local str = actor_str_adj(actor)
+					if str < random(1, 0x1e) then
+						actor.paralyzed = true
+						print("`"..actor.name.." is stuck in a web!\n")
+					end
+				end
+			elseif map_tile >= 2 and map_tile <= 5 then
+				--poison
+				local swamp_boots = Actor.inv_get_obj_n(actor, 0x1c) --swamp boots
+				if swamp_boots == nil or swamp_boots.readied == false then
+					if (actor_type == nil or actor_type[19] == 0) and actor.poisoned == false then --19 immune to poison
+						print(actor.name.." poisoned!\n")
+						hit_anim()
+					end
+				end
+			elseif (map_tile >= 220 and map_tile <= 223) or map_tile == 890 or map_tile == 1124 or map_tile == 1125 or map_tile == 1130 or map_tile == 1131 or map_tile == 1164 or map_tile == 1193 then
+				--fire
+				if map_tile == 1164 then
+					dmg = random(1, 0x1e)
+				else
+					dmg = random(1, 8)
+				end
+				if actor_type ~= nil and actor_type[17] == 1 then --double damage from fire
+					dmg = dmg * 2
+				end
+				
+				actor_hit(actor, dmg, nil)
+
+			elseif map_tile == 732 or map_tile == 1010 then
+				--trap, log saw
+				if map_tile == 732 then
+					local trap_obj = map_get_obj(map_x, map_y, map_z, 0xad) --trap
+					if trap_obj ~= nil then
+						trap_obj.invisible = false
+					end
+				end
+
+				actor_hit(actor, random(1, 0x1e), nil)
+
+			elseif (map_tile >= 1458 and map_tile <= 1463) then
+				if obj_n ~= 0x16e then --tangle vine
+					actor_hit(actor, random(1, 8), nil)
+				end
+			elseif map_tile == 562 or map_tile == 731 then
+				--force field, spikes
+				actor_hit(actor, random(1, 8), nil)
+					
+			elseif map_tile == 1167 then
+				--sleepfield
+				if (actor_type == nil or actor_type[21] == 0) and actor.asleep == false then --21 immune to sleep spell
+					actor.asleep = true
+				end
+			end
+		end
+	end
 end
 
 function actor_randomise_stat(base_stat)
@@ -1004,8 +1075,12 @@ function actor_dead(actor)
 		Obj.moveToMap(blood_obj, actor.x, actor.y, actor.z)
 	end
 
-	Actor.kill(actor)
-		
+	if actor.id_n ~= 1 then
+		Actor.kill(actor)
+	else
+		--FIXME avatar death logic here.
+	end
+	
 	if actor.obj_n == 0x177 then
 		slime_update_frames()
 	end

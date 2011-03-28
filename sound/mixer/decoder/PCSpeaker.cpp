@@ -62,10 +62,13 @@ void PCSpeaker::SetOn()
 	dataFile.write4(wav_length * 2); // length of data chunk
 */
 	time_left = 0.0;
+	want_vol = -SPKR_VOLUME;
 }
 
 void PCSpeaker::SetOff()
 {
+	want_vol = 0;
+	time_left = 0.0;
 /*
 	//PCSPEAKER_SetType(0);
 	dataFile.seek(4);

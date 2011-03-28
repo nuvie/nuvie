@@ -200,6 +200,9 @@ uint16 Actor::get_downward_facing_tile_num()
 /* Set direction faced by actor and change walk frame. */
 void Actor::set_direction(uint8 d)
 {
+ if(is_alive() == false || is_immobile())
+	 return;
+
  if(d < 4)
    direction = d;
 

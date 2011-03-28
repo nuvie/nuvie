@@ -1,5 +1,4 @@
-play_sfx(SFX_CASTING_MAGIC)
-xor_effect(1700)
+magic_casting_effect()
 
 local random = math.random
 local loc = caster_get_location()
@@ -12,8 +11,10 @@ for i=1,8 do
       local new_y = random(0, 10) + loc.y - 5
       if map_can_put(new_x, new_y, from_z) then
          actor = Actor.new(0x157, new_x, new_y, from_z) --insect
-         actor.align = caster.align
-         actor.wt = WT_ASSAULT
+         if actor ~= nil then
+         	actor.align = caster.align
+         	actor.wt = WT_ASSAULT
+         end
          break
       end
    end

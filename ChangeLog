@@ -1,3 +1,32 @@
+2012-03-29  Eric Fry <efry at users.sourceforge.net> r1157
+	* Added map damage logic into script. At the moment this is not hooked up to player/party movement.
+	* Added Tile *ObjManager::get_obj_dmg_tile(uint16 x, uint16 y, uint8 level)
+	* Don't set direction on immobile or dead actors.
+	* Removed map damage logic from C code actor move function.
+	* Added Avatar death tune PC Speaker sfx
+	* Added Kal Lor PC Speaker sfx
+	* Don't remove party flag from actor when dead. We need it to resurrect the
+	  member when the Help spell is cast.
+	* Removed PCSpeakerGlassSfxStream class. Replaced it with a queued audio stream
+	* Added PCSpeakerStutterStream class
+	* Added magic casting PC Speaker sfx
+	* Added Bell ringing PC Speaker sfx
+	* Added Tile *Map::get_dmg_tile(uint16 x, uint16 y, uint8 level); This returns
+	  the first tile that can do damage. It is either a map tile or an object tile.
+	* Added first circle Help spell. (Kal Lor)
+	* Added magic_casting_effect() lua convenience routine. Added it to correct spells
+	* Don't change alignment if actor not created in 'insect swarm; spell logic.
+	* Changed magic script invocation logic to always use magic_cast_spell() function
+	* Added g_magic_spell_num variable to magic scripts.
+	* Fixed bug in 'Use Shovel'
+	* Added party_resurrect_dead_members() and party_heal() functions to script system.
+	* Added map_get_dmg_tile_num() function to script system.
+	* Added object "invisible" set variable to script system.
+	* Added void nscript_new_obj_var(lua_State *L, Obj *obj) use this when returning an obj
+	  in a script C call.
+	* Added Actor.inv_get_obj(actor, obj_n) to script system.
+
+
 2012-03-25  Eric Fry <efry at users.sourceforge.net> r1155
 	* Added SFX_CASTING_MAGIC PC Speaker sfx. (Hooked it up to 'insect swarm' Kal Bet Xen spell)
 	* Cleanup pc speaker object when closing audiostream

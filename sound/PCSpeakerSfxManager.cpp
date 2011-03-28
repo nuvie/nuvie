@@ -76,7 +76,7 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 	}
 	else if(sfx_id == NUVIE_SFX_BROKEN_GLASS)
 	{
-		stream = new PCSpeakerGlassSfxStream();
+		stream = makePCSpeakerGlassSfxStream(mixer->getOutputRate());
 	}
 	else if(sfx_id == NUVIE_SFX_CORPSER_DRAGGED_UNDER)
 	{
@@ -86,9 +86,27 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 	{
 		stream = new PCSpeakerRandomStream(0x258, 0x1b58, 1);
 	}
-	else if(sfx_id == NUVIE_SFX_CASTING_MAGIC)
+	else if(sfx_id >= NUVIE_SFX_CASTING_MAGIC_P1 && sfx_id <= NUVIE_SFX_CASTING_MAGIC_P1_8)
 	{
-		stream = new PCSpeakerRandomStream(0x2bc, 0x3e80, 0x320);
+		uint8 magic_circle = sfx_id - NUVIE_SFX_CASTING_MAGIC_P1 + 1;
+		stream = makePCSpeakerMagicCastingP1SfxStream(mixer->getOutputRate(), magic_circle);
+	}
+	else if(sfx_id >= NUVIE_SFX_CASTING_MAGIC_P2 && sfx_id <= NUVIE_SFX_CASTING_MAGIC_P2_8)
+	{
+		uint8 magic_circle = sfx_id - NUVIE_SFX_CASTING_MAGIC_P2 + 1;
+		stream = makePCSpeakerMagicCastingP2SfxStream(mixer->getOutputRate(), magic_circle);
+	}
+	else if(sfx_id == NUVIE_SFX_BELL)
+	{
+		stream = new PCSpeakerStutterStream(-1, 0x4e20, 0x3e80, 1, 0x7d0);
+	}
+	else if(sfx_id == NUVIE_SFX_AVATAR_DEATH)
+	{
+		stream = makePCSpeakerAvatarDeathSfxStream(mixer->getOutputRate());
+	}
+	else if(sfx_id == NUVIE_SFX_KAL_LOR)
+	{
+		stream = makePCSpeakerKalLorSfxStream(mixer->getOutputRate());
 	}
 
 	if(stream)

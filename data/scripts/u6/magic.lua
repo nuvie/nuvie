@@ -4,24 +4,27 @@ magic = {}
 magic_invocations = {}
 
 run_magic_script = function(invocation)
-    if magic_invocations[invocation] == nil then
+	local spell_num = magic_invocations[invocation]
+    if spell_num == nil then
       io.stderr:write("No magic script found for invocation \"" .. invocation .. "\"\n");
       return
     end
 
-io.stderr:write("Running script \"" .. magic_invocations[invocation].script .."\"\n");
-
-    run_script(magic_invocations[invocation].script)
-
+--io.stderr:write("Running script \"" .. magic_invocations[invocation].script .."\"\n");
+	
+    --run_script(magic_invocations[invocation].script)
+    magic_cast_spell(spell_num, nil, nil)
     return
 end
 
 g_magic_target = nil
 g_magic_caster = nil
+g_magic_spell_num = nil
 
 function magic_cast_spell(spell_num, caster, target)
 	g_magic_target = target
 	g_magic_caster = caster
+	g_magic_spell_num = spell_num
 	if magic[spell_num] ~= nil then
 		run_script(magic[spell_num].script)
 	end
@@ -30,10 +33,11 @@ function magic_cast_spell(spell_num, caster, target)
 end
 
 magic_init = function(name, invocation, reagents, circle, num, script)
-    local spell = {name=name,invocation=invocation,reagents=reagents,circle=circle,num=num,script=script}
+	local spell_num = (circle-1) * 16 + (num-1); 
+    local spell = {name=name,invocation=invocation,reagents=reagents,circle=circle,spell_num=spell_num,script=script}
 
-    magic[(circle-1) * 16 + (num-1)] = spell
-    magic_invocations[string.lower(invocation)] = spell
+    magic[spell_num] = spell
+    magic_invocations[string.lower(invocation)] = spell_num
 
     io.stderr:write("Init Magic: " .. name .. " I: " .. invocation .. "\n")
 end
@@ -101,6 +105,14 @@ function caster_is_player()
 	return false
 end
 
+function magic_casting_effect()
+	local magic_level = math.floor(g_magic_spell_num / 0x10);
+
+	play_sfx(SFX_CASTING_MAGIC_P1 + magic_level, true)
+	play_sfx(SFX_CASTING_MAGIC_P2 + magic_level)
+	xor_effect(1700)
+end
+
 do
 local init
 
@@ -109,6 +121,7 @@ magic_init("Detect Trap", "wj", 0x82, 1, 3, "u6/magic/circle_01/detect_trap.lua"
 magic_init("Douse", "af", 0x24, 1, 5, "u6/magic/circle_01/douse.lua");
 magic_init("Harm", "am", 0x84, 1, 6, "u6/magic/circle_01/harm.lua");
 magic_init("Heal", "im", 0x84, 1, 7, "u6/magic/circle_01/heal.lua");
+magic_init("Help", "kl", 0x00, 1, 8, "u6/magic/circle_01/help.lua");
 magic_init("Ignite", "if", 0x84, 1, 9, "u6/magic/circle_01/ignite.lua");
 magic_init("Light", "il", 0x80, 1, 10, "u6/magic/circle_01/light.lua");
 

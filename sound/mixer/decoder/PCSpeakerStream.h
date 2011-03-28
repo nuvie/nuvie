@@ -139,33 +139,38 @@ protected:
 
 };
 
-class PCSpeakerGlassSfxStream : public PCSpeakerStream
+class PCSpeakerStutterStream : public PCSpeakerStream
 {
-protected:
-	Audio::QueuingAudioStream *stream;
-
 public:
-	PCSpeakerGlassSfxStream()
+	PCSpeakerStutterStream()
 	{
-		stream = Audio::makeQueuingAudioStream(getRate(), isStereo());
-		for(uint16 i=0x7d0;i<0x4e20;i+=0x3e8)
-		{
-			stream->queueAudioStream(new PCSpeakerRandomStream(i,0x78, 0x28), DisposeAfterUse::YES);
-		}
+
 	}
 
-	~PCSpeakerGlassSfxStream()
-	{
-		delete stream;
-	}
+	PCSpeakerStutterStream(sint16 a0, uint16 a2, uint16 a4, uint16 a6, uint16 a8);
+	~PCSpeakerStutterStream();
+	uint32 getLengthInMsec();
+	int readBuffer(sint16 *buffer, const int numSamples);
 
-	int readBuffer(sint16 *buffer, const int numSamples)
-	{
-		return stream->readBuffer(buffer, numSamples);
-	}
+protected:
 
-	bool endOfData() const { return stream->endOfData(); }
+	sint16 arg_0;
+	uint16 arg_2;
+	uint16 arg_4;
+	uint16 arg_6;
+	uint16 arg_8;
 
-	uint32 getLengthInMsec() { return stream->getLengthInMsec(); }
+	uint16 dx;
+	uint16 cx;
+	float delay;
+	float delay_remaining;
+
 };
+
+Audio::AudioStream *makePCSpeakerGlassSfxStream(uint32 rate);
+Audio::AudioStream *makePCSpeakerMagicCastingP1SfxStream(uint32 rate, uint8 magic_circle);
+Audio::AudioStream *makePCSpeakerMagicCastingP2SfxStream(uint32 rate, uint8 magic_circle);
+Audio::AudioStream *makePCSpeakerAvatarDeathSfxStream(uint32 rate);
+Audio::AudioStream *makePCSpeakerKalLorSfxStream(uint32 rate);
+
 #endif /* __PCSpeakerStream_h__ */

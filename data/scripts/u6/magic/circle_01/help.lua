@@ -1,5 +1,7 @@
-magic_load({name="Help", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
+magic_casting_effect()
+play_sfx(SFX_KAL_LOR, true)
+party_resurrect_dead_members()
+party_heal() --FIXME remove poison when healing party.
+party_move(0x133, 0x160, 0)
 
-  end
-})
+fade_in() --FIXME the original fades from current location. We fade from black.

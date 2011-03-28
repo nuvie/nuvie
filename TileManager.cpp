@@ -266,7 +266,6 @@ bool TileManager::tile_is_stackable(uint16 tile_num)
  return look->has_plural(tile_num); // luteijn: FIXME, doesn't take into account Zu Ylem, Silver Snake Venom, and possibly other stackables that don't have a plural defined.
 }
 
-
 void TileManager::update()
 {
  uint16 i;

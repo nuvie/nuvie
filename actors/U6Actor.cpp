@@ -35,6 +35,7 @@
 #include "Party.h"
 #include "ActorManager.h"
 #include "ViewManager.h"
+#include "SoundManager.h"
 #include "Converse.h"
 #include "Effect.h"
 #include "CombatPathFinder.h"
@@ -478,6 +479,9 @@ inline void U6Actor::discover_direction()
 
 void U6Actor::set_direction(uint8 d)
 {
+ if(is_alive() == false || is_immobile())
+   return;
+
  uint8 frames_per_dir = (actor_type->frames_per_direction != 0)
                          ? actor_type->frames_per_direction : 4;
  if(d >= 4)
@@ -568,7 +572,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
    {
      if(actor_type->can_sit)
        sit_on_chair(obj); // make the Actor sit if they are on top of a chair.
-     
+  /*
      switch(obj->obj_n)
      {
        case OBJ_U6_FIRE_FIELD : // ouch, fire
@@ -636,6 +640,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
        }
        default : break;
      }
+  */
    }
    Tile *tile = map->get_tile(new_x,new_y,new_z);
    if(tile->tile_num>=221&&tile->tile_num<=223) // lava
@@ -2032,8 +2037,11 @@ void U6Actor::die()
      {
       scroll->display_string("\nAn unending darkness engulfs thee...\n\n");
       // special effects?
+      game->get_sound_manager()->playSfx(NUVIE_SFX_AVATAR_DEATH, SFX_PLAY_ASYNC);
+
       scroll->display_string("A voice in the darkness intones, \"KAL LOR!\"\n");
       // special effects?
+      game->get_sound_manager()->playSfx(NUVIE_SFX_KAL_LOR, SFX_PLAY_ASYNC);
 
       party->set_in_combat_mode(false);
 //      game->get_command_bar()->set_combat_mode(false);
@@ -2049,7 +2057,7 @@ void U6Actor::die()
      }
    else
      {
-      party->remove_actor(this);
+      party->remove_actor(this, true);
       if(player->get_actor() == this)
         player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
      }

@@ -831,7 +831,11 @@ bool U6UseCode::use_bell(Obj *obj, UseCodeEvent ev)
     else
         bell = bell_find(obj);
     if(bell)
+    {
         obj_manager->animate_forwards(bell, 2);
+        Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BELL);
+    }
+
     return(true);
 }
 
@@ -1218,7 +1222,7 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 {
     Obj *dug_up_obj = NULL;
     Obj *ladder_obj;
-    MapCoord from = items.actor_ref->get_location(), dig_at, ladder;
+    MapCoord from, dig_at, ladder;
 
     if(!items.mapcoord_ref) // get direction (FIXME: should return relative dir)
     {
@@ -1227,11 +1231,18 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
             scroll->display_string("\nNot readied.\n");
             return(true);
         }
+
+        from = items.actor_ref->get_location();
+
 //        game->get_event()->useselect_mode(obj, "Direction: ");
         game->get_event()->get_direction(from, "Direction: ");
         game->get_event()->request_input(this, obj);
         return(false);
     }
+
+    Actor *parent = obj->get_actor_holding_obj();
+    from = parent->get_location();
+
     dig_at = *items.mapcoord_ref;
 
     // print direction (FIXME: relative dir is what should have been returned)
@@ -1241,6 +1252,10 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
     scroll->display_string(".\n\n");
     if(xdir == 0 && ydir == 0)
         return(true); // ??
+
+    dig_at.x += from.x;
+    dig_at.y += from.y;
+    dig_at.z = from.z;
 
     if(dig_at.z == 5) // we can't go anywhere from the gargoyle world.
     {
