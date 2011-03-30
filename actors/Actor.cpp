@@ -314,9 +314,9 @@ const char *Actor::get_name()
 }
 
 
-bool Actor::moveRelative(sint16 rel_x, sint16 rel_y)
+bool Actor::moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags)
 {
- return move(x + rel_x, y + rel_y, z);
+ return move(x + rel_x, y + rel_y, z, flags);
 }
 
 
@@ -391,7 +391,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 
  // blocking actors are checked for later
  obj = obj_manager->get_obj(new_x,new_y,new_z);
- if(!force_move && !check_move(new_x, new_y, new_z, ACTOR_IGNORE_OTHERS))
+ if(!force_move && !check_move(new_x, new_y, new_z, ACTOR_IGNORE_DANGER | ACTOR_IGNORE_OTHERS))
    {
     // open door
     if(!(obj && usecode->is_unlocked_door(obj) && open_doors)

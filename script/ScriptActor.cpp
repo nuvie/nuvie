@@ -122,6 +122,7 @@ static const char *actor_set_vars[] =
 //Actor variables
 static const char *actor_get_vars[] =
 {
+   "actor_num",
    "align",
    "alive",
    "asleep",
@@ -214,6 +215,7 @@ int (*actor_set_func[])(Actor *, lua_State *) =
 };
 
 //Actor get
+static int nscript_actor_get_actor_num(Actor *actor, lua_State *L);
 static int nscript_actor_get_align(Actor *actor, lua_State *L);
 static int nscript_actor_get_alive(Actor *actor, lua_State *L);
 static int nscript_actor_get_asleep_flag(Actor *actor, lua_State *L);
@@ -250,6 +252,7 @@ static int nscript_actor_get_z(Actor *actor, lua_State *L);
 
 int (*actor_get_func[])(Actor *, lua_State *) =
 {
+   nscript_actor_get_actor_num,
    nscript_actor_get_align,
    nscript_actor_get_alive,
    nscript_actor_get_asleep_flag,
@@ -640,6 +643,11 @@ static int nscript_actor_get(lua_State *L)
       return 0;
 
    return (*actor_get_func[idx])(actor, L);
+}
+
+static int nscript_actor_get_actor_num(Actor *actor, lua_State *L)
+{
+	lua_pushinteger(L, actor->get_actor_num()); return 1;
 }
 
 static int nscript_actor_get_align(Actor *actor, lua_State *L)

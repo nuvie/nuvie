@@ -1,3 +1,12 @@
+2012-03-30  Eric Fry <efry at users.sourceforge.net> r1158
+	* Moved avatar death logic into lua script.
+	* Hooked up actor_map_dmg() lua script to all actor movement.
+	* Added Script::call_actor_map_dmg(Actor *, MapCoord)
+	* Added flags to Actor::moveRelative method.
+	* Set actor direction before moving. This means the actor is facing the right
+	  way if we need to play the hit animation.
+	* Fixed bug with new poision tile script logic.
+	* Added actor.actor_num "get" variable to script system.
 2012-03-29  Eric Fry <efry at users.sourceforge.net> r1157
 	* Added map damage logic into script. At the moment this is not hooked up to player/party movement.
 	* Added Tile *ObjManager::get_obj_dmg_tile(uint16 x, uint16 y, uint8 level)

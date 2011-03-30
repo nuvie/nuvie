@@ -86,6 +86,7 @@ class Script
    bool call_actor_update_all();
    bool call_actor_init(Actor *actor);
    bool call_actor_attack(Actor *actor, MapCoord location, Obj *weapon);
+   bool call_actor_map_dmg(Actor *actor, MapCoord location);
    bool call_look_obj(Obj *obj);
    
  ScriptThread *new_thread(const char *scriptfile);

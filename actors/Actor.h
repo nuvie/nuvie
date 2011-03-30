@@ -359,7 +359,7 @@ class Actor
  void clear_error();
  ActorError *get_error();
 
- bool moveRelative(sint16 rel_x, sint16 rel_y);
+ bool moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags=0);
  virtual bool move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  virtual bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  bool check_moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags=0);

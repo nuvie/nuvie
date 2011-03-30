@@ -37,6 +37,7 @@
 #include "ViewManager.h"
 #include "SoundManager.h"
 #include "Converse.h"
+#include "Script.h"
 #include "Effect.h"
 #include "CombatPathFinder.h"
 
@@ -642,6 +643,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
      }
   */
    }
+   /*
    Tile *tile = map->get_tile(new_x,new_y,new_z);
    if(tile->tile_num>=221&&tile->tile_num<=223) // lava
      {
@@ -663,7 +665,9 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
          scroll->display_prompt();
         }
      }
+*/
   }
+
 
    // temp. fix; this too should be done with UseCode (and don't move the mirror)
    if(old_pos.y > 0 && new_y > 0)
@@ -682,6 +686,8 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
  if(has_surrounding_objs()) //add our surrounding objects back onto the map.
    add_surrounding_objs_to_map();
  
+ Game::get_game()->get_script()->call_actor_map_dmg(this, get_location());
+
  return ret;
 }
 

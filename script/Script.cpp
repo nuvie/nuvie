@@ -469,6 +469,26 @@ bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
    return true;
 }
 
+bool Script::call_actor_map_dmg(Actor *actor, MapCoord location)
+{
+   lua_getglobal(L, "actor_map_dmg");
+   nscript_new_actor_var(L, actor->get_actor_num());
+   //nscript_new_actor_var(L, foe->get_actor_num());
+   lua_pushnumber(L, (lua_Number)location.x);
+   lua_pushnumber(L, (lua_Number)location.y);
+   lua_pushnumber(L, (lua_Number)location.z);
+
+   if(lua_pcall(L, 4, 0, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: actor_move() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
+
+   //Game::get_game()->get_map_window()->updateBlacking(); // the script might have updated the blocking objects. eg broken a door.
+
+   return true;
+}
+
 bool Script::call_look_obj(Obj *obj)
 {
    lua_getglobal(L, "look_obj");

@@ -275,7 +275,9 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     if(alcohol>0 && NUVIE_RAND()%20 == 0) // FIXME: I havn't checked how U6 reduces alcohol level.
         if(--alcohol == 0) drunk = false;
 
-    if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/
+    actor->set_direction(rel_x, rel_y);
+
+    if(!actor->moveRelative(rel_x, rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
     {
         ActorError *ret = actor->get_error();
         if(ret->err == ACTOR_BLOCKED_BY_ACTOR
@@ -283,14 +285,14 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
         {
             ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
         }
-        if(!actor->moveRelative(rel_x,rel_y)) /**MOVE**/
+        if(!actor->moveRelative(rel_x,rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
         {
            Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
            return;
         }
     }
     // post-move
-    actor->set_direction(rel_x, rel_y);
+
     if(party_mode && party->is_leader(actor)) // lead party
     {
         party->follow(rel_x, rel_y);

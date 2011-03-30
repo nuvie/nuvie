@@ -174,15 +174,14 @@ function actor_move(actor, direction, flag)
    if direction == DIR_EAST then x = x + 1 end
    if direction == DIR_WEST then x = x - 1 end
    
+   actor.direction = direction
    local did_move = Actor.move(actor, x, y, z)
    
    --actor.direction = direction
       
    if did_move then
-      actor_map_dmg(actor, x, y, z)
       if actor.obj_n == 0x177 then slime_update_frames() end
       subtract_movement_pts(actor, 5)
-      actor.direction = direction
       --dbg("actor_move() did move actor("..actor.x..","..actor.y..")\n");
    end --FIXME need to handle this properly with map movement pts.
    
@@ -210,15 +209,14 @@ function actor_move_diagonal(actor, x_direction, y_direction)
    end
 
    --dbg("actor_move_diagonal("..actor.name..", "..direction_string(direction)..")\n");
-
+   actor.direction = y_direction
    local did_move = Actor.move(actor, x, y, z)
    
    if did_move then
       --dbg("did move\n");
-      actor_map_dmg(actor, x, y, z)
       if actor.obj_n == 0x177 then slime_update_frames() end
       subtract_movement_pts(actor, 5)
-      actor.direction = y_direction
+
       dbg("set dir = "..direction_string(direction).." y_dir ="..direction_string(y_direction).." ")
    end --FIXME need to handle this properly with map movement pts.
    
@@ -349,8 +347,9 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 				local swamp_boots = Actor.inv_get_obj_n(actor, 0x1c) --swamp boots
 				if swamp_boots == nil or swamp_boots.readied == false then
 					if (actor_type == nil or actor_type[19] == 0) and actor.poisoned == false then --19 immune to poison
+						actor.poisoned = true
 						print(actor.name.." poisoned!\n")
-						hit_anim()
+						hit_anim(map_x, map_y)
 					end
 				end
 			elseif (map_tile >= 220 and map_tile <= 223) or map_tile == 890 or map_tile == 1124 or map_tile == 1125 or map_tile == 1130 or map_tile == 1131 or map_tile == 1164 or map_tile == 1193 then
@@ -1075,10 +1074,10 @@ function actor_dead(actor)
 		Obj.moveToMap(blood_obj, actor.x, actor.y, actor.z)
 	end
 
-	if actor.id_n ~= 1 then
+	if actor.actor_num ~= 1 then --avatar
 		Actor.kill(actor)
 	else
-		--FIXME avatar death logic here.
+		actor_avatar_death(actor)
 	end
 	
 	if actor.obj_n == 0x177 then
@@ -3095,6 +3094,24 @@ function actor_use_effect(actor, effect)
 	end
 	
 	Obj.removeFromEngine(effect)
+end
+
+function actor_avatar_death(avatar)
+	
+	--FIXME the hit tile is displayed constantly while the death tune is playing.
+	
+	avatar.asleep = true --we do this so it looks like the avatar is dead.
+	print("\nAn unending darkness engulfs thee...\n\n")
+	play_sfx(SFX_AVATAR_DEATH, true)
+	fade_out()
+	print("A voice in the darkness intones, \"KAL LOR!\"\n")
+	play_sfx(SFX_KAL_LOR, true)
+	party_resurrect_dead_members()
+	party_heal() --FIXME remove poison when healing party.
+	party_move(0x133, 0x160, 0)
+
+	fade_in()
+	avatar.asleep = false
 end
 
 io.stderr:write("actor.lua loaded\n")
