@@ -153,6 +153,8 @@ static int nscript_map_get_obj(lua_State *L);
 static int nscript_map_remove_obj(lua_State *L);
 static int nscript_map_is_water(lua_State *L);
 static int nscript_map_get_dmg_tile_num(lua_State *L);
+static int nscript_map_line_test(lua_State *L);
+static int nscript_map_line_hit_check(lua_State *L);
 
 static int nscript_map_can_put(lua_State *L);
 
@@ -311,6 +313,11 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_map_can_put);
    lua_setglobal(L, "map_can_put");
 
+   lua_pushcfunction(L, nscript_map_line_test);
+   lua_setglobal(L, "map_can_reach_point");
+
+   lua_pushcfunction(L, nscript_map_line_hit_check);
+   lua_setglobal(L, "map_line_hit_check");
 
    lua_pushcfunction(L, nscript_player_get_location);
    lua_setglobal(L, "player_get_location");
@@ -1255,12 +1262,14 @@ static int nscript_party_set_combat_mode(lua_State *L)
 static int nscript_party_move(lua_State *L)
 {
 	Player *player = Game::get_game()->get_player();
+	//Party *party = Game::get_game()->get_party();
 	uint16 x, y;
 	uint8 z;
 
 	if(nscript_get_location_from_args(L, &x, &y, &z) == false)
 		return 0;
 
+	//party->move(x, y, z);
 	player->move(x, y, z); //FIXME should this be party move?
 
 	return 0;
@@ -1409,6 +1418,52 @@ static int nscript_map_get_dmg_tile_num(lua_State *L)
 	}
 
 	return 0;
+}
+
+static int nscript_map_line_test(lua_State *L)
+{
+	Map *map = Game::get_game()->get_game_map();
+	LineTestResult result;
+	bool ret = false;
+
+	uint16 x = (uint16) luaL_checkinteger(L, 1);
+	uint16 y = (uint16) luaL_checkinteger(L, 2);
+
+	uint16 x1 = (uint16) luaL_checkinteger(L, 3);
+	uint16 y1 = (uint16) luaL_checkinteger(L, 4);
+	uint8 level = (uint8) luaL_checkinteger(L, 5);
+
+	if(map->lineTest(x, y, x1, y1, level, LT_HitMissileBoundary, result) == false)
+		ret = true;
+
+	lua_pushboolean(L, (int)ret);
+	return 1;
+}
+
+static int nscript_map_line_hit_check(lua_State *L)
+{
+	Map *map = Game::get_game()->get_game_map();
+	LineTestResult result;
+
+	uint16 x = (uint16) luaL_checkinteger(L, 1);
+	uint16 y = (uint16) luaL_checkinteger(L, 2);
+
+	uint16 x1 = (uint16) luaL_checkinteger(L, 3);
+	uint16 y1 = (uint16) luaL_checkinteger(L, 4);
+	uint8 level = (uint8) luaL_checkinteger(L, 5);
+
+	if(map->lineTest(x, y, x1, y1, level, LT_HitMissileBoundary, result))
+	{
+		lua_pushinteger(L, result.hit_x);
+		lua_pushinteger(L, result.hit_y);
+	}
+	else
+	{
+		lua_pushinteger(L, x1);
+		lua_pushinteger(L, y1);
+	}
+
+	return 2;
 }
 
 static int nscript_eclipse_start(lua_State *L)

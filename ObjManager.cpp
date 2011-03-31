@@ -454,7 +454,7 @@ U6LList *ObjManager::get_obj_superchunk(uint16 x, uint16 y, uint8 level)
 }
 */
 
-bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
+bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type)
 {
  U6Link *link;
  U6LList *obj_list;
@@ -495,7 +495,7 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level)
              if(check_tile)
                {
                 tile1 = tile_manager->get_tile(tile_num);
-                if(tile1->flags2 & TILEFLAG_BOUNDARY)
+                if(tile1->flags2 & boundary_type) //either TILEFLAG_BOUNDARY or TILEFLAG_MISSILE_BOUNDARY
                   return true;
 
                 check_tile = false;

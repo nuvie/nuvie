@@ -43,7 +43,8 @@ enum LineTestFlags
 	LT_HitUnpassable		= (1<<1),
 	LT_HitForcedPassable		= (1<<2),
         LT_HitLocation			= (1<<3), /* hit location in Result */
-        LT_HitObjects			= (1<<4)  /* hit any object */
+        LT_HitObjects			= (1<<4), /* hit any object */
+        LT_HitMissileBoundary			= (1<<5)
 };
 
 class LineTestResult
@@ -137,6 +138,7 @@ class Map
  bool is_passable(uint16 x, uint16 y, uint8 level);
  bool is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects=false);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
+ bool is_missile_boundary(uint16 x, uint16 y, uint8 level);
  bool is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
  bool actor_at_location(uint16 x, uint16 y, uint8 level);
  uint8 get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);

@@ -1,3 +1,11 @@
+2012-04-01  Eric Fry <efry at users.sourceforge.net> r1159
+	* Constrain range attacks to within missile boundaries. (still need to do triple crossbow)
+	* Changed ObjManager::is_boundary() to allow checking for missile boundaries.
+	* Added missile boundary checking 'LT_HitMissileBoundary' to Map::LineTest()
+	* Added Map::is_missile_boundary()
+	* Moved actor asleep call to before party move in avatar death script.
+	* Added script functions map_can_reach_point() and map_line_hit_check().
+
 2012-03-30  Eric Fry <efry at users.sourceforge.net> r1158
 	* Moved avatar death logic into lua script.
 	* Hooked up actor_map_dmg() lua script to all actor movement.

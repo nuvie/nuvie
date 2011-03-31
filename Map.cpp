@@ -151,6 +151,26 @@ bool Map::is_boundary(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+bool Map::is_missile_boundary(uint16 x, uint16 y, uint8 level)
+{
+ uint8 *ptr;
+ Tile *map_tile;
+
+ WRAP_COORD(x,level);
+ WRAP_COORD(y,level);
+
+ ptr = get_map_data(level);
+ map_tile = tile_manager->get_tile(ptr[y * get_width(level) + x]);
+
+ if((map_tile->flags2 & TILEFLAG_MISSILE_BOUNDARY) != 0 && obj_manager->is_forced_passable(x, y, level) == false)
+   return true;
+
+ if(obj_manager->is_boundary(x, y, level, TILEFLAG_MISSILE_BOUNDARY))
+   return true;
+
+ return false;
+}
+
 bool Map::is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects)
 {
  uint8 *ptr;
@@ -489,6 +509,15 @@ bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResul
 	if (flags & LT_HitUnpassable)
 	{
 		if (!is_passable (x, y, level))
+		{
+			Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
+			return	true;
+		}
+	}
+
+	if (flags & LT_HitMissileBoundary)
+	{
+		if (is_missile_boundary (x, y, level))
 		{
 			Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
 			return	true;

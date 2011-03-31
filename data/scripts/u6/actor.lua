@@ -1301,7 +1301,10 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       end
       
       --FIXME might need to get new foe here.
+      target_x, target_y = map_line_hit_check(attacker.x, attacker.y, target_x, target_y, attacker.z)
+      
       combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, weapon)
+      
       
    else --standard weapon
       if actor_find_max_xy_distance(attacker, player_loc.x, player_loc.y) < 6 then
@@ -3003,7 +3006,7 @@ end
 
 --FIXME this is a line of sight check for combat.
 function sub_1D59F(actor, target_x, target_y, weapon_obj)
-   return true
+   return map_can_reach_point(actor.x, actor.y, target_x, target_y, actor.z)
 end
 
 
@@ -3106,12 +3109,13 @@ function actor_avatar_death(avatar)
 	fade_out()
 	print("A voice in the darkness intones, \"KAL LOR!\"\n")
 	play_sfx(SFX_KAL_LOR, true)
+	avatar.asleep = false
 	party_resurrect_dead_members()
 	party_heal() --FIXME remove poison when healing party.
 	party_move(0x133, 0x160, 0)
 
 	fade_in()
-	avatar.asleep = false
+
 end
 
 io.stderr:write("actor.lua loaded\n")
