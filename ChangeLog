@@ -1,3 +1,6 @@
+2012-04-01  Eric Fry <efry at users.sourceforge.net> r1160
+	* Fixed bug when recursively calling TimedEvents.
+
 2012-04-01  Eric Fry <efry at users.sourceforge.net> r1159
 	* Constrain range attacks to within missile boundaries. (still need to do triple crossbow)
 	* Changed ObjManager::is_boundary() to allow checking for missile boundaries.
@@ -15,6 +18,7 @@
 	  way if we need to play the hit animation.
 	* Fixed bug with new poision tile script logic.
 	* Added actor.actor_num "get" variable to script system.
+
 2012-03-29  Eric Fry <efry at users.sourceforge.net> r1157
 	* Added map damage logic into script. At the moment this is not hooked up to player/party movement.
 	* Added Tile *ObjManager::get_obj_dmg_tile(uint16 x, uint16 y, uint8 level)

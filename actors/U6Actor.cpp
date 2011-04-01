@@ -548,9 +548,9 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
 // bool force_move = flags & ACTOR_FORCE_MOVE;
  bool ret;
  sint16 rel_x, rel_y;
- MsgScroll *scroll = Game::get_game()->get_scroll();
+ //MsgScroll *scroll = Game::get_game()->get_scroll();
  Player *player = Game::get_game()->get_player();
- Party *party = player->get_party();
+ //Party *party = player->get_party();
  MapCoord old_pos = get_location();
 
  if(has_surrounding_objs())

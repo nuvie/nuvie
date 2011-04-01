@@ -31,20 +31,7 @@ void TimeQueue::call_timers(uint32 now)
 {
     while(!empty() && call_timer(now))
     {
-        TimedEvent *tevent = pop_timer(); // remove
 
-        if(tevent->repeat_count != 0) // repeat! same delay, add time
-        {
-            // use updated time so it isn't repeated too soon
-            tevent->set_time();
-//            tevent->time = clock->get_ticks() + tevent->delay;
-//            tevent->time = now + tevent->delay;
-            add_timer(tevent);
-            if(tevent->repeat_count > 0) // don't reduce count if infinite (-1)
-                --tevent->repeat_count;
-        }
-        else
-            delete_timer(tevent); // if not repeated, safe to delete
     }
 }
 
@@ -101,24 +88,42 @@ TimedEvent *TimeQueue::pop_timer()
 
 
 /* Call timed event at front of queue, whose time is <= `now'.
- * ***Does not handle repeating timers***
  * Returns true if an event handler was called. (false if time isn't up yet)
  */
 bool TimeQueue::call_timer(uint32 now)
 {
     if(empty())
         return(false);
-    TimedEvent *first = tq.front();
-    if(first->defunct)
+    TimedEvent *tevent = tq.front();
+    if(tevent->defunct)
     {
-        assert(pop_timer() == first);
-        delete_timer(first);
+        assert(pop_timer() == tevent);
+        delete_timer(tevent);
         return(false);
     }
-    if(first->time > now)
+    if(tevent->time > now)
         return(false);
 
-    first->timed(now); // fire
+    //dequeue event here
+    pop_timer(); // remove timer in case we have recursion in the timed() call.
+
+    tevent->timed(now); // fire
+
+    //re-queue if repeating timer.
+
+    if(tevent->repeat_count != 0) // repeat! same delay, add time
+    {
+        // use updated time so it isn't repeated too soon
+        tevent->set_time();
+//            tevent->time = clock->get_ticks() + tevent->delay;
+//            tevent->time = now + tevent->delay;
+        add_timer(tevent);
+        if(tevent->repeat_count > 0) // don't reduce count if infinite (-1)
+            --tevent->repeat_count;
+    }
+    else
+        delete_timer(tevent); // if not repeated, safe to delete
+
     return(true);
 }
 
