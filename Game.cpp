@@ -26,7 +26,7 @@
 #include "U6misc.h"
 
 #include "GUI.h"
-
+#include "Console.h"
 #include "Dither.h"
 
 #include "SoundManager.h"
@@ -69,11 +69,12 @@
 
 Game *Game::game = NULL;
 
-Game::Game(Configuration *cfg, Script *s)
+Game::Game(Configuration *cfg, Script *s, GUI *g)
 {
  game = this;
  config = cfg;
  script = s;
+ gui = g;
  cursor = NULL;
  dither = NULL;
  tile_manager = NULL;
@@ -91,7 +92,6 @@ Game::Game(Configuration *cfg, Script *s)
  portrait = NULL;
  view_manager = NULL;
  sound_manager = NULL;
- gui = NULL;
  usecode = NULL;
  effect_manager = NULL;
  weather = NULL;
@@ -137,8 +137,6 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
  screen = s;
  game_type = type;
 
- gui = new GUI(config, screen);
-
  try
   {
    dither = new Dither(config);
@@ -156,6 +154,7 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
 
    background = new Background(config);
    background->init();
+   background->Hide();
    gui->AddWidget(background);
 
    text = new Text(config);
@@ -173,6 +172,7 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    tile_manager = new TileManager(config);
    tile_manager->loadTiles();
 
+   ConsoleAddInfo("Loading ObjManager()");
    obj_manager = new ObjManager(config, tile_manager, egg_manager);
 
    // Correct usecode class for each game
@@ -186,9 +186,11 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    obj_manager->set_usecode(usecode);
    //obj_manager->loadObjs();
 
+   ConsoleAddInfo("Loading map data.");
    game_map->loadMap(tile_manager, obj_manager);
    egg_manager->set_obj_manager(obj_manager);
 
+   ConsoleAddInfo("Loading actor data.");
    actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
 
    game_map->set_actor_manager(actor_manager);
@@ -196,12 +198,15 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
 
    map_window = new MapWindow(config);
    map_window->init(game_map, tile_manager, obj_manager, actor_manager);
+   map_window->Hide();
    gui->AddWidget(map_window);
 
    weather = new Weather(config, game_type);
 
    command_bar = new CommandBar(this);
+   command_bar->Hide();
    gui->AddWidget(command_bar);
+
 
    player = new Player(config);
    party = new Party(config);
@@ -213,9 +218,9 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
 
    view_manager = new ViewManager(config);
    view_manager->init(gui, text, party, player, tile_manager, obj_manager, portrait);
-
-
+   scroll->Hide();
    gui->AddWidget(scroll);
+
 
    map_window->set_windowSize(11,11);
 
@@ -233,10 +238,23 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    
    save_manager->load_latest_save();
 
+   ConsoleAddInfo("Polishing Anhk");
+   ConsoleAddInfo("Waiting for Ultima X");
+   ConsoleAddInfo("Scrolling Console....");
+
+   //ConsolePause();
+   ConsoleHide();
+
+   background->Show();
+   command_bar->Show();
+   scroll->Show();
+   map_window->Show();
+   view_manager->set_party_mode();
   }
  catch(const char *error_string)
   {
    DEBUG(0,LEVEL_ERROR,"%s\n",error_string);
+   ConsoleAddError("Error: " + string(error_string));
    return false;
   }
 

@@ -25,6 +25,7 @@
 #include "Configuration.h"
 #include "U6misc.h"
 #include "GameSelect.h"
+#include "Console.h"
 
 GameSelect::GameSelect(Configuration *cfg)
 {
@@ -50,6 +51,9 @@ uint8 GameSelect::load(Screen *s, uint8 game_type)
     if(game_type == NUVIE_GAME_NONE)
       game_type = NUVIE_GAME_U6; // FIX we should select game from a menu here.
    }
+
+ if(game_type == NUVIE_GAME_NONE)
+	 ConsoleAddError("No game type specified!");
 
  return game_type;
 }

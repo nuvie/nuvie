@@ -9,9 +9,16 @@
 #include "GUI_loadimage.h"
 
 /* use default 8x8 font */
-GUI_Font::GUI_Font()
+GUI_Font::GUI_Font(Uint8 fontType)
 {
-  SDL_Surface *temp=GUI_DefaultFont();
+  SDL_Surface *temp;
+
+  if(fontType == GUI_FONT_6X8)
+	  temp = GUI_Font6x8();
+  else
+	  temp = GUI_DefaultFont();
+
+
   fontStore=SDL_ConvertSurface(temp,temp->format,SDL_SWSURFACE);
   charh = fontStore->h/16;
   charw = fontStore->w/16;

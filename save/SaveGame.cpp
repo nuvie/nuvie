@@ -32,6 +32,7 @@
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"
 #include "GUI.h"
+#include "Console.h"
 #include "SaveGame.h"
 #include "Configuration.h"
 #include "Game.h"
@@ -364,6 +365,7 @@ bool SaveGame::load(const char *filename)
    return false;
   }
 
+ ConsoleAddInfo("Loading Game: " + string(filename));
  DEBUG(0,LEVEL_NOTIFICATION,"Loading Game: %s\n", filename);
 
  if(!check_version(loadfile))

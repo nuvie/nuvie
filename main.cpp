@@ -26,7 +26,7 @@
 #include "SDL.h"
 
 #include "nuvieDefs.h"
-
+#include "Console.h"
 #include "nuvie.h"
 
 #include "main.h"
@@ -66,7 +66,10 @@ int main(int argc, char **argv)
  nuvie = new Nuvie;
 
  if(nuvie->init(argc, argv) == false)
+ {
+   ConsolePause();
    return 1;
+ }
 
  nuvie->play();
 

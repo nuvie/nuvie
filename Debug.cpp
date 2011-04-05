@@ -25,6 +25,7 @@
 #include <string.h>
 #include <time.h>
 #include <nuvieDefs.h>
+#include "Console.h"
 
 #ifndef WITHOUT_DEBUG
 
@@ -90,6 +91,7 @@ DebugLevelType debug(const char * func, const char * file, const int line, const
   }
   vfprintf(stderr,format,ap);
   va_end(ap);
+
   return CurrentDebugLevel;
 }
 

@@ -45,6 +45,7 @@ extern SDL_Surface *GUI_LoadImage(int w, int h, Uint8 *pal, Uint8 *data);
 /* Load the internal 8x8 font and return the associated font surface */
 extern SDL_Surface *GUI_DefaultFont(void);
 
+extern SDL_Surface *GUI_Font6x8(void);
 #ifdef __cplusplus
 };
 #endif

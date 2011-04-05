@@ -39,6 +39,7 @@ SDL_Surface *GUI_LoadImage(int w, int h, Uint8 *pal, Uint8 *data)
 #include "the_font.h"
 
 static SDL_Surface *the_font = NULL;
+static SDL_Surface *the_font_6x8 = NULL;
 
 SDL_Surface *GUI_DefaultFont(void)
 {
@@ -48,5 +49,12 @@ SDL_Surface *GUI_DefaultFont(void)
 	return(the_font);
 }
 
+SDL_Surface *GUI_Font6x8(void)
+{
+	if ( the_font_6x8 == NULL ) {
+		the_font_6x8 = GUI_LoadImage(font_6x8_w, font_6x8_h, font_pal, font_6x8_data);
+	}
+	return(the_font_6x8);
+}
 
 }; /* Extern C */

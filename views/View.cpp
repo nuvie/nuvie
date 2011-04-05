@@ -44,7 +44,7 @@ View::~View()
 bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
  GUI_Widget::Init(NULL, x, y, 136, 96);
-
+ Hide();
  text = t;
  party = p;
  tile_manager = tm;

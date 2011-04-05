@@ -1,3 +1,14 @@
+2012-04-06  Eric Fry <efry at users.sourceforge.net> r1161
+	* Added new Nuvie boot console. Fatal errors can now be shown to the user on screen.
+	* Added GUI_Console class
+	* Added Console class
+	* Moved creation of GUI object into Nuvie class
+	* Added new config option "config/general/show_console" default = true
+	* Added new 6x8 font to the GUI
+	* Changed GUI_Font class constructor to take font type argument.
+	  Either GUI_FONT_DEFAULT or GUI_FONT_6X8
+	* Show console on error
+
 2012-04-01  Eric Fry <efry at users.sourceforge.net> r1160
 	* Fixed bug when recursively calling TimedEvents.
 

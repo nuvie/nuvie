@@ -5,12 +5,15 @@
 
 #include "SDL.h"
 
+#define GUI_FONT_DEFAULT 0
+#define GUI_FONT_6X8     1
+
 class GUI_Font
 {
 
 public:
   /* use default 8x8 font */
-  GUI_Font();
+  GUI_Font(Uint8 fontType=GUI_FONT_DEFAULT);
 
   /* open named BMP file */
   GUI_Font(char *name);

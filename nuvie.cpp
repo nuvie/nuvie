@@ -38,6 +38,8 @@
 #include "Script.h"
 #include "Game.h"
 #include "GameSelect.h"
+#include "GUI.h"
+#include "Console.h"
 
 #include "nuvie.h"
 
@@ -92,6 +94,10 @@ bool Nuvie::init(int argc, char **argv)
 
  SDL_WM_SetCaption("Nuvie","Nuvie");
 
+ GUI *gui = new GUI(config, screen);
+ ConsoleInit(config, screen, gui, 320, 200);
+ ConsoleAddInfo("\n Nuvie: ver 0.1 rev ???? \n");
+ ConsoleAddInfo("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t");
  game_select = new GameSelect(config);
 
  // select game from graphical menu if required
@@ -99,6 +105,7 @@ bool Nuvie::init(int argc, char **argv)
  delete game_select;
  if(game_type == NUVIE_GAME_NONE)
    return false;
+
 
  //setup various game related config variables.
  assignGameConfigValues(game_type);
@@ -108,7 +115,7 @@ bool Nuvie::init(int argc, char **argv)
    return false;
 
  script = new Script(config, game_type);
- game = new Game(config, script);
+ game = new Game(config, script, gui);
 
  if(game->loadGame(screen,game_type) == false)
    {
@@ -121,6 +128,7 @@ bool Nuvie::init(int argc, char **argv)
 
 bool Nuvie::play()
 {
+
  if(game)
   game->play();
 
@@ -228,6 +236,7 @@ bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
 	config->set("config/general/lighting", "original");
 	config->set("config/general/dither_mode", "none");
 	config->set("config/general/enable_cursors", false);
+	config->set("config/general/show_console", true);
 
 	config->set("config/ultima6/gamedir", "/Library/Application Support/Nuvie Support/ultima6");
 	config->set("config/ultima6/townsdir", "/Library/Application Support/Nuvie Support/townsU6");
@@ -295,12 +304,16 @@ bool Nuvie::checkGameDir(uint8 game_type)
  struct stat sb;
  config_get_path(config, "", path);
 
+
+
  if(stat(path.c_str(),&sb) == 0 && sb.st_mode & S_IFDIR)
   {
+   ConsoleAddInfo("gamedir: \"" + path + "\"");
    return true;
   }
 
- DEBUG(0,LEVEL_ERROR,"Invalid gamedir! '%s'\n", path.c_str());
+ ConsoleAddError("Cannot open gamedir!");
+ ConsoleAddError("\"" + path + "\"");
 
  return false;
 #endif
