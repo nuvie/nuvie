@@ -104,9 +104,10 @@ bool ViewManager::set_current_view(View *view)
    }
 
  current_view = view;
- gui->AddWidget((GUI_Widget *)view);
  view->Show();
+ gui->AddWidget((GUI_Widget *)view);
  view->Redraw();
+ gui->Display();
 
  return true;
 }

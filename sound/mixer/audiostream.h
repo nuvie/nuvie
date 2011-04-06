@@ -29,6 +29,7 @@
 //#include "common/util.h"
 //#include "common/scummsys.h"
 #include <vector>
+#include <string>
 #include "nuvieDefs.h"
 #include "types.h"
 

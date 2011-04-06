@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Configuration::Configuration()
 {
-
+	config_filename = "";
 }
 
 Configuration::~Configuration()
@@ -43,6 +43,7 @@ Configuration::~Configuration()
 bool Configuration::readConfigFile(std::string fname, std::string root,
 								   bool readonly)
 {
+	config_filename = fname;
 	XMLTree* tree = new XMLTree();
 	tree->clear(root);
 	if (!tree->readConfigFile(fname)) {

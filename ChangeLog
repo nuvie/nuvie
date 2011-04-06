@@ -1,3 +1,10 @@
+2012-04-06  Eric Fry <efry at users.sourceforge.net> r1162
+	* Added more console messages.
+	* Fixed redraw bug with party view when launching
+	* Added ConsoleDelete() function
+	* Continue from Console pause if SDL_QUIT event received.
+	* Added filename() method to Configuration class.
+
 2012-04-06  Eric Fry <efry at users.sourceforge.net> r1161
 	* Added new Nuvie boot console. Fatal errors can now be shown to the user on screen.
 	* Added GUI_Console class

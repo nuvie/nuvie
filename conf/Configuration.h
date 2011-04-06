@@ -62,6 +62,8 @@ class Configuration
 	// clear everything
 	void clear();
 
+	std::string filename() { return config_filename; }
+
 	// get value
 	void value(std::string key, std::string &ret, const char *defaultvalue="");
 	void value(std::string key, int &ret, int defaultvalue=0);
@@ -89,6 +91,7 @@ class Configuration
  private:
 
 	std::vector<XMLTree*> trees;
+	std::string config_filename;
 };
 
 #endif

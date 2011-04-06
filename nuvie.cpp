@@ -98,6 +98,7 @@ bool Nuvie::init(int argc, char **argv)
  ConsoleInit(config, screen, gui, 320, 200);
  ConsoleAddInfo("\n Nuvie: ver 0.1 rev ???? \n");
  ConsoleAddInfo("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t");
+ ConsoleAddInfo("Config file: \"" + config->filename() + "\"");
  game_select = new GameSelect(config);
 
  // select game from graphical menu if required
@@ -110,7 +111,7 @@ bool Nuvie::init(int argc, char **argv)
  //setup various game related config variables.
  assignGameConfigValues(game_type);
 
- //check for a vaild path to the selected game.
+ //check for a valid path to the selected game.
  if(checkGameDir(game_type) == false)
    return false;
 
@@ -122,6 +123,8 @@ bool Nuvie::init(int argc, char **argv)
     delete game;
     return false;
    }
+
+ ConsoleDelete();
 
  return true;
 }

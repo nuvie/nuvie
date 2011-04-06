@@ -70,10 +70,22 @@ void ConsoleInit(Configuration *c, Screen *s, GUI *gui, uint16 w, uint16 h)
 	g_console = new Console(c, s, gui, w, h);
 }
 
+void ConsoleDelete()
+{
+	if(g_console != NULL)
+	{
+		g_console->Delete();
+		g_console = NULL;
+	}
+}
+
 void ConsoleAddInfo(std::string s)
 {
 	if(g_console != NULL)
+	{
+		DEBUG(0,LEVEL_INFORMATIONAL, s.c_str());
 		g_console->AddLine(s);
+	}
 }
 
 void ConsoleAddError(std::string s)
@@ -98,7 +110,7 @@ void ConsolePause()
 	 {
 		 while(!SDL_PollEvent(&event))
 		 {
-			 if(event.type == SDL_KEYDOWN)
+			 if(event.type == SDL_KEYDOWN || event.type == SDL_QUIT)
 			 {
 				 waiting = false;
 			 	 break;

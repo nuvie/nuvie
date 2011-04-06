@@ -239,8 +239,6 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    save_manager->load_latest_save();
 
    ConsoleAddInfo("Polishing Anhk");
-   ConsoleAddInfo("Waiting for Ultima X");
-   ConsoleAddInfo("Scrolling Console....");
 
    //ConsolePause();
    ConsoleHide();
@@ -250,6 +248,8 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    scroll->Show();
    map_window->Show();
    view_manager->set_party_mode();
+   view_manager->update();
+
   }
  catch(const char *error_string)
   {
