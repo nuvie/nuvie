@@ -35,7 +35,10 @@ NUVIE_OBJS1 = $(NUVIE_CPPs:.cpp=.o)
 NUVIE_Cs = $(filter %.c,$(nuvie_SOURCES))
 NUVIE_OBJS2 = $(NUVIE_Cs:.c=.o)
 
-nuvie.exe: $(NUVIE_OBJS1) $(NUVIE_OBJS2)
+builds/mingw/resource.o: builds/mingw/resource.rc builds/mingw/nuvie.ico
+	windres builds/mingw/resource.rc -O coff -o builds/mingw/resource.o
+
+nuvie.exe: $(NUVIE_OBJS1) $(NUVIE_OBJS2) builds/mingw/resource.o
 	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
 # tools/Makefile.common defines u6decomp_SOURCES

@@ -355,15 +355,14 @@ bool Nuvie::checkGameDir(uint8 game_type)
 {
  std::string path;
 
+ config_get_path(config, "", path);
+ ConsoleAddInfo("gamedir: \"" + path + "\"");
+
 #ifndef WIN32
  struct stat sb;
- config_get_path(config, "", path);
-
-
 
  if(stat(path.c_str(),&sb) == 0 && sb.st_mode & S_IFDIR)
-  {
-   ConsoleAddInfo("gamedir: \"" + path + "\"");
+  {   
    return true;
   }
 

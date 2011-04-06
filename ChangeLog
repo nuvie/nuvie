@@ -1,3 +1,7 @@
+2012-04-07  Eric Fry <efry at users.sourceforge.net> r1165
+	* Added MinGW windows icon
+	* Show gamedir path on Console under windows.
+
 2012-04-06  Eric Fry <efry at users.sourceforge.net> r1163
 	* Create default config for Windows if no config file found.
 	* Fixed bug in mkdir_recursive()
