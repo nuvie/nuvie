@@ -236,7 +236,10 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
    
-   save_manager->load_latest_save();
+   if(save_manager->load_latest_save() == false)
+   {
+    return false;
+   }
 
    ConsoleAddInfo("Polishing Anhk");
 

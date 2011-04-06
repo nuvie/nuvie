@@ -9,7 +9,7 @@ SRC=.
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib  -lSDL_mixer -lSDLmain -lSDL
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 	-I$(SRC)/conf -I$(SRC)/files -I$(SRC)/fonts -I$(SRC)/GUI \

@@ -172,9 +172,8 @@ int mkdir_recursive(std::string path, int mode)
       
       printf( "%s, ", dir.c_str() );
       
-      tmp_path += U6PATH_DELIMITER;
       tmp_path += dir;
-      
+      tmp_path += U6PATH_DELIMITER;
       if(directory_exists(tmp_path.c_str()) == false)
       {
 #if defined(WIN32)

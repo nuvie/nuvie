@@ -50,6 +50,7 @@ class Nuvie
    protected:
 
    bool initConfig();
+   bool initDefaultConfigWin32();
    bool initDefaultConfigMacOSX(const char *home_env);
    bool loadConfigFile(std::string filename, bool readOnly = NUVIE_CONF_READONLY);
    void assignGameConfigValues(uint8 game_type);
