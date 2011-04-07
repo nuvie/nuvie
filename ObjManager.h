@@ -123,6 +123,7 @@ class ObjManager
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
  bool is_forced_passable(uint16 x, uint16 y, uint8 level);
  bool is_stackable(Obj *obj);
+ bool is_breakable(Obj *obj);
  bool can_store_obj(Obj *target, Obj *src); // Bag, open chest, spellbook.
  bool has_reduced_weight(Obj *obj);
  bool has_toptile(Obj *obj);

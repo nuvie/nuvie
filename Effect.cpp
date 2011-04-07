@@ -645,12 +645,31 @@ void DropEffect::hit_target()
     throw_obj->x = stop_at.x;
     throw_obj->y = stop_at.y;
     throw_obj->z = stop_at.z;
-/*    if(throw_obj->is_breakable() && start_at.distance(stop_at) > 1)
+
+    //FIXME drop logic should probably be in lua script.
+    if(drop_from_actor && obj_manager->is_breakable(throw_obj) && start_at.distance(stop_at) > 1)
     {
-        delete_obj(throw_obj);
-        display_string("\nIt broke!\n");
+    	nuvie_game_t game_type = game->get_game_type();
+    	if(game_type == NUVIE_GAME_U6 && throw_obj->obj_n == OBJ_U6_DRAGON_EGG)
+    	{
+    		throw_obj->frame_n = 1; //brake egg.
+    		obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
+    	}
+    	else if(game_type == NUVIE_GAME_U6 && throw_obj->obj_n == OBJ_U6_MIRROR)
+    	{
+    		throw_obj->frame_n = 2; //break mirror.
+    		obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
+    	}
+    	else
+    	{
+    		obj_manager->unlink_from_engine(throw_obj);
+    		delete_obj(throw_obj);
+    	}
+
+        Game::get_game()->get_scroll()->display_string("\nIt broke!\n");
+        Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BROKEN_GLASS);
     }
-    else*/// FIXME
+    else
         obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
     throw_obj = NULL; // set as dropped
 

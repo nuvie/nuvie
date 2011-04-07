@@ -1,3 +1,7 @@
+2012-04-07  Eric Fry <efry at users.sourceforge.net> r1166
+	* Added the ability to break objects when dropping. Bug [1527605]
+	* Added bool ObjManager::is_breakable(Obj *obj)
+
 2012-04-07  Eric Fry <efry at users.sourceforge.net> r1165
 	* Added MinGW windows icon
 	* Show gamedir path on Console under windows.

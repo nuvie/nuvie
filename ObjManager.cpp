@@ -678,6 +678,35 @@ bool ObjManager::is_stackable(Obj *obj)
  return (bool)obj_stackable[obj->obj_n];
 }
 
+bool ObjManager::is_breakable(Obj *obj)
+{
+	if(game_type==NUVIE_GAME_U6)
+	{
+		switch (obj->obj_n)
+		{
+		case OBJ_U6_FLASK_OF_OIL:
+		case OBJ_U6_SNAKE_VENOM:
+		case OBJ_U6_CRYSTAL_BALL:
+		case OBJ_U6_MIRROR:
+		case OBJ_U6_WINE:
+		case OBJ_U6_MEAD:
+		case OBJ_U6_ALE:
+		case OBJ_U6_WINE_GLASS:
+		case OBJ_U6_PLATE:
+		case OBJ_U6_MUG:
+		case OBJ_U6_HONEY_JAR:
+		case OBJ_U6_JAR_OF_HONEY:
+		case OBJ_U6_POTION:
+		case OBJ_U6_WATER_VASE:
+		case OBJ_U6_DRAGON_EGG:
+			return true;
+		default: break;
+		}
+	}
+
+	return false;
+}
+
 bool ObjManager::can_store_obj(Obj *target, Obj *src)
 {
 	if(game_type==NUVIE_GAME_U6)

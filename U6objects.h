@@ -158,11 +158,13 @@
 #define OBJ_U6_SCROLL              152
 
 #define OBJ_U6_PANPIPES            153
+#define OBJ_U6_CRYSTAL_BALL        155
 #define OBJ_U6_HARPSICHORD         156
 #define OBJ_U6_HARP                157
 #define OBJ_U6_LUTE                158
 
 #define OBJ_U6_CLOCK               159
+#define OBJ_U6_WATER_VASE          161
 #define OBJ_U6_BED                 163
 #define OBJ_U6_FIREPLACE           164
 

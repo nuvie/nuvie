@@ -143,6 +143,8 @@ class Game
  void time_changed();
  void stats_changed();
 
+ nuvie_game_t get_game_type() { return game_type; }
+
  /* Return instances of Game classes */
  static Game *get_game()          { return(game); }
  Configuration *get_config()       { return(config); }
