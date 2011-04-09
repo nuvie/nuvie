@@ -94,7 +94,7 @@ void ConsoleAddError(std::string s)
 	{
 		DEBUG(0,LEVEL_ERROR, s.c_str());
 		g_console->Show();
-		g_console->AddLine(s);
+		g_console->AddLine("Error: " + s);
 	}
 }
 

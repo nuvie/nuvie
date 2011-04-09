@@ -51,7 +51,7 @@ SaveManager::SaveManager(Configuration *cfg)
 
 // setup the savedir variable.
 // throws if the directory is not found or inaccessable
-void SaveManager::init()
+bool SaveManager::init()
 {
  std::string savedir_key;
 
@@ -101,13 +101,14 @@ void SaveManager::init()
       if(mkdir_recursive(savedir.c_str(), 0700) != 0)
       {
          DEBUG(0,LEVEL_ERROR,"savedir '%s' either not found or not accessible!\n", savedir.c_str());
-         throw "Setting Save Directory!";
+         ConsoleAddError("Setting Save Directory!");
+         return false;
       }
    }
 
    ConsoleAddInfo("Save dir: \"" + savedir + "\"");
 
- return;
+ return true;
 }
 
 SaveManager::~SaveManager()

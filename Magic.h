@@ -86,13 +86,13 @@ class Magic : public CallBack {
   public: 
     Magic();
     ~Magic();
-    void init(Event *evt);
+    bool init(Event *evt);
     void lc(char * str);
 
     bool read_line(NuvieIOFileRead *file, char *buf, size_t maxlen);
     bool read_script(NuvieIOFileRead *file, char *buf, size_t maxlen);
     
-    void read_spell_list();
+    bool read_spell_list();
     void clear_cast_buffer() { cast_buffer_str[0] = '\0'; cast_buffer_len = 0; }
     bool start_new_spell();
     uint8 book_equipped();

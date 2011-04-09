@@ -132,7 +132,9 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
  time_queue = new TimeQueue;
  game_time_queue = new TimeQueue;
  magic = new Magic();
- magic->init(this);
+ if(magic->init(this) == false)
+	 return false;
+
  return true;
 }
 

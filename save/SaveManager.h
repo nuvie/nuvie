@@ -57,7 +57,7 @@ class SaveManager : public GUI_CallBack
  SaveManager(Configuration *cfg);
  virtual ~SaveManager();
 
- void init();
+ bool init();
 
  bool load_latest_save();
 

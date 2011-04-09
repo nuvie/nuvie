@@ -26,6 +26,7 @@
 
 #include "Configuration.h"
 
+#include "Console.h"
 #include "NuvieIOFile.h"
 #include "U6Lib_n.h"
 #include "U6Lzw.h"
@@ -94,22 +95,34 @@ bool TileManager::loadTiles()
     case NUVIE_GAME_U6 :
                          tile_data = lzw->decompress_file(maptiles_path,maptiles_size);
                          if(tile_data == NULL)
-                            throw "Decompressing maptiles.vga";
+                         {
+                            ConsoleAddError("Decompressing " + maptiles_path);
+                            return false;
+                         }
 
                          masktype = lzw->decompress_file(masktype_path,masktype_size);
                          if(masktype == NULL)
-                           throw "Decompressing masktype.vga";
+                         {
+                        	 ConsoleAddError("Decompressing " + masktype_path);
+                        	 return false;
+                         }
                          break;
     case NUVIE_GAME_MD :
     case NUVIE_GAME_SE : if(lib_file.open(maptiles_path,4,game_type) == false)
-                           throw "Opening maptiles.vga";
+                         {
+                             ConsoleAddError("Opening " + maptiles_path);
+                             return false;
+                         }
                          maptiles_size = lib_file.get_item_size(0);
 
                          tile_data = lib_file.get_item(0);
                          lib_file.close();
 
                          if(lib_file.open(masktype_path,4,game_type) == false)
-                           throw "Opening masktype.vga";
+                         {
+                        	 ConsoleAddError("Opening " + masktype_path);
+                        	 return false;
+                         }
                          //masktype_size = lib_file.get_item_size(0);
 
                          masktype = lib_file.get_item(0);
@@ -119,7 +132,10 @@ bool TileManager::loadTiles()
 
  config_get_path(config,"objtiles.vga",path);
  if(objtiles_vga.open(path) == false)
-   throw "Opening objtiles.vga";
+ {
+	 ConsoleAddError("Opening " + path);
+	 return false;
+ }
 
  objtiles_size = objtiles_vga.get_size();
 
@@ -130,7 +146,10 @@ bool TileManager::loadTiles()
  config_get_path(config,"tileindx.vga",path);
 
  if(tileindx_vga.open(path) == false)
-   throw "Opening tileindx.vga";
+ {
+	 ConsoleAddError("Opening " + path);
+	 return false;
+ }
 
  for(i=0;i<2048;i++)
   {
@@ -163,11 +182,17 @@ bool TileManager::loadTiles()
 
  look = new Look(config);
  if(look->init() == false)
-   throw "Initialising Look Class";
+ {
+   ConsoleAddError("Initialising Look Class");
+   return false;
+ }
 
  desc_buf = (char *)malloc(look->get_max_len() + 6); // add space for "%03d \n\0" or "the \n\0"
  if(desc_buf == NULL)
-   throw "Allocating desc_buf";
+ {
+   ConsoleAddError("Allocating desc_buf");
+   return false;
+ }
 
  loadAnimMask();
 

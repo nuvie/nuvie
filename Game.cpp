@@ -137,8 +137,7 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
  screen = s;
  game_type = type;
 
- try
-  {
+
    dither = new Dither(config);
    sound_manager = new SoundManager();
    sound_manager->nuvieStartup(config);
@@ -146,7 +145,8 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    //sound_manager->LoadObjectSamples(NULL);
 
    save_manager = new SaveManager(config);
-   save_manager->init();
+   if(save_manager->init() == false)
+	   return false;
 
    palette = new GamePalette(screen,config);
 
@@ -170,7 +170,8 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    egg_manager = new EggManager(config, game_type, game_map);
 
    tile_manager = new TileManager(config);
-   tile_manager->loadTiles();
+   if(tile_manager->loadTiles() == false)
+	   return false;
 
    ConsoleAddInfo("Loading ObjManager()");
    obj_manager = new ObjManager(config, tile_manager, egg_manager);
@@ -214,7 +215,8 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    party->init(this, actor_manager);
 
    portrait = new Portrait(config);
-   portrait->init();
+   if(portrait->init() == false)
+	   return false;
 
    view_manager = new ViewManager(config);
    view_manager->init(gui, text, party, player, tile_manager, obj_manager, portrait);
@@ -252,14 +254,6 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    map_window->Show();
    view_manager->set_party_mode();
    view_manager->update();
-
-  }
- catch(const char *error_string)
-  {
-   DEBUG(0,LEVEL_ERROR,"%s\n",error_string);
-   ConsoleAddError("Error: " + string(error_string));
-   return false;
-  }
 
  return true;
 }

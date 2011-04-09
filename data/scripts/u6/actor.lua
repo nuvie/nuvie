@@ -2538,7 +2538,7 @@ function actor_wt_combat_tanglevine(actor)
       local actor_y = actor.y
       if abs(target_x - actor_x) < 2 and abs(target_y - actor_y) < 2 and random(0, 1) ~= 0 then
       
-         actor_attack(actor, target_x, target_y, target_z, actor)
+         actor_attack(actor, target_x, target_y, actor.z, actor)
          subtract_movement_pts(actor, 10)
          return
       end

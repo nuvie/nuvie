@@ -24,7 +24,7 @@
 #include "nuvieDefs.h"
 
 #include "Configuration.h"
-
+#include "Console.h"
 #include "NuvieIOFile.h"
 #include "U6Shape.h"
 #include "Dither.h"
@@ -61,16 +61,22 @@ bool Portrait::init()
  if (gametype == NUVIE_GAME_U6) {
   config->pathFromValue("config/ultima6/gamedir","portrait.a",filename);
   if(portrait_a.open(filename,4) == false)
-   throw "Opening portrait.a";
-
+  {
+   ConsoleAddError("Opening " + filename);
+   return false;
+  }
   config->pathFromValue("config/ultima6/gamedir","portrait.b",filename);
   if(portrait_b.open(filename,4) == false)
-   throw "Opening portrait.b";
-
+  {
+   ConsoleAddError("Opening " + filename);
+   return false;
+  }
   config->pathFromValue("config/ultima6/gamedir","portrait.z",filename);
   if(portrait_z.open(filename,4) == false)
-   throw "Opening portrait.z";
-
+  {
+   ConsoleAddError("Opening " + filename);
+   return false;
+  }
  } 
  else
  {
@@ -83,7 +89,10 @@ bool Portrait::init()
    config->pathFromValue("config/savage/gamedir","faces.lzc",filename);
   }
   if(faces.open(filename,4) == false)
-   throw "Opening (md)faces.lzc";
+  {
+   ConsoleAddError("Opening " + filename);
+   return false;
+  }
  }
   return true;
 }

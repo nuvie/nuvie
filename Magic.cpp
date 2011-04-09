@@ -36,7 +36,7 @@
 
 #include "GUI.h"
 #include "GUI_YesNoDialog.h"
-
+#include "Console.h"
 #include "Actor.h"
 #include "ActorManager.h"
 #include "ObjManager.h"
@@ -85,10 +85,10 @@ Magic::~Magic()
  for (uint16 index=0;index<256;index++) delete(spell[index]);
 }
 
-void Magic::init(Event *evt)
+bool Magic::init(Event *evt)
 {
   event=evt;
-  read_spell_list();
+  return read_spell_list();
 }
 
 // FIXME This should be a member of the NuvieIOFileRead class.
@@ -143,7 +143,7 @@ void Magic::lc(char *str) // very crappy doesn't check much.
   }
 }
 
-void Magic::read_spell_list()
+bool Magic::read_spell_list()
 {
   uint16 index;
   bool complete=false;
@@ -163,7 +163,8 @@ void Magic::read_spell_list()
   
   if (!spells->open(spellfile)) 
   {
-    throw "error opening spells.nsl";
+    ConsoleAddError("opening " + spellfile);
+    return false;
   }
   
   /*read records into spell-array 1 by one.*/
@@ -179,8 +180,9 @@ void Magic::read_spell_list()
       /* read a line */ 
       if (!read_line(spells,buf,sizeof(buf)))
       {
-	DEBUG(0,LEVEL_ERROR,"Line too long reading spell-list entry for spell %d:\n",index);
-	throw "Buffer overflow\n";
+    	  DEBUG(0,LEVEL_ERROR,"Line too long reading spell-list entry for spell %d:\n",index);
+    	  ConsoleAddError("Buffer overflow");
+    	  return false;
       };
       /* parse the line */ // TODO far to quick and dirty...
       switch (buf[0]) 
@@ -200,8 +202,11 @@ void Magic::read_spell_list()
 	    reagents=uint8(strtol(buf+10,(char **)NULL,0));
 	  break;
 	case 's': // assume 'script: '
-    if(!read_script(spells,buf+7,sizeof(buf)-7))
-      throw "Line too long reading lua script\n";
+		if(!read_script(spells,buf+7,sizeof(buf)-7))
+		{
+			ConsoleAddError("Line too long reading lua script");
+			return false;
+		}
     
 	  strncpy(script,buf+7,sizeof(script)-1);
 	  break;
@@ -213,6 +218,8 @@ void Magic::read_spell_list()
   /* close the spell-list-file*/
   spells->close();
   delete spells;
+
+  return true;
 }
 
 #if 0
