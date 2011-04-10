@@ -528,7 +528,7 @@ actor_init = function(actor)
    local hp = actor_randomise_stat(actor_base[4])
    actor.hp = hp
    actor.level = math.floor((hp + 29) / 30)
-   actor.align = actor_base[6]
+   actor.align = actor_base[6] --FIXME what about alignment from eggs.
  else
    actor.str = 10
    actor.dex = 10
@@ -543,6 +543,30 @@ actor_init = function(actor)
    actor.magic = actor_get_max_magic_points(actor)
    actor.mpts = actor.dex
    actor.exp = 100
+   
+	if actor.obj_n == 0x16d then --tangle vine pod. Add tangle vines.
+		local actor_x = actor.x
+		local actor_y = actor.y
+		local actor_z = actor.z
+		local a
+
+    	if map_can_put(actor_x + 1, actor_y, actor_z) then
+    		a = Actor.new(0x16e, actor_x + 1, actor_y, actor_z, actor.align, WT_TANGLE)
+    		if a ~= nil then a.direction = DIR_EAST end
+    	end
+     	if map_can_put(actor_x - 1, actor_y, actor_z) then
+     		a = Actor.new(0x16e, actor_x - 1, actor_y, actor_z, actor.align, WT_TANGLE)
+     		if a ~= nil then a.direction = DIR_WEST end
+     	end 
+     	if map_can_put(actor_x, actor_y + 1, actor_z) then
+     		a = Actor.new(0x16e, actor_x, actor_y + 1, actor_z, actor.align, WT_TANGLE)
+     		if a ~= nil then a.direction = DIR_SOUTH end
+     	end  
+		if map_can_put(actor_x, actor_y - 1, actor_z) then
+     	   	a = Actor.new(0x16e, actor_x, actor_y - 1, actor_z, actor.align, WT_TANGLE)
+     	   	if a ~= nil then a.direction = DIR_NORTH end
+     	end    	
+	end
    
    local obj,i,v,j,qty,chance,chest
    

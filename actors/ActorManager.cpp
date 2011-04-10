@@ -1067,6 +1067,50 @@ bool ActorManager::toss_actor(Actor *actor, uint16 xrange, uint16 yrange)
     return(false);
 }
 
+/* Find a location to put actor within range.
+ * Returns true when tossed.
+ */
+bool ActorManager::toss_actor_get_location(uint16 start_x, uint16 start_y, uint8 start_z, uint16 xrange, uint16 yrange, MapCoord *location)
+{
+    // maximum number of tries
+    const uint32 toss_max = MAX(xrange, yrange) * MIN(xrange, yrange) * 2;
+    uint32 t = 0;
+    LineTestResult lt;
+    if(xrange > 0) --xrange; // range includes the starting location
+    if(yrange > 0) --yrange;
+    while(t++ < toss_max) // TRY RANDOM LOCATION
+    {
+        sint16 x = (start_x-xrange) + (NUVIE_RAND() % ((start_x+xrange) - (start_x-xrange) + 1)),
+               y = (start_y-yrange) + (NUVIE_RAND() % ((start_y+yrange) - (start_y-yrange) + 1));
+        if(!map->lineTest(start_x, start_y, x, y, start_z, LT_HitUnpassable, lt))
+        {
+        	if(!get_actor(x, y, start_z))
+        	{
+        		location->x = x;
+        		location->y = y;
+        		location->z = start_z;
+        		return can_put_actor(*location);
+        	}
+
+        }
+    }
+    // TRY ANY LOCATION
+    for(int y = start_y-yrange; y < start_y+yrange; y++)
+        for(int x = start_x-xrange; x < start_x+xrange; x++)
+            if(!map->lineTest(start_x, start_y, x, y, start_z, LT_HitUnpassable, lt))
+            {
+            	if(!get_actor(x, y, start_z))
+            	{
+            		location->x = x;
+            		location->y = y;
+            		location->z = start_z;
+            		return can_put_actor(*location);
+            	}
+            }
+
+    return(false);
+}
+
 
 /* Returns the actor whose inventory contains an object. */
 Actor *ActorManager::get_actor_holding_obj(Obj *obj)

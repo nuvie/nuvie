@@ -87,7 +87,7 @@ bool U6Actor::init()
 
    case OBJ_U6_SILVER_SERPENT : init_silver_serpent(); break;
    // These aren't really surrounding objects.
-   case OBJ_U6_TANGLE_VINE_POD : init_tangle_vine(); break;
+   //case OBJ_U6_TANGLE_VINE_POD : init_tangle_vine(); break;
 
    case OBJ_U6_GIANT_SCORPION :
    case OBJ_U6_GIANT_ANT :
@@ -382,6 +382,8 @@ void U6Actor::gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, u
 // when spawning new tangle vine pods/centers/frags, spawn up to four vine
 // actors around the pod
 // FIXME: bugged, being called multiple times, not spawning vines, spawning as fireplaces!
+
+/* Depreciated we init the tangle vine in script now.
 bool U6Actor::init_tangle_vine()
 {
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
@@ -412,6 +414,7 @@ if(vine) DEBUG(0,LEVEL_DEBUGGING,"    preexisting vine %d at %x,%x\n",v,vine->ge
     } while(++v < num_vines);
     return true;
 }
+*/
 
 uint16 U6Actor::get_downward_facing_tile_num()
 {

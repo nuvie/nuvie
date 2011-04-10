@@ -1,3 +1,9 @@
+2012-04-10  Eric Fry <efry at users.sourceforge.net> r1168
+	* Fixed tangle vine spawning logic.
+	* Moved vine creation into actor_init() script function.
+	* Fixed tangle vine pod twitching. Bug [1534721]
+	* Find monster spawn location befrore creating temp actor.
+
 2012-04-09  Eric Fry <efry at users.sourceforge.net> r1167
 	* Removed C++ exception code. A future port might not support it. ;-)
 	* Fixed bug in tangle vine attack logic

@@ -195,11 +195,22 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 				  	// group new actors randomly if egg space already occupied
 				  	Actor *prev_actor = actor_manager->get_actor(egg->x, egg->y, egg->z);
 				  	Actor *new_actor = NULL;
-				  	if(actor_manager->create_temp_actor(obj->obj_n,egg->x,egg->y,egg->z,alignment,obj->quality,&new_actor) && prev_actor)
+				  	MapCoord actor_loc = MapCoord(egg->x, egg->y, egg->z);
+				  	if(prev_actor)
+				  	{
+				  		if(prev_actor->get_obj_n() != obj->obj_n
+				  				|| !actor_manager->toss_actor_get_location(egg->x, egg->y, egg->z, 3, 2, &actor_loc)
+				  				|| !actor_manager->toss_actor_get_location(egg->x, egg->y, egg->z, 2, 3, &actor_loc))
+				  									actor_manager->toss_actor_get_location(egg->x, egg->y, egg->z, 4, 4, &actor_loc);
+				  	}
+
+				  	if(actor_manager->create_temp_actor(obj->obj_n,actor_loc.x,actor_loc.y,actor_loc.z,alignment,obj->quality,&new_actor) && prev_actor)
 					{
+				  		/*
 						// try to group actors of the same type first (FIXME: maybe this should use alignment/quality)
 						if(prev_actor->get_obj_n() != new_actor->get_obj_n() || !actor_manager->toss_actor(new_actor, 3, 2) || !actor_manager->toss_actor(new_actor, 2, 3))
 							actor_manager->toss_actor(new_actor, 4, 4);
+						*/
 						hatch_probability = NUVIE_RAND()%100;
 						if(hatch_probability > egg->qty)
 							break; // chance to stop spawning actors
