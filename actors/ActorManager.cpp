@@ -153,6 +153,12 @@ bool ActorManager::load(NuvieIO *objlist)
 
     actors[i]->frame_n = (b2 & 0xfc) >> 2;
     actors[i]->direction = actors[i]->frame_n / 4;
+    if(actors[i]->obj_n == 0) //Hack to get rid of Exodus.
+    {
+    	actors[i]->x = 0;
+    	actors[i]->y = 0;
+    	actors[i]->z = 0;
+    }
    }
 
  // Object flags.

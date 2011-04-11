@@ -134,7 +134,7 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
 
    if(num == (188-1))
     num = PORTRAIT_U6_EXODUS-1; // Exodus
-   else if(num >= (191-1) && num <= (198-1)) // Shrines, Temple of Singularity
+   else if(num >= (192-1) && num <= (200-1)) // Shrines, Temple of Singularity
     return(NULL);
    else if(num > 194) // there are 194 npc portraits
    {

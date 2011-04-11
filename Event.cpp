@@ -826,9 +826,14 @@ bool Event::talk(Obj *obj)
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     if(obj)
     {
-        // FIXME: U6
-        if(obj->obj_n == 393) // OBJ_U6_SHRINE
-            return(talk(actor_manager->get_actor(obj->quality)));
+    	if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+    	{
+    		if(obj->obj_n == OBJ_U6_SHRINE
+    				|| obj->obj_n == OBJ_U6_STATUE_OF_MONDAIN
+    				|| obj->obj_n == OBJ_U6_STATUE_OF_MINAX
+    				|| obj->obj_n == OBJ_U6_STATUE_OF_EXODUS)
+    			return(talk(actor_manager->get_actor(obj->quality)));
+    	}
     }
     scroll->display_string("nothing!\n");
     endAction();

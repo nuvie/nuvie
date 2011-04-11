@@ -2302,8 +2302,8 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
 */
              scroll->set_autobreak(true);
              scroll->display_string(data,strlen(data)); //normal font
-             scroll->display_string("\n"); // normal font
-             scroll->set_autobreak(false);
+             scroll->display_string("\n\t"); // '\t' = auto break off.
+             //scroll->set_autobreak(false);
 //                }
              free(data);
             }

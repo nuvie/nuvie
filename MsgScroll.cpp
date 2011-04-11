@@ -388,6 +388,9 @@ bool MsgScroll::add_token(MsgText *token)
     case '\n' :  add_new_line();
                  break;
 
+    case '\t' :  set_autobreak(false);
+                 break;
+
     case '`'  :  capitalise_next_letter = true;
                  break;
 
@@ -785,7 +788,7 @@ void MsgScroll::drawCursor(uint16 x, uint16 y)
 
 void MsgScroll::set_page_break()
 {
- line_count = 0;
+ line_count = 1;
  page_break = true;
 
  if(!input_mode)

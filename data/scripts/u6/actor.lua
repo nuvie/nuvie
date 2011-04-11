@@ -2750,7 +2750,7 @@ dbg("actor_wt_attack()\n");
             return
          end
 
-         if random(0, 1) == 0 then
+         if math.random(0, 1) == 0 then
          
             target_x = g_obj.y - actor_y + actor_x
             target_y = actor_y - g_obj.x - actor_x

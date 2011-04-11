@@ -330,9 +330,13 @@
 #define OBJ_U6_WOMAN               387
 #define OBJ_U6_CAT                 388
 #define OBJ_U6_MUSICIAN_PLAYING    392
-
+#define OBJ_U6_SHRINE              393
 #define OBJ_U6_BRITANNIAN_LENS     394
 #define OBJ_U6_GARGOYLE_LENS       396
+#define OBJ_U6_STATUE_OF_MONDAIN   397
+#define OBJ_U6_STATUE_OF_MINAX     398
+#define OBJ_U6_STATUE_OF_EXODUS    399
+
 
 #define OBJ_U6_LORD_BRITISH        409
 #define OBJ_U6_AVATAR              410

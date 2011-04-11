@@ -188,14 +188,14 @@ uint32 Converse::get_script_num(uint8 a)
               else if(npc->get_obj_n() == 382) // OBJ_U6_GUARD
                 a = 202;
              }
-           else if(a == 188)  // U6: temp. fix for shrines
-              a = 191; // ??? -> Exodus
-           else if(a >= 191 && a <= 197) // shrines except spirituality & humility
-              a += 2;
-           else if(a == 198)
-              a = 192; // Spirituality -> Honesty
-           else if(a == 199)
-              a = 200; // Humility -> Singularity
+           //else if(a == 188)  // U6: temp. fix for shrines
+           //   a = 191; // ??? -> Exodus
+           //else if(a >= 191 && a <= 197) // shrines except spirituality & humility
+           //   a += 2;
+           //else if(a == 198)
+           //   a = 192; // Spirituality -> Honesty
+           //else if(a == 199)
+           //   a = 200; // Humility -> Singularity
           }
 
  return a;

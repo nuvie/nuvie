@@ -713,7 +713,8 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 	{
 		if(target->obj_n == OBJ_U6_BAG
 		   || (target->obj_n == OBJ_U6_CHEST && target->frame_n == 0)
-		   || (target->obj_n == OBJ_U6_SPELLBOOK && src->obj_n == OBJ_U6_SPELL))
+		   || (target->obj_n == OBJ_U6_SPELLBOOK && src->obj_n == OBJ_U6_SPELL)
+		   || (target->obj_n == OBJ_U6_VORTEX_CUBE && src->obj_n == OBJ_U6_MOONSTONE))
 			return true;
 	}
 

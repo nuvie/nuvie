@@ -1,3 +1,11 @@
+2012-04-12  Eric Fry <efry at users.sourceforge.net> r1169
+	* Fixed vortex cube container. You can now move moonstones into the vortex cube
+	* Fixed talking to shrines/statues. Bug [1534935] We talk to the object not
+	  the actor.
+	* Fixed MsgScroll autobreak functionality when looking at books/signs. 
+	  Added MsgSroll token '\t' which means set autobreak off.
+	* Fixed bug in actor_wt_attack() script function
+
 2012-04-10  Eric Fry <efry at users.sourceforge.net> r1168
 	* Fixed tangle vine spawning logic.
 	* Moved vine creation into actor_init() script function.
