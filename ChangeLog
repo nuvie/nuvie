@@ -1,3 +1,6 @@
+2012-04-12  Eric Fry <efry at users.sourceforge.net> r1170
+	* Fixed smooth lighting colour on MACOSX.
+
 2012-04-12  Eric Fry <efry at users.sourceforge.net> r1169
 	* Fixed vortex cube container. You can now move moonstones into the vortex cube
 	* Fixed talking to shrines/statues. Bug [1534935] We talk to the object not

@@ -731,9 +731,9 @@ void Screen::blitalphamap8()
         {
             for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
             {
-                pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & 0xF800 ) >> 11)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 11) | //R
-                              ( ( (unsigned char)(( (float)(( pixels16[j] & 0x07E0 ) >> 5 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 5 ) | //G
-                              ( ( (unsigned char)(( (float)(( pixels16[j] & 0x001F ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
+                pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Rmask ) >> surface->Rshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Rshift ) | //R
+                              ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Gmask ) >> surface->Gshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Gshift ) | //G
+                              ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Gmask ) >> surface->Bshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Bshift );  //B
 
                 //Red = 0xF800 = 1111 1000 0000 0000
                 //Grn = 0x07E0 = 0000 0111 1110 0000
@@ -754,9 +754,9 @@ void Screen::blitalphamap8()
         {
             for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
             {
-                pixels[j] = ( ( (unsigned char)(( (float)(( pixels[j] & 0xFF0000 ) >> 16)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 16) | //R
-                            ( ( (unsigned char)(( (float)(( pixels[j] & 0x00FF00 ) >> 8 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 8 ) | //G
-                            ( ( (unsigned char)(( (float)(( pixels[j] & 0x0000FF ) >> 0 )) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << 0 );  //B
+            	pixels[j] = ( ( (unsigned char)(( (float)(( pixels[j] & surface->Rmask ) >> surface->Rshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Rshift ) | //R
+                            ( ( (unsigned char)(( (float)(( pixels[j] & surface->Gmask ) >> surface->Gshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Gshift ) | //G
+                            ( ( (unsigned char)(( (float)(( pixels[j] & surface->Bmask ) >> surface->Bshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Bshift );  //B
             }
             pixels += surface->w;
         }
