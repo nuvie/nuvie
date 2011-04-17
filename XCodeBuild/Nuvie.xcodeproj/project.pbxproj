@@ -338,6 +338,10 @@
 		EC360BD0130DC55F00D4CAE6 /* MapEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BCD130DC55F00D4CAE6 /* MapEntity.h */; };
 		EC360BD1130DC55F00D4CAE6 /* U6LineWalker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */; };
 		EC360BD2130DC55F00D4CAE6 /* U6LineWalker.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */; };
+		EC9B4EB3135ACEFA00EA1761 /* GUI_Console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC9B4EB1135ACEFA00EA1761 /* GUI_Console.cpp */; };
+		EC9B4EB4135ACEFA00EA1761 /* GUI_Console.h in Headers */ = {isa = PBXBuildFile; fileRef = EC9B4EB2135ACEFA00EA1761 /* GUI_Console.h */; };
+		EC9B4EB7135ACF3D00EA1761 /* Console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC9B4EB5135ACF3D00EA1761 /* Console.cpp */; };
+		EC9B4EB8135ACF3D00EA1761 /* Console.h in Headers */ = {isa = PBXBuildFile; fileRef = EC9B4EB6135ACF3D00EA1761 /* Console.h */; };
 		ECA2EC8B0FDB423800D4BDDA /* Script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC870FDB423800D4BDDA /* Script.cpp */; };
 		ECA2EC8C0FDB423800D4BDDA /* Script.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA2EC880FDB423800D4BDDA /* Script.h */; };
 		ECA2EC8D0FDB423800D4BDDA /* ScriptActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */; };
@@ -692,6 +696,10 @@
 		EC360BCD130DC55F00D4CAE6 /* MapEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEntity.h; path = ../misc/MapEntity.h; sourceTree = SOURCE_ROOT; };
 		EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = U6LineWalker.cpp; path = ../misc/U6LineWalker.cpp; sourceTree = SOURCE_ROOT; };
 		EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = U6LineWalker.h; path = ../misc/U6LineWalker.h; sourceTree = SOURCE_ROOT; };
+		EC9B4EB1135ACEFA00EA1761 /* GUI_Console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUI_Console.cpp; path = ../GUI/GUI_Console.cpp; sourceTree = SOURCE_ROOT; };
+		EC9B4EB2135ACEFA00EA1761 /* GUI_Console.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUI_Console.h; path = ../GUI/GUI_Console.h; sourceTree = SOURCE_ROOT; };
+		EC9B4EB5135ACF3D00EA1761 /* Console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Console.cpp; path = ../Console.cpp; sourceTree = SOURCE_ROOT; };
+		EC9B4EB6135ACF3D00EA1761 /* Console.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Console.h; path = ../Console.h; sourceTree = SOURCE_ROOT; };
 		ECA2EC870FDB423800D4BDDA /* Script.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Script.cpp; path = ../script/Script.cpp; sourceTree = SOURCE_ROOT; };
 		ECA2EC880FDB423800D4BDDA /* Script.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Script.h; path = ../script/Script.h; sourceTree = SOURCE_ROOT; };
 		ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScriptActor.cpp; path = ../script/ScriptActor.cpp; sourceTree = SOURCE_ROOT; };
@@ -816,6 +824,8 @@
 			isa = PBXGroup;
 			children = (
 				0787F20A064390F60028223C /* GUI_CallBack.h */,
+				EC9B4EB2135ACEFA00EA1761 /* GUI_Console.h */,
+				EC9B4EB1135ACEFA00EA1761 /* GUI_Console.cpp */,
 				072B48F8061EEBDA00CC3368 /* GUI_Dialog.h */,
 				072B48F7061EEBDA00CC3368 /* GUI_Dialog.cpp */,
 				0761777305D47ADB001B6450 /* GUI_YesNoDialog.h */,
@@ -1137,6 +1147,8 @@
 				07D6E0F104F89B0300A8000A /* Background.cpp */,
 				07D14A91044449E400A8000A /* Book.h */,
 				07D14A90044449E400A8000A /* Book.cpp */,
+				EC9B4EB6135ACF3D00EA1761 /* Console.h */,
+				EC9B4EB5135ACF3D00EA1761 /* Console.cpp */,
 				07BBAF1207D8750700F2792A /* CommandBar.h */,
 				07BBAF1107D8750700F2792A /* CommandBar.cpp */,
 				0761811505E84B60001B6450 /* Cursor.h */,
@@ -1469,6 +1481,8 @@
 				EC360BCC130DC50500D4CAE6 /* types.h in Headers */,
 				EC360BD0130DC55F00D4CAE6 /* MapEntity.h in Headers */,
 				EC360BD2130DC55F00D4CAE6 /* U6LineWalker.h in Headers */,
+				EC9B4EB4135ACEFA00EA1761 /* GUI_Console.h in Headers */,
+				EC9B4EB8135ACF3D00EA1761 /* Console.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1504,7 +1518,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 07CD0D5B088E817600E552A7 /* Build configuration list for PBXProject "Nuvie" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SDL App */;
 			projectDirPath = "";
 			projectRoot = ..;
@@ -1720,6 +1741,8 @@
 				EC360BC8130DC50500D4CAE6 /* sdl-mixer.cpp in Sources */,
 				EC360BCA130DC50500D4CAE6 /* timestamp.cpp in Sources */,
 				EC360BD1130DC55F00D4CAE6 /* U6LineWalker.cpp in Sources */,
+				EC9B4EB3135ACEFA00EA1761 /* GUI_Console.cpp in Sources */,
+				EC9B4EB7135ACF3D00EA1761 /* Console.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

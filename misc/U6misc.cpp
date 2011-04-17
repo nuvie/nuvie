@@ -166,6 +166,9 @@ int mkdir_recursive(std::string path, int mode)
    
    std::vector<string>::iterator dir_iter;
    
+   if(path.find(U6PATH_DELIMITER) == 0)
+      tmp_path += U6PATH_DELIMITER;
+   
    for( dir_iter = directories.begin(); dir_iter != directories.end(); )
    {
       string dir = *dir_iter;

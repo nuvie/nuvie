@@ -1481,7 +1481,7 @@ void Actor::reduce_hp(uint8 amount)
     Game::get_game()->stats_changed();
 }
 
-void Actor::die()
+void Actor::die(bool create_body)
 {
     hp = 0;
     alive = false;

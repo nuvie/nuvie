@@ -1,3 +1,9 @@
+2012-04-17  Eric Fry <efry at users.sourceforge.net> r1171
+	* Added Armageddon spell
+	* Changed Actor::die() to include switch to not drop dead body. Used in the Armageddon spell.
+	* Fixed bug in mkdir_recursive() when the path started at the root directory.
+	* Updated XCode build config.
+
 2012-04-12  Eric Fry <efry at users.sourceforge.net> r1170
 	* Fixed smooth lighting colour on MACOSX.
 

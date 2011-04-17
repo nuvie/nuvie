@@ -836,12 +836,16 @@ static int nscript_actor_get_z(Actor *actor, lua_State *L)
 static int nscript_actor_kill(lua_State *L)
 {
    Actor *actor;
+   bool create_body = true;
 
    actor = nscript_get_actor_from_args(L);
    if(actor == NULL)
       return 0;
 
-   actor->die();
+   if(lua_gettop(L) >= 2)
+	   create_body = (bool)lua_toboolean(L, 2);
+
+   actor->die(create_body);
 
    return 0;
 }

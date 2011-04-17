@@ -2021,7 +2021,7 @@ inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 ac
 }
 
 
-void U6Actor::die()
+void U6Actor::die(bool create_body)
 {
  Game *game = Game::get_game();
  Party *party = game->get_party();
@@ -2077,25 +2077,28 @@ void U6Actor::die()
     // we don't generate a dead body if the avatar dies because they will be ressurrected.  
     if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
     {
-        if(is_in_party() && party->get_member_num(this) == 0) // unready all items on the avatar.
-          remove_all_readied_objects();
-        else
-         { //if not avatar then create a dead body and place on the map.
-          Obj *dead_body = new Obj;
-          dead_body->obj_n = actor_type->dead_obj_n;
-          dead_body->frame_n = actor_type->dead_frame_n;
-          dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;
-          dead_body->quality = id_n;
-          dead_body->status = OBJ_STATUS_OK_TO_TAKE;
-          if(temp_actor)
-            dead_body->status |= OBJ_STATUS_TEMPORARY;
-          
-          // FIX: move my inventory into the dead body container
-          all_items_to_container(dead_body);
+    	if(create_body)
+    	{
+    		if(is_in_party() && party->get_member_num(this) == 0) // unready all items on the avatar.
+    			remove_all_readied_objects();
+    		else
+    		{ //if not avatar then create a dead body and place on the map.
+    			Obj *dead_body = new Obj;
+    			dead_body->obj_n = actor_type->dead_obj_n;
+    			dead_body->frame_n = actor_type->dead_frame_n;
+    			dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;
+    			dead_body->quality = id_n;
+    			dead_body->status = OBJ_STATUS_OK_TO_TAKE;
+    			if(temp_actor)
+    				dead_body->status |= OBJ_STATUS_TEMPORARY;
 
-          obj_manager->add_obj(dead_body, true);
+    			// FIX: move my inventory into the dead body container
+    			all_items_to_container(dead_body);
 
-         }
+    			obj_manager->add_obj(dead_body, true);
+
+    		}
+    	}
     }
 
     if(party->get_member_num(this) != 0)

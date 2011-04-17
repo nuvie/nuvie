@@ -389,7 +389,7 @@ class Actor
  void hit(uint8 dmg, Actor *attacker) { hit(dmg); }
  void hit(uint8 dmg, Obj *src_obj)    { hit(dmg); }
  void reduce_hp(uint8 amount);
- virtual void die();
+ virtual void die(bool create_body=true);
  void resurrect(MapCoord new_position, Obj *body_obj=NULL);
  virtual bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y) { return true; }
  void display_condition();
