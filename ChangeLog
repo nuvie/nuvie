@@ -1,3 +1,6 @@
+2012-04-21  Eric Fry <efry at users.sourceforge.net> r1174
+	* Fixed build error when compiling tools from automake.
+
 2012-04-20  Eric Fry <efry at users.sourceforge.net> r1173
 	* Official release 0.1
  
