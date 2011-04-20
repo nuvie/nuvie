@@ -96,7 +96,7 @@ bool Nuvie::init(int argc, char **argv)
 
  GUI *gui = new GUI(config, screen);
  ConsoleInit(config, screen, gui, 320, 200);
- ConsoleAddInfo("\n Nuvie: ver 0.1 rev ???? \n");
+ ConsoleAddInfo("\n Nuvie: ver 0.1 rev 1173 \n");
  ConsoleAddInfo("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t");
  ConsoleAddInfo("Config file: \"" + config->filename() + "\"");
  game_select = new GameSelect(config);
