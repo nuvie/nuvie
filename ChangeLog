@@ -1,3 +1,8 @@
+2012-04-20  Eric Fry <efry at users.sourceforge.net> r1172
+	* Updated README
+	* Updated MAC OS X dmg creation script to include README.txt
+	* Updated nuvie.cfg.sample
+
 2012-04-17  Eric Fry <efry at users.sourceforge.net> r1171
 	* Added Armageddon spell
 	* Changed Actor::die() to include switch to not drop dead body. Used in the Armageddon spell.

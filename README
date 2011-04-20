@@ -1,19 +1,24 @@
 Nuvie - An Engine for Ultima6, Martian Dreams and Savage Empire.
 http://nuvie.sourceforge.net/
 
+Version 0.1 
+
+
 What is Nuvie
 -------------
 
-Nuvie is an open source engine for Origin's games Ultima 6, Martian Dreams
-and The Savage Empire. It uses the original data files from the games. Nuvie
-currently runs on Linux, Mac OS X and Windows.
+Nuvie (Pronounced New-Vee) is an open source engine for Origin's games
+Ultima 6, Martian Dreams and The Savage Empire. It uses the original data files
+from the games. Nuvie currently runs on Linux, Mac OS X and Windows. It should
+be able to run on any platform that is supported by the SDL library.
 
-Nuvie is in the early stages of development. We are currently focusing on
-Ultima 6 we hope to fully support Martian Dreams and Savage Empire at a
-later date.
+We are currently focusing on Ultima 6 we hope to fully support Martian Dreams
+and Savage Empire at a later date.
 
 Compiling Nuvie
 ---------------
+
+Nuvie requires LibSDL to compile. http://www.libsdl.org/
 
 Unix (various)
 
@@ -24,28 +29,56 @@ make
 
 Win32
 
-Nuvie can be compiled for win32 using either MinGW or MSVC
+Nuvie can be compiled for win32 using MinGW
 
 
 Using Nuvie
 -----------
 
-Nuvie requires some configuration. You will at least need to set the path
-to your ultima6 directory in nuvie.cfg
+Config
+------
+
+Nuvie can be configured by editing the configuration file.
+
+The config file will be automatically created the first time you launch
+Nuvie on Windows and Mac OS X environments.
+
+On Windows the config file is called "nuvie.cfg" and it lives alongside
+the nuvie.exe file.
+
+On Mac OS X the configuration file is called "Nuvie Preferences" and lives in
+the following directory.
+"~/Library/Preferences/Nuvie Preferences"
+
+Linux users will need to manually create a config file in either "./nuvie.cfg"
+or "~/.nuvierc"
 
 A sample config file has been included nuvie.cfg.sample
-
-Note! The Martian Dreams and Savage Empire games currently need a working copy
-of Ultima 6 to function.
 
 Keyboard commands
 -----------------
 
-g         Get an object.
-l         Look at an object.
-q         Quit Nuvie.
-t         Talk to an NPC.
-u         Use an object.
+All the keyboard commands from the original game should be avilable in Nuvie.
+
+Additional keys.
+
+Quit. 'q'
+Loading/Saving games. 's'.
+
+Mouse
+-----
+
+It is possible to drag and drop items from your inventory.
+
+FM-Towns U6
+-----------
+
+Nuvie supports the english language speech and sfx from the FM-Towns version
+of Ultima VI. You can enable FM-Towns support with the following options in the
+config file.
+
+Set "config/ultima6/townsdir" to the location of your FM-Towns U6 data files.
+Set "config/ultima6/sfx" to "towns".
 
 Scalers
 -------
@@ -88,6 +121,14 @@ http://3e8.org/hacks/ultima6/
 
 The exult team.
 http://exult.sourceforge.net/
+
+Pentagram.
+http://pentagram.sourceforge.net/
+
+ScummVM.
+http://scummvm.sourceforge.net/
+
+Everyone on freenode #nuvie
 
 And of course Lord British along with all the talented people at Origin.
 

@@ -18,15 +18,19 @@
  <audio>
   <enabled>yes</enabled>
   <enable_music>yes</enable_music>
-  <enable_sfx>no</enable_sfx>
+  <enable_sfx>yes</enable_sfx>
+  <music_volume>100</music_volume>
+  <sfx_volume>255</sfx_volume>
  </audio>
 
  <ultima6>
   <gamedir>./ultima6</gamedir>
+  <townsdir>./fmtowns_u6</townsdir>
   <sounddir>./u6_sounds</sounddir>
   <savedir>./u6_save</savedir>
   <skip_intro> no </skip_intro>
   <music>native</music>
+  <sfx>pcspeaker</sfx>
  </ultima6>
 
  <martian>
