@@ -1,3 +1,7 @@
+2012-04-22  Eric Fry <efry at users.sourceforge.net> r1176
+	* Updated Mac SDLMain files to SDL 1.2.14
+	* Updated Mac build config changed base SDL to 10.4u sdk
+
 2012-04-21  Eric Fry <efry at users.sourceforge.net> r1174
 	* Fixed build error when compiling tools from automake.
 
