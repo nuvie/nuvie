@@ -85,6 +85,7 @@ class U6Actor: public Actor
  void set_worktype(uint8 new_worktype);
  void revert_worktype();
  void preform_worktype();
+ void change_base_obj_n(uint16 val);
  void set_direction(uint8 d);
  void face_location(uint16 lx, uint16 ly);
  void clear();

@@ -1,4 +1,11 @@
-2012-04-22  Eric Fry <efry at users.sourceforge.net> r1176
+2012-04-26  Eric Fry <efry at users.sourceforge.net> r1179
+	* Automatically create ~/.nuvierc config file on Unix systems.
+	* Added new Actor::change_base_obj_n() method. This allows us to change the
+	  underlying base object type for an actor. This is ued in the slime spell.
+	* Added actor.base_obj_n set field to script system.
+	* Added 8th circle Slime spell (vrx).
+
+2012-04-22  Eric Fry <efry at users.sourceforge.net> r1177
 	* Updated Mac SDLMain files to SDL 1.2.14
 	* Updated Mac build config changed base SDL to 10.4u sdk
 

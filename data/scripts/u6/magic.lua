@@ -155,6 +155,7 @@ magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 magic_init("Armageddon", "vcbm", 0xff, 8, 0, "u6/magic/circle_08/armageddon.lua");
 magic_init("Eclipse", "val", 0xab, 8, 2, "u6/magic/circle_08/eclipse.lua");
 magic_init("Resurrect", "imc", 0xf9, 8, 5, "u6/magic/circle_08/resurrect.lua");
+magic_init("Slime", "vrx", 0xb, 8, 6, "u6/magic/circle_08/slime.lua");
 magic_init("Summon", "kxc", 0x39, 8, 7, "u6/magic/circle_08/summon.lua");
 magic_init("Tremor", "vpy", 0x89, 8, 9, "u6/magic/circle_08/tremor.lua");
 

@@ -94,6 +94,7 @@ static const char *actor_set_vars[] =
 {
    "align",
    "asleep",
+   "base_obj_n",
    "charmed",
    "combat_mode",
    "corpser_flag",
@@ -161,6 +162,7 @@ static const char *actor_get_vars[] =
 //Actor set
 static int nscript_actor_set_align(Actor *actor, lua_State *L);
 static int nscript_actor_set_asleep_flag(Actor *actor, lua_State *L);
+static int nscript_actor_set_base_obj_n(Actor *actor, lua_State *L);
 static int nscript_actor_set_charmed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_combat_mode(Actor *actor, lua_State *L);
 static int nscript_actor_set_corpser_flag(Actor *actor, lua_State *L);
@@ -189,6 +191,7 @@ int (*actor_set_func[])(Actor *, lua_State *) =
 {
    nscript_actor_set_align,
    nscript_actor_set_asleep_flag,
+   nscript_actor_set_base_obj_n,
    nscript_actor_set_charmed_flag,
    nscript_actor_set_combat_mode,
    nscript_actor_set_corpser_flag,
@@ -570,6 +573,12 @@ static int nscript_actor_set_movement_pts(Actor *actor, lua_State *L)
 static int nscript_actor_set_obj_n(Actor *actor, lua_State *L)
 {
    actor->set_obj_n((uint16)lua_tointeger(L, 3));
+   return 0;
+}
+
+static int nscript_actor_set_base_obj_n(Actor *actor, lua_State *L)
+{
+   actor->change_base_obj_n((uint16)lua_tointeger(L, 3));
    return 0;
 }
 

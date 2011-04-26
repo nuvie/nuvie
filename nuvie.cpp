@@ -202,6 +202,9 @@ bool Nuvie::initConfig()
 #ifdef WIN32
 	 if(initDefaultConfigWin32())
 		 return true;
+#else //Unix
+	 if(home_env != NULL && initDefaultConfigUnix(home_env))
+		 return true;
 #endif
 
  delete config;
@@ -297,6 +300,56 @@ bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
 	config->set("config/ultima6/townsdir", "/Library/Application Support/Nuvie Support/townsU6");
 	config->set("config/ultima6/savedir", home + "/Library/Application Support/Nuvie/savegames");
 	config->set("config/ultima6/sfxdir", home + "/Library/Application Support/Nuvie/custom_sfx");
+	config->set("config/ultima6/music", "native");
+	config->set("config/ultima6/sfx", "pcspeaker");
+	config->set("config/ultima6/skip_intro", false);
+	config->set("config/ultima6/show_eggs", true);
+
+	config->write();
+
+	return true;
+}
+
+bool Nuvie::initDefaultConfigUnix(const char *home_env)
+{
+	const unsigned char cfg_stub[] = "<config></config>";
+	std::string config_path;
+   std::string home(home_env);
+	config_path = home;
+	config_path.append("/.nuvierc");
+
+	NuvieIOFileWrite cfgFile;
+
+	if(cfgFile.open(config_path) == false)
+		return false;
+
+	cfgFile.writeBuf(cfg_stub, sizeof(cfg_stub));
+	cfgFile.close();
+
+	if(loadConfigFile(config_path, NUVIE_CONF_READWRITE) == false)
+		return false;
+
+	config->set("config/loadgame", "ultima6");
+	config->set("config/datadir", "./data");
+
+	config->set("config/video/scale_method", "point");
+	config->set("config/video/scale_factor", "2");
+
+	config->set("config/audio/enabled", true);
+	config->set("config/audio/enable_music", true);
+	config->set("config/audio/enable_sfx", true);
+	config->set("config/audio/music_volume", 100);
+	config->set("config/audio/sfx_volume", 255);
+
+	config->set("config/general/lighting", "original");
+	config->set("config/general/dither_mode", "none");
+	config->set("config/general/enable_cursors", false);
+	config->set("config/general/show_console", true);
+
+	config->set("config/ultima6/gamedir", "./ultima6");
+	config->set("config/ultima6/townsdir", "./townsU6");
+	config->set("config/ultima6/savedir", home + "/.nuvie/savegames");
+	config->set("config/ultima6/sfxdir", home + "/.nuvie/custom_sfx");
 	config->set("config/ultima6/music", "native");
 	config->set("config/ultima6/sfx", "pcspeaker");
 	config->set("config/ultima6/skip_intro", false);

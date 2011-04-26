@@ -481,6 +481,13 @@ inline void U6Actor::discover_direction()
    direction = NUVIE_DIR_S;
 }
 
+void U6Actor::change_base_obj_n(uint16 val)
+{
+	Actor::change_base_obj_n(val);
+	clear_surrounding_objs_list(REMOVE_SURROUNDING_OBJS);
+	init();
+}
+
 void U6Actor::set_direction(uint8 d)
 {
  if(is_alive() == false || is_immobile())

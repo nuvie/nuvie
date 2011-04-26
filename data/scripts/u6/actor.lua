@@ -65,7 +65,7 @@ movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1}
 movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
 
 --Actor stats table
---str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,?,?,takes half dmg,?,strength_based,double dmg from fire,immune to magic,immune to poison,?,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
+--str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,?,takes half dmg,?,strength_based,double dmg from fire,immune to magic,immune to poison,?,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}, 0},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}, 6},
