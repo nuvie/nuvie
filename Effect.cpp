@@ -1311,6 +1311,135 @@ uint16 VanishEffect::callback(uint16 msg, CallBack *caller, void *data)
     return(0);
 }
 
+
+/* TileFadeEffect */
+TileFadeEffect::TileFadeEffect(MapCoord loc, Tile *from, Tile *to, FadeType type, uint16 speed)
+{
+	actor = NULL;
+	inc_reverse = false;
+	add_anim(new TileFadeAnim(&loc, from, to, speed));
+}
+
+TileFadeEffect::TileFadeEffect(MapCoord loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed)
+{
+	actor = NULL;
+	inc_reverse = false;
+	add_anim(new TileFadeAnim(&loc, from, color_from, color_to, reverse, speed));
+}
+
+TileFadeEffect::TileFadeEffect(Actor *a, uint8 c_from, uint8 c_to, bool include_return, uint16 speed)
+{
+	inc_reverse = include_return;
+	color_from = c_from;
+	color_to = c_to;
+	actor = a;
+	actor->hide();
+	add_actor_anim(speed);
+}
+
+TileFadeEffect::~TileFadeEffect()
+{
+
+}
+
+void TileFadeEffect::add_actor_anim(uint8 speed)
+{
+	MapCoord loc = actor->get_location();
+	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
+	add_anim(new TileFadeAnim(&loc, from, color_from, color_to, !inc_reverse, speed));
+}
+
+uint16 TileFadeEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+	if(msg == MESG_ANIM_DONE)
+	{
+		if(inc_reverse)
+		{
+			inc_reverse = false;
+			add_actor_anim(10);
+			return 0;
+		}
+
+		if(actor)
+			actor->show();
+
+		delete_self();
+	}
+
+	return 0;
+}
+
+
+TileBlackFadeEffect::TileBlackFadeEffect(Actor *a, uint8 fade_color, uint16 speed)
+{
+	init(fade_color, speed);
+	actor = a;
+	actor->hide();
+	add_actor_anim();
+}
+
+TileBlackFadeEffect::TileBlackFadeEffect(Obj *o, uint8 fade_color, uint16 speed)
+{
+	init(fade_color, speed);
+	obj = o;
+	obj->set_invisible(true);
+	add_obj_anim();
+}
+
+void TileBlackFadeEffect::init(uint8 fade_color, uint16 speed)
+{
+	fade_speed = speed;
+	color = fade_color;
+	actor = NULL;
+	obj = NULL;
+	reverse = false;
+
+}
+TileBlackFadeEffect::~TileBlackFadeEffect()
+{
+
+}
+
+void TileBlackFadeEffect::add_actor_anim()
+{
+	MapCoord loc = actor->get_location();
+	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
+	add_anim(new TileFadeAnim(&loc, from, 0, color, reverse, fade_speed));
+}
+
+void TileBlackFadeEffect::add_obj_anim()
+{
+	MapCoord loc(obj);
+	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
+	add_anim(new TileFadeAnim(&loc, from, 0, color, reverse, fade_speed));
+}
+
+uint16 TileBlackFadeEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+	if(msg == MESG_ANIM_DONE)
+	{
+		if(reverse == false)
+		{
+			reverse = true;
+			if(actor)
+				add_actor_anim();
+			else
+				add_obj_anim();
+
+			return 0;
+		}
+
+		if(actor)
+			actor->show();
+		else
+			obj->set_invisible(false);
+
+		delete_self();
+	}
+
+	return 0;
+}
+
 XorEffect::XorEffect(uint32 eff_ms)
                                        : map_window(game->get_map_window()),
                                          length(eff_ms)
@@ -1609,6 +1738,8 @@ void AsyncEffect::run()
 	{
 		//spin world
 		Game::get_game()->update_once();
+		if(!effect_complete)
+			Game::get_game()->update_once_display();
 	}
 
 	delete_self();

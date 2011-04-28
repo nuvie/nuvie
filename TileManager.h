@@ -87,6 +87,10 @@ class Look;
 #define TILE_U6_ARROW       566
 #define TILE_U6_BOLT        567
 
+#define TILE_WIDTH  16
+#define TILE_HEIGHT 16
+#define TILE_DATA_SIZE 256
+
 typedef struct {
 uint16 tile_num;
 bool passable;

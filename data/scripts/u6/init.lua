@@ -56,6 +56,9 @@ SFX_CASTING_MAGIC_P2_8 = 33
 SFX_AVATAR_DEATH = 34
 SFX_KAL_LOR = 35
 
+FADE_COLOR_RED = 12
+FADE_COLOR_BLUE = 9
+
 -- some common functions
 
 function dbg(msg_string)

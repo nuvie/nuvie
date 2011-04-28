@@ -169,6 +169,7 @@ static int nscript_usecode_look(lua_State *L);
 
 static int nscript_fade_out(lua_State *L);
 static int nscript_fade_in(lua_State *L);
+static int nscript_fade_tile(lua_State *L);
 
 static int nscript_xor_effect(lua_State *L);
 
@@ -378,6 +379,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    
    lua_pushcfunction(L, nscript_fade_in);
    lua_setglobal(L, "fade_in");
+
+   lua_pushcfunction(L, nscript_fade_tile);
+   lua_setglobal(L, "fade_tile");
 
    lua_pushcfunction(L, nscript_xor_effect);
    lua_setglobal(L, "xor_effect");
@@ -975,6 +979,13 @@ static int nscript_obj_get(lua_State *L)
       weight = floorf(weight); //get rid of the tiny fraction
       weight /= 10; //now scale.
       lua_pushnumber(L, (lua_Number)weight); return 1;
+   }
+
+   if(!strcmp(key, "tile_num"))
+   {
+      ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+      Tile *tile = obj_manager->get_obj_tile(obj->obj_n, obj->frame_n);
+      lua_pushinteger(L, (int)tile->tile_num); return 1;
    }
    
    return 0;
@@ -1634,6 +1645,31 @@ static int nscript_fade_in(lua_State *L)
 {
 	AsyncEffect *e = new AsyncEffect(new FadeEffect(FADE_PIXELATED, FADE_IN));
 	e->run();
+
+	return 0;
+}
+
+static int nscript_fade_tile(lua_State *L)
+{
+	MapCoord loc;
+	Tile *tile_from =  NULL;
+	Tile *tile_to =  NULL;
+	TileManager *tm = Game::get_game()->get_tile_manager();
+
+	if(nscript_get_location_from_args(L, &loc.x, &loc.y, &loc.z) == false)
+		return 0;
+
+	if(lua_isnumber(L, 4))
+		tile_from = tm->get_tile((uint16)luaL_checkinteger(L, 4));
+
+	if(lua_gettop(L) > 4)
+		tile_to = tm->get_tile((uint16)luaL_checkinteger(L, 5));
+
+
+	AsyncEffect *e = new AsyncEffect(new TileFadeEffect(loc, tile_from, tile_to, FADE_PIXELATED, 10));
+//	AsyncEffect *e = new AsyncEffect(new TileFadeEffect(loc, tile_from, 0, 4, false, 20));
+	e->run();
+
 
 	return 0;
 }

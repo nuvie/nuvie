@@ -119,6 +119,7 @@ class Game
 
  void play();
  void update_once();
+ void update_once_display();
 
  GamePauseState get_pause_flags()            { return(pause_flags); }
  void set_pause_flags(GamePauseState state);

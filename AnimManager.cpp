@@ -1109,3 +1109,108 @@ bool ProjectileAnim::already_hit(MapEntity ent)
                 return(true);
     return(false);
 }
+
+TileFadeAnim::TileFadeAnim(MapCoord *loc, Tile *from, Tile *to, uint16 speed)
+{
+	init(speed);
+
+	if(from != NULL)
+	{
+		anim_tile = new Tile(*from);
+	}
+	else
+	{
+		anim_tile = new Tile();
+		anim_tile->transparent = true;
+		memset(anim_tile->data, 0xff, TILE_DATA_SIZE);
+	}
+
+	if(to == NULL)
+	{
+		to_tile = new Tile();
+		to_tile->transparent = true;
+		memset(to_tile->data, 0xff, TILE_DATA_SIZE);
+		should_delete_to_tile = true;
+	}
+	else
+	{
+		to_tile = to;
+	}
+
+	add_tile(anim_tile, 0, 0);
+	move(loc->x, loc->y);
+}
+
+TileFadeAnim::TileFadeAnim(MapCoord *loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed)
+{
+	init(speed);
+
+	if(reverse)
+	{
+		to_tile = from;
+		anim_tile = new Tile(*from);
+		for(int i=0;i<TILE_DATA_SIZE;i++)
+		{
+			if(anim_tile->data[i] == color_from)
+				anim_tile->data[i] = color_to;
+		}
+	}
+	else
+	{
+		to_tile = new Tile(*from);
+		should_delete_to_tile = true;
+		for(int i=0;i<TILE_DATA_SIZE;i++)
+		{
+			if(to_tile->data[i] == color_from)
+				to_tile->data[i] = color_to;
+		}
+
+		anim_tile = new Tile(*from);
+	}
+
+	add_tile(anim_tile, 0, 0);
+	move(loc->x, loc->y);
+}
+
+TileFadeAnim::~TileFadeAnim()
+{
+	delete anim_tile; //FIXME do we need to unlink from anim manager here!
+
+	if(should_delete_to_tile)
+		delete to_tile;
+}
+
+void TileFadeAnim::init(uint16 speed)
+{
+	pixels_per_update = speed;
+	pixel_count = 0;
+	memset(mask, 0, 256);
+	should_delete_to_tile = false;
+}
+
+bool TileFadeAnim::update()
+{
+	for(int i=0;i<pixels_per_update && pixel_count < TILE_DATA_SIZE;)
+	{
+		uint16 x = NUVIE_RAND()%TILE_WIDTH,
+		       y = NUVIE_RAND()%TILE_HEIGHT;
+
+		uint8 idx = y * TILE_WIDTH + x;
+
+		if(mask[idx] == 0)
+		{
+			anim_tile->data[idx] = to_tile->data[idx];
+			mask[idx] = 1;
+			pixel_count++;
+			i++;
+		}
+	}
+
+	if(pixel_count == TILE_DATA_SIZE)
+	{
+		stop();
+		message(MESG_ANIM_DONE);
+	}
+
+	return true;
+}

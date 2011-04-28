@@ -5,6 +5,9 @@ local loc = caster_get_location()
 local caster = magic_get_caster()
 local from_z = loc.z
 local i, j
+
+magic_casting_fade_effect(caster)
+
 for i=1,8 do
    for j=1,8 do
       local new_x = random(0, 10) + loc.x - 5

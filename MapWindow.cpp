@@ -535,7 +535,7 @@ void MapWindow::Display(bool full_redraw)
 
  drawObjs();
 
- drawAnims();
+ //drawAnims();
 
  if(show_cursor)
   {
@@ -665,6 +665,8 @@ void MapWindow::drawObjs()
  drawObjSuperBlock(false,false); //draw lower objects
 
  drawActors();
+
+ drawAnims();
 
  drawObjSuperBlock(false,true); //draw top objects
 

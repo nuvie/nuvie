@@ -319,5 +319,24 @@ public:
     void start()                    { start_timer(300); }
 };
 
+class TileFadeAnim : public TileAnim
+{
+	uint16 pixel_count;
+	Tile *anim_tile;
+	Tile *to_tile;
+	bool should_delete_to_tile;
+	uint16 pixels_per_update; //the number of pixels to change in each update.
+	unsigned char mask[256];
+
+public:
+	TileFadeAnim();
+	TileFadeAnim(MapCoord *loc, Tile *from, Tile *to, uint16 speed);
+	TileFadeAnim(MapCoord *loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed);
+	~TileFadeAnim();
+
+	bool update();
+protected:
+	void init(uint16 speed);
+};
 
 #endif /* __AnimManager_h__ */

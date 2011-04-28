@@ -311,7 +311,7 @@ class Actor
  virtual uint8 get_maxhp() { return 0; }
  virtual uint8 get_maxmagic() { return 0; }
 
- virtual void change_base_obj_n(uint16 val) { base_obj_n = obj_n = val; }
+ virtual void change_base_obj_n(uint16 val) { base_obj_n = obj_n = val; frame_n = 0;}
  void set_obj_n(uint16 val) { obj_n = val; }
  void set_frame_n(uint16 val) { frame_n = val; }
  void set_strength(uint8 val) { strength = val; }

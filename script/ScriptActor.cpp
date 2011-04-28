@@ -26,6 +26,7 @@
 #include "ScriptActor.h"
 #include "Player.h"
 #include "Game.h"
+#include "Effect.h"
 #include "ActorManager.h"
 #include "Actor.h"
 
@@ -58,6 +59,7 @@ static int nscript_actor_inv_get_obj_total_qty(lua_State *L);
 static int nscript_actor_move(lua_State *L);
 static int nscript_actor_walk_path(lua_State *L);
 static int nscript_actor_is_at_scheduled_location(lua_State *L);
+static int nscript_actor_black_fade_effect(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -78,6 +80,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "inv_get_obj_n", nscript_actor_inv_get_obj_n },
    { "inv_get_obj_total_qty", nscript_actor_inv_get_obj_total_qty },
    { "is_at_scheduled_location", nscript_actor_is_at_scheduled_location },
+   { "black_fade_effect", nscript_actor_black_fade_effect },
 
    { NULL, NULL }
 };
@@ -152,6 +155,7 @@ static const char *actor_get_vars[] =
    "sched_wt",
    "str",
    "temp",
+   "tile_num",
    "visible",
    "wt",
    "x",
@@ -247,6 +251,7 @@ static int nscript_actor_get_sched_loc(Actor *actor, lua_State *L);
 static int nscript_actor_get_sched_worktype(Actor *actor, lua_State *L);
 static int nscript_actor_get_strength(Actor *actor, lua_State *L);
 static int nscript_actor_get_temp_status(Actor *actor, lua_State *L);
+static int nscript_actor_get_tile_num(Actor *actor, lua_State *L);
 static int nscript_actor_get_visible_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_worktype(Actor *actor, lua_State *L);
 static int nscript_actor_get_x(Actor *actor, lua_State *L);
@@ -284,6 +289,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_sched_worktype,
    nscript_actor_get_strength,
    nscript_actor_get_temp_status,
+   nscript_actor_get_tile_num,
    nscript_actor_get_visible_flag,
    nscript_actor_get_worktype,
    nscript_actor_get_x,
@@ -817,6 +823,14 @@ static int nscript_actor_get_temp_status(Actor *actor, lua_State *L)
    lua_pushboolean(L, (int)actor->is_temp()); return 1;
 }
 
+static int nscript_actor_get_tile_num(Actor *actor, lua_State *L)
+{
+   ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+   Tile *tile = obj_manager->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
+
+   lua_pushinteger(L, (int)tile->tile_num); return 1;
+}
+
 static int nscript_actor_get_visible_flag(Actor *actor, lua_State *L)
 {
    lua_pushboolean(L, (int)(actor->is_invisible() ? false : true)); return 1;
@@ -912,6 +926,21 @@ static int nscript_actor_is_at_scheduled_location(lua_State *L)
 
 	   lua_pushboolean(L, actor->is_at_scheduled_location());
 	   return 1;
+}
+
+static int nscript_actor_black_fade_effect(lua_State *L)
+{
+	   Actor *actor = nscript_get_actor_from_args(L);
+	   uint8 fade_color = (uint8)lua_tointeger(L, 2);
+	   uint16 fade_speed = (uint8)lua_tointeger(L, 3);
+
+	   if(actor != NULL)
+	   {
+		   AsyncEffect *e = new AsyncEffect(new TileBlackFadeEffect(actor, fade_color, fade_speed));
+		   e->run();
+	   }
+
+	   return 0;
 }
 
 static int nscript_actor_resurrect(lua_State *L)

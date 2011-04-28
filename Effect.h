@@ -439,6 +439,43 @@ public:
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
+class TileFadeEffect : public TimedEffect
+{
+	TileAnim *anim;
+	Tile *to_tile;
+	Tile *anim_tile;
+	Actor *actor;
+	uint8 color_from, color_to;
+	bool inc_reverse;
+
+public:
+	TileFadeEffect(MapCoord loc, Tile *from, Tile *to, FadeType type, uint16 speed);
+	TileFadeEffect(MapCoord loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed);
+	TileFadeEffect(Actor *a, uint8 c_from, uint8 c_to, bool include_return, uint16 speed);
+	~TileFadeEffect();
+	uint16 callback(uint16 msg, CallBack *caller, void *data);
+
+protected:
+	void add_actor_anim(uint8 speed);
+};
+
+class TileBlackFadeEffect : public TimedEffect
+{
+	Actor *actor;
+	Obj *obj;
+	uint8 color;
+	bool reverse;
+	uint16 fade_speed;
+public:
+	TileBlackFadeEffect(Actor *a, uint8 fade_color, uint16 speed);
+	TileBlackFadeEffect(Obj *o, uint8 fade_color, uint16 speed);
+	~TileBlackFadeEffect();
+	uint16 callback(uint16 msg, CallBack *caller, void *data);
+protected:
+	void init(uint8 fade_color, uint16 speed);
+	void add_actor_anim();
+	void add_obj_anim();
+};
 
 /* Briefly modify the mapwindow colors, disable map-blacking and player
  * movement for a few seconds, then enable both.

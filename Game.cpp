@@ -403,7 +403,10 @@ void Game::update_once()
     actor_manager->twitchActors();
     map_window->update();
     effect_manager->update_effects();
+}
 
+void Game::update_once_display()
+{
     gui->Display();
     if(cursor) cursor->display();
 

@@ -4,6 +4,8 @@ local x = loc.x - 5
 local y = loc.y - 5
 local z = loc.z
 
+magic_casting_fade_effect(caster)
+
 for x = loc.x - 5,loc.x + 5 do
 	for y = loc.y - 5,loc.y + 5 do
 		local actor = map_get_actor(x, y, z)
@@ -13,8 +15,14 @@ for x = loc.x - 5,loc.x + 5 do
 			
 			if actor.align == ALIGNMENT_EVIL and (actor_type == nil or actor_type[12] == 0) then
 				if actor_int_check(caster, actor) == false then
-					--FIXME need to fade to new slime frame here.
+					
+					local old_tile_num = actor.tile_num
 					actor.base_obj_n = 0x177 --convert actor into slime
+					local new_tile_num = actor.tile_num
+					actor.visible = false
+					--FIXME need to fade all at once.
+					fade_tile(x, y, z, old_tile_num, new_tile_num)
+					actor.visible = true
 					if actor.temp == true then
 						--remove inventory
 						local obj

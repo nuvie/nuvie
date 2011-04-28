@@ -1,3 +1,17 @@
+2012-04-29  Eric Fry <efry at users.sourceforge.net> r1180
+	* Added spell casting red fade effect.
+	* Added TileFadeAnim class.
+	* Changed Actor::change_base_obj_n() to zero frame_n.
+	* Added TileFadeEffect class.
+	* Added TileBlackFadeEffect class.
+	* Moved Game::update_once() into two calls. Split out display functions.
+	  This was needed to end an effect without redrawing the screen.
+	* Added magic script function magic_casting_fade_effect(caster)
+	* Moved tile Animation display under toptiles.
+	* Added script functions fade_tile(x,y,z,from_tile_num, to_tile_num) and
+	  Actor.black_fade_effect(actor,color,speed)
+	* Added tile_num get variable to actor in script.
+
 2012-04-26  Eric Fry <efry at users.sourceforge.net> r1179
 	* Automatically create ~/.nuvierc config file on Unix systems.
 	* Added new Actor::change_base_obj_n() method. This allows us to change the

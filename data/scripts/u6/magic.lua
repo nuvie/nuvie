@@ -113,6 +113,12 @@ function magic_casting_effect()
 	xor_effect(1700)
 end
 
+function magic_casting_fade_effect(caster)
+	if caster == nil then caster = magic_get_caster() end
+	
+	Actor.black_fade_effect(caster, 12, 20) -- 12 = colour red. 20 = fade_speed
+end
+
 do
 local init
 
