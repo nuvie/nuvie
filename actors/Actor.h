@@ -354,11 +354,13 @@ class Actor
  void set_talk_flags(uint8 newflags) { talk_flags = newflags; }
  void set_flag(uint8 bitflag);
  void clear_flag(uint8 bitflag);
- void show() { visible_flag = true; }
- void hide() { visible_flag = false; }
+ void show();
+ void hide();
  void set_error(ActorErrorCode err);
  void clear_error();
  ActorError *get_error();
+
+ list<Obj *> *get_surrounding_obj_list() { return surrounding_objects.empty() ? NULL : &surrounding_objects; }
 
  bool moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags=0);
  virtual bool move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);

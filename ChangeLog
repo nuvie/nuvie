@@ -1,3 +1,10 @@
+2012-05-02  Eric Fry <efry at users.sourceforge.net> r1182
+	* Fixed target selection bug when casting magic in the dungeon levels.
+	* Don't twitch actors that aren't visible.
+	* Hide surrounding objects for multi-tile actors when visible_flag = false.
+	* TileBlackFadeEffect can now fade multi-tile objs/actors.
+	* Fixed target selection in fire field spell logic.
+
 2012-05-02  Eric Fry <efry at users.sourceforge.net> r1181
 	* Added Detect Magic spell (wo)
 	* Added Dispel Magic spell (ajo)

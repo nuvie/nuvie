@@ -1319,7 +1319,7 @@ TileFadeEffect::TileFadeEffect(MapCoord loc, Tile *from, Tile *to, FadeType type
 	inc_reverse = false;
 	add_anim(new TileFadeAnim(&loc, from, to, speed));
 }
-
+/*
 TileFadeEffect::TileFadeEffect(MapCoord loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed)
 {
 	actor = NULL;
@@ -1336,7 +1336,7 @@ TileFadeEffect::TileFadeEffect(Actor *a, uint8 c_from, uint8 c_to, bool include_
 	actor->hide();
 	add_actor_anim(speed);
 }
-
+*/
 TileFadeEffect::~TileFadeEffect()
 {
 
@@ -1383,7 +1383,7 @@ TileBlackFadeEffect::TileBlackFadeEffect(Obj *o, uint8 fade_color, uint16 speed)
 	init(fade_color, speed);
 	obj = o;
 	obj->set_invisible(true);
-	add_obj_anim();
+	add_obj_anim(obj);
 }
 
 void TileBlackFadeEffect::init(uint8 fade_color, uint16 speed)
@@ -1394,6 +1394,7 @@ void TileBlackFadeEffect::init(uint8 fade_color, uint16 speed)
 	obj = NULL;
 	reverse = false;
 
+	num_anim_running = 0;
 }
 TileBlackFadeEffect::~TileBlackFadeEffect()
 {
@@ -1404,19 +1405,73 @@ void TileBlackFadeEffect::add_actor_anim()
 {
 	MapCoord loc = actor->get_location();
 	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
-	add_anim(new TileFadeAnim(&loc, from, 0, color, reverse, fade_speed));
+	add_tile_anim(loc, from);
+
+	std::list<Obj *> *surrounding_objs = actor->get_surrounding_obj_list();
+
+	if(surrounding_objs)
+	{
+		std::list<Obj *>::iterator obj_iter;
+		for(obj_iter = surrounding_objs->begin(); obj_iter != surrounding_objs->end(); obj_iter++)
+		{
+			add_obj_anim(*obj_iter);
+		}
+	}
 }
 
-void TileBlackFadeEffect::add_obj_anim()
+void TileBlackFadeEffect::add_obj_anim(Obj *o)
 {
-	MapCoord loc(obj);
-	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(obj->obj_n, obj->frame_n);
-	add_anim(new TileFadeAnim(&loc, from, 0, color, reverse, fade_speed));
+	MapCoord loc(o);
+	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(o->obj_n, o->frame_n);
+	add_tile_anim(loc, from);
+}
+
+void TileBlackFadeEffect::add_tile_anim(MapCoord loc, Tile *tile)
+{
+	TileManager *tile_manager = Game::get_game()->get_tile_manager();
+	uint16 tile_num = tile->tile_num;
+
+	add_anim(new TileFadeAnim(&loc, tile, 0, color, reverse, fade_speed));
+	num_anim_running++;
+
+	if(tile->dbl_width)
+	{
+		tile_num--;
+		loc.x -= 1;
+		add_anim(new TileFadeAnim(&loc, tile_manager->get_tile(tile_num), 0, color, reverse, fade_speed));
+		num_anim_running++;
+		loc.x += 1;
+	}
+
+	if(tile->dbl_height)
+	{
+		tile_num--;
+		loc.y -= 1;
+		add_anim(new TileFadeAnim(&loc, tile_manager->get_tile(tile_num), 0, color, reverse, fade_speed));
+		num_anim_running++;
+		loc.y += 1;
+	}
+
+	if(tile->dbl_width && tile->dbl_height)
+	{
+		tile_num--;
+		loc.x -= 1;
+		loc.y -= 1;
+		add_anim(new TileFadeAnim(&loc, tile_manager->get_tile(tile_num), 0, color, reverse, fade_speed));
+		num_anim_running++;
+		loc.x += 1;
+		loc.y += 1;
+	}
 }
 
 uint16 TileBlackFadeEffect::callback(uint16 msg, CallBack *caller, void *data)
 {
 	if(msg == MESG_ANIM_DONE)
+	{
+		num_anim_running--;
+	}
+
+	if(num_anim_running == 0)
 	{
 		if(reverse == false)
 		{
@@ -1424,7 +1479,7 @@ uint16 TileBlackFadeEffect::callback(uint16 msg, CallBack *caller, void *data)
 			if(actor)
 				add_actor_anim();
 			else
-				add_obj_anim();
+				add_obj_anim(obj);
 
 			return 0;
 		}

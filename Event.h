@@ -177,7 +177,7 @@ friend class Magic; // FIXME
  bool select_obj(Obj *obj, Actor *actor=NULL);
  bool select_actor(Actor *actor);
  bool select_direction(sint16 rel_x, sint16 rel_y);
- bool select_target(uint16 x, uint16 y);
+ bool select_target(uint16 x, uint16 y, uint8 z=0);
  bool select_party_member(uint8 num);
 // bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
 // bool select_obj(sint16 rel_x, sint16 rel_y);

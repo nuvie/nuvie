@@ -450,8 +450,8 @@ class TileFadeEffect : public TimedEffect
 
 public:
 	TileFadeEffect(MapCoord loc, Tile *from, Tile *to, FadeType type, uint16 speed);
-	TileFadeEffect(MapCoord loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed);
-	TileFadeEffect(Actor *a, uint8 c_from, uint8 c_to, bool include_return, uint16 speed);
+	//TileFadeEffect(MapCoord loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed);
+	//TileFadeEffect(Actor *a, uint8 c_from, uint8 c_to, bool include_return, uint16 speed);
 	~TileFadeEffect();
 	uint16 callback(uint16 msg, CallBack *caller, void *data);
 
@@ -466,6 +466,8 @@ class TileBlackFadeEffect : public TimedEffect
 	uint8 color;
 	bool reverse;
 	uint16 fade_speed;
+
+	uint16 num_anim_running;
 public:
 	TileBlackFadeEffect(Actor *a, uint8 fade_color, uint16 speed);
 	TileBlackFadeEffect(Obj *o, uint8 fade_color, uint16 speed);
@@ -474,7 +476,8 @@ public:
 protected:
 	void init(uint8 fade_color, uint16 speed);
 	void add_actor_anim();
-	void add_obj_anim();
+	void add_obj_anim(Obj *o);
+	void add_tile_anim(MapCoord loc, Tile *tile);
 };
 
 /* Briefly modify the mapwindow colors, disable map-blacking and player

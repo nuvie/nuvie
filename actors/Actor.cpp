@@ -1340,6 +1340,28 @@ void Actor::clear()
 
 }
 
+void Actor::show()
+{
+	visible_flag = true;
+
+	std::list<Obj *>::iterator obj_iter;
+	for(obj_iter = surrounding_objects.begin(); obj_iter != surrounding_objects.end(); obj_iter++)
+	{
+		(*obj_iter)->set_invisible(false);
+	}
+
+}
+
+void Actor::hide()
+{
+	visible_flag = false;
+
+	std::list<Obj *>::iterator obj_iter;
+	for(obj_iter = surrounding_objects.begin(); obj_iter != surrounding_objects.end(); obj_iter++)
+	{
+		(*obj_iter)->set_invisible(true);
+	}
+}
 
 /* Get pushed by `pusher' to location determined by `where'. */
 bool Actor::push(Actor *pusher, uint8 where)

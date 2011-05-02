@@ -2126,6 +2126,7 @@ bool U6Actor::is_immobile()
 bool U6Actor::can_twitch()
 {
 	return(can_move == true
+			   && visible_flag == true
 			   && actor_type->twitch_rand != 0
 			   && get_corpser_flag() == false
 	           && is_sleeping() == false

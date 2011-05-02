@@ -632,7 +632,7 @@ bool Event::select_direction(sint16 rel_x, sint16 rel_y)
 }
 
 // automatically converted to direction if requested
-bool Event::select_target(uint16 x, uint16 y)
+bool Event::select_target(uint16 x, uint16 y, uint8 z)
 {
     // FIXME: is this even correct behavior?! if an arrow key is used, a direction
     // should be returned, but you can still select any target with the mouse
@@ -645,7 +645,7 @@ if(mode != ATTACK_MODE) // FIXME: make ATTACK_MODE use INPUT_MODE
     assert(mode == INPUT_MODE);
 
     input.type = EVENTINPUT_MAPCOORD;
-    input.set_loc(MapCoord(x, y));
+    input.set_loc(MapCoord(x, y, z));
     // assumes mapwindow cursor is at the location
     input.actor = map_window->get_actorAtCursor();
     input.obj = map_window->get_objAtCursor();
@@ -2499,7 +2499,7 @@ void Event::doAction()
         else if(input.select_from_inventory) // some redirection here...
             view_manager->get_inventory_view()->select_objAtCursor();
         else
-            select_target(map_window->get_cursorCoord().x,map_window->get_cursorCoord().y);
+            select_target(map_window->get_cursorCoord().x,map_window->get_cursorCoord().y, map_window->get_cursorCoord().z);
         // the above function will switch back to the previous mode that
         // started getting input, and call doAction() again, which should
         // eventually result in an endAction()
