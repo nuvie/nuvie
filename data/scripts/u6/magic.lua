@@ -32,6 +32,14 @@ function magic_cast_spell(spell_num, caster, target)
 	g_magic_target = nil
 end
 
+function magic_spell_name(spell_num)
+	if magic[spell_num] ~= nil then
+		return magic[spell_num].name
+	end
+	
+	return "Unknown"
+end
+
 magic_init = function(name, invocation, reagents, circle, num, script)
 	local spell_num = (circle-1) * 16 + (num-1); 
     local spell = {name=name,invocation=invocation,reagents=reagents,circle=circle,spell_num=spell_num,script=script}
@@ -42,13 +50,15 @@ magic_init = function(name, invocation, reagents, circle, num, script)
     io.stderr:write("Init Magic: " .. name .. " I: " .. invocation .. "\n")
 end
 
+function select_location_with_prompt(prompt)
+if g_magic_target ~= nil then return g_magic_target end
 
+print(prompt)
+return get_target()
+end
 
 function select_location()
-	if g_magic_target ~= nil then return g_magic_target end
-	
-	print("Location: ")
-	return get_target()
+	return select_location_with_prompt("Location: ")
 end
 
 select_actor = function()
@@ -85,6 +95,56 @@ select_obj = function()
 	return obj 
 end
 
+function select_actor_with_projectile(projectile_tile, caster)
+
+	if caster == nil then caster = magic_get_caster() end
+
+	local loc = select_location_with_prompt("On Whom: ")
+	local actor = map_get_actor(loc)
+	if actor == nil then
+		print("nothing\n");
+	else
+		print(actor.name.."\n");
+	end
+	
+	magic_casting_fade_effect(caster)
+	if loc == nil then magic_no_effect() return end
+
+	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
+	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
+
+	if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
+
+	if actor == nil then magic_no_effect() return end
+
+	return actor
+end
+
+function select_obj_with_projectile(projectile_tile, caster)
+
+	if caster == nil then caster = magic_get_caster() end
+
+	local loc = select_location_with_prompt("On What: ")
+	local obj = map_get_obj(loc)
+	if obj == nil then
+		print("nothing\n");
+	else
+		print(obj.name.."\n");
+	end
+
+	magic_casting_fade_effect(caster)
+	if loc == nil then magic_no_effect() return end
+
+	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
+	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
+
+	if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
+
+	if obj == nil then magic_no_effect() return end
+
+	return obj
+end
+
 function caster_get_location()	  
 	 if g_magic_caster ~= nil then
 	  	return {x = g_magic_caster.x, y = g_magic_caster.y, z = g_magic_caster.z}
@@ -119,11 +179,64 @@ function magic_casting_fade_effect(caster)
 	Actor.black_fade_effect(caster, 12, 20) -- 12 = colour red. 20 = fade_speed
 end
 
+function magic_remove_actor_enchantments(actor)
+	local success = false
+	fade_actor_blue(actor)
+	if actor.asleep == true then
+		actor.asleep = false
+		success = true
+	end
+	if actor.poisoned == true then
+		actor.poisoned = false
+		success = true
+	end
+	if actor.paralysed == true then
+		actor.paralyzed = false
+		success = true
+	end
+
+	if actor_remove_charm(actor) == true then
+		success = true
+	end
+
+	return success
+end
+
+function magic_success()
+	if caster_is_player() then
+		print("\nSuccess\n")
+		play_sfx(SFX_SUCCESS)
+	end
+end
+
+function magic_no_effect()
+	if caster_is_player() then
+		print("\nNo effect\n")
+		play_sfx(SFX_FAILURE)
+	end
+end
+
+function magic_blocked()
+	if caster_is_player() then
+		print("\nBlocked!\n")
+		play_sfx(SFX_FAILURE)
+	end
+end
+
+function magic_failed()
+	if caster_is_player() then
+		print("\nFailed\n")
+		play_sfx(SFX_FAILURE)
+	end
+end
+
 do
 local init
 
 magic_init("Create Food", "imy", 0x61, 1, 1, "u6/magic/circle_01/create_food.lua");
+magic_init("Detect Magic", "wo", 0x82, 1, 2, "u6/magic/circle_01/detect_magic.lua");
 magic_init("Detect Trap", "wj", 0x82, 1, 3, "u6/magic/circle_01/detect_trap.lua");
+magic_init("Dispel Magic", "ajo", 0x60, 1, 4, "u6/magic/circle_01/dispel_magic.lua");
 magic_init("Douse", "af", 0x24, 1, 5, "u6/magic/circle_01/douse.lua");
 magic_init("Harm", "am", 0x84, 1, 6, "u6/magic/circle_01/harm.lua");
 magic_init("Heal", "im", 0x84, 1, 7, "u6/magic/circle_01/heal.lua");

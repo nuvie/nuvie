@@ -76,6 +76,7 @@ static sint32 nscript_inc_obj_ref_count(Obj *obj);
 static sint32 nscript_dec_obj_ref_count(Obj *obj);
 
 bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
+inline Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
 
 void nscript_new_obj_var(lua_State *L, Obj *obj);
 
@@ -170,6 +171,7 @@ static int nscript_usecode_look(lua_State *L);
 static int nscript_fade_out(lua_State *L);
 static int nscript_fade_in(lua_State *L);
 static int nscript_fade_tile(lua_State *L);
+static int nscript_black_fade_obj(lua_State *L);
 
 static int nscript_xor_effect(lua_State *L);
 
@@ -383,6 +385,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_fade_tile);
    lua_setglobal(L, "fade_tile");
 
+   lua_pushcfunction(L, nscript_black_fade_obj);
+   lua_setglobal(L, "fade_obj");
+
    lua_pushcfunction(L, nscript_xor_effect);
    lua_setglobal(L, "xor_effect");
 
@@ -588,6 +593,15 @@ bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z
    }
 
    return true;
+}
+
+inline Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset)
+{
+	   Obj **s_obj = (Obj **)luaL_checkudata(L, lua_stack_offset, "nuvie.Obj");
+	   if(s_obj == NULL)
+		   return NULL;
+
+	   return *s_obj;
 }
 
 void nscript_new_obj_var(lua_State *L, Obj *obj)
@@ -1672,6 +1686,21 @@ static int nscript_fade_tile(lua_State *L)
 
 
 	return 0;
+}
+
+static int nscript_black_fade_obj(lua_State *L)
+{
+	   Obj *obj = nscript_get_obj_from_args(L, 1);
+	   uint8 fade_color = (uint8)lua_tointeger(L, 2);
+	   uint16 fade_speed = (uint8)lua_tointeger(L, 3);
+
+	   if(obj != NULL)
+	   {
+		   AsyncEffect *e = new AsyncEffect(new TileBlackFadeEffect(obj, fade_color, fade_speed));
+		   e->run();
+	   }
+
+	   return 0;
 }
 
 static int nscript_xor_effect(lua_State *L)

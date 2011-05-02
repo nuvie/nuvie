@@ -221,6 +221,14 @@ function projectile(tile_num, start_x, start_y, end_x, end_y, speed, spin, rotat
 	projectile_anim(tile_num, start_x, start_y, end_x, end_y, speed, spin, rotate_offset)
 end
 
+function fade_obj_blue(obj)
+  fade_obj(obj, FADE_COLOR_BLUE, 20)
+end
+
+function fade_actor_blue(actor)
+	Actor.black_fade_effect(actor, FADE_COLOR_BLUE, 20)
+end
+
 --load actor functions
 actor_load = nuvie_load("u6/actor.lua");
 if type(actor_load) == "function" then

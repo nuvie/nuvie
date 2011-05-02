@@ -1,11 +1,11 @@
 magic_casting_effect()
+magic_casting_fade_effect()
 
-qty = math.random(4,9)
+local qty = math.random(1,10)
 
-obj = Obj.new(129,0,0,qty)
+local obj = Obj.new(129,0,0,qty)
 
 Obj.moveToInv(obj, 1)
 
-if obj.qty > 0 then
-  print("\nCreate " .. obj.qty .. " food.\n")
-end
+print("\nCreate " .. obj.qty .. " food.\n")
+

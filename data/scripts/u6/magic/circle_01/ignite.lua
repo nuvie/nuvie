@@ -1,19 +1,26 @@
-obj = select_obj()
+local obj = select_obj_with_projectile(0x18d)
 
-if obj ~= nil then
-  if obj.obj_n == 122 or --candle
-    obj.obj_n == 145 or --candelabra
-    obj.obj_n == 164 or --fireplace
-    obj.obj_n == 90 or --torch
-    (obj.obj_n == 206 and obj.frame_n == 0) then --brazier
-    if obj.frame_n == 0 or obj.frame_n == 2 then
-      if obj.obj_n == 90 then
-        Obj.use(obj) -- we want to use usecode to handle multi-torch stacks.
-      else
-        obj.frame_n = obj.frame_n + 1;
-      end
-      return print("\nSuccess\n");
-    end
-  end
+if obj == nil then return end
+
+if obj.obj_n == 122 or --candle
+	obj.obj_n == 145 or --candelabra
+	obj.obj_n == 164 or --fireplace
+	obj.obj_n == 90 or --torch
+	(obj.obj_n == 206 and obj.frame_n == 0) then --flaming brazier
+		fade_obj_blue(obj)
+		if obj.frame_n == 0 or obj.frame_n == 2 then
+			if obj.obj_n == 90 then
+				Obj.use(obj) -- we want to use usecode to remove the torch
+			else
+				obj.frame_n = obj.frame_n + 1;
+			end
+			
+			return magic_success()
+		end
+elseif obj.obj_n == 0xdf and obj.frame_n == 0 then --unlit keg
+	obj.frame_n = 1
+	print("\nFIXME set keg timer (3) here.\n")
+	return magic_success()
 end
-return print("\nNo effect\n");
+
+return magic_no_effect()

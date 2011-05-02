@@ -1,2 +1,3 @@
 magic_casting_effect()
-print("Cast light spell here.") --FIXME
+--FIXME set light timer to 0x64
+

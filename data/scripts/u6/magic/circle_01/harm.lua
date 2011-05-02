@@ -1,11 +1,8 @@
-actor = select_actor()
+local caster = magic_get_caster()
+local actor = select_actor_with_projectile(0x17f, caster)
 
-if actor ~= nil then
-	damage = math.random(0,10)
-	Actor.hit(actor, damage);
-	if damage > 0 then
-		return print("\nSuccess\n");
-	end
+if actor == nil then return end
+
+if spell_hit_actor(caster, actor, 5) == false then --5 = harm spell number
+	magic_failed()
 end
-
-return print("\nno effect\n");

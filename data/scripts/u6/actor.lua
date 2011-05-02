@@ -1790,26 +1790,30 @@ end
 
 function actor_remove_charm(actor)
 
-	actor.charm = false;
-	--FIXME actor.align = actor.old_align --stored in bits 5/6 in actor movement flags
+	if actor.charm == true then
+		actor.charm = false;
+		--FIXME actor.align = actor.old_align --stored in bits 5/6 in actor movement flags
 	
-	if actor.in_party == true then
-		actor.align = ALIGNMENT_GOOD
-	end
-	party_update_leader()
-	--[[ FIXME need to add functions to check for combat_mode and solo_mode
-	if party_in_combat_mode() then
-		actor.wt = combat_mode
-	else
-		if solo_mode() then
-			actor.wt = WT_NOTHING
-		else
-			actor.wt = WT_FOLLOW
+		if actor.in_party == true then
+			actor.align = ALIGNMENT_GOOD
 		end
+		party_update_leader()
+		--[[ FIXME need to add functions to check for combat_mode and solo_mode
+		if party_in_combat_mode() then
+			actor.wt = combat_mode
+		else
+			if solo_mode() then
+				actor.wt = WT_NOTHING
+			else
+				actor.wt = WT_FOLLOW
+			end
+		end
+		--]]
+		return true
 	end
-	--]]
+	
+	return false
 end
-
 
 function actor_yell_for_help(attacking_actor, defending_actor, dmg)
 
@@ -3084,6 +3088,31 @@ function spell_take_fire_dmg(attacker, foe)
    actor_yell_for_help(attacker, foe, 1)
 end
 
+function spell_hit_actor(attacker, foe, spell_num)
+
+	if actor_int_check(foe, attacker) == true then return false end
+	local random = math.random
+	local dmg = 0
+	
+	if spell_num == 5 then
+		dmg = random(1, 0xa)
+	elseif spell_num == 0x62 then
+		dmg = random(1, 0x1e)
+	elseif spell_num == 0x32 then
+		dmg = foe.hp - 1
+	end
+	
+	print("\n")
+	
+	local exp = actor_hit(foe, dmg)
+	if exp ~= 0 then         
+		attacker.exp = attacker.exp + exp
+	end
+
+	actor_yell_for_help(attacker, foe, 1)
+	
+	return true
+end
 
 function actor_use_effect(actor, effect)
 	local random = math.random

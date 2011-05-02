@@ -1,3 +1,16 @@
+2012-05-02  Eric Fry <efry at users.sourceforge.net> r1181
+	* Added Detect Magic spell (wo)
+	* Added Dispel Magic spell (ajo)
+	* Added better compatibilty to all first circle spells. Added projectile logic
+	  and fades.
+	* Added fade_obj() script function
+	* Added script actor.max_hp get variable
+	* Added new convenience routines to magic.lua
+	* Added script functions select_actor_with_projectile(projectile_tile, caster) and
+	  select_obj_with_projectile(projectile_tile, caster) These functions are used
+	  by magic scripts that fire a projectile at an actor/obj.
+	* Reworked resurrect spell to increase compatibility with original game.
+
 2012-04-29  Eric Fry <efry at users.sourceforge.net> r1180
 	* Added spell casting red fade effect.
 	* Added TileFadeAnim class.

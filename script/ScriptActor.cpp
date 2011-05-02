@@ -144,6 +144,7 @@ static const char *actor_get_vars[] =
    "level",
    "luatype",
    "magic",
+   "max_hp",
    "mpts",
    "name",
    "obj_n",
@@ -240,6 +241,7 @@ static int nscript_actor_get_intelligence(Actor *actor, lua_State *L);
 static int nscript_actor_get_level(Actor *actor, lua_State *L);
 static int nscript_actor_get_luatype(Actor *actor, lua_State *L);
 static int nscript_actor_get_magic(Actor *actor, lua_State *L);
+static int nscript_actor_get_max_hp(Actor *actor, lua_State *L);
 static int nscript_actor_get_movement_pts(Actor *actor, lua_State *L);
 static int nscript_actor_get_name(Actor *actor, lua_State *L);
 static int nscript_actor_get_obj_n(Actor *actor, lua_State *L);
@@ -278,6 +280,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_level,
    nscript_actor_get_luatype,
    nscript_actor_get_magic,
+   nscript_actor_get_max_hp,
    nscript_actor_get_movement_pts,
    nscript_actor_get_name,
    nscript_actor_get_obj_n,
@@ -748,6 +751,11 @@ static int nscript_actor_get_luatype(Actor *actor, lua_State *L)
 static int nscript_actor_get_magic(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_magic()); return 1;
+}
+
+static int nscript_actor_get_max_hp(Actor *actor, lua_State *L)
+{
+	lua_pushinteger(L, actor->get_maxhp()); return 1;
 }
 
 static int nscript_actor_get_movement_pts(Actor *actor, lua_State *L)

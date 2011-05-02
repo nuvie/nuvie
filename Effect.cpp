@@ -1410,7 +1410,7 @@ void TileBlackFadeEffect::add_actor_anim()
 void TileBlackFadeEffect::add_obj_anim()
 {
 	MapCoord loc(obj);
-	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
+	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(obj->obj_n, obj->frame_n);
 	add_anim(new TileFadeAnim(&loc, from, 0, color, reverse, fade_speed));
 }
 
