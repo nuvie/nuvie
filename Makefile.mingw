@@ -121,4 +121,6 @@ dist: install tools
 	cp SDL/README-SDL.txt $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)
 	cp SDL/lib/SDL.dll $(U6PATH)/tools
+	cp win32/Nuvie.iss $(U6PATH)
 	u2d $(U6PATH)/*.txt
+
