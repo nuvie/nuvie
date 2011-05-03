@@ -29,6 +29,7 @@
 #include "U6misc.h"
 
 #include "Game.h"
+#include "GameCLock.h"
 #include "Effect.h"
 #include "MsgScroll.h"
 #include "Player.h"
@@ -147,6 +148,8 @@ static int nscript_party_get_member(lua_State *L);
 static int nscript_party_update_leader(lua_State *L);
 static int nscript_party_resurrect_dead_members(lua_State *L);
 static int nscript_party_heal(lua_State *L);
+
+static int nscript_timer_set(lua_State *L);
 
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
@@ -298,6 +301,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_container);
    lua_setglobal(L, "container_objs");
    
+   lua_pushcfunction(L, nscript_timer_set);
+   lua_setglobal(L, "timer_set");
+
    lua_pushcfunction(L, nscript_objs_at_loc);
    lua_setglobal(L, "objs_at_loc");
    
@@ -1801,6 +1807,19 @@ static int nscript_party(lua_State *L)
    lua_pushcclosure(L, &nscript_party_iter, 1);
    return 1;
 }
+
+static int nscript_timer_set(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	uint8 timer_num = (uint8)luaL_checkinteger(L, 1);
+	uint8 value = (uint8)luaL_checkinteger(L, 2);
+
+	clock->set_timer(timer_num, value);
+
+	return 0;
+}
+
 
 //lua function objs_at_loc(x,y,z)
 static int nscript_objs_at_loc(lua_State *L)

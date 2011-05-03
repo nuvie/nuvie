@@ -462,6 +462,11 @@ void MapWindow::updateAmbience()
      else //Night
          screen->set_ambient( 0x00 );
 
+     uint8 a = screen->get_ambient();
+
+     if(a != 0xFF && clock->get_timer(GAMECLOCK_TIMER_U6_LIGHT) != 0) //FIXME U6 specific
+    	 screen->set_ambient(0xaa); //FIXME this is an approximation
+
      //Clear the opacity map
      screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
 

@@ -25,6 +25,7 @@
 #include "Configuration.h"
 #include "NuvieIOFile.h"
 #include "Game.h"
+#include "Objlist.h"
 #include "GameClock.h"
 
 GameClock::GameClock(Configuration *cfg)
@@ -52,13 +53,14 @@ void GameClock::init()
  year = 0;
  
  active = true;
+ num_timers = 0;
 }
 
 bool GameClock::load(NuvieIO *objlist)
 {
  init();
 
- objlist->seek(0x1bf3); // start of time data
+ objlist->seek(OBJLIST_OFFSET_U6_GAMETIME); // start of time data
 
  minute = objlist->read1();
  hour = objlist->read1();
@@ -68,6 +70,15 @@ bool GameClock::load(NuvieIO *objlist)
 
  update_day_of_week();
 
+ num_timers = GAMECLOCK_NUM_TIMERS;
+ timers.reserve(num_timers);
+ objlist->seek(OBJLIST_OFFSET_U6_TIMERS);
+
+ for(uint8 i=0;i < GAMECLOCK_NUM_TIMERS;i++)
+ {
+	timers[i] = objlist->read1();
+ }
+
  DEBUG(0,LEVEL_INFORMATIONAL,"Loaded game clock: %s %s\n",get_date_string(),get_time_string());
 
  return true;
@@ -75,13 +86,20 @@ bool GameClock::load(NuvieIO *objlist)
 
 bool GameClock::save(NuvieIO *objlist)
 {
- objlist->seek(0x1bf3); // start of time data
+ objlist->seek(OBJLIST_OFFSET_U6_GAMETIME); // start of time data
 
  objlist->write1(minute);
  objlist->write1(hour);
  objlist->write1(day);
  objlist->write1(month);
  objlist->write2(year);
+
+ objlist->seek(OBJLIST_OFFSET_U6_TIMERS);
+
+ for(uint8 i=0;i < num_timers;i++)
+ {
+	objlist->write1(timers[i]);
+ }
 
  return true;
 }
@@ -133,6 +151,8 @@ void GameClock::inc_minute()
     minute++;
     time_counter += 1;
    }
+
+ update_timers(1);
  return;
 }
 
@@ -292,4 +312,35 @@ inline void GameClock::update_day_of_week()
  day_of_week = day % 7;
  if(day_of_week == 0)
    day_of_week = 7;
+}
+
+void GameClock::set_timer(uint8 timer_num, uint8 val)
+{
+	if(timer_num < num_timers)
+	{
+		timers[timer_num] = val;
+	}
+}
+
+uint8 GameClock::get_timer(uint8 timer_num)
+{
+	if(timer_num < num_timers)
+		{
+			return timers[timer_num];
+		}
+
+	return 0;
+}
+
+void GameClock::update_timers(uint8 amount)
+{
+	 for(uint8 i=0;i < num_timers;i++)
+	 {
+		if(timers[i] > amount)
+		{
+			timers[i] -= amount;
+		}
+		else
+			timers[i] = 0;
+	 }
 }

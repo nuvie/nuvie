@@ -23,8 +23,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+#include <vector>
 #include "SDL.h"
+#include "nuvieDefs.h"
+
+using std::vector;
+
 #define GAMECLOCK_TICKS_PER_MINUTE   4
+
+#define GAMECLOCK_NUM_TIMERS 16
+
+#define GAMECLOCK_TIMER_U6_LIGHT 0
+#define GAMECLOCK_TIMER_U6_INFRAVISION 1
 
 class Configuration;
 class NuvieIO;
@@ -48,6 +59,9 @@ class GameClock
  char time_string[11];
 
  bool active; // clock is active and running (false = paused)
+
+ vector<uint8> timers;
+ uint8 num_timers;
 
  public:
 
@@ -91,6 +105,9 @@ class GameClock
 // uint32 get_time()  { return(time_counter); } // get_game_ticks() is preferred
  uint32 get_turn()  { return(move_counter); }
 
+ void set_timer(uint8 timer_num, uint8 val);
+ uint8 get_timer(uint8 timer_num);
+ void update_timers(uint8 amount);
  protected:
 
  void init();

@@ -1,3 +1,3 @@
+magic_casting_fade_effect()
 magic_casting_effect()
---FIXME set light timer to 0x64
-
+timer_set(TIMER_LIGHT, 0x64)

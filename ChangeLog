@@ -1,3 +1,14 @@
+2012-05-04  Eric Fry <efry at users.sourceforge.net> r1185
+	* Added support for game timers. They are handled by the GameClock class and
+	  are loaded/saved to the objlist file.
+	* Added magic light spell support.
+	* Added timer_set(timer_num, val) script function
+	* Added infravision magic script. (ql) This only sets the infravision spell timer.
+	  The infravision effect needs to be coded in MapWindow.
+
+2012-05-03  Kirben r1183 r1184
+	* Added Win32 installer build config
+
 2012-05-02  Eric Fry <efry at users.sourceforge.net> r1182
 	* Fixed target selection bug when casting magic in the dungeon levels.
 	* Don't twitch actors that aren't visible.

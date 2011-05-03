@@ -59,6 +59,9 @@ SFX_KAL_LOR = 35
 FADE_COLOR_RED = 12
 FADE_COLOR_BLUE = 9
 
+TIMER_LIGHT = 0
+TIMER_INFRAVISION = 1
+
 -- some common functions
 
 function dbg(msg_string)

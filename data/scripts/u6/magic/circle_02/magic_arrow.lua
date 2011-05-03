@@ -1,5 +1,6 @@
-magic_load({name="Magic Arrow", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
+local caster = magic_get_caster()
+local actor = select_actor_with_projectile(0x236, caster)
 
-  end
-})
+if actor == nil then return end
+
+--FIXME add hit logic here.
