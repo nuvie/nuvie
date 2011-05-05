@@ -322,8 +322,9 @@ void nscript_init_actor(lua_State *L)
    lua_pushcfunction(L, nscript_map_get_actor);
    lua_setglobal(L, "map_get_actor");
 
-   lua_pushcfunction(L, nscript_actor_poison);
-   lua_setglobal(L, "actor_poison");
+   //lua_pushcfunction(L, nscript_actor_poison);
+   //lua_setglobal(L, "actor_poison");
+
    lua_pushcfunction(L, nscript_actor_add_hp);
    lua_setglobal(L, "actor_add_hp");
    lua_pushcfunction(L, nscript_actor_add_mp);

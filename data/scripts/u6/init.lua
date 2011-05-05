@@ -62,6 +62,8 @@ FADE_COLOR_BLUE = 9
 TIMER_LIGHT = 0
 TIMER_INFRAVISION = 1
 
+g_vanish_obj = {["obj_n"] = 0, ["frame_n"] = 0}
+
 -- some common functions
 
 function dbg(msg_string)
@@ -215,10 +217,17 @@ function explosion(tile_num, x, y)
 	return explosion_start(tile_num, x, y)
 end
 
-function projectile(tile_num, start_x, start_y, end_x, end_y, speed, spin, rotate_offset)
+function projectile(tile_num, start_x, start_y, end_x, end_y, speed, spin)
 
 	if spin == nil then spin = 0 end
-	if rotate_offset == nil then rotate_offset = 0 end
+	
+	local rotate_offset = 0
+	
+	if tile_num == 547 then --spear
+		rotate_offset = 45
+	elseif tile_num == 566 or tile_num == 567 then --bow, crossbow
+		rotate_offset = 90 --FIXME these need to be shifted +y before rotation. :(
+	end
 	
 	play_sfx(SFX_MISSLE)
 	projectile_anim(tile_num, start_x, start_y, end_x, end_y, speed, spin, rotate_offset)

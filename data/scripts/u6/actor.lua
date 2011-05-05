@@ -972,6 +972,9 @@ function actor_take_hit(attacker, defender, max_dmg)
          end
          --FIXME add more logic from combat_hit_actor here.
          --acid slug disolves, gremlin, poison etc.
+         if max_dmg > 0 then
+         	actor_hit_msg(defender)
+         end
       else
          print("`"..defender.name.." killed!\n")
          --FIXME do party roster change. maybe
@@ -1002,7 +1005,9 @@ function actor_hit(defender, max_dmg, attacker)
 				party_member_num = math.random(0, num_in_party - 1)
 			end
 			
-			actor_hit(party_get_member(party_member_num), max_dmg, attacker)
+			local rand_party_member = party_get_member(party_member_num)
+			actor_hit(rand_party_member, max_dmg, attacker)
+			actor_hit_msg(rand_party_member)
 		else
 			-- actor hit logic here
 			if max_dmg >= defender.hp then
@@ -1077,6 +1082,39 @@ function actor_hit(defender, max_dmg, attacker)
 	end
 	
 	return exp_gained
+end
+
+function actor_hit_msg(actor)
+
+	if actor.obj_n == 0x1a7 then return end --balloon
+	
+	local hp = actor.hp
+	
+	if hp == 0 then return end
+	
+	local di = math.floor((hp * 4) / actor.max_hp)
+	
+	if di < 4 then
+		print("`"..actor.name.." ")
+	end
+	
+	if di == 0 then
+		print("critical!\n")
+		local wt = actor.wt
+		if actor_int_adj(actor) >= 5 and wt ~= WT_BERSERK and wt ~= WT_STATIONARY and wt > WT_FRONT then
+			actor.wt = WT_RETREAT
+		end
+	elseif di < 4 then
+	
+		if di == 1 then
+			print("heavily")
+		elseif di == 2 then
+			print("lightly")
+		elseif di == 3 then
+			print("barely")
+		end
+		print("wounded.\n")
+	end
 end
 
 function actor_dead(actor)
@@ -1385,7 +1423,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       
       if weapon_obj_n == 0x31 then --boomerang
          --projectile_anim(attacker.x, attacker.y, 1, target_x, target_y, 0x64, *(&bastile_ptr_data + 0x62), 1)
-         projectile(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
+         projectile(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], 0)
       end
    end
 end
@@ -1412,7 +1450,7 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, 
                     
       projectile_anim_multi(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, triple_crossbow_targets, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
    else     
-      projectile(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
+      projectile(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][3], 0)
    end
     
    if weapon_obj_n == 0x5b then
@@ -3072,6 +3110,20 @@ function spell_put_actor_to_sleep(attacker, foe)
    return 2
 end
 
+function spell_poison_actor(attacker, foe)
+	local actor_base = actor_tbl[foe.obj_n]
+	if actor_base == nil or actor_base[19] == 1 then return 2 end --immune to poison
+	
+	--FIXME poison saving throw here.
+	if ((math.floor(actor_str_adj(foe) / 2) + 0x1e) - actor_int_adj(attacker)) / 2 <= math.random(1, 0x1e) then
+		foe.poisoned = true
+		hit_anim(foe.x, foe.y)
+		return -1
+	end
+	
+	return 1
+end
+
 function spell_take_fire_dmg(attacker, foe)
    local actor_base = actor_tbl[foe.obj_n]
    if actor_base == nil or actor_base[18] == 1 then return end --immune to magic
@@ -3108,7 +3160,9 @@ function spell_hit_actor(attacker, foe, spell_num)
 	if exp ~= 0 then         
 		attacker.exp = attacker.exp + exp
 	end
-
+	
+	actor_hit_msg(foe)
+	
 	actor_yell_for_help(attacker, foe, 1)
 	
 	return true
