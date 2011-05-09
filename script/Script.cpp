@@ -71,6 +71,8 @@ static iAVLKey get_iAVLKey(const void *item)
    return ((ScriptObjRef *)item)->key;
 }
 
+static NuvieIO *g_objlist_file = NULL;
+
 // used for garbage collection.
 //returns current object reference count. Or -1 on error.
 static sint32 nscript_inc_obj_ref_count(Obj *obj);
@@ -135,6 +137,10 @@ static const struct luaL_Reg nscript_u6linkrecursivelib_m[] =
 static int nscript_print(lua_State *L);
 //no longer used -- static int nscript_get_target(lua_State *L);
 static int nscript_load(lua_State *L);
+
+static int nscript_objlist_seek(lua_State *L);
+static int nscript_objlist_read2(lua_State *L);
+static int nscript_objlist_write2(lua_State *L);
 
 static int nscript_player_get_location(lua_State *L);
 static int nscript_player_get_karma(lua_State *L);
@@ -288,6 +294,15 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_setglobal(L, "nuvie_load");
 
    nscript_init_actor(L);
+
+   lua_pushcfunction(L, nscript_objlist_seek);
+   lua_setglobal(L, "objlist_seek");
+
+   lua_pushcfunction(L, nscript_objlist_read2);
+   lua_setglobal(L, "objlist_read2");
+
+   lua_pushcfunction(L, nscript_objlist_write2);
+   lua_setglobal(L, "objlist_write2");
 
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
@@ -489,6 +504,32 @@ bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
 
    Game::get_game()->get_map_window()->updateBlacking(); // the script might have updated the blocking objects. eg broken a door.
    return true;
+}
+
+bool Script::call_load_game(NuvieIO *objlist)
+{
+	return call_loadsave_game("load_game", objlist);
+}
+
+bool Script::call_save_game(NuvieIO *objlist)
+{
+	return call_loadsave_game("save_game", objlist);
+}
+
+bool Script::call_loadsave_game(const char *function, NuvieIO *objlist)
+{
+	g_objlist_file = objlist;
+	lua_getglobal(L, function);
+
+	if(lua_pcall(L, 0, 0, 0) != 0)
+	{
+		DEBUG(0, LEVEL_ERROR, "Script Error: %s() %s\n", function, luaL_checkstring(L, -1));
+		g_objlist_file = NULL;
+		return false;
+	}
+
+	g_objlist_file = NULL;
+	return true;
 }
 
 bool Script::call_actor_map_dmg(Actor *actor, MapCoord location)
@@ -1236,6 +1277,38 @@ static int nscript_load(lua_State *L)
    return 1;
 }
 
+static int nscript_objlist_seek(lua_State *L)
+{
+	uint32 position = (uint32)lua_tointeger(L, 1);
+	if(g_objlist_file)
+		g_objlist_file->seek(position);
+
+	return 0;
+}
+
+static int nscript_objlist_read2(lua_State *L)
+{
+	if(g_objlist_file)
+	{
+		lua_pushinteger(L, g_objlist_file->read2());
+		return 1;
+	}
+
+	return 0;
+}
+
+static int nscript_objlist_write2(lua_State *L)
+{
+	bool ret = false;
+	uint16 value = (uint16)lua_tointeger(L, 1);
+	if(g_objlist_file)
+	{
+		ret = g_objlist_file->write2(value);
+	}
+
+	lua_pushboolean(L, ret);
+	return 1;
+}
 
 static int nscript_player_get_location(lua_State *L)
 {

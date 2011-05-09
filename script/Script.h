@@ -83,6 +83,9 @@ class Script
  Configuration *get_config() { return(config); }
  
  bool run_script(const char *script);
+   bool call_load_game(NuvieIO *objlist);
+   bool call_save_game(NuvieIO *objlist);
+
    bool call_actor_update_all();
    bool call_actor_init(Actor *actor);
    bool call_actor_attack(Actor *actor, MapCoord location, Obj *weapon);
@@ -93,6 +96,7 @@ class Script
  ScriptThread *new_thread_from_string(const char *script);
  
  protected:
+   bool call_loadsave_game(const char *function, NuvieIO *objlist);
    void seed_random();
  
 };

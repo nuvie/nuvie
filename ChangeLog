@@ -1,3 +1,11 @@
+2012-05-10  Eric Fry <efry at users.sourceforge.net> r1187
+	* Added Reappear (iy) spell
+	* Added game_load(), game_save() lua script functions in init.lua These are
+	  called when a game is loaded/saved.
+	* Added objlist_seek(), objlist_read2(), objlist_write2() script functions
+	  these functions are used to read/write to the objlist from script and can
+	  only be called from load_game() or save_game() functions.
+
 2012-05-06  Eric Fry <efry at users.sourceforge.net> r1186
 	* Added Magic Arrow spell (oj)
 	* Fixed up Poison spell

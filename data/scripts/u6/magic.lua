@@ -145,6 +145,23 @@ function select_obj_with_projectile(projectile_tile, caster)
 	return obj
 end
 
+function select_location_with_projectile(projectile_tile, caster)
+
+if caster == nil then caster = magic_get_caster() end
+
+local loc = select_location_with_prompt("Location: ")
+
+magic_casting_fade_effect(caster)
+if loc == nil then magic_no_effect() return end
+
+local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
+projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
+
+if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
+
+return loc
+end
+
 function caster_get_location()	  
 	 if g_magic_caster ~= nil then
 	  	return {x = g_magic_caster.x, y = g_magic_caster.y, z = g_magic_caster.z}
@@ -247,6 +264,7 @@ magic_init("Light", "il", 0x80, 1, 10, "u6/magic/circle_01/light.lua");
 magic_init("Infravision", "ql", 0x82, 2, 1, "u6/magic/circle_02/infravision.lua");
 magic_init("Magic Arrow", "oj", 0x84, 2, 2, "u6/magic/circle_02/magic_arrow.lua");
 magic_init("Poison", "inp", 0x0e, 2, 3, "u6/magic/circle_02/poison.lua");
+magic_init("Reappear", "iy", 0x1c, 2, 4, "u6/magic/circle_02/reappear.lua");
 magic_init("Sleep", "iz", 0x16, 2, 5, "u6/magic/circle_02/sleep.lua");
 magic_init("Telekinesis", "opy", 0x0d, 2, 6, "u6/magic/circle_02/telekinesis.lua");
 magic_init("Trap", "ij", 0x12, 2, 7, "u6/magic/circle_02/trap.lua");

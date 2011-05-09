@@ -48,6 +48,7 @@
 #include "GameClock.h"
 #include "CommandBar.h"
 #include "Weather.h"
+#include "Script.h"
 
 #ifdef WIN32
   #define OBJLIST_FILENAME "savegame\\objlist"
@@ -260,6 +261,8 @@ bool SaveGame::load_objlist()
  command_bar->set_combat_mode(party->is_in_combat_mode()); // update CommandBar
 
  portrait->load(&objlist); //load avatar portrait number.
+
+ game->get_script()->call_load_game(&objlist);
 
  view_manager->reload();
 
@@ -517,6 +520,8 @@ bool SaveGame::save_objlist()
  
  weather->save(&objlist);
  
+ game->get_script()->call_save_game(&objlist);
+
  scroll->display_string("\nGame Saved\n\n");
  scroll->display_prompt();
 

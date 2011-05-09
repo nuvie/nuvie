@@ -62,6 +62,8 @@ FADE_COLOR_BLUE = 9
 TIMER_LIGHT = 0
 TIMER_INFRAVISION = 1
 
+OBJLIST_OFFSET_VANISH_OBJ = 0x1c13
+
 g_vanish_obj = {["obj_n"] = 0, ["frame_n"] = 0}
 
 -- some common functions
@@ -239,6 +241,35 @@ end
 
 function fade_actor_blue(actor)
 	Actor.black_fade_effect(actor, FADE_COLOR_BLUE, 20)
+end
+
+
+function load_game()
+	objlist_seek(OBJLIST_OFFSET_VANISH_OBJ)
+	local tmp_obj_dat = objlist_read2()
+
+	local obj_n = tmp_obj_dat
+	local frame_n = 0
+	if tmp_obj_dat > 1023 then
+		frame_n = tmp_obj_dat - 1023
+		obj_n = tmp_obj_dat - frame_n
+	end
+	
+	g_vanish_obj.obj_n = obj_n
+	g_vanish_obj.frame_n = frame_n
+end
+
+function save_game()
+	objlist_seek(OBJLIST_OFFSET_VANISH_OBJ)
+	
+	local tmp_obj_dat = g_vanish_obj.obj_n
+	local frame_n = g_vanish_obj.frame_n
+	
+	if frame_n > 0 then
+		tmp_obj_dat = tmp_obj_dat + (frame_n + 1023)
+	end
+	
+	objlist_write2(tmp_obj_dat)
 end
 
 --load actor functions
