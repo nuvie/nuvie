@@ -102,9 +102,14 @@ function select_actor_with_projectile(projectile_tile, caster)
 	local loc = select_location_with_prompt("On Whom: ")
 	local actor = map_get_actor(loc)
 	if actor == nil then
-		print("nothing\n");
+		local obj = map_get_obj(loc)
+		if obj ~= nil then
+			print(obj.name.."\n")
+		else
+			print("nothing\n")
+		end
 	else
-		print(actor.name.."\n");
+		print(actor.name.."\n")
 	end
 	
 	magic_casting_fade_effect(caster)
@@ -118,6 +123,38 @@ function select_actor_with_projectile(projectile_tile, caster)
 	if actor == nil then magic_no_effect() return end
 
 	return actor
+end
+
+function select_actor_or_obj_with_projectile(projectile_tile, caster)
+
+	if caster == nil then caster = magic_get_caster() end
+
+	local loc = select_location_with_prompt("On what: ")
+	local item = map_get_actor(loc)
+	if item == nil then
+		item = map_get_obj(loc)
+	end
+	
+	if item ~= nil then
+		print(item.name)
+	else
+		print("nothing")
+	end
+
+	print("\n")
+
+	magic_casting_fade_effect(caster)
+
+	if loc == nil then magic_no_effect() return end
+
+	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
+	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
+
+	if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
+
+	if item == nil then magic_no_effect() return end
+
+	return item
 end
 
 function select_obj_with_projectile(projectile_tile, caster)
@@ -270,6 +307,7 @@ magic_init("Telekinesis", "opy", 0x0d, 2, 6, "u6/magic/circle_02/telekinesis.lua
 magic_init("Trap", "ij", 0x12, 2, 7, "u6/magic/circle_02/trap.lua");
 magic_init("Unlock Magic", "ep", 0x88, 2, 8, "u6/magic/circle_02/unlock_magic.lua");
 magic_init("Untrap", "aj", 0x88, 2, 9, "u6/magic/circle_02/untrap.lua");
+magic_init("Vanish", "ay", 0x2c, 2, 10, "u6/magic/circle_02/vanish.lua");
 
 magic_init("Curse", "as", 0xa2, 3, 1, "u6/magic/circle_03/curse.lua");
 magic_init("Dispel Field", "ag", 0x84, 3, 2, "u6/magic/circle_03/dispel_field.lua");

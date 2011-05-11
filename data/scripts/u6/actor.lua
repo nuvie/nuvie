@@ -1053,7 +1053,7 @@ function actor_hit(defender, max_dmg, attacker)
 			if (defender_obj_n < 0x129 or defender_obj_n > 0x12c or defender.frame_n < 0xc) --check frame_n for door objects
 				and (defender_obj_n ~= 0x62 or defender.frame_n ~= 3) then --don't attack open chests
 				if defender.qty <= max_dmg then
-					print("`"..defender.name .. " broken!\n")
+					print("\n`"..defender.name .. " broken!\n")
 	
 					local child
 					for child in container_objs(defender) do  -- look through container for effect object. 
@@ -3099,7 +3099,8 @@ function spell_put_actor_to_sleep(attacker, foe)
    
    local actor_base = actor_tbl[foe.obj_n]
    if actor_base == nil or actor_base[21] == 0 then -- 21 is immune to sleep
-      if actor_int_check(attacker, foe) == false then
+      if actor_int_check(foe, attacker) == false then
+         hit_anim(foe.x, foe.y)
          foe.asleep = true
          return 0xfe
       else

@@ -1074,6 +1074,11 @@ const char *ObjManager::get_obj_name(uint16 obj_n)
  return tile_manager->lookAtTile(get_obj_tile_num(obj_n),0,false);
 }
 
+const char *ObjManager::get_obj_name(uint16 obj_n, uint8 frame_n)
+{
+ return tile_manager->lookAtTile(get_obj_tile_num(obj_n)+frame_n,0,false);
+}
+
 float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool scale)
 {
  float weight;

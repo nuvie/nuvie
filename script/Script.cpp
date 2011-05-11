@@ -168,6 +168,8 @@ static int nscript_map_line_hit_check(lua_State *L);
 
 static int nscript_map_can_put(lua_State *L);
 
+static int nscript_tile_get_flag(lua_State *L);
+
 //Misc
 static int nscript_eclipse_start(lua_State *L);
 static int nscript_quake_start(lua_State *L);
@@ -318,6 +320,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    
    lua_pushcfunction(L, nscript_timer_set);
    lua_setglobal(L, "timer_set");
+
+   lua_pushcfunction(L, nscript_tile_get_flag);
+   lua_setglobal(L, "tile_get_flag");
 
    lua_pushcfunction(L, nscript_objs_at_loc);
    lua_setglobal(L, "objs_at_loc");
@@ -993,7 +998,7 @@ static int nscript_obj_get(lua_State *L)
    if(!strcmp(key, "name"))
    {
       ObjManager *obj_manager = Game::get_game()->get_obj_manager();
-      lua_pushstring(L, obj_manager->get_obj_name(obj->obj_n));
+      lua_pushstring(L, obj_manager->get_obj_name(obj->obj_n, obj->frame_n));
       return 1;
    }
 /*
@@ -1568,6 +1573,36 @@ static int nscript_map_line_hit_check(lua_State *L)
 	}
 
 	return 2;
+}
+
+static int nscript_tile_get_flag(lua_State *L)
+{
+	uint16 tile_num = (uint16) luaL_checkinteger(L, 1);
+	uint8 flag_set = (uint8) luaL_checkinteger(L, 2);
+	uint8 bit = (uint8) luaL_checkinteger(L, 3);
+
+	Tile *tile = Game::get_game()->get_tile_manager()->get_tile(tile_num);
+
+	if(tile == NULL || flag_set < 1 || flag_set > 3 || bit > 7)
+		return 0;
+
+	uint8 bit_flags = 0;
+
+	if(flag_set == 1)
+	{
+		bit_flags = tile->flags1;
+	}
+	else if(flag_set == 2)
+	{
+		bit_flags = tile->flags2;
+	}
+	else if(flag_set == 3)
+	{
+		bit_flags = tile->flags3;
+	}
+
+	lua_pushboolean(L, (bool)(bit_flags & (1 << bit)));
+	return 1;
 }
 
 static int nscript_eclipse_start(lua_State *L)

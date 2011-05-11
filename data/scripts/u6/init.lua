@@ -243,6 +243,17 @@ function fade_actor_blue(actor)
 	Actor.black_fade_effect(actor, FADE_COLOR_BLUE, 20)
 end
 
+function fade_obj_out(obj)
+	obj.invisible = true
+	fade_tile(obj.x, obj.y, obj.z, obj.tile_num)
+	obj.invisible = false
+end
+
+function fade_obj_in(obj)
+	obj.invisible = true
+	fade_tile(obj.x, obj.y, obj.z, nil, obj.tile_num)
+	obj.invisible = false
+end
 
 function load_game()
 	objlist_seek(OBJLIST_OFFSET_VANISH_OBJ)
@@ -264,11 +275,11 @@ function save_game()
 	
 	local tmp_obj_dat = g_vanish_obj.obj_n
 	local frame_n = g_vanish_obj.frame_n
-	
+
 	if frame_n > 0 then
 		tmp_obj_dat = tmp_obj_dat + (frame_n + 1023)
 	end
-	
+
 	objlist_write2(tmp_obj_dat)
 end
 

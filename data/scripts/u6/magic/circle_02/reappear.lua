@@ -12,10 +12,12 @@ projectile(0x17f, caster.x, caster.y, hit_x, hit_y, 2)
 if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
 
 local obj = Obj.new(g_vanish_obj.obj_n, g_vanish_obj.frame_n)
-
+obj.qty = 1
+obj.status = 0x21 --OK, TEMP
 if Obj.moveToMap(obj, loc) ~= nil then
 	magic_no_effect()
 else
+	fade_obj_in(obj)
 	g_vanish_obj.obj_n = 0
 	g_vanish_obj.frame_n = 0
 	magic_success()

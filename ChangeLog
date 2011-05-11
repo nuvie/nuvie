@@ -1,3 +1,13 @@
+2012-05-11  Eric Fry <efry at users.sourceforge.net> r1188
+	* Fixed up second circle spells.
+	* Script obj.name now returns object name including frame_n.
+	* Print object name when attacking.
+	* Added Vanish (ay) spell.
+	* Added fade_obj_out() and fade_obj_in() script functions.
+	* Fixed sleep spell dice roll.
+	* Added tile_get_flag(tile_num, flag_set, bit) script function.
+
+
 2012-05-10  Eric Fry <efry at users.sourceforge.net> r1187
 	* Added Reappear (iy) spell
 	* Added game_load(), game_save() lua script functions in init.lua These are

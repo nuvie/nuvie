@@ -1,8 +1,14 @@
-local obj = select_obj();
+local obj = select_obj()
+
+magic_casting_fade_effect()
+
+if obj == nil then magic_no_effect() return end
 
 local found = false
 
-if obj ~= nil then
+fade_obj_blue(obj)
+
+if (obj.obj_n >= 297 and obj.obj_n <= 300) or obj.obj_n == 98 then -- if door or chest
   local child
   for child in container_objs(obj) do  -- look through container for effect object. 
     if child.obj_n == 337 then --effect
@@ -14,10 +20,7 @@ if obj ~= nil then
 end
 
 if found == true then
-  print("\nSuccess.\n");
+	magic_success()
 else
-  print("\nNo effect\n");
+	magic_no_effect()
 end
-
-child = nil
-obj = nil

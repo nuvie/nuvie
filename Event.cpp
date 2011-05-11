@@ -854,7 +854,16 @@ bool Event::attack()
         }
     else
         {
-            scroll->display_string("nothing!\n");
+    		Obj *obj = map_window->get_objAtCursor();
+    		if(obj)
+    		{
+    			scroll->display_string(obj_manager->get_obj_name(obj->obj_n, obj->frame_n));
+    			scroll->display_string(".\n");
+    		}
+    		else
+    		{
+    			scroll->display_string("nothing!\n");
+    		}
         }
 
     map_window->set_show_cursor(false);
