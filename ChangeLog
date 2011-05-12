@@ -1,3 +1,10 @@
+2012-05-13  Eric Fry <efry at users.sourceforge.net> r1189
+	* Fixed up third circle spells.
+	* Added Fireball (pf) spell.
+	* Added Great Light (vl) spell.
+	* Added Repel Undead (axc) spell.
+	* Print actor dmg in spell_take_fire_dmg() script function.
+
 2012-05-11  Eric Fry <efry at users.sourceforge.net> r1188
 	* Fixed up second circle spells.
 	* Script obj.name now returns object name including frame_n.

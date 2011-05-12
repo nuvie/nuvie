@@ -5,16 +5,19 @@
 -- 319 Protection Field
 -- 320 Sleep Field
 
-obj = select_obj()
+local obj = select_obj_with_projectile(0x17f)
 
-if obj ~= nil then
-  if obj.obj_n >= 317 and obj.obj_n <= 320 then
-    map_remove_obj(obj)
-    obj = nil
-    return print("\nSuccess\n")
-  end
+if obj == nil then return end
+
+
+if obj.obj_n >= 317 and obj.obj_n <= 320 then
+  hit_anim(obj.x, obj.y)
+  map_remove_obj(obj)
+  obj = nil
+  return magic_success()
 end
 
+
 obj = nil
-print("\nNo effect\n")
+magic_no_effect()
  

@@ -1,9 +1,6 @@
-  actor = select_actor()
-  if actor ~= nil then
-     local caster = caster_get_location()
+  local actor = select_actor_with_projectile(0x17f)
   
-     projectile(0x17f, caster.x, caster.y, actor.x, actor.y, 2)
-     actor.protected = true
-     --FIXME sound effect
-     print("\nSuccess\n")
-  end
+  if actor == nil then return end
+  
+  actor.protected = true
+  magic_success()

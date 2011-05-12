@@ -24,7 +24,7 @@ WT_GUARD_WALK_EAST_WEST   = 0xf
 WT_GUARD_WALK_NORTH_SOUTH = 0x10
 --11
 WT_GUARD_ARREST_PLAYER    = 0x12
-WT_UNK_13                 = 0x13
+WT_UNK_13                 = 0x13 --FIXME I think this is repel undead
 
 WT_WALK_TO_LOCATION       = 0x86
 WT_FACE_NORTH             = 0x87
@@ -65,7 +65,7 @@ movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1}
 movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
 
 --Actor stats table
---str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,?,takes half dmg,?,strength_based,double dmg from fire,immune to magic,immune to poison,?,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
+--str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,?,undead,?,strength_based,double dmg from fire,immune to magic,immune to poison,?,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}, 0},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}, 6},
@@ -3139,6 +3139,7 @@ function spell_take_fire_dmg(attacker, foe)
    end
    
    actor_yell_for_help(attacker, foe, 1)
+   actor_hit_msg(foe)
 end
 
 function spell_hit_actor(attacker, foe, spell_num)

@@ -1,5 +1,24 @@
-magic_load({name="Repel Undead", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
+local caster = magic_get_caster()
 
-  end
-})
+local x = caster.x
+local y = caster.y
+local z = caster.z
+local loc_x = x
+local loc_y = y
+
+magic_casting_fade_effect(caster)
+
+for x = x - 5,loc_x + 5 do
+	for y = y - 5,loc_y + 5 do
+		local actor = map_get_actor(x, y, z)
+
+		if actor ~= nil then
+			local actor_type = actor_tbl[actor.obj_n]
+			if actor_type ~= nil and actor_type[8] == 1 and actor_int_check(actor, caster) == false then
+				actor.wt = WT_UNK_13
+			end
+		end
+	end
+end
+
+magic_success()

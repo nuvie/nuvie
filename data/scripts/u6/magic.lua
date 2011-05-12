@@ -311,10 +311,14 @@ magic_init("Vanish", "ay", 0x2c, 2, 10, "u6/magic/circle_02/vanish.lua");
 
 magic_init("Curse", "as", 0xa2, 3, 1, "u6/magic/circle_03/curse.lua");
 magic_init("Dispel Field", "ag", 0x84, 3, 2, "u6/magic/circle_03/dispel_field.lua");
+magic_init("Fireball", "pf", 0x84, 3, 3, "u6/magic/circle_03/fireball.lua");
+magic_init("Great Light", "vl", 0x81, 3, 4, "u6/magic/circle_03/great_light.lua");
 magic_init("Magic Lock", "ap", 0xa8, 3, 5, "u6/magic/circle_03/magic_lock.lua");
 magic_init("Mass Awaken", "avz", 0x60, 3, 6, "u6/magic/circle_03/mass_awaken.lua");
 magic_init("Mass Sleep", "vz", 0x52, 3, 7, "u6/magic/circle_03/mass_sleep.lua");
+magic_init("Peer", "vwy", 0x03, 3, 8, "u6/magic/circle_03/peer.lua");
 magic_init("Protection", "is", 0xe0, 3, 9, "u6/magic/circle_03/protection.lua");
+magic_init("Repel Undead", "axc", 0xa0, 3, 10, "u6/magic/circle_03/repel_undead.lua");
 
 magic_init("Fire Field", "ifg", 0x94, 4, 4, "u6/magic/circle_04/fire_field.lua");
 magic_init("Locate", "iw", 0x02, 4, 6, "u6/magic/circle_04/locate.lua");

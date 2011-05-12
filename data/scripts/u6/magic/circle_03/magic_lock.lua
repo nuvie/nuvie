@@ -1,6 +1,10 @@
-obj = select_obj()
+local obj = select_obj()
 
-if obj ~= nil and obj.obj_n >= 297 and obj.obj_n <= 300 then
+magic_casting_fade_effect()
+
+if obj == nil then magic_no_effect() return end
+
+if obj.obj_n >= 297 and obj.obj_n <= 300 then
    if obj.frame_n <= 7 then
       if obj.frame_n <= 3 then
          print("\nCan't (Un)lock an opened door\n")
@@ -11,9 +15,12 @@ if obj ~= nil and obj.obj_n >= 297 and obj.obj_n <= 300 then
             print("\nmagically locked!\n")
          end
       end
-      print("\nSuccess\n")
+      magic_success()
    end
+elseif obj.obj_n == 0x62 and (obj.frame_n == 1 or obj.frame_n == 2) then
+	obj.frame_n = 3
+	print("\nmagically locked!\n")
 else
-  print("\nNo effect\n")
+  magic_no_effect()
 end
 
