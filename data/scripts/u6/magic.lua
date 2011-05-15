@@ -284,6 +284,13 @@ function magic_failed()
 	end
 end
 
+function magic_not_possible()
+	if caster_is_player() then
+		print("\nNot possible\n")
+		play_sfx(SFX_FAILURE)
+	end
+end
+
 do
 local init
 
@@ -320,8 +327,13 @@ magic_init("Peer", "vwy", 0x03, 3, 8, "u6/magic/circle_03/peer.lua");
 magic_init("Protection", "is", 0xe0, 3, 9, "u6/magic/circle_03/protection.lua");
 magic_init("Repel Undead", "axc", 0xa0, 3, 10, "u6/magic/circle_03/repel_undead.lua");
 
+magic_init("Animate", "oy", 0x89, 4, 1, "u6/magic/circle_04/animate.lua");
+magic_init("Conjure", "kx", 0x11, 4, 2, "u6/magic/circle_04/conjure.lua");
+magic_init("Disable", "avm", 0x13, 4, 3, "u6/magic/circle_04/disable.lua");
 magic_init("Fire Field", "ifg", 0x94, 4, 4, "u6/magic/circle_04/fire_field.lua");
+magic_init("Great Heal", "vm", 0x51, 4, 5, "u6/magic/circle_04/great_heal.lua");
 magic_init("Locate", "iw", 0x02, 4, 6, "u6/magic/circle_04/locate.lua");
+magic_init("Mass Dispel", "vajo", 0x60, 4, 7, "u6/magic/circle_04/mass_dispel.lua");
 magic_init("Poison Field", "ing", 0x56, 4, 8, "u6/magic/circle_04/poison_field.lua");
 magic_init("Sleep Field", "izg", 0x54, 4, 9, "u6/magic/circle_04/sleep_field.lua");
 

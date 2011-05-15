@@ -60,9 +60,15 @@ U6Actor::~U6Actor()
 bool U6Actor::init()
 {
  Actor::init();
+ base_actor_type = get_actor_type(base_obj_n);
+ if(base_actor_type->base_obj_n != base_obj_n)
+ {
+	 base_obj_n = base_actor_type->base_obj_n;
+ }
+
  set_actor_obj_n(obj_n); //set actor_type
 
- base_actor_type = get_actor_type(base_obj_n);
+
  
  body_armor_class = base_actor_type->body_armor_class;
 
@@ -992,9 +998,10 @@ void U6Actor::set_asleep(bool val)
 	else
 	{
 		status_flags &= (0xff ^ ACTOR_STATUS_ASLEEP);
-		if(obj_n == actor_type->dead_obj_n)
+		if(obj_n == base_actor_type->dead_obj_n)
 		{
-			obj_n = actor_type->base_obj_n;
+			actor_type = base_actor_type;
+			obj_n = base_actor_type->base_obj_n;
 			frame_n = 0;
 		}
 	}
@@ -1052,8 +1059,11 @@ void U6Actor::set_worktype(uint8 new_worktype)
    }
 
  //reset to base obj_n
- if(worktype > 2) //don't revert for party worktypes as they might be riding a horse.
+ if(worktype > 2 && base_actor_type->base_obj_n != OBJ_U6_NOTHING) //don't revert for party worktypes as they might be riding a horse.
    set_actor_obj_n(base_actor_type->base_obj_n);
+
+ if(worktype == WORKTYPE_U6_SLEEP && status_flags & ACTOR_STATUS_ASLEEP) //FIXME do we still need this??
+	 status_flags ^= ACTOR_STATUS_ASLEEP;
 
  Actor::set_worktype(new_worktype);
 

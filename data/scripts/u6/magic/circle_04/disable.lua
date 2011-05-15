@@ -1,5 +1,10 @@
-magic_load({name="Disable", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
+local caster = magic_get_caster()
+local actor = select_actor()
 
-  end
-})
+magic_casting_fade_effect()
+
+if actor == nil then magic_no_effect() return end
+
+if spell_hit_actor(caster, actor, 50) == false then -- 50 = disable spell number
+	magic_failed()
+end

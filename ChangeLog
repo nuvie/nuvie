@@ -1,3 +1,15 @@
+2012-05-16  Eric Fry <efry at users.sourceforge.net> r1190
+	* Fixed bugs with loading sleeping actors.
+	* Allow actors without a base_actor_type. Used in the Animate spell.
+	* Added Animate (oy) spell.
+	* Added Conjure (kx) spell.
+	* Added Disable (avm) spell.
+	* Added Great Heal (vm) spell.
+	* Added Mass Dispel (vajo) spell.
+	* Added g_readiable_objs_tbl and obj_is_readiable() function to script system.
+	* Don't try to create inventory for Animated objects.
+	* Fixed forth circle spells.
+
 2012-05-13  Eric Fry <efry at users.sourceforge.net> r1189
 	* Fixed up third circle spells.
 	* Added Fireball (pf) spell.

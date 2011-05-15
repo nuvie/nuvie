@@ -135,6 +135,8 @@ actor_tbl = {
 
 monster_inv_food = { 129, 133, 128 } --portion of meat, ham, loaf of bread
 
+
+
 function actor_int_check(attacker, defender)
 
    if (math.floor(actor_int_adj(attacker) / 2) + 15) - actor_int_adj(defender) > math.random(1, 30) then
@@ -568,6 +570,8 @@ actor_init = function(actor)
      	end    	
 	end
    
+ if actor_base ~= nil then
+   
    local obj,i,v,j,qty,chance,chest
    
    --add spells
@@ -708,7 +712,8 @@ actor_init = function(actor)
       end
       
       chance = chance * 2
-   end   
+   end
+ end   
 end
 
 

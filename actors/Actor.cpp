@@ -1288,8 +1288,7 @@ void Actor::set_worktype(uint8 new_worktype)
  work_location.y = y;
  work_location.z = z;
 
- if(status_flags & ACTOR_STATUS_ASLEEP)
-   status_flags ^= ACTOR_STATUS_ASLEEP;
+
  return ;
 }
 
