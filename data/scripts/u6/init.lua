@@ -11,6 +11,7 @@ DIR_NORTHEAST = 4
 DIR_SOUTHEAST = 5 
 DIR_SOUTHWEST = 6
 DIR_NORTHWEST = 7
+DIR_NONE      = 8
 
 ALIGNMENT_DEFAULT = 0
 ALIGNMENT_NEUTRAL = 1
@@ -79,16 +80,18 @@ function alignment_is_evil(align)
 end
 
 function direction_string(dir)
-   if dir == DIR_NORTH then return "NORTH" end
-   if dir == DIR_NORTHEAST then return "NORTHEAST" end
-   if dir == DIR_EAST then return "EAST" end
-   if dir == DIR_SOUTHEAST then return "SOUTHEAST" end
-   if dir == DIR_SOUTH then return "SOUTH" end
-   if dir == DIR_SOUTHWEST then return "SOUTHWEST" end
-   if dir == DIR_WEST then return "WEST" end
-   if dir == DIR_NORTHWEST then return "NORTHWEST" end
-   
-   return "UNKNOWN"
+	if dir ~= nil then
+		if dir == DIR_NORTH then return "north" end
+		if dir == DIR_NORTHEAST then return "northeast" end
+		if dir == DIR_EAST then return "east" end
+		if dir == DIR_SOUTHEAST then return "southeast" end
+		if dir == DIR_SOUTH then return "south" end
+		if dir == DIR_SOUTHWEST then return "southwest" end
+		if dir == DIR_WEST then return "west" end
+		if dir == DIR_NORTHWEST then return "northwest" end
+	end
+	
+	return "unknown"
 end
 
 local dir_rev_tbl =
@@ -104,7 +107,23 @@ local dir_rev_tbl =
 }
    
 function direction_reverse(dir) return dir_rev_tbl[dir] end
-   
+
+local g_dir_offset_tbl =
+{
+   [DIR_NORTH] = {["x"]=0, ["y"]=-1},
+   [DIR_NORTHEAST] = {["x"]=1, ["y"]=-1},
+   [DIR_EAST] = {["x"]=1, ["y"]=0},
+   [DIR_SOUTHEAST] = {["x"]=1, ["y"]=1},
+   [DIR_SOUTH] = {["x"]=0, ["y"]=1},
+   [DIR_SOUTHWEST] = {["x"]=-1, ["y"]=1},
+   [DIR_WEST] = {["x"]=-1, ["y"]=0},
+   [DIR_NORTHWEST] = {["x"]=-1, ["y"]=-1}
+}
+
+function direction_get_loc(dir, from_x, from_y)
+	return g_dir_offset_tbl[dir].x + from_x, g_dir_offset_tbl[dir].y + from_y
+end
+
 function abs(val)
    if val < 0 then
       return -val
@@ -124,6 +143,17 @@ function get_target()
  loc = coroutine.yield("target")
 
  return loc
+end
+
+function get_direction(prompt)
+
+	if prompt ~= nil then
+		print(prompt)
+	end
+	
+	local dir = coroutine.yield("dir")
+
+	return dir
 end
 
 function obj_new(obj_n, frame_n, status, qty, quality, x, y, z)

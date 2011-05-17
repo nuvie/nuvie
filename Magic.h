@@ -45,6 +45,7 @@
 #define MAGIC_STATE_PROCESS_SCRIPT 0x02
 #define MAGIC_STATE_ACQUIRE_TARGET 0x03
 #define MAGIC_STATE_ACQUIRE_INPUT  0x04
+#define MAGIC_STATE_ACQUIRE_DIRECTION  0x05
 
 class ScriptThread;
 
@@ -103,7 +104,9 @@ class Magic : public CallBack {
     uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
     bool process_script_return(uint8 ret);
     bool resume(MapCoord location);
-    bool is_waiting_for_location() { if(magic_script) return true; else return false; }
+    bool resume(uint8 dir);
+    bool is_waiting_for_location() { if(magic_script && state == MAGIC_STATE_ACQUIRE_TARGET) return true; else return false; }
+    bool is_waiting_for_direction() { if(magic_script && state == MAGIC_STATE_ACQUIRE_DIRECTION) return true; else return false; }
     
 private:
     bool spellbook_has_spell(Obj *book, uint8 spell_index);

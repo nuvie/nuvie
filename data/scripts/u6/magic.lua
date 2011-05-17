@@ -336,6 +336,7 @@ magic_init("Locate", "iw", 0x02, 4, 6, "u6/magic/circle_04/locate.lua");
 magic_init("Mass Dispel", "vajo", 0x60, 4, 7, "u6/magic/circle_04/mass_dispel.lua");
 magic_init("Poison Field", "ing", 0x56, 4, 8, "u6/magic/circle_04/poison_field.lua");
 magic_init("Sleep Field", "izg", 0x54, 4, 9, "u6/magic/circle_04/sleep_field.lua");
+magic_init("Wind Change", "rh", 0x88, 4, 10, "u6/magic/circle_04/wind_change.lua");
 
 magic_init("Energy Field", "isg", 0x15, 5, 1, "u6/magic/circle_05/energy_field.lua");
 magic_init("Explosion", "vpf", 0x8d, 5, 2, "u6/magic/circle_05/explosion.lua");

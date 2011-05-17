@@ -277,7 +277,7 @@ bool Game::set_mouse_pointer(uint8 ptr_num)
     return(cursor && cursor->set_pointer(ptr_num));
 }
 
-
+//FIXME pausing inside a script function causes problems with yield/resume logic.
 void Game::set_pause_flags(GamePauseState state)
 {
     pause_flags = state; // set

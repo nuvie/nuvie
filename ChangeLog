@@ -1,3 +1,14 @@
+2012-05-18  Eric Fry <efry at users.sourceforge.net> r1191
+	* Added Wind Change (rh) spell.
+	* Added the ability to select direction from lua magic scripts.
+	* Tweaked event code to differentiate direction from target.
+	  Added new EVENTINPUT_MAPCOORD_DIR input type
+	* Added get_direction_code() which gives direction from relative map coords.
+	* Added Map::can_put_obj() function.
+	* Added the ability to move objects to the telekinesis spell.
+	* Added wind_set_dir(), wind_get_dir() script functions.
+	* Added map_can_put_obj() script function.
+
 2012-05-16  Eric Fry <efry at users.sourceforge.net> r1190
 	* Fixed bugs with loading sleeping actors.
 	* Allow actors without a base_actor_type. Used in the Animate spell.

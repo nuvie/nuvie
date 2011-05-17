@@ -352,6 +352,29 @@ const char *get_direction_name(sint16 rel_x, sint16 rel_y)
         return("nowhere");
 }
 
+/* Returns direction code of relative direction.
+ */
+uint8 get_direction_code(sint16 rel_x, sint16 rel_y)
+{
+    if(rel_x == 0 && rel_y < 0)
+        return NUVIE_DIR_N;
+    else if(rel_x > 0 && rel_y < 0)
+        return NUVIE_DIR_NE;
+    else if(rel_x > 0 && rel_y == 0)
+        return NUVIE_DIR_E;
+    else if(rel_x > 0 && rel_y > 0)
+        return NUVIE_DIR_SE;
+    else if(rel_x == 0 && rel_y > 0)
+        return NUVIE_DIR_S;
+    else if(rel_x < 0 && rel_y > 0)
+        return NUVIE_DIR_SW;
+    else if(rel_x < 0 && rel_y == 0)
+        return NUVIE_DIR_W;
+    else if(rel_x < 0 && rel_y < 0)
+        return NUVIE_DIR_NW;
+
+    return NUVIE_DIR_NONE;
+}
 int str_bsearch( const char *str[], int max, const char *value )
 {
    int position;

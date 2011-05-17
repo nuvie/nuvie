@@ -1,5 +1,4 @@
-magic_load({name="Wind Change", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
+local dir = get_direction("Direction-")
+print("`"..direction_string(dir).."\n")
 
-  end
-})
+wind_set_dir(dir)

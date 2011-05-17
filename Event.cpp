@@ -75,7 +75,7 @@ EventInput_s::~EventInput_s()
 
 void EventInput_s::set_loc(MapCoord c)
 {
-    if(type == EVENTINPUT_MAPCOORD && loc != 0) delete loc;
+    if((type == EVENTINPUT_MAPCOORD || type == EVENTINPUT_MAPCOORD_DIR) && loc != 0) delete loc;
     loc = new MapCoord(c);
 }
 
@@ -621,7 +621,7 @@ bool Event::select_direction(sint16 rel_x, sint16 rel_y)
     assert(mode == INPUT_MODE);
     assert(input.get_direction == true);
 
-    input.type = EVENTINPUT_MAPCOORD;
+    input.type = EVENTINPUT_MAPCOORD_DIR;
     input.set_loc(MapCoord(rel_x, rel_y));
     // assumes mapwindow cursor is at the location
     input.actor = map_window->get_actorAtCursor();
@@ -2550,7 +2550,7 @@ void Event::doAction()
     {
     	if(input.type == EVENTINPUT_OBJECT)
             use(input.obj);
-    	else if(input.type == EVENTINPUT_MAPCOORD)
+    	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
     	{
             if(input.actor) use(input.actor);
             else            use(input.loc->sx,input.loc->sy);
@@ -2566,7 +2566,7 @@ void Event::doAction()
     {
     	if(input.type == EVENTINPUT_OBJECT)
             perform_get(input.obj);
-        else if(input.type == EVENTINPUT_MAPCOORD)
+        else if(input.type == EVENTINPUT_MAPCOORD_DIR)
             get(input.loc->sx,input.loc->sy);
         else
         {
@@ -2581,8 +2581,8 @@ void Event::doAction()
     }
     else if(mode == PUSH_MODE)
     {
-        assert(input.type == EVENTINPUT_MAPCOORD || input.type == EVENTINPUT_OBJECT);
-        if(input.type == EVENTINPUT_MAPCOORD)
+        assert(input.type == EVENTINPUT_MAPCOORD_DIR || input.type == EVENTINPUT_OBJECT);
+        if(input.type == EVENTINPUT_MAPCOORD_DIR)
         {
 			if(!push_obj && !push_actor)
 				pushFrom(input.loc->sx,input.loc->sy);
@@ -2625,6 +2625,10 @@ void Event::doAction()
     	{
     		magic->resume(MapCoord(input.loc->x, input.loc->y, input.loc->z));
     	}
+    	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
+    	{
+    		magic->resume(get_direction_code(input.loc->sx, input.loc->sy));
+    	}
     	else
     	{
 			if(input.type == EVENTINPUT_OBJECT)
@@ -2634,6 +2638,8 @@ void Event::doAction()
     	}
 		if(magic->is_waiting_for_location())
 			get_target("");
+		else if(magic->is_waiting_for_direction())
+			get_direction("");
 		else
 			endAction(true);
     }

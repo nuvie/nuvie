@@ -251,7 +251,7 @@ void ProjectileEffect::start_anim()
 {
     game->pause_world();
     game->pause_anims();
-    game->pause_user();
+    //game->pause_user();
 
     add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation));
 

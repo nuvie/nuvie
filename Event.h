@@ -77,6 +77,7 @@ extern uint32 nuvieGameCounter;
 #define EVENTINPUT_KEY      1
 #define EVENTINPUT_STRING   2
 #define EVENTINPUT_OBJECT   3
+#define EVENTINPUT_MAPCOORD_DIR 4
 struct EventInput_s
 {
     uint8 type; // 0=loc,1=key,2=str,3=obj,4=actor

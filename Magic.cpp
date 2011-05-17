@@ -467,6 +467,16 @@ bool Magic::resume(MapCoord location)
 	return true;
 }
 
+bool Magic::resume(uint8 dir)
+{
+	if(magic_script)
+	{
+		process_script_return(magic_script->resume_with_direction(dir));
+	}
+
+	return true;
+}
+
 bool Magic::spellbook_has_spell(Obj *book, uint8 spell_index)
 {
   if(!book)
@@ -493,8 +503,8 @@ bool Magic::process_script_return(uint8 ret)
   switch(ret)
   {
     case NUVIE_SCRIPT_FINISHED : delete magic_script; magic_script = NULL; break;
-    case NUVIE_SCRIPT_GET_TARGET : DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get target callback here\n"); break;
-    case NUVIE_SCRIPT_GET_DIRECTION : DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get direction callback here\n"); break;
+    case NUVIE_SCRIPT_GET_TARGET : state = MAGIC_STATE_ACQUIRE_TARGET; DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get target callback here\n"); break;
+    case NUVIE_SCRIPT_GET_DIRECTION : state = MAGIC_STATE_ACQUIRE_DIRECTION; DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get direction callback here\n"); break;
     case NUVIE_SCRIPT_GET_INV_OBJ : DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get inv object callback here\n"); break;
       
     case NUVIE_SCRIPT_ADVANCE_GAME_TIME : nturns = magic_script->get_data();

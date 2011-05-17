@@ -157,6 +157,9 @@ static int nscript_party_heal(lua_State *L);
 
 static int nscript_timer_set(lua_State *L);
 
+static int nscript_wind_set(lua_State *L);
+static int nscript_wind_get(lua_State *L);
+
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
@@ -166,7 +169,8 @@ static int nscript_map_get_dmg_tile_num(lua_State *L);
 static int nscript_map_line_test(lua_State *L);
 static int nscript_map_line_hit_check(lua_State *L);
 
-static int nscript_map_can_put(lua_State *L);
+static int nscript_map_can_put_actor(lua_State *L);
+static int nscript_map_can_put_obj(lua_State *L);
 
 static int nscript_tile_get_flag(lua_State *L);
 
@@ -321,6 +325,12 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_timer_set);
    lua_setglobal(L, "timer_set");
 
+   lua_pushcfunction(L, nscript_wind_set);
+   lua_setglobal(L, "wind_set_dir");
+
+   lua_pushcfunction(L, nscript_wind_get);
+   lua_setglobal(L, "wind_get_dir");
+
    lua_pushcfunction(L, nscript_tile_get_flag);
    lua_setglobal(L, "tile_get_flag");
 
@@ -339,8 +349,11 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_map_get_dmg_tile_num);
    lua_setglobal(L, "map_get_dmg_tile_num");
 
-   lua_pushcfunction(L, nscript_map_can_put);
+   lua_pushcfunction(L, nscript_map_can_put_actor);
    lua_setglobal(L, "map_can_put");
+
+   lua_pushcfunction(L, nscript_map_can_put_obj);
+   lua_setglobal(L, "map_can_put_obj");
 
    lua_pushcfunction(L, nscript_map_line_test);
    lua_setglobal(L, "map_can_reach_point");
@@ -1484,7 +1497,7 @@ static int nscript_map_remove_obj(lua_State *L)
    return 1;
 }
 
-static int nscript_map_can_put(lua_State *L)
+static int nscript_map_can_put_actor(lua_State *L)
 {
    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
    uint16 x, y;
@@ -1494,6 +1507,20 @@ static int nscript_map_can_put(lua_State *L)
 	  return 0;
 
    lua_pushboolean(L, actor_manager->can_put_actor(MapCoord(x,y,z)));
+
+   return 1;
+}
+
+static int nscript_map_can_put_obj(lua_State *L)
+{
+   Map *map = Game::get_game()->get_game_map();
+   uint16 x, y;
+   uint8 z;
+
+   if(nscript_get_location_from_args(L, &x, &y, &z, 1) == false)
+	  return 0;
+
+   lua_pushboolean(L, map->can_put_obj(x,y,z));
 
    return 1;
 }
@@ -1928,6 +1955,22 @@ static int nscript_timer_set(lua_State *L)
 	return 0;
 }
 
+static int nscript_wind_set(lua_State *L)
+{
+	Weather *weather = Game::get_game()->get_weather();
+	uint8 wind_dir = (uint8)luaL_checkinteger(L, 1);
+
+	weather->set_wind_dir(wind_dir);
+
+	return 0;
+}
+
+static int nscript_wind_get(lua_State *L)
+{
+	Weather *weather = Game::get_game()->get_weather();
+	lua_pushinteger(L, weather->get_wind_dir());
+	return 1;
+}
 
 //lua function objs_at_loc(x,y,z)
 static int nscript_objs_at_loc(lua_State *L)
