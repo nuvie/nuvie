@@ -341,8 +341,10 @@ magic_init("Wind Change", "rh", 0x88, 4, 10, "u6/magic/circle_04/wind_change.lua
 magic_init("Energy Field", "isg", 0x15, 5, 1, "u6/magic/circle_05/energy_field.lua");
 magic_init("Explosion", "vpf", 0x8d, 5, 2, "u6/magic/circle_05/explosion.lua");
 magic_init("Insect Swarm", "kbx", 0x98, 5, 3, "u6/magic/circle_05/insect_swarm.lua");
+magic_init("Invisibility", "sl", 0x0a, 5, 4, "u6/magic/circle_05/invisibility.lua");
 magic_init("Lightning", "og", 0x85, 5, 5, "u6/magic/circle_05/lightning.lua");
 magic_init("Paralyze", "axp", 0x96, 5, 6, "u6/magic/circle_05/paralyze.lua");
+magic_init("Pickpocket", "py", 0x1a, 5, 7, "u6/magic/circle_05/pickpocket.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 

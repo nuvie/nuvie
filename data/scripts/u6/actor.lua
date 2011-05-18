@@ -135,7 +135,14 @@ actor_tbl = {
 
 monster_inv_food = { 129, 133, 128 } --portion of meat, ham, loaf of bread
 
+function actor_can_turn_invisible(obj_n)
 
+	if obj_n < 0x1aa and obj_n ~= 0x19b and obj_n ~= 0x176 and obj_n ~= 0x19d and obj_n ~= 0x177 then --giant scorpion, dragon, hydra, silver serpent, slime
+		return true
+	end
+
+	return false
+end
 
 function actor_int_check(attacker, defender)
 

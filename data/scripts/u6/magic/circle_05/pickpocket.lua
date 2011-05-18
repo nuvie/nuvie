@@ -1,5 +1,8 @@
-magic_load({name="Pickpocket", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
+local caster = magic_get_caster()
+local actor = select_actor_with_projectile(0x18b, caster)
 
-  end
-})
+if actor == nil then return end
+
+print("Which object:")
+
+print("FIXME select obj here.")

@@ -1,16 +1,12 @@
-  local loc = select_location()
-  local caster = magic_get_caster()
-  
-  magic_casting_fade_effect(caster)
-  
-  projectile(0x189, caster.x, caster.y, loc.x, loc.y, 2)
+local caster = magic_get_caster()
+local loc = select_location_with_projectile(0x189, caster)
 
-  local hit_items = explosion(0x17e, loc.x,loc.y)
-  
-  for k,v in pairs(hit_items) do
-     if v.luatype == "actor" then
-        spell_take_fire_dmg(caster, v)
-     end
-  end
+if loc == nil then return end
 
+local hit_items = explosion(0x17e, loc.x,loc.y)
   
+for k,v in pairs(hit_items) do
+	if v.luatype == "actor" then
+		spell_take_fire_dmg(caster, v)
+	end
+end

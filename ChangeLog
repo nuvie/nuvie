@@ -1,3 +1,7 @@
+2012-05-19  Eric Fry <efry at users.sourceforge.net> r1192
+	* Added Invisibility (sl) spell.
+	* Fixed up Energy field, explosion, insect swarm, lightning and paralyze spells
+
 2012-05-18  Eric Fry <efry at users.sourceforge.net> r1191
 	* Added Wind Change (rh) spell.
 	* Added the ability to select direction from lua magic scripts.

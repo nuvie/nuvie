@@ -1,6 +1,15 @@
-  local loc = select_location()
-  local caster = caster_get_location()
-  
-  projectile(0x188, caster.x, caster.y, loc.x, loc.y, 1)
---FIXME actor_hit
-  Actor.hit(map_get_actor(loc), math.random(1, 30))
+local caster = magic_get_caster()
+local actor = select_actor_with_projectile(0x188, caster)
+
+if actor == nil then return end
+
+print("\n")
+	
+local exp = actor_hit(actor, math.random(1, 30))
+if exp ~= 0 then         
+	caster.exp = caster.exp + exp
+end
+  	
+actor_hit_msg(actor)
+  	
+actor_yell_for_help(caster, foe, 1)

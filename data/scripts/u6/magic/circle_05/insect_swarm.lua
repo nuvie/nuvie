@@ -23,7 +23,4 @@ for i=1,8 do
    end
 end
 
-if caster_is_player() then
-	print("\nSuccess\n")
-	play_sfx(SFX_SUCCESS)
-end
+magic_success()
