@@ -1,8 +1,8 @@
-2012-05-19  Eric Fry <efry at users.sourceforge.net> r1192
+2011-05-19  Eric Fry <efry at users.sourceforge.net> r1192
 	* Added Invisibility (sl) spell.
 	* Fixed up Energy field, explosion, insect swarm, lightning and paralyze spells
 
-2012-05-18  Eric Fry <efry at users.sourceforge.net> r1191
+2011-05-18  Eric Fry <efry at users.sourceforge.net> r1191
 	* Added Wind Change (rh) spell.
 	* Added the ability to select direction from lua magic scripts.
 	* Tweaked event code to differentiate direction from target.
@@ -13,7 +13,7 @@
 	* Added wind_set_dir(), wind_get_dir() script functions.
 	* Added map_can_put_obj() script function.
 
-2012-05-16  Eric Fry <efry at users.sourceforge.net> r1190
+2011-05-16  Eric Fry <efry at users.sourceforge.net> r1190
 	* Fixed bugs with loading sleeping actors.
 	* Allow actors without a base_actor_type. Used in the Animate spell.
 	* Added Animate (oy) spell.
@@ -25,14 +25,14 @@
 	* Don't try to create inventory for Animated objects.
 	* Fixed forth circle spells.
 
-2012-05-13  Eric Fry <efry at users.sourceforge.net> r1189
+2011-05-13  Eric Fry <efry at users.sourceforge.net> r1189
 	* Fixed up third circle spells.
 	* Added Fireball (pf) spell.
 	* Added Great Light (vl) spell.
 	* Added Repel Undead (axc) spell.
 	* Print actor dmg in spell_take_fire_dmg() script function.
 
-2012-05-11  Eric Fry <efry at users.sourceforge.net> r1188
+2011-05-11  Eric Fry <efry at users.sourceforge.net> r1188
 	* Fixed up second circle spells.
 	* Script obj.name now returns object name including frame_n.
 	* Print object name when attacking.
@@ -42,7 +42,7 @@
 	* Added tile_get_flag(tile_num, flag_set, bit) script function.
 
 
-2012-05-10  Eric Fry <efry at users.sourceforge.net> r1187
+2011-05-10  Eric Fry <efry at users.sourceforge.net> r1187
 	* Added Reappear (iy) spell
 	* Added game_load(), game_save() lua script functions in init.lua These are
 	  called when a game is loaded/saved.
@@ -50,7 +50,7 @@
 	  these functions are used to read/write to the objlist from script and can
 	  only be called from load_game() or save_game() functions.
 
-2012-05-06  Eric Fry <efry at users.sourceforge.net> r1186
+2011-05-06  Eric Fry <efry at users.sourceforge.net> r1186
 	* Added Magic Arrow spell (oj)
 	* Fixed up Poison spell
 	* Added actor_hit_msg() script function to print actor damage text
@@ -59,7 +59,7 @@
 	* Added global script variable g_vanish_obj for upcoming vanish/reappear
 	  spells.
 
-2012-05-04  Eric Fry <efry at users.sourceforge.net> r1185
+2011-05-04  Eric Fry <efry at users.sourceforge.net> r1185
 	* Added support for game timers. They are handled by the GameClock class and
 	  are loaded/saved to the objlist file.
 	* Added magic light spell support.
@@ -67,17 +67,17 @@
 	* Added infravision magic script. (ql) This only sets the infravision spell timer.
 	  The infravision effect needs to be coded in MapWindow.
 
-2012-05-03  Kirben r1183 r1184
+2011-05-03  Kirben r1183 r1184
 	* Added Win32 installer build config
 
-2012-05-02  Eric Fry <efry at users.sourceforge.net> r1182
+2011-05-02  Eric Fry <efry at users.sourceforge.net> r1182
 	* Fixed target selection bug when casting magic in the dungeon levels.
 	* Don't twitch actors that aren't visible.
 	* Hide surrounding objects for multi-tile actors when visible_flag = false.
 	* TileBlackFadeEffect can now fade multi-tile objs/actors.
 	* Fixed target selection in fire field spell logic.
 
-2012-05-02  Eric Fry <efry at users.sourceforge.net> r1181
+2011-05-02  Eric Fry <efry at users.sourceforge.net> r1181
 	* Added Detect Magic spell (wo)
 	* Added Dispel Magic spell (ajo)
 	* Added better compatibilty to all first circle spells. Added projectile logic
@@ -90,7 +90,7 @@
 	  by magic scripts that fire a projectile at an actor/obj.
 	* Reworked resurrect spell to increase compatibility with original game.
 
-2012-04-29  Eric Fry <efry at users.sourceforge.net> r1180
+2011-04-29  Eric Fry <efry at users.sourceforge.net> r1180
 	* Added spell casting red fade effect.
 	* Added TileFadeAnim class.
 	* Changed Actor::change_base_obj_n() to zero frame_n.
@@ -104,38 +104,38 @@
 	  Actor.black_fade_effect(actor,color,speed)
 	* Added tile_num get variable to actor in script.
 
-2012-04-26  Eric Fry <efry at users.sourceforge.net> r1179
+2011-04-26  Eric Fry <efry at users.sourceforge.net> r1179
 	* Automatically create ~/.nuvierc config file on Unix systems.
 	* Added new Actor::change_base_obj_n() method. This allows us to change the
 	  underlying base object type for an actor. This is ued in the slime spell.
 	* Added actor.base_obj_n set field to script system.
 	* Added 8th circle Slime spell (vrx).
 
-2012-04-22  Eric Fry <efry at users.sourceforge.net> r1177
+2011-04-22  Eric Fry <efry at users.sourceforge.net> r1177
 	* Updated Mac SDLMain files to SDL 1.2.14
 	* Updated Mac build config changed base SDL to 10.4u sdk
 
-2012-04-21  Eric Fry <efry at users.sourceforge.net> r1174
+2011-04-21  Eric Fry <efry at users.sourceforge.net> r1174
 	* Fixed build error when compiling tools from automake.
 
-2012-04-20  Eric Fry <efry at users.sourceforge.net> r1173
+2011-04-20  Eric Fry <efry at users.sourceforge.net> r1173
 	* Official release 0.1
  
-2012-04-20  Eric Fry <efry at users.sourceforge.net> r1172
+2011-04-20  Eric Fry <efry at users.sourceforge.net> r1172
 	* Updated README
 	* Updated MAC OS X dmg creation script to include README.txt
 	* Updated nuvie.cfg.sample
 
-2012-04-17  Eric Fry <efry at users.sourceforge.net> r1171
+2011-04-17  Eric Fry <efry at users.sourceforge.net> r1171
 	* Added Armageddon spell
 	* Changed Actor::die() to include switch to not drop dead body. Used in the Armageddon spell.
 	* Fixed bug in mkdir_recursive() when the path started at the root directory.
 	* Updated XCode build config.
 
-2012-04-12  Eric Fry <efry at users.sourceforge.net> r1170
+2011-04-12  Eric Fry <efry at users.sourceforge.net> r1170
 	* Fixed smooth lighting colour on MACOSX.
 
-2012-04-12  Eric Fry <efry at users.sourceforge.net> r1169
+2011-04-12  Eric Fry <efry at users.sourceforge.net> r1169
 	* Fixed vortex cube container. You can now move moonstones into the vortex cube
 	* Fixed talking to shrines/statues. Bug [1534935] We talk to the object not
 	  the actor.
@@ -143,38 +143,38 @@
 	  Added MsgSroll token '\t' which means set autobreak off.
 	* Fixed bug in actor_wt_attack() script function
 
-2012-04-10  Eric Fry <efry at users.sourceforge.net> r1168
+2011-04-10  Eric Fry <efry at users.sourceforge.net> r1168
 	* Fixed tangle vine spawning logic.
 	* Moved vine creation into actor_init() script function.
 	* Fixed tangle vine pod twitching. Bug [1534721]
 	* Find monster spawn location befrore creating temp actor.
 
-2012-04-09  Eric Fry <efry at users.sourceforge.net> r1167
+2011-04-09  Eric Fry <efry at users.sourceforge.net> r1167
 	* Removed C++ exception code. A future port might not support it. ;-)
 	* Fixed bug in tangle vine attack logic
 
-2012-04-07  Eric Fry <efry at users.sourceforge.net> r1166
+2011-04-07  Eric Fry <efry at users.sourceforge.net> r1166
 	* Added the ability to break objects when dropping. Bug [1527605]
 	* Added bool ObjManager::is_breakable(Obj *obj)
 
-2012-04-07  Eric Fry <efry at users.sourceforge.net> r1165
+2011-04-07  Eric Fry <efry at users.sourceforge.net> r1165
 	* Added MinGW windows icon
 	* Show gamedir path on Console under windows.
 
-2012-04-06  Eric Fry <efry at users.sourceforge.net> r1163
+2011-04-06  Eric Fry <efry at users.sourceforge.net> r1163
 	* Create default config for Windows if no config file found.
 	* Fixed bug in mkdir_recursive()
 	* Handle error when save_manager::load_latest_save() fails.
 	* Removed -lSDL_mixer from Makefile.mingw
 
-2012-04-06  Eric Fry <efry at users.sourceforge.net> r1162
+2011-04-06  Eric Fry <efry at users.sourceforge.net> r1162
 	* Added more console messages.
 	* Fixed redraw bug with party view when launching
 	* Added ConsoleDelete() function
 	* Continue from Console pause if SDL_QUIT event received.
 	* Added filename() method to Configuration class.
 
-2012-04-06  Eric Fry <efry at users.sourceforge.net> r1161
+2011-04-06  Eric Fry <efry at users.sourceforge.net> r1161
 	* Added new Nuvie boot console. Fatal errors can now be shown to the user on screen.
 	* Added GUI_Console class
 	* Added Console class
@@ -185,10 +185,10 @@
 	  Either GUI_FONT_DEFAULT or GUI_FONT_6X8
 	* Show console on error
 
-2012-04-01  Eric Fry <efry at users.sourceforge.net> r1160
+2011-04-01  Eric Fry <efry at users.sourceforge.net> r1160
 	* Fixed bug when recursively calling TimedEvents.
 
-2012-04-01  Eric Fry <efry at users.sourceforge.net> r1159
+2011-04-01  Eric Fry <efry at users.sourceforge.net> r1159
 	* Constrain range attacks to within missile boundaries. (still need to do triple crossbow)
 	* Changed ObjManager::is_boundary() to allow checking for missile boundaries.
 	* Added missile boundary checking 'LT_HitMissileBoundary' to Map::LineTest()
@@ -196,7 +196,7 @@
 	* Moved actor asleep call to before party move in avatar death script.
 	* Added script functions map_can_reach_point() and map_line_hit_check().
 
-2012-03-30  Eric Fry <efry at users.sourceforge.net> r1158
+2011-03-30  Eric Fry <efry at users.sourceforge.net> r1158
 	* Moved avatar death logic into lua script.
 	* Hooked up actor_map_dmg() lua script to all actor movement.
 	* Added Script::call_actor_map_dmg(Actor *, MapCoord)
@@ -206,7 +206,7 @@
 	* Fixed bug with new poision tile script logic.
 	* Added actor.actor_num "get" variable to script system.
 
-2012-03-29  Eric Fry <efry at users.sourceforge.net> r1157
+2011-03-29  Eric Fry <efry at users.sourceforge.net> r1157
 	* Added map damage logic into script. At the moment this is not hooked up to player/party movement.
 	* Added Tile *ObjManager::get_obj_dmg_tile(uint16 x, uint16 y, uint8 level)
 	* Don't set direction on immobile or dead actors.
@@ -235,18 +235,18 @@
 	* Added Actor.inv_get_obj(actor, obj_n) to script system.
 
 
-2012-03-25  Eric Fry <efry at users.sourceforge.net> r1155
+2011-03-25  Eric Fry <efry at users.sourceforge.net> r1155
 	* Added SFX_CASTING_MAGIC PC Speaker sfx. (Hooked it up to 'insect swarm' Kal Bet Xen spell)
 	* Cleanup pc speaker object when closing audiostream
 
-2012-03-23  Eric Fry <efry at users.sourceforge.net> r1154
+2011-03-23  Eric Fry <efry at users.sourceforge.net> r1154
 	* Added SFX_CORPSER_REGURGITATED PC Speaker sfx.
 	* Added getLengthInMsec() method to PCSpeakerGlassSfxStream class.
 
-2012-03-23  Eric Fry <efry at users.sourceforge.net> r1153
+2011-03-23  Eric Fry <efry at users.sourceforge.net> r1153
 	* Added SFX_CORPSER_DRAGGED_UNDER PC Speaker sfx.
 
-2012-03-23  Eric Fry <efry at users.sourceforge.net> r1152
+2011-03-23  Eric Fry <efry at users.sourceforge.net> r1152
 	* Added the ablility to wait while a sfx plays. (Still need to add support for
 	  custom wav files.)
 	* Added the ability to get the duration of the last played sfx from the
@@ -260,7 +260,7 @@
 	* Changed lua script play_sfx() function to take optional argument play_async.
 
 
-2012-03-21  Eric Fry <efry at users.sourceforge.net> r1150
+2011-03-21  Eric Fry <efry at users.sourceforge.net> r1150
 	* More work on PC Speaker SFX
 	* Added PCSpeakerRandomStream and PCSpeakerGlassSfxStream classes
 	* Reworked PCSpeaker class to incorporate speaker cone speed.
@@ -268,12 +268,12 @@
 	* Changed PC Speaker output rate to 22050 Hz
 
 
-2012-03-09  Eric Fry <efry at users.sourceforge.net> r1148
+2011-03-09  Eric Fry <efry at users.sourceforge.net> r1148
 	* MACOSX: Changed development build config to use 10.5 SDK and target 10.4 (Thanks
 	  to Dominus for working on the build config)
 	* Cleaned up ConverseSpeech::play_speech() to remove some unused variables.
 
-2012-03-07  Eric Fry <efry at users.sourceforge.net> r1147
+2011-03-07  Eric Fry <efry at users.sourceforge.net> r1147
 	* MACOSX: Check for config in $HOME/Library/Preferences/Nuvie Preferences
 	* MACOSX: If no config can be loaded try to create config with default values in
 	  $HOME/Library/Preferences/Nuvie Preferences
@@ -291,7 +291,7 @@
 	* MACOSX: Added eclipse build files.
 
 
-2012-02-15  Eric Fry <efry at users.sourceforge.net> r1142
+2011-02-15  Eric Fry <efry at users.sourceforge.net> r1142
 
 	* Started work on PC Speaker SFX
 	* Added new PCSpeakerSfxManager class
