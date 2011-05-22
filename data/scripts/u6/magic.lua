@@ -345,15 +345,18 @@ magic_init("Invisibility", "sl", 0x0a, 5, 4, "u6/magic/circle_05/invisibility.lu
 magic_init("Lightning", "og", 0x85, 5, 5, "u6/magic/circle_05/lightning.lua");
 magic_init("Paralyze", "axp", 0x96, 5, 6, "u6/magic/circle_05/paralyze.lua");
 magic_init("Pickpocket", "py", 0x1a, 5, 7, "u6/magic/circle_05/pickpocket.lua");
+magic_init("Reveal", "asl", 0x13, 5, 8, "u6/magic/circle_05/reveal.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 
-magic_init("Armageddon", "vcbm", 0xff, 8, 0, "u6/magic/circle_08/armageddon.lua");
-magic_init("Eclipse", "val", 0xab, 8, 2, "u6/magic/circle_08/eclipse.lua");
-magic_init("Resurrect", "imc", 0xf9, 8, 5, "u6/magic/circle_08/resurrect.lua");
-magic_init("Slime", "vrx", 0xb, 8, 6, "u6/magic/circle_08/slime.lua");
-magic_init("Summon", "kxc", 0x39, 8, 7, "u6/magic/circle_08/summon.lua");
-magic_init("Tremor", "vpy", 0x89, 8, 9, "u6/magic/circle_08/tremor.lua");
+magic_init("Armageddon", "vcbm", 0xff, 8, 1, "u6/magic/circle_08/armageddon.lua");
+magic_init("Eclipse", "val", 0xab, 8, 3, "u6/magic/circle_08/eclipse.lua");
+magic_init("Resurrect", "imc", 0xf9, 8, 6, "u6/magic/circle_08/resurrect.lua");
+magic_init("Slime", "vrx", 0xb, 8, 7, "u6/magic/circle_08/slime.lua");
+magic_init("Summon", "kxc", 0x39, 8, 8, "u6/magic/circle_08/summon.lua");
+magic_init("Tremor", "vpy", 0x89, 8, 10, "u6/magic/circle_08/tremor.lua");
+
+magic_init("Monster Invisible", "", 0x00, 8, 17, "u6/magic/circle_08/monster_invisible.lua");
 
 --[[
 init = nuvie_load("u6/magic/circle_01/create_food.lua"); init()

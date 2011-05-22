@@ -41,6 +41,7 @@ class InventoryView : public View {
  DollWidget *doll_widget;
  InventoryWidget *inventory_widget;
  GUI_Button *combat_button;
+ bool is_party_member;
 
  enum invarea
  {
@@ -64,6 +65,7 @@ class InventoryView : public View {
 
  bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
  bool set_party_member(uint8 party_member);
+ bool set_actor(Actor *actor);
  void set_show_cursor(bool state);
  void moveCursorToSlot(uint8 slot_num);
  void moveCursorToInventory(uint8 inv_x = 0, uint8 inv_y = 0);
@@ -87,6 +89,8 @@ class InventoryView : public View {
  void display_inventory_weights();
  void display_combat_mode();
  void update_cursor();
+ void hide_buttons();
+ void show_buttons();
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };

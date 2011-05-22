@@ -50,6 +50,7 @@ InventoryView::InventoryView(Configuration *cfg) : View(cfg),
  cursor_pos.px = cursor_pos.py = 0;
  cursor_tile = NULL;
  show_cursor = false;
+ is_party_member = false;
 }
 
 InventoryView::~InventoryView()
@@ -60,10 +61,13 @@ bool InventoryView::set_party_member(uint8 party_member)
 {
  if(View::set_party_member(party_member))
   {
+   is_party_member = true;
    if(doll_widget)
      doll_widget->set_actor(party->get_actor(cur_party_member));
    if(inventory_widget)
      inventory_widget->set_actor(party->get_actor(cur_party_member));
+
+   show_buttons();
 
    if(combat_button)
    {
@@ -76,6 +80,19 @@ bool InventoryView::set_party_member(uint8 party_member)
    return true;
   }
  return false;
+}
+
+bool InventoryView::set_actor(Actor *actor)
+{
+   is_party_member = false;
+   if(doll_widget)
+     doll_widget->set_actor(actor);
+   if(inventory_widget)
+     inventory_widget->set_actor(actor);
+
+   hide_buttons();
+
+   return true;
 }
 
 bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
@@ -114,10 +131,14 @@ void InventoryView::Display(bool full_redraw)
    {
     screen->fill(bg_color, area.x, area.y, area.w, area.h);
 
-    display_name();
+    if(is_party_member)
+    {
+    	display_name();
+        display_combat_mode();
+    }
     //display_command_icons();
     display_inventory_weights();
-    display_combat_mode();
+
 
    }
 
@@ -316,6 +337,13 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
         case SDLK_KP_ENTER:
             select_objAtCursor();
             break;
+        case SDLK_TAB :
+        	if (is_party_member) // when in pickpocket mode we don't want to allow tabing to map window.
+        	{
+        		set_show_cursor(false);
+        		return GUI_PASS;
+        	}
+        	break;
 /*        case SDLK_F1: // FIXME: these should pass down to Event (global actions)
         case SDLK_F2:
         case SDLK_F3:
@@ -523,6 +551,24 @@ void InventoryView::set_show_cursor(bool state)
     
 }
 
+void InventoryView::hide_buttons()
+{
+	if(left_button) left_button->Hide();
+	if(right_button) right_button->Hide();
+	if(actor_button) actor_button->Hide();
+	if(party_button) party_button->Hide();
+	if(combat_button) combat_button->Hide();
+}
+
+void InventoryView::show_buttons()
+{
+	if(left_button) left_button->Show();
+	if(right_button) right_button->Show();
+	if(actor_button) actor_button->Show();
+	if(party_button) party_button->Show();
+	if(combat_button) combat_button->Show();
+}
+
 /* Returns pointer to object at cursor position, or NULL.
  */
 Obj *InventoryView::get_objAtCursor()
@@ -547,32 +593,36 @@ void InventoryView::select_objAtCursor()
     ViewManager *view_manager = Game::get_game()->get_view_manager();
     Obj *obj = get_objAtCursor();
 
-    // special areas
-    if(cursor_pos.area == INVAREA_COMMAND)
+    if(is_party_member)
     {
-        if(cursor_pos.x == 0) // left
-            View::callback(BUTTON_CB, left_button, view_manager);
-        if(cursor_pos.x == 1) // party
-            View::callback(BUTTON_CB, party_button, view_manager);
-        if(cursor_pos.x == 2) // status
-            View::callback(BUTTON_CB, actor_button, view_manager);
-        if(cursor_pos.x == 3) // right
-            View::callback(BUTTON_CB, right_button, view_manager);
-        if(cursor_pos.x == 4) // strategy
-            callback(BUTTON_CB, combat_button, view_manager);
-        return;
-    }
-    else if(cursor_pos.area == INVAREA_TOP)
-    {
-        if(inventory_widget->is_showing_container())
-            inventory_widget->set_prev_container();
-        else
-            Game::get_game()->get_view_manager()->set_party_mode();
+    	// special areas
+    	if(cursor_pos.area == INVAREA_COMMAND)
+    	{
+    		if(cursor_pos.x == 0) // left
+    			View::callback(BUTTON_CB, left_button, view_manager);
+    		if(cursor_pos.x == 1) // party
+    			View::callback(BUTTON_CB, party_button, view_manager);
+    		if(cursor_pos.x == 2) // status
+    			View::callback(BUTTON_CB, actor_button, view_manager);
+    		if(cursor_pos.x == 3) // right
+    			View::callback(BUTTON_CB, right_button, view_manager);
+    		if(cursor_pos.x == 4) // strategy
+    			callback(BUTTON_CB, combat_button, view_manager);
+    		return;
+    	}
+    	else if(cursor_pos.area == INVAREA_TOP)
+    	{
+    		if(inventory_widget->is_showing_container())
+    			inventory_widget->set_prev_container();
+    		else
+    			Game::get_game()->get_view_manager()->set_party_mode();
 
-        return;
+    		return;
+    	}
     }
 
-    select_obj(obj); // do action with an object
+    if(cursor_pos.area == INVAREA_DOLL || cursor_pos.area == INVAREA_LIST)
+    	select_obj(obj); // do action with an object
 }
 
 

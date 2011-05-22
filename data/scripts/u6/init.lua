@@ -156,6 +156,11 @@ function get_direction(prompt)
 	return dir
 end
 
+function get_obj_from_inventory(actor)
+	local obj = coroutine.yield("inv_obj", actor)
+	return obj
+end
+
 function obj_new(obj_n, frame_n, status, qty, quality, x, y, z)
   local obj = {}
   

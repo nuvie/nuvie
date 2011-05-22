@@ -477,6 +477,26 @@ bool Magic::resume(uint8 dir)
 	return true;
 }
 
+bool Magic::resume(Obj *obj)
+{
+	if(magic_script)
+	{
+		process_script_return(magic_script->resume_with_obj(obj));
+	}
+
+	return true;
+}
+
+bool Magic::resume()
+{
+	if(magic_script)
+	{
+		process_script_return(magic_script->resume_with_nil());
+	}
+
+	return true;
+}
+
 bool Magic::spellbook_has_spell(Obj *book, uint8 spell_index)
 {
   if(!book)
@@ -505,7 +525,7 @@ bool Magic::process_script_return(uint8 ret)
     case NUVIE_SCRIPT_FINISHED : delete magic_script; magic_script = NULL; break;
     case NUVIE_SCRIPT_GET_TARGET : state = MAGIC_STATE_ACQUIRE_TARGET; DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get target callback here\n"); break;
     case NUVIE_SCRIPT_GET_DIRECTION : state = MAGIC_STATE_ACQUIRE_DIRECTION; DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get direction callback here\n"); break;
-    case NUVIE_SCRIPT_GET_INV_OBJ : DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get inv object callback here\n"); break;
+    case NUVIE_SCRIPT_GET_INV_OBJ : state = MAGIC_STATE_ACQUIRE_INV_OBJ; DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get inv object callback here\n"); break;
       
     case NUVIE_SCRIPT_ADVANCE_GAME_TIME : nturns = magic_script->get_data();
       DEBUG(0,LEVEL_DEBUGGING,"Magic: Advance %d turns\n",nturns);
@@ -518,6 +538,14 @@ bool Magic::process_script_return(uint8 ret)
   }
   
   return true;
+}
+
+Actor *Magic::get_actor_from_script()
+{
+	if(magic_script && state == MAGIC_STATE_ACQUIRE_INV_OBJ)
+		return Game::get_game()->get_actor_manager()->get_actor((uint8)magic_script->get_data());
+
+	return NULL;
 }
 
 uint16 Magic::callback(uint16 msg, CallBack *caller, void *data)

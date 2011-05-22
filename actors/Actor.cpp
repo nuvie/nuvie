@@ -750,6 +750,7 @@ const CombatType *Actor::inventory_get_readied_object_combat_type(uint8 location
 
 bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
 {
+ obj_manager->unlink_from_engine(obj);
  U6LList *inventory = get_inventory_list(), *add_to = inventory;
 
  // we have the item now so we don't consider it stealing if we get it at any time in the future.

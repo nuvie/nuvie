@@ -1,3 +1,13 @@
+2011-05-23  Eric Fry <efry at users.sourceforge.net> r1194
+	* Added Pickpocket (py) Spell.
+	* Added Reveal (asl) Spell.
+	* Added blue fade to invisibility spell.
+	* Added special monster only spell number 128. This is used by monsters to turn
+	  invisible.
+	* Added the ability to select item from actor's inventory then resume magic
+	  spell.
+	* Fixed spell numbering on the 8th circle.
+
 2011-05-19  Eric Fry <efry at users.sourceforge.net> r1192
 	* Added Invisibility (sl) spell.
 	* Fixed up Energy field, explosion, insect swarm, lightning and paralyze spells

@@ -560,6 +560,12 @@ void Event::get_scroll_input(const char *allowed, bool can_escape)
 //    scroll->grab_focus();
 }
 
+void Event::get_inventory_obj(Actor *actor)
+{
+	get_target("");
+	moveCursorToInventory();
+	view_manager->get_inventory_view()->set_actor(actor);
+}
 /* Send all keyboard input to caller, with user_data.
    ESC always cancels sending any further input. */
 void Event::key_redirect(CallBack *caller, void *user_data)
@@ -2603,6 +2609,9 @@ void Event::doAction()
     {
     	if(!drop_obj)
     	{
+        	if(input.select_from_inventory == false)
+        		return endAction(true);
+
             assert(input.type == EVENTINPUT_OBJECT);
             drop_select(input.obj);
         }
@@ -2623,23 +2632,36 @@ void Event::doAction()
     {
     	if(input.type == EVENTINPUT_MAPCOORD)
     	{
-    		magic->resume(MapCoord(input.loc->x, input.loc->y, input.loc->z));
+    		if(magic->is_waiting_for_location())
+    			magic->resume(MapCoord(input.loc->x, input.loc->y, input.loc->z));
+    		else
+    		{
+    			magic->resume();
+    			view_manager->get_inventory_view()->set_party_member(Game::get_game()->get_party()->get_leader());
+    		}
     	}
     	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
     	{
     		magic->resume(get_direction_code(input.loc->sx, input.loc->sy));
     	}
+    	else if(input.type == EVENTINPUT_OBJECT)
+    	{
+    		magic->resume(input.obj);
+    		view_manager->get_inventory_view()->set_party_member(Game::get_game()->get_party()->get_leader());
+    	}
     	else
     	{
-			if(input.type == EVENTINPUT_OBJECT)
-				magic->cast(input.obj);
-			else
-				magic->cast();
+			magic->cast();
     	}
+
 		if(magic->is_waiting_for_location())
 			get_target("");
 		else if(magic->is_waiting_for_direction())
 			get_direction("");
+		else if(magic->is_waiting_for_inventory_obj())
+		{
+			get_inventory_obj(magic->get_actor_from_script());
+		}
 		else
 			endAction(true);
     }
@@ -2668,6 +2690,8 @@ void Event::cancelAction()
     else if(mode == CAST_MODE)
     {
         scroll->display_string("nothing\n");
+        if(magic->is_waiting_for_inventory_obj())
+        	magic->resume();
     }
     else
     {

@@ -46,6 +46,7 @@
 #define MAGIC_STATE_ACQUIRE_TARGET 0x03
 #define MAGIC_STATE_ACQUIRE_INPUT  0x04
 #define MAGIC_STATE_ACQUIRE_DIRECTION  0x05
+#define MAGIC_STATE_ACQUIRE_INV_OBJ  0x06
 
 class ScriptThread;
 
@@ -75,7 +76,7 @@ class Magic : public CallBack {
     char cast_buffer_str[26]; // buffer for spell syllables typed.
     uint8 cast_buffer_len; // how many characters typed in the spell buffer.
     Event *event;
-    Actor *target_actor;
+    //Actor *target_actor;
     Obj *target_object;
     uint8 state;
     size_t IP;
@@ -105,9 +106,12 @@ class Magic : public CallBack {
     bool process_script_return(uint8 ret);
     bool resume(MapCoord location);
     bool resume(uint8 dir);
+    bool resume(Obj *obj);
+    bool resume();
     bool is_waiting_for_location() { if(magic_script && state == MAGIC_STATE_ACQUIRE_TARGET) return true; else return false; }
     bool is_waiting_for_direction() { if(magic_script && state == MAGIC_STATE_ACQUIRE_DIRECTION) return true; else return false; }
-    
+    bool is_waiting_for_inventory_obj() { if(magic_script && state == MAGIC_STATE_ACQUIRE_INV_OBJ) return true; else return false; }
+    Actor *get_actor_from_script();
 private:
     bool spellbook_has_spell(Obj *book, uint8 spell_index);
 

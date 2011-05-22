@@ -59,6 +59,8 @@ public:
   uint8 start() { return resume(start_nargs); }
   uint8 resume_with_location(MapCoord loc);
   uint8 resume_with_direction(uint8 dir);
+  uint8 resume_with_obj(Obj *obj);
+  uint8 resume_with_nil();
   uint8 resume(int narg = 0);
   bool finished() { return lua_status(L) != LUA_YIELD ? true : false; }
   int get_error() { return lua_status(L); }

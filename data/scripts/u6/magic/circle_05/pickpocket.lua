@@ -5,4 +5,11 @@ if actor == nil then return end
 
 print("Which object:")
 
-print("FIXME select obj here.")
+local obj = get_obj_from_inventory(actor)
+
+if obj ~= nil then
+	print(obj.name.."\n")
+	projectile(obj.tile_num, actor.x, actor.y, caster.x, caster.y, 2)
+	Actor.inv_add_obj(caster, obj)
+	magic_success()
+end

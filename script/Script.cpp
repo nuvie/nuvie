@@ -80,6 +80,7 @@ static sint32 nscript_dec_obj_ref_count(Obj *obj);
 
 bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
 inline Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
+extern Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset=1);
 
 void nscript_new_obj_var(lua_State *L, Obj *obj);
 
@@ -229,6 +230,22 @@ uint8 ScriptThread::resume_with_direction(uint8 dir)
    return resume(1);
 }
 
+uint8 ScriptThread::resume_with_obj(Obj *obj)
+{
+	if(obj)
+	{
+		nscript_new_obj_var(L, obj);
+		return resume(1);
+	}
+
+	return resume(0);
+}
+
+uint8 ScriptThread::resume_with_nil()
+{
+	return resume(0);
+}
+
 uint8 ScriptThread::resume(int narg)
 {
    const char *s;
@@ -252,6 +269,13 @@ uint8 ScriptThread::resume(int narg)
 
             if(!strcmp(s, "dir"))
                return NUVIE_SCRIPT_GET_DIRECTION;
+
+            if(!strcmp(s, "inv_obj"))
+            {
+            	Actor *actor = nscript_get_actor_from_args(L, 2);
+            	data = actor->get_actor_num();
+            	return NUVIE_SCRIPT_GET_INV_OBJ;
+            }
 
             if(!strcmp(s, "adv_game_time"))
             {

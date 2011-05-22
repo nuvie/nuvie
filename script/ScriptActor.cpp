@@ -42,7 +42,7 @@ static int nscript_actor_new(lua_State *L);
 static int nscript_actor_clone(lua_State *L);
 static int nscript_get_actor_from_num(lua_State *L);
 
-inline Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset=1);
+Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset=1);
 static int nscript_actor_set(lua_State *L);
 static int nscript_actor_get(lua_State *L);
 static int nscript_get_player_actor(lua_State *L);

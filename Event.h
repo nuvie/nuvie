@@ -160,6 +160,7 @@ friend class Magic; // FIXME
 // void useselect_mode(Obj *src, const char *prompt = NULL); // deprecated
 // void freeselect_mode(Obj *src, const char *prompt = NULL); // deprecated
  void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
+ void get_inventory_obj(Actor *actor);
 // void get_amount();
  void get_direction(const char *prompt);
  void get_direction(const MapCoord &from, const char *prompt);
