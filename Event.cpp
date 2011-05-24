@@ -907,7 +907,7 @@ bool Event::push_start()
 bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
 {
     bool got_object = false;
-    float weight;
+    //float weight;
     if(mode == WAIT_MODE)
         return(false);
 
@@ -927,25 +927,16 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
             return(false); // ???
         }
 
-
-        // objects with 0 weight aren't gettable.
-        //255 is the max weight and means an object is movable but not getable.
-        //we can't get object that contains toptiles either. This makes dragon bits ungettable etc.
-        // excluding container items here, we just want the object itself to
-	// check if it weighs 0 or 255. no need to scale as we don't compare
-	// with other weights 
-	weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE); 
-        if(weight != 0 && weight != 255 && obj_manager->has_toptile(obj) == false) 
+        if(obj_manager->can_get_obj(obj) == true)
         {
-	  // now get the real weight (and include) the contained items. 
-	  weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DO_SCALE); 
-            if(actor->can_carry_weight(weight))
+            if(actor->can_carry_object(obj))
             {
                 // object is someone else's
                 if(!(obj->status & OBJ_STATUS_OK_TO_TAKE))
                 {
                     scroll->display_string("\n\nStealing!!!"); // or "Stop Thief!!!"
                     player->subtract_karma();
+                    //FIXME need to call city guards here.
 		    /* obj->status |= OBJ_STATUS_OK_TO_TAKE; */ // duplicated in inventory_add_object. 
                 }
                 obj_manager->remove_obj_from_map(obj); //remove object from map.
@@ -2654,6 +2645,12 @@ void Event::doAction()
 			magic->cast();
     	}
 
+		for(;magic->is_waiting_to_talk();)
+		{
+			talk(magic->get_actor_from_script());
+			magic->resume();
+		}
+
 		if(magic->is_waiting_for_location())
 			get_target("");
 		else if(magic->is_waiting_for_direction())
@@ -2663,7 +2660,9 @@ void Event::doAction()
 			get_inventory_obj(magic->get_actor_from_script());
 		}
 		else
+		{
 			endAction(true);
+		}
     }
     else
         cancelAction();
@@ -2689,9 +2688,10 @@ void Event::cancelAction()
     }
     else if(mode == CAST_MODE)
     {
-        scroll->display_string("nothing\n");
-        if(magic->is_waiting_for_inventory_obj())
+        if(magic->is_waiting_to_resume())
         	magic->resume();
+        else
+        	scroll->display_string("nothing\n");
     }
     else
     {

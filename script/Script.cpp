@@ -79,7 +79,7 @@ static sint32 nscript_inc_obj_ref_count(Obj *obj);
 static sint32 nscript_dec_obj_ref_count(Obj *obj);
 
 bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
-inline Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
+Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
 extern Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset=1);
 
 void nscript_new_obj_var(lua_State *L, Obj *obj);
@@ -190,6 +190,7 @@ static int nscript_fade_tile(lua_State *L);
 static int nscript_black_fade_obj(lua_State *L);
 
 static int nscript_xor_effect(lua_State *L);
+static int nscript_xray_effect(lua_State *L);
 
 static int nscript_play_sfx(lua_State *L);
 
@@ -275,6 +276,13 @@ uint8 ScriptThread::resume(int narg)
             	Actor *actor = nscript_get_actor_from_args(L, 2);
             	data = actor->get_actor_num();
             	return NUVIE_SCRIPT_GET_INV_OBJ;
+            }
+
+            if(!strcmp(s, "talk"))
+            {
+            	Actor *actor = nscript_get_actor_from_args(L, 2);
+            	data = actor->get_actor_num();
+            	return NUVIE_SCRIPT_TALK_TO_ACTOR;
             }
 
             if(!strcmp(s, "adv_game_time"))
@@ -453,6 +461,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_xor_effect);
    lua_setglobal(L, "xor_effect");
+
+   lua_pushcfunction(L, nscript_xray_effect);
+   lua_setglobal(L, "xray_effect");
 
    seed_random();
 
@@ -676,6 +687,7 @@ bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z
    }
    else
    {
+	  if(lua_isnil(L, lua_stack_offset)) return false;
       *x = (uint16)luaL_checkinteger(L, lua_stack_offset);
       *y = (uint16)luaL_checkinteger(L, lua_stack_offset + 1);
       *z = (uint8)luaL_checkinteger(L,  lua_stack_offset + 2);
@@ -1873,6 +1885,16 @@ static int nscript_xor_effect(lua_State *L)
 	uint16 duration = (uint16)luaL_checkinteger(L, 1);
 
 	AsyncEffect *e = new AsyncEffect(new XorEffect(duration));
+	e->run();
+
+	return 0;
+}
+
+static int nscript_xray_effect(lua_State *L)
+{
+	uint16 duration = (uint16)luaL_checkinteger(L, 1);
+
+	AsyncEffect *e = new AsyncEffect(new XRayEffect(duration));
 	e->run();
 
 	return 0;

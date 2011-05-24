@@ -525,6 +525,19 @@ public:
 };
 
 
+class XRayEffect : public TimedEffect
+{
+    uint32 xray_length;
+    void init_effect();
+
+public:
+    /* eff_ms=length of x-ray effect */
+    XRayEffect(uint32 eff_ms);
+    ~XRayEffect() { }
+
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
+
 /* Pause the game, create an effect, and wait for user input to continue. */
 class PauseEffect: public Effect
 {

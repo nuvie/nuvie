@@ -47,6 +47,7 @@
 #define MAGIC_STATE_ACQUIRE_INPUT  0x04
 #define MAGIC_STATE_ACQUIRE_DIRECTION  0x05
 #define MAGIC_STATE_ACQUIRE_INV_OBJ  0x06
+#define MAGIC_STATE_TALK_TO_ACTOR 0x07
 
 class ScriptThread;
 
@@ -111,6 +112,10 @@ class Magic : public CallBack {
     bool is_waiting_for_location() { if(magic_script && state == MAGIC_STATE_ACQUIRE_TARGET) return true; else return false; }
     bool is_waiting_for_direction() { if(magic_script && state == MAGIC_STATE_ACQUIRE_DIRECTION) return true; else return false; }
     bool is_waiting_for_inventory_obj() { if(magic_script && state == MAGIC_STATE_ACQUIRE_INV_OBJ) return true; else return false; }
+    bool is_waiting_to_talk() { if(state == MAGIC_STATE_TALK_TO_ACTOR) return true; else return false; }
+
+    bool is_waiting_to_resume() { if(magic_script) return true; else return false; }
+
     Actor *get_actor_from_script();
 private:
     bool spellbook_has_spell(Obj *book, uint8 spell_index);

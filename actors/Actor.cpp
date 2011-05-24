@@ -923,6 +923,13 @@ bool Actor::can_carry_object(uint16 obj_n, uint32 qty)
     return(can_carry_weight(obj_weight));
 }
 
+bool Actor::can_carry_object(Obj *obj)
+{
+	if(obj_manager->can_get_obj(obj) == false)
+		return false;
+
+	return(can_carry_weight(obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, OBJ_WEIGHT_DO_SCALE)));
+}
 
 /* Can the actor carry new object(s) of this weight?
  * (return from get_obj_weight())
@@ -930,7 +937,9 @@ bool Actor::can_carry_object(uint16 obj_n, uint32 qty)
 bool Actor::can_carry_weight(float obj_weight)
 {
     // obj_weight /= 10;
-    return((get_inventory_weight() + obj_weight) <= inventory_get_max_weight());
+	float inv_weight = get_inventory_weight() + obj_weight;
+	float max_weight = inventory_get_max_weight();
+    return(inv_weight <= max_weight);
 }
 
 

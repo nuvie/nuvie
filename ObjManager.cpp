@@ -721,6 +721,21 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 	return false;
 }
 
+bool ObjManager::can_get_obj(Obj *obj)
+{
+	// objects with 0 weight aren't gettable.
+	//255 is the max weight and means an object is movable but not getable.
+	//we can't get object that contains toptiles either. This makes dragon bits ungettable etc.
+	// excluding container items here, we just want the object itself to
+	// check if it weighs 0 or 255. no need to scale as we don't compare
+	// with other weights
+	float weight = get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
+	if(weight != 0 && weight != 255 && has_toptile(obj) == false)
+		return true;
+
+	return false;
+}
+
 bool ObjManager::has_reduced_weight(Obj *obj)
 {
   // FIXME: HERE BE HARDCODED VALUES! FIXME: not sure if this list is complete!

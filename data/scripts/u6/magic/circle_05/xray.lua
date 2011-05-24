@@ -1,5 +1,4 @@
-magic_load({name="xray", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
-
-  end
-})
+magic_casting_effect()
+magic_casting_fade_effect()
+xray_effect(6000)
+print("\nDone\n")

@@ -67,8 +67,12 @@ select_actor = function()
 	print("On whom: ");
 
 	local loc = get_target()
-	local actor = map_get_actor(loc)
-
+	local actor
+	
+	if loc ~= nil then
+		actor = map_get_actor(loc)
+	end
+	
 	if actor == nil then
 		print("nothing\n");
 	else
@@ -85,7 +89,7 @@ select_obj = function()
 
 	local loc = get_target()
 	local obj = map_get_obj(loc)
-
+	
 	if obj == nil then
 		print("nothing\n");
 	else
@@ -346,6 +350,8 @@ magic_init("Lightning", "og", 0x85, 5, 5, "u6/magic/circle_05/lightning.lua");
 magic_init("Paralyze", "axp", 0x96, 5, 6, "u6/magic/circle_05/paralyze.lua");
 magic_init("Pickpocket", "py", 0x1a, 5, 7, "u6/magic/circle_05/pickpocket.lua");
 magic_init("Reveal", "asl", 0x13, 5, 8, "u6/magic/circle_05/reveal.lua");
+magic_init("Seance", "kmc", 0x9b, 5, 9, "u6/magic/circle_05/seance.lua");
+magic_init("X-ray", "wy", 0x81, 5, 10, "u6/magic/circle_05/xray.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 

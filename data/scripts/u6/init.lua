@@ -161,6 +161,11 @@ function get_obj_from_inventory(actor)
 	return obj
 end
 
+function actor_talk(actor)
+	coroutine.yield("talk", actor)
+	return
+end
+ 
 function obj_new(obj_n, frame_n, status, qty, quality, x, y, z)
   local obj = {}
   

@@ -1158,7 +1158,7 @@ bool U6UseCode::use_fishing_pole(Obj *obj, UseCodeEvent ev)
     fish = new Obj();
 
     fish->obj_n = OBJ_U6_FISH;
-    if(!player_actor->can_carry_object(OBJ_U6_FISH, 1))
+    if(!player_actor->can_carry_object(fish))
       {
        scroll->display_string("\nGot it, but can't carry it.\n");
        if(use_boat_find_land(&x,&y,&z) == false) //we couldn't find an empty spot for the fish.

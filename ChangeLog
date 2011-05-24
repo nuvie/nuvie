@@ -1,3 +1,18 @@
+2011-05-24  Eric Fry <efry at users.sourceforge.net> r1195
+	* Added Seance (kmc) spell.
+	* Added X-ray (wy) spell.
+	* Added actor_talk(actor) script function.
+	* Added XRayEffect class.
+	* Added xray_effect(dur_ms) script function.
+	* Added Actor.can_carry_obj(actor, obj) script function.
+	* Added weight check to pickpocket spell.
+	* Subtract karma from player when pickpocketing.
+	* Fixed escaping while waiting for magic to resume in Event class.
+	* Simplified / moved game logic out of Event 'get' logic.
+	* Added ObjManager::can_get_obj(Obj *obj)
+	* return false from nscript_get_location_from_args() if no arguments were
+	  supplied.
+
 2011-05-23  Eric Fry <efry at users.sourceforge.net> r1194
 	* Added Pickpocket (py) Spell.
 	* Added Reveal (asl) Spell.

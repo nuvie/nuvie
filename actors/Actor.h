@@ -419,7 +419,7 @@ class Actor
  void all_items_to_container(Obj *container_obj);
  bool can_carry_weight(float obj_weight); // return from get_obj_weight()
  bool can_carry_object(uint16 obj_n, uint32 qty = 0);
- bool can_carry_object(Obj *obj) { return(can_carry_weight(obj_manager->get_obj_weight(obj, true))); }
+ bool can_carry_object(Obj *obj);
 
  virtual uint8 get_object_readiable_location(uint16 obj_n) { return ACTOR_NOT_READIABLE; }
  virtual const CombatType *get_object_combat_type(uint16 obj_n) { return NULL; }

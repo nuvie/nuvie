@@ -125,6 +125,7 @@ class ObjManager
  bool is_stackable(Obj *obj);
  bool is_breakable(Obj *obj);
  bool can_store_obj(Obj *target, Obj *src); // Bag, open chest, spellbook.
+ bool can_get_obj(Obj *obj);
  bool has_reduced_weight(Obj *obj);
  bool has_toptile(Obj *obj);
 

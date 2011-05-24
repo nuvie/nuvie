@@ -31,6 +31,7 @@
 #include "Actor.h"
 
 extern bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
+extern Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
 extern void nscript_new_obj_var(lua_State *L, Obj *obj);
 extern int nscript_obj_new(lua_State *L, Obj *obj);
 extern int nscript_u6llist_iter(lua_State *L);
@@ -59,6 +60,7 @@ static int nscript_actor_inv_get_obj_total_qty(lua_State *L);
 static int nscript_actor_move(lua_State *L);
 static int nscript_actor_walk_path(lua_State *L);
 static int nscript_actor_is_at_scheduled_location(lua_State *L);
+static int nscript_actor_can_carry_obj(lua_State *L);
 static int nscript_actor_black_fade_effect(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
@@ -80,6 +82,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "inv_get_obj_n", nscript_actor_inv_get_obj_n },
    { "inv_get_obj_total_qty", nscript_actor_inv_get_obj_total_qty },
    { "is_at_scheduled_location", nscript_actor_is_at_scheduled_location },
+   { "can_carry_obj", nscript_actor_can_carry_obj },
    { "black_fade_effect", nscript_actor_black_fade_effect },
 
    { NULL, NULL }
@@ -934,6 +937,20 @@ static int nscript_actor_is_at_scheduled_location(lua_State *L)
 	      return 0;
 
 	   lua_pushboolean(L, actor->is_at_scheduled_location());
+	   return 1;
+}
+
+static int nscript_actor_can_carry_obj(lua_State *L)
+{
+	   Actor *actor = nscript_get_actor_from_args(L);
+	   if(actor == NULL)
+	      return 0;
+
+	   Obj *obj = nscript_get_obj_from_args(L, 2);
+	   if(obj == NULL)
+		   return 0;
+
+	   lua_pushboolean(L, (int)actor->can_carry_object(obj));
 	   return 1;
 }
 

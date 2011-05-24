@@ -522,10 +522,10 @@ bool Magic::process_script_return(uint8 ret)
   uint32 nturns; uint8 *cb_msgid;
   switch(ret)
   {
-    case NUVIE_SCRIPT_FINISHED : delete magic_script; magic_script = NULL; break;
-    case NUVIE_SCRIPT_GET_TARGET : state = MAGIC_STATE_ACQUIRE_TARGET; DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get target callback here\n"); break;
-    case NUVIE_SCRIPT_GET_DIRECTION : state = MAGIC_STATE_ACQUIRE_DIRECTION; DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get direction callback here\n"); break;
-    case NUVIE_SCRIPT_GET_INV_OBJ : state = MAGIC_STATE_ACQUIRE_INV_OBJ; DEBUG(0,LEVEL_NOTIFICATION,"FIXME: Register Event get inv object callback here\n"); break;
+    case NUVIE_SCRIPT_FINISHED : delete magic_script; magic_script = NULL; state = MAGIC_STATE_READY; break;
+    case NUVIE_SCRIPT_GET_TARGET : state = MAGIC_STATE_ACQUIRE_TARGET;  break;
+    case NUVIE_SCRIPT_GET_DIRECTION : state = MAGIC_STATE_ACQUIRE_DIRECTION;  break;
+    case NUVIE_SCRIPT_GET_INV_OBJ : state = MAGIC_STATE_ACQUIRE_INV_OBJ;  break;
       
     case NUVIE_SCRIPT_ADVANCE_GAME_TIME : nturns = magic_script->get_data();
       DEBUG(0,LEVEL_DEBUGGING,"Magic: Advance %d turns\n",nturns);
@@ -533,7 +533,9 @@ bool Magic::process_script_return(uint8 ret)
       *cb_msgid = NUVIE_SCRIPT_CB_ADV_GAME_TIME;
       new GameTimedCallback((CallBack *)this, cb_msgid, nturns);
       break;
-      
+
+    case NUVIE_SCRIPT_TALK_TO_ACTOR : state = MAGIC_STATE_TALK_TO_ACTOR; break;
+
     default : DEBUG(0,LEVEL_WARNING,"Unknown ScriptThread return code!\n"); break;
   }
   
@@ -542,7 +544,7 @@ bool Magic::process_script_return(uint8 ret)
 
 Actor *Magic::get_actor_from_script()
 {
-	if(magic_script && state == MAGIC_STATE_ACQUIRE_INV_OBJ)
+	if(magic_script && (state == MAGIC_STATE_ACQUIRE_INV_OBJ || state == MAGIC_STATE_TALK_TO_ACTOR))
 		return Game::get_game()->get_actor_manager()->get_actor((uint8)magic_script->get_data());
 
 	return NULL;

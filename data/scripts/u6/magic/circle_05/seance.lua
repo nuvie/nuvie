@@ -1,5 +1,11 @@
-magic_load({name="Seance", invocation="", reagents=0x0, circle=1, number=1,
-  script= function ()
+local obj = select_obj()
 
-  end
-})
+magic_casting_fade_effect()
+
+if obj == nil then magic_no_effect() return end
+
+local obj_n = obj.obj_n
+
+if obj_n == 0x153 or obj_n == 0x162 or obj_n == 0x155 or obj_n == 0x155 or obj_n == 0x154 then
+	actor_talk(Actor.get(obj.quality))
+end

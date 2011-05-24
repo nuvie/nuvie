@@ -217,6 +217,7 @@ void MapWindow::set_show_use_cursor(bool state)
 void MapWindow::set_x_ray_view(bool state)
 {
     x_ray_view = state;
+    updateBlacking();
 }
 
 void MapWindow::set_freeze_blacking_location(bool state)

@@ -1610,6 +1610,30 @@ void U6WhitePotionEffect::xor_capture(uint8 mod)
 }
 
 
+XRayEffect::XRayEffect(uint32 eff_ms)
+{
+	xray_length = eff_ms;
+	init_effect();
+}
+
+void XRayEffect::init_effect()
+{
+	Game::get_game()->get_map_window()->set_x_ray_view(true);
+	start_timer(xray_length);
+}
+
+uint16 XRayEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(msg == MESG_TIMED)
+    {
+        stop_timer();
+        Game::get_game()->get_map_window()->set_x_ray_view(false);
+        delete_self();
+    }
+
+    return 0;
+}
+
 PauseEffect::PauseEffect()
 {
     game->pause_world();
