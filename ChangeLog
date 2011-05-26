@@ -1,3 +1,8 @@
+2011-05-27  Eric Fry <efry at users.sourceforge.net> r1196
+	* Added Charm (axe) spell.
+	* Added actor old_align get/set script variables.
+	* Hooked up old alignment to correct position in actor movement_flags.
+
 2011-05-24  Eric Fry <efry at users.sourceforge.net> r1195
 	* Added Seance (kmc) spell.
 	* Added X-ray (wy) spell.

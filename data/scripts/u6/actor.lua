@@ -1842,7 +1842,7 @@ function actor_remove_charm(actor)
 
 	if actor.charm == true then
 		actor.charm = false;
-		--FIXME actor.align = actor.old_align --stored in bits 5/6 in actor movement flags
+		actor.align = actor.old_align
 	
 		if actor.in_party == true then
 			actor.align = ALIGNMENT_GOOD
@@ -3152,6 +3152,22 @@ function spell_take_fire_dmg(attacker, foe)
    
    actor_yell_for_help(attacker, foe, 1)
    actor_hit_msg(foe)
+end
+
+function spell_charm_actor(attacker, foe)
+	if actor_int_check(foe, attacker) == true then return false end
+	
+	if foe.charmed == true then
+		actor_remove_charm(foe)
+	else
+		foe.charmed = true
+		foe.old_align = foe.align
+		foe.align = attacker.align
+		hit_anim(foe.x, foe.y)
+		print("\n"..foe.name.." is charmed.\n")
+	end
+	
+	return true
 end
 
 function spell_hit_actor(attacker, foe, spell_num)

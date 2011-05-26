@@ -353,6 +353,8 @@ magic_init("Reveal", "asl", 0x13, 5, 8, "u6/magic/circle_05/reveal.lua");
 magic_init("Seance", "kmc", 0x9b, 5, 9, "u6/magic/circle_05/seance.lua");
 magic_init("X-ray", "wy", 0x81, 5, 10, "u6/magic/circle_05/xray.lua");
 
+magic_init("Charm", "axe", 0x16, 6, 1, "u6/magic/circle_06/charm.lua");
+
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 
 magic_init("Armageddon", "vcbm", 0xff, 8, 1, "u6/magic/circle_08/armageddon.lua");

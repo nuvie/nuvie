@@ -77,6 +77,8 @@ using std::vector;
 #define ACTOR_STATUS_IN_PARTY  0x80
 #define ACTOR_STATUS_ALIGNMENT_MASK 0x60
 
+#define ACTOR_MOVEMENT_FLAGS_OLD_ALIGNMENT_MASK 0x60
+
 #define ACTOR_OBJ_FLAG_
 #define ACTOR_NO_ERROR 0
 #define ACTOR_OUT_OF_MOVES 1
@@ -307,6 +309,7 @@ class Actor
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
  uint8 get_alignment() { return(alignment); }
+ uint8 get_old_alignment() { return ((movement_flags & ACTOR_MOVEMENT_FLAGS_OLD_ALIGNMENT_MASK) >> 5) + 1; }
  sint8 get_moves_left() { return(moves); }
  virtual uint8 get_maxhp() { return 0; }
  virtual uint8 get_maxmagic() { return 0; }
@@ -322,6 +325,7 @@ class Actor
  void set_exp(uint16 val) { exp = clamp_max(val, 9999); }
  void set_magic(uint8 val) { magic = val; }
  void set_alignment(uint8 a) { alignment = a; }
+ void set_old_alignment(uint8 a) { if(a > 0 && a < 5) { movement_flags |= (a - 1) << 5; } }
  void add_light(uint8 val);
  void subtract_light(uint8 val);
  void heal() { set_hp(get_maxhp()); }

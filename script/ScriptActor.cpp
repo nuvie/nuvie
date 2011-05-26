@@ -115,6 +115,7 @@ static const char *actor_set_vars[] =
    "magic",
    "mpts",
    "obj_n",
+   "old_align",
    "paralyzed",
    "poisoned",
    "protected",
@@ -151,6 +152,7 @@ static const char *actor_get_vars[] =
    "mpts",
    "name",
    "obj_n",
+   "old_align",
    "old_frame_n",
    "paralyzed",
    "poisoned",
@@ -185,6 +187,7 @@ static int nscript_actor_set_level(Actor *actor, lua_State *L);
 static int nscript_actor_set_magic(Actor *actor, lua_State *L);
 static int nscript_actor_set_movement_pts(Actor *actor, lua_State *L);
 static int nscript_actor_set_obj_n(Actor *actor, lua_State *L);
+static int nscript_actor_set_old_align(Actor *actor, lua_State *L);
 static int nscript_actor_set_paralyzed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_poisoned_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_protected_flag(Actor *actor, lua_State *L);
@@ -214,6 +217,7 @@ int (*actor_set_func[])(Actor *, lua_State *) =
    nscript_actor_set_magic,
    nscript_actor_set_movement_pts,
    nscript_actor_set_obj_n,
+   nscript_actor_set_old_align,
    nscript_actor_set_paralyzed_flag,
    nscript_actor_set_poisoned_flag,
    nscript_actor_set_protected_flag,
@@ -248,6 +252,7 @@ static int nscript_actor_get_max_hp(Actor *actor, lua_State *L);
 static int nscript_actor_get_movement_pts(Actor *actor, lua_State *L);
 static int nscript_actor_get_name(Actor *actor, lua_State *L);
 static int nscript_actor_get_obj_n(Actor *actor, lua_State *L);
+static int nscript_actor_get_old_align(Actor *actor, lua_State *L);
 static int nscript_actor_get_old_frame_n(Actor *actor, lua_State *L);
 static int nscript_actor_get_paralyzed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_poisoned_flag(Actor *actor, lua_State *L);
@@ -287,6 +292,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_movement_pts,
    nscript_actor_get_name,
    nscript_actor_get_obj_n,
+   nscript_actor_get_old_align,
    nscript_actor_get_old_frame_n,
    nscript_actor_get_paralyzed_flag,
    nscript_actor_get_poisoned_flag,
@@ -589,6 +595,12 @@ static int nscript_actor_set_obj_n(Actor *actor, lua_State *L)
    return 0;
 }
 
+static int nscript_actor_set_old_align(Actor *actor, lua_State *L)
+{
+	actor->set_old_alignment((sint8)lua_tointeger(L, 3));
+	return 0;
+}
+
 static int nscript_actor_set_base_obj_n(Actor *actor, lua_State *L)
 {
    actor->change_base_obj_n((uint16)lua_tointeger(L, 3));
@@ -780,6 +792,11 @@ static int nscript_actor_get_obj_n(Actor *actor, lua_State *L)
 static int nscript_actor_get_old_frame_n(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_old_frame_n()); return 1;
+}
+
+static int nscript_actor_get_old_align(Actor *actor, lua_State *L)
+{
+   lua_pushinteger(L, actor->get_old_alignment()); return 1;
 }
 
 static int nscript_actor_get_paralyzed_flag(Actor *actor, lua_State *L)
