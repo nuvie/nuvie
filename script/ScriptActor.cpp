@@ -457,7 +457,7 @@ static int nscript_get_actor_from_num(lua_State *L)
    return nscript_new_actor_var(L, actor_num);
 }
 
-inline Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset)
+Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset)
 {
    uint16 *actor_num;
    Actor *actor = NULL;

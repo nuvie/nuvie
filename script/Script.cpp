@@ -29,7 +29,7 @@
 #include "U6misc.h"
 
 #include "Game.h"
-#include "GameCLock.h"
+#include "GameClock.h"
 #include "Effect.h"
 #include "MsgScroll.h"
 #include "Player.h"
@@ -696,7 +696,7 @@ bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z
    return true;
 }
 
-inline Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset)
+Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset)
 {
 	   Obj **s_obj = (Obj **)luaL_checkudata(L, lua_stack_offset, "nuvie.Obj");
 	   if(s_obj == NULL)
