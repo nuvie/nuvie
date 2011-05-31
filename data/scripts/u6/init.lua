@@ -295,6 +295,13 @@ function fade_obj_in(obj)
 	obj.invisible = false
 end
 
+function fade_actor_in(actor)
+	local new_tile_num = actor.tile_num
+	actor.visible = false
+	fade_tile(actor.x, actor.y, actor.z, nil, new_tile_num)
+	actor.visible = true
+end
+
 --tile_num, readied location
 local g_readiable_objs_tbl = {
 [0x200] = 0, [0x201] = 0, [0x202] = 0, [0x203] = 0, [0x204] = 0, [0x205] = 0, [0x206] = 0, [0x207] = 0,

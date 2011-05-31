@@ -1,3 +1,14 @@
+2011-06-01  Eric Fry <efry at users.sourceforge.net> r1198
+	* Added clone (iqx) spell.
+	* Added Confuse (vq) spell.
+	* Added fade_actor_in() script function.
+	* Fixed bug when creating musician actors.
+	* Added missing local declaration to conjure spell script.
+
+2011-05-27  <luteijn> r1197
+	* Fixed case when including file in the script system.
+	* Removed inline statement from external function.
+
 2011-05-27  Eric Fry <efry at users.sourceforge.net> r1196
 	* Added Charm (axe) spell.
 	* Added actor old_align get/set script variables.

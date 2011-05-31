@@ -28,7 +28,7 @@ for i=1,8 do
 	local new_x = random(0, 10) + from_x - 5
 	local new_y = random(0, 10) + from_y - 5
 	if map_can_put(new_x, new_y, from_z) then
-		actor = Actor.new(obj_n, new_x, new_y, from_z)
+		local actor = Actor.new(obj_n, new_x, new_y, from_z)
 		if actor ~= nil then
 			actor.align = caster.align
 			actor.wt = WT_ASSAULT

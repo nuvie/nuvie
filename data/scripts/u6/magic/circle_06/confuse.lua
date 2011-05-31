@@ -1,5 +1,26 @@
-magic_load({name="Confuse", invocation="", reagents=0x0, circle=6, number=1,
-  script= function ()
+local caster = magic_get_caster()
 
-  end
-})
+local x = caster.x
+local y = caster.y
+local z = caster.z
+local loc_x = x
+local loc_y = y
+
+magic_casting_fade_effect(caster)
+
+for x = x - 5,loc_x + 5 do
+	for y = y - 5,loc_y + 5 do
+		local actor = map_get_actor(x, y, z)
+
+		if actor ~= nil then
+			if actor.align == ALIGNMENT_EVIL then
+				if actor_int_check(actor, caster) == false then
+					actor.align = ALIGNMENT_GOOD
+					actor.wt = WT_ASSAULT
+				end
+			end
+		end
+	end
+end
+
+magic_success()

@@ -354,6 +354,8 @@ magic_init("Seance", "kmc", 0x9b, 5, 9, "u6/magic/circle_05/seance.lua");
 magic_init("X-ray", "wy", 0x81, 5, 10, "u6/magic/circle_05/xray.lua");
 
 magic_init("Charm", "axe", 0x16, 6, 1, "u6/magic/circle_06/charm.lua");
+magic_init("Clone", "iqx", 0xdb, 6, 2, "u6/magic/circle_06/clone.lua");
+magic_init("Confuse", "vq", 0x03, 6, 3, "u6/magic/circle_06/confuse.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 

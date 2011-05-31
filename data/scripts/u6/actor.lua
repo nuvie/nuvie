@@ -423,7 +423,7 @@ function actor_get_max_magic_points(actor)
    end
    
    if obj_n == 377 or obj_n == 386 then --swashbuckler, musician
-      return floor(actor.int/2)
+      return math.floor(actor.int/2)
    end
    
    return 0
