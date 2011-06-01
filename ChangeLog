@@ -1,3 +1,14 @@
+2011-06-02  Eric Fry <efry at users.sourceforge.net> r1199
+	* Added Flame Wind (fh) spell.
+	* Added Poison Wind (nh) spell.
+	* Added new magic_wind() script function. This provides the wind effect and
+	  returns the hit items.
+	* Moved and renamed triple_crossbow_offset_tbl into init.lua
+	* Moved movement_offset_* tables into init.lua
+	* Added nscript_new_hit_entities_tbl_var() which constructs return hit_items
+	  table for projectile effects.
+	* Return hit items from projectile_anim_multi() script function.
+
 2011-06-01  Eric Fry <efry at users.sourceforge.net> r1198
 	* Added clone (iqx) spell.
 	* Added Confuse (vq) spell.

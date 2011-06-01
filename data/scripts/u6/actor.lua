@@ -61,9 +61,6 @@ wt_front_target_actor = nil
 
 wt_num_monsters_near = 0
 
-movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1} 
-movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
-
 --Actor stats table
 --str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,?,undead,?,strength_based,double dmg from fire,immune to magic,immune to poison,?,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
 actor_tbl = {
@@ -864,36 +861,6 @@ armour_tbl =
 [256] = 5, --protection ring
 }
 
-triple_crossbow_offset_tbl = 
-{
- {
-  4,5,5,5,5,6,6,6,6,6,6,
-  4,4,5,5,5,6,6,6,6,6,7,
-  4,4,4,5,5,6,6,6,6,7,7,
-  4,4,4,4,5,6,6,6,7,7,7,
-  4,4,4,4,4,6,6,7,7,7,7,
-  4,4,4,4,4,0,0,0,0,0,0,
-  3,3,3,3,2,2,0,0,0,0,0,
-  3,3,3,2,2,2,1,0,0,0,0,
-  3,3,2,2,2,2,1,1,0,0,0,
-  3,2,2,2,2,2,1,1,1,0,0,
-  2,2,2,2,2,2,1,1,1,1,0
- },
- {
-  2,2,2,2,2,2,3,3,3,3,4,
-  1,2,2,2,2,2,3,3,3,4,4,
-  1,1,2,2,2,2,3,3,4,4,4,
-  1,1,1,2,2,2,3,4,4,4,4,
-  1,1,1,1,2,2,4,4,4,4,4,
-  0,0,0,0,0,0,4,4,4,4,4,
-  0,0,0,0,0,6,6,5,5,5,5,
-  0,0,0,0,7,6,6,6,5,5,5,
-  0,0,0,7,7,6,6,6,6,5,5,
-  0,0,7,7,7,6,6,6,6,6,5,
-  0,7,7,7,7,6,6,6,6,6,6
- }
-}
-
 function get_weapon_dmg(weapon_obj_n)
    local dmg = weapon_dmg_tbl[weapon_obj_n]
    
@@ -1400,7 +1367,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       
          if i > 1 then
             dbg("num_bolts = "..num_bolts.." off = "..off.." target_x = "..target_x.." target_y = "..target_y.."attacker.x = "..attacker.x.." attacker.y = "..attacker.y.."\n\n")
-            local t = triple_crossbow_offset_tbl[i-1][off+1]
+            local t = g_projectile_offset_tbl[i-1][off+1]
             
             foe = map_get_actor(target_x + movement_offset_x_tbl[t+1], target_y + movement_offset_y_tbl[t+1], player_loc.z)
             dbg("new_x = "..target_x + movement_offset_x_tbl[t+1].." new_y = "..target_y + movement_offset_y_tbl[t+1].."\n");
@@ -1452,11 +1419,11 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, 
                       {x=target_x,
                        y=target_y,
                        z=target_z}, 
-                      {x=target_x + movement_offset_x_tbl[triple_crossbow_offset_tbl[1][index]+1],
-                       y=target_y + movement_offset_y_tbl[triple_crossbow_offset_tbl[1][index]+1],
+                      {x=target_x + movement_offset_x_tbl[g_projectile_offset_tbl[1][index]+1],
+                       y=target_y + movement_offset_y_tbl[g_projectile_offset_tbl[1][index]+1],
                        z=target_z},
-                      {x=target_x + movement_offset_x_tbl[triple_crossbow_offset_tbl[2][index]+1],
-                       y=target_y + movement_offset_y_tbl[triple_crossbow_offset_tbl[2][index]+1],
+                      {x=target_x + movement_offset_x_tbl[g_projectile_offset_tbl[2][index]+1],
+                       y=target_y + movement_offset_y_tbl[g_projectile_offset_tbl[2][index]+1],
                        z=target_z}
                     }
                     

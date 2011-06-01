@@ -176,6 +176,7 @@ static int nscript_map_can_put_obj(lua_State *L);
 static int nscript_tile_get_flag(lua_State *L);
 
 //Misc
+static int nscript_new_hit_entities_tbl_var(lua_State *L, ProjectileEffect *effect);
 static int nscript_eclipse_start(lua_State *L);
 static int nscript_quake_start(lua_State *L);
 static int nscript_explosion_start(lua_State *L);
@@ -1692,6 +1693,30 @@ static int nscript_quake_start(lua_State *L)
    return 1;
 }
 
+static int nscript_new_hit_entities_tbl_var(lua_State *L, ProjectileEffect *effect)
+{
+	   vector<MapEntity> *hit_items = effect->get_hit_entities();
+
+	   lua_newtable(L);
+
+	   for(uint16 i=0;i<hit_items->size();i++)
+	   {
+	      lua_pushinteger(L, i);
+
+	      MapEntity m = (*hit_items)[i];
+	      if(m.entity_type == ENT_OBJ)
+	    	  nscript_obj_new(L, m.obj);
+	      else if(m.entity_type == ENT_ACTOR)
+	      {
+	    	  nscript_new_actor_var(L, m.actor->get_actor_num());
+	      }
+
+	      lua_settable(L, -3);
+	   }
+
+	   return 1;
+}
+
 static int nscript_explosion_start(lua_State *L)
 {
    uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
@@ -1702,26 +1727,7 @@ static int nscript_explosion_start(lua_State *L)
    AsyncEffect *e = new AsyncEffect(effect);
    e->run();
 
-   vector<MapEntity> *hit_items = effect->get_hit_entities();
-
-   lua_newtable(L);
-
-   for(uint16 i=0;i<hit_items->size();i++)
-   {
-      lua_pushinteger(L, i);
-
-      MapEntity m = (*hit_items)[i];
-      if(m.entity_type == ENT_OBJ)
-    	  nscript_obj_new(L, m.obj);
-      else if(m.entity_type == ENT_ACTOR)
-      {
-    	  nscript_new_actor_var(L, m.actor->get_actor_num());
-      }
-
-      lua_settable(L, -3);
-   }
-
-   return 1;
+   return nscript_new_hit_entities_tbl_var(L, (ProjectileEffect *)effect);
 }
 
 static int nscript_projectile_anim(lua_State *L)
@@ -1789,11 +1795,11 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
    bool trail = (bool)luaL_checkinteger(L, 6);
    uint8 initial_tile_rotation = (uint8)luaL_checkinteger(L, 7);
 
-   AsyncEffect *e = new AsyncEffect(new ProjectileEffect(tile_num, MapCoord(startx,starty), t, speed, trail, initial_tile_rotation));
+   ProjectileEffect *effect = new ProjectileEffect(tile_num, MapCoord(startx,starty), t, speed, trail, initial_tile_rotation);
+   AsyncEffect *e = new AsyncEffect(effect);
    e->run();
 
-   lua_pushboolean(L, true);
-   return 1;
+   return nscript_new_hit_entities_tbl_var(L, effect);
 }
 
 static int nscript_hit_anim(lua_State *L)

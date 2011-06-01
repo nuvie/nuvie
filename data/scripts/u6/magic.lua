@@ -260,6 +260,40 @@ function magic_remove_actor_enchantments(actor)
 	return success
 end
 
+
+function magic_wind(tile_num, caster, target_x, target_y)
+
+	local target_z = caster.z
+
+	local index = ((caster.y - target_y + 5) * 11) + (caster.x - target_x + 5) + 1
+
+	local offset_x_low = movement_offset_x_tbl[g_projectile_offset_tbl[1][index]+1]
+	local offset_x_high = movement_offset_x_tbl[g_projectile_offset_tbl[2][index]+1]
+
+	local offset_y_low = movement_offset_y_tbl[g_projectile_offset_tbl[1][index]+1]
+	local offset_y_high = movement_offset_y_tbl[g_projectile_offset_tbl[2][index]+1]
+
+	local targets = {
+		{x=target_x,
+		y=target_y,
+		z=target_z}, 
+		{x=target_x + offset_x_low,
+		y=target_y + offset_y_low,
+		z=target_z},
+		{x=target_x + offset_x_low + offset_x_low,
+		y=target_y + offset_y_low + offset_y_low,
+		z=target_z},
+		{x=target_x + offset_x_high,
+		y=target_y + offset_y_high,
+		z=target_z},
+		{x=target_x + offset_x_high + offset_x_high,
+		y=target_y + offset_y_high + offset_y_high,
+		z=target_z}
+	}
+
+	return projectile_anim_multi(tile_num, caster.x, caster.y, targets, 2, 1, 0)
+end
+
 function magic_success()
 	if caster_is_player() then
 		print("\nSuccess\n")
@@ -356,6 +390,9 @@ magic_init("X-ray", "wy", 0x81, 5, 10, "u6/magic/circle_05/xray.lua");
 magic_init("Charm", "axe", 0x16, 6, 1, "u6/magic/circle_06/charm.lua");
 magic_init("Clone", "iqx", 0xdb, 6, 2, "u6/magic/circle_06/clone.lua");
 magic_init("Confuse", "vq", 0x03, 6, 3, "u6/magic/circle_06/confuse.lua");
+magic_init("Flame Wind", "fh", 0x89, 6, 4, "u6/magic/circle_06/flame_wind.lua");
+
+magic_init("Poison Wind", "nh", 0x8a, 6, 8, "u6/magic/circle_06/poison_wind.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 
