@@ -36,6 +36,7 @@ using std::vector;
 
 #define GAMECLOCK_TIMER_U6_LIGHT 0
 #define GAMECLOCK_TIMER_U6_INFRAVISION 1
+#define GAMECLOCK_TIMER_U6_STORM 13
 
 class Configuration;
 class NuvieIO;

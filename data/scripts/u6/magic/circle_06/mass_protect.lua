@@ -1,5 +1,17 @@
-magic_load({name="Mass Protect", invocation="", reagents=0x0, circle=6, number=1,
-  script= function ()
+local caster = magic_get_caster()
+local loc = select_location_with_projectile(0x18b, caster)
 
-  end
-})
+if loc == nil then return end
+
+local hit_items = explosion(0x17f,loc.x,loc.y)
+
+local k,v
+
+for k,v in pairs(hit_items) do
+	if v.luatype == "actor" then
+		v.protected = true
+	end
+end
+
+magic_success()
+

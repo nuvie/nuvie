@@ -157,6 +157,7 @@ static int nscript_party_resurrect_dead_members(lua_State *L);
 static int nscript_party_heal(lua_State *L);
 
 static int nscript_timer_set(lua_State *L);
+static int nscript_timer_get(lua_State *L);
 
 static int nscript_wind_set(lua_State *L);
 static int nscript_wind_get(lua_State *L);
@@ -357,6 +358,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    
    lua_pushcfunction(L, nscript_timer_set);
    lua_setglobal(L, "timer_set");
+
+   lua_pushcfunction(L, nscript_timer_get);
+   lua_setglobal(L, "timer_get");
 
    lua_pushcfunction(L, nscript_wind_set);
    lua_setglobal(L, "wind_set_dir");
@@ -1751,7 +1755,7 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
 
 static int nscript_projectile_anim_multi(lua_State *L)
 {
-uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
+   uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
    uint16 startx = (uint16)luaL_checkinteger(L, 2);
    uint16 starty = (uint16)luaL_checkinteger(L, 3);
 
@@ -2005,6 +2009,17 @@ static int nscript_timer_set(lua_State *L)
 	clock->set_timer(timer_num, value);
 
 	return 0;
+}
+
+static int nscript_timer_get(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	uint8 timer_num = (uint8)luaL_checkinteger(L, 1);
+
+	lua_pushinteger(L, clock->get_timer(timer_num));
+
+	return 1;
 }
 
 static int nscript_wind_set(lua_State *L)

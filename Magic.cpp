@@ -44,6 +44,7 @@
 #include "U6objects.h"
 #include "Magic.h"
 #include "Game.h"
+#include "GameClock.h"
 #include "misc/U6LList.h"
 #include "Effect.h"
 #include "Weather.h"
@@ -286,13 +287,19 @@ uint8 Magic::book_equipped()
 
 bool Magic::start_new_spell() 
 {
-  if (book_equipped()) 
+  if (Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) > 0)
+  {
+	  event->scroll->display_string("No magic at this time!\n");
+  }
+  else if (book_equipped())
   {
     state=MAGIC_STATE_SELECT_SPELL;
     clear_cast_buffer();
     return true;
   }
-  event->scroll->display_string("\nNo spellbook is readied.\n"); 
+  else
+    event->scroll->display_string("\nNo spellbook is readied.\n");
+
   state=MAGIC_STATE_READY;
   return false;
 }

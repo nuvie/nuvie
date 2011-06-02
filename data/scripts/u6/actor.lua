@@ -1495,8 +1495,8 @@ function actor_get_weapon(attacker, foe)
    local obj, weapon
    
    for obj in actor_inventory(attacker) do
-      if obj.readied and obj.obj_n == 57 or --spellbook
-      obj.obj_n == 336 and math.random(0,3) == 0 and math.random(0, obj.quality) < 16 then --charge (spell)
+      if ((obj.readied and obj.obj_n == 57) or --spellbook
+      obj.obj_n == 336) and timer_get(TIMER_STORM) == 0 and math.random(0,3) == 0 and math.random(0, obj.quality) < 16 then --charge (spell)
          dbg("magic object quality = "..obj.quality.."\n");
          return obj
       else
@@ -3032,7 +3032,8 @@ function actor_find_target(actor)
          
             local target_x = tmp_actor.x
             local target_y = tmp_actor.y
-            if actor_find_max_xy_distance(actor, target_x, target_y) <= 8 and (tmp_actor.wt ~= 7 or abs(target_x - g_player_x) <= 5 and abs(target_y - g_player_y) <= 5) then
+            --FIXME g_player_x/y are undefined.
+            if actor_find_max_xy_distance(actor, target_x, target_y) <= 8 and (tmp_actor.wt ~= WT_RETREAT or abs(target_x - g_player_x) <= 5 and abs(target_y - g_player_y) <= 5) then
             
                local var_6 = (target_x - actor_x)^2 + (target_y - actor_y)^2 
                if var_6 < var_2 or var_6 == var_2 and math.random(0, 1) ~= 0 then

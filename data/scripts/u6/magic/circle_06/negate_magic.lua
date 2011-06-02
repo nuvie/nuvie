@@ -1,2 +1,4 @@
+magic_casting_fade_effect()
 magic_casting_effect()
---FIXME set magical storm timer 0x14
+timer_set(TIMER_STORM, 0x14)
+
