@@ -12,4 +12,4 @@ end
   	
 actor_hit_msg(actor)
   	
-actor_yell_for_help(caster, foe, 1)
+actor_yell_for_help(caster, actor, 1)

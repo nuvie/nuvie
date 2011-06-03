@@ -395,6 +395,8 @@ magic_init("Flame Wind", "fh", 0x89, 6, 4, "u6/magic/circle_06/flame_wind.lua");
 magic_init("Mass Protect", "vis", 0xe8, 6, 6, "u6/magic/circle_06/mass_protect.lua");
 magic_init("Negate Magic", "ao", 0xa1, 6, 7, "u6/magic/circle_06/negate_magic.lua");
 magic_init("Poison Wind", "nh", 0x8a, 6, 8, "u6/magic/circle_06/poison_wind.lua");
+magic_init("Replicate", "iqy", 0xda, 6, 9, "u6/magic/circle_06/replicate.lua");
+magic_init("Web", "idp", 0x10, 6, 10, "u6/magic/circle_06/web.lua");
 
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 

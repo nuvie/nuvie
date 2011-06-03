@@ -3012,7 +3012,10 @@ function actor_find_target(actor)
    local actor_y = actor.y
    local var_2 = 0x7fff
    local i
-   
+   local player_loc = player_get_location()
+   local player_x = player_loc.x
+   local player_y = player_loc.y
+               
    for i=1,0x100 do
 
       local tmp_actor = Actor.get(i)
@@ -3032,8 +3035,8 @@ function actor_find_target(actor)
          
             local target_x = tmp_actor.x
             local target_y = tmp_actor.y
-            --FIXME g_player_x/y are undefined.
-            if actor_find_max_xy_distance(actor, target_x, target_y) <= 8 and (tmp_actor.wt ~= WT_RETREAT or abs(target_x - g_player_x) <= 5 and abs(target_y - g_player_y) <= 5) then
+
+            if actor_find_max_xy_distance(actor, target_x, target_y) <= 8 and (tmp_actor.wt ~= WT_RETREAT or abs(target_x - player_x) <= 5 and abs(target_y - player_y) <= 5) then
             
                local var_6 = (target_x - actor_x)^2 + (target_y - actor_y)^2 
                if var_6 < var_2 or var_6 == var_2 and math.random(0, 1) ~= 0 then
