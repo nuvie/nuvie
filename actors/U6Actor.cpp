@@ -2218,6 +2218,7 @@ const char *U6Actor::get_worktype_string(uint32 wt)
     else if(wt == 0x98) wt_string = "Ring Bell";
     else if(wt == 0x99) wt_string = "Brawl";
     else if(wt == 0x9a) wt_string = "Mousing";
+    else if(wt == 0x9b) wt_string = "Attack Party";
     return(wt_string);
 }
 

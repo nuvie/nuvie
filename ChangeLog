@@ -1,3 +1,16 @@
+2011-06-09  Eric Fry <efry at users.sourceforge.net> r1202
+	* Added Chain Bolt (vog) spell.
+	* Added Energy Wind (gh) spell.
+	* Added Fear (qc) spell.
+	* Added Gate Travel (vrp) spell. Note this still needs the phase selection
+	  logic.
+	* Added Mass Curse (vas) spell.
+	* Added Mass Invisibility (vsl) spell.
+	* Added Death Wind (ch) spell.
+	* Added Mass Charm (vaxe) spell.
+	* Added Mass Kill (vc) spell.
+	* Moved wind spells into common function.
+
 2011-06-03  Eric Fry <efry at users.sourceforge.net> r1201
 	* Added Replicate (iqy) spell.
 	* Added Web (idp) spell.

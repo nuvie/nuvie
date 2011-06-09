@@ -294,6 +294,44 @@ function magic_wind(tile_num, caster, target_x, target_y)
 	return projectile_anim_multi(tile_num, caster.x, caster.y, targets, 2, 1, 0)
 end
 
+function magic_wind_spell(spell_num, tile_num)
+
+	local caster = magic_get_caster()
+	local loc = select_location()
+
+	if loc == nil then return end
+
+	print("\n")
+
+	if loc.x == caster.x and loc.y == caster.y then return magic_no_effect() end
+
+	local hit_items = magic_wind(tile_num, caster, loc.x, loc.y)
+
+	local k, v
+	for k,v in pairs(hit_items) do
+		if v.luatype == "actor" and v.actor_num ~= caster.actor_num then
+			if spell_num == 83 then --flame wind
+				spell_take_fire_dmg(caster, v)
+				
+			elseif spell_num == 87 then --poison wind
+				spell_poison_actor(caster, v)
+				
+			elseif spell_num == 98 then --energy wind
+				local exp = actor_hit(v, math.random(1, 0x1e))
+				if exp ~= 0 then         
+					caster.exp = caster.exp + exp
+				end
+						
+				actor_yell_for_help(caster, v, 1)
+				actor_hit_msg(v)
+				
+			elseif spell_num == 113 then --death wind
+				spell_kill_actor(caster, v)
+			end
+		end
+	end
+end
+
 function magic_success()
 	if caster_is_player() then
 		print("\nSuccess\n")
@@ -398,10 +436,20 @@ magic_init("Poison Wind", "nh", 0x8a, 6, 8, "u6/magic/circle_06/poison_wind.lua"
 magic_init("Replicate", "iqy", 0xda, 6, 9, "u6/magic/circle_06/replicate.lua");
 magic_init("Web", "idp", 0x10, 6, 10, "u6/magic/circle_06/web.lua");
 
+magic_init("Chain Bolt", "vog", 0x8d, 7, 1, "u6/magic/circle_07/chain_bolt.lua");
+
+magic_init("Energy Wind", "gh", 0x8b, 7, 3, "u6/magic/circle_07/energy_wind.lua");
+magic_init("Fear", "qc", 0x23, 7, 4, "u6/magic/circle_07/fear.lua");
+magic_init("Gate Travel", "vrp", 0x85, 7, 5, "u6/magic/circle_07/gate_travel.lua");
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
+magic_init("Mass Curse", "vas", 0xa3, 7, 7, "u6/magic/circle_07/mass_curse.lua");
+magic_init("Mass Invisibility", "vsl", 0x0f, 7, 8, "u6/magic/circle_07/mass_invisibility.lua");
 
 magic_init("Armageddon", "vcbm", 0xff, 8, 1, "u6/magic/circle_08/armageddon.lua");
+magic_init("Death Wind", "ch", 0x8b, 8, 2, "u6/magic/circle_08/death_wind.lua");
 magic_init("Eclipse", "val", 0xab, 8, 3, "u6/magic/circle_08/eclipse.lua");
+magic_init("Mass Charm", "vaxe", 0x17, 8, 4, "u6/magic/circle_08/mass_charm.lua");
+magic_init("Mass Kill", "vc", 0x87, 8, 5, "u6/magic/circle_08/mass_kill.lua");
 magic_init("Resurrect", "imc", 0xf9, 8, 6, "u6/magic/circle_08/resurrect.lua");
 magic_init("Slime", "vrx", 0xb, 8, 7, "u6/magic/circle_08/slime.lua");
 magic_init("Summon", "kxc", 0x39, 8, 8, "u6/magic/circle_08/summon.lua");

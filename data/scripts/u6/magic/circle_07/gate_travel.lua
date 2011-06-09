@@ -1,5 +1,15 @@
-magic_load({name="Gate Travel", invocation="VRP", reagents=0x0, circle=7, number=1,
-  script= function ()
+--FIXME get phase here
+print("To phase ")
+local phase = 1
 
-  end
-})
+print("\n")
+
+magic_casting_fade_effect()
+
+if phase > 0 and phase < 9 then
+	--FIXME the original walks the party into an invisible gate to teleport.
+	party_move(g_moonstone_loc_tbl[phase].x, g_moonstone_loc_tbl[phase].y, g_moonstone_loc_tbl[phase].z)
+	fade_in()
+else
+	play_sfx(SFX_FAILURE)
+end

@@ -62,7 +62,7 @@ wt_front_target_actor = nil
 wt_num_monsters_near = 0
 
 --Actor stats table
---str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,?,undead,?,strength_based,double dmg from fire,immune to magic,immune to poison,?,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
+--str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,?,undead,?,strength_based,double dmg from fire,immune to magic,immune to poison,undead,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}, 0},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}, 6},
@@ -1074,7 +1074,7 @@ function actor_hit_msg(actor)
 	local di = math.floor((hp * 4) / actor.max_hp)
 	
 	if di < 4 then
-		print("`"..actor.name.." ")
+		print("\n`"..actor.name.." ")
 	end
 	
 	if di == 0 then
@@ -3139,6 +3139,23 @@ function spell_charm_actor(attacker, foe)
 	end
 	
 	return true
+end
+
+function spell_kill_actor(attacker, foe)
+	local actor_base = actor_tbl[foe.obj_n]
+	if actor_base ~= nil and actor_base[20] == 1 then return 2 end --undead
+	
+	if actor_int_check(foe, attacker) == true then return 1 end
+	
+	local exp = actor_hit(foe, foe.hp)
+	if exp ~= 0 then         
+		attacker.exp = attacker.exp + exp
+	end
+	
+	actor_yell_for_help(attacker, foe, 1)
+	actor_hit_msg(foe)
+	
+	return -1
 end
 
 function spell_hit_actor(attacker, foe, spell_num)

@@ -102,6 +102,18 @@ g_projectile_offset_tbl =
  }
 }
 
+g_moonstone_loc_tbl =
+{
+ {x=0x3A7, y=0x106, z=0},
+ {x=0x1F7, y=0x166, z=0},
+ {x=0x9F,  y=0x3AE, z=0},
+ {x=0x127, y=0x26,  z=0},
+ {x=0x33F, y=0x0A6, z=0},
+ {x=0x147, y=0x336, z=0},
+ {x=0x17,  y=0x16,  z=1},
+ {x=0x397, y=0x3A6, z=0}
+}
+
 -- some common functions
 
 function dbg(msg_string)
