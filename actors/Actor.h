@@ -213,7 +213,6 @@ class Actor
  uint8 movement_flags; //0x19f1
  
  bool can_move;
- bool alive;
  bool temp_actor;
  bool met_player;
 
@@ -263,7 +262,7 @@ class Actor
  bool is_onscreen() { return(MapCoord(x,y,z).is_visible()); }
  bool is_in_party() { return ((status_flags & ACTOR_STATUS_IN_PARTY) == ACTOR_STATUS_IN_PARTY); }
  bool is_visible() { return visible_flag; }
- bool is_alive();
+ bool is_alive() { return (status_flags & ACTOR_STATUS_DEAD) ? false : true; }
  bool is_nearby(Actor *other);
  bool is_nearby(uint8 actor_num);
  bool is_nearby(MapCoord &where, uint8 thresh = 5);

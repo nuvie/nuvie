@@ -160,12 +160,19 @@ bool Player::save(NuvieIO *objlist)
 
 Actor *Player::find_actor()
 {
-    for(uint32 p=0; p < 256; p++)
+
+    for(uint32 p=0; p < ACTORMANAGER_MAX_ACTORS; p++)
     {
         Actor *actor = actor_manager->get_actor(p);
-        if(actor->get_worktype() == 0x02) // WT_U6_PLAYER
+        if(actor->get_worktype() == 0x02 && actor->is_immobile() == false) // WT_U6_PLAYER
             return(actor);
     }
+
+    sint8 party_leader = party->get_leader();
+
+    if(party_leader != -1)
+    	return party->get_actor(party_leader);
+
     return(actor_manager->get_actor(ACTOR_AVATAR_ID_N));
 }
 

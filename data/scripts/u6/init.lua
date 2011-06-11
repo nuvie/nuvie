@@ -63,6 +63,8 @@ FADE_COLOR_BLUE = 9
 TIMER_LIGHT = 0
 TIMER_INFRAVISION = 1
 TIMER_STORM = 13
+TIMER_TIME_STOP = 14
+TIMER_ECLIPSE = 15
 
 OBJLIST_OFFSET_VANISH_OBJ = 0x1c13
 
@@ -378,6 +380,12 @@ function obj_is_readiable(obj)
 		return true
 	end
 
+	return false
+end
+
+function is_time_stopped()
+	if timer_get(TIMER_TIME_STOP) ~= 0 then return true end
+	
 	return false
 end
 

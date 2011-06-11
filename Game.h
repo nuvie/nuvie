@@ -118,7 +118,7 @@ class Game
  void init_cursor();
 
  void play();
- void update_once();
+ void update_once(bool process_gui_input);
  void update_once_display();
 
  GamePauseState get_pause_flags()            { return(pause_flags); }

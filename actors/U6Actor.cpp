@@ -435,7 +435,7 @@ uint16 U6Actor::get_downward_facing_tile_num()
 void U6Actor::update()
 {
 // Party *party = Game::get_game()->get_party();
- if(!alive)  //we don't need to update dead actors.
+ if(!is_alive())  //we don't need to update dead actors.
    return;
 
  Actor::update();

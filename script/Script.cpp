@@ -162,6 +162,9 @@ static int nscript_timer_get(lua_State *L);
 static int nscript_wind_set(lua_State *L);
 static int nscript_wind_get(lua_State *L);
 
+static int nscript_input_select(lua_State *L);
+static int nscript_input_select_integer(lua_State *L);
+
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
@@ -178,7 +181,6 @@ static int nscript_tile_get_flag(lua_State *L);
 
 //Misc
 static int nscript_new_hit_entities_tbl_var(lua_State *L, ProjectileEffect *effect);
-static int nscript_eclipse_start(lua_State *L);
 static int nscript_quake_start(lua_State *L);
 static int nscript_explosion_start(lua_State *L);
 static int nscript_projectile_anim(lua_State *L);
@@ -193,6 +195,8 @@ static int nscript_black_fade_obj(lua_State *L);
 
 static int nscript_xor_effect(lua_State *L);
 static int nscript_xray_effect(lua_State *L);
+
+static int nscript_peer_effect(lua_State *L);
 
 static int nscript_play_sfx(lua_State *L);
 
@@ -347,6 +351,12 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
 
+   lua_pushcfunction(L, nscript_input_select);
+   lua_setglobal(L, "input_select");
+
+   lua_pushcfunction(L, nscript_input_select_integer);
+   lua_setglobal(L, "input_select_integer");
+
    lua_pushcfunction(L, nscript_play_sfx);
    lua_setglobal(L, "play_sfx");
 
@@ -431,9 +441,6 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_party_heal);
    lua_setglobal(L, "party_heal");
 
-   lua_pushcfunction(L, nscript_eclipse_start);
-   lua_setglobal(L, "eclipse_start");
-
    lua_pushcfunction(L, nscript_quake_start);
    lua_setglobal(L, "quake_start");
 
@@ -469,6 +476,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_xray_effect);
    lua_setglobal(L, "xray_effect");
+
+   lua_pushcfunction(L, nscript_peer_effect);
+   lua_setglobal(L, "peer_effect");
 
    seed_random();
 
@@ -1673,17 +1683,6 @@ static int nscript_tile_get_flag(lua_State *L)
 	return 1;
 }
 
-static int nscript_eclipse_start(lua_State *L)
-{
-   Weather *weather = Game::get_game()->get_weather();
-   uint8 length = (uint8)luaL_checkinteger(L, 1);
-
-   weather->start_eclipse(length);
-
-   lua_pushboolean(L, true);
-   return 1;
-}
-
 static int nscript_quake_start(lua_State *L)
 {
    Player *player = Game::get_game()->get_player();
@@ -1910,6 +1909,19 @@ static int nscript_xray_effect(lua_State *L)
 	return 0;
 }
 
+static int nscript_peer_effect(lua_State *L)
+{
+	uint16 x, y;
+	 uint8 z;
+
+	 Game::get_game()->get_player()->get_location(&x,&y,&z);
+
+	AsyncEffect *e = new AsyncEffect(new PeerEffect((x-x%8)-18,(y-y%8)-18,z));
+		e->run(EFFECT_PROCESS_GUI_INPUT);
+
+		return 0;
+}
+
 static int nscript_play_sfx(lua_State *L)
 {
 	bool play_mode = SFX_PLAY_SYNC;
@@ -2039,6 +2051,46 @@ static int nscript_wind_get(lua_State *L)
 	return 1;
 }
 
+static int nscript_input_select(lua_State *L)
+{
+	const char *allowed_chars = NULL;
+
+	if(!lua_isnil(L, 1))
+		allowed_chars = luaL_checkstring(L, 1);
+
+	bool can_escape = lua_toboolean(L, 2);
+
+	TextInputEffect *inputEffect = new TextInputEffect(allowed_chars, can_escape);
+	AsyncEffect *e = new AsyncEffect(inputEffect);
+	e->run(EFFECT_PROCESS_GUI_INPUT);
+
+	std::string input = inputEffect->get_input();
+
+	lua_pushstring(L, input.c_str());
+
+	return 1;
+}
+
+static int nscript_input_select_integer(lua_State *L)
+{
+	const char *allowed_chars = NULL;
+
+	if(!lua_isnil(L, 1))
+		allowed_chars = luaL_checkstring(L, 1);
+
+	bool can_escape = lua_toboolean(L, 2);
+
+	TextInputEffect *inputEffect = new TextInputEffect(allowed_chars, can_escape);
+	AsyncEffect *e = new AsyncEffect(inputEffect);
+	e->run(EFFECT_PROCESS_GUI_INPUT);
+
+	std::string input = inputEffect->get_input();
+
+	int num = (int)strtol(input.c_str(), (char **)NULL, 10);
+	lua_pushinteger(L, num);
+
+	return 1;
+}
 //lua function objs_at_loc(x,y,z)
 static int nscript_objs_at_loc(lua_State *L)
 {

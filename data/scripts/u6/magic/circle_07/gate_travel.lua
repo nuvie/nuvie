@@ -1,6 +1,6 @@
---FIXME get phase here
 print("To phase ")
-local phase = 1
+local phase = input_select_integer(nil,true)
+
 
 print("\n")
 

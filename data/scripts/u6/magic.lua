@@ -453,6 +453,7 @@ magic_init("Mass Kill", "vc", 0x87, 8, 5, "u6/magic/circle_08/mass_kill.lua");
 magic_init("Resurrect", "imc", 0xf9, 8, 6, "u6/magic/circle_08/resurrect.lua");
 magic_init("Slime", "vrx", 0xb, 8, 7, "u6/magic/circle_08/slime.lua");
 magic_init("Summon", "kxc", 0x39, 8, 8, "u6/magic/circle_08/summon.lua");
+magic_init("Time Stop", "at", 0x39, 8, 9, "u6/magic/circle_08/time_stop.lua");
 magic_init("Tremor", "vpy", 0x89, 8, 10, "u6/magic/circle_08/tremor.lua");
 
 magic_init("Monster Invisible", "", 0x00, 8, 17, "u6/magic/circle_08/monster_invisible.lua");

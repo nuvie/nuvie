@@ -42,19 +42,14 @@
 //the longest we will go before having a change in wind direction
 #define WEATHER_MAX_WIND 30 
 
-#define WEATHER_MAX_ECLIPSE_LENGTH 30
-
-Weather::Weather(Configuration *cfg, nuvie_game_t type)
+Weather::Weather(Configuration *cfg, GameClock *c, nuvie_game_t type)
 {
 	config = cfg;
+	clock = c;
 	gametype = type;
  
 	wind_dir = NUVIE_DIR_NONE;
 	wind_timer = NULL;
-	
-	eclipse_start = 0;
-	eclipse_length = 0;
-	eclipse_timer = NULL;
 }
 
 Weather::~Weather()
@@ -64,10 +59,7 @@ Weather::~Weather()
  
 bool Weather::load(NuvieIO *objlist)
 {
-	uint8 eclipse_length;
-
 	clear_wind();
-	clear_eclipse();
     
 	if(gametype == NUVIE_GAME_U6)
 	{
@@ -75,9 +67,6 @@ bool Weather::load(NuvieIO *objlist)
 		set_wind_change_callback(); //set a timer to change the wind direction in the future.
 		send_wind_change_notification_callback();
 		
-		eclipse_length = load_eclipse_length(objlist);
-		if(eclipse_length > 0)
-			start_eclipse(eclipse_length);
 		load_moonstones(objlist);
 	}
 
@@ -154,14 +143,6 @@ uint8 Weather::load_wind(NuvieIO *objlist)
 	return wind_tbl[objlist_wind];
 }
 
-void Weather::clear_eclipse()
-{
-	if(eclipse_timer)
-		eclipse_timer->stop_timer(); //stop current timer
-	
-	end_eclipse();
-}
-
 void Weather::clear_wind()
 {
 	if(wind_timer)
@@ -172,19 +153,11 @@ void Weather::clear_wind()
 	return;
 }
 
-//returns any eclipse time saved in the objlist. (measured in game ticks)
-uint8 Weather::load_eclipse_length(NuvieIO *objlist)
-{
-	objlist->seek(OBJLIST_OFFSET_U6_ECLIPSE);
-	return objlist->read1();
-}
-
 bool Weather::save(NuvieIO *objlist)
 {
 	if(gametype == NUVIE_GAME_U6)
 	{
 		save_wind(objlist);
-		save_eclipse(objlist);
 		save_moonstones(objlist);
 	}
 	
@@ -210,23 +183,6 @@ bool Weather::save_wind(NuvieIO *objlist)
 	return true;
 }
 
-bool Weather::save_eclipse(NuvieIO *objlist)
-{
-	GameClock *clock = Game::get_game()->get_clock();
-	uint8 new_length = 0;
-
-	if(eclipse_timer)
-	{
-		//work out how long we have left on the eclipse
-		new_length = eclipse_length - (clock->get_game_ticks() - eclipse_start);
-	}
-	
-	//save it into the objlist
-  objlist->seek(OBJLIST_OFFSET_U6_ECLIPSE);
-  objlist->write1(new_length);
-
-	return true;
-}
 bool Weather::save_moonstones(NuvieIO *objlist)
 {
   objlist->seek(OBJLIST_OFFSET_U6_MOONSTONES);
@@ -246,6 +202,14 @@ bool Weather::save_moonstones(NuvieIO *objlist)
     DEBUG(0,LEVEL_DEBUGGING,"Wrote moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
   }
   return true;
+}
+
+bool Weather::is_eclipse()
+{
+	if(gametype != NUVIE_GAME_U6 || clock->get_timer(GAMECLOCK_TIMER_U6_ECLIPSE) == 0)
+		return false;
+
+	return true;
 }
 
 string Weather::get_wind_dir_str()
@@ -303,46 +267,6 @@ inline void Weather::send_wind_change_notification_callback()
 		(*cb_iter)->callback(WEATHER_CB_CHANGE_WIND_DIR, (CallBack *)this, NULL);
 }
 
-void Weather::start_eclipse(uint8 length)
-{
-	GameClock *clock = Game::get_game()->get_clock();
-  ViewManager *view_manager = Game::get_game()->get_view_manager();
-  MapWindow *map_window = Game::get_game()->get_map_window();
-	
-	if(eclipse_timer != NULL || length == 0)
-		return;
-
-	eclipse_length = length;
-
-	eclipse_start = clock->get_game_ticks();
-	set_eclipse_callback(eclipse_length);
-  
-  view_manager->update();
-	map_window->updateAmbience();
-
-	DEBUG(0,LEVEL_INFORMATIONAL,"Starting Eclipse. Length=%d\n",eclipse_length);
-	
-	return;
-}
-
-inline void Weather::set_eclipse_callback(uint8 length)
-{
-	uint8 *cb_msgid = new uint8;
-	*cb_msgid = WEATHER_CB_END_ECLIPSE;
-	eclipse_timer = new GameTimedCallback((CallBack *)this, cb_msgid, length);
-}
-
-void Weather::end_eclipse()
-{
-	eclipse_timer = NULL;
-	eclipse_length = 0;
-	eclipse_start = 0;
-	
-	DEBUG(0,LEVEL_INFORMATIONAL,"Eclipse End.\n");
-
-	return;
-}
-
 bool Weather::add_wind_change_notification_callback(CallBack *caller)
 {
 	wind_change_notification_list.push_back(caller);
@@ -358,7 +282,6 @@ uint16 Weather::callback(uint16 msg, CallBack *caller, void *data)
 	switch(*cb_msgid)
 	{
 		case WEATHER_CB_CHANGE_WIND_DIR : wind_timer = NULL; change_wind_dir(); break;
-		case WEATHER_CB_END_ECLIPSE : end_eclipse(); break;
 		default : DEBUG(0,LEVEL_ERROR,"Weather: Unknown callback!\n"); break;
 	}
     

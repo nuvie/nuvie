@@ -31,6 +31,7 @@
 class Configuration;
 class NuvieIO;
 class CallBack;
+class GameClock;
 class GameTimedCallback;
 
 using std::list;
@@ -44,20 +45,18 @@ using std::string;
 class Weather: public CallBack
 {
 	Configuration *config;
+	GameClock *clock;
 	nuvie_game_t gametype; // what game is being played?
  
 	uint8 wind_dir;
 	std::list<CallBack *>wind_change_notification_list;
  
-	uint32 eclipse_start;
-	uint8 eclipse_length;
-	GameTimedCallback *eclipse_timer;
 	GameTimedCallback *wind_timer;
 	MapCoord moonstones[8]; //FIXME hardcoded constant!
  
 	public:
 
-	Weather(Configuration *cfg, nuvie_game_t type);
+	Weather(Configuration *cfg, GameClock *c, nuvie_game_t type);
 	~Weather();
 
 	bool load(NuvieIO *objlist);
@@ -70,8 +69,7 @@ class Weather: public CallBack
 	bool set_moonstone(uint8 moonstone,MapCoord where);
 	MapCoord get_moonstone(uint8 moonstone);
   
-	bool is_eclipse() { return((eclipse_timer != NULL ? true : false)); }
-	void start_eclipse(uint8 length = 0);
+	bool is_eclipse();
 
 	uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
  
@@ -85,12 +83,6 @@ class Weather: public CallBack
 	inline void set_wind_change_callback();
 	inline void send_wind_change_notification_callback();
 	void clear_wind();
-	
-	void clear_eclipse();
-	uint8 load_eclipse_length(NuvieIO *objlist);
-	bool save_eclipse(NuvieIO *objlist);
-	inline void set_eclipse_callback(uint8 length);
-	void end_eclipse();
 };
 
 #endif /* __Weather_h__ */

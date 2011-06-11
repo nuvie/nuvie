@@ -549,6 +549,17 @@ public:
     ~PauseEffect() { }
 };
 
+/* Gather text from scroll input then continue. */
+class TextInputEffect: public Effect
+{
+	std::string input;
+public:
+    /* Called by the Effect handler when input is available. */
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+    TextInputEffect(const char *allowed_chars, bool can_escape);
+    ~TextInputEffect() { }
+    std::string get_input() { return input; }
+};
 
 /* colors for PeerEffect */
 const uint8 peer_tilemap[4] =
@@ -592,6 +603,7 @@ public:
     void delete_self();
 };
 
+#define EFFECT_PROCESS_GUI_INPUT true
 /* Run an effect asynchronously and keep updating the world until the effect completes. */
 class AsyncEffect : public Effect
 {
@@ -602,7 +614,7 @@ protected:
 public:
     AsyncEffect(Effect *e);
     ~AsyncEffect();
-    void run();
+    void run(bool process_gui_input=false);
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 

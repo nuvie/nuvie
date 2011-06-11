@@ -114,12 +114,6 @@ void Actor::init_from_obj(Obj *obj)
  return;
 }
 
-bool Actor::is_alive()
-{
- return alive;
-}
-
-
 /* Returns true if another NPC `n' is in proximity to location `where'.
  */
 bool Actor::is_nearby(MapCoord &where, uint8 thresh)
@@ -548,7 +542,7 @@ void Actor::set_in_party(bool state)
     }
     else // left
     {
-        if(alive)
+        if(is_alive() == true)
           {
            inventory_drop_all();
            set_worktype(0x8f); // U6_WANDER_AROUND
@@ -1168,7 +1162,7 @@ bool Actor::updateSchedule(uint8 hour)
  uint8 day_of_week;
  uint16 new_pos;
 
- if(alive == false) //don't update schedule for dead actors.
+ if(is_alive() == false) //don't update schedule for dead actors.
    return false;
 
  //hour = clock->get_hour();
@@ -1515,7 +1509,6 @@ void Actor::reduce_hp(uint8 amount)
 void Actor::die(bool create_body)
 {
     hp = 0;
-    alive = false;
     visible_flag = false;
     status_flags |= ACTOR_STATUS_DEAD;
 }
@@ -1535,8 +1528,6 @@ void Actor::resurrect(MapCoord new_position, Obj *body_obj)
   }
   
 
-
-  alive = true;
   status_flags |= ACTOR_STATUS_DEAD; // set, make sure it is not 0 already
   status_flags = status_flags ^ ACTOR_STATUS_DEAD; // now toggle off 
   
@@ -1714,7 +1705,7 @@ void Actor::print()
     DEBUG(1,LEVEL_INFORMATIONAL,"walk_frame: %d\n", actor->walk_frame);
 
     DEBUG(1,LEVEL_INFORMATIONAL,"can_move: %s\n", actor->can_move ? "true" : "false");
-    DEBUG(1,LEVEL_INFORMATIONAL,"alive: %s\n", actor->alive ? "true" : "false");
+    DEBUG(1,LEVEL_INFORMATIONAL,"alive: %s\n", actor->is_alive() ? "true" : "false");
     DEBUG(1,LEVEL_INFORMATIONAL,"in_party: %s\n", is_in_party() ? "true" : "false");
     DEBUG(1,LEVEL_INFORMATIONAL,"visible_flag: %s\n", actor->visible_flag ? "true" : "false");
     DEBUG(1,LEVEL_INFORMATIONAL,"met_player: %s\n", actor->met_player ? "true" : "false");
@@ -1733,7 +1724,7 @@ void Actor::print()
            actor->intelligence);
     DEBUG(1,LEVEL_INFORMATIONAL," magic: %d / %d\n", actor->magic, actor->get_maxmagic());
 
-    DEBUG(1,LEVEL_INFORMATIONAL,"alignment: %s\n", get_actor_alignment_str(actor->get_alignment()));
+    DEBUG(1,LEVEL_INFORMATIONAL,"alignment: %s (%d)\n", get_actor_alignment_str(actor->get_alignment()), actor->get_alignment());
 
     uint8 combat_mode = actor->combat_mode;
     wt_string = get_worktype_string(actor->combat_mode);

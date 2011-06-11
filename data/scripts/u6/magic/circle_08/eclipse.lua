@@ -1,2 +1,4 @@
+magic_casting_fade_effect()
 magic_casting_effect()
-eclipse_start(math.random(10,20))
+timer_set(TIMER_ECLIPSE, 0x14)
+

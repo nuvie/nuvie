@@ -177,7 +177,6 @@ bool ActorManager::load(NuvieIO *objlist)
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
     actors[i]->status_flags = objlist->read1();
-    actors[i]->alive = (bool)!(actors[i]->status_flags & ACTOR_STATUS_DEAD);
     actors[i]->alignment = ((actors[i]->status_flags & ACTOR_STATUS_ALIGNMENT_MASK) >> 5) + 1;
    }
 
@@ -460,6 +459,7 @@ bool ActorManager::save(NuvieIO *objlist)
  
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
+	actors[i]->status_flags &= 0x9f;
     actors[i]->status_flags |= (actors[i]->alignment-1)<<5;
     objlist->write1(actors[i]->status_flags);
    }
@@ -910,6 +910,11 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    
    actor->temp_actor = true;
 
+   actor->obj_flags = 0;
+   actor->status_flags = 0;
+   actor->talk_flags = 0;
+   actor->movement_flags = 0;
+
    actor->init();
 
      Game::get_game()->get_script()->call_actor_init(actor);
@@ -1158,7 +1163,7 @@ inline ActorList *ActorManager::filter_active_actors(ActorList *list, uint16 x, 
             if((loc.distance(actor_loc) > dist || loc.z != actor_loc.z)
                && actor->worktype != WORKTYPE_U6_WALK_TO_LOCATION)
                 actor->set_moves_left(0);
-            if(actor->is_sleeping() || actor->is_immobile() || !actor->alive)
+            if(actor->is_sleeping() || actor->is_immobile() || !actor->is_alive())
                 actor->set_moves_left(0);
         }
         if((actor->is_in_party() == true && combat_movement == false) || actor->moves <= 0)

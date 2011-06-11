@@ -61,8 +61,10 @@ wt_front_target_actor = nil
 
 wt_num_monsters_near = 0
 
+g_time_stopped = false
+
 --Actor stats table
---str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,?,undead,?,strength_based,double dmg from fire,immune to magic,immune to poison,undead,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
+--str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,immune to tremor,undead,?,strength_based,double dmg from fire,immune to magic,immune to poison,undead,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}, 0},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}, 6},
@@ -449,12 +451,8 @@ function actor_dex_adj(actor)
          dex = dex - 3
       end
    end
-   
-   --FIXME
-   --if timestop and actor not in party then
-   -- dex = 1
-   
-   if actor.asleep == true then
+        
+   if g_time_stopped == true or actor.asleep == true then
      dex = 1
    end
    
@@ -1401,8 +1399,9 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       end
       
       if weapon_obj_n == 0x31 then --boomerang
-         --projectile_anim(attacker.x, attacker.y, 1, target_x, target_y, 0x64, *(&bastile_ptr_data + 0x62), 1)
-         projectile(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], 0)
+         if attacker.x ~= 0 and attacker.y ~= 0 then --hack to stop return projectile if the avatar has died
+         	projectile(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], 0)
+         end
       end
    end
 end
@@ -1428,7 +1427,7 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, 
                     }
                     
       projectile_anim_multi(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, triple_crossbow_targets, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
-   else     
+   else    
       projectile(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][3], 0)
    end
     
@@ -1636,6 +1635,8 @@ end
 --
 function actor_update_all()
 dbg("actor_update_all()\n")
+   
+   g_time_stopped = is_time_stopped()
    
    actor_calculate_avg_coords()
    local actor
@@ -2418,8 +2419,8 @@ function actor_wt_flank(actor)
       end
    end
    
-   if target_actor ~= nil then
-      worktype_move_towards_player(actor)
+   if target_actor == nil then
+      actor_move_towards_player(actor)
       return
    end
    
@@ -2487,7 +2488,7 @@ function actor_wt_flank(actor)
       if actor_move_towards_loc(actor, tmp_x, tmp_y) == 0 then
       
          actor.mpts = mpts
-         worktype_attack(actor)
+         actor_wt_attack(actor)
       end
    end
    
@@ -3061,6 +3062,11 @@ end
 
 
 function perform_worktype(actor)
+   
+   if g_time_stopped == true then
+      actor.mpts = 0
+      return
+   end
    
    if wt_tbl[actor.wt] == nil then
       subtract_movement_pts(actor, 5)

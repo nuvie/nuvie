@@ -202,7 +202,7 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
    map_window->Hide();
    gui->AddWidget(map_window);
 
-   weather = new Weather(config, game_type);
+   weather = new Weather(config, clock, game_type);
 
    command_bar = new CommandBar(this);
    command_bar->Hide();
@@ -372,9 +372,12 @@ void Game::play()
      if(cursor) cursor->clear(); // restore cursor area before GUI events
 
      game_play = event->update();
-     palette->rotatePalette();
-     tile_manager->update();
-     actor_manager->twitchActors();
+     if(clock->get_timer(GAMECLOCK_TIMER_U6_TIME_STOP) == 0)
+     {
+       palette->rotatePalette();
+       tile_manager->update();
+       actor_manager->twitchActors();
+     }
      actor_manager->moveActors(); // update/move actors for this turn
      map_window->update();
      //map_window->drawMap();
@@ -392,15 +395,25 @@ void Game::play()
   return;
 }
 
-void Game::update_once()
+void Game::update_once(bool process_gui_input)
 {
     if(cursor) cursor->clear(); // restore cursor area before GUI events
 
     event->update_timers();
 
-    palette->rotatePalette();
-    tile_manager->update();
-    actor_manager->twitchActors();
+    SDL_Event event;
+    while(SDL_PollEvent(&event))
+    {
+      if(process_gui_input)
+         gui->HandleEvent(&event);
+    }
+
+    if(clock->get_timer(GAMECLOCK_TIMER_U6_TIME_STOP) == 0)
+    {
+      palette->rotatePalette();
+      tile_manager->update();
+      actor_manager->twitchActors();
+    }
     map_window->update();
     effect_manager->update_effects();
 }

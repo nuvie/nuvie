@@ -1,3 +1,24 @@
+2011-06-11  Eric Fry <efry at users.sourceforge.net> r1203
+	* Fixed bug when loading a savegame where the avatar is incapacitated.
+	* Removed old eclipse logic from Weather class. Replaced with timer in
+	  GameClock.
+	* Fixed bug when saving actor alignment.
+	* Clear actor flags when creating new temp actor.
+	* Removed alive variable from actor. Alive flag is now back in status_flags.
+	* Added new TextInputEffect class which waits for input from msgscroll.
+	* Changed Game::update_once loop to allow polling of events by gui widgets.
+	  This allows effects to receive input from msgscroll.
+	* Added Peer (vwy) spell.
+	* Added Time Stop (at) spell.
+	* Added phase select to Gate Travel spell.
+	* Reworked Eclipse spell to use timers.
+	* Added damage to Tremor spell.
+	* Fixed some bugs with flank worktype.
+	* Added input_select() input_select_integer() and peer_effect() script
+	  functions.
+	* Removed eclipse_start() script function.
+	* Fixed bug with boomerang when avatar dies.
+
 2011-06-09  Eric Fry <efry at users.sourceforge.net> r1202
 	* Added Chain Bolt (vog) spell.
 	* Added Energy Wind (gh) spell.

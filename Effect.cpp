@@ -250,7 +250,7 @@ void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, 
 void ProjectileEffect::start_anim()
 {
     game->pause_world();
-    game->pause_anims();
+    //game->pause_anims();
     //game->pause_user();
 
     add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation));
@@ -1653,6 +1653,26 @@ uint16 PauseEffect::callback(uint16 msg, CallBack *caller, void *data)
     return 0;
 }
 
+TextInputEffect::TextInputEffect(const char *allowed_chars, bool can_escape)
+{
+    game->pause_world();
+    // FIXME: need a way to detect any keyboard/mouse input
+    game->get_scroll()->set_input_mode(true, allowed_chars, can_escape);
+    game->get_scroll()->request_input(this, 0);
+}
+
+/* The effect ends when this is called. (if input is correct) */
+uint16 TextInputEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(msg == MESG_INPUT_READY)
+    {
+    	input = *(std::string*)data;
+        game->unpause_world();
+        delete_self();
+    }
+    return 0;
+}
+
 
 PeerEffect::PeerEffect(uint16 x, uint16 y, uint8 z, Obj *callback_obj)
                      : map_window(game->get_map_window()), overlay(0),
@@ -1811,12 +1831,12 @@ AsyncEffect::~AsyncEffect()
 }
 
 /* The effect is marked as defunct after run finishes and will be removed from the system.*/
-void AsyncEffect::run()
+void AsyncEffect::run(bool process_gui_input)
 {
 	for(;effect_complete == false;)
 	{
 		//spin world
-		Game::get_game()->update_once();
+		Game::get_game()->update_once(process_gui_input);
 		if(!effect_complete)
 			Game::get_game()->update_once_display();
 	}
