@@ -29,6 +29,7 @@
 #include "Effect.h"
 #include "ActorManager.h"
 #include "Actor.h"
+#include "ViewManager.h"
 
 extern bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
 extern Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
@@ -62,6 +63,8 @@ static int nscript_actor_walk_path(lua_State *L);
 static int nscript_actor_is_at_scheduled_location(lua_State *L);
 static int nscript_actor_can_carry_obj(lua_State *L);
 static int nscript_actor_black_fade_effect(lua_State *L);
+static int nscript_actor_show_portrait(lua_State *L);
+static int nscript_actor_hide_portrait(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -84,6 +87,8 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "is_at_scheduled_location", nscript_actor_is_at_scheduled_location },
    { "can_carry_obj", nscript_actor_can_carry_obj },
    { "black_fade_effect", nscript_actor_black_fade_effect },
+   { "show_portrait", nscript_actor_show_portrait },
+   { "hide_portrait", nscript_actor_hide_portrait },
 
    { NULL, NULL }
 };
@@ -312,12 +317,6 @@ int (*actor_get_func[])(Actor *, lua_State *) =
 
 static int nscript_map_get_actor(lua_State *L);
 
-
-//Actor FIXME might not need these anymore.
-static int nscript_actor_poison(lua_State *L);
-static int nscript_actor_add_hp(lua_State *L);
-static int nscript_actor_add_mp(lua_State *L);
-
 static int nscript_actor_inv(lua_State *L);
 
 void nscript_init_actor(lua_State *L)
@@ -330,14 +329,6 @@ void nscript_init_actor(lua_State *L)
 
    lua_pushcfunction(L, nscript_map_get_actor);
    lua_setglobal(L, "map_get_actor");
-
-   //lua_pushcfunction(L, nscript_actor_poison);
-   //lua_setglobal(L, "actor_poison");
-
-   lua_pushcfunction(L, nscript_actor_add_hp);
-   lua_setglobal(L, "actor_add_hp");
-   lua_pushcfunction(L, nscript_actor_add_mp);
-   lua_setglobal(L, "actor_add_mp");
 
    lua_pushcfunction(L, nscript_actor_inv);
    lua_setglobal(L, "actor_inventory");
@@ -986,6 +977,24 @@ static int nscript_actor_black_fade_effect(lua_State *L)
 	   return 0;
 }
 
+static int nscript_actor_show_portrait(lua_State *L)
+{
+	Actor *actor = nscript_get_actor_from_args(L);
+	if(actor == NULL)
+		return 0;
+
+	Game::get_game()->get_view_manager()->set_portrait_mode(actor, actor->get_name());
+
+	return 0;
+}
+
+static int nscript_actor_hide_portrait(lua_State *L)
+{
+	Game::get_game()->get_view_manager()->set_party_mode();
+
+	return 0;
+}
+
 static int nscript_actor_resurrect(lua_State *L)
 {
    Actor *actor;
@@ -1151,55 +1160,6 @@ static int nscript_map_get_actor(lua_State *L)
       return 0;
 
    return 1;
-}
-
-static int nscript_actor_poison(lua_State *L)
-{
-   ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-   uint16 actor_num;
-   Actor *actor;
-
-   actor_num = (uint16)luaL_checkinteger(L, 1);
-
-   actor = actor_manager->get_actor(actor_num);
-
-   actor->set_poisoned(true);
-
-   return 0;
-}
-
-static int nscript_actor_add_hp(lua_State *L)
-{
-   ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-   uint16 actor_num;
-   uint8 hp;
-   Actor *actor;
-
-   actor_num = (uint16)luaL_checkinteger(L, 1);
-   hp = (uint8)luaL_checkinteger(L, 2);
-
-   actor = actor_manager->get_actor(actor_num);
-
-   actor->set_hp(MAX((actor->get_hp() + hp), actor->get_maxhp()));
-
-   return 0;
-}
-
-static int nscript_actor_add_mp(lua_State *L)
-{
-   ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-   uint16 actor_num;
-   uint8 mp;
-   Actor *actor;
-
-   actor_num = (uint16)luaL_checkinteger(L, 1);
-   mp = (uint8)luaL_checkinteger(L, 2);
-
-   actor = actor_manager->get_actor(actor_num);
-
-   actor->set_magic(MAX((actor->get_magic() + mp), actor->get_maxmagic()));
-
-   return 0;
 }
 
 //lua function actor_inventory(actor, is_recursive)

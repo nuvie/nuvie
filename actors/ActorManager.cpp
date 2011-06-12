@@ -615,7 +615,7 @@ void ActorManager::startActors()
         activate_actor(active_actors.begin(), actors[player_actor]);
 
     wait_for_player = false;
-    Game::get_game()->pause_user();
+    //ERIC Game::get_game()->pause_user();
 }
 
 // After all actors move, refresh move counts and add time.

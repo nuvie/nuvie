@@ -1899,7 +1899,6 @@ dbg("activate_city_guards()")
                         if actor.obj_n == 0x188 then
                            actor.frame_n = actor.old_frame_n
                         end
-      
                         actor.wt = WT_ATTACK_PARTY
                      end
                   end
@@ -1956,21 +1955,18 @@ function caught_by_guard(actor)
    --   return
    --end
    
+   Actor.show_portrait(actor)
+   
    print("\n\"Thou art under arrest!\"\n\n\"Wilt thou come quietly?\"\n\n:")
    
-   local var_6 = "Y"
- --[[ FIXME I need to get the input
-   var_6 = input_loop()
-   while(ax != 'N' && ax != 'Y')
-   {
-      var_6 = input_loop()
-   }
---]]
+   local var_6 = input_select("yn", true)
    
    actor.wt = 0x81
    
+   Actor.hide_portrait()
+   
    if var_6 == "Y" then
-      print("Yes\n\nThe guard strikes thee unconscious!\n\nThou dost awaken to...\n")
+      print("es\n\nThe guard strikes thee unconscious!\n\nThou dost awaken to...\n")
       --sub_2ACA1()
       
       fade_out()
@@ -2020,7 +2016,7 @@ function caught_by_guard(actor)
    --]]
    else
    
-      print("No\n\n\"Then defend thyself, rogue!\"\n")
+      print("o\n\n\"Then defend thyself, rogue!\"\n")
       activate_city_guards()
       actor.wt = WT_ASSAULT
       actor.align = ALIGNMENT_EVIL
@@ -3242,7 +3238,7 @@ function actor_avatar_death(avatar)
 	play_sfx(SFX_KAL_LOR, true)
 	avatar.asleep = false
 	party_resurrect_dead_members()
-	party_heal() --FIXME remove poison when healing party.
+	party_heal()
 	party_move(0x133, 0x160, 0)
 
 	fade_in()

@@ -48,7 +48,6 @@ U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
  beg_mode = 0; // beggers are waiting for targets
  walk_frame_inc = 1;
- poison_counter = 0;
 
  foe = attacker = 0;
 }
@@ -465,17 +464,6 @@ bool U6Actor::updateSchedule(uint8 hour)
    }
 
  return ret;
-}
-
-inline void U6Actor::updatePoison()
-{
- if(poison_counter == 0)
-  {
-   poison_counter = NUVIE_RAND() % 35;
-   hit(1, ACTOR_FORCE_HIT);
-  }
- else
-   poison_counter--;
 }
 
 // workout our direction based on actor_type and frame_n
@@ -915,13 +903,14 @@ void U6Actor::set_poisoned(bool poisoned)
   {
    status_flags |= ACTOR_STATUS_POISONED;
    new HitEffect(this); // no direct hp loss
-   Game::get_game()->get_view_manager()->update();
   }
  else
   {
    status_flags &= (0xff ^ ACTOR_STATUS_POISONED);
-   poison_counter = 0;
   }
+
+  if(is_in_party())
+	Game::get_game()->get_view_manager()->update();
 }
 
 void U6Actor::set_paralyzed(bool paralyzed)

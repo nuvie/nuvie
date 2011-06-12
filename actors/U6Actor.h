@@ -68,7 +68,6 @@ class U6Actor: public Actor
 
  uint8 beg_mode; // for WT_BEG
  sint8 walk_frame_inc; // added to walk_frame each step
- uint8 poison_counter;
 
  U6Actor *foe; // enemy being attacked or approached by this actor
  U6Actor *attacker; // last enemy to attack this actor
@@ -148,8 +147,6 @@ class U6Actor: public Actor
  void wt_tangle_vine();
 
  inline const U6ActorType *get_actor_type(uint16 new_obj_n);
-
- inline void updatePoison();
 
  inline bool has_surrounding_objs();
  inline void remove_surrounding_objs_from_map();

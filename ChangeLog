@@ -1,3 +1,15 @@
+2011-06-12  Eric Fry <efry at users.sourceforge.net> r1204
+	* Removed old poison damage code from U6Actor class.
+	* Update view manager when changing party member poison state.
+	* Update view manager when changing party member hp.
+	* Removed old defend code from Actor class.
+	* Removed party_heal script function and replace with pure script version.
+	  This version also removes poison, charm etc from party members.
+	* Added Actor.show_portrait() Actor.hide_portrait() script functions.
+	* Added input yes/no select to guard arrest player logic.
+	* Removed unused script functions actor_poison(), actor_add_hp() and
+	  actor_add_mp().
+
 2011-06-11  Eric Fry <efry at users.sourceforge.net> r1203
 	* Fixed bug when loading a savegame where the avatar is incapacitated.
 	* Removed old eclipse logic from Weather class. Replaced with timer in

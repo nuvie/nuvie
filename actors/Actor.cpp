@@ -31,6 +31,7 @@
 #include "MapWindow.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
+#include "ViewManager.h"
 #include "U6UseCode.h"
 #include "Party.h"
 #include "CombatPathFinder.h"
@@ -1407,103 +1408,27 @@ bool Actor::push(Actor *pusher, uint8 where)
     return(false);
 }
 
-//returns true if successfully defended
-//false if damage incurred
-#if 0
-bool Actor::defend(uint8 attack, uint8 weapon_damage)
-{
- uint8 damage;
- uint8 total_armor_class = body_armor_class + readied_armor_class;
- uint8 ac_saving_throw = 0;
- 
- if(weapon_damage == 0)
-   return true;
-/* 
- if(readied_armor_class > 0)
-  total_armor_class = readied_armor_class;
- else
-  total_armor_class = body_armor_class;
-*/
- DEBUG(0,LEVEL_DEBUGGING,"attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
-
- if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
-   {
-    if(weapon_damage == 255) // A weapon that does 255 damage kills every time.
-      {
-       hit(255, ACTOR_FORCE_HIT);
-       return false;
-      }
-
-    damage = NUVIE_RAND() % weapon_damage;
-    
-    if(total_armor_class > 0)
-      ac_saving_throw = NUVIE_RAND() % total_armor_class;
-
-    DEBUG(1,LEVEL_DEBUGGING,", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
-
-    if(damage > ac_saving_throw)
-      {
-       hit(damage-ac_saving_throw, true);
-       return false; // actor took damage
-      }
-   }
- else DEBUG(1,LEVEL_DEBUGGING,"\n");
- return true; // actor defended this attack
-}
-#endif
-//returns amount of damage to be incurred
-uint8 Actor::defend(uint8 attack, uint8 weapon_damage)
-{
- uint8 damage;
- uint8 total_armor_class = body_armor_class + readied_armor_class;
- uint8 ac_saving_throw = 0;
- 
- if(weapon_damage == 0)
-   return 0;
-/* 
- if(readied_armor_class > 0)
-  total_armor_class = readied_armor_class;
- else
-  total_armor_class = body_armor_class;
-*/
- DEBUG(0,LEVEL_DEBUGGING,"attack=%d, weapon_damage=%d, defender ac=%d(%d 'body', %d 'armor')", attack, weapon_damage, total_armor_class, body_armor_class, readied_armor_class);
-
- if(NUVIE_RAND() % 30 >= (dex - attack) / 2)
-   {
-    if(weapon_damage == 255) // A weapon that does 255 damage kills every time.
-      {
-       DEBUG(1,LEVEL_DEBUGGING,", Fatality!\n");
-       return 255;
-      }
-
-    damage = NUVIE_RAND() % weapon_damage;
-    
-    if(total_armor_class > 0)
-      ac_saving_throw = NUVIE_RAND() % total_armor_class;
-
-    DEBUG(1,LEVEL_DEBUGGING,", actual damage=%d, ac_save=%d\n",damage, ac_saving_throw);
-
-    if(damage > ac_saving_throw)
-      {
-       return damage-ac_saving_throw; // actor took damage
-      }
-   }
- else DEBUG(1,LEVEL_DEBUGGING,"\n");
- return 0; // actor defended this attack
-}
-
-
 /* Subtract amount from hp. May die if hp is too low. */
 void Actor::reduce_hp(uint8 amount)
 {
  DEBUG(0,LEVEL_DEBUGGING,"hit %s for %d points\n", get_name(), amount);
 
-    if(amount <= hp) hp -= amount;
-    else hp = 0;
+    if(amount <= hp)
+    	set_hp(hp - amount);
+    else
+    	set_hp(0);
 // FIXME... game specific?
     if(hp == 0)
         die();
-    Game::get_game()->stats_changed();
+}
+
+void Actor::set_hp(uint8 val)
+{
+	hp = val;
+	if(is_in_party())
+	{
+		Game::get_game()->get_view_manager()->update();
+	}
 }
 
 void Actor::die(bool create_body)

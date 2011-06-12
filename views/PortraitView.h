@@ -60,7 +60,7 @@ class PortraitView : public View {
  void Display(bool full_redraw);
  GUI_status HandleEvent(const SDL_Event *event);
 
- bool set_portrait(Actor *actor, char *name);
+ bool set_portrait(Actor *actor, const char *name);
  void set_show_cursor(bool state) { show_cursor = state; }
  void set_waiting(bool state);
  bool get_waiting()     { return(waiting); }

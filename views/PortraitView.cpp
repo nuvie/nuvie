@@ -106,7 +106,7 @@ void PortraitView::Display(bool full_redraw)
    DisplayChildren(full_redraw);
 }
 
-bool PortraitView::set_portrait(Actor *actor, char *name)
+bool PortraitView::set_portrait(Actor *actor, const char *name)
 {
  cur_actor_num = actor->get_actor_num();
  int doll_x_offset = 0;

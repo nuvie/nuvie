@@ -303,6 +303,16 @@ if karma >= 100 then karma = 99 end
 player_set_karma(karma)
 end
 
+function party_heal()
+	for actor in party_members() do
+		actor.asleep = false
+		actor.poisoned = false
+		actor.paralyzed = false	
+		actor_remove_charm(actor)
+		actor.hp = actor.max_hp
+	end
+end
+
 function explosion(tile_num, x, y)
 	play_sfx(SFX_EXPLOSION)
 	return explosion_start(tile_num, x, y)

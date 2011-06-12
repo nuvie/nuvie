@@ -319,7 +319,7 @@ class Actor
  void set_strength(uint8 val) { strength = val; }
  void set_dexterity(uint8 val) { dex = val; }
  void set_intelligence(uint8 val) { intelligence = val; }
- void set_hp(uint8 val) { hp = val; }
+ void set_hp(uint8 val);
  void set_level(uint8 val) { level = val; }
  void set_exp(uint16 val) { exp = clamp_max(val, 9999); }
  void set_magic(uint8 val) { magic = val; }
@@ -385,8 +385,6 @@ class Actor
  // combat methods
  void attack(MapCoord pos); // attack at a given map location
  void attack(sint8 readied_obj_location, MapCoord target);
-// bool defend(uint8 hit, uint8 weapon_damage); // defend against a hit
- uint8 defend(uint8 hit, uint8 weapon_damage); // defend against a hit
  const CombatType *get_weapon(sint8 readied_obj_location);
  void attract_to(Actor *target);
  void repel_from(Actor *target);

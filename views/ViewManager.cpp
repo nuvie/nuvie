@@ -121,7 +121,7 @@ void ViewManager::update()
 }
 
 // We only change to portrait mode if the actor has a portrait.
-void ViewManager::set_portrait_mode(Actor *actor, char *name)
+void ViewManager::set_portrait_mode(Actor *actor, const char *name)
 {
  if(portrait_view->set_portrait(actor, name) == true)
   {
