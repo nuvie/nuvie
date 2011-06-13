@@ -2124,7 +2124,7 @@ bool U6Actor::is_immobile()
 
 bool U6Actor::can_twitch()
 {
-	return(can_move == true
+	return((can_move == true || obj_n == OBJ_U6_MUSICIAN_PLAYING)
 			   && visible_flag == true
 			   && actor_type->twitch_rand != 0
 			   && get_corpser_flag() == false

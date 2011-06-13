@@ -198,6 +198,7 @@ end
 
 function actor_move_diagonal(actor, x_direction, y_direction)
    local x,y,z = actor.x, actor.y, actor.z
+   local direction
    
    if y_direction == DIR_NORTH then
       y = y - 1
@@ -1499,7 +1500,7 @@ function actor_get_weapon(attacker, foe)
          dbg("magic object quality = "..obj.quality.."\n");
          return obj
       else
-         dmg = get_weapon_dmg(obj.obj_n)  
+         local dmg = get_weapon_dmg(obj.obj_n)  
          if dmg ~= nil and dmg > max_dmg and get_weapon_range(obj.obj_n) >= range then
             max_dmg = dmg
             weapon = obj
@@ -1667,6 +1668,7 @@ dbg("actor_update_all()\n")
                      if actor.wt ~= WT_FOLLOW then
                         if actor.wt == 0x80 then
                            -- actor_set_worktype_from_schedule(actor)
+                           actor.wt = actor.sched_wt
                         end
                         
                         local dx = (actor.mpts * dex_6) - actor.dex * di
@@ -2206,7 +2208,7 @@ function actor_wt_front_1FB6E(actor)
    until found_actor == false
    
    
-   mpts = actor.mpts
+   local mpts = actor.mpts
    if actor_move_towards_loc(actor, target_x, target_y) ~= 0 then
       if actor.in_party == false or actor.x == target_x and actor.y == target_y then
          return 0
@@ -2511,7 +2513,7 @@ function actor_wt_berserk(actor)
        and (alignment ~= ALIGNMENT_GOOD or tmp_actor.align == ALIGNMENT_EVIL)
        and (alignment ~= ALIGNMENT_EVIL or tmp_actor.align == ALIGNMENT_GOOD)
        and (alignment ~= ALIGNMENT_CHAOTIC or tmp_actor.align ~= ALIGNMENT_CHAOTIC and tmp_actor.align ~= ALIGNMENT_NEUTRAL) then
-         combined_stats = tmp_actor.str + tmp_actor.dex + tmp_actor.int
+         local combined_stats = tmp_actor.str + tmp_actor.dex + tmp_actor.int
          if combined_stats > max_stats then
             max_stats = combined_stats
             target_actor = tmp_actor
@@ -2828,7 +2830,7 @@ function actor_wt_timid(actor)
 	   if actor.align == ALIGNMENT_GOOD and actor.wt ~= WT_FLEE and actor.wt ~= WT_MOUSE then
 	      actor_move_towards_loc(actor, party_avg_x, party_avg_y)
 	   else
-	      worktype_move_towards_player(actor)
+	      actor_move_towards_player(actor)
 	   end
 	end
 	
@@ -3071,8 +3073,10 @@ function perform_worktype(actor)
    
    dbg("wt = "..wt_tbl[actor.wt][1].."\n")
    
-   local func = wt_tbl[actor.wt][2]
-   func(actor)
+   if actor.mpts > 0 then
+   	local func = wt_tbl[actor.wt][2]
+   	func(actor)
+   end
    
    if actor.mpts == 0 then subtract_movement_pts(actor, 0xa) end
    
@@ -3239,8 +3243,15 @@ function actor_avatar_death(avatar)
 	avatar.asleep = false
 	party_resurrect_dead_members()
 	party_heal()
+	party_update_leader()
 	party_move(0x133, 0x160, 0)
 
+	for i=1,0x100 do
+		local actor = Actor.get(i)
+		actor.mpts = 0
+	end
+	avatar.mpts=1
+	
 	fade_in()
 
 end
