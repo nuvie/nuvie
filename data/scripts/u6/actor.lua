@@ -45,7 +45,7 @@ WT_PLAY_LUTE              = 0x95
 WT_BEG                    = 0x96
 
 WT_BELL_RINGER            = 0x98
-WT_FIGHTING               = 0x99
+WT_BRAWLING               = 0x99
 WT_MOUSE                  = 0x9a
 WT_ATTACK_PARTY           = 0x9b
 
@@ -2956,6 +2956,37 @@ dbg("actor_wt_sleep("..actor.name..") at "..actor.x..","..actor.y..","..actor.z.
 	end
 end
 
+function actor_wt_beg(actor)
+	local player_loc = player_get_location()
+	if actor.z == player_loc.z and abs(actor.x - player_loc.x) < 5 or abs(actor.y - player_loc.y) < 5 then
+		if actor_catch_up_to_party(actor) == true then
+			actor.wt = WT_WORK
+			Actor.talk(actor)
+		end
+	else
+		actor_wt_wander_around(actor)
+	end
+end
+
+function actor_wt_brawling(actor)
+	if math.random(0, 3) == 0 then
+		local target = actor_find_target(actor)
+		local player_loc = player_get_location()
+		if target ~= nil and actor_find_max_xy_distance(target, player_loc.x, player_loc.y) < 5 then
+			if actor_find_max_xy_distance(actor, target.x, target.y) < 2 then
+				hit_anim(target.x, target.y)
+				actor_move_towards_loc(actor, player_loc.x, player_loc.y)
+			else
+				actor_move_towards_loc(actor, target.x, target.y)
+			end
+			
+			return
+		end
+	end
+	
+	actor_wt_wander_around(actor)
+end
+
 wt_tbl = {
 [WT_NOTHING] = {"WT_NOTHING", perform_worktype},
 [WT_FRONT] = {"WT_FRONT", actor_wt_front},
@@ -2983,7 +3014,9 @@ wt_tbl = {
 [WT_WANDER_AROUND] = {"WT_WANDER_AROUND", actor_move_towards_player},
 [WT_WORK] = {"WT_WORK", actor_wt_wander_around},
 [WT_UNK_94] = {"WT_UNK_94", actor_wt_wander_around},
+[WT_BEG] = {"WT_BEG", actor_wt_beg},
 [WT_ATTACK_PARTY] = {"WT_ATTACK_PARTY", actor_wt_attack},
+[WT_BRAWLING] = {"WT_BRAWLING", actor_wt_brawling},
 [WT_MOUSE] = {"WT_MOUSE", actor_wt_timid}
 
 --[WT_] = {"WT_", actor_wt_rear}
@@ -3019,13 +3052,13 @@ function actor_find_target(actor)
 
       local tmp_actor = Actor.get(i)
 
-      if tmp_actor.obj_n ~= 0 and tmp_actor.alive == true and tmp_actor ~= actor and actor_ok_to_attack(actor, tmp_actor) == true then
+      if tmp_actor.obj_n ~= 0 and tmp_actor.alive == true and tmp_actor.actor_num ~= actor.actor_num and actor_ok_to_attack(actor, tmp_actor) == true then
       
          if actor.wt == WT_FLEE or
             actor.wt == WT_MOUSE or 
             actor.wt == WT_UNK_13 or
             actor.wt == WT_RETREAT or
-            actor.wt == WT_FIGHTING or 
+            actor.wt == WT_BRAWLING or 
             (align ~= ALIGNMENT_NEUTRAL or actor.wt == WT_ATTACK_PARTY and tmp_actor.align == ALIGNMENT_GOOD) and
             (align ~= ALIGNMENT_CHAOTIC or tmp_actor.align ~= ALIGNMENT_CHAOTIC) and
             tmp_actor.align ~= ALIGNMENT_NEUTRAL and

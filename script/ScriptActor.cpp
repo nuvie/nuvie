@@ -30,6 +30,7 @@
 #include "ActorManager.h"
 #include "Actor.h"
 #include "ViewManager.h"
+#include "Converse.h"
 
 extern bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
 extern Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
@@ -65,6 +66,7 @@ static int nscript_actor_can_carry_obj(lua_State *L);
 static int nscript_actor_black_fade_effect(lua_State *L);
 static int nscript_actor_show_portrait(lua_State *L);
 static int nscript_actor_hide_portrait(lua_State *L);
+static int nscript_actor_talk(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -89,6 +91,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "black_fade_effect", nscript_actor_black_fade_effect },
    { "show_portrait", nscript_actor_show_portrait },
    { "hide_portrait", nscript_actor_hide_portrait },
+   { "talk", nscript_actor_talk },
 
    { NULL, NULL }
 };
@@ -992,6 +995,16 @@ static int nscript_actor_hide_portrait(lua_State *L)
 {
 	Game::get_game()->get_view_manager()->set_party_mode();
 
+	return 0;
+}
+
+static int nscript_actor_talk(lua_State *L)
+{
+	Actor *actor = nscript_get_actor_from_args(L);
+	if(actor == NULL)
+		return 0;
+
+	Game::get_game()->get_converse()->start(actor);
 	return 0;
 }
 
