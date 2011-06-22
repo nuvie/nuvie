@@ -25,26 +25,39 @@ function magic_cast_spell(spell_num, caster, target)
 	g_magic_target = target
 	g_magic_caster = caster
 	g_magic_spell_num = spell_num
-	if magic[spell_num] ~= nil then
-		run_script(magic[spell_num].script)
+	if magic[spell_num+1] ~= nil then
+		run_script(magic[spell_num+1].script)
 	end
 	g_magic_caster = nil
 	g_magic_target = nil
 end
 
 function magic_spell_name(spell_num)
-	if magic[spell_num] ~= nil then
-		return magic[spell_num].name
+	if magic[spell_num+1] ~= nil then
+		return magic[spell_num+1].name
 	end
 	
 	return "Unknown"
+end
+
+function magic_get_spell_list(spell_level)
+	local list = {}
+	local insert = table.insert
+	local k,v
+	for k,v in pairs(magic) do
+		--if v.circle == spell_level then
+			insert(list, v)
+		--end
+	end
+	
+	return list
 end
 
 magic_init = function(name, invocation, reagents, circle, num, script)
 	local spell_num = (circle-1) * 16 + (num-1); 
     local spell = {name=name,invocation=invocation,reagents=reagents,circle=circle,spell_num=spell_num,script=script}
 
-    magic[spell_num] = spell
+    magic[spell_num+1] = spell
     magic_invocations[string.lower(invocation)] = spell_num
 
     io.stderr:write("Init Magic: " .. name .. " I: " .. invocation .. "\n")

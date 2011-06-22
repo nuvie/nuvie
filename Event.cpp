@@ -107,7 +107,7 @@ Event::~Event()
  delete game_time_queue;
 }
 
-bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
+bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic *mg,
                  GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g)
 {
  gui = g;
@@ -131,9 +131,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
    return false;
  time_queue = new TimeQueue;
  game_time_queue = new TimeQueue;
- magic = new Magic();
- if(magic->init(this) == false)
-	 return false;
+ magic = mg;
 
  return true;
 }
@@ -2691,7 +2689,12 @@ void Event::cancelAction()
         if(magic->is_waiting_to_resume())
         	magic->resume();
         else
+        {
+
         	scroll->display_string("nothing\n");
+      	  //view_manager->get_spell_view()->release_focus();
+      	  view_manager->set_inventory_mode();
+        }
     }
     else
     {

@@ -279,6 +279,8 @@ nuvie_SOURCES = \
 	views/InventoryMessage.h \
 	views/InventoryWidget.cpp \
 	views/InventoryWidget.h \
+	views/SpellView.cpp \
+	views/SpellView.h \
 \
 	AnimManager.cpp \
 	AnimManager.h \

@@ -34,6 +34,7 @@ extern "C"
 
 class Configuration;
 class MapCoord;
+class Spell;
 
 #define NUVIE_SCRIPT_ERROR             0
 #define NUVIE_SCRIPT_FINISHED          1
@@ -94,6 +95,7 @@ class Script
    bool call_actor_attack(Actor *actor, MapCoord location, Obj *weapon);
    bool call_actor_map_dmg(Actor *actor, MapCoord location);
    bool call_look_obj(Obj *obj);
+   bool call_magic_get_spell_list(uint8 level, Spell **spell_list);
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);

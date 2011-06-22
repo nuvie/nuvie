@@ -34,6 +34,7 @@
 #include "PortraitView.h"
 #include "InventoryView.h"
 #include "PartyView.h"
+#include "SpellView.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -70,6 +71,9 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
 
  portrait_view = new PortraitView(config);
  portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);
+
+ spell_view = new SpellView(config);
+ spell_view->init(gui->get_screen(), this, 168, 6, text, party, tile_manager, obj_manager);
 
  //set_current_view((View *)party_view);
 
@@ -142,11 +146,18 @@ void ViewManager::set_party_mode()
 
 void ViewManager::set_actor_mode()
 {
-
-
  set_current_view((View *)actor_view);
 }
 
+void ViewManager::set_spell_mode(Actor *caster, Obj *spell_container)
+{
+ if(spell_view != NULL)
+ {
+   spell_view->set_spell_caster(caster, spell_container);
+   set_current_view((View *)spell_view);
+ }
+ return;
+}
 
 // callbacks for switching views
 

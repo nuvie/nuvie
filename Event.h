@@ -143,7 +143,7 @@ friend class Magic; // FIXME
  Event(Configuration *cfg);
  virtual ~Event();
 
- bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p,
+ bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic *mg,
            GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g);
  Book *get_book() { return(book); }
  TimeQueue *get_time_queue() { return(time_queue); }

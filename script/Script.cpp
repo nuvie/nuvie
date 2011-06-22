@@ -43,6 +43,7 @@
 
 #include "Script.h"
 #include "ScriptActor.h"
+#include "Magic.h"
 
 #include <math.h>
 
@@ -210,6 +211,52 @@ static int nscript_container(lua_State *L);
 int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
 
 Script *Script::script = NULL;
+
+static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field)
+{
+   lua_pushstring(L, index);
+   lua_gettable(L, -2);
+
+   if(!lua_isnumber(L, -1))
+      return false;
+
+   *field = (uint16)lua_tonumber(L, -1);
+   lua_pop(L, 1);
+   return true;
+}
+
+static bool get_tbl_field_uint8(lua_State *L, const char *index, uint8 *field)
+{
+   lua_pushstring(L, index);
+   lua_gettable(L, -2);
+
+   if(!lua_isnumber(L, -1))
+      return false;
+
+   *field = (uint8)lua_tonumber(L, -1);
+   lua_pop(L, 1);
+   return true;
+}
+
+static bool get_tbl_field_string(lua_State *L, const char *index, char *field, uint16 max_len)
+{
+   lua_pushstring(L, index);
+   lua_gettable(L, -2);
+
+   if(!lua_isstring(L, -1))
+      return false;
+
+   size_t size;
+   const char *string = lua_tolstring(L, -1, &size);
+   if(size > max_len)
+	   size = max_len;
+
+   memcpy(field, string, size);
+   field[size] = '\0';
+
+   lua_pop(L, 1);
+   return true;
+}
 
 uint8 ScriptThread::resume_with_location(MapCoord loc)
 {
@@ -630,6 +677,51 @@ bool Script::call_look_obj(Obj *obj)
    return lua_toboolean(L,-1);
 }
 
+bool Script::call_magic_get_spell_list(uint8 level, Spell **spell_list)
+{
+	lua_getglobal(L, "magic_get_spell_list");
+
+	lua_pushnumber(L, (lua_Number)level);
+
+	if(lua_pcall(L, 1, 1, 0) != 0)
+	{
+		DEBUG(0, LEVEL_ERROR, "Script Error: look_obj() %s\n", luaL_checkstring(L, -1));
+		return false;
+	}
+
+	for(int i=1;;i++)
+	{
+		lua_pushinteger(L, i);
+		lua_gettable(L, -2);
+
+		if(!lua_istable(L, -1)) //we've hit the end of our targets
+		{
+			printf("end = %d",i);
+			lua_pop(L, 1);
+			break;
+		}
+
+		uint16 num;
+		uint8 re;
+		char name[13];
+		char invocation[5];
+
+		get_tbl_field_uint16(L, "spell_num", &num);
+		get_tbl_field_uint8(L, "reagents", &re);
+		get_tbl_field_string(L, "name", name, 12);
+		get_tbl_field_string(L, "invocation", invocation, 4);
+
+		if(num < 256 && spell_list[num] == NULL)
+		{
+			spell_list[num] = new Spell((uint8)num, (const char *)name, (const char *)invocation, re);
+			printf("num = %d, reagents = %d, name = %s invocation = %s\n", num, re, name, invocation);
+		}
+
+		lua_pop(L, 1);
+	}
+
+	return true;
+}
 
 ScriptThread *Script::new_thread(const char *scriptfile)
 {
@@ -658,32 +750,6 @@ ScriptThread *Script::new_thread_from_string(const char *script)
    t = new ScriptThread(s, 0);
 
    return t;
-}
-
-static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field)
-{
-   lua_pushstring(L, index);
-   lua_gettable(L, -2);
-
-   if(!lua_isnumber(L, -1))
-      return false;
-
-   *field = (uint16)lua_tonumber(L, -1);
-   lua_pop(L, 1);
-   return true;
-}
-
-static bool get_tbl_field_uint8(lua_State *L, const char *index, uint8 *field)
-{
-   lua_pushstring(L, index);
-   lua_gettable(L, -2);
-
-   if(!lua_isnumber(L, -1))
-      return false;
-
-   *field = (uint8)lua_tonumber(L, -1);
-   lua_pop(L, 1);
-   return true;
 }
 
 bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset)

@@ -49,25 +49,27 @@
 #define MAGIC_STATE_ACQUIRE_INV_OBJ  0x06
 #define MAGIC_STATE_TALK_TO_ACTOR 0x07
 
+#define MAGIC_ALL_SPELLS 255
+
 class ScriptThread;
+class NuvieIOFileRead;
 
 class Spell {
   public: /* saves using dumb get / set functions */
+	uint8 num;
 	char * name; // eg. "Heal" 
 	char * invocation; // eg. "im" 
-	char * script; // what functions the spell should call
 	uint8 reagents; // reagents used
 	
-	Spell(const char *new_name="undefined name",const char *new_invocation="kawo", const char *new_script="0;return", uint8 new_reagents=255) {
+	Spell(uint8 new_num, const char *new_name="undefined name",const char *new_invocation="kawo", uint8 new_reagents=255) {
+	  num=new_num;
 	  name=strdup(new_name);
 	  invocation=strdup(new_invocation);
-	  script=strdup(new_script);
 	  reagents=new_reagents;
 	};
 	~Spell(){
 	  free(name);
 	  free(invocation);
-	  free(script);
 	}
 };
 
@@ -90,19 +92,13 @@ class Magic : public CallBack {
     Magic();
     ~Magic();
     bool init(Event *evt);
-    void lc(char * str);
-
-    bool read_line(NuvieIOFileRead *file, char *buf, size_t maxlen);
-    bool read_script(NuvieIOFileRead *file, char *buf, size_t maxlen);
     
     bool read_spell_list();
     void clear_cast_buffer() { cast_buffer_str[0] = '\0'; cast_buffer_len = 0; }
     bool start_new_spell();
-    uint8 book_equipped();
+    Obj *book_equipped();
     bool cast();
-    bool cast(Actor *Act);
-    bool cast(Obj *Obj);
-//    bool handleSDL_KEYDOWN(const SDL_Event *sdl_event);
+
     uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
     bool process_script_return(uint8 ret);
     bool resume(MapCoord location);
@@ -115,6 +111,8 @@ class Magic : public CallBack {
     bool is_waiting_to_talk() { if(state == MAGIC_STATE_TALK_TO_ACTOR) return true; else return false; }
 
     bool is_waiting_to_resume() { if(magic_script) return true; else return false; }
+
+    Spell *get_spell(uint8 spell_num) { return spell[spell_num]; }
 
     Actor *get_actor_from_script();
 private:

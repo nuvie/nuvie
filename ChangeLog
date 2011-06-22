@@ -1,3 +1,13 @@
+2011-06-22  Eric Fry <efry at users.sourceforge.net> r1207
+	* Added spellbook view.
+	* Removed spells.nsl from Magic class.
+	* Magic class now loads its spell list from magic.lua via new
+	  magic_get_spell_list() script function.
+	* Removed unused code from Magic class.
+	* Moved creation of Magic class into Game class.
+	* Added num and removed script from Spell class.
+	* Changed magic.lua magic table to index from 1 instead of 0.
+
 2011-06-15  Eric Fry <efry at users.sourceforge.net> r1206
 	* Added Brawling worktype.
 	* Added Begging worktype.

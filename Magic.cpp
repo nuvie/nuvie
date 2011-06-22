@@ -40,6 +40,8 @@
 #include "Actor.h"
 #include "ActorManager.h"
 #include "ObjManager.h"
+#include "ViewManager.h"
+#include "SpellView.h"
 #include "SoundManager.h"
 #include "U6objects.h"
 #include "Magic.h"
@@ -50,7 +52,7 @@
 #include "Weather.h"
 #include "Script.h"
 
-#define MAGIC_ALL_SPELLS 255
+
 
 /* Syllable            Meaning     Syllable            Meaning
  * An .......... Negate/Dispel     Nox ................ Poison
@@ -92,209 +94,38 @@ bool Magic::init(Event *evt)
   return read_spell_list();
 }
 
-// FIXME This should be a member of the NuvieIOFileRead class.
-bool Magic::read_line(NuvieIOFileRead *file, char *buf, size_t maxlen) {
-  size_t buflen=0;
-
-  for (buflen=0;buflen<maxlen;buflen++) 
-  {
-    buf[buflen]=char(file->read1());
-    if (buf[buflen]=='\n') {
-      if (buflen) // check for backslash
-      {
-	if (buf[buflen-1]=='\\')
-	{
-	  buf[--buflen]=' ';  // turn into a space, and ignore \n
-	  continue;
-	}
-      }
-      buf[buflen]='\0'; // end the line here
-      return true; // no overflow.
-    }
-  }
-  return false; // overflow.
-}
-
-bool Magic::read_script(NuvieIOFileRead *file, char *buf, size_t maxlen) {
-  size_t buflen=0;
-  
-  for (buflen=0;buflen<maxlen;buflen++) 
-  {
-    buf[buflen]=char(file->read1());
-    if (buf[buflen]=='\n') {
-      if (buflen)
-      {
-        if (buf[buflen-1]=='~')
-        {
-          buf[buflen-1]='\0';
-          file->seek(file->position() - 2); // wind back to the '~'
-          return true;
-        }
-      }
-    }
-  }
-  return false; // overflow.
-}
-
-void Magic::lc(char *str) // very crappy doesn't check much.
-{
-  for (char *conv=str;*conv!='\0';conv++)
-  {
-    if (*conv<'a') {*conv+=32;};
-  }
-}
-
 bool Magic::read_spell_list()
 {
-  uint16 index;
-  bool complete=false;
-  NuvieIOFileRead *spells=new(NuvieIOFileRead);
-  char name[80]="";
-  char invocation[26]="";
-  uint8 reagents=0;
-  char script[MAX_SCRIPT_LENGTH+1]="_end";
-  char buf[MAX_SCRIPT_LENGTH+1];
-
-  //read spell file from nuvie data directory.
-
-  std::string datadir = GUI::get_gui()->get_data_dir();
-  std::string spellfile;
-  
-  build_path(datadir, "spells.nsl", spellfile);
-  
-  if (!spells->open(spellfile)) 
-  {
-    ConsoleAddError("opening " + spellfile);
-    return false;
-  }
-  
-  /*read records into spell-array 1 by one.*/
-  for (index=0;index<256;index++)
-  {
-    if (spell[index]) //clean up if something there already
-    {
-      delete spell[index]; 
-    }
-    complete=false;
-    while (!complete)
-    {
-      /* read a line */ 
-      if (!read_line(spells,buf,sizeof(buf)))
-      {
-    	  DEBUG(0,LEVEL_ERROR,"Line too long reading spell-list entry for spell %d:\n",index);
-    	  ConsoleAddError("Buffer overflow");
-    	  return false;
-      };
-      /* parse the line */ // TODO far to quick and dirty...
-      switch (buf[0]) 
-      {
-	case '~': // end of record, completed!
-	  complete=true; break;
-	case '#': // comment line, ignore
-	  break;
-	case 'n': // assume 'name: '
-	  strncpy(name,buf+6,sizeof(name)-1);
-	  break;
-	case 'i': // assume 'invocation: '
-	  strncpy(invocation,buf+12,sizeof(invocation)-1);
-	  lc(invocation);
-	  break;
-	case 'r': // assume 'reagents: '
-	    reagents=uint8(strtol(buf+10,(char **)NULL,0));
-	  break;
-	case 's': // assume 'script: '
-		if(!read_script(spells,buf+7,sizeof(buf)-7))
-		{
-			ConsoleAddError("Line too long reading lua script");
-			return false;
-		}
-    
-	  strncpy(script,buf+7,sizeof(script)-1);
-	  break;
-      }
-    }
-    /* store the result */
-    spell[index]=new Spell(name,invocation,script,reagents);
-  }
-  /* close the spell-list-file*/
-  spells->close();
-  delete spells;
-
-  return true;
+	return Game::get_game()->get_script()->call_magic_get_spell_list(1, spell);
 }
 
-#if 0
-bool Magic::handleSDL_KEYDOWN(const SDL_Event * sdl_event)
-{
-  if (state == MAGIC_STATE_SELECT_SPELL) {
-    // TODO keys to handle escaping from this mode
-    if (sdl_event->key.keysym.sym==SDLK_RETURN || sdl_event->key.keysym.sym==SDLK_KP_ENTER)
-    {
-      cast() ;
-
-      event->scroll->display_string("\n");
-      event->scroll->display_prompt();
-
-      event->mode = MOVE_MODE;
-      return true; // handled the event
-    }
-    if (sdl_event->key.keysym.sym>=SDLK_1 && sdl_event->key.keysym.sym<=SDLK_8)
-    {
-      cast(event->player->get_party()->get_actor(sdl_event->key.keysym.sym - 48-1));
-      event->mode = MOVE_MODE;
-      return true; // handled the event
-    } 
-    else if (sdl_event->key.keysym.sym>=SDLK_a && sdl_event->key.keysym.sym<=SDLK_z)
-    {
-      if (cast_buffer_len<4)
-      { 
-	cast_buffer_str[cast_buffer_len++]=sdl_event->key.keysym.sym;
-	event->scroll->display_string(syllable[sdl_event->key.keysym.sym - SDLK_a]);
-	return true; // handled the event
-      }
-      return true; // handled the event
-    }
-    else if (sdl_event->key.keysym.sym==SDLK_BACKSPACE)
-    {
-      if (cast_buffer_len>0)
-      { 
-	cast_buffer_len--; // back up a syllable FIXME, doesn't handle automatically inserted newlines, so we need to keep track more.
-	size_t len=strlen(syllable[cast_buffer_str[cast_buffer_len]-SDLK_a]);
-	while(len--) event->scroll->remove_char();
-	event->scroll->Display(true);
-	return true; // handled the event
-      }
-      return true; // handled the event
-    }
-  }
-  return false; // didn't handle the event
-} 
-#endif
-
-uint8 Magic::book_equipped()
+Obj *Magic::book_equipped()
 {
   // book(s) equipped? Maybe should check all locations?
+  Obj *obj = NULL;
   Actor *caster=event->player->get_actor();
-  Obj *right=caster->inventory_get_readied_object(ACTOR_ARM); 
-  Obj *left=caster->inventory_get_readied_object(ACTOR_ARM_2); 
-  uint8 books=0;
 
-  if (right!=NULL && right->obj_n==OBJ_U6_SPELLBOOK) { books+=1; }; 
-  if (left!=NULL && left->obj_n==OBJ_U6_SPELLBOOK) { books+=2; }; 
-  
-  return books;
+  obj=caster->inventory_get_readied_object(ACTOR_ARM);
+
+  if(obj == NULL)
+	  obj=caster->inventory_get_readied_object(ACTOR_ARM_2);
+
+  return obj;
 }
 
 bool Magic::start_new_spell() 
 {
+  Obj *spellbook_obj = book_equipped();
+
   if (Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) > 0)
   {
 	  event->scroll->display_string("No magic at this time!\n");
   }
-  else if (book_equipped())
+  else if (spellbook_obj != NULL)
   {
     state=MAGIC_STATE_SELECT_SPELL;
     clear_cast_buffer();
+    Game::get_game()->get_view_manager()->set_spell_mode(event->player->get_actor(), spellbook_obj);
     return true;
   }
   else
@@ -304,32 +135,39 @@ bool Magic::start_new_spell()
   return false;
 }
 
-
-bool Magic::cast(Actor *Act)
-{
-  return cast();
-}
-bool Magic::cast(Obj *Obj)
-{
-  return cast();
-}
 bool Magic::cast()
 {
   if(magic_script != NULL)
     return false;
   
+  //FIXME this should set previous view. Don't default to inventory view.
+  Game::get_game()->get_view_manager()->set_inventory_mode();
+
   cast_buffer_str[cast_buffer_len]='\0';
   DEBUG(0,LEVEL_DEBUGGING,"Trying to cast '%s'\n",cast_buffer_str);
   /* decode the invocation */
   // FIXME? original allows random order of syllables, do we want that?
 
   uint16 index;
-  for (index=0;index<256;index++) 
+
+  if(cast_buffer_len != 0)
   {
-    if (!strcmp(spell[index]->invocation,cast_buffer_str)) {
-      break;
-    }
+	  for (index=0;index<256;index++)
+	  {
+		  if (!strcmp(spell[index]->invocation,cast_buffer_str)) {
+			  break;
+		  }
+	  }
   }
+  else
+  {
+	  sint16 view_spell = Game::get_game()->get_view_manager()->get_spell_view()->get_selected_spell();
+	  if(view_spell < 256 && view_spell != -1)
+		  index = (uint16)view_spell;
+	  else
+		  index = 256;
+  }
+
   if (index>=256) {
     DEBUG(0,LEVEL_DEBUGGING,"didn't find spell in spell list\n");
     event->scroll->display_string("\nThat spell is not in thy spellbook!\n"); 
@@ -353,7 +191,7 @@ bool Magic::cast()
     }
   }
   DEBUG(1,LEVEL_DEBUGGING,"\n");
-  DEBUG(0,LEVEL_DEBUGGING,"script: %s\n",spell[index]->script);
+  //DEBUG(0,LEVEL_DEBUGGING,"script: %s\n",spell[index]->script);
   /* end debug block */
 
 
@@ -592,7 +430,7 @@ uint16 Magic::callback(uint16 msg, CallBack *caller, void *data)
         if(state == MAGIC_STATE_ACQUIRE_TARGET) {
             if(sym>=SDLK_1 && sym<=SDLK_8)
             {
-                cast(event->player->get_party()->get_actor(sym - 48-1));
+                cast();//event->player->get_party()->get_actor(sym - 48-1));
                 event->cancel_key_redirect();
                 return 1; // handled the event
             } 
@@ -604,6 +442,7 @@ uint16 Magic::callback(uint16 msg, CallBack *caller, void *data)
         // to global which could start another action)
         if(sym != SDLK_RETURN && sym != SDLK_ESCAPE && sym != SDLK_SPACE)
             return 1;
+
         return 0;
     }
     else if(magic_script)

@@ -24,6 +24,7 @@
  *
  */
 
+
 class Configuration;
 class GUI;
 class TileManager;
@@ -33,12 +34,14 @@ class Party;
 class Player;
 class Text;
 class Actor;
+class Obj;
 
 class View;
 class PartyView;
 class PortraitView;
 class InventoryView;
 class ActorView;
+class SpellView;
 
 class ViewManager
 {
@@ -56,6 +59,7 @@ class ViewManager
  InventoryView *inventory_view;
  PortraitView *portrait_view;
  PartyView *party_view;
+ SpellView *spell_view;
 
  View *current_view;
 
@@ -73,12 +77,14 @@ class ViewManager
  void set_inventory_mode();
  void set_party_mode();
  void set_actor_mode();
+ void set_spell_mode(Actor *caster, Obj *spell_container);
 
  View *get_current_view() { return(current_view); }
  ActorView *get_actor_view() { return(actor_view); }
  InventoryView *get_inventory_view() { return(inventory_view); }
  PortraitView *get_portrait_view() { return(portrait_view); }
  PartyView *get_party_view() { return(party_view); }
+ SpellView *get_spell_view() { return(spell_view); }
 
  protected:
 

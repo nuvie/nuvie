@@ -36,6 +36,7 @@ class Dither;
 class TileManager;
 class ObjManager;
 class ActorManager;
+class Magic;
 class Map;
 class MapWindow;
 class MsgScroll;
@@ -80,6 +81,7 @@ class Game
  TileManager *tile_manager;
  ObjManager *obj_manager;
  ActorManager *actor_manager;
+ Magic *magic;
  Map *game_map;
  MapWindow *map_window;
  MsgScroll *scroll;
@@ -159,6 +161,7 @@ class Game
  TileManager *get_tile_manager()   { return(tile_manager); }
  ObjManager *get_obj_manager()     { return(obj_manager); }
  ActorManager *get_actor_manager() { return(actor_manager); }
+ Magic *get_magic()                { return(magic); }
  Map *get_game_map()               { return(game_map); }
  MapWindow *get_map_window()       { return(map_window); }
  MsgScroll *get_scroll()           { return(scroll); }

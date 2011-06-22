@@ -47,6 +47,7 @@
 #include "ViewManager.h"
 #include "EffectManager.h"
 
+#include "Magic.h"
 #include "MsgScroll.h"
 #include "Map.h"
 #include "MapWindow.h"
@@ -95,6 +96,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  usecode = NULL;
  effect_manager = NULL;
  weather = NULL;
+ magic = NULL;
  
  pause_flags = PAUSE_UNPAUSED;
  ignore_event_delay = 0;
@@ -130,6 +132,7 @@ Game::~Game()
     if(cursor) delete cursor;
     if(egg_manager) delete egg_manager;
     if(weather) delete weather;
+    if(magic) delete magic;
 }
 
 bool Game::loadGame(Screen *s, nuvie_game_t type)
@@ -235,8 +238,12 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
 
    init_cursor();
 
+   magic = new Magic();
+
+
    event = new Event(config);
-   event->init(obj_manager, map_window, scroll, player, clock, converse, view_manager, usecode, gui);
+   event->init(obj_manager, map_window, scroll, player, magic, clock, converse, view_manager, usecode, gui);
+   magic->init(event);
    
    if(save_manager->load_latest_save() == false)
    {
