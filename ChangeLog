@@ -1,3 +1,9 @@
+2011-06-24  Eric Fry <efry at users.sourceforge.net> r1208
+	* Fixed bug where sleeping actors would disappear when killed.
+	* Show base object name for dead actors. This fixes the bug where nuvie
+	  would print 'A dead body killed!'
+	* Fixed left arrow button on spell view.
+
 2011-06-22  Eric Fry <efry at users.sourceforge.net> r1207
 	* Added spellbook view.
 	* Removed spells.nsl from Magic class.

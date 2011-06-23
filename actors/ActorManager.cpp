@@ -546,7 +546,7 @@ void ActorManager::set_player(Actor *a)
  */
 const char *ActorManager::look_actor(Actor *a, bool show_prefix)
 {
-    uint16 tile_num = obj_manager->get_obj_tile_num(a->get_tile_num());
+    uint16 tile_num = obj_manager->get_obj_tile_num(a->base_obj_n);
     if(tile_num == 0)
       {
        uint8 actor_num = a->id_n;

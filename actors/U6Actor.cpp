@@ -2081,7 +2081,7 @@ void U6Actor::die(bool create_body)
   //moved to script add_blood();
  
     // we don't generate a dead body if the avatar dies because they will be ressurrected.  
-    if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
+    if(base_actor_type->dead_obj_n != OBJ_U6_NOTHING)
     {
     	if(create_body)
     	{
@@ -2090,8 +2090,8 @@ void U6Actor::die(bool create_body)
     		else
     		{ //if not avatar then create a dead body and place on the map.
     			Obj *dead_body = new Obj;
-    			dead_body->obj_n = actor_type->dead_obj_n;
-    			dead_body->frame_n = actor_type->dead_frame_n;
+    			dead_body->obj_n = base_actor_type->dead_obj_n;
+    			dead_body->frame_n = base_actor_type->dead_frame_n;
     			dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;
     			dead_body->quality = id_n;
     			dead_body->status = OBJ_STATUS_OK_TO_TAKE;

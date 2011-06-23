@@ -421,7 +421,7 @@ void SpellView::update_buttons()
 	show_buttons();
 	sint8 index = get_selected_index();
 
-	if(level == 1 && index <= 0 && left_button)
+	if(level == 1 && index <= 7 && left_button)
 		left_button->Hide();
 
 	if(level == 8 && index >= 8 && right_button)
