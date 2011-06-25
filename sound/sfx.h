@@ -66,5 +66,6 @@ typedef uint16 SfxIdType;
 
 #define NUVIE_SFX_AVATAR_DEATH 34
 #define NUVIE_SFX_KAL_LOR 35
+#define NUVIE_SFX_SLUG_DISSOLVE 36
 
 #endif

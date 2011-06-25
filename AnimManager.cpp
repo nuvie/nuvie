@@ -965,7 +965,7 @@ void ExplosiveAnim::get_shifted_location(uint16 &x, uint16 &y, uint16 &px, uint1
 
 
 /*** ProjectileAnim ***/
-ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrail, uint16 initialTileRotation)
+ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrail, uint16 initialTileRotation, uint16 rotationAmount)
 {
     tile_num = tileNum; //382; // U6 FIREBALL_EFFECT
 
@@ -977,6 +977,7 @@ ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord>
     	line[i].target = target[i];
     	line[i].lineWalker = new U6LineWalker(src.x*16,src.y*16,target[i].x*16, target[i].y*16);
     	line[i].rotation = initialTileRotation;
+    	line[i].rotation_amount = rotationAmount;
     }
 
     stopped_count = 0;
@@ -984,7 +985,6 @@ ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord>
     speed = animSpeed;
 
     leaveTrailFlag = leaveTrail;
-
 }
 
 
@@ -1015,11 +1015,11 @@ void ProjectileAnim::start()
     {
     	uint32 x, y;
     	line[i].lineWalker->next(&x, &y);
-    	float deg = get_relative_degrees(line[i].target.x - src.x, line[i].target.y - src.y) - line[i].rotation;
-    	if(deg < 0)
-    		deg += 360;
+    	line[i].current_deg = get_relative_degrees(line[i].target.x - src.x, line[i].target.y - src.y) - line[i].rotation;
+    	if(line[i].current_deg < 0)
+    		line[i].current_deg += 360;
 
-    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, deg), x/16, y/16, x%16, y%16);
+    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, line[i].current_deg), x/16, y/16, x%16, y%16);
     	line[i].update_idx = 0;
     	line[i].isRunning = true;
     }
@@ -1032,6 +1032,7 @@ void ProjectileAnim::start()
  */
 bool ProjectileAnim::update()
 {
+    TileManager *tile_manager = map_window->get_tile_manager();
 	Map *map = Game::get_game()->get_game_map();
 	uint8 level;
     LineTestResult lt;
@@ -1053,6 +1054,15 @@ bool ProjectileAnim::update()
 					canContinue = false;
 					break;
 				}
+			}
+
+			if(line[i].rotation_amount != 0)
+			{
+				line[i].current_deg += line[i].rotation_amount;
+				if(line[i].current_deg >= 360)
+					line[i].current_deg -= 360;
+
+				tile_manager->get_rotated_tile(tile_manager->get_tile(tile_num), line[i].p_tile->tile, line[i].current_deg);
 			}
 
 			if(leaveTrailFlag == true)

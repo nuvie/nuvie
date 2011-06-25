@@ -218,20 +218,20 @@ void ExpEffect::start_anim()
 
 }
 
-ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation)
+ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation, uint16 rotationAmount)
 {
 	vector<MapCoord> t;
 	t.push_back(target);
 
-	init(tileNum, start, t, speed, trailFlag, initialTileRotation);
+	init(tileNum, start, t, speed, trailFlag, initialTileRotation, rotationAmount);
 }
 
 ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation)
 {
-	init(tileNum, start, t, speed, trailFlag, initialTileRotation);
+	init(tileNum, start, t, speed, trailFlag, initialTileRotation, 0);
 }
 
-void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation)
+void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation, uint16 rotationAmount)
 {
     finished_tiles = 0;
 
@@ -240,6 +240,7 @@ void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, 
 	anim_speed = speed;
 	trail = trailFlag;
 	initial_tile_rotation = initialTileRotation;
+	rotation_amount = rotationAmount;
 
     targets = t;
 
@@ -253,7 +254,7 @@ void ProjectileEffect::start_anim()
     //game->pause_anims();
     //game->pause_user();
 
-    add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation));
+    add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation, rotation_amount));
 
 }
 /* Handle messages from animation. Hit actors & walls. */

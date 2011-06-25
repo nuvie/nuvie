@@ -56,6 +56,7 @@ SFX_CASTING_MAGIC_P2_7 = 32
 SFX_CASTING_MAGIC_P2_8 = 33
 SFX_AVATAR_DEATH = 34
 SFX_KAL_LOR = 35
+SFX_SLUG_DISSOLVE = 36
 
 FADE_COLOR_RED = 12
 FADE_COLOR_BLUE = 9
@@ -331,7 +332,7 @@ function projectile(tile_num, start_x, start_y, end_x, end_y, speed, spin)
 	end
 	
 	play_sfx(SFX_MISSLE)
-	projectile_anim(tile_num, start_x, start_y, end_x, end_y, speed, spin, rotate_offset)
+	projectile_anim(tile_num, start_x, start_y, end_x, end_y, speed, false, rotate_offset, spin)
 end
 
 function fade_obj_blue(obj)

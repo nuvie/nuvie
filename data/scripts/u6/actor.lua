@@ -64,7 +64,7 @@ wt_num_monsters_near = 0
 g_time_stopped = false
 
 --Actor stats table
---str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,immune to tremor,undead,?,strength_based,double dmg from fire,immune to magic,immune to poison,undead,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
+--str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,immune to tremor,undead,poisonous,strength_based,double dmg from fire,immune to magic,immune to poison,undead,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}, 0},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}, 6},
@@ -775,19 +775,19 @@ end
 
 local projectile_weapon_tbl = 
 {
---obj_n = {tile_num, initial_tile_rotation, speed, doesRotate}
-[33] = {398, 0, 2, false}, -- sling
-[36] = {547, 45,3, false}, -- spear
-[37] = {548, 0, 2, true}, -- throwing axe
-[38] = {549, 0, 2, true}, -- dagger
-[41] = {566, 90,4, false}, -- bow
-[42] = {567, 90,4, false}, -- crossbow
-[49] = {560, 0, 4, true}, -- boomerang
-[83] = {601, 0, 2, false}, -- flask of oil
-[50] = {567, 90,4, false}, -- triple crossbow
-[91] = {612, 0, 2, true}, -- Zu Ylem
-[79] = {392, 0, 2, false}, -- lightning wand
-[80] = {393, 0, 2, false}, -- fire wand
+--obj_n = {tile_num, initial_tile_rotation, speed, rotation_amount}
+[33] = {398, 0, 2, 0}, -- sling
+[36] = {547, 45,3, 0}, -- spear
+[37] = {548, 0, 2, 10}, -- throwing axe
+[38] = {549, 0, 2, 10}, -- dagger
+[41] = {566, 90,4, 0}, -- bow
+[42] = {567, 90,4, 0}, -- crossbow
+[49] = {560, 0, 4, 10}, -- boomerang
+[83] = {601, 0, 2, 0}, -- flask of oil
+[50] = {567, 90,4, 0}, -- triple crossbow
+[91] = {612, 0, 2, 10}, -- Zu Ylem
+[79] = {392, 0, 2, 0}, -- lightning wand
+[80] = {393, 0, 2, 0}, -- fire wand
 }
 
 weapon_dmg_tbl = {
@@ -896,6 +896,74 @@ function actor_get_ac(actor)
    return ac
 end
 
+function actor_select_obj_from_tbl(actor, obj_list_tbl)
+	local obj
+	local selected_obj = nil
+	local random = math.random
+	for obj in actor_inventory(actor) do
+		if obj_list_tbl[obj.obj_n] ~= nil then
+			if selected_obj == nil or random(0, 1) == 0 then
+				selected_obj = obj
+			end
+		end
+	end
+	
+	return selected_obj
+end
+
+function acid_slug_dissolve_item(target_actor)
+	local acid_slug_items = { [0x2] = 1,
+	[0x3] = 1,
+	[0x4] = 1,
+	[0x5] = 1,
+	[0x7] = 1,
+	[0x0A] = 1,
+	[0x0B] = 1,
+	[0x0C] = 1,
+	[0x0D] = 1,
+	[0x0F] = 1,
+	[0x13] = 1,
+	[0x14] = 1,
+	[0x15] = 1,
+	[0x16] = 1,
+	[0x23] = 1,
+	[0x26] = 1,
+	[0x2B] = 1,
+	[0x71] = 1,
+	[0x72] = 1 }
+	
+	local obj = actor_select_obj_from_tbl(target_actor, acid_slug_items)
+	
+	if obj ~= nil then
+		play_sfx(SFX_SLUG_DISSOLVE, true)
+		print("A slug dissolves "..target_actor.name.."'s "..obj.name.."!\n")
+		Actor.inv_remove_obj(target_actor, obj)
+		obj = nil
+	end
+end
+
+function gremlin_steal_item(target_actor)
+	local gremlin_items = { [0x80] = 1,
+	[0x81] = 1,
+	[0x82] = 1,
+	[0x83] = 1,
+	[0x84] = 1,
+	[0x85] = 1,
+	[0x87] = 1,
+	[0xD1] = 1,
+	[0xD2] = 1,
+	[0xD3] = 1 }
+	
+	local obj = actor_select_obj_from_tbl(target_actor, gremlin_items)
+	
+	if obj ~= nil then
+		play_sfx(SFX_FAILURE, true)
+		print("`"..target_actor.name.."  has been robbed!\n")
+		Actor.inv_remove_obj(target_actor, obj)
+		obj = nil
+	end
+end
+
 function actor_take_hit(attacker, defender, max_dmg)
    if attacker.obj_n == 357 then --corpser
       attacker.frame_n = 1 --reveal corpser.
@@ -934,13 +1002,17 @@ function actor_take_hit(attacker, defender, max_dmg)
       
       actor_yell_for_help(attacker, defender, max_dmg)
       
+      local defender_obj_n = defender.obj_n
+      
       if defender.alive == true 
-        or defender.obj_n == 0x1a7 --balloon
-        or defender.obj_n == 0x19e --skiff
-        or defender.obj_n == 0x19f --raft
-        or defender.obj_n == 0x19c then --ship
+        or defender_obj_n == 0x1a7 --balloon
+        or defender_obj_n == 0x19e --skiff
+        or defender_obj_n == 0x19f --raft
+        or defender_obj_n == 0x19c then --ship
         
-         if attacker.obj_n == 0x165 then --corpser
+         local attacker_obj_n = attacker.obj_n
+         
+         if attacker_obj_n == 0x165 then --corpser
          	play_sfx(SFX_CORPSER_DRAGGED_UNDER, true)
             print("`"..defender.name.." dragged under!\n")
             defender.corpser_flag = true
@@ -948,8 +1020,21 @@ function actor_take_hit(attacker, defender, max_dmg)
                party_update_leader()
             end
          end
-         --FIXME add more logic from combat_hit_actor here.
-         --acid slug disolves, gremlin, poison etc.
+        
+         if attacker_obj_n == 0x16c then --acid slug
+         	acid_slug_dissolve_item(defender)
+         end
+         
+         if attacker_obj_n == 0x161 then --gremlin
+         	gremlin_steal_item(defender)
+         end
+         
+         local actor_type = actor_tbl[attacker_obj_n]
+         if actor_type ~= nil and actor_type[15] == 1 and math.random(0, 3) == 0 then --actor is poisonous
+         	defender.poisoned = true
+         	print("`"..defender.name.." poisoned!\n")
+         end
+         
          if max_dmg > 0 then
          	actor_hit_msg(defender)
          end
@@ -1401,7 +1486,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       
       if weapon_obj_n == 0x31 then --boomerang
          if attacker.x ~= 0 and attacker.y ~= 0 then --hack to stop return projectile if the avatar has died
-         	projectile(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], 0)
+         	projectile(projectile_weapon_tbl[weapon_obj_n][1], target_x, target_y, attacker.x, attacker.y, projectile_weapon_tbl[weapon_obj_n][3], projectile_weapon_tbl[weapon_obj_n][4])
          end
       end
    end
@@ -1429,7 +1514,7 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, 
                     
       projectile_anim_multi(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, triple_crossbow_targets, projectile_weapon_tbl[weapon_obj_n][3], 0, projectile_weapon_tbl[weapon_obj_n][2])
    else    
-      projectile(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][3], 0)
+      projectile(projectile_weapon_tbl[weapon_obj_n][1], attacker.x, attacker.y, target_x, target_y, projectile_weapon_tbl[weapon_obj_n][3], projectile_weapon_tbl[weapon_obj_n][4])
    end
     
    if weapon_obj_n == 0x5b then

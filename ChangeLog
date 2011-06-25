@@ -1,3 +1,13 @@
+2011-06-25  Eric Fry <efry at users.sourceforge.net> r1209
+	* Added the ability to spin a projectile animation. Combat projectiles spin
+	  now.
+	* Added SFX_SLUG_DISSOLVE PC Speaker sound effect.
+	* Added chance of being poisoned by actors with a poisonous actor type.
+	* Acid slugs can now dissolve metal objects when attacking.
+	* Gremlins now steal food when attacking.
+	* Added new form of TileManager::get_rotated_tile() which accepts a destination
+	  tile to perform the rotation on.
+
 2011-06-24  Eric Fry <efry at users.sourceforge.net> r1208
 	* Fixed bug where sleeping actors would disappear when killed.
 	* Show base object name for dead actors. This fixes the bug where nuvie

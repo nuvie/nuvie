@@ -355,6 +355,17 @@ int PCSpeakerStutterStream::readBuffer(sint16 *buffer, const int numSamples)
 	return s;
 }
 
+Audio::AudioStream *makePCSpeakerSlugDissolveSfxStream(uint32 rate)
+{
+	Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);
+	for(uint16 i=0;i<20;i++)
+	{
+		stream->queueAudioStream(new PCSpeakerRandomStream((NUVIE_RAND() % 0x1068) + 0x258, 0x15e, 1), DisposeAfterUse::YES);
+	}
+
+	return stream;
+}
+
 Audio::AudioStream *makePCSpeakerGlassSfxStream(uint32 rate)
 {
 	Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);

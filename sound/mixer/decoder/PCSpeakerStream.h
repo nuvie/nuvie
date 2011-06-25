@@ -167,6 +167,7 @@ protected:
 
 };
 
+Audio::AudioStream *makePCSpeakerSlugDissolveSfxStream(uint32 rate);
 Audio::AudioStream *makePCSpeakerGlassSfxStream(uint32 rate);
 Audio::AudioStream *makePCSpeakerMagicCastingP1SfxStream(uint32 rate, uint8 magic_circle);
 Audio::AudioStream *makePCSpeakerMagicCastingP2SfxStream(uint32 rate, uint8 magic_circle);

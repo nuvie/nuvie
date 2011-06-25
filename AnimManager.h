@@ -276,6 +276,8 @@ typedef struct
 	PositionedTile *p_tile;
 	uint8 update_idx;
 	uint16 rotation;
+	uint16 rotation_amount;
+	float current_deg;
 	bool isRunning;
 } ProjectileLine;
 
@@ -291,7 +293,7 @@ class ProjectileAnim : public TileAnim
     bool leaveTrailFlag;
     bool rotateFlag;
 public:
-    ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrailFlag = false, uint16 initialTileRotation = 0);
+    ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrailFlag = false, uint16 initialTileRotation = 0, uint16 rotationAmount = 0);
     ~ProjectileAnim();
     void start();
 

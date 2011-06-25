@@ -97,6 +97,7 @@ protected:
     uint8 anim_speed;
     bool trail;
     uint16 initial_tile_rotation;
+    uint16 rotation_amount;
     uint16 finished_tiles;
 
     vector<MapEntity> hit_entities;
@@ -105,10 +106,10 @@ protected:
 
 public:
     ProjectileEffect() {}
-    ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation);
+    ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation, uint16 rotationAmount);
     ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation);
 
-    void init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation);
+    void init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation, uint16 rotationAmount);
 
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 

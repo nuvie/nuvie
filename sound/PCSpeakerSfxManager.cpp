@@ -108,6 +108,10 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 	{
 		stream = makePCSpeakerKalLorSfxStream(mixer->getOutputRate());
 	}
+	else if(sfx_id == NUVIE_SFX_SLUG_DISSOLVE)
+	{
+		stream = makePCSpeakerSlugDissolveSfxStream(mixer->getOutputRate());
+	}
 
 	if(stream)
 	{

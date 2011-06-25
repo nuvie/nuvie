@@ -600,6 +600,14 @@ void TileManager::update_timed_tiles(uint8 hour)
  */
 Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
 {
+    Tile *new_tile = new Tile(*tile); // retain properties of original tile
+    get_rotated_tile(tile, new_tile, rotate);
+
+    return new_tile;
+}
+
+void TileManager::get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate)
+{
     unsigned char tile_data[256];
     memset(&tile_data, 255, 256); // fill output with transparent color
 
@@ -652,9 +660,10 @@ Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
         }
     }
 
-    Tile *new_tile = new Tile(*tile); // retain properties of original tile
-    memcpy(&new_tile->data, &tile_data, 256); // replace data
-    return(new_tile);
+
+    memcpy(&dest_tile->data, &tile_data, 256); // replace data
+
+    return;
 }
 
 
