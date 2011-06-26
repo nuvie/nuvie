@@ -1,3 +1,9 @@
+2011-06-27  Eric Fry <efry at users.sourceforge.net> r1210
+	* Turned on message scroll autobreak while in conversation. This should fix
+	  the bug with missed text when saying 'job' to Finn.
+	* Fixed some issues with berserk combat worktype.
+	* Added corpser check to actor_ok_to_attack()
+
 2011-06-25  Eric Fry <efry at users.sourceforge.net> r1209
 	* Added the ability to spin a projectile animation. Combat projectiles spin
 	  now.

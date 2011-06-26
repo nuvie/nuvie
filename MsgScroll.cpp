@@ -194,6 +194,7 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
  show_cursor = true;
  talking = false;
  autobreak = false;
+ just_finished_page_break = false;
 
  add_new_line();
  display_pos = 0;
@@ -416,7 +417,10 @@ bool MsgScroll::add_token(MsgText *token)
                     return true;
 
                  if(token->s[0] == '*')
-                    set_page_break();
+                 {
+                	if(just_finished_page_break == false) //we don't want to add another break if we've only just completed an autobreak
+                		set_page_break();
+                 }
                  else
                  {
                 	if(capitalise_next_letter)
@@ -432,7 +436,7 @@ bool MsgScroll::add_token(MsgText *token)
 
 if(msg_buf.size() > scroll_height)
    display_pos = msg_buf.size() - scroll_height;
-
+ just_finished_page_break = false;
  return true;
 }
 
@@ -570,7 +574,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
     if(page_break)
       {
        page_break = false;
-
+       just_finished_page_break = true;
        if(!input_mode)
          Game::get_game()->get_gui()->unlock_input();
 
@@ -627,7 +631,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
     if(page_break) // any click == scroll-to-end
     {
         page_break = false;
-
+        just_finished_page_break = true;
         if(!input_mode)
             Game::get_game()->get_gui()->unlock_input();
 

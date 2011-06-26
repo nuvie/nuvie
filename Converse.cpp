@@ -368,6 +368,7 @@ bool Converse::start(uint8 n)
         show_portrait(npc_num);
         Game::get_game()->get_sound_manager()->musicStop();
         Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
+        scroll->set_autobreak(true);
         unwait();
         DEBUG(0,LEVEL_INFORMATIONAL,"Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
         return(true);
@@ -384,6 +385,7 @@ void Converse::stop()
 {
     reset(); // free memory
 
+    scroll->set_autobreak(false);
     scroll->set_talking(false);
     scroll->display_string("\n");
     scroll->display_prompt();

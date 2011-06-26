@@ -2592,7 +2592,7 @@ function actor_wt_berserk(actor)
 
       if tmp_actor ~= nil
        and tmp_actor.alive == true
-       and tmp_actor ~= actor
+       and tmp_actor.actor_num ~= actor.actor_num
        and actor_find_max_xy_distance(tmp_actor, actor_x, actor_y) <= 8
        and actor_ok_to_attack(actor, tmp_actor) == true
        and (alignment ~= ALIGNMENT_GOOD or tmp_actor.align == ALIGNMENT_EVIL)
@@ -2621,13 +2621,13 @@ function actor_wt_berserk(actor)
    if attack_range < 9 and attack_range <= weapon_range then
 
       --g_obj = target_actor
-      if false then--FIXME what are we doing here?? projectile_anim_from_actor(actor, &target_x, &target_y, weapon_range, 0) == 0 then
+      if map_can_reach_point(actor_x, actor_y, target_x, target_y, actor.z) == false then
          if math.random(0, 1) == 0 then
-            target_x = (g_obj.y) - actor_y + actor_x
-            target_y = actor_y - (g_obj.x) - actor_x
+            target_x = target_actor.y - actor_y + actor_x
+            target_y = actor_y - target_actor.x - actor_x
          else
-            target_x = actor_x - (g_obj.y) - actor_y
-            target_y = (g_obj.x) - actor_x + actor_y
+            target_x = actor_x - target_actor.y - actor_y
+            target_y = target_actor.x - actor_x + actor_y
          end
       else
          actor_attack(actor, target_x, target_y, actor.z, weapon_obj)
@@ -3113,10 +3113,11 @@ function actor_ok_to_attack(actor, target_actor)
    
    if target_actor.z ~= actor.z then return false end
    
-   if target_actor.obj_n == 0x165 and target_actor.frame_n == 0 then return false end
+   if target_actor.obj_n == 0x165 and target_actor.frame_n == 0 then return false end --corpser underground
    
-   --need to check if target_actor's corpser bit is set eg dragged under
-   --need to check tileflag3 bit 4 is not set. The Ignore flag.
+   if target_actor.corpser_flag == true then return false end
+   
+   --FIXME need to check tileflag3 bit 4 is not set. The Ignore flag.
    return true
 
 end
