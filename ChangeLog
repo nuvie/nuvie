@@ -1,3 +1,8 @@
+2011-06-27 Pieter Luteijn <luteijn at users.sourceforge.net> r1211
+	* added #include <stdlib.h> (for the random functions) to 
+	  sound/mixer/decoder/PCSpeakerStream.cpp to get the
+	  SFX_SLUG_DISSOLVE Soundeffect to compile.
+
 2011-06-27  Eric Fry <efry at users.sourceforge.net> r1210
 	* Turned on message scroll autobreak while in conversation. This should fix
 	  the bug with missed text when saying 'job' to Finn.
