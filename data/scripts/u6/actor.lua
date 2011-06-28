@@ -1703,6 +1703,9 @@ function actor_calculate_avg_coords()
             end
          end
       end
+      --FIXME I'm not really sure what the original does when these aren't set
+      if wt_rear_max_party == nil then wt_rear_max_party = player end
+      if wt_rear_min_party == nil then wt_rear_min_party = player end      
    else
       --this is used by party members when in combat_front worktype.
       combat_avg_x = player_x + movement_offset_x_tbl[(player_dir*2) + 1]
@@ -2467,7 +2470,7 @@ function actor_wt_flank(actor)
       var_E = -tmp_x
    end
    
-   local var_1A = 0x8000
+   local var_1A = -0x8000
    local target_actor = nil
    
    local i, tmp_actor
@@ -2486,7 +2489,7 @@ function actor_wt_flank(actor)
 
          if (tmp_actor.wt ~= WT_RETREAT and tmp_actor.wt ~= WT_FLEE and tmp_actor.wt ~= WT_MOUSE or player_x - 5 <= target_x and player_x + 5 >= target_x and player_y - 5 <= target_y and player_y + 5 >= target_y)
           and (abs(target_x - player_x) <= 7 and abs(target_y - player_y) <= 7 or abs(target_x - actor_x) <= 5 and abs(target_y - actor_y) <= 5) then
-         
+
             local var_1C = (target_x - party_avg_x) * tmp_y - (target_y - party_avg_y) * tmp_x
             if var_1E == 0 then
             
@@ -2511,28 +2514,23 @@ function actor_wt_flank(actor)
    tmp_x = target_actor.x
    tmp_y = target_actor.y
    
-   local should_move_actor = 0
-   local weapon_obj = get_weapon_obj(actor, target_actor)
+   local should_move_actor = false
+   local weapon_obj = actor_get_weapon(actor, target_actor)
    local weapon_range = get_weapon_range(weapon_obj)
    local attack_range = get_attack_range(actor_x, actor_y, tmp_x, tmp_y)
    
    if attack_range < 9 and attack_range <= weapon_range then
    
-      if true then --FIXME projectile_anim_from_actor(actor, &tmp_x, &tmp_y, weapon_range, 0) == 0 then
-      
+      if map_can_reach_point(actor_x, actor_y, tmp_x, tmp_y, actor.z) == false then
          if random(0, 1) == 0 then
-         
-            tmp_x = (g_obj.y) - actor_y + actor_x
-            tmp_y = actor_y - (g_obj.x) - actor_x
-            should_move_actor = 1
+            tmp_x = target_actor.y - actor_y + actor_x
+            tmp_y = actor_y - target_actor.x - actor_x
          else
-         
-            tmp_x = actor_x - (g_obj.y) - actor_y
-            tmp_y = (g_obj.x) - actor_x + actor_y
-            should_move_actor = 1
+            tmp_x = actor_x - target_actor.y - actor_y
+            tmp_y = target_actor.x - actor_x + actor_y
          end
+         should_move_actor = true
       else
-      
          actor_attack(actor, tmp_x, tmp_y, actor.z, weapon_obj)
          subtract_movement_pts(actor, 10)
       end
@@ -2549,23 +2547,16 @@ function actor_wt_flank(actor)
          tmp_x = tmp_x + 1
       end
       if var_E <= 0 then
-      
-         if var_E >= 0 then
-         
-            should_move_actor = 1
-         else
-         
+         if var_E < 0 then
             tmp_y = tmp_y - 1
-            should_move_actor = 1
          end
       else
-      
          tmp_y = tmp_y + 1
-         should_move_actor = 1
       end
+      should_move_actor = true
    end
    
-   if should_move_actor ~= 0 then
+   if should_move_actor == true then
    
       local mpts = actor.mpts
       if actor_move_towards_loc(actor, tmp_x, tmp_y) == 0 then

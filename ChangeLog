@@ -1,3 +1,7 @@
+2011-06-28  Eric Fry <efry at users.sourceforge.net> r1211
+	* Fixed some bugs with flank combat worktype
+	* Fixed some bugs with rear combat worktype
+
 2011-06-27 Pieter Luteijn <luteijn at users.sourceforge.net> r1211
 	* added #include <stdlib.h> (for the random functions) to 
 	  sound/mixer/decoder/PCSpeakerStream.cpp to get the
