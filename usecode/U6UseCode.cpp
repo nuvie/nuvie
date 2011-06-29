@@ -1015,23 +1015,27 @@ bool U6UseCode::use_moonstone(Obj *obj, UseCodeEvent ev)
       return true;
     } else if(ev == USE_EVENT_USE)
     {
-      /* TODO: check if the moonstone can be buried here.
-       * TODO: figure out what locations are valid
-       * FIXME: message-text check
-       */
-	Weather *weather = game->get_weather();
-	MapCoord loc=Game::get_game()->get_player()->get_actor()->get_location();
-	weather->set_moonstone(obj->frame_n,loc) ;
-	scroll->display_string("\nMoonstone buried. (FIXME)\n");
-	// FIXME: *properly* drop the moonstone at this location
-	actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj); // fixme make this work with containers
-	obj->x=loc.x;
-	obj->y=loc.y;
-	obj->z=loc.z;
-        obj->status |= OBJ_STATUS_OK_TO_TAKE;
-        obj_manager->add_obj(obj, OBJ_ADD_TOP);
-	// TODO weather->update_moongates();
-	return true;
+		Weather *weather = game->get_weather();
+		MapCoord loc=Game::get_game()->get_player()->get_actor()->get_location();
+		Tile *map_tile = map->get_tile(loc.x,loc.y,loc.z);
+
+		if( (map_tile->tile_num < 1 || map_tile->tile_num > 7) && (map_tile->tile_num < 0x10 || map_tile->tile_num > 0x6f) )
+		{
+			scroll->display_string("Cannot be buried here!\n");
+			return true;
+		}
+
+		weather->set_moonstone(obj->frame_n,loc) ;
+		scroll->display_string("\nMoonstone buried. (FIXME)\n");
+		// FIXME: *properly* drop the moonstone at this location
+		actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj); // fixme make this work with containers
+		obj->x=loc.x;
+		obj->y=loc.y;
+		obj->z=loc.z;
+			obj->status |= OBJ_STATUS_OK_TO_TAKE;
+			obj_manager->add_obj(obj, OBJ_ADD_TOP);
+		// TODO weather->update_moongates();
+		return true;
     }
   return false;
 }
