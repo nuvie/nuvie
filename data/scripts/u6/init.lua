@@ -105,6 +105,9 @@ g_projectile_offset_tbl =
  }
 }
 
+-- 20110629 Pieter Luteijn FIXME: this would need to be set to the actual
+-- location of the moonstones from the array loaded in Weather.cpp */
+
 g_moonstone_loc_tbl =
 {
  {x=0x3A7, y=0x106, z=0},
@@ -115,7 +118,8 @@ g_moonstone_loc_tbl =
  {x=0x147, y=0x336, z=0},
  {x=0x17,  y=0x16,  z=1},
  {x=0x397, y=0x3A6, z=0}
-}
+} 
+
 
 -- some common functions
 

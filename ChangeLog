@@ -1,4 +1,8 @@
-2011-06-28  Eric Fry <efry at users.sourceforge.net> r1211
+2011-06-29 Pieter Luteijn <luteijn at users.sourceforge.net> r1213
+	* updated revision number in previous changelog entry below to r1212
+	* some reminders placed around moonstone locations in lua..
+
+2011-06-28  Eric Fry <efry at users.sourceforge.net> r1212
 	* Fixed some bugs with flank combat worktype
 	* Fixed some bugs with rear combat worktype
 
