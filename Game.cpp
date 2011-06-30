@@ -153,7 +153,7 @@ bool Game::loadGame(Screen *s, nuvie_game_t type)
 
    palette = new GamePalette(screen,config);
 
-   clock = new GameClock(config);
+   clock = new GameClock(config, game_type);
 
    background = new Background(config);
    background->init();

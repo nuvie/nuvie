@@ -723,6 +723,73 @@ bool Script::call_magic_get_spell_list(uint8 level, Spell **spell_list)
 	return true;
 }
 
+bool Script::call_function(const char *function_name)
+{
+	lua_getglobal(L, function_name);
+
+	if(lua_pcall(L, 0, 0, 0) != 0)
+	{
+		DEBUG(0, LEVEL_ERROR, "Script Error: %s() %s\n", function_name, luaL_checkstring(L, -1));
+		return false;
+	}
+
+	return true;
+}
+
+bool Script::call_moonstone_set_loc(uint8 phase, MapCoord location)
+{
+   lua_getglobal(L, "moonstone_set_loc");
+
+   lua_pushnumber(L, (lua_Number)phase);
+   lua_pushnumber(L, (lua_Number)location.x);
+   lua_pushnumber(L, (lua_Number)location.y);
+   lua_pushnumber(L, (lua_Number)location.z);
+
+   if(lua_pcall(L, 4, 0, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: moonstone_set_loc() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
+
+   return true;
+}
+
+MapCoord Script::call_moonstone_get_loc(uint8 phase)
+{
+   MapCoord loc(0,0,0);
+
+   lua_getglobal(L, "moonstone_get_loc");
+
+   lua_pushnumber(L, (lua_Number)phase);
+
+   if(lua_pcall(L, 1, 1, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: moonstone_get_loc() %s\n", luaL_checkstring(L, -1));
+      return loc;
+   }
+
+   get_tbl_field_uint16(L, "x", &loc.x);
+   get_tbl_field_uint16(L, "y", &loc.y);
+   get_tbl_field_uint8(L, "z", &loc.z);
+
+   return loc;
+}
+
+bool Script::call_update_moongates(bool visible)
+{
+   lua_getglobal(L, "update_moongates");
+
+   lua_pushboolean(L, visible);
+
+   if(lua_pcall(L, 1, 0, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: update_moongates() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
+
+   return true;
+}
+
 ScriptThread *Script::new_thread(const char *scriptfile)
 {
    ScriptThread *t = NULL;

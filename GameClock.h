@@ -46,6 +46,7 @@ class NuvieIO;
 class GameClock
 {
  Configuration *config;
+ nuvie_game_t game_type;
 
  uint8 minute;
  uint8 hour;
@@ -68,7 +69,7 @@ class GameClock
 
  public:
 
- GameClock(Configuration *cfg);
+ GameClock(Configuration *cfg, nuvie_game_t type);
  ~GameClock();
 
  bool load(NuvieIO *objlist);

@@ -35,6 +35,9 @@ extern "C"
 class Configuration;
 class MapCoord;
 class Spell;
+class Obj;
+class Actor;
+
 
 #define NUVIE_SCRIPT_ERROR             0
 #define NUVIE_SCRIPT_FINISHED          1
@@ -96,6 +99,10 @@ class Script
    bool call_actor_map_dmg(Actor *actor, MapCoord location);
    bool call_look_obj(Obj *obj);
    bool call_magic_get_spell_list(uint8 level, Spell **spell_list);
+   bool call_function(const char *function_name);
+   bool call_moonstone_set_loc(uint8 phase, MapCoord location); //this is a hack until we have 'use' moonstone in script.
+   MapCoord call_moonstone_get_loc(uint8 phase);
+   bool call_update_moongates(bool visible);
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);

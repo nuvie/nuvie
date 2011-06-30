@@ -3,7 +3,7 @@
  *  Nuvie
  *
  *  Created by Eric Fry on Fri May 02 2003.
- *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
+ *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,11 +26,13 @@
 #include "NuvieIOFile.h"
 #include "Game.h"
 #include "Objlist.h"
+#include "Weather.h"
 #include "GameClock.h"
 
-GameClock::GameClock(Configuration *cfg)
+GameClock::GameClock(Configuration *cfg, nuvie_game_t type)
 {
  config = cfg;
+ game_type = type;
 
  init();
 }
@@ -173,6 +175,8 @@ void GameClock::inc_hour()
    }
  DEBUG(0,LEVEL_INFORMATIONAL,"%s\n",get_time_string());
 
+ if(game_type == NUVIE_GAME_U6)
+	 Game::get_game()->get_weather()->update_moongates();
 
  return;
 }

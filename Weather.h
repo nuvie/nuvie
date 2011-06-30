@@ -52,7 +52,6 @@ class Weather: public CallBack
 	std::list<CallBack *>wind_change_notification_list;
  
 	GameTimedCallback *wind_timer;
-	MapCoord moonstones[8]; //FIXME hardcoded constant!
  
 	public:
 
@@ -68,16 +67,16 @@ class Weather: public CallBack
 	bool add_wind_change_notification_callback(CallBack *caller);
 	bool set_moonstone(uint8 moonstone,MapCoord where);
 	MapCoord get_moonstone(uint8 moonstone);
+	void update_moongates();
   
 	bool is_eclipse();
+	bool is_moon_visible();
 
 	uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
  
 	protected:
  
 	uint8 load_wind(NuvieIO *objlist);
-        bool load_moonstones(NuvieIO *objlist);
-        bool save_moonstones(NuvieIO *objlist);
 	bool save_wind(NuvieIO *objlist);
 	void change_wind_dir();
 	inline void set_wind_change_callback();

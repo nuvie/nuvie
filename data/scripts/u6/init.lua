@@ -68,6 +68,7 @@ TIMER_TIME_STOP = 14
 TIMER_ECLIPSE = 15
 
 OBJLIST_OFFSET_VANISH_OBJ = 0x1c13
+OBJLIST_OFFSET_MOONSTONES = 0x1c1b
 
 g_vanish_obj = {["obj_n"] = 0, ["frame_n"] = 0}
 
@@ -105,9 +106,7 @@ g_projectile_offset_tbl =
  }
 }
 
--- 20110629 Pieter Luteijn FIXME: this would need to be set to the actual
--- location of the moonstones from the array loaded in Weather.cpp */
-
+--moonstone data is loaded from objlist in load_game()
 g_moonstone_loc_tbl =
 {
  {x=0x3A7, y=0x106, z=0},
@@ -417,6 +416,19 @@ function load_game()
 	
 	g_vanish_obj.obj_n = obj_n
 	g_vanish_obj.frame_n = frame_n
+
+	--Load moonstone locations.
+	objlist_seek(OBJLIST_OFFSET_MOONSTONES)
+	
+	for i=1,8 do
+	
+		local x = objlist_read2()
+		local y = objlist_read2()
+		local z = objlist_read2()
+		dbg("moonstone["..i.."] at ("..x..","..y..","..z..")\n")
+		g_moonstone_loc_tbl[i] = {x=x, y=y, z=z}
+	end
+
 end
 
 function save_game()
@@ -430,6 +442,46 @@ function save_game()
 	end
 
 	objlist_write2(tmp_obj_dat)
+	
+	--Save moonstone locations
+	objlist_seek(OBJLIST_OFFSET_MOONSTONES)
+	
+	for i=1,8 do
+		local loc = g_moonstone_loc_tbl[i]
+		objlist_write2(loc.x)
+		objlist_write2(loc.y)
+		objlist_write2(loc.z)
+	end
+end
+
+function moonstone_set_loc(phase, x, y, z)
+	if phase < 1 or phase > 8 then return false end
+
+	g_moonstone_loc_tbl[phase] = {x=x, y=y, z=z}
+	return true
+end
+
+function moonstone_get_loc(phase)
+	if phase < 1 or phase > 8 then return nil end
+	
+	return g_moonstone_loc_tbl[phase]
+end
+
+function update_moongates(show_moongates)
+	local i, loc
+	for i,loc in ipairs(g_moonstone_loc_tbl) do
+		local moongate = map_get_obj(loc.x, loc.y, loc.z, 0x55) --moongate
+		if show_moongates == true then
+			if moongate == nil and loc.x ~= 0 then
+				moongate = Obj.new(0x55, 1)
+				Obj.moveToMap(moongate, loc)
+			end
+		else --hide moongate
+			if moongate ~= nil then
+				map_remove_obj(moongate)
+			end
+		end
+	end
 end
 
 --load actor functions

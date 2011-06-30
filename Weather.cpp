@@ -23,6 +23,7 @@
 
 #include <list>
 #include <cassert>
+#include <cmath>
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "CallBack.h"
@@ -38,6 +39,7 @@
 #include "ViewManager.h"
 #include "MapWindow.h"
 #include "Map.h"
+#include "Script.h"
 
 //the longest we will go before having a change in wind direction
 #define WEATHER_MAX_WIND 30 
@@ -66,46 +68,16 @@ bool Weather::load(NuvieIO *objlist)
 		wind_dir = load_wind(objlist);
 		set_wind_change_callback(); //set a timer to change the wind direction in the future.
 		send_wind_change_notification_callback();
-		
-		load_moonstones(objlist);
 	}
 
 	return true;
 }
 
-bool Weather::load_moonstones(NuvieIO *objlist)
-{
-
- objlist->seek(OBJLIST_OFFSET_U6_MOONSTONES);
-
- // endian issues, and size of z coordinate doesn't match, so can't do a straight read to buffer
- for (uint8 moonstone=0;moonstone<8;moonstone++)
- {
-   uint8 little;
-   uint8 bigend;
-   uint16 x,y;
-   uint8 z;
-   little=objlist->read1();//little endian..
-   bigend=objlist->read1();//little endian..
-   x=little+(256*bigend);
-   little=objlist->read1();//little endian..
-   bigend=objlist->read1();//little endian..
-   y=little+(256*bigend);
-   little=objlist->read1();//little endian..
-   bigend=objlist->read1();//little endian..
-   assert(!bigend);
-   z=little; //bigend should be zero
-   DEBUG(0,LEVEL_DEBUGGING,"Read moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
-   moonstones[moonstone]=MapCoord(x,y,z);
- }
- return true;
-
-}
-
 MapCoord Weather::get_moonstone(uint8 moonstone) 
 {
   if (moonstone<8) // FIXME: hardcoded constant
-    return moonstones[moonstone];
+    return Game::get_game()->get_script()->call_moonstone_get_loc(moonstone+1);
+
   DEBUG(0,LEVEL_ERROR,"get_moonstone(%d): Moonstone out of range\n",moonstone);
   return MapCoord(0,0,0);
 }
@@ -113,11 +85,16 @@ bool Weather::set_moonstone(uint8 moonstone,MapCoord where)
 {
   if (moonstone<8) // FIXME: hardcoded constant
   {
-    moonstones[moonstone]=where;
+    Game::get_game()->get_script()->call_moonstone_set_loc(moonstone+1,where); //phase starts at 1 in script.
     return true;
   }
   DEBUG(0,LEVEL_ERROR,"set_moonstone(%d): Moonstone out of range\n",moonstone);
   return false;
+}
+
+void Weather::update_moongates()
+{
+	Game::get_game()->get_script()->call_update_moongates(is_moon_visible());
 }
 
 uint8 Weather::load_wind(NuvieIO *objlist)
@@ -158,7 +135,6 @@ bool Weather::save(NuvieIO *objlist)
 	if(gametype == NUVIE_GAME_U6)
 	{
 		save_wind(objlist);
-		save_moonstones(objlist);
 	}
 	
     return true;
@@ -183,33 +159,37 @@ bool Weather::save_wind(NuvieIO *objlist)
 	return true;
 }
 
-bool Weather::save_moonstones(NuvieIO *objlist)
-{
-  objlist->seek(OBJLIST_OFFSET_U6_MOONSTONES);
-  for (uint8 moonstone=0;moonstone<8;moonstone++)
-  {
-    uint16 x,y;
-    uint8 z;
-    x=moonstones[moonstone].x;
-    y=moonstones[moonstone].y;
-    z=moonstones[moonstone].z;
-    objlist->write1((uint8)(x&255));//little endian..
-    objlist->write1((uint8)(x>>8));
-    objlist->write1((uint8)(y&255));//little endian..
-    objlist->write1((uint8)(y>>8));
-    objlist->write1(z);//little endian..
-    objlist->write1(0);
-    DEBUG(0,LEVEL_DEBUGGING,"Wrote moonstone %x, buried at (%X,%X,%X)\n",moonstone,x,y,z);
-  }
-  return true;
-}
-
 bool Weather::is_eclipse()
 {
 	if(gametype != NUVIE_GAME_U6 || clock->get_timer(GAMECLOCK_TIMER_U6_ECLIPSE) == 0)
 		return false;
 
 	return true;
+}
+
+bool Weather::is_moon_visible()
+{
+	//FIXME this is duplicated logic. Maybe we should look at how the original works out moon locations
+
+	uint8 day = clock->get_day();
+	uint8 hour = clock->get_hour();
+    uint8 phase = 0;
+    // trammel (starts 1 hour ahead of sun)
+    phase = uint8(nearbyint((day-1)/TRAMMEL_PHASE)) % 8;
+    uint8 posA = ((hour + 1) + 3*phase) % 24; // advance 3 positions each phase-change
+    if(posA >= 5 && posA <= 19)
+    	return true;
+
+    // felucca (starts 1 hour behind sun)
+    // ...my FELUCCA_PHASE may be wrong but this method works with it...
+    sint8 phaseb = (day-1) % uint8(nearbyint(FELUCCA_PHASE*8)) - 1;
+    phase = (phaseb >= 0) ? phaseb : 0;
+    uint8 posB = ((hour - 1) + 3*phase) % 24; // advance 3 positions per phase-change
+
+    if(posB >= 5 && posB <= 19)
+        return true;
+
+	return false;
 }
 
 string Weather::get_wind_dir_str()

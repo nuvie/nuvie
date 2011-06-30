@@ -1,3 +1,11 @@
+2011-07-01  Eric Fry <efry at users.sourceforge.net> r1215
+	* Moved 'buried moonstone' location data from Weather class into lua script.
+	* Added logic to create moongates on top of buried moonstones if the moon is
+	  the sky. The moongates are removed from the map when the moons are no 
+	  longer visible.
+	* Don't do anything with the gate travel spell if trying to travel to a phase
+	  that doesn't have a corresponding buried moonstone.
+
 2011-06-29  Eric Fry <efry at users.sourceforge.net> r1214
 	* Added map tile check when burying moonstone.
 
