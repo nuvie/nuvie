@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include "nuvieDefs.h"
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"

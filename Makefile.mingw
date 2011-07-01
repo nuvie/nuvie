@@ -21,7 +21,7 @@ CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 CXXFLAGS=-g
 CC=gcc
 
-LFLAGS=-mwindows
+LFLAGS=-static-libgcc -static-libstdc++ -mwindows
 LIBS=-lmingw32 $(SDL_LIBS)
 
 all: nuvie.exe
