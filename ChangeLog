@@ -1,3 +1,9 @@
+2011-07-01 Pieter Luteijn <luteijn at users.sourceforge.net> r1217
+	* check before following potential null spell pointer
+
+2011-07-01 kirben r1216
+	* mingw makefile adjusted
+
 2011-07-01  Eric Fry <efry at users.sourceforge.net> r1215
 	* Moved 'buried moonstone' location data from Weather class into lua script.
 	* Added logic to create moongates on top of buried moonstones if the moon is

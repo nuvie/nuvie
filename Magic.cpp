@@ -147,13 +147,16 @@ bool Magic::cast()
   DEBUG(0,LEVEL_DEBUGGING,"Trying to cast '%s'\n",cast_buffer_str);
   /* decode the invocation */
   // FIXME? original allows random order of syllables, do we want that?
-
+  // easy enough to sort invocations, but would somewhat limit custom spells  
   uint16 index;
 
   if(cast_buffer_len != 0)
   {
 	  for (index=0;index<256;index++)
 	  {
+	    	  if (spell[index]==NULL) {
+		   	  continue;
+		  }
 		  if (!strcmp(spell[index]->invocation,cast_buffer_str)) {
 			  break;
 		  }
@@ -173,6 +176,8 @@ bool Magic::cast()
     event->scroll->display_string("\nThat spell is not in thy spellbook!\n"); 
     return false;
   }
+//20110701 Pieter Luteijn: add an assert(spell[index]) to be sure it's not NULL?
+
   event->scroll->display_string("\n(");
   event->scroll->display_string(spell[index]->name);
   event->scroll->display_string(")\n");
