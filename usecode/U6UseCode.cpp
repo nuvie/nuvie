@@ -60,6 +60,7 @@
 #define MESG_DATA_READY      CB_DATA_READY
 #define MESG_EFFECT_COMPLETE EFFECT_CB_COMPLETE
 #define MESG_TIMED           CB_TIMED
+#define MESG_INPUT_CANCELED  CB_INPUT_CANCELED
 
 // numbered by entrance quality, "" = no name
 static const char *u6_dungeons[21] =
@@ -314,6 +315,9 @@ bool U6UseCode::message_obj(Obj *obj, CallbackMessage msg, void *msg_data)
             items.string_ref = ((EventInput*)items.data_ref)->str;
             return uc_event(get_object_type(obj->obj_n,obj->frame_n),
                             USE_EVENT_USE, obj);
+        case MESG_INPUT_CANCELED:
+            return uc_event(get_object_type(obj->obj_n,obj->frame_n),
+        	                USE_EVENT_INPUT_CANCEL, obj);
         default : break;
     }
 
@@ -1070,6 +1074,12 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
 //    return true;
 //   }
 
+ if(ev == USE_EVENT_INPUT_CANCEL)
+ {
+	 scroll->display_string("Failed\n");
+	 return true;
+ }
+
  if(!mapcoord_ref)
   {
    game->get_event()->get_target(MapCoord(x,y,z), "Where: ");
@@ -1227,6 +1237,12 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
     Obj *dug_up_obj = NULL;
     Obj *ladder_obj;
     MapCoord from, dig_at, ladder;
+
+    if(ev == USE_EVENT_INPUT_CANCEL)
+    {
+    	scroll->display_string("nowhere.\n");
+    	return true;
+    }
 
     if(!items.mapcoord_ref) // get direction (FIXME: should return relative dir)
     {
@@ -1575,6 +1591,11 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
             return true;
         }
     }
+    else if(ev == USE_EVENT_INPUT_CANCEL)
+    {
+    	scroll->display_string("No effect\n");
+    	return true;
+    }
     else if(ev == USE_EVENT_MESSAGE) // assume message is from potion effect
     {
         if(*items.msg_ref == MESG_EFFECT_COMPLETE && obj->frame_n == USE_U6_POTION_WHITE) // white
@@ -1620,6 +1641,12 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
             return true;
         }
     }
+    else if(ev == USE_EVENT_INPUT_CANCEL)
+    {
+    	scroll->display_string("nothing\n");
+    	return true;
+    }
+
     return false;
 }
 

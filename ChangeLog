@@ -1,3 +1,8 @@
+2011-07-05  Eric Fry <efry at users.sourceforge.net> r1218
+	* Added new USE_EVENT_INPUT_CANCEL usecode event type. This is sent when the
+	  usecode input request has been canceled by the user.
+	* Added input canceled messages to use_orb, use_shovel and use_potion.
+
 2011-07-01 Pieter Luteijn <luteijn at users.sourceforge.net> r1217
 	* check before following potential null spell pointer
 

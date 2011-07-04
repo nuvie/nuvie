@@ -25,16 +25,17 @@ class CallBack;
 // general messages
 typedef enum
 {
-    CB_TIMED,               /* timer fired (data=uint32:time) */
+    CB_TIMED,                /* timer fired (data=uint32:time) */
 
-    ANIM_CB_DONE,           /* animation has finished */
-    ANIM_CB_HIT,            /* animation hit a MapEntity (data=MapEntity) */
-    ANIM_CB_HIT_WORLD,      /* animation hit some other tile on the map (data=MapCoord) */
+    ANIM_CB_DONE,            /* animation has finished */
+    ANIM_CB_HIT,             /* animation hit a MapEntity (data=MapEntity) */
+    ANIM_CB_HIT_WORLD,       /* animation hit some other tile on the map (data=MapCoord) */
 
-    EFFECT_CB_COMPLETE,     /* effect has finished */
+    EFFECT_CB_COMPLETE,      /* effect has finished */
 
-    CB_DATA_READY,          /* some data is ready to be retrieved (data=char)*/
-    MSGSCROLL_CB_TEXT_READY /* text is ready to be retrieved (data=std::string)*/
+    CB_DATA_READY,           /* some data is ready to be retrieved (data=char)*/
+    MSGSCROLL_CB_TEXT_READY, /* text is ready to be retrieved (data=std::string)*/
+    CB_INPUT_CANCELED        /* input canceled by user */
 } CallbackMessage;
 
 

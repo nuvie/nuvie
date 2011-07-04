@@ -2696,6 +2696,15 @@ void Event::cancelAction()
       	  view_manager->set_inventory_mode();
         }
     }
+    else if(mode == USE_MODE)
+    {
+    	if(callback_target)
+    	{
+    		message(CB_INPUT_CANCELED, (char*)&input);
+    		callback_target = NULL;
+    		callback_user_data = NULL;
+    	}
+    }
     else
     {
         scroll->display_string("what?\n");

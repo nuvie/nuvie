@@ -41,6 +41,7 @@
 #define USE_EVENT_READY   0x0100 /* true: object may be equipped */
 #define USE_EVENT_GET     0x0200 /* true: do normal get */
 #define USE_EVENT_DROP    0x0400 /* true: do normal drop */
+#define USE_EVENT_INPUT_CANCEL 0x501 /* note this shares a bit with USE_EVENT_USE so it can pass through uc_event(). return undefined */
 //#define USE_EVENT_NEAR    0x00 /* mirrors; might use ON with distance val */
 //#define USE_EVENT_ATTACK  0x00 /* doors, chests, mirrors */
 //#define USE_EVENT_ENTER   0x00 /* object enters view (clocks) */
