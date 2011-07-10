@@ -154,7 +154,7 @@ void GameClock::inc_minute()
     time_counter += 1;
    }
 
- update_timers(1);
+ //update_timers(1);
  return;
 }
 

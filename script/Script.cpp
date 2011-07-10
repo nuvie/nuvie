@@ -158,6 +158,7 @@ static int nscript_party_resurrect_dead_members(lua_State *L);
 
 static int nscript_timer_set(lua_State *L);
 static int nscript_timer_get(lua_State *L);
+static int nscript_timer_update_all(lua_State *L);
 
 static int nscript_wind_set(lua_State *L);
 static int nscript_wind_get(lua_State *L);
@@ -417,6 +418,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_timer_get);
    lua_setglobal(L, "timer_get");
+
+   lua_pushcfunction(L, nscript_timer_update_all);
+   lua_setglobal(L, "timer_update_all");
 
    lua_pushcfunction(L, nscript_wind_set);
    lua_setglobal(L, "wind_set_dir");
@@ -2157,6 +2161,17 @@ static int nscript_timer_get(lua_State *L)
 	lua_pushinteger(L, clock->get_timer(timer_num));
 
 	return 1;
+}
+
+static int nscript_timer_update_all(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	uint8 value = (uint8)luaL_checkinteger(L, 1);
+
+	clock->update_timers(value);
+
+	return 0;
 }
 
 static int nscript_wind_set(lua_State *L)

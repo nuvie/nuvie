@@ -252,6 +252,20 @@ bool Screen::fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
  return true;
 }
 
+void Screen::put_pixel(uint8 colour_num, uint16 x, uint16 y)
+{
+	if(surface->bits_per_pixel == 16)
+	{
+		uint16 *pixel = (uint16 *)surface->pixels + y * surface->w + x;
+		*pixel = (uint16)surface->colour32[colour_num];
+	}
+	else
+	{
+		uint32 *pixel = (uint32 *)surface->pixels + y * surface->w + x;
+		*pixel = (uint32)surface->colour32[colour_num];
+	}
+}
+
 void *Screen::get_pixels()
 {
  //if(scaled_surface == NULL)

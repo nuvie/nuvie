@@ -1,3 +1,17 @@
+2011-07-11  Eric Fry <efry at users.sourceforge.net> r1219
+	* Added rain effect to MapWindow. This is used by the dispel magic spell and
+	  the storm cloak. The effect in nuvie differs a bit from the original.
+	* Readied (lit) torches now burn out.
+	* Invisibility/regeneration rings can now disappear while being worn.
+	* Added readied storm cloak logic. It now rains when a party member wears the
+	  storm cloak.
+	* Added timer_update_all() script function. This allows us to decrement all
+	  timers by a given value from script.
+	* Added Screen::put_pixel() method
+	* Added new advance_time() script function this is used to trigger time based
+	  events.
+	* Moved timer updates from C code into advance_time()
+
 2011-07-05  Eric Fry <efry at users.sourceforge.net> r1218
 	* Added new USE_EVENT_INPUT_CANCEL usecode event type. This is sent when the
 	  usecode input request has been canceled by the user.

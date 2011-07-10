@@ -201,6 +201,7 @@ protected:
  void drawBorder();
  inline void drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);
  inline void drawActor(Actor *actor);
+ void drawRain();
 
  void generateTmpMap();
  void boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y);

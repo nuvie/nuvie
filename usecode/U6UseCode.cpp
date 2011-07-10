@@ -2831,6 +2831,9 @@ void U6UseCode::light_torch(Obj *obj)
 
     if(obj->is_readied())
         actor_manager->get_actor_holding_obj(obj)->add_light(TORCH_LIGHT_LEVEL);
+
+    obj->qty = 0xc8; //torch duration. updated in lua advance_time()
+
     scroll->display_string("\nTorch is lit.\n");
     game->get_map_window()->updateBlacking();
 }
@@ -2905,6 +2908,24 @@ bool U6UseCode::magic_ring(Obj *obj, UseCodeEvent ev)
     return true; // do normal ready/unready
 }
 
+bool U6UseCode::storm_cloak(Obj *obj, UseCodeEvent ev)
+{
+    Actor *actor = actor_manager->get_actor_holding_obj(obj);
+
+    AsyncEffect *e = new AsyncEffect(new TileBlackFadeEffect(actor, 9, 20)); //FIXME hardcoded values.
+	e->run();
+
+    if(obj->is_readied() == false)
+    {
+    	Game::get_game()->get_clock()->set_timer(GAMECLOCK_TIMER_U6_STORM, 0x14);
+    }
+    else
+    {
+    	Game::get_game()->get_clock()->set_timer(GAMECLOCK_TIMER_U6_STORM, 0);
+    }
+
+    return true;
+}
 
 /* Unready/Drop/Move: Don't allow removal. */
 bool U6UseCode::amulet_of_submission(Obj *obj, UseCodeEvent ev)

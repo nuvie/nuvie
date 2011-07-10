@@ -15,6 +15,8 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_REGENERATION_RING,0,0,USE_EVENT_READY,&U6UseCode::magic_ring,OBJTYPE_NONE },
     { OBJ_U6_INVISIBILITY_RING,0,0,USE_EVENT_READY,&U6UseCode::magic_ring,OBJTYPE_NONE },
 
+    { OBJ_U6_STORM_CLOAK,0,0,USE_EVENT_READY,&U6UseCode::storm_cloak,OBJTYPE_NONE },
+
     { OBJ_U6_SIGN,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
     { OBJ_U6_BOOK,      255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
     { OBJ_U6_SCROLL,    255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },

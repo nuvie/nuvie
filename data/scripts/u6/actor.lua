@@ -1788,13 +1788,13 @@ dbg("actor_update_all()\n")
                   end
                   
                   actor.mpts = m
-                  actor_update_flags(actor);
+                  --  actor_update_flags(actor); <- moved into advance_time()
                   if actor.wt == WT_FOLLOW and actor.corpser_flag == true then
                      actor_corpser_regurgitation(actor) --hack the original does this in party_move() but we don't have that in script yet.
                   end
                end
             end
-            --FIXME advance_time(1)
+            advance_time(1)
 
          end
       until di > 0
@@ -1817,6 +1817,83 @@ dbg("actor_update_all()\n")
       end
 
    until selected_actor.obj_n ~= 0 and selected_actor.wt == WT_PLAYER and selected_actor.corpser_flag == false
+end
+
+function advance_time(num_turns)
+
+	local time_stop_timer = timer_get(TIMER_TIME_STOP)
+	
+	if time_stop_timer ~= 0 then
+		if time_stop_timer > num_turns then
+			timer_set(TIMER_TIME_STOP, time_stop_timer - num_turns)
+			return
+		end
+		
+		timer_set(TIMER_TIME_STOP, 0)
+	end
+	
+	timer_update_all(num_turns)
+	
+	--FIXME update keg timer. explode kegs.
+
+	local random = math.random
+	local cloak_readied = false
+	local i
+	for i=1,0x100 do
+		local actor = Actor.get(i)
+		
+		if actor.in_party == true then
+			local obj
+			for obj in actor_inventory(actor) do
+				if obj.readied == true then
+					local obj_n = obj.obj_n
+					local obj_name = nil
+					if obj_n == 0x5a and obj.frame_n == 1 then --lit torch
+						if random(0, 1) == 0 then
+							if obj.qty > num_turns then
+								obj.qty = obj.qty - num_turns
+							else
+								print("A torch burned out.\n")
+								Actor.inv_remove_obj(actor, obj)
+							end
+						end
+					elseif obj_n == 0x102 then --invisibility ring
+						if random(0, 1000) == 429 then
+							actor.visible = true
+							obj_name = "ring"
+						end
+					elseif obj_n == 0x101 then -- regeneration ring
+						if random(0, 1000) == 734 then
+							--FIXME handle regeneration
+							obj_name = "ring"
+						end
+					elseif obj_n == 0x51 then --storm cloak
+						if random(0, 1000) == 588 then
+							obj_name = "cloak"
+							timer_set(TIMER_STORM, 0)
+						else
+							cloak_readied = true
+						end
+					end
+					
+					if obj_name ~= nil then
+						Actor.inv_remove_obj(actor, obj)
+						print("A "..obj_name.." has vanished!\n")
+					end
+				end
+			end
+		end
+		for j=0,num_turns do
+			actor_update_flags(actor)
+		end
+		
+		--FIXME do map tile damage here. update movement flag so we don't damage too often.
+	end
+
+	if cloak_readied == true then
+		timer_set(TIMER_STORM, 1)
+	end
+	--FIXME update magic points, game clock, etc
 end
 
 function actor_update_flags(actor)
@@ -1864,7 +1941,7 @@ function actor_update_flags(actor)
 		end
 		
 		if actor.poisoned == true and actor.protected == false and random(0, 7) == 0 then
-			actor_hit(actor, 1) --FIXME we need to remove the poison hit from the C code now.
+			actor_hit(actor, 1)
 		end
 	end
 

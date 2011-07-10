@@ -543,6 +543,9 @@ void MapWindow::Display(bool full_redraw)
 
  //drawAnims();
 
+ if(Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) != 0) //FIXME u6 specific.
+   drawRain();
+
  if(show_cursor)
   {
    screen->blit(cursor_x*16,cursor_y*16,(unsigned char *)cursor_tile->data,8,16,16,16,true,&clip_rect);
@@ -656,8 +659,8 @@ inline void MapWindow::drawActor(Actor *actor)
         // draw light coming from actor
         if(actor->light > 0 && screen->updatingalphamap)
         {
-            if(actor->light > 5)
-                DEBUG(0,LEVEL_WARNING,"%s's light level is %d\n",actor->get_name(),actor->light);
+            //if(actor->light > 5)
+            //    DEBUG(0,LEVEL_WARNING,"%s's light level is %d\n",actor->get_name(),actor->light);
             screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light);
         }
     }
@@ -891,6 +894,22 @@ void MapWindow::drawBorder()
     screen->blit(0,i*16,tile->data,8,16,16,16,true,&clip_rect);
     screen->blit((win_width-1)*16,i*16,tile1->data,8,16,16,16,true,&clip_rect);
    }
+}
+
+void MapWindow::drawRain()
+{
+	int c = win_width * win_height;
+	for(int i=0;i<c;i++)
+	{
+		uint16 x = NUVIE_RAND()%(win_width*16-2);
+		uint16 y = NUVIE_RAND()%(win_height*16-2);
+
+		//FIXME the original does something with the palette if a pixel is black then draw gray etc.
+		//We can't do this easily here because we don't have the original 8 bit display surface.
+		screen->put_pixel(118, x, y);
+		screen->put_pixel(118, x+1, y+1);
+		screen->put_pixel(0, x+2, y+2);
+	}
 }
 
 void MapWindow::generateTmpMap()
