@@ -901,8 +901,9 @@ void MapWindow::drawRain()
 	int c = win_width * win_height;
 	for(int i=0;i<c;i++)
 	{
-		uint16 x = NUVIE_RAND()%(win_width*16-2);
-		uint16 y = NUVIE_RAND()%(win_height*16-2);
+		//FIXME this assumes we have a mapwindow border. fix this when we go full screen.
+		uint16 x = NUVIE_RAND()%((win_width-1)*16-2) + 8;
+		uint16 y = NUVIE_RAND()%((win_height-1)*16-2) + 8;
 
 		//FIXME the original does something with the palette if a pixel is black then draw gray etc.
 		//We can't do this easily here because we don't have the original 8 bit display surface.
