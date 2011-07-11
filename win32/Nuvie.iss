@@ -1,16 +1,22 @@
 [Setup]
-OutputDir=C:\Ultima6
-OutputBaseFilename=Nuviewin32
 AppCopyright=2011
 AppName=Nuvie
 AppVerName=Nuvie SVN
+AppPublisher=The Nuvie Team
+AppPublisherURL=http://nuvie.sourceforge.net/
+AppSupportURL=http://nuvie.sourceforge.net/
+AppUpdatesURL=http://nuvie.sourceforge.net/
 DefaultDirName={pf}\Nuvie
-DirExistsWarning=no
-AppendDefaultDirName=false
-AllowNoIcons=true
-MergeDuplicateFiles=false
-SolidCompression=true
 DefaultGroupName=Nuvie
+AllowNoIcons=true
+AlwaysUsePersonalGroup=false
+EnableDirDoesntExistWarning=false
+OutputDir=C:\Ultima6
+OutputBaseFilename=Nuviewin32
+DisableStartupPrompt=true
+AppendDefaultDirName=false    
+SolidCompression=true
+DirExistsWarning=no 
 
 [Icons]
 Name: {group}\{cm:UninstallProgram, Nuvie}; Filename: {uninstallexe}
