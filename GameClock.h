@@ -48,7 +48,7 @@ class GameClock
  Configuration *config;
  nuvie_game_t game_type;
 
- uint8 minute;
+ uint16 minute;
  uint8 hour;
  uint8 day;
  uint8 month;
@@ -83,7 +83,7 @@ class GameClock
 
  void advance_to_next_hour();
 
- void inc_minute();
+ void inc_minute(uint16 amount=1);
  void inc_hour();
  void inc_day();
  void inc_month();

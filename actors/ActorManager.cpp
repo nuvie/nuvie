@@ -618,17 +618,8 @@ void ActorManager::startActors()
     //ERIC Game::get_game()->pause_user();
 }
 
-// After all actors move, refresh move counts and add time.
-void ActorManager::updateTime()
+void ActorManager::updateSchedules()
 {
-  //  if(!update)
-  //      return;
-
-//DEBUG(0,LEVEL_DEBUGGING,"updateTime(): ");
- //   for(int i=0; i<ACTORMANAGER_MAX_ACTORS; i++)
- //       actors[i]->update_time(); // **UPDATE MOVES LEFT**
-    clock->inc_minute(); // **UPDATE TIME**
-//DEBUG(0,LEVEL_DEBUGGING,"%d:%02d\n",clock->get_hour(),clock->get_minute());
     uint8 cur_hour = clock->get_hour();
     if(cur_hour != game_hour) // moved from updateActors() (SB-X)
     {
@@ -669,7 +660,7 @@ void ActorManager::moveActors()
         return;// nothing to do
 
    Game::get_game()->get_script()->call_actor_update_all();
-   updateTime();
+   //updateTime();
    stopActors();
    return;
    
@@ -695,7 +686,7 @@ void ActorManager::moveActors()
             }
             else // just ran out of actors, or never found any
             {
-                updateTime(); // refresh moves
+                //updateTime(); // refresh moves
                 update_active_actors(cur_x,cur_y,cur_z);
                 if(active_actors.empty())
                 {

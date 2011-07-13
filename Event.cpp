@@ -1604,7 +1604,8 @@ void Event::alt_code(const char *cs)
             break;
 
         case 215:
-            clock->advance_to_next_hour();
+            //clock->advance_to_next_hour();
+        	Game::get_game()->get_script()->call_advance_time(60);
             scroll->display_string(clock->get_time_string());
             scroll->display_string("\n");
             scroll->display_prompt();

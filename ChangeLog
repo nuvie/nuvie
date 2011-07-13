@@ -1,3 +1,19 @@
+2011-07-14  Eric Fry <efry at users.sourceforge.net> r1222
+	* Restore magic points for party members in advance_time() function.
+	* Reimplemented alcohol logic. Alcohol units now decrease hourly.
+	* Game time is now updated from advance_time() script function.
+	* Removed ActorManager::updateTime()
+	* Created new ActorManager::updateSchedules()
+	* Changed GameClock::inc_minute() to allow increments of more than 1 minute.
+	* Added Player::dec_alcohol()
+	* Moved schedule updates to advance_time() script function.
+	* Added script functions clock_get_minute(), clock_inc(), update_actor_schedules()
+	  and player_dec_alcohol().
+	* Added Script::call_advace_time(). Used by the alt 215 cheatcode.
+
+2011-07-13 kirben r1221
+	* Updated win32 installer script.
+
 2011-07-11  Eric Fry <efry at users.sourceforge.net> r1220
 	* Fixed bug where the rain effect was corrupting the map window border when
 	  game cursors are enabled.

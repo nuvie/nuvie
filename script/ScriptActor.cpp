@@ -319,6 +319,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
 
 
 static int nscript_map_get_actor(lua_State *L);
+static int nscript_update_actor_schedules(lua_State *L);
 
 static int nscript_actor_inv(lua_State *L);
 
@@ -332,6 +333,9 @@ void nscript_init_actor(lua_State *L)
 
    lua_pushcfunction(L, nscript_map_get_actor);
    lua_setglobal(L, "map_get_actor");
+
+   lua_pushcfunction(L, nscript_update_actor_schedules);
+   lua_setglobal(L, "update_actor_schedules");
 
    lua_pushcfunction(L, nscript_actor_inv);
    lua_setglobal(L, "actor_inventory");
@@ -1173,6 +1177,13 @@ static int nscript_map_get_actor(lua_State *L)
       return 0;
 
    return 1;
+}
+
+static int nscript_update_actor_schedules(lua_State *L)
+{
+	ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+	actor_manager->updateSchedules();
+	return 0;
 }
 
 //lua function actor_inventory(actor, is_recursive)

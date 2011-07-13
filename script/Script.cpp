@@ -147,6 +147,7 @@ static int nscript_objlist_write2(lua_State *L);
 static int nscript_player_get_location(lua_State *L);
 static int nscript_player_get_karma(lua_State *L);
 static int nscript_player_set_karma(lua_State *L);
+static int nscript_player_dec_alcohol(lua_State *L);
 
 static int nscript_party_is_in_combat_mode(lua_State *L);
 static int nscript_party_set_combat_mode(lua_State *L);
@@ -159,6 +160,9 @@ static int nscript_party_resurrect_dead_members(lua_State *L);
 static int nscript_timer_set(lua_State *L);
 static int nscript_timer_get(lua_State *L);
 static int nscript_timer_update_all(lua_State *L);
+
+static int nscript_clock_get_minute(lua_State *L);
+static int nscript_clock_inc(lua_State *L);
 
 static int nscript_wind_set(lua_State *L);
 static int nscript_wind_get(lua_State *L);
@@ -422,6 +426,12 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_timer_update_all);
    lua_setglobal(L, "timer_update_all");
 
+   lua_pushcfunction(L, nscript_clock_get_minute);
+   lua_setglobal(L, "clock_get_minute");
+
+   lua_pushcfunction(L, nscript_clock_inc);
+   lua_setglobal(L, "clock_inc");
+
    lua_pushcfunction(L, nscript_wind_set);
    lua_setglobal(L, "wind_set_dir");
 
@@ -466,6 +476,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_player_set_karma);
    lua_setglobal(L, "player_set_karma");
+
+   lua_pushcfunction(L, nscript_player_dec_alcohol);
+   lua_setglobal(L, "player_dec_alcohol");
 
    lua_pushcfunction(L, nscript_party_get_size);
    lua_setglobal(L, "party_get_size");
@@ -792,6 +805,21 @@ bool Script::call_update_moongates(bool visible)
    }
 
    return true;
+}
+
+bool Script::call_advance_time(uint16 minutes)
+{
+	lua_getglobal(L, "advance_time");
+
+	lua_pushnumber(L, (lua_Number)minutes);
+
+	if(lua_pcall(L, 1, 0, 0) != 0)
+	{
+		DEBUG(0, LEVEL_ERROR, "Script Error: moonstone_get_loc() %s\n", luaL_checkstring(L, -1));
+		return false;
+	}
+
+	return true;
 }
 
 ScriptThread *Script::new_thread(const char *scriptfile)
@@ -1551,6 +1579,13 @@ static int nscript_player_set_karma(lua_State *L)
 	return 0;
 }
 
+static int nscript_player_dec_alcohol(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	player->dec_alcohol((uint8)lua_tointeger(L, 1));
+	return 0;
+}
+
 static int nscript_party_is_in_combat_mode(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2170,6 +2205,26 @@ static int nscript_timer_update_all(lua_State *L)
 	uint8 value = (uint8)luaL_checkinteger(L, 1);
 
 	clock->update_timers(value);
+
+	return 0;
+}
+
+static int nscript_clock_get_minute(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	lua_pushinteger(L, clock->get_minute());
+
+	return 1;
+}
+
+static int nscript_clock_inc(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	uint16 minutes = (uint16)luaL_checkinteger(L, 1);
+
+	clock->inc_minute(minutes);
 
 	return 0;
 }

@@ -1820,7 +1820,7 @@ dbg("actor_update_all()\n")
 end
 
 function advance_time(num_turns)
-
+	dbg("advance_time("..num_turns..")")
 	local time_stop_timer = timer_get(TIMER_TIME_STOP)
 	
 	if time_stop_timer ~= 0 then
@@ -1893,7 +1893,32 @@ function advance_time(num_turns)
 	if cloak_readied == true then
 		timer_set(TIMER_STORM, 1)
 	end
-	--FIXME update magic points, game clock, etc
+
+	local minute = clock_get_minute()
+	
+	clock_inc(num_turns)
+	
+	if minute + num_turns >= 60 then
+
+		update_actor_schedules()
+		
+		--update magic points
+		local party_actor
+		for party_actor in party_members() do 
+			local obj_n = party_actor.obj_n
+			if obj_n == 0x19a or obj_n == 0x17a or obj_n == 0x179 or obj_n == 0x182 then -- Avatar, Mage, Swashbuckler, Musician
+				local magic_pts = party_actor.magic + party_actor.level
+				local max_magic = actor_get_max_magic_points(party_actor)
+				if magic_pts > max_magic then
+					magic_pts = max_magic
+				end
+				party_actor.magic = magic_pts
+			end
+		end
+		
+		player_dec_alcohol(1)
+	end
+	
 end
 
 function actor_update_flags(actor)

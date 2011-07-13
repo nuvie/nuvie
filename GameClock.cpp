@@ -138,20 +138,24 @@ void GameClock::advance_to_next_hour()
  inc_hour();
 }
 
-void GameClock::inc_minute()
+void GameClock::inc_minute(uint16 amount)
 {
  if(!active)
    return;
 
- if(minute == 59)
+ minute += amount;
+
+ if(minute >= 60)
    {
-    minute = 0;
-    inc_hour();
+	 for(;minute >= 60; minute -= 60)
+	 {
+		 inc_hour();
+	 }
+	 time_counter += minute;
    }
  else
    {
-    minute++;
-    time_counter += 1;
+    time_counter += amount;
    }
 
  //update_timers(1);

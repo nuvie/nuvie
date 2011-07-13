@@ -54,7 +54,6 @@ class Player
  uint8 karma;
  uint8 gargishf; // learned Gargish
  uint8 alcohol; // number of alcoholic drinks consumed
- bool drunk; // player drank too much
 
  MapWindow *map_window;
  
@@ -85,6 +84,7 @@ class Player
  void add_karma(uint8 val = 1);
  void subtract_karma(uint8 val = 1);
  void add_alcohol(uint8 val = 1) { alcohol = clamp_max(alcohol+val, 255); }
+ void dec_alcohol(uint8 val = 1) { if(alcohol > val) { alcohol -= val; } else { alcohol = 0; } }
 
  void set_quest_flag(uint8 val) { questf = val; }
  uint8 get_quest_flag()         { return(questf); }

@@ -101,6 +101,8 @@ class Script
    bool call_magic_get_spell_list(uint8 level, Spell **spell_list);
    bool call_function(const char *function_name);
    bool call_moonstone_set_loc(uint8 phase, MapCoord location); //this is a hack until we have 'use' moonstone in script.
+   bool call_advance_time(uint16 minutes);
+
    MapCoord call_moonstone_get_loc(uint8 phase);
    bool call_update_moongates(bool visible);
    

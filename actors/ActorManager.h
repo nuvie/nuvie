@@ -99,7 +99,7 @@ class ActorManager
  void moveActors();
  void startActors();
  void stopActors();
- void updateTime();
+ void updateSchedules();
 
  void clear_actor(Actor *actor);
  bool resurrect_actor(Obj *actor_obj, MapCoord new_position);

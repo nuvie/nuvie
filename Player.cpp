@@ -71,7 +71,6 @@ void Player::init()
 
  party_mode = true;
  mapwindow_centered = true;
- drunk = false;
 }
 
 bool Player::load(NuvieIO *objlist)
@@ -272,15 +271,12 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     if(actor->is_immobile() && actor->id_n != 0)
         return;
 
-    if(alcohol > 3) drunk = true;
-    if(drunk && NUVIE_RAND()%4 != 0)
+    if(alcohol > 3 && NUVIE_RAND()%4 != 0)
     {
         rel_x = NUVIE_RAND()%3 - 1; // stumble and change direction
         rel_y = NUVIE_RAND()%3 - 1;
         Game::get_game()->get_scroll()->display_string("Hic!\n");
     }
-    if(alcohol>0 && NUVIE_RAND()%20 == 0) // FIXME: I havn't checked how U6 reduces alcohol level.
-        if(--alcohol == 0) drunk = false;
 
     actor->set_direction(rel_x, rel_y);
 
