@@ -117,6 +117,7 @@ static const char *actor_set_vars[] =
    "direction",
    "exp",
    "frame_n",
+   "hit_flag",
    "hp",
    "int",
    "level",
@@ -150,6 +151,7 @@ static const char *actor_get_vars[] =
    "direction",
    "exp",
    "frame_n",
+   "hit_flag",
    "hp",
    "in_party",
    "int",
@@ -189,6 +191,7 @@ static int nscript_actor_set_dexterity(Actor *actor, lua_State *L);
 static int nscript_actor_set_direction(Actor *actor, lua_State *L);
 static int nscript_actor_set_exp(Actor *actor, lua_State *L);
 static int nscript_actor_set_frame_n(Actor *actor, lua_State *L);
+static int nscript_actor_set_hit(Actor *actor, lua_State *L);
 static int nscript_actor_set_hp(Actor *actor, lua_State *L);
 static int nscript_actor_set_intelligence(Actor *actor, lua_State *L);
 static int nscript_actor_set_level(Actor *actor, lua_State *L);
@@ -219,6 +222,7 @@ int (*actor_set_func[])(Actor *, lua_State *) =
    nscript_actor_set_direction,
    nscript_actor_set_exp,
    nscript_actor_set_frame_n,
+   nscript_actor_set_hit,
    nscript_actor_set_hp,
    nscript_actor_set_intelligence,
    nscript_actor_set_level,
@@ -250,6 +254,7 @@ static int nscript_actor_get_dexterity(Actor *actor, lua_State *L);
 static int nscript_actor_get_direction(Actor *actor, lua_State *L);
 static int nscript_actor_get_exp(Actor *actor, lua_State *L);
 static int nscript_actor_get_frame_n(Actor *actor, lua_State *L);
+static int nscript_actor_get_hit_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_hp(Actor *actor, lua_State *L);
 static int nscript_actor_get_in_party_status(Actor *actor, lua_State *L);
 static int nscript_actor_get_intelligence(Actor *actor, lua_State *L);
@@ -290,6 +295,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_direction,
    nscript_actor_get_exp,
    nscript_actor_get_frame_n,
+   nscript_actor_get_hit_flag,
    nscript_actor_get_hp,
    nscript_actor_get_in_party_status,
    nscript_actor_get_intelligence,
@@ -563,6 +569,12 @@ static int nscript_actor_set_hp(Actor *actor, lua_State *L)
    return 0;
 }
 
+static int nscript_actor_set_hit(Actor *actor, lua_State *L)
+{
+   actor->set_hit_flag((uint8)lua_tointeger(L, 3));
+   return 0;
+}
+
 static int nscript_actor_set_intelligence(Actor *actor, lua_State *L)
 {
    actor->set_intelligence((uint8)lua_tointeger(L, 3));
@@ -735,6 +747,11 @@ static int nscript_actor_get_exp(Actor *actor, lua_State *L)
 static int nscript_actor_get_frame_n(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_frame_n()); return 1;
+}
+
+static int nscript_actor_get_hit_flag(Actor *actor, lua_State *L)
+{
+   lua_pushboolean(L, (int)actor->is_hit()); return 1;
 }
 
 static int nscript_actor_get_hp(Actor *actor, lua_State *L)

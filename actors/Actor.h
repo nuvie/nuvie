@@ -77,6 +77,7 @@ using std::vector;
 #define ACTOR_STATUS_IN_PARTY  0x80
 #define ACTOR_STATUS_ALIGNMENT_MASK 0x60
 
+#define ACTOR_MOVEMENT_HIT_FLAG 0x8
 #define ACTOR_MOVEMENT_FLAGS_OLD_ALIGNMENT_MASK 0x60
 
 #define ACTOR_OBJ_FLAG_
@@ -281,6 +282,7 @@ class Actor
  virtual bool is_charmed() { return(obj_flags & OBJ_STATUS_CHARMED); }
  virtual bool is_cursed() { return(obj_flags & OBJ_STATUS_CURSED); }
  virtual bool get_corpser_flag() { return false; }
+ bool is_hit() { return(movement_flags & ACTOR_MOVEMENT_HIT_FLAG); }
 
  void set_name(const char *actor_name) {  name=actor_name; }
  const char *get_name();
@@ -337,6 +339,7 @@ class Actor
  virtual void set_corpser_flag(bool val) { return; }
  virtual void set_cursed(bool val) { return; }
  virtual void set_asleep(bool val) { return; }
+ void set_hit_flag(bool val);
 
  void set_invisible(bool invisible);
 

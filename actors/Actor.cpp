@@ -1431,6 +1431,18 @@ void Actor::set_hp(uint8 val)
 	}
 }
 
+void Actor::set_hit_flag(bool val)
+{
+	if(val)
+	{
+		movement_flags |= ACTOR_MOVEMENT_HIT_FLAG;
+	}
+	else
+	{
+		movement_flags &= (0xff ^ ACTOR_MOVEMENT_HIT_FLAG);
+	}
+}
+
 void Actor::die(bool create_body)
 {
     hp = 0;

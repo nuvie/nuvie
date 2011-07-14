@@ -339,9 +339,14 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 	local dmg = 0
 	local random = math.random
 	
+	if actor.alive == false or actor.hit_flag == true then
+		return
+	end
+	
 	if obj_n ~= 0x1a7 and obj_n ~= 0x19e and obj_n ~= 0x19f and obj_n ~= 0x19c and (actor_type == nil or actor_type[13] == 0) and actor.protected == false then --balloon, skiff, raft, ship, immune to map dmg
 		local map_tile = map_get_dmg_tile_num(map_x, map_y, map_z)
 		if map_tile ~= nil then
+			actor.hit_flag = true
 			if map_tile == 564 then
 				--web
 				if obj_n ~= 0x169 then --giant spider
@@ -1057,6 +1062,7 @@ function actor_hit(defender, max_dmg, attacker)
 	
 	if defender.luatype == "actor" then
 		--actor logic here
+		defender.hit_flag = true
 		hit_anim(defender.x, defender.y)
 		if defender_obj_n == 409 then --lord british
 			defender.hp = 0xff
@@ -1863,8 +1869,15 @@ function advance_time(num_turns)
 							obj_name = "ring"
 						end
 					elseif obj_n == 0x101 then -- regeneration ring
+						--FIXME the original increments a counter here.
+						local hp = actor.hp + num_turns
+						local max_hp = actor.max_hp
+						if hp > max_hp then
+							hp = max_hp
+						end
+						actor.hp = hp
+						
 						if random(0, 1000) == 734 then
-							--FIXME handle regeneration
 							obj_name = "ring"
 						end
 					elseif obj_n == 0x51 then --storm cloak
@@ -1887,7 +1900,9 @@ function advance_time(num_turns)
 			actor_update_flags(actor)
 		end
 		
-		--FIXME do map tile damage here. update movement flag so we don't damage too often.
+		actor_map_dmg(actor, actor.x, actor.y, actor.z)
+		actor.hit_flag = false
+
 	end
 
 	if cloak_readied == true then

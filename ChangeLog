@@ -1,3 +1,10 @@
+2011-07-15  Eric Fry <efry at users.sourceforge.net> r1223
+	* Added actor hit flag. bit 4 in actor movement flags. We use this to make
+	  sure we don't hit from map tile damage if the actor has already been hit
+	  this turn.
+	* Added regeneration ring healing.
+	* Added map tile damage in advance_time()
+
 2011-07-14  Eric Fry <efry at users.sourceforge.net> r1222
 	* Restore magic points for party members in advance_time() function.
 	* Reimplemented alcohol logic. Alcohol units now decrease hourly.
