@@ -564,6 +564,14 @@ void Event::get_inventory_obj(Actor *actor)
 	moveCursorToInventory();
 	view_manager->get_inventory_view()->set_actor(actor);
 }
+
+void Event::get_spell_num(Actor *caster, Obj *spell_container)
+{
+	//get_target("");
+	view_manager->set_spell_mode(caster, spell_container, true);
+	view_manager->get_current_view()->grab_focus();
+}
+
 /* Send all keyboard input to caller, with user_data.
    ESC always cancels sending any further input. */
 void Event::key_redirect(CallBack *caller, void *user_data)
@@ -669,6 +677,22 @@ bool Event::select_party_member(uint8 num)
         return true;
     }
     return false;
+}
+
+bool Event::select_spell_num(sint16 spell_num)
+{
+    //assert(mode == INPUT_MODE);
+    //assert(input.select_from_inventory == true);
+
+
+
+    input.type = EVENTINPUT_SPELL_NUM;
+    input.spell_num = spell_num;
+    //endAction(); // mode = prev_mode
+    Game::get_game()->get_view_manager()->get_current_view()->release_focus();
+    Game::get_game()->get_view_manager()->set_inventory_mode();
+    doAction();
+    return true;
 }
 
 // move the cursor or walk around; do action for direction-targeted modes
@@ -2639,6 +2663,13 @@ void Event::doAction()
     		magic->resume(input.obj);
     		view_manager->get_inventory_view()->set_party_member(Game::get_game()->get_party()->get_leader());
     	}
+    	else if(input.type == EVENTINPUT_SPELL_NUM)
+    	{
+    		if(input.spell_num != -1)
+    			magic->resume_with_spell_num(input.spell_num);
+    		else
+    			magic->resume();
+    	}
     	else
     	{
 			magic->cast();
@@ -2657,6 +2688,10 @@ void Event::doAction()
 		else if(magic->is_waiting_for_inventory_obj())
 		{
 			get_inventory_obj(magic->get_actor_from_script());
+		}
+		else if(magic->is_waiting_for_spell())
+		{
+			get_spell_num(player->get_actor(), magic->get_spellbook_obj());
 		}
 		else
 		{

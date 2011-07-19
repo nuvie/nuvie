@@ -115,7 +115,7 @@ Obj *Magic::book_equipped()
 
 bool Magic::start_new_spell() 
 {
-  Obj *spellbook_obj = book_equipped();
+  spellbook_obj = book_equipped();
 
   if (Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) > 0)
   {
@@ -126,6 +126,7 @@ bool Magic::start_new_spell()
     state=MAGIC_STATE_SELECT_SPELL;
     clear_cast_buffer();
     Game::get_game()->get_view_manager()->set_spell_mode(event->player->get_actor(), spellbook_obj);
+    Game::get_game()->get_view_manager()->get_spell_view()->grab_focus();
     return true;
   }
   else
@@ -141,7 +142,9 @@ bool Magic::cast()
     return false;
   
   //FIXME this should set previous view. Don't default to inventory view.
+  Game::get_game()->get_view_manager()->get_spell_view()->release_focus();
   Game::get_game()->get_view_manager()->set_inventory_mode();
+
 
   cast_buffer_str[cast_buffer_len]='\0';
   DEBUG(0,LEVEL_DEBUGGING,"Trying to cast '%s'\n",cast_buffer_str);
@@ -327,6 +330,16 @@ bool Magic::resume(uint8 dir)
 	return true;
 }
 
+bool Magic::resume_with_spell_num(uint8 spell_num)
+{
+	if(magic_script)
+	{
+		process_script_return(magic_script->resume_with_spell_num(spell_num));
+	}
+
+	return true;
+}
+
 bool Magic::resume(Obj *obj)
 {
 	if(magic_script)
@@ -376,7 +389,8 @@ bool Magic::process_script_return(uint8 ret)
     case NUVIE_SCRIPT_GET_TARGET : state = MAGIC_STATE_ACQUIRE_TARGET;  break;
     case NUVIE_SCRIPT_GET_DIRECTION : state = MAGIC_STATE_ACQUIRE_DIRECTION;  break;
     case NUVIE_SCRIPT_GET_INV_OBJ : state = MAGIC_STATE_ACQUIRE_INV_OBJ;  break;
-      
+    case NUVIE_SCRIPT_GET_SPELL : state = MAGIC_STATE_ACQUIRE_SPELL;  break;
+
     case NUVIE_SCRIPT_ADVANCE_GAME_TIME : nturns = magic_script->get_data();
       DEBUG(0,LEVEL_DEBUGGING,"Magic: Advance %d turns\n",nturns);
       cb_msgid = new uint8;

@@ -1,7 +1,23 @@
 io.stderr:write("Magic init\n");
 
+magic_syllable_tbl = {a = "An", b = "Bet", c = "Corp", d = "Des", e = "Ex", f = "Flam", g = "Grav", h = "Hur",
+                      i = "In", j = "Jux", k = "Kal", l = "Lor", m = "Mani", n = "Nox", o = "Ort", p = "Por",
+                      q = "Quas", r = "Rel", s = "Sanct", t = "Tym", u = "Uus", v = "Vas", w = "Wis", x = "Xen",
+                      y = "Ylem", z = "Zu"}
 magic = {}
 magic_invocations = {}
+
+function magic_print_invocation_string(spell_num)
+	local i
+	local invocation = magic_spell_invocation(spell_num)
+	
+	for i = 1,#invocation do
+		if i ~= 1 then
+			print(" ")
+		end
+		print(magic_syllable_tbl[string.sub(invocation, i, i)])
+	end
+end
 
 run_magic_script = function(invocation)
 	local spell_num = magic_invocations[invocation]
@@ -38,6 +54,14 @@ function magic_spell_name(spell_num)
 	end
 	
 	return "Unknown"
+end
+
+function magic_spell_invocation(spell_num)
+	if magic[spell_num+1] ~= nil then
+		return magic[spell_num+1].invocation
+	end
+
+	return ""
 end
 
 function magic_get_spell_list(spell_level)
@@ -214,6 +238,10 @@ projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
 if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
 
 return loc
+end
+
+function select_spell()
+	return get_spell()
 end
 
 function caster_get_location()	  
@@ -450,7 +478,7 @@ magic_init("Replicate", "iqy", 0xda, 6, 9, "u6/magic/circle_06/replicate.lua");
 magic_init("Web", "idp", 0x10, 6, 10, "u6/magic/circle_06/web.lua");
 
 magic_init("Chain Bolt", "vog", 0x8d, 7, 1, "u6/magic/circle_07/chain_bolt.lua");
-
+magic_init("Enchant", "ioy", 0x91, 7, 2, "u6/magic/circle_07/enchant.lua");
 magic_init("Energy Wind", "gh", 0x8b, 7, 3, "u6/magic/circle_07/energy_wind.lua");
 magic_init("Fear", "qc", 0x23, 7, 4, "u6/magic/circle_07/fear.lua");
 magic_init("Gate Travel", "vrp", 0x85, 7, 5, "u6/magic/circle_07/gate_travel.lua");

@@ -83,10 +83,11 @@ void SpellView::PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
  GUI_Widget::PlaceOnScreen(s,dm,x,y);
 }
 
-void SpellView::set_spell_caster(Actor *actor, Obj *s_container)
+void SpellView::set_spell_caster(Actor *actor, Obj *s_container, bool eventMode)
 {
 	caster = actor;
 	spell_container = s_container;
+	event_mode = eventMode;
 
 	for(int shift=0;shift<8;shift++)
 	{
@@ -388,10 +389,29 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
         case SDLK_KP6:
             move_right();
             break;
-        case SDLK_SPACE:
         case SDLK_RETURN:
         case SDLK_KP_ENTER:
+        	if(event_mode)
+        	{
+        		sint16 spell_num = get_selected_spell();
+        		Game::get_game()->get_event()->select_spell_num(spell_num);
+        		release_focus();
+        		return GUI_YUM;
+        	}
+
+        	return GUI_PASS;
+
+        	break;
         case SDLK_ESCAPE:
+        	if(event_mode)
+        	{
+        		Game::get_game()->get_event()->select_spell_num(-1);
+    			release_focus();
+    			return GUI_YUM;
+        	}
+        	return GUI_PASS;
+        	break;
+        case SDLK_SPACE:
         	return GUI_PASS;
             break;
         case SDLK_TAB :
@@ -402,6 +422,11 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
             return GUI_PASS;
     }
     return(GUI_YUM);
+}
+
+GUI_status SpellView::MouseDown(int x, int y, int button)
+{
+	return GUI_YUM;
 }
 
 void SpellView::hide_buttons()

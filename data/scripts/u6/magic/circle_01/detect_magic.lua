@@ -28,7 +28,7 @@ local potion_name = {
 }
 
 fade_obj_blue(obj)
-  
+ 
 if magical_tiles[obj.tile_num] ~= nil then
 	--magical object.
 	if obj.obj_n == 0x113 then

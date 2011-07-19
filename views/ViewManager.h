@@ -77,7 +77,7 @@ class ViewManager
  void set_inventory_mode();
  void set_party_mode();
  void set_actor_mode();
- void set_spell_mode(Actor *caster, Obj *spell_container);
+ void set_spell_mode(Actor *caster, Obj *spell_container, bool eventMode=false);
 
  View *get_current_view() { return(current_view); }
  ActorView *get_actor_view() { return(actor_view); }

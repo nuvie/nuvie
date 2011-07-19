@@ -48,6 +48,7 @@
 #define MAGIC_STATE_ACQUIRE_DIRECTION  0x05
 #define MAGIC_STATE_ACQUIRE_INV_OBJ  0x06
 #define MAGIC_STATE_TALK_TO_ACTOR 0x07
+#define MAGIC_STATE_ACQUIRE_SPELL  0x08
 
 #define MAGIC_ALL_SPELLS 255
 
@@ -85,6 +86,7 @@ class Magic : public CallBack {
     size_t IP;
     
     ScriptThread *magic_script;
+    Obj *spellbook_obj;
     /* TODO
      * add a register array, or a pointer to a list of variables?
      */
@@ -103,16 +105,19 @@ class Magic : public CallBack {
     bool process_script_return(uint8 ret);
     bool resume(MapCoord location);
     bool resume(uint8 dir);
+    bool resume_with_spell_num(uint8 spell_num);
     bool resume(Obj *obj);
     bool resume();
     bool is_waiting_for_location() { if(magic_script && state == MAGIC_STATE_ACQUIRE_TARGET) return true; else return false; }
     bool is_waiting_for_direction() { if(magic_script && state == MAGIC_STATE_ACQUIRE_DIRECTION) return true; else return false; }
     bool is_waiting_for_inventory_obj() { if(magic_script && state == MAGIC_STATE_ACQUIRE_INV_OBJ) return true; else return false; }
     bool is_waiting_to_talk() { if(state == MAGIC_STATE_TALK_TO_ACTOR) return true; else return false; }
+    bool is_waiting_for_spell() { if(magic_script && state == MAGIC_STATE_ACQUIRE_SPELL) return true; else return false; }
 
     bool is_waiting_to_resume() { if(magic_script) return true; else return false; }
 
     Spell *get_spell(uint8 spell_num) { return spell[spell_num]; }
+    Obj *get_spellbook_obj() { return spellbook_obj; }
 
     Actor *get_actor_from_script();
 private:

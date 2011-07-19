@@ -1,3 +1,10 @@
+2011-07-19  Eric Fry <efry at users.sourceforge.net> r1224
+	* Added Enchant (ioy) spell.
+	* Advance time to 8:00am when sending party to jail.
+	* Added clock_get_hour() script function.
+	* Added the ability to select a spell from the active spell book from
+	  magic scripts.
+
 2011-07-15  Eric Fry <efry at users.sourceforge.net> r1223
 	* Added actor hit flag. bit 4 in actor movement flags. We use this to make
 	  sure we don't hit from map tile damage if the actor has already been hit

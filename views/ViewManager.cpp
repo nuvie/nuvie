@@ -149,11 +149,11 @@ void ViewManager::set_actor_mode()
  set_current_view((View *)actor_view);
 }
 
-void ViewManager::set_spell_mode(Actor *caster, Obj *spell_container)
+void ViewManager::set_spell_mode(Actor *caster, Obj *spell_container, bool eventMode)
 {
  if(spell_view != NULL)
  {
-   spell_view->set_spell_caster(caster, spell_container);
+   spell_view->set_spell_caster(caster, spell_container, eventMode);
    set_current_view((View *)spell_view);
  }
  return;

@@ -2184,10 +2184,12 @@ function caught_by_guard(actor)
    
       party_move(0xe7, 0xba, 0)
    
-      --FIXME get and update game time.
-      --while g_game_hour ~= 8 do
-      --   advance_time(0x3c)
-      --end
+      local cur_hour = clock_get_hour()
+      while cur_hour ~= 8 do
+      	advance_time(60)
+      	cur_hour = clock_get_hour()
+      	--FIXME need to pause and update screen so player can see the sun-moon display move.
+      end
    
       for party_actor in party_members() do 
          for var_4 in actor_inventory(party_actor, true) do -- recursively search containers in inventory.

@@ -47,18 +47,19 @@ class SpellView : public View {
  U6Bmp *background;
  sint16 cur_spells[16];
  bool all_spells_mode;
-
+ bool event_mode; //this means we are reporting the spell_num back to the event class. Used by the enchant spell.
  public:
  SpellView(Configuration *cfg);
  ~SpellView();
 
  bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
 
- void set_spell_caster(Actor *actor, Obj *s_container);
+ void set_spell_caster(Actor *actor, Obj *s_container, bool eventMode);
  sint16 get_selected_spell() { if(spell_container) { return spell_container->quality; } else return -1; }
  void Display(bool full_redraw);
  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
  GUI_status KeyDown(SDL_keysym key);
+ GUI_status MouseDown(int x, int y, int button);
 
  protected:
 

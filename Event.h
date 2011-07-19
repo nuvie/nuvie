@@ -78,6 +78,8 @@ extern uint32 nuvieGameCounter;
 #define EVENTINPUT_STRING   2
 #define EVENTINPUT_OBJECT   3
 #define EVENTINPUT_MAPCOORD_DIR 4
+#define EVENTINPUT_SPELL_NUM 5
+
 struct EventInput_s
 {
     uint8 type; // 0=loc,1=key,2=str,3=obj,4=actor
@@ -98,6 +100,7 @@ struct EventInput_s
     MapCoord *target_init; // where MapWindow cursor is centered when targeting
     bool select_from_inventory; // if true, objects from inventory will be selected (and not from the map)
     uint8 select_range; // limits movement of MapWindow cursor from center
+    sint16 spell_num;
 };
 typedef struct EventInput_s EventInput;
 
@@ -161,6 +164,7 @@ friend class Magic; // FIXME
 // void freeselect_mode(Obj *src, const char *prompt = NULL); // deprecated
  void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
  void get_inventory_obj(Actor *actor);
+ void get_spell_num(Actor *caster, Obj *spell_container);
 // void get_amount();
  void get_direction(const char *prompt);
  void get_direction(const MapCoord &from, const char *prompt);
@@ -181,6 +185,7 @@ friend class Magic; // FIXME
  bool select_direction(sint16 rel_x, sint16 rel_y);
  bool select_target(uint16 x, uint16 y, uint8 z=0);
  bool select_party_member(uint8 num);
+ bool select_spell_num(sint16 spell_num);
 // bool select_obj(Obj *obj = NULL, Actor *actor = NULL);
 // bool select_obj(sint16 rel_x, sint16 rel_y);
 // There is no "select_text", as Event polls MsgScroll for new input.

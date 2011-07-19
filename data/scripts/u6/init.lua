@@ -218,7 +218,12 @@ function actor_talk(actor)
 	coroutine.yield("talk", actor)
 	return
 end
- 
+
+function get_spell()
+	local spell_num = coroutine.yield("spell")
+	return spell_num
+end
+
 function obj_new(obj_n, frame_n, status, qty, quality, x, y, z)
   local obj = {}
   

@@ -162,6 +162,7 @@ static int nscript_timer_get(lua_State *L);
 static int nscript_timer_update_all(lua_State *L);
 
 static int nscript_clock_get_minute(lua_State *L);
+static int nscript_clock_get_hour(lua_State *L);
 static int nscript_clock_inc(lua_State *L);
 
 static int nscript_wind_set(lua_State *L);
@@ -288,6 +289,13 @@ uint8 ScriptThread::resume_with_direction(uint8 dir)
    return resume(1);
 }
 
+uint8 ScriptThread::resume_with_spell_num(uint8 spell_num)
+{
+   lua_pushinteger(L, spell_num);
+
+   return resume(1);
+}
+
 uint8 ScriptThread::resume_with_obj(Obj *obj)
 {
 	if(obj)
@@ -327,6 +335,9 @@ uint8 ScriptThread::resume(int narg)
 
             if(!strcmp(s, "dir"))
                return NUVIE_SCRIPT_GET_DIRECTION;
+
+            if(!strcmp(s, "spell"))
+               return NUVIE_SCRIPT_GET_SPELL;
 
             if(!strcmp(s, "inv_obj"))
             {
@@ -428,6 +439,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_clock_get_minute);
    lua_setglobal(L, "clock_get_minute");
+
+   lua_pushcfunction(L, nscript_clock_get_hour);
+   lua_setglobal(L, "clock_get_hour");
 
    lua_pushcfunction(L, nscript_clock_inc);
    lua_setglobal(L, "clock_inc");
@@ -2214,6 +2228,15 @@ static int nscript_clock_get_minute(lua_State *L)
 	GameClock *clock = Game::get_game()->get_clock();
 
 	lua_pushinteger(L, clock->get_minute());
+
+	return 1;
+}
+
+static int nscript_clock_get_hour(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	lua_pushinteger(L, clock->get_hour());
 
 	return 1;
 }
