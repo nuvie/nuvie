@@ -1,3 +1,10 @@
+2011-07-22  Eric Fry <efry at users.sourceforge.net> r1226
+	* Fixed bug when escaping from spell view.
+	* Make sure that we use the correct spellbook object if player has more
+	  than one object readied in his/her hands.
+	* Fixed actor comparison in chain bolt spell.
+	* Started work on wing strike spell.
+
 2011-07-21  Eric Fry <efry at users.sourceforge.net> r1225
 	* Added 'U'se staff usecode.
 

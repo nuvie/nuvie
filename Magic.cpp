@@ -106,11 +106,15 @@ Obj *Magic::book_equipped()
   Actor *caster=event->player->get_actor();
 
   obj=caster->inventory_get_readied_object(ACTOR_ARM);
+  if(obj && obj->obj_n == OBJ_U6_SPELLBOOK)
+	  return obj;
 
-  if(obj == NULL)
-	  obj=caster->inventory_get_readied_object(ACTOR_ARM_2);
+  obj=caster->inventory_get_readied_object(ACTOR_ARM_2);
 
-  return obj;
+  if(obj && obj->obj_n == OBJ_U6_SPELLBOOK)
+	 return obj;
+
+  return NULL;
 }
 
 bool Magic::start_new_spell() 
@@ -205,8 +209,6 @@ bool Magic::cast()
 
   if(event->mode == WAIT_MODE)
     return false;
-  
-  // TODO "No magic at this time!" error. 
   
   // book(s) equipped? Maybe should check all locations?
   Actor *caster=event->player->get_actor();

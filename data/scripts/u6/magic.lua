@@ -485,6 +485,7 @@ magic_init("Gate Travel", "vrp", 0x85, 7, 5, "u6/magic/circle_07/gate_travel.lua
 magic_init("Kill", "ic", 0x86, 7, 6, "u6/magic/circle_07/kill.lua");
 magic_init("Mass Curse", "vas", 0xa3, 7, 7, "u6/magic/circle_07/mass_curse.lua");
 magic_init("Mass Invisibility", "vsl", 0x0f, 7, 8, "u6/magic/circle_07/mass_invisibility.lua");
+magic_init("Wing Strike", "kox", 0x99, 7, 9, "u6/magic/circle_07/wing_strike.lua");
 
 magic_init("Armageddon", "vcbm", 0xff, 8, 1, "u6/magic/circle_08/armageddon.lua");
 magic_init("Death Wind", "ch", 0x8b, 8, 2, "u6/magic/circle_08/death_wind.lua");

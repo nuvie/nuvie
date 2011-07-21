@@ -2740,7 +2740,7 @@ void Event::cancelAction()
         {
 
         	scroll->display_string("nothing\n");
-      	  //view_manager->get_spell_view()->release_focus();
+      	  view_manager->get_current_view()->release_focus();
       	  view_manager->set_inventory_mode();
         }
     }

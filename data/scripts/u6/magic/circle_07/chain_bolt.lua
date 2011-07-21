@@ -27,7 +27,7 @@ for i=0,6 do
 	for j=1,0x100 do
 		local tmp_actor = Actor.get(j)
 
-		if tmp_actor.obj_n ~= 0 and tmp_actor.alive == true and tmp_actor ~= actor and actor_ok_to_attack(actor, tmp_actor) == true then
+		if tmp_actor.obj_n ~= 0 and tmp_actor.alive == true and tmp_actor.actor_num ~= actor.actor_num and actor_ok_to_attack(actor, tmp_actor) == true then
 			local target_x = tmp_actor.x
 			local target_y = tmp_actor.y
 
