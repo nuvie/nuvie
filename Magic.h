@@ -100,6 +100,7 @@ class Magic : public CallBack {
     bool start_new_spell();
     Obj *book_equipped();
     bool cast();
+    void cast_spell_directly(uint8 spell_num);
 
     uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);
     bool process_script_return(uint8 ret);

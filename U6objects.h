@@ -275,7 +275,7 @@
 #define OBJ_U6_SECRET_DOOR         334
 
 #define OBJ_U6_EGG                 335
-
+#define OBJ_U6_CHARGE              336
 #define OBJ_U6_EFFECT              337
 #define OBJ_U6_BLOOD               338
 #define OBJ_U6_DEAD_BODY           339

@@ -298,16 +298,21 @@ bool Magic::cast()
     }
   }
   
-  string lua = "run_magic_script(\"";
-  lua += spell[index]->invocation;
-  lua += "\")";
-
-  magic_script = Game::get_game()->get_script()->new_thread_from_string(lua.c_str());
-
-  if(magic_script)
-    process_script_return(magic_script->start());
+  cast_spell_directly(index);
 
   return true;
+}
+
+void Magic::cast_spell_directly(uint8 spell_num)
+{
+	string lua = "run_magic_script(\"";
+	lua += spell[spell_num]->invocation;
+	lua += "\")";
+
+	magic_script = Game::get_game()->get_script()->new_thread_from_string(lua.c_str());
+
+	if(magic_script)
+		process_script_return(magic_script->start());
 }
 
 bool Magic::resume(MapCoord location)

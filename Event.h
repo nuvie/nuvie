@@ -56,6 +56,7 @@ typedef enum {
  LOOK_MODE,
  USE_MODE,
  CAST_MODE,
+ SPELL_MODE, //direct spell casting without spell select etc.
  GET_MODE,
  MOVE_MODE,
  DROP_MODE,
@@ -244,6 +245,8 @@ friend class Magic; // FIXME
  bool rest();
  bool rest_input(uint16 input);
  bool can_rest(std::string &err_str);
+
+ void cast_spell_directly(uint8 spell_num);
 
  // these are both for mouse-using convenience
  void walk_to_mouse_cursor(uint32 mx, uint32 my);

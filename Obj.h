@@ -69,6 +69,7 @@
 
 
 #define OBJ_MATCH_QUALITY true
+#define OBJ_NOMATCH_QUALITY false
 
 //We use this in Obj::is_in_inventory()
 #define OBJ_DONT_CHECK_PARENT false

@@ -2419,6 +2419,15 @@ bool Event::rest_input(uint16 input)
     return true;
 }
 
+void Event::cast_spell_directly(uint8 spell_num)
+{
+	endAction(false);
+	newAction(SPELL_MODE);
+	input.type = EVENTINPUT_KEY;
+	input.spell_num = spell_num;
+	doAction();
+}
+
 /* Walk the player towards the mouse cursor. (just 1 space for now) */
 void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
 {
@@ -2642,7 +2651,7 @@ void Event::doAction()
         assert(input.str);
         rest_input(strtol(input.str->c_str(), NULL, 10));
     }
-    else if(mode == CAST_MODE)
+    else if(mode == CAST_MODE || mode == SPELL_MODE)
     {
     	if(input.type == EVENTINPUT_MAPCOORD)
     	{
@@ -2672,7 +2681,10 @@ void Event::doAction()
     	}
     	else
     	{
-			magic->cast();
+    		if(mode == CAST_MODE)
+    			magic->cast();
+    		else
+    			magic->cast_spell_directly(input.spell_num);
     	}
 
 		for(;magic->is_waiting_to_talk();)
@@ -2795,8 +2807,9 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 			}
 			else
 				key_redirect((CallBack*)magic, NULL);
-			/* TODO show the spellbook view */
 		  	break;
+	  	case SPELL_MODE:
+	  		break;
 		case LOOK_MODE: look_start(); break;
 		case TALK_MODE: talk_start(); break;
 		case USE_MODE:  use_start();  break;

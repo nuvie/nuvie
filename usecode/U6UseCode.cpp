@@ -2286,6 +2286,31 @@ bool U6UseCode::use_sextant(Obj *obj, UseCodeEvent ev)
  return(true);
 }
 
+bool U6UseCode::use_staff(Obj *obj, UseCodeEvent ev)
+{
+	 if(ev != USE_EVENT_USE)
+	   return false;
+
+	 if(obj->is_readied() == false)
+	 {
+		 scroll->display_string("\nNot readied.\n");
+		 return true;
+	 }
+
+	 Obj *charge = obj->find_in_container(OBJ_U6_CHARGE, 0, OBJ_NOMATCH_QUALITY);
+
+	 if(charge)
+	 {
+		 uint8 spell_num = charge->quality;
+		 obj_manager->unlink_from_engine(charge);
+		 delete_obj(charge);
+
+		 Game::get_game()->get_event()->cast_spell_directly(spell_num);
+	 }
+
+	 return true;
+}
+
 /* Pass: Allow normal move if player's Quest Flag is set.
  */
 bool U6UseCode::pass_quest_barrier(Obj *obj, UseCodeEvent ev)
