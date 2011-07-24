@@ -1161,6 +1161,8 @@ WingAnim::WingAnim(MapCoord t)
 		wing_bottom[0] = tile_manager->get_tile(1792+32+2);
 		wing_bottom[1] = tile_manager->get_tile(1792+32+3);
 	}
+
+	paused = false;
 }
 
 
@@ -1182,6 +1184,9 @@ void WingAnim::start()
 
 bool WingAnim::update()
 {
+	if(paused)
+		return true;
+
 	x += x_inc;
 
 	if(x == finish_x)
@@ -1195,7 +1200,11 @@ bool WingAnim::update()
 	move_tile(p_tile_bottom, x, y);
 
 	if(x == target.x*16)
+	{
+		paused = true;
 		message(MESG_ANIM_HIT);
+		paused = false;
+	}
 
 	if(x%16 == 0) //flap wings.
 	{

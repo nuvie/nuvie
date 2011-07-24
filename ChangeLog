@@ -1,3 +1,6 @@
+2011-07-25  Eric Fry <efry at users.sourceforge.net> r1228
+	* Pause wing strike animation while hitting target.
+
 2011-07-24  Eric Fry <efry at users.sourceforge.net> r1227
 	* Added Wing Strike (kox) spell.
 	* Added WingAnim and WingStrikeEffect classes.

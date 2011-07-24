@@ -315,6 +315,7 @@ class WingAnim : public TileAnim
 
 	PositionedTile *p_tile_top;
 	PositionedTile *p_tile_bottom;
+	bool paused;
 public:
 	WingAnim(MapCoord target);
 	~WingAnim();
