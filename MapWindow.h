@@ -147,6 +147,7 @@ class MapWindow: public GUI_Widget
  void get_level(uint8 *level);
  void get_pos(uint16 *x, uint16 *y, uint8 *px = NULL, uint8 *py = NULL);
  void get_velocity(sint16 *vx, sint16 *vy) { *vx = vel_x; *vy = vel_y; }
+ void get_windowSize(uint16 *width, uint16 *height);
 
  bool in_window(uint16 x, uint16 y, uint8 z);
  bool in_dungeon_level() { return(cur_level != 0 && cur_level != 5); }

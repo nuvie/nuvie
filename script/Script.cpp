@@ -203,6 +203,7 @@ static int nscript_xor_effect(lua_State *L);
 static int nscript_xray_effect(lua_State *L);
 
 static int nscript_peer_effect(lua_State *L);
+static int nscript_wing_strike_effect(lua_State *L);
 
 static int nscript_play_sfx(lua_State *L);
 
@@ -554,6 +555,10 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_peer_effect);
    lua_setglobal(L, "peer_effect");
 
+   lua_pushcfunction(L, nscript_wing_strike_effect);
+   lua_setglobal(L, "wing_strike_effect");
+
+
    seed_random();
 
    lua_getglobal(L, "package");
@@ -690,6 +695,21 @@ bool Script::call_actor_map_dmg(Actor *actor, MapCoord location)
    }
 
    //Game::get_game()->get_map_window()->updateBlacking(); // the script might have updated the blocking objects. eg broken a door.
+
+   return true;
+}
+
+bool Script::call_actor_hit(Actor *actor, uint8 dmg)
+{
+   lua_getglobal(L, "actor_hit");
+   nscript_new_actor_var(L, actor->get_actor_num());
+   lua_pushnumber(L, (lua_Number)dmg);
+
+   if(lua_pcall(L, 2, 0, 0) != 0)
+   {
+      DEBUG(0, LEVEL_ERROR, "Script Error: actor_hit() %s\n", luaL_checkstring(L, -1));
+      return false;
+   }
 
    return true;
 }
@@ -2098,6 +2118,19 @@ static int nscript_peer_effect(lua_State *L)
 		e->run(EFFECT_PROCESS_GUI_INPUT);
 
 		return 0;
+}
+
+static int nscript_wing_strike_effect(lua_State *L)
+{
+	Actor *actor = nscript_get_actor_from_args(L, 1);
+
+	if(actor != NULL)
+	{
+		AsyncEffect *e = new AsyncEffect(new WingStrikeEffect(actor));
+		e->run();
+	}
+
+	return 0;
 }
 
 static int nscript_play_sfx(lua_State *L)

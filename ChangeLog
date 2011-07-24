@@ -1,3 +1,10 @@
+2011-07-24  Eric Fry <efry at users.sourceforge.net> r1227
+	* Added Wing Strike (kox) spell.
+	* Added WingAnim and WingStrikeEffect classes.
+	* Added wing_Strike_effect() script function.
+	* Added MapWindow::get_windowSize().
+	* Added Script::call_actor_hit().
+
 2011-07-22  Eric Fry <efry at users.sourceforge.net> r1226
 	* Fixed bug when escaping from spell view.
 	* Make sure that we use the correct spellbook object if player has more

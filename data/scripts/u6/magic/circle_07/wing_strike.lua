@@ -14,11 +14,11 @@ for i=1,0x100 do
 
 	if actor.obj_n ~= 0 and actor.alive == true and actor.visible == true and alignment_is_evil(actor.align) then
 
-		local target_x = tmp_actor.x
-		local target_y = tmp_actor.y
+		local target_x = actor.x
+		local target_y = actor.y
 	
 		if actor.z == player_z and target_x > player_x - 5 and target_x < player_x + 5 and target_y > player_y - 5 and target_y < player_y + 5 then
-			--FIXME wing strike effect here.
+			wing_strike_effect(actor)
 			foes_present = true
 		end
 	

@@ -4,6 +4,7 @@
 
 #include "Actor.h"
 #include "Map.h"
+#include "Script.h"
 #include "AnimManager.h"
 #include "MapWindow.h"
 #include "TileManager.h"
@@ -1815,6 +1816,28 @@ inline uint8 PeerEffect::get_tilemap_type(uint16 wx, uint16 wy, uint8 wz)
     if(map->is_damaging(wx, wy, wz))
         return peer_tilemap[3];
     return peer_tilemap[0]; // ground/passable
+}
+
+WingStrikeEffect::WingStrikeEffect(Actor *target_actor)
+{
+	actor = target_actor;
+
+	add_anim(new WingAnim(actor->get_location()));
+}
+
+uint16 WingStrikeEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+	switch(msg)
+	{
+		case MESG_ANIM_HIT :
+			DEBUG(0,LEVEL_DEBUGGING,"hit target!\n");
+			Game::get_game()->get_script()->call_actor_hit(actor, (NUVIE_RAND()%20)+1);
+			break;
+		case MESG_ANIM_DONE :
+			delete_self();
+			break;
+	}
+	return 0;
 }
 
 /*** AsyncEffect ***/

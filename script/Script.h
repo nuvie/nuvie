@@ -99,6 +99,7 @@ class Script
    bool call_actor_init(Actor *actor);
    bool call_actor_attack(Actor *actor, MapCoord location, Obj *weapon);
    bool call_actor_map_dmg(Actor *actor, MapCoord location);
+   bool call_actor_hit(Actor *actor, uint8 dmg);
    bool call_look_obj(Obj *obj);
    bool call_magic_get_spell_list(uint8 level, Spell **spell_list);
    bool call_function(const char *function_name);

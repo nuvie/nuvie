@@ -305,6 +305,23 @@ protected:
 
 };
 
+class WingAnim : public TileAnim
+{
+	MapCoord target;
+	sint32 x, y, finish_x;
+	sint16 x_inc;
+	Tile *wing_top[2];
+	Tile *wing_bottom[2];
+
+	PositionedTile *p_tile_top;
+	PositionedTile *p_tile_bottom;
+public:
+	WingAnim(MapCoord target);
+	~WingAnim();
+	void start();
+	bool update();
+
+};
 /* Display hit effect over an actor or location for a certain duration.
  */
 class HitAnim : public TimedAnim

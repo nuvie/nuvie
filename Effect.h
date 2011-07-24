@@ -604,6 +604,18 @@ public:
     void delete_self();
 };
 
+class WingStrikeEffect : public Effect
+{
+protected:
+
+    Actor *actor;
+
+public:
+    WingStrikeEffect(Actor *target_actor);
+
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
+
 #define EFFECT_PROCESS_GUI_INPUT true
 /* Run an effect asynchronously and keep updating the world until the effect completes. */
 class AsyncEffect : public Effect

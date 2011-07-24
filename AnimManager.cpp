@@ -1120,6 +1120,101 @@ bool ProjectileAnim::already_hit(MapEntity ent)
     return(false);
 }
 
+/*** WingAnim ***/
+WingAnim::WingAnim(MapCoord t)
+{
+	TileManager *tile_manager = map_window->get_tile_manager();
+
+
+	target = t;
+	y = target.y*16;
+
+	uint16 mx, my, win_w, win_h;
+	map_window->get_pos(&mx, &my);
+	map_window->get_windowSize(&win_w, &win_h);
+
+	uint16 off_x;
+
+	off_x = target.x - mx;
+
+	if(off_x <=  win_w / 2)
+	{
+		//right, left
+		finish_x = (mx-1)*16;
+		x_inc = -4;
+		x = (mx + win_w + 1) * 16;
+		wing_top[0] = tile_manager->get_tile(1792+32+6);
+		wing_top[1] = tile_manager->get_tile(1792+32+7);
+
+		wing_bottom[0] = tile_manager->get_tile(1792+24+6);
+		wing_bottom[1] = tile_manager->get_tile(1792+24+7);
+	}
+	else
+	{
+		//left, right
+		finish_x = (mx+win_w+1)*16;
+		x_inc = 4;
+		x = (mx-1)*16;
+		wing_top[0] = tile_manager->get_tile(1792+24+2);
+		wing_top[1] = tile_manager->get_tile(1792+24+3);
+
+		wing_bottom[0] = tile_manager->get_tile(1792+32+2);
+		wing_bottom[1] = tile_manager->get_tile(1792+32+3);
+	}
+}
+
+
+WingAnim::~WingAnim()
+{
+
+}
+
+
+void WingAnim::start()
+{
+	move(0, 0);
+
+	p_tile_top = add_tile(wing_top[0], x/16, (y-16)/16, x%16, (y-16)%16);
+	p_tile_bottom = add_tile(wing_bottom[0], x/16, y/16, x%16, y%16);
+}
+
+
+
+bool WingAnim::update()
+{
+	x += x_inc;
+
+	if(x == finish_x)
+	{
+		message(MESG_ANIM_DONE);
+		stop();
+		return true;
+	}
+
+	move_tile(p_tile_top, x, y-16);
+	move_tile(p_tile_bottom, x, y);
+
+	if(x == target.x*16)
+		message(MESG_ANIM_HIT);
+
+	if(x%16 == 0) //flap wings.
+	{
+		if(p_tile_top->tile == wing_top[0])
+		{
+			p_tile_top->tile = wing_top[1];
+			p_tile_bottom->tile = wing_bottom[1];
+		}
+		else
+		{
+			p_tile_top->tile = wing_top[0];
+			p_tile_bottom->tile = wing_bottom[0];
+		}
+	}
+
+	return(true);
+}
+
+
 TileFadeAnim::TileFadeAnim(MapCoord *loc, Tile *from, Tile *to, uint16 speed)
 {
 	init(speed);

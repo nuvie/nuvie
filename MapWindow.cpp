@@ -377,6 +377,11 @@ void MapWindow::get_pos(uint16 *x, uint16 *y, uint8 *px, uint8 *py)
    *py = cur_y_add;
 }
 
+void MapWindow::get_windowSize(uint16 *width, uint16 *height)
+{
+	*width = win_width;
+	*height = win_height;
+}
 
 /* Returns true if the location at the coordinates is visible on the map window.
  */
