@@ -204,6 +204,7 @@ static int nscript_xray_effect(lua_State *L);
 
 static int nscript_peer_effect(lua_State *L);
 static int nscript_wing_strike_effect(lua_State *L);
+static int nscript_hail_storm_effect(lua_State *L);
 
 static int nscript_play_sfx(lua_State *L);
 
@@ -557,6 +558,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_wing_strike_effect);
    lua_setglobal(L, "wing_strike_effect");
+
+   lua_pushcfunction(L, nscript_hail_storm_effect);
+   lua_setglobal(L, "hail_storm_effect");
 
 
    seed_random();
@@ -2129,6 +2133,20 @@ static int nscript_wing_strike_effect(lua_State *L)
 		AsyncEffect *e = new AsyncEffect(new WingStrikeEffect(actor));
 		e->run();
 	}
+
+	return 0;
+}
+
+static int nscript_hail_storm_effect(lua_State *L)
+{
+	MapCoord loc;
+	if(nscript_get_location_from_args(L, &loc.x, &loc.y, &loc.z) == false)
+		return 0;
+
+
+	AsyncEffect *e = new AsyncEffect(new HailStormEffect(loc));
+	e->run();
+
 
 	return 0;
 }

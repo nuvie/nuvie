@@ -359,6 +359,22 @@ void TileAnim::remove_tile(uint32 i)
     }
 }
 
+void TileAnim::remove_tile(PositionedTile *p_tile)
+{
+    std::vector<PositionedTile*>::iterator ti = tiles.begin();
+    for(;ti != tiles.end();ti++)
+    {
+        if(*ti == p_tile)
+        {
+        	delete *ti;
+        	tiles.erase(ti);
+        	break;
+        }
+    }
+
+    return;
+}
+
 
 /* Move tile(s) by the pixel, in direction sx,sy.
  */
@@ -1201,7 +1217,7 @@ bool WingAnim::update()
 
 	if(x == target.x*16)
 	{
-		paused = true;
+		paused = true; //we pause our anim here to avoid recursion from the hit effect called by our effect class parent.
 		message(MESG_ANIM_HIT);
 		paused = false;
 	}
@@ -1223,6 +1239,87 @@ bool WingAnim::update()
 	return(true);
 }
 
+HailstormAnim::HailstormAnim(MapCoord t)
+{
+	target = t;
+	hailstone_tile = Game::get_game()->get_tile_manager()->get_tile(0x18e); //hailstone tile.
+
+	num_active = 0;
+	for(int i=0; i < HAILSTORM_ANIM_MAX_STONES; i++)
+	{
+		hailstones[i].length_left = 0;
+		hailstones[i].p_tile = NULL;
+	}
+
+	num_hailstones_left = (NUVIE_RAND()%20) + 10;
+
+}
+
+HailstormAnim::~HailstormAnim()
+{ }
+
+void HailstormAnim::start()
+{
+	move(0, 0);
+}
+
+bool HailstormAnim::update()
+{
+	if(num_active < 6 && num_hailstones_left > 0)
+	{
+		if(NUVIE_RAND()%8 == 0)
+		{
+			uint8 idx = (uint8)find_free_hailstone();
+
+			hailstones[idx].x = target.x * 16 + (NUVIE_RAND()%30) + (NUVIE_RAND()%30) - 23 - 52;
+			hailstones[idx].y = target.y * 16 + (NUVIE_RAND()%30) + (NUVIE_RAND()%30) - 23 - 52;
+
+			hailstones[idx].p_tile = add_tile(hailstone_tile, hailstones[idx].x/16, hailstones[idx].y/16, hailstones[idx].x%16, hailstones[idx].y%16);
+			hailstones[idx].length_left = 52;
+			num_hailstones_left--;
+			num_active++;
+		}
+	}
+
+	for(int i = 0;i < HAILSTORM_ANIM_MAX_STONES; i++)
+	{
+		if(hailstones[i].length_left > 0)
+		{
+			hailstones[i].x+=4;
+			hailstones[i].y+=4;
+			move_tile(hailstones[i].p_tile, hailstones[i].x, hailstones[i].y);
+			hailstones[i].length_left-=4;
+
+			if(hailstones[i].length_left == 0)
+			{
+				num_active--;
+				remove_tile(hailstones[i].p_tile);
+				hailstones[i].p_tile = NULL;
+
+				//FIXME hit actor here.
+			}
+		}
+	}
+
+	if(num_active == 0 && num_hailstones_left == 0)
+	{
+		message(MESG_ANIM_DONE);
+		stop();
+	}
+
+	return true;
+}
+
+sint8 HailstormAnim::find_free_hailstone()
+{
+	for(int i=0;i < HAILSTORM_ANIM_MAX_STONES; i++)
+	{
+		if(hailstones[i].length_left == 0)
+			return i;
+	}
+
+	return -1;
+}
 
 TileFadeAnim::TileFadeAnim(MapCoord *loc, Tile *from, Tile *to, uint16 speed)
 {

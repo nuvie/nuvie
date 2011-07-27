@@ -470,7 +470,7 @@ magic_init("Charm", "axe", 0x16, 6, 1, "u6/magic/circle_06/charm.lua");
 magic_init("Clone", "iqx", 0xdb, 6, 2, "u6/magic/circle_06/clone.lua");
 magic_init("Confuse", "vq", 0x03, 6, 3, "u6/magic/circle_06/confuse.lua");
 magic_init("Flame Wind", "fh", 0x89, 6, 4, "u6/magic/circle_06/flame_wind.lua");
-
+magic_init("Hail Storm", "kdy", 0x0d, 6, 5, "u6/magic/circle_06/hail_storm.lua");
 magic_init("Mass Protect", "vis", 0xe8, 6, 6, "u6/magic/circle_06/mass_protect.lua");
 magic_init("Negate Magic", "ao", 0xa1, 6, 7, "u6/magic/circle_06/negate_magic.lua");
 magic_init("Poison Wind", "nh", 0x8a, 6, 8, "u6/magic/circle_06/poison_wind.lua");

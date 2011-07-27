@@ -1,5 +1,7 @@
-magic_load({name="Hail Storm", invocation="", reagents=0x0, circle=6, number=1,
-  script= function ()
+local loc = select_location_with_prompt("Location: ")
 
-  end
-})
+magic_casting_fade_effect()
+
+if loc == nil then magic_no_effect() return end
+
+hail_storm_effect(loc)

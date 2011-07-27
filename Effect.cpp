@@ -1840,6 +1840,26 @@ uint16 WingStrikeEffect::callback(uint16 msg, CallBack *caller, void *data)
 	return 0;
 }
 
+HailStormEffect::HailStormEffect(MapCoord target)
+{
+	add_anim(new HailstormAnim(target));
+}
+
+uint16 HailStormEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+	switch(msg)
+	{
+		case MESG_ANIM_HIT :
+			DEBUG(0,LEVEL_DEBUGGING,"hit target!\n");
+			//Game::get_game()->get_script()->call_actor_hit(actor, (NUVIE_RAND()%20)+1);
+			break;
+		case MESG_ANIM_DONE :
+			delete_self();
+			break;
+	}
+	return 0;
+}
+
 /*** AsyncEffect ***/
 AsyncEffect::AsyncEffect(Effect *e)
 {

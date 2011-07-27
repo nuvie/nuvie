@@ -1,3 +1,8 @@
+2011-07-28  Eric Fry <efry at users.sourceforge.net> r1229
+	* Started work on Hail Storm spell.
+	* Added TileAnim::remove_tile(PositionedTile *p_tile)
+	* Added hail_storm_effect() script function.
+
 2011-07-25  Eric Fry <efry at users.sourceforge.net> r1228
 	* Pause wing strike animation while hitting target.
 
