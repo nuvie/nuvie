@@ -1851,7 +1851,7 @@ uint16 HailStormEffect::callback(uint16 msg, CallBack *caller, void *data)
 	{
 		case MESG_ANIM_HIT :
 			DEBUG(0,LEVEL_DEBUGGING,"hit target!\n");
-			//Game::get_game()->get_script()->call_actor_hit(actor, (NUVIE_RAND()%20)+1);
+			Game::get_game()->get_script()->call_actor_hit((Actor *)data, 1);
 			break;
 		case MESG_ANIM_DONE :
 			delete_self();

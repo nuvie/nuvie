@@ -1253,6 +1253,7 @@ HailstormAnim::HailstormAnim(MapCoord t)
 
 	num_hailstones_left = (NUVIE_RAND()%20) + 10;
 
+	paused = false;
 }
 
 HailstormAnim::~HailstormAnim()
@@ -1265,9 +1266,12 @@ void HailstormAnim::start()
 
 bool HailstormAnim::update()
 {
+	if(paused)
+		return true;
+
 	if(num_active < 6 && num_hailstones_left > 0)
 	{
-		if(NUVIE_RAND()%8 == 0)
+		if(NUVIE_RAND()%2 == 0)
 		{
 			uint8 idx = (uint8)find_free_hailstone();
 
@@ -1296,7 +1300,19 @@ bool HailstormAnim::update()
 				remove_tile(hailstones[i].p_tile);
 				hailstones[i].p_tile = NULL;
 
-				//FIXME hit actor here.
+				uint8 z = 0;
+				map_window->get_level(&z);
+				Actor *actor = Game::get_game()->get_actor_manager()->get_actor(hailstones[i].x/16, hailstones[i].y/16, z);
+				if(actor)
+				{
+					paused = true;
+					message(MESG_ANIM_HIT, actor);
+					paused = false;
+				}
+				else
+				{
+					//FIXME add sfx for hailstone hitting ground.
+				}
 			}
 		}
 	}

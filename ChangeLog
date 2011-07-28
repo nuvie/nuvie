@@ -1,3 +1,8 @@
+2011-07-29  Eric Fry <efry at users.sourceforge.net> r1230
+	* Hit actors in hail storm effect.
+	* Increased the probability that a hailstone will be made in the
+	  hail storm animation.
+
 2011-07-28  Eric Fry <efry at users.sourceforge.net> r1229
 	* Started work on Hail Storm spell.
 	* Added TileAnim::remove_tile(PositionedTile *p_tile)
