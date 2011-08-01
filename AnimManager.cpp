@@ -12,6 +12,7 @@
 #include "ObjManager.h"
 #include "Screen.h"
 #include "Text.h"
+#include "SoundManager.h"
 #include "AnimManager.h"
 
 #define MESG_ANIM_HIT_WORLD ANIM_CB_HIT_WORLD
@@ -1312,6 +1313,7 @@ bool HailstormAnim::update()
 				else
 				{
 					//FIXME add sfx for hailstone hitting ground.
+					Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_HAIL_STONE);
 				}
 			}
 		}

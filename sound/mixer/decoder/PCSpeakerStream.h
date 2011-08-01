@@ -173,5 +173,6 @@ Audio::AudioStream *makePCSpeakerMagicCastingP1SfxStream(uint32 rate, uint8 magi
 Audio::AudioStream *makePCSpeakerMagicCastingP2SfxStream(uint32 rate, uint8 magic_circle);
 Audio::AudioStream *makePCSpeakerAvatarDeathSfxStream(uint32 rate);
 Audio::AudioStream *makePCSpeakerKalLorSfxStream(uint32 rate);
+Audio::AudioStream *makePCSpeakerHailStoneSfxStream(uint32 rate);
 
 #endif /* __PCSpeakerStream_h__ */

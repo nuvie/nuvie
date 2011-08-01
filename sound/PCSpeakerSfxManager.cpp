@@ -112,6 +112,10 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 	{
 		stream = makePCSpeakerSlugDissolveSfxStream(mixer->getOutputRate());
 	}
+	else if(sfx_id == NUVIE_SFX_HAIL_STONE)
+	{
+		stream = makePCSpeakerHailStoneSfxStream(mixer->getOutputRate());
+	}
 
 	if(stream)
 	{

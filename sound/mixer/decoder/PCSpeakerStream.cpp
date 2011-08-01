@@ -29,9 +29,11 @@ PCSpeakerFreqStream::PCSpeakerFreqStream(uint32 freq, uint16 d)
 	frequency = freq;
 
 	duration = d * (SPKR_OUTPUT_RATE / 1255);
-	pcspkr->SetOn();
-	pcspkr->SetFrequency(frequency);
-
+	if(freq != 0)
+	{
+		pcspkr->SetOn();
+		pcspkr->SetFrequency(frequency);
+	}
 
 	total_samples_played = 0;
 }
@@ -57,7 +59,10 @@ int PCSpeakerFreqStream::readBuffer(sint16 *buffer, const int numSamples)
 	if(total_samples_played + samples > duration)
 		samples = duration - total_samples_played;
 
-	pcspkr->PCSPEAKER_CallBack(buffer, samples);
+	if(frequency != 0)
+		pcspkr->PCSPEAKER_CallBack(buffer, samples);
+	else
+		memset(buffer, 0, sizeof(sint16)*numSamples);
 
 	total_samples_played += samples;
 
@@ -427,6 +432,30 @@ Audio::AudioStream *makePCSpeakerKalLorSfxStream(uint32 rate)
 	}
 
 	stream->queueAudioStream(new PCSpeakerStutterStream(8, 0, 0x1f40, 1, 0x640));
+
+	return stream;
+}
+
+Audio::AudioStream *makePCSpeakerHailStoneSfxStream(uint32 rate)
+{
+	//FIXME This doesn't sound right. It should probably use a single pcspkr object. The original also plays the hailstones individually not all at once like we do. :(
+	Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);
+
+	for(uint16 i=0;i<0x28;i++)
+	{
+		stream->queueAudioStream(new PCSpeakerFreqStream((NUVIE_RAND()%0x28)+0x20, 8), DisposeAfterUse::YES);
+	}
+
+	/* The original logic looks something like this. But this doesn't sound right.
+	uint16 base_freq = (NUVIE_RAND()%0x64)+0x190;
+	for(uint16 i=0;i<0x28;i++)
+	{
+		if(NUVIE_RAND()%7==0)
+			stream->queueAudioStream(new PCSpeakerFreqStream(base_freq + (NUVIE_RAND()%0x28), 8), DisposeAfterUse::YES);
+		else
+			stream->queueAudioStream(new PCSpeakerFreqStream(0, 8), DisposeAfterUse::YES);
+	}
+	 */
 
 	return stream;
 }

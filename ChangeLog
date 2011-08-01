@@ -1,3 +1,10 @@
+2011-08-01  Eric Fry <efry at users.sourceforge.net> r1231
+	* Finished Hail Storm (kdy) spell.
+	* Added pc speaker sfx to hail storm animation. It's not correct. :-(
+	* Fixed bug in QueuingAudioStreamImpl. It was never finishing.
+	* Added the ability to play silence from PCSpeakerFreqStream by
+	  setting the frequency to 0.
+
 2011-07-29  Eric Fry <efry at users.sourceforge.net> r1230
 	* Hit actors in hail storm effect.
 	* Increased the probability that a hailstone will be made in the

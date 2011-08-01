@@ -256,6 +256,8 @@ int QueuingAudioStreamImpl::readBuffer(sint16 *buffer, const int numSamples) {
 			if (tmp._disposeAfterUse == DisposeAfterUse::YES)
 				delete stream;
 			_queue.pop();
+			if(_queue.empty())
+				finish();
 		}
 	}
 
