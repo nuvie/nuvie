@@ -205,6 +205,7 @@ static int nscript_xray_effect(lua_State *L);
 static int nscript_peer_effect(lua_State *L);
 static int nscript_wing_strike_effect(lua_State *L);
 static int nscript_hail_storm_effect(lua_State *L);
+static int nscript_wizard_eye_effect(lua_State *L);
 
 static int nscript_play_sfx(lua_State *L);
 
@@ -562,6 +563,8 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_pushcfunction(L, nscript_hail_storm_effect);
    lua_setglobal(L, "hail_storm_effect");
 
+   lua_pushcfunction(L, nscript_wizard_eye_effect);
+   lua_setglobal(L, "wizard_eye_effect");
 
    seed_random();
 
@@ -2146,6 +2149,21 @@ static int nscript_hail_storm_effect(lua_State *L)
 
 	AsyncEffect *e = new AsyncEffect(new HailStormEffect(loc));
 	e->run();
+
+
+	return 0;
+}
+
+static int nscript_wizard_eye_effect(lua_State *L)
+{
+	MapCoord loc;
+	uint16 duration = (uint16)luaL_checkinteger(L, 1);
+
+	if(nscript_get_location_from_args(L, &loc.x, &loc.y, &loc.z, 2) == false)
+		return 0;
+
+	AsyncEffect *e = new AsyncEffect(new WizardEyeEffect(loc, duration));
+	e->run(EFFECT_PROCESS_GUI_INPUT);
 
 
 	return 0;

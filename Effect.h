@@ -562,6 +562,16 @@ public:
     std::string get_input() { return input; }
 };
 
+class WizardEyeEffect: public Effect
+{
+public:
+    /* Called by the Effect handler when input is available. */
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+    virtual void delete_self() { Effect::delete_self(); }
+    WizardEyeEffect(MapCoord location, uint16 duration);
+    ~WizardEyeEffect() { }
+};
+
 /* colors for PeerEffect */
 const uint8 peer_tilemap[4] =
 {

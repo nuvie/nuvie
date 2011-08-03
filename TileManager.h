@@ -84,6 +84,7 @@ class Look;
 #define TILE_U6_FIRE_SHOT   397
 #define TILE_U6_SLING_STONE 398
 #define TILE_U6_CANNONBALL  399
+#define TILE_U6_WIZARD_EYE  563
 #define TILE_U6_ARROW       566
 #define TILE_U6_BOLT        567
 

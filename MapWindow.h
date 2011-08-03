@@ -38,6 +38,7 @@ class AnimManager;
 class Map;
 class MapCoord;
 class Screen;
+class CallBack;
 
 #define MAPWINDOW_THUMBNAIL_SIZE 52
 #define MAPWINDOW_THUMBNAIL_SCALE 3
@@ -49,6 +50,13 @@ typedef struct {
 	Tile *t;
 	uint16 x,y;
 } TileInfo;
+
+typedef struct {
+	Tile *eye_tile;
+	uint16 prev_x, prev_y;
+	uint16 moves_left;
+	CallBack *caller;
+} WizardEye;
 
 class MapWindow: public GUI_Widget
 {
@@ -98,6 +106,8 @@ class MapWindow: public GUI_Widget
 
  bool window_updated;
  bool freeze_blacking_location;
+
+ WizardEye wizard_eye_info;
 
  public:
 
@@ -189,6 +199,8 @@ class MapWindow: public GUI_Widget
  std::vector<Obj *> m_ViewableObjects; //^^ dodgy public buffer
  std::vector<TileInfo> m_ViewableTiles; //^^ dodgy public buffer
 
+ void wizard_eye_start(MapCoord location, uint16 duration, CallBack *caller);
+
 protected:
  void create_thumbnail();
 
@@ -212,6 +224,10 @@ protected:
  inline bool tmpBufTileIsBlack(uint16 x, uint16 y);
  bool tmpBufTileIsBoundary(uint16 x, uint16 y);
  bool tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction);
+
+ void wizard_eye_stop();
+ void wizard_eye_update();
+ bool is_wizard_eye_mode() { if(wizard_eye_info.moves_left != 0) return true; else return false; }
 };
 
 #endif /* __MapWindow_h__ */

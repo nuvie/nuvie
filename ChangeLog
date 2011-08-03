@@ -1,3 +1,11 @@
+2011-08-04  Eric Fry <efry at users.sourceforge.net> r1233
+	* Added Wizard Eye (pow) spell.
+	* Added wizard eye mode to MapWindow class.
+	* Added wizard_eye_effect() script function.
+
+2011-08-02 kirben r1232
+	* MinGW compile fix
+
 2011-08-01  Eric Fry <efry at users.sourceforge.net> r1231
 	* Finished Hail Storm (kdy) spell.
 	* Added pc speaker sfx to hail storm animation. It's not correct. :-(

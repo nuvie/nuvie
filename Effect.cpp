@@ -1655,6 +1655,21 @@ uint16 PauseEffect::callback(uint16 msg, CallBack *caller, void *data)
     return 0;
 }
 
+WizardEyeEffect::WizardEyeEffect(MapCoord location, uint16 duration)
+{
+	game->get_map_window()->wizard_eye_start(location, duration, this);
+}
+
+uint16 WizardEyeEffect::callback(uint16 msg, CallBack *caller, void *data)
+{
+    if(msg == MESG_EFFECT_COMPLETE)
+    {
+        delete_self();
+    }
+
+    return 0;
+}
+
 TextInputEffect::TextInputEffect(const char *allowed_chars, bool can_escape)
 {
     game->pause_world();

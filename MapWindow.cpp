@@ -150,6 +150,10 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  if(enable_doubleclick)
    set_accept_mouseclick(true, USE_BUTTON); // allow double-clicks (single-clicks aren't used for anything)
 
+ wizard_eye_info.eye_tile = tile_manager->get_tile(TILE_U6_WIZARD_EYE);
+ wizard_eye_info.moves_left = 0;
+ wizard_eye_info.caller = NULL;
+
  return true;
 }
 
@@ -431,8 +435,21 @@ void MapWindow::update()
     {
         int mx, my; // bit-AND buttons with mouse state to test
         if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(USE_BUTTON) | SDL_BUTTON(ACTION_BUTTON)))
-            event->walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
-                                        (uint32)my / screen->get_scale_factor());
+        {
+        	if(is_wizard_eye_mode())
+        	{
+        		int wx, wy;
+        		mouseToWorldCoords(mx / screen->get_scale_factor(), my / screen->get_scale_factor(), wx, wy);
+        		sint16 rx, ry;
+        	    get_movement_direction((uint16)wx, (uint16)wy, rx, ry);
+        	    moveMapRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
+        	                         (ry == 0) ? 0 : ry < 0 ? -1 : 1);
+        	    wizard_eye_update();
+        	}
+        	else
+        		event->walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
+        									(uint32)my / screen->get_scale_factor());
+        }
     }
 
 }
@@ -570,6 +587,9 @@ void MapWindow::Display(bool full_redraw)
 
  if(new_thumbnail)
    create_thumbnail();
+
+ if(is_wizard_eye_mode())
+	 screen->blit((win_width/2)*16,(win_height/2)*16,(unsigned char *)wizard_eye_info.eye_tile->data,8,16,16,16,true,&clip_rect);
 
  drawBorder();
 
@@ -1381,7 +1401,7 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
     Event *event = Game::get_game()->get_event();
 
     // only USE if not doing anything in event
-    if(event->get_mode() == MOVE_MODE)
+    if(event->get_mode() == MOVE_MODE && !is_wizard_eye_mode())
     {
         int wx, wy;
         mouseToWorldCoords(x, y, wx, wy);
@@ -1398,10 +1418,17 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	Obj	*obj = get_objAtMousePos (x, y);
 	int wx, wy;
 
+	if(is_wizard_eye_mode())
+	{
+		walking = true;
+		return GUI_YUM;
+	}
+
 	if(button != USE_BUTTON && button != WALK_BUTTON && button != DRAG_BUTTON)
 		return GUI_PASS;
 
 	mouseToWorldCoords(x, y, wx, wy);
+
 	if(event->get_mode() == MOVE_MODE) // PASS if Avatar is hit
 	{
 		if(wx == player->x && wy == player->y)
@@ -1516,6 +1543,33 @@ void	MapWindow::drag_drop_failed (int x, int y, int message, void *data)
 // this does nothing
 GUI_status MapWindow::KeyDown(SDL_keysym key)
 {
+	if(is_wizard_eye_mode())
+	{
+		if(key.sym == SDLK_ESCAPE)
+		{
+			wizard_eye_stop();
+		}
+		else if(key.sym == SDLK_LEFT)
+		{
+			moveMapRelative(-1,0);
+			wizard_eye_update();
+		}
+		else if(key.sym == SDLK_RIGHT)
+		{
+			moveMapRelative(1,0);
+			wizard_eye_update();
+		}
+		else if(key.sym == SDLK_UP)
+		{
+			moveMapRelative(0,-1);
+			wizard_eye_update();
+		}
+		else if(key.sym == SDLK_DOWN)
+		{
+			moveMapRelative(0,1);
+			wizard_eye_update();
+		}
+	}
 /*    if(key.sym == SDLK_RETURN)
     {
 		Game::get_game()->get_event()->select_target(cur_x+cursor_x, cur_y+cursor_y);
@@ -1801,4 +1855,41 @@ bool MapWindow::in_town()
         if((*ti).t->flags1&TILEFLAG_WALL)
             return true;
     return false;
+}
+
+void MapWindow::wizard_eye_start(MapCoord location, uint16 duration, CallBack *caller)
+{
+	wizard_eye_info.moves_left = duration;
+	wizard_eye_info.caller = caller;
+
+	wizard_eye_info.prev_x = cur_x;
+	wizard_eye_info.prev_y = cur_y;
+
+	set_x_ray_view(true);
+
+	moveMap(location.x-(win_width/2), location.y-(win_height/2), cur_level);
+	grab_focus();
+}
+
+void MapWindow::wizard_eye_stop()
+{
+	if(wizard_eye_info.moves_left > 0)
+	{
+		wizard_eye_info.moves_left = 0;
+		wizard_eye_update();
+	}
+}
+
+void MapWindow::wizard_eye_update()
+{
+	if(wizard_eye_info.moves_left > 0)
+		wizard_eye_info.moves_left--;
+
+	if(wizard_eye_info.moves_left == 0)
+	{
+		set_x_ray_view(false);
+		moveMap(wizard_eye_info.prev_x, wizard_eye_info.prev_y, cur_level);
+		wizard_eye_info.caller->callback(EFFECT_CB_COMPLETE, (CallBack *)this, NULL);
+		release_focus();
+	}
 }
