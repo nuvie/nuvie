@@ -47,6 +47,7 @@
 #include "SoundManager.h"
 #include "Effect.h"
 #include "Weather.h"
+#include "Script.h"
 
 #include "U6UseCode.h"
 #include "U6ObjectTypes.h"
@@ -1429,6 +1430,125 @@ bool U6UseCode::use_rubber_ducky(Obj *obj, UseCodeEvent ev)
     return(true);
 }
 
+sint16 U6UseCode::parseLatLongString(U6UseCodeLatLonEnum mode, std::string *input)
+{
+	uint16 len = input->length();
+	sint16 val = 0;
+	for(uint16 i=0;i<len;i++)
+	{
+		char c = (*input)[i];
+		if(c < '0' || c > '9')
+		{
+			c = toupper(c);
+			if(mode == LAT)
+			{
+				if(c == 'N' || c == 'S')
+				{
+					if(c == 'N')
+						val = -val;
+				}
+				else
+				{
+					val = 100;
+				}
+			}
+			else
+			{
+				if(c == 'E' || c == 'W')
+				{
+					if(c == 'W')
+						val = -val;
+				}
+				else
+				{
+					val = 100;
+				}
+			}
+			break;
+		}
+
+		val = val * 10 + (*input)[i] - 48;
+	}
+
+	return val;
+}
+
+/* USE: Crystal ball
+ */
+bool U6UseCode::use_crystal_ball(Obj *obj, UseCodeEvent ev)
+{
+    static enum { GET_LAT, GET_LON} mode = GET_LAT;
+    static MapCoord loc;
+    static Actor *actor = NULL;
+
+    scroll->cancel_input_request();
+    if(ev == USE_EVENT_USE)
+    {
+    	actor = items.actor_ref;
+    	if(NUVIE_RAND()%30 < (45 - actor->get_intelligence()) / 2) //use crystal ball saving roll.
+    	{
+    		game->get_script()->call_actor_hit(actor, (NUVIE_RAND()%10)+1, SCRIPT_DISPLAY_HIT_MSG);
+    		scroll->display_string("\n");
+    		scroll->display_prompt();
+    		return false;
+    	}
+
+    	mode = GET_LAT;
+    	scroll->display_string("Enter degrees followed by N, S, E or W.\n\nAt latitude=");
+    	scroll->set_input_mode(true);
+    	scroll->request_input(this, obj);
+
+        return(false);
+    }
+    else if(ev == USE_EVENT_MESSAGE && items.string_ref)
+    {
+		if(mode == GET_LAT)
+		{
+			sint16 lat = parseLatLongString(LAT, items.string_ref);
+			if(lat > 80 || lat < -44)
+			{
+				scroll->display_string("\n\n");
+				scroll->display_prompt();
+				return false;
+			}
+
+			loc.y = lat * 8 + 360;
+			scroll->display_string("\n");
+			scroll->display_string("  longitude=");
+    		scroll->set_input_mode(true);
+    		scroll->request_input(this, obj);
+    		mode = GET_LON;
+		}
+		else if(mode == GET_LON)
+		{
+			scroll->display_string("\n");
+			sint16 lon = parseLatLongString(LON, items.string_ref);
+			if(lon > 88 || lon < -37)
+			{
+				scroll->display_string("\n\n");
+				scroll->display_prompt();
+				return false;
+			}
+
+			loc.x = lon * 8 + 304;
+
+			actor->get_location(NULL, NULL, &loc.z);
+			if(loc.z != 0)
+			{
+				loc.x = loc.x / 4;
+				loc.y = loc.y / 4;
+			}
+
+			AsyncEffect *e = new AsyncEffect(new WizardEyeEffect(loc, 0x28));
+			e->run(EFFECT_PROCESS_GUI_INPUT);
+			scroll->display_string("\nDone\n\n");
+			scroll->display_prompt();
+		}
+
+    }
+
+    return(false);
+}
 
 /* USE: Enter instrument playing mode, with sound for used object. */
 bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)

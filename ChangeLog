@@ -1,3 +1,7 @@
+2011-08-05  Eric Fry <efry at users.sourceforge.net> r1234
+	* Added 'U'se Crystal Ball.
+	* Script::call_actor_hit() can now display the actor hit message.
+
 2011-08-04  Eric Fry <efry at users.sourceforge.net> r1233
 	* Added Wizard Eye (pow) spell.
 	* Added wizard eye mode to MapWindow class.

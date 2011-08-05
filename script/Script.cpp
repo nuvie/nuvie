@@ -706,7 +706,7 @@ bool Script::call_actor_map_dmg(Actor *actor, MapCoord location)
    return true;
 }
 
-bool Script::call_actor_hit(Actor *actor, uint8 dmg)
+bool Script::call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg)
 {
    lua_getglobal(L, "actor_hit");
    nscript_new_actor_var(L, actor->get_actor_num());
@@ -716,6 +716,18 @@ bool Script::call_actor_hit(Actor *actor, uint8 dmg)
    {
       DEBUG(0, LEVEL_ERROR, "Script Error: actor_hit() %s\n", luaL_checkstring(L, -1));
       return false;
+   }
+
+   if(display_hit_msg)
+   {
+	   lua_getglobal(L, "actor_hit_msg");
+	   nscript_new_actor_var(L, actor->get_actor_num());
+
+	   if(lua_pcall(L, 1, 0, 0) != 0)
+	      {
+	         DEBUG(0, LEVEL_ERROR, "Script Error: actor_hit() %s\n", luaL_checkstring(L, -1));
+	         return false;
+	      }
    }
 
    return true;

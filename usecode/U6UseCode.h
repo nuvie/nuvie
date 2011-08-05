@@ -58,6 +58,12 @@ typedef struct // object properties & usecode
     uint16 flags; // properties (OBJTYPE)
 } U6ObjectType;
 
+typedef enum
+{
+	LAT,
+	LON
+} U6UseCodeLatLonEnum;
+
 class U6UseCode: public UseCode, public CallBack
 {
  public:
@@ -130,6 +136,7 @@ class U6UseCode: public UseCode, public CallBack
  bool use_shovel(Obj *obj, UseCodeEvent ev);
  bool use_fountain(Obj *obj, UseCodeEvent ev);
  bool use_rubber_ducky(Obj *obj, UseCodeEvent ev);
+ bool use_crystal_ball(Obj *obj, UseCodeEvent ev);
  bool play_instrument(Obj *obj, UseCodeEvent ev);
  bool look_mirror(Obj *obj, UseCodeEvent ev);
  bool look_sign(Obj *obj, UseCodeEvent ev);
@@ -165,7 +172,7 @@ class U6UseCode: public UseCode, public CallBack
  void extinguish_torch(Obj *obj);
  void light_torch(Obj *obj);
  bool process_effects(Obj *container_obj);
-
+ sint16 parseLatLongString(U6UseCodeLatLonEnum mode, std::string *input);
  
  inline bool use_find_water(uint16 *x, uint16 *y, uint8 *z);
 };
