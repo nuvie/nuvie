@@ -72,6 +72,8 @@ class SpellView : public View {
 
  protected:
 
+ void event_mode_select_spell();
+
  void add_command_icons(Screen *tmp_screen, void *view_manager);
  void hide_buttons();
  void show_buttons();

@@ -369,6 +369,13 @@ void SpellView::add_command_icons(Screen *tmp_screen, void *view_manager)
 
 }
 
+void SpellView::event_mode_select_spell()
+{
+	sint16 spell_num = get_selected_spell();
+	Game::get_game()->get_event()->select_spell_num(spell_num);
+	release_focus();
+}
+
 /* Move the cursor around
  */
 GUI_status SpellView::KeyDown(SDL_keysym key)
@@ -395,9 +402,7 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
         case SDLK_KP_ENTER:
         	if(event_mode)
         	{
-        		sint16 spell_num = get_selected_spell();
-        		Game::get_game()->get_event()->select_spell_num(spell_num);
-        		release_focus();
+        		event_mode_select_spell();
         		return GUI_YUM;
         	}
 
@@ -431,6 +436,9 @@ GUI_status SpellView::MouseUp(int x, int y, int button)
 	y -= area.y;
 	x -= area.x;
 
+	y += 3; //align the pointer in the center of the crosshair cursor.
+	x += 3;
+
 	if(y < 8 || y > 72 || x < 16)
 	{
 		return GUI_YUM;
@@ -443,6 +451,7 @@ GUI_status SpellView::MouseUp(int x, int y, int button)
 	else
 		index = 0;
 
+
 	y = (y / 8) - 1;
 
 	//printf("x = %d, y = %d index=%d\n", x, y, index);
@@ -452,12 +461,19 @@ GUI_status SpellView::MouseUp(int x, int y, int button)
 		spell_container->quality = cur_spells[index+y];
 		update_display = true;
 
-		//Simulate a global key down event.
-		SDL_Event e;
-		e.type = SDL_KEYDOWN;
-		e.key.keysym.sym = SDLK_RETURN;
+    	if(event_mode)
+    	{
+    		event_mode_select_spell();
+    	}
+    	else
+    	{
+    		//Simulate a global key down event.
+    		SDL_Event e;
+    		e.type = SDL_KEYDOWN;
+    		e.key.keysym.sym = SDLK_RETURN;
 
-		Game::get_game()->get_event()->handleEvent(&e);
+    		Game::get_game()->get_event()->handleEvent(&e);
+    	}
 	}
 
 	return GUI_YUM;
