@@ -59,7 +59,16 @@ class SpellView : public View {
  void Display(bool full_redraw);
  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
  GUI_status KeyDown(SDL_keysym key);
- GUI_status MouseDown(int x, int y, int button);
+ GUI_status MouseUp(int x, int y, int button);
+
+ GUI_status MouseDown(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseMotion(int x, int y, Uint8 state) { return GUI_YUM; }
+ GUI_status MouseEnter(Uint8 state) { return GUI_YUM; }
+ GUI_status MouseLeave(Uint8 state) { return GUI_YUM; }
+ GUI_status MouseClick(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseDouble(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseDelayed(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseHeld(int x, int y, int button) { return GUI_YUM; }
 
  protected:
 

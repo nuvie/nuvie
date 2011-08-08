@@ -27,6 +27,7 @@
 #include "U6LList.h"
 #include "U6misc.h"
 #include "U6Bmp.h"
+#include "GUI.h"
 #include "GUI_button.h"
 #include "DollWidget.h"
 #include "InventoryWidget.h"
@@ -105,6 +106,7 @@ void SpellView::set_spell_caster(Actor *actor, Obj *s_container, bool eventMode)
 
 	fill_cur_spell_list();
 	update_buttons();
+	Game::get_game()->set_mouse_pointer(1); // crosshairs
 }
 
 void SpellView::Display(bool full_redraw)
@@ -424,8 +426,40 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
     return(GUI_YUM);
 }
 
-GUI_status SpellView::MouseDown(int x, int y, int button)
+GUI_status SpellView::MouseUp(int x, int y, int button)
 {
+	y -= area.y;
+	x -= area.x;
+
+	if(y < 8 || y > 72 || x < 16)
+	{
+		return GUI_YUM;
+	}
+
+	sint8 index = get_selected_index();
+
+	if(index >= 8)
+		index = 8;
+	else
+		index = 0;
+
+	y = (y / 8) - 1;
+
+	//printf("x = %d, y = %d index=%d\n", x, y, index);
+
+	if(cur_spells[index+y] != -1)
+	{
+		spell_container->quality = cur_spells[index+y];
+		update_display = true;
+
+		//Simulate a global key down event.
+		SDL_Event e;
+		e.type = SDL_KEYDOWN;
+		e.key.keysym.sym = SDLK_RETURN;
+
+		Game::get_game()->get_event()->handleEvent(&e);
+	}
+
 	return GUI_YUM;
 }
 

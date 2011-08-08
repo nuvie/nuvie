@@ -1,3 +1,6 @@
+2011-08-09  Eric Fry <efry at users.sourceforge.net> r1235
+	* Added the ability to select spells from spellbook with the mouse.
+
 2011-08-05  Eric Fry <efry at users.sourceforge.net> r1234
 	* Added 'U'se Crystal Ball.
 	* Script::call_actor_hit() can now display the actor hit message.
