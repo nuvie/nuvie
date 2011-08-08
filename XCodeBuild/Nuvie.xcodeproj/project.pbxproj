@@ -346,6 +346,8 @@
 		ECA2EC8C0FDB423800D4BDDA /* Script.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA2EC880FDB423800D4BDDA /* Script.h */; };
 		ECA2EC8D0FDB423800D4BDDA /* ScriptActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */; };
 		ECA2EC8E0FDB423800D4BDDA /* ScriptActor.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA2EC8A0FDB423800D4BDDA /* ScriptActor.h */; };
+		ECAD317E13F0A1BA001ABC85 /* SpellView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECAD317C13F0A1BA001ABC85 /* SpellView.cpp */; };
+		ECAD317F13F0A1BA001ABC85 /* SpellView.h in Headers */ = {isa = PBXBuildFile; fileRef = ECAD317D13F0A1BA001ABC85 /* SpellView.h */; };
 		ECAE7B8013236C3F009EBD35 /* data in Resources */ = {isa = PBXBuildFile; fileRef = ECAE7B0813236C3F009EBD35 /* data */; };
 /* End PBXBuildFile section */
 
@@ -704,6 +706,8 @@
 		ECA2EC880FDB423800D4BDDA /* Script.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Script.h; path = ../script/Script.h; sourceTree = SOURCE_ROOT; };
 		ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScriptActor.cpp; path = ../script/ScriptActor.cpp; sourceTree = SOURCE_ROOT; };
 		ECA2EC8A0FDB423800D4BDDA /* ScriptActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScriptActor.h; path = ../script/ScriptActor.h; sourceTree = SOURCE_ROOT; };
+		ECAD317C13F0A1BA001ABC85 /* SpellView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpellView.cpp; path = ../views/SpellView.cpp; sourceTree = SOURCE_ROOT; };
+		ECAD317D13F0A1BA001ABC85 /* SpellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpellView.h; path = ../views/SpellView.h; sourceTree = SOURCE_ROOT; };
 		ECAE7B0813236C3F009EBD35 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../data; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
@@ -772,6 +776,8 @@
 				07E87A11050E07AF00A8000A /* InventoryFont.h */,
 				0762A3550506027A00A8000A /* InventoryWidget.h */,
 				0762A3540506027A00A8000A /* InventoryWidget.cpp */,
+				ECAD317D13F0A1BA001ABC85 /* SpellView.h */,
+				ECAD317C13F0A1BA001ABC85 /* SpellView.cpp */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1483,6 +1489,7 @@
 				EC360BD2130DC55F00D4CAE6 /* U6LineWalker.h in Headers */,
 				EC9B4EB4135ACEFA00EA1761 /* GUI_Console.h in Headers */,
 				EC9B4EB8135ACF3D00EA1761 /* Console.h in Headers */,
+				ECAD317F13F0A1BA001ABC85 /* SpellView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1743,6 +1750,7 @@
 				EC360BD1130DC55F00D4CAE6 /* U6LineWalker.cpp in Sources */,
 				EC9B4EB3135ACEFA00EA1761 /* GUI_Console.cpp in Sources */,
 				EC9B4EB7135ACF3D00EA1761 /* Console.cpp in Sources */,
+				ECAD317E13F0A1BA001ABC85 /* SpellView.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,3 +1,6 @@
+2011-08-09  Eric Fry <efry at users.sourceforge.net> r1237
+	* Updated XCode build environment.
+
 2011-08-09  Eric Fry <efry at users.sourceforge.net> r1236
 	* Fixed mouse based spell selection when in event mode.
 	* Align pointer with center of crosshair cursor when in spellview.
