@@ -221,6 +221,24 @@ int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
 
 Script *Script::script = NULL;
 
+static int lua_error_handler(lua_State *L)
+{
+	lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+	if (!lua_istable(L, -1)) {
+		lua_pop(L, 1);
+		return 1;
+	}
+	lua_getfield(L, -1, "traceback");
+	if (!lua_isfunction(L, -1)) {
+		lua_pop(L, 2);
+		return 1;
+	}
+	lua_pushvalue(L, 1);
+	lua_pushinteger(L, 2);
+	lua_call(L, 2, 1);
+	return 1;
+}
+
 static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field)
 {
    lua_pushstring(L, index);
@@ -615,13 +633,7 @@ bool Script::call_actor_update_all()
 {
    lua_getglobal(L, "actor_update_all");
 
-   if(lua_pcall(L, 0, 0, 0) != 0)
-   {
-      DEBUG(0, LEVEL_ERROR, "Script Error: actor_update_all() %s\n", luaL_checkstring(L, -1));
-      return false;
-   }
-   
-   return true;
+   return call_function("actor_update_all", 0, 0);
 }
 
 bool Script::call_actor_init(Actor *actor)
@@ -629,13 +641,7 @@ bool Script::call_actor_init(Actor *actor)
    lua_getglobal(L, "actor_init");
    nscript_new_actor_var(L, actor->get_actor_num());
 
-   if(lua_pcall(L, 1, 0, 0) != 0)
-   {
-      DEBUG(0, LEVEL_ERROR, "Script Error: actor_init() %s\n", luaL_checkstring(L, -1));
-      return false;
-   }
-
-   return true;
+   return call_function("actor_init", 1, 0);
 }
 
 bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
@@ -650,9 +656,9 @@ bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
       nscript_new_actor_var(L, actor->get_actor_num());
    else
       nscript_obj_new(L, weapon);
-   if(lua_pcall(L, 5, 0, 0) != 0)
+
+   if(call_function("actor_attack", 5, 0) == false)
    {
-      DEBUG(0, LEVEL_ERROR, "Script Error: actor_attack() %s\n", luaL_checkstring(L, -1));
       return false;
    }
 
@@ -675,19 +681,15 @@ bool Script::call_loadsave_game(const char *function, NuvieIO *objlist)
 	g_objlist_file = objlist;
 	lua_getglobal(L, function);
 
-	if(lua_pcall(L, 0, 0, 0) != 0)
-	{
-		DEBUG(0, LEVEL_ERROR, "Script Error: %s() %s\n", function, luaL_checkstring(L, -1));
-		g_objlist_file = NULL;
-		return false;
-	}
+	bool result = call_function(function, 0, 0);
 
 	g_objlist_file = NULL;
-	return true;
+	return result;
 }
 
 bool Script::call_actor_map_dmg(Actor *actor, MapCoord location)
 {
+
    lua_getglobal(L, "actor_map_dmg");
    nscript_new_actor_var(L, actor->get_actor_num());
    //nscript_new_actor_var(L, foe->get_actor_num());
@@ -695,15 +697,7 @@ bool Script::call_actor_map_dmg(Actor *actor, MapCoord location)
    lua_pushnumber(L, (lua_Number)location.y);
    lua_pushnumber(L, (lua_Number)location.z);
 
-   if(lua_pcall(L, 4, 0, 0) != 0)
-   {
-      DEBUG(0, LEVEL_ERROR, "Script Error: actor_move() %s\n", luaL_checkstring(L, -1));
-      return false;
-   }
-
-   //Game::get_game()->get_map_window()->updateBlacking(); // the script might have updated the blocking objects. eg broken a door.
-
-   return true;
+   return call_function("actor_map_dmg", 4, 0);
 }
 
 bool Script::call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg)
@@ -712,22 +706,15 @@ bool Script::call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg)
    nscript_new_actor_var(L, actor->get_actor_num());
    lua_pushnumber(L, (lua_Number)dmg);
 
-   if(lua_pcall(L, 2, 0, 0) != 0)
-   {
-      DEBUG(0, LEVEL_ERROR, "Script Error: actor_hit() %s\n", luaL_checkstring(L, -1));
-      return false;
-   }
+   if(call_function("actor_hit", 2, 0) == false)
+	   return false;
 
    if(display_hit_msg)
    {
 	   lua_getglobal(L, "actor_hit_msg");
 	   nscript_new_actor_var(L, actor->get_actor_num());
 
-	   if(lua_pcall(L, 1, 0, 0) != 0)
-	      {
-	         DEBUG(0, LEVEL_ERROR, "Script Error: actor_hit() %s\n", luaL_checkstring(L, -1));
-	         return false;
-	      }
+	   return call_function("actor_hit_msg", 1, 0);
    }
 
    return true;
@@ -738,26 +725,19 @@ bool Script::call_look_obj(Obj *obj)
    lua_getglobal(L, "look_obj");
 
    nscript_obj_new(L, obj);
-   if(lua_pcall(L, 1, 1, 0) != 0)
-   {
-      DEBUG(0, LEVEL_ERROR, "Script Error: look_obj() %s\n", luaL_checkstring(L, -1));
-      return false;
-   }
-   
+
+   if(call_function("look_obj", 1, 1) == false)
+	   return false;
+
    return lua_toboolean(L,-1);
 }
 
-bool Script::call_magic_get_spell_list(uint8 level, Spell **spell_list)
+bool Script::call_magic_get_spell_list(Spell **spell_list)
 {
 	lua_getglobal(L, "magic_get_spell_list");
 
-	lua_pushnumber(L, (lua_Number)level);
-
-	if(lua_pcall(L, 1, 1, 0) != 0)
-	{
-		DEBUG(0, LEVEL_ERROR, "Script Error: look_obj() %s\n", luaL_checkstring(L, -1));
+	if(call_function("magic_get_spell_list", 0, 1) == false)
 		return false;
-	}
 
 	for(int i=1;;i++)
 	{
@@ -793,17 +773,34 @@ bool Script::call_magic_get_spell_list(uint8 level, Spell **spell_list)
 	return true;
 }
 
-bool Script::call_function(const char *function_name)
+bool Script::call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace)
 {
-	lua_getglobal(L, function_name);
+	int start_idx = lua_gettop(L);
+	int error_index = 0;
 
-	if(lua_pcall(L, 0, 0, 0) != 0)
+	if(print_stacktrace)
 	{
-		DEBUG(0, LEVEL_ERROR, "Script Error: %s() %s\n", function_name, luaL_checkstring(L, -1));
-		return false;
+		error_index = lua_gettop(L) - num_args;
+		lua_pushcfunction(L, lua_error_handler);
+		lua_insert(L, error_index);
 	}
 
-	return true;
+	int result = lua_pcall(L, num_args, num_return, error_index);
+	if(result != 0)
+	{
+		DEBUG(0, LEVEL_ERROR, "Script Error: %s(), %s\n", func_name, luaL_checkstring(L, -1));
+		lua_pop(L,1);
+	}
+
+	if(print_stacktrace)
+	{
+		lua_remove(L, error_index);
+	}
+
+	if(lua_gettop(L) + num_args + 1 != start_idx + num_return)
+		DEBUG(0, LEVEL_ERROR, "lua stack error!");
+
+	return (result != 0) ? false : true;
 }
 
 bool Script::call_moonstone_set_loc(uint8 phase, MapCoord location)
@@ -815,13 +812,7 @@ bool Script::call_moonstone_set_loc(uint8 phase, MapCoord location)
    lua_pushnumber(L, (lua_Number)location.y);
    lua_pushnumber(L, (lua_Number)location.z);
 
-   if(lua_pcall(L, 4, 0, 0) != 0)
-   {
-      DEBUG(0, LEVEL_ERROR, "Script Error: moonstone_set_loc() %s\n", luaL_checkstring(L, -1));
-      return false;
-   }
-
-   return true;
+   return call_function("moonstone_set_loc", 4, 0);
 }
 
 MapCoord Script::call_moonstone_get_loc(uint8 phase)
@@ -832,11 +823,8 @@ MapCoord Script::call_moonstone_get_loc(uint8 phase)
 
    lua_pushnumber(L, (lua_Number)phase);
 
-   if(lua_pcall(L, 1, 1, 0) != 0)
-   {
-      DEBUG(0, LEVEL_ERROR, "Script Error: moonstone_get_loc() %s\n", luaL_checkstring(L, -1));
-      return loc;
-   }
+   if(call_function("moonstone_get_loc", 1, 1) == false)
+	   return loc;
 
    get_tbl_field_uint16(L, "x", &loc.x);
    get_tbl_field_uint16(L, "y", &loc.y);
@@ -851,13 +839,7 @@ bool Script::call_update_moongates(bool visible)
 
    lua_pushboolean(L, visible);
 
-   if(lua_pcall(L, 1, 0, 0) != 0)
-   {
-      DEBUG(0, LEVEL_ERROR, "Script Error: update_moongates() %s\n", luaL_checkstring(L, -1));
-      return false;
-   }
-
-   return true;
+   return call_function("update_moongates", 1, 0);
 }
 
 bool Script::call_advance_time(uint16 minutes)
@@ -866,13 +848,7 @@ bool Script::call_advance_time(uint16 minutes)
 
 	lua_pushnumber(L, (lua_Number)minutes);
 
-	if(lua_pcall(L, 1, 0, 0) != 0)
-	{
-		DEBUG(0, LEVEL_ERROR, "Script Error: moonstone_get_loc() %s\n", luaL_checkstring(L, -1));
-		return false;
-	}
-
-	return true;
+	return call_function("advance_time", 1, 0);
 }
 
 ScriptThread *Script::new_thread(const char *scriptfile)

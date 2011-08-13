@@ -96,7 +96,7 @@ bool Magic::init(Event *evt)
 
 bool Magic::read_spell_list()
 {
-	return Game::get_game()->get_script()->call_magic_get_spell_list(1, spell);
+	return Game::get_game()->get_script()->call_magic_get_spell_list(spell);
 }
 
 Obj *Magic::book_equipped()

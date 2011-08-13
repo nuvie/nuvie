@@ -1,5 +1,4 @@
 io.stderr:write("Magic init\n");
-
 magic_syllable_tbl = {a = "An", b = "Bet", c = "Corp", d = "Des", e = "Ex", f = "Flam", g = "Grav", h = "Hur",
                       i = "In", j = "Jux", k = "Kal", l = "Lor", m = "Mani", n = "Nox", o = "Ort", p = "Por",
                       q = "Quas", r = "Rel", s = "Sanct", t = "Tym", u = "Uus", v = "Vas", w = "Wis", x = "Xen",
@@ -64,14 +63,12 @@ function magic_spell_invocation(spell_num)
 	return ""
 end
 
-function magic_get_spell_list(spell_level)
+function magic_get_spell_list()
 	local list = {}
 	local insert = table.insert
 	local k,v
 	for k,v in pairs(magic) do
-		--if v.circle == spell_level then
 			insert(list, v)
-		--end
 	end
 	
 	return list
