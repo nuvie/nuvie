@@ -466,6 +466,7 @@ bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
    }
  else
    {
+	process_effects(obj, items.actor_ref); //process traps.
     obj->frame_n -= 4;
     if(print) scroll->display_string("\nopened!\n");
    }
@@ -695,7 +696,7 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
             toggle_frame(obj); //open / close object
         if(obj->frame_n == 0)
         {
-            process_effects(obj); //run any effects that might be stored in this container. Eg Poison explosion.
+            process_effects(obj, items.actor_ref); //run any effects that might be stored in this container. Eg Poison explosion.
 
             scroll->display_string("\nSearching here, you find ");
             bool found_objects = search_obj(obj, items.actor_ref);
@@ -2983,7 +2984,7 @@ void U6UseCode::light_torch(Obj *obj)
     game->get_map_window()->updateBlacking();
 }
 
-bool U6UseCode::process_effects(Obj *container_obj)
+bool U6UseCode::process_effects(Obj *container_obj, Actor *actor)
 {
  Obj *temp_obj;
  U6Link *obj_link, *temp_link;
@@ -2997,14 +2998,8 @@ bool U6UseCode::process_effects(Obj *container_obj)
 
         if(temp_obj->obj_n == OBJ_U6_EFFECT)
           {
-           switch(temp_obj->quality) // process the effect.
-             {
-              case 22 : DEBUG(0,LEVEL_WARNING,"BIG Poison explosion!\n"); break;
-              default : DEBUG(0,LEVEL_WARNING,"Unknown Effect!!\n"); break;
-             }
-
            temp_link = obj_link->prev;
-           container_obj->container->remove(temp_obj); //remove the used effect from the container.
+           game->get_script()->call_actor_use_effect(temp_obj, actor); //Note this call unlinks the effect object.
            obj_link = temp_link;
           }
         else

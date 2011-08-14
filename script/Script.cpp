@@ -773,6 +773,15 @@ bool Script::call_magic_get_spell_list(Spell **spell_list)
 	return true;
 }
 
+bool Script::call_actor_use_effect(Obj *effect_obj, Actor *actor)
+{
+	lua_getglobal(L, "actor_use_effect");
+	nscript_new_actor_var(L, actor->get_actor_num());
+	nscript_obj_new(L, effect_obj);
+
+	return call_function("actor_use_effect", 2, 0);
+}
+
 bool Script::call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace)
 {
 	int start_idx = lua_gettop(L);

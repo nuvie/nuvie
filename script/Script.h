@@ -103,6 +103,7 @@ class Script
    bool call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg=false);
    bool call_look_obj(Obj *obj);
    bool call_magic_get_spell_list(Spell **spell_list);
+   bool call_actor_use_effect(Obj *effect_obj, Actor *actor);
    bool call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace=true);
    bool call_moonstone_set_loc(uint8 phase, MapCoord location); //this is a hack until we have 'use' moonstone in script.
    bool call_advance_time(uint16 minutes);
