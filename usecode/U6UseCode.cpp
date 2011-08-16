@@ -1795,6 +1795,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
       obj->qty = ship_actor->get_hp(); // Hull Strength
 
       party->show();
+      ship_actor->unlink_surrounding_objects();
       ship_actor->hide();
       ship_actor->set_worktype(0);
 

@@ -367,6 +367,7 @@ class Actor
  ActorError *get_error();
 
  list<Obj *> *get_surrounding_obj_list() { return surrounding_objects.empty() ? NULL : &surrounding_objects; }
+ void unlink_surrounding_objects() { surrounding_objects.clear(); }
 
  bool moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags=0);
  virtual bool move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
