@@ -100,6 +100,9 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  walking = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
 
+ draw_brit_lens_anim = false;
+ draw_garg_lens_anim = false;
+
  window_updated = true;
 }
 
@@ -504,6 +507,8 @@ void MapWindow::updateBlacking()
  m_ViewableObjects.clear();
  m_ViewableTiles.clear();
 
+ draw_brit_lens_anim = false;
+ draw_garg_lens_anim = false;
 
  window_updated = true;
 }
@@ -704,7 +709,27 @@ void MapWindow::drawObjs()
 
  drawObjSuperBlock(false,true); //draw top objects
 
+ drawLensAnim();
  return;
+}
+
+inline void MapWindow::drawLensAnim()
+{
+	if(draw_brit_lens_anim)
+	{
+		if(cur_x < 0x399)
+			drawTile(tile_manager->get_tile(TILE_U6_BRITANNIAN_LENS_ANIM_2),0x398 - cur_x, 0x353 - cur_y, true);
+		if(cur_x + win_width > 0x39a)
+			drawTile(tile_manager->get_tile(TILE_U6_BRITANNIAN_LENS_ANIM_1),0x39a - cur_x, 0x353 - cur_y, true);
+	}
+
+	if(draw_garg_lens_anim)
+	{
+		if(cur_x < 0x39d)
+			drawTile(tile_manager->get_tile(TILE_U6_GARGOYLE_LENS_ANIM_2),0x39c - cur_x, 0x353 - cur_y, true);
+		if(cur_x + win_width > 0x39e)
+			drawTile(tile_manager->get_tile(TILE_U6_GARGOYLE_LENS_ANIM_1),0x39e - cur_x, 0x353 - cur_y, true);
+	}
 }
 
 void MapWindow::drawObjSuperBlock(bool draw_lowertiles, bool toptile)
@@ -755,7 +780,21 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
    return;
 
  if(window_updated)
+ {
    m_ViewableObjects.push_back(obj);
+
+   if(game_type == NUVIE_GAME_U6 && cur_level == 0 && obj->y == 0x353 && tmp_map_buf[(y+1)*tmp_map_width+(x+1)] != 0)
+   {
+	   if(obj->obj_n == 394 && obj->x == 0x399)
+	   {
+		   draw_brit_lens_anim = true;
+	   }
+	   else if(obj->obj_n == 396 && obj->x == 0x39d)
+	   {
+		   draw_garg_lens_anim = true;
+	   }
+   }
+ }
 
  //don't show invisible objects. 
  if(obj->status & OBJ_STATUS_INVISIBLE)
@@ -1349,7 +1388,10 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 //            obj_manager->list_add_obj(target_obj->container, obj);
         // FIXME: a method to prevent exploiting this would be to subtract the
         //        number of moves that are necessary to reach the object
+
+
     }
+
 }
 
 

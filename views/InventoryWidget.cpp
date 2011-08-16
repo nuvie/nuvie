@@ -35,6 +35,7 @@
 #include "MsgScroll.h"
 #include "TimedEvent.h"
 #include "UseCode.h"
+#include "MapWindow.h"
 
 #include "InventoryFont.h"
 #include "ViewManager.h"
@@ -541,6 +542,7 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
     Redraw();
    }
 
+ Game::get_game()->get_map_window()->updateBlacking();
  target_obj = NULL;
 
  return;

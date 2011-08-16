@@ -109,6 +109,9 @@ class MapWindow: public GUI_Widget
 
  WizardEye wizard_eye_info;
 
+ bool draw_brit_lens_anim;
+ bool draw_garg_lens_anim;
+
  public:
 
  MapWindow(Configuration *cfg);
@@ -215,6 +218,7 @@ protected:
  inline void drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);
  inline void drawActor(Actor *actor);
  void drawRain();
+ inline void drawLensAnim();
 
  void generateTmpMap();
  void boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y);

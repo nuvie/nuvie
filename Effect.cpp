@@ -682,6 +682,7 @@ void DropEffect::hit_target()
     game->get_scroll()->display_string("\n");
     game->get_scroll()->display_prompt();
  
+    game->get_map_window()->updateBlacking();
     ThrowObjectEffect::hit_target(); // calls delete_self()
 }
 
