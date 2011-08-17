@@ -116,6 +116,9 @@ bool Nuvie::init(int argc, char **argv)
    return false;
 
  script = new Script(config, game_type);
+ if(script->init() == false)
+	 return false;
+
  game = new Game(config, script, gui);
 
  if(game->loadGame(screen,game_type) == false)

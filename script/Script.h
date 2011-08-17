@@ -88,6 +88,8 @@ class Script
  Script(Configuration *cfg, nuvie_game_t type);
  ~Script();
 
+ bool init();
+
  /* Return instance of self */
  static Script *get_script()           { return(script); }
  Configuration *get_config() { return(config); }

@@ -593,8 +593,6 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    path = lua_tolstring(L, -1, &len);
    DEBUG(0, LEVEL_INFORMATIONAL, "lua path = %s\n", path);
 
-   run_script("init = nuvie_load(\"u6/init.lua\"); init()");
-
 }
 
 Script::~Script()
@@ -603,6 +601,18 @@ Script::~Script()
       lua_close(L);
 }
 
+bool Script::init()
+{
+	switch(gametype)
+	{
+	case NUVIE_GAME_U6 : return run_script("init = nuvie_load(\"u6/init.lua\"); init()");
+	case NUVIE_GAME_SE : return run_script("init = nuvie_load(\"se/init.lua\"); init()");
+	case NUVIE_GAME_MD : return run_script("init = nuvie_load(\"md/init.lua\"); init()");
+	default : break;
+	}
+
+	return false;
+}
 
 void Script::seed_random()
 {
