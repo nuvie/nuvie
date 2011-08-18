@@ -25,7 +25,10 @@ void print_indent(DebugLevelType level,uint8 indent);
 void print_bool(DebugLevelType level,bool state, const char *yes = "true", const char *no = "false");
 void print_flags(DebugLevelType level,uint8 num, const char *f[8]);
 bool subtract_rect(SDL_Rect *rect1, SDL_Rect *rect2, SDL_Rect *sub_rect);
+uint8 get_nuvie_dir_code(uint8 original_dir_code);
 uint8 get_direction_code(sint16 rel_x, sint16 rel_y);
+uint8 get_reverse_direction(uint8 dir);
+void get_relative_dir(uint8 dir, sint16 *rel_x, sint16 *rel_y);
 const char *get_direction_name(sint16 rel_x, sint16 rel_y);
 int str_bsearch( const char *str[], int max, const char *value );
 

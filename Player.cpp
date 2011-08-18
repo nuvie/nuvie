@@ -36,6 +36,7 @@
 #include "Objlist.h"
 #include "U6objects.h"
 #include "SoundManager.h"
+#include "Weather.h"
 #include "Player.h"
 
 Player::Player(Configuration *cfg)
@@ -256,13 +257,71 @@ const char *Player::get_gender_title()
    return "milady";
 }
 
-
 // walk to adjacent square
 void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 {
+	const uint8 raft_movement_tbl[] = {
+			NUVIE_DIR_N, NUVIE_DIR_NE, NUVIE_DIR_N, NUVIE_DIR_NW, NUVIE_DIR_N, NUVIE_DIR_NE, NUVIE_DIR_NW, NUVIE_DIR_N,
+			NUVIE_DIR_NE, NUVIE_DIR_NE, NUVIE_DIR_E, NUVIE_DIR_N, NUVIE_DIR_NE, NUVIE_DIR_E, NUVIE_DIR_NE, NUVIE_DIR_N,
+			NUVIE_DIR_NE, NUVIE_DIR_E, NUVIE_DIR_SE, NUVIE_DIR_E, NUVIE_DIR_E, NUVIE_DIR_E, NUVIE_DIR_SE, NUVIE_DIR_NE,
+			NUVIE_DIR_E, NUVIE_DIR_SE, NUVIE_DIR_SE, NUVIE_DIR_S, NUVIE_DIR_E, NUVIE_DIR_SE, NUVIE_DIR_S, NUVIE_DIR_SE,
+			NUVIE_DIR_S, NUVIE_DIR_SE, NUVIE_DIR_S, NUVIE_DIR_SW, NUVIE_DIR_SE, NUVIE_DIR_S, NUVIE_DIR_S, NUVIE_DIR_SW,
+			NUVIE_DIR_W, NUVIE_DIR_S, NUVIE_DIR_SW, NUVIE_DIR_SW, NUVIE_DIR_SW, NUVIE_DIR_S, NUVIE_DIR_SW, NUVIE_DIR_W,
+			NUVIE_DIR_NW, NUVIE_DIR_W, NUVIE_DIR_SW, NUVIE_DIR_W, NUVIE_DIR_NW, NUVIE_DIR_SW, NUVIE_DIR_W, NUVIE_DIR_W,
+			NUVIE_DIR_NW, NUVIE_DIR_N, NUVIE_DIR_W, NUVIE_DIR_NW, NUVIE_DIR_N, NUVIE_DIR_NW, NUVIE_DIR_W, NUVIE_DIR_NW
+	};
+
     uint16 x, y;
     uint8 z;
     actor->get_location(&x, &y, &z);
+
+    if(game_type == NUVIE_GAME_U6)
+    {
+    	if(actor->id_n == 0)
+    	{
+    		if(actor->obj_n == OBJ_U6_INFLATED_BALLOON)
+    		{
+    			uint8 dir = get_reverse_direction(Game::get_game()->get_weather()->get_wind_dir());
+    			if(dir == NUVIE_DIR_NONE)
+    			{
+    				Game::get_game()->get_scroll()->display_string("Thou canst not move without wind!\n\n");
+    				Game::get_game()->get_scroll()->display_prompt();
+    				return;
+    			}
+
+    			get_relative_dir(dir, &rel_x, &rel_y);
+    		}
+    		else if(actor->obj_n == OBJ_U6_RAFT)
+    		{
+    			uint8 dir = 0;
+    			uint8 wind_dir = Game::get_game()->get_weather()->get_wind_dir();
+    			Tile *t = Game::get_game()->get_game_map()->get_tile(x, y, z, true);
+    			if(t->tile_num >= 8 && t->tile_num < 16)
+    			{
+    				dir = t->tile_num - 8;
+    			}
+    			if(wind_dir != NUVIE_DIR_NONE)
+    			{
+    				dir = raft_movement_tbl[dir*8 + get_reverse_direction(wind_dir)];
+    			}
+    			else
+    			{
+    				dir = get_nuvie_dir_code(dir);
+    			}
+
+    			get_relative_dir(dir, &rel_x, &rel_y);
+    		}
+    	}
+    	else
+    	{
+    		if(alcohol > 3 && NUVIE_RAND()%4 != 0)
+    		{
+    			rel_x = NUVIE_RAND()%3 - 1; // stumble and change direction
+    			rel_y = NUVIE_RAND()%3 - 1;
+    			Game::get_game()->get_scroll()->display_string("Hic!\n");
+    		}
+    	}
+    }
 
     // don't allow diagonal move between blocked tiles (player only)
     if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS)
@@ -270,13 +329,6 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
         return;
     if(actor->is_immobile() && actor->id_n != 0)
         return;
-
-    if(alcohol > 3 && NUVIE_RAND()%4 != 0)
-    {
-        rel_x = NUVIE_RAND()%3 - 1; // stumble and change direction
-        rel_y = NUVIE_RAND()%3 - 1;
-        Game::get_game()->get_scroll()->display_string("Hic!\n");
-    }
 
     actor->set_direction(rel_x, rel_y);
 
@@ -353,6 +405,16 @@ void Player::pass()
 {
 // uint16 x = actor->x, y = actor->y;
 // uint8 z = actor->z;
+
+ // Move balloon / raft if required.
+ if(game_type == NUVIE_GAME_U6 && (actor->obj_n == OBJ_U6_INFLATED_BALLOON || actor->obj_n == OBJ_U6_RAFT))
+ {
+   if(Game::get_game()->get_weather()->get_wind_dir() != NUVIE_DIR_NONE)
+   {
+	 moveRelative(0, 0);
+	 return;
+   }
+ }
 
  if(actor->get_moves_left() > 0)
    actor->set_moves_left(0); // Pass and use up moves

@@ -352,6 +352,36 @@ const char *get_direction_name(sint16 rel_x, sint16 rel_y)
         return("nowhere");
 }
 
+/* Gets the nuvie direction code from the original u6 direction code. */
+uint8 get_nuvie_dir_code(uint8 original_dir_code)
+{
+	uint8 dir = NUVIE_DIR_NONE;
+	//convert original direction into nuvie direction.
+	//original
+	// 701
+	// 6 2
+	// 543
+	//
+	// nuvie
+	// 704
+	// 3 1
+	// 625
+	switch(original_dir_code)
+	{
+	case 0: dir = NUVIE_DIR_N; break;
+	case 1: dir = NUVIE_DIR_NE; break;
+	case 2: dir = NUVIE_DIR_E; break;
+	case 3: dir = NUVIE_DIR_SE; break;
+	case 4: dir = NUVIE_DIR_S; break;
+	case 5: dir = NUVIE_DIR_SW; break;
+	case 6: dir = NUVIE_DIR_W; break;
+	case 7: dir = NUVIE_DIR_NW; break;
+	default: break;
+	}
+
+	return dir;
+}
+
 /* Returns direction code of relative direction.
  */
 uint8 get_direction_code(sint16 rel_x, sint16 rel_y)
@@ -375,6 +405,47 @@ uint8 get_direction_code(sint16 rel_x, sint16 rel_y)
 
     return NUVIE_DIR_NONE;
 }
+
+uint8 get_reverse_direction(uint8 dir)
+{
+	switch(dir)
+	{
+	case  NUVIE_DIR_N : return NUVIE_DIR_S;
+	case NUVIE_DIR_E : return NUVIE_DIR_W;
+	case NUVIE_DIR_S : return NUVIE_DIR_N;
+	case NUVIE_DIR_W : return NUVIE_DIR_E;
+
+	case NUVIE_DIR_NE : return NUVIE_DIR_SW;
+	case NUVIE_DIR_SE : return NUVIE_DIR_NW;
+	case NUVIE_DIR_SW : return NUVIE_DIR_NE;
+	case NUVIE_DIR_NW : return NUVIE_DIR_SE;
+
+	case NUVIE_DIR_NONE :
+	default : break;
+	}
+
+	return NUVIE_DIR_NONE;
+}
+
+void get_relative_dir(uint8 dir, sint16 *rel_x, sint16 *rel_y)
+{
+	switch(dir)
+	{
+	case  NUVIE_DIR_N : *rel_x = 0; *rel_y = -1; break;
+	case NUVIE_DIR_E : *rel_x = 1; *rel_y = 0; break;
+	case NUVIE_DIR_S : *rel_x = 0; *rel_y = 1; break;
+	case NUVIE_DIR_W : *rel_x = -1; *rel_y = 0; break;
+
+	case NUVIE_DIR_NE : *rel_x = 1; *rel_y = -1; break;
+	case NUVIE_DIR_SE : *rel_x = 1; *rel_y = 1; break;
+	case NUVIE_DIR_SW : *rel_x = -1; *rel_y = 1; break;
+	case NUVIE_DIR_NW : *rel_x = -1; *rel_y = -1; break;
+
+	case NUVIE_DIR_NONE :
+	default : *rel_x = 0; *rel_y = 0; break;
+	}
+}
+
 int str_bsearch( const char *str[], int max, const char *value )
 {
    int position;

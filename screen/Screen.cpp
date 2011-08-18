@@ -644,14 +644,14 @@ void Screen::buildalphamap8()
     int game_type;
     config->value("config/GameType",game_type);
 
-    if(game_type == NUVIE_GAME_U6)
+    if(game_type == NUVIE_GAME_U6 || game_type == NUVIE_GAME_SE)
     {
         shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(444)->data;
         shading_tile[1] = game->get_map_window()->get_tile_manager()->get_tile(445)->data;
         shading_tile[2] = game->get_map_window()->get_tile_manager()->get_tile(446)->data;
         shading_tile[3] = game->get_map_window()->get_tile_manager()->get_tile(447)->data;
     }
-    else
+    else //NUVIE_GAME_MD
     {
         shading_tile[0] = game->get_map_window()->get_tile_manager()->get_tile(268)->data;
         shading_tile[1] = game->get_map_window()->get_tile_manager()->get_tile(269)->data;

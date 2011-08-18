@@ -79,7 +79,6 @@ install: all
 	strip nuvie.exe -o $(U6PATH)/nuvie.exe
 	mkdir -p $(U6PATH)/data
 	cp data/*.bmp $(U6PATH)/data
-	cp data/spells.nsl $(U6PATH)/data
 	mkdir -p $(U6PATH)/data
 	mkdir -p $(U6PATH)/data/scripts
 	mkdir -p $(U6PATH)/data/scripts/u6
