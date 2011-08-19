@@ -100,7 +100,6 @@ install: all
 	cp data/scripts/u6/magic/circle_08/*.lua $(U6PATH)/data/scripts/u6/magic/circle_08
 	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
 	cp data/*.bmp $(U6PATH)/data
-	cp data/spells.nsl $(U6PATH)/data
 
 tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_portraits.exe
 	mkdir -p $(U6PATH)
