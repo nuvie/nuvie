@@ -50,7 +50,6 @@ Source: data\ScrollBarDown_1.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarDown_2.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarUp_1.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarUp_2.bmp; DestDir: {app}\data\; Flags: ignoreversion
-Source: data\spells.nsl; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\scripts\u6\actor.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\init.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\magic.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
