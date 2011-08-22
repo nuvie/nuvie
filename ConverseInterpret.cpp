@@ -32,7 +32,7 @@
 #include "ConverseInterpret.h"
 #include "ConverseSpeech.h"
 
-//#define CONVERSE_DEBUG
+#define CONVERSE_DEBUG
 
 ConverseInterpret::ConverseInterpret(Converse *owner)
 {
@@ -149,7 +149,7 @@ void ConverseInterpret::step()
         else
         {
 #ifdef CONVERSE_DEBUG
-            DEBUG(0,LEVEL_DEBUGGING"Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
+            DEBUG(0,LEVEL_DEBUGGING, "Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
 #endif
             converse->print("[Tried to print a control char.]\n");
             cs->skip();
@@ -498,7 +498,13 @@ bool ConverseInterpret::op(stack<converse_value> &i)
     Player *player = converse->player;
 //    converse_db_s *cdb;
 
-    switch(in = pop_arg(i))
+    in = pop_arg(i);
+
+#ifdef CONVERSE_DEBUG
+    DEBUG(0, LEVEL_DEBUGGING, "op %s(%x)\n", op_str(in), in);
+#endif
+
+    switch(in)
     {
         case U6OP_SLEEP: // 0x9e
             // Note: It's usually unecessary to wait for the effect, as it
@@ -534,8 +540,30 @@ bool ConverseInterpret::op(stack<converse_value> &i)
                 cnpc->clear_flag(pop_arg(i));
             break;
         case U6OP_DECL: // 0xa6
+        	db_lvar = false;
             v[0] = pop_arg(i); // variable
             v[1] = pop_arg(i); // type
+            if(!i.empty() && (i.top() == 0xb2 || i.top() == 0xb4))
+            {
+            	if(i.top() == 0xb2) // eg DB1[#2] = ...
+            	{
+            		pop_arg(i); //0xb2
+            		pop_arg(i); //0xb4 DATA op.
+            		db_lvar = true;
+            		db_loc = v[0];
+            		db_offset = converse->get_var(v[1]);
+            	}
+            	else if(i.top() == 0xb4) // eg DB1[0] = ...
+            	{
+            		pop_arg(i); //0xb4 DATA op.
+            		db_lvar = true;
+            		db_loc = v[0];
+            		db_offset = v[1];
+            	}
+#ifdef CONVERSE_DEBUG
+            	DEBUG(0, LEVEL_DEBUGGING, "DB lvar found. location = %x, offset = %x", db_loc, db_offset);
+#endif
+            }
             let(v[0], v[1]);
             break;
         case U6OP_ASSIGN: // 0xa8
@@ -543,6 +571,11 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             v[0] = pop_arg(i); // value
             if(in == U6OP_ASSIGN) // 0xa8
             {
+            	if(db_lvar)
+            	{
+            		set_db_integer(db_loc, db_offset, v[0]);
+            	}
+            	else
                 if(decl_v <= U6TALK_VAR__LAST_)
                 {
                     if(decl_t == 0xb3)
@@ -551,7 +584,10 @@ bool ConverseInterpret::op(stack<converse_value> &i)
                         converse->set_var(decl_v, v[0]);
                 }
                 else
-                    converse->print("[Illegal variable]\n");
+                {
+                	converse->print("[Illegal variable]\n");
+                	DEBUG(0, LEVEL_ERROR, "[Illegal variable] decl_v = %x decl_t = %x\n", decl_v, decl_t);
+                }
             }
             else // // 0xd8, assign name of npc `result' to ystr
             {
@@ -757,7 +793,13 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
 //    converse_db_s *cdb;
     Player *player = converse->player;
 
-    switch(in = pop_arg(i))
+    in = pop_arg(i);
+
+#ifdef CONVERSE_DEBUG
+    DEBUG(0, LEVEL_DEBUGGING, "evop %s(%x)\n", evop_str(in), in);
+#endif
+
+    switch(in)
     {
         case U6OP_GT: // 0x81
             v[1] = pop_arg(i);
@@ -1253,6 +1295,27 @@ converse_value ConverseInterpret::get_db_integer(uint32 loc, uint32 i)
     return((converse_value)item);
 }
 
+void ConverseInterpret::set_db_integer(uint32 loc, uint32 i, converse_value val)
+{
+#ifdef CONVERSE_DEBUG
+	DEBUG(0, LEVEL_DEBUGGING, "set_db_integer(%x, %x, %d)\n", loc, i, val);
+#endif
+	uint32 p = 0; /* pointer into db */
+
+	/* skip to index */
+	uint32 e = 0;
+	while(e++ < i)
+		p += 2;
+
+	/* use ConvScript functions to check overflow and read data correctly */
+	uint32 old_pos = converse->script->pos();
+	converse->script->seek(loc + p);
+	if(!converse->script->overflow(+1))
+		converse->script->write2(val);
+	converse->script->seek(old_pos);
+
+	return;
+}
 
 /* Scan data section `loc' for `dstring'. Stop at ENDDATA.
  * Returns the index of the string or the index of the ENDDATA marker.
@@ -1303,3 +1366,95 @@ DEBUG(0,LEVEL_DEBUGGING,"\nConverse: find_db_string: not found; returning %d\n",
     return(i);
 }
 
+const char *ConverseInterpret::evop_str(converse_value op)
+{
+	switch(op)
+	{
+	case U6OP_GT: return "U6OP_GT";
+	case U6OP_GE: return "U6OP_GE";
+	case U6OP_LT: return "U6OP_LT";
+	case U6OP_LE: return "U6OP_LE";
+	case U6OP_NE: return "U6OP_NE";
+	case U6OP_EQ: return "U6OP_EQ";
+	case U6OP_ADD: return "U6OP_ADD";
+	case U6OP_SUB: return "U6OP_SUB";
+	case U6OP_MUL: return "U6OP_MUL";
+	case U6OP_DIV: return "U6OP_DIV";
+	case U6OP_LOR: return "U6OP_LOR";
+	case U6OP_LAND: return "U6OP_LAND";
+	case U6OP_CANCARRY: return "U6OP_CANCARRY";
+	case U6OP_WEIGHT: return "U6OP_WEIGHT";
+	case U6OP_HORSED: return "U6OP_HORSED";
+	case U6OP_HASOBJ: return "U6OP_HASOBJ";
+	case U6OP_RAND: return "U6OP_RAND";
+	case U6OP_FLAG: return "U6OP_FLAG";
+	case U6OP_VAR: return "U6OP_VAR";
+	case U6OP_SVAR: return "U6OP_SVAR";
+	case U6OP_DATA: return "U6OP_DATA";
+	case U6OP_INDEXOF: return "U6OP_INDEXOF";
+	case U6OP_OBJCOUNT: return "U6OP_OBJCOUNT";
+	case U6OP_INPARTY: return "U6OP_INPARTY";
+	case U6OP_OBJINPARTY: return "U6OP_OBJINPARTY";
+	case U6OP_JOIN: return "U6OP_JOIN";
+	case U6OP_LEAVE: return "U6OP_LEAVE";
+	case U6OP_NPCNEARBY: return "U6OP_NPCNEARBY";
+	case U6OP_WOUNDED: return "U6OP_WOUNDED";
+	case U6OP_POISONED: return "U6OP_POISONED";
+	case U6OP_NPC: return "U6OP_NPC";
+	case U6OP_EXP: return "U6OP_EXP";
+	case U6OP_LVL: return "U6OP_LVL";
+	case U6OP_STR: return "U6OP_STR";
+	case U6OP_INT: return "U6OP_INT";
+	case U6OP_DEX: return "U6OP_DEX";
+	default: break;
+	}
+
+	return "U6OP_UNKNOWN";
+}
+
+const char *ConverseInterpret::op_str(converse_value op)
+{
+	switch(op)
+	{
+	case U6OP_SLEEP: return "U6OP_SLEEP";
+	case U6OP_HORSE: return "U6OP_HORSE";
+	case U6OP_IF: return "U6OP_IF";
+	case U6OP_ENDIF: return "U6OP_ENDIF";
+	case U6OP_ELSE: return "U6OP_ELSE";
+	case U6OP_SETF: return "U6OP_SETF";
+	case U6OP_CLEARF: return "U6OP_CLEARF";
+	case U6OP_DECL: return "U6OP_DECL";
+	case U6OP_ASSIGN: return "U6OP_ASSIGN";
+	case U6OP_SETNAME: return "U6OP_SETNAME";
+	case U6OP_JUMP: return "U6OP_JUMP";
+	case U6OP_DPRINT: return "U6OP_DPRINT";
+	case U6OP_BYE: return "U6OP_BYE";
+	case U6OP_NEW: return "U6OP_NEW";
+	case U6OP_DELETE: return "U6OP_DELETE";
+	case U6OP_GIVE: return "U6OP_GIVE";
+	case U6OP_ADDKARMA: return "U6OP_ADDKARMA";
+	case U6OP_SUBKARMA: return "U6OP_SUBKARMA";
+	case U6OP_RESURRECT: return "U6OP_RESURRECT";
+	case U6OP_HEAL: return "U6OP_HEAL";
+	case U6OP_CURE: return "U6OP_CURE";
+	case U6OP_WORKTYPE: return "U6OP_WORKTYPE";
+	case U6OP_INVENTORY: return "U6OP_INVENTORY";
+	case U6OP_PORTRAIT: return "U6OP_PORTRAIT";
+	case U6OP_WAIT: return "U6OP_WAIT";
+	case U6OP_ENDANSWER: return "U6OP_ENDANSWER";
+	case U6OP_KEYWORDS: return "U6OP_KEYWORDS";
+	case U6OP_SIDENT: return "U6OP_SIDENT";
+	case U6OP_SLOOK: return "U6OP_SLOOK";
+	case U6OP_SCONVERSE: return "U6OP_SCONVERSE";
+	case U6OP_SPREFIX: return "U6OP_SPREFIX";
+	case U6OP_ANSWER: return "U6OP_ANSWER";
+	case U6OP_ASK: return "U6OP_ASK";
+	case U6OP_ASKC: return "U6OP_ASKC";
+	case U6OP_INPUTSTR: return "U6OP_INPUTSTR";
+	case U6OP_INPUT: return "U6OP_INPUT";
+	case U6OP_INPUTNUM: return "U6OP_INPUTNUM";
+	default : break;
+	}
+
+	return "U6OP_UNKNOWN";
+}

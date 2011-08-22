@@ -189,6 +189,9 @@ public:
     converse_value read4();
     converse_value peek(uint32 skip = 0) { return((converse_value)*(buf_pt+skip)); }
 
+    /* Writing */
+    void write2(converse_value val);
+
     /* Seeking - update script pointer */
     void rewind() { buf_pt = buf; }
     void skip(uint32 bytes = 1) { buf_pt += bytes; }

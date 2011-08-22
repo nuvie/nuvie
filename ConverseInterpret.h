@@ -150,6 +150,11 @@ protected:
     uint8 decl_t; // declared variable type: 0x00=none,0xb2=int,0xb3=string
     stack<struct convi_frame_s *> *b_frame;
 
+    bool db_lvar;
+    converse_value db_loc;
+    converse_value db_offset;
+
+
     const char *get_rstr(uint32 sn) { return((sn < rstrings.size()) ? rstrings[sn].c_str() : ""); }
     const char *get_ystr()          { return(ystring.c_str()); }
     void set_ystr(const char *s)    { ystring = s ? s : ""; }
@@ -217,6 +222,7 @@ public:
     void assign_input(); // set declared variable to Converse input
     struct converse_db_s *get_db(uint32 loc, uint32 i);
     converse_value get_db_integer(uint32 loc, uint32 i);
+    void set_db_integer(uint32 loc, uint32 i, converse_value val);
     char *get_db_string(uint32 loc, uint32 i);
     converse_value find_db_string(uint32 loc, const char *dstring);
 
@@ -242,6 +248,8 @@ public:
                  || (check == 0xdd) || (check == 0xe0) || (check == 0xe1)
                  || (check == 0xe2) || (check == 0xe3) || (check == 0xe4)) );
     }
+    const char *evop_str(converse_value op);
+    const char *op_str(converse_value op);
 };
 
 

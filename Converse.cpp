@@ -728,3 +728,9 @@ converse_value ConvScript::read4()
     return(val);
 }
 
+void ConvScript::write2(converse_value val)
+{
+    *(buf_pt++) = val & 0xff;
+    *(buf_pt++) = (val >> 8) & 0xff;
+    return;
+}
