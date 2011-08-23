@@ -790,7 +790,9 @@ local projectile_weapon_tbl =
 [49] = {560, 0, 4, 10}, -- boomerang
 [83] = {601, 0, 2, 0}, -- flask of oil
 [50] = {567, 90,4, 0}, -- triple crossbow
+[412] = {399, 0,2, 0}, -- ship
 [91] = {612, 0, 2, 10}, -- Zu Ylem
+[54] = {566, 90,4, 0}, -- magic bow
 [79] = {392, 0, 2, 0}, -- lightning wand
 [80] = {393, 0, 2, 0}, -- fire wand
 }
@@ -1397,8 +1399,6 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       end
       
       local spell_retcode = 0
-      --FIXME cast spell here.
-      --spell_retcode = cast_magic_spell(weapon_quality, 1)
 
       magic_cast_spell(weapon_quality, attacker, {x = target_x, y = target_y, z = target_z})
       
@@ -1975,8 +1975,6 @@ function actor_update_flags(actor)
 		
 		if actor.asleep == true and actor.wt ~= WT_SLEEP and random(0, 15) == 0 then
 			actor.asleep = false
-			--FIXME restore actor frame_n here.
-			--* (& objlist_npc_movement_flags + actor) = * (bx + actor) | 8
 			actor.frame_n = actor.old_frame_n
 		end
 		
@@ -1999,7 +1997,6 @@ function actor_corpser_regurgitation(actor)
    local val = random(1, 0x1e)
      
    if val < actor_str_adj(actor) then
-      --FIXME play sound effect
       play_sfx(SFX_CORPSER_REGURGITATE, true)
       print("`"..actor.name.." regurgitated!\n")
       actor.corpser_flag = false
@@ -3333,7 +3330,6 @@ function spell_poison_actor(attacker, foe)
 	local actor_base = actor_tbl[foe.obj_n]
 	if actor_base == nil or actor_base[19] == 1 then return 2 end --immune to poison
 	
-	--FIXME poison saving throw here.
 	if ((math.floor(actor_str_adj(foe) / 2) + 0x1e) - actor_int_adj(attacker)) / 2 <= math.random(1, 0x1e) then
 		foe.poisoned = true
 		hit_anim(foe.x, foe.y)

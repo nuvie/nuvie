@@ -538,7 +538,11 @@ bool Player::attack_select_weapon_at_location(sint8 location)
  if(location == ACTOR_NO_READIABLE_LOCATION)
    {
     current_weapon = location;
-    scroll->display_string("Attack with bare hands-");
+    if(game_type == NUVIE_GAME_U6 && actor->obj_n == OBJ_U6_SHIP)
+    	scroll->display_string("Attack with ship cannons-");
+    else
+    	scroll->display_string("Attack with bare hands-");
+
     return true;
    }
 

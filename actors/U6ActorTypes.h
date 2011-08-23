@@ -223,6 +223,7 @@ static const struct {uint16 obj_n; uint8 readiable_location; uint8 defence; uint
 // obj_n, defence, attack, hit_range, attack_type, missle_tile_num, thrown_obj_n, breaks_on_contact
 
 const CombatType u6combat_hand = {OBJ_U6_NOTHING, {0}, {4}, 1, ATTACK_TYPE_HAND, 0, OBJ_U6_NOTHING, false};
+const CombatType u6combat_ship_cannon = {OBJ_U6_NOTHING, {0}, {30}, 4, ATTACK_TYPE_MISSLE, TILE_U6_LIGHTNING, OBJ_U6_NOTHING, false };
 
 const CombatType u6combat_objects[] ={ 
 {OBJ_U6_LEATHER_HELM, {1}, {0}, 0, ATTACK_TYPE_NONE, 0, OBJ_U6_NOTHING, false },

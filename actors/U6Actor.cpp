@@ -819,7 +819,10 @@ const CombatType *U6Actor::get_object_combat_type(uint16 obj_n)
 
 const CombatType *U6Actor::get_hand_combat_type()
 {
- return &u6combat_hand;
+	if(obj_n == OBJ_U6_SHIP)
+		return &u6combat_ship_cannon;
+
+	return &u6combat_hand;
 }
 
 bool U6Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)

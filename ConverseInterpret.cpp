@@ -32,7 +32,7 @@
 #include "ConverseInterpret.h"
 #include "ConverseSpeech.h"
 
-#define CONVERSE_DEBUG
+//#define CONVERSE_DEBUG
 
 ConverseInterpret::ConverseInterpret(Converse *owner)
 {

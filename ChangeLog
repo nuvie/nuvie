@@ -1,3 +1,9 @@
+2011-08-24  Eric Fry <efry at users.sourceforge.net> r1249
+	* Added attack with ship cannon.
+	* Fixed attack with magic bow.
+	* Removed some old FIXME comments.
+	* Turned off converse debug output.
+
 2011-08-23  Eric Fry <efry at users.sourceforge.net> r1248
 	* Fixed converse bug where db values weren't being assigned.
 	  Thanks to angelox for spotting the bug!
