@@ -70,6 +70,20 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  tile_manager = tm;
  obj_manager = om;
 
+ switch(Game::get_game()->get_game_type())
+ {
+ case NUVIE_GAME_U6 : blocked_tile = tile_manager->get_tile(TILE_U6_BLOCKED_EQUIP);
+                      empty_tile = tile_manager->get_tile(TILE_U6_EQUIP);
+                      break;
+
+ case NUVIE_GAME_SE : blocked_tile = tile_manager->get_tile(TILE_SE_BLOCKED_EQUIP);
+                      empty_tile = tile_manager->get_tile(TILE_SE_EQUIP);
+                      break;
+
+ case NUVIE_GAME_MD : blocked_tile = tile_manager->get_tile(TILE_MD_BLOCKED_EQUIP);
+                      empty_tile = tile_manager->get_tile(TILE_MD_EQUIP);
+                      break;
+ }
  GUI_Widget::Init(NULL, x, y, 64, 64);
 
  set_actor(a);
@@ -108,10 +122,8 @@ void DollWidget::Display(bool full_redraw)
 
 inline void DollWidget::display_doll()
 {
- Tile *tile, *empty_tile;
+ Tile *tile;
  uint16 i,j;
-
- empty_tile = tile_manager->get_tile(410);
 
  for(i=0;i<2;i++)
    {
@@ -126,7 +138,7 @@ inline void DollWidget::display_doll()
  display_readied_object(ACTOR_BODY, area.x+3*16, (area.y+8) + 0 * 16, actor, empty_tile);
 
  display_readied_object(ACTOR_ARM, area.x, (area.y+8) + 1 * 16, actor, empty_tile);
- display_readied_object(ACTOR_ARM_2, area.x+3*16, (area.y+8) + 1 * 16, actor, empty_tile);
+ display_readied_object(ACTOR_ARM_2, area.x+3*16, (area.y+8) + 1 * 16, actor, actor->is_double_handed_obj_readied() ? tile_manager->get_tile(TILE_U6_BLOCKED_EQUIP) : empty_tile);
 
  display_readied_object(ACTOR_HAND, area.x, (area.y+8) + 2 * 16, actor, empty_tile);
  display_readied_object(ACTOR_HAND_2, area.x+3*16, (area.y+8) + 2 * 16, actor, empty_tile);

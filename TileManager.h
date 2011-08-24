@@ -76,6 +76,7 @@ class Look;
 #define TILE_U6_PURPLE_MAGIC 381
 #define TILE_U6_RED_MAGIC   382
 #define TILE_U6_BLUE_MAGIC  383
+#define TILE_U6_BLOCKED_EQUIP 389
 #define TILE_U6_LIGHTNING   392
 #define TILE_U6_FIREBALL    393
 #define TILE_U6_SOME_KIND_OF_BLUE_FIELD 394 // ghost's outline for casting/going invis
@@ -84,6 +85,7 @@ class Look;
 #define TILE_U6_FIRE_SHOT   397
 #define TILE_U6_SLING_STONE 398
 #define TILE_U6_CANNONBALL  399
+#define TILE_U6_EQUIP       410
 #define TILE_U6_GARGOYLE_LENS_ANIM_1 440
 #define TILE_U6_GARGOYLE_LENS_ANIM_2 441
 #define TILE_U6_BRITANNIAN_LENS_ANIM_1 442
@@ -91,6 +93,12 @@ class Look;
 #define TILE_U6_WIZARD_EYE  563
 #define TILE_U6_ARROW       566
 #define TILE_U6_BOLT        567
+
+#define TILE_SE_BLOCKED_EQUIP 391
+#define TILE_SE_EQUIP         392
+
+#define TILE_MD_EQUIP         273
+#define TILE_MD_BLOCKED_EQUIP 274
 
 #define TILE_WIDTH  16
 #define TILE_HEIGHT 16

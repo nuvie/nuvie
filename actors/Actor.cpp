@@ -726,6 +726,14 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, bool match_quality)
  return NULL;
 }
 
+bool Actor::is_double_handed_obj_readied()
+{
+	if(readied_objects[ACTOR_ARM] != NULL && readied_objects[ACTOR_ARM]->double_handed == true)
+		return true;
+
+	return false;
+}
+
 Obj *Actor::inventory_get_readied_object(uint8 location)
 {
  if(readied_objects[location] != NULL)
@@ -970,6 +978,7 @@ void Actor::inventory_parse_readied_objects()
 bool Actor::add_readied_object(Obj *obj)
 {
  uint8 location;
+ bool double_handed = false;
 
  location =  get_object_readiable_location(obj->obj_n);
 
@@ -978,8 +987,19 @@ bool Actor::add_readied_object(Obj *obj)
     case ACTOR_NOT_READIABLE : return false;
 
     case ACTOR_ARM : if(readied_objects[ACTOR_ARM] != NULL) //if full try other arm
+                     {
+                        if(readied_objects[ACTOR_ARM]->double_handed)
+                           return false;
+
                          location = ACTOR_ARM_2;
+                     }
                      break;
+
+    case ACTOR_ARM_2 : if(readied_objects[ACTOR_ARM] != NULL || readied_objects[ACTOR_ARM_2] != NULL)
+                          return false;
+                       location = ACTOR_ARM;
+                       double_handed = true;
+                       break;
 
     case ACTOR_HAND : if(readied_objects[ACTOR_HAND] != NULL) // if full try other hand
                           location = ACTOR_HAND_2;
@@ -993,6 +1013,7 @@ bool Actor::add_readied_object(Obj *obj)
  
  readied_objects[location]->obj = obj;
  readied_objects[location]->combat_type = get_object_combat_type(obj->obj_n);
+ readied_objects[location]->double_handed = double_handed;
 
  if(readied_objects[location]->combat_type != NULL)
    readied_armor_class += readied_objects[location]->combat_type->defence;

@@ -47,6 +47,8 @@ class DollWidget : public GUI_Widget {
 
  uint8 bg_color;
  
+ Tile *empty_tile, *blocked_tile;
+
  public:
  DollWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~DollWidget();

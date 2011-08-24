@@ -130,6 +130,7 @@ bool breaks_on_contact;
 typedef struct {
 Obj *obj;
 const CombatType *combat_type;
+bool double_handed;
 } ReadiedObj;
 
 typedef uint8 ActorErrorCode;
@@ -408,6 +409,7 @@ class Actor
  uint32 inventory_count_objects(bool inc_readied_objects);
  uint32 inventory_count_object(uint16 obj_n);
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, bool match_quality = OBJ_MATCH_QUALITY);
+ bool is_double_handed_obj_readied();
  Obj *inventory_get_readied_object(uint8 location);
  virtual Obj *inventory_get_food(Obj *container=0) { return 0; }
  const CombatType *inventory_get_readied_object_combat_type(uint8 location);

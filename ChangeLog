@@ -1,3 +1,7 @@
+2011-08-24  Eric Fry <efry at users.sourceforge.net> r1250
+	* Added logic for readied double handed weapons.
+	* Added correct readied object error messages.
+
 2011-08-24  Eric Fry <efry at users.sourceforge.net> r1249
 	* Added attack with ship cannon.
 	* Fixed attack with magic bow.
