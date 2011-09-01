@@ -724,6 +724,28 @@ void Party::enter_vehicle(Obj *ship_obj, uint32 step_delay)
     autowalk = true;
 }
 
+void Party::exit_vehicle(uint16 x, uint16 y, uint16 z)
+{
+	if(is_in_vehicle() == false)
+		return;
+
+	Actor *vehicle_actor = actor_manager->get_actor(0);
+
+    show();
+    vehicle_actor->unlink_surrounding_objects();
+    vehicle_actor->hide();
+    vehicle_actor->set_worktype(0);
+
+    Player *player = game->get_player();
+
+    player->set_actor(get_actor(0));
+    player->move(x,y,z);
+    vehicle_actor->obj_n = OBJ_U6_NO_VEHICLE;
+    vehicle_actor->frame_n = 0;
+    vehicle_actor->init();
+    vehicle_actor->move(0,0,0,ACTOR_FORCE_MOVE);
+}
+
 void Party::set_in_vehicle(bool value)
 {
  in_vehicle = value;
@@ -793,7 +815,7 @@ void Party::rest_gather()
     Actor *player_actor = member[get_leader()].actor;
     MapCoord player_loc = player_actor->get_location();
     Obj *campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y,player_loc.z);
-    campfire->status |= OBJ_STATUS_TEMPORARY;
+    campfire->set_temporary();
     game->get_obj_manager()->add_obj(campfire, true); // addOnTop
 
     game->get_player()->set_mapwindow_centered(false);

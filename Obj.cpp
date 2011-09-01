@@ -76,6 +76,16 @@ void Obj::set_invisible(bool flag)
   return;
 }
 
+void Obj::set_temporary(bool flag)
+{
+	if(flag)
+		status |= OBJ_STATUS_TEMPORARY;
+	else if (is_temporary())
+		status ^= OBJ_STATUS_TEMPORARY;
+
+	return;
+}
+
 void Obj::set_in_inventory()
 { 
   nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 

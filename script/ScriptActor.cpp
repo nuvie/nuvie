@@ -56,6 +56,7 @@ static int nscript_actor_inv_add_obj(lua_State *L);
 static int nscript_actor_inv_remove_obj(lua_State *L);
 static int nscript_actor_inv_remove_obj_qty(lua_State *L);
 static int nscript_actor_inv_ready_obj(lua_State *L);
+static int nscript_actor_inv_unready_obj(lua_State *L);
 static int nscript_actor_inv_has_obj_n(lua_State *L);
 static int nscript_actor_inv_get_obj_n(lua_State *L);
 static int nscript_actor_inv_get_obj_total_qty(lua_State *L);
@@ -67,6 +68,7 @@ static int nscript_actor_black_fade_effect(lua_State *L);
 static int nscript_actor_show_portrait(lua_State *L);
 static int nscript_actor_hide_portrait(lua_State *L);
 static int nscript_actor_talk(lua_State *L);
+static int nscript_actor_unlink_surrounding_objs(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -83,6 +85,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "inv_remove_obj", nscript_actor_inv_remove_obj },
    { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },   
    { "inv_ready_obj", nscript_actor_inv_ready_obj },
+   { "inv_unready_obj", nscript_actor_inv_unready_obj },
    { "inv_has_obj_n", nscript_actor_inv_has_obj_n },
    { "inv_get_obj_n", nscript_actor_inv_get_obj_n },
    { "inv_get_obj_total_qty", nscript_actor_inv_get_obj_total_qty },
@@ -92,6 +95,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "show_portrait", nscript_actor_show_portrait },
    { "hide_portrait", nscript_actor_hide_portrait },
    { "talk", nscript_actor_talk },
+   { "unlink_surrounding_objs", nscript_actor_unlink_surrounding_objs },
 
    { NULL, NULL }
 };
@@ -1029,6 +1033,19 @@ static int nscript_actor_talk(lua_State *L)
 	return 0;
 }
 
+static int nscript_actor_unlink_surrounding_objs(lua_State *L)
+{
+	Actor *actor = nscript_get_actor_from_args(L);
+	if(actor == NULL)
+		return 0;
+
+	bool make_temp_obj = lua_toboolean(L, 2);
+
+	actor->unlink_surrounding_objects(make_temp_obj);
+
+	return 0;
+}
+
 static int nscript_actor_resurrect(lua_State *L)
 {
    Actor *actor;
@@ -1118,6 +1135,24 @@ static int nscript_actor_inv_ready_obj(lua_State *L)
    actor->add_readied_object(obj);
 
    return 0;
+}
+
+static int nscript_actor_inv_unready_obj(lua_State *L)
+{
+	Actor *actor;
+
+	actor = nscript_get_actor_from_args(L);
+	if(actor == NULL)
+		return 0;
+
+	Obj **s_obj = (Obj **)luaL_checkudata(L, 2, "nuvie.Obj");
+	Obj *obj;
+
+	obj = *s_obj;
+
+	actor->remove_readied_object(obj);
+
+	return 0;
 }
 
 static int nscript_actor_inv_has_obj_n(lua_State *L)

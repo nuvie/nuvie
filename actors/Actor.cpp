@@ -308,6 +308,17 @@ const char *Actor::get_name()
     return(name.c_str());
 }
 
+void Actor::unlink_surrounding_objects(bool make_objects_temporary)
+{
+	if(make_objects_temporary)
+	{
+		 std::list<Obj *>::iterator obj;
+
+		 for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
+		    (*obj)->set_temporary();
+	}
+	surrounding_objects.clear();
+}
 
 bool Actor::moveRelative(sint16 rel_x, sint16 rel_y, ActorMoveFlags flags)
 {
@@ -570,7 +581,7 @@ void Actor::attack(sint8 readied_obj_location, MapCoord target)
 // if(combat_type == NULL)
 //   return;
    //DEBUG(0, LEVEL_DEBUGGING, "%s (%d) attacking %s (%d)\n", get_name(), id_n, actor->get_name(), actor->id_n);
-   face_location(target);
+   //face_location(target);
 
    //FIXME just hacked in to test lua actor_attack()
    if(readied_obj_location != ACTOR_NO_READIABLE_LOCATION && readied_objects[readied_obj_location] && readied_objects[readied_obj_location]->obj != NULL)

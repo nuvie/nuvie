@@ -128,6 +128,8 @@ public:
  
   void set_invisible(bool flag);
   
+  void set_temporary(bool flag=true);
+
   void readied();
   void set_noloc();
   void set_in_script(bool flag);

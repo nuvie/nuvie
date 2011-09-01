@@ -210,7 +210,8 @@ void Player::set_actor(Actor *new_actor)
     actor->set_worktype(0x02); // WT_U6_PLAYER
     
     actor_manager->set_player(actor);
-    std::string prompt = actor->get_name();
+    std::string prompt = get_name();
+
     prompt += ":\n>";
     scroll->set_prompt((char *)prompt.c_str());
 }
@@ -232,6 +233,9 @@ uint8 Player::get_location_level()
 
 const char *Player::get_name()
 {
+ if(actor->get_actor_num() == ACTOR_VEHICLE_ID_N)
+    return actor_manager->get_actor(ACTOR_AVATAR_ID_N)->get_name();
+
  return actor->get_name();
 }
 
@@ -412,7 +416,7 @@ void Player::pass()
    if(Game::get_game()->get_weather()->get_wind_dir() != NUVIE_DIR_NONE)
    {
 	 moveRelative(0, 0);
-	 return;
+	 //return;
    }
  }
 
@@ -425,6 +429,7 @@ void Player::pass()
 // actor_manager->updateActors(x, y, z); // not needed because position is unchanged
  clock->inc_move_counter_by_a_minute(); // doesn't update time
  actor_manager->startActors(); // end player turn
+ actor_manager->moveActors();
 }
 
 

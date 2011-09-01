@@ -1111,7 +1111,7 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
 
  gate=new_obj(OBJ_U6_RED_GATE,1,ox,oy,z);
  gate->quality=position;
- gate->status |= OBJ_STATUS_TEMPORARY;
+ gate->set_temporary();
 
  new VanishEffect(VANISH_WAIT);
  obj_manager->add_obj(gate, true);
@@ -1794,17 +1794,8 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
       Obj *obj = ship_actor->make_obj();
       obj->qty = ship_actor->get_hp(); // Hull Strength
 
-      party->show();
-      ship_actor->unlink_surrounding_objects();
-      ship_actor->hide();
-      ship_actor->set_worktype(0);
+      party->exit_vehicle(lx, ly, lz);
 
-      player->set_actor(party->get_actor(0));
-      player->move(lx,ly,lz);
-      ship_actor->obj_n = OBJ_U6_NO_VEHICLE;
-      ship_actor->frame_n = 0;
-      ship_actor->init();
-      ship_actor->move(0,0,0,ACTOR_FORCE_MOVE);
       obj_manager->add_obj(obj);
      }
    else

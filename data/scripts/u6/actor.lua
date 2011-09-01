@@ -1037,7 +1037,7 @@ function actor_take_hit(attacker, defender, max_dmg)
          end
          
          local actor_type = actor_tbl[attacker_obj_n]
-         if actor_type ~= nil and actor_type[15] == 1 and math.random(0, 3) == 0 then --actor is poisonous
+         if actor_type ~= nil and actor_type[15] == 1 and math.random(0, 3) == 0 and defender.actor_num ~= 0 then --actor is poisonous, don't poison vehicles.
          	defender.poisoned = true
          	print("`"..defender.name.." poisoned!\n")
          end
@@ -1097,13 +1097,28 @@ function actor_hit(defender, max_dmg, attacker)
 					
 					defender.visible = true
 					
-					actor_dead(defender)
-					
-					defender.wt = WT_NOTHING
-					if defender.in_party == true then
-						party_update_leader()
-					end
-							
+					if defender.obj_n == 412 and defender.actor_num == 0 then --handle ship destruction
+						Actor.unlink_surrounding_objs(defender, true) --unlink ship front/back and make objects temporary.
+						defender.base_obj_n = 0x19f --raft
+						--try to toss raft out from center of the ship.
+						if actor_move(defender, DIR_NORTH, 1) == 0 then
+							if actor_move(defender, DIR_SOUTH, 1) == 0 then
+								if actor_move(defender, DIR_EAST, 1) == 0 then
+									actor_move(defender, DIR_WEST, 1)
+								end
+							end
+						end
+						defender.hp = 10
+						defender.mpts = 1
+						party_move(defender.x, defender.y, defender.z)
+					else
+						actor_dead(defender)
+
+						defender.wt = WT_NOTHING
+						if defender.in_party == true then
+							party_update_leader()
+						end
+					end	
 				end
 			else
 				defender.hp = defender.hp - max_dmg
@@ -1362,7 +1377,10 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
    end
 --]]
 
-   attacker.direction = attacker_direction
+   if attacker.obj_n ~= 412 and actor_obj_n ~= 413 then --don't change direction for ship, silver serpent.
+      attacker.direction = attacker_direction
+   end
+
    if actor_obj_n >= 0x170 and actor_obj_n <= 0x174 then -- skeleton, mongbat
       local frame_n = attacker.frame_n
       attacker.frame_n = (frame_n - (frame_n % 4)) + 2
@@ -1411,9 +1429,9 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       return
    end
    
-   
+
    --weapon here.
-   
+
    local hit_actor = actor_combat_hit_check(attacker, foe, weapon)
    local num_bolts
    
@@ -3328,7 +3346,7 @@ end
 
 function spell_poison_actor(attacker, foe)
 	local actor_base = actor_tbl[foe.obj_n]
-	if actor_base == nil or actor_base[19] == 1 then return 2 end --immune to poison
+	if actor_base == nil or actor_base[19] == 1 or foe.actor_num == 0 then return 2 end --immune to poison
 	
 	if ((math.floor(actor_str_adj(foe) / 2) + 0x1e) - actor_int_adj(attacker)) / 2 <= math.random(1, 0x1e) then
 		foe.poisoned = true
@@ -3470,6 +3488,7 @@ function actor_avatar_death(avatar)
 	party_heal()
 	party_update_leader()
 	party_move(0x133, 0x160, 0)
+	party_exit_vehicle(0x133, 0x160, 0)
 
 	for i=1,0x100 do
 		local actor = Actor.get(i)
@@ -3477,6 +3496,12 @@ function actor_avatar_death(avatar)
 	end
 	avatar.mpts=1
 	
+	--unready inventory objects.
+	for obj in actor_inventory(avatar) do
+		if obj.readied then
+			Actor.inv_unready_obj(avatar, obj)
+		end
+	end
 	fade_in()
 
 end

@@ -156,6 +156,7 @@ static int nscript_party_get_size(lua_State *L);
 static int nscript_party_get_member(lua_State *L);
 static int nscript_party_update_leader(lua_State *L);
 static int nscript_party_resurrect_dead_members(lua_State *L);
+static int nscript_party_exit_vehicle(lua_State *L);
 
 static int nscript_timer_set(lua_State *L);
 static int nscript_timer_get(lua_State *L);
@@ -535,6 +536,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_party_resurrect_dead_members);
    lua_setglobal(L, "party_resurrect_dead_members");
+
+   lua_pushcfunction(L, nscript_party_exit_vehicle);
+   lua_setglobal(L, "party_exit_vehicle");
 
    lua_pushcfunction(L, nscript_quake_start);
    lua_setglobal(L, "quake_start");
@@ -1704,6 +1708,21 @@ static int nscript_party_resurrect_dead_members(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
 	party->resurrect_dead_members();
+
+	return 0;
+}
+
+static int nscript_party_exit_vehicle(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+
+	uint16 x, y;
+	uint8 z;
+
+	if(nscript_get_location_from_args(L, &x, &y, &z) == false)
+		return 0;
+
+	party->exit_vehicle(x, y, z);
 
 	return 0;
 }
