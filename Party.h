@@ -23,7 +23,7 @@
  *
  */
 
-#include <string.h>
+#include <string>
 #include "ObjManager.h"
 
 class Configuration;
