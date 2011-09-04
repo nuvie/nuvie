@@ -1321,45 +1321,102 @@ TileFadeEffect::TileFadeEffect(MapCoord loc, Tile *from, Tile *to, FadeType type
 	actor = NULL;
 	inc_reverse = false;
 	add_anim(new TileFadeAnim(&loc, from, to, speed));
-}
-/*
-TileFadeEffect::TileFadeEffect(MapCoord loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed)
-{
-	actor = NULL;
-	inc_reverse = false;
-	add_anim(new TileFadeAnim(&loc, from, color_from, color_to, reverse, speed));
+	num_anim_running = 1;
 }
 
-TileFadeEffect::TileFadeEffect(Actor *a, uint8 c_from, uint8 c_to, bool include_return, uint16 speed)
+//Fade out actor.
+TileFadeEffect::TileFadeEffect(Actor *a, uint16 speed)
 {
-	inc_reverse = include_return;
-	color_from = c_from;
-	color_to = c_to;
+	inc_reverse = false;
 	actor = a;
+	spd = speed;
+	add_actor_anim();
 	actor->hide();
-	add_actor_anim(speed);
 }
-*/
+
 TileFadeEffect::~TileFadeEffect()
 {
 
 }
 
-void TileFadeEffect::add_actor_anim(uint8 speed)
+void TileFadeEffect::add_actor_anim()
 {
 	MapCoord loc = actor->get_location();
 	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
-	add_anim(new TileFadeAnim(&loc, from, color_from, color_to, !inc_reverse, speed));
+	add_tile_anim(loc, from);
+
+	std::list<Obj *> *surrounding_objs = actor->get_surrounding_obj_list();
+
+	if(surrounding_objs)
+	{
+		std::list<Obj *>::iterator obj_iter;
+		for(obj_iter = surrounding_objs->begin(); obj_iter != surrounding_objs->end(); obj_iter++)
+		{
+			add_obj_anim(*obj_iter);
+		}
+	}
+}
+
+void TileFadeEffect::add_obj_anim(Obj *obj)
+{
+	ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+	MapCoord loc(obj->x, obj->y, obj->z);
+	add_tile_anim(loc, obj_manager->get_obj_tile(obj->obj_n, obj->frame_n));
+}
+
+void TileFadeEffect::add_fade_anim(MapCoord loc, Tile *tile)
+{
+	add_anim(new TileFadeAnim(&loc, tile, NULL, spd));
+	num_anim_running++;
+}
+
+void TileFadeEffect::add_tile_anim(MapCoord loc, Tile *tile)
+{
+	TileManager *tile_manager = Game::get_game()->get_tile_manager();
+	uint16 tile_num = tile->tile_num;
+
+	add_fade_anim(loc, tile);
+
+	if(tile->dbl_width)
+	{
+		tile_num--;
+		loc.x -= 1;
+		add_fade_anim(loc, tile_manager->get_tile(tile_num));
+		loc.x += 1;
+	}
+
+	if(tile->dbl_height)
+	{
+		tile_num--;
+		loc.y -= 1;
+		add_fade_anim(loc, tile_manager->get_tile(tile_num));
+		loc.y += 1;
+	}
+
+	if(tile->dbl_width && tile->dbl_height)
+	{
+		tile_num--;
+		loc.x -= 1;
+		loc.y -= 1;
+		add_fade_anim(loc, tile_manager->get_tile(tile_num));
+		loc.x += 1;
+		loc.y += 1;
+	}
 }
 
 uint16 TileFadeEffect::callback(uint16 msg, CallBack *caller, void *data)
 {
 	if(msg == MESG_ANIM_DONE)
 	{
+		num_anim_running--;
+	}
+
+	if(num_anim_running == 0)
+	{
 		if(inc_reverse)
 		{
 			inc_reverse = false;
-			add_actor_anim(10);
+			add_actor_anim();
 			return 0;
 		}
 

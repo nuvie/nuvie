@@ -65,6 +65,7 @@ static int nscript_actor_walk_path(lua_State *L);
 static int nscript_actor_is_at_scheduled_location(lua_State *L);
 static int nscript_actor_can_carry_obj(lua_State *L);
 static int nscript_actor_black_fade_effect(lua_State *L);
+static int nscript_actor_fade_out_effect(lua_State *L);
 static int nscript_actor_show_portrait(lua_State *L);
 static int nscript_actor_hide_portrait(lua_State *L);
 static int nscript_actor_talk(lua_State *L);
@@ -92,6 +93,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "is_at_scheduled_location", nscript_actor_is_at_scheduled_location },
    { "can_carry_obj", nscript_actor_can_carry_obj },
    { "black_fade_effect", nscript_actor_black_fade_effect },
+   { "fade_out", nscript_actor_fade_out_effect },
    { "show_portrait", nscript_actor_show_portrait },
    { "hide_portrait", nscript_actor_hide_portrait },
    { "talk", nscript_actor_talk },
@@ -1011,6 +1013,20 @@ static int nscript_actor_black_fade_effect(lua_State *L)
 	   }
 
 	   return 0;
+}
+
+static int nscript_actor_fade_out_effect(lua_State *L)
+{
+	Actor *actor = nscript_get_actor_from_args(L);
+	uint16 fade_speed = (uint8)lua_tointeger(L, 2);
+
+	if(actor != NULL)
+	{
+		AsyncEffect *e = new AsyncEffect(new TileFadeEffect(actor, fade_speed));
+		e->run();
+	}
+
+	return 0;
 }
 
 static int nscript_actor_show_portrait(lua_State *L)

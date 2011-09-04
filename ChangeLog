@@ -1,3 +1,11 @@
+2011-09-03  Eric Fry <efry at users.sourceforge.net> r1254
+	* Fade out magical creatures when they die.
+	* Added Actor.fade_out(actor, speed) script function.
+	* Reworked TileFadeEffect class to fade out an actor.
+
+2011-09-03  Kirben r1253
+	* MinGW compile fix.
+
 2011-09-03  Eric Fry <efry at users.sourceforge.net> r1252
 	* Moved 'can rest' logic from Event to Party.
 	* Update sun/moon strip when the player passes a turn.

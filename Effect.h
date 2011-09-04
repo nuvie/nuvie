@@ -448,16 +448,21 @@ class TileFadeEffect : public TimedEffect
 	Actor *actor;
 	uint8 color_from, color_to;
 	bool inc_reverse;
+	uint16 spd;
 
+	uint16 num_anim_running;
 public:
 	TileFadeEffect(MapCoord loc, Tile *from, Tile *to, FadeType type, uint16 speed);
 	//TileFadeEffect(MapCoord loc, Tile *from, uint8 color_from, uint8 color_to, bool reverse, uint16 speed);
-	//TileFadeEffect(Actor *a, uint8 c_from, uint8 c_to, bool include_return, uint16 speed);
+	TileFadeEffect(Actor *a, uint16 speed);
 	~TileFadeEffect();
 	uint16 callback(uint16 msg, CallBack *caller, void *data);
 
 protected:
-	void add_actor_anim(uint8 speed);
+	void add_actor_anim();
+	void add_fade_anim(MapCoord loc, Tile *tile);
+	void add_tile_anim(MapCoord loc, Tile *tile);
+	void add_obj_anim(Obj *obj);
 };
 
 class TileBlackFadeEffect : public TimedEffect

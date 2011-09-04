@@ -1213,7 +1213,7 @@ function actor_dead(actor)
 		end
 		
 		if actor_base[9] == 1 then --fades away. magical creature.
-			--FIXME fade out actor here.
+			Actor.fade_out(actor, 20) --FIXME make fade speed configurable.
 		end
 	end
 	
