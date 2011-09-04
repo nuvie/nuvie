@@ -158,6 +158,7 @@ static const char *actor_get_vars[] =
    "hit_flag",
    "hp",
    "in_party",
+   "in_vehicle",
    "int",
    "level",
    "luatype",
@@ -261,6 +262,7 @@ static int nscript_actor_get_frame_n(Actor *actor, lua_State *L);
 static int nscript_actor_get_hit_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_hp(Actor *actor, lua_State *L);
 static int nscript_actor_get_in_party_status(Actor *actor, lua_State *L);
+static int nscript_actor_get_in_vehicle(Actor *actor, lua_State *L);
 static int nscript_actor_get_intelligence(Actor *actor, lua_State *L);
 static int nscript_actor_get_level(Actor *actor, lua_State *L);
 static int nscript_actor_get_luatype(Actor *actor, lua_State *L);
@@ -302,6 +304,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_hit_flag,
    nscript_actor_get_hp,
    nscript_actor_get_in_party_status,
+   nscript_actor_get_in_vehicle,
    nscript_actor_get_intelligence,
    nscript_actor_get_level,
    nscript_actor_get_luatype,
@@ -766,6 +769,11 @@ static int nscript_actor_get_hp(Actor *actor, lua_State *L)
 static int nscript_actor_get_in_party_status(Actor *actor, lua_State *L)
 {
    lua_pushboolean(L, (int)actor->is_in_party()); return 1;
+}
+
+static int nscript_actor_get_in_vehicle(Actor *actor, lua_State *L)
+{
+	lua_pushboolean(L, (int)actor->is_in_vehicle()); return 1;
 }
 
 static int nscript_actor_get_intelligence(Actor *actor, lua_State *L)

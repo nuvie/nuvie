@@ -1053,7 +1053,7 @@ function actor_take_hit(attacker, defender, max_dmg)
    end
 end
 
-function actor_hit(defender, max_dmg, attacker)
+function actor_hit(defender, max_dmg, attacker, no_hit_anim)
 	
 	local defender_obj_n = defender.obj_n
 	local exp_gained = 0
@@ -1065,7 +1065,9 @@ function actor_hit(defender, max_dmg, attacker)
 	if defender.luatype == "actor" then
 		--actor logic here
 		defender.hit_flag = true
-		hit_anim(defender.x, defender.y)
+		if no_hit_anim == nil then
+			hit_anim(defender.x, defender.y)
+		end
 		if defender_obj_n == 409 then --lord british
 			defender.hp = 0xff
 		elseif defender_obj_n == 414 or defender_obj_n == 415 then --skiff, raft
@@ -1077,7 +1079,7 @@ function actor_hit(defender, max_dmg, attacker)
 			end
 			
 			local rand_party_member = party_get_member(party_member_num)
-			actor_hit(rand_party_member, max_dmg, attacker)
+			actor_hit(rand_party_member, max_dmg, attacker, true)
 			actor_hit_msg(rand_party_member)
 		else
 			-- actor hit logic here
@@ -1109,7 +1111,7 @@ function actor_hit(defender, max_dmg, attacker)
 							end
 						end
 						defender.hp = 10
-						defender.mpts = 1
+						--defender.mpts = 1
 						party_move(defender.x, defender.y, defender.z)
 					else
 						actor_dead(defender)
@@ -1193,11 +1195,11 @@ function actor_hit_msg(actor)
 	elseif di < 4 then
 	
 		if di == 1 then
-			print("heavily")
+			print("heavily ")
 		elseif di == 2 then
-			print("lightly")
+			print("lightly ")
 		elseif di == 3 then
-			print("barely")
+			print("barely ")
 		end
 		print("wounded.\n")
 	end
@@ -1215,7 +1217,9 @@ function actor_dead(actor)
 		end
 	end
 	
-	if actor_base ~= nil and actor_base[8] == 1 or actor.obj_n == 0x187 or actor.obj_n == 0x188 then --farmer, musician
+	local in_vehicle = actor.in_vehicle
+	
+	if in_vehicle == false and actor_base ~= nil and actor_base[8] == 1 or actor.obj_n == 0x187 or actor.obj_n == 0x188 then --farmer, musician
 		--add some blood.
 		dbg("\nAdding Blood\n")
 		local blood_obj = Obj.new(0x152, math.random(0,2))
@@ -1223,7 +1227,11 @@ function actor_dead(actor)
 	end
 
 	if actor.actor_num ~= 1 then --avatar
-		Actor.kill(actor)
+		local create_body = true
+		if in_vehicle == true then
+			create_body = false -- don't drop body when party member dies on raft.
+		end
+		Actor.kill(actor, create_body)
 	else
 		actor_avatar_death(actor)
 	end
@@ -2197,7 +2205,7 @@ function caught_by_guard(actor)
          party_set_combat_mode(false)
       end
    
-      party_move(0xe7, 0xba, 0)
+      player_move(0xe7, 0xba, 0)
    
       local cur_hour = clock_get_hour()
       while cur_hour ~= 8 do
@@ -3487,7 +3495,7 @@ function actor_avatar_death(avatar)
 	party_resurrect_dead_members()
 	party_heal()
 	party_update_leader()
-	party_move(0x133, 0x160, 0)
+	player_move(0x133, 0x160, 0)
 	party_exit_vehicle(0x133, 0x160, 0)
 
 	for i=1,0x100 do

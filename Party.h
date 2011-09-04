@@ -165,6 +165,7 @@ class Party {
  bool get_autowalk() { return(autowalk); }
  void rest_gather();
  void rest_sleep(uint8 hours, sint16 guard);
+ bool can_rest(std::string &err_str);
 
  protected:
  void reform_party(); // call when adding or removing members

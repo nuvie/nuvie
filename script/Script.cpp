@@ -148,6 +148,7 @@ static int nscript_player_get_location(lua_State *L);
 static int nscript_player_get_karma(lua_State *L);
 static int nscript_player_set_karma(lua_State *L);
 static int nscript_player_dec_alcohol(lua_State *L);
+static int nscript_player_move(lua_State *L);
 
 static int nscript_party_is_in_combat_mode(lua_State *L);
 static int nscript_party_set_combat_mode(lua_State *L);
@@ -515,6 +516,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_player_dec_alcohol);
    lua_setglobal(L, "player_dec_alcohol");
+
+   lua_pushcfunction(L, nscript_player_move);
+   lua_setglobal(L, "player_move");
 
    lua_pushcfunction(L, nscript_party_get_size);
    lua_setglobal(L, "party_get_size");
@@ -1654,16 +1658,28 @@ static int nscript_party_set_combat_mode(lua_State *L)
 
 static int nscript_party_move(lua_State *L)
 {
-	Player *player = Game::get_game()->get_player();
-	//Party *party = Game::get_game()->get_party();
+	Party *party = Game::get_game()->get_party();
 	uint16 x, y;
 	uint8 z;
 
 	if(nscript_get_location_from_args(L, &x, &y, &z) == false)
 		return 0;
 
-	//party->move(x, y, z);
-	player->move(x, y, z); //FIXME should this be party move?
+	party->move(x, y, z);
+
+	return 0;
+}
+
+static int nscript_player_move(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	uint16 x, y;
+	uint8 z;
+
+	if(nscript_get_location_from_args(L, &x, &y, &z) == false)
+		return 0;
+
+	player->move(x, y, z);
 
 	return 0;
 }

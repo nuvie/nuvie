@@ -37,6 +37,7 @@
 #include "U6objects.h"
 #include "SoundManager.h"
 #include "Weather.h"
+#include "Script.h"
 #include "Player.h"
 
 Player::Player(Configuration *cfg)
@@ -430,6 +431,7 @@ void Player::pass()
  clock->inc_move_counter_by_a_minute(); // doesn't update time
  actor_manager->startActors(); // end player turn
  actor_manager->moveActors();
+ Game::get_game()->time_changed();
 }
 
 
@@ -603,6 +605,6 @@ void Player::repairShip()
     snprintf(hp, 6, "%d%%\n", ship->get_hp());
     scroll->display_string("Hull Strength: ");
     scroll->display_string(hp);
-    for(int t=0;t<5;t++) clock->inc_minute();
+    Game::get_game()->get_script()->call_advance_time(5);
     Game::get_game()->time_changed();
 }

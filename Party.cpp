@@ -33,6 +33,7 @@
 #include "ViewManager.h"
 #include "Player.h"
 #include "Map.h"
+#include "MapWindow.h"
 #include "U6UseCode.h"
 #include "CommandBar.h"
 #include "PartyPathFinder.h"
@@ -832,6 +833,45 @@ void Party::rest_sleep(uint8 hours, sint16 guard)
     new TimedRest(hours, guard >= 0 ? member[guard].actor : 0);
 }
 
+bool Party::can_rest(std::string &err_str)
+{
+	Map *map = game->get_game_map();
+	Player *player = game->get_player();
+	Actor *pActor = player->get_actor();
+	MapCoord loc = pActor->get_location();
+
+	ActorList *enemies = 0;
+	ActorList *all_actors = 0;
+	uint8 level = 0;
+
+	level = pActor->get_z();
+	if(is_in_combat_mode())
+		err_str = "-Not while in Combat!";
+	else if(is_in_vehicle()
+			&& pActor->get_obj_n() != OBJ_U6_SHIP) // player is a vehicle
+		err_str = "-Can not be repaired!";
+	else if((level != 0 && level != 5) || game->get_map_window()->in_town())
+		err_str = "-Only in the wilderness!";
+	else if((enemies = pActor->find_enemies()))
+		err_str = "-Not while foes are near!";
+	else if((all_actors = actor_manager->filter_party(actor_manager->filter_distance(actor_manager->get_actor_list(),
+			loc.x,loc.y,loc.z, 5)))
+			&& !all_actors->empty() && !is_in_vehicle())
+	{
+		err_str = "-Not while others are near!";
+		delete all_actors;
+	}
+	else if(!player->in_party_mode())
+		err_str = "-Not in solo mode!";
+	else if(!is_in_vehicle() && !map->is_passable(loc.x-1,loc.y-1,loc.x+1,loc.y+1,loc.z))
+		err_str = "-Not enough room!"; // FIXME: for ships the original checks all squares around the ship. Do we really need this?
+	else if(is_horsed())
+		err_str = "-Dismount first!";
+	else
+		return true;
+	delete enemies;
+	return false;
+}
 
 bool Party::is_horsed()
 {

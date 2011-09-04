@@ -244,7 +244,6 @@ friend class Magic; // FIXME
 
  bool rest();
  bool rest_input(uint16 input);
- bool can_rest(std::string &err_str);
 
  void cast_spell_directly(uint8 spell_num);
 

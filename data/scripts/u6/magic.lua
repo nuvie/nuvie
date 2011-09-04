@@ -137,16 +137,20 @@ function select_actor_with_projectile(projectile_tile, caster)
 
 	if caster == nil then caster = magic_get_caster() end
 
+	local is_player = caster_is_player()
+	
 	local loc = select_location_with_prompt("On Whom: ")
 	local actor = map_get_actor(loc)
 	if actor == nil then
 		local obj = map_get_obj(loc)
-		if obj ~= nil then
-			print(obj.name.."\n")
-		else
-			print("nothing\n")
+		if is_player == true then
+			if obj ~= nil then
+				print(obj.name.."\n")
+			else
+				print("nothing\n")
+			end
 		end
-	else
+	elseif is_player == true then
 		print(actor.name.."\n")
 	end
 	

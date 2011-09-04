@@ -263,6 +263,7 @@ class Actor
 
  bool is_onscreen() { return(MapCoord(x,y,z).is_visible()); }
  bool is_in_party() { return ((status_flags & ACTOR_STATUS_IN_PARTY) == ACTOR_STATUS_IN_PARTY); }
+ bool is_in_vehicle();
  bool is_visible() { return visible_flag; }
  bool is_alive() { return (status_flags & ACTOR_STATUS_DEAD) ? false : true; }
  bool is_nearby(Actor *other);

@@ -155,6 +155,14 @@ bool Actor::is_passable()
  return tile->passable;
 }
 
+bool Actor::is_in_vehicle()
+{
+	if(is_in_party() == false)
+		return false;
+
+	return Game::get_game()->get_party()->is_in_vehicle();
+}
+
 void Actor::get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level)
 {
  if(ret_x) *ret_x = x;
@@ -1484,55 +1492,55 @@ void Actor::die(bool create_body)
 
 void Actor::resurrect(MapCoord new_position, Obj *body_obj)
 {
-  U6Link *link;
-  bool remove_obj = false;
-  
-  if(body_obj == NULL)
-  {
-    body_obj = find_body();
-    if(body_obj == NULL)
-      return;
-    
-    remove_obj = true;
-  }
-  
+	U6Link *link;
+	bool remove_obj = false;
 
-  status_flags |= ACTOR_STATUS_DEAD; // set, make sure it is not 0 already
-  status_flags = status_flags ^ ACTOR_STATUS_DEAD; // now toggle off 
-  
-  show();
-  
-  x = new_position.x;
-  y = new_position.y;
-  z = new_position.z;
-  obj_n = base_obj_n;
-  init();
-  
-  frame_n = 0;
-  
-  set_direction(NUVIE_DIR_N);
-  
-  set_hp(1);
-  //actor->set_worktype(0x1);
-  
-  if(is_in_party()) //actor in party
-    Game::get_game()->get_party()->add_actor(this);
-  
-  //add body container objects back into actor's inventory.
-  if(body_obj->has_container())
-  {
-    for(link = body_obj->container->start(); link != NULL; link = link->next)
-      inventory_add_object((Obj *)link->data);
-    
-    body_obj->container->removeAll();
-  }
+	if(body_obj == NULL)
+	{
+		body_obj = find_body();
+		if(body_obj != NULL)
+			remove_obj = true;
+	}
 
-  obj_manager->unlink_from_engine(body_obj);
+	status_flags |= ACTOR_STATUS_DEAD; // set, make sure it is not 0 already
+	status_flags = status_flags ^ ACTOR_STATUS_DEAD; // now toggle off
 
-  if(remove_obj)
-    delete_obj(body_obj);
-  
-  return;
+	show();
+
+	x = new_position.x;
+	y = new_position.y;
+	z = new_position.z;
+	obj_n = base_obj_n;
+	init();
+
+	frame_n = 0;
+
+	set_direction(NUVIE_DIR_N);
+
+	set_hp(1);
+	//actor->set_worktype(0x1);
+
+	if(is_in_party()) //actor in party
+		Game::get_game()->get_party()->add_actor(this);
+
+	if(body_obj != NULL)
+	{
+		//add body container objects back into actor's inventory.
+		if(body_obj->has_container())
+		{
+			for(link = body_obj->container->start(); link != NULL; link = link->next)
+				inventory_add_object((Obj *)link->data);
+
+			body_obj->container->removeAll();
+		}
+
+		obj_manager->unlink_from_engine(body_obj);
+	}
+
+	if(remove_obj)
+		delete_obj(body_obj);
+
+	return;
 }
 
 void Actor::display_condition()

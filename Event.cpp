@@ -2306,46 +2306,6 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     return false;
 }
 
-bool Event::can_rest(std::string &err_str)
-{
-    Map *map = Game::get_game()->get_game_map();
-    Party *party = player->get_party();
-    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
-    Actor *pActor = player->get_actor();
-    MapCoord loc = pActor->get_location();
-
-    ActorList *enemies = 0;
-    ActorList *all_actors = 0;
-    uint8 level = 0;
-    map_window->get_level(&level);
-    if(party->is_in_combat_mode())
-        err_str = "-Not while in Combat!";
-    else if(party->is_in_vehicle()
-            && pActor->get_obj_n() != OBJ_U6_SHIP) // player is a vehicle
-        err_str = "-Can not be repaired!";
-    else if((level != 0 && level != 5) || map_window->in_town())
-        err_str = "-Only in the wilderness!";
-    else if((enemies = pActor->find_enemies()))
-        err_str = "-Not while foes are near!";
-    else if((all_actors = actor_mgr->filter_party(actor_mgr->filter_distance(actor_mgr->get_actor_list(),
-                                                  loc.x,loc.y,loc.z, 5)))
-            && !all_actors->empty() && !party->is_in_vehicle())
-    {
-        err_str = "-Not while others are near!";
-        delete all_actors;
-    }
-    else if(!player->in_party_mode())
-        err_str = "-Not in solo mode!";
-    else if(!map->is_passable(loc.x-1,loc.y-1,loc.x+1,loc.y+1,loc.z))
-        err_str = "-Not enough room!"; // FIXME: for ships check all squares around the ship
-    else if(party->is_horsed())
-        err_str = "-Dismount first!";
-    else
-        return true;
-    delete enemies;
-    return false;
-}
-
 bool Event::rest()
 {
     if(rest_time != 0) // already got time & started the campfire; time to Rest
@@ -2358,7 +2318,7 @@ bool Event::rest()
     scroll->display_string("Rest");
 
     string err_str;
-    if(!can_rest(err_str))
+    if(!player->get_party()->can_rest(err_str))
     {
         scroll->display_string(err_str);
         scroll->display_string("\n");

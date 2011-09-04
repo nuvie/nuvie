@@ -3,7 +3,9 @@ local actor = select_actor_with_projectile(0x188, caster)
 
 if actor == nil then return end
 
-print("\n")
+if caster_is_player() then
+	print("\n")
+end
 	
 local exp = actor_hit(actor, math.random(1, 30))
 if exp ~= 0 then         
