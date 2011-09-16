@@ -1179,15 +1179,17 @@ bool ObjManager::actor_has_inventory(uint16 actor_num)
  return false;
 }
 
-Obj *ObjManager::find_next_obj(Obj *prev_obj)
+Obj *ObjManager::find_next_obj(uint8 level, Obj *prev_obj, bool match_frame_n, bool match_quality)
 {
  if(prev_obj == NULL)
    return NULL;
 
- return find_obj(prev_obj->obj_n, prev_obj->quality, prev_obj->z, prev_obj);
+ Obj **p = &prev_obj;
+
+ return find_obj(level, prev_obj->obj_n, prev_obj->quality, match_quality, prev_obj->frame_n, match_frame_n, p);
 }
 
-Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_obj)
+Obj *ObjManager::find_obj(uint8 level, uint16 obj_n, uint8 quality, bool match_quality, uint16 frame_n, bool match_frame_n, Obj **prev_obj)
 {
  uint8 i;
  Obj *new_obj;
@@ -1196,14 +1198,14 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
    {
     for(i=0;i<64;i++)
       {
-       new_obj = find_obj_in_tree(obj_n, quality, prev_obj, surface[i]);
+       new_obj = find_obj_in_tree(obj_n, quality, match_quality, frame_n, match_frame_n, prev_obj, surface[i]);
        if(new_obj != NULL)
          return new_obj;
       }
    }
  else
    {
-    new_obj = find_obj_in_tree(obj_n, quality, prev_obj, dungeon[level-1]);
+    new_obj = find_obj_in_tree(obj_n, quality, match_quality, frame_n, match_frame_n, prev_obj, dungeon[level-1]);
     if(new_obj != NULL)
       return new_obj;
    }
@@ -1211,7 +1213,7 @@ Obj *ObjManager::find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_ob
  return NULL;
 }
 
-inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree)
+inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, bool match_quality, uint8 frame_n, bool match_frame_n, Obj **prev_obj, iAVLTree *obj_tree)
 {
  iAVLCursor cursor;
  ObjTreeNode *node;
@@ -1226,20 +1228,24 @@ inline Obj *ObjManager::find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_
    for(;link != NULL;link=link->next)
     {
      new_obj = (Obj *)link->data;
-     if( new_obj->obj_n == obj_n && new_obj->quality == quality )
+     if( new_obj->obj_n == obj_n && (match_quality == false || new_obj->quality == quality) && (match_frame_n == false || new_obj->frame_n == frame_n))
        {
-        if(new_obj == prev_obj)
-          prev_obj = NULL;
+        if(prev_obj != NULL && new_obj == *prev_obj)
+          *prev_obj = NULL;
         else
           {
-           if(prev_obj == NULL)
+           if(prev_obj == NULL || *prev_obj == NULL)
              return new_obj;
           }
        }
-
-     new_obj = new_obj->find_in_container(obj_n, quality, OBJ_MATCH_QUALITY, prev_obj);
-     if(new_obj)
-       return new_obj;
+/* Don't search containers.
+     if(prev_obj == NULL)
+     {
+		 new_obj = new_obj->find_in_container(obj_n, quality, match_quality, frame_n, match_frame_n, prev_obj);
+		 if(new_obj)
+		   return new_obj;
+     }
+*/
     }
 
    node = (ObjTreeNode *)iAVLNext(&cursor);

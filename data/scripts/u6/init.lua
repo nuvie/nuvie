@@ -70,8 +70,11 @@ TIMER_ECLIPSE = 15
 
 OBJLIST_OFFSET_VANISH_OBJ = 0x1c13
 OBJLIST_OFFSET_MOONSTONES = 0x1c1b
+OBJLIST_OFFSET_KEG_TIMER  = 0x1c4b
 
 g_vanish_obj = {["obj_n"] = 0, ["frame_n"] = 0}
+
+g_keg_timer = 0
 
 movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1} 
 movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
@@ -435,6 +438,9 @@ function load_game()
 		g_moonstone_loc_tbl[i] = {x=x, y=y, z=z}
 	end
 
+	objlist_seek(OBJLIST_OFFSET_KEG_TIMER)
+	g_keg_timer = objlist_read2()
+
 end
 
 function save_game()
@@ -458,6 +464,9 @@ function save_game()
 		objlist_write2(loc.y)
 		objlist_write2(loc.z)
 	end
+	
+	objlist_seek(OBJLIST_OFFSET_KEG_TIMER)
+	objlist_write2(g_keg_timer)
 end
 
 function moonstone_set_loc(phase, x, y, z)
@@ -489,6 +498,94 @@ function update_moongates(show_moongates)
 		end
 	end
 end
+
+function use_keg(obj)
+	if obj.frame_n ~= 0 then
+		print("\nNo effect\n")
+		return
+	end
+	
+	if g_keg_timer > 0 then
+		print("\nNot now\n")
+	else
+		obj.frame_n = 1
+		print("\nPowder lit!\n")
+		g_keg_timer = 3
+	end
+end
+
+function explode_keg()
+	--try to find lit keg on the current game map.
+	local loc = player_get_location()
+	for obj in find_obj(loc.z, 223, 1) do --keg obj, frame_n = 1
+		if obj ~= nil then
+			explode_obj(obj)
+		end
+	end
+	
+	--try to explode lit kegs in the party's inventory
+	local party_actor
+	for party_actor in party_members() do
+		obj = Actor.inv_get_obj_n(party_actor, 223, 1) --keg with frame_n = 1
+		if obj ~= nil then
+			explode_obj(obj, party_actor)
+		end
+	end
+end
+
+function explode_obj(obj, actor)
+	dbg("Exploding "..obj.name.."\n")
+	local x, y, z
+	
+	if actor ~= nil then
+		x = actor.x
+		y = actor.y
+		z = actor.z
+	else
+		x = obj.x
+		y = obj.y
+		z = obj.z
+	end
+	
+	Obj.removeFromEngine(obj)
+	
+	local hit_items = explosion(0x189, x, y)
+	local random = math.random
+	local k, v
+	for k,v in pairs(hit_items) do
+		if v.luatype == "actor" then
+			actor_hit(v, random(1, 0x3c))
+		end
+	end
+	
+	--blow up doors and other kegs
+	for x = x - 2,x + 2 do
+		for y = y - 2,y + 2 do
+			local map_obj = map_get_obj(x, y, z, 223)
+			if map_obj ~= nil then
+				explode_obj(map_obj)
+			end
+			
+			map_obj = map_get_obj(x, y, z, 0x12c) --steel door
+			if map_obj == nil or map_obj.frame_n == 0xc then
+				map_obj = map_get_obj(x, y, z, 0x129) --oaken door
+				if map_obj == nil or map_obj.frame_n == 0xc then
+					map_obj = map_get_obj(x, y, z, 0x12a) --windowed door
+					if map_obj == nil or map_obj.frame_n == 0xc then
+						map_obj = map_get_obj(x, y, z, 0x12b) --cedar door
+					end
+				end
+			end
+			
+			if map_obj ~= nil and map_obj.frame_n <= 0xc then
+				Obj.removeFromEngine(map_obj)
+				print("\nThe door is blown up!\n")
+			end
+		end
+	end
+end
+
+
 
 --load actor functions
 actor_load = nuvie_load("u6/actor.lua");

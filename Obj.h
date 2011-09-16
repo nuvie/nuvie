@@ -71,6 +71,9 @@
 #define OBJ_MATCH_QUALITY true
 #define OBJ_NOMATCH_QUALITY false
 
+#define OBJ_MATCH_FRAME_N true
+#define OBJ_NOMATCH_FRAME_N false
+
 //We use this in Obj::is_in_inventory()
 #define OBJ_DONT_CHECK_PARENT false
 
@@ -138,7 +141,7 @@ public:
 
   bool remove(Obj *obj);
   
-  Obj *find_in_container(uint16 obj_n, uint8 quality, bool match_quality=OBJ_MATCH_QUALITY, Obj *prev_obj=NULL);
+  Obj *find_in_container(uint16 obj_n, uint8 quality, bool match_quality=OBJ_MATCH_QUALITY, uint8 frame_n=0, bool match_frame_n=OBJ_NOMATCH_FRAME_N, Obj **prev_obj=NULL);
 
   uint32 get_total_qty(uint16 match_obj_n);
   

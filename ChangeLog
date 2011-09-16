@@ -1,3 +1,14 @@
+2011-09-16  Eric Fry <efry at users.sourceforge.net> r1255
+	* Added powder keg logic.
+	* Added new find_obj(level, obj_n, frame_n, quality) function to script.
+	  eg.
+	  for obj in find_obj(loc.z, 223, 1) do --keg obj, frame_n = 1
+	     --do something.
+	  end
+	* Reworked ObjManager::find_obj() to allow searching by frame_n
+	* Added the ability to search frame_n, quality from Actor.inv_get_obj() script
+	  function.
+
 2011-09-03  Eric Fry <efry at users.sourceforge.net> r1254
 	* Fade out magical creatures when they die.
 	* Added Actor.fade_out(actor, speed) script function.

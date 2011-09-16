@@ -584,8 +584,8 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
      message = "\nOperate the switch, you hear a noise.\n";
  }
 
- doorway_obj = obj_manager->find_obj(OBJ_U6_DOORWAY, obj->quality, obj->z);
- for(;doorway_obj != NULL;doorway_obj = obj_manager->find_next_obj(doorway_obj))
+ doorway_obj = obj_manager->find_obj(obj->z, OBJ_U6_DOORWAY, obj->quality);
+ for(;doorway_obj != NULL;doorway_obj = obj_manager->find_next_obj(obj->z, doorway_obj))
    {
     obj_list = obj_manager->get_obj_list(doorway_obj->x,doorway_obj->y,doorway_obj->z);
 
@@ -746,7 +746,7 @@ bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
     if(strcasecmp(mantra,  mantras[rune_obj_offset]) == 0)
       {
        // find the matching force field for this shrine. match rune offset against force field quality
-       force_field = obj_manager->find_obj(OBJ_U6_FORCE_FIELD, rune_obj_offset, player_location.z, NULL);
+       force_field = obj_manager->find_obj(player_location.z, OBJ_U6_FORCE_FIELD, rune_obj_offset);
 
        // make sure the player is right next to the force field.
        if(force_field && abs(player_location.x - force_field->x) < 2 && abs(player_location.y - force_field->y) < 2)
@@ -782,9 +782,9 @@ bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
      
  if(obj->container != NULL || player_location.z == 0)  // make sure we've got all 8 moonstones in our vortex cube.
    {
-    codex = obj_manager->find_obj(OBJ_U6_CODEX, 128, player_location.z, NULL); // 128 = codex's book id
-    britannian_lens = obj_manager->find_obj(OBJ_U6_BRITANNIAN_LENS, 0, player_location.z, NULL);
-    gargoyle_lens = obj_manager->find_obj(OBJ_U6_GARGOYLE_LENS, 0, player_location.z, NULL);
+    codex = obj_manager->find_obj(player_location.z, OBJ_U6_CODEX, 128); // 128 = codex's book id
+    britannian_lens = obj_manager->find_obj(player_location.z, OBJ_U6_BRITANNIAN_LENS, 0, OBJ_NOMATCH_QUALITY);
+    gargoyle_lens = obj_manager->find_obj(player_location.z, OBJ_U6_GARGOYLE_LENS, 0, OBJ_NOMATCH_QUALITY);
         
     // make sure the player is close to the codex
     if(codex && abs(player_location.x - codex->x) < 11 && abs(player_location.y - codex->y) < 11) //FIXME this should probably be mapwindow size
@@ -2677,57 +2677,13 @@ bool U6UseCode::enter_moongate(Obj *obj, UseCodeEvent ev)
 /* USE: Light powder keg if unlit
  * MESSAGE: Timed: Explode; Effect complete: delete powder keg
  */
-bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)// FIXME when in container
+bool U6UseCode::use_powder_keg(Obj *obj, UseCodeEvent ev)
 {
-    // allow only one keg to be active at a time (timer/messaging issues)
-    static bool lit_powder_keg = false;
-
-    if(ev == USE_EVENT_USE)
-    {
-        if(lit_powder_keg || obj->is_in_container()) // FIXME: doesn't work for objects in containers
-        {
-            scroll->display_string("\nNot now!\n");
-            return(true);
-        }
-        obj->frame_n = 1;
-        lit_powder_keg = true;
-        new GameTimedCallback(this, obj, 5);
-        scroll->display_string("\nPowder lit!\n");
-        return(true);
-    }
-    else if(ev == USE_EVENT_MESSAGE)
-    {
-        if(*items.msg_ref == MESG_TIMED) // explode
-        {
-            uint16 x = obj->x, y = obj->y;
-            if(obj->is_in_inventory()) // explode over actor carrying keg 
-            {
-                Actor *actor = obj->get_actor_holding_obj();
-                x = actor->get_x();
-                y = actor->get_y();
-            }
-            else if(obj->is_in_container()) // use coordinates of container on map
-            {
-                Obj *root_obj=obj;
-                do
-                {
-                    root_obj = root_obj->get_container_obj();
-                } while(root_obj->is_in_container());
-                x = root_obj->x; y = root_obj->y;
-            }
-            obj->frame_n = 0;
-
-            new UseCodeExplosiveEffect(obj, x, y, 3, 16);
-            // Note: waits for effect to complete and sends MESG_EFFECT_COMPLETE
-        }
-        else if(*items.msg_ref == MESG_EFFECT_COMPLETE) // explosion finished
-        {
-            destroy_obj(obj);
-            lit_powder_keg = false;
-        }
-        return(true);
-    }
-    return(false);
+	if(ev == USE_EVENT_USE)
+	{
+		game->get_script()->call_use_keg(obj);
+	}
+	return true;
 }
 
 

@@ -104,6 +104,7 @@ class Script
    bool call_actor_map_dmg(Actor *actor, MapCoord location);
    bool call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg=false);
    bool call_look_obj(Obj *obj);
+   bool call_use_keg(Obj *obj); //we need this until we move all usecode into script.
    bool call_magic_get_spell_list(Spell **spell_list);
    bool call_actor_use_effect(Obj *effect_obj, Actor *actor);
    bool call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace=true);

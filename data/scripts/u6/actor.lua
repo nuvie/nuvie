@@ -1866,7 +1866,14 @@ function advance_time(num_turns)
 	
 	timer_update_all(num_turns)
 	
-	--FIXME update keg timer. explode kegs.
+	--update keg timer. explode kegs.
+	if g_keg_timer > 0 then
+		g_keg_timer = g_keg_timer - num_turns
+		if g_keg_timer <= 0 then
+			explode_keg()
+			g_keg_timer = 0
+		end
+	end
 
 	local random = math.random
 	local cloak_readied = false

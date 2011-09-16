@@ -1199,6 +1199,10 @@ static int nscript_actor_inv_get_obj_n(lua_State *L)
 {
    Actor *actor;
    uint16 obj_n;
+   uint8 frame_n = 0;
+   uint8 quality = 0;
+   bool match_frame_n = false;
+   bool match_quality = false;
    Obj *obj;
    actor = nscript_get_actor_from_args(L);
    if(actor == NULL)
@@ -1206,7 +1210,19 @@ static int nscript_actor_inv_get_obj_n(lua_State *L)
 
    obj_n = (uint16)luaL_checkinteger(L, 2);
 
-   obj = actor->inventory_get_object(obj_n, 0, false);
+   if(lua_gettop(L) >= 3 && !lua_isnil(L, 3))
+   {
+	   frame_n = (uint8)luaL_checkinteger(L, 3);
+	   match_frame_n = true;
+   }
+
+   if(lua_gettop(L) >= 4 && !lua_isnil(L, 4))
+   {
+	   quality = (uint8)luaL_checkinteger(L, 4);
+	   match_quality = true;
+   }
+
+   obj = actor->inventory_get_object(obj_n, quality, match_quality, frame_n, match_frame_n);
 
    if(obj)
    {

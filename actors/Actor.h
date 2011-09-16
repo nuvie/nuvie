@@ -406,10 +406,10 @@ class Actor
  ActorList *find_enemies(); // returns list or 0 if no enemies nearby
  
  U6LList *get_inventory_list();
- bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_quality = OBJ_MATCH_QUALITY);
+ bool inventory_has_object(uint16 obj_n, uint8 qual = 0, bool match_quality = OBJ_MATCH_QUALITY, uint8 frame_n = 0, bool match_frame_n = OBJ_NOMATCH_FRAME_N);
  uint32 inventory_count_objects(bool inc_readied_objects);
  uint32 inventory_count_object(uint16 obj_n);
- Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, bool match_quality = OBJ_MATCH_QUALITY);
+ Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, bool match_quality = OBJ_MATCH_QUALITY, uint8 frame_n = 0, bool match_frame_n = OBJ_NOMATCH_FRAME_N);
  bool is_double_handed_obj_readied();
  Obj *inventory_get_readied_object(uint8 location);
  virtual Obj *inventory_get_food(Obj *container=0) { return 0; }

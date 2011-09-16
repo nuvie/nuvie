@@ -216,10 +216,11 @@ int nscript_u6llist_iter(lua_State *L);
 int nscript_u6llist_iter_recursive(lua_State *L);
 int nscript_party_iter(lua_State *L);
 
-
 static int nscript_party(lua_State *L);
 static int nscript_container(lua_State *L);
 int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
+
+static int nscript_find_obj(lua_State *L);
 
 Script *Script::script = NULL;
 
@@ -450,6 +451,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_container);
    lua_setglobal(L, "container_objs");
+
+   lua_pushcfunction(L, nscript_find_obj);
+   lua_setglobal(L, "find_obj");
    
    lua_pushcfunction(L, nscript_timer_set);
    lua_setglobal(L, "timer_set");
@@ -748,6 +752,18 @@ bool Script::call_look_obj(Obj *obj)
 	   return false;
 
    return lua_toboolean(L,-1);
+}
+
+bool Script::call_use_keg(Obj *obj)
+{
+   lua_getglobal(L, "use_keg");
+
+   nscript_obj_new(L, obj);
+
+   if(call_function("use_keg", 1, 0) == false)
+	   return false;
+
+   return true;
 }
 
 bool Script::call_magic_get_spell_list(Spell **spell_list)
@@ -2298,6 +2314,87 @@ static int nscript_party(lua_State *L)
    lua_pushinteger(L, 0);
    lua_pushcclosure(L, &nscript_party_iter, 1);
    return 1;
+}
+
+int nscript_find_obj_iter(lua_State *L)
+{
+	Obj *cur_obj = NULL;
+
+	if(!lua_isnil(L, lua_upvalueindex(1)))
+		cur_obj = nscript_get_obj_from_args(L, lua_upvalueindex(1));
+	uint8 level = (uint8)lua_tointeger(L, lua_upvalueindex(2));
+	bool match_frame_n = (bool)lua_toboolean(L, lua_upvalueindex(3));
+	bool match_quality = (bool)lua_toboolean(L, lua_upvalueindex(4));
+
+	if(cur_obj == NULL)
+		return 0;
+
+	ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+	Obj *next_obj = obj_manager->find_next_obj(level, cur_obj, match_frame_n, match_quality);
+
+	if(next_obj == NULL)
+	{
+		lua_pushnil(L);
+	}
+	else
+	{
+		nscript_new_obj_var(L, next_obj);
+	}
+	lua_replace(L, lua_upvalueindex(1));
+
+	lua_pushinteger(L, level);
+	lua_replace(L, lua_upvalueindex(2));
+
+	lua_pushboolean(L, match_frame_n);
+	lua_replace(L, lua_upvalueindex(3));
+
+	lua_pushboolean(L, match_quality);
+	lua_replace(L, lua_upvalueindex(4));
+
+	nscript_new_obj_var(L, cur_obj);
+
+	return 1;
+}
+
+static int nscript_find_obj(lua_State *L)
+{
+	uint8 level = (uint8)luaL_checkinteger(L, 1);
+	uint16 obj_n = (uint16)luaL_checkinteger(L, 2);
+	uint16 frame_n = 0;
+	bool match_frame_n = OBJ_NOMATCH_FRAME_N;
+	uint16 quality = 0;
+	bool match_quality = OBJ_NOMATCH_QUALITY;
+
+	if(lua_gettop(L) >= 3 && !lua_isnil(L, 3))
+	{
+		frame_n = (uint16)luaL_checkinteger(L, 3);
+		match_frame_n = OBJ_MATCH_FRAME_N;
+	}
+
+	if(lua_gettop(L) >= 4 && !lua_isnil(L, 4))
+	{
+		quality = (uint16)luaL_checkinteger(L, 4);
+		match_quality = OBJ_MATCH_QUALITY;
+	}
+
+	ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+	Obj *obj = obj_manager->find_obj(level, obj_n, quality, match_quality, frame_n, match_frame_n);
+	if(obj != NULL)
+	{
+		nscript_new_obj_var(L, obj);
+	}
+	else
+	{
+		lua_pushnil(L);
+	}
+
+	lua_pushinteger(L, level);
+	lua_pushboolean(L, match_frame_n);
+	lua_pushboolean(L, match_quality);
+
+	lua_pushcclosure(L, &nscript_find_obj_iter, 4);
+
+	return 1;
 }
 
 static int nscript_timer_set(lua_State *L)

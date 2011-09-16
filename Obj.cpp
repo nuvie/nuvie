@@ -214,7 +214,7 @@ bool Obj::remove(Obj *obj)
   return true;
 }
 
-Obj *Obj::find_in_container(uint16 obj_n, uint8 quality, bool match_quality, Obj *prev_obj)
+Obj *Obj::find_in_container(uint16 obj_n, uint8 quality, bool match_quality, uint8 frame_n, bool match_frame_n, Obj **prev_obj)
 {
   U6Link *link;
   Obj *obj;
@@ -225,20 +225,20 @@ Obj *Obj::find_in_container(uint16 obj_n, uint8 quality, bool match_quality, Obj
   for(link = container->start();link != NULL;link=link->next)
   {
     obj = (Obj *)link->data;
-    if(obj && obj->obj_n == obj_n && (match_quality == false || obj->quality == quality))
+    if(obj && obj->obj_n == obj_n && (match_quality == false || obj->quality == quality) && (match_frame_n == false || obj->frame_n == frame_n))
     {
-      if(obj == prev_obj)
+      if(prev_obj != NULL && obj == *prev_obj)
         prev_obj = NULL;
       else
       {
-        if(prev_obj == NULL)
+        if(prev_obj == NULL || *prev_obj == NULL)
           return obj;
       }
     }
     
     if(obj->container)
     {
-      obj = obj->find_in_container(obj_n, quality, match_quality, prev_obj);
+      obj = obj->find_in_container(obj_n, quality, match_quality, frame_n, match_frame_n, prev_obj);
       if(obj)
         return obj;
     }

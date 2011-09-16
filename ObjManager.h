@@ -145,8 +145,8 @@ class ObjManager
  U6LList *get_actor_inventory(uint16 actor_num);
  bool actor_has_inventory(uint16 actor_num);
 
- Obj *find_next_obj(Obj *prev_obj);
- Obj *find_obj(uint16 obj_n, uint8 quality, uint8 level, Obj *prev_obj=NULL);
+ Obj *find_next_obj(uint8 level, Obj *prev_obj, bool match_frame_n=OBJ_NOMATCH_FRAME_N, bool match_quality=OBJ_MATCH_QUALITY);
+ Obj *find_obj(uint8 level, uint16 obj_n, uint8 quality, bool match_quality=OBJ_MATCH_QUALITY, uint16 frame_n=0, bool match_frame_n=OBJ_NOMATCH_FRAME_N,  Obj **prev_obj=NULL);
 
  bool move(Obj *obj, uint16 x, uint16 y, uint8 level);
  bool add_obj(Obj *obj, bool addOnTop=false);
@@ -200,7 +200,7 @@ class ObjManager
  void temp_obj_list_clean_level(uint8 z);
  void temp_obj_list_clean_area(uint16 x, uint16 y);
 
- inline Obj *find_obj_in_tree(uint16 obj_n, uint8 quality, Obj *prev_obj, iAVLTree *obj_tree);
+ inline Obj *find_obj_in_tree(uint16 obj_n, uint8 quality, bool match_quality, uint8 frame_n, bool match_frame_n, Obj **prev_obj, iAVLTree *obj_tree);
  inline void start_obj_usecode(iAVLTree *obj_tree);
  inline void print_egg_tree(iAVLTree *obj_tree);
 

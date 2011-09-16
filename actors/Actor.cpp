@@ -668,9 +668,9 @@ U6LList *Actor::get_inventory_list()
 }
 
 
-bool Actor::inventory_has_object(uint16 obj_n, uint8 qual, bool match_quality)
+bool Actor::inventory_has_object(uint16 obj_n, uint8 qual, bool match_quality, uint8 frame_n, bool match_frame_n)
 {
-    if(inventory_get_object(obj_n, qual, match_quality))
+    if(inventory_get_object(obj_n, qual, match_quality, frame_n, match_frame_n))
         return(true);
     return(false);
 }
@@ -723,7 +723,7 @@ uint32 Actor::inventory_count_object(uint16 obj_n)
 
 /* Returns object descriptor of object in the actor's inventory, or NULL if no
  * matching object is found. */
-Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, bool match_quality)
+Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, bool match_quality, uint8 frame_n, bool match_frame_n)
 {
  U6LList *inventory;
  U6Link *link;
@@ -733,7 +733,7 @@ Obj *Actor::inventory_get_object(uint16 obj_n, uint8 qual, bool match_quality)
  for(link=inventory->start();link != NULL;link=link->next)
  {
    obj = (Obj *)link->data;
-   if(obj->obj_n == obj_n && (match_quality == false || obj->quality == qual)) //FIXME should qual = 0 be an all quality search!?
+   if(obj->obj_n == obj_n && (match_quality == false || obj->quality == qual) && (match_frame_n == false || obj->frame_n == frame_n)) //FIXME should qual = 0 be an all quality search!?
      return(obj);
    else if(obj->has_container())
    {
@@ -1845,11 +1845,11 @@ Obj *Actor::find_body()
   actor = party->who_has_obj(339,id_n,true);
 
   if(actor) //get from collective party inventory if possible
-    return actor->inventory_get_object(339,id_n,true);
+    return actor->inventory_get_object(339,id_n,OBJ_MATCH_QUALITY);
     
   // try to find on map.
   for(level=0;level < 5 && body_obj == NULL;level++)
-    body_obj = obj_manager->find_obj(339, id_n, level, NULL);
+    body_obj = obj_manager->find_obj(level, 339, id_n);
   
   return body_obj;
 }
