@@ -657,7 +657,9 @@ void ActorManager::twitchActors()
 void ActorManager::moveActors()
 {
     if(!update || wait_for_player)
+    {
         return;// nothing to do
+    }
 
    Game::get_game()->get_script()->call_actor_update_all();
    //updateTime();

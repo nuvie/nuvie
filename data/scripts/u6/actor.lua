@@ -158,7 +158,7 @@ end
 function subtract_movement_pts(actor, pts)
    if actor.obj_n == 0x1af then pts = math.floor(pts / 2) end --if horse with rider
     
-   --fixme check with the original there are two timers that are check but never seem to be used.
+   --fixme check with the original there are two timers that are checked but never seem to be used.
    
    if pts < 1 then pts = 1 end
    
@@ -166,7 +166,8 @@ function subtract_movement_pts(actor, pts)
 end
 
 function subtract_map_movement_pts(actor)
-   subtract_movement_pts(actor, 5) --FIXME need to code this up.
+	local points = map_get_impedence(actor.x, actor.y, actor.z, false) + 5
+	subtract_movement_pts(actor, points)
 end
 
 function actor_find_max_xy_distance(actor, x, y)

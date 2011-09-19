@@ -178,6 +178,7 @@ static int nscript_objs_at_loc(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
 static int nscript_map_remove_obj(lua_State *L);
 static int nscript_map_is_water(lua_State *L);
+static int nscript_map_get_impedence(lua_State *L);
 static int nscript_map_get_dmg_tile_num(lua_State *L);
 static int nscript_map_line_test(lua_State *L);
 static int nscript_map_line_hit_check(lua_State *L);
@@ -493,6 +494,9 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
 
    lua_pushcfunction(L, nscript_map_is_water);
    lua_setglobal(L, "map_is_water");
+
+   lua_pushcfunction(L, nscript_map_get_impedence);
+   lua_setglobal(L, "map_get_impedence");
 
    lua_pushcfunction(L, nscript_map_get_dmg_tile_num);
    lua_setglobal(L, "map_get_dmg_tile_num");
@@ -1844,6 +1848,24 @@ static int nscript_map_is_water(lua_State *L)
 	uint8 z = (uint8) luaL_checkinteger(L, 3);
 
 	lua_pushboolean(L, map->is_water(x, y, z));
+
+	return 1;
+}
+
+static int nscript_map_get_impedence(lua_State *L)
+{
+	Map *map = Game::get_game()->get_game_map();
+
+	uint16 x = (uint16) luaL_checkinteger(L, 1);
+	uint16 y = (uint16) luaL_checkinteger(L, 2);
+	uint8 z = (uint8) luaL_checkinteger(L, 3);
+
+	bool ignore_objects = true;
+
+	if(lua_gettop(L) >= 4)
+		ignore_objects = (bool) lua_toboolean(L, 4);
+
+	lua_pushinteger(L, map->get_impedance(x, y, z, ignore_objects));
 
 	return 1;
 }

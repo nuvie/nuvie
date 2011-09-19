@@ -248,21 +248,36 @@ bool Map::can_put_obj(uint16 x, uint16 y, uint8 level)
 
 uint8 Map::get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects)
 {
-  uint8 *ptr=get_map_data(level);
-  WRAP_COORD(x,level);
-  WRAP_COORD(y,level);
-  Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
-  uint8 impedance = 0;
+	uint8 *ptr=get_map_data(level);
+	WRAP_COORD(x,level);
+	WRAP_COORD(y,level);
+	Tile *map_tile=tile_manager->get_original_tile(ptr[y*get_width(level) + x]);
+	uint8 impedance = 0;
 
-  if(!ignore_objects)
-  {
-    Obj *obj = obj_manager->get_obj(x, y, level);
-    if(obj != 0)
-      impedance += (obj_manager->get_obj_tile(obj->obj_n, obj->frame_n)->flags1 & TILEFLAG_IMPEDANCE)>>TILEFLAG_IMPEDANCE_SHIFT;
-  }
+	if(!ignore_objects)
+	{
+		U6LList *obj_list = obj_manager->get_obj_list(x,y,level);
+		if(obj_list)
+		{
+			for(U6Link *link=obj_list->start();link != NULL;link=link->next)
+			{
+				Obj *obj = (Obj *)link->data;
+				if(obj != NULL)
+				{
+					uint8 tile_flag = obj_manager->get_obj_tile(obj->obj_n, obj->frame_n)->flags1;
+					if((tile_flag & TILEFLAG_BLOCKING) == 0)
+					{
+						impedance += (tile_flag & TILEFLAG_IMPEDANCE)>>TILEFLAG_IMPEDANCE_SHIFT;
+					}
+				}
+			}
+		}
+	}
 
-  impedance += (map_tile->flags1 & TILEFLAG_IMPEDANCE)>>TILEFLAG_IMPEDANCE_SHIFT;
-  return impedance;
+	if((map_tile->flags1 & TILEFLAG_BLOCKING) == 0)
+		impedance += (map_tile->flags1 & TILEFLAG_IMPEDANCE)>>TILEFLAG_IMPEDANCE_SHIFT;
+
+	return impedance;
 }
 
 Tile *Map::get_dmg_tile(uint16 x, uint16 y, uint8 level)

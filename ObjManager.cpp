@@ -786,7 +786,7 @@ bool ObjManager::has_toptile(Obj *obj)
  return false;
 }
 
-//gets the linked list of objects at a perticular location.
+//gets the linked list of objects at a particular location.
 
 U6LList *ObjManager::get_obj_list(uint16 x, uint16 y, uint8 level)
 {

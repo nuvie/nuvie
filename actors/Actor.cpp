@@ -449,7 +449,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  z = new_z;
 
  can_move = true;
- if(!(force_move || ignore_moves)) // subtract from moves left
+ if(!(force_move || ignore_moves) && is_in_party()) // subtract from moves left for party members only. Other actors have their movement points deducted in actor_update_all()
  {
     set_moves_left(moves - (move_cost+map->get_impedance(oldpos.x, oldpos.y, oldpos.z)));
     if(oldpos.x != x && oldpos.y != y) // diagonal move, double cost
