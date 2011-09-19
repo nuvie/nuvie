@@ -190,9 +190,9 @@ function actor_move(actor, direction, flag)
       
    if did_move then
       if actor.obj_n == 0x177 then slime_update_frames() end
-      subtract_movement_pts(actor, 5)
+      subtract_map_movement_pts(actor)
       --dbg("actor_move() did move actor("..actor.x..","..actor.y..")\n");
-   end --FIXME need to handle this properly with map movement pts.
+   end
    
    return did_move and 1 or 0
 end
@@ -225,10 +225,10 @@ function actor_move_diagonal(actor, x_direction, y_direction)
    if did_move then
       --dbg("did move\n");
       if actor.obj_n == 0x177 then slime_update_frames() end
-      subtract_movement_pts(actor, 5)
+      subtract_map_movement_pts(actor)
 
       dbg("set dir = "..direction_string(direction).." y_dir ="..direction_string(y_direction).." ")
-   end --FIXME need to handle this properly with map movement pts.
+   end
    
    return did_move and 1 or 0
 end

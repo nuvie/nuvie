@@ -1,3 +1,6 @@
+2011-09-19  Eric Fry <efry at users.sourceforge.net> r1257
+	* Added map impedence to actor script movement.
+
 2011-09-19  Eric Fry <efry at users.sourceforge.net> r1256
 	* Added map impedence to actor movement point calculation.
 	* Look at all objects at a map location when calculating impedence.
