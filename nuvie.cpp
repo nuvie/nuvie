@@ -115,9 +115,12 @@ bool Nuvie::init(int argc, char **argv)
  if(checkGameDir(game_type) == false)
    return false;
 
- script = new Script(config, game_type);
+ script = new Script(config, gui, game_type);
  if(script->init() == false)
 	 return false;
+
+
+ playIntro();
 
  game = new Game(config, script, gui);
 
@@ -429,4 +432,24 @@ bool Nuvie::checkGameDir(uint8 game_type)
 #endif
 
  return true;
+}
+
+bool Nuvie::playIntro()
+{
+	bool skip_intro;
+
+	string key = config_get_game_key(config);
+	key.append("/skip_intro");
+
+	config->value(key, skip_intro, false);
+
+	if(skip_intro)
+		return true;
+
+	string script_file = "";
+	config->value("config/GameID", script_file);
+
+	script_file += "/intro.lua";
+
+	return script->run_lua_file(script_file.c_str());
 }

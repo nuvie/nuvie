@@ -43,6 +43,7 @@
 
 #include "Script.h"
 #include "ScriptActor.h"
+#include "ScriptCutscene.h"
 #include "Magic.h"
 
 #include <math.h>
@@ -395,7 +396,7 @@ uint8 ScriptThread::resume(int narg)
 }
 
 
-Script::Script(Configuration *cfg, nuvie_game_t type)
+Script::Script(Configuration *cfg, GUI *gui, nuvie_game_t type)
 {
    const char *path;
    size_t len;
@@ -425,6 +426,7 @@ Script::Script(Configuration *cfg, nuvie_game_t type)
    lua_setglobal(L, "nuvie_load");
 
    nscript_init_actor(L);
+   nscript_init_cutscene(L, cfg, gui);
 
    lua_pushcfunction(L, nscript_objlist_seek);
    lua_setglobal(L, "objlist_seek");
@@ -662,12 +664,13 @@ bool Script::call_actor_update_all()
    return call_function("actor_update_all", 0, 0);
 }
 
-bool Script::call_actor_init(Actor *actor)
+bool Script::call_actor_init(Actor *actor, uint8 alignment)
 {
    lua_getglobal(L, "actor_init");
    nscript_new_actor_var(L, actor->get_actor_num());
+   lua_pushinteger(L, alignment);
 
-   return call_function("actor_init", 1, 0);
+   return call_function("actor_init", 2, 0);
 }
 
 bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
@@ -848,6 +851,24 @@ bool Script::call_function(const char *func_name, int num_args, int num_return, 
 		DEBUG(0, LEVEL_ERROR, "lua stack error!");
 
 	return (result != 0) ? false : true;
+}
+
+bool Script::run_lua_file(const char *filename)
+{
+	std::string dir, path;
+	Script::get_script()->get_config()->value("config/datadir", dir, "");
+
+	build_path(dir, "scripts", path);
+	dir = path;
+	build_path(dir, filename, path);
+
+	if(luaL_loadfile(L, path.c_str()) != 0)
+	{
+		DEBUG(0, LEVEL_ERROR, "loading script file %s", path.c_str() );
+		return false;
+	}
+
+	return call_function(path.c_str(), 0, 0);
 }
 
 bool Script::call_moonstone_set_loc(uint8 phase, MapCoord location)

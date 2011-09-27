@@ -1,3 +1,15 @@
+2011-09-28  Eric Fry <efry at users.sourceforge.net> r1258
+	* Started work on cutscene scripting.
+	* Started work on u6 intro cutscene.
+	* Added the ability to blit to Screen with opacity.
+	* Fixed typo bug with 16bit smooth lighting.
+	* Added get width/height methods to Screen. They return the 
+	  un-scaled dimensions.
+	* Added GamePalette::set_palette() to reset palette after cutscene.
+	* Pass alignment from eggs into actor_init() script function.
+	* Added get width/height methods to GUI class.
+	* Added Script::run_lua_file()
+
 2011-09-19  Eric Fry <efry at users.sourceforge.net> r1257
 	* Added map impedence to actor script movement.
 

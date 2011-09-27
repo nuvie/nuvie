@@ -145,6 +145,9 @@ public:
         void block()   { block_input = true; }
         void unblock() { block_input = false; }
     std::string get_data_dir();
+
+    uint16 get_width() { return screen->get_width(); }
+    uint16 get_height() { return screen->get_height(); }
 protected:
 
 	/* Function to handle a GUI status */

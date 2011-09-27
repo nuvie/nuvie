@@ -907,13 +907,11 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    actor->status_flags = 0;
    actor->talk_flags = 0;
    actor->movement_flags = 0;
+   actor->alignment = ACTOR_ALIGNMENT_NEUTRAL;
 
    actor->init();
 
-     Game::get_game()->get_script()->call_actor_init(actor);
-     
-   if(alignment != ACTOR_ALIGNMENT_DEFAULT)
-    actor->set_alignment(alignment);
+   Game::get_game()->get_script()->call_actor_init(actor, alignment);
 
    // spawn double-tiled actors, like cows, facing west (SB-X)
    if(actor->get_tile_type() == ACTOR_DT)

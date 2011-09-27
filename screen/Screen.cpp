@@ -283,7 +283,7 @@ SDL_Surface *Screen::get_sdl_surface()
  return NULL;
 }
 
-bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans, SDL_Rect *clip_rect)
+bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans, SDL_Rect *clip_rect, uint8 opacity)
 {
  uint16 src_x = 0;
  uint16 src_y = 0;
@@ -357,9 +357,32 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
   }
 
  if(surface->bits_per_pixel == 16)
+ {
+	 if(opacity < 255)
+		 return blit16WithOpacity(dest_x, dest_y, src_buf, src_bpp, src_w, src_h, src_pitch, trans, opacity);
+
    return blit16(dest_x, dest_y, src_buf, src_bpp, src_w, src_h, src_pitch, trans);
+ }
+
+ if(opacity < 255)
+	 return blit32WithOpacity(dest_x, dest_y, src_buf, src_bpp, src_w, src_h, src_pitch, trans, opacity);
 
  return blit32(dest_x, dest_y, src_buf, src_bpp, src_w, src_h, src_pitch, trans);
+}
+
+
+inline uint16 Screen::blendpixel16(uint16 p, uint16 p1, uint8 opacity)
+{
+	return ( ( (uint8)(( (float)(( p1 & surface->Rmask ) >> surface->Rshift)) * (float)(opacity)/255.0f) + (uint8)(( (float)(( p & surface->Rmask ) >> surface->Rshift)) * (float)(255-opacity)/255.0f) ) << surface->Rshift ) | //R
+            ( ( (uint8)(( (float)(( p1 & surface->Gmask ) >> surface->Gshift)) * (float)(opacity)/255.0f) + (uint8)(( (float)(( p & surface->Gmask ) >> surface->Gshift)) * (float)(255-opacity)/255.0f)) << surface->Gshift ) | //G
+            ( ( (uint8)(( (float)(( p1 & surface->Bmask ) >> surface->Bshift)) * (float)(opacity)/255.0f) + (uint8)(( (float)(( p & surface->Bmask ) >> surface->Bshift)) * (float)(255-opacity)/255.0f)) << surface->Bshift );  //B
+}
+
+inline uint32 Screen::blendpixel32(uint32 p, uint32 p1, uint8 opacity)
+{
+	return ( ( (uint8)(( (float)(( p1 & surface->Rmask ) >> surface->Rshift)) * (float)(opacity)/255.0f) + (uint8)(( (float)(( p & surface->Rmask ) >> surface->Rshift)) * (float)(255-opacity)/255.0f) ) << surface->Rshift ) | //R
+            ( ( (uint8)(( (float)(( p1 & surface->Gmask ) >> surface->Gshift)) * (float)(opacity)/255.0f) + (uint8)(( (float)(( p & surface->Gmask ) >> surface->Gshift)) * (float)(255-opacity)/255.0f)) << surface->Gshift ) | //G
+            ( ( (uint8)(( (float)(( p1 & surface->Bmask ) >> surface->Bshift)) * (float)(opacity)/255.0f) + (uint8)(( (float)(( p & surface->Bmask ) >> surface->Bshift)) * (float)(255-opacity)/255.0f)) << surface->Bshift );  //B
 }
 
 inline bool Screen::blit16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
@@ -400,6 +423,44 @@ inline bool Screen::blit16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf,
  return true;
 }
 
+inline bool Screen::blit16WithOpacity(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans, uint8 opacity)
+{
+ uint16 *pixels;
+ uint16 i,j;
+
+ pixels = (uint16 *)surface->pixels;
+
+ pixels += dest_y * surface->w + dest_x;
+
+ if(trans)
+  {
+   for(i=0;i<src_h;i++)
+     {
+      for(j=0;j<src_w;j++)
+        {
+         if(src_buf[j] != 0xff)
+           pixels[j] = blendpixel16(pixels[j], (uint16)surface->colour32[src_buf[j]], opacity);
+        }
+      src_buf += src_pitch;
+      pixels += surface->w; //pitch;
+     }
+  }
+ else
+  {
+   for(i=0;i<src_h;i++)
+     {
+      for(j=0;j<src_w;j++)
+        {
+         pixels[j] = blendpixel16(pixels[j], (uint16)surface->colour32[src_buf[j]], opacity);
+        }
+      src_buf += src_pitch;
+      pixels += surface->w; //surface->pitch;
+     }
+  }
+
+ return true;
+}
+
 bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans)
 {
  uint32 *pixels;
@@ -430,6 +491,45 @@ bool Screen::blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16
       for(j=0;j<src_w;j++)
         {
          pixels[j] = surface->colour32[src_buf[j]];
+        }
+      src_buf += src_pitch;
+      pixels += surface->w; //surface->pitch;
+     }
+  }
+
+ return true;
+}
+
+bool Screen::blit32WithOpacity(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans, uint8 opacity)
+{
+ uint32 *pixels;
+ uint16 i,j;
+
+ pixels = (uint32 *)surface->pixels;
+
+ pixels += dest_y * surface->w + dest_x;
+
+
+ if(trans)
+  {
+   for(i=0;i<src_h;i++)
+     {
+      for(j=0;j<src_w;j++)
+        {
+         if(src_buf[j] != 0xff)
+           pixels[j] = blendpixel32(pixels[j], surface->colour32[src_buf[j]], opacity);
+        }
+      src_buf += src_pitch;
+      pixels += surface->w; //pitch;
+     }
+  }
+ else
+  {
+   for(i=0;i<src_h;i++)
+     {
+      for(j=0;j<src_w;j++)
+        {
+         pixels[j] = blendpixel32(pixels[j], surface->colour32[src_buf[j]], opacity);
         }
       src_buf += src_pitch;
       pixels += surface->w; //surface->pitch;
@@ -747,7 +847,7 @@ void Screen::blitalphamap8()
             {
                 pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Rmask ) >> surface->Rshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Rshift ) | //R
                               ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Gmask ) >> surface->Gshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Gshift ) | //G
-                              ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Gmask ) >> surface->Bshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Bshift );  //B
+                              ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Bmask ) >> surface->Bshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Bshift );  //B
 
                 //Red = 0xF800 = 1111 1000 0000 0000
                 //Grn = 0x07E0 = 0000 0111 1110 0000

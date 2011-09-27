@@ -56,6 +56,8 @@ class Nuvie
    bool loadConfigFile(std::string filename, bool readOnly = NUVIE_CONF_READONLY);
    void assignGameConfigValues(uint8 game_type);
    bool checkGameDir(uint8 game_type);
+
+   bool playIntro();
 };
 
 

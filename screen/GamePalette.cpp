@@ -44,7 +44,7 @@ GamePalette::GamePalette(Screen *s, Configuration *cfg)
 
  this->loadPalette();
 
- screen->set_palette(palette);
+ set_palette();
 
  counter = 0;
 }
@@ -54,6 +54,10 @@ GamePalette::~GamePalette()
  free(palette);
 }
 
+void GamePalette::set_palette()
+{
+	screen->set_palette(palette);
+}
 
 bool GamePalette::loadPalette()
 {

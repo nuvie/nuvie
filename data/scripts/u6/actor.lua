@@ -528,7 +528,7 @@ end
 -- actor_init(actor)
 --
 
-actor_init = function(actor)
+function actor_init(actor, alignment)
 
  local actor_base = actor_tbl[actor.obj_n]
  if actor_base ~= nil then
@@ -549,6 +549,10 @@ actor_init = function(actor)
    --actor.status = 32
  end
  
+   if alignment ~= nil then
+      actor.align = alignment
+   end
+   
    actor.wt = 8
    actor.combat_mode = 8
    actor.magic = actor_get_max_magic_points(actor)

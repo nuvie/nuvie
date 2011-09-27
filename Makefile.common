@@ -182,6 +182,8 @@ nuvie_SOURCES = \
 	script/Script.h \
 	script/ScriptActor.cpp \
 	script/ScriptActor.h \
+	script/ScriptCutscene.cpp \
+	script/ScriptCutscene.h \
 \
 	sound/CustomSfxManager.cpp \
 	sound/CustomSfxManager.h \

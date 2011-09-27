@@ -44,6 +44,7 @@ class GamePalette
    ~GamePalette();
    void rotatePalette();
    uint8 get_bg_color() { return bg_color; }
+   void set_palette();
 
  protected:
 

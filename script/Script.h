@@ -26,6 +26,7 @@
 
 #include <string>
 #include <list>
+#include "GUI.h"
 
 extern "C"
 {
@@ -85,7 +86,7 @@ class Script
 
  public:
 
- Script(Configuration *cfg, nuvie_game_t type);
+ Script(Configuration *cfg, GUI *gui, nuvie_game_t type);
  ~Script();
 
  bool init();
@@ -99,7 +100,7 @@ class Script
    bool call_save_game(NuvieIO *objlist);
 
    bool call_actor_update_all();
-   bool call_actor_init(Actor *actor);
+   bool call_actor_init(Actor *actor, uint8 alignment);
    bool call_actor_attack(Actor *actor, MapCoord location, Obj *weapon);
    bool call_actor_map_dmg(Actor *actor, MapCoord location);
    bool call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg=false);
@@ -108,6 +109,7 @@ class Script
    bool call_magic_get_spell_list(Spell **spell_list);
    bool call_actor_use_effect(Obj *effect_obj, Actor *actor);
    bool call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace=true);
+   bool run_lua_file(const char *filename);
    bool call_moonstone_set_loc(uint8 phase, MapCoord location); //this is a hack until we have 'use' moonstone in script.
    bool call_advance_time(uint16 minutes);
 
