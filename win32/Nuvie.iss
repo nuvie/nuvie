@@ -52,6 +52,7 @@ Source: data\ScrollBarUp_1.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarUp_2.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\scripts\u6\actor.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\init.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
+Source: data\scripts\u6\intro.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\magic.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\magic\circle_01\create_food.lua; DestDir: {app}\data\scripts\u6\magic\circle_01; Flags: ignoreversion
 Source: data\scripts\u6\magic\circle_01\detect_magic.lua; DestDir: {app}\data\scripts\u6\magic\circle_01; Flags: ignoreversion
