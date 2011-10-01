@@ -29,6 +29,8 @@
 #include "U6Shape.h"
 #include "Configuration.h"
 
+class SoundManager;
+
 extern "C"
 {
 #include "lauxlib.h"
@@ -46,8 +48,8 @@ struct CSImage {
 };
 
 struct CSSprite {
-	uint16 x;
-	uint16 y;
+	sint16 x;
+	sint16 y;
 	uint8 opacity;
 	CSImage *image;
 	bool visible;
@@ -62,7 +64,7 @@ struct CSSprite {
 	}
 };
 
-void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui);
+void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundManager *sm);
 
 
 class ScriptCutscene : public GUI_Widget
@@ -73,9 +75,10 @@ private:
 	std::list<CSSprite *> sprite_list; // in paint order
 	Screen *screen;
 	uint8 *palette;
+	SoundManager *sound_manager;
 
 public:
-	ScriptCutscene(GUI *g, Configuration *cfg);
+	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
 	CSImage *load_image(const char *filename, int idx);
 	void add_sprite(CSSprite *s) { sprite_list.push_back(s); }
 	void remove_sprite(CSSprite *s) { sprite_list.remove(s); }
@@ -85,6 +88,8 @@ public:
 	void update();
 
 	void Display(bool full_redraw);
+
+	SoundManager *get_sound_manager() { return sound_manager; }
 };
 
 #endif /* __ScriptCutscene_h__ */

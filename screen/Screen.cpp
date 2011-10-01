@@ -299,6 +299,9 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
       return false;
     else
       src_w += dest_x;
+
+    src_buf += -dest_x;
+    dest_x = 0;
    }
 
  if(dest_y < 0)
@@ -307,6 +310,9 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
       return false;
     else
       src_h += dest_y;
+
+    src_buf += src_pitch * -dest_y;
+    dest_y = 0;
    }
 
  if(dest_x + src_w >= width)

@@ -135,15 +135,15 @@ Game::~Game()
     if(magic) delete magic;
 }
 
-bool Game::loadGame(Screen *s, nuvie_game_t type)
+bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 {
  screen = s;
  game_type = type;
 
 
    dither = new Dither(config);
-   sound_manager = new SoundManager();
-   sound_manager->nuvieStartup(config);
+
+   sound_manager = sm;
    //sound_manager->LoadSongs(NULL);
    //sound_manager->LoadObjectSamples(NULL);
 

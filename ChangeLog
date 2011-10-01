@@ -1,3 +1,13 @@
+2011-10-01  Eric Fry <efry at users.sourceforge.net> r1260
+	* Added sound support to cutscene scripting.
+	* Fixed screen blitting where dest x/y < 0
+	* Added SoundManager::musicPlay(filename) for playing songs individually.
+	* Added cutscene script functions music_play() and input_poll().
+	* Added new optional arguments to sprite_new() script function. x, y, visible.
+	* Changed cutscene display() to only blit visible sprites that have an
+	  image assigned.
+	* Allow negative coords for cutscene sprites.
+
 2011-09-28  Eric Fry <efry at users.sourceforge.net> r1259
 	* Added u6 intro.lua file to win32 installer script.
 

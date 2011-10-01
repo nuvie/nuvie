@@ -72,6 +72,7 @@ void musicFinished ()
 SoundManager::SoundManager ()
 {
   m_pCurrentSong = NULL;
+  m_CurrentGroup = "";
   g_MusicFinished = true;
 
   audio_enabled = false;
@@ -531,6 +532,19 @@ void SoundManager::musicPlay()
 
 }
 
+void SoundManager::musicPlay(const char *filename)
+{
+	string path;
+	config_get_path(m_Config, filename, path);
+	SongAdPlug *song = new SongAdPlug(mixer->getMixer(), opl);
+	song->Init(path.c_str());
+
+	musicStop();
+	m_pCurrentSong = song;
+	m_CurrentGroup = "";
+	musicPlay();
+}
+
 // (SB-X) Stop the current song so a new song will play when resumed.
 void SoundManager::musicStop()
 {
@@ -685,7 +699,10 @@ void SoundManager::update()
         {
           m_pCurrentSong->Stop();
         }
-      m_pCurrentSong = SoundManager::RequestSong (m_CurrentGroup);
+
+      if(m_CurrentGroup.length() > 0)
+    	  m_pCurrentSong = SoundManager::RequestSong (m_CurrentGroup);
+
       if(m_pCurrentSong)
         {
           DEBUG(0,LEVEL_INFORMATIONAL,"assigning new song! '%s'\n", m_pCurrentSong->GetName().c_str());

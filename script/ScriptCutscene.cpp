@@ -27,6 +27,8 @@
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"
 
+#include "SoundManager.h"
+
 #include "ScriptCutscene.h"
 
 static ScriptCutscene *cutScene = NULL;
@@ -69,9 +71,12 @@ static int nscript_canvas_set_palette(lua_State *L);
 static int nscript_canvas_update(lua_State *L);
 static int nscript_canvas_hide(lua_State *L);
 
-void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui)
+static int nscript_music_play(lua_State *L);
+static int nscript_input_poll(lua_State *L);
+
+void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundManager *sm)
 {
-   cutScene = new ScriptCutscene(gui, cfg);
+   cutScene = new ScriptCutscene(gui, cfg, sm);
 
    luaL_newmetatable(L, "nuvie.Image");
    luaL_register(L, NULL, nscript_imagelib_m);
@@ -93,6 +98,12 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui)
 
    lua_pushcfunction(L, nscript_canvas_hide);
    lua_setglobal(L, "canvas_hide");
+
+   lua_pushcfunction(L, nscript_music_play);
+   lua_setglobal(L, "music_play");
+
+   lua_pushcfunction(L, nscript_input_poll);
+   lua_setglobal(L, "input_poll");
 }
 
 bool nscript_new_image_var(lua_State *L, CSImage *image)
@@ -386,11 +397,26 @@ static int nscript_sprite_new(lua_State *L)
 {
 	CSSprite *sprite = new CSSprite();
 
-	if(lua_gettop(L) >= 1)
+	if(lua_gettop(L) >= 1 && !lua_isnil(L, 1))
 	{
 		sprite->image = nscript_get_image_from_args(L, 1);
 		if(sprite->image)
 			sprite->image->refcount++;
+	}
+
+	if(lua_gettop(L) >= 2 && !lua_isnil(L, 2))
+	{
+		sprite->x = lua_tointeger(L, 2);
+	}
+
+	if(lua_gettop(L) >= 3 && !lua_isnil(L, 3))
+	{
+		sprite->y = lua_tointeger(L, 3);
+	}
+
+	if(lua_gettop(L) >= 4 && !lua_isnil(L, 4))
+	{
+		sprite->visible = lua_toboolean(L, 4);
 	}
 
 	cutScene->add_sprite(sprite);
@@ -418,16 +444,43 @@ static int nscript_canvas_update(lua_State *L)
 static int nscript_canvas_hide(lua_State *L)
 {
 	cutScene->Hide();
+	cutScene->get_sound_manager()->musicStop();
 	return 0;
 }
 
-ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg) : GUI_Widget(NULL, 0, 0, g->get_width(), g->get_height())
+static int nscript_music_play(lua_State *L)
+{
+	const char *filename = lua_tostring(L, 1);
+
+	cutScene->get_sound_manager()->musicPlay(filename);
+
+	return 0;
+}
+
+static int nscript_input_poll(lua_State *L)
+{
+	SDL_Event event;
+	if(SDL_PollEvent(&event))
+	{
+		//FIXME do something here.
+		if(event.type == SDL_KEYUP)
+		{
+			lua_pushinteger(L, 1);
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : GUI_Widget(NULL, 0, 0, g->get_width(), g->get_height())
 {
 	config = cfg;
 	gui = g;
 	screen = g->get_screen();
 	gui->AddWidget(this);
 	Hide();
+	sound_manager = sm;
 }
 
 CSImage *ScriptCutscene::load_image(const char *filename, int idx)
@@ -514,6 +567,7 @@ void ScriptCutscene::update()
 
 	gui->Display();
 	screen->preformUpdate();
+	sound_manager->update();
 	SDL_Delay(20); //FIXME implement scriptable wait period here.
 }
 
@@ -524,10 +578,15 @@ void ScriptCutscene::Display(bool full_redraw)
 	for(std::list<CSSprite *>::iterator it = sprite_list.begin(); it != sprite_list.end(); it++)
 	 {
 		CSSprite *s = *it;
-		uint16 w, h;
-		s->image->shp->get_size(&w, &h);
-		screen->blit(s->x, s->y, s->image->shp->get_data(), 8, w, h, w, true, NULL, s->opacity);
+		if(s->visible && s->image)
+		{
+			uint16 w, h;
+			s->image->shp->get_size(&w, &h);
+			screen->blit(s->x, s->y, s->image->shp->get_data(), 8, w, h, w, true, NULL, s->opacity);
+		}
 	 }
 
 	 screen->update(area.x,area.y,area.w,area.h);
 }
+
+

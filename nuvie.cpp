@@ -40,6 +40,7 @@
 #include "GameSelect.h"
 #include "GUI.h"
 #include "Console.h"
+#include "SoundManager.h"
 
 #include "nuvie.h"
 
@@ -115,7 +116,10 @@ bool Nuvie::init(int argc, char **argv)
  if(checkGameDir(game_type) == false)
    return false;
 
- script = new Script(config, gui, game_type);
+ SoundManager *sound_manager = new SoundManager();
+ sound_manager->nuvieStartup(config);
+
+ script = new Script(config, gui, sound_manager, game_type);
  if(script->init() == false)
 	 return false;
 
@@ -124,7 +128,7 @@ bool Nuvie::init(int argc, char **argv)
 
  game = new Game(config, script, gui);
 
- if(game->loadGame(screen,game_type) == false)
+ if(game->loadGame(screen, sound_manager, game_type) == false)
    {
     delete game;
     return false;

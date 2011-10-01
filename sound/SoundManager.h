@@ -66,6 +66,7 @@ public:
 
     void musicPause();
     void musicPlay();
+    void musicPlay(const char *filename);
 
     void musicStop(); // SB-X
     Audio::SoundHandle playTownsSound(std::string filename, uint16 sample_num);

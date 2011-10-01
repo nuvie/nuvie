@@ -38,7 +38,7 @@ class MapCoord;
 class Spell;
 class Obj;
 class Actor;
-
+class SoundManager;
 
 #define NUVIE_SCRIPT_ERROR             0
 #define NUVIE_SCRIPT_FINISHED          1
@@ -86,7 +86,7 @@ class Script
 
  public:
 
- Script(Configuration *cfg, GUI *gui, nuvie_game_t type);
+ Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type);
  ~Script();
 
  bool init();

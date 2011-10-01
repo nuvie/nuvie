@@ -396,7 +396,7 @@ uint8 ScriptThread::resume(int narg)
 }
 
 
-Script::Script(Configuration *cfg, GUI *gui, nuvie_game_t type)
+Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type)
 {
    const char *path;
    size_t len;
@@ -426,7 +426,7 @@ Script::Script(Configuration *cfg, GUI *gui, nuvie_game_t type)
    lua_setglobal(L, "nuvie_load");
 
    nscript_init_actor(L);
-   nscript_init_cutscene(L, cfg, gui);
+   nscript_init_cutscene(L, cfg, gui, sm);
 
    lua_pushcfunction(L, nscript_objlist_seek);
    lua_setglobal(L, "objlist_seek");

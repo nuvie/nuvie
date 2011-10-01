@@ -116,7 +116,7 @@ class Game
  Game(Configuration *cfg, Script *s, GUI *g);
  ~Game();
 
- bool loadGame(Screen *screen, nuvie_game_t type);
+ bool loadGame(Screen *screen, SoundManager *sm, nuvie_game_t type);
  void init_cursor();
 
  void play();
