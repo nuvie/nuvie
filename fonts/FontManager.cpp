@@ -29,6 +29,7 @@
 #include "NuvieIOFile.h"
 #include "FontManager.h"
 #include "Font.h"
+#include "U6Font.h"
 
 FontManager::FontManager(Configuration *cfg)
 {
@@ -65,13 +66,13 @@ bool FontManager::init()
    return false;
 
  // english font
- font = new Font();
+ font = new U6Font();
  font->init(font_data,128,0);
  fonts.push_back(font);
  num_fonts++;
 
  // runic & gargoyle font
- font = new Font();
+ font = new U6Font();
  font->init(&font_data[128 * 8], 128, 0);
  fonts.push_back(font);
  num_fonts++;

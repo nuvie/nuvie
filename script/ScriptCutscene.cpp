@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <math.h>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "U6Lib_n.h"
@@ -28,6 +29,7 @@
 #include "U6Lzw.h"
 
 #include "SoundManager.h"
+#include "Font.h"
 
 #include "ScriptCutscene.h"
 
@@ -42,6 +44,7 @@ static int nscript_image_gc(lua_State *L);
 static sint32 nscript_dec_image_ref_count(CSImage *image);
 
 static int nscript_image_load(lua_State *L);
+static int nscript_image_print(lua_State *L);
 
 static const struct luaL_Reg nscript_imagelib_m[] =
 {
@@ -86,6 +89,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_image_load);
    lua_setglobal(L, "image_load");
+
+   lua_pushcfunction(L, nscript_image_print);
+   lua_setglobal(L, "image_print");
 
    lua_pushcfunction(L, nscript_sprite_new);
    lua_setglobal(L, "sprite_new");
@@ -237,6 +243,24 @@ static int nscript_image_load(lua_State *L)
 	}
 
 	return 0;
+}
+
+static int nscript_image_print(lua_State *L)
+{
+	CSImage *img = nscript_get_image_from_args(L, 1);
+	const char *text = lua_tostring(L, 2);
+	uint16 startx = lua_tointeger(L, 3);
+	uint16 width = lua_tointeger(L, 4);
+	uint16 x = lua_tointeger(L, 5);
+	uint16 y = lua_tointeger(L, 6);
+	uint8 color = lua_tointeger(L, 7);
+
+	cutScene->print_text(img, text, &x, &y, startx, width, color);
+
+	lua_pushinteger(L, x);
+	lua_pushinteger(L, y);
+
+	return 2;
 }
 
 bool nscript_new_sprite_var(lua_State *L, CSSprite *sprite)
@@ -465,7 +489,7 @@ static int nscript_input_poll(lua_State *L)
 		//FIXME do something here.
 		if(event.type == SDL_KEYUP)
 		{
-			lua_pushinteger(L, 1);
+			lua_pushinteger(L, event.key.keysym.sym);
 			return 1;
 		}
 	}
@@ -481,6 +505,13 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	gui->AddWidget(this);
 	Hide();
 	sound_manager = sm;
+
+	//FIXME this should be loaded by script.
+	std::string path;
+	config_get_path(config, "u6.set", path);
+
+	font = new Font();
+	font->init(path.c_str());
 }
 
 CSImage *ScriptCutscene::load_image(const char *filename, int idx)
@@ -525,6 +556,64 @@ CSImage *ScriptCutscene::load_image(const char *filename, int idx)
 	return image;
 }
 
+void ScriptCutscene::print_text(CSImage *image, const char *s, uint16 *x, uint16 *y, uint16 startx, uint16 width, uint8 color)
+{
+	int len=*x-startx;
+	size_t start=0;
+	size_t found;
+	std::string str = s;
+	std::list<std::string> tokens;
+	int space_width = font->getStringWidth(" ");
+	//uint16 x1 = startx;
+
+	  found=str.find_first_of(" ", start);
+	  while (found!=string::npos)
+	  {
+	    std::string token = str.substr(start,found-start);
+
+	    int token_len = font->getStringWidth(token.c_str());
+
+	    if(len + token_len + space_width > width)
+	    {
+	    	//FIXME render line here.
+	    	list<std::string>::iterator it;
+	    	int new_space = 0;
+	    	if(tokens.size() > 1)
+	    		new_space = floor((width - (len - space_width * (tokens.size() - 1))) / (tokens.size() - 1));
+
+	    	  for(it=tokens.begin() ; it != tokens.end() ; it++ )
+	    	  {
+	    		  *x = font->drawStringToShape(image->shp, (*it).c_str(), *x, *y, color);
+	    		  *x += new_space;
+	    	  }
+	    	*y += 8;
+	    	*x = startx;
+	    	len = token_len + space_width;
+	    	tokens.clear();
+	    	tokens.push_back(token);
+	    }
+	    else
+	    {
+	    	tokens.push_back(token);
+	    	len += token_len + space_width;
+	    }
+
+	    start = found + 1;
+	    found=str.find_first_of(" ", start);
+	  }
+	  if(start < str.length())
+		  tokens.push_back(str.substr(start, str.length() - start));
+
+  	list<std::string>::iterator it;
+
+  	  for(it=tokens.begin() ; it != tokens.end() ; it++ )
+  	  {
+  		  *x = font->drawStringToShape(image->shp, (*it).c_str(), *x, *y, color);
+  		  *x += space_width;
+  	  }
+	//font->drawStringToShape(image->shp, string, x, y, color);
+}
+
 void ScriptCutscene::load_palette(const char *filename, int idx)
 {
 	NuvieIOFileRead file;
@@ -554,7 +643,9 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 	                        (buf[byte_pos+1] << 8))
 	                        >> shift_val) & 0x3F;
 	            unpacked_palette[i*3+j] = (uint8) (color << 2);
+	            //printf("%02x,", unpacked_palette[i*3+j]);
 	        }
+	        //printf(":%d\n", i);
 	    }
 
 	screen->set_palette(unpacked_palette);

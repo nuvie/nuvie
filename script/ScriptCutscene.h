@@ -30,6 +30,7 @@
 #include "Configuration.h"
 
 class SoundManager;
+class Font;
 
 extern "C"
 {
@@ -76,6 +77,7 @@ private:
 	Screen *screen;
 	uint8 *palette;
 	SoundManager *sound_manager;
+	Font *font;
 
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
@@ -88,6 +90,8 @@ public:
 	void update();
 
 	void Display(bool full_redraw);
+
+	void print_text(CSImage *image, const char *string, uint16 *x, uint16 *y, uint16 startx, uint16 width, uint8 color);
 
 	SoundManager *get_sound_manager() { return sound_manager; }
 };

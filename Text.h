@@ -28,6 +28,7 @@
 
 class Configuration;
 class Screen;
+class U6Shape;
 
 class Text
 {
@@ -49,6 +50,10 @@ class Text
    uint8 get_char_num(uint8 c, uint8 lang_num);
    void drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color = 0x48);
+
+   bool drawStringToShape(U6Shape *shp, const char *str, uint16 x, uint16 y, uint8 color);
+   uint8 drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y,
+                       uint8 color);
 };
 
 #endif /* __Text_h__ */

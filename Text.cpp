@@ -32,7 +32,7 @@
 #include "NuvieIOFile.h"
 
 #include "Screen.h"
-
+#include "U6Shape.h"
 #include "Text.h"
 
 Text::Text(Configuration *cfg)
@@ -173,4 +173,59 @@ void Text::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
 
  screen->blit(x,y,buf,8,8,8,8,true,NULL);
  return;
+}
+
+bool Text::drawStringToShape(U6Shape *shp, const char *str, uint16 x, uint16 y, uint8 color)
+{
+	uint16 i;
+	uint16 string_len = strlen(str);
+
+	if(font_data == NULL)
+		return false;
+
+	for(i=0;i<string_len;i++)
+	{
+		x += drawCharToShape(shp, get_char_num(str[i], 0), x, y, color) + 1;
+	}
+
+	return true;
+}
+
+uint8 Text::drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y,
+                    uint8 color)
+{
+ unsigned char *pixels;
+ uint16 i,j;
+ unsigned char *font;
+ uint16 pitch;
+ uint16 dst_w, dst_h;
+
+ pixels = shp->get_data();
+ shp->get_size(&dst_w, &dst_h);
+ pitch = dst_w;
+
+ font = &font_data[char_num * 8];
+
+ pixels += y * pitch + x;
+ uint8 w=0;
+ for(i=0;i<8;i++)
+   {
+
+    for(j=8;j>0;j--)
+      {
+       if(font[i] & (1<<(j-1)))
+       {
+         pixels[8-j] = color; // 0th palette entry should be black
+         if((8-j) > w)
+        	 w = 8-j;
+       }
+      }
+
+    pixels += pitch;
+   }
+
+ if(w==0)
+	 w = 4;
+
+ return w;
 }

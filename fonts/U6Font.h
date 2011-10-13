@@ -1,8 +1,8 @@
-#ifndef __Font_h__
-#define __Font_h__
+#ifndef __U6Font_h__
+#define __U6Font_h__
 
 /*
- *  Font.h
+ *  U6Font.h
  *  Nuvie
  *
  *  Created by Eric Fry on Wed Jan 28 2003.
@@ -27,44 +27,25 @@
 #define FONT_COLOR_U6_NORMAL    0x48
 #define FONT_COLOR_U6_HIGHLIGHT 0x0c
 
+#include "Font.h"
+
 class Configuration;
 class Screen;
-class U6Shape;
 
-class Font
+class U6Font : public Font
 {
-protected:
- unsigned char *font_data;
- uint16 num_chars;
- uint16 offset;
-
-private:
- uint16 height;
- uint8 pixel_char;
 
  public:
 
-   Font();
-   ~Font();
+   U6Font();
+   ~U6Font();
 
-   virtual bool init(unsigned char *data, uint16 num_chars, uint16 char_offset) {return false;}
-   bool init(const char *filename);
+   bool init(unsigned char *data, uint16 num_chars, uint16 char_offset);
 
-//   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y);
-   bool drawString(Screen *screen, const char *str, uint16 x, uint16 y);
-   bool drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y);
-
-   virtual void drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
+   void drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color = FONT_COLOR_U6_NORMAL);
-
-   uint16 drawStringToShape(U6Shape *shp, const char *str, uint16 x, uint16 y, uint8 color);
-   uint8 drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y, uint8 color);
-
-   uint16 getStringWidth(const char *str);
   protected:
-
-   uint8 get_char_num(uint8 c);
 
 };
 
-#endif /* __Font_h__ */
+#endif /* __U6Font_h__ */
