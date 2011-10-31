@@ -86,6 +86,7 @@ public:
 	void remove_sprite(CSSprite *s) { sprite_list.remove(s); }
 
 	void load_palette(const char *filename, int idx);
+	void set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
 
 	void update();
 

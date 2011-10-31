@@ -71,6 +71,7 @@ static const struct luaL_Reg nscript_spritelib_m[] =
 static int nscript_sprite_new(lua_State *L);
 
 static int nscript_canvas_set_palette(lua_State *L);
+static int nscript_canvas_set_palette_entry(lua_State *L);
 static int nscript_canvas_update(lua_State *L);
 static int nscript_canvas_hide(lua_State *L);
 
@@ -98,6 +99,10 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_canvas_set_palette);
    lua_setglobal(L, "canvas_set_palette");
+
+   lua_pushcfunction(L, nscript_canvas_set_palette_entry);
+   lua_setglobal(L, "canvas_set_palette_entry");
+
 
    lua_pushcfunction(L, nscript_canvas_update);
    lua_setglobal(L, "canvas_update");
@@ -459,6 +464,18 @@ static int nscript_canvas_set_palette(lua_State *L)
 	return 0;
 }
 
+static int nscript_canvas_set_palette_entry(lua_State *L)
+{
+	uint8 idx = lua_tointeger(L, 1);
+	uint8 r = lua_tointeger(L, 2);
+	uint8 g = lua_tointeger(L, 3);
+	uint8 b = lua_tointeger(L, 4);
+
+	cutScene->set_palette_entry(idx, r, g, b);
+
+	return 0;
+}
+
 static int nscript_canvas_update(lua_State *L)
 {
 	cutScene->update();
@@ -635,6 +652,7 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 	    uint8 unpacked_palette[0x300];
 	    for (int i = 0; i < 0x100; i++)
 	    {
+	    	//printf("%d:",idx);
 	        for (int j = 0; j < 3; j++)
 	        {
 	            int byte_pos = (i*3*6 + j*6) / 8;
@@ -649,6 +667,11 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 	    }
 
 	screen->set_palette(unpacked_palette);
+}
+
+void ScriptCutscene::set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b)
+{
+	screen->set_palette_entry(idx, r, g, b);
 }
 
 void ScriptCutscene::update()
@@ -673,7 +696,9 @@ void ScriptCutscene::Display(bool full_redraw)
 		{
 			uint16 w, h;
 			s->image->shp->get_size(&w, &h);
-			screen->blit(s->x, s->y, s->image->shp->get_data(), 8, w, h, w, true, NULL, s->opacity);
+			uint16 x, y;
+			s->image->shp->get_hot_point(&x, &y);
+			screen->blit(s->x-x, s->y-y, s->image->shp->get_data(), 8, w, h, w, true, NULL, s->opacity);
 		}
 	 }
 

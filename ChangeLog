@@ -1,3 +1,9 @@
+2011-11-01  Eric Fry <efry at users.sourceforge.net> r1262
+	* More work on U6 intro sequence.
+	* Added Screen::set_palette_entry()
+	* Added canvas_set_palette_entry() script function.
+	* Use U6Shape hotpoints when update cutscene sprites.
+
 2011-10-14  Eric Fry <efry at users.sourceforge.net> r1261
 	* Added new Font class for intro style fonts. Moved existing u6 font
 	  into U6Font class.

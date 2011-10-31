@@ -144,6 +144,18 @@ bool Screen::set_palette(uint8 *p)
  return true;
 }
 
+bool Screen::set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b)
+{
+ if(surface == NULL)
+   return false;
+
+ uint32	c= ((((uint32)r)>>RenderSurface::Rloss)<<RenderSurface::Rshift) | ((((uint32)g)>>RenderSurface::Gloss)<<RenderSurface::Gshift) | ((((uint32)b)>>RenderSurface::Bloss)<<RenderSurface::Bshift);
+
+ surface->colour32[idx] = c;
+
+ return true;
+}
+
 bool Screen::rotate_palette(uint8 pos, uint8 length)
 {
  uint32 tmp_colour;

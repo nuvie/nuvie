@@ -165,15 +165,26 @@ end
 
 g_window_tbl = {}
 function load_window()
+	local rand = math.random
+	g_window_tbl["cloud_x"] = -400
+	
 	g_window_tbl["sky"] = sprite_new(g_img_tbl[1], 0, 0, true)
-	g_window_tbl["cloud1"] = sprite_new(g_img_tbl[0], 0, 0, false)
-	g_window_tbl["cloud2"] = sprite_new(g_img_tbl[2], 0, 0, false)
-	g_window_tbl["cloud3"] = sprite_new(g_img_tbl[3], 0, 0, false)
+	g_window_tbl["cloud1"] = sprite_new(g_img_tbl[0], g_window_tbl["cloud_x"], -5, true)
+	g_window_tbl["cloud2"] = sprite_new(g_img_tbl[0], g_window_tbl["cloud_x"], -5, true)
+	g_window_tbl["clouds"] = {}
+	
+	local i
+	for i=1,5 do
+		table.insert(g_window_tbl["clouds"], sprite_new(g_img_tbl[rand(2,3)], rand(0,320) - 260, rand(0, 30), true))
+	end
+	
 	g_window_tbl["lightning"] = sprite_new(nil, 0, 0, false)
 	g_window_tbl["ground"] = sprite_new(g_img_tbl[10], 0, 0x4c, true)
 	g_window_tbl["trees"] = sprite_new(g_img_tbl[8], 0, 0, true)
 
-	g_window_tbl["strike"] = sprite_new(nil, 0, 0, false)
+	g_window_tbl["strike"] = sprite_new(g_img_tbl[rand(19,23)], 158, 114, false)
+	
+
 	
 	--FIXME rain here.
 	local rain = {}
@@ -185,10 +196,14 @@ function load_window()
 	
 	g_window_tbl["frame"] = sprite_new(g_img_tbl[28], 0, 0, true)	
 	g_window_tbl["window"] = sprite_new(g_img_tbl[26], 0x39, 0, true)
-
+	g_window_tbl["door_left"] = sprite_new(g_img_tbl[24], 320, 0, true)
+	g_window_tbl["door_right"] = sprite_new(g_img_tbl[25], 573, 0, true)
+		
 	g_window_tbl["flash"] = 0
 	g_window_tbl["drops"] = 0
 	g_window_tbl["rain_delay"] = 20
+	g_window_tbl["lightning_counter"] = 0
+	
 end
 
 function display_window()
@@ -197,36 +212,57 @@ function display_window()
 	local rain = g_window_tbl["rain"]
 	local rand = math.random
 	local c_num
-	if g_window_tbl["cloud1"].visible == false or g_window_tbl["cloud1"].x > 320 then
-		c_num = rand(1,3)
-		if c_num == 1 then c_num = 0 end
+
+	--FIXME display clouds here.
+	local cloud
+	for i,cloud in ipairs(g_window_tbl["clouds"]) do
+		if cloud.x > 320 then
+			cloud.x = rand(0, 320) - 320
+			cloud.y = rand(0, 30)
+		end
 		
-		g_window_tbl["cloud1"].image = g_img_tbl[c_num]
-		
-		g_window_tbl["cloud1"].x = -310
-		g_window_tbl["cloud1"].visible = true
-	else
-		g_window_tbl["cloud1"].x = g_window_tbl["cloud1"].x + 1
+		cloud.x = cloud.x + 2
 	end
 
-	if g_window_tbl["cloud2"].visible == false or g_window_tbl["cloud2"].x > 320 then
-		g_window_tbl["cloud2"].x = -150
-		g_window_tbl["cloud2"].visible = true
-	else
-		g_window_tbl["cloud2"].x = g_window_tbl["cloud2"].x + 2
+	g_window_tbl["cloud_x"] = g_window_tbl["cloud_x"] + 1
+	if g_window_tbl["cloud_x"] == 320 then
+		g_window_tbl["cloud_x"] = 0
+	end
+	
+	g_window_tbl["cloud1"].x = g_window_tbl["cloud_x"]
+	g_window_tbl["cloud2"].x = g_window_tbl["cloud_x"] - 320
+	
+	if rand(0, 6) == 0 and g_window_tbl["lightning_counter"] == 0 then --fixme var_1a, var_14
+		g_window_tbl["lightning_counter"] = rand(1, 4)
+		g_window_tbl["lightning"].image = g_img_tbl[rand(11,18)]
+		g_window_tbl["lightning"].visible = true
+		g_window_tbl["lightning_x"] = rand(-5,320)
+		g_window_tbl["lightning_y"] = rand(-5,200)
 	end
 
-	if g_window_tbl["cloud3"].visible == false or g_window_tbl["cloud3"].x > 320 then
-		g_window_tbl["cloud3"].x = -140
-		g_window_tbl["cloud3"].visible = true
-	else
-		g_window_tbl["cloud3"].x = g_window_tbl["cloud3"].x + 3
+	if g_window_tbl["lightning_counter"] > 0 then
+		g_window_tbl["lightning"].x = g_window_tbl["lightning_x"] + rand(0, 3)
+		g_window_tbl["lightning"].y = g_window_tbl["lightning_y"] + rand(0, 3)
 	end
 
+	if (g_window_tbl["lightning_counter"] > 0 and rand(0,3) == 0) or g_window_tbl["strike"].visible == true then
+		canvas_set_palette_entry(0x58, 0x40,0x94,0xfc)
+		canvas_set_palette_entry(0x5a, 0x40,0x94,0xfc)
+		canvas_set_palette_entry(0x5c, 0x40,0x94,0xfc)
+	else
+		canvas_set_palette_entry(0x58, 0x20,0xa4,0x80)
+		canvas_set_palette_entry(0x5a, 0x14,0x8c,0x74)
+		canvas_set_palette_entry(0x5c, 0x0c,0x74,0x68)
+	end
+	
+	if rand(0,1) == 0 then
+		g_window_tbl["strike"].image = g_img_tbl[rand(19,23)]
+	end
+	
 	if g_window_tbl["flash"] > 0 then
 		g_window_tbl["flash"] = g_window_tbl["flash"] - 1
 	else
-		if rand(0,5) == 0 then
+		if rand(0,5) == 0 or g_window_tbl["strike"].visible == true then
 			g_window_tbl["window"].image = g_img_tbl[27]
 			g_window_tbl["flash"] = rand(1, 5)
 		else
@@ -264,6 +300,10 @@ function display_window()
 			rain[i].x = rand(0,320)
 		end
 	end
+	
+	if g_window_tbl["lightning_counter"] > 0 then
+		g_window_tbl["lightning_counter"] = g_window_tbl["lightning_counter"] - 1
+	end
 end
 
 function window_sequence()
@@ -272,7 +312,26 @@ function window_sequence()
 	load_window()
 	
 	canvas_set_palette("palettes.int", 2)
+	
+	local i = 0
+	local input = input_poll()
+	while input == nil and i < 20 do
+		display_window()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
 		
+		i = i + 1
+		canvas_update()
+	end
+	
+	local scroll_img = image_load("blocks.shp", 1)
+	local scroll = sprite_new(scroll_img, 1, 0x98, true)
+	
+	local x, y = image_print(scroll_img, "...and in moments, the storm is upon you.", 8, 312, 36, 14, 0x3e)
+
 	local input = input_poll()
 	while input == nil do
 		display_window()
@@ -282,8 +341,122 @@ function window_sequence()
 			break
 		end
 		canvas_update()
-		input = input_poll()
 	end
+	
+	scroll_img = image_load("blocks.shp", 1)
+	x, y = image_print(scroll_img, "Tongues of lightning lash the sky, conducting an unceasing ", 8, 310, 8, 10, 0x3e)
+	image_print(scroll_img, "crescendo of thunder....", 8, 310, x, y, 0x3e)
+	scroll.image = scroll_img
+	
+	input = null
+	while input == nil do
+		display_window()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	canvas_update()
+	end
+
+	scroll_img = image_load("blocks.shp", 1)
+	x, y = image_print(scroll_img, "In a cataclysm of sound and light, a bolt of searing ", 8, 310, 8, 10, 0x3e)
+	image_print(scroll_img, "blue fire strikes the earth!", 8, 310, x, y, 0x3e)
+	scroll.image = scroll_img
+	
+	g_window_tbl["strike"].visible = true
+		
+	input = null
+	while input == nil do
+		display_window()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	canvas_update()
+	end
+	
+	scroll_img = image_load("blocks.shp", 1)
+	x, y = image_print(scroll_img, "Lightning among the stones!", 8, 310, 73, 10, 0x3e)
+	image_print(scroll_img, "Is this a sign from distant Britannia?", 8, 310, 41, 18, 0x3e)
+	scroll.image = scroll_img
+		
+	--fixme scroll window here.
+	input = null
+	i = 0
+	while input == nil and i < 320 do
+
+		display_window()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	
+		canvas_update()
+		input = input_poll()
+	
+		g_window_tbl["window"].x = g_window_tbl["window"].x - 2
+		g_window_tbl["frame"].x = g_window_tbl["frame"].x - 2
+		g_window_tbl["door_left"].x = g_window_tbl["door_left"].x - 2
+		g_window_tbl["door_right"].x = g_window_tbl["door_right"].x - 2
+		i = i + 2
+		if i > 160 and g_window_tbl["strike"].visible == true then
+			g_window_tbl["strike"].visible = false
+		end
+	end
+	
+	input = null
+	while input == nil do
+		display_window()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+		canvas_update()
+	end
+	
+	scroll.visible = false
+	input = null
+	i = 0
+	while input == nil and i < 68 do
+	
+		display_window()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	
+		canvas_update()
+		input = input_poll()
+	
+		g_window_tbl["door_left"].x = g_window_tbl["door_left"].x - 1
+		g_window_tbl["door_right"].x = g_window_tbl["door_right"].x + 1
+		i = i + 1
+	end
+
+	scroll_img = image_load("blocks.shp", 2)
+	x, y = image_print(scroll_img, "You bolt from your house, stumbling, running blind in the", 7, 310, 8, 12, 0x3e)
+	x, y = image_print(scroll_img, " storm. Into the forest, down the path, through the ", 7, 310, x, y, 0x3e)
+	image_print(scroll_img, "rain... to the stones.", 7, 310, x, y, 0x3e)
+	scroll.image = scroll_img
+	scroll.visible = true
+
+	input = null
+	while input == nil do
+		display_window()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+		canvas_update()
+	end
+
+	
 end
 
 load_images("intro_1.shp", 0x46)
@@ -337,10 +510,10 @@ end
 
 background.visible = false
 
---] ]
+
 
 lounge_sequence()
-
+--] ]
 window_sequence()
 
 canvas_hide()

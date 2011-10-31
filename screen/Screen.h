@@ -68,6 +68,7 @@ class Screen
    bool init(uint16 width, uint16 height);
 
    bool set_palette(uint8 *palette);
+   bool set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
    bool rotate_palette(uint8 pos, uint8 length);
    bool clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect=NULL);
    void *get_pixels();
