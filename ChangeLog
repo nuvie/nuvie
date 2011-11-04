@@ -1,3 +1,9 @@
+2011-11-04  Eric Fry <efry at users.sourceforge.net> r1263
+	* Added new cutscene script function image_load_all(). This loads all images
+	  from a given file and returns them in a lua table starting at index 0.
+	* Fixed assert() when double clicking a sign. Bug [3432913] Thanks to angelox
+	  and qbradq.
+
 2011-11-01  Eric Fry <efry at users.sourceforge.net> r1262
 	* More work on U6 intro sequence.
 	* Added Screen::set_palette_entry()

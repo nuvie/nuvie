@@ -44,6 +44,7 @@ static int nscript_image_gc(lua_State *L);
 static sint32 nscript_dec_image_ref_count(CSImage *image);
 
 static int nscript_image_load(lua_State *L);
+static int nscript_image_load_all(lua_State *L);
 static int nscript_image_print(lua_State *L);
 
 static const struct luaL_Reg nscript_imagelib_m[] =
@@ -90,6 +91,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_image_load);
    lua_setglobal(L, "image_load");
+
+   lua_pushcfunction(L, nscript_image_load_all);
+   lua_setglobal(L, "image_load_all");
 
    lua_pushcfunction(L, nscript_image_print);
    lua_setglobal(L, "image_print");
@@ -248,6 +252,29 @@ static int nscript_image_load(lua_State *L)
 	}
 
 	return 0;
+}
+
+static int nscript_image_load_all(lua_State *L)
+{
+	const char *filename = lua_tostring(L, 1);
+	std::vector<CSImage *> images = cutScene->load_all_images(filename);
+
+	if(images.empty())
+	{
+		return 0;
+	}
+
+	lua_newtable(L);
+
+	for(uint16 i=0;i<images.size();i++)
+	{
+		lua_pushinteger(L, i);
+
+		nscript_new_image_var(L, images[i]);
+		lua_settable(L, -3);
+	}
+
+	return 1;
 }
 
 static int nscript_image_print(lua_State *L)
@@ -573,6 +600,42 @@ CSImage *ScriptCutscene::load_image(const char *filename, int idx)
 	return image;
 }
 
+std::vector<CSImage *> ScriptCutscene::load_all_images(const char *filename)
+{
+	std::string path;
+	CSImage *image = NULL;
+
+	config_get_path(config, filename, path);
+
+
+	std::vector<CSImage *> v;
+	U6Lzw lzw;
+
+	U6Lib_n lib_n;
+	uint32 decomp_size;
+	unsigned char *buf = lzw.decompress_file(path.c_str(), decomp_size);
+	NuvieIOBuffer io;
+	io.open(buf, decomp_size, false);
+	if(!lib_n.open(&io, 4, NUVIE_GAME_MD))
+	{
+		free(buf);
+		return v;
+	}
+
+	for(uint32 idx=0;idx<lib_n.get_num_items();idx++)
+	{
+		U6Shape *shp = new U6Shape();
+		if(shp->load(&lib_n, (uint32)idx))
+		{
+			image = new CSImage(shp);
+			v.push_back(image);
+		}
+	}
+	free(buf);
+
+	return v;
+
+}
 void ScriptCutscene::print_text(CSImage *image, const char *s, uint16 *x, uint16 *y, uint16 startx, uint16 width, uint8 color)
 {
 	int len=*x-startx;

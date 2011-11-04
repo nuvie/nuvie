@@ -2464,13 +2464,13 @@ void Event::multiuse(uint16 wx, uint16 wy)
     }
     else if(obj && usecode->is_sign(obj)) // look at a sign
     {
-        newAction(LOOK_MODE);
+        set_mode(LOOK_MODE);
         look(obj);
-        endAction(true); // FIXME: should be in look()
+        endAction(false); // FIXME: should be in look()
     }
     else if(obj) // use a real object
     {
-        newAction(USE_MODE);
+        set_mode(USE_MODE);
         use(obj);
     }
 }

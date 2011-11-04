@@ -10,13 +10,8 @@ function poll_for_esc()
 	return false
 end
 
-function load_images(filename, num_images)
-	--FIXME create a C function to do this.
-	local i
-	g_img_tbl = {}
-	for i=0,num_images do
-	g_img_tbl[i] = image_load(filename, i)
-	end
+function load_images(filename)
+	g_img_tbl = image_load_all(filename)
 end
 
 g_clock_tbl = {}
@@ -307,7 +302,7 @@ function display_window()
 end
 
 function window_sequence()
-	load_images("intro_2.shp", 0x1c)
+	load_images("intro_2.shp")
 	
 	load_window()
 	
@@ -459,7 +454,7 @@ function window_sequence()
 	
 end
 
-load_images("intro_1.shp", 0x46)
+load_images("intro_1.shp")
 music_play("bootup.m")
 --[ [
 canvas_set_palette("palettes.int", 0)
