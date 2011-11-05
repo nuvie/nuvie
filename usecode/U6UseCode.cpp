@@ -1727,6 +1727,22 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
     return false;
 }
 
+bool U6UseCode::lock_pick_dex_check()
+{
+	int dex = player->get_actor()->get_dexterity();
+	if(player->get_actor()->is_cursed())
+	{
+		if(dex <= 3)
+			dex = 1;
+		else
+			dex -= 3;
+	}
+
+	if(NUVIE_RAND() % 30 < (45 - dex) / 2)
+		return true;
+
+	return false;
+}
 
 /* Use a key on obj_ref (a door). */
 bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
@@ -1744,7 +1760,25 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
         {
             scroll->display_string(obj_manager->get_obj_name(door_obj));
             scroll->display_string("\n");
-            if(door_obj->quality != 0 && door_obj->quality == obj->quality && is_closed_door(door_obj))
+
+            if(obj->obj_n == OBJ_U6_LOCK_PICK && lock_pick_dex_check() == true)
+            {
+                Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_FAILURE);
+            	scroll->display_string("\nKey broke.\n");
+            	if(obj->qty > 1)
+            	{
+            		obj->qty -= 1;
+            	}
+            	else
+            	{
+            		obj_manager->unlink_from_engine(obj);
+            		delete_obj(obj);
+            	}
+
+            	return true;
+            }
+//FIXME need to handle locked chests.
+            if(((door_obj->quality != 0 && door_obj->quality == obj->quality) || obj->obj_n == OBJ_U6_LOCK_PICK) && is_closed_door(door_obj))
             {
                 if(is_locked_door(door_obj))
                 {

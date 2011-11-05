@@ -89,6 +89,7 @@ class U6UseCode: public UseCode, public CallBack
  bool is_locked_door(Obj *obj)   { return(is_door(obj) && (obj->frame_n == 9 || obj->frame_n == 11)); }
  bool is_magically_locked_door(Obj *obj) { return(is_door(obj) && (obj->frame_n == 13 || obj->frame_n == 15)); }
  bool is_closed_door(Obj *obj)   { return(is_door(obj) && obj->frame_n > 3); }
+ bool is_closed_chest(Obj *obj) { return(obj->obj_n == OBJ_U6_CHEST); }
  bool is_food(Obj *obj);
  bool is_container(Obj *obj);
  bool is_book(Obj *obj);
@@ -175,6 +176,7 @@ class U6UseCode: public UseCode, public CallBack
  sint16 parseLatLongString(U6UseCodeLatLonEnum mode, std::string *input);
  
  inline bool use_find_water(uint16 *x, uint16 *y, uint8 *z);
+ inline bool lock_pick_dex_check();
 };
 
 #endif /* __U6UseCode_h__ */

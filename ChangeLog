@@ -1,3 +1,6 @@
+2011-11-05  Eric Fry <efry at users.sourceforge.net> r1264
+	* Added 'U'se lock pick. Bug [3433606].
+
 2011-11-04  Eric Fry <efry at users.sourceforge.net> r1263
 	* Added new cutscene script function image_load_all(). This loads all images
 	  from a given file and returns them in a lua table starting at index 0.

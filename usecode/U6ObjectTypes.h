@@ -10,6 +10,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_CEDAR_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door,OBJTYPE_NONE },
     { OBJ_U6_STEEL_DOOR,   255,0,USE_EVENT_USE,&U6UseCode::use_door,OBJTYPE_NONE },
     { OBJ_U6_KEY,          255,0,USE_EVENT_USE,&U6UseCode::use_key,OBJTYPE_NONE },
+    { OBJ_U6_LOCK_PICK,    255,0,USE_EVENT_USE,&U6UseCode::use_key,OBJTYPE_NONE },
 
     { OBJ_U6_PROTECTION_RING,0,0,USE_EVENT_READY,&U6UseCode::magic_ring,OBJTYPE_NONE },
     { OBJ_U6_REGENERATION_RING,0,0,USE_EVENT_READY,&U6UseCode::magic_ring,OBJTYPE_NONE },
