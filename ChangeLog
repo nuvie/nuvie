@@ -1,3 +1,7 @@
+2011-11-07  Eric Fry <efry at users.sourceforge.net> r1265
+	* Fixed assert crash when moving objects between party members. Bug [3432314]
+	* Fixed bug with Obj::is_on_map() method. It wasn't working correctly on readied items.
+
 2011-11-05  Eric Fry <efry at users.sourceforge.net> r1264
 	* Added 'U'se lock pick. Bug [3433606].
 

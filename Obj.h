@@ -112,7 +112,7 @@ public:
   bool is_cursed()       { return(status & OBJ_STATUS_CURSED); }
   bool is_lit()          { return(status & OBJ_STATUS_LIT); }
   
-  bool is_on_map()       { return((nuvie_status & OBJ_LOC_MAP) == OBJ_LOC_MAP); }
+  bool is_on_map()       { return((nuvie_status & NUVIE_OBJ_STATUS_LOC_MASK_GET) == OBJ_LOC_MAP); }
   bool is_in_container() { return((nuvie_status & NUVIE_OBJ_STATUS_LOC_MASK_GET) == OBJ_LOC_CONT); }
   bool is_in_inventory(bool check_parent=true);
   

@@ -2574,13 +2574,17 @@ void Event::doAction()
     }
     else if(mode == PUSH_MODE)
     {
-        assert(input.type == EVENTINPUT_MAPCOORD_DIR || input.type == EVENTINPUT_OBJECT);
+        assert(input.type == EVENTINPUT_MAPCOORD_DIR || input.type == EVENTINPUT_OBJECT || input.type == EVENTINPUT_MAPCOORD);
         if(input.type == EVENTINPUT_MAPCOORD_DIR)
         {
 			if(!push_obj && !push_actor)
 				pushFrom(input.loc->sx,input.loc->sy);
 			else
 				pushTo(input.loc->sx,input.loc->sy,PUSH_FROM_OBJECT);
+        }
+        else if(input.type == EVENTINPUT_MAPCOORD)
+        {
+        	pushTo(input.loc->x,input.loc->y);
         }
     	else
     	{
