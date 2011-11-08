@@ -89,7 +89,19 @@ class U6UseCode: public UseCode, public CallBack
  bool is_locked_door(Obj *obj)   { return(is_door(obj) && (obj->frame_n == 9 || obj->frame_n == 11)); }
  bool is_magically_locked_door(Obj *obj) { return(is_door(obj) && (obj->frame_n == 13 || obj->frame_n == 15)); }
  bool is_closed_door(Obj *obj)   { return(is_door(obj) && obj->frame_n > 3); }
- bool is_closed_chest(Obj *obj) { return(obj->obj_n == OBJ_U6_CHEST); }
+
+ bool is_chest(Obj *obj) { return(obj->obj_n == OBJ_U6_CHEST); }
+ bool is_closed_chest(Obj *obj) { return(is_chest(obj) && obj->frame_n > 0); }
+ bool is_locked_chest(Obj *obj) { return(is_chest(obj) && obj->frame_n == 2); }
+ bool is_magically_locked_chest(Obj *obj) { return(is_chest(obj) && obj->frame_n == 3); }
+ void unlock_chest(Obj *obj) { if(is_locked_chest(obj)) obj->frame_n = 1; return; }
+ void lock_chest(Obj *obj) { if(is_chest(obj) && obj->frame_n == 1) obj->frame_n = 2; return; }
+
+ bool is_locked(Obj *obj) { return(is_locked_door(obj) || is_locked_chest(obj)); }
+ bool is_magically_locked(Obj *obj) { return(is_magically_locked_door(obj) || is_magically_locked_chest(obj)); }
+ void unlock(Obj *obj);
+ void lock(Obj *obj);
+
  bool is_food(Obj *obj);
  bool is_container(Obj *obj);
  bool is_book(Obj *obj);

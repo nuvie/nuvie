@@ -1,3 +1,11 @@
+2011-11-09  Eric Fry <efry at users.sourceforge.net> r1266
+	* Added chests to use_key/lockpick logic.
+	* Don't allow lock picks to unlock key locked doors. eg doors with non-zero
+	  quality.
+	* Automatically unlock chests when using if the corresponding key is in
+	  the player's inventory.
+	* Don't unlock magically locked doors/chests with keys or lockpicks.
+
 2011-11-07  Eric Fry <efry at users.sourceforge.net> r1265
 	* Fixed assert crash when moving objects between party members. Bug [3432314]
 	* Fixed bug with Obj::is_on_map() method. It wasn't working correctly on readied items.

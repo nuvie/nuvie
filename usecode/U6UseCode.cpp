@@ -426,6 +426,33 @@ void U6UseCode::unlock_door(Obj *obj)
         obj->frame_n -= 4;
 }
 
+void U6UseCode::unlock(Obj *obj)
+{
+	if(is_locked_door(obj))
+	{
+		unlock_door(obj);
+	}
+	else if(is_locked_chest(obj))
+	{
+		unlock_chest(obj);
+	}
+}
+
+void U6UseCode::lock(Obj *obj)
+{
+	if(is_magically_locked(obj) || is_locked(obj))
+		return;
+
+	if(is_closed_door(obj))
+	{
+		lock_door(obj);
+	}
+	else if(is_closed_chest(obj))
+	{
+		lock_chest(obj);
+	}
+}
+
 // USE: unlock locked doors, open/close other doors
 bool U6UseCode::use_door(Obj *obj, UseCodeEvent ev)
 {
@@ -686,12 +713,22 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
-        if(obj->obj_n == OBJ_U6_CHEST && obj->frame_n == 3)
-        {
-            scroll->display_string("\nno effect\n");
-            return(true);
-        }
-        
+    	if(is_locked_chest(obj) || is_magically_locked_chest(obj))
+    	{
+    		if(is_locked_chest(obj) && obj->quality != 0)
+    		{
+    		    Obj *key_obj = player->get_actor()->inventory_get_object(OBJ_U6_KEY, obj->quality);
+    		    if(key_obj != NULL) // we have the key for this chest so lets unlock it.
+    		      {
+    		       unlock_chest(obj);
+    		       scroll->display_string("\nunlocked\n");
+    		       return true;
+    		      }
+    		}
+
+    		scroll->display_string("\nNo effect\n");
+    		return true;
+    	}
         if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
             toggle_frame(obj); //open / close object
         if(obj->frame_n == 0)
@@ -1761,6 +1798,12 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
             scroll->display_string(obj_manager->get_obj_name(door_obj));
             scroll->display_string("\n");
 
+            if(!is_door(door_obj) && !is_chest(door_obj))
+            {
+            	scroll->display_string("No effect\n");
+            	return true;
+            }
+
             if(obj->obj_n == OBJ_U6_LOCK_PICK && lock_pick_dex_check() == true)
             {
                 Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_FAILURE);
@@ -1777,22 +1820,26 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
 
             	return true;
             }
+
 //FIXME need to handle locked chests.
-            if(((door_obj->quality != 0 && door_obj->quality == obj->quality) || obj->obj_n == OBJ_U6_LOCK_PICK) && is_closed_door(door_obj))
+            if(( (obj->obj_n == OBJ_U6_KEY && door_obj->quality != 0 && door_obj->quality == obj->quality)
+            		|| (obj->obj_n == OBJ_U6_LOCK_PICK && door_obj->quality == 0) )
+            	&& (is_closed_door(door_obj) || is_closed_chest(door_obj))
+            	&& !is_magically_locked(door_obj))
             {
-                if(is_locked_door(door_obj))
+                if(is_locked(door_obj))
                 {
-                    unlock_door(door_obj);
+                    unlock(door_obj);
                     scroll->display_string("\nunlocked!\n");
                 }
                 else
                 {
-                    lock_door(door_obj);
+                    lock(door_obj);
                     scroll->display_string("\nlocked!\n");
                 }
             }
             else
-                scroll->display_string("No effect\n");
+                scroll->display_string("\nNo effect\n");
             return true;
         }
     }
