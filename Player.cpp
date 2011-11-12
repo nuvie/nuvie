@@ -49,6 +49,7 @@ Player::Player(Configuration *cfg)
  questf = 0;
  gargishf = 0;
  alcohol = 0;
+ actor_attack_target = 0;
 }
 
 bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p)
@@ -514,13 +515,31 @@ bool Player::weapon_can_hit(uint16 x, uint16 y)
 
 void Player::attack_select_init()
 {
- map_window->centerCursor();
+
  
  current_weapon = ACTOR_NO_READIABLE_LOCATION;
  
  if(attack_select_next_weapon() == false)
    attack_select_weapon_at_location(ACTOR_NO_READIABLE_LOCATION); // attack with hands.
  
+ map_window->centerCursor();
+
+ if(actor_attack_target > 0)
+ {
+	 Actor *actor = actor_manager->get_actor(actor_attack_target);
+	 if(actor && actor->is_onscreen() && actor->is_alive() && actor->is_visible() && weapon_can_hit(actor->get_x(), actor->get_y()))
+	 {
+		 uint16 x, y;
+		 uint8 z;
+		 map_window->get_pos(&x, &y, &z);
+		 map_window->moveCursor(actor->get_x()-x,actor->get_y()-y);
+	 }
+	 else
+	 {
+		 actor_attack_target = 0;
+	 }
+ }
+
  return;
 }
 
@@ -572,7 +591,15 @@ void Player::attack(MapCoord target)
  MsgScroll *scroll = Game::get_game()->get_scroll();
  
  if(weapon_can_hit(target.x,target.y))
+ {
    actor->attack(current_weapon, target);
+
+   Actor *target_actor = actor_manager->get_actor(target.x,target.y,actor->get_z());
+   if(target_actor)
+   {
+	   actor_attack_target = target_actor->get_actor_num();
+   }
+ }
  else
    scroll->display_string("\nOut of range!\n");
 
