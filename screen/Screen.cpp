@@ -80,12 +80,22 @@ Screen::~Screen()
  SDL_Quit();
 }
 
-bool Screen::init(uint16 new_width, uint16 new_height)
+bool Screen::init()
 {
  std::string str;
 
- width = new_width;
- height = new_height;
+ int new_width, new_height;
+ config->value("config/video/screen_width", new_width, 320);
+ config->value("config/video/screen_height", new_height, 200);
+
+ if(new_width < 320)
+	 new_width = 320;
+
+ if(new_height < 200)
+	 new_height = 200;
+
+ width = (uint16)new_width;
+ height = (uint16)new_height;
 
   	/* Initialize the SDL library */
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
@@ -171,6 +181,21 @@ bool Screen::rotate_palette(uint8 pos, uint8 length)
  return true;
 }
 
+uint16 Screen::get_translated_x(uint16 x)
+{
+	if(scale_factor != 1)
+		x /= scale_factor;
+
+	return x;
+}
+
+uint16 Screen::get_translated_y(uint16 y)
+{
+	if(scale_factor != 1)
+		y /= scale_factor;
+
+	return y;
+}
 bool Screen::clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
 {
  uint8 *pixels;
@@ -337,21 +362,20 @@ bool Screen::blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 s
 
  if(clip_rect)
   {
+	 if(dest_x + src_w < clip_rect->x || dest_y + src_h < clip_rect->y)
+		 return false;
+
    if(clip_rect->x > dest_x)
       {
        src_x = clip_rect->x - dest_x;
-       if(src_x > dest_x + src_w)
-         return false;
-       src_w -= clip_rect->x - dest_x;
+       src_w -= src_x;
        dest_x = clip_rect->x;
       }
 
    if(clip_rect->y > dest_y)
      {
       src_y = clip_rect->y - dest_y;
-      if(src_y > dest_y + src_h)
-         return false;
-      src_h -= clip_rect->y - dest_y;
+      src_h -= src_y;
       dest_y = clip_rect->y;
      }
 

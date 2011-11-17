@@ -541,10 +541,21 @@ static int nscript_input_poll(lua_State *L)
 	return 0;
 }
 
-ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : GUI_Widget(NULL, 0, 0, g->get_width(), g->get_height())
+ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : GUI_Widget(NULL)
 {
 	config = cfg;
 	gui = g;
+
+	uint16 x_off = config_get_video_x_offset(config);
+	uint16 y_off = config_get_video_y_offset(config);
+
+	GUI_Widget::Init(NULL, x_off, y_off, 320, 200); //g->get_width(), g->get_height());
+
+	clip_rect.x = x_off;
+	clip_rect.y = y_off;
+	clip_rect.w = 320;
+	clip_rect.h = 200;
+
 	screen = g->get_screen();
 	gui->AddWidget(this);
 	Hide();
@@ -751,7 +762,7 @@ void ScriptCutscene::update()
 /* Show the widget  */
 void ScriptCutscene::Display(bool full_redraw)
 {
-	screen->fill(0,0,0,area.w, area.h);
+	screen->fill(0,area.x,area.y,area.w, area.h);
 	for(std::list<CSSprite *>::iterator it = sprite_list.begin(); it != sprite_list.end(); it++)
 	 {
 		CSSprite *s = *it;
@@ -761,7 +772,7 @@ void ScriptCutscene::Display(bool full_redraw)
 			s->image->shp->get_size(&w, &h);
 			uint16 x, y;
 			s->image->shp->get_hot_point(&x, &y);
-			screen->blit(s->x-x, s->y-y, s->image->shp->get_data(), 8, w, h, w, true, NULL, s->opacity);
+			screen->blit(area.x+s->x-x, area.y+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, &clip_rect, s->opacity);
 		}
 	 }
 

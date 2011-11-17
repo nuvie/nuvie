@@ -31,8 +31,8 @@
 #include "GUI_Console.h"
 
 
-GUI_Console::GUI_Console(uint16 w, uint16 h)
- : GUI_Widget(NULL, 0, 0, w, h)
+GUI_Console::GUI_Console(uint16 x, uint16 y, uint16 w, uint16 h)
+ : GUI_Widget(NULL, x, y, w, h)
 {
 	bg_color = new GUI_Color(0,0,0);
 	font = new GUI_Font(1);

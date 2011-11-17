@@ -32,12 +32,15 @@
 #include "Dither.h"
 #include "Background.h"
 
-Background::Background(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
+Background::Background(Configuration *cfg) : GUI_Widget(NULL)
 {
  config = cfg;
  config->value("config/GameType",game_type);
 
  background = NULL;
+ uint16 x_off = config_get_video_x_offset(config);
+ uint16 y_off = config_get_video_y_offset(config);
+ Init(NULL, x_off,y_off,0,0);
 }
 
 Background::~Background()
@@ -78,9 +81,6 @@ bool Background::init()
                          free(temp_buf);
                          break;
    }
-
- area.x = 0;
- area.y = 0;
 
  background->get_size(&area.w,&area.h);
 

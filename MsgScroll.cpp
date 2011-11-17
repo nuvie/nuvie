@@ -179,7 +179,10 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
                          break;
    }
 
- GUI_Widget::Init(NULL, x, y, scroll_width * 8, scroll_height * 8);
+ uint16 x_off = config_get_video_x_offset(config);
+ uint16 y_off = config_get_video_y_offset(config);
+
+ GUI_Widget::Init(NULL, x+x_off, y+y_off, scroll_width * 8, scroll_height * 8);
 
  cursor_char = 0;
  cursor_x = 0;

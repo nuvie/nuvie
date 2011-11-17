@@ -620,8 +620,8 @@ GUI_status GUI_Widget::try_mouse_delayed()
         int button = held_button;
         int x, y; // position isn't saved anywhere so we get it here
         SDL_GetMouseState(&x, &y); // hopefully it hasn't changed since MouseDown
-        x /= screen->get_scale_factor();
-        y /= screen->get_scale_factor();
+        x = screen->get_translated_x((uint16)x);
+        y = screen->get_translated_y((uint16)y);
 	held_button = 0; // no need to clear mousedown time, MouseUp does that
         return(MouseHeld(x, y, button));
     }
@@ -631,8 +631,8 @@ GUI_status GUI_Widget::try_mouse_delayed()
         int button = delayed_button;
         int x, y; // position isn't saved anywhere so we get it here
         SDL_GetMouseState(&x, &y); // hopefully it hasn't changed since MouseClick/MouseUp
-        x /= screen->get_scale_factor();
-        y /= screen->get_scale_factor();
+        x = screen->get_translated_x((uint16)x);
+        y = screen->get_translated_y((uint16)y);
 	delayed_button = 0;
         // before a Double or Delayed click, mouseup time is reset
         set_mouseup(0, button);

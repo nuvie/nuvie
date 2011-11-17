@@ -37,6 +37,9 @@ bool Cursor::init(Configuration *c, Screen *s)
     config = c;
     screen = s;
     
+    screen_w = screen->get_width();
+    screen_h = screen->get_height();
+
     config->value("config/general/enable_cursors", enable_cursors, true);
     
     if(!enable_cursors)
@@ -182,10 +185,10 @@ inline void Cursor::fix_position(MousePointer *ptr, sint32 &px, sint32 &py)
         py = 0;
     else
         py -= ptr->point_y;
-    if((px + ptr->w) >= 320) // don't draw offscreen
-        px = 320 - ptr->w - 1;
-    if((py + ptr->h) >= 200)
-        py = 200 - ptr->h - 1;
+    if((px + ptr->w) >= screen_w) // don't draw offscreen
+        px = screen_w - ptr->w - 1;
+    if((py + ptr->h) >= screen_h)
+        py = screen_h - ptr->h - 1;
 }
 
 

@@ -1,3 +1,12 @@
+2011-11-18  Eric Fry <efry at users.sourceforge.net> r1268
+	* Added config/video/screen_width config/video/screen_height for setting screen
+	  dimensions.
+	* Added config/video/x_offset config/video/y_offset for centering nuvie display
+	  when a non 16:10 ratio is used. e.g. 800x480 or 320x240.
+	* Fixed screen clipping when trying to clip to the edges of the screen.
+	* Reworked nuvie GUI widgets to allow arbitary x/y postiion. Removed 
+	  MapWindow's dependance of being positioned at screen coords (0,0).
+
 2011-11-12  Eric Fry <efry at users.sourceforge.net> r1267
 	* Remember previous attack target when attacking with player.
 

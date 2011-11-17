@@ -16,6 +16,8 @@ class Configuration;
 std::string config_get_game_key(Configuration *config);
 const char *get_game_tag(int game_type);
 void config_get_path(Configuration *config, std::string filename, std::string &path);
+uint16 config_get_video_x_offset(Configuration *config);
+uint16 config_get_video_y_offset(Configuration *config);
 uint8 get_game_type(const char *string);
 void build_path(std::string path, std::string filename, std::string &full_path);
 bool directory_exists(const char *directory);

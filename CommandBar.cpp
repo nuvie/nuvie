@@ -23,7 +23,10 @@
 #include <cassert>
 #include "SDL.h"
 
+#include "Configuration.h"
+
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "Game.h"
 #include "Screen.h"
 #include "Event.h"
@@ -39,9 +42,15 @@
 
 using std::string;
 
-CommandBar::CommandBar(Game *g) : GUI_Widget(NULL, 8, 168, 0, 0)
+CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
 {
     Weather *weather;
+    Configuration *config = g->get_config();
+
+    uint16 x_off = config_get_video_x_offset(config);
+    uint16 y_off = config_get_video_y_offset(config);
+
+    Init(NULL, 8+x_off, 168+y_off, 0, 0);
     
     game = g;
     event = NULL; // it's not set yet

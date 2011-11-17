@@ -227,7 +227,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    gui->AddWidget(scroll);
 
 
-   map_window->set_windowSize(11,11);
+   //map_window->set_windowSize(11,11);
 
    converse = new Converse();
    converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);

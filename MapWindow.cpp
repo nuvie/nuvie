@@ -24,6 +24,7 @@
 #include "nuvieDefs.h"
 
 #include "Configuration.h"
+#include "U6misc.h"
 #include "U6LList.h"
 #include "Actor.h"
 #include "TileManager.h"
@@ -66,8 +67,15 @@ static const uint8 movement_array[9 * 9] =
 
 MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
+
  config = cfg;
  config->value("config/GameType",game_type);
+
+ uint16 x_off = config_get_video_x_offset(config);
+ uint16 y_off = config_get_video_y_offset(config);
+
+ GUI_Widget::Init(NULL, x_off, y_off, 0, 0);
+
  screen = NULL;
  //surface = NULL;
  anim_manager = NULL;
@@ -121,7 +129,7 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  tile_manager = tm;
  obj_manager = om;
  actor_manager = am;
- anim_manager = new AnimManager();
+ anim_manager = new AnimManager(offset_x, offset_y);
 
 // config->value("config/GameType",game_type);
 
@@ -140,8 +148,8 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
                          break;
    }
 
- area.x = 0;
- area.y = 0;
+ area.x = offset_x;
+ area.y = offset_y;
 
  set_windowSize(11,11);
 
@@ -190,19 +198,19 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
 // if(surface->init(win_width*16,win_height*16) == false)
 //   return false;
 
- clip_rect.x = 8;
+ clip_rect.x = area.x+8;
  clip_rect.w = (win_width - 1) * 16;
  clip_rect.h = (win_height - 1) * 16;
 
  if(game_type == NUVIE_GAME_U6)
-   clip_rect.y = 8;
+   clip_rect.y = area.y+8;
  else
    {
-    clip_rect.y = 16;
+    clip_rect.y = area.y+16;
     clip_rect.h -= 16;
    }
 
- anim_manager->set_area(&clip_rect);
+ anim_manager->set_area(clip_rect);
 
  reset_mousecenter();
 
@@ -439,10 +447,12 @@ void MapWindow::update()
         int mx, my; // bit-AND buttons with mouse state to test
         if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(USE_BUTTON) | SDL_BUTTON(ACTION_BUTTON)))
         {
+        	mx = screen->get_translated_x((uint16)mx);
+        	my = screen->get_translated_y((uint16)my);
         	if(is_wizard_eye_mode())
         	{
         		int wx, wy;
-        		mouseToWorldCoords(mx / screen->get_scale_factor(), my / screen->get_scale_factor(), wx, wy);
+        		mouseToWorldCoords(mx, my, wx, wy);
         		sint16 rx, ry;
         	    get_movement_direction((uint16)wx, (uint16)wy, rx, ry);
         	    moveMapRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
@@ -450,8 +460,8 @@ void MapWindow::update()
         	    wizard_eye_update();
         	}
         	else
-        		event->walk_to_mouse_cursor((uint32)mx / screen->get_scale_factor(),
-        									(uint32)my / screen->get_scale_factor());
+        		event->walk_to_mouse_cursor((uint32)mx,
+        									(uint32)my);
         }
     }
 
@@ -534,7 +544,7 @@ void MapWindow::Display(bool full_redraw)
   {
    for(j=0;j<win_width;j++)
      {
-      uint16 draw_x = (j*16), draw_y = (i*16);
+      uint16 draw_x = area.x + (j*16), draw_y = area.y + (i*16);
       draw_x -= (cur_x_add <= draw_x) ? cur_x_add : draw_x;
       draw_y -= (cur_y_add <= draw_y) ? cur_y_add : draw_y;
 
@@ -575,12 +585,12 @@ void MapWindow::Display(bool full_redraw)
 
  if(show_cursor)
   {
-   screen->blit(cursor_x*16,cursor_y*16,(unsigned char *)cursor_tile->data,8,16,16,16,true,&clip_rect);
+   screen->blit(area.x+cursor_x*16,area.y+cursor_y*16,(unsigned char *)cursor_tile->data,8,16,16,16,true,&clip_rect);
   }
 
  if(show_use_cursor)
   {
-   screen->blit(cursor_x*16,cursor_y*16,(unsigned char *)use_tile->data,8,16,16,16,true,&clip_rect);
+   screen->blit(area.x+cursor_x*16,area.y+cursor_y*16,(unsigned char *)use_tile->data,8,16,16,16,true,&clip_rect);
   }
 
 // screen->fill(0,8,8,win_height*16-16,win_height*16-16);
@@ -606,7 +616,7 @@ void MapWindow::Display(bool full_redraw)
 
 // screen->blit(8,8,ptr,8,(win_width-1) * 16,(win_height-1) * 16, win_width * 16, false);
 
- screen->update(8,8,win_width*16-16,win_height*16-16);
+ screen->update(area.x+8,area.y+8,win_width*16-16,win_height*16-16);
 
  if(window_updated)
   {
@@ -910,13 +920,13 @@ inline void MapWindow::drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile)
     {
      if(tile->toptile)
 //        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
-        screen->blit((x*16)-cur_x_add,(y*16)-cur_y_add,tile->data,8,16,16,16,tile->transparent,&clip_rect);
+        screen->blit(area.x+(x*16)-cur_x_add,area.y+(y*16)-cur_y_add,tile->data,8,16,16,16,tile->transparent,&clip_rect);
     }
  else
     {
      if(!tile->toptile)
 //        screen->blit(x*16,y*16,tile->data,8,16,16,16,tile->transparent,&clip_rect);
-        screen->blit((x*16)-cur_x_add,(y*16)-cur_y_add,tile->data,8,16,16,16,tile->transparent,&clip_rect);
+        screen->blit(area.x+(x*16)-cur_x_add,area.y+(y*16)-cur_y_add,tile->data,8,16,16,16,tile->transparent,&clip_rect);
     }
 }
 
@@ -930,24 +940,24 @@ void MapWindow::drawBorder()
    return;
 
  tile = tile_manager->get_tile(432);
- screen->blit(0,0,tile->data,8,16,16,16,true,&clip_rect);
+ screen->blit(area.x,area.y,tile->data,8,16,16,16,true,&clip_rect);
 
  tile = tile_manager->get_tile(434);
- screen->blit((win_width-1)*16,0,tile->data,8,16,16,16,true,&clip_rect);
+ screen->blit(area.x+(win_width-1)*16,area.y,tile->data,8,16,16,16,true,&clip_rect);
 
  tile = tile_manager->get_tile(435);
- screen->blit(0,(win_height-1)*16,tile->data,8,16,16,16,true,&clip_rect);
+ screen->blit(area.x,area.y+(win_height-1)*16,tile->data,8,16,16,16,true,&clip_rect);
 
  tile = tile_manager->get_tile(437);
- screen->blit((win_width-1)*16,(win_height-1)*16,tile->data,8,16,16,16,true,&clip_rect);
+ screen->blit(area.x+(win_width-1)*16,area.y+(win_height-1)*16,tile->data,8,16,16,16,true,&clip_rect);
 
  tile = tile_manager->get_tile(433);
  tile1 = tile_manager->get_tile(436);
 
  for(i=1;i < win_width-1;i++)
    {
-    screen->blit(i*16,0,tile->data,8,16,16,16,true,&clip_rect);
-    screen->blit(i*16,(win_height-1)*16,tile1->data,8,16,16,16,true,&clip_rect);
+    screen->blit(area.x+i*16,area.y,tile->data,8,16,16,16,true,&clip_rect);
+    screen->blit(area.x+i*16,area.y+(win_height-1)*16,tile1->data,8,16,16,16,true,&clip_rect);
    }
 
  tile = tile_manager->get_tile(438);
@@ -955,8 +965,8 @@ void MapWindow::drawBorder()
 
   for(i=1;i < win_height-1;i++)
    {
-    screen->blit(0,i*16,tile->data,8,16,16,16,true,&clip_rect);
-    screen->blit((win_width-1)*16,i*16,tile1->data,8,16,16,16,true,&clip_rect);
+    screen->blit(area.x,area.y+i*16,tile->data,8,16,16,16,true,&clip_rect);
+    screen->blit(area.x+(win_width-1)*16,area.y+i*16,tile1->data,8,16,16,16,true,&clip_rect);
    }
 }
 
@@ -1661,13 +1671,13 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
 	int	nx = x - 8;
 	int	ny = y - 8;
 
-	if (nx + 16 >= 320)
-		nx = 303;
+	if (nx + 16 >= screen->get_width())
+		nx = screen->get_width()-17;
 	else if (nx < 0)
 		nx = 0;
 
-	if (ny + 16 >= 200)
-		ny = 183;
+	if (ny + 16 >= screen->get_height())
+		ny = screen->get_height()-17;
 	else if (ny < 0)
 		ny = 0;
 

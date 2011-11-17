@@ -87,7 +87,8 @@ bool Nuvie::init(int argc, char **argv)
 
  //load SDL screen and scaler if selected.
  screen = new Screen(config);
- if(screen->init(320,200) == false)
+
+ if(screen->init() == false)
    {
     DEBUG(0,LEVEL_ERROR,"Initializing screen!\n");
     return false;
@@ -96,6 +97,9 @@ bool Nuvie::init(int argc, char **argv)
  SDL_WM_SetCaption("Nuvie","Nuvie");
 
  GUI *gui = new GUI(config, screen);
+
+
+
  ConsoleInit(config, screen, gui, 320, 200);
  ConsoleAddInfo("\n Nuvie: ver 0.2 rev 1238 \n");
  ConsoleAddInfo("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t");

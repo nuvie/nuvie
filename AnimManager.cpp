@@ -59,7 +59,7 @@ static float get_relative_degrees(sint16 sx, sint16 sy, float angle_up)
 }
 
 
-AnimManager::AnimManager(Screen *screen, SDL_Rect *clipto)
+AnimManager::AnimManager(uint16 x, uint16 y, Screen *screen, SDL_Rect *clipto)
                         : next_id(0)
 {
         map_window = Game::get_game()->get_map_window();
@@ -68,6 +68,9 @@ AnimManager::AnimManager(Screen *screen, SDL_Rect *clipto)
         viewsurf = screen;
         if(clipto)
             viewport = *clipto;
+
+        mapwindow_x_offset = x;
+        mapwindow_y_offset = y;
 }
 
 
@@ -197,7 +200,7 @@ bool AnimManager::destroy_anim(NuvieAnim *anim_pt)
  */
 void AnimManager::drawTile(Tile *tile, uint16 x, uint16 y)
 {
-    viewsurf->blit(x, y, tile->data, 8, tile_pitch, tile_pitch, 16,
+    viewsurf->blit(mapwindow_x_offset+x, mapwindow_y_offset+y, tile->data, 8, tile_pitch, tile_pitch, 16,
                    tile->transparent, &viewport);
 }
 

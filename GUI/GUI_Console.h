@@ -39,7 +39,7 @@ class GUI_Console : public GUI_Widget {
     std::list<std::string> data;
 
 public:
-	GUI_Console(uint16 w, uint16 h);
+	GUI_Console(uint16 x, uint16 y, uint16 w, uint16 h);
 	~GUI_Console();
 
 	/* Map the color to the display */

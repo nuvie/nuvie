@@ -39,7 +39,7 @@ protected:
 	bool displayConsole;
 
 public:
-	Console(Configuration *c, Screen *s, GUI *g, uint16 w, uint16 h);
+	Console(Configuration *c, Screen *s, GUI *g, uint16 x, uint16 y, uint16 w, uint16 h);
 	~Console();
 
 	void AddLine(std::string line);

@@ -31,8 +31,8 @@
 
 static Console *g_console = NULL;
 
-Console::Console(Configuration *c, Screen *s, GUI *g, uint16 w, uint16 h)
-: GUI_Console(w, h)
+Console::Console(Configuration *c, Screen *s, GUI *g, uint16 x, uint16 y, uint16 w, uint16 h)
+: GUI_Console(x, y, w, h)
 {
 	config = c;
 	screen = s;
@@ -67,7 +67,10 @@ void ConsoleInit(Configuration *c, Screen *s, GUI *gui, uint16 w, uint16 h)
 {
 	assert(g_console == NULL);
 
-	g_console = new Console(c, s, gui, w, h);
+	uint16 x_off = config_get_video_x_offset(c);
+	uint16 y_off = config_get_video_y_offset(c);
+
+	g_console = new Console(c, s, gui, x_off, y_off, w, h);
 }
 
 void ConsoleDelete()

@@ -23,6 +23,7 @@
 
 #include "nuvieDefs.h"
 #include "Configuration.h"
+#include "U6misc.h"
 
 #include "GUI.h"
 
@@ -60,20 +61,23 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  tile_manager = tm;
  obj_manager = om;
 
+ uint16 x_off = config_get_video_x_offset(config);
+ uint16 y_off = config_get_video_y_offset(config);
+
  actor_view = new ActorView(config);
- actor_view->init(gui->get_screen(), this, 176,8, text, party, tile_manager, obj_manager, portrait);
+ actor_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager, portrait);
 
  inventory_view = new InventoryView(config);
- inventory_view->init(gui->get_screen(), this, 176,8, text, party, tile_manager, obj_manager);
+ inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
 
  party_view = new PartyView(config);
- party_view->init(this,168,6, text, party, player, tile_manager, obj_manager);
+ party_view->init(this,168+x_off,6+y_off, text, party, player, tile_manager, obj_manager);
 
  portrait_view = new PortraitView(config);
- portrait_view->init(176,8, text, party, tile_manager, obj_manager, portrait);
+ portrait_view->init(176+x_off,8+y_off, text, party, tile_manager, obj_manager, portrait);
 
  spell_view = new SpellView(config);
- spell_view->init(gui->get_screen(), this, 168, 6, text, party, tile_manager, obj_manager);
+ spell_view->init(gui->get_screen(), this, 168+x_off, 6+y_off, text, party, tile_manager, obj_manager);
 
  //set_current_view((View *)party_view);
 

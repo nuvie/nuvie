@@ -54,6 +54,7 @@ GUI:: GUI(Configuration *c, Screen *s)
 	display = 1;
 
   screen_scale_factor = screen->get_scale_factor();
+
   dragging = false;
   full_redraw = true;
   focused_widget = locked_widget = NULL;
@@ -212,7 +213,7 @@ void GUI::Display()
 	int mx, my;
 	SDL_GetMouseState (&mx, &my);
 
-	gui_drag_manager->draw (mx / screen_scale_factor, my / screen_scale_factor);
+	gui_drag_manager->draw (screen->get_translated_x((uint16)mx), screen->get_translated_y((uint16)my));
 
     if(full_redraw)
        full_redraw = false;
@@ -253,11 +254,12 @@ GUI:: HandleEvent(SDL_Event *event)
         {
          event->motion.x /= screen_scale_factor;
          event->motion.y /= screen_scale_factor;
+
          event->motion.xrel /= screen_scale_factor;
          event->motion.yrel /= screen_scale_factor;
+
         }
     }
-
   if(dragging && !block_input)
    {
     if(event->type == SDL_MOUSEBUTTONUP) //FIX for button up that doesn't hit a widget.

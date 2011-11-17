@@ -50,7 +50,6 @@ class Screen
  uint8 palette[768];
  uint16 width;
  uint16 height;
-
  SDL_Rect *update_rects;
  uint16 num_update_rects;
  uint16 max_update_rects;
@@ -65,7 +64,7 @@ class Screen
    Screen(Configuration *cfg);
    ~Screen();
 
-   bool init(uint16 width, uint16 height);
+   bool init();
 
    bool set_palette(uint8 *palette);
    bool set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
@@ -81,6 +80,9 @@ class Screen
    SDL_Surface *get_sdl_surface();
    uint16 get_width() { return width; }
    uint16 get_height() { return height; }
+   uint16 get_translated_x(uint16 x);
+   uint16 get_translated_y(uint16 y);
+
    bool fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
    void put_pixel(uint8 colour_num, uint16 x, uint16 y);
 

@@ -38,10 +38,13 @@ class AnimManager
 
     uint8 tile_pitch;
 
+    uint16 mapwindow_x_offset;
+    uint16 mapwindow_y_offset;
+
     AnimIterator get_anim_iterator(uint32 anim_id);
 
 public:
-    AnimManager(Screen *screen = NULL, SDL_Rect *clipto = NULL);
+    AnimManager(uint16 x, uint16 y, Screen *screen = NULL, SDL_Rect *clipto = NULL);
     ~AnimManager() { destroy_all(); }
 
     void update();
@@ -49,7 +52,7 @@ public:
 
     Screen *get_surface()            { return(viewsurf); }
     void set_surface(Screen *screen) { viewsurf = screen; }
-    void set_area(SDL_Rect *clipto)  { viewport = *clipto; }
+    void set_area(SDL_Rect clipto)  { viewport = clipto; }
     void set_tile_pitch(uint8 p)     { tile_pitch = p; }
     uint8 get_tile_pitch()           { return(tile_pitch); }
 
