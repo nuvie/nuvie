@@ -459,5 +459,7 @@ bool Nuvie::playIntro()
 
 	script_file += "/intro.lua";
 
+	ConsoleHide();
+
 	return script->run_lua_file(script_file.c_str());
 }

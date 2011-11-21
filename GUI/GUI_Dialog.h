@@ -33,16 +33,20 @@
 class GUI_Dialog : public GUI_Widget {
 
     int old_x, old_y;
+    int button_x, button_y;
 	Uint8 R, G, B;
 	Uint32 bg_color;
 
     bool drag;
     SDL_Surface *border[8];
 
+    unsigned char *backingstore;
+
+    SDL_Rect backingstore_rect;
 public:
 	/* Passed the area, color and shape */
 	GUI_Dialog(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, bool is_moveable);
-
+	~GUI_Dialog();
 	/* Map the color to the display */
 	virtual void SetDisplay(Screen *s);
 
@@ -53,7 +57,7 @@ public:
     GUI_status MouseDown(int x, int y, int button);
     GUI_status MouseUp(int x, int y, int button);
     GUI_status MouseMotion(int x,int y,Uint8 state);
-
+    void MoveRelative(int dx,int dy);
 protected:
     void loadBorderImages();
 };

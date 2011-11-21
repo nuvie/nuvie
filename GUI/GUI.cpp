@@ -182,7 +182,7 @@ bool GUI::moveWidget(GUI_Widget *widget, uint32 dx, uint32 dy)
  widget->MoveRelative(dx, dy);
 
  if(widget->Status() == WIDGET_VISIBLE)
-   force_full_redraw();
+   widget->Redraw();//force_full_redraw();
 
  return true;
 }

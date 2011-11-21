@@ -35,6 +35,8 @@ class Background: public GUI_Widget
  int game_type;
 
  U6Shape *background;
+ uint16 bg_w, bg_h;
+ uint16 x_off, y_off;
 
  public:
 

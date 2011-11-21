@@ -79,6 +79,7 @@ private:
 	SoundManager *sound_manager;
 	Font *font;
 	SDL_Rect clip_rect;
+	uint16 x_off, y_off;
 
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);

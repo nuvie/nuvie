@@ -504,7 +504,7 @@ void MapWindow::updateAmbience()
     	 screen->set_ambient(0xaa); //FIXME this is an approximation
 
      //Clear the opacity map
-     screen->clearalphamap8( 8, 8, 160, 160, screen->get_ambient() );
+     screen->clearalphamap8( area.x+8, area.y+8, 160, 160, screen->get_ambient() );
 
 }
 
@@ -595,7 +595,7 @@ void MapWindow::Display(bool full_redraw)
 
 // screen->fill(0,8,8,win_height*16-16,win_height*16-16);
 
- screen->blitalphamap8();
+ screen->blitalphamap8(area.x, area.y);
 
  if(overlay && overlay_level == MAP_OVERLAY_DEFAULT)
    screen->blit(area.x, area.y, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
@@ -976,8 +976,8 @@ void MapWindow::drawRain()
 	for(int i=0;i<c;i++)
 	{
 		//FIXME this assumes we have a mapwindow border. fix this when we go full screen.
-		uint16 x = NUVIE_RAND()%((win_width-1)*16-2) + 8;
-		uint16 y = NUVIE_RAND()%((win_height-1)*16-2) + 8;
+		uint16 x = area.x + NUVIE_RAND()%((win_width-1)*16-2) + 8;
+		uint16 y = area.y + NUVIE_RAND()%((win_height-1)*16-2) + 8;
 
 		//FIXME the original does something with the palette if a pixel is black then draw gray etc.
 		//We can't do this easily here because we don't have the original 8 bit display surface.

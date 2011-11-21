@@ -829,25 +829,26 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 			}
         return;
     }
-    x = x*16+8;
-    y = y*16+8;
+    x = x*16;
+    y = y*16;
+
     //Draw using "smooth" lighting
-    //The x and y are relative to (0,0) of the screen itself, and are absolute coordinates, so are i and j
+    //The x and y are relative to (0,0) of the mapwindow itself, and are absolute coordinates, so are i and j
     r--;
     for(i=-globeradius_2[r];i<globeradius_2[r];i++)
         for(j=-globeradius_2[r];j<globeradius_2[r];j++)
         {
-            if( (y-shading_rect.y+i)-1 < 0 ||
-                (x-shading_rect.x+j)-1 < 0 ||
-                (y-shading_rect.y+i)+1 > shading_rect.h ||
-                (x-shading_rect.x+j)+1 > shading_rect.w )
+            if( (y+i)-1 < 0 ||
+                (x+j)-1 < 0 ||
+                (y+i)+1 > shading_rect.h ||
+                (x+j)+1 > shading_rect.w )
                 continue;
-            shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] = MIN( shading_data[(y-shading_rect.y+i)*shading_rect.w+(x-shading_rect.x+j)] + shading_globe[r][(i+globeradius_2[r])*globeradius[r]+(j+globeradius_2[r])], 255 );
+            shading_data[(y+i)*shading_rect.w+(x+j)] = MIN( shading_data[(y+i)*shading_rect.w+(x+j)] + shading_globe[r][(i+globeradius_2[r])*globeradius[r]+(j+globeradius_2[r])], 255 );
         }
 }
 
 
-void Screen::blitalphamap8()
+void Screen::blitalphamap8(uint16 x, uint16 y)
 {
     //pixel = (dst*(1-alpha))+(src*alpha)   for an interpolation
     //pixel = pixel * alpha                 for a reduction
@@ -869,7 +870,7 @@ void Screen::blitalphamap8()
             for( i = 0; i < 11; i++ )
             {
                 if( shading_data[j*11+i] < 4 )
-                    blit(i*16,j*16,shading_tile[shading_data[j*11+i]],8,16,16,16,true,game->get_map_window()->get_clip_rect());
+                    blit(x+i*16,y+j*16,shading_tile[shading_data[j*11+i]],8,16,16,16,true,game->get_map_window()->get_clip_rect());
             }
         }
         return;
@@ -1479,15 +1480,15 @@ unsigned char *Screen::copy_area32(SDL_Rect *area, uint16 down_scale)
 
 // surface -> unsigned char *
 // (NULL area = entire screen)
-unsigned char *Screen::copy_area(SDL_Rect *area)
+unsigned char *Screen::copy_area(SDL_Rect *area, unsigned char *buf)
 {
     SDL_Rect screen_area = { 0, 0, surface->w, surface->h };
     if(!area)
         area = &screen_area;
 
     if(surface->bits_per_pixel == 16)
-        return(copy_area16(area));
-    return(copy_area32(area));
+        return(copy_area16(area, buf));
+    return(copy_area32(area, buf));
 }
 
 
@@ -1495,22 +1496,26 @@ unsigned char *Screen::copy_area(SDL_Rect *area)
 // unsigned char * -> target (src area still means location on screen, not relative to target)
 // (NULL area = entire screen)
 void Screen::restore_area(unsigned char *pixels, SDL_Rect *area,
-                          unsigned char *target, SDL_Rect *target_area)
+                          unsigned char *target, SDL_Rect *target_area, bool free_src)
 {
     SDL_Rect screen_area = { 0, 0, surface->w, surface->h };
     if(!area)
         area = &screen_area;
 
     if(surface->bits_per_pixel == 16)
-        restore_area16(pixels, area, target, target_area);
+        restore_area16(pixels, area, target, target_area, free_src);
     else
-        restore_area32(pixels, area, target, target_area);
+        restore_area32(pixels, area, target, target_area, free_src);
 }
 
 
-unsigned char *Screen::copy_area32(SDL_Rect *area)
+unsigned char *Screen::copy_area32(SDL_Rect *area, unsigned char *buf)
 {
-    uint32 *copied = (uint32 *)malloc(area->w * area->h * 4);
+    uint32 *copied = (uint32 *)buf;
+	if(buf==NULL)
+	{
+		copied = (uint32 *)malloc(area->w * area->h * 4);
+	}
     uint32 *dest = copied;
     uint32 *src = (uint32 *)surface->pixels;
             src += area->y * surface->w + area->x;
@@ -1527,7 +1532,7 @@ unsigned char *Screen::copy_area32(SDL_Rect *area)
 
 
 void Screen::restore_area32(unsigned char *pixels, SDL_Rect *area,
-                            unsigned char *target, SDL_Rect *target_area)
+                            unsigned char *target, SDL_Rect *target_area, bool free_src)
 {
     uint32 *src = (uint32 *)pixels;
     uint32 *dest = (uint32 *)surface->pixels;
@@ -1544,13 +1549,20 @@ void Screen::restore_area32(unsigned char *pixels, SDL_Rect *area,
         src += area->w;
         dest += target ? target_area->w : surface->w;
     }
-    free(pixels);
+    if(free_src)
+    {
+    	free(pixels);
+    }
 }
 
 
-unsigned char *Screen::copy_area16(SDL_Rect *area)
+unsigned char *Screen::copy_area16(SDL_Rect *area, unsigned char *buf)
 {
-    uint16 *copied = (uint16 *)malloc(area->w * area->h * 2);
+    uint16 *copied = (uint16 *)buf;
+	if(buf==NULL)
+	{
+		copied = (uint16 *)malloc(area->w * area->h * 2);
+	}
     uint16 *dest = copied;
     uint16 *src = (uint16 *)surface->pixels;
             src += area->y * surface->w + area->x;
@@ -1567,7 +1579,7 @@ unsigned char *Screen::copy_area16(SDL_Rect *area)
 
 
 void Screen::restore_area16(unsigned char *pixels, SDL_Rect *area,
-                            unsigned char *target, SDL_Rect *target_area)
+                            unsigned char *target, SDL_Rect *target_area, bool free_src)
 {
     uint16 *src = (uint16 *)pixels;
     uint16 *dest = (uint16 *)surface->pixels;
@@ -1585,5 +1597,8 @@ void Screen::restore_area16(unsigned char *pixels, SDL_Rect *area,
         src += area->w;
         dest += target ? target_area->w : surface->w;
     }
-    free(pixels);
+    if(free_src)
+    {
+        free(pixels);
+    }
 }

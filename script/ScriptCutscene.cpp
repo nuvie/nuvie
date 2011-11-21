@@ -546,10 +546,10 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	config = cfg;
 	gui = g;
 
-	uint16 x_off = config_get_video_x_offset(config);
-	uint16 y_off = config_get_video_y_offset(config);
+	x_off = config_get_video_x_offset(config);
+	y_off = config_get_video_y_offset(config);
 
-	GUI_Widget::Init(NULL, x_off, y_off, 320, 200); //g->get_width(), g->get_height());
+	GUI_Widget::Init(NULL, 0, 0, g->get_width(), g->get_height());
 
 	clip_rect.x = x_off;
 	clip_rect.y = y_off;
@@ -751,7 +751,10 @@ void ScriptCutscene::set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b)
 void ScriptCutscene::update()
 {
 	if(cutScene->Status() == WIDGET_HIDDEN)
+	{
 		cutScene->Show();
+		gui->force_full_redraw();
+	}
 
 	gui->Display();
 	screen->preformUpdate();
@@ -762,7 +765,11 @@ void ScriptCutscene::update()
 /* Show the widget  */
 void ScriptCutscene::Display(bool full_redraw)
 {
-	screen->fill(0,area.x,area.y,area.w, area.h);
+	if(full_redraw)
+		screen->fill(0,0,0,area.w, area.h);
+	else
+		screen->fill(0,x_off,y_off,320, 200);
+
 	for(std::list<CSSprite *>::iterator it = sprite_list.begin(); it != sprite_list.end(); it++)
 	 {
 		CSSprite *s = *it;
@@ -772,11 +779,14 @@ void ScriptCutscene::Display(bool full_redraw)
 			s->image->shp->get_size(&w, &h);
 			uint16 x, y;
 			s->image->shp->get_hot_point(&x, &y);
-			screen->blit(area.x+s->x-x, area.y+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, &clip_rect, s->opacity);
+			screen->blit(x_off+s->x-x, y_off+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, &clip_rect, s->opacity);
 		}
 	 }
 
-	 screen->update(area.x,area.y,area.w,area.h);
+	if(full_redraw)
+	 screen->update(0,0,area.w,area.h);
+	else
+		screen->update(x_off,y_off,320, 200);
 }
 
 

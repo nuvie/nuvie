@@ -38,9 +38,9 @@ Background::Background(Configuration *cfg) : GUI_Widget(NULL)
  config->value("config/GameType",game_type);
 
  background = NULL;
- uint16 x_off = config_get_video_x_offset(config);
- uint16 y_off = config_get_video_y_offset(config);
- Init(NULL, x_off,y_off,0,0);
+ x_off = config_get_video_x_offset(config);
+ y_off = config_get_video_y_offset(config);
+ Init(NULL, 0,0,320,240);
 }
 
 Background::~Background()
@@ -82,7 +82,7 @@ bool Background::init()
                          break;
    }
 
- background->get_size(&area.w,&area.h);
+ background->get_size(&bg_w,&bg_h);
 
  Game::get_game()->get_dither()->dither_bitmap(background->get_data(),area.w, area.h, DITHER_NO_TRANSPARENCY);
 
@@ -95,11 +95,11 @@ void Background::Display(bool full_redraw)
    {
     update_display = false;
 
-    if(game_type != NUVIE_GAME_U6)
+    //if(game_type != NUVIE_GAME_U6)
        screen->clear(area.x,area.y,area.w,area.h,NULL);
 
-    screen->blit(area.x, area.y, background->get_data(), 8,  area.w, area.h, area.w, true);
-    screen->update(area.x,area.y,area.w,area.h);
+    screen->blit(x_off, y_off, background->get_data(), 8,  bg_w, bg_h, bg_w, true);
+    screen->update(0,0,area.w,area.h);
    }
 
  return;

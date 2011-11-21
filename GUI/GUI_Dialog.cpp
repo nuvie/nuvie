@@ -37,11 +37,21 @@ GUI_Dialog::GUI_Dialog(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, bo
 	B = b;
 	bg_color = 0;
     drag = false;
-    old_x = old_y = 0;
-
+    old_x = old_y = -1;
+    backingstore = NULL;
+    backingstore_rect.w = w;
+    backingstore_rect.h = h;
     loadBorderImages();
 }
 
+GUI_Dialog::~GUI_Dialog()
+{
+	if(backingstore)
+		free(backingstore);
+
+	for(int i=0;i<8;i++)
+		SDL_FreeSurface(border[i]);
+}
 
 void GUI_Dialog::loadBorderImages()
 {
@@ -76,6 +86,23 @@ GUI_Dialog:: Display(bool full_redraw)
  int i;
  SDL_Rect framerect;
  SDL_Rect src, dst;
+
+ if(old_x != area.x || old_y != area.y)
+ {
+	 if(backingstore)
+	 {
+		 screen->restore_area(backingstore, &backingstore_rect, NULL, NULL, false);
+		 screen->update(backingstore_rect.x,backingstore_rect.y,backingstore_rect.w,backingstore_rect.h);
+	 }
+
+	 backingstore_rect.x = area.x; // cursor must be drawn LAST for this to work
+	 backingstore_rect.y = area.y;
+
+	 backingstore = screen->copy_area(&backingstore_rect, backingstore);
+
+	 old_x = area.x;
+	 old_y = area.y;
+ }
 
  framerect.x = area.x + 8;
  framerect.y = area.y + 8;
@@ -193,8 +220,8 @@ GUI_Dialog:: Display(bool full_redraw)
 GUI_status GUI_Dialog::MouseDown(int x, int y, int button)
 {
  drag = true;
- old_x = x;
- old_y = y;
+ button_x = x;
+ button_y = y;
 
  grab_focus();
 
@@ -217,11 +244,11 @@ GUI_status GUI_Dialog::MouseMotion(int x,int y,Uint8 state)
  if(!drag)
    return GUI_PASS;
 
- dx = x - old_x;
- dy = y - old_y;
+ dx = x - button_x;
+ dy = y - button_y;
 
- old_x = x;
- old_y = y;
+ button_x = x;
+ button_y = y;
 
  GUI::get_gui()->moveWidget(this,dx,dy);
 // Redraw();
@@ -229,3 +256,31 @@ GUI_status GUI_Dialog::MouseMotion(int x,int y,Uint8 state)
  return (GUI_YUM);
 }
 
+void GUI_Dialog::MoveRelative(int dx,int dy)
+{
+ int new_x = area.x + dx;
+
+ if(new_x < 0)
+ {
+	 dx = -area.x;
+ }
+ else if(new_x + area.w > screen->get_width())
+ {
+	 dx = screen->get_width() - (area.x + area.w);
+ }
+
+ int new_y = area.y + dy;
+
+ if(new_y < 0)
+ {
+	 dy = -area.y;
+ }
+ else if(new_y + area.h > screen->get_height())
+ {
+	 dy = screen->get_height() - (area.y + area.h);
+ }
+
+ GUI_Widget::MoveRelative(dx, dy);
+
+ return;
+}

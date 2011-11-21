@@ -67,10 +67,10 @@ void ConsoleInit(Configuration *c, Screen *s, GUI *gui, uint16 w, uint16 h)
 {
 	assert(g_console == NULL);
 
-	uint16 x_off = config_get_video_x_offset(c);
-	uint16 y_off = config_get_video_y_offset(c);
+	//uint16 x_off = config_get_video_x_offset(c);
+	//uint16 y_off = config_get_video_y_offset(c);
 
-	g_console = new Console(c, s, gui, x_off, y_off, w, h);
+	g_console = new Console(c, s, gui, 0, 0, s->get_width(), s->get_height());//x_off, y_off, w, h);
 }
 
 void ConsoleDelete()

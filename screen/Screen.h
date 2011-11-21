@@ -92,7 +92,7 @@ class Screen
    void buildalphamap8();
    void clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity );
    void drawalphamap8globe( sint16 x, sint16 y, uint16 radius );
-   void blitalphamap8();
+   void blitalphamap8(uint16 x, uint16 y);
    bool updatingalphamap;
    int lighting_style;
 
@@ -108,10 +108,10 @@ class Screen
 
    bool initScaler();
 
-   unsigned char *copy_area(SDL_Rect *area = NULL);
+   unsigned char *copy_area(SDL_Rect *area = NULL, unsigned char *buf = NULL);
    unsigned char *copy_area(SDL_Rect *area, uint16 down_scale);
 
-   void restore_area(unsigned char *pixels, SDL_Rect *area = NULL, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
+   void restore_area(unsigned char *pixels, SDL_Rect *area = NULL, unsigned char *target = NULL, SDL_Rect *target_area = NULL, bool free_src = true);
 
 protected:
 
@@ -135,10 +135,10 @@ inline void blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, u
    unsigned char *copy_area16(SDL_Rect *area, uint16 down_scale);
    unsigned char *copy_area32(SDL_Rect *area, uint16 down_scale);
 
-   unsigned char *copy_area16(SDL_Rect *area);
-   unsigned char *copy_area32(SDL_Rect *area);
-   void restore_area16(unsigned char *pixels, SDL_Rect *area, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
-   void restore_area32(unsigned char *pixels, SDL_Rect *area, unsigned char *target = NULL, SDL_Rect *target_area = NULL);
+   unsigned char *copy_area16(SDL_Rect *area, unsigned char *buf);
+   unsigned char *copy_area32(SDL_Rect *area, unsigned char *buf);
+   void restore_area16(unsigned char *pixels, SDL_Rect *area, unsigned char *target = NULL, SDL_Rect *target_area = NULL, bool free_src = true);
+   void restore_area32(unsigned char *pixels, SDL_Rect *area, unsigned char *target = NULL, SDL_Rect *target_area = NULL, bool free_src = true);
 
 void set_screen_mode();
 bool try_scaler(int w, int h, uint32 flags, int hwdepth);

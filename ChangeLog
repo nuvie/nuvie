@@ -1,3 +1,11 @@
+2011-11-22  Eric Fry <efry at users.sourceforge.net> r1269
+	* Added backingstore support to GUI_Dialog.
+	* Screen copy_area/restore_area to reuse copy buffer.
+	* Fixed lighting when mapwindow isn't located at 0,0.
+	* Fixed redraw issues when GUI_Dialog's are dragged outside background.
+	* Console now fills entire screen when non 320x200 resolution is used.
+	* Hide console when starting introduction sequence.
+
 2011-11-18  Eric Fry <efry at users.sourceforge.net> r1268
 	* Added config/video/screen_width config/video/screen_height for setting screen
 	  dimensions.
