@@ -80,7 +80,8 @@ private:
 	Font *font;
 	SDL_Rect clip_rect;
 	uint16 x_off, y_off;
-
+	uint32 next_time;
+	uint32 loop_interval;
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
 	CSImage *load_image(const char *filename, int idx);
@@ -91,8 +92,10 @@ public:
 	void load_palette(const char *filename, int idx);
 	void set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
 
+	void set_update_interval(uint16 interval);
 	void update();
 
+	void wait();
 	void Display(bool full_redraw);
 
 	void print_text(CSImage *image, const char *string, uint16 *x, uint16 *y, uint16 startx, uint16 width, uint8 color);

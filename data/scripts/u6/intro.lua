@@ -10,6 +10,15 @@ function poll_for_esc()
 	return false
 end
 
+function should_exit(input)
+	if input ~=nil and input == 27 then
+		canvas_hide()
+		return true
+	end
+	
+	return false
+end
+
 function load_images(filename)
 	g_img_tbl = image_load_all(filename)
 end
@@ -116,7 +125,11 @@ function lounge_sequence()
 		canvas_update()
 		input = input_poll()
 	end
-
+	
+	if should_exit(input) then
+		return false
+	end
+	
 	scroll_img = image_load("blocks.shp", 2)
 	x, y = image_print(scroll_img, "You have traded the Avatar's life of peril and adventure ", 7, 310, 7, 8, 0x3e)
 	x, y = image_print(scroll_img, "for the lonely serenity of a world at peace. But ", 7, 310, x, y, 0x3e)
@@ -134,6 +147,10 @@ function lounge_sequence()
 		canvas_update()
 		input = input_poll()
 	end
+	
+	if should_exit(input) then
+		return false
+	end
 
 	scroll_img = image_load("blocks.shp", 0)
 	image_print(scroll_img, "Outside, a chill wind rises...", 39, 200, 39, 8, 0x3e)
@@ -146,6 +163,10 @@ function lounge_sequence()
 		scroll_lounge()
 		display_lounge()
 		canvas_update()
+		input = input_poll()
+		if should_exit(input) then
+			return false
+		end
 	end
 
 	input = input_poll()
@@ -154,8 +175,14 @@ function lounge_sequence()
 		input = input_poll()
 	end
 
+	if should_exit(input) then
+		return false
+	end
+	
 	hide_lounge()
 	scroll.visible = false
+	
+	return true
 end
 
 g_window_tbl = {}
@@ -301,6 +328,22 @@ function display_window()
 	end
 end
 
+function window_update()
+	local input = input_poll()
+	
+	while input == nil do
+		display_window()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+		canvas_update()
+	end
+
+	return should_exit(input)
+end
+
 function window_sequence()
 	load_images("intro_2.shp")
 	
@@ -309,13 +352,13 @@ function window_sequence()
 	canvas_set_palette("palettes.int", 2)
 	
 	local i = 0
-	local input = input_poll()
-	while input == nil and i < 20 do
+	local input
+	while i < 20 do
 		display_window()
 		canvas_update()
 		input = input_poll()
-		if input ~= nil then
-			break
+		if should_exit(input) then
+			return false
 		end
 		
 		i = i + 1
@@ -327,15 +370,8 @@ function window_sequence()
 	
 	local x, y = image_print(scroll_img, "...and in moments, the storm is upon you.", 8, 312, 36, 14, 0x3e)
 
-	local input = input_poll()
-	while input == nil do
-		display_window()
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-		canvas_update()
+	if window_update() == true then
+		return false
 	end
 	
 	scroll_img = image_load("blocks.shp", 1)
@@ -343,15 +379,8 @@ function window_sequence()
 	image_print(scroll_img, "crescendo of thunder....", 8, 310, x, y, 0x3e)
 	scroll.image = scroll_img
 	
-	input = null
-	while input == nil do
-		display_window()
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-	canvas_update()
+	if window_update() == true then
+		return false
 	end
 
 	scroll_img = image_load("blocks.shp", 1)
@@ -361,15 +390,8 @@ function window_sequence()
 	
 	g_window_tbl["strike"].visible = true
 		
-	input = null
-	while input == nil do
-		display_window()
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-	canvas_update()
+	if window_update() == true then
+		return false
 	end
 	
 	scroll_img = image_load("blocks.shp", 1)
@@ -377,20 +399,18 @@ function window_sequence()
 	image_print(scroll_img, "Is this a sign from distant Britannia?", 8, 310, 41, 18, 0x3e)
 	scroll.image = scroll_img
 		
-	--fixme scroll window here.
-	input = null
+	--scroll window.
 	i = 0
-	while input == nil and i < 320 do
+	while i < 320 do
 
 		display_window()
 		canvas_update()
 		input = input_poll()
-		if input ~= nil then
-			break
+		if should_exit(input) then
+			return false
 		end
 	
 		canvas_update()
-		input = input_poll()
 	
 		g_window_tbl["window"].x = g_window_tbl["window"].x - 2
 		g_window_tbl["frame"].x = g_window_tbl["frame"].x - 2
@@ -402,27 +422,19 @@ function window_sequence()
 		end
 	end
 	
-	input = null
-	while input == nil do
-		display_window()
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-		canvas_update()
+	if window_update() == true then
+		return false
 	end
 	
 	scroll.visible = false
-	input = null
 	i = 0
-	while input == nil and i < 68 do
+	while i < 68 do
 	
 		display_window()
 		canvas_update()
 		input = input_poll()
-		if input ~= nil then
-			break
+		if should_exit(input) then
+			return false
 		end
 	
 		canvas_update()
@@ -440,15 +452,8 @@ function window_sequence()
 	scroll.image = scroll_img
 	scroll.visible = true
 
-	input = null
-	while input == nil do
-		display_window()
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-		canvas_update()
+	if window_update() == true then
+		return false
 	end
 
 	
@@ -458,6 +463,7 @@ load_images("intro_1.shp")
 music_play("bootup.m")
 --[ [
 canvas_set_palette("palettes.int", 0)
+canvas_set_update_interval(40)
 
 local img = g_img_tbl[0x45]
 
@@ -507,7 +513,9 @@ background.visible = false
 
 
 
-lounge_sequence()
+if lounge_sequence() == false then
+	return false
+end
 --] ]
 window_sequence()
 

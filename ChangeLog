@@ -1,3 +1,9 @@
+2011-11-22  Eric Fry <efry at users.sourceforge.net> r1270
+	* Fixed inline compile bug.
+	* Added canvas_set_update_interval() script function. This sets the cutscene
+	  framerate. It is the loop interval measured in milliseconds.
+	* You can now escape from all points in the intro sequence. Bug [3432868].
+
 2011-11-22  Eric Fry <efry at users.sourceforge.net> r1269
 	* Added backingstore support to GUI_Dialog.
 	* Screen copy_area/restore_area to reuse copy buffer.

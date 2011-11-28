@@ -73,6 +73,7 @@ static int nscript_sprite_new(lua_State *L);
 
 static int nscript_canvas_set_palette(lua_State *L);
 static int nscript_canvas_set_palette_entry(lua_State *L);
+static int nscript_canvas_set_update_interval(lua_State *L);
 static int nscript_canvas_update(lua_State *L);
 static int nscript_canvas_hide(lua_State *L);
 
@@ -106,6 +107,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_canvas_set_palette_entry);
    lua_setglobal(L, "canvas_set_palette_entry");
+
+   lua_pushcfunction(L, nscript_canvas_set_update_interval);
+   lua_setglobal(L, "canvas_set_update_interval");
 
 
    lua_pushcfunction(L, nscript_canvas_update);
@@ -503,6 +507,14 @@ static int nscript_canvas_set_palette_entry(lua_State *L)
 	return 0;
 }
 
+static int nscript_canvas_set_update_interval(lua_State *L)
+{
+	uint16 loop_interval = lua_tointeger(L, 1);
+
+	cutScene->set_update_interval(loop_interval);
+	return 0;
+}
+
 static int nscript_canvas_update(lua_State *L)
 {
 	cutScene->update();
@@ -567,6 +579,9 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 
 	font = new Font();
 	font->init(path.c_str());
+
+	next_time = 0;
+	loop_interval = 40;
 }
 
 CSImage *ScriptCutscene::load_image(const char *filename, int idx)
@@ -748,6 +763,11 @@ void ScriptCutscene::set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b)
 	screen->set_palette_entry(idx, r, g, b);
 }
 
+void ScriptCutscene::set_update_interval(uint16 interval)
+{
+	loop_interval = interval;
+}
+
 void ScriptCutscene::update()
 {
 	if(cutScene->Status() == WIDGET_HIDDEN)
@@ -759,9 +779,19 @@ void ScriptCutscene::update()
 	gui->Display();
 	screen->preformUpdate();
 	sound_manager->update();
-	SDL_Delay(20); //FIXME implement scriptable wait period here.
+	//SDL_Delay(20); //FIXME implement scriptable wait period here.
+	wait();
 }
 
+void ScriptCutscene::wait()
+{
+    uint32 now = SDL_GetTicks();
+    if ( next_time <= now ) {
+        next_time = now+loop_interval;
+        return;
+    }
+    SDL_Delay(next_time-now);
+}
 /* Show the widget  */
 void ScriptCutscene::Display(bool full_redraw)
 {

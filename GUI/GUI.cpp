@@ -187,7 +187,7 @@ bool GUI::moveWidget(GUI_Widget *widget, uint32 dx, uint32 dy)
  return true;
 }
 
-inline void GUI::force_full_redraw()
+void GUI::force_full_redraw()
 {
  full_redraw = true;
 }
