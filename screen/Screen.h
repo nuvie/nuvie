@@ -84,6 +84,7 @@ class Screen
    uint16 get_translated_y(uint16 y);
 
    bool fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
+   void fade(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity);
    void put_pixel(uint8 colour_num, uint16 x, uint16 y);
 
    bool blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL, uint8 opacity=255);
@@ -118,6 +119,9 @@ protected:
    bool fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
 
    bool fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
+
+   void fade16(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity);
+   void fade32(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity);
 
    inline uint16 blendpixel16(uint16 p, uint16 p1, uint8 opacity);
    inline uint32 blendpixel32(uint32 p, uint32 p1, uint8 opacity);

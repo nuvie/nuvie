@@ -3,7 +3,6 @@ g_img_tbl = {}
 function poll_for_esc()
 	input = input_poll()
 	if input ~= nil and input == 27 then
-		canvas_hide()
 		return true
 	end
 	
@@ -12,8 +11,17 @@ end
 
 function should_exit(input)
 	if input ~=nil and input == 27 then
-		canvas_hide()
 		return true
+	end
+	
+	return false
+end
+
+function fade_out()
+	local i
+	for i=0xff,0,-3 do
+		canvas_set_opacity(i)
+		canvas_update()
 	end
 	
 	return false
@@ -459,6 +467,8 @@ function window_sequence()
 	
 end
 
+function play()
+
 load_images("intro_1.shp")
 music_play("bootup.m")
 --[ [
@@ -514,9 +524,12 @@ background.visible = false
 
 
 if lounge_sequence() == false then
-	return false
+	return 
 end
 --] ]
 window_sequence()
+end
 
+play()
+fade_out()
 canvas_hide()

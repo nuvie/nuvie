@@ -74,6 +74,7 @@ static int nscript_sprite_new(lua_State *L);
 static int nscript_canvas_set_palette(lua_State *L);
 static int nscript_canvas_set_palette_entry(lua_State *L);
 static int nscript_canvas_set_update_interval(lua_State *L);
+static int nscript_canvas_set_opacity(lua_State *L);
 static int nscript_canvas_update(lua_State *L);
 static int nscript_canvas_hide(lua_State *L);
 
@@ -110,6 +111,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_canvas_set_update_interval);
    lua_setglobal(L, "canvas_set_update_interval");
+
+   lua_pushcfunction(L, nscript_canvas_set_opacity);
+   lua_setglobal(L, "canvas_set_opacity");
 
 
    lua_pushcfunction(L, nscript_canvas_update);
@@ -515,6 +519,14 @@ static int nscript_canvas_set_update_interval(lua_State *L)
 	return 0;
 }
 
+static int nscript_canvas_set_opacity(lua_State *L)
+{
+	uint8 opacity = lua_tointeger(L, 1);
+
+	cutScene->set_screen_opacity(opacity);
+	return 0;
+}
+
 static int nscript_canvas_update(lua_State *L)
 {
 	cutScene->update();
@@ -582,6 +594,8 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 
 	next_time = 0;
 	loop_interval = 40;
+
+	screen_opacity = 255;
 }
 
 CSImage *ScriptCutscene::load_image(const char *filename, int idx)
@@ -768,6 +782,11 @@ void ScriptCutscene::set_update_interval(uint16 interval)
 	loop_interval = interval;
 }
 
+void ScriptCutscene::set_screen_opacity(uint8 new_opacity)
+{
+	screen_opacity = new_opacity;
+}
+
 void ScriptCutscene::update()
 {
 	if(cutScene->Status() == WIDGET_HIDDEN)
@@ -779,7 +798,6 @@ void ScriptCutscene::update()
 	gui->Display();
 	screen->preformUpdate();
 	sound_manager->update();
-	//SDL_Delay(20); //FIXME implement scriptable wait period here.
 	wait();
 }
 
@@ -800,21 +818,29 @@ void ScriptCutscene::Display(bool full_redraw)
 	else
 		screen->fill(0,x_off,y_off,320, 200);
 
-	for(std::list<CSSprite *>::iterator it = sprite_list.begin(); it != sprite_list.end(); it++)
-	 {
-		CSSprite *s = *it;
-		if(s->visible && s->image)
+	if(screen_opacity > 0)
+	{
+		for(std::list<CSSprite *>::iterator it = sprite_list.begin(); it != sprite_list.end(); it++)
 		{
-			uint16 w, h;
-			s->image->shp->get_size(&w, &h);
-			uint16 x, y;
-			s->image->shp->get_hot_point(&x, &y);
-			screen->blit(x_off+s->x-x, y_off+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, &clip_rect, s->opacity);
+			CSSprite *s = *it;
+			if(s->visible && s->image)
+			{
+				uint16 w, h;
+				s->image->shp->get_size(&w, &h);
+				uint16 x, y;
+				s->image->shp->get_hot_point(&x, &y);
+				screen->blit(x_off+s->x-x, y_off+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, &clip_rect, s->opacity);
+			}
 		}
-	 }
+
+		if(screen_opacity < 255)
+		{
+			screen->fade(x_off,y_off,320,200, screen_opacity);
+		}
+	}
 
 	if(full_redraw)
-	 screen->update(0,0,area.w,area.h);
+		screen->update(0,0,area.w,area.h);
 	else
 		screen->update(x_off,y_off,320, 200);
 }

@@ -82,6 +82,8 @@ private:
 	uint16 x_off, y_off;
 	uint32 next_time;
 	uint32 loop_interval;
+	uint8 screen_opacity;
+
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
 	CSImage *load_image(const char *filename, int idx);
@@ -91,6 +93,7 @@ public:
 
 	void load_palette(const char *filename, int idx);
 	void set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
+	void set_screen_opacity(uint8 new_opacity);
 
 	void set_update_interval(uint16 interval);
 	void update();
