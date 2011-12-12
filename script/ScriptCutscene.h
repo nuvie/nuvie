@@ -93,6 +93,7 @@ public:
 
 	void load_palette(const char *filename, int idx);
 	void set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
+	void rotate_palette(uint8 idx, uint8 length);
 	void set_screen_opacity(uint8 new_opacity);
 
 	void set_update_interval(uint16 interval);

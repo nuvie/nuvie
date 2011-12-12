@@ -1,3 +1,8 @@
+2011-12-13  Eric Fry <efry at users.sourceforge.net> r1274
+	* Added palette rotation effect to tv animation.
+	* Added pledge now text to tv animation.
+	* Added canvas_rotate_palette() script function.
+
 2011-12-12  Eric Fry <efry at users.sourceforge.net> r1273
 	* More work on intro sequence tv animations.
 

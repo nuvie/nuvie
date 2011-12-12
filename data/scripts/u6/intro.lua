@@ -116,6 +116,9 @@ g_tv_y_off = {
 0x0,0x0
 }
 
+g_tv_pledge_counter = 0
+g_tv_pledge_image = 37
+
 function display_tv_sprite(s_idx, image_num)
 	local sprite = g_lounge_tbl.tv[s_idx]
 	if sprite ~= nil then
@@ -141,32 +144,49 @@ function display_tv()
 		elseif item == 0x82 then
 			--static
 			should_exit = true
-		elseif item == 0x80 then
+		elseif item == 0x80 then --loop start
 			g_tv_cur_pos = g_tv_cur_pos + 1
 			g_tv_loop_cnt = g_tv_programs[g_tv_cur_program][g_tv_cur_pos]
 			g_tv_loop_pos = g_tv_cur_pos
-		elseif item == 0x81 then
+		elseif item == 0x81 then --loop end
 			if g_tv_loop_cnt > 0 then
 				g_tv_cur_pos = g_tv_loop_pos
 				g_tv_loop_cnt = g_tv_loop_cnt - 1
 			end
 			should_exit = true
-		elseif item == 0x84 then
+		elseif item == 0x84 then --select random image from list.
 			local rand_len = g_tv_programs[g_tv_cur_program][g_tv_cur_pos+1]
 			item = g_tv_programs[g_tv_cur_program][g_tv_cur_pos+math.random(1,rand_len)+1]
 			display_tv_sprite(s_idx, item)
 			s_idx = s_idx + 1
 			g_tv_cur_pos = g_tv_cur_pos + 1 + rand_len
-		elseif item == 0x86 then
+		elseif item == 0x86 then --display news image
 			display_tv_sprite(s_idx, g_tv_news_image)
 			s_idx = s_idx + 1
-		elseif item == 0x87 then
+		elseif item == 0x87 then --select news image
 			g_tv_news_image = g_tv_news_image_tbl[math.random(1, 9)]
+		elseif item == 0x88 then --pledge now!
+			g_tv_pledge_counter = g_tv_pledge_counter + 1
+			if g_tv_pledge_counter % 4 == 0 then
+				display_tv_sprite(s_idx, g_tv_pledge_image)
+				s_idx = s_idx + 1
+			end
+			
+			if g_tv_pledge_counter == 16 then
+				if g_tv_pledge_image == 37 then
+					g_tv_pledge_image = 38
+				else
+					g_tv_pledge_image = 37
+				end
+				g_tv_pledge_counter = 0
+			end
 		elseif item == 0x89 then
 			display_tv_sprite(s_idx, math.random(50, 52))
 			s_idx = s_idx + 1
 		elseif item == 0x8a then
 			should_exit = true
+		elseif item == 0x8b then
+			canvas_rotate_palette(0xe0, 5)
 		end
 		
 		g_tv_cur_pos = g_tv_cur_pos + 1

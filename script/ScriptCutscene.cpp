@@ -73,6 +73,7 @@ static int nscript_sprite_new(lua_State *L);
 
 static int nscript_canvas_set_palette(lua_State *L);
 static int nscript_canvas_set_palette_entry(lua_State *L);
+static int nscript_canvas_rotate_palette(lua_State *L);
 static int nscript_canvas_set_update_interval(lua_State *L);
 static int nscript_canvas_set_opacity(lua_State *L);
 static int nscript_canvas_update(lua_State *L);
@@ -108,6 +109,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_canvas_set_palette_entry);
    lua_setglobal(L, "canvas_set_palette_entry");
+
+   lua_pushcfunction(L, nscript_canvas_rotate_palette);
+   lua_setglobal(L, "canvas_rotate_palette");
 
    lua_pushcfunction(L, nscript_canvas_set_update_interval);
    lua_setglobal(L, "canvas_set_update_interval");
@@ -511,6 +515,16 @@ static int nscript_canvas_set_palette_entry(lua_State *L)
 	return 0;
 }
 
+static int nscript_canvas_rotate_palette(lua_State *L)
+{
+	uint8 idx = lua_tointeger(L, 1);
+	uint8 len = lua_tointeger(L, 2);
+
+	cutScene->rotate_palette(idx, len);
+
+	return 0;
+}
+
 static int nscript_canvas_set_update_interval(lua_State *L)
 {
 	uint16 loop_interval = lua_tointeger(L, 1);
@@ -775,6 +789,11 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 void ScriptCutscene::set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b)
 {
 	screen->set_palette_entry(idx, r, g, b);
+}
+
+void ScriptCutscene::rotate_palette(uint8 idx, uint8 length)
+{
+	screen->rotate_palette(idx, length);
 }
 
 void ScriptCutscene::set_update_interval(uint16 interval)
