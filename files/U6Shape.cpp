@@ -98,7 +98,6 @@ U6Shape::U6Shape()
  width = height = 0;
 }
 
-
 /*
  * ======================
  *  U6Shape::~U6Shape();
@@ -110,6 +109,21 @@ U6Shape::~U6Shape(void)
 {
  if(raw)
   free(raw);
+}
+
+bool U6Shape::init(uint16 w, uint16 h)
+{
+ width = w;
+ height = h;
+ raw = (uint8 *)malloc(width * height);
+
+ if(raw == NULL)
+ {
+	 DEBUG(0,LEVEL_ERROR,"malloc failed to allocate space for shape\n");
+	 return false;
+ }
+
+ return true;
 }
 
 bool U6Shape::load(std::string filename)

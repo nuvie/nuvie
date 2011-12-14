@@ -1,3 +1,9 @@
+2011-12-14  Eric Fry <efry at users.sourceforge.net> r1275
+	* Added remote keypress to tv animation.
+	* Added channel change static to tv animation.
+	* Added U6Shape::init() for creating a new blank shape.
+	* Added image_new() and image_static() cutscene script functions.
+
 2011-12-13  Eric Fry <efry at users.sourceforge.net> r1274
 	* Added palette rotation effect to tv animation.
 	* Added pledge now text to tv animation.

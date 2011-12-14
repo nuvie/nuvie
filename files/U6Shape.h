@@ -56,6 +56,7 @@ public:
 	U6Shape();
 	virtual ~U6Shape();
 
+	bool init(uint16 w, uint16 h);
 	virtual bool load(std::string filename);
   bool load(U6Lib_n *file, uint32 index);
 	virtual bool load(unsigned char *buf);

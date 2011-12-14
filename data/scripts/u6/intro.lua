@@ -80,6 +80,10 @@ function load_lounge()
 
 	g_lounge_tbl["tv"] = {sprite_new(nil, g_tv_base_x ,g_tv_base_y, true), sprite_new(nil, g_tv_base_x ,g_tv_base_y, true), sprite_new(nil, g_tv_base_x ,g_tv_base_y, true), sprite_new(nil, g_tv_base_x ,g_tv_base_y, true), sprite_new(nil, g_tv_base_x ,g_tv_base_y, true)}
 
+	g_lounge_tbl["finger"] = sprite_new(g_img_tbl[0xe], 143, 91, true)
+	
+	g_lounge_tbl["tv_static"] = image_new(57,37)
+	
 	load_clock()
 end
 
@@ -136,6 +140,8 @@ function display_tv()
 		g_lounge_tbl["tv"][i].visible = false
 	end
 	
+	g_lounge_tbl.finger.visible = false
+	
 	while should_exit == false do
 		local item = g_tv_programs[g_tv_cur_program][g_tv_cur_pos]
 		if item < 0x80 then
@@ -143,6 +149,15 @@ function display_tv()
 			s_idx = s_idx + 1
 		elseif item == 0x82 then
 			--static
+			local sprite = g_lounge_tbl.tv[s_idx]
+			if sprite ~= nil then
+				sprite.image = g_lounge_tbl["tv_static"]
+				image_static(sprite.image)
+				sprite.x = g_tv_base_x
+				sprite.y = g_tv_base_y
+				sprite.visible = true
+			end
+			g_lounge_tbl.finger.visible = true
 			should_exit = true
 		elseif item == 0x80 then --loop start
 			g_tv_cur_pos = g_tv_cur_pos + 1
@@ -218,6 +233,7 @@ g_lounge_tbl.bg.x = g_lounge_tbl.bg.x - 1
 g_lounge_tbl.bg1.x = g_lounge_tbl.bg1.x - 1
 g_tv_base_x = g_tv_base_x - 1
 g_lounge_tbl.avatar.x = g_lounge_tbl.avatar.x - 2
+g_lounge_tbl.finger.x = g_lounge_tbl.finger.x - 2
 
 if g_lounge_tbl.bg1.x < 166 and g_lounge_tbl.bg1.x % 2 == 0 then
 	g_lounge_tbl.bg0.x = g_lounge_tbl.bg0.x - 1

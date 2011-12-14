@@ -43,9 +43,11 @@ static int nscript_image_gc(lua_State *L);
 
 static sint32 nscript_dec_image_ref_count(CSImage *image);
 
+static int nscript_image_new(lua_State *L);
 static int nscript_image_load(lua_State *L);
 static int nscript_image_load_all(lua_State *L);
 static int nscript_image_print(lua_State *L);
+static int nscript_image_static(lua_State *L);
 
 static const struct luaL_Reg nscript_imagelib_m[] =
 {
@@ -92,6 +94,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
    luaL_newmetatable(L, "nuvie.Sprite");
    luaL_register(L, NULL, nscript_spritelib_m);
 
+   lua_pushcfunction(L, nscript_image_new);
+   lua_setglobal(L, "image_new");
+
    lua_pushcfunction(L, nscript_image_load);
    lua_setglobal(L, "image_load");
 
@@ -100,6 +105,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_image_print);
    lua_setglobal(L, "image_print");
+
+   lua_pushcfunction(L, nscript_image_static);
+   lua_setglobal(L, "image_static");
 
    lua_pushcfunction(L, nscript_sprite_new);
    lua_setglobal(L, "sprite_new");
@@ -242,9 +250,28 @@ static int nscript_image_gc(lua_State *L)
    image = *p_image;
 
    if(nscript_dec_image_ref_count(image) == 0)
+   {
+	   if(image->shp)
+		   delete image->shp;
 	   delete image;
+   }
 
    return 0;
+}
+
+static int nscript_image_new(lua_State *L)
+{
+	uint16 width = lua_tointeger(L, 1);
+	uint16 height = lua_tointeger(L, 2);
+
+	U6Shape *shp = new U6Shape();
+	if(shp->init(width, height) == false)
+		return 0;
+
+	CSImage *image = new CSImage(shp);
+
+	nscript_new_image_var(L, image);
+	return 1;
 }
 
 static int nscript_image_load(lua_State *L)
@@ -305,6 +332,24 @@ static int nscript_image_print(lua_State *L)
 	lua_pushinteger(L, y);
 
 	return 2;
+}
+
+static int nscript_image_static(lua_State *L)
+{
+	CSImage *img = nscript_get_image_from_args(L, 1);
+
+	if(img)
+	{
+		unsigned char *data = img->shp->get_data();
+		uint16 w, h;
+		img->shp->get_size(&w, &h);
+		memset(data, 16, w * h);
+		for(int i=0;i<1000;i++)
+		{
+			data[NUVIE_RAND()%(w*h)] = 0;
+		}
+	}
+	return 0;
 }
 
 bool nscript_new_sprite_var(lua_State *L, CSSprite *sprite)
