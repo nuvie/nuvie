@@ -54,6 +54,7 @@ struct CSSprite {
 	uint8 opacity;
 	CSImage *image;
 	bool visible;
+	SDL_Rect clip_rect;
 
 	CSSprite()
 	{
@@ -62,6 +63,10 @@ struct CSSprite {
 		opacity = 255;
 		image = NULL;
 		visible = false;
+		clip_rect.x = 0;
+		clip_rect.y = 0;
+		clip_rect.w = 0;
+		clip_rect.h = 0;
 	}
 };
 
@@ -105,6 +110,10 @@ public:
 	void print_text(CSImage *image, const char *string, uint16 *x, uint16 *y, uint16 startx, uint16 width, uint8 color);
 
 	SoundManager *get_sound_manager() { return sound_manager; }
+
+	uint16 get_x_off() { return x_off; }
+	uint16 get_y_off() { return y_off; }
+
 };
 
 #endif /* __ScriptCutscene_h__ */

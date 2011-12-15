@@ -423,7 +423,29 @@ static int nscript_sprite_set(lua_State *L)
 		return 0;
 	}
 
+	if(!strcmp(key, "clip_x"))
+	{
+		sprite->clip_rect.x = lua_tointeger(L, 3) + cutScene->get_x_off();
+		return 0;
+	}
 
+	if(!strcmp(key, "clip_y"))
+	{
+		sprite->clip_rect.y = lua_tointeger(L, 3) + cutScene->get_y_off();
+		return 0;
+	}
+
+	if(!strcmp(key, "clip_w"))
+	{
+		sprite->clip_rect.w = lua_tointeger(L, 3);
+		return 0;
+	}
+
+	if(!strcmp(key, "clip_h"))
+	{
+		sprite->clip_rect.h = lua_tointeger(L, 3);
+		return 0;
+	}
    return 0;
 }
 
@@ -893,7 +915,7 @@ void ScriptCutscene::Display(bool full_redraw)
 				s->image->shp->get_size(&w, &h);
 				uint16 x, y;
 				s->image->shp->get_hot_point(&x, &y);
-				screen->blit(x_off+s->x-x, y_off+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, &clip_rect, s->opacity);
+				screen->blit(x_off+s->x-x, y_off+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, s->clip_rect.w != 0 ? &s->clip_rect : &clip_rect, s->opacity);
 			}
 		}
 

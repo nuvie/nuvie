@@ -27,6 +27,16 @@ function fade_out()
 	return false
 end
 
+function fade_in()
+	local i
+	for i=0x0,0xff,3 do
+		canvas_set_opacity(i)
+		canvas_update()
+	end
+
+	return false
+end
+
 function load_images(filename)
 	g_img_tbl = image_load_all(filename)
 end
@@ -80,6 +90,14 @@ function load_lounge()
 
 	g_lounge_tbl["tv"] = {sprite_new(nil, g_tv_base_x ,g_tv_base_y, true), sprite_new(nil, g_tv_base_x ,g_tv_base_y, true), sprite_new(nil, g_tv_base_x ,g_tv_base_y, true), sprite_new(nil, g_tv_base_x ,g_tv_base_y, true), sprite_new(nil, g_tv_base_x ,g_tv_base_y, true)}
 
+	for i=1,5 do
+		local sprite = g_lounge_tbl["tv"][i]
+		sprite.clip_x = g_tv_base_x
+		sprite.clip_y = g_tv_base_y
+		sprite.clip_w = 57
+		sprite.clip_h = 37
+	end
+
 	g_lounge_tbl["finger"] = sprite_new(g_img_tbl[0xe], 143, 91, true)
 	
 	g_lounge_tbl["tv_static"] = image_new(57,37)
@@ -100,7 +118,7 @@ g_tv_programs = {
 {0x82,0x82,0x80,0x28,0x3,0x8B,0x81}, --intestines
 {0x82,0x82,0x80,0x4,0x4,0x81,0x80,0x4,0x8,0x81,0x80,0x4,0x9,0x81,0x80,0x4,0x0A,0x81,0x80,0x4,0x0B,0x81,0x80,0x4,0x0C,0x81}, --vacuum
 {0x82,0x82,0x87,0x80,0x46,0x0F,0x86,0x84,0x9,0x10,0x10,0x10,0x11,0x11,0x11,0x12,0x12,0x12,0x81}, --tv anchor man
---{0x82,0x82,0x80,0x32,0x83,0x81}, --endless road
+{0x82,0x82,0x80,0x32,0x83,0x81}, --endless road
 {0x82,0x82,0x80,0x5,0x27,0x8A,0x28,0x8A,0x29,0x81,0x80,0x6,0x2A,0x8A,0x2A,0x8A,0x2B,0x8A,0x2B,0x8A,0x2C,0x8A,0x2C,0x8A,0x2D,0x8A,0x2D,0x81,0x80,0x0A,0x2E,0x8A,0x2F,0x8A,0x30,0x8A,0x84,0x9,0x2E,0x2E,0x2E,0x2F,0x2F,0x2F,0x30,0x30,0x30,0x8A,0x2E,0x8A,0x2F,0x8A,0x30,0x81}, --rock band
 {0x82,0x82,0x80,0x55,0x16,0x17,0x84,0x0C,0x13,0x13,0x13,0x13,0x14,0x14,0x14,0x14,0x15,0x15,0x15,0x15,0x88,0x81,0x80,0x0F,0x16,0x84,0x2,0x1A,0x1B,0x89,0x88,0x81,0x80,0x3,0x16,0x1A,0x89,0x88,0x81,0x80,0x3,0x16,0x1C,0x88,0x81,0x80,0x3,0x16,0x1D,0x88,0x81,0x80,0x3,0x16,0x1E,0x88,0x81,0x80,0x3,0x16,0x23,0x88,0x81,0x80,0x3,0x16,0x24,0x88,0x81,0x80,0x32,0x16,0x88,0x81} --pledge now!
 }
@@ -123,12 +141,16 @@ g_tv_y_off = {
 g_tv_pledge_counter = 0
 g_tv_pledge_image = 37
 
+g_tv_road_offset = 0xe
+
 function display_tv_sprite(s_idx, image_num)
 	local sprite = g_lounge_tbl.tv[s_idx]
 	if sprite ~= nil then
 		sprite.image = g_img_tbl[0x10+image_num]
 		sprite.x = g_tv_base_x + g_tv_x_off[image_num+1]
 		sprite.y = g_tv_base_y + g_tv_y_off[image_num+1]
+		sprite.clip_x = g_tv_base_x
+		sprite.clip_y = g_tv_base_y
 		sprite.visible = true
 	end
 end
@@ -155,6 +177,8 @@ function display_tv()
 				image_static(sprite.image)
 				sprite.x = g_tv_base_x
 				sprite.y = g_tv_base_y
+				sprite.clip_x = g_tv_base_x
+				sprite.clip_y = g_tv_base_y
 				sprite.visible = true
 			end
 			g_lounge_tbl.finger.visible = true
@@ -169,6 +193,19 @@ function display_tv()
 				g_tv_loop_cnt = g_tv_loop_cnt - 1
 			end
 			should_exit = true
+		elseif item == 0x83 then --endless road
+			g_tv_road_offset = g_tv_road_offset - 1
+			if g_tv_road_offset == 0 then
+				g_tv_road_offset = 0xe
+			end
+			g_tv_y_off[0x23] = 0x15 - g_tv_road_offset
+			display_tv_sprite(s_idx, 0x22)
+			s_idx = s_idx + 1
+			g_tv_y_off[0x23] = 0x24 - g_tv_road_offset
+			display_tv_sprite(s_idx, 0x22)
+			s_idx = s_idx + 1
+			display_tv_sprite(s_idx, 0x21)
+			s_idx = s_idx + 1
 		elseif item == 0x84 then --select random image from list.
 			local rand_len = g_tv_programs[g_tv_cur_program][g_tv_cur_pos+1]
 			item = g_tv_programs[g_tv_cur_program][g_tv_cur_pos+math.random(1,rand_len)+1]
@@ -382,6 +419,34 @@ function load_window()
 	g_window_tbl["rain_delay"] = 20
 	g_window_tbl["lightning_counter"] = 0
 	
+end
+
+function hide_window()
+	g_window_tbl["sky"].visible = false
+	g_window_tbl["cloud1"].visible = false
+	g_window_tbl["cloud2"].visible = false
+
+	local i
+	for i=1,5 do
+		g_window_tbl["clouds"][i].visible = false
+	end
+
+	g_window_tbl["lightning"].visible = false
+	g_window_tbl["ground"].visible = false
+	g_window_tbl["trees"].visible = false
+
+	g_window_tbl["strike"].visible = false
+
+	local i
+	for i = 0,100 do
+		g_window_tbl["rain"][i].visible = false
+	end
+
+	g_window_tbl["frame"].visible = false
+	g_window_tbl["window"].visible = false
+	g_window_tbl["door_left"].visible = false
+	g_window_tbl["door_right"].visible = false
+
 end
 
 function display_window()
@@ -615,6 +680,58 @@ function window_sequence()
 	
 end
 
+function stones_update()
+	local input = input_poll()
+
+	while input == nil do
+--		display_stones()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+		canvas_update()
+	end
+
+	return should_exit(input)
+end
+
+g_stones_tbl = {}
+
+function stones_sequence()
+
+	load_images("intro_3.shp")
+
+	canvas_set_palette("palettes.int", 3)
+
+	g_stones_tbl["bg"] = sprite_new(g_img_tbl[0], 0, 0, true)
+
+	local scroll_img = image_load("blocks.shp", 2)
+	local scroll = sprite_new(scroll_img, 1, 0xc, true)
+
+	local x, y = image_print(scroll_img, "Near the stones, the smell of damp, blasted earth hangs ", 7, 303, 7, 8, 0x3e)
+	x, y = image_print(scroll_img, "in the air. In a frozen moment of lightning-struck ", 7, 303, x, y, 0x3e)
+	x, y = image_print(scroll_img, "daylight, you glimpse a tiny obsidian stone in the ", 7, 303, x, y, 0x3e)
+	x, y = image_print(scroll_img, "midst of the circle!", 7, 303, x, y, 0x3e)
+	
+	fade_in()
+
+	if stones_update() == true then
+		return false
+	end
+	
+	scroll_img = image_load("blocks.shp", 0)
+	image_print(scroll_img, "Wondering, you pick it up....", 8, 234, 0x2a, 8, 0x3e)
+	scroll.image = scroll_img
+	scroll.x = 0x21
+	scroll.y = 0x1e
+	
+	if stones_update() == true then
+		return false
+	end
+
+end
+
 function play()
 
 load_images("intro_1.shp")
@@ -674,8 +791,12 @@ background.visible = false
 if lounge_sequence() == false then
 	return 
 end
---] ]
+
 window_sequence()
+fade_out()
+hide_window()
+--] ]
+stones_sequence()
 end
 
 play()

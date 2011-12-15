@@ -1,3 +1,8 @@
+2011-12-16  Eric Fry <efry at users.sourceforge.net> r1276
+	* Added endless road anim to tv intro sequence.
+	* Added clipping rect to cutscene sprites.
+	* Started on the moonstone part of the intro sequence.
+
 2011-12-14  Eric Fry <efry at users.sourceforge.net> r1275
 	* Added remote keypress to tv animation.
 	* Added channel change static to tv animation.
