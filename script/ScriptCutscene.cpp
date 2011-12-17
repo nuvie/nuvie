@@ -845,9 +845,9 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 	                        (buf[byte_pos+1] << 8))
 	                        >> shift_val) & 0x3F;
 	            unpacked_palette[i*3+j] = (uint8) (color << 2);
-	            //printf("%02x,", unpacked_palette[i*3+j]);
+	            //printf("%d ", unpacked_palette[i*3+j]);
 	        }
-	        //printf(":%d\n", i);
+	        //printf(" untitled\n");
 	    }
 
 	screen->set_palette(unpacked_palette);

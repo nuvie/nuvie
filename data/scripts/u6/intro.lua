@@ -677,6 +677,7 @@ function window_sequence()
 		return false
 	end
 
+	scroll.visible = false
 	
 end
 
@@ -684,16 +685,47 @@ function stones_update()
 	local input = input_poll()
 
 	while input == nil do
---		display_stones()
+		stones_rotate_palette()
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
 			break
 		end
-		canvas_update()
 	end
 
 	return should_exit(input)
+end
+
+function stones_shake_moongate()
+	local input = input_poll()
+
+	while input == nil do
+		stones_rotate_palette()
+		g_stones_tbl["moon_gate"].x = 0x7c + math.random(0, 1)
+		g_stones_tbl["moon_gate"].y = 5 + math.random(0, 3)
+		canvas_update()
+		stones_rotate_palette()
+		g_stones_tbl["moon_gate"].x = 0x7c + math.random(0, 1)
+		g_stones_tbl["moon_gate"].y = 5 + math.random(0, 3)
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
+	
+	return should_exit(input)
+end
+
+g_stones_pal_counter = 0
+
+function stones_rotate_palette()
+	if g_stones_pal_counter == 4 then
+		canvas_rotate_palette(144, 16)
+		g_stones_pal_counter = 0
+	else
+		g_stones_pal_counter = g_stones_pal_counter + 1
+	end
 end
 
 g_stones_tbl = {}
@@ -705,6 +737,15 @@ function stones_sequence()
 	canvas_set_palette("palettes.int", 3)
 
 	g_stones_tbl["bg"] = sprite_new(g_img_tbl[0], 0, 0, true)
+	g_stones_tbl["stone_cover"] = sprite_new(g_img_tbl[3], 0x96, 0x64, false)
+	g_stones_tbl["gate_cover"] = sprite_new(g_img_tbl[4], 0x5e, 0x66, false)
+	g_stones_tbl["hand"] = sprite_new(g_img_tbl[1], 0xbd, 0xc7, false)
+	g_stones_tbl["moon_gate"] = sprite_new(g_img_tbl[2], 0x7c, 0x64, false)
+	g_stones_tbl["moon_gate"].clip_x = 0
+	g_stones_tbl["moon_gate"].clip_y = 0
+	g_stones_tbl["moon_gate"].clip_w = 320
+	g_stones_tbl["moon_gate"].clip_h = 0x66
+	g_stones_tbl["avatar"] = sprite_new(g_img_tbl[7], -2, 0x12, false)
 
 	local scroll_img = image_load("blocks.shp", 2)
 	local scroll = sprite_new(scroll_img, 1, 0xc, true)
@@ -720,16 +761,215 @@ function stones_sequence()
 		return false
 	end
 	
+	g_stones_tbl["stone_cover"].visible = true
+	g_stones_tbl["hand"].visible = true
+	
 	scroll_img = image_load("blocks.shp", 0)
 	image_print(scroll_img, "Wondering, you pick it up....", 8, 234, 0x2a, 8, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x21
 	scroll.y = 0x1e
 	
+	local i
+	for i=0xc7,0x54,-2  do
+		--		display_stones()
+		g_stones_tbl["hand"].y = i
+		canvas_update()
+		local input = input_poll()
+		if input ~= nil and should_exit(input) then
+			return false
+		end
+	end
+
+	if stones_update() == true then
+		return false
+	end
+	
+	g_stones_tbl["bg"].image = g_img_tbl[5]
+	g_stones_tbl["stone_cover"].visible = false
+	g_stones_tbl["gate_cover"].visible = true
+	
+	scroll_img = image_load("blocks.shp", 1)
+	x, y = image_print(scroll_img, "...and from the heart of the stones, a softly glowing door ", 7, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "ascends in silence!", 7, 303, x, y, 0x3e)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0xa0
+	
+	g_stones_tbl["moon_gate"].visible = true
+
+	for i=0x64,0x5,-1  do
+		--		display_stones()
+		stones_rotate_palette()
+		g_stones_tbl["moon_gate"].y = i
+		canvas_update()
+		local input = input_poll()
+		if input ~= nil and should_exit(input) then
+			return false
+		end
+	end
+
+	for i=0x54,0xc7,2  do
+		--		display_stones()
+		stones_rotate_palette()
+		g_stones_tbl["hand"].y = i
+		canvas_update()
+		local input = input_poll()
+		if input ~= nil and should_exit(input) then
+			return false
+		end
+	end
+	
+	g_stones_tbl["hand"].visible = false
+	
+	if stones_update() == true then
+		return false
+	end
+	
+	g_stones_tbl["hand"].image = g_img_tbl[6]
+	g_stones_tbl["hand"].x = 0x9b
+	g_stones_tbl["hand"].visible = true
+	scroll.visible = false
+	
+	for i=0xc7,0x44,-2  do
+		stones_rotate_palette()
+		g_stones_tbl["hand"].y = i
+		g_stones_tbl["bg"].y = g_stones_tbl["bg"].y - 1
+		g_stones_tbl["gate_cover"].y = g_stones_tbl["gate_cover"].y - 1
+		g_stones_tbl["moon_gate"].y = g_stones_tbl["moon_gate"].y - 1
+		canvas_update()
+		local input = input_poll()
+		if input ~= nil and should_exit(input) then
+			return false
+		end
+	end
+	
+	scroll_img = image_load("blocks.shp", 2)
+	x, y = image_print(scroll_img, "Exultant memories wash over you as you clutch the stone. ", 7, 303, 7, 8, 0x3e)
+	x, y = image_print(scroll_img, "When last you saw an orb such as this, it was cast down ", 7, 303, x, y, 0x3e)
+	image_print(scroll_img, "by Lord British to banish the tyrant Blackthorn!", 7, 303, x, y, 0x3e)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0x98
+	scroll.visible = true
+	
+	if stones_update() == true then
+		return false
+	end
+	
+	scroll.visible = false
+	
+	for i=0x44,0xc7,2  do
+		stones_rotate_palette()
+		g_stones_tbl["hand"].y = i
+		g_stones_tbl["bg"].y = g_stones_tbl["bg"].y + 1
+		g_stones_tbl["gate_cover"].y = g_stones_tbl["gate_cover"].y + 1
+		g_stones_tbl["moon_gate"].y = g_stones_tbl["moon_gate"].y + 1
+		canvas_update()
+		local input = input_poll()
+		if input ~= nil and should_exit(input) then
+			return false
+		end
+	end
+	
+	g_stones_tbl["hand"].visible = false
+	
+	scroll_img = image_load("blocks.shp", 2)
+	image_print(scroll_img, "But your joy soon gives way to apprehension.", 7, 303, 16, 8, 0x3e)
+	image_print(scroll_img, "The gate to Britannia has always been blue...", 7, 303, 18, 24, 0x3e)
+	image_print(scroll_img, "as blue as the morning sky.", 7, 303, 76, 32, 0x3e)
+	scroll.image = scroll_img
+	scroll.visible = true
+		
+	if stones_update() == true then
+		return false
+	end
+	
+	scroll_img = image_load("blocks.shp", 1)
+	x,y = image_print(scroll_img, "Abruptly, the portal quivers and begins to sink ", 7, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "into the ground.  Its crimson light wanes!", 7, 303, x, y, 0x3e)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0xa0
+	
+	if stones_shake_moongate() == true then
+		return false
+	end
+	
+	scroll_img = image_load("blocks.shp", 1)
+	x,y = image_print(scroll_img, "Desperation makes the decision an easy one.", 7, 303, 22, 14, 0x3e)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0xa0
+		
+	if stones_shake_moongate() == true then
+		return false
+	end
+	
+	scroll.visible = false
+	
+	g_stones_tbl["avatar"].visible = true
+	
+	canvas_set_palette_entry(0x19, 0, 0, 0)
+		
+	for i=0,19,1 do
+		g_stones_tbl["avatar"].image = g_img_tbl[7+i]
+		
+		local j
+		for j=0,4 do
+			canvas_update()
+			stones_rotate_palette()
+			g_stones_tbl["moon_gate"].x = 0x7c + math.random(0, 1)
+			g_stones_tbl["moon_gate"].y = 5 + math.random(0, 3)
+		end
+						
+		g_stones_tbl["avatar"].y = g_stones_tbl["avatar"].y - 3
+
+		local input = input_poll()
+		if input ~= nil and should_exit(input) then
+			return false
+		end
+	end
+	
+	
+	for i=0xff,0,-3 do
+		canvas_update()
+		stones_rotate_palette()
+		g_stones_tbl["moon_gate"].x = 0x7c + math.random(0, 1)
+		g_stones_tbl["moon_gate"].y = 5 + math.random(0, 3)
+		
+		g_stones_tbl["avatar"].opacity = i
+	
+		local input = input_poll()
+		if input ~= nil and should_exit(input) then
+			return false
+		end
+	end
+
+	canvas_set_palette_entry(0x19, 0x74, 0x74, 0x74)
+	
+	g_stones_tbl["moon_gate"].x = 0x7c
+	
+	for i=0x5,0x64,1  do
+		stones_rotate_palette()
+		g_stones_tbl["moon_gate"].y = i
+		canvas_update()
+		local input = input_poll()
+		if input ~= nil and should_exit(input) then
+			return false
+		end
+	end
+
+	g_stones_tbl["bg"].image = g_img_tbl[0]
+	g_stones_tbl["moon_gate"].visible = false
+	g_stones_tbl["gate_cover"].visible = false
+	g_stones_tbl["stone_cover"].visible = true
+	
 	if stones_update() == true then
 		return false
 	end
 
+	return true
 end
 
 function play()

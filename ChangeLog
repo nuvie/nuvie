@@ -1,3 +1,6 @@
+2011-12-17  Eric Fry <efry at users.sourceforge.net> r1277
+	* Finished the intro sequence.
+
 2011-12-16  Eric Fry <efry at users.sourceforge.net> r1276
 	* Added endless road anim to tv intro sequence.
 	* Added clipping rect to cutscene sprites.
