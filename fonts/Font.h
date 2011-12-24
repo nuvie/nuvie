@@ -54,7 +54,7 @@ private:
    bool drawString(Screen *screen, const char *str, uint16 x, uint16 y);
    bool drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y);
 
-   virtual void drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
+   virtual uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color = FONT_COLOR_U6_NORMAL);
 
    uint16 drawStringToShape(U6Shape *shp, const char *str, uint16 x, uint16 y, uint8 color);

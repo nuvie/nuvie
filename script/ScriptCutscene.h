@@ -55,6 +55,7 @@ struct CSSprite {
 	CSImage *image;
 	bool visible;
 	SDL_Rect clip_rect;
+	std::string text;
 
 	CSSprite()
 	{
@@ -67,6 +68,7 @@ struct CSSprite {
 		clip_rect.y = 0;
 		clip_rect.w = 0;
 		clip_rect.h = 0;
+		text = "";
 	}
 };
 
@@ -114,6 +116,7 @@ public:
 	uint16 get_x_off() { return x_off; }
 	uint16 get_y_off() { return y_off; }
 
+	void hide_sprites();
 };
 
 #endif /* __ScriptCutscene_h__ */

@@ -58,7 +58,7 @@ bool U6Font::init(unsigned char *data, uint16 num_c, uint16 char_offset)
  return true;
 }
 
-void U6Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
+uint16 U6Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                     uint8 color)
 {
  unsigned char buf[64];
@@ -89,5 +89,5 @@ void U6Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
    }
 
  screen->blit(x,y,buf,8,8,8,8,true,NULL);
- return;
+ return 8;
 }

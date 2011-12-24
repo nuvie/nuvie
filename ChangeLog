@@ -1,3 +1,13 @@
+2011-12-24  Eric Fry <efry at users.sourceforge.net> r1278
+	* Added text property to cutscene sprite.
+	* Added ScriptCutscene::hide_sprites() which hides all sprites.
+	* Added canvas_hide_all_sprites() script function.
+	* Added support for uppercase input in cutscene scripting.
+	* Font::drawChar() now returns char width.
+	* Font::drawString() has correct kerning when printing U6 intro font.
+	* Added input key repeat to cutscene scripting.
+	* Started work on U6 main menu.
+
 2011-12-17  Eric Fry <efry at users.sourceforge.net> r1277
 	* Finished the intro sequence.
 

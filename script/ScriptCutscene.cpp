@@ -80,6 +80,7 @@ static int nscript_canvas_set_update_interval(lua_State *L);
 static int nscript_canvas_set_opacity(lua_State *L);
 static int nscript_canvas_update(lua_State *L);
 static int nscript_canvas_hide(lua_State *L);
+static int nscript_canvas_hide_all_sprites(lua_State *L);
 
 static int nscript_music_play(lua_State *L);
 static int nscript_input_poll(lua_State *L);
@@ -133,6 +134,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_canvas_hide);
    lua_setglobal(L, "canvas_hide");
+
+   lua_pushcfunction(L, nscript_canvas_hide_all_sprites);
+   lua_setglobal(L, "canvas_hide_all_sprites");
 
    lua_pushcfunction(L, nscript_music_play);
    lua_setglobal(L, "music_play");
@@ -446,6 +450,11 @@ static int nscript_sprite_set(lua_State *L)
 		sprite->clip_rect.h = lua_tointeger(L, 3);
 		return 0;
 	}
+	if(!strcmp(key, "text"))
+	{
+		const char *text = lua_tostring(L, 3);
+		sprite->text = std::string(text);
+	}
    return 0;
 }
 
@@ -497,6 +506,12 @@ static int nscript_sprite_get(lua_State *L)
 			nscript_new_image_var(L, sprite->image);
 			return 1;
 		}
+	}
+
+	if(!strcmp(key, "text"))
+	{
+		lua_pushstring(L, sprite->text.c_str());
+		return 1;
 	}
 
 return 0;
@@ -621,6 +636,12 @@ static int nscript_canvas_hide(lua_State *L)
 	return 0;
 }
 
+static int nscript_canvas_hide_all_sprites(lua_State *L)
+{
+	cutScene->hide_sprites();
+	return 0;
+}
+
 static int nscript_music_play(lua_State *L)
 {
 	const char *filename = lua_tostring(L, 1);
@@ -636,9 +657,12 @@ static int nscript_input_poll(lua_State *L)
 	if(SDL_PollEvent(&event))
 	{
 		//FIXME do something here.
-		if(event.type == SDL_KEYUP)
+		if(event.type == SDL_KEYDOWN)
 		{
-			lua_pushinteger(L, event.key.keysym.sym);
+			if((((event.key.keysym.mod & KMOD_CAPS) == KMOD_CAPS && (event.key.keysym.mod & KMOD_SHIFT) == 0) || ((event.key.keysym.mod & KMOD_CAPS) == 0 && event.key.keysym.mod & KMOD_SHIFT)) && event.key.keysym.sym >= SDLK_a && event.key.keysym.sym <= SDLK_z)
+				lua_pushinteger(L, event.key.keysym.sym-32);
+			else
+				lua_pushinteger(L, event.key.keysym.sym);
 			return 1;
 		}
 	}
@@ -873,6 +897,16 @@ void ScriptCutscene::set_screen_opacity(uint8 new_opacity)
 	screen_opacity = new_opacity;
 }
 
+void ScriptCutscene::hide_sprites()
+{
+	for(std::list<CSSprite *>::iterator it = sprite_list.begin(); it != sprite_list.end(); it++)
+	{
+		CSSprite *s = *it;
+		if(s->visible)
+			s->visible = false;
+	}
+}
+
 void ScriptCutscene::update()
 {
 	if(cutScene->Status() == WIDGET_HIDDEN)
@@ -909,13 +943,21 @@ void ScriptCutscene::Display(bool full_redraw)
 		for(std::list<CSSprite *>::iterator it = sprite_list.begin(); it != sprite_list.end(); it++)
 		{
 			CSSprite *s = *it;
-			if(s->visible && s->image)
+			if(s->visible)
 			{
-				uint16 w, h;
-				s->image->shp->get_size(&w, &h);
-				uint16 x, y;
-				s->image->shp->get_hot_point(&x, &y);
-				screen->blit(x_off+s->x-x, y_off+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, s->clip_rect.w != 0 ? &s->clip_rect : &clip_rect, s->opacity);
+				if(s->image)
+				{
+					uint16 w, h;
+					s->image->shp->get_size(&w, &h);
+					uint16 x, y;
+					s->image->shp->get_hot_point(&x, &y);
+					screen->blit(x_off+s->x-x, y_off+s->y-y, s->image->shp->get_data(), 8, w, h, w, true, s->clip_rect.w != 0 ? &s->clip_rect : &clip_rect, s->opacity);
+				}
+
+				if(s->text.length() > 0)
+				{
+					font->drawString(screen, s->text.c_str(), s->x, s->y);
+				}
 			}
 		}
 

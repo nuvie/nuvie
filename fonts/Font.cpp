@@ -71,13 +71,13 @@ bool Font::drawString(Screen *screen, const char *str, uint16 x, uint16 y)
 
 bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y)
 {
- uint16 i, l; // l is drawn-index of character, to determine x
+ uint16 i;
  bool highlight = false;
 
  if(font_data == NULL)
    return false;
 
- for(i=0, l=0;i<string_len;i++)
+ for(i=0;i<string_len;i++)
    {
     if(str[i] == '@')
        highlight = true;
@@ -85,7 +85,7 @@ bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16
       {
        if(!isalpha(str[i]))
           highlight = false;
-       drawChar(screen, get_char_num(str[i]), x + (l++) * 8, y,
+       x += drawChar(screen, get_char_num(str[i]), x, y,
                 highlight ? FONT_COLOR_U6_HIGHLIGHT : FONT_COLOR_U6_NORMAL);
       }
    }
@@ -122,7 +122,7 @@ uint16 Font::getStringWidth(const char *str)
 	return w;
 }
 
-void Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
+uint16 Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                     uint8 color)
 {
 	unsigned char buf[64];
@@ -142,7 +142,7 @@ void Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
 	}
 
 	screen->blit(x,y,buf,8,width,height,width,true,NULL);
-	return;
+	return width;
 }
 
 uint16 Font::drawStringToShape(U6Shape *shp, const char *str, uint16 x, uint16 y, uint8 color)

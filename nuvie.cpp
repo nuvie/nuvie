@@ -461,5 +461,7 @@ bool Nuvie::playIntro()
 
 	ConsoleHide();
 
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL*2);
+
 	return script->run_lua_file(script_file.c_str());
 }

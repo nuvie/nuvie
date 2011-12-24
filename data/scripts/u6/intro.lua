@@ -27,10 +27,42 @@ function fade_out()
 	return false
 end
 
+function fade_out_sprite(sprite, speed)
+	local i
+	if speed ~= nil then
+		speed = -speed
+	else
+		speed = -3
+	end
+	
+	for i=0xff,0,speed do
+		sprite.opacity = i
+		canvas_update()
+	end
+
+	return false
+end
+
 function fade_in()
 	local i
 	for i=0x0,0xff,3 do
 		canvas_set_opacity(i)
+		canvas_update()
+	end
+
+	return false
+end
+
+function fade_in_sprite(sprite, speed)
+	local i
+	if speed ~= nil then
+		speed = speed
+	else
+		speed = 3
+	end
+
+	for i=0,0xff,speed do
+		sprite.opacity = i
 		canvas_update()
 	end
 
@@ -1032,13 +1064,212 @@ if lounge_sequence() == false then
 	return 
 end
 
-window_sequence()
+if window_sequence() == false then
+	return
+end
+
 fade_out()
 hide_window()
 --] ]
 stones_sequence()
 end
 
+function main_menu_load()
+	g_menu = {}
+	
+	canvas_set_palette("palettes.int", 0)
+		
+	local title_img_tbl = image_load_all("titles.shp")
+	g_menu["title"] = sprite_new(title_img_tbl[0], 0x13, 0, true)
+	g_menu["subtitle"] = sprite_new(title_img_tbl[1], 0x3b, 0x2f, false)
+
+	g_menu["menu"] = sprite_new(image_load("mainmenu.shp", 0), 0x31, 0x53, false)
+	
+	fade_in()
+	
+	g_menu["subtitle"].visible = true
+	g_menu["menu"].visible = true
+	
+	fade_in_sprite(g_menu["menu"])
+end
+
+function main_menu()
+	g_menu["title"].visible = true
+	g_menu["subtitle"].visible = true
+	g_menu["menu"].visible = true
+	
+	local input = input_poll()
+
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if input == 113 then     --q quit
+				break
+			elseif input == 105 then --i
+				--run intro here
+			elseif input == 99 then  --c
+				fade_out_sprite(g_menu["menu"],6)
+				if create_character() == true then
+					return "J"
+				end
+				fade_in_sprite(g_menu["menu"])
+				--create character
+			elseif input == 116 then --t
+				--transfer a character
+			elseif input == 97 then  --a
+				--acknowledgments
+			elseif input == 106 then --j
+				return "J"
+			end
+			input = nil
+		end
+	end
+	
+	return "Q"
+end
+
+g_keycode_tbl =
+{
+[32]=" ",
+
+[48]="0",
+[49]="1",
+[50]="2",
+[51]="3",
+[52]="4",
+[53]="5",
+[54]="6",
+[55]="7",
+[56]="8",
+[57]="9",
+[65]="A",
+[66]="B",
+[67]="C",
+[68]="D",
+[69]="E",
+[70]="F",
+[71]="G",
+[72]="H",
+[73]="I",
+[74]="J",
+[75]="K",
+[76]="L",
+[77]="M",
+[78]="N",
+[79]="O",
+[80]="P",
+[81]="Q",
+[82]="R",
+[83]="S",
+[84]="T",
+[85]="U",
+[86]="V",
+[87]="W",
+[88]="X",
+[89]="Y",
+[90]="Z",
+
+[97]="a",
+[98]="b",
+[99]="c",
+[100]="d",
+[101]="e",
+[102]="f",
+[103]="g",
+[104]="h",
+[105]="i",
+[106]="j",
+[107]="k",
+[108]="l",
+[109]="m",
+[110]="n",
+[111]="o",
+[112]="p",
+[113]="q",
+[114]="r",
+[115]="s",
+[116]="t",
+[117]="u",
+[118]="v",
+[119]="w",
+[120]="x",
+[121]="y",
+[122]="z",
+}
+function create_character()
+	music_play("create.m")
+
+	local bg = sprite_new(image_load("vellum1.shp",0), 0x10, 0x50, true)
+	image_print(bg.image, "By what name shalt thou be called?", 7, 303, 36, 24, 0x48)
+	
+	local name = sprite_new(nil, 0x34, 0x78, true)
+	name.text = ""
+	local input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) == true then
+				bg.visible = false
+				name.visible = false
+				return false
+			end
+			local name_text = name.text
+			local len = string.len(name_text)
+			if input == 8 and len > 0 then
+				name.text = string.sub(name_text, 1, len - 1)
+			elseif input == 13 and len > 0 then --return
+				break;
+			elseif g_keycode_tbl[input] ~= nil and len < 13 then
+				name.text = name_text..g_keycode_tbl[input]
+			end
+			input = nil
+		end
+	end
+	
+	image_print(bg.image, "And art thou Male, or Female?", 7, 303, 52, 56, 0x48)
+	input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) == true then
+				bg.visible = false
+				name.visible = false
+				return false
+			end
+			if input == 77 or input == 109 then
+				--male
+				break
+			elseif input == 70 or input == 102 then
+				--female
+				break
+			end
+			
+			input = nil
+		end
+	end
+	
+	return true
+end
+
 play()
 fade_out()
+
+g_img_tbl = nil
+g_clock_tbl = nil
+g_lounge_tbl = nil
+g_window_tbl = nil
+g_stones_tbl = nil
+
+canvas_hide_all_sprites()
+
+main_menu_load()
+local cmd = ""
+
+while cmd ~= "Q" and cmd ~= "J" do
+	cmd = main_menu()
+end
+
 canvas_hide()
