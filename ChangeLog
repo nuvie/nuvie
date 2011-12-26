@@ -1,3 +1,6 @@
+2011-12-26  Eric Fry <efry at users.sourceforge.net> r1279
+	* Added arrow key navigation to U6 main menu.
+
 2011-12-24  Eric Fry <efry at users.sourceforge.net> r1278
 	* Added text property to cutscene sprite.
 	* Added ScriptCutscene::hide_sprites() which hides all sprites.

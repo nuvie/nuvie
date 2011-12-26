@@ -856,7 +856,7 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 	file.seek(idx * 0x240);
 
 	file.readToBuf(buf, 0x240);
-
+	    //printf("pal%d\n",idx);
 	    uint8 unpacked_palette[0x300];
 	    for (int i = 0; i < 0x100; i++)
 	    {

@@ -1074,6 +1074,29 @@ hide_window()
 stones_sequence()
 end
 
+g_menu_pal =
+{
+	{232,96,0},
+	{236,128,0},
+	{244,164,0},
+	{248,200,0},
+	{252,252,84},
+	{248,200,0},
+	{244,164,0},
+	{236,128,0},
+	{232,96,0}
+}
+
+g_menu_pal_idx = { 14, 33, 34, 35, 36 }
+function main_menu_set_pal(idx)
+	local i
+	
+	for i = 1,5,1 do
+		local colour = g_menu_pal[5+(i-1)-idx]
+		canvas_set_palette_entry(g_menu_pal_idx[i], colour[1], colour[2], colour[3])
+	end
+end
+
 function main_menu_load()
 	g_menu = {}
 	
@@ -1099,7 +1122,7 @@ function main_menu()
 	g_menu["menu"].visible = true
 	
 	local input = input_poll()
-
+	local menu_idx = 0
 	while input == nil do
 		canvas_update()
 		input = input_poll()
@@ -1108,19 +1131,34 @@ function main_menu()
 				break
 			elseif input == 105 then --i
 				--run intro here
-			elseif input == 99 then  --c
+			elseif input == 99 or input == 13 and menu_idx == 1 then  --c
+				main_menu_set_pal(1)
 				fade_out_sprite(g_menu["menu"],6)
 				if create_character() == true then
 					return "J"
 				end
+				menu_idx=0
+				main_menu_set_pal(menu_idx)
 				fade_in_sprite(g_menu["menu"])
 				--create character
 			elseif input == 116 then --t
 				--transfer a character
 			elseif input == 97 then  --a
 				--acknowledgments
-			elseif input == 106 then --j
+			elseif input == 106 or input == 13 and menu_idx == 4 then --j
+				main_menu_set_pal(4)
+				fade_out()
 				return "J"
+			elseif input == 274 then --down key
+				if menu_idx < 4 then
+					menu_idx = menu_idx + 1
+					main_menu_set_pal(menu_idx)
+				end
+			elseif input == 273 then --up key
+				if menu_idx > 0 then
+					menu_idx = menu_idx - 1
+					main_menu_set_pal(menu_idx)
+				end
 			end
 			input = nil
 		end
