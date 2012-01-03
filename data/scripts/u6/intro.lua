@@ -1137,6 +1137,7 @@ function main_menu()
 				if create_character() == true then
 					return "J"
 				end
+				canvas_set_palette("palettes.int", 0)
 				menu_idx=0
 				main_menu_set_pal(menu_idx)
 				fade_in_sprite(g_menu["menu"])
@@ -1165,6 +1166,125 @@ function main_menu()
 	end
 	
 	return "Q"
+end
+
+function gypsy_ab_select(question)
+	local a_lookup_tbl = {
+	0, 0, 0, 0, 0, 0, 0, 1,
+	1, 1, 1, 1, 1, 2, 2, 2,
+	2, 2, 3, 3, 3, 3, 4, 4,
+	4, 5, 5, 6,
+	}
+	
+	local b_lookup_tbl = {
+	1, 2, 3, 4, 5, 6, 7, 2,
+	3, 4, 5, 6, 7, 3, 4, 5,
+	6, 7, 4, 5, 6, 7, 5, 6,
+	7, 6, 7, 7,
+	}
+
+	local input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if input == 65 or input == 97 then
+				return a_lookup_tbl[question - 104]
+			elseif input == 66 or input == 98 then
+				return b_lookup_tbl[question - 104]
+			end
+			input = nil
+		end
+	end
+end
+
+local gypsy_question_text = {
+"\"Entrusted to deliver an uncounted purse of gold, thou dost meet a poor beggar. Dost thou A) deliver the gold Honestly, knowing the trust in thee was well-placed; or B) show Compassion and give the beggar a coin, knowing it won't be missed?\127",
+"\"Thou has been prohibited by thy absent Lord from joining thy friends in a close-pitched battle. Dost thou A) refrain, so thou may Honestly claim obedience; or B) show Valor and aid thy comrades, knowing thou may deny it later?\127",
+"\"A merchant owes thy friend money, now long past due. Thou dost see the same merchant drop a purse of gold. Dost thou A) Honestly return the purse intact; or B) Justly give thy friend a portion of the gold first?\127",
+"\"Thee and thy friend are valiant but penniless warriors. Thou both set forth to slay a mighty dragon. Thy friend dost think he slew it, but the killing blow was thine. Dost thou A) Honestly claim the reward; or B) Sacrifice the gold for the sake of thy friendship?\127",
+"\"Thou art sworn to protect thy Lord at any cost, yet thou knowest he hath committed a crime. Authorities ask thee of the affair. Dost thou A) Break thine oath by Honestly speaking; or B) uphold Honor by silently keeping thine oath?\127",
+"\"Thy friend doth seek admittance to thy spiritual order. Thou art asked to vouch for his purity of spirit, of which thou art uncertain. Dost thou A) Honestly express thy doubt; or B) Vouch for him, hoping for his Spiritual improvement?\127",
+"\"Thy Lord doth mistakenly believe he slew a dragon. Thou hast proof that thy lance felled the beast. When asked, dost thou A) Honestly claim the kill; or B) Humbly permit thy Lord his belief?\127",
+"\"Thou dost manage to disarm thy mortal enemy in a duel. He is at thy mercy. Dost thou A) Show Compassion by permitting him to yield; or B) Slay him, as expected of a Valiant duelist?\127",
+"\"After twenty years thou hast found the slayer of thy best friends. The villain proves to be a man who provides the sole support for a young girl. Dost thou A) Spare him in Compassion for the child; or B) Slay him in the name of Justice?\127",
+"\"Thee and thy friends hath been routed and ordered to retreat. In defiance of thy orders, dost thou A) Stop in Compassion to aid a wounded comrade; or B) Sacrifice thyself to slow the pursuing enemy so that others might escape?\127",
+"\"Thou art sworn to uphold a Lord who doth participate in the forbidden torture of prisoners. Each night their cries of pain reach thee. Dost thou A) Show Compassion by reporting the deeds; or B) Honor thy oath and ignore the deeds?\127",
+"\"Thou hast been taught to preserve all life as sacred. A man lies fatally stung by a venomous serpent. He prays for a merciful death. Dost thou A) Show Compassion and end his pain; or B) heed thy Spiritual beliefs and turn away?\127",
+"\"The Captain of the King's Guard asks that one among thee visit a hospital to cheer the children with tales of valiant personal deeds. Dost thou A) Show thy Compassion and play the braggart; or B) Humbly let another go?\127",
+"\"Thou hast been sent to secure a needed treaty with a distant Lord. Thy host is agreeable to thy proposal but insults thy country at dinner. Dost thou A) Valiantly bear the slurs; or B) Justly rise and demand an apology?\127",
+"\"A burly knight accosts thee and demands thy food. Dost thou A) Valiantly refuse and engage the knight, or B) Sacrifice thy rations unto the hungry knight?\127",
+"\"During battle thou art ordered to guard thy commander's empty tent. The battle goes poorly and thou dost yearn to aid thy fellows. Dost thou A) Valiantly enter the battle; or B) Honor thy post as guard?\127",
+"\"A local bully pushes for a fight. Dost thou A) Valiantly trounce the rogue; or B) Decline, knowing in thy Spirit that no lasting good will come of it?\127",
+"\"Although a simple fisherman, thou art also a skillful swordsman. Thy Lord dost seek to assemble a peacetime guard. Dost thou A) Answer the call, so that all may witness thy Valor; or B) Humbly decline the offer to join thy Lord's largely ceremonial knighthood?\127",
+"\"During a pitched battle, thou dost see a fellow desert his post, endangering many. As he flees, he is set upon by several enemies. Dost thou A) Justly let him fight alone; or B) Risk the Sacrifice of thine own life to aid him?\127",
+"\"Thou hast sworn to do thy Lord's bidding in all. He covets a piece of land and orders its owner removed. Dost thou A) Serve Justice, refusing to act, thus being disgraced; or B) Honor thine oath and evict the landowner?\127",
+"\"Thou dost believe that virtue resides in all people. Thou dost see a rogue steal from thy Lord. Dost thou A) Call him to Justice; or B) Personally try to sway him back to the Spiritual path of good?\127",
+"\"Unwitnessed, thou hast slain a mighty dragon in defense of thy life. A poor warrior claims the offered reward. Dost thou A) Justly step forward to claim the bounty; or B) Humbly go about thy life, secure in thy self-esteem?\127",
+"\"Thou art a bounty hunter sworn to return an alleged murderer. After his capture, thou dost come to believe him innocent. Dost thou A) Sacrifice thy sizable bounty for thy belief; or B) Honor thine oath to return him as promised?\127",
+"\"Thou hast spent thy life in charitable and righteous work. Thine uncle the innkeeper lies ill and asks thee to take over his tavern. Dost thou A) Sacrifice thy life of purity to aid thy kin; or B) Decline and follow the call of Spirituality?\127",
+"\"Thou art an elderly, wealthy merchant. Thy end is near. Dost thou A) Sacrifice all thy wealth to feed hundreds of starving children, receiving public adulation; or B) Humbly live out thy life, willing thy fortune to thy heirs?\127",
+"\"In thy youth thou didst pledge to marry thy sweetheart. Now thou art on a sacred quest in distant lands. Thy sweetheart doth ask thee to keep thy vow. Dost thou A) Honor thy pledge to wed; or B) Follow thy Spiritual crusade?\127",
+"\"Though thou art but a peasant shepherd, thou art discovered to be the sole descendant of a noble family long thought extinct. Dost thou A) Honorably take up the arms of thy ancestors; or B) Humbly resume thy life of simplicity and peace?\127",
+"\"Thy parents wish thee to become an apprentice. Two positions are available. Dost thou A) Become an acolyte in a worthy Spiritual order; or B) Become an assistant to a humble village cobbler?\127",
+}
+
+	local gypsy_questions = {
+	-1, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F,
+	0x69, -1, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75,
+	0x6A, 0x70, -1, 0x76, 0x77, 0x78, 0x79, 0x7A,
+	0x6B, 0x71, 0x76, -1, 0x7B, 0x7C, 0x7D, 0x7E,
+	0x6C, 0x72, 0x77, 0x7B, -1, 0x7F, 0x80, 0x81,
+	0x6D, 0x73, 0x78, 0x7C, 0x7F, -1, 0x82, 0x83,
+	0x6E, 0x74, 0x79, 0x7D, 0x80, 0x82, -1, 0x84,
+	0x6F, 0x75, 0x7A, 0x7E, 0x81, 0x83, 0x84, -1,
+	}
+	
+	g_str = 0xf
+	g_dex = 0xf
+	g_int = 0xf
+
+	g_question_tbl = {0, 1, 2, 3, 4, 5, 6, 7}
+
+function shuffle_question_tbl(shuffle_len)
+	local random = math.random
+	local c = random(0, (shuffle_len * shuffle_len)-1) + shuffle_len
+	
+	for i=0,c,1 do
+		local j = random(1, shuffle_len)
+		local k = random(1, shuffle_len)
+	
+		local tmp = g_question_tbl[j]
+	
+		g_question_tbl[j] = g_question_tbl[k]
+		g_question_tbl[k] = tmp
+	end
+	
+end
+
+function gypsy_ask_questions(num_questions, scroll)
+	
+	local strength_adjustment_tbl = { 0, 0, 2, 0, 1, 1, 1, 0 }
+	local dex_adjustment_tbl = { 0, 2, 0, 1, 1, 0, 1, 0 } 
+	local int_adjustment_tbl = { 2, 0, 0, 1, 0, 1, 1, 0 }
+	
+	for i=0,num_questions-1,1 do
+		local q = gypsy_questions[g_question_tbl[i*2+1]*8 + g_question_tbl[i*2+2] + 1]
+	
+		local scroll_img = image_load("blocks.shp", 3)
+		scroll.image = scroll_img
+		image_print(scroll_img, gypsy_question_text[q - 104], 7, 303, 8, 9, 0x3e)
+	
+		local vial = gypsy_ab_select(q)
+	
+		g_str = g_str + strength_adjustment_tbl[vial+1]
+		g_dex = g_dex + dex_adjustment_tbl[vial+1]
+		g_int = g_int + int_adjustment_tbl[vial+1]
+	
+		g_question_tbl[i+1] = vial
+	
+		io.stderr:write(q.." "..vial.."("..g_str..","..g_dex..","..g_int..")\n")
+	end
 end
 
 g_keycode_tbl =
@@ -1237,8 +1357,8 @@ g_keycode_tbl =
 }
 function create_character()
 	music_play("create.m")
-
-	local bg = sprite_new(image_load("vellum1.shp",0), 0x10, 0x50, true)
+	
+	local bg = sprite_new(image_load("vellum1.shp", 0), 0x10, 0x50, true)
 	image_print(bg.image, "By what name shalt thou be called?", 7, 303, 36, 24, 0x48)
 	
 	local name = sprite_new(nil, 0x34, 0x78, true)
@@ -1266,8 +1386,11 @@ function create_character()
 		end
 	end
 	
+	name.x = 0x10 + (284 - canvas_string_length(name.text)) / 2
+	
 	image_print(bg.image, "And art thou Male, or Female?", 7, 303, 52, 56, 0x48)
 	input = nil
+	local gender = 0
 	while input == nil do
 		canvas_update()
 		input = input_poll()
@@ -1278,10 +1401,10 @@ function create_character()
 				return false
 			end
 			if input == 77 or input == 109 then
-				--male
+				gender = 1 --male
 				break
 			elseif input == 70 or input == 102 then
-				--female
+				gender = 0 --female
 				break
 			end
 			
@@ -1289,6 +1412,198 @@ function create_character()
 		end
 	end
 	
+	load_images("vellum1.shp")
+	bg.image = g_img_tbl[0]
+	
+	name.y = 0x58
+
+	local new_sex = sprite_new(g_img_tbl[3], 0x5e, 0x70, true)	
+	local new_portrait = sprite_new(g_img_tbl[0x12], 0x3e, 0x81, true)
+	local continue = sprite_new(g_img_tbl[0x10], 0x56, 0x92, true)
+	local esc_abort = sprite_new(g_img_tbl[4], 0x50, 0xa3, true)
+	
+	local montage_img_tbl = image_load_all("montage.shp")
+	local portrait_num = 0
+	local avatar = sprite_new(montage_img_tbl[gender*6+portrait_num], 0xc3, 0x76, true)
+	
+	input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) == true then
+				bg.visible = false
+				name.visible = false
+				new_sex.visible = false
+				new_portrait.visible = false
+				continue.visible = false
+				esc_abort.visible = false
+				avatar.visible = false
+				return false
+			end
+			if input == 112 or input == 80 then
+				if portrait_num == 5 then
+					portrait_num = 0
+				else
+					portrait_num = portrait_num + 1
+				end
+				
+				avatar.image = montage_img_tbl[gender*6+portrait_num]
+			elseif input == 115 or input == 83 then
+				if gender == 0 then
+					gender = 1
+				else
+					gender = 0
+				end
+
+				avatar.image = montage_img_tbl[gender*6+portrait_num]
+			elseif input == 99 or input == 67 then
+				break
+			end
+			
+			input = nil
+		end
+	end
+	
+	fade_out()
+	canvas_hide_all_sprites()
+	
+	canvas_set_palette("palettes.int", 4)
+	local woods_img_tbl = image_load_all("woods.shp")
+	local woods = sprite_new(woods_img_tbl[0], 0, 0, true)
+	local woods1 = sprite_new(woods_img_tbl[1], 0x140, 0, true)
+	
+	fade_in()
+	
+	local scroll_img = image_load("blocks.shp", 1)
+	local scroll = sprite_new(scroll_img, 1, 0xa0, true)
+	
+	local x, y = image_print(scroll_img, "\"Welcome, O Seeker!\127", 7, 303, 96, 14, 0x3e)
+	
+	input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
+	
+	scroll.visible = false
+	
+	input = nil
+	for i=0,0xbd,2 do
+		woods.x = woods.x - 2
+		woods1.x = woods1.x - 2
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			--
+		end
+	end
+	
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.x = 1
+	scroll.y = 0x98
+	x, y = image_print(scroll_img, "A lonely stroll along an unfamiliar forest path brings you ", 7, 303, 8, 12, 0x3e)
+	x, y = image_print(scroll_img, "upon a curious gypsy wagon, its exotic colors dappled in the ", 7, 303, x, y, 0x3e)
+	image_print(scroll_img, "summer shade.", 7, 303, x, y, 0x3e)
+	scroll.image = scroll_img
+	scroll.visible = true
+		
+	input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
+
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.x = 1
+	scroll.y = 0x98
+	x, y = image_print(scroll_img, "A woman's voice rings out with friendship, beckoning you into ", 7, 303, 8, 12, 0x3e)
+	x, y = image_print(scroll_img, "across the wagon's threshold and, as it happens, ", 7, 303, x, y, 0x3e)
+	image_print(scroll_img, "into another life....", 7, 303, x, y, 0x3e)
+	scroll.image = scroll_img
+	scroll.visible = true
+	
+	input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
+	
+	scroll.visible = false
+	
+	fade_out()
+	canvas_hide_all_sprites()
+	canvas_set_palette("palettes.int", 5)
+	
+	local gypsy_img_tbl = image_load_all("gypsy.shp")
+	
+	bg.image = gypsy_img_tbl[0]
+	bg.x = 0
+	bg.y = -20
+	bg.visible = true
+	
+	local gypsy_tbl = {}
+	gypsy_tbl["arm"] = sprite_new(nil, 0, 0, false)
+	gypsy_tbl["hand"] = sprite_new(nil, 0, 0, false)
+
+	gypsy_tbl["jar_liquid"] = sprite_new(nil, 0, 0, false)
+	gypsy_tbl["jar"] = sprite_new(gypsy_img_tbl[16], 0x8e, 0x38, true)	
+	 	
+	local vial_level = {3,3,3,3,3,3,3,3}
+	local vial_img_off = {2, 5, 8, 0xB, 0x18, 0x1B, 0x1E, 0x21}
+	
+	gypsy_tbl["vial_liquid"] = {
+		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[1] + vial_level[1] - 3], 44, 0x4d, true),
+		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[2] + vial_level[2] - 3], 65, 0x4d, true),
+		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[3] + vial_level[3] - 3], 86, 0x4d, true),
+		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[4] + vial_level[4] - 3], 107, 0x4d, true),
+		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[5] + vial_level[5] - 3], 203, 0x4d, true),
+		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[6] + vial_level[6] - 3], 224, 0x4d, true),
+		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[7] + vial_level[7] - 3], 245, 0x4d, true),
+		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[8] + vial_level[8] - 3], 266, 0x4d, true),
+	}
+		
+	gypsy_tbl["vial"] = {
+		sprite_new(gypsy_img_tbl[20], 41, 0x42, true),
+		sprite_new(gypsy_img_tbl[20], 62, 0x42, true),
+		sprite_new(gypsy_img_tbl[20], 83, 0x42, true),
+		sprite_new(gypsy_img_tbl[20], 104, 0x42, true),
+		sprite_new(gypsy_img_tbl[23], 200, 0x42, true),
+		sprite_new(gypsy_img_tbl[23], 221, 0x42, true),
+		sprite_new(gypsy_img_tbl[23], 242, 0x42, true),
+		sprite_new(gypsy_img_tbl[23], 263, 0x42, true),
+	}
+	
+	fade_in()
+	
+	local a_button = sprite_new(gypsy_img_tbl[7], 0x117, 0xae, true)
+	local b_button = sprite_new(gypsy_img_tbl[8], 0x128, 0xae, true)
+
+	g_str = 0xf
+	g_dex = 0xf
+	g_int = 0xf
+	
+	scroll.x = 1
+	scroll.y = 0x7c
+	scroll.visible = true
+	
+	shuffle_question_tbl(8)
+	gypsy_ask_questions(4, scroll)
+
+	shuffle_question_tbl(4)
+	
+	gypsy_ask_questions(2, scroll)
+	gypsy_ask_questions(1, scroll)
+		
 	return true
 end
 

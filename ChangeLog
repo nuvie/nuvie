@@ -1,3 +1,9 @@
+2012-01-03  Eric Fry <efry at users.sourceforge.net> r1280
+	* Added canvas_string_length() script function.
+	* Fixed bug with image_print() script function.
+	* More work on create character logic.
+	* Started work on gypsy questions.
+
 2011-12-26  Eric Fry <efry at users.sourceforge.net> r1279
 	* Added arrow key navigation to U6 main menu.
 

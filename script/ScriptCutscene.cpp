@@ -81,6 +81,7 @@ static int nscript_canvas_set_opacity(lua_State *L);
 static int nscript_canvas_update(lua_State *L);
 static int nscript_canvas_hide(lua_State *L);
 static int nscript_canvas_hide_all_sprites(lua_State *L);
+static int nscript_canvas_string_length(lua_State *L);
 
 static int nscript_music_play(lua_State *L);
 static int nscript_input_poll(lua_State *L);
@@ -137,6 +138,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_canvas_hide_all_sprites);
    lua_setglobal(L, "canvas_hide_all_sprites");
+
+   lua_pushcfunction(L, nscript_canvas_string_length);
+   lua_setglobal(L, "canvas_string_length");
 
    lua_pushcfunction(L, nscript_music_play);
    lua_setglobal(L, "music_play");
@@ -642,6 +646,15 @@ static int nscript_canvas_hide_all_sprites(lua_State *L)
 	return 0;
 }
 
+static int nscript_canvas_string_length(lua_State *L)
+{
+	Font *font = cutScene->get_font();
+	const char *str = lua_tostring(L, 1);
+
+	lua_pushinteger(L, font->getStringWidth(str));
+	return 1;
+}
+
 static int nscript_music_play(lua_State *L)
 {
 	const char *filename = lua_tostring(L, 1);
@@ -826,16 +839,27 @@ void ScriptCutscene::print_text(CSImage *image, const char *s, uint16 *x, uint16
 	    start = found + 1;
 	    found=str.find_first_of(" ", start);
 	  }
+
+	  list<std::string>::iterator it;
+
+	  for(it=tokens.begin() ; it != tokens.end() ; it++ )
+	  {
+	  	 *x = font->drawStringToShape(image->shp, (*it).c_str(), *x, *y, color);
+	  	 *x += space_width;
+	  }
+
 	  if(start < str.length())
-		  tokens.push_back(str.substr(start, str.length() - start));
+	  {
+		std::string token = str.substr(start, str.length() - start);
+	    if(len + font->getStringWidth(token.c_str()) > width)
+	    {
+	    	*y += 8;
+	    	*x = startx;
+	    }
+	  	*x = font->drawStringToShape(image->shp, token.c_str(), *x, *y, color);
+	  }
 
-  	list<std::string>::iterator it;
 
-  	  for(it=tokens.begin() ; it != tokens.end() ; it++ )
-  	  {
-  		  *x = font->drawStringToShape(image->shp, (*it).c_str(), *x, *y, color);
-  		  *x += space_width;
-  	  }
 	//font->drawStringToShape(image->shp, string, x, y, color);
 }
 

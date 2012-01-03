@@ -116,6 +116,8 @@ public:
 	uint16 get_x_off() { return x_off; }
 	uint16 get_y_off() { return y_off; }
 
+	Font *get_font() { return font; }
+
 	void hide_sprites();
 };
 
