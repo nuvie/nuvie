@@ -1585,6 +1585,38 @@ function create_character()
 	
 	fade_in()
 	
+	scroll.x = 1
+	scroll.y = 0x7c
+	scroll.visible = true
+		
+	local scroll_img = image_load("blocks.shp", 3)
+	scroll.image = scroll_img
+	x, y = image_print(scroll_img, "\"At last thou hast come to fulfill thy destiny,\127 the gypsy says. She smiles, as if in great relief.", 7, 303, 8, 19, 0x3e)
+	image_print(scroll_img, "\"Sit before me now, and I shall pour the light of Virtue into the shadows of thy future.\127", 7, 303, 8, y+16, 0x3e)
+	
+	input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
+	
+	scroll_img = image_load("blocks.shp", 3)
+	scroll.image = scroll_img
+	x, y = image_print(scroll_img, "On a wooden table eight bottles stand, a rainbow of bubbling liquids.", 7, 303, 8, 19, 0x3e)
+	image_print(scroll_img, "\"Behold the Virtues of the Avatar,\127 the woman says. \"Let us begin the casting!\127", 7, 303, 8, y+16, 0x3e)
+	
+	input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
+
 	local a_button = sprite_new(gypsy_img_tbl[7], 0x117, 0xae, true)
 	local b_button = sprite_new(gypsy_img_tbl[8], 0x128, 0xae, true)
 
@@ -1592,9 +1624,7 @@ function create_character()
 	g_dex = 0xf
 	g_int = 0xf
 	
-	scroll.x = 1
-	scroll.y = 0x7c
-	scroll.visible = true
+
 	
 	shuffle_question_tbl(8)
 	gypsy_ask_questions(4, scroll)
@@ -1603,7 +1633,16 @@ function create_character()
 	
 	gypsy_ask_questions(2, scroll)
 	gypsy_ask_questions(1, scroll)
-		
+	
+	config_set("config/newgame", true)
+	
+	config_set("config/newgamedata/name", name.text)
+	config_set("config/newgamedata/gender", gender)
+	config_set("config/newgamedata/portrait", portrait_num)
+	config_set("config/newgamedata/str", g_str)
+	config_set("config/newgamedata/dex", g_dex)
+	config_set("config/newgamedata/int", g_int)
+	
 	return true
 end
 

@@ -116,6 +116,20 @@ SaveManager::~SaveManager()
  delete savegame;
 }
 
+bool SaveManager::load_save()
+{
+	bool newsave = false;
+
+	config->value("config/newgame", newsave, false);
+
+	if(newsave)
+	{
+		return savegame->load_new();
+	}
+
+	return load_latest_save();
+}
+
 bool SaveManager::load_latest_save()
 {
  NuvieFileList filelist;

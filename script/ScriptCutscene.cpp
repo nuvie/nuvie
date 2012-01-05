@@ -86,6 +86,8 @@ static int nscript_canvas_string_length(lua_State *L);
 static int nscript_music_play(lua_State *L);
 static int nscript_input_poll(lua_State *L);
 
+static int nscript_config_set(lua_State *L);
+
 void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundManager *sm)
 {
    cutScene = new ScriptCutscene(gui, cfg, sm);
@@ -147,6 +149,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_input_poll);
    lua_setglobal(L, "input_poll");
+
+   lua_pushcfunction(L, nscript_config_set);
+   lua_setglobal(L, "config_set");
 }
 
 bool nscript_new_image_var(lua_State *L, CSImage *image)
@@ -678,6 +683,26 @@ static int nscript_input_poll(lua_State *L)
 				lua_pushinteger(L, event.key.keysym.sym);
 			return 1;
 		}
+	}
+
+	return 0;
+}
+
+static int nscript_config_set(lua_State *L)
+{
+	const char *config_key = lua_tostring(L, 1);
+
+	if(lua_isnumber(L, 2))
+	{
+		cutScene->get_config()->set(config_key, lua_tointeger(L, 2));
+	}
+	else if(lua_isstring(L, 2))
+	{
+		cutScene->get_config()->set(config_key, lua_tostring(L, 2));
+	}
+	else if(lua_isboolean(L, 2))
+	{
+		cutScene->get_config()->set(config_key, (bool)lua_toboolean(L, 2));
 	}
 
 	return 0;

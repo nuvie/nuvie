@@ -245,7 +245,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    event->init(obj_manager, map_window, scroll, player, magic, clock, converse, view_manager, usecode, gui);
    magic->init(event);
    
-   if(save_manager->load_latest_save() == false)
+   if(save_manager->load_save() == false)
    {
     return false;
    }

@@ -129,6 +129,8 @@ bool SaveGame::load_new()
 
  objlist.open(&data[pos], decomp_size - pos, NUVIE_BUF_COPY);
 
+ update_objlist_for_new_game();
+
  load_objlist();
 
  free(data);
@@ -555,4 +557,51 @@ void SaveGame::clean_up()
    }
 
  return;
+}
+
+void SaveGame::update_objlist_for_new_game()
+{
+	std::string name = "";
+
+	config->value("config/newgamedata/name", name, "Avatar");
+	objlist.seek(0xf00);
+	int len = name.length();
+	if(len > 13)
+		len = 13;
+
+	objlist.writeBuf((unsigned char *)name.c_str(), len+1);
+
+	objlist.seek(0x1c71); //gender
+
+	int gender;
+	config->value("config/newgamedata/gender", gender, 0);
+
+	objlist.write1(gender==1 ? 0 : 1);
+
+	int portrait;
+	config->value("config/newgamedata/portrait", portrait, 0);
+
+	objlist.write1((uint8)(gender*6 + portrait)+1);
+
+	int stat;
+	config->value("config/newgamedata/str", stat, 0xf);
+	objlist.seek(0x901);
+	objlist.write1(stat);
+
+	config->value("config/newgamedata/dex", stat, 0xf);
+	objlist.seek(0xa01);
+	objlist.write1(stat);
+
+	config->value("config/newgamedata/int", stat, 0xf);
+	objlist.seek(0xb01);
+	objlist.write1(stat);
+
+	objlist.seek(0xc02);
+	objlist.write2(0x172); //experience
+
+	objlist.seek(0x13f2);
+	objlist.write1(stat*2); //magic
+
+	objlist.seek(0xff2);
+	objlist.write1(3); //level
 }

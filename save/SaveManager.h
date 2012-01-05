@@ -59,6 +59,7 @@ class SaveManager : public GUI_CallBack
 
  bool init();
 
+ bool load_save();
  bool load_latest_save();
 
  void create_dialog();

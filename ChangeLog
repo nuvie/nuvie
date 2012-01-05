@@ -1,3 +1,11 @@
+2012-01-05  Eric Fry <efry at users.sourceforge.net> r1281
+	* The create character data is now loaded into the new game upon startup.
+	* Added config_set() script function which writes data to the config object.
+	  This is used to pass data between the create player cutscene script and the
+	  savegame class.
+	* Added SaveManager::load_save() which creates a new game if new game data
+	  has been injected into the config.
+
 2012-01-03  Eric Fry <efry at users.sourceforge.net> r1280
 	* Added canvas_string_length() script function.
 	* Fixed bug with image_print() script function.
