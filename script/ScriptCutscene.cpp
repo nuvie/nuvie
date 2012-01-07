@@ -692,13 +692,13 @@ static int nscript_config_set(lua_State *L)
 {
 	const char *config_key = lua_tostring(L, 1);
 
-	if(lua_isnumber(L, 2))
-	{
-		cutScene->get_config()->set(config_key, lua_tointeger(L, 2));
-	}
-	else if(lua_isstring(L, 2))
+	if(lua_isstring(L, 2))
 	{
 		cutScene->get_config()->set(config_key, lua_tostring(L, 2));
+	}
+	else if(lua_isnumber(L, 2))
+	{
+		cutScene->get_config()->set(config_key, lua_tointeger(L, 2));
 	}
 	else if(lua_isboolean(L, 2))
 	{

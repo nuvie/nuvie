@@ -1,3 +1,9 @@
+2012-01-07  Eric Fry <efry at users.sourceforge.net> r1282
+	* Added more text to gypsy sequence.
+	* Added comma,period,minus and quote chars to character name input.
+	* Changed type checking order in config_set() to check for strings before
+	  checking for numbers. Incase a string contains a valid number.
+
 2012-01-05  Eric Fry <efry at users.sourceforge.net> r1281
 	* The create character data is now loaded into the new game upon startup.
 	* Added config_set() script function which writes data to the config object.

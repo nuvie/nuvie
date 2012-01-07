@@ -9,6 +9,17 @@ function poll_for_esc()
 	return false
 end
 
+function wait_for_input()
+	input = nil
+	while input == nil do
+		canvas_update()
+		input = input_poll()
+			if input ~= nil then
+				break
+			end
+	end
+end
+
 function should_exit(input)
 	if input ~=nil and input == 27 then
 		return true
@@ -1290,7 +1301,10 @@ end
 g_keycode_tbl =
 {
 [32]=" ",
-
+[39]="'",
+[44]=",",
+[45]="-",
+[46]=".",
 [48]="0",
 [49]="1",
 [50]="2",
@@ -1480,14 +1494,7 @@ function create_character()
 	
 	local x, y = image_print(scroll_img, "\"Welcome, O Seeker!\127", 7, 303, 96, 14, 0x3e)
 	
-	input = nil
-	while input == nil do
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-	end
+	wait_for_input()
 	
 	scroll.visible = false
 	
@@ -1505,38 +1512,20 @@ function create_character()
 	scroll_img = image_load("blocks.shp", 2)
 	scroll.x = 1
 	scroll.y = 0x98
-	x, y = image_print(scroll_img, "A lonely stroll along an unfamiliar forest path brings you ", 7, 303, 8, 12, 0x3e)
-	x, y = image_print(scroll_img, "upon a curious gypsy wagon, its exotic colors dappled in the ", 7, 303, x, y, 0x3e)
-	image_print(scroll_img, "summer shade.", 7, 303, x, y, 0x3e)
+	image_print(scroll_img, "A lonely stroll along an unfamiliar forest path brings you upon a curious gypsy wagon, its exotic colors dappled in the summer shade.", 7, 303, 8, 12, 0x3e)
 	scroll.image = scroll_img
 	scroll.visible = true
 		
-	input = nil
-	while input == nil do
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-	end
+	wait_for_input()
 
 	scroll_img = image_load("blocks.shp", 2)
 	scroll.x = 1
 	scroll.y = 0x98
-	x, y = image_print(scroll_img, "A woman's voice rings out with friendship, beckoning you into ", 7, 303, 8, 12, 0x3e)
-	x, y = image_print(scroll_img, "across the wagon's threshold and, as it happens, ", 7, 303, x, y, 0x3e)
-	image_print(scroll_img, "into another life....", 7, 303, x, y, 0x3e)
+	image_print(scroll_img, "A woman's voice rings out with friendship, beckoning you into across the wagon's threshold and, as it happens, into another life....", 7, 303, 8, 12, 0x3e)
 	scroll.image = scroll_img
 	scroll.visible = true
 	
-	input = nil
-	while input == nil do
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-	end
+	wait_for_input()
 	
 	scroll.visible = false
 	
@@ -1594,28 +1583,14 @@ function create_character()
 	x, y = image_print(scroll_img, "\"At last thou hast come to fulfill thy destiny,\127 the gypsy says. She smiles, as if in great relief.", 7, 303, 8, 19, 0x3e)
 	image_print(scroll_img, "\"Sit before me now, and I shall pour the light of Virtue into the shadows of thy future.\127", 7, 303, 8, y+16, 0x3e)
 	
-	input = nil
-	while input == nil do
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-	end
+	wait_for_input()
 	
 	scroll_img = image_load("blocks.shp", 3)
 	scroll.image = scroll_img
 	x, y = image_print(scroll_img, "On a wooden table eight bottles stand, a rainbow of bubbling liquids.", 7, 303, 8, 19, 0x3e)
 	image_print(scroll_img, "\"Behold the Virtues of the Avatar,\127 the woman says. \"Let us begin the casting!\127", 7, 303, 8, y+16, 0x3e)
 	
-	input = nil
-	while input == nil do
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-	end
+	wait_for_input()
 
 	local a_button = sprite_new(gypsy_img_tbl[7], 0x117, 0xae, true)
 	local b_button = sprite_new(gypsy_img_tbl[8], 0x128, 0xae, true)
@@ -1633,6 +1608,67 @@ function create_character()
 	
 	gypsy_ask_questions(2, scroll)
 	gypsy_ask_questions(1, scroll)
+	
+	a_button.visible = false
+	b_button.visible = false
+	
+	scroll_img = image_load("blocks.shp", 3)
+	scroll.image = scroll_img
+	image_print(scroll_img, "\"The path of the Avatar lies beneath thy feet, worthy "..name.text..",\127 the gypsy intones. With a mysterious smile, she passes you the flask of shimmering liquids. \"Drink of these waters and go forth among our people, who shall receive thee in joy!\127", 7, 303, 8, 16, 0x3e)
+	
+	wait_for_input()
+
+	fade_out()
+	
+	canvas_hide_all_sprites()
+	canvas_set_palette("palettes.int", 6)
+	
+	bg.image = gypsy_img_tbl[198]
+	bg.x = 0
+	bg.y = 0
+	bg.visible = true
+
+	fade_in()
+
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.x = 1
+	scroll.y = 0x98
+	scroll.visible = true
+	image_print(scroll_img, "As you drink from the flask, vertigo overwhelms you. A soothing mist obscures the gypsy's face, and you sink without fear into an untroubled sleep.", 7, 303, 8, 8, 0x3e)
+	
+	wait_for_input()
+	
+	fade_out()
+	
+	bg.image = gypsy_img_tbl[199]
+	
+	scroll.visible = false
+	
+	fade_in()
+	
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.visible = true
+	image_print(scroll_img, "You wake in a different time, upon another world's shore. Though the Avatar's quests bring you both triumph and tragedy, never do you stray from the path of the Eight Virtues.", 7, 303, 8, 8, 0x3e)
+
+	wait_for_input()
+	
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.visible = true
+	image_print(scroll_img, "The sagas of Ultima IV and Ultima V chronicle your perilous travels, and your name and your deeds are written forever among Britannia's legends....", 7, 303, 8, 8, 0x3e)
+	
+	wait_for_input()
+
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.visible = true
+	image_print(scroll_img, "Finally, tempered by your struggles against the enemies of Virtue, you are proven ready to answer the epic challenge of Ultima VI!", 7, 303, 8, 12, 0x3e)
+	
+	wait_for_input()
+	scroll.visible = false
+	fade_out()
 	
 	config_set("config/newgame", true)
 	
