@@ -1,3 +1,6 @@
+2012-01-11  Eric Fry <efry at users.sourceforge.net> r1283
+	* Work on gypsy animation.
+
 2012-01-07  Eric Fry <efry at users.sourceforge.net> r1282
 	* Added more text to gypsy sequence.
 	* Added comma,period,minus and quote chars to character name input.

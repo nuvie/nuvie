@@ -1200,9 +1200,9 @@ function gypsy_ab_select(question)
 		input = input_poll()
 		if input ~= nil then
 			if input == 65 or input == 97 then
-				return a_lookup_tbl[question - 104]
+				return a_lookup_tbl[question - 104] + 1
 			elseif input == 66 or input == 98 then
-				return b_lookup_tbl[question - 104]
+				return b_lookup_tbl[question - 104] + 1
 			end
 			input = nil
 		end
@@ -1288,13 +1288,36 @@ function gypsy_ask_questions(num_questions, scroll)
 	
 		local vial = gypsy_ab_select(q)
 	
-		g_str = g_str + strength_adjustment_tbl[vial+1]
-		g_dex = g_dex + dex_adjustment_tbl[vial+1]
-		g_int = g_int + int_adjustment_tbl[vial+1]
+		gypsy_vial_anim(vial)
+		
+		g_str = g_str + strength_adjustment_tbl[vial]
+		g_dex = g_dex + dex_adjustment_tbl[vial]
+		g_int = g_int + int_adjustment_tbl[vial]
 	
-		g_question_tbl[i+1] = vial
+		g_question_tbl[i+1] = vial-1
 	
 		io.stderr:write(q.." "..vial.."("..g_str..","..g_dex..","..g_int..")\n")
+	end
+end
+
+function gypsy_vial_anim(vial)
+
+	local vial_level = g_gypsy_tbl["vial_level"]
+	local vial_img_off = {2, 5, 8, 0xB, 0x18, 0x1B, 0x1E, 0x21}
+	
+	vial_level[vial] = vial_level[vial] - 1
+	
+	io.stderr:write("vial #"..vial.." level="..vial_level[vial].."\n")
+	
+	g_gypsy_tbl["jar_level"] = g_gypsy_tbl["jar_level"] + 1
+	
+	g_gypsy_tbl["jar_liquid"].visible = true
+	g_gypsy_tbl["jar_liquid"].image = g_gypsy_img_tbl[8 + g_gypsy_tbl["jar_level"]]
+	
+	if vial_level[vial] == 0 then
+		g_gypsy_tbl["vial_liquid"][vial].visible = false
+	else
+		g_gypsy_tbl["vial_liquid"][vial].image = g_gypsy_img_tbl[0x42 + vial_img_off[vial] + vial_level[vial] - 3]
 	end
 end
 
@@ -1372,6 +1395,7 @@ g_keycode_tbl =
 function create_character()
 	music_play("create.m")
 	
+	local bubbles = sprite_new(image_new(100,100), 110, 30, false)
 	local bg = sprite_new(image_load("vellum1.shp", 0), 0x10, 0x50, true)
 	image_print(bg.image, "By what name shalt thou be called?", 7, 303, 36, 24, 0x48)
 	
@@ -1533,43 +1557,48 @@ function create_character()
 	canvas_hide_all_sprites()
 	canvas_set_palette("palettes.int", 5)
 	
-	local gypsy_img_tbl = image_load_all("gypsy.shp")
+	g_gypsy_img_tbl = image_load_all("gypsy.shp")
 	
-	bg.image = gypsy_img_tbl[0]
+	bg.image = g_gypsy_img_tbl[0]
 	bg.x = 0
 	bg.y = -20
 	bg.visible = true
 	
-	local gypsy_tbl = {}
-	gypsy_tbl["arm"] = sprite_new(nil, 0, 0, false)
-	gypsy_tbl["hand"] = sprite_new(nil, 0, 0, false)
+	g_gypsy_tbl = {}
+	g_gypsy_tbl["arm"] = sprite_new(nil, 0, 0, false)
+	g_gypsy_tbl["hand"] = sprite_new(nil, 0, 0, false)
 
-	gypsy_tbl["jar_liquid"] = sprite_new(nil, 0, 0, false)
-	gypsy_tbl["jar"] = sprite_new(gypsy_img_tbl[16], 0x8e, 0x38, true)	
+	g_gypsy_tbl["jar_level"] = 0
+	g_gypsy_tbl["jar_liquid"] = sprite_new(nil, 0x92, 0x51, false)
+	g_gypsy_tbl["jar"] = sprite_new(g_gypsy_img_tbl[16], 0x8e, 0x38, true)	
 	 	
-	local vial_level = {3,3,3,3,3,3,3,3}
+
+
+	g_gypsy_tbl["vial_level"] = {3,3,3,3,3,3,3,3}
+	local vial_level = g_gypsy_tbl["vial_level"]
+	
 	local vial_img_off = {2, 5, 8, 0xB, 0x18, 0x1B, 0x1E, 0x21}
 	
-	gypsy_tbl["vial_liquid"] = {
-		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[1] + vial_level[1] - 3], 44, 0x4d, true),
-		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[2] + vial_level[2] - 3], 65, 0x4d, true),
-		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[3] + vial_level[3] - 3], 86, 0x4d, true),
-		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[4] + vial_level[4] - 3], 107, 0x4d, true),
-		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[5] + vial_level[5] - 3], 203, 0x4d, true),
-		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[6] + vial_level[6] - 3], 224, 0x4d, true),
-		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[7] + vial_level[7] - 3], 245, 0x4d, true),
-		sprite_new(gypsy_img_tbl[0x42 + vial_img_off[8] + vial_level[8] - 3], 266, 0x4d, true),
+	g_gypsy_tbl["vial_liquid"] = {
+		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[1] + vial_level[1] - 3], 44, 0x4d, true),
+		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[2] + vial_level[2] - 3], 65, 0x4d, true),
+		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[3] + vial_level[3] - 3], 86, 0x4d, true),
+		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[4] + vial_level[4] - 3], 107, 0x4d, true),
+		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[5] + vial_level[5] - 3], 203, 0x4d, true),
+		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[6] + vial_level[6] - 3], 224, 0x4d, true),
+		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[7] + vial_level[7] - 3], 245, 0x4d, true),
+		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[8] + vial_level[8] - 3], 266, 0x4d, true),
 	}
 		
-	gypsy_tbl["vial"] = {
-		sprite_new(gypsy_img_tbl[20], 41, 0x42, true),
-		sprite_new(gypsy_img_tbl[20], 62, 0x42, true),
-		sprite_new(gypsy_img_tbl[20], 83, 0x42, true),
-		sprite_new(gypsy_img_tbl[20], 104, 0x42, true),
-		sprite_new(gypsy_img_tbl[23], 200, 0x42, true),
-		sprite_new(gypsy_img_tbl[23], 221, 0x42, true),
-		sprite_new(gypsy_img_tbl[23], 242, 0x42, true),
-		sprite_new(gypsy_img_tbl[23], 263, 0x42, true),
+	g_gypsy_tbl["vial"] = {
+		sprite_new(g_gypsy_img_tbl[20], 41, 0x42, true),
+		sprite_new(g_gypsy_img_tbl[20], 62, 0x42, true),
+		sprite_new(g_gypsy_img_tbl[20], 83, 0x42, true),
+		sprite_new(g_gypsy_img_tbl[20], 104, 0x42, true),
+		sprite_new(g_gypsy_img_tbl[23], 200, 0x42, true),
+		sprite_new(g_gypsy_img_tbl[23], 221, 0x42, true),
+		sprite_new(g_gypsy_img_tbl[23], 242, 0x42, true),
+		sprite_new(g_gypsy_img_tbl[23], 263, 0x42, true),
 	}
 	
 	fade_in()
@@ -1592,8 +1621,8 @@ function create_character()
 	
 	wait_for_input()
 
-	local a_button = sprite_new(gypsy_img_tbl[7], 0x117, 0xae, true)
-	local b_button = sprite_new(gypsy_img_tbl[8], 0x128, 0xae, true)
+	local a_button = sprite_new(g_gypsy_img_tbl[7], 0x117, 0xae, true)
+	local b_button = sprite_new(g_gypsy_img_tbl[8], 0x128, 0xae, true)
 
 	g_str = 0xf
 	g_dex = 0xf
@@ -1623,11 +1652,16 @@ function create_character()
 	canvas_hide_all_sprites()
 	canvas_set_palette("palettes.int", 6)
 	
-	bg.image = gypsy_img_tbl[198]
+	
+	--local big_flask = sprite_new(g_gypsy_img_tbl[198], 0, 0, true)
+	bubbles.visible = true
 	bg.x = 0
 	bg.y = 0
 	bg.visible = true
+	bg.image = g_gypsy_img_tbl[198]
 
+	image_static(bubbles.image)
+	
 	fade_in()
 
 	scroll_img = image_load("blocks.shp", 2)
@@ -1637,12 +1671,27 @@ function create_character()
 	scroll.visible = true
 	image_print(scroll_img, "As you drink from the flask, vertigo overwhelms you. A soothing mist obscures the gypsy's face, and you sink without fear into an untroubled sleep.", 7, 303, 8, 8, 0x3e)
 	
-	wait_for_input()
+	--wait_for_input()
+
+	input = nil
+	while input == nil do
+		image_static(bubbles.image)
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
 	
 	fade_out()
 	
-	bg.image = gypsy_img_tbl[199]
+	bubbles.visible = false
 	
+	bg.image = g_gypsy_img_tbl[199]
+	bg.x = 0
+	bg.y = 0
+	bg.visible = true
+		
 	scroll.visible = false
 	
 	fade_in()
@@ -1678,6 +1727,9 @@ function create_character()
 	config_set("config/newgamedata/str", g_str)
 	config_set("config/newgamedata/dex", g_dex)
 	config_set("config/newgamedata/int", g_int)
+	
+	g_gypsy_img_tbl = nil
+	g_gypsy_tbl = nil
 	
 	return true
 end
