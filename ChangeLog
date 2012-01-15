@@ -1,3 +1,6 @@
+2012-01-16  Eric Fry <efry at users.sourceforge.net> r1284
+	* Fixed compile error on some versions of gcc.
+
 2012-01-11  Eric Fry <efry at users.sourceforge.net> r1283
 	* Work on gypsy animation.
 

@@ -698,7 +698,7 @@ static int nscript_config_set(lua_State *L)
 	}
 	else if(lua_isnumber(L, 2))
 	{
-		cutScene->get_config()->set(config_key, lua_tointeger(L, 2));
+		cutScene->get_config()->set(config_key, (int)lua_tointeger(L, 2));
 	}
 	else if(lua_isboolean(L, 2))
 	{
