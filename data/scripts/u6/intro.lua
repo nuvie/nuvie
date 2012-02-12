@@ -1206,6 +1206,18 @@ function gypsy_ab_select(question)
 			end
 			input = nil
 		end
+		if g_gypsy_tbl["jar_liquid"].visible == true then
+			gypsy_update_bubbles(g_gypsy_tbl["jar_liquid"].image)
+		end
+	end
+end
+
+function gypsy_update_bubbles(bubble_image)
+	if g_gypsy_tbl["bubble_counter"] == 0 then
+		image_bubble_effect(bubble_image)
+		g_gypsy_tbl["bubble_counter"] = 3
+	else
+		g_gypsy_tbl["bubble_counter"] = g_gypsy_tbl["bubble_counter"] - 1
 	end
 end
 
@@ -1304,6 +1316,7 @@ function gypsy_vial_anim(vial)
 
 	local vial_level = g_gypsy_tbl["vial_level"]
 	local vial_img_off = {2, 5, 8, 0xB, 0x18, 0x1B, 0x1E, 0x21}
+	local vial_colors = {239, 14, 231, 103, 228, 5, 15, 219}
 	
 	vial_level[vial] = vial_level[vial] - 1
 	
@@ -1313,10 +1326,12 @@ function gypsy_vial_anim(vial)
 	
 	g_gypsy_tbl["jar_liquid"].visible = true
 	g_gypsy_tbl["jar_liquid"].image = g_gypsy_img_tbl[8 + g_gypsy_tbl["jar_level"]]
-	
+	g_gypsy_tbl["jar_liquid"].y = g_gypsy_tbl["jar_liquid"].y - 1
 	if vial_level[vial] == 0 then
 		g_gypsy_tbl["vial_liquid"][vial].visible = false
 	else
+		image_bubble_effect_add_color(vial_colors[vial])
+		g_gypsy_tbl["bubble_counter"] = 0
 		g_gypsy_tbl["vial_liquid"][vial].image = g_gypsy_img_tbl[0x42 + vial_img_off[vial] + vial_level[vial] - 3]
 	end
 end
@@ -1569,10 +1584,15 @@ function create_character()
 	g_gypsy_tbl["hand"] = sprite_new(nil, 0, 0, false)
 
 	g_gypsy_tbl["jar_level"] = 0
-	g_gypsy_tbl["jar_liquid"] = sprite_new(nil, 0x92, 0x51, false)
+	g_gypsy_tbl["jar_liquid"] = sprite_new(nil, 0x92, 0x53, false)
+	g_gypsy_tbl["jar_liquid"].clip_x = 0
+	g_gypsy_tbl["jar_liquid"].clip_y = 0
+	g_gypsy_tbl["jar_liquid"].clip_w = 320
+	g_gypsy_tbl["jar_liquid"].clip_h = 0x6d
+	
 	g_gypsy_tbl["jar"] = sprite_new(g_gypsy_img_tbl[16], 0x8e, 0x38, true)	
 	 	
-
+	g_gypsy_tbl["bubble_counter"] = 0
 
 	g_gypsy_tbl["vial_level"] = {3,3,3,3,3,3,3,3}
 	local vial_level = g_gypsy_tbl["vial_level"]
@@ -1645,7 +1665,17 @@ function create_character()
 	scroll.image = scroll_img
 	image_print(scroll_img, "\"The path of the Avatar lies beneath thy feet, worthy "..name.text..",\127 the gypsy intones. With a mysterious smile, she passes you the flask of shimmering liquids. \"Drink of these waters and go forth among our people, who shall receive thee in joy!\127", 7, 303, 8, 16, 0x3e)
 	
-	wait_for_input()
+	-- wait_for_input()
+	
+	input = nil
+	while input == nil do
+		gypsy_update_bubbles(g_gypsy_tbl["jar_liquid"].image)
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
 
 	fade_out()
 	
@@ -1659,8 +1689,8 @@ function create_character()
 	bg.y = 0
 	bg.visible = true
 	bg.image = g_gypsy_img_tbl[198]
-
-	image_static(bubbles.image)
+	g_gypsy_tbl["bubble_counter"] = 0
+	gypsy_update_bubbles(bubbles.image)
 	
 	fade_in()
 
@@ -1675,7 +1705,7 @@ function create_character()
 
 	input = nil
 	while input == nil do
-		image_static(bubbles.image)
+		gypsy_update_bubbles(bubbles.image)
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then

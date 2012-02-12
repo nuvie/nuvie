@@ -48,6 +48,8 @@ static int nscript_image_load(lua_State *L);
 static int nscript_image_load_all(lua_State *L);
 static int nscript_image_print(lua_State *L);
 static int nscript_image_static(lua_State *L);
+static int nscript_image_bubble_effect_add_color(lua_State *L);
+static int nscript_image_bubble_effect(lua_State *L);
 
 static const struct luaL_Reg nscript_imagelib_m[] =
 {
@@ -115,6 +117,12 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_sprite_new);
    lua_setglobal(L, "sprite_new");
+
+   lua_pushcfunction(L, nscript_image_bubble_effect_add_color);
+   lua_setglobal(L, "image_bubble_effect_add_color");
+
+   lua_pushcfunction(L, nscript_image_bubble_effect);
+   lua_setglobal(L, "image_bubble_effect");
 
    lua_pushcfunction(L, nscript_canvas_set_palette);
    lua_setglobal(L, "canvas_set_palette");
@@ -345,6 +353,44 @@ static int nscript_image_print(lua_State *L)
 	lua_pushinteger(L, y);
 
 	return 2;
+}
+
+
+static uint8 u6_flask_num_colors = 0;
+static uint8 u6_flask_liquid_colors[8];
+
+static int nscript_image_bubble_effect_add_color(lua_State *L)
+{
+	if(u6_flask_num_colors != 8)
+	{
+		u6_flask_liquid_colors[u6_flask_num_colors++] = lua_tointeger(L, 1);
+	}
+
+	return 0;
+}
+
+static int nscript_image_bubble_effect(lua_State *L)
+{
+	CSImage *img = nscript_get_image_from_args(L, 1);
+
+	if(img && u6_flask_num_colors > 0)
+	{
+		unsigned char *data = img->shp->get_data();
+		uint16 w, h;
+		img->shp->get_size(&w, &h);
+
+		for(int i=0;i<w*h;i++)
+		{
+			if(*data != 0xff)
+			{
+				*data = u6_flask_liquid_colors[NUVIE_RAND()%u6_flask_num_colors];
+			}
+
+			data++;
+		}
+
+	}
+	return 0;
 }
 
 static int nscript_image_static(lua_State *L)
@@ -739,6 +785,7 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	loop_interval = 40;
 
 	screen_opacity = 255;
+
 }
 
 CSImage *ScriptCutscene::load_image(const char *filename, int idx)

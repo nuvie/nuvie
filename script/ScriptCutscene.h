@@ -120,6 +120,7 @@ public:
 	Configuration *get_config() { return config; }
 
 	void hide_sprites();
+
 };
 
 #endif /* __ScriptCutscene_h__ */

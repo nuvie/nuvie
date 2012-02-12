@@ -1,3 +1,8 @@
+2012-02-13  Eric Fry <efry at users.sourceforge.net> r1285
+	* Added gypsy bubbling liquid effect.
+	* Added image_bubble_effect_add_color() and image_bubble_effect() script
+	  functions.
+
 2012-01-16  Eric Fry <efry at users.sourceforge.net> r1284
 	* Fixed compile error on some versions of gcc.
 
