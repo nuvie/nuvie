@@ -137,6 +137,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
       sfx_enabled = false;
       music_volume = 0;
       sfx_volume = 0;
+      mixer = NULL;
       return false;
      }
 
@@ -535,6 +536,10 @@ void SoundManager::musicPlay()
 void SoundManager::musicPlay(const char *filename)
 {
 	string path;
+
+	if(!music_enabled)
+		return;
+
 	config_get_path(m_Config, filename, path);
 	SongAdPlug *song = new SongAdPlug(mixer->getMixer(), opl);
 	song->Init(path.c_str());

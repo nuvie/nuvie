@@ -1308,7 +1308,7 @@ function gypsy_ask_questions(num_questions, scroll)
 	
 		g_question_tbl[i+1] = vial-1
 	
-		io.stderr:write(q.." "..vial.."("..g_str..","..g_dex..","..g_int..")\n")
+		--io.stderr:write(q.." "..vial.."("..g_str..","..g_dex..","..g_int..")\n")
 	end
 end
 
@@ -1316,24 +1316,353 @@ function gypsy_vial_anim(vial)
 
 	local vial_level = g_gypsy_tbl["vial_level"]
 	local vial_img_off = {2, 5, 8, 0xB, 0x18, 0x1B, 0x1E, 0x21}
-	local vial_colors = {239, 14, 231, 103, 228, 5, 15, 219}
+
+	local vial_x_offset = {41, 62, 83, 104, 200, 221, 242, 263}
 	
-	vial_level[vial] = vial_level[vial] - 1
+	local idx
 	
-	io.stderr:write("vial #"..vial.." level="..vial_level[vial].."\n")
+	--g_gypsy_tbl["vial"][vial].visible = false
+	--g_gypsy_tbl["vial_liquid"][vial].visible = false
+	
+	
+	local arm_img_tbl = {0, 0, 0, 0, 5, 5, 5, 5}
+	local arm_img_tbl1 = {1, 1, 1, 1, 4, 4, 4, 4}
+	local arm_img_tbl2 = {2, 2, 2, 2, 3, 3, 3, 3}
+	
+	local hand_img_tbl = {12, 12, 12, 12, 13, 13, 13, 13}
+	local hand_img_tbl1 = {9, 9, 9, 9, 17, 17, 17, 17}
+	local hand_img_tbl2 = {10, 10, 10, 10, 18, 18, 18, 18}
+	local hand_img_tbl3 = {16, 16, 16, 16, 46, 46, 46, 46}
+	local hand_img_tbl4 = {15, 15, 15, 15, 37, 37, 37, 37}
+	
+	local arm_x_offset = {93, 93, 93, 93, 172, 172, 172, 172}
+	
+	local hand_x_offset = {29, 50, 71, 92, 202, 223, 244, 264}
+	local hand_x_offset1 = {107, 107, 107, 107, 170, 170, 170, 170}
+	local hand_x_offset2 = {109, 109, 109, 109, 168, 168, 168, 168}
+	local hand_x_offset3 = {112, 112, 112, 112, 165, 165, 165, 165}
+	local hand_x_offset4 = {10, 10, 10, 10, -13, -13, -13, -13}
+	
+	local hand_img_num
+	local should_update
+	for idx=0,16 do
+		should_update = true
+		if idx == 0 then
+			--
+			hand_img_num = 0xf
+			should_update = false
+		elseif idx == 1 or idx == 15 then
+			--
+			g_gypsy_tbl["arm"].visible = true
+			g_gypsy_tbl["hand"].visible = true
+			g_gypsy_tbl["vial"][vial].visible = false
+			g_gypsy_tbl["arm"].image = g_gypsy_img_tbl[1 + arm_img_tbl[vial]]
+			g_gypsy_tbl["arm"].x = vial_x_offset[vial] - 6
+			g_gypsy_tbl["arm"].y = 21
+
+			hand_img_num = hand_img_tbl[vial]
+			g_gypsy_tbl["hand"].image = g_gypsy_img_tbl[9 + hand_img_num]
+			g_gypsy_tbl["hand"].x = vial_x_offset[vial]
+			g_gypsy_tbl["hand"].y = 66
+			g_gypsy_tbl["hand"].visible = true
+		elseif idx == 2 or idx == 14 then
+			--
+			g_gypsy_tbl["arm"].image = g_gypsy_img_tbl[1 + arm_img_tbl1[vial]]
+			g_gypsy_tbl["arm"].x = vial_x_offset[vial] - 6
+			g_gypsy_tbl["arm"].y = 21
+
+			hand_img_num = hand_img_tbl[vial]
+			g_gypsy_tbl["hand"].image = g_gypsy_img_tbl[9 + hand_img_num]
+			g_gypsy_tbl["hand"].x = vial_x_offset[vial]
+			g_gypsy_tbl["hand"].y = 29
+
+		elseif idx == 3 or idx == 13 then
+			--
+			g_gypsy_tbl["arm"].image = g_gypsy_img_tbl[1 + arm_img_tbl1[vial]]
+			g_gypsy_tbl["arm"].x = vial_x_offset[vial] - 6
+			g_gypsy_tbl["arm"].y = 21
+
+			hand_img_num = hand_img_tbl1[vial]
+			g_gypsy_tbl["hand"].image = g_gypsy_img_tbl[9 + hand_img_num]
+			g_gypsy_tbl["hand"].x = hand_x_offset[vial]
+			g_gypsy_tbl["hand"].y = 25
+			
+		elseif idx == 4 or idx == 12 then
+			--
+			g_gypsy_tbl["arm"].image = g_gypsy_img_tbl[1 + arm_img_tbl2[vial]]
+			g_gypsy_tbl["arm"].x = arm_x_offset[vial]
+			g_gypsy_tbl["arm"].y = 21
+		
+			hand_img_num = hand_img_tbl1[vial]
+			g_gypsy_tbl["hand"].image = g_gypsy_img_tbl[9 + hand_img_num]
+			g_gypsy_tbl["hand"].x = hand_x_offset1[vial]
+			g_gypsy_tbl["hand"].y = 20
+
+		elseif idx == 5 or idx == 11 then
+			--
+			g_gypsy_tbl["arm"].image = g_gypsy_img_tbl[1 + arm_img_tbl2[vial]]
+			g_gypsy_tbl["arm"].x = arm_x_offset[vial]
+			g_gypsy_tbl["arm"].y = 21
+		
+			hand_img_num = hand_img_tbl2[vial]
+			g_gypsy_tbl["hand"].image = g_gypsy_img_tbl[9 + hand_img_num]
+			g_gypsy_tbl["hand"].x = hand_x_offset1[vial]
+			g_gypsy_tbl["hand"].y = 20
+		
+			if idx == 11 then
+				vial_level[vial] = vial_level[vial] - 1
+				if vial_level[vial] == 2 then
+					gypsy_stop_pouring()
+				end
+			end
+			
+			if vial_level[vial] == 3 then
+				gypsy_start_pouring(vial, vial_level[vial])
+			end
+		elseif idx == 6 or idx == 10 then
+			--
+			if vial_level[vial] > 2 then
+				should_update = false
+			end
+			g_gypsy_tbl["arm"].image = g_gypsy_img_tbl[1 + arm_img_tbl2[vial]]
+			g_gypsy_tbl["arm"].x = arm_x_offset[vial]
+			g_gypsy_tbl["arm"].y = 21
+		
+			hand_img_num = hand_img_tbl3[vial]
+			g_gypsy_tbl["hand"].image = g_gypsy_img_tbl[9 + hand_img_num]
+			g_gypsy_tbl["hand"].x = hand_x_offset2[vial]
+			g_gypsy_tbl["hand"].y = 21
+			
+			if vial_level[vial] == 2 then
+				if idx == 6 then
+					gypsy_start_pouring(vial, vial_level[vial])
+				elseif idx == 10 then
+					gypsy_stop_pouring()
+				end
+			end
+		elseif idx == 7 or idx == 8 or idx == 9 then
+			--
+			if vial_level[vial] > 1 then
+				should_update = false
+			end
+			g_gypsy_tbl["arm"].image = g_gypsy_img_tbl[1 + arm_img_tbl2[vial]]
+			g_gypsy_tbl["arm"].x = arm_x_offset[vial]
+			g_gypsy_tbl["arm"].y = 21
+		
+			hand_img_num = hand_img_tbl4[vial]
+			g_gypsy_tbl["hand"].image = g_gypsy_img_tbl[9 + hand_img_num]
+			g_gypsy_tbl["hand"].x = hand_x_offset3[vial]
+			g_gypsy_tbl["hand"].y = 13
+			
+			if vial_level[vial] == 1 then
+				if idx == 7 then
+					gypsy_start_pouring(vial, vial_level[vial])
+					g_gypsy_tbl["vial_liquid"][vial].visible = false
+				elseif idx == 9 then
+					gypsy_stop_pouring()
+				end
+			end
+		end
+
+		--if idx > 3 and idx < 9 or idx > 8 and idx < 13 then
+		--	g_gypsy_tbl["hand"].x = g_gypsy_tbl["hand"].x - hand_x_offset4[vial]
+		--end
+		
+		--io.stderr:write("idx ="..idx.."\n")
+		if should_update == true then
+			gypsy_vial_anim_liquid(hand_img_num, vial, vial_level[vial], g_gypsy_tbl["hand"].x - hand_x_offset4[vial], g_gypsy_tbl["hand"].y + 20)
+		
+			--g_gypsy_tbl["hand"].x = g_gypsy_tbl["hand"].x + hand_x_offset4[vial]
+		
+			local j
+			for j = 1,8 do
+				if g_gypsy_tbl["jar_level"] > 0 then
+					gypsy_update_bubbles(g_gypsy_tbl["jar_liquid"].image)
+				end
+				canvas_update()
+				input_poll()
+			end
+		end
+	--[[						
+		local j
+		for j = 1,8 do
+			local img = g_gypsy_tbl["jar_liquid"].image
+			if img ~= nil then
+				gypsy_update_bubbles(g_gypsy_tbl["jar_liquid"].image)
+			end
+			canvas_update()
+			input_poll()
+		end
+	--]]
+	end
+
+	g_gypsy_tbl["hand"].visible = false
+	
+	--io.stderr:write("vial #"..vial.." level="..vial_level[vial].."\n")
+	
+
+	
+	g_gypsy_tbl["hand"].visible = false
+	g_gypsy_tbl["arm"].visible = false
+			
+	g_gypsy_tbl["vial"][vial].visible = true
+	--g_gypsy_tbl["vial_liquid"][vial].visible = true
+end
+
+function gypsy_vial_anim_liquid(img_num, vial_num, vial_level, hand_x, hand_y)
+
+	--io.stderr:write(img_num..", "..vial_num..", "..vial_level..", "..hand_x..", "..hand_y.."\n")
+	
+	if vial_level == 3 then
+		vial_level = 2
+	end
+	
+	if vial_level <= 0 then
+		g_gypsy_tbl["vial_liquid"][vial_num].visible = false
+		return
+	end
+	
+	local si = 0
+	if img_num == 0xf then return end
+
+
+	if img_num > 0xf then
+		if img_num == 0x12 then
+			si = 1
+		else
+			if img_num > 0x12 then
+				if img_num == 0x25 then return end
+				if img_num == 0x2e then
+					si = 2
+				end
+			else
+				if img_num == 0x10 then
+					si = 2
+				else
+					if img_num == 0x11 then
+						si = 0
+					end
+				end
+			end
+		end
+
+	else
+
+		img_num = img_num - 9
+		if img_num == 0 then
+			si = 0
+		elseif img_num == 1 then
+			si = 1
+		elseif img_num >= 2 and img_num <= 5 then
+			si = 3
+		end
+
+	end
+
+	local vial_liquid_tbl = { 
+	0x3A, 0x4F, 0x64, 0x7C, 0x28, 0x7E, 0x20, 0x34,
+	0x36, 0x4B, 0x60, 0x76, 0x26, 0x78, 0x1C, 0x30,
+	0x36, 0x4B, 0x60, 0x76, 0x26, 0x78, 0x1C, 0x30,
+	0x3C, 0x51, 0x66, 0x7F, 0x14, 0x5F, 0x22, 0x36,
+	0x38, 0x4D, 0x62, 0x79, 0x27, 0x7B, 0x1E, 0x32,
+	0x38, 0x4D, 0x62, 0x79, 0x27, 0x7B, 0x1E, 0x32,
+	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
+	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
+	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
+	0x0, 0x3, 0x6, 0x9, 0x16, 0x19, 0x1C, 0x1F,
+	0x1, 0x4, 0x7, 0x0A, 0x17, 0x1A, 0x1D, 0x20,
+	0x2, 0x5, 0x8, 0x0B, 0x18, 0x1B, 0x1E, 0x21
+	}
+
+	local img_offset
+	
+	if vial_num > 6 and si ~= 3 then
+		img_offset = 9
+	else
+		img_offset = 0x42
+	end
+	
+	--io.stderr:write("si ="..si.."\n")
+	
+	if vial_level > 0 and vial_level < 3 then
+		--vial_liquid_tbl[vial_level * 2 + si * 24 + vial_num] + img_offset
+		local img_idx = vial_liquid_tbl[(vial_level-1) * 8 + si * 24 + vial_num]
+		g_gypsy_tbl["vial_liquid"][vial_num].image = g_gypsy_img_tbl[img_idx + img_offset]
+		
+		local hand_y_tbl = {0x1B, 0x13, 0x13, 0x16, 0x0E, 0x0E, 0x0E, 0x0E, 0x0E, 0x0B, 0x0B, 0x0B}
+		g_gypsy_tbl["vial_liquid"][vial_num].y = hand_y + hand_y_tbl[si * 3 + vial_level] - 20
+		
+		local hand_x_tbl =
+		{
+		0x4, 0x4, 0x4, 0x4, 0x14, 0x14, 0x14, 0x14,
+		0x4, 0x4, 0x4, 0x4, 0x13, 0x13, 0x13, 0x13,
+		0x4, 0x4, 0x4, 0x4, 0x13, 0x13, 0x13, 0x13,
+		0x4, 0x4, 0x4, 0x4, 0x17, 0x17, 0x17, 0x17,
+		0x3, 0x3, 0x3, 0x3, 0x17, 0x17, 0x17, 0x17,
+		0x3, 0x3, 0x3, 0x3, 0x17, 0x17, 0x17, 0x17,
+		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
+		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
+		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
+		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+		}
+		
+		local hand_x_tbl1 = {10, 10, 10, 10, -13, -13, -13, -13}
+
+		g_gypsy_tbl["vial_liquid"][vial_num].x = hand_x + hand_x_tbl[si * 24 + (vial_level-1) * 8 + vial_num] + hand_x_tbl1[vial_num]
+	end
+	
+end
+
+function gypsy_start_pouring(vial_num, vial_level)	
+	local pour_img_tbl = 
+	{
+	 0x2B, 0x43, 0x56, 0x6B, 0x24, 0x74, 0x19, 0x2C,
+	 0x2C, 0x44, 0x57, 0x6C, 0x23, 0x73, 0x18, 0x2B,
+	 0x2E, 0x45, 0x58, 0x6D, 0x22, 0x72, 0x17, 0x2A,
+	}
+	
+	if vial_level <= 3 and vial_level > 0 then
+		g_gypsy_tbl["pour"].visible = true
+		local img1 = pour_img_tbl[(3 - vial_level) * 8 + vial_num]
+		--io.stderr:write("pour: "..vial_level.." img1="..img1.."vial_num="..vial_num.."\n")
+		if vial_num > 6 then
+			img1 = img1 + 9
+		else
+			img1 = img1 + 0x42
+		end
+		
+		g_gypsy_tbl["pour"].image = g_gypsy_img_tbl[img1]
+		
+		local pour_y_tbl = {0x32, 0x37, 0x40}
+		g_gypsy_tbl["pour"].y = pour_y_tbl[3 - vial_level + 1] - 20
+		
+		local pour_x_tbl =
+		{
+		 0x92, 0x92, 0x92, 0x92, 0x0A9, 0x0A9, 0x0A9, 0x0A9,
+		 0x91, 0x91, 0x91, 0x91, 0x0A9, 0x0A9, 0x0A9, 0x0A9,
+		 0x94, 0x94, 0x94, 0x94, 0x0AA, 0x0AA, 0x0AA, 0x0AA,
+		}
+		
+		g_gypsy_tbl["pour"].x = pour_x_tbl[(3 - vial_level) * 8 + vial_num]
+	end
 	
 	g_gypsy_tbl["jar_level"] = g_gypsy_tbl["jar_level"] + 1
 	
 	g_gypsy_tbl["jar_liquid"].visible = true
 	g_gypsy_tbl["jar_liquid"].image = g_gypsy_img_tbl[8 + g_gypsy_tbl["jar_level"]]
 	g_gypsy_tbl["jar_liquid"].y = g_gypsy_tbl["jar_liquid"].y - 1
-	if vial_level[vial] == 0 then
-		g_gypsy_tbl["vial_liquid"][vial].visible = false
-	else
-		image_bubble_effect_add_color(vial_colors[vial])
-		g_gypsy_tbl["bubble_counter"] = 0
-		g_gypsy_tbl["vial_liquid"][vial].image = g_gypsy_img_tbl[0x42 + vial_img_off[vial] + vial_level[vial] - 3]
-	end
+
+	local vial_colors = {239, 14, 231, 103, 228, 5, 15, 219}
+	
+	image_bubble_effect_add_color(vial_colors[vial_num])
+	g_gypsy_tbl["bubble_counter"] = 0
+
+end
+
+function gypsy_stop_pouring()
+	g_gypsy_tbl["pour"].visible = false
 end
 
 g_keycode_tbl =
@@ -1581,7 +1910,8 @@ function create_character()
 	
 	g_gypsy_tbl = {}
 	g_gypsy_tbl["arm"] = sprite_new(nil, 0, 0, false)
-	g_gypsy_tbl["hand"] = sprite_new(nil, 0, 0, false)
+	g_gypsy_tbl["pour"] = sprite_new(nil, 0, 0, false)
+
 
 	g_gypsy_tbl["jar_level"] = 0
 	g_gypsy_tbl["jar_liquid"] = sprite_new(nil, 0x92, 0x53, false)
@@ -1609,6 +1939,8 @@ function create_character()
 		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[7] + vial_level[7] - 3], 245, 0x4d, true),
 		sprite_new(g_gypsy_img_tbl[0x42 + vial_img_off[8] + vial_level[8] - 3], 266, 0x4d, true),
 	}
+	
+	g_gypsy_tbl["hand"] = sprite_new(nil, 0, 0, false)
 		
 	g_gypsy_tbl["vial"] = {
 		sprite_new(g_gypsy_img_tbl[20], 41, 0x42, true),

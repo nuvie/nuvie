@@ -1,3 +1,7 @@
+2012-02-20  Eric Fry <efry at users.sourceforge.net> r1286
+	* Added gypsy vial animations.
+	* Fixed crash in intro when audio is disabled.
+
 2012-02-13  Eric Fry <efry at users.sourceforge.net> r1285
 	* Added gypsy bubbling liquid effect.
 	* Added image_bubble_effect_add_color() and image_bubble_effect() script
