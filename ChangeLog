@@ -1,3 +1,8 @@
+2012-02-21  Eric Fry <efry at users.sourceforge.net> r1287
+	* Added the ability to fade to a given colour in the cutscene scripting.
+	* Added canvas_set_bg_color() script function.
+	* Fade to blue when drinking from flask in gypsy sequence.
+
 2012-02-20  Eric Fry <efry at users.sourceforge.net> r1286
 	* Added gypsy vial animations.
 	* Fixed crash in intro when audio is disabled.

@@ -75,6 +75,7 @@ static const struct luaL_Reg nscript_spritelib_m[] =
 
 static int nscript_sprite_new(lua_State *L);
 
+static int nscript_canvas_set_bg_color(lua_State *L);
 static int nscript_canvas_set_palette(lua_State *L);
 static int nscript_canvas_set_palette_entry(lua_State *L);
 static int nscript_canvas_rotate_palette(lua_State *L);
@@ -123,6 +124,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_image_bubble_effect);
    lua_setglobal(L, "image_bubble_effect");
+
+   lua_pushcfunction(L, nscript_canvas_set_bg_color);
+   lua_setglobal(L, "canvas_set_bg_color");
 
    lua_pushcfunction(L, nscript_canvas_set_palette);
    lua_setglobal(L, "canvas_set_palette");
@@ -630,6 +634,14 @@ static int nscript_sprite_new(lua_State *L)
 	return 1;
 }
 
+static int nscript_canvas_set_bg_color(lua_State *L)
+{
+	uint8 color = lua_tointeger(L, 1);
+	cutScene->set_bg_color(color);
+
+	return 0;
+}
+
 static int nscript_canvas_set_palette(lua_State *L)
 {
 	const char *filename = lua_tostring(L, 1);
@@ -785,7 +797,7 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	loop_interval = 40;
 
 	screen_opacity = 255;
-
+	bg_color = 0;
 }
 
 CSImage *ScriptCutscene::load_image(const char *filename, int idx)
@@ -1030,9 +1042,9 @@ void ScriptCutscene::wait()
 void ScriptCutscene::Display(bool full_redraw)
 {
 	if(full_redraw)
-		screen->fill(0,0,0,area.w, area.h);
+		screen->fill(bg_color,0,0,area.w, area.h);
 	else
-		screen->fill(0,x_off,y_off,320, 200);
+		screen->fill(bg_color,x_off,y_off,320, 200);
 
 	if(screen_opacity > 0)
 	{
@@ -1059,7 +1071,7 @@ void ScriptCutscene::Display(bool full_redraw)
 
 		if(screen_opacity < 255)
 		{
-			screen->fade(x_off,y_off,320,200, screen_opacity);
+			screen->fade(x_off,y_off,320,200, screen_opacity, bg_color);
 		}
 	}
 

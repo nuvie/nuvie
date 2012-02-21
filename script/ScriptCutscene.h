@@ -90,6 +90,7 @@ private:
 	uint32 next_time;
 	uint32 loop_interval;
 	uint8 screen_opacity;
+	uint8 bg_color;
 
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
@@ -120,6 +121,8 @@ public:
 	Configuration *get_config() { return config; }
 
 	void hide_sprites();
+
+	void set_bg_color(uint8 new_color) { bg_color = new_color; }
 
 };
 

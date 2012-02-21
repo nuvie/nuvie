@@ -2044,7 +2044,7 @@ function create_character()
 			break
 		end
 	end
-	
+	canvas_set_bg_color(0x75)
 	fade_out()
 	
 	bubbles.visible = false
@@ -2079,6 +2079,8 @@ function create_character()
 	
 	wait_for_input()
 	scroll.visible = false
+	
+	canvas_set_bg_color(0)
 	fade_out()
 	
 	config_set("config/newgame", true)

@@ -288,16 +288,17 @@ bool Screen::fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
 
  return true;
 }
-void Screen::fade(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity)
+void Screen::fade(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity, uint8 fade_bg_color)
 {
 if(surface->bits_per_pixel == 16)
-	fade16(dest_x, dest_y, src_w, src_h, opacity);
+	fade16(dest_x, dest_y, src_w, src_h, opacity, fade_bg_color);
 else
-	fade32(dest_x, dest_y, src_w, src_h, opacity);
+	fade32(dest_x, dest_y, src_w, src_h, opacity, fade_bg_color);
 }
 
-void Screen::fade16(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity)
+void Screen::fade16(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity, uint8 fade_bg_color)
 {
+	 uint16 bg = (uint16)surface->colour32[fade_bg_color];
 	 uint16 *pixels;
 	 uint16 i,j;
 
@@ -309,7 +310,7 @@ void Screen::fade16(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, ui
 	  {
 	   for(j=0;j<src_w;j++)
 	    {
-	       pixels[j] = blendpixel16(0, pixels[j], opacity);
+	       pixels[j] = blendpixel16(bg, pixels[j], opacity);
 	    }
 
 	   pixels += surface->w; //surface->pitch;
@@ -318,8 +319,9 @@ void Screen::fade16(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, ui
 	 return;
 }
 
-void Screen::fade32(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity)
+void Screen::fade32(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity, uint8 fade_bg_color)
 {
+	 uint32 bg = surface->colour32[fade_bg_color];
 	 uint32 *pixels;
 	 uint16 i,j;
 
@@ -331,7 +333,7 @@ void Screen::fade32(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, ui
 	  {
 	   for(j=0;j<src_w;j++)
 	    {
-	       pixels[j] = blendpixel32(0, pixels[j], opacity);
+	       pixels[j] = blendpixel32(bg, pixels[j], opacity);
 	    }
 
 	   pixels += surface->w; //surface->pitch;
