@@ -11,6 +11,7 @@
 #include <dirent.h>
 
 #include <cstdio>
+#include <cstdlib>
 #include <string>
 #include <vector>
 #include "nuvieDefs.h"
