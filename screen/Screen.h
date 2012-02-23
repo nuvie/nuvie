@@ -114,6 +114,8 @@ class Screen
 
    void restore_area(unsigned char *pixels, SDL_Rect *area = NULL, unsigned char *target = NULL, SDL_Rect *target_area = NULL, bool free_src = true);
 
+   void draw_line (int sx, int sy, int ex, int ey, uint8 color);
+
 protected:
 
    bool fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);

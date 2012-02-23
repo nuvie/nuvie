@@ -482,3 +482,118 @@ int str_bsearch( const char *str[], int max, const char *value )
 
    return -1;
 }
+
+#define LINE_FRACTION 65536L
+
+void draw_line_8bit(int sx, int sy, int ex, int ey, uint8 col, uint8 *pixels, uint16 w, uint16 h)
+{
+	uint16 pitch = w;
+		int xinc = 1;
+		int yinc = 1;
+
+		if (sx == ex) {
+			sx --;
+			if (sy > ey) {
+				yinc = -1;
+				sy--;
+			}
+		}
+		else {
+			if (sx > ex) {
+				sx--;
+				xinc = -1;
+			}
+			else {
+				ex--;
+			}
+
+			if (sy > ey) {
+				yinc = -1;
+				sy--;
+				ey--;
+			}
+		}
+
+		uint8 * pixptr = (uint8 *) (pixels + pitch*sy + sx);
+		uint8 * pixend = (uint8 *) (pixels + pitch*ey + ex);
+		pitch = pitch*yinc;
+
+		int cury = sy;
+		int curx = sx;
+		int width = w;
+		int height = h;
+		bool no_clip = true;
+
+		if (sx >= width && ex >= width) return;
+		if (sy >= height && ey >= height) return;
+		if (sx < 0 && ex < 0) return;
+		if (sy < 0 && ey < 0) return;
+
+		if (sy < 0 || sy >= height || sx < 0 || sx >= width) no_clip = false;
+		if (ey < 0 || ey >= height || ex < 0 || ex >= width) no_clip = false;
+
+		// vertical
+		if (sx == ex) {
+			//std::cout << "Vertical" << std::endl;
+			// start is below end
+			while (pixptr != pixend) {
+				if (no_clip || (cury >= 0 && cury < height)) *pixptr = col;
+				pixptr+=pitch;
+				cury+=yinc;
+			}
+		}
+		// Horizontal
+		else if (sy == ey) {
+			//std::cout << "Horizontal" << std::endl;
+			while (pixptr != pixend) {
+				if (no_clip || (curx >= 0 && curx < width)) *pixptr = col;
+				pixptr+=xinc;
+				curx+=xinc;
+			}
+		}
+		// Diagonal xdiff >= ydiff
+		else if (std::labs(sx-ex) >= std::labs(sy-ey)) {
+			//std::cout << "Diagonal 1" << std::endl;
+			uint32 fraction = std::labs((LINE_FRACTION * (sy-ey)) / (sx-ex));
+			uint32 ycounter = 0;
+
+			for ( ; ; ) {
+				if ((no_clip || (cury >= 0 && cury < height && curx >= 0 && curx < width)))
+					*pixptr = col;
+				pixptr+=xinc;
+				if (curx == ex) break;
+				curx  +=xinc;
+				ycounter += fraction;
+
+				// Need to work out if we need to change line
+				if (ycounter > LINE_FRACTION) {
+					ycounter -= LINE_FRACTION;
+					pixptr+=pitch;
+					cury  +=yinc;
+				}
+			}
+		}
+		// Diagonal ydiff > xdiff
+		else {
+			//std::cout << "Diagonal 2" << std::endl;
+			uint32 fraction = std::labs((LINE_FRACTION * (sx-ex)) / (sy-ey));
+			uint32 xcounter = 0;
+
+			for ( ; ; ) {
+				if ((no_clip || (cury >= 0 && cury < height && curx >= 0 && curx < width)))
+					*pixptr = col;
+				pixptr+=pitch;
+				if (cury == ey) break;
+				cury  +=yinc;
+				xcounter += fraction;
+
+				// Need to work out if we need to change line
+				if (xcounter > LINE_FRACTION) {
+					xcounter -= LINE_FRACTION;
+					pixptr+=xinc;
+					curx+=xinc;
+				}
+			}
+		}
+
+}

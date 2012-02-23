@@ -124,6 +124,7 @@ public:
 
 	void set_bg_color(uint8 new_color) { bg_color = new_color; }
 
+	Screen *get_screen() { return screen; }
 };
 
 #endif /* __ScriptCutscene_h__ */

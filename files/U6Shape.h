@@ -65,6 +65,8 @@ public:
   SDL_Surface *get_shape_surface();
 	bool get_hot_point(uint16 *x, uint16 *y);
 	bool get_size(uint16 *w, uint16 *h);
+
+	void draw_line(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color);
 };
 
 #endif

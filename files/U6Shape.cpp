@@ -31,6 +31,7 @@
 #include "SDL.h"
 #include "SDL_endian.h"
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "U6Lzw.h"
 #include "U6Lib_n.h"
 #include "U6Shape.h"
@@ -340,4 +341,12 @@ bool U6Shape::get_size(uint16 *w, uint16 *h)
   *h = height;
 
 	return true;
+}
+
+void U6Shape::draw_line(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color)
+{
+	if (raw == NULL)
+		return;
+
+	draw_line_8bit(sx, sy, ex, ey, color, raw, width, height);
 }

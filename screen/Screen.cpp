@@ -1655,3 +1655,13 @@ void Screen::restore_area16(unsigned char *pixels, SDL_Rect *area,
         free(pixels);
     }
 }
+
+void Screen::draw_line (int sx, int sy, int ex, int ey, uint8 color)
+{
+	if(surface == NULL)
+		return;
+
+	surface->draw_line(sx, sy, ex, ey, color);
+
+	return;
+}

@@ -70,4 +70,6 @@ inline uint32 divide_time(uint32 this_time, uint32 &last_time, uint32 *passed_ti
 
 int mkdir_recursive(std::string path, int mode);
 
+void draw_line_8bit(int sx, int sy, int ex, int ey, uint8 col, uint8 *pixels, uint16 w, uint16 h);
+
 #endif /* __U6misc_h__ */

@@ -1797,8 +1797,10 @@ function create_character()
 	load_images("vellum1.shp")
 	bg.image = g_img_tbl[0]
 	
-	name.y = 0x58
-
+	name.y = 0x59
+	
+	image_draw_line(bg.image, 14, 19, 277, 19, 0x48)
+	
 	local new_sex = sprite_new(g_img_tbl[3], 0x5e, 0x70, true)	
 	local new_portrait = sprite_new(g_img_tbl[0x12], 0x3e, 0x81, true)
 	local continue = sprite_new(g_img_tbl[0x10], 0x56, 0x92, true)
@@ -1873,9 +1875,12 @@ function create_character()
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
-			--
+			break
 		end
 	end
+	
+	woods.x = -190
+	woods1.x = 130
 	
 	scroll_img = image_load("blocks.shp", 2)
 	scroll.x = 1
@@ -2044,6 +2049,9 @@ function create_character()
 			break
 		end
 	end
+	
+	scroll.visible = false
+		
 	canvas_set_bg_color(0x75)
 	fade_out()
 	

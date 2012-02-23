@@ -47,6 +47,7 @@ static int nscript_image_new(lua_State *L);
 static int nscript_image_load(lua_State *L);
 static int nscript_image_load_all(lua_State *L);
 static int nscript_image_print(lua_State *L);
+static int nscript_image_draw_line(lua_State *L);
 static int nscript_image_static(lua_State *L);
 static int nscript_image_bubble_effect_add_color(lua_State *L);
 static int nscript_image_bubble_effect(lua_State *L);
@@ -124,6 +125,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_image_bubble_effect);
    lua_setglobal(L, "image_bubble_effect");
+
+   lua_pushcfunction(L, nscript_image_draw_line);
+   lua_setglobal(L, "image_draw_line");
 
    lua_pushcfunction(L, nscript_canvas_set_bg_color);
    lua_setglobal(L, "canvas_set_bg_color");
@@ -359,6 +363,22 @@ static int nscript_image_print(lua_State *L)
 	return 2;
 }
 
+static int nscript_image_draw_line(lua_State *L)
+{
+	CSImage *img = nscript_get_image_from_args(L, 1);
+	uint16 sx = lua_tointeger(L, 2);
+	uint16 sy = lua_tointeger(L, 3);
+	uint16 ex = lua_tointeger(L, 4);
+	uint16 ey = lua_tointeger(L, 5);
+	uint8 color = lua_tointeger(L, 6);
+
+	if(img)
+	{
+		img->shp->draw_line(sx, sy, ex, ey, color);
+	}
+
+	return 0;
+}
 
 static uint8 u6_flask_num_colors = 0;
 static uint8 u6_flask_liquid_colors[8];
