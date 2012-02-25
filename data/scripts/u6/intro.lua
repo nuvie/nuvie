@@ -1109,6 +1109,7 @@ function main_menu_set_pal(idx)
 end
 
 function main_menu_load()
+	music_play("ultima.m")
 	g_menu = {}
 	
 	canvas_set_palette("palettes.int", 0)
@@ -1151,11 +1152,19 @@ function main_menu()
 				canvas_set_palette("palettes.int", 0)
 				menu_idx=0
 				main_menu_set_pal(menu_idx)
+				music_play("ultima.m")
 				fade_in_sprite(g_menu["menu"])
 				--create character
 			elseif input == 116 then --t
 				--transfer a character
 			elseif input == 97 then  --a
+				main_menu_set_pal(3)
+				fade_out_sprite(g_menu["menu"],6)
+				acknowledgements()
+				canvas_set_palette("palettes.int", 0)
+				menu_idx=0
+				main_menu_set_pal(menu_idx)
+				fade_in_sprite(g_menu["menu"])
 				--acknowledgments
 			elseif input == 106 or input == 13 and menu_idx == 4 then --j
 				main_menu_set_pal(4)
@@ -1171,6 +1180,32 @@ function main_menu()
 					menu_idx = menu_idx - 1
 					main_menu_set_pal(menu_idx)
 				end
+			elseif input >= 48 and input <= 57 or input == 45 or input == 61 then --play music play pressing number keys or '-' or '='
+				if input == 45 then
+					input = 11
+				elseif input == 48 then
+					input = 10
+				elseif input == 61 then
+					input = 12
+				else
+					input = input - 48
+				end
+
+				local song_names = {
+					"ultima.m",
+					"bootup.m",
+					"intro.m",
+					"create.m",
+					"forest.m",
+					"hornpipe.m",
+					"engage.m",
+					"stones.m",
+					"dungeon.m",
+					"brit.m",
+					"gargoyle.m",
+					"end.m"
+				}
+				music_play(song_names[input])
 			end
 			input = nil
 		end
@@ -2102,6 +2137,83 @@ function create_character()
 	
 	g_gypsy_img_tbl = nil
 	g_gypsy_tbl = nil
+	
+	return true
+end
+
+function ack_header(scroll_img)
+	image_print(scroll_img, "Ultima VI", 7, 303, 115, 9, 0x3d)
+	image_print(scroll_img, "A Lord British Production", 7, 303, 63, 17, 0x3d)
+	image_draw_line(scroll_img, 9, 26, 274, 26, 0x3d)
+end
+
+function acknowledgements()
+
+	local bg = sprite_new(image_load("vellum1.shp", 0), 0x10, 0x50, true)
+	
+	ack_header(bg.image)
+
+	image_print(bg.image, "Produced by", 7, 303, 106, 32, 0xC)
+	image_print(bg.image, "Richard Garriott and Warren Spector", 7, 303, 28, 40, 0x48)
+
+	image_print(bg.image, "Executive Producer", 7, 303, 82, 56, 0xC)
+	image_print(bg.image, "Dallas Snell", 7, 303, 106, 64, 0x48)
+	
+	image_print(bg.image, "Programming", 7, 303, 104, 80, 0xC)
+	image_print(bg.image, "Cheryl Chen    John Miles", 7, 303, 67, 88, 0x48)
+	image_print(bg.image, "Herman Miller    Gary Scott Smith", 7, 303, 40, 96, 0x48)
+	
+	fade_in_sprite(bg)
+	local input
+		
+	wait_for_input()
+		
+	bg.image = image_load("vellum1.shp", 0)
+	
+	ack_header(bg.image)
+	
+	image_print(bg.image, "Writing", 7, 303, 120, 47, 0xC)
+	image_print(bg.image, "Stephen Beeman    Dr. Cat    \39Manda Dee", 7, 303, 25, 55, 0x48)
+	image_print(bg.image, "Richard Garriott    Greg Malone", 7, 303, 46, 63, 0x48)
+	image_print(bg.image, "John Miles    Herman Miller", 7, 303, 61, 71, 0x48)
+	image_print(bg.image, "Todd Porter    Warren Spector", 7, 303, 50, 79, 0x48)
+							
+	wait_for_input()
+	
+	bg.image = image_load("vellum1.shp", 0)
+	
+	ack_header(bg.image)
+	
+	image_print(bg.image, "Art", 7, 303, 132, 31, 0xC)
+	image_print(bg.image, "Keith Berdak    Daniel Bourbonnais", 7, 303, 37, 39, 0x48)
+	image_print(bg.image, "Jeff Dee    \39Manda Dee", 7, 303, 75, 47, 0x48)
+	image_print(bg.image, "Glen Johnson    Denis Loubet", 7, 303, 56, 55, 0x48)
+		
+	image_print(bg.image, "Music", 7, 303, 126, 71, 0xC)
+	image_print(bg.image, "Ken Arnold    Iolo Fitzowen", 7, 303, 61, 79, 0x48)
+	image_print(bg.image, "Herman Miller    Todd Porter", 7, 303, 56, 87, 0x48)
+	
+	wait_for_input()
+	
+	bg.image = image_load("vellum1.shp", 0)
+	
+	ack_header(bg.image)
+		
+	image_print(bg.image, "Quality Assurance", 7, 303, 87, 31, 0xC)
+	image_print(bg.image, "Paul Malone    Mike Romero", 7, 303, 62, 39, 0x48)
+	image_print(bg.image, "", 7, 303, 49, 47, 0x48)
+	
+	image_print(bg.image, "Additional Support", 7, 303, 84, 63, 0xC)
+	image_print(bg.image, "Michelle Caddel    Melanie Fleming", 7, 303, 39, 71, 0x48)
+	image_print(bg.image, "Alan Gardner    Jeff Hillhouse", 7, 303, 51, 79, 0x48)
+	image_print(bg.image, "Sherry Hunter    Steve Muchow", 7, 303, 49, 87, 0x48)
+	image_print(bg.image, "Cheryl Neeld", 7, 303, 104, 95, 0x48)
+			
+	wait_for_input()
+						
+	fade_out_sprite(bg, 4)
+	
+	bg.visible = false
 	
 	return true
 end

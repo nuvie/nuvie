@@ -1,5 +1,14 @@
-2012-02-25  Eric Fry <efry at users.sourceforge.net> r1289
+2012-02-25  Eric Fry <efry at users.sourceforge.net> r1291
+	* Play ultima.m on main menu
+	* Added the ability to cycle through all songs on main menu by pressing
+	  number keys or '-' or '='.
+	* Added acknowledgements to main menu.
+
+2012-02-25  Eric Fry <efry at users.sourceforge.net> r1290
 	* Fixed build scripts for unpack_portraits tool.
+
+2012-02-24  Kirben r1289
+	* MinGW compile fix.
 
 2012-02-23  Eric Fry <efry at users.sourceforge.net> r1288
 	* Added Screen::draw_line().
