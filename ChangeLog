@@ -1,3 +1,6 @@
+2012-02-25  Eric Fry <efry at users.sourceforge.net> r1289
+	* Fixed build scripts for unpack_portraits tool.
+
 2012-02-23  Eric Fry <efry at users.sourceforge.net> r1288
 	* Added Screen::draw_line().
 	* Added draw_line_8bit()

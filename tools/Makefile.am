@@ -4,7 +4,8 @@ else
 noinst_PROGRAMS =
 endif
 
-CFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ -I ../misc -I ../conf
+CFLAGS = @CXXFLAGS@ 
 
 # Makefile.common defines u6decomp_SOURCES
 include Makefile.common

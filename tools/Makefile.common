@@ -31,6 +31,14 @@ unpack_portraits_SOURCES = \
 	unpack_portraits.cpp \
 \
   	../Debug.cpp \
+	../conf/Configuration.cpp \
+	../conf/Configuration.h \
+	../conf/XMLNode.cpp \
+	../conf/XMLNode.h \
+	../conf/XMLTree.cpp \
+	../conf/XMLTree.h \
+	../conf/ConfigNode.h \
+\
 	../files/NuvieIO.cpp \
 	../files/NuvieIO.h \
 	../files/NuvieIOFile.cpp \
@@ -40,5 +48,9 @@ unpack_portraits_SOURCES = \
 	../files/U6Lzw.cpp \
 	../files/U6Lzw.h \
 	../files/U6Shape.h \
-	../files/U6Shape.cpp
+	../files/U6Shape.cpp \
+\
+	../misc/U6misc.h \
+	../misc/U6misc.cpp
+
 
