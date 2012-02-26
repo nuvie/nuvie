@@ -1,7 +1,7 @@
 g_img_tbl = {}
 
 function poll_for_esc()
-	input = input_poll()
+	local input = input_poll()
 	if input ~= nil and input == 27 then
 		return true
 	end
@@ -10,7 +10,7 @@ function poll_for_esc()
 end
 
 function wait_for_input()
-	input = nil
+	local input = nil
 	while input == nil do
 		canvas_update()
 		input = input_poll()
@@ -18,6 +18,8 @@ function wait_for_input()
 				break
 			end
 	end
+	
+	return input
 end
 
 function should_exit(input)
@@ -760,14 +762,14 @@ function stones_shake_moongate()
 	return should_exit(input)
 end
 
-g_stones_pal_counter = 0
+g_pal_counter = 0
 
 function stones_rotate_palette()
-	if g_stones_pal_counter == 4 then
+	if g_pal_counter == 4 then
 		canvas_rotate_palette(144, 16)
-		g_stones_pal_counter = 0
+		g_pal_counter = 0
 	else
-		g_stones_pal_counter = g_stones_pal_counter + 1
+		g_pal_counter = g_pal_counter + 1
 	end
 end
 
@@ -1141,7 +1143,18 @@ function main_menu()
 		if input ~= nil then
 			if input == 113 then     --q quit
 				break
-			elseif input == 105 then --i
+			elseif input == 105 or input == 13 and menu_idx == 0 then --i
+				main_menu_set_pal(0)
+				fade_out()
+				canvas_hide_all_sprites()
+				intro()
+				music_play("ultima.m")
+				g_menu["title"].visible = true
+				fade_in()
+				g_menu["subtitle"].visible = true
+				g_menu["menu"].visible = true
+				
+				fade_in_sprite(g_menu["menu"])
 				--run intro here
 			elseif input == 99 or input == 13 and menu_idx == 1 then  --c
 				main_menu_set_pal(1)
@@ -1155,9 +1168,9 @@ function main_menu()
 				music_play("ultima.m")
 				fade_in_sprite(g_menu["menu"])
 				--create character
-			elseif input == 116 then --t
+			elseif input == 116 or input == 13 and menu_idx == 2 then --t
 				--transfer a character
-			elseif input == 97 then  --a
+			elseif input == 97 or input == 13 and menu_idx == 3 then  --a
 				main_menu_set_pal(3)
 				fade_out_sprite(g_menu["menu"],6)
 				acknowledgements()
@@ -2216,6 +2229,468 @@ function acknowledgements()
 	bg.visible = false
 	
 	return true
+end
+
+
+function intro_sway_gargs(sprite, idx, angry_flag)
+	if math.random(0, 3) == 0 then
+		return idx
+	end
+	
+	local movement_tbl = {1,1,1, -1,-1,-1,  -1,-1,-1,  1, 1, 1}
+	
+	if idx == 12 then
+		idx = 1
+	else
+		idx = idx + 1
+	end
+	
+	sprite.x = sprite.x + movement_tbl[idx]
+	
+	return idx
+end
+
+function moongate_rotate_palette(idx, num)
+	if g_pal_counter == 3 then
+		canvas_rotate_palette(232, 8)
+		g_pal_counter = 0
+	else
+		g_pal_counter = g_pal_counter + 1
+	end
+end
+
+function intro_exit()
+	fade_out()
+	canvas_hide_all_sprites()
+	canvas_set_palette("palettes.int", 0)
+end
+
+function intro_wait()
+	if should_exit(wait_for_input()) == true then
+		intro_exit()
+		return false
+	end
+		
+	return true
+end
+
+function intro()
+	local input
+	local intro_img_tbl = image_load_all("intro.shp")
+	
+	local bg = sprite_new(intro_img_tbl[6], 0, 0, true)
+	local moongate = sprite_new(intro_img_tbl[7], 0x78, 0x3a, false)
+	local gargs_left = sprite_new(intro_img_tbl[3], -84, 0x6d, true)
+	local gargs_right = sprite_new(intro_img_tbl[4], 326, 0xc7, true)
+	local garg_body = sprite_new(intro_img_tbl[8], 0xd5, 0x8d, false)
+	local garg_head = sprite_new(intro_img_tbl[11], 0x123, 0x9b, false)
+	local iolo = sprite_new(intro_img_tbl[1], 0xa8, 0xca, false)
+	local shamino = sprite_new(intro_img_tbl[2], 0x44, 0x7a, false)
+	local dupre = sprite_new(intro_img_tbl[0], -0x20, 0x7a, false)
+
+	
+	local alter = sprite_new(intro_img_tbl[5], 0, 0x70, true)
+	local avatar = sprite_new(intro_img_tbl[9], 0x31, 0x44, false)
+	local ropes = sprite_new(intro_img_tbl[12], 0xd2, 0x84, false)
+			
+	canvas_set_palette("palettes.int", 7)
+	music_play("intro.m")
+					
+	fade_in()
+	
+	local scroll_img = image_load("blocks.shp", 2)
+	local scroll = sprite_new(scroll_img, 1, 0x98, true)
+	
+	image_print(scroll_img, "Dazed, you emerge from the portal to find yourself standing on a desolate plain. Nearby rests a massive rune-struck altar, shrouded in moonlit fog.", 7, 308, 8, 8, 0x3e)
+
+	if should_exit(wait_for_input()) == true then intro_exit() return end
+	
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	image_print(scroll_img, "At first the plain is still. Then a hundred voices raise a slow, deathlike song, drawing closer and closer with each passing moment. You are seized by an urge to run...", 7, 308, 8, 8, 0x3e)
+
+	if intro_wait() == false then return end
+	
+	local l_move_tbl_x = {1, 1, 0, 1, 1, 1}
+	local l_move_tbl_y = {0, 0, -1, 0, 0, -1}
+
+	local r_move_tbl_x = {-1, -1, -1, -1, -1, -1}
+	local r_move_tbl_y = {-1, -1, 0, -1, -1, -1}
+	
+	scroll.visible = false
+	
+	local i
+	for i=0,95,1 do
+		gargs_left.x = gargs_left.x + l_move_tbl_x[(i%6)+1]
+		gargs_left.y = gargs_left.y + l_move_tbl_y[(i%6)+1]
+		
+		if i > 23 then
+			gargs_right.x = gargs_right.x + r_move_tbl_x[(i%6)+1] * 2
+			gargs_right.y = gargs_right.y + r_move_tbl_y[(i%6)+1] * 2
+		end
+		
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) ==  true then
+				intro_exit()
+				return
+			end
+
+			gargs_left.x = -4
+			gargs_left.y = 77
+			gargs_right.x = 182
+			gargs_right.y = 79
+			
+			break
+		end
+		canvas_update()
+		canvas_update()
+	end
+	
+	scroll_img = image_load("blocks.shp", 0)
+	scroll.image = scroll_img
+	scroll.x = 0x21
+	scroll.y = 0x9d
+	scroll.visible = true
+	image_print(scroll_img, "...but you have no place to go.", 7, 308, 35, 8, 0x3e)
+
+	if intro_wait() == false then return end
+	
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0x98
+	image_print(scroll_img, "Before you can offer a protest to the creatures who surround you, scaly claws grasp your body.", 7, 308, 8, 12, 0x3e)
+	
+	if intro_wait() == false then return end
+
+	scroll_img = image_load("blocks.shp", 1)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0xa0
+	image_print(scroll_img, "With unearthly strength, the monsters bind you to the altar stone!", 7, 308, 11, 10, 0x3e)
+	
+	avatar.visible = true
+	ropes.visible = true
+		
+	if intro_wait() == false then return end
+	
+	gargs_left.y = gargs_left.y + 4
+	gargs_right.y = gargs_right.y + 4
+	scroll.visible = false
+	
+	garg_body.visible = true
+	garg_head.visible = true
+	
+	for i=0,22,1 do
+		garg_body.x = garg_body.x - 3
+		garg_body.y = garg_body.y - 3
+		garg_head.x = garg_head.x - 3
+		garg_head.y = garg_head.y - 3
+
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) ==  true then
+				intro_exit()
+				return
+			end
+
+			break
+		end
+		canvas_update()
+		canvas_update()
+	end
+
+	if input == nil then
+		for i=0,13,1 do
+			garg_body.y = garg_body.y - 3
+			garg_head.y = garg_head.y - 3
+
+			input = input_poll()
+			if input ~= nil then
+				if should_exit(input) ==  true then
+					intro_exit()
+					return
+				end
+
+				break
+			end
+
+			canvas_update()
+			canvas_update()
+		end
+	end
+	
+	garg_body.x = 144
+	garg_body.y = 30
+	garg_head.x = 222
+	garg_head.y = 44
+		
+	scroll_img = image_load("blocks.shp", 1)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0xa0
+	scroll.visible = true
+	image_print(scroll_img, "Kneeling, the hordes sway and chant as a stately winged nightmare steps forward.", 32, 262, 33, 10, 0x3e)
+
+	local input = nil
+	local left_idx = 1
+	local right_idx = 6
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		canvas_update()
+		input = input_poll()
+			if input ~= nil then
+				if should_exit(input) ==  true then
+					intro_exit()
+					return
+				end
+				break
+			end
+		canvas_update()
+	end
+	
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0x98
+	scroll.visible = true
+	image_print(scroll_img, "The leader unwraps a velvet covered, brass-bound book and recites from it in a formal, stilted tongue.", 7, 308, 8, 12, 0x3e)
+
+	input = nil
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) ==  true then
+				intro_exit()
+				return
+			end
+			break
+		end
+		canvas_update()
+	end
+
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	image_print(scroll_img, "Shouts and jeers explode from the masses as the priest slams shut the book. In his hand a malignant dagger drips with moonlight.", 7, 308, 8, 12, 0x3e)
+
+	input = nil
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) ==  true then
+				intro_exit()
+				return
+			end
+			break
+		end
+		canvas_update()
+	end
+
+	scroll_img = image_load("blocks.shp", 1)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0xa0
+	image_print(scroll_img, "You close your eyes. A dying scream, certainly your own, curdles the air.", 80, 228, 16, 10, 0x3e)
+	
+	moongate.visible = true
+	g_pal_counter = 0
+
+	for i=0x78,0x3a,-1 do
+		moongate.y = i
+		moongate_rotate_palette()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			moongate.y = 0x3a
+			break
+		end
+	end
+	
+	input = nil
+	while input == nil do
+		moongate_rotate_palette()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			break
+		end
+	end
+	
+	for i=0xff,0,-3 do
+		moongate_rotate_palette()
+		canvas_set_opacity(i)
+		canvas_update()
+		input_poll()
+	end
+	
+	canvas_hide_all_sprites()
+	
+	scroll_img = image_load("blocks.shp", 1)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0x50
+	scroll.visible = true
+	image_print(scroll_img, "Catcalls, the dagger, a scream, Death....", 7, 308, 39, 14, 0x3e)
+	
+	fade_in()
+	
+	if intro_wait() == false then return end
+
+	fade_out()
+	
+	scroll_img = image_load("blocks.shp", 1)
+	scroll.image = scroll_img
+	image_print(scroll_img, "Pandemonium. Shrieks of rage, of terror.", 7, 308, 34, 14, 0x3e)
+		
+	fade_in()
+	
+	if intro_wait() == false then return end
+
+	fade_out()
+	
+	scroll_img = image_load("blocks.shp", 1)
+	scroll.image = scroll_img
+	image_print(scroll_img, "From the inevitable, an impossibility emerges.", 7, 308, 16, 14, 0x3e)
+	
+	fade_in()
+	
+	if intro_wait() == false then return end
+	
+	fade_out()
+	
+	scroll_img = image_load("blocks.shp", 1)
+	scroll.image = scroll_img
+	image_print(scroll_img, "You are still alive.", 7, 308, 101, 14, 0x3e)
+		
+	fade_in()
+		
+	if intro_wait() == false then return end
+	
+	fade_out()
+	
+	bg.visible = true
+	moongate.visible = true
+	gargs_left.visible = true
+	gargs_right.visible = true
+	garg_body.visible = true
+	garg_head.visible = true
+	alter.visible = true
+	avatar.visible = true
+	ropes.visible = true
+
+	scroll.visible = false
+	
+	for i=0,0xff,3 do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		moongate_rotate_palette()
+		canvas_set_opacity(i)
+		canvas_update()
+		input_poll()
+	end
+	
+	garg_head.image = intro_img_tbl[10]
+
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0x98
+	scroll.visible = true
+	image_print(scroll_img, "Silent red light fills the darkness. There is the wooden clack of a crossbow, and a violet- fletched rose blooms in the priest\39s barren forehead.", 7, 308, 8, 8, 0x3e)
+	
+	input = nil
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		moongate_rotate_palette()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			break
+		end
+	end
+
+	scroll.visible = false
+	
+	for i=0,42,1 do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		moongate_rotate_palette()
+	
+		local x =  math.random(-1, 2)
+		garg_body.x = garg_body.x + x
+		garg_body.y = garg_body.y + 3
+		garg_head.x = garg_head.x + x
+		garg_head.y = garg_head.y + 3
+	
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) ==  true then
+				intro_exit()
+				return
+			end
+			garg_body.visible = false
+			garg_head.visible = false
+			break
+		end
+		canvas_update()
+	end
+
+	garg_body.visible = false
+	garg_head.visible = false
+	
+	iolo.visible = true
+	dupre.visible = true
+	shamino.visible = true
+	
+	for i=0,140,1 do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		moongate_rotate_palette()
+		
+		if i % 2 == 0 then
+			dupre.x = dupre.x + 2
+			dupre.y = dupre.y - 1
+			shamino.x = shamino.x + 1
+			shamino.y = shamino.y - 1
+			iolo.x = iolo.x + 1
+			iolo.y = iolo.y - 1
+		end
+		
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) ==  true then
+				intro_exit()
+				return
+			end
+			break
+		end
+		canvas_update()
+	end
+	
+	wait_for_input()
+		
+	intro_exit()
 end
 
 play()
