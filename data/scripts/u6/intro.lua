@@ -2288,9 +2288,8 @@ function intro()
 	local shamino = sprite_new(intro_img_tbl[2], 0x44, 0x7a, false)
 	local dupre = sprite_new(intro_img_tbl[0], -0x20, 0x7a, false)
 
-	
+	local avatar = sprite_new(intro_img_tbl[9], 0x31, 0x44, false)	
 	local alter = sprite_new(intro_img_tbl[5], 0, 0x70, true)
-	local avatar = sprite_new(intro_img_tbl[9], 0x31, 0x44, false)
 	local ropes = sprite_new(intro_img_tbl[12], 0xd2, 0x84, false)
 			
 	canvas_set_palette("palettes.int", 7)
@@ -2663,18 +2662,36 @@ function intro()
 	dupre.visible = true
 	shamino.visible = true
 	
-	for i=0,140,1 do
+	for i=0,82,1 do
 		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
 		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
 		moongate_rotate_palette()
 		
-		if i % 2 == 0 then
+
+		if i > 33 then
 			dupre.x = dupre.x + 2
-			dupre.y = dupre.y - 1
-			shamino.x = shamino.x + 1
+		else
+			dupre.x = dupre.x + 1
+		end
+		
+		dupre.y = dupre.y - 1
+		
+		if i > 13 then
+			if i > 36 then
+				shamino.x = shamino.x + 2
+			else
+				shamino.x = shamino.x + 1
+			end	
 			shamino.y = shamino.y - 1
+		end
+		
+		if i > 10 then
 			iolo.x = iolo.x + 1
-			iolo.y = iolo.y - 1
+			if i > 14 then
+				iolo.y = iolo.y - 2
+			else
+				iolo.y = iolo.y - 1
+			end
 		end
 		
 		input = input_poll()
@@ -2683,12 +2700,184 @@ function intro()
 				intro_exit()
 				return
 			end
+			dupre.x = 99
+			dupre.y = 40
+			shamino.x = 183
+			shamino.y = 53
+			iolo.x = 240
+			iolo.y = 62
 			break
 		end
 		canvas_update()
 	end
 	
-	wait_for_input()
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0x98
+	scroll.visible = true
+	image_print(scroll_img, "Friendly faces vault from a newborn moongate, while a rain of quarrels holds the furious mob at bay. The knight Dupre\39s sword flashes twice in the darkness, slicing away your bonds!", 7, 308, 8, 8, 0x3e)
+		
+	input = nil
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		moongate_rotate_palette()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			break
+		end
+	end
+
+	scroll.visible = false
+	ropes.visible = false
+	
+	for i=0,82,1 do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		moongate_rotate_palette()
+
+		dupre.x = dupre.x - 1
+		dupre.y = dupre.y + 2
+
+
+		shamino.x = shamino.x - 1
+		shamino.y = shamino.y + 2
+
+		iolo.x = iolo.x - 1
+		iolo.y = iolo.y + 2
+		
+		avatar.y = avatar.y + 1
+
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) ==  true then
+				intro_exit()
+				return
+			end
+			dupre.visible = false
+			shamino.visible = false
+			iolo.visible = false
+			avatar.visible = false
+			break
+		end
+		canvas_update()
+	end
+
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.visible = true
+	image_print(scroll_img, "\"Quickly, old friend! To the gate!\127 Accompanied by the swordsman Shamino and a grinning, crossbow-wielding Iolo the Bard, Dupre thrusts a spare sword into your hand.", 7, 308, 8, 8, 0x3e)
+		
+	input = nil
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		moongate_rotate_palette()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			break
+		end
+	end
+
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	image_print(scroll_img, "Snatching the fallen priest\39s book, Iolo dives into the redness with Shamino at his heels. The howling throng surges forward, all of one terrible mind.", 7, 308, 8, 8, 0x3e)
+	
+	input = nil
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		moongate_rotate_palette()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			break
+		end
+	end
+
+	scroll_img = image_load("blocks.shp", 1)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0xa0
+	image_print(scroll_img, "The gate wanes rapidly as you and Dupre charge through...", 130, 178, 12, 10, 0x3e)
+
+	for i=0,150,1 do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		if i % 2 == 0 then
+			moongate.y = moongate.y + 1
+		end
+		moongate_rotate_palette()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			moongate.visible = false
+			break
+		end
+	end
+
+	scroll_img = image_load("blocks.shp", 0)
+	scroll.image = scroll_img
+	scroll.x = 0x21
+	scroll.y = 0x9d
+	image_print(scroll_img, "...but not rapidly enough.", 7, 308, 50, 8, 0x3e)
+
+	input = nil
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			break
+		end
+	end
+
+	scroll_img = image_load("blocks.shp", 2)
+	scroll.image = scroll_img
+	scroll.x = 0x1
+	scroll.y = 0x98
+	image_print(scroll_img, "From the mob\39s vanguard, three of the abominations scramble toward the gate. Driven by fury, the creatures hurl their bodies into the portal\39s last handspan of light!", 7, 308, 8, 8, 0x3e)
+
+	input = nil
+	while input == nil do
+		left_idx = intro_sway_gargs(gargs_left, left_idx, false)
+		right_idx = intro_sway_gargs(gargs_right, right_idx, false)
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if should_exit(input) then
+				intro_exit()
+				return
+			end
+			break
+		end
+	end
+
+	scroll.visible = false
 		
 	intro_exit()
 end
