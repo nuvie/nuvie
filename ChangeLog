@@ -1,4 +1,7 @@
-2012-02-26  Eric Fry <efry at users.sourceforge.net> r1293
+2012-02-29  Eric Fry <efry at users.sourceforge.net> r1294
+	* Added U6Font and ScriptCutscene to xcode build environment.
+
+2012-02-28  Eric Fry <efry at users.sourceforge.net> r1293
 	* More work on Introduction sequence. It now plays the whole way through.
 
 2012-02-26  Eric Fry <efry at users.sourceforge.net> r1292

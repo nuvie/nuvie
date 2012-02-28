@@ -338,6 +338,10 @@
 		EC360BD0130DC55F00D4CAE6 /* MapEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BCD130DC55F00D4CAE6 /* MapEntity.h */; };
 		EC360BD1130DC55F00D4CAE6 /* U6LineWalker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */; };
 		EC360BD2130DC55F00D4CAE6 /* U6LineWalker.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */; };
+		EC79081C14FD7CA70067E06F /* U6Font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC79081A14FD7CA70067E06F /* U6Font.cpp */; };
+		EC79081D14FD7CA70067E06F /* U6Font.h in Headers */ = {isa = PBXBuildFile; fileRef = EC79081B14FD7CA70067E06F /* U6Font.h */; };
+		EC79082014FD7CD50067E06F /* ScriptCutscene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC79081E14FD7CD50067E06F /* ScriptCutscene.cpp */; };
+		EC79082114FD7CD50067E06F /* ScriptCutscene.h in Headers */ = {isa = PBXBuildFile; fileRef = EC79081F14FD7CD50067E06F /* ScriptCutscene.h */; };
 		EC9B4EB3135ACEFA00EA1761 /* GUI_Console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC9B4EB1135ACEFA00EA1761 /* GUI_Console.cpp */; };
 		EC9B4EB4135ACEFA00EA1761 /* GUI_Console.h in Headers */ = {isa = PBXBuildFile; fileRef = EC9B4EB2135ACEFA00EA1761 /* GUI_Console.h */; };
 		EC9B4EB7135ACF3D00EA1761 /* Console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC9B4EB5135ACF3D00EA1761 /* Console.cpp */; };
@@ -698,6 +702,10 @@
 		EC360BCD130DC55F00D4CAE6 /* MapEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEntity.h; path = ../misc/MapEntity.h; sourceTree = SOURCE_ROOT; };
 		EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = U6LineWalker.cpp; path = ../misc/U6LineWalker.cpp; sourceTree = SOURCE_ROOT; };
 		EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = U6LineWalker.h; path = ../misc/U6LineWalker.h; sourceTree = SOURCE_ROOT; };
+		EC79081A14FD7CA70067E06F /* U6Font.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = U6Font.cpp; path = ../fonts/U6Font.cpp; sourceTree = SOURCE_ROOT; };
+		EC79081B14FD7CA70067E06F /* U6Font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = U6Font.h; path = ../fonts/U6Font.h; sourceTree = SOURCE_ROOT; };
+		EC79081E14FD7CD50067E06F /* ScriptCutscene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScriptCutscene.cpp; path = ../script/ScriptCutscene.cpp; sourceTree = SOURCE_ROOT; };
+		EC79081F14FD7CD50067E06F /* ScriptCutscene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScriptCutscene.h; path = ../script/ScriptCutscene.h; sourceTree = SOURCE_ROOT; };
 		EC9B4EB1135ACEFA00EA1761 /* GUI_Console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUI_Console.cpp; path = ../GUI/GUI_Console.cpp; sourceTree = SOURCE_ROOT; };
 		EC9B4EB2135ACEFA00EA1761 /* GUI_Console.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUI_Console.h; path = ../GUI/GUI_Console.h; sourceTree = SOURCE_ROOT; };
 		EC9B4EB5135ACF3D00EA1761 /* Console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Console.cpp; path = ../Console.cpp; sourceTree = SOURCE_ROOT; };
@@ -1075,6 +1083,8 @@
 		07F10D1D05C7D2490029E1F1 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				EC79081A14FD7CA70067E06F /* U6Font.cpp */,
+				EC79081B14FD7CA70067E06F /* U6Font.h */,
 				07F10D2305C7D27A0029E1F1 /* Font.cpp */,
 				07F10D2405C7D27A0029E1F1 /* Font.h */,
 				07F10D2505C7D27A0029E1F1 /* FontManager.cpp */,
@@ -1297,6 +1307,8 @@
 		ECA2EC860FDB421200D4BDDA /* Script */ = {
 			isa = PBXGroup;
 			children = (
+				EC79081E14FD7CD50067E06F /* ScriptCutscene.cpp */,
+				EC79081F14FD7CD50067E06F /* ScriptCutscene.h */,
 				ECA2EC870FDB423800D4BDDA /* Script.cpp */,
 				ECA2EC880FDB423800D4BDDA /* Script.h */,
 				ECA2EC890FDB423800D4BDDA /* ScriptActor.cpp */,
@@ -1490,6 +1502,8 @@
 				EC9B4EB4135ACEFA00EA1761 /* GUI_Console.h in Headers */,
 				EC9B4EB8135ACF3D00EA1761 /* Console.h in Headers */,
 				ECAD317F13F0A1BA001ABC85 /* SpellView.h in Headers */,
+				EC79081D14FD7CA70067E06F /* U6Font.h in Headers */,
+				EC79082114FD7CD50067E06F /* ScriptCutscene.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1751,6 +1765,8 @@
 				EC9B4EB3135ACEFA00EA1761 /* GUI_Console.cpp in Sources */,
 				EC9B4EB7135ACF3D00EA1761 /* Console.cpp in Sources */,
 				ECAD317E13F0A1BA001ABC85 /* SpellView.cpp in Sources */,
+				EC79081C14FD7CA70067E06F /* U6Font.cpp in Sources */,
+				EC79082014FD7CD50067E06F /* ScriptCutscene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
