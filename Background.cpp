@@ -40,7 +40,7 @@ Background::Background(Configuration *cfg) : GUI_Widget(NULL)
  background = NULL;
  x_off = config_get_video_x_offset(config);
  y_off = config_get_video_y_offset(config);
- Init(NULL, 0,0,320,240);
+ Init(NULL, 0,0,320,200);
 }
 
 Background::~Background()
