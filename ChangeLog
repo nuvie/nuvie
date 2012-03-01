@@ -1,3 +1,6 @@
+2012-03-01  Eric Fry <efry at users.sourceforge.net> r1296
+	* Official release 0.3
+
 2012-02-29  Eric Fry <efry at users.sourceforge.net> r1295
 	* Fixed crash when 1x scaling used. There was a typo in Background.cpp
 

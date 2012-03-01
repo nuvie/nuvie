@@ -1,7 +1,7 @@
 Nuvie - An Engine for Ultima6, Martian Dreams and Savage Empire.
 http://nuvie.sourceforge.net/
 
-Version 0.2 
+Version 0.3 
 
 
 What is Nuvie
@@ -99,6 +99,18 @@ BilinearInterlaced
 BilinearHalfInterlaced
 BilinearQuarterInterlaced
 
+Helping
+-------
+
+We are always looking for people to help out with the project. If you feel you
+can help out in any way please contact us.
+
+Contact
+-------
+
+Email: efry <AT> users.sourceforge.net
+IRC: #nuvie on freenode.net
+Message board: http://nuvie.sourceforge.net/phorum
 
 Credits and Thanks
 ------------------
