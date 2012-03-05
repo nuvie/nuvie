@@ -111,6 +111,9 @@ void SpellView::set_spell_caster(Actor *actor, Obj *s_container, bool eventMode)
 
 void SpellView::Display(bool full_redraw)
 {
+	if(new_ui_mode)
+		full_redraw = true;
+
  if(full_redraw || update_display)
    {
     screen->fill(bg_color, area.x, area.y + NEWMAGIC_BMP_H, area.w, area.h - NEWMAGIC_BMP_H);

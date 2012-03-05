@@ -1,3 +1,17 @@
+2012-03-06  Eric Fry <efry at users.sourceforge.net> r1297
+	* Started work fullscreen map mode.
+	  You can enable it with the following config switch
+	
+	  config/general/fullscreen_map yes|no
+	
+	* Changed MapWindow to allow negative widget offset.
+	* Changed alpha map darkness to handle non 11x11 map window.
+	* Don't show party view when in fullscreen map mode.
+	* Show/hide spell view when in fullmap mode.
+	* Added Game::is_new_style(), Game::is_orig_style() to tell if we are in
+	  fullscreen map mode.
+	* Don't draw light globes if tile is blacked out.
+
 2012-03-01  Eric Fry <efry at users.sourceforge.net> r1296
 	* Official release 0.3
 

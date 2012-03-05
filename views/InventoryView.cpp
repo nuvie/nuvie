@@ -127,6 +127,7 @@ void InventoryView::PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
 
 void InventoryView::Display(bool full_redraw)
 {
+	full_redraw = true;
  if(full_redraw || update_display)
    {
     screen->fill(bg_color, area.x, area.y, area.w, area.h);

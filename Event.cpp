@@ -689,8 +689,7 @@ bool Event::select_spell_num(sint16 spell_num)
     input.type = EVENTINPUT_SPELL_NUM;
     input.spell_num = spell_num;
     //endAction(); // mode = prev_mode
-    Game::get_game()->get_view_manager()->get_current_view()->release_focus();
-    Game::get_game()->get_view_manager()->set_inventory_mode();
+    Game::get_game()->get_view_manager()->close_spell_mode();
     doAction();
     return true;
 }
@@ -2708,8 +2707,7 @@ void Event::cancelAction()
         {
 
         	scroll->display_string("nothing\n");
-      	  view_manager->get_current_view()->release_focus();
-      	  view_manager->set_inventory_mode();
+      	  view_manager->close_spell_mode();
         }
     }
     else if(mode == USE_MODE)

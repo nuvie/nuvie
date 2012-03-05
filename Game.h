@@ -69,6 +69,7 @@ typedef enum
 class Game
 {
  nuvie_game_t game_type;
+ uint8 game_style; //new or original
  static Game *game;
  Configuration *config;
  Script *script;
@@ -118,7 +119,7 @@ class Game
 
  bool loadGame(Screen *screen, SoundManager *sm, nuvie_game_t type);
  void init_cursor();
-
+ void init_game_style();
  void play();
  void update_once(bool process_gui_input);
  void update_once_display();
@@ -147,7 +148,9 @@ class Game
  void stats_changed();
 
  nuvie_game_t get_game_type() { return game_type; }
-
+ uint8 get_game_style() { return game_style; }
+ bool is_new_style() { return (game_style == NUVIE_STYLE_NEW); }
+ bool is_orig_style() { return (game_style == NUVIE_STYLE_ORIG); }
  /* Return instances of Game classes */
  static Game *get_game()          { return(game); }
  Configuration *get_config()       { return(config); }

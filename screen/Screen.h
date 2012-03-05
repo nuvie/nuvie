@@ -69,7 +69,7 @@ class Screen
    bool set_palette(uint8 *palette);
    bool set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
    bool rotate_palette(uint8 pos, uint8 length);
-   bool clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect=NULL);
+   bool clear(sint16 x, sint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect=NULL);
    void *get_pixels();
    const unsigned char *get_surface_pixels() { return(surface->get_pixels()); }
    uint16 get_pitch();
@@ -93,7 +93,7 @@ class Screen
    void buildalphamap8();
    void clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity );
    void drawalphamap8globe( sint16 x, sint16 y, uint16 radius );
-   void blitalphamap8(uint16 x, uint16 y);
+   void blitalphamap8(sint16 x, sint16 y, SDL_Rect *clip_rect);
    bool updatingalphamap;
    int lighting_style;
 

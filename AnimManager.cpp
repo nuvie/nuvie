@@ -59,7 +59,7 @@ static float get_relative_degrees(sint16 sx, sint16 sy, float angle_up)
 }
 
 
-AnimManager::AnimManager(uint16 x, uint16 y, Screen *screen, SDL_Rect *clipto)
+AnimManager::AnimManager(sint16 x, sint16 y, Screen *screen, SDL_Rect *clipto)
                         : next_id(0)
 {
         map_window = Game::get_game()->get_map_window();

@@ -196,13 +196,42 @@ uint16 Screen::get_translated_y(uint16 y)
 
 	return y;
 }
-bool Screen::clear(uint16 x, uint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
+bool Screen::clear(sint16 x, sint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
 {
  uint8 *pixels;
  uint16 i;
  uint16 x1,y1;
 
  pixels = (uint8 *)surface->pixels;
+
+ if(x >= width || y >= height)
+   return false;
+
+ if(x < 0)
+   {
+    if(x + w <= 0)
+      return false;
+    else
+      w += x;
+
+    x = 0;
+   }
+
+ if(y < 0)
+   {
+    if(y + h <= 0)
+      return false;
+    else
+      h += y;
+
+    y = 0;
+   }
+
+ if(x + w >= width)
+   w = width - x;
+
+ if(y + h >= height)
+   h = height - y;
 
  if(clip_rect)
    {
@@ -782,8 +811,16 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
     {
         shading_rect.x = x;
         shading_rect.y = y;
-        shading_rect.w = w;
-        shading_rect.h = h;
+        if(lighting_style == 2)
+        {
+        	shading_rect.w = w;
+        	shading_rect.h = h;
+        }
+        else
+        {
+        	shading_rect.w = w * 16 + 8;
+        	shading_rect.h = h * 16 + 8;
+        }
         shading_data = (unsigned char*)malloc(sizeof(char)*shading_rect.w*shading_rect.h);
         if( shading_data == NULL )
         {
@@ -804,9 +841,9 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
 
     //Light globe around the avatar
     if( lighting_style == 2 )
-        drawalphamap8globe( 5, 5, opacity/64+3 ); //range (0..3)+3 or (3..6)
+        drawalphamap8globe( (shading_rect.w-1)/2, (shading_rect.h-1)/2, opacity/64+3 ); //range (0..3)+3 or (3..6)
     else if( lighting_style != 0 )
-        drawalphamap8globe( 5, 5, 3 );
+        drawalphamap8globe( (((shading_rect.w-8)/16)-1)/2, (((shading_rect.h-8)/16)-1)/2, 3 );
 }
 
 void Screen::buildalphamap8()
@@ -874,16 +911,16 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 		for( j = 0; j <= r*2; j++ )
 			for( i = 0; i <= r*2; i++ )
 			{
-				if( x + i - r < 0 || x + i - r >= 11 )
+				if( x + i - r < 0 || x + i - r >= shading_rect.w )
 					continue;
-				if( y + j - r < 0 || y + j - r >= 11  )
+				if( y + j - r < 0 || y + j - r >= shading_rect.h  )
 					continue;
-				shading_data[(y+j-r)*11+(x+i-r)] = MIN( shading_data[(y+j-r)*11+(x+i-r)] + TileGlobe[r-1][j*(r*2+1)+i], 4 );
+				shading_data[(y+j-r)*shading_rect.w+(x+i-r)] = MIN( shading_data[(y+j-r)*shading_rect.w+(x+i-r)] + TileGlobe[r-1][j*(r*2+1)+i], 4 );
 			}
         return;
     }
-    x = x*16;
-    y = y*16;
+    x = x*16 + 8;
+    y = y*16 + 8;
 
     //Draw using "smooth" lighting
     //The x and y are relative to (0,0) of the mapwindow itself, and are absolute coordinates, so are i and j
@@ -901,7 +938,7 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 }
 
 
-void Screen::blitalphamap8(uint16 x, uint16 y)
+void Screen::blitalphamap8(sint16 x, sint16 y, SDL_Rect *clip_rect)
 {
     //pixel = (dst*(1-alpha))+(src*alpha)   for an interpolation
     //pixel = pixel * alpha                 for a reduction
@@ -918,16 +955,98 @@ void Screen::blitalphamap8(uint16 x, uint16 y)
 
     if( lighting_style == 2 )
     {
-        for( j = 0; j < 11; j++ )
+        for( j = 0; j < shading_rect.h; j++ )
         {
-            for( i = 0; i < 11; i++ )
+            for( i = 0; i < shading_rect.w; i++ )
             {
-                if( shading_data[j*11+i] < 4 )
-                    blit(x+i*16,y+j*16,shading_tile[shading_data[j*11+i]],8,16,16,16,true,game->get_map_window()->get_clip_rect());
+                if( shading_data[j*shading_rect.w+i] < 4 )
+                    blit(x+i*16,y+j*16,shading_tile[shading_data[j*shading_rect.w+i]],8,16,16,16,true,game->get_map_window()->get_clip_rect());
             }
         }
         return;
     }
+
+    uint16 src_w = shading_rect.w;
+    uint16 src_h = shading_rect.h;
+
+    uint16 src_x = 0;
+    uint16 src_y = 0;
+
+    uint8 *src_buf = shading_data;
+
+    // clip to screen.
+
+    //if(x >= width || y >= height)
+    //  return;
+
+    if(x < 0)
+      {
+       //if(x + src_w <= 0)
+       //  return;
+       //else
+         src_w += x;
+
+       src_buf += -x;
+       x = 0;
+      }
+
+    if(y < 0)
+      {
+       //if(y + src_h <= 0)
+       //  return;
+       //else
+         src_h += y;
+
+       src_buf += shading_rect.w * -y;
+       y = 0;
+      }
+
+    if(x + src_w >= width)
+      src_w = width - x;
+
+    if(y + src_h >= height)
+      src_h = height - y;
+
+    //clip to rect if required.
+
+    if(clip_rect)
+     {
+   	 //if(x + src_w < clip_rect->x || y + src_h < clip_rect->y)
+   	//	 return;
+
+      if(clip_rect->x > x)
+         {
+          src_x = clip_rect->x - x;
+          src_w -= src_x;
+          x = clip_rect->x;
+         }
+
+      if(clip_rect->y > y)
+        {
+         src_y = clip_rect->y - y;
+         src_h -= src_y;
+         y = clip_rect->y;
+        }
+
+      if(x + src_w > clip_rect->x + clip_rect->w)
+        {
+         //if(clip_rect->x + clip_rect->w - x <= 0)
+         //  return;
+
+         src_w = clip_rect->x + clip_rect->w - x;
+        }
+
+      if(y + src_h > clip_rect->y + clip_rect->h)
+        {
+         //if(clip_rect->y + clip_rect->h - y <= 0)
+         //  return;
+
+         src_h = clip_rect->y + clip_rect->h - y;
+        }
+
+      src_buf += src_y * shading_rect.w + src_x;
+     }
+
 
     switch( surface->bits_per_pixel )
     {
@@ -935,15 +1054,15 @@ void Screen::blitalphamap8(uint16 x, uint16 y)
         uint16 *pixels16;
         pixels16 = (uint16 *)surface->pixels;
 
-        pixels16 += shading_rect.y*surface->w;
+        pixels16 += y*surface->w+x;
 
-        for(i=shading_rect.y;i<shading_rect.h+shading_rect.y;i++)
+        for(i=0;i<src_h;i++)
         {
-            for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
+            for(j=0;j<src_w;j++)
             {
-                pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Rmask ) >> surface->Rshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Rshift ) | //R
-                              ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Gmask ) >> surface->Gshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Gshift ) | //G
-                              ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Bmask ) >> surface->Bshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Bshift );  //B
+                pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Rmask ) >> surface->Rshift)) * (float)(src_buf[j])/255.0f) ) << surface->Rshift ) | //R
+                              ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Gmask ) >> surface->Gshift)) * (float)(src_buf[j])/255.0f) ) << surface->Gshift ) | //G
+                              ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Bmask ) >> surface->Bshift)) * (float)(src_buf[j])/255.0f) ) << surface->Bshift );  //B
 
                 //Red = 0xF800 = 1111 1000 0000 0000
                 //Grn = 0x07E0 = 0000 0111 1110 0000
@@ -958,17 +1077,18 @@ void Screen::blitalphamap8(uint16 x, uint16 y)
         uint32 *pixels;
         pixels = (uint32 *)surface->pixels;
 
-        pixels += shading_rect.y*surface->w;
+        pixels += y*surface->w+x;
 
-        for(i=shading_rect.y;i<shading_rect.h+shading_rect.y;i++)
+        for(i=0;i<src_h;i++)
         {
-            for(j=shading_rect.x;j<shading_rect.w+shading_rect.x;j++)
+            for(j=0;j<src_w;j++)
             {
-            	pixels[j] = ( ( (unsigned char)(( (float)(( pixels[j] & surface->Rmask ) >> surface->Rshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Rshift ) | //R
-                            ( ( (unsigned char)(( (float)(( pixels[j] & surface->Gmask ) >> surface->Gshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Gshift ) | //G
-                            ( ( (unsigned char)(( (float)(( pixels[j] & surface->Bmask ) >> surface->Bshift)) * (float)(shading_data[(j-shading_rect.x)+(i-shading_rect.y)*shading_rect.w])/255.0f) ) << surface->Bshift );  //B
+            	pixels[j] = ( ( (unsigned char)(( (float)(( pixels[j] & surface->Rmask ) >> surface->Rshift)) * (float)(src_buf[j])/255.0f) ) << surface->Rshift ) | //R
+                            ( ( (unsigned char)(( (float)(( pixels[j] & surface->Gmask ) >> surface->Gshift)) * (float)(src_buf[j])/255.0f) ) << surface->Gshift ) | //G
+                            ( ( (unsigned char)(( (float)(( pixels[j] & surface->Bmask ) >> surface->Bshift)) * (float)(src_buf[j])/255.0f) ) << surface->Bshift );  //B
             }
             pixels += surface->w;
+            src_buf += shading_rect.w;
         }
         return;
         break;

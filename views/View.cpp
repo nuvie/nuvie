@@ -55,6 +55,10 @@ bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManag
 
  bg_color = Game::get_game()->get_palette()->get_bg_color();
 
+
+ new_ui_mode = Game::get_game()->is_new_style();
+
+
  return true;
 }
 

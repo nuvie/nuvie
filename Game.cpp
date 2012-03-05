@@ -140,6 +140,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
  screen = s;
  game_type = type;
 
+ init_game_style();
 
    dither = new Dither(config);
 
@@ -155,10 +156,13 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
    clock = new GameClock(config, game_type);
 
-   background = new Background(config);
-   background->init();
-   background->Hide();
-   gui->AddWidget(background);
+   if(is_orig_style())
+   {
+	   background = new Background(config);
+	   background->init();
+	   background->Hide();
+	   gui->AddWidget(background);
+   }
 
    text = new Text(config);
    text->loadFont();
@@ -255,9 +259,14 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    //ConsolePause();
    ConsoleHide();
 
-   background->Show();
-   command_bar->Show();
-   scroll->Show();
+   if(is_orig_style())
+   {
+	   background->Show();
+	   command_bar->Show();
+	   scroll->Show();
+   }
+
+
    map_window->Show();
    view_manager->set_party_mode();
    view_manager->update();
@@ -278,6 +287,22 @@ void Game::init_cursor()
     }
 }
 
+void Game::init_game_style()
+{
+	bool fullscreen_map = false;
+
+	config->value("config/general/fullscreen_map", fullscreen_map, false);
+
+	if(fullscreen_map)
+	{
+		game_style = NUVIE_STYLE_NEW;
+	}
+	else
+	{
+		game_style = NUVIE_STYLE_ORIG;
+	}
+
+}
 
 bool Game::set_mouse_pointer(uint8 ptr_num)
 {

@@ -145,9 +145,7 @@ bool Magic::cast()
   if(magic_script != NULL)
     return false;
   
-  //FIXME this should set previous view. Don't default to inventory view.
-  Game::get_game()->get_view_manager()->get_spell_view()->release_focus();
-  Game::get_game()->get_view_manager()->set_inventory_mode();
+  Game::get_game()->get_view_manager()->close_spell_mode();
 
 
   cast_buffer_str[cast_buffer_len]='\0';

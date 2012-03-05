@@ -39,6 +39,7 @@ class Map;
 class MapCoord;
 class Screen;
 class CallBack;
+class Game;
 
 #define MAPWINDOW_THUMBNAIL_SIZE 52
 #define MAPWINDOW_THUMBNAIL_SCALE 3
@@ -61,6 +62,7 @@ typedef struct {
 class MapWindow: public GUI_Widget
 {
  friend class AnimManager;
+ Game *game;
  Configuration *config;
  int game_type;
  bool enable_doubleclick;

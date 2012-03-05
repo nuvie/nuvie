@@ -89,7 +89,7 @@ void ViewManager::reload()
  actor_view->set_party_member(0);
  inventory_view->set_party_member(0);
 
- set_current_view((View *)party_view);
+ set_party_mode();
 }
 
 bool ViewManager::set_current_view(View *view)
@@ -120,6 +120,15 @@ bool ViewManager::set_current_view(View *view)
  return true;
 }
 
+void ViewManager::close_current_view()
+{
+	if(current_view == NULL)
+		return;
+
+	gui->removeWidget((GUI_Widget *)current_view);//remove current widget from gui
+	current_view = NULL;
+}
+
 void ViewManager::update()
 {
  if(current_view)
@@ -144,7 +153,8 @@ void ViewManager::set_inventory_mode()
 
 void ViewManager::set_party_mode()
 {
- set_current_view((View *)party_view);
+ if(Game::get_game()->is_orig_style())
+	 set_current_view((View *)party_view);
  return;
 }
 
@@ -161,6 +171,16 @@ void ViewManager::set_spell_mode(Actor *caster, Obj *spell_container, bool event
    set_current_view((View *)spell_view);
  }
  return;
+}
+
+void ViewManager::close_spell_mode()
+{
+	  //FIXME this should set previous view. Don't default to inventory view.
+	  spell_view->release_focus();
+	  if(Game::get_game()->is_orig_style())
+		  set_inventory_mode();
+	  else
+		  close_current_view();
 }
 
 // callbacks for switching views

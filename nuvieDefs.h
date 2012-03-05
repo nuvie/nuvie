@@ -36,6 +36,9 @@ typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
 #define NUVIE_CONFIG_NAME_MD "martian"
 #define NUVIE_CONFIG_NAME_SE "savage"
 
+#define NUVIE_STYLE_ORIG 0
+#define NUVIE_STYLE_NEW  1
+
 #define MAX(x, y)      ((x) > (y) ? (x) : (y))
 #define MIN(x, y)      ((x) < (y) ? (x) : (y))
 #define clamp_min(v, c)  (((v) < (c)) ? (c) : (v))

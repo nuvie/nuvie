@@ -125,10 +125,21 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
 {
 // int game_type; Why is this local, and retrieved again here? --SB-X
 
+ game = Game::get_game();
  map = m;
  tile_manager = tm;
  obj_manager = om;
  actor_manager = am;
+ uint16 map_w = 11, map_h = 11;
+
+ if(game->is_new_style())
+ {
+	 offset_x -= 8;
+	 offset_y -= 4;
+	 map_w = 21;
+	 map_h = 13;
+ }
+
  anim_manager = new AnimManager(offset_x, offset_y);
 
 // config->value("config/GameType",game_type);
@@ -151,12 +162,12 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  area.x = offset_x;
  area.y = offset_y;
 
- set_windowSize(11,11);
+ set_windowSize(map_w,map_h);
 
  // hide the window until game is fully loaded and does fade-in
  get_overlay(); // this allocates `overlay`
  overlay_level = MAP_OVERLAY_ONTOP;
- assert(SDL_FillRect(overlay, NULL, Game::get_game()->get_palette()->get_bg_color()) == 0);
+ assert(SDL_FillRect(overlay, NULL, game->get_palette()->get_bg_color()) == 0);
 
  if(enable_doubleclick)
    set_accept_mouseclick(true, USE_BUTTON); // allow double-clicks (single-clicks aren't used for anything)
@@ -197,7 +208,8 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
 
 // if(surface->init(win_width*16,win_height*16) == false)
 //   return false;
-
+if(game->is_orig_style())
+{
  clip_rect.x = area.x+8;
  clip_rect.w = (win_width - 1) * 16;
  clip_rect.h = (win_height - 1) * 16;
@@ -209,7 +221,14 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
     clip_rect.y = area.y+16;
     clip_rect.h -= 16;
    }
-
+}
+else
+{
+	 clip_rect.x = 0;//area.x;
+	 clip_rect.y = 0;//area.y;
+	 clip_rect.w = win_width * 16;
+	 clip_rect.h = win_height * 16;
+}
  anim_manager->set_area(clip_rect);
 
  reset_mousecenter();
@@ -411,8 +430,8 @@ bool MapWindow::in_window(uint16 x, uint16 y, uint8 z)
  */
 void MapWindow::update()
 {
-    GameClock *clock = Game::get_game()->get_clock();
-    Event *event = Game::get_game()->get_event();
+    GameClock *clock = game->get_clock();
+    Event *event = game->get_event();
     static bool game_started = false; // set to true on the first update()
     static uint32 last_update_time = clock->get_ticks();
     uint32 update_time = clock->get_ticks();
@@ -421,7 +440,7 @@ void MapWindow::update()
     if(game_started == false)
     {
 //        new FadeEffect(FADE_PIXELATED_ONTOP, FADE_IN, 0x31);
-        new GameFadeInEffect(Game::get_game()->get_palette()->get_bg_color());
+        new GameFadeInEffect(game->get_palette()->get_bg_color());
         game_started = true;
     }
 
@@ -476,12 +495,13 @@ void MapWindow::updateAmbience()
      //It's completely bright by 6:00
      //Dusk and dawn operate by changing the ambient light, not by changing the radius of the avatar's light globe
 
-     GameClock *clock = Game::get_game()->get_clock();
-	 Weather *weather = Game::get_game()->get_weather();
+    if(!screen)
+        return;
+
+     GameClock *clock = game->get_clock();
+	 Weather *weather = game->get_weather();
 	
      int h = clock->get_hour();
-     if(!screen)
-         return;
 
      if(x_ray_view == true)
          screen->set_ambient( 0xFF );
@@ -504,7 +524,7 @@ void MapWindow::updateAmbience()
     	 screen->set_ambient(0xaa); //FIXME this is an approximation
 
      //Clear the opacity map
-     screen->clearalphamap8( area.x+8, area.y+8, 160, 160, screen->get_ambient() );
+     screen->clearalphamap8( 0, 0, win_width, win_height, screen->get_ambient() );
 
 }
 
@@ -544,10 +564,11 @@ void MapWindow::Display(bool full_redraw)
   {
    for(j=0;j<win_width;j++)
      {
-      uint16 draw_x = area.x + (j*16), draw_y = area.y + (i*16);
-      draw_x -= (cur_x_add <= draw_x) ? cur_x_add : draw_x;
-      draw_y -= (cur_y_add <= draw_y) ? cur_y_add : draw_y;
-
+      sint16 draw_x = area.x + (j*16), draw_y = area.y + (i*16);
+      //draw_x -= (cur_x_add <= draw_x) ? cur_x_add : draw_x;
+      //draw_y -= (cur_y_add <= draw_y) ? cur_y_add : draw_y;
+      draw_x -= cur_x_add;
+      draw_y -= cur_y_add;
       if(map_ptr[j] == 0)
         screen->clear(draw_x,draw_y,16,16,&clip_rect); //blackout tile.
       else
@@ -580,7 +601,7 @@ void MapWindow::Display(bool full_redraw)
 
  //drawAnims();
 
- if(Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) != 0) //FIXME u6 specific.
+ if(game->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) != 0) //FIXME u6 specific.
    drawRain();
 
  if(show_cursor)
@@ -595,7 +616,7 @@ void MapWindow::Display(bool full_redraw)
 
 // screen->fill(0,8,8,win_height*16-16,win_height*16-16);
 
- screen->blitalphamap8(area.x, area.y);
+ screen->blitalphamap8(area.x, area.y, &clip_rect);
 
  if(overlay && overlay_level == MAP_OVERLAY_DEFAULT)
    screen->blit(area.x, area.y, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
@@ -606,7 +627,8 @@ void MapWindow::Display(bool full_redraw)
  if(is_wizard_eye_mode())
 	 screen->blit((win_width/2)*16,(win_height/2)*16,(unsigned char *)wizard_eye_info.eye_tile->data,8,16,16,16,true,&clip_rect);
 
- drawBorder();
+ if(game->is_orig_style())
+	 drawBorder();
 
  if(overlay && overlay_level == MAP_OVERLAY_ONTOP)
    screen->blit(area.x, area.y, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
@@ -616,12 +638,15 @@ void MapWindow::Display(bool full_redraw)
 
 // screen->blit(8,8,ptr,8,(win_width-1) * 16,(win_height-1) * 16, win_width * 16, false);
 
- screen->update(area.x+8,area.y+8,win_width*16-16,win_height*16-16);
+ if(game->is_orig_style())
+	 screen->update(area.x+8,area.y+8,win_width*16-16,win_height*16-16);
+ else
+	 screen->update(area.x,area.y,win_width*16,win_height*16);
 
  if(window_updated)
   {
    window_updated = false;
-   Game::get_game()->get_sound_manager()->update_map_sfx();
+   game->get_sound_manager()->update_map_sfx();
   }
 
 }
@@ -812,14 +837,6 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
     
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
-   //Draw a lightglobe in the middle of the 16x16 tile.
-   if( !draw_lowertiles &&
-       toptile &&
-       tile->flags2 & 0x3 &&
-       Game::get_game()->get_screen()->updatingalphamap )
-   screen->drawalphamap8globe( obj->x - cur_x, obj->y - cur_y, (tile->flags2 & 0x3) );
-
-
  if(draw_lowertiles == false && (tile->flags3 & 0x4) && toptile == false) //don't display force lower tiles.
    return;
 
@@ -839,6 +856,13 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
          return;
       }
     }
+
+ //Draw a lightglobe in the middle of the 16x16 tile.
+ if( !draw_lowertiles &&
+     toptile &&
+     tile->flags2 & 0x3 &&
+     screen->updatingalphamap )
+	 	 screen->drawalphamap8globe( obj->x - cur_x, obj->y - cur_y, (tile->flags2 & 0x3) );
 
 
   drawTile(tile,obj->x - cur_x, obj->y - cur_y, toptile);
@@ -1362,7 +1386,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     if(can_drop_obj(x, y, actor_manager->get_player()))
       return true;
 
-    Game::get_game()->get_scroll()->message("\n\nNot Possible\n\n");
+    game->get_scroll()->message("\n\nNot Possible\n\n");
   }
 
  return false;
@@ -1371,7 +1395,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 {
     DEBUG(0,LEVEL_DEBUGGING,"MapWindow::drag_perform_drop()\n");
-    Event *event = Game::get_game()->get_event();
+    Event *event = game->get_event();
     uint16 map_width = map->get_width(cur_level);
 
     x -= area.x;
@@ -1426,7 +1450,7 @@ GUI_status MapWindow::MouseDelayed(int x, int y, int button)
 {
 #if 0 /* enable this once I can negotiate between Click,DoubleClick,Delayed and
          can get a MouseDelayed even if the cursor is moved */
-    Event *event = Game::get_game()->get_event();
+    Event *event = game->get_event();
     int wx, wy;
     mouseToWorldCoords(x, y, wx, wy);
     if(event->newAction(LOOK_MODE))
@@ -1450,7 +1474,7 @@ GUI_status MapWindow::MouseHeld(int x, int y, int button)
 // double-click
 GUI_status MapWindow::MouseDouble(int x, int y, int button)
 {
-    Event *event = Game::get_game()->get_event();
+    Event *event = game->get_event();
 
     // only USE if not doing anything in event
     if(event->get_mode() == MOVE_MODE && !is_wizard_eye_mode())
@@ -1465,7 +1489,7 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
 GUI_status MapWindow::MouseDown (int x, int y, int button)
 {
 	//DEBUG(0,LEVEL_DEBUGGING,"MapWindow::MouseDown, button = %i\n", button);
-	Event *event = Game::get_game()->get_event();
+	Event *event = game->get_event();
 	Actor *player = actor_manager->get_player();
 	Obj	*obj = get_objAtMousePos (x, y);
 	int wx, wy;
@@ -1532,8 +1556,7 @@ GUI_status MapWindow::MouseUp(int x, int y, int button)
 
 GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 {
-//	Event *event = Game::get_game()->get_event();
-	Game *game = Game::get_game();
+//	Event *event = game->get_event();
 	Tile	*tile;
 
 	update_mouse_cursor((uint32)x, (uint32)y);
@@ -1624,7 +1647,7 @@ GUI_status MapWindow::KeyDown(SDL_keysym key)
 	}
 /*    if(key.sym == SDLK_RETURN)
     {
-		Game::get_game()->get_event()->select_target(cur_x+cursor_x, cur_y+cursor_y);
+		game->get_event()->select_target(cur_x+cursor_x, cur_y+cursor_y);
         return GUI_YUM;
     }*/
     return GUI_PASS;
@@ -1700,7 +1723,6 @@ void MapWindow::drawAnims()
 /* Set mouse pointer to a movement-arrow for walking, or a crosshair. */
 void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
 {
-    Game *game = Game::get_game();
     Event *event = game->get_event();
     int wx, wy;
     sint16 rel_x, rel_y;
@@ -1812,7 +1834,7 @@ void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint
 /* Revert mouse cursor to normal arrow. Stop walking. */
 GUI_status MapWindow::MouseLeave(Uint8 state)
 {
-    Game::get_game()->set_mouse_pointer(0);
+    game->set_mouse_pointer(0);
     walking = false;
     dragging = false;
     // NOTE: Don't clear selected_obj here! It's used to remove the object after

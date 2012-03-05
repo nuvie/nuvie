@@ -51,6 +51,7 @@ class View: public GUI_Widget
 
  uint8 cur_party_member;
  uint8 bg_color;
+ bool new_ui_mode;
 
  public:
 
