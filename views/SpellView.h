@@ -24,7 +24,8 @@
  *
  */
 
-#include "View.h"
+#include "DraggableView.h"
+#include "Obj.h"
 
 class Configuration;
 class TileManager;
@@ -35,8 +36,13 @@ class Text;
 class U6Bmp;
 class Spell;
 
-class SpellView : public View {
+class SpellView : public DraggableView {
 
+ U6Bmp *background;
+ bool all_spells_mode;
+ bool event_mode; //this means we are reporting the spell_num back to the event class. Used by the enchant spell.
+
+protected:
  Obj *spell_container;
  Actor *caster;
  uint16 caster_reagents[8];
@@ -44,15 +50,15 @@ class SpellView : public View {
  uint8 level;
  uint8 spell_num;
 
- U6Bmp *background;
  sint16 cur_spells[16];
- bool all_spells_mode;
- bool event_mode; //this means we are reporting the spell_num back to the event class. Used by the enchant spell.
- public:
+
+ uint8 num_spells_per_page;
+
+public:
  SpellView(Configuration *cfg);
  ~SpellView();
 
- bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ virtual bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
 
  void set_spell_caster(Actor *actor, Obj *s_container, bool eventMode);
  sint16 get_selected_spell() { if(spell_container) { return spell_container->quality; } else return -1; }
@@ -87,7 +93,7 @@ class SpellView : public View {
  void set_prev_level();
  void set_next_level();
 
- uint8 fill_cur_spell_list();
+ virtual uint8 fill_cur_spell_list();
  sint8 get_selected_index();
 
  void display_level_text();

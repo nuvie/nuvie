@@ -50,11 +50,12 @@ static const int obj_n_reagent[8]={OBJ_U6_MANDRAKE_ROOT, OBJ_U6_NIGHTSHADE, OBJ_
 #define NEWMAGIC_BMP_W 144
 #define NEWMAGIC_BMP_H 82
 
-SpellView::SpellView(Configuration *cfg) : View(cfg)
+SpellView::SpellView(Configuration *cfg) : DraggableView(cfg)
 {
 	spell_container = NULL;
 	level = 1;
 	spell_num = 0;
+	num_spells_per_page = 8;
 }
 
 SpellView::~SpellView()
@@ -188,8 +189,8 @@ void SpellView::set_prev_level()
 		fill_cur_spell_list();
 	}
 
-	if(num_spells > 8)
-		spell_container->quality = cur_spells[8];
+	if(num_spells > num_spells_per_page)
+		spell_container->quality = cur_spells[num_spells_per_page];
 	else
 	{
 		spell_container->quality = cur_spells[0];
@@ -230,7 +231,7 @@ void SpellView::move_left()
 	if(index < 0)
 		index = 0;
 
-	if(index >= 8)
+	if(index >= num_spells_per_page)
 	{
 		spell_container->quality = cur_spells[0];
 	}
@@ -249,13 +250,13 @@ void SpellView::move_right()
 	if(index < 0)
 		index = 0;
 
-	if(index >= 8 || cur_spells[8] == -1)
+	if(index >= num_spells_per_page || cur_spells[num_spells_per_page] == -1)
 	{
 		set_next_level();
 	}
 	else
 	{
-		spell_container->quality = cur_spells[8];
+		spell_container->quality = cur_spells[num_spells_per_page];
 	}
 
 	update_buttons();
@@ -266,7 +267,7 @@ void SpellView::move_up()
 {
 	sint8 index = get_selected_index();
 
-	if(index > 0 && index != 8)
+	if(index > 0 && index != num_spells_per_page)
 	{
 		spell_container->quality = cur_spells[index-1];
 		update_display = true;
@@ -278,7 +279,7 @@ void SpellView::move_down()
 {
 	sint8 index = get_selected_index();
 
-	if(index != -1 && index < 15 && index != 7)
+	if(index != -1 && index < 15 && index != (num_spells_per_page-1))
 	{
 		if(cur_spells[index+1] != -1)
 		{
@@ -302,12 +303,12 @@ void SpellView::display_spell_list_text()
 
 	sint8 index = get_selected_index();
 
-	if(index >= 8)
-		index = 8;
+	if(index >= num_spells_per_page)
+		index = num_spells_per_page;
 	else
 		index = 0;
 
-	for(uint8 i=0;i<8;i++)
+	for(uint8 i=0;i<num_spells_per_page;i++)
 	{
 		sint16 spell_num = cur_spells[i+index];
 		if(spell_num != -1)
@@ -449,13 +450,13 @@ GUI_status SpellView::MouseUp(int x, int y, int button)
 
 	sint8 index = get_selected_index();
 
-	if(index >= 8)
-		index = 8;
+	if(index >= num_spells_per_page)
+		index = num_spells_per_page;
 	else
 		index = 0;
 
 
-	y = (y / 8) - 1;
+	y = (y / num_spells_per_page) - 1;
 
 	//printf("x = %d, y = %d index=%d\n", x, y, index);
 
@@ -499,10 +500,10 @@ void SpellView::update_buttons()
 	show_buttons();
 	sint8 index = get_selected_index();
 
-	if(level == 1 && index <= 7 && left_button)
+	if(level == 1 && index <= (num_spells_per_page-1) && left_button)
 		left_button->Hide();
 
-	if(level == 8 && index >= 8 && right_button)
+	if(level == 8 && index >= num_spells_per_page && right_button)
 		right_button->Hide();
 }
 

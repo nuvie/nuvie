@@ -27,6 +27,7 @@
 #include "nuvieDefs.h"
 #include "U6LList.h"
 
+class Actor;
 
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1

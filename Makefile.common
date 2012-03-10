@@ -279,12 +279,16 @@ nuvie_SOURCES = \
 	views/ViewManager.h \
 	views/DollWidget.cpp \
 	views/DollWidget.h \
+	views/DraggableView.cpp \
+	views/DraggableView.h \
 	views/InventoryFont.h \
 	views/InventoryMessage.h \
 	views/InventoryWidget.cpp \
 	views/InventoryWidget.h \
 	views/SpellView.cpp \
 	views/SpellView.h \
+	views/SpellViewGump.cpp \
+	views/SpellViewGump.h \
 \
 	AnimManager.cpp \
 	AnimManager.h \

@@ -36,6 +36,7 @@
 #include "InventoryView.h"
 #include "PartyView.h"
 #include "SpellView.h"
+#include "SpellViewGump.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -76,9 +77,15 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  portrait_view = new PortraitView(config);
  portrait_view->init(176+x_off,8+y_off, text, party, tile_manager, obj_manager, portrait);
 
- spell_view = new SpellView(config);
+ if(Game::get_game()->is_orig_style())
+ {
+	 spell_view = new SpellView(config);
+ }
+ else
+ {
+	 spell_view = new SpellViewGump(config);
+ }
  spell_view->init(gui->get_screen(), this, 168+x_off, 6+y_off, text, party, tile_manager, obj_manager);
-
  //set_current_view((View *)party_view);
 
  return true;
