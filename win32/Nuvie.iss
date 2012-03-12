@@ -135,6 +135,17 @@ Source: data\images\gumps\spellbook\spellbook_spell_118.bmp; DestDir: {app}\data
 Source: data\images\gumps\spellbook\spellbook_spell_119.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
 Source: data\images\gumps\spellbook\spellbook_spell_120.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
 Source: data\images\gumps\spellbook\spellbook_spell_121.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\1.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\2.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\3.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\4.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\5.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\6.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\7.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\8.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\st.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\nd.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\images\gumps\spellbook\rd.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
 Source: data\scripts\u6\actor.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\init.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\intro.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion

@@ -1,8 +1,16 @@
-2012-03-10  Eric Fry <efry at users.sourceforge.net> r1298
+2012-03-12  Eric Fry <efry at users.sourceforge.net> r1301
+	* Added circle text to new spellbook gump.
+	* Added files to XCode build environment.
+	* Fixed spell images on new spellbook gump.
+
+2012-03-11  Kirben r1300
+	* MinGW installer fix.
+
+2012-03-10  Eric Fry <efry at users.sourceforge.net> r1299
 	* Started work on newlook spellbook gump for fullscreen mode.
 	  Thanks to Daniel c. Würl for his awesome artwork.
 
-2012-03-06  Eric Fry <efry at users.sourceforge.net> r1297
+2012-03-06  Eric Fry <efry at users.sourceforge.net> r1298
 	* Started work fullscreen map mode.
 	  You can enable it with the following config switch
 	

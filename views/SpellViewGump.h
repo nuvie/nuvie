@@ -58,7 +58,8 @@ public:
  protected:
 
  virtual uint8 fill_cur_spell_list();
-
+ void loadCircleString(std::string datadir);
+ void loadCircleSuffix(std::string datadir, std::string image);
 };
 
 #endif /* __SpellViewGump_h__ */

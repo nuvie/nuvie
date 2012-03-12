@@ -146,7 +146,54 @@ uint8 SpellViewGump::fill_cur_spell_list()
 		}
 	}
 
+	loadCircleString(datadir);
+
 	return count;
+}
+
+void SpellViewGump::loadCircleString(std::string datadir)
+{
+	std::string imagefile;
+	char filename[7]; // n.bmp\0
+
+	sprintf(filename, "%d.bmp", level);
+	build_path(datadir, filename, imagefile);
+
+	SDL_Surface *s = SDL_LoadBMP(imagefile.c_str());
+	if(s != NULL)
+	{
+		SDL_Rect dst;
+		dst.x = 70;
+		dst.y = 7;
+		dst.w = 4;
+		dst.h = 6;
+		SDL_BlitSurface(s, NULL, bg_image, &dst);
+	}
+
+	switch(level)
+	{
+		case 1 : loadCircleSuffix(datadir, "st.bmp"); break;
+		case 2 : loadCircleSuffix(datadir, "nd.bmp"); break;
+		case 3 : loadCircleSuffix(datadir, "rd.bmp"); break;
+		default: break;
+	}
+}
+
+void SpellViewGump::loadCircleSuffix(std::string datadir, std::string image)
+{
+	std::string imagefile;
+
+	build_path(datadir, image, imagefile);
+	SDL_Surface *s = SDL_LoadBMP(imagefile.c_str());
+	if(s != NULL)
+	{
+		SDL_Rect dst;
+		dst.x = 75;
+		dst.y = 7;
+		dst.w = 7;
+		dst.h = 6;
+		SDL_BlitSurface(s, NULL, bg_image, &dst);
+	}
 }
 
 void SpellViewGump::Display(bool full_redraw)

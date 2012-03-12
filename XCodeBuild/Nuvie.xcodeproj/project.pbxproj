@@ -338,6 +338,10 @@
 		EC360BD0130DC55F00D4CAE6 /* MapEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BCD130DC55F00D4CAE6 /* MapEntity.h */; };
 		EC360BD1130DC55F00D4CAE6 /* U6LineWalker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */; };
 		EC360BD2130DC55F00D4CAE6 /* U6LineWalker.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */; };
+		EC6DB724150E10D000E5EEBC /* DraggableView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC6DB720150E10D000E5EEBC /* DraggableView.cpp */; };
+		EC6DB725150E10D000E5EEBC /* DraggableView.h in Headers */ = {isa = PBXBuildFile; fileRef = EC6DB721150E10D000E5EEBC /* DraggableView.h */; };
+		EC6DB726150E10D000E5EEBC /* SpellViewGump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC6DB722150E10D000E5EEBC /* SpellViewGump.cpp */; };
+		EC6DB727150E10D000E5EEBC /* SpellViewGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC6DB723150E10D000E5EEBC /* SpellViewGump.h */; };
 		EC79081C14FD7CA70067E06F /* U6Font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC79081A14FD7CA70067E06F /* U6Font.cpp */; };
 		EC79081D14FD7CA70067E06F /* U6Font.h in Headers */ = {isa = PBXBuildFile; fileRef = EC79081B14FD7CA70067E06F /* U6Font.h */; };
 		EC79082014FD7CD50067E06F /* ScriptCutscene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC79081E14FD7CD50067E06F /* ScriptCutscene.cpp */; };
@@ -702,6 +706,10 @@
 		EC360BCD130DC55F00D4CAE6 /* MapEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEntity.h; path = ../misc/MapEntity.h; sourceTree = SOURCE_ROOT; };
 		EC360BCE130DC55F00D4CAE6 /* U6LineWalker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = U6LineWalker.cpp; path = ../misc/U6LineWalker.cpp; sourceTree = SOURCE_ROOT; };
 		EC360BCF130DC55F00D4CAE6 /* U6LineWalker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = U6LineWalker.h; path = ../misc/U6LineWalker.h; sourceTree = SOURCE_ROOT; };
+		EC6DB720150E10D000E5EEBC /* DraggableView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DraggableView.cpp; path = ../views/DraggableView.cpp; sourceTree = SOURCE_ROOT; };
+		EC6DB721150E10D000E5EEBC /* DraggableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DraggableView.h; path = ../views/DraggableView.h; sourceTree = SOURCE_ROOT; };
+		EC6DB722150E10D000E5EEBC /* SpellViewGump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpellViewGump.cpp; path = ../views/SpellViewGump.cpp; sourceTree = SOURCE_ROOT; };
+		EC6DB723150E10D000E5EEBC /* SpellViewGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpellViewGump.h; path = ../views/SpellViewGump.h; sourceTree = SOURCE_ROOT; };
 		EC79081A14FD7CA70067E06F /* U6Font.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = U6Font.cpp; path = ../fonts/U6Font.cpp; sourceTree = SOURCE_ROOT; };
 		EC79081B14FD7CA70067E06F /* U6Font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = U6Font.h; path = ../fonts/U6Font.h; sourceTree = SOURCE_ROOT; };
 		EC79081E14FD7CD50067E06F /* ScriptCutscene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScriptCutscene.cpp; path = ../script/ScriptCutscene.cpp; sourceTree = SOURCE_ROOT; };
@@ -781,11 +789,15 @@
 				07C3D12D047A1C7B00A8000A /* ViewManager.cpp */,
 				0762A33905036D0E00A8000A /* DollWidget.h */,
 				0762A33805036D0E00A8000A /* DollWidget.cpp */,
+				EC6DB721150E10D000E5EEBC /* DraggableView.h */,
+				EC6DB720150E10D000E5EEBC /* DraggableView.cpp */,
 				07E87A11050E07AF00A8000A /* InventoryFont.h */,
 				0762A3550506027A00A8000A /* InventoryWidget.h */,
 				0762A3540506027A00A8000A /* InventoryWidget.cpp */,
 				ECAD317D13F0A1BA001ABC85 /* SpellView.h */,
 				ECAD317C13F0A1BA001ABC85 /* SpellView.cpp */,
+				EC6DB723150E10D000E5EEBC /* SpellViewGump.h */,
+				EC6DB722150E10D000E5EEBC /* SpellViewGump.cpp */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1504,6 +1516,8 @@
 				ECAD317F13F0A1BA001ABC85 /* SpellView.h in Headers */,
 				EC79081D14FD7CA70067E06F /* U6Font.h in Headers */,
 				EC79082114FD7CD50067E06F /* ScriptCutscene.h in Headers */,
+				EC6DB725150E10D000E5EEBC /* DraggableView.h in Headers */,
+				EC6DB727150E10D000E5EEBC /* SpellViewGump.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1767,6 +1781,8 @@
 				ECAD317E13F0A1BA001ABC85 /* SpellView.cpp in Sources */,
 				EC79081C14FD7CA70067E06F /* U6Font.cpp in Sources */,
 				EC79082014FD7CD50067E06F /* ScriptCutscene.cpp in Sources */,
+				EC6DB724150E10D000E5EEBC /* DraggableView.cpp in Sources */,
+				EC6DB726150E10D000E5EEBC /* SpellViewGump.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
