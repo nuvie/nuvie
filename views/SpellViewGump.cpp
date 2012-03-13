@@ -243,3 +243,72 @@ GUI_status SpellViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
     return GUI_PASS;
 }
 
+sint16 SpellViewGump::getSpell(int x, int y)
+{
+	int localy = y - area.y;
+	int localx = x - area.x;
+
+	localy += 3; //align the pointer in the center of the crosshair cursor.
+	localx += 3;
+
+	if(localy < 18 || localy > 88 || localx < 25 || localx > 146)
+	{
+		return -1;
+	}
+
+	uint8 spell = (level - 1) * 16;
+
+
+	if(localx >= 88)
+		spell += 5;
+
+	spell += (localy - 18) / 14;
+
+	for(uint8 i=0;cur_spells[i] != -1 && i < 16;i++)
+	{
+		if(cur_spells[i] == spell)
+		{
+			return spell;
+		}
+	}
+
+	return -1;
+}
+
+GUI_status SpellViewGump::MouseDown(int x, int y, int button)
+{
+	selected_spell = getSpell(x, y);
+	if(selected_spell != -1)
+		return GUI_YUM;
+
+	return DraggableView::MouseDown(x, y, button);
+}
+
+GUI_status SpellViewGump::MouseUp(int x, int y, int button)
+{
+	sint16 spell = getSpell(x, y);
+
+	if(spell != -1 && spell == selected_spell)
+	{
+		spell_container->quality = spell;
+
+		if(event_mode)
+		{
+			event_mode_select_spell();
+		}
+		else
+		{
+			//Simulate a global key down event.
+			SDL_Event e;
+			e.type = SDL_KEYDOWN;
+			e.key.keysym.sym = SDLK_RETURN;
+
+			Game::get_game()->get_event()->handleEvent(&e);
+		}
+
+		return GUI_YUM;
+	}
+
+
+	return DraggableView::MouseUp(x, y, button);
+}

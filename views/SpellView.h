@@ -40,9 +40,10 @@ class SpellView : public DraggableView {
 
  U6Bmp *background;
  bool all_spells_mode;
- bool event_mode; //this means we are reporting the spell_num back to the event class. Used by the enchant spell.
 
 protected:
+ bool event_mode; //this means we are reporting the spell_num back to the event class. Used by the enchant spell.
+
  Obj *spell_container;
  Actor *caster;
  uint16 caster_reagents[8];

@@ -39,6 +39,7 @@ class SpellViewGump : public SpellView {
 
 	SDL_Surface *bg_image;
 	GUI_Button *gump_button;
+	sint16 selected_spell;
 
 public:
  SpellViewGump(Configuration *cfg);
@@ -48,14 +49,16 @@ public:
 
  void Display(bool full_redraw);
 
- virtual GUI_status MouseDown(int x, int y, int button) { return DraggableView::MouseDown(x, y, button); }
- virtual GUI_status MouseUp(int x, int y, int button) { return DraggableView::MouseUp(x, y, button); }
+ virtual GUI_status MouseDown(int x, int y, int button);
+ virtual GUI_status MouseUp(int x, int y, int button);
  virtual GUI_status MouseMotion(int x,int y,Uint8 state) { return DraggableView::MouseMotion(x, y, state); }
  virtual void MoveRelative(int dx,int dy) { return DraggableView::MoveRelative(dx, dy); }
 
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
  protected:
+
+ sint16 getSpell(int x, int y);
 
  virtual uint8 fill_cur_spell_list();
  void loadCircleString(std::string datadir);

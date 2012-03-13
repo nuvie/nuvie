@@ -1,3 +1,6 @@
+2012-03-13  Eric Fry <efry at users.sourceforge.net> r1302
+	* Click on spells in the spellbook gump to select them.
+
 2012-03-12  Eric Fry <efry at users.sourceforge.net> r1301
 	* Added circle text to new spellbook gump.
 	* Added files to XCode build environment.
