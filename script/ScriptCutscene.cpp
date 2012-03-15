@@ -750,7 +750,7 @@ static int nscript_music_play(lua_State *L)
 static int nscript_input_poll(lua_State *L)
 {
 	SDL_Event event;
-	if(SDL_PollEvent(&event))
+	while(SDL_PollEvent(&event))
 	{
 		//FIXME do something here.
 		if(event.type == SDL_KEYDOWN)
@@ -1056,8 +1056,12 @@ void ScriptCutscene::wait()
         next_time = now+loop_interval;
         return;
     }
-    SDL_Delay(next_time-now);
+
+    uint32 delay = next_time-now;
+    next_time += loop_interval;
+    SDL_Delay(delay);
 }
+
 /* Show the widget  */
 void ScriptCutscene::Display(bool full_redraw)
 {

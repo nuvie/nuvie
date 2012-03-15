@@ -205,7 +205,7 @@ bool Party::remove_actor(Actor *actor, bool keep_party_flag)
       //If the last actor dies and was being displayed in a view then we need to set the
       //view to the new last party member.
       View *cur_view = Game::get_game()->get_view_manager()->get_current_view();
-      if(cur_view->get_party_member_num() >= num_in_party)
+      if(cur_view && cur_view->get_party_member_num() >= num_in_party)
         cur_view->set_party_member(num_in_party - 1);
 
       return true;

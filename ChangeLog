@@ -1,3 +1,10 @@
+2012-03-16  Eric Fry <efry at users.sourceforge.net> r1303
+	* Fixed wait loop logic. Thanks to wjp for the suggestion. It should
+	  be smoother now.
+	* Fixed input polling in the cutscenes. Not consuming all available events
+	  was causing extreme slowdown on Linux.
+	* Fixed bug when party member dies in fullmap mode.
+
 2012-03-13  Eric Fry <efry at users.sourceforge.net> r1302
 	* Click on spells in the spellbook gump to select them.
 

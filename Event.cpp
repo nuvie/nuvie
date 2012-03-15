@@ -1974,7 +1974,9 @@ inline Uint32 Event::TimeLeft()
         next_time = now+NUVIE_INTERVAL;
         return(0);
     }
-    return(next_time-now);
+    Uint32 delay = next_time-now;
+    next_time += NUVIE_INTERVAL;
+    return(delay);
 }
 
 void Event::quitDialog()
