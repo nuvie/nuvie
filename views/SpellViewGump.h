@@ -40,7 +40,7 @@ class SpellViewGump : public SpellView {
 	SDL_Surface *bg_image;
 	GUI_Button *gump_button;
 	sint16 selected_spell;
-
+	GUI_Font *font;
 public:
  SpellViewGump(Configuration *cfg);
  ~SpellViewGump();
@@ -63,6 +63,7 @@ public:
  virtual uint8 fill_cur_spell_list();
  void loadCircleString(std::string datadir);
  void loadCircleSuffix(std::string datadir, std::string image);
+ void printSpellQty(uint8 spell_num, uint16 x, uint16 y);
 };
 
 #endif /* __SpellViewGump_h__ */

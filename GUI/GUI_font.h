@@ -7,6 +7,7 @@
 
 #define GUI_FONT_DEFAULT 0
 #define GUI_FONT_6X8     1
+#define GUI_FONT_GUMP    2
 
 class GUI_Font
 {
@@ -31,6 +32,8 @@ public:
 
   /* determine foreground and background color values RGB*/
   virtual void SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 br=255, Uint8 bg=255, Uint8 bb=255);
+  /* Two color font */
+  virtual void SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 fr1, Uint8 fg1, Uint8 fb1, Uint8 br, Uint8 bg, Uint8 bb);
 
   /* yields the pixel height of a single character */
   inline virtual int CharHeight()
@@ -56,6 +59,8 @@ protected:
 
   /* dimensions */
   int charh,charw;
+
+  Uint8 *w_data;
 };
 
 #endif /* _GUI_font_h */

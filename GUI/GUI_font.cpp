@@ -13,8 +13,15 @@ GUI_Font::GUI_Font(Uint8 fontType)
 {
   SDL_Surface *temp;
 
+  w_data = NULL;
+
   if(fontType == GUI_FONT_6X8)
 	  temp = GUI_Font6x8();
+  else if(fontType == GUI_FONT_GUMP)
+  {
+	  temp = GUI_FontGump();
+	  w_data = GUI_FontGumpWData();
+  }
   else
 	  temp = GUI_DefaultFont();
 
@@ -91,6 +98,12 @@ void GUI_Font::SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 br, Uint8 bg, Uin
   SDL_SetColors(fontStore,colors,0,2);
 }
 
+void GUI_Font::SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 fr1, Uint8 fg1, Uint8 fb1, Uint8 br, Uint8 bg, Uint8 bb)
+{
+  SDL_Color colors[4]={{br,bg,bb,0},{fr,fg,fb,0},{fr1,fg1,fb1,0}};
+  SDL_SetColors(fontStore,colors,0,3);
+}
+
 /* put the text onto the given surface using the preset mode and colors */
 void GUI_Font::TextOut(SDL_Surface* context,int x, int y, const char* text, int line_wrap)
 {
@@ -116,7 +129,14 @@ void GUI_Font::TextOut(SDL_Surface* context,int x, int y, const char* text, int 
 
     src.x = (ch%16)*charw;
     src.y = (ch/16)*charh;
-    dst.x = x+(j*charw);
+    if(w_data)
+    {
+    	dst.x = x;
+    	dst.w = w_data[ch];
+    	x += dst.w;
+    }
+    else
+    	dst.x = x+(j*charw);
     dst.y = y;
     SDL_BlitSurface(fontStore, &src, context, &dst);
     i++;

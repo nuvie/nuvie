@@ -26,6 +26,7 @@
 #include "Event.h"
 #include "GUI.h"
 #include "GUI_button.h"
+#include "Magic.h"
 
 #include "SpellViewGump.h"
 
@@ -82,6 +83,9 @@ bool SpellViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 
 	right_button = new GUI_Button(this, 132, 4, image, image, this);
 	this->AddWidget(right_button);
+
+	font = new GUI_Font(GUI_FONT_GUMP);
+	font->SetColoring( 0x7c, 0x00, 0x00, 0xd0, 0x70, 0x00, 0x00, 0x00, 0x00);
 
 	return true;
 }
@@ -143,6 +147,7 @@ uint8 SpellViewGump::fill_cur_spell_list()
 			dst.y = 18 + (spell % 5) * 14;
 			SDL_BlitSurface(spell_image, NULL, bg_image, &dst);
 			SDL_FreeSurface(spell_image);
+			printSpellQty(cur_spells[i], dst.x + ((spell < 5) ? 50 : 48), dst.y);
 		}
 	}
 
@@ -194,6 +199,23 @@ void SpellViewGump::loadCircleSuffix(std::string datadir, std::string image)
 		dst.h = 6;
 		SDL_BlitSurface(s, NULL, bg_image, &dst);
 	}
+}
+
+
+void SpellViewGump::printSpellQty(uint8 spell_num, uint16 x, uint16 y)
+{
+	Magic *m = Game::get_game()->get_magic();
+	char num_str[4];
+
+	Spell *spell = m->get_spell((uint8)spell_num);
+
+	uint16 qty = get_available_spell_count(spell);
+	snprintf(num_str, 3, "%d", qty);
+
+	if(qty < 10)
+		x += 5;
+
+	font->TextOut(bg_image, x, y, num_str);
 }
 
 void SpellViewGump::Display(bool full_redraw)

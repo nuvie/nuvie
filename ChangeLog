@@ -1,3 +1,9 @@
+2012-03-18  Eric Fry <efry at users.sourceforge.net> r1304
+	* Added new GUMP font.
+	* Added Armageddon spell to new spellbook.
+	* Fixed spell backgrounds on 8th circle.
+	* Added spell qty's to new spellbook GUMP.
+
 2012-03-16  Eric Fry <efry at users.sourceforge.net> r1303
 	* Fixed wait loop logic. Thanks to wjp for the suggestion. It should
 	  be smoother now.
