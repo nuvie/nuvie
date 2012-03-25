@@ -1,9 +1,9 @@
 /*
- *  InventoryWidget.cpp
+ *  ContainerWidget.cpp
  *  Nuvie
  *
- *  Created by Eric Fry on Mon Sep 01 2003.
- *  Copyright (c) 2003 The Nuvie Team. All rights reserved.
+ *  Created by Eric Fry on Sun Mar 25 2012.
+ *  Copyright (c) 2012 The Nuvie Team. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@
 
 #include "GUI.h"
 #include "GamePalette.h"
-#include "InventoryWidget.h"
+#include "ContainerWidget.h"
 #include "Actor.h"
 #include "Text.h"
 #include "GameClock.h"
@@ -44,9 +44,8 @@
 #define ACTION_BUTTON 3
 #define DRAG_BUTTON 1
 
-static SDL_Rect arrow_rects[2] = {{0,16,8,8},{0,3*16+8,8,8}};
 
-InventoryWidget::InventoryWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(NULL, 0, 0, 0, 0)
+ContainerWidget::ContainerWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
  callback_object = callback;
@@ -63,21 +62,21 @@ InventoryWidget::InventoryWidget(Configuration *cfg, GUI_CallBack *callback): GU
 
 }
 
-InventoryWidget::~InventoryWidget()
+ContainerWidget::~ContainerWidget()
 {
 
 }
 
-bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t)
+bool ContainerWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t)
 {
  tile_manager = tm;
  obj_manager = om;
- text = t;
+
 
  bg_color = Game::get_game()->get_palette()->get_bg_color();
  obj_font_color = 0x48;
- objlist_offset_x = 8;
- objlist_offset_y = 16;
+
+ fill_bg = true;
 
  empty_tile = tile_manager->get_tile(410);
 
@@ -90,92 +89,41 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  return true;
 }
 
-void InventoryWidget::set_actor(Actor *a)
+void ContainerWidget::set_actor(Actor *a)
 {
  actor = a;
  container_obj = NULL;
  Redraw();
 }
 
-Obj *InventoryWidget::get_prev_container()
+void ContainerWidget::Display(bool full_redraw)
 {
-	if(container_obj && container_obj->get_engine_loc() == OBJ_LOC_CONT)
-		return (Obj *)container_obj->parent;
+	if(fill_bg)
+	{
+		//clear the screen first inventory icons, 4 x 3 tiles
+		screen->fill(bg_color, area.x, area.y, area.w, area.h);
+	}
+	display_inventory_list();
 
-	return NULL;
+	screen->update(area.x, area.y, area.w, area.h);
 }
 
-void InventoryWidget::set_prev_container()
-{
-  if(!container_obj)
-    return;
-  
-  if(container_obj->get_engine_loc() == OBJ_LOC_CONT)
-    set_container((Obj *)container_obj->parent);
-  else
-    set_container(NULL);
 
-  return;
-}
-
-void InventoryWidget::Display(bool full_redraw)
-{
- if(full_redraw || update_display)
-  {
-   screen->fill(bg_color, area.x, area.y, area.w, area.h);
-   display_inventory_container();
-   display_arrows();
-  }
-   //screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
-
- //clear the screen first inventory icons, 4 x 3 tiles
- screen->fill(bg_color, area.x +objlist_offset_x, area.y + objlist_offset_y, 16 * 4, 16 * 3);
- display_inventory_list();
-
- if(full_redraw || update_display)
-  {
-   update_display = false;
-   screen->update(area.x, area.y, area.w, area.h);
-  }
- else
-  {
-   screen->update(area.x+8,area.y+16,area.w-8,area.h-16); // update only the inventory list
-  }
-
-}
-
-//either an Actor or an object container.
-void InventoryWidget::display_inventory_container()
-{
- Tile *tile;
-
- if(!container_obj) //display actor
-   tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
- else // display container object
-   tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(container_obj->obj_n)+container_obj->frame_n);
-
- screen->blit(area.x+32,area.y,tile->data,8,16,16,16,true);
-
- return;
-}
-
-void InventoryWidget::display_inventory_list()
+void ContainerWidget::display_inventory_list()
 {
  const Tile *tile;
- U6LList *inventory;
+ U6LList *objlist;
  U6Link *link;
  Obj *obj = NULL;
  uint16 i,j;
  uint16 skip_num;
 
-
-
  if(container_obj)
-   inventory = container_obj->container;
+   objlist = container_obj->container;
  else
-   inventory = actor->get_inventory_list();
+   objlist = actor->get_inventory_list();
 
- link = inventory->start();
+ link = objlist->start();
 
  //skip row_offset rows of objects.
  skip_num = row_offset * 4;
@@ -185,10 +133,6 @@ void InventoryWidget::display_inventory_list()
     if(obj->is_readied() == false)
       i++;
    }
-
-
-
-
 
   for(i=0;i<3;i++)
    {
@@ -217,24 +161,24 @@ void InventoryWidget::display_inventory_list()
 
        //tile = tile_manager->get_tile(actor->indentory_tile());
 
-       screen->blit((area.x+objlist_offset_x)+j*16,area.y+objlist_offset_y+i*16,(unsigned char *)empty_tile->data,8,16,16,16,true);
+       screen->blit(area.x+j*16,area.y+i*16,(unsigned char *)empty_tile->data,8,16,16,16,true);
        if(tile != empty_tile)
         {
          //draw qty string for stackable items
          if(obj_manager->is_stackable(obj))       
-           display_qty_string((area.x+objlist_offset_x)+j*16,area.y+objlist_offset_y+i*16,obj->qty);
+           display_qty_string(area.x+j*16,area.y+i*16,obj->qty);
        
          //draw special char for Keys.
          if(game_type == NUVIE_GAME_U6 && obj->obj_n == 64)
-           display_special_char((area.x+objlist_offset_x)+j*16,area.y+objlist_offset_y+i*16,obj->quality);
+           display_special_char(area.x+j*16,area.y+i*16,obj->quality);
         }
 
-       screen->blit((area.x+objlist_offset_x)+j*16,area.y+objlist_offset_y+i*16,(unsigned char *)tile->data,8,16,16,16,true);
+       screen->blit(area.x+j*16,area.y+i*16,(unsigned char *)tile->data,8,16,16,16,true);
       }
    }
 }
 
-void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint16 qty)
+void ContainerWidget::display_qty_string(uint16 x, uint16 y, uint16 qty)
 {
  uint8 len, i, offset;
  char buf[6];
@@ -250,7 +194,7 @@ void InventoryWidget::display_qty_string(uint16 x, uint16 y, uint16 qty)
  return;
 }
 
-void InventoryWidget::display_special_char(uint16 x, uint16 y, uint8 quality)
+void ContainerWidget::display_special_char(uint16 x, uint16 y, uint8 quality)
 {
  if(quality + 9 >= NUVIE_MICRO_FONT_COUNT)
    return;
@@ -258,31 +202,7 @@ void InventoryWidget::display_special_char(uint16 x, uint16 y, uint8 quality)
  screen->blitbitmap(x+6,y+11,inventory_font[quality + 9],3,5,obj_font_color,bg_color);
 }
 
-void InventoryWidget::display_arrows()
-{
- uint32 num_objects;
-
- if(is_showing_container())
- {
-	 if(container_obj->container)
-		 num_objects = container_obj->container->count();
-	 else
-		 num_objects = 0;
- }
- else
-	 num_objects = actor->inventory_count_objects(false);
-
- if(num_objects <= 12) //reset row_offset if we only have one page of objects
-   row_offset = 0;
-
- if(row_offset > 0) //display top arrow
-    text->drawChar(screen, 24, area.x, area.y + 16, 0x48);
-
- if(num_objects - row_offset * 4 > 12) //display bottom arrow
-    text->drawChar(screen, 25, area.x, area.y + 3 * 16 + 8, 0x48);
-}
-
-GUI_status InventoryWidget::MouseDown(int x, int y, int button)
+GUI_status ContainerWidget::MouseDown(int x, int y, int button)
 {
  //Event *event = Game::get_game()->get_event();
  //MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -305,17 +225,17 @@ GUI_status InventoryWidget::MouseDown(int x, int y, int button)
  return GUI_PASS;
 }
 
-inline uint16 InventoryWidget::get_list_position(int x, int y)
+inline uint16 ContainerWidget::get_list_position(int x, int y)
 {
  uint16 list_pos;
 
- list_pos = ((y - objlist_offset_y) / 16) * 4 + (x - objlist_offset_x) / 16;
+ list_pos = (y / 16) * 4 + x / 16;
  list_pos += row_offset * 4;
 
  return list_pos;
 }
 
-Obj *InventoryWidget::get_obj_at_location(int x, int y)
+Obj *ContainerWidget::get_obj_at_location(int x, int y)
 {
  uint8 location;
  U6LList *inventory;
@@ -323,8 +243,7 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
  Obj *obj =  NULL;
  uint16 i;
 
- if(x >= objlist_offset_x && y >= objlist_offset_y)
-   {
+
     location = get_list_position(x,y); //find the postion of the object we hit in the inventory
 
     if(container_obj)
@@ -341,13 +260,12 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
 
     if(i > location && obj && obj->is_readied() == false) // don't return readied or non existent objects
       return obj;
-   }
 
  return NULL;
 }
 
 // change container, ready/unready object, activate arrows
-GUI_status InventoryWidget::MouseUp(int x,int y,int button)
+GUI_status ContainerWidget::MouseUp(int x,int y,int button)
 {
  Event *event = Game::get_game()->get_event();
  UseCode *usecode = Game::get_game()->get_usecode();
@@ -356,29 +274,6 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
    {
     x -= area.x;
     y -= area.y;
-
-    if(x >= 32 && x <= 48 && // hit top icon either actor or container
-       y >= 0 && y <= 16)
-      {
-			 if(is_showing_container())
-				 set_prev_container(); //return to previous container or main actor inventory
-			 else
-				 Game::get_game()->get_view_manager()->set_party_mode();
-
-       Redraw();
-      }
-
-    if(HitRect(x,y,arrow_rects[0])) //up arrow hit rect
-      {
-       if(up_arrow())
-         Redraw();
-      }
-
-    if(HitRect(x,y,arrow_rects[1])) //down arrow hit rect
-      {
-       if(down_arrow())
-         Redraw();
-      }
 
     // only act now if objects can't be used with DoubleClick
     if(selected_obj && !enable_doubleclick)
@@ -407,7 +302,7 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
  return GUI_YUM;
 }
 
-bool InventoryWidget::up_arrow()
+bool ContainerWidget::up_arrow()
 {
  if(row_offset > 0)
   {
@@ -418,7 +313,7 @@ bool InventoryWidget::up_arrow()
  return false;
 }
 
-bool InventoryWidget::down_arrow()
+bool ContainerWidget::down_arrow()
 {
  uint32 num_objects;
 
@@ -433,7 +328,7 @@ bool InventoryWidget::down_arrow()
  return false;
 }
 
-GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
+GUI_status ContainerWidget::MouseMotion(int x,int y,Uint8 state)
 {
  Tile *tile;
 
@@ -447,9 +342,9 @@ GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
 	return GUI_PASS;
 }
 
-void InventoryWidget::drag_drop_success(int x, int y, int message, void *data)
+void ContainerWidget::drag_drop_success(int x, int y, int message, void *data)
 {
- DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_drop_success()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"ContainerWidget::drag_drop_success()\n");
  dragging = false;
 
 // handled by drop target
@@ -462,36 +357,25 @@ void InventoryWidget::drag_drop_success(int x, int y, int message, void *data)
  Redraw();
 }
 
-void InventoryWidget::drag_drop_failed(int x, int y, int message, void *data)
+void ContainerWidget::drag_drop_failed(int x, int y, int message, void *data)
 {
- DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_drop_failed()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"ContainerWidget::drag_drop_failed()\n");
  dragging = false;
  selected_obj = NULL;
 }
 
-bool InventoryWidget::drag_set_target_obj(int x, int y)
+bool ContainerWidget::drag_set_target_obj(int x, int y)
 {
-	if(x >= 32 && x < 48 && y < 16)
-	{
-		target_obj = NULL;
-		target_cont = get_prev_container(); //returns parent container or NULL if we're back at the inventory.
-	}
-	else if(x >= objlist_offset_x && y >= objlist_offset_y)
-	{
+
 		target_obj = get_obj_at_location(x,y);
 		target_cont = get_container();
-	}
-	else
-	{
-		return false;
-	}
 
 	return true;
 }
 
-bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
+bool ContainerWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
- DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_accept_drop()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"ContainerWidget::drag_accept_drop()\n");
  if(message == GUI_DRAG_OBJ)
    {
     Obj *obj = (Obj*)data;
@@ -501,14 +385,14 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
     {
       if(drag_set_target_obj(x, y) == false)
       {
-          DEBUG(0,LEVEL_WARNING,"InventoryWidget: Didn't hit any widget object targets!\n");
+          DEBUG(0,LEVEL_WARNING,"ContainerWidget: Didn't hit any widget object targets!\n");
           return false;
       }
     }
 
     if((obj->is_in_inventory() || obj->is_readied()) && obj->get_actor_holding_obj() != actor)
     {
-        DEBUG(0,LEVEL_WARNING,"InventoryWidget: Cannot Move between party members!\n"); 
+        DEBUG(0,LEVEL_WARNING,"ContainerWidget: Cannot Move between party members!\n"); 
         return false;
     }
 
@@ -520,9 +404,9 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
  return false;
 }
 
-void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
+void ContainerWidget::drag_perform_drop(int x, int y, int message, void *data)
 {
- DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_perform_drop()\n");
+ DEBUG(0,LEVEL_DEBUGGING,"ContainerWidget::drag_perform_drop()\n");
  Obj *obj;
 
  x -= area.x;
@@ -558,7 +442,7 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
  return;
 }
 
-void InventoryWidget::drag_draw(int x, int y, int message, void* data)
+void ContainerWidget::drag_draw(int x, int y, int message, void* data)
 {
 	Tile* tile;
 
@@ -586,7 +470,7 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
 
 
 /* Use object. */
-GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
+GUI_status ContainerWidget::MouseDouble(int x, int y, int button)
 {
     // we have to check if double-clicks are allowed here, since we use single-clicks
     if(!enable_doubleclick)
@@ -607,13 +491,13 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
     return(GUI_PASS);
 }
 
-GUI_status InventoryWidget::MouseClick(int x, int y, int button)
+GUI_status ContainerWidget::MouseClick(int x, int y, int button)
 {
     return(MouseUp(x, y, button));
 }
 
 // change container, ready/unready object, activate arrows
-GUI_status InventoryWidget::MouseDelayed(int x, int y, int button)
+GUI_status ContainerWidget::MouseDelayed(int x, int y, int button)
 {
     Event *event = Game::get_game()->get_event();
     UseCode *usecode = Game::get_game()->get_usecode();

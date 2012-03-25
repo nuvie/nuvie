@@ -1,12 +1,12 @@
-#ifndef __DraggableView_h__
-#define __DraggableView_h__
+#ifndef __ContainerWidgetGump_h__
+#define __ContainerWidgetGump_h__
 
 /*
- *  DraggableView.h
+ *  ContainerWidgetGump.h
  *  Nuvie
  *
- *  Created by Eric Fry on Wed Mar 7 2012.
- *  Copyright (c) 2012. All rights reserved.
+ *  Created by Eric Fry on Tue Mar 20 2012.
+ *  Copyright (c) 2012 The Nuvie Team. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,29 +24,23 @@
  *
  */
 
-#include "View.h"
+#include "GUI_widget.h"
+#include "ObjManager.h"
+#include "ContainerWidget.h"
 
 class Configuration;
-class GUI_Button;
+class TileManager;
+class Actor;
+class Text;
 
-class DraggableView: public View 
-{
-private:
-	bool drag;
-    int button_x, button_y;
+class ContainerWidgetGump : public ContainerWidget {
 
-public:
-	DraggableView(Configuration *config);
-	virtual ~DraggableView();
+ public:
+ ContainerWidgetGump(Configuration *cfg, GUI_CallBack *callback = NULL);
+ ~ContainerWidgetGump();
 
-    /* events, used for dragging the area. */
-    GUI_status MouseDown(int x, int y, int button);
-    GUI_status MouseUp(int x, int y, int button);
-    GUI_status MouseMotion(int x,int y,Uint8 state);
-    void MoveRelative(int dx,int dy);
-
-protected:
-    GUI_Button *loadButton(std::string dir, std::string name, uint16 x, uint16 y);
+ bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
 };
 
-#endif /* __DraggableView_h__ */
+#endif /* __ContainerWidgetGump_h__ */
+

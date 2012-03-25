@@ -22,7 +22,9 @@
  */
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "GUI.h"
+#include "GUI_button.h"
 #include "Configuration.h"
 #include "DraggableView.h"
 
@@ -60,7 +62,7 @@ GUI_status DraggableView::MouseMotion(int x,int y,Uint8 state)
 {
  int dx, dy;
 
- if(!drag)
+ if(!drag || state == 0) //state is 0 if no button pressed
    return GUI_PASS;
 
  dx = x - button_x;
@@ -102,4 +104,21 @@ void DraggableView::MoveRelative(int dx,int dy)
  GUI_Widget::MoveRelative(dx, dy);
 
  return;
+}
+
+GUI_Button *DraggableView::loadButton(std::string dir, std::string name, uint16 x, uint16 y)
+{
+	GUI_Button *button;
+	std::string imagefile;
+		std::string path;
+
+		SDL_Surface *image, *image1;
+		build_path(dir, name + "_btn_up.bmp", imagefile);
+			image = SDL_LoadBMP(imagefile.c_str());
+			build_path(dir, name + "_btn_down.bmp", imagefile);
+			image1 = SDL_LoadBMP(imagefile.c_str());
+
+			button = new GUI_Button(NULL, x, y, image, image1, this);
+			this->AddWidget(button);
+	return button;
 }

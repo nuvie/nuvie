@@ -373,6 +373,9 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_r     :
             newAction(REST_MODE);
             break;
+		case SDLK_i     :
+			view_manager->open_doll_view(NULL);
+			break;
 		case SDLK_F1:
 		case SDLK_F2:
 		case SDLK_F3:

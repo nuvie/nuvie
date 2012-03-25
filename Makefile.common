@@ -289,6 +289,14 @@ nuvie_SOURCES = \
 	views/SpellView.h \
 	views/SpellViewGump.cpp \
 	views/SpellViewGump.h \
+	views/ContainerViewGump.cpp \
+	views/ContainerViewGump.h \
+	views/ContainerWidget.cpp \
+	views/ContainerWidget.h \
+	views/ContainerWidgetGump.cpp \
+	views/ContainerWidgetGump.h \
+	views/DollViewGump.cpp \
+	views/DollViewGump.h \
 \
 	AnimManager.cpp \
 	AnimManager.h \

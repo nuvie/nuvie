@@ -735,9 +735,16 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
         {
             process_effects(obj, items.actor_ref); //run any effects that might be stored in this container. Eg Poison explosion.
 
-            scroll->display_string("\nSearching here, you find ");
-            bool found_objects = search_obj(obj, items.actor_ref);
-            scroll->display_string(found_objects ? ".\n" : "nothing.\n");
+            if(game->is_orig_style())
+            {
+            	scroll->display_string("\nSearching here, you find ");
+            	bool found_objects = search_obj(obj, items.actor_ref);
+            	scroll->display_string(found_objects ? ".\n" : "nothing.\n");
+            }
+            else
+            {
+            	game->get_view_manager()->open_container_view(obj);
+            }
         }
         return(true);
     }

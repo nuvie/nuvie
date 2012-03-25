@@ -147,19 +147,29 @@ void GUI_Font::TextOut(SDL_Surface* context,int x, int y, const char* text, int 
 void GUI_Font:: TextExtent(const char *text, int *w, int *h, int line_wrap)
 {
  int len = strlen(text);
+ if(w_data) //variable width font.
+ {
+	 //FIXME we're not handling line_wrap properly for variable width fonts!
+	 *w = 0;
+	 for(int i=0;i < len;i++)
+	 {
+		 *w += w_data[text[i]];
+	 }
+ }
+ else
+ {
+	 if(line_wrap && len > line_wrap)
+		 *w = line_wrap * charw;
+	 else
+		 *w=len * charw;
+ }
 
  if(line_wrap && len > line_wrap)
-   *w = line_wrap * charw;
+ {
+	 *h = (int)ceil((float)len / (float)line_wrap);
+	 *h *= charh-1;
+ }
  else
-   *w=len * charw;
-
- if(line_wrap && len > line_wrap)
-   {
-    *h = (int)ceil((float)len / (float)line_wrap);
-    *h *= charh-1;
-   }
- else
-    *h=charh-1;
-
+	 *h=charh-1;
  return;
 }

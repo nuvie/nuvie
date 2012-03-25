@@ -46,6 +46,44 @@ static SDL_Rect item_hit_rects[8] = { {24, 0,16,16},   // ACTOR_HEAD
                                      {48,40,16,16},   // ACTOR_HAND_2
                                      {24,48,16,16} }; // ACTOR_FOOT
 
+static const char gump_blocked_tile_data[] = {
+	170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,
+	170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,
+	170,170,170,170,64,178,55,54,54,55,178,64,170,170,170,170,
+	170,170,170,64,55,168,64,170,170,64,168,55,64,170,170,170,
+	170,170,64,55,64,170,170,170,170,170,12,12,55,64,170,170,
+	170,170,178,130,170,170,170,170,170,12,12,12,168,178,170,170,
+	170,170,55,64,170,170,170,170,12,12,12,170,64,55,170,170,
+	170,170,54,170,170,170,170,12,12,12,170,170,170,54,170,170,
+	170,170,54,170,170,170,12,12,12,170,170,170,170,54,170,170,
+	170,170,55,64,170,12,12,12,170,170,170,170,64,55,170,170,
+	170,170,178,168,12,12,12,170,170,170,170,170,168,178,170,170,
+	170,170,64,55,12,12,170,170,170,170,170,64,55,64,170,170,
+	170,170,170,64,55,168,64,170,170,64,168,55,64,170,170,170,
+	170,170,170,170,64,178,55,54,54,55,178,64,170,170,170,170,
+	170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,
+	170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,170
+	};
+
+static char gump_empty_tile_data[] = {
+	170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,
+	170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,
+	170,170,170,170,64,178,55,54,54,55,178,64,170,170,170,170,
+	170,170,170,64,55,168,64,170,170,64,168,55,64,170,170,170,
+	170,170,64,55,64,170,170,170,170,170,170,64,55,64,170,170,
+	170,170,178,130,170,170,170,170,170,170,170,170,168,178,170,170,
+	170,170,55,64,170,170,170,170,170,170,170,170,64,55,170,170,
+	170,170,54,170,170,170,170,170,170,170,170,170,170,54,170,170,
+	170,170,54,170,170,170,170,170,170,170,170,170,170,54,170,170,
+	170,170,55,64,170,170,170,170,170,170,170,170,64,55,170,170,
+	170,170,178,168,170,170,170,170,170,170,170,170,168,178,170,170,
+	170,170,64,55,64,170,170,170,170,170,170,64,55,64,170,170,
+	170,170,170,64,55,168,64,170,170,64,168,55,64,170,170,170,
+	170,170,170,170,64,178,55,54,54,55,178,64,170,170,170,170,
+	170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,
+	170,170,170,170,170,170,170,170,170,170,170,170,170,170,170,170
+	};
+
 DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(NULL, 0, 0, 0, 0)
 {
  config = cfg;
@@ -70,6 +108,8 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  tile_manager = tm;
  obj_manager = om;
 
+ if(Game::get_game()->is_orig_style())
+ {
  switch(Game::get_game()->get_game_type())
  {
  case NUVIE_GAME_U6 : blocked_tile = tile_manager->get_tile(TILE_U6_BLOCKED_EQUIP);
@@ -84,6 +124,15 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
                       empty_tile = tile_manager->get_tile(TILE_MD_EQUIP);
                       break;
  }
+ }
+ else
+ {
+	 blocked_tile = new Tile();
+	 memcpy(&blocked_tile->data, &gump_blocked_tile_data, 256);
+	 empty_tile = new Tile();
+	 memcpy(&empty_tile->data, &gump_empty_tile_data, 256);
+ }
+
  GUI_Widget::Init(NULL, x, y, 64, 64);
 
  set_actor(a);
@@ -112,7 +161,7 @@ void DollWidget::Display(bool full_redraw)
  //if(full_redraw || update_display)
  // {
    update_display = false;
-   screen->fill(bg_color, area.x, area.y, area.w, area.h);
+
    if(actor != NULL)
      display_doll();
    screen->update(area.x, area.y, area.w, area.h);
@@ -125,20 +174,23 @@ inline void DollWidget::display_doll()
  Tile *tile;
  uint16 i,j;
 
- for(i=0;i<2;i++)
-   {
-    for(j=0;j<2;j++) // draw doll
-      {
-       tile = tile_manager->get_tile(368+i*2+j);
-       screen->blit(area.x+16+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
-      }
-   }
-
+ if(Game::get_game()->is_orig_style())
+ {
+	 screen->fill(bg_color, area.x, area.y, area.w, area.h);
+	 for(i=0;i<2;i++)
+	 {
+		 for(j=0;j<2;j++) // draw doll
+		 {
+			 tile = tile_manager->get_tile(368+i*2+j);
+			 screen->blit(area.x+16+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
+		 }
+	 }
+ }
  display_readied_object(ACTOR_NECK, area.x, (area.y+8) + 0 * 16, actor, empty_tile);
  display_readied_object(ACTOR_BODY, area.x+3*16, (area.y+8) + 0 * 16, actor, empty_tile);
 
  display_readied_object(ACTOR_ARM, area.x, (area.y+8) + 1 * 16, actor, empty_tile);
- display_readied_object(ACTOR_ARM_2, area.x+3*16, (area.y+8) + 1 * 16, actor, actor->is_double_handed_obj_readied() ? tile_manager->get_tile(TILE_U6_BLOCKED_EQUIP) : empty_tile);
+ display_readied_object(ACTOR_ARM_2, area.x+3*16, (area.y+8) + 1 * 16, actor, actor->is_double_handed_obj_readied() ? blocked_tile : empty_tile);
 
  display_readied_object(ACTOR_HAND, area.x, (area.y+8) + 2 * 16, actor, empty_tile);
  display_readied_object(ACTOR_HAND_2, area.x+3*16, (area.y+8) + 2 * 16, actor, empty_tile);

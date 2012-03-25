@@ -90,7 +90,14 @@ class ViewManager
 
  void close_current_view();
 
+ void open_doll_view(Actor *actor);
+
+ void open_container_view(Obj *obj) { open_container_view(NULL, obj); }
+ void open_container_view(Actor *actor) { open_container_view(actor, NULL); }
+
  protected:
+
+ void open_container_view(Actor *actor, Obj *obj);
 
  bool set_current_view(View *view);
 };

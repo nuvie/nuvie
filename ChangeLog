@@ -1,3 +1,10 @@
+2012-03-25  Eric Fry <efry at users.sourceforge.net> r1305
+	* Started working on new inventory / doll gumps.
+	* Hit 'i' to bring up the new doll gump. Then click the bag button
+	  to view the actor's inventory.
+	* Bring up new Bag gump when searching objects with 'U'se in fullmap mode.
+	* Only move gump views while a mouse button is pressed.
+
 2012-03-18  Eric Fry <efry at users.sourceforge.net> r1304
 	* Added new GUMP font.
 	* Added Armageddon spell to new spellbook.

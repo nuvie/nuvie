@@ -34,6 +34,8 @@
 #include "ActorView.h"
 #include "PortraitView.h"
 #include "InventoryView.h"
+#include "DollViewGump.h"
+#include "ContainerViewGump.h"
 #include "PartyView.h"
 #include "SpellView.h"
 #include "SpellViewGump.h"
@@ -79,10 +81,16 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
 
  if(Game::get_game()->is_orig_style())
  {
+	 //inventory_view = new InventoryView(config);
+	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
+
 	 spell_view = new SpellView(config);
  }
  else
  {
+	 //inventory_view = new InventoryViewGump(config);
+	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
+
 	 spell_view = new SpellViewGump(config);
  }
  spell_view->init(gui->get_screen(), this, 168+x_off, 6+y_off, text, party, tile_manager, obj_manager);
@@ -190,6 +198,37 @@ void ViewManager::close_spell_mode()
 		  close_current_view();
 }
 
+void ViewManager::open_doll_view(Actor *actor)
+{
+	if(Game::get_game()->is_new_style())
+	{
+		DollViewGump *doll = new DollViewGump(config);
+		doll->init(Game::get_game()->get_screen(), this, 40, 20, text, party, tile_manager, obj_manager);
+
+		doll->Show();
+		gui->AddWidget((GUI_Widget *)doll);
+		doll->Redraw();
+		gui->Display();
+	}
+}
+
+void ViewManager::open_container_view(Actor *actor, Obj *obj)
+{
+	if(Game::get_game()->is_new_style())
+	{
+		ContainerViewGump *view = new ContainerViewGump(config);
+		view->init(Game::get_game()->get_screen(), this, 40, 20, text, party, tile_manager, obj_manager);
+		if(actor)
+			view->set_actor(actor);
+		else
+			view->set_container_obj(obj);
+
+		view->Show();
+		Game::get_game()->get_gui()->AddWidget((GUI_Widget *)view);
+		view->Redraw();
+		Game::get_game()->get_gui()->Display();
+	}
+}
 // callbacks for switching views
 
 GUI_status partyViewButtonCallback(void *data)

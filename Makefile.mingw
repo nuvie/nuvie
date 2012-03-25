@@ -81,6 +81,8 @@ install: all
 	mkdir -p $(U6PATH)/data
 	mkdir -p $(U6PATH)/data/images
 	mkdir -p $(U6PATH)/data/images/gumps
+	mkdir -p $(U6PATH)/data/images/gumps/container
+	mkdir -p $(U6PATH)/data/images/gumps/doll
 	mkdir -p $(U6PATH)/data/images/gumps/spellbook
 	mkdir -p $(U6PATH)/data/scripts
 	mkdir -p $(U6PATH)/data/scripts/u6
@@ -94,6 +96,8 @@ install: all
 	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_07
 	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_08
 	cp data/images/gumps/*.bmp $(U6PATH)/data/images/gumps
+	cp data/images/gumps/container/*.bmp $(U6PATH)/data/images/gumps/container
+	cp data/images/gumps/doll/*.bmp $(U6PATH)/data/images/gumps/doll
 	cp data/images/gumps/spellbook/*.bmp $(U6PATH)/data/images/gumps/spellbook
 	cp data/scripts/u6/magic/circle_01/*.lua $(U6PATH)/data/scripts/u6/magic/circle_01
 	cp data/scripts/u6/magic/circle_02/*.lua $(U6PATH)/data/scripts/u6/magic/circle_02
