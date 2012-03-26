@@ -271,35 +271,40 @@ GUI_status ContainerWidget::MouseUp(int x,int y,int button)
  UseCode *usecode = Game::get_game()->get_usecode();
 
  if(button == USE_BUTTON)
-   {
-    x -= area.x;
-    y -= area.y;
+ {
+	 x -= area.x;
+	 y -= area.y;
 
-    // only act now if objects can't be used with DoubleClick
-    if(selected_obj && !enable_doubleclick)
-      {
-        if(usecode->is_container(selected_obj)) // open up the container.
-          {
-            container_obj = selected_obj;
-            Redraw();
-          }
-        else // attempt to ready selected object.
-          {
-            event->ready(selected_obj);
-            Redraw();
-          }
-        ready_obj = NULL;
-      }
-    else if(selected_obj)
-      {
-        wait_for_mouseclick(USE_BUTTON);
-        ready_obj = selected_obj;
-      }
-   }
+	 if(selected_obj)
+	 {
+		 // only act now if objects can't be used with DoubleClick
+		 if(!enable_doubleclick)
+		 {
+			 if(usecode->is_container(selected_obj)) // open up the container.
+			 {
+				 container_obj = selected_obj;
+				 Redraw();
+			 }
+			 else // attempt to ready selected object.
+			 {
+				 event->ready(selected_obj);
+				 Redraw();
+			 }
+			 ready_obj = NULL;
+		 }
+		 else
+		 {
+			 wait_for_mouseclick(USE_BUTTON);
+			 ready_obj = selected_obj;
+		 }
 
- selected_obj = NULL;
+		 selected_obj = NULL;
 
- return GUI_YUM;
+		 return GUI_YUM;
+	 }
+ }
+
+ return GUI_PASS;
 }
 
 bool ContainerWidget::up_arrow()

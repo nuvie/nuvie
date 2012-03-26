@@ -54,7 +54,11 @@ GUI_status DraggableView::MouseUp(int x, int y, int button)
  drag = false;
 
  release_focus();
-
+ if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
+ {
+	 Hide();
+		//FIXME unload view from the view_manager.
+ }
  return GUI_YUM;
 }
 

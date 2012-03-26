@@ -123,6 +123,16 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 		Hide();
 		return GUI_YUM;
 	}
+	else if(caller == down_arrow_button)
+	{
+		container_widget->down_arrow();
+		return GUI_YUM;
+	}
+	else if(caller == up_arrow_button)
+	{
+		container_widget->up_arrow();
+		return GUI_YUM;
+	}
 
     return GUI_PASS;
 }

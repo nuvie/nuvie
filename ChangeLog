@@ -1,3 +1,7 @@
+2012-03-27  Eric Fry <efry at users.sourceforge.net> r1307
+	* Right-click to close gumps.
+	* Wired up arrow buttons in Container Gump.
+
 2012-03-26  Eric Fry <efry at users.sourceforge.net> r1306
 	* Added new files to XCode build environment.
 
