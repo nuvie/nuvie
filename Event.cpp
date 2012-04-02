@@ -1566,7 +1566,6 @@ void Event::alt_code_input(const char *in)
                 active_alt_code = 0;
             }
             break;
-
     }
 }
 
@@ -1666,6 +1665,10 @@ void Event::alt_code(const char *cs)
             active_alt_code = c;
             break;
 
+        case 600: // map editor
+        	view_manager->open_mapeditor_view();
+        	active_alt_code = 0;
+        	break;
     }
 }
 

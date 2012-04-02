@@ -108,6 +108,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  walking = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
 
+ config->value(config_get_game_key(config) + "/roof_mode", roof_mode, false);
+
  draw_brit_lens_anim = false;
  draw_garg_lens_anim = false;
 
@@ -175,6 +177,9 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  wizard_eye_info.eye_tile = tile_manager->get_tile(TILE_U6_WIZARD_EYE);
  wizard_eye_info.moves_left = 0;
  wizard_eye_info.caller = NULL;
+
+ if(roof_mode)
+	 loadRoofTiles();
 
  return true;
 }
@@ -601,6 +606,11 @@ void MapWindow::Display(bool full_redraw)
 
  //drawAnims();
 
+ if(roof_mode)
+ {
+	 drawRoofs();
+ }
+
  if(game->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) != 0) //FIXME u6 specific.
    drawRain();
 
@@ -992,6 +1002,43 @@ void MapWindow::drawBorder()
     screen->blit(area.x,area.y+i*16,tile->data,8,16,16,16,true,&clip_rect);
     screen->blit(area.x+(win_width-1)*16,area.y+i*16,tile1->data,8,16,16,16,true,&clip_rect);
    }
+}
+
+void MapWindow::drawRoofs()
+{
+	if(map->has_roof(cur_x + (win_width - 1) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
+		return;
+
+	uint16 *roof_map_ptr = map->get_roof_data(cur_level);
+
+    SDL_Rect src, dst;
+    src.w = 16;
+    src.h = 16;
+    dst.w = 16;
+    dst.h = 16;
+	if(roof_map_ptr)
+	{
+		roof_map_ptr += cur_y * 1024 + cur_x;
+	for(uint16 i=0;i<win_height;i++)
+	  {
+	   for(uint16 j=0;j<win_width;j++)
+	     {
+		   if(roof_map_ptr[j] != 0)
+		   {
+	      dst.x = area.x + (j*16);
+	      dst.y = area.y + (i*16);
+	      dst.x -= cur_x_add;
+	      dst.y -= cur_y_add;
+
+	       src.x = (roof_map_ptr[j] % 32) * 16;
+	       src.y = (roof_map_ptr[j] / 32) * 16;
+
+	       SDL_BlitSurface(roof_tiles, &src, surface, &dst);
+		   }
+	     }
+	   roof_map_ptr += 1024;
+	  }
+	}
 }
 
 void MapWindow::drawRain()
@@ -1965,5 +2012,21 @@ void MapWindow::wizard_eye_update()
 		moveMap(wizard_eye_info.prev_x, wizard_eye_info.prev_y, cur_level);
 		wizard_eye_info.caller->callback(EFFECT_CB_COMPLETE, (CallBack *)this, NULL);
 		release_focus();
+	}
+}
+
+void MapWindow::loadRoofTiles()
+{
+	std::string datadir = GUI::get_gui()->get_data_dir();
+	std::string imagefile;
+	std::string path;
+
+	build_path(datadir, "images", path);
+	datadir = path;
+	build_path(datadir, "roof_tiles.bmp", imagefile);
+	roof_tiles = SDL_LoadBMP(imagefile.c_str());
+	if(roof_tiles)
+	{
+		SDL_SetColorKey(roof_tiles, SDL_SRCCOLORKEY, SDL_MapRGB(roof_tiles->format, 0, 0x70, 0xfc));
 	}
 }

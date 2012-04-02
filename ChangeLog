@@ -1,3 +1,9 @@
+2012-04-03  Eric Fry <efry at users.sourceforge.net> r1308
+	* Added roof mode support. /config/ultima6/roof_mode = true
+	* Started work on in-game map editor. Alt-600 to activate. right-click to
+	  close. Arrow keys to move cursor. Alt-arrow keys to change selected tile.
+	  Enter to place a tile and 's' to save the map.
+
 2012-03-27  Eric Fry <efry at users.sourceforge.net> r1307
 	* Right-click to close gumps.
 	* Wired up arrow buttons in Container Gump.

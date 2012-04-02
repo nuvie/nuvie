@@ -162,6 +162,7 @@ Source: data\images\gumps\spellbook\8.bmp; DestDir: {app}\data\images\gumps\spel
 Source: data\images\gumps\spellbook\st.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
 Source: data\images\gumps\spellbook\nd.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
 Source: data\images\gumps\spellbook\rd.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
+Source: data\maps\u6\roof_map_00.dat; DestDir: {app}\data\maps\u6; Flags: ignoreversion
 Source: data\scripts\u6\actor.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\init.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\intro.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion

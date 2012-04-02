@@ -39,6 +39,7 @@
 #include "PartyView.h"
 #include "SpellView.h"
 #include "SpellViewGump.h"
+#include "MapEditorView.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -205,10 +206,7 @@ void ViewManager::open_doll_view(Actor *actor)
 		DollViewGump *doll = new DollViewGump(config);
 		doll->init(Game::get_game()->get_screen(), this, 40, 20, text, party, tile_manager, obj_manager);
 
-		doll->Show();
-		gui->AddWidget((GUI_Widget *)doll);
-		doll->Redraw();
-		gui->Display();
+		add_view((View *)doll);
 	}
 }
 
@@ -223,12 +221,29 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 		else
 			view->set_container_obj(obj);
 
-		view->Show();
-		Game::get_game()->get_gui()->AddWidget((GUI_Widget *)view);
-		view->Redraw();
-		Game::get_game()->get_gui()->Display();
+		add_view((View *)view);
 	}
 }
+
+void ViewManager::open_mapeditor_view()
+{
+	if(Game::get_game()->is_new_style())
+	{
+		MapEditorView *view = new MapEditorView(config);
+		view->init(Game::get_game()->get_screen(), this, 230, 0, text, party, tile_manager, obj_manager);
+		add_view((View *)view);
+		view->grab_focus();
+	}
+}
+
+void ViewManager::add_view(View *view)
+{
+	view->Show();
+	gui->AddWidget((GUI_Widget *)view);
+	view->Redraw();
+	gui->Display();
+}
+
 // callbacks for switching views
 
 GUI_status partyViewButtonCallback(void *data)

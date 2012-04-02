@@ -297,6 +297,8 @@ nuvie_SOURCES = \
 	views/ContainerWidgetGump.h \
 	views/DollViewGump.cpp \
 	views/DollViewGump.h \
+	views/MapEditorView.cpp \
+	views/MapEditorView.h \
 \
 	AnimManager.cpp \
 	AnimManager.h \

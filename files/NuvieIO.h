@@ -61,6 +61,7 @@ class NuvieIO
    virtual void seek(uint32 new_pos)=0;
 
    inline bool is_end() { return (pos == size - 1); };
+   inline bool is_eof() { return (size == 0 || pos >= size); };
    uint32 position() { return pos; };
 };
 

@@ -123,6 +123,9 @@ class Map
  uint8 *surface;
  uint8 *dungeons[5];
 
+ bool roof_mode;
+ uint16 *roof_surface;
+
  public:
 
  Map(Configuration *cfg);
@@ -133,6 +136,7 @@ class Map
 
  bool loadMap(TileManager *tm, ObjManager *om);
  unsigned char *get_map_data(uint8 level);
+ uint16 *get_roof_data(uint8 level);
  Tile *get_tile(uint16 x, uint16 y, uint8 level, bool original_tile=false);
  uint16 get_width(uint8 level);
  bool is_passable(uint16 x, uint16 y, uint8 level);
@@ -145,6 +149,7 @@ class Map
  uint8 get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
  Tile *get_dmg_tile(uint16 x, uint16 y, uint8 level);
  bool is_passable(uint16 x1, uint16 y1, uint16 x2, uint16 y2, uint8 level);
+ bool has_roof(uint16 x, uint16 y, uint8 level);
 
  const char *look(uint16 x, uint16 y, uint8 level);
 
@@ -152,6 +157,8 @@ class Map
 	 	       uint8 flags, LineTestResult &Result, uint32 skip = 0);
 
  bool testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result);
+
+ void saveRoofData();
 
  protected:
 
@@ -161,7 +168,8 @@ class Map
  void insertDungeonSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 level);
  void insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 level);
 
-
+ std::string getRoofDataFilename();
+ void loadRoofData();
 
 };
 

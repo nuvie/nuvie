@@ -95,11 +95,14 @@ class ViewManager
  void open_container_view(Obj *obj) { open_container_view(NULL, obj); }
  void open_container_view(Actor *actor) { open_container_view(actor, NULL); }
 
+ void open_mapeditor_view();
+
  protected:
 
  void open_container_view(Actor *actor, Obj *obj);
 
  bool set_current_view(View *view);
+ void add_view(View *view);
 };
 
 #endif /* __ViewManager_h__ */

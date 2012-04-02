@@ -109,6 +109,9 @@ class MapWindow: public GUI_Widget
  bool window_updated;
  bool freeze_blacking_location;
 
+ bool roof_mode;
+ SDL_Surface *roof_tiles;
+
  WizardEye wizard_eye_info;
 
  bool draw_brit_lens_anim;
@@ -200,6 +203,7 @@ class MapWindow: public GUI_Widget
  void free_thumbnail();
  SDL_Surface *get_sdl_surface();
  SDL_Surface *get_sdl_surface(uint16 x, uint16 y, uint16 w, uint16 h);
+ SDL_Surface *get_roof_tiles() { return roof_tiles; }
 
  std::vector<Obj *> m_ViewableObjects; //^^ dodgy public buffer
  std::vector<TileInfo> m_ViewableTiles; //^^ dodgy public buffer
@@ -219,6 +223,7 @@ protected:
  void drawBorder();
  inline void drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);
  inline void drawActor(Actor *actor);
+ void drawRoofs();
  void drawRain();
  inline void drawLensAnim();
 
@@ -234,6 +239,8 @@ protected:
  void wizard_eye_stop();
  void wizard_eye_update();
  bool is_wizard_eye_mode() { if(wizard_eye_info.moves_left != 0) return true; else return false; }
+
+ void loadRoofTiles();
 };
 
 #endif /* __MapWindow_h__ */

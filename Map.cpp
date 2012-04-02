@@ -40,7 +40,9 @@ Map::Map(Configuration *cfg)
  config = cfg;
 
  surface = NULL;
+ roof_surface = NULL;
 
+ config->value(config_get_game_key(config) + "/roof_mode", roof_mode, false);
 }
 
 Map::~Map()
@@ -54,6 +56,9 @@ Map::~Map()
 
  for(i=0;i<5;i++)
    free(dungeons[i]);
+
+ if(roof_surface)
+	 free(roof_surface);
 }
 
 
@@ -66,6 +71,14 @@ unsigned char *Map::get_map_data(uint8 level)
    return NULL;
 
  return dungeons[level - 1];
+}
+
+uint16 *Map::get_roof_data(uint8 level)
+{
+	if(level == 0)
+		return roof_surface;
+
+	return NULL;
 }
 
 Tile *Map::get_tile(uint16 x, uint16 y, uint8 level, bool original_tile)
@@ -395,6 +408,9 @@ if(surface == NULL)
  free(map_data);
  free(chunk_data);
 
+ if(roof_mode)
+	loadRoofData();
+
 /* ERIC Useful for testing map wrapping
    I plan to add a map patch function
    to allow custom map changes to be
@@ -411,6 +427,113 @@ if(surface == NULL)
 */
  
  return true;
+}
+
+bool Map::has_roof(uint16 x, uint16 y, uint8 level)
+{
+	if(!roof_mode || level != 0)
+		return false;
+
+	if(roof_surface[y * 1024 + x] != 0)
+		return true;
+
+	return false;
+}
+
+std::string Map::getRoofDataFilename()
+{
+	std::string game_type, datadir, path, mapfile;
+
+	config->value("config/datadir", datadir, "");
+	config->value("config/GameID", game_type);
+
+	build_path(datadir, "maps", path);
+	datadir = path;
+	build_path(datadir, game_type, path);
+	datadir = path;
+	build_path(datadir, "roof_map_00.dat", mapfile);
+
+	return mapfile;
+}
+
+void Map::loadRoofData()
+{
+	NuvieIOFileRead file;
+	uint16 *ptr;
+	roof_surface = (uint16 *)malloc(1024 * 1024 * 2);
+	memset(roof_surface, 0, 1024 * 1024 * 2);
+
+	if(roof_surface && file.open(getRoofDataFilename()))
+	{
+		ptr = roof_surface;
+		while(!file.is_eof())
+		{
+			uint16 offset = file.read2();
+			ptr += offset;
+			uint8 run_len = file.read1();
+			for(uint8 i=0;i<run_len;i++)
+			{
+				*ptr = file.read2();
+				ptr++;
+			}
+		}
+	}
+	else
+	{
+		if(roof_surface)
+		{
+			free(roof_surface);
+			roof_surface = NULL;
+		}
+		roof_mode = false;
+	}
+}
+
+void Map::saveRoofData()
+{
+	NuvieIOFileWrite file;
+	uint32 prev_offset = 0;
+	uint32 cur_offset = 0;
+	uint16 run_length = 0;
+
+	if(roof_surface && file.open(getRoofDataFilename()))
+	{
+		for(;cur_offset < 1048576;)
+		{
+			for(;cur_offset<prev_offset + 65535 && cur_offset < 1048576;)
+			{
+				if(roof_surface[cur_offset] != 0)
+				{
+					file.write2((uint16)(cur_offset-prev_offset));
+					for(run_length = 0;run_length < 256; run_length++)
+					{
+						if(roof_surface[cur_offset+run_length] == 0)
+							break;
+					}
+					if(run_length == 256)
+						run_length--;
+
+					file.write1((uint8)run_length);
+					for(uint8 i=0;i<run_length;i++)
+					{
+						file.write2(roof_surface[cur_offset+i]);
+					}
+					cur_offset += run_length;
+					break;
+				}
+
+				cur_offset++;
+				if(cur_offset == prev_offset + 65535)
+				{
+					//write blank.
+					file.write2(65535);
+					file.write1(0);
+				}
+			}
+
+			prev_offset = cur_offset;
+		}
+	}
 }
 
 void Map::insertSurfaceSuperChunk(unsigned char *schunk, unsigned char *chunk_data, uint8 schunk_num)
