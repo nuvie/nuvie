@@ -55,6 +55,8 @@ bool MapEditorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 
 	map_window->set_show_cursor(true);
 	map_window->moveCursor(7,6);
+	map_window->set_roof_display_mode(ROOF_DISPLAY_FORCE_ON);
+	map_window->set_enable_blacking(false);
 
 	tile_offset = 0;
 	selectedTile = 3;
@@ -174,6 +176,9 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
         case SDLK_TAB :
 
         	break;
+        case SDLK_ESCAPE:
+        	closeView();
+        	break;
         default:
             return GUI_PASS;
     }
@@ -191,10 +196,8 @@ GUI_status MapEditorView::MouseUp(int x, int y, int button)
 
  if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
  {
-	 map_window->set_show_cursor(false);
-	 release_focus();
-	 Hide();
-		//FIXME unload view from the view_manager.
+	 closeView();
+	//FIXME unload view from the view_manager.
  }
  else if(HitRect(x, y))
  {
@@ -224,4 +227,13 @@ void MapEditorView::setTile(uint16 x, uint16 y, uint8 level)
         	{
         		roof_data[y * ((level == 0) ? 1024 : 256) + x] = selectedTile;
         	}
+}
+
+void MapEditorView::closeView()
+{
+	map_window->set_show_cursor(false);
+	map_window->set_roof_display_mode(ROOF_DISPLAY_NORMAL);
+	map_window->set_enable_blacking(true);
+	release_focus();
+	Hide();
 }

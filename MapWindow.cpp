@@ -92,6 +92,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  show_use_cursor = false;
  x_ray_view = false;
  freeze_blacking_location = false;
+ enable_blacking = true;
 
  new_thumbnail = false;
  thumbnail = NULL;
@@ -114,6 +115,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  draw_garg_lens_anim = false;
 
  window_updated = true;
+ roof_display = ROOF_DISPLAY_NORMAL;
 }
 
 MapWindow::~MapWindow()
@@ -262,6 +264,12 @@ void MapWindow::set_x_ray_view(bool state)
 void MapWindow::set_freeze_blacking_location(bool state)
 {
     freeze_blacking_location = state;
+}
+
+void MapWindow::set_enable_blacking(bool state)
+{
+	enable_blacking = state;
+	updateBlacking();
 }
 
 void MapWindow::moveLevel(uint8 new_level)
@@ -606,7 +614,7 @@ void MapWindow::Display(bool full_redraw)
 
  //drawAnims();
 
- if(roof_mode)
+ if(roof_mode && roof_display != ROOF_DISPLAY_OFF)
  {
 	 drawRoofs();
  }
@@ -1006,7 +1014,7 @@ void MapWindow::drawBorder()
 
 void MapWindow::drawRoofs()
 {
-	if(map->has_roof(cur_x + (win_width - 1) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
+	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
 		return;
 
 	uint16 *roof_map_ptr = map->get_roof_data(cur_level);
@@ -1067,6 +1075,20 @@ void MapWindow::generateTmpMap()
  
  map_ptr = map->get_map_data(cur_level);
  pitch = map->get_width(cur_level);
+
+ if(enable_blacking == false)
+ {
+	 uint16 *ptr = tmp_map_buf;
+	for(y=0;y<tmp_map_height;y++)
+	{
+		for(x=0;x<tmp_map_width;x++)
+		{
+			*ptr = map_ptr[(cur_y + y - 1) * pitch + cur_x + x - 1];
+			ptr++;
+		}
+	}
+	return;
+ }
 
  memset(tmp_map_buf, 0, tmp_map_width * tmp_map_height * sizeof(uint16));
 

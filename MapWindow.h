@@ -59,6 +59,8 @@ typedef struct {
 	CallBack *caller;
 } WizardEye;
 
+enum RoofDisplayType {ROOF_DISPLAY_OFF, ROOF_DISPLAY_NORMAL, ROOF_DISPLAY_FORCE_ON };
+
 class MapWindow: public GUI_Widget
 {
  friend class AnimManager;
@@ -108,8 +110,11 @@ class MapWindow: public GUI_Widget
 
  bool window_updated;
  bool freeze_blacking_location;
+ bool enable_blacking;
 
  bool roof_mode;
+ RoofDisplayType roof_display;
+
  SDL_Surface *roof_tiles;
 
  WizardEye wizard_eye_info;
@@ -132,6 +137,8 @@ class MapWindow: public GUI_Widget
  void set_overlay_level(int level = MAP_OVERLAY_DEFAULT) { overlay_level = level; }
  void set_x_ray_view(bool state);
  void set_freeze_blacking_location(bool state);
+ void set_enable_blacking(bool state);
+ void set_roof_display_mode(enum RoofDisplayType mode) { roof_display = mode; }
 
  void moveLevel(uint8 new_level);
  void moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add = 0, uint8 new_y_add = 0);
