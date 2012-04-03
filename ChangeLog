@@ -1,3 +1,10 @@
+2012-04-03  Eric Fry <efry at users.sourceforge.net> r1310
+	* Added files to XCode build environment.
+	* Added data/images/roof_tiles.bmp to win32 installer script.
+
+2012-04-03  Kirben r1309
+	* Win32 compile fixes
+
 2012-04-03  Eric Fry <efry at users.sourceforge.net> r1308
 	* Added roof mode support. /config/ultima6/roof_mode = true
 	* Started work on in-game map editor. Alt-600 to activate. right-click to

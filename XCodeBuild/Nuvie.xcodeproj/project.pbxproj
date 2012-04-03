@@ -296,6 +296,8 @@
 		EC223ADE151FBB0800D9D659 /* ContainerWidgetGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC223AD6151FBB0800D9D659 /* ContainerWidgetGump.h */; };
 		EC223ADF151FBB0800D9D659 /* DollViewGump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC223AD7151FBB0800D9D659 /* DollViewGump.cpp */; };
 		EC223AE0151FBB0800D9D659 /* DollViewGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC223AD8151FBB0800D9D659 /* DollViewGump.h */; };
+		EC2EC46F152AF582008B1C0F /* MapEditorView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC2EC46D152AF582008B1C0F /* MapEditorView.cpp */; };
+		EC2EC470152AF582008B1C0F /* MapEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2EC46E152AF582008B1C0F /* MapEditorView.h */; };
 		EC360B6A130DC4C200D4CAE6 /* CustomSfxManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */; };
 		EC360B6B130DC4C200D4CAE6 /* CustomSfxManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EC360B69130DC4C200D4CAE6 /* CustomSfxManager.h */; };
 		EC360B72130DC4E800D4CAE6 /* PCSpeakerSfxManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B6C130DC4E800D4CAE6 /* PCSpeakerSfxManager.cpp */; };
@@ -672,6 +674,8 @@
 		EC223AD6151FBB0800D9D659 /* ContainerWidgetGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContainerWidgetGump.h; path = ../views/ContainerWidgetGump.h; sourceTree = SOURCE_ROOT; };
 		EC223AD7151FBB0800D9D659 /* DollViewGump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DollViewGump.cpp; path = ../views/DollViewGump.cpp; sourceTree = SOURCE_ROOT; };
 		EC223AD8151FBB0800D9D659 /* DollViewGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DollViewGump.h; path = ../views/DollViewGump.h; sourceTree = SOURCE_ROOT; };
+		EC2EC46D152AF582008B1C0F /* MapEditorView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MapEditorView.cpp; path = ../views/MapEditorView.cpp; sourceTree = SOURCE_ROOT; };
+		EC2EC46E152AF582008B1C0F /* MapEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEditorView.h; path = ../views/MapEditorView.h; sourceTree = SOURCE_ROOT; };
 		EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CustomSfxManager.cpp; path = ../sound/CustomSfxManager.cpp; sourceTree = SOURCE_ROOT; };
 		EC360B69130DC4C200D4CAE6 /* CustomSfxManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomSfxManager.h; path = ../sound/CustomSfxManager.h; sourceTree = SOURCE_ROOT; };
 		EC360B6C130DC4E800D4CAE6 /* PCSpeakerSfxManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PCSpeakerSfxManager.cpp; path = ../sound/PCSpeakerSfxManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -812,6 +816,8 @@
 				07E87A11050E07AF00A8000A /* InventoryFont.h */,
 				0762A3550506027A00A8000A /* InventoryWidget.h */,
 				0762A3540506027A00A8000A /* InventoryWidget.cpp */,
+				EC2EC46E152AF582008B1C0F /* MapEditorView.h */,
+				EC2EC46D152AF582008B1C0F /* MapEditorView.cpp */,
 				ECAD317D13F0A1BA001ABC85 /* SpellView.h */,
 				ECAD317C13F0A1BA001ABC85 /* SpellView.cpp */,
 				EC6DB723150E10D000E5EEBC /* SpellViewGump.h */,
@@ -1546,6 +1552,7 @@
 				EC223ADC151FBB0800D9D659 /* ContainerWidget.h in Headers */,
 				EC223ADE151FBB0800D9D659 /* ContainerWidgetGump.h in Headers */,
 				EC223AE0151FBB0800D9D659 /* DollViewGump.h in Headers */,
+				EC2EC470152AF582008B1C0F /* MapEditorView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1815,6 +1822,7 @@
 				EC223ADB151FBB0800D9D659 /* ContainerWidget.cpp in Sources */,
 				EC223ADD151FBB0800D9D659 /* ContainerWidgetGump.cpp in Sources */,
 				EC223ADF151FBB0800D9D659 /* DollViewGump.cpp in Sources */,
+				EC2EC46F152AF582008B1C0F /* MapEditorView.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
