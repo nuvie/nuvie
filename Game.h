@@ -151,6 +151,8 @@ class Game
  uint8 get_game_style() { return game_style; }
  bool is_new_style() { return (game_style == NUVIE_STYLE_NEW); }
  bool is_orig_style() { return (game_style == NUVIE_STYLE_ORIG); }
+ bool is_roof_mode();
+
  /* Return instances of Game classes */
  static Game *get_game()          { return(game); }
  Configuration *get_config()       { return(config); }

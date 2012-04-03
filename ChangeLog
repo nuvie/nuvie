@@ -1,3 +1,10 @@
+2012-04-04  Eric Fry <efry at users.sourceforge.net> r1313
+	* Don't load map editor when roof_mode = no
+	* Wrap coord when loading temp map with blacking disabled.
+
+2012-04-03  Kirben r1312
+	* Add data/images/roof_tiles.bmp to install target for mingw
+
 2012-04-03  Eric Fry <efry at users.sourceforge.net> r1311
 	* Disable blacking when in map editor.
 	* Always display roof tiles when in map editor.

@@ -109,7 +109,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  walking = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
 
- config->value(config_get_game_key(config) + "/roof_mode", roof_mode, false);
+ roof_mode = Game::get_game()->is_roof_mode();
 
  draw_brit_lens_anim = false;
  draw_garg_lens_anim = false;
@@ -1083,7 +1083,11 @@ void MapWindow::generateTmpMap()
 	{
 		for(x=0;x<tmp_map_width;x++)
 		{
-			*ptr = map_ptr[(cur_y + y - 1) * pitch + cur_x + x - 1];
+			uint16 x1 = cur_x + x - 1;
+			uint16 y1 = cur_y + y - 1;
+			WRAP_COORD(x1,cur_level);
+			WRAP_COORD(y1,cur_level);
+			*ptr = map_ptr[y1 * pitch + x1];
 			ptr++;
 		}
 	}

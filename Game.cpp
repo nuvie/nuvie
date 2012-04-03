@@ -304,6 +304,13 @@ void Game::init_game_style()
 
 }
 
+bool Game::is_roof_mode()
+{
+	bool roof_mode;
+	config->value(config_get_game_key(config) + "/roof_mode", roof_mode, false);
+	return roof_mode;
+}
+
 bool Game::set_mouse_pointer(uint8 ptr_num)
 {
     return(cursor && cursor->set_pointer(ptr_num));

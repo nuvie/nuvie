@@ -227,7 +227,7 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 
 void ViewManager::open_mapeditor_view()
 {
-	if(Game::get_game()->is_new_style())
+	if(Game::get_game()->is_new_style() && Game::get_game()->is_roof_mode())
 	{
 		MapEditorView *view = new MapEditorView(config);
 		view->init(Game::get_game()->get_screen(), this, 230, 0, text, party, tile_manager, obj_manager);
