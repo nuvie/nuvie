@@ -24,6 +24,7 @@
  *
  */
 #include <cstdlib>
+#include <string>
 
 #include "ObjManager.h"
 
