@@ -64,6 +64,44 @@ static const uint8 movement_array[9 * 9] =
     7, 7, 6, 6, 6, 6, 6, 5, 5
 };
 
+static const Tile grid_tile = {
+		0,
+		false,
+		false,
+		false,
+		false,
+		false,
+		true,
+		false,
+		false,
+		0,
+		//uint8 qty;
+		//uint8 flags;
+
+		0,
+		0,
+		0,
+
+		{
+				54,255,255,255,58,255,255,255,58,255,255,255,58,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				58,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				58,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				58,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
+				255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
+
+		}
+};
 
 MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 {
@@ -90,6 +128,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  cursor_y = 0;
  show_cursor = false;
  show_use_cursor = false;
+ show_grid = false;
  x_ray_view = false;
  freeze_blacking_location = false;
  enable_blacking = true;
@@ -253,6 +292,11 @@ void MapWindow::set_show_cursor(bool state)
 void MapWindow::set_show_use_cursor(bool state)
 {
  show_use_cursor = state;
+}
+
+void MapWindow::set_show_grid(bool state)
+{
+	show_grid = state;
 }
 
 void MapWindow::set_x_ray_view(bool state)
@@ -621,6 +665,11 @@ void MapWindow::Display(bool full_redraw)
 
  if(game->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) != 0) //FIXME u6 specific.
    drawRain();
+
+ if(show_grid)
+ {
+	drawGrid();
+ }
 
  if(show_cursor)
   {
@@ -1064,6 +1113,17 @@ void MapWindow::drawRain()
 		screen->put_pixel(118, x+1, y+1);
 		screen->put_pixel(0, x+2, y+2);
 	}
+}
+
+void MapWindow::drawGrid()
+{
+	for(uint16 i=0;i<win_height;i++)
+	  {
+	   for(uint16 j=0;j<win_width;j++)
+	     {
+		   screen->blit(area.x + (j*16) - cur_x_add, area.y + (i*16) - cur_y_add, (unsigned char *)grid_tile.data, 8, 16, 16, 16, true);
+	     }
+	  }
 }
 
 void MapWindow::generateTmpMap()

@@ -50,7 +50,7 @@ public:
     void closeView();
 protected:
     void setTile(uint16 x, uint16 y, uint8 level);
-
+    void toggleGrid();
 };
 
 #endif /* __MapEditorView_h__ */

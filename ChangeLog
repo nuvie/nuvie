@@ -1,3 +1,7 @@
+2012-04-04  Eric Fry <efry at users.sourceforge.net> r1314
+	* Added grid lines to the map editor. hit 'g' to toggle them on/off.
+	* Changed map editor background colour from black to blue.
+
 2012-04-04  Eric Fry <efry at users.sourceforge.net> r1313
 	* Don't load map editor when roof_mode = no
 	* Wrap coord when loading temp map with blacking disabled.

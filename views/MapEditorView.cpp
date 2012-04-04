@@ -48,7 +48,7 @@ bool MapEditorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 	View::init(x,y,t,p,tm,om);
 
 	SetRect(area.x, area.y, 90, 200);
-	bg_color = 0;
+	bg_color = 119;
 
 	map_window = Game::get_game()->get_map_window();
 	roof_tiles = map_window->get_roof_tiles();
@@ -57,6 +57,7 @@ bool MapEditorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 	map_window->moveCursor(7,6);
 	map_window->set_roof_display_mode(ROOF_DISPLAY_FORCE_ON);
 	map_window->set_enable_blacking(false);
+	map_window->set_show_grid(false);
 
 	tile_offset = 0;
 	selectedTile = 3;
@@ -159,6 +160,9 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
         case SDLK_KP6:
         	map_window->moveMapRelative(1, 0);
             break;
+        case SDLK_g:
+        	toggleGrid();
+        	break;
         case SDLK_s:
         	Game::get_game()->get_game_map()->saveRoofData();
         	break;
@@ -229,11 +233,17 @@ void MapEditorView::setTile(uint16 x, uint16 y, uint8 level)
         	}
 }
 
+void MapEditorView::toggleGrid()
+{
+	map_window->set_show_grid(!map_window->is_grid_showing());
+}
+
 void MapEditorView::closeView()
 {
 	map_window->set_show_cursor(false);
 	map_window->set_roof_display_mode(ROOF_DISPLAY_NORMAL);
 	map_window->set_enable_blacking(true);
+	map_window->set_show_grid(false);
 	release_focus();
 	Hide();
 }

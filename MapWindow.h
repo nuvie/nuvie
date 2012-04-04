@@ -91,6 +91,7 @@ class MapWindow: public GUI_Widget
 
  bool show_cursor;
  bool show_use_cursor;
+ bool show_grid;
 
  unsigned char *thumbnail;
  bool new_thumbnail;
@@ -132,6 +133,8 @@ class MapWindow: public GUI_Widget
  bool set_windowSize(uint16 width, uint16 height);
  void set_show_cursor(bool state);
  void set_show_use_cursor(bool state);
+ void set_show_grid(bool state);
+ bool is_grid_showing() { return show_grid; }
  void set_velocity(sint16 vx, sint16 vy) { vel_x = vx; vel_y = vy; }
  void set_overlay(SDL_Surface *surfpt);
  void set_overlay_level(int level = MAP_OVERLAY_DEFAULT) { overlay_level = level; }
@@ -231,6 +234,7 @@ protected:
  inline void drawTopTile(Tile *tile, uint16 x, uint16 y, bool toptile);
  inline void drawActor(Actor *actor);
  void drawRoofs();
+ void drawGrid();
  void drawRain();
  inline void drawLensAnim();
 
