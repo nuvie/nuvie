@@ -186,6 +186,11 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	{
 		Game::get_game()->get_view_manager()->open_container_view(actor);
 	}
+	else if(caller == heart_button)
+	{
+		Game::get_game()->get_view_manager()->open_portrait_gump(actor);
+	}
+
     return GUI_PASS;
 }
 

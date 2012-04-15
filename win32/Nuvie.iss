@@ -54,6 +54,7 @@ Source: data\images\gumps\gump_btn_down.bmp; DestDir: {app}\data\images\gumps; F
 Source: data\images\gumps\gump_btn_up.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\left_arrow.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\right_arrow.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
+Source: data\images\gumps\portrait_bg.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\container\bag_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\cont_down_btn_down.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\cont_down_btn_up.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion

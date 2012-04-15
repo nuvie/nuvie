@@ -1,3 +1,7 @@
+2012-04-15  Eric Fry <efry at users.sourceforge.net> r1315
+	* Added new Portrait gump.
+	* Free up objects when closing gumps.
+
 2012-04-04  Eric Fry <efry at users.sourceforge.net> r1314
 	* Added grid lines to the map editor. hit 'g' to toggle them on/off.
 	* Changed map editor background colour from black to blue.

@@ -275,6 +275,8 @@ nuvie_SOURCES = \
 	views/PartyView.h \
 	views/PortraitView.cpp \
 	views/PortraitView.h \
+	views/PortraitViewGump.cpp \
+	views/PortraitViewGump.h \
 	views/ViewManager.cpp \
 	views/ViewManager.h \
 	views/DollWidget.cpp \

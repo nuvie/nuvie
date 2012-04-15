@@ -47,7 +47,7 @@ public:
     GUI_status MouseDown(int x, int y, int button);
     GUI_status MouseUp(int x, int y, int button);
 
-    void closeView();
+    virtual void close_view();
 protected:
     void setTile(uint16 x, uint16 y, uint8 level);
     void toggleGrid();

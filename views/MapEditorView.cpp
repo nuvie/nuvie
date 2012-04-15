@@ -28,6 +28,7 @@
 #include "Configuration.h"
 #include "Map.h"
 #include "MapWindow.h"
+#include "ViewManager.h"
 #include "MapEditorView.h"
 
 #define TILES_W 5
@@ -181,7 +182,7 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
 
         	break;
         case SDLK_ESCAPE:
-        	closeView();
+        	Game::get_game()->get_view_manager()->close_gump(this);
         	break;
         default:
             return GUI_PASS;
@@ -200,8 +201,7 @@ GUI_status MapEditorView::MouseUp(int x, int y, int button)
 
  if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
  {
-	 closeView();
-	//FIXME unload view from the view_manager.
+ 	Game::get_game()->get_view_manager()->close_gump(this);
  }
  else if(HitRect(x, y))
  {
@@ -238,7 +238,7 @@ void MapEditorView::toggleGrid()
 	map_window->set_show_grid(!map_window->is_grid_showing());
 }
 
-void MapEditorView::closeView()
+void MapEditorView::close_view()
 {
 	map_window->set_show_cursor(false);
 	map_window->set_roof_display_mode(ROOF_DISPLAY_NORMAL);

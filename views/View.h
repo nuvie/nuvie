@@ -65,6 +65,8 @@ class View: public GUI_Widget
  bool next_party_member();
  bool prev_party_member();
 
+ virtual void close_view() {}
+
  protected:
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);

@@ -54,6 +54,7 @@ class ViewManager
  TileManager *tile_manager;
  ObjManager *obj_manager;
  Party *party;
+ Portrait *portrait;
 
  ActorView *actor_view;
  InventoryView *inventory_view;
@@ -68,7 +69,7 @@ class ViewManager
  ViewManager(Configuration *cfg);
  virtual ~ViewManager();
 
- bool init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *portrait);
+ bool init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *por);
  void reload();
 
  void update();
@@ -96,6 +97,8 @@ class ViewManager
  void open_container_view(Actor *actor) { open_container_view(actor, NULL); }
 
  void open_mapeditor_view();
+ void open_portrait_gump(Actor *a);
+ void close_gump(View *gump);
 
  protected:
 

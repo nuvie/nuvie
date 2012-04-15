@@ -36,6 +36,7 @@
 #include "InventoryView.h"
 #include "DollViewGump.h"
 #include "ContainerViewGump.h"
+#include "PortraitViewGump.h"
 #include "PartyView.h"
 #include "SpellView.h"
 #include "SpellViewGump.h"
@@ -57,13 +58,14 @@ ViewManager::~ViewManager()
  if (current_view != portrait_view)  delete portrait_view;
 }
 
-bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *portrait)
+bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *por)
 {
  gui = g;
  text = t;
  party = p;
  tile_manager = tm;
  obj_manager = om;
+ portrait = por;
 
  uint16 x_off = config_get_video_x_offset(config);
  uint16 y_off = config_get_video_y_offset(config);
@@ -236,12 +238,29 @@ void ViewManager::open_mapeditor_view()
 	}
 }
 
+void ViewManager::open_portrait_gump(Actor *a)
+{
+	if(Game::get_game()->is_new_style())
+	{
+		PortraitViewGump *view = new PortraitViewGump(config);
+		view->init(Game::get_game()->get_screen(), this, 62, 0, text, party, tile_manager, obj_manager, portrait, a);
+		add_view((View *)view);
+		view->grab_focus();
+	}
+}
+
 void ViewManager::add_view(View *view)
 {
 	view->Show();
 	gui->AddWidget((GUI_Widget *)view);
 	view->Redraw();
 	gui->Display();
+}
+
+void ViewManager::close_gump(View *gump)
+{
+	gump->close_view();
+	gui->removeWidget((GUI_Widget *)gump);
 }
 
 // callbacks for switching views
