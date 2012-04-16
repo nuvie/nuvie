@@ -296,6 +296,8 @@
 		EC223ADE151FBB0800D9D659 /* ContainerWidgetGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC223AD6151FBB0800D9D659 /* ContainerWidgetGump.h */; };
 		EC223ADF151FBB0800D9D659 /* DollViewGump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC223AD7151FBB0800D9D659 /* DollViewGump.cpp */; };
 		EC223AE0151FBB0800D9D659 /* DollViewGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC223AD8151FBB0800D9D659 /* DollViewGump.h */; };
+		EC2CF952153CCF5300A6036D /* PortraitViewGump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC2CF950153CCF5300A6036D /* PortraitViewGump.cpp */; };
+		EC2CF953153CCF5300A6036D /* PortraitViewGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2CF951153CCF5300A6036D /* PortraitViewGump.h */; };
 		EC2EC46F152AF582008B1C0F /* MapEditorView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC2EC46D152AF582008B1C0F /* MapEditorView.cpp */; };
 		EC2EC470152AF582008B1C0F /* MapEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2EC46E152AF582008B1C0F /* MapEditorView.h */; };
 		EC360B6A130DC4C200D4CAE6 /* CustomSfxManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */; };
@@ -674,6 +676,8 @@
 		EC223AD6151FBB0800D9D659 /* ContainerWidgetGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContainerWidgetGump.h; path = ../views/ContainerWidgetGump.h; sourceTree = SOURCE_ROOT; };
 		EC223AD7151FBB0800D9D659 /* DollViewGump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DollViewGump.cpp; path = ../views/DollViewGump.cpp; sourceTree = SOURCE_ROOT; };
 		EC223AD8151FBB0800D9D659 /* DollViewGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DollViewGump.h; path = ../views/DollViewGump.h; sourceTree = SOURCE_ROOT; };
+		EC2CF950153CCF5300A6036D /* PortraitViewGump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PortraitViewGump.cpp; path = ../views/PortraitViewGump.cpp; sourceTree = SOURCE_ROOT; };
+		EC2CF951153CCF5300A6036D /* PortraitViewGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PortraitViewGump.h; path = ../views/PortraitViewGump.h; sourceTree = SOURCE_ROOT; };
 		EC2EC46D152AF582008B1C0F /* MapEditorView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MapEditorView.cpp; path = ../views/MapEditorView.cpp; sourceTree = SOURCE_ROOT; };
 		EC2EC46E152AF582008B1C0F /* MapEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEditorView.h; path = ../views/MapEditorView.h; sourceTree = SOURCE_ROOT; };
 		EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CustomSfxManager.cpp; path = ../sound/CustomSfxManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -805,6 +809,8 @@
 				071DE9F604F61F9000A8000A /* PartyView.cpp */,
 				07C3D12C047A1C7B00A8000A /* PortraitView.h */,
 				07C3D12B047A1C7B00A8000A /* PortraitView.cpp */,
+				EC2CF951153CCF5300A6036D /* PortraitViewGump.h */,
+				EC2CF950153CCF5300A6036D /* PortraitViewGump.cpp */,
 				07C3D12E047A1C7B00A8000A /* ViewManager.h */,
 				07C3D12D047A1C7B00A8000A /* ViewManager.cpp */,
 				0762A33905036D0E00A8000A /* DollWidget.h */,
@@ -1553,6 +1559,7 @@
 				EC223ADE151FBB0800D9D659 /* ContainerWidgetGump.h in Headers */,
 				EC223AE0151FBB0800D9D659 /* DollViewGump.h in Headers */,
 				EC2EC470152AF582008B1C0F /* MapEditorView.h in Headers */,
+				EC2CF953153CCF5300A6036D /* PortraitViewGump.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1823,6 +1830,7 @@
 				EC223ADD151FBB0800D9D659 /* ContainerWidgetGump.cpp in Sources */,
 				EC223ADF151FBB0800D9D659 /* DollViewGump.cpp in Sources */,
 				EC2EC46F152AF582008B1C0F /* MapEditorView.cpp in Sources */,
+				EC2CF952153CCF5300A6036D /* PortraitViewGump.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

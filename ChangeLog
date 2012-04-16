@@ -1,3 +1,7 @@
+2012-04-17  Eric Fry <efry at users.sourceforge.net> r1316
+	* Added PortraitViewGump to XCode build env.
+	* Use the view manager to close gumps when right-clicking.
+
 2012-04-15  Eric Fry <efry at users.sourceforge.net> r1315
 	* Added new Portrait gump.
 	* Free up objects when closing gumps.

@@ -26,6 +26,7 @@
 #include "GUI.h"
 #include "GUI_button.h"
 #include "Configuration.h"
+#include "ViewManager.h"
 #include "DraggableView.h"
 
 DraggableView::DraggableView(Configuration *config)
@@ -56,8 +57,7 @@ GUI_status DraggableView::MouseUp(int x, int y, int button)
  release_focus();
  if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
  {
-	 Hide();
-		//FIXME unload view from the view_manager.
+	 Game::get_game()->get_view_manager()->close_gump(this);
  }
  return GUI_YUM;
 }
