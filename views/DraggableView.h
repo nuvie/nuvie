@@ -46,7 +46,7 @@ public:
     void MoveRelative(int dx,int dy);
 
 protected:
-    GUI_Button *loadButton(std::string dir, std::string name, uint16 x, uint16 y);
+
 };
 
 #endif /* __DraggableView_h__ */

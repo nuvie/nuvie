@@ -69,6 +69,10 @@ Source: data\images\gumps\doll\inventory_btn_down.bmp; DestDir: {app}\data\image
 Source: data\images\gumps\doll\inventory_btn_up.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\party_btn_down.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\party_btn_up.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
+Source: data\images\gumps\mapeditor\up_btn_up.bmp; DestDir: {app}\data\images\gumps\mapeditor; Flags: ignoreversion
+Source: data\images\gumps\mapeditor\up_btn_down.bmp; DestDir: {app}\data\images\gumps\mapeditor; Flags: ignoreversion
+Source: data\images\gumps\mapeditor\down_btn_up.bmp; DestDir: {app}\data\images\gumps\mapeditor; Flags: ignoreversion
+Source: data\images\gumps\mapeditor\down_btn_down.bmp; DestDir: {app}\data\images\gumps\mapeditor; Flags: ignoreversion
 Source: data\images\gumps\spellbook\spellbook_bg.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
 Source: data\images\gumps\spellbook\spellbook_left_arrow.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
 Source: data\images\gumps\spellbook\spellbook_right_arrow.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion

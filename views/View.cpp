@@ -22,6 +22,7 @@
  */
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "Party.h"
 #include "GamePalette.h"
 #include "ViewManager.h"
@@ -141,4 +142,21 @@ GUI_status View::callback(uint16 msg, GUI_CallBack *caller, void *data)
    }
 
  return GUI_PASS;
+}
+
+GUI_Button *View::loadButton(std::string dir, std::string name, uint16 x, uint16 y)
+{
+	GUI_Button *button;
+	std::string imagefile;
+		std::string path;
+
+		SDL_Surface *image, *image1;
+		build_path(dir, name + "_btn_up.bmp", imagefile);
+			image = SDL_LoadBMP(imagefile.c_str());
+			build_path(dir, name + "_btn_down.bmp", imagefile);
+			image1 = SDL_LoadBMP(imagefile.c_str());
+
+			button = new GUI_Button(NULL, x, y, image, image1, this);
+			this->AddWidget(button);
+	return button;
 }

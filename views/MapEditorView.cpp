@@ -51,6 +51,19 @@ bool MapEditorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 	SetRect(area.x, area.y, 90, 200);
 	bg_color = 119;
 
+	std::string datadir = GUI::get_gui()->get_data_dir();
+	std::string path;
+
+	build_path(datadir, "images", path);
+	datadir = path;
+	build_path(datadir, "gumps", path);
+	datadir = path;
+	build_path(datadir, "mapeditor", path);
+	datadir = path;
+
+	up_button = loadButton(datadir, "up", 0, 7);
+	down_button = loadButton(datadir, "down", 0, 186);
+
 	map_window = Game::get_game()->get_map_window();
 	roof_tiles = map_window->get_roof_tiles();
 
@@ -69,32 +82,34 @@ void MapEditorView::Display(bool full_redraw)
 {
 	SDL_Rect src, dst;
 	src.w = 16;
-	    src.h = 16;
-	    dst.w = 16;
-	    dst.h = 16;
+	src.h = 16;
+	dst.w = 16;
+	dst.h = 16;
 
-   screen->fill(bg_color, area.x, area.y, area.w, area.h);
+	screen->fill(bg_color, area.x, area.y, area.w, area.h);
 
-   uint16 tile_num = tile_offset;
+	DisplayChildren(full_redraw);
 
-   for(int i=0;i< TILES_H;i++)
-   {
-	   for(int j=0;j<TILES_W;j++)
-	   {
-		      dst.x = area.x + 3 + (j*17);
-		      dst.y = area.y + 16 + (i*17);
+	uint16 tile_num = tile_offset;
 
-		      src.x = (tile_num % 32) * 16;
-		      src.y = (tile_num / 32) * 16;
+	for(int i=0;i< TILES_H;i++)
+	{
+		for(int j=0;j<TILES_W;j++)
+		{
+			dst.x = area.x + 3 + (j*17);
+			dst.y = area.y + 16 + (i*17);
 
-		      if(tile_num == selectedTile)
-		    	  screen->fill(15, dst.x-1,dst.y-1, 18, 18);
+			src.x = (tile_num % 32) * 16;
+			src.y = (tile_num / 32) * 16;
 
-		      SDL_BlitSurface(roof_tiles, &src, surface, &dst);
-		      tile_num++;
-	   }
-   }
-   screen->update(area.x, area.y, area.w, area.h);
+			if(tile_num == selectedTile)
+				screen->fill(15, dst.x-1,dst.y-1, 18, 18);
+
+			SDL_BlitSurface(roof_tiles, &src, surface, &dst);
+			tile_num++;
+		}
+	}
+	screen->update(area.x, area.y, area.w, area.h);
 }
 
 GUI_status MapEditorView::KeyDown(SDL_keysym key)
@@ -110,32 +125,36 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
 		{
 		case SDLK_UP:
 		case SDLK_KP8:
-			if(selectedTile > TILES_W)
-				selectedTile -= TILES_W;
+			if(selectedTile >= TILES_W)
+				update_selected_tile_relative(-TILES_W);
 			break;
 		case SDLK_DOWN:
 		case SDLK_KP2:
-			selectedTile += TILES_W;
+			update_selected_tile_relative(TILES_W);
 			break;
 		case SDLK_LEFT:
 		case SDLK_KP4:
-			selectedTile--;
+			update_selected_tile_relative(-1);
 			break;
 		case SDLK_RIGHT:
 		case SDLK_KP6:
-			selectedTile++;
+			update_selected_tile_relative(1);
 			break;
 		default:
 			break;
 		}
-
-		tile_offset = (TILES_W * TILES_H) * (selectedTile / (TILES_W * TILES_H));
 
 		return GUI_YUM;
 	}
 
     switch(key.sym)
     {
+    	case SDLK_PAGEUP:
+    		update_selected_tile_relative(-(TILES_W * TILES_H));
+    		break;
+    	case SDLK_PAGEDOWN:
+    		update_selected_tile_relative(TILES_W * TILES_H);
+    		break;
         case SDLK_KP1:
             break;
         case SDLK_KP3:
@@ -246,4 +265,28 @@ void MapEditorView::close_view()
 	map_window->set_show_grid(false);
 	release_focus();
 	Hide();
+}
+
+void MapEditorView::update_selected_tile_relative(sint32 rel_value)
+{
+	if((sint32)selectedTile + rel_value < 0)
+		return;
+
+	selectedTile = selectedTile + rel_value;
+	tile_offset = (TILES_W * TILES_H) * (selectedTile / (TILES_W * TILES_H));
+}
+
+GUI_status MapEditorView::callback(uint16 msg, GUI_CallBack *caller, void *data)
+{
+	if(caller == up_button)
+	{
+		update_selected_tile_relative(-(TILES_W * TILES_H));
+		return GUI_YUM;
+	}
+	else if(caller == down_button)
+	{
+		update_selected_tile_relative(TILES_W * TILES_H);
+		return GUI_YUM;
+	}
+    return GUI_PASS;
 }

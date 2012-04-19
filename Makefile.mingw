@@ -83,6 +83,7 @@ install: all
 	mkdir -p $(U6PATH)/data/images/gumps
 	mkdir -p $(U6PATH)/data/images/gumps/container
 	mkdir -p $(U6PATH)/data/images/gumps/doll
+	mkdir -p $(U6PATH)/data/images/gumps/mapeditor
 	mkdir -p $(U6PATH)/data/images/gumps/spellbook
 	mkdir -p $(U6PATH)/data/maps
 	mkdir -p $(U6PATH)/data/maps/u6
@@ -101,6 +102,7 @@ install: all
 	cp data/images/gumps/*.bmp $(U6PATH)/data/images/gumps
 	cp data/images/gumps/container/*.bmp $(U6PATH)/data/images/gumps/container
 	cp data/images/gumps/doll/*.bmp $(U6PATH)/data/images/gumps/doll
+	cp data/images/gumps/mapeditor/*.bmp $(U6PATH)/data/images/gumps/mapeditor
 	cp data/images/gumps/spellbook/*.bmp $(U6PATH)/data/images/gumps/spellbook
 	cp data/maps/u6/*.dat $(U6PATH)/data/maps/u6
 	cp data/scripts/u6/magic/circle_01/*.lua $(U6PATH)/data/scripts/u6/magic/circle_01

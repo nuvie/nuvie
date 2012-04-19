@@ -37,6 +37,8 @@ private:
 	MapWindow *map_window;
 	uint16 selectedTile;
 	uint16 tile_offset;
+	GUI_Button *up_button;
+	GUI_Button *down_button;
 public:
 	MapEditorView(Configuration *config);
 	virtual ~MapEditorView();
@@ -48,9 +50,12 @@ public:
     GUI_status MouseUp(int x, int y, int button);
 
     virtual void close_view();
+    GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 protected:
     void setTile(uint16 x, uint16 y, uint8 level);
     void toggleGrid();
+private:
+    void update_selected_tile_relative(sint32 rel_value);
 };
 
 #endif /* __MapEditorView_h__ */

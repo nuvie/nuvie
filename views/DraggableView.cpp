@@ -109,20 +109,3 @@ void DraggableView::MoveRelative(int dx,int dy)
 
  return;
 }
-
-GUI_Button *DraggableView::loadButton(std::string dir, std::string name, uint16 x, uint16 y)
-{
-	GUI_Button *button;
-	std::string imagefile;
-		std::string path;
-
-		SDL_Surface *image, *image1;
-		build_path(dir, name + "_btn_up.bmp", imagefile);
-			image = SDL_LoadBMP(imagefile.c_str());
-			build_path(dir, name + "_btn_down.bmp", imagefile);
-			image1 = SDL_LoadBMP(imagefile.c_str());
-
-			button = new GUI_Button(NULL, x, y, image, image1, this);
-			this->AddWidget(button);
-	return button;
-}

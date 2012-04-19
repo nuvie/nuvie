@@ -70,6 +70,7 @@ class View: public GUI_Widget
  protected:
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
+ GUI_Button *loadButton(std::string dir, std::string name, uint16 x, uint16 y);
 };
 
 #endif /* __View_h__ */
