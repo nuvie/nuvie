@@ -1023,7 +1023,7 @@ load_images("intro_1.shp")
 music_play("bootup.m")
 --[ [
 canvas_set_palette("palettes.int", 0)
-canvas_set_update_interval(40)
+canvas_set_update_interval(25)
 
 local img = g_img_tbl[0x45]
 

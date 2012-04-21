@@ -73,6 +73,8 @@ bool MapEditorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 	map_window->set_enable_blacking(false);
 	map_window->set_show_grid(false);
 
+	Game::get_game()->set_mouse_pointer(1); //crosshairs
+
 	tile_offset = 0;
 	selectedTile = 3;
 	return true;
@@ -241,6 +243,11 @@ GUI_status MapEditorView::MouseUp(int x, int y, int button)
  }
 
  return GUI_YUM;
+}
+
+GUI_status MapEditorView::MouseMotion(int x,int y,Uint8 state)
+{
+	return GUI_YUM;
 }
 
 void MapEditorView::setTile(uint16 x, uint16 y, uint8 level)

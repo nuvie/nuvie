@@ -48,6 +48,7 @@ public:
 	GUI_status KeyDown(SDL_keysym key);
     GUI_status MouseDown(int x, int y, int button);
     GUI_status MouseUp(int x, int y, int button);
+    GUI_status MouseMotion(int x,int y,Uint8 state);
 
     virtual void close_view();
     GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);

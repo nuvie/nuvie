@@ -1,3 +1,7 @@
+2012-04-21  Eric Fry <efry at users.sourceforge.net> r1318
+	* Use crosshairs mouse cursor in mapeditor.
+	* Fixed cutscene timing. Bug [3511125]
+
 2012-04-20  Eric Fry <efry at users.sourceforge.net> r1317
 	* Added the ability to page up/down in the mapeidtor tileset.
 	  You can use the pageup/down keys or gui buttons.
