@@ -101,8 +101,8 @@ void MapEditorView::Display(bool full_redraw)
 			dst.x = area.x + 3 + (j*17);
 			dst.y = area.y + 16 + (i*17);
 
-			src.x = (tile_num % 32) * 16;
-			src.y = (tile_num / 32) * 16;
+			src.x = (tile_num % MAPWINDOW_ROOFTILES_IMG_W) * 16;
+			src.y = (tile_num / MAPWINDOW_ROOFTILES_IMG_W) * 16;
 
 			if(tile_num == selectedTile)
 				screen->fill(15, dst.x-1,dst.y-1, 18, 18);
@@ -276,7 +276,7 @@ void MapEditorView::close_view()
 
 void MapEditorView::update_selected_tile_relative(sint32 rel_value)
 {
-	if((sint32)selectedTile + rel_value < 0)
+	if((sint32)selectedTile + rel_value < 0 || (sint32)selectedTile + rel_value >= (MAPWINDOW_ROOFTILES_IMG_W * MAPWINDOW_ROOFTILES_IMG_H))
 		return;
 
 	selectedTile = selectedTile + rel_value;

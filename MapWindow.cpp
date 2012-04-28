@@ -1087,8 +1087,8 @@ void MapWindow::drawRoofs()
 	      dst.x -= cur_x_add;
 	      dst.y -= cur_y_add;
 
-	       src.x = (roof_map_ptr[j] % 32) * 16;
-	       src.y = (roof_map_ptr[j] / 32) * 16;
+	       src.x = (roof_map_ptr[j] % MAPWINDOW_ROOFTILES_IMG_W) * 16;
+	       src.y = (roof_map_ptr[j] / MAPWINDOW_ROOFTILES_IMG_W) * 16;
 
 	       SDL_BlitSurface(roof_tiles, &src, surface, &dst);
 		   }

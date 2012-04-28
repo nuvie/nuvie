@@ -1,3 +1,8 @@
+2012-04-28  Eric Fry <efry at users.sourceforge.net> r1319
+	* Changed roof_tiles.bmp from 32x32 to 5x204 tiles.
+	* Constrain tile selection in mapeditor to tiles in roof_tiles.bmp.
+	* Updated roof map data to show current WIP.
+
 2012-04-21  Eric Fry <efry at users.sourceforge.net> r1318
 	* Use crosshairs mouse cursor in mapeditor.
 	* Fixed cutscene timing. Bug [3511125]

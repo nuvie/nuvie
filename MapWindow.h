@@ -47,6 +47,9 @@ class Game;
 #define MAP_OVERLAY_DEFAULT 0 /* just below border */
 #define MAP_OVERLAY_ONTOP   1 /* cover border */
 
+#define MAPWINDOW_ROOFTILES_IMG_W 5
+#define MAPWINDOW_ROOFTILES_IMG_H 204
+
 typedef struct {
 	Tile *t;
 	uint16 x,y;
