@@ -1,3 +1,8 @@
+2012-05-01  Eric Fry <efry at users.sourceforge.net> r1320
+	* Added Daniel c. Würl to the AUTHORS file.
+	* Reorganised the AUTHORS file to list active and inactive team members.
+	* Added new grey roof tiles.
+
 2012-04-28  Eric Fry <efry at users.sourceforge.net> r1319
 	* Changed roof_tiles.bmp from 32x32 to 5x204 tiles.
 	* Constrain tile selection in mapeditor to tiles in roof_tiles.bmp.
