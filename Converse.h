@@ -133,6 +133,7 @@ public:
     void unwait();
     void poll_input(const char *allowed = NULL, bool nonblock = true);
     bool override_input();
+    void collect_input();
 
     bool input();
     void print(const char *s = NULL);

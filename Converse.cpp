@@ -33,6 +33,7 @@
 #include "Event.h"
 #include "ConverseInterpret.h"
 #include "ConverseSpeech.h"
+#include "ConverseGump.h"
 #include "Converse.h"
 
 //#define CONVERSE_DEBUG
@@ -365,10 +366,18 @@ bool Converse::start(uint8 n)
         npc_num = n;
         init_variables();
         scroll->set_talking(true);
-        show_portrait(npc_num);
+
         Game::get_game()->get_sound_manager()->musicStop();
         Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         scroll->set_autobreak(true);
+        if(Game::get_game()->is_new_style())
+        {
+        	scroll->Show();
+        	scroll->set_input_mode(false);
+        	//scroll->grab_focus();
+        }
+
+        show_portrait(npc_num);
         unwait();
         DEBUG(0,LEVEL_INFORMATIONAL,"Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);
         return(true);
@@ -385,11 +394,19 @@ void Converse::stop()
 {
     reset(); // free memory
 
-    scroll->set_autobreak(false);
-    scroll->set_talking(false);
-    scroll->display_string("\n");
-    scroll->display_prompt();
-    views->set_inventory_mode();
+    if(Game::get_game()->is_new_style())
+    {
+    	scroll->Hide();
+    }
+    else
+    {
+    	scroll->set_autobreak(false);
+    	scroll->set_talking(false);
+    	scroll->display_string("\n");
+    	scroll->display_prompt();
+    	views->set_inventory_mode();
+    }
+
     Game::get_game()->get_sound_manager()->musicPlay();
     Game::get_game()->get_event()->set_mode(MOVE_MODE); // return control to player
 
@@ -463,7 +480,10 @@ void Converse::show_portrait(uint8 n)
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor, false);
-    views->set_portrait_mode(actor, (char *)nameret);
+    if(Game::get_game()->is_orig_style())
+    	views->set_portrait_mode(actor, (char *)nameret);
+    else
+    	((ConverseGump *)scroll)->set_actor_portrait(actor);
 }
 
 
@@ -559,6 +579,12 @@ bool Converse::override_input()
     return(true);
 }
 
+void Converse::collect_input()
+{
+	if(Game::get_game()->is_orig_style())
+		print("\nyou say:");
+    poll_input();
+}
 
 /* If not waiting, continue the active script. If waiting for input, check i/o
  * object (scroll), taking the input if available. Else wait until the scroll's

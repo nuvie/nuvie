@@ -29,6 +29,9 @@
 class Configuration;
 class Actor;
 
+#define PORTRAIT_WIDTH 56
+#define PORTRAIT_HEIGHT 64
+
 class Portrait
 {
  Configuration *config;

@@ -82,31 +82,45 @@ class MsgLine
 
 class MsgScroll: public GUI_Widget, public CallBack
 {
+protected:
  Configuration *config;
  int game_type;
+ Font *font;
+ uint16 scroll_height;
+ uint16 scroll_width;
+
+ // set by request_input()
+ CallBack *callback_target;
+ char *callback_user_data;
+
+ bool input_mode;
+ const char *permit_input; // character list, or 0 = any string
+
+ bool page_break;
+ bool just_finished_page_break;
+
+private:
  uint16 screen_x; //x offset to top left corner of MsgScroll
  uint16 screen_y; //y offset to top left corner of MsgScroll
 
- Font *font;
+
  uint8 bg_color;
  bool keyword_highlight;
- bool input_mode;
- const char *permit_input; // character list, or 0 = any string
+
  bool permit_inputescape; // can RETURN or ESCAPE be used to escape input entry
  bool talking;
 
  MsgText prompt;
  std::list<MsgText *> holding_buffer;
 
- bool page_break;
+
  bool show_cursor;
  bool autobreak; // if true, a page break will be added when the scroll is full
- bool just_finished_page_break;
+
 
  std::list<MsgLine *> msg_buf;
 
- uint16 scroll_height;
- uint16 scroll_width;
+
 
  bool scroll_updated;
  uint8 cursor_char;
@@ -119,26 +133,29 @@ class MsgScroll: public GUI_Widget, public CallBack
 
  uint16 display_pos;
 
- // set by request_input()
- CallBack *callback_target;
- char *callback_user_data;
+
 
  bool capitalise_next_letter;
 
  public:
 
  MsgScroll(Configuration *cfg, Font *f);
+ MsgScroll() : GUI_Widget(NULL, 0, 0, 0, 0) {};
  ~MsgScroll();
+
+ void init(Configuration *cfg, Font *f);
 
  bool init(char *player_name);
 
  void process_holding_buffer();
 
  MsgText *holding_buffer_get_token();
- bool add_token(MsgText *token);
+ bool parse_token(MsgText *token);
+ virtual void add_token(MsgText *token);
  bool remove_char();
 
- void set_font(Font *f);
+ void set_font(uint8 font_type);
+ bool is_garg_font();
 
  int printf(const std::string format,...);
 

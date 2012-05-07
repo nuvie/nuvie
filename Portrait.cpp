@@ -44,6 +44,8 @@
 #define PORTRAIT_U6_EXODUS 191
 #define PORTRAIT_U6_NOTHING 188
 
+
+
 Portrait::Portrait(Configuration *cfg)
 {
  config = cfg;
@@ -159,7 +161,7 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
   lzw_data = portrait->get_item(num);
   new_portrait = lzw.decompress_buffer(lzw_data, portrait->get_item_size(num), new_length);
   free(lzw_data);
-  Game::get_game()->get_dither()->dither_bitmap(new_portrait,56,64,true);
+  Game::get_game()->get_dither()->dither_bitmap(new_portrait,PORTRAIT_WIDTH,PORTRAIT_HEIGHT,true);
 
   return new_portrait;
  }

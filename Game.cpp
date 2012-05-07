@@ -42,6 +42,7 @@
 #include "Player.h"
 #include "Party.h"
 #include "Converse.h"
+#include "ConverseGump.h"
 #include "Text.h"
 #include "FontManager.h"
 #include "ViewManager.h"
@@ -234,7 +235,18 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    //map_window->set_windowSize(11,11);
 
    converse = new Converse();
+   if(is_orig_style())
+   {
    converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
+   }
+   else
+   {
+	   ConverseGump *conv_gump = new ConverseGump(config, font_manager->get_font(0));
+	   conv_gump->Hide();
+	   gui->AddWidget(conv_gump);
+
+	   converse->init(config, game_type, conv_gump, actor_manager, clock, player, view_manager, obj_manager);
+   }
 
    usecode->init(obj_manager, game_map, player, scroll);
 

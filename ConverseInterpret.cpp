@@ -751,8 +751,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             break;
         case U6OP_ASK: // 0xf7
             answer_mode = ANSWER_NO; // reset answer switch
-            converse->print("\nyou say:");
-            converse->poll_input();
+            converse->collect_input();
             break;
         case U6OP_ASKC: // 0xf8 (blocking, single character input)
             answer_mode = ANSWER_NO; // reset answer switch

@@ -1,3 +1,7 @@
+2012-05-08  Eric Fry <efry at users.sourceforge.net> r1321
+	* Started work on fullscreen map talk mode.
+	* Added new ConverseGump class.
+
 2012-05-01  Eric Fry <efry at users.sourceforge.net> r1320
 	* Added Daniel c. Würl to the AUTHORS file.
 	* Reorganised the AUTHORS file to list active and inactive team members.

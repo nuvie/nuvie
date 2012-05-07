@@ -145,17 +145,30 @@ MsgText *MsgLine::get_text_at_pos(uint16 pos)
 
 // MsgScroll Class
 
+void MsgScroll::init(Configuration *cfg, Font *f)
+{
+	font = f;
+
+	config = cfg;
+	config->value("config/GameType",game_type);
+
+	scroll_updated = false;
+
+	page_break = false;
+	show_cursor = true;
+	talking = false;
+	autobreak = false;
+	just_finished_page_break = false;
+
+	callback_target = NULL;
+	callback_user_data = NULL;
+}
+
 MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
  uint16 x, y;
 
- font = f;
-
- config = cfg;
- config->value("config/GameType",game_type);
-
- callback_target = NULL;
- callback_user_data = NULL;
+ init(cfg, f);
 
  switch(game_type)
    {
@@ -190,14 +203,6 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
  line_count = 0;
 
  cursor_wait = 0;
-
- scroll_updated = false;
-
- page_break = false;
- show_cursor = true;
- talking = false;
- autobreak = false;
- just_finished_page_break = false;
 
  add_new_line();
  display_pos = 0;
@@ -332,7 +337,7 @@ void MsgScroll::display_string(std::string s, Font *f)
 
      for( ; token != NULL && !page_break; )
        {
-        add_token(token);
+        parse_token(token);
         delete token;
         scroll_updated = true;
 
@@ -381,7 +386,7 @@ void MsgScroll::display_string(std::string s, Font *f)
   return NULL;
  }
 
-bool MsgScroll::add_token(MsgText *token)
+bool MsgScroll::parse_token(MsgText *token)
 {
  MsgLine *msg_line;
 
@@ -398,12 +403,12 @@ bool MsgScroll::add_token(MsgText *token)
     case '`'  :  capitalise_next_letter = true;
                  break;
 
-    case '<'  :  font = Game::get_game()->get_font_manager()->get_font(1); // runic / gargoyle font
+    case '<'  :  set_font(NUVIE_FONT_GARG); // runic / gargoyle font
                  break;
 
-    case '>'  :  if(font == Game::get_game()->get_font_manager()->get_font(1))
+    case '>'  :  if(is_garg_font())
                     {
-                     font = Game::get_game()->get_font_manager()->get_font(0); // english font
+                     set_font(NUVIE_FONT_NORMAL); // english font
                      break;
                     }
                   // Note fall through. ;-) We fall through if we haven't already seen a '<' char
@@ -432,7 +437,7 @@ bool MsgScroll::add_token(MsgText *token)
                 		capitalise_next_letter = false;
                 	}
 
-                	msg_line->append(token);
+                	add_token(token);
                  }
                  break;
    }
@@ -441,6 +446,11 @@ if(msg_buf.size() > scroll_height)
    display_pos = msg_buf.size() - scroll_height;
  just_finished_page_break = false;
  return true;
+}
+
+void MsgScroll::add_token(MsgText *token)
+{
+	msg_buf.back()->append(token);
 }
 
 bool MsgScroll::remove_char()
@@ -457,6 +467,16 @@ bool MsgScroll::remove_char()
    }
 
  return true;
+}
+
+void MsgScroll::set_font(uint8 font_type)
+{
+	font = Game::get_game()->get_font_manager()->get_font(font_type); // 0 = normal english; 1 = runic / gargoyle font
+}
+
+bool MsgScroll::is_garg_font()
+{
+	return (font == Game::get_game()->get_font_manager()->get_font(NUVIE_FONT_GARG));
 }
 
 inline MsgLine *MsgScroll::add_new_line()
@@ -817,7 +837,7 @@ bool MsgScroll::input_buf_add_char(char c)
  token.s.assign(&c, 1);
  token.font = font;
 
- add_token(&token);
+ parse_token(&token);
 
  return true;
 }

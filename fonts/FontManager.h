@@ -30,6 +30,9 @@
 class Configuration;
 class Font;
 
+#define NUVIE_FONT_NORMAL 0
+#define NUVIE_FONT_GARG   1
+
 class FontManager
 {
  Configuration *config;

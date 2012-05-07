@@ -64,12 +64,12 @@ bool Font::init(const char *filename)
  return true;
 }
 
-bool Font::drawString(Screen *screen, const char *str, uint16 x, uint16 y)
+bool Font::drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color)
 {
- return drawString(screen, str, strlen(str), x, y);
+ return drawString(screen, str, strlen(str), x, y, color);
 }
 
-bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y)
+bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color)
 {
  uint16 i;
  bool highlight = false;
@@ -86,7 +86,7 @@ bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16
        if(!isalpha(str[i]))
           highlight = false;
        x += drawChar(screen, get_char_num(str[i]), x, y,
-                highlight ? FONT_COLOR_U6_HIGHLIGHT : FONT_COLOR_U6_NORMAL);
+                highlight ? FONT_COLOR_U6_HIGHLIGHT : color);
       }
    }
  highlight = false;
