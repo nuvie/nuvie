@@ -45,16 +45,25 @@ class ConverseGump: public MsgScroll
 	unsigned char *npc_portrait;
 	unsigned char *avatar_portrait;
 
+	bool found_break_char;
  public:
 
  ConverseGump(Configuration *cfg, Font *f);
  ~ConverseGump();
 
  void set_actor_portrait(Actor *a);
- virtual void add_token(MsgText *token);
+ bool parse_token(MsgText *token);
+ virtual void display_string(std::string s, Font *f);
+
+ virtual void set_font(uint8 font_type) {}
 
  void Display(bool full_redraw);
  GUI_status KeyDown(SDL_keysym key);
+
+ void set_found_break_char(bool val) { found_break_char = val; }
+
+ protected:
+ std::string strip_whitespace_after_break(std::string s);
 };
 
 

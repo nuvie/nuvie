@@ -374,6 +374,8 @@ bool Converse::start(uint8 n)
         {
         	scroll->Show();
         	scroll->set_input_mode(false);
+        	scroll->clear_scroll();
+        	((ConverseGump *)scroll)->set_found_break_char(true);
         	//scroll->grab_focus();
         }
 

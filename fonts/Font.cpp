@@ -74,9 +74,6 @@ bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16
  uint16 i;
  bool highlight = false;
 
- if(font_data == NULL)
-   return false;
-
  for(i=0;i<string_len;i++)
    {
     if(str[i] == '@')
@@ -128,6 +125,9 @@ uint16 Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
 	unsigned char buf[64];
 	unsigned char *pixels;
 	uint16 width;
+
+	if(font_data == NULL)
+		return false;
 
 	memset(buf,0xff,64);
 

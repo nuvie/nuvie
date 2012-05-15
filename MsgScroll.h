@@ -99,6 +99,8 @@ protected:
  bool page_break;
  bool just_finished_page_break;
 
+ std::list<MsgLine *> msg_buf;
+
 private:
  uint16 screen_x; //x offset to top left corner of MsgScroll
  uint16 screen_y; //y offset to top left corner of MsgScroll
@@ -118,7 +120,7 @@ private:
  bool autobreak; // if true, a page break will be added when the scroll is full
 
 
- std::list<MsgLine *> msg_buf;
+
 
 
 
@@ -150,16 +152,18 @@ private:
  void process_holding_buffer();
 
  MsgText *holding_buffer_get_token();
- bool parse_token(MsgText *token);
- virtual void add_token(MsgText *token);
+ bool is_holding_buffer_empty() { return holding_buffer.empty(); }
+
+ virtual bool parse_token(MsgText *token);
+ void add_token(MsgText *token);
  bool remove_char();
 
- void set_font(uint8 font_type);
+ virtual void set_font(uint8 font_type);
  bool is_garg_font();
 
  int printf(const std::string format,...);
 
- void display_string(std::string s, Font *f);
+ virtual void display_string(std::string s, Font *f);
  void display_string(std::string s, uint16 length, uint8 lang_num);
  void display_string(std::string s, uint8 lang_num=0);
  void message(const char *string) { display_string(string); display_prompt(); }
@@ -198,10 +202,12 @@ private:
  const char *peek_at_input();
  void request_input(CallBack *caller, void *user_data);
  void cancel_input_request() { request_input(NULL, NULL); }
+ void clear_scroll();
 
  protected:
 
- inline MsgLine *add_new_line();
+
+ virtual MsgLine *add_new_line();
  void drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y);
  inline void clear_page_break();
 };

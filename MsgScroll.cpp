@@ -413,17 +413,19 @@ bool MsgScroll::parse_token(MsgText *token)
                     }
                   // Note fall through. ;-) We fall through if we haven't already seen a '<' char
 
-    default   :  if(msg_line->total_length + token->length() > scroll_width) // the token is to big for the current line
-                   {
-                    msg_line = add_new_line();
-                   }
-// This adds extra newlines. (SB-X)
-//                 if(msg_line->total_length + token->length() == scroll_width) //we add a new line but write to the old line.
-//                    add_new_line();
+    default   :  if(msg_line)
+    {
+    	if(msg_line->total_length + token->length() > scroll_width) // the token is to big for the current line
+    	{
+    		msg_line = add_new_line();
+    	}
+    	// This adds extra newlines. (SB-X)
+    	//                 if(msg_line->total_length + token->length() == scroll_width) //we add a new line but write to the old line.
+    	//                    add_new_line();
 
-                 if(msg_line->total_length == 0 && token->s[0] == ' ') // discard whitespace at the start of a line.
-                    return true;
-
+    	if(msg_line->total_length == 0 && token->s[0] == ' ') // discard whitespace at the start of a line.
+    		return true;
+    }
                  if(token->s[0] == '*')
                  {
                 	if(just_finished_page_break == false) //we don't want to add another break if we've only just completed an autobreak
@@ -479,7 +481,14 @@ bool MsgScroll::is_garg_font()
 	return (font == Game::get_game()->get_font_manager()->get_font(NUVIE_FONT_GARG));
 }
 
-inline MsgLine *MsgScroll::add_new_line()
+	void MsgScroll::clear_scroll()
+{
+	msg_buf.clear(); //FIXME!! need to delete list items.
+	line_count = 0;
+	add_new_line();
+}
+
+MsgLine *MsgScroll::add_new_line()
 {
  MsgLine *msg_line = new MsgLine();
  msg_buf.push_back(msg_line);
