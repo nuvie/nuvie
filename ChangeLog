@@ -1,3 +1,7 @@
+2012-05-15  Eric Fry <efry at users.sourceforge.net> r1323
+	* More work on fullscreen converse mode.
+	* Added new font for conversations in full map mode.
+
 2012-05-08  Eric Fry <efry at users.sourceforge.net> r1321
 	* Started work on fullscreen map talk mode.
 	* Added new ConverseGump class.
