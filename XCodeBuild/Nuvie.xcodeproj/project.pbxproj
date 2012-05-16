@@ -288,6 +288,8 @@
 		07F10D2905C7D27A0029E1F1 /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F10D2505C7D27A0029E1F1 /* FontManager.cpp */; };
 		07F10D2A05C7D27A0029E1F1 /* FontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 07F10D2605C7D27A0029E1F1 /* FontManager.h */; };
 		C1A9ABA00CF5101D00AC1C6D /* Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */; };
+		EC0E5CBD15645B9200A2ACAC /* ConvFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC0E5CBB15645B9200A2ACAC /* ConvFont.cpp */; };
+		EC0E5CBE15645B9200A2ACAC /* ConvFont.h in Headers */ = {isa = PBXBuildFile; fileRef = EC0E5CBC15645B9200A2ACAC /* ConvFont.h */; };
 		EC20131C155882260027BE43 /* ConverseGump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC20131A155882260027BE43 /* ConverseGump.cpp */; };
 		EC20131D155882260027BE43 /* ConverseGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC20131B155882260027BE43 /* ConverseGump.h */; };
 		EC223AD9151FBB0800D9D659 /* ContainerViewGump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC223AD1151FBB0800D9D659 /* ContainerViewGump.cpp */; };
@@ -670,6 +672,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		C1A9AB9F0CF5101D00AC1C6D /* Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Debug.cpp; path = ../Debug.cpp; sourceTree = SOURCE_ROOT; };
+		EC0E5CBB15645B9200A2ACAC /* ConvFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConvFont.cpp; path = ../fonts/ConvFont.cpp; sourceTree = SOURCE_ROOT; };
+		EC0E5CBC15645B9200A2ACAC /* ConvFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConvFont.h; path = ../fonts/ConvFont.h; sourceTree = SOURCE_ROOT; };
 		EC20131A155882260027BE43 /* ConverseGump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConverseGump.cpp; path = ../ConverseGump.cpp; sourceTree = SOURCE_ROOT; };
 		EC20131B155882260027BE43 /* ConverseGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConverseGump.h; path = ../ConverseGump.h; sourceTree = SOURCE_ROOT; };
 		EC223AD1151FBB0800D9D659 /* ContainerViewGump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ContainerViewGump.cpp; path = ../views/ContainerViewGump.cpp; sourceTree = SOURCE_ROOT; };
@@ -1137,6 +1141,8 @@
 		07F10D1D05C7D2490029E1F1 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				EC0E5CBB15645B9200A2ACAC /* ConvFont.cpp */,
+				EC0E5CBC15645B9200A2ACAC /* ConvFont.h */,
 				EC79081A14FD7CA70067E06F /* U6Font.cpp */,
 				EC79081B14FD7CA70067E06F /* U6Font.h */,
 				07F10D2305C7D27A0029E1F1 /* Font.cpp */,
@@ -1567,6 +1573,7 @@
 				EC2EC470152AF582008B1C0F /* MapEditorView.h in Headers */,
 				EC2CF953153CCF5300A6036D /* PortraitViewGump.h in Headers */,
 				EC20131D155882260027BE43 /* ConverseGump.h in Headers */,
+				EC0E5CBE15645B9200A2ACAC /* ConvFont.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1839,6 +1846,7 @@
 				EC2EC46F152AF582008B1C0F /* MapEditorView.cpp in Sources */,
 				EC2CF952153CCF5300A6036D /* PortraitViewGump.cpp in Sources */,
 				EC20131C155882260027BE43 /* ConverseGump.cpp in Sources */,
+				EC0E5CBD15645B9200A2ACAC /* ConvFont.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

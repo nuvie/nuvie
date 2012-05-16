@@ -1,3 +1,6 @@
+2012-05-17  Eric Fry <efry at users.sourceforge.net> r1325
+	* Added ConvFont class to Xcode build.
+
 2012-05-15  Eric Fry <efry at users.sourceforge.net> r1323
 	* More work on fullscreen converse mode.
 	* Added new font for conversations in full map mode.
