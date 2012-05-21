@@ -36,10 +36,7 @@ static	string	close_tag(const string &s);
 
 static const std::string c_empty_string;
 
-bool string_i_compare(const std::string &s1, const std::string &s2)
-{
- return strcasecmp(s1.c_str(), s2.c_str()) == 0;
-}
+
 
 XMLNode::~XMLNode()
 {

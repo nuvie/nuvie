@@ -1,3 +1,12 @@
+2012-05-21  Eric Fry <efry at users.sourceforge.net> r1326
+	* Added mouse based keyword selection to conversation system when talking in
+	  fullmap mode. By default all npcs have 'name', 'job' and 'bye' keywords. New
+	  keywords are added whenever a @keyword is seen in the conversation text.
+	* Moved string_i_compare() into U6misc.cpp
+	* 'yn' permitted input is replaced with 'yes', 'no' keywords when in fullscreen
+	  converse mode.
+
+
 2012-05-17  Eric Fry <efry at users.sourceforge.net> r1325
 	* Added ConvFont class to Xcode build.
 

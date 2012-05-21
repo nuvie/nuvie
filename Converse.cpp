@@ -370,6 +370,7 @@ bool Converse::start(uint8 n)
         Game::get_game()->get_sound_manager()->musicStop();
         Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         scroll->set_autobreak(true);
+        /* moved into ConverseGump::set_talking()
         if(Game::get_game()->is_new_style())
         {
         	scroll->Show();
@@ -378,7 +379,7 @@ bool Converse::start(uint8 n)
         	((ConverseGump *)scroll)->set_found_break_char(true);
         	//scroll->grab_focus();
         }
-
+        */
         show_portrait(npc_num);
         unwait();
         DEBUG(0,LEVEL_INFORMATIONAL,"Begin conversation with \"%s\" (npc %d)\n", npc_name(n), n);

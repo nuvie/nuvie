@@ -29,6 +29,7 @@
 
 #include <list>
 #include <vector>
+#include <string>
 using std::list;
 
 
@@ -39,8 +40,10 @@ class Actor;
 
 class ConverseGump: public MsgScroll
 {
+	std::list<MsgText> conv_keywords;
+	std::list<MsgText> permitted_input_keywords;
 
-	std::list<MsgText> display_text;
+	std::list<MsgText> *keyword_list;
 
 	unsigned char *npc_portrait;
 	unsigned char *avatar_portrait;
@@ -52,18 +55,24 @@ class ConverseGump: public MsgScroll
  ~ConverseGump();
 
  void set_actor_portrait(Actor *a);
- bool parse_token(MsgText *token);
+ virtual bool parse_token(MsgText *token);
+ virtual std::string get_token_string_at_pos(uint16 x, uint16 y);
  virtual void display_string(std::string s, Font *f);
-
+ virtual void set_talking(bool state);
  virtual void set_font(uint8 font_type) {}
 
  void Display(bool full_redraw);
  GUI_status KeyDown(SDL_keysym key);
+ GUI_status MouseUp(int x, int y, int button);
 
  void set_found_break_char(bool val) { found_break_char = val; }
 
  protected:
  std::string strip_whitespace_after_break(std::string s);
+ void add_keyword(std::string keyword);
+
+ virtual void set_permitted_input(const char *allowed);
+ virtual void clear_permitted_input();
 };
 
 

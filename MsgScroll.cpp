@@ -481,9 +481,17 @@ bool MsgScroll::is_garg_font()
 	return (font == Game::get_game()->get_font_manager()->get_font(NUVIE_FONT_GARG));
 }
 
-	void MsgScroll::clear_scroll()
+void MsgScroll::clear_scroll()
 {
-	msg_buf.clear(); //FIXME!! need to delete list items.
+	std::list<MsgLine *>::iterator iter;
+
+	for(iter=msg_buf.begin();iter !=msg_buf.end();iter++)
+	{
+		MsgLine *line = *iter;
+		delete line;
+	}
+
+	msg_buf.clear();
 	line_count = 0;
 	add_new_line();
 }
@@ -533,12 +541,22 @@ void MsgScroll::set_keyword_highlight(bool state)
  keyword_highlight = state;
 }
 
+void MsgScroll::set_permitted_input(const char *allowed)
+{
+	permit_input = allowed;
+}
+
+void MsgScroll::clear_permitted_input()
+{
+	permit_input = NULL;
+}
+
 void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
 {
  bool do_callback = false;
 
  input_mode = state;
- permit_input = NULL;
+ clear_permitted_input();
  permit_inputescape = can_escape;
 
  line_count = 0;
@@ -548,7 +566,7 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
  if(input_mode == true)
  {
    if(allowed && strlen(allowed))
-     permit_input = allowed;
+      set_permitted_input(allowed);
    SDL_EnableUNICODE(1); // allow character translation
    input_buf.erase(0,input_buf.length());
  }
@@ -658,7 +676,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
 GUI_status MsgScroll::MouseUp(int x, int y, int button)
 {
  uint16 i;
- MsgText *token;
+ std::string token_str;
 
     if(page_break) // any click == scroll-to-end
     {
@@ -674,15 +692,14 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
     {
      if(input_mode)
        {
-        token = get_token_at_pos(x,y);
-        if(token)
-         {
-          for(i=0;i < token->s.length(); i++)
-            {
-             if(isalpha(token->s[i]))
-               input_buf_add_char(token->s[i]);
-            }
-         }
+        token_str = get_token_string_at_pos(x,y);
+
+        for(i=0;i < token_str.length(); i++)
+        {
+        	if(isalpha(token_str[i]))
+        		input_buf_add_char(token_str[i]);
+        }
+
        }
     }
     else if(button == 3) // right click == send input
@@ -694,7 +711,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
     return(GUI_PASS);
 }
 
-MsgText *MsgScroll::get_token_at_pos(uint16 x, uint16 y)
+std::string MsgScroll::get_token_string_at_pos(uint16 x, uint16 y)
 {
  uint16 i;
  sint32 buf_x, buf_y;
@@ -706,12 +723,12 @@ MsgText *MsgScroll::get_token_at_pos(uint16 x, uint16 y)
 
  if(buf_x < 0 || buf_x >= scroll_width || // click not in MsgScroll area.
     buf_y < 0 || buf_y >= scroll_height)
-     return NULL;
+     return "";
 
  if(msg_buf.size() <= scroll_height)
    {
     if((sint32)msg_buf.size() < buf_y + 1)
-      return NULL;
+      return "";
    }
  else
    {
@@ -728,10 +745,13 @@ MsgText *MsgScroll::get_token_at_pos(uint16 x, uint16 y)
    {
     token = (*iter)->get_text_at_pos(buf_x);
     if(token)
+    {
        DEBUG(0,LEVEL_DEBUGGING,"Token at (%d,%d) = %s\n",buf_x, buf_y, token->s.c_str());
+       return token->s;
+    }
    }
 
- return token;
+ return "";
 }
 
 void MsgScroll::Display(bool full_redraw)

@@ -62,6 +62,8 @@ class MsgText
  void append(std::string new_string);
  void copy(MsgText *msg_text);
  uint32 length();
+
+ bool operator<( const MsgText &rhs ) const { return (s<rhs.s); }
 };
 
 class MsgLine
@@ -175,7 +177,7 @@ private:
 
  void set_input_mode(bool state, const char *allowed = NULL,
                      bool can_escape = true);
- void set_talking(bool state) { talking = state; }
+ virtual void set_talking(bool state) { talking = state; }
 
  void set_show_cursor(bool state) { show_cursor = state; }
 
@@ -185,7 +187,7 @@ private:
 
  GUI_status KeyDown(SDL_keysym key);
  GUI_status MouseUp(int x, int y, int button);
- MsgText *get_token_at_pos(uint16 x, uint16 y);
+ virtual std::string get_token_string_at_pos(uint16 x, uint16 y);
  //void updateScroll();
  void Display(bool full_redraw);
 
@@ -210,6 +212,9 @@ private:
  virtual MsgLine *add_new_line();
  void drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y);
  inline void clear_page_break();
+
+ virtual void set_permitted_input(const char *allowed);
+ virtual void clear_permitted_input();
 };
 
 

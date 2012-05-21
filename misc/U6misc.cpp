@@ -598,3 +598,8 @@ void draw_line_8bit(int sx, int sy, int ex, int ey, uint8 col, uint8 *pixels, ui
 		}
 
 }
+
+bool string_i_compare(const std::string &s1, const std::string &s2)
+{
+ return strcasecmp(s1.c_str(), s2.c_str()) == 0;
+}
