@@ -258,12 +258,29 @@ std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 	return "";
 }
 
+bool ConverseGump::input_buf_add_char(char c)
+{
+	input_buf.append(&c, 1);
+	return true;
+}
+
+bool ConverseGump::input_buf_remove_char()
+{
+	if(input_buf.length())
+	{
+		input_buf.erase(input_buf.length() - 1, 1);
+		return true;
+	}
+
+	return false;
+}
+
 void ConverseGump::Display(bool full_redraw)
 {
 	MsgText *token;
 	 //std::list<MsgText>::iterator iter;
 	 uint16 total_length = 0;
-	 uint16 y = area.y;
+	 uint16 y = area.y + PORTRAIT_HEIGHT + 8;
 
 	 if(npc_portrait)
 	 {
@@ -272,7 +289,7 @@ void ConverseGump::Display(bool full_redraw)
 
 	 if(!page_break && input_mode && avatar_portrait)
 	 {
-		 screen->blit(area.x + PORTRAIT_WIDTH / 2,area.y + PORTRAIT_HEIGHT + 8,avatar_portrait,8,PORTRAIT_WIDTH,PORTRAIT_HEIGHT,PORTRAIT_WIDTH,false);
+		 screen->blit(area.x + PORTRAIT_WIDTH / 2,y,avatar_portrait,8,PORTRAIT_WIDTH,PORTRAIT_HEIGHT,PORTRAIT_WIDTH,false);
 		 std::list<MsgText>::iterator iter;
 		 for(iter=keyword_list->begin();iter!=keyword_list->end();iter++)
 		 {
@@ -282,9 +299,13 @@ void ConverseGump::Display(bool full_redraw)
 				 total_length = 0;
 				 y += 8;
 			 }
-			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length * 8, y + PORTRAIT_HEIGHT + 8, 0);
+			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0);
 			 total_length += t.s.length();
 		 }
+		 y+=16;
+		 font->drawString(screen, " *", area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8, y, 0);
+		 font->drawString(screen, input_buf.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + 2 * 8, y, 0);
+		 drawCursor(area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + 2 * 8 + input_buf.length() * 8, y);
 	 }
 
 	 y = area.y;
@@ -401,6 +422,7 @@ GUI_status ConverseGump::MouseUp(int x, int y, int button)
         token_str = get_token_string_at_pos(x,y);
         if(token_str.length() > 0)
         {
+        	input_buf.clear();
         	for(i=0;i < token_str.length(); i++)
         	{
         		if(isalpha(token_str[i]))

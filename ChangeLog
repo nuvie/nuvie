@@ -1,3 +1,9 @@
+2012-05-22  Eric Fry <efry at users.sourceforge.net> r1329
+	* Moved freetext input to under keywords. In full map converse mode.
+	* Added spinning cursor. In full map converse mode.
+	* Clear freetext intput when selecting keyword with mouse. In full map
+    converse mode.
+
 2012-05-21  Eric Fry <efry at users.sourceforge.net> r1328
 	* Fixed bug [3528034] Conversations not displaying correctly
 

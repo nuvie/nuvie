@@ -67,6 +67,9 @@ class ConverseGump: public MsgScroll
 
  void set_found_break_char(bool val) { found_break_char = val; }
 
+ virtual bool input_buf_add_char(char c);
+ virtual bool input_buf_remove_char();
+
  protected:
  std::string strip_whitespace_after_break(std::string s);
  void add_keyword(std::string keyword);

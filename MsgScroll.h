@@ -103,6 +103,8 @@ protected:
 
  std::list<MsgLine *> msg_buf;
 
+ std::string input_buf;
+
 private:
  uint16 screen_x; //x offset to top left corner of MsgScroll
  uint16 screen_y; //y offset to top left corner of MsgScroll
@@ -132,7 +134,7 @@ private:
 
  uint16 cursor_wait;
 
- std::string input_buf;
+
  uint16 line_count; // count the number of lines since last page break.
 
  uint16 display_pos;
@@ -196,8 +198,8 @@ private:
 
  void set_page_break();
 
- bool input_buf_add_char(char c);
- bool input_buf_remove_char();
+ virtual bool input_buf_add_char(char c);
+ virtual bool input_buf_remove_char();
 
  bool has_input();
  std::string get_input();
