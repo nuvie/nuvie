@@ -1,3 +1,6 @@
+2012-05-21  Eric Fry <efry at users.sourceforge.net> r1328
+	* Fixed bug [3528034] Conversations not displaying correctly
+
 2012-05-21  Eric Fry <efry at users.sourceforge.net> r1326
 	* Added mouse based keyword selection to conversation system when talking in
 	  fullmap mode. By default all npcs have 'name', 'job' and 'bye' keywords. New

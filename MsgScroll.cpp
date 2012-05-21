@@ -440,6 +440,10 @@ bool MsgScroll::parse_token(MsgText *token)
                 	}
 
                 	add_token(token);
+                	if(msg_line->total_length == scroll_width) // add another line for cursor.
+                	{
+                		msg_line = add_new_line();
+                	}
                  }
                  break;
    }
