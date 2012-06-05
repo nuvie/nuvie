@@ -104,6 +104,9 @@ protected:
  std::list<MsgLine *> msg_buf;
 
  std::string input_buf;
+ bool permit_inputescape; // can RETURN or ESCAPE be used to escape input entry
+
+ uint16 cursor_wait;
 
 private:
  uint16 screen_x; //x offset to top left corner of MsgScroll
@@ -113,7 +116,7 @@ private:
  uint8 bg_color;
  bool keyword_highlight;
 
- bool permit_inputescape; // can RETURN or ESCAPE be used to escape input entry
+
  bool talking;
 
  MsgText prompt;
@@ -132,7 +135,7 @@ private:
  uint8 cursor_char;
  uint16 cursor_x, cursor_y;
 
- uint16 cursor_wait;
+
 
 
  uint16 line_count; // count the number of lines since last page break.

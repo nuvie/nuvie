@@ -26,8 +26,8 @@ unpack_conv_SOURCES = \
 	../files/U6Lib_n.h \
 	../files/U6Lzw.cpp \
 	../files/U6Lzw.h \
-	../misc/U6Misc.cpp \
-	../misc/U6Misc.h
+	../misc/U6misc.cpp \
+	../misc/U6misc.h
 
 unpack_portraits_SOURCES = \
 	unpack_portraits.cpp \

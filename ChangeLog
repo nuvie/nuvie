@@ -1,3 +1,14 @@
+2012-06-06  Eric Fry <efry at users.sourceforge.net> r1330
+	* Added Daniel's new converse font.
+	* Added stippled background while in fullscreen converse mode.
+	  You can select the colour with config/general/converse_bg_color
+	  The default colour is 218. The numbers correspond to entries in the
+	  U6 ingame palette. A value of 255 disables the background effect.
+	* Fixed tools compile problem under Linux.
+	* Added frame around portraits when in fullscreen converse mode.
+	* Return font width from Font::drawString()
+	* Added Font::getCharWidth()
+
 2012-05-22  Eric Fry <efry at users.sourceforge.net> r1329
 	* Moved freetext input to under keywords. In full map converse mode.
 	* Added spinning cursor. In full map converse mode.

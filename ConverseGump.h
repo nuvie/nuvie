@@ -49,12 +49,16 @@ class ConverseGump: public MsgScroll
 	unsigned char *avatar_portrait;
 
 	bool found_break_char;
+
+	uint8 converse_bg_color;
+
  public:
 
  ConverseGump(Configuration *cfg, Font *f);
  ~ConverseGump();
 
  void set_actor_portrait(Actor *a);
+ unsigned char *create_framed_portrait(Actor *a);
  virtual bool parse_token(MsgText *token);
  virtual std::string get_token_string_at_pos(uint16 x, uint16 y);
  virtual void display_string(std::string s, Font *f);
@@ -62,8 +66,18 @@ class ConverseGump: public MsgScroll
  virtual void set_font(uint8 font_type) {}
 
  void Display(bool full_redraw);
+
  GUI_status KeyDown(SDL_keysym key);
  GUI_status MouseUp(int x, int y, int button);
+
+ GUI_status MouseDown(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseMotion(int x, int y, Uint8 state) { return GUI_YUM; }
+ GUI_status MouseEnter(Uint8 state) { return GUI_YUM; }
+ GUI_status MouseLeave(Uint8 state) { return GUI_YUM; }
+ GUI_status MouseClick(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseDouble(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseDelayed(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseHeld(int x, int y, int button) { return GUI_YUM; }
 
  void set_found_break_char(bool val) { found_break_char = val; }
 

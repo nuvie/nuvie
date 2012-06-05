@@ -51,8 +51,8 @@ private:
    bool init(const char *filename);
 
 //   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y);
-   bool drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color=FONT_COLOR_U6_NORMAL);
-   bool drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color);
+   uint16 drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color=FONT_COLOR_U6_NORMAL);
+   uint16 drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color);
 
    virtual uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color = FONT_COLOR_U6_NORMAL);
@@ -60,6 +60,7 @@ private:
    uint16 drawStringToShape(U6Shape *shp, const char *str, uint16 x, uint16 y, uint8 color);
    uint8 drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y, uint8 color);
 
+   virtual uint16 getCharWidth(uint8 c);
    uint16 getStringWidth(const char *str);
   protected:
 

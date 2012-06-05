@@ -85,6 +85,7 @@ class Screen
 
    bool fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
    void fade(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, uint8 opacity, uint8 fade_bg_color=0);
+   void stipple_8bit(uint8 color_num);
    void put_pixel(uint8 colour_num, uint16 x, uint16 y);
 
    bool blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL, uint8 opacity=255);

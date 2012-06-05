@@ -371,6 +371,56 @@ void Screen::fade32(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, ui
 	 return;
 }
 
+void Screen::stipple_8bit(uint8 color_num)
+{
+	uint32 i, j;
+
+	if(surface->bits_per_pixel == 16)
+	{
+		uint16 color = (uint16)surface->colour32[color_num];
+		uint16 *pixels = (uint16 *)surface->pixels;
+
+		for(i=0;i<surface->h;i++)
+		{
+			for(j=0;j<surface->w;j+=2)
+			{
+				*pixels = color;
+				pixels += 2;
+			}
+			if(i%2)
+			{
+				pixels--;
+			}
+			else
+			{
+				pixels++;
+			}
+		}
+	}
+	else
+	{
+		uint32 color = surface->colour32[color_num];
+		uint32 *pixels = (uint32 *)surface->pixels;
+
+		for(i=0;i<surface->h;i++)
+		{
+			for(j=0;j<surface->w;j+=2)
+			{
+				*pixels = color;
+				pixels += 2;
+			}
+			if(i%2)
+			{
+				pixels--;
+			}
+			else
+			{
+				pixels++;
+			}
+		}
+	}
+}
+
 void Screen::put_pixel(uint8 colour_num, uint16 x, uint16 y)
 {
 	if(surface->bits_per_pixel == 16)

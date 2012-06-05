@@ -64,15 +64,16 @@ bool Font::init(const char *filename)
  return true;
 }
 
-bool Font::drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color)
+uint16 Font::drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color)
 {
  return drawString(screen, str, strlen(str), x, y, color);
 }
 
-bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color)
+uint16 Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color)
 {
  uint16 i;
  bool highlight = false;
+ uint16 font_len = 0;
 
  for(i=0;i<string_len;i++)
    {
@@ -82,12 +83,12 @@ bool Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16
       {
        if(!isalpha(str[i]))
           highlight = false;
-       x += drawChar(screen, get_char_num(str[i]), x, y,
+       font_len += drawChar(screen, get_char_num(str[i]), x + font_len, y,
                 highlight ? FONT_COLOR_U6_HIGHLIGHT : color);
       }
    }
  highlight = false;
- return true;
+ return font_len;
 }
 
 inline uint8 Font::get_char_num(uint8 c)
@@ -106,17 +107,22 @@ uint16 Font::getStringWidth(const char *str)
 	uint16 string_len;
 	uint16 w=0;
 
-	if(font_data == NULL)
-		return w;
-
 	string_len = strlen(str);
 
 	for(i=0;i<string_len;i++)
 	{
-		w += font_data[0x4 + get_char_num(str[i])];
+		w += getCharWidth(str[i]);
 	}
 
 	return w;
+}
+
+uint16 Font::getCharWidth(uint8 c)
+{
+	if(font_data == NULL)
+		return 0;
+
+	return font_data[0x4 + get_char_num(c)];
 }
 
 uint16 Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,

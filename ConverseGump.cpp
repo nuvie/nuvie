@@ -37,7 +37,8 @@
 #include "ConvFont.h"
 #include "ConverseGump.h"
 
-
+#define FRAME_W (PORTRAIT_WIDTH + 8)
+#define FRAME_H (PORTRAIT_HEIGHT + 9)
 
 // ConverseGump Class
 
@@ -56,7 +57,7 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f)
  uint16 x_off = config_get_video_x_offset(config);
  uint16 y_off = config_get_video_y_offset(config);
 
- GUI_Widget::Init(NULL, x+x_off, y+y_off, PORTRAIT_WIDTH + 8 + scroll_width * 8, 168);
+ GUI_Widget::Init(NULL, x_off, y_off, 320, 240);
  npc_portrait = NULL;
  avatar_portrait = NULL;
 
@@ -64,6 +65,12 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f)
  font->init(NULL, 256, 0);
 
  found_break_char = false;
+ cursor_wait = 0;
+
+ int c;
+ cfg->value("config/general/converse_bg_color", c, 218);
+ if(c<256)
+	 converse_bg_color = (uint8)c;
 }
 
 ConverseGump::~ConverseGump()
@@ -103,13 +110,97 @@ void ConverseGump::set_actor_portrait(Actor *a)
 	if(npc_portrait)
 		free(npc_portrait);
 
-	Portrait *p = Game::get_game()->get_portrait();
-	npc_portrait = p->get_portrait_data(a);
+	npc_portrait = create_framed_portrait(a);
 
 	if(avatar_portrait == NULL)
 	{
-		avatar_portrait = p->get_portrait_data(Game::get_game()->get_player()->get_actor());
+		avatar_portrait = create_framed_portrait(Game::get_game()->get_player()->get_actor());
 	}
+}
+
+unsigned char *ConverseGump::create_framed_portrait(Actor *a) //FIXME U6 specific.
+{
+	uint16 i;
+	Portrait *p = Game::get_game()->get_portrait();
+	unsigned char *portrait_data = p->get_portrait_data(a);
+	unsigned char *framed_data = (unsigned char *)malloc(FRAME_W * FRAME_H);
+
+	memset(framed_data, 255, FRAME_W * FRAME_H);
+
+	memset(framed_data, 0, FRAME_W);
+	memset(framed_data + (FRAME_H-1)*FRAME_W, 0, FRAME_W);
+	memset(framed_data + 1*FRAME_W+2, 53, 57);
+	memset(framed_data + 2*FRAME_W+2, 57, 59);
+
+	memset(framed_data + 3*FRAME_W+4, 0, 57);
+
+	//top left corner
+	framed_data[1*FRAME_W] = 0;
+	framed_data[1*FRAME_W+1] = 138;
+	framed_data[2*FRAME_W] = 0;
+	framed_data[2*FRAME_W+1] = 139;
+	framed_data[3*FRAME_W] = 0;
+	framed_data[3*FRAME_W+1] = 139;
+	framed_data[3*FRAME_W+2] = 57;
+	framed_data[3*FRAME_W+3] = 143;
+
+	for(i=0;i<PORTRAIT_HEIGHT;i++)
+	{
+		framed_data[(i+4)*FRAME_W] = 0;
+		framed_data[(i+4)*FRAME_W+1] = 139;
+		framed_data[(i+4)*FRAME_W+2] = 57;
+		framed_data[(i+4)*FRAME_W+3] = 142;
+
+		memcpy(&framed_data[(i+4)*FRAME_W+4], &portrait_data[i*PORTRAIT_WIDTH], PORTRAIT_WIDTH);
+
+		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH] = 0;
+		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH+1] = 57;
+		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH+2] = 53;
+		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH+3] = 0;
+	}
+
+	memset(framed_data + (FRAME_H-5)*FRAME_W + 3, 142, 57);
+	memset(framed_data + (FRAME_H-4)*FRAME_W + 2, 57, 60);
+	memset(framed_data + (FRAME_H-3)*FRAME_W + 1, 139, 61);
+	memset(framed_data + (FRAME_H-2)*FRAME_W + 1, 142, 62);
+
+	//bottom left
+	framed_data[(FRAME_H-5)*FRAME_W] = 0;
+	framed_data[(FRAME_H-5)*FRAME_W+1] = 139;
+	framed_data[(FRAME_H-5)*FRAME_W+2] = 57;
+	framed_data[(FRAME_H-4)*FRAME_W] = 0;
+	framed_data[(FRAME_H-4)*FRAME_W+1] = 139;
+	framed_data[(FRAME_H-3)*FRAME_W] = 0;
+	framed_data[(FRAME_H-2)*FRAME_W] = 0;
+
+	//top right
+	framed_data[1*FRAME_W+59] = 50;
+	framed_data[1*FRAME_W+59+1] = 49;
+	framed_data[1*FRAME_W+59+2] = 49;
+	framed_data[1*FRAME_W+59+3] = 15;
+	framed_data[1*FRAME_W+59+4] = 0;
+	framed_data[2*FRAME_W+59+2] = 15;
+	framed_data[2*FRAME_W+59+3] = 49;
+	framed_data[2*FRAME_W+59+4] = 0;
+	framed_data[3*FRAME_W+59+2] = 57;
+	framed_data[3*FRAME_W+59+3] = 49;
+	framed_data[3*FRAME_W+59+4] = 0;
+	framed_data[4*FRAME_W+59+3] = 50;
+
+	//bottom right
+	framed_data[(FRAME_H-5)*FRAME_W+60] = 143;
+	framed_data[(FRAME_H-5)*FRAME_W+61] = 57;
+	framed_data[(FRAME_H-5)*FRAME_W+62] = 53;
+	framed_data[(FRAME_H-5)*FRAME_W+63] = 0;
+	framed_data[(FRAME_H-4)*FRAME_W+62] = 53;
+	framed_data[(FRAME_H-4)*FRAME_W+63] = 0;
+	framed_data[(FRAME_H-3)*FRAME_W+62] = 173;
+	framed_data[(FRAME_H-3)*FRAME_W+63] = 0;
+	framed_data[(FRAME_H-2)*FRAME_W+63] = 0;
+
+	free(portrait_data);
+
+	return framed_data;
 }
 
 void ConverseGump::set_permitted_input(const char *allowed)
@@ -239,13 +330,14 @@ std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 	for(iter=keyword_list->begin();iter!=keyword_list->end();iter++)
 	{
 		MsgText t = *iter;
-		if(t.s.length() + total_length >= 26)
+		uint16 token_len = font->getStringWidth(t.s.c_str());
+		if(token_len + total_length >= (26 * 8))
 		{
 			total_length = 0;
-			tmp_y += 8;
+			tmp_y += 10;
 		}
 		//t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length * 8, y + PORTRAIT_HEIGHT + 8, 0);
-		if( x > area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length * 8 && x < area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length * 8 + t.s.length() * 8)
+		if( x > area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length && x < area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length + token_len)
 		{
 			if(y > tmp_y && y < tmp_y + 8)
 			{
@@ -253,7 +345,7 @@ std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 				return t.s;
 			}
 		}
-		total_length += t.s.length();
+		total_length += token_len;
 	}
 	return "";
 }
@@ -282,33 +374,41 @@ void ConverseGump::Display(bool full_redraw)
 	 uint16 total_length = 0;
 	 uint16 y = area.y + PORTRAIT_HEIGHT + 8;
 
+	 if(converse_bg_color != 255)
+	 {
+		 screen->stipple_8bit(converse_bg_color);
+		 //screen->fill(converse_bg_color, area.x, area.y, area.w, area.h);
+	 }
+
 	 if(npc_portrait)
 	 {
-		 screen->blit(area.x,area.y,npc_portrait,8,PORTRAIT_WIDTH,PORTRAIT_HEIGHT,PORTRAIT_WIDTH,false);
+		 screen->blit(area.x,area.y,npc_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
 	 }
 
 	 if(!page_break && input_mode && avatar_portrait)
 	 {
-		 screen->blit(area.x + PORTRAIT_WIDTH / 2,y,avatar_portrait,8,PORTRAIT_WIDTH,PORTRAIT_HEIGHT,PORTRAIT_WIDTH,false);
+		 screen->blit(area.x + PORTRAIT_WIDTH / 2,y,avatar_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
 		 std::list<MsgText>::iterator iter;
 		 for(iter=keyword_list->begin();iter!=keyword_list->end();iter++)
 		 {
 			 MsgText t = *iter;
-			 if(t.s.length() + total_length >= 26)
+			 uint16 token_len = font->getStringWidth(t.s.c_str());
+			 if(token_len + total_length >= (26 * 8))
 			 {
 				 total_length = 0;
-				 y += 8;
+				 y += 10;
 			 }
-			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0);
-			 total_length += t.s.length();
+			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length, y, 0);
+			 total_length += token_len;
+			 //total_length += t.s.length();
 		 }
 		 y+=16;
 		 font->drawString(screen, " *", area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8, y, 0);
-		 font->drawString(screen, input_buf.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + 2 * 8, y, 0);
-		 drawCursor(area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + 2 * 8 + input_buf.length() * 8, y);
+		 font->drawString(screen, input_buf.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *"), y, 0);
+		 drawCursor(area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *") + font->getStringWidth(input_buf.c_str()), y);
 	 }
 
-	 y = area.y;
+	 y = area.y + 4;
 	 total_length = 0;
 	 std::list<MsgLine *>::iterator iter;
 	 for(iter=msg_buf.begin();iter != msg_buf.end();iter++)
@@ -320,13 +420,13 @@ void ConverseGump::Display(bool full_redraw)
 		  {
 			  token = *iter1;
 
-			  token->font->drawString(screen, token->s.c_str(), area.x + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0); //FIX for hardcoded font height
-			  total_length += token->s.length();
+			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + FRAME_W + 4 + total_length, y, 0); //FIX for hardcoded font height
+			  //token->s.length();
 			  //token->font->drawChar(screen, ' ', area.x + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0);
 			  //total_length += 1;
 
 		  }
-		  y+=8;
+		  y+=10;
 		  total_length = 0;
 	     }
 
@@ -356,19 +456,23 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	switch(key.sym)
 	    {
 	        case SDLK_ESCAPE:
-	                            // reset input buffer
-	                            permit_input = NULL;
-	                            if(input_mode)
-	                              set_input_mode(false);
-
+	        					if(permit_inputescape)
+	        	                 {
+	                               // reset input buffer
+	                              permit_input = NULL;
+	                              if(input_mode)
+	                                set_input_mode(false);
+	        	                 }
 	                          return(GUI_YUM);
 	        case SDLK_KP_ENTER:
 	        case SDLK_RETURN:
-	                            if(input_mode)
-	                              set_input_mode(false);
-	                            clear_scroll();
-	                            found_break_char = true; //strip leading whitespace.
-
+	        					if(permit_inputescape)
+	        	                 {
+	                              if(input_mode)
+	                                set_input_mode(false);
+	                              clear_scroll();
+	                              found_break_char = true; //strip leading whitespace.
+	        	                 }
 
 	                          return(GUI_YUM);
 	        case SDLK_BACKSPACE :

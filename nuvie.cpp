@@ -260,6 +260,7 @@ bool Nuvie::initDefaultConfigWin32()
 	config->set("config/general/enable_cursors", false);
 	config->set("config/general/show_console", true);
 	config->set("config/general/fullscreen_map", false);
+	config->set("config/general/converse_bg_color", 218);
 
 	config->set("config/ultima6/gamedir", "c:\\ultima6");
 	config->set("config/ultima6/townsdir", "c:\\fmtownsU6");
@@ -311,6 +312,7 @@ bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
 	config->set("config/general/enable_cursors", false);
 	config->set("config/general/show_console", true);
 	config->set("config/general/fullscreen_map", false);
+	config->set("config/general/converse_bg_color", 218);
 
 	config->set("config/ultima6/gamedir", "/Library/Application Support/Nuvie Support/ultima6");
 	config->set("config/ultima6/townsdir", "/Library/Application Support/Nuvie Support/townsU6");
@@ -362,6 +364,7 @@ bool Nuvie::initDefaultConfigUnix(const char *home_env)
 	config->set("config/general/enable_cursors", false);
 	config->set("config/general/show_console", true);
 	config->set("config/general/fullscreen_map", false);
+	config->set("config/general/converse_bg_color", 218);
 
 	config->set("config/ultima6/gamedir", "./ultima6");
 	config->set("config/ultima6/townsdir", "./townsU6");
