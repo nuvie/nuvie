@@ -325,7 +325,7 @@ void ConverseGump::add_keyword(std::string keyword)
 std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 {
 	uint16 total_length = 0;
-	uint16 tmp_y = area.y + PORTRAIT_HEIGHT + 8;
+	uint16 tmp_y = area.y + PORTRAIT_HEIGHT + 8 + 3 + 4;
 	std::list<MsgText>::iterator iter;
 	for(iter=keyword_list->begin();iter!=keyword_list->end();iter++)
 	{
@@ -372,7 +372,7 @@ void ConverseGump::Display(bool full_redraw)
 	MsgText *token;
 	 //std::list<MsgText>::iterator iter;
 	 uint16 total_length = 0;
-	 uint16 y = area.y + PORTRAIT_HEIGHT + 8;
+	 uint16 y = area.y + PORTRAIT_HEIGHT + 8 + 3;
 
 	 if(converse_bg_color != 255)
 	 {
@@ -382,12 +382,12 @@ void ConverseGump::Display(bool full_redraw)
 
 	 if(npc_portrait)
 	 {
-		 screen->blit(area.x,area.y,npc_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
+		 screen->blit(area.x+4,area.y+4,npc_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
 	 }
 
 	 if(!page_break && input_mode && avatar_portrait)
 	 {
-		 screen->blit(area.x + PORTRAIT_WIDTH / 2,y,avatar_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
+		 screen->blit(area.x + PORTRAIT_WIDTH / 2 + 4,y,avatar_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
 		 std::list<MsgText>::iterator iter;
 		 for(iter=keyword_list->begin();iter!=keyword_list->end();iter++)
 		 {
@@ -398,7 +398,7 @@ void ConverseGump::Display(bool full_redraw)
 				 total_length = 0;
 				 y += 10;
 			 }
-			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length, y, 0);
+			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length, y + 4, 0);
 			 total_length += token_len;
 			 //total_length += t.s.length();
 		 }
@@ -420,7 +420,7 @@ void ConverseGump::Display(bool full_redraw)
 		  {
 			  token = *iter1;
 
-			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + FRAME_W + 4 + total_length, y, 0); //FIX for hardcoded font height
+			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + FRAME_W + 4 + total_length, y + 4, 0); //FIX for hardcoded font height
 			  //token->s.length();
 			  //token->font->drawChar(screen, ' ', area.x + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0);
 			  //total_length += 1;
