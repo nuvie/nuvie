@@ -336,15 +336,20 @@ function projectile(tile_num, start_x, start_y, end_x, end_y, speed, spin)
 	if spin == nil then spin = 0 end
 	
 	local rotate_offset = 0
+	local src_tile_y_offset = 0
 	
 	if tile_num == 547 then --spear
 		rotate_offset = 45
-	elseif tile_num == 566 or tile_num == 567 then --bow, crossbow
-		rotate_offset = 90 --FIXME these need to be shifted +y before rotation. :(
+	elseif tile_num == 566 then --bow
+		rotate_offset = 90
+		src_tile_y_offset = 4
+	elseif tile_num == 567 then --crossbow
+		rotate_offset = 90 
+		src_tile_y_offset = 3
 	end
 	
 	play_sfx(SFX_MISSLE)
-	projectile_anim(tile_num, start_x, start_y, end_x, end_y, speed, false, rotate_offset, spin)
+	projectile_anim(tile_num, start_x, start_y, end_x, end_y, speed, false, rotate_offset, spin, src_tile_y_offset)
 end
 
 function fade_obj_blue(obj)

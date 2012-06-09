@@ -1,3 +1,9 @@
+2012-06-09  Eric Fry <efry at users.sourceforge.net> r1333
+	* Changed Nuvie fps from 15 to 20.
+	* Did some work on projectile animation timing.
+	* Added +y shifting to tile rotation. This is needed when rotating
+    bolt or arrow tiles.
+
 2012-06-09  Eric Fry <efry at users.sourceforge.net> r1332
 	* Added spinning ankh characters to new converse font.
 

@@ -2046,11 +2046,15 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
    bool trail = (bool)lua_toboolean(L, 7);
    uint8 initial_tile_rotation = (uint8)luaL_checkinteger(L, 8);
    uint16 rotation_amount = 0;
+   uint8 src_tile_y_offset = 0;
 
    if(lua_gettop(L) >= 9)
 	   rotation_amount = (uint16)luaL_checkinteger(L, 9);
 
-   ProjectileEffect *projectile_effect = new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail, initial_tile_rotation, rotation_amount);
+   if(lua_gettop(L) >= 10)
+	   src_tile_y_offset = (uint8)luaL_checkinteger(L, 10);
+
+   ProjectileEffect *projectile_effect = new ProjectileEffect(tile_num, MapCoord(startx,starty), MapCoord(targetx,targety), speed, trail, initial_tile_rotation, rotation_amount, src_tile_y_offset);
    AsyncEffect *e = new AsyncEffect(projectile_effect);
    e->run();
 

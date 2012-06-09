@@ -36,7 +36,7 @@
 #include "Look.h"
 #include "GameClock.h"
 #include "TileManager.h"
-
+#include "GUI.h"
 static char article_tbl[][5] = {"", "a ", "an ", "the "};
 
 static const uint16 U6_ANIM_SRC_TILE[32] = {0x16,0x16,0x1a,0x1a,0x1e,0x1e,0x12,0x12,
@@ -215,7 +215,24 @@ bool TileManager::loadTiles()
 #endif
 
  delete lzw;
+/*
+ std::string datadir = GUI::get_gui()->get_data_dir();
+ std::string imagefile;
 
+ build_path(datadir, "images", path);
+ datadir = path;
+ build_path(datadir, "new_avatar.raw", imagefile);
+
+ file.open(imagefile.c_str());
+ for(i=0;i<16;i++)
+ {
+	 file.readToBuf(tile[i+1776].data, 256);
+	 dither->dither_bitmap(tile[i+1776].data,16,16,tile[i+1776].transparent);
+ }
+ file.readToBuf(tile[1269].data, 256);
+ dither->dither_bitmap(tile[1269].data,16,16,tile[1269].transparent);
+ file.close();
+*/
  return true;
 }
 
@@ -598,18 +615,19 @@ void TileManager::update_timed_tiles(uint8 hour)
  * **Fixed-point rotate function taken from the SDL Graphics Extension library
  * (SGE) (c)1999-2003 Anders Lindström, licensed under LGPL v2+.**
  */
-Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
+Tile *TileManager::get_rotated_tile(Tile *tile, float rotate, uint8 src_y_offset)
 {
     Tile *new_tile = new Tile(*tile); // retain properties of original tile
-    get_rotated_tile(tile, new_tile, rotate);
+    get_rotated_tile(tile, new_tile, rotate, src_y_offset);
 
     return new_tile;
 }
 
-void TileManager::get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate)
+void TileManager::get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate, uint8 src_y_offset)
 {
     unsigned char tile_data[256];
-    memset(&tile_data, 255, 256); // fill output with transparent color
+
+    memset(&dest_tile->data, 255, 256); // fill output with transparent color
 
     Sint32 dy, sx, sy;
     Sint16 rx, ry;
@@ -633,8 +651,16 @@ void TileManager::get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate)
 
     Sint32 const src_pitch=16;
     Sint32 const dst_pitch=16;
-    Uint8 const *src_row = (Uint8 *)&tile->data, *dst_pixels = (Uint8 *)&tile_data;
+    Uint8 const *src_row = (Uint8 *)&tile->data;
+    Uint8 const *dst_pixels = (Uint8 *)&dest_tile->data;
     Uint8 *dst_row;
+
+    if(src_y_offset > 0 && src_y_offset < 16) //shift source down before rotating. This is used by bolt and arrow tiles.
+    {
+        memset(&tile_data, 255, 256);
+        memcpy(&tile_data[src_y_offset*16], &tile->data, 256-(src_y_offset*16));
+    	src_row = (Uint8 *)&tile_data;
+    }
 
     for(uint32 y=ymin; y<ymax; y++)
     {
@@ -661,7 +687,7 @@ void TileManager::get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate)
     }
 
 
-    memcpy(&dest_tile->data, &tile_data, 256); // replace data
+    //memcpy(&dest_tile->data, &tile_data, 256); // replace data
 
     return;
 }

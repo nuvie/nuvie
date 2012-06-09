@@ -167,8 +167,8 @@ class TileManager
    void update();
    void update_timed_tiles(uint8 hour);
 
-   Tile *get_rotated_tile(Tile *tile, float rotate);
-   void get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate);
+   Tile *get_rotated_tile(Tile *tile, float rotate, uint8 src_y_offset=0);
+   void get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate, uint8 src_y_offset=0);
 
  protected:
 

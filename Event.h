@@ -48,7 +48,7 @@ class UseCode;
 class GUI;
 class Magic;
 
-#define NUVIE_INTERVAL    65
+#define NUVIE_INTERVAL    50
 #define PUSH_FROM_PLAYER false
 #define PUSH_FROM_OBJECT true
 

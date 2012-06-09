@@ -170,7 +170,7 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
     return(0);
 }
 
-#define EXP_EFFECT_SPEED 6
+#define EXP_EFFECT_SPEED 3
 
 
 ExpEffect::ExpEffect(uint16 tileNum, MapCoord location)
@@ -219,20 +219,20 @@ void ExpEffect::start_anim()
 
 }
 
-ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation, uint16 rotationAmount)
+ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, MapCoord target, uint8 speed, bool trailFlag, uint16 initialTileRotation, uint16 rotationAmount, uint8 src_y_offset)
 {
 	vector<MapCoord> t;
 	t.push_back(target);
 
-	init(tileNum, start, t, speed, trailFlag, initialTileRotation, rotationAmount);
+	init(tileNum, start, t, speed, trailFlag, initialTileRotation, rotationAmount, src_y_offset);
 }
 
 ProjectileEffect::ProjectileEffect(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation)
 {
-	init(tileNum, start, t, speed, trailFlag, initialTileRotation, 0);
+	init(tileNum, start, t, speed, trailFlag, initialTileRotation, 0, 0);
 }
 
-void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation, uint16 rotationAmount)
+void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, uint8 speed, bool trailFlag, uint16 initialTileRotation, uint16 rotationAmount, uint8 src_y_offset)
 {
     finished_tiles = 0;
 
@@ -243,6 +243,7 @@ void ProjectileEffect::init(uint16 tileNum, MapCoord start, vector<MapCoord> t, 
 	initial_tile_rotation = initialTileRotation;
 	rotation_amount = rotationAmount;
 
+	src_tile_y_offset = src_y_offset;
     targets = t;
 
 	start_anim();
@@ -255,7 +256,7 @@ void ProjectileEffect::start_anim()
     //game->pause_anims();
     //game->pause_user();
 
-    add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation, rotation_amount));
+    add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation, rotation_amount, src_tile_y_offset));
 
 }
 /* Handle messages from animation. Hit actors & walls. */

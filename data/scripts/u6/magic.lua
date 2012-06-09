@@ -158,7 +158,7 @@ function select_actor_with_projectile(projectile_tile, caster)
 	if loc == nil then magic_no_effect() return end
 
 	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
-	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
+	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 4)
 
 	if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
 
@@ -190,7 +190,7 @@ function select_actor_or_obj_with_projectile(projectile_tile, caster)
 	if loc == nil then magic_no_effect() return end
 
 	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
-	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
+	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 4)
 
 	if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
 
@@ -215,7 +215,7 @@ function select_obj_with_projectile(projectile_tile, caster)
 	if loc == nil then magic_no_effect() return end
 
 	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
-	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
+	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 4)
 
 	if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
 
@@ -234,7 +234,7 @@ magic_casting_fade_effect(caster)
 if loc == nil then magic_no_effect() return end
 
 local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
-projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 2)
+projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 4)
 
 if hit_x ~= loc.x or hit_y ~= loc.y then magic_blocked() return end
 
@@ -333,7 +333,7 @@ function magic_wind(tile_num, caster, target_x, target_y)
 		z=target_z}
 	}
 
-	return projectile_anim_multi(tile_num, caster.x, caster.y, targets, 2, 1, 0)
+	return projectile_anim_multi(tile_num, caster.x, caster.y, targets, 3, 1, 0)
 end
 
 function magic_wind_spell(spell_num, tile_num)

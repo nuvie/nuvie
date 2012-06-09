@@ -985,10 +985,10 @@ void ExplosiveAnim::get_shifted_location(uint16 &x, uint16 &y, uint16 &px, uint1
 
 
 /*** ProjectileAnim ***/
-ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrail, uint16 initialTileRotation, uint16 rotationAmount)
+ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord> target, uint8 animSpeed, bool leaveTrail, uint16 initialTileRotation, uint16 rotationAmount, uint8 src_y_offset)
 {
     tile_num = tileNum; //382; // U6 FIREBALL_EFFECT
-
+    src_tile_y_offset = src_y_offset;
     src = *start;
     line.resize(target.size());
 
@@ -1003,6 +1003,8 @@ ProjectileAnim::ProjectileAnim(uint16 tileNum, MapCoord *start, vector<MapCoord>
     stopped_count = 0;
 
     speed = animSpeed;
+    if(speed==0)
+    	speed = 1;
 
     leaveTrailFlag = leaveTrail;
 }
@@ -1039,7 +1041,7 @@ void ProjectileAnim::start()
     	if(line[i].current_deg < 0)
     		line[i].current_deg += 360;
 
-    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, line[i].current_deg), x/16, y/16, x%16, y%16);
+    	line[i].p_tile = add_tile(tile_manager->get_rotated_tile(t, line[i].current_deg, src_tile_y_offset), x/16, y/16, x%16, y%16);
     	line[i].update_idx = 0;
     	line[i].isRunning = true;
     }
@@ -1065,8 +1067,8 @@ bool ProjectileAnim::update()
 		{
 			uint32 x, y;
 			bool canContinue = false;
-
-			for(uint16 j = 0; j < 6; j++)
+			//printf("step. speed=%d, time=%d\n",speed,SDL_GetTicks());
+			for(uint16 j = 0; j < speed*2; j++)
 			{
 				canContinue = line[i].lineWalker->next(&x, &y);
 				if(!canContinue)//FIXME explosion boundary checks. || map->is_boundary((x + 10)/16,(y + 10)/16,level))
