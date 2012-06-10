@@ -31,6 +31,7 @@
 #include "ActorManager.h"
 #include "SoundManager.h"
 #include "Event.h"
+#include "MapWindow.h"
 #include "ConverseInterpret.h"
 #include "ConverseSpeech.h"
 #include "ConverseGump.h"
@@ -366,7 +367,7 @@ bool Converse::start(uint8 n)
         npc_num = n;
         init_variables();
         scroll->set_talking(true);
-
+        Game::get_game()->get_map_window()->set_walking(false);
         Game::get_game()->get_sound_manager()->musicStop();
         Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         scroll->set_autobreak(true);

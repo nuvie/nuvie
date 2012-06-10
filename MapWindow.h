@@ -145,6 +145,7 @@ class MapWindow: public GUI_Widget
  void set_freeze_blacking_location(bool state);
  void set_enable_blacking(bool state);
  void set_roof_display_mode(enum RoofDisplayType mode) { roof_display = mode; }
+ void set_walking(bool state) { walking = state; }
 
  void moveLevel(uint8 new_level);
  void moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add = 0, uint8 new_y_add = 0);
