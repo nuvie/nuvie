@@ -2324,6 +2324,7 @@ bool Event::rest()
     }
     scroll->display_string("Rest");
 
+
     string err_str;
     if(!player->get_party()->can_rest(err_str))
     {
@@ -2742,6 +2743,8 @@ void Event::cancelAction()
  */
 bool Event::newAction(EventMode new_mode)
 {
+	map_window->set_walking(false);
+
 	if(mode == WAIT_MODE)
 		return(false);
 

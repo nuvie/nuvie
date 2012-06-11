@@ -177,9 +177,10 @@ void Obj::add_and_stack(Obj *obj)
   Obj *cont_obj;
   
   //should we recurse through nested containers?
-  for(link = container->start();link != NULL;link=link->next)
+  for(link = container->start();link != NULL;)
   {
     cont_obj = (Obj *)link->data;
+    link=link->next;
     //match on obj_n, frame_n and quality.
     if(obj->obj_n == cont_obj->obj_n && obj->frame_n == cont_obj->frame_n && obj->quality == cont_obj->quality)
     {

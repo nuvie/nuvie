@@ -1,3 +1,11 @@
+2012-06-11  Eric Fry <efry at users.sourceforge.net> r1335
+	* Use actor base alignment if egg set to default alignment.
+	* Stop walking when new event actioned. eg when the player
+	  hits 'r' to rest. Thanks to Micro Magic for reporting the bug.
+	* Fixed bug when iterating through a list of objects. The list pointer
+	  could become corrupted if the object was removed from the list.
+    
+
 2012-06-10  Eric Fry <efry at users.sourceforge.net> r1334
 	* Fixed bug. 'Can walk away while talking with Finn' [3526052]
 

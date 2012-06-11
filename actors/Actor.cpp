@@ -859,9 +859,10 @@ void Actor::inventory_del_all_objs()
       return;
    
    U6Link *link = inventory->start();
-   for(;link != NULL; link = inventory->start())
+   for(;link != NULL; )
    {
       Obj *obj = (Obj *)link->data;
+      link = link->next;
       inventory_remove_obj(obj);
       delete_obj(obj);
    }
@@ -976,9 +977,10 @@ void Actor::inventory_parse_readied_objects()
 
  inventory = obj_manager->get_actor_inventory(id_n);
 
- for(link=inventory->start();link != NULL;link=link->next)
+ for(link=inventory->start();link != NULL;)
   {
    obj = (Obj *)link->data;
+   link=link->next;
    obj->parent = (void *)this;
    if(obj->is_readied()) //object readied
       {
@@ -1528,8 +1530,12 @@ void Actor::resurrect(MapCoord new_position, Obj *body_obj)
 		//add body container objects back into actor's inventory.
 		if(body_obj->has_container())
 		{
-			for(link = body_obj->container->start(); link != NULL; link = link->next)
-				inventory_add_object((Obj *)link->data);
+			for(link = body_obj->container->start(); link != NULL;)
+			{
+				Obj *inv_obj = (Obj *)link->data;
+				link = link->next;
+				inventory_add_object(inv_obj);
+			}
 
 			body_obj->container->removeAll();
 		}

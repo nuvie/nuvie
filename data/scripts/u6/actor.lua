@@ -539,7 +539,7 @@ function actor_init(actor, alignment)
    local hp = actor_randomise_stat(actor_base[4])
    actor.hp = hp
    actor.level = math.floor((hp + 29) / 30)
-   actor.align = actor_base[6] --FIXME what about alignment from eggs.
+   actor.align = actor_base[6]
  else
    actor.str = 10
    actor.dex = 10
@@ -549,7 +549,7 @@ function actor_init(actor, alignment)
    --actor.status = 32
  end
  
-   if alignment ~= nil then
+   if alignment ~= nil and alignment ~= ALIGNMENT_DEFAULT then
       actor.align = alignment
    end
    

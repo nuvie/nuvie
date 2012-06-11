@@ -420,8 +420,12 @@ void ObjManager::clean_actor_inventories()
   {
    if(actor_inventories[i])
      {
-      for(link=actor_inventories[i]->start(); link != NULL; link=link->next)
-        delete_obj((Obj *)link->data);
+      for(link=actor_inventories[i]->start(); link != NULL; )
+      {
+    	Obj *obj = (Obj *)link->data;
+    	link=link->next;
+        delete_obj(obj);
+      }
       actor_inventories[i]->removeAll();
      }
   }
@@ -1720,8 +1724,13 @@ void delete_obj(Obj *obj)
  {
     if(obj->container)
     {
-       for(link=obj->container->start();link != NULL; link=link->next)
-          delete_obj((Obj *)link->data);
+       for(link=obj->container->start();link != NULL; )
+       {
+    	  Obj *cont_obj = (Obj *)link->data;
+    	  link=link->next;
+
+          delete_obj(cont_obj);
+       }
     }
     
    if(obj->container)
@@ -1840,8 +1849,13 @@ void clean_obj_tree_node(void *node)
  U6Link *link;
  ObjTreeNode *obj_node = (ObjTreeNode *)node;
 
- for(link=obj_node->obj_list->start();link != NULL; link=link->next)
-   delete_obj((Obj *)link->data);
+ for(link=obj_node->obj_list->start();link != NULL; )
+ {
+   Obj *obj = (Obj *)link->data;
+   link=link->next;
+
+   delete_obj(obj);
+ }
 
  delete obj_node->obj_list;
  delete obj_node;
