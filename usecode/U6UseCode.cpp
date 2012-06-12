@@ -2972,6 +2972,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
         if(obj->frame_n == 0) // unlit: may get normally
             return(true);
         toggle_frame(obj); // unlight
+        obj->qty=1;
         obj_manager->remove_obj_from_map(obj); // add to inventory and USE
         items.actor_ref->inventory_add_object(obj); // will unstack in USE
         scroll->display_string("\n");
@@ -2992,7 +2993,6 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
 /* Torches disappear when extinguished. */
 void U6UseCode::extinguish_torch(Obj *obj)
 {
-    assert(obj->qty == 1);
     assert(obj->frame_n == 1);
 
 //  handled by Actor::inventory_remove_obj()

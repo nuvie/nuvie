@@ -1,3 +1,7 @@
+2012-06-13  Eric Fry <efry at users.sourceforge.net> r1336
+	* Removed wrong assert in extinguish_torch()
+	* Set torch qty to 1 when getting lit torch from map.
+
 2012-06-11  Eric Fry <efry at users.sourceforge.net> r1335
 	* Use actor base alignment if egg set to default alignment.
 	* Stop walking when new event actioned. eg when the player
