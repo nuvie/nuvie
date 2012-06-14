@@ -31,6 +31,7 @@
 #include "Actor.h"
 #include "ViewManager.h"
 #include "Converse.h"
+#include "UseCode.h"
 
 extern bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
 extern Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
@@ -1173,6 +1174,14 @@ static int nscript_actor_inv_unready_obj(lua_State *L)
 	Obj *obj;
 
 	obj = *s_obj;
+
+	UseCode *usecode = Game::get_game()->get_usecode();
+
+	//try to unready via usecode.
+	if(usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
+	{
+		return 0;
+	}
 
 	actor->remove_readied_object(obj);
 

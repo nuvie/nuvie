@@ -269,7 +269,7 @@ bool Nuvie::initDefaultConfigWin32()
 	config->set("config/ultima6/music", "native");
 	config->set("config/ultima6/sfx", "pcspeaker");
 	config->set("config/ultima6/skip_intro", false);
-	config->set("config/ultima6/show_eggs", true);
+	config->set("config/ultima6/show_eggs", false);
 
 	config->write();
 
@@ -321,7 +321,7 @@ bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
 	config->set("config/ultima6/music", "native");
 	config->set("config/ultima6/sfx", "pcspeaker");
 	config->set("config/ultima6/skip_intro", false);
-	config->set("config/ultima6/show_eggs", true);
+	config->set("config/ultima6/show_eggs", false);
 
 	config->write();
 
@@ -373,7 +373,7 @@ bool Nuvie::initDefaultConfigUnix(const char *home_env)
 	config->set("config/ultima6/music", "native");
 	config->set("config/ultima6/sfx", "pcspeaker");
 	config->set("config/ultima6/skip_intro", false);
-	config->set("config/ultima6/show_eggs", true);
+	config->set("config/ultima6/show_eggs", false);
 
 	config->write();
 

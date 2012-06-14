@@ -1,3 +1,7 @@
+2012-06-14  Eric Fry <efry at users.sourceforge.net> r1337
+	* Don't show eggs by default. Bug [3535033]
+	* Call unready usecode when unreadying objects from lua script.
+
 2012-06-13  Eric Fry <efry at users.sourceforge.net> r1336
 	* Removed wrong assert in extinguish_torch()
 	* Set torch qty to 1 when getting lit torch from map.
