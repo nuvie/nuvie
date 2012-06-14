@@ -82,8 +82,8 @@ bool SaveSlot::init(const char *directory, std::string *file)
       return false;
    }
 
- widget = (GUI_Widget *) new GUI_TextInput(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, (char *)save_description.c_str(), gui->get_font(),26,2, this);
- AddWidget(widget);
+ textinput_widget = new GUI_TextInput(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, (char *)save_description.c_str(), gui->get_font(),26,2, this);
+ AddWidget((GUI_Widget *)textinput_widget);
 
  return true;
 }
@@ -161,6 +161,17 @@ std::string *SaveSlot::get_filename()
  return &filename;
 }
 
+void SaveSlot::deselect()
+{
+	selected = false;
+	textinput_widget->set_text(save_description.c_str()); //revert to original text
+}
+
+std::string SaveSlot::get_save_description()
+{
+	return std::string(textinput_widget->get_text());
+}
+
 /* Map the color to the display */
 void SaveSlot::SetDisplay(Screen *s)
 {
@@ -221,8 +232,6 @@ GUI_status SaveSlot::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
  if(msg == TEXTINPUT_CB_TEXT_READY) //we should probably make sure the caller is a GUI_TextInput object
    {
-    save_description.assign((char *)data);
-
     return callback_object->callback(SAVESLOT_CB_SAVE, this, this);
    }
 

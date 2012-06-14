@@ -29,6 +29,7 @@ using std::string;
 
 class GUI;
 class GUI_CallBack;
+class GUI_TextInput;
 
 #define NUVIE_SAVESLOT_HEIGHT 52
 
@@ -51,6 +52,8 @@ std::string save_description;
 
 SDL_Surface *thumbnail;
 
+GUI_TextInput *textinput_widget;
+
 public:
 
 SaveSlot(GUI_CallBack *callback, GUI_Color bg_color);
@@ -59,10 +62,10 @@ SaveSlot(GUI_CallBack *callback, GUI_Color bg_color);
 
 bool init(const char *directory, std::string *filename);
 
-std::string get_save_description() { return save_description; };
+std::string get_save_description();
 std::string *get_filename();
 
-void deselect() { selected = false; };
+void deselect();
 
 void SetDisplay(Screen *s);
 

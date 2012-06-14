@@ -170,6 +170,17 @@ void GUI_TextInput::remove_char()
  return;
 }
 
+void GUI_TextInput::set_text(const char *new_text)
+{
+	if(new_text)
+	{
+		strncpy(text, new_text, max_width * max_height);
+
+		pos = strlen(text);
+		length = pos;
+	}
+}
+
 /* Map the color to the display */
 void GUI_TextInput::SetDisplay(Screen *s)
 {

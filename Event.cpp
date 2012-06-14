@@ -214,8 +214,8 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			case SDLK_9: alt_code_str[alt_code_len++] = '9'; break;
 
 			case SDLK_x: // quit
-				scroll->display_string("Exit!\n");
-				return false;
+				quitDialog();
+				return true;
 
 			case SDLK_d: 
 				DEBUG(0,LEVEL_EMERGENCY,"!!decrease!!\n");
@@ -246,7 +246,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		switch(event->key.keysym.sym)
 		{
 			case SDLK_s: // save
-				scroll->display_string("Save game?\n");
+				saveDialog();
 				return true;
 			case SDLK_l: { // load
 				SaveManager *save_manager = Game::get_game()->get_save_manager();
@@ -254,8 +254,8 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 				save_manager->load_latest_save();
 				return true; }
 			case SDLK_q: // quit
-				scroll->display_string("Exit!\n");
-				return false;
+				quitDialog();
+				return true;
 			default:
 				if(event->key.keysym.sym != SDLK_LCTRL
 				   && event->key.keysym.sym != SDLK_RCTRL)
@@ -337,11 +337,8 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			break;
 
 		case SDLK_q     :
-			if(mode == MOVE_MODE && !showingQuitDialog)
-			{
-				showingQuitDialog = true;
 				quitDialog();
-			}
+
 			break;
 		case SDLK_c     :
 			newAction(CAST_MODE);
@@ -476,11 +473,7 @@ bool Event::handleEvent(const SDL_Event *event)
 			break;
 
 		case SDL_QUIT :
-			if(!showingQuitDialog)
-			{
-				showingQuitDialog = true;
 				quitDialog();
-			}
 			break;
 
 		default:
@@ -1987,12 +1980,17 @@ inline Uint32 Event::TimeLeft()
 
 void Event::quitDialog()
 {
- GUI_Widget *quit_dialog;
+	GUI_Widget *quit_dialog;
+	if(mode == MOVE_MODE && !showingQuitDialog)
+	{
+		showingQuitDialog = true;
 
- quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", (GUI_CallBack *)this, (GUI_CallBack *)this);
+		quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", (GUI_CallBack *)this, (GUI_CallBack *)this);
 
- gui->AddWidget(quit_dialog);
- gui->lock_input(quit_dialog);
+		gui->AddWidget(quit_dialog);
+		gui->lock_input(quit_dialog);
+	}
+
  return;
 }
 

@@ -1,3 +1,7 @@
+2012-06-15  Eric Fry <efry at users.sourceforge.net> r1338
+	* Fixed bug "save game name isn't saved" [3535034]
+	* Fixed bug "ctrl-save and alt-x ignore y/n input" [3535038]
+
 2012-06-14  Eric Fry <efry at users.sourceforge.net> r1337
 	* Don't show eggs by default. Bug [3535033]
 	* Call unready usecode when unreadying objects from lua script.
