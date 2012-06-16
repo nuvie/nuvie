@@ -141,6 +141,8 @@ static int nscript_print(lua_State *L);
 //no longer used -- static int nscript_get_target(lua_State *L);
 static int nscript_load(lua_State *L);
 
+static int nscript_config_get_boolean_value(lua_State *L);
+
 static int nscript_objlist_seek(lua_State *L);
 static int nscript_objlist_read2(lua_State *L);
 static int nscript_objlist_write2(lua_State *L);
@@ -424,6 +426,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_load);
    lua_setglobal(L, "nuvie_load");
+
+   lua_pushcfunction(L, nscript_config_get_boolean_value);
+   lua_setglobal(L, "config_get_boolean_value");
 
    nscript_init_actor(L);
    nscript_init_cutscene(L, cfg, gui, sm);
@@ -1376,6 +1381,17 @@ static int nscript_obj_get(lua_State *L)
       lua_pushinteger(L, (int)tile->tile_num); return 1;
    }
    
+   if(!strcmp(key, "getable"))
+   {
+	   ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+	   lua_pushboolean(L, (int)obj_manager->can_get_obj(obj)); return 1;
+   }
+
+   if(!strcmp(key, "ok_to_take"))
+   {
+	   lua_pushboolean(L, (int)obj->is_ok_to_take()); return 1;
+   }
+
    return 0;
 }
 
@@ -1602,6 +1618,16 @@ static int nscript_load(lua_State *L)
    luaL_loadfile(L, path.c_str());
 
    return 1;
+}
+
+static int nscript_config_get_boolean_value(lua_State *L)
+{
+	bool value;
+	const char *config_key = luaL_checkstring(L, 1);
+	Script::get_script()->get_config()->value(std::string(config_key), value);
+
+	lua_pushboolean(L, value);
+	return 1;
 }
 
 static int nscript_objlist_seek(lua_State *L)

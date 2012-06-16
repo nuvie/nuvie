@@ -123,6 +123,7 @@ g_moonstone_loc_tbl =
  {x=0x397, y=0x3A6, z=0}
 } 
 
+g_show_stealing = config_get_boolean_value("config/ultima6/show_stealing")
 
 -- some common functions
 
@@ -299,6 +300,11 @@ function look_obj(obj)
    end
    
    print(".\n");
+   
+   if g_show_stealing == true and obj.getable == true and obj.ok_to_take == false then
+   	print("PRIVATE PROPERTY")
+   end
+   
    return true
 end
 

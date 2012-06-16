@@ -2258,8 +2258,19 @@ bool Event::perform_drop()
 {
     if(mode == WAIT_MODE)
         return false;
-    if(drop_x == -1) drop_x = input.loc->x;
-    if(drop_y == -1) drop_y = input.loc->y;
+    if(drop_x == -1 || drop_y == -1)
+    {
+    	if(input.loc == NULL)
+    	{
+    		scroll->display_string("Not possible\n");
+    		endAction(true);
+    		return false;
+    	}
+
+        if(drop_x == -1) drop_x = input.loc->x;
+        if(drop_y == -1) drop_y = input.loc->y;
+    }
+
     return(drop(drop_obj, drop_qty, uint16(drop_x), uint16(drop_y)));
 }
 
@@ -2608,6 +2619,12 @@ void Event::doAction()
     	{
         	if(input.select_from_inventory == false)
         		return endAction(true);
+
+        	if(input.type == EVENTINPUT_MAPCOORD)
+        	{
+        		scroll->display_string("nothing\n");
+        		return endAction(true);
+        	}
 
             assert(input.type == EVENTINPUT_OBJECT);
             drop_select(input.obj);

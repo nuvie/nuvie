@@ -50,6 +50,7 @@ Party::Party(Configuration *cfg)
  formation = PARTY_FORM_STANDARD;
  num_in_party = 0;
  prev_leader_x = prev_leader_y = 0;
+ defer_removing_dead_members = false;
 }
 
 Party::~Party()
@@ -183,6 +184,9 @@ bool Party::add_actor(Actor *actor)
 // remove actor from member array shuffle remaining actors down if required.
 bool Party::remove_actor(Actor *actor, bool keep_party_flag)
 {
+ if(defer_removing_dead_members) //we don't want to remove member while inside the Party::follow() method.
+	 return true;
+
  uint8 i;
 
  for(i=0;i< num_in_party;i++)
@@ -452,6 +456,8 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
         return;
     }
 
+    defer_removing_dead_members = true;
+
     // set previous leader location first, just in case the leader changed
     prev_leader_x = member[get_leader()].actor->x - rel_x;
     prev_leader_y = member[get_leader()].actor->y - rel_y;
@@ -482,6 +488,16 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
 
         get_actor(p)->set_moves_left(get_actor(p)->get_moves_left() - 10);
         get_actor(p)->set_worktype(0x01); // revert to normal worktype
+    }
+
+    defer_removing_dead_members = false;
+
+    //remove party members that died during follow routine.
+    for(int p=get_party_size()-1; p>=0;p--)
+    {
+        Actor *a = get_actor(p);
+        if(a->is_alive() == false)
+        	remove_actor(a, PARTY_KEEP_PARTY_FLAG);
     }
 }
 

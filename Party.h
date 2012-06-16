@@ -96,6 +96,8 @@ class Party {
  bool in_vehicle; //Party is in a vehicle.
  bool in_combat_mode;
 
+ bool defer_removing_dead_members;
+
  public:
 
  Party(Configuration *cfg);

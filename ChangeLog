@@ -1,3 +1,15 @@
+2012-06-16  Eric Fry <efry at users.sourceforge.net> r1339
+	* Implemented idea from patch
+	  'Optional message saying whether taking an item is stealing'
+	  by malignantmanor. You can turn it on with the following config
+	  value. config/ultima6/show_stealing
+	* Added config_get_boolean_value() to lua script. You can
+	  use this function to get boolean config values.
+	* Fixed bug 'using drop on the tiled area of the screen causes assert'[3535037]
+	* Fixed crash when party members die while pathfinding.
+	* Added object get vars 'getable' and 'ok_to_take' to the scripting
+	  system.
+
 2012-06-15  Eric Fry <efry at users.sourceforge.net> r1338
 	* Fixed bug "save game name isn't saved" [3535034]
 	* Fixed bug "ctrl-save and alt-x ignore y/n input" [3535038]
