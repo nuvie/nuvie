@@ -2112,6 +2112,46 @@ function actor_yell_for_help(attacking_actor, defending_actor, dmg)
 
 end
 
+function actor_get_obj(actor, obj)
+	if obj.getable == false then
+		print("\n\nNot possible.")
+		return false
+	end
+	
+	if Actor.can_carry_obj(actor, obj) == false then
+		print("\n\nThe total is too heavy.")
+		return false
+	end
+
+	local player_loc = player_get_location()
+	local i
+	local caught_stealing = false
+	if player_loc.z == 0 and obj.ok_to_take == false then --stealing logic only applies to surface level.
+		player_subtract_karma(1)
+		play_sfx(SFX_FAILURE, true)
+		for i=1,0xe0 do --perm actors
+			local actor = Actor.get(i)
+
+			if actor.alive == true and actor.z == player_loc.z and actor.in_party == false and actor.align == ALIGNMENT_NEUTRAL and actor.asleep == false then
+				if actor_find_max_xy_distance(actor, player_loc.x, player_loc.y) < 0x6 then
+					print("\n\"Stop Thief!!!\"\n")
+					activate_city_guards()
+					caught_stealing = true
+					break
+				end
+			end
+		end
+		
+		if caught_stealing == false then
+			print("\nStealing!!!\n")
+		end
+	end
+	
+	obj.ok_to_take = true
+	
+	return true
+end
+
 function activate_city_guards()
 dbg("activate_city_guards()")
    local i

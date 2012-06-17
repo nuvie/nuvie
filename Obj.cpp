@@ -86,6 +86,14 @@ void Obj::set_temporary(bool flag)
 	return;
 }
 
+void Obj::set_ok_to_take(bool flag)
+{
+	if(flag)
+		status |= OBJ_STATUS_OK_TO_TAKE;
+	else if (is_ok_to_take())
+		status ^= OBJ_STATUS_OK_TO_TAKE;
+}
+
 void Obj::set_in_inventory()
 { 
   nuvie_status &= NUVIE_OBJ_STATUS_LOC_MASK_SET; 

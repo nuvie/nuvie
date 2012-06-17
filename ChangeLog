@@ -1,3 +1,12 @@
+2012-06-17  Eric Fry <efry at users.sourceforge.net> r1340
+	* Added Obj::set_ok_to_take()
+	* Added call to lua script function actor_get_obj() when getting
+	  an object either with the keyboard get command or via drag and drop.
+	* Added 'Stop thief!' logic. Nearby NPCs will attack party when an object
+	  is stolen. Nearby guards will also try to arrest the player.
+	* Removed double drag_accept_drop check from drag and drop logic.
+	* Fixed bug 'Dragging objects into the inventory doesn't trigger stealing'[3535340]
+
 2012-06-16  Eric Fry <efry at users.sourceforge.net> r1339
 	* Implemented idea from patch
 	  'Optional message saying whether taking an item is stealing'

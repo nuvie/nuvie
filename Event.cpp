@@ -944,28 +944,13 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
             return(false); // ???
         }
 
-        if(obj_manager->can_get_obj(obj) == true)
+        if(Game::get_game()->get_script()->call_actor_get_obj(actor, obj))
         {
-            if(actor->can_carry_object(obj))
-            {
-                // object is someone else's
-                if(!(obj->status & OBJ_STATUS_OK_TO_TAKE))
-                {
-                    scroll->display_string("\n\nStealing!!!"); // or "Stop Thief!!!"
-                    player->subtract_karma();
-                    //FIXME need to call city guards here.
-		    /* obj->status |= OBJ_STATUS_OK_TO_TAKE; */ // duplicated in inventory_add_object. 
-                }
-                obj_manager->remove_obj_from_map(obj); //remove object from map.
+            obj_manager->remove_obj_from_map(obj); //remove object from map.
 
-                actor->inventory_add_object(obj, container_obj);
-                got_object = true;
-            }
-            else
-                scroll->display_string("\n\nThe total is too heavy.");
+            actor->inventory_add_object(obj, container_obj);
+            got_object = true;
         }
-        else
-            scroll->display_string("\n\nNot possible.");
 
         if(obj_manager->is_damaging(obj->x,obj->y,obj->z))
         {

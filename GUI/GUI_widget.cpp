@@ -507,11 +507,8 @@ void GUI_Widget::drag_perform_drop(int x, int y, int message, void *data)
       {
        if((*child)->HitRect(x,y))
          {
-          if((*child)->drag_accept_drop(x,y,message,data))
-            {
-             (*child)->drag_perform_drop(x,y,message,data);
-             break;
-            }
+          (*child)->drag_perform_drop(x,y,message,data);
+          break;
          }
       }
    }

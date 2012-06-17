@@ -59,7 +59,7 @@ void GUI_DragManager::drop(GUI_DragArea *drag_target, int x, int y)
 
  if(drag_target->drag_accept_drop(x,y,message,data))
   {
-   //inform the source of the success so it can preform operations before the drop takes place.
+   //inform the source of the success so it can perform operations before the drop takes place.
    drag_source->drag_drop_success(x,y,message,data);
    drag_target->drag_perform_drop(x,y,message,data);
   }

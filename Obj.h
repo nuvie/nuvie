@@ -134,6 +134,8 @@ public:
   
   void set_temporary(bool flag=true);
 
+  void set_ok_to_take(bool flag);
+
   void readied();
   void set_noloc();
   void set_in_script(bool flag);

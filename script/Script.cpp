@@ -766,6 +766,18 @@ bool Script::call_look_obj(Obj *obj)
    return lua_toboolean(L,-1);
 }
 
+bool Script::call_actor_get_obj(Actor *actor, Obj *obj)
+{
+   lua_getglobal(L, "actor_get_obj");
+   nscript_new_actor_var(L, actor->get_actor_num());
+   nscript_obj_new(L, obj);
+
+   if(call_function("actor_get_obj", 2, 1) == false)
+	   return false;
+
+   return lua_toboolean(L,-1);
+}
+
 bool Script::call_use_keg(Obj *obj)
 {
    lua_getglobal(L, "use_keg");
@@ -1259,6 +1271,12 @@ static int nscript_obj_set(lua_State *L)
    {
       obj->set_invisible((bool)lua_toboolean(L, 3));
       return 0;
+   }
+
+   if(!strcmp(key, "ok_to_take"))
+   {
+	   obj->set_ok_to_take((bool)lua_toboolean(L, 3));
+	   return 0;
    }
 
    return 0;

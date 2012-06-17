@@ -36,6 +36,7 @@
 #include "TimedEvent.h"
 #include "UseCode.h"
 #include "MapWindow.h"
+#include "Script.h"
 
 #include "InventoryFont.h"
 #include "ViewManager.h"
@@ -511,6 +512,9 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
         DEBUG(0,LEVEL_WARNING,"InventoryWidget: Cannot Move between party members!\n"); 
         return false;
     }
+
+    if(Game::get_game()->get_script()->call_actor_get_obj(actor, obj) == false)
+    	return false;
 
     DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
     return true;
