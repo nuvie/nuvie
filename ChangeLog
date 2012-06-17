@@ -1,3 +1,6 @@
+2012-06-17  Eric Fry <efry at users.sourceforge.net> r1341
+	* Added support for dragging objects from map window to the party roster.
+
 2012-06-17  Eric Fry <efry at users.sourceforge.net> r1340
 	* Added Obj::set_ok_to_take()
 	* Added call to lua script function actor_get_obj() when getting

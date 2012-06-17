@@ -33,6 +33,7 @@ class Screen;
 class Text;
 class Party;
 class Player;
+class Actor;
 
 class PartyView : public View {
 
@@ -47,6 +48,8 @@ class PartyView : public View {
  bool init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl, TileManager *tm, ObjManager *om);
  GUI_status MouseUp(int x,int y,int button);
  GUI_status MouseDown(int x,int y,int button) { return(GUI_YUM); }
+ bool drag_accept_drop(int x, int y, int message, void *data);
+ void drag_perform_drop(int x, int y, int message, void *data);
  void Display(bool full_redraw);
  void update() { update_display = true; }
 
@@ -63,6 +66,7 @@ class PartyView : public View {
  bool up_arrow();
  bool down_arrow();
 
+ Actor *get_actor(int x, int y);
 };
 
 #endif /* __PartyView_h__ */

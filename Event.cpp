@@ -1149,10 +1149,10 @@ bool Event::search(Obj *obj)
     {
         scroll->display_string("Searching here, you find ");
         if(!obj || !usecode->search_obj(obj, player->get_actor()))
-            scroll->display_string("nothing.\n");
+            scroll->display_string("nothing.");
         else
         {
-            scroll->display_string(".\n");
+            scroll->display_string(".");
             map_window->updateBlacking(); // secret doors
         }
         return(true);

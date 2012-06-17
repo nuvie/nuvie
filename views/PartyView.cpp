@@ -30,6 +30,8 @@
 #include "PartyView.h"
 #include "Text.h"
 #include "Weather.h"
+#include "Script.h"
+#include "MsgScroll.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status actorViewButtonCallback(void *data);
@@ -99,6 +101,78 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
      }
   }
  return GUI_YUM;
+}
+
+Actor *PartyView::get_actor(int x, int y)
+{
+    x -= area.x;
+    y -= area.y;
+
+    uint8 party_size = party->get_party_size();
+    if(party_size > 5) party_size = 5; // can only display/handle 5 at a time
+
+    if(y > party_size * 16 + 18) // clicked below actors
+      return NULL;
+
+    if(x >= 8)
+     {
+    	return party->get_actor(((y - 18) / 16) + row_offset);
+     }
+
+    return NULL;
+}
+
+bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
+{
+	DEBUG(0,LEVEL_DEBUGGING,"PartyView::drag_accept_drop()\n");
+	if(message == GUI_DRAG_OBJ)
+	{
+		Obj *obj = (Obj*)data;
+		Actor *actor = get_actor(x, y);
+
+	    MsgScroll *scroll = Game::get_game()->get_scroll();
+	    scroll->display_string("Move-");
+	    scroll->display_string(obj_manager->get_obj_name(obj->obj_n, obj->frame_n));
+	    scroll->display_string(" To ");
+	    scroll->display_string(actor->get_name());
+	    scroll->display_string(".");
+
+		if(actor && Game::get_game()->get_script()->call_actor_get_obj(actor, obj) == true)
+		{
+			DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
+			return true;
+		}
+
+		scroll->display_string("\n");
+	    scroll->display_prompt();
+	}
+
+	Redraw();
+
+	DEBUG(0,LEVEL_DEBUGGING,"Drop Refused\n");
+	return false;
+}
+
+void PartyView::drag_perform_drop(int x, int y, int message, void *data)
+{
+ DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_perform_drop()\n");
+ Obj *obj;
+
+ if(message == GUI_DRAG_OBJ)
+   {
+    DEBUG(0,LEVEL_DEBUGGING,"Drop into inventory.\n");
+    obj = (Obj *)data;
+
+	Actor *actor = get_actor(x, y);
+    obj_manager->moveto_inventory(obj, actor);
+
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+    scroll->display_prompt();
+
+    Redraw();
+   }
+
+ return;
 }
 
 void PartyView::Display(bool full_redraw)
