@@ -477,13 +477,13 @@ TossAnim::TossAnim(Tile *tile, const MapCoord &start, const MapCoord &stop, uint
 
     init(tile, 0, start, stop, pixels_per_sec, stop_flags);
 }
-TossAnim::TossAnim(uint16 obj_n, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags)
+TossAnim::TossAnim(Obj *obj, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags)
 {
     actor_manager = Game::get_game()->get_actor_manager();
     obj_manager = Game::get_game()->get_obj_manager();
     map = Game::get_game()->get_game_map();
 
-    init(obj_manager->get_obj_tile(obj_n, 0), degrees,
+    init(obj_manager->get_obj_tile(obj->obj_n, obj->frame_n), degrees,
          start, stop, pixels_per_sec, stop_flags);
 }
 

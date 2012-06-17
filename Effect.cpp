@@ -574,7 +574,7 @@ void ThrowObjectEffect::start_anim()
     assert(throw_speed != 0);
 
     if(throw_obj)
-        anim = new TossAnim(throw_obj->obj_n, degrees, start_at, stop_at, throw_speed, stop_flags);
+        anim = new TossAnim(throw_obj, degrees, start_at, stop_at, throw_speed, stop_flags);
     else
         anim = new TossAnim(throw_tile, start_at, stop_at, throw_speed, stop_flags);
     add_anim(anim);

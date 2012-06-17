@@ -44,6 +44,7 @@
 #include "GameClock.h"
 #include "GamePalette.h"
 #include "Weather.h"
+#include "Script.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define WALK_BUTTON 3
@@ -1516,8 +1517,50 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     x = (cur_x + x) % map_width;
     y = (cur_y + y) % map_width;
 
-    if(can_drop_obj(x, y, actor_manager->get_player()))
+    Obj *obj = (Obj *)data;
+    MsgScroll *scroll = Game::get_game()->get_scroll();
+
+    if(obj->is_in_inventory() == false) //obj on map.
+    {
+
+
+    	Actor *p = actor_manager->get_player();
+    	LineTestResult lt;
+    	if(can_drop_obj(obj->x, obj->y, p)) //make sure there is a clear line from player to object
+    	{
+    		Actor *target_actor = map->get_actor(x, y, cur_level);
+    		if(target_actor)
+    		{
+    	    	scroll->display_string("Move-");
+    	    	scroll->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
+    	    	scroll->display_string(" To ");
+    			scroll->display_string(target_actor->get_name());
+    			scroll->display_string(".\n");
+
+    			if(target_actor == p || (target_actor->is_in_party() && can_drop_obj(x, y, p)))
+    			{
+    				return Game::get_game()->get_script()->call_actor_get_obj(target_actor, obj);
+    			}
+    		}
+    		else
+    		{
+    			return can_drop_obj(x, y, p);
+    		}
+    	}
+    }
+    else if(can_drop_obj(x, y, actor_manager->get_player())) //object in inventory
+    {
+    	Actor *a = map->get_actor(x, y, cur_level);
+    	if(a)
+    	{
+    		if(a->is_in_party()==false)
+    			return false;
+
+    		if(Game::get_game()->get_script()->call_actor_get_obj(a, obj) == false)
+    			return false;
+    	}
       return true;
+    }
 
     game->get_scroll()->message("\n\nNot Possible\n\n");
   }
@@ -1542,21 +1585,28 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 //        Actor *target_actor = actor_manager->get_actor(x,y,cur_level);
         Obj *obj = (Obj *)data;
 
-        // drop on ground or into a container
-        event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
-        event->select_obj(obj);
-        if(obj->qty == 0 || obj->qty == 1)
-            event->select_target(x, y);
+        Actor *a = map->get_actor(x, y, cur_level);
+        if(a && a->is_in_party())
+        {
+        	obj_manager->moveto_inventory(obj, a);
+        	Game::get_game()->get_scroll()->display_string("\n");
+            Game::get_game()->get_scroll()->display_prompt();
+        }
         else
-            event->set_drop_target(x, y); // pre-select target
-
+        {
+        	// drop on ground or into a container
+        	event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
+        	event->select_obj(obj);
+        	if(obj->qty == 0 || obj->qty == 1)
+        		event->select_target(x, y);
+        	else
+        		event->set_drop_target(x, y); // pre-select target
+        }
         // FIXME: need to re-add dropping onto a container or actor
 //        if(target_obj && target_obj->container)
 //            obj_manager->list_add_obj(target_obj->container, obj);
         // FIXME: a method to prevent exploiting this would be to subtract the
         //        number of moves that are necessary to reach the object
-
-
     }
 
 }

@@ -51,6 +51,7 @@ class Actor;
 
 #define OBJ_ADD_TOP true
 
+#define OBJ_SHOW_PREFIX true
 
 #define OBJ_TEMP_INIT 255 // this is used to stop temporary objects from being cleaned upon startup.
 

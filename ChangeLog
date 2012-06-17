@@ -1,3 +1,9 @@
+2012-06-17  Eric Fry <efry at users.sourceforge.net> r1342
+	* Fixed bug "Can't pickup items with Drag'n'drop" [3526054]
+	  You can now drag and drop items from the map onto party members.
+	* Fixed bug where toss animation wasn't showing correct tile for
+	  objects with a frame_n other than 0.
+
 2012-06-17  Eric Fry <efry at users.sourceforge.net> r1341
 	* Added support for dragging objects from map window to the party roster.
 

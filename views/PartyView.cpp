@@ -132,7 +132,7 @@ bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
 
 	    MsgScroll *scroll = Game::get_game()->get_scroll();
 	    scroll->display_string("Move-");
-	    scroll->display_string(obj_manager->get_obj_name(obj->obj_n, obj->frame_n));
+	    scroll->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
 	    scroll->display_string(" To ");
 	    scroll->display_string(actor->get_name());
 	    scroll->display_string(".");
@@ -167,6 +167,7 @@ void PartyView::drag_perform_drop(int x, int y, int message, void *data)
     obj_manager->moveto_inventory(obj, actor);
 
     MsgScroll *scroll = Game::get_game()->get_scroll();
+    scroll->display_string("\n\n");
     scroll->display_prompt();
 
     Redraw();

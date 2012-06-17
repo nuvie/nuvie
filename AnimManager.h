@@ -218,7 +218,7 @@ protected:
 
 public:
     TossAnim(Tile *tile, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags = 0);
-    TossAnim(uint16 obj_n, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags = 0);
+    TossAnim(Obj *obj, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags = 0);
     ~TossAnim();
 
     void init(Tile *tile, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags);
