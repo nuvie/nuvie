@@ -381,28 +381,32 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_F6:
 		case SDLK_F7:
 		case SDLK_F8:
-		        if(view_manager->get_inventory_view()
-		           ->set_party_member(event->key.keysym.sym - 282))
-		            view_manager->set_inventory_mode();
-		        break;
+		case SDLK_F9:
+			if(player->get_party()->get_party_size()
+			   >= event->key.keysym.sym - 281)
+			{
+				view_manager->set_inventory_mode();
+				view_manager->get_inventory_view()
+				->set_party_member(event->key.keysym.sym - 282);
+			}
+			break;
 		case SDLK_F10:
 		            view_manager->set_party_mode();
 		        break;
         case SDLK_PLUS:
         case SDLK_KP_PLUS:
-		    if(view_manager->get_current_view() != view_manager->get_party_view())
-		        if(view_manager->get_inventory_view()
-		           ->set_party_member(view_manager->get_inventory_view()
-		           ->get_party_member_num()+1))
-		            view_manager->set_inventory_mode();
+		case SDLK_EQUALS:
+			if(Game::get_game()->is_orig_style() && view_manager->get_inventory_view()
+			   ->set_party_member(view_manager->get_inventory_view()
+			   ->get_party_member_num()+1))
+			    view_manager->set_inventory_mode();
             break;
         case SDLK_MINUS:
         case SDLK_KP_MINUS:
-		    if(view_manager->get_current_view() != view_manager->get_party_view())
-		        if(view_manager->get_inventory_view()
-		           ->set_party_member(view_manager->get_inventory_view()
-		           ->get_party_member_num()-1))
-		            view_manager->set_inventory_mode();
+			if(Game::get_game()->is_orig_style() && view_manager->get_inventory_view()
+			   ->set_party_member(view_manager->get_inventory_view()
+			   ->get_party_member_num()-1))
+			    view_manager->set_inventory_mode();
             break;
 		case SDLK_1:
 		case SDLK_2:

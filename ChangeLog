@@ -1,3 +1,9 @@
+2012-06-19  Eric Fry <efry at users.sourceforge.net> r1344
+	* Added Malignant Manor's patches
+	  'Allow + and - hotkeys to work in party view' [3535914]
+	  'Fix function key inventory hotkey.' [3535912]
+	* Fixed bug 'Have to hit function key twice to see inventory' [1624969]
+
 2012-06-19  Eric Fry <efry at users.sourceforge.net> r1343
 	* Added Malignant Manor's consolidate config patch. [3536084]
 	* Added obj.temporary set var in lua script.
