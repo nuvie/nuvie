@@ -86,7 +86,7 @@ Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
     objects = o;
     gametype = t;
 
-    cfg->value("config/party_all_the_time", party_all_the_time);
+    cfg->value("config/cheats/party_all_the_time", party_all_the_time);
 
     cfg->value("config/ultima6/townsdir", townsdir, "");
     if(townsdir != "" && directory_exists(townsdir.c_str()))

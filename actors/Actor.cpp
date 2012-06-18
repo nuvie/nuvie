@@ -776,7 +776,11 @@ bool Actor::inventory_add_object(Obj *obj, Obj *container, bool stack)
  U6LList *inventory = get_inventory_list(), *add_to = inventory;
 
  // we have the item now so we don't consider it stealing if we get it at any time in the future.
- obj->status |= OBJ_STATUS_OK_TO_TAKE;
+ obj->set_ok_to_take(true);
+
+ //remove temp flag on inventory items.
+ obj->set_temporary(false);
+
  if(container) // assumes actor is holding the container
  {
    container->add(obj, stack);
@@ -1734,8 +1738,8 @@ void Actor::print()
         for(U6Link *link = inv_list->start(); link != NULL; link=link->next)
         {
             Obj *obj = (Obj *)link->data;
-            DEBUG(1,LEVEL_INFORMATIONAL," %24s (%03d:%d) qual=%d qty=%d    (weighs %f)\n",
-                   obj_manager->look_obj(obj), obj->obj_n, obj->frame_n, obj->quality,
+            DEBUG(1,LEVEL_INFORMATIONAL," %24s (%03d:%d) status=%d qual=%d qty=%d    (weighs %f)\n",
+                   obj_manager->look_obj(obj), obj->obj_n, obj->frame_n, obj->status, obj->quality,
                    obj->qty, obj_manager->get_obj_weight(obj, false));
         }
         DEBUG(1,LEVEL_INFORMATIONAL,"(weight %f / %f)\n", actor->get_inventory_weight(),

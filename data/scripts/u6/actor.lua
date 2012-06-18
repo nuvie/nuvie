@@ -1581,6 +1581,8 @@ function combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, 
 
       if Actor.inv_remove_obj_qty(attacker, weapon_obj_n, 1) == 1 and map_is_water(target_x,target_y,target_z) == false then
 	      local obj = Obj.new(weapon_obj_n);
+	      obj.ok_to_take = true
+	      obj.temporary = true
 		  Obj.moveToMap(obj, target_x, target_y, target_z)
 	  end
       	      

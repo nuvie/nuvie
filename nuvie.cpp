@@ -227,6 +227,52 @@ bool Nuvie::initConfig()
  return false;
 }
 
+void Nuvie::SharedDefaultConfigValues()
+{
+	config->set("config/loadgame", "ultima6");
+	config->set("config/datadir", "./data");
+
+	config->set("config/video/scale_method", "point");
+	config->set("config/video/scale_factor", "2");
+//	config->set("config/video/screen_width", 320);
+//	config->set("config/video/screen_height", 200);
+//	config->set("config/video/x_offset", 0);
+//	config->set("config/video/y_offset", 0);
+
+	config->set("config/audio/enabled", true);
+	config->set("config/audio/enable_music", true);
+	config->set("config/audio/enable_sfx", true);
+	config->set("config/audio/music_volume", 100);
+	config->set("config/audio/sfx_volume", 255);
+
+	config->set("config/input/enable_doubleclick", true);
+
+	config->set("config/general/lighting", "original");
+	config->set("config/general/dither_mode", "none");
+	config->set("config/general/enable_cursors", true);
+	config->set("config/general/show_console", true);
+	config->set("config/general/fullscreen_map", false);
+	config->set("config/general/converse_bg_color", 218);
+	config->set("config/general/party_formation", "standard");
+
+	config->set("config/cheats/enable_hackmove", false);
+	config->set("config/cheats/party_all_the_time", false);
+
+	config->set("config/ultima6/music", "native");
+	config->set("config/ultima6/sfx", "pcspeaker");
+	config->set("config/ultima6/skip_intro", false);
+	config->set("config/ultima6/show_eggs", false);
+	config->set("config/ultima6/show_stealing", false);
+	config->set("config/ultima6/roof_mode", false);
+
+//	config->set("config/newgamedata/name", "Avatar");
+//	config->set("config/newgamedata/gender", 0);
+//	config->set("config/newgamedata/portrait", 0);
+//	config->set("config/newgamedata/str", 0xf);
+//	config->set("config/newgamedata/dex", 0xf);
+//	config->set("config/newgamedata/int", 0xf);
+}
+
 bool Nuvie::initDefaultConfigWin32()
 {
 	const unsigned char cfg_stub[] = "<config></config>";
@@ -243,34 +289,11 @@ bool Nuvie::initDefaultConfigWin32()
 	if(loadConfigFile(config_path, NUVIE_CONF_READWRITE) == false)
 		return false;
 
-	config->set("config/loadgame", "ultima6");
-	config->set("config/datadir", "./data");
-
-	config->set("config/video/scale_method", "point");
-	config->set("config/video/scale_factor", "2");
-
-	config->set("config/audio/enabled", true);
-	config->set("config/audio/enable_music", true);
-	config->set("config/audio/enable_sfx", true);
-	config->set("config/audio/music_volume", 100);
-	config->set("config/audio/sfx_volume", 255);
-
-	config->set("config/general/lighting", "original");
-	config->set("config/general/dither_mode", "none");
-	config->set("config/general/enable_cursors", false);
-	config->set("config/general/show_console", true);
-	config->set("config/general/fullscreen_map", false);
-	config->set("config/general/converse_bg_color", 218);
-
+	SharedDefaultConfigValues();
 	config->set("config/ultima6/gamedir", "c:\\ultima6");
 	config->set("config/ultima6/townsdir", "c:\\fmtownsU6");
 	config->set("config/ultima6/savedir", "./u6_save");
 	config->set("config/ultima6/sfxdir", "./custom_sfx");
-	config->set("config/ultima6/music", "native");
-	config->set("config/ultima6/sfx", "pcspeaker");
-	config->set("config/ultima6/skip_intro", false);
-	config->set("config/ultima6/show_eggs", false);
-	config->set("config/ultima6/show_stealing", false);
 
 	config->write();
 
@@ -296,34 +319,11 @@ bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
 	if(loadConfigFile(config_path, NUVIE_CONF_READWRITE) == false)
 		return false;
 
-	config->set("config/loadgame", "ultima6");
-	config->set("config/datadir", "./data");
-
-	config->set("config/video/scale_method", "point");
-	config->set("config/video/scale_factor", "2");
-
-	config->set("config/audio/enabled", true);
-	config->set("config/audio/enable_music", true);
-	config->set("config/audio/enable_sfx", true);
-	config->set("config/audio/music_volume", 100);
-	config->set("config/audio/sfx_volume", 255);
-
-	config->set("config/general/lighting", "original");
-	config->set("config/general/dither_mode", "none");
-	config->set("config/general/enable_cursors", false);
-	config->set("config/general/show_console", true);
-	config->set("config/general/fullscreen_map", false);
-	config->set("config/general/converse_bg_color", 218);
-
+	SharedDefaultConfigValues();
 	config->set("config/ultima6/gamedir", "/Library/Application Support/Nuvie Support/ultima6");
 	config->set("config/ultima6/townsdir", "/Library/Application Support/Nuvie Support/townsU6");
 	config->set("config/ultima6/savedir", home + "/Library/Application Support/Nuvie/savegames");
 	config->set("config/ultima6/sfxdir", home + "/Library/Application Support/Nuvie/custom_sfx");
-	config->set("config/ultima6/music", "native");
-	config->set("config/ultima6/sfx", "pcspeaker");
-	config->set("config/ultima6/skip_intro", false);
-	config->set("config/ultima6/show_eggs", false);
-	config->set("config/ultima6/show_stealing", false);
 
 	config->write();
 
@@ -349,34 +349,11 @@ bool Nuvie::initDefaultConfigUnix(const char *home_env)
 	if(loadConfigFile(config_path, NUVIE_CONF_READWRITE) == false)
 		return false;
 
-	config->set("config/loadgame", "ultima6");
-	config->set("config/datadir", "./data");
-
-	config->set("config/video/scale_method", "point");
-	config->set("config/video/scale_factor", "2");
-
-	config->set("config/audio/enabled", true);
-	config->set("config/audio/enable_music", true);
-	config->set("config/audio/enable_sfx", true);
-	config->set("config/audio/music_volume", 100);
-	config->set("config/audio/sfx_volume", 255);
-
-	config->set("config/general/lighting", "original");
-	config->set("config/general/dither_mode", "none");
-	config->set("config/general/enable_cursors", false);
-	config->set("config/general/show_console", true);
-	config->set("config/general/fullscreen_map", false);
-	config->set("config/general/converse_bg_color", 218);
-
+	SharedDefaultConfigValues();
 	config->set("config/ultima6/gamedir", "./ultima6");
 	config->set("config/ultima6/townsdir", "./townsU6");
 	config->set("config/ultima6/savedir", home + "/.nuvie/savegames");
 	config->set("config/ultima6/sfxdir", home + "/.nuvie/custom_sfx");
-	config->set("config/ultima6/music", "native");
-	config->set("config/ultima6/sfx", "pcspeaker");
-	config->set("config/ultima6/skip_intro", false);
-	config->set("config/ultima6/show_eggs", false);
-	config->set("config/ultima6/show_stealing", false);
 
 	config->write();
 

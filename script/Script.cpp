@@ -1279,6 +1279,12 @@ static int nscript_obj_set(lua_State *L)
 	   return 0;
    }
 
+   if(!strcmp(key, "temporary"))
+   {
+	   obj->set_temporary((bool)lua_toboolean(L, 3));
+	   return 0;
+   }
+
    return 0;
 }
 

@@ -145,7 +145,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 
  selected_obj = NULL;
  selected_actor = NULL;
- config->value("config/general/enable_hackmove", hackmove);
+ config->value("config/cheats/enable_hackmove", hackmove);
  walking = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
 

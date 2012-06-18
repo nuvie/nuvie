@@ -2458,8 +2458,16 @@ void Event::multiuse(uint16 wx, uint16 wy)
         }
         else
         {
-            newAction(TALK_MODE);
-            talk(actor);
+        	if(Game::get_game()->is_new_style() && actor == actor_manager->get_player())
+        	{
+        		//open inventory here.
+        		view_manager->open_doll_view(NULL);
+        	}
+        	else
+        	{
+        		newAction(TALK_MODE);
+        		talk(actor);
+        	}
         }
         // we were using an actor so free the temp Obj
         delete_obj(obj);

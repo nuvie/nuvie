@@ -4,11 +4,24 @@
 
  <datadir>./data</datadir>
 
+ <input>
+  <enable_doubleclick>yes</enable_doubleclick>
+ </input>
+
  <general>
   <lighting>original</lighting>
   <dither_mode>none</dither_mode>
   <enable_cursors>yes</enable_cursors>
+  <fullscreen_map>no</fullscreen_map>
+  <converse_bg_color>218</converse_bg_color>
+  <party_formation>standard</party_formation>
+  <show_console>yes</show_console>
  </general>
+
+ <cheats>
+  <enable_hackmove>no</enable_hackmove>
+  <party_all_the_time>no</party_all_the_time>
+ </cheats>
 
  <video>
   <scale_method>Point</scale_method>
@@ -29,6 +42,9 @@
   <sounddir>./u6_sounds</sounddir>
   <savedir>./u6_save</savedir>
   <skip_intro> no </skip_intro>
+  <show_eggs>no</show_eggs>
+  <roof_mode>no</roof_mode>
+  <show_stealing>no</show_stealing>
   <music>native</music>
   <sfx>pcspeaker</sfx>
  </ultima6>

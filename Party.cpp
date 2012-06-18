@@ -70,7 +70,7 @@ bool Party::init(Game *g, ActorManager *am)
  autowalk=false;
  in_vehicle = false;
 
- config->value("config/party_formation", formation_string, "");
+ config->value("config/general/party_formation", formation_string, "");
  if(formation_string == "row")
    formation = PARTY_FORM_ROW;
  else if(formation_string == "column")

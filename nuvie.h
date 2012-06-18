@@ -50,6 +50,7 @@ class Nuvie
    protected:
 
    bool initConfig();
+   void SharedDefaultConfigValues();
    bool initDefaultConfigWin32();
    bool initDefaultConfigMacOSX(const char *home_env);
    bool initDefaultConfigUnix(const char *home_env);
