@@ -256,6 +256,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/party_formation", "standard");
 
 	config->set("config/cheats/enable_hackmove", false);
+	config->set("config/cheats/min_brightness", 0);
 	config->set("config/cheats/party_all_the_time", false);
 
 	config->set("config/ultima6/music", "native");

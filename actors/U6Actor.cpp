@@ -112,6 +112,8 @@ bool U6Actor::init()
     sit_on_chair(obj); // attempt to sit on obj.
    }
 
+ inventory_make_all_objs_ok_to_take();
+
  return true;
 }
 
@@ -2236,6 +2238,27 @@ Obj *U6Actor::inventory_get_food(Obj *container)
     return 0;
 }
 
+void U6Actor::inventory_make_all_objs_ok_to_take()
+{
+ U6LList *inventory;
+ U6Link *link;
+ Obj *obj;
+
+ inventory = get_inventory_list();
+
+ if(!inventory)
+   return;
+
+ for(link=inventory->start(); link != NULL;)
+   {
+    obj = (Obj *)link->data;
+    link = link->next;
+
+    obj->set_ok_to_take(true);
+   }
+
+ return;
+}
 /* Set worktype to normal non-combat activity. */
 void U6Actor::revert_worktype()
 {

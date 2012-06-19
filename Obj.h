@@ -134,7 +134,7 @@ public:
   
   void set_temporary(bool flag=true);
 
-  void set_ok_to_take(bool flag);
+  void set_ok_to_take(bool flag, bool recursive=false);
 
   void readied();
   void set_noloc();

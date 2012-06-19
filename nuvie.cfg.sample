@@ -21,6 +21,7 @@
  <cheats>
   <enable_hackmove>no</enable_hackmove>
   <party_all_the_time>no</party_all_the_time>
+  <min_brightness>0</min_brightness>
  </cheats>
 
  <video>

@@ -86,12 +86,21 @@ void Obj::set_temporary(bool flag)
 	return;
 }
 
-void Obj::set_ok_to_take(bool flag)
+void Obj::set_ok_to_take(bool flag, bool recursive)
 {
 	if(flag)
 		status |= OBJ_STATUS_OK_TO_TAKE;
 	else if (is_ok_to_take())
 		status ^= OBJ_STATUS_OK_TO_TAKE;
+
+	if(recursive && container)
+	{
+		for(U6Link *link = container->start();link != NULL;link=link->next)
+		  {
+		    Obj *obj = (Obj *)link->data;
+		    obj->set_ok_to_take(flag, recursive);
+		  }
+	}
 }
 
 void Obj::set_in_inventory()

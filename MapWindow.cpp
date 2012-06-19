@@ -576,10 +576,14 @@ void MapWindow::updateAmbience()
      else //Night
          screen->set_ambient( 0x00 );
 
+     int min_brightness;
      uint8 a = screen->get_ambient();
-
+     config->value("config/cheats/min_brightness", min_brightness, 0);
+ 
      if(a != 0xFF && clock->get_timer(GAMECLOCK_TIMER_U6_LIGHT) != 0) //FIXME U6 specific
     	 screen->set_ambient(0xaa); //FIXME this is an approximation
+     if(a < min_brightness)
+         screen->set_ambient(min_brightness);
 
      //Clear the opacity map
      screen->clearalphamap8( 0, 0, win_width, win_height, screen->get_ambient() );
