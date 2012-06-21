@@ -1515,6 +1515,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
  x /= 16;
  y /= 16;
 
+
  if(message == GUI_DRAG_OBJ)
    {
     map_width = map->get_width(cur_level);
@@ -1704,12 +1705,16 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		else if(button == USE_BUTTON) // you can also walk by holding the USE button
 			wait_for_mousedown(button);
 	}
-	else // finish whatever action is being done, with mouse coordinates
+	else if(event->get_mode() == INPUT_MODE) // finish whatever action is being done, with mouse coordinates
 	{
 		mouseToWorldCoords(x, y, wx, wy);   // some Event functions still use
 		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
 		event->select_target(uint16(wx), uint16(wy)); // the returned location
 		return  GUI_PASS;
+	}
+	else
+	{
+		return GUI_PASS;
 	}
 
 	if (!obj)

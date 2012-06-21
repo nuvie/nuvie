@@ -37,9 +37,10 @@
 #include "NuvieIOFile.h"
 #include "Game.h"
 
-static const int obj_egg_table[4] = {0,   // NUVIE_GAME_NONE
+static const int obj_egg_table[5] = {0,   // NUVIE_GAME_NONE
                                      335, // NUVIE_GAME_U6
                                      0,   // NUVIE_GAME_MD
+                                     0,
                                      230};  // NUVIE_GAME_SE
 
 static iAVLKey get_iAVLKey(const void *item)

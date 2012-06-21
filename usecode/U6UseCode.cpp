@@ -1692,7 +1692,7 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
 
     if(ev == USE_EVENT_USE)
     {
-        if(!items.actor2_ref && !items.obj_ref)
+        if(!items.actor2_ref && !items.obj_ref && !items.mapcoord_ref)
         {
             game->get_event()->get_target(items.actor_ref->get_location(), "On whom: ");
             game->get_event()->request_input(this, obj);
