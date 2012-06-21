@@ -1925,6 +1925,9 @@ bool ObjManager::moveto_inventory(Obj *obj, Actor *actor)
 
 bool ObjManager::moveto_container(Obj *obj, Obj *container_obj)
 {
+  if(obj == container_obj)
+	  return false;
+
   unlink_from_engine(obj);
   container_obj->add(obj);
 

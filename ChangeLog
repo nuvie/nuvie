@@ -1,3 +1,6 @@
+2012-06-21  Eric Fry <efry at users.sourceforge.net> r1347
+	* Fixed bug 'Drag and drop container onto itself causes self delete' [3535859]
+
 2012-06-21  Eric Fry <efry at users.sourceforge.net> r1346
 	* Fixed bug when loading egg tile for Savage Empire.
 	* Fixed bug 'tab key assert when clicking the map' [3535894]
