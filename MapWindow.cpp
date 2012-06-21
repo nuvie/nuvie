@@ -1709,7 +1709,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	{
 		mouseToWorldCoords(x, y, wx, wy);   // some Event functions still use
 		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
-		event->select_target(uint16(wx), uint16(wy)); // the returned location
+		event->select_target(uint16(wx), uint16(wy), cur_level); // the returned location
 		return  GUI_PASS;
 	}
 	else

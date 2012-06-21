@@ -109,18 +109,22 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
 GUI_status CommandBar::hit(uint8 num)
 {
     if(!event) event = game->get_event();
-    switch(num) // hit button
+
+    if(event->get_mode() == MOVE_MODE)
     {
-        case 0: event->newAction(ATTACK_MODE); break;
-        case 1: event->newAction(CAST_MODE); break;
-        case 2: event->newAction(TALK_MODE); break;
-        case 3: event->newAction(LOOK_MODE); break;
-        case 4: event->newAction(GET_MODE); break;
-        case 5: event->newAction(DROP_MODE); break;
-        case 6: event->newAction(PUSH_MODE); break;
-        case 7: event->newAction(USE_MODE); break;
-        case 8: event->newAction(REST_MODE); break;
-        case 9: event->newAction(COMBAT_MODE); break;
+    	switch(num) // hit button
+    	{
+			case 0: event->newAction(ATTACK_MODE); break;
+			case 1: event->newAction(CAST_MODE); break;
+			case 2: event->newAction(TALK_MODE); break;
+			case 3: event->newAction(LOOK_MODE); break;
+			case 4: event->newAction(GET_MODE); break;
+			case 5: event->newAction(DROP_MODE); break;
+			case 6: event->newAction(PUSH_MODE); break;
+			case 7: event->newAction(USE_MODE); break;
+			case 8: event->newAction(REST_MODE); break;
+			case 9: event->newAction(COMBAT_MODE); break;
+    	}
     }
     return(GUI_PASS);
 }

@@ -494,6 +494,7 @@ bool GUI_Widget::drag_accept_drop(int x, int y, int message, void *data)
       }
    }
 
+ GUI::get_gui()->force_full_redraw();
  return false;
 }
 

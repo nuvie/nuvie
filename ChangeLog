@@ -1,3 +1,9 @@
+2012-06-22  Eric Fry <efry at users.sourceforge.net> r1348
+	* Fixed bug when targeting with mouse in dungeon levels.
+	* Force screen redraw when dragging object to a widget that
+	  doesn't accept dragging.
+	* Don't allow clicking on command icons when another action is running.
+
 2012-06-21  Eric Fry <efry at users.sourceforge.net> r1347
 	* Fixed bug 'Drag and drop container onto itself causes self delete' [3535859]
 
