@@ -148,16 +148,15 @@ void Converse::reset()
 void Converse::load_conv(const std::string &convfilename)
 {
     string conv_lib_str;
-    if (gametype == NUVIE_GAME_U6) {
-	if(using_fmtowns)
-	    config->pathFromValue("config/ultima6/townsdir", convfilename, conv_lib_str);
-	else
-	    config->pathFromValue("config/ultima6/gamedir", convfilename, conv_lib_str);
-    } 
-    else
+    if (gametype == NUVIE_GAME_U6 && using_fmtowns)
     {
-	config->pathFromValue((gametype==NUVIE_GAME_MD)?"config/martian/gamedir":"config/savage/gamedir", convfilename, conv_lib_str);
+	    config->pathFromValue("config/ultima6/townsdir", convfilename, conv_lib_str); //FIXME handle case insensitive filename here.
     }
+	else
+	{
+		config_get_path(config,convfilename,conv_lib_str);
+    } 
+
     unload_conv();
     src_num = 0;
     if(gametype == NUVIE_GAME_U6)

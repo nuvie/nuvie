@@ -27,6 +27,7 @@
 #include "Configuration.h"
 
 #include "U6Lib_n.h"
+#include "U6misc.h"
 
 #include "Book.h"
 
@@ -45,7 +46,7 @@ bool Book::init()
 {
  std::string filename;
 
- config->pathFromValue("config/ultima6/gamedir","book.dat",filename);
+ config_get_path(config,"book.dat",filename);
 
  if(books->open(filename,2) == false)
     return false;

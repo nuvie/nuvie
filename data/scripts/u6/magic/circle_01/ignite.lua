@@ -18,8 +18,7 @@ if obj.obj_n == 122 or --candle
 			return magic_success()
 		end
 elseif obj.obj_n == 0xdf and obj.frame_n == 0 then --unlit keg
-	obj.frame_n = 1
-	print("\nFIXME set keg timer (3) here.\n")
+	use_keg(obj)
 	return magic_success()
 end
 

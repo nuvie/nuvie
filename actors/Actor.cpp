@@ -1161,8 +1161,16 @@ void Actor::all_items_to_container(Obj *container_obj)
     if(temp_actor)
       obj->status |= OBJ_STATUS_TEMPORARY;
 
-    obj_manager->moveto_container(obj, container_obj);
+    Tile *obj_tile = obj_manager->get_obj_tile(obj->obj_n, obj->frame_n);
+    if(obj_tile && obj_tile->flags3 & TILEFLAG_IGNORE)
+    {
+        inventory_remove_obj(obj);
+        delete_obj(obj);
+    }
+    else
+    	obj_manager->moveto_container(obj, container_obj);
    }
+
 
  return;
 }

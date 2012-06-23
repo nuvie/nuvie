@@ -118,7 +118,7 @@ bool Screen::init()
 
 config->value("config/video/scale_factor", scale_factor, 1);
 
-fullscreen = false;
+ config->value("config/video/fullscreen", fullscreen, false);
 
  //scaled_surface = SDL_SetVideoMode(width, height, 8, SDL_SWSURFACE | SDL_HWPALETTE);
  //pitch = scaled_surface->pitch;

@@ -1504,6 +1504,21 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
     return true;
 }
 
+bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
+{
+	if(obj->is_in_inventory() || actor->get_z() != obj->z)
+		return false;
+
+	LineTestResult lt;
+	if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt))
+	{
+		if(lt.hitObj != obj)
+			return false;
+	}
+
+	return true;
+}
+
 bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 {
  DEBUG(0,LEVEL_DEBUGGING,"MapWindow::drag_accept_drop()\n");
@@ -1531,7 +1546,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
     	Actor *p = actor_manager->get_player();
     	LineTestResult lt;
-    	if(can_drop_obj(obj->x, obj->y, p)) //make sure there is a clear line from player to object
+    	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
     	{
     		Actor *target_actor = map->get_actor(x, y, cur_level);
     		if(target_actor)
@@ -1705,7 +1720,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		else if(button == USE_BUTTON) // you can also walk by holding the USE button
 			wait_for_mousedown(button);
 	}
-	else if(event->get_mode() == INPUT_MODE) // finish whatever action is being done, with mouse coordinates
+	else if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE) // finish whatever action is being done, with mouse coordinates
 	{
 		mouseToWorldCoords(x, y, wx, wy);   // some Event functions still use
 		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of

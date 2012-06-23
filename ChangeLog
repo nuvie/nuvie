@@ -1,3 +1,10 @@
+2012-06-23  Eric Fry <efry at users.sourceforge.net> r1349
+	* Added Malignant Manor's patch to enable fullscreen mode.
+	* Fixed bug "spell items kept after death" [3537046]
+	* Fixed bug "can't drag powder keg onto  party members on the map" [3537077]
+	* Fixed bug "Mouse targeting no longer works with attack command" [3537041]
+	* Fixed issues when loading game data files on case sensitive filesystems.
+
 2012-06-22  Eric Fry <efry at users.sourceforge.net> r1348
 	* Fixed bug when targeting with mouse in dungeon levels.
 	* Force screen redraw when dragging object to a widget that

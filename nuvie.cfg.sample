@@ -27,6 +27,7 @@
  <video>
   <scale_method>Point</scale_method>
   <scale_factor>2</scale_factor>
+  <fullscreen>no</fullscreen>
  </video>
 
  <audio>

@@ -186,6 +186,7 @@ class MapWindow: public GUI_Widget
  bool in_town();
  // can put object at world location x,y?
  bool can_drop_obj(uint16 x, uint16 y, Actor *actor = NULL);
+ bool can_get_obj(Actor *actor, Obj *obj);
 
  void updateBlacking();
  void updateAmbience();

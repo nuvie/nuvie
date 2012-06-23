@@ -30,6 +30,7 @@
 #include "FontManager.h"
 #include "Font.h"
 #include "U6Font.h"
+#include "U6misc.h"
 
 FontManager::FontManager(Configuration *cfg)
 {
@@ -56,7 +57,7 @@ bool FontManager::init()
  std::string filename;
  NuvieIOFileRead u6_ch;
 
- config->pathFromValue("config/ultima6/gamedir","u6.ch",filename);
+ config_get_path(config,"u6.ch",filename);
 
  if(u6_ch.open(filename) == false)
    return false;

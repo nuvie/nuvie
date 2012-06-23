@@ -62,7 +62,7 @@ class Look;
 #define TILEFLAG_ARTICLE_MSB     0x80 // 00 01 10 11
 #define TILEFLAG_ARTICLE_LSB     0x40 // -  a  an the
 #define TILEFLAG_UNKNOWN_3_5     0x20
-#define TILEFLAG_UNKNOWN_3_4     0x10 
+#define TILEFLAG_IGNORE          0x10
 #define TILEFLAG_UNKNOWN_3_3     0x8 // Flammable? Mostly_non_metal_object (not affected by acid-slug)?
 #define TILEFLAG_FORCED_PASSABLE 0x4
 #define TILEFLAG_CAN_PLACE_ONTOP 0x2

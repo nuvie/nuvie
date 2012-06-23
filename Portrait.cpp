@@ -33,6 +33,7 @@
 #include "Actor.h"
 #include "Portrait.h"
 #include "U6Lzw.h"
+#include "U6misc.h"
 
 #include "U6objects.h"
 
@@ -61,19 +62,19 @@ bool Portrait::init()
  config->value("config/GameType",gametype);
 
  if (gametype == NUVIE_GAME_U6) {
-  config->pathFromValue("config/ultima6/gamedir","portrait.a",filename);
+  config_get_path(config,"portrait.a",filename);
   if(portrait_a.open(filename,4) == false)
   {
    ConsoleAddError("Opening " + filename);
    return false;
   }
-  config->pathFromValue("config/ultima6/gamedir","portrait.b",filename);
+  config_get_path(config,"portrait.b",filename);
   if(portrait_b.open(filename,4) == false)
   {
    ConsoleAddError("Opening " + filename);
    return false;
   }
-  config->pathFromValue("config/ultima6/gamedir","portrait.z",filename);
+  config_get_path(config,"portrait.z",filename);
   if(portrait_z.open(filename,4) == false)
   {
    ConsoleAddError("Opening " + filename);
@@ -84,11 +85,13 @@ bool Portrait::init()
  {
   if (gametype == NUVIE_GAME_MD) 
   {
-   config->pathFromValue("config/martian/gamedir","mdfaces.lzc",filename);
+   config_get_path(config,"mdfaces.lzc",filename);
+   //config->pathFromValue("config/martian/gamedir","mdfaces.lzc",filename);
   }
   if (gametype == NUVIE_GAME_SE)
   {
-   config->pathFromValue("config/savage/gamedir","faces.lzc",filename);
+   config_get_path(config,"faces.lzc",filename);
+   //config->pathFromValue("config/savage/gamedir","faces.lzc",filename);
   }
   if(faces.open(filename,4) == false)
   {

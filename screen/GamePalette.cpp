@@ -28,6 +28,7 @@
 #include "SDL.h"
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "NuvieIOFile.h"
 #include "Configuration.h"
 #include "Screen.h"
@@ -66,7 +67,7 @@ bool GamePalette::loadPalette()
  NuvieIOFileRead file;
  unsigned char *buf;
  uint8 *pal_ptr;
- std::string key, game_name, game_id, pal_name;
+ std::string game_name, game_id, pal_name;
  uint8 dither_mode;
  
  config->value("config/GameName",game_name);
@@ -75,11 +76,7 @@ bool GamePalette::loadPalette()
  pal_name.assign(game_id);
  pal_name.append("pal");
 
- key.assign("config/");
- key.append(game_name);
- key.append("/gamedir");
-
- config->pathFromValue(key,pal_name,filename);
+ config_get_path(config,pal_name,filename);
 
  if(file.open(filename) == false)
   {

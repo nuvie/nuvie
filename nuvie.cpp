@@ -234,6 +234,7 @@ void Nuvie::SharedDefaultConfigValues()
 
 	config->set("config/video/scale_method", "point");
 	config->set("config/video/scale_factor", "2");
+	config->set("config/video/fullscreen", "false");
 //	config->set("config/video/screen_width", 320);
 //	config->set("config/video/screen_height", 200);
 //	config->set("config/video/x_offset", 0);
