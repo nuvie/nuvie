@@ -735,7 +735,8 @@ bool ObjManager::can_get_obj(Obj *obj)
 	// check if it weighs 0 or 255. no need to scale as we don't compare
 	// with other weights
 	float weight = get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
-	if(weight != 0 && weight != 255 && has_toptile(obj) == false)
+	if((weight != 0 && weight != 255 && has_toptile(obj) == false)
+	    || Game::get_game()->using_hackmove())
 		return true;
 
 	return false;

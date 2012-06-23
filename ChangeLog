@@ -1,3 +1,12 @@
+2012-06-23  Eric Fry <efry at users.sourceforge.net> r1350
+	* Added Malignant Manor's hack move patch. [3536149]
+	* Fixed bug "Combat AI doesn't start until the Avatar moves" [3535036]
+	* Fixed bug "Party members say shape name on death if not talked to" [3537298]
+	* Fixed bug "Party members will throw ranged weapons when not equipped." [3537296]
+	* Fixed bug "Alt-215 doesn't advance time twice in a row" [3537293]
+	  Disabled active check on GameClock.
+	* Don't allow party members to cast magic during combat mode.
+
 2012-06-23  Eric Fry <efry at users.sourceforge.net> r1349
 	* Added Malignant Manor's patch to enable fullscreen mode.
 	* Fixed bug "spell items kept after death" [3537046]

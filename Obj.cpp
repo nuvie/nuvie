@@ -26,6 +26,7 @@
 #include "nuvieDefs.h"
 
 #include "ObjManager.h"
+#include "game.h"
 
 Obj::Obj() {obj_n = 0; status = 0; nuvie_status = 0; frame_n = 0; qty = 0; quality = 0; parent = NULL; container = NULL; };
 Obj::Obj(Obj *sobj)
@@ -292,3 +293,7 @@ uint32 Obj::get_total_qty(uint16 match_obj_n)
   return total_qty;
 }
 
+bool Obj::is_ok_to_take()
+{
+	return((status & OBJ_STATUS_OK_TO_TAKE) || Game::get_game()->using_hackmove());
+}

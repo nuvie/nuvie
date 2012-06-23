@@ -101,6 +101,8 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  
  pause_flags = PAUSE_UNPAUSED;
  ignore_event_delay = 0;
+
+ config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
 }
 
 Game::~Game()
@@ -323,6 +325,11 @@ bool Game::is_roof_mode()
 	return roof_mode;
 }
 
+bool Game::using_hackmove()
+{
+	return is_using_hackmove;
+}
+
 bool Game::set_mouse_pointer(uint8 ptr_num)
 {
     return(cursor && cursor->set_pointer(ptr_num));
@@ -357,16 +364,16 @@ void Game::set_pause_flags(GamePauseState state)
         if(actor_manager->get_update() == true) // ActorMgr is running
             game->get_actor_manager()->set_update(false); // pause
 
-        if(clock->get_active() == true) // stop time
-            clock->set_active(false);
+        //if(clock->get_active() == true) // stop time
+        //    clock->set_active(false);
     }
     else // unpaused
     {
         if(actor_manager->get_update() == false) // ActorMgr is not running
             game->get_actor_manager()->set_update(true); // resume
 
-        if(clock->get_active() == false) // start time
-            clock->set_active(true);
+        //if(clock->get_active() == false) // start time
+        //    clock->set_active(true);
     }
 }
 

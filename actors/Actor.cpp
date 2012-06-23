@@ -308,7 +308,7 @@ const char *Actor::get_name()
 
     if(is_alive() && is_in_party())
         name = party->get_actor_name(party->get_member_num(this));
-    else if(is_met()
+    else if((is_met() || is_in_party())
             && (talk_name = converse->npc_name(id_n)) ) // assignment
         name = talk_name;
     else
@@ -945,6 +945,8 @@ float Actor::get_inventory_equip_weight()
  */
 bool Actor::can_carry_object(uint16 obj_n, uint32 qty)
 {
+    if(Game::get_game()->using_hackmove())
+        return true;
     float obj_weight = obj_manager->get_obj_weight(obj_n);
     if(qty) obj_weight *= qty;
     return(can_carry_weight(obj_weight));
@@ -952,6 +954,8 @@ bool Actor::can_carry_object(uint16 obj_n, uint32 qty)
 
 bool Actor::can_carry_object(Obj *obj)
 {
+	if(Game::get_game()->using_hackmove())
+		return true;
 	if(obj_manager->can_get_obj(obj) == false)
 		return false;
 
@@ -963,6 +967,8 @@ bool Actor::can_carry_object(Obj *obj)
  */
 bool Actor::can_carry_weight(float obj_weight)
 {
+	if(Game::get_game()->using_hackmove())
+		return true;
     // obj_weight /= 10;
 	float inv_weight = get_inventory_weight() + obj_weight;
 	float max_weight = inventory_get_max_weight();

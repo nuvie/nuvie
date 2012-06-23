@@ -103,7 +103,7 @@ public:
     
   bool is_script_obj()    { return(nuvie_status & NUVIE_OBJ_STATUS_SCRIPTING); }
   
-  bool is_ok_to_take()   { return(status & OBJ_STATUS_OK_TO_TAKE); }
+  bool is_ok_to_take();
   bool is_invisible()	  { return(status & OBJ_STATUS_INVISIBLE); } 
   bool is_charmed()	    { return(status & OBJ_STATUS_CHARMED); }
   bool is_temporary()    { return(status & OBJ_STATUS_TEMPORARY); }

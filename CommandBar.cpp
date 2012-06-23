@@ -36,6 +36,8 @@
 #include "GamePalette.h"
 #include "CommandBar.h"
 #include "Weather.h"
+#include "Party.h"
+#include "Player.h"
 
 #define USE_BUTTON 1
 #define ACTION_BUTTON 3
@@ -154,6 +156,12 @@ void CommandBar::set_combat_mode(bool mode)
         combat_mode = mode;
         icon[9] = tile_man->get_tile(combat_mode ? 415 : 414);
         update_display = true;
+    }
+    if (combat_mode) // make sure party attacks
+    {
+        Player *player = game->get_player();
+        Party *party = player->get_party();
+        party->follow(0, 0);
     }
 }
 

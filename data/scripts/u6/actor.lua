@@ -1619,15 +1619,16 @@ function actor_get_weapon(attacker, foe)
    local obj, weapon
    
    for obj in actor_inventory(attacker) do
-      if ((obj.readied and obj.obj_n == 57) or --spellbook
-      obj.obj_n == 336) and timer_get(TIMER_STORM) == 0 and math.random(0,3) == 0 and math.random(0, obj.quality) < 16 then --charge (spell)
+      if obj.obj_n == 336 and timer_get(TIMER_STORM) == 0 and math.random(0,3) == 0 and math.random(0, obj.quality) < 16 then --charge (spell)
          dbg("magic object quality = "..obj.quality.."\n");
          return obj
       else
-         local dmg = get_weapon_dmg(obj.obj_n)  
-         if dmg ~= nil and dmg > max_dmg and get_weapon_range(obj.obj_n) >= range then
-            max_dmg = dmg
-            weapon = obj
+         if obj.readied == true then
+            local dmg = get_weapon_dmg(obj.obj_n)  
+            if dmg ~= nil and dmg > max_dmg and get_weapon_range(obj.obj_n) >= range then
+               max_dmg = dmg
+               weapon = obj
+            end
          end
       end
    end

@@ -62,7 +62,7 @@ class GameClock
  char date_string[11];
  char time_string[11];
 
- bool active; // clock is active and running (false = paused)
+ //bool active; // clock is active and running (false = paused)
 
  vector<uint8> timers;
  uint8 num_timers;
@@ -75,8 +75,8 @@ class GameClock
  bool load(NuvieIO *objlist);
  bool save(NuvieIO *objlist);
 
- void set_active(bool state) { active = state; }
- bool get_active()           { return(active); }
+ //void set_active(bool state) { active = state; }
+ //bool get_active()           { return(active); }
 
  void inc_move_counter();
  void inc_move_counter_by_a_minute();

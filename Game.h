@@ -111,6 +111,7 @@ class Game
 
  GamePauseState pause_flags;
  uint8 ignore_event_delay; // (stack) if non-zero, Event will not periodically wait for NUVIE_INTERVAL
+ bool is_using_hackmove;
 
  public:
 
@@ -152,6 +153,7 @@ class Game
  bool is_new_style() { return (game_style == NUVIE_STYLE_NEW); }
  bool is_orig_style() { return (game_style == NUVIE_STYLE_ORIG); }
  bool is_roof_mode();
+ bool using_hackmove();
 
  /* Return instances of Game classes */
  static Game *get_game()          { return(game); }

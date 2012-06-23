@@ -54,7 +54,7 @@ void GameClock::init()
  month = 0;
  year = 0;
  
- active = true;
+ //active = true;
  num_timers = 0;
 }
 
@@ -131,18 +131,12 @@ void GameClock::inc_move_counter_by_a_minute()
 
 void GameClock::advance_to_next_hour()
 {
- if(!active)
-   return;
-
  minute = 0;
  inc_hour();
 }
 
 void GameClock::inc_minute(uint16 amount)
 {
- if(!active)
-   return;
-
  minute += amount;
 
  if(minute >= 60)
@@ -164,9 +158,6 @@ void GameClock::inc_minute(uint16 amount)
 
 void GameClock::inc_hour()
 {
- if(!active)
-   return;
-
  if(hour == 23)
    {
     hour = 0;
@@ -187,9 +178,6 @@ void GameClock::inc_hour()
 
 void GameClock::inc_day()
 {
- if(!active)
-   return;
-
  if(day == 28)
    {
     day = 1;
@@ -210,9 +198,6 @@ void GameClock::inc_day()
 
 void GameClock::inc_month()
 {
- if(!active)
-   return;
-
  if(month == 12)
    {
     month = 1;
@@ -228,9 +213,6 @@ void GameClock::inc_month()
 
 void GameClock::inc_year()
 {
- if(!active)
-   return;
-
  year++;
  time_counter += 483840;
  return;

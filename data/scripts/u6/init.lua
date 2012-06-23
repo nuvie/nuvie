@@ -128,7 +128,7 @@ g_show_stealing = config_get_boolean_value("config/ultima6/show_stealing")
 -- some common functions
 
 function dbg(msg_string)
-	--print(msg_string)
+	--io.stderr:write(msg_string)
 end
 
 function alignment_is_evil(align)
