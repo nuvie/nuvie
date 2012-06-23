@@ -26,7 +26,7 @@
 #include "nuvieDefs.h"
 
 #include "ObjManager.h"
-#include "game.h"
+#include "Game.h"
 
 Obj::Obj() {obj_n = 0; status = 0; nuvie_status = 0; frame_n = 0; qty = 0; quality = 0; parent = NULL; container = NULL; };
 Obj::Obj(Obj *sobj)
