@@ -1,3 +1,7 @@
+2012-06-25  Eric Fry <efry at users.sourceforge.net> r1357
+	* Fixed bug with actor scripts where we were trying to index actor 256
+	  which doesn't exist.
+
 2012-06-24  Eric Fry <efry at users.sourceforge.net> r1356
 	* Fixed targeting on multi-tile actors. Winged Gargoyles and cyclops'
 
