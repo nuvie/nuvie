@@ -162,6 +162,8 @@ static int nscript_party_get_member(lua_State *L);
 static int nscript_party_update_leader(lua_State *L);
 static int nscript_party_resurrect_dead_members(lua_State *L);
 static int nscript_party_exit_vehicle(lua_State *L);
+static int nscript_party_dismount_from_horses(lua_State *L);
+
 
 static int nscript_timer_set(lua_State *L);
 static int nscript_timer_get(lua_State *L);
@@ -559,6 +561,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_party_exit_vehicle);
    lua_setglobal(L, "party_exit_vehicle");
+
+   lua_pushcfunction(L, nscript_party_dismount_from_horses);
+   lua_setglobal(L, "party_dismount_from_horses");
 
    lua_pushcfunction(L, nscript_quake_start);
    lua_setglobal(L, "quake_start");
@@ -1851,6 +1856,13 @@ static int nscript_party_exit_vehicle(lua_State *L)
 
 	party->exit_vehicle(x, y, z);
 
+	return 0;
+}
+
+static int nscript_party_dismount_from_horses(lua_State *L)
+{
+	Party *party = Game::get_game()->get_party();
+	party->dismount_from_horses();
 	return 0;
 }
 

@@ -134,6 +134,14 @@ actor_tbl = {
 
 monster_inv_food = { 129, 133, 128 } --portion of meat, ham, loaf of bread
 
+function actor_put_to_sleep(actor)
+	if actor.obj_n == 431 then --horse with rider
+		Actor.use(actor) --dismount from horse
+	end
+	
+	actor.asleep = true
+end
+
 function actor_can_turn_invisible(obj_n)
 
 	if obj_n < 0x1aa and obj_n ~= 0x19b and obj_n ~= 0x176 and obj_n ~= 0x19d and obj_n ~= 0x177 then --giant scorpion, dragon, hydra, silver serpent, slime
@@ -402,7 +410,7 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 			elseif map_tile == 1167 then
 				--sleepfield
 				if (actor_type == nil or actor_type[21] == 0) and actor.asleep == false then --21 immune to sleep spell
-					actor.asleep = true
+					actor_put_to_sleep(actor)
 				end
 			end
 		end
@@ -1241,7 +1249,9 @@ function actor_dead(actor)
 			local animated_obj = Obj.new(actor.obj_n)
 			Obj.moveToMap(animated_obj, actor.x, actor.y, actor.z)
 		end
-		
+		if actor.obj_n == 431 then --horse with rider
+			Actor.new(430, actor.x, actor.y, actor.z, ALIGNMENT_NEUTRAL, 12) --horse, wt wander
+		end
 		Actor.kill(actor, create_body)
 	else
 		actor_avatar_death(actor)
@@ -3403,7 +3413,7 @@ function spell_put_actor_to_sleep(attacker, foe)
    if actor_base == nil or actor_base[21] == 0 then -- 21 is immune to sleep
       if actor_int_check(foe, attacker) == false then
          hit_anim(foe.x, foe.y)
-         foe.asleep = true
+         actor_put_to_sleep(foe)
          return 0xfe
       else
          return 1
@@ -3546,6 +3556,10 @@ function actor_avatar_death(avatar)
 	
 	--FIXME the hit tile is displayed constantly while the death tune is playing.
 	
+	
+	if avatar.obj_n == 431 then --horse with rider
+		Actor.use(avatar) --dismount from horse
+	end
 	avatar.asleep = true --we do this so it looks like the avatar is dead.
 	print("\nAn unending darkness engulfs thee...\n\n")
 	play_sfx(SFX_AVATAR_DEATH, true)
@@ -3553,6 +3567,7 @@ function actor_avatar_death(avatar)
 	print("A voice in the darkness intones, \"KAL LOR!\"\n")
 	play_sfx(SFX_KAL_LOR, true)
 	avatar.asleep = false
+	party_dismount_from_horses();
 	party_resurrect_dead_members()
 	party_heal()
 	party_update_leader()

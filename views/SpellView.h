@@ -61,6 +61,7 @@ public:
 
  virtual bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
 
+ void simulate_return();
  void set_spell_caster(Actor *actor, Obj *s_container, bool eventMode);
  sint16 get_selected_spell() { if(spell_container) { return spell_container->quality; } else return -1; }
  void Display(bool full_redraw);

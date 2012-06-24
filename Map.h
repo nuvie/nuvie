@@ -133,7 +133,7 @@ class Map
  ~Map();
 
  void set_actor_manager(ActorManager *am) { actor_manager = am; }
- Actor *get_actor(uint16 x, uint16 y, uint8 z);
+ Actor *get_actor(uint16 x, uint16 y, uint8 z, bool inc_surrounding_objs=true);
 
  bool loadMap(TileManager *tm, ObjManager *om);
  unsigned char *get_map_data(uint8 level);
@@ -146,7 +146,7 @@ class Map
  bool is_missile_boundary(uint16 x, uint16 y, uint8 level);
  bool is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
  bool can_put_obj(uint16 x, uint16 y, uint8 level);
- bool actor_at_location(uint16 x, uint16 y, uint8 level);
+ bool actor_at_location(uint16 x, uint16 y, uint8 level, bool inc_surrounding_objs=true);
  uint8 get_impedance(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
  Tile *get_dmg_tile(uint16 x, uint16 y, uint8 level);
  bool is_passable(uint16 x1, uint16 y1, uint16 x2, uint16 y2, uint8 level);

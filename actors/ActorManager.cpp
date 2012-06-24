@@ -37,7 +37,7 @@
 #include "Game.h"
 #include "Party.h"
 #include "Script.h"
-
+#include "U6objects.h"
 
 #define TEMP_ACTOR_OFFSET 224
 #define ACTOR_TEMP_INIT 255
@@ -518,7 +518,7 @@ Actor *ActorManager::get_actor(uint8 actor_num)
  return actors[actor_num];
 }
 
-Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z)
+Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z, bool inc_surrounding_objs)
 {
  uint16 i;
 
@@ -527,6 +527,18 @@ Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z)
    if(actors[i]->x == x && actors[i]->y == y && actors[i]->z == z)
      return actors[i];
   }
+
+ if(inc_surrounding_objs)
+ {
+  Obj *obj = obj_manager->get_obj(x, y, z);
+  if(obj && obj->is_actor_obj())
+  {
+	  if(obj->obj_n == OBJ_U6_SILVER_SERPENT && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+		  return actors[obj->qty];
+
+	 return actors[obj->quality];
+  }
+ }
 
  return NULL;
 }

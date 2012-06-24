@@ -146,12 +146,12 @@ bool U6Actor::init_ship()
  obj = obj_manager->get_obj(obj1_x,obj1_y,z);
  if(obj == NULL)
    return false;
- surrounding_objects.push_back(obj);
+ add_surrounding_obj(obj);
 
  obj = obj_manager->get_obj(obj2_x,obj2_y,z);
  if(obj == NULL)
    return false;
- surrounding_objects.push_back(obj);
+ add_surrounding_obj(obj);
 
  return true;
 }
@@ -325,7 +325,7 @@ void U6Actor::gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, u
  pz = az;
  
  obj = start_obj;
- surrounding_objects.push_back(obj);
+ add_surrounding_obj(obj);
 
  for(seg_num = 2;obj && obj->frame_n >= 8;seg_num++)
   {
@@ -381,7 +381,7 @@ void U6Actor::gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, u
     obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_SILVER_SERPENT, seg_num, id_n, nx, ny, nz);
 
     if(obj)
-      surrounding_objects.push_back(obj);
+    	add_surrounding_obj(obj);
   }
      
 }
@@ -1054,7 +1054,7 @@ void U6Actor::set_worktype(uint8 new_worktype)
    }
 
  //reset to base obj_n
- if(worktype > 2 && base_actor_type->base_obj_n != OBJ_U6_NOTHING) //don't revert for party worktypes as they might be riding a horse.
+ if((!is_in_party() || worktype > 0xe) && base_actor_type->base_obj_n != OBJ_U6_NOTHING) //don't revert for party worktypes as they might be riding a horse.
    set_actor_obj_n(base_actor_type->base_obj_n);
 
  if(worktype == WORKTYPE_U6_SLEEP && status_flags & ACTOR_STATUS_ASLEEP) //FIXME do we still need this??
@@ -2027,7 +2027,7 @@ inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 ac
   }
 
  obj->quality = id_n;
- surrounding_objects.push_back(obj);
+ add_surrounding_obj(obj);
 
  return;
 }

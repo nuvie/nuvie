@@ -1607,7 +1607,8 @@ void ObjManager::print_obj(Obj *obj, bool in_container, uint8 indent)
    case OBJ_LOC_NONE : DEBUG(1,LEVEL_INFORMATIONAL,"NONE"); break;
    default : DEBUG(1,LEVEL_INFORMATIONAL,"**UNKNOWN**"); break;
  }
- 
+ if(obj->is_actor_obj())
+	 DEBUG(1,LEVEL_INFORMATIONAL," (ACTOR_OBJ)");
  DEBUG(1,LEVEL_INFORMATIONAL,"\n");
  
  DEBUG(1,LEVEL_INFORMATIONAL,"parent (");

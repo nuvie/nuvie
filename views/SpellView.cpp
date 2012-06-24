@@ -440,10 +440,30 @@ GUI_status SpellView::MouseUp(int x, int y, int button)
 	y -= area.y;
 	x -= area.x;
 
-	y += 3; //align the pointer in the center of the crosshair cursor.
-	x += 3;
-
-	if(y < 8 || y > 72 || x < 16)
+	if(button == SDL_BUTTON_WHEELUP)
+	{
+		move_up();
+		return GUI_PASS;
+	}
+	if(button == SDL_BUTTON_WHEELDOWN)
+	{
+		move_down();
+		return GUI_PASS;
+	}
+	if(x < 0 && y > 0 && y < 162) // cast selected spell on the map
+	{
+		simulate_return();
+	// FIXME: needs cast selected spell code on map with only one click
+		return GUI_YUM;
+	}
+	if(x > 1 && (y > 101 || x > 137)) // cancel spell
+	{
+		Event *event = Game::get_game()->get_event();
+		event->set_mode(CAST_MODE);
+		event->cancelAction();
+		return GUI_PASS;
+	}
+	if(y < 8 || y > 71 || x < 16 || x > 134) // do nothing
 	{
 		return GUI_YUM;
 	}
@@ -471,12 +491,7 @@ GUI_status SpellView::MouseUp(int x, int y, int button)
     	}
     	else
     	{
-    		//Simulate a global key down event.
-    		SDL_Event e;
-    		e.type = SDL_KEYDOWN;
-    		e.key.keysym.sym = SDLK_RETURN;
-
-    		Game::get_game()->get_event()->handleEvent(&e);
+    		simulate_return();
     	}
 	}
 
@@ -524,3 +539,10 @@ GUI_status SpellView::callback(uint16 msg, GUI_CallBack *caller, void *data)
     return GUI_PASS;
 }
 
+void SpellView::simulate_return() //Simulate a global key down event.
+{
+	SDL_Event e;
+	e.type = SDL_KEYDOWN;
+	e.key.keysym.sym = SDLK_RETURN;
+	Game::get_game()->get_event()->handleEvent(&e);
+}

@@ -71,6 +71,7 @@ static int nscript_actor_show_portrait(lua_State *L);
 static int nscript_actor_hide_portrait(lua_State *L);
 static int nscript_actor_talk(lua_State *L);
 static int nscript_actor_unlink_surrounding_objs(lua_State *L);
+static int nscript_actor_use(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -99,6 +100,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "hide_portrait", nscript_actor_hide_portrait },
    { "talk", nscript_actor_talk },
    { "unlink_surrounding_objs", nscript_actor_unlink_surrounding_objs },
+   { "use", nscript_actor_use },
 
    { NULL, NULL }
 };
@@ -1069,6 +1071,20 @@ static int nscript_actor_unlink_surrounding_objs(lua_State *L)
 	actor->unlink_surrounding_objects(make_temp_obj);
 
 	return 0;
+}
+
+static int nscript_actor_use(lua_State *L)
+{
+	UseCode *usecode = Game::get_game()->get_usecode();
+	Actor *actor = nscript_get_actor_from_args(L);
+	if(actor == NULL)
+		return 0;
+
+    Obj *my_obj = actor->make_obj();
+    usecode->use_obj(my_obj, actor);
+    delete_obj(my_obj);
+
+    return 0;
 }
 
 static int nscript_actor_resurrect(lua_State *L)

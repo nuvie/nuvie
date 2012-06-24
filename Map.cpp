@@ -303,12 +303,12 @@ Tile *Map::get_dmg_tile(uint16 x, uint16 y, uint8 level)
 	return obj_manager->get_obj_dmg_tile(x, y, level);
 }
 
-bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
+bool Map::actor_at_location(uint16 x, uint16 y, uint8 level, bool inc_surrounding_objs)
 {
   WRAP_COORD(x,level);
   WRAP_COORD(y,level);
   //check for blocking Actor at location.
-  if(actor_manager->get_actor(x,y,level) != NULL)
+  if(actor_manager->get_actor(x,y,level, inc_surrounding_objs) != NULL)
     return true;
 
   return false;
@@ -316,11 +316,11 @@ bool Map::actor_at_location(uint16 x, uint16 y, uint8 level)
 
 /* Return pointer to actor standing at map coordinates.
  */
-Actor *Map::get_actor(uint16 x, uint16 y, uint8 z)
+Actor *Map::get_actor(uint16 x, uint16 y, uint8 z, bool inc_surrounding_objs)
 {
   WRAP_COORD(x,z);
   WRAP_COORD(y,z);
-  return(actor_manager->get_actor(x,y,z));
+  return(actor_manager->get_actor(x,y,z, inc_surrounding_objs));
 }
 
 

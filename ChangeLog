@@ -1,4 +1,20 @@
-2012-06-24  Eric Fry <efry at users.sourceforge.net> r1351
+2012-06-24  Eric Fry <efry at users.sourceforge.net> r1355
+	* Added new actor object status flag to objects that are owned by an actor
+	  eg. The back of a horse.
+	* Changed ActorManager::get_actor() to search for actor objects as well as the
+	  actor themselves.
+	* Don't revert to base obj_n for party members when witching out of combat mode.
+	* Added Malignant Manor's patch for fixing mouse mode in the spellview. This fixes
+	  bug "Original spellbook: mouse targets wrong spell" [3537049]
+	* Lots of improvements to horse logic. Actors now dismount upon death or when put to
+	  sleep. This fixes bug "Horse Bugs" [3537285]
+	* You can now target target actors that have surrounding objects. eg horses etc.
+	  I still need to fix targeting for 4x4 actors, winged gargoyles and cyclops'
+	* Added script function party_dismount_from_horses()
+	* Added Actor.use() function. This is used to dismount an actor from a horse
+	  with usecode.
+
+2012-06-24  Eric Fry <efry at users.sourceforge.net> r1353
 	* Add check for datadir on startup.
 	* Fixed bug "Animated items disappear when killed" [3537287]
 	* Added void stringToLower(std::string &str) to u6misc

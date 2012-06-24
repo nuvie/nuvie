@@ -250,6 +250,8 @@ GUI_status GUI_Button:: MouseDown(int x, int y, int button)
 
 GUI_status GUI_Button::MouseUp(int x,int y,int button)
 {
+	if (button==SDL_BUTTON_WHEELUP || button==SDL_BUTTON_WHEELDOWN)
+		return GUI_PASS;
 	if ((button==1) && (pressed[0]))
 	{
 	  pressed[0]=0;

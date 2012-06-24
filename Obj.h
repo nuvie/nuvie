@@ -67,7 +67,7 @@ class Actor;
 #define NUVIE_OBJ_STATUS_LOC_MASK_SET 0xf8
 
 #define NUVIE_OBJ_STATUS_SCRIPTING 0x8
-
+#define NUVIE_OBJ_STATUS_ACTOR_OBJ 0x10
 
 #define OBJ_MATCH_QUALITY true
 #define OBJ_NOMATCH_QUALITY false
@@ -102,7 +102,8 @@ public:
   Obj(Obj *sobj);
     
   bool is_script_obj()    { return(nuvie_status & NUVIE_OBJ_STATUS_SCRIPTING); }
-  
+  bool is_actor_obj()     { return(nuvie_status & NUVIE_OBJ_STATUS_ACTOR_OBJ); }
+
   bool is_ok_to_take();
   bool is_invisible()	  { return(status & OBJ_STATUS_INVISIBLE); } 
   bool is_charmed()	    { return(status & OBJ_STATUS_CHARMED); }
@@ -139,6 +140,7 @@ public:
   void readied();
   void set_noloc();
   void set_in_script(bool flag);
+  void set_actor_obj(bool flag);
 
   void add(Obj *obj, bool stack=false);
 

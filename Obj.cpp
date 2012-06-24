@@ -138,6 +138,15 @@ void Obj::set_in_script(bool flag)
   return;
 }
 
+void Obj::set_actor_obj(bool flag)
+{
+  if(flag)
+    nuvie_status |= NUVIE_OBJ_STATUS_ACTOR_OBJ;
+  else if( is_actor_obj() )
+    nuvie_status ^= NUVIE_OBJ_STATUS_ACTOR_OBJ;
+
+  return;
+}
 
 /* Returns true if an object is in an actor inventory, including containers and readied items. */
 
