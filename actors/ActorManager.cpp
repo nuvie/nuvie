@@ -560,6 +560,8 @@ const char *ActorManager::look_actor(Actor *a, bool show_prefix)
          return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(393), 0, show_prefix);
        else if(actor_num == 199) // Altar of singularity
          return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(329), 0, show_prefix);
+
+       return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(a->obj_n), 0, show_prefix);
       }
     return tile_manager->lookAtTile(tile_num,0,show_prefix);
 }

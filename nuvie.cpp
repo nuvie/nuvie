@@ -120,6 +120,9 @@ bool Nuvie::init(int argc, char **argv)
  if(checkGameDir(game_type) == false)
    return false;
 
+ if(checkDataDir() == false)
+	 return false;
+
  SoundManager *sound_manager = new SoundManager();
  sound_manager->nuvieStartup(config);
 
@@ -422,6 +425,29 @@ bool Nuvie::checkGameDir(uint8 game_type)
   }
 
  ConsoleAddError("Cannot open gamedir!");
+ ConsoleAddError("\"" + path + "\"");
+
+ return false;
+#endif
+
+ return true;
+}
+
+bool Nuvie::checkDataDir()
+{
+	std::string path;
+	config->value("config/datadir", path, "");
+	ConsoleAddInfo("datadir: \"" + path + "\"");
+
+#ifndef WIN32
+ struct stat sb;
+
+ if(stat(path.c_str(),&sb) == 0 && sb.st_mode & S_IFDIR)
+  {
+   return true;
+  }
+
+ ConsoleAddError("Cannot open datadir!");
  ConsoleAddError("\"" + path + "\"");
 
  return false;

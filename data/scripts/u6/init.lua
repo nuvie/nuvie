@@ -409,6 +409,14 @@ local g_readiable_objs_tbl = {
 [0x258] = 9, [0x37d] = 9, [0x37e] = 9, [0x37f] = 9
 }
 
+function actor_is_readiable_obj(actor)
+	if g_readiable_objs_tbl[actor.tile_num] ~= nil then
+		return true
+	end
+	
+	return false
+end
+
 function obj_is_readiable(obj)
 	if g_readiable_objs_tbl[obj.tile_num] ~= nil then
 		return true

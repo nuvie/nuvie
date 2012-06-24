@@ -40,6 +40,7 @@
 #include "Weather.h"
 #include "UseCode.h"
 #include "SoundManager.h"
+#include "Console.h"
 
 #include "Script.h"
 #include "ScriptActor.h"
@@ -626,15 +627,33 @@ Script::~Script()
 
 bool Script::init()
 {
-	switch(gametype)
+	std::string dir, path;
+	config->value("config/datadir", dir, "");
+	build_path(dir, "scripts", path);
+	dir = path;
+
+	std::string game_tag = get_game_tag(gametype);
+	stringToLower(game_tag);
+
+	build_path(dir, game_tag, path);
+
+	dir = path;
+	build_path(dir, "init.lua", path);
+	ConsoleAddInfo("Loading init.lua");
+
+	std::string init_str = "init = nuvie_load(\"";
+	init_str.append(game_tag);
+	init_str.append("/init.lua\"); init()");
+
+	if(run_script(init_str.c_str()) == false)
 	{
-	case NUVIE_GAME_U6 : return run_script("init = nuvie_load(\"u6/init.lua\"); init()");
-	case NUVIE_GAME_SE : return run_script("init = nuvie_load(\"se/init.lua\"); init()");
-	case NUVIE_GAME_MD : return run_script("init = nuvie_load(\"md/init.lua\"); init()");
-	default : break;
+		std::string errorStr = "Loading ";
+		errorStr.append(path);
+		ConsoleAddError(errorStr);
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
 void Script::seed_random()
@@ -657,6 +676,7 @@ bool Script::run_script(const char *script)
    if(luaL_dostring(L, script) != 0)
    {
       DEBUG(0, LEVEL_ERROR, "Script Error: %s\n", luaL_checkstring(L, -1));
+      return false;
    }
 
    return true;

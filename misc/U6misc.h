@@ -33,7 +33,7 @@ uint8 get_reverse_direction(uint8 dir);
 void get_relative_dir(uint8 dir, sint16 *rel_x, sint16 *rel_y);
 const char *get_direction_name(sint16 rel_x, sint16 rel_y);
 int str_bsearch( const char *str[], int max, const char *value );
-
+void stringToLower(std::string &str);
 /* Is point x,y within rect?
  */
 inline bool point_in_rect(uint16 x, uint16 y, SDL_Rect *rect)

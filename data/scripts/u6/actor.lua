@@ -1236,6 +1236,12 @@ function actor_dead(actor)
 		if in_vehicle == true then
 			create_body = false -- don't drop body when party member dies on raft.
 		end
+		
+		if actor_is_readiable_obj(actor) then
+			local animated_obj = Obj.new(actor.obj_n)
+			Obj.moveToMap(animated_obj, actor.x, actor.y, actor.z)
+		end
+		
 		Actor.kill(actor, create_body)
 	else
 		actor_avatar_death(actor)

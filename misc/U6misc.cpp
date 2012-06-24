@@ -174,6 +174,14 @@ void stringToUpper(std::string &str)
     }
 }
 
+void stringToLower(std::string &str)
+{
+	for (size_t i = 0; i < str.length(); ++i)
+    {
+        str[i]=tolower(str[i]);
+    }
+}
+
 int mkdir_recursive(std::string path, int mode)
 {
    vector<string> directories;

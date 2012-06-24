@@ -1,3 +1,8 @@
+2012-06-24  Eric Fry <efry at users.sourceforge.net> r1351
+	* Add check for datadir on startup.
+	* Fixed bug "Animated items disappear when killed" [3537287]
+	* Added void stringToLower(std::string &str) to u6misc
+
 2012-06-23  Eric Fry <efry at users.sourceforge.net> r1350
 	* Added Malignant Manor's hack move patch. [3536149]
 	* Fixed bug "Combat AI doesn't start until the Avatar moves" [3535036]
