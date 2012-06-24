@@ -9,7 +9,7 @@ local player_z = player_loc.z
 local foes_present = false
 
 local i
-for i=1,0x100 do
+for i=1,0xff do
 	local actor = Actor.get(i)
 
 	if actor.obj_n ~= 0 and actor.alive == true and actor.visible == true and alignment_is_evil(actor.align) then

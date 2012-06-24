@@ -24,7 +24,7 @@ local i,j
 for i=0,6 do
 	local var_c = 32769
 	local new_target = nil
-	for j=1,0x100 do
+	for j=1,0xff do
 		local tmp_actor = Actor.get(j)
 
 		if tmp_actor.obj_n ~= 0 and tmp_actor.alive == true and tmp_actor.actor_num ~= actor.actor_num and actor_ok_to_attack(actor, tmp_actor) == true then

@@ -351,7 +351,7 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 	if actor.alive == false or actor.hit_flag == true then
 		return
 	end
-	
+
 	if obj_n ~= 0x1a7 and obj_n ~= 0x19e and obj_n ~= 0x19f and obj_n ~= 0x19c and (actor_type == nil or actor_type[13] == 0) and actor.protected == false then --balloon, skiff, raft, ship, immune to map dmg
 		local map_tile = map_get_dmg_tile_num(map_x, map_y, map_z)
 		if map_tile ~= nil then
@@ -1305,7 +1305,7 @@ function slime_update_frames()
 	local i, j
 	local pow = math.pow
 	
-	for i=1,0x100 do
+	for i=1,0xff do
 		local actor = Actor.get(i)
 		if actor.obj_n == 0x177 and actor.alive then --slime
 			local new_frame_n = 0;
@@ -1696,7 +1696,7 @@ function actor_calculate_avg_coords()
    avg_y = 0
    
    local i 
-   for i=1,0x100 do
+   for i=1,0xff do
       actor = Actor.get(i)
       
       if actor.obj_n ~= 0 and actor.alive then
@@ -1735,7 +1735,7 @@ function actor_calculate_avg_coords()
       --var_16 = 0x8000
       
       local var_A
-      for i=1,0x100 do
+      for i=1,0xff do
          actor = Actor.get(i)
          if actor.obj_n ~= 0 and actor.alive and (actor.wt == WT_FRONT or actor.wt == WT_PLAYER) then
             --var_C = ((actor.x - party_avg_x) * tmp_x) + ((actor.y - party_avg_y) * tmp_y)
@@ -1800,7 +1800,7 @@ dbg("actor_update_all()\n")
             end
          end
          
-         for i=1,0x100 do
+         for i=1,0xff do
             local actor = Actor.get(i)
             if actor.obj_n ~= 0 and actor.paralyzed == false and actor.asleep == false then
                if actor.wt ~= WT_NOTHING and actor.alive == true and actor.mpts > 0 and actor.z == player_loc.z then
@@ -1834,7 +1834,7 @@ dbg("actor_update_all()\n")
 
          if di <= 0 then
             local i,m
-            for i=1,0x100 do
+            for i=1,0xff do
                local actor = Actor.get(i)
                if actor.obj_n ~= 0 then
                   if actor.mpts >= 0 then
@@ -1902,9 +1902,9 @@ function advance_time(num_turns)
 	local random = math.random
 	local cloak_readied = false
 	local i
-	for i=1,0x100 do
+	for i=1,0xff do
 		local actor = Actor.get(i)
-		
+
 		if actor.in_party == true then
 			local obj
 			for obj in actor_inventory(actor) do
@@ -2178,7 +2178,7 @@ dbg("activate_city_guards()")
    
    player_subtract_karma(5)
    
-   for i=1,0x100 do
+   for i=1,0xff do
       local actor = Actor.get(i)
    
       if actor.alive == true and actor.z == player_loc.z and actor.in_party == false and actor.align == ALIGNMENT_NEUTRAL then
@@ -2325,7 +2325,7 @@ function caught_by_guard(actor)
       actor.align = ALIGNMENT_EVIL
    
       local i 
-      for i=1,0x100 do
+      for i=1,0xff do
          local a = Actor.get(i)
          if a.wt == WT_GUARD_ARREST_PLAYER then
             a.wt = WT_ASSAULT
@@ -2566,7 +2566,7 @@ function actor_wt_rear(actor)
    local var_10 = 0x7fff
    local align = actor.align
    local i, var_12
-   for i=0,0x100 do
+   for i=0,0xff do
       local a = Actor.get(i)
       
       if a.alive and a.wt == WT_FRONT and a.align == align then
@@ -2687,7 +2687,7 @@ function actor_wt_flank(actor)
    local target_actor = nil
    
    local i, tmp_actor
-   for i=1,0x100 do
+   for i=1,0xff do
       tmp_actor = Actor.get(i)
    
       if tmp_actor ~= nil
@@ -2791,7 +2791,7 @@ function actor_wt_berserk(actor)
    local max_stats = 0
 
    local i
-   for i=1,0x100 do
+   for i=1,0xff do
       local tmp_actor = Actor.get(i)
 
       if tmp_actor ~= nil
@@ -3338,7 +3338,7 @@ function actor_find_target(actor)
    local player_x = player_loc.x
    local player_y = player_loc.y
                
-   for i=1,0x100 do
+   for i=1,0xff do
 
       local tmp_actor = Actor.get(i)
 
@@ -3574,7 +3574,7 @@ function actor_avatar_death(avatar)
 	player_move(0x133, 0x160, 0)
 	party_exit_vehicle(0x133, 0x160, 0)
 
-	for i=1,0x100 do
+	for i=1,0xff do
 		local actor = Actor.get(i)
 		actor.mpts = 0
 	end
