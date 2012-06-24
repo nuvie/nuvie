@@ -538,9 +538,41 @@ Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z, bool inc_surrounding
 
 	 return actors[obj->quality];
   }
+
+  return get_multi_tile_actor(x, y, z);
  }
 
  return NULL;
+}
+
+Actor *ActorManager::get_multi_tile_actor(uint16 x, uint16 y, uint8 z)
+{
+	Actor *actor = get_actor(x+1,y+1,z,false); //search for 2x2 tile actor.
+	if(actor)
+	{
+		Tile *tile = obj_manager->get_obj_tile(actor->get_obj_n(),actor->get_frame_n());
+		if(tile->dbl_width && tile->dbl_height)
+			return actor;
+	}
+
+	actor = get_actor(x,y+1,z,false); //search for 1x2 tile actor.
+	if(actor)
+	{
+		Tile *tile = obj_manager->get_obj_tile(actor->get_obj_n(),actor->get_frame_n());
+		if(tile->dbl_height)
+			return actor;
+	}
+
+	actor = get_actor(x+1,y,z,false); //search for 1x2 tile actor.
+	if(actor)
+	{
+		Tile *tile = obj_manager->get_obj_tile(actor->get_obj_n(),actor->get_frame_n());
+		if(tile->dbl_width)
+			return actor;
+	}
+
+
+	return NULL;
 }
 
 Actor *ActorManager::get_player()

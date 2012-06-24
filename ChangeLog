@@ -1,3 +1,6 @@
+2012-06-24  Eric Fry <efry at users.sourceforge.net> r1356
+	* Fixed targeting on multi-tile actors. Winged Gargoyles and cyclops'
+
 2012-06-24  Eric Fry <efry at users.sourceforge.net> r1355
 	* Added new actor object status flag to objects that are owned by an actor
 	  eg. The back of a horse.

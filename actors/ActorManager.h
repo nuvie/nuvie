@@ -115,6 +115,8 @@ class ActorManager
 
  protected:
 
+ Actor *get_multi_tile_actor(uint16 x, uint16 y, uint8 z);
+
  bool loadActorSchedules();
  inline Actor *find_free_temp_actor();
  void update_active_actors(uint16 x, uint16 y, uint8 z); // start moving actors
