@@ -56,6 +56,7 @@ class SaveManager;
 class EggManager;
 class CommandBar;
 class Weather;
+class Book;
 
 typedef enum
 {
@@ -108,6 +109,8 @@ class Game
  Event *event;
 
  GUI *gui;
+
+ Book *book;
 
  GamePauseState pause_flags;
  uint8 ignore_event_delay; // (stack) if non-zero, Event will not periodically wait for NUVIE_INTERVAL
@@ -190,6 +193,7 @@ class Game
  CommandBar *get_command_bar()     { return(command_bar); }
  Weather *get_weather()            { return(weather); }
 
+ Book *get_book()                  { return(book); }
  protected:
 
 };

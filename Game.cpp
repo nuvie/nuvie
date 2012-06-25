@@ -66,6 +66,7 @@
 #include "Cursor.h"
 #include "SaveManager.h"
 #include "Weather.h"
+#include "Book.h"
 
 #include "Game.h"
 
@@ -98,6 +99,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  effect_manager = NULL;
  weather = NULL;
  magic = NULL;
+ book = NULL;
  
  pause_flags = PAUSE_UNPAUSED;
  ignore_event_delay = 0;
@@ -136,6 +138,7 @@ Game::~Game()
     if(egg_manager) delete egg_manager;
     if(weather) delete weather;
     if(magic) delete magic;
+    if(book) delete book;
 }
 
 bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
@@ -171,7 +174,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    text->loadFont();
 
    font_manager = new FontManager(config);
-   font_manager->init();
+   font_manager->init(game_type);
 
    scroll = new MsgScroll(config, font_manager->get_font(0));
 
@@ -185,6 +188,13 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
    ConsoleAddInfo("Loading ObjManager()");
    obj_manager = new ObjManager(config, tile_manager, egg_manager);
+
+   if(game_type == NUVIE_GAME_U6)
+   {
+     book = new Book(config);
+     if(book->init() == false)
+       return false;
+   }
 
    // Correct usecode class for each game
    switch (game_type)
@@ -292,7 +302,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 void Game::init_cursor()
 {
     cursor = new Cursor();
-    if(cursor->init(config, screen))
+    if(cursor->init(config, screen, game_type))
        SDL_ShowCursor(false); // won't need the system default
     else
     {

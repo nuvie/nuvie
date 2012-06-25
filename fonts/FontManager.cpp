@@ -27,6 +27,7 @@
 #include "Configuration.h"
 
 #include "NuvieIOFile.h"
+#include "U6Lib_n.h"
 #include "FontManager.h"
 #include "Font.h"
 #include "U6Font.h"
@@ -50,7 +51,18 @@ FontManager::~FontManager()
 
 }
 
-bool FontManager::init()
+bool FontManager::init(nuvie_game_t game_type)
+{
+	if(game_type == NUVIE_GAME_U6)
+		return initU6();
+
+	if(game_type == NUVIE_GAME_SE)
+		return initWOU("savage.fnt");
+
+	return initWOU("fonts.lzc"); //martian
+}
+
+bool FontManager::initU6()
 {
  Font *font;
  unsigned char *font_data;
@@ -80,6 +92,30 @@ bool FontManager::init()
 
  free(font_data);
  return true;
+}
+
+bool FontManager::initWOU(std::string filename)
+{
+	 Font *font;
+	 std::string path;
+	 U6Lib_n lib_file;
+
+	 config_get_path(config, filename, path);
+
+	 lib_file.open(path,4,NUVIE_GAME_MD); //can be either SE or MD just as long as it isn't set to U6 type.
+
+	 font = new Font();
+	 unsigned char *buf = lib_file.get_item(0);
+	 font->initWithBuffer(buf, lib_file.get_item_size(0)); //buf will be freed by ~Font()
+	 fonts.push_back(font);
+	 num_fonts++;
+/*
+	 font = new Font();
+	 font->init(path.c_str());
+	 fonts.push_back(font);
+	 num_fonts++;
+*/
+	 return true;
 }
 
 Font *FontManager::get_font(uint16 font_number)

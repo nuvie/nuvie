@@ -49,6 +49,7 @@ private:
 
    virtual bool init(unsigned char *data, uint16 num_chars, uint16 char_offset) {return false;}
    bool init(const char *filename);
+   bool initWithBuffer(unsigned char *buffer, uint32 buffer_len);
 
 //   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y);
    uint16 drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color=FONT_COLOR_U6_NORMAL);

@@ -94,7 +94,6 @@ Event::Event(Configuration *cfg)
  push_obj = NULL;
  push_actor = NULL;
 
- book = NULL;
  time_queue = game_time_queue = NULL;
  showingQuitDialog = false;
  ignore_timeleft = false;
@@ -102,7 +101,6 @@ Event::Event(Configuration *cfg)
 
 Event::~Event()
 {
- delete book;
  delete time_queue;
  delete game_time_queue;
 }
@@ -126,9 +124,6 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic 
  input.get_text = false;
  input.target_init = NULL;
 
- book = new Book(config);
- if(book->init() == false)
-   return false;
  time_queue = new TimeQueue;
  game_time_queue = new TimeQueue;
  magic = mg;

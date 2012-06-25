@@ -112,9 +112,6 @@ void SpellView::set_spell_caster(Actor *actor, Obj *s_container, bool eventMode)
 
 void SpellView::Display(bool full_redraw)
 {
-	if(new_ui_mode)
-		full_redraw = true;
-
  if(full_redraw || update_display)
    {
     screen->fill(bg_color, area.x, area.y + NEWMAGIC_BMP_H, area.w, area.h - NEWMAGIC_BMP_H);
@@ -126,13 +123,16 @@ void SpellView::Display(bool full_redraw)
  display_spell_list_text();
 
  DisplayChildren(full_redraw);
-
+#if 1 // FIXME: This shouldn't need to be in the loop
+ update_buttons(); // It doesn't seem to hurt speed though
+ screen->update(area.x, area.y, area.w, area.h);
+#else
  if(full_redraw || update_display)
    {
     update_display = false;
     screen->update(area.x, area.y, area.w, area.h);
    }
-
+#endif
  return;
 }
 
@@ -272,6 +272,8 @@ void SpellView::move_up()
 		spell_container->quality = cur_spells[index-1];
 		update_display = true;
 	}
+	else
+		move_left();
 
 }
 
@@ -286,8 +288,11 @@ void SpellView::move_down()
 			spell_container->quality = cur_spells[index+1];
 			update_display = true;
 		}
+		else
+			move_right();
 	}
-
+	else
+		move_right();
 }
 
 void SpellView::display_level_text()

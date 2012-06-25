@@ -45,11 +45,15 @@ class FontManager
  FontManager(Configuration *cfg);
  ~FontManager();
 
- bool init();
+ bool init(nuvie_game_t game_type);
+
 
  Font *get_font(uint16 font_number);
 
  protected:
+
+ bool initU6();
+ bool initWOU(std::string filename);
 
 };
 

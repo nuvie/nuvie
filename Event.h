@@ -115,7 +115,6 @@ friend class Magic; // FIXME
  MsgScroll *scroll;
  GameClock *clock;
  Player *player;
- Book *book;
  Converse *converse;
  ViewManager *view_manager;
  UseCode *usecode;
@@ -149,7 +148,7 @@ friend class Magic; // FIXME
 
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic *mg,
            GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g);
- Book *get_book() { return(book); }
+
  TimeQueue *get_time_queue() { return(time_queue); }
  TimeQueue *get_game_time_queue() { return(game_time_queue); }
  EventMode get_mode() { return(mode); }

@@ -470,6 +470,7 @@ static int nscript_get_actor_from_num(lua_State *L)
    uint16 actor_num;
    actor_num = (uint16)lua_tointeger(L, 1);
 
+   assert(actor_num < ACTORMANAGER_MAX_ACTORS);
    return nscript_new_actor_var(L, actor_num);
 }
 

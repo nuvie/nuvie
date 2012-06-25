@@ -273,7 +273,7 @@ sint16 SpellViewGump::getSpell(int x, int y)
 	localy += 3; //align the pointer in the center of the crosshair cursor.
 	localx += 3;
 
-	if(localy < 18 || localy > 88 || localx < 25 || localx > 146)
+	if(localy < 21 || localy > 88 || localx < 28 || localx > 148)
 	{
 		return -1;
 	}
@@ -281,10 +281,10 @@ sint16 SpellViewGump::getSpell(int x, int y)
 	uint8 spell = (level - 1) * 16;
 
 
-	if(localx >= 88)
+	if(localx >= 89)
 		spell += 5;
 
-	spell += (localy - 18) / 14;
+	spell += (localy - 20) / 14;
 
 	for(uint8 i=0;cur_spells[i] != -1 && i < 16;i++)
 	{

@@ -1,3 +1,12 @@
+2012-06-26  Eric Fry <efry at users.sourceforge.net> r1360
+	* Added support for in-game mouse cursors in MD and SE
+	* Added in-game fonts for MD and SE
+	* Moved Book object from Event into Game. Only load when playing U6.
+	* Added assert() to make sure Actor.get script function cannot get an actor
+    greater than 255
+	* Added Malignant Manor's patch for mouse targeting on new spellviewgump.
+	* Fixed bug "Spellbook has wrong next page buttons if opened again" [3537050]
+
 2012-06-25  Eric Fry <efry at users.sourceforge.net> r1357
 	* Fixed bug with actor scripts where we were trying to index actor 256
 	  which doesn't exist.

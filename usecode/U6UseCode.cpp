@@ -2535,7 +2535,7 @@ bool U6UseCode::pass_quest_barrier(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
 {
     char *data;
-    Book *book = game->get_event()->get_book(); // ??
+    Book *book = game->get_book(); // ??
 
     if(ev == USE_EVENT_LOOK && obj->quality != 0)
     {

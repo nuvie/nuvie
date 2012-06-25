@@ -29,9 +29,9 @@ Cursor::Cursor()
 
 /* Returns true if mouse pointers file was loaded.
  */
-bool Cursor::init(Configuration *c, Screen *s)
+bool Cursor::init(Configuration *c, Screen *s, nuvie_game_t game_type)
 {
-    std::string filename;
+    std::string file, filename;
     bool enable_cursors;
     
     config = c;
@@ -43,12 +43,18 @@ bool Cursor::init(Configuration *c, Screen *s)
     config->value("config/general/enable_cursors", enable_cursors, true);
     
     if(!enable_cursors)
-      return false;
-    //FIXME secursor.ptr, mdcursor.ptr 
-    config_get_path(config, "u6mcga.ptr", filename);
+    	return false;
+    switch(game_type)
+    {
+		case NUVIE_GAME_U6 : file = "u6mcga.ptr"; break;
+		case NUVIE_GAME_SE : file = "secursor.ptr"; break;
+		case NUVIE_GAME_MD : file = "mdcursor.ptr"; break;
+    }
+
+    config_get_path(config, file, filename);
     
     if(filename != "")
-        if(load_all(filename) > 0)
+        if(load_all(filename, game_type) > 0)
             return(true);
     return(false);
 }
@@ -57,21 +63,34 @@ bool Cursor::init(Configuration *c, Screen *s)
 /* Load pointers from `filename'. (lzw -> s_lib_32 -> shapes)
  * Returns the number found in the file.
  */
-uint32 Cursor::load_all(std::string filename)
+uint32 Cursor::load_all(std::string filename, nuvie_game_t game_type)
 {
     U6Lzw decompressor;
     U6Lib_n pointer_list;
     NuvieIOBuffer iobuf;
     uint32 slib32_len = 0;
-    unsigned char *slib32_data = decompressor.decompress_file(filename, slib32_len);
+    unsigned char *slib32_data;
+    if(game_type != NUVIE_GAME_U6)
+    {
+    	U6Lib_n file;
+    	file.open(filename, 4, game_type);
+    	slib32_data = file.get_item(0);
+    	slib32_len = file.get_item_size(0);
+    }
+    else
+    {
+    	slib32_data = decompressor.decompress_file(filename, slib32_len);
+    }
+
     if(slib32_len == 0)
-        return(0);
+    	return(0);
     // FIXME: u6lib_n assumes u6 libs have no filesize header
     iobuf.open(slib32_data, slib32_len);
     free(slib32_data);
 
     if(!pointer_list.open(&iobuf, 4, NUVIE_GAME_MD))
-        return(0);
+    	return(0);
+
 
     uint32 num_read = 0, num_total = pointer_list.get_num_items();
     cursors.resize(num_total);

@@ -64,6 +64,18 @@ bool Font::init(const char *filename)
  return true;
 }
 
+bool Font::initWithBuffer(unsigned char *buffer, uint32 buffer_len)
+{
+	font_data = buffer;
+
+	height = font_data[0];
+	pixel_char = font_data[2];
+
+ num_chars = 256;
+
+ return true;
+}
+
 uint16 Font::drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color)
 {
  return drawString(screen, str, strlen(str), x, y, color);
@@ -128,14 +140,14 @@ uint16 Font::getCharWidth(uint8 c)
 uint16 Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                     uint8 color)
 {
-	unsigned char buf[64];
+	unsigned char buf[121]; // 11x11
 	unsigned char *pixels;
 	uint16 width;
 
 	if(font_data == NULL)
 		return false;
 
-	memset(buf,0xff,64);
+	memset(buf,0xff,121);
 
 	pixels = font_data + font_data[0x204 + char_num] * 256 + font_data[0x104 + char_num];
 	width = font_data[0x4 + char_num];

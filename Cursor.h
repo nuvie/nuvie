@@ -44,8 +44,8 @@ class Cursor
 public:
     Cursor();
     ~Cursor()                              { unload_all(); }
-    bool init(Configuration *c, Screen *s);
-    uint32 load_all(std::string filename);
+    bool init(Configuration *c, Screen *s, nuvie_game_t game_type);
+    uint32 load_all(std::string filename, nuvie_game_t game_type);
     void unload_all();
     bool set_pointer(uint8 ptr_num);
 
