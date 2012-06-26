@@ -459,7 +459,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 
  Game *game = Game::get_game();
  can_move = true;
- if(!(force_move || ignore_moves) && is_in_party() && game->get_party()->is_in_combat_mode() == false) // subtract from moves left for party members only. Other actors have their movement points deducted in actor_update_all()
+ if(!(force_move || ignore_moves) && (id_n == game->get_player()->get_actor()->id_n || (is_in_party() && game->get_party()->is_in_combat_mode() == false))) // subtract from moves left for party members only. Other actors have their movement points deducted in actor_update_all()
  {
     set_moves_left(moves - (move_cost+map->get_impedance(oldpos.x, oldpos.y, oldpos.z)));
     if(oldpos.x != x && oldpos.y != y) // diagonal move, double cost
