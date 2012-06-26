@@ -409,7 +409,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  {
     set_error(ACTOR_OUT_OF_MOVES);
 //    return false;
-    DEBUG(0,LEVEL_WARNING,"actor %d is out of moves\n", id_n);
+    DEBUG(0,LEVEL_WARNING,"actor %d is out of moves %d\n", id_n, moves);
  }
 
  // blocking actors are checked for later
@@ -457,8 +457,9 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  y = WRAPPED_COORD(new_y,new_z);
  z = new_z;
 
+ Game *game = Game::get_game();
  can_move = true;
- if(!(force_move || ignore_moves) && is_in_party()) // subtract from moves left for party members only. Other actors have their movement points deducted in actor_update_all()
+ if(!(force_move || ignore_moves) && is_in_party() && game->get_party()->is_in_combat_mode() == false) // subtract from moves left for party members only. Other actors have their movement points deducted in actor_update_all()
  {
     set_moves_left(moves - (move_cost+map->get_impedance(oldpos.x, oldpos.y, oldpos.z)));
     if(oldpos.x != x && oldpos.y != y) // diagonal move, double cost
@@ -474,7 +475,6 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
        usecode->use_obj(obj, this);
    }
 
- Game *game = Game::get_game();
  // re-center map if actor is player character
  if(id_n == game->get_player()->get_actor()->id_n && game->get_player()->is_mapwindow_centered())
     game->get_map_window()->centerMapOnActor(this);

@@ -1,3 +1,7 @@
+2012-06-27  Eric Fry <efry at users.sourceforge.net> r1362
+	* Don't deduct movement points from party members in Actor::move() when in
+	  combat mode.
+
 2012-06-26  Eric Fry <efry at users.sourceforge.net> r1361
 	* Fixed bug "Repel Undead causes the game to hang" [3537064]
 	  It was using the wrong actor flag.
