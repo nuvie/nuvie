@@ -1238,6 +1238,15 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     if(mode == WAIT_MODE)
         return(false);
 
+    if(!push_actor && !push_obj)
+    {
+        scroll->display_string("what?\n\n");
+        scroll->display_prompt();
+        map_window->reset_mousecenter();
+        endAction();
+        return(false);
+    }
+
     if(push_actor)
         from = push_actor->get_location();
     else
@@ -1981,8 +1990,8 @@ void Event::quitDialog()
 void Event::saveDialog()
 {
  SaveManager *save_manager = Game::get_game()->get_save_manager();
-
- save_manager->create_dialog();
+ if(mode == MOVE_MODE)
+	 save_manager->create_dialog();
 
  return;
 }

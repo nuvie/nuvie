@@ -1,3 +1,10 @@
+2012-06-26  Eric Fry <efry at users.sourceforge.net> r1361
+	* Fixed bug "Repel Undead causes the game to hang" [3537064]
+	  It was using the wrong actor flag.
+	* Fixed bug "move and then pressing a number key cause a crash" [3537950]
+	* Fixed bug in timid 0x13 worktype.
+	* Don't show save dialog unless we are in move mode.
+
 2012-06-26  Eric Fry <efry at users.sourceforge.net> r1360
 	* Added support for in-game mouse cursors in MD and SE
 	* Added in-game fonts for MD and SE

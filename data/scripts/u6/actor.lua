@@ -64,7 +64,7 @@ wt_num_monsters_near = 0
 g_time_stopped = false
 
 --Actor stats table
---str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,immune to tremor,undead,poisonous,strength_based,double dmg from fire,immune to magic,immune to poison,undead,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
+--str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,immune to tremor,repel undead,poisonous,strength_based,double dmg from fire,immune to magic,immune to poison,undead,immune to sleep spell,spell table,weapon table,armor table,treasure table,exp_related see actor_hit()
 actor_tbl = {
 [364] = {5, 5, 2, 10, 1, ALIGNMENT_CHAOTIC, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, {}, {}, {}, {}, 0},
 [429] = {20, 10, 3, 30, 10, ALIGNMENT_CHAOTIC, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, {}, {}, {}, {}, 6},
@@ -3094,7 +3094,7 @@ function actor_wt_timid(actor)
 	   return
 	end
 	local target = actor_find_target(actor)
-	if target ~= nil then
+	if target == nil then
 	   actor_move_towards_player(actor)
 	   return
 	end
