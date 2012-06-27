@@ -707,11 +707,12 @@ void ActorManager::moveActors()
         return;// nothing to do
     }
 
+   Game::get_game()->pause_user();
    Game::get_game()->get_script()->call_actor_update_all();
    //updateTime();
    stopActors();
    return;
-   
+/*
     while(!wait_for_player)
     {
         if(can_party_move())
@@ -745,6 +746,7 @@ void ActorManager::moveActors()
             }
         }
     }
+*/
 }
 
 inline void ActorManager::deactivate_actor(Actor *actor)

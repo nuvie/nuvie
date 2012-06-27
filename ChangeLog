@@ -1,3 +1,7 @@
+2012-06-27  Eric Fry <efry at users.sourceforge.net> r1364
+	* Fixed bug "Mouse movement doesn't properly wait for combat turns" [3537295]
+	  The user is paused while Script::call_actor_update_all() is being run.
+
 2012-06-27  Eric Fry <efry at users.sourceforge.net> r1362
 	* Don't deduct movement points from party members in Actor::move() when in
 	  combat mode.

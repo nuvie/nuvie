@@ -519,7 +519,7 @@ void MapWindow::update()
         }
     }
 
-    if(walking)
+    if(walking && !game->user_paused())
     {
         int mx, my; // bit-AND buttons with mouse state to test
         if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(USE_BUTTON) | SDL_BUTTON(ACTION_BUTTON)))
