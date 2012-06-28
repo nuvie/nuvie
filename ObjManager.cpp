@@ -1457,18 +1457,16 @@ bool ObjManager::temp_obj_list_remove(Obj *obj)
 void ObjManager::temp_obj_list_clean_level(uint8 z)
 {
  std::list<Obj *>::iterator obj;
- std::list<Obj *>::iterator tmp_obj;
+ Obj *tmp_obj;
 
  for(obj = temp_obj_list.begin(); obj != temp_obj_list.end();)
    {
     if((*obj)->z == z)
       {
-       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
-       tmp_obj = obj;
-       tmp_obj++;
-       remove_obj_from_map(*obj); // this calls temp_obj_list_remove()
-       delete_obj(*obj);
-       obj = tmp_obj;
+       tmp_obj = *obj++;
+       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n)+(tmp_obj)->frame_n,0,false));
+       remove_obj_from_map(tmp_obj); // this calls temp_obj_list_remove()
+       delete_obj(tmp_obj);
       }
     else
       obj++;
@@ -1482,7 +1480,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
 void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
 {
  std::list<Obj *>::iterator obj;
- std::list<Obj *>::iterator tmp_obj;
+ Obj *tmp_obj;
  sint16 dist_x, dist_y;
 
  for(obj = temp_obj_list.begin(); obj != temp_obj_list.end();)
@@ -1492,12 +1490,10 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
 
     if(dist_x > 32 || dist_y > 32)
       {
-       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((*obj)->obj_n)+(*obj)->frame_n,0,false));
-       tmp_obj = obj;
-       tmp_obj++;
-       remove_obj_from_map(*obj);
-       delete_obj(*obj);
-       obj = tmp_obj;
+       tmp_obj = *obj++;
+       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n)+(tmp_obj)->frame_n,0,false));
+       remove_obj_from_map(tmp_obj);
+       delete_obj(tmp_obj);
       }
     else
       obj++;
