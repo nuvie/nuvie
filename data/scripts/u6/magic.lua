@@ -133,6 +133,33 @@ select_obj = function()
 	return obj 
 end
 
+function select_actor_or_obj()
+	if g_magic_target ~= nil then return map_get_obj(g_magic_target) end
+
+	local is_player = caster_is_player()
+
+	local loc = select_location_with_prompt("On Whom: ")
+	local actor = map_get_actor(loc)
+	if actor == nil then
+		local obj = map_get_obj(loc)
+		actor = obj
+		if is_player == true then
+			if obj ~= nil then
+				print(obj.name.."\n")
+			else
+				print("nothing\n")
+			end
+		end
+	elseif is_player == true then
+		print(actor.name.."\n")
+	end
+
+	magic_casting_fade_effect(caster)
+	if loc == nil or actor == nil then magic_no_effect() return end
+
+	return actor
+end
+
 function select_actor_with_projectile(projectile_tile, caster)
 
 	if caster == nil then caster = magic_get_caster() end

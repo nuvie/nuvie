@@ -793,13 +793,13 @@ bool U6Actor::sit_on_chair(Obj *obj)
  return false;
 }
 
-uint8 U6Actor::get_object_readiable_location(uint16 obj_n)
+uint8 U6Actor::get_object_readiable_location(Obj *obj)
 {
  uint16 i;
 
  for(i=0;readiable_objects[i].obj_n != OBJ_U6_NOTHING;i++)
    {
-    if(obj_n == readiable_objects[i].obj_n)
+    if(obj->obj_n == readiable_objects[i].obj_n)
       return readiable_objects[i].readiable_location;
    }
 

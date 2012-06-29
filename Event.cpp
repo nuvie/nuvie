@@ -2136,7 +2136,7 @@ bool Event::ready(Obj *obj)
 
     if(!(readied = actor->add_readied_object(obj)))
     {
-    	if(actor->get_object_readiable_location(obj->obj_n) == ACTOR_NOT_READIABLE)
+    	if(actor->get_object_readiable_location(obj) == ACTOR_NOT_READIABLE)
     		scroll->display_string("\nCan't be readied!\n");
     	else
     		scroll->display_string("\nNo place to put!\n");

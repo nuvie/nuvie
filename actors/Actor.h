@@ -430,7 +430,7 @@ class Actor
  bool can_carry_object(uint16 obj_n, uint32 qty = 0);
  bool can_carry_object(Obj *obj);
 
- virtual uint8 get_object_readiable_location(uint16 obj_n) { return ACTOR_NOT_READIABLE; }
+ virtual uint8 get_object_readiable_location(Obj *obj);
  virtual const CombatType *get_object_combat_type(uint16 obj_n) { return NULL; }
  
  bool add_readied_object(Obj *obj);

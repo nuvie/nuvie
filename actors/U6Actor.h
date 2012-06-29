@@ -102,7 +102,7 @@ class U6Actor: public Actor
  bool combat_try_attack(ActorList *enemies);
  bool combat_try_attack(U6Actor *enemy);
 
- uint8 get_object_readiable_location(uint16 obj_n);
+ uint8 get_object_readiable_location(Obj *obj);
  const CombatType *get_object_combat_type(uint16 obj_n);
  ActorTileType get_tile_type() { return(actor_type->tile_type); }
  Obj *inventory_get_food(Obj *container=0);

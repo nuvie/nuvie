@@ -389,6 +389,16 @@ bool Actor::can_be_passed(Actor *other)
     return(other->is_passable() || is_passable());
 }
 
+uint8 Actor::get_object_readiable_location(Obj *obj)
+{
+	int loc = Game::get_game()->get_script()->call_obj_get_readiable_location(obj);
+
+	if(loc >= 0)
+		return (uint8)loc;
+
+	return ACTOR_NOT_READIABLE;
+}
+
 bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
  const uint8 move_cost = 5; // base cost to move
@@ -1020,7 +1030,7 @@ bool Actor::add_readied_object(Obj *obj)
  uint8 location;
  bool double_handed = false;
 
- location =  get_object_readiable_location(obj->obj_n);
+ location =  get_object_readiable_location(obj);
 
  switch(location)
    {

@@ -72,6 +72,7 @@ static int nscript_actor_hide_portrait(lua_State *L);
 static int nscript_actor_talk(lua_State *L);
 static int nscript_actor_unlink_surrounding_objs(lua_State *L);
 static int nscript_actor_use(lua_State *L);
+static int nscript_actor_set_talk_flag(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -101,6 +102,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "talk", nscript_actor_talk },
    { "unlink_surrounding_objs", nscript_actor_unlink_surrounding_objs },
    { "use", nscript_actor_use },
+   { "set_talk_flag", nscript_actor_set_talk_flag },
 
    { NULL, NULL }
 };
@@ -112,7 +114,7 @@ static const struct luaL_Reg nscript_actorlib_m[] =
 };
 
 
-//Actor variables
+//Actor variables - must be in alphabetical order
 static const char *actor_set_vars[] =
 {
    "align",
@@ -145,7 +147,7 @@ static const char *actor_set_vars[] =
    "z"
 };
 
-//Actor variables
+//Actor variables - must be in alphabetical order
 static const char *actor_get_vars[] =
 {
    "actor_num",
@@ -1320,4 +1322,14 @@ static int nscript_actor_inv(lua_State *L)
    U6LList *inv = actor->get_inventory_list();
 
    return nscript_init_u6link_iter(L, inv, is_recursive);
+}
+
+static int nscript_actor_set_talk_flag(lua_State *L)
+{
+	Actor *actor;
+	actor = nscript_get_actor_from_args(L);
+	if(actor == NULL)
+		return 0;
+	actor->set_flag((uint8)lua_tointeger(L, 2));
+	return 0;
 }

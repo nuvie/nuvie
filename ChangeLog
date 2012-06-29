@@ -1,4 +1,13 @@
-2012-06-27  Eric Fry <efry at users.sourceforge.net> r1364
+2012-06-29  Eric Fry <efry at users.sourceforge.net> r1365
+	* Added Malignant Manor's seance patch [3538839]
+	  This sets bit 7 on Quenton's talk flags. This can be used to add additional
+	  seance dialog to his character.
+	* Added Malignant Manor's patch for SE/MD script values.
+	* Added Actor.set_talk_flag(actor, flag_num) to script system.
+	* Call obj_get_readiable_location() script function from Actor to determine readiable
+	  object loction. MD and SE will use this to ready objects.
+
+2012-06-28  Eric Fry <efry at users.sourceforge.net> r1364
 	* Fixed bug "Mouse movement doesn't properly wait for combat turns" [3537295]
 	  The user is paused while Script::call_actor_update_all() is being run.
 

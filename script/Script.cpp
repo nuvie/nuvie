@@ -791,6 +791,19 @@ bool Script::call_look_obj(Obj *obj)
    return lua_toboolean(L,-1);
 }
 
+int Script::call_obj_get_readiable_location(Obj *obj)
+{
+   lua_getglobal(L, "obj_get_readiable_location");
+
+   nscript_obj_new(L, obj);
+
+   if(call_function("obj_get_readiable_location", 1, 1) == false)
+	   return -1;
+
+   return lua_tointeger(L,-1);
+}
+
+
 bool Script::call_actor_get_obj(Actor *actor, Obj *obj)
 {
    lua_getglobal(L, "actor_get_obj");
