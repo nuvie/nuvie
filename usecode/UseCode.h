@@ -198,6 +198,7 @@ class UseCode
  virtual bool is_food(Obj *obj)          { return(false); }
  virtual bool is_container(Obj *obj)     { return(false); }
  virtual bool is_book(Obj *obj)          { return(false); }
+ virtual bool is_chest(Obj *obj)         { return(false); }
  bool is_painting(Obj *obj)              { return(is_book(obj)); }
  bool is_sign(Obj *obj)                  { return(is_book(obj)); }
  bool is_scroll(Obj *obj)                { return(is_book(obj)); }

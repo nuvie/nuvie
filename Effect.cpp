@@ -1733,6 +1733,7 @@ TextInputEffect::TextInputEffect(const char *allowed_chars, bool can_escape)
 {
     game->pause_world();
     // FIXME: need a way to detect any keyboard/mouse input
+	game->get_gui()->unblock();
     game->get_scroll()->set_input_mode(true, allowed_chars, can_escape);
     game->get_scroll()->request_input(this, 0);
 }

@@ -34,7 +34,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_BARREL,       0,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
     { OBJ_U6_BARREL,     255,0,USE_EVENT_USE,   &U6UseCode::use_container,OBJTYPE_CONTAINER },
     { OBJ_U6_CHEST,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
-    { OBJ_U6_CHEST,      255,0,USE_EVENT_USE,   &U6UseCode::use_container,OBJTYPE_CONTAINER },
+    { OBJ_U6_CHEST,      255,0,USE_EVENT_USE|USE_EVENT_GET,   &U6UseCode::use_container,OBJTYPE_CONTAINER },
     { OBJ_U6_SECRET_DOOR,255,0,USE_EVENT_USE|USE_EVENT_SEARCH,&U6UseCode::use_secret_door,OBJTYPE_NONE },
     { OBJ_U6_BAG,        255,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
     { OBJ_U6_BACKPACK,   255,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },

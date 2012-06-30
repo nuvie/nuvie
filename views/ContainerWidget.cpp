@@ -280,7 +280,7 @@ GUI_status ContainerWidget::MouseUp(int x,int y,int button)
 		 // only act now if objects can't be used with DoubleClick
 		 if(!enable_doubleclick)
 		 {
-			 if(usecode->is_container(selected_obj)) // open up the container.
+			 if(usecode->is_container(selected_obj) && !usecode->is_chest(selected_obj)) // open up the container.
 			 {
 				 container_obj = selected_obj;
 				 Redraw();
@@ -509,7 +509,7 @@ GUI_status ContainerWidget::MouseDelayed(int x, int y, int button)
 
     if(ready_obj)
     {
-        if(usecode->is_container(ready_obj)) // open up the container.
+        if(usecode->is_container(ready_obj) && !usecode->is_chest(ready_obj)) // open up the container.
         {
             container_obj = ready_obj;
             Redraw();

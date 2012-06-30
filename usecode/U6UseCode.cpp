@@ -757,6 +757,14 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
 //            return(true);
 //        }
     }
+    else if(ev == USE_EVENT_GET)
+    {
+    	if(is_chest(obj) && obj->frame_n == 0) //open chest
+    	{
+    		obj->frame_n = 1; //close the chest
+    		return true;
+    	}
+    }
     return(false);
 }
 

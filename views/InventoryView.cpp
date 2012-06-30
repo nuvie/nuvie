@@ -639,7 +639,7 @@ bool InventoryView::select_obj(Obj *obj)
     {
         case MOVE_MODE:
         case EQUIP_MODE:
-            if(obj && Game::get_game()->get_usecode()->is_container(obj))
+            if(obj && Game::get_game()->get_usecode()->is_container(obj) && !Game::get_game()->get_usecode()->is_chest(obj))
                 inventory_widget->set_container(obj);
             else if(obj)
             {
