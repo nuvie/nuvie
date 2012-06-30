@@ -320,6 +320,19 @@ bool ActorManager::load(NuvieIO *objlist)
     actors[i]->set_worktype(objlist->read1());
    }
 
+ //cleanup party actor if not currently set as the player.
+
+ if(actors[ACTOR_VEHICLE_ID_N]->get_worktype() != ACTOR_WT_PLAYER)
+ {
+	 Actor *a = actors[ACTOR_VEHICLE_ID_N];
+	 a->set_obj_n(0);
+	 a->x=0;
+	 a->y=0;
+	 a->z=0;
+	 //a->status_flags = ACTOR_STATUS_DEAD;
+	 //a->hide();
+ }
+
  return true;
 }
 

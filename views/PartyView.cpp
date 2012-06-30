@@ -193,7 +193,13 @@ void PartyView::Display(bool full_redraw)
 
    display_sun_moon_strip();
 
-   for(i=row_offset;i<((party_size>=5)?5:party_size)+row_offset;i++)
+   display_arrows();
+
+   uint8 end_offset = row_offset + 5;
+   if(end_offset > party_size)
+	   end_offset = party_size;
+
+   for(i=row_offset;i<end_offset;i++)
      {
       hp_text_color = 0x48; //standard text color
       actor = party->get_actor(i);
@@ -212,8 +218,6 @@ void PartyView::Display(bool full_redraw)
        }
       text->drawString(screen, hp_string, strlen(hp_string), area.x+8 + 112, area.y + 18 + (i-row_offset) * 16, 0, hp_text_color);
      }
-
-   display_arrows();
 
    screen->update(area.x, area.y, area.w, area.h);
   }

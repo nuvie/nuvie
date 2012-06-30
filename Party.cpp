@@ -120,7 +120,7 @@ bool Party::load(NuvieIO *objlist)
 
  autowalk=false;
    
- if(actor_manager->get_actor(ACTOR_VEHICLE_ID_N)->get_worktype() == 0x02) // WT_U6_PLAYER
+ if(actor_manager->get_actor(ACTOR_VEHICLE_ID_N)->get_worktype() == ACTOR_WT_PLAYER) // WT_U6_PLAYER
   {
    set_in_vehicle(true);
    hide();
@@ -757,10 +757,12 @@ void Party::exit_vehicle(uint16 x, uint16 y, uint16 z)
 
     player->set_actor(get_actor(0));
     player->move(x,y,z);
-    vehicle_actor->obj_n = OBJ_U6_NO_VEHICLE;
+    vehicle_actor->obj_n = 0;//OBJ_U6_NO_VEHICLE;
     vehicle_actor->frame_n = 0;
     vehicle_actor->init();
     vehicle_actor->move(0,0,0,ACTOR_FORCE_MOVE);
+
+    set_in_vehicle(false);
 }
 
 void Party::set_in_vehicle(bool value)

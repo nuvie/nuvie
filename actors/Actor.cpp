@@ -111,6 +111,7 @@ void Actor::init_from_obj(Obj *obj)
  obj_flags = obj->status;
 
  init();
+ set_dead_flag(false);
  show();
  return;
 }
@@ -307,7 +308,11 @@ const char *Actor::get_name()
     const char *talk_name = NULL; // name from conversation script
 
     if(is_alive() && is_in_party())
-        name = party->get_actor_name(party->get_member_num(this));
+    {
+    	sint8 party_pos = party->get_member_num(this);
+    	if(party_pos != -1)
+    		name = party->get_actor_name((uint8)party_pos);
+    }
     else if((is_met() || is_in_party())
             && (talk_name = converse->npc_name(id_n)) ) // assignment
         name = talk_name;
@@ -469,7 +474,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 
  Game *game = Game::get_game();
  can_move = true;
- if(!(force_move || ignore_moves) && (id_n == game->get_player()->get_actor()->id_n || (is_in_party() && game->get_party()->is_in_combat_mode() == false))) // subtract from moves left for party members only. Other actors have their movement points deducted in actor_update_all()
+ if(!(force_move || ignore_moves) && (id_n == game->get_player()->get_actor()->id_n || id_n == 0 || (is_in_party() && game->get_party()->is_in_combat_mode() == false))) // subtract from moves left for party members only. Other actors have their movement points deducted in actor_update_all()
  {
     set_moves_left(moves - (move_cost+map->get_impedance(oldpos.x, oldpos.y, oldpos.z)));
     if(oldpos.x != x && oldpos.y != y) // diagonal move, double cost
@@ -1526,7 +1531,7 @@ void Actor::die(bool create_body)
 {
     hp = 0;
     visible_flag = false;
-    status_flags |= ACTOR_STATUS_DEAD;
+    set_dead_flag(true);
 }
 
 void Actor::resurrect(MapCoord new_position, Obj *body_obj)
@@ -1541,8 +1546,7 @@ void Actor::resurrect(MapCoord new_position, Obj *body_obj)
 			remove_obj = true;
 	}
 
-	status_flags |= ACTOR_STATUS_DEAD; // set, make sure it is not 0 already
-	status_flags = status_flags ^ ACTOR_STATUS_DEAD; // now toggle off
+	set_dead_flag(false);
 
 	show();
 
@@ -1682,6 +1686,16 @@ void Actor::subtract_light(uint8 val)
 void Actor::set_moves_left(sint8 val)
 {
     moves = clamp(val, -127, dex);
+}
+
+void Actor::set_dead_flag(bool value)
+{
+	  if(value)
+	    status_flags |= ACTOR_STATUS_DEAD;
+	  else if (!is_alive()) //if not alive then clear dead flag
+	    status_flags ^= ACTOR_STATUS_DEAD;
+
+	  return;
 }
 
 /* Set error/status information. */
@@ -1906,7 +1920,7 @@ bool Actor::morph(uint16 obj_n)
     actor_obj->obj_n = obj_n;
     actor_obj->frame_n = 0;
     init_from_obj(actor_obj);
-
+    set_dead_flag(false);
     set_direction(old_dir); // FIXME: this should get saved through init_from_obj()
     return true;
 }

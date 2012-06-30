@@ -1,3 +1,12 @@
+2012-06-30  Eric Fry <efry at users.sourceforge.net> r1368
+	* Fixed several issues with vehicles.
+	* Clean out vehicle actor on startup is not currently the player actor.
+	* Include vehicle actor in several script functions.
+	* Fixed issues with PartyView display when a member dies in a party of more than 5
+	  members with the view scrolled down.
+	* Added Actor::set_dead_flag() this replaces direct bitwise operations on the status_flag
+	* Fixed bug "Using a horse while in a skiff will delete the skiff." [3539088]
+ 
 2012-06-30  Eric Fry <efry at users.sourceforge.net> r1367
 	* Changed actor_wt_timid() to stop endless loop when fleeing actor
 	  was blocked. This should fix bug "Segmentation fault and hanging" [3538556]

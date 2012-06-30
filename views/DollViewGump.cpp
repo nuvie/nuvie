@@ -158,6 +158,7 @@ void DollViewGump::displayEquipWeight()
 
 GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
+	Event *event = Game::get_game()->get_event();
 	//close gump and return control to Magic class for clean up.
 	if(caller == gump_button)
 	{
@@ -189,6 +190,15 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	else if(caller == heart_button)
 	{
 		Game::get_game()->get_view_manager()->open_portrait_gump(actor);
+	}
+	else if(caller == combat_button && event->get_mode() != INPUT_MODE
+	        && event->get_mode() != ATTACK_MODE && event->get_mode() != CAST_MODE)
+	{
+		event->newAction(COMBAT_MODE);
+	}
+	else if(caller == party_button) // FIXME: What is this supposed to do?
+	{
+
 	}
 
     return GUI_PASS;

@@ -1194,7 +1194,7 @@ function actor_hit(defender, max_dmg, attacker, no_hit_anim)
 						actor_dead(defender)
 
 						defender.wt = WT_NOTHING
-						if defender.in_party == true then
+						if defender.in_party == true and defender.in_vehicle == false then
 							party_update_leader()
 						end
 					end	
@@ -1760,7 +1760,7 @@ function actor_calculate_avg_coords()
    avg_y = 0
    
    local i 
-   for i=1,0xff do
+   for i=0,0xff do
       actor = Actor.get(i)
       
       if actor.obj_n ~= 0 and actor.alive then
@@ -1799,7 +1799,7 @@ function actor_calculate_avg_coords()
       --var_16 = 0x8000
       
       local var_A
-      for i=1,0xff do
+      for i=0,0xff do
          actor = Actor.get(i)
          if actor.obj_n ~= 0 and actor.alive and (actor.wt == WT_FRONT or actor.wt == WT_PLAYER) then
             --var_C = ((actor.x - party_avg_x) * tmp_x) + ((actor.y - party_avg_y) * tmp_y)
@@ -1864,7 +1864,7 @@ dbg("actor_update_all()\n")
             end
          end
          
-         for i=1,0xff do
+         for i=0,0xff do
             local actor = Actor.get(i)
             if actor.obj_n ~= 0 and actor.paralyzed == false and actor.asleep == false then
                if actor.wt ~= WT_NOTHING and actor.alive == true and actor.mpts > 0 and actor.z == player_loc.z then
@@ -1898,7 +1898,7 @@ dbg("actor_update_all()\n")
 
          if di <= 0 then
             local i,m
-            for i=1,0xff do
+            for i=0,0xff do
                local actor = Actor.get(i)
                if actor.obj_n ~= 0 then
                   if actor.mpts >= 0 then
@@ -1966,64 +1966,65 @@ function advance_time(num_turns)
 	local random = math.random
 	local cloak_readied = false
 	local i
-	for i=1,0xff do
+	for i=0,0xff do
 		local actor = Actor.get(i)
 
-		if actor.in_party == true then
-			local obj
-			for obj in actor_inventory(actor) do
-				if obj.readied == true then
-					local obj_n = obj.obj_n
-					local obj_name = nil
-					if obj_n == 0x5a and obj.frame_n == 1 then --lit torch
-						if random(0, 1) == 0 then
-							if obj.qty > num_turns then
-								obj.qty = obj.qty - num_turns
+		if actor.obj_n ~= 0 then
+			if actor.in_party == true then
+				local obj
+				for obj in actor_inventory(actor) do
+					if obj.readied == true then
+						local obj_n = obj.obj_n
+						local obj_name = nil
+						if obj_n == 0x5a and obj.frame_n == 1 then --lit torch
+							if random(0, 1) == 0 then
+								if obj.qty > num_turns then
+									obj.qty = obj.qty - num_turns
+								else
+									print("A torch burned out.\n")
+									Actor.inv_remove_obj(actor, obj)
+								end
+							end
+						elseif obj_n == 0x102 then --invisibility ring
+							if random(0, 1000) == 429 then
+								actor.visible = true
+								obj_name = "ring"
+							end
+						elseif obj_n == 0x101 then -- regeneration ring
+							--FIXME the original increments a counter here.
+							local hp = actor.hp + num_turns
+							local max_hp = actor.max_hp
+							if hp > max_hp then
+								hp = max_hp
+							end
+							actor.hp = hp
+							
+							if random(0, 1000) == 734 then
+								obj_name = "ring"
+							end
+						elseif obj_n == 0x51 then --storm cloak
+							if random(0, 1000) == 588 then
+								obj_name = "cloak"
+								timer_set(TIMER_STORM, 0)
 							else
-								print("A torch burned out.\n")
-								Actor.inv_remove_obj(actor, obj)
+								cloak_readied = true
 							end
 						end
-					elseif obj_n == 0x102 then --invisibility ring
-						if random(0, 1000) == 429 then
-							actor.visible = true
-							obj_name = "ring"
-						end
-					elseif obj_n == 0x101 then -- regeneration ring
-						--FIXME the original increments a counter here.
-						local hp = actor.hp + num_turns
-						local max_hp = actor.max_hp
-						if hp > max_hp then
-							hp = max_hp
-						end
-						actor.hp = hp
 						
-						if random(0, 1000) == 734 then
-							obj_name = "ring"
+						if obj_name ~= nil then
+							Actor.inv_remove_obj(actor, obj)
+							print("A "..obj_name.." has vanished!\n")
 						end
-					elseif obj_n == 0x51 then --storm cloak
-						if random(0, 1000) == 588 then
-							obj_name = "cloak"
-							timer_set(TIMER_STORM, 0)
-						else
-							cloak_readied = true
-						end
-					end
-					
-					if obj_name ~= nil then
-						Actor.inv_remove_obj(actor, obj)
-						print("A "..obj_name.." has vanished!\n")
 					end
 				end
 			end
+			for j=0,num_turns do
+				actor_update_flags(actor)
+			end
+			
+			actor_map_dmg(actor, actor.x, actor.y, actor.z)
+			actor.hit_flag = false
 		end
-		for j=0,num_turns do
-			actor_update_flags(actor)
-		end
-		
-		actor_map_dmg(actor, actor.x, actor.y, actor.z)
-		actor.hit_flag = false
-
 	end
 
 	if cloak_readied == true then
@@ -3403,7 +3404,7 @@ function actor_find_target(actor)
    local player_x = player_loc.x
    local player_y = player_loc.y
                
-   for i=1,0xff do
+   for i=0,0xff do
 
       local tmp_actor = Actor.get(i)
 
@@ -3639,7 +3640,7 @@ function actor_avatar_death(avatar)
 	player_move(0x133, 0x160, 0)
 	party_exit_vehicle(0x133, 0x160, 0)
 
-	for i=1,0xff do
+	for i=0,0xff do
 		local actor = Actor.get(i)
 		actor.mpts = 0
 	end

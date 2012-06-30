@@ -1461,7 +1461,10 @@ void Event::alt_code_input(const char *in)
     {
         case 300: // show NPC portrait (FIXME: should be show portrait number)
             if(a)
+            {
+            	am->print_actor(a); //print actor debug info
                 display_portrait(a);
+            }
             scroll->display_string("\n");
             active_alt_code = 0;
             break;
@@ -2786,8 +2789,9 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		return(false);
 	}
 
-	Game::get_game()->set_mouse_pointer(1);
 	set_mode(new_mode);
+	if (new_mode != COMBAT_MODE)
+		Game::get_game()->set_mouse_pointer(1);
 	switch(new_mode)
 	{
 	  	case CAST_MODE:

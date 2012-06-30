@@ -1892,8 +1892,6 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
       return true;
      }
 
-   party->set_in_vehicle(false);
-
    return true;
   }
 
@@ -2379,6 +2377,11 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
  else if(obj->obj_n == OBJ_U6_HORSE && player_actor->obj_n == OBJ_U6_HORSE_WITH_RIDER)
    {
     scroll->display_string("You're already on a horse!\n");
+    return true;
+   }
+ else if(party->is_in_vehicle())
+   {
+    scroll->display_string("Not while aboard ship!\n");
     return true;
    }
 

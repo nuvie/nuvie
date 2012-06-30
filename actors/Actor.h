@@ -89,6 +89,8 @@ using std::vector;
 
 #define ACTOR_MAX_READIED_OBJECTS 8
 
+#define ACTOR_WT_PLAYER 2
+
 class Map;
 class MapCoord;
 class UseCode;
@@ -333,6 +335,7 @@ class Actor
  void subtract_light(uint8 val);
  void heal() { set_hp(get_maxhp()); }
  void set_moves_left(sint8 val);
+ void set_dead_flag(bool value);
  virtual void update_time() { set_moves_left(get_moves_left() + get_dexterity()); }
  virtual void set_poisoned(bool poisoned) { return; }
  virtual void set_paralyzed(bool paralyzed) { return; }
