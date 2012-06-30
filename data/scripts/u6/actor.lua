@@ -3174,8 +3174,9 @@ function actor_wt_timid(actor)
 	if abs(diff_x) < var_4 and abs(diff_y) < var_4 then
 	   local var_2 = actor.mpts
 	   if actor_move_towards_loc(actor, actor.x - diff_x, actor.y - diff_y) == 0 then
-	      actor.mpts = var_2
+	      --original logic -- actor.mpts = var_2
 	      if actor.wt ~= WT_MOUSE and actor.wt ~= WT_FLEE then
+	         actor.mpts = var_2 --moved here.
 	         actor_wt_attack(actor)
 	      end
 	   end
