@@ -690,6 +690,9 @@ void MapWindow::Display(bool full_redraw)
 
  screen->blitalphamap8(area.x, area.y, &clip_rect);
 
+ if(game->get_clock()->get_timer(GAMECLOCK_TIMER_U6_INFRAVISION) != 0)
+   drawActors();
+
  if(overlay && overlay_level == MAP_OVERLAY_DEFAULT)
    screen->blit(area.x, area.y, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
 
