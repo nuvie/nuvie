@@ -1,3 +1,8 @@
+2012-07-01  Eric Fry <efry at users.sourceforge.net> r1375
+	* Fixed bug "Temporay actors are deleted even when in the party" [3539081]
+	* Fixed bug "Party members will drop charges upon leaving" [3539235]
+	* Fixed bug "double click on horse causes target cursor to show" [3537890]
+
 2012-07-01  Eric Fry <efry at users.sourceforge.net> r1374
 	* Fixed bug "infravision doesn't work" [3537070]
 

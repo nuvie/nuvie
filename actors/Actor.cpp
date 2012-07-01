@@ -1165,9 +1165,18 @@ void Actor::inventory_drop_all()
         obj = (Obj *)(inv->start()->data);
         if(!inventory_remove_obj(obj))
             break;
-        obj->status |= OBJ_STATUS_OK_TO_TAKE;
-        obj->x = x; obj->y = y; obj->z = z;
-        obj_manager->add_obj(obj, true); // add to map
+
+        Tile *obj_tile = obj_manager->get_obj_tile(obj->obj_n, obj->frame_n);
+		if(obj_tile && (obj_tile->flags3 & TILEFLAG_IGNORE)) //Don't drop charges.
+		{
+			delete_obj(obj);
+		}
+		else
+		{
+			obj->status |= OBJ_STATUS_OK_TO_TAKE;
+			obj->x = x; obj->y = y; obj->z = z;
+			obj_manager->add_obj(obj, true); // add to map
+		}
     }
 }
 

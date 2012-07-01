@@ -2465,7 +2465,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
         if(can_use)
         {
             newAction(USE_MODE);
-            use(obj);
+            select_obj(obj);
         }
         else
         {
