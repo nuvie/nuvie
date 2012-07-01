@@ -436,7 +436,7 @@ Obj *MapWindow::get_objAtCursor()
  if(tmp_map_buf[(cursor_y+1) * tmp_map_width + (cursor_x+1)] == 0) //black area
    return NULL; // nothing to see here. ;)
 
- return obj_manager->get_obj(cur_x + cursor_x, cur_y + cursor_y, cur_level);
+ return obj_manager->get_obj(cur_x + cursor_x, cur_y + cursor_y, cur_level,OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
 }
 
 Actor *MapWindow::get_actorAtCursor()

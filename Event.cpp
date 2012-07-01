@@ -975,7 +975,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 
  player->get_location(&x,&y,&level);
 
- obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level);
+ obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
  bool got_object = perform_get(obj, view_manager->get_inventory_view()->get_inventory_widget()->get_container(),
                                player->get_actor());
 

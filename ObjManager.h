@@ -55,6 +55,9 @@ class Actor;
 
 #define OBJ_TEMP_INIT 255 // this is used to stop temporary objects from being cleaned upon startup.
 
+#define OBJ_SEARCH_TOP true
+#define OBJ_INCLUDE_IGNORED true
+#define OBJ_EXCLUDE_IGNORED false
 
 #include "Obj.h"
 
@@ -135,10 +138,10 @@ class ObjManager
  Tile *get_obj_tile(uint16 obj_n, uint8 frame_n);
  Tile *get_obj_tile(uint16 x, uint16 y, uint8 level, bool top_obj = true);
  Tile *get_obj_dmg_tile(uint16 x, uint16 y, uint8 level);
- Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = true);
+ Obj *get_obj(uint16 x, uint16 y, uint8 level, bool top_obj = OBJ_SEARCH_TOP, bool include_ignored_objects = OBJ_EXCLUDE_IGNORED);
  Obj *get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
  Obj *get_obj_of_type_from_location(uint16 obj_n, sint16 quality, sint32 qty, uint16 x, uint16 y, uint8 z);
- Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj);
+ Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects = true);
 
  uint16 get_obj_tile_num(uint16 obj_num);
  void set_obj_tile_num(uint16 obj_num, uint16 tile_num);

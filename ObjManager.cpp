@@ -865,16 +865,16 @@ Tile *ObjManager::get_obj_dmg_tile(uint16 x, uint16 y, uint8 level)
  return NULL;
 }
 
-Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
+Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects)
 {
  Obj *obj;
  Tile *tile;
 
- obj = get_objBasedAt(x,y,level,top_obj);
+ obj = get_objBasedAt(x,y,level,top_obj,include_ignored_objects);
  if(obj != NULL)
    return obj;
 
- obj = get_objBasedAt(x+1,y+1,level,top_obj);
+ obj = get_objBasedAt(x+1,y+1,level,top_obj,include_ignored_objects);
  if(obj != NULL)
   {
    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
@@ -882,7 +882,7 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
      return obj;
   }
 
- obj = get_objBasedAt(x,y+1,level,top_obj);
+ obj = get_objBasedAt(x,y+1,level,top_obj,include_ignored_objects);
  if(obj != NULL)
   {
    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
@@ -890,7 +890,7 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj)
      return obj;
   }
 
- obj = get_objBasedAt(x+1,y,level,top_obj);
+ obj = get_objBasedAt(x+1,y,level,top_obj,include_ignored_objects);
  if(obj != NULL)
   {
    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
@@ -937,7 +937,7 @@ Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, sint16 quality, sin
 }
 
 // x, y in world coords
-Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
+Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects)
 {
  U6Link *link;
  U6LList *obj_list;
@@ -952,11 +952,21 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj)
     else
        link = obj_list->start();
 
-    if(link != NULL)
-       {
-        obj = (Obj *)link->data;
-        return obj;
-       }
+    while(link != NULL)
+    {
+    	obj = (Obj *)link->data;
+    	if(include_ignored_objects)
+    		return obj;
+
+    	Tile *tile = get_obj_tile(obj->obj_n, obj->frame_n);
+    	if((tile->flags3 & TILEFLAG_IGNORE) != TILEFLAG_IGNORE)
+    		return obj;
+
+    	if(top_obj)
+    		link = link->prev;
+    	else
+    		link = link->next;
+    }
    }
 
  return NULL;

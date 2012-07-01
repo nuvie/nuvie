@@ -1,3 +1,7 @@
+2012-07-01  Eric Fry <efry at users.sourceforge.net> r1373
+	* Fixed bug "Blood blocks items from being moved or picked up" [3535335]
+	  ignore objects that have the ignore tile flag set in ObjManager::get_obj()
+
 2012-07-01  Eric Fry <efry at users.sourceforge.net> r1370
 	* Fixed bug "Can't use items that are in a space occupied by actors" [3539091]
 	* Added UseCode::has_usecode(Actor *actor, UseCodeEvent ev)
