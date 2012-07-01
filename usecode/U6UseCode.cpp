@@ -233,6 +233,13 @@ bool U6UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
     return(true);
 }
 
+bool U6UseCode::has_usecode(Actor *actor, UseCodeEvent ev)
+{
+    const U6ObjectType *type = get_object_type(actor->get_obj_n(), actor->get_frame_n(), ev);
+    if(!type)
+        return(false);
+    return(true);
+}
 
 /* USE object. Actor is the actor using the object. */
 bool U6UseCode::use_obj(Obj *obj, Actor *actor)

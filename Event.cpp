@@ -1036,7 +1036,7 @@ bool Event::use(Actor *actor)
     MapCoord target = actor->get_location();
     Obj *obj = actor->make_obj();
 
-    if(usecode->has_usecode(obj))
+    if(usecode->has_usecode(actor))
     {
         scroll->display_string(obj_manager->look_obj(obj));
         scroll->display_string("\n");
@@ -2566,8 +2566,10 @@ void Event::doAction()
             use(input.obj);
     	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
     	{
-            if(input.actor) use(input.actor);
-            else            use(input.loc->sx,input.loc->sy);
+            if(input.actor && usecode->has_usecode(input.actor))
+            	use(input.actor);
+            else
+            	use(input.loc->sx,input.loc->sy);
         }
         else
         {

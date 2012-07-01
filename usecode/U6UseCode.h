@@ -82,7 +82,8 @@ class U6UseCode: public UseCode, public CallBack
  bool get_obj(Obj *obj, Actor *actor);
  bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y, uint16 qty = 0);
 
- bool has_usecode(Obj *obj, uint16 ev = USE_EVENT_USE);
+ bool has_usecode(Obj *obj, UseCodeEvent ev = USE_EVENT_USE);
+ bool has_usecode(Actor *actor, UseCodeEvent ev = USE_EVENT_USE);
 
  bool is_door(Obj *obj) { return(obj->obj_n >= 297 && obj->obj_n <= 300); }
  bool is_unlocked_door(Obj *obj) { return(is_door(obj) && obj->frame_n != 9 && obj->frame_n != 11); }

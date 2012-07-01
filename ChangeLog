@@ -1,3 +1,7 @@
+2012-07-01  Eric Fry <efry at users.sourceforge.net> r1370
+	* Fixed bug "Can't use items that are in a space occupied by actors" [3539091]
+	* Added UseCode::has_usecode(Actor *actor, UseCodeEvent ev)
+
 2012-07-01  Eric Fry <efry at users.sourceforge.net> r1369
 	* Unblock input when requested from script. eg arrested by guards.
 	* Fixed bug "locked and trapped chest contents can be viewed in inventory" [3539083]

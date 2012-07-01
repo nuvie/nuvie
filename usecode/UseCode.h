@@ -182,7 +182,8 @@ class UseCode
  virtual bool get_obj(Obj *obj, Actor *actor)    { return(false); }
  virtual bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y, uint16 qty = 0) { return(false); }
 
- virtual bool has_usecode(Obj *obj, uint16 ev = USE_EVENT_USE)  { return(false); }
+ virtual bool has_usecode(Obj *obj, UseCodeEvent ev = USE_EVENT_USE)  { return(false); }
+ virtual bool has_usecode(Actor *actor, UseCodeEvent ev = USE_EVENT_USE)  { return(false); }
  virtual bool has_lookcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_LOOK)); }
  virtual bool has_passcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_PASS)); }
  virtual bool has_movecode(Obj *obj) { return(has_usecode(obj, USE_EVENT_MOVE)); }
