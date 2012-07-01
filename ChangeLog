@@ -1,3 +1,6 @@
+2012-07-02  Eric Fry <efry at users.sourceforge.net> r1377
+	* Fixed bug "Explosion doesn't blow up doors" [3539291]
+
 2012-07-02  Eric Fry <efry at users.sourceforge.net> r1376
 	* Fixed bug "log saw doesn't cause any damage" [3539294]
 	  Needed to reference original tile not animated tile.

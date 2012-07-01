@@ -577,6 +577,10 @@ function explode_obj(obj, actor)
 		end
 	end
 	
+	explode_surrounding_objects(x, y, z)
+end
+
+function explode_surrounding_objects(x, y, z)	
 	--blow up doors and other kegs
 	for x = x - 2,x + 2 do
 		for y = y - 2,y + 2 do

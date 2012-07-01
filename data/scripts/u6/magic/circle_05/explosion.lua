@@ -10,3 +10,5 @@ for k,v in pairs(hit_items) do
 		spell_take_fire_dmg(caster, v)
 	end
 end
+
+explode_surrounding_objects(loc.x, loc.y, loc.z)
