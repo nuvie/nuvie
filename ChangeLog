@@ -1,3 +1,7 @@
+2012-07-02  Eric Fry <efry at users.sourceforge.net> r1376
+	* Fixed bug "log saw doesn't cause any damage" [3539294]
+	  Needed to reference original tile not animated tile.
+
 2012-07-01  Eric Fry <efry at users.sourceforge.net> r1375
 	* Fixed bug "Temporay actors are deleted even when in the party" [3539081]
 	* Fixed bug "Party members will drop charges upon leaving" [3539235]

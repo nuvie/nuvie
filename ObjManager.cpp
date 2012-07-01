@@ -855,7 +855,7 @@ Tile *ObjManager::get_obj_dmg_tile(uint16 x, uint16 y, uint8 level)
 	 for(link=obj_list->end();link != NULL; link=link->prev)
 	 {
 		 obj = (Obj *)link->data;
-		 tile = get_obj_tile(obj->obj_n, obj->frame_n);
+		 tile = tile_manager->get_original_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
 		 if(tile->damages == true)
 			 return tile;
