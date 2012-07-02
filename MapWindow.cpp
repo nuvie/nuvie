@@ -561,10 +561,29 @@ void MapWindow::updateAmbience()
 	
      int h = clock->get_hour();
 
+   if (screen->get_lighting_style() == 1) //smooth_lighting
+   {
      if(x_ray_view == true)
          screen->set_ambient( 0xFF );
      else if(in_dungeon_level())
-         screen->set_ambient( 0x00 );
+         screen->set_ambient( 50 );
+     else if( weather->is_eclipse() ) //solar eclipse
+         screen->set_ambient( 50 );
+     else if( h == 19 ) //Dusk
+         screen->set_ambient( 233-clock->get_minute()*3 );
+     else if( h == 5 ) //Dawn
+         screen->set_ambient( 3*clock->get_minute()+50 );
+     else if( h > 5 && h < 19 ) //Day
+         screen->set_ambient( 0xFF );
+     else //Night
+        screen->set_ambient( 50 );
+   }
+   else
+   {
+     if(x_ray_view == true)
+         screen->set_ambient( 0xFF );
+     else if(in_dungeon_level())
+             screen->set_ambient( 0x00 );
      else if( weather->is_eclipse() ) //solar eclipse
 		     screen->set_ambient( 0x00 );
      else if( h == 19 ) //Dusk
@@ -575,12 +594,13 @@ void MapWindow::updateAmbience()
          screen->set_ambient( 0xFF );
      else //Night
          screen->set_ambient( 0x00 );
+   }
 
      int min_brightness;
      uint8 a = screen->get_ambient();
      config->value("config/cheats/min_brightness", min_brightness, 0);
  
-     if(a != 0xFF && clock->get_timer(GAMECLOCK_TIMER_U6_LIGHT) != 0) //FIXME U6 specific
+     if(a < 0xab && clock->get_timer(GAMECLOCK_TIMER_U6_LIGHT) != 0) //FIXME U6 specific
     	 screen->set_ambient(0xaa); //FIXME this is an approximation
      if(a < min_brightness)
          screen->set_ambient(min_brightness);

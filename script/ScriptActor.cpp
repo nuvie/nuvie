@@ -65,6 +65,7 @@ static int nscript_actor_move(lua_State *L);
 static int nscript_actor_walk_path(lua_State *L);
 static int nscript_actor_is_at_scheduled_location(lua_State *L);
 static int nscript_actor_can_carry_obj(lua_State *L);
+static int nscript_actor_can_carry_obj_weight(lua_State *L);
 static int nscript_actor_black_fade_effect(lua_State *L);
 static int nscript_actor_fade_out_effect(lua_State *L);
 static int nscript_actor_show_portrait(lua_State *L);
@@ -95,6 +96,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "inv_get_obj_total_qty", nscript_actor_inv_get_obj_total_qty },
    { "is_at_scheduled_location", nscript_actor_is_at_scheduled_location },
    { "can_carry_obj", nscript_actor_can_carry_obj },
+   { "can_carry_obj_weight", nscript_actor_can_carry_obj_weight },
    { "black_fade_effect", nscript_actor_black_fade_effect },
    { "fade_out", nscript_actor_fade_out_effect },
    { "show_portrait", nscript_actor_show_portrait },
@@ -1003,6 +1005,20 @@ static int nscript_actor_can_carry_obj(lua_State *L)
 		   return 0;
 
 	   lua_pushboolean(L, (int)actor->can_carry_object(obj));
+	   return 1;
+}
+
+static int nscript_actor_can_carry_obj_weight(lua_State *L)
+{
+	   Actor *actor = nscript_get_actor_from_args(L);
+	   if(actor == NULL)
+	      return 0;
+
+	   Obj *obj = nscript_get_obj_from_args(L, 2);
+	   if(obj == NULL)
+		   return 0;
+
+	   lua_pushboolean(L, (int)actor->can_carry_weight(obj));
 	   return 1;
 }
 

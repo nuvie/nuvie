@@ -9,7 +9,7 @@
  </input>
 
  <general>
-  <lighting>original</lighting>
+  <lighting>smooth</lighting>
   <dither_mode>none</dither_mode>
   <enable_cursors>yes</enable_cursors>
   <fullscreen_map>no</fullscreen_map>

@@ -983,6 +983,11 @@ bool Actor::can_carry_object(Obj *obj)
 	if(obj_manager->can_get_obj(obj) == false)
 		return false;
 
+	return can_carry_weight(obj);
+}
+
+bool Actor::can_carry_weight(Obj *obj)
+{
 	return(can_carry_weight(obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, OBJ_WEIGHT_DO_SCALE)));
 }
 

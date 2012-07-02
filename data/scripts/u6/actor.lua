@@ -2197,12 +2197,12 @@ function actor_yell_for_help(attacking_actor, defending_actor, dmg)
 end
 
 function actor_get_obj(actor, obj)
-	if obj.getable == false then
+	if obj.getable == false and obj.obj_n ~= 209 and obj.obj_n ~= 210 and obj.obj_n ~= 211 then --meat, ribs, dead animal. These are toptile objects and need an override check.
 		print("\n\nNot possible.")
 		return false
 	end
 	
-	if Actor.can_carry_obj(actor, obj) == false then
+	if Actor.can_carry_obj_weight(actor, obj) == false then
 		print("\n\nThe total is too heavy.")
 		return false
 	end

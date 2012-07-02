@@ -251,7 +251,7 @@ void Nuvie::SharedDefaultConfigValues()
 
 	config->set("config/input/enable_doubleclick", true);
 
-	config->set("config/general/lighting", "original");
+	config->set("config/general/lighting", "smooth");
 	config->set("config/general/dither_mode", "none");
 	config->set("config/general/enable_cursors", true);
 	config->set("config/general/show_console", true);

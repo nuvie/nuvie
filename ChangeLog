@@ -1,3 +1,9 @@
+2012-07-03  Eric Fry <efry at users.sourceforge.net> r1378
+	* Fixed bug "Ribs and meat can't be taken" [3539346]
+	  Needed to override toptile check for these objects.
+	* Added Actor.can_carry_obj_weight() script function.
+	* Fixed bug "Smooth lighting is way off from the original" [3539076]
+
 2012-07-02  Eric Fry <efry at users.sourceforge.net> r1377
 	* Fixed bug "Explosion doesn't blow up doors" [3539291]
 

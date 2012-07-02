@@ -429,6 +429,7 @@ class Actor
  float get_inventory_equip_weight();
  void inventory_drop_all();
  void all_items_to_container(Obj *container_obj);
+ bool can_carry_weight(Obj *obj);
  bool can_carry_weight(float obj_weight); // return from get_obj_weight()
  bool can_carry_object(uint16 obj_n, uint32 qty = 0);
  bool can_carry_object(Obj *obj);
