@@ -428,7 +428,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  }
 
  // blocking actors are checked for later
- obj = obj_manager->get_obj(new_x,new_y,new_z);
+ obj = obj_manager->get_obj(new_x,new_y,new_z, OBJ_SEARCH_TOP, OBJ_INCLUDE_IGNORED); //we include ignored objects here to pick up the sacred quest blocking object.
  if(!force_move && !check_move(new_x, new_y, new_z, ACTOR_IGNORE_DANGER | ACTOR_IGNORE_OTHERS))
    {
     // open door
@@ -450,7 +450,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  // usecode must allow movement
  if(obj && usecode->has_passcode(obj))
    {
-    if(!usecode->pass_obj(obj, this, new_x,new_y)) // calling item is this actor
+    if(!usecode->pass_obj(obj, this, new_x,new_y) && !force_move) // calling item is this actor
       {
        set_error(ACTOR_BLOCKED_BY_OBJECT);
        error_struct.blocking_obj = obj;
