@@ -835,6 +835,7 @@ void Party::rest_gather()
     MapCoord player_loc = player_actor->get_location();
     Obj *campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y,player_loc.z);
     campfire->set_temporary();
+    campfire->qty = 1; //this is set so the campfire may be destroyed by being attacked.
     game->get_obj_manager()->add_obj(campfire, true); // addOnTop
 
     game->get_player()->set_mapwindow_centered(false);
