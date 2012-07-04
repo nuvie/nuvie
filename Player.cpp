@@ -238,7 +238,7 @@ const char *Player::get_name()
  if(actor->get_actor_num() == ACTOR_VEHICLE_ID_N)
     return actor_manager->get_actor(ACTOR_AVATAR_ID_N)->get_name();
 
- return actor->get_name();
+ return actor->get_name(true);
 }
 
 

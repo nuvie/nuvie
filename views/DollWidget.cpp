@@ -120,8 +120,8 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
                       empty_tile = tile_manager->get_tile(TILE_SE_EQUIP);
                       break;
 
- case NUVIE_GAME_MD : blocked_tile = tile_manager->get_tile(TILE_MD_BLOCKED_EQUIP);
-                      empty_tile = tile_manager->get_tile(TILE_MD_EQUIP);
+ case NUVIE_GAME_MD : blocked_tile = tile_manager->get_tile(TILE_MD_BLOCKED_EQUIP); // FIXME: different depending on npc
+                      empty_tile = tile_manager->get_tile(TILE_MD_EQUIP); // FIXME: different depending on npc
                       break;
  }
  }
@@ -176,12 +176,17 @@ inline void DollWidget::display_doll()
 
  if(Game::get_game()->is_orig_style())
  {
+	int tilenum = 368;
+	if(Game::get_game()->get_game_type() == NUVIE_GAME_MD) // FIXME: different depending on npc - Also needs npc doll info code
+		tilenum = 275;
+	else if(Game::get_game()->get_game_type() == NUVIE_GAME_SE) // FIXME: different depending on npc
+		tilenum = 404;
 	 screen->fill(bg_color, area.x, area.y, area.w, area.h);
 	 for(i=0;i<2;i++)
 	 {
 		 for(j=0;j<2;j++) // draw doll
 		 {
-			 tile = tile_manager->get_tile(368+i*2+j);
+			 tile = tile_manager->get_tile(tilenum+i*2+j);
 			 screen->blit(area.x+16+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
 		 }
 	 }

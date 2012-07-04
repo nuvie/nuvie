@@ -74,11 +74,19 @@ bool ContainerWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
 
 
  bg_color = Game::get_game()->get_palette()->get_bg_color();
- obj_font_color = 0x48;
+ if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
+   obj_font_color = 0x48;
+ else
+   obj_font_color = 0;
 
  fill_bg = true;
 
- empty_tile = tile_manager->get_tile(410);
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+   empty_tile = tile_manager->get_tile(410);
+ else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD) // FIXME: different depending on npc
+   empty_tile = tile_manager->get_tile(273);
+ else
+   empty_tile = tile_manager->get_tile(392);
 
  //72 =  4 * 16 + 8
  GUI_Widget::Init(NULL, x, y, 72, 64);

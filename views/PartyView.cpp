@@ -36,6 +36,10 @@
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status actorViewButtonCallback(void *data);
 
+#define U6 Game::get_game()->get_game_type()==NUVIE_GAME_U6
+#define SE Game::get_game()->get_game_type()==NUVIE_GAME_SE
+#define MD Game::get_game()->get_game_type()==NUVIE_GAME_MD
+
 PartyView::PartyView(Configuration *cfg) : View(cfg)
 {
 
@@ -51,7 +55,10 @@ bool PartyView::init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl
  View::init(x,y,t,p,tm,om);
  // PartyView is 8px wider than other Views, for the arrows
  // ...and 3px taller, for the sky (SB-X)
- SetRect(area.x, area.y, area.w+8, area.h+3);
+ if(U6)
+   SetRect(area.x, area.y, area.w+8, area.h+3);
+ else
+   SetRect(area.x, area.y, area.w, area.h);
 
  view_manager = vm;
  player = pl;
@@ -65,33 +72,55 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
  x -= area.x;
  y -= area.y;
 
- if(y < 18) // clicked on skydisplay
+ if(y < 18 && U6) // clicked on skydisplay
+   return GUI_PASS;
+ if(y < 4 && MD)
    return GUI_PASS;
 
- uint8 party_size = party->get_party_size();
- if(party_size > 5) party_size = 5; // can only display/handle 5 at a time
+ int rowH = 16;
+ if(MD)
+     rowH = 24;
 
- SDL_Rect arrow_rects[2] = {{0,18,8,8},{0,90,8,8}};
- if(HitRect(x,y,arrow_rects[0])) //up arrow hit rect
+ uint8 party_size = party->get_party_size();
+ if(SE)
+ {
+     if(party_size > 7) party_size = 7;
+ }
+ else if(party_size > 5) party_size = 5; // can only display/handle 5 at a time
+
+ SDL_Rect arrow_rects_U6[2] = {{0,18,8,8},{0,90,8,8}};
+ SDL_Rect arrow_rects[2] = {{0,6,7,8},{0,102,7,8}};
+ SDL_Rect arrow_up_rect_MD[1] = {{0,15,7,8}};
+
+ if(HitRect(x,y,U6? arrow_rects_U6[0]: (MD ? arrow_up_rect_MD[0] : arrow_rects[0]))) //up arrow hit rect
    {
     if(up_arrow())
       Redraw();
     return GUI_YUM;
    }
-  if(HitRect(x,y,arrow_rects[1])) //down arrow hit rect
+  if(HitRect(x,y,U6? arrow_rects_U6[1]: arrow_rects[1])) //down arrow hit rect
    {
     if(down_arrow())
       Redraw();
     return GUI_YUM;
    }
 
- if(y > party_size * 16 + 18) // clicked below actors
+ int x_offset = 7;
+ int y_offset = 18;
+ if(SE)
+ {
+     x_offset = 6;
+     y_offset = 2;
+ }
+ else if(MD)
+     y_offset = 4;
+ if(y > party_size * rowH + y_offset-1) // clicked below actors
    return GUI_YUM;
 
- if(x >= 8)
+ if(x >= x_offset)
   {
-   set_party_member(((y - 18) / 16) + row_offset);
-   if(x >= 8+18) // clicked an actor name
+   set_party_member(((y - y_offset) / rowH) + row_offset);
+   if(x >= x_offset + 17) // clicked an actor name
      {
       actorViewButtonCallback(view_manager);
      }
@@ -109,14 +138,25 @@ Actor *PartyView::get_actor(int x, int y)
     y -= area.y;
 
     uint8 party_size = party->get_party_size();
-    if(party_size > 5) party_size = 5; // can only display/handle 5 at a time
+    int rowH = 16;
+    int y_offset = 18;
+    if(MD)
+    {
+        rowH = 24; y_offset = 0;
+    }
+    if(SE)
+    {
+        y_offset = 2;
+        if(party_size > 7) party_size = 7;
+    }
+    else if(party_size > 5) party_size = 5; // can only display/handle 5 at a time
 
-    if(y > party_size * 16 + 18) // clicked below actors
+    if(y > party_size * rowH + y_offset) // clicked below actors
       return NULL;
 
     if(x >= 8)
      {
-    	return party->get_actor(((y - 18) / 16) + row_offset);
+    	return party->get_actor(((y - y_offset) / rowH) + row_offset);
      }
 
     return NULL;
@@ -185,29 +225,53 @@ void PartyView::Display(bool full_redraw)
  char *actor_name;
  char hp_string[4];
  uint8 party_size = party->get_party_size();
+ int rowH = 16;
+ if(MD)
+   rowH = 24;
 
  if(full_redraw || update_display)
   {
    update_display = false;
+   uint8 end_offset = row_offset + 5;
    screen->fill(bg_color, area.x, area.y, area.w, area.h);
-
-   display_sun_moon_strip();
+   if(U6)
+      display_sun_moon_strip();
 
    display_arrows();
 
-   uint8 end_offset = row_offset + 5;
+   if(SE)
+	   end_offset = row_offset + 7;
    if(end_offset > party_size)
 	   end_offset = party_size;
 
    for(i=row_offset;i<end_offset;i++)
      {
-      hp_text_color = 0x48; //standard text color
+      int x_offset = 8;
+      int y_offset = 18;
+      hp_text_color = 0; //standard text color
+
+      if(U6)
+        hp_text_color = 0x48; //standard text color 
+      if (SE)
+      {
+        x_offset = 6; y_offset = 1;
+      }
+      if(MD)
+        y_offset = 5;
       actor = party->get_actor(i);
       actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
-      screen->blit(area.x+8,area.y+18+(i-row_offset)*16,actor_tile->data,8,16,16,16,true);
 
+      screen->blit(area.x+x_offset,area.y + y_offset + (i-row_offset)*rowH,actor_tile->data,8,16,16,16,true);
       actor_name = party->get_actor_name(i);
-      text->drawString(screen, actor_name, area.x+8 + 16 + 8, area.y + 18 + (i-row_offset) * 16 + 8, 0);
+
+      if(SE)
+      {
+        x_offset = 4; y_offset = 0;
+      }
+      if(MD)
+        y_offset = -3;
+      // FIXME: Martian Dreams text is somewhat center aligned
+      text->drawString(screen, actor_name, area.x + x_offset + 24, area.y + y_offset + (i-row_offset) * rowH + 8, 0);
       sprintf(hp_string,"%3d",actor->get_hp());
       if(actor->is_poisoned()) //actor is poisoned, display their hp in green
         hp_text_color = 0xa;
@@ -216,7 +280,15 @@ void PartyView::Display(bool full_redraw)
         if(actor->get_hp() < 10) //actor is critical, display their hp in red.
           hp_text_color = 0x0c; 
        }
-      text->drawString(screen, hp_string, strlen(hp_string), area.x+8 + 112, area.y + 18 + (i-row_offset) * 16, 0, hp_text_color);
+      if(SE)
+      {
+        x_offset = -7; y_offset = 3;
+      }
+      if(MD)
+      {
+        x_offset = -16; y_offset = 14;
+      }
+      text->drawString(screen, hp_string, strlen(hp_string), area.x + x_offset + 112, area.y + y_offset + (i-row_offset) * rowH, 0, hp_text_color);
      }
 
    screen->update(area.x, area.y, area.w, area.h);
@@ -352,7 +424,7 @@ bool PartyView::up_arrow()
 
 bool PartyView::down_arrow()
 {
-    if((row_offset+5) < party->get_party_size())
+    if((row_offset+ (SE? 7:5)) < party->get_party_size())
     {
         row_offset++;
         return(true);
@@ -363,14 +435,26 @@ bool PartyView::down_arrow()
 
 void PartyView::display_arrows()
 {
+    int x_offset = 0; int y_offset = 0;
+    uint8 font_color = 0x48;
+    if(SE || MD)
+    {
+        font_color = 0;
+        x_offset = 2;
+        y_offset = 12;
+    }
+    uint8 max_party_size = 5;
     uint8 party_size = party->get_party_size();
-    if(party_size <= 5) // reset
+    if(SE)
+        max_party_size = 7;
+    if(party_size <= max_party_size) // reset
         row_offset = 0;
 
+    if((party_size - row_offset) > max_party_size) // display bottom arrow
+        text->drawChar(screen, 25, area.x - x_offset, area.y + 90 + y_offset, font_color);
+    if(MD)
+        y_offset = 3;
     if(row_offset > 0) // display top arrow
-        text->drawChar(screen, 24, area.x, area.y + 18, 0x48);
-
-    if((party_size - row_offset) > 5) // display bottom arrow
-        text->drawChar(screen, 25, area.x, area.y + 90, 0x48);
+        text->drawChar(screen, 24, area.x - x_offset, area.y + 18 - y_offset, font_color);
 }
 // </SB-X> 

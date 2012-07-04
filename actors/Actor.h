@@ -289,7 +289,7 @@ class Actor
  bool is_hit() { return(movement_flags & ACTOR_MOVEMENT_HIT_FLAG); }
 
  void set_name(const char *actor_name) {  name=actor_name; }
- const char *get_name();
+ const char *get_name(bool force_real_name = false);
 
  void get_location(uint16 *ret_x, uint16 *ret_y, uint8 *ret_level);
  MapCoord get_location();

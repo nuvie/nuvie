@@ -1,3 +1,7 @@
+2012-07-03  Eric Fry <efry at users.sourceforge.net> r1381
+	* Added malignantmanor's patch "SE and MD display fixes and more" [3539957]
+	* Fixed bug "Party member rested on top of the campfire" [3539302]
+
 2012-07-03  Eric Fry <efry at users.sourceforge.net> r1380
 	* Fixed bug "party member stuck at entrance of dungeon on exit" [3539315]
 	* Fixed bug with sacred quest barrier not working. We needed to search ignore

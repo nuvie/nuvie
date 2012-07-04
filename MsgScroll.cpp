@@ -811,11 +811,13 @@ inline void MsgScroll::drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y
  MsgText *token;
  std::list<MsgText *>::iterator iter;
  uint16 total_length = 0;
-
+ uint8 font_color = 0x48;
+ if(Game::get_game()->get_game_type()!=NUVIE_GAME_U6)
+    font_color = 0;
  for(iter=msg_line->text.begin();iter != msg_line->text.end() ; iter++)
    {
     token = *iter;
-	token->font->drawString(screen, token->s.c_str(), area.x + total_length * 8, area.y+line_y*8); //FIX for hardcoded font height
+	token->font->drawString(screen, token->s.c_str(), area.x + total_length * 8, area.y+line_y*8, font_color); //FIX for hardcoded font height
 	total_length += token->s.length();
    }
 }
@@ -827,13 +829,16 @@ void MsgScroll::clearCursor(uint16 x, uint16 y)
 
 void MsgScroll::drawCursor(uint16 x, uint16 y)
 {
+ uint8 font_color = 0x48;
+ if(Game::get_game()->get_game_type()!=NUVIE_GAME_U6)
+    font_color = 0;
  if(page_break)
     {
      if(cursor_wait <= 2) // flash arrow
-	   font->drawChar(screen, 1, x, y); // down arrow
+	   font->drawChar(screen, 1, x, y, font_color); // down arrow
 	}
  else
-    font->drawChar(screen, cursor_char + 5, x, y); //spinning ankh
+    font->drawChar(screen, cursor_char + 5, x, y, font_color); //spinning ankh
 
   screen->update(x, y, 8, 8);
   if(cursor_wait == MSGSCROLL_CURSOR_DELAY)

@@ -233,6 +233,7 @@ public:
 
 protected:
     bool move_party();
+    void check_campfire();
 };
 
 /* Camping in the wilderness. Do a TimedAdvance until the requested time. The
@@ -245,8 +246,9 @@ class TimedRest : public TimedAdvance
     Actor *lookout;
     bool sleeping; // false: mealtime, true: sleeping
     uint8 print_message; // which message is to be printed next
+    Obj *campfire;
 public:
-    TimedRest(uint8 hours, Actor *lookout);
+    TimedRest(uint8 hours, Actor *lookout, Obj *campfire_obj);
     ~TimedRest();
 
     void timed(uint32 evtime);

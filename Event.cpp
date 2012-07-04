@@ -363,7 +363,18 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			newAction(ATTACK_MODE);
 			break;
 		case SDLK_r     :
-            newAction(REST_MODE);
+			if(Game::get_game()->get_game_type()==NUVIE_GAME_MD)
+			{
+				if(mode != MOVE_MODE)
+					cancelAction();
+				else
+				{
+					scroll->display_string("what?\n\n");
+					scroll->display_prompt();
+				}
+			}
+			else
+				newAction(REST_MODE);
             break;
 		case SDLK_i     :
 			view_manager->open_doll_view(NULL);
@@ -377,6 +388,9 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_F7:
 		case SDLK_F8:
 		case SDLK_F9:
+			// make sure we are currently controlling a party member
+			if(!player->get_party()->contains_actor(player->get_actor()))
+				break;
 			if(player->get_party()->get_party_size()
 			   >= event->key.keysym.sym - 281)
 			{
@@ -386,11 +400,16 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			}
 			break;
 		case SDLK_F10:
+			// make sure we are currently controlling a party member
+			if(player->get_party()->contains_actor(player->get_actor()))
 		            view_manager->set_party_mode();
 		        break;
         case SDLK_PLUS:
         case SDLK_KP_PLUS:
 		case SDLK_EQUALS:
+			// make sure we are currently controlling a party member
+			if(!player->get_party()->contains_actor(player->get_actor()))
+				break;
 			if(Game::get_game()->is_orig_style() && view_manager->get_inventory_view()
 			   ->set_party_member(view_manager->get_inventory_view()
 			   ->get_party_member_num()+1))
@@ -398,6 +417,9 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
             break;
         case SDLK_MINUS:
         case SDLK_KP_MINUS:
+			// make sure we are currently controlling a party member
+			if(!player->get_party()->contains_actor(player->get_actor()))
+				break;
 			if(Game::get_game()->is_orig_style() && view_manager->get_inventory_view()
 			   ->set_party_member(view_manager->get_inventory_view()
 			   ->get_party_member_num()-1))
@@ -1533,6 +1555,8 @@ void Event::alt_code_input(const char *in)
         case 500: // control/watch anyone
             player->set_actor(a);
             player->set_mapwindow_centered(true);
+            view_manager->set_inventory_mode(); // reset inventoryview
+            view_manager->get_inventory_view()->set_actor(player->get_actor());
             scroll->display_string("\n");
             scroll->display_prompt();
             active_alt_code = 0;

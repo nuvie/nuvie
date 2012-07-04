@@ -35,6 +35,7 @@
 #include "U6Shape.h"
 
 #include "Font.h"
+#include "Game.h"
 
 Font::Font()
 {
@@ -86,6 +87,7 @@ uint16 Font::drawString(Screen *screen, const char *str, uint16 string_len, uint
  uint16 i;
  bool highlight = false;
  uint16 font_len = 0;
+ bool U6 = Game::get_game()->get_game_type()==NUVIE_GAME_U6;
 
  for(i=0;i<string_len;i++)
    {
@@ -96,7 +98,7 @@ uint16 Font::drawString(Screen *screen, const char *str, uint16 string_len, uint
        if(!isalpha(str[i]))
           highlight = false;
        font_len += drawChar(screen, get_char_num(str[i]), x + font_len, y,
-                highlight ? FONT_COLOR_U6_HIGHLIGHT : color);
+                highlight ? (U6 ? FONT_COLOR_U6_HIGHLIGHT: 4) : color);
       }
    }
  highlight = false;

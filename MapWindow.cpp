@@ -2064,7 +2064,10 @@ void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint
 /* Revert mouse cursor to normal arrow. Stop walking. */
 GUI_status MapWindow::MouseLeave(Uint8 state)
 {
-    game->set_mouse_pointer(0);
+    if(game_type == NUVIE_GAME_MD) // magnifying glass - pointer 0 should be used too for some areas
+        game->set_mouse_pointer(1);
+    else
+        game->set_mouse_pointer(0);
     walking = false;
     dragging = false;
     // NOTE: Don't clear selected_obj here! It's used to remove the object after

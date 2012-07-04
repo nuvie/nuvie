@@ -98,6 +98,8 @@ class Party {
 
  bool defer_removing_dead_members;
 
+ Obj *rest_campfire;
+
  public:
 
  Party(Configuration *cfg);

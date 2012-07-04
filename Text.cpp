@@ -86,6 +86,14 @@ bool Text::drawString(Screen *screen, const char *str, uint16 string_len, uint16
  if(font_data == NULL)
    return false;
 
+ uint8 highlight_index = 4;
+ uint8 normal_text_index = 0;
+
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+ {
+   highlight_index = 0x0c;
+   normal_text_index = 0x48;
+ }
  for(i=0, l=0;i<string_len;i++)
    {
     if(str[i] == '@')
@@ -95,7 +103,7 @@ bool Text::drawString(Screen *screen, const char *str, uint16 string_len, uint16
        if(!isalpha(str[i]))
           highlight = false;
        drawChar(screen, get_char_num(str[i],lang_num), x + (l++) * 8, y,
-                highlight ? 0x0c : 0x48);
+                highlight ? highlight_index : normal_text_index);
       }
    }
  highlight = false;

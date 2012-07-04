@@ -36,6 +36,7 @@ View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
  config = cfg;
  left_button = NULL;
  right_button = NULL;
+ party_button = NULL;
 }
 
 View::~View()
@@ -44,7 +45,12 @@ View::~View()
 
 bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
- GUI_Widget::Init(NULL, x, y, 136, 96);
+ if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
+   GUI_Widget::Init(NULL, x, y, 136, 96);
+ else if(Game::get_game()->get_game_type()==NUVIE_GAME_SE)
+   GUI_Widget::Init(NULL, x+15, y, 132, 113);
+ else // MD - FIXME: This needs to go behind the background
+   GUI_Widget::Init(NULL, x+16, y-4, 128, 118);
  Hide();
  text = t;
  party = p;

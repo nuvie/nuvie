@@ -16,6 +16,7 @@
 #include "CommandBar.h"
 #include "ViewManager.h"
 #include "PartyView.h"
+#include "ActorManager.h"
 // FIXME: effects use timers, not the other way around (make a movement effect?)
 #include "EffectManager.h"
 #include "Effect.h"
@@ -701,6 +702,7 @@ TimedRestGather::TimedRestGather(uint16 x, uint16 y)
     MapCoord center = MapCoord(x, y);
     init(&center, 0, 0); // set dest to campfire location
     Game::get_game()->get_map_window()->updateAmbience();
+    check_campfire();
 }
 
 /* Repeat until everyone is in the circle. */
@@ -719,11 +721,38 @@ void TimedRestGather::timed(uint32 evtime)
 
     if(repeat_count == 0)
     {
+    	check_campfire();
         Game::get_game()->get_event()->rest();
     }
 
     if(moves_left > 0)
         --moves_left;
+}
+
+void TimedRestGather::check_campfire()
+{
+	ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    for(sint32 a = 0; a < party->get_party_size(); a++)
+    {
+    	Actor *actor = party->get_actor(a);
+    	MapCoord loc = actor->get_location();
+    	if(loc.x == dest->x && loc.y == dest->y)
+    	{
+    		for(int x=0; x<3; x++)
+    			for(int y=0; y<3; y++)
+    			{
+    				if(x == 1 && y == 1)
+    					continue;
+    				if(actor_manager->get_actor(dest->x + x-1, dest->y + y-1, loc.z) == NULL)
+    				{
+    					actor->move(dest->x + x-1, dest->y + y-1, loc.z);
+
+    				}
+    			}
+
+    	}
+		actor->face_location(dest->x,dest->y);
+    }
 }
 
 bool TimedRestGather::move_party()
@@ -765,19 +794,20 @@ bool TimedRestGather::move_party()
     return moving;
 }
 
-TimedRest::TimedRest(uint8 hours, Actor *who_will_guard)
+TimedRest::TimedRest(uint8 hours, Actor *who_will_guard, Obj *campfire_obj)
                     : TimedAdvance(hours, 80), party(Game::get_game()->get_party()),
                       scroll(Game::get_game()->get_scroll()), sleeping(0),
                       print_message(0)
 {
     lookout = who_will_guard;
+    campfire = campfire_obj;
 }
 
 /* This is the only place we know that the TimedAdvance has completed. */
 TimedRest::~TimedRest()
 {
     MapCoord loc = Game::get_game()->get_player()->get_actor()->get_location();
-    Obj *campfire = Game::get_game()->get_obj_manager()->get_obj_of_type_from_location(253, loc.x, loc.y+1, loc.z);
+    //Obj *campfire = Game::get_game()->get_obj_manager()->get_obj_of_type_from_location(253, loc.x, loc.y+1, loc.z);
     assert(campfire != 0);
     campfire->frame_n = 0; // extinguish campfire
 

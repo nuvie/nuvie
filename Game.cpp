@@ -286,7 +286,8 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    if(is_orig_style())
    {
 	   background->Show();
-	   command_bar->Show();
+	   if(game_type == NUVIE_GAME_U6)
+		   command_bar->Show();
 	   scroll->Show();
    }
 

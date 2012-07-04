@@ -833,10 +833,10 @@ void Party::rest_gather()
 {
     Actor *player_actor = member[get_leader()].actor;
     MapCoord player_loc = player_actor->get_location();
-    Obj *campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y,player_loc.z);
-    campfire->set_temporary();
-    campfire->qty = 1; //this is set so the campfire may be destroyed by being attacked.
-    game->get_obj_manager()->add_obj(campfire, true); // addOnTop
+    rest_campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y,player_loc.z);
+    rest_campfire->set_temporary();
+    rest_campfire->qty = 1; //this is set so the campfire may be destroyed by being attacked.
+    game->get_obj_manager()->add_obj(rest_campfire, true); // addOnTop
 
     game->get_player()->set_mapwindow_centered(false);
     game->pause_user();
@@ -849,7 +849,7 @@ void Party::rest_sleep(uint8 hours, sint16 guard)
 {
     // FIXME: change music to Stones when asking "How many hours?", change to
     // a random song when finished camping (or if cancelled)
-    new TimedRest(hours, guard >= 0 ? member[guard].actor : 0);
+    new TimedRest(hours, guard >= 0 ? member[guard].actor : 0, rest_campfire);
 }
 
 bool Party::can_rest(std::string &err_str)

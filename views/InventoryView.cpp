@@ -39,8 +39,11 @@
 #include "ViewManager.h"
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
+static const char combat_mode_tbl_se[][6] = {"CMND", "RANGE", "FLEE", "CLOSE"};
+static const char combat_mode_tbl_md[][6] = {"CMND", "RANGE", "FLEE", "ATTK"};
 static const int first_combat_mode = 0x2;
 static const int last_combat_mode = 0x8;
+#define MD Game::get_game()->get_game_type()==NUVIE_GAME_MD
 
 InventoryView::InventoryView(Configuration *cfg) : View(cfg),
    doll_widget(NULL), inventory_widget(NULL)
@@ -59,7 +62,14 @@ InventoryView::~InventoryView()
 
 bool InventoryView::set_party_member(uint8 party_member)
 {
- if(View::set_party_member(party_member))
+ Player *player = Game::get_game()->get_player();
+
+ // see if we are currently controlling a party member
+ if(!player->get_party()->contains_actor(player->get_actor()))
+ {
+   is_party_member = false;
+ }
+ else if(View::set_party_member(party_member))
   {
    is_party_member = true;
    if(doll_widget)
@@ -97,7 +107,10 @@ bool InventoryView::set_actor(Actor *actor)
 
 bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
- View::init(x,y,t,p,tm,om);
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+	View::init(x,y,t,p,tm,om);
+ else
+	View::init(x-8,y-2,t,p,tm,om);
 
  doll_widget = new DollWidget(config, this);
  doll_widget->init(party->get_actor(cur_party_member), 0, 8, tile_manager, obj_manager);
@@ -110,8 +123,13 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
  AddWidget(inventory_widget);
 
  add_command_icons(tmp_screen, view_manager);
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+	cursor_tile = tile_manager->get_tile(365);
+ else if(MD)
+	cursor_tile = tile_manager->get_tile(265);
+ else // SE
+	cursor_tile = tile_manager->get_tile(381);
 
- cursor_tile = tile_manager->get_tile(365);
 // update_cursor(); moved to PlaceOnScreen
 
  return true;
@@ -133,12 +151,10 @@ void InventoryView::Display(bool full_redraw)
     screen->fill(bg_color, area.x, area.y, area.w, area.h);
 
     if(is_party_member)
-    {
-    	display_name();
         display_combat_mode();
-    }
-    //display_command_icons();
+    display_name();
     display_inventory_weights();
+    //display_command_icons();
 
 
    }
@@ -168,8 +184,10 @@ void InventoryView::display_name()
 {
  char *name;
 
- name = party->get_actor_name(cur_party_member);
-
+ if(is_party_member)
+  name = party->get_actor_name(cur_party_member);
+ else
+  name = (char *) Game::get_game()->get_player()->get_actor()->get_name(true);
  if(name == NULL)
   return;
 
@@ -187,7 +205,12 @@ void InventoryView::display_inventory_list()
  Obj *obj;
  uint16 i,j;
 
- empty_tile = tile_manager->get_tile(410);
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+   empty_tile = tile_manager->get_tile(410);
+ else if(MD) // FIXME: different depending on npc
+   empty_tile = tile_manager->get_tile(273);
+ else
+   empty_tile = tile_manager->get_tile(392);
 
  actor = party->get_actor(cur_party_member);
 
@@ -229,38 +252,48 @@ void InventoryView::display_inventory_list()
 void InventoryView::add_command_icons(Screen *tmp_screen, void *view_manager)
 {
  Tile *tile;
+ int y = 96;
+ if(MD)
+    y = 100;
+ else if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+	y = 80;
  SDL_Surface *button_image;
  SDL_Surface *button_image2;
  //FIX need to handle clicked button image, check image free on destruct.
 
- tile = tile_manager->get_tile(387); //left arrow icon
+ tile = tile_manager->get_tile(MD?282:387); //left arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- left_button = new GUI_Button(this, 0, 80, button_image, button_image2, this);
+ left_button = new GUI_Button(this, 0, y, button_image, button_image2, this);
  this->AddWidget(left_button);
 
- tile = tile_manager->get_tile(384); //party view icon
+ tile = tile_manager->get_tile(MD?279:384); //party view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- party_button = new GUI_Button(view_manager, 16, 80, button_image, button_image2, this);
+ party_button = new GUI_Button(view_manager, 16, y, button_image, button_image2, this);
  this->AddWidget(party_button);
 
- tile = tile_manager->get_tile(385); //actor view icon
+ tile = tile_manager->get_tile(MD?280:385); //actor view icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- actor_button = new GUI_Button(view_manager, 2*16, 80, button_image, button_image2, this);
+ actor_button = new GUI_Button(view_manager, 2*16, y, button_image, button_image2, this);
  this->AddWidget(actor_button);
 
- tile = tile_manager->get_tile(388); //right arrow icon
+ tile = tile_manager->get_tile(MD?283:388); //right arrow icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- right_button = new GUI_Button(this, 3*16, 80, button_image, button_image2, this);
+ right_button = new GUI_Button(this, 3*16, y, button_image, button_image2, this);
  this->AddWidget(right_button);
 
- tile = tile_manager->get_tile(391); //combat icon
+ if(MD)
+	tile = tile_manager->get_tile(285); //combat icon
+ else if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+	tile = tile_manager->get_tile(365); //combat icon
+ else
+	tile = tile_manager->get_tile(391); //combat icon
  button_image = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
  button_image2 = tmp_screen->create_sdl_surface_from(tile->data, 8, 16, 16, 16);
- combat_button = new GUI_Button(this, 4*16, 80, button_image, button_image2, this); //FIX combat
+ combat_button = new GUI_Button(this, 4*16, y, button_image, button_image2, this); //FIX combat
  this->AddWidget(combat_button);
 
 }
@@ -270,7 +303,11 @@ void InventoryView::display_inventory_weights()
  uint8 strength;
  float inv_weight;
  float equip_weight;
- Actor *actor = party->get_actor(cur_party_member);
+ Actor *actor;
+ if(is_party_member)
+	actor = party->get_actor(cur_party_member);
+ else
+	actor = Game::get_game()->get_player()->get_actor();
  char string[9]; //  "E:xx/xxs"
 
  strength = actor->get_strength();
@@ -288,7 +325,12 @@ void InventoryView::display_inventory_weights()
 void InventoryView::display_combat_mode()
 {
  Actor *actor = party->get_actor(cur_party_member);
- text->drawString(screen, combat_mode_tbl[actor->get_combat_mode() - 2], area.x+5*16, area.y+88, 0);
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+   text->drawString(screen, combat_mode_tbl[actor->get_combat_mode() - 2], area.x+5*16, area.y+88, 0);
+ else if(MD) // FIXME: selection isn't right
+   text->drawString(screen, combat_mode_tbl_md[actor->get_combat_mode()], area.x+5*16, area.y+88, 0);
+ else // SE - FIXME: selection isn't right
+   text->drawString(screen, combat_mode_tbl_se[actor->get_combat_mode()], area.x+5*16, area.y+88, 0);
 }
 
 /* Move the cursor around, ready or unready objects, select objects, switch
@@ -556,15 +598,15 @@ void InventoryView::hide_buttons()
 {
 	if(left_button) left_button->Hide();
 	if(right_button) right_button->Hide();
-	if(actor_button) actor_button->Hide();
+//	if(actor_button) actor_button->Hide();
 	if(party_button) party_button->Hide();
 	if(combat_button) combat_button->Hide();
 }
 
 void InventoryView::show_buttons()
 {
-	if(left_button) left_button->Show();
-	if(right_button) right_button->Show();
+//	if(left_button) left_button->Show(); //   these two shouldn't be needed
+//	if(right_button) right_button->Show(); // and cause problems
 	if(actor_button) actor_button->Show();
 	if(party_button) party_button->Show();
 	if(combat_button) combat_button->Show();

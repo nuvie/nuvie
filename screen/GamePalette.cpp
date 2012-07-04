@@ -99,12 +99,17 @@ bool GamePalette::loadPalette()
  free(buf);
 
  dither_mode = Game::get_game()->get_dither()->get_mode();
- 
- if(dither_mode == DITHER_NONE)
-   bg_color = 0x31;
- else
-   bg_color = 0xf;
-  
+ if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
+ {
+   if(dither_mode == DITHER_NONE)
+     bg_color = 0x31;
+   else
+     bg_color = 0xf;
+ }
+ else if(Game::get_game()->get_game_type()==NUVIE_GAME_MD)
+   bg_color = 220;
+ else // SE
+   bg_color = 72;
  return true;
 }
 

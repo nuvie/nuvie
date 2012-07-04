@@ -37,6 +37,8 @@
 #include "UseCode.h"
 #include "MapWindow.h"
 #include "Script.h"
+#include "Player.h"
+#include "Party.h"
 
 #include "InventoryFont.h"
 #include "ViewManager.h"
@@ -76,11 +78,20 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  text = t;
 
  bg_color = Game::get_game()->get_palette()->get_bg_color();
- obj_font_color = 0x48;
+ obj_font_color = 0;
+
+ if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
+	obj_font_color = 0x48;
+
  objlist_offset_x = 8;
  objlist_offset_y = 16;
 
- empty_tile = tile_manager->get_tile(410);
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+	empty_tile = tile_manager->get_tile(410);
+ else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD) // FIXME: different depending on npc
+	empty_tile = tile_manager->get_tile(273);
+ else
+	empty_tile = tile_manager->get_tile(392);
 
  //72 =  4 * 16 + 8
  GUI_Widget::Init(NULL, x, y, 72, 64);
@@ -217,8 +228,8 @@ void InventoryWidget::display_inventory_list()
           tile = empty_tile;
 
        //tile = tile_manager->get_tile(actor->indentory_tile());
-
-       screen->blit((area.x+objlist_offset_x)+j*16,area.y+objlist_offset_y+i*16,(unsigned char *)empty_tile->data,8,16,16,16,true);
+       if(tile == empty_tile)
+         screen->blit((area.x+objlist_offset_x)+j*16,area.y+objlist_offset_y+i*16,(unsigned char *)empty_tile->data,8,16,16,16,true);
        if(tile != empty_tile)
         {
          //draw qty string for stackable items
@@ -361,9 +372,12 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
     if(x >= 32 && x <= 48 && // hit top icon either actor or container
        y >= 0 && y <= 16)
       {
+			 Player *player = Game::get_game()->get_player();
+			 bool in_party = player->get_party()->contains_actor(player->get_actor());
+
 			 if(is_showing_container())
 				 set_prev_container(); //return to previous container or main actor inventory
-			 else
+			 else if(in_party)
 				 Game::get_game()->get_view_manager()->set_party_mode();
 
        Redraw();

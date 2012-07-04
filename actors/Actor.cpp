@@ -299,7 +299,7 @@ void Actor::face_actor(Actor *a)
 /* Returns the proper (NPC) name of this actor if the Player knows it, or their
  * description if the name is unknown.
  */
-const char *Actor::get_name()
+const char *Actor::get_name(bool force_real_name)
 {
     ActorManager *actor_manager = Game::get_game()->get_actor_manager();
     Converse *converse = Game::get_game()->get_converse();
@@ -313,7 +313,7 @@ const char *Actor::get_name()
     	if(party_pos != -1)
     		name = party->get_actor_name((uint8)party_pos);
     }
-    else if((is_met() || is_in_party())
+    else if((is_met() || is_in_party() || force_real_name)
             && (talk_name = converse->npc_name(id_n)) ) // assignment
         name = talk_name;
     else
