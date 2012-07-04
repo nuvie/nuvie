@@ -1,3 +1,6 @@
+2012-07-04  Eric Fry <efry at users.sourceforge.net> r1382
+	* Fixed bug "Actor targets himself with the attack cursor and does damage" [3539293]
+
 2012-07-03  Eric Fry <efry at users.sourceforge.net> r1381
 	* Added malignantmanor's patch "SE and MD display fixes and more" [3539957]
 	* Fixed bug "Party member rested on top of the campfire" [3539302]

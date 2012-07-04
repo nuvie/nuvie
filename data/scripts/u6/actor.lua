@@ -1422,6 +1422,10 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
 
    local foe = map_get_actor(target_x, target_y, target_z)
    
+	if foe ~= nil and foe.actor_num == attacker.actor_num then
+		return
+	end
+   
    if foe == nil then
       foe = map_get_obj(target_x, target_y, target_z);
    end

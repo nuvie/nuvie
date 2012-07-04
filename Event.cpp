@@ -892,6 +892,13 @@ bool Event::attack()
     Actor *actor = map_window->get_actorAtCursor();
     if(actor)
         {
+    		if(actor->get_actor_num() == player->get_actor()->get_actor_num()) //don't attack yourself.
+    		{
+    			scroll->display_string("pass.\n");
+    			endAction(true);
+    			return true;
+    		}
+
             scroll->display_string(actor->get_name());
             scroll->display_string(".\n");
 
