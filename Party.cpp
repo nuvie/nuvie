@@ -910,3 +910,11 @@ Obj *Party::get_food()
     }
     return 0;
 }
+
+bool Party::main_actor_is_in_party()
+{
+	Player *player = game->get_player();
+
+	return (contains_actor(player->get_actor())
+	        || player->get_actor()->get_actor_num() == 0); // vehicle
+}

@@ -388,8 +388,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_F7:
 		case SDLK_F8:
 		case SDLK_F9:
-			// make sure we are currently controlling a party member
-			if(!player->get_party()->contains_actor(player->get_actor()))
+			if(!player->get_party()->main_actor_is_in_party())
 				break;
 			if(player->get_party()->get_party_size()
 			   >= event->key.keysym.sym - 281)
@@ -400,15 +399,13 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			}
 			break;
 		case SDLK_F10:
-			// make sure we are currently controlling a party member
-			if(player->get_party()->contains_actor(player->get_actor()))
+			if(player->get_party()->main_actor_is_in_party())
 		            view_manager->set_party_mode();
 		        break;
         case SDLK_PLUS:
         case SDLK_KP_PLUS:
 		case SDLK_EQUALS:
-			// make sure we are currently controlling a party member
-			if(!player->get_party()->contains_actor(player->get_actor()))
+			if(!player->get_party()->main_actor_is_in_party())
 				break;
 			if(Game::get_game()->is_orig_style() && view_manager->get_inventory_view()
 			   ->set_party_member(view_manager->get_inventory_view()
@@ -417,8 +414,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
             break;
         case SDLK_MINUS:
         case SDLK_KP_MINUS:
-			// make sure we are currently controlling a party member
-			if(!player->get_party()->contains_actor(player->get_actor()))
+			if(!player->get_party()->main_actor_is_in_party())
 				break;
 			if(Game::get_game()->is_orig_style() && view_manager->get_inventory_view()
 			   ->set_party_member(view_manager->get_inventory_view()
@@ -1610,6 +1606,13 @@ void Event::alt_code(const char *cs)
             break;
 
         case 500: // control/watch anyone
+            if(Game::get_game()->get_party()->is_in_vehicle())
+            {
+                 scroll->display_string("\nNot while aboard a vehicle!\n\n");
+                 scroll->display_prompt();
+                 active_alt_code = 0;
+                 break;
+            }
             scroll->display_string("Npc number? ");
             get_scroll_input();
             active_alt_code = c;
@@ -2023,6 +2026,12 @@ void Event::quitDialog()
 
 void Event::saveDialog()
 {
+ if(!player->get_party()->main_actor_is_in_party())
+ {
+	scroll->display_string("\nNot when using the control npc cheat!\n\n");
+	scroll->display_prompt();
+	return;
+ }
  SaveManager *save_manager = Game::get_game()->get_save_manager();
  if(mode == MOVE_MODE)
 	 save_manager->create_dialog();

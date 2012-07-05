@@ -69,22 +69,19 @@ bool ActorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y,
 bool ActorView::set_party_member(uint8 party_member)
 {
  in_party = false;
- Player *player = Game::get_game()->get_player();
 
- // make sure we are currently controlling a party member
- if(!player->get_party()->contains_actor(player->get_actor()))
+ if(View::set_party_member(party_member)
+   && party->main_actor_is_in_party())
+ {
+    in_party = true;
+    if(party_button) party_button->Show();
+ }
+ else
  {
     if(left_button) left_button->Hide();
     if(right_button) right_button->Hide();
     if(party_button) party_button->Hide();
  }
- else if(View::set_party_member(party_member))
- {
-    in_party = true;
-    if(party_button) party_button->Show();
- }
- else // shouldn't happen
-    return false;
 
  if(portrait) // this might not be set yet. if called from View::init()
    {
@@ -94,7 +91,10 @@ bool ActorView::set_party_member(uint8 party_member)
     if(in_party)
         portrait_data = portrait->get_portrait_data(party->get_actor(cur_party_member));
     else
+    {
+        Player *player = Game::get_game()->get_player();
         portrait_data = portrait->get_portrait_data(player->get_actor());
+    }
     if(portrait_data == NULL)
       return false;
    }

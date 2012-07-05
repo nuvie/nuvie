@@ -2258,6 +2258,7 @@ dbg("activate_city_guards()")
          else
             if actor.wt ~= WT_STATIONARY 
              and actor.wt ~= WT_NOTHING
+             and actor.wt ~= WT_PLAYER
              and actor.paralyzed == false
              and actor.asleep == false
              and actor.corpser_flag == false then

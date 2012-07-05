@@ -62,14 +62,9 @@ InventoryView::~InventoryView()
 
 bool InventoryView::set_party_member(uint8 party_member)
 {
- Player *player = Game::get_game()->get_player();
 
- // see if we are currently controlling a party member
- if(!player->get_party()->contains_actor(player->get_actor()))
- {
-   is_party_member = false;
- }
- else if(View::set_party_member(party_member))
+ if(View::set_party_member(party_member)
+    && party->main_actor_is_in_party())
   {
    is_party_member = true;
    if(doll_widget)
@@ -89,6 +84,9 @@ bool InventoryView::set_party_member(uint8 party_member)
    
    return true;
   }
+ is_party_member = false;
+ hide_buttons();
+
  return false;
 }
 

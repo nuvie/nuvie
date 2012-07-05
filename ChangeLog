@@ -1,3 +1,6 @@
+2012-07-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1385
+	* Fix in r1381 that messed up actor vehicles. Fix some control cheat issues.
+
 2012-07-05  Eric Fry <efry at users.sourceforge.net> r1384
 	* Added nuvie_realloc() wrapper around realloc. This should make cppcheck happy.
 
