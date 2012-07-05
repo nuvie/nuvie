@@ -139,7 +139,7 @@ bool TileManager::loadTiles()
 
  objtiles_size = objtiles_vga.get_size();
 
- tile_data = (unsigned char *)realloc(tile_data,maptiles_size + objtiles_size);
+ tile_data = (unsigned char *)nuvie_realloc(tile_data,maptiles_size + objtiles_size);
 
  objtiles_vga.readToBuf(&tile_data[maptiles_size], objtiles_size);
 

@@ -52,7 +52,7 @@ void pack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
             }
             while(!feof(src_f))
             {
-                buf = (unsigned char *)realloc(buf, buf_size + 1);
+                buf = (unsigned char *)nuvie_realloc(buf, buf_size + 1);
                 fread(&buf[buf_size++], 1, 1, src_f);
             }
             fclose(src_f);

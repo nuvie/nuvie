@@ -16,6 +16,7 @@
 #include "nuvieDefs.h"
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"
+#include "U6misc.h"
 
 
 U6Lzw::U6Lzw()
@@ -50,7 +51,7 @@ unsigned char *U6Lzw::compress_buffer(unsigned char *src, uint32 src_len,
     blocks = (src_len / 64);
     if((blocks * 64) < src_len)
         blocks += 1;
-    dest_buf = (unsigned char *)realloc(dest_buf, src_len + 4);
+    dest_buf = (unsigned char *)nuvie_realloc(dest_buf, src_len + 4);
     dest_len = src_len + 4;
     memset(&dest_buf[4], 0, src_len);
 #if 0

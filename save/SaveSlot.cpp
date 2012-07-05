@@ -57,7 +57,6 @@ SaveSlot::~SaveSlot()
 
 bool SaveSlot::init(const char *directory, std::string *file)
 {
- GUI_Widget *widget;
  GUI *gui = GUI::get_gui();
 
  if(file != NULL)

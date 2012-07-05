@@ -611,3 +611,11 @@ bool string_i_compare(const std::string &s1, const std::string &s2)
 {
  return strcasecmp(s1.c_str(), s2.c_str()) == 0;
 }
+
+void *nuvie_realloc(void *ptr, size_t size)
+{
+	void *new_ptr = realloc(ptr, size);
+	if(!new_ptr)
+		free(ptr);
+	return new_ptr;
+}

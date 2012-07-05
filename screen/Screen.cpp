@@ -28,6 +28,7 @@
 #include "SDL.h"
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "Configuration.h"
 
 #include "Surface.h"
@@ -1298,7 +1299,7 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
 
  if(num_update_rects == max_update_rects)
    {
-    update_rects = (SDL_Rect *)realloc(update_rects,sizeof(SDL_Rect) * (max_update_rects + 10));
+    update_rects = (SDL_Rect *)nuvie_realloc(update_rects,sizeof(SDL_Rect) * (max_update_rects + 10));
     max_update_rects += 10;
    }
 

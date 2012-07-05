@@ -1,4 +1,5 @@
 #include <cassert>
+#include "U6misc.h"
 #include "Map.h"
 #include "Path.h"
 
@@ -15,7 +16,7 @@ Path::~Path()
 void Path::set_path_size(int alloc_size)
 {
     path_size = alloc_size;
-    path = (MapCoord*)realloc(path, path_size * sizeof(MapCoord));
+    path = (MapCoord*)nuvie_realloc(path, path_size * sizeof(MapCoord));
 }
 
 /* Take estimate of a path, and return the highest allowed score of any nodes
@@ -89,7 +90,7 @@ void Path::add_step(MapCoord loc)
     if(step_count >= path_size)
     {
         path_size += path_block_size;
-        path = (MapCoord *)realloc(path, path_size*sizeof(MapCoord));
+        path = (MapCoord *)nuvie_realloc(path, path_size*sizeof(MapCoord));
     }
     path[step_count++] = loc;
 }

@@ -245,7 +245,7 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
  tmp_map_width = win_width + 3;
  tmp_map_height = win_height + 3;
 
- tmp_map_buf = (uint16 *)realloc(tmp_map_buf, tmp_map_width * tmp_map_height * sizeof(uint16));
+ tmp_map_buf = (uint16 *)nuvie_realloc(tmp_map_buf, tmp_map_width * tmp_map_height * sizeof(uint16));
  if(tmp_map_buf == NULL)
    return false;
 

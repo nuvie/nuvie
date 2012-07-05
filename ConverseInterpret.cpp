@@ -20,6 +20,7 @@
 #include <ctype.h>
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 
 #include "Player.h"
 #include "Party.h"
@@ -1263,7 +1264,7 @@ char *ConverseInterpret::get_db_string(uint32 loc, uint32 i)
     {
         if((d+1) >= dbuf_len) // resize buffer as needed
             dbuf_len += 16;
-        item = (char *)realloc(item, dbuf_len);
+        item = (char *)nuvie_realloc(item, dbuf_len);
         item[d++] = (char)(db[p]); // copy
         item[d] = '\0';
     } while(is_print(db[++p]));
@@ -1339,7 +1340,7 @@ DEBUG(0,LEVEL_DEBUGGING,"\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dst
             {
                 if((d+1) >= dbuf_len) // resize buffer as needed
                     dbuf_len += 16;
-                item = (char *)realloc(item, dbuf_len);
+                item = (char *)nuvie_realloc(item, dbuf_len);
                 item[d++] = (char)(db[p]); // copy
                 item[d] = '\0';
             } while(is_print(db[++p]));

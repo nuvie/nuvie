@@ -10,6 +10,7 @@
  */
 #include <string>
 #include "SDL.h"
+#include "nuvieDefs.h"
 
 class Configuration;
 
@@ -73,5 +74,7 @@ int mkdir_recursive(std::string path, int mode);
 void draw_line_8bit(int sx, int sy, int ex, int ey, uint8 col, uint8 *pixels, uint16 w, uint16 h);
 
 bool string_i_compare(const std::string &s1, const std::string &s2);
+
+void *nuvie_realloc(void *ptr, size_t size);
 
 #endif /* __U6misc_h__ */

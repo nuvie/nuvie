@@ -27,6 +27,7 @@
 #include <cctype>
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"
@@ -376,7 +377,7 @@ void U6Lib_n::add_item(uint32 offset32, const char *name)
     if(!num_offsets)
         items = (U6LibItem *)malloc(sizeof(U6LibItem));
     else
-        items = (U6LibItem *)realloc(items, sizeof(U6LibItem)*(num_offsets+1));
+        items = (U6LibItem *)nuvie_realloc(items, sizeof(U6LibItem)*(num_offsets+1));
     U6LibItem *item = &items[num_offsets];
     item->offset = offset32;
     item->name = new string(name);
