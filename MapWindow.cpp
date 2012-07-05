@@ -1797,7 +1797,7 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 //		walking = false;
 	if(walking) // No, we don't want to select an object to move if we are walking.
 	{
-		selected_obj = false;
+		selected_obj = NULL;
 		dragging = false;
 	}
 

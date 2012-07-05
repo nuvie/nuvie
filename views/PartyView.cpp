@@ -167,22 +167,24 @@ bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
 	DEBUG(0,LEVEL_DEBUGGING,"PartyView::drag_accept_drop()\n");
 	if(message == GUI_DRAG_OBJ)
 	{
+		MsgScroll *scroll = Game::get_game()->get_scroll();
+
 		Obj *obj = (Obj*)data;
 		Actor *actor = get_actor(x, y);
-
-	    MsgScroll *scroll = Game::get_game()->get_scroll();
-	    scroll->display_string("Move-");
-	    scroll->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
-	    scroll->display_string(" To ");
-	    scroll->display_string(actor->get_name());
-	    scroll->display_string(".");
-
-		if(actor && Game::get_game()->get_script()->call_actor_get_obj(actor, obj) == true)
+		if(actor)
 		{
-			DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
-			return true;
-		}
+			scroll->display_string("Move-");
+			scroll->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
+			scroll->display_string(" To ");
+			scroll->display_string(actor->get_name());
+			scroll->display_string(".");
 
+			if(Game::get_game()->get_script()->call_actor_get_obj(actor, obj) == true)
+			{
+				DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
+				return true;
+			}
+		}
 		scroll->display_string("\n");
 	    scroll->display_prompt();
 	}
@@ -204,8 +206,10 @@ void PartyView::drag_perform_drop(int x, int y, int message, void *data)
     obj = (Obj *)data;
 
 	Actor *actor = get_actor(x, y);
-    obj_manager->moveto_inventory(obj, actor);
-
+	if(actor)
+	{
+		obj_manager->moveto_inventory(obj, actor);
+	}
     MsgScroll *scroll = Game::get_game()->get_scroll();
     scroll->display_string("\n\n");
     scroll->display_prompt();

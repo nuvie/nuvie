@@ -461,10 +461,10 @@ void Map::loadRoofData()
 	NuvieIOFileRead file;
 	uint16 *ptr;
 	roof_surface = (uint16 *)malloc(1024 * 1024 * 2);
-	memset(roof_surface, 0, 1024 * 1024 * 2);
 
-	if(roof_surface && file.open(getRoofDataFilename()))
+	if(file.open(getRoofDataFilename()))
 	{
+		memset(roof_surface, 0, 1024 * 1024 * 2);
 		ptr = roof_surface;
 		while(!file.is_eof())
 		{

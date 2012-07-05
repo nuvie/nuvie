@@ -306,7 +306,7 @@ SaveHeader *SaveGame::load_info(NuvieIOFileRead *loadfile)
  header.num_saves = loadfile->read2();
 
  loadfile->readToBuf(save_desc, MAX_SAVE_DESC_LENGTH);
- save_desc[MAX_SAVE_DESC_LENGTH+1] = '\0';
+ save_desc[MAX_SAVE_DESC_LENGTH] = '\0';
  header.save_description.assign((const char *)save_desc);
 
  loadfile->readToBuf(player_name, 14);

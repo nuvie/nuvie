@@ -139,6 +139,10 @@ void Converse::reset()
         free(allowed_input);
         allowed_input = NULL;
     }
+
+    player->set_quest_flag((uint8)get_var(U6TALK_VAR_QUESTF));
+    player->set_gargish_flag((uint8)get_var(U6TALK_VAR_GARGF));
+
     delete_variables();
 }
 
@@ -277,6 +281,9 @@ ConvScript *Converse::load_script(uint32 n)
  */
 void Converse::init_variables()
 {
+	if(variables)
+		delete_variables();
+
     variables = new converse_variables_s[U6TALK_VAR__LAST_ + 1];
     for(uint32 v = 0; v <= U6TALK_VAR__LAST_; v++)
     {
@@ -299,9 +306,6 @@ void Converse::init_variables()
  */
 void Converse::delete_variables()
 {
-    player->set_quest_flag((uint8)get_var(U6TALK_VAR_QUESTF));
-    player->set_gargish_flag((uint8)get_var(U6TALK_VAR_GARGF));
-
     for(uint32 v = 0; v <= U6TALK_VAR__LAST_; v++)
         if(variables[v].sv)
             free(variables[v].sv);

@@ -1441,13 +1441,13 @@ bool U6UseCode::use_fountain(Obj *obj, UseCodeEvent ev)
         {
             get_wish = false;
             bool wished_for_food = false;
-            char *wish = new char[items.string_ref->size() + 1];
+            char *wish = (char*)malloc(items.string_ref->size() + 1);
             strcpy(wish, items.string_ref->c_str());
             if(strcasecmp(wish, "Food") == 0 || strcasecmp(wish, "Mutton") == 0
                || strcasecmp(wish, "Wine") == 0 || strcasecmp(wish, "Fruit") == 0
                || strcasecmp(wish, "Mead") == 0)
                 wished_for_food = true;
-            delete wish;
+            free(wish);
             if(!wished_for_food)
             {
                 scroll->display_string("\nFailed\n\n");

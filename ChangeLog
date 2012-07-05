@@ -1,3 +1,7 @@
+2012-07-05  Eric Fry <efry at users.sourceforge.net> r1383
+	* Fixed bugs outlined in "errors shown by Cppcheck tool" [3540270]
+	  I haven't done anything about the realloc issues.
+
 2012-07-04  Eric Fry <efry at users.sourceforge.net> r1382
 	* Fixed bug "Actor targets himself with the attack cursor and does damage" [3539293]
 

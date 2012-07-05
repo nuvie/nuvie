@@ -887,8 +887,11 @@ bool ActorManager::loadActorSchedules()
 
  sched_data = schedule.readBuf(total_schedules * SCHEDULE_SIZE, &bytes_read);
 
- if(bytes_read != (uint32)(total_schedules * SCHEDULE_SIZE))
+ if(!sched_data || bytes_read != (uint32)(total_schedules * SCHEDULE_SIZE))
    {
+	if(sched_data)
+		free(sched_data);
+	 free(sched_offsets);
     DEBUG(0,LEVEL_ERROR,"Failed to read schedules!\n");
     return false;
    }

@@ -299,12 +299,14 @@ SDL_Surface* GUI_Button::CreateTextButtonImage(int style, const char *text, int 
 
   SDL_Surface *img=SDL_AllocSurface(SDL_SWSURFACE,area.w,area.h,
 				    16,31 << 11,63 << 5,31,0);
+
+  if (img==NULL) return NULL;
+
   Uint32 color1=SDL_MapRGB(img->format,BL_R,BL_G,BL_B);
   Uint32 color2=SDL_MapRGB(img->format,BS_R,BS_G,BS_B);
   Uint32 color3=SDL_MapRGB(img->format,BF_R,BF_G,BF_B);
   Uint32 color4=SDL_MapRGB(img->format,BI2_R,BI2_G,BI2_B);
 
-  if (img==NULL) return NULL;
 
   buttonFont->SetColoring(0,0,0);
   buttonFont->SetTransparency(1);
