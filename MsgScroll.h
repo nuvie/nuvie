@@ -192,7 +192,7 @@ private:
 
  GUI_status KeyDown(SDL_keysym key);
  GUI_status MouseUp(int x, int y, int button);
- virtual const std::string get_token_string_at_pos(uint16 x, uint16 y);
+ virtual std::string get_token_string_at_pos(uint16 x, uint16 y);
  //void updateScroll();
  void Display(bool full_redraw);
 
