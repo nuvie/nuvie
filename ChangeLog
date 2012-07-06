@@ -1,3 +1,7 @@
+2012-07-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1387
+	* Fix pathfinding typo that counted moving on the y axis as being diagonal
+	* Remove stray and test roof tiles from the map
+
 2012-07-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1385
 	* Fix regression in r1381 that messed up actor vehicles. Fix some control cheat issues.
 

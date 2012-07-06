@@ -32,7 +32,7 @@ sint32 U6AStarPath::step_cost(MapCoord &c1, MapCoord &c2)
     // add cost of *original* step
 //    c += game->get_game_map()->get_impedance(c1.x, c1.y, c1.z);
 
-    if(c2.x != c2.x && c1.y != c2.y) // prefer non-diagonal
+    if(c1.x != c2.x && c1.y != c2.y) // prefer non-diagonal
         c *= 2;
     return(c);
 }
