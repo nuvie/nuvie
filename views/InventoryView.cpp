@@ -46,7 +46,7 @@ static const int last_combat_mode = 0x8;
 #define MD Game::get_game()->get_game_type()==NUVIE_GAME_MD
 
 InventoryView::InventoryView(Configuration *cfg) : View(cfg),
-   doll_widget(NULL), inventory_widget(NULL)
+   doll_widget(NULL), inventory_widget(NULL), combat_button(NULL)
 {
  cursor_pos.area = INVAREA_LIST;
  cursor_pos.x = cursor_pos.y = 0;

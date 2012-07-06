@@ -144,7 +144,7 @@ static const char *u6_potions[8] =
 // convenient macro to grab a target object - when first called the player will
 // be prompted with P, and upon target selection the object will be set to O
 #define USECODE_SELECT_OBJ(O, P) \
-({ \
+{ \
     static bool selected_obj = false; \
     if(!selected_obj) \
     { \
@@ -154,9 +154,9 @@ static const char *u6_potions[8] =
         return false; \
     } \
     else { O = items.obj_ref; selected_obj = false; } \
-})
+}
 #define USECODE_SELECT_ACTOR(O, P) \
-({ \
+{ \
     static bool selected_obj = false; \
     if(!selected_obj) \
     { \
@@ -166,9 +166,9 @@ static const char *u6_potions[8] =
         return false; \
     } \
     else { A = items.actor2_ref; selected_obj = false; } \
-})
+}
 #define USECODE_SELECT_TARGET(T, P) \
-({ \
+{ \
     static bool selected_obj = false; \
     if(!selected_obj) \
     { \
@@ -178,9 +178,9 @@ static const char *u6_potions[8] =
         return false; \
     } \
     else { T = items.mapcoord_ref; selected_obj = false; } \
-})
+}
 #define USECODE_SELECT_DIRECTION(T, P) \
-({ \
+{ \
     static bool selected_obj = false; \
     if(!selected_obj) \
     { \
@@ -190,7 +190,7 @@ static const char *u6_potions[8] =
         return false; \
     } \
     else { T = items.mapcoord_ref; selected_obj = false; } \
-})
+}
 
 
 U6UseCode::U6UseCode(Game *g, Configuration *cfg) : UseCode(g, cfg)

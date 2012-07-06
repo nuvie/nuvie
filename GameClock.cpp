@@ -74,11 +74,12 @@ bool GameClock::load(NuvieIO *objlist)
 
  num_timers = GAMECLOCK_NUM_TIMERS;
  timers.reserve(num_timers);
+ timers.clear();
  objlist->seek(OBJLIST_OFFSET_U6_TIMERS);
 
  for(uint8 i=0;i < GAMECLOCK_NUM_TIMERS;i++)
  {
-	timers[i] = objlist->read1();
+	timers.push_back( objlist->read1() );
  }
 
  DEBUG(0,LEVEL_INFORMATIONAL,"Loaded game clock: %s %s\n",get_date_string(),get_time_string());

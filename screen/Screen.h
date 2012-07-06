@@ -31,6 +31,10 @@
 #include "Surface.h"
 #include "Scale.h"
 
+#define LIGHTING_STYLE_NONE 0
+#define LIGHTING_STYLE_SMOOTH 1
+#define LIGHTING_STYLE_ORIGINAL 2
+
 class Configuration;
 
 class Screen

@@ -55,11 +55,11 @@ Screen::Screen(Configuration *cfg)
  config->value( "config/general/lighting", str_lighting_style );
 
  if( str_lighting_style == "none" )
-	 lighting_style = 0;
+	 lighting_style = LIGHTING_STYLE_NONE;
  else if( str_lighting_style == "smooth" )
-	 lighting_style = 1;
+	 lighting_style = LIGHTING_STYLE_SMOOTH;
  else
-	 lighting_style = 2;
+	 lighting_style = LIGHTING_STYLE_ORIGINAL;
 
  max_update_rects = 10;
  num_update_rects = 0;
@@ -844,13 +844,13 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
 {
 	switch( lighting_style )
 	{
-	case 0:
-		return;
 	default:
-	case 1:
+	case LIGHTING_STYLE_NONE:
+		return;
+	case LIGHTING_STYLE_SMOOTH:
 		shading_ambient = opacity;
 		break;
-	case 2:
+	case LIGHTING_STYLE_ORIGINAL:
 		if( opacity < 0xFF )
             shading_ambient = 0;
         else
@@ -862,12 +862,12 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
     {
         shading_rect.x = x;
         shading_rect.y = y;
-        if(lighting_style == 2)
+        if(lighting_style == LIGHTING_STYLE_ORIGINAL)
         {
         	shading_rect.w = w;
         	shading_rect.h = h;
         }
-        else
+        else // LIGHTING_STYLE_SMOOTH
         {
         	shading_rect.w = w * 16 + 8;
         	shading_rect.h = h * 16 + 8;
@@ -891,9 +891,9 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
     updatingalphamap = true;
 
     //Light globe around the avatar
-    if( lighting_style == 2 )
+    if( lighting_style == LIGHTING_STYLE_ORIGINAL )
         drawalphamap8globe( (shading_rect.w-1)/2, (shading_rect.h-1)/2, opacity/64+3 ); //range (0..3)+3 or (3..6)
-    else if( lighting_style != 0 )
+    else if( lighting_style == LIGHTING_STYLE_SMOOTH )
         drawalphamap8globe( (((shading_rect.w-8)/16)-1)/2, (((shading_rect.h-8)/16)-1)/2, 3 );
 }
 
@@ -954,9 +954,9 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
         return;
     if( shading_ambient == 0xFF )
         return;
-	if( lighting_style == 0 )
+	if( lighting_style == LIGHTING_STYLE_NONE )
 		return;
-    if( lighting_style == 2 )
+    if( lighting_style == LIGHTING_STYLE_ORIGINAL )
     {
         //Draw using "original" lighting
 		for( j = 0; j <= r*2; j++ )
@@ -997,14 +997,14 @@ void Screen::blitalphamap8(sint16 x, sint16 y, SDL_Rect *clip_rect)
 
     if( shading_ambient == 0xFF )
         return;
-	if( lighting_style == 0 )
+	if( lighting_style == LIGHTING_STYLE_NONE )
 		return;
 
     uint16 i,j;
     Game *game = Game::get_game();
     updatingalphamap = false;
 
-    if( lighting_style == 2 )
+    if( lighting_style == LIGHTING_STYLE_ORIGINAL )
     {
         for( j = 0; j < shading_rect.h; j++ )
         {

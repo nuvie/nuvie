@@ -39,7 +39,7 @@ class ConfigNode
 		return *this;
 	}
 
-	std::string get_string(const char *defaultvalue="") {
+	const std::string &get_string(const char *defaultvalue="") {
 		std::string s;
 		config.value(key, s, defaultvalue);
 		return s;

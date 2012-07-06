@@ -1,0 +1,1161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="..\ChangeLog" />
+    <CustomBuild Include="..\nuvie.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="actors">
+      <UniqueIdentifier>{6fa94624-f21c-4a4b-8eb8-093d6e299f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="conf">
+      <UniqueIdentifier>{81e9467f-ea78-4184-9116-f25642a75cc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="files">
+      <UniqueIdentifier>{2b9a56b5-9003-49e2-ac79-cb35805d9257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fonts">
+      <UniqueIdentifier>{552542ae-a963-46f8-99c1-f22eee2f2a2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{67fb38ca-dc8c-4a20-8f9b-57d94cef9076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lua">
+      <UniqueIdentifier>{b9926579-1b84-403e-95ff-deeec26c28ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="misc">
+      <UniqueIdentifier>{c400cf34-aeb0-4e0e-93eb-ce3d333ff33e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pathfinder">
+      <UniqueIdentifier>{abff306d-6518-41e0-a1f3-7308802054e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="save">
+      <UniqueIdentifier>{26515e87-3dd2-4d20-a396-f31feeb5187c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="screen">
+      <UniqueIdentifier>{28a1509b-3def-4889-815e-6aaa6d0a9233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script">
+      <UniqueIdentifier>{1104ecf3-5c30-46d1-888d-57bc91a9a37b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound">
+      <UniqueIdentifier>{28611ee5-9ab8-4bc8-ba7a-67501e866a87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="usecode">
+      <UniqueIdentifier>{b6c590ec-92ea-4441-a030-233f8ab3f078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="views">
+      <UniqueIdentifier>{8dfb2f79-90d3-4ed8-b057-8540d6947a31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound\adplug">
+      <UniqueIdentifier>{96d9c2a9-3a3b-4b14-84b9-de92fded58db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound\mixer">
+      <UniqueIdentifier>{1cde02c6-4cd6-4170-a99c-c0492da3b114}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound\mixer\decoder">
+      <UniqueIdentifier>{50c04af7-8a56-462f-9212-76037ba527bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound\mixer\decoder\wave">
+      <UniqueIdentifier>{7e639214-c31f-406a-8f50-e2ed0289754b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nuvie">
+      <UniqueIdentifier>{fb799932-9120-45f2-85a2-b9555b4cc2a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="visualc7">
+      <UniqueIdentifier>{ace28aa6-aea5-4e1e-bd9c-7b68ac40b165}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\actors\ActorManager.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\actors\U6Actor.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\actors\Actor.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\conf\XMLTree.cpp">
+      <Filter>conf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\conf\Configuration.cpp">
+      <Filter>conf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\conf\XMLNode.cpp">
+      <Filter>conf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\U6Bmp.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\U6Lib_n.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\U6Lzw.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\U6Shape.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\NuvieFileList.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\NuvieIO.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\NuvieIOFile.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fonts\U6Font.cpp">
+      <Filter>fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fonts\ConvFont.cpp">
+      <Filter>fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fonts\Font.cpp">
+      <Filter>fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fonts\FontManager.cpp">
+      <Filter>fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_text.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_TextInput.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_widget.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_YesNoDialog.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_area.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_button.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_Console.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_Dialog.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_DragManager.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_font.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_loadimage.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_ScrollBar.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_Scroller.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\ldblib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\ldebug.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\ldo.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\ldump.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lfunc.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lgc.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\linit.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\liolib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\llex.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lmathlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lmem.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\loadlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lobject.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lopcodes.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\loslib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lparser.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lstate.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lstring.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lstrlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\ltable.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\ltablib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\ltm.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lundump.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lvm.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lzio.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lapi.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lauxlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lbaselib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lcode.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\misc\U6LineWalker.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\misc\U6LList.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\misc\iAVLTree.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\CombatPathFinder.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\DirFinder.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\PartyPathFinder.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\Path.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\PathFinder.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\SchedPathFinder.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\SeekPath.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\U6AStarPath.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\ActorPathFinder.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pathfinder\AStarPath.cpp">
+      <Filter>pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\save\SaveGame.cpp">
+      <Filter>save</Filter>
+    </ClCompile>
+    <ClCompile Include="..\save\SaveManager.cpp">
+      <Filter>save</Filter>
+    </ClCompile>
+    <ClCompile Include="..\save\SaveSlot.cpp">
+      <Filter>save</Filter>
+    </ClCompile>
+    <ClCompile Include="..\save\SaveDialog.cpp">
+      <Filter>save</Filter>
+    </ClCompile>
+    <ClCompile Include="..\screen\GamePalette.cpp">
+      <Filter>screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\screen\Scale.cpp">
+      <Filter>screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\screen\Screen.cpp">
+      <Filter>screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\screen\Surface.cpp">
+      <Filter>screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\screen\Dither.cpp">
+      <Filter>screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\script\ScriptCutscene.cpp">
+      <Filter>script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\script\Script.cpp">
+      <Filter>script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\script\ScriptActor.cpp">
+      <Filter>script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\CustomSfxManager.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\PCSpeakerSfxManager.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\Song.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\SongAdPlug.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\SoundManager.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\TownsSfxManager.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\adplug\emuopl.cpp">
+      <Filter>sound\adplug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\adplug\fmopl.c">
+      <Filter>sound\adplug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\adplug\u6m.cpp">
+      <Filter>sound\adplug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\adplug\adplug_player.cpp">
+      <Filter>sound\adplug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\mixer.cpp">
+      <Filter>sound\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\mutex.cpp">
+      <Filter>sound\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\rate.cpp">
+      <Filter>sound\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\sdl-mixer.cpp">
+      <Filter>sound\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\timestamp.cpp">
+      <Filter>sound\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\audiostream.cpp">
+      <Filter>sound\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\doublebuffersdl-mixer.cpp">
+      <Filter>sound\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\FMtownsDecoderStream.cpp">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\PCSpeaker.cpp">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\PCSpeakerStream.cpp">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\U6AdPlugDecoderStream.cpp">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\wave\raw.cpp">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\wave\stdiostream.cpp">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\wave\stream.cpp">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\wave\wave.cpp">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\wave\adpcm.cpp">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\usecode\SEUseCode.cpp">
+      <Filter>usecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\usecode\U6UseCode.cpp">
+      <Filter>usecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\usecode\UseCode.cpp">
+      <Filter>usecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\usecode\MDUseCode.cpp">
+      <Filter>usecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\PortraitView.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\PortraitViewGump.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\SpellView.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\SpellViewGump.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\View.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\ViewManager.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\ActorView.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\ContainerViewGump.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\ContainerWidget.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\ContainerWidgetGump.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\DollViewGump.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\DollWidget.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\DraggableView.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\InventoryView.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\InventoryWidget.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\MapEditorView.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\PartyView.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TimedEvent.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Weather.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AnimManager.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Background.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Book.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommandBar.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Console.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Converse.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ConverseGump.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ConverseInterpret.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ConverseSpeech.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cursor.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Debug.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Effect.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\EffectManager.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\EggManager.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Event.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Game.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameClock.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameSelect.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Look.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Magic.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Map.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MapWindow.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MsgScroll.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nuvie.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Obj.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ObjManager.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Party.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Player.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Portrait.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Text.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TileManager.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\misc\U6misc.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\visualc7\dirent.cpp">
+      <Filter>visualc7</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\actors\ActorManager.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\actors\U6Actor.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\actors\U6ActorTypes.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\actors\U6WorkTypes.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\actors\Actor.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\conf\XMLNode.h">
+      <Filter>conf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\conf\XMLTree.h">
+      <Filter>conf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\conf\ConfigNode.h">
+      <Filter>conf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\conf\Configuration.h">
+      <Filter>conf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\conf\misc.h">
+      <Filter>conf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\U6Bmp.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\U6Lib_n.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\U6Lzw.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\U6Shape.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\NuvieFileList.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\NuvieIO.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\NuvieIOFile.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fonts\U6Font.h">
+      <Filter>fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fonts\ConvFont.h">
+      <Filter>fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fonts\Font.h">
+      <Filter>fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fonts\FontManager.h">
+      <Filter>fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_status.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_text.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_TextInput.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_types.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_widget.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_YesNoDialog.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\the_font.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_area.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_button.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_CallBack.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_Console.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_Dialog.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_DragArea.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_DragManager.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_font.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_loadimage.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_ScrollBar.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_Scroller.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lcode.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\ldebug.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\ldo.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lfunc.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lgc.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\llex.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\llimits.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lmem.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lobject.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lopcodes.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lparser.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lstate.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lstring.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\ltable.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\ltm.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lua.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\luaconf.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lualib.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lundump.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lvm.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lzio.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lapi.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lauxlib.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\U6LineWalker.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\U6LList.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\ActorList.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\CallBack.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\iAVLTree.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\MapEntity.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\CombatPathFinder.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\DirFinder.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\PartyPathFinder.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\Path.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\PathFinder.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\SchedPathFinder.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\SeekPath.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\U6AStarPath.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\ActorPathFinder.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pathfinder\AStarPath.h">
+      <Filter>pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\save\SaveGame.h">
+      <Filter>save</Filter>
+    </ClInclude>
+    <ClInclude Include="..\save\SaveManager.h">
+      <Filter>save</Filter>
+    </ClInclude>
+    <ClInclude Include="..\save\SaveSlot.h">
+      <Filter>save</Filter>
+    </ClInclude>
+    <ClInclude Include="..\save\Objlist.h">
+      <Filter>save</Filter>
+    </ClInclude>
+    <ClInclude Include="..\save\SaveDialog.h">
+      <Filter>save</Filter>
+    </ClInclude>
+    <ClInclude Include="..\screen\GamePalette.h">
+      <Filter>screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\screen\Scale.h">
+      <Filter>screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\screen\Screen.h">
+      <Filter>screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\screen\Surface.h">
+      <Filter>screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\screen\Dither.h">
+      <Filter>screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\script\ScriptActor.h">
+      <Filter>script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\script\ScriptCutscene.h">
+      <Filter>script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\script\Script.h">
+      <Filter>script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\CustomSfxManager.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\PCSpeakerSfxManager.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\sfx.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SfxManager.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\Song.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SongAdPlug.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\Sound.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SoundManager.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\TownsSfxManager.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\adplug\emuopl.h">
+      <Filter>sound\adplug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\adplug\fmopl.h">
+      <Filter>sound\adplug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\adplug\opl.h">
+      <Filter>sound\adplug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\adplug\silentopl.h">
+      <Filter>sound\adplug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\adplug\u6m.h">
+      <Filter>sound\adplug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\adplug\adplug_player.h">
+      <Filter>sound\adplug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\frac.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\mixer.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\mixer_intern.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\mutex.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\rate.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\sdl-mixer.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\timestamp.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\types.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\audiostream.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\doublebuffersdl-mixer.h">
+      <Filter>sound\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\FMtownsDecoderStream.h">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\PCSpeaker.h">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\PCSpeakerStream.h">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\U6AdPlugDecoderStream.h">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\endian.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\list.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\list_intern.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\memstream.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\raw.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\stdiostream.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\stream.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\wave.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\wave\adpcm.h">
+      <Filter>sound\mixer\decoder\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\usecode\MDUseCode.h">
+      <Filter>usecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\usecode\SEUseCode.h">
+      <Filter>usecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\usecode\U6ObjectTypes.h">
+      <Filter>usecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\usecode\U6UseCode.h">
+      <Filter>usecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\usecode\UseCode.h">
+      <Filter>usecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\PortraitView.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\PortraitViewGump.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\SpellView.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\SpellViewGump.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\View.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\ViewManager.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\ActorView.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\ContainerViewGump.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\ContainerWidget.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\ContainerWidgetGump.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\DollViewGump.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\DollWidget.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\DraggableView.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\InventoryFont.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\InventoryMessage.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\InventoryView.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\InventoryWidget.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\MapEditorView.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\PartyView.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AnimManager.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Background.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Book.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommandBar.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Console.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Converse.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ConverseGump.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ConverseInterpret.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ConverseSpeech.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cursor.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Effect.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\EffectManager.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\EggManager.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Event.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Game.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameClock.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameSelect.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Look.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Magic.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Map.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MapWindow.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MsgScroll.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nuvie.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nuvieDefs.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Obj.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ObjManager.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Party.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Player.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Portrait.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Text.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TileManager.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TimedEvent.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\U6objects.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Weather.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\U6misc.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\visualc7\vc7inc.h">
+      <Filter>visualc7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\visualc7\dirent.h">
+      <Filter>visualc7</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\screen\Scale.inl">
+      <Filter>screen</Filter>
+    </None>
+    <None Include="..\sound\adplug\README">
+      <Filter>sound\adplug</Filter>
+    </None>
+  </ItemGroup>
+</Project>

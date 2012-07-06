@@ -537,8 +537,8 @@ void TossAnim::start()
     start_py = src->y * pitch;
     target_px = target->x * pitch;
     target_py = target->y * pitch;
-    x_dist = abs(target_px-start_px);
-    y_dist = abs(target_py-start_py);
+    x_dist = abs(sint32(target_px-start_px));
+    y_dist = abs(sint32(target_py-start_py));
     if(x_dist) // will move in X direction (and possibly diagonally)
         tanS = float(sint32(target_py-start_py)) / sint32(target_px-start_px);
 //DEBUG(0,LEVEL_DEBUGGING,"start: tanS = %d / %d = %f\n", target_py-start_py, target_px-start_px, tanS);

@@ -70,7 +70,11 @@ DebugLevelType debug(const char * func, const char * file, const int line, const
   if (!no_header) {
     time(&now);
     ts = *localtime(&now);
+#ifdef _MSC_VER
+	strftime(buf,128,"%Y-%m-%d %H:%M:%S",&ts); 
+#else
     strftime(buf,128,"%s",&ts); 
+#endif
     fprintf(stderr,"<");
 #ifndef WITHOUT_DEBUG_TIMESTAMP_IN_HEADER
     fprintf(stderr,"%s ",buf); 

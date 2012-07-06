@@ -1,0 +1,511 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and '$(VisualStudioVersion)' == ''">$(VCTargetsPath11)</VCTargetsPath>
+  </PropertyGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+    <ProjectGuid>{A77C4994-20B7-4264-A4EB-45B65B9517B0}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\intermediate\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>nuvie</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <IncludePath>..\..\lib\SDL_mixer-1.2.12\include;..\..\lib\SDL-1.2.15\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\lib\SDL_mixer-1.2.12\lib\x86;..\..\lib\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\intermediate\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>nuvie</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <IncludePath>..\..\lib\SDL_mixer-1.2.12\include;..\..\lib\SDL-1.2.15\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\lib\SDL_mixer-1.2.12\lib\x86;..\..\lib\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalIncludeDirectories>..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../lua;../sound;../sound/adplug;../sound/mixer;../save;../fonts;../visualc7;../script;../weather;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\intermediate\</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>.\Release\intermediate\nuvie.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Release\intermediate\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\intermediate\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <TypeLibraryName>.\Release\nuvie.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0407</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\nuvie.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>sdl.lib;sdlmain.lib;sdl_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../lua;../sound;../sound/adplug;../sound/mixer;../save;../fonts;../visualc7;../script;../weather;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;_STLP_DEBUG;_STLP_USE_NEWALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\intermediate\</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>.\Debug\intermediate\nuvie.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Debug\intermediate\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\intermediate\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <TypeLibraryName>.\Debug\nuvie.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0407</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\nuvie.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <IgnoreSpecificDefaultLibraries>msvcrt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>sdl.lib;sdlmain.lib;sdl_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\ChangeLog" />
+    <CustomBuild Include="..\nuvie.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\actors\Actor.cpp" />
+    <ClCompile Include="..\actors\ActorManager.cpp" />
+    <ClCompile Include="..\actors\U6Actor.cpp" />
+    <ClCompile Include="..\AnimManager.cpp" />
+    <ClCompile Include="..\Background.cpp" />
+    <ClCompile Include="..\Book.cpp" />
+    <ClCompile Include="..\CommandBar.cpp" />
+    <ClCompile Include="..\conf\Configuration.cpp" />
+    <ClCompile Include="..\conf\XMLNode.cpp" />
+    <ClCompile Include="..\conf\XMLTree.cpp" />
+    <ClCompile Include="..\Console.cpp" />
+    <ClCompile Include="..\Converse.cpp" />
+    <ClCompile Include="..\ConverseGump.cpp" />
+    <ClCompile Include="..\ConverseInterpret.cpp" />
+    <ClCompile Include="..\ConverseSpeech.cpp" />
+    <ClCompile Include="..\Cursor.cpp" />
+    <ClCompile Include="..\Debug.cpp" />
+    <ClCompile Include="..\Effect.cpp" />
+    <ClCompile Include="..\EffectManager.cpp" />
+    <ClCompile Include="..\EggManager.cpp" />
+    <ClCompile Include="..\Event.cpp" />
+    <ClCompile Include="..\files\NuvieFileList.cpp" />
+    <ClCompile Include="..\files\NuvieIO.cpp" />
+    <ClCompile Include="..\files\NuvieIOFile.cpp" />
+    <ClCompile Include="..\files\U6Bmp.cpp" />
+    <ClCompile Include="..\files\U6Lib_n.cpp" />
+    <ClCompile Include="..\files\U6Lzw.cpp" />
+    <ClCompile Include="..\files\U6Shape.cpp" />
+    <ClCompile Include="..\fonts\ConvFont.cpp" />
+    <ClCompile Include="..\fonts\Font.cpp" />
+    <ClCompile Include="..\fonts\FontManager.cpp" />
+    <ClCompile Include="..\fonts\U6Font.cpp" />
+    <ClCompile Include="..\Game.cpp" />
+    <ClCompile Include="..\GameClock.cpp" />
+    <ClCompile Include="..\GameSelect.cpp" />
+    <ClCompile Include="..\GUI\GUI.cpp" />
+    <ClCompile Include="..\GUI\GUI_area.cpp" />
+    <ClCompile Include="..\GUI\GUI_button.cpp" />
+    <ClCompile Include="..\GUI\GUI_Console.cpp" />
+    <ClCompile Include="..\GUI\GUI_Dialog.cpp" />
+    <ClCompile Include="..\GUI\GUI_DragManager.cpp" />
+    <ClCompile Include="..\GUI\GUI_font.cpp" />
+    <ClCompile Include="..\GUI\GUI_loadimage.cpp" />
+    <ClCompile Include="..\GUI\GUI_ScrollBar.cpp" />
+    <ClCompile Include="..\GUI\GUI_Scroller.cpp" />
+    <ClCompile Include="..\GUI\GUI_text.cpp" />
+    <ClCompile Include="..\GUI\GUI_TextInput.cpp" />
+    <ClCompile Include="..\GUI\GUI_widget.cpp" />
+    <ClCompile Include="..\GUI\GUI_YesNoDialog.cpp" />
+    <ClCompile Include="..\Look.cpp" />
+    <ClCompile Include="..\lua\lapi.c" />
+    <ClCompile Include="..\lua\lauxlib.c" />
+    <ClCompile Include="..\lua\lbaselib.c" />
+    <ClCompile Include="..\lua\lcode.c" />
+    <ClCompile Include="..\lua\ldblib.c" />
+    <ClCompile Include="..\lua\ldebug.c" />
+    <ClCompile Include="..\lua\ldo.c" />
+    <ClCompile Include="..\lua\ldump.c" />
+    <ClCompile Include="..\lua\lfunc.c" />
+    <ClCompile Include="..\lua\lgc.c" />
+    <ClCompile Include="..\lua\linit.c" />
+    <ClCompile Include="..\lua\liolib.c" />
+    <ClCompile Include="..\lua\llex.c" />
+    <ClCompile Include="..\lua\lmathlib.c" />
+    <ClCompile Include="..\lua\lmem.c" />
+    <ClCompile Include="..\lua\loadlib.c" />
+    <ClCompile Include="..\lua\lobject.c" />
+    <ClCompile Include="..\lua\lopcodes.c" />
+    <ClCompile Include="..\lua\loslib.c" />
+    <ClCompile Include="..\lua\lparser.c" />
+    <ClCompile Include="..\lua\lstate.c" />
+    <ClCompile Include="..\lua\lstring.c" />
+    <ClCompile Include="..\lua\lstrlib.c" />
+    <ClCompile Include="..\lua\ltable.c" />
+    <ClCompile Include="..\lua\ltablib.c" />
+    <ClCompile Include="..\lua\ltm.c" />
+    <ClCompile Include="..\lua\lundump.c" />
+    <ClCompile Include="..\lua\lvm.c" />
+    <ClCompile Include="..\lua\lzio.c" />
+    <ClCompile Include="..\Magic.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\Map.cpp" />
+    <ClCompile Include="..\MapWindow.cpp" />
+    <ClCompile Include="..\misc\iAVLTree.cpp" />
+    <ClCompile Include="..\misc\U6LineWalker.cpp" />
+    <ClCompile Include="..\misc\U6LList.cpp" />
+    <ClCompile Include="..\misc\U6misc.cpp" />
+    <ClCompile Include="..\MsgScroll.cpp" />
+    <ClCompile Include="..\nuvie.cpp" />
+    <ClCompile Include="..\Obj.cpp" />
+    <ClCompile Include="..\ObjManager.cpp" />
+    <ClCompile Include="..\Party.cpp" />
+    <ClCompile Include="..\pathfinder\ActorPathFinder.cpp" />
+    <ClCompile Include="..\pathfinder\AStarPath.cpp" />
+    <ClCompile Include="..\pathfinder\CombatPathFinder.cpp" />
+    <ClCompile Include="..\pathfinder\DirFinder.cpp" />
+    <ClCompile Include="..\pathfinder\PartyPathFinder.cpp" />
+    <ClCompile Include="..\pathfinder\Path.cpp" />
+    <ClCompile Include="..\pathfinder\PathFinder.cpp" />
+    <ClCompile Include="..\pathfinder\SchedPathFinder.cpp" />
+    <ClCompile Include="..\pathfinder\SeekPath.cpp" />
+    <ClCompile Include="..\pathfinder\U6AStarPath.cpp" />
+    <ClCompile Include="..\Player.cpp" />
+    <ClCompile Include="..\Portrait.cpp" />
+    <ClCompile Include="..\save\SaveDialog.cpp" />
+    <ClCompile Include="..\save\SaveGame.cpp" />
+    <ClCompile Include="..\save\SaveManager.cpp" />
+    <ClCompile Include="..\save\SaveSlot.cpp" />
+    <ClCompile Include="..\screen\Dither.cpp" />
+    <ClCompile Include="..\screen\GamePalette.cpp" />
+    <ClCompile Include="..\screen\Scale.cpp" />
+    <ClCompile Include="..\screen\Screen.cpp" />
+    <ClCompile Include="..\screen\Surface.cpp" />
+    <ClCompile Include="..\script\Script.cpp" />
+    <ClCompile Include="..\script\ScriptActor.cpp" />
+    <ClCompile Include="..\script\ScriptCutscene.cpp" />
+    <ClCompile Include="..\sound\adplug\adplug_player.cpp" />
+    <ClCompile Include="..\sound\adplug\emuopl.cpp" />
+    <ClCompile Include="..\sound\adplug\fmopl.c" />
+    <ClCompile Include="..\sound\adplug\u6m.cpp" />
+    <ClCompile Include="..\sound\CustomSfxManager.cpp" />
+    <ClCompile Include="..\sound\mixer\audiostream.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\FMtownsDecoderStream.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\PCSpeaker.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\PCSpeakerStream.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\U6AdPlugDecoderStream.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\wave\adpcm.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\wave\raw.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\wave\stdiostream.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\wave\stream.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\wave\wave.cpp" />
+    <ClCompile Include="..\sound\mixer\doublebuffersdl-mixer.cpp" />
+    <ClCompile Include="..\sound\mixer\mixer.cpp" />
+    <ClCompile Include="..\sound\mixer\mutex.cpp" />
+    <ClCompile Include="..\sound\mixer\rate.cpp" />
+    <ClCompile Include="..\sound\mixer\sdl-mixer.cpp" />
+    <ClCompile Include="..\sound\mixer\timestamp.cpp" />
+    <ClCompile Include="..\sound\PCSpeakerSfxManager.cpp" />
+    <ClCompile Include="..\sound\Song.cpp" />
+    <ClCompile Include="..\sound\SongAdPlug.cpp" />
+    <ClCompile Include="..\sound\SoundManager.cpp" />
+    <ClCompile Include="..\sound\TownsSfxManager.cpp" />
+    <ClCompile Include="..\Text.cpp" />
+    <ClCompile Include="..\TileManager.cpp" />
+    <ClCompile Include="..\TimedEvent.cpp" />
+    <ClCompile Include="..\usecode\MDUseCode.cpp" />
+    <ClCompile Include="..\usecode\SEUseCode.cpp" />
+    <ClCompile Include="..\usecode\U6UseCode.cpp" />
+    <ClCompile Include="..\usecode\UseCode.cpp" />
+    <ClCompile Include="..\views\ActorView.cpp" />
+    <ClCompile Include="..\views\ContainerViewGump.cpp" />
+    <ClCompile Include="..\views\ContainerWidget.cpp" />
+    <ClCompile Include="..\views\ContainerWidgetGump.cpp" />
+    <ClCompile Include="..\views\DollViewGump.cpp" />
+    <ClCompile Include="..\views\DollWidget.cpp" />
+    <ClCompile Include="..\views\DraggableView.cpp" />
+    <ClCompile Include="..\views\InventoryView.cpp" />
+    <ClCompile Include="..\views\InventoryWidget.cpp" />
+    <ClCompile Include="..\views\MapEditorView.cpp" />
+    <ClCompile Include="..\views\PartyView.cpp" />
+    <ClCompile Include="..\views\PortraitView.cpp" />
+    <ClCompile Include="..\views\PortraitViewGump.cpp" />
+    <ClCompile Include="..\views\SpellView.cpp" />
+    <ClCompile Include="..\views\SpellViewGump.cpp" />
+    <ClCompile Include="..\views\View.cpp" />
+    <ClCompile Include="..\views\ViewManager.cpp" />
+    <ClCompile Include="..\visualc7\dirent.cpp" />
+    <ClCompile Include="..\Weather.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\actors\Actor.h" />
+    <ClInclude Include="..\actors\ActorManager.h" />
+    <ClInclude Include="..\actors\U6Actor.h" />
+    <ClInclude Include="..\actors\U6ActorTypes.h" />
+    <ClInclude Include="..\actors\U6WorkTypes.h" />
+    <ClInclude Include="..\AnimManager.h" />
+    <ClInclude Include="..\Background.h" />
+    <ClInclude Include="..\Book.h" />
+    <ClInclude Include="..\CommandBar.h" />
+    <ClInclude Include="..\conf\ConfigNode.h" />
+    <ClInclude Include="..\conf\Configuration.h" />
+    <ClInclude Include="..\conf\misc.h" />
+    <ClInclude Include="..\conf\XMLNode.h" />
+    <ClInclude Include="..\conf\XMLTree.h" />
+    <ClInclude Include="..\Console.h" />
+    <ClInclude Include="..\Converse.h" />
+    <ClInclude Include="..\ConverseGump.h" />
+    <ClInclude Include="..\ConverseInterpret.h" />
+    <ClInclude Include="..\ConverseSpeech.h" />
+    <ClInclude Include="..\Cursor.h" />
+    <ClInclude Include="..\Effect.h" />
+    <ClInclude Include="..\EffectManager.h" />
+    <ClInclude Include="..\EggManager.h" />
+    <ClInclude Include="..\Event.h" />
+    <ClInclude Include="..\files\NuvieFileList.h" />
+    <ClInclude Include="..\files\NuvieIO.h" />
+    <ClInclude Include="..\files\NuvieIOFile.h" />
+    <ClInclude Include="..\files\U6Bmp.h" />
+    <ClInclude Include="..\files\U6Lib_n.h" />
+    <ClInclude Include="..\files\U6Lzw.h" />
+    <ClInclude Include="..\files\U6Shape.h" />
+    <ClInclude Include="..\fonts\ConvFont.h" />
+    <ClInclude Include="..\fonts\Font.h" />
+    <ClInclude Include="..\fonts\FontManager.h" />
+    <ClInclude Include="..\fonts\U6Font.h" />
+    <ClInclude Include="..\Game.h" />
+    <ClInclude Include="..\GameClock.h" />
+    <ClInclude Include="..\GameSelect.h" />
+    <ClInclude Include="..\GUI\GUI.h" />
+    <ClInclude Include="..\GUI\GUI_area.h" />
+    <ClInclude Include="..\GUI\GUI_button.h" />
+    <ClInclude Include="..\GUI\GUI_CallBack.h" />
+    <ClInclude Include="..\GUI\GUI_Console.h" />
+    <ClInclude Include="..\GUI\GUI_Dialog.h" />
+    <ClInclude Include="..\GUI\GUI_DragArea.h" />
+    <ClInclude Include="..\GUI\GUI_DragManager.h" />
+    <ClInclude Include="..\GUI\GUI_font.h" />
+    <ClInclude Include="..\GUI\GUI_loadimage.h" />
+    <ClInclude Include="..\GUI\GUI_ScrollBar.h" />
+    <ClInclude Include="..\GUI\GUI_Scroller.h" />
+    <ClInclude Include="..\GUI\GUI_status.h" />
+    <ClInclude Include="..\GUI\GUI_text.h" />
+    <ClInclude Include="..\GUI\GUI_TextInput.h" />
+    <ClInclude Include="..\GUI\GUI_types.h" />
+    <ClInclude Include="..\GUI\GUI_widget.h" />
+    <ClInclude Include="..\GUI\GUI_YesNoDialog.h" />
+    <ClInclude Include="..\GUI\the_font.h" />
+    <ClInclude Include="..\Look.h" />
+    <ClInclude Include="..\lua\lapi.h" />
+    <ClInclude Include="..\lua\lauxlib.h" />
+    <ClInclude Include="..\lua\lcode.h" />
+    <ClInclude Include="..\lua\ldebug.h" />
+    <ClInclude Include="..\lua\ldo.h" />
+    <ClInclude Include="..\lua\lfunc.h" />
+    <ClInclude Include="..\lua\lgc.h" />
+    <ClInclude Include="..\lua\llex.h" />
+    <ClInclude Include="..\lua\llimits.h" />
+    <ClInclude Include="..\lua\lmem.h" />
+    <ClInclude Include="..\lua\lobject.h" />
+    <ClInclude Include="..\lua\lopcodes.h" />
+    <ClInclude Include="..\lua\lparser.h" />
+    <ClInclude Include="..\lua\lstate.h" />
+    <ClInclude Include="..\lua\lstring.h" />
+    <ClInclude Include="..\lua\ltable.h" />
+    <ClInclude Include="..\lua\ltm.h" />
+    <ClInclude Include="..\lua\lua.h" />
+    <ClInclude Include="..\lua\luaconf.h" />
+    <ClInclude Include="..\lua\lualib.h" />
+    <ClInclude Include="..\lua\lundump.h" />
+    <ClInclude Include="..\lua\lvm.h" />
+    <ClInclude Include="..\lua\lzio.h" />
+    <ClInclude Include="..\Magic.h" />
+    <ClInclude Include="..\main.h" />
+    <ClInclude Include="..\Map.h" />
+    <ClInclude Include="..\MapWindow.h" />
+    <ClInclude Include="..\misc\ActorList.h" />
+    <ClInclude Include="..\misc\CallBack.h" />
+    <ClInclude Include="..\misc\iAVLTree.h" />
+    <ClInclude Include="..\misc\MapEntity.h" />
+    <ClInclude Include="..\misc\U6LineWalker.h" />
+    <ClInclude Include="..\misc\U6LList.h" />
+    <ClInclude Include="..\misc\U6misc.h" />
+    <ClInclude Include="..\MsgScroll.h" />
+    <ClInclude Include="..\nuvie.h" />
+    <ClInclude Include="..\nuvieDefs.h" />
+    <ClInclude Include="..\Obj.h" />
+    <ClInclude Include="..\ObjManager.h" />
+    <ClInclude Include="..\Party.h" />
+    <ClInclude Include="..\pathfinder\ActorPathFinder.h" />
+    <ClInclude Include="..\pathfinder\AStarPath.h" />
+    <ClInclude Include="..\pathfinder\CombatPathFinder.h" />
+    <ClInclude Include="..\pathfinder\DirFinder.h" />
+    <ClInclude Include="..\pathfinder\PartyPathFinder.h" />
+    <ClInclude Include="..\pathfinder\Path.h" />
+    <ClInclude Include="..\pathfinder\PathFinder.h" />
+    <ClInclude Include="..\pathfinder\SchedPathFinder.h" />
+    <ClInclude Include="..\pathfinder\SeekPath.h" />
+    <ClInclude Include="..\pathfinder\U6AStarPath.h" />
+    <ClInclude Include="..\Player.h" />
+    <ClInclude Include="..\Portrait.h" />
+    <ClInclude Include="..\save\Objlist.h" />
+    <ClInclude Include="..\save\SaveDialog.h" />
+    <ClInclude Include="..\save\SaveGame.h" />
+    <ClInclude Include="..\save\SaveManager.h" />
+    <ClInclude Include="..\save\SaveSlot.h" />
+    <ClInclude Include="..\screen\Dither.h" />
+    <ClInclude Include="..\screen\GamePalette.h" />
+    <ClInclude Include="..\screen\Scale.h" />
+    <ClInclude Include="..\screen\Screen.h" />
+    <ClInclude Include="..\screen\Surface.h" />
+    <ClInclude Include="..\script\Script.h" />
+    <ClInclude Include="..\script\ScriptActor.h" />
+    <ClInclude Include="..\script\ScriptCutscene.h" />
+    <ClInclude Include="..\sound\adplug\adplug_player.h" />
+    <ClInclude Include="..\sound\adplug\emuopl.h" />
+    <ClInclude Include="..\sound\adplug\fmopl.h" />
+    <ClInclude Include="..\sound\adplug\opl.h" />
+    <ClInclude Include="..\sound\adplug\silentopl.h" />
+    <ClInclude Include="..\sound\adplug\u6m.h" />
+    <ClInclude Include="..\sound\CustomSfxManager.h" />
+    <ClInclude Include="..\sound\mixer\audiostream.h" />
+    <ClInclude Include="..\sound\mixer\decoder\FMtownsDecoderStream.h" />
+    <ClInclude Include="..\sound\mixer\decoder\PCSpeaker.h" />
+    <ClInclude Include="..\sound\mixer\decoder\PCSpeakerStream.h" />
+    <ClInclude Include="..\sound\mixer\decoder\U6AdPlugDecoderStream.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\adpcm.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\endian.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\list.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\list_intern.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\memstream.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\raw.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\stdiostream.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\stream.h" />
+    <ClInclude Include="..\sound\mixer\decoder\wave\wave.h" />
+    <ClInclude Include="..\sound\mixer\doublebuffersdl-mixer.h" />
+    <ClInclude Include="..\sound\mixer\frac.h" />
+    <ClInclude Include="..\sound\mixer\mixer.h" />
+    <ClInclude Include="..\sound\mixer\mixer_intern.h" />
+    <ClInclude Include="..\sound\mixer\mutex.h" />
+    <ClInclude Include="..\sound\mixer\rate.h" />
+    <ClInclude Include="..\sound\mixer\sdl-mixer.h" />
+    <ClInclude Include="..\sound\mixer\timestamp.h" />
+    <ClInclude Include="..\sound\mixer\types.h" />
+    <ClInclude Include="..\sound\PCSpeakerSfxManager.h" />
+    <ClInclude Include="..\sound\sfx.h" />
+    <ClInclude Include="..\sound\SfxManager.h" />
+    <ClInclude Include="..\sound\Song.h" />
+    <ClInclude Include="..\sound\SongAdPlug.h" />
+    <ClInclude Include="..\sound\Sound.h" />
+    <ClInclude Include="..\sound\SoundManager.h" />
+    <ClInclude Include="..\sound\TownsSfxManager.h" />
+    <ClInclude Include="..\Text.h" />
+    <ClInclude Include="..\TileManager.h" />
+    <ClInclude Include="..\TimedEvent.h" />
+    <ClInclude Include="..\U6objects.h" />
+    <ClInclude Include="..\usecode\MDUseCode.h" />
+    <ClInclude Include="..\usecode\SEUseCode.h" />
+    <ClInclude Include="..\usecode\U6ObjectTypes.h" />
+    <ClInclude Include="..\usecode\U6UseCode.h" />
+    <ClInclude Include="..\usecode\UseCode.h" />
+    <ClInclude Include="..\views\ActorView.h" />
+    <ClInclude Include="..\views\ContainerViewGump.h" />
+    <ClInclude Include="..\views\ContainerWidget.h" />
+    <ClInclude Include="..\views\ContainerWidgetGump.h" />
+    <ClInclude Include="..\views\DollViewGump.h" />
+    <ClInclude Include="..\views\DollWidget.h" />
+    <ClInclude Include="..\views\DraggableView.h" />
+    <ClInclude Include="..\views\InventoryFont.h" />
+    <ClInclude Include="..\views\InventoryMessage.h" />
+    <ClInclude Include="..\views\InventoryView.h" />
+    <ClInclude Include="..\views\InventoryWidget.h" />
+    <ClInclude Include="..\views\MapEditorView.h" />
+    <ClInclude Include="..\views\PartyView.h" />
+    <ClInclude Include="..\views\PortraitView.h" />
+    <ClInclude Include="..\views\PortraitViewGump.h" />
+    <ClInclude Include="..\views\SpellView.h" />
+    <ClInclude Include="..\views\SpellViewGump.h" />
+    <ClInclude Include="..\views\View.h" />
+    <ClInclude Include="..\views\ViewManager.h" />
+    <ClInclude Include="..\visualc7\dirent.h" />
+    <ClInclude Include="..\visualc7\vc7inc.h" />
+    <ClInclude Include="..\Weather.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\screen\Scale.inl" />
+    <None Include="..\sound\adplug\README" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

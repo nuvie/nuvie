@@ -26,8 +26,10 @@
 
 #define snprintf	_snprintf
 #define strcasecmp	_stricmp
+#define strdup		_strdup
 
 #include <locale>
+#include <direct.h>
 #include <math.h>
 #include <assert.h>
 
@@ -35,6 +37,9 @@
 #pragma	warning (disable : 4100)	//	unreferenced formal parameter
 #pragma warning (disable : 4800)	//	forcing value to bool 'true' or 'false' (performance warning)
 #pragma warning (disable : 4121)	//	alignment of member was sensitive to packing
+#pragma warning (disable : 4068)	//	unknown pragma
+#pragma warning (disable : 4099)	//	'$' : type name first seen using 'class' now seen using 'struct'
+#pragma warning (disable : 4996)	//	'_strdup': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strdup.
 
 //	for pre-compiled headers when I get all the #include issues fixed
 /*
@@ -46,8 +51,13 @@
 #include "misc.h"
 */
 
-// .NET has no roundf function (C99)
-__inline roundf (float val) { return floorf (val); }
+// .NET has no roundf or nearbyint function (C99)
+__inline float roundf (float val) { return fmod( val, 1.0f ) >= 0.5f ? ceilf (val) : floorf (val); }
+#define nearbyint roundf
+
+#define mkdir _mkdir
+
+#define __func__ __FUNCTION__
 
 #define M_PI	3.1415926535897932384626433832795
 

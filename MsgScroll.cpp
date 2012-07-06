@@ -435,7 +435,7 @@ bool MsgScroll::parse_token(MsgText *token)
                  {
                 	if(capitalise_next_letter)
                 	{
-                		token->s[0] = std::toupper(token->s[0]);
+						token->s[0] = toupper(token->s[0]);
                 		capitalise_next_letter = false;
                 	}
 
@@ -715,7 +715,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
     return(GUI_PASS);
 }
 
-std::string MsgScroll::get_token_string_at_pos(uint16 x, uint16 y)
+const std::string &MsgScroll::get_token_string_at_pos(uint16 x, uint16 y)
 {
  uint16 i;
  sint32 buf_x, buf_y;
@@ -923,7 +923,6 @@ void MsgScroll::clear_page_break()
 
   process_holding_buffer();
 }
-
 
 /* Set callback & callback_user_data so that a message will be sent to the
  * caller when input has been gathered. */

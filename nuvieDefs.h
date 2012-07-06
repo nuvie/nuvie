@@ -73,9 +73,9 @@ const uint16 map_pitch[2] = { 1024, 256 }; // width of 0:surface plane, and 1:al
 #define FELUCCA_PHASE 1.1666666666666667
 
 #ifdef WITHOUT_DEBUG
-#define DEBUG(x...)
+#define DEBUG(...)
 #else
-#define DEBUG(x...) debug(__func__,__FILE__,__LINE__,x)
+#define DEBUG(...) debug(__func__,__FILE__,__LINE__,__VA_ARGS__)
 typedef enum { LEVEL_EMERGENCY=0, LEVEL_ALERT, LEVEL_CRITICAL, LEVEL_ERROR, LEVEL_WARNING, LEVEL_NOTIFICATION, LEVEL_INFORMATIONAL, LEVEL_DEBUGGING } DebugLevelType;
 DebugLevelType debug(const char * func, const char * file, const int line, const bool no_header,const DebugLevelType level, const char *format, ...);
 #endif /* WITHOUT_DEBUG */
@@ -110,7 +110,7 @@ typedef unsigned char BOOL;
 
 #define MAXPATHLEN 256
 
-#define nuprint(T...) Game::get_game()->get_scroll()->printf(T)
+#define nuprint(...) Game::get_game()->get_scroll()->printf(__VA_ARGS__)
 /*#define nuprint(T) Game::get_game()->get_scroll()->display_string(T)*/
 /*#define nuprint(T) Game::get_game()->get_scroll()->display_string(T); \
                      Game::get_game()->get_scroll()->display_string("\n");*/

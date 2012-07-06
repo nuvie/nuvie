@@ -561,7 +561,7 @@ void MapWindow::updateAmbience()
 	
      int h = clock->get_hour();
 
-   if (screen->get_lighting_style() == 1) //smooth_lighting
+   if (screen->get_lighting_style() == LIGHTING_STYLE_SMOOTH)
    {
      if(x_ray_view == true)
          screen->set_ambient( 0xFF );
@@ -578,7 +578,7 @@ void MapWindow::updateAmbience()
      else //Night
         screen->set_ambient( 50 );
    }
-   else
+   else // LIGHTING_STYLE_ORIGINAL
    {
      if(x_ray_view == true)
          screen->set_ambient( 0xFF );

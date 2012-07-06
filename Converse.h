@@ -137,8 +137,8 @@ public:
 
     bool input();
     void print(const char *s = NULL);
-    string get_input()  { return in_str; }
-    string get_output() { return out_str; }
+    const std::string &get_input()  { return in_str; }
+    const std::string &get_output() { return out_str; }
     void set_input(std::string s) { in_str = s; }
     void set_output(std::string s) { out_str = s; }
 

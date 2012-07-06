@@ -204,7 +204,7 @@ protected:
     uint8 get_val_size(uint32 vi);
     converse_value pop_val();
     uint8 pop_val_size();
-    string get_text() { return text; }
+    const std::string &get_text() { return text; }
     void flush() {in.resize(0); in_start = 0; text.resize(0);}
 
     /* operating on input */
