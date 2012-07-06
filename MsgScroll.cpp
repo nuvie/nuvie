@@ -715,7 +715,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
     return(GUI_PASS);
 }
 
-const std::string &MsgScroll::get_token_string_at_pos(uint16 x, uint16 y)
+const std::string MsgScroll::get_token_string_at_pos(uint16 x, uint16 y)
 {
  uint16 i;
  sint32 buf_x, buf_y;

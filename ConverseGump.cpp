@@ -240,7 +240,7 @@ void ConverseGump::display_string(std::string s, Font *f)
 	MsgScroll::display_string(strip_whitespace_after_break(s), f);
 }
 
-const std::string &ConverseGump::strip_whitespace_after_break(std::string s)
+const std::string ConverseGump::strip_whitespace_after_break(std::string s)
 {
 	std::string::iterator iter;
 	for(iter=s.begin();iter != s.end();)
@@ -322,7 +322,7 @@ void ConverseGump::add_keyword(std::string keyword)
 	keyword_list->push_back(m_text);
 }
 
-const std::string &ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
+const std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 {
 	uint16 total_length = 0;
 	uint16 tmp_y = area.y + PORTRAIT_HEIGHT + 8 + 3 + 4;

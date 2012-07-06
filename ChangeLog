@@ -1,5 +1,19 @@
+2012-07-06  Eric Fry <efry at users.sourceforge.net> r1393
+	* Removed return references to local variables that were introduced in r1390.
+
 2012-07-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1392
 	* views directory: initialize member variables in the constructor
+
+2012-07-06 <smatthews at users.sourceforge.net> r1390
+	* Added Visual Studio 11 (2012) solution and project files
+	* Fixed several uninitialized variable crashes
+	* Fixed several STL variable scoping crashes in MSVC regarding using an out-of-scope std::string
+	* Fixed several implicit cast disambiguation compilation errors (MSVC)
+	* Fixed STL array compilation errors (MSVC)
+	* Changed named variadic macro arguments to __VA_ARGS__ for compatibility with MSVC (should retain compatibility with gcc)
+	* Added MSVC-compatible workarounds for variable-length arrays (alloca)
+	* Added MSVC-compatible workaround for gcc-specific strftime parameter
+	* Added descriptive DEF names to lighting modes (LIGHTING_STYLE_NONE, LIGHTING_STYLE_ORIGINAL, LIGHTING_STYLE_SMOOTH)
 
 2012-07-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1387
 	* Fix pathfinding typo that counted moving on the y axis as being diagonal
