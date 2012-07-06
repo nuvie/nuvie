@@ -39,9 +39,9 @@
 
 PortraitView::PortraitView(Configuration *cfg) : View(cfg)
 {
- portrait_data = NULL;
- name_string = new string;
- doll_widget = NULL;
+ portrait_data = NULL; portrait = NULL;
+ name_string = new string; show_cursor = false;
+ doll_widget = NULL; waiting = false; display_doll = false;
 }
 
 PortraitView::~PortraitView()

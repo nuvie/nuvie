@@ -32,7 +32,7 @@
 DraggableView::DraggableView(Configuration *config)
 : View(config)
 {
-	drag = false;
+	drag = false; button_x = 0; button_y = 0;
 }
 
 DraggableView::~DraggableView()

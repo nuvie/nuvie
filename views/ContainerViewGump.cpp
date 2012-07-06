@@ -36,7 +36,8 @@
 
 ContainerViewGump::ContainerViewGump(Configuration *cfg) : DraggableView(cfg)
 {
-	bg_image = NULL;
+	bg_image = NULL; gump_button = NULL; up_arrow_button = NULL; down_arrow_button = NULL;
+	container_widget = NULL; font = NULL; actor = NULL; container_obj = NULL;
 }
 
 ContainerViewGump::~ContainerViewGump()

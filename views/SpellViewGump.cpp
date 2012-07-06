@@ -37,7 +37,7 @@
 SpellViewGump::SpellViewGump(Configuration *cfg) : SpellView(cfg)
 {
 	num_spells_per_page = 10;
-	bg_image = NULL;
+	bg_image = NULL; gump_button = NULL; font = NULL;
 }
 
 SpellViewGump::~SpellViewGump()

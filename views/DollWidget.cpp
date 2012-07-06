@@ -89,9 +89,9 @@ DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(N
  config = cfg;
  callback_object = callback;
 
- actor = NULL;
- selected_obj = NULL;
- unready_obj = NULL;
+ actor = NULL; tile_manager = NULL;
+ selected_obj = NULL; obj_manager = NULL;
+ unready_obj = NULL; empty_tile = NULL; blocked_tile = NULL;
 
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  

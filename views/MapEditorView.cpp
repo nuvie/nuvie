@@ -37,7 +37,7 @@
 MapEditorView::MapEditorView(Configuration *config)
 : View(config)
 {
-
+ roof_tiles = NULL; map_window = NULL; up_button = NULL; down_button = NULL;
 }
 
 MapEditorView::~MapEditorView()

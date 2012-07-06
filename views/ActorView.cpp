@@ -42,6 +42,7 @@ ActorView::ActorView(Configuration *cfg) : View(cfg)
 {
  portrait = NULL;
  portrait_data = NULL;
+ in_party = false;
 }
 
 ActorView::~ActorView()

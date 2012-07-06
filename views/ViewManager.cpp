@@ -46,7 +46,10 @@ ViewManager::ViewManager(Configuration *cfg)
 {
  config = cfg;
  config->value("config/GameType",game_type);
- current_view = NULL;
+ current_view = NULL; gui = NULL; text = NULL;
+ tile_manager = NULL; obj_manager = NULL; party = NULL;
+ portrait = NULL; actor_view = NULL; inventory_view = NULL;
+ portrait_view = NULL; party_view = NULL; spell_view = NULL;
 }
 
 ViewManager::~ViewManager()

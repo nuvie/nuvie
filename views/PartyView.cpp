@@ -42,7 +42,7 @@ extern GUI_status actorViewButtonCallback(void *data);
 
 PartyView::PartyView(Configuration *cfg) : View(cfg)
 {
-
+ player = NULL; view_manager = NULL;
 }
 
 PartyView::~PartyView()

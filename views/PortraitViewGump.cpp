@@ -38,9 +38,9 @@
 
 PortraitViewGump::PortraitViewGump(Configuration *cfg) : DraggableView(cfg)
 {
-	bg_image = NULL;
-	font = NULL;
-	portrait_data = NULL;
+	bg_image = NULL; portrait = NULL;
+	font = NULL; gump_button = NULL;
+	portrait_data = NULL; actor = NULL;
 }
 
 PortraitViewGump::~PortraitViewGump()

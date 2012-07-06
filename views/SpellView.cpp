@@ -52,10 +52,10 @@ static const int obj_n_reagent[8]={OBJ_U6_MANDRAKE_ROOT, OBJ_U6_NIGHTSHADE, OBJ_
 
 SpellView::SpellView(Configuration *cfg) : DraggableView(cfg)
 {
-	spell_container = NULL;
-	level = 1;
-	spell_num = 0;
-	num_spells_per_page = 8;
+	spell_container = NULL; background = NULL;
+	level = 1; all_spells_mode = false;
+	spell_num = 0; event_mode = false;
+	num_spells_per_page = 8; caster = NULL;
 }
 
 SpellView::~SpellView()

@@ -54,9 +54,9 @@ InventoryWidget::InventoryWidget(Configuration *cfg, GUI_CallBack *callback): GU
  config = cfg;
  callback_object = callback;
 
- container_obj = NULL;
- selected_obj = NULL;
- target_obj = NULL;
+ container_obj = NULL; tile_manager = NULL; obj_manager = NULL;
+ selected_obj = NULL; text = NULL; actor = NULL;
+ target_obj = NULL; target_cont = NULL; empty_tile = NULL;
  ready_obj = NULL; // FIXME: this is unused but I might need it again -- SB-X
  row_offset = 0;
  

@@ -33,10 +33,10 @@
 
 View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
 {
- config = cfg;
- left_button = NULL;
- right_button = NULL;
- party_button = NULL;
+ config = cfg; new_ui_mode = false;
+ left_button = NULL; text = NULL; tile_manager = NULL;
+ right_button = NULL; obj_manager = NULL; party = NULL;
+ party_button = NULL; inventory_button = NULL; actor_button = NULL;
 }
 
 View::~View()

@@ -37,7 +37,8 @@
 
 
 DollViewGump::DollViewGump(Configuration *cfg) : DraggableView(cfg),
-	bg_image(NULL), gump_button(NULL), combat_button(NULL), heart_button(NULL), party_button(NULL), inventory_button(NULL)
+	bg_image(NULL), gump_button(NULL), combat_button(NULL), heart_button(NULL), party_button(NULL), inventory_button(NULL),
+	doll_widget(NULL), font(NULL), actor(NULL)
 {
 	bg_image = NULL;
 }

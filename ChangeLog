@@ -1,3 +1,6 @@
+2012-07-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1392
+	* views directory: initialize member variables in the constructor
+
 2012-07-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1387
 	* Fix pathfinding typo that counted moving on the y axis as being diagonal
 	* Remove stray and test roof tiles from the map
