@@ -50,6 +50,7 @@ GUI_Font::GUI_Font(char *name)
     exit(1);
   }
   SetTransparency(1);
+  w_data = NULL;
 }
 
 /* use given YxY surface */
@@ -63,6 +64,7 @@ GUI_Font::GUI_Font(SDL_Surface *bitmap)
   charw = fontStore->w/16;
   freefont=0;
   SetTransparency(1);
+  w_data = NULL;
 }
 
 /* copy constructor */
@@ -74,6 +76,7 @@ GUI_Font::GUI_Font(GUI_Font& font)
   charw = fontStore->w/16;
   freefont=1;
   SetTransparency(1);
+  w_data = NULL;
 }
 
 GUI_Font::~GUI_Font()

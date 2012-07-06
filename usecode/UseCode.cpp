@@ -33,6 +33,13 @@ UseCode::UseCode(Game *g, Configuration *cfg)
 {
  game = g;
  config = cfg;
+ obj_manager = NULL;
+ map = NULL;
+ player = NULL;
+ scroll = NULL;
+ actor_manager = NULL;
+ obj_manager = NULL;
+ party = NULL;
 
  clear_items();
 }

@@ -32,9 +32,10 @@ class Cu6mPlayer: public CPlayer
     public:
   static CPlayer *factory(Copl *newopl);
 
-        Cu6mPlayer(Copl *newopl) : CPlayer(newopl), song_data(0)
+        Cu6mPlayer(Copl *newopl) : CPlayer(newopl), song_data(0),driver_active(0),
+            songend(0), song_pos(0), loop_position(0), read_delay(0)
     {
-    };
+    }
 
     ~Cu6mPlayer();
 

@@ -52,6 +52,7 @@ GUI:: GUI(Configuration *c, Screen *s)
 	maxwidgets = 0;
 	widgets = NULL;
 	display = 1;
+	running = 0;
 
   screen_scale_factor = screen->get_scale_factor();
 

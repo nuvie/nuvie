@@ -47,6 +47,10 @@ SaveManager::SaveManager(Configuration *cfg)
 {
  config = cfg;
  dialog = NULL;
+ actor_manager = NULL;
+ obj_manager = NULL;
+ savegame = NULL;
+ game_type = 0;
 }
 
 // setup the savedir variable.

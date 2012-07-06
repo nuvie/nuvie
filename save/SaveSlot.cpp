@@ -46,7 +46,9 @@ SaveSlot::SaveSlot(GUI_CallBack *callback, GUI_Color bg_color) : GUI_Widget(NULL
  background_color = bg_color;
 
  selected = false;
+ new_save = false;
  thumbnail = NULL;
+ textinput_widget = NULL;
 }
 
 SaveSlot::~SaveSlot()

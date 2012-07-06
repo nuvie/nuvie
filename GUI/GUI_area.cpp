@@ -36,6 +36,7 @@ GUI_Area:: GUI_Area(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, int a
 	color = 0;
 	useFrame=0;
 	shape=aShape;
+	frameThickness = 0;
 }
 
 GUI_Area:: GUI_Area(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b,

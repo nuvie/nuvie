@@ -37,6 +37,7 @@ GUI_Dialog::GUI_Dialog(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, bo
 	B = b;
 	bg_color = 0;
     drag = false;
+    button_x = button_y = 0;
     old_x = old_y = -1;
     backingstore = NULL;
     backingstore_rect.w = w;

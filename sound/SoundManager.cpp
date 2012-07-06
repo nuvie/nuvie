@@ -79,7 +79,9 @@ SoundManager::SoundManager ()
   music_enabled = false;
   sfx_enabled = false;
 
+  m_Config = NULL;
   m_SfxManager = NULL;
+  mixer = NULL;
 
   opl = NULL;
 }

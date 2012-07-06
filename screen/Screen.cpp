@@ -48,9 +48,16 @@ Screen::Screen(Configuration *cfg)
  std::string str_lighting_style;
  config = cfg;
 
+ sdl_surface = NULL;
+ surface = NULL;
+ scaler = NULL;
  update_rects = NULL;
  shading_data = NULL;
  updatingalphamap = true;
+ scaler_index = 0;
+ scale_factor = 2;
+ fullscreen = false;
+ doubleBuffer = false;
  std::string x;
  config->value( "config/general/lighting", str_lighting_style );
 

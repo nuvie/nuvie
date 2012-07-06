@@ -45,7 +45,7 @@ uint32 RenderSurface::Bmask;
 RenderSurface::RenderSurface() : buffer(0), zbuffer_priv(0), sdl_surface(NULL), opengl(0),
 		bytes_per_pixel(0), bits_per_pixel(0),
 		pixels(0), zbuffer(0), w(0), h(0), pitch(0),
-		gl(0), gr(0), gt(0), gb(0), lock_count(0)
+		gl(0), gr(0), gt(0), gb(0), lock_count(0), format_type(0)
 {
 }
 
@@ -87,7 +87,7 @@ RenderSurface::RenderSurface(SDL_Surface *surf) : buffer(0), zbuffer_priv(0), sd
 RenderSurface::RenderSurface(OpenGL *ogl) : buffer(0), zbuffer_priv(0), sdl_surface(NULL), opengl(ogl),
 		bytes_per_pixel(0), bits_per_pixel(0),
 		pixels(0), zbuffer(0), w(0), h(0), pitch(0),
-		gl(0), gr(0), gt(0), gb(0), lock_count(0)
+		gl(0), gr(0), gt(0), gb(0), lock_count(0), format_type(0)
 {
 }
 

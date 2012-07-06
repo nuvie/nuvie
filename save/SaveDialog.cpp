@@ -45,6 +45,10 @@ SaveDialog::SaveDialog(GUI_CallBack *callback)
 {
  callback_object = callback;
  selected_slot = NULL;
+ scroller = NULL;
+ save_button = NULL;
+ load_button = NULL;
+ cancel_button = NULL;
 }
 
 bool SaveDialog::init(const char *save_directory, const char *search_prefix)

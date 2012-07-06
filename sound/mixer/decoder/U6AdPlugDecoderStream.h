@@ -39,7 +39,7 @@ class U6AdPlugDecoderStream : public Audio::RewindableAudioStream
 public:
 	U6AdPlugDecoderStream()
 	{
-
+	opl = NULL; player = NULL; player_refresh_count = 0;
 	}
 
 	U6AdPlugDecoderStream(CEmuopl *o, std::string filename);
