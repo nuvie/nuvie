@@ -190,6 +190,15 @@ void unpack_converse_file(U6Lib_n *converse, U6Lzw *lzw, const char *indexname)
 }
 
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst,  LPSTR lpCmdLine, int iShowCmd) {
+	SDL_SetModuleHandle(GetModuleHandle(NULL));
+	return main(__argc, __argv);
+}
+#endif
+
 int main(int argc, char **argv)
 {
  Configuration config;

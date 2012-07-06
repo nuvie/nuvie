@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "../nuvieDefs.h"
 #include "../files/U6Lzw.h"
 #include "../files/U6Lib_n.h"
-#include "../files/U6Shape.h"
 #include "../files/NuvieIOFile.h"
 
 int main(int argc, char **argv)

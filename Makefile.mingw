@@ -21,7 +21,7 @@ CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 CXXFLAGS=-g
 CC=gcc
 
-LFLAGS=-static-libgcc -static-libstdc++ -mwindows
+LFLAGS=-static-libgcc -static-libstdc++
 LIBS=-lmingw32 $(SDL_LIBS)
 
 all: nuvie.exe
@@ -39,7 +39,7 @@ builds/mingw/resource.o: builds/mingw/resource.rc builds/mingw/nuvie.ico
 	windres builds/mingw/resource.rc -O coff -o builds/mingw/resource.o
 
 nuvie.exe: $(NUVIE_OBJS1) $(NUVIE_OBJS2) builds/mingw/resource.o
-	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS) -mwindows
 
 # tools/Makefile.common defines u6decomp_SOURCES
 include tools/Makefile.common
@@ -48,31 +48,50 @@ U6DECOMP_Cs = $(filter %.c,$(u6decomp_SOURCES))
 U6DECOMP_OBJS=$(U6DECOMP_Cs:%.c=tools/%.o)
 
 u6decomp.exe: $(U6DECOMP_OBJS)
-	$(CC) -o $@ $+
+	$(CC) $(LFLAGS) -o $@ $+
 
 UNPACKCONV_CPPs = $(filter %.cpp,$(unpack_conv_SOURCES))
 UNPACKCONV_OBJS = $(UNPACKCONV_CPPs:%.cpp=tools/%.o)
 
 unpack_conv.exe: $(UNPACKCONV_OBJS)
-	$(CXX) -o $@ $+ $(LIBS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+UNPACKFONT_CPPs = $(filter %.cpp,$(unpack_font_SOURCES))
+UNPACKFONT_OBJS = $(UNPACKFONT_CPPs:%.cpp=tools/%.o)
+
+unpack_font.exe: $(UNPACKFONT_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+
+
+UNPACKMAPTILES_CPPs = $(filter %.cpp,$(unpack_maptiles_SOURCES))
+UNPACKMAPTILES_OBJS = $(UNPACKMAPTILES_CPPs:%.cpp=tools/%.o)
+
+unpack_maptiles.exe: $(UNPACKMAPTILES_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+
 
 UNPACKPORTRAITS_CPPs = $(filter %.cpp,$(unpack_portraits_SOURCES))
 UNPACKPORTRAITS_OBJS = $(UNPACKPORTRAITS_CPPs:%.cpp=tools/%.o)
 
 unpack_portraits.exe: $(UNPACKPORTRAITS_OBJS)
-	$(CXX) -o $@ $+ $(LIBS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+UNPACKTALK_CPPs = $(filter %.cpp,$(unpack_talk_SOURCES))
+UNPACKTALK_OBJS = $(UNPACKTALK_CPPs:%.cpp=tools/%.o)
+
+unpack_talk.exe: $(UNPACKTALK_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+
 
 include tools/FMTownsU6/Makefile.common
 
 UNPACK_OBJS = $(unpack_OBJS:%=tools/FMTownsU6/%) Debug.o
 
 unpack.exe: $(UNPACK_OBJS)
-	$(CXX) -o $@ $+
+	$(CXX) $(LFLAGS) -o $@ $+
 
 clean:
 	rm -f $(NUVIE_OBJS1) $(NUVIE_OBJS2) nuvie.exe $(U6DECOMP_OBJS) u6decomp.exe \
-	$(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACKPORTRAITS_OBJS) unpack_portraits.exe \
-	$(UNPACK_OBJS) unpack.exe
+	$(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACKFONT_OBJS) unpack_font.exe \
+	$(UNPACKMAPTILES_OBJS) unpack_maptiles.exe $(UNPACKPORTRAITS_OBJS) unpack_portraits.exe \
+	$(UNPACKTALK_OBJS) unpack_talk.exe $(UNPACK_OBJS) unpack.exe
 
 install: all
 	mkdir -p $(U6PATH)
@@ -116,13 +135,16 @@ install: all
 	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
 	cp data/*.bmp $(U6PATH)/data
 
-tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_portraits.exe
+tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_font.exe unpack_maptiles.exe unpack_portraits.exe unpack_talk.exe
 	mkdir -p $(U6PATH)
 	mkdir -p $(U6PATH)/tools
 	strip u6decomp.exe -o $(U6PATH)/tools/u6decomp.exe
 	strip unpack.exe -o $(U6PATH)/tools/unpack.exe
 	strip unpack_conv.exe -o $(U6PATH)/tools/unpack_conv.exe
+	strip unpack_font.exe -o $(U6PATH)/tools/unpack_font.exe
+	strip unpack_maptiles.exe -o $(U6PATH)/tools/unpack_maptiles.exe
 	strip unpack_portraits.exe -o $(U6PATH)/tools/unpack_portraits.exe
+	strip unpack_talk.exe -o $(U6PATH)/tools/unpack_talk.exe
 
 dist: install tools
 	cp nuvie.cfg.sample $(U6PATH)

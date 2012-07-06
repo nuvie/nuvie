@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "../nuvieDefs.h"
 #include "../files/U6Lzw.h"
 #include "../files/U6Lib_n.h"

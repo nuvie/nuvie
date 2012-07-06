@@ -257,7 +257,10 @@ Source: tools\SDL.dll; DestDir: {app}\tools\
 Source: tools\u6decomp.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: tools\unpack.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: tools\unpack_conv.exe; DestDir: {app}\tools\; Flags: ignoreversion
+Source: tools\unpack_font.exe; DestDir: {app}\tools\; Flags: ignoreversion
+Source: tools\unpack_maptiles.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: tools\unpack_portraits.exe; DestDir: {app}\tools\; Flags: ignoreversion
+Source: tools\unpack_talk.exe; DestDir: {app}\tools\; Flags: ignoreversion
 
 [Dirs]
 Name: {app}\data;
