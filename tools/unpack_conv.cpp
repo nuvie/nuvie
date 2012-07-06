@@ -7,6 +7,7 @@
 #include "nuvieDefs.h"
 #include "files/U6Lib_n.h"
 #include "files/U6Lzw.h"
+#include "files/U6misc.h"
 #include "conf/Configuration.h"
 
 using std::string;
