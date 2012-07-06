@@ -219,7 +219,15 @@ TimedPartyMove::TimedPartyMove(MapCoord *d, MapCoord *t, Obj *use_obj, uint32 st
 TimedPartyMove::TimedPartyMove(uint32 step_delay)
                               : TimedEvent(step_delay, true)
 {
-
+    map_window = NULL;
+    party = NULL;
+    dest = NULL;
+    target = NULL;
+    moongate = NULL;
+    actor_to_hide = NULL;
+    moves_left = 0;
+    wait_for_effect = 0;
+    falling_in = false;
 }
 
 TimedPartyMove::~TimedPartyMove()

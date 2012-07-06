@@ -471,6 +471,7 @@ uint16 HitAnim::callback(uint16 msg, CallBack *caller, void *msg_data)
 /*** TossAnim ***/
 TossAnim::TossAnim(Tile *tile, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags)
 {
+    tile_center = 0;
     actor_manager = Game::get_game()->get_actor_manager();
     obj_manager = Game::get_game()->get_obj_manager();
     map = Game::get_game()->get_game_map();
@@ -479,6 +480,7 @@ TossAnim::TossAnim(Tile *tile, const MapCoord &start, const MapCoord &stop, uint
 }
 TossAnim::TossAnim(Obj *obj, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags)
 {
+    tile_center = 0;
     actor_manager = Game::get_game()->get_actor_manager();
     obj_manager = Game::get_game()->get_obj_manager();
     map = Game::get_game()->get_game_map();
@@ -1147,7 +1149,8 @@ WingAnim::WingAnim(MapCoord t)
 {
 	TileManager *tile_manager = map_window->get_tile_manager();
 
-
+	p_tile_top = NULL;
+	p_tile_bottom = NULL;
 	target = t;
 	y = target.y*16;
 

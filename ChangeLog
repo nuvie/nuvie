@@ -1,3 +1,6 @@
+2012-07-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1395
+	* nuvie and actors directories: initialize member variables in the constructor
+
 2012-07-06  Willem Jan Palenstijn <wjpalenstijn at users.sourceforge.net> r1394
 	* Remove unnecessary const keywords
 

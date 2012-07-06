@@ -28,7 +28,8 @@
 #include "ObjManager.h"
 #include "Game.h"
 
-Obj::Obj() {obj_n = 0; status = 0; nuvie_status = 0; frame_n = 0; qty = 0; quality = 0; parent = NULL; container = NULL; };
+Obj::Obj() {obj_n = 0; status = 0; nuvie_status = 0; frame_n = 0; qty = 0;
+            quality = 0; parent = NULL; container = NULL; x = 0; y = 0; z = 0;};
 Obj::Obj(Obj *sobj)
 {
   memcpy(this, sobj, sizeof(Obj));

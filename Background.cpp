@@ -37,6 +37,7 @@ Background::Background(Configuration *cfg) : GUI_Widget(NULL)
  config = cfg;
  config->value("config/GameType",game_type);
 
+ bg_w = 0; bg_h = 0;
  background = NULL;
  x_off = config_get_video_x_offset(config);
  y_off = config_get_video_y_offset(config);

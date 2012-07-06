@@ -91,7 +91,7 @@ struct EventInput_s
         std::string *str; // ???
 //    };
     void set_loc(MapCoord c);
-    EventInput_s() : loc(0), str(0), obj(0), actor(0), get_direction(false), get_text(false), target_init(0), select_from_inventory(false), select_range(0) { }
+    EventInput_s() : loc(0), str(0), obj(0), actor(0), get_direction(false), get_text(false), target_init(0), select_from_inventory(false), select_range(0) { spell_num = 0; type = 0; }
     ~EventInput_s();
 
     Obj *obj; // top object at loc (or object from inventory)

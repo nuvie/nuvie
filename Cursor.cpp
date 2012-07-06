@@ -24,6 +24,9 @@ Cursor::Cursor()
     update_area.x = update_area.y = 0;
     update_area.w = update_area.h = 0;
     hidden = false;
+    screen = NULL;
+    config = NULL;
+    screen_w =screen_h = 0;
 }
 
 

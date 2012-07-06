@@ -60,6 +60,7 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f)
  GUI_Widget::Init(NULL, x_off, y_off, 320, 240);
  npc_portrait = NULL;
  avatar_portrait = NULL;
+ keyword_list = NULL;
 
  font = new ConvFont();
  font->init(NULL, 256, 0);

@@ -50,8 +50,11 @@ TileManager::TileManager(Configuration *cfg)
 :desc_buf(NULL)
 {
  config = cfg;
+ look = NULL;
+ dither = NULL;
  game_counter = rgame_counter = 0;
  memset(tileindex,0,sizeof(tileindex));
+ memset(tile,0,sizeof(tile));
 }
 
 TileManager::~TileManager()

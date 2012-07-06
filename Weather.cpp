@@ -114,7 +114,7 @@ uint8 Weather::load_wind(NuvieIO *objlist)
 	objlist->seek(OBJLIST_OFFSET_U6_WIND_DIR);
 	objlist_wind = objlist->read1();
     
-	if(objlist_wind > 7 || objlist_wind == 0xff) //objlist 0xff = Calm 'C'
+	if(objlist_wind > 7) //objlist 0xff = Calm 'C'
 		return NUVIE_DIR_NONE;
 
 	return wind_tbl[objlist_wind];

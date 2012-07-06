@@ -40,10 +40,12 @@ ConverseInterpret::ConverseInterpret(Converse *owner)
     converse = owner;
     b_frame = NULL;
     decl_v = decl_t = 0x00;
+    in_start = 0;
 
     unwait();
     answer_mode = ANSWER_NO;
     stopped = false;
+    db_lvar = false;
 }
 
 

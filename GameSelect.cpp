@@ -30,6 +30,8 @@
 GameSelect::GameSelect(Configuration *cfg)
 {
  config = cfg;
+ screen = NULL;
+ game = NULL;
 }
 
 GameSelect::~GameSelect()

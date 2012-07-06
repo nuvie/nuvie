@@ -149,7 +149,16 @@ private:
  public:
 
  MsgScroll(Configuration *cfg, Font *f);
- MsgScroll() : GUI_Widget(NULL, 0, 0, 0, 0) {};
+ MsgScroll() : GUI_Widget(NULL, 0, 0, 0, 0)
+ {
+  config = NULL; game_type = 0; font = NULL; scroll_height = 0; scroll_width = 0;
+  callback_target = NULL; callback_user_data = NULL; input_mode = false;
+  permit_input = NULL; page_break = false; just_finished_page_break = false;
+  permit_inputescape = false; cursor_wait = 0; screen_x = 0; screen_y = 0;
+  bg_color = 0; keyword_highlight = true; talking = false; show_cursor = false;
+  autobreak = false; scroll_updated = false; cursor_char = 0; cursor_x = 0;
+  cursor_y = 0; line_count = 0; display_pos = 0; capitalise_next_letter = false;
+ }
  ~MsgScroll();
 
  void init(Configuration *cfg, Font *f);

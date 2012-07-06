@@ -44,13 +44,19 @@
 Party::Party(Configuration *cfg)
 {
  config = cfg;
+ game = NULL;
+ actor_manager = NULL;
  map = NULL;
  pathfinder = NULL;
+ rest_campfire = NULL;
 
  formation = PARTY_FORM_STANDARD;
  num_in_party = 0;
  prev_leader_x = prev_leader_y = 0;
  defer_removing_dead_members = false;
+ autowalk = false;
+ in_vehicle = false;
+ in_combat_mode = false;
 }
 
 Party::~Party()

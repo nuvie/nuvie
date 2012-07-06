@@ -34,6 +34,7 @@
 ConverseSpeech::ConverseSpeech()
 {
     config = NULL;
+    audio_enabled = true;
 }
 
 

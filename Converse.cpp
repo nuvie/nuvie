@@ -66,6 +66,8 @@ Converse::Converse()
     party_all_the_time = false;
     speech = NULL;
     using_fmtowns = false;
+    need_input = false;
+    aname[15] = '\0';
 }
 
 
@@ -654,8 +656,11 @@ ConvScript::ConvScript(U6Lib_n *s, uint32 idx)
  */
 ConvScript::ConvScript(ConvScript *orig)
 {
+    src = NULL;
     buf = NULL;
     buf_len = 0;
+    src_index = 0;
+    compressed = false;
 
     cpy = orig;
     ref = 1;

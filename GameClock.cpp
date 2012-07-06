@@ -34,6 +34,10 @@ GameClock::GameClock(Configuration *cfg, nuvie_game_t type)
  config = cfg;
  game_type = type;
 
+ day_of_week = 0;
+ date_string[10] = '\0';
+ time_string[10] = '\0';
+
  init();
 }
 

@@ -44,7 +44,8 @@
 #include "U6ActorTypes.h"
 #include "U6WorkTypes.h"
 
-U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
+U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c), actor_type(NULL),
+ base_actor_type(NULL)
 {
  beg_mode = 0; // beggers are waiting for targets
  walk_frame_inc = 1;
@@ -1395,7 +1396,6 @@ void U6Actor::wt_combat()
     }
     // attack or chase enemies
     if(worktype == WORKTYPE_U6_COMBAT_FRONT
-       || worktype == WORKTYPE_U6_COMBAT_REAR
        || worktype == WORKTYPE_U6_COMBAT_FLANK
        || worktype == WORKTYPE_U6_COMBAT_BERSERK
        || worktype == WORKTYPE_U6_COMBAT_ASSAULT

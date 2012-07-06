@@ -50,6 +50,8 @@
 Portrait::Portrait(Configuration *cfg)
 {
  config = cfg;
+ gametype = 0;
+ avatar_portrait_num = 0;
 }
 
 bool Portrait::init()

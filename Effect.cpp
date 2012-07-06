@@ -178,6 +178,8 @@ ExpEffect::ExpEffect(uint16 tileNum, MapCoord location)
 	start_loc = location;
     finished_tiles = 0;
     exp_tile_num = tileNum;
+    usecode = NULL;
+    obj = NULL;
 
     start_anim();
 }
@@ -1319,8 +1321,13 @@ uint16 VanishEffect::callback(uint16 msg, CallBack *caller, void *data)
 /* TileFadeEffect */
 TileFadeEffect::TileFadeEffect(MapCoord loc, Tile *from, Tile *to, FadeType type, uint16 speed)
 {
+	anim = NULL;
+	to_tile = NULL;
+	anim_tile = NULL;
 	actor = NULL;
+	color_from = color_to = 0;
 	inc_reverse = false;
+	spd = 0;
 	add_anim(new TileFadeAnim(&loc, from, to, speed));
 	num_anim_running = 1;
 }
@@ -1329,8 +1336,13 @@ TileFadeEffect::TileFadeEffect(MapCoord loc, Tile *from, Tile *to, FadeType type
 TileFadeEffect::TileFadeEffect(Actor *a, uint16 speed)
 {
 	inc_reverse = false;
+	anim = NULL;
+	to_tile = NULL;
+	anim_tile = NULL;
 	actor = a;
+	color_from = color_to = 0;
 	spd = speed;
+	num_anim_running = 1;
 	add_actor_anim();
 	actor->hide();
 }

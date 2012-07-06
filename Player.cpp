@@ -45,11 +45,21 @@ Player::Player(Configuration *cfg)
  config = cfg;
  config->value("config/GameType",game_type);
 
+ clock = NULL;
+ party = NULL;
+ actor = NULL;
+ actor_manager = NULL;
+ obj_manager = NULL;
+ map_window = NULL;
  karma = 0;
+ gender = 0;
  questf = 0;
  gargishf = 0;
  alcohol = 0;
  actor_attack_target = 0;
+ current_weapon = 0;
+ party_mode = false;
+ mapwindow_centered = false;
 }
 
 bool Player::init(ObjManager *om, ActorManager *am, MapWindow *mw, GameClock *c, Party *p)

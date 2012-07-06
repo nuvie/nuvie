@@ -37,6 +37,7 @@ Look::Look(Configuration *cfg)
 {
  config = cfg;
 
+ look_tbl[2047] = '\0';
  max_len = 0;
 }
 

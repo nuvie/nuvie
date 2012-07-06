@@ -54,6 +54,8 @@ EggManager::EggManager(Configuration *cfg, nuvie_game_t type, Map *m)
  config = cfg;
  gametype = type;
  map = m;
+ actor_manager = NULL;
+ obj_manager = NULL;
 }
 
 EggManager::~EggManager()

@@ -39,8 +39,12 @@ Map::Map(Configuration *cfg)
 {
  config = cfg;
 
+ tile_manager = NULL;
+ obj_manager = NULL;
+ actor_manager = NULL;
  surface = NULL;
  roof_surface = NULL;
+ dungeons[4] = '\0';
 
  config->value(config_get_game_key(config) + "/roof_mode", roof_mode, false);
 }

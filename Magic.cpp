@@ -77,8 +77,12 @@ const int obj_n_reagent[8]={OBJ_U6_MANDRAKE_ROOT, OBJ_U6_NIGHTSHADE, OBJ_U6_BLAC
 
 Magic::Magic()
 {
+  event = NULL;
+  target_object = NULL;
   magic_script = NULL;
-  
+  spellbook_obj = NULL;
+  state = 0;
+
  for (uint16 index=0;index<256;index++) spell[index]=NULL;
  clear_cast_buffer();
 }

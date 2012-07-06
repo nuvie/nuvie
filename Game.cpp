@@ -78,6 +78,9 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  config = cfg;
  script = s;
  gui = g;
+
+ screen = NULL;
+ background = NULL;
  cursor = NULL;
  dither = NULL;
  tile_manager = NULL;
@@ -85,22 +88,28 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  palette = NULL;
  text = NULL;
  font_manager = NULL;
+ scroll = NULL;
  game_map = NULL;
+ map_window = NULL;
  actor_manager = NULL;
  player = NULL;
  event = NULL;
  converse = NULL;
+ command_bar = NULL;
  clock = NULL;
  party = NULL;
  portrait = NULL;
  view_manager = NULL;
  sound_manager = NULL;
+ save_manager = NULL;
+ egg_manager = NULL;
  usecode = NULL;
  effect_manager = NULL;
  weather = NULL;
  magic = NULL;
  book = NULL;
  
+ game_style = 0;
  pause_flags = PAUSE_UNPAUSED;
  ignore_event_delay = 0;
 

@@ -244,11 +244,10 @@ class Actor
  
  string name;
 
- U6LList *obj_inventory;
-
  ReadiedObj *readied_objects[ACTOR_MAX_READIED_OBJECTS];
 
  Schedule **sched;
+ U6LList *obj_inventory;
 
  //current schedule pos;
  uint16 sched_pos;

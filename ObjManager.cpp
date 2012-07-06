@@ -56,6 +56,8 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
  config = cfg;
  tile_manager = tm;
  egg_manager = em;
+ usecode = NULL;
+ obj_save_count = 0;
 
  load_basetile();
  load_weight_table();

@@ -46,7 +46,7 @@ static uint8 walk_frame_tbl[4] = {0,1,2,1};
 class ActorManager;
 
 Actor::Actor(Map *m, ObjManager *om, GameClock *c)
-:sched(NULL)
+:sched(NULL), obj_inventory(NULL)
 {
  map = m;
  obj_manager = om;
@@ -59,6 +59,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  can_move = true;
  temp_actor = false;
  visible_flag = true;
+ met_player = false;
 // active = false;
 
  worktype = 0;

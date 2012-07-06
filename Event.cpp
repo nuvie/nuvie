@@ -86,7 +86,18 @@ Event::Event(Configuration *cfg)
  active_alt_code = 0;
  alt_code_input_num = 0;
 
+ gui = NULL;
+ obj_manager = NULL;
+ map_window = NULL;
+ scroll = NULL;
+ clock = NULL;
+ player = NULL;
+ converse = NULL;
+ view_manager = NULL;
+ usecode = NULL;
+ magic = NULL;
  drop_obj = NULL;
+ ts = 0;
  drop_qty = 0;
  drop_x = drop_y = -1;
  rest_time = 0;
