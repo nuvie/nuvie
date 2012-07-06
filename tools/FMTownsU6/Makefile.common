@@ -1,6 +1,10 @@
-unpack_OBJS = ../../files/NuvieIO.o\
-	../../files/NuvieIOFile.o\
-	../../files/U6Lzw.o\
-	../../files/U6Lib_n.o\
-	../../files/U6misc.o\
-	unpack.o
+unpack_OBJS= \
+	unpack.o\
+	../../conf/Configuration.o \
+	../../conf/XMLNode.o \
+	../../conf/XMLTree.o \
+	../../files/NuvieIO.o \
+	../../files/NuvieIOFile.o \
+	../../files/U6Lib_n.o \
+	../../files/U6Lzw.o \
+	../../misc/U6misc.o

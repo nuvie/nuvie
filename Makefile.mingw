@@ -54,7 +54,7 @@ UNPACKCONV_CPPs = $(filter %.cpp,$(unpack_conv_SOURCES))
 UNPACKCONV_OBJS = $(UNPACKCONV_CPPs:%.cpp=tools/%.o)
 
 unpack_conv.exe: $(UNPACKCONV_OBJS)
-	$(CXX) -o $@ $+
+	$(CXX) -o $@ $+ $(LIBS)
 
 UNPACKPORTRAITS_CPPs = $(filter %.cpp,$(unpack_portraits_SOURCES))
 UNPACKPORTRAITS_OBJS = $(UNPACKPORTRAITS_CPPs:%.cpp=tools/%.o)
