@@ -40,8 +40,8 @@
 
 //Ultima 6 light globe sizes.
 
-static const uint8 globeradius[]   = { 64, 96, 160, 224, 240, 255 };
-static const uint8 globeradius_2[] = { 32, 48,  80, 112, 120, 127 };
+static const sint32 globeradius[]   = { 76, 116, 180, 240, 270, 330 };
+static const sint32 globeradius_2[] = { 38,  58,  90, 120, 135, 160 };
 
 Screen::Screen(Configuration *cfg)
 {

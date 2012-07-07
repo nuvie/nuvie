@@ -550,7 +550,7 @@ void MapWindow::updateAmbience()
      //Dusk starts at 19:00
      //It's completely dark by 20:00
      //Dawn starts at 5:00
-     //It's completely bright by 6:00
+     //It's completely bright by 5:45
      //Dusk and dawn operate by changing the ambient light, not by changing the radius of the avatar's light globe
 
     if(!screen)
@@ -561,53 +561,35 @@ void MapWindow::updateAmbience()
 	
      int h = clock->get_hour();
 
-   if (screen->get_lighting_style() == LIGHTING_STYLE_SMOOTH)
-   {
-     if(x_ray_view == true)
-         screen->set_ambient( 0xFF );
-     else if(in_dungeon_level())
-         screen->set_ambient( 50 );
-     else if( weather->is_eclipse() ) //solar eclipse
-         screen->set_ambient( 50 );
-     else if( h == 19 ) //Dusk
-         screen->set_ambient( 233-clock->get_minute()*3 );
-     else if( h == 5 ) //Dawn
-         screen->set_ambient( 3*clock->get_minute()+50 );
-     else if( h > 5 && h < 19 ) //Day
-         screen->set_ambient( 0xFF );
-     else //Night
-        screen->set_ambient( 50 );
-   }
-   else // LIGHTING_STYLE_ORIGINAL
-   {
-     if(x_ray_view == true)
-         screen->set_ambient( 0xFF );
-     else if(in_dungeon_level())
-             screen->set_ambient( 0x00 );
-     else if( weather->is_eclipse() ) //solar eclipse
-		     screen->set_ambient( 0x00 );
-     else if( h == 19 ) //Dusk
-         screen->set_ambient( (uint8)(255*(float)(60-clock->get_minute())/60.0) );
-     else if( h == 5 ) //Dawn
-         screen->set_ambient( (uint8)(255*(float)clock->get_minute()/60.0) );
-     else if( h > 5 && h < 19 ) //Day
-         screen->set_ambient( 0xFF );
-     else //Night
-         screen->set_ambient( 0x00 );
-   }
-
-     int min_brightness;
-     uint8 a = screen->get_ambient();
+	 // TODO: Move this out so that the configuration doesn't need to be iterated through each time
+	 int min_brightness;
      config->value("config/cheats/min_brightness", min_brightness, 0);
  
+	 int a;
+     if(x_ray_view == true)
+         a = 255;
+     else if(in_dungeon_level())
+	     a = min_brightness;
+     else if( weather->is_eclipse() ) //solar eclipse
+         a = min_brightness;
+     else if( h == 19 ) //Dusk -- Smooth transition between 255 and min_brightness during first 59 minutes
+         a = 255 - (uint8)( ( 255.0f - min_brightness ) * (float)clock->get_minute() / 59.0f );
+     else if( h == 5 ) //Dawn -- Smooth transition between min_brightness and 255 during first 45 minutes
+         a = min_brightness + (uint8)( ( 255.0f - min_brightness ) * (float)clock->get_minute() / 45.0f );
+     else if( h > 5 && h < 19 ) //Day
+         a = 255;
+     else //Night
+         a = min_brightness;
+ 
+     if(a > 255)
+         a = 255;
      if(a < 0xab && clock->get_timer(GAMECLOCK_TIMER_U6_LIGHT) != 0) //FIXME U6 specific
-    	 screen->set_ambient(0xaa); //FIXME this is an approximation
-     if(a < min_brightness)
-         screen->set_ambient(min_brightness);
+    	 a = 0xaa; //FIXME this is an approximation
+
+	 screen->set_ambient( a );
 
      //Clear the opacity map
      screen->clearalphamap8( 0, 0, win_width, win_height, screen->get_ambient() );
-
 }
 
 void MapWindow::updateBlacking()
