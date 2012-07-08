@@ -46,6 +46,8 @@ ConverseInterpret::ConverseInterpret(Converse *owner)
     answer_mode = ANSWER_NO;
     stopped = false;
     db_lvar = false;
+    db_loc = 0;
+    db_offset = 0;
 }
 
 

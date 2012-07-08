@@ -112,6 +112,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  game_style = 0;
  pause_flags = PAUSE_UNPAUSED;
  ignore_event_delay = 0;
+ game_type = NUVIE_GAME_NONE;
 
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
 }

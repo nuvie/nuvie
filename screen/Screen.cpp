@@ -721,7 +721,7 @@ bool Screen::blit32WithOpacity(uint16 dest_x, uint16 dest_y, unsigned char *src_
  return true;
 }
 
-void Screen::blitbitmap(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
+void Screen::blitbitmap(uint16 dest_x, uint16 dest_y, const unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
 {
  if(surface->bits_per_pixel == 16)
    blitbitmap16(dest_x, dest_y, src_buf, src_w, src_h, fg_color, bg_color);
@@ -731,7 +731,7 @@ void Screen::blitbitmap(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, ui
  return;
 }
 
-void Screen::blitbitmap16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
+void Screen::blitbitmap16(uint16 dest_x, uint16 dest_y, const unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
 {
  uint16 *pixels;
  uint16 i,j;
@@ -756,7 +756,7 @@ void Screen::blitbitmap16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, 
  return;
 }
 
-void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
+void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, const unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color)
 {
  uint32 *pixels;
  uint16 i,j;

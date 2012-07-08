@@ -68,8 +68,6 @@ ActorManager::~ActorManager()
 
 void ActorManager::init()
 {
- game_hour = 0;
-
  player_actor = 1;
 
  last_obj_blk_x = cur_x = 0;
@@ -112,8 +110,6 @@ bool ActorManager::load(NuvieIO *objlist)
  clean();
 
  config->value("config/GameType",game_type);
-
- game_hour = clock->get_hour(); //this assumes that clock->load() is called first.
 
  objlist->seek(0x100); // Start of Actor position info
 
@@ -704,15 +700,10 @@ void ActorManager::startActors()
 void ActorManager::updateSchedules()
 {
     uint8 cur_hour = clock->get_hour();
-    if(cur_hour != game_hour) // moved from updateActors() (SB-X)
-    {
-        game_hour = cur_hour;
 
-        for(int i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
-            if(!actors[i]->is_in_party()) // don't do scheduled activities while partying
-                actors[i]->updateSchedule(cur_hour);
-    }
-
+    for(int i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
+    	if(!actors[i]->is_in_party()) // don't do scheduled activities while partying
+    		actors[i]->updateSchedule(cur_hour);
 }
 
 // Return control to player.

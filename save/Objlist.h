@@ -31,6 +31,7 @@
 //U6 specific offsets
 
 #define OBJLIST_OFFSET_U6_QUEST_FLAG   0x1bf1
+#define OBJLIST_OFFSET_U6_REST_COUNTER 0x1bf2
 #define OBJLIST_OFFSET_U6_GAMETIME     0x1bf3
 #define OBJLIST_OFFSET_U6_KARMA        0x1bf9
 

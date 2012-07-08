@@ -93,7 +93,7 @@ class Screen
    void put_pixel(uint8 colour_num, uint16 x, uint16 y);
 
    bool blit(sint32 dest_x, sint32 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans=false, SDL_Rect *clip_rect=NULL, uint8 opacity=255);
-   void blitbitmap(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
+   void blitbitmap(uint16 dest_x, uint16 dest_y, const unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
    void buildalphamap8();
    void clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity );
@@ -140,9 +140,9 @@ inline bool blit16WithOpacity(uint16 dest_x, uint16 dest_y, unsigned char *src_b
 inline bool blit32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans);
 inline bool blit32WithOpacity(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_bpp, uint16 src_w, uint16 src_h, uint16 src_pitch, bool trans, uint8 opacity);
 
-inline void blitbitmap16(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
+inline void blitbitmap16(uint16 dest_x, uint16 dest_y, const unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
-inline void blitbitmap32(uint16 dest_x, uint16 dest_y, unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
+inline void blitbitmap32(uint16 dest_x, uint16 dest_y, const unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
    unsigned char *copy_area16(SDL_Rect *area, uint16 down_scale);
    unsigned char *copy_area32(SDL_Rect *area, uint16 down_scale);

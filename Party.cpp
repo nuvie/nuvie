@@ -57,6 +57,9 @@ Party::Party(Configuration *cfg)
  autowalk = false;
  in_vehicle = false;
  in_combat_mode = false;
+
+ memset(&member, 0, sizeof member );
+
 }
 
 Party::~Party()

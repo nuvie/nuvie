@@ -1929,7 +1929,7 @@ dbg("actor_update_all()\n")
       
       if selected_actor.corpser_flag == false then
          if selected_actor.wt ~= WT_PLAYER and selected_actor.wt ~= WT_FOLLOW then
-            dbg("perform_worktype("..selected_actor.name.." dex = "..selected_actor.dex.." mpts = "..selected_actor.mpts..").\n")
+            dbg("perform_worktype("..selected_actor.name.."("..selected_actor.actor_num..") dex = "..selected_actor.dex.." mpts = "..selected_actor.mpts..").\n")
             perform_worktype(selected_actor)
             --sub_1C34A() --update map window??
             if selected_actor.wt > 1 and selected_actor.wt < 0x10 then
@@ -3648,6 +3648,9 @@ function actor_avatar_death(avatar)
 	for i=0,0xff do
 		local actor = Actor.get(i)
 		actor.mpts = 0
+		if actor.temp == false and actor.wt == WT_ATTACK_PARTY then
+			actor.wt = WT_WALK_TO_LOCATION
+		end
 	end
 	avatar.mpts=1
 	

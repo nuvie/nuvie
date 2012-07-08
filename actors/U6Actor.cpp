@@ -434,25 +434,6 @@ uint16 U6Actor::get_downward_facing_tile_num()
  return obj_manager->get_obj_tile_num(base_actor_type->base_obj_n) + base_actor_type->tile_start_offset + (NUVIE_DIR_S * base_actor_type->tiles_per_direction + base_actor_type->tiles_per_frame - 1) + shift;
 }
 
-void U6Actor::update()
-{
-// Party *party = Game::get_game()->get_party();
- if(!is_alive())  //we don't need to update dead actors.
-   return;
-
- Actor::update();
-// moved to Party::follow(), but I think it should be here
-// if(in_party && !party->is_in_combat_mode() && party->get_actor(party->get_leader()) != this)
-//  set_worktype(WORKTYPE_U6_IN_PARTY); // revert to normal worktype
-
- //preform_worktype();
-
- //if(is_poisoned())
- // updatePoison();
-
- return;
-}
-
 bool U6Actor::updateSchedule(uint8 hour)
 {
  bool ret;
@@ -1003,47 +984,6 @@ void U6Actor::set_asleep(bool val)
 	}
 }
 
-void U6Actor::preform_worktype()
-{
- switch(worktype)
-  {
-//   case WORKTYPE_U6_IN_PARTY : wt_party(); break;
-   case WORKTYPE_U6_PLAYER : wt_player(); break;
-   case WORKTYPE_U6_COMBAT_FRONT :
-   case WORKTYPE_U6_COMBAT_REAR :
-   case WORKTYPE_U6_COMBAT_FLANK :
-   case WORKTYPE_U6_COMBAT_BERSERK :
-   case WORKTYPE_U6_COMBAT_RETREAT :
-   case WORKTYPE_U6_COMBAT_ASSAULT : // WILD
-   case WORKTYPE_U6_COMBAT_SHY :
-   case WORKTYPE_U6_COMBAT_LIKE :
-//   case WORKTYPE_U6_COMBAT_IMMOBILE : immobile actors can fight, but wt_combat can't handle them yet
-   case WORKTYPE_U6_COMBAT_UNFRIENDLY : wt_combat(); break;
-   case WORKTYPE_U6_FACE_NORTH :
-   case WORKTYPE_U6_FACE_EAST  :
-   case WORKTYPE_U6_FACE_SOUTH :
-   case WORKTYPE_U6_FACE_WEST  :
-     break;
-   case WORKTYPE_U6_WALK_TO_LOCATION : wt_walk_to_location();
-                                      break;
-
-   case WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH :
-   case WORKTYPE_U6_GUARD_WALK_EAST_WEST   :
-   case WORKTYPE_U6_WALK_NORTH_SOUTH :
-   case WORKTYPE_U6_WALK_EAST_WEST   : wt_walk_straight(); break;
-
-   case WORKTYPE_U6_WORK :
-   case WORKTYPE_U6_WANDER_AROUND   : wt_wander_around(); break;
-   case WORKTYPE_U6_ANIMAL_WANDER : wt_wander_around(); break;
-   case WORKTYPE_U6_BEG : wt_converse(); break;
-   case WORKTYPE_U6_TANGLE : wt_tangle_vine(); break;
-//   case WORKTYPE_U6_
-//                     break;
-  }
-
- return;
-}
-
 void U6Actor::set_worktype(uint8 new_worktype)
 {
  if(new_worktype == worktype)
@@ -1062,6 +1002,11 @@ void U6Actor::set_worktype(uint8 new_worktype)
 	 status_flags ^= ACTOR_STATUS_ASLEEP;
 
  Actor::set_worktype(new_worktype);
+
+ if(worktype == WORKTYPE_U6_WALK_TO_LOCATION)
+ {
+	 setup_walk_to_location();
+ }
 
  //FIX from here.
 
@@ -1091,7 +1036,7 @@ void U6Actor::pathfind_to(MapCoord &d)
     pathfinder->update_location();
 }
 
-void U6Actor::wt_walk_to_location()
+void U6Actor::setup_walk_to_location()
 {
     if(sched[sched_pos] != NULL)
     {
@@ -1116,76 +1061,6 @@ void U6Actor::wt_walk_to_location()
 }
 
 
-void U6Actor::wt_walk_straight()
-{
- uint8 dir = get_direction();
-// set_direction(dir); //update walk frame FIX this!
- if(NUVIE_RAND()%2) // sometimes guards do stop, even if they can move (SB-X)
-   {
- if(worktype == WORKTYPE_U6_WALK_NORTH_SOUTH || worktype == WORKTYPE_U6_GUARD_WALK_NORTH_SOUTH)
-   {
-    if(dir == NUVIE_DIR_N) // move up if blocked face down
-       {
-        if(moveRelative(0,-1) == false)
-          set_direction(NUVIE_DIR_S);
-        else
-          set_direction(NUVIE_DIR_N);
-       }
-    else // move down if blocked face up
-       {
-        if(moveRelative(0,1) == false)
-          set_direction(NUVIE_DIR_N);
-        else
-          set_direction(NUVIE_DIR_S);
-       }
-   }
- else //WORKTYPE_U6_WALK_EAST_WEST, WORKTYPE_U6_GUARD_WALK_EAST_WEST
-   {
-    if(dir == NUVIE_DIR_W) //move left if blocked face right
-       {
-        if(moveRelative(-1,0) == false)
-          set_direction(NUVIE_DIR_E);
-        else
-          set_direction(NUVIE_DIR_W);
-       }
-    else  //move right if blocked face left
-       {
-        if(moveRelative(1,0) == false)
-          set_direction(NUVIE_DIR_W);
-        else
-          set_direction(NUVIE_DIR_E);
-       }
-   }
-   } else set_moves_left(moves - 5); // FIXME: might use tile cost
-}
-
-// Loitering/Working actors stay close to their schedule location. (SB-X)
-void U6Actor::wt_wander_around()
-{
- const int area = (worktype == WORKTYPE_U6_WORK) ? 1 : 8;
- uint8 new_direction;
- sint32 xdist = 0, ydist = 0;
-
- if(work_location.x || work_location.y)
-   {
-    xdist = (sint32)x - work_location.x;
-    ydist = (sint32)y - work_location.y;
-   }
- if(NUVIE_RAND()%8 == 1)
-   {
-    new_direction = NUVIE_RAND()%4;
-    switch(new_direction)
-      {
-       case 0 : if(ydist > -area) if(moveRelative(0,-1)) set_direction(new_direction); break;
-       case 1 : if(xdist < +area) if(moveRelative(1,0)) set_direction(new_direction); break;
-       case 2 : if(ydist < +area) if(moveRelative(0,1)) set_direction(new_direction); break;
-       case 3 : if(xdist > -area) if(moveRelative(-1,0)) set_direction(new_direction); break;
-      }
-   }
- else set_moves_left(moves - 5);
-
- return;
-}
 
 // wander around but don't cross boundaries or fences. Used for cows and horses.
 // now that hazards are working properly, this isn't needed --SB-X
@@ -1217,58 +1092,6 @@ void U6Actor::wt_wander_around()
 
  return;
 }*/
-
-/* Wander around, approach and talk to the player character if visible. */
-void U6Actor::wt_converse()
-{
-    Player *player = Game::get_game()->get_player();
-    Actor *actor = player->get_actor();
-    uint32 dist_from_start = 0;
-    if(work_location.x || work_location.y)
-        dist_from_start = get_location().distance(work_location);
-
-    if(beg_mode == 0)
-        if(is_nearby(actor)) // look for victi... er, player
-            beg_mode = 1;
-    if(beg_mode == 1)
-    {
-        beg_mode = is_nearby(actor) ? 1 : 0; // still visible?
-        Party *party = player->get_party();
-        MapCoord me(x,y,z), them(0,0,0);
-        for(uint32 p = 0; p < party->get_party_size(); p++)
-        {
-            party->get_actor(p)->get_location(&them.x, &them.y, &them.z);
-            if(me.distance(them) <= 1 && z == them.z)
-            {
-                // talk to me :)
-                delete_pathfinder();
-                // FIXME: this check should be in Converse
-                if(!player->in_party_mode())
-                {
-                    MsgScroll *scroll = Game::get_game()->get_scroll();
-                    scroll->display_string("\nNot in solo mode.\n");
-                    scroll->display_string("\n");
-                    scroll->display_prompt();
-                }
-                else if(Game::get_game()->get_converse()->start(this))
-                {
-                    actor->face_actor(this);
-                    face_actor(actor);
-                }
-                set_worktype(WORKTYPE_U6_WANDER_AROUND);
-                return; // done
-            }
-        }
-        // get closer
-        if(dist_from_start < 4)
-            attract_to(actor);
-        else
-            pathfind_to(work_location); // U6 probably doesn't even do this
-    }
-    else
-        wt_wander_around();
-}
-
 
 void U6Actor::wt_sleep()
 {
@@ -1315,277 +1138,6 @@ void U6Actor::wt_play_lute()
  frame_n = direction * actor_type->tiles_per_direction;
 
  return;
-}
-
-// Combat worktypes/strategies
-void U6Actor::wt_combat()
-{
-    bool attacking = false;
-    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
-    Player *player = Game::get_game()->get_player();
-    Actor *pactor = player->get_actor();
-    MapCoord ploc = pactor->get_location();
-
-// FIXME: This needs to be replaced with special cases for each worktype.
-//        Player combat modes are especially more involved. It should also call
-//        specific methods for different monster types. (that do various idle and attack actions)
-
-    if(NUVIE_RAND()%4 != 0) // only move 1/4th of the time; looks closer to U6
-    {
-        set_moves_left(moves-10);
-        return;
-    }
-
-    // retreat
-    if(worktype == WORKTYPE_U6_COMBAT_SHY
-       || worktype == WORKTYPE_U6_COMBAT_RETREAT)
-    {
-        ActorList *actors = is_in_party() ? find_enemies() : find_players();
-        if(actors)
-        {
-//DEBUG(0,LEVEL_DEBUGGING,"%s yells \"Aiee!", get_name());
-            actor_mgr->sort_nearest(actors,x,y,z);
-            if(worktype == WORKTYPE_U6_COMBAT_RETREAT)
-            {
-//DEBUG(0,LEVEL_DEBUGGING," %s is trying to get me!\"", actors->front()->get_name());
-                repel_from(actors->front());
-            }
-            else // shy creatures only flee if very close
-            {
-                ActorIterator a = actors->begin();
-                while(a != actors->end())
-                {
-                    pactor = *a;
-                    ploc = pactor->get_location();
-                    if(is_nearby(ploc, 2))
-                    {
-//DEBUG(0,LEVEL_DEBUGGING," %s is trying to get me!", pactor->get_name());
-                        repel_from(pactor);
-                        break;
-                    }
-                    ++a;
-                }
-            }
-            delete actors;
-//DEBUG(0,LEVEL_DEBUGGING,"\"\n");
-        }
-    }
-    // follow
-    if(worktype == WORKTYPE_U6_COMBAT_LIKE)
-    {
-        ActorList *actors = find_players();
-        if(actors)
-        {
-            actor_mgr->sort_nearest(actors,x,y,z);
-            if(worktype == WORKTYPE_U6_COMBAT_LIKE && !pathfinder)
-                attract_to(actors->front());
-            delete actors;
-        }
-    }
-    // turn wild if near player
-    if(worktype == WORKTYPE_U6_COMBAT_UNFRIENDLY)
-    {
-//DEBUG(0,LEVEL_DEBUGGING,"%s looks threatening.\n", get_name());
-        ActorList *actors = find_players();
-        if(actors)
-        {
-            delete actors;
-            if(NUVIE_RAND()%4)
-                set_worktype(WORKTYPE_U6_COMBAT_ASSAULT);
-        }
-    }
-    // attack or chase enemies
-    if(worktype == WORKTYPE_U6_COMBAT_FRONT
-       || worktype == WORKTYPE_U6_COMBAT_FLANK
-       || worktype == WORKTYPE_U6_COMBAT_BERSERK
-       || worktype == WORKTYPE_U6_COMBAT_ASSAULT
-       || worktype == WORKTYPE_U6_COMBAT_REAR)
-    {
-//DEBUG(0,LEVEL_DEBUGGING,"%s is looking for trouble", get_name());
-        ActorList *actors = find_enemies();
-        if(actors)
-        {
-//DEBUG(1,LEVEL_DEBUGGING,", and finds someone to fight!\n");
-            if(worktype == WORKTYPE_U6_COMBAT_BERSERK)
-                sort(actors->begin(), actors->end(), cmp_level());
-            else
-                actor_mgr->sort_nearest(actors,x,y,z);
-            attacking = combat_try_attack(actors);
-            if(!attacking && !pathfinder)
-            {
-                foe = (U6Actor*)actors->front();
-                attract_to(actors->front());
-            }
-            delete actors;
-        }
-//else DEBUG(1,LEVEL_DEBUGGING,".\n");
-    }
-
-    if(!attacking && !pathfinder)
-        wt_wander_around();
-}
-
-// switch to the next person
-void U6Actor::wt_player()
-{
-    Player *player = Game::get_game()->get_player();
-    if(player->get_actor()->get_actor_num() != id_n)
-    {
-        delete_pathfinder();
-        player->update_player(this);
-    }
-
-    // else do player update, raft, balloon, etc
-    DEBUG(0,LEVEL_DEBUGGING,"U6Actor: Player (%d)\n", id_n);
-}
-
-// move towards enemies, dropping tangle vines as we go
-// attack adjacent enemies
-// FIXME: this is a combat worktype
-void U6Actor::wt_tangle_vine()
-{
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-    ActorList *foes = find_enemies();
-    if(foes)
-    {
-        actor_manager->sort_nearest(foes,x,y,z);
-        if(combat_try_attack(foes))
-            return;
-    }
-
-    MapCoord old_pos(x,y,z);
-    if(!foes)
-        wt_wander_around(); // move somewhere
-    else // move manually because moving with pathfinder wouldn't drop vines
-    {
-        if(NUVIE_RAND()%4 != 0) // vines aren't constantly moving
-            return;
-
-        U6Actor *foe = (U6Actor *)foes->front();
-        sint16 rel_x = clamp(foe->x-x,-1,1);
-        sint16 rel_y = clamp(foe->y-y,-1,1);
-        if(rel_x && rel_y) // don't allow diagonals
-        {
-            if(abs(foe->x-x) < abs(foe->y-y)) rel_x = 0;
-                                         else rel_y = 0;
-        }
-        // creepy random movement towards enemy
-        if(NUVIE_RAND()%2 == 0)
-        {
-            if(rel_x) { rel_y = rel_x; rel_x = 0; }
-            else      { rel_x = rel_y; rel_y = 0; }
-        }
-
-        if(moveRelative(rel_x, rel_y))
-            Actor::set_direction(rel_x,rel_y);
-    }
-
-    MapCoord new_pos(x,y,z);
-    if(new_pos != old_pos) // moved; extend a tangle vine
-        tangle_drop_vine(old_pos, new_pos);
-}
-
-// drop a vine at moved_from connecting to moved_to and any previous vine
-void U6Actor::tangle_drop_vine(const MapCoord &moved_from, const MapCoord &moved_to)
-{
-    // -- = 366:0 //  | = 366:1
-    // |_ = 366:2 // |^ = 366:3
-    // ^| = 366:4 // _| = 366:5
-    Obj *vine = new_obj(OBJ_U6_TANGLE_VINE,0,
-                        moved_from.x,moved_from.y,moved_from.z);
-    // FIXME: we should be able to use current direction, but it doesn't always seem reliable
-    uint8 dir = ((moved_to.x-moved_from.x)==0) ? (moved_to.y<moved_from.y?NUVIE_DIR_N:NUVIE_DIR_S)
-                                      : (moved_to.x<moved_from.x?NUVIE_DIR_W:NUVIE_DIR_E);
-    if(dir == NUVIE_DIR_W || dir == NUVIE_DIR_E)
-        vine->frame_n = 0;
-    if(dir == NUVIE_DIR_N || dir == NUVIE_DIR_S)
-        vine->frame_n = 1;
-
-    MapCoord connecting_vine; // old vine position
-    if(tangle_get_connecting_vine(moved_from, connecting_vine))
-    {
-        uint8 old_dir = ((moved_from.x-connecting_vine.x)==0) ? (moved_from.y<connecting_vine.y?NUVIE_DIR_N:NUVIE_DIR_S)
-                                          : (moved_from.x<connecting_vine.x?NUVIE_DIR_W:NUVIE_DIR_E);
-        if(old_dir != dir)
-        {
-            if(dir == NUVIE_DIR_E && old_dir == NUVIE_DIR_S)
-                vine->frame_n = 2; // was going down and turned right, ll-bend
-            if(dir == NUVIE_DIR_N && old_dir == NUVIE_DIR_W)
-                vine->frame_n = 2; // was going left and turned up, ll-bend
-            if(dir == NUVIE_DIR_E && old_dir == NUVIE_DIR_N)
-                vine->frame_n = 3; // was going up and turned right, ul-bend
-            if(dir == NUVIE_DIR_S && old_dir == NUVIE_DIR_W)
-                vine->frame_n = 3; // was going left and turned down, ul-bend
-            if(dir == NUVIE_DIR_S && old_dir == NUVIE_DIR_E)
-                vine->frame_n = 4; // was going right and turned down, ur-bend
-            if(dir == NUVIE_DIR_W && old_dir == NUVIE_DIR_N)
-                vine->frame_n = 4; // was going up and turned left, ur-bend
-            if(dir == NUVIE_DIR_W && old_dir == NUVIE_DIR_S)
-                vine->frame_n = 5; // was going down and turned left, lr-bend
-            if(dir == NUVIE_DIR_N && old_dir == NUVIE_DIR_E)
-                vine->frame_n = 5; // was going right and turned up, lr-bend
-        }
-    }
-
-    vine->quality = id_n; // vine points to me
-    vine->qty = 1; // vine has 1 hp
-    vine->status |= OBJ_STATUS_TEMPORARY | OBJ_STATUS_OK_TO_TAKE;
-    obj_manager->add_obj(vine,OBJ_ADD_TOP);
-}
-
-// find a connecting vine adjacent to new_vine_pos, and store the location in
-// old_vine_pos
-// FIXME: maybe I should be using surrounding_objs after all
-bool U6Actor::tangle_get_connecting_vine(const MapCoord &new_vine_pos, MapCoord &old_vine_pos)
-{
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-    Obj *old_vine = 0;
-    Actor *pod = 0;
-    const struct{sint8 x,y;} connecting_vines[4] = { { -1,0 },{ +1,0 },{ 0,-1 },{ 0,+1 } };
-
-    int squares_checked=0;
-    while(squares_checked < 4)
-    {
-        uint16 x2 = new_vine_pos.x + connecting_vines[squares_checked].x,
-               y2 = new_vine_pos.y + connecting_vines[squares_checked].y;
-        // return vines with a quality equal to our id_n, or the center pod
-        old_vine = obj_manager->get_obj_of_type_from_location(OBJ_U6_TANGLE_VINE,id_n,1,x2,y2,z);
-        pod = actor_manager->get_actor(x2,y2,z);
-        if((old_vine && old_vine->obj_n == OBJ_U6_TANGLE_VINE)
-           || (pod && pod->get_obj_n() == OBJ_U6_TANGLE_VINE_POD))
-        {
-            old_vine_pos.x = x2; old_vine_pos.y = y2;
-            return true;
-        }
-        ++squares_checked;
-    }
-    return false;
-}
-
-// Returns true if the enemy could be attacked. If false is returned, the actor
-// probably needs to be closer. (or use a long-range weapon)
-bool U6Actor::combat_try_attack(U6Actor *enemy)
-{
-    if(weapon_can_hit(get_weapon(ACTOR_NO_READIABLE_LOCATION), enemy->x,enemy->y))
-    {
-        face_actor(enemy);
-        attack(ACTOR_NO_READIABLE_LOCATION, MapCoord(enemy->x,enemy->y,enemy->z));
-        foe = enemy;
-        return true;
-    }
-    return false;
-}
-
-// Try to attack anyone in the enemies list, which must not be empty.
-bool U6Actor::combat_try_attack(ActorList *enemies)
-{
-    ActorIterator a = enemies->begin();
-    do
-    {
-        if(combat_try_attack((U6Actor*)*a))
-            return true;
-    } while(++a != enemies->end());
-    return false;
 }
 
 void U6Actor::set_actor_obj_n(uint16 new_obj_n)

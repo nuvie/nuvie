@@ -68,6 +68,7 @@ Converse::Converse()
     using_fmtowns = false;
     need_input = false;
     aname[15] = '\0';
+    gametype = NUVIE_GAME_NONE;
 }
 
 

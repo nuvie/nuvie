@@ -388,6 +388,7 @@ void U6Lzw::get_string(int codeword)
 
 U6LzwStack::U6LzwStack()
 {
+ memset(stack, 0, STACK_SIZE);
  this->reset();
 }
 

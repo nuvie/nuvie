@@ -55,6 +55,7 @@ TileManager::TileManager(Configuration *cfg)
  game_counter = rgame_counter = 0;
  memset(tileindex,0,sizeof(tileindex));
  memset(tile,0,sizeof(tile));
+ memset(&animdata,0,sizeof animdata);
 }
 
 TileManager::~TileManager()

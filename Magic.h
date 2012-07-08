@@ -83,7 +83,6 @@ class Magic : public CallBack {
     //Actor *target_actor;
     Obj *target_object;
     uint8 state;
-    size_t IP;
     
     ScriptThread *magic_script;
     Obj *spellbook_obj;

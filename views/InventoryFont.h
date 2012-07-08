@@ -25,7 +25,7 @@
  */
 #define NUVIE_MICRO_FONT_COUNT 26
 
-static unsigned char inventory_font[NUVIE_MICRO_FONT_COUNT][15] =
+const unsigned char inventory_font[NUVIE_MICRO_FONT_COUNT][15] =
 {
  {1,1,1,
   1,0,1,

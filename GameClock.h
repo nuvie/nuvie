@@ -67,6 +67,8 @@ class GameClock
  vector<uint8> timers;
  uint8 num_timers;
 
+ uint8 rest_counter; //hours until the party will heal again while resting.
+
  public:
 
  GameClock(Configuration *cfg, nuvie_game_t type);
@@ -103,6 +105,9 @@ class GameClock
 
  char *get_date_string();
  char *get_time_string();
+
+ uint8 get_rest_counter();
+ void set_rest_counter(uint8 value) { rest_counter = value; }
 
  uint32 get_ticks() { return(SDL_GetTicks()); } // milliseconds since start
  uint32 get_game_ticks() { return(time_counter/**GAMECLOCK_TICKS_PER_MINUTE+tick_counter*/); }

@@ -140,7 +140,7 @@ bool SaveGame::load_new()
 
 bool SaveGame::load_original()
 {
- std::string path, key, objlist_filename, objblk_filename;
+ std::string path, objlist_filename, objblk_filename;
  unsigned char *data;
  //char *filename;
  char x,y;

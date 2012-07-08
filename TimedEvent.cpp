@@ -815,18 +815,36 @@ TimedRest::TimedRest(uint8 hours, Actor *who_will_guard, Obj *campfire_obj)
 TimedRest::~TimedRest()
 {
     MapCoord loc = Game::get_game()->get_player()->get_actor()->get_location();
-    //Obj *campfire = Game::get_game()->get_obj_manager()->get_obj_of_type_from_location(253, loc.x, loc.y+1, loc.z);
     assert(campfire != 0);
     campfire->frame_n = 0; // extinguish campfire
 
+    bool can_heal = (Game::get_game()->get_clock()->get_rest_counter() == 0); //only heal once every 12 hours.
+
     for(int s=0; s<party->get_party_size(); s++)
     {
-        if(party->get_actor(s)->is_sleeping())
+    	Actor *actor = party->get_actor(s);
+
+        if(can_heal && actor->is_sleeping())
         {
-            // FIXME: heal
+        	//heal actors.
+        	uint8 hp_diff = actor->get_maxhp() - actor->get_hp();
+        	if(hp_diff > 0)
+        	{
+        		if(hp_diff == 1)
+        			hp_diff = 2;
+
+        		actor->set_hp(actor->get_hp() + NUVIE_RAND()%(hp_diff/2) + hp_diff/2);
+        		scroll->display_string(actor->get_name());
+        		scroll->display_string(" has healed.\n");
+        	}
+
         }
         party->get_actor(s)->revert_worktype(); // "wake up"
     }
+
+    if(can_heal)
+    	Game::get_game()->get_clock()->set_rest_counter(12); //don't heal by resting for another 12 hours.
+
     Game::get_game()->get_player()->set_mapwindow_centered(true);
     Game::get_game()->unpause_user();
     Game::get_game()->get_event()->endAction(true); // exit Rest mode

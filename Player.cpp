@@ -220,6 +220,7 @@ void Player::set_actor(Actor *new_actor)
     actor = new_actor;
 
     actor->set_worktype(0x02); // WT_U6_PLAYER
+    actor->delete_pathfinder();
     
     actor_manager->set_player(actor);
     std::string prompt = get_name();

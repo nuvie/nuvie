@@ -1,3 +1,13 @@
+2012-07-08  Eric Fry <efry at users.sourceforge.net> r1400
+	* Fixed compiler warning about inventory_font being unused.
+	* Fixed some cppcheck warnings.
+	* Added rest counter. This is used make sure the party only heals once every 12 hours
+	  while resting. It is stored at offset 0x1bf2 in objlist.
+	* Create path finders for actors that are in worktype 0x86 WALK_TO_LOCATION when the game loads.
+	* Removed old worktype code from U6Actor. This code has now been moved into lua script.
+	* Added party healing while resting. Sleeping party members will heal when resting. See ~TimedRest()
+	* Fixed bug "actors are still pissed at party even after the avatar dies" [3540936]
+
 2012-07-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1399
 	* Fix more SE and MD inventory display
 	* Add more can't sleep messages

@@ -78,6 +78,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  obj_flags = 0;
  body_armor_class = 0;
  readied_armor_class = 0;
+ clear_error();
 }
 
 Actor::~Actor()
@@ -97,6 +98,8 @@ Actor::~Actor()
 
 bool Actor::init()
 {
+ if(pathfinder)
+    delete_pathfinder();
  set_moves_left(dex);
  return true;
 }
@@ -502,6 +505,9 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 
 void Actor::update()
 {
+	if(!is_alive())  //we don't need to update dead actors.
+	   return;
+
     if(pathfinder)
     {
         // NOTE: don't delete pathfinder right after walking, because the scheduled
@@ -1723,6 +1729,8 @@ void Actor::set_error(ActorErrorCode err)
 void Actor::clear_error()
 {
     error_struct.err = ACTOR_NO_ERROR;
+    error_struct.blocking_obj = NULL;
+    error_struct.blocking_actor = NULL;
 }
 
 ActorError *Actor::get_error()

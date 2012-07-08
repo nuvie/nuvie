@@ -86,6 +86,9 @@ bool GameClock::load(NuvieIO *objlist)
 	timers.push_back( objlist->read1() );
  }
 
+ objlist->seek(OBJLIST_OFFSET_U6_REST_COUNTER);
+ rest_counter = objlist->read1();
+
  DEBUG(0,LEVEL_INFORMATIONAL,"Loaded game clock: %s %s\n",get_date_string(),get_time_string());
 
  return true;
@@ -107,6 +110,9 @@ bool GameClock::save(NuvieIO *objlist)
  {
 	objlist->write1(timers[i]);
  }
+
+ objlist->seek(OBJLIST_OFFSET_U6_REST_COUNTER);
+ objlist->write1(rest_counter);
 
  return true;
 }
@@ -163,6 +169,9 @@ void GameClock::inc_minute(uint16 amount)
 
 void GameClock::inc_hour()
 {
+ if(rest_counter > 0)
+	 rest_counter--;
+
  if(hour == 23)
    {
     hour = 0;
@@ -300,6 +309,11 @@ char *GameClock::get_time_string()
  sprintf(time_string, "%02d:%02d %c.M.", tmp_hour, minute, c);
 
  return time_string;
+}
+
+uint8 GameClock::get_rest_counter()
+{
+	return rest_counter;
 }
 
 inline void GameClock::update_day_of_week()

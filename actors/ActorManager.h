@@ -54,7 +54,6 @@ class ActorManager
  Actor *actors[ACTORMANAGER_MAX_ACTORS];
  uint8 player_actor;
  GameClock *clock;
- uint8 game_hour;
  ActorList active_actors; // actors who still get a turn
 
  uint16 last_obj_blk_x, last_obj_blk_y;

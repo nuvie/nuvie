@@ -108,6 +108,9 @@ Event::Event(Configuration *cfg)
  time_queue = game_time_queue = NULL;
  showingQuitDialog = false;
  ignore_timeleft = false;
+
+ mode = MOVE_MODE;
+ last_mode = MOVE_MODE;
 }
 
 Event::~Event()
