@@ -267,7 +267,13 @@ bool ActorManager::load(NuvieIO *objlist)
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
-    actors[i]->combat_mode = objlist->read1();
+     switch(game_type)
+     {
+      case NUVIE_GAME_U6 : actors[i]->combat_mode = objlist->read1(); break;
+
+      case NUVIE_GAME_MD : // FIXME not sure what this is supposed to be
+      case NUVIE_GAME_SE : actors[i]->magic = objlist->read1(); break;
+     }
    }
 
  // Magic Points
@@ -276,7 +282,13 @@ bool ActorManager::load(NuvieIO *objlist)
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
-    actors[i]->magic = objlist->read1();
+      switch(game_type)
+      {
+      case NUVIE_GAME_U6 : actors[i]->magic = objlist->read1(); break;
+
+      case NUVIE_GAME_MD :
+      case NUVIE_GAME_SE : actors[i]->combat_mode = objlist->read1(); break;
+      }
    }
 
  objlist->seek(0x17f1); // Start of Talk flags
@@ -440,7 +452,13 @@ bool ActorManager::save(NuvieIO *objlist)
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
-    objlist->write1(actors[i]->combat_mode);
+     switch(game_type)
+     {
+      case NUVIE_GAME_U6 : objlist->write1(actors[i]->combat_mode); break;
+
+      case NUVIE_GAME_MD : // FIXME not sure what this is supposed to be
+      case NUVIE_GAME_SE : objlist->write1(actors[i]->magic); break;
+     }
    }
 
  // Magic Points
@@ -449,7 +467,13 @@ bool ActorManager::save(NuvieIO *objlist)
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
-    objlist->write1(actors[i]->magic);
+     switch(game_type)
+     {
+      case NUVIE_GAME_U6 : objlist->write1(actors[i]->magic); break;
+
+      case NUVIE_GAME_MD :
+      case NUVIE_GAME_SE : objlist->write1(actors[i]->combat_mode); break;
+     }
    }
 
  // Moves

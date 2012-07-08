@@ -181,7 +181,9 @@ void InventoryView::Display(bool full_redraw)
 void InventoryView::display_name()
 {
  char *name;
-
+ int y_off = 0;
+ if(Game::get_game()->get_game_type()==NUVIE_GAME_SE)
+  y_off = 1;
  if(is_party_member)
   name = party->get_actor_name(cur_party_member);
  else
@@ -189,12 +191,12 @@ void InventoryView::display_name()
  if(name == NULL)
   return;
 
- text->drawString(screen, name, area.x + ((136) - strlen(name) * 8) / 2, area.y, 0);
+ text->drawString(screen, name, area.x + ((136) - strlen(name) * 8) / 2, area.y + y_off, 0);
 
  return;
 }
 
-void InventoryView::display_inventory_list()
+/*void InventoryView::display_inventory_list()
 {
  Tile *tile, *empty_tile;
  Actor *actor;
@@ -216,7 +218,11 @@ void InventoryView::display_inventory_list()
 
  link = inventory->start();
 
-  for(i=0;i<3;i++)
+ int max_rows = 4;
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+  max_rows = 3;
+
+  for(i=0;i<max_rows;i++)
    {
     for(j=0;j<4;j++)
       {
@@ -245,7 +251,7 @@ void InventoryView::display_inventory_list()
        screen->blit((area.x+4*16+8)+j*16,area.y+16+8+i*16,tile->data,8,16,16,16,true);
       }
    }
-}
+}*/
 
 void InventoryView::add_command_icons(Screen *tmp_screen, void *view_manager)
 {
@@ -317,18 +323,62 @@ void InventoryView::display_inventory_weights()
  text->drawString(screen, string, area.x, area.y+72, 0);
 
  snprintf(string,9,"I:%d/%ds",(int)inv_weight,strength*2);
- text->drawString(screen, string, area.x+4*16+8, area.y+72, 0);
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+	text->drawString(screen, string, area.x+4*16+8, area.y+72, 0);
+ else
+	text->drawString(screen, string, area.x, area.y+80, 0);
 }
 
 void InventoryView::display_combat_mode()
 {
  Actor *actor = party->get_actor(cur_party_member);
- if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+
+ if(Game::get_game()->get_game_type() != NUVIE_GAME_U6)
+ {
+	int y_off = 96;
+	if(MD)
+	y_off = 100;
+	Tile *tile;
+
+// Avatar combat text background (where command button is for other party members)
+	if(actor->get_actor_num() == 1 || actor->get_actor_num() == 0)
+	{
+		if(MD)
+			tile = tile_manager->get_tile(284);
+		else
+			tile = tile_manager->get_tile(364);
+		screen->blit(area.x+4*16, area.y + y_off, tile->data,8,16,16,16,true);
+	}
+	if(MD) // combat text background
+		tile = tile_manager->get_tile(286);
+	else if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+		tile = tile_manager->get_tile(366);
+	screen->blit(area.x+5*16, area.y + y_off, tile->data,8,16,16,16,true);
+	screen->blit(area.x+6*16, area.y + y_off, tile->data,8,16,16,16,true); // reuse
+
+	if(MD) // last combat text background
+		tile = tile_manager->get_tile(287);
+	else
+		tile = tile_manager->get_tile(368);
+	screen->blit(area.x+7*16, area.y + y_off, tile->data,8,16,16,16,true);
+
+	int combat_mode_index = 0;
+	if(actor->get_combat_mode() == 2) // command
+		combat_mode_index = 0;
+	else if(actor->get_combat_mode() == 4) // ranged
+		combat_mode_index = 1;
+	else if(actor->get_combat_mode() == 7) // flee
+		combat_mode_index = 2;
+	else if(actor->get_combat_mode() == 8) // attack (MD)/close (SE)
+		combat_mode_index = 3;
+
+	if(MD)
+		text->drawString(screen, combat_mode_tbl_md[combat_mode_index], area.x+5*16, area.y+101, 0);
+	else 
+		text->drawString(screen, combat_mode_tbl_se[combat_mode_index], area.x+5*16, area.y+98, 0);
+ }
+ else
    text->drawString(screen, combat_mode_tbl[actor->get_combat_mode() - 2], area.x+5*16, area.y+88, 0);
- else if(MD) // FIXME: selection isn't right
-   text->drawString(screen, combat_mode_tbl_md[actor->get_combat_mode()], area.x+5*16, area.y+88, 0);
- else // SE - FIXME: selection isn't right
-   text->drawString(screen, combat_mode_tbl_se[actor->get_combat_mode()], area.x+5*16, area.y+88, 0);
 }
 
 /* Move the cursor around, ready or unready objects, select objects, switch
@@ -712,9 +762,23 @@ GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
             {
                 Actor *actor = party->get_actor(cur_party_member);
                 uint8 combat_mode = actor->get_combat_mode();
+              if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
+              {
                 combat_mode++;
                 if(combat_mode > last_combat_mode)
                     combat_mode = first_combat_mode;
+              }
+              else
+              {
+                if(actor->get_combat_mode() == 2) // command
+                    combat_mode = 4; // ranged
+                else if(actor->get_combat_mode() == 4) // ranged
+                    combat_mode = 7; // flee
+                else if(actor->get_combat_mode() == 7) // flee
+                    combat_mode = 8; // attack (MD)/close (SE)
+                else if(actor->get_combat_mode() == 8) // attack (MD)/close (SE)
+                    combat_mode = 2; // command
+               }
                 actor->set_combat_mode(combat_mode);
                 update_display = true;
             }

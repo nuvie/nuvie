@@ -84,7 +84,7 @@ class InventoryView : public View {
  protected:
 
  void display_name();
- void display_inventory_list();
+// void display_inventory_list();
  void add_command_icons(Screen *tmp_screen, void *view_manager);
  void display_inventory_weights();
  void display_combat_mode();

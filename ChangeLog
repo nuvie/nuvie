@@ -1,3 +1,16 @@
+2012-07-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1399
+	* Fix more SE and MD inventory display
+	* Add more can't sleep messages
+	* Change save/load of combat_mode bits for SE and MD
+
+2012-07-08 <smatthews at users.sourceforge.net> r1398
+	* Fixed it's-darkest-just-after-the-dawn bug.
+
+2012-07-07 <smatthews at users.sourceforge.net> r1397
+	* Made minimum ambient light configurable without messing up dusk/dawn transitions
+	* Dawn now occurs between 5:00 and 5:45 instead of between 5:00 and 5:59
+	* Increased size of smooth lighting globes to better approximate original lighting globe sizes
+
 2012-07-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1396
 	* GUI, pathfinder, save, screen, sound, and usecode directories: initialize
 		member variables in the constructor

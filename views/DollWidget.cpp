@@ -179,8 +179,16 @@ inline void DollWidget::display_doll()
 	int tilenum = 368;
 	if(Game::get_game()->get_game_type() == NUVIE_GAME_MD) // FIXME: different depending on npc - Also needs npc doll info code
 		tilenum = 275;
-	else if(Game::get_game()->get_game_type() == NUVIE_GAME_SE) // FIXME: different depending on npc
-		tilenum = 404;
+	else if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+	{
+		if(actor->get_obj_n() == 310 || actor->get_obj_n() == 311
+		   || actor->get_obj_n() == 312)
+			tilenum = 404;
+		else if(actor->get_obj_n() == 318)
+			tilenum = 408;
+		else
+			tilenum = 400;
+	}
 	 screen->fill(bg_color, area.x, area.y, area.w, area.h);
 	 for(i=0;i<2;i++)
 	 {

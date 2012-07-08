@@ -81,20 +81,29 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  obj_font_color = 0;
 
  if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
+ {
 	obj_font_color = 0x48;
-
- objlist_offset_x = 8;
+	objlist_offset_x = 8;
+ }
+ else
+	objlist_offset_x = 0;
  objlist_offset_y = 16;
 
  if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+ {
 	empty_tile = tile_manager->get_tile(410);
+	GUI_Widget::Init(NULL, x, y, 72, 64); //72 =  4 * 16 + 8
+ }
  else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD) // FIXME: different depending on npc
+ {
 	empty_tile = tile_manager->get_tile(273);
- else
+	GUI_Widget::Init(NULL, x, y, 64, 82);
+ }
+ else // SE
+ {
 	empty_tile = tile_manager->get_tile(392);
-
- //72 =  4 * 16 + 8
- GUI_Widget::Init(NULL, x, y, 72, 64);
+	GUI_Widget::Init(NULL, x+2, y, 64, 82);
+ }
 
  set_actor(a);
  set_accept_mouseclick(true, USE_BUTTON); // accept [double]clicks from button1 (even if double-click disabled we need clicks)
@@ -136,7 +145,8 @@ void InventoryWidget::Display(bool full_redraw)
   {
    screen->fill(bg_color, area.x, area.y, area.w, area.h);
    display_inventory_container();
-   display_arrows();
+   if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+     display_arrows();
   }
    //screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
 
@@ -151,7 +161,7 @@ void InventoryWidget::Display(bool full_redraw)
   }
  else
   {
-   screen->update(area.x+8,area.y+16,area.w-8,area.h-16); // update only the inventory list
+   screen->update(area.x+objlist_offset_x,area.y+16,area.w-objlist_offset_x,area.h-16); // update only the inventory list
   }
 
 }
@@ -160,13 +170,15 @@ void InventoryWidget::Display(bool full_redraw)
 void InventoryWidget::display_inventory_container()
 {
  Tile *tile;
-
+ int x_off = 23;
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+	x_off = 32;
  if(!container_obj) //display actor
    tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
  else // display container object
    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(container_obj->obj_n)+container_obj->frame_n);
 
- screen->blit(area.x+32,area.y,tile->data,8,16,16,16,true);
+ screen->blit(area.x+x_off,area.y,tile->data,8,16,16,16,true);
 
  return;
 }
@@ -179,8 +191,9 @@ void InventoryWidget::display_inventory_list()
  Obj *obj = NULL;
  uint16 i,j;
  uint16 skip_num;
-
-
+ int max_rows = 4;
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+   max_rows = 3;
 
  if(container_obj)
    inventory = container_obj->container;
@@ -202,7 +215,7 @@ void InventoryWidget::display_inventory_list()
 
 
 
-  for(i=0;i<3;i++)
+  for(i=0;i<max_rows;i++)
    {
     for(j=0;j<4;j++)
       {
@@ -382,14 +395,17 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 
        Redraw();
       }
+    if(Game::get_game()->get_game_type() != NUVIE_GAME_U6)
 
-    if(HitRect(x,y,arrow_rects[0])) //up arrow hit rect
+    if(HitRect(x,y,arrow_rects[0]) //up arrow hit rect
+       && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
       {
        if(up_arrow())
          Redraw();
       }
 
-    if(HitRect(x,y,arrow_rects[1])) //down arrow hit rect
+    if(HitRect(x,y,arrow_rects[1]) //down arrow hit rect
+       && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
       {
        if(down_arrow())
          Redraw();
