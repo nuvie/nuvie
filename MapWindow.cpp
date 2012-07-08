@@ -575,7 +575,7 @@ void MapWindow::updateAmbience()
      else if( h == 19 ) //Dusk -- Smooth transition between 255 and min_brightness during first 59 minutes
          a = 255 - (uint8)( ( 255.0f - min_brightness ) * (float)clock->get_minute() / 59.0f );
      else if( h == 5 ) //Dawn -- Smooth transition between min_brightness and 255 during first 45 minutes
-         a = min_brightness + (uint8)( ( 255.0f - min_brightness ) * (float)clock->get_minute() / 45.0f );
+         a = min_brightness + ( 255.0f - min_brightness ) * (float)clock->get_minute() / 45.0f;
      else if( h > 5 && h < 19 ) //Day
          a = 255;
      else //Night
