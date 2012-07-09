@@ -44,6 +44,7 @@
 #include "TimedEvent.h"
 #include "InventoryView.h"
 #include "PartyView.h"
+#include "ActorView.h"
 #include "CommandBar.h"
 #include "U6LList.h"
 #include "Event.h"
@@ -334,6 +335,12 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			move(1,0);
 			break;
 
+		case SDLK_BACKQUOTE :
+			if(Game::get_game()->is_orig_style()
+			   && view_manager->get_current_view()
+			      == view_manager->get_inventory_view())
+				view_manager->get_inventory_view()->simulate_CB_callback();
+			break;
 		case SDLK_TAB :
             // cursor is on mapwindow or hidden
             if(input.select_from_inventory == false)
@@ -413,6 +420,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			}
 			break;
 		case SDLK_F10:
+		case SDLK_KP_DIVIDE :
 			if(player->get_party()->main_actor_is_in_party())
 		            view_manager->set_party_mode();
 		        break;
@@ -1620,9 +1628,13 @@ void Event::alt_code(const char *cs)
             break;
 
         case 500: // control/watch anyone
-            if(Game::get_game()->get_party()->is_in_vehicle())
+            if(Game::get_game()->get_party()->is_in_vehicle()
+               || Game::get_game()->get_party()->is_in_combat_mode())
             {
-                 scroll->display_string("\nNot while aboard a vehicle!\n\n");
+                 if(Game::get_game()->get_party()->is_in_vehicle())
+                     scroll->display_string("\nNot while aboard a vehicle!\n\n");
+                 else
+                     scroll->display_string("\nNot while in combat mode!\n\n");
                  scroll->display_prompt();
                  active_alt_code = 0;
                  break;
@@ -2086,6 +2098,8 @@ void Event::solo_mode(uint32 party_member)
     if(!actor || player->get_actor()->get_actor_num() == 0) // vehicle
         return;
 
+    bool main_actor_was_not_in_party = !player->get_party()->main_actor_is_in_party();
+
     if(player->get_party()->is_in_combat_mode())
         scroll->display_string("Not in combat mode!\n\n");
     else if(player->set_solo_mode(actor))
@@ -2093,9 +2107,18 @@ void Event::solo_mode(uint32 party_member)
         scroll->display_string("Solo mode\n\n");
         player->set_mapwindow_centered(true);
         actor->set_worktype(0x02); // Player
-        if(view_manager->get_inventory_view()->set_party_member(party_member))
-            view_manager->set_inventory_mode(); // reset inventoryview
-        // FIXME: make inventory view show ONLY this actor
+        if(view_manager->get_current_view() == view_manager->get_inventory_view())
+        {
+            if(main_actor_was_not_in_party)
+                view_manager->set_inventory_mode(); // reset inventory view
+            view_manager->get_inventory_view()->set_party_member(party_member);
+        }
+        else if(view_manager->get_current_view() == view_manager->get_actor_view())
+        {
+            if(main_actor_was_not_in_party)
+                view_manager->set_actor_mode(); // reset actor view
+            view_manager->get_actor_view()->set_party_member(party_member);
+        }
     }
     scroll->display_prompt();
 }
@@ -2104,6 +2127,8 @@ void Event::solo_mode(uint32 party_member)
 void Event::party_mode()
 {
     MapCoord leader_loc;
+    if(!player->get_party()->main_actor_is_in_party())
+        view_manager->set_party_mode();
     Actor *actor = player->get_party()->get_actor(0);
     assert(actor); // there must be a leader
 
@@ -2123,8 +2148,6 @@ void Event::party_mode()
         {
             scroll->display_string("Party mode\n");
             player->set_mapwindow_centered(true);
-            if(view_manager->get_inventory_view()->set_party_member(0))
-                view_manager->set_inventory_mode(); // reset inventoryview
         }
     }
     else
@@ -2147,6 +2170,11 @@ bool Event::toggle_combat()
     else if(party->is_in_vehicle())
     {
          scroll->display_string("\nNot while aboard ship!\n\n");
+         scroll->display_prompt();
+    }
+    else if(!player->get_party()->main_actor_is_in_party())
+    {
+         scroll->display_string("\nNot while using control cheat!\n\n");
          scroll->display_prompt();
     }
     else

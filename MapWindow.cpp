@@ -1075,6 +1075,8 @@ void MapWindow::drawRoofs()
 {
 	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
 		return;
+	if(x_ray_view)
+		return;
 
 	uint16 *roof_map_ptr = map->get_roof_data(cur_level);
 

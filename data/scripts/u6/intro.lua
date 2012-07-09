@@ -1137,12 +1137,12 @@ function main_menu()
 	
 	local input = input_poll()
 	local menu_idx = 0
-	while input == nil do
+	while true do
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
 			if input == 113 then     --q quit
-				break
+				return "Q"
 			elseif input == 105 or input == 13 and menu_idx == 0 then --i
 				main_menu_set_pal(0)
 				fade_out()
@@ -1223,8 +1223,6 @@ function main_menu()
 			input = nil
 		end
 	end
-	
-	return "Q"
 end
 
 function gypsy_ab_select(question)

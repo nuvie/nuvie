@@ -799,3 +799,7 @@ GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
     return GUI_PASS;
 }
 
+void InventoryView::simulate_CB_callback()
+{
+	callback(BUTTON_CB, combat_button, Game::get_game()->get_view_manager());
+}

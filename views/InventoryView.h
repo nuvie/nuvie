@@ -80,6 +80,7 @@ class InventoryView : public View {
  void Display(bool full_redraw);
  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
  GUI_status KeyDown(SDL_keysym key);
+ void simulate_CB_callback();
 
  protected:
 

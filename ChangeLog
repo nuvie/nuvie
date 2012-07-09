@@ -1,3 +1,11 @@
+2012-07-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1405
+	* Fix x-ray in roof mode
+	* Fix some needless view changes.
+	* Fix intro main menu exiting if you input a key before the loop starts
+	* Use Grave '`' (SDL_BACKQUOTE) to change combat mode when in inventory view
+	* Use forward slash '/' (SDLK_KP_DIVIDE) to change to party view
+	* Don't allow control cheat in combat mode
+
 2012-07-09  Eric Fry <efry at users.sourceforge.net> r1404
 	* Added Daniel's latest roof tileset. We now have a roof on LB's castle and walls around Trinsic.
 
