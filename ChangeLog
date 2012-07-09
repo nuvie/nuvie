@@ -1,3 +1,7 @@
+2012-07-10  Eric Fry <efry at users.sourceforge.net> r1405
+	* Fixed bug "Some windows aren't usable" [3541709]
+	* Removed stray tile from roof tile map.
+
 2012-07-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1405
 	* Fix x-ray in roof mode
 	* Fix some needless view changes.

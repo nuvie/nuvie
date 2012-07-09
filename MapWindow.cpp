@@ -1166,6 +1166,8 @@ void MapWindow::generateTmpMap()
 	return;
  }
 
+ roof_display = ROOF_DISPLAY_NORMAL;
+
  memset(tmp_map_buf, 0, tmp_map_width * tmp_map_height * sizeof(uint16));
 
  if(freeze_blacking_location == false)
@@ -1241,6 +1243,8 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
   {
    if(boundaryLookThroughWindow(*ptr, x, y) == false)
       return;
+   else
+	   roof_display = ROOF_DISPLAY_OFF; //hide roof tiles if player is looking through window.
   }
 
  uint16 xp1,xm1;
