@@ -26,6 +26,8 @@
 
 #define FONT_COLOR_U6_NORMAL    0x48
 #define FONT_COLOR_U6_HIGHLIGHT 0x0c
+#define FONT_COLOR_WOU_NORMAL    0
+#define FONT_COLOR_WOU_HIGHLIGHT 4
 
 class Configuration;
 class Screen;
@@ -52,8 +54,8 @@ private:
    bool initWithBuffer(unsigned char *buffer, uint32 buffer_len);
 
 //   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y);
-   uint16 drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color=FONT_COLOR_U6_NORMAL);
-   uint16 drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color);
+   uint16 drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color=FONT_COLOR_U6_NORMAL, uint8 highlight_color=FONT_COLOR_U6_HIGHLIGHT);
+   uint16 drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color, uint8 highlight_color=FONT_COLOR_U6_HIGHLIGHT);
 
    virtual uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color = FONT_COLOR_U6_NORMAL);

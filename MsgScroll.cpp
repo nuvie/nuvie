@@ -811,13 +811,17 @@ inline void MsgScroll::drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y
  MsgText *token;
  std::list<MsgText *>::iterator iter;
  uint16 total_length = 0;
- uint8 font_color = 0x48;
+ uint8 font_color = FONT_COLOR_U6_NORMAL;
+ uint8 font_highlight_color = FONT_COLOR_U6_HIGHLIGHT;
  if(Game::get_game()->get_game_type()!=NUVIE_GAME_U6)
-    font_color = 0;
+ {
+    font_color = FONT_COLOR_WOU_NORMAL;
+    font_highlight_color = FONT_COLOR_WOU_HIGHLIGHT;
+ }
  for(iter=msg_line->text.begin();iter != msg_line->text.end() ; iter++)
    {
     token = *iter;
-	token->font->drawString(screen, token->s.c_str(), area.x + total_length * 8, area.y+line_y*8, font_color); //FIX for hardcoded font height
+	token->font->drawString(screen, token->s.c_str(), area.x + total_length * 8, area.y+line_y*8, font_color, font_highlight_color); //FIX for hardcoded font height
 	total_length += token->s.length();
    }
 }

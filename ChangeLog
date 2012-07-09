@@ -1,3 +1,9 @@
+2012-07-09  Eric Fry <efry at users.sourceforge.net> r1403
+	* Fixed typo when unpacking thrown container object.
+	* Fixed bug "Character creation is borked" [3541458]
+	* Removed check for game type from Font class. This was causing a segfault
+	  when it was called by the Cutscene scripting. This is called before Game is instanciated.
+
 2012-07-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1402
 	* Fix inventory up arrow not working in U6 because of missing return
 	* Add SE move command inside the inventory containers (unfinished),
