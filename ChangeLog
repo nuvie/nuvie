@@ -1,3 +1,6 @@
+2012-07-09  Eric Fry <efry at users.sourceforge.net> r1404
+	* Added Daniel's latest roof tileset. We now have a roof on LB's castle and walls around Trinsic.
+
 2012-07-09  Eric Fry <efry at users.sourceforge.net> r1403
 	* Fixed typo when unpacking thrown container object.
 	* Fixed bug "Character creation is borked" [3541458]
