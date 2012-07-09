@@ -679,6 +679,61 @@ bool ObjManager::is_stackable(Obj *obj)
     return true;
    default:
     return false;
+  } 
+ }
+
+ if(game_type==NUVIE_GAME_SE)
+ {
+  switch (obj->obj_n)
+  {
+   case OBJ_SE_MAGNESIUM_RIBBON:
+   case OBJ_SE_SPEAR:
+   case OBJ_SE_THROWING_AXE:
+   case OBJ_SE_POISONED_DART:
+   case OBJ_SE_RIFLE_BULLET:
+   case OBJ_SE_KNIFE:
+   case OBJ_SE_ARROW:
+   case OBJ_SE_TURTLE_BAIT:
+   case OBJ_SE_FEATHER:
+   case OBJ_SE_CHOCOLATL:
+   case OBJ_SE_PINDE:
+   case OBJ_SE_YOPO:
+   case OBJ_SE_GOLD:
+   case OBJ_SE_GOLD_NUGGET:
+   case OBJ_SE_DIAMOND:
+   case OBJ_SE_EMERALD:
+   case OBJ_SE_RUBY:
+   case OBJ_SE_CORN_MEAL:
+   case OBJ_SE_TORTILLA:
+   case OBJ_SE_MEAT_103:
+   case OBJ_SE_BERRY:
+   case OBJ_SE_CAKE:
+   case OBJ_SE_CORN:
+   case OBJ_SE_BEAN:
+   case OBJ_SE_MEAT_110:
+   case OBJ_SE_ORCHID:
+   case OBJ_SE_PEPPER:
+   case OBJ_SE_SULFUR:
+   case OBJ_SE_CHARCOAL:
+   case OBJ_SE_POTASSIUM_NITRATE:
+   case OBJ_SE_SOFT_CLAY_POT:
+   case OBJ_SE_FIRED_CLAY_POT:
+   case OBJ_SE_CLOTH_STRIP:
+   case OBJ_SE_GRENADE:
+   case OBJ_SE_TAR:
+   case OBJ_SE_WATER:
+   case OBJ_SE_CLOTH:
+   case OBJ_SE_TARRED_CLOTH_STRIP:
+   case OBJ_SE_CLAY:
+   case OBJ_SE_GUNPOWDER:
+   case OBJ_SE_TORCH:
+   case OBJ_SE_FLAX:
+   case OBJ_SE_RIB_BONE:
+   case OBJ_SE_CHOP:
+   case OBJ_SE_DEVICE:
+    return true;
+   default:
+    return false;
   }
  }
 
@@ -710,6 +765,23 @@ bool ObjManager::is_breakable(Obj *obj)
 		default: break;
 		}
 	}
+	else if(game_type==NUVIE_GAME_SE)
+	{
+		switch (obj->obj_n)
+		{
+			case OBJ_SE_MORTAR:
+			case OBJ_SE_GRINDING_STONE:
+			case OBJ_SE_JUG_OF_PLACHTA:
+			case OBJ_SE_BOTTLE_OF_LIQUOR:
+			case OBJ_SE_JAR:
+			case OBJ_SE_FIRED_CLAY_POT:
+			case OBJ_SE_GRENADE:
+			case OBJ_SE_JUG:
+			case OBJ_SE_POT:
+				return true;
+			default: break;
+		}
+	}
 
 	return false;
 }
@@ -724,7 +796,40 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 		   || (target->obj_n == OBJ_U6_VORTEX_CUBE && src->obj_n == OBJ_U6_MOONSTONE))
 			return true;
 	}
-
+	else if(game_type==NUVIE_GAME_SE)
+	{
+		if(target->obj_n == OBJ_SE_JUG || target->obj_n == OBJ_SE_POUCH
+		   || target->obj_n == OBJ_SE_BASKET || target->obj_n == OBJ_SE_POT)
+			return true;
+		if(target->obj_n == OBJ_SE_MORTAR || target->obj_n == OBJ_SE_GRINDING_STONE
+		   || target->obj_n == OBJ_SE_JAR)
+		{
+			switch (src->obj_n)
+			{
+				case OBJ_SE_MAGNESIUM_RIBBON:
+				case OBJ_SE_CHOCOLATL:
+				case OBJ_SE_PINDE:
+				case OBJ_SE_YOPO:
+				case OBJ_SE_CORN_MEAL:
+				case OBJ_SE_CORN:
+				case OBJ_SE_SULFUR:
+				case OBJ_SE_CHARCOAL:
+				case OBJ_SE_POTASSIUM_NITRATE:
+				case OBJ_SE_GUNPOWDER:
+					if(target->obj_n == OBJ_SE_JAR)
+					{
+// FIXME - Only holds one kind of item at a time
+//         it changes frame to white color if magnesium and potassium (frame 2, tile 645)
+//         yellow with corn, corn meal, and sulfur (frame 1, tile 644)
+//         it changes to black for the rest (frame 3, tile 646)
+//         reverts when empty (frame 0, tile 643)
+					}
+					return true;
+				default:
+					return false;
+			}
+		}
+	}
 	return false;
 }
 
@@ -762,6 +867,29 @@ bool ObjManager::has_reduced_weight(Obj *obj)
     {
       return true;
     }
+  }
+  else if(game_type==NUVIE_GAME_SE)
+  {
+	switch (obj->obj_n)
+	{
+		case OBJ_SE_RIFLE_BULLET:
+		case OBJ_SE_FEATHER:
+		case OBJ_SE_CHOCOLATL:
+		case OBJ_SE_PINDE:
+		case OBJ_SE_YOPO:
+		case OBJ_SE_GOLD:
+		case OBJ_SE_DIAMOND:
+		case OBJ_SE_EMERALD:
+		case OBJ_SE_RUBY:
+		case OBJ_SE_PEPPER:
+		case OBJ_SE_SULFUR:
+		case OBJ_SE_CHARCOAL:
+		case OBJ_SE_POTASSIUM_NITRATE:
+		case OBJ_SE_CLOTH_STRIP:
+			return true;
+		default:
+			return false;
+	}
   }
   return false;
 }

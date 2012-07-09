@@ -396,6 +396,7 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
        Redraw();
       }
     if(Game::get_game()->get_game_type() != NUVIE_GAME_U6)
+      return GUI_YUM;
 
     if(HitRect(x,y,arrow_rects[0]) //up arrow hit rect
        && Game::get_game()->get_game_type() == NUVIE_GAME_U6)

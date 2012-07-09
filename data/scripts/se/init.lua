@@ -26,7 +26,7 @@ local g_readiable_objs_tbl = {
 -- 0 = head
 -- 1 = neck
 [630] = 1, --tooth necklace
-[631] = 1, --hade necklace
+[631] = 1, --jade necklace
 [696] = 1, --lei
 -- 3 = 1 handed
 [512] = 3, --spear of shamap
@@ -71,8 +71,9 @@ local g_readiable_objs_tbl = {
 [676] = 4, --fire axe
 [689] = 4, --bamboo pole
 [692] = 4, --digging stick
-[904] = 4 --fishing pole
+[904] = 4, --fishing pole
 -- 9 = finger
+[600] = 9, --ring (not equipable in original)
 }
 
 function obj_is_readiable(obj)

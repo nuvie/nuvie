@@ -666,7 +666,16 @@ void DropEffect::hit_target()
     		obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
     	}
     	else
-    	{
+    	{	// remove items from container if there is one
+    		if(game->get_usecode()->is_container(throw_obj))
+    		{
+    			U6Link *link = throw_obj->container->start();
+    			for(link != NULL; link = throw_obj->container->start();)
+    			{
+    				Obj *obj = (Obj *)link->data;
+    				obj_manager->moveto_map(obj, stop_at);
+    			}
+    		}
     		obj_manager->unlink_from_engine(throw_obj);
     		delete_obj(throw_obj);
     	}

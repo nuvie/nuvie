@@ -1,3 +1,8 @@
+2012-07-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1402
+	* Fix inventory up arrow not working in U6 because of missing return
+	* Add SE move command inside the inventory containers (unfinished),
+		breaking items, stackable items, and reduced weight items
+
 2012-07-08  Eric Fry <efry at users.sourceforge.net> r1400
 	* Fixed compiler warning about inventory_font being unused.
 	* Fixed some cppcheck warnings.

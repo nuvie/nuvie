@@ -235,7 +235,11 @@ armour_tbl = --FIXME: all armor value is made up
 [13] = 1, --bark shield
 [14] = 3, --leather shield
 [15] = 5, --stegosaurus shield
-[67] = 10 --kotl shield (better vs Myrmidex?)
+[67] = 10, --kotl shield (better vs Myrmidex?)
+--[84] = 0, --tooth necklace
+--[85] = 0, --jade necklace
+--[135] = 0, --lei
+--[600] = 0, --ring
 }
 
 function actor_update_all()
