@@ -1,3 +1,7 @@
+2012-07-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1409
+	* Home/end now properly go to beginning and end.
+	* Update documents
+
 2012-07-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1408
 	* Remove accidental commit of leftover code
 	* Keypad (KP) 8 and KP 2 now scroll save slots

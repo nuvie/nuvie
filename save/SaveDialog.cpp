@@ -179,10 +179,10 @@ GUI_status SaveDialog::KeyDown(SDL_keysym key)
 		scroller->page_down();
 		break;
 	case SDLK_HOME :
-		scroller->page_up(255);
+		scroller->page_up(true);
 		break;
 	case SDLK_END :
-		scroller->page_down(255);
+		scroller->page_down(true);
 		break;
 	default:
 		break;

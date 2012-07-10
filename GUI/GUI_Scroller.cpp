@@ -170,26 +170,36 @@ void GUI_Scroller::move_down()
     }
 }
 
-void GUI_Scroller::page_up(uint8 slots)
+void GUI_Scroller::page_up(bool all)
 {
- for (int i=0; i < slots; i++)
+ if(disp_offset == 0)
+   return;
+ if(all)
+   disp_offset = 0;
+ else
  {
-   if(disp_offset > 0)
-     disp_offset--;
-   else
-     i = slots +1;
+   for (int i=0; i < rows_per_page; i++)
+   {
+     if(disp_offset > 0)
+       disp_offset--;
+   }
  }
  update_viewport(true);
 }
 
-void GUI_Scroller::page_down(uint8 slots)
+void GUI_Scroller::page_down(bool all)
 {
- for (int i=0; i < slots; i++)
+ if(num_rows - disp_offset < rows_per_page)
+  return;
+ if(all)
+   disp_offset = num_rows - rows_per_page;
+ else
  {
-   if(num_rows - disp_offset > rows_per_page)
-     disp_offset++;
-   else
-     i = slots +1;
+   for (int i=0; i < rows_per_page; i++)
+   {
+     if(num_rows - disp_offset > rows_per_page)
+       disp_offset++;
+   }
  }
  update_viewport(true);
 }

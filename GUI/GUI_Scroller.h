@@ -49,8 +49,8 @@ public:
     void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
     void move_up();
     void move_down();
-    void page_up(uint8 slots = 3);
-    void page_down(uint8 slots = 3);
+    void page_up(bool all = false);
+    void page_down(bool all = false);
 
     int AddWidget(GUI_Widget *widget);
 
