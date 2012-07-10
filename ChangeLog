@@ -1,4 +1,9 @@
-2012-07-10  Eric Fry <efry at users.sourceforge.net> r1405
+2012-07-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1407
+	* Fix the sun and moon going through the bottom of the landscape
+	* Mouse wheel, page up/down, and up/down now scroll through the save files
+	* Expand save menu and not allow mouse or keys to pass to the map window
+
+2012-07-10  Eric Fry <efry at users.sourceforge.net> r1406
 	* Fixed bug "Some windows aren't usable" [3541709]
 	* Removed stray tile from roof tile map.
 

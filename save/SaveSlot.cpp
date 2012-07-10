@@ -38,6 +38,9 @@
 
 #include "SaveGame.h"
 #include "SaveSlot.h"
+#include "SaveManager.h"
+#include "SaveDialog.h"
+#include "GUI_Scroller.h"
 
 
 SaveSlot::SaveSlot(GUI_CallBack *callback, GUI_Color bg_color) : GUI_Widget(NULL, 0, 0, 266, NUVIE_SAVESLOT_HEIGHT)
@@ -215,6 +218,17 @@ GUI_status SaveSlot::KeyDown(SDL_keysym key)
 
 GUI_status SaveSlot::MouseDown(int x, int y, int button)
 {
+ SaveManager *save_manager = Game::get_game()->get_save_manager();
+ if(button == SDL_BUTTON_WHEELUP)
+ {
+	save_manager->get_dialog()->get_scroller()->move_up();
+	return GUI_YUM;
+ }
+ else if(button == SDL_BUTTON_WHEELDOWN)
+ {
+	save_manager->get_dialog()->get_scroller()->move_down();
+	return GUI_YUM;
+ }
  if(selected != true)
    {
     selected = true;

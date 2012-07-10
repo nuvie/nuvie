@@ -200,3 +200,12 @@ GUI_status GUI_Scroller::callback(uint16 msg, GUI_CallBack *caller, void *data)
  return GUI_YUM;
 }
 
+void GUI_Scroller::simulate_CB_UP_callback()
+{
+ callback(SCROLLBAR_CB_UP_BUTTON, this, NULL);
+}
+
+void GUI_Scroller::simulate_CB_DOWN_callback()
+{
+ callback(SCROLLBAR_CB_DOWN_BUTTON, this, NULL);
+}

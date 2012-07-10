@@ -63,6 +63,7 @@ class SaveManager : public GUI_CallBack
  bool load_latest_save();
 
  void create_dialog();
+ SaveDialog *get_dialog() { return dialog; }
 
  bool load(SaveSlot *save_slot);
  bool save(SaveSlot *save_slot);

@@ -47,6 +47,8 @@ public:
 	/* Map the color to the display */
 	virtual void SetDisplay(Screen *s);
     void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
+    void move_up();
+    void move_down();
 
     int AddWidget(GUI_Widget *widget);
 
@@ -60,8 +62,6 @@ public:
 
 protected:
 void update_viewport(bool update_slider);
-void move_up();
-void move_down();
 void move_percentage(float offset_percentage);
 GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };

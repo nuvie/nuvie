@@ -377,8 +377,11 @@ void PartyView::display_sun_moon(Tile *tile, uint8 pos)
         { 8 + 7*16 - 14*8, 6 }
     };
 
+    int height = 16;
     uint16 x = area.x + skypos[pos].x, y = area.y + skypos[pos].y;
-    screen->blit(x,y, tile->data,8,16,16,16,true);
+    if (skypos[pos].y == 6) // goes through the bottom if not reduced
+      height = 10;
+    screen->blit(x,y, tile->data,8 ,16, height,16,true);
 }
 
 void PartyView::display_sun(uint8 hour, uint8 minute, bool eclipse)

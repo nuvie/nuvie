@@ -58,6 +58,8 @@ bool init(const char *save_directory, const char *search_prefix);
 
 GUI_status close_dialog();
 GUI_status KeyDown(SDL_keysym key);
+GUI_status MouseDown(int x, int y, int button);
+GUI_Scroller *get_scroller() { return scroller; }
 
 GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };

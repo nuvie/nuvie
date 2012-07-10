@@ -240,6 +240,8 @@ void GUI_Button:: Display(bool full_redraw)
 /* Mouse hits activate us */
 GUI_status GUI_Button:: MouseDown(int x, int y, int button)
 {
+	if(button == SDL_BUTTON_WHEELUP || button == SDL_BUTTON_WHEELDOWN)
+	  return GUI_PASS;
 	if (enabled &&(button==1))
 	{
 	  pressed[0]=1;

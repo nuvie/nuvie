@@ -64,6 +64,8 @@ void GUI_TextInput::release_focus()
 
 GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
 {
+ if(button == SDL_BUTTON_WHEELUP || button == SDL_BUTTON_WHEELDOWN)
+   return GUI_PASS;
  //release focus if we click outside the text box.
  if(focused && !HitRect(x, y))
    release_focus();

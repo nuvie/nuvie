@@ -41,7 +41,7 @@
 #define NUVIE_SAVE_SCROLLER_HEIGHT NUVIE_SAVE_SCROLLER_ROWS * NUVIE_SAVESLOT_HEIGHT
 
 SaveDialog::SaveDialog(GUI_CallBack *callback)
-          : GUI_Dialog(10,4, 300, 192, 244, 216, 131, GUI_DIALOG_MOVABLE)
+          : GUI_Dialog(0,0, 320, 200, 244, 216, 131, false)
 {
  callback_object = callback;
  selected_slot = NULL;
@@ -66,8 +66,8 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
    return false;
 
 
- scroller = new GUI_Scroller(10,26, 280, NUVIE_SAVE_SCROLLER_HEIGHT, 135,119,76, NUVIE_SAVESLOT_HEIGHT );
- widget = (GUI_Widget *) new GUI_Text(10, 12, 0, 0, 0, "Load/Save", gui->get_font());
+ scroller = new GUI_Scroller(20,26, 280, NUVIE_SAVE_SCROLLER_HEIGHT, 135,119,76, NUVIE_SAVESLOT_HEIGHT );
+ widget = (GUI_Widget *) new GUI_Text(20, 12, 0, 0, 0, "Load/Save", gui->get_font());
  AddWidget(widget);
 
  num_saves = filelist.get_num_files();
@@ -119,13 +119,13 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 */
  AddWidget(scroller);
 
- load_button = new GUI_Button(this, 135, 8, 40, 16, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ load_button = new GUI_Button(this, 145, 8, 40, 16, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(load_button);
 
- save_button = new GUI_Button(this, 185, 8, 40, 16, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ save_button = new GUI_Button(this, 195, 8, 40, 16, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(save_button);
 
- cancel_button = new GUI_Button(this, 235, 8, 55, 16, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0); //154
+ cancel_button = new GUI_Button(this, 245, 8, 55, 16, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0); //154
  AddWidget(cancel_button);
 
  filelist.close();
@@ -144,16 +144,34 @@ GUI_status SaveDialog::close_dialog()
  return callback_object->callback(SAVEDIALOG_CB_DELETE, this, this);
 }
 
+GUI_status SaveDialog::MouseDown(int x, int y, int button)
+{
+ if(button == SDL_BUTTON_WHEELUP)
+	scroller->move_up();
+ else if(button == SDL_BUTTON_WHEELDOWN)
+	scroller->move_down();
+ return GUI_YUM;
+}
+
 GUI_status SaveDialog::KeyDown(SDL_keysym key)
 {
 
- if(key.sym == SDLK_ESCAPE)
-   return close_dialog();
-
- /*
- return no_callback_object->callback(YESNODIALOG_CB_NO, this, this);
- */
- return GUI_PASS;
+ switch(key.sym)
+ {
+	case SDLK_ESCAPE :
+		return close_dialog();
+	case SDLK_UP :
+	case SDLK_PAGEUP:
+		scroller->move_up();
+		break;
+	case SDLK_DOWN :
+	case SDLK_PAGEDOWN :
+		scroller->move_down();
+		break;
+	default:
+		break;
+ }
+ return GUI_YUM;
 }
 
 GUI_status SaveDialog::callback(uint16 msg, GUI_CallBack *caller, void *data)
