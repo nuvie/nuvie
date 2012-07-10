@@ -1,3 +1,6 @@
+2012-07-10  Eric Fry <efry at users.sourceforge.net> r1412
+	* Fixed bug "raft gets stuck" [3541909]
+
 2012-07-10  Eric Fry <efry at users.sourceforge.net> r1411
 	* Added Player::is_in_vehicle()
 	* Fixed bug "Avatar can attack from raft, balloon, and skiff" [3541933]

@@ -313,20 +313,24 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     			uint8 dir = 0;
     			uint8 wind_dir = Game::get_game()->get_weather()->get_wind_dir();
     			Tile *t = Game::get_game()->get_game_map()->get_tile(x, y, z, true);
-    			if(t->tile_num >= 8 && t->tile_num < 16)
+    			if(t->flags1&TILEFLAG_BLOCKING) //deep water tiles are blocking. Shore tiles should allow player movement.
     			{
-    				dir = t->tile_num - 8;
-    			}
-    			if(wind_dir != NUVIE_DIR_NONE)
-    			{
-    				dir = raft_movement_tbl[dir*8 + get_reverse_direction(wind_dir)];
-    			}
-    			else
-    			{
-    				dir = get_nuvie_dir_code(dir);
-    			}
+    				//deep water, so take control away from player.
+					if(t->tile_num >= 8 && t->tile_num < 16)
+					{
+						dir = t->tile_num - 8;
+					}
+					if(wind_dir != NUVIE_DIR_NONE)
+					{
+						dir = raft_movement_tbl[dir*8 + get_reverse_direction(wind_dir)];
+					}
+					else
+					{
+						dir = get_nuvie_dir_code(dir);
+					}
 
-    			get_relative_dir(dir, &rel_x, &rel_y);
+					get_relative_dir(dir, &rel_x, &rel_y);
+    			}
     		}
     	}
     	else
