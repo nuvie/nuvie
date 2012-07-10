@@ -170,6 +170,30 @@ void GUI_Scroller::move_down()
     }
 }
 
+void GUI_Scroller::page_up(uint8 slots)
+{
+ for (int i=0; i < slots; i++)
+ {
+   if(disp_offset > 0)
+     disp_offset--;
+   else
+     i = slots +1;
+ }
+ update_viewport(true);
+}
+
+void GUI_Scroller::page_down(uint8 slots)
+{
+ for (int i=0; i < slots; i++)
+ {
+   if(num_rows - disp_offset > rows_per_page)
+     disp_offset++;
+   else
+     i = slots +1;
+ }
+ update_viewport(true);
+}
+
 void GUI_Scroller::move_percentage(float offset_percentage)
 {
  // DEBUG(0,LEVEL_DEBUGGING,"offset_percentage = %f\n", offset_percentage);
@@ -198,14 +222,4 @@ GUI_status GUI_Scroller::callback(uint16 msg, GUI_CallBack *caller, void *data)
   }
 
  return GUI_YUM;
-}
-
-void GUI_Scroller::simulate_CB_UP_callback()
-{
- callback(SCROLLBAR_CB_UP_BUTTON, this, NULL);
-}
-
-void GUI_Scroller::simulate_CB_DOWN_callback()
-{
- callback(SCROLLBAR_CB_DOWN_BUTTON, this, NULL);
 }

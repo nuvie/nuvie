@@ -161,12 +161,28 @@ GUI_status SaveDialog::KeyDown(SDL_keysym key)
 	case SDLK_ESCAPE :
 		return close_dialog();
 	case SDLK_UP :
-	case SDLK_PAGEUP:
+	case SDLK_KP8 :
 		scroller->move_up();
 		break;
 	case SDLK_DOWN :
-	case SDLK_PAGEDOWN :
+	case SDLK_KP2 :
 		scroller->move_down();
+		break;
+	case SDLK_PAGEUP:
+	case SDLK_LEFT:
+	case SDLK_KP4:
+		scroller->page_up();
+		break;
+	case SDLK_PAGEDOWN :
+	case SDLK_RIGHT :
+	case SDLK_KP6 :
+		scroller->page_down();
+		break;
+	case SDLK_HOME :
+		scroller->page_up(255);
+		break;
+	case SDLK_END :
+		scroller->page_down(255);
 		break;
 	default:
 		break;
