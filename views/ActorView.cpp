@@ -191,17 +191,26 @@ void ActorView::display_actor_stats()
  char buf[10];
  int x_off = 0;
  int y_off = 0;
+ int hp_text_color = 0; //standard text color
+
  if (MD)
 	x_off = -1;
  else if(Game::get_game()->get_game_type()==NUVIE_GAME_SE)
  {
 	x_off = 2; y_off = - 6;
  }
+ else //U6
+	hp_text_color = 0x48; //standard text color)
 
  if(in_party)
 	actor = party->get_actor(cur_party_member);
  else
 	actor = Game::get_game()->get_player()->get_actor();
+
+ if(actor->is_poisoned()) //actor is poisoned, display their hp in green
+	hp_text_color = 0xa;
+ else if(actor->get_hp() < 10) //actor is critical, display their hp in red.
+	hp_text_color = 0x0c;
 
  sprintf(buf,"STR:%d",actor->get_strength());
  text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16, 0);
@@ -214,8 +223,9 @@ void ActorView::display_actor_stats()
 
  if (MD || Game::get_game()->get_game_type()==NUVIE_GAME_SE)
  {
-	sprintf(buf,"HP:%3d",actor->get_hp());
-	text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 3 * 8, 0);
+	text->drawString(screen, "HP:", area.x + 5 * 16 + x_off, area.y + y_off + 16 + 3 * 8, 0);
+	sprintf(buf,"   %3d",actor->get_hp());
+	text->drawString(screen, buf, strlen(buf), area.x + 5 * 16 + x_off, area.y + y_off + 16 + 3 * 8, 0, hp_text_color);
 
 	sprintf(buf,"HM:%3d",actor->get_maxhp());
 	text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 4 * 8, 0);
@@ -234,7 +244,9 @@ void ActorView::display_actor_stats()
  text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 5 * 8, 0);
 
  text->drawString(screen, "Health", area.x + 5 * 16, area.y + 16 + 6 * 8, 0);
- sprintf(buf,"%3d/%d",actor->get_hp(),actor->get_maxhp());
+ sprintf(buf,"%3d",actor->get_hp());
+ text->drawString(screen, buf, strlen(buf), area.x + 5 * 16, area.y + 16 + 7 * 8, 0, hp_text_color);
+ sprintf(buf,"   /%d",actor->get_maxhp());
  text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 7 * 8, 0);
 
  text->drawString(screen, "Lev/Exp", area.x + 5 * 16, area.y + 16 + 8 * 8, 0);

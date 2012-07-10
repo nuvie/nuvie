@@ -1,3 +1,6 @@
+2012-07-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1410
+	* Actor view now changes hp color based on status
+
 2012-07-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1409
 	* Home/end now properly go to beginning and end.
 	* Update documents
@@ -6,7 +9,7 @@
 	* Remove accidental commit of leftover code
 	* Keypad (KP) 8 and KP 2 now scroll save slots
 	* Page up/down, left/right, and KP 4/KP 6 now move 3 save slots at a time
-	* Home/end now scroll through up to 255 save slots at a time
+	* Home/end move to the beginning and end of save slots
 
 2012-07-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1407
 	* Fix the sun and moon going through the bottom of the landscape
