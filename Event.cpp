@@ -908,6 +908,7 @@ bool Event::attack()
 {
 	MapCoord target = map_window->get_cursorCoord();
     Actor *actor = map_window->get_actorAtCursor();
+
     if(actor)
         {
     		if(actor->get_actor_num() == player->get_actor()->get_actor_num()) //don't attack yourself.
@@ -1628,10 +1629,10 @@ void Event::alt_code(const char *cs)
             break;
 
         case 500: // control/watch anyone
-            if(Game::get_game()->get_party()->is_in_vehicle()
+            if(player->is_in_vehicle()
                || Game::get_game()->get_party()->is_in_combat_mode())
             {
-                 if(Game::get_game()->get_party()->is_in_vehicle())
+                 if(player->is_in_vehicle())
                      scroll->display_string("\nNot while aboard a vehicle!\n\n");
                  else
                      scroll->display_string("\nNot while in combat mode!\n\n");
@@ -2095,7 +2096,7 @@ void Event::solo_mode(uint32 party_member)
     if(mode == WAIT_MODE)
         return;
 
-    if(!actor || player->get_actor()->get_actor_num() == 0) // vehicle
+    if(!actor || player->is_in_vehicle())
         return;
 
     bool main_actor_was_not_in_party = !player->get_party()->main_actor_is_in_party();
@@ -2135,7 +2136,7 @@ void Event::party_mode()
     if(mode == WAIT_MODE)
         return;
 
-    if(player->get_actor()->get_actor_num() == 0) // vehicle
+    if(player->is_in_vehicle())
         return;
 
     leader_loc = actor->get_location();
@@ -2896,6 +2897,15 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		case USE_MODE:  use_start();  break;
 		case GET_MODE:  get_start();  break;
 		case ATTACK_MODE:
+			if(Game::get_game()->get_game_type() == NUVIE_GAME_U6
+					&& player->is_in_vehicle()
+					&& player->get_actor()->get_obj_n() != OBJ_U6_SHIP)
+			{
+				scroll->display_string("Attack-Not while aboard ship!\n");
+				endAction(true);
+				return false;
+			}
+
 			player->attack_select_init();
 			map_window->set_show_cursor(true);
 			break;

@@ -809,6 +809,7 @@ TimedRest::TimedRest(uint8 hours, Actor *who_will_guard, Obj *campfire_obj)
 {
     lookout = who_will_guard;
     campfire = campfire_obj;
+    number_that_had_food = 0;
 }
 
 /* This is the only place we know that the TimedAdvance has completed. */
@@ -824,7 +825,7 @@ TimedRest::~TimedRest()
     {
     	Actor *actor = party->get_actor(s);
 
-        if(can_heal && actor->is_sleeping())
+        if(can_heal && actor->is_sleeping() && s < number_that_had_food)
         {
         	//heal actors.
         	uint8 hp_diff = actor->get_maxhp() - actor->get_hp();
@@ -891,6 +892,7 @@ void TimedRest::eat(Actor *actor)
     {
         scroll->display_string(" has food.\n");
         Game::get_game()->get_usecode()->destroy_obj(food, 1);
+        number_that_had_food++;
     }
     else
         scroll->display_string(" has no food.\n");

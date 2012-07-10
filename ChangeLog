@@ -1,3 +1,9 @@
+2012-07-10  Eric Fry <efry at users.sourceforge.net> r1411
+	* Added Player::is_in_vehicle()
+	* Fixed bug "Avatar can attack from raft, balloon, and skiff" [3541933]
+	* Fixed bug "Party should need to eat during rest in order to heal" [3541920]
+	* Fixed bug "wilderness detection is off" [3541916]
+
 2012-07-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1410
 	* Actor view now changes hp color based on status
 

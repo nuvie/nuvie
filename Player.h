@@ -75,6 +75,8 @@ class Player
  bool is_mapwindow_centered()            { return(mapwindow_centered); }
  void set_mapwindow_centered(bool state);
 
+ bool is_in_vehicle() { return (get_actor()->get_actor_num() == 0); }
+
  Party *get_party()      { return(party); }
  bool set_party_mode(Actor *new_actor);
  bool set_solo_mode(Actor *new_actor);

@@ -247,6 +247,7 @@ class TimedRest : public TimedAdvance
     bool sleeping; // false: mealtime, true: sleeping
     uint8 print_message; // which message is to be printed next
     Obj *campfire;
+    uint8 number_that_had_food;
 public:
     TimedRest(uint8 hours, Actor *lookout, Obj *campfire_obj);
     ~TimedRest();

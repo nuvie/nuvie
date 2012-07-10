@@ -2147,8 +2147,10 @@ bool MapWindow::in_town()
 {
     for(std::vector<TileInfo>::iterator ti = m_ViewableTiles.begin();
         ti != m_ViewableTiles.end(); ti++)
-        if((*ti).t->flags1&TILEFLAG_WALL)
+        if((*ti).t->flags1&TILEFLAG_WALL && (*ti).t->flags1&TILEFLAG_WALL_MASK) //only wall tiles with wall direction bits set.
+        {
             return true;
+        }
     return false;
 }
 
