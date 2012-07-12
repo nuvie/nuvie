@@ -1,3 +1,6 @@
+2012-07-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1416
+	* Remove some dead code.
+
 2012-07-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1415
 	* home/end scroll to the beginning and end of the roof tiles in roof edit mode
 	* keypad 7,9,1, and 3 move diagonally (but do not wrap) in roof edit mode

@@ -128,8 +128,6 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
  else // SE
 	cursor_tile = tile_manager->get_tile(381);
 
-// update_cursor(); moved to PlaceOnScreen
-
  return true;
 }
 
@@ -152,13 +150,7 @@ void InventoryView::Display(bool full_redraw)
         display_combat_mode();
     display_name();
     display_inventory_weights();
-    //display_command_icons();
-
-
    }
-
- //display_doll(area.x,area.y+8);
- //display_inventory_list();
 
  DisplayChildren(full_redraw);
 
@@ -195,63 +187,6 @@ void InventoryView::display_name()
 
  return;
 }
-
-/*void InventoryView::display_inventory_list()
-{
- Tile *tile, *empty_tile;
- Actor *actor;
- U6LList *inventory;
- U6Link *link;
- Obj *obj;
- uint16 i,j;
-
- if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-   empty_tile = tile_manager->get_tile(410);
- else if(MD) // FIXME: different depending on npc
-   empty_tile = tile_manager->get_tile(273);
- else
-   empty_tile = tile_manager->get_tile(392);
-
- actor = party->get_actor(cur_party_member);
-
- inventory = actor->get_inventory_list();
-
- link = inventory->start();
-
- int max_rows = 4;
- if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-  max_rows = 3;
-
-  for(i=0;i<max_rows;i++)
-   {
-    for(j=0;j<4;j++)
-      {
-       if(link != NULL)
-         {
-          obj = (Obj *)link->data;
-          if(obj->is_readied()) //skip any readied objects
-            {
-             for(;link != NULL && obj->is_readied(); link = link->next)
-                obj = (Obj *)link->data;
-            }
-          else
-            link = link->next;
-
-          tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-          if(link == NULL)
-            {
-             if(obj->is_readied()) //last object is readied so skip it.
-                tile = empty_tile;
-            }
-         }
-        else
-          tile = empty_tile;
-
-       //tile = tile_manager->get_tile(actor->indentory_tile());
-       screen->blit((area.x+4*16+8)+j*16,area.y+16+8+i*16,tile->data,8,16,16,16,true);
-      }
-   }
-}*/
 
 void InventoryView::add_command_icons(Screen *tmp_screen, void *view_manager)
 {
@@ -386,9 +321,6 @@ void InventoryView::display_combat_mode()
  */
 GUI_status InventoryView::KeyDown(SDL_keysym key)
 {
-//    Event *event = Game::get_game()->get_event();
-//    ViewManager *view_manager = Game::get_game()->get_view_manager();
-
     if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
         return(GUI_PASS);
     switch(key.sym)
@@ -435,28 +367,6 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
         		return GUI_PASS;
         	}
         	break;
-/*        case SDLK_F1: // FIXME: these should pass down to Event (global actions)
-        case SDLK_F2:
-        case SDLK_F3:
-        case SDLK_F4:
-        case SDLK_F5:
-        case SDLK_F6:
-        case SDLK_F7:
-        case SDLK_F8:
-            if(view_manager->get_inventory_view()->set_party_member(key.sym - 282))
-            {
-                view_manager->set_inventory_mode();
-                moveCursorToInventory(0, 0);
-            }
-            break;
-        case SDLK_F10:
-            view_manager->set_party_mode();
-            set_show_cursor(false);
-            break;
-        case SDLK_ESCAPE:
-        default:
-            event->cancelAction();
-            break;*/
         default:
             set_show_cursor(false); // newAction() can move cursor here
             return GUI_PASS;
