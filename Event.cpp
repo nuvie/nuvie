@@ -787,6 +787,11 @@ bool Event::perform_talk(Actor *actor)
     Actor *pc = player->get_actor();
     uint8 id = actor->get_actor_num();
 
+    if(actor->is_in_vehicle())
+    {
+    	 scroll->display_string("Not in vehicle.\n");
+    	 return false;
+    }
     if(id == pc->get_actor_num())    // actor is controlled by player
     {
         // Note: being the player, this should ALWAYS use the real name
@@ -1505,6 +1510,7 @@ void Event::alt_code_input(const char *in)
     Actor *a = am->get_actor((uint8)strtol(in, NULL, 10));
     static string teleport_string = "";
     static Obj obj;
+	uint8 a_num = 0;
     switch(active_alt_code)
     {
         case 300: // show NPC portrait (FIXME: should be show portrait number)
@@ -1518,7 +1524,8 @@ void Event::alt_code_input(const char *in)
             break;
 
         case 400: // talk to NPC (FIXME: get portrait and inventory too)
-            if(!converse->start((uint8)strtol(in, NULL, 10)))
+        	a_num = (uint8)strtol(in, NULL, 10);
+            if(a_num == 0 || !converse->start(a_num))
             {
                 scroll->display_string("\n");
                 scroll->display_prompt();

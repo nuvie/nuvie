@@ -1,3 +1,6 @@
+2012-07-12  Eric Fry <efry at users.sourceforge.net> r1414
+	* Fixed bug "alt-414 and alt-500 crash the game when given invalid #" [3539092]
+
 2012-07-12  Eric Fry <efry at users.sourceforge.net> r1413
 	* Fixed bug "roof mode corrupts map window background when moused over" [3539089]
 	* Remove roof when standing next to an open door.
