@@ -1,3 +1,7 @@
+2012-07-12  Eric Fry <efry at users.sourceforge.net> r1413
+	* Fixed bug "roof mode corrupts map window background when moused over" [3539089]
+	* Remove roof when standing next to an open door.
+
 2012-07-10  Eric Fry <efry at users.sourceforge.net> r1412
 	* Fixed bug "raft gets stuck" [3541909]
 

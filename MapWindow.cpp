@@ -1078,6 +1078,8 @@ void MapWindow::drawRoofs()
 	if(x_ray_view)
 		return;
 
+	bool orig_style = game->is_orig_style();
+
 	uint16 *roof_map_ptr = map->get_roof_data(cur_level);
 
     SDL_Rect src, dst;
@@ -1102,6 +1104,38 @@ void MapWindow::drawRoofs()
 	       src.x = (roof_map_ptr[j] % MAPWINDOW_ROOFTILES_IMG_W) * 16;
 	       src.y = (roof_map_ptr[j] / MAPWINDOW_ROOFTILES_IMG_W) * 16;
 
+	       if(orig_style)
+	       {
+	    	   src.w = 16;
+	    	   src.h = 16;
+	    	   dst.w = 16;
+	    	   dst.h = 16;
+
+	    	   if(i==0)
+	    	   {
+	    		   src.y += 8;
+	    		   src.h = 8;
+	    		   dst.y += 8;
+	    		   dst.h = 8;
+	    	   }
+	    	   else if(i == win_height-1)
+	    	   {
+	    		   src.h = 8;
+	    		   dst.h = 8;
+	    	   }
+
+	    	   if(j==0)
+	    	   {
+	    		   src.x += 8;
+	    		   src.w = 8;
+	    		   dst.x += 8;
+	    		   dst.w = 8;
+	    	   } else if(j == win_width-1)
+	    	   {
+	    		   src.w = 8;
+	    		   dst.w = 8;
+	    	   }
+	       }
 	       SDL_BlitSurface(roof_tiles, &src, surface, &dst);
 		   }
 	     }
@@ -1200,6 +1234,9 @@ void MapWindow::generateTmpMap()
  boundaryFill(map_ptr, pitch, x, y);
 
  reshapeBoundary();
+
+ if(roof_mode && floorTilesVisible())
+	roof_display = ROOF_DISPLAY_OFF; // hide roof if a building's floor is showing.
 }
 
 void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y)
@@ -1247,6 +1284,7 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
 	   roof_display = ROOF_DISPLAY_OFF; //hide roof tiles if player is looking through window.
   }
 
+
  uint16 xp1,xm1;
  uint16 yp1,ym1;
  
@@ -1267,6 +1305,37 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
 
 
  return;
+}
+
+bool MapWindow::floorTilesVisible()
+{
+	Actor *actor;
+	 uint16 a_x, a_y;
+	 uint8 a_z;
+	actor = actor_manager->get_player();
+	if(!actor)
+		return false;
+	 actor->get_location(&a_x,&a_y,&a_z);
+	 uint16 cX = WRAPPED_COORD(a_x-1, cur_level), eX = WRAPPED_COORD(a_x+2, cur_level);
+	 uint16 cY = WRAPPED_COORD(a_y-1, cur_level), eY = WRAPPED_COORD(a_y+2, cur_level);
+
+	 for(;cY != eY;)
+	 {
+		 for(;cX != eX;)
+		 {
+			 if(map->has_roof(cX,cY,cur_level) && !map->is_boundary(cX,cY,cur_level))
+			 {
+				 Tile *t = obj_manager->get_obj_tile(cX,cY, cur_level, false);
+				 if(t && t->flags1&TILEFLAG_WALL)
+					 return true;
+			 }
+			 cX = WRAPPED_COORD(cX+1, cur_level);
+		 }
+		 cX = WRAPPED_COORD(a_x-1, cur_level);
+		 cY = WRAPPED_COORD(cY+1, cur_level);
+	 }
+
+ return false;
 }
 
 bool MapWindow::boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y)

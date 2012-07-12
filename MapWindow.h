@@ -245,6 +245,7 @@ protected:
 
  void generateTmpMap();
  void boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y);
+ bool floorTilesVisible();
  bool boundaryLookThroughWindow(uint16 tile_num, uint16 x, uint16 y);
 
  void reshapeBoundary();
