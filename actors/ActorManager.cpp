@@ -28,6 +28,8 @@
 
 #include "Actor.h"
 #include "U6Actor.h"
+#include "SEActor.h"
+#include "MDActor.h"
 #include "U6WorkTypes.h"
 #include "TileManager.h"
 #include "U6LList.h"
@@ -118,8 +120,8 @@ bool ActorManager::load(NuvieIO *objlist)
     switch(game_type)
      {
       case NUVIE_GAME_U6 : actors[i] = new U6Actor(map,obj_manager,clock); break;
-      case NUVIE_GAME_MD : actors[i] = new Actor(map,obj_manager,clock); break;
-      case NUVIE_GAME_SE : actors[i] = new Actor(map,obj_manager,clock); break;
+      case NUVIE_GAME_MD : actors[i] = new MDActor(map,obj_manager,clock); break;
+      case NUVIE_GAME_SE : actors[i] = new SEActor(map,obj_manager,clock); break;
      }
 
     b1 = objlist->read1();

@@ -1,3 +1,9 @@
+2012-07-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1415
+	* home/end scroll to the beginning and end of the roof tiles in roof edit mode
+	* keypad 7,9,1, and 3 move diagonally (but do not wrap) in roof edit mode
+	* Stopped the main actor from walking when the save or quit menu is opened
+	* Added stubs for MD and SE actors
+
 2012-07-12  Eric Fry <efry at users.sourceforge.net> r1414
 	* Fixed bug "alt-414 and alt-500 crash the game when given invalid #" [3539092]
 

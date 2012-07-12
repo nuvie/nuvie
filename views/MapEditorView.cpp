@@ -142,6 +142,28 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
 		case SDLK_KP6:
 			update_selected_tile_relative(1);
 			break;
+		case SDLK_KP1:
+			update_selected_tile_relative(TILES_W);
+			if(selectedTile%TILES_W) // don't wrap
+				update_selected_tile_relative(-1);
+			break;
+		case SDLK_KP3:
+			update_selected_tile_relative(TILES_W);
+			if((selectedTile+1)%TILES_W) // don't wrap
+				update_selected_tile_relative(1);
+			break;
+		case SDLK_KP7:
+			if(selectedTile >= TILES_W)
+				update_selected_tile_relative(-TILES_W);
+			if(selectedTile%TILES_W) // don't wrap
+					update_selected_tile_relative(-1);
+			break;
+		case SDLK_KP9:
+			if(selectedTile >= TILES_W)
+				update_selected_tile_relative(-TILES_W);
+			if((selectedTile+1)%TILES_W) // don't wrap
+				update_selected_tile_relative(1);
+			break;
 		default:
 			break;
 		}
@@ -158,12 +180,16 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
     		update_selected_tile_relative(TILES_W * TILES_H);
     		break;
         case SDLK_KP1:
+        	map_window->moveMapRelative(-1,1);
             break;
         case SDLK_KP3:
+        	map_window->moveMapRelative(1,1);
             break;
         case SDLK_KP7:
+        	map_window->moveMapRelative(-1,-1);
             break;
         case SDLK_KP9:
+        	map_window->moveMapRelative(1,-1);
             break;
 
         case SDLK_UP:
@@ -201,6 +227,14 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
             break;
         case SDLK_TAB :
 
+        	break;
+        case SDLK_HOME:
+        	selectedTile = 0;
+        	tile_offset = 0;
+        	break;
+        case SDLK_END:
+        	selectedTile = MAPWINDOW_ROOFTILES_IMG_W * MAPWINDOW_ROOFTILES_IMG_H -1;
+        	tile_offset = (TILES_W * TILES_H) * (selectedTile / (TILES_W * TILES_H));
         	break;
         case SDLK_ESCAPE:
         	Game::get_game()->get_view_manager()->close_gump(this);

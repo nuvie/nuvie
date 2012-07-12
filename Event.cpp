@@ -2047,6 +2047,7 @@ void Event::quitDialog()
 	GUI_Widget *quit_dialog;
 	if(mode == MOVE_MODE && !showingQuitDialog)
 	{
+		map_window->set_walking(false);
 		showingQuitDialog = true;
 
 		quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", (GUI_CallBack *)this, (GUI_CallBack *)this);
@@ -2068,8 +2069,10 @@ void Event::saveDialog()
  }
  SaveManager *save_manager = Game::get_game()->get_save_manager();
  if(mode == MOVE_MODE)
+ {
+	 map_window->set_walking(false);
 	 save_manager->create_dialog();
-
+ }
  return;
 }
 

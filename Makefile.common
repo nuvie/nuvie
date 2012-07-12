@@ -7,6 +7,10 @@ nuvie_SOURCES = \
 	actors/U6WorkTypes.h \
 	actors/ActorManager.cpp \
 	actors/ActorManager.h \
+	actors/SEActor.cpp \
+	actors/SEActor.h \
+	actors/MDActor.cpp \
+	actors/MDActor.h \
 \
 	conf/Configuration.cpp \
 	conf/Configuration.h \
