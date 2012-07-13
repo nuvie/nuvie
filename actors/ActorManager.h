@@ -129,8 +129,6 @@ class ActorManager
 
  inline ActorIterator activate_actor(const ActorIterator &start_at, Actor *actor);
  inline void deactivate_actor(Actor *actor);
- inline bool update_actor(Actor *actor);
- inline bool can_party_move();
 
 };
 

@@ -4,28 +4,49 @@
 
  <datadir>@datadir@/nuvie</datadir>
 
+ <input>
+  <enable_doubleclick>yes</enable_doubleclick>
+ </input>
+
  <general>
-  <lighting>original</lighting>
+  <lighting>smooth</lighting>
+  <dither_mode>none</dither_mode>
   <enable_cursors>yes</enable_cursors>
+  <fullscreen_map>no</fullscreen_map>
+  <converse_bg_color>218</converse_bg_color>
+  <party_formation>standard</party_formation>
+  <show_console>yes</show_console>
  </general>
+
+ <cheats>
+  <enable_hackmove>no</enable_hackmove>
+  <party_all_the_time>no</party_all_the_time>
+  <min_brightness>0</min_brightness>
+ </cheats>
 
  <video>
   <scale_method>Point</scale_method>
   <scale_factor>2</scale_factor>
+  <fullscreen>no</fullscreen>
  </video>
 
  <audio>
   <enabled>yes</enabled>
   <enable_music>yes</enable_music>
-  <enable_sfx>no</enable_sfx>
+  <enable_sfx>yes</enable_sfx>
+  <music_volume>100</music_volume>
+  <sfx_volume>255</sfx_volume>
  </audio>
 
  <ultima6>
   <gamedir>@datadir@/nuvie/ultima6</gamedir>
   <sounddir>@datadir@/nuvie/u6_sounds</sounddir>
   <skip_intro> no </skip_intro>
-  <show_eggs> yes </show_eggs>
+  <show_eggs> no </show_eggs>
+  <roof_mode>no</roof_mode>
+  <show_stealing>no</show_stealing>
   <music>native</music>
+  <sfx>pcspeaker</sfx>
  </ultima6>
 
  <martian>

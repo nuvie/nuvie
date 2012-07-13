@@ -672,18 +672,6 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
  last_obj_blk_y = cur_blk_y;
  last_obj_blk_z = z;
 
-/*// moved to updateTime() (SB-X)
- cur_hour = clock->get_hour();
-
- if(cur_hour != game_hour)
-   {
-    game_hour = cur_hour;
-
-    for(i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
-      if(!actors[i]->in_party) // don't do scheduled activities while partying
-        actors[i]->updateSchedule(cur_hour);
-   }*/
-
  return;
 }
 
@@ -742,41 +730,6 @@ void ActorManager::moveActors()
    //updateTime();
    stopActors();
    return;
-/*
-    while(!wait_for_player)
-    {
-        if(can_party_move())
-            stopActors(); // wait_for_player=true
-        else
-        {
-            if(!active_actors.empty())
-            {
-                Actor *actor = active_actors.front();
-                if(!update_actor(actor)) // actor==player: wait_for_player=true
-                    break;
-
-                // resort by moves after update
-                deactivate_actor(actor);
-                if(actor->id_n != player_actor)
-                    activate_actor(active_actors.begin(), actor);
-            // We don't re-add the player because they didn't update, or their update
-            // doesn't use up any moves, and only needs to be called once per turn.
-            // If stopActors() was called, the player will be re-added after moving.
-            }
-            else // just ran out of actors, or never found any
-            {
-                //updateTime(); // refresh moves
-                update_active_actors(cur_x,cur_y,cur_z);
-                if(active_actors.empty())
-                {
-                    // make sure display updates when player isn't moving
-                    Game::get_game()->time_changed();
-                    break; // break instead of continue, so main loop can update world
-                }
-            }
-        }
-    }
-*/
 }
 
 inline void ActorManager::deactivate_actor(Actor *actor)
@@ -791,27 +744,6 @@ inline void ActorManager::deactivate_actor(Actor *actor)
         else ++a;
 }
 
-// Update actor. Return false if actor can't move yet.
-inline bool ActorManager::update_actor(Actor *actor)
-{
-    sint8 moves_pre_update = actor->moves;
-    if(actor->id_n != player_actor)
-        if(actor->get_location().is_visible()
-           && (clock->get_ticks()-actor->move_time) < (combat_movement?250:66)) // FIXME: Replace with animation.
-            return false; // Don't move again so soon, and block others.
-//DEBUG(0,LEVEL_DEBUGGING,"update_actor(%d) %d moves",actor->id_n,actor->moves);
-    actor->update(); // *UPDATE*
-    if(actor->id_n == player_actor)
-    {
-//DEBUG(1,LEVEL_DEBUGGING," -> player\n");
-        stopActors(); // Player's turn
-    }
-    else if(actor->moves == moves_pre_update && actor->moves > 0)
-        actor->set_moves_left(0); // Pass - use up moves (prevents endless loop)
-//else DEBUG(1,LEVEL_DEBUGGING," -> %d moves left\n",actor->moves);
-    return true;
-}
-
 inline ActorIterator ActorManager::activate_actor(const ActorIterator &start_at, Actor *actor)
 {
     ActorIterator a = start_at;
@@ -822,27 +754,6 @@ inline ActorIterator ActorManager::activate_actor(const ActorIterator &start_at,
         a = active_actors.insert(a, actor);
     }
     return a;
-}
-
-/* Returns true if the party can move before the next actor in active_actors.
- * (switching to player in combat is handled after actor update) */
-inline bool ActorManager::can_party_move()
-{
-    Party *party = Game::get_game()->get_party();
-    Actor *pActor = party->get_slowest_actor();
-    sint8 party_moves_left = pActor ? pActor->get_moves_left() : 0;
-
-    if(combat_movement || party_moves_left <= 0)
-        return false;
-    if(active_actors.empty())
-        return true;
-
-    Actor *actor = active_actors.front();
-    // pM/pD > M/D
-    if((actor->is_in_party()
-        || party_moves_left*actor->dex > actor->moves*pActor->get_dexterity()))
-        return true; // Player's turn
-    return false;
 }
 
 // Sort actors by order of movement.

@@ -1,3 +1,7 @@
+2012-07-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1417
+	* Add nuvie.cfg options to Linux and OSX build
+	* Remove some dead code.
+
 2012-07-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1416
 	* Remove some dead code.
 
