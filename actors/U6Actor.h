@@ -50,13 +50,7 @@ typedef struct {
  ActorTileType tile_type;
  uint8 movetype;
  uint16 twitch_rand; //used to control how frequently an actor twitches, lower numbers twitch more
- uint8 str;
- uint8 dex;
- uint8 intelligence;
  uint8 body_armor_class;
- uint8 attack_hands;
- uint8 hp;
- uint8 alignment;
 } U6ActorType;
 
 class U6Actor: public Actor
@@ -66,11 +60,7 @@ class U6Actor: public Actor
  const U6ActorType *actor_type;
  const U6ActorType *base_actor_type;
 
- uint8 beg_mode; // for WT_BEG
  sint8 walk_frame_inc; // added to walk_frame each step
-
- U6Actor *foe; // enemy being attacked or approached by this actor
- U6Actor *attacker; // last enemy to attack this actor
 
  public:
 
@@ -78,7 +68,7 @@ class U6Actor: public Actor
  ~U6Actor();
 
  bool init();
- uint16 get_downward_facing_tile_num();
+ virtual uint16 get_downward_facing_tile_num();
  bool updateSchedule(uint8 hour);
  void set_worktype(uint8 new_worktype);
  void revert_worktype();
@@ -157,7 +147,6 @@ class U6Actor: public Actor
 
  void print();
  const char *get_worktype_string(uint32 wt);
- void add_blood();
  void inventory_make_all_objs_ok_to_take();
 };
 

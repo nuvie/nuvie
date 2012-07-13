@@ -35,95 +35,89 @@ can_sit
 tile_type
 movetype
 twitch_rand
-str
-dex
-intelligence
 body_armor_class
-attack_hands
-hp
-alignment
 */
 
 const U6ActorType u6ActorTypes[] = {
- // 4x1 tile actors                                                                                            STR, DEX, INT,  AC, DMG,  HP, ALIGNMENT
- {OBJ_U6_INSECTS,          0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      2,   1,  40,   1,   0,   1,   1, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_GIANT_SQUID,      0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH, 50,  24,  20,   8,   0,  20,  50, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_GHOST,            0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       45,   1,  10,   9,   0,  12,  20, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_ACID_SLUG,        0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       50,   5,   5,   2,   0,   1,  10, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_WISP,             0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,    50,   1,  40,  20,   0,   1,  40, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_GIANT_BAT,        0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      30,   5,  25,   4,   0,   6,   5, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_REAPER,           0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         40,  21,  20,  16,   4,  20,  30, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_GREMLIN,          0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         20,   2,  26,   7,   0,   1,   5, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_GAZER,            0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         30,   2,  10,  21,   0,   1,  20, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_BIRD,             0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      20,   1,  28,   4,   0,   1,   3, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_CORPSER,          0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         50,  17,   6,   3,   0,  15,  40, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_RABBIT,           0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         25,   3,   9,   3,   0,   2,   5, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_ROT_WORMS,        0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         50,   3,  17,   2,   0,   2,   5, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_HYDRA,            0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,          5,  26,  11,   2,   0,  15,  50, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_MOUSE,            1, 1, 1, 0, OBJ_U6_MOUSE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,          0,   2,  25,   3,   0,   2,   5, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_CAT,              1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         40,   4,  18,   8,   0,   2,   6, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_TANGLE_VINE,      1, 1, 1, 0, OBJ_U6_TANGLE_VINE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,    0,  20,   5,   1,   4,   1,  30, ACTOR_ALIGNMENT_CHAOTIC},
+ // 4x1 tile actors                                                                                            AC
+ {OBJ_U6_INSECTS,          0, 0, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      2,  0},
+ {OBJ_U6_GIANT_SQUID,      0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH, 50,  0},
+ {OBJ_U6_GHOST,            0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       45,  0},
+ {OBJ_U6_ACID_SLUG,        0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
+ {OBJ_U6_WISP,             0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,    50,  0},
+ {OBJ_U6_GIANT_BAT,        0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      30,  0},
+ {OBJ_U6_REAPER,           0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         40,  4},
+ {OBJ_U6_GREMLIN,          0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         20,  0},
+ {OBJ_U6_GAZER,            0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         30,  0},
+ {OBJ_U6_BIRD,             0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      20,  0},
+ {OBJ_U6_CORPSER,          0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         50,  0},
+ {OBJ_U6_RABBIT,           0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         25,  0},
+ {OBJ_U6_ROT_WORMS,        0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         50,  0},
+ {OBJ_U6_HYDRA,            0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,          5,  0},
+ {OBJ_U6_MOUSE,            1, 1, 1, 0, OBJ_U6_MOUSE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,          0,  0},
+ {OBJ_U6_CAT,              1, 1, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         40,  0},
+ {OBJ_U6_TANGLE_VINE,      1, 1, 1, 0, OBJ_U6_TANGLE_VINE, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,    0,  4},
 
  // 4x2
- {OBJ_U6_SEA_SERPENT,      2, 2, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH,  60,  17,  17,   9,   2,  30,  70, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_GIANT_RAT,        2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          40,   5,  13,   4,   0,   6,   8, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_SHEEP,            2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          35,   5,  10,   4,   0,   2,   6, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_DOG,              2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          35,   5,  16,   8,   0,   3,   6, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_DEER,             2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,  11,  18,   5,   0,   2,   8, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_WOLF,             2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,   8,  16,   8,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_SNAKE,            2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,   3,   7,   6,   1,   2,   5, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_GIANT_SPIDER,     2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,   9,  11,   4,   0,   8,  10, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_DRAKE,            2, 2, 1, 0, OBJ_U6_DRAKE, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,       15,  22,  22,  13,   4,  10,  50, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_MONGBAT,          2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          15,  20,  27,  13,   4,  20,  30, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_DAEMON,           2, 2, 1, 0, OBJ_U6_DEAD_BODY, 0, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       30,  35,  26,  31,  10,  20, 100, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_SKELETON,         2, 2, 1, 0, OBJ_U6_DEAD_BODY, 9, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       30,  10,  14,   7,   0,   6,  20, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_HEADLESS,         2, 2, 1, 0, OBJ_U6_DEAD_BODY, 1, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       30,  19,  13,   8,   2,  12,  20, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_TROLL,            2, 2, 1, 0, OBJ_U6_DEAD_BODY, 0, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       40,  18,  14,   9,   4,   6,  15, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_CYCLOPS,          2, 8, 4, 0, OBJ_U6_DEAD_CYCLOPS, 3, true,false, ACTOR_QT, MOVETYPE_U6_LAND,    45,  27,   8,   7,   4,  20,  40, ACTOR_ALIGNMENT_EVIL},
+ {OBJ_U6_SEA_SERPENT,      2, 2, 1, 0, OBJ_U6_NOTHING, 0, false,false, ACTOR_ST, MOVETYPE_U6_WATER_HIGH,  60,  2},
+ {OBJ_U6_GIANT_RAT,        2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          40,  0},
+ {OBJ_U6_SHEEP,            2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          35,  0},
+ {OBJ_U6_DOG,              2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          35,  0},
+ {OBJ_U6_DEER,             2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,  0},
+ {OBJ_U6_WOLF,             2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,  0},
+ {OBJ_U6_SNAKE,            2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,  1},
+ {OBJ_U6_GIANT_SPIDER,     2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          20,  0},
+ {OBJ_U6_DRAKE,            2, 2, 1, 0, OBJ_U6_DRAKE, 0, false,false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,       15,  4},
+ {OBJ_U6_MONGBAT,          2, 2, 1, 0, OBJ_U6_BLOOD, 0, false,false, ACTOR_ST, MOVETYPE_U6_LAND,          15,  4},
+ {OBJ_U6_DAEMON,           2, 2, 1, 0, OBJ_U6_DEAD_BODY, 0, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       30, 10},
+ {OBJ_U6_SKELETON,         2, 2, 1, 0, OBJ_U6_DEAD_BODY, 9, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       30,  0},
+ {OBJ_U6_HEADLESS,         2, 2, 1, 0, OBJ_U6_DEAD_BODY, 1, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       30,  2},
+ {OBJ_U6_TROLL,            2, 2, 1, 0, OBJ_U6_DEAD_BODY, 0, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       40,  4},
+ {OBJ_U6_CYCLOPS,          2, 8, 4, 0, OBJ_U6_DEAD_CYCLOPS, 3, true,false, ACTOR_QT, MOVETYPE_U6_LAND,    45,  4},
 
  // 4x3 fix dead frame
- {OBJ_U6_WINGED_GARGOYLE,  3, 12, 4, 0, OBJ_U6_DEAD_GARGOYLE, 3, true,false, ACTOR_QT, MOVETYPE_U6_LAND,  60,  15,  32,  33,  10,   6,  50, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_GARGOYLE,         3, 3, 1, 0, OBJ_U6_DEAD_BODY, 0, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       50,  25,  19,   8,   5,  15,  30, ACTOR_ALIGNMENT_EVIL},
+ {OBJ_U6_WINGED_GARGOYLE,  3, 12, 4, 0, OBJ_U6_DEAD_GARGOYLE, 3, true,false, ACTOR_QT, MOVETYPE_U6_LAND,  60, 10},
+ {OBJ_U6_GARGOYLE,         3, 3, 1, 0, OBJ_U6_DEAD_BODY, 0, true,false, ACTOR_ST, MOVETYPE_U6_LAND,       50,  5},
 
  // 4x5
- {OBJ_U6_FIGHTER,          3, 4, 1, 0, OBJ_U6_DEAD_BODY, 6, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  20,  17,  11,   0,   6,  20, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_SWASHBUCKLER,     3, 4, 1, 0, OBJ_U6_DEAD_BODY, 5, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  15,  18,  12,   0,   4,  15, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_MAGE,             3, 4, 1, 0, OBJ_U6_DEAD_BODY, 3, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  10,  14,  22,   0,   4,  30, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_VILLAGER,         3, 4, 1, 0, OBJ_U6_DEAD_BODY, 2, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  11,  12,  12,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_MERCHANT,         3, 4, 1, 0, OBJ_U6_DEAD_BODY, 2, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  12,  12,  18,   0,   4,   8, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_CHILD,            3, 4, 1, 0, OBJ_U6_DEAD_BODY, 8, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       30,   8,   8,   9,   0,   2,   6, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_GUARD,            3, 4, 1, 0, OBJ_U6_DEAD_BODY, 4, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       35,  30,  30,   9,   0,   8, 100, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_JESTER,           3, 4, 1, 0, OBJ_U6_DEAD_BODY, 8, true, true, ACTOR_ST, MOVETYPE_U6_LAND,        5,  14,  16,  12,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_PEASANT,          3, 4, 1, 0, OBJ_U6_DEAD_BODY, 5, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  11,  12,  12,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL}, //not sure of stats here
- {OBJ_U6_FARMER,           3, 4, 1, 0, OBJ_U6_DEAD_BODY, 8, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       40,  15,  15,  10,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_MUSICIAN,         3, 4, 1, 0, OBJ_U6_DEAD_BODY, 7, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  12,  16,  14,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_WOMAN,            3, 4, 1, 0, OBJ_U6_DEAD_BODY, 3, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  10,  14,  15,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_LORD_BRITISH,     3, 4, 1, 0, OBJ_U6_DEAD_BODY, 2, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       60,  30,  30,  30,  30, 255, 255, ACTOR_ALIGNMENT_GOOD}, //does LB have a dead frame!? ;)
- {OBJ_U6_AVATAR,           3, 4, 1, 0, OBJ_U6_DEAD_BODY, 7, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  25,  25,  25,   0,   4,  30, ACTOR_ALIGNMENT_GOOD},
+ {OBJ_U6_FIGHTER,          3, 4, 1, 0, OBJ_U6_DEAD_BODY, 6, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
+ {OBJ_U6_SWASHBUCKLER,     3, 4, 1, 0, OBJ_U6_DEAD_BODY, 5, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
+ {OBJ_U6_MAGE,             3, 4, 1, 0, OBJ_U6_DEAD_BODY, 3, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
+ {OBJ_U6_VILLAGER,         3, 4, 1, 0, OBJ_U6_DEAD_BODY, 2, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
+ {OBJ_U6_MERCHANT,         3, 4, 1, 0, OBJ_U6_DEAD_BODY, 2, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
+ {OBJ_U6_CHILD,            3, 4, 1, 0, OBJ_U6_DEAD_BODY, 8, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       30,  0},
+ {OBJ_U6_GUARD,            3, 4, 1, 0, OBJ_U6_DEAD_BODY, 4, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       35,  0},
+ {OBJ_U6_JESTER,           3, 4, 1, 0, OBJ_U6_DEAD_BODY, 8, true, true, ACTOR_ST, MOVETYPE_U6_LAND,        5,  0},
+ {OBJ_U6_PEASANT,          3, 4, 1, 0, OBJ_U6_DEAD_BODY, 5, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0}, //not sure of stats here
+ {OBJ_U6_FARMER,           3, 4, 1, 0, OBJ_U6_DEAD_BODY, 8, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       40,  0},
+ {OBJ_U6_MUSICIAN,         3, 4, 1, 0, OBJ_U6_DEAD_BODY, 7, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
+ {OBJ_U6_WOMAN,            3, 4, 1, 0, OBJ_U6_DEAD_BODY, 3, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
+ {OBJ_U6_LORD_BRITISH,     3, 4, 1, 0, OBJ_U6_DEAD_BODY, 2, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       60, 30}, //does LB have a dead frame!? ;)
+ {OBJ_U6_AVATAR,           3, 4, 1, 0, OBJ_U6_DEAD_BODY, 7, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
 
- {OBJ_U6_MUSICIAN_PLAYING, 2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        3,  12,  16,  14,   0,   4,   8, ACTOR_ALIGNMENT_NEUTRAL},
+ {OBJ_U6_MUSICIAN_PLAYING, 2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        3,  0},
 
- {OBJ_U6_SHIP,             1, 2, 2, 8, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_WATER_HIGH,  0,  30,  30,  30,  30,  30,  30, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_SKIFF,            1, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_INFLATED_BALLOON, 0, 0, 0, 4, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,     0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL},
+ {OBJ_U6_SHIP,             1, 2, 2, 8, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_WATER_HIGH,  0, 30},
+ {OBJ_U6_SKIFF,            1, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,  0},
+ {OBJ_U6_INFLATED_BALLOON, 0, 0, 0, 4, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,     0,  0},
 
- {OBJ_U6_GIANT_SCORPION,   2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         30,  13,  13,   3,   3,   8,  20, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_GIANT_ANT,        2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         30,  16,  15,   2,   3,   8,  10, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_COW,              2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         40,  14,   7,   5,   0,   3,  10, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_ALLIGATOR,        2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         30,  20,  10,   3,   6,  10,  30, ACTOR_ALIGNMENT_CHAOTIC},
- {OBJ_U6_HORSE,            2, 2, 1, 0, OBJ_U6_HORSE_CARCASS, 1, false, false, ACTOR_DT, MOVETYPE_U6_LAND, 20,  22,  27,   7,   0,   3,  15, ACTOR_ALIGNMENT_NEUTRAL},
- {OBJ_U6_HORSE_WITH_RIDER, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         20,  22,  27,   7,   0,   3,  15, ACTOR_ALIGNMENT_NEUTRAL},
+ {OBJ_U6_GIANT_SCORPION,   2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         30,  3},
+ {OBJ_U6_GIANT_ANT,        2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         30,  3},
+ {OBJ_U6_COW,              2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         40,  0},
+ {OBJ_U6_ALLIGATOR,        2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         30,  6},
+ {OBJ_U6_HORSE,            2, 2, 1, 0, OBJ_U6_HORSE_CARCASS, 1, false, false, ACTOR_DT, MOVETYPE_U6_LAND, 20,  0},
+ {OBJ_U6_HORSE_WITH_RIDER, 2, 2, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_DT, MOVETYPE_U6_LAND,         20,  0},
 
- {OBJ_U6_DRAGON,           2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_AIR_LOW,    10,  40,  35,  27,  12,  30, 150, ACTOR_ALIGNMENT_EVIL},
- {OBJ_U6_SILVER_SERPENT,   1, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,        0,  60,  21,   8,  15,  60, 200, ACTOR_ALIGNMENT_CHAOTIC},
+ {OBJ_U6_DRAGON,           2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_AIR_LOW,    10, 12},
+ {OBJ_U6_SILVER_SERPENT,   1, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_LAND,        0, 15},
 
  // 2x1 FIXME
- {OBJ_U6_RAFT,             0, 0, 0, 1, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL}, // FIX might need to fix this
- {OBJ_U6_TANGLE_VINE_POD,  2, 2, 1, 0, OBJ_U6_TANGLE_VINE_POD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,20, 20,  25,   1,   4,   1,  30, ACTOR_ALIGNMENT_CHAOTIC},
+ {OBJ_U6_RAFT,             0, 0, 0, 1, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,  0}, // FIX might need to fix this
+ {OBJ_U6_TANGLE_VINE_POD,  2, 2, 1, 0, OBJ_U6_TANGLE_VINE_POD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,20, 4},
 
- {OBJ_U6_SLIME,            0, 0, 0, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        0,   0,   0,   0,   0,   0,   0, ACTOR_ALIGNMENT_NEUTRAL},
+ {OBJ_U6_SLIME,            0, 0, 0, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        0,  0},
 
- {OBJ_U6_NOTHING, 0, 0, 0, 1, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 0, 0, 0, 0, 0, 0, 0, ACTOR_ALIGNMENT_NEUTRAL} //end indicator
+ {OBJ_U6_NOTHING, 0, 0, 0, 1, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 0, 0} //end indicator
 };
 
 // A list of readiable objects and their readied location.

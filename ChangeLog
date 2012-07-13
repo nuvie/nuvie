@@ -1,3 +1,6 @@
+2012-07-13  Eric Fry <efry at users.sourceforge.net> r1418
+	* Code clean up in Actor classes. Dead code removal.
+
 2012-07-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1417
 	* Add nuvie.cfg options to Linux and OSX build
 	* Remove some dead code.

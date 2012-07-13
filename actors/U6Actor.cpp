@@ -47,10 +47,7 @@
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c), actor_type(NULL),
  base_actor_type(NULL)
 {
- beg_mode = 0; // beggers are waiting for targets
  walk_frame_inc = 1;
-
- foe = attacker = 0;
 }
 
 U6Actor::~U6Actor()
@@ -71,9 +68,6 @@ bool U6Actor::init()
 
  
  body_armor_class = base_actor_type->body_armor_class;
-
- //if(alignment == ACTOR_ALIGNMENT_DEFAULT)
- //  set_alignment(base_actor_type->alignment);
       
  if(actor_type->tile_type == ACTOR_QT && frame_n == 0) //set the two quad tile actors to correct frame number.
    frame_n = 3;
@@ -92,8 +86,6 @@ bool U6Actor::init()
    case OBJ_U6_DRAGON : init_dragon(); break;
 
    case OBJ_U6_SILVER_SERPENT : init_silver_serpent(); break;
-   // These aren't really surrounding objects.
-   //case OBJ_U6_TANGLE_VINE_POD : init_tangle_vine(); break;
 
    case OBJ_U6_GIANT_SCORPION :
    case OBJ_U6_GIANT_ANT :
@@ -387,43 +379,6 @@ void U6Actor::gather_snake_objs_from_map(Obj *start_obj, uint16 ax, uint16 ay, u
      
 }
 
-// when spawning new tangle vine pods/centers/frags, spawn up to four vine
-// actors around the pod
-// FIXME: bugged, being called multiple times, not spawning vines, spawning as fireplaces!
-
-/* Depreciated we init the tangle vine in script now.
-bool U6Actor::init_tangle_vine()
-{
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-    uint8 num_vines = NUVIE_RAND()%4+1;
-    DEBUG(0,LEVEL_DEBUGGING,"init_tangle_vine() %d at %x,%x with %d vines\n",id_n,x,y,num_vines);
-    const struct { sint8 x, y; } vine_pos[4] = { {-1,0},{+1,0},{0,-1},{0,+1} };
-    // Pod may have already been initialized, so just add vines where none
-    // currently exist.
-    uint8 v = 0;
-    do
-    {
-        uint16 vx = x+vine_pos[v].x, vy = y+vine_pos[v].y;
-        Actor *vine = actor_manager->get_actor(vx,vy,z);
-        if(!vine)
-        {
-            if(actor_manager->create_temp_actor(OBJ_U6_TANGLE_VINE,vx,vy,z,alignment,WORKTYPE_U6_TANGLE,&vine))
-            {
-                vine->set_direction((v==0)?NUVIE_DIR_W:(v==1)?NUVIE_DIR_E:(v==2)?NUVIE_DIR_N:NUVIE_DIR_S);
-if(vine) DEBUG(0,LEVEL_DEBUGGING,"    new vine %d at %x,%x\n",v,vine->get_location().x,vine->get_location().y);
-            }
-
-        }
-        else
-        {
-if(vine) DEBUG(0,LEVEL_DEBUGGING,"    preexisting vine %d at %x,%x\n",v,vine->get_location().x,vine->get_location().y);
-            return true; // no room!
-        }
-    } while(++v < num_vines);
-    return true;
-}
-*/
-
 uint16 U6Actor::get_downward_facing_tile_num()
 {
  uint8 shift = 0;
@@ -561,99 +516,8 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
    {
      if(actor_type->can_sit)
        sit_on_chair(obj); // make the Actor sit if they are on top of a chair.
-  /*
-     switch(obj->obj_n)
-     {
-       case OBJ_U6_FIRE_FIELD : // ouch, fire
-       {
-         DEBUG(0,LEVEL_WARNING,"FIXME: find correct fire field damage amount\n");
-         hit(5); // -?? hp?
-         scroll->display_string("\n");
-         scroll->display_prompt();
-         break;
-       }
-
-       case OBJ_U6_POISON_FIELD :
-       {
-         if(!is_poisoned())
-         {
-           set_poisoned(true); // ick, poisoned!
-           
-           if(is_in_party()) //FIXME Should this be moved to set_poisoned?
-           {
-             scroll->display_string(party->get_actor_name(party->get_member_num(this)));
-             scroll->display_string(" poisoned!\n\n");
-             scroll->display_prompt();
-           }
-         }
-         break;
-       }
-
-       case OBJ_U6_SLEEP_FIELD :
-       {
-         new HitEffect(this); // no hp loss
-         //set_worktype(WORKTYPE_U6_SLEEP); // fall asleep
-         set_asleep(true);
-         if(is_in_party())
-           {
-            //party->set_active(party->get_member_num(this), !(is_sleeping() || is_paralyzed()));
-            player->set_actor(party->get_actor(party->get_leader()));
-            player->set_mapwindow_centered(true);
-           }
-         break;
-       }
-
-       case OBJ_U6_TRAP :
-       {
-         hit(25); //FIXME find proper amount. share with U6UseCode::use_trap
-         obj->status &= (0xff ^ OBJ_STATUS_INVISIBLE); //show trap. FIXME should this logic go else ware.
-         break;
-       }
-
-       case OBJ_U6_SPIKES :
-       {
-         hit(NUVIE_RAND()%8+1); // I think this is the proper amount. (SB-X)
-         break;
-       }
-
-       case OBJ_U6_TANGLE_VINE :
-       {
-         hit(5); // FIXME find proper amount.
-         break;
-       }
-
-       case OBJ_U6_LOG_SAW :
-       {
-         hit(NUVIE_RAND()%31+1); // Ouch that hurts!
-         break;
-       }
-       default : break;
-     }
-  */
    }
-   /*
-   Tile *tile = map->get_tile(new_x,new_y,new_z);
-   if(tile->tile_num>=221&&tile->tile_num<=223) // lava
-     {
-      DEBUG(0,LEVEL_WARNING,"FIXME: find correct lava damage amount\n");
-      hit(5);
-      scroll->display_string("\n");
-      scroll->display_prompt();
-     }
-   // swamp
-   else if(tile->tile_num>=2&&tile->tile_num<=4 && !is_poisoned()
-           && (!readied_objects[ACTOR_FOOT] || readied_objects[ACTOR_FOOT]->obj->obj_n != OBJ_U6_SWAMP_BOOTS))
-     {
-      set_poisoned(true);
-         
-      if(is_in_party())
-        {
-         scroll->display_string(party->get_actor_name(party->get_member_num(this)));
-         scroll->display_string(" poisoned!\n\n");
-         scroll->display_prompt();
-        }
-     }
-*/
+
   }
 
 
@@ -1431,7 +1295,7 @@ inline void U6Actor::set_direction_of_surrounding_dragon_objs(uint8 new_directio
  uint8 frame_offset =  (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
  Obj *head, *tail, *wing1, *wing2;
 
- //NOTE! this is dependant on the order the in which the objects are loaded in U6Actor::init_dragon()
+ //NOTE! this is dependent on the order the in which the objects are loaded in U6Actor::init_dragon()
 
  obj = surrounding_objects.begin();
  if(obj == surrounding_objects.end())
@@ -1514,7 +1378,7 @@ inline void U6Actor::twitch_surrounding_hydra_objs()
  uint8 i;
  std::list<Obj *>::iterator obj;
 
- //Note! list order is important here. As it corresponds to the frame order in the tile set. This is definied in init_hydra()
+ //Note! list order is important here. As it corresponds to the frame order in the tile set. This is defined in init_hydra()
 
  for(i = 0, obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++, i += 4)
    {
@@ -1591,77 +1455,40 @@ void U6Actor::die(bool create_body)
  Party *party = game->get_party();
  Player *player = game->get_player();
  MapCoord actor_loc = get_location();
- MsgScroll *scroll = game->get_scroll();
  
+ if(party->get_member_num(this) == 0) //avatar
+	 return; //The avatar can't die. They just get teleported back to LB's castle.
+
  if(has_surrounding_objs())
    clear_surrounding_objs_list(true);
-     
- if(is_in_party() && party->get_member_num(this) == 0) {
-   // don't kill off Avatar, as it would cause 
-   // player->set_party_mode(party->get_actor(0)); 
-   // to use the look-string for name (turning you into Avatar)
- } else {
-   Actor::die(); // unless we are the avatar.
- }
+
+ Actor::die();
+
     
  if(is_in_party())
   {
-   if(party->get_member_num(this) == 0) // Avatar
-     {
-      scroll->display_string("\nAn unending darkness engulfs thee...\n\n");
-      // special effects?
-      game->get_sound_manager()->playSfx(NUVIE_SFX_AVATAR_DEATH, SFX_PLAY_ASYNC);
-
-      scroll->display_string("A voice in the darkness intones, \"KAL LOR!\"\n");
-      // special effects?
-      game->get_sound_manager()->playSfx(NUVIE_SFX_KAL_LOR, SFX_PLAY_ASYNC);
-
-      party->set_in_combat_mode(false);
-//      game->get_command_bar()->set_combat_mode(false);
-
-     player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
-      player->move(0x133,0x160,0); //move to LB's castle.
-      set_direction(NUVIE_DIR_N);
-
-      party->resurrect_dead_members();
-      party->heal();
-      party->show();
-      set_moves_left(1);
-     }
-   else
-     {
       party->remove_actor(this, true);
       if(player->get_actor() == this)
         player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
-     }
   }
-
-  //moved to script add_blood();
  
-    // we don't generate a dead body if the avatar dies because they will be ressurrected.  
     if(base_actor_type->dead_obj_n != OBJ_U6_NOTHING)
     {
     	if(create_body)
     	{
-    		if(is_in_party() && party->get_member_num(this) == 0) // unready all items on the avatar.
-    			remove_all_readied_objects();
-    		else
-    		{ //if not avatar then create a dead body and place on the map.
-    			Obj *dead_body = new Obj;
-    			dead_body->obj_n = base_actor_type->dead_obj_n;
-    			dead_body->frame_n = base_actor_type->dead_frame_n;
-    			dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;
-    			dead_body->quality = id_n;
-    			dead_body->status = OBJ_STATUS_OK_TO_TAKE;
-    			if(temp_actor)
-    				dead_body->status |= OBJ_STATUS_TEMPORARY;
+			Obj *dead_body = new Obj;
+			dead_body->obj_n = base_actor_type->dead_obj_n;
+			dead_body->frame_n = base_actor_type->dead_frame_n;
+			dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;
+			dead_body->quality = id_n;
+			dead_body->status = OBJ_STATUS_OK_TO_TAKE;
+			if(temp_actor)
+				dead_body->status |= OBJ_STATUS_TEMPORARY;
 
-    			// FIX: move my inventory into the dead body container
-    			all_items_to_container(dead_body);
+			// FIX: move my inventory into the dead body container
+			all_items_to_container(dead_body);
 
-    			obj_manager->add_obj(dead_body, true);
-
-    		}
+			obj_manager->add_obj(dead_body, true);
     	}
     }
 
@@ -1835,19 +1662,4 @@ uint8 U6Actor::get_maxmagic()
         return uint8(intelligence*2);
     if(!is_in_party()) DEBUG(0,LEVEL_WARNING,"FIXME: %s (%d) has unknown max. magic points\n", get_name(), id_n);
     return 0;
-}
-
-//Add some blood to the map at the actor's location.
-void U6Actor::add_blood()
-{
-  Obj *blood;
-  
-  blood = new Obj();
-  blood->obj_n = OBJ_U6_BLOOD;
-  blood->frame_n = NUVIE_RAND() % 3;
-  blood->status |= OBJ_STATUS_TEMPORARY;
-  
-  obj_manager->moveto_map(blood, MapCoord(get_x(), get_y(), get_z()));
-  
-  return;
 }

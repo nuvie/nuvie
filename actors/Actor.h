@@ -399,8 +399,6 @@ class Actor
  void repel_from(Actor *target);
  
  void hit(uint8 dmg, bool force_hit=false);
- void hit(uint8 dmg, Actor *attacker) { hit(dmg); }
- void hit(uint8 dmg, Obj *src_obj)    { hit(dmg); }
  void reduce_hp(uint8 amount);
  virtual void die(bool create_body=true);
  void resurrect(MapCoord new_position, Obj *body_obj=NULL);
