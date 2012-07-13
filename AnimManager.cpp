@@ -172,9 +172,7 @@ void AnimManager::destroy_all()
  */
 bool AnimManager::destroy_anim(uint32 anim_id)
 {
-    if(anim_id >= 0)
         return(destroy_anim(get_anim(anim_id)));
-     return(false);
 }
 
 

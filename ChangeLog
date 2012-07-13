@@ -1,3 +1,8 @@
+2012-07-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1419
+	* Remove useless check to see if unsigned int is >= 0
+	* Fix conversion warning
+	* Make sure SE and MD max hp don't overflow
+
 2012-07-13  Eric Fry <efry at users.sourceforge.net> r1418
 	* Code clean up in Actor classes. Dead code removal.
 

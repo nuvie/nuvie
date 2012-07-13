@@ -36,7 +36,7 @@ class MDActor: public Actor
  ~MDActor();
 
  bool init();
- uint8 get_maxhp() { return(level * 24 + strength * 2); }
+ uint8 get_maxhp() { return(((level * 24 + strength * 2) < 255) ? (level * 24 + strength * 2) : 255); }
 };
 
 #endif /* __MDActor_h__ */

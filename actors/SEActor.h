@@ -36,7 +36,7 @@ class SEActor: public Actor
  ~SEActor();
 
  bool init();
- uint8 get_maxhp() { return(level * 4 + strength * 2); }
+ uint8 get_maxhp() { return(((level * 4 + strength * 2) < 255) ? (level * 4 + strength * 2) : 255); }
 };
 
 #endif /* __SEActor_h__ */
