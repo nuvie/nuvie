@@ -736,26 +736,30 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
     		scroll->display_string("\nNo effect\n");
     		return true;
     	}
-    	if(obj->is_in_inventory())
-    	{
-    		scroll->display_string("\nNot usable\n");
-    		return true;
-    	}
-        if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
+        if((obj->obj_n == OBJ_U6_CHEST && !obj->is_in_inventory()) || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
             toggle_frame(obj); //open / close object
-        if(obj->frame_n == 0)
+        if(obj->frame_n == 0 || (obj->obj_n != OBJ_U6_CHEST && obj->obj_n != OBJ_U6_CRATE && obj->obj_n != OBJ_U6_BARREL)
+           || (obj->obj_n == OBJ_U6_CHEST && obj->frame_n < 2 && obj->is_in_inventory()))
         {
             process_effects(obj, items.actor_ref); //run any effects that might be stored in this container. Eg Poison explosion.
 
-            if(game->is_orig_style())
+            bool doubleclick_opens_containers;
+            config->value("config/input/doubleclick_opens_containers", doubleclick_opens_containers, true);
+
+            if(Game::get_game()->is_new_style() || doubleclick_opens_containers)
+            {
+            	game->get_view_manager()->open_container_view(obj);
+            }
+            else if(obj->is_in_inventory())
+            {
+            	scroll->display_string("\nNot usable\n");
+            	return true;
+            }
+            else
             {
             	scroll->display_string("\nSearching here, you find ");
             	bool found_objects = search_obj(obj, items.actor_ref);
             	scroll->display_string(found_objects ? ".\n" : "nothing.\n");
-            }
-            else
-            {
-            	game->get_view_manager()->open_container_view(obj);
             }
         }
         return(true);

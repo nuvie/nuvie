@@ -303,6 +303,21 @@ uint32 Obj::get_total_qty(uint16 match_obj_n)
   return total_qty;
 }
 
+uint32 Obj::container_count_objects()
+{ 
+ uint32 count = 0;
+ U6Link *link;
+
+ if(container != NULL)
+  {
+    for(link = container->start();link != NULL;link=link->next)
+    {
+          ++count;
+    }
+ }
+ return count;
+}
+
 bool Obj::is_ok_to_take()
 {
 	return((status & OBJ_STATUS_OK_TO_TAKE) || Game::get_game()->using_hackmove());

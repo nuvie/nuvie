@@ -123,6 +123,7 @@ public:
   bool has_container() { return (container != NULL); }
   void make_container();
   Obj *get_container_obj();
+  uint32 container_count_objects();
 
   uint8 get_engine_loc();
   Actor *get_actor_holding_obj();

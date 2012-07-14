@@ -217,15 +217,21 @@ void ViewManager::open_doll_view(Actor *actor)
 
 void ViewManager::open_container_view(Actor *actor, Obj *obj)
 {
-	if(Game::get_game()->is_new_style())
+	bool doubleclick_opens_containers;
+	config->value("config/input/doubleclick_opens_containers", doubleclick_opens_containers, true);
+
+	if(Game::get_game()->is_new_style() || doubleclick_opens_containers)
 	{
 		ContainerViewGump *view = new ContainerViewGump(config);
 		view->init(Game::get_game()->get_screen(), this, 40, 20, text, party, tile_manager, obj_manager);
 		if(actor)
 			view->set_actor(actor);
 		else
+		{
+			if(!obj->container)
+				return;
 			view->set_container_obj(obj);
-
+		}
 		add_view((View *)view);
 	}
 }

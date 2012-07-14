@@ -1,3 +1,8 @@
+2012-07-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1422
+	* Fix scrolling inside of containers
+	* Allow more objects to be opened in fullscreen_map
+	* Allow double clicking option to open fullscreen_map container in original mode
+
 2012-07-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1421
 	* Fix being unable to get chests that aren't open
 

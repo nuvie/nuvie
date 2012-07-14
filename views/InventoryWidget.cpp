@@ -440,8 +440,10 @@ bool InventoryWidget::up_arrow()
 bool InventoryWidget::down_arrow()
 {
  uint32 num_objects;
-
- num_objects = actor->inventory_count_objects(false);
+ if(container_obj)
+    num_objects = container_obj->container_count_objects();
+ else
+    num_objects = actor->inventory_count_objects(false);
 
  if(num_objects - row_offset * 4 > 12)
    {
