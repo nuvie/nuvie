@@ -196,6 +196,7 @@ class UseCode
  virtual bool is_locked_door(Obj *obj)   { return(false); }
  virtual bool is_unlocked_door(Obj *obj) { return(false); }
  virtual bool is_closed_door(Obj *obj)   { return(false); }
+ virtual bool process_effects(Obj *container_obj, Actor *actor) { return(false); }
  virtual bool is_food(Obj *obj)          { return(false); }
  virtual bool is_container(Obj *obj)     { return(false); }
  virtual bool is_book(Obj *obj)          { return(false); }

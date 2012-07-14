@@ -736,6 +736,11 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
     		scroll->display_string("\nNo effect\n");
     		return true;
     	}
+    	if(obj->is_in_inventory())
+    	{
+    		scroll->display_string("\nNot usable\n");
+    		return true;
+    	}
         if(obj->obj_n == OBJ_U6_CHEST || obj->obj_n == OBJ_U6_CRATE || obj->obj_n == OBJ_U6_BARREL)
             toggle_frame(obj); //open / close object
         if(obj->frame_n == 0)

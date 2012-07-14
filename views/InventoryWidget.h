@@ -99,6 +99,7 @@ protected:
  void display_arrows();
 
  bool drag_set_target_obj(int x, int y);
+ void try_click();
 
  public:
  bool up_arrow();

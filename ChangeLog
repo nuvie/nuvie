@@ -1,3 +1,11 @@
+2012-07-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1420
+	* Fix chests drag and drop on map causing a target cursor to come up
+	* Fix chests being usable in inventory
+	* Fix chests not closing when dragged into inventory
+	* Fix closed chests not accepting items in the inventory
+	* Fix chests not showing their inventory
+	* Fix problem with non-U6 games not equipping objects
+
 2012-07-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1419
 	* Remove useless check to see if unsigned int is >= 0
 	* Fix conversion warning

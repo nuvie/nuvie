@@ -3588,7 +3588,7 @@ end
 function actor_use_effect(actor, effect)
 	local random = math.random
 	local effect_type = random(0, 3)
-
+    Obj.removeFromEngine(effect) -- moved here so it won't be seen in chest
 	if effect_type == 0 then
 		print("Acid!\n")
 		actor_hit(actor, random(1, 0x14))
@@ -3619,8 +3619,7 @@ function actor_use_effect(actor, effect)
 			end
 		end
 	end
-	
-	Obj.removeFromEngine(effect)
+
 end
 
 function actor_avatar_death(avatar)

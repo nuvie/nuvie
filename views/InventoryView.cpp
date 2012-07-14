@@ -634,12 +634,15 @@ void InventoryView::select_objAtCursor()
 bool InventoryView::select_obj(Obj *obj)
 {
     Event *event = Game::get_game()->get_event();
+    bool locked_chest = false;
+    if(obj)
+        locked_chest = (Game::get_game()->get_usecode()->is_chest(obj) && obj->frame_n > 1);
 
     switch(event->get_mode())
     {
         case MOVE_MODE:
         case EQUIP_MODE:
-            if(obj && Game::get_game()->get_usecode()->is_container(obj) && !Game::get_game()->get_usecode()->is_chest(obj))
+            if(obj && Game::get_game()->get_usecode()->is_container(obj) && !locked_chest)
                 inventory_widget->set_container(obj);
             else if(obj)
             {

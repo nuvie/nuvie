@@ -199,7 +199,11 @@ void InventoryWidget::display_inventory_list()
    inventory = container_obj->container;
  else
    inventory = actor->get_inventory_list();
-
+ if(inventory == NULL)
+ {
+    DEBUG(0,LEVEL_ERROR,"InventoryWidget: inventory is null!\n"); 
+    return;
+ }
  link = inventory->start();
 
  //skip row_offset rows of objects.
@@ -374,9 +378,6 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
 // change container, ready/unready object, activate arrows
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 {
- Event *event = Game::get_game()->get_event();
- UseCode *usecode = Game::get_game()->get_usecode();
-
  if(button == USE_BUTTON)
    {
     x -= area.x;
@@ -395,8 +396,6 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 
        Redraw();
       }
-    if(Game::get_game()->get_game_type() != NUVIE_GAME_U6)
-      return GUI_YUM;
 
     if(HitRect(x,y,arrow_rects[0]) //up arrow hit rect
        && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
@@ -414,19 +413,7 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 
     // only act now if objects can't be used with DoubleClick
     if(selected_obj && !enable_doubleclick)
-      {
-        if(usecode->is_container(selected_obj) && !usecode->is_chest(selected_obj)) // open up the container.
-          {
-            container_obj = selected_obj;
-            Redraw();
-          }
-        else // attempt to ready selected object.
-          {
-            event->ready(selected_obj);
-            Redraw();
-          }
-        ready_obj = NULL;
-      }
+        try_click();
     else if(selected_obj)
       {
         wait_for_mouseclick(USE_BUTTON);
@@ -547,6 +534,10 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
     if(Game::get_game()->get_script()->call_actor_get_obj(actor, obj) == false)
     	return false;
 
+    UseCode *usecode = Game::get_game()->get_usecode();
+    if(usecode->is_chest(obj) && obj->frame_n == 0) //open chest
+        obj->frame_n = 1; //close the chest
+
     DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
     return true;
    }
@@ -619,6 +610,28 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
 	screen->update(nx, ny, 16, 16);
 }
 
+void InventoryWidget::try_click()
+{
+	Event *event = Game::get_game()->get_event();
+	UseCode *usecode = Game::get_game()->get_usecode();
+	if(!selected_obj)
+		selected_obj = ready_obj;
+	bool locked_chest = (usecode->is_chest(selected_obj) && selected_obj->frame_n > 1);
+	if(usecode->is_container(selected_obj) && !locked_chest) // open up the container.
+	{
+		container_obj = selected_obj;
+		if(usecode->is_chest(container_obj) && selected_obj->frame_n == 1)
+			usecode->process_effects(container_obj, actor);
+		Redraw();
+	}
+	else // attempt to ready selected object.
+	{
+		event->ready(selected_obj);
+		Redraw();
+	}
+	ready_obj = NULL;
+	selected_obj = NULL;
+}
 
 /* Use object. */
 GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
@@ -650,22 +663,7 @@ GUI_status InventoryWidget::MouseClick(int x, int y, int button)
 // change container, ready/unready object, activate arrows
 GUI_status InventoryWidget::MouseDelayed(int x, int y, int button)
 {
-    Event *event = Game::get_game()->get_event();
-    UseCode *usecode = Game::get_game()->get_usecode();
-
     if(ready_obj)
-    {
-        if(usecode->is_container(ready_obj) && !usecode->is_chest(ready_obj)) // open up the container.
-        {
-            container_obj = ready_obj;
-            Redraw();
-        }
-        else // attempt to ready selected object.
-        {
-            event->ready(ready_obj);
-            Redraw();
-        }
-        ready_obj = NULL;
-    }
+        try_click();
     return GUI_PASS;
 }

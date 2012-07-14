@@ -1697,7 +1697,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         	// drop on ground or into a container
         	event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
         	event->select_obj(obj);
-        	if(obj->qty == 0 || obj->qty == 1)
+        	if(obj->qty == 0 || obj->qty == 1 || obj->container)
         		event->select_target(x, y);
         	else
         		event->set_drop_target(x, y); // pre-select target

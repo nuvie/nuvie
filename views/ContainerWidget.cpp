@@ -275,9 +275,6 @@ Obj *ContainerWidget::get_obj_at_location(int x, int y)
 // change container, ready/unready object, activate arrows
 GUI_status ContainerWidget::MouseUp(int x,int y,int button)
 {
- Event *event = Game::get_game()->get_event();
- UseCode *usecode = Game::get_game()->get_usecode();
-
  if(button == USE_BUTTON)
  {
 	 x -= area.x;
@@ -287,19 +284,7 @@ GUI_status ContainerWidget::MouseUp(int x,int y,int button)
 	 {
 		 // only act now if objects can't be used with DoubleClick
 		 if(!enable_doubleclick)
-		 {
-			 if(usecode->is_container(selected_obj) && !usecode->is_chest(selected_obj)) // open up the container.
-			 {
-				 container_obj = selected_obj;
-				 Redraw();
-			 }
-			 else // attempt to ready selected object.
-			 {
-				 event->ready(selected_obj);
-				 Redraw();
-			 }
-			 ready_obj = NULL;
-		 }
+			 try_click();
 		 else
 		 {
 			 wait_for_mouseclick(USE_BUTTON);
@@ -408,6 +393,9 @@ bool ContainerWidget::drag_accept_drop(int x, int y, int message, void *data)
         DEBUG(0,LEVEL_WARNING,"ContainerWidget: Cannot Move between party members!\n"); 
         return false;
     }
+    UseCode *usecode = Game::get_game()->get_usecode();
+    if(usecode->is_chest(obj) && obj->frame_n == 0) //open chest
+        obj->frame_n = 1; //close the chest
 
     DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
     return true;
@@ -482,6 +470,29 @@ void ContainerWidget::drag_draw(int x, int y, int message, void* data)
 }
 
 
+void ContainerWidget::try_click()
+{
+	Event *event = Game::get_game()->get_event();
+	UseCode *usecode = Game::get_game()->get_usecode();
+	if(!selected_obj)
+		selected_obj = ready_obj;
+	bool locked_chest = (usecode->is_chest(selected_obj) && selected_obj->frame_n > 1);
+	if(usecode->is_container(selected_obj) && !locked_chest) // open up the container.
+	{
+		container_obj = selected_obj;
+		if(usecode->is_chest(container_obj) && selected_obj->frame_n == 1)
+			usecode->process_effects(container_obj, actor);
+		Redraw();
+	}
+	else // attempt to ready selected object.
+	{
+		event->ready(selected_obj);
+		Redraw();
+	}
+	ready_obj = NULL;
+	selected_obj = NULL;
+}
+
 /* Use object. */
 GUI_status ContainerWidget::MouseDouble(int x, int y, int button)
 {
@@ -512,22 +523,7 @@ GUI_status ContainerWidget::MouseClick(int x, int y, int button)
 // change container, ready/unready object, activate arrows
 GUI_status ContainerWidget::MouseDelayed(int x, int y, int button)
 {
-    Event *event = Game::get_game()->get_event();
-    UseCode *usecode = Game::get_game()->get_usecode();
-
     if(ready_obj)
-    {
-        if(usecode->is_container(ready_obj) && !usecode->is_chest(ready_obj)) // open up the container.
-        {
-            container_obj = ready_obj;
-            Redraw();
-        }
-        else // attempt to ready selected object.
-        {
-            event->ready(ready_obj);
-            Redraw();
-        }
-        ready_obj = NULL;
-    }
+        try_click();
     return GUI_PASS;
 }
