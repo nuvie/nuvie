@@ -1,3 +1,6 @@
+2012-07-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1421
+	* Fix being unable to get chests that aren't open
+
 2012-07-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1420
 	* Fix chests drag and drop on map causing a target cursor to come up
 	* Fix chests being usable in inventory
