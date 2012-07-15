@@ -746,7 +746,8 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
             bool doubleclick_opens_containers;
             config->value("config/input/doubleclick_opens_containers", doubleclick_opens_containers, true);
 
-            if(Game::get_game()->is_new_style() || doubleclick_opens_containers)
+            if((Game::get_game()->is_new_style() || doubleclick_opens_containers)
+                && obj->obj_n != OBJ_U6_PLANT && obj->obj_n != OBJ_U6_STONE_LION) // just search for these two
             {
             	game->get_view_manager()->open_container_view(obj);
             }
@@ -845,10 +846,18 @@ bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
  U6Link *link;
  uint8 moonstone_check = 0;
  MapCoord player_location = player->get_actor()->get_location();
-     
+ codex = obj_manager->find_obj(player_location.z, OBJ_U6_CODEX, 128); // 128 = codex's book id
+ bool doubleclick_opens_containers;
+ config->value("config/input/doubleclick_opens_containers", doubleclick_opens_containers, true);
+
+ if((Game::get_game()->is_new_style() || doubleclick_opens_containers) && (obj->is_in_inventory() || !codex
+     || abs(player_location.x - codex->x) > 11 || abs(player_location.y - codex->y) > 11)) //FIXME this should probably be mapwindow size)
+ {
+    game->get_view_manager()->open_container_view(obj);
+    return true;
+ }
  if(obj->container != NULL || player_location.z == 0)  // make sure we've got all 8 moonstones in our vortex cube.
    {
-    codex = obj_manager->find_obj(player_location.z, OBJ_U6_CODEX, 128); // 128 = codex's book id
     britannian_lens = obj_manager->find_obj(player_location.z, OBJ_U6_BRITANNIAN_LENS, 0, OBJ_NOMATCH_QUALITY);
     gargoyle_lens = obj_manager->find_obj(player_location.z, OBJ_U6_GARGOYLE_LENS, 0, OBJ_NOMATCH_QUALITY);
         

@@ -200,11 +200,9 @@ void InventoryWidget::display_inventory_list()
  else
    inventory = actor->get_inventory_list();
  if(inventory == NULL)
- {
-    DEBUG(0,LEVEL_ERROR,"InventoryWidget: inventory is null!\n"); 
-    return;
- }
- link = inventory->start();
+   link = NULL;
+ else
+   link = inventory->start();
 
  //skip row_offset rows of objects.
  skip_num = row_offset * 4;

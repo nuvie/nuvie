@@ -1,3 +1,8 @@
+2012-07-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1424
+	* Allow inventory widget to display empty tiles for containers that are NULL
+	* Fix Vortex cube not being openable as a container
+	* Add some more containers that can be opened or searched with double click
+
 2012-07-15  Eric Fry <efry at users.sourceforge.net> r1423
 	* Removed use of WAIT_MODE event. Replaced with Game user pause functions.
 	* Fixed issue with fading out multi-tile actors.

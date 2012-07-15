@@ -190,6 +190,7 @@
 #define OBJ_U6_BARREL              186
 #define OBJ_U6_BAG                 188
 
+#define OBJ_U6_BASKET              191
 #define OBJ_U6_CRATE               192
 
 #define OBJ_U6_PLIERS              203

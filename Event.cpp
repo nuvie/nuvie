@@ -1270,7 +1270,14 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 	}
 
 	if(!ok)
-		scroll->display_string("Not possible!\n");
+	{
+		if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_VORTEX_CUBE)
+			scroll->display_string("\nOnly moonstones can go into the vortex cube.\n");
+		else if(obj->is_in_inventory() && !obj->container)
+			scroll->display_string("\nnot a container\n");
+		else
+			scroll->display_string("Not possible!\n");
+	}
 
     scroll->display_prompt();
     map_window->reset_mousecenter(); // FIXME: put this in endAction()?
