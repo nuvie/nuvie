@@ -234,6 +234,14 @@ uint8 get_game_type(const char *string)
  return NUVIE_GAME_NONE;
 }
 
+nuvie_game_t get_game_type(Configuration *config)
+{
+	int game_type;
+	config->value("config/GameType", game_type);
+
+	return (nuvie_game_t)game_type;
+}
+
 void build_path(std::string path, std::string filename, std::string &full_path)
 {
  full_path = path;

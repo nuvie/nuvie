@@ -794,6 +794,8 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	x_off = config_get_video_x_offset(config);
 	y_off = config_get_video_y_offset(config);
 
+	nuvie_game_t game_type = get_game_type(config);
+
 	GUI_Widget::Init(NULL, 0, 0, g->get_width(), g->get_height());
 
 	clip_rect.x = x_off;
@@ -808,10 +810,16 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 
 	//FIXME this should be loaded by script.
 	std::string path;
-	config_get_path(config, "u6.set", path);
+
 
 	font = new Font();
-	font->init(path.c_str());
+
+	if(game_type == NUVIE_GAME_U6)
+	{
+		config_get_path(config, "u6.set", path);
+		font->init(path.c_str());
+	}
+	//FIXME load other fonts for MD / SE if needed here.
 
 	next_time = 0;
 	loop_interval = 40;

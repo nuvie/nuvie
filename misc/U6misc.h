@@ -20,6 +20,7 @@ void config_get_path(Configuration *config, std::string filename, std::string &p
 uint16 config_get_video_x_offset(Configuration *config);
 uint16 config_get_video_y_offset(Configuration *config);
 uint8 get_game_type(const char *string);
+nuvie_game_t get_game_type(Configuration *config);
 void build_path(std::string path, std::string filename, std::string &full_path);
 bool directory_exists(const char *directory);
 void print_b(DebugLevelType level,uint8 num);

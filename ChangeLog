@@ -1,3 +1,7 @@
+2012-07-16  Eric Fry <efry at users.sourceforge.net> r1425
+	* Added nuvie_game_t get_game_type(Configuration *config)
+	* Fixed bug "SE and MD load u6.set from ScriptCutscene.cpp" [3543890]
+
 2012-07-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1424
 	* Allow inventory widget to display empty tiles for containers that are NULL
 	* Fix Vortex cube not being openable as a container
