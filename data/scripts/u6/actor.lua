@@ -203,7 +203,12 @@ function actor_put_to_sleep(actor)
 		Actor.use(actor) --dismount from horse
 	end
 	
-	actor.asleep = true
+	if actor.actor_num ~= 0 then
+		actor.asleep = true
+		if actor.in_party == true then
+			party_update_leader()
+		end
+	end
 end
 
 function actor_can_turn_invisible(obj_n)
@@ -429,7 +434,7 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 						print("`"..actor.name.." is stuck in a web!\n")
 					end
 				end
-			elseif map_tile >= 2 and map_tile <= 5 then
+			elseif (map_tile >= 2 and map_tile <= 5) or map_tile == 1165 then --swamp tiles or poison field.
 				--poison
 				local swamp_boots = Actor.inv_get_obj_n(actor, 0x1c) --swamp boots
 				if swamp_boots == nil or swamp_boots.readied == false then
@@ -2102,6 +2107,9 @@ function actor_update_flags(actor)
 		if actor.asleep == true and actor.wt ~= WT_SLEEP and random(0, 15) == 0 then
 			actor.asleep = false
 			actor.frame_n = actor.old_frame_n
+			if actor.in_party == true then
+				party_update_leader()
+			end
 		end
 		
 		if actor.poisoned == true and actor.protected == false and random(0, 7) == 0 then

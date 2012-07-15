@@ -47,7 +47,8 @@ GUI_status GUI_DragManager::start_drag(GUI_DragArea *src, int msg, void *d, unsi
  drag_source = src;
  message = msg;
  data = d;
- Game::get_game()->get_event()->set_mode(WAIT_MODE);
+ //Game::get_game()->get_event()->set_mode(WAIT_MODE);
+ Game::get_game()->pause_user();
  return GUI_DRAG_AND_DROP;
 }
 
@@ -55,8 +56,8 @@ void GUI_DragManager::drop(GUI_DragArea *drag_target, int x, int y)
 {
  DEBUG(0,LEVEL_DEBUGGING,"Drop\n");
 
- Game::get_game()->get_event()->endAction(); // WAIT_MODE
-
+ //Game::get_game()->get_event()->endAction(); // WAIT_MODE
+ Game::get_game()->unpause_user();
  if(drag_target->drag_accept_drop(x,y,message,data))
   {
    //inform the source of the success so it can perform operations before the drop takes place.

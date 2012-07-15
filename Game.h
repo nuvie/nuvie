@@ -113,6 +113,7 @@ class Game
  Book *book;
 
  GamePauseState pause_flags;
+ uint16 pause_user_count;
  uint8 ignore_event_delay; // (stack) if non-zero, Event will not periodically wait for NUVIE_INTERVAL
  bool is_using_hackmove;
 
@@ -130,14 +131,14 @@ class Game
 
  GamePauseState get_pause_flags()            { return(pause_flags); }
  void set_pause_flags(GamePauseState state);
- void unpause_all() { set_pause_flags(PAUSE_UNPAUSED); }
- void unpause_user(){ set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_USER)); }
- void unpause_anims(){ set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_ANIMS)); }
- void unpause_world(){ set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_WORLD)); }
- void pause_all()   { set_pause_flags(PAUSE_ALL); }
- void pause_user()  { set_pause_flags((GamePauseState)(pause_flags | PAUSE_USER)); }
- void pause_anims() { set_pause_flags((GamePauseState)(pause_flags | PAUSE_ANIMS)); }
- void pause_world() { set_pause_flags((GamePauseState)(pause_flags | PAUSE_WORLD)); }
+ void unpause_all();
+ void unpause_user();
+ void unpause_anims();
+ void unpause_world();
+ void pause_all();
+ void pause_user();
+ void pause_anims();
+ void pause_world();
 
  bool paused()       { return(pause_flags); }
  bool all_paused()   { return(pause_flags & PAUSE_ALL); }

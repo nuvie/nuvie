@@ -209,7 +209,7 @@ bool Magic::cast()
   /* end debug block */
 
 
-  if(event->mode == WAIT_MODE)
+  if(Game::get_game()->user_paused())//event->mode == WAIT_MODE)
     return false;
   
   // book(s) equipped? Maybe should check all locations?

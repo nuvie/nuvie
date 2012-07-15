@@ -87,6 +87,7 @@ Event::Event(Configuration *cfg)
  active_alt_code = 0;
  alt_code_input_num = 0;
 
+ game = Game::get_game();
  gui = NULL;
  obj_manager = NULL;
  map_window = NULL;
@@ -180,7 +181,7 @@ bool Event::update()
     gui->Idle(); // run Idle() for all widgets
 
   if(showingQuitDialog) // temp. fix to show normal cursor over quit dialog
-    Game::get_game()->set_mouse_pointer(0);
+    game->set_mouse_pointer(0);
 
  return true;
 }
@@ -236,7 +237,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 
 			case SDLK_KP_ENTER:
 			case SDLK_RETURN:
-//				Game::get_game()->get_screen()->toggleFullScreen();
+//				game->get_screen()->toggleFullScreen();
 				break;
 			default: return true;
 		}
@@ -259,7 +260,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 				saveDialog();
 				return true;
 			case SDLK_l: { // load
-				SaveManager *save_manager = Game::get_game()->get_save_manager();
+				SaveManager *save_manager = game->get_save_manager();
 				scroll->display_string("Load game!\n");
 				save_manager->load_latest_save();
 				return true; }
@@ -336,7 +337,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			break;
 
 		case SDLK_BACKQUOTE :
-			if(Game::get_game()->is_orig_style()
+			if(game->is_orig_style()
 			   && view_manager->get_current_view()
 			      == view_manager->get_inventory_view())
 				view_manager->get_inventory_view()->simulate_CB_callback();
@@ -384,7 +385,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			newAction(ATTACK_MODE);
 			break;
 		case SDLK_r     :
-			if(Game::get_game()->get_game_type()==NUVIE_GAME_MD)
+			if(game->get_game_type()==NUVIE_GAME_MD)
 			{
 				if(mode != MOVE_MODE)
 					cancelAction();
@@ -429,7 +430,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_EQUALS:
 			if(!player->get_party()->main_actor_is_in_party())
 				break;
-			if(Game::get_game()->is_orig_style() && view_manager->get_inventory_view()
+			if(game->is_orig_style() && view_manager->get_inventory_view()
 			   ->set_party_member(view_manager->get_inventory_view()
 			   ->get_party_member_num()+1))
 			    view_manager->set_inventory_mode();
@@ -438,7 +439,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
         case SDLK_KP_MINUS:
 			if(!player->get_party()->main_actor_is_in_party())
 				break;
-			if(Game::get_game()->is_orig_style() && view_manager->get_inventory_view()
+			if(game->is_orig_style() && view_manager->get_inventory_view()
 			   ->set_party_member(view_manager->get_inventory_view()
 			   ->get_party_member_num()-1))
 			    view_manager->set_inventory_mode();
@@ -490,7 +491,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 
 bool Event::handleEvent(const SDL_Event *event)
 {
-	if(mode == WAIT_MODE)
+	if(game->user_paused())
 		return true;
 
 	switch (event->type)
@@ -724,7 +725,7 @@ bool Event::select_spell_num(sint16 spell_num)
     input.type = EVENTINPUT_SPELL_NUM;
     input.spell_num = spell_num;
     //endAction(); // mode = prev_mode
-    Game::get_game()->get_view_manager()->close_spell_mode();
+    game->get_view_manager()->close_spell_mode();
     doAction();
     return true;
 }
@@ -734,7 +735,7 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
 {
  MapCoord cursor_coord;
  
- if(mode == WAIT_MODE)
+ if(game->user_paused())
     return false;
 
  switch(mode)
@@ -769,7 +770,7 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
    default              : if(player->check_walk_delay())
                             {
                              player->moveRelative(rel_x, rel_y);
-                             Game::get_game()->time_changed();
+                             game->time_changed();
                             }
                           break;
   }
@@ -783,7 +784,7 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
  */
 bool Event::perform_talk(Actor *actor)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    ActorManager *actor_manager = game->get_actor_manager();
     Actor *pc = player->get_actor();
     uint8 id = actor->get_actor_num();
 
@@ -849,7 +850,7 @@ bool Event::perform_talk(Actor *actor)
 bool Event::talk(Actor *actor)
 {
     bool talking = true;
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     endAction();
@@ -881,7 +882,7 @@ bool Event::talk_cursor()
 
 bool Event::talk_start()
 {
-   if(mode == WAIT_MODE)
+   if(game->user_paused())
         return(false);
    get_target("Talk-");
    return true;
@@ -890,10 +891,10 @@ bool Event::talk_start()
 /* You can talk to some objects using their quality as actor number. */
 bool Event::talk(Obj *obj)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    ActorManager *actor_manager = game->get_actor_manager();
     if(obj)
     {
-    	if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+    	if(game->get_game_type() == NUVIE_GAME_U6)
     	{
     		if(obj->obj_n == OBJ_U6_SHRINE
     				|| obj->obj_n == OBJ_U6_STATUE_OF_MONDAIN
@@ -950,13 +951,15 @@ bool Event::attack()
         {
             map_window->set_show_cursor(true);
             mode = ATTACK_MODE; // FIXME: need to return after WAIT_MODE
+            //endAction(false);
+            //newAction(ATTACK_MODE);
         }
     return true;
 }
 
 bool Event::get_start()
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
     get_direction("Get-");
     return true;
@@ -964,7 +967,7 @@ bool Event::get_start()
 
 bool Event::push_start()
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
     push_obj = NULL;
     push_actor = NULL;
@@ -977,7 +980,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
 {
     bool got_object = false;
     //float weight;
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     if(!actor)
@@ -996,7 +999,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
             return(false); // ???
         }
 
-        if(Game::get_game()->get_script()->call_actor_get_obj(actor, obj))
+        if(game->get_script()->call_actor_get_obj(actor, obj))
         {
             obj_manager->remove_obj_from_map(obj); //remove object from map.
 
@@ -1040,7 +1043,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 
 bool Event::use_start()
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
     get_direction("Use-");
     return true;
@@ -1048,7 +1051,7 @@ bool Event::use_start()
 
 bool Event::use(Obj *obj)
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
     if(!obj)
     {
@@ -1083,7 +1086,7 @@ bool Event::use(Obj *obj)
 
 bool Event::use(Actor *actor)
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
     bool display_prompt = true;
     MapCoord target = actor->get_location();
@@ -1108,7 +1111,7 @@ bool Event::use(Actor *actor)
     }
 // FIXME: usecode might request input, causing the obj to be accessed again,
 // so we can't delete it in that case
-assert(mode == USE_MODE || mode == WAIT_MODE);
+assert(mode == USE_MODE || game->user_paused());
     delete_obj(obj); // we were using an actor so free the temp Obj
     if(mode == USE_MODE) // check mode because UseCode may have changed it
         endAction(display_prompt);
@@ -1122,7 +1125,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  Actor *actor = map_window->get_actorAtCursor();
  Obj *obj = map_window->get_objAtCursor();
 
- if(mode == WAIT_MODE)
+ if(game->user_paused())
     return false;
 
  if(obj) // FIXME: try actor first
@@ -1137,7 +1140,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
 
 bool Event::look_start()
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
     get_target("Look-");
     return true;
@@ -1147,13 +1150,13 @@ bool Event::look_start()
  */
 bool Event::look(Obj *obj)
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
    
    if(obj)
    {
       obj_manager->print_obj(obj, false); // DEBUG
-      if(Game::get_game()->get_script()->call_look_obj(obj) == false)
+      if(game->get_script()->call_look_obj(obj) == false)
       {
          scroll->display_prompt();
          return false;
@@ -1167,11 +1170,11 @@ bool Event::look(Obj *obj)
 /* Returns true if there was a portrait for actor. */
 bool Event::look(Actor *actor)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    ActorManager *actor_manager = game->get_actor_manager();
     sint16 p_id = -1; // party member number of actor
     bool had_portrait = true;
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     display_portrait(actor);
@@ -1194,7 +1197,7 @@ bool Event::search(Obj *obj)
     MapCoord player_loc = player->get_actor()->get_location(),
              target_loc = map_window->get_cursorCoord();
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player_loc.distance(target_loc) <= 1)
@@ -1219,7 +1222,7 @@ bool Event::look_cursor()
  Obj *obj = map_window->get_objAtCursor();
  Actor *actor = map_window->get_actorAtCursor();
 
- if(mode == WAIT_MODE)
+ if(game->user_paused())
    return false;
 
  if(actor)
@@ -1282,13 +1285,13 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 {
     Tile *obj_tile;
     bool can_move = false; // some checks must determine if object can_move
-    Map *map = Game::get_game()->get_game_map();
+    Map *map = game->get_game_map();
     MapCoord pusher = player->get_actor()->get_location();
     MapCoord from, to; // absolute locations: object, target
     sint16 pushrel_x, pushrel_y; // direction relative to object
     LineTestResult lt;
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     if(!push_actor && !push_obj)
@@ -1450,10 +1453,10 @@ bool Event::pushFrom(Obj *obj)
 /* Select object to move. */
 bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    ActorManager *actor_manager = game->get_actor_manager();
     MapCoord from = player->get_actor()->get_location();
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     map_window->set_show_use_cursor(false);
@@ -1506,7 +1509,7 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
 /* Send input to active alt-code. */
 void Event::alt_code_input(const char *in)
 {
-    ActorManager *am = Game::get_game()->get_actor_manager();
+    ActorManager *am = game->get_actor_manager();
     Actor *a = am->get_actor((uint8)strtol(in, NULL, 10));
     static string teleport_string = "";
     static Obj obj;
@@ -1637,7 +1640,7 @@ void Event::alt_code(const char *cs)
 
         case 500: // control/watch anyone
             if(player->is_in_vehicle()
-               || Game::get_game()->get_party()->is_in_combat_mode())
+               || game->get_party()->is_in_combat_mode())
             {
                  if(player->is_in_vehicle())
                      scroll->display_string("\nNot while aboard a vehicle!\n\n");
@@ -1687,11 +1690,11 @@ void Event::alt_code(const char *cs)
 
         case 215:
             //clock->advance_to_next_hour();
-        	Game::get_game()->get_script()->call_advance_time(60);
+        	game->get_script()->call_advance_time(60);
             scroll->display_string(clock->get_time_string());
             scroll->display_string("\n");
             scroll->display_prompt();
-            Game::get_game()->time_changed();
+            game->time_changed();
             active_alt_code = 0;
             break;
 
@@ -1746,7 +1749,7 @@ bool Event::alt_code_teleport(const char *location_string)
  player->move(x,y,z);
 
  // This is a bit of a hack but we would like to update the music when teleporting.
- Game::get_game()->get_party()->update_music();
+ game->get_party()->update_music();
 
  return true;
 }
@@ -1779,7 +1782,7 @@ void Event::alt_code_infostring()
 /* Move player to NPC location. */
 bool Event::alt_code_teleport_to_person(uint32 npc)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    ActorManager *actor_manager = game->get_actor_manager();
     MapCoord actor_location = actor_manager->get_actor(npc)->get_location();
     player->move(actor_location.x, actor_location.y, actor_location.z);
     if(!actor_manager->toss_actor(player->get_actor(), 2, 2))
@@ -2067,7 +2070,7 @@ void Event::saveDialog()
 	scroll->display_prompt();
 	return;
  }
- SaveManager *save_manager = Game::get_game()->get_save_manager();
+ SaveManager *save_manager = game->get_save_manager();
  if(mode == MOVE_MODE)
  {
 	 map_window->set_walking(false);
@@ -2083,13 +2086,13 @@ uint16 Event::callback(uint16 msg, CallBack *caller, void *data)
  switch(msg) // Handle callback from quit dialog.
   {
    case YESNODIALOG_CB_YES :  showingQuitDialog = false;
-                              Game::get_game()->get_gui()->unlock_input();
+                              game->get_gui()->unlock_input();
                               return GUI_QUIT;
    case YESNODIALOG_CB_NO :  widget = (GUI_Widget *)data;
                              widget->Delete();
 
                              showingQuitDialog = false;
-                             Game::get_game()->get_gui()->unlock_input();
+                             game->get_gui()->unlock_input();
                              return GUI_YUM;
   }
 
@@ -2103,7 +2106,7 @@ void Event::solo_mode(uint32 party_member)
 {
     Actor *actor = player->get_party()->get_actor(party_member);
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return;
 
     if(!actor || player->is_in_vehicle())
@@ -2143,7 +2146,7 @@ void Event::party_mode()
     Actor *actor = player->get_party()->get_actor(0);
     assert(actor); // there must be a leader
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return;
 
     if(player->is_in_vehicle())
@@ -2202,7 +2205,7 @@ bool Event::toggle_combat()
             player->set_mapwindow_centered(true); // center mapwindow
         }
         scroll->display_prompt();
-        Game::get_game()->get_command_bar()->set_combat_mode(combat_mode);
+        game->get_command_bar()->set_combat_mode(combat_mode);
         return true;
     }
 
@@ -2212,10 +2215,10 @@ bool Event::toggle_combat()
 /* Make actor wear an object they are holding. */
 bool Event::ready(Obj *obj)
 {
-    Actor *actor = Game::get_game()->get_actor_manager()->get_actor(obj->x);
+    Actor *actor = game->get_actor_manager()->get_actor(obj->x);
     bool readied = false;
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     scroll->display_string("Ready-");
@@ -2246,9 +2249,9 @@ bool Event::ready(Obj *obj)
 /* Make actor hold an object they are wearing. */
 bool Event::unready(Obj *obj)
 {
-    Actor *actor = Game::get_game()->get_actor_manager()->get_actor(obj->x);
+    Actor *actor = game->get_actor_manager()->get_actor(obj->x);
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     scroll->display_string("Unready-");
@@ -2273,7 +2276,7 @@ bool Event::unready(Obj *obj)
 
 bool Event::drop_start()
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
     drop_obj = NULL;
     drop_qty = 0;
@@ -2291,7 +2294,7 @@ bool Event::drop_start()
  */
 bool Event::drop_select(Obj *obj, uint16 qty)
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
 
     drop_obj = obj;
@@ -2317,7 +2320,7 @@ bool Event::drop_select(Obj *obj, uint16 qty)
 /* Select quantity of `drop_obj' to be dropped. (qty 0 = drop nothing) */
 bool Event::drop_count(uint16 qty)
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return(false);
 
     drop_qty = qty;
@@ -2345,7 +2348,7 @@ bool Event::drop_count(uint16 qty)
  */
 bool Event::perform_drop()
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
     if(drop_x == -1 || drop_y == -1)
     {
@@ -2367,7 +2370,7 @@ bool Event::perform_drop()
 /* Make actor holding object drop it at x,y. */
 bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return false;
 
     if(obj->get_engine_loc() == OBJ_LOC_MAP) //we can't accept a map to map drag at the moment. FIXME
@@ -2404,6 +2407,8 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     {
         obj->status |= OBJ_STATUS_OK_TO_TAKE;
         new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
+        endAction(false);
+        set_mode(MOVE_MODE);
         return true;
     }
     // handled by usecode
@@ -2506,7 +2511,7 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
     int wx, wy;
     sint16 rx, ry;
 
-    if(mode == WAIT_MODE || !player->check_walk_delay())
+    if(game->user_paused() || !player->check_walk_delay())
         return;
 
     // Mouse->World->RelativeDirection
@@ -2515,7 +2520,7 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
     // FIXME: With U6 mouse-move, Avatar tries to move left or right around obstacles.
     player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
                          (ry == 0) ? 0 : ry < 0 ? -1 : 1);
-    Game::get_game()->time_changed();
+    game->time_changed();
 }
 
 
@@ -2524,13 +2529,13 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
  */
 void Event::multiuse(uint16 wx, uint16 wy)
 {
-    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+    ActorManager *actor_manager = game->get_actor_manager();
     Obj *obj = NULL;
     Actor *actor = NULL, *player_actor = player->get_actor();
     bool using_actor = false; //, talking = false;
     MapCoord target(player_actor->get_location()); // changes to target location
 
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return;
 
     obj = obj_manager->get_obj(wx, wy, target.z);
@@ -2562,7 +2567,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
         }
         else
         {
-        	if(Game::get_game()->is_new_style() && actor == actor_manager->get_player())
+        	if(game->is_new_style() && actor == actor_manager->get_player())
         	{
         		//open inventory here.
         		view_manager->open_doll_view(NULL);
@@ -2593,7 +2598,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
 /* Do the final action for the current mode, with a selected target. */
 void Event::doAction()
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return;
 
     if(mode == MOVE_MODE)
@@ -2750,7 +2755,7 @@ void Event::doAction()
     		else
     		{
     			magic->resume();
-    			view_manager->get_inventory_view()->set_party_member(Game::get_game()->get_party()->get_leader());
+    			view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
     		}
     	}
     	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
@@ -2760,7 +2765,7 @@ void Event::doAction()
     	else if(input.type == EVENTINPUT_OBJECT)
     	{
     		magic->resume(input.obj);
-    		view_manager->get_inventory_view()->set_party_member(Game::get_game()->get_party()->get_leader());
+    		view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
     	}
     	else if(input.type == EVENTINPUT_SPELL_NUM)
     	{
@@ -2807,7 +2812,7 @@ void Event::doAction()
 /* Cancel the action for the current mode, switch back to MOVE_MODE if possible. */
 void Event::cancelAction()
 {
-    if(mode == WAIT_MODE)
+    if(game->user_paused())
         return;
 
     if(mode == INPUT_MODE) // cancel action of previous mode
@@ -2859,7 +2864,7 @@ bool Event::newAction(EventMode new_mode)
 {
 	map_window->set_walking(false);
 
-	if(mode == WAIT_MODE)
+	if(game->user_paused())
 		return(false);
 
 // FIXME: make ATTACK_MODE use INPUT_MODE
@@ -2886,7 +2891,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 
 	set_mode(new_mode);
 	if (new_mode != COMBAT_MODE)
-		Game::get_game()->set_mouse_pointer(1);
+		game->set_mouse_pointer(1);
 	switch(new_mode)
 	{
 	  	case CAST_MODE:
@@ -2907,7 +2912,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		case USE_MODE:  use_start();  break;
 		case GET_MODE:  get_start();  break;
 		case ATTACK_MODE:
-			if(Game::get_game()->get_game_type() == NUVIE_GAME_U6
+			if(game->get_game_type() == NUVIE_GAME_U6
 					&& player->is_in_vehicle()
 					&& player->get_actor()->get_obj_n() != OBJ_U6_SHIP)
 			{
@@ -2979,7 +2984,7 @@ void Event::endAction(bool prompt)
     /* Switching from INPUT_MODE, clear state indicating the type of input
        to return, but leave returned input. Clear returned input only when
        entering INPUT_MODE, or deleting Event. */
-    if(mode == WAIT_MODE || mode == INPUT_MODE || mode == KEYINPUT_MODE)
+    if(/*game->user_paused() ||*/ mode == INPUT_MODE || mode == KEYINPUT_MODE)
     {
         mode = last_mode;
 //        callback_target = 0;
@@ -2989,7 +2994,7 @@ void Event::endAction(bool prompt)
         map_window->set_show_use_cursor(false);
         map_window->set_show_cursor(false);
         view_manager->get_inventory_view()->set_show_cursor(false);
-//    Game::get_game()->set_mouse_pointer(0);
+//    game->set_mouse_pointer(0);
         return;
     }
     else
@@ -3000,6 +3005,7 @@ void Event::endAction(bool prompt)
 // save current mode if switching to WAIT_MODE or INPUT_MODE
 void Event::set_mode(EventMode new_mode)
 {
+	DEBUG(0,LEVEL_DEBUGGING, "new mode = %s,  mode = %s, last mode = %s\n", print_mode(new_mode), print_mode(mode), print_mode(last_mode) );
     if(new_mode == WAIT_MODE && (last_mode == EQUIP_MODE || last_mode == REST_MODE))
         last_mode = mode;
     else if((new_mode == INPUT_MODE || new_mode == KEYINPUT_MODE))
@@ -3048,4 +3054,28 @@ void Event::moveCursorToMapWindow()
     input.select_from_inventory = false;
 
 //    map_window->grab_focus(); FIXME add move() and keyhandler to MapWindow, and uncomment this
+}
+
+static const char eventModeStrings[][16] = {
+"LOOK_MODE",
+"USE_MODE",
+"CAST_MODE",
+"SPELL_MODE", //direct spell casting without spell select etc.
+"GET_MODE",
+"MOVE_MODE",
+"DROP_MODE",
+"TALK_MODE", /* finding an actor to talk to */
+"ATTACK_MODE",
+"REST_MODE",
+"EQUIP_MODE",
+"PUSH_MODE",
+"COMBAT_MODE", /* only used to cancel previous actions */
+"WAIT_MODE", /* waiting for something, optionally display prompt when finished */
+"INPUT_MODE",
+"KEYINPUT_MODE"
+};
+
+const char *Event::print_mode(EventMode mode)
+{
+	return eventModeStrings[mode];
 }

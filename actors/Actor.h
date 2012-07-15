@@ -121,7 +121,7 @@ union {uint8 attack;
 };
 
 uint16 hit_range;
-AttackType attack_type; 
+AttackType attack_type;
 
 uint16 missle_tile_num;
 uint16 thrown_obj_n;

@@ -54,7 +54,6 @@ class ActorManager
  Actor *actors[ACTORMANAGER_MAX_ACTORS];
  uint8 player_actor;
  GameClock *clock;
- ActorList active_actors; // actors who still get a turn
 
  uint16 last_obj_blk_x, last_obj_blk_y;
  uint8 last_obj_blk_z;
@@ -74,7 +73,6 @@ class ActorManager
  bool save(NuvieIO *objlist);
  // ActorList
  ActorList *get_actor_list(); // *returns a NEW list*
- ActorList *get_active_actors(); // *returns a NEW list*
  ActorList *sort_nearest(ActorList *list, uint16 x, uint16 y, uint8 z); // ascending distance
  ActorList *filter_distance(ActorList *list, uint16 x, uint16 y, uint8 z, uint16 dist);
  ActorList *filter_alignment(ActorList *list, uint8 align);
@@ -97,7 +95,6 @@ class ActorManager
  void twitchActors();
  void moveActors();
  void startActors();
- void stopActors();
  void updateSchedules();
 
  void clear_actor(Actor *actor);
@@ -118,7 +115,6 @@ class ActorManager
 
  bool loadActorSchedules();
  inline Actor *find_free_temp_actor();
- void update_active_actors(uint16 x, uint16 y, uint8 z); // start moving actors
  inline ActorList *filter_active_actors(ActorList *list, uint16 x, uint16 y, uint8 z);
 
  void update_temp_actors(uint16 x, uint16 y, uint8 z);
@@ -126,9 +122,6 @@ class ActorManager
  void clean_temp_actors_from_area(uint16 x, uint16 y);
 
  inline void clean_temp_actor(Actor *actor);
-
- inline ActorIterator activate_actor(const ActorIterator &start_at, Actor *actor);
- inline void deactivate_actor(Actor *actor);
 
 };
 

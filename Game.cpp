@@ -111,6 +111,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  
  game_style = 0;
  pause_flags = PAUSE_UNPAUSED;
+ pause_user_count = 0;
  ignore_event_delay = 0;
  game_type = NUVIE_GAME_NONE;
 
@@ -362,42 +363,78 @@ bool Game::set_mouse_pointer(uint8 ptr_num)
 void Game::set_pause_flags(GamePauseState state)
 {
     pause_flags = state; // set
+}
 
-    // if stopped user input set event to wait mode and block GUI
-    // else set event back to move mode and unblock GUI
-    if(user_paused())
-    {
-        if(event->get_mode() != WAIT_MODE)
-            event->set_mode(WAIT_MODE);
-        if(!gui->get_block_input())
-            gui->block();
-    }
-    else
-    {
-        if(event->get_mode() == WAIT_MODE)
-            event->endAction(); // change to MOVE_MODE, hide cursors
-        if(gui->get_block_input())
-            gui->unblock();
-    }
+void Game::unpause_all()
+{
+	 DEBUG(0, LEVEL_DEBUGGING,"Unpause ALL!\n");
+	unpause_user();
+	unpause_anims();
+	unpause_world();
+}
 
-    // if stopped world, freeze actormanager and gameclock
-    // (other classes will check the pauseflags themselves)
-    if(world_paused())
-    {
-        if(actor_manager->get_update() == true) // ActorMgr is running
-            game->get_actor_manager()->set_update(false); // pause
+void Game::unpause_user()
+{
+	set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_USER));
 
-        //if(clock->get_active() == true) // stop time
-        //    clock->set_active(false);
-    }
-    else // unpaused
-    {
-        if(actor_manager->get_update() == false) // ActorMgr is not running
-            game->get_actor_manager()->set_update(true); // resume
 
-        //if(clock->get_active() == false) // start time
-        //    clock->set_active(true);
-    }
+    //if(event->get_mode() == WAIT_MODE)
+    //    event->endAction(); // change to MOVE_MODE, hide cursors
+    if(gui->get_block_input())
+        gui->unblock();
+
+    if(pause_user_count > 0)
+    	pause_user_count--;
+
+    DEBUG(0, LEVEL_DEBUGGING, "unpause user count=%d!\n", pause_user_count);
+}
+
+void Game::unpause_anims()
+{
+	set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_ANIMS));
+}
+
+void Game::unpause_world()
+{
+	set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_WORLD));
+
+	if(actor_manager->get_update() == false) // ActorMgr is not running
+		game->get_actor_manager()->set_update(true); // resume
+
+	//if(clock->get_active() == false) // start time
+	//    clock->set_active(true);
+}
+
+void Game::pause_all()
+{
+	pause_user();
+	pause_anims();
+	pause_world();
+}
+
+void Game::pause_user()
+{
+	set_pause_flags((GamePauseState)(pause_flags | PAUSE_USER));
+
+    if(!gui->get_block_input())
+        gui->block();
+
+    pause_user_count++;
+
+    DEBUG(0, LEVEL_DEBUGGING, "Pause user count=%d!\n", pause_user_count);
+}
+
+void Game::pause_anims() { set_pause_flags((GamePauseState)(pause_flags | PAUSE_ANIMS)); }
+
+void Game::pause_world()
+{
+	set_pause_flags((GamePauseState)(pause_flags | PAUSE_WORLD));
+
+    if(actor_manager->get_update() == true) // ActorMgr is running
+        game->get_actor_manager()->set_update(false); // pause
+
+    //if(clock->get_active() == true) // stop time
+    //    clock->set_active(false);
 }
 
 

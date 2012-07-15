@@ -53,7 +53,7 @@ class Magic;
 #define PUSH_FROM_OBJECT true
 
 typedef enum {
- LOOK_MODE,
+ LOOK_MODE=0,
  USE_MODE,
  CAST_MODE,
  SPELL_MODE, //direct spell casting without spell select etc.
@@ -110,6 +110,7 @@ class Event : public CallBack
 friend class Magic; // FIXME
  Configuration *config;
  GUI *gui;
+ Game *game;
  ObjManager *obj_manager;
  MapWindow *map_window;
  MsgScroll *scroll;
@@ -276,6 +277,7 @@ friend class Magic; // FIXME
  // may each independantly show/hide their own cursors)
  void moveCursorToMapWindow();
  void moveCursorToInventory();
+ const char *print_mode(EventMode mode);
 };
 
 

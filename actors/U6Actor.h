@@ -96,7 +96,6 @@ class U6Actor: public Actor
  uint8 get_maxmagic();
 
  bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
- ActorList *find_players();
 
  bool is_immobile(); // frozen by worktype or status
  bool can_twitch();

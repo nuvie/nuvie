@@ -540,14 +540,6 @@ ActorList *ActorManager::get_actor_list()
     return _actors;
 }
 
-ActorList *ActorManager::get_active_actors()
-{
-    if(active_actors.empty())
-        update_active_actors(cur_x, cur_y, cur_z);
-    ActorList *_actors = new ActorList(active_actors);
-    return _actors;
-}
-
 Actor *ActorManager::get_actor(uint8 actor_num)
 {
  return actors[actor_num];
@@ -662,12 +654,6 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
 
  update_temp_actors(x,y,z); // Remove out of range temp actors
 
- // Add new actors to active list, Remove out of range actors
- if(active_actors.empty() || cur_blk_x != last_obj_blk_x || cur_blk_y != last_obj_blk_y || z != last_obj_blk_z)
-    update_active_actors(cur_x,cur_y,cur_z);
- // The active actors list will remain empty if nobody can move, and time will
- // be added in moveActors().
-
  last_obj_blk_x = cur_blk_x; // moved from update_temp_actors() (SB-X)
  last_obj_blk_y = cur_blk_y;
  last_obj_blk_z = z;
@@ -679,9 +665,6 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
 void ActorManager::startActors()
 {
 //DEBUG(0,LEVEL_DEBUGGING,"startActors()\n");
-    // add player after they move (if they have any moves left)
-    if(combat_movement == true)
-        activate_actor(active_actors.begin(), actors[player_actor]);
 
     wait_for_player = false;
     //ERIC Game::get_game()->pause_user();
@@ -694,14 +677,6 @@ void ActorManager::updateSchedules()
     for(int i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
     	if(!actors[i]->is_in_party()) // don't do scheduled activities while partying
     		actors[i]->updateSchedule(cur_hour);
-}
-
-// Return control to player.
-void ActorManager::stopActors()
-{
-//DEBUG(0,LEVEL_DEBUGGING,"stopActors()\n\n\n\n\n");
-    Game::get_game()->unpause_user();
-    wait_for_player = true;
 }
 
 void ActorManager::twitchActors()
@@ -728,46 +703,10 @@ void ActorManager::moveActors()
    Game::get_game()->pause_user();
    Game::get_game()->get_script()->call_actor_update_all();
    //updateTime();
-   stopActors();
+   Game::get_game()->unpause_user();
+   wait_for_player = true;
+
    return;
-}
-
-inline void ActorManager::deactivate_actor(Actor *actor)
-{
-    ActorIterator a = active_actors.begin();
-    while(a != active_actors.end())
-        if((*a)->id_n == actor->id_n)
-        {
-            active_actors.erase(a);
-            return; // assume the actor is only listed once
-        }
-        else ++a;
-}
-
-inline ActorIterator ActorManager::activate_actor(const ActorIterator &start_at, Actor *actor)
-{
-    ActorIterator a = start_at;
-    if(actor->moves > 0)
-    {
-        struct Actor::cmp_move_fraction cmpfunc; // comparison function object
-        while(a != active_actors.end() && cmpfunc(*a, actor)) ++a;
-        a = active_actors.insert(a, actor);
-    }
-    return a;
-}
-
-// Sort actors by order of movement.
-void ActorManager::update_active_actors(uint16 x, uint16 y, uint8 z)
-{
-//DEBUG(0,LEVEL_DEBUGGING,"update_active_actors(): ");
-    ActorList *new_active_actors = get_actor_list(); // sorted by actor number
-    filter_active_actors(new_active_actors, x,y,z);
-//DEBUG(1,LEVEL_DEBUGGING,"%d can move\n",new_active_actors->size());
-    stable_sort(new_active_actors->begin(), new_active_actors->end(),
-                Actor::cmp_move_fraction()); // sorted by movement order
-
-    active_actors = *new_active_actors;
-    delete new_active_actors;
 }
 
 bool ActorManager::loadActorSchedules()
@@ -1219,5 +1158,4 @@ ActorList *ActorManager::filter_party(ActorList *list)
 void ActorManager::set_combat_movement(bool c)
 {
     combat_movement = c;
-    update_active_actors(cur_x,cur_y,cur_z);
 }

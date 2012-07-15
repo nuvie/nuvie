@@ -520,7 +520,8 @@ TimedContainerSearch::TimedContainerSearch(Obj *obj) : TimedEvent(500, TIMER_DEL
     container_obj = obj;
     prev_obj = NULL;
 
-    game->set_pause_flags((GamePauseState)(game->get_pause_flags() | PAUSE_USER));
+    //game->set_pause_flags((GamePauseState)(game->get_pause_flags() | PAUSE_USER));
+    game->pause_user();
     queue(); // start
 }
 
@@ -538,7 +539,7 @@ void TimedContainerSearch::timed(uint32 evtime)
     }
     else
     {
-        Game::get_game()->unpause_all();
+        Game::get_game()->unpause_user();
         stop();
     }
 }

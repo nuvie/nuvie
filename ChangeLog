@@ -1,3 +1,11 @@
+2012-07-15  Eric Fry <efry at users.sourceforge.net> r1423
+	* Removed use of WAIT_MODE event. Replaced with Game user pause functions.
+	* Fixed issue with fading out multi-tile actors.
+	* Fixed bug "attack with two weapons broken" [3542245]
+	* Fixed bug "poison field doesn't poison" [3544288]
+	* Fixed bug "sleep field causes the game to loop" [3544287]
+	* Removed some dead code from ActorManager
+
 2012-07-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1422
 	* Fix scrolling inside of containers
 	* Allow more objects to be opened in fullscreen_map

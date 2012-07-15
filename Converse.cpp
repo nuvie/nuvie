@@ -375,7 +375,7 @@ bool Converse::start(uint8 n)
         scroll->set_talking(true);
         Game::get_game()->get_map_window()->set_walking(false);
         Game::get_game()->get_sound_manager()->musicStop();
-        Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
+        //Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         scroll->set_autobreak(true);
         /* moved into ConverseGump::set_talking()
         if(Game::get_game()->is_new_style())

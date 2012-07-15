@@ -1485,7 +1485,7 @@ void U6Actor::die(bool create_body)
 			if(temp_actor)
 				dead_body->status |= OBJ_STATUS_TEMPORARY;
 
-			// FIX: move my inventory into the dead body container
+			// move my inventory into the dead body container
 			all_items_to_container(dead_body);
 
 			obj_manager->add_obj(dead_body, true);
@@ -1520,27 +1520,6 @@ bool U6Actor::can_twitch()
 bool U6Actor::is_sleeping()
 {
     return(Actor::is_sleeping() || worktype == WORKTYPE_U6_SLEEP);
-}
-
-/* Find Party members. */
-ActorList *U6Actor::find_players()
-{
-    const uint8 in_range = 5;
-    ActorManager *actor_mgr = Game::get_game()->get_actor_manager();
-    Party *party = Game::get_game()->get_party();
-    uint8 psize = party->get_party_size();
-    ActorList *actors = new ActorList;
-
-    for(uint32 p = 0; p < psize; p++)
-        if(!party->get_actor(p)->is_invisible())
-            actors->push_back(party->get_actor(p));
-    actors = actor_mgr->filter_distance(actors, x,y,z, in_range);
-    if(actors->empty())
-    {
-        delete actors;
-        return NULL;
-    }
-    return actors;
 }
 
 bool U6Actor::can_be_passed(Actor *other)

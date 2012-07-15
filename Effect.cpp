@@ -256,7 +256,7 @@ void ProjectileEffect::start_anim()
 {
     game->pause_world();
     //game->pause_anims();
-    //game->pause_user();
+    game->pause_user();
 
     add_anim(new ProjectileAnim(tile_num, &start_loc, targets, anim_speed, trail, initial_tile_rotation, rotation_amount, src_tile_y_offset));
 
@@ -299,7 +299,8 @@ uint16 ProjectileEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
             ((NuvieAnim *)caller)->stop();
         //if(finished_tiles == 16)
        // {
-			game->unpause_all();
+			game->unpause_world();
+			game->unpause_user();
 			//usecode->message_obj(obj, MESG_EFFECT_COMPLETE, this);
 			delete_self();
        // }
@@ -514,7 +515,8 @@ uint16 ExplosiveEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
     {
         if(msg != MESG_ANIM_DONE)
             anim->stop();
-        game->unpause_all();
+        game->unpause_world();
+        game->unpause_user();
         delete_self();
     }
     return(0);
@@ -901,7 +903,7 @@ uint16 SleepEffect::callback(uint16 msg, CallBack *caller, void *data)
         }
         else // stopping
         {
-            game->unpause_all();
+            game->unpause_user();
             delete_self();
         }
         return(0);
@@ -1351,7 +1353,6 @@ TileFadeEffect::TileFadeEffect(Actor *a, uint16 speed)
 	actor = a;
 	color_from = color_to = 0;
 	spd = speed;
-	num_anim_running = 1;
 	add_actor_anim();
 	actor->hide();
 }
