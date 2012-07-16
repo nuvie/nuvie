@@ -286,7 +286,7 @@ void InventoryView::display_combat_mode()
 	}
 	if(MD) // combat text background
 		tile = tile_manager->get_tile(286);
-	else if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+	else // SE
 		tile = tile_manager->get_tile(366);
 	screen->blit(area.x+5*16, area.y + y_off, tile->data,8,16,16,16,true);
 	screen->blit(area.x+6*16, area.y + y_off, tile->data,8,16,16,16,true); // reuse

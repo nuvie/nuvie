@@ -1,3 +1,6 @@
+2012-07-17  Eric Fry <efry at users.sourceforge.net> r1428
+	* Fixed up xcode build.
+
 2012-07-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1426
 	* Allow container widget to display empty tiles for containers that are NULL
 	* Add NULL check to inventory widget

@@ -373,6 +373,10 @@
 		ECAD317E13F0A1BA001ABC85 /* SpellView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECAD317C13F0A1BA001ABC85 /* SpellView.cpp */; };
 		ECAD317F13F0A1BA001ABC85 /* SpellView.h in Headers */ = {isa = PBXBuildFile; fileRef = ECAD317D13F0A1BA001ABC85 /* SpellView.h */; };
 		ECAE7B8013236C3F009EBD35 /* data in Resources */ = {isa = PBXBuildFile; fileRef = ECAE7B0813236C3F009EBD35 /* data */; };
+		ECFB30DD15B4BFF80080AB19 /* MDActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECFB30D915B4BFF80080AB19 /* MDActor.cpp */; };
+		ECFB30DE15B4BFF80080AB19 /* MDActor.h in Headers */ = {isa = PBXBuildFile; fileRef = ECFB30DA15B4BFF80080AB19 /* MDActor.h */; };
+		ECFB30DF15B4BFF80080AB19 /* SEActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECFB30DB15B4BFF80080AB19 /* SEActor.cpp */; };
+		ECFB30E015B4BFF80080AB19 /* SEActor.h in Headers */ = {isa = PBXBuildFile; fileRef = ECFB30DC15B4BFF80080AB19 /* SEActor.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -394,7 +398,7 @@
 		0700C6C60A84303D0039FD03 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Weather.cpp; path = ../Weather.cpp; sourceTree = SOURCE_ROOT; };
 		0700C6C70A84303D0039FD03 /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Weather.h; path = ../Weather.h; sourceTree = SOURCE_ROOT; };
 		0700C71E0A8442490039FD03 /* Objlist.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Objlist.h; path = ../save/Objlist.h; sourceTree = SOURCE_ROOT; };
-		0701134C08EE53B500D9B9F4 /* SDL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = SDL.framework; path = ../../../../../Library/Frameworks/SDL.framework; sourceTree = SOURCE_ROOT; };
+		0701134C08EE53B500D9B9F4 /* SDL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = SDL.framework; path = "~/Library/Frameworks/SDL.framework"; sourceTree = "<absolute>"; };
 		0703C0F3054BE5660003D6CB /* Nuvie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nuvie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0704F9D40446B4E600A8000A /* Converse.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Converse.cpp; path = ../Converse.cpp; sourceTree = SOURCE_ROOT; };
 		0704F9D50446B4E600A8000A /* Converse.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Converse.h; path = ../Converse.h; sourceTree = SOURCE_ROOT; };
@@ -757,6 +761,10 @@
 		ECAD317C13F0A1BA001ABC85 /* SpellView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpellView.cpp; path = ../views/SpellView.cpp; sourceTree = SOURCE_ROOT; };
 		ECAD317D13F0A1BA001ABC85 /* SpellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpellView.h; path = ../views/SpellView.h; sourceTree = SOURCE_ROOT; };
 		ECAE7B0813236C3F009EBD35 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../data; sourceTree = SOURCE_ROOT; };
+		ECFB30D915B4BFF80080AB19 /* MDActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MDActor.cpp; path = ../actors/MDActor.cpp; sourceTree = SOURCE_ROOT; };
+		ECFB30DA15B4BFF80080AB19 /* MDActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MDActor.h; path = ../actors/MDActor.h; sourceTree = SOURCE_ROOT; };
+		ECFB30DB15B4BFF80080AB19 /* SEActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SEActor.cpp; path = ../actors/SEActor.cpp; sourceTree = SOURCE_ROOT; };
+		ECFB30DC15B4BFF80080AB19 /* SEActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SEActor.h; path = ../actors/SEActor.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -781,6 +789,10 @@
 				070B5A5804D3D7DC00A8000A /* Actor.cpp */,
 				070B5A6504D3DEDF00A8000A /* U6Actor.h */,
 				070B5A6404D3DEDF00A8000A /* U6Actor.cpp */,
+				ECFB30DA15B4BFF80080AB19 /* MDActor.h */,
+				ECFB30D915B4BFF80080AB19 /* MDActor.cpp */,
+				ECFB30DC15B4BFF80080AB19 /* SEActor.h */,
+				ECFB30DB15B4BFF80080AB19 /* SEActor.cpp */,
 				07A5001E052AE88D00A8000A /* U6ActorTypes.h */,
 				07E9A045081CD4A1009FA3BE /* U6WorkTypes.h */,
 				070B5A5B04D3D7DC00A8000A /* ActorManager.h */,
@@ -1574,6 +1586,8 @@
 				EC2CF953153CCF5300A6036D /* PortraitViewGump.h in Headers */,
 				EC20131D155882260027BE43 /* ConverseGump.h in Headers */,
 				EC0E5CBE15645B9200A2ACAC /* ConvFont.h in Headers */,
+				ECFB30DE15B4BFF80080AB19 /* MDActor.h in Headers */,
+				ECFB30E015B4BFF80080AB19 /* SEActor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1847,6 +1861,8 @@
 				EC2CF952153CCF5300A6036D /* PortraitViewGump.cpp in Sources */,
 				EC20131C155882260027BE43 /* ConverseGump.cpp in Sources */,
 				EC0E5CBD15645B9200A2ACAC /* ConvFont.cpp in Sources */,
+				ECFB30DD15B4BFF80080AB19 /* MDActor.cpp in Sources */,
+				ECFB30DF15B4BFF80080AB19 /* SEActor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1941,7 +1957,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					"$(HOME)/Library/Frameworks/SDL_mixer.framework/Headers",
 					/usr/local/include/SDL,
 					..,
 					"$(SOURCE_ROOT)/../sound/mixer",
