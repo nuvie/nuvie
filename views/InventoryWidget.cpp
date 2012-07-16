@@ -358,8 +358,12 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
       inventory = container_obj->container;
     else
       inventory = actor->get_inventory_list();
+    if(inventory == NULL)
+      link = NULL;
+    else
+      link = inventory->start();
 
-    for(i=0,link = inventory->start();link != NULL && i <= location;link=link->next)
+    for(i=0;link != NULL && i <= location;link=link->next)
      {
       obj = (Obj *)link->data;
       if(obj->is_readied() == false)

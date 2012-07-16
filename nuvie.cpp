@@ -250,7 +250,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/audio/sfx_volume", 255);
 
 	config->set("config/input/enable_doubleclick", true);
-	config->set("config/input/doubleclick_opens_containers", true);
+	config->set("config/input/doubleclick_opens_containers", false);
 
 	config->set("config/general/lighting", "smooth");
 	config->set("config/general/dither_mode", "none");

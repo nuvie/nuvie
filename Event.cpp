@@ -2566,7 +2566,11 @@ void Event::multiuse(uint16 wx, uint16 wy)
 
     if(using_actor) // use or talk to an actor
     {
-        bool can_use = usecode->has_usecode(obj);
+        bool can_use;
+        if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_MOUSE)
+            can_use = false;
+        else
+            can_use = usecode->has_usecode(obj);
         if(can_use)
         {
             newAction(USE_MODE);

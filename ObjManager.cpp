@@ -791,9 +791,25 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 	if(game_type==NUVIE_GAME_U6)
 	{
 		if(target->obj_n == OBJ_U6_BAG
-		   || (target->obj_n == OBJ_U6_CHEST && target->frame_n < 2)
+		   || target->obj_n == OBJ_U6_BACKPACK
+		   || target->obj_n == OBJ_U6_BASKET
+		   || (target->obj_n == OBJ_U6_BARREL && target->frame_n == 0)
+		   || (target->obj_n == OBJ_U6_CHEST && target->frame_n == 0)
 		   || (target->obj_n == OBJ_U6_SPELLBOOK && src->obj_n == OBJ_U6_SPELL)
 		   || (target->obj_n == OBJ_U6_VORTEX_CUBE && src->obj_n == OBJ_U6_MOONSTONE))
+			return true;
+
+		if((target->is_in_inventory() || Game::get_game()->doubleclick_opens_containers())
+		   && ((target->obj_n == OBJ_U6_CHEST && target->frame_n == 1)
+		   || target->obj_n == OBJ_U6_DEAD_BODY
+		   || target->obj_n == OBJ_U6_MOUSE
+		   || target->obj_n == OBJ_U6_REMAINS))
+			return true;
+
+		if(Game::get_game()->doubleclick_opens_containers()
+		   && (target->obj_n == OBJ_U6_DESK
+		   || target->obj_n == OBJ_U6_DRAWER
+		   || target->obj_n == OBJ_U6_GRAVE))
 			return true;
 	}
 	else if(game_type==NUVIE_GAME_SE)

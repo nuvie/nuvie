@@ -130,8 +130,10 @@ void ContainerWidget::display_inventory_list()
    objlist = container_obj->container;
  else
    objlist = actor->get_inventory_list();
-
- link = objlist->start();
+ if(objlist == NULL)
+   link = NULL;
+ else
+   link = objlist->start();
 
  //skip row_offset rows of objects.
  skip_num = row_offset * 4;
@@ -258,8 +260,12 @@ Obj *ContainerWidget::get_obj_at_location(int x, int y)
       inventory = container_obj->container;
     else
       inventory = actor->get_inventory_list();
+    if(inventory == NULL)
+      link = NULL;
+    else
+      link = inventory->start();
 
-    for(i=0,link = inventory->start();link != NULL && i <= location;link=link->next)
+    for(i=0;link != NULL && i <= location;link=link->next)
      {
       obj = (Obj *)link->data;
       if(obj->is_readied() == false)

@@ -342,6 +342,16 @@ void Game::init_game_style()
 
 }
 
+bool Game::doubleclick_opens_containers()
+{
+	bool open_containers;
+	config->value("config/input/doubleclick_opens_containers", open_containers, false);
+	if(open_containers || is_new_style())
+		return true;
+	else
+		return false;
+}
+
 bool Game::is_roof_mode()
 {
 	bool roof_mode;

@@ -1,3 +1,8 @@
+2012-07-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1426
+	* Allow container widget to display empty tiles for containers that are NULL
+	* Add NULL check to inventory widget
+	* Allow more containers to have objects moved into them
+
 2012-07-16  Eric Fry <efry at users.sourceforge.net> r1425
 	* Added nuvie_game_t get_game_type(Configuration *config)
 	* Fixed bug "SE and MD load u6.set from ScriptCutscene.cpp" [3543890]
