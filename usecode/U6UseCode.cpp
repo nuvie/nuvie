@@ -1847,6 +1847,7 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
             	}
             	else
             	{
+            		UseCode::search_container(obj, false); //need to remove rolling pin if there is one
             		obj_manager->unlink_from_engine(obj);
             		delete_obj(obj);
             	}
@@ -1881,6 +1882,13 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
     	scroll->display_string("nothing\n");
     	return true;
     }
+    else if(ev == USE_EVENT_GET && obj->obj_n == OBJ_U6_LOCK_PICK)  //need to remove rolling pin if there is one
+	{
+		UseCode::search_container(obj, false);
+        return true;
+	}
+    else if(ev == USE_EVENT_SEARCH && obj->obj_n == OBJ_U6_LOCK_PICK)  //need to remove rolling pin if there is one
+        return(UseCode::search_container(obj));
 
     return false;
 }

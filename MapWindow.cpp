@@ -45,6 +45,8 @@
 #include "GamePalette.h"
 #include "Weather.h"
 #include "Script.h"
+#include "U6objects.h"
+#include "UseCode.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define WALK_BUTTON 3
@@ -1684,7 +1686,8 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 //        Obj *target_obj = obj_manager->get_obj(x,y, cur_level);
 //        Actor *target_actor = actor_manager->get_actor(x,y,cur_level);
         Obj *obj = (Obj *)data;
-
+        if(obj->obj_n == OBJ_U6_LOCK_PICK && game_type == NUVIE_GAME_U6)
+        	game->get_usecode()->search_container(obj, false);
         Actor *a = map->get_actor(x, y, cur_level);
         if(a && a->is_in_party())
         {
@@ -1697,7 +1700,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         	// drop on ground or into a container
         	event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
         	event->select_obj(obj);
-        	if(obj->qty == 0 || obj->qty == 1 || obj->container)
+        	if(obj->qty == 0 || obj->qty == 1 || !obj_manager->is_stackable(obj))
         		event->select_target(x, y);
         	else
         		event->set_drop_target(x, y); // pre-select target

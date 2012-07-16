@@ -105,7 +105,7 @@ void UseCode::toggle_frame(Obj *obj)
 /* Print container contents and dump them on top of the container.
  */
 //FIXME! some of this logic should go elsewhere.
-bool UseCode::search_container(Obj *obj)
+bool UseCode::search_container(Obj *obj, bool show_string)
 {
  Obj *temp_obj;
  U6Link *obj_link;
@@ -128,9 +128,12 @@ bool UseCode::search_container(Obj *obj)
        temp_obj->z = obj->z;
        */
        obj_manager->moveto_map(temp_obj, MapCoord(obj));
-       scroll->display_string(obj_manager->look_obj(temp_obj,true));
-       if(obj_link) // more objects left
-         scroll->display_string(obj_link->prev ? ", " : ", and ");
+       if(show_string)
+       {
+         scroll->display_string(obj_manager->look_obj(temp_obj,true));
+         if(obj_link) // more objects left
+           scroll->display_string(obj_link->prev ? ", " : ", and ");
+       }
       }
      /* Remove objects from the container. */
      //obj->container->removeAll();
