@@ -107,6 +107,8 @@ install: all
 	mkdir -p $(U6PATH)/data/maps
 	mkdir -p $(U6PATH)/data/maps/u6
 	mkdir -p $(U6PATH)/data/scripts
+	mkdir -p $(U6PATH)/data/scripts/md
+	mkdir -p $(U6PATH)/data/scripts/se
 	mkdir -p $(U6PATH)/data/scripts/u6
 	mkdir -p $(U6PATH)/data/scripts/u6/magic
 	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_01
@@ -132,6 +134,8 @@ install: all
 	cp data/scripts/u6/magic/circle_06/*.lua $(U6PATH)/data/scripts/u6/magic/circle_06
 	cp data/scripts/u6/magic/circle_07/*.lua $(U6PATH)/data/scripts/u6/magic/circle_07
 	cp data/scripts/u6/magic/circle_08/*.lua $(U6PATH)/data/scripts/u6/magic/circle_08
+	cp data/scripts/md/*.lua $(U6PATH)/data/scripts/md
+	cp data/scripts/se/*.lua $(U6PATH)/data/scripts/se
 	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
 	cp data/*.bmp $(U6PATH)/data
 

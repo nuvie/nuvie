@@ -169,6 +169,10 @@ Source: data\images\gumps\spellbook\nd.bmp; DestDir: {app}\data\images\gumps\spe
 Source: data\images\gumps\spellbook\rd.bmp; DestDir: {app}\data\images\gumps\spellbook; Flags: ignoreversion
 Source: data\images\roof_tiles.bmp; DestDir: {app}\data\images; Flags: ignoreversion
 Source: data\maps\u6\roof_map_00.dat; DestDir: {app}\data\maps\u6; Flags: ignoreversion
+Source: data\scripts\md\actor.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
+Source: data\scripts\md\init.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
+Source: data\scripts\se\actor.lua; DestDir: {app}\data\scripts\se; Flags: ignoreversion
+Source: data\scripts\se\init.lua; DestDir: {app}\data\scripts\se; Flags: ignoreversion
 Source: data\scripts\u6\actor.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\init.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\intro.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
