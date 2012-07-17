@@ -590,9 +590,19 @@ Obj *InventoryView::get_objAtCursor()
    selected button. This is called when pressing ENTER. */
 void InventoryView::select_objAtCursor()
 {
-    //Event *event = Game::get_game()->get_event();
+    Event *event = Game::get_game()->get_event();
     ViewManager *view_manager = Game::get_game()->get_view_manager();
     Obj *obj = get_objAtCursor();
+
+	if(cursor_pos.area == INVAREA_TOP && event->can_target_icon())
+	{
+		if(inventory_widget->is_showing_container()
+		   &&  inventory_widget->get_container()->get_engine_loc() == OBJ_LOC_CONT)
+			select_obj((Obj *)inventory_widget->get_container()->parent);
+		else
+			event->select_actor(inventory_widget->get_actor());
+		return;
+	}
 
     if(is_party_member)
     {

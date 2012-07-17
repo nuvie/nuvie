@@ -251,6 +251,7 @@ void Nuvie::SharedDefaultConfigValues()
 
 	config->set("config/input/enable_doubleclick", true);
 	config->set("config/input/doubleclick_opens_containers", false);
+	config->set("config/input/party_view_targeting", false);
 
 	config->set("config/general/lighting", "smooth");
 	config->set("config/general/dither_mode", "none");

@@ -388,6 +388,16 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
     if(x >= 32 && x <= 48 && // hit top icon either actor or container
        y >= 0 && y <= 16)
       {
+		Event *event = Game::get_game()->get_event();
+
+		if(event->can_target_icon())
+		{
+			if(is_showing_container() && container_obj->get_engine_loc() == OBJ_LOC_CONT)
+				event->select_obj((Obj *)container_obj->parent, actor);
+			else
+				event->select_actor(actor);
+			 return GUI_YUM;
+		}
 			 Player *player = Game::get_game()->get_player();
 			 bool in_party = player->get_party()->contains_actor(player->get_actor());
 

@@ -142,6 +142,7 @@ friend class Magic; // FIXME
 
  bool showingQuitDialog;
  bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
+ bool move_in_inventory;
 
  public:
  Event(Configuration *cfg);
@@ -246,6 +247,7 @@ friend class Magic; // FIXME
  bool rest_input(uint16 input);
 
  void cast_spell_directly(uint8 spell_num);
+ bool can_target_icon(); // Target the actor or container tile in inventory and party view
 
  // these are both for mouse-using convenience
  void walk_to_mouse_cursor(uint32 mx, uint32 my);

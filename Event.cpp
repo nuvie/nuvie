@@ -106,7 +106,7 @@ Event::Event(Configuration *cfg)
  rest_guard = 0;
  push_obj = NULL;
  push_actor = NULL;
-
+ move_in_inventory = false;
  time_queue = game_time_queue = NULL;
  showingQuitDialog = false;
  ignore_timeleft = false;
@@ -428,7 +428,9 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
         case SDLK_PLUS:
         case SDLK_KP_PLUS:
 		case SDLK_EQUALS:
-			if(!player->get_party()->main_actor_is_in_party())
+			if(!player->get_party()->main_actor_is_in_party()
+			   || player->get_party()->get_party_size()
+			      < view_manager->get_inventory_view()->get_party_member_num()+2)
 				break;
 			if(game->is_orig_style() && view_manager->get_inventory_view()
 			   ->set_party_member(view_manager->get_inventory_view()
@@ -437,7 +439,8 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
             break;
         case SDLK_MINUS:
         case SDLK_KP_MINUS:
-			if(!player->get_party()->main_actor_is_in_party())
+			if(!player->get_party()->main_actor_is_in_party()
+			   || view_manager->get_inventory_view()->get_party_member_num() < 1)
 				break;
 			if(game->is_orig_style() && view_manager->get_inventory_view()
 			   ->set_party_member(view_manager->get_inventory_view()
@@ -2720,6 +2723,7 @@ void Event::doAction()
         }
     	else
     	{
+    		move_in_inventory = true;
     		if(!push_obj)
     			pushFrom(input.obj);
     		else
@@ -2899,6 +2903,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		cancelAction();
 		return(false);
 	}
+	move_in_inventory = false;
 
 	set_mode(new_mode);
 	if (new_mode != COMBAT_MODE)
@@ -3089,4 +3094,15 @@ static const char eventModeStrings[][16] = {
 const char *Event::print_mode(EventMode mode)
 {
 	return eventModeStrings[mode];
+}
+
+bool Event::can_target_icon()
+{
+	if(mode == INPUT_MODE && (last_mode == TALK_MODE
+	   || last_mode == CAST_MODE || last_mode == SPELL_MODE
+	   || last_mode == LOOK_MODE || move_in_inventory
+	   || last_mode == USE_MODE))
+		return true;
+	else
+		return false;
 }

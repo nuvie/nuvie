@@ -32,6 +32,8 @@
 #include "Weather.h"
 #include "Script.h"
 #include "MsgScroll.h"
+#include "Event.h"
+#include "Configuration.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status actorViewButtonCallback(void *data);
@@ -119,6 +121,21 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
 
  if(x >= x_offset)
   {
+   Event *event = Game::get_game()->get_event();
+   bool party_view_targeting;
+   config->value("config/input/party_view_targeting", party_view_targeting, false);
+
+   if(party_view_targeting && event->can_target_icon())
+   {
+      x += area.x;
+      y += area.y;
+      Actor *actor = get_actor(x, y);
+      if(actor)
+      {
+         event->select_actor(actor);
+         return GUI_YUM;
+      }
+   }
    set_party_member(((y - y_offset) / rowH) + row_offset);
    if(x >= x_offset + 17) // clicked an actor name
      {

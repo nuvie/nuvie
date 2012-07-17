@@ -1,5 +1,16 @@
+2012-07-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1429
+	* Fix targeting the actor or container icon in inventory view.
+		Attack mode was left out
+	* Add optional party view targeting with input/party_view_targeting setting
+	* Fix + and - inventory hot keys that were broken by control cheat changes
+
 2012-07-17  Eric Fry <efry at users.sourceforge.net> r1428
 	* Fixed up xcode build.
+
+2012-07-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1427
+	* Fix regression in 1420 that broke drag and drop with stackable containers
+	* Rolling pin now drops from the lock pick container with get, search,
+		drag and drop, or the destruction of the last lock pick.
 
 2012-07-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1426
 	* Allow container widget to display empty tiles for containers that are NULL
