@@ -2209,6 +2209,11 @@ function actor_yell_for_help(attacking_actor, defending_actor, dmg)
 end
 
 function actor_get_obj(actor, obj)
+	if get_attack_range(actor.x, actor.y, obj.x, obj.y) > 1 then
+		print("\n\nOut of range!")
+		return false
+	end
+
 	if obj.getable == false and obj.obj_n ~= 209 and obj.obj_n ~= 210 and obj.obj_n ~= 211 then --meat, ribs, dead animal. These are toptile objects and need an override check.
 		print("\n\nNot possible.")
 		return false

@@ -1,3 +1,6 @@
+2012-07-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1430
+	* Fix get not checking for range
+
 2012-07-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1429
 	* Fix targeting the actor or container icon in inventory view.
 		Attack mode was left out
