@@ -1393,6 +1393,15 @@ inline uint16 Actor::getSchedulePos(uint8 hour)
 }
 */
 
+void Actor::set_combat_mode(uint8 new_mode)
+{
+	combat_mode = new_mode;
+	if(Game::get_game()->get_party()->is_in_combat_mode())
+	{
+		set_worktype(combat_mode);
+	}
+}
+
 void Actor::set_worktype(uint8 new_worktype)
 {
  worktype = new_worktype;

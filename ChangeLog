@@ -1,9 +1,12 @@
+2012-07-19  Eric Fry <efry at users.sourceforge.net> r1433
+	* Fixed bug "Changing combat mode doesn't work until combat is toggled" [3545175]
+
 2012-07-18  Eric Fry <efry at users.sourceforge.net> r1432
 	* Moved player movement point update to Player::moveRelative()
 	* Update actors after all player attacks are finished.
 	* Added new script function player_set_actor()
 	* Implemented 'Command' combat work type. This needs a bit of testing before
-	  I close the bug tracker ticket.
+	  I close the bug tracker ticket. [3538909]
 
 2012-07-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1430
 	* Fix get not checking for range
