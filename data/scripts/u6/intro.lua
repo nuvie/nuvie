@@ -2898,4 +2898,5 @@ while cmd ~= "Q" and cmd ~= "J" do
 	cmd = main_menu()
 end
 
+canvas_hide_all_sprites()
 canvas_hide()

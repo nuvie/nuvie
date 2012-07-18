@@ -410,7 +410,7 @@ uint8 Actor::get_object_readiable_location(Obj *obj)
 
 bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
- const uint8 move_cost = 5; // base cost to move
+ //const uint8 move_cost = 5; // base cost to move
  bool force_move = flags & ACTOR_FORCE_MOVE;
  bool open_doors = flags & ACTOR_OPEN_DOORS;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
@@ -478,13 +478,15 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 
  Game *game = Game::get_game();
  can_move = true;
+ //FIXME move this into Player::moveRelative()
+ /*
  if(!(force_move || ignore_moves) && (id_n == game->get_player()->get_actor()->id_n || id_n == 0 || (is_in_party() && game->get_party()->is_in_combat_mode() == false))) // subtract from moves left for party members only. Other actors have their movement points deducted in actor_update_all()
  {
     set_moves_left(moves - (move_cost+map->get_impedance(oldpos.x, oldpos.y, oldpos.z)));
     if(oldpos.x != x && oldpos.y != y) // diagonal move, double cost
         set_moves_left(moves - (move_cost+map->get_impedance(oldpos.x, oldpos.y, oldpos.z)));
  }
-
+ */
  // post-move
  // close door
  if(open_doors)

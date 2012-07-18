@@ -1,3 +1,10 @@
+2012-07-18  Eric Fry <efry at users.sourceforge.net> r1432
+	* Moved player movement point update to Player::moveRelative()
+	* Update actors after all player attacks are finished.
+	* Added new script function player_set_actor()
+	* Implemented 'Command' combat work type. This needs a bit of testing before
+	  I close the bug tracker ticket.
+
 2012-07-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1430
 	* Fix get not checking for range
 

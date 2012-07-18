@@ -1858,8 +1858,9 @@ dbg("actor_update_all()\n")
    
    actor_calculate_avg_coords()
    local actor
+   local selected_actor
    repeat
-      local selected_actor = nil
+      selected_actor = nil
       local di = 0
       local dex_6 = 1
       repeat
@@ -1946,6 +1947,13 @@ dbg("actor_update_all()\n")
       end
 
    until selected_actor.obj_n ~= 0 and selected_actor.wt == WT_PLAYER and selected_actor.corpser_flag == false
+   
+   if selected_actor ~= nil then --swap player to next party member with 'command' combat worktype.
+    local old_player = Actor.get_player_actor()
+	player_set_actor(selected_actor)
+	old_player.wt = WT_PLAYER --reset worktype to player as it gets changed to follow in Player::set_actor() :-(
+   end
+   
 end
 
 function advance_time(num_turns)

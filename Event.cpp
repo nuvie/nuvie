@@ -949,7 +949,10 @@ bool Event::attack()
     player->attack(target);
 
     if(player->attack_select_next_weapon() == false)
+    {
+    	game->get_actor_manager()->startActors(); // end player turn
       endAction(true);
+    }
     else
         {
             map_window->set_show_cursor(true);

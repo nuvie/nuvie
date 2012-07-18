@@ -40,6 +40,8 @@
 #include "Script.h"
 #include "Player.h"
 
+#define PLAYER_BASE_MOVEMENT_COST 5
+
 Player::Player(Configuration *cfg)
 {
  config = cfg;
@@ -222,6 +224,9 @@ void Player::set_actor(Actor *new_actor)
     actor->set_worktype(0x02); // WT_U6_PLAYER
     actor->delete_pathfinder();
     
+    current_weapon = ACTOR_NO_READIABLE_LOCATION;
+    map_window->centerCursor();
+
     actor_manager->set_player(actor);
     std::string prompt = get_name();
 
@@ -378,6 +383,11 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
         MapCoord new_xyz = actor->get_location();
         party->move(new_xyz.x, new_xyz.y, new_xyz.z);
     }
+
+    actor->set_moves_left(actor->get_moves_left() - (PLAYER_BASE_MOVEMENT_COST+Game::get_game()->get_game_map()->get_impedance(x, y, z)));
+    if(rel_x != 0 && rel_y != 0) // diagonal move, double cost
+    	actor->set_moves_left(actor->get_moves_left() - PLAYER_BASE_MOVEMENT_COST);
+
     // update world around player
     actor_manager->updateActors(x, y, z);
     obj_manager->update(x, y, z); // remove temporary objs, hatch eggs
@@ -618,7 +628,7 @@ void Player::attack(MapCoord target)
  else
    scroll->display_string("\nOut of range!\n");
 
- actor_manager->startActors(); // end player turn
+ //actor_manager->startActors(); // end player turn
  return;
 }
 

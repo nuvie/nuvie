@@ -153,6 +153,7 @@ static int nscript_player_get_karma(lua_State *L);
 static int nscript_player_set_karma(lua_State *L);
 static int nscript_player_dec_alcohol(lua_State *L);
 static int nscript_player_move(lua_State *L);
+static int nscript_player_set_actor(lua_State *L);
 
 static int nscript_party_is_in_combat_mode(lua_State *L);
 static int nscript_party_set_combat_mode(lua_State *L);
@@ -537,6 +538,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_player_move);
    lua_setglobal(L, "player_move");
+
+   lua_pushcfunction(L, nscript_player_set_actor);
+   lua_setglobal(L, "player_set_actor");
 
    lua_pushcfunction(L, nscript_party_get_size);
    lua_setglobal(L, "party_get_size");
@@ -1809,6 +1813,17 @@ static int nscript_player_move(lua_State *L)
 		return 0;
 
 	player->move(x, y, z);
+
+	return 0;
+}
+
+static int nscript_player_set_actor(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	Actor *actor = nscript_get_actor_from_args(L, 1);
+
+	if(actor && actor != player->get_actor())
+		player->update_player(actor);
 
 	return 0;
 }
