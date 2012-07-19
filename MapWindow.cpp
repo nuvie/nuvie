@@ -150,7 +150,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  config->value("config/cheats/enable_hackmove", hackmove);
  walking = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
- original_obj_loc = {0,0,0};
+ original_obj_loc = MapCoord(0,0,0);
 
  roof_mode = Game::get_game()->is_roof_mode();
 
@@ -1840,7 +1840,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return	GUI_PASS;
 	}
 
-	original_obj_loc = {obj->x, obj->y, obj->z};
+	original_obj_loc = MapCoord(obj->x, obj->y, obj->z);
 	int distance = player->get_location().distance(original_obj_loc);
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
