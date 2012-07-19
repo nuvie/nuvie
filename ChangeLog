@@ -1,3 +1,8 @@
+2012-07-20  Eric Fry <efry at users.sourceforge.net> r1436
+	* Removed reference to struct Obj. It is a class now.
+	* Fixed return in MapWindow::make_thumbnail()
+	* Fixed bug "items in containers are still flagged as stolen in new game" [3545763]
+
 2012-07-19  Eric Fry <efry at users.sourceforge.net> r1435
 	* Fixed compile on Mac OS X.
 	* Chnaged inline to static inline in fmopl.c

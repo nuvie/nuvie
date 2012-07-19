@@ -2160,7 +2160,7 @@ GUI_status MapWindow::MouseLeave(Uint8 state)
 unsigned char *MapWindow::make_thumbnail()
 {
  if(thumbnail)
-   return false;
+   return NULL;
 
  new_thumbnail = true;
 

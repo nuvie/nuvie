@@ -1612,7 +1612,7 @@ void U6Actor::inventory_make_all_objs_ok_to_take()
     obj = (Obj *)link->data;
     link = link->next;
 
-    obj->set_ok_to_take(true);
+    obj->set_ok_to_take(true, true);
    }
 
  return;

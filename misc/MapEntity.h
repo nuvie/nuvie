@@ -22,7 +22,7 @@
 class Actor;
 class MapCoord;
 class NuvieAnim;
-struct Obj;
+class Obj;
 
 typedef enum
 {
