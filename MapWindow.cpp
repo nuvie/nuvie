@@ -150,6 +150,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  config->value("config/cheats/enable_hackmove", hackmove);
  walking = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
+ original_obj_loc = {0,0,0};
 
  roof_mode = Game::get_game()->is_roof_mode();
 
@@ -1620,28 +1621,30 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     y = (cur_y + y) % map_width;
 
     Obj *obj = (Obj *)data;
-    MsgScroll *scroll = Game::get_game()->get_scroll();
+    Actor *p = actor_manager->get_player();
+    Actor *target_actor = map->get_actor(x, y, cur_level);
 
     if(obj->is_in_inventory() == false) //obj on map.
     {
+    	if(!obj_manager->can_get_obj(obj) && !target_actor)  // handled by push to see if blocked
+    		return true;
 
-
-    	Actor *p = actor_manager->get_player();
     	LineTestResult lt;
     	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
     	{
-    		Actor *target_actor = map->get_actor(x, y, cur_level);
     		if(target_actor)
     		{
-    	    	scroll->display_string("Move-");
-    	    	scroll->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
-    	    	scroll->display_string(" To ");
-    			scroll->display_string(target_actor->get_name());
-    			scroll->display_string(".\n");
+    			game->get_event()->display_move_text(target_actor, obj);
 
-    			if(target_actor == p || (target_actor->is_in_party() && can_drop_obj(x, y, p)))
+    			if(target_actor == p || (target_actor->is_in_party()))
     			{
-    				return Game::get_game()->get_script()->call_actor_get_obj(target_actor, obj);
+    				if(game->get_event()->can_move_obj_between_actors(obj, p, target_actor))
+    					return true;
+    				else
+    				{
+    					game->get_scroll()->message("\n\n");
+    					return false;
+    				}
     			}
     		}
     		else
@@ -1650,18 +1653,27 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     		}
     	}
     }
-    else if(can_drop_obj(x, y, actor_manager->get_player())) //object in inventory
+    else
     {
-    	Actor *a = map->get_actor(x, y, cur_level);
-    	if(a)
-    	{
-    		if(a->is_in_party()==false)
-    			return false;
+		Actor *owner = obj->get_actor_holding_obj();
 
-    		if(Game::get_game()->get_script()->call_actor_get_obj(a, obj) == false)
-    			return false;
-    	}
-      return true;
+		if(target_actor)
+		{
+			if(target_actor->is_in_party()==false)
+				return false;
+
+			game->get_event()->display_move_text(target_actor, obj);
+
+			if(game->get_event()->can_move_obj_between_actors(obj, p, target_actor) == false)
+			{
+				game->get_scroll()->message("\n\n");
+				return false;
+			}
+			else
+				return true;
+		}
+		else
+			return can_drop_obj(x, y, owner); //throw on ground
     }
 
     game->get_scroll()->message("\n\nNot Possible\n\n");
@@ -1689,14 +1701,22 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         if(obj->obj_n == OBJ_U6_LOCK_PICK && game_type == NUVIE_GAME_U6)
         	game->get_usecode()->search_container(obj, false);
         Actor *a = map->get_actor(x, y, cur_level);
-        if(a && a->is_in_party())
+        if(a && (a->is_in_party() || a == actor_manager->get_player()))
         {
         	obj_manager->moveto_inventory(obj, a);
-        	Game::get_game()->get_scroll()->display_string("\n");
-            Game::get_game()->get_scroll()->display_prompt();
+        	game->get_scroll()->message("\n\n");
         }
         else
         {
+            if(!obj_manager->can_get_obj(obj))
+            {
+                event->newAction(PUSH_MODE);
+                event->select_obj(obj);
+                event->pushTo(x-original_obj_loc.x, y-original_obj_loc.y, PUSH_FROM_OBJECT);
+                event->endAction();
+                return;
+            }
+
         	// drop on ground or into a container
         	event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
         	event->select_obj(obj);
@@ -1820,9 +1840,11 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return	GUI_PASS;
 	}
 
+	original_obj_loc = {obj->x, obj->y, obj->z};
+	int distance = player->get_location().distance(original_obj_loc);
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
-	if (weight == 0 && !hackmove)
+	if ((weight == 0 || distance > 1 || player->get_actor_num() == 0) && !hackmove)
 		return	GUI_PASS;
 
 	if(button == DRAG_BUTTON)

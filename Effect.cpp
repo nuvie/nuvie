@@ -17,6 +17,7 @@
 #include "SoundManager.h"
 #include "U6objects.h"
 #include "Effect.h"
+#include "Event.h"
 
 #include <cassert>
 
@@ -652,11 +653,11 @@ void DropEffect::hit_target()
     throw_obj->x = stop_at.x;
     throw_obj->y = stop_at.y;
     throw_obj->z = stop_at.z;
+    nuvie_game_t game_type = game->get_game_type();
 
     //FIXME drop logic should probably be in lua script.
     if(drop_from_actor && obj_manager->is_breakable(throw_obj) && start_at.distance(stop_at) > 1)
     {
-    	nuvie_game_t game_type = game->get_game_type();
     	if(game_type == NUVIE_GAME_U6 && throw_obj->obj_n == OBJ_U6_DRAGON_EGG)
     	{
     		throw_obj->frame_n = 1; //brake egg.
@@ -687,6 +688,15 @@ void DropEffect::hit_target()
     }
     else
         obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
+
+    if(game_type == NUVIE_GAME_U6) // only matters for U6
+    {
+        if(throw_obj)
+            throw_obj->set_ok_to_take(game->get_event()->drop_okay_to_take);
+
+        game->get_event()->drop_okay_to_take = true;
+    }
+
     throw_obj = NULL; // set as dropped
 
     // not appropriate to do "Event::endAction(true)" from here to display

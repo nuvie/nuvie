@@ -29,6 +29,7 @@
 
 #include "ObjManager.h"
 #include "GUI_widget.h"
+#include "Map.h"
 
 class Configuration;
 class TileManager;
@@ -187,6 +188,8 @@ class MapWindow: public GUI_Widget
  // can put object at world location x,y?
  bool can_drop_obj(uint16 x, uint16 y, Actor *actor = NULL);
  bool can_get_obj(Actor *actor, Obj *obj);
+ void display_move_text(Actor *target_actor, Obj *obj);
+ MapCoord original_obj_loc;
 
  void updateBlacking();
  void updateAmbience();

@@ -398,8 +398,7 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 				event->select_actor(actor);
 			 return GUI_YUM;
 		}
-			 Player *player = Game::get_game()->get_player();
-			 bool in_party = player->get_party()->contains_actor(player->get_actor());
+		bool in_party = Game::get_game()->get_party()->main_actor_is_in_party();
 
 			 if(is_showing_container())
 				 set_prev_container(); //return to previous container or main actor inventory
@@ -544,9 +543,20 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
         DEBUG(0,LEVEL_WARNING,"InventoryWidget: Cannot Move between party members!\n"); 
         return false;
     }
+    Actor *src_actor = Game::get_game()->get_player()->get_actor();
 
-    if(Game::get_game()->get_script()->call_actor_get_obj(actor, obj) == false)
+    if(obj->get_actor_holding_obj() == actor)
+        src_actor = actor;
+    else
+        Game::get_game()->get_event()->display_move_text(actor, obj);
+
+    if(!Game::get_game()->get_event()->can_move_obj_between_actors(obj, src_actor, actor))
+    {
+        Game::get_game()->get_scroll()->message("\n\n");
     	return false;
+    }
+    else if(src_actor != actor || !obj->is_in_inventory())
+        Game::get_game()->get_scroll()->message("\n\n");
 
     UseCode *usecode = Game::get_game()->get_usecode();
     if(usecode->is_chest(obj) && obj->frame_n == 0) //open chest

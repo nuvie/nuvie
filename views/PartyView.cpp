@@ -190,19 +190,16 @@ bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
 		Actor *actor = get_actor(x, y);
 		if(actor)
 		{
-			scroll->display_string("Move-");
-			scroll->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
-			scroll->display_string(" To ");
-			scroll->display_string(actor->get_name());
-			scroll->display_string(".");
+			Event *event = Game::get_game()->get_event();
+			event->display_move_text(actor, obj);
 
-			if(Game::get_game()->get_script()->call_actor_get_obj(actor, obj) == true)
+			if(event->can_move_obj_between_actors(obj, player->get_actor(), actor))
 			{
 				DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
 				return true;
 			}
 		}
-		scroll->display_string("\n");
+		scroll->display_string("\n\n");
 	    scroll->display_prompt();
 	}
 

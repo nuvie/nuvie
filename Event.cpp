@@ -110,6 +110,7 @@ Event::Event(Configuration *cfg)
  time_queue = game_time_queue = NULL;
  showingQuitDialog = false;
  ignore_timeleft = false;
+ drop_okay_to_take = true;
 
  mode = MOVE_MODE;
  last_mode = MOVE_MODE;
@@ -358,7 +359,10 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 
 			break;
 		case SDLK_c     :
-			newAction(CAST_MODE);
+			if(player->get_actor()->get_actor_num() == 0)
+				display_not_aboard_vehicle();
+			else
+				newAction(CAST_MODE);
 			break;
 		case SDLK_l     :
 			newAction(LOOK_MODE);
@@ -370,13 +374,22 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			newAction(USE_MODE);
 			break;
 		case SDLK_g     :
-			newAction(GET_MODE);
+			if(player->get_actor()->get_actor_num() == 0)
+				display_not_aboard_vehicle();
+			else
+				newAction(GET_MODE);
 			break;
 		case SDLK_m     :
-			newAction(PUSH_MODE);
+			if(player->get_actor()->get_actor_num() == 0)
+				display_not_aboard_vehicle();
+			else
+				newAction(PUSH_MODE);
 			break;
 		case SDLK_d     :
-			newAction(DROP_MODE);
+			if(player->get_actor()->get_actor_num() == 0)
+				display_not_aboard_vehicle();
+			else
+				newAction(DROP_MODE);
 			break;
 		case SDLK_b     :
 			newAction(COMBAT_MODE);
@@ -458,6 +471,8 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_9:
             if(mode == INPUT_MODE)
                 select_party_member(event->key.keysym.sym - 48 - 1);
+            else if(player->get_actor()->get_actor_num() == 0)
+                display_not_aboard_vehicle();
             else
     			solo_mode(event->key.keysym.sym - 48 - 1);
 			break;
@@ -1004,8 +1019,11 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
             map_window->updateBlacking();
             return(false); // ???
         }
+        MapCoord target(obj->x, obj->y, obj->z);
 
-        if(game->get_script()->call_actor_get_obj(actor, obj))
+        if(player->get_actor()->get_location().distance(target) > 1)
+            scroll->display_string("\nOut of range!");
+        else if(game->get_script()->call_actor_get_obj(actor, obj))
         {
             obj_manager->remove_obj_from_map(obj); //remove object from map.
 
@@ -1330,37 +1348,9 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             Actor *src_actor = push_obj->get_actor_holding_obj();
             if(src_actor)
             {
-            	from = src_actor->get_location();
-
             	Actor *target_actor = map->get_actor(rel_x, rel_y, from.z);
-            	if(target_actor)
-            	{
-
-            		to = target_actor->get_location();
-
-            		scroll->display_string(target_actor == src_actor ? "yourself" : target_actor->get_name());
-            		scroll->display_string(".\n\n");
-
-            		if(map->lineTest(from.x, from.y, to.x, to.y, from.z, LT_HitUnpassable, lt) == false)
-            		{
-            			if(from.distance(to) < 5)
-            			{
-            				obj_manager->moveto_inventory(push_obj, target_actor);
-            			}
-            			else
-            			{
-            				scroll->display_string("Out of range!\n");
-            			}
-            		}
-            		else
-            		{
-            			scroll->display_string("Blocked!\n");
-            		}
-            	}
-            	else
-            	{
-            		scroll->display_string("nobody.\n\n");
-            	}
+            	if(can_move_obj_between_actors(push_obj, src_actor, target_actor, true))
+            		obj_manager->moveto_inventory(push_obj, target_actor);
             }
 
             scroll->display_prompt();
@@ -1656,7 +1646,7 @@ void Event::alt_code(const char *cs)
                || game->get_party()->is_in_combat_mode())
             {
                  if(player->is_in_vehicle())
-                     scroll->display_string("\nNot while aboard a vehicle!\n\n");
+                     display_not_aboard_vehicle(false);
                  else
                      scroll->display_string("\nNot while in combat mode!\n\n");
                  scroll->display_prompt();
@@ -1721,8 +1711,7 @@ void Event::alt_code(const char *cs)
         case 314: // teleport player & party to selected location
             if(player->get_actor()->get_actor_num() == 0)
             {
-                scroll->display_string("\nNot while aboard ship!\n");
-                scroll->display_prompt();
+                display_not_aboard_vehicle();
                 active_alt_code = 0;
             }
             else
@@ -2196,8 +2185,7 @@ bool Event::toggle_combat()
     }
     else if(party->is_in_vehicle())
     {
-         scroll->display_string("\nNot while aboard ship!\n\n");
-         scroll->display_prompt();
+         display_not_aboard_vehicle();
     }
     else if(!player->get_party()->main_actor_is_in_party())
     {
@@ -2386,11 +2374,10 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     if(game->user_paused())
         return false;
 
-    if(obj->get_engine_loc() == OBJ_LOC_MAP) //we can't accept a map to map drag at the moment. FIXME
+    if(obj->get_engine_loc() == OBJ_LOC_MAP)
     {
-        scroll->display_string("Not possible\n");
-        endAction(true);
-        return false;
+        drop_okay_to_take = obj->is_ok_to_take(); // we need to preserve flag
+        obj_manager->moveto_inventory(obj, player->get_actor()); // hack to stop ghosting from drop effect
     }
 
     Actor *actor = (obj->is_in_inventory()) // includes held containers
@@ -2907,6 +2894,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		return(false);
 	}
 	move_in_inventory = false;
+	drop_okay_to_take = true;
 
 	set_mode(new_mode);
 	if (new_mode != COMBAT_MODE)
@@ -2935,7 +2923,8 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 					&& player->is_in_vehicle()
 					&& player->get_actor()->get_obj_n() != OBJ_U6_SHIP)
 			{
-				scroll->display_string("Attack-Not while aboard ship!\n");
+				scroll->display_string("Attack-");
+				display_not_aboard_vehicle(false);
 				endAction(true);
 				return false;
 			}
@@ -3108,4 +3097,69 @@ bool Event::can_target_icon()
 		return true;
 	else
 		return false;
+}
+
+void Event::display_not_aboard_vehicle(bool show_prompt)
+{
+	if(player->get_actor()->get_obj_n() == OBJ_U6_INFLATED_BALLOON)
+		scroll->display_string("Not while aboard balloon!\n\n");
+	else
+		scroll->display_string("Not while aboard ship!\n\n");
+	if(show_prompt)
+		scroll->display_prompt();
+}
+
+bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *target_actor, bool display_name) // exchange inventory
+{
+	MapCoord from = src_actor->get_location();
+
+	if(target_actor)
+	{
+		if(game->using_hackmove())
+			return true;
+		if(player->get_actor()->get_actor_num() == 0)
+		{
+			display_not_aboard_vehicle();
+			return false;
+		}
+
+		if(display_name)
+		{
+			scroll->display_string(target_actor == src_actor ? "yourself" : target_actor->get_name());
+			scroll->display_string(".\n\n");
+		}
+
+		if(target_actor == src_actor && obj->is_in_inventory())
+			return true;
+
+		LineTestResult lt;
+		Map *map = game->get_game_map();
+		MapCoord to = target_actor->get_location();
+
+		if(map->lineTest(from.x, from.y, to.x, to.y, from.z, LT_HitUnpassable, lt) == false)
+		{
+			if(from.distance(to) < 5)
+			{
+				if(game->get_script()->call_actor_get_obj(target_actor, obj))
+					return true;
+			}
+			else
+				scroll->display_string("Out of range!\n");
+		}
+		else
+			scroll->display_string("Blocked!\n");
+	}
+	else
+		scroll->display_string("nobody.\n\n");
+
+	return false;
+}
+
+void Event::display_move_text(Actor *target_actor, Obj *obj)
+{
+	scroll->display_string("Move-");
+	scroll->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
+ 	scroll->display_string(" To ");
+	scroll->display_string(target_actor->get_name());
+	scroll->display_string(".");
 }

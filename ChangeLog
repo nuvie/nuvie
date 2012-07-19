@@ -1,3 +1,10 @@
+2012-07-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1434
+	* Add drag and drop/move map to map functionality
+	* Undo revision 1430 and add range check before actor_get_obj
+	* Add range, blocking, and weight check to party members obj exchanges
+	* Don't allow drag and drop, drop, move, and get while in a vehicle
+	* Fix player icon not showing party view if in a vehicle
+
 2012-07-19  Eric Fry <efry at users.sourceforge.net> r1433
 	* Fixed bug "Changing combat mode doesn't work until combat is toggled" [3545175]
 

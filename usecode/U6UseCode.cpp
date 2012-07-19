@@ -2415,7 +2415,7 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
    }
  else if(party->is_in_vehicle())
    {
-    scroll->display_string("Not while aboard ship!\n");
+    Game::get_game()->get_event()->display_not_aboard_vehicle(false);
     return true;
    }
 
