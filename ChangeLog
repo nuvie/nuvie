@@ -1,3 +1,9 @@
+2012-07-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1437
+	* Added some teleportation checks to fix some crashes
+	* Have generated nuvie.cfg setup SE and MD settings
+	* Fix generated nuvie.cfg fullscreen setting
+	* Don't try to use gargoyle font in SE or MD (214 cheat)
+
 2012-07-20  Eric Fry <efry at users.sourceforge.net> r1436
 	* Removed reference to struct Obj. It is a class now.
 	* Fixed return in MapWindow::make_thumbnail()

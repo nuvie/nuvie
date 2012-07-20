@@ -488,6 +488,8 @@ void U6Actor::clear()
 
 bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
+ assert(new_z < 6);
+
 // bool force_move = flags & ACTOR_FORCE_MOVE;
  bool ret;
  sint16 rel_x, rel_y;

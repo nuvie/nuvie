@@ -1553,12 +1553,18 @@ void Event::alt_code_input(const char *in)
             ++alt_code_input_num;
             if(alt_code_input_num == 1)
             {
-                scroll->display_string("\n<uai>: ");
+                if(game->get_game_type() ==NUVIE_GAME_U6)
+                    scroll->display_string("\n<uai>: ");
+                else
+                    scroll->display_string("\ny: ");
                 get_scroll_input();
             }
             else if(alt_code_input_num == 2)
             {
-                scroll->display_string("\n<zi>: ");
+                if(game->get_game_type() ==NUVIE_GAME_U6)
+                    scroll->display_string("\n<zi>: ");
+                else
+                    scroll->display_string("\nz: ");
                 get_scroll_input();
             }
             else
@@ -1585,18 +1591,26 @@ void Event::alt_code_input(const char *in)
             break;
 
         case 414: // teleport player & party to NPC location
-            alt_code_teleport_to_person((uint32)strtol(in, NULL, 10));
+            if(a->get_z() > 5)
+                scroll->display_string("\nnpc is invalid or at invalid location");
+            else
+                alt_code_teleport_to_person((uint32)strtol(in, NULL, 10));
             scroll->display_string("\n\n");
             scroll->display_prompt();
             active_alt_code = 0;
             break;
 
         case 500: // control/watch anyone
+            if(a->get_z() > 5 || a->get_actor_num() == 0)
+                scroll->display_string("\nnpc is invalid or at invalid location\n\n");
+          else
+          {
             player->set_actor(a);
             player->set_mapwindow_centered(true);
             view_manager->set_inventory_mode(); // reset inventoryview
             view_manager->get_inventory_view()->set_actor(player->get_actor());
             scroll->display_string("\n");
+          }
             scroll->display_prompt();
             active_alt_code = 0;
             break;
@@ -1679,13 +1693,19 @@ void Event::alt_code(const char *cs)
         case 214:
             if(player->get_actor()->get_actor_num() == 0)
             {
-                scroll->display_string("\n<nat uail abord wip!>\n");
+                if(game->get_game_type() ==NUVIE_GAME_U6)
+                    scroll->display_string("\n<nat uail abord wip!>\n");
+                else
+                    display_not_aboard_vehicle();
                 scroll->display_prompt();
                 active_alt_code = 0;
             }
             else
             {
-                scroll->display_string("\n<gotu eks>: ");
+                if(game->get_game_type() ==NUVIE_GAME_U6)
+                    scroll->display_string("\n<gotu eks>: ");
+                else
+                    scroll->display_string("\ngoto x: ");
                 get_scroll_input();
                 active_alt_code = c;
             }
@@ -1746,7 +1766,7 @@ bool Event::alt_code_teleport(const char *location_string)
  y = strtol(next_num,&next_num,16);
  z = strtol(next_num,&next_num,16);
 
- if(x == 0 && y == 0)
+ if((x == 0 && y == 0) || z > 5)
    return false;
  player->move(x,y,z);
 

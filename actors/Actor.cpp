@@ -410,6 +410,8 @@ uint8 Actor::get_object_readiable_location(Obj *obj)
 
 bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
+ assert(new_z < 6);
+
  //const uint8 move_cost = 5; // base cost to move
  bool force_move = flags & ACTOR_FORCE_MOVE;
  bool open_doors = flags & ACTOR_OPEN_DOORS;

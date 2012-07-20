@@ -237,7 +237,7 @@ void Nuvie::SharedDefaultConfigValues()
 
 	config->set("config/video/scale_method", "point");
 	config->set("config/video/scale_factor", "2");
-	config->set("config/video/fullscreen", "false");
+	config->set("config/video/fullscreen", "no");
 //	config->set("config/video/screen_width", 320);
 //	config->set("config/video/screen_height", 200);
 //	config->set("config/video/x_offset", 0);
@@ -272,6 +272,9 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/ultima6/show_stealing", false);
 	config->set("config/ultima6/roof_mode", false);
 
+	config->set("config/martian/skip_intro", false);
+	config->set("config/savage/skip_intro", false);
+
 //	config->set("config/newgamedata/name", "Avatar");
 //	config->set("config/newgamedata/gender", 0);
 //	config->set("config/newgamedata/portrait", 0);
@@ -301,6 +304,10 @@ bool Nuvie::initDefaultConfigWin32()
 	config->set("config/ultima6/townsdir", "c:\\fmtownsU6");
 	config->set("config/ultima6/savedir", "./u6_save");
 	config->set("config/ultima6/sfxdir", "./custom_sfx");
+	config->set("config/martian/gamedir", "c:\\martian");
+	config->set("config/martian/savedir", "./martian_save");
+	config->set("config/savage/gamedir", "c:\\savage");
+	config->set("config/savage/savedir", "./savage_save");
 
 	config->write();
 
@@ -331,6 +338,8 @@ bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
 	config->set("config/ultima6/townsdir", "/Library/Application Support/Nuvie Support/townsU6");
 	config->set("config/ultima6/savedir", home + "/Library/Application Support/Nuvie/savegames");
 	config->set("config/ultima6/sfxdir", home + "/Library/Application Support/Nuvie/custom_sfx");
+	config->set("config/martian/gamedir", "/Library/Application Support/Nuvie Support/martian");
+	config->set("config/savage/gamedir", "/Library/Application Support/Nuvie Support/savage");
 
 	config->write();
 
@@ -361,6 +370,8 @@ bool Nuvie::initDefaultConfigUnix(const char *home_env)
 	config->set("config/ultima6/townsdir", "./townsU6");
 	config->set("config/ultima6/savedir", home + "/.nuvie/savegames");
 	config->set("config/ultima6/sfxdir", home + "/.nuvie/custom_sfx");
+	config->set("config/martian/gamedir", "./martian");
+	config->set("config/savage/gamedir", "./savage");
 
 	config->write();
 
