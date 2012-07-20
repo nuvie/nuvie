@@ -1,3 +1,7 @@
+2012-07-20  Eric Fry <efry at users.sourceforge.net> r1436
+	* Fixed more clang warnings.
+	* Fixed bug "background border doesn't redraw on failed drag and drop" [3546137]
+
 2012-07-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1437
 	* Added some teleportation checks to fix some crashes
 	* Have generated nuvie.cfg setup SE and MD settings

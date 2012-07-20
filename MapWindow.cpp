@@ -1613,6 +1613,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
  x /= 16;
  y /= 16;
 
+ GUI::get_gui()->force_full_redraw();
 
  if(message == GUI_DRAG_OBJ)
    {

@@ -207,7 +207,7 @@ bool NuvieIOBuffer::write4(uint32 src)
  return true;
 }
 
-uint32 NuvieIOBuffer::writeBuf(unsigned char *src, uint32 src_size)
+uint32 NuvieIOBuffer::writeBuf(const unsigned char *src, uint32 src_size)
 {
   if(pos + src_size > size || src == NULL)
    return 0;

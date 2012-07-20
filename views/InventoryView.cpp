@@ -496,7 +496,7 @@ void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
             else if(x == 4)
                 moveCursorToInventory(1, 2);
         }
-        else if((x + new_x) >= 0 && (x + new_x) <= 4)
+        else if(((sint16)x + new_x) >= 0 && (x + new_x) <= 4)
             moveCursorToButton(x + new_x);
         update_display = true;
     }

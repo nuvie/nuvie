@@ -50,7 +50,7 @@ class NuvieIO
    virtual bool write1(uint8 src) { return false; };
    virtual bool write2(uint16 src) { return false; };
    virtual bool write4(uint32 src) { return false; };
-   virtual uint32 writeBuf(unsigned char *src, uint32 src_size) { return 0; };
+   virtual uint32 writeBuf(const unsigned char *src, uint32 src_size) { return 0; };
    virtual uint32 write(NuvieIO *src) { return 0; };
 
    uint32 get_size() { return size; };
@@ -94,7 +94,7 @@ class NuvieIOBuffer: public NuvieIO
    bool write1(uint8 src);
    bool write2(uint16 src);
    bool write4(uint32 src);
-   uint32 writeBuf(unsigned char *src, uint32 src_size);
+   uint32 writeBuf(const unsigned char *src, uint32 src_size);
    uint32 write(NuvieIO *src);
 
    void seek(uint32 new_pos);

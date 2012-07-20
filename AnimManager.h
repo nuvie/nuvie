@@ -115,7 +115,7 @@ public:
                                     { if(callback_target) return(CallBack::message(msg,msg_data,my_data));
                                       else return(0); }
 
-    virtual void move(uint32 x, uint32 y)    { px = x; py = y; }
+    virtual void move(uint32 x, uint32 y, uint32 add_x = 0, uint32 add_y = 0)    { px = x; py = y; }
     virtual void shift(sint32 sx, sint32 sy) { px += sx; py += sy; }
 
 //    void set_flags();
