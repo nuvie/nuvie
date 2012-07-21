@@ -40,10 +40,12 @@ bundle_name = Nuvie.app
 bundle: ${EXE_TARGET}
 	mkdir -p $(bundle_name)/Contents/MacOS
 	mkdir -p $(bundle_name)/Contents/Resources/data/
+	mkdir -p $(bundle_name)/Contents/Resources/English.lproj/
 	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
 	$(INSTALL_DATA) xcodebuild/Info-Nuvie.plist $(bundle_name)/Contents/Info.plist
 	$(INSTALL_PROGRAM) nuvie$(EXEEXT) $(bundle_name)/Contents/MacOS/
 	$(INSTALL_DATA) xcodebuild/nuvie.icns $(bundle_name)/Contents/Resources/
+	$(INSTALL_DATA) xcodebuild/English.lproj/InfoPlist.strings $(bundle_name)/Contents/Resources/English.lproj/
 	cp -r data/* $(bundle_name)/Contents/Resources/data
 
 

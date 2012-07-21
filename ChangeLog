@@ -1,3 +1,6 @@
+2012-07-21  Dominik Reichardt <dominus@users.sourceforge.net> r1444
+	* some more changes for "Building for OSX with autotools"
+
 2012-07-21  Eric Fry <efry at users.sourceforge.net> r1442
 	* Added patch "Building for OSX with autotools" [3546509]
 	* Fixed bug when hitting right arrow in inventory view on the last party member.
