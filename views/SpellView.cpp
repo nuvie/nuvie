@@ -440,7 +440,7 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
     return(GUI_YUM);
 }
 
-GUI_status SpellView::MouseUp(int x, int y, int button)
+GUI_status SpellView::MouseDown(int x, int y, int button)
 {
 	y -= area.y;
 	x -= area.x;

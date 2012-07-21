@@ -47,6 +47,7 @@
 #include "Script.h"
 #include "U6objects.h"
 #include "UseCode.h"
+#include "CommandBar.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define WALK_BUTTON 3
@@ -1812,26 +1813,34 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 
 	mouseToWorldCoords(x, y, wx, wy);
 
-	if(event->get_mode() == MOVE_MODE) // PASS if Avatar is hit
+	if(event->get_mode() == MOVE_MODE)
 	{
-		if(wx == player->x && wy == player->y)
+		if(button == WALK_BUTTON && game->get_command_bar()->get_selected_action() != -1)
+		{
+			if(game->get_command_bar()->try_selected_action() == false) // start new action
+				return GUI_PASS; // false if new event doesn't need target
+		}
+		else if(wx == player->x && wy == player->y) // PASS if Avatar is hit
 		{
 			event->cancelAction(); // MOVE_MODE, so this should work
 			return GUI_PASS;
 		}
-		if(button == WALK_BUTTON)
-			walking = true;
+		else if(button == WALK_BUTTON)
+		{
+				walking = true;
+		}
 		else if(button == USE_BUTTON) // you can also walk by holding the USE button
 			wait_for_mousedown(button);
 	}
-	else if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE) // finish whatever action is being done, with mouse coordinates
+
+	if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE) // finish whatever action is being done, with mouse coordinates
 	{
 		mouseToWorldCoords(x, y, wx, wy);   // some Event functions still use
 		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
 		event->select_target(uint16(wx), uint16(wy), cur_level); // the returned location
 		return  GUI_PASS;
 	}
-	else
+	else if(event->get_mode() != MOVE_MODE)
 	{
 		return GUI_PASS;
 	}

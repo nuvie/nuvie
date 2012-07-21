@@ -34,6 +34,7 @@
 #include "MsgScroll.h"
 #include "Event.h"
 #include "Configuration.h"
+#include "CommandBar.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status actorViewButtonCallback(void *data);
@@ -41,6 +42,8 @@ extern GUI_status actorViewButtonCallback(void *data);
 #define U6 Game::get_game()->get_game_type()==NUVIE_GAME_U6
 #define SE Game::get_game()->get_game_type()==NUVIE_GAME_SE
 #define MD Game::get_game()->get_game_type()==NUVIE_GAME_MD
+
+static const uint8 ACTION_BUTTON = 3;
 
 PartyView::PartyView(Configuration *cfg) : View(cfg)
 {
@@ -122,10 +125,18 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
  if(x >= x_offset)
   {
    Event *event = Game::get_game()->get_event();
+   CommandBar *command_bar = Game::get_game()->get_command_bar();
    bool party_view_targeting;
    config->value("config/input/party_view_targeting", party_view_targeting, false);
 
-   if(party_view_targeting && event->can_target_icon())
+   if(button == ACTION_BUTTON && event->get_mode() == MOVE_MODE
+      && command_bar->get_selected_action() > 0) // Exclude attack mode too
+   {
+      if(command_bar->try_selected_action() == false) // start new action
+         return GUI_PASS; // false if new event doesn't need target
+   }
+   if((party_view_targeting || (button == ACTION_BUTTON
+      && command_bar->get_selected_action() > 0)) && event->can_target_icon())
    {
       x += area.x;
       y += area.y;

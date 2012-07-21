@@ -39,6 +39,7 @@
 #include "Script.h"
 #include "Player.h"
 #include "Party.h"
+#include "CommandBar.h"
 
 #include "InventoryFont.h"
 #include "ViewManager.h"
@@ -311,16 +312,40 @@ void InventoryWidget::display_arrows()
 
 GUI_status InventoryWidget::MouseDown(int x, int y, int button)
 {
- //Event *event = Game::get_game()->get_event();
- //MsgScroll *scroll = Game::get_game()->get_scroll();
+ Event *event = Game::get_game()->get_event();
+ CommandBar *command_bar = Game::get_game()->get_command_bar();
  x -= area.x;
  y -= area.y;
+
+ if( y < 17)
+    return GUI_PASS;
+
+ Obj *obj = get_obj_at_location(x,y);
+ 
+ if(button == ACTION_BUTTON && event->get_mode() == MOVE_MODE
+    && command_bar->get_selected_action() > 0) // Exclude attack mode too
+ {
+    if(command_bar->try_selected_action() == false) // start new action
+        return GUI_PASS; // false if new event doesn't need target
+ }
+ if(button == ACTION_BUTTON && command_bar->get_selected_action() > 0
+    && event->get_mode() == INPUT_MODE)
+ {
+    if(obj)
+       event->select_obj(obj); // the returned location
+    else
+    {
+       Game::get_game()->get_scroll()->display_string("nothing!\n");
+       event->endAction(true);
+       event->set_mode(MOVE_MODE);
+    }
+    return  GUI_PASS;
+ }
 
  // ABOEING
  if(actor && (button == USE_BUTTON || button == ACTION_BUTTON || button == DRAG_BUTTON))
    {
-    Obj *obj; // FIXME: duplicating code in DollWidget
-    if((obj = get_obj_at_location(x,y)) != NULL)
+    if(obj) // FIXME: duplicating code in DollWidget
       {
        // send to View
        if(callback_object->callback(INVSELECT_CB, this, obj) == GUI_PASS
@@ -380,20 +405,29 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
 // change container, ready/unready object, activate arrows
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 {
- if(button == USE_BUTTON)
+
+ CommandBar *command_bar = Game::get_game()->get_command_bar();
+
+ if(button == USE_BUTTON || (button == ACTION_BUTTON
+    && command_bar->get_selected_action() > 0)) // Exclude attack mode too
    {
     x -= area.x;
     y -= area.y;
-
     if(x >= 32 && x <= 48 && // hit top icon either actor or container
        y >= 0 && y <= 16)
       {
 		Event *event = Game::get_game()->get_event();
 
+		if(button == ACTION_BUTTON && event->get_mode() == MOVE_MODE)
+		{
+			if(command_bar->try_selected_action() == false) // start new action
+				return GUI_PASS; // false if new event doesn't need target
+		}
+
 		if(event->can_target_icon())
 		{
-			if(is_showing_container() && container_obj->get_engine_loc() == OBJ_LOC_CONT)
-				event->select_obj((Obj *)container_obj->parent, actor);
+			if(is_showing_container())
+				event->select_obj((Obj *)container_obj, actor);
 			else
 				event->select_actor(actor);
 			 return GUI_YUM;

@@ -359,7 +359,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 
 			break;
 		case SDLK_c     :
-			if(player->get_actor()->get_actor_num() == 0)
+			if(player->is_in_vehicle())
 				display_not_aboard_vehicle();
 			else
 				newAction(CAST_MODE);
@@ -374,19 +374,19 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			newAction(USE_MODE);
 			break;
 		case SDLK_g     :
-			if(player->get_actor()->get_actor_num() == 0)
+			if(player->is_in_vehicle())
 				display_not_aboard_vehicle();
 			else
 				newAction(GET_MODE);
 			break;
 		case SDLK_m     :
-			if(player->get_actor()->get_actor_num() == 0)
+			if(player->is_in_vehicle())
 				display_not_aboard_vehicle();
 			else
 				newAction(PUSH_MODE);
 			break;
 		case SDLK_d     :
-			if(player->get_actor()->get_actor_num() == 0)
+			if(player->is_in_vehicle())
 				display_not_aboard_vehicle();
 			else
 				newAction(DROP_MODE);
@@ -398,18 +398,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 			newAction(ATTACK_MODE);
 			break;
 		case SDLK_r     :
-			if(game->get_game_type()==NUVIE_GAME_MD)
-			{
-				if(mode != MOVE_MODE)
-					cancelAction();
-				else
-				{
-					scroll->display_string("what?\n\n");
-					scroll->display_prompt();
-				}
-			}
-			else
-				newAction(REST_MODE);
+			newAction(REST_MODE);
             break;
 		case SDLK_i     :
 			view_manager->open_doll_view(NULL);
@@ -471,7 +460,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		case SDLK_9:
             if(mode == INPUT_MODE)
                 select_party_member(event->key.keysym.sym - 48 - 1);
-            else if(player->get_actor()->get_actor_num() == 0)
+            else if(player->is_in_vehicle())
                 display_not_aboard_vehicle();
             else
     			solo_mode(event->key.keysym.sym - 48 - 1);
@@ -1691,7 +1680,7 @@ void Event::alt_code(const char *cs)
             break;
 */
         case 214:
-            if(player->get_actor()->get_actor_num() == 0)
+            if(player->is_in_vehicle())
             {
                 if(game->get_game_type() ==NUVIE_GAME_U6)
                     scroll->display_string("\n<nat uail abord wip!>\n");
@@ -1729,7 +1718,7 @@ void Event::alt_code(const char *cs)
             break;
 
         case 314: // teleport player & party to selected location
-            if(player->get_actor()->get_actor_num() == 0)
+            if(player->is_in_vehicle())
             {
                 display_not_aboard_vehicle();
                 active_alt_code = 0;
@@ -2665,6 +2654,8 @@ void Event::doAction()
             bool prompt_in_endAction = look(input.obj);
             endAction(prompt_in_endAction);
         }
+        else if(input.type == EVENTINPUT_MAPCOORD && input.actor)
+            talk(input.actor);
         else
         {
             look_cursor();
@@ -3137,7 +3128,7 @@ bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *targe
 	{
 		if(game->using_hackmove())
 			return true;
-		if(player->get_actor()->get_actor_num() == 0)
+		if(player->is_in_vehicle())
 		{
 			display_not_aboard_vehicle();
 			return false;

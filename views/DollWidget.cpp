@@ -32,6 +32,7 @@
 #include "ActorManager.h"
 #include "GamePalette.h"
 #include "DollWidget.h"
+#include "CommandBar.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define ACTION_BUTTON 3
@@ -241,6 +242,14 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
  x -= area.x;
  y -= area.y;
 
+ CommandBar *command_bar = Game::get_game()->get_command_bar();
+ if(button == ACTION_BUTTON && event->get_mode() == MOVE_MODE
+    && command_bar->get_selected_action() > 0) // Exclude attack mode too
+ {
+	if(command_bar->try_selected_action() == false) // start new action
+		return GUI_PASS; // false if new event doesn't need target
+ }
+
  if(actor && selected_obj == NULL && (button == USE_BUTTON || button == ACTION_BUTTON || button == DRAG_BUTTON))
    {
     for(location=0;location<8;location++)
@@ -251,6 +260,12 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
           obj = actor->inventory_get_readied_object(location);
           if(obj)
            {
+             if(button == ACTION_BUTTON && command_bar->get_selected_action() > 0
+                && event->get_mode()== INPUT_MODE)
+             {
+                 event->select_obj(obj, actor);
+                 return GUI_PASS;
+             }
              if((event->get_mode()==MOVE_MODE || event->get_mode()==EQUIP_MODE)
                 && button==DRAG_BUTTON)
                  selected_obj = obj; // start dragging
@@ -259,6 +274,14 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
            }
          }
       }
+   }
+   if(button == ACTION_BUTTON && event->get_mode()== INPUT_MODE // has not found a target yet
+      && command_bar->get_selected_action() >0)
+   {
+       Game::get_game()->get_scroll()->display_string("nothing!\n");
+       event->endAction(true);
+       event->set_mode(MOVE_MODE);
+       return GUI_PASS;
    }
 
  return GUI_YUM;

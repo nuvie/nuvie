@@ -46,7 +46,7 @@ protected:
     Text *text;
     Tile *icon[10];
 
-    sint8 default_action; // underlined icon (-1 = none)
+    sint8 selected_action; // underlined icon (-1 = none)
     bool combat_mode; // state of combat icon
     std::string wind; // wind direction
 
@@ -66,10 +66,11 @@ public:
 
     void set_combat_mode(bool mode);
     void set_wind(std::string dir)        { wind = dir; update_display = true; }
-    void set_default_action(sint8 action) { default_action = action;
+    void set_selected_action(sint8 action) { selected_action = action;
                                             update_display = true; }
-    bool try_default_action(uint8 activate);
-    
+    bool try_selected_action();
+    sint8 get_selected_action() { return selected_action;}
+
     uint16 callback(uint16 msg, CallBack *caller, void * data);
 };
 

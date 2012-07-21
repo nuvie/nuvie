@@ -63,7 +63,7 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
     area.w = 16 * 10; // space for 10 icons
     area.h = 24 + 1; // extra space for the underlined default action
 
-    default_action = -1;
+    selected_action = -1;
     combat_mode = false;
     wind = "?";
 
@@ -99,10 +99,10 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
             return(hit(activate));
         else if(button == ACTION_BUTTON)
         {
-            if(default_action == activate) // clear if already selected
-                set_default_action(-1);
-            else if(try_default_action(activate)) // set in Event and here
-                set_default_action(activate);
+            if(selected_action == activate) // clear if already selected
+                set_selected_action(-1);
+            else
+                set_selected_action(activate);
         }
     }
     return(GUI_YUM);
@@ -131,21 +131,39 @@ GUI_status CommandBar::hit(uint8 num)
     return(GUI_PASS);
 }
 
-/* Returns true if the default action is set with Event. */
-bool CommandBar::try_default_action(uint8 activate)
+bool CommandBar::try_selected_action() // return true if target is needed
 {
-/*
-    return((activate == 0 && event->set_default_action(ATTACK_MODE))
-        || (activate == 1 && event->set_default_action(CAST_MODE))
-        || (activate == 2 && event->set_default_action(TALK_MODE))
-        || (activate == 3 && event->set_default_action(LOOK_MODE))
-        || (activate == 4 && event->set_default_action(GET_MODE))
-        || (activate == 5 && event->set_default_action(DROP_MODE))
-        || (activate == 6 && event->set_default_action(PUSHSELECT_MODE))
-        || (activate == 7 && event->set_default_action(USE_MODE))
-        || (activate == 8 && event->set_default_action(REST_MODE))
-        || (activate == 9 && event->set_default_action(COMBAT_MODE)));*/
-    return(true);
+	if(!event) event = game->get_event();
+
+	switch(selected_action)
+	{
+		case 1:
+		case 4:
+		case 5:
+		case 6:
+			if(game->get_player()->is_in_vehicle())
+			{
+				event->display_not_aboard_vehicle();
+				return false;
+			}
+			break;
+		default: break;
+	}
+	switch(selected_action)
+	{
+		case 0: return event->newAction(ATTACK_MODE);
+		case 1: event->newAction(CAST_MODE); return false;
+		case 2: return event->newAction(TALK_MODE);
+		case 3: return event->newAction(LOOK_MODE);
+		case 4: return event->newAction(GET_MODE);
+		case 5: return event->newAction(DROP_MODE);
+		case 6: return event->newAction(PUSH_MODE);
+		case 7: return event->newAction(USE_MODE);
+		case 8: event->newAction(REST_MODE); return false;
+		case 9: event->newAction(COMBAT_MODE); return false;
+		default: return false;
+	}
+	return false;
 }
 
 void CommandBar::set_combat_mode(bool mode)
@@ -178,8 +196,8 @@ void CommandBar::Display(bool full_redraw)
         for(uint32 i = 0; i < 10; i++)
             screen->blit(area.x+i*16, area.y+8, icon[i]->data, 8, 16, 16, 16);
 
-        if(default_action >= 0 && default_action <= 9)
-            screen->fill(9, area.x + default_action*16, area.y + 24, 16, 1);
+        if(selected_action >= 0 && selected_action <= 9)
+            screen->fill(9, area.x + selected_action*16, area.y + 24, 16, 1);
         screen->update(area.x, area.y, area.w, area.h);
     }
 }

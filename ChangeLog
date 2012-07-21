@@ -1,3 +1,8 @@
+2012-07-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1441
+	* Add right click uses of selected command bar commands in inventory,
+		party view, and the game map.
+	* Fix look not selecting actor icons
+
 2012-07-21  Eric Fry <efry at users.sourceforge.net> r1440
 	* Fixed issue with mouse movement not waiting for npcs to finish.
 	* Fixed issue with cutscene scripting fade_out() function overriding in-game
