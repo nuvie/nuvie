@@ -134,6 +134,8 @@ class MapWindow: public GUI_Widget
 
  bool init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am);
 
+ sint16 get_cur_x() { return cur_x; }
+ sint16 get_cur_y() { return cur_y; }
  bool set_windowSize(uint16 width, uint16 height);
  void set_show_cursor(bool state);
  void set_show_use_cursor(bool state);

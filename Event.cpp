@@ -1174,6 +1174,7 @@ bool Event::look(Obj *obj)
          scroll->display_prompt();
          return false;
       }
+      scroll->display_string("\n");
    }
    
    return true;
@@ -1251,7 +1252,7 @@ bool Event::look_cursor()
   {
    scroll->display_string("Thou dost see ");
    scroll->display_string(map_window->lookAtCursor());
-//   scroll->display_string("\n");
+   scroll->display_string("\n");
   }
 
  endAction(display_prompt);
@@ -2568,6 +2569,19 @@ void Event::multiuse(uint16 wx, uint16 wy)
 
     if(using_actor) // use or talk to an actor
     {
+        if(player->get_party()->is_in_combat_mode()
+           && (actor->get_alignment() == ACTOR_ALIGNMENT_EVIL
+           || actor->get_alignment() == ACTOR_ALIGNMENT_CHAOTIC))
+        {
+            newAction(ATTACK_MODE);
+            if(get_mode() == ATTACK_MODE)
+            {
+                map_window->moveCursor(wx - map_window->get_cur_x(), wy - map_window->get_cur_y());
+                select_target(uint16(wx), uint16(wy), target.z);
+            }
+            delete_obj(obj); // we were using an actor so free the temp Obj
+            return;
+        }
         bool can_use;
         if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_MOUSE)
             can_use = false;
@@ -2655,7 +2669,10 @@ void Event::doAction()
             endAction(prompt_in_endAction);
         }
         else if(input.type == EVENTINPUT_MAPCOORD && input.actor)
-            talk(input.actor);
+        {
+            bool prompt = !look(input.actor);
+            endAction(prompt);
+        }
         else
         {
             look_cursor();

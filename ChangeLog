@@ -1,3 +1,7 @@
+2012-07-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1445
+	* Fix typo that used talk instead of look
+	* Double click while in combat mode will attack evil or chaotic actors
+
 2012-07-21  Dominik Reichardt <dominus@users.sourceforge.net> r1444
 	* some more changes for "Building for OSX with autotools"
 
