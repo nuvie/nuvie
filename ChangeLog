@@ -1,4 +1,10 @@
-2012-07-20  Eric Fry <efry at users.sourceforge.net> r1436
+2012-07-21  Eric Fry <efry at users.sourceforge.net> r1440
+	* Fixed issue with mouse movement not waiting for npcs to finish.
+	* Fixed issue with cutscene scripting fade_out() function overriding in-game
+	  fade_out() function. I've made the intro.lua functions local. We might need to run the
+	  cutscene script inside its own lua state.
+
+2012-07-20  Eric Fry <efry at users.sourceforge.net> r1438
 	* Fixed more clang warnings.
 	* Fixed bug "background border doesn't redraw on failed drag and drop" [3546137]
 

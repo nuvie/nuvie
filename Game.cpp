@@ -385,16 +385,20 @@ void Game::unpause_all()
 
 void Game::unpause_user()
 {
-	set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_USER));
-
-
-    //if(event->get_mode() == WAIT_MODE)
-    //    event->endAction(); // change to MOVE_MODE, hide cursors
-    if(gui->get_block_input())
-        gui->unblock();
-
     if(pause_user_count > 0)
     	pause_user_count--;
+
+    if(pause_user_count == 0)
+    {
+    	set_pause_flags((GamePauseState)(pause_flags & ~PAUSE_USER));
+
+
+    	//if(event->get_mode() == WAIT_MODE)
+    	//    event->endAction(); // change to MOVE_MODE, hide cursors
+    	if(gui->get_block_input())
+    		gui->unblock();
+
+    }
 
     DEBUG(0, LEVEL_DEBUGGING, "unpause user count=%d!\n", pause_user_count);
 }

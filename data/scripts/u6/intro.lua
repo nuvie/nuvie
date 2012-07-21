@@ -1,6 +1,6 @@
 g_img_tbl = {}
 
-function poll_for_esc()
+local function poll_for_esc()
 	local input = input_poll()
 	if input ~= nil and input == 27 then
 		return true
@@ -9,7 +9,7 @@ function poll_for_esc()
 	return false
 end
 
-function wait_for_input()
+local function wait_for_input()
 	local input = nil
 	while input == nil do
 		canvas_update()
@@ -22,7 +22,7 @@ function wait_for_input()
 	return input
 end
 
-function should_exit(input)
+local function should_exit(input)
 	if input ~=nil and input == 27 then
 		return true
 	end
@@ -30,7 +30,7 @@ function should_exit(input)
 	return false
 end
 
-function fade_out()
+local function fade_out()
 	local i
 	for i=0xff,0,-3 do
 		canvas_set_opacity(i)
@@ -40,7 +40,7 @@ function fade_out()
 	return false
 end
 
-function fade_out_sprite(sprite, speed)
+local function fade_out_sprite(sprite, speed)
 	local i
 	if speed ~= nil then
 		speed = -speed
@@ -56,7 +56,7 @@ function fade_out_sprite(sprite, speed)
 	return false
 end
 
-function fade_in()
+local function fade_in()
 	local i
 	for i=0x0,0xff,3 do
 		canvas_set_opacity(i)
@@ -66,7 +66,7 @@ function fade_in()
 	return false
 end
 
-function fade_in_sprite(sprite, speed)
+local function fade_in_sprite(sprite, speed)
 	local i
 	if speed ~= nil then
 		speed = speed
@@ -82,20 +82,20 @@ function fade_in_sprite(sprite, speed)
 	return false
 end
 
-function load_images(filename)
+local function load_images(filename)
 	g_img_tbl = image_load_all(filename)
 end
 
 g_clock_tbl = {}
 
-function load_clock()
+local function load_clock()
 	g_clock_tbl["h1"] = sprite_new(nil, 0xdd, 0x14, true)
 	g_clock_tbl["h2"] = sprite_new(nil, 0xdd+4, 0x14, true)
 	g_clock_tbl["m1"] = sprite_new(nil, 0xdd+0xa, 0x14, true)
 	g_clock_tbl["m2"] = sprite_new(nil, 0xdd+0xe, 0x14, true)
 end
 
-function display_clock()
+local function display_clock()
 	local t = os.date("*t")
 	local hour = t.hour
 	local minute = t.min
@@ -126,7 +126,7 @@ g_lounge_tbl = {}
 g_tv_base_x = 0xe5
 g_tv_base_y = 0x32
 
-function load_lounge()
+local function load_lounge()
 
 	g_lounge_tbl["bg0"] = sprite_new(g_img_tbl[15], 210, 0, true)
 	g_lounge_tbl["bg"] = sprite_new(g_img_tbl[0], 0, 0, true)
@@ -188,7 +188,7 @@ g_tv_pledge_image = 37
 
 g_tv_road_offset = 0xe
 
-function display_tv_sprite(s_idx, image_num)
+local function display_tv_sprite(s_idx, image_num)
 	local sprite = g_lounge_tbl.tv[s_idx]
 	if sprite ~= nil then
 		sprite.image = g_img_tbl[0x10+image_num]
@@ -200,7 +200,7 @@ function display_tv_sprite(s_idx, image_num)
 	end
 end
 
-function display_tv()
+local function display_tv()
 	local should_exit = false
 	local s_idx = 1
 	for i=1,5 do
@@ -300,7 +300,7 @@ end
 
 g_tv_update = true
 
-function display_lounge()
+local function display_lounge()
 	display_clock()
 	if g_tv_update == true then
 		display_tv()
@@ -310,7 +310,14 @@ function display_lounge()
 	end
 end
 
-function scroll_lounge()
+local function scroll_clock()
+g_clock_tbl["h1"].x = g_clock_tbl["h1"].x - 1
+g_clock_tbl["h2"].x = g_clock_tbl["h2"].x - 1
+g_clock_tbl["m1"].x = g_clock_tbl["m1"].x - 1
+g_clock_tbl["m2"].x = g_clock_tbl["m2"].x - 1
+end
+
+local function scroll_lounge()
 g_lounge_tbl.bg.x = g_lounge_tbl.bg.x - 1
 g_lounge_tbl.bg1.x = g_lounge_tbl.bg1.x - 1
 g_tv_base_x = g_tv_base_x - 1
@@ -324,14 +331,7 @@ end
 scroll_clock()
 end
 
-function scroll_clock()
-g_clock_tbl["h1"].x = g_clock_tbl["h1"].x - 1
-g_clock_tbl["h2"].x = g_clock_tbl["h2"].x - 1
-g_clock_tbl["m1"].x = g_clock_tbl["m1"].x - 1
-g_clock_tbl["m2"].x = g_clock_tbl["m2"].x - 1
-end
-
-function hide_lounge()
+local function hide_lounge()
 
 	g_lounge_tbl["bg0"].visible = false
 	g_lounge_tbl["bg"].visible = false
@@ -340,7 +340,7 @@ function hide_lounge()
 	g_lounge_tbl["tv"].visible = false
 end
 
-function lounge_sequence()
+local function lounge_sequence()
 
 	load_lounge()
 
@@ -424,7 +424,7 @@ function lounge_sequence()
 end
 
 g_window_tbl = {}
-function load_window()
+local function load_window()
 	local rand = math.random
 	g_window_tbl["cloud_x"] = -400
 	
@@ -466,7 +466,7 @@ function load_window()
 	
 end
 
-function hide_window()
+local function hide_window()
 	g_window_tbl["sky"].visible = false
 	g_window_tbl["cloud1"].visible = false
 	g_window_tbl["cloud2"].visible = false
@@ -494,7 +494,7 @@ function hide_window()
 
 end
 
-function display_window()
+local function display_window()
 
 	local i
 	local rain = g_window_tbl["rain"]
@@ -594,7 +594,7 @@ function display_window()
 	end
 end
 
-function window_update()
+local function window_update()
 	local input = input_poll()
 	
 	while input == nil do
@@ -610,7 +610,7 @@ function window_update()
 	return should_exit(input)
 end
 
-function window_sequence()
+local function window_sequence()
 	load_images("intro_2.shp")
 	
 	load_window()
@@ -726,7 +726,16 @@ function window_sequence()
 	
 end
 
-function stones_update()
+local function stones_rotate_palette()
+	if g_pal_counter == 4 then
+		canvas_rotate_palette(144, 16)
+		g_pal_counter = 0
+	else
+		g_pal_counter = g_pal_counter + 1
+	end
+end
+
+local function stones_update()
 	local input = input_poll()
 
 	while input == nil do
@@ -741,7 +750,7 @@ function stones_update()
 	return should_exit(input)
 end
 
-function stones_shake_moongate()
+local function stones_shake_moongate()
 	local input = input_poll()
 
 	while input == nil do
@@ -764,18 +773,9 @@ end
 
 g_pal_counter = 0
 
-function stones_rotate_palette()
-	if g_pal_counter == 4 then
-		canvas_rotate_palette(144, 16)
-		g_pal_counter = 0
-	else
-		g_pal_counter = g_pal_counter + 1
-	end
-end
-
 g_stones_tbl = {}
 
-function stones_sequence()
+local function stones_sequence()
 
 	load_images("intro_3.shp")
 
@@ -1017,7 +1017,7 @@ function stones_sequence()
 	return true
 end
 
-function play()
+local function play()
 
 load_images("intro_1.shp")
 music_play("bootup.m")
@@ -1087,145 +1087,17 @@ hide_window()
 stones_sequence()
 end
 
-g_menu_pal =
-{
-	{232,96,0},
-	{236,128,0},
-	{244,164,0},
-	{248,200,0},
-	{252,252,84},
-	{248,200,0},
-	{244,164,0},
-	{236,128,0},
-	{232,96,0}
-}
-
-g_menu_pal_idx = { 14, 33, 34, 35, 36 }
-function main_menu_set_pal(idx)
-	local i
-	
-	for i = 1,5,1 do
-		local colour = g_menu_pal[5+(i-1)-idx]
-		canvas_set_palette_entry(g_menu_pal_idx[i], colour[1], colour[2], colour[3])
+local function gypsy_update_bubbles(bubble_image)
+	if g_gypsy_tbl["bubble_counter"] == 0 then
+		image_bubble_effect(bubble_image)
+		g_gypsy_tbl["bubble_counter"] = 3
+	else
+		g_gypsy_tbl["bubble_counter"] = g_gypsy_tbl["bubble_counter"] - 1
 	end
 end
 
-function main_menu_load()
-	music_play("ultima.m")
-	g_menu = {}
-	
-	canvas_set_palette("palettes.int", 0)
-		
-	local title_img_tbl = image_load_all("titles.shp")
-	g_menu["title"] = sprite_new(title_img_tbl[0], 0x13, 0, true)
-	g_menu["subtitle"] = sprite_new(title_img_tbl[1], 0x3b, 0x2f, false)
 
-	g_menu["menu"] = sprite_new(image_load("mainmenu.shp", 0), 0x31, 0x53, false)
-	
-	fade_in()
-	
-	g_menu["subtitle"].visible = true
-	g_menu["menu"].visible = true
-	
-	fade_in_sprite(g_menu["menu"])
-end
-
-function main_menu()
-	g_menu["title"].visible = true
-	g_menu["subtitle"].visible = true
-	g_menu["menu"].visible = true
-	
-	local input = input_poll()
-	local menu_idx = 0
-	while true do
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			if input == 113 then     --q quit
-				return "Q"
-			elseif input == 105 or input == 13 and menu_idx == 0 then --i
-				main_menu_set_pal(0)
-				fade_out()
-				canvas_hide_all_sprites()
-				intro()
-				music_play("ultima.m")
-				g_menu["title"].visible = true
-				fade_in()
-				g_menu["subtitle"].visible = true
-				g_menu["menu"].visible = true
-				
-				fade_in_sprite(g_menu["menu"])
-				--run intro here
-			elseif input == 99 or input == 13 and menu_idx == 1 then  --c
-				main_menu_set_pal(1)
-				fade_out_sprite(g_menu["menu"],6)
-				if create_character() == true then
-					return "J"
-				end
-				canvas_set_palette("palettes.int", 0)
-				menu_idx=0
-				main_menu_set_pal(menu_idx)
-				music_play("ultima.m")
-				fade_in_sprite(g_menu["menu"])
-				--create character
-			elseif input == 116 or input == 13 and menu_idx == 2 then --t
-				--transfer a character
-			elseif input == 97 or input == 13 and menu_idx == 3 then  --a
-				main_menu_set_pal(3)
-				fade_out_sprite(g_menu["menu"],6)
-				acknowledgements()
-				canvas_set_palette("palettes.int", 0)
-				menu_idx=0
-				main_menu_set_pal(menu_idx)
-				fade_in_sprite(g_menu["menu"])
-				--acknowledgments
-			elseif input == 106 or input == 13 and menu_idx == 4 then --j
-				main_menu_set_pal(4)
-				fade_out()
-				return "J"
-			elseif input == 274 then --down key
-				if menu_idx < 4 then
-					menu_idx = menu_idx + 1
-					main_menu_set_pal(menu_idx)
-				end
-			elseif input == 273 then --up key
-				if menu_idx > 0 then
-					menu_idx = menu_idx - 1
-					main_menu_set_pal(menu_idx)
-				end
-			elseif input >= 48 and input <= 57 or input == 45 or input == 61 then --play music play pressing number keys or '-' or '='
-				if input == 45 then
-					input = 11
-				elseif input == 48 then
-					input = 10
-				elseif input == 61 then
-					input = 12
-				else
-					input = input - 48
-				end
-
-				local song_names = {
-					"ultima.m",
-					"bootup.m",
-					"intro.m",
-					"create.m",
-					"forest.m",
-					"hornpipe.m",
-					"engage.m",
-					"stones.m",
-					"dungeon.m",
-					"brit.m",
-					"gargoyle.m",
-					"end.m"
-				}
-				music_play(song_names[input])
-			end
-			input = nil
-		end
-	end
-end
-
-function gypsy_ab_select(question)
+local function gypsy_ab_select(question)
 	local a_lookup_tbl = {
 	0, 0, 0, 0, 0, 0, 0, 1,
 	1, 1, 1, 1, 1, 2, 2, 2,
@@ -1258,14 +1130,6 @@ function gypsy_ab_select(question)
 	end
 end
 
-function gypsy_update_bubbles(bubble_image)
-	if g_gypsy_tbl["bubble_counter"] == 0 then
-		image_bubble_effect(bubble_image)
-		g_gypsy_tbl["bubble_counter"] = 3
-	else
-		g_gypsy_tbl["bubble_counter"] = g_gypsy_tbl["bubble_counter"] - 1
-	end
-end
 
 local gypsy_question_text = {
 "\"Entrusted to deliver an uncounted purse of gold, thou dost meet a poor beggar. Dost thou A) deliver the gold Honestly, knowing the trust in thee was well-placed; or B) show Compassion and give the beggar a coin, knowing it won't be missed?\127",
@@ -1315,7 +1179,7 @@ local gypsy_question_text = {
 
 	g_question_tbl = {0, 1, 2, 3, 4, 5, 6, 7}
 
-function shuffle_question_tbl(shuffle_len)
+local function shuffle_question_tbl(shuffle_len)
 	local random = math.random
 	local c = random(0, (shuffle_len * shuffle_len)-1) + shuffle_len
 	
@@ -1331,34 +1195,163 @@ function shuffle_question_tbl(shuffle_len)
 	
 end
 
-function gypsy_ask_questions(num_questions, scroll)
+local function gypsy_start_pouring(vial_num, vial_level)	
+	local pour_img_tbl = 
+	{
+	 0x2B, 0x43, 0x56, 0x6B, 0x24, 0x74, 0x19, 0x2C,
+	 0x2C, 0x44, 0x57, 0x6C, 0x23, 0x73, 0x18, 0x2B,
+	 0x2E, 0x45, 0x58, 0x6D, 0x22, 0x72, 0x17, 0x2A,
+	}
 	
-	local strength_adjustment_tbl = { 0, 0, 2, 0, 1, 1, 1, 0 }
-	local dex_adjustment_tbl = { 0, 2, 0, 1, 1, 0, 1, 0 } 
-	local int_adjustment_tbl = { 2, 0, 0, 1, 0, 1, 1, 0 }
-	
-	for i=0,num_questions-1,1 do
-		local q = gypsy_questions[g_question_tbl[i*2+1]*8 + g_question_tbl[i*2+2] + 1]
-	
-		local scroll_img = image_load("blocks.shp", 3)
-		scroll.image = scroll_img
-		image_print(scroll_img, gypsy_question_text[q - 104], 7, 303, 8, 9, 0x3e)
-	
-		local vial = gypsy_ab_select(q)
-	
-		gypsy_vial_anim(vial)
+	if vial_level <= 3 and vial_level > 0 then
+		g_gypsy_tbl["pour"].visible = true
+		local img1 = pour_img_tbl[(3 - vial_level) * 8 + vial_num]
+		--io.stderr:write("pour: "..vial_level.." img1="..img1.."vial_num="..vial_num.."\n")
+		if vial_num > 6 then
+			img1 = img1 + 9
+		else
+			img1 = img1 + 0x42
+		end
 		
-		g_str = g_str + strength_adjustment_tbl[vial]
-		g_dex = g_dex + dex_adjustment_tbl[vial]
-		g_int = g_int + int_adjustment_tbl[vial]
-	
-		g_question_tbl[i+1] = vial-1
-	
-		--io.stderr:write(q.." "..vial.."("..g_str..","..g_dex..","..g_int..")\n")
+		g_gypsy_tbl["pour"].image = g_gypsy_img_tbl[img1]
+		
+		local pour_y_tbl = {0x32, 0x37, 0x40}
+		g_gypsy_tbl["pour"].y = pour_y_tbl[3 - vial_level + 1] - 20
+		
+		local pour_x_tbl =
+		{
+		 0x92, 0x92, 0x92, 0x92, 0x0A9, 0x0A9, 0x0A9, 0x0A9,
+		 0x91, 0x91, 0x91, 0x91, 0x0A9, 0x0A9, 0x0A9, 0x0A9,
+		 0x94, 0x94, 0x94, 0x94, 0x0AA, 0x0AA, 0x0AA, 0x0AA,
+		}
+		
+		g_gypsy_tbl["pour"].x = pour_x_tbl[(3 - vial_level) * 8 + vial_num]
 	end
+	
+	g_gypsy_tbl["jar_level"] = g_gypsy_tbl["jar_level"] + 1
+	
+	g_gypsy_tbl["jar_liquid"].visible = true
+	g_gypsy_tbl["jar_liquid"].image = g_gypsy_img_tbl[8 + g_gypsy_tbl["jar_level"]]
+	g_gypsy_tbl["jar_liquid"].y = g_gypsy_tbl["jar_liquid"].y - 1
+
+	local vial_colors = {239, 14, 231, 103, 228, 5, 15, 219}
+	
+	image_bubble_effect_add_color(vial_colors[vial_num])
+	g_gypsy_tbl["bubble_counter"] = 0
+
 end
 
-function gypsy_vial_anim(vial)
+local function gypsy_stop_pouring()
+	g_gypsy_tbl["pour"].visible = false
+end
+
+local function gypsy_vial_anim_liquid(img_num, vial_num, vial_level, hand_x, hand_y)
+
+	--io.stderr:write(img_num..", "..vial_num..", "..vial_level..", "..hand_x..", "..hand_y.."\n")
+	
+	if vial_level == 3 then
+		vial_level = 2
+	end
+	
+	if vial_level <= 0 then
+		g_gypsy_tbl["vial_liquid"][vial_num].visible = false
+		return
+	end
+	
+	local si = 0
+	if img_num == 0xf then return end
+
+
+	if img_num > 0xf then
+		if img_num == 0x12 then
+			si = 1
+		else
+			if img_num > 0x12 then
+				if img_num == 0x25 then return end
+				if img_num == 0x2e then
+					si = 2
+				end
+			else
+				if img_num == 0x10 then
+					si = 2
+				else
+					if img_num == 0x11 then
+						si = 0
+					end
+				end
+			end
+		end
+
+	else
+
+		img_num = img_num - 9
+		if img_num == 0 then
+			si = 0
+		elseif img_num == 1 then
+			si = 1
+		elseif img_num >= 2 and img_num <= 5 then
+			si = 3
+		end
+
+	end
+
+	local vial_liquid_tbl = { 
+	0x3A, 0x4F, 0x64, 0x7C, 0x28, 0x7E, 0x20, 0x34,
+	0x36, 0x4B, 0x60, 0x76, 0x26, 0x78, 0x1C, 0x30,
+	0x36, 0x4B, 0x60, 0x76, 0x26, 0x78, 0x1C, 0x30,
+	0x3C, 0x51, 0x66, 0x7F, 0x14, 0x5F, 0x22, 0x36,
+	0x38, 0x4D, 0x62, 0x79, 0x27, 0x7B, 0x1E, 0x32,
+	0x38, 0x4D, 0x62, 0x79, 0x27, 0x7B, 0x1E, 0x32,
+	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
+	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
+	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
+	0x0, 0x3, 0x6, 0x9, 0x16, 0x19, 0x1C, 0x1F,
+	0x1, 0x4, 0x7, 0x0A, 0x17, 0x1A, 0x1D, 0x20,
+	0x2, 0x5, 0x8, 0x0B, 0x18, 0x1B, 0x1E, 0x21
+	}
+
+	local img_offset
+	
+	if vial_num > 6 and si ~= 3 then
+		img_offset = 9
+	else
+		img_offset = 0x42
+	end
+	
+	--io.stderr:write("si ="..si.."\n")
+	
+	if vial_level > 0 and vial_level < 3 then
+		--vial_liquid_tbl[vial_level * 2 + si * 24 + vial_num] + img_offset
+		local img_idx = vial_liquid_tbl[(vial_level-1) * 8 + si * 24 + vial_num]
+		g_gypsy_tbl["vial_liquid"][vial_num].image = g_gypsy_img_tbl[img_idx + img_offset]
+		
+		local hand_y_tbl = {0x1B, 0x13, 0x13, 0x16, 0x0E, 0x0E, 0x0E, 0x0E, 0x0E, 0x0B, 0x0B, 0x0B}
+		g_gypsy_tbl["vial_liquid"][vial_num].y = hand_y + hand_y_tbl[si * 3 + vial_level] - 20
+		
+		local hand_x_tbl =
+		{
+		0x4, 0x4, 0x4, 0x4, 0x14, 0x14, 0x14, 0x14,
+		0x4, 0x4, 0x4, 0x4, 0x13, 0x13, 0x13, 0x13,
+		0x4, 0x4, 0x4, 0x4, 0x13, 0x13, 0x13, 0x13,
+		0x4, 0x4, 0x4, 0x4, 0x17, 0x17, 0x17, 0x17,
+		0x3, 0x3, 0x3, 0x3, 0x17, 0x17, 0x17, 0x17,
+		0x3, 0x3, 0x3, 0x3, 0x17, 0x17, 0x17, 0x17,
+		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
+		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
+		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
+		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+		}
+		
+		local hand_x_tbl1 = {10, 10, 10, 10, -13, -13, -13, -13}
+
+		g_gypsy_tbl["vial_liquid"][vial_num].x = hand_x + hand_x_tbl[si * 24 + (vial_level-1) * 8 + vial_num] + hand_x_tbl1[vial_num]
+	end
+	
+end
+
+local function gypsy_vial_anim(vial)
 
 	local vial_level = g_gypsy_tbl["vial_level"]
 	local vial_img_off = {2, 5, 8, 0xB, 0x18, 0x1B, 0x1E, 0x21}
@@ -1555,161 +1548,34 @@ function gypsy_vial_anim(vial)
 	--g_gypsy_tbl["vial_liquid"][vial].visible = true
 end
 
-function gypsy_vial_anim_liquid(img_num, vial_num, vial_level, hand_x, hand_y)
-
-	--io.stderr:write(img_num..", "..vial_num..", "..vial_level..", "..hand_x..", "..hand_y.."\n")
+local function gypsy_ask_questions(num_questions, scroll)
 	
-	if vial_level == 3 then
-		vial_level = 2
-	end
+	local strength_adjustment_tbl = { 0, 0, 2, 0, 1, 1, 1, 0 }
+	local dex_adjustment_tbl = { 0, 2, 0, 1, 1, 0, 1, 0 } 
+	local int_adjustment_tbl = { 2, 0, 0, 1, 0, 1, 1, 0 }
 	
-	if vial_level <= 0 then
-		g_gypsy_tbl["vial_liquid"][vial_num].visible = false
-		return
-	end
+	for i=0,num_questions-1,1 do
+		local q = gypsy_questions[g_question_tbl[i*2+1]*8 + g_question_tbl[i*2+2] + 1]
 	
-	local si = 0
-	if img_num == 0xf then return end
-
-
-	if img_num > 0xf then
-		if img_num == 0x12 then
-			si = 1
-		else
-			if img_num > 0x12 then
-				if img_num == 0x25 then return end
-				if img_num == 0x2e then
-					si = 2
-				end
-			else
-				if img_num == 0x10 then
-					si = 2
-				else
-					if img_num == 0x11 then
-						si = 0
-					end
-				end
-			end
-		end
-
-	else
-
-		img_num = img_num - 9
-		if img_num == 0 then
-			si = 0
-		elseif img_num == 1 then
-			si = 1
-		elseif img_num >= 2 and img_num <= 5 then
-			si = 3
-		end
-
-	end
-
-	local vial_liquid_tbl = { 
-	0x3A, 0x4F, 0x64, 0x7C, 0x28, 0x7E, 0x20, 0x34,
-	0x36, 0x4B, 0x60, 0x76, 0x26, 0x78, 0x1C, 0x30,
-	0x36, 0x4B, 0x60, 0x76, 0x26, 0x78, 0x1C, 0x30,
-	0x3C, 0x51, 0x66, 0x7F, 0x14, 0x5F, 0x22, 0x36,
-	0x38, 0x4D, 0x62, 0x79, 0x27, 0x7B, 0x1E, 0x32,
-	0x38, 0x4D, 0x62, 0x79, 0x27, 0x7B, 0x1E, 0x32,
-	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
-	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
-	0x40, 0x53, 0x68, 0x81, 0x29, 0x83, 0x24, 0x38,
-	0x0, 0x3, 0x6, 0x9, 0x16, 0x19, 0x1C, 0x1F,
-	0x1, 0x4, 0x7, 0x0A, 0x17, 0x1A, 0x1D, 0x20,
-	0x2, 0x5, 0x8, 0x0B, 0x18, 0x1B, 0x1E, 0x21
-	}
-
-	local img_offset
+		local scroll_img = image_load("blocks.shp", 3)
+		scroll.image = scroll_img
+		image_print(scroll_img, gypsy_question_text[q - 104], 7, 303, 8, 9, 0x3e)
 	
-	if vial_num > 6 and si ~= 3 then
-		img_offset = 9
-	else
-		img_offset = 0x42
-	end
+		local vial = gypsy_ab_select(q)
 	
-	--io.stderr:write("si ="..si.."\n")
-	
-	if vial_level > 0 and vial_level < 3 then
-		--vial_liquid_tbl[vial_level * 2 + si * 24 + vial_num] + img_offset
-		local img_idx = vial_liquid_tbl[(vial_level-1) * 8 + si * 24 + vial_num]
-		g_gypsy_tbl["vial_liquid"][vial_num].image = g_gypsy_img_tbl[img_idx + img_offset]
+		gypsy_vial_anim(vial)
 		
-		local hand_y_tbl = {0x1B, 0x13, 0x13, 0x16, 0x0E, 0x0E, 0x0E, 0x0E, 0x0E, 0x0B, 0x0B, 0x0B}
-		g_gypsy_tbl["vial_liquid"][vial_num].y = hand_y + hand_y_tbl[si * 3 + vial_level] - 20
-		
-		local hand_x_tbl =
-		{
-		0x4, 0x4, 0x4, 0x4, 0x14, 0x14, 0x14, 0x14,
-		0x4, 0x4, 0x4, 0x4, 0x13, 0x13, 0x13, 0x13,
-		0x4, 0x4, 0x4, 0x4, 0x13, 0x13, 0x13, 0x13,
-		0x4, 0x4, 0x4, 0x4, 0x17, 0x17, 0x17, 0x17,
-		0x3, 0x3, 0x3, 0x3, 0x17, 0x17, 0x17, 0x17,
-		0x3, 0x3, 0x3, 0x3, 0x17, 0x17, 0x17, 0x17,
-		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
-		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
-		0x3, 0x3, 0x3, 0x3, 0x1B, 0x1B, 0x1B, 0x1B,
-		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
-		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
-		0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
-		}
-		
-		local hand_x_tbl1 = {10, 10, 10, 10, -13, -13, -13, -13}
-
-		g_gypsy_tbl["vial_liquid"][vial_num].x = hand_x + hand_x_tbl[si * 24 + (vial_level-1) * 8 + vial_num] + hand_x_tbl1[vial_num]
-	end
+		g_str = g_str + strength_adjustment_tbl[vial]
+		g_dex = g_dex + dex_adjustment_tbl[vial]
+		g_int = g_int + int_adjustment_tbl[vial]
 	
+		g_question_tbl[i+1] = vial-1
+	
+		--io.stderr:write(q.." "..vial.."("..g_str..","..g_dex..","..g_int..")\n")
+	end
 end
 
-function gypsy_start_pouring(vial_num, vial_level)	
-	local pour_img_tbl = 
-	{
-	 0x2B, 0x43, 0x56, 0x6B, 0x24, 0x74, 0x19, 0x2C,
-	 0x2C, 0x44, 0x57, 0x6C, 0x23, 0x73, 0x18, 0x2B,
-	 0x2E, 0x45, 0x58, 0x6D, 0x22, 0x72, 0x17, 0x2A,
-	}
-	
-	if vial_level <= 3 and vial_level > 0 then
-		g_gypsy_tbl["pour"].visible = true
-		local img1 = pour_img_tbl[(3 - vial_level) * 8 + vial_num]
-		--io.stderr:write("pour: "..vial_level.." img1="..img1.."vial_num="..vial_num.."\n")
-		if vial_num > 6 then
-			img1 = img1 + 9
-		else
-			img1 = img1 + 0x42
-		end
-		
-		g_gypsy_tbl["pour"].image = g_gypsy_img_tbl[img1]
-		
-		local pour_y_tbl = {0x32, 0x37, 0x40}
-		g_gypsy_tbl["pour"].y = pour_y_tbl[3 - vial_level + 1] - 20
-		
-		local pour_x_tbl =
-		{
-		 0x92, 0x92, 0x92, 0x92, 0x0A9, 0x0A9, 0x0A9, 0x0A9,
-		 0x91, 0x91, 0x91, 0x91, 0x0A9, 0x0A9, 0x0A9, 0x0A9,
-		 0x94, 0x94, 0x94, 0x94, 0x0AA, 0x0AA, 0x0AA, 0x0AA,
-		}
-		
-		g_gypsy_tbl["pour"].x = pour_x_tbl[(3 - vial_level) * 8 + vial_num]
-	end
-	
-	g_gypsy_tbl["jar_level"] = g_gypsy_tbl["jar_level"] + 1
-	
-	g_gypsy_tbl["jar_liquid"].visible = true
-	g_gypsy_tbl["jar_liquid"].image = g_gypsy_img_tbl[8 + g_gypsy_tbl["jar_level"]]
-	g_gypsy_tbl["jar_liquid"].y = g_gypsy_tbl["jar_liquid"].y - 1
 
-	local vial_colors = {239, 14, 231, 103, 228, 5, 15, 219}
-	
-	image_bubble_effect_add_color(vial_colors[vial_num])
-	g_gypsy_tbl["bubble_counter"] = 0
-
-end
-
-function gypsy_stop_pouring()
-	g_gypsy_tbl["pour"].visible = false
-end
 
 g_keycode_tbl =
 {
@@ -1782,7 +1648,7 @@ g_keycode_tbl =
 [121]="y",
 [122]="z",
 }
-function create_character()
+local function create_character()
 	music_play("create.m")
 	
 	local bubbles = sprite_new(image_new(100,100), 110, 30, false)
@@ -2152,13 +2018,13 @@ function create_character()
 	return true
 end
 
-function ack_header(scroll_img)
+local function ack_header(scroll_img)
 	image_print(scroll_img, "Ultima VI", 7, 303, 115, 9, 0x3d)
 	image_print(scroll_img, "A Lord British Production", 7, 303, 63, 17, 0x3d)
 	image_draw_line(scroll_img, 9, 26, 274, 26, 0x3d)
 end
 
-function acknowledgements()
+local function acknowledgements()
 
 	local bg = sprite_new(image_load("vellum1.shp", 0), 0x10, 0x50, true)
 	
@@ -2230,7 +2096,7 @@ function acknowledgements()
 end
 
 
-function intro_sway_gargs(sprite, idx, angry_flag)
+local function intro_sway_gargs(sprite, idx, angry_flag)
 	if math.random(0, 3) == 0 then
 		return idx
 	end
@@ -2248,7 +2114,7 @@ function intro_sway_gargs(sprite, idx, angry_flag)
 	return idx
 end
 
-function moongate_rotate_palette(idx, num)
+local function moongate_rotate_palette(idx, num)
 	if g_pal_counter == 3 then
 		canvas_rotate_palette(232, 8)
 		g_pal_counter = 0
@@ -2257,13 +2123,13 @@ function moongate_rotate_palette(idx, num)
 	end
 end
 
-function intro_exit()
+local function intro_exit()
 	fade_out()
 	canvas_hide_all_sprites()
 	canvas_set_palette("palettes.int", 0)
 end
 
-function intro_wait()
+local function intro_wait()
 	if should_exit(wait_for_input()) == true then
 		intro_exit()
 		return false
@@ -2272,7 +2138,7 @@ function intro_wait()
 	return true
 end
 
-function intro()
+local function intro()
 	local input
 	local intro_img_tbl = image_load_all("intro.shp")
 	
@@ -2879,6 +2745,145 @@ function intro()
 		
 	intro_exit()
 end
+
+g_menu_pal =
+{
+	{232,96,0},
+	{236,128,0},
+	{244,164,0},
+	{248,200,0},
+	{252,252,84},
+	{248,200,0},
+	{244,164,0},
+	{236,128,0},
+	{232,96,0}
+}
+
+g_menu_pal_idx = { 14, 33, 34, 35, 36 }
+local function main_menu_set_pal(idx)
+	local i
+	
+	for i = 1,5,1 do
+		local colour = g_menu_pal[5+(i-1)-idx]
+		canvas_set_palette_entry(g_menu_pal_idx[i], colour[1], colour[2], colour[3])
+	end
+end
+
+local function main_menu_load()
+	music_play("ultima.m")
+	g_menu = {}
+	
+	canvas_set_palette("palettes.int", 0)
+		
+	local title_img_tbl = image_load_all("titles.shp")
+	g_menu["title"] = sprite_new(title_img_tbl[0], 0x13, 0, true)
+	g_menu["subtitle"] = sprite_new(title_img_tbl[1], 0x3b, 0x2f, false)
+
+	g_menu["menu"] = sprite_new(image_load("mainmenu.shp", 0), 0x31, 0x53, false)
+	
+	fade_in()
+	
+	g_menu["subtitle"].visible = true
+	g_menu["menu"].visible = true
+	
+	fade_in_sprite(g_menu["menu"])
+end
+
+local function main_menu()
+	g_menu["title"].visible = true
+	g_menu["subtitle"].visible = true
+	g_menu["menu"].visible = true
+	
+	local input = input_poll()
+	local menu_idx = 0
+	while true do
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			if input == 113 then     --q quit
+				return "Q"
+			elseif input == 105 or input == 13 and menu_idx == 0 then --i
+				main_menu_set_pal(0)
+				fade_out()
+				canvas_hide_all_sprites()
+				intro()
+				music_play("ultima.m")
+				g_menu["title"].visible = true
+				fade_in()
+				g_menu["subtitle"].visible = true
+				g_menu["menu"].visible = true
+				
+				fade_in_sprite(g_menu["menu"])
+				--run intro here
+			elseif input == 99 or input == 13 and menu_idx == 1 then  --c
+				main_menu_set_pal(1)
+				fade_out_sprite(g_menu["menu"],6)
+				if create_character() == true then
+					return "J"
+				end
+				canvas_set_palette("palettes.int", 0)
+				menu_idx=0
+				main_menu_set_pal(menu_idx)
+				music_play("ultima.m")
+				fade_in_sprite(g_menu["menu"])
+				--create character
+			elseif input == 116 or input == 13 and menu_idx == 2 then --t
+				--transfer a character
+			elseif input == 97 or input == 13 and menu_idx == 3 then  --a
+				main_menu_set_pal(3)
+				fade_out_sprite(g_menu["menu"],6)
+				acknowledgements()
+				canvas_set_palette("palettes.int", 0)
+				menu_idx=0
+				main_menu_set_pal(menu_idx)
+				fade_in_sprite(g_menu["menu"])
+				--acknowledgments
+			elseif input == 106 or input == 13 and menu_idx == 4 then --j
+				main_menu_set_pal(4)
+				fade_out()
+				return "J"
+			elseif input == 274 then --down key
+				if menu_idx < 4 then
+					menu_idx = menu_idx + 1
+					main_menu_set_pal(menu_idx)
+				end
+			elseif input == 273 then --up key
+				if menu_idx > 0 then
+					menu_idx = menu_idx - 1
+					main_menu_set_pal(menu_idx)
+				end
+			elseif input >= 48 and input <= 57 or input == 45 or input == 61 then --play music play pressing number keys or '-' or '='
+				if input == 45 then
+					input = 11
+				elseif input == 48 then
+					input = 10
+				elseif input == 61 then
+					input = 12
+				else
+					input = input - 48
+				end
+
+				local song_names = {
+					"ultima.m",
+					"bootup.m",
+					"intro.m",
+					"create.m",
+					"forest.m",
+					"hornpipe.m",
+					"engage.m",
+					"stones.m",
+					"dungeon.m",
+					"brit.m",
+					"gargoyle.m",
+					"end.m"
+				}
+				music_play(song_names[input])
+			end
+			input = nil
+		end
+	end
+end
+
 
 play()
 fade_out()
