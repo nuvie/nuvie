@@ -1,3 +1,7 @@
+2012-07-21  Eric Fry <efry at users.sourceforge.net> r1442
+	* Added patch "Building for OSX with autotools" [3546509]
+	* Fixed bug when hitting right arrow in inventory view on the last party member.
+
 2012-07-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1441
 	* Add right click uses of selected command bar commands in inventory,
 		party view, and the game map.

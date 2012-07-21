@@ -99,7 +99,10 @@ bool View::set_party_member(uint8 party_member)
 
 bool View::next_party_member()
 {
- return set_party_member(cur_party_member + 1);
+	if((cur_party_member + 1) < party->get_party_size())
+		return set_party_member(cur_party_member + 1);
+
+	return false;
 }
 
 bool View::prev_party_member()

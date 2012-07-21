@@ -1,6 +1,10 @@
 #ifndef __nuvieDefs_h__
 #define __nuvieDefs_h__
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #ifdef _MSC_VER
 
 #if _MSC_VER < 1300

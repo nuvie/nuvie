@@ -20,6 +20,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <time.h>
 #include <cstdlib>
 
@@ -33,6 +38,7 @@
 
 #ifdef MACOSX
 #include <CoreFoundation/CoreFoundation.h>
+#include <xcodebuild/main.cpp>
 int nuvieMain(int argc, char **argv)
 #else
 int main(int argc, char **argv)

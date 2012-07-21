@@ -31,3 +31,53 @@ dist_icon_DATA = builds/linux/nuvie.png
 
 EXTRA_DIST=nuvie.cfg.sample builds/linux/nuvie.cfg.in \
 	builds/linux/nuvie.spec.in nuvie.spec
+
+
+if MACOSX
+
+bundle_name = Nuvie.app
+
+bundle: ${EXE_TARGET}
+	mkdir -p $(bundle_name)/Contents/MacOS
+	mkdir -p $(bundle_name)/Contents/Resources/data/
+	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
+	$(INSTALL_DATA) xcodebuild/Info-Nuvie.plist $(bundle_name)/Contents/Info.plist
+	$(INSTALL_PROGRAM) nuvie$(EXEEXT) $(bundle_name)/Contents/MacOS/
+	$(INSTALL_DATA) xcodebuild/nuvie.icns $(bundle_name)/Contents/Resources/
+	cp -r data/* $(bundle_name)/Contents/Resources/data
+
+
+install-exec-local: bundle
+	mkdir -p $(DESTDIR)/Applications/
+	cp -r $(bundle_name) $(DESTDIR)/Applications/
+
+osxdmg: bundle
+	mkdir Nuvie-snapshot
+	cp $(srcdir)/AUTHORS ./Nuvie-snapshot/Authors
+	cp $(srcdir)/COPYING ./Nuvie-snapshot/License
+	cp $(srcdir)/changelog ./Nuvie-snapshot/Changelog
+	cp $(srcdir)/README ./Nuvie-snapshot/ReadMe
+	cp $(srcdir)/xcodebuild/misc/README_MacOSX.txt ./Nuvie-snapshot/ReadMe.MacOSX
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/Authors
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/License
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/Changelog
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/ReadMe
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/ReadMe.MacOSX
+	/Developer/Tools/CpMac -r $(bundle_name) ./Nuvie-snapshot/
+	hdiutil create -ov -format UDZO -imagekey zlib-level=9 -fs HFS+ \
+					-srcfolder Nuvie-snapshot \
+					-volname "Nuvie SVN snapshot" \
+					Nuvie-snapshot.dmg
+	rm -rf Nuvie-snapshot
+
+clean-local:
+	-rm -f Nuvie-snapshot.dmg
+	-rm -rf $(bundle_name)
+
+else
+
+install-exec-local:
+
+clean-local:
+	
+endif

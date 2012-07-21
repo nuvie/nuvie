@@ -19,6 +19,10 @@
 */
 
 /*NUVIE*/
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #if defined(MACOSX) && !defined(LUA_USE_MACOSX)
 #define LUA_USE_MACOSX
 #endif

@@ -541,8 +541,11 @@ void MapWindow::update()
         	    wizard_eye_update();
         	}
         	else
+        	{
+        		//DEBUG(0, LEVEL_DEBUGGING, "MOUSE WALKING...\n");
         		event->walk_to_mouse_cursor((uint32)mx,
         									(uint32)my);
+        	}
         }
     }
 
