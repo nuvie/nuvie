@@ -1,3 +1,9 @@
+2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1446
+	* Double click now attacks objects in combat mode
+	* Fix drop going through walls
+	* Fix chain bolt using player instead of caster
+	* Fix move in inventory
+
 2012-07-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1445
 	* Fix typo that used talk instead of look
 	* Double click while in combat mode will attack evil or chaotic actors

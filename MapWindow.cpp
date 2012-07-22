@@ -1563,7 +1563,9 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
     if(hackmove)
         return true;
 
-    if(actor)
+    if(!actor) // need an actor now
+       return false;
+//    if(actor)
     {
         actor_loc = actor->get_location();
         // can't ever drop at the actor location
@@ -1573,6 +1575,8 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
 
     if(tmpBufTileIsBlack(x - cur_x, y - cur_y))
         return false;
+
+/* is this still needed?
 
     if(!map->is_passable(x, y, cur_level)
        || (actor && map->lineTest(actor_loc.x, actor_loc.y, x, y, cur_level, LT_HitUnpassable, lt)))
@@ -1588,6 +1592,11 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
                                    || !obj_tile->boundary))))
             return false;
     }
+    return true;*/
+
+    if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
+        return false;
+
     return true;
 }
 

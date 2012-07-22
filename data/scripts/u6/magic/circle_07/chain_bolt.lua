@@ -13,12 +13,6 @@ end
 actor_yell_for_help(caster, actor, 1)
 actor_hit_msg(actor)
 
-local player_loc = player_get_location()
-
-local player_x = player_loc.x
-local player_y = player_loc.y
-local player_z = player_loc.z
-
 local i,j
 
 for i=0,6 do
@@ -31,7 +25,7 @@ for i=0,6 do
 			local target_x = tmp_actor.x
 			local target_y = tmp_actor.y
 
-			if tmp_actor.z == player_z and target_x > player_x - 5 and target_x < player_x + 5 and target_y > player_y - 5 and target_y < player_y + 5 then
+			if tmp_actor.z == caster.z and target_x > caster.x - 5 and target_x < caster.x + 5 and target_y > caster.y - 5 and target_y < caster.y + 5 then
 
 				local val = (target_x - actor.x) * (target_x - actor.x) + (target_y - actor.y) * (target_y - actor.y)
 				dbg("and here val = "..val.."\n")

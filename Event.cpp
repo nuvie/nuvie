@@ -1338,7 +1338,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             Actor *src_actor = push_obj->get_actor_holding_obj();
             if(src_actor)
             {
-            	Actor *target_actor = map->get_actor(rel_x, rel_y, from.z);
+            	Actor *target_actor = map->get_actor(rel_x, rel_y, src_actor->get_z());
             	if(can_move_obj_between_actors(push_obj, src_actor, target_actor, true))
             		obj_manager->moveto_inventory(push_obj, target_actor);
             }
@@ -2567,11 +2567,10 @@ void Event::multiuse(uint16 wx, uint16 wy)
         DEBUG(0,LEVEL_DEBUGGING,"Use object at %d,%d\n", obj->x, obj->y);
     }
 
-    if(using_actor) // use or talk to an actor
+    if(player->get_party()->is_in_combat_mode() && (obj || using_actor))
     {
-        if(player->get_party()->is_in_combat_mode()
-           && (actor->get_alignment() == ACTOR_ALIGNMENT_EVIL
-           || actor->get_alignment() == ACTOR_ALIGNMENT_CHAOTIC))
+        if(!using_actor || actor->get_alignment() == ACTOR_ALIGNMENT_EVIL
+           || actor->get_alignment() == ACTOR_ALIGNMENT_CHAOTIC)
         {
             newAction(ATTACK_MODE);
             if(get_mode() == ATTACK_MODE)
@@ -2579,9 +2578,14 @@ void Event::multiuse(uint16 wx, uint16 wy)
                 map_window->moveCursor(wx - map_window->get_cur_x(), wy - map_window->get_cur_y());
                 select_target(uint16(wx), uint16(wy), target.z);
             }
-            delete_obj(obj); // we were using an actor so free the temp Obj
+            if(using_actor)
+                delete_obj(obj); // we were using an actor so free the temp Obj
             return;
         }
+    }
+
+    if(using_actor) // use or talk to an actor
+    {
         bool can_use;
         if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_MOUSE)
             can_use = false;

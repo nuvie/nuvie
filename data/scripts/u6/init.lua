@@ -301,7 +301,7 @@ function look_obj(obj)
    
    print(".\n");
    
-   if g_show_stealing == true and obj.getable == true and obj.ok_to_take == false then --FIXME only objects on the surface level are considered stolen.
+   if g_show_stealing == true and obj.getable == true and player_get_location().z == 0 and obj.ok_to_take == false then
    	print("PRIVATE PROPERTY")
    end
    
