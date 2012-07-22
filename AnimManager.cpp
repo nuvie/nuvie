@@ -1356,9 +1356,10 @@ TileFadeAnim::TileFadeAnim(MapCoord *loc, Tile *from, Tile *to, uint16 speed)
 	else
 	{
 		anim_tile = new Tile();
-		anim_tile->transparent = true;
 		memset(anim_tile->data, 0xff, TILE_DATA_SIZE);
 	}
+
+	anim_tile->transparent = true;
 
 	if(to == NULL)
 	{

@@ -927,6 +927,7 @@ bool Event::attack()
     		if(actor->get_actor_num() == player->get_actor()->get_actor_num()) //don't attack yourself.
     		{
     			scroll->display_string("pass.\n");
+    	    	player->subtract_movement_points(10);
     			endAction(true);
     			return true;
     		}
@@ -954,6 +955,7 @@ bool Event::attack()
 
     if(player->attack_select_next_weapon() == false)
     {
+    	player->subtract_movement_points(10);
     	game->get_actor_manager()->startActors(); // end player turn
       endAction(true);
     }
@@ -1003,6 +1005,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
         // perform GET usecode (can't add to container)
         if(usecode->has_getcode(obj) && (usecode->get_obj(obj, actor) == false))
         {
+            game->get_script()->call_actor_subtract_movement_points(actor, 3);
             scroll->display_string("\n");
             scroll->display_prompt();
             map_window->updateBlacking();
@@ -1017,6 +1020,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
             obj_manager->remove_obj_from_map(obj); //remove object from map.
 
             actor->inventory_add_object(obj, container_obj);
+            game->get_script()->call_actor_subtract_movement_points(actor, 3);
             got_object = true;
         }
 
@@ -1085,7 +1089,10 @@ bool Event::use(Obj *obj)
         DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
     }
     else if(usecode->has_usecode(obj)) // Usable
+    {
         display_prompt = usecode->use_obj(obj, player->get_actor());
+        player->subtract_movement_points(5);
+    }
     else
     {
         scroll->display_string("\nNot usable\n");
@@ -1115,7 +1122,10 @@ bool Event::use(Actor *actor)
             DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
         }
         else
+        {
             display_prompt = usecode->use_obj(obj, player->get_actor());
+            player->subtract_movement_points(5);
+        }
     }
     else
     {
@@ -1311,6 +1321,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     MapCoord from, to; // absolute locations: object, target
     sint16 pushrel_x, pushrel_y; // direction relative to object
     LineTestResult lt;
+    Script *script = game->get_script();
 
     if(game->user_paused())
         return(false);
@@ -1340,7 +1351,10 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             {
             	Actor *target_actor = map->get_actor(rel_x, rel_y, src_actor->get_z());
             	if(can_move_obj_between_actors(push_obj, src_actor, target_actor, true))
+            	{
             		obj_manager->moveto_inventory(push_obj, target_actor);
+            		script->call_actor_subtract_movement_points(src_actor, 5);
+            	}
             }
 
             scroll->display_prompt();
@@ -1380,7 +1394,10 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
         else if(!push_actor->moveRelative(pushrel_x, pushrel_y))
         {
             if(push_actor->can_be_moved() && NUVIE_RAND() % 2) // already checked if target is passable
+            {
                 push_actor->move(to.x, to.y, from.z, ACTOR_FORCE_MOVE);
+                player->subtract_movement_points(5);
+            }
             else
                 scroll->display_string("Failed.\n\n");
         }
@@ -1428,6 +1445,8 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 
         if(!can_move)
           scroll->display_string("Blocked.\n\n");
+        else
+          player->subtract_movement_points(5);
     }
     scroll->display_prompt();
     map_window->reset_mousecenter(); // FIXME: put this in endAction()?
@@ -2417,6 +2436,7 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     {
         obj->status |= OBJ_STATUS_OK_TO_TAKE;
         new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
+        game->get_script()->call_actor_subtract_movement_points(actor, 3);
         endAction(false);
         set_mode(MOVE_MODE);
         return true;

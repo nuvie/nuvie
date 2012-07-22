@@ -820,6 +820,18 @@ bool Script::call_actor_get_obj(Actor *actor, Obj *obj)
    return lua_toboolean(L,-1);
 }
 
+bool Script::call_actor_subtract_movement_points(Actor *actor, uint8 points)
+{
+   lua_getglobal(L, "subtract_movement_pts");
+   nscript_new_actor_var(L, actor->get_actor_num());
+   lua_pushnumber(L, (lua_Number)points);
+
+   if(call_function("subtract_movement_pts", 2, 0) == false)
+	   return false;
+
+   return true;
+}
+
 bool Script::call_use_keg(Obj *obj)
 {
    lua_getglobal(L, "use_keg");

@@ -270,6 +270,10 @@ void Player::subtract_karma(uint8 val)
     karma = ((karma - val) >= 0) ? karma - val : 0;
 }
 
+void Player::subtract_movement_points(uint8 points)
+{
+	Game::get_game()->get_script()->call_actor_subtract_movement_points(get_actor(), points);
+}
 
 const char *Player::get_gender_title()
 {

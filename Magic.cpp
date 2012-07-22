@@ -304,6 +304,8 @@ bool Magic::cast()
   
   cast_spell_directly(index);
 
+  event->player->subtract_movement_points(spell_level * 3 + 10);
+
   return true;
 }
 

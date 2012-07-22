@@ -107,6 +107,7 @@ class Script
    bool call_look_obj(Obj *obj);
    int call_obj_get_readiable_location(Obj *obj);
    bool call_actor_get_obj(Actor *actor, Obj *obj);
+   bool call_actor_subtract_movement_points(Actor *actor, uint8 points);
    bool call_use_keg(Obj *obj); //we need this until we move all usecode into script.
    bool call_magic_get_spell_list(Spell **spell_list);
    bool call_actor_use_effect(Obj *effect_obj, Actor *actor);

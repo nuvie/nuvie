@@ -86,6 +86,7 @@ class Player
  uint8 get_karma()         { return(karma); }
  void add_karma(uint8 val = 1);
  void subtract_karma(uint8 val = 1);
+ void subtract_movement_points(uint8 points);
  void add_alcohol(uint8 val = 1) { alcohol = clamp_max(alcohol+val, 255); }
  void dec_alcohol(uint8 val = 1) { if(alcohol > val) { alcohol -= val; } else { alcohol = 0; } }
 

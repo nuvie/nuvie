@@ -1,7 +1,11 @@
-2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1450
+2012-07-23  Eric Fry <efry at users.sourceforge.net> r1452
+	* Fixed bug "get,drop, use, and move should deduct movement points" [3546091]
+	* Fixed Hydra fade bug. It was fading to a white tile.
+
+2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1451
 	* Fix last commit
 
-2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1449
+2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1450
 	* Allow double click to bypass the party leader so you can use objects
 		underneath him. Single left click no longer passes when double click
 		is enabled
