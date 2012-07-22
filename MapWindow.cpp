@@ -1558,20 +1558,21 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
  */
 bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
 {
-    LineTestResult lt;
-    MapCoord actor_loc;
+    if(original_obj_loc.x = x && original_obj_loc.y == y)
+        return false;
     if(hackmove)
         return true;
 
     if(!actor) // need an actor now
        return false;
-//    if(actor)
-    {
+
+    LineTestResult lt;
+    MapCoord actor_loc;
         actor_loc = actor->get_location();
+
         // can't ever drop at the actor location
         if(actor_loc.x == x && actor_loc.y == y)
             return false;
-    }
 
     if(tmpBufTileIsBlack(x - cur_x, y - cur_y))
         return false;
@@ -1832,12 +1833,13 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 			if(game->get_command_bar()->try_selected_action() == false) // start new action
 				return GUI_PASS; // false if new event doesn't need target
 		}
-		else if(wx == player->x && wy == player->y) // PASS if Avatar is hit
+		else if(wx == player->x && wy == player->y // PASS if Avatar is hit
+		        && (button == WALK_BUTTON || !enable_doubleclick))
 		{
 			event->cancelAction(); // MOVE_MODE, so this should work
 			return GUI_PASS;
 		}
-		else if(button == WALK_BUTTON)
+		else if(button == WALK_BUTTON || (!enable_doubleclick && button == USE_BUTTON))
 		{
 				walking = true;
 		}

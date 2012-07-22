@@ -1,3 +1,11 @@
+2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1449
+	* Allow double click to bypass the party leader so you can use objects
+		underneath him. Single left click no longer passes when double click
+		is enabled
+	* Fix Shamino talking when entering a dungeon and he isn't there
+	* Drag and drop to the same spot on the map now cancels drop
+	* Left mouse button walks without a delay if you don't enable double click
+
 2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1448
 	* Fix clicking on the map in cast mode to cast preselected targeted spells
 		requiring an extra click

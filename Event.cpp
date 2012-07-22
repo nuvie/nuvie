@@ -2543,6 +2543,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
     Obj *obj = NULL;
     Actor *actor = NULL, *player_actor = player->get_actor();
     bool using_actor = false; //, talking = false;
+    MapCoord player_location(player_actor->get_location());
     MapCoord target(player_actor->get_location()); // changes to target location
 
     if(game->user_paused())
@@ -2550,6 +2551,9 @@ void Event::multiuse(uint16 wx, uint16 wy)
 
     obj = obj_manager->get_obj(wx, wy, target.z);
     actor = actor_manager->get_actor(wx, wy, target.z);
+
+    if(actor == player_actor && game->is_orig_style()) // ignore player
+        actor = NULL;
 
     // use object or actor?
     if(actor && actor->is_visible())
@@ -2602,6 +2606,15 @@ void Event::multiuse(uint16 wx, uint16 wy)
         	{
         		//open inventory here.
         		view_manager->open_doll_view(NULL);
+        	}
+        	else if(target == player_location)
+        	{
+        		obj = obj_manager->get_obj(wx, wy, target.z);
+        		if(obj && usecode->has_usecode(obj))
+        		{
+        			set_mode(USE_MODE);
+        			use(obj);
+        		}
         	}
         	else
         	{

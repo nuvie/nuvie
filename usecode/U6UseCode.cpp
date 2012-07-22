@@ -542,7 +542,7 @@ bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
 
  MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
  party->walk(&ladder, &destination, 100);
- return false;
+ return true;
 }
 
 
@@ -2680,13 +2680,15 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
     // don't activate if autowalking from linking exit
     if(ev == USE_EVENT_PASS && items.actor_ref == player->get_actor() && !party->get_autowalk())
     {
-        if(obj->quality != 0/* && Shamino is in party and alive*/) /* FIXME */
+        ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+        if(obj->quality != 0 && party->contains_actor(3) && actor_manager->get_actor(3)->is_alive())
         {
             // scroll->printf("%s says, \"This is the %s%s.\"\n\n",blah->name, prefix, dungeon_name);
             scroll->display_string("Shamino says, \"This is the ");
             scroll->display_string(prefix);
             scroll->display_string(dungeon_name);
-            scroll->display_string(".\"\n");
+            scroll->display_string(".\"\n\n");
+            scroll->display_prompt();
         }
         MapCoord entrance(x, y, z);
         // going down
