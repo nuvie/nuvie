@@ -1,3 +1,7 @@
+2012-07-22  Eric Fry <efry at users.sourceforge.net> r1447
+	* Fixed game lockup when magic npcs fadeout on death.
+	* Fixed some uninitialised variables.
+
 2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1446
 	* Double click now attacks objects in combat mode
 	* Fix drop going through walls

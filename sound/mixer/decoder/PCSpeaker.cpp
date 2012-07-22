@@ -105,6 +105,7 @@ PCSpeaker::PCSpeaker(uint32 mixer_rate)
 	rate = mixer_rate;
 	cur_vol = 0.0f;
 	want_vol = 0.0f; //SPKR_VOLUME;
+	frequency = 0;
 }
 
 

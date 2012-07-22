@@ -1363,6 +1363,7 @@ TileFadeEffect::TileFadeEffect(Actor *a, uint16 speed)
 	actor = a;
 	color_from = color_to = 0;
 	spd = speed;
+	num_anim_running = 0;
 	add_actor_anim();
 	actor->hide();
 }
