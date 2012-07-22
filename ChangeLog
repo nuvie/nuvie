@@ -1,3 +1,6 @@
+2012-07-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1453
+	* Actually fix 1450 problem with mixing drag and drop and drop command
+
 2012-07-23  Eric Fry <efry at users.sourceforge.net> r1452
 	* Fixed bug "get,drop, use, and move should deduct movement points" [3546091]
 	* Fixed Hydra fade bug. It was fading to a white tile.

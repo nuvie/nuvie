@@ -1556,9 +1556,9 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
 /* Returns true if any object could be placed at world coordinates x,y.
  * If actor is set a line-of-site check must pass. (z is always cur_level)
  */
-bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool drag)
+bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory)
 {
-    if(drag && original_obj_loc.x == x && original_obj_loc.y == y)
+    if(!in_inventory && original_obj_loc.x == x && original_obj_loc.y == y)
         return false;
     if(hackmove)
         return true;
@@ -1664,7 +1664,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     		}
     		else
     		{
-    			return can_drop_obj(x, y, p);
+    			return can_drop_obj(x, y, p, obj->is_in_inventory());
     		}
     	}
     }
@@ -1688,7 +1688,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 				return true;
 		}
 		else
-			return can_drop_obj(x, y, owner); //throw on ground
+			return can_drop_obj(x, y, owner, obj->is_in_inventory()); //throw on ground
     }
 
     game->get_scroll()->message("\n\nNot Possible\n\n");
