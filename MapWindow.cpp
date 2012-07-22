@@ -1556,9 +1556,9 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
 /* Returns true if any object could be placed at world coordinates x,y.
  * If actor is set a line-of-site check must pass. (z is always cur_level)
  */
-bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor)
+bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool drag)
 {
-    if(original_obj_loc.x = x && original_obj_loc.y == y)
+    if(drag && original_obj_loc.x == x && original_obj_loc.y == y)
         return false;
     if(hackmove)
         return true;

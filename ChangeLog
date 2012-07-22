@@ -1,3 +1,6 @@
+2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1450
+	* Fix last commit
+
 2012-07-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1449
 	* Allow double click to bypass the party leader so you can use objects
 		underneath him. Single left click no longer passes when double click

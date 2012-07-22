@@ -2403,8 +2403,8 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
         scroll->display_string(".\n");
     }
 
-    // check drop-to location (FIXME: This is redundant if using DragnDrop)
-    if(!map_window->can_drop_obj(drop_loc.x, drop_loc.y, actor) || (rel_x == 0 && rel_y == 0))
+    if(obj->get_engine_loc() != OBJ_LOC_MAP
+       && !map_window->can_drop_obj(drop_loc.x, drop_loc.y, actor, false))
     {
         scroll->display_string("Not possible\n");
         endAction(true); // because the DropEffect is never called to do this
