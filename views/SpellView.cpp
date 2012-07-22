@@ -444,6 +444,7 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 {
 	y -= area.y;
 	x -= area.x;
+	Event *event = Game::get_game()->get_event();
 
 	if(button == SDL_BUTTON_WHEELUP)
 	{
@@ -457,13 +458,23 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 	}
 	if(x < 0 && y > 0 && y < 162) // cast selected spell on the map
 	{
+		int wx, wy;
+		MapWindow *map_window = Game::get_game()->get_map_window();
+		uint8 z = Game::get_game()->get_player()->get_actor()->get_z();
+
 		simulate_return();
-	// FIXME: needs cast selected spell code on map with only one click
-		return GUI_YUM;
+		if(event->get_mode() == INPUT_MODE)
+		{
+			y += area.y;
+			x += area.x;
+			map_window->mouseToWorldCoords(x, y, wx, wy);
+			map_window->moveCursor(wx - map_window->get_cur_x(), wy - map_window->get_cur_y());
+			event->select_target(uint16(wx), uint16(wy), z);
+		}
+		return GUI_PASS;
 	}
 	if(x > 1 && (y > 101 || x > 137)) // cancel spell
 	{
-		Event *event = Game::get_game()->get_event();
 		event->set_mode(CAST_MODE);
 		event->cancelAction();
 		return GUI_PASS;
