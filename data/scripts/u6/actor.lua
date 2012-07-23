@@ -2819,7 +2819,7 @@ function actor_wt_flank(actor)
    local weapon_range = get_weapon_range(weapon_obj)
    local attack_range = get_attack_range(actor_x, actor_y, tmp_x, tmp_y)
    
-   if attack_range < 9 and attack_range <= weapon_range then
+   if attack_range < 9 and attack_range > weapon_range then
    
       if map_can_reach_point(actor_x, actor_y, tmp_x, tmp_y, actor.z) == false then
          if random(0, 1) == 0 then
@@ -2909,7 +2909,7 @@ function actor_wt_berserk(actor)
    local weapon_range = get_weapon_range(weapon_obj)
    local attack_range = get_attack_range(actor_x, actor_y, target_x, target_y)
 
-   if attack_range < 9 and attack_range <= weapon_range then
+   if attack_range < 9 and attack_range > weapon_range then
 
       --g_obj = target_actor
       if map_can_reach_point(actor_x, actor_y, target_x, target_y, actor.z) == false then
