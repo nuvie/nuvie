@@ -1,3 +1,6 @@
+2012-07-23  Eric Fry <efry at users.sourceforge.net> r1456
+	* Fixed bug "new game starts in combat with other npcs taking turns first" [3547485]
+
 2012-07-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1455
 	* Limit range of drop to the original screen length
 	* Added enabled_dragging cfg setting (full_screen_map ignores it)

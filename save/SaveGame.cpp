@@ -280,6 +280,8 @@ bool SaveGame::load_objlist()
 
  scroll->display_prompt();
 
+ actor_manager->startActors(); //npc's have the first turn.
+
  return true;
 }
 
@@ -601,6 +603,9 @@ void SaveGame::update_objlist_for_new_game()
 
 	objlist.seek(0x13f2);
 	objlist.write1(stat*2); //magic
+
+	objlist.seek(0x14f2);
+	objlist.write1(1); //player movement points set to 1 so npcs move first.
 
 	objlist.seek(0xff2);
 	objlist.write1(3); //level
