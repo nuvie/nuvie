@@ -159,6 +159,7 @@ class Game
  bool doubleclick_opens_containers();
  bool is_roof_mode();
  bool using_hackmove();
+ bool is_dragging_enabled();
 
  /* Return instances of Game classes */
  static Game *get_game()          { return(game); }

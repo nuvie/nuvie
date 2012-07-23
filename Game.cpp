@@ -352,6 +352,16 @@ bool Game::doubleclick_opens_containers()
 		return false;
 }
 
+bool Game::is_dragging_enabled()
+{
+	bool dragging_enabled;
+	config->value("config/input/enabled_dragging", dragging_enabled, true);
+	if(dragging_enabled || is_new_style())
+		return true;
+	else
+		return false;
+}
+
 bool Game::is_roof_mode()
 {
 	bool roof_mode;

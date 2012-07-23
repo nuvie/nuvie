@@ -503,7 +503,7 @@ GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
 {
  Tile *tile;
 
- if(selected_obj && !dragging)
+ if(selected_obj && !dragging && Game::get_game()->is_dragging_enabled())
    {
     dragging = true;
     tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
@@ -708,7 +708,13 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
     if(!obj)
         return(MouseUp(x, y, button)); // probably hit an arrow
 
-    if(event->newAction(USE_MODE))
+    if(Game::get_game()->get_usecode()->is_book(obj)) // look at a scroll or book
+    {
+        event->set_mode(LOOK_MODE);
+        event->look(obj);
+        event->endAction(false); // FIXME: should be in look()
+    }
+    else if(event->newAction(USE_MODE))
         event->select_obj(obj);
     return(GUI_PASS);
 }

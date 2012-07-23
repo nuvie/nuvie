@@ -318,7 +318,7 @@ GUI_status DollWidget::MouseMotion(int x,int y,Uint8 state)
 {
  Tile *tile;
 
- if(selected_obj && !dragging)
+ if(selected_obj && !dragging && Game::get_game()->is_dragging_enabled())
    {
     dragging = true;
     tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);

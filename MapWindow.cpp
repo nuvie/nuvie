@@ -1568,6 +1568,7 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
 
     LineTestResult lt;
     MapCoord actor_loc;
+    MapCoord target_loc(x,y, actor_loc.z);
         actor_loc = actor->get_location();
 
         // can't ever drop at the actor location
@@ -1576,7 +1577,8 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
 
     if(tmpBufTileIsBlack(x - cur_x, y - cur_y))
         return false;
-
+    if(actor_loc.distance(target_loc) > 5)
+        return false;
 /* is this still needed?
 
     if(!map->is_passable(x, y, cur_level)
@@ -1839,7 +1841,8 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 			event->cancelAction(); // MOVE_MODE, so this should work
 			return GUI_PASS;
 		}
-		else if(button == WALK_BUTTON || (!enable_doubleclick && button == USE_BUTTON))
+		else if(button == WALK_BUTTON || (!enable_doubleclick && button == USE_BUTTON
+		                                   && !game->is_dragging_enabled()))
 		{
 				walking = true;
 		}
@@ -1871,7 +1874,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	if ((weight == 0 || distance > 1 || player->get_actor_num() == 0) && !hackmove)
 		return	GUI_PASS;
 
-	if(button == DRAG_BUTTON)
+	if(button == DRAG_BUTTON && game->is_dragging_enabled())
 		selected_obj = obj;
 
 	return	GUI_PASS;

@@ -1,4 +1,10 @@
-2012-07-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1453
+2012-07-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1455
+	* Limit range of drop to the original screen length
+	* Added enabled_dragging cfg setting (full_screen_map ignores it)
+	* For left mouse button to walk without a delay dragging also needs disabled
+	* Double click in the inventory widget will now read books, etc.
+
+2012-07-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1453/r1454
 	* Actually fix 1450 problem with mixing drag and drop and drop command
 
 2012-07-23  Eric Fry <efry at users.sourceforge.net> r1452
