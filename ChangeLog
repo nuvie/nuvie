@@ -1,3 +1,6 @@
+2012-07-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1459
+	* Revert revision 1456 since it was based on false info I gave.
+
 2012-07-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1458
 	* Prevent Amulet of Submission from being unreadied by drag and drop
 	* Have Amulet of Submission be placed on Avatar's neck instead of inventory
