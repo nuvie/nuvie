@@ -206,6 +206,10 @@ bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
 
 			if(event->can_move_obj_between_actors(obj, player->get_actor(), actor))
 			{
+				if(actor == player->get_actor()) // get
+					player->subtract_movement_points(3);
+				else // get plus move
+					player->subtract_movement_points(8);
 				DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
 				return true;
 			}

@@ -640,7 +640,16 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             v[3] = pop_arg(i); // quant
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
-                cnpc->inventory_new_object(v[1], v[3], v[2]);
+            {
+                if(v[1] == 76) // Amulet of Submission
+                {
+                    cnpc->remove_readied_object(ACTOR_NECK);
+                    cnpc_obj = cnpc->inventory_new_object(76, 1, 0);
+                    cnpc->add_readied_object(cnpc_obj);
+                }
+                else
+                    cnpc->inventory_new_object(v[1], v[3], v[2]);
+            }
             break;
         case U6OP_DELETE: // 0xba
 //bool Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);

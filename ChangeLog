@@ -1,4 +1,10 @@
-2012-07-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1456
+2012-07-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1458
+	* Prevent Amulet of Submission from being unreadied by drag and drop
+	* Have Amulet of Submission be placed on Avatar's neck instead of inventory
+	* Fix spiked collar being equipped in body slot instead of neck
+	* Add drag and drop movement deductions
+
+2012-07-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1457
 	* Fixed bug where flank or berserk actors would only attack at range 1
 
 2012-07-23  Eric Fry <efry at users.sourceforge.net> r1456

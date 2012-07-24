@@ -36,7 +36,6 @@
 #include "TimedEvent.h"
 #include "UseCode.h"
 #include "MapWindow.h"
-#include "Script.h"
 #include "Player.h"
 #include "Party.h"
 #include "CommandBar.h"
@@ -581,6 +580,11 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 
     if(obj->get_actor_holding_obj() == actor)
         src_actor = actor;
+    else if(!obj->is_in_inventory() && actor == Game::get_game()->get_player()->get_actor())
+    {
+        Game::get_game()->get_scroll()->display_string("Get-");
+        Game::get_game()->get_scroll()->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
+    }
     else
         Game::get_game()->get_event()->display_move_text(actor, obj);
 
@@ -591,6 +595,11 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
     }
     else if(src_actor != actor || !obj->is_in_inventory())
         Game::get_game()->get_scroll()->message("\n\n");
+
+    if(src_actor != actor) // get plus move
+         Game::get_game()->get_player()->subtract_movement_points(8);
+    else if(!obj->is_in_inventory()) // get
+         Game::get_game()->get_player()->subtract_movement_points(3);
 
     UseCode *usecode = Game::get_game()->get_usecode();
     if(usecode->is_chest(obj) && obj->frame_n == 0) //open chest

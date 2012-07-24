@@ -1678,7 +1678,12 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 		{
 			if(target_actor->is_in_party()==false)
 				return false;
-
+			if(obj->is_readied() && game->get_usecode()->ready_obj(obj, owner) == false)
+			{
+				game->get_scroll()->display_string("\n");
+				game->get_scroll()->display_prompt();
+				return false;
+			}
 			game->get_event()->display_move_text(target_actor, obj);
 
 			if(game->get_event()->can_move_obj_between_actors(obj, p, target_actor) == false)
@@ -1720,6 +1725,10 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         Actor *a = map->get_actor(x, y, cur_level);
         if(a && (a->is_in_party() || a == actor_manager->get_player()))
         {
+         	if(a == actor_manager->get_player()) // get
+        		game->get_player()->subtract_movement_points(3);
+        	else // get plus move
+        		game->get_player()->subtract_movement_points(8);
         	obj_manager->moveto_inventory(obj, a);
         	game->get_scroll()->message("\n\n");
         }
