@@ -205,7 +205,8 @@ bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
 			Event *event = Game::get_game()->get_event();
 			event->display_move_text(actor, obj);
 
-			if(Game::get_game()->get_usecode()->get_obj(obj, actor)
+			if((!Game::get_game()->get_usecode()->has_getcode(obj)
+			    || Game::get_game()->get_usecode()->get_obj(obj, actor))
 			   && event->can_move_obj_between_actors(obj, player->get_actor(), actor))
 			{
 				if(actor == player->get_actor()) // get
