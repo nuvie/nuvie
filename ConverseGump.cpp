@@ -42,7 +42,7 @@
 
 // ConverseGump Class
 
-ConverseGump::ConverseGump(Configuration *cfg, Font *f)
+ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
 {
  uint16 x, y;
 
@@ -57,7 +57,7 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f)
  uint16 x_off = config_get_video_x_offset(config);
  uint16 y_off = config_get_video_y_offset(config);
 
- GUI_Widget::Init(NULL, x_off, y_off, 320, 240);
+ GUI_Widget::Init(NULL, x_off, y_off, s->get_width(), s->get_height());
  npc_portrait = NULL;
  avatar_portrait = NULL;
  keyword_list = NULL;

@@ -1,3 +1,7 @@
+2012-07-26  Eric Fry <efry at users.sourceforge.net> r1464
+	* Fixed bug "can move with mouse during talk" [3548040]
+	* Fixed hard coded screen size in ConverseGump.
+
 2012-07-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1463
 	* Search ship for items (needed for map piece)
 

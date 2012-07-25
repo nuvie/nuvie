@@ -36,6 +36,7 @@
 #include "ConverseSpeech.h"
 #include "ConverseGump.h"
 #include "Converse.h"
+#include "GUI.h"
 
 //#define CONVERSE_DEBUG
 
@@ -376,6 +377,8 @@ bool Converse::start(uint8 n)
         Game::get_game()->get_map_window()->set_walking(false);
         Game::get_game()->get_sound_manager()->musicStop();
         //Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
+        Game::get_game()->pause_user();
+        Game::get_game()->get_gui()->unblock();
         scroll->set_autobreak(true);
         /* moved into ConverseGump::set_talking()
         if(Game::get_game()->is_new_style())
@@ -417,6 +420,7 @@ void Converse::stop()
     	views->set_inventory_mode();
     }
 
+    Game::get_game()->unpause_user();
     Game::get_game()->get_sound_manager()->musicPlay();
     Game::get_game()->get_event()->set_mode(MOVE_MODE); // return control to player
 

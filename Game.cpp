@@ -264,7 +264,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    }
    else
    {
-	   ConverseGump *conv_gump = new ConverseGump(config, font_manager->get_font(0));
+	   ConverseGump *conv_gump = new ConverseGump(config, font_manager->get_font(0), screen);
 	   conv_gump->Hide();
 	   gui->AddWidget(conv_gump);
 
