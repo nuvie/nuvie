@@ -1,3 +1,6 @@
+2012-07-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1463
+	* Search ship for items (needed for map piece)
+
 2012-07-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1462
 	* Fix blood not disappearing
 	* Use unlink_from_engine instead of move_to_inventory for map to map drop

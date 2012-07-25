@@ -1902,7 +1902,11 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
  uint16 lx, ly;
  uint8 lz;
 
- if(ev == USE_EVENT_LOOK || ev == USE_EVENT_GET)
+ if(ev == USE_EVENT_SEARCH)
+    return(UseCode::search_container(obj));
+ else if(ev == USE_EVENT_USE && obj->has_container())
+    return use_container(obj, USE_EVENT_USE);
+ else if(ev == USE_EVENT_LOOK || ev == USE_EVENT_GET)
  {
     if(obj->quality != 0 && party->has_obj(OBJ_U6_SHIP_DEED, obj->quality))
     {
