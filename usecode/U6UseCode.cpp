@@ -1902,6 +1902,18 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
  uint16 lx, ly;
  uint8 lz;
 
+ if(ev == USE_EVENT_LOOK || ev == USE_EVENT_GET)
+ {
+    if(obj->quality != 0 && party->has_obj(OBJ_U6_SHIP_DEED, obj->quality))
+    {
+      if(obj->obj_n == OBJ_U6_SKIFF)
+        obj->set_ok_to_take(true);
+      obj->quality = 0;
+    }
+    if(ev == USE_EVENT_GET)
+      return true;
+ }
+
  if(ev != USE_EVENT_USE)
     return(false);
  ship_actor = actor_manager->get_actor(0); //get the vehicle actor.
@@ -1958,6 +1970,9 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
        scroll->display_string("\nA deed is required.\n");
        return true;
       }
+    if(obj->obj_n == OBJ_U6_SKIFF)
+       obj->set_ok_to_take(true);
+    obj->quality = 0;
    }
 
  // walk to vehicle if necessary

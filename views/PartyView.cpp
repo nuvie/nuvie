@@ -35,6 +35,7 @@
 #include "Event.h"
 #include "Configuration.h"
 #include "CommandBar.h"
+#include "Usecode.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status actorViewButtonCallback(void *data);
@@ -204,7 +205,8 @@ bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
 			Event *event = Game::get_game()->get_event();
 			event->display_move_text(actor, obj);
 
-			if(event->can_move_obj_between_actors(obj, player->get_actor(), actor))
+			if(Game::get_game()->get_usecode()->get_obj(obj, actor)
+			   && event->can_move_obj_between_actors(obj, player->get_actor(), actor))
 			{
 				if(actor == player->get_actor()) // get
 					player->subtract_movement_points(3);

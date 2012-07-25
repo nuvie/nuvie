@@ -1,3 +1,10 @@
+2012-07-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1460
+	* Fix using a skiff you have a deed for not set it as okay to take
+	* Fix using a skiff or ship you have a deed for not setting quality to 0
+	* Have look, get, and drag and drop do the two previously mentioned things
+	  The original didn't do this for get, but that should be considered a bug
+	* Fix double click on actor vehicle (1450 regression)
+
 2012-07-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1459
 	* Revert revision 1456 since it was based on false info I gave.
 

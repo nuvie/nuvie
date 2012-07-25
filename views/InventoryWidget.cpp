@@ -588,7 +588,8 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
     else
         Game::get_game()->get_event()->display_move_text(actor, obj);
 
-    if(!Game::get_game()->get_event()->can_move_obj_between_actors(obj, src_actor, actor))
+    if(!Game::get_game()->get_usecode()->get_obj(obj, actor)
+       || !Game::get_game()->get_event()->can_move_obj_between_actors(obj, src_actor, actor))
     {
         Game::get_game()->get_scroll()->message("\n\n");
     	return false;

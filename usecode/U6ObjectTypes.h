@@ -121,7 +121,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_HORSE_WITH_RIDER, 255,0,USE_EVENT_USE,&U6UseCode::use_horse,OBJTYPE_NONE },
 
     { OBJ_U6_SHIP, 255,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
-    { OBJ_U6_SKIFF,255,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
+    { OBJ_U6_SKIFF,255,0,USE_EVENT_USE|USE_EVENT_GET|USE_EVENT_LOOK,&U6UseCode::use_boat,OBJTYPE_NONE },
     { OBJ_U6_RAFT,   0,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
     
     { OBJ_U6_BALLOON_PLANS,0,0,USE_EVENT_USE,&U6UseCode::use_balloon_plans,OBJTYPE_NONE },    

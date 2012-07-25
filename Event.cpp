@@ -2424,7 +2424,7 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
         scroll->display_string(".\n");
     }
 
-    if(obj->get_engine_loc() != OBJ_LOC_MAP
+    if(!drop_from_map // already checked in map window
        && !map_window->can_drop_obj(drop_loc.x, drop_loc.y, actor, obj->is_in_inventory()))
     {
         scroll->display_string("Not possible\n");
@@ -2579,7 +2579,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
     obj = obj_manager->get_obj(wx, wy, target.z);
     actor = actor_manager->get_actor(wx, wy, target.z);
 
-    if(actor == player_actor && game->is_orig_style()) // ignore player
+    if(actor == player_actor && game->is_orig_style() && actor->get_actor_num() != 0) // ignore player
         actor = NULL;
 
     // use object or actor?

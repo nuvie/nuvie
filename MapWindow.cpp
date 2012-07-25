@@ -1655,7 +1655,8 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
     			if(target_actor == p || (target_actor->is_in_party()))
     			{
-    				if(game->get_event()->can_move_obj_between_actors(obj, p, target_actor))
+    				if(game->get_usecode()->get_obj(obj, target_actor)
+    				   && game->get_event()->can_move_obj_between_actors(obj, p, target_actor))
     					return true;
     				else
     				{
