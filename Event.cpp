@@ -110,7 +110,6 @@ Event::Event(Configuration *cfg)
  time_queue = game_time_queue = NULL;
  showingQuitDialog = false;
  ignore_timeleft = false;
- drop_okay_to_take = true;
 
  mode = MOVE_MODE;
  last_mode = MOVE_MODE;
@@ -2403,13 +2402,7 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     if(game->user_paused())
         return false;
 
-    bool drop_from_map = false;
-    if(obj->get_engine_loc() == OBJ_LOC_MAP)
-    {
-        drop_okay_to_take = obj->is_ok_to_take(); // we need to preserve flag
-        obj_manager->moveto_inventory(obj, player->get_actor()); // hack to stop ghosting from drop effect
-        drop_from_map = true; // no longer considered on the map so preserve here
-    }
+    bool drop_from_map = obj->get_engine_loc() == OBJ_LOC_MAP;
 
     Actor *actor = (obj->is_in_inventory()) // includes held containers
                    ? obj->get_actor_holding_obj()
@@ -2436,7 +2429,10 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     if(!usecode->has_dropcode(obj)
        || usecode->drop_obj(obj, actor, drop_loc.x, drop_loc.y, qty ? qty : obj->qty))
     {
-        obj->status |= OBJ_STATUS_OK_TO_TAKE;
+        if(drop_from_map) // preserve ok to take since it was never in inventory
+            obj_manager->unlink_from_engine(obj); // stop ghosting from drop effect
+        else
+            obj->status |= OBJ_STATUS_OK_TO_TAKE;
         new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
         if(drop_from_map && map_window->original_obj_loc.distance(drop_loc) > 1) // get plus drop
             player->subtract_movement_points(6); // get plus drop
@@ -2966,7 +2962,6 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		return(false);
 	}
 	move_in_inventory = false;
-	drop_okay_to_take = true;
 
 	set_mode(new_mode);
 	if (new_mode != COMBAT_MODE)

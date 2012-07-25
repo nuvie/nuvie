@@ -1,3 +1,7 @@
+2012-07-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1462
+	* Fix blood not disappearing
+	* Use unlink_from_engine instead of move_to_inventory for map to map drop
+
 2012-07-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1461
 	* Fix drag and drop for objects without get usecode (1460 regression)
 

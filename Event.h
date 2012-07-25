@@ -244,7 +244,6 @@ friend class Magic; // FIXME
  void set_drop_target(uint16 x, uint16 y) { drop_x = sint32(x); drop_y = sint32(y); }
  bool can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *target_actor, bool display_name = false);
  void display_not_aboard_vehicle(bool show_prompt = true);
- bool drop_okay_to_take; // preserve okay to take for drag and drop map to map
  void display_move_text(Actor *target_actor, Obj *obj);
 
  bool rest();

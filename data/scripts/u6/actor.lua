@@ -1305,6 +1305,7 @@ function actor_dead(actor)
 		--add some blood.
 		dbg("\nAdding Blood\n")
 		local blood_obj = Obj.new(0x152, math.random(0,2))
+		blood_obj.temporary = true
 		Obj.moveToMap(blood_obj, actor.x, actor.y, actor.z)
 	end
 
