@@ -89,6 +89,7 @@ using std::vector;
 
 #define ACTOR_MAX_READIED_OBJECTS 8
 
+#define ACTOR_WT_FOLLOW 1
 #define ACTOR_WT_PLAYER 2
 
 class Map;

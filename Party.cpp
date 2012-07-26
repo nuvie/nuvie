@@ -616,6 +616,17 @@ void Party::set_in_combat_mode(bool value)
   in_combat_mode = value;
   actor_manager->set_combat_movement(value);
 
+  if(in_combat_mode)
+  {
+	  for(int p=0; p<get_party_size();p++)
+		  get_actor(p)->set_worktype(get_actor(p)->get_combat_mode()); //set combat worktype
+  }
+  else
+  {
+	  for(int p=0; p<get_party_size();p++)
+	  		  get_actor(p)->set_worktype(ACTOR_WT_FOLLOW); //set back to follow party leader.
+  }
+
   update_music();
 }
 
