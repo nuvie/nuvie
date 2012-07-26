@@ -67,6 +67,10 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
 
  found_break_char = false;
  cursor_wait = 0;
+ if(Game::get_game()->is_orig_style())
+	solid_bg = true;
+ else
+	cfg->value("config/general/converse_solid_bg", solid_bg, false);
 
  int c;
  cfg->value("config/general/converse_bg_color", c, 218);
@@ -375,10 +379,12 @@ void ConverseGump::Display(bool full_redraw)
 	 uint16 total_length = 0;
 	 uint16 y = area.y + PORTRAIT_HEIGHT + 8 + 3;
 
-	 if(converse_bg_color != 255)
+	 if(converse_bg_color != 255 || Game::get_game()->is_orig_style())
 	 {
-		 screen->stipple_8bit(converse_bg_color);
-		 //screen->fill(converse_bg_color, area.x, area.y, area.w, area.h);
+		if(solid_bg)
+			screen->fill(converse_bg_color, area.x, area.y, area.w, area.h);
+		else
+			screen->stipple_8bit(converse_bg_color);
 	 }
 
 	 if(npc_portrait)

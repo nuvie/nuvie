@@ -49,6 +49,7 @@ Converse::Converse()
     objects = NULL;
     player = NULL;
     views = NULL;
+    last_view = NULL;
     scroll = NULL;
 
     conv_i = NULL;
@@ -407,9 +408,14 @@ void Converse::stop()
 {
     reset(); // free memory
 
-    if(Game::get_game()->is_new_style())
+    if(Game::get_game()->use_new_converse_gump())
     {
     	scroll->Hide();
+        if(Game::get_game()->is_orig_style())
+        {
+            Game::get_game()->get_event()->endAction(true);
+            GUI::get_gui()->force_full_redraw(); // need to remove converse background
+        }
     }
     else
     {
@@ -417,7 +423,12 @@ void Converse::stop()
     	scroll->set_talking(false);
     	scroll->display_string("\n");
     	scroll->display_prompt();
-    	views->set_inventory_mode();
+    }
+    if(Game::get_game()->is_orig_style())
+    {
+        if(last_view->set_party_member(last_view->get_party_member_num()) == false) // set party member left party
+            last_view->prev_party_member(); // seems only needed with new converse gump but will leave here just in case
+        views->set_current_view(last_view);
     }
 
     Game::get_game()->unpause_user();
@@ -494,10 +505,15 @@ void Converse::show_portrait(uint8 n)
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor, false);
-    if(Game::get_game()->is_orig_style())
-    	views->set_portrait_mode(actor, (char *)nameret);
+    last_view = views->get_current_view();
+    if(Game::get_game()->use_new_converse_gump())
+    {
+        if(Game::get_game()->is_orig_style())
+            views->close_current_view();
+        ((ConverseGump *)scroll)->set_actor_portrait(actor);
+    }
     else
-    	((ConverseGump *)scroll)->set_actor_portrait(actor);
+    	views->set_portrait_mode(actor, (char *)nameret);
 }
 
 
@@ -595,7 +611,7 @@ bool Converse::override_input()
 
 void Converse::collect_input()
 {
-	if(Game::get_game()->is_orig_style())
+	if(!Game::get_game()->use_new_converse_gump())
 		print("\nyou say:");
     poll_input();
 }

@@ -49,6 +49,7 @@ class ConverseGump: public MsgScroll
 	unsigned char *avatar_portrait;
 
 	bool found_break_char;
+	bool solid_bg;
 
 	uint8 converse_bg_color;
 

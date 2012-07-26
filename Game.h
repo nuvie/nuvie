@@ -160,6 +160,7 @@ class Game
  bool is_roof_mode();
  bool using_hackmove();
  bool is_dragging_enabled();
+ bool use_new_converse_gump();
 
  /* Return instances of Game classes */
  static Game *get_game()          { return(game); }

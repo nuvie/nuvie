@@ -26,6 +26,7 @@
 #include "Actor.h"
 #include "MsgScroll.h"
 #include "U6Lib_n.h"
+#include "View.h"
 
 class Actor;
 class ActorManager;
@@ -86,6 +87,7 @@ class Converse
 
     ConverseInterpret *conv_i; // interpreter
     ConvScript *script;
+    View *last_view;
     Actor *npc;
     uint8 npc_num;
     uint8 script_num; //this could differ from npc_num when talking to guards or wisps etc.

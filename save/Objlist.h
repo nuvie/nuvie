@@ -44,10 +44,12 @@
 
 #define OBJLIST_OFFSET_U6_COMBAT_MODE  0x1c69
 #define OBJLIST_OFFSET_U6_SOLO_MODE    0x1c6a
+#define OBJLIST_OFFSET_U6_COMMAND_BAR  0x1c6c
 #define OBJLIST_OFFSET_U6_GENDER       0x1c71
 
 //MD specific offsets
 
+#define OBJLIST_OFFSET_MD_COMMAND_BAR  0x1d26
 #define OBJLIST_OFFSET_MD_GENDER       0x1d27
 
 #define OBJLIST_PARTY_MODE 0xff
@@ -62,5 +64,7 @@
 #define OBJLIST_U6_WIND_DIR_W  6
 #define OBJLIST_U6_WIND_DIR_NW 7
 #define OBJLIST_U6_WIND_DIR_C  0xff
+
+#define OBJLIST_OFFSET_SE_COMMAND_BAR  0x1d6c
 
 #endif /* __Objlist_h__ */

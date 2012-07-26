@@ -99,12 +99,12 @@ class ViewManager
  void open_mapeditor_view();
  void open_portrait_gump(Actor *a);
  void close_gump(View *gump);
+ bool set_current_view(View *view);
 
  protected:
 
  void open_container_view(Actor *actor, Obj *obj);
 
- bool set_current_view(View *view);
  void add_view(View *view);
 };
 

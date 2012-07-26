@@ -26,6 +26,7 @@
 #include "GUI_widget.h"
 #include "CallBack.h"
 
+class NuvieIO;
 class Event;
 class Game;
 class GUI_Button;
@@ -49,8 +50,10 @@ protected:
     sint8 selected_action; // underlined icon (-1 = none)
     bool combat_mode; // state of combat icon
     std::string wind; // wind direction
+    void fill_square(uint8 pal_index);
 
     uint8 bg_color;
+    uint16 offset;
 
     virtual void display_information();
     virtual GUI_status hit(uint8 num);
@@ -72,6 +75,8 @@ public:
     sint8 get_selected_action() { return selected_action;}
 
     uint16 callback(uint16 msg, CallBack *caller, void * data);
+    bool load(NuvieIO *objlist);
+    bool save(NuvieIO *objlist);
 };
 
 #endif /* __CommandBar_h__ */

@@ -261,6 +261,7 @@ bool SaveGame::load_objlist()
  weather->load(&objlist);
  
  command_bar->set_combat_mode(party->is_in_combat_mode()); // update CommandBar
+ command_bar->load(&objlist);
 
  portrait->load(&objlist); //load avatar portrait number.
 
@@ -521,6 +522,7 @@ bool SaveGame::save_objlist()
  party->save(&objlist);
  
  weather->save(&objlist);
+ game->get_command_bar()->save(&objlist);
  
  game->get_script()->call_save_game(&objlist);
 

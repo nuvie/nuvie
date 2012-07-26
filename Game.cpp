@@ -258,11 +258,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    //map_window->set_windowSize(11,11);
 
    converse = new Converse();
-   if(is_orig_style())
-   {
-   converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
-   }
-   else
+   if(use_new_converse_gump())
    {
 	   ConverseGump *conv_gump = new ConverseGump(config, font_manager->get_font(0), screen);
 	   conv_gump->Hide();
@@ -270,6 +266,8 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
 	   converse->init(config, game_type, conv_gump, actor_manager, clock, player, view_manager, obj_manager);
    }
+   else
+	   converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
 
    usecode->init(obj_manager, game_map, player, scroll);
 
@@ -297,8 +295,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    if(is_orig_style())
    {
 	   background->Show();
-	   if(game_type == NUVIE_GAME_U6)
-		   command_bar->Show();
+	   command_bar->Show();
 	   scroll->Show();
    }
 
@@ -367,6 +364,16 @@ bool Game::is_roof_mode()
 	bool roof_mode;
 	config->value(config_get_game_key(config) + "/roof_mode", roof_mode, false);
 	return roof_mode;
+}
+
+bool Game::use_new_converse_gump()
+{
+	bool converse_gump;
+	config->value("config/general/converse_gump", converse_gump, false);
+	if(converse_gump || is_new_style())
+		return true;
+	else
+		return false;
 }
 
 bool Game::using_hackmove()

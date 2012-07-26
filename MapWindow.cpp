@@ -2085,7 +2085,8 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
     get_movement_direction((uint16)wx, (uint16)wy, rel_x, rel_y, &mptr);
     if(event->get_mode() == INPUT_MODE && mousecenter_x == (win_width/2) && mousecenter_y == (win_height/2))
         game->set_mouse_pointer(1); // crosshairs
-    else if(dragging || wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1) || wy == (cur_y+win_height-1))
+    else if(dragging || (game->is_orig_style() && (wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1)
+                                                   || wy == (cur_y+win_height-1))))
         game->set_mouse_pointer(0); // arrow
     else
         game->set_mouse_pointer(mptr); // 1=crosshairs, 2to9=arrows

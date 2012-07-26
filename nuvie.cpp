@@ -263,7 +263,9 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/enable_cursors", true);
 	config->set("config/general/show_console", true);
 	config->set("config/general/fullscreen_map", false);
+	config->set("config/general/converse_gump", false);
 	config->set("config/general/converse_bg_color", 218);
+	config->set("config/general/converse_solid_bg", false);
 	config->set("config/general/party_formation", "standard");
 
 	config->set("config/cheats/enable_hackmove", false);

@@ -1,3 +1,14 @@
+2012-07-26  Malignant Manor <malignantmanor@users.sourceforge.net> r1465
+	* Allow the fullscreen_map conversation gump in other game styles
+	* Add converse_solid_bg cfg option. Yes means the conversation gump uses
+		a solid background. No means the the background will be a pattern of
+		dots. This choice is only for fullscreen_map. Original style must have
+		a solid background.
+	* Fix mouse cursor changing on the edge of fullscreen_map
+	* Load command bar selected action (right click command bar highlight)
+	* SE command bar is now fully functional
+	* MD command bar works except for lever toggling
+
 2012-07-26  Eric Fry <efry at users.sourceforge.net> r1464
 	* Fixed bug "can move with mouse during talk" [3548040]
 	* Fixed hard coded screen size in ConverseGump.
