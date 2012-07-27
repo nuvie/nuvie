@@ -151,7 +151,7 @@ void InventoryWidget::Display(bool full_redraw)
    //screen->blit(area.x+40,area.y+16,portrait_data,8,56,64,56,false);
 
  //clear the screen first inventory icons, 4 x 3 tiles
- screen->fill(bg_color, area.x +objlist_offset_x, area.y + objlist_offset_y, 16 * 4, 16 * 3);
+// screen->fill(bg_color, area.x +objlist_offset_x, area.y + objlist_offset_y, 16 * 4, 16 * 3); // doesn't seem to be needed
  display_inventory_list();
 
  if(full_redraw || update_display)

@@ -470,6 +470,7 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 			map_window->mouseToWorldCoords(x, y, wx, wy);
 			map_window->moveCursor(wx - map_window->get_cur_x(), wy - map_window->get_cur_y());
 			event->select_target(uint16(wx), uint16(wy), z);
+			return GUI_YUM;
 		}
 		return GUI_PASS;
 	}

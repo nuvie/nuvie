@@ -604,7 +604,7 @@ void Event::get_inventory_obj(Actor *actor)
 {
 	get_target("");
 	moveCursorToInventory();
-	view_manager->get_inventory_view()->set_actor(actor);
+	view_manager->get_inventory_view()->set_actor(actor, true);
 }
 
 void Event::get_spell_num(Actor *caster, Obj *spell_container)
@@ -1618,7 +1618,13 @@ void Event::alt_code_input(const char *in)
             player->set_actor(a);
             player->set_mapwindow_centered(true);
             view_manager->set_inventory_mode(); // reset inventoryview
-            view_manager->get_inventory_view()->set_actor(player->get_actor());
+            if(game->get_party()->main_actor_is_in_party())
+            {
+                uint8 member_num = game->get_party()->get_member_num(player->get_actor());
+                view_manager->get_inventory_view()->set_party_member(member_num);
+            }
+            else
+                view_manager->get_inventory_view()->set_actor(player->get_actor());
             scroll->display_string("\n");
           }
             scroll->display_prompt();

@@ -54,6 +54,8 @@ InventoryView::InventoryView(Configuration *cfg) : View(cfg),
  cursor_tile = NULL;
  show_cursor = false;
  is_party_member = false;
+ picking_pocket = false;
+ outside_actor = NULL;
 }
 
 InventoryView::~InventoryView()
@@ -62,6 +64,7 @@ InventoryView::~InventoryView()
 
 bool InventoryView::set_party_member(uint8 party_member)
 {
+ picking_pocket = false;
 
  if(View::set_party_member(party_member)
     && party->main_actor_is_in_party())
@@ -87,17 +90,25 @@ bool InventoryView::set_party_member(uint8 party_member)
  is_party_member = false;
  hide_buttons();
 
+ if(actor_button) actor_button->Show();
+
  return false;
 }
 
-bool InventoryView::set_actor(Actor *actor)
+bool InventoryView::set_actor(Actor *actor, bool pickpocket)
 {
+   picking_pocket = pickpocket;
    is_party_member = false;
+   outside_actor = actor;
    if(doll_widget)
      doll_widget->set_actor(actor);
    if(inventory_widget)
      inventory_widget->set_actor(actor);
 
+   if(picking_pocket)
+   {
+    if(actor_button) actor_button->Hide();
+   }
    hide_buttons();
 
    return true;
@@ -144,7 +155,10 @@ void InventoryView::Display(bool full_redraw)
 	full_redraw = true;
  if(full_redraw || update_display)
    {
-    screen->fill(bg_color, area.x, area.y, area.w, area.h);
+    if(MD)
+        fill_md_background(bg_color, area);
+    else
+        screen->fill(bg_color, area.x, area.y, area.w, area.h);
 
     if(is_party_member)
         display_combat_mode();
@@ -178,6 +192,8 @@ void InventoryView::display_name()
   y_off = 1;
  if(is_party_member)
   name = party->get_actor_name(cur_party_member);
+ else if(picking_pocket)
+  name = (char *) outside_actor->get_name();
  else
   name = (char *) Game::get_game()->get_player()->get_actor()->get_name(true);
  if(name == NULL)
@@ -245,6 +261,8 @@ void InventoryView::display_inventory_weights()
  Actor *actor;
  if(is_party_member)
 	actor = party->get_actor(cur_party_member);
+ else if(picking_pocket)
+	actor = outside_actor;
  else
 	actor = Game::get_game()->get_player()->get_actor();
  char string[9]; //  "E:xx/xxs"
@@ -429,7 +447,7 @@ void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
         {
             if(inventory_widget->down_arrow()) // scroll down
                 update_display = true;
-            else
+            else if(!picking_pocket)
                 moveCursorToButton((x == 0) ? 3 : 4); // move to command icon
         }
         else if((x + new_x) <= 3)
@@ -445,11 +463,11 @@ void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
         else if(new_x > 0 && x == 6)
             moveCursorToInventory(0, 2);
         // moves from these readied items can jump to command icons
-        else if(new_y > 0 && x == 5)
+        else if(new_y > 0 && x == 5 && !picking_pocket)
             moveCursorToButton(0);
-        else if(new_y > 0 && x == 6)
+        else if(new_y > 0 && x == 6 && !picking_pocket)
             moveCursorToButton(2);
-        else if(new_y > 0 && x == 7)
+        else if(new_y > 0 && x == 7 && !picking_pocket)
             moveCursorToButton(1);
         // the rest move between readied items
         else if(x == 0)

@@ -190,7 +190,7 @@ inline void DollWidget::display_doll()
 		else
 			tilenum = 400;
 	}
-	 screen->fill(bg_color, area.x, area.y, area.w, area.h);
+//	 screen->fill(bg_color, area.x, area.y, area.w, area.h); // should be taken care of by the main view
 	 for(i=0;i<2;i++)
 	 {
 		 for(j=0;j<2;j++) // draw doll

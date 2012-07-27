@@ -1,3 +1,10 @@
+2012-07-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1469
+	* Fix view background obscuring the pillars in MD
+	* Fix pickpocket display bug
+	* Fix spells that need two targets from selecting both at once if you
+		clicked on the map window to activate the spell
+	* Fix button display when you control cheat a party member
+
 2012-07-27  Eric Fry <efry at users.sourceforge.net> r1468
 	* Fixed bug "cannon should change direction even if blocked" [3548081]
 	* Don't allow movement of ungetable items into containers.

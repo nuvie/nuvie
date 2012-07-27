@@ -269,7 +269,10 @@ void PartyView::Display(bool full_redraw)
   {
    update_display = false;
    uint8 end_offset = row_offset + 5;
-   screen->fill(bg_color, area.x, area.y, area.w, area.h);
+   if(MD)
+      fill_md_background(bg_color, area);
+   else
+      screen->fill(bg_color, area.x, area.y, area.w, area.h);
    if(U6)
       display_sun_moon_strip();
 

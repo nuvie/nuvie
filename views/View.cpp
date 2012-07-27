@@ -49,7 +49,7 @@ bool View::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManag
    GUI_Widget::Init(NULL, x, y, 136, 96);
  else if(Game::get_game()->get_game_type()==NUVIE_GAME_SE)
    GUI_Widget::Init(NULL, x+15, y, 132, 113);
- else // MD - FIXME: This needs to go behind the background
+ else
    GUI_Widget::Init(NULL, x+16, y-4, 128, 118);
  Hide();
  text = t;
@@ -111,6 +111,19 @@ bool View::prev_party_member()
    return set_party_member(cur_party_member - 1);
 
  return false;
+}
+
+void View::fill_md_background(uint8 bg_color, SDL_Rect area)
+{
+	Screen *screen = Game::get_game()->get_screen();
+	screen->fill(bg_color, area.x +1, area.y + 9, 1, 1); // left pillar
+	screen->fill(bg_color, area.x +2, area.y + 6, 1, 4); // left pillar
+	screen->fill(bg_color, area.x +3, area.y + 3, 1, 11); // left pillar
+	screen->fill(bg_color, area.x + area.w -2, area.y + 9, 1, 1); // right pillar
+	screen->fill(bg_color, area.x + area.w -3, area.y + 6, 1, 4); // right pillar
+	screen->fill(bg_color, area.x + area.w -4, area.y + 3, 1, 11); // right pillar
+	screen->fill(bg_color, area.x + 4, area.y, area.w - 8, 15); // top center
+	screen->fill(bg_color, area.x, area.y +14, area.w, area.h -14); // bottom
 }
 
 GUI_status View::callback(uint16 msg, GUI_CallBack *caller, void *data)
