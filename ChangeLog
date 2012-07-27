@@ -1,3 +1,8 @@
+2012-07-27  Eric Fry <efry at users.sourceforge.net> r1468
+	* Fixed bug "cannon should change direction even if blocked" [3548081]
+	* Don't allow movement of ungetable items into containers.
+	  eg. moving a cannon into a bag.
+
 2012-07-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1467
 	* Fix last_view pointer being set in wrong place in converse
 	* Make converse_bg_color a per game setting due to different color palettes

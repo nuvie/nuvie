@@ -1403,6 +1403,8 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     }
     else
     {
+      if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+      {
         if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
             {
              if(lt.hitObj)
@@ -1421,7 +1423,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 					  (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
 				   {
 					 /* do normal move if no usecode or return from usecode was true */
-					 if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+					 //if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
 						can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
 				   }
                }
@@ -1430,22 +1432,22 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
          else
          {
         	 Obj *obj = obj_manager->get_obj(to.x,to.y,to.z);
-        	 if(obj && obj_manager->can_store_obj(obj, push_obj)) //if we are moving onto a container.
+        	 if(obj && obj_manager->can_store_obj(obj, push_obj) && obj_manager->can_get_obj(push_obj)) //if we are moving onto a container.
         	 {
         		 can_move = obj_manager->moveto_container(push_obj, obj);
         	 }
         	 else
         	 {
         		 /* do normal move if no usecode or return from usecode was true */
-        		 if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+        		 //if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
         			 can_move = obj_manager->move(push_obj,to.x,to.y,from.z);
         	 }
          }
-
         if(!can_move)
           scroll->display_string("Blocked.\n\n");
-        else
-          player->subtract_movement_points(5);
+      }
+      if(can_move)
+        player->subtract_movement_points(5);
     }
     scroll->display_prompt();
     map_window->reset_mousecenter(); // FIXME: put this in endAction()?
