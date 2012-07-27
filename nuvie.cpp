@@ -264,7 +264,6 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/show_console", true);
 	config->set("config/general/fullscreen_map", false);
 	config->set("config/general/converse_gump", false);
-	config->set("config/general/converse_bg_color", 218);
 	config->set("config/general/converse_solid_bg", false);
 	config->set("config/general/party_formation", "standard");
 
@@ -278,9 +277,14 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/ultima6/show_eggs", false);
 	config->set("config/ultima6/show_stealing", false);
 	config->set("config/ultima6/roof_mode", false);
+	config->set("config/ultima6/converse_bg_color", 218);
 
 	config->set("config/martian/skip_intro", false);
+	config->set("config/martian/show_eggs", false);
+	config->set("config/martian/converse_bg_color", 136);
 	config->set("config/savage/skip_intro", false);
+	config->set("config/savage/show_eggs", false);
+	config->set("config/savage/converse_bg_color", 216);
 
 //	config->set("config/newgamedata/name", "Avatar");
 //	config->set("config/newgamedata/gender", 0);

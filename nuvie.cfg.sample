@@ -17,7 +17,6 @@
   <enable_cursors>yes</enable_cursors>
   <fullscreen_map>no</fullscreen_map>
   <converse_gump>no</converse_gump>
-  <converse_bg_color>218</converse_bg_color>
   <converse_solid_bg>no</converse_solid_bg>
   <party_formation>standard</party_formation>
   <show_console>yes</show_console>
@@ -52,6 +51,7 @@
   <show_eggs>no</show_eggs>
   <roof_mode>no</roof_mode>
   <show_stealing>no</show_stealing>
+  <converse_bg_color>218</converse_bg_color>
   <music>native</music>
   <sfx>pcspeaker</sfx>
  </ultima6>
@@ -60,12 +60,16 @@
   <gamedir>./martian</gamedir>
   <savedir>./martian_save</savedir>
   <skip_intro> no </skip_intro>
+  <show_eggs>no</show_eggs>
+  <converse_bg_color>136</converse_bg_color>
  </martian>
 
  <savage>
   <gamedir>./savage</gamedir>
   <savedir>./savage_save</savedir>
   <skip_intro> no </skip_intro>
+  <show_eggs>no</show_eggs>
+  <converse_bg_color>216</converse_bg_color>
  </savage>
 
 </config>

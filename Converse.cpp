@@ -366,6 +366,7 @@ bool Converse::start(uint8 n)
     if(script)
     {
         active = true;
+        last_view = views->get_current_view();
         if(!(conv_i = new_interpreter()))
         {
             DEBUG(0,LEVEL_CRITICAL,"Can't talk: Unimplemented or unknown game type\n");
@@ -505,7 +506,6 @@ void Converse::show_portrait(uint8 n)
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor, false);
-    last_view = views->get_current_view();
     if(Game::get_game()->use_new_converse_gump())
     {
         if(Game::get_game()->is_orig_style())

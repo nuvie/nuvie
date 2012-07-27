@@ -73,7 +73,12 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
 	cfg->value("config/general/converse_solid_bg", solid_bg, false);
 
  int c;
- cfg->value("config/general/converse_bg_color", c, 218);
+ uint8 default_c = 218;
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+	default_c = 216;
+ else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD)
+	default_c = 136;
+ cfg->value(config_get_game_key(config) + "/converse_bg_color", c, default_c);
  if(c<256)
 	 converse_bg_color = (uint8)c;
 }
