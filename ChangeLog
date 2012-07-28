@@ -1,3 +1,8 @@
+2012-07-28  Malignant Manor <malignantmanor@users.sourceforge.net> r1471
+	* Double click now talks to shrines and statue actors
+	* Look now shows statue actor portraits
+	* Don't open new container gump for ship container
+
 2012-07-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1470
 	* Fix some inventory targeting issues
 

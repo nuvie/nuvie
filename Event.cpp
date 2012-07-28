@@ -1177,6 +1177,17 @@ bool Event::look(Obj *obj)
    
    if(obj)
    {
+      if(game->get_game_type() == NUVIE_GAME_U6)
+      {
+         if(obj->obj_n == OBJ_U6_STATUE_OF_MONDAIN
+            || obj->obj_n == OBJ_U6_STATUE_OF_MINAX
+            || obj->obj_n == OBJ_U6_STATUE_OF_EXODUS)
+         {
+           Actor *actor = game->get_actor_manager()->get_actor(obj->quality);
+           look(actor);
+           return false;
+         }
+      }
       obj_manager->print_obj(obj, false); // DEBUG
       if(game->get_script()->call_look_obj(obj) == false)
       {
@@ -2661,6 +2672,15 @@ void Event::multiuse(uint16 wx, uint16 wy)
         set_mode(LOOK_MODE);
         look(obj);
         endAction(false); // FIXME: should be in look()
+    }
+    else if(game->get_game_type() == NUVIE_GAME_U6 && obj
+            && (obj->obj_n == OBJ_U6_SHRINE
+            || obj->obj_n == OBJ_U6_STATUE_OF_MONDAIN
+            || obj->obj_n == OBJ_U6_STATUE_OF_MINAX
+            || obj->obj_n == OBJ_U6_STATUE_OF_EXODUS))
+    {
+        set_mode(TALK_MODE);
+        talk(obj);
     }
     else if(obj) // use a real object
     {

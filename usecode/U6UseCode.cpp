@@ -744,7 +744,8 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
             process_effects(obj, items.actor_ref); //run any effects that might be stored in this container. Eg Poison explosion.
 
             if(Game::get_game()->doubleclick_opens_containers()
-                && obj->obj_n != OBJ_U6_PLANT && obj->obj_n != OBJ_U6_STONE_LION) // just search for these two
+                && obj->obj_n != OBJ_U6_PLANT && obj->obj_n != OBJ_U6_STONE_LION // just search for these
+                && obj->obj_n != OBJ_U6_SHIP)
             {
             	game->get_view_manager()->open_container_view(obj);
             }
