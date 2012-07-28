@@ -425,8 +425,10 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 
 		if(event->can_target_icon())
 		{
-			if(is_showing_container())
+			if(is_showing_container() && event->get_last_mode() != PUSH_MODE)
 				event->select_obj((Obj *)container_obj, actor);
+			else if(is_showing_container() && get_container()->get_engine_loc() == OBJ_LOC_CONT)
+				event->select_obj((Obj *)get_container()->parent, actor);
 			else
 				event->select_actor(actor);
 			 return GUI_YUM;
@@ -628,14 +630,14 @@ void InventoryWidget::drag_perform_drop(int x, int y, int message, void *data)
     DEBUG(0,LEVEL_DEBUGGING,"Drop into inventory.\n");
     obj = (Obj *)data;
 
-	if(target_cont && obj_manager->can_store_obj(target_cont, obj))
+	if(target_obj && obj_manager->can_store_obj(target_obj, obj))
+	{
+		obj_manager->moveto_container(obj, target_obj);
+	}
+	else if(target_cont && obj_manager->can_store_obj(target_cont, obj))
 	{
 		obj_manager->moveto_container(obj, target_cont);
 	}
-	else if(target_obj && obj_manager->can_store_obj(target_obj, obj))
-    {
-    	obj_manager->moveto_container(obj, target_obj);
-    }
     else
     {
     	if(obj->is_readied())

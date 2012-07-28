@@ -614,8 +614,10 @@ void InventoryView::select_objAtCursor()
 
 	if(cursor_pos.area == INVAREA_TOP && event->can_target_icon())
 	{
-		if(inventory_widget->is_showing_container()
-		   &&  inventory_widget->get_container()->get_engine_loc() == OBJ_LOC_CONT)
+		if(inventory_widget->is_showing_container() && event->get_last_mode() != PUSH_MODE)
+			select_obj((Obj *)inventory_widget->get_container());
+		else if(inventory_widget->is_showing_container()
+		        &&  inventory_widget->get_container()->get_engine_loc() == OBJ_LOC_CONT)
 			select_obj((Obj *)inventory_widget->get_container()->parent);
 		else
 			event->select_actor(inventory_widget->get_actor());

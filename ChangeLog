@@ -1,3 +1,6 @@
+2012-07-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1470
+	* Fix some inventory targeting issues
+
 2012-07-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1469
 	* Fix view background obscuring the pillars in MD
 	* Fix pickpocket display bug

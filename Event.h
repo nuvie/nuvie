@@ -154,6 +154,7 @@ friend class Magic; // FIXME
  TimeQueue *get_time_queue() { return(time_queue); }
  TimeQueue *get_game_time_queue() { return(game_time_queue); }
  EventMode get_mode() { return(mode); }
+ EventMode get_last_mode() { return(last_mode); }
  void set_mode(EventMode new_mode);
 
  void update_timers();
