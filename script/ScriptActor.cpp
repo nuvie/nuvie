@@ -588,7 +588,7 @@ static int nscript_actor_set_hp(Actor *actor, lua_State *L)
 
 static int nscript_actor_set_hit(Actor *actor, lua_State *L)
 {
-   actor->set_hit_flag((uint8)lua_tointeger(L, 3));
+   actor->set_hit_flag(lua_toboolean(L, 3));
    return 0;
 }
 

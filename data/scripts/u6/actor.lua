@@ -2115,6 +2115,7 @@ function actor_update_flags(actor)
 		
 		if actor.asleep == true and actor.wt ~= WT_SLEEP and random(0, 15) == 0 then
 			actor.asleep = false
+			actor.hit_flag = true
 			actor.frame_n = actor.old_frame_n
 			if actor.in_party == true then
 				party_update_leader()
