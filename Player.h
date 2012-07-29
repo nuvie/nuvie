@@ -58,7 +58,6 @@ class Player
  MapWindow *map_window;
  
  sint8 current_weapon;
- uint8 actor_attack_target;  //previous attack target.
  
  public:
 

@@ -25,6 +25,7 @@
 
 #include <string>
 #include "ObjManager.h"
+#include "Map.h"
 
 class Configuration;
 class Game;
@@ -36,6 +37,14 @@ class NuvieIO;
 class PartyPathFinder;
 class PartySeek;
 
+typedef enum { TARGET_ACTOR, TARGET_LOCATION, TARGET_NONE } CombatTargetType;
+
+struct CombatTarget {
+	CombatTargetType type;
+	uint8 actor_num;
+	MapCoord loc;
+};
+
 struct PartyMember {
 char name[14];
 Actor *actor;
@@ -44,6 +53,7 @@ uint8 combat_position;
 sint8 form_x; // relative position left or right of leader
 sint8 form_y; // relative position in front or in back of leader
               // (leader is at 0,0 in formation)
+CombatTarget target;
 };
 
 #define PARTY_MAX_MEMBERS 16
@@ -171,6 +181,11 @@ class Party {
  void rest_gather();
  void rest_sleep(uint8 hours, sint16 guard);
  bool can_rest(std::string &err_str);
+
+ void set_combat_target(uint8 member_num, Actor *target);
+ void set_combat_target(uint8 member_num, MapCoord target);
+ void clear_combat_target(uint8 member_num);
+ CombatTarget get_combat_target(uint8 member_num);
 
  protected:
  void reform_party(); // call when adding or removing members

@@ -1,3 +1,11 @@
+2012-07-29  Eric Fry <efry at users.sourceforge.net> r1473
+	* Added new attack target memory system. Each party member has their
+	  own attack target memory.
+	* Fixed bug "target memory is broke on mult-tiled actors" [3547431]
+	  If the actor main tile goes out of range then multiple tile actors
+	  will be searched for surrounding tiles that are within weapon range.
+	* Fixed bug "objects don't stay targeted when attacked" [3539292]
+
 2012-07-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1472
 	* Fix fishing pole not setting fish okay to take if you can't carry it
 	* Fix using move being able to move objects to a non-party actor

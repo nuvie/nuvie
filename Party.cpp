@@ -59,7 +59,6 @@ Party::Party(Configuration *cfg)
  in_combat_mode = false;
 
  memset(&member, 0, sizeof member );
-
 }
 
 Party::~Party()
@@ -134,6 +133,11 @@ bool Party::load(NuvieIO *objlist)
    set_in_vehicle(true);
    hide();
   }
+
+ for(int i=0;i<PARTY_MAX_MEMBERS;i++)
+ {
+	 clear_combat_target(i);
+ }
 
  update_music();
 
@@ -960,4 +964,46 @@ bool Party::main_actor_is_in_party()
 
 	return (contains_actor(player->get_actor())
 	        || player->get_actor()->get_actor_num() == 0); // vehicle
+}
+
+void Party::set_combat_target(uint8 member_num, Actor *target)
+{
+	if(num_in_party <= member_num)
+		return;
+
+	member[member_num].target.type = TARGET_ACTOR;
+	member[member_num].target.actor_num = target->get_actor_num();
+}
+
+void Party::set_combat_target(uint8 member_num, MapCoord target)
+{
+	if(num_in_party <= member_num)
+		return;
+
+	member[member_num].target.type = TARGET_LOCATION;
+	member[member_num].target.loc = target;
+}
+
+void Party::clear_combat_target(uint8 member_num)
+{
+	if(member_num >= PARTY_MAX_MEMBERS)
+		return;
+
+	member[member_num].target.type = TARGET_NONE;
+	member[member_num].target.loc = MapCoord();
+	member[member_num].target.actor_num = 0;
+}
+
+CombatTarget Party::get_combat_target(uint8 member_num)
+{
+	if(num_in_party <= member_num)
+	{
+		CombatTarget noTarget;
+		noTarget.type = TARGET_NONE;
+		noTarget.loc = MapCoord();
+		noTarget.actor_num = 0;
+		return noTarget;
+	}
+
+	return member[member_num].target;
 }

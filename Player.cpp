@@ -58,7 +58,6 @@ Player::Player(Configuration *cfg)
  questf = 0;
  gargishf = 0;
  alcohol = 0;
- actor_attack_target = 0;
  current_weapon = 0;
  party_mode = false;
  mapwindow_centered = false;
@@ -544,8 +543,6 @@ bool Player::weapon_can_hit(uint16 x, uint16 y)
 
 void Player::attack_select_init()
 {
-
- 
  current_weapon = ACTOR_NO_READIABLE_LOCATION;
  
  if(attack_select_next_weapon() == false)
@@ -553,20 +550,44 @@ void Player::attack_select_init()
  
  map_window->centerCursor();
 
- if(actor_attack_target > 0)
+ CombatTarget target = party->get_combat_target(party->get_member_num(actor));
+ Actor *target_actor = NULL;
+
+ switch(target.type)
  {
-	 Actor *actor = actor_manager->get_actor(actor_attack_target);
-	 if(actor && actor->is_onscreen() && actor->is_alive() && actor->is_visible() && weapon_can_hit(actor->get_x(), actor->get_y()))
+ case TARGET_ACTOR :
+	 target_actor = actor_manager->get_actor(target.actor_num);
+	 uint16 target_x, target_y;
+	 uint16 x, y;
+	 uint8 z;
+	 map_window->get_pos(&x, &y, &z);
+	 target_x = x;
+	 target_y = y;
+	 if(target_actor && target_actor->is_onscreen() && target_actor->is_alive() && target_actor->is_visible() && actor->weapon_can_hit(actor->get_weapon(current_weapon), target_actor, &target_x, &target_y))
+	 {
+		 map_window->moveCursor(target_x-x,target_y-y);
+	 }
+	 else
+	 {
+		 party->clear_combat_target(party->get_member_num(actor));
+	 }
+	 break;
+
+ case TARGET_LOCATION :
+	 if(target.loc.z == actor->get_z() && weapon_can_hit(target.loc.x, target.loc.y))
 	 {
 		 uint16 x, y;
 		 uint8 z;
 		 map_window->get_pos(&x, &y, &z);
-		 map_window->moveCursor(actor->get_x()-x,actor->get_y()-y);
+		 map_window->moveCursor(target.loc.x-x,target.loc.y-y);
 	 }
 	 else
 	 {
-		 actor_attack_target = 0;
+		 party->clear_combat_target(party->get_member_num(actor));
 	 }
+	 break;
+
+ default : break;
  }
 
  return;
@@ -621,12 +642,21 @@ void Player::attack(MapCoord target)
  
  if(weapon_can_hit(target.x,target.y))
  {
+   Actor *target_actor = actor_manager->get_actor(target.x,target.y,actor->get_z());
+
    actor->attack(current_weapon, target);
 
-   Actor *target_actor = actor_manager->get_actor(target.x,target.y,actor->get_z());
    if(target_actor)
    {
-	   actor_attack_target = target_actor->get_actor_num();
+	   party->set_combat_target(party->get_member_num(actor), target_actor);
+   }
+   else
+   {
+	   Obj *target_obj = obj_manager->get_obj(target.x,target.y,actor->get_z());
+	   if(target_obj)
+	   {
+		   party->set_combat_target(party->get_member_num(actor), MapCoord(target_obj));
+	   }
    }
  }
  else

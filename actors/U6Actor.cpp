@@ -675,6 +675,67 @@ const CombatType *U6Actor::get_hand_combat_type()
 	return &u6combat_hand;
 }
 
+bool U6Actor::weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hit_x, uint16 *hit_y)
+{
+	if(weapon_can_hit(weapon, target->get_x(), target->get_y()))
+	{
+		*hit_x = target->get_x();
+		*hit_y = target->get_y();
+		return true;
+	}
+
+	std::list<Obj *> *surrounding_objs = target->get_surrounding_obj_list();
+
+	if(surrounding_objs)
+	{
+		std::list<Obj *>::iterator obj_iter;
+		for(obj_iter = surrounding_objs->begin(); obj_iter != surrounding_objs->end(); obj_iter++)
+		{
+			Obj *obj = *obj_iter;
+			if(weapon_can_hit(weapon, obj->x, obj->y))
+			{
+				*hit_x = obj->x;
+				*hit_y = obj->y;
+				return true;
+			}
+		}
+	}
+
+	uint16 target_x = target->get_x();
+	uint16 target_y = target->get_y();
+
+	Tile *tile = obj_manager->get_obj_tile(target->get_obj_n(),target->get_frame_n());
+	if(tile->dbl_width && tile->dbl_height)
+	{
+		if(weapon_can_hit(weapon, target_x-1, target_y-1))
+		{
+			*hit_x = target_x-1;
+			*hit_y = target_y-1;
+			return true;
+		}
+	}
+	if(tile->dbl_width)
+	{
+		if(weapon_can_hit(weapon, target_x-1, target_y))
+		{
+			*hit_x = target_x-1;
+			*hit_y = target_y;
+			return true;
+		}
+	}
+	if(tile->dbl_height)
+	{
+		if(weapon_can_hit(weapon, target_x, target_y-1))
+		{
+			*hit_x = target_x;
+			*hit_y = target_y-1;
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool U6Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)
 {
  sint16 off_x, off_y;
