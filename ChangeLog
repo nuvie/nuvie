@@ -1,3 +1,11 @@
+2012-07-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1472
+	* Fix fishing pole not setting fish okay to take if you can't carry it
+	* Fix using move being able to move objects to a non-party actor
+	* Fix blocking check when moving items between party members
+	* Have blacked out areas be displayed as darkness instead of Nothing
+	* Stop double click from selecting objects in blacked out areas
+	* Fix look not showing names underneath actor portraits
+
 2012-07-28  Malignant Manor <malignantmanor@users.sourceforge.net> r1471
 	* Double click now talks to shrines and statue actors
 	* Look now shows statue actor portraits

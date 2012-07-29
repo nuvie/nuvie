@@ -2588,7 +2588,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
     MapCoord player_location(player_actor->get_location());
     MapCoord target(player_actor->get_location()); // changes to target location
 
-    if(game->user_paused())
+    if(game->user_paused() || map_window->tile_is_black(wx, wy))
         return;
 
     obj = obj_manager->get_obj(wx, wy, target.z);
@@ -3224,14 +3224,19 @@ bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *targe
 			scroll->display_string(".\n\n");
 		}
 
+		if(!target_actor->is_in_party())
+		{
+			scroll->display_string("Only within the party!\n\n");
+			return false;
+		}
+
 		if(target_actor == src_actor && obj->is_in_inventory())
 			return true;
 
-		LineTestResult lt;
-		Map *map = game->get_game_map();
 		MapCoord to = target_actor->get_location();
 
-		if(map->lineTest(from.x, from.y, to.x, to.y, from.z, LT_HitUnpassable, lt) == false)
+		if(!map_window->tile_is_black(from.x, from.y)
+		   && !map_window->tile_is_black(to.x, to.y))
 		{
 			if(from.distance(to) < 5)
 			{
@@ -3242,7 +3247,7 @@ bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *targe
 				scroll->display_string("Out of range!\n");
 		}
 		else
-			scroll->display_string("Blocked!\n");
+			scroll->display_string("Blocked!\n"); // original said Out of Range!
 	}
 	else
 		scroll->display_string("nobody.\n\n");

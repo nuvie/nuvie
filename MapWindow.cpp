@@ -418,13 +418,17 @@ void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
  moveCursor(cursor_x + rel_x, cursor_y + rel_y);
 }
 
+bool MapWindow::tile_is_black(uint16 x, uint16 y)
+{
+ return (tmp_map_buf[(y - cur_y +1) * tmp_map_width + (x - cur_x +1)] == 0);
+}
 
 const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 {
  Actor *actor;
 
  if(tmp_map_buf[(y+1) * tmp_map_width + (x+1)] == 0) //black area
-   return tile_manager->lookAtTile(0,0,true); // nothing to see here. ;)
+   return "darkness."; // nothing to see here. ;)
 
  actor = actor_manager->get_actor(cur_x + x, cur_y + y, cur_level);
  if(actor != NULL)
@@ -1862,7 +1866,6 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 
 	if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE) // finish whatever action is being done, with mouse coordinates
 	{
-		mouseToWorldCoords(x, y, wx, wy);   // some Event functions still use
 		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
 		event->select_target(uint16(wx), uint16(wy), cur_level); // the returned location
 		return  GUI_PASS;

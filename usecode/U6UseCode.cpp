@@ -1257,6 +1257,7 @@ bool U6UseCode::use_fishing_pole(Obj *obj, UseCodeEvent ev)
        fish->x = x;
        fish->y = y;
        fish->z = z;
+       fish->set_ok_to_take(true);
        obj_manager->add_obj(fish);
        return true;
       }

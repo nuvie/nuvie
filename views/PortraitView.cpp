@@ -138,7 +138,9 @@ bool PortraitView::set_portrait(Actor *actor, const char *name)
    }
 
  if(name == NULL)
-   name_string->assign("");  //FIX
+   name = actor->get_name();
+ if(name == NULL)
+   name_string->assign("");  // just in case
  else
    name_string->assign(name);
  
