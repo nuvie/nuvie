@@ -750,7 +750,7 @@ function actor_init(actor, alignment)
                Obj.moveToCont(obj, chest)
             end
             if math.random(0, 3) ~= 0 then
-               obj = Obj.new(monster_inv_food[math.random(0, 2)])
+               obj = Obj.new(monster_inv_food[math.random(1, 3)])
                obj.status = 41
                obj.qty = math.random(1, 10)
                Obj.moveToCont(obj, chest)
@@ -775,7 +775,7 @@ function actor_init(actor, alignment)
                Actor.inv_add_obj(actor, obj)
             end
             if math.random(0, 3) == 0 then
-               obj = Obj.new(monster_inv_food[math.random(0, 2)])
+               obj = Obj.new(monster_inv_food[math.random(1, 3)])
                obj.status = 49
                obj.qty = math.random(1, 100)
                Actor.inv_add_obj(actor, obj)

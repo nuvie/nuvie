@@ -1,3 +1,10 @@
+2012-07-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1475
+	* Exclude quantity from getable weight limit check
+	* Fix randomly generated food from using wrong table index bug [3550549]
+	* Add can_get_obj check to can_store_obj. This fixes another move case
+	* Add dropped items to containers like the original did
+	* Fix mouse being used as a container when alive
+
 2012-07-29  Eric Fry <efry at users.sourceforge.net> r1474
 	* Fixed bug "actors on a sleep field never wake up" [3551055]
 

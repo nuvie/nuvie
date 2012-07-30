@@ -686,7 +686,13 @@ void DropEffect::hit_target()
         Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BROKEN_GLASS);
     }
     else
-        obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
+    {
+        Obj *dest_obj = obj_manager->get_obj(stop_at.x, stop_at.y, stop_at.z);
+        if(obj_manager->can_store_obj(dest_obj, throw_obj))
+            obj_manager->moveto_container(throw_obj, dest_obj);
+        else
+            obj_manager->add_obj(throw_obj, OBJ_ADD_TOP);
+    }
     throw_obj = NULL; // set as dropped
 
     // not appropriate to do "Event::endAction(true)" from here to display

@@ -49,6 +49,8 @@ class Actor;
 #define OBJ_WEIGHT_DO_SCALE true
 #define OBJ_WEIGHT_DONT_SCALE false
 
+#define OBJ_WEIGHT_EXCLUDE_QTY false
+
 #define OBJ_ADD_TOP true
 
 #define OBJ_SHOW_PREFIX true
@@ -168,7 +170,7 @@ class ObjManager
  const char *get_obj_name(uint16 obj_n);
  const char *get_obj_name(uint16 obj_n, uint8 frame_n);
  
- float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, bool scale=true);
+ float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, bool scale=true, bool include_qty = true);
  uint8 get_obj_weight(uint16 obj_n) { return(obj_weight[obj_n]); }
 
  void animate_forwards(Obj *obj, uint32 loop_count = 1);

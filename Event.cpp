@@ -1443,7 +1443,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
          else
          {
         	 Obj *obj = obj_manager->get_obj(to.x,to.y,to.z);
-        	 if(obj && obj_manager->can_store_obj(obj, push_obj) && obj_manager->can_get_obj(push_obj)) //if we are moving onto a container.
+        	 if(obj && obj_manager->can_store_obj(obj, push_obj)) //if we are moving onto a container.
         	 {
         		 can_move = obj_manager->moveto_container(push_obj, obj);
         	 }

@@ -720,6 +720,12 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
+		if(obj->obj_n == OBJ_U6_MOUSE && !obj->is_in_inventory()  // needed for live mouse
+		   && obj != obj_manager->get_obj(obj->x, obj->y, obj->z))
+		{
+			scroll->display_string("\nNot usable\n");
+			return true;
+		}
     	if(is_locked_chest(obj) || is_magically_locked_chest(obj))
     	{
     		if(is_locked_chest(obj) && obj->quality != 0)

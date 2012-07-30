@@ -788,6 +788,9 @@ bool ObjManager::is_breakable(Obj *obj)
 
 bool ObjManager::can_store_obj(Obj *target, Obj *src)
 {
+	if(!can_get_obj(src) || target == NULL)
+		return false;
+
 	if(game_type==NUVIE_GAME_U6)
 	{
 		if(target->obj_n == OBJ_U6_BAG
@@ -857,7 +860,9 @@ bool ObjManager::can_get_obj(Obj *obj)
 	// excluding container items here, we just want the object itself to
 	// check if it weighs 0 or 255. no need to scale as we don't compare
 	// with other weights
-	float weight = get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE);
+	if(obj == NULL)
+		return false;
+	float weight = get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE, OBJ_WEIGHT_EXCLUDE_QTY);
 	if((weight != 0 && weight != 255 && has_toptile(obj) == false)
 	    || Game::get_game()->using_hackmove())
 		return true;
@@ -1256,7 +1261,7 @@ const char *ObjManager::get_obj_name(uint16 obj_n, uint8 frame_n)
  return tile_manager->lookAtTile(get_obj_tile_num(obj_n)+frame_n,0,false);
 }
 
-float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool scale)
+float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool scale, bool include_qty)
 {
  float weight;
  U6Link *link;
@@ -1265,7 +1270,8 @@ float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool sc
 
  if(is_stackable(obj))
  {
-   weight *= obj->qty; 
+   if(include_qty)
+     weight *= obj->qty; 
    /* luteijn: only some need to be divided by an extra 10 for a total of 100.
     * unfortunately can't seem to find a tileflag that controls this so would have to be hardcoded!
     */
