@@ -1234,7 +1234,7 @@ bool Event::search(Obj *obj)
     if(game->user_paused())
         return(false);
 
-    if(!(obj->status & OBJ_STATUS_IN_INVENTORY) && player_loc.distance(target_loc) <= 1)
+    if(obj->get_engine_loc() == OBJ_LOC_MAP && player_loc.distance(target_loc) <= 1)
     {
         scroll->display_string("Searching here, you find ");
         if(!obj || !usecode->search_obj(obj, player->get_actor()))

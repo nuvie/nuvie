@@ -1,3 +1,9 @@
+2012-07-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1476
+	* Fix right button in spell view showing when there are no more spells
+	* Fix not being able to search items after they have been saved in the
+		inventory, placed back on the map, and the game hasn't been saved
+		since then
+
 2012-07-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1475
 	* Exclude quantity from getable weight limit check
 	* Fix randomly generated food from using wrong table index bug [3550549]

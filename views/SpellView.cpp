@@ -535,7 +535,20 @@ void SpellView::update_buttons()
 	if(level == 1 && index <= (num_spells_per_page-1) && left_button)
 		left_button->Hide();
 
-	if(level == 8 && index >= num_spells_per_page && right_button)
+	uint8 old_level = level;
+	uint8 num_spells = 0;
+	for(;num_spells == 0;)
+	{
+		level++;
+		if(level == 9)
+			break;
+		num_spells = fill_cur_spell_list();
+	}
+	level = old_level;
+	fill_cur_spell_list();
+
+	if(right_button && ((level < 8 && num_spells == 0) || level == 8)
+	   && cur_spells[num_spells_per_page*(1+index/num_spells_per_page)-1] == -1)
 		right_button->Hide();
 }
 
