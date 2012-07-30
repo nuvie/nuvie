@@ -297,7 +297,6 @@ armour_tbl = --FIXME: all armor value is made up
 [39] = 1, --welding gloves
 [90] = 1, --electric belt?
 [234] = 1, --martian jewelry
-[296] = 1, --headgear
 }
 
 function advance_time(num_turns)

@@ -1,3 +1,9 @@
+2012-07-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1477
+	* Fix show right button equation in spell view  (r1476 regression)
+	* Don't allow already included spells to be added to the spell book
+	* Add some more messages
+	* Add more containers and MD data
+
 2012-07-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1476
 	* Fix right button in spell view showing when there are no more spells
 	* Fix not being able to search items after they have been saved in the

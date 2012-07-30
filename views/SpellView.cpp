@@ -548,7 +548,7 @@ void SpellView::update_buttons()
 	fill_cur_spell_list();
 
 	if(right_button && ((level < 8 && num_spells == 0) || level == 8)
-	   && cur_spells[num_spells_per_page*(1+index/num_spells_per_page)-1] == -1)
+	   && cur_spells[num_spells_per_page*(1+index/num_spells_per_page)] == -1)
 		right_button->Hide();
 }
 

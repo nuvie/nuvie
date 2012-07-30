@@ -1880,6 +1880,10 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
                     scroll->display_string("\nlocked!\n");
                 }
             }
+            else if(is_door(door_obj) && door_obj->frame_n <= 3
+                    && ((obj->obj_n == OBJ_U6_KEY && door_obj->quality != 0 && door_obj->quality == obj->quality)
+                    || (obj->obj_n == OBJ_U6_LOCK_PICK && door_obj->quality == 0)))
+                scroll->display_string("\nCan't (Un)lock an opened door\n");
             else
                 scroll->display_string("\nNo effect\n");
             return true;

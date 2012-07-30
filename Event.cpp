@@ -1285,13 +1285,12 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 
 	if(obj)
 	{
-		scroll->display_string(obj_manager->look_obj(obj));
+		if(game->get_game_type() == NUVIE_GAME_SE || push_obj != obj)
+			scroll->display_string(obj_manager->look_obj(obj));
 		scroll->display_string("\n");
+
 		if(obj_manager->can_store_obj(obj,push_obj))
-		{
-			if(obj != push_obj)
-				ok = obj_manager->moveto_container(push_obj, obj);
-		}
+			ok = obj_manager->moveto_container(push_obj, obj);
 	}
 	else
 	{
@@ -1305,12 +1304,32 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 
 	if(!ok)
 	{
-		if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_VORTEX_CUBE)
-			scroll->display_string("\nOnly moonstones can go into the vortex cube.\n");
-		else if(obj->is_in_inventory() && !obj->container)
-			scroll->display_string("\nnot a container\n");
+		if(obj == push_obj)
+		{
+			if(game->get_game_type() == NUVIE_GAME_MD)
+				scroll->display_string("\nAn item can't be placed inside itself!\n\n");
+			else if(game->get_game_type() == NUVIE_GAME_SE)
+				scroll->display_string("\nYou can't do that!\n\n");
+			else if(obj->container)
+				scroll->display_string("\nHow can a container go into itself!\n\n");
+			else
+				scroll->display_string("\nnot a container\n\n");
+		}
+		else if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_VORTEX_CUBE)
+			scroll->display_string("\nOnly moonstones can go into the vortex cube.\n\n");
+		else if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_SPELLBOOK)
+		{
+			if(push_obj->obj_n == OBJ_U6_SPELL)
+				scroll->display_string("\nThe spellbook already has this spell.\n\n");
+			else
+				scroll->display_string("\nOnly spells can go into the spellbook.\n\n");
+		}
+		else if(game->get_game_type() == NUVIE_GAME_U6 && !obj->container)
+			scroll->display_string("\nnot a container\n\n");
+		else if(game->get_game_type() == NUVIE_GAME_U6)
+			scroll->display_string("\nNot possible!\n\n");
 		else
-			scroll->display_string("Not possible!\n");
+			scroll->display_string("\nYou can't do that!\n\n");
 	}
 
     scroll->display_prompt();
@@ -1470,7 +1489,10 @@ bool Event::pushFrom(Obj *obj)
 {
 	scroll->display_string(obj_manager->look_obj(obj));
 	push_obj = obj;
-	get_target("\nTo ");
+	if(game->get_game_type() == NUVIE_GAME_MD)
+		get_target("\nWhere? ");
+	else
+		get_target("\nTo ");
 	return true;
 }
 
@@ -3259,7 +3281,10 @@ void Event::display_move_text(Actor *target_actor, Obj *obj)
 {
 	scroll->display_string("Move-");
 	scroll->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
- 	scroll->display_string(" To ");
+	if(game->get_game_type() == NUVIE_GAME_MD)
+		scroll->display_string("\nWhere? ");
+	else
+		scroll->display_string(" To ");
 	scroll->display_string(target_actor->get_name());
 	scroll->display_string(".");
 }

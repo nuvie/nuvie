@@ -788,7 +788,7 @@ bool ObjManager::is_breakable(Obj *obj)
 
 bool ObjManager::can_store_obj(Obj *target, Obj *src)
 {
-	if(!can_get_obj(src) || target == NULL)
+	if(target == src || !can_get_obj(src) || target == NULL)
 		return false;
 
 	if(game_type==NUVIE_GAME_U6)
@@ -798,7 +798,9 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 		   || target->obj_n == OBJ_U6_BASKET
 		   || (target->obj_n == OBJ_U6_BARREL && target->frame_n == 0)
 		   || (target->obj_n == OBJ_U6_CHEST && target->frame_n == 0)
-		   || (target->obj_n == OBJ_U6_SPELLBOOK && src->obj_n == OBJ_U6_SPELL)
+		   || (target->obj_n == OBJ_U6_SPELLBOOK && src->obj_n == OBJ_U6_SPELL
+		       && !target->find_in_container(OBJ_U6_SPELL, src->quality)
+		       && !target->find_in_container(OBJ_U6_SPELL, 255)) // this quality contains all spells
 		   || (target->obj_n == OBJ_U6_VORTEX_CUBE && src->obj_n == OBJ_U6_MOONSTONE))
 			return true;
 
@@ -817,6 +819,8 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 	}
 	else if(game_type==NUVIE_GAME_SE)
 	{
+		if(src->has_container() || usecode->is_container(src))
+			return false;
 		if(target->obj_n == OBJ_SE_JUG || target->obj_n == OBJ_SE_POUCH
 		   || target->obj_n == OBJ_SE_BASKET || target->obj_n == OBJ_SE_POT)
 			return true;
@@ -848,6 +852,36 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 					return false;
 			}
 		}
+	}
+	else // MD
+	{
+		if(src->has_container() || usecode->is_container(src))
+			return false;
+		switch (target->obj_n)
+			{
+				case OBJ_MD_BRASS_CHEST:
+				case OBJ_MD_OBSIDIAN_BOX:
+				case OBJ_MD_WOODEN_CRATE:
+				case OBJ_MD_STEAMER_TRUNK:
+				case OBJ_MD_BARREL:
+				case OBJ_MD_CRATE:
+				case OBJ_MD_BRASS_TRUNK:
+					if(target->frame_n == 0)
+					{
+						return true;
+					}
+					else
+						return false;
+				case OBJ_MD_BACKPACK:
+				case OBJ_MD_LARGE_SACK:
+				case OBJ_MD_SMALL_POUCH:
+				case OBJ_MD_CARPET_BAG:
+				case OBJ_MD_BAG:
+				case OBJ_MD_LEAD_BOX:
+					return true;
+				default:
+					return false;
+			}
 	}
 	return false;
 }

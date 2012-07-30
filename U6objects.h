@@ -426,4 +426,19 @@
 #define OBJ_SE_CHOP                214
 #define OBJ_SE_DEVICE              240
 
+// Martian Dreams
+#define OBJ_MD_BACKPACK             80
+#define OBJ_MD_LARGE_SACK           81
+#define OBJ_MD_SMALL_POUCH          82
+#define OBJ_MD_BRASS_CHEST          83
+#define OBJ_MD_OBSIDIAN_BOX         85
+#define OBJ_MD_WOODEN_CRATE         86
+#define OBJ_MD_STEAMER_TRUNK        87
+#define OBJ_MD_CARPET_BAG           89
+#define OBJ_MD_BARREL              104
+#define OBJ_MD_LEAD_BOX            139
+#define OBJ_MD_CRATE               284
+#define OBJ_MD_BAG                 285
+#define OBJ_MD_BRASS_TRUNK         304
+
 #endif /* __U6objects_h__ */
