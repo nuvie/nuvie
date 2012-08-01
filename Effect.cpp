@@ -442,12 +442,14 @@ void QuakeEffect::recenter_map()
  */
 HitEffect::HitEffect(Actor *target, uint32 duration)
 {
+    game->pause_user();
     add_anim(new HitAnim(target));
     Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_HIT); //FIXME use NUVIE_SFX_SAMPLE defines here.
 }
 
 HitEffect::HitEffect(MapCoord location)
 {
+    game->pause_user();
     add_anim(new HitAnim(&location));
     Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_HIT); //FIXME use NUVIE_SFX_SAMPLE defines here.
 }
@@ -457,7 +459,10 @@ HitEffect::HitEffect(MapCoord location)
 uint16 HitEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 {
     if(msg == MESG_ANIM_DONE)
+    {
+        game->unpause_user();
         delete_self();
+    }
     return(0);
 }
 
@@ -1981,6 +1986,8 @@ AsyncEffect::~AsyncEffect()
 /* The effect is marked as defunct after run finishes and will be removed from the system.*/
 void AsyncEffect::run(bool process_gui_input)
 {
+	if(!process_gui_input)
+		Game::get_game()->pause_user();
 	for(;effect_complete == false;)
 	{
 		//spin world
@@ -1988,7 +1995,8 @@ void AsyncEffect::run(bool process_gui_input)
 		if(!effect_complete)
 			Game::get_game()->update_once_display();
 	}
-
+	if(!process_gui_input)
+		Game::get_game()->unpause_user();
 	delete_self();
 }
 

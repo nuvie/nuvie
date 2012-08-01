@@ -1,3 +1,7 @@
+2012-08-02  Eric Fry <efry at users.sourceforge.net> r1478
+	* Fixed bug "party members get stuck on trap mouse movement" [3550251]
+	* Changed async effect to pause user when not polling input.
+
 2012-07-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1477
 	* Fix show right button equation in spell view  (r1476 regression)
 	* Don't allow already included spells to be added to the spell book

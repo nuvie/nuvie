@@ -2242,6 +2242,7 @@ static int nscript_hit_anim(lua_State *L)
    uint16 targetx = (uint16)luaL_checkinteger(L, 1);
    uint16 targety = (uint16)luaL_checkinteger(L, 2);
 
+
    AsyncEffect *e = new AsyncEffect(new HitEffect(MapCoord(targetx,targety)));
    e->run();
 
