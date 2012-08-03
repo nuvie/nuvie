@@ -594,6 +594,7 @@ void Actor::set_in_party(bool state)
         can_move = true;
         set_worktype(0x01); // U6_IN_PARTY
         status_flags |= ACTOR_STATUS_IN_PARTY;
+        set_alignment(ACTOR_ALIGNMENT_GOOD);
     }
     else // left
     {
@@ -602,6 +603,7 @@ void Actor::set_in_party(bool state)
            inventory_drop_all();
            set_worktype(0x8f); // U6_WANDER_AROUND
            status_flags ^= ACTOR_STATUS_IN_PARTY;
+           set_alignment(ACTOR_ALIGNMENT_NEUTRAL);
           }
     }
 }
