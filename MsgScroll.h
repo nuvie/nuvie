@@ -164,6 +164,8 @@ private:
  void init(Configuration *cfg, Font *f);
 
  bool init(char *player_name);
+ void page_up();
+ void page_down();
 
  void process_holding_buffer();
 

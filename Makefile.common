@@ -79,6 +79,13 @@ nuvie_SOURCES = \
 	GUI/GUI_YesNoDialog.h \
 	GUI/the_font.h \
 \
+	keybinding/KeyActions.cpp \
+	keybinding/KeyActions.h \
+	keybinding/Keys.cpp \
+	keybinding/Keys.h \
+	keybinding/Utils.cpp \
+	keybinding/Utils.h \
+\
 	lua/lapi.c \
 	lua/lapi.h \
 	lua/lauxlib.c \

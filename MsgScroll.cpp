@@ -594,6 +594,24 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
    requestor->callback(MSGSCROLL_CB_TEXT_READY, this, &input_str);
  }
 }
+void MsgScroll::page_up()
+{
+ uint8 i=0;
+ for(; display_pos > 0 && i < scroll_height; i++)
+   display_pos--;
+ if(i > 0)
+   scroll_updated = true;
+}
+
+void MsgScroll::page_down()
+{
+ uint8 i=0;
+ for(; msg_buf.size() > scroll_height && i < scroll_height
+     && display_pos < msg_buf.size() - scroll_height ; i++)
+   display_pos++;
+ if(i > 0)
+   scroll_updated = true;
+}
 
 /* Take input from the main event handler and do something with it
  * if necessary.
@@ -622,6 +640,10 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                         }
                       return (GUI_YUM);
                       break;
+      case SDLK_PAGEUP: page_up(); // handled in event too but keybindings can change
+                        return (GUI_YUM);
+      case SDLK_PAGEDOWN: page_down(); // handled in event too but keybindings can change
+                          return (GUI_YUM);
       default : break;
      }
 

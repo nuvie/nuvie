@@ -57,6 +57,7 @@ class EggManager;
 class CommandBar;
 class Weather;
 class Book;
+class KeyBinder;
 
 typedef enum
 {
@@ -111,6 +112,7 @@ class Game
  GUI *gui;
 
  Book *book;
+ KeyBinder *keybinder;
 
  GamePauseState pause_flags;
  uint16 pause_user_count;
@@ -198,6 +200,7 @@ class Game
  Weather *get_weather()            { return(weather); }
 
  Book *get_book()                  { return(book); }
+ KeyBinder *get_keybinder()        { return(keybinder); }
  protected:
 
 };

@@ -238,6 +238,7 @@ void Nuvie::SharedDefaultConfigValues()
 {
 	config->set("config/loadgame", "ultima6");
 	config->set("config/datadir", "./data");
+	config->set("config/keys", "(default)");
 
 	config->set("config/video/scale_method", "point");
 	config->set("config/video/scale_factor", "2");
@@ -315,10 +316,13 @@ bool Nuvie::initDefaultConfigWin32()
 	config->set("config/ultima6/townsdir", "c:\\fmtownsU6");
 	config->set("config/ultima6/savedir", "./u6_save");
 	config->set("config/ultima6/sfxdir", "./custom_sfx");
+	config->set("config/ultima6/patch_keys", "./patchkeys.txt");
 	config->set("config/martian/gamedir", "c:\\martian");
 	config->set("config/martian/savedir", "./martian_save");
+	config->set("config/martian/patch_keys", "./patchkeys.txt");
 	config->set("config/savage/gamedir", "c:\\savage");
 	config->set("config/savage/savedir", "./savage_save");
+	config->set("config/savage/patch_keys", "./patchkeys.txt");
 
 	config->write();
 
@@ -349,8 +353,11 @@ bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
 	config->set("config/ultima6/townsdir", "/Library/Application Support/Nuvie Support/townsU6");
 	config->set("config/ultima6/savedir", home + "/Library/Application Support/Nuvie/savegames");
 	config->set("config/ultima6/sfxdir", home + "/Library/Application Support/Nuvie/custom_sfx");
+	config->set("config/ultima6/patch_keys", home + "/Library/Preferences/Nuvie Preferences/patchkeys.txt");
 	config->set("config/martian/gamedir", "/Library/Application Support/Nuvie Support/martian");
+	config->set("config/martian/patch_keys", home + "/Library/Preferences/Nuvie Preferences/patchkeys.txt");
 	config->set("config/savage/gamedir", "/Library/Application Support/Nuvie Support/savage");
+	config->set("config/savage/patch_keys", home + "/Library/Preferences/Nuvie Preferences/patchkeys.txt");
 
 	config->write();
 
@@ -380,9 +387,12 @@ bool Nuvie::initDefaultConfigUnix(const char *home_env)
 	config->set("config/ultima6/gamedir", "./ultima6");
 	config->set("config/ultima6/townsdir", "./townsU6");
 	config->set("config/ultima6/savedir", home + "/.nuvie/savegames");
+	config->set("config/ultima6/patch_keys", home + "/.nuvie/patchkeys.txt");
 	config->set("config/ultima6/sfxdir", home + "/.nuvie/custom_sfx");
 	config->set("config/martian/gamedir", "./martian");
+	config->set("config/martian/patch_keys", home + "/.nuvie/patchkeys.txt");
 	config->set("config/savage/gamedir", "./savage");
+	config->set("config/savage/patch_keys", home + "/.nuvie/patchkeys.txt");
 
 	config->write();
 

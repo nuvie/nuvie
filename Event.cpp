@@ -62,6 +62,7 @@
 
 #include "views/InventoryWidget.h"
 #include "Script.h"
+#include "Keys.h"
 
 #include <math.h>
 
@@ -122,7 +123,7 @@ Event::~Event()
 }
 
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic *mg,
-                 GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g)
+                 GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g, KeyBinder *kb)
 {
  gui = g;
  obj_manager = om;
@@ -143,6 +144,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic 
  time_queue = new TimeQueue;
  game_time_queue = new TimeQueue;
  magic = mg;
+ keybinder = kb;
 
  return true;
 }
@@ -223,23 +225,9 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 
 			case SDLK_KP9:
 			case SDLK_9: alt_code_str[alt_code_len++] = '9'; break;
-
-			case SDLK_x: // quit
-				quitDialog();
+			default:
+				keybinder->HandleEvent(event);
 				return true;
-
-			case SDLK_d: 
-				DEBUG(0,LEVEL_EMERGENCY,"!!decrease!!\n");
-				return false;
-			case SDLK_i:
-				DEBUG(0,LEVEL_EMERGENCY,"!!increase!!\n");
-				return false;
-
-			case SDLK_KP_ENTER:
-			case SDLK_RETURN:
-//				game->get_screen()->toggleFullScreen();
-				break;
-			default: return true;
 		}
 		if(alt_code_len != 0)
 		{
@@ -249,36 +237,6 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 				alt_code(alt_code_str);
 				clear_alt_code();
 			}
-		}
-		return true;
-	}
-	if(mods & KMOD_CTRL)
-	{
-		switch(event->key.keysym.sym)
-		{
-			case SDLK_s: // save
-				saveDialog();
-				return true;
-			case SDLK_l: { // load
-				SaveManager *save_manager = game->get_save_manager();
-				scroll->display_string("Load game!\n");
-				save_manager->load_latest_save();
-				return true; }
-			case SDLK_q: // quit
-				quitDialog();
-				return true;
-			default:
-				if(event->key.keysym.sym != SDLK_LCTRL
-				   && event->key.keysym.sym != SDLK_RCTRL)
-				{
-					if(mode != MOVE_MODE)
-						cancelAction();
-					else
-					{
-						scroll->display_string("what?\n\n");
-						scroll->display_prompt();
-					}
-				}
 		}
 		return true;
 	}
@@ -294,204 +252,9 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
         callback_target = 0;
         endAction(); // no more keys for you! (end KEYINPUT_MODE)
 	}
-	switch (event->key.keysym.sym)
-	{
-		//	keypad arrow keys
-		case SDLK_KP7   :
-			move(-1,-1);
-			break;
-		case SDLK_KP9   :
-			move(1,-1);
-			break;
-		case SDLK_KP1   :
-			move(-1,1);
-			break;
-		case SDLK_KP3   :
-			move(1,1);
-			break;
-		case SDLK_KP8   :
-			move(0,-1);
-			break;
-		case SDLK_KP2   :
-			move(0,1);
-			break;
-		case SDLK_KP4   :
-			move(-1,0);
-			break;
-		case SDLK_KP6   :
-			move(1,0);
-			break;
 
-		//	standard arrow keys
-		case SDLK_UP    :
-			move(0,-1);
-			break;
-		case SDLK_DOWN  :
-			move(0,1);
-			break;
-		case SDLK_LEFT  :
-			move(-1,0);
-			break;
-		case SDLK_RIGHT :
-			move(1,0);
-			break;
+	keybinder->HandleEvent(event);
 
-		case SDLK_BACKQUOTE :
-			if(game->is_orig_style()
-			   && view_manager->get_current_view()
-			      == view_manager->get_inventory_view())
-				view_manager->get_inventory_view()->simulate_CB_callback();
-			break;
-		case SDLK_TAB :
-            // cursor is on mapwindow or hidden
-            if(input.select_from_inventory == false)
-    		    moveCursorToInventory();
-		    else // cursor is on inventory
-                moveCursorToMapWindow();
-            break;
-		case SDLK_s     :
-				saveDialog();
-			break;
-
-		case SDLK_q     :
-				quitDialog();
-
-			break;
-		case SDLK_c     :
-			if(player->is_in_vehicle())
-				display_not_aboard_vehicle();
-			else
-				newAction(CAST_MODE);
-			break;
-		case SDLK_l     :
-			newAction(LOOK_MODE);
-			break;
-		case SDLK_t     :
-			newAction(TALK_MODE);
-			break;
-		case SDLK_u     :
-			newAction(USE_MODE);
-			break;
-		case SDLK_g     :
-			if(player->is_in_vehicle())
-				display_not_aboard_vehicle();
-			else
-				newAction(GET_MODE);
-			break;
-		case SDLK_m     :
-			if(player->is_in_vehicle())
-				display_not_aboard_vehicle();
-			else
-				newAction(PUSH_MODE);
-			break;
-		case SDLK_d     :
-			if(player->is_in_vehicle())
-				display_not_aboard_vehicle();
-			else
-				newAction(DROP_MODE);
-			break;
-		case SDLK_b     :
-			newAction(COMBAT_MODE);
-			break;
-		case SDLK_a     :
-			newAction(ATTACK_MODE);
-			break;
-		case SDLK_r     :
-			newAction(REST_MODE);
-            break;
-		case SDLK_i     :
-			view_manager->open_doll_view(NULL);
-			break;
-		case SDLK_F1:
-		case SDLK_F2:
-		case SDLK_F3:
-		case SDLK_F4:
-		case SDLK_F5:
-		case SDLK_F6:
-		case SDLK_F7:
-		case SDLK_F8:
-		case SDLK_F9:
-			if(!player->get_party()->main_actor_is_in_party())
-				break;
-			if(player->get_party()->get_party_size()
-			   >= event->key.keysym.sym - 281)
-			{
-				view_manager->set_inventory_mode();
-				view_manager->get_inventory_view()
-				->set_party_member(event->key.keysym.sym - 282);
-			}
-			break;
-		case SDLK_F10:
-		case SDLK_KP_DIVIDE :
-			if(player->get_party()->main_actor_is_in_party())
-		            view_manager->set_party_mode();
-		        break;
-        case SDLK_PLUS:
-        case SDLK_KP_PLUS:
-		case SDLK_EQUALS:
-			if(!player->get_party()->main_actor_is_in_party()
-			   || player->get_party()->get_party_size()
-			      < view_manager->get_inventory_view()->get_party_member_num()+2)
-				break;
-			if(game->is_orig_style() && view_manager->get_inventory_view()
-			   ->set_party_member(view_manager->get_inventory_view()
-			   ->get_party_member_num()+1))
-			    view_manager->set_inventory_mode();
-            break;
-        case SDLK_MINUS:
-        case SDLK_KP_MINUS:
-			if(!player->get_party()->main_actor_is_in_party()
-			   || view_manager->get_inventory_view()->get_party_member_num() < 1)
-				break;
-			if(game->is_orig_style() && view_manager->get_inventory_view()
-			   ->set_party_member(view_manager->get_inventory_view()
-			   ->get_party_member_num()-1))
-			    view_manager->set_inventory_mode();
-            break;
-		case SDLK_1:
-		case SDLK_2:
-		case SDLK_3:
-		case SDLK_4:
-		case SDLK_5:
-		case SDLK_6:
-		case SDLK_7:
-		case SDLK_8:
-		case SDLK_9:
-            if(mode == INPUT_MODE)
-                select_party_member(event->key.keysym.sym - 48 - 1);
-            else if(player->is_in_vehicle())
-                display_not_aboard_vehicle();
-            else
-    			solo_mode(event->key.keysym.sym - 48 - 1);
-			break;
-		case SDLK_0:
-			if(mode == MOVE_MODE)
-    			party_mode();
-            else
-                cancelAction();
-			break;
-		case SDLK_RETURN  :
-		case SDLK_KP_ENTER:
-            doAction();
-			break;
-		case SDLK_ESCAPE:
-		case SDLK_SPACE :
-			cancelAction();
-			break;
-		default :
-			if (event->key.keysym.sym != SDLK_LALT
-				&& event->key.keysym.sym != SDLK_RALT)
-			{
-				if(mode != MOVE_MODE)
-					cancelAction();
-				else
-				{
-					scroll->display_string("what?\n\n");
-					scroll->display_prompt();
-				}
-			}
-			break;
-	}	//	switch (event->key.keysym.sym)
 	return	true;
 }
 

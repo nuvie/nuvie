@@ -67,6 +67,8 @@
 #include "SaveManager.h"
 #include "Weather.h"
 #include "Book.h"
+#include "Keys.h"
+#include "Utils.h"
 
 #include "Game.h"
 
@@ -108,6 +110,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  weather = NULL;
  magic = NULL;
  book = NULL;
+ keybinder = NULL;
  
  game_style = 0;
  pause_flags = PAUSE_UNPAUSED;
@@ -222,7 +225,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    game_map->loadMap(tile_manager, obj_manager);
    egg_manager->set_obj_manager(obj_manager);
 
-   ConsoleAddInfo("Loading actor data.");
+   ConsoleAddInfo("Loading actor data.\n");
    actor_manager = new ActorManager(config, game_map, tile_manager, obj_manager, clock);
 
    game_map->set_actor_manager(actor_manager);
@@ -277,9 +280,23 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
    magic = new Magic();
 
+   keybinder = new KeyBinder();
+   std::string keyfilename, dir;
+   config->value("config/keys",keyfilename,"(default)");
+   bool key_file_exists = fileExists(keyfilename.c_str());
+
+   if(!key_file_exists)
+       fprintf(stderr, "Couldn't find the default key setting at %s - trying defaultkeys.txt in the data directory\n", keyfilename.c_str());
+   if (keyfilename == "(default)" || !key_file_exists)
+   {
+       config->value("config/datadir", dir, "./data");
+       keyfilename = dir + "/defaultkeys.txt";
+   }
+   keybinder->LoadFromFile(keyfilename.c_str()); // will throw() if not found
+   keybinder->LoadFromPatch(); // won't load if file isn't found
 
    event = new Event(config);
-   event->init(obj_manager, map_window, scroll, player, magic, clock, converse, view_manager, usecode, gui);
+   event->init(obj_manager, map_window, scroll, player, magic, clock, converse, view_manager, usecode, gui, keybinder);
    magic->init(event);
    
    if(save_manager->load_save() == false)

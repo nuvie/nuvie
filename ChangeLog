@@ -1,3 +1,7 @@
+2012-08-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1479
+	* Page up and page down now scroll through the message scroll (anytime)
+	* Add a slightly modified version of Exult's keybinding system
+
 2012-08-02  Eric Fry <efry at users.sourceforge.net> r1478
 	* Fixed bug "party members get stuck on trap mouse movement" [3550251]
 	* Changed async effect to pause user when not polling input.

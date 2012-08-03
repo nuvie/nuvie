@@ -1,0 +1,74 @@
+right	walk_east
+left	walk_west
+up	walk_north
+down	walk_south
+KP7	walk_north_west
+KP8	walk_north
+KP9	walk_north_east
+KP4	walk_west
+KP6	walk_east
+KP1	walk_south_west
+KP2	walk_south
+KP3	walk_south_east
+
+Esc	cancel_action
+SPACE	cancel_action
+ENTER	do_action
+KP_ENTER	do_action
+
+q	quit
+Ctrl-q	quit
+Alt-x	quit
+s	save_menu
+Ctrl-s	save_menu
+Ctrl-l	load_latest_save
+Ctrl-r	load_latest_save
+
+`	toggle_combat_strategy
+tab	toggle_cursor
+c	cast
+l	look
+t	talk
+u	use
+g	get
+m	move
+d	drop
+b	toggle_combat
+a	attack
+r	rest
+i	new_inventory
+h	show_keys
+pageup	msg_scroll_up
+pagedown	msg_scroll_down
+
+1	solo_mode	1	# solo mode as Avatar
+2	solo_mode	2	# solo mode as character 2
+3	solo_mode	3	# solo mode as character 3
+4	solo_mode	4	# solo mode as character 4
+5	solo_mode	5	# solo mode as character 5
+6	solo_mode	6	# solo mode as character 6
+7	solo_mode	7	# solo mode as character 7
+8	solo_mode	8	# solo mode as character 8
+9	solo_mode	9	# solo mode as character 9
+0	party_mode
+F10	party_view
+KP/	party_view
+/	party_view
+
+F1	inventory	1	# Show inventory for Avatar
+F2	inventory	2	# Show inventory for character 2
+F3	inventory	3	# Show inventory for character 3
+F4	inventory	4	# Show inventory for character 4
+F5	inventory	5	# Show inventory for character 5
+F6	inventory	6	# Show inventory for character 6
+F7	inventory	7	# Show inventory for character 7
+F8	inventory	8	# Show inventory for character 8
+F9	inventory	9	# Show inventory for character 9
+shift-=	next_inventory
+=	next_inventory
+KP+	next_inventory
+-	previous_inventory
+KP-	previous_inventory
+
+Alt-d	decrease_debug
+Alt-i	increase_debug

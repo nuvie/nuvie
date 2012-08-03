@@ -47,6 +47,7 @@ class ViewManager;
 class UseCode;
 class GUI;
 class Magic;
+class KeyBinder;
 
 #define NUVIE_INTERVAL    50
 #define PUSH_FROM_PLAYER false
@@ -120,6 +121,7 @@ friend class Magic; // FIXME
  ViewManager *view_manager;
  UseCode *usecode;
  Magic *magic;
+ KeyBinder *keybinder;
 
  SDL_Event event;
  EventMode mode, last_mode;
@@ -149,7 +151,7 @@ friend class Magic; // FIXME
  virtual ~Event();
 
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic *mg,
-           GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g);
+           GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g, KeyBinder *kb);
 
  TimeQueue *get_time_queue() { return(time_queue); }
  TimeQueue *get_game_time_queue() { return(game_time_queue); }
@@ -267,6 +269,14 @@ friend class Magic; // FIXME
 
  void wait();
  void set_ignore_timeleft(bool newsetting) { ignore_timeleft = newsetting; }
+ void quitDialog();
+ void saveDialog();
+ EventInput get_input() { return input; }
+ // These cursor methods are use to make sure Event knows where the cursor is
+ // when objects are selected with ENTER. (since MapWindow and InventoryView
+ // may each independantly show/hide their own cursors)
+ void moveCursorToMapWindow();
+ void moveCursorToInventory();
 
 /* FIXME: Some of the above (action) functions can be removed from public, so
    that we don't need to check for WAIT mode in all of them. */
@@ -274,15 +284,8 @@ friend class Magic; // FIXME
 
  inline Uint32 TimeLeft();
 
- void quitDialog();
- void saveDialog();
  uint16 callback(uint16 msg, CallBack *caller, void *data);
  bool handleSDL_KEYDOWN (const SDL_Event *event);
- // These cursor methods are use to make sure Event knows where the cursor is
- // when objects are selected with ENTER. (since MapWindow and InventoryView
- // may each independantly show/hide their own cursors)
- void moveCursorToMapWindow();
- void moveCursorToInventory();
  const char *print_mode(EventMode mode);
 };
 

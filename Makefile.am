@@ -2,7 +2,7 @@ SUBDIRS = tools
 
 bin_PROGRAMS = nuvie
 
-CXXFLAGS = @CXXFLAGS@ -Iactors -IGUI -Imisc -Ifiles -Ifonts -Iconf -Ipathfinder -Isave -Iscreen -Iscript -Isound -Isound/adplug -Isound/mixer -Itools -Iusecode -Iviews -Ilua
+CXXFLAGS = @CXXFLAGS@ -Iactors -IGUI -Imisc -Ifiles -Ifonts -Iconf -Ipathfinder -Isave -Iscreen -Iscript -Isound -Isound/adplug -Isound/mixer -Itools -Iusecode -Iviews -Ilua -Ikeybinding
 LDFLAGS = @LIBS@
 
 # Makefile.common defines nuvie_SOURCES
@@ -21,7 +21,8 @@ dist_nuviedata_DATA = \
 	data/ScrollBarDown_1.bmp \
 	data/ScrollBarDown_2.bmp \
 	data/ScrollBarUp_1.bmp \
-	data/ScrollBarUp_2.bmp
+	data/ScrollBarUp_2.bmp \
+	data/defaultkeys.txt
 
 desktopdir=$(datadir)/applications
 dist_desktop_DATA = builds/linux/nuvie.desktop

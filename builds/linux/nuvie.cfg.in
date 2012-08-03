@@ -4,6 +4,8 @@
 
  <datadir>@datadir@/nuvie</datadir>
 
+ <keys>(default)</keys>
+
  <input>
   <enable_doubleclick>yes</enable_doubleclick>
   <doubleclick_opens_containers>no</doubleclick_opens_containers>
