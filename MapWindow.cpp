@@ -150,7 +150,10 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  selected_actor = NULL;
  config->value("config/cheats/enable_hackmove", hackmove);
  walking = false;
+ looking = true;
+ in_input_mode = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
+ config->value("config/input/look_on_left_click",look_on_left_click,true);
  original_obj_loc = MapCoord(0,0,0);
 
  roof_mode = Game::get_game()->is_roof_mode();
@@ -217,7 +220,7 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  overlay_level = MAP_OVERLAY_ONTOP;
  assert(SDL_FillRect(overlay, NULL, game->get_palette()->get_bg_color()) == 0);
 
- if(enable_doubleclick)
+ if(enable_doubleclick || look_on_left_click)
    set_accept_mouseclick(true, USE_BUTTON); // allow double-clicks (single-clicks aren't used for anything)
 
  wizard_eye_info.eye_tile = tile_manager->get_tile(TILE_U6_WIZARD_EYE);
@@ -1775,29 +1778,31 @@ GUI_status MapWindow::Idle(void)
 // single-click (press and release button)
 GUI_status MapWindow::MouseClick(int x, int y, int button)
 {
-#if 0
-    if(button == USE_BUTTON) // see MouseDelayed
-        wait_for_mouseclick(button);
-#endif
+    if(button == USE_BUTTON && look_on_left_click)
+    {
+        looking = true;
+        wait_for_mouseclick(button); // see MouseDelayed
+    }
     return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
 
 // single-click; waited for double-click
 GUI_status MapWindow::MouseDelayed(int x, int y, int button)
 {
-#if 0 /* enable this once I can negotiate between Click,DoubleClick,Delayed and
-         can get a MouseDelayed even if the cursor is moved */
     Event *event = game->get_event();
+    if(!looking || in_input_mode || event->get_mode() != MOVE_MODE)
+    {
+        in_input_mode = false;
+        return(GUI_PASS);
+    }
     int wx, wy;
     mouseToWorldCoords(x, y, wx, wy);
-    if(event->newAction(LOOK_MODE))
-    {
-        moveCursor(wx - cur_x, wy - cur_y);
-        event->look();
-        centerCursor();
-        event->endAction();
-    }
-#endif
+
+    game->get_scroll()->display_string("Look-");
+    event->set_mode(LOOK_MODE);
+    moveCursor(original_obj_loc.x - cur_x, original_obj_loc.y - cur_y);
+    event->lookAtLocation(false, original_obj_loc.x, original_obj_loc.y, cur_level);
+
     return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
 
@@ -1855,17 +1860,26 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 			event->cancelAction(); // MOVE_MODE, so this should work
 			return GUI_PASS;
 		}
-		else if(button == WALK_BUTTON || (!enable_doubleclick && button == USE_BUTTON
-		                                   && !game->is_dragging_enabled()))
+		else if(button == WALK_BUTTON
+		        || (!enable_doubleclick && button == USE_BUTTON
+		            && !game->is_dragging_enabled() && !look_on_left_click))
 		{
 				walking = true;
 		}
 		else if(button == USE_BUTTON) // you can also walk by holding the USE button
+		{
+			if(look_on_left_click) // need to preserve location because of click delay
+			{
+				mouseToWorldCoords(x, y, wx, wy);
+				original_obj_loc = MapCoord(wx,wy ,cur_level);
+			}
 			wait_for_mousedown(button);
+		}
 	}
 
 	if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE) // finish whatever action is being done, with mouse coordinates
 	{
+		in_input_mode = true;
 		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
 		event->select_target(uint16(wx), uint16(wy), cur_level); // the returned location
 		return  GUI_PASS;
@@ -1900,6 +1914,8 @@ GUI_status MapWindow::MouseUp(int x, int y, int button)
 	{
 		selected_obj = NULL;
 	}
+	if(walking)
+		looking = false;
 	walking = false;
 	dragging = false;
 

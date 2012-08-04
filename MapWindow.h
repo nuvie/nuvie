@@ -112,6 +112,9 @@ class MapWindow: public GUI_Widget
  Actor *selected_actor;
  bool hackmove;
  bool walking;
+ bool look_on_left_click;
+ bool looking; // used to stop look_on_left_click from triggering during mouseup from left button walking
+ bool in_input_mode; // used to stop look_on_left_click from triggering during mouseup from input mode
 
  bool window_updated;
  bool freeze_blacking_location;

@@ -212,7 +212,7 @@ friend class Magic; // FIXME
  bool perform_get(Obj *obj, Obj *container_obj = NULL, Actor *actor = NULL);
 
  bool look_start();
- bool look_cursor();
+ bool lookAtLocation(bool cursor, uint16 x = 0, uint16 y  = 0, uint8 z  = 0);
  bool look(Obj *obj);
  bool look(Actor *actor);
  bool search(Obj *obj);

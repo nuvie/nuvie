@@ -11,6 +11,7 @@
   <doubleclick_opens_containers>no</doubleclick_opens_containers>
   <party_view_targeting>no</party_view_targeting>
   <enabled_dragging>yes</enabled_dragging>
+  <look_on_left_click>yes</look_on_left_click>
  </input>
 
  <general>

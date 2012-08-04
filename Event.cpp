@@ -1013,11 +1013,22 @@ bool Event::search(Obj *obj)
 }
 
 // looks at the whatever is at MapWindow cursor location
-bool Event::look_cursor()
+bool Event::lookAtLocation(bool cursor, uint16 x, uint16 y, uint8 z)
 {
  bool display_prompt = true;
- Obj *obj = map_window->get_objAtCursor();
- Actor *actor = map_window->get_actorAtCursor();
+ Obj *obj;
+ Actor *actor;
+
+ if(cursor)
+ {
+   obj = map_window->get_objAtCursor();
+   actor = map_window->get_actorAtCursor();
+ }
+ else
+ {
+   obj = obj_manager->get_obj(x, y, z);
+   actor = game->get_actor_manager()->get_actor(x, y, z);
+ }
 
  if(game->user_paused())
    return false;
@@ -2418,7 +2429,8 @@ void Event::multiuse(uint16 wx, uint16 wy)
     if(using_actor) // use or talk to an actor
     {
         bool can_use;
-        if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_MOUSE)
+        if(game->get_game_type() == NUVIE_GAME_U6 && (obj->obj_n == OBJ_U6_MOUSE
+           || actor->get_actor_num() == 132)) // Smith
             can_use = false;
         else
             can_use = usecode->has_usecode(obj);
@@ -2528,7 +2540,7 @@ void Event::doAction()
         }
         else
         {
-            look_cursor();
+            lookAtLocation(true);
         }
     }
     else if(mode == TALK_MODE)
