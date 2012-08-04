@@ -45,6 +45,7 @@
 								<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.1658852504" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.980853571" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/local/32bit/SDL-1.2.15/include/SDL"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/keybinding}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/sound/adplug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/pathfinder}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/script}&quot;"/>

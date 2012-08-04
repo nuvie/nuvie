@@ -302,6 +302,12 @@
 		EC223AE0151FBB0800D9D659 /* DollViewGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC223AD8151FBB0800D9D659 /* DollViewGump.h */; };
 		EC2CF952153CCF5300A6036D /* PortraitViewGump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC2CF950153CCF5300A6036D /* PortraitViewGump.cpp */; };
 		EC2CF953153CCF5300A6036D /* PortraitViewGump.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2CF951153CCF5300A6036D /* PortraitViewGump.h */; };
+		EC2DA5B615CC964000087AA4 /* KeyActions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC2DA5B015CC964000087AA4 /* KeyActions.cpp */; };
+		EC2DA5B715CC964000087AA4 /* KeyActions.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DA5B115CC964000087AA4 /* KeyActions.h */; };
+		EC2DA5B815CC964000087AA4 /* Keys.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC2DA5B215CC964000087AA4 /* Keys.cpp */; };
+		EC2DA5B915CC964000087AA4 /* Keys.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DA5B315CC964000087AA4 /* Keys.h */; };
+		EC2DA5BA15CC964000087AA4 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC2DA5B415CC964000087AA4 /* Utils.cpp */; };
+		EC2DA5BB15CC964000087AA4 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DA5B515CC964000087AA4 /* Utils.h */; };
 		EC2EC46F152AF582008B1C0F /* MapEditorView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC2EC46D152AF582008B1C0F /* MapEditorView.cpp */; };
 		EC2EC470152AF582008B1C0F /* MapEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2EC46E152AF582008B1C0F /* MapEditorView.h */; };
 		EC360B6A130DC4C200D4CAE6 /* CustomSfxManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */; };
@@ -690,6 +696,12 @@
 		EC223AD8151FBB0800D9D659 /* DollViewGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DollViewGump.h; path = ../views/DollViewGump.h; sourceTree = SOURCE_ROOT; };
 		EC2CF950153CCF5300A6036D /* PortraitViewGump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PortraitViewGump.cpp; path = ../views/PortraitViewGump.cpp; sourceTree = SOURCE_ROOT; };
 		EC2CF951153CCF5300A6036D /* PortraitViewGump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PortraitViewGump.h; path = ../views/PortraitViewGump.h; sourceTree = SOURCE_ROOT; };
+		EC2DA5B015CC964000087AA4 /* KeyActions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KeyActions.cpp; path = ../keybinding/KeyActions.cpp; sourceTree = SOURCE_ROOT; };
+		EC2DA5B115CC964000087AA4 /* KeyActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeyActions.h; path = ../keybinding/KeyActions.h; sourceTree = SOURCE_ROOT; };
+		EC2DA5B215CC964000087AA4 /* Keys.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Keys.cpp; path = ../keybinding/Keys.cpp; sourceTree = SOURCE_ROOT; };
+		EC2DA5B315CC964000087AA4 /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keys.h; path = ../keybinding/Keys.h; sourceTree = SOURCE_ROOT; };
+		EC2DA5B415CC964000087AA4 /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Utils.cpp; path = ../keybinding/Utils.cpp; sourceTree = SOURCE_ROOT; };
+		EC2DA5B515CC964000087AA4 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utils.h; path = ../keybinding/Utils.h; sourceTree = SOURCE_ROOT; };
 		EC2EC46D152AF582008B1C0F /* MapEditorView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MapEditorView.cpp; path = ../views/MapEditorView.cpp; sourceTree = SOURCE_ROOT; };
 		EC2EC46E152AF582008B1C0F /* MapEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEditorView.h; path = ../views/MapEditorView.h; sourceTree = SOURCE_ROOT; };
 		EC360B68130DC4C200D4CAE6 /* CustomSfxManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CustomSfxManager.cpp; path = ../sound/CustomSfxManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -1212,6 +1224,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				EC2DA5AF15CC95F600087AA4 /* keybinding */,
 				ECA2EC860FDB421200D4BDDA /* Script */,
 				07EF82340A9C633900872DBE /* Lua */,
 				07B011740668763B000771BC /* Effects */,
@@ -1309,6 +1322,19 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EC2DA5AF15CC95F600087AA4 /* keybinding */ = {
+			isa = PBXGroup;
+			children = (
+				EC2DA5B015CC964000087AA4 /* KeyActions.cpp */,
+				EC2DA5B115CC964000087AA4 /* KeyActions.h */,
+				EC2DA5B215CC964000087AA4 /* Keys.cpp */,
+				EC2DA5B315CC964000087AA4 /* Keys.h */,
+				EC2DA5B415CC964000087AA4 /* Utils.cpp */,
+				EC2DA5B515CC964000087AA4 /* Utils.h */,
+			);
+			name = keybinding;
 			sourceTree = "<group>";
 		};
 		EC360B78130DC50500D4CAE6 /* mixer */ = {
@@ -1588,6 +1614,9 @@
 				EC0E5CBE15645B9200A2ACAC /* ConvFont.h in Headers */,
 				ECFB30DE15B4BFF80080AB19 /* MDActor.h in Headers */,
 				ECFB30E015B4BFF80080AB19 /* SEActor.h in Headers */,
+				EC2DA5B715CC964000087AA4 /* KeyActions.h in Headers */,
+				EC2DA5B915CC964000087AA4 /* Keys.h in Headers */,
+				EC2DA5BB15CC964000087AA4 /* Utils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1863,6 +1892,9 @@
 				EC0E5CBD15645B9200A2ACAC /* ConvFont.cpp in Sources */,
 				ECFB30DD15B4BFF80080AB19 /* MDActor.cpp in Sources */,
 				ECFB30DF15B4BFF80080AB19 /* SEActor.cpp in Sources */,
+				EC2DA5B615CC964000087AA4 /* KeyActions.cpp in Sources */,
+				EC2DA5B815CC964000087AA4 /* Keys.cpp in Sources */,
+				EC2DA5BA15CC964000087AA4 /* Utils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,3 +1,6 @@
+2012-08-04  Eric Fry <efry at users.sourceforge.net> r1481
+	* Added keybinding files to Xcode and eclipse build configs.
+
 2012-08-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1480
 	* Fix actor alignment not changing on join or leave. It fixes itself on
 		when the save loads up so you don't need to do anything. [3552309]
