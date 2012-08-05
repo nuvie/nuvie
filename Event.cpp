@@ -704,7 +704,7 @@ bool Event::attack()
     else
         {
     		Obj *obj = map_window->get_objAtCursor();
-    		if(obj && !map_window->tile_is_black(obj->x, obj->y, obj) && !(obj->status & OBJ_STATUS_INVISIBLE))
+    		if(obj && (!obj->is_on_map() || (!map_window->tile_is_black(obj->x, obj->y, obj) && !(obj->status & OBJ_STATUS_INVISIBLE))))
     		{
     			scroll->display_string(obj_manager->get_obj_name(obj->obj_n, obj->frame_n));
     			scroll->display_string(".\n");
@@ -836,7 +836,7 @@ bool Event::use(Obj *obj)
 {
     if(game->user_paused())
         return false;
-    if(obj && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(obj->x, obj->y, obj)))
+    if(obj && obj->is_on_map() && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(obj->x, obj->y, obj)))
     {
         Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
         if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
@@ -926,7 +926,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  if(game->user_paused())
     return false;
 
- if(obj && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(obj->x, obj->y, obj)))
+ if(obj && obj->is_on_map() && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(obj->x, obj->y, obj)))
  {
     Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
     if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
@@ -1054,7 +1054,7 @@ bool Event::lookAtLocation(bool cursor, uint16 x, uint16 y, uint8 z)
    actor = game->get_actor_manager()->get_actor(x, y, z);
  }
 
- if(obj && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(x, y, obj)))
+ if(obj && obj->is_on_map() && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(x, y, obj)))
  {
    Obj *bottom_obj = obj_manager->get_obj(x, y, obj->z, false);
    if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
@@ -2578,8 +2578,9 @@ void Event::doAction()
 
     if(mode == LOOK_MODE)
     {
-        if(input.type == EVENTINPUT_OBJECT && input.obj && !(input.obj->status & OBJ_STATUS_INVISIBLE)
-           && !map_window->tile_is_black(input.obj->x, input.obj->y, input.obj))
+        if(input.type == EVENTINPUT_OBJECT && input.obj && (!input.obj->is_on_map()
+           || (!(input.obj->status & OBJ_STATUS_INVISIBLE)
+           && !map_window->tile_is_black(input.obj->x, input.obj->y, input.obj))))
         {   // look() returns false if prompt was already printed
             bool prompt_in_endAction = look(input.obj);
             endAction(prompt_in_endAction);
