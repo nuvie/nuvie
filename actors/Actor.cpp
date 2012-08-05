@@ -594,7 +594,8 @@ void Actor::set_in_party(bool state)
         can_move = true;
         set_worktype(0x01); // U6_IN_PARTY
         status_flags |= ACTOR_STATUS_IN_PARTY;
-        set_alignment(ACTOR_ALIGNMENT_GOOD);
+        if(!is_charmed())
+            set_alignment(ACTOR_ALIGNMENT_GOOD);
     }
     else // left
     {
