@@ -67,7 +67,7 @@ bool InventoryView::set_party_member(uint8 party_member)
  picking_pocket = false;
 
  if(View::set_party_member(party_member)
-    && party->main_actor_is_in_party())
+    && !Game::get_game()->get_event()->using_control_cheat())
   {
    is_party_member = true;
    if(doll_widget)

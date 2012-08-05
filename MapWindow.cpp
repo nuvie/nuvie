@@ -434,7 +434,7 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
    return "darkness."; // nothing to see here. ;)
 
  actor = actor_manager->get_actor(cur_x + x, cur_y + y, cur_level);
- if(actor != NULL)
+ if(actor != NULL && actor->is_visible())
    return actor_manager->look_actor(actor, show_prefix);
 
  return map->look(cur_x + x, cur_y + y, cur_level);

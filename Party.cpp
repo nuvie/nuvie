@@ -40,6 +40,7 @@
 #include "Party.h"
 #include "View.h"
 #include "Objlist.h"
+#include "Event.h"
 
 Party::Party(Configuration *cfg)
 {
@@ -199,7 +200,7 @@ bool Party::remove_actor(Actor *actor, bool keep_party_flag)
 {
  if(defer_removing_dead_members) //we don't want to remove member while inside the Party::follow() method.
 	 return true;
-
+ Game::get_game()->get_event()->set_control_cheat(false);
  uint8 i;
 
  for(i=0;i< num_in_party;i++)
@@ -224,7 +225,8 @@ bool Party::remove_actor(Actor *actor, bool keep_party_flag)
       View *cur_view = Game::get_game()->get_view_manager()->get_current_view();
       if(cur_view && cur_view->get_party_member_num() >= num_in_party)
         cur_view->set_party_member(num_in_party - 1);
-
+      else if(cur_view)
+        cur_view->set_party_member(cur_view->get_party_member_num()); // needed if a middle party member dies
       return true;
      }
   }
@@ -242,7 +244,13 @@ bool Party::resurrect_dead_members()
   uint16 i;
   Actor *actor;
   MapCoord new_pos = get_leader_location();
-  
+  if(Game::get_game()->get_event()->using_control_cheat())
+  {
+     Game::get_game()->get_event()->set_control_cheat(false);
+     Game::get_game()->get_view_manager()->set_inventory_mode();
+     Game::get_game()->get_view_manager()->get_current_view()->set_party_member(0);
+  }
+
   for(i = 0; i < ACTORMANAGER_MAX_ACTORS; i++)
   {
     actor = actor_manager->get_actor(i);
@@ -956,14 +964,6 @@ Obj *Party::get_food()
             return food;
     }
     return 0;
-}
-
-bool Party::main_actor_is_in_party()
-{
-	Player *player = game->get_player();
-
-	return (contains_actor(player->get_actor())
-	        || player->get_actor()->get_actor_num() == 0); // vehicle
 }
 
 void Party::set_combat_target(uint8 member_num, Actor *target)

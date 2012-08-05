@@ -111,6 +111,7 @@ Event::Event(Configuration *cfg)
  time_queue = game_time_queue = NULL;
  showingQuitDialog = false;
  ignore_timeleft = false;
+ in_control_cheat = false;
 
  mode = MOVE_MODE;
  last_mode = MOVE_MODE;
@@ -644,7 +645,7 @@ bool Event::talk(Actor *actor)
 bool Event::talk_cursor()
 {
     Actor *actor = map_window->get_actorAtCursor();
-    if(actor)
+    if(actor && input.actor->is_visible())
         return talk(actor);
     return talk(map_window->get_objAtCursor());
 }
@@ -760,7 +761,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
     if(!actor)
         actor = player->get_actor();
 
-    if(obj && obj->is_on_map())
+    if(obj && obj->is_on_map() && !map_window->tile_is_black(obj->x, obj->y))
     {
         scroll->display_string(obj_manager->look_obj(obj));
 
@@ -1033,7 +1034,9 @@ bool Event::lookAtLocation(bool cursor, uint16 x, uint16 y, uint8 z)
  if(game->user_paused())
    return false;
 
- if(actor)
+ if(map_window->tile_is_black(x, y))
+   scroll->display_string("Thou dost see darkness.\n");
+ else if(actor && actor->is_visible())
    display_prompt = !look(actor);
  else if(obj && !(obj->status & OBJ_STATUS_INVISIBLE)) // don't display weight or do usecode for obj under actor or invisible objects
   {
@@ -1285,6 +1288,10 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         push_obj = obj_manager->get_obj((uint16)(from.x+rel_x), (uint16)(from.y+rel_y), from.z);
         push_actor = actor_manager->get_actor((uint16)(from.x+rel_x), (uint16)(from.y+rel_y), from.z);
     }
+    if(map_window->tile_is_black(from.x + rel_x, from.y + rel_y))
+    {
+        push_obj = NULL; push_actor = NULL;
+    }
     if(push_obj
        && (obj_manager->get_obj_weight(push_obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS) == 0))
         push_obj = NULL;
@@ -1408,7 +1415,7 @@ void Event::alt_code_input(const char *in)
             break;
 
         case 414: // teleport player & party to NPC location
-            if(a->get_z() > 5)
+            if(a->get_z() > 5 || strcmp(a->get_name(true), "Nothing") == 0)
                 scroll->display_string("\nnpc is invalid or at invalid location");
             else
                 alt_code_teleport_to_person((uint32)strtol(in, NULL, 10));
@@ -1418,20 +1425,24 @@ void Event::alt_code_input(const char *in)
             break;
 
         case 500: // control/watch anyone
-            if(a->get_z() > 5 || a->get_actor_num() == 0)
+            if(a->get_z() > 5 || a->get_actor_num() == 0 || strcmp(a->get_name(true), "Nothing") == 0)
                 scroll->display_string("\nnpc is invalid or at invalid location\n\n");
           else
           {
             player->set_actor(a);
             player->set_mapwindow_centered(true);
             view_manager->set_inventory_mode(); // reset inventoryview
-            if(game->get_party()->main_actor_is_in_party())
+            if(game->get_party()->contains_actor(player->get_actor()))
             {
+                in_control_cheat = false;
                 uint8 member_num = game->get_party()->get_member_num(player->get_actor());
                 view_manager->get_inventory_view()->set_party_member(member_num);
             }
             else
+            {
+                in_control_cheat = true;
                 view_manager->get_inventory_view()->set_actor(player->get_actor());
+            }
             scroll->display_string("\n");
           }
             scroll->display_prompt();
@@ -1909,7 +1920,7 @@ void Event::quitDialog()
 
 void Event::saveDialog()
 {
- if(!player->get_party()->main_actor_is_in_party())
+ if(in_control_cheat)
  {
 	scroll->display_string("\nNot when using the control npc cheat!\n\n");
 	scroll->display_prompt();
@@ -1957,8 +1968,6 @@ void Event::solo_mode(uint32 party_member)
     if(!actor || player->is_in_vehicle())
         return;
 
-    bool main_actor_was_not_in_party = !player->get_party()->main_actor_is_in_party();
-
     if(player->get_party()->is_in_combat_mode())
         scroll->display_string("Not in combat mode!\n\n");
     else if(player->set_solo_mode(actor))
@@ -1968,26 +1977,32 @@ void Event::solo_mode(uint32 party_member)
         actor->set_worktype(0x02); // Player
         if(view_manager->get_current_view() == view_manager->get_inventory_view())
         {
-            if(main_actor_was_not_in_party)
-                view_manager->set_inventory_mode(); // reset inventory view
+            if(in_control_cheat)
+            {
+                in_control_cheat = false;
+            }
             view_manager->get_inventory_view()->set_party_member(party_member);
         }
         else if(view_manager->get_current_view() == view_manager->get_actor_view())
         {
-            if(main_actor_was_not_in_party)
-                view_manager->set_actor_mode(); // reset actor view
+            if(in_control_cheat)
+                in_control_cheat = false;
             view_manager->get_actor_view()->set_party_member(party_member);
         }
     }
     scroll->display_prompt();
+    in_control_cheat = false;
 }
 
 /* Switch to party mode. */
 void Event::party_mode()
 {
     MapCoord leader_loc;
-    if(!player->get_party()->main_actor_is_in_party())
+    if(in_control_cheat)
+    {
+        in_control_cheat = false;
         view_manager->set_party_mode();
+    }
     Actor *actor = player->get_party()->get_actor(0);
     assert(actor); // there must be a leader
 
@@ -2030,7 +2045,7 @@ bool Event::toggle_combat()
     {
          display_not_aboard_vehicle();
     }
-    else if(!player->get_party()->main_actor_is_in_party())
+    else if(in_control_cheat)
     {
          scroll->display_string("\nNot while using control cheat!\n\n");
          scroll->display_prompt();
@@ -2533,7 +2548,7 @@ void Event::doAction()
             bool prompt_in_endAction = look(input.obj);
             endAction(prompt_in_endAction);
         }
-        else if(input.type == EVENTINPUT_MAPCOORD && input.actor)
+        else if(input.type == EVENTINPUT_MAPCOORD && input.actor && input.actor->is_visible())
         {
             bool prompt = !look(input.actor);
             endAction(prompt);
@@ -2549,7 +2564,7 @@ void Event::doAction()
         //			scroll->set_talking(true);
         if(input.type == EVENTINPUT_OBJECT)
             talk(input.obj);
-        else if(input.type == EVENTINPUT_MAPCOORD && input.actor)
+        else if(input.type == EVENTINPUT_MAPCOORD && input.actor && input.actor->is_visible())
             talk(input.actor);
         else
             talk_cursor();
@@ -3021,7 +3036,7 @@ bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *targe
 			scroll->display_string(".\n\n");
 		}
 
-		if(!target_actor->is_in_party())
+		if(!target_actor->is_in_party() && target_actor != player->get_actor())
 		{
 			scroll->display_string("Only within the party!\n\n");
 			return false;

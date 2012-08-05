@@ -600,6 +600,8 @@ void Actor::set_in_party(bool state)
     {
         if(is_alive() == true)
           {
+           if(is_invisible())
+               visible_flag = false;
            inventory_drop_all();
            set_worktype(0x8f); // U6_WANDER_AROUND
            status_flags ^= ACTOR_STATUS_IN_PARTY;
@@ -1872,9 +1874,16 @@ const char *get_actor_alignment_str(uint8 alignment)
 void Actor::set_invisible(bool invisible)
 {
     if(invisible)
+    {
+        if(!is_in_party())
+            visible_flag = false;
         obj_flags |= OBJ_STATUS_INVISIBLE;
+    }
     else
+    {
+        visible_flag = true;
         obj_flags &= ~OBJ_STATUS_INVISIBLE;
+    }
 }
 
 sint8 Actor::count_readied_objects(sint32 obj_n, sint16 frame_n, sint16 quality)

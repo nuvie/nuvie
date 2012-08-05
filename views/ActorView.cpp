@@ -32,6 +32,7 @@
 #include "ActorView.h"
 #include "Text.h"
 #include "Player.h"
+#include "Event.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status partyViewButtonCallback(void *data);
@@ -72,7 +73,7 @@ bool ActorView::set_party_member(uint8 party_member)
  in_party = false;
 
  if(View::set_party_member(party_member)
-   && party->main_actor_is_in_party())
+    && !Game::get_game()->get_event()->using_control_cheat())
  {
     in_party = true;
     if(party_button) party_button->Show();

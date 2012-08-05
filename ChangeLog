@@ -1,3 +1,9 @@
+2012-08-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1483
+	* Fix inventory and actor view on death (mostly caused by control cheat)
+	* Fix visibile_flag for actors and add some checks for it
+	* Fix mouse selection returns obj in black tiles for move and get
+	* Add check to not allow invalid npcs for teleport or control cheat
+
 2012-08-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1482
 	* Allow talking to Smith with double click
 	* Add look_on_left_click option. It only works in the map area.

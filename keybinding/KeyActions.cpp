@@ -138,7 +138,7 @@ void ActionNewInventory(int *params)
 
 void ActionInventory(int *params)
 {
-	if(!player->get_party()->main_actor_is_in_party() || params[0] == 0)
+	if(event->using_control_cheat() || params[0] == 0)
 		return;
 	if(player->get_party()->get_party_size() >= params[0])
 	{
@@ -149,15 +149,14 @@ void ActionInventory(int *params)
 
 void ActionPartyView(int *params)
 {
-	if(player->get_party()->main_actor_is_in_party())
+	if(!event->using_control_cheat())
 		view_manager->set_party_mode();
 }
 
 void ActionNextInventory(int *params)
 {
 	uint8 party_num = inventory_view->get_party_member_num();
-	if(!player->get_party()->main_actor_is_in_party()
-	   || player->get_party()->get_party_size() < party_num+2)
+	if(event->using_control_cheat() || player->get_party()->get_party_size() < party_num+2)
 		return;
 	if(game->is_orig_style() && inventory_view->set_party_member(party_num+1))
 		view_manager->set_inventory_mode();
@@ -166,7 +165,7 @@ void ActionNextInventory(int *params)
 void ActionPreviousInventory(int *params)
 {
 	uint8 party_num = inventory_view->get_party_member_num();
-	if(!player->get_party()->main_actor_is_in_party() || party_num < 1)
+	if(event->using_control_cheat() || party_num < 1)
 		return;
 	if(game->is_orig_style() && inventory_view->set_party_member(party_num-1))
 		view_manager->set_inventory_mode();

@@ -49,6 +49,7 @@
 #include "CommandBar.h"
 #include "Weather.h"
 #include "Script.h"
+#include "Event.h"
 
 #ifdef WIN32
   #define OBJLIST_FILENAME "savegame\\objlist"
@@ -266,6 +267,7 @@ bool SaveGame::load_objlist()
  portrait->load(&objlist); //load avatar portrait number.
 
  game->get_script()->call_load_game(&objlist);
+ game->get_event()->set_control_cheat(false);
 
  view_manager->reload();
 

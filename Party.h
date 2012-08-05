@@ -157,7 +157,6 @@ class Party {
  bool is_leader(Actor *actor) { return(get_member_num(actor) == get_leader()); }
  bool contains_actor(Actor *actor);
  bool contains_actor(uint8 actor_num);
- bool main_actor_is_in_party();
 
  // Check entire party
  bool is_at(uint16 x, uint16 y, uint8 z, uint32 threshold = 0);

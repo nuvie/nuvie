@@ -145,6 +145,7 @@ friend class Magic; // FIXME
  bool showingQuitDialog;
  bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
  bool move_in_inventory;
+ bool in_control_cheat;
 
  public:
  Event(Configuration *cfg);
@@ -248,6 +249,8 @@ friend class Magic; // FIXME
  bool can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *target_actor, bool display_name = false);
  void display_not_aboard_vehicle(bool show_prompt = true);
  void display_move_text(Actor *target_actor, Obj *obj);
+ bool using_control_cheat() { return in_control_cheat; }
+ void set_control_cheat(bool control_cheat) { in_control_cheat = control_cheat; }
 
  bool rest();
  bool rest_input(uint16 input);

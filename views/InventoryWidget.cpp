@@ -37,7 +37,6 @@
 #include "UseCode.h"
 #include "MapWindow.h"
 #include "Player.h"
-#include "Party.h"
 #include "CommandBar.h"
 
 #include "InventoryFont.h"
@@ -433,11 +432,10 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 				event->select_actor(actor);
 			 return GUI_YUM;
 		}
-		bool in_party = Game::get_game()->get_party()->main_actor_is_in_party();
 
 			 if(is_showing_container())
 				 set_prev_container(); //return to previous container or main actor inventory
-			 else if(in_party)
+			 else if(!event->using_control_cheat())
 				 Game::get_game()->get_view_manager()->set_party_mode();
 
        Redraw();
