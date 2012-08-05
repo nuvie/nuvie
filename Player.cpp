@@ -295,7 +295,10 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 			NUVIE_DIR_NW, NUVIE_DIR_W, NUVIE_DIR_SW, NUVIE_DIR_W, NUVIE_DIR_NW, NUVIE_DIR_SW, NUVIE_DIR_W, NUVIE_DIR_W,
 			NUVIE_DIR_NW, NUVIE_DIR_N, NUVIE_DIR_W, NUVIE_DIR_NW, NUVIE_DIR_N, NUVIE_DIR_NW, NUVIE_DIR_W, NUVIE_DIR_NW
 	};
+	const uint8 ship_cost[8] = {0xA, 5, 3, 4, 5, 4, 3, 5};
+	const uint8 skiff_cost[8] = {3, 4, 5, 7, 0xA, 7, 5, 4};
 
+	uint8 wind_dir = Game::get_game()->get_weather()->get_wind_dir();
     uint16 x, y;
     uint8 z;
     actor->get_location(&x, &y, &z);
@@ -311,15 +314,18 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     			{
     				Game::get_game()->get_scroll()->display_string("Thou canst not move without wind!\n\n");
     				Game::get_game()->get_scroll()->display_prompt();
-    				return;
+    				actor->set_moves_left(0);
+    				rel_x = 0;
+    				rel_y = 0;
     			}
-
-    			get_relative_dir(dir, &rel_x, &rel_y);
+    			else
+    			{
+    				get_relative_dir(dir, &rel_x, &rel_y);
+    			}
     		}
     		else if(actor->obj_n == OBJ_U6_RAFT)
     		{
     			uint8 dir = 0;
-    			uint8 wind_dir = Game::get_game()->get_weather()->get_wind_dir();
     			Tile *t = Game::get_game()->get_game_map()->get_tile(x, y, z, true);
     			if(t->flags1&TILEFLAG_BLOCKING) //deep water tiles are blocking. Shore tiles should allow player movement.
     			{
@@ -352,44 +358,89 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     	}
     }
 
+    bool can_move = true;
     // don't allow diagonal move between blocked tiles (player only)
     if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS)
                       && !actor->check_move(x + 0, y + rel_y, z, ACTOR_IGNORE_OTHERS))
-        return;
+        can_move = false;
     if(actor->is_immobile() && actor->id_n != 0)
-        return;
+        can_move = false;
 
     actor->set_direction(rel_x, rel_y);
 
-    if(!actor->moveRelative(rel_x, rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
+    if(can_move)
     {
-        ActorError *ret = actor->get_error();
-        if(ret->err == ACTOR_BLOCKED_BY_ACTOR
-           && party->contains_actor(ret->blocking_actor) && ret->blocking_actor->is_immobile() == false)
-        {
-            ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
-        }
-        if(!actor->moveRelative(rel_x,rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
-        {
-           Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
-           return;
-        }
+		if(!actor->moveRelative(rel_x, rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
+		{
+			ActorError *ret = actor->get_error();
+			if(ret->err == ACTOR_BLOCKED_BY_ACTOR
+			   && party->contains_actor(ret->blocking_actor) && ret->blocking_actor->is_immobile() == false)
+			{
+				ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
+			}
+			if(!actor->moveRelative(rel_x,rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
+			{
+			   Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
+			   can_move = false;
+			   if(actor->id_n == 0) //vehicle actor.
+			   {
+				   actor->set_moves_left(0); //zero movement points here so U6 can change wind direction by advancing game time.
+			   }
+			}
+		}
     }
+
     // post-move
-
-    if(party_mode && party->is_leader(actor)) // lead party
+    if(can_move)
     {
-        party->follow(rel_x, rel_y);
-    }
-    else if(actor->id_n == 0) // using vehicle; drag party along
-    {
-        MapCoord new_xyz = actor->get_location();
-        party->move(new_xyz.x, new_xyz.y, new_xyz.z);
-    }
+		if(party_mode && party->is_leader(actor)) // lead party
+		{
+			party->follow(rel_x, rel_y);
+		}
+		else if(actor->id_n == 0) // using vehicle; drag party along
+		{
+			MapCoord new_xyz = actor->get_location();
+			party->move(new_xyz.x, new_xyz.y, new_xyz.z);
+		}
 
-    actor->set_moves_left(actor->get_moves_left() - (PLAYER_BASE_MOVEMENT_COST+Game::get_game()->get_game_map()->get_impedance(x, y, z)));
-    if(rel_x != 0 && rel_y != 0) // diagonal move, double cost
-    	actor->set_moves_left(actor->get_moves_left() - PLAYER_BASE_MOVEMENT_COST);
+		if(game_type == NUVIE_GAME_U6 && (actor->obj_n == OBJ_U6_INFLATED_BALLOON || actor->obj_n == OBJ_U6_RAFT))
+		{
+			actor->set_moves_left(actor->get_moves_left() - PLAYER_BASE_MOVEMENT_COST);
+		}
+		else if(game_type == NUVIE_GAME_U6 && actor->obj_n == OBJ_U6_SHIP && wind_dir != WEATHER_WIND_CALM)
+		{
+			uint8 nuvie_dir = get_direction_code(rel_x, rel_y);
+			if(nuvie_dir != NUVIE_DIR_NONE)
+			{
+				sint8 dir = get_original_dir_code(nuvie_dir);
+
+				actor->set_moves_left(actor->get_moves_left() - ship_cost[abs(dir-wind_dir)]);
+				//DEBUG(0, LEVEL_DEBUGGING, "Ship movement cost = %d\n", ship_cost[abs(dir-wind_dir)]);
+			}
+		}
+		else if(game_type == NUVIE_GAME_U6 && actor->obj_n == OBJ_U6_SKIFF)
+		{
+			uint8 nuvie_dir = get_direction_code(rel_x, rel_y);
+			if(nuvie_dir != NUVIE_DIR_NONE)
+			{
+				sint8 dir = get_original_dir_code(nuvie_dir);
+				sint8 water_dir = dir;
+				Tile *t = Game::get_game()->get_game_map()->get_tile(x, y, z, true);
+				if(t->tile_num >= 8 && t->tile_num < 16)
+				{
+					dir = t->tile_num - 8;
+				}
+				actor->set_moves_left(actor->get_moves_left() - skiff_cost[abs(dir-water_dir)]);
+				//DEBUG(0, LEVEL_DEBUGGING, "Skiff movement cost = %d\n", skiff_cost[abs(dir-water_dir)]);
+			}
+		}
+		else
+		{
+			actor->set_moves_left(actor->get_moves_left() - (PLAYER_BASE_MOVEMENT_COST+Game::get_game()->get_game_map()->get_impedance(x, y, z)));
+			if(rel_x != 0 && rel_y != 0) // diagonal move, double cost
+				actor->set_moves_left(actor->get_moves_left() - PLAYER_BASE_MOVEMENT_COST);
+		}
+    }
 
     // update world around player
     actor_manager->updateActors(x, y, z);
@@ -459,7 +510,7 @@ void Player::pass()
 // actor_manager->updateActors(x, y, z); // not needed because position is unchanged
  clock->inc_move_counter_by_a_minute(); // doesn't update time
  actor_manager->startActors(); // end player turn
- actor_manager->moveActors();
+ //actor_manager->moveActors();
  Game::get_game()->time_changed();
 }
 

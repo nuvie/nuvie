@@ -415,6 +415,25 @@ uint8 get_nuvie_dir_code(uint8 original_dir_code)
 	return dir;
 }
 
+sint8 get_original_dir_code(uint8 nuvie_dir_code)
+{
+	sint8 dir = -1;
+	//convert nuvie direction into original direction.
+	switch(nuvie_dir_code)
+	{
+	case NUVIE_DIR_N:  dir = 0; break;
+	case NUVIE_DIR_NE: dir = 1; break;
+	case NUVIE_DIR_E:  dir = 2; break;
+	case NUVIE_DIR_SE: dir = 3; break;
+	case NUVIE_DIR_S:  dir = 4; break;
+	case NUVIE_DIR_SW: dir = 5; break;
+	case NUVIE_DIR_W:  dir = 6; break;
+	case NUVIE_DIR_NW: dir = 7; break;
+	default: break;
+	}
+
+	return dir;
+}
 /* Returns direction code of relative direction.
  */
 uint8 get_direction_code(sint16 rel_x, sint16 rel_y)

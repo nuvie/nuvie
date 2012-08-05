@@ -1,3 +1,15 @@
+2012-08-05  Eric Fry <efry at users.sourceforge.net> r1484
+	* Fixed bug "time doesn't update when player movement is blocked" [3542999]
+	  This bug should really be renamed to time should update for vehicle actors
+	  when they are blocked. The original didn't deduct movement points for blocked
+	  actors which causes problems for stuck rafts or balloons as the wind direction
+	  never changes in Nuvie. To fix this I zero out the player's movement points
+	  when the vechicle gets stuck. This forces another game turn which increments
+	  the game clock.
+	* Added proper movement point deductions for U6 vehicle actors.
+	* Added get_original_dir_code() which maps nuvie direction codes back
+	  to original direction codes.
+
 2012-08-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1483
 	* Fix inventory and actor view on death (mostly caused by control cheat)
 	* Fix visibile_flag for actors and add some checks for it

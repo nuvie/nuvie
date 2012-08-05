@@ -41,6 +41,7 @@ using std::string;
 
 #define WEATHER_CB_CHANGE_WIND_DIR 1
 #define WEATHER_CB_END_ECLIPSE     2
+#define WEATHER_WIND_CALM 8
 
 class Weather: public CallBack
 {
