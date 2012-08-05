@@ -114,8 +114,8 @@ void Actor::init_from_obj(Obj *obj)
  frame_n = obj->frame_n;
  obj_flags = obj->status;
 
- init();
  set_dead_flag(false);
+ init();
  show();
  return;
 }

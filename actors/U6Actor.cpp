@@ -77,7 +77,9 @@ bool U6Actor::init()
  if(has_surrounding_objs())
    clear_surrounding_objs_list(); //clean up the old list if required.
 
- switch(obj_n) //gather surrounding objects from map if required
+ if(is_alive()) //only try to init multi-tile actors if they are alive.
+ {
+  switch(obj_n) //gather surrounding objects from map if required
   {
    case OBJ_U6_SHIP : init_ship(); break;
 
@@ -97,7 +99,7 @@ bool U6Actor::init()
 
    default : break;
   }
-
+ }
 
  if(actor_type->can_sit) // For some reason U6 starts with actors standing on their chairs.
    {                     // We need to sit them down.

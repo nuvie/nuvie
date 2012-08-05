@@ -1,3 +1,7 @@
+2012-08-05  Eric Fry <efry at users.sourceforge.net> r1486
+	* Fixed bug "Segmentation fault on game load" [3554453]
+	  Don't load multi-tile actors like hydras when they are dead.
+
 2012-08-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1485
 	* Removed the ability to move, get, look, use, and drag objects that are on
 		the blacked out side of a wall.
