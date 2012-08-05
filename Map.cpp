@@ -345,7 +345,8 @@ const char *Map::look(uint16 x, uint16 y, uint8 level)
  WRAP_COORD(x,level);
  WRAP_COORD(y,level);
  obj = obj_manager->get_obj(x, y, level);
- if(obj != NULL && !(obj->status & OBJ_STATUS_INVISIBLE)) //only show visible objects.
+ if(obj != NULL && !(obj->status & OBJ_STATUS_INVISIBLE) //only show visible objects.
+    && !Game::get_game()->get_map_window()->tile_is_black(obj->x, obj->y, obj))
  {
    //      tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
    //      tile_num = tile->tile_num;

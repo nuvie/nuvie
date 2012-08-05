@@ -1,3 +1,14 @@
+2012-08-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1485
+	* Removed the ability to move, get, look, use, and drag objects that are on
+		the blacked out side of a wall.
+	* Stopped invisible and blacked out actors and objects displaying their
+		name when attacked and fixed attack not displaying the tile name
+	* Stopped using, looking, and moving invisible objects. Stopped moving and
+		using of invisible actors
+	* Stopped dragging invisible or blacked out objects
+	* Fixed frame 2 secret door not opening on search
+	* Hacked work around for secret door frame 2 when objects are on the other side
+
 2012-08-05  Eric Fry <efry at users.sourceforge.net> r1484
 	* Fixed bug "time doesn't update when player movement is blocked" [3542999]
 	  This bug should really be renamed to time should update for vehicle actors

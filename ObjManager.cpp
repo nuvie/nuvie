@@ -36,6 +36,7 @@
 #include "U6LList.h"
 #include "NuvieIOFile.h"
 #include "Game.h"
+#include "MapWindow.h"
 
 static const int obj_egg_table[5] = {0,   // NUVIE_GAME_NONE
                                      335, // NUVIE_GAME_U6
@@ -897,7 +898,8 @@ bool ObjManager::can_get_obj(Obj *obj)
 	if(obj == NULL)
 		return false;
 	float weight = get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE, OBJ_WEIGHT_EXCLUDE_QTY);
-	if((weight != 0 && weight != 255 && has_toptile(obj) == false)
+	if((weight != 0 && weight != 255 && has_toptile(obj) == false
+	    && !Game::get_game()->get_map_window()->tile_is_black(obj->x, obj->y, obj))
 	    || Game::get_game()->using_hackmove())
 		return true;
 

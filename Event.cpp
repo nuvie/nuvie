@@ -685,7 +685,9 @@ bool Event::attack()
 	MapCoord target = map_window->get_cursorCoord();
     Actor *actor = map_window->get_actorAtCursor();
 
-    if(actor)
+    if(map_window->tile_is_black(target.x, target.y))
+        scroll->display_string("nothing!\n");
+    else if(actor && actor->is_visible())
         {
     		if(actor->get_actor_num() == player->get_actor()->get_actor_num()) //don't attack yourself.
     		{
@@ -702,14 +704,15 @@ bool Event::attack()
     else
         {
     		Obj *obj = map_window->get_objAtCursor();
-    		if(obj)
+    		if(obj && !map_window->tile_is_black(obj->x, obj->y, obj) && !(obj->status & OBJ_STATUS_INVISIBLE))
     		{
     			scroll->display_string(obj_manager->get_obj_name(obj->obj_n, obj->frame_n));
     			scroll->display_string(".\n");
     		}
     		else
     		{
-    			scroll->display_string("nothing!\n");
+    			scroll->display_string(game->get_game_map()->look(target.x, target.y, target.z));
+    			scroll->display_string(".\n");
     		}
         }
 
@@ -761,7 +764,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
     if(!actor)
         actor = player->get_actor();
 
-    if(obj && obj->is_on_map() && !map_window->tile_is_black(obj->x, obj->y))
+    if(obj && obj->is_on_map() && !map_window->tile_is_black(obj->x, obj->y, obj))
     {
         scroll->display_string(obj_manager->look_obj(obj));
 
@@ -833,6 +836,15 @@ bool Event::use(Obj *obj)
 {
     if(game->user_paused())
         return false;
+    if(obj && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(obj->x, obj->y, obj)))
+    {
+        Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
+        if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
+           && !map_window->tile_is_black(obj->x, obj->y, bottom_obj))
+            obj = bottom_obj;
+        else
+            obj = NULL;
+    }
     if(!obj)
     {
         scroll->display_string("nothing\n");
@@ -875,7 +887,7 @@ bool Event::use(Actor *actor)
     MapCoord target = actor->get_location();
     Obj *obj = actor->make_obj();
 
-    if(usecode->has_usecode(actor))
+    if(!map_window->tile_is_black(obj->x, obj->y) && usecode->has_usecode(actor))
     {
         scroll->display_string(obj_manager->look_obj(obj));
         scroll->display_string("\n");
@@ -914,6 +926,15 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  if(game->user_paused())
     return false;
 
+ if(obj && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(obj->x, obj->y, obj)))
+ {
+    Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
+    if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
+       && !map_window->tile_is_black(obj->x, obj->y, bottom_obj))
+        obj = bottom_obj;
+    else
+        obj = NULL;
+ }
  if(obj) // FIXME: try actor first
     return(use(obj));
  else if(actor && actor->is_visible())
@@ -1022,6 +1043,8 @@ bool Event::lookAtLocation(bool cursor, uint16 x, uint16 y, uint8 z)
 
  if(cursor)
  {
+   x = map_window->get_cursorCoord().x;
+   y = map_window->get_cursorCoord().y;
    obj = map_window->get_objAtCursor();
    actor = map_window->get_actorAtCursor();
  }
@@ -1031,6 +1054,15 @@ bool Event::lookAtLocation(bool cursor, uint16 x, uint16 y, uint8 z)
    actor = game->get_actor_manager()->get_actor(x, y, z);
  }
 
+ if(obj && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(x, y, obj)))
+ {
+   Obj *bottom_obj = obj_manager->get_obj(x, y, obj->z, false);
+   if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
+      && !map_window->tile_is_black(x, y, bottom_obj))
+     obj = bottom_obj;
+   else
+     obj = NULL;
+ }
  if(game->user_paused())
    return false;
 
@@ -1038,7 +1070,7 @@ bool Event::lookAtLocation(bool cursor, uint16 x, uint16 y, uint8 z)
    scroll->display_string("Thou dost see darkness.\n");
  else if(actor && actor->is_visible())
    display_prompt = !look(actor);
- else if(obj && !(obj->status & OBJ_STATUS_INVISIBLE)) // don't display weight or do usecode for obj under actor or invisible objects
+ else if(obj)
   {
    if(look(obj))
      search(obj);
@@ -1288,22 +1320,25 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         push_obj = obj_manager->get_obj((uint16)(from.x+rel_x), (uint16)(from.y+rel_y), from.z);
         push_actor = actor_manager->get_actor((uint16)(from.x+rel_x), (uint16)(from.y+rel_y), from.z);
     }
-    if(map_window->tile_is_black(from.x + rel_x, from.y + rel_y))
+    if(map_window->tile_is_black(from.x + rel_x, from.y + rel_y, push_obj))
     {
-        push_obj = NULL; push_actor = NULL;
+        scroll->display_string("nothing.\n\n");
+        scroll->display_prompt();
+        endAction();
+        return false;
     }
     if(push_obj
        && (obj_manager->get_obj_weight(push_obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS) == 0))
         push_obj = NULL;
 
     MapCoord target;
-    if(push_actor)
+    if(push_actor && push_actor->is_visible())
     {
         target = push_actor->get_location();
         scroll->display_string(push_actor->get_name());
         push_obj = NULL;
     }
-    else if(push_obj)
+    else if(push_obj && !(push_obj->status & OBJ_STATUS_INVISIBLE))
     {
         target = MapCoord(push_obj->x, push_obj->y, push_obj->z);
         scroll->display_string(obj_manager->look_obj(push_obj));
@@ -2543,7 +2578,8 @@ void Event::doAction()
 
     if(mode == LOOK_MODE)
     {
-        if(input.type == EVENTINPUT_OBJECT)
+        if(input.type == EVENTINPUT_OBJECT && input.obj && !(input.obj->status & OBJ_STATUS_INVISIBLE)
+           && !map_window->tile_is_black(input.obj->x, input.obj->y, input.obj))
         {   // look() returns false if prompt was already printed
             bool prompt_in_endAction = look(input.obj);
             endAction(prompt_in_endAction);
@@ -2576,7 +2612,7 @@ void Event::doAction()
             use(input.obj);
     	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
     	{
-            if(input.actor && usecode->has_usecode(input.actor))
+            if(input.actor && input.actor->is_visible() && usecode->has_usecode(input.actor))
             	use(input.actor);
             else
             	use(input.loc->sx,input.loc->sy);

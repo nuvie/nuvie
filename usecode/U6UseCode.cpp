@@ -705,7 +705,7 @@ bool U6UseCode::use_secret_door(Obj *obj, UseCodeEvent ev)
     else if(ev == USE_EVENT_SEARCH)
     {
         scroll->display_string("a secret door");
-        if(obj->frame_n == 0)
+        if(obj->frame_n == 0 || obj->frame_n == 2)
             obj->frame_n++;
         return(true);
     }

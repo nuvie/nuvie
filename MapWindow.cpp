@@ -421,9 +421,19 @@ void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
  moveCursor(cursor_x + rel_x, cursor_y + rel_y);
 }
 
-bool MapWindow::tile_is_black(uint16 x, uint16 y)
+bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
 {
- return (tmp_map_buf[(y - cur_y +1) * tmp_map_width + (x - cur_x +1)] == 0);
+ if(tmp_map_buf[(y - cur_y +1) * tmp_map_width + (x - cur_x +1)] == 0)
+    return true;
+ else if(obj)
+ {
+    Tile *tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+    if(!tile || (tmp_map_buf[(y- cur_y +1)*tmp_map_width+(x - cur_x +2)] == 0  && !(tile->flags1 & TILEFLAG_WALL))
+       || (tmp_map_buf[(y- cur_y +2)*tmp_map_width+(x - cur_x +1)] == 0 && !(tile->flags1 & TILEFLAG_WALL)))
+        return true;
+ }
+
+ return false;
 }
 
 const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
@@ -1898,7 +1908,8 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	int distance = player->get_location().distance(original_obj_loc);
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
-	if ((weight == 0 || distance > 1 || player->get_actor_num() == 0) && !hackmove)
+	if ((weight == 0 || distance > 1 || player->get_actor_num() == 0
+	    || tile_is_black(obj->x, obj->y, obj) || (obj->status & OBJ_STATUS_INVISIBLE)) && !hackmove)
 		return	GUI_PASS;
 
 	if(button == DRAG_BUTTON && game->is_dragging_enabled())
