@@ -1,3 +1,6 @@
+2012-08-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1491
+	* Fix left_click_looks when you move the actor and look (plus code cleanup)
+
 2012-08-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1490
 	* Fix poison field not working when wearing swamp boots
 	* Fix being able to get trap, removed usability of trap, and allow

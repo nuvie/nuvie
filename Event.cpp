@@ -1035,23 +1035,16 @@ bool Event::search(Obj *obj)
 }
 
 // looks at the whatever is at MapWindow cursor location
-bool Event::lookAtLocation(bool cursor, uint16 x, uint16 y, uint8 z)
+bool Event::lookAtCursor(bool delayed, uint16 x, uint16 y, uint8 z, Obj *obj, Actor *actor)
 {
  bool display_prompt = true;
- Obj *obj;
- Actor *actor;
 
- if(cursor)
+ if(!delayed)
  {
    x = map_window->get_cursorCoord().x;
    y = map_window->get_cursorCoord().y;
    obj = map_window->get_objAtCursor();
    actor = map_window->get_actorAtCursor();
- }
- else
- {
-   obj = obj_manager->get_obj(x, y, z);
-   actor = game->get_actor_manager()->get_actor(x, y, z);
  }
 
  if(obj && obj->is_on_map() && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(x, y, obj)))
@@ -1080,7 +1073,10 @@ bool Event::lookAtLocation(bool cursor, uint16 x, uint16 y, uint8 z)
  else // ground
   {
    scroll->display_string("Thou dost see ");
-   scroll->display_string(map_window->lookAtCursor());
+   if(delayed)
+       scroll->display_string(game->get_game_map()->look(x, y, z));
+   else
+       scroll->display_string(map_window->lookAtCursor());
    scroll->display_string("\n");
   }
 
@@ -2592,7 +2588,7 @@ void Event::doAction()
         }
         else
         {
-            lookAtLocation(true);
+            lookAtCursor();
         }
     }
     else if(mode == TALK_MODE)

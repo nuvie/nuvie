@@ -147,7 +147,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  tmp_map_buf = NULL;
 
  selected_obj = NULL;
- selected_actor = NULL;
+ look_obj = NULL;
+ look_actor = NULL;
  config->value("config/cheats/enable_hackmove", hackmove);
  walking = false;
  looking = true;
@@ -1596,24 +1597,6 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
         return false;
     if(actor_loc.distance(target_loc) > 5)
         return false;
-/* is this still needed?
-
-    if(!map->is_passable(x, y, cur_level)
-       || (actor && map->lineTest(actor_loc.x, actor_loc.y, x, y, cur_level, LT_HitUnpassable, lt)))
-    {
-        // We can place an object on a bench or table. Or on any other object if
-        // the object is passable and not on a boundary.
-        Obj *obj = lt.hitObj ? lt.hitObj : obj_manager->get_obj(x, y, cur_level);
-        Tile *obj_tile;
-        if(!obj) obj_tile = map->get_tile(x, y, cur_level);
-        else     obj_tile = obj_manager->get_obj_tile(obj->obj_n,obj->frame_n);
-        if(!(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
-            (obj_tile->passable && ((obj && !map->is_boundary(obj->x, obj->y, cur_level))
-                                   || !obj_tile->boundary))))
-            return false;
-    }
-    return true;*/
-
     if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
         return false;
 
@@ -1803,15 +1786,13 @@ GUI_status MapWindow::MouseDelayed(int x, int y, int button)
     if(!looking || in_input_mode || event->get_mode() != MOVE_MODE)
     {
         in_input_mode = false;
+        look_obj = NULL; look_actor = NULL;
         return(GUI_PASS);
     }
-    int wx, wy;
-    mouseToWorldCoords(x, y, wx, wy);
-
     game->get_scroll()->display_string("Look-");
     event->set_mode(LOOK_MODE);
-    moveCursor(original_obj_loc.x - cur_x, original_obj_loc.y - cur_y);
-    event->lookAtLocation(false, original_obj_loc.x, original_obj_loc.y, cur_level);
+    event->lookAtCursor(true, original_obj_loc.x, original_obj_loc.y, original_obj_loc.z, look_obj, look_actor);
+    look_obj = NULL; look_actor = NULL;
 
     return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
@@ -1882,6 +1863,8 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 			{
 				mouseToWorldCoords(x, y, wx, wy);
 				original_obj_loc = MapCoord(wx,wy ,cur_level);
+				look_actor = actor_manager->get_actor(wx , wy, cur_level);
+				look_obj = obj_manager->get_obj(wx , wy, cur_level);
 			}
 			wait_for_mousedown(button);
 		}

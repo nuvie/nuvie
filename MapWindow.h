@@ -109,7 +109,8 @@ class MapWindow: public GUI_Widget
  SDL_Rect clip_rect;
 
  Obj* selected_obj;
- Actor *selected_actor;
+ Actor *look_actor;
+ Obj* look_obj;
  bool hackmove;
  bool walking;
  bool look_on_left_click;
