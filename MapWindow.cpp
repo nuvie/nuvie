@@ -1752,7 +1752,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         }
         else
         {
-            if(!obj_manager->can_get_obj(obj))
+            if(!obj_manager->can_get_obj(obj) || game->get_usecode()->has_getcode(obj))
             {
                 event->newAction(PUSH_MODE);
                 event->select_obj(obj);
@@ -1909,7 +1909,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
 	if ((weight == 0 || distance > 1 || player->get_actor_num() == 0
-	    || tile_is_black(obj->x, obj->y, obj) || (obj->status & OBJ_STATUS_INVISIBLE)) && !hackmove)
+	    || tile_is_black(obj->x, obj->y, obj)) && !hackmove)
 		return	GUI_PASS;
 
 	if(button == DRAG_BUTTON && game->is_dragging_enabled())

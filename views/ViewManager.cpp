@@ -111,6 +111,7 @@ void ViewManager::reload()
  inventory_view->set_party_member(0);
 
  set_party_mode();
+ update();
 }
 
 bool ViewManager::set_current_view(View *view)

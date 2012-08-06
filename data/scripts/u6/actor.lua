@@ -437,7 +437,7 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 			elseif (map_tile >= 2 and map_tile <= 5) or map_tile == 1165 then --swamp tiles or poison field.
 				--poison
 				local swamp_boots = Actor.inv_get_obj_n(actor, 0x1c) --swamp boots
-				if swamp_boots == nil or swamp_boots.readied == false then
+				if swamp_boots == nil or swamp_boots.readied == false or map_tile == 1165 then
 					if (actor_type == nil or actor_type[19] == 0) and actor.poisoned == false then --19 immune to poison
 						actor.poisoned = true
 						print(actor.name.." poisoned!\n")

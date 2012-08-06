@@ -1,3 +1,11 @@
+2012-08-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1490
+	* Fix poison field not working when wearing swamp boots
+	* Fix being able to get trap, removed usability of trap, and allow
+		non-party members to be moved onto trap. Changed damage to match script
+	* Revert use, get, attack, and move not working on invisible objects since
+		the original seems to allow it
+	* Fix party mode not updating on reload
+
 2012-08-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1489
 	* Fix crash when using a moonstone on the map or inside a container
 	* Fix Sherry not being able to go through bars or portcullis

@@ -704,7 +704,7 @@ bool Event::attack()
     else
         {
     		Obj *obj = map_window->get_objAtCursor();
-    		if(obj && (!obj->is_on_map() || (!map_window->tile_is_black(obj->x, obj->y, obj) && !(obj->status & OBJ_STATUS_INVISIBLE))))
+    		if(obj && (!obj->is_on_map() || !map_window->tile_is_black(obj->x, obj->y, obj)))
     		{
     			scroll->display_string(obj_manager->get_obj_name(obj->obj_n, obj->frame_n));
     			scroll->display_string(".\n");
@@ -836,7 +836,7 @@ bool Event::use(Obj *obj)
 {
     if(game->user_paused())
         return false;
-    if(obj && obj->is_on_map() && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(obj->x, obj->y, obj)))
+    if(obj && obj->is_on_map() && map_window->tile_is_black(obj->x, obj->y, obj))
     {
         Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
         if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
@@ -926,7 +926,7 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  if(game->user_paused())
     return false;
 
- if(obj && obj->is_on_map() && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(obj->x, obj->y, obj)))
+ if(obj && obj->is_on_map() && map_window->tile_is_black(obj->x, obj->y, obj))
  {
     Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
     if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
@@ -1233,7 +1233,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
         {
             if(push_actor->can_be_moved() && NUVIE_RAND() % 2) // already checked if target is passable
             {
-                push_actor->move(to.x, to.y, from.z, ACTOR_FORCE_MOVE);
+                push_actor->move(to.x, to.y, from.z, ACTOR_FORCE_MOVE | ACTOR_IGNORE_DANGER);
                 player->subtract_movement_points(5);
             }
             else
@@ -1338,7 +1338,7 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         scroll->display_string(push_actor->get_name());
         push_obj = NULL;
     }
-    else if(push_obj && !(push_obj->status & OBJ_STATUS_INVISIBLE))
+    else if(push_obj)
     {
         target = MapCoord(push_obj->x, push_obj->y, push_obj->z);
         scroll->display_string(obj_manager->look_obj(push_obj));
