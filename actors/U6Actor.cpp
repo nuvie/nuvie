@@ -589,7 +589,9 @@ bool U6Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags
        default : if(map->is_passable(new_x,new_y,new_z) == false)
        {
                     if(obj_n == OBJ_U6_MOUSE // try to go through mousehole
-                       && obj_manager->get_obj_of_type_from_location(OBJ_U6_MOUSEHOLE,new_x,new_y,new_z) != NULL)
+                       && (obj_manager->get_obj_of_type_from_location(OBJ_U6_MOUSEHOLE,new_x,new_y,new_z) != NULL
+                           || obj_manager->get_obj_of_type_from_location(OBJ_U6_BARS,new_x,new_y,new_z) != NULL
+                           || obj_manager->get_obj_of_type_from_location(OBJ_U6_PORTCULLIS,new_x,new_y,new_z) != NULL))
                        return(true);
                     if(obj_n == OBJ_U6_SILVER_SERPENT //silver serpents can crossover themselves
                        && obj_manager->get_obj_of_type_from_location(OBJ_U6_SILVER_SERPENT,new_x,new_y,new_z) != NULL)

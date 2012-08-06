@@ -1,3 +1,8 @@
+2012-08-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1489
+	* Fix crash when using a moonstone on the map or inside a container
+	* Fix Sherry not being able to go through bars or portcullis
+	* Use object owner for drag and drop inventory to actor on map
+
 2012-08-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1488
 	* Fix obj manager can get obj (r1485 regression)
 	* Fix loading a game with charmed party members (r1480 regression)

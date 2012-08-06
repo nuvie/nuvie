@@ -1111,12 +1111,8 @@ bool U6UseCode::use_moonstone(Obj *obj, UseCodeEvent ev)
 		weather->set_moonstone(obj->frame_n,loc) ;
 		scroll->display_string("buried.\n");
 
-		actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj); // fixme make this work with containers
-		obj->x=loc.x;
-		obj->y=loc.y;
-		obj->z=loc.z;
+		obj_manager->moveto_map(obj, loc);
 			obj->status |= OBJ_STATUS_OK_TO_TAKE;
-			obj_manager->add_obj(obj, OBJ_ADD_TOP);
 		weather->update_moongates();
 		return true;
     }

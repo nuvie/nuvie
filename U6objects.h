@@ -243,6 +243,7 @@
 #define OBJ_U6_V_PASSTHROUGH       278
 #define OBJ_U6_H_PASSTHROUGH       280
 #define OBJ_U6_FENCE               281
+#define OBJ_U6_BARS                282
 #define OBJ_U6_ROPE                284
 #define OBJ_U6_WATER_WHEEL         287
 #define OBJ_U6_CRANK               288

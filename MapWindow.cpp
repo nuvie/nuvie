@@ -1704,7 +1704,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 			}
 			game->get_event()->display_move_text(target_actor, obj);
 
-			if(game->get_event()->can_move_obj_between_actors(obj, p, target_actor) == false)
+			if(game->get_event()->can_move_obj_between_actors(obj, owner, target_actor) == false)
 			{
 				game->get_scroll()->message("\n\n");
 				return false;
