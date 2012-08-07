@@ -40,6 +40,7 @@
 #include "Effect.h"
 #include "Actor.h"
 #include "Script.h"
+#include "Event.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
 
@@ -1571,6 +1572,10 @@ void Actor::die(bool create_body)
     hp = 0;
     visible_flag = false;
     set_dead_flag(true);
+
+    Game *game = Game::get_game();
+    if(game->get_player()->get_actor() == this && game->get_event()->using_control_cheat())
+        game->get_event()->party_mode();
 }
 
 void Actor::resurrect(MapCoord new_position, Obj *body_obj)

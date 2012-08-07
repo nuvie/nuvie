@@ -1861,7 +1861,6 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		{
 			if(look_on_left_click) // need to preserve location because of click delay
 			{
-				mouseToWorldCoords(x, y, wx, wy);
 				original_obj_loc = MapCoord(wx,wy ,cur_level);
 				look_actor = actor_manager->get_actor(wx , wy, cur_level);
 				look_obj = obj_manager->get_obj(wx , wy, cur_level);

@@ -2291,7 +2291,7 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
        || usecode->drop_obj(obj, actor, drop_loc.x, drop_loc.y, qty ? qty : obj->qty))
     {
         if(drop_from_map) // preserve ok to take since it was never in inventory
-            obj_manager->unlink_from_engine(obj); // stop ghosting from drop effect
+            obj_manager->remove_obj_from_map(obj); // stop ghosting from drop effect
         else
             obj->status |= OBJ_STATUS_OK_TO_TAKE;
         new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);

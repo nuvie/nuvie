@@ -1,3 +1,7 @@
+2012-08-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1492
+	* Fix game hangs on control cheat npc death [3554396]
+	* MapWindow, Event - fix some redundant or inefficient code
+
 2012-08-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1491
 	* Fix left_click_looks when you move the actor and look (plus code cleanup)
 
