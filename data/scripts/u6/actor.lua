@@ -2891,7 +2891,7 @@ function actor_wt_berserk(actor)
        and actor_ok_to_attack(actor, tmp_actor) == true
        and (alignment ~= ALIGNMENT_GOOD or tmp_actor.align == ALIGNMENT_EVIL)
        and (alignment ~= ALIGNMENT_EVIL or tmp_actor.align == ALIGNMENT_GOOD)
-       and (alignment ~= ALIGNMENT_CHAOTIC or tmp_actor.align ~= ALIGNMENT_CHAOTIC and tmp_actor.align ~= ALIGNMENT_NEUTRAL) then
+       and (alignment ~= ALIGNMENT_CHAOTIC or (tmp_actor.align ~= ALIGNMENT_CHAOTIC and tmp_actor.align ~= ALIGNMENT_NEUTRAL)) then
          local combined_stats = tmp_actor.str + tmp_actor.dex + tmp_actor.int
          if combined_stats > max_stats then
             max_stats = combined_stats
