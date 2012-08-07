@@ -1,3 +1,8 @@
+2012-08-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1493
+	* Fix charm never being removed [3554617]
+	* Make sure charmed party members that leave have their old alignment set
+	* Fix alt-500 controlled npcs hang on schedule update [3539775]
+
 2012-08-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1492
 	* Fix game hangs on control cheat npc death [3554396]
 	* MapWindow, Event - fix some redundant or inefficient code

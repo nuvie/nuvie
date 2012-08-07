@@ -2156,8 +2156,8 @@ end
 
 function actor_remove_charm(actor)
 
-	if actor.charm == true then
-		actor.charm = false;
+	if actor.charmed == true then
+		actor.charmed = false;
 		actor.align = actor.old_align
 	
 		if actor.in_party == true then

@@ -607,7 +607,10 @@ void Actor::set_in_party(bool state)
            inventory_drop_all();
            set_worktype(0x8f); // U6_WANDER_AROUND
            status_flags ^= ACTOR_STATUS_IN_PARTY;
-           set_alignment(ACTOR_ALIGNMENT_NEUTRAL);
+           if(is_charmed())
+                set_old_alignment(ACTOR_ALIGNMENT_NEUTRAL);
+           else
+                set_alignment(ACTOR_ALIGNMENT_NEUTRAL);
           }
     }
 }
@@ -1278,7 +1281,9 @@ bool Actor::updateSchedule(uint8 hour)
  uint8 day_of_week;
  uint16 new_pos;
 
- if(is_alive() == false) //don't update schedule for dead actors.
+ if(is_alive() == false  //don't update schedule for dead actors.
+    ||(Game::get_game()->get_player()->get_actor() == this
+    && Game::get_game()->get_event()->using_control_cheat()))
    return false;
 
  //hour = clock->get_hour();
