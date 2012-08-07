@@ -1703,6 +1703,7 @@ function actor_get_weapon(attacker, foe)
    
    if foe == nil then return nil end
    
+   local in_party = attacker.in_party
    local range = get_attack_range(attacker.x, attacker.y, foe.x, foe.y)
    dbg("range = "..range.."\n")
    local max_dmg = 0
@@ -1713,7 +1714,7 @@ function actor_get_weapon(attacker, foe)
          dbg("magic object quality = "..obj.quality.."\n");
          return obj
       else
-         if obj.readied == true then
+         if in_party == false or obj.readied == true then
             local dmg = get_weapon_dmg(obj.obj_n)  
             if dmg ~= nil and dmg > max_dmg and get_weapon_range(obj.obj_n) >= range then
                max_dmg = dmg
@@ -2818,10 +2819,10 @@ function actor_wt_flank(actor)
    
    local should_move_actor = false
    local weapon_obj = actor_get_weapon(actor, target_actor)
-   local weapon_range = get_weapon_range(weapon_obj)
+   local weapon_range = get_weapon_range(weapon_obj.obj_n)
    local attack_range = get_attack_range(actor_x, actor_y, tmp_x, tmp_y)
    
-   if attack_range < 9 and attack_range > weapon_range then
+   if attack_range < 9 and attack_range <= weapon_range then
    
       if map_can_reach_point(actor_x, actor_y, tmp_x, tmp_y, actor.z) == false then
          if random(0, 1) == 0 then
@@ -2908,13 +2909,14 @@ function actor_wt_berserk(actor)
    local target_x = target_actor.x
    local target_y = target_actor.y
    local weapon_obj = actor_get_weapon(actor, target_actor)
-   local weapon_range = get_weapon_range(weapon_obj)
+   local weapon_range = get_weapon_range(weapon_obj.obj_n)
    local attack_range = get_attack_range(actor_x, actor_y, target_x, target_y)
 
-   if attack_range < 9 and attack_range > weapon_range then
+   if attack_range < 9 and attack_range <= weapon_range then
 
       --g_obj = target_actor
       if map_can_reach_point(actor_x, actor_y, target_x, target_y, actor.z) == false then
+      
          if math.random(0, 1) == 0 then
             target_x = target_actor.y - actor_y + actor_x
             target_y = actor_y - target_actor.x - actor_x

@@ -1,3 +1,9 @@
+2012-08-08  Eric Fry <efry at users.sourceforge.net> r1494
+	* Fixed some issues with berserk and flank combat types. Fixed ranged weapon
+	  handling.
+	* Changed script actor_get_weapon to return non-readied weapons for actors
+	  that aren't in the avatar's party.
+
 2012-08-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1493
 	* Fix charm never being removed [3554617]
 	* Make sure charmed party members that leave have their old alignment set
