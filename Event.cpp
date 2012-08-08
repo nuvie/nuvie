@@ -1137,8 +1137,6 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 			scroll->display_string("\nYou can't do that!\n\n");
 	}
 
-    scroll->display_prompt();
-    map_window->reset_mousecenter(); // FIXME: put this in endAction()?
     endAction();
     return(true);
 }
@@ -1163,14 +1161,20 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     if(!push_actor && !push_obj)
     {
         scroll->display_string("what?\n\n");
-        scroll->display_prompt();
-        map_window->reset_mousecenter();
         endAction();
         return(false);
     }
 
     if(push_actor)
+    {
+        if(!push_actor->can_be_moved())
+        {
+            scroll->display_string("Not possible\n\n");
+            endAction();
+            return false;
+        }
         from = push_actor->get_location();
+    }
     else
     {
         if(push_obj->is_on_map())
@@ -1191,8 +1195,6 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             	}
             }
 
-            scroll->display_prompt();
-            map_window->reset_mousecenter(); // FIXME: put this in endAction()?
             endAction();
             return(true);
     	}
@@ -1227,7 +1229,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             scroll->display_string("Blocked.\n\n");
         else if(!push_actor->moveRelative(pushrel_x, pushrel_y))
         {
-            if(push_actor->can_be_moved() && NUVIE_RAND() % 2) // already checked if target is passable
+            if(NUVIE_RAND() % 2) // already checked if target is passable
             {
                 push_actor->move(to.x, to.y, from.z, ACTOR_FORCE_MOVE | ACTOR_IGNORE_DANGER);
                 player->subtract_movement_points(5);
@@ -1284,8 +1286,6 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
       if(can_move)
         player->subtract_movement_points(5);
     }
-    scroll->display_prompt();
-    map_window->reset_mousecenter(); // FIXME: put this in endAction()?
     endAction();
     return(true);
 }
@@ -1319,7 +1319,6 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     if(map_window->tile_is_black(from.x + rel_x, from.y + rel_y, push_obj))
     {
         scroll->display_string("nothing.\n\n");
-        scroll->display_prompt();
         endAction();
         return false;
     }
@@ -1343,7 +1342,6 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     else
     {
         scroll->display_string("nothing.\n\n");
-        scroll->display_prompt();
         endAction();
         return false;
     }
@@ -1351,7 +1349,6 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     if(from.distance(target) > 1)
     {
         scroll->display_string("\n\nOut of range!\n\n");
-        scroll->display_prompt();
         endAction();
     }
     else
@@ -2913,6 +2910,8 @@ void Event::endAction(bool prompt)
     {
         push_obj = NULL;
         push_actor = NULL;
+        scroll->display_prompt();
+        map_window->reset_mousecenter();
     }
     else if(mode == DROP_MODE)
     {

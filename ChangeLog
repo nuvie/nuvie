@@ -1,3 +1,7 @@
+2012-08-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1496
+	* Fix Moving a person in bed moves the actor in bed tile [3554707]
+	* Fix dispel magic doesn't awaken sleeping schedule actors [3555166]
+
 2012-08-08  Eric Fry <efry at users.sourceforge.net> r1495
 	* Added parentheses to clarify alignment logic.
 

@@ -906,7 +906,7 @@ void U6Actor::set_asleep(bool val)
 	else
 	{
 		status_flags &= (0xff ^ ACTOR_STATUS_ASLEEP);
-		if(obj_n == base_actor_type->dead_obj_n)
+		if(obj_n == base_actor_type->dead_obj_n || obj_n ==  OBJ_U6_PERSON_SLEEPING)
 		{
 			actor_type = base_actor_type;
 			obj_n = base_actor_type->base_obj_n;
@@ -915,7 +915,7 @@ void U6Actor::set_asleep(bool val)
 	}
 }
 
-void U6Actor::set_worktype(uint8 new_worktype)
+void U6Actor::set_worktype(uint8 new_worktype, bool init)
 {
  if(new_worktype == worktype)
    return;
@@ -948,7 +948,7 @@ void U6Actor::set_worktype(uint8 new_worktype)
    case WORKTYPE_U6_FACE_SOUTH : set_direction(NUVIE_DIR_S); break;
    case WORKTYPE_U6_FACE_WEST  : set_direction(NUVIE_DIR_W); break;
 
-   case WORKTYPE_U6_SLEEP : wt_sleep(); break;
+   case WORKTYPE_U6_SLEEP : wt_sleep(init); break;
    case WORKTYPE_U6_PLAY_LUTE : wt_play_lute(); break;
   }
 }
@@ -1024,8 +1024,10 @@ void U6Actor::setup_walk_to_location()
  return;
 }*/
 
-void U6Actor::wt_sleep()
+void U6Actor::wt_sleep(bool init)
 {
+ if(init && !is_sleeping())
+    return;
  Obj *obj = obj_manager->get_obj(x,y,z);
 
  can_move = false;
@@ -1582,11 +1584,6 @@ bool U6Actor::can_twitch()
 			   && get_corpser_flag() == false
 	           && is_sleeping() == false
 	           && is_paralyzed() == false);
-}
-
-bool U6Actor::is_sleeping()
-{
-    return(Actor::is_sleeping() || worktype == WORKTYPE_U6_SLEEP);
 }
 
 bool U6Actor::can_be_passed(Actor *other)

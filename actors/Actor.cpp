@@ -1415,7 +1415,7 @@ void Actor::set_combat_mode(uint8 new_mode)
 	}
 }
 
-void Actor::set_worktype(uint8 new_worktype)
+void Actor::set_worktype(uint8 new_worktype, bool init)
 {
  worktype = new_worktype;
  work_location.x = x;

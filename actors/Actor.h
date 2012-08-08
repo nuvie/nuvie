@@ -350,7 +350,7 @@ class Actor
 
  uint8 get_worktype();
  uint8 get_sched_worktype();
- virtual void set_worktype(uint8 new_worktype);
+ virtual void set_worktype(uint8 new_worktype, bool init = false);
  uint8 get_combat_mode() { return combat_mode; }
  void set_combat_mode(uint8 new_mode);
  virtual void revert_worktype() { }

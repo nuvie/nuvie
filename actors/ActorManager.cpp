@@ -327,7 +327,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
-    actors[i]->set_worktype(objlist->read1());
+    actors[i]->set_worktype(objlist->read1(), true);
    }
 
  //cleanup party actor if not currently set as the player.

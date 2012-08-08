@@ -70,7 +70,7 @@ class U6Actor: public Actor
  bool init();
  virtual uint16 get_downward_facing_tile_num();
  bool updateSchedule(uint8 hour);
- void set_worktype(uint8 new_worktype);
+ void set_worktype(uint8 new_worktype, bool init = false);
  void revert_worktype();
  void change_base_obj_n(uint16 val);
  void set_direction(uint8 d);
@@ -100,7 +100,7 @@ class U6Actor: public Actor
 
  bool is_immobile(); // frozen by worktype or status
  bool can_twitch();
- bool is_sleeping();
+
  bool get_corpser_flag() { return(movement_flags & ACTOR_MOVEMENT_FLAGS_CORPSER); }
  bool can_be_passed(Actor *other);
 
@@ -120,7 +120,7 @@ class U6Actor: public Actor
 
  inline void discover_direction();
  void setup_walk_to_location();
- void wt_sleep();
+ void wt_sleep(bool init = false);
  void wt_play_lute();
 
  inline const U6ActorType *get_actor_type(uint16 new_obj_n);
