@@ -1167,7 +1167,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 
     if(push_actor)
     {
-        if(!push_actor->can_be_moved())
+        if(!push_actor->can_be_moved() || push_actor->get_tile_type() > ACTOR_DT)
         {
             scroll->display_string("Not possible\n\n");
             endAction();

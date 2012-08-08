@@ -908,6 +908,8 @@ void U6Actor::set_asleep(bool val)
 		status_flags &= (0xff ^ ACTOR_STATUS_ASLEEP);
 		if(obj_n == base_actor_type->dead_obj_n || obj_n ==  OBJ_U6_PERSON_SLEEPING)
 		{
+			if(worktype == WORKTYPE_U6_SLEEP)
+				can_move = true;
 			actor_type = base_actor_type;
 			obj_n = base_actor_type->base_obj_n;
 			frame_n = 0;
