@@ -1,3 +1,6 @@
+2012-08-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1499
+	* Add TILEFLAG_WALL to the through walls check
+
 2012-08-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1498
 	* Don't move, get, or use objects through walls.
 	* Allow drag and drop to move a getable object if it cannot be dropped but

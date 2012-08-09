@@ -1250,7 +1250,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     {
         Tile *tile = map->get_tile(push_obj->x, push_obj->y, push_obj->z);
 
-        if((!game->using_hackmove())
+        if(!game->using_hackmove() && (tile->flags1 & TILEFLAG_WALL)
            && (((tile->flags1 & TILEFLAG_WALL_MASK) == 208 // pushing north or south through wall
                 && (to.y < push_obj->y || player->get_actor()->get_y() < push_obj->y))
            || ((tile->flags1 & TILEFLAG_WALL_MASK) == 176 // pushing east or west through wall

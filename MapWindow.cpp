@@ -1650,10 +1650,11 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 	}
 	Tile *tile = map->get_tile(obj->x, obj->y, cur_level);
 
-	if(((tile->flags1 & TILEFLAG_WALL_MASK) == 208 && actor->get_y() < obj->y) // can't get items that are south
+	if((tile->flags1 & TILEFLAG_WALL)
+       && (((tile->flags1 & TILEFLAG_WALL_MASK) == 208 && actor->get_y() < obj->y) // can't get items that are south
 	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 176 && actor->get_x() < obj->x) // can't get items that are east
 	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 240 // northwest corner - used in SE (not sure if used in other games)
-	       && (actor->get_y() < obj->y || actor->get_x() < obj->x)))
+	       && (actor->get_y() < obj->y || actor->get_x() < obj->x))))
 		return false;
 
 	return true;
