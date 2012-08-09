@@ -153,6 +153,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  walking = false;
  looking = true;
  in_input_mode = false;
+ drop_with_move = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
  original_obj_loc = MapCoord(0,0,0);
@@ -424,6 +425,8 @@ void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
 
 bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
 {
+ if(hackmove)
+    return false;
  if(tmp_map_buf[(y - cur_y +1) * tmp_map_width + (x - cur_x +1)] == 0)
     return true;
  else if(obj)
@@ -1098,6 +1101,8 @@ void MapWindow::drawBorder()
 
 void MapWindow::drawRoofs()
 {
+	if(cur_y < 0) // FIXME We need to handle this properly
+		return;
 	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
 		return;
 	if(x_ray_view)
@@ -1574,7 +1579,7 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
 /* Returns true if any object could be placed at world coordinates x,y.
  * If actor is set a line-of-site check must pass. (z is always cur_level)
  */
-bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory)
+bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory, Obj *obj)
 {
     if(!in_inventory && original_obj_loc.x == x && original_obj_loc.y == y)
         return false;
@@ -1598,8 +1603,34 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
     if(actor_loc.distance(target_loc) > 5)
         return false;
     if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
-        return false;
+    {
+        // just for drag and drop cases where a getable obj can be moved but not dropped
+        if(!obj || original_obj_loc.distance(target_loc) != 1)
+            return false;
+        drop_with_move = true;
+        
+        if(map->lineTest(original_obj_loc.x, original_obj_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
+        {
+            if(lt.hitObj)
+            {
+                if(obj_manager->can_store_obj(lt.hitObj, obj)) //if we are moving onto a container.
+                    return true;
+                else
+                {
+                    // We can place an object on a bench or table. Or on any other object if
+                    // the object is passable and not on a boundary.
 
+                    Tile *obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
+                    if(!obj_tile) // shouldn't happen
+                        return false;
+                    if((obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP)
+                       || (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
+                        return true;
+                }
+            }
+            return false;
+        }
+    }
     return true;
 }
 
@@ -1608,12 +1639,22 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 	if(obj->is_in_inventory() || actor->get_z() != obj->z)
 		return false;
 
+	if(hackmove)
+		return true;
+
 	LineTestResult lt;
 	if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt))
 	{
 		if(lt.hitObj != obj)
 			return false;
 	}
+	Tile *tile = map->get_tile(obj->x, obj->y, cur_level);
+
+	if(((tile->flags1 & TILEFLAG_WALL_MASK) == 208 && actor->get_y() < obj->y) // can't get items that are south
+	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 176 && actor->get_x() < obj->x) // can't get items that are east
+	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 240 // northwest corner - used in SE (not sure if used in other games)
+	       && (actor->get_y() < obj->y || actor->get_x() < obj->x)))
+		return false;
 
 	return true;
 }
@@ -1633,6 +1674,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
  if(message == GUI_DRAG_OBJ)
    {
+    drop_with_move = false;
     map_width = map->get_width(cur_level);
     x = (cur_x + x) % map_width;
     y = (cur_y + y) % map_width;
@@ -1644,10 +1686,13 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     if(obj->is_in_inventory() == false) //obj on map.
     {
     	if(!obj_manager->can_get_obj(obj) && !target_actor)  // handled by push to see if blocked
+    	{
+    		drop_with_move = true;
     		return true;
+    	}
 
     	LineTestResult lt;
-    	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
+//    	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
     	{
     		if(target_actor)
     		{
@@ -1667,7 +1712,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     		}
     		else
     		{
-    			return can_drop_obj(x, y, p, obj->is_in_inventory());
+    			return can_drop_obj(x, y, p, obj->is_in_inventory(), obj);
     		}
     	}
     }
@@ -1735,7 +1780,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         }
         else
         {
-            if(!obj_manager->can_get_obj(obj) || game->get_usecode()->has_getcode(obj))
+            if(drop_with_move || game->get_usecode()->has_getcode(obj))
             {
                 event->newAction(PUSH_MODE);
                 event->select_obj(obj);
@@ -1891,7 +1936,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
 	if ((weight == 0 || distance > 1 || player->get_actor_num() == 0
-	    || tile_is_black(obj->x, obj->y, obj)) && !hackmove)
+	    || tile_is_black(obj->x, obj->y, obj) || !can_get_obj(player, obj)) && !hackmove)
 		return	GUI_PASS;
 
 	if(button == DRAG_BUTTON && game->is_dragging_enabled())

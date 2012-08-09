@@ -761,13 +761,19 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
     if(game->user_paused())
         return(false);
 
+  if(obj && !map_window->tile_is_black(obj->x, obj->y, obj))
+  {
     if(!actor)
         actor = player->get_actor();
+    MapCoord target(obj->x, obj->y, obj->z);
+    scroll->display_string(obj_manager->look_obj(obj));
 
-    if(obj && obj->is_on_map() && !map_window->tile_is_black(obj->x, obj->y, obj))
+    if(player->get_actor()->get_location().distance(target) > 1)
+        scroll->display_string("\n\nOut of range!");
+    else if(!map_window->can_get_obj(actor, obj))
+        scroll->display_string("\n\nBlocked.");
+    else if(obj->is_on_map())
     {
-        scroll->display_string(obj_manager->look_obj(obj));
-
         // perform GET usecode (can't add to container)
         if(usecode->has_getcode(obj) && (usecode->get_obj(obj, actor) == false))
         {
@@ -777,11 +783,8 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
             map_window->updateBlacking();
             return(false); // ???
         }
-        MapCoord target(obj->x, obj->y, obj->z);
 
-        if(player->get_actor()->get_location().distance(target) > 1)
-            scroll->display_string("\nOut of range!");
-        else if(game->get_script()->call_actor_get_obj(actor, obj))
+        if(game->get_script()->call_actor_get_obj(actor, obj))
         {
             obj_manager->remove_obj_from_map(obj); //remove object from map.
 
@@ -796,6 +799,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
             actor->display_condition(); // indicate that object hurt the player
         }
     }
+  }
     else
         scroll->display_string("nothing");
 
@@ -862,6 +866,10 @@ bool Event::use(Obj *obj)
     {
         scroll->display_string("\nOut of range!\n");
         DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
+    }
+    else if(!obj->is_in_inventory() && !map_window->can_get_obj(player->get_actor(), obj))
+    {
+        scroll->display_string("\nBlocked.\n");
     }
     else if(usecode->has_usecode(obj)) // Usable
     {
@@ -1240,7 +1248,18 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     }
     else
     {
-      if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
+        Tile *tile = map->get_tile(push_obj->x, push_obj->y, push_obj->z);
+
+        if((!game->using_hackmove())
+           && (((tile->flags1 & TILEFLAG_WALL_MASK) == 208 // pushing north or south through wall
+                && (to.y < push_obj->y || player->get_actor()->get_y() < push_obj->y))
+           || ((tile->flags1 & TILEFLAG_WALL_MASK) == 176 // pushing east or west through wall
+               && (to.x < push_obj->x || player->get_actor()->get_x() < push_obj->x))
+           || ((tile->flags1 & TILEFLAG_WALL_MASK) == 240))) // northwest corner (always blocked)
+        {
+            scroll->display_string("Blocked.\n\n");
+        }
+      else if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
       {
         if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
             {

@@ -1680,17 +1680,12 @@ bool U6UseCode::use_trap(Obj *obj, UseCodeEvent ev)
     MapCoord loc(obj->x, obj->y, obj->z);
     if(ev == USE_EVENT_GET)
     {
-        if(player->get_actor()->get_location().distance(loc) < 2)
-        {
             game->get_scroll()->display_string("\n\nNot Possible\n");
             if(items.actor_ref == player->get_actor())
             {
                 items.actor_ref->hit((NUVIE_RAND()%29)+1); // CHECKME I think I changed it to the same value as the lua
 //         obj->status &= (0xff ^ OBJ_STATUS_INVISIBLE); // original didn't show the trap
             }
-        }
-        else
-            scroll->display_string("\n\nOut of range!\n");
     }
     return(false);
 }
