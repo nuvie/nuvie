@@ -21,6 +21,7 @@
  *
  */
 #include <cassert>
+#include <math.h>
 #include "nuvieDefs.h"
 
 #include "Screen.h"
@@ -268,9 +269,9 @@ void InventoryView::display_inventory_weights()
  char string[9]; //  "E:xx/xxs"
 
  strength = actor->get_strength();
- //FIX weight isn't correct.
- inv_weight = actor->get_inventory_weight();
- equip_weight = actor->get_inventory_equip_weight();
+
+ inv_weight = ceilf(actor->get_inventory_weight());
+ equip_weight = ceilf(actor->get_inventory_equip_weight());
 
  snprintf(string,9,"E:%d/%ds",(int)equip_weight,strength);
  text->drawString(screen, string, area.x, area.y+72, 0);

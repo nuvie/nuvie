@@ -1781,7 +1781,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         }
         else
         {
-            if(drop_with_move || game->get_usecode()->has_getcode(obj))
+            if(drop_with_move || (game->get_usecode()->has_getcode(obj) && obj->is_in_inventory() == false))
             {
                 event->newAction(PUSH_MODE);
                 event->select_obj(obj);

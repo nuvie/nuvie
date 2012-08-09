@@ -21,6 +21,7 @@
  *
  */
 #include <cassert>
+#include <math.h>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "Event.h"
@@ -148,7 +149,7 @@ void DollViewGump::Display(bool full_redraw)
 void DollViewGump::displayEquipWeight()
 {
 	uint8 strength = actor->get_strength();
-	float equip_weight = actor->get_inventory_equip_weight();
+	float equip_weight = ceilf(actor->get_inventory_equip_weight());
 	char string[4]; //nnn\0
 
 	snprintf(string, 4, "%d", (int)equip_weight);

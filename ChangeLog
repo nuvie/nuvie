@@ -1,3 +1,9 @@
+2012-08-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1500
+	* Fix drag and drop from inventory for objs with get usecode (1490 regression)
+	* Fix weight not being checked when readying items [3550550]
+	* Don't round get_inventory_equip_weight or get_inventory_weight in function
+	* Round up inventory display values
+
 2012-08-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1499
 	* Add TILEFLAG_WALL to the through walls check
 

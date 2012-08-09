@@ -2130,16 +2130,19 @@ bool Event::ready(Obj *obj)
     scroll->display_string("Ready-");
     scroll->display_string(obj_manager->look_obj(obj, false));
     scroll->display_string("\n");
-
+    float weight = actor->get_inventory_equip_weight()
+                   + obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,
+                                                 OBJ_WEIGHT_DO_SCALE, OBJ_WEIGHT_EXCLUDE_QTY);
+    if(actor->get_strength() < weight && !game->using_hackmove())
+        scroll->display_string("\nToo heavy!\n");
     // perform READY usecode
-    if(usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
+    else if(usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
     {
         scroll->display_string("\n");
         scroll->display_prompt();
         return(obj->is_readied()); // handled by usecode
     }
-
-    if(!(readied = actor->add_readied_object(obj)))
+    else if(!(readied = actor->add_readied_object(obj)))
     {
     	if(actor->get_object_readiable_location(obj) == ACTOR_NOT_READIABLE)
     		scroll->display_string("\nCan't be readied!\n");
