@@ -12,6 +12,8 @@
   <party_view_targeting>no</party_view_targeting>
   <enabled_dragging>yes</enabled_dragging>
   <look_on_left_click>yes</look_on_left_click>
+  <walk_with_left_button>yes</walk_with_left_button>
+  <interface>normal</interface>
  </input>
 
  <general>

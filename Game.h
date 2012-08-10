@@ -118,6 +118,7 @@ class Game
  uint16 pause_user_count;
  uint8 ignore_event_delay; // (stack) if non-zero, Event will not periodically wait for NUVIE_INTERVAL
  bool is_using_hackmove;
+ uint8 dragging_enabled;
 
  public:
 
@@ -161,7 +162,8 @@ class Game
  bool doubleclick_opens_containers();
  bool is_roof_mode();
  bool using_hackmove();
- bool is_dragging_enabled();
+ uint8 is_dragging_enabled() { return dragging_enabled; }
+ void set_dragging_enabled();
  bool use_new_converse_gump();
 
  /* Return instances of Game classes */

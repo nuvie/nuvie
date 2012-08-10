@@ -156,6 +156,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  drop_with_move = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
+ config->value("config/input/walk_with_left_button", walk_with_left_button, true);
  original_obj_loc = MapCoord(0,0,0);
 
  roof_mode = Game::get_game()->is_roof_mode();
@@ -165,6 +166,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 
  window_updated = true;
  roof_display = ROOF_DISPLAY_NORMAL;
+ set_interface();
 }
 
 MapWindow::~MapWindow()
@@ -223,7 +225,7 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  assert(SDL_FillRect(overlay, NULL, game->get_palette()->get_bg_color()) == 0);
 
  if(enable_doubleclick || look_on_left_click)
-   set_accept_mouseclick(true, USE_BUTTON); // allow double-clicks (single-clicks aren't used for anything)
+   set_accept_mouseclick(true, USE_BUTTON); // allow left clicks
 
  wizard_eye_info.eye_tile = tile_manager->get_tile(TILE_U6_WIZARD_EYE);
  wizard_eye_info.moves_left = 0;
@@ -1579,34 +1581,60 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
 /* Returns true if any object could be placed at world coordinates x,y.
  * If actor is set a line-of-site check must pass. (z is always cur_level)
  */
-bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory, Obj *obj)
+bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory, Obj *obj, bool accepting_drop)
 {
     if(!in_inventory && original_obj_loc.x == x && original_obj_loc.y == y)
         return false;
     if(hackmove)
         return true;
 
-    if(!actor) // need an actor now
-       return false;
+    if(tile_is_black(x, y, obj))
+    {
+        if(accepting_drop)
+        {
+            if(tile_is_black(x, y))
+                game->get_scroll()->message("\n\nNot possible.\n\n");
+            else
+                game->get_scroll()->message("\n\nBlocked.\n\n");
+        }
+        return false;
+    }
 
     LineTestResult lt;
     MapCoord actor_loc;
     MapCoord target_loc(x,y, actor_loc.z);
         actor_loc = actor->get_location();
 
+    if(in_inventory && obj && !obj->get_actor_holding_obj()->is_onscreen()
+       && obj->get_actor_holding_obj()->get_location().distance(target_loc) > 5)
+    {
+        if(accepting_drop)
+            game->get_scroll()->message("\n\nOut of range!\n\n");
+        return false;
+    }
+
+    if(interface == INTERFACE_IGNORE_BLOCK && map->can_put_obj(x, y, cur_level))
+       return true;
+
         // can't ever drop at the actor location
         if(actor_loc.x == x && actor_loc.y == y)
             return false;
 
-    if(tmpBufTileIsBlack(x - cur_x, y - cur_y))
+    if(actor_loc.distance(target_loc) > 5 && interface == INTERFACE_NORMAL)
+    {
+        if(accepting_drop)
+            game->get_scroll()->message("\n\nOut of range!\n\n");
         return false;
-    if(actor_loc.distance(target_loc) > 5)
-        return false;
+    }
     if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
     {
         // just for drag and drop cases where a getable obj can be moved but not dropped
         if(!obj || original_obj_loc.distance(target_loc) != 1)
+        {
+            if(accepting_drop)
+                game->get_scroll()->message("\n\nBlocked.\n\n");
             return false;
+        }
         drop_with_move = true;
         
         if(map->lineTest(original_obj_loc.x, original_obj_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
@@ -1628,6 +1656,8 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
                         return true;
                 }
             }
+            if(accepting_drop)
+                game->get_scroll()->message("\n\nBlocked.\n\n");
             return false;
         }
     }
@@ -1639,7 +1669,7 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 	if(obj->is_in_inventory() || actor->get_z() != obj->z)
 		return false;
 
-	if(hackmove)
+	if(interface == INTERFACE_IGNORE_BLOCK)
 		return true;
 
 	LineTestResult lt;
@@ -1692,8 +1722,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     		return true;
     	}
 
-    	LineTestResult lt;
-//    	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
+    	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
     	{
     		if(target_actor)
     		{
@@ -1713,7 +1742,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     		}
     		else
     		{
-    			return can_drop_obj(x, y, p, obj->is_in_inventory(), obj);
+    			return true;
     		}
     	}
     }
@@ -1723,9 +1752,8 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
 		if(target_actor)
 		{
-			if(target_actor->is_in_party()==false)
-				return false;
-			if(obj->is_readied() && game->get_usecode()->ready_obj(obj, owner) == false)
+			if(obj->is_readied() && game->get_usecode()->has_readycode(obj)
+			   && game->get_usecode()->ready_obj(obj, owner) == false)
 			{
 				game->get_scroll()->display_string("\n");
 				game->get_scroll()->display_prompt();
@@ -1742,10 +1770,10 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 				return true;
 		}
 		else
-			return can_drop_obj(x, y, owner, obj->is_in_inventory()); //throw on ground
+			return true; //throw on ground
     }
 
-    game->get_scroll()->message("\n\nNot Possible\n\n");
+    game->get_scroll()->message("\n\nBlocked.\n\n");
   }
 
  return false;
@@ -1781,7 +1809,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         }
         else
         {
-            if(drop_with_move || (game->get_usecode()->has_getcode(obj) && obj->is_in_inventory() == false))
+            if(move_on_drop(obj))
             {
                 event->newAction(PUSH_MODE);
                 event->select_obj(obj);
@@ -1789,6 +1817,9 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
                 event->endAction();
                 return;
             }
+
+            if(!can_drop_obj(x, y, actor_manager->get_player(), obj->is_in_inventory(), obj, true))
+                return;
 
         	// drop on ground or into a container
         	event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
@@ -1807,6 +1838,54 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 
 }
 
+bool MapWindow::move_on_drop(Obj *obj)
+{
+	bool always_throw = game->is_dragging_enabled() >= 2;
+	if(game_type == NUVIE_GAME_U6)
+	{
+		if(drop_with_move && !always_throw && obj->obj_n != OBJ_U6_MEAT && obj->obj_n != OBJ_U6_RIBS)
+			return true;
+		if(obj->obj_n == OBJ_U6_CANNON && game->is_dragging_enabled() != 3) // force throw
+			return true;
+	}
+	else if(drop_with_move && !always_throw)
+		return true;
+
+	bool move = true;
+	if(always_throw)
+		move = false;
+
+	if(game->get_usecode()->has_getcode(obj) && obj->is_in_inventory() == false)
+	{
+		if(game_type == NUVIE_GAME_U6)
+		{
+			switch(obj->obj_n)
+			{
+				case OBJ_U6_MOONSTONE: game->get_usecode()->get_obj(obj, actor_manager->get_player());
+				case OBJ_U6_SKIFF:
+					return false;
+				case OBJ_U6_TORCH: if(obj->frame_n == 0) return false; // else fall through
+				default : return move;
+			}
+		}
+
+		return move;
+	}
+
+	return false;
+}
+
+void MapWindow::set_interface()
+{
+	std::string interface_str;
+	config->value("config/input/interface", interface_str, "normal");
+	if(interface_str == "ignore_block" || hackmove)
+		interface = INTERFACE_IGNORE_BLOCK;
+	else if(interface_str == "fullscreen")
+		interface = INTERFACE_FULLSCREEN;
+	else
+		interface = INTERFACE_NORMAL;
+}
 
 GUI_status MapWindow::Idle(void)
 {
@@ -1910,8 +1989,10 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 				original_obj_loc = MapCoord(wx,wy ,cur_level);
 				look_actor = actor_manager->get_actor(wx , wy, cur_level);
 				look_obj = obj_manager->get_obj(wx , wy, cur_level);
+				moveCursor(wx - cur_x, wy - cur_y);
 			}
-			wait_for_mousedown(button);
+			if(walk_with_left_button)
+				wait_for_mousedown(button);
 		}
 	}
 
@@ -1936,8 +2017,11 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	int distance = player->get_location().distance(original_obj_loc);
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
-	if ((weight == 0 || distance > 1 || player->get_actor_num() == 0
-	    || tile_is_black(obj->x, obj->y, obj) || !can_get_obj(player, obj)) && !hackmove)
+	if ((weight == 0 || player->get_actor_num() == 0
+	    || tile_is_black(obj->x, obj->y, obj)) && !hackmove)
+		return	GUI_PASS;
+
+	if(distance > 1 && interface == INTERFACE_NORMAL)
 		return	GUI_PASS;
 
 	if(button == DRAG_BUTTON && game->is_dragging_enabled())
@@ -1989,7 +2073,8 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 		Actor* player = actor_manager->get_player();
 
 		if (map->lineTest(player->x, player->y, wx, wy, cur_level, LT_HitUnpassable, result)
-                    && !(result.hitObj && result.hitObj->x == wx && result.hitObj->y == wy) && !hackmove)
+            && !(result.hitObj && result.hitObj->x == wx && result.hitObj->y == wy)
+            && interface == INTERFACE_NORMAL)
 			// something was in the way, so don't allow a drag
 			return GUI_PASS;
 		dragging = true;

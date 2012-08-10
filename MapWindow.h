@@ -64,6 +64,7 @@ typedef struct {
 } WizardEye;
 
 enum RoofDisplayType {ROOF_DISPLAY_OFF, ROOF_DISPLAY_NORMAL, ROOF_DISPLAY_FORCE_ON };
+enum InterfaceType { INTERFACE_NORMAL, INTERFACE_FULLSCREEN, INTERFACE_IGNORE_BLOCK };
 
 class MapWindow: public GUI_Widget
 {
@@ -72,7 +73,9 @@ class MapWindow: public GUI_Widget
  Configuration *config;
  int game_type;
  bool enable_doubleclick;
+ bool walk_with_left_button;
  bool x_ray_view;
+ InterfaceType interface;
 
  Map *map;
 
@@ -194,7 +197,7 @@ class MapWindow: public GUI_Widget
  bool in_dungeon_level() { return(cur_level != 0 && cur_level != 5); }
  bool in_town();
  // can put object at world location x,y?
- bool can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory, Obj *obj = NULL);
+ bool can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory, Obj *obj = NULL, bool accepting_drop = false);
  bool can_get_obj(Actor *actor, Obj *obj);
  void display_move_text(Actor *target_actor, Obj *obj);
  MapCoord original_obj_loc;
@@ -220,6 +223,9 @@ class MapWindow: public GUI_Widget
 
  bool drag_accept_drop(int x, int y, int message, void *data);
  void drag_perform_drop(int x, int y, int message, void *data);
+ bool move_on_drop(Obj *obj);
+ void set_interface();
+ InterfaceType get_interface() { return interface; }
 
  void drag_draw(int x, int y, int message, void* data);
 

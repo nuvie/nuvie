@@ -119,6 +119,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  game_type = NUVIE_GAME_NONE;
 
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
+ set_dragging_enabled(); // must be after hackmove
 }
 
 Game::~Game()
@@ -366,14 +367,18 @@ bool Game::doubleclick_opens_containers()
 		return false;
 }
 
-bool Game::is_dragging_enabled()
+void Game::set_dragging_enabled()
 {
-	bool dragging_enabled;
-	config->value("config/input/enabled_dragging", dragging_enabled, true);
-	if(dragging_enabled || is_new_style())
-		return true;
+	string dragging_enabled_str;
+	config->value("config/input/enabled_dragging", dragging_enabled_str, "yes");
+	if(dragging_enabled_str == "force_throw")
+		dragging_enabled = 3;
+	else if(dragging_enabled_str == "always_throw" || is_using_hackmove)
+		dragging_enabled = 2;
+	else if(dragging_enabled_str == "yes" || is_new_style())
+		dragging_enabled = 1;
 	else
-		return false;
+		dragging_enabled = 0;
 }
 
 bool Game::is_roof_mode()

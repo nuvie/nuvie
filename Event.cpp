@@ -768,7 +768,8 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
     MapCoord target(obj->x, obj->y, obj->z);
     scroll->display_string(obj_manager->look_obj(obj));
 
-    if(player->get_actor()->get_location().distance(target) > 1)
+    if(player->get_actor()->get_location().distance(target) > 1
+       && map_window->get_interface() == INTERFACE_NORMAL)
         scroll->display_string("\n\nOut of range!");
     else if(!map_window->can_get_obj(actor, obj))
         scroll->display_string("\n\nBlocked.");
@@ -861,11 +862,15 @@ bool Event::use(Obj *obj)
     scroll->display_string(obj_manager->look_obj(obj));
     scroll->display_string("\n");
 
-    if(!obj->is_in_inventory()
+    if(!obj->is_in_inventory() && map_window->get_interface() == INTERFACE_NORMAL
         && player->get_actor()->get_location().distance(target) > 1)
     {
         scroll->display_string("\nOut of range!\n");
         DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
+    }
+    else if(!player->in_party_mode() && obj->is_in_inventory() && !obj->get_actor_holding_obj()->is_onscreen())
+    {
+        scroll->display_string("\nNot on screen.\n");
     }
     else if(!obj->is_in_inventory() && !map_window->can_get_obj(player->get_actor(), obj))
     {
@@ -899,7 +904,8 @@ bool Event::use(Actor *actor)
     {
         scroll->display_string(obj_manager->look_obj(obj));
         scroll->display_string("\n");
-        if(player->get_actor()->get_location().distance(target) > 1)
+        if(player->get_actor()->get_location().distance(target) > 1
+           && map_window->get_interface() == INTERFACE_NORMAL)
         {
             scroll->display_string("\nOut of range!\n");
             DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
@@ -1103,7 +1109,19 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 		scroll->display_string("\n");
 
 		if(obj_manager->can_store_obj(obj,push_obj))
+		{
+			if(obj->is_in_inventory())
+			{
+				Actor *src_actor = game->get_player()->get_actor();
+				Actor *target_actor = obj->get_actor_holding_obj();
+				if(can_move_obj_between_actors(push_obj, src_actor, target_actor, false))
+					obj_manager->moveto_inventory(push_obj, actor);
+				scroll->message("\n\n");
+				endAction();
+				return(true);
+			}
 			ok = obj_manager->moveto_container(push_obj, obj);
+		}
 	}
 	else
 	{
@@ -1145,6 +1163,7 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 			scroll->display_string("\nYou can't do that!\n\n");
 	}
 
+	scroll->display_prompt();
     endAction();
     return(true);
 }
@@ -1169,6 +1188,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     if(!push_actor && !push_obj)
     {
         scroll->display_string("what?\n\n");
+        scroll->display_prompt();
         endAction();
         return(false);
     }
@@ -1178,6 +1198,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
         if(!push_actor->can_be_moved() || push_actor->get_tile_type() > ACTOR_DT)
         {
             scroll->display_string("Not possible\n\n");
+            scroll->display_prompt();
             endAction();
             return false;
         }
@@ -1202,7 +1223,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
             		script->call_actor_subtract_movement_points(src_actor, 5);
             	}
             }
-
+            scroll->message("\n\n");
             endAction();
             return(true);
     	}
@@ -1305,6 +1326,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
       if(can_move)
         player->subtract_movement_points(5);
     }
+    scroll->display_prompt();
     endAction();
     return(true);
 }
@@ -1364,10 +1386,19 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         endAction();
         return false;
     }
+    Obj *obj = push_obj;
+    if(!obj)
+        obj = push_actor->make_obj();
 
-    if(from.distance(target) > 1)
+    if(from.distance(target) > 1 && map_window->get_interface() == INTERFACE_NORMAL)
     {
         scroll->display_string("\n\nOut of range!\n\n");
+        endAction();
+    }
+    else if(map_window->get_interface() != INTERFACE_NORMAL
+            && !map_window->can_get_obj(player->get_actor(), obj))
+    {
+        scroll->display_string("\n\nBlocked.\n\n");
         endAction();
     }
     else
@@ -1376,6 +1407,8 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         map_window->set_mousecenter(target.x - from.x + 5, target.y - from.y + 5);
         get_direction(MapCoord(target.x, target.y), "\nTo ");
     }
+    if(push_actor)
+        delete_obj(obj); // free temp obj
     return true;
 }
 
@@ -2309,18 +2342,31 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     if(!usecode->has_dropcode(obj)
        || usecode->drop_obj(obj, actor, drop_loc.x, drop_loc.y, qty ? qty : obj->qty))
     {
-        if(drop_from_map) // preserve ok to take since it was never in inventory
-            obj_manager->remove_obj_from_map(obj); // stop ghosting from drop effect
-        else
+        bool interface_fullscreen = map_window->get_interface() != INTERFACE_NORMAL;
+        if(interface_fullscreen)
+        {
+            if(qty < obj->qty && obj_manager->is_stackable(obj))
+                obj = obj_manager->get_obj_from_stack(obj, qty);
+            obj_manager->moveto_map(obj, drop_loc);
+        }
+        else if(drop_from_map)
+        {
+            if(qty >= obj->qty || !obj_manager->is_stackable(obj))
+                obj_manager->remove_obj_from_map(obj); // stop ghosting from drop effect
+        }
+
+        if(!drop_from_map) // preserve ok to take if it was never in inventory
             obj->status |= OBJ_STATUS_OK_TO_TAKE;
-        new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
+
+        if(!interface_fullscreen)
+            new DropEffect(obj, qty ? qty : obj->qty, actor, &drop_loc);
         if(drop_from_map && map_window->original_obj_loc.distance(drop_loc) > 1) // get plus drop
             player->subtract_movement_points(6); // get plus drop
         else if(drop_from_map) // move
             player->subtract_movement_points(5);
         else
             game->get_script()->call_actor_subtract_movement_points(actor, 3);
-        endAction(false);
+        endAction(interface_fullscreen);
         set_mode(MOVE_MODE);
         return true;
     }
@@ -2932,7 +2978,6 @@ void Event::endAction(bool prompt)
     {
         push_obj = NULL;
         push_actor = NULL;
-        scroll->display_prompt();
         map_window->reset_mousecenter();
     }
     else if(mode == DROP_MODE)
@@ -3087,12 +3132,12 @@ bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *targe
 		if(display_name)
 		{
 			scroll->display_string(target_actor == src_actor ? "yourself" : target_actor->get_name());
-			scroll->display_string(".\n\n");
+			scroll->display_string(".");
 		}
 
 		if(!target_actor->is_in_party() && target_actor != player->get_actor())
 		{
-			scroll->display_string("Only within the party!\n\n");
+			scroll->display_string("\n\nOnly within the party!");
 			return false;
 		}
 
@@ -3104,19 +3149,20 @@ bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *targe
 		if(!map_window->tile_is_black(from.x, from.y)
 		   && !map_window->tile_is_black(to.x, to.y))
 		{
-			if(from.distance(to) < 5)
+			if(from.distance(to) < 5 || (map_window->get_interface() != INTERFACE_NORMAL
+			                             && target_actor->is_onscreen() && src_actor->is_onscreen()))
 			{
 				if(game->get_script()->call_actor_get_obj(target_actor, obj))
 					return true;
 			}
 			else
-				scroll->display_string("Out of range!\n");
+				scroll->display_string("\n\nOut of range!");
 		}
 		else
-			scroll->display_string("Blocked!\n"); // original said Out of Range!
+			scroll->display_string("\n\nBlocked!"); // original said Out of Range!
 	}
 	else
-		scroll->display_string("nobody.\n\n");
+		scroll->display_string("\n\nnobody.");
 
 	return false;
 }
