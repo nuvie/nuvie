@@ -1,3 +1,8 @@
+2012-08-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1502
+	* Fix disabled walk_with_left_button causing look_on_left_click on a failed
+		drag
+	* Fix crash when using the balloon inside a container
+
 2012-08-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1501
 	* Fix drag and drop from map to map deleting leftover quantity
 	* Add interface setting that controls how far you can drag, drop, get, use,

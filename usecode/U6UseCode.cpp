@@ -2184,7 +2184,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
 	   if (Game::get_game()->get_map_window()->can_drop_obj(x+ix,y+iy,balloonist,false)) 
 	   {
 	     DEBUG(0,LEVEL_DEBUGGING,"yes, can drop at %d %d.\n",x+ix,y+iy); 
-	     actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj); // fixme make this work with containers
+	     obj_manager->unlink_from_engine(obj);
 	     obj->x=x+ix;
 	     obj->y=y+iy;
 	     obj->z=spot.z;
@@ -2197,7 +2197,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
        if (!dropped) 
        {
 // drop on 'spot' instead. 
-	     actor_manager->get_actor_holding_obj(obj)->inventory_remove_obj(obj);
+	     obj_manager->unlink_from_engine(obj);
 	     obj->x=spot.x;
 	     obj->y=spot.y;;
 	     obj->z=spot.z;

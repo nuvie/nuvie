@@ -152,7 +152,6 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  config->value("config/cheats/enable_hackmove", hackmove);
  walking = false;
  looking = true;
- in_input_mode = false;
  drop_with_move = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
@@ -1898,7 +1897,6 @@ GUI_status MapWindow::MouseClick(int x, int y, int button)
 {
     if(button == USE_BUTTON && look_on_left_click)
     {
-        looking = true;
         wait_for_mouseclick(button); // see MouseDelayed
     }
     return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
@@ -1908,10 +1906,10 @@ GUI_status MapWindow::MouseClick(int x, int y, int button)
 GUI_status MapWindow::MouseDelayed(int x, int y, int button)
 {
     Event *event = game->get_event();
-    if(!looking || in_input_mode || event->get_mode() != MOVE_MODE)
+    if(!looking || event->get_mode() != MOVE_MODE)
     {
-        in_input_mode = false;
         look_obj = NULL; look_actor = NULL;
+        looking = true;
         return(GUI_PASS);
     }
     game->get_scroll()->display_string("Look-");
@@ -1925,7 +1923,9 @@ GUI_status MapWindow::MouseDelayed(int x, int y, int button)
 // MouseDown; waited for MouseUp
 GUI_status MapWindow::MouseHeld(int x, int y, int button)
 {
-    walking = true;
+    looking = false;
+    if(walk_with_left_button)
+        walking = true;
     return(GUI_PASS);
 }
 
@@ -1991,14 +1991,13 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 				look_obj = obj_manager->get_obj(wx , wy, cur_level);
 				moveCursor(wx - cur_x, wy - cur_y);
 			}
-			if(walk_with_left_button)
 				wait_for_mousedown(button);
 		}
 	}
 
 	if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE) // finish whatever action is being done, with mouse coordinates
 	{
-		in_input_mode = true;
+		looking = false;
 		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
 		event->select_target(uint16(wx), uint16(wy), cur_level); // the returned location
 		return  GUI_PASS;
@@ -2037,8 +2036,6 @@ GUI_status MapWindow::MouseUp(int x, int y, int button)
 	{
 		selected_obj = NULL;
 	}
-	if(walking)
-		looking = false;
 	walking = false;
 	dragging = false;
 
