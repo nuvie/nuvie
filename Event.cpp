@@ -2347,7 +2347,11 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
         {
             if(qty < obj->qty && obj_manager->is_stackable(obj))
                 obj = obj_manager->get_obj_from_stack(obj, qty);
-            obj_manager->moveto_map(obj, drop_loc);
+            Obj *dest_obj = obj_manager->get_obj(drop_loc.x, drop_loc.y, drop_loc.z);
+            if(obj_manager->can_store_obj(dest_obj, obj))
+                obj_manager->moveto_container(obj, dest_obj);
+            else
+                obj_manager->moveto_map(obj, drop_loc);
         }
         else if(drop_from_map)
         {

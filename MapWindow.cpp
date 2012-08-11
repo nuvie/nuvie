@@ -1715,12 +1715,6 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
     if(obj->is_in_inventory() == false) //obj on map.
     {
-    	if(!obj_manager->can_get_obj(obj) && !target_actor)  // handled by push to see if blocked
-    	{
-    		drop_with_move = true;
-    		return true;
-    	}
-
     	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
     	{
     		if(target_actor)
@@ -1741,6 +1735,8 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     		}
     		else
     		{
+    			if(!obj_manager->can_get_obj(obj))
+    				drop_with_move = true;
     			return true;
     		}
     	}
@@ -1791,9 +1787,8 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
     {
         x = (cur_x + x / 16) % map_width;
         y = (cur_y + y / 16) % map_width;
-//        Obj *target_obj = obj_manager->get_obj(x,y, cur_level);
-//        Actor *target_actor = actor_manager->get_actor(x,y,cur_level);
         Obj *obj = (Obj *)data;
+
         if(obj->obj_n == OBJ_U6_LOCK_PICK && game_type == NUVIE_GAME_U6)
         	game->get_usecode()->search_container(obj, false);
         Actor *a = map->get_actor(x, y, cur_level);
@@ -1828,11 +1823,6 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         	else
         		event->set_drop_target(x, y); // pre-select target
         }
-        // FIXME: need to re-add dropping onto a container or actor
-//        if(target_obj && target_obj->container)
-//            obj_manager->list_add_obj(target_obj->container, obj);
-        // FIXME: a method to prevent exploiting this would be to subtract the
-        //        number of moves that are necessary to reach the object
     }
 
 }

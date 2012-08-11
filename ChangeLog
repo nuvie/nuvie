@@ -1,3 +1,8 @@
+2012-08-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1504
+	* Fix look_on_left_click when clicking to cast a spell you cannot cast
+	* Check if there is a path to ungetable items now that range has increased
+	* Add dropping into containers for fullscreen interface
+
 2012-08-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1503
 	* Add drake to the list of objects to search
 	* Fix invisibility wearing off while wearing an invisibility ring
