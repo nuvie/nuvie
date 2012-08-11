@@ -115,6 +115,7 @@ class Script
    bool run_lua_file(const char *filename);
    bool call_moonstone_set_loc(uint8 phase, MapCoord location); //this is a hack until we have 'use' moonstone in script.
    bool call_advance_time(uint16 minutes);
+   bool call_can_get_obj_override(Obj *obj);
 
    MapCoord call_moonstone_get_loc(uint8 phase);
    bool call_update_moongates(bool visible);

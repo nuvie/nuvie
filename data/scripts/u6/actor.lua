@@ -2219,9 +2219,16 @@ function actor_yell_for_help(attacking_actor, defending_actor, dmg)
 
 end
 
+function can_get_obj_override(obj) --meat, ribs, dead animal. These are toptile objects and need an override check.
+	if obj.obj_n == 209 or obj.obj_n == 210 or obj.obj_n == 211 then
+		return true
+	end
+	return false
+end
+
 function actor_get_obj(actor, obj)
 
-	if obj.getable == false and obj.obj_n ~= 209 and obj.obj_n ~= 210 and obj.obj_n ~= 211 then --meat, ribs, dead animal. These are toptile objects and need an override check.
+	if obj.getable == false then
 		print("\n\nNot possible.")
 		return false
 	end

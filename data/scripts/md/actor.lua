@@ -309,3 +309,22 @@ function advance_time(num_turns)
 		update_actor_schedules()
 	end
 end
+
+--function can_get_obj_override(obj)
+
+function actor_get_obj(actor, obj) -- FIXME need to limit inventory slots
+
+	if obj.getable == false then
+		print("\nThat is not possible.")
+		return false
+	end
+	
+	if Actor.can_carry_obj_weight(actor, obj) == false then
+		print("\nThe total is too heavy.")
+		return false
+	end
+
+--		print("\nYou are carrying too much already.");
+
+	return true
+end

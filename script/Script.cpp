@@ -894,6 +894,17 @@ bool Script::call_actor_use_effect(Obj *effect_obj, Actor *actor)
 	return call_function("actor_use_effect", 2, 0);
 }
 
+bool Script::call_can_get_obj_override(Obj *obj)
+{
+	lua_getglobal(L, "can_get_obj_override");
+	nscript_obj_new(L, obj);
+
+	if(call_function("can_get_obj_override", 1, 1) == false)
+		return false;
+
+   return lua_toboolean(L,-1);
+}
+
 bool Script::call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace)
 {
 	int start_idx = lua_gettop(L);

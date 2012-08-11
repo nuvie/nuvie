@@ -1,3 +1,9 @@
+2012-08-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1505
+	* Fix putting objects into containers that block pathfinding
+	* Add crate to container list and don't move trap into containers
+	* Call can_get_obj_override from lua when calling obj_manager->can_get_obj
+	* Fix weight check when quantity is 0 (should also fix display problem)
+
 2012-08-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1504
 	* Fix look_on_left_click when clicking to cast a spell you cannot cast
 	* Check if there is a path to ungetable items now that range has increased

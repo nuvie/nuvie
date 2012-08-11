@@ -1627,22 +1627,27 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
     }
     if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
     {
-        // just for drag and drop cases where a getable obj can be moved but not dropped
-        if(!obj || original_obj_loc.distance(target_loc) != 1)
+        if(original_obj_loc.distance(target_loc) != 1 || !accepting_drop)
         {
+            MapCoord hit_loc = MapCoord(lt.hit_x, lt.hit_y, lt.hit_level);
+            if(lt.hitObj && target_loc == hit_loc)
+            {
+                if(obj_manager->can_store_obj(lt.hitObj, obj)) //if we are moving onto a container.
+                    return true;
+            }
             if(accepting_drop)
                 game->get_scroll()->message("\n\nBlocked.\n\n");
             return false;
         }
         drop_with_move = true;
-        
+        // trying to push object one tile away from actor
         if(map->lineTest(original_obj_loc.x, original_obj_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
         {
             if(lt.hitObj)
             {
                 if(obj_manager->can_store_obj(lt.hitObj, obj)) //if we are moving onto a container.
                     return true;
-                else
+                else // I don't think these are needed
                 {
                     // We can place an object on a bench or table. Or on any other object if
                     // the object is passable and not on a boundary.
@@ -1830,14 +1835,8 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 bool MapWindow::move_on_drop(Obj *obj)
 {
 	bool always_throw = game->is_dragging_enabled() >= 2;
-	if(game_type == NUVIE_GAME_U6)
-	{
-		if(drop_with_move && !always_throw && obj->obj_n != OBJ_U6_MEAT && obj->obj_n != OBJ_U6_RIBS)
-			return true;
-		if(obj->obj_n == OBJ_U6_CANNON && game->is_dragging_enabled() != 3) // force throw
-			return true;
-	}
-	else if(drop_with_move && !always_throw)
+	if((drop_with_move && !always_throw)
+	   || (game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_CANNON && game->is_dragging_enabled() != 3)) // force throw
 		return true;
 
 	bool move = true;

@@ -37,6 +37,7 @@
 #include "NuvieIOFile.h"
 #include "Game.h"
 #include "MapWindow.h"
+#include "Script.h"
 
 static const int obj_egg_table[5] = {0,   // NUVIE_GAME_NONE
                                      335, // NUVIE_GAME_U6
@@ -794,9 +795,13 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 
 	if(game_type==NUVIE_GAME_U6)
 	{
+		if(src->obj_n == OBJ_U6_TRAP)
+			return false;
+
 		if(target->obj_n == OBJ_U6_BAG
 		   || target->obj_n == OBJ_U6_BACKPACK
 		   || target->obj_n == OBJ_U6_BASKET
+		   || (target->obj_n == OBJ_U6_CRATE && target->frame_n == 0)
 		   || (target->obj_n == OBJ_U6_BARREL && target->frame_n == 0)
 		   || (target->obj_n == OBJ_U6_CHEST && target->frame_n == 0)
 		   || (target->obj_n == OBJ_U6_SPELLBOOK && src->obj_n == OBJ_U6_SPELL
@@ -897,6 +902,9 @@ bool ObjManager::can_get_obj(Obj *obj)
 	// with other weights
 	if(obj == NULL)
 		return false;
+	if(Game::get_game()->get_script()->call_can_get_obj_override(obj))
+		return true;
+
 	float weight = get_obj_weight(obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS,OBJ_WEIGHT_DONT_SCALE, OBJ_WEIGHT_EXCLUDE_QTY);
 	if((weight != 0 && weight != 255 && has_toptile(obj) == false
 	    && (!obj->is_on_map() || !Game::get_game()->get_map_window()->tile_is_black(obj->x, obj->y, obj)))
@@ -1307,7 +1315,11 @@ float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool sc
  if(is_stackable(obj))
  {
    if(include_qty)
+   {
+     if(obj->qty == 0)
+       obj->qty = 1;
      weight *= obj->qty; 
+   }
    /* luteijn: only some need to be divided by an extra 10 for a total of 100.
     * unfortunately can't seem to find a tileflag that controls this so would have to be hardcoded!
     */
