@@ -18,6 +18,7 @@ KP_ENTER	do_action
 
 q	quit
 Ctrl-q	quit
+Alt-q	quit
 Alt-x	quit
 s	save_menu
 Ctrl-s	save_menu

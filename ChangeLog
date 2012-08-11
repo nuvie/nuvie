@@ -1,3 +1,7 @@
+2012-08-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1503
+	* Add drake to the list of objects to search
+	* Fix invisibility wearing off while wearing an invisibility ring
+
 2012-08-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1502
 	* Fix disabled walk_with_left_button causing look_on_left_click on a failed
 		drag

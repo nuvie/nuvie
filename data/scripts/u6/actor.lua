@@ -2083,7 +2083,7 @@ function actor_update_flags(actor)
 		
 	if actor.alive then
 		local var_8 = 0 --FIXME get proper value for var_8.
-		if actor.visible == false and var_8 == 0 and random(0, 0x3f) == 0 then
+		if actor.visible == false and Actor.inv_get_obj_n(actor, 0x102) == false and var_8 == 0 and random(0, 0x3f) == 0 then --invis_ring 0x102
 			if actor_int_adj(actor) <= random(1, 0x1e) then
 				actor.visible = true
 			end

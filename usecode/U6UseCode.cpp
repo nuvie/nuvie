@@ -720,7 +720,7 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
-		if(obj->obj_n == OBJ_U6_MOUSE && !obj->is_in_inventory()  // needed for live mouse
+		if((obj->obj_n == OBJ_U6_MOUSE || obj->obj_n == OBJ_U6_DRAKE) && !obj->is_in_inventory() // needed for live mouse and drake
 		   && obj != obj_manager->get_obj(obj->x, obj->y, obj->z))
 		{
 			scroll->display_string("\nNot usable\n");
