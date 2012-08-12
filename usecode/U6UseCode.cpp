@@ -1673,23 +1673,6 @@ bool U6UseCode::use_firedevice_message(Obj *obj, bool lit)
  return true;
 }
 
-/* USE: trap. Ouch!
- */
-bool U6UseCode::use_trap(Obj *obj, UseCodeEvent ev)
-{
-    MapCoord loc(obj->x, obj->y, obj->z);
-    if(ev == USE_EVENT_GET)
-    {
-            game->get_scroll()->display_string("\n\nNot Possible\n");
-            if(items.actor_ref == player->get_actor())
-            {
-                items.actor_ref->hit((NUVIE_RAND()%29)+1); // CHECKME I think I changed it to the same value as the lua
-//         obj->status &= (0xff ^ OBJ_STATUS_INVISIBLE); // original didn't show the trap
-            }
-    }
-    return(false);
-}
-
 /* USE: Eat/drink food object. Hic!
  */
 bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)

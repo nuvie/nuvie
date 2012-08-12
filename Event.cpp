@@ -775,6 +775,14 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
         scroll->display_string("\n\nBlocked.");
     else if(obj->is_on_map())
     {
+    	Tile *tile = game->get_tile_manager()->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+    	if(tile && tile->damages)
+    	{
+    		scroll->display_string("\nNot possible");
+    		game->get_script()->call_actor_tile_dmg(actor, tile->tile_num);
+    		return false;
+    	}
+
         // perform GET usecode (can't add to container)
         if(usecode->has_getcode(obj) && (usecode->get_obj(obj, actor) == false))
         {
@@ -2144,7 +2152,7 @@ bool Event::toggle_combat()
             player->set_mapwindow_centered(true); // center mapwindow
         }
         scroll->display_prompt();
-        game->get_command_bar()->set_combat_mode(combat_mode);
+
         return true;
     }
 

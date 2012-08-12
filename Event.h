@@ -274,7 +274,7 @@ friend class Magic; // FIXME
  void set_ignore_timeleft(bool newsetting) { ignore_timeleft = newsetting; }
  void quitDialog();
  void saveDialog();
- EventInput get_input() { return input; }
+ EventInput *get_input() { return &input; }
  // These cursor methods are use to make sure Event knows where the cursor is
  // when objects are selected with ENTER. (since MapWindow and InventoryView
  // may each independantly show/hide their own cursors)

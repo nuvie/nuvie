@@ -414,15 +414,30 @@ end
 function actor_map_dmg(actor, map_x, map_y, map_z)
 	local obj_n = actor.obj_n
 	local actor_type = actor_tbl[obj_n]
-	local dmg = 0
-	local random = math.random
-	
+
 	if actor.alive == false or actor.hit_flag == true then
 		return
 	end
 
 	if obj_n ~= 0x1a7 and obj_n ~= 0x19e and obj_n ~= 0x19f and obj_n ~= 0x19c and (actor_type == nil or actor_type[13] == 0) and actor.protected == false then --balloon, skiff, raft, ship, immune to map dmg
 		local map_tile = map_get_dmg_tile_num(map_x, map_y, map_z)
+		if map_tile ~= nil then
+			actor_tile_dmg(actor, map_tile)
+			
+			if map_tile == 732 then
+				local trap_obj = map_get_obj(map_x, map_y, map_z, 0xad) --trap
+				if trap_obj ~= nil then
+					trap_obj.invisible = false
+				end
+			end
+		end
+	end
+end
+
+function actor_tile_dmg(actor, map_tile)
+		local actor_type = actor_tbl[actor.obj_n]
+		local dmg = 0
+		local random = math.random
 		if map_tile ~= nil then
 			actor.hit_flag = true
 			if map_tile == 564 then
@@ -441,7 +456,7 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 					if (actor_type == nil or actor_type[19] == 0) and actor.poisoned == false then --19 immune to poison
 						actor.poisoned = true
 						print(actor.name.." poisoned!\n")
-						hit_anim(map_x, map_y)
+						hit_anim(actor.x, actor.y)
 					end
 				end
 			elseif (map_tile >= 220 and map_tile <= 223) or map_tile == 890 or map_tile == 1124 or map_tile == 1125 or map_tile == 1130 or map_tile == 1131 or map_tile == 1164 or map_tile == 1193 then
@@ -459,12 +474,6 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 
 			elseif map_tile == 732 or map_tile == 1010 then
 				--trap, log saw
-				if map_tile == 732 then
-					local trap_obj = map_get_obj(map_x, map_y, map_z, 0xad) --trap
-					if trap_obj ~= nil then
-						trap_obj.invisible = false
-					end
-				end
 
 				actor_hit(actor, random(1, 0x1e), nil)
 
@@ -483,7 +492,7 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 				end
 			end
 		end
-	end
+
 end
 
 function actor_randomise_stat(base_stat)
@@ -3687,6 +3696,8 @@ function actor_avatar_death(avatar)
 			Actor.inv_unready_obj(avatar, obj)
 		end
 	end
+	party_set_combat_mode(false)
+	party_set_party_mode()
 	fade_in()
 
 end

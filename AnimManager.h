@@ -91,6 +91,7 @@ protected:
     bool safe_to_delete; // can animmgr delete me?
     bool updated; // call display
     bool running;
+	bool paused;
 
     // return false if animation doesn't need redraw
     virtual bool update() { return(true); }
@@ -101,6 +102,10 @@ protected:
 public:
     NuvieAnim();
     ~NuvieAnim();
+
+    void pause() { paused = true; }
+    void unpause() {paused = false; }
+    bool is_paused() { return paused; }
 
     virtual MapCoord get_location() { return(MapCoord(px, py, 0)); }
     uint32 get_id()                 { return(id_n); }
@@ -216,6 +221,8 @@ protected:
     bool update();
     MapCoord get_location();
 
+    virtual void display();
+
 public:
     TossAnim(Tile *tile, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags = 0);
     TossAnim(Obj *obj, uint16 degrees, const MapCoord &start, const MapCoord &stop, uint16 pixels_per_sec, uint8 stop_flags = 0);
@@ -321,7 +328,7 @@ class WingAnim : public TileAnim
 
 	PositionedTile *p_tile_top;
 	PositionedTile *p_tile_bottom;
-	bool paused;
+
 public:
 	WingAnim(MapCoord target);
 	~WingAnim();
@@ -347,7 +354,7 @@ class HailstormAnim : public TileAnim
 	Hailstone hailstones[HAILSTORM_ANIM_MAX_STONES];
 	uint8 num_hailstones_left;
 	uint8 num_active;
-	bool paused;
+
 public:
 	HailstormAnim(MapCoord t);
 	~HailstormAnim();

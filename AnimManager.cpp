@@ -230,6 +230,7 @@ NuvieAnim::NuvieAnim()
     running = true;
 
     last_move_time = SDL_GetTicks();
+    paused = false;
 }
 
 
@@ -602,6 +603,8 @@ MapCoord TossAnim::get_location()
 bool TossAnim::update()
 {
     uint32 moves_left = 0;
+    if(!running || is_paused())
+    	return true;
 
     do // move (no more than) one tile at a time, and check for intercept
     {
@@ -647,6 +650,13 @@ bool TossAnim::update()
     return(true);
 }
 
+void TossAnim::display()
+{
+	if(is_paused())
+		return;
+
+	TileAnim::display();
+}
 
 void TossAnim::hit_target()
 {
@@ -1185,7 +1195,7 @@ WingAnim::WingAnim(MapCoord t)
 		wing_bottom[1] = tile_manager->get_tile(1792+32+3);
 	}
 
-	paused = false;
+	unpause();
 }
 
 
@@ -1207,7 +1217,7 @@ void WingAnim::start()
 
 bool WingAnim::update()
 {
-	if(paused)
+	if(is_paused())
 		return true;
 
 	x += x_inc;
@@ -1224,9 +1234,9 @@ bool WingAnim::update()
 
 	if(x == target.x*16)
 	{
-		paused = true; //we pause our anim here to avoid recursion from the hit effect called by our effect class parent.
+		pause(); //we pause our anim here to avoid recursion from the hit effect called by our effect class parent.
 		message(MESG_ANIM_HIT);
-		paused = false;
+		unpause();
 	}
 
 	if(x%16 == 0) //flap wings.
@@ -1260,7 +1270,7 @@ HailstormAnim::HailstormAnim(MapCoord t)
 
 	num_hailstones_left = (NUVIE_RAND()%20) + 10;
 
-	paused = false;
+	unpause();
 }
 
 HailstormAnim::~HailstormAnim()
@@ -1273,7 +1283,7 @@ void HailstormAnim::start()
 
 bool HailstormAnim::update()
 {
-	if(paused)
+	if(is_paused())
 		return true;
 
 	if(num_active < 6 && num_hailstones_left > 0)
@@ -1312,9 +1322,9 @@ bool HailstormAnim::update()
 				Actor *actor = Game::get_game()->get_actor_manager()->get_actor(hailstones[i].x/16, hailstones[i].y/16, z);
 				if(actor)
 				{
-					paused = true;
+					pause();
 					message(MESG_ANIM_HIT, actor);
-					paused = false;
+					unpause();
 				}
 				else
 				{

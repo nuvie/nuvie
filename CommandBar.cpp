@@ -303,6 +303,8 @@ void CommandBar::set_combat_mode(bool mode)
             update_display = true;
         }
     }
+
+    //FIXME this probably should be moved else where. I think this was added to get party to fight first. It may not be needed now.
     if (combat_mode) // make sure party attacks
     {
         Player *player = game->get_player();

@@ -55,8 +55,6 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_V_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough,OBJTYPE_NONE },
     { OBJ_U6_H_PASSTHROUGH,255,0,USE_EVENT_USE,&U6UseCode::use_passthrough,OBJTYPE_NONE },
 
-    { OBJ_U6_TRAP,      0,0,USE_EVENT_GET,&U6UseCode::use_trap,OBJTYPE_NONE },
-
     { OBJ_U6_LEVER, 255,0,USE_EVENT_USE,&U6UseCode::use_switch,OBJTYPE_NONE },
     { OBJ_U6_SWITCH,255,0,USE_EVENT_USE,&U6UseCode::use_switch,OBJTYPE_NONE },
 

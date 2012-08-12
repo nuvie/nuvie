@@ -123,7 +123,6 @@ class U6UseCode: public UseCode, public CallBack
  bool use_passthrough(Obj *obj, UseCodeEvent ev);
  bool use_switch(Obj *obj, UseCodeEvent ev);
  bool use_crank(Obj *obj, UseCodeEvent ev);
- bool use_trap(Obj *obj, UseCodeEvent ev);
  bool use_food(Obj *obj, UseCodeEvent ev);
  bool use_firedevice(Obj *obj, UseCodeEvent ev);
  bool use_fan(Obj *obj, UseCodeEvent ev);

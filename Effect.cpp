@@ -109,6 +109,8 @@ void CannonballEffect::start_anim()
 uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 {
     bool stop_effect = false;
+    Actor *hit_actor = NULL;
+
     switch(msg)
     {
         case MESG_ANIM_HIT_WORLD:
@@ -129,7 +131,8 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
             MapEntity *hit_ent = static_cast<MapEntity *>(msg_data);
             if(hit_ent->entity_type == ENT_ACTOR)
             {
-                hit_ent->actor->hit(32);
+                //hit_ent->actor->hit(32);
+            	hit_actor = hit_ent->actor;
                 stop_effect = true;
             }
             if(hit_ent->entity_type == ENT_OBJ)
@@ -161,6 +164,11 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 
     if(stop_effect)
     {
+        if(hit_actor)
+        {
+        	anim->pause(); //pause to avoid recursive problems when animations are called from actor_hit() lua script.
+        	Game::get_game()->get_script()->call_actor_hit(hit_actor, 32, true);
+        }
         if(msg != MESG_ANIM_DONE) // this msg means anim stopped itself
             anim->stop();
         game->unpause_all();

@@ -1,3 +1,15 @@
+2012-08-12  Eric Fry <efry at users.sourceforge.net> r1508
+	* Fixed bug with Event::get_input() It should have been returning a pointer.
+	  Otherwise it tries to double free the input buffers. This was causing segfaults
+	  when tabbing between map and inventory.
+	* Refactored actor_map_dmg() to create new actor_tile_dmg() function
+	* Added call to actor_tile_dmg() lua function when trying to get damaging
+	  tiles. eg. get trap, poison field etc.
+	* Added paused variable to NuvieAnim class. Changed TossAnim to be pauseable
+	* Changed CannonEffect to use actor_hit() lua script instead of Actor::hit()
+	  This allows the avatar to die from cannon fire.
+	* Set party mode upon avatar death.
+ 
 2012-08-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1507
 	* Fix loading portrait 0 and the name for it (Pushme Pullyu)
 	* Allow double click to talk to Pushme Pullyu

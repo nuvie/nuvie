@@ -208,7 +208,7 @@ void ActionQuitDialog(int *params)
 
 void ActionToggleCursor(int *params)
 {
-	if(event->get_input().select_from_inventory == false)
+	if(event->get_input()->select_from_inventory == false)
 		event->moveCursorToInventory();
 	else // cursor is on inventory
 		event->moveCursorToMapWindow();

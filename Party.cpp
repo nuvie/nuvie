@@ -640,6 +640,10 @@ void Party::set_in_combat_mode(bool value)
   }
 
   update_music();
+  if(game->get_command_bar() != NULL)
+  {
+      game->get_command_bar()->set_combat_mode(in_combat_mode);
+  }
 }
 
 void Party::update_music()
@@ -809,7 +813,6 @@ void Party::set_in_vehicle(bool value)
  if(value)
  {
   set_in_combat_mode(false); // break off combat when boarding a vehicle
-  game->get_command_bar()->set_combat_mode(false);
  }
 
  return;

@@ -103,6 +103,7 @@ class Script
    bool call_actor_init(Actor *actor, uint8 alignment);
    bool call_actor_attack(Actor *actor, MapCoord location, Obj *weapon);
    bool call_actor_map_dmg(Actor *actor, MapCoord location);
+   bool call_actor_tile_dmg(Actor *actor, uint16 tile_num);
    bool call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg=false);
    bool call_look_obj(Obj *obj);
    int call_obj_get_readiable_location(Obj *obj);

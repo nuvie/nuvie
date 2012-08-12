@@ -157,6 +157,7 @@ static int nscript_player_set_actor(lua_State *L);
 
 static int nscript_party_is_in_combat_mode(lua_State *L);
 static int nscript_party_set_combat_mode(lua_State *L);
+static int nscript_party_set_party_mode(lua_State *L);
 static int nscript_party_move(lua_State *L);
 static int nscript_party_get_size(lua_State *L);
 static int nscript_party_get_member(lua_State *L);
@@ -554,6 +555,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_party_set_combat_mode);
    lua_setglobal(L, "party_set_combat_mode");
 
+   lua_pushcfunction(L, nscript_party_set_party_mode);
+   lua_setglobal(L, "party_set_party_mode");
+
    lua_pushcfunction(L, nscript_party_move);
    lua_setglobal(L, "party_move");
 
@@ -761,6 +765,17 @@ bool Script::call_actor_map_dmg(Actor *actor, MapCoord location)
    lua_pushnumber(L, (lua_Number)location.z);
 
    return call_function("actor_map_dmg", 4, 0);
+}
+
+bool Script::call_actor_tile_dmg(Actor *actor, uint16 tile_num)
+{
+
+   lua_getglobal(L, "actor_tile_dmg");
+   nscript_new_actor_var(L, actor->get_actor_num());
+   lua_pushnumber(L, (lua_Number)tile_num);
+
+
+   return call_function("actor_tile_dmg", 2, 0);
 }
 
 bool Script::call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg)
@@ -1809,6 +1824,14 @@ static int nscript_party_set_combat_mode(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
 	party->set_in_combat_mode(lua_toboolean(L, 1));
+	return 0;
+}
+
+static int nscript_party_set_party_mode(lua_State *L)
+{
+	Player *player = Game::get_game()->get_player();
+	player->set_party_mode(player->get_party()->get_actor(0));
+
 	return 0;
 }
 
