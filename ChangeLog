@@ -1,3 +1,6 @@
+2012-08-13  Eric Fry <efry at users.sourceforge.net> r1509
+	* Fixed bug "bars visible through darkness" [3556239]
+
 2012-08-12  Eric Fry <efry at users.sourceforge.net> r1508
 	* Fixed bug with Event::get_input() It should have been returning a pointer.
 	  Otherwise it tries to double free the input buffers. This was causing segfaults

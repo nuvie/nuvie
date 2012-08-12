@@ -940,7 +940,7 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  //don't show invisible objects. 
  if(obj->status & OBJ_STATUS_INVISIBLE)
     return;
-    
+
  tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
 
  if(draw_lowertiles == false && (tile->flags3 & 0x4) && toptile == false) //don't display force lower tiles.
@@ -953,14 +953,12 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
     return;
  else
     {
-     // We don't show objects on walls if the area to the right or bottom of the wall is in darkness
-     if(tmp_map_buf[(y+1)*tmp_map_width+(x+2)] == 0 && !(tile->flags1 & TILEFLAG_WALL))
-        return;
-     else
-      {
-       if(tmp_map_buf[(y+2)*tmp_map_width+(x+1)] == 0 && !(tile->flags1 & TILEFLAG_WALL))//(obj->obj_n < 290 || obj->obj_n > 302))
-         return;
-      }
+	 // We don't show objects on walls if the area to the right or bottom of the wall is in darkness
+     if(tmp_map_buf[(y+1)*tmp_map_width+(x+2)] == 0 || tmp_map_buf[(y+2)*tmp_map_width+(x+1)] == 0)
+     {
+      if((!(tile->flags1 & TILEFLAG_WALL) || (game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_BARS)))
+    	  return;
+     }
     }
 
  //Draw a lightglobe in the middle of the 16x16 tile.
