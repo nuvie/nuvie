@@ -1,3 +1,6 @@
+2012-08-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1506
+	* Fix converse gump crash when talking to an actor without a portrait
+
 2012-08-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1505
 	* Fix putting objects into containers that block pathfinding
 	* Add crate to container list and don't move trap into containers
