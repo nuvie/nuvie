@@ -1,3 +1,7 @@
+2012-08-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1507
+	* Fix loading portrait 0 and the name for it (Pushme Pullyu)
+	* Allow double click to talk to Pushme Pullyu
+
 2012-08-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1506
 	* Fix converse gump crash when talking to an actor without a portrait
 

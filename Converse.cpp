@@ -501,7 +501,15 @@ void Converse::show_portrait(uint8 n)
     const char *nameret = 0;
     if(!actor)
         return;
-    if((actor->is_met()) || player->get_party()->contains_actor(actor)
+    if(gametype == NUVIE_GAME_U6 && n == 0) // Pushme Pullyu
+    {
+        Actor *real_actor = Game::get_game()->get_actor_manager()->get_actor(130);
+        if(real_actor->is_met() || player->get_party()->contains_actor(real_actor))
+            nameret = npc_name(130);
+        else
+            nameret = actors->look_actor(real_actor, false);
+    }
+    else if((actor->is_met()) || player->get_party()->contains_actor(actor)
          || (gametype == NUVIE_GAME_U6 && n >= 188 && n <= 200)) // always known NPCs
         nameret = npc_name(n);
     else

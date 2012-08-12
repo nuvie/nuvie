@@ -2545,7 +2545,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
     {
         bool can_use;
         if(game->get_game_type() == NUVIE_GAME_U6 && (obj->obj_n == OBJ_U6_MOUSE
-           || actor->get_actor_num() == 132)) // Smith
+           || actor->get_actor_num() == 132 || actor->get_actor_num() == 130)) // Smith, Pushme Pullyu
             can_use = false;
         else
             can_use = usecode->has_usecode(obj);

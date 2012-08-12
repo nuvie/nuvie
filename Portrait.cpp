@@ -137,7 +137,8 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
   }
   else
   {
-   num -= 1;
+   if(num != 0)
+     num -= 1;
 
    if(num == (188-1))
     num = PORTRAIT_U6_EXODUS-1; // Exodus
