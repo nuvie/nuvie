@@ -722,7 +722,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
 
         for(i=0;i < token_str.length(); i++)
         {
-        	if(isalpha(token_str[i]))
+        	if(isalnum(token_str[i]))
         		input_buf_add_char(token_str[i]);
         }
 

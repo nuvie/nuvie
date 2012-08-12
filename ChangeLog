@@ -1,3 +1,7 @@
+2012-08-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1510
+	* Fix secret door being blocked
+	* Allow numbers to be selected in conversations
+
 2012-08-13  Eric Fry <efry at users.sourceforge.net> r1509
 	* Fixed bug "bars visible through darkness" [3556239]
 

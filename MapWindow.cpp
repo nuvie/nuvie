@@ -1680,6 +1680,9 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 		if(lt.hitObj != obj)
 			return false;
 	}
+
+	if(game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_SECRET_DOOR)
+		return true;
 	Tile *tile = map->get_tile(obj->x, obj->y, cur_level);
 
 	if((tile->flags1 & TILEFLAG_WALL)

@@ -225,6 +225,20 @@ void ConverseGump::set_permitted_input(const char *allowed)
 		add_keyword("no");
 	}
 
+	if(allowed && strcmp(allowed, "0123456789") == 0)
+	{
+		add_keyword("0");
+		add_keyword("1");
+		add_keyword("2");
+		add_keyword("3");
+		add_keyword("4");
+		add_keyword("5");
+		add_keyword("6");
+		add_keyword("7");
+		add_keyword("8");
+		add_keyword("9");
+	}
+
 	MsgScroll::set_permitted_input(allowed);
 }
 
@@ -542,7 +556,7 @@ GUI_status ConverseGump::MouseUp(int x, int y, int button)
         	input_buf.clear();
         	for(i=0;i < token_str.length(); i++)
         	{
-        		if(isalpha(token_str[i]))
+        		if(isalnum(token_str[i]))
         			input_buf_add_char(token_str[i]);
         	}
         	set_input_mode(false);
