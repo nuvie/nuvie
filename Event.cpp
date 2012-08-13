@@ -1994,6 +1994,7 @@ void Event::quitDialog()
 	GUI_Widget *quit_dialog;
 	if(mode == MOVE_MODE && !showingQuitDialog)
 	{
+		map_window->set_looking(false);
 		map_window->set_walking(false);
 		showingQuitDialog = true;
 
@@ -2017,6 +2018,7 @@ void Event::saveDialog()
  SaveManager *save_manager = game->get_save_manager();
  if(mode == MOVE_MODE)
  {
+	 map_window->set_looking(false);
 	 map_window->set_walking(false);
 	 save_manager->create_dialog();
  }
@@ -2885,6 +2887,7 @@ void Event::cancelAction()
  */
 bool Event::newAction(EventMode new_mode)
 {
+	map_window->set_looking(false);
 	map_window->set_walking(false);
 
 	if(game->user_paused())

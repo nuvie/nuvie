@@ -1,3 +1,8 @@
+2012-08-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1511
+	* Converse gump: add default keywords, don't remove buy or sell keywords,
+		and fix dangling pointer regression from 1506
+	* Disable look on left click in certain situations
+
 2012-08-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1510
 	* Fix secret door being blocked
 	* Allow numbers to be selected in conversations

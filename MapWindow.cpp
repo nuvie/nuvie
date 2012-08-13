@@ -1896,7 +1896,7 @@ GUI_status MapWindow::MouseClick(int x, int y, int button)
 GUI_status MapWindow::MouseDelayed(int x, int y, int button)
 {
     Event *event = game->get_event();
-    if(!looking || event->get_mode() != MOVE_MODE)
+    if(!looking || event->get_mode() != MOVE_MODE || game->user_paused())
     {
         look_obj = NULL; look_actor = NULL;
         looking = true;
@@ -1976,6 +1976,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		{
 			if(look_on_left_click) // need to preserve location because of click delay
 			{
+				looking = true;
 				original_obj_loc = MapCoord(wx,wy ,cur_level);
 				look_actor = actor_manager->get_actor(wx , wy, cur_level);
 				look_obj = obj_manager->get_obj(wx , wy, cur_level);

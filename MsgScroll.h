@@ -47,6 +47,7 @@ using std::list;
 
 class Configuration;
 class Font;
+class Actor;
 
 class MsgText
 {
@@ -193,7 +194,7 @@ private:
 
  void set_input_mode(bool state, const char *allowed = NULL,
                      bool can_escape = true);
- virtual void set_talking(bool state) { talking = state; }
+ virtual void set_talking(bool state,  Actor *actor = NULL) { talking = state; }
 
  void set_show_cursor(bool state) { show_cursor = state; }
 

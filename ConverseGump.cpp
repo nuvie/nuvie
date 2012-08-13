@@ -81,6 +81,8 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
  cfg->value(config_get_game_key(config) + "/converse_bg_color", c, default_c);
  if(c<256)
 	 converse_bg_color = (uint8)c;
+
+ cfg->value("config/cheats/party_all_the_time", party_all_the_time, false);
 }
 
 ConverseGump::~ConverseGump()
@@ -94,7 +96,7 @@ ConverseGump::~ConverseGump()
 	delete font;
 }
 
-void ConverseGump::set_talking(bool state)
+void ConverseGump::set_talking(bool state, Actor *actor)
 {
 	if(state == true)
 	{
@@ -109,6 +111,11 @@ void ConverseGump::set_talking(bool state)
     	add_keyword("job");
     	add_keyword("bye");
 
+		if(actor && actor->is_in_party())
+			add_keyword("leave");
+		else if(actor && party_all_the_time)
+			add_keyword("join");
+
     	keyword_list = &conv_keywords;
 	}
 
@@ -122,6 +129,8 @@ void ConverseGump::set_actor_portrait(Actor *a)
 
 	if(Game::get_game()->get_portrait()->get_portrait_data(a))
 		npc_portrait = create_framed_portrait(a);
+	else
+		npc_portrait = NULL;
 
 	if(avatar_portrait == NULL)
 	{
@@ -366,7 +375,8 @@ std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 		{
 			if(y > tmp_y && y < tmp_y + 8)
 			{
-				keyword_list->erase(iter);
+				if(!string_i_compare((*iter).s, " *buy") && !string_i_compare((*iter).s, " *sell"))
+					keyword_list->erase(iter);
 				return t.s;
 			}
 		}

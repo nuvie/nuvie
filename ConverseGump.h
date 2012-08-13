@@ -50,7 +50,7 @@ class ConverseGump: public MsgScroll
 
 	bool found_break_char;
 	bool solid_bg;
-
+	bool party_all_the_time;
 	uint8 converse_bg_color;
 
  public:
@@ -63,7 +63,7 @@ class ConverseGump: public MsgScroll
  virtual bool parse_token(MsgText *token);
  virtual std::string get_token_string_at_pos(uint16 x, uint16 y);
  virtual void display_string(std::string s, Font *f);
- virtual void set_talking(bool state);
+ virtual void set_talking(bool state, Actor *actor = NULL);
  virtual void set_font(uint8 font_type) {}
 
  void Display(bool full_redraw);
