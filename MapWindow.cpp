@@ -1809,7 +1809,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         }
         else
         {
-            if(move_on_drop(obj))
+            if(!obj->is_in_inventory() && move_on_drop(obj))
             {
                 event->newAction(PUSH_MODE);
                 event->select_obj(obj);

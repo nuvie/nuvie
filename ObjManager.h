@@ -132,7 +132,8 @@ class ObjManager
  bool is_breakable(Obj *obj);
  bool can_store_obj(Obj *target, Obj *src); // Bag, open chest, spellbook.
  bool can_get_obj(Obj *obj);
- bool has_reduced_weight(Obj *obj);
+ bool has_reduced_weight(uint16 obj_n);
+ bool has_reduced_weight(Obj *obj) { return has_reduced_weight(obj->obj_n); }
  bool has_toptile(Obj *obj);
 
  U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);

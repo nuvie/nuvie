@@ -914,20 +914,20 @@ bool ObjManager::can_get_obj(Obj *obj)
 	return false;
 }
 
-bool ObjManager::has_reduced_weight(Obj *obj)
+bool ObjManager::has_reduced_weight(uint16 obj_n)
 {
   // FIXME: HERE BE HARDCODED VALUES! FIXME: not sure if this list is complete!
   if (game_type==NUVIE_GAME_U6) // luteijn: I only know about U6...
   {
-    if (   (obj->obj_n == OBJ_U6_GOLD) 
-	|| (obj->obj_n == OBJ_U6_BLACK_PEARL) // not using range because don't want to depend on underlying magic numbers relations
-	|| (obj->obj_n == OBJ_U6_BLOOD_MOSS) 
-	|| (obj->obj_n == OBJ_U6_GARLIC) 
-	|| (obj->obj_n == OBJ_U6_GINSENG) 
-	|| (obj->obj_n == OBJ_U6_MANDRAKE_ROOT) 
-	|| (obj->obj_n == OBJ_U6_NIGHTSHADE) 
-	|| (obj->obj_n == OBJ_U6_SPIDER_SILK) 
-	|| (obj->obj_n == OBJ_U6_SULFUROUS_ASH) 
+    if (   (obj_n == OBJ_U6_GOLD) 
+	|| (obj_n == OBJ_U6_BLACK_PEARL) // not using range because don't want to depend on underlying magic numbers relations
+	|| (obj_n == OBJ_U6_BLOOD_MOSS) 
+	|| (obj_n == OBJ_U6_GARLIC) 
+	|| (obj_n == OBJ_U6_GINSENG) 
+	|| (obj_n == OBJ_U6_MANDRAKE_ROOT) 
+	|| (obj_n == OBJ_U6_NIGHTSHADE) 
+	|| (obj_n == OBJ_U6_SPIDER_SILK) 
+	|| (obj_n == OBJ_U6_SULFUROUS_ASH) 
        )
     {
       return true;
@@ -935,7 +935,7 @@ bool ObjManager::has_reduced_weight(Obj *obj)
   }
   else if(game_type==NUVIE_GAME_SE)
   {
-	switch (obj->obj_n)
+	switch (obj_n)
 	{
 		case OBJ_SE_RIFLE_BULLET:
 		case OBJ_SE_FEATHER:

@@ -107,13 +107,19 @@ void ConverseGump::set_talking(bool state, Actor *actor)
     	set_input_mode(false);
     	clear_scroll();
     	set_found_break_char(true);
-    	add_keyword("name");
-    	add_keyword("job");
-    	add_keyword("bye");
-
+		bool altar = (Game::get_game()->get_game_type() == NUVIE_GAME_U6 // Singularity is excluded on purpose
+		              && actor->get_actor_num() >= 192 && actor->get_actor_num() <= 199);
+		if(!altar)
+		{
+			add_keyword("name");
+			add_keyword("job");
+			add_keyword("bye");
+		}
+		bool cant_join = (Game::get_game()->get_game_type() == NUVIE_GAME_U6 // statues and altars
+		                  && actor->get_actor_num() >= 189 && actor->get_actor_num() <= 200);
 		if(actor && actor->is_in_party())
 			add_keyword("leave");
-		else if(actor && party_all_the_time)
+		else if(actor && party_all_the_time && !cant_join)
 			add_keyword("join");
 
     	keyword_list = &conv_keywords;

@@ -116,9 +116,12 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
         case MESG_ANIM_HIT_WORLD:
         {
             MapCoord *hit_loc = static_cast<MapCoord *>(msg_data);
+            Tile *obj_tile = game->get_obj_manager()->get_obj_tile(hit_loc->x, hit_loc->y, hit_loc->z);
             Tile *tile = game->get_game_map()->get_tile(hit_loc->x,hit_loc->y,
                                                         hit_loc->z);
-            if(tile->flags1 & TILEFLAG_WALL)
+
+            if((tile->flags2 & TILEFLAG_MISSILE_BOUNDARY)
+               || (obj_tile && obj_tile->flags2 & TILEFLAG_MISSILE_BOUNDARY))
             {
                 //new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
             	new ExpEffect(EXP_EFFECT_TILE_NUM, MapCoord(hit_loc->x, hit_loc->y, hit_loc->z));

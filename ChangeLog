@@ -1,3 +1,11 @@
+2012-08-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1512
+	* Don't allow statues and altars to join the party.
+	* Fix converse reading past page breaks (converse gump still does this)
+	* Fix converse get_obj_weight when dealing with reduced weight items
+	* Fix cannon not stopping when hitting a blocking obj
+	* Fix cannon projectile stopping on tiles that aren't missile boundaries
+	* Fix hackmove trying to move items when drag and dropping from inventory
+
 2012-08-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1511
 	* Converse gump: add default keywords, don't remove buy or sell keywords,
 		and fix dangling pointer regression from 1506

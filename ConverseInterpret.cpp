@@ -139,7 +139,7 @@ void ConverseInterpret::step()
 
     flush();
 
-    while(!waiting() && !cs->overflow())
+    while(!waiting() && !cs->overflow() && !Game::get_game()->get_scroll()->get_page_break())
     {
         if(is_print(cs->peek()))
         {
@@ -888,10 +888,15 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                                           - cnpc->get_inventory_weight()) * 10);
             break;
         case U6OP_WEIGHT: // 0x9b
+        {
             v[1] = pop_arg(i); // quantity
             v[0] = pop_arg(i); // object
-            out = converse->objects->get_obj_weight(v[0]) * v[1];
+            float weight = converse->objects->get_obj_weight(v[0]) * v[1];
+            if(converse->objects->has_reduced_weight(v[0]))
+                weight /= 10;
+            out = weight;
             break;
+        }
         case U6OP_HORSED: // 0x9d
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             cnpc_obj = cnpc->make_obj();
