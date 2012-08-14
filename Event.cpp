@@ -680,12 +680,36 @@ bool Event::talk(Obj *obj)
     return(false);
 }
 
+void Event::try_next_attack()
+{
+	if(player->attack_select_next_weapon(true) == false)
+	{
+		player->subtract_movement_points(10);
+		game->get_actor_manager()->startActors(); // end player turn
+		endAction(true);
+	}
+	else
+	{
+		map_window->set_show_cursor(true);
+		mode = ATTACK_MODE; // FIXME: need to return after WAIT_MODE
+		//endAction(false);
+		//newAction(ATTACK_MODE);
+	}
+}
+
 bool Event::attack()
 {
 	MapCoord target = map_window->get_cursorCoord();
     Actor *actor = map_window->get_actorAtCursor();
+    Actor *p = player->get_actor();
 
-    if(map_window->tile_is_black(target.x, target.y))
+    if(game->get_script()->call_out_of_ammo(p, p->get_weapon_obj(player->get_current_weapon()), true))
+    {
+        // the function prints out the message
+        try_next_attack(); // SE and MD have weapons that need ammo and only take up 1 slot
+        return true;
+    }
+    else if(map_window->tile_is_black(target.x, target.y))
         scroll->display_string("nothing!\n");
     else if(actor && actor->is_visible())
         {
@@ -719,19 +743,8 @@ bool Event::attack()
     map_window->set_show_cursor(false);
     player->attack(target);
 
-    if(player->attack_select_next_weapon() == false)
-    {
-    	player->subtract_movement_points(10);
-    	game->get_actor_manager()->startActors(); // end player turn
-      endAction(true);
-    }
-    else
-        {
-            map_window->set_show_cursor(true);
-            mode = ATTACK_MODE; // FIXME: need to return after WAIT_MODE
-            //endAction(false);
-            //newAction(ATTACK_MODE);
-        }
+    try_next_attack();
+
     return true;
 }
 
@@ -1896,13 +1909,13 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 else if(selection == 4) // Justice
                     teleport_dest = "127 28 0";
                 else if(selection == 5) // Sacrifice
-                    teleport_dest = "33f a6 0";
+                    teleport_dest = "33e a6 0";
                 else if(selection == 6) // Honor
                     teleport_dest = "147 339 0";
                 else if(selection == 7) // Humility
                     teleport_dest = "397 3a8 0";
                 else if(selection == 8) // Spirituality
-                    teleport_dest = "17 16 1";
+                    teleport_dest = "18 16 1";
                 break;
             case 4:
                 if(selection == 1) // Hall of Knowledge

@@ -644,20 +644,20 @@ void Player::attack_select_init()
  return;
 }
 
-bool Player::attack_select_next_weapon()
+bool Player::attack_select_next_weapon(bool add_newline)
 {
  sint8 i;
 
  for(i=current_weapon + 1; i < ACTOR_MAX_READIED_OBJECTS;i++)
    {
-    if(attack_select_weapon_at_location(i) == true)
+    if(attack_select_weapon_at_location(i, add_newline) == true)
       return true;
    }
 
  return false;
 }
 
-bool Player::attack_select_weapon_at_location(sint8 location)
+bool Player::attack_select_weapon_at_location(sint8 location, bool add_newline)
 {
  const CombatType *weapon;
  MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -665,6 +665,8 @@ bool Player::attack_select_weapon_at_location(sint8 location)
  if(location == ACTOR_NO_READIABLE_LOCATION)
    {
     current_weapon = location;
+    if(add_newline)
+        scroll->display_string("\n");
     if(game_type == NUVIE_GAME_U6 && actor->obj_n == OBJ_U6_SHIP)
     	scroll->display_string("Attack with ship cannons-");
     else
@@ -678,6 +680,8 @@ bool Player::attack_select_weapon_at_location(sint8 location)
  if(weapon && weapon->attack > 0)
    {
     current_weapon = location;
+    if(add_newline)
+        scroll->display_string("\n");
     scroll->display_string("Attack with ");
     scroll->display_string(obj_manager->get_obj_name(weapon->obj_n));
     scroll->display_string("-");

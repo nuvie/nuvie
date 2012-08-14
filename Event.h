@@ -290,6 +290,7 @@ friend class Magic; // FIXME
  uint16 callback(uint16 msg, CallBack *caller, void *data);
  bool handleSDL_KEYDOWN (const SDL_Event *event);
  const char *print_mode(EventMode mode);
+ void try_next_attack();
 };
 
 

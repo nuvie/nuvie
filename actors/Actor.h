@@ -393,7 +393,8 @@ class Actor
  virtual void preform_worktype() { return; }
 
  // combat methods
- void attack(MapCoord pos); // attack at a given map location
+ //void attack(MapCoord pos); // attack at a given map location
+ Obj *get_weapon_obj(sint8 readied_obj_location);
  void attack(sint8 readied_obj_location, MapCoord target);
  const CombatType *get_weapon(sint8 readied_obj_location);
  void attract_to(Actor *target);

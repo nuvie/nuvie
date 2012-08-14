@@ -118,13 +118,14 @@ class Player
 
  bool weapon_can_hit(uint16 x, uint16 y);
  void attack_select_init();
- bool attack_select_next_weapon();
+ bool attack_select_next_weapon(bool add_newline = false);
 
  void attack(MapCoord target);
- 
+ sint8 get_current_weapon() { return current_weapon; }
+
  protected:
  
- bool attack_select_weapon_at_location(sint8 location);
+ bool attack_select_weapon_at_location(sint8 location, bool add_newline = false);
 };
 
 #endif /* __Player_h__ */

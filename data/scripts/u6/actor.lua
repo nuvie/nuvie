@@ -1425,6 +1425,26 @@ function combat_range_check_target(actor_attacking)
 return true
 end
 
+--check for arrows or bolts if attacking with a bow or crossbow
+function out_of_ammo(attacker, weapon, print_message)
+
+   local weapon_obj_n = weapon.obj_n
+
+   if (weapon_obj_n == 41 or weapon_obj_n == 54) and Actor.inv_has_obj_n(attacker, 55) == false then --bow, magic bow, arrows
+      if(print_message) then
+         print("Out of arrows!\n")
+      end
+      return true --no arrows, bail out
+   end
+   if (weapon_obj_n == 42 or weapon_obj_n == 50) and Actor.inv_has_obj_n(attacker, 56) == false then --crossbow, triple crossbow, bolts
+      if(print_message) then
+         print("Out of bolts!\n")
+      end
+      return true --no bolts, bail out
+   end
+   return false
+end
+
 --
 -- actor_attack(attacker, target, weapon)
 --
@@ -1454,13 +1474,10 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon)
       return
    end
 
-   --check for arrows or bolts is attacking with a bow or crossbow
+   --check for arrows or bolts if attacking with a bow or crossbow
 
-   if (weapon_obj_n == 41 or weapon_obj_n == 54) and Actor.inv_has_obj_n(attacker, 55) == false then --bow, magic bow, arrows
-      return --no arrows, bail out
-   end
-   if (weapon_obj_n == 42 or weapon_obj_n == 50) and Actor.inv_has_obj_n(attacker, 56) == false then --crossbow, triple crossbow, bolts
-      return --no bolts, bail out
+   if (out_of_ammo(attacker, weapon, false) == true) then
+      return --no arrows or bolts, bail out
    end
 
 

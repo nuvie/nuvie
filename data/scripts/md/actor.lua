@@ -184,7 +184,7 @@ local get_weapon_range = function(obj_n)
 
 end
 
-local projectile_weapon_tbl = 
+local projectile_weapon_tbl = --FIXME weed sprayer and spray gun
 {
 --obj_n = {tile_num, initial_tile_rotation, speed, rotation_amount} --FIXME: all untested
 [40] = {575, 90,4, 0}, -- Cupid's bow and arrows
@@ -240,12 +240,12 @@ weapon_dmg_tbl = { --FIXME: all damage is made up
 --[116] = 1, --lit oil lamp
 --[117] = 1, --lantern
 --[118] = 1, --lit lantern
---[129] = 2, --weed sprayer
+[129] = 1, --weed sprayer -- FIXME no damage normally not sure what it does
 --[136] = 1, --tongs
 [241] = 2, --heat ray gun
 [242] = 2, --freeze ray gun
 --[243] = 1, --martian ritual pod knife
-[261] = 2, --spray gun
+[261] = 1, --spray gun -- FIXME no damage normally not sure what it does
 [263] = 2, --martian hoe (couldn't be equipped in original)
 [264] = 2, --martian scythe (couldn't be equipped in original)
 [265] = 2, --martian pitchfork (couldn't be equipped in original)
@@ -298,6 +298,37 @@ armour_tbl = --FIXME: all armor value is made up
 [90] = 1, --electric belt?
 [234] = 1, --martian jewelry
 }
+
+function out_of_ammo(attacker, weapon, print_message) -- untest function
+
+	local weapon_obj_n = weapon.obj_n
+
+	if ((weapon_obj_n == 41 or weapon_obj_n == 42) and Actor.inv_has_obj_n(attacker, 57) == false) --derringer, revolver, pistol rounds
+	    or (weapon_obj_n == 43 and Actor.inv_has_obj_n(attacker, 58) == false) --shotgun, shotgun shell
+	    or (weapon_obj_n == 44 and Actor.inv_has_obj_n(attacker, 59) == false) --rifle, rifle round
+	    or (weapon_obj_n == 45 and weapon.quality == 0 and (Actor.inv_has_obj_n(attacker, 58) == false or Actor.inv_has_obj_n(attacker, 59) == false)) --belgian combine (combine), shotgun shell, rifle round
+	    or (weapon_obj_n == 45 and weapon.quality == 1 and Actor.inv_has_obj_n(attacker, 59) == false) --belgian combine (rifle), rifle round
+	    or (weapon_obj_n == 45 and weapon.quality == 2 and Actor.inv_has_obj_n(attacker, 58) == false) --belgian combine (shotgun), shotgun shell
+	    or (weapon_obj_n == 46 and Actor.inv_has_obj_n(attacker, 60) == false) --elephant gun, elephant gun round
+	    or (weapon_obj_n == 47 and Actor.inv_has_obj_n(attacker, 63) == false) --sling, sling stone
+	    or ((weapon_obj_n == 240 or weapon_obj_n == 241 or weapon_obj_n == 129 or weapon_obj_n == 261) and obj.qty == 0) then --heat ray gun, freeze ray gun, weed sprayer, spray gun
+		if(print_message) then
+			print("Out of ammunition!\n")
+			--FIXME add sfx here
+		end
+		return true
+	end
+
+	if weapon_obj_n == 48 and Actor.inv_has_obj_n(attacker, 64) == false then --bow, arrows
+		if(print_message) then
+			print("Out of arrows!\n")
+			--FIXME add sfx here
+		end
+		return true
+	end
+
+	return false
+end
 
 function advance_time(num_turns)
 	--FIXME

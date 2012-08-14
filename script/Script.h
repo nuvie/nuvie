@@ -117,6 +117,7 @@ class Script
    bool call_moonstone_set_loc(uint8 phase, MapCoord location); //this is a hack until we have 'use' moonstone in script.
    bool call_advance_time(uint16 minutes);
    bool call_can_get_obj_override(Obj *obj);
+   bool call_out_of_ammo(Actor *attacker, Obj *weapon, bool print_message);
 
    MapCoord call_moonstone_get_loc(uint8 phase);
    bool call_update_moongates(bool visible);

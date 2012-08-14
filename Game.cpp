@@ -286,7 +286,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    config->value("config/keys",keyfilename,"(default)");
    bool key_file_exists = fileExists(keyfilename.c_str());
 
-   if(!key_file_exists)
+   if(keyfilename != "(default)" && !key_file_exists)
        fprintf(stderr, "Couldn't find the default key setting at %s - trying defaultkeys.txt in the data directory\n", keyfilename.c_str());
    if (keyfilename == "(default)" || !key_file_exists)
    {

@@ -381,7 +381,9 @@ std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 		{
 			if(y > tmp_y && y < tmp_y + 8)
 			{
-				if(!string_i_compare((*iter).s, " *buy") && !string_i_compare((*iter).s, " *sell"))
+				if(!string_i_compare(t.s, " *buy") && !string_i_compare(t.s, " *sell")
+				   && !string_i_compare(t.s, " *bye") && !string_i_compare(t.s, " *spells")
+				   && !string_i_compare(t.s, " *reagents"))
 					keyword_list->erase(iter);
 				return t.s;
 			}

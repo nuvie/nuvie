@@ -920,6 +920,22 @@ bool Script::call_can_get_obj_override(Obj *obj)
    return lua_toboolean(L,-1);
 }
 
+bool Script::call_out_of_ammo(Actor *attacker, Obj *weapon, bool print_message)
+{
+	lua_getglobal(L, "out_of_ammo");
+	nscript_new_actor_var(L, attacker->get_actor_num());
+	if(weapon == NULL)
+		nscript_new_actor_var(L, attacker->get_actor_num());
+	else
+		nscript_obj_new(L, weapon);
+	lua_pushboolean(L, print_message);
+
+	if(call_function("out_of_ammo", 3, 1) == false)
+		return false;
+
+	return lua_toboolean(L,-1);
+}
+
 bool Script::call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace)
 {
 	int start_idx = lua_gettop(L);

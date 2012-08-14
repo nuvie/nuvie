@@ -162,7 +162,6 @@ local get_weapon_range = function(obj_n)
       [240] = 6, --device
       [241] = 6 --activated device
    }
---FIXME: bamboo flintlock needs to say "flintlock not loaded" when it isn't and cancel out
    local range = range_weapon_tbl[obj_n]
    
    if range == nil then
@@ -241,6 +240,43 @@ armour_tbl = --FIXME: all armor value is made up
 --[135] = 0, --lei
 --[600] = 0, --ring
 }
+
+function out_of_ammo(attacker, weapon, print_message)  -- untest function
+
+	local weapon_obj_n = weapon.obj_n
+
+	if weapon_obj_n == 32 and Actor.inv_has_obj_n(attacker, 36) == false then --blowgun, poisoned darts
+		if(print_message) then
+			print("Out of darts!\n")
+		end
+		return true
+	end
+	if weapon_obj_n == 31 and Actor.inv_has_obj_n(attacker, 45) == false then --bow, arrows
+		if(print_message) then
+			print("Out of arrows!\n")
+		end
+		return true
+	end
+	if weapon_obj_n == 37 and Actor.inv_has_obj_n(attacker, 26) == false then --atl atl, spear
+		if(print_message) then
+			print("Out of spears!\n")
+		end
+		return true
+	end
+	if weapon_obj_n == 40 and Actor.inv_has_obj_n(attacker, 41) == false then --modern rifle, rifle bullet
+		if(print_message) then
+			print("Out of ammunition!\n")
+		end
+		return true
+	end
+	if weapon_obj_n == 50 and weapon.frame_n == 0 then --unloaded bamboo flintlock (frame 1 is loaded)
+		if(print_message) then
+			print("Flintlock not loaded!\n")
+		end
+		return true
+	end
+	return false
+end
 
 function actor_update_all()
 	dbg("actor_update_all()\n")
