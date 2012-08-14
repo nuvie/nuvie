@@ -80,7 +80,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_RED_GATE,  1,0,USE_EVENT_PASS,&U6UseCode::enter_moongate,OBJTYPE_NONE },
     { OBJ_U6_LADDER,255,0,USE_EVENT_USE,&U6UseCode::use_ladder,OBJTYPE_NONE },
     { OBJ_U6_CAVE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon,OBJTYPE_NONE },
-    { OBJ_U6_HOLE,  255,0,USE_EVENT_PASS,&U6UseCode::enter_dungeon,OBJTYPE_NONE },
+    { OBJ_U6_HOLE,  255,0,USE_EVENT_USE|USE_EVENT_PASS,&U6UseCode::enter_dungeon,OBJTYPE_NONE },
 
     { OBJ_U6_CLOCK,     255,0,USE_EVENT_LOOK,&U6UseCode::look_clock,OBJTYPE_NONE },
     { OBJ_U6_SUNDIAL,   255,0,USE_EVENT_LOOK,&U6UseCode::look_clock,OBJTYPE_NONE },

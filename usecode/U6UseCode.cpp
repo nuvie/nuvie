@@ -519,6 +519,9 @@ bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
     return true;
   }
 
+  if(UseCode::out_of_use_range(obj, true))
+    return true;
+
  if(obj->frame_n == 0) // DOWN
    {
     if(obj->z == 0)//handle the transition from the surface to the first dungeon level
@@ -1817,6 +1820,9 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
         }
         else
         {
+            if(UseCode::out_of_use_range(door_obj, false))
+                return true;
+
             scroll->display_string(obj_manager->get_obj_name(door_obj));
             scroll->display_string("\n");
 
@@ -1971,6 +1977,9 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
        obj->set_ok_to_take(true);
     obj->quality = 0;
    }
+
+ if(UseCode::out_of_use_range(obj, true))
+    return true;
 
  // walk to vehicle if necessary
  if(!party->is_at(obj->x, obj->y, obj->z))
@@ -2239,6 +2248,8 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
     return(true);
    }
 
+  if(UseCode::out_of_use_range(obj, true))
+    return true;
  // walk to vehicle if necessary
  if(!party->is_at(obj->x, obj->y, obj->z))
    {
@@ -2455,6 +2466,8 @@ bool U6UseCode::use_horse(Obj *obj, UseCodeEvent ev)
    }
  else // mount up.
    {
+    if(UseCode::out_of_use_range(obj, true))
+        return true;
     actor_manager->clear_actor(actor); //clear the temp horse actor from the map.
 
     actor_obj->obj_n = OBJ_U6_HORSE_WITH_RIDER;
@@ -2678,6 +2691,9 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
         return(true);
     }
 
+    if(ev == USE_EVENT_USE && UseCode::out_of_use_range(obj, true))
+        return true;
+
     if(obj->quality < 21)
         dungeon_name = (char *)u6_dungeons[obj->quality];
     if(obj->quality >= 1 && obj->quality <= 7)
@@ -2690,7 +2706,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
     party->dismount_from_horses();
 
     // don't activate if autowalking from linking exit
-    if(ev == USE_EVENT_PASS && items.actor_ref == player->get_actor() && !party->get_autowalk())
+    if((ev == USE_EVENT_PASS || ev == USE_EVENT_USE) && items.actor_ref == player->get_actor() && !party->get_autowalk())
     {
         ActorManager *actor_manager = Game::get_game()->get_actor_manager();
         if(obj->quality != 0 && party->contains_actor(3) && actor_manager->get_actor(3)->is_alive())
@@ -2722,7 +2738,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
         party->walk(&entrance, &exit, 100);
         return(true);
     }
-    else if(ev == USE_EVENT_PASS && party->get_autowalk()) // party can use now
+    else if((ev == USE_EVENT_PASS || ev == USE_EVENT_USE) && party->get_autowalk()) // party can use now
         if(party->contains_actor(items.actor_ref))
             return(true);
     return(false);

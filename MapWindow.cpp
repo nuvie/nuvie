@@ -1668,7 +1668,7 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
 
 bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 {
-	if(obj->is_in_inventory() || actor->get_z() != obj->z)
+	if(!obj || obj->is_in_inventory() || actor->get_z() != obj->z)
 		return false;
 
 	if(interface == INTERFACE_IGNORE_BLOCK)

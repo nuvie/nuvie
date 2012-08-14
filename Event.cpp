@@ -1013,13 +1013,16 @@ bool Event::look(Actor *actor)
 {
     ActorManager *actor_manager = game->get_actor_manager();
     sint16 p_id = -1; // party member number of actor
-    bool had_portrait = true;
+    bool had_portrait = false;
 
     if(game->user_paused())
         return(false);
 
-    display_portrait(actor);
-    had_portrait = view_manager->get_portrait_view()->get_waiting();
+    if(actor->get_actor_num() != 0)
+    {
+        display_portrait(actor);    
+        had_portrait = view_manager->get_portrait_view()->get_waiting();
+    }
 
     actor_manager->print_actor(actor); // DEBUG
     scroll->display_string("Thou dost see ");
@@ -1203,7 +1206,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 
     if(push_actor)
     {
-        if(!push_actor->can_be_moved() || push_actor->get_tile_type() > ACTOR_DT)
+        if(!push_actor->can_be_moved() || push_actor->get_tile_type() != ACTOR_ST)
         {
             scroll->display_string("Not possible\n\n");
             scroll->display_prompt();

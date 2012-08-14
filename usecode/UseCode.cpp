@@ -28,6 +28,7 @@
 #include "ActorManager.h"
 #include "Actor.h"
 #include "UseCode.h"
+#include "MapWindow.h"
 
 UseCode::UseCode(Game *g, Configuration *cfg)
 {
@@ -229,4 +230,48 @@ Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
   }
   
   return(obj);
+}
+
+/*
+ * don't autowalk long distances to objects when foes are nearby or select obj outside of range
+ */
+bool UseCode::out_of_use_range(Obj *obj, bool check_enemies)
+{
+    if(!obj) // this should be checked before you get here
+        return true;
+    if(obj->is_in_inventory())
+        return false;
+
+    MapCoord player_loc = player->get_actor()->get_location();
+    MapCoord obj_loc = MapCoord(obj->x, obj->y, obj->z);
+
+    if(!check_enemies)
+    {
+        if(player_loc.distance(obj_loc) > 1
+           && game->get_map_window()->get_interface() == INTERFACE_NORMAL)
+        {
+            scroll->display_string("\nOut of range.\n");
+            return true;
+        }
+        else if(!game->get_map_window()->can_get_obj(player->get_actor(), obj))
+        {
+            scroll->display_string("\nBlocked.\n");
+            return true;
+        }
+        else
+            return false;
+    }
+    else if(player_loc.distance(obj_loc) > 1) // only setup for objects that already checked range and blocking limit
+    {
+        ActorList *enemies = 0;
+
+        if((enemies = player->get_actor()->find_enemies()))
+        {
+            scroll->display_string("\nOut of range.\n");
+            delete enemies;
+            return true;
+        }
+        delete enemies;
+    }
+    return false;
 }
