@@ -1,3 +1,8 @@
+2012-08-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1516
+	* Allow objs to be dragged onto doll widget when inside a container and fix
+		readying items inside a container
+	* Add inventory weight check to event->equip
+
 2012-08-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1515
 	* Fix forgotten local lua variable from actor_map_dmg change
 	* Fix swamp boots, invisibility ring, and storm cloak checks

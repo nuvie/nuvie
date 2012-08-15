@@ -33,6 +33,7 @@
 #include "GamePalette.h"
 #include "DollWidget.h"
 #include "CommandBar.h"
+#include "MapWindow.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define ACTION_BUTTON 3
@@ -358,12 +359,8 @@ bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
             DEBUG(0,LEVEL_WARNING,"DollWidget: Object already equipped!\n");
             return false;
         }
-        if(obj->is_in_container())
-        {
-            DEBUG(0,LEVEL_WARNING,"DollWidget: Not from a container!\n");
-            return false;
-        }
-        if(obj->is_in_inventory() && obj->get_actor_holding_obj() != actor)
+        if(obj->get_actor_holding_obj() != actor && (obj->is_in_inventory() || (obj->is_in_container()
+            && !Game::get_game()->get_map_window()->can_get_obj(actor, obj->get_container_obj()))))
         {
             DEBUG(0,LEVEL_WARNING,"DollWidget: Must be holding object!\n");
             return false;
@@ -392,7 +389,6 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
     bool can_equip = true;
     if(obj->is_on_map()) // get
       {
-       assert(!obj->is_in_container()); // won't happen since 'is_on_map' FIXME need to make work with containers
        // event->newAction(GET_MODE);
        Game::get_game()->get_scroll()->display_string("Get-");
        can_equip = Game::get_game()->get_event()->perform_get(obj, NULL, actor);
@@ -404,10 +400,8 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
       }
     if(can_equip) // ready
       {
-       assert(obj->is_in_inventory());
-       assert(obj->get_actor_holding_obj() == actor);
        assert(!obj->is_readied());
-       Game::get_game()->get_event()->ready(obj);
+       Game::get_game()->get_event()->ready(obj, actor);
       }
     Redraw();
    }

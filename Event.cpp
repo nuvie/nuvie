@@ -791,8 +791,11 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
     	Tile *tile = game->get_tile_manager()->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
     	if(tile && tile->damages)
     	{
-    		scroll->display_string("\nNot possible");
+    		scroll->display_string("\n\nNot possible");
     		game->get_script()->call_actor_tile_dmg(actor, tile->tile_num);
+			actor->display_condition(); // indicate that object hurt the player
+			scroll->display_string("\n");
+			scroll->display_prompt();
     		return false;
     	}
 
@@ -815,11 +818,11 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
             got_object = true;
         }
 
-        if(obj_manager->is_damaging(obj->x,obj->y,obj->z))
+/*        if(obj_manager->is_damaging(obj->x,obj->y,obj->z)) // I think the above check cancels this out
         {
             scroll->display_string("\n");
             actor->display_condition(); // indicate that object hurt the player
-        }
+        }*/
     }
   }
     else
@@ -2178,9 +2181,10 @@ bool Event::toggle_combat()
 }
 
 /* Make actor wear an object they are holding. */
-bool Event::ready(Obj *obj)
+bool Event::ready(Obj *obj, Actor *actor)
 {
-    Actor *actor = game->get_actor_manager()->get_actor(obj->x);
+    if(!actor)
+        actor = game->get_actor_manager()->get_actor(obj->x);
     bool readied = false;
 
     if(game->user_paused())
@@ -2189,10 +2193,16 @@ bool Event::ready(Obj *obj)
     scroll->display_string("Ready-");
     scroll->display_string(obj_manager->look_obj(obj, false));
     scroll->display_string("\n");
-    float weight = actor->get_inventory_equip_weight()
-                   + obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,
-                                                 OBJ_WEIGHT_DO_SCALE, OBJ_WEIGHT_EXCLUDE_QTY);
-    if(actor->get_strength() < weight && !game->using_hackmove())
+    float obj_weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,
+                                                   OBJ_WEIGHT_DO_SCALE, OBJ_WEIGHT_EXCLUDE_QTY);
+    float equip_weight = actor->get_inventory_equip_weight() + obj_weight;
+    float total_weight = actor->get_inventory_weight();
+
+    if(obj->get_actor_holding_obj() != actor)
+        total_weight += obj_weight;
+
+    if((actor->get_strength() < equip_weight
+       || actor->get_strength()*2 < total_weight) && !game->using_hackmove())
         scroll->display_string("\nToo heavy!\n");
     // perform READY usecode
     else if(usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
@@ -2201,6 +2211,9 @@ bool Event::ready(Obj *obj)
         scroll->display_prompt();
         return(obj->is_readied()); // handled by usecode
     }
+	else if(obj->is_in_container() && obj->get_actor_holding_obj() != actor
+	        && !Game::get_game()->get_map_window()->can_get_obj(actor, obj->get_container_obj()))
+		scroll->display_string("\nBlocked!\n");
     else if(!(readied = actor->add_readied_object(obj)))
     {
     	if(actor->get_object_readiable_location(obj) == ACTOR_NOT_READIABLE)

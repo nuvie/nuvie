@@ -36,6 +36,8 @@
 #include "TimedEvent.h"
 #include "UseCode.h"
 #include "MapWindow.h"
+#include "Player.h"
+#include "ActorManager.h"
 
 #include "InventoryFont.h"
 #include "ViewManager.h"
@@ -495,7 +497,10 @@ void ContainerWidget::try_click()
 	}
 	else // attempt to ready selected object.
 	{
-		event->ready(selected_obj);
+		Actor *actor = Game::get_game()->get_actor_manager()->get_actor(selected_obj->x);
+		if(!actor->is_in_party()) // hack for containers that aren't in the party
+			actor = Game::get_game()->get_player()->get_actor();
+		event->ready(selected_obj, actor);
 		Redraw();
 	}
 	ready_obj = NULL;

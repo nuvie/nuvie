@@ -236,7 +236,7 @@ friend class Magic; // FIXME
  void party_mode();
  bool toggle_combat();
 
- bool ready(Obj *obj);
+ bool ready(Obj *obj, Actor *actor = NULL);
  bool unready(Obj *obj);
 
  bool drop_start();

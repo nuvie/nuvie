@@ -1185,17 +1185,10 @@ static int nscript_actor_inv_get_readied_obj_n(lua_State *L)
 	Actor *actor = nscript_get_actor_from_args(L);
 	if(actor == NULL)
 	{
-		lua_pushinteger(L, 65535);
+		lua_pushinteger(L, -1);
 		return 1;
 	}
-
 	uint8 location = (uint8)lua_tointeger(L, 2);
-	if(actor->inventory_get_readied_obj_n(location) == -1)
-	{
-		lua_pushinteger(L, 65535);
-		return 1;
-	}
-
 	lua_pushinteger(L, actor->inventory_get_readied_obj_n(location));
 	return 1;
 }
