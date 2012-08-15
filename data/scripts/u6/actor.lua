@@ -435,6 +435,7 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 end
 
 function actor_tile_dmg(actor, map_tile)
+		local obj_n = actor.obj_n
 		local actor_type = actor_tbl[actor.obj_n]
 		local dmg = 0
 		local random = math.random
@@ -451,8 +452,8 @@ function actor_tile_dmg(actor, map_tile)
 				end
 			elseif (map_tile >= 2 and map_tile <= 5) or map_tile == 1165 then --swamp tiles or poison field.
 				--poison
-				local swamp_boots = Actor.inv_get_obj_n(actor, 0x1c) --swamp boots
-				if swamp_boots == nil or swamp_boots.readied == false or map_tile == 1165 then
+				local swamp_boots = Actor.inv_get_readied_obj_n(actor, 7) == 0x1c --swamp boots
+				if swamp_boots == false or map_tile == 1165 then
 					if (actor_type == nil or actor_type[19] == 0) and actor.poisoned == false then --19 immune to poison
 						actor.poisoned = true
 						print(actor.name.." poisoned!\n")
@@ -2032,7 +2033,11 @@ function advance_time(num_turns)
 							end
 						elseif obj_n == 0x102 then --invisibility ring
 							if random(0, 1000) == 429 then
-								actor.visible = true
+								local two_rings = (Actor.inv_get_readied_obj_n(actor, 5) == 0x102
+								                   and Actor.inv_get_readied_obj_n(actor, 6) == 0x102)
+								if two_rings == false then
+									actor.visible = true
+								end
 								obj_name = "ring"
 							end
 						elseif obj_n == 0x101 then -- regeneration ring
@@ -2109,7 +2114,9 @@ function actor_update_flags(actor)
 		
 	if actor.alive then
 		local var_8 = 0 --FIXME get proper value for var_8.
-		if actor.visible == false and Actor.inv_get_obj_n(actor, 0x102) == false and var_8 == 0 and random(0, 0x3f) == 0 then --invis_ring 0x102
+		if actor.visible == false and var_8 == 0 and random(0, 0x3f) == 0
+		   and Actor.inv_get_readied_obj_n(actor, 5) ~= 0x102 --invisibility rings
+		   and Actor.inv_get_readied_obj_n(actor, 6) ~= 0x102 then
 			if actor_int_adj(actor) <= random(1, 0x1e) then
 				actor.visible = true
 			end

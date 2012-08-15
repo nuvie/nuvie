@@ -56,6 +56,7 @@ static int nscript_actor_resurrect(lua_State *L);
 static int nscript_actor_inv_add_obj(lua_State *L);
 static int nscript_actor_inv_remove_obj(lua_State *L);
 static int nscript_actor_inv_remove_obj_qty(lua_State *L);
+static int nscript_actor_inv_get_readied_obj_n(lua_State *L);
 static int nscript_actor_inv_ready_obj(lua_State *L);
 static int nscript_actor_inv_unready_obj(lua_State *L);
 static int nscript_actor_inv_has_obj_n(lua_State *L);
@@ -89,6 +90,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "inv_add_obj", nscript_actor_inv_add_obj },
    { "inv_remove_obj", nscript_actor_inv_remove_obj },
    { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },   
+   { "inv_get_readied_obj_n", nscript_actor_inv_get_readied_obj_n },
    { "inv_ready_obj", nscript_actor_inv_ready_obj },
    { "inv_unready_obj", nscript_actor_inv_unready_obj },
    { "inv_has_obj_n", nscript_actor_inv_has_obj_n },
@@ -1176,6 +1178,26 @@ static int nscript_actor_inv_remove_obj_qty(lua_State *L)
    lua_pushinteger(L, actor->inventory_del_object(obj_n, qty, 0));
    
    return 1;
+}
+
+static int nscript_actor_inv_get_readied_obj_n(lua_State *L)
+{
+	Actor *actor = nscript_get_actor_from_args(L);
+	if(actor == NULL)
+	{
+		lua_pushinteger(L, 65535);
+		return 1;
+	}
+
+	uint8 location = (uint8)lua_tointeger(L, 2);
+	if(actor->inventory_get_readied_obj_n(location) == -1)
+	{
+		lua_pushinteger(L, 65535);
+		return 1;
+	}
+
+	lua_pushinteger(L, actor->inventory_get_readied_obj_n(location));
+	return 1;
 }
 
 static int nscript_actor_inv_ready_obj(lua_State *L)

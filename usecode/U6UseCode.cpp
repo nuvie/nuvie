@@ -3141,6 +3141,11 @@ bool U6UseCode::use_peer_gem(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::magic_ring(Obj *obj, UseCodeEvent ev)
 {
     Actor *actor = actor_manager->get_actor_holding_obj(obj);
+    if(actor->inventory_get_readied_object(ACTOR_HAND) != NULL
+       && actor->inventory_get_readied_object(ACTOR_HAND) != obj
+       && actor->inventory_get_readied_object(ACTOR_HAND_2) != NULL
+       && actor->inventory_get_readied_object(ACTOR_HAND_2) != obj)
+        return true;
     uint8 num_readied = actor->count_readied_objects(obj->obj_n, 0);
 //    if(obj->obj_n == OBJ_U6_REGENERATION_RING)
 //        actor_manager->get_actor_holding_obj(obj)->??? no visual effect
@@ -3154,6 +3159,9 @@ bool U6UseCode::magic_ring(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::storm_cloak(Obj *obj, UseCodeEvent ev)
 {
     Actor *actor = actor_manager->get_actor_holding_obj(obj);
+    if(actor->inventory_get_readied_object(ACTOR_BODY) != NULL
+       && actor->inventory_get_readied_object(ACTOR_BODY) != obj)
+        return true;
 
     AsyncEffect *e = new AsyncEffect(new TileBlackFadeEffect(actor, 9, 20)); //FIXME hardcoded values.
 	e->run();

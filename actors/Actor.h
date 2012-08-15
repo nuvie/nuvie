@@ -416,6 +416,7 @@ class Actor
  Obj *inventory_get_object(uint16 obj_n, uint8 qual = 0, bool match_quality = OBJ_MATCH_QUALITY, uint8 frame_n = 0, bool match_frame_n = OBJ_NOMATCH_FRAME_N);
  bool is_double_handed_obj_readied();
  Obj *inventory_get_readied_object(uint8 location);
+ sint16 inventory_get_readied_obj_n(uint8 location) { return (inventory_get_readied_object(location) == NULL ? -1 : inventory_get_readied_object(location)->obj_n); }
  virtual Obj *inventory_get_food(Obj *container=0) { return 0; }
  const CombatType *inventory_get_readied_object_combat_type(uint8 location);
  bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack=true);

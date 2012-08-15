@@ -1,3 +1,7 @@
+2012-08-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1515
+	* Fix forgotten local lua variable from actor_map_dmg change
+	* Fix swamp boots, invisibility ring, and storm cloak checks
+
 2012-08-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1514
 	* Add missing out of ammo messages
 	* Converse gump: Add more to the list of keywords not to remove
