@@ -1685,6 +1685,12 @@ void Event::alt_code(const char *cs)
             break;
 
         case 414: // teleport player & party to NPC location
+            if(player->is_in_vehicle())
+            {
+                display_not_aboard_vehicle();
+                active_alt_code = 0;
+                break;
+            }
             scroll->display_string("Npc number? ");
             get_scroll_input();
             active_alt_code = c;

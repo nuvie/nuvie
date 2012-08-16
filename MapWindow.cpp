@@ -428,13 +428,13 @@ bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
 {
  if(hackmove)
     return false;
- if(tmp_map_buf[(y - cur_y +1) * tmp_map_width + (x - cur_x +1)] == 0)
+ if(tmpBufTileIsBlack(x - cur_x +1,y - cur_y +1))
     return true;
  else if(obj)
  {
     Tile *tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-    if(!tile || (tmp_map_buf[(y- cur_y +1)*tmp_map_width+(x - cur_x +2)] == 0  && !(tile->flags1 & TILEFLAG_WALL))
-       || (tmp_map_buf[(y- cur_y +2)*tmp_map_width+(x - cur_x +1)] == 0 && !(tile->flags1 & TILEFLAG_WALL)))
+    if(!tile || (tmpBufTileIsBlack(x - cur_x +2, y - cur_y +1)  && !(tile->flags1 & TILEFLAG_WALL))
+       || (tmpBufTileIsBlack(x - cur_x +1, y - cur_y +2) && !(tile->flags1 & TILEFLAG_WALL)))
         return true;
  }
 
@@ -1100,7 +1100,7 @@ void MapWindow::drawBorder()
 
 void MapWindow::drawRoofs()
 {
-	if(cur_y < 0) // FIXME We need to handle this properly
+	if(cur_y < 1 || cur_y > 1012) // FIXME We need to handle this properly
 		return;
 	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
 		return;
@@ -1710,6 +1710,11 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
  if(message == GUI_DRAG_OBJ)
    {
+    if(game->get_player()->is_in_vehicle() && !hackmove)
+    {
+        game->get_event()->display_not_aboard_vehicle();
+        return false;
+    }
     drop_with_move = false;
     map_width = map->get_width(cur_level);
     x = (cur_x + x) % map_width;
