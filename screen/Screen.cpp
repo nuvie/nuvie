@@ -75,7 +75,7 @@ Screen::Screen(Configuration *cfg)
 
  max_update_rects = 10;
  num_update_rects = 0;
- memset( shading_globe, 0, sizeof(uint8*) * 3 );
+ memset( shading_globe, 0, sizeof(shading_globe) );
 }
 
 Screen::~Screen()

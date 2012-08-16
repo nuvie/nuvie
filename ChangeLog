@@ -1,3 +1,6 @@
+2012-08-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1523
+	*Fix segmentation fault from partially initialized value (thanks WJP)
+
 2012-08-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1522
 	*Don't accept drops onto map or 414 teleport when in a vehicle
 	*Call tmpBufTileIsBlack from tile_is_black to prevent a crash
