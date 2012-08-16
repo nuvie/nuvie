@@ -1,3 +1,6 @@
+2012-08-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1520
+	*Fix problems with the mouse selecting spells with a fake keyboard event
+
 2012-08-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1518
 	* Drag and drop from containers on the map to the map (container gump)
 	* Fix 1501 regression where targeting a container with move moved to

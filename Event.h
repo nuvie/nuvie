@@ -164,6 +164,7 @@ friend class Magic; // FIXME
  bool update();
  bool handleEvent(const SDL_Event *event);
  void request_input(CallBack *caller, void *user_data=NULL);
+ void target_spell();
 // Prompt for input.
 // obsolete:
 // void useselect_mode(Obj *src, const char *prompt = NULL); // deprecated

@@ -321,11 +321,7 @@ GUI_status SpellViewGump::MouseUp(int x, int y, int button)
 		else
 		{
 			//Simulate a global key down event.
-			SDL_Event e;
-			e.type = SDL_KEYDOWN;
-			e.key.keysym.sym = SDLK_RETURN;
-
-			Game::get_game()->get_event()->handleEvent(&e);
+			Game::get_game()->get_event()->target_spell();
 		}
 
 		return GUI_YUM;

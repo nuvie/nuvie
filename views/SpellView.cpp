@@ -462,7 +462,7 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 		MapWindow *map_window = Game::get_game()->get_map_window();
 		uint8 z = Game::get_game()->get_player()->get_actor()->get_z();
 
-		simulate_return();
+		Game::get_game()->get_event()->target_spell();
 		if(event->get_mode() == INPUT_MODE)
 		{
 			y += area.y;
@@ -507,7 +507,7 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
     	}
     	else
     	{
-    		simulate_return();
+			Game::get_game()->get_event()->target_spell();
     	}
 	}
 
@@ -566,12 +566,4 @@ GUI_status SpellView::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	}
 
     return GUI_PASS;
-}
-
-void SpellView::simulate_return() //Simulate a global key down event.
-{
-	SDL_Event e;
-	e.type = SDL_KEYDOWN;
-	e.key.keysym.sym = SDLK_RETURN;
-	Game::get_game()->get_event()->handleEvent(&e);
 }

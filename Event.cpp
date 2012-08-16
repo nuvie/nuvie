@@ -259,6 +259,16 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 	return	true;
 }
 
+void Event::target_spell()
+{
+	input.type = EVENTINPUT_KEY;
+	input.key = SDLK_RETURN;
+	message(CB_DATA_READY, (char*)&input);
+	callback_target = 0;
+	endAction();
+	doAction();
+}
+
 bool Event::handleEvent(const SDL_Event *event)
 {
 	if(game->user_paused())
