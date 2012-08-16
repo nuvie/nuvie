@@ -595,6 +595,12 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
         Game::get_game()->get_scroll()->message("\n\n");
     	return false;
     }
+    else if(!obj->is_in_inventory()
+            && obj_manager->obj_is_damaging(obj, Game::get_game()->get_player()->get_actor()))
+    {
+        Game::get_game()->get_player()->subtract_movement_points(3);
+        return false;
+    }
     else if(src_actor != actor || !obj->is_in_inventory())
         Game::get_game()->get_scroll()->message("\n\n");
 

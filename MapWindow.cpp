@@ -1721,7 +1721,8 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
     if(obj->is_in_inventory() == false) //obj on map.
     {
-    	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
+    	if(can_get_obj(p, obj)  //make sure there is a clear line from player to object
+		   || (obj->is_in_container() && can_get_obj(p, obj->get_container_obj())))
     	{
     		if(target_actor)
     		{
@@ -1729,6 +1730,11 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
     			if(target_actor == p || (target_actor->is_in_party()))
     			{
+					if(obj_manager->obj_is_damaging(obj, p))
+					{
+						game->get_player()->subtract_movement_points(3);
+						return false;
+					}
     				if((!game->get_usecode()->has_getcode(obj) || game->get_usecode()->get_obj(obj, target_actor))
     				   && game->get_event()->can_move_obj_between_actors(obj, p, target_actor))
     					return true;
@@ -1738,6 +1744,12 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     					return false;
     				}
     			}
+				else
+				{
+					game->get_scroll()->display_string("\n\nOnly within the party!");
+					game->get_scroll()->message("\n\n");
+					return false;
+				}
     		}
     		else
     		{

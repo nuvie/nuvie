@@ -139,7 +139,7 @@ const U6ObjectType U6ObjectTypes[] =
 
     { OBJ_U6_CAMPFIRE, 255,0,USE_EVENT_USE,&U6UseCode::use_firedevice,OBJTYPE_NONE },
 
-    { OBJ_U6_VORTEX_CUBE, 0,0,USE_EVENT_USE,&U6UseCode::use_vortex_cube,OBJTYPE_CONTAINER },
+    { OBJ_U6_VORTEX_CUBE, 0,0,USE_EVENT_SEARCH|USE_EVENT_USE,&U6UseCode::use_vortex_cube,OBJTYPE_CONTAINER },
     { OBJ_U6_PULL_CHAIN,  0,0,USE_EVENT_USE,&U6UseCode::use_bell,OBJTYPE_NONE },
     { OBJ_U6_BELL,      255,0,USE_EVENT_USE,&U6UseCode::use_bell,OBJTYPE_NONE },
     { OBJ_U6_SHOVEL,      0,0,USE_EVENT_USE,&U6UseCode::use_shovel,OBJTYPE_NONE },

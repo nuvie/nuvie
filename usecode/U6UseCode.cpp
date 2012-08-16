@@ -882,6 +882,9 @@ void U6UseCode::remove_gargoyle_egg(uint16 x, uint16 y, uint8 z)
 
 bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 {
+ if(ev == USE_EVENT_SEARCH)
+    return UseCode::search_container(obj);
+
  Obj *britannian_lens, *gargoyle_lens;
  Obj *container_obj;
  Obj *codex;

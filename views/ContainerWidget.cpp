@@ -404,6 +404,13 @@ bool ContainerWidget::drag_accept_drop(int x, int y, int message, void *data)
         DEBUG(0,LEVEL_WARNING,"ContainerWidget: Cannot Move between party members!\n"); 
         return false;
     }
+
+    if(!obj->is_in_inventory() &&
+       obj_manager->obj_is_damaging(obj, Game::get_game()->get_player()->get_actor()))
+    {
+        Game::get_game()->get_player()->subtract_movement_points(3);
+        return false;
+    }
     UseCode *usecode = Game::get_game()->get_usecode();
     if(usecode->is_chest(obj) && obj->frame_n == 0) //open chest
         obj->frame_n = 1; //close the chest

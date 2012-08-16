@@ -213,6 +213,9 @@ bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
 					player->subtract_movement_points(3);
 				else // get plus move
 					player->subtract_movement_points(8);
+				if(!obj->is_in_inventory() &&
+				   obj_manager->obj_is_damaging(obj, Game::get_game()->get_player()->get_actor()))
+					return false;
 				DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
 				return true;
 			}

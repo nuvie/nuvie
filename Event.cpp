@@ -788,16 +788,8 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
         scroll->display_string("\n\nBlocked.");
     else if(obj->is_on_map())
     {
-    	Tile *tile = game->get_tile_manager()->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-    	if(tile && tile->damages)
-    	{
-    		scroll->display_string("\n\nNot possible");
-    		game->get_script()->call_actor_tile_dmg(actor, tile->tile_num);
-			actor->display_condition(); // indicate that object hurt the player
-			scroll->display_string("\n");
-			scroll->display_prompt();
+		if(obj_manager->obj_is_damaging(obj, actor))
     		return false;
-    	}
 
         // perform GET usecode (can't add to container)
         if(usecode->has_getcode(obj) && (usecode->get_obj(obj, actor) == false))
@@ -1067,7 +1059,7 @@ bool Event::search(Obj *obj)
             scroll->display_string("nothing.");
         else
         {
-            scroll->display_string(".");
+            scroll->display_string(".\n");
             map_window->updateBlacking(); // secret doors
         }
         return(true);
@@ -1142,7 +1134,7 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 				Actor *src_actor = game->get_player()->get_actor();
 				Actor *target_actor = obj->get_actor_holding_obj();
 				if(can_move_obj_between_actors(push_obj, src_actor, target_actor, false))
-					obj_manager->moveto_inventory(push_obj, actor);
+					obj_manager->moveto_container(push_obj, obj);
 				scroll->message("\n\n");
 				endAction();
 				return(true);

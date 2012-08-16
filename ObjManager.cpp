@@ -38,6 +38,7 @@
 #include "Game.h"
 #include "MapWindow.h"
 #include "Script.h"
+#include "MsgScroll.h"
 
 static const int obj_egg_table[5] = {0,   // NUVIE_GAME_NONE
                                      335, // NUVIE_GAME_U6
@@ -814,13 +815,16 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 		   && ((target->obj_n == OBJ_U6_CHEST && target->frame_n == 1)
 		   || target->obj_n == OBJ_U6_DEAD_BODY
 		   || target->obj_n == OBJ_U6_MOUSE
-		   || target->obj_n == OBJ_U6_REMAINS))
+		   || target->obj_n == OBJ_U6_REMAINS
+		   || target->obj_n == OBJ_U6_DRAKE))
 			return true;
 
 		if(Game::get_game()->doubleclick_opens_containers()
 		   && (target->obj_n == OBJ_U6_DESK
 		   || target->obj_n == OBJ_U6_DRAWER
-		   || target->obj_n == OBJ_U6_GRAVE))
+		   || target->obj_n == OBJ_U6_GRAVE
+		   || target->obj_n == OBJ_U6_DEAD_GARGOYLE
+		   || target->obj_n == OBJ_U6_DEAD_CYCLOPS))
 			return true;
 	}
 	else if(game_type==NUVIE_GAME_SE)
@@ -1058,6 +1062,30 @@ Tile *ObjManager::get_obj_dmg_tile(uint16 x, uint16 y, uint8 level)
  }
 
  return NULL;
+}
+
+bool ObjManager::obj_is_damaging(Obj *obj, Actor *actor)
+{
+	if(!obj)
+		return false;
+
+	Tile *tile = tile_manager->get_original_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+
+	if(tile && tile->damages == true)
+	{
+		if(actor)
+		{
+			MsgScroll *scroll = Game::get_game()->get_scroll();
+			scroll->display_string("\n\nNot possible");
+			Game::get_game()->get_script()->call_actor_tile_dmg(actor, tile->tile_num);
+			actor->display_condition(); // indicate that object hurt the player
+			scroll->display_string("\n");
+			scroll->display_prompt();
+		}
+		 return true;
+	}
+	else
+		return false;
 }
 
 Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects)
