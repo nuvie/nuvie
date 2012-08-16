@@ -179,6 +179,7 @@ class Game
  TileManager *get_tile_manager()   { return(tile_manager); }
  ObjManager *get_obj_manager()     { return(obj_manager); }
  ActorManager *get_actor_manager() { return(actor_manager); }
+ EggManager *get_egg_manager()     { return(egg_manager); }
  Magic *get_magic()                { return(magic); }
  Map *get_game_map()               { return(game_map); }
  MapWindow *get_map_window()       { return(map_window); }

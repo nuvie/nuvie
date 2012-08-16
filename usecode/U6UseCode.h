@@ -173,6 +173,7 @@ class U6UseCode: public UseCode, public CallBack
  
  protected:
 // supplementary
+ void remove_gargoyle_egg(uint16 x, uint16 y, uint8 z);
  Obj *drawbridge_find(Obj *crank_obj);
  void drawbridge_open(uint16 x, uint16 y, uint8 level, uint16 b_width);
  void drawbridge_close(uint16 x, uint16 y, uint8 level, uint16 b_width);

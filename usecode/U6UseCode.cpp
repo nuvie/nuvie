@@ -825,8 +825,16 @@ bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
        // make sure the player is right next to the force field.
        if(force_field && abs(player_location.x - force_field->x) < 2 && abs(player_location.y - force_field->y) < 2)
          {
+    	  game->get_sound_manager()->playSfx(NUVIE_SFX_CASTING_MAGIC_P1, SFX_PLAY_ASYNC);
+    	  game->get_sound_manager()->playSfx(NUVIE_SFX_CASTING_MAGIC_P2, SFX_PLAY_SYNC);
+    	  AsyncEffect *e = new AsyncEffect(new XorEffect(1000));
+    	  e->run();
+
+          remove_gargoyle_egg(force_field->x,force_field->y,force_field->z);
+
           obj_manager->remove_obj_from_map(force_field);
           delete force_field;
+
 
           scroll->display_string("\nDone!\n");
          }
@@ -844,6 +852,33 @@ bool U6UseCode::use_rune(Obj *obj, UseCodeEvent ev)
  return true;
 }
 
+void U6UseCode::remove_gargoyle_egg(uint16 x, uint16 y, uint8 z)
+{
+	std::list<Egg *> *egg_list;
+	std::list<Egg *>::iterator egg_itr;
+
+	 egg_list = game->get_egg_manager()->get_egg_list();
+
+	 for(egg_itr = egg_list->begin(); egg_itr != egg_list->end();)
+	 {
+		 Egg *egg = *egg_itr;
+		 egg_itr++;
+
+		 Obj *egg_obj = egg->obj;
+
+		 if(abs(x - egg_obj->x) < 20 && abs(y - egg_obj->y) < 20 && z == egg_obj->z)
+		 {
+			 if(egg_obj->find_in_container(OBJ_U6_GARGOYLE, 0, false, 0, false) || egg_obj->find_in_container(OBJ_U6_WINGED_GARGOYLE, 0, false, 0, false))
+			 {
+				 DEBUG(0, LEVEL_DEBUGGING, "Removed egg at (%x,%x,%x)", egg_obj->x, egg_obj->y, egg_obj->z);
+				 game->get_egg_manager()->remove_egg(egg_obj, false);
+				 obj_manager->unlink_from_engine(egg_obj);
+				 delete_obj(egg_obj);
+
+			 }
+		 }
+	 }
+}
 
 bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 {
@@ -1685,13 +1720,11 @@ bool U6UseCode::use_food(Obj *obj, UseCodeEvent ev)
         if(items.actor_ref == player->get_actor())
         {
             if(obj->obj_n == OBJ_U6_WINE || obj->obj_n == OBJ_U6_MEAD
-               || obj->obj_n == OBJ_U6_ALE || obj->obj_n == OBJ_U6_SNAKE_VENOM)
+               || obj->obj_n == OBJ_U6_ALE)
             {
                 scroll->display_string("\nYou drink it.\n");
-                if(obj->obj_n == OBJ_U6_SNAKE_VENOM)
-                { // FIXME snake venom
-                }
-                else player->add_alcohol(); // add to drunkeness
+
+                player->add_alcohol(); // add to drunkeness
             }
             else
                 scroll->display_string("\nYou eat the food.\n");
