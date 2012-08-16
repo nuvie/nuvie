@@ -1501,8 +1501,11 @@ inline void U6Actor::init_surrounding_obj(uint16 x, uint16 y, uint8 z, uint16 ac
 {
  Obj *obj;
 
- obj = obj_manager->get_obj(x, y, z);
- if(obj == NULL || actor_obj_n != obj->obj_n || (obj->quality != 0 && obj->quality != id_n))
+ obj = obj_manager->get_obj_of_type_from_location(actor_obj_n, id_n, -1, x, y, z);
+ if(obj == NULL)
+	 obj = obj_manager->get_obj_of_type_from_location(actor_obj_n, 0, -1, x, y, z);
+
+ if(obj == NULL)
   {
    obj = new Obj();
    obj->x = x;
