@@ -92,6 +92,8 @@ using std::vector;
 #define ACTOR_WT_FOLLOW 1
 #define ACTOR_WT_PLAYER 2
 
+#define ACTOR_CHANGE_BASE_OBJ_N true
+
 class Map;
 class MapCoord;
 class UseCode;
@@ -261,7 +263,7 @@ class Actor
  virtual ~Actor();
 
  virtual bool init();
- void init_from_obj(Obj *obj);
+ void init_from_obj(Obj *obj, bool change_base_obj=false);
 
  bool is_onscreen() { return(MapCoord(x,y,z).is_visible()); }
  bool is_in_party() { return ((status_flags & ACTOR_STATUS_IN_PARTY) == ACTOR_STATUS_IN_PARTY); }

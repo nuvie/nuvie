@@ -105,12 +105,16 @@ bool Actor::init()
  return true;
 }
 
-void Actor::init_from_obj(Obj *obj)
+void Actor::init_from_obj(Obj *obj, bool change_base_obj)
 {
  x = obj->x;
  y = obj->y;
  z = obj->z;
 
+ if(change_base_obj)
+ {
+	 base_obj_n = obj->obj_n;
+ }
  obj_n = obj->obj_n;
  frame_n = obj->frame_n;
  obj_flags = obj->status;

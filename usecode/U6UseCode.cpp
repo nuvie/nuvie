@@ -2025,7 +2025,7 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
    }
 
  // use it (replace ship with vehicle actor)
- ship_actor->init_from_obj(obj);
+ ship_actor->init_from_obj(obj, ACTOR_CHANGE_BASE_OBJ_N);
  if(obj->obj_n == OBJ_U6_SHIP)
     ship_actor->set_hp(obj->qty); // Hull Strength
  ship_actor->show(); // Swift!
@@ -2294,7 +2294,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
    }
 
  // use it (replace ship with vehicle actor)
- balloon_actor->init_from_obj(obj);
+ balloon_actor->init_from_obj(obj, ACTOR_CHANGE_BASE_OBJ_N);
  balloon_actor->show(); // Swift!
  obj_manager->remove_obj_from_map(obj);
  delete_obj(obj);
