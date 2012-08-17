@@ -35,7 +35,7 @@
 #include "Event.h"
 #include "Configuration.h"
 #include "CommandBar.h"
-#include "Usecode.h"
+#include "UseCode.h"
 #include "MapWindow.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);

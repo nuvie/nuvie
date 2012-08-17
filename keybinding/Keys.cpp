@@ -27,7 +27,7 @@
 #include "XMLTree.h"
 #include "Player.h"
 #include "Event.h"
-#include "utils.h"
+#include "Utils.h"
 #include "MsgScroll.h"
 #include "Configuration.h"
 #include "U6misc.h"
