@@ -48,8 +48,10 @@ bundle: ${EXE_TARGET}
 	$(INSTALL_DATA) xcodebuild/nuvie.icns $(bundle_name)/Contents/Resources/
 	$(INSTALL_DATA) xcodebuild/English.lproj/InfoPlist.strings $(bundle_name)/Contents/Resources/English.lproj/
 	cp -r data/* $(bundle_name)/Contents/Resources/data
-
-
+if WITH_OSX_CODE_SIGNATURE
+	codesign -f -s "$(OSX_CODE_SIGNATURE)" $(bundle_name)
+endif
+	
 install-exec-local: bundle
 	mkdir -p $(DESTDIR)/Applications/
 	cp -r $(bundle_name) $(DESTDIR)/Applications/

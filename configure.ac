@@ -101,9 +101,23 @@ if test x$HOST_SYSTEM == xMACOSX; then
 
 		# SDL MacOS X readme lists this as needed.
 		# We should have sdl-config by this point, or we would have
-		# died in PENT_CHECK_SDL.
+		# died in AM_PATH_SDL.
 		SDL_LIBS=`$SDL_CONFIG $sdl_config_args --static-libs`
 	fi
+fi
+
+# enable code signing on OS X to satisfy OS X 10.8's Gatekeeper
+if test x$HOST_SYSTEM == xMACOSX; then
+	AC_ARG_WITH(macosx-code-signature,
+		AS_HELP_STRING([--with-macosx-code-signature=identity], [identity for code signing (Mac OS X bundles only) @<:@default "Developer ID Application"@:>@]),
+		[with_macosx_code_signature="$withval"],
+		[with_macosx_code_signature=""])
+	if test x$with_macosx_code_signature = xyes; then
+		with_macosx_code_signature="Developer ID Application"
+	fi
+	AM_CONDITIONAL(WITH_OSX_CODE_SIGNATURE, true)
+	OSX_CODE_SIGNATURE="$with_macosx_code_signature"
+	AC_SUBST(OSX_CODE_SIGNATURE)
 fi
 
 CXXFLAGS="$CXXFLAGS $DEBUG_FLAGS $SDL_CFLAGS"
