@@ -2159,13 +2159,13 @@ bool ObjManager::moveto_inventory(Obj *obj, Actor *actor)
   return true;
 }
 
-bool ObjManager::moveto_container(Obj *obj, Obj *container_obj)
+bool ObjManager::moveto_container(Obj *obj, Obj *container_obj, bool stack)
 {
   if(obj == container_obj)
 	  return false;
 
   unlink_from_engine(obj);
-  container_obj->add(obj);
+  container_obj->add(obj, stack);
 
   return true;
 }

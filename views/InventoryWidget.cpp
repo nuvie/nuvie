@@ -588,6 +588,12 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
     else
         Game::get_game()->get_event()->display_move_text(actor, obj);
 
+    if(!obj->is_in_inventory()
+       && !Game::get_game()->get_map_window()->can_get_obj(actor, obj))
+    {
+        Game::get_game()->get_scroll()->message("\n\nblocked\n\n");
+        return false;
+    }
     if((Game::get_game()->get_usecode()->has_getcode(obj)
         && !Game::get_game()->get_usecode()->get_obj(obj, actor))
        || !Game::get_game()->get_event()->can_move_obj_between_actors(obj, src_actor, actor))
@@ -701,7 +707,7 @@ void InventoryWidget::try_click()
 	}
 	else // attempt to ready selected object.
 	{
-		event->ready(selected_obj);
+		event->ready(selected_obj, actor);
 		Redraw();
 	}
 	ready_obj = NULL;

@@ -1096,7 +1096,7 @@ bool Actor::add_readied_object(Obj *obj)
  readied_objects[location] = new ReadiedObj;
 
  if(obj->is_in_container())
-    obj_manager->moveto_inventory(obj, this);
+    inventory_add_object_nostack(obj);
 
  readied_objects[location]->obj = obj;
  readied_objects[location]->combat_type = get_object_combat_type(obj->obj_n);

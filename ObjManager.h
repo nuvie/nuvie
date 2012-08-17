@@ -185,7 +185,7 @@ class ObjManager
  bool moveto_map(Obj *obj, MapCoord location);
  bool moveto_inventory(Obj *obj, uint16 actor_num);
  bool moveto_inventory(Obj *obj, Actor *actor);
- bool moveto_container(Obj *obj, Obj *container_obj);
+ bool moveto_container(Obj *obj, Obj *container_obj, bool stack = true);
    
  protected:
 

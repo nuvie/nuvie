@@ -45,9 +45,17 @@ void Obj::make_container()
   return;
 }
 
-Obj *Obj::get_container_obj()
-{ 
-  return is_in_container() ? (Obj *)parent : NULL;
+Obj *Obj::get_container_obj(bool recursive)
+{
+  Obj *obj = (is_in_container() ? (Obj *)parent : NULL);
+
+  if(recursive)
+  {
+    while(obj->is_in_container())
+      obj = (Obj *)obj->parent;
+  }
+
+  return obj;
 }
 
 void Obj::set_on_map(U6LList *map_list) 

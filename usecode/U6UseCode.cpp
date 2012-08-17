@@ -3001,9 +3001,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             return(true);
         }
         // light
-        if(obj->is_in_container())
-            scroll->display_string("\nNot now!\n"); // FIXME make this just work.
-        else if(obj->is_on_map()) 
+        if(obj->is_on_map())
         {
             Obj *torch = obj_manager->get_obj_from_stack(obj, 1);
             if(torch != obj)
@@ -3014,8 +3012,13 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
         else // so is readied or in inventory
         {
             Obj *torch = obj;
-            Actor *actor = actor_manager->get_actor_holding_obj(obj);
+            Actor *actor;
+            if(obj->is_in_inventory() == false) // container on map
+                actor = actor_manager->get_player();
+            else
+                actor = actor_manager->get_actor_holding_obj(obj);
             bool can_light_it = true; // only set FALSE on some error
+            bool in_container = obj->is_in_container();
 
             if(!obj->is_readied())
             {
@@ -3036,7 +3039,9 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             else
             {
                 assert(torch->qty == 1);
-                if(torch->is_in_inventory()) //  assume it's not stacked
+                if(in_container) // need old location
+                    obj_manager->moveto_container(torch, obj->get_container_obj());
+                else if(torch->is_in_inventory()) //  assume it's not stacked
                 {
                     actor->inventory_remove_obj(torch);
                     actor->inventory_add_object(torch); // restack here
@@ -3047,7 +3052,6 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
     }
     else if(ev == USE_EVENT_READY)
     {
-        assert(!obj->is_in_container()); // FIXME make this just work.
         if(obj->is_readied()) // remove
         {
             if(obj->frame_n == 1)
@@ -3062,7 +3066,9 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
             {
                 Obj *torch = obj_manager->get_obj_from_stack(obj, obj->qty - 1);
                 assert(torch != obj); // got a new object from the obj stack
-                if(obj->is_in_inventory()) // keep extras in inventory
+                if(obj->is_in_container())
+                    obj_manager->moveto_container(torch, obj->get_container_obj(), false);
+                else if(obj->is_in_inventory()) // keep extras in inventory
                 {
                     actor_manager->get_actor_holding_obj(torch)->inventory_add_object_nostack(torch);
                 }

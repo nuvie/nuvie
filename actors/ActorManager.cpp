@@ -1048,8 +1048,10 @@ bool ActorManager::toss_actor_get_location(uint16 start_x, uint16 start_y, uint8
 /* Returns the actor whose inventory contains an object. */
 Actor *ActorManager::get_actor_holding_obj(Obj *obj)
 {
-  assert(obj->is_in_inventory(OBJ_DONT_CHECK_PARENT));
+  assert(obj->is_in_inventory());
     
+  while(obj->is_in_container())
+    obj = obj->get_container_obj();
   return (Actor *)obj->parent;
 }
 

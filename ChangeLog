@@ -1,3 +1,12 @@
+2012-08-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1524
+	*Fix converse gump portrait when using a vehicle or loading a game with a
+		different Avatar portrait
+	*Fix clicking to equip items in containers being blocked (1518 regression)
+	*Allow the torch to be equipped and used when inside a container
+	*Fix objects in containers not stacking [3550551]
+	*Allow container gump and doll widget to receive unreadied items from other
+		party members
+
 2012-08-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1523
 	*Fix segmentation fault from partially initialized value (thanks WJP)
 

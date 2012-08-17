@@ -36,6 +36,7 @@
 #include "Player.h"
 #include "ConvFont.h"
 #include "ConverseGump.h"
+#include "ActorManager.h"
 
 #define FRAME_W (PORTRAIT_WIDTH + 8)
 #define FRAME_H (PORTRAIT_HEIGHT + 9)
@@ -123,6 +124,12 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 			add_keyword("join");
 
     	keyword_list = &conv_keywords;
+
+		if(avatar_portrait)
+		{
+			free(avatar_portrait);
+			avatar_portrait = NULL;
+		}
 	}
 
 	MsgScroll::set_talking(state);
@@ -140,7 +147,9 @@ void ConverseGump::set_actor_portrait(Actor *a)
 
 	if(avatar_portrait == NULL)
 	{
-		avatar_portrait = create_framed_portrait(Game::get_game()->get_player()->get_actor());
+		Actor *p = Game::get_game()->get_player()->get_actor();
+		Actor *p1 = Game::get_game()->get_actor_manager()->get_actor(1);
+		avatar_portrait = create_framed_portrait(p->get_actor_num() != 0 ? p: p1); // don't use portrait 0 when in a vehicle
 	}
 }
 

@@ -398,18 +398,40 @@ bool ContainerWidget::drag_accept_drop(int x, int y, int message, void *data)
           return false;
       }
     }
-
-    if((obj->is_in_inventory() || obj->is_readied()) && obj->get_actor_holding_obj() != actor)
+    if(obj->is_readied() && obj->get_actor_holding_obj() != actor)
     {
         DEBUG(0,LEVEL_WARNING,"ContainerWidget: Cannot Move between party members!\n"); 
         return false;
     }
-
-    if(!obj->is_in_inventory() &&
-       obj_manager->obj_is_damaging(obj, Game::get_game()->get_player()->get_actor()))
+    if(obj->is_in_inventory() && obj->get_actor_holding_obj() != actor)
     {
-        Game::get_game()->get_player()->subtract_movement_points(3);
+        Event *event = Game::get_game()->get_event();
+        event->display_move_text(actor, obj);
+        if(!event->can_move_obj_between_actors(obj, obj->get_actor_holding_obj(), actor, false))
+        {
+            Game::get_game()->get_scroll()->message("\n\n");
+            return false;
+        }
+        Game::get_game()->get_scroll()->message("\n\n");
+    }
+    if(container_obj && !container_obj->is_in_inventory()
+       && !Game::get_game()->get_map_window()->can_get_obj(actor, container_obj))
+    {
+        Game::get_game()->get_scroll()->message("\n\nblocked\n\n");
         return false;
+    }
+    if(!obj->is_in_inventory() && !obj->is_readied())
+    {
+        if(!Game::get_game()->get_map_window()->can_get_obj(actor, obj))
+        {
+            Game::get_game()->get_scroll()->message("\n\nblocked\n\n");
+            return false;
+        }
+        if(obj_manager->obj_is_damaging(obj, Game::get_game()->get_player()->get_actor()))
+        {
+            Game::get_game()->get_player()->subtract_movement_points(3);
+            return false;
+        }
     }
     UseCode *usecode = Game::get_game()->get_usecode();
     if(usecode->is_chest(obj) && obj->frame_n == 0) //open chest
@@ -436,6 +458,8 @@ void ContainerWidget::drag_perform_drop(int x, int y, int message, void *data)
     DEBUG(0,LEVEL_DEBUGGING,"Drop into inventory.\n");
     obj = (Obj *)data;
 
+	if(obj->get_actor_holding_obj() != actor)
+		Game::get_game()->get_player()->subtract_movement_points(3);
 	if(target_cont && obj_manager->can_store_obj(target_cont, obj))
 	{
 		obj_manager->moveto_container(obj, target_cont);

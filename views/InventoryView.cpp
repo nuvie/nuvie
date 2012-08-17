@@ -680,7 +680,7 @@ bool InventoryView::select_obj(Obj *obj)
                 if(obj->is_readied())
                     return event->unready(obj);
                 else
-                    return event->ready(obj);
+                    return event->ready(obj, inventory_widget->get_actor());
             }
             break;
         default:

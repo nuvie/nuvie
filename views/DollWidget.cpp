@@ -34,6 +34,7 @@
 #include "DollWidget.h"
 #include "CommandBar.h"
 #include "MapWindow.h"
+#include "Player.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define ACTION_BUTTON 3
@@ -359,14 +360,31 @@ bool DollWidget::drag_accept_drop(int x, int y, int message, void *data)
             DEBUG(0,LEVEL_WARNING,"DollWidget: Object already equipped!\n");
             return false;
         }
-        if(obj->get_actor_holding_obj() != actor && (obj->is_in_inventory() || (obj->is_in_container()
-            && !Game::get_game()->get_map_window()->can_get_obj(actor, obj->get_container_obj()))))
+        if(obj->get_actor_holding_obj() != actor)
+        {
+            if(obj->is_in_inventory())
+            {
+                Event *event = Game::get_game()->get_event();
+                event->display_move_text(actor, obj);
+                if(event->can_move_obj_between_actors(obj, obj->get_actor_holding_obj(), actor, false))
+                {
+                    Game::get_game()->get_player()->subtract_movement_points(3);
+                    DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
+                    return true;
+                }
+            }
+        }
+        if(obj->get_actor_holding_obj() == actor
+           || Game::get_game()->get_map_window()->can_get_obj(actor, obj))
+        {
+            DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
+            return true;
+        }
+        else
         {
             DEBUG(0,LEVEL_WARNING,"DollWidget: Must be holding object!\n");
             return false;
         }
-        DEBUG(0,LEVEL_DEBUGGING,"Drop Accepted\n");
-        return true;
     }
 
     DEBUG(0,LEVEL_DEBUGGING,"Drop Refused\n");
@@ -387,7 +405,7 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
     obj = (Obj *)data;
 
     bool can_equip = true;
-    if(obj->is_on_map()) // get
+    if(!obj->is_in_inventory()) // get
       {
        // event->newAction(GET_MODE);
        Game::get_game()->get_scroll()->display_string("Get-");
@@ -398,6 +416,8 @@ void DollWidget::drag_perform_drop(int x, int y, int message, void *data)
 //        obj_manager->add_obj(obj); // add back to map
 //       }
       }
+    else
+        obj_manager->moveto_inventory(obj, actor);
     if(can_equip) // ready
       {
        assert(!obj->is_readied());

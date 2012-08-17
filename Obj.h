@@ -122,7 +122,7 @@ public:
   
   bool has_container() { return (container != NULL); }
   void make_container();
-  Obj *get_container_obj();
+  Obj *get_container_obj(bool recursive = false);
   uint32 container_count_objects();
 
   uint8 get_engine_loc();
