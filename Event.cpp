@@ -883,6 +883,7 @@ bool Event::use(Obj *obj)
         return true;
     }
     MapCoord target(obj->x, obj->y, obj->z);
+    MapCoord player_loc = player->get_actor()->get_location();
     bool display_prompt = true;
 
     scroll->display_string(obj_manager->look_obj(obj));
@@ -898,7 +899,7 @@ bool Event::use(Obj *obj)
     {
         scroll->display_string("\nNot on screen.\n");
     }
-    else if(!obj->is_in_inventory() && !map_window->can_get_obj(player->get_actor(), obj))
+    else if(!obj->is_in_inventory() && !map_window->can_get_obj(player->get_actor(), obj) && player_loc != target)
     {
         scroll->display_string("\nBlocked.\n");
     }
@@ -1019,7 +1020,6 @@ bool Event::look(Obj *obj)
          scroll->display_prompt();
          return false;
       }
-      scroll->display_string("\n");
    }
    
    return true;
@@ -1064,9 +1064,9 @@ bool Event::search(Obj *obj)
 
     if(obj->get_engine_loc() == OBJ_LOC_MAP && player_loc.distance(target_loc) <= 1)
     {
-        scroll->display_string("Searching here, you find ");
+        scroll->display_string("\nSearching here, you find ");
         if(!obj || !usecode->search_obj(obj, player->get_actor()))
-            scroll->display_string("nothing.");
+            scroll->display_string("nothing.\n");
         else
         {
             scroll->display_string(".\n");
@@ -1311,7 +1311,24 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
         }
       else if(!usecode->has_movecode(push_obj) || usecode->move_obj(push_obj,pushrel_x,pushrel_y))
       {
-        if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
+        if(game->get_game_type() == NUVIE_GAME_U6 && (push_obj->obj_n == OBJ_U6_SKIFF
+          || push_obj->obj_n == OBJ_U6_RAFT))
+        {
+            Obj *to_obj = obj_manager->get_obj(to.x, to.y, to.z, true);
+            if(to_obj)
+            {
+                if(obj_manager->can_store_obj(to_obj, push_obj))
+                    can_move = obj_manager->moveto_container(push_obj, to_obj);   
+            }
+            else if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
+            {
+                if(!lt.hitActor && map->is_water(to.x, to.y, to.z))
+                    can_move = obj_manager->move(push_obj,to.x,to.y,to.z);
+            }
+            else
+                can_move = obj_manager->move(push_obj,to.x,to.y,to.z);
+        }
+        else if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
             {
              if(lt.hitObj)
               {
@@ -1388,8 +1405,8 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     }
     if(map_window->tile_is_black(from.x + rel_x, from.y + rel_y, push_obj))
     {
-        scroll->display_string("nothing.\n\n");
-        endAction();
+        scroll->display_string("nothing.\n");
+        endAction(true);
         return false;
     }
     if(push_obj
@@ -1411,8 +1428,8 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     }
     else
     {
-        scroll->display_string("nothing.\n\n");
-        endAction();
+        scroll->display_string("nothing.\n");
+        endAction(true);
         return false;
     }
     Obj *obj = push_obj;
@@ -2613,7 +2630,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
         		obj = obj_manager->get_obj(wx, wy, target.z);
         		if(obj && usecode->has_usecode(obj))
         		{
-        			set_mode(USE_MODE);
+        			newAction(USE_MODE);
         			use(obj);
         		}
         	}
@@ -2626,8 +2643,11 @@ void Event::multiuse(uint16 wx, uint16 wy)
         // we were using an actor so free the temp Obj
         delete_obj(obj);
     }
-    else if(obj && usecode->is_sign(obj)) // look at a sign
+    else if(obj && (usecode->is_sign(obj) // look at a sign
+            || (game->get_game_type() == NUVIE_GAME_U6 && (obj->obj_n == OBJ_U6_CLOCK
+            || obj->obj_n == OBJ_U6_SUNDIAL))))
     {
+        scroll->display_string("Look-");
         set_mode(LOOK_MODE);
         look(obj);
         endAction(false); // FIXME: should be in look()
@@ -2638,11 +2658,13 @@ void Event::multiuse(uint16 wx, uint16 wy)
             || obj->obj_n == OBJ_U6_STATUE_OF_MINAX
             || obj->obj_n == OBJ_U6_STATUE_OF_EXODUS))
     {
+        scroll->display_string("Talk-");
         set_mode(TALK_MODE);
         talk(obj);
     }
     else if(obj) // use a real object
     {
+        scroll->display_string("Use-");
         set_mode(USE_MODE);
         use(obj);
     }

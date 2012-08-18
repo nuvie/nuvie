@@ -1985,7 +1985,12 @@ bool U6UseCode::use_boat(Obj *obj, UseCodeEvent ev)
     scroll->display_string("\nNot usable\n");
     return(true);
    }
-
+  if((obj->obj_n == OBJ_U6_SKIFF || obj->obj_n == OBJ_U6_RAFT)
+     && !map->is_water(obj->x, obj->y, obj->z, true))
+  {
+        scroll->display_string("\nYou must place it in water first.\n");
+        return true;
+  }
   if(!player->in_party_mode())
    {
     scroll->display_string("\nNot in solo mode.\n");
@@ -2290,7 +2295,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
  if(!party->is_at(obj->x, obj->y, obj->z))
    {
     party->enter_vehicle(obj);
-    return(false);
+    return(true); // display prompt
    }
 
  // use it (replace ship with vehicle actor)
@@ -2635,13 +2640,21 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
     char *data;
     Book *book = game->get_book(); // ??
 
-    if(ev == USE_EVENT_LOOK && obj->quality != 0)
+    if(ev == USE_EVENT_LOOK)
     {
+        if(obj->quality == 0 && obj->obj_n != OBJ_U6_BOOK)
+        {
+            scroll->display_string("\n");
+            return true; // display prompt
+        }
         // read
         if(items.actor_ref == player->get_actor())
         {
             scroll->display_string(":\n\n");
-            if((data = book->get_book_data(obj->quality - 1)))
+            uint8 book_num = obj->quality - 1;
+            if(obj->quality == 0)
+                book_num = 126;
+            if((data = book->get_book_data(book_num)))
             {
 /*
              // FIX Any alternate-font text is in < >, Runic is capitalized,
@@ -2682,6 +2695,7 @@ bool U6UseCode::look_clock(Obj *obj, UseCodeEvent ev)
     {
         scroll->display_string("\nThe time is ");
         scroll->display_string(clock->get_time_string());
+        scroll->display_string("\n");
     }
     return(true);
 }

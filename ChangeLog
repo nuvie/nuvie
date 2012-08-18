@@ -1,3 +1,13 @@
+2012-08-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1528
+	* Tweak message display
+	* Fix chest and lockpick not being thrown (drop) with drag and drop
+	* Don't drop or move raft or skiff if there is an object at the new
+		location. (Rafts and skiffs display underneath objects.)
+	* Don't use skiff or raft when it isn't in the water.
+	* Allow skiff and raft to be moved in the water with the move command.
+	* Fix instance where vehicle might be blocked from use during double click
+	* Fix book quality 0
+
 2012-08-18  Dominik Reichardt <dominus@users.sourceforge.net> r1527
 	* added --with-macosx-code-signature=identity to configure to allow code 
 	  signing on Mac OS X. By default it uses "Developer ID Application" with

@@ -32,6 +32,8 @@
 #include "GamePalette.h"
 #include "GUI.h"
 #include "MsgScroll.h"
+#include "Event.h"
+#include "Game.h"
 
 // MsgText Class
 MsgText::MsgText()
@@ -440,7 +442,9 @@ bool MsgScroll::parse_token(MsgText *token)
                 	}
 
                 	add_token(token);
-                	if(msg_line->total_length == scroll_width) // add another line for cursor.
+                	if(msg_line->total_length == scroll_width // add another line for cursor.
+                       && (talking || Game::get_game()->get_event()->get_mode() == INPUT_MODE
+                       || Game::get_game()->get_event()->get_mode() == KEYINPUT_MODE))
                 	{
                 		msg_line = add_new_line();
                 	}

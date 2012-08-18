@@ -156,6 +156,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
  config->value("config/input/walk_with_left_button", walk_with_left_button, true);
+ config->value("config/cheats/min_brightness", min_brightness, 0);
  original_obj_loc = MapCoord(0,0,0);
 
  roof_mode = Game::get_game()->is_roof_mode();
@@ -589,11 +590,6 @@ void MapWindow::updateAmbience()
 	 Weather *weather = game->get_weather();
 	
      int h = clock->get_hour();
-
-	 // TODO: Move this out so that the configuration doesn't need to be iterated through each time
-	 int min_brightness;
-     config->value("config/cheats/min_brightness", min_brightness, 0);
- 
 	 int a;
      if(x_ray_view == true)
          a = 255;
@@ -1596,11 +1592,17 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
         }
         return false;
     }
+    MapCoord actor_loc = actor->get_location();
 
+    if(game_type == NUVIE_GAME_U6 && (obj->obj_n == OBJ_U6_SKIFF
+       || obj->obj_n == OBJ_U6_RAFT) && obj_manager->get_obj(x, y, actor_loc.z))
+    {
+        if(accepting_drop)
+            game->get_scroll()->message("\n\nNot possible.\n\n");
+        return false;
+    }
     LineTestResult lt;
-    MapCoord actor_loc;
     MapCoord target_loc(x,y, actor_loc.z);
-        actor_loc = actor->get_location();
 
     if(in_inventory && obj && !obj->get_actor_holding_obj()->is_onscreen()
        && obj->get_actor_holding_obj()->get_location().distance(target_loc) > 5)
@@ -1873,6 +1875,8 @@ bool MapWindow::move_on_drop(Obj *obj)
 		{
 			switch(obj->obj_n)
 			{
+				case OBJ_U6_CHEST:
+				case OBJ_U6_LOCK_PICK:
 				case OBJ_U6_MOONSTONE: game->get_usecode()->get_obj(obj, actor_manager->get_player());
 				case OBJ_U6_SKIFF:
 					return false;

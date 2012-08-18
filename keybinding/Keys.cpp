@@ -269,6 +269,7 @@ void KeyBinder::ShowKeys() // FIXME This doesn't look very good, the font is mis
 		std::vector<string>::iterator iter;
 		string keys;
 		MsgScroll *scroll = Game::get_game()->get_scroll();
+		scroll->set_autobreak(true);
 
 		for (iter = keyhelp.begin(); iter != keyhelp.end(); ++iter)
 		{
@@ -276,7 +277,7 @@ void KeyBinder::ShowKeys() // FIXME This doesn't look very good, the font is mis
 			keys.append(iter->c_str());
 			scroll->display_string(keys, 1);
 		}
-		scroll->message("\n\n");
+		scroll->message("\n\n\t");
 	}
 }
 

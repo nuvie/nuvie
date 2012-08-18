@@ -300,9 +300,13 @@ function look_obj(obj)
    end
    
    print(".\n");
-   
-   if g_show_stealing == true and obj.getable == true and player_get_location().z == 0 and obj.ok_to_take == false then
-   	print("PRIVATE PROPERTY")
+   local player_loc = player_get_location();
+   if g_show_stealing == true and obj.getable == true and player_loc.z == 0 and obj.ok_to_take == false then
+      if math.abs(player_loc.x - obj.x) > 1 or math.abs(player_loc.y - obj.y) > 1 then
+        print("PRIVATE PROPERTY\n")
+      else
+        print("PRIVATE PROPERTY")
+      end
    end
    
    return true

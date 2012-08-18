@@ -83,6 +83,7 @@ class MapWindow: public GUI_Widget
  uint16 tmp_map_width, tmp_map_height;
  SDL_Surface *overlay; // used for visual effects
  uint8 overlay_level; // where the overlay surface is placed
+ int min_brightness;
 
  TileManager *tile_manager;
  ObjManager *obj_manager;

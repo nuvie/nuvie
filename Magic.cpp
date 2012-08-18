@@ -138,7 +138,7 @@ bool Magic::start_new_spell()
     return true;
   }
   else
-    event->scroll->display_string("\nNo spellbook is readied.\n");
+    event->scroll->display_string("\nNo spellbook is readied.\n\n");
 
   state=MAGIC_STATE_READY;
   return false;
