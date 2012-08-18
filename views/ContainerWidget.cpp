@@ -38,6 +38,7 @@
 #include "MapWindow.h"
 #include "Player.h"
 #include "ActorManager.h"
+#include "Magic.h"
 
 #include "InventoryFont.h"
 #include "ViewManager.h"
@@ -516,23 +517,44 @@ void ContainerWidget::try_click()
 {
 	Event *event = Game::get_game()->get_event();
 	UseCode *usecode = Game::get_game()->get_usecode();
+	Actor *actor;
 	if(!selected_obj)
 		selected_obj = ready_obj;
+	if(selected_obj)
+		actor = Game::get_game()->get_actor_manager()->get_actor(selected_obj->x);
+	if(!actor || !actor->is_in_party())
+		actor = Game::get_game()->get_player()->get_actor();
 	bool locked_chest = (usecode->is_chest(selected_obj) && selected_obj->frame_n > 1);
-	if(usecode->is_container(selected_obj) && !locked_chest) // open up the container.
+	switch(event->get_mode())
 	{
-		container_obj = selected_obj;
-		if(usecode->is_chest(container_obj) && selected_obj->frame_n == 1)
-			usecode->process_effects(container_obj, actor);
-		Redraw();
-	}
-	else // attempt to ready selected object.
-	{
-		Actor *actor = Game::get_game()->get_actor_manager()->get_actor(selected_obj->x);
-		if(!actor->is_in_party()) // hack for containers that aren't in the party
-			actor = Game::get_game()->get_player()->get_actor();
-		event->ready(selected_obj, actor);
-		Redraw();
+		case MOVE_MODE:
+		case EQUIP_MODE:
+			if(selected_obj && usecode->is_container(selected_obj) && !locked_chest)
+			{
+				container_obj = selected_obj;
+				if(usecode->is_chest(container_obj))
+				{
+					usecode->process_effects(container_obj, actor);
+					Redraw();
+				}
+			}
+			else if(selected_obj)
+			{
+				if(selected_obj->is_readied())
+					event->unready(selected_obj);
+				else
+					event->ready(selected_obj, actor);
+				Redraw();
+			}
+			break;
+		default:
+			if((event->get_last_mode() == CAST_MODE || event->get_last_mode() == SPELL_MODE)
+			   && !Game::get_game()->get_magic()->is_waiting_for_obj()
+			   && !Game::get_game()->get_magic()->is_waiting_for_inventory_obj())
+				event->cancelAction();
+			else
+				event->select_obj(selected_obj, actor);
+			break;
 	}
 	ready_obj = NULL;
 	selected_obj = NULL;

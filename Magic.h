@@ -49,6 +49,7 @@
 #define MAGIC_STATE_ACQUIRE_INV_OBJ  0x06
 #define MAGIC_STATE_TALK_TO_ACTOR 0x07
 #define MAGIC_STATE_ACQUIRE_SPELL  0x08
+#define MAGIC_STATE_ACQUIRE_OBJ    0x09
 
 #define MAGIC_ALL_SPELLS 255
 
@@ -111,6 +112,7 @@ class Magic : public CallBack {
     bool is_waiting_for_location() { if(magic_script && state == MAGIC_STATE_ACQUIRE_TARGET) return true; else return false; }
     bool is_waiting_for_direction() { if(magic_script && state == MAGIC_STATE_ACQUIRE_DIRECTION) return true; else return false; }
     bool is_waiting_for_inventory_obj() { if(magic_script && state == MAGIC_STATE_ACQUIRE_INV_OBJ) return true; else return false; }
+    bool is_waiting_for_obj() { if(magic_script && state == MAGIC_STATE_ACQUIRE_OBJ) return true; else return false; }
     bool is_waiting_to_talk() { if(state == MAGIC_STATE_TALK_TO_ACTOR) return true; else return false; }
     bool is_waiting_for_spell() { if(magic_script && state == MAGIC_STATE_ACQUIRE_SPELL) return true; else return false; }
 

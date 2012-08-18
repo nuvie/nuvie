@@ -2836,6 +2836,8 @@ void Event::doAction()
     	{
     		if(magic->is_waiting_for_location())
     			magic->resume(MapCoord(input.loc->x, input.loc->y, input.loc->z));
+			else if(magic->is_waiting_for_obj())
+				magic->resume(input.obj);
     		else
     		{
     			magic->resume();
@@ -2872,7 +2874,7 @@ void Event::doAction()
 			magic->resume();
 		}
 
-		if(magic->is_waiting_for_location())
+		if(magic->is_waiting_for_location() || magic->is_waiting_for_obj())
 			get_target("");
 		else if(magic->is_waiting_for_direction())
 			get_direction("");

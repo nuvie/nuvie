@@ -49,6 +49,7 @@ class SoundManager;
 #define NUVIE_SCRIPT_ADVANCE_REAL_TIME 6
 #define NUVIE_SCRIPT_TALK_TO_ACTOR     7
 #define NUVIE_SCRIPT_GET_SPELL         8
+#define NUVIE_SCRIPT_GET_OBJ           9
 
 #define NUVIE_SCRIPT_CB_ADV_GAME_TIME  1
 

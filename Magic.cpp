@@ -400,6 +400,7 @@ bool Magic::process_script_return(uint8 ret)
     case NUVIE_SCRIPT_GET_TARGET : state = MAGIC_STATE_ACQUIRE_TARGET;  break;
     case NUVIE_SCRIPT_GET_DIRECTION : state = MAGIC_STATE_ACQUIRE_DIRECTION;  break;
     case NUVIE_SCRIPT_GET_INV_OBJ : state = MAGIC_STATE_ACQUIRE_INV_OBJ;  break;
+    case NUVIE_SCRIPT_GET_OBJ : state = MAGIC_STATE_ACQUIRE_OBJ;  break;
     case NUVIE_SCRIPT_GET_SPELL : state = MAGIC_STATE_ACQUIRE_SPELL;  break;
 
     case NUVIE_SCRIPT_ADVANCE_GAME_TIME : nturns = magic_script->get_data();

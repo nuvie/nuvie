@@ -2716,6 +2716,7 @@ bool U6UseCode::look_mirror(Obj *obj, UseCodeEvent ev)
             scroll->display_string("\nYou can see yourself!");
             game->get_event()->display_portrait(items.actor_ref);
         }
+        scroll->display_string("\n");
         return(true);
     }
     return(false);

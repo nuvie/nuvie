@@ -208,7 +208,6 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 				  									actor_manager->toss_actor_get_location(egg->x, egg->y, egg->z, 4, 4, &actor_loc);
 				  	}
 				  	uint8 worktype = get_worktype(obj);
-				  	if(gametype == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_WINGED_GARGOYLE || obj->obj_n == OBJ_U6_GARGOYLE)
 				  	if(actor_manager->create_temp_actor(obj->obj_n,actor_loc.x,actor_loc.y,actor_loc.z,alignment,worktype,&new_actor) && prev_actor)
 					{
 				  		/*

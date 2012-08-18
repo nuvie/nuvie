@@ -219,6 +219,11 @@ function get_obj_from_inventory(actor)
 	return obj
 end
 
+function get_obj()
+	local obj = coroutine.yield("obj")
+	return obj
+end
+
 function actor_talk(actor)
 	coroutine.yield("talk", actor)
 	return

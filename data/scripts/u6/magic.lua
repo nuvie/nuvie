@@ -121,8 +121,7 @@ select_obj = function()
 	
 	print("On what: ");
 
-	local loc = get_target()
-	local obj = map_get_obj(loc)
+	local obj = get_obj()
 	
 	if obj == nil then
 		print("nothing\n");

@@ -38,6 +38,7 @@
 #include "MsgScroll.h"
 #include "UseCode.h"
 #include "ViewManager.h"
+#include "Magic.h"
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
 static const char combat_mode_tbl_se[][6] = {"CMND", "RANGE", "FLEE", "CLOSE"};
@@ -684,7 +685,12 @@ bool InventoryView::select_obj(Obj *obj)
             }
             break;
         default:
-            event->select_obj(obj, inventory_widget->get_actor());
+            if((event->get_last_mode() == CAST_MODE || event->get_last_mode() == SPELL_MODE)
+               && !Game::get_game()->get_magic()->is_waiting_for_obj()
+               && !Game::get_game()->get_magic()->is_waiting_for_inventory_obj())
+                event->cancelAction();
+            else
+                event->select_obj(obj, inventory_widget->get_actor());
             return true;
     }
     return false;

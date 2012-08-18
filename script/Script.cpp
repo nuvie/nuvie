@@ -379,6 +379,9 @@ uint8 ScriptThread::resume(int narg)
             	return NUVIE_SCRIPT_GET_INV_OBJ;
             }
 
+            if(!strcmp(s, "obj"))
+                return NUVIE_SCRIPT_GET_OBJ;
+
             if(!strcmp(s, "talk"))
             {
             	Actor *actor = nscript_get_actor_from_args(L, 2);
