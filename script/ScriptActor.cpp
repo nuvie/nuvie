@@ -1119,9 +1119,18 @@ static int nscript_actor_resurrect(lua_State *L)
 
    if(nscript_get_location_from_args(L, &loc.x, &loc.y, &loc.z, 2) == false)
       return 0;
+   Obj *obj = nscript_get_obj_from_args(L, 5);
+   bool toss = (obj->is_in_inventory() || obj->is_in_container());
+   if(toss)
+      loc = Game::get_game()->get_player()->get_actor()->get_location();
 
-   actor->resurrect(loc);
-
+   actor->resurrect(loc, obj);
+   if(toss)
+   {
+      ActorManager *actor_manager = Game::get_game()->get_actor_manager();
+      if(!actor_manager->toss_actor(actor, 2, 2))
+         actor_manager->toss_actor(actor, 4, 4);
+   }
    return 0;
 }
 

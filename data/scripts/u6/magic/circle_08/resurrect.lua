@@ -9,7 +9,7 @@ if obj ~= nil then --FIXME armageddon flag.
     if obj.quality < 0xe0 then --greater than 0xe0 temp actors
       if obj.quality ~= 0 then
         local actor = Actor.get(obj.quality)
-        Actor.resurrect(actor, obj.x, obj.y, obj.z)
+        Actor.resurrect(actor, obj.x, obj.y, obj.z, obj)
         magic_success()
       else
         print("\nThe corpse is too old!\n")
