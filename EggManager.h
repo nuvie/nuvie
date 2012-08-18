@@ -69,6 +69,7 @@ class EggManager
 
  protected:
  
+ uint8 get_worktype(Obj *embryo);
 };
 
 #endif /* __EggManager_h__ */

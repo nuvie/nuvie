@@ -35,6 +35,8 @@
 #include "NuvieIOFile.h"
 #include "GameClock.h"
 #include "Game.h"
+#include "Party.h"
+#include "U6WorkTypes.h"
 #include "U6objects.h" //needed for silver serpent exception
 
 /* ALWAYS means the time is unset, is unknown, or day and night are both set */
@@ -205,8 +207,9 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 				  				|| !actor_manager->toss_actor_get_location(egg->x, egg->y, egg->z, 2, 3, &actor_loc))
 				  									actor_manager->toss_actor_get_location(egg->x, egg->y, egg->z, 4, 4, &actor_loc);
 				  	}
-
-				  	if(actor_manager->create_temp_actor(obj->obj_n,actor_loc.x,actor_loc.y,actor_loc.z,alignment,obj->quality,&new_actor) && prev_actor)
+				  	uint8 worktype = get_worktype(obj);
+				  	if(gametype == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_WINGED_GARGOYLE || obj->obj_n == OBJ_U6_GARGOYLE)
+				  	if(actor_manager->create_temp_actor(obj->obj_n,actor_loc.x,actor_loc.y,actor_loc.z,alignment,worktype,&new_actor) && prev_actor)
 					{
 				  		/*
 						// try to group actors of the same type first (FIXME: maybe this should use alignment/quality)
@@ -237,4 +240,16 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
             }
     }
  return false;
+}
+
+uint8 EggManager::get_worktype(Obj *embryo)
+{
+	if(gametype == NUVIE_GAME_U6
+			&& (embryo->obj_n == OBJ_U6_WINGED_GARGOYLE || embryo->obj_n == OBJ_U6_GARGOYLE)
+			&& Game::get_game()->get_party()->has_obj(OBJ_U6_AMULET_OF_SUBMISSION, 0, false))
+	{
+		return WORKTYPE_U6_ANIMAL_WANDER;
+	}
+
+	return embryo->quality;
 }
