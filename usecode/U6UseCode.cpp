@@ -217,10 +217,11 @@ bool U6UseCode::is_container(Obj *obj)
 }
 
 
-bool U6UseCode::is_book(Obj *obj)
+bool U6UseCode::is_readable(Obj *obj)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n);
-    return(type && (type->flags & OBJTYPE_BOOK));
+    return((type && (type->flags & OBJTYPE_BOOK)) || obj->obj_n == OBJ_U6_CLOCK
+           || obj->obj_n == OBJ_U6_SUNDIAL);
 }
 
 

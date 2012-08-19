@@ -731,7 +731,7 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
     if(!obj)
         return(MouseUp(x, y, button)); // probably hit an arrow
 
-    if(Game::get_game()->get_usecode()->is_book(obj)) // look at a scroll or book
+    if(Game::get_game()->get_usecode()->is_readable(obj)) // look at a scroll or book
     {
         event->set_mode(LOOK_MODE);
         event->look(obj);

@@ -1,3 +1,10 @@
+2012-08-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1534
+	* Improve double click use obj under player and attack logic.
+	* Improve attack logic so that the currently targeted actor is used instead
+		of selecting it from the targeted actor's location
+	* magic.lua: cleanup and comment
+	* Get change is_book to is_readable and get rid of functions that return it
+
 2012-08-19  Dominik Reichardt <dominus@users.sourceforge.net> r1533
 	* Less hackish configure.ac for codesigning. Thanks wjp.
 	

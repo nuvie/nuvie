@@ -2572,6 +2572,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
     bool using_actor = false; //, talking = false;
     MapCoord player_location(player_actor->get_location());
     MapCoord target(player_actor->get_location()); // changes to target location
+    bool in_combat = player->get_party()->is_in_combat_mode();
 
     if(game->user_paused() || map_window->tile_is_black(wx, wy))
         return;
@@ -2579,29 +2580,39 @@ void Event::multiuse(uint16 wx, uint16 wy)
     obj = obj_manager->get_obj(wx, wy, target.z);
     actor = actor_manager->get_actor(wx, wy, target.z);
 
-    if(actor == player_actor && game->is_orig_style() && actor->get_actor_num() != 0) // ignore player
-        actor = NULL;
-
     // use object or actor?
-    if(actor && actor->is_visible())
+    if(actor)
     {
+        if((!actor->is_visible() && !in_combat) || (in_combat
+            && (actor->get_actor_num() == player->get_actor()->get_actor_num() //don't attack yourself.
+            || actor->get_alignment() == ACTOR_ALIGNMENT_GOOD)))
+        {
+            ActorManager *actor_manager = game->get_actor_manager();
+            Actor *a = actor_manager->get_actor(actor->get_x(), actor->get_y(), actor->get_z(), true, actor);
+            if(a || (!in_combat && (!actor->is_visible() // null invisible actors if not in combat and no one is found
+                     || (actor == player_actor && game->is_orig_style() && actor->get_actor_num() != 0)))) // pass if in combat if player and not showing inventory
+                actor = a;
+        }
+
+        if(actor)
+        {
         obj = actor->make_obj();
         using_actor = true;
         target.x = actor->get_location().x;
         target.y = actor->get_location().y;
         DEBUG(0,LEVEL_DEBUGGING,"Use actor at %d,%d\n", target.x, target.y);
+        }
     }
-    else if(obj)
+    if(obj && !using_actor)
     {
         target.x = obj->x;
         target.y = obj->y;
         DEBUG(0,LEVEL_DEBUGGING,"Use object at %d,%d\n", obj->x, obj->y);
     }
 
-    if(player->get_party()->is_in_combat_mode() && (obj || using_actor))
+    if(in_combat && (obj || using_actor))
     {
-        if(!using_actor || actor->get_alignment() == ACTOR_ALIGNMENT_EVIL
-           || actor->get_alignment() == ACTOR_ALIGNMENT_CHAOTIC)
+        if(!using_actor || actor->get_alignment() != ACTOR_ALIGNMENT_GOOD)
         {
             newAction(ATTACK_MODE);
             if(get_mode() == ATTACK_MODE)
@@ -2637,12 +2648,9 @@ void Event::multiuse(uint16 wx, uint16 wy)
         	}
         	else if(target == player_location)
         	{
+        		delete_obj(obj); // free temp obj
         		obj = obj_manager->get_obj(wx, wy, target.z);
-        		if(obj && usecode->has_usecode(obj))
-        		{
-        			newAction(USE_MODE);
-        			use(obj);
-        		}
+        		using_actor = false;
         	}
         	else
         	{
@@ -2650,19 +2658,22 @@ void Event::multiuse(uint16 wx, uint16 wy)
         		talk(actor);
         	}
         }
-        // we were using an actor so free the temp Obj
-        delete_obj(obj);
+        if(using_actor) // we were using an actor so free the temp Obj
+        {
+            delete_obj(obj);
+            return;
+        }
     }
-    else if(obj && (usecode->is_sign(obj) // look at a sign
-            || (game->get_game_type() == NUVIE_GAME_U6 && (obj->obj_n == OBJ_U6_CLOCK
-            || obj->obj_n == OBJ_U6_SUNDIAL))))
+    if(!obj)
+        return;
+    else if(usecode->is_readable(obj))
     {
         scroll->display_string("Look-");
         set_mode(LOOK_MODE);
         look(obj);
         endAction(false); // FIXME: should be in look()
     }
-    else if(game->get_game_type() == NUVIE_GAME_U6 && obj
+    else if(game->get_game_type() == NUVIE_GAME_U6
             && (obj->obj_n == OBJ_U6_SHRINE
             || obj->obj_n == OBJ_U6_STATUE_OF_MONDAIN
             || obj->obj_n == OBJ_U6_STATUE_OF_MINAX
@@ -2672,7 +2683,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
         set_mode(TALK_MODE);
         talk(obj);
     }
-    else if(obj) // use a real object
+    else // use a real object
     {
         scroll->display_string("Use-");
         set_mode(USE_MODE);

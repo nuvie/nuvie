@@ -1456,20 +1456,8 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
    local weapon_obj_n = weapon.obj_n
    local weapon_quality = weapon.quality
 
-	if foe == nil then
-		foe = map_get_actor(target_x, target_y, target_z)
-	end
-
-	if attacker.in_party and attacker.actor_num ~= Actor.get_player_actor().actor_num and foe ~= nil
-	   and foe.in_party and attacker.align == ALIGNMENT_GOOD and foe.align == ALIGNMENT_GOOD then
-		foe = map_get_actor(target_x, target_y, target_z, foe) -- exclude previous target
-		if foe ~= nil and foe.in_party and foe.align == ALIGNMENT_GOOD then
-			dbg("A party member tried attacking another party member. This shouldn't happen.");
-			return
-		end
-	end
-
 	if foe ~= nil and foe.actor_num == attacker.actor_num then
+		print("\n"..attacker.name.." is try to attack itself. Report me!\n")  -- this shouldn't happen
 		return
 	end
    
@@ -2885,7 +2873,7 @@ function actor_wt_flank(actor)
          end
          should_move_actor = true
       else
-         actor_attack(actor, tmp_x, tmp_y, actor.z, weapon_obj)
+         actor_attack(actor, tmp_x, tmp_y, actor.z, weapon_obj, target_actor)
          subtract_movement_pts(actor, 10)
       end
    else
@@ -2976,7 +2964,7 @@ function actor_wt_berserk(actor)
             target_y = target_actor.x - actor_x + actor_y
          end
       else
-         actor_attack(actor, target_x, target_y, actor.z, weapon_obj)
+         actor_attack(actor, target_x, target_y, actor.z, weapon_obj, target_actor)
          subtract_movement_pts(actor, 15)
          return
       end
@@ -3013,7 +3001,7 @@ function actor_wt_combat_tanglevine(actor)
       local actor_y = actor.y
       if abs(target_x - actor_x) < 2 and abs(target_y - actor_y) < 2 and random(0, 1) ~= 0 then
       
-         actor_attack(actor, target_x, target_y, actor.z, actor)
+         actor_attack(actor, target_x, target_y, actor.z, actor, target)
          subtract_movement_pts(actor, 10)
          return
       end
@@ -3085,7 +3073,7 @@ function actor_wt_combat_stationary(actor)
 
       if target_actor ~= nil and actor_ok_to_attack(actor, target_actor) == true and target_actor.alive == true and target_actor.align ~= align and target_actor.align ~= ALIGNMENT_NEUTRAL then
       
-         actor_attack(actor, target_x, target_y, actor.z, actor_get_weapon(actor, target_actor))
+         actor_attack(actor, target_x, target_y, actor.z, actor_get_weapon(actor, target_actor), target_actor)
          subtract_movement_pts(actor, 10)
          return
       end
@@ -3196,7 +3184,7 @@ dbg("actor_wt_attack()\n");
        get_attack_range(actor_x, actor_y, target_x, target_y) <= weapon_range then
 
          if sub_1D59F(actor, target_x, target_y, weapon_range, 0) == true then
-            actor_attack(actor, g_obj.x, g_obj.y, g_obj.z, weapon_obj)
+            actor_attack(actor, g_obj.x, g_obj.y, g_obj.z, weapon_obj, g_obj)
             subtract_movement_pts(actor, 10)
             return
          end
