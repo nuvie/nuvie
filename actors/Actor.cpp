@@ -632,7 +632,7 @@ Obj *Actor::get_weapon_obj(sint8 readied_obj_location)
 }
 
 // attack another actor with melee attack or a weapon (short or long range)
-void Actor::attack(sint8 readied_obj_location, MapCoord target)
+void Actor::attack(sint8 readied_obj_location, MapCoord target, Actor *foe)
 {
    const uint8 attack_cost = 10; // base cost to attack
    const CombatType *combat_type;
@@ -646,7 +646,7 @@ void Actor::attack(sint8 readied_obj_location, MapCoord target)
    //face_location(target);
 
    //FIXME just hacked in to test lua actor_attack()
-   Game::get_game()->get_script()->call_actor_attack(this, target, get_weapon_obj(readied_obj_location));
+   Game::get_game()->get_script()->call_actor_attack(this, target, get_weapon_obj(readied_obj_location), foe);
 
 /*
 // using new defend() method

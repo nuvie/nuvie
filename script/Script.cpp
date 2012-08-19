@@ -714,11 +714,12 @@ bool Script::call_actor_init(Actor *actor, uint8 alignment)
    return call_function("actor_init", 2, 0);
 }
 
-bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
+bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon, Actor * foe)
 {
    lua_getglobal(L, "actor_attack");
    nscript_new_actor_var(L, actor->get_actor_num());
    //nscript_new_actor_var(L, foe->get_actor_num());
+   uint8 num_arg = 6;
    lua_pushnumber(L, (lua_Number)location.x);
    lua_pushnumber(L, (lua_Number)location.y);
    lua_pushnumber(L, (lua_Number)location.z);
@@ -726,8 +727,12 @@ bool Script::call_actor_attack(Actor *actor, MapCoord location, Obj *weapon)
       nscript_new_actor_var(L, actor->get_actor_num());
    else
       nscript_obj_new(L, weapon);
+   if(foe == NULL)
+      num_arg = 5;
+   else
+      nscript_new_actor_var(L, foe->get_actor_num());
 
-   if(call_function("actor_attack", 5, 0) == false)
+   if(call_function("actor_attack", num_arg, 0) == false)
    {
       return false;
    }

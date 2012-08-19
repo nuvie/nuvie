@@ -691,15 +691,16 @@ bool Player::attack_select_weapon_at_location(sint8 location, bool add_newline)
  return false;
 }
 
-void Player::attack(MapCoord target)
+void Player::attack(MapCoord target, Actor *target_actor)
 {
  MsgScroll *scroll = Game::get_game()->get_scroll();
  
  if(weapon_can_hit(target.x,target.y))
  {
-   Actor *target_actor = actor_manager->get_actor(target.x,target.y,actor->get_z());
+   if(!target_actor)
+       target_actor = actor_manager->get_actor(target.x,target.y,actor->get_z());
 
-   actor->attack(current_weapon, target);
+   actor->attack(current_weapon, target, target_actor);
 
    if(target_actor)
    {

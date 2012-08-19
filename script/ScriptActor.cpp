@@ -1327,8 +1327,12 @@ static int nscript_map_get_actor(lua_State *L)
 
    if(nscript_get_location_from_args(L, &x, &y, &z) == false)
       return 0;
+   Actor *excluded_actor = NULL;
+   void *p = lua_touserdata(L, 4); // avoid error warnings when null
+   if (p != NULL)
+       excluded_actor = nscript_get_actor_from_args(L, 4);
 
-   actor = actor_manager->get_actor(x, y, z);
+   actor = actor_manager->get_actor(x, y, z, true, excluded_actor);
 
    if(actor == NULL)
       return 0;

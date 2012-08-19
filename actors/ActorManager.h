@@ -79,7 +79,7 @@ class ActorManager
  ActorList *filter_party(ActorList *list);
 
  Actor *get_actor(uint8 actor_num);
- Actor *get_actor(uint16 x, uint16 y, uint8 z,  bool inc_surrounding_objs=true);
+ Actor *get_actor(uint16 x, uint16 y, uint8 z,  bool inc_surrounding_objs=true, Actor *excluded_actor = NULL);
  Actor *get_actor_holding_obj(Obj *obj);
 
  Actor *get_player();

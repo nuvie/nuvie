@@ -1,6 +1,7 @@
-2012-08-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1531
-	* Fix resurrect not removing corpse and adding inventory items
-	* Fix resurrect location being wrong for objects in inventory or container
+2012-08-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1531
+	* Fix party members attacking each other or themselves with weapons when
+		trying to attack an actor that is in the same tile. (Magic will still
+		target party members on the same tile as another actor.)
 
 2012-08-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1530
 	* Remove forgotten line from r1529

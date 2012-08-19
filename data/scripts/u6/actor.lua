@@ -1450,14 +1450,25 @@ end
 -- actor_attack(attacker, target, weapon)
 --
 
-function actor_attack(attacker, target_x, target_y, target_z, weapon)
+function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
 
    local random = math.random
    local weapon_obj_n = weapon.obj_n
    local weapon_quality = weapon.quality
 
-   local foe = map_get_actor(target_x, target_y, target_z)
-   
+	if foe == nil then
+		foe = map_get_actor(target_x, target_y, target_z)
+	end
+
+	if attacker.in_party and attacker.actor_num ~= Actor.get_player_actor().actor_num and foe ~= nil
+	   and foe.in_party and attacker.align == ALIGNMENT_GOOD and foe.align == ALIGNMENT_GOOD then
+		foe = map_get_actor(target_x, target_y, target_z, foe) -- exclude previous target
+		if foe ~= nil and foe.in_party and foe.align == ALIGNMENT_GOOD then
+			dbg("A party member tried attacking another party member. This shouldn't happen.");
+			return
+		end
+	end
+
 	if foe ~= nil and foe.actor_num == attacker.actor_num then
 		return
 	end

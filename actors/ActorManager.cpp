@@ -545,13 +545,13 @@ Actor *ActorManager::get_actor(uint8 actor_num)
  return actors[actor_num];
 }
 
-Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z, bool inc_surrounding_objs)
+Actor *ActorManager::get_actor(uint16 x, uint16 y, uint8 z, bool inc_surrounding_objs, Actor *excluded_actor)
 {
  uint16 i;
 
  for(i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
   {
-   if(actors[i]->x == x && actors[i]->y == y && actors[i]->z == z)
+   if(actors[i]->x == x && actors[i]->y == y && actors[i]->z == z && actors[i] != excluded_actor)
      return actors[i];
   }
 

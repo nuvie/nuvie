@@ -712,6 +712,7 @@ bool Event::attack()
 	MapCoord target = map_window->get_cursorCoord();
     Actor *actor = map_window->get_actorAtCursor();
     Actor *p = player->get_actor();
+    bool tile_is_black = map_window->tile_is_black(target.x, target.y);
 
     if(game->get_script()->call_out_of_ammo(p, p->get_weapon_obj(player->get_current_weapon()), true))
     {
@@ -719,23 +720,32 @@ bool Event::attack()
         try_next_attack(); // SE and MD have weapons that need ammo and only take up 1 slot
         return true;
     }
-    else if(map_window->tile_is_black(target.x, target.y))
+    else if(tile_is_black)
         scroll->display_string("nothing!\n");
-    else if(actor && actor->is_visible())
-        {
-    		if(actor->get_actor_num() == player->get_actor()->get_actor_num()) //don't attack yourself.
-    		{
+    else if(actor)
+    {
+		if(actor->get_actor_num() == player->get_actor()->get_actor_num() //don't attack yourself.
+		   || (actor->is_in_party() && actor->get_alignment() == ACTOR_ALIGNMENT_GOOD))
+		{
+			ActorManager *actor_manager = game->get_actor_manager();
+			Actor *a = actor_manager->get_actor(actor->get_x(), actor->get_y(), actor->get_z(), true, actor);
+			if(a) // exclude previous target if we find another actor
+				actor = a;
+			else if(actor->get_actor_num() == player->get_actor()->get_actor_num())
+			{
     			scroll->display_string("pass.\n");
     	    	player->subtract_movement_points(10);
     			endAction(true);
     			return true;
-    		}
-
+			}
+		}
+        if(actor->is_visible())
+        {
             scroll->display_string(actor->get_name());
             scroll->display_string(".\n");
-
         }
-    else
+    }
+    if((!actor || !actor->is_visible()) && !tile_is_black)
         {
     		Obj *obj = map_window->get_objAtCursor();
     		if(obj && (!obj->is_on_map() || !map_window->tile_is_black(obj->x, obj->y, obj)))
@@ -751,7 +761,7 @@ bool Event::attack()
         }
 
     map_window->set_show_cursor(false);
-    player->attack(target);
+    player->attack(target, actor);
 
     try_next_attack();
 

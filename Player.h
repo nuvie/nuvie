@@ -120,7 +120,7 @@ class Player
  void attack_select_init();
  bool attack_select_next_weapon(bool add_newline = false);
 
- void attack(MapCoord target);
+ void attack(MapCoord target, Actor *target_actor);
  sint8 get_current_weapon() { return current_weapon; }
 
  protected:

@@ -397,7 +397,7 @@ class Actor
  // combat methods
  //void attack(MapCoord pos); // attack at a given map location
  Obj *get_weapon_obj(sint8 readied_obj_location);
- void attack(sint8 readied_obj_location, MapCoord target);
+ void attack(sint8 readied_obj_location, MapCoord target, Actor *foe = NULL);
  const CombatType *get_weapon(sint8 readied_obj_location);
  void attract_to(Actor *target);
  void repel_from(Actor *target);
