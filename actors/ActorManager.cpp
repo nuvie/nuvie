@@ -643,8 +643,8 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
 // uint8 cur_hour;
 // uint16 i;
 
- if(!update)
-  return;
+// if(!update)
+//  return;
 //DEBUG(0,LEVEL_DEBUGGING,"updateActors()\n");
 
  cur_x = x; cur_y = y; cur_z = z;
@@ -934,7 +934,7 @@ void ActorManager::clean_temp_actors_from_area(uint16 x, uint16 y)
        dist_x = abs((sint16)actors[i]->x - x);
        dist_y = abs((sint16)actors[i]->y - y);
 
-       if(dist_x > 32 || dist_y > 32)
+       if(dist_x > 20 || dist_y > 20)
          {
           clean_temp_actor(actors[i]);
          }

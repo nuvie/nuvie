@@ -202,8 +202,8 @@ void Player::set_mapwindow_centered(bool state)
  map_window->centerMapOnActor(actor); // center immediately
 
  get_location(&x,&y,&z);
- obj_manager->update(x,y,z); // spawn eggs when teleporting. eg red moongate.
  actor_manager->updateActors(x,y,z);
+ obj_manager->update(x,y,z); // spawn eggs when teleporting. eg red moongate.
 }
 
 void Player::set_actor(Actor *new_actor)

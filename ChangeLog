@@ -1,3 +1,7 @@
+2012-08-21  Eric Fry <efry at users.sourceforge.net> r1537
+	* Changed temp actor cleanup to > 20 tiles away
+	* Fixed bug where temp actors weren't cleaned on player teleport.
+
 2012-08-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1536
 	* Exclude U6 specific hardcoding from other games.
 
