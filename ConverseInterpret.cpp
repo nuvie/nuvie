@@ -641,7 +641,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
             {
-                if(v[1] == 76) // Amulet of Submission
+                if(Game::get_game()->get_game_type() == NUVIE_GAME_U6 && v[1] == 76) // Amulet of Submission
                 {
                     cnpc->remove_readied_object(ACTOR_NECK);
                     cnpc_obj = cnpc->inventory_new_object(76, 1, 0);
@@ -681,15 +681,22 @@ bool ConverseInterpret::op(stack<converse_value> &i)
             player->subtract_karma(pop_arg(i));
             break;
         case U6OP_RESURRECT: // 0xd6
+        {
             v[0] = npc_num(pop_arg(i));
+            uint16 body = OBJ_U6_DEAD_BODY;
+
+            if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+              body = OBJ_SE_DEAD_BODY;
+            else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD)
+              body = OBJ_MD_DEAD_BODY;
 
             if(v[0] == 0) // Party
-              cnpc = converse->player->get_party()->who_has_obj(OBJ_U6_DEAD_BODY,0,false);
+              cnpc = converse->player->get_party()->who_has_obj(body ,0,false);
             else
               cnpc = converse->actors->get_actor(v[0]);
           
-            cnpc_obj = cnpc->inventory_get_object(OBJ_U6_DEAD_BODY, 0, false);
-            if(!cnpc_obj)
+            cnpc_obj = cnpc->inventory_get_object(body, 0, false);
+            if(Game::get_game()->get_game_type() == NUVIE_GAME_U6 && !cnpc_obj)
             {
               if(v[0] == 0)
                 cnpc = converse->player->get_party()->who_has_obj(OBJ_U6_MOUSE,0,false);
@@ -704,6 +711,7 @@ bool ConverseInterpret::op(stack<converse_value> &i)
                  }
               }
             break;
+        }
         case U6OP_HEAL: // 0xd9
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
@@ -997,6 +1005,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             v[0] = pop_arg(i); // obj
             bool has_mouse = false; // resurrect others first
             if(!player->get_party()->has_obj(v[0], v[1], false) && (v[0] != OBJ_U6_DEAD_BODY
+               || Game::get_game()->get_game_type() != NUVIE_GAME_U6
                || !(has_mouse = player->get_party()->has_obj(OBJ_U6_MOUSE, v[1], false))))
                 out = 0x8001; // something OR'ed or u6val version of "no npc"?
             else

@@ -1,3 +1,6 @@
+2012-08-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1536
+	* Exclude U6 specific hardcoding from other games.
+
 2012-08-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1535
 	* Have the use command employ the tile selected when dealing with actors
 	* Allow Sherry to be resurrected by npc healers

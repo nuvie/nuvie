@@ -426,6 +426,7 @@
 #define OBJ_SE_RIB_BONE            211
 #define OBJ_SE_CHOP                214
 #define OBJ_SE_DEVICE              240
+#define OBJ_SE_DEAD_BODY           249
 
 // Martian Dreams
 #define OBJ_MD_BACKPACK             80
@@ -441,5 +442,6 @@
 #define OBJ_MD_CRATE               284
 #define OBJ_MD_BAG                 285
 #define OBJ_MD_BRASS_TRUNK         304
+#define OBJ_MD_DEAD_BODY           341
 
 #endif /* __U6objects_h__ */
