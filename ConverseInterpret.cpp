@@ -689,6 +689,12 @@ bool ConverseInterpret::op(stack<converse_value> &i)
               cnpc = converse->actors->get_actor(v[0]);
           
             cnpc_obj = cnpc->inventory_get_object(OBJ_U6_DEAD_BODY, 0, false);
+            if(!cnpc_obj)
+            {
+              if(v[0] == 0)
+                cnpc = converse->player->get_party()->who_has_obj(OBJ_U6_MOUSE,0,false);
+              cnpc_obj = cnpc->inventory_get_object(OBJ_U6_MOUSE, 0, false);
+            }
             if(cnpc_obj != NULL)
               {
                if(converse->actors->resurrect_actor(cnpc_obj, converse->player->get_actor()->get_location()))
@@ -986,17 +992,21 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 out = 1;
             break;
         case U6OP_OBJINPARTY: // 0xc7 ?? check if party has object
+        {
             v[1] = pop_arg(i); // qual
             v[0] = pop_arg(i); // obj
-            if(!player->get_party()->has_obj(v[0], v[1], false))
+            bool has_mouse = false; // resurrect others first
+            if(!player->get_party()->has_obj(v[0], v[1], false) && (v[0] != OBJ_U6_DEAD_BODY
+               || !(has_mouse = player->get_party()->has_obj(OBJ_U6_MOUSE, v[1], false))))
                 out = 0x8001; // something OR'ed or u6val version of "no npc"?
             else
             {
-                cnpc = player->get_party()->who_has_obj(v[0], v[1], false);
+                cnpc = player->get_party()->who_has_obj(has_mouse ? OBJ_U6_MOUSE : v[0], v[1], false);
                 assert(cnpc);
                 out = cnpc->get_actor_num(); // first NPC that has object (sometimes 0xFFFF?)
             }
             break;
+        }
         case U6OP_JOIN: // 0xca
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)

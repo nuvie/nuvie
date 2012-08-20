@@ -929,24 +929,37 @@ bool Event::use(Obj *obj)
     return true;
 }
 
-bool Event::use(Actor *actor)
+bool Event::use(Actor *actor, uint16 x, uint16 y)
 {
     if(game->user_paused())
         return false;
     bool display_prompt = true;
-    MapCoord target = actor->get_location();
     Obj *obj = actor->make_obj();
 
-    if(!map_window->tile_is_black(obj->x, obj->y) && usecode->has_usecode(actor))
+    if(!map_window->tile_is_black(x, y) && usecode->has_usecode(actor))
     {
-        scroll->display_string(obj_manager->look_obj(obj));
+        if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
+            scroll->display_string("horse");
+        else
+            scroll->display_string(obj_manager->look_obj(obj));
         scroll->display_string("\n");
-        if(player->get_actor()->get_location().distance(target) > 1
+
+        LineTestResult lt;
+        Map *map = game->get_game_map();
+        MapCoord player_loc = player->get_actor()->get_location();
+        MapCoord target = MapCoord(x, y, player_loc.z);
+
+
+        if(player_loc.distance(target) > 1
            && map_window->get_interface() == INTERFACE_NORMAL)
         {
             scroll->display_string("\nOut of range!\n");
-            DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
+            DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player_loc.distance(target));
         }
+        else if(map->lineTest(player_loc.x, player_loc.y, x, y, target.z, LT_HitUnpassable, lt)
+                && map_window->get_interface() != INTERFACE_IGNORE_BLOCK // FIXME false obj matches can occur (should be rare)
+                && (!lt.hitObj || lt.hitObj->quality != actor->get_actor_num())) // actor part
+            scroll->display_string("\nBlocked.\n");
         else
         {
             display_prompt = usecode->use_obj(obj, player->get_actor());
@@ -989,7 +1002,10 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
  if(obj) // FIXME: try actor first
     return(use(obj));
  else if(actor && actor->is_visible())
-    return(use(actor));
+ {
+    MapCoord loc = player->get_actor()->get_location();
+    return(use(actor, loc.x + rel_x, loc.y + rel_y));
+ }
 
  scroll->display_string("nothing\n");
  endAction(true);
@@ -2587,7 +2603,6 @@ void Event::multiuse(uint16 wx, uint16 wy)
             && (actor->get_actor_num() == player->get_actor()->get_actor_num() //don't attack yourself.
             || actor->get_alignment() == ACTOR_ALIGNMENT_GOOD)))
         {
-            ActorManager *actor_manager = game->get_actor_manager();
             Actor *a = actor_manager->get_actor(actor->get_x(), actor->get_y(), actor->get_z(), true, actor);
             if(a || (!in_combat && (!actor->is_visible() // null invisible actors if not in combat and no one is found
                      || (actor == player_actor && game->is_orig_style() && actor->get_actor_num() != 0)))) // pass if in combat if player and not showing inventory
@@ -2596,7 +2611,6 @@ void Event::multiuse(uint16 wx, uint16 wy)
 
         if(actor)
         {
-        obj = actor->make_obj();
         using_actor = true;
         target.x = actor->get_location().x;
         target.y = actor->get_location().y;
@@ -2616,12 +2630,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
         {
             newAction(ATTACK_MODE);
             if(get_mode() == ATTACK_MODE)
-            {
-                map_window->moveCursor(wx - map_window->get_cur_x(), wy - map_window->get_cur_y());
                 select_target(uint16(wx), uint16(wy), target.z);
-            }
-            if(using_actor)
-                delete_obj(obj); // we were using an actor so free the temp Obj
             return;
         }
     }
@@ -2629,15 +2638,16 @@ void Event::multiuse(uint16 wx, uint16 wy)
     if(using_actor) // use or talk to an actor
     {
         bool can_use;
-        if(game->get_game_type() == NUVIE_GAME_U6 && (obj->obj_n == OBJ_U6_MOUSE
+        if(game->get_game_type() == NUVIE_GAME_U6 && (actor->get_obj_n() == OBJ_U6_MOUSE
            || actor->get_actor_num() == 132 || actor->get_actor_num() == 130)) // Smith, Pushme Pullyu
             can_use = false;
         else
-            can_use = usecode->has_usecode(obj);
+            can_use = usecode->has_usecode(actor);
         if(can_use)
         {
-            newAction(USE_MODE);
-            select_obj(obj);
+            scroll->display_string("Use-");
+            set_mode(USE_MODE);
+            use(actor, wx, wy);
         }
         else
         {
@@ -2647,22 +2657,15 @@ void Event::multiuse(uint16 wx, uint16 wy)
         		view_manager->open_doll_view(NULL);
         	}
         	else if(target == player_location)
-        	{
-        		delete_obj(obj); // free temp obj
-        		obj = obj_manager->get_obj(wx, wy, target.z);
         		using_actor = false;
-        	}
         	else
         	{
         		newAction(TALK_MODE);
         		talk(actor);
         	}
         }
-        if(using_actor) // we were using an actor so free the temp Obj
-        {
-            delete_obj(obj);
+        if(using_actor)
             return;
-        }
     }
     if(!obj)
         return;
@@ -2769,7 +2772,10 @@ void Event::doAction()
     	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
     	{
             if(input.actor && input.actor->is_visible() && usecode->has_usecode(input.actor))
-            	use(input.actor);
+            {
+                MapCoord loc = game->get_player()->get_actor()->get_location();
+                use(input.actor, loc.x + input.loc->sx, loc.y + input.loc->sy);
+            }
             else
             	use(input.loc->sx,input.loc->sy);
         }

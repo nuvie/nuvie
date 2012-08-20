@@ -1,3 +1,7 @@
+2012-08-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1535
+	* Have the use command employ the tile selected when dealing with actors
+	* Allow Sherry to be resurrected by npc healers
+
 2012-08-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1534
 	* Improve double click use obj under player and attack logic.
 	* Improve attack logic so that the currently targeted actor is used instead

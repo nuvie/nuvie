@@ -207,7 +207,7 @@ friend class Magic; // FIXME
  bool use_start();
  bool use(sint16 rel_x, sint16 rel_y);
  bool use(Obj *obj);
- bool use(Actor *actor);
+ bool use(Actor *actor, uint16 x, uint16 y);
 
  bool get_start();
  bool get(sint16 rel_x, sint16 rel_y);
