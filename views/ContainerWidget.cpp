@@ -517,7 +517,7 @@ void ContainerWidget::try_click()
 {
 	Event *event = Game::get_game()->get_event();
 	UseCode *usecode = Game::get_game()->get_usecode();
-	Actor *actor;
+	Actor *actor = NULL;
 	if(!selected_obj)
 		selected_obj = ready_obj;
 	if(selected_obj)

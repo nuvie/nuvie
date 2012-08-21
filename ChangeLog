@@ -1,3 +1,7 @@
+2012-08-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1538
+	* Fix move command distance and blocking check of multi-tiled actors
+	* Initialize variables
+
 2012-08-21  Eric Fry <efry at users.sourceforge.net> r1537
 	* Changed temp actor cleanup to > 20 tiles away
 	* Fixed bug where temp actors weren't cleaned on player teleport.

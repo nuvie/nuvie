@@ -944,11 +944,8 @@ bool Event::use(Actor *actor, uint16 x, uint16 y)
             scroll->display_string(obj_manager->look_obj(obj));
         scroll->display_string("\n");
 
-        LineTestResult lt;
-        Map *map = game->get_game_map();
         MapCoord player_loc = player->get_actor()->get_location();
         MapCoord target = MapCoord(x, y, player_loc.z);
-
 
         if(player_loc.distance(target) > 1
            && map_window->get_interface() == INTERFACE_NORMAL)
@@ -956,9 +953,7 @@ bool Event::use(Actor *actor, uint16 x, uint16 y)
             scroll->display_string("\nOut of range!\n");
             DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player_loc.distance(target));
         }
-        else if(map->lineTest(player_loc.x, player_loc.y, x, y, target.z, LT_HitUnpassable, lt)
-                && map_window->get_interface() != INTERFACE_IGNORE_BLOCK // FIXME false obj matches can occur (should be rare)
-                && (!lt.hitObj || lt.hitObj->quality != actor->get_actor_num())) // actor part
+        else if(!can_get_to_actor(actor, x, y))
             scroll->display_string("\nBlocked.\n");
         else
         {
@@ -1419,6 +1414,7 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
 {
     ActorManager *actor_manager = game->get_actor_manager();
     MapCoord from = player->get_actor()->get_location();
+    MapCoord target = MapCoord(from.x + rel_x, from.y + rel_y, from.z);
 
     if(game->user_paused())
         return(false);
@@ -1426,10 +1422,10 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     map_window->set_show_use_cursor(false);
     if(rel_x || rel_y)
     {
-        push_obj = obj_manager->get_obj((uint16)(from.x+rel_x), (uint16)(from.y+rel_y), from.z);
-        push_actor = actor_manager->get_actor((uint16)(from.x+rel_x), (uint16)(from.y+rel_y), from.z);
+        push_obj = obj_manager->get_obj(target.x, target.y, from.z);
+        push_actor = actor_manager->get_actor(target.x, target.y, from.z);
     }
-    if(map_window->tile_is_black(from.x + rel_x, from.y + rel_y, push_obj))
+    if(map_window->tile_is_black(target.x, target.y, push_obj))
     {
         scroll->display_string("nothing.\n");
         endAction(true);
@@ -1439,16 +1435,13 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
        && (obj_manager->get_obj_weight(push_obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS) == 0))
         push_obj = NULL;
 
-    MapCoord target;
     if(push_actor && push_actor->is_visible())
     {
-        target = push_actor->get_location();
         scroll->display_string(push_actor->get_name());
         push_obj = NULL;
     }
     else if(push_obj)
     {
-        target = MapCoord(push_obj->x, push_obj->y, push_obj->z);
         scroll->display_string(obj_manager->look_obj(push_obj));
         push_actor = NULL;
     }
@@ -1458,20 +1451,18 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         endAction(true);
         return false;
     }
-    Obj *obj = push_obj;
-    if(!obj)
-        obj = push_actor->make_obj();
 
     if(from.distance(target) > 1 && map_window->get_interface() == INTERFACE_NORMAL)
     {
-        scroll->display_string("\n\nOut of range!\n\n");
-        endAction();
+        scroll->display_string("\n\nOut of range!\n");
+        endAction(true);
     }
     else if(map_window->get_interface() != INTERFACE_NORMAL
-            && !map_window->can_get_obj(player->get_actor(), obj))
+            && ((push_obj && !map_window->can_get_obj(player->get_actor(), push_obj))
+            || (push_actor && !can_get_to_actor(push_actor, target.x, target.y))))
     {
-        scroll->display_string("\n\nBlocked.\n\n");
-        endAction();
+        scroll->display_string("\n\nBlocked.\n");
+        endAction(true);
     }
     else
     {
@@ -1479,8 +1470,6 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         map_window->set_mousecenter(target.x - from.x + 5, target.y - from.y + 5);
         get_direction(MapCoord(target.x, target.y), "\nTo ");
     }
-    if(push_actor)
-        delete_obj(obj); // free temp obj
     return true;
 }
 
@@ -3280,4 +3269,21 @@ void Event::display_move_text(Actor *target_actor, Obj *obj)
 		scroll->display_string(" To ");
 	scroll->display_string(target_actor->get_name());
 	scroll->display_string(".");
+}
+
+bool Event::can_get_to_actor(Actor *actor, uint16 x, uint16 y) // need the exact tile
+{
+	if(map_window->get_interface() == INTERFACE_IGNORE_BLOCK)
+		return true;
+
+	LineTestResult lt;
+	Map *map = game->get_game_map();
+	MapCoord player_loc = player->get_actor()->get_location();
+
+// FIXME false obj matches can occur (should be extremly rare)
+	if(map->lineTest(player_loc.x, player_loc.y, x, y, player_loc.z, LT_HitUnpassable, lt)
+	   && (!lt.hitObj || lt.hitObj->quality != actor->get_actor_num())) // actor part
+		return false;
+
+	return true;
 }

@@ -57,7 +57,7 @@ void GameClock::init()
  day = 0;
  month = 0;
  year = 0;
- 
+ rest_counter = 0;
  //active = true;
  num_timers = 0;
 }

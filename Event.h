@@ -250,6 +250,7 @@ friend class Magic; // FIXME
  bool can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *target_actor, bool display_name = false);
  void display_not_aboard_vehicle(bool show_prompt = true);
  void display_move_text(Actor *target_actor, Obj *obj);
+ bool can_get_to_actor(Actor *actor, uint16 x, uint16 y);
  bool using_control_cheat() { return in_control_cheat; }
  void set_control_cheat(bool control_cheat) { in_control_cheat = control_cheat; }
 
