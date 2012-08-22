@@ -1647,6 +1647,8 @@ void Actor::resurrect(MapCoord new_position, Obj *body_obj)
 	if(remove_obj)
 		delete_obj(body_obj);
 
+	Game::get_game()->get_script()->call_actor_resurrect(this);
+
 	return;
 }
 

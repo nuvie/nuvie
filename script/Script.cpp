@@ -855,6 +855,17 @@ bool Script::call_actor_subtract_movement_points(Actor *actor, uint8 points)
    return true;
 }
 
+bool Script::call_actor_resurrect(Actor *actor)
+{
+   lua_getglobal(L, "actor_resurrect");
+   nscript_new_actor_var(L, actor->get_actor_num());
+
+   if(call_function("actor_resurrect", 1, 0) == false)
+	   return false;
+
+   return true;
+}
+
 bool Script::call_use_keg(Obj *obj)
 {
    lua_getglobal(L, "use_keg");

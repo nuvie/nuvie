@@ -3682,6 +3682,13 @@ function actor_use_effect(actor, effect)
 
 end
 
+function actor_resurrect(actor)
+	local karma = player_get_karma()
+	if karma < 98 then
+		actor.exp = math.floor((actor.exp * karma) / 100)
+	end
+end
+
 function actor_avatar_death(avatar)
 	
 	--FIXME the hit tile is displayed constantly while the death tune is playing.
