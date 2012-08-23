@@ -3287,3 +3287,27 @@ bool Event::can_get_to_actor(Actor *actor, uint16 x, uint16 y) // need the exact
 
 	return true;
 }
+
+bool Event::select_view_obj(Obj *obj, Actor *actor)
+{
+	if((last_mode == CAST_MODE || last_mode == SPELL_MODE)
+	   && !magic->is_waiting_for_obj() && !magic->is_waiting_for_inventory_obj())
+		cancelAction();
+	else
+	{
+		if(!obj)
+			return false;
+		if(usecode->cannot_unready(obj) && ((last_mode == DROP_MODE && drop_obj == NULL)
+		   || (last_mode == PUSH_MODE && push_obj == NULL && push_actor == NULL)))
+		{
+			scroll->display_string(obj_manager->look_obj(obj, false));
+			scroll->display_string("\n");
+			usecode->ready_obj(obj, obj->get_actor_holding_obj());
+			endAction(true);
+			set_mode(MOVE_MODE);
+		}
+		else
+			select_obj(obj, actor);
+	}
+	return true;
+}

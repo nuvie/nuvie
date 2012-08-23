@@ -117,6 +117,9 @@ const U6ActorType u6ActorTypes[] = {
 
  {OBJ_U6_SLIME,            0, 0, 0, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        0,  0},
 
+ // 1x1
+ {OBJ_U6_CHEST,            0, 0, 0, 1, OBJ_U6_CHEST, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,          5,  0},
+
  {OBJ_U6_NOTHING, 0, 0, 0, 1, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND, 0, 0} //end indicator
 };
 

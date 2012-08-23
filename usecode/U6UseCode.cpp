@@ -3276,17 +3276,13 @@ bool U6UseCode::holy_flame(Obj *obj, UseCodeEvent ev)
     return false;
 }
 
-bool U6UseCode::cannot_unready(Obj *obj, bool cancel_event)
+bool U6UseCode::cannot_unready(Obj *obj)
 {
 	if(!obj->is_readied())
 		return false;
 	if(obj->obj_n == OBJ_U6_AMULET_OF_SUBMISSION
 	   || (obj->obj_n == OBJ_U6_TORCH && obj->frame_n == 1))
-	{
-		if(cancel_event)
-			return UseCode::cannot_unready(obj);
 		return true;
-	}
 
 	return false;
 }

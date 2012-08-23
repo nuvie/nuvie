@@ -189,7 +189,7 @@ class UseCode
  virtual bool has_movecode(Obj *obj) { return(has_usecode(obj, USE_EVENT_MOVE)); }
  virtual bool has_loadcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_LOAD)); }
  virtual bool has_readycode(Obj *obj) { return(has_usecode(obj, USE_EVENT_READY)); }
- virtual bool cannot_unready(Obj *obj, bool cancel_event = false);
+ virtual bool cannot_unready(Obj *obj) { return false; }
  virtual bool has_getcode(Obj *obj)  { return(has_usecode(obj, USE_EVENT_GET)); }
  virtual bool has_dropcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_DROP)); }
 

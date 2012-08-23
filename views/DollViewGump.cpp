@@ -35,8 +35,6 @@
 #include "ContainerViewGump.h"
 #include "DollWidget.h"
 #include "DollViewGump.h"
-#include "Magic.h"
-#include "UseCode.h"
 
 
 DollViewGump::DollViewGump(Configuration *cfg) : DraggableView(cfg),
@@ -207,21 +205,9 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	}
 	else if(caller == doll_widget)
 	{
-		Event *event = Game::get_game()->get_event();
+		Obj *obj = (Obj *)data;
+		Game::get_game()->get_event()->select_view_obj(obj, actor);
 
-		if((event->get_last_mode() == CAST_MODE || event->get_last_mode() == SPELL_MODE)
-		   && !Game::get_game()->get_magic()->is_waiting_for_obj()
-		   && !Game::get_game()->get_magic()->is_waiting_for_inventory_obj())
-			event->cancelAction();
-		else
-		{
-			Obj *obj = (Obj *)data;
-			if(!obj)
-				return GUI_PASS;
-
-			if(!Game::get_game()->get_usecode()->cannot_unready(obj, true))
-				event->select_obj(obj, actor);
-		}
 	}
 
     return GUI_PASS;

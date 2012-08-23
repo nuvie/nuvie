@@ -1566,12 +1566,15 @@ void U6Actor::die(bool create_body)
 			if(temp_actor)
 				dead_body->status |= OBJ_STATUS_TEMPORARY;
 
-			// move my inventory into the dead body container
-			all_items_to_container(dead_body);
-
+			if(base_actor_type->dead_obj_n == OBJ_U6_BLOOD)
+				inventory_drop_all();
+			else // move my inventory into the dead body container
+				all_items_to_container(dead_body);
 			obj_manager->add_obj(dead_body, true);
     	}
     }
+	else if(create_body)
+		inventory_drop_all();
 
     if(party->get_member_num(this) != 0)
         move(0,0,0,ACTOR_FORCE_MOVE); // FIXME: move to another plane, same coords

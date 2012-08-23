@@ -1,3 +1,8 @@
+2012-08-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1541
+	* Fix bug where actors without a normal body didn't drop items
+	* Fix mimic not having an open chest as a body
+	* Refactor some view event selection code
+
 2012-08-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1540
 	* Allow commands to be used on the doll widget
 	* Fix drag and drop, move, and drop command not unreadying items. WARNING:

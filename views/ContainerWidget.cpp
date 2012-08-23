@@ -38,7 +38,6 @@
 #include "MapWindow.h"
 #include "Player.h"
 #include "ActorManager.h"
-#include "Magic.h"
 
 #include "InventoryFont.h"
 #include "ViewManager.h"
@@ -524,12 +523,15 @@ void ContainerWidget::try_click()
 		actor = Game::get_game()->get_actor_manager()->get_actor(selected_obj->x);
 	if(!actor || !actor->is_in_party())
 		actor = Game::get_game()->get_player()->get_actor();
-	bool locked_chest = (usecode->is_chest(selected_obj) && selected_obj->frame_n > 1);
 	switch(event->get_mode())
 	{
 		case MOVE_MODE:
 		case EQUIP_MODE:
-			if(selected_obj && usecode->is_container(selected_obj) && !locked_chest)
+		{
+			if(!selected_obj)
+				return;
+			bool locked_chest = (usecode->is_chest(selected_obj) && selected_obj->frame_n > 1);
+			if(usecode->is_container(selected_obj) && !locked_chest)
 			{
 				container_obj = selected_obj;
 				if(usecode->is_chest(container_obj))
@@ -538,22 +540,15 @@ void ContainerWidget::try_click()
 					Redraw();
 				}
 			}
-			else if(selected_obj)
+			else
 			{
-				if(selected_obj->is_readied())
-					event->unready(selected_obj);
-				else
-					event->ready(selected_obj, actor);
+				event->ready(selected_obj, actor);
 				Redraw();
 			}
 			break;
+		}
 		default:
-			if((event->get_last_mode() == CAST_MODE || event->get_last_mode() == SPELL_MODE)
-			   && !Game::get_game()->get_magic()->is_waiting_for_obj()
-			   && !Game::get_game()->get_magic()->is_waiting_for_inventory_obj())
-				event->cancelAction();
-			else
-				event->select_obj(selected_obj, actor);
+			event->select_view_obj(selected_obj, actor);
 			break;
 	}
 	ready_obj = NULL;

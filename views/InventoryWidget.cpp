@@ -697,6 +697,8 @@ void InventoryWidget::try_click()
 	UseCode *usecode = Game::get_game()->get_usecode();
 	if(!selected_obj)
 		selected_obj = ready_obj;
+	if(!selected_obj)
+		return;
 	bool locked_chest = (usecode->is_chest(selected_obj) && selected_obj->frame_n > 1);
 	if(usecode->is_container(selected_obj) && !locked_chest) // open up the container.
 	{
