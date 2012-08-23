@@ -3722,10 +3722,15 @@ function actor_avatar_death(avatar)
 	
 	--unready inventory objects.
 	for obj in actor_inventory(avatar) do
-		if obj.readied then
-			Actor.inv_unready_obj(avatar, obj)
+		if obj.readied and obj.obj_n ~= 76 then -- don't display message for amulet of submission
+			if obj.obj_n == 90 and obj.frame_n == 1 then -- don't display message for lit torch
+				Actor.inv_remove_obj(avatar, obj)
+			else
+				Actor.inv_unready_obj(avatar, obj)
+			end
 		end
 	end
+	actor_resurrect(avatar)
 	party_set_combat_mode(false)
 	party_set_party_mode()
 	fade_in()

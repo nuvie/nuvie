@@ -156,6 +156,9 @@ friend class Magic; // FIXME
 
  TimeQueue *get_time_queue() { return(time_queue); }
  TimeQueue *get_game_time_queue() { return(game_time_queue); }
+ Obj *get_push_obj() { return push_obj; }
+ Actor *get_push_actor() { return push_actor; }
+ Obj *get_drop_obj() { return drop_obj; }
  EventMode get_mode() { return(mode); }
  EventMode get_last_mode() { return(last_mode); }
  void set_mode(EventMode new_mode);

@@ -1774,17 +1774,14 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
     }
     else
     {
-		Actor *owner = obj->get_actor_holding_obj();
-
+		if(game->get_usecode()->cannot_unready(obj))
+		{
+			game->get_event()->unready(obj);
+			return false;
+		}
 		if(target_actor)
 		{
-			if(obj->is_readied() && game->get_usecode()->has_readycode(obj)
-			   && game->get_usecode()->ready_obj(obj, owner) == false)
-			{
-				game->get_scroll()->display_string("\n");
-				game->get_scroll()->display_prompt();
-				return false;
-			}
+			Actor *owner = obj->get_actor_holding_obj();
 			game->get_event()->display_move_text(target_actor, obj);
 
 			if(game->get_event()->can_move_obj_between_actors(obj, owner, target_actor) == false)
@@ -1849,7 +1846,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         	// drop on ground or into a container
         	event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
         	event->select_obj(obj);
-        	if(obj->qty == 0 || obj->qty == 1 || !obj_manager->is_stackable(obj))
+        	if(obj->qty <= 1 || !obj_manager->is_stackable(obj))
         		event->select_target(x, y);
         	else
         		event->set_drop_target(x, y); // pre-select target

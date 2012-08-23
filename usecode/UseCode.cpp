@@ -29,6 +29,7 @@
 #include "Actor.h"
 #include "UseCode.h"
 #include "MapWindow.h"
+#include "Event.h"
 
 UseCode::UseCode(Game *g, Configuration *cfg)
 {
@@ -274,4 +275,21 @@ bool UseCode::out_of_use_range(Obj *obj, bool check_enemies)
         delete enemies;
     }
     return false;
+}
+
+bool UseCode::cannot_unready(Obj *obj, bool show_usecode)
+{
+	Event *event = Game::get_game()->get_event();
+	if((event->get_last_mode() == PUSH_MODE && event->get_push_obj() == NULL
+	   && event->get_push_actor() == NULL)
+	   || (event->get_last_mode() == DROP_MODE && event->get_drop_obj() == NULL))
+	{
+		scroll->display_string(obj_manager->look_obj(obj, false));
+		scroll->display_string("\n");
+		ready_obj(obj, obj->get_actor_holding_obj());
+		event->endAction(true);
+		event->set_mode(MOVE_MODE);
+		return true;
+	}
+	return false;
 }

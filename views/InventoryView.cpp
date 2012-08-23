@@ -35,7 +35,6 @@
 #include "Actor.h"
 #include "Event.h"
 #include "MapWindow.h"
-#include "MsgScroll.h"
 #include "UseCode.h"
 #include "ViewManager.h"
 #include "Magic.h"
@@ -689,7 +688,7 @@ bool InventoryView::select_obj(Obj *obj)
                && !Game::get_game()->get_magic()->is_waiting_for_obj()
                && !Game::get_game()->get_magic()->is_waiting_for_inventory_obj())
                 event->cancelAction();
-            else
+            else if(!Game::get_game()->get_usecode()->cannot_unready(obj, true))
                 event->select_obj(obj, inventory_widget->get_actor());
             return true;
     }

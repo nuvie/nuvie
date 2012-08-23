@@ -1,3 +1,13 @@
+2012-08-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1540
+	* Allow commands to be used on the doll widget
+	* Fix drag and drop, move, and drop command not unreadying items. WARNING:
+	   Do not remove_from_engine with unready usecode without unreadying first
+	* Add experience point loss for Avatar on death
+	* Don't display unready messages on Avatar death
+	* Delete lit torches on actor death
+	* Use ignore_block for a check instead of hackmove
+	* Don't search plant
+
 2012-08-22  Eric Fry <efry at users.sourceforge.net> r1539
 	* Reset experience points when resurrecting actors. This is done using a
 	  call to the actor_resurrect() script function from Actor::resurrect()

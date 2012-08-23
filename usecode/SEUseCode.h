@@ -46,6 +46,7 @@ class SEUseCode: public UseCode
  void init_objects() { }
  sint16 get_ucobject_index(uint16 n, uint8 f, uint8 ev) { return(-1); }
  bool uc_event(sint16 uco, uint8 ev, Obj *obj) { return(false); }
+ bool cannot_unready(Obj *obj, bool cancel_event = false) { return false; }
 
  protected:
 

@@ -754,8 +754,7 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
             process_effects(obj, items.actor_ref); //run any effects that might be stored in this container. Eg Poison explosion.
 
             if(Game::get_game()->doubleclick_opens_containers()
-                && obj->obj_n != OBJ_U6_PLANT && obj->obj_n != OBJ_U6_STONE_LION // just search for these
-                && obj->obj_n != OBJ_U6_SHIP)
+               && obj->obj_n != OBJ_U6_SHIP && obj->obj_n != OBJ_U6_STONE_LION) // just search for these
             {
             	game->get_view_manager()->open_container_view(obj);
             }
@@ -958,8 +957,8 @@ bool U6UseCode::use_bell(Obj *obj, UseCodeEvent ev)
     if(bell)
     {
         obj_manager->animate_forwards(bell, 2);
-        Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BELL);
     }
+    Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BELL);
 
     return(true);
 }
@@ -3124,6 +3123,8 @@ void U6UseCode::extinguish_torch(Obj *obj)
 //    if(obj->is_in_inventory_old())
 //        actor_manager->get_actor_holding_obj(obj)->subtract_light(TORCH_LIGHT_LEVEL);
     scroll->display_string("\nA torch burned out.\n");
+    if(obj->is_readied()) // needed to prevent endless loop
+        actor_manager->get_actor_holding_obj(obj)->remove_readied_object(obj); // needed to prevent endless loop
     destroy_obj(obj);
     game->get_map_window()->updateBlacking();
 }
@@ -3273,4 +3274,19 @@ bool U6UseCode::holy_flame(Obj *obj, UseCodeEvent ev)
         scroll->display_string("courage");
     scroll->display_string(".\n");
     return false;
+}
+
+bool U6UseCode::cannot_unready(Obj *obj, bool cancel_event)
+{
+	if(!obj->is_readied())
+		return false;
+	if(obj->obj_n == OBJ_U6_AMULET_OF_SUBMISSION
+	   || (obj->obj_n == OBJ_U6_TORCH && obj->frame_n == 1))
+	{
+		if(cancel_event)
+			return UseCode::cannot_unready(obj);
+		return true;
+	}
+
+	return false;
 }
