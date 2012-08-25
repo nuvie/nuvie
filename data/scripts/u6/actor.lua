@@ -1568,8 +1568,10 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
    
       if hit_actor == false then
          hit_actor = nil
-         target_x = target_x + random(0, 2) - 1
-         target_y = target_y + random(0, 2) - 1
+         if foe ~= nil then
+            target_x = target_x + random(0, 2) - 1
+            target_y = target_y + random(0, 2) - 1
+         end
       end
       
       if weapon_obj_n == 0x32 then --triple crossbow
@@ -2215,6 +2217,10 @@ function actor_remove_charm(actor)
 end
 
 function actor_yell_for_help(attacking_actor, defending_actor, dmg)
+
+   if defending_actor.hp == 0 then
+     return
+   end
 
    if defending_actor.luatype == "actor" and defending_actor.align == ALIGNMENT_NEUTRAL and defending_actor.in_party == false then
       local actor_base = actor_tbl[defending_actor.obj_n]

@@ -1,9 +1,15 @@
+2012-08-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1543
+	* Fix ranged weapons being inaccurate if targeting an empty tile [3547524]
+	* Remove needless inventory background color filling. (Fixes MD background)
+	* Don't have actors yell for help if they are killed by the initial attack
+
 2012-08-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1542
 	* Fix minor memory leak (r1540 regression)
 	* Fix bug "Actor view not working right after casting pickpocket" [3550076]
 	* Fix bug "tab into inventory doesn't cancel in several instances" [3544896]
 	* Fix door being blocked by itself
 	* Refactor command bar
+	* Add ability to use tab to activate command bar actions on the map window
 
 2012-08-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1541
 	* Fix bug where actors without a normal body didn't drop items

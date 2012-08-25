@@ -142,7 +142,7 @@ void InventoryWidget::Display(bool full_redraw)
 {
  if(full_redraw || update_display)
   {
-   screen->fill(bg_color, area.x, area.y, area.w, area.h);
+//   screen->fill(bg_color, area.x, area.y, area.w, area.h);
    display_inventory_container();
    if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
      display_arrows();
