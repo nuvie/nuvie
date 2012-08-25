@@ -217,7 +217,7 @@ void Player::set_actor(Actor *new_actor)
       else
         actor->set_worktype(0x00); //no worktype
     }
-
+    bool same_actor = (actor == new_actor);
     actor = new_actor;
 
     actor->set_worktype(0x02); // WT_U6_PLAYER
@@ -225,7 +225,8 @@ void Player::set_actor(Actor *new_actor)
     
     current_weapon = ACTOR_NO_READIABLE_LOCATION;
     map_window->centerCursor();
-
+    if(same_actor)
+        return;
     actor_manager->set_player(actor);
     std::string prompt = get_name();
 
@@ -726,8 +727,16 @@ void Player::attack(MapCoord target, Actor *target_actor)
 void Player::update_player(Actor *next_player)
 {
     MsgScroll *scroll = Game::get_game()->get_scroll();
+    bool same_actor = (next_player == get_actor());
     set_actor(next_player); // redirects to ActorManager::set_player()
     set_mapwindow_centered(true);
+    if(get_party()->is_in_combat_mode()) // HACK due to mouse up issues when the player is paused
+    {
+        map_window->set_looking(false);
+        map_window->set_walking(false);
+    }
+    if(!scroll->can_displayed_prompt() && same_actor)
+        return;
     scroll->display_string("\n");
     scroll->display_prompt();
 }

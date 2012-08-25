@@ -139,6 +139,7 @@ static const struct luaL_Reg nscript_u6linkrecursivelib_m[] =
 };
 
 static int nscript_print(lua_State *L);
+static int nscript_display_prompt(lua_State *L);
 //no longer used -- static int nscript_get_target(lua_State *L);
 static int nscript_load(lua_State *L);
 
@@ -452,6 +453,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
+
+   lua_pushcfunction(L, nscript_display_prompt);
+   lua_setglobal(L, "display_prompt");
 
    lua_pushcfunction(L, nscript_input_select);
    lua_setglobal(L, "input_select");
@@ -1739,6 +1743,20 @@ static int nscript_print(lua_State *L)
 
    scroll->display_string(string);
 
+   return 0;
+}
+
+static int nscript_display_prompt(lua_State *L)
+{
+   MsgScroll *scroll = Game::get_game()->get_scroll();
+
+   if(!scroll->can_displayed_prompt())
+      return 0;
+
+   bool newline = lua_toboolean(L, 1);
+   if(newline)
+      scroll->display_string("\n");
+   scroll->display_prompt();
    return 0;
 }
 

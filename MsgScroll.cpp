@@ -455,6 +455,7 @@ bool MsgScroll::parse_token(MsgText *token)
 if(msg_buf.size() > scroll_height)
    display_pos = msg_buf.size() - scroll_height;
  just_finished_page_break = false;
+ just_displayed_prompt = false;
  return true;
 }
 
@@ -534,13 +535,14 @@ bool MsgScroll::set_prompt(const char *new_prompt, Font *f)
 
 void MsgScroll::display_prompt()
 {
- if(!talking)
+ if(!talking && !just_displayed_prompt)
   { 
  //line_count = 0;
    display_string(prompt.s.c_str(), prompt.font);
  //line_count = 0;
 
    clear_page_break();
+   just_displayed_prompt = true;
   }
 }
 

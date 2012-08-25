@@ -1983,7 +1983,7 @@ dbg("actor_update_all()\n")
 	player_set_actor(selected_actor)
 	old_player.wt = WT_PLAYER --reset worktype to player as it gets changed to follow in Player::set_actor() :-(
    end
-   
+   display_prompt(true)
 end
 
 function advance_time(num_turns)

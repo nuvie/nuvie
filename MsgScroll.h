@@ -101,6 +101,7 @@ protected:
 
  bool page_break;
  bool just_finished_page_break;
+ bool just_displayed_prompt;
 
  std::list<MsgLine *> msg_buf;
 
@@ -159,6 +160,7 @@ private:
   bg_color = 0; keyword_highlight = true; talking = false; show_cursor = false;
   autobreak = false; scroll_updated = false; cursor_char = 0; cursor_x = 0;
   cursor_y = 0; line_count = 0; display_pos = 0; capitalise_next_letter = false;
+  just_displayed_prompt = false;
  }
  ~MsgScroll();
 
@@ -172,6 +174,7 @@ private:
 
  MsgText *holding_buffer_get_token();
  bool is_holding_buffer_empty() { return holding_buffer.empty(); }
+ bool can_displayed_prompt() { return (!just_displayed_prompt); }
 
  virtual bool parse_token(MsgText *token);
  void add_token(MsgText *token);

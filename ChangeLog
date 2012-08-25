@@ -1,3 +1,9 @@
+2012-08-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1544
+	* Have the command prompt display when regaining control of a party member
+		if the command prompt isn't already displayed. This fixes bug [3550547]
+	* Add a HACK to set walking to false when in combat and the player changes.
+		This should reduce problems with bug [3551056] but not eliminate them.
+
 2012-08-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1543
 	* Fix ranged weapons being inaccurate if targeting an empty tile [3547524]
 	* Remove needless inventory background color filling. (Fixes MD background)

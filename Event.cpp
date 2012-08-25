@@ -684,7 +684,7 @@ void Event::try_next_attack()
 	{
 		player->subtract_movement_points(10);
 		game->get_actor_manager()->startActors(); // end player turn
-		endAction(true);
+		endAction();
 	}
 	else
 	{
