@@ -1692,8 +1692,7 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 	if(game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_SECRET_DOOR)
 		return true;
 	Tile *tile = map->get_tile(obj->x, obj->y, cur_level);
-
-	if((tile->flags1 & TILEFLAG_WALL)
+	if((tile->flags1 & TILEFLAG_WALL && !game->get_usecode()->is_door(obj))
        && (((tile->flags1 & TILEFLAG_WALL_MASK) == 208 && actor->get_y() < obj->y) // can't get items that are south
 	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 176 && actor->get_x() < obj->x) // can't get items that are east
 	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 240 // northwest corner - used in SE (not sure if used in other games)
@@ -1920,7 +1919,8 @@ GUI_status MapWindow::MouseClick(int x, int y, int button)
 GUI_status MapWindow::MouseDelayed(int x, int y, int button)
 {
     Event *event = game->get_event();
-    if(!looking || event->get_mode() != MOVE_MODE || game->user_paused())
+    if(!looking || game->user_paused() || event->cursor_mode
+       || (event->get_mode() != MOVE_MODE && event->get_mode() != EQUIP_MODE))
     {
         look_obj = NULL; look_actor = NULL;
         looking = true;
@@ -1977,7 +1977,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 
 	mouseToWorldCoords(x, y, wx, wy);
 
-	if(event->get_mode() == MOVE_MODE)
+	if(event->get_mode() == MOVE_MODE || event->get_mode() == EQUIP_MODE)
 	{
 		if(button == WALK_BUTTON && game->get_command_bar()->get_selected_action() != -1)
 		{
@@ -1998,7 +1998,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		}
 		else if(button == USE_BUTTON) // you can also walk by holding the USE button
 		{
-			if(look_on_left_click) // need to preserve location because of click delay
+			if(look_on_left_click && !event->cursor_mode) // need to preserve location because of click delay
 			{
 				looking = true;
 				original_obj_loc = MapCoord(wx,wy ,cur_level);
@@ -2017,7 +2017,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		event->select_target(uint16(wx), uint16(wy), cur_level); // the returned location
 		return  GUI_PASS;
 	}
-	else if(event->get_mode() != MOVE_MODE)
+	else if(event->get_mode() != MOVE_MODE && event->get_mode() != EQUIP_MODE)
 	{
 		return GUI_PASS;
 	}

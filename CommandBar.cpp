@@ -159,69 +159,46 @@ GUI_status CommandBar::hit(uint8 num)
 {
     if(!event) event = game->get_event();
 
-    if(event->get_mode() != MOVE_MODE)
+    if(event->get_mode() != MOVE_MODE && event->get_mode() != EQUIP_MODE)
         return GUI_PASS;
 
-	if(game->get_game_type() == NUVIE_GAME_U6)
-    {
-    	switch(num) // hit button
-    	{
-			case 0: event->newAction(ATTACK_MODE); break;
-			case 1: event->newAction(CAST_MODE); break;
-			case 2: event->newAction(TALK_MODE); break;
-			case 3: event->newAction(LOOK_MODE); break;
-			case 4: event->newAction(GET_MODE); break;
-			case 5: event->newAction(DROP_MODE); break;
-			case 6: event->newAction(PUSH_MODE); break;
-			case 7: event->newAction(USE_MODE); break;
-			case 8: event->newAction(REST_MODE); break;
-			case 9: event->newAction(COMBAT_MODE); break;
-    	}
-    }
-	else if(game->get_game_type() == NUVIE_GAME_MD)
-	{
-		switch(num) // hit button
-		{
-			case 0: event->newAction(ATTACK_MODE); break;
-			case 1: event->newAction(TALK_MODE); break;
-			case 2: event->newAction(LOOK_MODE); break;
-			case 3: event->newAction(GET_MODE); break;
-			case 4: event->newAction(DROP_MODE); break;
-			case 5: event->newAction(PUSH_MODE); break;
-			case 6: event->newAction(USE_MODE); break;
-			case 7: event->newAction(COMBAT_MODE); break;
-		}
-	}
-	else // SE
-	{
-		switch(num) // hit button
-		{
-			case 0: event->newAction(PUSH_MODE); break;
-			case 1: event->newAction(GET_MODE); break;
-			case 2: event->newAction(DROP_MODE); break;
-			case 3: event->newAction(USE_MODE); break;
-			case 4: event->newAction(TALK_MODE); break;
-			case 5: event->newAction(LOOK_MODE); break;
-			case 6: event->newAction(ATTACK_MODE); break;
-			case 7: event->newAction(REST_MODE); break;
-			case 8: event->newAction(COMBAT_MODE); break;
-		}
-	}
-    return(GUI_PASS);
+    try_selected_action(num);
+
+    return(GUI_YUM);
 }
 
-bool CommandBar::try_selected_action() // return true if target is needed
+static const EventMode U6_mode_tbl[] ={ ATTACK_MODE, CAST_MODE, TALK_MODE, LOOK_MODE, GET_MODE,
+                                        DROP_MODE, PUSH_MODE, USE_MODE, REST_MODE, COMBAT_MODE };
+static const EventMode MD_mode_tbl[] ={ ATTACK_MODE, TALK_MODE, LOOK_MODE, GET_MODE,
+                                        DROP_MODE, PUSH_MODE, USE_MODE, COMBAT_MODE };
+static const EventMode SE_mode_tbl[] ={ PUSH_MODE, GET_MODE, DROP_MODE, USE_MODE, TALK_MODE,
+                                        LOOK_MODE, ATTACK_MODE, REST_MODE, COMBAT_MODE };
+
+bool CommandBar::try_selected_action(sint8 command_num) // return true if target is needed
 {
 	if(!event) event = game->get_event();
 
-  if(game->get_game_type() == NUVIE_GAME_U6)
-  {
-	switch(selected_action)
+	if(command_num == -1)
+		command_num = selected_action;
+
+	if(command_num == -1) // might happen if changing selected action when in EQUIP_MODE
+		return false;
+
+	EventMode mode;
+
+	if(game->get_game_type() == NUVIE_GAME_U6)
+		mode = U6_mode_tbl[command_num];
+	else if(game->get_game_type() == NUVIE_GAME_MD)
+		mode = MD_mode_tbl[command_num];
+	else // SE
+		mode = SE_mode_tbl[command_num];
+
+	switch(mode)
 	{
-		case 1:
-		case 4:
-		case 5:
-		case 6:
+		case CAST_MODE:
+		case GET_MODE:
+		case DROP_MODE:
+		case PUSH_MODE:
 			if(game->get_player()->is_in_vehicle())
 			{
 				event->display_not_aboard_vehicle();
@@ -230,65 +207,13 @@ bool CommandBar::try_selected_action() // return true if target is needed
 			break;
 		default: break;
 	}
-	switch(selected_action)
-	{
-		case 0: return event->newAction(ATTACK_MODE);
-		case 1: event->newAction(CAST_MODE); return false;
-		case 2: return event->newAction(TALK_MODE);
-		case 3: return event->newAction(LOOK_MODE);
-		case 4: return event->newAction(GET_MODE);
-		case 5: return event->newAction(DROP_MODE);
-		case 6: return event->newAction(PUSH_MODE);
-		case 7: return event->newAction(USE_MODE);
-		case 8: event->newAction(REST_MODE); return false;
-		case 9: event->newAction(COMBAT_MODE); return false;
-		default: return false;
-	}
-  }
-	else if(game->get_game_type() == NUVIE_GAME_MD)
-	{
-		switch(selected_action)
-		{
-			case 0: return event->newAction(ATTACK_MODE);
-			case 1: return event->newAction(TALK_MODE);
-			case 2: return event->newAction(LOOK_MODE);
-			case 3: return event->newAction(GET_MODE);
-			case 4: return event->newAction(DROP_MODE);
-			case 5: return event->newAction(PUSH_MODE);
-			case 6: return event->newAction(USE_MODE);
-			case 7: event->newAction(COMBAT_MODE); return false;
-			default: return false;
-		}
-	}
-	else // SE
-	{
-		switch(selected_action)
-		{
-			case 0:
-			case 1:
-			case 2:
-				if(game->get_player()->is_in_vehicle())
-				{
-					event->display_not_aboard_vehicle();
-					return false;
-				}
-			default: break;
-		}
-		switch(selected_action)
-		{
-			case 0: return event->newAction(PUSH_MODE);
-			case 1: return event->newAction(GET_MODE);
-			case 2: return event->newAction(DROP_MODE);
-			case 3: return event->newAction(USE_MODE);
-			case 4: return event->newAction(TALK_MODE);
-			case 5: return event->newAction(LOOK_MODE);
-			case 6: return event->newAction(ATTACK_MODE);
-			case 7: event->newAction(REST_MODE); return false;
-			case 8: event->newAction(COMBAT_MODE); return false;
-			default: return false;
-		}
-	}
-	return false;
+
+	event->newAction(mode);
+
+	if(mode < REST_MODE) // needs target
+		return true;
+	else
+		return false;
 }
 
 void CommandBar::set_combat_mode(bool mode)

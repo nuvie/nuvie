@@ -56,16 +56,16 @@ class KeyBinder;
 typedef enum {
  LOOK_MODE=0,
  USE_MODE,
- CAST_MODE,
  SPELL_MODE, //direct spell casting without spell select etc.
  GET_MODE,
  MOVE_MODE,
  DROP_MODE,
  TALK_MODE, /* finding an actor to talk to */
  ATTACK_MODE,
- REST_MODE,
- EQUIP_MODE,
  PUSH_MODE,
+ REST_MODE, /* modes before this need targets if using the command bar selected action */
+ CAST_MODE,
+ EQUIP_MODE,
  COMBAT_MODE, /* only used to cancel previous actions */
  WAIT_MODE, /* waiting for something, optionally display prompt when finished */
  INPUT_MODE,
@@ -160,6 +160,7 @@ friend class Magic; // FIXME
  EventMode get_last_mode() { return(last_mode); }
  void set_mode(EventMode new_mode);
 
+ bool cursor_mode;
  void update_timers();
  bool update();
  bool handleEvent(const SDL_Event *event);
@@ -281,7 +282,7 @@ friend class Magic; // FIXME
  // These cursor methods are use to make sure Event knows where the cursor is
  // when objects are selected with ENTER. (since MapWindow and InventoryView
  // may each independantly show/hide their own cursors)
- void moveCursorToMapWindow();
+ void moveCursorToMapWindow(bool ToggleCursor = false);
  void moveCursorToInventory();
 
 /* FIXME: Some of the above (action) functions can be removed from public, so

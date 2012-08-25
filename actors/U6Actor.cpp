@@ -1538,10 +1538,16 @@ void U6Actor::die(bool create_body)
 
 	Obj *obj = inventory_get_readied_object(ACTOR_ARM);
 	if(obj && obj->obj_n == OBJ_U6_TORCH && obj->frame_n == 1)
+	{
 		inventory_remove_obj(obj);
+		delete_obj(obj);
+	}
 	obj = inventory_get_readied_object(ACTOR_ARM_2);
 	if(obj && obj->obj_n == OBJ_U6_TORCH && obj->frame_n == 1)
+	{
 		inventory_remove_obj(obj);
+		delete_obj(obj);
+	}
 
  Actor::die();
 

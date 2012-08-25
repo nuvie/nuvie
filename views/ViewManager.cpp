@@ -139,6 +139,15 @@ bool ViewManager::set_current_view(View *view)
  view->Redraw();
  gui->Display();
 
+  if(inventory_view)
+  {
+    if(view != inventory_view)
+    {
+      inventory_view->set_show_cursor(false);
+      inventory_view->release_focus();
+    } 
+  }
+
  return true;
 }
 

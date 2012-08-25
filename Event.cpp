@@ -140,6 +140,7 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic 
  last_mode = MOVE_MODE;
  input.get_direction = false;
  input.get_text = false;
+ cursor_mode = false;
  input.target_init = NULL;
 
  time_queue = new TimeQueue;
@@ -526,27 +527,14 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
                           if(player->weapon_can_hit(cursor_coord.x, cursor_coord.y) == false)
                             break;
                           DEBUG(0,LEVEL_DEBUGGING,"attack select(%d,%d)\n", cursor_coord.x, cursor_coord.y);
-/* // (handled by INPUT_MODE)
-   case LOOK_MODE       :
-   case TALK_MODE       :
-   case EQUIP_MODE      :
-   case DROP_MODE       : map_window->moveCursorRelative(rel_x,rel_y);
+
+   case EQUIP_MODE      : map_window->moveCursorRelative(rel_x,rel_y);
                           break;
-   case USE_MODE        : use(rel_x,rel_y);
-                          break;
-*/
+
    case INPUT_MODE      : map_window->moveCursorRelative(rel_x,rel_y);
                           if(input.get_direction) select_direction(rel_x,rel_y);
                           break;
-/* // (handled by INPUT_MODE)
-   case PUSH_MODE       : if(push_obj == NULL && push_actor == NULL)
-                            pushFrom(rel_x,rel_y);
-                          else
-                            pushTo(rel_x,rel_y,PUSH_FROM_OBJECT);
-                          break;
-   case GET_MODE        : get(rel_x,rel_y);
-                          break;
-*/
+
    default              : if(player->check_walk_delay())
                             {
                              player->moveRelative(rel_x, rel_y);
@@ -2051,7 +2039,7 @@ inline Uint32 Event::TimeLeft()
 void Event::quitDialog()
 {
 	GUI_Widget *quit_dialog;
-	if(mode == MOVE_MODE && !showingQuitDialog)
+	if((mode == MOVE_MODE || mode == EQUIP_MODE) && !showingQuitDialog)
 	{
 		map_window->set_looking(false);
 		map_window->set_walking(false);
@@ -2867,6 +2855,7 @@ void Event::doAction()
     	else if(input.type == EVENTINPUT_OBJECT)
     	{
     		magic->resume(input.obj);
+    		view_manager->get_inventory_view()->release_focus();
     		view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
     	}
     	else if(input.type == EVENTINPUT_SPELL_NUM)
@@ -2907,6 +2896,20 @@ void Event::doAction()
 			endAction(true);
 		}
     }
+    else if(cursor_mode)
+    {
+        MapCoord loc = map_window->get_cursorCoord(); // need to preserve locations if a target is needed
+        uint16 cursor_x = loc.x - map_window->get_cur_x();
+        uint16 cursor_y = loc.y - map_window->get_cur_y();
+
+        if(!game->get_command_bar()->try_selected_action(-1)) // no input needed
+        {
+            map_window->set_show_cursor(false);
+            return;
+        }
+        map_window->moveCursor(cursor_x, cursor_y);
+        select_target(loc.x, loc.y, loc.z); // the returned location
+    }
     else
         cancelAction();
 }
@@ -2919,6 +2922,11 @@ void Event::cancelAction()
 
     if(mode == INPUT_MODE) // cancel action of previous mode
     {
+        if(magic->is_waiting_for_inventory_obj())
+        {
+            view_manager->get_inventory_view()->release_focus();
+            view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
+        }
         endAction();
         cancelAction();
         return;
@@ -2949,6 +2957,11 @@ void Event::cancelAction()
     		callback_user_data = NULL;
     	}
     }
+    else if(mode == EQUIP_MODE)
+    {
+        endAction();
+        return;
+    }
     else
     {
         scroll->display_string("what?\n");
@@ -2969,7 +2982,7 @@ bool Event::newAction(EventMode new_mode)
 
 	if(game->user_paused())
 		return(false);
-
+   cursor_mode = false;
 // FIXME: make ATTACK_MODE use INPUT_MODE
 if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 {
@@ -3081,6 +3094,11 @@ void Event::endAction(bool prompt)
     {
         rest_time = rest_guard = 0;
     }
+    if(cursor_mode || mode == EQUIP_MODE)
+    {
+        cursor_mode = false;
+        map_window->set_show_cursor(false);
+    }
     if(mode == ATTACK_MODE) // FIXME: make ATTACK_MODE use INPUT_MODE
     {
         map_window->set_show_cursor(false);
@@ -3136,6 +3154,7 @@ void Event::set_mode(EventMode new_mode)
 
 void Event::moveCursorToInventory()
 {
+    cursor_mode = false;
     if(mode == MOVE_MODE)
         newAction(EQUIP_MODE);
     else
@@ -3149,15 +3168,26 @@ void Event::moveCursorToInventory()
 }
 
 // Note that the cursor is not recentered here.
-void Event::moveCursorToMapWindow()
+void Event::moveCursorToMapWindow(bool ToggleCursor)
 {
+    input.select_from_inventory = false;
     view_manager->get_inventory_view()->set_show_cursor(false);
     view_manager->get_inventory_view()->release_focus();
     if(input.get_direction) // show the correct MapWindow cursor
         map_window->set_show_use_cursor(true);
+    else if(ToggleCursor && mode == EQUIP_MODE)
+    {
+        if(game->get_command_bar()->get_selected_action() == -1)
+             mode = MOVE_MODE;
+        else
+        {
+            cursor_mode = true;
+            map_window->centerCursor();
+            map_window->set_show_cursor(true);
+        }
+    }
     else
         map_window->set_show_cursor(true);
-    input.select_from_inventory = false;
 
 //    map_window->grab_focus(); FIXME add move() and keyhandler to MapWindow, and uncomment this
 }
@@ -3165,16 +3195,16 @@ void Event::moveCursorToMapWindow()
 static const char eventModeStrings[][16] = {
 "LOOK_MODE",
 "USE_MODE",
-"CAST_MODE",
 "SPELL_MODE", //direct spell casting without spell select etc.
 "GET_MODE",
 "MOVE_MODE",
 "DROP_MODE",
 "TALK_MODE", /* finding an actor to talk to */
 "ATTACK_MODE",
-"REST_MODE",
-"EQUIP_MODE",
 "PUSH_MODE",
+"REST_MODE",
+"CAST_MODE",
+"EQUIP_MODE",
 "COMBAT_MODE", /* only used to cancel previous actions */
 "WAIT_MODE", /* waiting for something, optionally display prompt when finished */
 "INPUT_MODE",

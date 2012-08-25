@@ -71,7 +71,7 @@ public:
     void set_wind(std::string dir)        { wind = dir; update_display = true; }
     void set_selected_action(sint8 action) { selected_action = action;
                                             update_display = true; }
-    bool try_selected_action();
+    bool try_selected_action(sint8 command_num = -1);
     sint8 get_selected_action() { return selected_action;}
 
     uint16 callback(uint16 msg, CallBack *caller, void * data);
