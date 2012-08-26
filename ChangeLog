@@ -1,3 +1,7 @@
+2012-08-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1545
+	* Fix attacking with double click (r1535 regression)
+	* Fix lit torch weight and description by not making it not stackable
+
 2012-08-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1544
 	* Have the command prompt display when regaining control of a party member
 		if the command prompt isn't already displayed. This fixes bug [3550547]

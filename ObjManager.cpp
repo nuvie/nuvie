@@ -657,7 +657,7 @@ bool ObjManager::is_stackable(Obj *obj)
  if(game_type==NUVIE_GAME_U6)
  {
   switch (obj->obj_n) {
-   case OBJ_U6_TORCH: // 0x5A, // torch 
+   case OBJ_U6_TORCH: if(obj->frame_n == 1) return false;// 0x5A, // torch 
    case OBJ_U6_LOCK_PICK: // 0x3F, // lock pick
    case OBJ_U6_GEM: // 0x4D, // gem
    case OBJ_U6_ARROW: // 0x37, // arrow

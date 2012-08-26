@@ -2607,7 +2607,10 @@ void Event::multiuse(uint16 wx, uint16 wy)
         {
             newAction(ATTACK_MODE);
             if(get_mode() == ATTACK_MODE)
+            {
+                map_window->moveCursor(wx - map_window->get_cur_x(), wy - map_window->get_cur_y());
                 select_target(uint16(wx), uint16(wy), target.z);
+            }
             return;
         }
     }
