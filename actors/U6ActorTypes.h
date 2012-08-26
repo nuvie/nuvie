@@ -95,7 +95,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_LORD_BRITISH,     3, 4, 1, 0, OBJ_U6_DEAD_BODY, 2, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       60, 30}, //does LB have a dead frame!? ;)
  {OBJ_U6_AVATAR,           3, 4, 1, 0, OBJ_U6_DEAD_BODY, 7, true, true, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
 
- {OBJ_U6_MUSICIAN_PLAYING, 2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        3,  0},
+ {OBJ_U6_MUSICIAN_PLAYING, 2, 2, 1, 0, OBJ_U6_NOTHING, 0, false, true, ACTOR_ST, MOVETYPE_U6_LAND,        3,  0},
 
  {OBJ_U6_SHIP,             1, 2, 2, 8, OBJ_U6_NOTHING, 0, false, false, ACTOR_MT, MOVETYPE_U6_WATER_HIGH,  0, 30},
  {OBJ_U6_SKIFF,            1, 1, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,  0},

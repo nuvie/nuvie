@@ -458,6 +458,7 @@ class Actor
  
  bool get_schedule_location(MapCoord *loc);
  bool is_at_scheduled_location();
+ virtual bool will_not_talk() { return false; }
  protected:
 
  void loadSchedule(unsigned char *schedule_data, uint16 num);

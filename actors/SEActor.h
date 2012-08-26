@@ -36,6 +36,7 @@ class SEActor: public Actor
  ~SEActor();
 
  bool init();
+ bool will_not_talk();
  uint8 get_maxhp() { return(((level * 4 + strength * 2) < 255) ? (level * 4 + strength * 2) : 255); }
 };
 

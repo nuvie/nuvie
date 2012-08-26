@@ -626,7 +626,10 @@ bool U6Actor::sit_on_chair(Obj *obj)
      {
          if(obj->obj_n == OBJ_U6_CHAIR)  // make the actor sit on a chair.
            {
-            frame_n = (obj->frame_n * 4) + 3;
+            if(obj_n == OBJ_U6_MUSICIAN_PLAYING)
+                frame_n = (obj->frame_n * 2);
+            else
+                frame_n = (obj->frame_n * 4) + 3;
             direction = obj->frame_n;
             can_move = false;
             return true;
@@ -1066,11 +1069,11 @@ void U6Actor::wt_sleep(bool init)
 
 void U6Actor::wt_play_lute()
 {
- old_frame_n = frame_n;
-
  set_actor_obj_n(OBJ_U6_MUSICIAN_PLAYING);
 
  frame_n = direction * actor_type->tiles_per_direction;
+ Obj *obj = obj_manager->get_obj(x,y,z);
+ sit_on_chair(obj); // attempt to sit on obj.
 
  return;
 }
@@ -1726,4 +1729,12 @@ uint8 U6Actor::get_maxmagic()
         return uint8(intelligence*2);
     if(!is_in_party()) DEBUG(0,LEVEL_WARNING,"FIXME: %s (%d) has unknown max. magic points\n", get_name(), id_n);
     return 0;
+}
+
+bool U6Actor::will_not_talk()
+{
+	if(worktype == WORKTYPE_U6_COMBAT_RETREAT || worktype == 0x12 // guard arrest player
+	   || worktype == WORKTYPE_U6_ATTACK_PARTY || worktype == 0x13) // repel undead and retreat
+		return true;
+	return false;
 }

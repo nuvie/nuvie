@@ -1865,6 +1865,9 @@ bool MapWindow::move_on_drop(Obj *obj)
 	if(always_throw)
 		move = false;
 
+	if(obj_manager->obj_is_damaging(obj))
+		return move;
+
 	if(game->get_usecode()->has_getcode(obj) && obj->is_in_inventory() == false)
 	{
 		if(game_type == NUVIE_GAME_U6)

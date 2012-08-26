@@ -39,6 +39,17 @@ a	attack
 r	rest
 i	new_inventory
 h	show_keys
+
+Alt-a	select_command_bar	0	# select attack on the command bar
+Alt-c	select_command_bar	1	# select cast on the command bar
+Alt-t	select_command_bar	2	# select talk on the command bar
+Alt-l	select_command_bar	3	# select look on the command bar
+Alt-g	select_command_bar	4	# select get on the command bar
+Alt-d	select_command_bar	5	# select drop on the command bar
+Alt-m	select_command_bar	6	# select move on the command bar
+Alt-u	select_command_bar	7	# select use on the command bar
+Alt-r	select_command_bar	8	# select rest on the command bar
+Alt-b	select_command_bar	9	# select toggle combat on the command bar
 pageup	msg_scroll_up
 pagedown	msg_scroll_down
 
@@ -71,5 +82,5 @@ KP+	next_inventory
 -	previous_inventory
 KP-	previous_inventory
 
-Alt-d	decrease_debug
-Alt-i	increase_debug
+Ctrl-d	decrease_debug
+Ctrl-i	increase_debug

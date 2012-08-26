@@ -127,6 +127,16 @@ void CommandBar::fill_square(uint8 pal_index)
 	screen->fill(pal_index, area.x + selected_action*18 +18, area.y +1, 1, 17); // right side
 }
 
+void CommandBar::select_action(sint8 activate)
+{
+    if(game->get_game_type() == NUVIE_GAME_SE) // black out previous setting
+        fill_square(0);
+    if(selected_action == activate) // clear if already selected
+        set_selected_action(-1);
+    else
+        set_selected_action(activate);
+}
+
 GUI_status CommandBar::MouseDown(int x, int y, int button)
 {
     x -= area.x;
@@ -144,12 +154,7 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
             return(hit(activate));
         else if(button == ACTION_BUTTON)
         {
-            if(game->get_game_type() == NUVIE_GAME_SE) // black out previous setting
-                fill_square(0);
-            if(selected_action == activate) // clear if already selected
-                set_selected_action(-1);
-            else
-                set_selected_action(activate);
+            select_action(activate);
         }
     }
     return(GUI_YUM);

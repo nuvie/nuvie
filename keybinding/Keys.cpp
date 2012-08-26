@@ -87,6 +87,7 @@ const struct Action {
 	{ "TOGGLE_COMBAT", ActionToggleCombat, "Toggle combat", Action::normal_keys, false },
 	{ "ATTACK", ActionAttack, "Attack", Action::normal_keys, true },
 	{ "REST", ActionRest, "Rest", Action::normal_keys, true },
+	{ "SELECT_COMMAND_BAR", ActionSelectCommandBar, "Select Command Bar", Action::normal_keys, true },
 	{ "NEW_INVENTORY", ActionNewInventory, "New inventory", Action::normal_keys, true },
 	{ "INVENTORY", ActionInventory, "inventory", Action::normal_keys, true },
 	{ "PREVIOUS_INVENTORY", ActionPreviousInventory, "Previous inventory", Action::normal_keys, true },

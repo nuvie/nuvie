@@ -67,6 +67,7 @@ public:
     virtual GUI_status MouseDown(int x, int y, int button);
     void update() { update_display = true; }
 
+    void select_action(sint8 activate);
     void set_combat_mode(bool mode);
     void set_wind(std::string dir)        { wind = dir; update_display = true; }
     void set_selected_action(sint8 action) { selected_action = action;

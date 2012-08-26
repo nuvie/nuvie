@@ -1,3 +1,11 @@
+2012-08-26  Malignant Manor <malignantmanor@users.sourceforge.net> r1546
+	* Fix Sitting position for musicians playing a lute.
+	* Add checks for being immobile, alignment, in combat with the party, or
+		retreating when trying to talk.
+	* Have damaging objects default to move when dragging and dropping now that
+		they don't have get usecode.
+	* Add command bar selection hotkeys
+
 2012-08-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1545
 	* Fix attacking with double click (r1535 regression)
 	* Fix lit torch weight and description by not making it not stackable

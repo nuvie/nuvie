@@ -36,3 +36,10 @@ bool SEActor::init()
  Actor::init();
  return true;
 }
+
+bool SEActor::will_not_talk()
+{
+	if(worktype == 0x07 || worktype == 0x8 || worktype == 0x9b)
+		return true;
+	return false;
+}

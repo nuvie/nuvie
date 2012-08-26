@@ -36,3 +36,10 @@ bool MDActor::init()
  Actor::init();
  return true;
 }
+
+bool MDActor::will_not_talk()
+{
+	if(worktype == 0xa0)
+		return true;
+	return false;
+}

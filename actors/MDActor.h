@@ -36,6 +36,7 @@ class MDActor: public Actor
  ~MDActor();
 
  bool init();
+ bool will_not_talk();
  uint8 get_maxhp() { return(((level * 24 + strength * 2) < 255) ? (level * 24 + strength * 2) : 255); }
 };
 

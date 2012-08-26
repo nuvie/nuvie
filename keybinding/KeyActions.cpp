@@ -26,6 +26,7 @@
 #include "MsgScroll.h"
 #include "SaveManager.h"
 #include "InventoryView.h"
+#include "CommandBar.h"
 
 #define game Game::get_game()
 #define event Game::get_game()->get_event()
@@ -129,6 +130,22 @@ void ActionAttack(int *params)
 void ActionRest(int *params)
 {
 	event->newAction(REST_MODE);
+}
+
+static const uint8 SE_command_tbl[] = {6, -1, 4, 5, 1, 2, 0, 3, 7, 8}; // convert U6 indexes
+static const uint8 MD_command_tbl[] = {0, -1, 1, 2, 3, 4, 5, 6, -1, 7};
+
+void ActionSelectCommandBar(int *params)
+{
+	CommandBar *cb = game->get_command_bar();
+	if(params[0] < 0 || params[0] > 9) // deactivate
+		cb->select_action(-1);
+	else if(game->get_game_type() == NUVIE_GAME_U6)
+		cb->select_action(params[0]);
+	else if(game->get_game_type() == NUVIE_GAME_SE)
+		cb->select_action(SE_command_tbl[params[0]]);
+	else // MD
+		cb->select_action(MD_command_tbl[params[0]]);
 }
 
 void ActionNewInventory(int *params)

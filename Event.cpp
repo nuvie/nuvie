@@ -584,7 +584,10 @@ bool Event::perform_talk(Actor *actor)
         scroll->display_string("\n");
         scroll->display_string("Not in solo mode.\n");
     }
-    else if(actor->is_sleeping())
+    else if(actor->is_sleeping() || actor->is_paralyzed() || actor->get_corpser_flag()
+            || actor->get_alignment() == ACTOR_ALIGNMENT_EVIL
+            || actor->get_alignment() == ACTOR_ALIGNMENT_CHAOTIC
+            || (actor->get_alignment() == ACTOR_ALIGNMENT_NEUTRAL && actor->will_not_talk()))
     {
         // always display look-string on failure
         scroll->display_string(actor_manager->look_actor(actor));

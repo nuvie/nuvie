@@ -103,6 +103,7 @@ class U6Actor: public Actor
 
  bool get_corpser_flag() { return(movement_flags & ACTOR_MOVEMENT_FLAGS_CORPSER); }
  bool can_be_passed(Actor *other);
+ bool will_not_talk();
 
  void set_actor_obj_n(uint16 new_obj_n);
  void pathfind_to(MapCoord &d);
