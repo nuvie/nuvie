@@ -135,7 +135,14 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
     dist_x = abs((sint16)(*egg)->obj->x - x);
     dist_y = abs((sint16)(*egg)->obj->y - y);
 
-    if(dist_x <= 32 && dist_y <= 32 && (*egg)->obj->z == z)
+    //Deactivate eggs that are more than 20 tiles from player.
+    if(((*egg)->obj->status & OBJ_STATUS_EGG_ACTIVE) && ( (*egg)->obj->z != z || (dist_x >= 20 || dist_y >= 20) ) )
+    {
+    	(*egg)->obj->status &= (0xff ^ OBJ_STATUS_EGG_ACTIVE);
+    	DEBUG(0,LEVEL_DEBUGGING, "Reactivate egg at (%x,%x,%d)\n", (*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z);
+    }
+
+    if(dist_x < 20 && dist_y < 20 && (*egg)->obj->z == z)
       {
 
        if(((*egg)->obj->status & OBJ_STATUS_EGG_ACTIVE) == 0)
@@ -155,8 +162,6 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
           spawn_egg((*egg)->obj, hatch_probability);
          }
       }
-    else
-      (*egg)->obj->status &= (0xff ^ OBJ_STATUS_EGG_ACTIVE);
 
     egg++;
    }

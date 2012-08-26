@@ -649,8 +649,8 @@ void ActorManager::updateActors(uint16 x, uint16 y, uint8 z)
 
  cur_x = x; cur_y = y; cur_z = z;
 
- uint16 cur_blk_x = x >> 5; // x / 32;
- uint16 cur_blk_y = y >> 5; // y / 32;
+ uint16 cur_blk_x = x >> 3; // x / 8;
+ uint16 cur_blk_y = y >> 3; // y / 8;
 
  update_temp_actors(x,y,z); // Remove out of range temp actors
 
@@ -888,15 +888,15 @@ void ActorManager::update_temp_actors(uint16 x, uint16 y, uint8 z)
  if(last_obj_blk_z != z)
    {
     if(last_obj_blk_z != ACTOR_TEMP_INIT) //don't clean actors on startup.
+    {
       clean_temp_actors_from_level(last_obj_blk_z);
-
+      return;
+    }
 //    last_obj_blk_z = z;
-
-    return;
    }
 
- cur_blk_x = x >> 5; // x / 32;
- cur_blk_y = y >> 5; // y / 32;
+ cur_blk_x = x >> 3; // x / 8;
+ cur_blk_y = y >> 3; // y / 8;
 
  if(cur_blk_x != last_obj_blk_x || cur_blk_y != last_obj_blk_y)
    {

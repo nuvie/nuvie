@@ -1643,8 +1643,8 @@ void ObjManager::update(uint16 x, uint16 y, uint8 z)
 {
  uint16 cur_blk_x, cur_blk_y;
 
- cur_blk_x = x >> 5; // x / 32;
- cur_blk_y = y >> 5; // y / 32;
+ cur_blk_x = x >> 3; // x / 8;
+ cur_blk_y = y >> 3; // y / 8;
 
  // We're changing levels so clean out all temp objects on the current level.
  if(last_obj_blk_z != z)
@@ -1726,7 +1726,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
     dist_x = abs((sint16)(*obj)->x - x);
     dist_y = abs((sint16)(*obj)->y - y);
 
-    if(dist_x > 32 || dist_y > 32)
+    if(dist_x > 20 || dist_y > 20)
       {
        tmp_obj = *obj++;
        DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n)+(tmp_obj)->frame_n,0,false));
