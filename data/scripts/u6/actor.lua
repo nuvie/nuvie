@@ -2411,7 +2411,7 @@ function caught_by_guard(actor)
          party_set_combat_mode(false)
       end
    
-      player_move(0xe7, 0xba, 0)
+      player_move(0xe7, 0xba, 0, true)
    
       local cur_hour = clock_get_hour()
       while cur_hour ~= 8 do
@@ -3714,7 +3714,7 @@ function actor_avatar_death(avatar)
 	party_resurrect_dead_members()
 	party_heal()
 	party_update_leader()
-	player_move(0x133, 0x160, 0)
+	player_move(0x133, 0x160, 0, true)
 	party_exit_vehicle(0x133, 0x160, 0)
 
 	for i=0,0xff do

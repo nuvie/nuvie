@@ -123,7 +123,7 @@ void EggManager::remove_egg(Obj *egg_obj, bool keep_obj)
  return;
 }
 
-void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
+void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z, bool teleport)
 {
  std::list<Egg *>::iterator egg;
  sint16 dist_x, dist_y;
@@ -142,7 +142,8 @@ void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z)
     	DEBUG(0,LEVEL_DEBUGGING, "Reactivate egg at (%x,%x,%d)\n", (*egg)->obj->x, (*egg)->obj->y, (*egg)->obj->z);
     }
 
-    if(dist_x < 20 && dist_y < 20 && (*egg)->obj->z == z)
+    if(dist_x < 20 && dist_y < 20 && (*egg)->obj->z == z
+       && (dist_x > 8 || dist_y > 8 || Game::get_game()->is_new_style() || teleport))
       {
 
        if(((*egg)->obj->status & OBJ_STATUS_EGG_ACTIVE) == 0)

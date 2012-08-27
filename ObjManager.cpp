@@ -1639,7 +1639,7 @@ iAVLKey ObjManager::get_obj_tree_key(uint16 x, uint16 y, uint8 level)
    return y * 256 + x;
 }
 
-void ObjManager::update(uint16 x, uint16 y, uint8 z)
+void ObjManager::update(uint16 x, uint16 y, uint8 z, bool teleport)
 {
  uint16 cur_blk_x, cur_blk_y;
 
@@ -1652,7 +1652,7 @@ void ObjManager::update(uint16 x, uint16 y, uint8 z)
     if(last_obj_blk_z != OBJ_TEMP_INIT)
       temp_obj_list_clean_level(last_obj_blk_z);
 
-    egg_manager->spawn_eggs(x, y, z);
+    egg_manager->spawn_eggs(x, y, z, teleport);
 
     last_obj_blk_x = cur_blk_x;
     last_obj_blk_y = cur_blk_y;
@@ -1668,7 +1668,7 @@ void ObjManager::update(uint16 x, uint16 y, uint8 z)
     last_obj_blk_y = cur_blk_y;
 
     temp_obj_list_clean_area(x, y);
-    egg_manager->spawn_eggs(x, y, z);
+    egg_manager->spawn_eggs(x, y, z, teleport);
 
    }
 
@@ -1714,7 +1714,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
 }
 
 
-// Clean objects more than 32 tiles from position
+// Clean objects more than 19 tiles from position
 void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
 {
  std::list<Obj *>::iterator obj;
@@ -1726,7 +1726,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
     dist_x = abs((sint16)(*obj)->x - x);
     dist_y = abs((sint16)(*obj)->y - y);
 
-    if(dist_x > 20 || dist_y > 20)
+    if(dist_x > 19 || dist_y > 19)
       {
        tmp_obj = *obj++;
        DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n)+(tmp_obj)->frame_n,0,false));

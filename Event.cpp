@@ -1740,7 +1740,7 @@ bool Event::alt_code_teleport(const char *location_string)
 
  if((x == 0 && y == 0) || z > 5)
    return false;
- player->move(x,y,z);
+ player->move(x,y,z, true);
 
  // This is a bit of a hack but we would like to update the music when teleporting.
  game->get_party()->update_music();
@@ -1778,7 +1778,7 @@ bool Event::alt_code_teleport_to_person(uint32 npc)
 {
     ActorManager *actor_manager = game->get_actor_manager();
     MapCoord actor_location = actor_manager->get_actor(npc)->get_location();
-    player->move(actor_location.x, actor_location.y, actor_location.z);
+    player->move(actor_location.x, actor_location.y, actor_location.z, true);
     if(!actor_manager->toss_actor(player->get_actor(), 2, 2))
         actor_manager->toss_actor(player->get_actor(), 4, 4);
     return(true);

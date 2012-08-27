@@ -1,3 +1,12 @@
+2012-08-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1548
+	* Tweak temp obj removal, actor removal, and egg spawning
+	* Add check so eggs closer than 9 tiles away don't spawn unless teleporting
+		or the game is full screen map style
+	* Free a temp actor's slot upon its death
+	* Fix crash when a shovel is used on a widget
+	* Fix accidental use of unsigned integer instead of signed (KeyActions)
+	* Fix doll widget selecting an object when it shouldn't
+
 2012-08-27  Eric Fry <efry at users.sourceforge.net> r1547
 	* Changed the egg logic a bit to try and fix the all slots full issues.
 	* Spawn eggs every 8 tiles instead of 32. Remove temp actors/objects > 20 tiles away

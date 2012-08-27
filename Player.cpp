@@ -451,7 +451,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 }
 
 // teleport-type move
-void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
+void Player::move(sint16 new_x, sint16 new_y, uint8 new_level, bool teleport)
 {
    if(actor->move(new_x, new_y, new_level, ACTOR_FORCE_MOVE))
    {
@@ -462,7 +462,7 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level)
        party->follow(0, 0); // then try to move them to correct positions
       }
     actor_manager->updateActors(new_x, new_y, new_level);
-    obj_manager->update(new_x, new_y, new_level); // remove temporary objs, hatch eggs
+    obj_manager->update(new_x, new_y, new_level, true); // remove temporary objs, hatch eggs
     // it's still the player's turn
    }
 }

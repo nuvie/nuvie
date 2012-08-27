@@ -105,7 +105,7 @@ class Player
  uint8 get_gender()         { return(gender); }
 
  void moveRelative(sint16 rel_x, sint16 rel_y);
- void move(sint16 new_x, sint16 new_y, uint8 new_level);
+ void move(sint16 new_x, sint16 new_y, uint8 new_level, bool teleport);
  void moveLeft();
  void moveRight();
  void moveUp();

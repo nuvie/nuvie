@@ -205,9 +205,12 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	}
 	else if(caller == doll_widget)
 	{
-		Obj *obj = (Obj *)data;
-		Game::get_game()->get_event()->select_view_obj(obj, actor);
-
+		Event *event = Game::get_game()->get_event();
+		if(event->get_mode() != MOVE_MODE && event->get_mode() != EQUIP_MODE)
+		{
+			Obj *obj = (Obj *)data;
+			event->select_view_obj(obj, actor);
+		}
 	}
 
     return GUI_PASS;

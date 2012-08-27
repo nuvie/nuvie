@@ -1592,6 +1592,8 @@ void Actor::die(bool create_body)
     Game *game = Game::get_game();
     if(game->get_player()->get_actor() == this && game->get_event()->using_control_cheat())
         game->get_event()->party_mode();
+    if(is_temp())
+        Game::get_game()->get_actor_manager()->clear_actor(this);
 }
 
 void Actor::resurrect(MapCoord new_position, Obj *body_obj)

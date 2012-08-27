@@ -419,7 +419,10 @@ void TimedPartyMove::change_location()
             delete_obj(moongate);
         }
 
-        party->move(target->x, target->y, target->z);
+        if(moongate)
+            Game::get_game()->get_player()->move(target->x, target->y, target->z, true);
+        else
+            party->move(target->x, target->y, target->z);
         party->show(); // unhide everyone
 
         Game::get_game()->get_view_manager()->update(); // we do this to update party view sun moon display if visible.

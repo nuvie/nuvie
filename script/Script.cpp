@@ -1911,7 +1911,7 @@ static int nscript_player_move(lua_State *L)
 	if(nscript_get_location_from_args(L, &x, &y, &z) == false)
 		return 0;
 
-	player->move(x, y, z);
+	player->move(x, y, z, lua_toboolean(L, 4));
 
 	return 0;
 }

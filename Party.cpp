@@ -796,7 +796,7 @@ void Party::exit_vehicle(uint16 x, uint16 y, uint16 z)
     Player *player = game->get_player();
 
     player->set_actor(get_actor(0));
-    player->move(x,y,z);
+    player->move(x,y,z, false);
     vehicle_actor->obj_n = 0;//OBJ_U6_NO_VEHICLE;
     vehicle_actor->frame_n = 0;
     vehicle_actor->init();

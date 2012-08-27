@@ -934,7 +934,7 @@ void ActorManager::clean_temp_actors_from_area(uint16 x, uint16 y)
        dist_x = abs((sint16)actors[i]->x - x);
        dist_y = abs((sint16)actors[i]->y - y);
 
-       if(dist_x > 20 || dist_y > 20)
+       if(dist_x > 19 || dist_y > 19)
          {
           clean_temp_actor(actors[i]);
          }

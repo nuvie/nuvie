@@ -1368,7 +1368,11 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
             scroll->display_string("\nNot readied.\n");
             return(true);
         }
-
+        if(items.actor_ref == NULL) // happens when you use on a widget
+        {
+            scroll->display_string("nowhere.\n");
+            return true;
+        }
         from = items.actor_ref->get_location();
 
 //        game->get_event()->useselect_mode(obj, "Direction: ");
@@ -2262,7 +2266,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
       balloon_actor->set_worktype(0);
 
       player->set_actor(party->get_actor(0));
-      player->move(lx,ly,lz);
+      player->move(lx,ly,lz, false);
       balloon_actor->obj_n = OBJ_U6_NO_VEHICLE;
       balloon_actor->frame_n = 0;
       balloon_actor->init();

@@ -178,7 +178,7 @@ class ObjManager
  void animate_forwards(Obj *obj, uint32 loop_count = 1);
  void animate_backwards(Obj *obj, uint32 loop_count = 1);
 
- void update(uint16 x, uint16 y, uint8 z);
+ void update(uint16 x, uint16 y, uint8 z, bool teleport = false);
 
  bool unlink_from_engine(Obj *obj);
  

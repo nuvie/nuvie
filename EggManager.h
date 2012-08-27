@@ -64,7 +64,7 @@ class EggManager
  void add_egg(Obj *egg);
  void remove_egg(Obj *egg, bool keep_egg=true);
  bool spawn_egg(Obj *egg, uint8 hatch_probability);
- void spawn_eggs(uint16 x, uint16 y, uint8 z);
+ void spawn_eggs(uint16 x, uint16 y, uint8 z, bool teleport = false);
  std::list<Egg *> *get_egg_list() { return &egg_list; };
 
  protected:
