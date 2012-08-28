@@ -1373,7 +1373,8 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
             scroll->display_string("nowhere.\n");
             return true;
         }
-        from = items.actor_ref->get_location();
+        Actor *parent = obj->get_actor_holding_obj();
+        from = parent->get_location();
 
 //        game->get_event()->useselect_mode(obj, "Direction: ");
         game->get_event()->get_direction(from, "Direction: ");
@@ -1386,19 +1387,50 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 
     dig_at = *items.mapcoord_ref;
 
-    // print direction (FIXME: relative dir is what should have been returned)
-    sint8 xdir = (dig_at.x == from.x) ? 0 : (dig_at.x < from.x) ? -1 : 1;
-    sint8 ydir = (dig_at.y == from.y) ? 0 : (dig_at.y < from.y) ? -1 : 1;
-    scroll->display_string(get_direction_name(xdir, ydir));
+    if(game->get_map_window()->get_interface() < INTERFACE_FULLSCREEN)
+    {
+        dig_at.x = (dig_at.x == 0) ? 0 : (dig_at.x < 0) ? -1 : 1;
+        dig_at.y = (dig_at.y == 0) ? 0 : (dig_at.y < 0) ? -1 : 1;
+    }
+
+    scroll->display_string(get_direction_name(dig_at.x, dig_at.y));
+    if(dig_at.x == 0 && dig_at.y == 0)
+    {
+        scroll->display_string(".\n");
+        return(true); // display prompt
+    }
     scroll->display_string(".\n\n");
-    if(xdir == 0 && ydir == 0)
-        return(true); // ??
 
     dig_at.x += from.x;
     dig_at.y += from.y;
     dig_at.z = from.z;
-
-    if(dig_at.z == 5) // we can't go anywhere from the gargoyle world.
+    if(!dig_at.is_visible())
+    {
+        scroll->display_string("Not on screen.\n");
+        return true; //  display prompt
+    }
+    else if(!from.is_visible() && from.distance(dig_at) > 5)
+    {
+        scroll->display_string("Out of range.\n");
+        return true; //  display prompt
+    }
+    else if(game->get_map_window()->get_interface() != INTERFACE_IGNORE_BLOCK)
+    {
+        LineTestResult lt;
+        if(map->lineTest(from.x, from.y, dig_at.x, dig_at.y, dig_at.z, LT_HitUnpassable, lt))
+        {
+            MapCoord hit_loc = MapCoord(lt.hit_x, lt.hit_y, lt.hit_level);
+            if(hit_loc != dig_at)
+            {
+                scroll->display_string("Blocked\n");
+                return true; // display prompt
+            }
+        }
+    }
+    Obj *hole = obj_manager->get_obj_of_type_from_location(OBJ_U6_HOLE,dig_at.x,dig_at.y,dig_at.z);
+    if(hole || dig_at.z == 5 // we can't go anywhere from the gargoyle world.
+       || game->get_map_window()->tile_is_black(dig_at.x, dig_at.y)
+       || (dig_at.z == 0 && (dig_at.x != 0x2c3 || dig_at.y != 0x343)))
     {
         scroll->display_string("No effect\n");
         return(true); // ??
@@ -1406,6 +1438,8 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 
     // try to conenct with a ladder on a lower level.
     ladder = dig_at;
+// This is to inacurate. It will detect an extra ladder 8 tiles east
+// plus another one 8 tiles north and 8 tiles east
     if(dig_at.z == 0)//handle the transition from the surface to the first dungeon level
       {
        ladder.x = (dig_at.x & 0x07) | (dig_at.x >> 2 & 0xF8);
@@ -1414,7 +1448,7 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
       
     ladder.z = dig_at.z + 1;
 
-    if(dig_at.z != 5)
+//    if(dig_at.z != 5) already checked
       {
        ladder_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_LADDER, ladder.x, ladder.y, ladder.z);
        if(ladder_obj && ladder_obj->frame_n == 1) // ladder up.
@@ -1423,8 +1457,10 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
           dug_up_obj = new_obj(OBJ_U6_HOLE, 0, dig_at.x, dig_at.y,dig_at.z); //found a connecting ladder, dig a hole
          }
       }
-
-    if(!dug_up_obj && (dig_at.z == 0 || dig_at.z == 5))
+    Tile *tile = map->get_tile(dig_at.x, dig_at.y, dig_at.z, true);
+// uncomment first check if the coord conversion gets added back
+    if(/*(!dug_up_obj && dig_at.z == 0) ||*/ !tile // original might have checked for earth desc and no wall mask
+       || !((tile->tile_num <= 111 && tile->tile_num >= 108) || tile->tile_num == 540))
       {
        scroll->display_string("No Effect.\n");
        return(true);
@@ -1441,10 +1477,11 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
          
        // Door #1 or Door #2?
        Obj *fountain = obj_manager->get_obj_of_type_from_location(OBJ_U6_FOUNTAIN,dig_at.x,dig_at.y,dig_at.z);
-       if((NUVIE_RAND() % 2) && !fountain)
+       if((NUVIE_RAND() % 2)) // original lets you stack fountains
          {
           scroll->display_string("You find a water fountain.\n");
-          dug_up_obj = new_obj(OBJ_U6_FOUNTAIN,0, dig_at.x,dig_at.y,dig_at.z);
+          if(!fountain) // don't actually add another one
+              dug_up_obj = new_obj(OBJ_U6_FOUNTAIN,0, dig_at.x,dig_at.y,dig_at.z);
          }
        else
          {
@@ -1453,8 +1490,11 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
           dug_up_obj->status |= OBJ_STATUS_OK_TO_TAKE;
          }
       }
-
-    obj_manager->add_obj(dug_up_obj, true);
+    if(dug_up_obj)
+    {
+        dug_up_obj->set_temporary();
+        obj_manager->add_obj(dug_up_obj, true);
+    }
     return(true);
 }
 

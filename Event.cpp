@@ -890,7 +890,12 @@ bool Event::use(Obj *obj)
     scroll->display_string(obj_manager->look_obj(obj));
     scroll->display_string("\n");
 
-    if(!obj->is_in_inventory() && map_window->get_interface() == INTERFACE_NORMAL
+    if(!usecode->has_usecode(obj))
+    {
+        scroll->display_string("\nNot usable\n");
+        DEBUG(0,LEVEL_DEBUGGING,"Object %d:%d\n", obj->obj_n, obj->frame_n);
+    }
+    else if(!obj->is_in_inventory() && map_window->get_interface() == INTERFACE_NORMAL
         && player->get_actor()->get_location().distance(target) > 1)
     {
         scroll->display_string("\nOut of range!\n");
@@ -904,15 +909,10 @@ bool Event::use(Obj *obj)
     {
         scroll->display_string("\nBlocked.\n");
     }
-    else if(usecode->has_usecode(obj)) // Usable
+    else // Usable
     {
         display_prompt = usecode->use_obj(obj, player->get_actor());
         player->subtract_movement_points(5);
-    }
-    else
-    {
-        scroll->display_string("\nNot usable\n");
-        DEBUG(0,LEVEL_DEBUGGING,"Object %d:%d\n", obj->obj_n, obj->frame_n);
     }
 
     if(mode == USE_MODE) // check mode because UseCode may have changed it

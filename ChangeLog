@@ -1,3 +1,16 @@
+2012-08-28  Malignant Manor <malignantmanor@users.sourceforge.net> r1549
+	* Stop seizure inducing canal animation in Martian Dreams
+	* Make usability check go before other checks (use obj event)
+	* Don't print a condition with display_condition() if not injured. This
+		makes the get text of a cookfire and fence like the original
+	* Add drop check for water. Add back some removed drop checks
+	* Fix printed shovel direction. Have pick use the shovel usecode, make dug
+		up objects temporary, and only dig on dirt tiles. Fix digging for party
+		members that aren't the leader. Disable digging on the surface except
+		the one spot due to false positives
+	* Fix crash when calling tmpBufTileIsBlack from tile_is_black when a
+		location is not in the buffer. (r1522 started calling it)
+
 2012-08-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1548
 	* Tweak temp obj removal, actor removal, and egg spawning
 	* Add check so eggs closer than 9 tiles away don't spawn unless teleporting

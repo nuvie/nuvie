@@ -142,6 +142,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_PULL_CHAIN,  0,0,USE_EVENT_USE,&U6UseCode::use_bell,OBJTYPE_NONE },
     { OBJ_U6_BELL,      255,0,USE_EVENT_USE,&U6UseCode::use_bell,OBJTYPE_NONE },
     { OBJ_U6_SHOVEL,      0,0,USE_EVENT_USE,&U6UseCode::use_shovel,OBJTYPE_NONE },
+    { OBJ_U6_PICK,        0,0,USE_EVENT_USE,&U6UseCode::use_shovel,OBJTYPE_NONE },
     { OBJ_U6_FOUNTAIN,    0,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_fountain,OBJTYPE_NONE },
     { OBJ_U6_RUBBER_DUCKY,0,0,USE_EVENT_USE,&U6UseCode::use_rubber_ducky,OBJTYPE_NONE },
     { OBJ_U6_CANNON,    255,0,USE_EVENT_USE|USE_EVENT_MOVE|USE_EVENT_MESSAGE,&U6UseCode::use_cannon,OBJTYPE_NONE },

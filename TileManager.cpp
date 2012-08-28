@@ -466,10 +466,12 @@ bool TileManager::loadAnimData()
   for(i=0;i<32;i++) // FIXME: any data on which tiles don't start as animated?
   {
    animdata.loop[i] = 0; // loop forwards
-   if((game_type == NUVIE_GAME_U6) &&
+   if((game_type == NUVIE_GAME_U6 &&
       (animdata.tile_to_animate[i] == 862 // Crank
       || animdata.tile_to_animate[i] == 1009 // Crank
       || animdata.tile_to_animate[i] == 1020)) // Chain
+      || (game_type == NUVIE_GAME_MD
+      && animdata.tile_to_animate[i] >= 16 && animdata.tile_to_animate[i] <= 23)) // canal
     animdata.loop_count[i] = 0; // don't start animated
    else
     animdata.loop_count[i] = -1; // infinite animation

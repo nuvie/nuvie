@@ -151,7 +151,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  look_actor = NULL;
  config->value("config/cheats/enable_hackmove", hackmove);
  walking = false;
- looking = true;
+ looking = false;
  drop_with_move = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
@@ -429,6 +429,8 @@ bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
 {
  if(hackmove)
     return false;
+ if(!MapCoord(x,y,cur_level).is_visible()) // tmpBufTileIsBlack will crash if called (doesn't happen in gdb)
+    return true;
  if(tmpBufTileIsBlack(x - cur_x +1,y - cur_y +1))
     return true;
  else if(obj)
@@ -1593,9 +1595,10 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
         return false;
     }
     MapCoord actor_loc = actor->get_location();
-
-    if(game_type == NUVIE_GAME_U6 && (obj->obj_n == OBJ_U6_SKIFF
-       || obj->obj_n == OBJ_U6_RAFT) && obj_manager->get_obj(x, y, actor_loc.z))
+    Obj *dest_obj = obj_manager->get_obj(x, y, actor_loc.z);
+    bool can_go_in_water = (game_type == NUVIE_GAME_U6
+                            && (obj->obj_n == OBJ_U6_SKIFF || obj->obj_n == OBJ_U6_RAFT));
+    if(can_go_in_water && dest_obj) // it is drawn underneath so only allow on hackmove
     {
         if(accepting_drop)
             game->get_scroll()->message("\n\nNot possible.\n\n");
@@ -1665,7 +1668,23 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
             return false;
         }
     }
-    return true;
+    Tile *tile;
+    if(dest_obj)
+        tile = obj_manager->get_obj_tile(dest_obj->obj_n, dest_obj->frame_n);
+    else
+        tile = map->get_tile(x, y, actor_loc.z);
+
+    if(!tile) // shouldn't happen
+        return false;
+
+    if((can_go_in_water || !map->is_water(x, y, actor_loc.z))
+       && ((tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP)
+       || (tile->passable && !map->is_boundary(x, y, actor_loc.z))))
+        return true;
+
+    if(accepting_drop)
+        game->get_scroll()->message("\n\nNot possible.\n\n");
+    return false;
 }
 
 bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
@@ -1926,7 +1945,6 @@ GUI_status MapWindow::MouseDelayed(int x, int y, int button)
        || (event->get_mode() != MOVE_MODE && event->get_mode() != EQUIP_MODE))
     {
         look_obj = NULL; look_actor = NULL;
-        looking = true;
         return(GUI_PASS);
     }
     game->get_scroll()->display_string("Look-");
