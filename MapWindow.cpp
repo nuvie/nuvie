@@ -425,6 +425,18 @@ void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
  moveCursor(cursor_x + rel_x, cursor_y + rel_y);
 }
 
+bool MapWindow::is_on_screen(uint16 x, uint16 y, uint8 z)
+{
+	if(z == cur_level && x >= cur_x && x < cur_x + win_width && y >= cur_y && y < cur_y + win_height) {
+		if(tile_is_black(x, y) == false)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
 {
  if(hackmove)

@@ -343,6 +343,8 @@ bool ActorManager::load(NuvieIO *objlist)
 	 //a->hide();
  }
 
+ updateSchedules();
+
  return true;
 }
 

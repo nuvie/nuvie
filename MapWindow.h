@@ -173,6 +173,7 @@ class MapWindow: public GUI_Widget
  void moveCursor(sint16 new_x, sint16 new_y);
  void moveCursorRelative(sint16 rel_x, sint16 rel_y);
 
+ bool is_on_screen(uint16 x, uint16 y, uint8 z);
  bool tile_is_black(uint16 x, uint16 y, Obj *obj = NULL); // subtracts cur_x and cur_y
  const char *look(uint16 x, uint16 y, bool show_prefix = true);
  const char *lookAtCursor(bool show_prefix = true) { return(look(cursor_x, cursor_y, show_prefix)); }

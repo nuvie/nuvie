@@ -1,3 +1,9 @@
+2012-08-29  Eric Fry <efry at users.sourceforge.net> r1550
+	* Added map_is_on_screen() lua function.
+	* update actor schedules on load.
+	* Teleport actors to schedule location if it is off screen. This fixes bug
+	  "npc schedules don't update properly -teleport (orb of moons)" [3556231]
+
 2012-08-28  Malignant Manor <malignantmanor@users.sourceforge.net> r1549
 	* Stop seizure inducing canal animation in Martian Dreams
 	* Make usability check go before other checks (use obj event)
