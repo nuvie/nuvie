@@ -1389,12 +1389,12 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 
     if(game->get_map_window()->get_interface() < INTERFACE_FULLSCREEN)
     {
-        dig_at.x = (dig_at.x == 0) ? 0 : (dig_at.x < 0) ? -1 : 1;
-        dig_at.y = (dig_at.y == 0) ? 0 : (dig_at.y < 0) ? -1 : 1;
+        dig_at.sx = (dig_at.sx == 0) ? 0 : (dig_at.sx < 0) ? -1 : 1;
+        dig_at.sy = (dig_at.sy == 0) ? 0 : (dig_at.sy < 0) ? -1 : 1;
     }
 
     scroll->display_string(get_direction_name(dig_at.x, dig_at.y));
-    if(dig_at.x == 0 && dig_at.y == 0)
+    if(dig_at.sx == 0 && dig_at.sy == 0)
     {
         scroll->display_string(".\n");
         return(true); // display prompt
