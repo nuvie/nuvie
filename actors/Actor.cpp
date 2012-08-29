@@ -1209,6 +1209,8 @@ void Actor::inventory_drop_all()
 		}
 		else
 		{
+			if(temp_actor)
+				obj->status |= OBJ_STATUS_TEMPORARY;
 			obj->status |= OBJ_STATUS_OK_TO_TAKE;
 			obj->x = x; obj->y = y; obj->z = z;
 			obj_manager->add_obj(obj, true); // add to map

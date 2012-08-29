@@ -917,7 +917,8 @@ void ActorManager::clean_temp_actors_from_level(uint8 level)
 
  for(i=TEMP_ACTOR_OFFSET;i<ACTORMANAGER_MAX_ACTORS;i++)
    {
-    if(actors[i]->is_in_party() == false && actors[i]->z == level)
+    if((actors[i]->is_visible() || actors[i]->x != 0 || actors[i]->y != 0 || actors[i]->z != 0)
+       && actors[i]->is_in_party() == false && actors[i]->z == level)
       clean_temp_actor(actors[i]);
    }
 
@@ -931,7 +932,8 @@ void ActorManager::clean_temp_actors_from_area(uint16 x, uint16 y)
 
  for(i=TEMP_ACTOR_OFFSET;i<ACTORMANAGER_MAX_ACTORS;i++)
    {
-    if(actors[i]->is_in_party() == false)
+    if((actors[i]->is_visible() || actors[i]->x != 0 || actors[i]->y != 0 || actors[i]->z != 0)
+       && actors[i]->is_in_party() == false)
       {
        dist_x = abs((sint16)actors[i]->x - x);
        dist_y = abs((sint16)actors[i]->y - y);
