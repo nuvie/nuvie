@@ -1,3 +1,6 @@
+2012-08-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1554
+	* Remove visiblity check from temporary actor cleanup
+
 2012-08-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1553
 	* Have weather be set to calm when going into a dungeon.
 	* Add bodies for cat, dog, deer, mongbat, and wolf.
