@@ -462,7 +462,9 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level, bool teleport)
        party->follow(0, 0); // then try to move them to correct positions
       }
     actor_manager->updateActors(new_x, new_y, new_level);
-    obj_manager->update(new_x, new_y, new_level, true); // remove temporary objs, hatch eggs
+    if(teleport && new_level != 0 && new_level != 5)
+        Game::get_game()->get_weather()->set_wind_dir(NUVIE_DIR_NONE);
+    obj_manager->update(new_x, new_y, new_level, teleport); // remove temporary objs, hatch eggs
     // it's still the player's turn
    }
 }

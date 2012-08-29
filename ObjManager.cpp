@@ -816,7 +816,8 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 		   || target->obj_n == OBJ_U6_DEAD_BODY
 		   || target->obj_n == OBJ_U6_MOUSE
 		   || target->obj_n == OBJ_U6_REMAINS
-		   || target->obj_n == OBJ_U6_DRAKE))
+		   || target->obj_n == OBJ_U6_DRAKE
+		   || target->obj_n == OBJ_U6_MONGBAT))
 			return true;
 
 		if(Game::get_game()->doubleclick_opens_containers()

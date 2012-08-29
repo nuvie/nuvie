@@ -216,6 +216,11 @@ bool U6UseCode::is_container(Obj *obj)
     return(type && (type->flags & OBJTYPE_CONTAINER));
 }
 
+bool U6UseCode::is_container(uint16 obj_n, uint8 frame_n)
+{
+    const U6ObjectType *type = get_object_type(obj_n, frame_n);
+    return(type && (type->flags & OBJTYPE_CONTAINER));
+}
 
 bool U6UseCode::is_readable(Obj *obj)
 {
@@ -546,6 +551,8 @@ bool U6UseCode::use_ladder(Obj *obj, UseCodeEvent ev)
 
  MapCoord ladder(obj->x, obj->y, obj->z), destination(x, y, z);
  party->walk(&ladder, &destination, 100);
+ if(z != 0 && z != 5)
+     game->get_weather()->set_wind_dir(NUVIE_DIR_NONE);
  return true;
 }
 
@@ -724,12 +731,6 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
 {
     if(ev == USE_EVENT_USE)
     {
-		if((obj->obj_n == OBJ_U6_MOUSE || obj->obj_n == OBJ_U6_DRAKE) && !obj->is_in_inventory() // needed for live mouse and drake
-		   && obj != obj_manager->get_obj(obj->x, obj->y, obj->z))
-		{
-			scroll->display_string("\nNot usable\n");
-			return true;
-		}
     	if(is_locked_chest(obj) || is_magically_locked_chest(obj))
     	{
     		if(is_locked_chest(obj) && obj->quality != 0)
@@ -753,7 +754,7 @@ bool U6UseCode::use_container(Obj *obj, UseCodeEvent ev)
         {
             process_effects(obj, items.actor_ref); //run any effects that might be stored in this container. Eg Poison explosion.
 
-            if(Game::get_game()->doubleclick_opens_containers()
+            if(Game::get_game()->doubleclick_opens_containers() && obj->obj_n != OBJ_U6_DEER
                && obj->obj_n != OBJ_U6_SHIP && obj->obj_n != OBJ_U6_STONE_LION) // just search for these
             {
             	game->get_view_manager()->open_container_view(obj);
@@ -2831,6 +2832,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
 //        else
 //            party->walk(&entrance, &exit);
         party->walk(&entrance, &exit, 100);
+        game->get_weather()->set_wind_dir(NUVIE_DIR_NONE);
         return(true);
     }
     else if((ev == USE_EVENT_PASS || ev == USE_EVENT_USE) && party->get_autowalk()) // party can use now

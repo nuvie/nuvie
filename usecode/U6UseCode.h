@@ -106,6 +106,7 @@ class U6UseCode: public UseCode, public CallBack
 
  bool is_food(Obj *obj);
  bool is_container(Obj *obj);
+ bool is_container(uint16 obj_n, uint8 frame_n);
  bool is_readable(Obj *obj);
 
  uint16 callback(uint16 msg, CallBack *caller, void *data = NULL);

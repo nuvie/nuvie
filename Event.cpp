@@ -927,7 +927,8 @@ bool Event::use(Actor *actor, uint16 x, uint16 y)
     bool display_prompt = true;
     Obj *obj = actor->make_obj();
 
-    if(!map_window->tile_is_black(x, y) && usecode->has_usecode(actor))
+    if(!map_window->tile_is_black(x, y) && usecode->has_usecode(actor)
+       && !usecode->is_container(obj))
     {
         if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
             scroll->display_string("horse");
@@ -2621,11 +2622,12 @@ void Event::multiuse(uint16 wx, uint16 wy)
     if(using_actor) // use or talk to an actor
     {
         bool can_use;
-        if(game->get_game_type() == NUVIE_GAME_U6 && (actor->get_obj_n() == OBJ_U6_MOUSE
-           || actor->get_actor_num() == 132 || actor->get_actor_num() == 130)) // Smith, Pushme Pullyu
+        if(game->get_game_type() == NUVIE_GAME_U6 && (actor->get_actor_num() == 132 // Smith
+           || actor->get_actor_num() == 130)) // Pushme Pullyu
             can_use = false;
         else
-            can_use = usecode->has_usecode(actor);
+            can_use = (usecode->has_usecode(actor)
+                       && !usecode->is_container(actor->get_obj_n(), actor->get_frame_n()));
         if(can_use)
         {
             scroll->display_string("Use-");

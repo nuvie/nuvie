@@ -1,3 +1,11 @@
+2012-08-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1553
+	* Have weather be set to calm when going into a dungeon.
+	* Add bodies for cat, dog, deer, mongbat, and wolf.
+	* Don't use actors that have a container type.
+	* Fix item drop for actors without a proper body. It was broken by temp
+		actor removal happening too soon (r1548 regression)
+	* Fix teleport bool not being used in player_move (r1548 forgotten)
+
 2012-08-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1552
 	* Set Gargoyle worktype to 0xC 'WANDER' when Beh Lem is in the party
 

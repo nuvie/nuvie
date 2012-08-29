@@ -220,8 +220,10 @@ bool Weather::set_wind_dir(uint8 new_wind_dir)
 		return false;
 
 	clear_wind();
-	
-	wind_dir = new_wind_dir;
+	if(Game::get_game()->get_map_window()->in_dungeon_level())
+		wind_dir = NUVIE_DIR_NONE;
+	else
+		wind_dir = new_wind_dir;
 
 	if(wind_dir != old_wind_dir)
 		send_wind_change_notification_callback();

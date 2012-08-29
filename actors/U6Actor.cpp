@@ -1552,23 +1552,16 @@ void U6Actor::die(bool create_body)
 		delete_obj(obj);
 	}
 
- Actor::die();
-
-    
- if(is_in_party())
-  {
-      party->remove_actor(this, true);
-      if(player->get_actor() == this)
-        player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
-  }
- 
     if(base_actor_type->dead_obj_n != OBJ_U6_NOTHING)
     {
     	if(create_body)
     	{
 			Obj *dead_body = new Obj;
 			dead_body->obj_n = base_actor_type->dead_obj_n;
-			dead_body->frame_n = base_actor_type->dead_frame_n;
+			if(base_actor_type->dead_frame_n == 255) // dog, cat, mouse, deer, wolf, drake, mongbat
+				dead_body->frame_n = frame_n; // same frame the actor died
+			else
+				dead_body->frame_n = base_actor_type->dead_frame_n;
 			dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;
 			dead_body->quality = id_n;
 			dead_body->status = OBJ_STATUS_OK_TO_TAKE;
@@ -1584,6 +1577,15 @@ void U6Actor::die(bool create_body)
     }
 	else if(create_body)
 		inventory_drop_all();
+
+	Actor::die();
+
+	if(is_in_party())
+	{
+		party->remove_actor(this, true);
+		if(player->get_actor() == this)
+			player->set_party_mode(party->get_actor(0)); //set party mode with the avatar as the leader.
+	}
 
     if(party->get_member_num(this) != 0)
         move(0,0,0,ACTOR_FORCE_MOVE); // FIXME: move to another plane, same coords
