@@ -1,3 +1,6 @@
+2012-08-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1552
+	* Set Gargoyle worktype to 0xC 'WANDER' when Beh Lem is in the party
+
 2012-08-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1551
 	* Make fire fields temporary when from an oil flask or cast by a sea serpent
 	* Fix not using a signed integer when comparing relative coordinates [r1549]

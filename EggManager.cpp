@@ -251,7 +251,8 @@ uint8 EggManager::get_worktype(Obj *embryo)
 {
 	if(gametype == NUVIE_GAME_U6
 			&& (embryo->obj_n == OBJ_U6_WINGED_GARGOYLE || embryo->obj_n == OBJ_U6_GARGOYLE)
-			&& Game::get_game()->get_party()->has_obj(OBJ_U6_AMULET_OF_SUBMISSION, 0, false))
+			&& (Game::get_game()->get_party()->has_obj(OBJ_U6_AMULET_OF_SUBMISSION, 0, false)
+			    || Game::get_game()->get_party()->contains_actor(164))) // Beh lem
 	{
 		return WORKTYPE_U6_ANIMAL_WANDER;
 	}
