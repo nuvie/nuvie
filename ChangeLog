@@ -1,3 +1,6 @@
+2012-08-31  Eric Fry <efry at users.sourceforge.net> r1558
+	* Added missing code for schedule fix from r1550
+
 2012-08-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1557
 	* Fix name displayed by shrines and statues actors
 	* Allow book of circles to be read

@@ -1911,7 +1911,14 @@ dbg("actor_update_all()\n")
                if actor.wt ~= WT_NOTHING and actor.alive == true and actor.mpts > 0 and actor.z == player_loc.z then
                   if abs(actor.x - var_C) > 0x27 or abs(actor.y - var_A) > 0x27 then
                      if actor.wt >= 0x83 and actor.wt <= 0x86 then
-                        --actor_move_to_sched_loc
+                        --move actor to schedule location if it isn't on screen
+                        local sched_loc = actor.sched_loc
+                        if map_is_on_screen(sched_loc.x, sched_loc.y, sched_loc.z) == false then
+                        	Actor.move(actor, sched_loc.x, sched_loc.y, sched_loc.z)
+                        	actor_wt_walk_to_location(actor) --this will cancel the pathfinder and set the new worktype
+                        	subtract_movement_pts(actor, 10)
+                        	--dbg("\nActor SCHEDULE TELEPORT "..actor.actor_num.." to ("..sched_loc.x..","..sched_loc.y..","..sched_loc.z..")\n")
+                        end
                      end
                   else
                      if actor.wt ~= WT_FOLLOW then
