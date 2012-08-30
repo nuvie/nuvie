@@ -1560,6 +1560,8 @@ void U6Actor::die(bool create_body)
 			dead_body->obj_n = base_actor_type->dead_obj_n;
 			if(base_actor_type->dead_frame_n == 255) // dog, cat, mouse, deer, wolf, drake, mongbat
 				dead_body->frame_n = frame_n; // same frame the actor died
+			else if(base_actor_type->dead_obj_n == OBJ_U6_BLOOD)
+				dead_body->frame_n = NUVIE_RAND()%3;
 			else
 				dead_body->frame_n = base_actor_type->dead_frame_n;
 			dead_body->x = actor_loc.x; dead_body->y = actor_loc.y; dead_body->z = actor_loc.z;

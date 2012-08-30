@@ -2259,7 +2259,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
 	 for (sint8 ix=-1;ix<2;ix++) 
 	 {
 	   DEBUG(0,LEVEL_DEBUGGING,"can drop at %d %d?\n",ix,iy); 
-	   if (Game::get_game()->get_map_window()->can_drop_obj(x+ix,y+iy,balloonist,false)) 
+	   if(Game::get_game()->get_map_window()->can_drop_obj(x+ix,y+iy,balloonist, obj))
 	   {
 	     DEBUG(0,LEVEL_DEBUGGING,"yes, can drop at %d %d.\n",x+ix,y+iy); 
 	     obj_manager->unlink_from_engine(obj);
@@ -2687,7 +2687,14 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
 
     if(ev == USE_EVENT_LOOK)
     {
-        if(obj->quality == 0 && obj->obj_n != OBJ_U6_BOOK)
+        MapCoord obj_loc = MapCoord(obj->x, obj->y, obj->z);
+        MapCoord player_loc = player->get_actor()->get_location();
+        InterfaceType interface = game->get_map_window()->get_interface();
+        bool too_far = (player_loc.distance(obj_loc) > 1 && interface == INTERFACE_NORMAL);
+        bool blocked = (interface != INTERFACE_IGNORE_BLOCK
+                        && !game->get_map_window()->can_get_obj(player->get_actor(), obj));
+        if((obj->quality == 0 && obj->obj_n != OBJ_U6_BOOK) || (!obj->is_in_inventory()
+          && (obj->obj_n == OBJ_U6_BOOK || obj->obj_n == OBJ_U6_SCROLL) && (too_far || blocked)))
         {
             scroll->display_string("\n");
             return true; // display prompt

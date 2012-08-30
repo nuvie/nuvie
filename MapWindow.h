@@ -199,7 +199,7 @@ class MapWindow: public GUI_Widget
  bool in_dungeon_level() { return(cur_level != 0 && cur_level != 5); }
  bool in_town();
  // can put object at world location x,y?
- bool can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory, Obj *obj = NULL, bool accepting_drop = false);
+ bool can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool accepting_drop = false);
  bool can_get_obj(Actor *actor, Obj *obj);
  void display_move_text(Actor *target_actor, Obj *obj);
  MapCoord original_obj_loc;

@@ -2402,7 +2402,7 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
     }
 
     if(!drop_from_map // already checked in map window
-       && !map_window->can_drop_obj(drop_loc.x, drop_loc.y, actor, obj->is_in_inventory(), obj))
+       && !map_window->can_drop_obj(drop_loc.x, drop_loc.y, actor, obj))
     {
         scroll->display_string("Not possible\n");
         endAction(true); // because the DropEffect is never called to do this

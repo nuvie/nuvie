@@ -1588,8 +1588,9 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
 /* Returns true if any object could be placed at world coordinates x,y.
  * If actor is set a line-of-site check must pass. (z is always cur_level)
  */
-bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory, Obj *obj, bool accepting_drop)
+bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool accepting_drop)
 {
+    bool in_inventory = obj->is_in_inventory();
     if(!in_inventory && original_obj_loc.x == x && original_obj_loc.y == y)
         return false;
     if(hackmove)
@@ -1619,7 +1620,7 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, bool in_inventory
     LineTestResult lt;
     MapCoord target_loc(x,y, actor_loc.z);
 
-    if(in_inventory && obj && !obj->get_actor_holding_obj()->is_onscreen()
+    if(in_inventory && !obj->get_actor_holding_obj()->is_onscreen()
        && obj->get_actor_holding_obj()->get_location().distance(target_loc) > 5)
     {
         if(accepting_drop)
@@ -1870,7 +1871,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
                 return;
             }
 
-            if(!can_drop_obj(x, y, actor_manager->get_player(), obj->is_in_inventory(), obj, true))
+            if(!can_drop_obj(x, y, actor_manager->get_player(), obj, true))
                 return;
 
         	// drop on ground or into a container
