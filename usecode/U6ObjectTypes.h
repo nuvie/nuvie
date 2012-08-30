@@ -28,6 +28,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_TOMBSTONE, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
     { OBJ_U6_CROSS,     255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
     { OBJ_U6_CODEX,       0,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
+    { OBJ_U6_BOOK_OF_CIRCLES, 255,0,USE_EVENT_LOOK,&U6UseCode::look_sign,OBJTYPE_BOOK },
 
     { OBJ_U6_CRATE,        0,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
     { OBJ_U6_CRATE,      255,0,USE_EVENT_USE,   &U6UseCode::use_container,OBJTYPE_CONTAINER },

@@ -315,6 +315,7 @@ const char *Actor::get_name(bool force_real_name)
     Party *party = Game::get_game()->get_party();
     //Actor *player = Game::get_game()->get_player()->get_actor();
     const char *talk_name = NULL; // name from conversation script
+    bool statue = (Game::get_game()->get_game_type() == NUVIE_GAME_U6 && id_n >= 189 && id_n <= 200);
 
     if(is_alive() && is_in_party())
     {
@@ -323,7 +324,8 @@ const char *Actor::get_name(bool force_real_name)
     		name = party->get_actor_name((uint8)party_pos);
     }
     else if((is_met() || is_in_party() || force_real_name)
-            && (talk_name = converse->npc_name(id_n)) ) // assignment
+            && (talk_name = converse->npc_name(id_n)) // assignment
+            && !statue)
         name = talk_name;
     else
         name = actor_manager->look_actor(this, false);

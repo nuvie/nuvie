@@ -623,16 +623,14 @@ const char *ActorManager::look_actor(Actor *a, bool show_prefix)
     if(tile_num == 0)
       {
        uint8 actor_num = a->id_n;
-       if(actor_num == 188) // U6: Statue of Exodus
+       if(actor_num == 191) // U6: Statue of Exodus
          return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(399), 0, show_prefix);
        else if(actor_num == 189) // Statue of Mondain
          return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(397), 0, show_prefix);
        else if(actor_num == 190) // Statue of Minax
          return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(398), 0, show_prefix);
-       else if(actor_num >= 191 && actor_num <= 198) // shrines
+       else if(a->id_n >= 192 && a->id_n <= 200) // shrines
          return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(393), 0, show_prefix);
-       else if(actor_num == 199) // Altar of singularity
-         return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(329), 0, show_prefix);
 
        return tile_manager->lookAtTile(obj_manager->get_obj_tile_num(a->obj_n), 0, show_prefix);
       }

@@ -502,6 +502,7 @@ void Converse::show_portrait(uint8 n)
     const char *nameret = 0;
     if(!actor)
         return;
+    bool statue = (gametype == NUVIE_GAME_U6 && n >= 189 && n <= 191);
     if(gametype == NUVIE_GAME_U6 && n == 0) // Pushme Pullyu
     {
         Actor *real_actor = Game::get_game()->get_actor_manager()->get_actor(130);
@@ -510,8 +511,8 @@ void Converse::show_portrait(uint8 n)
         else
             nameret = actors->look_actor(real_actor, false);
     }
-    else if((actor->is_met()) || player->get_party()->contains_actor(actor)
-         || (gametype == NUVIE_GAME_U6 && n >= 188 && n <= 200)) // always known NPCs
+    else if((actor->is_met() || player->get_party()->contains_actor(actor))
+            && !statue) // they need to display statue of names
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor, false);

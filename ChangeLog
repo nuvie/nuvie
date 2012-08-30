@@ -1,6 +1,10 @@
+2012-08-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1557
+	* Fix name displayed by shrines and statues actors
+	* Allow book of circles to be read
+
 2012-08-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1556
 	* Randomly generate the frame for dead bodies that are blood
-	* Fix crash from passing a null obj pointer to can_drop_obj.
+	* Fix crash from balloon usecode passing a null pointer to can_drop_obj
 
 2012-08-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1555
 	* Revert previous commit since it causes constant clean up of already free
