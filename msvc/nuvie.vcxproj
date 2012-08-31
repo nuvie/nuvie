@@ -49,7 +49,7 @@
     <LinkIncremental>false</LinkIncremental>
     <TargetName>nuvie</TargetName>
     <TargetExt>.exe</TargetExt>
-    <IncludePath>..\..\lib\SDL_mixer-1.2.12\include;..\..\lib\SDL-1.2.15\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\lib\SDL_mixer-1.2.12\include;..\..\lib\SDL-1.2.15\include;..\keybinding;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\lib\SDL_mixer-1.2.12\lib\x86;..\..\lib\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -58,7 +58,7 @@
     <LinkIncremental>true</LinkIncremental>
     <TargetName>nuvie</TargetName>
     <TargetExt>.exe</TargetExt>
-    <IncludePath>..\..\lib\SDL_mixer-1.2.12\include;..\..\lib\SDL-1.2.15\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\lib\SDL_mixer-1.2.12\include;..\..\lib\SDL-1.2.15\include;..\keybinding;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\lib\SDL_mixer-1.2.12\lib\x86;..\..\lib\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -140,6 +140,8 @@
   <ItemGroup>
     <ClCompile Include="..\actors\Actor.cpp" />
     <ClCompile Include="..\actors\ActorManager.cpp" />
+    <ClCompile Include="..\actors\MDActor.cpp" />
+    <ClCompile Include="..\actors\SEActor.cpp" />
     <ClCompile Include="..\actors\U6Actor.cpp" />
     <ClCompile Include="..\AnimManager.cpp" />
     <ClCompile Include="..\Background.cpp" />
@@ -187,6 +189,9 @@
     <ClCompile Include="..\GUI\GUI_TextInput.cpp" />
     <ClCompile Include="..\GUI\GUI_widget.cpp" />
     <ClCompile Include="..\GUI\GUI_YesNoDialog.cpp" />
+    <ClCompile Include="..\keybinding\KeyActions.cpp" />
+    <ClCompile Include="..\keybinding\Keys.cpp" />
+    <ClCompile Include="..\keybinding\Utils.cpp" />
     <ClCompile Include="..\Look.cpp" />
     <ClCompile Include="..\lua\lapi.c" />
     <ClCompile Include="..\lua\lauxlib.c" />
@@ -310,6 +315,8 @@
   <ItemGroup>
     <ClInclude Include="..\actors\Actor.h" />
     <ClInclude Include="..\actors\ActorManager.h" />
+    <ClInclude Include="..\actors\MDActor.h" />
+    <ClInclude Include="..\actors\SEActor.h" />
     <ClInclude Include="..\actors\U6Actor.h" />
     <ClInclude Include="..\actors\U6ActorTypes.h" />
     <ClInclude Include="..\actors\U6WorkTypes.h" />
@@ -365,6 +372,9 @@
     <ClInclude Include="..\GUI\GUI_widget.h" />
     <ClInclude Include="..\GUI\GUI_YesNoDialog.h" />
     <ClInclude Include="..\GUI\the_font.h" />
+    <ClInclude Include="..\keybinding\KeyActions.h" />
+    <ClInclude Include="..\keybinding\Keys.h" />
+    <ClInclude Include="..\keybinding\Utils.h" />
     <ClInclude Include="..\Look.h" />
     <ClInclude Include="..\lua\lapi.h" />
     <ClInclude Include="..\lua\lauxlib.h" />

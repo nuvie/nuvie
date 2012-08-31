@@ -54,7 +54,7 @@ static bool base_to_uppercase(string& str, int count)
 		if (todo <= 0)
 			break;
 
-#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
+#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__) || defined(_MSC_VER))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = static_cast<char>(std::toupper(*X));

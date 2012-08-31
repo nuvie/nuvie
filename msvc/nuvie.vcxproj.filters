@@ -65,6 +65,9 @@
     <Filter Include="visualc7">
       <UniqueIdentifier>{ace28aa6-aea5-4e1e-bd9c-7b68ac40b165}</UniqueIdentifier>
     </Filter>
+    <Filter Include="keybinding">
+      <UniqueIdentifier>{887a2a7a-f3c9-4f07-a00f-b92c7c1c04bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\actors\ActorManager.cpp">
@@ -570,6 +573,21 @@
     </ClCompile>
     <ClCompile Include="..\visualc7\dirent.cpp">
       <Filter>visualc7</Filter>
+    </ClCompile>
+    <ClCompile Include="..\keybinding\KeyActions.cpp">
+      <Filter>keybinding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\keybinding\Keys.cpp">
+      <Filter>keybinding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\keybinding\Utils.cpp">
+      <Filter>keybinding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\actors\SEActor.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\actors\MDActor.cpp">
+      <Filter>actors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1148,6 +1166,21 @@
     </ClInclude>
     <ClInclude Include="..\visualc7\dirent.h">
       <Filter>visualc7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\keybinding\KeyActions.h">
+      <Filter>keybinding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\keybinding\Keys.h">
+      <Filter>keybinding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\keybinding\Utils.h">
+      <Filter>keybinding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\actors\SEActor.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\actors\MDActor.h">
+      <Filter>actors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
