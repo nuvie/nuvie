@@ -1,3 +1,7 @@
+2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1570
+	* Fix page_break doubling command prompts
+	* Fix spell book look description showing the weight twice
+
 2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1568
 	* Add check for can_laydown when setting sleep flag
 

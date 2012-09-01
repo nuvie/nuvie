@@ -661,6 +661,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
          Game::get_game()->get_gui()->unlock_input();
 
        process_holding_buffer(); // Process any text in the holding buffer.
+       just_displayed_prompt = true;
        return(GUI_YUM);
       }
 
