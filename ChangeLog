@@ -1,7 +1,7 @@
-2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1567
+2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1568
 	* Add check for can_laydown when setting sleep flag
 
-2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1566
+2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1567
 	* Add torch lighting/dousing on actor creation or hour change
 	* Show sky strip when talking or looking at an actor
 
