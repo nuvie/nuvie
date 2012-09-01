@@ -1,3 +1,6 @@
+2012-09-01  Eric Fry <efry at users.sourceforge.net> r1566
+	* Fixed bug "Party members get hit by damage tiles more than they should" [3561801]
+
 2012-09-01  Eric Fry <efry at users.sourceforge.net> r1565
 	* Fixed bug "Stuck in dialog when sleeping at an inn" [3562326]
 	* Added party healing when resting at inn.

@@ -522,6 +522,8 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
        sit_on_chair(obj); // make the Actor sit if they are on top of a chair.
    }
 
+   set_hit_flag(false);
+   Game::get_game()->get_script()->call_actor_map_dmg(this, get_location());
   }
 
 
@@ -541,9 +543,6 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
 
  if(has_surrounding_objs()) //add our surrounding objects back onto the map.
    add_surrounding_objs_to_map();
- 
- set_hit_flag(false);
- Game::get_game()->get_script()->call_actor_map_dmg(this, get_location());
 
  return ret;
 }
