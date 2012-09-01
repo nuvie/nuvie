@@ -902,7 +902,7 @@ void U6Actor::set_asleep(bool val)
 	if(val)
 	{
 		status_flags |= ACTOR_STATUS_ASLEEP;
-		if(actor_type->dead_obj_n != OBJ_U6_NOTHING)
+		if(actor_type->dead_obj_n != OBJ_U6_NOTHING && actor_type->can_laydown)
 		{
 			obj_n = actor_type->dead_obj_n;
 			frame_n = actor_type->dead_frame_n;
