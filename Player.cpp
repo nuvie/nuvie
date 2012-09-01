@@ -361,8 +361,8 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 
     bool can_move = true;
     // don't allow diagonal move between blocked tiles (player only)
-    if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS)
-                      && !actor->check_move(x + 0, y + rel_y, z, ACTOR_IGNORE_OTHERS))
+    if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS|ACTOR_IGNORE_DANGER)
+                      && !actor->check_move(x + 0, y + rel_y, z, ACTOR_IGNORE_OTHERS|ACTOR_IGNORE_DANGER))
         can_move = false;
     if(actor->is_immobile() && actor->id_n != 0)
         can_move = false;

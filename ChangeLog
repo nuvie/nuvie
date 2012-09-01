@@ -1,3 +1,6 @@
+2012-09-01  Eric Fry <efry at users.sourceforge.net> r1563
+	* Allow diagonal movement between damage tiles.
+
 2012-09-01  Eric Fry <efry at users.sourceforge.net> r1562
 	* Ignore danger tiles if 'force move' is set.
 
