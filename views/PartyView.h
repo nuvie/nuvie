@@ -52,10 +52,10 @@ class PartyView : public View {
  void drag_perform_drop(int x, int y, int message, void *data);
  void Display(bool full_redraw);
  void update() { update_display = true; }
+ void display_sun_moon_strip();
 
  protected:
 
- void display_sun_moon_strip();
  void display_surface_strip();
  void display_dungeon_strip();
  void display_arrows();

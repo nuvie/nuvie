@@ -36,6 +36,7 @@
 #include "GUI.h"
 #include "DollWidget.h"
 #include "PortraitView.h"
+#include "PartyView.h"
 
 PortraitView::PortraitView(Configuration *cfg) : View(cfg)
 {
@@ -83,7 +84,18 @@ void PortraitView::Display(bool full_redraw)
   config->value("config/GameType",gametype);
   switch(gametype)
   {
-    case NUVIE_GAME_U6: w=56; h=64; break;
+    case NUVIE_GAME_U6:
+    {
+      w=56; h=64;
+      PartyView *party_view = Game::get_game()->get_view_manager()->get_party_view();
+      if(party_view)
+      {
+        screen->fill(bg_color, area.x, area.y-2, area.w, 16);
+        party_view->display_sun_moon_strip();
+        screen->update(area.x, area.y-2, area.w, 2);
+      }
+      break;
+    }
     case NUVIE_GAME_SE: w=79; h=85; break;
     case NUVIE_GAME_MD: w=76; h=83; break;
   }

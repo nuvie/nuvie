@@ -3175,9 +3175,20 @@ void U6UseCode::extinguish_torch(Obj *obj)
 //  handled by Actor::inventory_remove_obj()
 //    if(obj->is_in_inventory_old())
 //        actor_manager->get_actor_holding_obj(obj)->subtract_light(TORCH_LIGHT_LEVEL);
+    if(obj->is_readied())
+    {
+        Actor *owner = actor_manager->get_actor_holding_obj(obj);
+        if(owner->is_in_party() || owner == player->get_actor())
+            owner->remove_readied_object(obj); // needed to prevent endless loop
+        else
+        {
+            obj->frame_n = 0;
+            game->get_map_window()->updateBlacking(); // might need this on death
+            return;
+        }
+    }
+
     scroll->display_string("\nA torch burned out.\n");
-    if(obj->is_readied()) // needed to prevent endless loop
-        actor_manager->get_actor_holding_obj(obj)->remove_readied_object(obj); // needed to prevent endless loop
     destroy_obj(obj);
     game->get_map_window()->updateBlacking();
 }
@@ -3189,13 +3200,13 @@ void U6UseCode::light_torch(Obj *obj)
     assert(obj->is_readied() || obj->is_on_map());
     toggle_frame(obj); // light
     obj->status |= OBJ_STATUS_LIT;
-
+    Actor *owner = actor_manager->get_actor_holding_obj(obj);
     if(obj->is_readied())
-        actor_manager->get_actor_holding_obj(obj)->add_light(TORCH_LIGHT_LEVEL);
+        owner->add_light(TORCH_LIGHT_LEVEL);
 
     obj->qty = 0xc8; //torch duration. updated in lua advance_time()
-
-    scroll->display_string("\nTorch is lit.\n");
+    if(!owner || owner->is_in_party() || owner == player->get_actor())
+        scroll->display_string("\nTorch is lit.\n");
     game->get_map_window()->updateBlacking();
 }
 

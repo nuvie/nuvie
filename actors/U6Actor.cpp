@@ -43,6 +43,7 @@
 
 #include "U6ActorTypes.h"
 #include "U6WorkTypes.h"
+#include "Weather.h"
 
 U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c), actor_type(NULL),
  base_actor_type(NULL)
@@ -394,6 +395,8 @@ uint16 U6Actor::get_downward_facing_tile_num()
 bool U6Actor::updateSchedule(uint8 hour)
 {
  bool ret;
+ handle_lightsource(hour);
+
  if((ret = Actor::updateSchedule(hour)) == true) //walk to next schedule location if required.
    {
     if(sched[sched_pos] != NULL && (sched[sched_pos]->x != x || sched[sched_pos]->y != y || sched[sched_pos]->z != z))
@@ -1740,4 +1743,43 @@ bool U6Actor::will_not_talk()
 	   || worktype == WORKTYPE_U6_ATTACK_PARTY || worktype == 0x13) // repel undead and retreat
 		return true;
 	return false;
+}
+
+void U6Actor::handle_lightsource(uint8 hour)
+{
+	if(worktype == WORKTYPE_U6_SLEEP) // accident waiting to happen
+		return;
+	Obj *torch = inventory_get_readied_object(ACTOR_ARM);
+	if(torch && torch->obj_n != OBJ_U6_TORCH)
+		torch = NULL;
+	Obj *torch2 = inventory_get_readied_object(ACTOR_ARM_2);
+	if(torch2 && torch2->obj_n != OBJ_U6_TORCH)
+		torch2 = NULL;
+	if(torch || torch2)
+	{
+		U6UseCode *usecode = (U6UseCode*)Game::get_game()->get_usecode();
+		if(hour < 6 || hour > 18 || (z != 0 && z != 5)
+		   || Game::get_game()->get_weather()->is_eclipse())
+		{
+			if(torch && torch->frame_n == 0)
+			{
+				if(torch->qty != 1)
+					torch->qty = 1;
+				usecode->torch(torch, USE_EVENT_USE);
+			}
+			if(torch2 && torch2->frame_n == 0)
+			{
+				if(torch2->qty != 1)
+					torch2->qty = 1;
+				usecode->torch(torch2, USE_EVENT_USE);
+			}
+		}
+		else
+		{
+			if(torch && torch->frame_n == 1)
+				usecode->torch(torch, USE_EVENT_USE);
+			if(torch2 && torch2->frame_n == 1)
+				usecode->torch(torch2, USE_EVENT_USE);
+		}
+	}
 }

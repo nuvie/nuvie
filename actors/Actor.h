@@ -472,6 +472,7 @@ class Actor
  virtual const CombatType *get_hand_combat_type() { return NULL; }
 
  virtual void print();
+ virtual void handle_lightsource(uint8 hour) { return; }
  virtual const char *get_worktype_string(uint32 wt) { return NULL; }
 
  Obj *find_body();

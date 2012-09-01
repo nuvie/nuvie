@@ -855,6 +855,7 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
 
    if(new_actor)
     *new_actor = actor;
+   actor->handle_lightsource(clock->get_hour());
    return true;
   }
  else
