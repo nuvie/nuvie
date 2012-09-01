@@ -4,6 +4,7 @@
 
 #include "Actor.h"
 #include "Map.h"
+#include "Party.h"
 #include "Script.h"
 #include "AnimManager.h"
 #include "MapWindow.h"
@@ -925,6 +926,20 @@ uint16 SleepEffect::callback(uint16 msg, CallBack *caller, void *data)
         }
         else // stopping
         {
+        	Party *party = game->get_party();
+            for(int s=0; s<party->get_party_size(); s++)
+            {
+            	Actor *actor = party->get_actor(s);
+
+            	//heal actors.
+            	uint8 hp_diff = actor->get_maxhp() - actor->get_hp();
+            	if(hp_diff > 0)
+            	{
+            		if(hp_diff == 1)
+            			hp_diff = 2;
+            		actor->set_hp(actor->get_hp() + NUVIE_RAND()%(hp_diff/2) + hp_diff/2);
+            	}
+            }
             game->unpause_user();
             delete_self();
         }

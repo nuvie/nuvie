@@ -469,7 +469,7 @@ void Game::pause_user()
 {
 	set_pause_flags((GamePauseState)(pause_flags | PAUSE_USER));
 
-    if(!gui->get_block_input())
+    if(!gui->get_block_input() && pause_user_count == 0)
         gui->block();
 
     pause_user_count++;
