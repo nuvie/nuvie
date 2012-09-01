@@ -1,3 +1,6 @@
+2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1560
+	* Fix missing newline before display_condition() call in obj_is_damaging
+
 2012-08-31  Eric Fry <efry at users.sourceforge.net> r1558
 	* Added missing code for schedule fix from r1550
 

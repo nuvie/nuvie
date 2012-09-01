@@ -1663,10 +1663,7 @@ void Actor::display_condition()
     MsgScroll *scroll = Game::get_game()->get_scroll();
 
     if(hp == get_maxhp())
-    {
-        scroll->display_string("\n");
         return;
-    }
     scroll->display_string(get_name());
     scroll->display_string(" ");
     if(hp < get_maxhp()/4) // 25%
