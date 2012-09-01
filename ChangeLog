@@ -1,3 +1,10 @@
+2012-09-01  Eric Fry <efry at users.sourceforge.net> r1561
+	* Changed PartyPathFinder to make party members avoid damaging tiles.
+	  They will attempt to avoid damaging tiles unless there is no other way
+	  to follow the leader without walking on a damaging tile.
+	* Changed ObjManager::is_damaging() to use original tile for damage check.
+	  This fixes an issue with the log saw not being marked as damaging.
+
 2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1560
 	* Fix missing newline before display_condition() call in obj_is_damaging
 

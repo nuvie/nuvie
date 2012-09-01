@@ -222,13 +222,13 @@ bool PartyPathFinder::try_moving_to_leader(uint32 p, bool ignore_position)
     // move towards leader (allow non-contiguous moves)
     sint8 rel_x, rel_y;
     get_target_dir(p, rel_x, rel_y);
-    if(move_member(p, rel_x, rel_y, ignore_position))
+    if(move_member(p, rel_x, rel_y, ignore_position, true, false))
         return true;
     DirFinder::get_adjacent_dir(rel_x, rel_y, -1);
-    if(move_member(p, rel_x, rel_y, ignore_position))
+    if(move_member(p, rel_x, rel_y, ignore_position, true, false))
         return true;
     DirFinder::get_adjacent_dir(rel_x, rel_y, 2);
-    if(move_member(p, rel_x, rel_y, ignore_position))
+    if(move_member(p, rel_x, rel_y, ignore_position, true, false))
         return true;
     return false;
 }
@@ -247,7 +247,7 @@ bool PartyPathFinder::try_moving_forward(uint32 p)
  * directions if necessary.
  * Returns true if character moved, or doesn't need to. Returns false if he stil
  * needs to try to move. */
-bool PartyPathFinder::try_moving_to_target(uint32 p)
+bool PartyPathFinder::try_moving_to_target(uint32 p, bool avoid_damage_tiles)
 {
     sint8 rel_x, rel_y;
     get_target_dir(p, rel_x, rel_y);
@@ -413,7 +413,7 @@ bool PartyPathFinder::bump_member(uint32 bumped_member_num, uint32 member_num)
 }
 
 /* "Try a move", only if target is contiguous. */
-bool PartyPathFinder::move_member(uint32 member_num, sint16 relx, sint16 rely, bool ignore_position, bool can_bump)
+bool PartyPathFinder::move_member(uint32 member_num, sint16 relx, sint16 rely, bool ignore_position, bool can_bump, bool avoid_danger_tiles)
 {
     /**Do not call with relx and rely set to 0.**/
     if(relx == 0 && rely == 0)
@@ -422,10 +422,13 @@ bool PartyPathFinder::move_member(uint32 member_num, sint16 relx, sint16 rely, b
     MapCoord target(member_loc);
     target = member_loc.abs_coords(relx, rely);
     Actor *actor = get_member(member_num).actor;
+    ActorMoveFlags flags = ACTOR_IGNORE_MOVES;
+    if(!avoid_danger_tiles)
+    	flags = flags | ACTOR_IGNORE_DANGER;
 
     if(is_contiguous(member_num, target) || ignore_position)
     {
-        if(actor->move(target.x, target.y, target.z, ACTOR_IGNORE_MOVES))
+        if(actor->move(target.x, target.y, target.z, flags))
         {
             actor->set_direction(relx, rely);
             return true;
@@ -439,7 +442,7 @@ bool PartyPathFinder::move_member(uint32 member_num, sint16 relx, sint16 rely, b
             if(blocking_member_num < sint32(member_num))
                 return false; // blocked by an actor not in the party
             if(bump_member(uint32(blocking_member_num), member_num)
-               && actor->move(target.x, target.y, target.z, ACTOR_IGNORE_OTHERS|ACTOR_IGNORE_MOVES))
+               && actor->move(target.x, target.y, target.z, flags|ACTOR_IGNORE_MOVES))
             {
                 actor->set_direction(relx, rely);
                 return true;

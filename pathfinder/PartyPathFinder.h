@@ -18,6 +18,9 @@
  * (perpendicular to the forward direction) shouldn't exchange positions until
  * the leader stops.
  */
+
+#define AVOID_DAMAGE_TILES true
+
 class PartyPathFinder
 {
     Party *party; // friend
@@ -30,7 +33,7 @@ public:
     void seek_leader(uint32 p);
     void end_seek(uint32 p);
 
-    bool move_member(uint32 member_num, sint16 relx, sint16 rely, bool ignore_position=false, bool can_bump=true);
+    bool move_member(uint32 member_num, sint16 relx, sint16 rely, bool ignore_position=false, bool can_bump=true, bool avoid_danger_tiles=true);
     bool bump_member(uint32 bumped_member_num, uint32 member_num);
 
     bool is_seeking(uint32 member_num) { return(get_member(member_num).actor->get_pathfinder() != 0); }
@@ -45,7 +48,7 @@ public:
 protected:
     bool try_moving_to_leader(uint32 p, bool ignore_position);
     bool try_moving_forward(uint32 p);
-    bool try_moving_to_target(uint32 p);
+    bool try_moving_to_target(uint32 p, bool avoid_damage_tiles=false);
     bool try_all_directions(uint32 p, MapCoord target_loc);
     bool try_moving_sideways(uint32 p);
 

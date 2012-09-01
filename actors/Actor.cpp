@@ -363,7 +363,7 @@ bool Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags f
 {
  Actor *a;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
- bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || is_in_party();
+ bool ignore_danger = (flags & ACTOR_IGNORE_DANGER);
 // bool ignore_danger = true;
 /*
     uint16 pitch = map->get_width(new_z);
@@ -423,7 +423,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  bool force_move = flags & ACTOR_FORCE_MOVE;
  bool open_doors = flags & ACTOR_OPEN_DOORS;
  bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
- bool ignore_danger = (flags & ACTOR_IGNORE_DANGER) || is_in_party();
+ bool ignore_danger = (flags & ACTOR_IGNORE_DANGER);
 // bool ignore_danger = true;
  bool ignore_moves = flags & ACTOR_IGNORE_MOVES;
  Obj *obj = NULL;
@@ -454,7 +454,9 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
       }
    }
  // avoid dangerous objects
- if(!ignore_danger && obj && obj_manager->is_damaging(new_x, new_y, new_z))
+ if(!ignore_danger
+		 && ((is_in_party() && map->is_damaging(new_x, new_y, new_z))
+				 || (obj && obj_manager->is_damaging(new_x, new_y, new_z))))
    {
     set_error(ACTOR_BLOCKED_BY_OBJECT);
     error_struct.blocking_obj = obj;

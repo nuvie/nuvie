@@ -629,7 +629,7 @@ bool ObjManager::is_damaging(uint16 x, uint16 y, uint8 level)
    for(link=obj_list->start();link!=NULL;link=link->next)
      {
       obj = (Obj *)link->data;
-      tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+      tile = tile_manager->get_original_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);//get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
       if(tile->flags1 & TILEFLAG_DAMAGING)
         return true;
      }
