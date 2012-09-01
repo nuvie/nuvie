@@ -1,3 +1,6 @@
+2012-09-01  Eric Fry <efry at users.sourceforge.net> r1562
+	* Ignore danger tiles if 'force move' is set.
+
 2012-09-01  Eric Fry <efry at users.sourceforge.net> r1561
 	* Changed PartyPathFinder to make party members avoid damaging tiles.
 	  They will attempt to avoid damaging tiles unless there is no other way

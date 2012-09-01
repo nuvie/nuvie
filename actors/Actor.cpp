@@ -455,6 +455,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
    }
  // avoid dangerous objects
  if(!ignore_danger
+		 && !force_move
 		 && ((is_in_party() && map->is_damaging(new_x, new_y, new_z))
 				 || (obj && obj_manager->is_damaging(new_x, new_y, new_z))))
    {
