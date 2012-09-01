@@ -1,3 +1,7 @@
+2012-09-01  Malignant Manor <malignantmanor@users.sourceforge.net> r1564
+	* Fix reintroduced bug where the skiff actor is blocked in tight areas
+	* Fix WITHOUT_DEBUG compiler option and remove some debugging printouts
+
 2012-09-01  Eric Fry <efry at users.sourceforge.net> r1563
 	* Allow diagonal movement between damage tiles.
 

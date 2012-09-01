@@ -3311,7 +3311,8 @@ void Event::display_move_text(Actor *target_actor, Obj *obj)
 
 bool Event::can_get_to_actor(Actor *actor, uint16 x, uint16 y) // need the exact tile
 {
-	if(map_window->get_interface() == INTERFACE_IGNORE_BLOCK)
+	if(map_window->get_interface() == INTERFACE_IGNORE_BLOCK
+	   || player->get_actor() == actor)
 		return true;
 
 	LineTestResult lt;

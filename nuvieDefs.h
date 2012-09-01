@@ -76,11 +76,11 @@ const uint16 map_pitch[2] = { 1024, 256 }; // width of 0:surface plane, and 1:al
 #define TRAMMEL_PHASE 1.75
 #define FELUCCA_PHASE 1.1666666666666667
 
+typedef enum { LEVEL_EMERGENCY=0, LEVEL_ALERT, LEVEL_CRITICAL, LEVEL_ERROR, LEVEL_WARNING, LEVEL_NOTIFICATION, LEVEL_INFORMATIONAL, LEVEL_DEBUGGING } DebugLevelType;
 #ifdef WITHOUT_DEBUG
 #define DEBUG(...)
 #else
 #define DEBUG(...) debug(__func__,__FILE__,__LINE__,__VA_ARGS__)
-typedef enum { LEVEL_EMERGENCY=0, LEVEL_ALERT, LEVEL_CRITICAL, LEVEL_ERROR, LEVEL_WARNING, LEVEL_NOTIFICATION, LEVEL_INFORMATIONAL, LEVEL_DEBUGGING } DebugLevelType;
 DebugLevelType debug(const char * func, const char * file, const int line, const bool no_header,const DebugLevelType level, const char *format, ...);
 #endif /* WITHOUT_DEBUG */
 

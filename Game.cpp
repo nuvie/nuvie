@@ -416,7 +416,7 @@ void Game::set_pause_flags(GamePauseState state)
 
 void Game::unpause_all()
 {
-	 DEBUG(0, LEVEL_DEBUGGING,"Unpause ALL!\n");
+//	 DEBUG(0, LEVEL_DEBUGGING,"Unpause ALL!\n");
 	unpause_user();
 	unpause_anims();
 	unpause_world();
@@ -439,7 +439,7 @@ void Game::unpause_user()
 
     }
 
-    DEBUG(0, LEVEL_DEBUGGING, "unpause user count=%d!\n", pause_user_count);
+//    DEBUG(0, LEVEL_DEBUGGING, "unpause user count=%d!\n", pause_user_count);
 }
 
 void Game::unpause_anims()
@@ -474,7 +474,7 @@ void Game::pause_user()
 
     pause_user_count++;
 
-    DEBUG(0, LEVEL_DEBUGGING, "Pause user count=%d!\n", pause_user_count);
+//    DEBUG(0, LEVEL_DEBUGGING, "Pause user count=%d!\n", pause_user_count);
 }
 
 void Game::pause_anims() { set_pause_flags((GamePauseState)(pause_flags | PAUSE_ANIMS)); }
