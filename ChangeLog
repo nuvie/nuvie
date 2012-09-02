@@ -1,3 +1,6 @@
+2012-09-02  Eric Fry <efry at users.sourceforge.net> r1572
+	* Fixed issue with explosion effect not unpausing animations once done.
+
 2012-09-02  Eric Fry <efry at users.sourceforge.net> r1571
 	* Fixed bug in SleepEffect class.
 	* Fixed some memory leaks when shutting down.

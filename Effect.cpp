@@ -313,6 +313,7 @@ uint16 ProjectileEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
        // {
 			game->unpause_world();
 			game->unpause_user();
+			game->unpause_anims();
 			//usecode->message_obj(obj, MESG_EFFECT_COMPLETE, this);
 			delete_self();
        // }
