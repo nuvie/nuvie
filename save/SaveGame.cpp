@@ -38,6 +38,7 @@
 #include "Game.h"
 #include "ObjManager.h"
 #include "ActorManager.h"
+#include "EggManager.h"
 #include "Actor.h"
 #include "ViewManager.h"
 #include "MapWindow.h"
@@ -133,6 +134,9 @@ bool SaveGame::load_new()
  update_objlist_for_new_game();
 
  load_objlist();
+
+ Actor *player = Game::get_game()->get_player()->get_actor();
+ Game::get_game()->get_egg_manager()->spawn_eggs(player->get_x(), player->get_y(), player->get_z(), true);
 
  free(data);
 

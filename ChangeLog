@@ -1,3 +1,6 @@
+2012-09-02  Eric Fry <efry at users.sourceforge.net> r1575
+	* Fixed bug "new save labeled save slot can load without gargoyles" [3547487]
+
 2012-09-02  Malignant Manor <malignantmanor@users.sourceforge.net> r1573
 	* Fix warnings about using a signed integer instead of an unsigned integer
 
