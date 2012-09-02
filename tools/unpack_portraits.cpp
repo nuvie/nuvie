@@ -98,7 +98,7 @@ int main(int argc, char **argv)
   c[i].g=pal[i*3+1];
   c[i].b=pal[i*3+2];
  
-  fprintf(stderr,"pal[%d] = [%d,%d,%d]\n", i, c[i].r, c[i].g, c[i].b);
+  fprintf(stderr,"pal[%u] = [%u,%u,%u]\n", i, c[i].r, c[i].g, c[i].b);
  }
 
  free(pal);
@@ -123,10 +123,10 @@ int main(int argc, char **argv)
   shp->get_size(&w,&h);
   s = shp->get_shape_surface();
   SDL_SetPalette(s, SDL_LOGPAL|SDL_PHYSPAL, c, 0, 256);
-  sprintf(bmp_file, "%03d.bmp", i);
+  sprintf(bmp_file, "%03u.bmp", i);
   SDL_SaveBMP(s, bmp_file);
  
-  fprintf(stderr,"Portrait %03d: width = %d, height = %d\n", i, w, h); 
+  fprintf(stderr,"Portrait %03u: width = %u, height = %u\n", i, w, h); 
 
   SDL_FreeSurface(s);
   delete shp;

@@ -319,7 +319,7 @@ void ConverseInterpret::do_text()
                            && isdigit(symbol[1]))
                      {
                       last_value = converse->get_var(strtol(&symbol[1], NULL, 10));
-                      snprintf(intval, 16, "%d", last_value);
+                      snprintf(intval, 16, "%u", last_value);
 
                       output.append((char *)intval);
                       output.append("");

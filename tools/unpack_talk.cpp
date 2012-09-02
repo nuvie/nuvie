@@ -47,7 +47,7 @@ int main(int argc, char **argv)
    continue;
 
 
-  sprintf(script_file, "%03d.dat", i);
+  sprintf(script_file, "%03u.dat", i);
   FILE * scr;
   scr=fopen(script_file,"w"); 
   if (scr) {
