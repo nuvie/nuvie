@@ -1,3 +1,6 @@
+2012-09-02  Eric Fry <efry at users.sourceforge.net> r1577
+	* Official release 0.4
+
 2012-09-02  Eric Fry <efry at users.sourceforge.net> r1576
 	* Fixed bug "Trinsic stable only front of horse is created by egg" [3564008]
 	  Changed U6 actor detection logic in spawn_egg().
