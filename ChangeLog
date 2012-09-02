@@ -1,3 +1,8 @@
+2012-09-02  Eric Fry <efry at users.sourceforge.net> r1576
+	* Fixed bug "Trinsic stable only front of horse is created by egg" [3564008]
+	  Changed U6 actor detection logic in spawn_egg().
+	* Allow eggs to spawn actors with worktype 0.
+
 2012-09-02  Eric Fry <efry at users.sourceforge.net> r1575
 	* Fixed bug "new save labeled save slot can load without gargoyles" [3547487]
 

@@ -387,7 +387,7 @@ static int nscript_actor_new(lua_State *L)
    uint16 y = 0;
    uint8 z = 0;
    uint8 alignment = ACTOR_ALIGNMENT_NEUTRAL;
-   uint8 worktype = 0; //motionless
+   uint8 worktype = ACTOR_WT_ASSAULT; //FIXME this may be U6 specific.
 
    int nargs = lua_gettop(L);
 
