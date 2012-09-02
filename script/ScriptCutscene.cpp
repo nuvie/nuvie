@@ -828,6 +828,11 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	bg_color = 0;
 }
 
+ScriptCutscene::~ScriptCutscene()
+{
+	delete font;
+}
+
 CSImage *ScriptCutscene::load_image(const char *filename, int idx)
 {
 	U6Lib_n lib_n;

@@ -160,6 +160,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  original_obj_loc = MapCoord(0,0,0);
 
  roof_mode = Game::get_game()->is_roof_mode();
+ roof_tiles = NULL;
 
  draw_brit_lens_anim = false;
  draw_garg_lens_anim = false;
@@ -174,6 +175,10 @@ MapWindow::~MapWindow()
  set_overlay(NULL); // free
  free(tmp_map_buf);
  delete anim_manager;
+ if(roof_tiles)
+ {
+	 SDL_FreeSurface(roof_tiles);
+ }
 }
 
 bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)

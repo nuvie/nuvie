@@ -94,6 +94,7 @@ private:
 
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
+	~ScriptCutscene();
 	CSImage *load_image(const char *filename, int idx);
 	std::vector<CSImage *> load_all_images(const char *filename);
 	void add_sprite(CSSprite *s) { sprite_list.push_back(s); }

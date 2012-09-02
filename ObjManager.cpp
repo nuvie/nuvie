@@ -106,6 +106,13 @@ ObjManager::~ObjManager()
  for(i=0;i<5;i++)
   iAVLFreeTree(dungeon[i], clean_obj_tree_node);
 
+ for(uint16 i=0; i < 256; i++)
+  {
+   if(actor_inventories[i])
+   {
+	   delete actor_inventories[i];
+   }
+  }
 }
 
 bool ObjManager::load_basetile()

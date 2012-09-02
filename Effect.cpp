@@ -879,8 +879,8 @@ SleepEffect::SleepEffect(uint8 to_hour)
 
 SleepEffect::~SleepEffect()
 {
-    if(timer) // make sure it doesn't try to call us again
-        timer->clear_target();
+    //if(timer) // make sure it doesn't try to call us again
+    //    timer->clear_target();
 }
 
 
@@ -888,8 +888,8 @@ SleepEffect::~SleepEffect()
  */
 void SleepEffect::delete_self()
 {
-    timer->clear_target(); // this will also stop/delete the TimedAdvance
-    timer = NULL;
+    //timer->clear_target(); // this will also stop/delete the TimedAdvance
+    //timer = NULL;
     Effect::delete_self();
 }
 

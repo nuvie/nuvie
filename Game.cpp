@@ -154,6 +154,7 @@ Game::~Game()
     if(weather) delete weather;
     if(magic) delete magic;
     if(book) delete book;
+    if(keybinder) delete keybinder;
 }
 
 bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)

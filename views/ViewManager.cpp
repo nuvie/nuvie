@@ -59,6 +59,7 @@ ViewManager::~ViewManager()
  if (current_view != inventory_view) delete inventory_view;
  if (current_view != party_view)     delete party_view;
  if (current_view != portrait_view)  delete portrait_view;
+ if (current_view != spell_view)  delete spell_view;
 }
 
 bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *por)

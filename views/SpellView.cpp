@@ -60,6 +60,10 @@ SpellView::SpellView(Configuration *cfg) : DraggableView(cfg)
 
 SpellView::~SpellView()
 {
+	if(background)
+	{
+		delete background;
+	}
 }
 
 bool SpellView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)

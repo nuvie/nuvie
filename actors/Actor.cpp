@@ -95,6 +95,16 @@ Actor::~Actor()
  }
  if(pathfinder)
     delete pathfinder;
+
+ for(uint8 location=0; location < ACTOR_MAX_READIED_OBJECTS; location++)
+   {
+    if(readied_objects[location] != NULL)
+      {
+       delete readied_objects[location];
+      }
+   }
+
+ return;
 }
 
 bool Actor::init()
