@@ -20,7 +20,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-#include <cassert>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "Event.h"
@@ -87,7 +86,7 @@ bool PortraitViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, ui
 
 void PortraitViewGump::Display(bool full_redraw)
 {
- char buf[5]; //xxxx\n
+ char buf[6]; //xxxxx\n
  //display_level_text();
  //display_spell_list_text();
  SDL_Rect dst;
@@ -111,45 +110,45 @@ void PortraitViewGump::Display(bool full_redraw)
 
  font->TextOut(screen->get_sdl_surface(), area.x + 29 + w, area.y + 6, actor->get_name());
 
- snprintf(buf, 4, "%d", actor->get_strength());
+ snprintf(buf, 5, "%d", actor->get_strength());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 170 - w, area.y + 18, buf);
 
- snprintf(buf, 4, "%d", actor->get_dexterity());
+ snprintf(buf, 5, "%d", actor->get_dexterity());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 170 - w, area.y + 27, buf);
 
- snprintf(buf, 4, "%d", actor->get_intelligence());
+ snprintf(buf, 5, "%d", actor->get_intelligence());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 170 - w, area.y + 36, buf);
 
  font->SetColoring( 0x6c, 0x00, 0x00, 0xbc, 0x34, 0x00, 0x00, 0x00, 0x00);
 
- snprintf(buf, 4, "%d", actor->get_magic());
+ snprintf(buf, 5, "%d", actor->get_magic());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 142 - w, area.y + 55, buf);
 
- snprintf(buf, 4, "%d", actor->get_maxmagic());
+ snprintf(buf, 5, "%d", actor->get_maxmagic());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 170 - w, area.y + 55, buf);
 
  font->SetColoring( 0x00, 0x3c, 0x70, 0x74, 0x74, 0x74, 0x00, 0x00, 0x00);
 
- snprintf(buf, 4, "%d", actor->get_hp());
+ snprintf(buf, 5, "%d", actor->get_hp());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 142 - w, area.y + 64, buf);
 
- snprintf(buf, 4, "%d", actor->get_maxhp());
+ snprintf(buf, 5, "%d", actor->get_maxhp());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 170 - w, area.y + 64, buf);
 
  font->SetColoring( 0xa8, 0x28, 0x00, 0xa8, 0x54, 0x00, 0x00, 0x00, 0x00);
 
- snprintf(buf, 4, "%d", actor->get_level());
+ snprintf(buf, 5, "%d", actor->get_level());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 142 - w, area.y + 73, buf);
 
- snprintf(buf, 4, "%d", actor->get_exp());
+ snprintf(buf, 5, "%d", actor->get_exp());
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 170 - w, area.y + 73, buf);
 
