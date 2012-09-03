@@ -88,7 +88,7 @@ void PortraitView::Display(bool full_redraw)
     {
       w=56; h=64;
       PartyView *party_view = Game::get_game()->get_view_manager()->get_party_view();
-      if(party_view)
+      if(Game::get_game()->is_orig_style() && party_view)
       {
         screen->fill(bg_color, area.x, area.y-2, area.w, 16);
         party_view->display_sun_moon_strip();

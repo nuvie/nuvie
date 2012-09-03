@@ -1,3 +1,6 @@
+2012-09-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1581
+	* Fix crash in fullscreen_map when looking at an actor (r1567 regression)
+
 2012-09-02  Eric Fry <efry at users.sourceforge.net> r1577
 	* Official release 0.4
 
