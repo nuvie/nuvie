@@ -217,7 +217,11 @@ bool Party::remove_actor(Actor *actor, bool keep_party_flag)
       num_in_party--;
 
       reform_party();
-
+      if(game->is_new_style())
+      {
+// FIXME need to close member's gumps if open
+        return true;
+      }
       //FIXME this is a bit hacky we need a better way to refresh views when things change
       //maybe using callbacks.
       //If the last actor dies and was being displayed in a view then we need to set the
@@ -247,8 +251,11 @@ bool Party::resurrect_dead_members()
   if(Game::get_game()->get_event()->using_control_cheat())
   {
      Game::get_game()->get_event()->set_control_cheat(false);
-     Game::get_game()->get_view_manager()->set_inventory_mode();
-     Game::get_game()->get_view_manager()->get_current_view()->set_party_member(0);
+     if(Game::get_game()->is_orig_style())
+     {
+       Game::get_game()->get_view_manager()->set_inventory_mode();
+       Game::get_game()->get_view_manager()->get_current_view()->set_party_member(0);
+     }
   }
 
   for(i = 0; i < ACTORMANAGER_MAX_ACTORS; i++)

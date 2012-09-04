@@ -106,12 +106,12 @@ DollWidget::~DollWidget()
 
 }
 
-bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om)
+bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, bool override_style)
 {
  tile_manager = tm;
  obj_manager = om;
 
- if(Game::get_game()->is_orig_style())
+ if(Game::get_game()->is_orig_style() || override_style)
  {
  switch(Game::get_game()->get_game_type())
  {

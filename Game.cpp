@@ -511,16 +511,22 @@ void Game::wait_for_interval()
 
 void Game::time_changed()
 {
-    get_command_bar()->update(); // date & wind
-    get_view_manager()->get_party_view()->update(); // sky
+    if(is_orig_style())
+    {
+        get_command_bar()->update(); // date & wind
+        get_view_manager()->get_party_view()->update(); // sky
+    }
     get_map_window()->updateAmbience();
 }
 
 // FIXME: should this be in ViewManager?
 void Game::stats_changed()
 {
-    get_view_manager()->get_actor_view()->update();
-    get_view_manager()->get_party_view()->update();
+    if(is_orig_style())
+    {
+        get_view_manager()->get_actor_view()->update();
+        get_view_manager()->get_party_view()->update();
+    }
 }
 
 

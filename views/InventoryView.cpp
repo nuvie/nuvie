@@ -122,7 +122,7 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 	View::init(x-8,y-2,t,p,tm,om);
 
  doll_widget = new DollWidget(config, this);
- doll_widget->init(party->get_actor(cur_party_member), 0, 8, tile_manager, obj_manager);
+ doll_widget->init(party->get_actor(cur_party_member), 0, 8, tile_manager, obj_manager, true);
 
  AddWidget(doll_widget);
 

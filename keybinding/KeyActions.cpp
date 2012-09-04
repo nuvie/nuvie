@@ -157,7 +157,7 @@ void ActionInventory(int *params)
 {
 	if(event->using_control_cheat() || params[0] == 0)
 		return;
-	if(player->get_party()->get_party_size() >= params[0])
+	if(game->is_orig_style() && player->get_party()->get_party_size() >= params[0])
 	{
 		view_manager->set_inventory_mode();
 		inventory_view->set_party_member(params[0] -1);
@@ -172,20 +172,27 @@ void ActionPartyView(int *params)
 
 void ActionNextInventory(int *params)
 {
-	uint8 party_num = inventory_view->get_party_member_num();
-	if(event->using_control_cheat() || player->get_party()->get_party_size() < party_num+2)
+	if(event->using_control_cheat())
 		return;
-	if(game->is_orig_style() && inventory_view->set_party_member(party_num+1))
-		view_manager->set_inventory_mode();
+	if(game->is_orig_style())
+	{
+		uint8 party_num = inventory_view->get_party_member_num();
+		if(player->get_party()->get_party_size() >= party_num+2
+		   && inventory_view->set_party_member(party_num+1))
+			view_manager->set_inventory_mode();
+	}
 }
 
 void ActionPreviousInventory(int *params)
 {
-	uint8 party_num = inventory_view->get_party_member_num();
-	if(event->using_control_cheat() || party_num < 1)
+	if(event->using_control_cheat())
 		return;
-	if(game->is_orig_style() && inventory_view->set_party_member(party_num-1))
-		view_manager->set_inventory_mode();
+	if(game->is_orig_style())
+	{
+		uint8 party_num = inventory_view->get_party_member_num();
+		if(party_num >= 1 && inventory_view->set_party_member(party_num-1))
+			view_manager->set_inventory_mode();
+	}
 }
 
 void ActionSoloMode(int *params)

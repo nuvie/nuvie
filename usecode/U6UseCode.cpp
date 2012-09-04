@@ -1308,7 +1308,8 @@ bool U6UseCode::use_fishing_pole(Obj *obj, UseCodeEvent ev)
 
     player_actor->inventory_add_object(fish);
 
-    view_manager->set_inventory_mode();
+    if(game->is_orig_style())
+        view_manager->set_inventory_mode();
 
     view_manager->update(); //FIX this should be moved higher up in UseCode
 
@@ -2442,8 +2443,8 @@ bool U6UseCode::use_churn(Obj *obj, UseCodeEvent ev)
  butter->obj_n = OBJ_U6_BUTTER;
  player_actor->inventory_add_object(butter);
  player_actor->inventory_add_object(bucket);
-
- view_manager->set_inventory_mode();
+ if(game->is_orig_style())
+    view_manager->set_inventory_mode();
 
  view_manager->update(); //FIX this should be moved higher up in UseCode
 
@@ -2481,8 +2482,8 @@ else
  honey_jar->obj_n = OBJ_U6_JAR_OF_HONEY; //fill the empty jar with honey.
 
  player_actor->inventory_add_object(honey_jar);   // add the filled jar back to the player's inventory
-
- view_manager->set_inventory_mode();
+ if(game->is_orig_style())
+    view_manager->set_inventory_mode();
 
  view_manager->update(); //FIX this should be moved higher up in UseCode
 

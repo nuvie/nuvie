@@ -12,7 +12,6 @@
 #include "GameClock.h"
 #include "EffectManager.h"
 #include "UseCode.h"
-#include "ViewManager.h"
 #include "MsgScroll.h"
 #include "ActorManager.h"
 #include "SoundManager.h"

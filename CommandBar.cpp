@@ -81,11 +81,13 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
     combat_mode = false;
     wind = "?";
 
+    bg_color = game->get_palette()->get_bg_color();
+    if(game->is_new_style())
+        return;
+
     if(game->get_game_type() == NUVIE_GAME_U6)
         init_buttons();
-    
-    bg_color = game->get_palette()->get_bg_color();
-    
+
     weather->add_wind_change_notification_callback((CallBack *)this); //we want to know when the wind direction changes.
 }
 
@@ -129,7 +131,7 @@ void CommandBar::fill_square(uint8 pal_index)
 
 void CommandBar::select_action(sint8 activate)
 {
-    if(game->get_game_type() == NUVIE_GAME_SE) // black out previous setting
+    if(game->is_orig_style() && game->get_game_type() == NUVIE_GAME_SE) // black out previous setting
         fill_square(0);
     if(selected_action == activate) // clear if already selected
         set_selected_action(-1);
@@ -227,7 +229,7 @@ void CommandBar::set_combat_mode(bool mode)
     if(combat_mode != mode)
     {
         combat_mode = mode;
-        if(game->get_game_type() == NUVIE_GAME_U6)
+        if(game->is_orig_style() && game->get_game_type() == NUVIE_GAME_U6)
         {
             icon[9] = tile_man->get_tile(combat_mode ? 415 : 414);
             update_display = true;

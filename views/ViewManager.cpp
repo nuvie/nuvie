@@ -74,14 +74,8 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  uint16 x_off = config_get_video_x_offset(config);
  uint16 y_off = config_get_video_y_offset(config);
 
- actor_view = new ActorView(config);
- actor_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager, portrait);
-
  inventory_view = new InventoryView(config);
  inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
-
- party_view = new PartyView(config);
- party_view->init(this,168+x_off,6+y_off, text, party, player, tile_manager, obj_manager);
 
  portrait_view = new PortraitView(config);
  portrait_view->init(176+x_off,8+y_off, text, party, tile_manager, obj_manager, portrait);
@@ -90,6 +84,11 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  {
 	 //inventory_view = new InventoryView(config);
 	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
+	 actor_view = new ActorView(config);
+	 actor_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager, portrait);
+
+	 party_view = new PartyView(config);
+	 party_view->init(this,168+x_off,6+y_off, text, party, player, tile_manager, obj_manager);
 
 	 spell_view = new SpellView(config);
  }
@@ -108,7 +107,8 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
 
 void ViewManager::reload()
 {
- actor_view->set_party_member(0);
+ if(Game::get_game()->is_orig_style())
+   actor_view->set_party_member(0);
  inventory_view->set_party_member(0);
 
  set_party_mode();

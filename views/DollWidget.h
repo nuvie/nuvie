@@ -53,7 +53,7 @@ class DollWidget : public GUI_Widget {
  DollWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~DollWidget();
 
- bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om);
+ bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, bool override_style = false);
  void set_actor(Actor *a);
  void Display(bool full_redraw);
 

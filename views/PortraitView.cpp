@@ -66,7 +66,7 @@ bool PortraitView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, 
  // cursor_y =
 
  doll_widget = new DollWidget(config, this);
- doll_widget->init(NULL, 0, 16, tile_manager, obj_manager);
+ doll_widget->init(NULL, 0, 16, tile_manager, obj_manager, true);
 
  AddWidget(doll_widget);
  doll_widget->Hide();
@@ -99,6 +99,8 @@ void PortraitView::Display(bool full_redraw)
     case NUVIE_GAME_SE: w=79; h=85; break;
     case NUVIE_GAME_MD: w=76; h=83; break;
   }
+ if(Game::get_game()->is_new_style())
+   screen->fill(bg_color, area.x, area.y, area.w, area.h);
  if(portrait_data != NULL/* && (full_redraw || update_display)*/)
   {
    update_display = false;
@@ -120,6 +122,8 @@ void PortraitView::Display(bool full_redraw)
 
 bool PortraitView::set_portrait(Actor *actor, const char *name)
 {
+ if(Game::get_game()->is_new_style())
+   this->Show();
  cur_actor_num = actor->get_actor_num();
  int doll_x_offset = 0;
 
@@ -183,8 +187,10 @@ GUI_status PortraitView::HandleEvent(const SDL_Event *event)
     if(waiting
        && (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_KEYDOWN))
     {
-        // FIXME revert to previous status view
-        Game::get_game()->get_view_manager()->set_inventory_mode();
+        if(Game::get_game()->is_new_style())
+            this->Hide();
+        else // FIXME revert to previous status view
+            Game::get_game()->get_view_manager()->set_inventory_mode();
         // Game::get_game()->get_scroll()->set_input_mode(false);
         Game::get_game()->get_scroll()->message("\n");
         set_waiting(false);

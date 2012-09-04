@@ -379,6 +379,8 @@ void Event::get_inventory_obj(Actor *actor)
 {
 	get_target("");
 	moveCursorToInventory();
+	if(game->is_new_style())
+		view_manager->set_inventory_mode();
 	view_manager->get_inventory_view()->set_actor(actor, true);
 }
 
@@ -847,9 +849,12 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
  player->get_location(&x,&y,&level);
 
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
- bool got_object = perform_get(obj, view_manager->get_inventory_view()->get_inventory_widget()->get_container(),
+ bool got_object;
+ if(game->is_orig_style())
+    got_object = perform_get(obj, view_manager->get_inventory_view()->get_inventory_widget()->get_container(),
                                player->get_actor());
-
+ else
+    got_object = perform_get(obj, NULL, player->get_actor());
  view_manager->update(); //redraw views to show new item.
  endAction();
 
@@ -1564,19 +1569,22 @@ void Event::alt_code_input(const char *in)
           {
             player->set_actor(a);
             player->set_mapwindow_centered(true);
-            view_manager->set_inventory_mode(); // reset inventoryview
+            if(game->is_orig_style())
+               view_manager->set_inventory_mode(); // reset inventoryview
             if(game->get_party()->contains_actor(player->get_actor()))
             {
                 in_control_cheat = false;
                 uint8 member_num = game->get_party()->get_member_num(player->get_actor());
-                view_manager->get_inventory_view()->set_party_member(member_num);
+                if(game->is_orig_style())
+                    view_manager->get_inventory_view()->set_party_member(member_num);
             }
             else
             {
                 in_control_cheat = true;
-                view_manager->get_inventory_view()->set_actor(player->get_actor());
+                if(game->is_orig_style())
+                    view_manager->get_inventory_view()->set_actor(player->get_actor());
             }
-            scroll->display_string("\n");
+            scroll->display_string("\n\n");
           }
             scroll->display_prompt();
             active_alt_code = 0;
@@ -2116,23 +2124,17 @@ void Event::solo_mode(uint32 party_member)
         scroll->display_string("Solo mode\n\n");
         player->set_mapwindow_centered(true);
         actor->set_worktype(0x02); // Player
-        if(view_manager->get_current_view() == view_manager->get_inventory_view())
-        {
-            if(in_control_cheat)
-            {
-                in_control_cheat = false;
-            }
+        in_control_cheat = false;
+
+        if(game->is_new_style())
+        {// do nothing for now
+        }
+        else if(view_manager->get_current_view() == view_manager->get_inventory_view())
             view_manager->get_inventory_view()->set_party_member(party_member);
-        }
         else if(view_manager->get_current_view() == view_manager->get_actor_view())
-        {
-            if(in_control_cheat)
-                in_control_cheat = false;
             view_manager->get_actor_view()->set_party_member(party_member);
-        }
     }
     scroll->display_prompt();
-    in_control_cheat = false;
 }
 
 /* Switch to party mode. */
@@ -2853,7 +2855,8 @@ void Event::doAction()
     		else
     		{
     			magic->resume();
-    			view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
+				if(game->is_orig_style())
+					view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
     		}
     	}
     	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
@@ -2863,8 +2866,13 @@ void Event::doAction()
     	else if(input.type == EVENTINPUT_OBJECT)
     	{
     		magic->resume(input.obj);
-    		view_manager->get_inventory_view()->release_focus();
-    		view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
+			if(game->is_orig_style())
+			{
+				view_manager->get_inventory_view()->release_focus();
+				view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
+			}
+			else
+				view_manager->get_inventory_view()->Hide();
     	}
     	else if(input.type == EVENTINPUT_SPELL_NUM)
     	{
@@ -2932,8 +2940,13 @@ void Event::cancelAction()
     {
         if(magic->is_waiting_for_inventory_obj())
         {
-            view_manager->get_inventory_view()->release_focus();
-            view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
+            if(game->is_orig_style())
+            {
+                view_manager->get_inventory_view()->release_focus();
+                view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
+            }
+            else
+                view_manager->get_inventory_view()->Hide();
         }
         endAction();
         cancelAction();
@@ -3125,7 +3138,8 @@ void Event::endAction(bool prompt)
         input.get_direction = false;
         map_window->set_show_use_cursor(false);
         map_window->set_show_cursor(false);
-        view_manager->get_inventory_view()->set_show_cursor(false);
+        if(game->is_orig_style())
+            view_manager->get_inventory_view()->set_show_cursor(false);
 //    game->set_mouse_pointer(0);
         return;
     }
@@ -3169,8 +3183,11 @@ void Event::moveCursorToInventory()
     {
         map_window->set_show_cursor(false); // hide both MapWindow cursors
         map_window->set_show_use_cursor(false);
-        view_manager->get_inventory_view()->set_show_cursor(true);
-        view_manager->get_inventory_view()->grab_focus(); // Inventory wants keyboard input
+        if(game->is_orig_style())
+        {
+            view_manager->get_inventory_view()->set_show_cursor(true);
+            view_manager->get_inventory_view()->grab_focus(); // Inventory wants keyboard input
+        }
     }
     input.select_from_inventory = true;
 }
@@ -3179,8 +3196,11 @@ void Event::moveCursorToInventory()
 void Event::moveCursorToMapWindow(bool ToggleCursor)
 {
     input.select_from_inventory = false;
-    view_manager->get_inventory_view()->set_show_cursor(false);
-    view_manager->get_inventory_view()->release_focus();
+    if(game->is_orig_style())
+    {
+        view_manager->get_inventory_view()->set_show_cursor(false);
+        view_manager->get_inventory_view()->release_focus();
+    }
     if(input.get_direction) // show the correct MapWindow cursor
         map_window->set_show_use_cursor(true);
     else if(ToggleCursor && mode == EQUIP_MODE)
