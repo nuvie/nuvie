@@ -438,7 +438,7 @@ static int nscript_actor_new(lua_State *L)
       }
 
       //init here.
-      if(Game::get_game()->get_actor_manager()->create_temp_actor(obj_n, x, y, z, alignment, worktype, &actor) == false)
+      if(Game::get_game()->get_actor_manager()->create_temp_actor(obj_n, NO_OBJ_STATUS, x, y, z, alignment, worktype, &actor) == false)
          return 0;
 
       //create the new lua Actor variable

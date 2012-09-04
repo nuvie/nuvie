@@ -29,6 +29,8 @@
 
 class Actor;
 
+#define NO_OBJ_STATUS 0
+
 // obj status bit flags
 #define OBJ_STATUS_OK_TO_TAKE    0x1
 //#define OBJ_STATUS_SEEN_EGG      0x2  // something to do with eggs <- not sure about this one.

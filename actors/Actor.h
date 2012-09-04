@@ -263,7 +263,7 @@ class Actor
  Actor(Map *m, ObjManager *om, GameClock *c);
  virtual ~Actor();
 
- virtual bool init();
+ virtual bool init(uint8 obj_status=NO_OBJ_STATUS);
  void init_from_obj(Obj *obj, bool change_base_obj=false);
 
  bool is_onscreen() { return(MapCoord(x,y,z).is_visible()); }

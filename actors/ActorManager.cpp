@@ -814,7 +814,7 @@ bool ActorManager::is_temp_actor(uint8 id_n)
  return false;
 }
 
-bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, uint8 alignment, uint8 worktype, Actor **new_actor)
+bool ActorManager::create_temp_actor(uint16 obj_n, uint8 obj_status, uint16 x, uint16 y, uint8 z, uint8 alignment, uint8 worktype, Actor **new_actor)
 {
  Actor *actor;
  actor = find_free_temp_actor();
@@ -840,7 +840,7 @@ bool ActorManager::create_temp_actor(uint16 obj_n, uint16 x, uint16 y, uint8 z, 
    actor->movement_flags = 0;
    actor->alignment = ACTOR_ALIGNMENT_NEUTRAL;
 
-   actor->init();
+   actor->init(obj_status);
 
    Game::get_game()->get_script()->call_actor_init(actor, alignment);
 
@@ -961,7 +961,7 @@ bool ActorManager::clone_actor(Actor *actor, Actor **new_actor, MapCoord new_loc
 	if(actor == NULL)
 		return false;
 
-	if(create_temp_actor(actor->obj_n, new_location.x, new_location.y, new_location.z, actor->alignment, actor->worktype, new_actor) == false)
+	if(create_temp_actor(actor->obj_n, NO_OBJ_STATUS, new_location.x, new_location.y, new_location.z, actor->alignment, actor->worktype, new_actor) == false)
 		return false;
 
 	(*new_actor)->strength = actor->strength;

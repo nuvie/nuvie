@@ -107,7 +107,7 @@ Actor::~Actor()
  return;
 }
 
-bool Actor::init()
+bool Actor::init(uint8 obj_status)
 {
  if(pathfinder)
     delete_pathfinder();

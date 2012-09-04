@@ -23,6 +23,7 @@
 #include <cstdlib>
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "U6LList.h"
 
 #include "Game.h"
@@ -55,7 +56,7 @@ U6Actor::~U6Actor()
 {
 }
 
-bool U6Actor::init()
+bool U6Actor::init(uint8 obj_status)
 {
  Actor::init();
  base_actor_type = get_actor_type(base_obj_n);
@@ -95,7 +96,7 @@ bool U6Actor::init()
    case OBJ_U6_COW :
    case OBJ_U6_ALLIGATOR :
    case OBJ_U6_HORSE :
-   case OBJ_U6_HORSE_WITH_RIDER : init_splitactor(); break;
+   case OBJ_U6_HORSE_WITH_RIDER : init_splitactor(obj_status); break;
 
 
    default : break;
@@ -152,7 +153,7 @@ bool U6Actor::init_ship()
  return true;
 }
 
-bool U6Actor::init_splitactor()
+bool U6Actor::init_splitactor(uint8 obj_status)
 {
  uint16 obj_x, obj_y;
 
@@ -171,7 +172,15 @@ bool U6Actor::init_splitactor()
                       break;
   }
 
- init_surrounding_obj(obj_x, obj_y, z, obj_n, frame_n + 8); // init back object
+ // init back object
+ if(obj_status & OBJ_STATUS_MUTANT)
+ {
+	 init_surrounding_obj(obj_x, obj_y, z, obj_n, (get_reverse_direction(direction) * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1));
+ }
+ else
+ {
+	 init_surrounding_obj(obj_x, obj_y, z, obj_n, frame_n + 8);
+ }
 
  return true;
 }
@@ -1331,7 +1340,10 @@ inline void U6Actor::set_direction_of_surrounding_splitactor_objs(uint8 new_dire
 
  obj = surrounding_objects.back();
 
- obj->frame_n =  8 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
+ if(obj->frame_n < 8)
+	 obj->frame_n = (get_reverse_direction(new_direction) * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1); //mutant actor
+ else
+	 obj->frame_n =  8 + (new_direction * actor_type->tiles_per_direction + actor_type->tiles_per_frame - 1);
 
  obj->x = x;
  obj->y = y;
@@ -1472,9 +1484,27 @@ inline void U6Actor::twitch_obj(Obj *obj)
                        walk_frame * actor_type->tiles_per_frame;
     return;
    }
- obj->frame_n = (obj->frame_n / (actor_type->frames_per_direction * 4) * (actor_type->frames_per_direction * 4)) + direction * actor_type->tiles_per_direction +
-                       walk_frame * actor_type->tiles_per_frame;
 
+ switch(obj->obj_n)
+    {
+     case OBJ_U6_GIANT_SCORPION :
+     case OBJ_U6_GIANT_ANT :
+     case OBJ_U6_COW :
+     case OBJ_U6_ALLIGATOR :
+     case OBJ_U6_HORSE :
+    	 if(obj->frame_n < 8) //mutant actor with two heads
+    	 {
+    		 obj->frame_n = get_reverse_direction(direction) * actor_type->tiles_per_direction +
+    				 walk_frame * actor_type->tiles_per_frame;
+    		 return;
+    	 }
+    	 break;
+     default : break;
+    }
+
+
+	 obj->frame_n = (obj->frame_n / (actor_type->frames_per_direction * 4) * (actor_type->frames_per_direction * 4)) + direction * actor_type->tiles_per_direction +
+                       walk_frame * actor_type->tiles_per_frame;
 }
 
 inline void U6Actor::clear_surrounding_objs_list(bool delete_objs)

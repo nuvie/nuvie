@@ -67,7 +67,7 @@ class U6Actor: public Actor
  U6Actor(Map *m, ObjManager *om, GameClock *c);
  ~U6Actor();
 
- bool init();
+ bool init(uint8 obj_status=NO_OBJ_STATUS);
  virtual uint16 get_downward_facing_tile_num();
  bool updateSchedule(uint8 hour);
  void set_worktype(uint8 new_worktype, bool init = false);
@@ -111,7 +111,7 @@ class U6Actor: public Actor
 
  protected:
  bool init_ship();
- bool init_splitactor(); //cows, horses etc.
+ bool init_splitactor(uint8 obj_status); //cows, horses etc.
  bool init_dragon();
  bool init_hydra();
  bool init_silver_serpent();

@@ -1,4 +1,7 @@
-2012-09-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1583
+2012-09-05  Eric Fry <efry at users.sourceforge.net> r1584
+	* Added support for spawning mutant (two headed) actors.
+
+2012-09-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1583
 	* Separate some original style and fullscreen_map code. This should stop
 		the views from popping up when not needed.
 
