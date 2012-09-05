@@ -2290,7 +2290,7 @@ function actor_get_obj(actor, obj)
 	if player_loc.z == 0 and obj.ok_to_take == false then --stealing logic only applies to surface level.
 		player_subtract_karma(1)
 		play_sfx(SFX_FAILURE, true)
-		for i=1,0xe0 do --perm actors
+		for i=1,202 do --perm actors
 			local actor = Actor.get(i)
 
 			if actor.alive == true and actor.z == player_loc.z and actor.in_party == false and actor.align == ALIGNMENT_NEUTRAL and actor.asleep == false then
@@ -2320,7 +2320,7 @@ dbg("activate_city_guards()")
    
    player_subtract_karma(5)
    
-   for i=1,0xff do
+   for i=1,202 do --perm actors
       local actor = Actor.get(i)
    
       if actor.alive == true and actor.z == player_loc.z and actor.in_party == false and actor.align == ALIGNMENT_NEUTRAL then

@@ -53,6 +53,7 @@ class ActorManager
  Map *map;
  Actor *actors[ACTORMANAGER_MAX_ACTORS];
  uint8 player_actor;
+ uint8 temp_actor_offset;
  GameClock *clock;
 
  uint16 last_obj_blk_x, last_obj_blk_y;

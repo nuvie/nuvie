@@ -1,3 +1,6 @@
+2012-09-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1585
+	* Increase the number of temporary actors in Ultima 6 by 21
+
 2012-09-05  Eric Fry <efry at users.sourceforge.net> r1584
 	* Added support for spawning mutant (two headed) actors.
 

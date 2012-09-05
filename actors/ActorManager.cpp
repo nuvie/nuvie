@@ -41,7 +41,6 @@
 #include "Script.h"
 #include "U6objects.h"
 
-#define TEMP_ACTOR_OFFSET 224
 #define ACTOR_TEMP_INIT 255
 #define SCHEDULE_SIZE 5
 
@@ -59,7 +58,7 @@ ActorManager::ActorManager(Configuration *cfg, Map *m, TileManager *tm, ObjManag
 
  for(i = 0; i < ACTORMANAGER_MAX_ACTORS; i++)
    actors[i] = NULL;
-
+ temp_actor_offset = 224;
  init();
 }
 
@@ -114,6 +113,10 @@ bool ActorManager::load(NuvieIO *objlist)
  config->value("config/GameType",game_type);
 
  objlist->seek(0x100); // Start of Actor position info
+ if(game_type == NUVIE_GAME_U6)
+    temp_actor_offset = 203;
+ else
+    temp_actor_offset = 224;
 
  for(i=0; i < ACTORMANAGER_MAX_ACTORS; i++)
    {
@@ -808,7 +811,7 @@ bool ActorManager::is_temp_actor(Actor *actor)
 
 bool ActorManager::is_temp_actor(uint8 id_n)
 {
- if(id_n >= TEMP_ACTOR_OFFSET)
+ if(id_n >= temp_actor_offset)
   return true;
 
  return false;
@@ -870,7 +873,7 @@ inline Actor *ActorManager::find_free_temp_actor()
 {
  uint16 i;
 
- for(i = TEMP_ACTOR_OFFSET;i<ACTORMANAGER_MAX_ACTORS;i++)
+ for(i = temp_actor_offset;i<ACTORMANAGER_MAX_ACTORS;i++)
   {
    if(actors[i]->obj_n == 0)
      return actors[i];
@@ -914,7 +917,7 @@ void ActorManager::clean_temp_actors_from_level(uint8 level)
 {
  uint16 i;
 
- for(i=TEMP_ACTOR_OFFSET;i<ACTORMANAGER_MAX_ACTORS;i++)
+ for(i=temp_actor_offset;i<ACTORMANAGER_MAX_ACTORS;i++)
    {
     if((actors[i]->is_visible() || actors[i]->x != 0 || actors[i]->y != 0 || actors[i]->z != 0)
        && actors[i]->is_in_party() == false && actors[i]->z == level)
@@ -929,7 +932,7 @@ void ActorManager::clean_temp_actors_from_area(uint16 x, uint16 y)
  uint16 i;
  uint16 dist_x, dist_y;
 
- for(i=TEMP_ACTOR_OFFSET;i<ACTORMANAGER_MAX_ACTORS;i++)
+ for(i=temp_actor_offset;i<ACTORMANAGER_MAX_ACTORS;i++)
    {
     if((actors[i]->is_visible() || actors[i]->x != 0 || actors[i]->y != 0 || actors[i]->z != 0)
        && actors[i]->is_in_party() == false)
