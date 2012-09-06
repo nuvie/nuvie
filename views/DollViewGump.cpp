@@ -112,8 +112,9 @@ bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16
 	return true;
 }
 
-
-
+static const char combat_mode_tbl[][8] = {"COMMAND", "FRONT", "REAR", "FLANK", "BERSERK", "RETREAT", "ASSAULT"};
+static const char combat_mode_tbl_se[][8] = {"COMMAND", "RANGED", "FLEE", "CLOSE"};
+static const char combat_mode_tbl_md[][8] = {"COMMAND", "RANGED", "FLEE", "ATTACK"};
 
 void DollViewGump::Display(bool full_redraw)
 {
@@ -125,21 +126,13 @@ void DollViewGump::Display(bool full_redraw)
  dst.h = 136;
  SDL_BlitSurface(bg_image, NULL, surface, &dst);
 
- int w,h;
- font->TextExtent(actor->get_name(), &w, &h);
- if(w < 58)
- {
-	 w = (58 - w) / 2;
- }
- else
-	 w = 0;
+ uint8 w = font->get_center(actor->get_name(), 58);
  font->TextOut(screen->get_sdl_surface(), area.x + 29 + w, area.y + 7, actor->get_name());
 
  displayEquipWeight();
 
  DisplayChildren(full_redraw);
-
-
+ displayCombatMode();
  update_display = false;
  screen->update(area.x, area.y, area.w, area.h);
 
@@ -157,6 +150,22 @@ void DollViewGump::displayEquipWeight()
 
 	snprintf(string, 4, "%d", strength);
 	font->TextOut(screen->get_sdl_surface(), area.x + ((strength > 9) ? 76 : 81), area.y + 82, string);
+}
+
+void DollViewGump::displayCombatMode()
+{
+	if(!actor->is_in_party() || party->get_member_num(actor) == 0)
+		return;
+	uint8 index = get_combat_mode_index(actor);
+	const char *text;
+	if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+		text = combat_mode_tbl[index];
+	else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD)
+		text = combat_mode_tbl_md[index];
+	else // SE
+		text = combat_mode_tbl_se[index];
+	uint8 c = font->get_center(text, 55);
+	font->TextOut(screen->get_sdl_surface(), area.x + 36 + c, area.y + 97, text);
 }
 
 GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
@@ -193,6 +202,12 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	else if(caller == heart_button)
 	{
 		Game::get_game()->get_view_manager()->open_portrait_gump(actor);
+	}
+	else if(caller == combat_button && actor->is_in_party()
+	        && party->get_member_num(actor) != 0)
+	{
+		set_combat_mode(actor);
+		update_display = true;
 	}
 	else if(caller == combat_button && event->get_mode() != INPUT_MODE
 	        && event->get_mode() != ATTACK_MODE && event->get_mode() != CAST_MODE)

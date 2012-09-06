@@ -36,6 +36,7 @@ class Text;
 class ObjManager;
 class Party;
 class GUI_Button;
+class Actor;
 
 class View: public GUI_Widget
 {
@@ -65,6 +66,8 @@ class View: public GUI_Widget
  bool next_party_member();
  bool prev_party_member();
  void fill_md_background(uint8 bg_color, SDL_Rect area);
+ void set_combat_mode(Actor *actor);
+ uint8 get_combat_mode_index(Actor *actor);
 
  virtual void close_view() {}
 

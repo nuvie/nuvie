@@ -68,6 +68,7 @@ public:
  protected:
 
  void displayEquipWeight();
+ void displayCombatMode();
 };
 
 #endif /* __DollViewGump_h__ */

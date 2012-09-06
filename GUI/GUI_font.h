@@ -49,6 +49,9 @@ public:
   /* yields pixel width and height of a string when printed with this font */
   void TextExtent(const char *text, int *w, int *h, int line_wrap=0);
 
+  /* yields the center (of width) where the text should be placed or 0 if larger than width */
+  uint16 get_center(const char *text, uint16 width);
+
 protected:
   /* the font source surface */
   SDL_Surface *fontStore;

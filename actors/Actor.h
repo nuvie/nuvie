@@ -91,6 +91,8 @@ using std::vector;
 
 #define ACTOR_WT_FOLLOW 1
 #define ACTOR_WT_PLAYER 2
+#define ACTOR_WT_RANGED 4
+#define ACTOR_WT_RETREAT 7
 #define ACTOR_WT_ASSAULT 8
 
 #define ACTOR_CHANGE_BASE_OBJ_N true

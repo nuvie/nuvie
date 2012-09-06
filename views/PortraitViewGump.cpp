@@ -97,14 +97,7 @@ void PortraitViewGump::Display(bool full_redraw)
  screen->blit(area.x+25,area.y+17,portrait_data,8,PORTRAIT_WIDTH,PORTRAIT_HEIGHT,PORTRAIT_WIDTH,false);
 
  int w,h;
- font->TextExtent(actor->get_name(), &w, &h);
-
- if(w < 138)
-  {
- 	 w = (138 - w) / 2;
-  }
-  else
- 	 w = 0;
+ w = font->get_center(actor->get_name(), 138);
 
  font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
 

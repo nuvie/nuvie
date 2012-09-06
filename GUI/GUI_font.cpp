@@ -176,3 +176,13 @@ void GUI_Font:: TextExtent(const char *text, int *w, int *h, int line_wrap)
 	 *h=charh-1;
  return;
 }
+
+uint16 GUI_Font::get_center(const char *text, uint16 width)
+{
+	int w,h;
+	TextExtent(text, &w, &h);
+	if(w < width)
+		return ((width - w) / 2);
+	else
+		return 0;
+}

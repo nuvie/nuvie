@@ -41,8 +41,6 @@
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
 static const char combat_mode_tbl_se[][6] = {"CMND", "RANGE", "FLEE", "CLOSE"};
 static const char combat_mode_tbl_md[][6] = {"CMND", "RANGE", "FLEE", "ATTK"};
-static const int first_combat_mode = 0x2;
-static const int last_combat_mode = 0x8;
 #define MD Game::get_game()->get_game_type()==NUVIE_GAME_MD
 
 InventoryView::InventoryView(Configuration *cfg) : View(cfg),
@@ -286,11 +284,12 @@ void InventoryView::display_combat_mode()
 {
  Actor *actor = party->get_actor(cur_party_member);
 
+ uint8 index = get_combat_mode_index(actor);
  if(Game::get_game()->get_game_type() != NUVIE_GAME_U6)
  {
 	int y_off = 96;
 	if(MD)
-	y_off = 100;
+		y_off = 100;
 	Tile *tile;
 
 // Avatar combat text background (where command button is for other party members)
@@ -315,23 +314,13 @@ void InventoryView::display_combat_mode()
 		tile = tile_manager->get_tile(368);
 	screen->blit(area.x+7*16, area.y + y_off, tile->data,8,16,16,16,true);
 
-	int combat_mode_index = 0;
-	if(actor->get_combat_mode() == 2) // command
-		combat_mode_index = 0;
-	else if(actor->get_combat_mode() == 4) // ranged
-		combat_mode_index = 1;
-	else if(actor->get_combat_mode() == 7) // flee
-		combat_mode_index = 2;
-	else if(actor->get_combat_mode() == 8) // attack (MD)/close (SE)
-		combat_mode_index = 3;
-
 	if(MD)
-		text->drawString(screen, combat_mode_tbl_md[combat_mode_index], area.x+5*16, area.y+101, 0);
+		text->drawString(screen, combat_mode_tbl_md[index], area.x+5*16, area.y+101, 0);
 	else 
-		text->drawString(screen, combat_mode_tbl_se[combat_mode_index], area.x+5*16, area.y+98, 0);
+		text->drawString(screen, combat_mode_tbl_se[index], area.x+5*16, area.y+98, 0);
  }
  else
-   text->drawString(screen, combat_mode_tbl[actor->get_combat_mode() - 2], area.x+5*16, area.y+88, 0);
+	text->drawString(screen, combat_mode_tbl[index], area.x+5*16, area.y+88, 0);
 }
 
 /* Move the cursor around, ready or unready objects, select objects, switch
@@ -705,25 +694,7 @@ GUI_status InventoryView::callback(uint16 msg, GUI_CallBack *caller, void *data)
             if(cur_party_member != 0) // You can't change combat modes for the avatar.
             {
                 Actor *actor = party->get_actor(cur_party_member);
-                uint8 combat_mode = actor->get_combat_mode();
-              if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
-              {
-                combat_mode++;
-                if(combat_mode > last_combat_mode)
-                    combat_mode = first_combat_mode;
-              }
-              else
-              {
-                if(actor->get_combat_mode() == 2) // command
-                    combat_mode = 4; // ranged
-                else if(actor->get_combat_mode() == 4) // ranged
-                    combat_mode = 7; // flee
-                else if(actor->get_combat_mode() == 7) // flee
-                    combat_mode = 8; // attack (MD)/close (SE)
-                else if(actor->get_combat_mode() == 8) // attack (MD)/close (SE)
-                    combat_mode = 2; // command
-               }
-                actor->set_combat_mode(combat_mode);
+                set_combat_mode(actor);
                 update_display = true;
             }
 

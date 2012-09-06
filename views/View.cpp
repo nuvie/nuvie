@@ -27,6 +27,7 @@
 #include "GamePalette.h"
 #include "ViewManager.h"
 #include "View.h"
+#include "Actor.h"
 
 #include "GUI_widget.h"
 #include "GUI_button.h"
@@ -124,6 +125,50 @@ void View::fill_md_background(uint8 bg_color, SDL_Rect area)
 	screen->fill(bg_color, area.x + area.w -4, area.y + 3, 1, 11); // right pillar
 	screen->fill(bg_color, area.x + 4, area.y, area.w - 8, 15); // top center
 	screen->fill(bg_color, area.x, area.y +14, area.w, area.h -14); // bottom
+}
+
+void View::set_combat_mode(Actor *actor)
+{
+	uint8 combat_mode = actor->get_combat_mode();
+	if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+	{
+		combat_mode++;
+		if(combat_mode > ACTOR_WT_ASSAULT)
+			combat_mode = ACTOR_WT_PLAYER;
+	}
+	else
+	{
+		if(combat_mode == ACTOR_WT_PLAYER)
+			combat_mode = ACTOR_WT_RANGED;
+		else if(combat_mode == ACTOR_WT_RANGED)
+			combat_mode = ACTOR_WT_RETREAT;
+		else if(combat_mode == ACTOR_WT_RETREAT)
+			combat_mode = ACTOR_WT_ASSAULT;
+		else if(combat_mode == ACTOR_WT_ASSAULT)
+			combat_mode = ACTOR_WT_PLAYER;
+	}
+	actor->set_combat_mode(combat_mode);
+}
+
+uint8 View::get_combat_mode_index(Actor *actor)
+{
+	uint8 combat_mode = actor->get_combat_mode();
+	if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+		return (combat_mode - 2);
+	else
+	{
+		uint8 combat_mode_index = 0;
+		if(combat_mode == ACTOR_WT_PLAYER)
+			combat_mode_index = 0;
+		else if(combat_mode == ACTOR_WT_RANGED)
+			combat_mode_index = 1;
+		else if(combat_mode == ACTOR_WT_RETREAT)
+			combat_mode_index = 2;
+		else if(combat_mode == ACTOR_WT_ASSAULT)
+			combat_mode_index = 3;
+
+		return combat_mode_index;
+	}
 }
 
 GUI_status View::callback(uint16 msg, GUI_CallBack *caller, void *data)

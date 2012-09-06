@@ -1,3 +1,6 @@
+2012-09-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1586
+	* Allow changing combat strategy with DollViewGump (fullscreen_map)
+
 2012-09-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1585
 	* Increase the number of temporary actors in Ultima 6 by 21
 
