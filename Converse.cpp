@@ -302,6 +302,8 @@ void Converse::init_variables()
     // FIXME: count dead party members in PARTYALL, not in PARTYLIVE
     set_var(U6TALK_VAR_PARTYALL, get_var(U6TALK_VAR_PARTYLIVE));
     set_var(U6TALK_VAR_HP, player->get_actor()->get_hp());
+    set_svar(U6TALK_VAR_NPC_NAME, npc_name(npc_num));
+    set_svar(U6TALK_VAR_PLAYER_NAME, player->get_name());
     set_var(U6TALK_VAR_QUESTF, player->get_quest_flag());
     set_var(U6TALK_VAR_WORKTYPE, npc->get_worktype());
 }

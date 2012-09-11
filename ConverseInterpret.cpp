@@ -374,7 +374,7 @@ void ConverseInterpret::do_text()
  */
 void ConverseInterpret::do_ctrl()
 {
-    stack<converse_value> st;
+    stack<converse_typed_value> st;
 #ifdef CONVERSE_DEBUG
     DEBUG(0,LEVEL_DEBUGGING,"Converse: %04x INSTR:", in_start);
     for(uint32 v = 0; v < val_count(); v++)
@@ -382,8 +382,12 @@ void ConverseInterpret::do_ctrl()
     DEBUG(0,LEVEL_DEBUGGING,"\n");
 #endif
 
+    converse_typed_value v = {U6OP_VAR, 0};
     while(val_count())
-        st.push(pop_val());
+    {
+    	v.val = pop_val();
+        st.push(v);
+    }
     op(st);
 }
 
@@ -437,6 +441,11 @@ uint8 ConverseInterpret::get_val_size(uint32 vi)
     return(0);
 }
 
+void ConverseInterpret::set_ystr(const char *s)
+{
+	ystring = s ? s : "";
+	converse->set_svar(U6TALK_VAR_YSTRING, ystring.c_str());
+}
 
 /* Set the return string `sn' to `s'.
  */
@@ -460,9 +469,21 @@ converse_value ConverseInterpret::add_rstr(const char *s)
 
 /* Returns and removes top item from a value stack.
  */
-converse_value ConverseInterpret::pop_arg(stack<converse_value> &vs)
+converse_value ConverseInterpret::pop_arg(stack<converse_typed_value> &vs)
 {
     converse_value ret = 0;
+    if(!vs.empty())
+    {
+        converse_typed_value val = vs.top();
+        ret = val.val;
+        vs.pop();
+    }
+    return(ret);
+}
+
+converse_typed_value ConverseInterpret::pop_typed_arg(stack<converse_typed_value> &vs)
+{
+    converse_typed_value ret = {0,0};
     if(!vs.empty())
     {
         ret = vs.top();
@@ -470,7 +491,6 @@ converse_value ConverseInterpret::pop_arg(stack<converse_value> &vs)
     }
     return(ret);
 }
-
 
 #if 0
 bool MDTalkInterpret::op(stack<converse_value> &i)
@@ -492,7 +512,7 @@ bool MDTalkInterpret::op(stack<converse_value> &i)
 /* Run control code with arguments/operands (arranged on a stack from
  * top to bottom.)
  */
-bool ConverseInterpret::op(stack<converse_value> &i)
+bool ConverseInterpret::op(stack<converse_typed_value> &i)
 {
     bool success = true;
     converse_value v[4] = { 0, 0, 0, 0 }; // args
@@ -548,26 +568,31 @@ bool ConverseInterpret::op(stack<converse_value> &i)
         	db_lvar = false;
             v[0] = pop_arg(i); // variable
             v[1] = pop_arg(i); // type
-            if(!i.empty() && (i.top() == 0xb2 || i.top() == 0xb4))
+
+            if(!i.empty())
             {
-            	if(i.top() == 0xb2) // eg DB1[#2] = ...
+                converse_typed_value top = i.top();
+            	if((top.val == 0xb2 || top.val == 0xb4))
             	{
-            		pop_arg(i); //0xb2
-            		pop_arg(i); //0xb4 DATA op.
-            		db_lvar = true;
-            		db_loc = v[0];
-            		db_offset = converse->get_var(v[1]);
-            	}
-            	else if(i.top() == 0xb4) // eg DB1[0] = ...
-            	{
-            		pop_arg(i); //0xb4 DATA op.
-            		db_lvar = true;
-            		db_loc = v[0];
-            		db_offset = v[1];
-            	}
+            		if(top.val == 0xb2) // eg DB1[#2] = ...
+            		{
+            			pop_arg(i); //0xb2
+            			pop_arg(i); //0xb4 DATA op.
+            			db_lvar = true;
+            			db_loc = v[0];
+            			db_offset = converse->get_var(v[1]);
+            		}
+            		else if(top.val == 0xb4) // eg DB1[0] = ...
+            		{
+            			pop_arg(i); //0xb4 DATA op.
+            			db_lvar = true;
+            			db_loc = v[0];
+            			db_offset = v[1];
+            		}
 #ifdef CONVERSE_DEBUG
-            	DEBUG(0, LEVEL_DEBUGGING, "DB lvar found. location = %x, offset = %x", db_loc, db_offset);
+            		DEBUG(0, LEVEL_DEBUGGING, "DB lvar found. location = %x, offset = %x", db_loc, db_offset);
 #endif
+            	}
             }
             let(v[0], v[1]);
             break;
@@ -810,66 +835,69 @@ bool ConverseInterpret::op(stack<converse_value> &i)
 /* The other set of codes, these operate on the input values, so call them
  * valops. Output goes back to the stack.
  */
-bool ConverseInterpret::evop(stack<converse_value> &i)
+bool ConverseInterpret::evop(stack<converse_typed_value> &i)
 {
     bool success = true;
     converse_value v[4]; // input
-    converse_value in, out = 0;
+    converse_typed_value in;
+    converse_typed_value out;
     Actor *cnpc = NULL;
     Obj *cnpc_obj = NULL;
 //    converse_db_s *cdb;
     Player *player = converse->player;
 
-    in = pop_arg(i);
+    out.type = U6OP_VAR;
+    out.val = 0;
+
+    in.val = pop_arg(i);
 
 #ifdef CONVERSE_DEBUG
-    DEBUG(0, LEVEL_DEBUGGING, "evop %s(%x)\n", evop_str(in), in);
+    DEBUG(0, LEVEL_DEBUGGING, "evop %s(%x)\n", evop_str(in.val), in.val);
 #endif
 
-    switch(in)
+    switch(in.val)
     {
         case U6OP_GT: // 0x81
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             if(v[0] > v[1])
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_GE: // 0x82
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             if(v[0] >= v[1])
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_LT: // 0x83
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             if(v[0] < v[1])
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_LE: // 0x84
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             if(v[0] <= v[1])
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_NE: // 0x85
             if(pop_arg(i) != pop_arg(i))
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_EQ: // 0x86
-            if(pop_arg(i) == pop_arg(i))
-                out = 1;
+                out.val = evop_eq(i);
             break;
         case U6OP_ADD: // 0x90
-            out = pop_arg(i) + pop_arg(i);
+            out.val = pop_arg(i) + pop_arg(i);
             break;
         case U6OP_SUB: // 0x91
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
-            out = v[0] - v[1];
+            out.val = v[0] - v[1];
             break;
         case U6OP_MUL: // 0x92
-            out = pop_arg(i) * pop_arg(i);
+            out.val = pop_arg(i) * pop_arg(i);
             break;
         case U6OP_DIV: // 0x93
             v[1] = pop_arg(i);
@@ -881,24 +909,24 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 stop();
             }
             else
-                out = v[0] / v[1];
+                out.val = v[0] / v[1];
             break;
         case U6OP_LOR: // 0x94
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             if(v[0] || v[1])
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_LAND: // 0x95
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
             if(v[0] && v[1])
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_CANCARRY: // 0x9a
             cnpc = converse->actors->get_actor(pop_arg(i));
             if(cnpc)
-               out = (converse_value)((cnpc->inventory_get_max_weight()
+               out.val = (converse_value)((cnpc->inventory_get_max_weight()
                                           - cnpc->get_inventory_weight()) * 10);
             break;
         case U6OP_WEIGHT: // 0x9b
@@ -908,14 +936,14 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             float weight = converse->objects->get_obj_weight(v[0]) * v[1];
             if(converse->objects->has_reduced_weight(v[0]))
                 weight /= 10;
-            out = weight;
+            out.val = weight;
             break;
         }
         case U6OP_HORSED: // 0x9d
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             cnpc_obj = cnpc->make_obj();
             if(cnpc_obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
-                out = 1;
+                out.val = 1;
             delete_obj(cnpc_obj);
             break;
         case U6OP_HASOBJ: // 0x9f
@@ -924,15 +952,15 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             v[0] = pop_arg(i); // npc
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc && cnpc->inventory_has_object(v[1], v[2], (v[2] != 0 ? true : false))) //don't search quality if quality is 0
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_RAND: // 0xa0
             v[1] = pop_arg(i); // max.
             v[0] = pop_arg(i); // min.
             if(v[0] >= v[1])
-                out = v[0];
+                out.val = v[0];
             else
-                out = v[0] + (NUVIE_RAND()%(v[1]-v[0]+1));
+                out.val = v[0] + (NUVIE_RAND()%(v[1]-v[0]+1));
             break;
         case U6OP_FLAG: // 0xab (npc, flag)
             v[1] = pop_arg(i);
@@ -941,14 +969,15 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             {
                 cnpc = converse->actors->get_actor(npc_num(v[0]));
                 if(cnpc && (cnpc->get_talk_flags() & (1 << v[1])))
-                    out = 1;
+                    out.val = 1;
             }
             break;
         case U6OP_VAR: // 0xb2
-            out = converse->get_var(pop_arg(i));
+            out.val = converse->get_var(pop_arg(i));
             break;
         case U6OP_SVAR: // 0xb3 (using new rstring)
-            out = add_rstr(converse->get_svar(pop_arg(i))); // rstr num
+            out.val = add_rstr(converse->get_svar(pop_arg(i))); // rstr num
+            out.type = U6OP_SVAR;
             break;
 #if 0 /* old read style tries to detect if data is string or integer */
         case U6OP_DATA: // 0xb4
@@ -956,11 +985,11 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             v[0] = pop_arg(i); // db location
             cdb = get_db(v[0], v[1]);
             if(!cdb)
-                out = 0;
+                out.val = 0;
             else if(cdb->type == 0)
-                out = add_rstr(cdb->s);
+                out.val = add_rstr(cdb->s);
             else
-                out = cdb->i;
+                out.val = cdb->i;
             delete cdb;
             break;
 #else /* new read assumes DATA may be assigned, and depend on variable type */
@@ -973,31 +1002,33 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
                 char *dstring = get_db_string(v[0], v[1]);
                 if(dstring)
                 {
-                    out = add_rstr(dstring);
+                    out.val = add_rstr(dstring);
                     free(dstring);
                 }
                 else
-                    out = add_rstr("");
+                    out.val = add_rstr("");
+
+                out.type = U6OP_SVAR;
             }
             else // this will work for 0xB2 assignment and normal stack ops
-                out = get_db_integer(v[0], v[1]);
+                out.val = get_db_integer(v[0], v[1]);
             break;
 #endif
         case U6OP_INDEXOF: // 0xb7
             v[1] = pop_arg(i); // string variable
             v[0] = pop_arg(i); // db location
-            out = find_db_string(v[0], converse->get_svar(v[1]));
+            out.val = find_db_string(v[0], converse->get_svar(v[1]));
             break;
         case U6OP_OBJCOUNT: // 0xbb
             v[1] = pop_arg(i); // object
             v[0] = pop_arg(i); // npc
             cnpc = converse->actors->get_actor(npc_num(v[0])); //FIXME should this be party?
             if(cnpc)
-                out = cnpc->inventory_count_object(v[1]);
+                out.val = cnpc->inventory_count_object(v[1]);
             break;
         case U6OP_INPARTY: // 0xc6
             if(player->get_party()->contains_actor(npc_num(pop_arg(i))))
-                out = 1;
+                out.val = 1;
             break;
         case U6OP_OBJINPARTY: // 0xc7 ?? check if party has object
         {
@@ -1007,12 +1038,12 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             if(!player->get_party()->has_obj(v[0], v[1], false) && (v[0] != OBJ_U6_DEAD_BODY
                || Game::get_game()->get_game_type() != NUVIE_GAME_U6
                || !(has_mouse = player->get_party()->has_obj(OBJ_U6_MOUSE, v[1], false))))
-                out = 0x8001; // something OR'ed or u6val version of "no npc"?
+                out.val = 0x8001; // something OR'ed or u6val version of "no npc"?
             else
             {
                 cnpc = player->get_party()->who_has_obj(has_mouse ? OBJ_U6_MOUSE : v[0], v[1], false);
                 assert(cnpc);
-                out = cnpc->get_actor_num(); // first NPC that has object (sometimes 0xFFFF?)
+                out.val = cnpc->get_actor_num(); // first NPC that has object (sometimes 0xFFFF?)
             }
             break;
         }
@@ -1021,12 +1052,12 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             if(cnpc)
             {
                 if(player->get_party()->contains_actor(cnpc))
-                    out = 3; // 3: ALREADY IN PARTY
+                    out.val = 3; // 3: ALREADY IN PARTY
                 else if(player->get_party()->get_party_size() >=
                         player->get_party()->get_party_max())
-                    out = 2; // 2: PARTY TOO LARGE
+                    out.val = 2; // 2: PARTY TOO LARGE
                 else if(player->get_actor()->get_actor_num() == 0) // vehicle
-                    out = 1; // 1: NOT ON LAND
+                    out.val = 1; // 1: NOT ON LAND
                 else
                     player->get_party()->add_actor(cnpc);
                     // 0: SUCCESS
@@ -1037,9 +1068,9 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             if(cnpc)
             {
                 if(!player->get_party()->contains_actor(cnpc))
-                    out = 2; // 2: NOT IN PARTY
+                    out.val = 2; // 2: NOT IN PARTY
                 else if(player->get_actor()->get_actor_num() == 0) // vehicle
-                    out = 1; // 1: NOT ON LAND
+                    out.val = 1; // 1: NOT ON LAND
                 else
                     player->get_party()->remove_actor(cnpc);
                     // 0: SUCCESS
@@ -1048,24 +1079,24 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
         case U6OP_NPCNEARBY: // 0xd7
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
-                out = converse->npc->is_nearby(cnpc) ? 1 : 0;
+                out.val = converse->npc->is_nearby(cnpc) ? 1 : 0;
             break;
         case U6OP_WOUNDED: // 0xda
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
                 if(cnpc->get_hp() < cnpc->get_maxhp())
-                    out = 1;
+                    out.val = 1;
             break;
         case U6OP_POISONED: // 0xdc
             cnpc = converse->actors->get_actor(npc_num(pop_arg(i)));
             if(cnpc)
-              out = cnpc->is_poisoned() ? 1 : 0;
+              out.val = cnpc->is_poisoned() ? 1 : 0;
             break;
         case U6OP_NPC: // 0xdd (val2=??)
             v[1] = pop_arg(i);
             v[0] = pop_arg(i); // 0+
             cnpc = player->get_party()->get_actor(v[0]);
-            out = cnpc ? cnpc->get_actor_num() : 0;
+            out.val = cnpc ? cnpc->get_actor_num() : 0;
             break;
         case U6OP_EXP: // 0xe0
             v[1] = pop_arg(i); // add value
@@ -1073,8 +1104,8 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
             {
-                out = cnpc->get_exp() + v[1];
-                cnpc->set_exp(out);
+                out.val = cnpc->get_exp() + v[1];
+                cnpc->set_exp(out.val);
             }
             break;
         case U6OP_LVL: // 0xe1
@@ -1083,8 +1114,8 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
             {
-                out = cnpc->get_level() + v[1];
-                cnpc->set_level(out);
+                out.val = cnpc->get_level() + v[1];
+                cnpc->set_level(out.val);
             }
             break;
         case U6OP_STR: // 0xe2
@@ -1093,8 +1124,8 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
             {
-                out = cnpc->get_strength() + v[1];
-                cnpc->set_strength(out);
+                out.val = cnpc->get_strength() + v[1];
+                cnpc->set_strength(out.val);
             }
             break;
         case U6OP_INT: // 0xe3
@@ -1103,8 +1134,8 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
             {
-                out = cnpc->get_intelligence() + v[1];
-                cnpc->set_intelligence(out);
+                out.val = cnpc->get_intelligence() + v[1];
+                cnpc->set_intelligence(out.val);
             }
             break;
         case U6OP_DEX: // 0xe4
@@ -1113,8 +1144,8 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
             cnpc = converse->actors->get_actor(npc_num(v[0]));
             if(cnpc)
             {
-                out = cnpc->get_dexterity() + v[1];
-                cnpc->set_dexterity(out);
+                out.val = cnpc->get_dexterity() + v[1];
+                cnpc->set_dexterity(out.val);
             }
             break;
         default:
@@ -1125,6 +1156,25 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
     return(success);
 }
 
+converse_value ConverseInterpret::evop_eq(stack<converse_typed_value> &vs)
+{
+	converse_typed_value operand1 = pop_typed_arg(vs);
+	converse_typed_value operand2 = pop_typed_arg(vs);
+	converse_value out = 0;
+
+	if(operand1.type == U6OP_VAR)
+	{
+		if(operand1.val == operand2.val)
+			out = 1;
+	}
+	else
+	{
+		if(strcmp(get_rstr(operand1.val), get_rstr(operand2.val)) == 0)
+			out = 1;
+	}
+
+	return out;
+}
 
 /* Take the values collected so far as input (starting with value `vi') and run
  * any assign/compare value ops that are mixed with the data. The result goes
@@ -1132,7 +1182,7 @@ bool ConverseInterpret::evop(stack<converse_value> &i)
  */
 void ConverseInterpret::eval(uint32 vi)
 {
-    stack<converse_value> op_stk, r_stk;
+    stack<converse_typed_value> op_stk, r_stk;
     uint32 v = vi;
 #ifdef CONVERSE_DEBUG
     DEBUG(0,LEVEL_DEBUGGING,"Converse: EVAL");
@@ -1142,10 +1192,11 @@ void ConverseInterpret::eval(uint32 vi)
 
     while(v < val_count())
     {
-        converse_value a = get_val(v);
+        converse_typed_value a = {U6OP_VAR,0};
+        a.val = get_val(v);
         uint8 ds = get_val_size(v++);
         op_stk.push(a);
-        if(is_valop(a) && !ds)
+        if(is_valop(a.val) && !ds)
             evop(op_stk);
     }
     in.resize(vi);
@@ -1154,7 +1205,10 @@ void ConverseInterpret::eval(uint32 vi)
     else
     {
         while(!op_stk.empty())
-            r_stk.push(pop_arg(op_stk)); // reverse
+        {
+        	r_stk.push(op_stk.top()); // reverse
+        	op_stk.pop();
+        }
         while(!r_stk.empty())
             add_val(pop_arg(r_stk)); // return(s)
     }

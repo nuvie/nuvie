@@ -157,7 +157,7 @@ protected:
 
     const char *get_rstr(uint32 sn) { return((sn < rstrings.size()) ? rstrings[sn].c_str() : ""); }
     const char *get_ystr()          { return(ystring.c_str()); }
-    void set_ystr(const char *s)    { ystring = s ? s : ""; }
+    void set_ystr(const char *s);
     void set_rstr(uint32 sn, const char *s);
     converse_value add_rstr(const char *s);
 
@@ -211,9 +211,12 @@ protected:
     void exec();
     void do_ctrl();
     void do_text();
-    converse_value pop_arg(stack<converse_value> &vs);
-    virtual bool evop(stack<converse_value> &i);
-    virtual bool op(stack<converse_value> &i);
+    converse_value pop_arg(stack<converse_typed_value> &vs);
+    converse_typed_value pop_typed_arg(stack<converse_typed_value> &vs);
+    virtual bool evop(stack<converse_typed_value> &i);
+    virtual bool op(stack<converse_typed_value> &i);
+
+    converse_value evop_eq(stack<converse_typed_value> &vs);
 
 public:
     virtual uint8 npc_num(uint32 n);//uint8 npc_num(uint32 n){return((n!=0xeb)?n:converse->npc_num);}

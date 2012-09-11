@@ -1,3 +1,10 @@
+2012-09-12  Eric Fry <efry at users.sourceforge.net> r1587
+	* Added some missing converse variables. $34 the value of $Y
+	  $25 the player name. $23 the name of the npc.
+	  This fixes bugs in the arm wrestling logic in script 56.
+	* Changed the equals opcode to handle string equality.
+	  This fixes bug "Player's name isn't recognized in conversation" [3557490]
+
 2012-09-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1586
 	* Allow changing combat strategy with DollViewGump (fullscreen_map)
 

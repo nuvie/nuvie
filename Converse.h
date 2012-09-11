@@ -49,14 +49,22 @@ using std::string;
 typedef uint32 converse_value; // any single value read from a script
 typedef unsigned char* convscript_buffer;
 
+typedef struct {
+	uint8 type;
+	converse_value val;
+} converse_typed_value;
+
 #define U6TALK_VAR_SEX       0x10 // sex of avatar: male=0 female=1
 #define U6TALK_VAR_KARMA     0x14 // avatar's karma
 #define U6TALK_VAR_GARGF     0x15 // 1=player knows Gargish
+#define U6TALK_VAR_NPC_NAME  0x17
 #define U6TALK_VAR_PARTYLIVE 0x17 // number of people (living) following avatar
 #define U6TALK_VAR_PARTYALL  0x18 // number of people (total) following avatar
 #define U6TALK_VAR_HP        0x19 // avatar's health
+#define U6TALK_VAR_PLAYER_NAME 0x19
 #define U6TALK_VAR_QUESTF    0x1A // 0="Thou art not upon a sacred quest!"
 #define U6TALK_VAR_WORKTYPE  0x20 // current activity of npc, from schedule
+#define U6TALK_VAR_YSTRING   0x22 // value of $Y variable.
 #define U6TALK_VAR_INPUT     0x23 // previous input from player ($Z)
 #define U6TALK_VAR__LAST_ 0x25    // (all above 36 appear uninitialized)
 
