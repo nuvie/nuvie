@@ -1,3 +1,6 @@
+2012-09-13  Eric Fry <efry at users.sourceforge.net> r1588
+	* Fixed bug "Missing dialog with Mondain, Minax, and Exodus" [3563186]
+
 2012-09-12  Eric Fry <efry at users.sourceforge.net> r1587
 	* Added some missing converse variables. $34 the value of $Y
 	  $25 the player name. $23 the name of the npc.

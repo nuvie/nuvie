@@ -811,6 +811,8 @@ bool ConverseInterpret::op(stack<converse_typed_value> &i)
             converse->poll_input(get_text().c_str(), false); // collected=allowed input
             break;
         case U6OP_INPUTSTR: // 0xf9 (string or integer)
+        	answer_mode = ANSWER_NO; // reset answer switch
+        	//fall through here
         case U6OP_INPUT: // 0xfb (integer)
             v[0] = pop_arg(i); // var
             v[1] = pop_arg(i); // type (should be 0xb2)
