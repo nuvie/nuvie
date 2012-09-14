@@ -85,6 +85,8 @@ class ConverseGump: public MsgScroll
  virtual bool input_buf_add_char(char c);
  virtual bool input_buf_remove_char();
 
+ virtual bool is_converse_finished() { return (is_holding_buffer_empty() && msg_buf.size() == 1 && msg_buf.back()->total_length == 0); }
+
  protected:
  std::string strip_whitespace_after_break(std::string s);
  void add_keyword(std::string keyword);

@@ -1,3 +1,6 @@
+2012-09-14  Eric Fry <efry at users.sourceforge.net> r1589
+	* Fixed display of end conversation text when in full map mode.
+
 2012-09-13  Eric Fry <efry at users.sourceforge.net> r1588
 	* Fixed bug "Missing dialog with Mondain, Minax, and Exodus" [3563186]
 

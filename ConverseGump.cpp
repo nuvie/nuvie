@@ -439,7 +439,7 @@ void ConverseGump::Display(bool full_redraw)
 		 screen->blit(area.x+4,area.y+4,npc_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
 	 }
 
-	 if(!page_break && input_mode && avatar_portrait)
+	 if(!page_break && input_mode && avatar_portrait && is_talking())
 	 {
 		 screen->blit(area.x + PORTRAIT_WIDTH / 2 + 4,y,avatar_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
 		 std::list<MsgText>::iterator iter;

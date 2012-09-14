@@ -410,6 +410,13 @@ bool Converse::start(uint8 n)
  */
 void Converse::stop()
 {
+	scroll->set_talking(false);
+
+    if(Game::get_game()->use_new_converse_gump() && !scroll->is_converse_finished())
+    {
+    	return;
+    }
+
     reset(); // free memory
 
     if(Game::get_game()->use_new_converse_gump())
@@ -424,7 +431,6 @@ void Converse::stop()
     else
     {
     	scroll->set_autobreak(false);
-    	scroll->set_talking(false);
     	scroll->display_string("\n");
     	scroll->display_prompt();
     }

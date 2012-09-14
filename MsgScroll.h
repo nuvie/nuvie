@@ -198,7 +198,7 @@ private:
  void set_input_mode(bool state, const char *allowed = NULL,
                      bool can_escape = true);
  virtual void set_talking(bool state,  Actor *actor = NULL) { talking = state; }
-
+ bool is_talking() { return talking; }
  void set_show_cursor(bool state) { show_cursor = state; }
 
  void set_autobreak(bool state) { autobreak = state; }
@@ -218,6 +218,9 @@ private:
 
  virtual bool input_buf_add_char(char c);
  virtual bool input_buf_remove_char();
+
+ /* Converse uses this to tell if the scroll has finished displaying the converse dialog */
+ virtual bool is_converse_finished() { return true; }
 
  bool has_input();
  std::string get_input();
