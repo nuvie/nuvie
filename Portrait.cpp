@@ -116,6 +116,51 @@ bool Portrait::load(NuvieIO *objlist)
  return true;
 }
 
+uint8 Portrait::get_portrait_num(Actor *actor)
+{
+	uint8 num;
+
+	if(actor == NULL)
+		return NO_PORTRAIT_FOUND;
+
+	num = actor->get_actor_num();
+	if (gametype==NUVIE_GAME_U6)
+	{
+		if(num == 1) // avatar portrait
+		{
+			num = avatar_portrait_num;
+		}
+		else
+		{
+			if(num != 0)
+				num -= 1;
+
+			if(num == (188-1))
+				num = PORTRAIT_U6_EXODUS-1; // Exodus
+			else if(num >= (192-1) && num <= (200-1)) // Shrines, Temple of Singularity
+				return(NO_PORTRAIT_FOUND);
+			else if(num > 194) // there are 194 npc portraits
+			{
+				switch(actor->get_obj_n()) //check for temporary actors with portraits. eg guards and wisps
+				{
+				case OBJ_U6_GUARD : num = PORTRAIT_U6_GUARD-1; break;
+				case OBJ_U6_WISP : num = PORTRAIT_U6_WISP-1; break;
+				case OBJ_U6_GARGOYLE : num = PORTRAIT_U6_GARGOYLE-1; break;
+				default : return NO_PORTRAIT_FOUND;
+				}
+			}
+		}
+	}
+
+	if (gametype==NUVIE_GAME_MD)
+	{
+		// FIXME select right avatar portrait, correct offset for MD (SE only has male)
+		num++;
+	}
+
+	return num;
+}
+
 unsigned char *Portrait::get_portrait_data(Actor *actor)
 {
  uint8 num;
@@ -125,36 +170,17 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
  uint32 new_length;
  unsigned char *new_portrait;
 
- if(actor == NULL)
+ num = get_portrait_num(actor);
+ if(num == NO_PORTRAIT_FOUND)
    return NULL;
 
- num = actor->get_actor_num();
  if (gametype==NUVIE_GAME_U6) {
-  if(num == 1) // avatar portrait
+  if(actor->get_actor_num() == 1) // avatar portrait
   {
    portrait = &portrait_z;
-   num = avatar_portrait_num;
   }
   else
   {
-   if(num != 0)
-     num -= 1;
-
-   if(num == (188-1))
-    num = PORTRAIT_U6_EXODUS-1; // Exodus
-   else if(num >= (192-1) && num <= (200-1)) // Shrines, Temple of Singularity
-    return(NULL);
-   else if(num > 194) // there are 194 npc portraits
-   {
-    switch(actor->get_obj_n()) //check for temporary actors with portraits. eg guards and wisps
-    {
-     case OBJ_U6_GUARD : num = PORTRAIT_U6_GUARD-1; break;
-     case OBJ_U6_WISP : num = PORTRAIT_U6_WISP-1; break;
-     case OBJ_U6_GARGOYLE : num = PORTRAIT_U6_GARGOYLE-1; break;
-     default : return NULL;
-    }
-   }
-
    if(num < 98)
     portrait = &portrait_a;
    else
@@ -171,11 +197,8 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
 
   return new_portrait;
  }
+
  // MD/SE
- if (gametype==NUVIE_GAME_MD) {
- // FIXME select right avatar portrait, correct offset for MD (SE only has male)
-   num++;
- }
   U6Shape * shp;
   unsigned char *shp_data;
   NuvieIOBuffer shp_buf;

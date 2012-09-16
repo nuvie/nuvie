@@ -32,6 +32,8 @@ class Actor;
 #define PORTRAIT_WIDTH 56
 #define PORTRAIT_HEIGHT 64
 
+#define NO_PORTRAIT_FOUND 255
+
 class Portrait
 {
  Configuration *config;
@@ -53,6 +55,12 @@ class Portrait
  bool init();
  bool load(NuvieIO *objlist);
  unsigned char *get_portrait_data(Actor *actor);
+
+ bool has_portrait(Actor *actor) { return (get_portrait_num(actor) != NO_PORTRAIT_FOUND); }
+
+ private:
+
+ uint8 get_portrait_num(Actor *actor);
 };
 
 #endif /* __Portrait_h__ */

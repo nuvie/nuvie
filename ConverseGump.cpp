@@ -140,7 +140,7 @@ void ConverseGump::set_actor_portrait(Actor *a)
 	if(npc_portrait)
 		free(npc_portrait);
 
-	if(Game::get_game()->get_portrait()->get_portrait_data(a))
+	if(Game::get_game()->get_portrait()->has_portrait(a))
 		npc_portrait = create_framed_portrait(a);
 	else
 		npc_portrait = NULL;
