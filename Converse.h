@@ -140,6 +140,7 @@ public:
     void stop();
 
     bool running()    { return(active); }
+    bool is_waiting_for_scroll() { return scroll->get_page_break(); }
     void unwait();
     void poll_input(const char *allowed = NULL, bool nonblock = true);
     bool override_input();

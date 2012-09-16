@@ -139,7 +139,7 @@ void ConverseInterpret::step()
 
     flush();
 
-    while(!waiting() && !cs->overflow() && !Game::get_game()->get_scroll()->get_page_break())
+    while(!waiting() && !cs->overflow() && !converse->is_waiting_for_scroll())
     {
         if(is_print(cs->peek()))
         {
