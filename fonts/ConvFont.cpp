@@ -1063,7 +1063,7 @@ static const unsigned char f_data[] = {
 	};
 
 
-static uint8 f_w_data[] = {
+static const uint8 f_w_data[] = {
 		8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
 		8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
 		6,4,5,8,8,8,8,4,5,5,6,8,4,8,3,5,

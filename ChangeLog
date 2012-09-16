@@ -1,3 +1,7 @@
+2012-09-16  Eric Fry <efry at users.sourceforge.net> r1592
+	* Started work on the Look function in Full map mode. Left click the map
+	  to look at an object.
+
 2012-09-16  Eric Fry <efry at users.sourceforge.net> r1591
 	* Fixed memory leak regression from 1506. Added new Portrait::has_portrait() method.
 

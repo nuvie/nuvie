@@ -248,7 +248,7 @@ protected:
  void create_thumbnail();
 
  void drawActors();
- void drawAnims();
+ void drawAnims(bool top_anims);
  void drawObjs();
  void drawObjSuperBlock(bool draw_lowertiles, bool toptile);
  inline void drawObj(Obj *obj, bool draw_lowertiles, bool toptile);

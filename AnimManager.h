@@ -20,6 +20,7 @@ class CallBack;
 class AnimManager;
 class NuvieAnim;
 class Screen;
+class Font;
 
 #define MESG_TIMED CB_TIMED
 
@@ -48,7 +49,7 @@ public:
     ~AnimManager() { destroy_all(); }
 
     void update();
-    void display();
+    void display(bool top_anims = false);
 
     Screen *get_surface()            { return(viewsurf); }
     void set_surface(Screen *screen) { viewsurf = screen; }
@@ -66,7 +67,7 @@ public:
 
     void drawTile(Tile *tile, uint16 x, uint16 y);
     void drawTileAtWorldCoords(Tile *tile, uint16 wx, uint16 wy, uint16 add_x = 0, uint16 add_y = 0);
-
+    void drawText(Font *font, const char *text, uint16 x, uint16 y);
 };
 
 
@@ -92,6 +93,7 @@ protected:
     bool updated; // call display
     bool running;
 	bool paused;
+	bool top_anim; //animate on top of mapwindow.
 
     // return false if animation doesn't need redraw
     virtual bool update() { return(true); }
@@ -380,6 +382,21 @@ public:
 
     uint16 callback(uint16 msg, CallBack *caller, void *msg_data);
     void start()                    { start_timer(300); }
+};
+
+class TextAnim : public TimedAnim
+{
+    std::string text;
+    Font *font;
+    uint32 duration;
+
+public:
+    TextAnim(std::string text, MapCoord *loc, uint32 dur);
+    ~TextAnim();
+    uint16 callback(uint16 msg, CallBack *caller, void *msg_data);
+    void start()                    { start_timer(duration); }
+
+    void display();
 };
 
 class TileFadeAnim : public TileAnim

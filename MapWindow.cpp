@@ -742,6 +742,8 @@ void MapWindow::Display(bool full_redraw)
  if(overlay && overlay_level == MAP_OVERLAY_DEFAULT)
    screen->blit(area.x, area.y, (unsigned char *)(overlay->pixels), overlay->format->BitsPerPixel, overlay->w, overlay->h, overlay->pitch, true, &clip_rect);
 
+ drawAnims(true);
+
  if(new_thumbnail)
    create_thumbnail();
 
@@ -861,7 +863,7 @@ void MapWindow::drawObjs()
 
  drawActors();
 
- drawAnims();
+ drawAnims(false);
 
  drawObjSuperBlock(false,true); //draw top objects
 
@@ -2253,13 +2255,13 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
 
 
 /* Display MapWindow animations. */
-void MapWindow::drawAnims()
+void MapWindow::drawAnims(bool top_anims)
 {
     if(!screen) // screen should be set early on
         return;
     else if(!anim_manager->get_surface()) // screen must be assigned to AnimManager
         anim_manager->set_surface(screen);
-    anim_manager->display();
+    anim_manager->display(top_anims);
 }
 
 

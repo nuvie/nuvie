@@ -478,6 +478,24 @@ uint16 HitEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
     return(0);
 }
 
+/*** TextEffect ***/
+/* Print Text to MapWindow for duration
+ */
+TextEffect::TextEffect(std::string text, MapCoord location)
+{
+    add_anim(new TextAnim(text, &location, 1500));
+}
+
+/* On ANIM_DONE: end
+ */
+uint16 TextEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
+{
+    if(msg == MESG_ANIM_DONE)
+    {
+        delete_self();
+    }
+    return(0);
+}
 
 /*** ExplosiveEffect ***/
 ExplosiveEffect::ExplosiveEffect(uint16 x, uint16 y, uint32 size, uint16 dmg)

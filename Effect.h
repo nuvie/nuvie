@@ -186,6 +186,15 @@ public:
     uint16 callback(uint16 msg, CallBack *caller, void *data);
 };
 
+/* Print text to MapWindow for a given duration
+ */
+class TextEffect : public Effect
+{
+public:
+	TextEffect(std::string text, MapCoord location);
+    uint16 callback(uint16 msg, CallBack *caller, void *data);
+};
+
 
 /* Create explosion animation and sounds from the source location out to
  * specified radius. Hit actors and objects for `dmg'.

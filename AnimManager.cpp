@@ -4,6 +4,8 @@
 #include "nuvieDefs.h"
 #include "U6misc.h"
 
+#include "Font.h"
+#include "ConvFont.h"
 #include "Actor.h"
 #include "ActorManager.h"
 #include "Game.h"
@@ -125,12 +127,12 @@ void AnimManager::update()
 
 /* Draw all animations that have been updated.
  */
-void AnimManager::display()
+void AnimManager::display(bool top_anims)
 {
         AnimIterator i = anim_list.begin();
         while(i != anim_list.end())
         {
-            if((*i)->updated)
+            if((*i)->updated && ((top_anims && (*i)->top_anim) || !(*i)->top_anim))
             {
                 (*i)->display();
                 (*i)->updated = false;
@@ -202,6 +204,10 @@ void AnimManager::drawTile(Tile *tile, uint16 x, uint16 y)
                    tile->transparent, &viewport);
 }
 
+void AnimManager::drawText(Font *font, const char *text, uint16 x, uint16 y)
+{
+	font->drawString(viewsurf, text, mapwindow_x_offset+x, mapwindow_y_offset+y);
+}
 
 /* Draw tile on viewsurf at map location wx,wy (offset by add_x,add_y).
  */
@@ -231,6 +237,7 @@ NuvieAnim::NuvieAnim()
 
     last_move_time = SDL_GetTicks();
     paused = false;
+    top_anim = false;
 }
 
 
@@ -457,6 +464,44 @@ bool HitAnim::update()
 }
 
 uint16 HitAnim::callback(uint16 msg, CallBack *caller, void *msg_data)
+{
+	if(msg == MESG_TIMED)
+	{
+		message(MESG_ANIM_DONE);
+		stop();
+	}
+
+	return(0);
+}
+
+
+/*** TextAnim ***/
+
+TextAnim::TextAnim(std::string t, MapCoord *loc, uint32 dur)
+{
+	px = loc->x;
+	py = loc->y;
+	duration = dur;
+	font = new ConvFont();
+	font->init(NULL, 256, 0);
+	text = t;
+	top_anim = true;
+}
+
+TextAnim::~TextAnim()
+{
+	delete font;
+}
+
+void TextAnim::display()
+{
+	if(is_paused())
+		return;
+
+	anim_manager->drawText(font, text.c_str(), px, py);
+}
+
+uint16 TextAnim::callback(uint16 msg, CallBack *caller, void *msg_data)
 {
 	if(msg == MESG_TIMED)
 	{
