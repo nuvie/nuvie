@@ -1,3 +1,6 @@
+2012-09-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1593
+	* Fix uninitialized z var when not looking on left click (r1592 regression)
+
 2012-09-16  Eric Fry <efry at users.sourceforge.net> r1592
 	* Started work on the Look function in Full map mode. Left click the map
 	  to look at an object.

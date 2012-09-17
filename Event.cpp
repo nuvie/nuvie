@@ -1105,13 +1105,14 @@ bool Event::lookAtCursor(bool delayed, uint16 x, uint16 y, uint8 z, Obj *obj, Ac
  {
    x = map_window->get_cursorCoord().x;
    y = map_window->get_cursorCoord().y;
+   z = map_window->get_cursorCoord().z;
    obj = map_window->get_objAtCursor();
    actor = map_window->get_actorAtCursor();
  }
 
  if(obj && obj->is_on_map() && ((obj->status & OBJ_STATUS_INVISIBLE) || map_window->tile_is_black(x, y, obj)))
  {
-   Obj *bottom_obj = obj_manager->get_obj(x, y, obj->z, false);
+   Obj *bottom_obj = obj_manager->get_obj(x, y, z, false);
    if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
       && !map_window->tile_is_black(x, y, bottom_obj))
      obj = bottom_obj;
@@ -1136,10 +1137,7 @@ bool Event::lookAtCursor(bool delayed, uint16 x, uint16 y, uint8 z, Obj *obj, Ac
   {
    scroll->display_string("Thou dost see ");
    new TextEffect(game->get_game_map()->look(x, y, z), MapCoord((x - map_window->get_cur_x())*16,(y-map_window->get_cur_y())*16,z));
-   if(delayed)
-       scroll->display_string(game->get_game_map()->look(x, y, z));
-   else
-       scroll->display_string(map_window->lookAtCursor());
+   scroll->display_string(game->get_game_map()->look(x, y, z));
    scroll->display_string("\n");
   }
 
