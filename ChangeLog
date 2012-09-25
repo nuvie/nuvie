@@ -1,3 +1,7 @@
+2012-09-26  Eric Fry <efry at users.sourceforge.net> r1595
+	* Fixed bug when exiting Sherry's converse script. She would always leave the party
+	  when in fullmap mode.
+
 2012-09-25  Eric Fry <efry at users.sourceforge.net> r1594
 	* Added new MsgScrollNewUI class which is used in the fullscreen map mode.
 	  This scroll shows text then removes all rows with a rollup animation after
