@@ -483,7 +483,7 @@ uint16 HitEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
  */
 TextEffect::TextEffect(std::string text, MapCoord location)
 {
-    add_anim(new TextAnim(text, &location, 1500));
+    add_anim(new TextAnim(text, location, 1500));
 }
 
 /* On ANIM_DONE: end

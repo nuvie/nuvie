@@ -190,6 +190,7 @@ public:
  */
 class TextEffect : public Effect
 {
+
 public:
 	TextEffect(std::string text, MapCoord location);
     uint16 callback(uint16 msg, CallBack *caller, void *data);

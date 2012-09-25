@@ -1033,7 +1033,10 @@ bool Event::look(Obj *obj)
          }
       }
       obj_manager->print_obj(obj, false); // DEBUG
-      new TextEffect(obj_manager->get_obj_name(obj), MapCoord((obj->x - map_window->get_cur_x())*16,(obj->y-map_window->get_cur_y())*16,obj->z));
+      if(game->is_new_style())
+      {
+    	  new TextEffect(obj_manager->look_obj(obj, true), MapCoord((obj->x - map_window->get_cur_x())*16,(obj->y-map_window->get_cur_y())*16,obj->z));
+      }
       if(game->get_script()->call_look_obj(obj) == false)
       {
          scroll->display_prompt();
@@ -2224,9 +2227,7 @@ bool Event::ready(Obj *obj, Actor *actor)
     if(game->user_paused())
         return(false);
 
-    scroll->display_string("Ready-");
-    scroll->display_string(obj_manager->look_obj(obj, false));
-    scroll->display_string("\n");
+    scroll->display_fmt_string("Ready-%s\n",obj_manager->look_obj(obj, false));
     float obj_weight = obj_manager->get_obj_weight(obj, OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS,
                                                    OBJ_WEIGHT_DO_SCALE, OBJ_WEIGHT_EXCLUDE_QTY);
     float equip_weight = actor->get_inventory_equip_weight() + obj_weight;
@@ -2269,9 +2270,7 @@ bool Event::unready(Obj *obj)
     if(game->user_paused())
         return(false);
 
-    scroll->display_string("Unready-");
-    scroll->display_string(obj_manager->look_obj(obj, false));
-    scroll->display_string("\n");
+    scroll->display_fmt_string("Unready-%s\n",obj_manager->look_obj(obj, false));
 
     // perform unREADY usecode
     if(usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
@@ -2632,7 +2631,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
                        && !usecode->is_container(actor->get_obj_n(), actor->get_frame_n()));
         if(can_use)
         {
-            scroll->display_string("Use-");
+            scroll->display_string("Use-", MSGSCROLL_NO_MAP_DISPLAY);
             set_mode(USE_MODE);
             use(actor, wx, wy);
         }
@@ -2658,7 +2657,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
         return;
     else if(usecode->is_readable(obj))
     {
-        scroll->display_string("Look-");
+        scroll->display_string("Look-", MSGSCROLL_NO_MAP_DISPLAY);
         set_mode(LOOK_MODE);
         look(obj);
         endAction(false); // FIXME: should be in look()
@@ -2669,13 +2668,13 @@ void Event::multiuse(uint16 wx, uint16 wy)
             || obj->obj_n == OBJ_U6_STATUE_OF_MINAX
             || obj->obj_n == OBJ_U6_STATUE_OF_EXODUS))
     {
-        scroll->display_string("Talk-");
+        scroll->display_string("Talk-", MSGSCROLL_NO_MAP_DISPLAY);
         set_mode(TALK_MODE);
         talk(obj);
     }
     else // use a real object
     {
-        scroll->display_string("Use-");
+        scroll->display_string("Use-", MSGSCROLL_NO_MAP_DISPLAY);
         set_mode(USE_MODE);
         use(obj);
     }
@@ -2690,7 +2689,7 @@ void Event::doAction()
 
     if(mode == MOVE_MODE)
     {
-        scroll->display_string("what?\n");
+        scroll->display_string("what?\n", MSGSCROLL_NO_MAP_DISPLAY);
         endAction(true);
         return;
     }

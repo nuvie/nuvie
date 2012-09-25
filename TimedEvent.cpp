@@ -839,8 +839,7 @@ TimedRest::~TimedRest()
         			hp_diff = 2;
 
         		actor->set_hp(actor->get_hp() + NUVIE_RAND()%(hp_diff/2) + hp_diff/2);
-        		scroll->display_string(actor->get_name());
-        		scroll->display_string(" has healed.\n");
+        		scroll->display_fmt_string("%s has healed.\n", actor->get_name());
         	}
 
         }
@@ -891,15 +890,15 @@ void TimedRest::eat(Actor *actor)
     Obj *food = actor->inventory_get_food(); // search actor's inventory first
     if(!food)
         food = party->get_food();
-    scroll->display_string(actor->get_name());
+
     if(food)
     {
-        scroll->display_string(" has food.\n");
+        scroll->display_fmt_string("%s has food.\n", actor->get_name());
         Game::get_game()->get_usecode()->destroy_obj(food, 1);
         number_that_had_food++;
     }
     else
-        scroll->display_string(" has no food.\n");
+        scroll->display_fmt_string("%s has no food.\n", actor->get_name());
 }
 
 /* Look for a bard in the party and have them play a tune. */
@@ -911,8 +910,7 @@ void TimedRest::bard_play()
         {
             Actor *bard = party->get_actor(b);
             bard->morph(OBJ_U6_MUSICIAN_PLAYING);
-            scroll->display_string(bard->get_name());
-            scroll->display_string(" plays a tune.\n");
+            scroll->display_fmt_string("%s plays a tune.\n", bard->get_name());
             break;
         }
 }
@@ -931,9 +929,7 @@ void TimedRest::sleep()
         if(actor == lookout)
         {
             actor->set_worktype(WORKTYPE_U6_LOOKOUT);
-            scroll->display_string("\n");
-            scroll->display_string(actor->get_name());
-            scroll->display_string(" stands guard while the party rests.\n");
+            scroll->display_fmt_string("\n%s stands guard while the party rests.\n", actor->get_name());
         }
         else
         {

@@ -50,6 +50,7 @@
 
 #include "Magic.h"
 #include "MsgScroll.h"
+#include "MsgScrollNewUI.h"
 #include "Map.h"
 #include "MapWindow.h"
 #include "Event.h"
@@ -192,8 +193,14 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
    font_manager = new FontManager(config);
    font_manager->init(game_type);
 
-   scroll = new MsgScroll(config, font_manager->get_font(0));
-
+   if(is_orig_style())
+   {
+	   scroll = new MsgScroll(config, font_manager->get_font(0));
+   }
+   else
+   {
+	   scroll = new MsgScrollNewUI(config, screen);
+   }
    game_map = new Map(config);
 
    egg_manager = new EggManager(config, game_type, game_map);
@@ -320,6 +327,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
 
    map_window->Show();
+   scroll->Show();
    view_manager->set_party_mode();
    view_manager->update();
 

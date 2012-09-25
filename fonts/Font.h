@@ -65,6 +65,9 @@ private:
 
    virtual uint16 getCharWidth(uint8 c);
    uint16 getStringWidth(const char *str);
+
+   void setOffset(uint16 off) { offset = off; }
+
   protected:
 
    uint8 get_char_num(uint8 c);

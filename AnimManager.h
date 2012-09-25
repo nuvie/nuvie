@@ -391,7 +391,7 @@ class TextAnim : public TimedAnim
     uint32 duration;
 
 public:
-    TextAnim(std::string text, MapCoord *loc, uint32 dur);
+    TextAnim(std::string text, MapCoord loc, uint32 dur);
     ~TextAnim();
     uint16 callback(uint16 msg, CallBack *caller, void *msg_data);
     void start()                    { start_timer(duration); }

@@ -40,6 +40,8 @@
 
 #define MSGSCROLL_SCROLLBACK_HEIGHT 100
 
+#define MSGSCROLL_NO_MAP_DISPLAY false
+
 #include <list>
 #include <vector>
 using std::list;
@@ -110,6 +112,8 @@ protected:
 
  uint16 cursor_wait;
 
+ uint16 scrollback_height;
+
 private:
  uint16 screen_x; //x offset to top left corner of MsgScroll
  uint16 screen_y; //y offset to top left corner of MsgScroll
@@ -145,8 +149,10 @@ private:
  uint16 display_pos;
 
 
-
  bool capitalise_next_letter;
+
+
+
 
  public:
 
@@ -160,7 +166,7 @@ private:
   bg_color = 0; keyword_highlight = true; talking = false; show_cursor = false;
   autobreak = false; scroll_updated = false; cursor_char = 0; cursor_x = 0;
   cursor_y = 0; line_count = 0; display_pos = 0; capitalise_next_letter = false;
-  just_displayed_prompt = false;
+  just_displayed_prompt = false; scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
  }
  ~MsgScroll();
 
@@ -174,24 +180,25 @@ private:
 
  MsgText *holding_buffer_get_token();
  bool is_holding_buffer_empty() { return holding_buffer.empty(); }
- bool can_displayed_prompt() { return (!just_displayed_prompt); }
+ virtual bool can_displayed_prompt() { return (!just_displayed_prompt); }
 
  virtual bool parse_token(MsgText *token);
  void add_token(MsgText *token);
  bool remove_char();
 
  virtual void set_font(uint8 font_type);
- bool is_garg_font();
+ virtual bool is_garg_font();
 
  int printf(const std::string format,...);
 
- virtual void display_string(std::string s, Font *f);
+ virtual void display_string(std::string s, Font *f, bool include_on_map_window);
  void display_string(std::string s, uint16 length, uint8 lang_num);
- void display_string(std::string s, uint8 lang_num=0);
+ void display_string(std::string s, bool include_on_map_window=true);
+ void display_fmt_string(const char *format, ...);
  void message(const char *string) { display_string(string); display_prompt(); }
 
  bool set_prompt(const char *new_prompt, Font *f=NULL);
- void display_prompt();
+ virtual void display_prompt();
 
  void set_keyword_highlight(bool state);
 
@@ -231,7 +238,7 @@ private:
 
  protected:
 
-
+ void delete_front_line();
  virtual MsgLine *add_new_line();
  void drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y);
  inline void clear_page_break();

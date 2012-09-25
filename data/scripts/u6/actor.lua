@@ -1274,12 +1274,14 @@ function actor_hit_msg(actor)
 	
 	local di = math.floor((hp * 4) / actor.max_hp)
 	
+	local s
+	
 	if di < 4 then
-		print("\n`"..actor.name.." ")
+		s = "\n`"..actor.name.." "
 	end
 	
 	if di == 0 then
-		print("critical!\n")
+		s = s.."critical!\n"
 		local wt = actor.wt
 		if actor_int_adj(actor) >= 5 and wt ~= WT_BERSERK and wt ~= WT_STATIONARY and wt > WT_FRONT then
 			actor.wt = WT_RETREAT
@@ -1287,14 +1289,16 @@ function actor_hit_msg(actor)
 	elseif di < 4 then
 	
 		if di == 1 then
-			print("heavily ")
+			s = s.."heavily "
 		elseif di == 2 then
-			print("lightly ")
+			s = s.."lightly "
 		elseif di == 3 then
-			print("barely ")
+			s = s.."barely "
 		end
-		print("wounded.\n")
+		s = s.."wounded.\n"
 	end
+	
+	print(s)
 end
 
 function actor_dead(actor)

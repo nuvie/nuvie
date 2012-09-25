@@ -281,12 +281,12 @@ void ConverseGump::add_token(MsgText *token)
 }
 */
 
-void ConverseGump::display_string(std::string s, Font *f)
+void ConverseGump::display_string(std::string s, Font *f,  bool include_on_map_window)
 {
 	if(s.empty())
 		return;
 
-	MsgScroll::display_string(strip_whitespace_after_break(s), f);
+	MsgScroll::display_string(strip_whitespace_after_break(s), f, include_on_map_window);//, MSGSCROLL_NO_MAP_DISPLAY);
 }
 
 std::string ConverseGump::strip_whitespace_after_break(std::string s)
@@ -493,13 +493,13 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 {
     char ascii = 0;
 
-    if(page_break)
+    if(page_break || !is_talking())
       {
        page_break = false;
        just_finished_page_break = true;
        if(!input_mode)
          Game::get_game()->get_gui()->unlock_input();
-       if(!is_holding_buffer_empty() || !input_mode)
+       if(!is_holding_buffer_empty() || !input_mode || !is_talking())
        {
     	   clear_scroll();
     	   process_holding_buffer(); // Process any text in the holding buffer.
@@ -559,14 +559,14 @@ GUI_status ConverseGump::MouseUp(int x, int y, int button)
  uint16 i;
  std::string token_str;
 
-    if(page_break) // any click == scroll-to-end
+    if(page_break || !is_talking()) // any click == scroll-to-end
     {
         page_break = false;
         just_finished_page_break = true;
         if(!input_mode)
             Game::get_game()->get_gui()->unlock_input();
 
-        if(!is_holding_buffer_empty() || !input_mode)
+        if(!is_holding_buffer_empty() || !input_mode || !is_talking())
         {
         	clear_scroll();
         	process_holding_buffer(); // Process any text in the holding buffer.

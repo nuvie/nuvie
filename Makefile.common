@@ -360,6 +360,8 @@ nuvie_SOURCES = \
 	MapWindow.h \
 	MsgScroll.cpp \
 	MsgScroll.h \
+	MsgScrollNewUI.cpp \
+	MsgScrollNewUI.h \
 	Obj.cpp \
 	Obj.h \
 	ObjManager.cpp \

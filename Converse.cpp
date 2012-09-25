@@ -475,9 +475,9 @@ void Converse::print(const char *s)
     DEBUG(0,LEVEL_DEBUGGING,"Converse: PRINT \"%s\"\n\n",s ? s : get_output().c_str());
 #endif
     if(s)
-        scroll->display_string(s);
+        scroll->display_string(s, MSGSCROLL_NO_MAP_DISPLAY);
     else
-        scroll->display_string(get_output());
+        scroll->display_string(get_output(), MSGSCROLL_NO_MAP_DISPLAY);
 }
 
 

@@ -31,7 +31,7 @@ class Screen;
 
 class ConvFont : public Font
 {
-
+   uint16 data_offset;
  public:
 
    ConvFont();

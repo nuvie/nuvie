@@ -685,9 +685,7 @@ bool Player::attack_select_weapon_at_location(sint8 location, bool add_newline)
     current_weapon = location;
     if(add_newline)
         scroll->display_string("\n");
-    scroll->display_string("Attack with ");
-    scroll->display_string(obj_manager->get_obj_name(weapon->obj_n));
-    scroll->display_string("-");
+    scroll->display_fmt_string("Attack with %s-", obj_manager->get_obj_name(weapon->obj_n));
     return true;
    }
 
@@ -748,16 +746,15 @@ void Player::repairShip()
 {
     MsgScroll *scroll = Game::get_game()->get_scroll();
     Actor *ship = get_actor();
-    char hp[6] = { '\0' };
+
     if(ship->get_obj_n() != OBJ_U6_SHIP)
         return;
     // ship actor's health is hull strength
     if(ship->get_hp()+5 > 100) ship->set_hp(100);
     else                       ship->set_hp(ship->get_hp()+5);
 
-    snprintf(hp, 6, "%d%%\n", ship->get_hp());
-    scroll->display_string("Hull Strength: ");
-    scroll->display_string(hp);
+    scroll->display_fmt_string("Hull Strength: %d%%\n", ship->get_hp());
+
     Game::get_game()->get_script()->call_advance_time(5);
     Game::get_game()->time_changed();
 }

@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <stdarg.h>
 #include <string>
 #include <ctype.h>
 #include <iostream>
@@ -34,6 +35,7 @@
 #include "MsgScroll.h"
 #include "Event.h"
 #include "Game.h"
+#include "Effect.h"
 
 // MsgText Class
 MsgText::MsgText()
@@ -212,6 +214,7 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
  bg_color = Game::get_game()->get_palette()->get_bg_color();
 
  capitalise_next_letter = false;
+ scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
 }
 
 MsgScroll::~MsgScroll()
@@ -297,17 +300,29 @@ int MsgScroll::printf(std::string format, ...)
   return printed;
 }
 
+void MsgScroll::display_fmt_string(const char *format, ...)
+{
+	char buf[1024];
+	memset(buf, 0, 1024);
+	va_list args;
+	va_start(args, format);
+	vsnprintf(buf, 1024, format, args);
+	va_end(args);
+
+	display_string(buf);
+}
+
 void MsgScroll::display_string(std::string s, uint16 length, uint8 lang_num)
 {
 
 }
 
-void MsgScroll::display_string(std::string s, uint8 lang_num)
+void MsgScroll::display_string(std::string s, bool include_on_map_window)
 {
- display_string(s,font);
+ display_string(s,font, include_on_map_window);
 }
 
-void MsgScroll::display_string(std::string s, Font *f)
+void MsgScroll::display_string(std::string s, Font *f, bool include_on_map_window)
 {
  MsgText *msg_text;
 
@@ -505,17 +520,22 @@ void MsgScroll::clear_scroll()
 	add_new_line();
 }
 
+void MsgScroll::delete_front_line()
+{
+	MsgLine* msg_line_front = msg_buf.front();
+	msg_buf.pop_front();
+	delete msg_line_front;
+}
+
 MsgLine *MsgScroll::add_new_line()
 {
  MsgLine *msg_line = new MsgLine();
  msg_buf.push_back(msg_line);
  line_count++;
 
- if(msg_buf.size() > MSGSCROLL_SCROLLBACK_HEIGHT)
+ if(msg_buf.size() > scrollback_height)
  {
-   MsgLine* msg_line_front = msg_buf.front();
-   msg_buf.pop_front();
-   delete msg_line_front;
+   delete_front_line();
  }
 
  if(autobreak && line_count > scroll_height - 1)
@@ -538,7 +558,7 @@ void MsgScroll::display_prompt()
  if(!talking && !just_displayed_prompt)
   { 
  //line_count = 0;
-   display_string(prompt.s.c_str(), prompt.font);
+	   display_string(prompt.s.c_str(), prompt.font, MSGSCROLL_NO_MAP_DISPLAY);
  //line_count = 0;
 
    clear_page_break();

@@ -62,7 +62,7 @@ class ConverseGump: public MsgScroll
  unsigned char *create_framed_portrait(Actor *a);
  virtual bool parse_token(MsgText *token);
  virtual std::string get_token_string_at_pos(uint16 x, uint16 y);
- virtual void display_string(std::string s, Font *f);
+ virtual void display_string(std::string s, Font *f, bool include_on_map_window);
  virtual void set_talking(bool state, Actor *actor = NULL);
  virtual void set_font(uint8 font_type) {}
 

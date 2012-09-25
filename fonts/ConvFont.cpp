@@ -1095,7 +1095,7 @@ ConvFont::~ConvFont()
 
 bool ConvFont::init(unsigned char *data, uint16 num_c, uint16 char_offset)
 {
- offset = char_offset;
+ data_offset = char_offset;
  num_chars = num_c;
 
  return true;
@@ -1103,14 +1103,14 @@ bool ConvFont::init(unsigned char *data, uint16 num_c, uint16 char_offset)
 
 uint16 ConvFont::getCharWidth(uint8 c)
 {
-	return f_w_data[c];
+	return f_w_data[c+data_offset];
 }
 
 uint16 ConvFont::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                     uint8 color)
 {
 
- unsigned char *buf = (unsigned char *)f_data + (char_num % 16) * 8 + (char_num / 16) * 128 * 8;
+ unsigned char *buf = (unsigned char *)f_data + (data_offset * 64) + (char_num % 16) * 8 + (char_num / 16) * 128 * 8;
  screen->blit(x,y,buf,8,8,8,128,true,NULL);
  return getCharWidth(char_num);
 }

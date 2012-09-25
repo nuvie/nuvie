@@ -477,10 +477,10 @@ uint16 HitAnim::callback(uint16 msg, CallBack *caller, void *msg_data)
 
 /*** TextAnim ***/
 
-TextAnim::TextAnim(std::string t, MapCoord *loc, uint32 dur)
+TextAnim::TextAnim(std::string t, MapCoord loc, uint32 dur)
 {
-	px = loc->x;
-	py = loc->y;
+	px = loc.x;
+	py = loc.y;
 	duration = dur;
 	font = new ConvFont();
 	font->init(NULL, 256, 0);

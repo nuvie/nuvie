@@ -1844,9 +1844,9 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                     default:
                         if(obj->frame_n <= 7)
                         {
-                            scroll->display_string("Drink ");
-                            scroll->display_string(u6_potions[obj->frame_n]);
-                            scroll->display_string(" potion!\n");
+                            scroll->display_string("Drink %s potion!\n", u6_potions[obj->frame_n]);
+                            //scroll->display_string(u6_potions[obj->frame_n]);
+                            //scroll->display_string(" potion!\n");
                         }
                         else
                             scroll->display_string("\nNo effect\n");

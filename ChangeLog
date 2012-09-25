@@ -1,3 +1,11 @@
+2012-09-25  Eric Fry <efry at users.sourceforge.net> r1594
+	* Added new MsgScrollNewUI class which is used in the fullscreen map mode.
+	  This scroll shows text then removes all rows with a rollup animation after
+	  2 seconds of inactivity.
+	* Fixed bug with converse scripts not exiting properly with fullmap mode.
+	* Fixed display of gargoyle/runic font with the new ConvFont class.
+	* Added MsgScroll::display_fmt_string() which accepts a var args printf style.
+
 2012-09-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1593
 	* Fix uninitialized z var when not looking on left click (r1592 regression)
 
