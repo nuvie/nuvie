@@ -2324,7 +2324,7 @@ dbg("activate_city_guards()")
    
    player_subtract_karma(5)
    
-   for i=1,202 do --perm actors
+   for i=1,0xff do
       local actor = Actor.get(i)
    
       if actor.alive == true and actor.z == player_loc.z and actor.in_party == false and actor.align == ALIGNMENT_NEUTRAL then

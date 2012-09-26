@@ -55,7 +55,7 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 
  scroll_width = 30;
  scroll_height = 19;
- scrollback_height = 19;
+ scrollback_height = 100;
 
  x = 8;
  y = 8;
@@ -68,6 +68,8 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
  cursor_wait = 0;
 
  timer = NULL;
+
+ position = 0;
 }
 
 MsgScrollNewUI::~MsgScrollNewUI()
@@ -110,16 +112,17 @@ uint16 MsgScrollNewUI::callback(uint16 msg, CallBack *caller, void *data)
 		}
 		else
 		{
-			delete_front_line();
+			//roll up the message scroll so it's out of the way.
+			if(position < msg_buf.size())
+			{
+				if((uint16)(position+1) < msg_buf.size()
+						|| msg_buf.back()->total_length > 0) //don't advance if on second last line and the last line is empty.
+				{
+					position++;
+					new TimedCallback(this, NULL, 50);
+				}
+			}
 
-			if(msg_buf.size() > 0)
-			{
-				new TimedCallback(this, NULL, 50);
-			}
-			else
-			{
-				add_new_line(); //buffer cannot be empty.
-			}
 		}
 	}
 
@@ -136,7 +139,12 @@ void MsgScrollNewUI::Display(bool full_redraw)
 	 y = area.y + 4;
 	 total_length = 0;
 	 std::list<MsgLine *>::iterator iter;
-	 for(iter=msg_buf.begin();iter != msg_buf.end();iter++)
+
+	 iter=msg_buf.begin();
+	 for(uint16 i=0;i < position; i++)
+		 iter++;
+
+	 for(uint16 i=0;i< scroll_height && iter != msg_buf.end();i++,iter++)
 	     {
 		  MsgLine *msg_line = *iter;
 		  std::list<MsgText *>::iterator iter1;
@@ -159,3 +167,47 @@ void MsgScrollNewUI::Display(bool full_redraw)
 	screen->update(area.x,area.y, area.w, area.h);
 }
 
+GUI_status MsgScrollNewUI::KeyDown(SDL_keysym key)
+{
+    switch(key.sym)
+     {
+      case SDLK_PAGEUP:
+    	  if(position > 0)
+    	  {
+    		  position--;
+    		  grab_focus();
+    	  }
+    	  return (GUI_YUM);
+      case SDLK_PAGEDOWN: if(position < msg_buf.size()) position++;
+                          return (GUI_YUM);
+      default :
+    	  release_focus();
+    	  new TimedCallback(this, NULL, 50);
+    	  break;
+     }
+
+    return MsgScroll::KeyDown(key);
+}
+
+GUI_status MsgScrollNewUI::MouseDown(int x, int y, int button)
+{
+	switch(button)
+	{
+	case SDL_BUTTON_WHEELDOWN :
+		if(position < msg_buf.size()) position++;
+		return GUI_YUM;
+	case SDL_BUTTON_WHEELUP :
+		if(position > 0)
+		{
+			position--;
+			grab_focus();
+		}
+		return GUI_YUM;
+	default :
+		release_focus();
+		new TimedCallback(this, NULL, 50);
+		break;
+	}
+
+	return GUI_PASS;
+}

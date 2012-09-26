@@ -47,6 +47,8 @@ class MsgScrollNewUI: public MsgScroll
  Font *font_normal;
  Font *font_garg;
 
+ uint16 position;
+
  public:
 
  MsgScrollNewUI(Configuration *cfg, Screen *s);
@@ -64,6 +66,8 @@ class MsgScrollNewUI: public MsgScroll
  void set_font(uint8 font_type);
  bool is_garg_font();
 
+ GUI_status KeyDown(SDL_keysym key);
+ GUI_status MouseDown(int x, int y, int button);
  protected:
 };
 
