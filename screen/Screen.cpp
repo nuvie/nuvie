@@ -386,20 +386,39 @@ void Screen::fade32(uint16 dest_x, uint16 dest_y, uint16 src_w, uint16 src_h, ui
 
 void Screen::stipple_8bit(uint8 color_num)
 {
+	stipple_8bit(color_num, 0, 0, surface->w, surface->h);
+}
+
+void Screen::stipple_8bit(uint8 color_num, uint16 x, uint16 y, uint16 w, uint16 h)
+{
 	uint32 i, j;
+
+	//FIXME need more range checks here!
+	if(h > surface->h)
+	{
+		h = surface->h;
+	}
+
+	if(w > surface->w)
+	{
+		w = surface->w;
+	}
 
 	if(surface->bits_per_pixel == 16)
 	{
 		uint16 color = (uint16)surface->colour32[color_num];
 		uint16 *pixels = (uint16 *)surface->pixels;
 
-		for(i=0;i<surface->h;i++)
+		pixels += y * surface->w + x;
+
+		for(i=y;i<y+h;i++)
 		{
-			for(j=0;j<surface->w;j+=2)
+			for(j=x;j<x+w;j+=2)
 			{
 				*pixels = color;
 				pixels += 2;
 			}
+			pixels += (surface->w - j) + x;
 			if(i%2)
 			{
 				pixels--;
@@ -415,13 +434,16 @@ void Screen::stipple_8bit(uint8 color_num)
 		uint32 color = surface->colour32[color_num];
 		uint32 *pixels = (uint32 *)surface->pixels;
 
-		for(i=0;i<surface->h;i++)
+		pixels += y * surface->w + x;
+
+		for(i=y;i<y+h;i++)
 		{
-			for(j=0;j<surface->w;j+=2)
+			for(j=x;j<x+w;j+=2)
 			{
 				*pixels = color;
 				pixels += 2;
 			}
+			pixels += (surface->w - j) + x;
 			if(i%2)
 			{
 				pixels--;
@@ -433,7 +455,6 @@ void Screen::stipple_8bit(uint8 color_num)
 		}
 	}
 }
-
 void Screen::put_pixel(uint8 colour_num, uint16 x, uint16 y)
 {
 	if(surface->bits_per_pixel == 16)

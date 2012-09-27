@@ -1,3 +1,6 @@
+2012-09-27  Eric Fry <efry at users.sourceforge.net> r1597
+	* Added stippled background to new fullmap msg scroll.
+
 2012-09-26  Eric Fry <efry at users.sourceforge.net> r1596
 	* Fixed bug with activate_city_guards() not checking for temp actors.
 	* Changed fullmap mode message scroll to retain scrollback buffer. You can now

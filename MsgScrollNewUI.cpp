@@ -43,7 +43,6 @@
 
 MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 {
- uint16 x, y;
 
  font_normal = new ConvFont();
  font_normal->init(NULL, 256, 0);
@@ -57,8 +56,6 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
  scroll_height = 19;
  scrollback_height = 100;
 
- x = 8;
- y = 8;
 
  uint16 x_off = config_get_video_x_offset(config);
  uint16 y_off = config_get_video_y_offset(config);
@@ -70,6 +67,10 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
  timer = NULL;
 
  position = 0;
+
+ bg_color = 218;
+ border_color = 220;
+
 }
 
 MsgScrollNewUI::~MsgScrollNewUI()
@@ -132,77 +133,103 @@ uint16 MsgScrollNewUI::callback(uint16 msg, CallBack *caller, void *data)
 void MsgScrollNewUI::Display(bool full_redraw)
 {
 	MsgText *token;
-	 //std::list<MsgText>::iterator iter;
-	 uint16 total_length = 0;
-	 uint16 y = area.y + 8 + 3;
 
-	 y = area.y + 4;
-	 total_length = 0;
-	 std::list<MsgLine *>::iterator iter;
+	uint16 y = area.y + 4;
+	std::list<MsgLine *>::iterator iter;
 
-	 iter=msg_buf.begin();
-	 for(uint16 i=0;i < position; i++)
-		 iter++;
+	iter=msg_buf.begin();
+	for(uint16 i=0;i < position; i++)
+		iter++;
 
-	 for(uint16 i=0;i< scroll_height && iter != msg_buf.end();i++,iter++)
-	     {
-		  MsgLine *msg_line = *iter;
-		  std::list<MsgText *>::iterator iter1;
+	for(uint16 i=0;i< scroll_height && iter != msg_buf.end();i++,iter++)
+	{
+		MsgLine *msg_line = *iter;
+		std::list<MsgText *>::iterator iter1;
 
-		  for(iter1=msg_line->text.begin();iter1 != msg_line->text.end() ; iter1++)
-		  {
-			  token = *iter1;
+		iter1=msg_line->text.begin();
 
-			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + 4 + total_length, y + 4, 0); //FIX for hardcoded font height
-			  //token->s.length();
-			  //token->font->drawChar(screen, ' ', area.x + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0);
-			  //total_length += 1;
+		//if not last record or if last record is not an empty line.
+		if(i + position < (msg_buf.size()-1) || (iter1 != msg_line->text.end() && ((*iter)->total_length != 0)))
+		{
+			if(bg_color != 255)
+			{
+				//FIXME solid/stippled should be config variable.
 
-		  }
-		  y+=10;
-		  total_length = 0;
-	     }
+				//screen->fill(bg_color, area.x, y + (i==0?-4:4), scroll_width * 7 + 8, (i==0?18:10));
+				screen->stipple_8bit(bg_color, area.x, y + (i==0?-4:4), scroll_width * 7 + 8, (i==0?18:10));
+			}
 
-	//font->drawString(screen, conv_str.c_str(), area.x, area.y);
+			if(border_color != 255)
+			{
+				screen->fill(border_color, area.x, y + (i==0?-4:4), 1, (i==0?18:10));
+				screen->fill(border_color, area.x + scroll_width * 7 + 7, y + (i==0?-4:4), 1, (i==0?18:10));
+			}
+
+			for(uint16 total_length = 0;iter1 != msg_line->text.end() ; iter1++)
+			{
+				token = *iter1;
+
+				total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + 4 + total_length, y + 4, 0); //FIX for hardcoded font height
+			}
+			y+=10;
+		}
+
+	}
+	if(border_color != 255 && y != area.y + 4)
+	{
+		screen->fill(border_color, area.x, y + 4, scroll_width * 7 + 8, 1); //draw bottom border
+	}
 	screen->update(area.x,area.y, area.w, area.h);
 }
 
 GUI_status MsgScrollNewUI::KeyDown(SDL_keysym key)
 {
-    switch(key.sym)
-     {
-      case SDLK_PAGEUP:
-    	  if(position > 0)
-    	  {
-    		  position--;
-    		  grab_focus();
-    	  }
-    	  return (GUI_YUM);
-      case SDLK_PAGEDOWN: if(position < msg_buf.size()) position++;
-                          return (GUI_YUM);
-      default :
-    	  release_focus();
-    	  new TimedCallback(this, NULL, 50);
-    	  break;
-     }
+	ScrollEventType event = SCROLL_ESCAPE;
+
+	switch(key.sym)
+	{
+	case SDLK_PAGEDOWN: event = SCROLL_DOWN; break;
+	case SDLK_PAGEUP: event = SCROLL_UP; break;
+	default : break;
+	}
+
+	if(scroll_movement_event(event) == GUI_YUM)
+		return GUI_YUM;
 
     return MsgScroll::KeyDown(key);
 }
 
 GUI_status MsgScrollNewUI::MouseDown(int x, int y, int button)
 {
+	ScrollEventType event = SCROLL_ESCAPE;
+
 	switch(button)
 	{
-	case SDL_BUTTON_WHEELDOWN :
-		if(position < msg_buf.size()) position++;
-		return GUI_YUM;
-	case SDL_BUTTON_WHEELUP :
+	case SDL_BUTTON_WHEELDOWN : event = SCROLL_DOWN; break;
+	case SDL_BUTTON_WHEELUP : event = SCROLL_UP; break;
+	default : break;
+	}
+
+	return scroll_movement_event(event);
+}
+
+GUI_status MsgScrollNewUI::scroll_movement_event(ScrollEventType event)
+{
+	switch(event)
+	{
+	case SCROLL_UP :
 		if(position > 0)
 		{
 			position--;
 			grab_focus();
 		}
 		return GUI_YUM;
+
+	case SCROLL_DOWN :
+		if(position < msg_buf.size())
+			position++;
+		return (GUI_YUM);
+
 	default :
 		release_focus();
 		new TimedCallback(this, NULL, 50);
@@ -210,4 +237,16 @@ GUI_status MsgScrollNewUI::MouseDown(int x, int y, int button)
 	}
 
 	return GUI_PASS;
+}
+
+MsgLine *MsgScrollNewUI::add_new_line()
+{
+	MsgLine *line = MsgScroll::add_new_line();
+
+	if(position + scroll_height < msg_buf.size())
+	{
+		position++;
+	}
+
+	return line;
 }

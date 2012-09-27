@@ -39,6 +39,12 @@ class MsgScroll;
 class Actor;
 class CallBack;
 
+typedef enum {
+	SCROLL_UP,
+	SCROLL_DOWN,
+	SCROLL_ESCAPE
+} ScrollEventType;
+
 class MsgScrollNewUI: public MsgScroll
 {
 
@@ -46,6 +52,9 @@ class MsgScrollNewUI: public MsgScroll
 
  Font *font_normal;
  Font *font_garg;
+
+ uint8 bg_color;
+ uint8 border_color;
 
  uint16 position;
 
@@ -69,6 +78,10 @@ class MsgScrollNewUI: public MsgScroll
  GUI_status KeyDown(SDL_keysym key);
  GUI_status MouseDown(int x, int y, int button);
  protected:
+
+ GUI_status scroll_movement_event(ScrollEventType event);
+ MsgLine *add_new_line();
+
 };
 
 
