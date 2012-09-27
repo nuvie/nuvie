@@ -393,15 +393,19 @@ void Screen::stipple_8bit(uint8 color_num, uint16 x, uint16 y, uint16 w, uint16 
 {
 	uint32 i, j;
 
-	//FIXME need more range checks here!
-	if(h > surface->h)
+	if(x >= surface->w || y >= surface->h)
 	{
-		h = surface->h;
+		return;
 	}
 
-	if(w > surface->w)
+	if(y+h > surface->h)
 	{
-		w = surface->w;
+		h = surface->h - y;
+	}
+
+	if(x+w > surface->w)
+	{
+		w = surface->w - x;
 	}
 
 	if(surface->bits_per_pixel == 16)
