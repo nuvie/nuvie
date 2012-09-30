@@ -284,6 +284,21 @@ bool Screen::clear(sint16 x, sint16 y, sint16 w, sint16 h,SDL_Rect *clip_rect)
 
 bool Screen::fill(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h)
 {
+	if(x >= surface->w || y >= surface->h)
+	{
+		return true;
+	}
+
+	if(y+(uint16)h > surface->h)
+	{
+		h = surface->h - y;
+	}
+
+	if(x+(uint16)w > surface->w)
+	{
+		w = surface->w - x;
+	}
+
  if(surface->bits_per_pixel == 16)
     return fill16(colour_num, x, y, w, h);
 

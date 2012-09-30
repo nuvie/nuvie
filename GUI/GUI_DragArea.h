@@ -28,12 +28,14 @@
 class GUI_DragArea : public GUI_CallBack {
 
  protected:
-
+ bool drop_target;
  bool dragging;
 
  public:
 
-  GUI_DragArea() { dragging = false; }
+  GUI_DragArea() { dragging = false; drop_target = true;}
+
+  bool is_drop_target() { return drop_target; }
 
   virtual bool drag_accept_drop(int x, int y, int message, void *data) { return false; }
   virtual void drag_perform_drop(int x, int y, int message, void *data) { return; }

@@ -29,6 +29,7 @@
 
 #include "Party.h"
 #include "Actor.h"
+#include "ViewManager.h"
 
 #include "ContainerWidgetGump.h"
 #include "ContainerViewGump.h"
@@ -77,7 +78,7 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 	build_path(datadir, "bag_bg.bmp", imagefile);
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
-	SDL_SetColorKey(bg_image, SDL_SRCCOLORKEY, SDL_MapRGB(bg_image->format, 0, 0x70, 0xfc));
+	set_bg_color_key(0, 0x70, 0xfc);
 
 	font = new GUI_Font(GUI_FONT_GUMP);
 	font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
@@ -119,9 +120,7 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 	//close gump and return control to Magic class for clean up.
 	if(caller == gump_button)
 	{
-		//FIXME close gump.
-		release_focus();
-		Hide();
+		Game::get_game()->get_view_manager()->close_container_view(this);
 		return GUI_YUM;
 	}
 	else if(caller == down_arrow_button)
@@ -140,6 +139,17 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 
 GUI_status ContainerViewGump::MouseDown(int x, int y, int button)
 {
+	 if(button == SDL_BUTTON_WHEELDOWN)
+	 {
+		 container_widget->down_arrow();
+		return GUI_YUM;
+	 }
+	 else if(button == SDL_BUTTON_WHEELUP)
+	 {
+		 container_widget->up_arrow();
+		 return GUI_YUM;
+	 }
+
 	return DraggableView::MouseDown(x, y, button);
 }
 

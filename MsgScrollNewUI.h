@@ -53,6 +53,7 @@ class MsgScrollNewUI: public MsgScroll
  Font *font_normal;
  Font *font_garg;
 
+ bool solid_bg;
  uint8 bg_color;
  uint8 border_color;
 

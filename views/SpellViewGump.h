@@ -37,7 +37,6 @@ class Spell;
 
 class SpellViewGump : public SpellView {
 
-	SDL_Surface *bg_image;
 	GUI_Button *gump_button;
 	sint16 selected_spell;
 	GUI_Font *font;

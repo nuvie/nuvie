@@ -223,7 +223,7 @@ GUI_status ContainerWidget::MouseDown(int x, int y, int button)
 
  // ABOEING
  if(actor && (button == USE_BUTTON || button == ACTION_BUTTON || button == DRAG_BUTTON))
-   {
+ {
     Obj *obj; // FIXME: duplicating code in DollWidget
     if((obj = get_obj_at_location(x,y)) != NULL)
       {
@@ -233,7 +233,8 @@ GUI_status ContainerWidget::MouseDown(int x, int y, int button)
            selected_obj = obj; // start dragging
        return GUI_YUM;
       }
-   }
+ }
+
  return GUI_PASS;
 }
 

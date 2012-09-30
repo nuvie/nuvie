@@ -159,6 +159,16 @@ void GUI_Widget::release_focus()
  focused = false;
 }
 
+void GUI_Widget::moveToFront()
+{
+	GUI *gui = GUI::get_gui();
+	if(gui)
+	{
+		gui->removeWidget(this);
+		gui->AddWidget(this);
+	}
+}
+
 void GUI_Widget::PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y)
 {
  std::list<GUI_Widget *>::iterator child;

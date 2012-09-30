@@ -37,7 +37,6 @@ class Portrait;
 
 class PortraitViewGump : public DraggableView {
 
-	SDL_Surface *bg_image;
 	GUI_Button *gump_button;
 
 	GUI_Font *font;
@@ -55,8 +54,14 @@ public:
  void Display(bool full_redraw);
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
+
+ GUI_status MouseDown(int x, int y, int button);
+
  protected:
 
+ void set_actor(Actor *a);
+ void left_arrow();
+ void right_arrow();
 };
 
 #endif /* __PortraitViewGump_h__ */

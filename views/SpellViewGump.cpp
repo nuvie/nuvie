@@ -122,7 +122,7 @@ uint8 SpellViewGump::fill_cur_spell_list()
 		return count;
 	}
 
-	SDL_SetColorKey(bg_image, SDL_SRCCOLORKEY, SDL_MapRGB(bg_image->format, 0, 0x70, 0xfc));
+	set_bg_color_key(0, 0x70, 0xfc);
 
 	for(i=0;i<count;i++)
 	{

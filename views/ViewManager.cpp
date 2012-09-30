@@ -226,16 +226,72 @@ void ViewManager::open_doll_view(Actor *actor)
 	}
 }
 
+ContainerViewGump *ViewManager::get_container_view(Actor *actor, Obj *obj)
+{
+	std::list<ContainerViewGump *>::iterator iter;
+	for(iter=container_gumps.begin(); iter != container_gumps.end();iter++)
+	{
+		ContainerViewGump *view = *iter;
+		if(actor)
+		{
+			if(view->is_actor_container() && view->get_actor() == actor)
+			{
+				return view;
+			}
+		}
+		else if(obj)
+		{
+			if(!view->is_actor_container() && view->get_container_obj() == obj)
+			{
+				return view;
+			}
+		}
+	}
+
+	return NULL;
+}
+
 void ViewManager::open_container_view(Actor *actor, Obj *obj)
 {
-		ContainerViewGump *view = new ContainerViewGump(config);
+	ContainerViewGump *view = get_container_view(actor, obj);
+
+	if(view == NULL)
+	{
+		view = new ContainerViewGump(config);
 		view->init(Game::get_game()->get_screen(), this, 40, 20, text, party, tile_manager, obj_manager);
 		if(actor)
 			view->set_actor(actor);
 		else
 			view->set_container_obj(obj);
 
+		container_gumps.push_back(view);
 		add_view((View *)view);
+	}
+	else
+	{
+		view->moveToFront();
+	}
+}
+
+void ViewManager::close_container_view(Actor *actor)
+{
+	ContainerViewGump *view = get_container_view(actor, NULL);
+
+	if(view)
+	{
+		close_container_view(view);
+	}
+}
+
+void ViewManager::close_container_view(ContainerViewGump *view)
+{
+	container_gumps.remove(view);
+
+	if(view->has_focus())
+	{
+		view->release_focus();
+	}
+	view->Delete();
 }
 
 void ViewManager::open_mapeditor_view()

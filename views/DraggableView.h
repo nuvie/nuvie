@@ -31,6 +31,10 @@ class GUI_Button;
 
 class DraggableView: public View 
 {
+protected:
+	SDL_Surface *bg_image;
+	Uint32 bg_color_key;
+
 private:
 	bool drag;
     int button_x, button_y;
@@ -46,7 +50,7 @@ public:
     void MoveRelative(int dx,int dy);
 
 protected:
-
+    void set_bg_color_key(Uint8 r, Uint8 g, Uint8 b);
 };
 
 #endif /* __DraggableView_h__ */

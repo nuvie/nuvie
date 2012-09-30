@@ -33,17 +33,38 @@ DraggableView::DraggableView(Configuration *config)
 : View(config)
 {
 	drag = false; button_x = 0; button_y = 0;
+	bg_image = NULL;
+	bg_color_key = 0;
 }
 
 DraggableView::~DraggableView()
 {
 }
 
+void DraggableView::set_bg_color_key(Uint8 r, Uint8 g, Uint8 b)
+{
+	if(bg_image)
+	{
+		bg_color_key = SDL_MapRGB(bg_image->format, 0, 0x70, 0xfc);
+		SDL_SetColorKey(bg_image, SDL_SRCCOLORKEY, bg_color_key);
+	}
+}
+
 GUI_status DraggableView::MouseDown(int x, int y, int button)
 {
+	if(bg_image && HitRect(x, y))
+	{
+		Uint32 pixel = sdl_getpixel(bg_image, x - area.x, y - area.y);
+		if(pixel == bg_color_key)
+		{
+			return GUI_PASS;
+		}
+	}
  drag = true;
  button_x = x;
  button_y = y;
+
+ moveToFront();
 
  grab_focus();
 

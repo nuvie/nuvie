@@ -260,33 +260,37 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
          {
           DEBUG(0,LEVEL_DEBUGGING,"Hit %d\n",location);
           obj = actor->inventory_get_readied_object(location);
+          if(button == ACTION_BUTTON && command_bar->get_selected_action() > 0
+             && event->get_mode()== INPUT_MODE)
+          {
+        	  if(obj)
+        	  {
+        		  event->select_obj(obj, actor);
+        	  }
+        	  else
+        	  {
+        		  // has not found a target yet
+        	       Game::get_game()->get_scroll()->display_string("nothing!\n");
+        	       event->endAction(true);
+        	       event->set_mode(MOVE_MODE);
+        	  }
+              return GUI_PASS;
+          }
           if(obj)
            {
-             if(button == ACTION_BUTTON && command_bar->get_selected_action() > 0
-                && event->get_mode()== INPUT_MODE)
-             {
-                 event->select_obj(obj, actor);
-                 return GUI_PASS;
-             }
+
              if((event->get_mode()==MOVE_MODE || event->get_mode()==EQUIP_MODE)
                 && button==DRAG_BUTTON)
                  selected_obj = obj; // start dragging
              else // send to View
                  callback_object->callback(INVSELECT_CB, this, obj);
            }
+          return GUI_YUM;
          }
       }
    }
-   if(button == ACTION_BUTTON && event->get_mode()== INPUT_MODE // has not found a target yet
-      && command_bar->get_selected_action() >0)
-   {
-       Game::get_game()->get_scroll()->display_string("nothing!\n");
-       event->endAction(true);
-       event->set_mode(MOVE_MODE);
-       return GUI_PASS;
-   }
 
- return GUI_YUM;
+ return GUI_PASS;
 }
 
 // un-ready selected item

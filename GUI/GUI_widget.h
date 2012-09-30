@@ -104,9 +104,10 @@ public:
 	virtual void MoveRelative(int dx,int dy);
 	virtual void Move(int new_x, int new_y);
     void MoveRelativeToParent(int dx, int dy);
+    bool has_focus() { return focused; }
 	void grab_focus();
 	virtual void release_focus();
-
+	void moveToFront();
 	virtual void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
 
 	virtual int  Status(void);	/* Reports status to GUI */

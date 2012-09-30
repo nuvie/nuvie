@@ -37,7 +37,7 @@
 
 PortraitViewGump::PortraitViewGump(Configuration *cfg) : DraggableView(cfg)
 {
-	bg_image = NULL; portrait = NULL;
+	portrait = NULL;
 	font = NULL; gump_button = NULL;
 	portrait_data = NULL; actor = NULL;
 }
@@ -59,8 +59,7 @@ bool PortraitViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, ui
 	SetRect(area.x, area.y, 188, 91);
 
 	portrait = por;
-	actor = a;
-	portrait_data = portrait->get_portrait_data(actor);
+	set_actor(a);
 
 	std::string datadir = GUI::get_gui()->get_data_dir();
 	std::string imagefile;
@@ -76,12 +75,36 @@ bool PortraitViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, ui
 	build_path(datadir, "portrait_bg.bmp", imagefile);
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
-	SDL_SetColorKey(bg_image, SDL_SRCCOLORKEY, SDL_MapRGB(bg_image->format, 0, 0x70, 0xfc));
+	set_bg_color_key(0, 0x70, 0xfc);
 
 	font = new GUI_Font(GUI_FONT_GUMP);
 	font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
 
 	return true;
+}
+
+void PortraitViewGump::set_actor(Actor *a)
+{
+	actor = a;
+	if(portrait_data)
+		free(portrait_data);
+	portrait_data = portrait->get_portrait_data(actor);
+}
+
+void PortraitViewGump::left_arrow()
+{
+	uint8 party_mem_num = party->get_member_num(actor);
+	if(party_mem_num > 0)
+		party_mem_num--;
+	else
+		party_mem_num = party->get_party_size() - 1;
+
+	set_actor(party->get_actor(party_mem_num));
+}
+
+void PortraitViewGump::right_arrow()
+{
+	set_actor(party->get_actor((party->get_member_num(actor) + 1) % party->get_party_size()));
 }
 
 void PortraitViewGump::Display(bool full_redraw)
@@ -162,4 +185,20 @@ GUI_status PortraitViewGump::callback(uint16 msg, GUI_CallBack *caller, void *da
 	}
 
     return GUI_PASS;
+}
+
+GUI_status PortraitViewGump::MouseDown(int x, int y, int button)
+{
+	 if(button == SDL_BUTTON_WHEELDOWN)
+	 {
+		right_arrow();
+		return GUI_YUM;
+	 }
+	 else if(button == SDL_BUTTON_WHEELUP)
+	 {
+		 left_arrow();
+		 return GUI_YUM;
+	 }
+
+	return DraggableView::MouseDown(x, y, button);
 }

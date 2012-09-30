@@ -37,7 +37,6 @@ class DollWidget;
 
 class DollViewGump : public DraggableView {
 
-	SDL_Surface *bg_image;
 	GUI_Button *gump_button;
 	GUI_Button *combat_button;
 	GUI_Button *heart_button;
@@ -69,6 +68,9 @@ public:
 
  void displayEquipWeight();
  void displayCombatMode();
+
+ void left_arrow();
+ void right_arrow();
 };
 
 #endif /* __DollViewGump_h__ */

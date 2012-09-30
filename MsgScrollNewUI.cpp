@@ -43,6 +43,7 @@
 
 MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 {
+ drop_target = false; //we don't participate in drag and drop.
 
  font_normal = new ConvFont();
  font_normal->init(NULL, 256, 0);
@@ -52,9 +53,21 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 
  init(cfg, font_normal);
 
- scroll_width = 30;
- scroll_height = 19;
- scrollback_height = 100;
+ std::string new_scroll_cfg = config_get_game_key(config) + "/newscroll";
+
+ cfg->value(new_scroll_cfg + "/solid_bg", solid_bg, false);
+
+ int c;
+ cfg->value(new_scroll_cfg + "/bg_color", c, 218);
+ bg_color = clamp_max(c, 255);
+ cfg->value(new_scroll_cfg + "/border_color", c, 220);
+ border_color = clamp_max(c, 255);
+
+ cfg->value(new_scroll_cfg + "/width", c, 30);
+ scroll_width = c;
+ cfg->value(new_scroll_cfg + "/height", c, 19);
+ scroll_height = c;
+ scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
 
 
  uint16 x_off = config_get_video_x_offset(config);
@@ -67,10 +80,6 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
  timer = NULL;
 
  position = 0;
-
- bg_color = 218;
- border_color = 220;
-
 }
 
 MsgScrollNewUI::~MsgScrollNewUI()
@@ -153,10 +162,10 @@ void MsgScrollNewUI::Display(bool full_redraw)
 		{
 			if(bg_color != 255)
 			{
-				//FIXME solid/stippled should be config variable.
-
-				//screen->fill(bg_color, area.x, y + (i==0?-4:4), scroll_width * 7 + 8, (i==0?18:10));
-				screen->stipple_8bit(bg_color, area.x, y + (i==0?-4:4), scroll_width * 7 + 8, (i==0?18:10));
+				if(solid_bg)
+					screen->fill(bg_color, area.x, y + (i==0?-4:4), scroll_width * 7 + 8, (i==0?18:10));
+				else
+					screen->stipple_8bit(bg_color, area.x, y + (i==0?-4:4), scroll_width * 7 + 8, (i==0?18:10));
 			}
 
 			if(border_color != 255)

@@ -38,7 +38,7 @@
 
 
 DollViewGump::DollViewGump(Configuration *cfg) : DraggableView(cfg),
-	bg_image(NULL), gump_button(NULL), combat_button(NULL), heart_button(NULL), party_button(NULL), inventory_button(NULL),
+	gump_button(NULL), combat_button(NULL), heart_button(NULL), party_button(NULL), inventory_button(NULL),
 	doll_widget(NULL), font(NULL), actor(NULL)
 {
 	bg_image = NULL;
@@ -92,7 +92,7 @@ bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16
 	build_path(datadir, "doll_bg.bmp", imagefile);
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
-	SDL_SetColorKey(bg_image, SDL_SRCCOLORKEY, SDL_MapRGB(bg_image->format, 0, 0x70, 0xfc));
+	set_bg_color_key(0, 0x70, 0xfc);
 
 	build_path(datadir, "combat_btn_up.bmp", imagefile);
 	image = SDL_LoadBMP(imagefile.c_str());
@@ -168,6 +168,24 @@ void DollViewGump::displayCombatMode()
 	font->TextOut(screen->get_sdl_surface(), area.x + 36 + c, area.y + 97, text);
 }
 
+void DollViewGump::left_arrow()
+{
+	uint8 party_mem_num = party->get_member_num(actor);
+	if(party_mem_num > 0)
+		party_mem_num--;
+	else
+		party_mem_num = party->get_party_size() - 1;
+
+	actor = party->get_actor(party_mem_num);
+	doll_widget->set_actor(actor);
+}
+
+void DollViewGump::right_arrow()
+{
+	actor = party->get_actor((party->get_member_num(actor) + 1) % party->get_party_size());
+	doll_widget->set_actor(actor);
+}
+
 GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
 	Event *event = Game::get_game()->get_event();
@@ -181,19 +199,11 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	}
 	else if(caller == right_button)
 	{
-		actor = party->get_actor((party->get_member_num(actor) + 1) % party->get_party_size());
-		doll_widget->set_actor(actor);
+		right_arrow();
 	}
 	else if(caller == left_button)
 	{
-		uint8 party_mem_num = party->get_member_num(actor);
-		if(party_mem_num > 0)
-			party_mem_num--;
-		else
-			party_mem_num = party->get_party_size() - 1;
-
-		actor = party->get_actor(party_mem_num);
-		doll_widget->set_actor(actor);
+		left_arrow();
 	}
 	else if(caller == inventory_button)
 	{
@@ -233,6 +243,17 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 
 GUI_status DollViewGump::MouseDown(int x, int y, int button)
 {
+	 if(button == SDL_BUTTON_WHEELDOWN)
+	 {
+		right_arrow();
+		return GUI_YUM;
+	 }
+	 else if(button == SDL_BUTTON_WHEELUP)
+	 {
+		 left_arrow();
+		 return GUI_YUM;
+	 }
+
 	return DraggableView::MouseDown(x, y, button);
 }
 

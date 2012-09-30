@@ -3187,6 +3187,10 @@ void Event::moveCursorToInventory()
             view_manager->get_inventory_view()->set_show_cursor(true);
             view_manager->get_inventory_view()->grab_focus(); // Inventory wants keyboard input
         }
+        else
+        {
+        	view_manager->open_container_view(player->get_actor());
+        }
     }
     input.select_from_inventory = true;
 }
@@ -3199,6 +3203,10 @@ void Event::moveCursorToMapWindow(bool ToggleCursor)
     {
         view_manager->get_inventory_view()->set_show_cursor(false);
         view_manager->get_inventory_view()->release_focus();
+    }
+    else
+    {
+    	view_manager->close_container_view(player->get_actor());
     }
     if(input.get_direction) // show the correct MapWindow cursor
         map_window->set_show_use_cursor(true);

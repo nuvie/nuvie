@@ -267,7 +267,7 @@ GUI:: HandleEvent(SDL_Event *event)
       {
        for (hit=false,i=numwidgets-1; (i>=0)&&(hit == false); --i)
         {
-				 if(widgets[i]->Status() == WIDGET_VISIBLE && widgets[i]->HitRect(event->button.x,event->button.y))
+				 if(widgets[i]->Status() == WIDGET_VISIBLE && widgets[i]->is_drop_target() && widgets[i]->HitRect(event->button.x,event->button.y))
             {
              gui_drag_manager->drop((GUI_DragArea *)widgets[i],event->button.x,event->button.y);
              dragging = false;

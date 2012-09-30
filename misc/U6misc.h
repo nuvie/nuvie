@@ -79,4 +79,5 @@ bool string_i_compare(const std::string &s1, const std::string &s2);
 
 void *nuvie_realloc(void *ptr, size_t size);
 
+Uint32 sdl_getpixel(SDL_Surface *surface, int x, int y);
 #endif /* __U6misc_h__ */

@@ -24,6 +24,7 @@
  *
  */
 
+#include <list>
 
 class Configuration;
 class GUI;
@@ -42,6 +43,9 @@ class PortraitView;
 class InventoryView;
 class ActorView;
 class SpellView;
+class ContainerViewGump;
+
+using std::list;
 
 class ViewManager
 {
@@ -63,6 +67,8 @@ class ViewManager
  SpellView *spell_view;
 
  View *current_view;
+
+ std::list<ContainerViewGump *> container_gumps;
 
  public:
 
@@ -96,6 +102,9 @@ class ViewManager
  void open_container_view(Obj *obj) { open_container_view(NULL, obj); }
  void open_container_view(Actor *actor) { open_container_view(actor, NULL); }
 
+ void close_container_view(Actor *actor);
+ void close_container_view(ContainerViewGump *view);
+
  void open_mapeditor_view();
  void open_portrait_gump(Actor *a);
  void close_gump(View *gump);
@@ -103,6 +112,7 @@ class ViewManager
 
  protected:
 
+ ContainerViewGump *get_container_view(Actor *actor, Obj *obj);
  void open_container_view(Actor *actor, Obj *obj);
 
  void add_view(View *view);

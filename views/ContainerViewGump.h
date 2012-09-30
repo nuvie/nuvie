@@ -37,7 +37,6 @@ class ContainerWidgetGump;
 
 class ContainerViewGump : public DraggableView {
 
-	SDL_Surface *bg_image;
 	GUI_Button *gump_button;
 	GUI_Button *up_arrow_button;
 	GUI_Button *down_arrow_button;
@@ -58,7 +57,11 @@ public:
  void Display(bool full_redraw);
 
  void set_actor(Actor *a);
+ Actor *get_actor() { return actor; }
  void set_container_obj(Obj *o);
+ Obj *get_container_obj() { return container_obj; }
+
+ bool is_actor_container() { return (actor != NULL); }
 
  virtual GUI_status MouseDown(int x, int y, int button);
  virtual GUI_status MouseUp(int x, int y, int button);

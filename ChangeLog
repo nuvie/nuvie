@@ -1,3 +1,13 @@
+2012-09-30  Eric Fry <efry at users.sourceforge.net> r1599
+	* Move gump to top when clicked.
+	* Added scroll wheel support to gumps.
+	* Gumps don't respond to mouseDown events when the mouse is clicked on a
+	  transparent part of the their background image.
+	* Fixed bug with Drag and Drop while using new message scroll.
+	* Added container gump management to ViewManager class.
+	* Added config entries for new message scroll functionality.
+	* Added range checks to the Screen::fill() method.
+
 2012-09-28  Eric Fry <efry at users.sourceforge.net> r1598
 	* Added safety checks to stipple_8bit()
 
