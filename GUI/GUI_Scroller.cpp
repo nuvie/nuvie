@@ -127,7 +127,10 @@ void GUI_Scroller:: Display(bool full_redraw)
 GUI_status GUI_Scroller::MouseDown(int x, int y, int button)
 {
 
-
+	if(button == SDL_BUTTON_WHEELUP)
+		move_up();
+	else if(button == SDL_BUTTON_WHEELDOWN)
+		move_down();
  //grab_focus();
 
  return GUI_YUM;

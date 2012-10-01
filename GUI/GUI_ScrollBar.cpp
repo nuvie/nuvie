@@ -231,14 +231,22 @@ inline void GUI_ScrollBar::DisplaySlider()
 
 GUI_status GUI_ScrollBar::MouseDown(int x, int y, int button)
 {
- if(y >= area.y + button_height + slider_y && y <= area.y + button_height + slider_y + slider_length)
-   {
-    drag = true;
-    slider_click_offset = y - area.y - button_height - slider_y;
-    grab_focus();
-   }
+	if(button == SDL_BUTTON_WHEELUP)
+	{
+		send_up_button_msg();
+	}
+	else if(button == SDL_BUTTON_WHEELDOWN)
+	{
+		send_down_button_msg();
+	}
+	else if(y >= area.y + button_height + slider_y && y <= area.y + button_height + slider_y + slider_length)
+	{
+		drag = true;
+		slider_click_offset = y - area.y - button_height - slider_y;
+		grab_focus();
+	}
 
- return GUI_YUM;
+	return GUI_YUM;
 }
 
 GUI_status GUI_ScrollBar::MouseUp(int x, int y, int button)
@@ -297,21 +305,26 @@ void GUI_ScrollBar::send_slider_moved_msg()
  return;
 }
 
+void GUI_ScrollBar::send_up_button_msg()
+{
+	callback_object->callback(SCROLLBAR_CB_UP_BUTTON, this, NULL);
+}
+
+void GUI_ScrollBar::send_down_button_msg()
+{
+	callback_object->callback(SCROLLBAR_CB_DOWN_BUTTON, this, NULL);
+}
+
 GUI_status GUI_ScrollBar::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
- uint16 action = 0;
-
  if(msg == BUTTON_CB)
    {
     if(caller == up_button)
-      action = SCROLLBAR_CB_UP_BUTTON;
+    	send_up_button_msg();
 
     if(caller == down_button)
-      action = SCROLLBAR_CB_DOWN_BUTTON;
+    	send_down_button_msg();
    }
-
- if(action)
-   callback_object->callback(action, this, NULL);
 
  return GUI_YUM;
 }

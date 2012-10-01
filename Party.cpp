@@ -64,6 +64,8 @@ Party::Party(Configuration *cfg)
 
 Party::~Party()
 {
+	if(pathfinder)
+		delete pathfinder;
 }
 
 bool Party::init(Game *g, ActorManager *am)

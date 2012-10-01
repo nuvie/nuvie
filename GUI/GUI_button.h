@@ -60,6 +60,7 @@ const Uint8 BI1_R=255,BI1_G=255,BI1_B=255;
 // 2D Button inverse background color
 const Uint8 BI2_R=0,BI2_G=0,BI2_B=0;
 
+#define GUI_BUTTON_DONT_FREE_SURFACES false
 
 /* This is the definition of the "I've been activated" callback */
 typedef GUI_status (*GUI_ActiveProc)(void *data);
@@ -69,7 +70,7 @@ class GUI_Button : public GUI_Widget {
 public:
 	/* Passed the button data, position, images (pressed/unpressed) and callback */
 	GUI_Button(void *data, int x, int y, SDL_Surface *image,
-		   SDL_Surface *image2, GUI_CallBack *callback);
+		   SDL_Surface *image2, GUI_CallBack *callback, bool free_surfaces=true);
 
 	/* I don't know what this one is for */
 	GUI_Button(void *data, int x, int y, int w, int h,

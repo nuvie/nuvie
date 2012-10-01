@@ -59,6 +59,8 @@ class MsgScrollNewUI: public MsgScroll
 
  uint16 position;
 
+ std::string trailing_whitespace;
+
  public:
 
  MsgScrollNewUI(Configuration *cfg, Screen *s);
@@ -82,6 +84,9 @@ class MsgScrollNewUI: public MsgScroll
 
  GUI_status scroll_movement_event(ScrollEventType event);
  MsgLine *add_new_line();
+
+ private:
+ uint16 count_empty_lines(std::string s);
 
 };
 

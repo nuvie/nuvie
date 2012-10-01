@@ -1,3 +1,11 @@
+2012-10-01  Eric Fry <efry at users.sourceforge.net> r1600
+	* Changed the new message scroll to show the correct position when
+	  coming back from the hidden state.
+	* Added mouse wheel up/down events to the GUI_ScrollBar widget.
+	* Free GUI_Button image memory.
+	* Fixed bug with mouse wheel events in the double click logic.
+	* Other memory cleanups on object deletion.
+
 2012-09-30  Eric Fry <efry at users.sourceforge.net> r1599
 	* Move gump to top when clicked.
 	* Added scroll wheel support to gumps.

@@ -84,14 +84,65 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 
 MsgScrollNewUI::~MsgScrollNewUI()
 {
-	delete font;
+	delete font_normal;
+	delete font_garg;
 }
 
 void MsgScrollNewUI::display_string(std::string s, Font *f, bool include_on_map_window)
 {
-	timer = new TimedCallback(this, NULL, 2000);
+	if(s.empty())
+		return;
+	bool has_trailing_whitespace = (!trailing_whitespace.empty());
+	s = trailing_whitespace + s;
+	trailing_whitespace.clear();
 
-	MsgScroll::display_string(s, f, include_on_map_window);
+	std::string::reverse_iterator iter;
+	uint16 i;
+	for(i=0,iter=s.rbegin();iter != s.rend();iter++,i++)
+	{
+		char c = *iter;
+		if(c != '\t' && c != '\n')
+			break;
+	}
+
+	if(i>0)
+	{
+		trailing_whitespace = s.substr(s.length()-i,i);
+		s = s.substr(0, s.length()-i);
+	}
+
+	if(!s.empty())
+	{
+		if(position>0 && position == msg_buf.size())
+		{
+			if(!has_trailing_whitespace)
+				position--;
+			else
+			{
+				position += count_empty_lines(s) - 1;
+			}
+		}
+		timer = new TimedCallback(this, NULL, 2000);
+
+		MsgScroll::display_string(s, f, include_on_map_window);
+	}
+}
+
+uint16 MsgScrollNewUI::count_empty_lines(std::string s)
+{
+	std::string::iterator iter;
+	uint16 count = 0;
+	for(iter=s.begin();iter != s.end();iter++)
+	{
+		char c = *iter;
+		if(c != ' ' && c != '\t' && c != '\n')
+			break;
+
+		if(c == '\n')
+			count++;
+	}
+
+	return count;
 }
 
 void MsgScrollNewUI::set_font(uint8 font_type)

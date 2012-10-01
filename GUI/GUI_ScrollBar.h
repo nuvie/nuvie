@@ -85,6 +85,9 @@ protected:
     void send_slider_moved_msg();
     bool move_slider(int new_slider_y);
     GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
+
+    void send_up_button_msg();
+    void send_down_button_msg();
 };
 
 #endif /* __GUI_SCROLLBAR_H__ */

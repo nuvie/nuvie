@@ -76,14 +76,16 @@ bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16
 
 	build_path(datadir, "left_arrow.bmp", imagefile);
 	image = SDL_LoadBMP(imagefile.c_str());
+	image1 = SDL_LoadBMP(imagefile.c_str());
 
-	left_button = new GUI_Button(this, 23, 7, image, image, this);
+	left_button = new GUI_Button(this, 23, 7, image, image1, this);
 	this->AddWidget(left_button);
 
 	build_path(datadir, "right_arrow.bmp", imagefile);
 	image = SDL_LoadBMP(imagefile.c_str());
+	image1 = SDL_LoadBMP(imagefile.c_str());
 
-	right_button = new GUI_Button(this, 86, 7, image, image, this);
+	right_button = new GUI_Button(this, 86, 7, image, image1, this);
 	this->AddWidget(right_button);
 
 	build_path(datadir, "doll", path);
@@ -195,6 +197,7 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 		//FIXME close gump.
 		release_focus();
 		Hide();
+		Delete();
 		return GUI_YUM;
 	}
 	else if(caller == right_button)

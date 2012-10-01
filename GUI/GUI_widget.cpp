@@ -430,15 +430,15 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 			if ( focused || HitRect(x, y) )	{
 				int rel_time = SDL_GetTicks();
 				int last_rel_time = get_mouseup(button);
-                                bool do_mouseclick = get_mousedown(button);
+                bool do_mouseclick = get_mousedown(button);
 				set_mouseup(rel_time, button);
-				if(accept_mouseclick[button-1] && do_mouseclick && (rel_time-last_rel_time < GUI::mouseclick_delay))
+				if(do_mouseclick && accept_mouseclick[button-1] && (rel_time-last_rel_time < GUI::mouseclick_delay))
 				{
 				        // before a Double or Delayed click, mouseup_time is reset so another click isn't possible
 					set_mouseup(0, button);
 					return(MouseDouble(x, y, button));
 				}
-				else if(accept_mouseclick[button-1] && do_mouseclick)
+				else if(do_mouseclick && accept_mouseclick[button-1])
 					return(MouseClick(x, y, button));
 				else
 					return(MouseUp(x, y, button));

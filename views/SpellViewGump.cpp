@@ -42,6 +42,7 @@ SpellViewGump::SpellViewGump(Configuration *cfg) : SpellView(cfg)
 
 SpellViewGump::~SpellViewGump()
 {
+	delete font;
 }
 
 bool SpellViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
@@ -73,15 +74,17 @@ bool SpellViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
 	datadir = path;
 
 	build_path(datadir, "spellbook_left_arrow.bmp", imagefile);
-	image = SDL_LoadBMP(imagefile.c_str());
+	image = SDL_LoadBMP(imagefile.c_str()); //we load this twice as they are freed in ~GUI_Button()
+	image1 = SDL_LoadBMP(imagefile.c_str());
 
-	left_button = new GUI_Button(this, 27, 4, image, image, this);
+	left_button = new GUI_Button(this, 27, 4, image, image1, this);
 	this->AddWidget(left_button);
 
 	build_path(datadir, "spellbook_right_arrow.bmp", imagefile);
 	image = SDL_LoadBMP(imagefile.c_str());
+	image1 = SDL_LoadBMP(imagefile.c_str());
 
-	right_button = new GUI_Button(this, 132, 4, image, image, this);
+	right_button = new GUI_Button(this, 132, 4, image, image1, this);
 	this->AddWidget(right_button);
 
 	font = new GUI_Font(GUI_FONT_GUMP);

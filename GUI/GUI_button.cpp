@@ -37,14 +37,14 @@ SDL_Surface *checkmarks=NULL;
 
 
 GUI_Button:: GUI_Button(void *data, int x, int y, SDL_Surface *image,
-			SDL_Surface *image2, GUI_CallBack *callback)
+			SDL_Surface *image2, GUI_CallBack *callback, bool free_surfaces)
  : GUI_Widget(data, x, y, image->w, image->h)
 {
 	callback_object = callback;
 
 	button = image;
 	button2 = image2;
-	freebutton = 0;
+	freebutton = free_surfaces;
 	for (int i=0;i<3; ++i ) {
   		pressed[i]=0;
 	}
