@@ -198,7 +198,7 @@ void MsgScrollNewUI::Display(bool full_redraw)
 	std::list<MsgLine *>::iterator iter;
 
 	iter=msg_buf.begin();
-	for(uint16 i=0;i < position; i++)
+	for(uint16 i=0;i < position && iter != msg_buf.end(); i++)
 		iter++;
 
 	for(uint16 i=0;i< scroll_height && iter != msg_buf.end();i++,iter++)
@@ -239,6 +239,13 @@ void MsgScrollNewUI::Display(bool full_redraw)
 	{
 		screen->fill(border_color, area.x, y + 4, scroll_width * 7 + 8, 1); //draw bottom border
 	}
+/* Debug
+	char buf[10];
+	snprintf(buf, 10, "%d", position);
+	font_normal->drawString(screen, buf, 160, 10);
+	snprintf(buf, 10, "%d", (int)msg_buf.size());
+	font_normal->drawString(screen, buf, 160, 20);
+*/
 	screen->update(area.x,area.y, area.w, area.h);
 }
 
@@ -307,6 +314,9 @@ MsgLine *MsgScrollNewUI::add_new_line()
 	{
 		position++;
 	}
-
+	else if(position + scroll_height > scrollback_height)
+	{
+		position--;
+	}
 	return line;
 }

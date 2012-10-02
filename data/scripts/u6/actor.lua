@@ -1298,7 +1298,9 @@ function actor_hit_msg(actor)
 		s = s.."wounded.\n"
 	end
 	
-	print(s)
+	if s ~= nil then
+		print(s)
+	end
 end
 
 function actor_dead(actor)
