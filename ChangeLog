@@ -1,3 +1,10 @@
+2012-10-08  Eric Fry <efry at users.sourceforge.net> r1602
+	* Added new CommandBar for fullmap mode. This is activated by pressing the
+	  comma ',' key. Commands can be selected with the arrow keys. This should
+	  allow command selection for devices without a keyboard. Eg Dingoo a320
+	* Fixed bug in stipple_8bit().
+	* Changed ConsoleAddInfo() to use printf style varargs.
+
 2012-10-03  Eric Fry <efry at users.sourceforge.net> r1601
 	* A small fix for the new message scroll when scrollback_height is reached.
 	* Fixed nil reference in actor.lua

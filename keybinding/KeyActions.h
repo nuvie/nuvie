@@ -39,6 +39,7 @@ void ActionToggleCombat(int *params);
 void ActionAttack(int *params);
 void ActionRest(int *params);
 void ActionSelectCommandBar(int *params);
+void ActionSelectNewCommandBar(int *params);
 
 void ActionNewInventory(int *params);
 void ActionInventory(int *params);

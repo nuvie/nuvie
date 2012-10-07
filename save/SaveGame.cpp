@@ -377,7 +377,7 @@ bool SaveGame::load(const char *filename)
    return false;
   }
 
- ConsoleAddInfo("Loading Game: " + string(filename));
+ ConsoleAddInfo("Loading Game: %s", filename);
  DEBUG(0,LEVEL_NOTIFICATION,"Loading Game: %s\n", filename);
 
  if(!check_version(loadfile))

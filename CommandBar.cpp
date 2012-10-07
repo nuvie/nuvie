@@ -41,10 +41,10 @@
 #include "Objlist.h"
 #include "NuvieIO.h"
 
-#define USE_BUTTON 1
-#define ACTION_BUTTON 3
 
 using std::string;
+
+CommandBar::CommandBar() : GUI_Widget(NULL) { }
 
 CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
 {
@@ -152,9 +152,9 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
               activate = x/18;
         else if(game->get_game_type() == NUVIE_GAME_MD)
               activate = (x-1)/18;
-        if(button == USE_BUTTON)
+        if(button == COMMANDBAR_USE_BUTTON)
             return(hit(activate));
-        else if(button == ACTION_BUTTON)
+        else if(button == COMMANDBAR_ACTION_BUTTON)
         {
             select_action(activate);
         }
@@ -180,6 +180,8 @@ static const EventMode MD_mode_tbl[] ={ ATTACK_MODE, TALK_MODE, LOOK_MODE, GET_M
                                         DROP_MODE, PUSH_MODE, USE_MODE, COMBAT_MODE };
 static const EventMode SE_mode_tbl[] ={ PUSH_MODE, GET_MODE, DROP_MODE, USE_MODE, TALK_MODE,
                                         LOOK_MODE, ATTACK_MODE, REST_MODE, COMBAT_MODE };
+
+
 
 bool CommandBar::try_selected_action(sint8 command_num) // return true if target is needed
 {

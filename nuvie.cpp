@@ -107,7 +107,7 @@ bool Nuvie::init(int argc, char **argv)
  ConsoleInit(config, screen, gui, 320, 200);
  ConsoleAddInfo("\n Nuvie: ver 0.4 rev 1577 \n");
  ConsoleAddInfo("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t");
- ConsoleAddInfo("Config file: \"" + config->filename() + "\"");
+ ConsoleAddInfo("Config file: \"%s\"", config->filename().c_str());
  game_select = new GameSelect(config);
 
  // select game from graphical menu if required
@@ -451,7 +451,7 @@ bool Nuvie::checkGameDir(uint8 game_type)
  std::string path;
 
  config_get_path(config, "", path);
- ConsoleAddInfo("gamedir: \"" + path + "\"");
+ ConsoleAddInfo("gamedir: \"%s\"", path.c_str());
 
 #ifndef WIN32
  struct stat sb;
@@ -474,7 +474,7 @@ bool Nuvie::checkDataDir()
 {
 	std::string path;
 	config->value("config/datadir", path, "");
-	ConsoleAddInfo("datadir: \"" + path + "\"");
+	ConsoleAddInfo("datadir: \"%s\"", path.c_str());
 
 #ifndef WIN32
  struct stat sb;

@@ -105,7 +105,7 @@ bool SaveManager::init()
    if(directory_exists(savedir.c_str()) == false)
    {
       //DEBUG(0,LEVEL_NOTIFICATION,"creating directory %s\n", savedir.c_str());
-	   ConsoleAddInfo(std::string("Creating savegame directory: \"") + savedir + "\"");
+	   ConsoleAddInfo("Creating savegame directory: \"%s\"", savedir.c_str());
       if(mkdir_recursive(savedir.c_str(), 0700) != 0)
       {
          DEBUG(0,LEVEL_ERROR,"savedir '%s' either not found or not accessible!\n", savedir.c_str());
@@ -114,7 +114,7 @@ bool SaveManager::init()
       }
    }
 
-   ConsoleAddInfo("Save dir: \"" + savedir + "\"");
+   ConsoleAddInfo("Save dir: \"%s\"", savedir.c_str());
 
  return true;
 }

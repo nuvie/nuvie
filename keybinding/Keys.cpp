@@ -31,6 +31,7 @@
 #include "MsgScroll.h"
 #include "Configuration.h"
 #include "U6misc.h"
+#include "Console.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::atoi;
@@ -88,6 +89,7 @@ const struct Action {
 	{ "ATTACK", ActionAttack, "Attack", Action::normal_keys, true },
 	{ "REST", ActionRest, "Rest", Action::normal_keys, true },
 	{ "SELECT_COMMAND_BAR", ActionSelectCommandBar, "Select Command Bar", Action::normal_keys, true },
+	{ "NEW_COMMAND_BAR", ActionSelectNewCommandBar, "Select New Command Bar", Action::normal_keys, true },
 	{ "NEW_INVENTORY", ActionNewInventory, "New inventory", Action::normal_keys, true },
 	{ "INVENTORY", ActionInventory, "inventory", Action::normal_keys, true },
 	{ "PREVIOUS_INVENTORY", ActionPreviousInventory, "Previous inventory", Action::normal_keys, true },
@@ -472,7 +474,7 @@ void KeyBinder::LoadFromFile(const char* filename)
 	
 	Flush();
 	
-	printf("Loading keybindings from file %s\n", filename);
+	ConsoleAddInfo("Loading keybindings from file %s\n", filename);
 	LoadFromFileInternal(filename);
 }
 
@@ -483,7 +485,7 @@ void KeyBinder::LoadFromPatch() // FIXME default should probably be system speci
 
 	config->value(config_get_game_key(config) + "/patch_keys", PATCH_KEYS, "./patchkeys.txt");
 	if (fileExists(PATCH_KEYS.c_str())) {
-		printf("Loading patch keybindings\n");
+		ConsoleAddInfo("Loading patch keybindings\n");
 		LoadFromFileInternal(PATCH_KEYS.c_str());
 	}
 }

@@ -53,6 +53,8 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 
  init(cfg, font_normal);
 
+ scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
+
  std::string new_scroll_cfg = config_get_game_key(config) + "/newscroll";
 
  cfg->value(new_scroll_cfg + "/solid_bg", solid_bg, false);
@@ -66,8 +68,8 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
  cfg->value(new_scroll_cfg + "/width", c, 30);
  scroll_width = c;
  cfg->value(new_scroll_cfg + "/height", c, 19);
- scroll_height = c;
- scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
+ scroll_height = clamp_max(c, scrollback_height);
+
 
 
  uint16 x_off = config_get_video_x_offset(config);

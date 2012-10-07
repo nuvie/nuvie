@@ -57,6 +57,7 @@
 #include "Portrait.h"
 #include "Background.h"
 #include "CommandBar.h"
+#include "CommandBarNewUI.h"
 #include "PartyView.h"
 #include "ActorView.h"
 
@@ -247,7 +248,10 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
    weather = new Weather(config, clock, game_type);
 
-   command_bar = new CommandBar(this);
+   if(is_orig_style())
+	   command_bar = new CommandBar(this);
+   else
+	   command_bar = new CommandBarNewUI(this);
    command_bar->Hide();
    gui->AddWidget(command_bar);
 

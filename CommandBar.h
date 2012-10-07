@@ -33,6 +33,9 @@ class GUI_Button;
 class GUI_CallBack;
 class Text;
 
+#define COMMANDBAR_USE_BUTTON 1
+#define COMMANDBAR_ACTION_BUTTON 3
+
 /* U6 command buttons.
  * [Attack][Cast][Talk][Look][Get][Drop][Move][Use][Rest][Combat]
  * Left click: New action if none is pending.
@@ -59,6 +62,7 @@ protected:
     virtual GUI_status hit(uint8 num);
 
 public:
+    CommandBar();
     CommandBar(Game *g);
     ~CommandBar();
     virtual bool init_buttons();

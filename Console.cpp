@@ -82,12 +82,19 @@ void ConsoleDelete()
 	}
 }
 
-void ConsoleAddInfo(std::string s)
+void ConsoleAddInfo(const char *format, ...)
 {
+	char buf[1024];
+	memset(buf, 0, 1024);
+	va_list args;
+	va_start(args, format);
+	vsnprintf(buf, 1024, format, args);
+	va_end(args);
+
 	if(g_console != NULL)
 	{
-		DEBUG(0,LEVEL_INFORMATIONAL, s.c_str());
-		g_console->AddLine(s);
+		DEBUG(0,LEVEL_INFORMATIONAL, buf);
+		g_console->AddLine(buf);
 	}
 }
 

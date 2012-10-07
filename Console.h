@@ -23,6 +23,8 @@
  *
  */
 
+#include <stdarg.h>
+
 #include "SDL.h"
 
 #include "GUI_Console.h"
@@ -50,7 +52,7 @@ protected:
 
 void ConsoleInit(Configuration *c, Screen *s, GUI *gui, uint16 w, uint16 h);
 void ConsoleDelete();
-void ConsoleAddInfo(std::string s);
+void ConsoleAddInfo(const char *s, ...);
 void ConsoleAddError(std::string s);
 void ConsolePause();
 void ConsoleHide();

@@ -455,7 +455,7 @@ void Screen::stipple_8bit(uint8 color_num, uint16 x, uint16 y, uint16 w, uint16 
 
 		pixels += y * surface->w + x;
 
-		for(i=y;i<y+h;i++)
+		for(i=0;i<h;i++)
 		{
 			for(j=x;j<x+w;j+=2)
 			{

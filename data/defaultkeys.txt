@@ -25,6 +25,7 @@ Ctrl-s	save_menu
 Ctrl-l	load_latest_save
 Ctrl-r	load_latest_save
 
+,	new_command_bar
 `	toggle_combat_strategy
 tab	toggle_cursor
 c	cast

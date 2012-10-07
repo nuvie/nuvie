@@ -148,6 +148,12 @@ void ActionSelectCommandBar(int *params)
 		cb->select_action(MD_command_tbl[params[0]]);
 }
 
+void ActionSelectNewCommandBar(int *params)
+{
+	CommandBar *cb = game->get_command_bar();
+	cb->Show();
+}
+
 void ActionNewInventory(int *params)
 {
 	view_manager->open_doll_view(NULL);
