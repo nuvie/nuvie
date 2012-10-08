@@ -40,6 +40,7 @@ protected:
 	uint8 cur_pos;
 	uint8 icon_w;
 	uint8 icon_h;
+	uint8 icon_y_offset;
 	uint16 num_icons;
 
 	Font *font;
@@ -50,6 +51,7 @@ public:
     virtual void Display(bool full_redraw);
     virtual GUI_status KeyDown(SDL_keysym key);
     virtual GUI_status MouseDown(int x, int y, int button);
+    virtual GUI_status MouseUp(int x, int y, int button);
 
 private:
     const char *get_command_name(sint8 command_num);

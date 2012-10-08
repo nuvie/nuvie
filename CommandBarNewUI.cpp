@@ -60,6 +60,8 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
     icon_h = 2;
     num_icons = 10;
 
+    icon_y_offset = 10;
+
 	offset = OBJLIST_OFFSET_U6_COMMAND_BAR;
 	Init(NULL, 120+x_off, 74+y_off, 0, 0);
 	area.w = btn_size * icon_w; // space for 5x2 icons
@@ -97,21 +99,29 @@ GUI_status CommandBarNewUI::MouseDown(int x, int y, int button)
     x -= area.x;
     y -= area.y;
 
-    if((game->get_game_type() == NUVIE_GAME_U6 && y >= 8 && y <= 24)
-        || game->get_game_type() != NUVIE_GAME_U6)
+    if(y >= icon_y_offset)
     {
-        uint8 activate = x / 16; // icon selected
-        if(game->get_game_type() == NUVIE_GAME_SE)
-              activate = x/18;
-        else if(game->get_game_type() == NUVIE_GAME_MD)
-              activate = (x-1)/18;
-        if(button == COMMANDBAR_USE_BUTTON)
-            return(hit(activate));
-        else if(button == COMMANDBAR_ACTION_BUTTON)
-        {
-            select_action(activate);
-        }
+    	uint8 pos = ((y - icon_y_offset) / btn_size) * icon_w;
+    	pos += x / btn_size;
+
+    	if(pos < num_icons)
+    		cur_pos = pos;
     }
+
+    return(GUI_YUM);
+}
+
+GUI_status CommandBarNewUI::MouseUp(int x, int y, int button)
+{
+    x -= area.x;
+    y -= area.y;
+
+    if(y >= icon_y_offset && y < icon_h * btn_size)
+    {
+		hit((sint8)cur_pos);
+		Hide();
+    }
+
     return(GUI_YUM);
 }
 
@@ -147,14 +157,13 @@ GUI_status CommandBarNewUI::KeyDown(SDL_keysym key)
         	{
 				hit((sint8)cur_pos);
 				Hide();
-				return GUI_YUM;
         	}
         	break;
         case SDLK_ESCAPE:
         	Hide();
         	break;
         default :
-        	return GUI_PASS;
+        	break;
     }
 
     return GUI_YUM;
@@ -181,17 +190,17 @@ void CommandBarNewUI::Display(bool full_redraw)
         {
             for(uint8 x = 0; x < icon_w && i < num_icons; x++,i++)
             {
-            	screen->blit(area.x+x*btn_size, 10+area.y+y*btn_size, icon[i]->data, 8, 16, 16, 16);
+            	screen->blit(area.x+x*btn_size, icon_y_offset+area.y+y*btn_size, icon[i]->data, 8, 16, 16, 16);
             	if(i == cur_pos)
             	{
-            		screen->stipple_8bit(SELECTED_COLOR, area.x+x*btn_size, 10+area.y+y*btn_size, 16, 16);
+            		screen->stipple_8bit(SELECTED_COLOR, area.x+x*btn_size, icon_y_offset+area.y+y*btn_size, 16, 16);
             	}
             }
         }
 
 
       }
-      font->drawString(screen, get_command_name(cur_pos), area.x, area.y + 10 + icon_h * btn_size);
+      font->drawString(screen, get_command_name(cur_pos), area.x, area.y + icon_y_offset + icon_h * btn_size);
         screen->update(area.x, area.y, area.w, area.h);
   //  }
 }
