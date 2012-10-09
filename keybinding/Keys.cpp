@@ -117,6 +117,12 @@ const struct {
 	const char *s;
 	SDLKey k;
 } SDLKeyStringTable[] = {
+	{"LCTRL",     SDLK_LCTRL},
+	{"RCTRL",     SDLK_RCTRL},
+	{"LALT",      SDLK_LALT},
+	{"RALT",      SDLK_RALT},
+	{"LSHIFT",    SDLK_LSHIFT},
+	{"RSHIFT",    SDLK_RSHIFT},
 	{"BACKSPACE", SDLK_BACKSPACE},
 	{"TAB",       SDLK_TAB}, 
 	{"ENTER",     SDLK_RETURN}, 

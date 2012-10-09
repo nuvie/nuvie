@@ -1,3 +1,6 @@
+2012-10-10  Eric Fry <efry at users.sourceforge.net> r1604
+	* Added ctrl, alt and shift keys to the key binding system
+
 2012-10-09  Eric Fry <efry at users.sourceforge.net> r1603
 	* Added mouse event handling to the new Command Bar.
 
