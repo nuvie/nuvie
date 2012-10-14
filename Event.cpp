@@ -64,6 +64,8 @@
 #include "Script.h"
 #include "Keys.h"
 
+#include "FpsCounter.h"
+
 #include <math.h>
 
 using std::string;
@@ -115,6 +117,9 @@ Event::Event(Configuration *cfg)
 
  mode = MOVE_MODE;
  last_mode = MOVE_MODE;
+
+ fps_timestamp = 0;
+ fps_counter = 0;
 }
 
 Event::~Event()
@@ -148,6 +153,12 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic 
  magic = mg;
  keybinder = kb;
 
+ fps_timestamp = clock->get_ticks();
+
+ fps_counter_widget = new FpsCounter(game);
+ gui->AddWidget(fps_counter_widget);
+ fps_counter_widget->Hide();
+
  return true;
 }
 
@@ -172,10 +183,14 @@ bool Event::update()
    switch(gui->HandleEvent(&event))
      {
       case GUI_PASS : if(handleEvent(&event) == false)
+      	  	  	  	  {
+    	  	  	  	  	 game->quit();
                          return false;
+      	  	  	  	  }
                       break;
 
-      case GUI_QUIT : return false;
+      case GUI_QUIT : game->quit();
+    	  	  	  	  return false;
 
       default : break;
      }
@@ -2042,6 +2057,17 @@ inline Uint32 Event::TimeLeft()
     Uint32 now;
 
     now = clock->get_ticks();
+    if(fps_counter == 60)
+    {
+    	fps_counter = 0;
+    	float fps = 1000 / ((float)(now - fps_timestamp) / 60);
+    	//printf("FPS: %f %d\n", fps, (uint32)(now - fps_timestamp));
+    	fps_counter_widget->setFps(fps);
+    	fps_timestamp = now;
+    }
+    else
+    	fps_counter++;
+
     if ( next_time <= now ) {
         next_time = now+NUVIE_INTERVAL;
         return(0);
@@ -2049,6 +2075,14 @@ inline Uint32 Event::TimeLeft()
     Uint32 delay = next_time-now;
     next_time += NUVIE_INTERVAL;
     return(delay);
+}
+
+void Event::toggleFpsDisplay()
+{
+	if(fps_counter_widget->Status() == WIDGET_VISIBLE)
+		fps_counter_widget->Hide();
+	else
+		fps_counter_widget->Show();
 }
 
 void Event::quitDialog()

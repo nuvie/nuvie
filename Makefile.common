@@ -346,6 +346,8 @@ nuvie_SOURCES = \
 	EggManager.h \
 	Event.cpp \
 	Event.h \
+	FpsCounter.cpp \
+	FpsCounter.h \
 	Game.cpp \
 	Game.h \
 	GameClock.cpp \

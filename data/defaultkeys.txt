@@ -18,7 +18,7 @@ KP_ENTER	do_action
 
 q	quit
 Ctrl-q	quit
-Alt-q	quit
+Alt-q	quit_no_dialog
 Alt-x	quit
 s	save_menu
 Ctrl-s	save_menu
@@ -82,6 +82,8 @@ shift-=	next_inventory
 KP+	next_inventory
 -	previous_inventory
 KP-	previous_inventory
+
+Ctrl-f	toggle_fps_display
 
 Ctrl-d	decrease_debug
 Ctrl-i	increase_debug

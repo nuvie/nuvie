@@ -119,6 +119,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  pause_user_count = 0;
  ignore_event_delay = 0;
  game_type = NUVIE_GAME_NONE;
+ game_play = true;
 
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
  set_dragging_enabled(); // must be after hackmove
@@ -544,7 +545,6 @@ void Game::stats_changed()
 
 void Game::play()
 {
-  bool game_play = true;
   pause_flags = PAUSE_UNPAUSED;
 
   //view_manager->set_inventory_mode(1); //FIX
@@ -561,7 +561,7 @@ void Game::play()
    {
      if(cursor) cursor->clear(); // restore cursor area before GUI events
 
-     game_play = event->update();
+     event->update();
      if(clock->get_timer(GAMECLOCK_TIMER_U6_TIME_STOP) == 0)
      {
        palette->rotatePalette();

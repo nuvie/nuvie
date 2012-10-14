@@ -236,6 +236,11 @@ void ActionQuitDialog(int *params)
 	event->quitDialog();
 }
 
+void ActionQuitNODialog(int *params)
+{
+	game->quit();
+}
+
 void ActionToggleCursor(int *params)
 {
 	if(event->get_input()->select_from_inventory == false)
@@ -248,6 +253,11 @@ void ActionToggleCombatStrategy(int *params)
 {
 	if(game->is_orig_style() && view_manager->get_current_view() == inventory_view)
 		inventory_view->simulate_CB_callback();
+}
+
+void ActionToggleFps(int *params)
+{
+	event->toggleFpsDisplay();
 }
 
 void ActionDoAction(int *params)

@@ -1,12 +1,11 @@
-#ifndef __FontManager_h__
-#define __FontManager_h__
-
+#ifndef __FpsCounter_h__
+#define __FpsCounter_h__
 /*
- *  FontManager.h
+ *  FpsCounter.h
  *  Nuvie
  *
- *  Created by Eric Fry on Sun Dec 07 2003.
- *  Copyright (c) 2003. All rights reserved.
+ *  Created by Eric Fry on Sun Oct 14 2012.
+ *  Copyright (c) 2012 The Nuvie Team. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,39 +23,29 @@
  *
  */
 
-#include <string>
-#include <list>
+#include "GUI_widget.h"
 
-class Configuration;
-class Font;
+class Game;
 
-#define NUVIE_FONT_NORMAL 0
-#define NUVIE_FONT_GARG   1
-
-class FontManager
+class FpsCounter: public GUI_Widget
 {
- Configuration *config;
+protected:
 
- std::vector<Font *> fonts;
- uint16 num_fonts;
- Font *conv_font;
+	Game *game;
+	Font *font;
 
- public:
+	char fps_string[7]; // "000.00\0"
 
- FontManager(Configuration *cfg);
- ~FontManager();
+public:
+    FpsCounter();
+    FpsCounter(Game *g);
+    ~FpsCounter();
 
- bool init(nuvie_game_t game_type);
+    void setFps(float fps);
 
+    virtual void Display(bool full_redraw);
 
- Font *get_font(uint16 font_number);
- Font *get_conv_font() { return conv_font; }
-
- protected:
-
- bool initU6();
- bool initWOU(std::string filename);
-
+    void update() { update_display = true; }
 };
 
-#endif /* __FontManager_h__ */
+#endif /* __FpsCounter_h__ */

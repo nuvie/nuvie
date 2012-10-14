@@ -48,6 +48,7 @@ class UseCode;
 class GUI;
 class Magic;
 class KeyBinder;
+class FpsCounter;
 
 #define NUVIE_INTERVAL    50
 #define PUSH_FROM_PLAYER false
@@ -146,6 +147,10 @@ friend class Magic; // FIXME
  bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
  bool move_in_inventory;
  bool in_control_cheat;
+
+ Uint32 fps_timestamp;
+ uint16 fps_counter;
+ FpsCounter *fps_counter_widget;
 
  public:
  Event(Configuration *cfg);
@@ -284,6 +289,8 @@ friend class Magic; // FIXME
  // may each independantly show/hide their own cursors)
  void moveCursorToMapWindow(bool ToggleCursor = false);
  void moveCursorToInventory();
+
+ void toggleFpsDisplay();
 
 /* FIXME: Some of the above (action) functions can be removed from public, so
    that we don't need to check for WAIT mode in all of them. */

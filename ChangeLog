@@ -1,3 +1,19 @@
+2012-10-14  Eric Fry <efry at users.sourceforge.net> r1605
+	* Added new Action QUIT_NO_DIALOG, Alt-q. This allows you to quit 
+	  without confirmation.
+	* Added new Action TOGGLE_FPS_DISPLAY, Ctrl-f. This shows the current fps.
+	* Added new keyboard controls to the ConverseGump. This allows for keyboard 
+	  based keyword selection.
+	* Added the ability to enter free text input into ConverseGump without a
+	  qwerty keyboard. Up/Down arrows select a letter. Right arrow to select.
+	  Left arrow to remove.
+	* Added more info to Console when loading a game.
+	* Commented out dbg() calls in actor.lua
+	* Re-worked actor_update_all() logic to remove a loop that iterated through
+	  all actors.
+	* update_actor_flags() was updating n+1 times. It should be n times.
+
+
 2012-10-10  Eric Fry <efry at users.sourceforge.net> r1604
 	* Added ctrl, alt and shift keys to the key binding system
 

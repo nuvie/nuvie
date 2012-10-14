@@ -53,9 +53,11 @@ void ActionPartyMode(int *params);
 void ActionSaveDialog(int *params);
 void ActionLoadLatestSave(int *params);
 void ActionQuitDialog(int *params);
+void ActionQuitNODialog(int *params);
 
 void ActionToggleCursor(int *params);
 void ActionToggleCombatStrategy(int *params);
+void ActionToggleFps(int *params);
 
 void ActionDoAction(int *params);
 void ActionCancelAction(int *params);

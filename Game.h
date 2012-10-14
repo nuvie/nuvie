@@ -120,6 +120,8 @@ class Game
  bool is_using_hackmove;
  uint8 dragging_enabled;
 
+ bool game_play;
+
  public:
 
  Game(Configuration *cfg, Script *s, GUI *g);
@@ -148,6 +150,8 @@ class Game
  bool user_paused()  { return(pause_flags & PAUSE_USER); }
  bool anims_paused() { return(pause_flags & PAUSE_ANIMS); }
  bool world_paused() { return(pause_flags & PAUSE_WORLD); }
+
+ void quit() { game_play = false; }
 
  bool set_mouse_pointer(uint8 ptr_num);
  void dont_wait_for_interval();

@@ -41,6 +41,8 @@
 #define FRAME_W (PORTRAIT_WIDTH + 8)
 #define FRAME_H (PORTRAIT_HEIGHT + 9)
 
+#define CURSOR_COLOR 248
+
 // ConverseGump Class
 
 ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
@@ -58,7 +60,7 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
  uint16 x_off = config_get_video_x_offset(config);
  uint16 y_off = config_get_video_y_offset(config);
 
- GUI_Widget::Init(NULL, x_off, y_off, s->get_width(), s->get_height());
+ GUI_Widget::Init(NULL, x_off, y_off, 320, 200);
  npc_portrait = NULL;
  avatar_portrait = NULL;
  keyword_list = NULL;
@@ -84,6 +86,9 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
 	 converse_bg_color = (uint8)c;
 
  cfg->value("config/cheats/party_all_the_time", party_all_the_time, false);
+
+ input_char = 0;
+ cursor_position = 0;
 }
 
 ConverseGump::~ConverseGump()
@@ -130,6 +135,8 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 			free(avatar_portrait);
 			avatar_portrait = NULL;
 		}
+
+		cursor_position = 0;
 	}
 
 	MsgScroll::set_talking(state);
@@ -263,6 +270,7 @@ void ConverseGump::set_permitted_input(const char *allowed)
 		add_keyword("9");
 	}
 
+	cursor_position = 0;
 	MsgScroll::set_permitted_input(allowed);
 }
 
@@ -390,15 +398,31 @@ std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 		{
 			if(y > tmp_y && y < tmp_y + 8)
 			{
-				if(!string_i_compare(t.s, " *buy") && !string_i_compare(t.s, " *sell")
-				   && !string_i_compare(t.s, " *bye") && !string_i_compare(t.s, " *spells")
-				   && !string_i_compare(t.s, " *reagents"))
+				if(!is_permanent_keyword(t.s))
 					keyword_list->erase(iter);
 				return t.s;
 			}
 		}
 		total_length += token_len;
 	}
+	return "";
+}
+
+std::string ConverseGump::get_token_at_cursor()
+{
+	uint16 i = 0;
+	std::list<MsgText>::iterator iter;
+	for(iter=keyword_list->begin();iter!=keyword_list->end();i++,iter++)
+	{
+		if(i == cursor_position)
+		{
+			std::string keyword = (*iter).s;
+			if(!is_permanent_keyword(keyword))
+				keyword_list->erase(iter);
+			return keyword;
+		}
+	}
+
 	return "";
 }
 
@@ -431,7 +455,7 @@ void ConverseGump::Display(bool full_redraw)
 		if(solid_bg)
 			screen->fill(converse_bg_color, area.x, area.y, area.w, area.h);
 		else
-			screen->stipple_8bit(converse_bg_color);
+			screen->stipple_8bit(converse_bg_color, area.x, area.y, area.w, area.h);
 	 }
 
 	 if(npc_portrait)
@@ -443,7 +467,8 @@ void ConverseGump::Display(bool full_redraw)
 	 {
 		 screen->blit(area.x + PORTRAIT_WIDTH / 2 + 4,y,avatar_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
 		 std::list<MsgText>::iterator iter;
-		 for(iter=keyword_list->begin();iter!=keyword_list->end();iter++)
+		 sint16 i = 0;
+		 for(iter=keyword_list->begin();iter!=keyword_list->end();i++,iter++)
 		 {
 			 MsgText t = *iter;
 			 uint16 token_len = font->getStringWidth(t.s.c_str());
@@ -453,6 +478,10 @@ void ConverseGump::Display(bool full_redraw)
 				 y += 10;
 			 }
 			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length, y + 4, 0);
+			 if(cursor_position == i)
+			 {
+				 screen->fill(CURSOR_COLOR, area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 16 + total_length, y + 4 + 8, token_len-8, 1);
+			 }
 			 total_length += token_len;
 			 //total_length += t.s.length();
 		 }
@@ -460,6 +489,10 @@ void ConverseGump::Display(bool full_redraw)
 		 font->drawString(screen, " *", area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8, y, 0);
 		 font->drawString(screen, input_buf.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *"), y, 0);
 		 drawCursor(area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *") + font->getStringWidth(input_buf.c_str()), y);
+		 if(cursor_position == keyword_list->size())
+		 {
+			 screen->fill(CURSOR_COLOR, area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 16, y + 8, font->getStringWidth(input_buf.c_str())+8, 1);
+		 }
 	 }
 
 	 y = area.y + 4;
@@ -475,6 +508,7 @@ void ConverseGump::Display(bool full_redraw)
 			  token = *iter1;
 
 			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + FRAME_W + 4 + total_length, y + 4, 0); //FIX for hardcoded font height
+
 			  //token->s.length();
 			  //token->font->drawChar(screen, ' ', area.x + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0);
 			  //total_length += 1;
@@ -509,6 +543,41 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 
 	switch(key.sym)
 	    {
+			case SDLK_LEFT:
+				if(cursor_at_input_section() && input_char != 0)
+					input_char = 0;
+				else
+				{
+					if(!cursor_at_input_section() || !input_buf_remove_char())
+					{
+						if(cursor_position == 0)
+						{
+							cursor_position = keyword_list->size();
+						}
+						else
+						{
+							cursor_position--;
+						}
+					}
+				}
+				break;
+			case SDLK_RIGHT:
+				if(cursor_at_input_section() && input_char != 0)
+				{
+					input_buf_add_char(input_char + SDLK_a - 1);
+					input_char = 0;
+				}
+				else
+					cursor_position = (cursor_position + 1) % (keyword_list->size()+1);
+				break;
+			case SDLK_DOWN:
+				cursor_move_to_input();
+				input_char = (input_char + 1) % 27;
+				break;
+			case SDLK_UP:
+				cursor_move_to_input();
+				input_char = input_char == 0 ? 26 : input_char - 1;
+				break;
 	        case SDLK_ESCAPE:
 	        					if(permit_inputescape)
 	        	                 {
@@ -520,12 +589,25 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	                          return(GUI_YUM);
 	        case SDLK_KP_ENTER:
 	        case SDLK_RETURN:
-	        					if(permit_inputescape)
+	        					if(permit_inputescape || !cursor_at_input_section())
 	        	                 {
-	                              if(input_mode)
+	        						if(!cursor_at_input_section())
+	        						{
+	        							input_add_string(get_token_at_cursor());
+	        						}
+	        						else
+	        						{
+	        							if(input_char != 0)
+	        							{
+	        								input_buf_add_char(input_char + SDLK_a - 1);
+	        								input_char = 0;
+	        							}
+	        						}
+	                              //if(input_mode)
 	                                set_input_mode(false);
 	                              clear_scroll();
 	                              found_break_char = true; //strip leading whitespace.
+	                              cursor_reset();
 	        	                 }
 
 	                          return(GUI_YUM);
@@ -539,6 +621,7 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	                 else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
 	                 if(input_mode && isprint(ascii))
 	                  {
+	                   cursor_move_to_input();
 	                   if(permit_input == NULL)
 	                    input_buf_add_char(ascii);
 	                   else if(strchr(permit_input, ascii) || strchr(permit_input, tolower(ascii)))
@@ -556,7 +639,6 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 
 GUI_status ConverseGump::MouseUp(int x, int y, int button)
 {
- uint16 i;
  std::string token_str;
 
     if(page_break || !is_talking()) // any click == scroll-to-end
@@ -580,12 +662,7 @@ GUI_status ConverseGump::MouseUp(int x, int y, int button)
         token_str = get_token_string_at_pos(x,y);
         if(token_str.length() > 0)
         {
-        	input_buf.clear();
-        	for(i=0;i < token_str.length(); i++)
-        	{
-        		if(isalnum(token_str[i]))
-        			input_buf_add_char(token_str[i]);
-        	}
+        	input_add_string(token_str);
         	set_input_mode(false);
         	clear_scroll();
         	found_break_char = true; //strip leading whitespace.
@@ -601,4 +678,33 @@ GUI_status ConverseGump::MouseUp(int x, int y, int button)
         }
      */
     return(GUI_YUM);
+}
+
+void ConverseGump::input_add_string(std::string token_str)
+{
+	input_buf.clear();
+	for(uint16 i=0;i < token_str.length(); i++)
+	{
+		if(isalnum(token_str[i]))
+			input_buf_add_char(token_str[i]);
+	}
+}
+
+bool ConverseGump::is_permanent_keyword(std::string keyword)
+{
+	return 	(string_i_compare(keyword, " *buy") || string_i_compare(keyword, " *sell")
+			   || string_i_compare(keyword, " *bye") || string_i_compare(keyword, " *spells")
+			   || string_i_compare(keyword, " *reagents"));
+}
+
+void ConverseGump::drawCursor(uint16 x, uint16 y)
+{
+	if(input_char != 0)
+	{
+		font->drawChar(screen, input_char + SDLK_a - 1, x, y);
+	}
+	else
+	{
+		MsgScroll::drawCursor(x, y);
+	}
 }

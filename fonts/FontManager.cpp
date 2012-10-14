@@ -30,6 +30,7 @@
 #include "U6Lib_n.h"
 #include "FontManager.h"
 #include "Font.h"
+#include "ConvFont.h"
 #include "U6Font.h"
 #include "U6misc.h"
 
@@ -37,6 +38,9 @@ FontManager::FontManager(Configuration *cfg)
 {
  config = cfg;
  num_fonts = 0;
+
+ conv_font = new ConvFont();
+ conv_font->init(NULL, 256, 0);
 }
 
 FontManager::~FontManager()
@@ -49,6 +53,7 @@ FontManager::~FontManager()
     font++;
    }
 
+ delete conv_font;
 }
 
 bool FontManager::init(nuvie_game_t game_type)

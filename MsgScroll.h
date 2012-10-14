@@ -219,7 +219,7 @@ private:
  void Display(bool full_redraw);
 
  void clearCursor(uint16 x, uint16 y);
- void drawCursor(uint16 x, uint16 y);
+ virtual void drawCursor(uint16 x, uint16 y);
 
  void set_page_break();
 

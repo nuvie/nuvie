@@ -172,7 +172,7 @@ bool SaveGame::load_original()
     {
      objblk_filename[len-1] = y;
      objblk_filename[len-2] = x;
-
+     ConsoleAddInfo("Loading file: %s", objblk_filename.c_str());
 	 config_get_path(config, objblk_filename, path);
      if(objblk_file->open(path) == false)
        {
@@ -397,6 +397,7 @@ bool SaveGame::load(const char *filename)
  // load surface objects
  for(i=0;i<64;i++)
    {
+    ConsoleAddInfo("Loading super chunk %d of 64", i+1);
     obj_manager->load_super_chunk((NuvieIO *)loadfile, 0, i);
    }
 

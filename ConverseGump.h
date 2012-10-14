@@ -53,6 +53,8 @@ class ConverseGump: public MsgScroll
 	bool party_all_the_time;
 	uint8 converse_bg_color;
 
+	uint16 cursor_position;
+	uint8 input_char;
  public:
 
  ConverseGump(Configuration *cfg, Font *f, Screen *s);
@@ -87,12 +89,24 @@ class ConverseGump: public MsgScroll
 
  virtual bool is_converse_finished() { return (is_holding_buffer_empty() && msg_buf.size() == 1 && msg_buf.back()->total_length == 0); }
 
+ virtual void drawCursor(uint16 x, uint16 y);
+
  protected:
  std::string strip_whitespace_after_break(std::string s);
  void add_keyword(std::string keyword);
 
  virtual void set_permitted_input(const char *allowed);
  virtual void clear_permitted_input();
+
+ bool cursor_at_input_section() { return (keyword_list && cursor_position == keyword_list->size()); }
+ void cursor_reset() { cursor_position = 0; }
+ void cursor_move_to_input() { cursor_position = keyword_list ? keyword_list->size() : 0; }
+
+ void input_add_string(std::string token_str);
+
+ std::string get_token_at_cursor();
+
+ bool is_permanent_keyword(std::string keyword);
 };
 
 
