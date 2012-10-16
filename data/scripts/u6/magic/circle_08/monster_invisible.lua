@@ -5,3 +5,4 @@ if caster.visible == true then
 	magic_success()
 else
 	magic_no_effect()
+end
