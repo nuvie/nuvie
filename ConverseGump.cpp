@@ -34,7 +34,6 @@
 #include "MsgScroll.h"
 #include "Portrait.h"
 #include "Player.h"
-#include "ConvFont.h"
 #include "ConverseGump.h"
 #include "ActorManager.h"
 
@@ -65,8 +64,7 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
  avatar_portrait = NULL;
  keyword_list = NULL;
 
- font = new ConvFont();
- font->init(NULL, 256, 0);
+ font = Game::get_game()->get_font_manager()->get_conv_font();
 
  found_break_char = false;
  cursor_wait = 0;
@@ -99,7 +97,6 @@ ConverseGump::~ConverseGump()
 		free(avatar_portrait);
 	conv_keywords.clear();
 	permitted_input_keywords.clear();
-	delete font;
 }
 
 void ConverseGump::set_talking(bool state, Actor *actor)

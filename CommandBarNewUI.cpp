@@ -31,7 +31,8 @@
 #include "Screen.h"
 #include "Event.h"
 #include "TileManager.h"
-#include "ConvFont.h"
+#include "Font.h"
+#include "FontManager.h"
 #include "GameClock.h"
 #include "GamePalette.h"
 #include "CommandBarNewUI.h"
@@ -84,8 +85,7 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 
     cur_pos = 0;
 
-    font = new ConvFont();
-    font->init(NULL, 256, 0);
+    font = game->get_font_manager()->get_conv_font();
 }
 
 CommandBarNewUI::~CommandBarNewUI()

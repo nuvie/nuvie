@@ -287,8 +287,8 @@ if(game->is_orig_style())
 }
 else
 {
-	 clip_rect.x = 0;//area.x;
-	 clip_rect.y = 0;//area.y;
+	 clip_rect.x = area.x;
+	 clip_rect.y = area.y;
 	 clip_rect.w = win_width * 16;
 	 clip_rect.h = win_height * 16;
 }

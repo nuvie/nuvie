@@ -5,7 +5,7 @@
 #include "U6misc.h"
 
 #include "Font.h"
-#include "ConvFont.h"
+#include "FontManager.h"
 #include "Actor.h"
 #include "ActorManager.h"
 #include "Game.h"
@@ -482,15 +482,14 @@ TextAnim::TextAnim(std::string t, MapCoord loc, uint32 dur)
 	px = loc.x;
 	py = loc.y;
 	duration = dur;
-	font = new ConvFont();
-	font->init(NULL, 256, 0);
+	font = Game::get_game()->get_font_manager()->get_conv_font();
 	text = t;
 	top_anim = true;
 }
 
 TextAnim::~TextAnim()
 {
-	delete font;
+
 }
 
 void TextAnim::display()

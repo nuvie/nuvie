@@ -1,3 +1,9 @@
+2012-10-16  Eric Fry <efry at users.sourceforge.net> r1606
+	* Fixed bugs with non-standard screen size. The background wasn't blanking
+	  properly. The MapWindow wasn't clipping correctly when a x/y offset was used.
+	* Refactored code to use a common shared instance of ConvFont. This is sourced
+	  from FontManager.
+
 2012-10-14  Eric Fry <efry at users.sourceforge.net> r1605
 	* Added new Action QUIT_NO_DIALOG, Alt-q. This allows you to quit 
 	  without confirmation.

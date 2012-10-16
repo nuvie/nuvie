@@ -45,8 +45,7 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 {
  drop_target = false; //we don't participate in drag and drop.
 
- font_normal = new ConvFont();
- font_normal->init(NULL, 256, 0);
+ font_normal = Game::get_game()->get_font_manager()->get_conv_font();
 
  font_garg = new ConvFont();
  font_garg->init(NULL, 256, 128);
@@ -86,7 +85,6 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 
 MsgScrollNewUI::~MsgScrollNewUI()
 {
-	delete font_normal;
 	delete font_garg;
 }
 

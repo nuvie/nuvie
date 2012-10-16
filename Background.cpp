@@ -41,7 +41,9 @@ Background::Background(Configuration *cfg) : GUI_Widget(NULL)
  background = NULL;
  x_off = config_get_video_x_offset(config);
  y_off = config_get_video_y_offset(config);
- Init(NULL, 0,0,320,200);
+
+
+ Init(NULL, 0,0,Game::get_game()->get_screen()->get_width(),Game::get_game()->get_screen()->get_height());
 }
 
 Background::~Background()
@@ -56,37 +58,39 @@ bool Background::init()
  U6Lib_n file;
  unsigned char *temp_buf;
 
- switch(game_type)
-   {
-    case NUVIE_GAME_U6 : config_get_path(config,"paper.bmp",filename);
-                         background = (U6Shape *) new U6Bmp();
-                         if(background->load(filename) == false)
-                           return false;
-                         break;
+ if(Game::get_game()->is_orig_style())
+ {
+	 switch(game_type)
+	   {
+		case NUVIE_GAME_U6 : config_get_path(config,"paper.bmp",filename);
+							 background = (U6Shape *) new U6Bmp();
+							 if(background->load(filename) == false)
+							   return false;
+							 break;
 
-    case NUVIE_GAME_MD :
-                         background = new U6Shape();
-                         config_get_path(config,"mdscreen.lzc",filename);
-                         file.open(filename,4,game_type);
-                         temp_buf = file.get_item(0);
-                         background->load(temp_buf + 8);
-                         free(temp_buf);
-                         break;
+		case NUVIE_GAME_MD :
+							 background = new U6Shape();
+							 config_get_path(config,"mdscreen.lzc",filename);
+							 file.open(filename,4,game_type);
+							 temp_buf = file.get_item(0);
+							 background->load(temp_buf + 8);
+							 free(temp_buf);
+							 break;
 
-    case NUVIE_GAME_SE :
-                         background = new U6Shape();
-                         config_get_path(config,"screen.lzc",filename);
-                         file.open(filename,4,game_type);
-                         temp_buf = file.get_item(0);
-                         background->load(temp_buf + 8);
-                         free(temp_buf);
-                         break;
-   }
+		case NUVIE_GAME_SE :
+							 background = new U6Shape();
+							 config_get_path(config,"screen.lzc",filename);
+							 file.open(filename,4,game_type);
+							 temp_buf = file.get_item(0);
+							 background->load(temp_buf + 8);
+							 free(temp_buf);
+							 break;
+	   }
 
- background->get_size(&bg_w,&bg_h);
+	 background->get_size(&bg_w,&bg_h);
 
- Game::get_game()->get_dither()->dither_bitmap(background->get_data(),area.w, area.h, DITHER_NO_TRANSPARENCY);
-
+	 Game::get_game()->get_dither()->dither_bitmap(background->get_data(),area.w, area.h, DITHER_NO_TRANSPARENCY);
+ }
  return true;
 }
 
@@ -96,10 +100,11 @@ void Background::Display(bool full_redraw)
    {
     update_display = false;
 
-    //if(game_type != NUVIE_GAME_U6)
-       screen->clear(area.x,area.y,area.w,area.h,NULL);
+    screen->clear(area.x,area.y,area.w,area.h,NULL);
 
-    screen->blit(x_off, y_off, background->get_data(), 8,  bg_w, bg_h, bg_w, true);
+    if(Game::get_game()->is_orig_style())
+    	screen->blit(x_off, y_off, background->get_data(), 8,  bg_w, bg_h, bg_w, true);
+
     screen->update(0,0,area.w,area.h);
    }
 

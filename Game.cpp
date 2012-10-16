@@ -181,13 +181,11 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
    clock = new GameClock(config, game_type);
 
-   if(is_orig_style())
-   {
-	   background = new Background(config);
-	   background->init();
-	   background->Hide();
-	   gui->AddWidget(background);
-   }
+
+   background = new Background(config);
+   background->init();
+   background->Hide();
+   gui->AddWidget(background);
 
    text = new Text(config);
    text->loadFont();
@@ -325,11 +323,13 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
    if(is_orig_style())
    {
-	   background->Show();
 	   command_bar->Show();
-	   scroll->Show();
    }
 
+   if(is_orig_style() || screen->get_width() != 320 || screen->get_height() != 200)
+   {
+	   background->Show();
+   }
 
    map_window->Show();
    scroll->Show();
