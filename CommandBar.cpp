@@ -102,6 +102,7 @@ bool CommandBar::init_buttons()
         icon[i] = tile_man->get_tile(i+400);
     // NOTE: combat button has two states
     icon[9] = tile_man->get_tile(combat_mode ? 415 : 414);
+    icon[10] = tile_man->get_tile(409); //save icon used by CommandBarNewUI
     return(true);
 }
 
@@ -196,7 +197,15 @@ bool CommandBar::try_selected_action(sint8 command_num) // return true if target
 	EventMode mode;
 
 	if(game->get_game_type() == NUVIE_GAME_U6)
-		mode = U6_mode_tbl[command_num];
+	{
+		if(command_num == 10) //This is used by CommandBarNewUI
+		{
+			event->saveDialog();
+			return true;
+		}
+		else
+			mode = U6_mode_tbl[command_num];
+	}
 	else if(game->get_game_type() == NUVIE_GAME_MD)
 		mode = MD_mode_tbl[command_num];
 	else // SE

@@ -58,14 +58,14 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
     uint16 y_off = config_get_video_y_offset(config);
 
     icon_w = 5;
-    icon_h = 2;
-    num_icons = 10;
+    icon_h = 3;
+    num_icons = 11;
 
     icon_y_offset = 10;
 
 	offset = OBJLIST_OFFSET_U6_COMMAND_BAR;
 	Init(NULL, 120+x_off, 74+y_off, 0, 0);
-	area.w = btn_size * icon_w; // space for 5x2 icons
+	area.w = btn_size * icon_w; // space for 5x3 icons
 	area.h = btn_size * icon_h + 20; //
 
     event = NULL; // it's not set yet
@@ -96,31 +96,37 @@ CommandBarNewUI::~CommandBarNewUI()
 
 GUI_status CommandBarNewUI::MouseDown(int x, int y, int button)
 {
-    x -= area.x;
-    y -= area.y;
+	if(HitRect(x, y))
+	{
+		x -= area.x;
+		y -= area.y;
 
-    if(y >= icon_y_offset)
-    {
-    	uint8 pos = ((y - icon_y_offset) / btn_size) * icon_w;
-    	pos += x / btn_size;
+		if(y >= icon_y_offset)
+		{
+			uint8 pos = ((y - icon_y_offset) / btn_size) * icon_w;
+			pos += x / btn_size;
 
-    	if(pos < num_icons)
-    		cur_pos = pos;
-    }
+			if(pos < num_icons)
+				cur_pos = pos;
+		}
+	}
 
     return(GUI_YUM);
 }
 
 GUI_status CommandBarNewUI::MouseUp(int x, int y, int button)
 {
-    x -= area.x;
-    y -= area.y;
+	if(HitRect(x, y))
+	{
+		x -= area.x;
+		y -= area.y;
 
-    if(y >= icon_y_offset && y < icon_h * btn_size)
-    {
-		hit((sint8)cur_pos);
-		Hide();
-    }
+		if(y >= icon_y_offset && y < icon_y_offset + icon_h * btn_size)
+		{
+			hit((sint8)cur_pos);
+			Hide();
+		}
+	}
 
     return(GUI_YUM);
 }
@@ -131,25 +137,37 @@ GUI_status CommandBarNewUI::KeyDown(SDL_keysym key)
     {
         case SDLK_UP:
         case SDLK_KP8:
-            if(cur_pos - icon_w < 0)
-            	cur_pos = icon_w * icon_h - (icon_w - cur_pos%icon_w);
-            else
-            	cur_pos -= icon_w;
+        	do
+        	{
+				if(cur_pos - icon_w < 0)
+					cur_pos = icon_w * icon_h - (icon_w - cur_pos%icon_w);
+				else
+					cur_pos -= icon_w;
+        	} while(cur_pos >= num_icons);
             break;
         case SDLK_DOWN:
         case SDLK_KP2:
-            cur_pos = (cur_pos + icon_w) % (icon_w * icon_h);
+        	do
+        	{
+        		cur_pos = (cur_pos + icon_w) % (icon_w * icon_h);
+        	} while(cur_pos >= num_icons);
             break;
         case SDLK_LEFT:
         case SDLK_KP4:
-        	if(cur_pos%icon_w == 0)
-        		cur_pos = (cur_pos/icon_w)*icon_w+icon_w-1;
-        	else
-        		cur_pos--;
+        	do
+        	{
+				if(cur_pos%icon_w == 0)
+					cur_pos = (cur_pos/icon_w)*icon_w+icon_w-1;
+				else
+					cur_pos--;
+        	} while(cur_pos >= num_icons);
             break;
         case SDLK_RIGHT:
         case SDLK_KP6:
-            cur_pos = (cur_pos/icon_w)*icon_w + (cur_pos+1) % icon_w;
+        	do
+        	{
+        		cur_pos = (cur_pos/icon_w)*icon_w + (cur_pos+1) % icon_w;
+        	} while(cur_pos >= num_icons);
             break;
         case SDLK_RETURN:
         case SDLK_KP_ENTER:
@@ -205,11 +223,11 @@ void CommandBarNewUI::Display(bool full_redraw)
   //  }
 }
 
-static const char *U6_mode_name_tbl[10] = {"Attack", "Cast", "Talk", "Look", "Get", "Drop", "Move", "Use", "Rest", "Combat mode"};
+static const char *U6_mode_name_tbl[11] = {"Attack", "Cast", "Talk", "Look", "Get", "Drop", "Move", "Use", "Rest", "Combat mode", "Load/Save"};
 
 const char *CommandBarNewUI::get_command_name(sint8 command_num)
 {
-	if(command_num < 0 || command_num > num_icons)
+	if(command_num < 0 || command_num >= num_icons)
 		return "";
 
 	return U6_mode_name_tbl[command_num];

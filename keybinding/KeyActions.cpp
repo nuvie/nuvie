@@ -151,6 +151,7 @@ void ActionSelectCommandBar(int *params)
 void ActionSelectNewCommandBar(int *params)
 {
 	CommandBar *cb = game->get_command_bar();
+	cb->grab_focus();
 	cb->Show();
 }
 

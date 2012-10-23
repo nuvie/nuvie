@@ -48,7 +48,7 @@ protected:
     Game *game;
     Event *event;
     Text *text;
-    Tile *icon[10];
+    Tile *icon[11];
 
     sint8 selected_action; // underlined icon (-1 = none)
     bool combat_mode; // state of combat icon

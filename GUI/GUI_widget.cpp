@@ -96,6 +96,10 @@ void GUI_Widget::Show(void)
 /* Mark the widget as hidden;  no display, no events */
 void GUI_Widget::Hide(void)
 {
+	if(has_focus())
+	{
+		release_focus();
+	}
 	status = WIDGET_HIDDEN;
 }
 
