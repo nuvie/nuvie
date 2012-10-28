@@ -167,6 +167,7 @@ class Party {
  bool remove_obj(uint16 obj_n, uint8 quality);
  Actor *who_has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual=true);
  bool is_horsed(); // is anyone on a horse?
+ bool is_everyone_horsed();
  Obj *get_food(); // used while resting
 
  // Automatic-walking. These methods should be replaced with ActorActions.

@@ -1,3 +1,7 @@
+2012-10-28  Eric Fry <efry at users.sourceforge.net> r1609
+	* Fixed bug "horsed Avatar doubles movement speed for all party members" [3547478]
+	  The party only moves at horse speed if all members are horsed.
+
 2012-10-24  Eric Fry <efry at users.sourceforge.net> r1608
 	* Added load/save icon to the new command bar widget.
 

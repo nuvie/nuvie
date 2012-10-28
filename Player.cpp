@@ -559,7 +559,7 @@ uint32 Player::get_walk_delay()
         return(50); // 2x normal
     else if(actor->obj_n == OBJ_U6_RAFT)
         return(100); // normal
-    else if(actor->obj_n == OBJ_U6_HORSE_WITH_RIDER)
+    else if(actor->obj_n == OBJ_U6_HORSE_WITH_RIDER && party->is_everyone_horsed())
         return(50); // 2x normal
     else
         return(125); // normal movement about 8 spaces per second

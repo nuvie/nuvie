@@ -967,6 +967,14 @@ bool Party::is_horsed()
     return false;
 }
 
+bool Party::is_everyone_horsed()
+{
+	for(int p=0; p<num_in_party; p++)
+	        if(member[p].actor->get_obj_n() != OBJ_U6_HORSE_WITH_RIDER)
+	            return false;
+	    return true;
+}
+
 Obj *Party::get_food()
 {
     for(int p=0; p<num_in_party; p++)
