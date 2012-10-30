@@ -617,14 +617,14 @@ bool Converse::override_input()
             return true;
         if(!player->get_party()->contains_actor(npc))
             player->get_party()->add_actor(npc);
-        print("\"Friends of Nuvie? Sure, I'll come along!\"\n");
+        print("\"Friends of Nuvie? Sure, I'll come along!\"\n*");
         return(false);
     }
     else if(party_all_the_time && in_str == "leave")
     {
         if(player->get_party()->contains_actor(npc))
             player->get_party()->remove_actor(npc);
-        print("\"For Nuvie!\"\n");
+        print("\"For Nuvie!\"\n*");
         return(false);
     }
     return(true);
@@ -654,6 +654,8 @@ void Converse::continue_script()
             print("\n\n");
             if(!override_input())
             {
+            	need_input = false;
+            	conv_i->stop();
                 stop();
                 return;
             }

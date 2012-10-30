@@ -80,6 +80,22 @@ bool PortraitViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, ui
 	font = new GUI_Font(GUI_FONT_GUMP);
 	font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
 
+	SDL_Surface *image, *image1;
+
+	build_path(datadir, "left_arrow.bmp", imagefile);
+	image = SDL_LoadBMP(imagefile.c_str());
+	image1 = SDL_LoadBMP(imagefile.c_str());
+
+	left_button = new GUI_Button(this, 23, 6, image, image1, this);
+	this->AddWidget(left_button);
+
+	build_path(datadir, "right_arrow.bmp", imagefile);
+	image = SDL_LoadBMP(imagefile.c_str());
+	image1 = SDL_LoadBMP(imagefile.c_str());
+
+	right_button = new GUI_Button(this, 166, 6, image, image1, this);
+	this->AddWidget(right_button);
+
 	return true;
 }
 
@@ -182,6 +198,14 @@ GUI_status PortraitViewGump::callback(uint16 msg, GUI_CallBack *caller, void *da
 	{
 		Game::get_game()->get_view_manager()->close_gump(this);
 		return GUI_YUM;
+	}
+	else if(caller == left_button)
+	{
+		left_arrow();
+	}
+	else if(caller == right_button)
+	{
+		right_arrow();
 	}
 
     return GUI_PASS;

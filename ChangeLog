@@ -1,3 +1,8 @@
+2012-10-31  Eric Fry <efry at users.sourceforge.net> r1612
+	* Fixed bug with an endless loop when using the "party all the time" cheat in
+	  fullmap mode.
+	* Added left/right arrow buttons to PortraitGump.
+
 2012-10-30  Eric Fry <efry at users.sourceforge.net> r1610
 	* Fixed segfault when dragging from player's inventory in fullmap mode.
 	* Added left/right buttons to inventory gump.
