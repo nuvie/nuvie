@@ -29,8 +29,9 @@
 
 #include "Party.h"
 #include "Actor.h"
+#include "Font.h"
 #include "ViewManager.h"
-
+#include "FontManager.h"
 #include "ContainerWidgetGump.h"
 #include "ContainerViewGump.h"
 
@@ -38,6 +39,7 @@
 ContainerViewGump::ContainerViewGump(Configuration *cfg) : DraggableView(cfg)
 {
 	bg_image = NULL; gump_button = NULL; up_arrow_button = NULL; down_arrow_button = NULL;
+	left_arrow_button = NULL; right_arrow_button = NULL;
 	container_widget = NULL; font = NULL; actor = NULL; container_obj = NULL;
 }
 
@@ -48,15 +50,6 @@ ContainerViewGump::~ContainerViewGump()
 bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
 	View::init(x,y,t,p,tm,om);
-
-	SetRect(area.x, area.y, 111, 101);
-
-	actor = p->get_actor(p->get_leader());
-
-	container_widget = new ContainerWidgetGump(config, this);
-	container_widget->init(actor, 21, 29, tile_manager, obj_manager, t);
-
-	AddWidget(container_widget);
 
 	std::string datadir = GUI::get_gui()->get_data_dir();
 	std::string imagefile;
@@ -78,10 +71,25 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 	build_path(datadir, "bag_bg.bmp", imagefile);
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
+	left_arrow_button = loadButton(datadir, "cont_left", area.x, area.y + bg_image->h);
+	right_arrow_button = loadButton(datadir, "cont_right", area.x + 11, area.y + bg_image->h);
+
+	SetRect(area.x, area.y, bg_image->w, bg_image->h + 16); //111, 101);
+
+	actor = p->get_actor(p->get_leader());
+
+	container_widget = new ContainerWidgetGump(config, this);
+	container_widget->init(actor, 21, 29, tile_manager, obj_manager, t);
+
+	AddWidget(container_widget);
+
+
+
 	set_bg_color_key(0, 0x70, 0xfc);
 
-	font = new GUI_Font(GUI_FONT_GUMP);
-	font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
+	//font = new GUI_Font(GUI_FONT_GUMP);
+	//font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
+	font = Game::get_game()->get_font_manager()->get_conv_font();
 
 	return true;
 }
@@ -89,13 +97,18 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 void ContainerViewGump::set_actor(Actor *a)
 {
 	actor = a;
+	container_obj = NULL;
 	container_widget->set_actor(a);
+	left_arrow_button->Show();
+	right_arrow_button->Show();
 }
 
 void ContainerViewGump::set_container_obj(Obj *o)
 {
 	container_obj = o;
 	container_widget->set_container(container_obj);
+	left_arrow_button->Hide();
+	right_arrow_button->Hide();
 }
 
 void ContainerViewGump::Display(bool full_redraw)
@@ -108,11 +121,30 @@ void ContainerViewGump::Display(bool full_redraw)
 
  DisplayChildren(full_redraw);
 
-
+ if(container_obj == NULL)
+ {
+	 font->drawString(screen, actor->get_name(), area.x + 23, area.y + bg_image->h + 2);
+ }
  update_display = false;
  screen->update(area.x, area.y, area.w, area.h);
 
  return;
+}
+
+void ContainerViewGump::left_arrow()
+{
+	uint8 party_mem_num = party->get_member_num(actor);
+	if(party_mem_num > 0)
+		party_mem_num--;
+	else
+		party_mem_num = party->get_party_size() - 1;
+
+	set_actor(party->get_actor(party_mem_num));
+}
+
+void ContainerViewGump::right_arrow()
+{
+	set_actor(party->get_actor((party->get_member_num(actor) + 1) % party->get_party_size()));
 }
 
 GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
@@ -131,6 +163,16 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 	else if(caller == up_arrow_button)
 	{
 		container_widget->up_arrow();
+		return GUI_YUM;
+	}
+	else if(caller == left_arrow_button)
+	{
+		left_arrow();
+		return GUI_YUM;
+	}
+	else if(caller == right_arrow_button)
+	{
+		right_arrow();
 		return GUI_YUM;
 	}
 

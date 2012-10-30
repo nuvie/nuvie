@@ -244,10 +244,17 @@ void ActionQuitNODialog(int *params)
 
 void ActionToggleCursor(int *params)
 {
-	if(event->get_input()->select_from_inventory == false)
-		event->moveCursorToInventory();
-	else // cursor is on inventory
-		event->moveCursorToMapWindow(true);
+	if(game->is_orig_style())
+	{
+		if(event->get_input()->select_from_inventory == false)
+			event->moveCursorToInventory();
+		else // cursor is on inventory
+			event->moveCursorToMapWindow(true);
+	}
+	else
+	{
+		game->get_view_manager()->open_container_view(player->get_actor());
+	}
 }
 
 void ActionToggleCombatStrategy(int *params)

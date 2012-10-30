@@ -33,6 +33,7 @@ class Screen;
 class Actor;
 class Text;
 class U6Bmp;
+class Font;
 class ContainerWidgetGump;
 
 class ContainerViewGump : public DraggableView {
@@ -40,10 +41,12 @@ class ContainerViewGump : public DraggableView {
 	GUI_Button *gump_button;
 	GUI_Button *up_arrow_button;
 	GUI_Button *down_arrow_button;
+	GUI_Button *left_arrow_button;
+	GUI_Button *right_arrow_button;
 
 	ContainerWidgetGump *container_widget;
 
-	GUI_Font *font;
+	Font *font;
 
 	Actor *actor;
 	Obj *container_obj;
@@ -71,6 +74,9 @@ public:
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
  protected:
+
+ void left_arrow();
+ void right_arrow();
 
 };
 

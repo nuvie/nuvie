@@ -3223,7 +3223,7 @@ void Event::moveCursorToInventory()
         }
         else
         {
-        	view_manager->open_container_view(player->get_actor());
+        	//view_manager->open_container_view(player->get_actor());
         }
     }
     input.select_from_inventory = true;
@@ -3240,7 +3240,7 @@ void Event::moveCursorToMapWindow(bool ToggleCursor)
     }
     else
     {
-    	view_manager->close_container_view(player->get_actor());
+    	//Removed due to delete issues while dragging. view_manager->close_container_view(player->get_actor());
     }
     if(input.get_direction) // show the correct MapWindow cursor
         map_window->set_show_use_cursor(true);
