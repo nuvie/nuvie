@@ -59,6 +59,10 @@ Source: data\images\gumps\portrait_bg.bmp; DestDir: {app}\data\images\gumps; Fla
 Source: data\images\gumps\container\bag_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\cont_down_btn_down.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\cont_down_btn_up.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
+Source: data\images\gumps\container\cont_left_btn_down.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
+Source: data\images\gumps\container\cont_left_btn_up.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
+Source: data\images\gumps\container\cont_right_btn_down.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
+Source: data\images\gumps\container\cont_right_btn_up.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\cont_up_btn_down.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\cont_up_btn_up.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\doll\combat_btn_down.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
