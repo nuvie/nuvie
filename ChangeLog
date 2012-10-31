@@ -1,3 +1,6 @@
+2012-10-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1613
+	* Fix a couple of torch lighting crashes
+
 2012-10-31  Eric Fry <efry at users.sourceforge.net> r1612
 	* Fixed bug with an endless loop when using the "party all the time" cheat in
 	  fullmap mode.

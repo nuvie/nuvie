@@ -3075,7 +3075,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
                     actor->inventory_add_object_nostack(torch);
 
                 // ready it
-                actor = actor_manager->get_actor_holding_obj(torch);
+//                actor = actor_manager->get_actor_holding_obj(torch);
                 can_light_it = actor->add_readied_object(torch);
             }
 
@@ -3180,9 +3180,12 @@ void U6UseCode::light_torch(Obj *obj)
     assert(obj->is_readied() || obj->is_on_map());
     toggle_frame(obj); // light
     obj->status |= OBJ_STATUS_LIT;
-    Actor *owner = actor_manager->get_actor_holding_obj(obj);
+    Actor *owner;
     if(obj->is_readied())
+    {
+        owner= actor_manager->get_actor_holding_obj(obj);
         owner->add_light(TORCH_LIGHT_LEVEL);
+    }
 
     obj->qty = 0xc8; //torch duration. updated in lua advance_time()
     if(!owner || owner->is_in_party() || owner == player->get_actor())
