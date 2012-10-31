@@ -237,7 +237,9 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
         	tile_offset = (TILES_W * TILES_H) * (selectedTile / (TILES_W * TILES_H));
         	break;
         case SDLK_ESCAPE:
-        	Game::get_game()->get_view_manager()->close_gump(this);
+        	//Game::get_game()->get_view_manager()->close_gump(this);
+        	close_view();
+        	GUI::get_gui()->removeWidget((GUI_Widget *)this);
         	break;
         default:
             return GUI_PASS;
@@ -256,7 +258,9 @@ GUI_status MapEditorView::MouseUp(int x, int y, int button)
 
  if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
  {
- 	Game::get_game()->get_view_manager()->close_gump(this);
+ 	//Game::get_game()->get_view_manager()->close_gump(this);
+	close_view();
+	GUI::get_gui()->removeWidget((GUI_Widget *)this);
  }
  else if(HitRect(x, y))
  {

@@ -223,15 +223,16 @@ void ViewManager::open_doll_view(Actor *actor)
 		doll->init(Game::get_game()->get_screen(), this, 40, 20, text, party, tile_manager, obj_manager);
 
 		add_view((View *)doll);
+		gumps.push_back(doll);
 	}
 }
 
 ContainerViewGump *ViewManager::get_container_view(Actor *actor, Obj *obj)
 {
-	std::list<ContainerViewGump *>::iterator iter;
+	std::list<DraggableView *>::iterator iter;
 	for(iter=container_gumps.begin(); iter != container_gumps.end();iter++)
 	{
-		ContainerViewGump *view = *iter;
+		ContainerViewGump *view = (ContainerViewGump *)*iter;
 		if(actor)
 		{
 			if(view->is_actor_container() && view->get_actor() == actor)
@@ -265,6 +266,7 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 			view->set_container_obj(obj);
 
 		container_gumps.push_back(view);
+		gumps.push_back(view);
 		add_view((View *)view);
 	}
 	else
@@ -279,19 +281,8 @@ void ViewManager::close_container_view(Actor *actor)
 
 	if(view)
 	{
-		close_container_view(view);
+		close_gump(view);
 	}
-}
-
-void ViewManager::close_container_view(ContainerViewGump *view)
-{
-	container_gumps.remove(view);
-
-	if(view->has_focus())
-	{
-		view->release_focus();
-	}
-	view->Delete();
 }
 
 void ViewManager::open_mapeditor_view()
@@ -312,6 +303,7 @@ void ViewManager::open_portrait_gump(Actor *a)
 		PortraitViewGump *view = new PortraitViewGump(config);
 		view->init(Game::get_game()->get_screen(), this, 62, 0, text, party, tile_manager, obj_manager, portrait, a);
 		add_view((View *)view);
+		gumps.push_back(view);
 		view->grab_focus();
 	}
 }
@@ -324,10 +316,27 @@ void ViewManager::add_view(View *view)
 	gui->Display();
 }
 
-void ViewManager::close_gump(View *gump)
+void ViewManager::close_gump(DraggableView *gump)
 {
+	gumps.remove(gump);
+	container_gumps.remove(gump);
+
 	gump->close_view();
-	gui->removeWidget((GUI_Widget *)gump);
+	gump->Delete();
+	//gui->removeWidget((GUI_Widget *)gump);
+}
+
+void ViewManager::close_all_gumps()
+{
+	std::list<DraggableView *>::iterator iter;
+	for(iter=gumps.begin(); iter != gumps.end();)
+	{
+		DraggableView *gump = *iter;
+		iter++;
+
+		close_gump(gump);
+	}
+	//TODO make sure all gump objects have been deleted by GUI.
 }
 
 // callbacks for switching views

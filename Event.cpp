@@ -672,6 +672,7 @@ bool Event::talk_start()
 {
    if(game->user_paused())
         return(false);
+   close_gumps();
    get_target("Talk-");
    return true;
 }
@@ -2094,6 +2095,8 @@ void Event::quitDialog()
 		map_window->set_walking(false);
 		showingQuitDialog = true;
 
+		close_gumps();
+
 		quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", (GUI_CallBack *)this, (GUI_CallBack *)this);
 
 		gui->AddWidget(quit_dialog);
@@ -2111,6 +2114,9 @@ void Event::saveDialog()
 	scroll->display_prompt();
 	return;
  }
+
+ close_gumps();
+
  SaveManager *save_manager = game->get_save_manager();
  if(mode == MOVE_MODE)
  {
@@ -3410,4 +3416,12 @@ bool Event::select_view_obj(Obj *obj, Actor *actor)
 			select_obj(obj, actor);
 	}
 	return true;
+}
+
+void Event::close_gumps()
+{
+	if(game->is_new_style())
+	{
+		view_manager->close_all_gumps();
+	}
 }

@@ -103,6 +103,7 @@ void ContainerWidget::set_actor(Actor *a)
 {
  actor = a;
  container_obj = NULL;
+ row_offset = 0;
  Redraw();
 }
 

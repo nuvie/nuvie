@@ -152,7 +152,7 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 	//close gump and return control to Magic class for clean up.
 	if(caller == gump_button)
 	{
-		Game::get_game()->get_view_manager()->close_container_view(this);
+		Game::get_game()->get_view_manager()->close_gump(this);
 		return GUI_YUM;
 	}
 	else if(caller == down_arrow_button)

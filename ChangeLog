@@ -1,3 +1,9 @@
+2012-10-31  Eric Fry <efry at users.sourceforge.net> r1614
+	* Added ViewManager::close_all_gumps()
+	* Reset row offset when cycling through party member inventories.
+	* Close gumps when opening save/load/quit dialogs.
+	  This fixes "The game can crash  if you load with a container gump open" [3557811]
+
 2012-10-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1613
 	* Fix a couple of torch lighting crashes
 

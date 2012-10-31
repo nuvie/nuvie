@@ -44,6 +44,7 @@ class InventoryView;
 class ActorView;
 class SpellView;
 class ContainerViewGump;
+class DraggableView;
 
 using std::list;
 
@@ -68,7 +69,9 @@ class ViewManager
 
  View *current_view;
 
- std::list<ContainerViewGump *> container_gumps;
+ std::list<DraggableView *> container_gumps;
+ std::list<DraggableView *> gumps;
+
 
  public:
 
@@ -103,11 +106,11 @@ class ViewManager
  void open_container_view(Actor *actor) { open_container_view(actor, NULL); }
 
  void close_container_view(Actor *actor);
- void close_container_view(ContainerViewGump *view);
 
  void open_mapeditor_view();
  void open_portrait_gump(Actor *a);
- void close_gump(View *gump);
+ void close_gump(DraggableView *gump);
+ void close_all_gumps();
  bool set_current_view(View *view);
 
  protected:

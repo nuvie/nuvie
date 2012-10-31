@@ -302,6 +302,8 @@ friend class Magic; // FIXME
  bool handleSDL_KEYDOWN (const SDL_Event *event);
  const char *print_mode(EventMode mode);
  void try_next_attack();
+
+ void close_gumps();
 };
 
 
