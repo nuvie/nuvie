@@ -291,6 +291,7 @@ friend class Magic; // FIXME
  void moveCursorToInventory();
 
  void toggleFpsDisplay();
+ void close_gumps();
 
 /* FIXME: Some of the above (action) functions can be removed from public, so
    that we don't need to check for WAIT mode in all of them. */
@@ -303,7 +304,6 @@ friend class Magic; // FIXME
  const char *print_mode(EventMode mode);
  void try_next_attack();
 
- void close_gumps();
 };
 
 

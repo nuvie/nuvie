@@ -109,8 +109,9 @@ const struct Action {
 	{ "MSG_SCROLL_UP", ActionMsgScrollUP, "Msg scroll up", Action::normal_keys, true },
 	{ "MSG_SCROLL_DOWN", ActionMsgScrollDown, "Msg scroll down", Action::normal_keys, true },
 	{ "SHOW_KEYS", ActionShowKeys, "Show keys", Action::normal_keys, true },
-	{ "DECREASE_DEBUG", ActionDecreaseDebug, "Decrease_debug", Action::normal_keys, true },
+	{ "DECREASE_DEBUG", ActionDecreaseDebug, "Decrease debug", Action::normal_keys, true },
 	{ "INCREASE_DEBUG", ActionIncreaseDebug, "Increase debug", Action::normal_keys, true },
+	{ "CLOSE_GUMPS", ActionCloseGumps, "Close gumps", Action::normal_keys, true },
 	{ "TEST", ActionTest, "Test", Action::dont_show, true },
 	{ "", 0, "", Action::dont_show, false } //terminator
 };

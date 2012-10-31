@@ -227,6 +227,7 @@ void ActionSaveDialog(int *params)
 
 void ActionLoadLatestSave(int *params)
 {
+	event->close_gumps();
 	SaveManager *save_manager = game->get_save_manager();
 	game->get_scroll()->display_string("Load game!\n");
 	save_manager->load_latest_save();
@@ -302,6 +303,11 @@ void ActionDecreaseDebug(int *params)
 void ActionIncreaseDebug(int *params)
 {
 	DEBUG(0,LEVEL_EMERGENCY,"!!increase!!\n");
+}
+
+void ActionCloseGumps(int *params)
+{
+	event->close_gumps();
 }
 
 void ActionTest(int *params)

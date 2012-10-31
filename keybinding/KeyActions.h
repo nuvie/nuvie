@@ -67,6 +67,7 @@ void ActionMsgScrollDown(int *params);
 void ActionShowKeys(int *params);
 void ActionDecreaseDebug(int *params);
 void ActionIncreaseDebug(int *params);
+void ActionCloseGumps(int *params);
 
 void ActionTest(int* params);
 
