@@ -99,7 +99,14 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
 
 	 spell_view = new SpellViewGump(config);
  }
- spell_view->init(gui->get_screen(), this, 168+x_off, 6+y_off, text, party, tile_manager, obj_manager);
+
+ uint16 spell_x_offset = 168+x_off;
+ if(Game::get_game()->is_new_style())
+ {
+	spell_x_offset = 320 - SPELLVIEWGUMP_WIDTH + x_off;
+ }
+
+ spell_view->init(gui->get_screen(), this, spell_x_offset, 6+y_off, text, party, tile_manager, obj_manager);
  //set_current_view((View *)party_view);
 
  return true;
@@ -220,7 +227,7 @@ void ViewManager::open_doll_view(Actor *actor)
 	if(Game::get_game()->is_new_style())
 	{
 		DollViewGump *doll = new DollViewGump(config);
-		doll->init(Game::get_game()->get_screen(), this, 40, 20, text, party, tile_manager, obj_manager);
+		doll->init(Game::get_game()->get_screen(), this, 10, Game::get_game()->get_screen()->get_height() - DOLLVIEWGUMP_HEIGHT, text, party, tile_manager, obj_manager);
 
 		add_view((View *)doll);
 		gumps.push_back(doll);
@@ -259,7 +266,7 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 	if(view == NULL)
 	{
 		view = new ContainerViewGump(config);
-		view->init(Game::get_game()->get_screen(), this, 40, 20, text, party, tile_manager, obj_manager);
+		view->init(Game::get_game()->get_screen(), this, Game::get_game()->get_screen()->get_width() - 120, 20, text, party, tile_manager, obj_manager);
 		if(actor)
 			view->set_actor(actor);
 		else

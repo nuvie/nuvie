@@ -302,6 +302,17 @@ sint16 SpellViewGump::getSpell(int x, int y)
 
 GUI_status SpellViewGump::MouseDown(int x, int y, int button)
 {
+	if(button == SDL_BUTTON_WHEELDOWN)
+	{
+		move_right();
+		return GUI_YUM;
+	}
+	else if(button == SDL_BUTTON_WHEELUP)
+	{
+		move_left();
+		return GUI_YUM;
+	}
+
 	selected_spell = getSpell(x, y);
 	if(selected_spell != -1)
 		return GUI_YUM;

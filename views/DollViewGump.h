@@ -35,6 +35,8 @@ class Text;
 class U6Bmp;
 class DollWidget;
 
+#define DOLLVIEWGUMP_HEIGHT 136
+
 class DollViewGump : public DraggableView {
 
 	GUI_Button *gump_button;

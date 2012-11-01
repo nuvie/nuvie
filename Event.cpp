@@ -3073,6 +3073,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 	{
 	  	case CAST_MODE:
 			/* TODO check if spellbook ready before changing mode */
+	  		close_gumps();
 			scroll->display_string("Cast-");
 		  	if(!magic->start_new_spell())
 			{

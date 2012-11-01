@@ -35,6 +35,8 @@ class Text;
 class U6Bmp;
 class Spell;
 
+#define SPELLVIEWGUMP_WIDTH 162
+
 class SpellViewGump : public SpellView {
 
 	GUI_Button *gump_button;

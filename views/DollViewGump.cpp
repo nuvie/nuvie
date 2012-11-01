@@ -194,10 +194,7 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	//close gump and return control to Magic class for clean up.
 	if(caller == gump_button)
 	{
-		//FIXME close gump.
-		release_focus();
-		Hide();
-		Delete();
+		Game::get_game()->get_view_manager()->close_gump(this);
 		return GUI_YUM;
 	}
 	else if(caller == right_button)
