@@ -1,3 +1,6 @@
+2012-11-02  Eric Fry <efry at users.sourceforge.net> r1617
+	* Fixed bug when closing spellbook gump with right mouse click.
+
 2012-11-01  Eric Fry <efry at users.sourceforge.net> r1616
 	* Fixed bug when closing doll gump.
 	* Added scroll wheel support to spell view gump.

@@ -245,12 +245,7 @@ GUI_status SpellViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	//close gump and return control to Magic class for clean up.
 	if(caller == gump_button)
 	{
-		//Simulate a global key down event.
-		SDL_Event e;
-		e.type = SDL_KEYDOWN;
-		e.key.keysym.sym = SDLK_ESCAPE;
-
-		Game::get_game()->get_event()->handleEvent(&e);
+		close_spellbook();
 
 		return GUI_YUM;
 	}
@@ -266,6 +261,16 @@ GUI_status SpellViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	}
 
     return GUI_PASS;
+}
+
+void SpellViewGump::close_spellbook()
+{
+	//Simulate a global key down event.
+	SDL_Event e;
+	e.type = SDL_KEYDOWN;
+	e.key.keysym.sym = SDLK_ESCAPE;
+
+	Game::get_game()->get_event()->handleEvent(&e);
 }
 
 sint16 SpellViewGump::getSpell(int x, int y)
@@ -322,6 +327,12 @@ GUI_status SpellViewGump::MouseDown(int x, int y, int button)
 
 GUI_status SpellViewGump::MouseUp(int x, int y, int button)
 {
+	if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
+	{
+		close_spellbook();
+		return GUI_YUM;
+	}
+
 	sint16 spell = getSpell(x, y);
 
 	if(spell != -1 && spell == selected_spell)

@@ -65,6 +65,8 @@ public:
  void loadCircleString(std::string datadir);
  void loadCircleSuffix(std::string datadir, std::string image);
  void printSpellQty(uint8 spell_num, uint16 x, uint16 y);
+
+ void close_spellbook();
 };
 
 #endif /* __SpellViewGump_h__ */
