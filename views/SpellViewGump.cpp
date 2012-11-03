@@ -233,6 +233,13 @@ void SpellViewGump::Display(bool full_redraw)
 
  DisplayChildren(full_redraw);
 
+ sint16 spell = get_selected_spell();
+
+ if(spell < 0)
+	 spell = 0;
+
+ spell = spell % 16;
+ screen->fill(248, area.x + ((spell < 5) ? 75 : 136), area.y + 18 + 7 + (spell % 5) * 14, 10, 1);
 
  update_display = false;
  screen->update(area.x, area.y, area.w, area.h);
