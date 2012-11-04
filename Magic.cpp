@@ -387,6 +387,7 @@ bool Magic::spellbook_has_spell(Obj *book, uint8 spell_index)
 
 bool Magic::process_script_return(uint8 ret)
 {
+  Game::get_game()->get_view_manager()->close_all_gumps();
   if(ret == NUVIE_SCRIPT_ERROR)
   {
     delete magic_script; magic_script = NULL;

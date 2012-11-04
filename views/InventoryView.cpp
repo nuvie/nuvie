@@ -130,12 +130,9 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
  AddWidget(inventory_widget);
 
  add_command_icons(tmp_screen, view_manager);
- if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-	cursor_tile = tile_manager->get_tile(365);
- else if(MD)
-	cursor_tile = tile_manager->get_tile(265);
- else // SE
-	cursor_tile = tile_manager->get_tile(381);
+
+ cursor_tile = tile_manager->get_cursor_tile();
+
 
  return true;
 }

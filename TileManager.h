@@ -148,6 +148,7 @@ class TileManager
  Configuration *config;
 
  uint8 *dither;
+ int game_type;
  
  public:
 
@@ -169,6 +170,9 @@ class TileManager
 
    Tile *get_rotated_tile(Tile *tile, float rotate, uint8 src_y_offset=0);
    void get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate, uint8 src_y_offset=0);
+
+   Tile *get_cursor_tile();
+   Tile *get_use_tile();
 
  protected:
 

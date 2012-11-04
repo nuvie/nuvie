@@ -27,6 +27,7 @@
 #include "GUI_button.h"
 #include "Configuration.h"
 #include "ViewManager.h"
+#include "MsgScroll.h"
 #include "DraggableView.h"
 
 DraggableView::DraggableView(Configuration *config)
@@ -65,7 +66,10 @@ GUI_status DraggableView::MouseDown(int x, int y, int button)
  button_y = y;
 
  moveToFront();
-
+ if(Game::get_game()->is_new_style())
+ {
+	 Game::get_game()->get_scroll()->moveToFront();
+ }
  grab_focus();
 
  return GUI_YUM;

@@ -111,13 +111,15 @@ class ViewManager
  void open_portrait_gump(Actor *a);
  void close_gump(DraggableView *gump);
  void close_all_gumps();
+ bool gumps_are_active() { return !gumps.empty(); }
+
  bool set_current_view(View *view);
 
  protected:
 
  ContainerViewGump *get_container_view(Actor *actor, Obj *obj);
  void open_container_view(Actor *actor, Obj *obj);
-
+ void add_gump(DraggableView *gump);
  void add_view(View *view);
 };
 

@@ -272,8 +272,8 @@ GUI_status MsgScrollNewUI::MouseDown(int x, int y, int button)
 
 	switch(button)
 	{
-	case SDL_BUTTON_WHEELDOWN : event = SCROLL_DOWN; break;
-	case SDL_BUTTON_WHEELUP : event = SCROLL_UP; break;
+	case SDL_BUTTON_WHEELDOWN : return GUI_PASS;
+	case SDL_BUTTON_WHEELUP : return GUI_PASS;
 	default : break;
 	}
 

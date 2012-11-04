@@ -29,10 +29,12 @@
 #include "Actor.h"
 #include "TileManager.h"
 #include "ActorManager.h"
+#include "ViewManager.h"
 #include "MapWindow.h"
 #include "Map.h"
 #include "Event.h"
 #include "MsgScroll.h"
+#include "MsgScrollNewUI.h"
 #include "Effect.h" /* for initial fade-in */
 
 #include "AnimManager.h"
@@ -202,22 +204,8 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
 
  anim_manager = new AnimManager(offset_x, offset_y);
 
-// config->value("config/GameType",game_type);
-
- switch(game_type)
-   {
-    case NUVIE_GAME_U6 : cursor_tile = tile_manager->get_tile(365);
-                         use_tile = tile_manager->get_tile(364);
-                         break;
-
-    case NUVIE_GAME_MD : cursor_tile = tile_manager->get_tile(265);
-                         use_tile = tile_manager->get_tile(264);
-                         break;
-
-    case NUVIE_GAME_SE : cursor_tile = tile_manager->get_tile(381);
-                         use_tile = tile_manager->get_tile(380);
-                         break;
-   }
+ cursor_tile = tile_manager->get_cursor_tile();
+ use_tile = tile_manager->get_use_tile();
 
  area.x = offset_x;
  area.y = offset_y;
@@ -331,6 +319,14 @@ void MapWindow::set_enable_blacking(bool state)
 {
 	enable_blacking = state;
 	updateBlacking();
+}
+
+void MapWindow::set_walking(bool state)
+{
+	if(state && game->get_view_manager()->gumps_are_active()) //we don't allow walking while gumps are active.
+		return;
+
+	walking = state;
 }
 
 void MapWindow::moveLevel(uint8 new_level)
@@ -1980,7 +1976,7 @@ GUI_status MapWindow::MouseHeld(int x, int y, int button)
 {
     looking = false;
     if(walk_with_left_button)
-        walking = true;
+        set_walking(true);
     return(GUI_PASS);
 }
 
@@ -2002,6 +1998,18 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
 GUI_status MapWindow::MouseDown (int x, int y, int button)
 {
 	//DEBUG(0,LEVEL_DEBUGGING,"MapWindow::MouseDown, button = %i\n", button);
+	if(game->is_new_style())
+	{
+		if(button == SDL_BUTTON_WHEELDOWN)
+		{
+			((MsgScrollNewUI *)game->get_scroll())->move_scroll_down();
+			return GUI_YUM;
+		} else if(button == SDL_BUTTON_WHEELUP)
+		{
+			((MsgScrollNewUI *)game->get_scroll())->move_scroll_up();
+			return GUI_YUM;
+		}
+	}
 	Event *event = game->get_event();
 	Actor *player = actor_manager->get_player();
 	Obj	*obj = get_objAtMousePos (x, y);
@@ -2009,7 +2017,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 
 	if(is_wizard_eye_mode())
 	{
-		walking = true;
+		set_walking(true);
 		return GUI_YUM;
 	}
 
@@ -2035,7 +2043,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		        || (!enable_doubleclick && button == USE_BUTTON
 		            && !game->is_dragging_enabled() && !look_on_left_click))
 		{
-				walking = true;
+				set_walking(true);
 		}
 		else if(button == USE_BUTTON) // you can also walk by holding the USE button
 		{

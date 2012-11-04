@@ -43,6 +43,7 @@ class ContainerViewGump : public DraggableView {
 	GUI_Button *down_arrow_button;
 	GUI_Button *left_arrow_button;
 	GUI_Button *right_arrow_button;
+	GUI_Button *doll_button;
 
 	ContainerWidgetGump *container_widget;
 
@@ -64,7 +65,7 @@ public:
  void set_container_obj(Obj *o);
  Obj *get_container_obj() { return container_obj; }
 
- bool is_actor_container() { return (actor != NULL); }
+ bool is_actor_container() { return (container_obj == NULL); }
 
  virtual GUI_status MouseDown(int x, int y, int button);
  virtual GUI_status MouseUp(int x, int y, int button);
@@ -74,6 +75,8 @@ public:
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
  protected:
+
+ void display_inventory_weight();
 
  void left_arrow();
  void right_arrow();

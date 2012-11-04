@@ -118,6 +118,13 @@ static const char combat_mode_tbl[][8] = {"COMMAND", "FRONT", "REAR", "FLANK", "
 static const char combat_mode_tbl_se[][8] = {"COMMAND", "RANGED", "FLEE", "CLOSE"};
 static const char combat_mode_tbl_md[][8] = {"COMMAND", "RANGED", "FLEE", "ATTACK"};
 
+void DollViewGump::set_actor(Actor *a)
+{
+	actor = a;
+	if(doll_widget)
+		doll_widget->set_actor(actor);
+}
+
 void DollViewGump::Display(bool full_redraw)
 {
  //display_level_text();

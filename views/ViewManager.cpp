@@ -40,7 +40,9 @@
 #include "PartyView.h"
 #include "SpellView.h"
 #include "SpellViewGump.h"
+#include "MapWindow.h"
 #include "MapEditorView.h"
+#include "MsgScroll.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -228,9 +230,12 @@ void ViewManager::open_doll_view(Actor *actor)
 	{
 		DollViewGump *doll = new DollViewGump(config);
 		doll->init(Game::get_game()->get_screen(), this, 10, Game::get_game()->get_screen()->get_height() - DOLLVIEWGUMP_HEIGHT, text, party, tile_manager, obj_manager);
-
+		if(actor)
+		{
+			doll->set_actor(actor);
+		}
 		add_view((View *)doll);
-		gumps.push_back(doll);
+		add_gump(doll);
 	}
 }
 
@@ -273,7 +278,7 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 			view->set_container_obj(obj);
 
 		container_gumps.push_back(view);
-		gumps.push_back(view);
+		add_gump(view);
 		add_view((View *)view);
 	}
 	else
@@ -310,7 +315,7 @@ void ViewManager::open_portrait_gump(Actor *a)
 		PortraitViewGump *view = new PortraitViewGump(config);
 		view->init(Game::get_game()->get_screen(), this, 62, 0, text, party, tile_manager, obj_manager, portrait, a);
 		add_view((View *)view);
-		gumps.push_back(view);
+		add_gump(view);
 		view->grab_focus();
 	}
 }
@@ -319,8 +324,18 @@ void ViewManager::add_view(View *view)
 {
 	view->Show();
 	gui->AddWidget((GUI_Widget *)view);
+	if(Game::get_game()->is_new_style())
+	{
+		Game::get_game()->get_scroll()->moveToFront();
+	}
 	view->Redraw();
 	gui->Display();
+}
+
+void ViewManager::add_gump(DraggableView *gump)
+{
+	gumps.push_back(gump);
+	Game::get_game()->get_map_window()->set_walking(false);
 }
 
 void ViewManager::close_gump(DraggableView *gump)

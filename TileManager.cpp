@@ -82,7 +82,6 @@ bool TileManager::loadTiles()
  unsigned char *masktype = NULL;
  uint32 masktype_size;
  uint16 i;
- int game_type;
 
  Dither *dither;
  
@@ -735,3 +734,38 @@ Tile *TileManager::get_rotated_tile(Tile *tile, float rotate)
 }
 #endif
 
+Tile *TileManager::get_cursor_tile()
+{
+	Tile *cursor_tile = NULL;
+	switch(game_type)
+	{
+	case NUVIE_GAME_U6 : cursor_tile = get_tile(365);
+	break;
+
+	case NUVIE_GAME_MD : cursor_tile = get_tile(265);
+	break;
+
+	case NUVIE_GAME_SE : cursor_tile = get_tile(381);
+	break;
+	}
+
+	return cursor_tile;
+}
+
+Tile *TileManager::get_use_tile()
+{
+	Tile *use_tile = NULL;
+	switch(game_type)
+	{
+	case NUVIE_GAME_U6 : use_tile = get_tile(364);
+	break;
+
+	case NUVIE_GAME_MD : use_tile = get_tile(264);
+	break;
+
+	case NUVIE_GAME_SE : use_tile = get_tile(380);
+	break;
+	}
+
+	return use_tile;
+}

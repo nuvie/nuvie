@@ -80,6 +80,10 @@ class MsgScrollNewUI: public MsgScroll
 
  GUI_status KeyDown(SDL_keysym key);
  GUI_status MouseDown(int x, int y, int button);
+
+ void move_scroll_down() { scroll_movement_event(SCROLL_DOWN); }
+ void move_scroll_up() { scroll_movement_event(SCROLL_UP); }
+
  protected:
 
  GUI_status scroll_movement_event(ScrollEventType event);

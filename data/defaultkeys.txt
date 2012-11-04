@@ -40,6 +40,7 @@ a	attack
 r	rest
 i	new_inventory
 h	show_keys
+z	close_gumps
 
 Alt-a	select_command_bar	0	# select attack on the command bar
 Alt-c	select_command_bar	1	# select cast on the command bar

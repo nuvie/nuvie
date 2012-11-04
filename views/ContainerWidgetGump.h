@@ -33,6 +33,8 @@ class TileManager;
 class Actor;
 class Text;
 
+#define CONTAINER_WIDGET_GUMP_HEIGHT 48
+
 class ContainerWidgetGump : public ContainerWidget {
 
  public:

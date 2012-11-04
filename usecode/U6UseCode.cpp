@@ -3180,7 +3180,7 @@ void U6UseCode::light_torch(Obj *obj)
     assert(obj->is_readied() || obj->is_on_map());
     toggle_frame(obj); // light
     obj->status |= OBJ_STATUS_LIT;
-    Actor *owner;
+    Actor *owner = NULL;
     if(obj->is_readied())
     {
         owner= actor_manager->get_actor_holding_obj(obj);

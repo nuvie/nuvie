@@ -395,8 +395,14 @@ void Event::get_inventory_obj(Actor *actor)
 	get_target("");
 	moveCursorToInventory();
 	if(game->is_new_style())
-		view_manager->set_inventory_mode();
-	view_manager->get_inventory_view()->set_actor(actor, true);
+	{
+		//view_manager->set_inventory_mode();
+		view_manager->open_container_view(actor); //FIXME need to open container gump in pickpocket mode.
+	}
+	else
+	{
+		view_manager->get_inventory_view()->set_actor(actor, true);
+	}
 }
 
 void Event::get_spell_num(Actor *caster, Obj *spell_container)
@@ -552,7 +558,7 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
                           if(input.get_direction) select_direction(rel_x,rel_y);
                           break;
 
-   default              : if(player->check_walk_delay())
+   default              : if(player->check_walk_delay() && !view_manager->gumps_are_active())
                             {
                              player->moveRelative(rel_x, rel_y);
                              game->time_changed();

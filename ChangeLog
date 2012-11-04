@@ -1,3 +1,13 @@
+2012-11-05  Eric Fry <efry at users.sourceforge.net> r1619
+	* Make sure the new message scroll is always on top. This helps actions that require
+	  interaction with the scroll while gumps are open.
+	* Added shortcut button to doll gump from container inventory gump.
+	* Display inventory weight on new container gump.
+	* Added scroll wheel to scroll party members on container gump.
+	* Disable player movement when gumps are active.
+	* Refactored cursor tile logic. Moved it to TileManager.
+	* Add 'z' key to the 'close all gumps' action.
+
 2012-11-04  Eric Fry <efry at users.sourceforge.net> r1618
 	* Added keyboard cursor into spellbook gump.
 

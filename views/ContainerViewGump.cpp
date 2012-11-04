@@ -21,6 +21,7 @@
  *
  */
 #include <cassert>
+#include <math.h>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "Event.h"
@@ -35,6 +36,7 @@
 #include "ContainerWidgetGump.h"
 #include "ContainerViewGump.h"
 
+#define CONTAINER_WIDGET_OFFSET 29
 
 ContainerViewGump::ContainerViewGump(Configuration *cfg) : DraggableView(cfg)
 {
@@ -71,15 +73,16 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 	build_path(datadir, "bag_bg.bmp", imagefile);
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
-	left_arrow_button = loadButton(datadir, "cont_left", area.x, area.y + bg_image->h);
-	right_arrow_button = loadButton(datadir, "cont_right", area.x + 11, area.y + bg_image->h);
+	doll_button = loadButton(datadir, "cont_doll", area.x + 18, area.y + bg_image->h);
+	left_arrow_button = loadButton(datadir, "cont_left", area.x + 18 + 11, area.y + bg_image->h);
+	right_arrow_button = loadButton(datadir, "cont_right", area.x + 18 + 22, area.y + bg_image->h);
 
 	SetRect(area.x, area.y, bg_image->w, bg_image->h + 16); //111, 101);
 
 	actor = p->get_actor(p->get_leader());
 
 	container_widget = new ContainerWidgetGump(config, this);
-	container_widget->init(actor, 21, 29, tile_manager, obj_manager, t);
+	container_widget->init(actor, 21, CONTAINER_WIDGET_OFFSET, tile_manager, obj_manager, t);
 
 	AddWidget(container_widget);
 
@@ -99,6 +102,7 @@ void ContainerViewGump::set_actor(Actor *a)
 	actor = a;
 	container_obj = NULL;
 	container_widget->set_actor(a);
+	doll_button->Show();
 	left_arrow_button->Show();
 	right_arrow_button->Show();
 }
@@ -107,6 +111,7 @@ void ContainerViewGump::set_container_obj(Obj *o)
 {
 	container_obj = o;
 	container_widget->set_container(container_obj);
+	doll_button->Hide();
 	left_arrow_button->Hide();
 	right_arrow_button->Hide();
 }
@@ -123,12 +128,23 @@ void ContainerViewGump::Display(bool full_redraw)
 
  if(container_obj == NULL)
  {
-	 font->drawString(screen, actor->get_name(), area.x + 23, area.y + bg_image->h + 2);
+	 font->drawString(screen, actor->get_name(), area.x + 18, area.y + 2);
+	 display_inventory_weight();
  }
  update_display = false;
  screen->update(area.x, area.y, area.w, area.h);
 
  return;
+}
+
+void ContainerViewGump::display_inventory_weight()
+{
+	uint8 strength = actor->get_strength();
+	float equip_weight = ceilf(actor->get_inventory_weight());
+	char string[11]; //I:nnn/nnns\0
+
+	snprintf(string, 10, "I:%d/%ds", (int)equip_weight,strength*2);
+	font->drawString(screen, string, area.x + 18 + 34, area.y + bg_image->h + 2);
 }
 
 void ContainerViewGump::left_arrow()
@@ -153,6 +169,11 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 	if(caller == gump_button)
 	{
 		Game::get_game()->get_view_manager()->close_gump(this);
+		return GUI_YUM;
+	}
+	else if(caller == doll_button)
+	{
+		Game::get_game()->get_view_manager()->open_doll_view(actor);
 		return GUI_YUM;
 	}
 	else if(caller == down_arrow_button)
@@ -181,17 +202,37 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 
 GUI_status ContainerViewGump::MouseDown(int x, int y, int button)
 {
-	 if(button == SDL_BUTTON_WHEELDOWN)
-	 {
-		 container_widget->down_arrow();
-		return GUI_YUM;
-	 }
-	 else if(button == SDL_BUTTON_WHEELUP)
-	 {
-		 container_widget->up_arrow();
-		 return GUI_YUM;
-	 }
+	int y_off = y - area.y;
 
+	if(y_off >= CONTAINER_WIDGET_OFFSET && y_off < CONTAINER_WIDGET_OFFSET + CONTAINER_WIDGET_GUMP_HEIGHT)
+	{
+		if(button == SDL_BUTTON_WHEELDOWN)
+		{
+			container_widget->down_arrow();
+			return GUI_YUM;
+		}
+		else if(button == SDL_BUTTON_WHEELUP)
+		{
+			container_widget->up_arrow();
+			return GUI_YUM;
+		}
+	}
+	else
+	{
+		if(is_actor_container())
+		{
+			if(button == SDL_BUTTON_WHEELDOWN)
+			{
+				right_arrow();
+				return GUI_YUM;
+			}
+			else if(button == SDL_BUTTON_WHEELUP)
+			{
+				left_arrow();
+				return GUI_YUM;
+			}
+		}
+	}
 	return DraggableView::MouseDown(x, y, button);
 }
 
