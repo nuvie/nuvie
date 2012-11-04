@@ -164,10 +164,17 @@ void ActionInventory(int *params)
 {
 	if(event->using_control_cheat() || params[0] == 0)
 		return;
-	if(game->is_orig_style() && player->get_party()->get_party_size() >= params[0])
+	if(player->get_party()->get_party_size() >= params[0])
 	{
-		view_manager->set_inventory_mode();
-		inventory_view->set_party_member(params[0] -1);
+		if(game->is_orig_style())
+		{
+			view_manager->set_inventory_mode();
+			inventory_view->set_party_member(params[0] -1);
+		}
+		else
+		{
+			view_manager->open_container_view(game->get_party()->get_actor(params[0] -1));
+		}
 	}
 }
 

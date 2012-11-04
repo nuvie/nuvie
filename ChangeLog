@@ -1,3 +1,6 @@
+2012-11-05  Eric Fry <efry at users.sourceforge.net> r1620
+	* You can now use the F-keys to show party member inventory gumps in fullmap mode.
+
 2012-11-05  Eric Fry <efry at users.sourceforge.net> r1619
 	* Make sure the new message scroll is always on top. This helps actions that require
 	  interaction with the scroll while gumps are open.
