@@ -40,6 +40,11 @@ DraggableView::DraggableView(Configuration *config)
 
 DraggableView::~DraggableView()
 {
+	if(bg_image)
+	{
+		SDL_FreeSurface(bg_image);
+		bg_image = NULL;
+	}
 }
 
 void DraggableView::set_bg_color_key(Uint8 r, Uint8 g, Uint8 b)

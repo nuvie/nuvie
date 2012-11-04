@@ -46,6 +46,8 @@ DollViewGump::DollViewGump(Configuration *cfg) : DraggableView(cfg),
 
 DollViewGump::~DollViewGump()
 {
+	if(font)
+		delete font;
 }
 
 bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)

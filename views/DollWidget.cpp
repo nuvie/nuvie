@@ -99,11 +99,18 @@ DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(N
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  
  bg_color = Game::get_game()->get_palette()->get_bg_color();
+ need_to_free_tiles = false;
 }
 
 DollWidget::~DollWidget()
 {
-
+	if(need_to_free_tiles)
+	{
+		if(blocked_tile)
+			delete blocked_tile;
+		if(empty_tile)
+			delete empty_tile;
+	}
 }
 
 bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, bool override_style)
@@ -134,6 +141,7 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
 	 memcpy(&blocked_tile->data, &gump_blocked_tile_data, 256);
 	 empty_tile = new Tile();
 	 memcpy(&empty_tile->data, &gump_empty_tile_data, 256);
+	 need_to_free_tiles = true;
  }
 
  GUI_Widget::Init(NULL, x, y, 64, 64);

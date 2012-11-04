@@ -44,8 +44,6 @@ PortraitViewGump::PortraitViewGump(Configuration *cfg) : DraggableView(cfg)
 
 PortraitViewGump::~PortraitViewGump()
 {
-	if(bg_image)
-		delete bg_image;
 	if(font)
 		delete font;
 	if(portrait_data)
