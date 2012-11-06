@@ -44,6 +44,7 @@ class InventoryView;
 class ActorView;
 class SpellView;
 class ContainerViewGump;
+class DollViewGump;
 class DraggableView;
 
 using std::list;
@@ -70,8 +71,10 @@ class ViewManager
  View *current_view;
 
  std::list<DraggableView *> container_gumps;
+ std::list<DraggableView *> doll_gumps;
  std::list<DraggableView *> gumps;
 
+ uint8 doll_next_party_member;
 
  public:
 
@@ -117,10 +120,13 @@ class ViewManager
 
  protected:
 
+ Actor *doll_view_get_next_party_member();
+ DollViewGump *get_doll_view(Actor *actor);
  ContainerViewGump *get_container_view(Actor *actor, Obj *obj);
  void open_container_view(Actor *actor, Obj *obj);
  void add_gump(DraggableView *gump);
  void add_view(View *view);
+ void move_gump_to_top(DraggableView *gump);
 };
 
 #endif /* __ViewManager_h__ */

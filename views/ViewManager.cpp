@@ -43,6 +43,7 @@
 #include "MapWindow.h"
 #include "MapEditorView.h"
 #include "MsgScroll.h"
+#include "Party.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -52,6 +53,7 @@ ViewManager::ViewManager(Configuration *cfg)
  tile_manager = NULL; obj_manager = NULL; party = NULL;
  portrait = NULL; actor_view = NULL; inventory_view = NULL;
  portrait_view = NULL; party_view = NULL; spell_view = NULL;
+ doll_next_party_member = 0;
 }
 
 ViewManager::~ViewManager()
@@ -226,17 +228,63 @@ void ViewManager::close_spell_mode()
 
 void ViewManager::open_doll_view(Actor *actor)
 {
+	Screen *screen = Game::get_game()->get_screen();
+
 	if(Game::get_game()->is_new_style())
 	{
-		DollViewGump *doll = new DollViewGump(config);
-		doll->init(Game::get_game()->get_screen(), this, 10, Game::get_game()->get_screen()->get_height() - DOLLVIEWGUMP_HEIGHT, text, party, tile_manager, obj_manager);
-		if(actor)
+		if(actor == NULL)
 		{
-			doll->set_actor(actor);
+			actor = doll_view_get_next_party_member();
 		}
-		add_view((View *)doll);
-		add_gump(doll);
+		DollViewGump *doll = get_doll_view(actor);
+		if(doll == NULL)
+		{
+			uint8 num_doll_gumps = doll_gumps.size();
+			doll = new DollViewGump(config);
+			uint16 x = 12 * num_doll_gumps;
+			uint16 y = 12 * num_doll_gumps;
+
+			if(y + DOLLVIEWGUMP_HEIGHT > screen->get_height())
+				y = screen->get_height() - DOLLVIEWGUMP_HEIGHT;
+
+			doll->init(Game::get_game()->get_screen(), this, x, y, actor, text, party, tile_manager, obj_manager);
+
+			add_view((View *)doll);
+			add_gump(doll);
+			doll_gumps.push_back(doll);
+		}
+		else
+		{
+			move_gump_to_top(doll);
+		}
 	}
+}
+
+Actor *ViewManager::doll_view_get_next_party_member()
+{
+	if(doll_gumps.empty())
+	{
+		doll_next_party_member = 0; //reset to first party member when there are no doll gumps on screen.
+	}
+	Actor *a = party->get_actor(doll_next_party_member);
+	doll_next_party_member = (doll_next_party_member + 1) % party->get_party_size();
+
+	return a;
+}
+
+DollViewGump *ViewManager::get_doll_view(Actor *actor)
+{
+	std::list<DraggableView *>::iterator iter;
+	for(iter=doll_gumps.begin(); iter != doll_gumps.end();iter++)
+	{
+		DollViewGump *view = (DollViewGump *)*iter;
+		if(view->get_actor() == actor)
+		{
+			return view;
+		}
+	}
+
+	return NULL;
 }
 
 ContainerViewGump *ViewManager::get_container_view(Actor *actor, Obj *obj)
@@ -283,7 +331,7 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 	}
 	else
 	{
-		view->moveToFront();
+		move_gump_to_top(view);
 	}
 }
 
@@ -342,6 +390,7 @@ void ViewManager::close_gump(DraggableView *gump)
 {
 	gumps.remove(gump);
 	container_gumps.remove(gump);
+	doll_gumps.remove(gump);
 
 	gump->close_view();
 	gump->Delete();
@@ -359,6 +408,12 @@ void ViewManager::close_all_gumps()
 		close_gump(gump);
 	}
 	//TODO make sure all gump objects have been deleted by GUI.
+}
+
+void ViewManager::move_gump_to_top(DraggableView *gump)
+{
+	gump->moveToFront();
+	Game::get_game()->get_scroll()->moveToFront();
 }
 
 // callbacks for switching views

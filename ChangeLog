@@ -1,3 +1,6 @@
+2012-11-05  Eric Fry <efry at users.sourceforge.net> r1622
+	* Changed 'i' command to cycle through party member doll gumps when pressed repeatedly.
+
 2012-11-05  Eric Fry <efry at users.sourceforge.net> r1621
 	* Fixed some memory leaks in gump logic.
 

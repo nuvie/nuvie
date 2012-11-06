@@ -50,13 +50,13 @@ DollViewGump::~DollViewGump()
 		delete font;
 }
 
-bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Actor *a, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
 	View::init(x,y,t,p,tm,om);
 
 	SetRect(area.x, area.y, 108, 136);
 
-	actor = p->get_actor(p->get_leader());
+	actor = a;
 
 	doll_widget = new DollWidget(config, this);
 	doll_widget->init(actor, 26, 16, tile_manager, obj_manager);
