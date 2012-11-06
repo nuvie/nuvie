@@ -555,7 +555,8 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
                           break;
 
    case INPUT_MODE      : map_window->moveCursorRelative(rel_x,rel_y);
-                          if(input.get_direction) select_direction(rel_x,rel_y);
+                          if((input.get_direction && map_window->get_interface() == INTERFACE_NORMAL) || push_actor)
+                            select_direction(rel_x,rel_y);
                           break;
 
    default              : if(player->check_walk_delay() && !view_manager->gumps_are_active())
@@ -1312,9 +1313,13 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
         to.y = from.y + rel_y;
     }
     pushrel_x = to.x - from.x; pushrel_y = to.y - from.y;
-    // you can only push one space at a time
-    pushrel_x = (pushrel_x == 0) ? 0 : (pushrel_x < 0) ? -1 : 1;
-    pushrel_y = (pushrel_y == 0) ? 0 : (pushrel_y < 0) ? -1 : 1;
+
+    if(map_window->get_interface() == INTERFACE_NORMAL || push_actor)
+    {
+        // you can only push one space at a time
+        pushrel_x = (pushrel_x == 0) ? 0 : (pushrel_x < 0) ? -1 : 1;
+        pushrel_y = (pushrel_y == 0) ? 0 : (pushrel_y < 0) ? -1 : 1;
+    }
     to.x = from.x + pushrel_x; to.y = from.y + pushrel_y;
     to.z = from.z;
 
@@ -1491,6 +1496,12 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         // FIXME: not taking win_width into account
         map_window->set_mousecenter(target.x - from.x + 5, target.y - from.y + 5);
         get_direction(MapCoord(target.x, target.y), "\nTo ");
+        if(map_window->get_interface() != INTERFACE_NORMAL && !push_actor)
+        {
+            map_window->moveCursor(target.x - map_window->get_cur_x(), target.y - map_window->get_cur_y());
+            map_window->set_show_use_cursor(true);
+        }
+
     }
     return true;
 }

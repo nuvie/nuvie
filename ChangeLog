@@ -1,3 +1,9 @@
+2012-11-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1623
+	* Have move, use, and get work on the whole screen when using a keyboard and
+	  fullscreen interface.
+	* Allow move to move objects anywhere on screen in fullscreen interface.
+	  Actors can still only be moved one tile (by design).
+
 2012-11-05  Eric Fry <efry at users.sourceforge.net> r1622
 	* Changed 'i' command to cycle through party member doll gumps when pressed repeatedly.
 
