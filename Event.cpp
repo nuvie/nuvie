@@ -1325,6 +1325,13 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 
     scroll->display_string(get_direction_name(pushrel_x, pushrel_y));
     scroll->display_string(".\n\n");
+    if((fabs(pushrel_x) > 1 || fabs(pushrel_y) > 1)
+       && !map_window->can_drop_obj(to.x, to.y, player->get_actor(), push_obj))
+    {
+        scroll->display_string("Blocked.\n");
+        endAction(true);
+        return true;
+    }
     DEBUG(0,LEVEL_WARNING,"deduct moves from player\n");
     // FIXME: the random chance here is just made up, I don't know what
     //        kind of check U6 did ("Failed.\n\n")

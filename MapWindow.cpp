@@ -1891,14 +1891,9 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 
 bool MapWindow::move_on_drop(Obj *obj)
 {
-	bool always_throw = game->is_dragging_enabled() >= 2;
-	if((drop_with_move && !always_throw)
-	   || (game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_CANNON && game->is_dragging_enabled() != 3)) // force throw
+	bool move = (interface == INTERFACE_NORMAL);
+	if(drop_with_move && move)
 		return true;
-
-	bool move = true;
-	if(always_throw)
-		move = false;
 
 	if(obj_manager->obj_is_damaging(obj))
 		return move;

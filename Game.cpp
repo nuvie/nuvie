@@ -122,7 +122,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  game_play = true;
 
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
- set_dragging_enabled(); // must be after hackmove
+ config->value("config/input/enabled_dragging", dragging_enabled, true);
 }
 
 Game::~Game()
@@ -379,20 +379,6 @@ bool Game::doubleclick_opens_containers()
 		return true;
 	else
 		return false;
-}
-
-void Game::set_dragging_enabled()
-{
-	string dragging_enabled_str;
-	config->value("config/input/enabled_dragging", dragging_enabled_str, "yes");
-	if(dragging_enabled_str == "force_throw")
-		dragging_enabled = 3;
-	else if(dragging_enabled_str == "always_throw" || is_using_hackmove)
-		dragging_enabled = 2;
-	else if(dragging_enabled_str == "yes" || is_new_style())
-		dragging_enabled = 1;
-	else
-		dragging_enabled = 0;
 }
 
 bool Game::is_roof_mode()
