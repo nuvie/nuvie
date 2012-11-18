@@ -1,3 +1,8 @@
+2012-11-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1625
+	* '+', '=', and '-' now also change the party member's actor view
+	* '*' now switches between inventory and party view
+	* 'ctrl-1' through 'ctrl-9' will show that party members stat view
+
 2012-11-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1624
 	* Fix block check when using the move action to move more than one tile away
 	* Remove always_throw and force_throw options from enabled_dragging cfg

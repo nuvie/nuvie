@@ -27,12 +27,14 @@
 #include "SaveManager.h"
 #include "InventoryView.h"
 #include "CommandBar.h"
+#include "ActorView.h"
 
 #define game Game::get_game()
 #define event Game::get_game()->get_event()
 #define player Game::get_game()->get_player()
 #define view_manager Game::get_game()->get_view_manager()
 #define inventory_view Game::get_game()->get_view_manager()->get_inventory_view()
+#define actor_view Game::get_game()->get_view_manager()->get_actor_view()
 
 void ActionWalkWest(int *params)
 {
@@ -160,6 +162,22 @@ void ActionNewInventory(int *params)
 	view_manager->open_doll_view(NULL);
 }
 
+void ActionShowStats(int *params)
+{
+	if(event->using_control_cheat())
+		return;
+	Actor *party_member = player->get_party()->get_actor(params[0] -1);
+	if(party_member == NULL)
+		return;
+	if(game->is_orig_style())
+	{
+		actor_view->set_party_member(params[0] -1);
+		view_manager->set_actor_mode();
+	}
+	else
+		view_manager->open_portrait_gump(party_member);
+}
+
 void ActionInventory(int *params)
 {
 	if(event->using_control_cheat() || params[0] == 0)
@@ -184,28 +202,57 @@ void ActionPartyView(int *params)
 		view_manager->set_party_mode();
 }
 
-void ActionNextInventory(int *params)
+void ActionNextPartyMember(int *params)
 {
 	if(event->using_control_cheat())
 		return;
 	if(game->is_orig_style())
 	{
-		uint8 party_num = inventory_view->get_party_member_num();
-		if(player->get_party()->get_party_size() >= party_num+2
-		   && inventory_view->set_party_member(party_num+1))
-			view_manager->set_inventory_mode();
+		if(view_manager->get_current_view() == actor_view)
+		{
+			uint8 party_num = actor_view->get_party_member_num();
+			if(player->get_party()->get_party_size() >= party_num+2)
+				actor_view->set_party_member(party_num+1);
+		}
+		else
+		{
+			uint8 party_num = inventory_view->get_party_member_num();
+			if(player->get_party()->get_party_size() >= party_num+2
+			   && inventory_view->set_party_member(party_num+1))
+				view_manager->set_inventory_mode();
+		}
 	}
 }
 
-void ActionPreviousInventory(int *params)
+void ActionPreviousPartyMember(int *params)
 {
 	if(event->using_control_cheat())
 		return;
 	if(game->is_orig_style())
 	{
-		uint8 party_num = inventory_view->get_party_member_num();
-		if(party_num >= 1 && inventory_view->set_party_member(party_num-1))
+		if(view_manager->get_current_view() == actor_view)
+		{
+			uint8 party_num = actor_view->get_party_member_num();
+			if(party_num >= 1)
+				actor_view->set_party_member(party_num-1);
+		}
+		else
+		{
+			uint8 party_num = inventory_view->get_party_member_num();
+			if(party_num >= 1 && inventory_view->set_party_member(party_num-1))
+				view_manager->set_inventory_mode();
+		}
+	}
+}
+
+void ActionToggleView(int *params)
+{
+	if(game->is_orig_style())
+	{
+		if(view_manager->get_current_view() == actor_view)
 			view_manager->set_inventory_mode();
+		else if(view_manager->get_current_view() == inventory_view)
+			view_manager->set_actor_mode();
 	}
 }
 

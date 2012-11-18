@@ -42,10 +42,12 @@ void ActionSelectCommandBar(int *params);
 void ActionSelectNewCommandBar(int *params);
 
 void ActionNewInventory(int *params);
+void ActionShowStats(int *params);
 void ActionInventory(int *params);
 void ActionPartyView(int *params);
-void ActionNextInventory(int *params);
-void ActionPreviousInventory(int *params);
+void ActionNextPartyMember(int *params);
+void ActionPreviousPartyMember(int *params);
+void ActionToggleView(int *params);
 
 void ActionSoloMode(int *params);
 void ActionPartyMode(int *params);

@@ -78,11 +78,23 @@ F6	inventory	6	# Show inventory for character 6
 F7	inventory	7	# Show inventory for character 7
 F8	inventory	8	# Show inventory for character 8
 F9	inventory	9	# Show inventory for character 9
-shift-=	next_inventory
-=	next_inventory
-KP+	next_inventory
--	previous_inventory
-KP-	previous_inventory
+ctrl-1	show_stats	1	# Show stats for Avatar
+ctrl-2	show_stats	2	# Show stats for character 2
+ctrl-3	show_stats	3	# Show stats for character 3
+ctrl-4	show_stats	4	# Show stats for character 4
+ctrl-5	show_stats	5	# Show stats for character 5
+ctrl-6	show_stats	6	# Show stats for character 6
+ctrl-7	show_stats	7	# Show stats for character 7
+ctrl-8	show_stats	8	# Show stats for character 8
+ctrl-9	show_stats	9	# Show stats for character 9
+
+shift-=	next_party_member
+=	next_party_member
+KP+	next_party_member
+-	previous_party_member
+KP-	previous_party_member
+KP*	toggle_view	# Toggle between inventory and actor view
+shift-8	toggle_view	# Toggle between inventory and actor view
 
 Ctrl-f	toggle_fps_display
 
