@@ -3295,7 +3295,6 @@ void Event::moveCursorToMapWindow(bool ToggleCursor)
 static const char eventModeStrings[][16] = {
 "LOOK_MODE",
 "USE_MODE",
-"SPELL_MODE", //direct spell casting without spell select etc.
 "GET_MODE",
 "MOVE_MODE",
 "DROP_MODE",
@@ -3304,8 +3303,9 @@ static const char eventModeStrings[][16] = {
 "PUSH_MODE",
 "REST_MODE",
 "CAST_MODE",
-"EQUIP_MODE",
 "COMBAT_MODE", /* only used to cancel previous actions */
+"SPELL_MODE", //direct spell casting without spell select etc.
+"EQUIP_MODE",
 "WAIT_MODE", /* waiting for something, optionally display prompt when finished */
 "INPUT_MODE",
 "KEYINPUT_MODE"

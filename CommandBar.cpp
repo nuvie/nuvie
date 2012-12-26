@@ -111,6 +111,8 @@ bool CommandBar::load(NuvieIO *objlist)
 	objlist->seek(offset);
 	uint8 action = objlist->read1();
 	selected_action = (action == 0xff ? -1 : action - 0x81);
+	if(selected_action > 10 || selected_action < 0)
+		selected_action = -1;
 	return true;
 }
 

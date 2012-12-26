@@ -57,7 +57,6 @@ class FpsCounter;
 typedef enum {
  LOOK_MODE=0,
  USE_MODE,
- SPELL_MODE, //direct spell casting without spell select etc.
  GET_MODE,
  MOVE_MODE,
  DROP_MODE,
@@ -66,8 +65,9 @@ typedef enum {
  PUSH_MODE,
  REST_MODE, /* modes before this need targets if using the command bar selected action */
  CAST_MODE,
- EQUIP_MODE,
  COMBAT_MODE, /* only used to cancel previous actions */
+ SPELL_MODE, //direct spell casting without spell select etc.
+ EQUIP_MODE,
  WAIT_MODE, /* waiting for something, optionally display prompt when finished */
  INPUT_MODE,
  KEYINPUT_MODE
