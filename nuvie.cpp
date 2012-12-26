@@ -268,7 +268,6 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/show_console", true);
 	config->set("config/general/fullscreen_map", false);
 	config->set("config/general/converse_gump", false);
-	config->set("config/general/converse_solid_bg", false);
 	config->set("config/general/party_formation", "standard");
 
 	config->set("config/cheats/enable_hackmove", false);
@@ -281,14 +280,33 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/ultima6/show_eggs", false);
 	config->set("config/ultima6/show_stealing", false);
 	config->set("config/ultima6/roof_mode", false);
+	config->set("config/ultima6/converse_solid_bg", false);
 	config->set("config/ultima6/converse_bg_color", 218);
+	config->set("config/ultima6/newscroll/width", 30);
+	config->set("config/ultima6/newscroll/height", 19);
+	config->set("config/ultima6/newscroll/solid_bg", "no");
+	config->set("config/ultima6/newscroll/bg_color", 218);
+	config->set("config/ultima6/newscroll/border_color", 220);
 
 	config->set("config/martian/skip_intro", false);
 	config->set("config/martian/show_eggs", false);
+	config->set("config/martian/converse_solid_bg", false);
 	config->set("config/martian/converse_bg_color", 136);
+	config->set("config/martian/newscroll/width", 30);
+	config->set("config/martian/newscroll/height", 19);
+	config->set("config/martian/newscroll/solid_bg", "no");
+	config->set("config/martian/newscroll/bg_color", 136);
+	config->set("config/martian/newscroll/border_color", 133);
+
 	config->set("config/savage/skip_intro", false);
 	config->set("config/savage/show_eggs", false);
+	config->set("config/savage/converse_solid_bg", false);
 	config->set("config/savage/converse_bg_color", 216);
+	config->set("config/savage/newscroll/width", 30);
+	config->set("config/savage/newscroll/height", 19);
+	config->set("config/savage/newscroll/solid_bg", "no");
+	config->set("config/savage/newscroll/bg_color", 216);
+	config->set("config/savage/newscroll/border_color", 219);
 
 //	config->set("config/newgamedata/name", "Avatar");
 //	config->set("config/newgamedata/gender", 0);

@@ -59,9 +59,24 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
  cfg->value(new_scroll_cfg + "/solid_bg", solid_bg, false);
 
  int c;
- cfg->value(new_scroll_cfg + "/bg_color", c, 218);
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+ {
+	bg_color = 218;
+	border_color = 220;
+ }
+ else if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+ {
+	bg_color = 216;
+	border_color = 219;
+ }
+ else // MD
+ {
+	bg_color = 136;
+	border_color = 133;
+ }
+ cfg->value(new_scroll_cfg + "/bg_color", c, bg_color);
  bg_color = clamp_max(c, 255);
- cfg->value(new_scroll_cfg + "/border_color", c, 220);
+ cfg->value(new_scroll_cfg + "/border_color", c, border_color);
  border_color = clamp_max(c, 255);
 
  cfg->value(new_scroll_cfg + "/width", c, 30);

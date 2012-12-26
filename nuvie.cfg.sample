@@ -22,7 +22,6 @@
   <enable_cursors>yes</enable_cursors>
   <fullscreen_map>no</fullscreen_map>
   <converse_gump>no</converse_gump>
-  <converse_solid_bg>no</converse_solid_bg>
   <party_formation>standard</party_formation>
   <show_console>yes</show_console>
  </general>
@@ -56,10 +55,18 @@
   <show_eggs>no</show_eggs>
   <roof_mode>no</roof_mode>
   <show_stealing>no</show_stealing>
+  <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>218</converse_bg_color>
   <music>native</music>
   <sfx>pcspeaker</sfx>
   <patch_keys>./patchkeys.txt</patch_keys>
+  <newscroll>
+   <width>30</width>
+   <height>19</height>
+   <solid_bg>no</solid_bg>
+   <bg_color>218</bg_color>
+   <border_color>220</border_color>
+  </newscroll>
  </ultima6>
 
  <martian>
@@ -67,8 +74,16 @@
   <savedir>./martian_save</savedir>
   <skip_intro> no </skip_intro>
   <show_eggs>no</show_eggs>
+  <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>136</converse_bg_color>
   <patch_keys>./patchkeys.txt</patch_keys>
+  <newscroll>
+   <width>30</width>
+   <height>19</height>
+   <solid_bg>no</solid_bg>
+   <bg_color>136</bg_color>
+   <border_color>133</border_color>
+  </newscroll>
  </martian>
 
  <savage>
@@ -76,8 +91,16 @@
   <savedir>./savage_save</savedir>
   <skip_intro> no </skip_intro>
   <show_eggs>no</show_eggs>
+  <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>216</converse_bg_color>
   <patch_keys>./patchkeys.txt</patch_keys>
+  <newscroll>
+   <width>30</width>
+   <height>19</height>
+   <solid_bg>no</solid_bg>
+   <bg_color>216</bg_color>
+   <border_color>219</border_color>
+  </newscroll>
  </savage>
 
 </config>

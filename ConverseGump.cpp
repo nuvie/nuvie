@@ -71,7 +71,7 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
  if(Game::get_game()->is_orig_style())
 	solid_bg = true;
  else
-	cfg->value("config/general/converse_solid_bg", solid_bg, false);
+	cfg->value(config_get_game_key(config) + "/converse_solid_bg", solid_bg, false);
 
  int c;
  uint8 default_c = 218;
