@@ -28,6 +28,7 @@
 #include "GUI.h"
 #include "GUI_button.h"
 
+#include "U6objects.h"
 #include "Party.h"
 #include "Actor.h"
 #include "Font.h"
@@ -49,9 +50,11 @@ ContainerViewGump::~ContainerViewGump()
 {
 }
 
-bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Obj *container_obj_type)
 {
 	View::init(x,y,t,p,tm,om);
+
+	actor = p->get_actor(p->get_leader());
 
 	std::string datadir = GUI::get_gui()->get_data_dir();
 	std::string imagefile;
@@ -62,6 +65,39 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 	build_path(datadir, "gumps", path);
 	datadir = path;
 
+	init_container_type(datadir, container_obj_type);
+
+	set_bg_color_key(0, 0x70, 0xfc);
+
+	//font = new GUI_Font(GUI_FONT_GUMP);
+	//font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
+	font = Game::get_game()->get_font_manager()->get_conv_font();
+
+	return true;
+}
+
+void ContainerViewGump::init_container_type(std::string datadir, Obj *obj_type)
+{
+
+
+	if(obj_type != NULL)
+	{
+		if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+		{
+			if(obj_type->obj_n == OBJ_U6_CHEST)
+				return init_chest(datadir);
+			else if(obj_type->obj_n == OBJ_U6_CRATE)
+				return init_crate(datadir);
+		}
+	}
+
+	return init_bag(datadir);
+}
+
+void ContainerViewGump::init_bag(std::string datadir)
+{
+	std::string imagefile, path;
+
 	gump_button = loadButton(datadir, "gump", 0, 27);
 
 	build_path(datadir, "container", path);
@@ -71,6 +107,7 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 	down_arrow_button = loadButton(datadir, "cont_down", 83, 66);
 
 	build_path(datadir, "bag_bg.bmp", imagefile);
+
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
 	doll_button = loadButton(datadir, "cont_doll", area.x + 18, area.y + bg_image->h);
@@ -79,22 +116,69 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 
 	SetRect(area.x, area.y, bg_image->w, bg_image->h + 16); //111, 101);
 
-	actor = p->get_actor(p->get_leader());
-
 	container_widget = new ContainerWidgetGump(config, this);
-	container_widget->init(actor, 21, CONTAINER_WIDGET_OFFSET, tile_manager, obj_manager, t);
+	container_widget_y_offset = CONTAINER_WIDGET_OFFSET;
+	container_widget->init(actor, 21, container_widget_y_offset, 4, 3, tile_manager, obj_manager, text);
 
 	AddWidget(container_widget);
+}
 
+void ContainerViewGump::init_chest(std::string datadir)
+{
+	std::string imagefile, path;
 
+	gump_button = loadButton(datadir, "gump", 0, 56);
 
-	set_bg_color_key(0, 0x70, 0xfc);
+	build_path(datadir, "container", path);
+	datadir = path;
 
-	//font = new GUI_Font(GUI_FONT_GUMP);
-	//font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
-	font = Game::get_game()->get_font_manager()->get_conv_font();
+	up_arrow_button = loadButton(datadir, "cont_up", 85, 31);
+	down_arrow_button = loadButton(datadir, "cont_down", 85, 47);
 
-	return true;
+	build_path(datadir, "chest_bg.bmp", imagefile);
+
+	bg_image = SDL_LoadBMP(imagefile.c_str());
+
+	doll_button = loadButton(datadir, "cont_doll", area.x + 18, area.y + bg_image->h);
+	left_arrow_button = loadButton(datadir, "cont_left", area.x + 18 + 11, area.y + bg_image->h);
+	right_arrow_button = loadButton(datadir, "cont_right", area.x + 18 + 22, area.y + bg_image->h);
+
+	SetRect(area.x, area.y, bg_image->w, bg_image->h + 16); //111, 101);
+
+	container_widget = new ContainerWidgetGump(config, this);
+	container_widget_y_offset = CONTAINER_WIDGET_OFFSET - 1;
+	container_widget->init(actor, 21, container_widget_y_offset, 4, 2, tile_manager, obj_manager, text);
+
+	AddWidget(container_widget);
+}
+
+void ContainerViewGump::init_crate(std::string datadir)
+{
+	std::string imagefile, path;
+
+	gump_button = loadButton(datadir, "gump", 0, 63);
+
+	build_path(datadir, "container", path);
+	datadir = path;
+
+	up_arrow_button = loadButton(datadir, "cont_up", 100, 15);
+	down_arrow_button = loadButton(datadir, "cont_down", 100, 46);
+
+	build_path(datadir, "crate_bg.bmp", imagefile);
+
+	bg_image = SDL_LoadBMP(imagefile.c_str());
+
+	doll_button = loadButton(datadir, "cont_doll", area.x + 18, area.y + bg_image->h);
+	left_arrow_button = loadButton(datadir, "cont_left", area.x + 18 + 11, area.y + bg_image->h);
+	right_arrow_button = loadButton(datadir, "cont_right", area.x + 18 + 22, area.y + bg_image->h);
+
+	SetRect(area.x, area.y, bg_image->w, bg_image->h + 16); //111, 101);
+
+	container_widget = new ContainerWidgetGump(config, this);
+	container_widget_y_offset = 10;
+	container_widget->init(actor, 21, container_widget_y_offset, 5, 3, tile_manager, obj_manager, text);
+
+	AddWidget(container_widget);
 }
 
 void ContainerViewGump::set_actor(Actor *a)
@@ -200,11 +284,25 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
     return GUI_PASS;
 }
 
+GUI_status ContainerViewGump::KeyDown(SDL_keysym key)
+{
+	switch(key.sym)
+	    {
+	        case SDLK_RETURN:
+	        case SDLK_KP_ENTER:
+	        	return GUI_YUM;;
+	        default:
+	        	break;
+	    }
+
+	return container_widget->KeyDown(key);
+}
+
 GUI_status ContainerViewGump::MouseDown(int x, int y, int button)
 {
 	int y_off = y - area.y;
 
-	if(y_off >= CONTAINER_WIDGET_OFFSET && y_off < CONTAINER_WIDGET_OFFSET + CONTAINER_WIDGET_GUMP_HEIGHT)
+	if(y_off >= container_widget_y_offset && y_off < container_widget_y_offset + CONTAINER_WIDGET_GUMP_HEIGHT)
 	{
 		if(button == SDL_BUTTON_WHEELDOWN)
 		{

@@ -28,6 +28,9 @@
 #include "ObjManager.h"
 #include "InventoryMessage.h"
 
+#define CONTAINER_WIDGET_ROWS 3
+#define CONTAINER_WIDGET_COLS 4
+
 class Configuration;
 class TileManager;
 class Actor;
@@ -49,6 +52,7 @@ protected:
 
  Obj *selected_obj, *target_obj, *ready_obj;
  Obj *target_cont;
+ uint16 rows, cols;
  uint16 row_offset;
 
  uint8 bg_color;
@@ -63,7 +67,7 @@ protected:
  ~ContainerWidget();
 
  bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
- void set_actor(Actor *a);
+ virtual void set_actor(Actor *a);
  Actor *get_actor() { return(actor); }
  Obj *get_container() { return(container_obj); }
  void set_container(Obj *obj) { container_obj = obj; row_offset = 0; Redraw(); }

@@ -90,17 +90,19 @@ ContainerWidgetGump::~ContainerWidgetGump()
 
 }
 
-bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t)
+bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h, TileManager *tm, ObjManager *om, Text *t)
 {
  tile_manager = tm;
  obj_manager = om;
 
+ rows = h;
+ cols = w;
 
  //objlist_offset_x = 0;
  //objlist_offset_y = 0;
 
  //72 =  4 * 16 + 8
- GUI_Widget::Init(NULL, x, y, 64, CONTAINER_WIDGET_GUMP_HEIGHT);
+ GUI_Widget::Init(NULL, x, y, CONTAINER_WIDGET_COLS * 16, CONTAINER_WIDGET_GUMP_HEIGHT);
 
  set_actor(a);
  set_accept_mouseclick(true, 0);//USE_BUTTON); // accept [double]clicks from button1 (even if double-click disabled we need clicks)
@@ -109,5 +111,106 @@ bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, TileManager *tm, Ob
  bg_color = 0;
  fill_bg = false;
 
+ cursor_x = cursor_y = 0;
+ show_cursor = true;
+ cursor_tile = tile_manager->get_cursor_tile();
+
  return true;
+}
+
+void ContainerWidgetGump::Display(bool full_redraw)
+{
+	display_inventory_list();
+	if(show_cursor)
+	{
+		screen->blit(area.x+cursor_x*16,area.y+cursor_y*16,(unsigned char *)cursor_tile->data,8,16,16,16,true);
+	}
+	screen->update(area.x, area.y, area.w, area.h);
+}
+
+void ContainerWidgetGump::cursor_right()
+{
+	if(cursor_x < CONTAINER_WIDGET_COLS - 1)
+	{
+		if(get_obj_at_location((cursor_x+1) * 16,cursor_y * 16) != NULL)
+		{
+			cursor_x++;
+		}
+	}
+}
+
+void ContainerWidgetGump::cursor_left()
+{
+	if(cursor_x > 0)
+	{
+		cursor_x--;
+	}
+}
+
+void ContainerWidgetGump::cursor_up()
+{
+	if(cursor_y > 0)
+	{
+		cursor_y--;
+	}
+	else
+	{
+		up_arrow();
+	}
+}
+
+void ContainerWidgetGump::cursor_down()
+{
+	if(get_obj_at_location(0,(cursor_y+1) * 16) != NULL) //check that we can move down one row.
+	{
+		if(cursor_y < rows - 1)
+		{
+			cursor_y++;
+		}
+		else
+		{
+			down_arrow();
+		}
+
+		for(;cursor_x > 0;cursor_x--)
+		{
+			if(get_obj_at_location(cursor_x * 16,cursor_y * 16) != NULL)
+			{
+				break;
+			}
+		}
+	}
+}
+
+GUI_status ContainerWidgetGump::KeyDown(SDL_keysym key)
+{
+	switch(key.sym)
+	    {
+	        case SDLK_UP:
+	        case SDLK_KP8:
+	            cursor_up();
+	            break;
+	        case SDLK_DOWN:
+	        case SDLK_KP2:
+	            cursor_down();
+	            break;
+	        case SDLK_LEFT:
+	        case SDLK_KP4:
+	        	cursor_left();
+	            break;
+	        case SDLK_RIGHT:
+	        case SDLK_KP6:
+	            cursor_right();
+	            break;
+	        default:
+	        	return GUI_PASS;
+	    }
+
+	return GUI_YUM;
+}
+
+void ContainerWidgetGump::set_actor(Actor *a)
+{
+	cursor_x = cursor_y = 0;
+	ContainerWidget::set_actor(a);
 }

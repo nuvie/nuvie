@@ -37,11 +37,27 @@ class Text;
 
 class ContainerWidgetGump : public ContainerWidget {
 
+ private:
+ uint16 cursor_x, cursor_y;
+ Tile *cursor_tile;
+ bool show_cursor;
+
  public:
  ContainerWidgetGump(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~ContainerWidgetGump();
 
- bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
+ bool init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h, TileManager *tm, ObjManager *om, Text *t);
+
+ void Display(bool full_redraw);
+ GUI_status KeyDown(SDL_keysym key);
+
+ virtual void set_actor(Actor *a);
+ private:
+
+ void cursor_right();
+ void cursor_left();
+ void cursor_up();
+ void cursor_down();
 };
 
 #endif /* __ContainerWidgetGump_h__ */

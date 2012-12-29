@@ -46,6 +46,7 @@ class ContainerViewGump : public DraggableView {
 	GUI_Button *doll_button;
 
 	ContainerWidgetGump *container_widget;
+	uint16 container_widget_y_offset;
 
 	Font *font;
 
@@ -56,7 +57,7 @@ public:
  ContainerViewGump(Configuration *cfg);
  ~ContainerViewGump();
 
- bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Obj *container_obj_type);
 
  void Display(bool full_redraw);
 
@@ -67,6 +68,8 @@ public:
 
  bool is_actor_container() { return (container_obj == NULL); }
 
+ GUI_status KeyDown(SDL_keysym key);
+
  virtual GUI_status MouseDown(int x, int y, int button);
  virtual GUI_status MouseUp(int x, int y, int button);
  virtual GUI_status MouseMotion(int x,int y,Uint8 state) { return DraggableView::MouseMotion(x, y, state); }
@@ -76,6 +79,10 @@ public:
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
  protected:
 
+ void init_container_type(std::string datadir, Obj *obj_type);
+ void init_bag(std::string datadir);
+ void init_chest(std::string datadir);
+ void init_crate(std::string datadir);
  void display_inventory_weight();
 
  void left_arrow();

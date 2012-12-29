@@ -74,6 +74,8 @@ bool ContainerWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  tile_manager = tm;
  obj_manager = om;
 
+ rows = CONTAINER_WIDGET_ROWS;
+ cols = CONTAINER_WIDGET_COLS;
 
  bg_color = Game::get_game()->get_palette()->get_bg_color();
  if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
@@ -90,8 +92,7 @@ bool ContainerWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
  else
    empty_tile = tile_manager->get_tile(392);
 
- //72 =  4 * 16 + 8
- GUI_Widget::Init(NULL, x, y, 72, 64);
+ GUI_Widget::Init(NULL, x, y, cols * 16 + 8, (rows + 1) * 16);
 
  set_actor(a);
  set_accept_mouseclick(true, USE_BUTTON); // accept [double]clicks from button1 (even if double-click disabled we need clicks)
@@ -139,7 +140,7 @@ void ContainerWidget::display_inventory_list()
    link = objlist->start();
 
  //skip row_offset rows of objects.
- skip_num = row_offset * 4;
+ skip_num = row_offset * cols;
  for(i=0;link != NULL && i < skip_num; link = link->next)
    {
     obj = (Obj *)link->data;
@@ -147,9 +148,9 @@ void ContainerWidget::display_inventory_list()
       i++;
    }
 
-  for(i=0;i<3;i++)
+  for(i=0;i<rows;i++)
    {
-    for(j=0;j<4;j++)
+    for(j=0;j<cols;j++)
       {
        if(link != NULL)
          {
@@ -243,8 +244,8 @@ inline uint16 ContainerWidget::get_list_position(int x, int y)
 {
  uint16 list_pos;
 
- list_pos = (y / 16) * 4 + x / 16;
- list_pos += row_offset * 4;
+ list_pos = (y / 16) * cols + x / 16;
+ list_pos += row_offset * cols;
 
  return list_pos;
 }
@@ -330,7 +331,7 @@ bool ContainerWidget::down_arrow()
  else
     num_objects = actor->inventory_count_objects(false);
 
- if(num_objects - row_offset * 4 > 12)
+ if((sint32)(num_objects - row_offset * cols) > (sint32)(rows * cols))
    {
     row_offset++;
     return true;

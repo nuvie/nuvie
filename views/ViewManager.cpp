@@ -319,7 +319,7 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 	if(view == NULL)
 	{
 		view = new ContainerViewGump(config);
-		view->init(Game::get_game()->get_screen(), this, Game::get_game()->get_screen()->get_width() - 120, 20, text, party, tile_manager, obj_manager);
+		view->init(Game::get_game()->get_screen(), this, Game::get_game()->get_screen()->get_width() - 120, 20, text, party, tile_manager, obj_manager, obj);
 		if(actor)
 			view->set_actor(actor);
 		else
