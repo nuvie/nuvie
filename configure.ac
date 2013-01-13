@@ -1,5 +1,5 @@
 AC_PREREQ(2.52)
-AC_INIT(nuvie,0.1)
+AC_INIT(nuvie, 0.5svn)
 AC_CONFIG_SRCDIR(nuvie.cpp)
 
 # check build/host/target systems
@@ -11,7 +11,7 @@ AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 AC_PROG_CXX
