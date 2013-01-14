@@ -82,14 +82,14 @@ public:
 	void Flush() {
 		bindings.clear(); keyhelp.clear(); cheathelp.clear();
 	}
-	bool DoAction(ActionType action);
+	bool DoAction(ActionType const& a) const;
 	bool HandleEvent(const SDL_Event *event);
 	
 	void LoadFromFile(const char* filename);
 	void LoadFromPatch();
 	void handle_wrong_key_pressed();
 
-	void ShowKeys();
+	void ShowKeys() const;
  private:
 	void ParseText(char *text, int len);
 	void ParseLine(char *line);

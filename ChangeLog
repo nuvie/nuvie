@@ -1,3 +1,6 @@
+2012-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1632
+	* Enforce const-ness in KeyBinder class and on key actions
+
 2013-01-13  Dominik Reichardt <dominus@users.sourceforge.net> r1629
 	* fixed autotools warnings, changed version number
 	

@@ -57,7 +57,7 @@ static	class Chardata	// ctype-like character lists
 		}
 	} chardata;
 
-typedef void(*ActionFunc)(int*);
+typedef void(*ActionFunc)(int const*);
 
 const struct Action {
 	const char *s;
@@ -219,7 +219,7 @@ void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action,
 	bindings[k] = a;
 }
 
-bool KeyBinder::DoAction(ActionType a)
+bool KeyBinder::DoAction(ActionType const& a) const
 {
 	if (!a.action->allow_in_vehicle && Game::get_game()->get_player()->is_in_vehicle())
 	{
@@ -276,11 +276,11 @@ void KeyBinder::handle_wrong_key_pressed()
 	}
 }
 
-void KeyBinder::ShowKeys() // FIXME This doesn't look very good, the font is missing some characters,
-{                          // and it is longer than msgscroll can hold
+void KeyBinder::ShowKeys() const // FIXME This doesn't look very good, the font is missing
+{                                // some characters, and it is longer than msgscroll can hold
 	if(Game::get_game()->is_orig_style())
 	{
-		std::vector<string>::iterator iter;
+		std::vector<string>::const_iterator iter;
 		string keys;
 		MsgScroll *scroll = Game::get_game()->get_scroll();
 		scroll->set_autobreak(true);

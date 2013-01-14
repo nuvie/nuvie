@@ -19,58 +19,58 @@
 #ifndef KEYACTIONS_H
 #define KEYACTIONS_H
 
-void ActionWalkWest(int *params);
-void ActionWalkEast(int *params);
-void ActionWalkNorth(int *params);
-void ActionWalkSouth(int *params);
-void ActionWalkNorthEast(int *params);
-void ActionWalkSouthEast(int *params);
-void ActionWalkNorthWest(int *params);
-void ActionWalkSouthWest(int *params);
+void ActionWalkWest(int const *params);
+void ActionWalkEast(int const *params);
+void ActionWalkNorth(int const *params);
+void ActionWalkSouth(int const *params);
+void ActionWalkNorthEast(int const *params);
+void ActionWalkSouthEast(int const *params);
+void ActionWalkNorthWest(int const *params);
+void ActionWalkSouthWest(int const *params);
 
-void ActionCast(int *params);
-void ActionLook(int *params);
-void ActionTalk(int *params);
-void ActionUse(int *params);
-void ActionGet(int *params);
-void ActionMove(int *params); //PUSH EVENT
-void ActionDrop(int *params);
-void ActionToggleCombat(int *params);
-void ActionAttack(int *params);
-void ActionRest(int *params);
-void ActionSelectCommandBar(int *params);
-void ActionSelectNewCommandBar(int *params);
+void ActionCast(int const *params);
+void ActionLook(int const *params);
+void ActionTalk(int const *params);
+void ActionUse(int const *params);
+void ActionGet(int const *params);
+void ActionMove(int const *params); //PUSH EVENT
+void ActionDrop(int const *params);
+void ActionToggleCombat(int const *params);
+void ActionAttack(int const *params);
+void ActionRest(int const *params);
+void ActionSelectCommandBar(int const *params);
+void ActionSelectNewCommandBar(int const *params);
 
-void ActionNewInventory(int *params);
-void ActionShowStats(int *params);
-void ActionInventory(int *params);
-void ActionPartyView(int *params);
-void ActionNextPartyMember(int *params);
-void ActionPreviousPartyMember(int *params);
-void ActionToggleView(int *params);
+void ActionNewInventory(int const *params);
+void ActionShowStats(int const *params);
+void ActionInventory(int const *params);
+void ActionPartyView(int const *params);
+void ActionNextPartyMember(int const *params);
+void ActionPreviousPartyMember(int const *params);
+void ActionToggleView(int const *params);
 
-void ActionSoloMode(int *params);
-void ActionPartyMode(int *params);
+void ActionSoloMode(int const *params);
+void ActionPartyMode(int const *params);
 
-void ActionSaveDialog(int *params);
-void ActionLoadLatestSave(int *params);
-void ActionQuitDialog(int *params);
-void ActionQuitNODialog(int *params);
+void ActionSaveDialog(int const *params);
+void ActionLoadLatestSave(int const *params);
+void ActionQuitDialog(int const *params);
+void ActionQuitNODialog(int const *params);
 
-void ActionToggleCursor(int *params);
-void ActionToggleCombatStrategy(int *params);
-void ActionToggleFps(int *params);
+void ActionToggleCursor(int const *params);
+void ActionToggleCombatStrategy(int const *params);
+void ActionToggleFps(int const *params);
 
-void ActionDoAction(int *params);
-void ActionCancelAction(int *params);
+void ActionDoAction(int const *params);
+void ActionCancelAction(int const *params);
 
-void ActionMsgScrollUP(int *params);
-void ActionMsgScrollDown(int *params);
-void ActionShowKeys(int *params);
-void ActionDecreaseDebug(int *params);
-void ActionIncreaseDebug(int *params);
-void ActionCloseGumps(int *params);
+void ActionMsgScrollUP(int const *params);
+void ActionMsgScrollDown(int const *params);
+void ActionShowKeys(int const *params);
+void ActionDecreaseDebug(int const *params);
+void ActionIncreaseDebug(int const *params);
+void ActionCloseGumps(int const *params);
 
-void ActionTest(int* params);
+void ActionTest(int const *params);
 
 #endif

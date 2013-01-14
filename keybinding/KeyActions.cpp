@@ -36,47 +36,47 @@
 #define inventory_view Game::get_game()->get_view_manager()->get_inventory_view()
 #define actor_view Game::get_game()->get_view_manager()->get_actor_view()
 
-void ActionWalkWest(int *params)
+void ActionWalkWest(int const *params)
 {
 	event->move(-1,0);
 }
 
-void ActionWalkEast(int *params)
+void ActionWalkEast(int const *params)
 {
 	event->move(1,0);
 }
 
-void ActionWalkNorth(int *params)
+void ActionWalkNorth(int const *params)
 {
 	event->move(0,-1);
 }
 
-void ActionWalkSouth(int *params)
+void ActionWalkSouth(int const *params)
 {
 	event->move(0,1);
 }
 
-void ActionWalkNorthEast(int *params)
+void ActionWalkNorthEast(int const *params)
 {
 	event->move(1,-1);
 }
 
-void ActionWalkSouthEast(int *params)
+void ActionWalkSouthEast(int const *params)
 {
 	event->move(1,1);
 }
 
-void ActionWalkNorthWest(int *params)
+void ActionWalkNorthWest(int const *params)
 {
 	event->move(-1,-1);
 }
 
-void ActionWalkSouthWest(int *params)
+void ActionWalkSouthWest(int const *params)
 {
 	event->move(-1,1);
 }
 
-void ActionCast(int *params)
+void ActionCast(int const *params)
 {
 	if(game->get_game_type() != NUVIE_GAME_U6)
 	{
@@ -89,47 +89,47 @@ void ActionCast(int *params)
 		event->newAction(CAST_MODE);
 }
 
-void ActionLook(int *params)
+void ActionLook(int const *params)
 {
 	event->newAction(LOOK_MODE);
 }
 
-void ActionTalk(int *params)
+void ActionTalk(int const *params)
 {
 	event->newAction(TALK_MODE);
 }
 
-void ActionUse(int *params)
+void ActionUse(int const *params)
 {
 	event->newAction(USE_MODE);
 }
 
-void ActionGet(int *params)
+void ActionGet(int const *params)
 {
 	event->newAction(GET_MODE);
 }
 
-void ActionMove(int *params)
+void ActionMove(int const *params)
 {
 	event->newAction(PUSH_MODE);
 }
 
-void ActionDrop(int *params)
+void ActionDrop(int const *params)
 {
 	event->newAction(DROP_MODE);
 }
 
-void ActionToggleCombat(int *params)
+void ActionToggleCombat(int const *params)
 {
 	event->newAction(COMBAT_MODE);
 }
 
-void ActionAttack(int *params)
+void ActionAttack(int const *params)
 {
 	event->newAction(ATTACK_MODE);
 }
 
-void ActionRest(int *params)
+void ActionRest(int const *params)
 {
 	event->newAction(REST_MODE);
 }
@@ -137,7 +137,7 @@ void ActionRest(int *params)
 static const sint8 SE_command_tbl[] = {6, -1, 4, 5, 1, 2, 0, 3, 7, 8}; // convert U6 indexes
 static const sint8 MD_command_tbl[] = {0, -1, 1, 2, 3, 4, 5, 6, -1, 7};
 
-void ActionSelectCommandBar(int *params)
+void ActionSelectCommandBar(int const *params)
 {
 	CommandBar *cb = game->get_command_bar();
 	if(params[0] < 0 || params[0] > 9) // deactivate
@@ -150,19 +150,19 @@ void ActionSelectCommandBar(int *params)
 		cb->select_action(MD_command_tbl[params[0]]);
 }
 
-void ActionSelectNewCommandBar(int *params)
+void ActionSelectNewCommandBar(int const *params)
 {
 	CommandBar *cb = game->get_command_bar();
 	cb->grab_focus();
 	cb->Show();
 }
 
-void ActionNewInventory(int *params)
+void ActionNewInventory(int const *params)
 {
 	view_manager->open_doll_view(NULL);
 }
 
-void ActionShowStats(int *params)
+void ActionShowStats(int const *params)
 {
 	if(event->using_control_cheat())
 		return;
@@ -178,7 +178,7 @@ void ActionShowStats(int *params)
 		view_manager->open_portrait_gump(party_member);
 }
 
-void ActionInventory(int *params)
+void ActionInventory(int const *params)
 {
 	if(event->using_control_cheat() || params[0] == 0)
 		return;
@@ -196,13 +196,13 @@ void ActionInventory(int *params)
 	}
 }
 
-void ActionPartyView(int *params)
+void ActionPartyView(int const *params)
 {
 	if(!event->using_control_cheat())
 		view_manager->set_party_mode();
 }
 
-void ActionNextPartyMember(int *params)
+void ActionNextPartyMember(int const *params)
 {
 	if(event->using_control_cheat())
 		return;
@@ -224,7 +224,7 @@ void ActionNextPartyMember(int *params)
 	}
 }
 
-void ActionPreviousPartyMember(int *params)
+void ActionPreviousPartyMember(int const *params)
 {
 	if(event->using_control_cheat())
 		return;
@@ -245,7 +245,7 @@ void ActionPreviousPartyMember(int *params)
 	}
 }
 
-void ActionToggleView(int *params)
+void ActionToggleView(int const *params)
 {
 	if(game->is_orig_style())
 	{
@@ -256,7 +256,7 @@ void ActionToggleView(int *params)
 	}
 }
 
-void ActionSoloMode(int *params)
+void ActionSoloMode(int const *params)
 {
 	if(event->get_mode() == INPUT_MODE)
 		event->select_party_member(params[0] -1);
@@ -266,7 +266,7 @@ void ActionSoloMode(int *params)
 		event->solo_mode(params[0] - 1);
 }
 
-void ActionPartyMode(int *params)
+void ActionPartyMode(int const *params)
 {
 	if(event->get_mode() == MOVE_MODE)
 		event->party_mode();
@@ -274,12 +274,12 @@ void ActionPartyMode(int *params)
 		event->cancelAction();
 }
 
-void ActionSaveDialog(int *params)
+void ActionSaveDialog(int const *params)
 {
 	event->saveDialog();
 }
 
-void ActionLoadLatestSave(int *params)
+void ActionLoadLatestSave(int const *params)
 {
 	event->close_gumps();
 	SaveManager *save_manager = game->get_save_manager();
@@ -287,17 +287,17 @@ void ActionLoadLatestSave(int *params)
 	save_manager->load_latest_save();
 }
 
-void ActionQuitDialog(int *params)
+void ActionQuitDialog(int const *params)
 {
 	event->quitDialog();
 }
 
-void ActionQuitNODialog(int *params)
+void ActionQuitNODialog(int const *params)
 {
 	game->quit();
 }
 
-void ActionToggleCursor(int *params)
+void ActionToggleCursor(int const *params)
 {
 	if(game->is_orig_style())
 	{
@@ -312,58 +312,58 @@ void ActionToggleCursor(int *params)
 	}
 }
 
-void ActionToggleCombatStrategy(int *params)
+void ActionToggleCombatStrategy(int const *params)
 {
 	if(game->is_orig_style() && view_manager->get_current_view() == inventory_view)
 		inventory_view->simulate_CB_callback();
 }
 
-void ActionToggleFps(int *params)
+void ActionToggleFps(int const *params)
 {
 	event->toggleFpsDisplay();
 }
 
-void ActionDoAction(int *params)
+void ActionDoAction(int const *params)
 {
 	event->doAction();
 }
 
-void ActionCancelAction(int *params)
+void ActionCancelAction(int const *params)
 {
 	event->cancelAction();
 }
 
-void ActionMsgScrollUP(int *params)
+void ActionMsgScrollUP(int const *params)
 {
 	if(game->is_orig_style())
 		game->get_scroll()->page_up();
 }
 
-void ActionMsgScrollDown(int *params)
+void ActionMsgScrollDown(int const *params)
 {
 	if(game->is_orig_style())
 		game->get_scroll()->page_down();
 }
 
-void ActionShowKeys(int *params)
+void ActionShowKeys(int const *params)
 {
 	game->get_keybinder()->ShowKeys();
 }
 
-void ActionDecreaseDebug(int *params)
+void ActionDecreaseDebug(int const *params)
 {
 	DEBUG(0,LEVEL_EMERGENCY,"!!decrease!!\n");
 }
-void ActionIncreaseDebug(int *params)
+void ActionIncreaseDebug(int const *params)
 {
 	DEBUG(0,LEVEL_EMERGENCY,"!!increase!!\n");
 }
 
-void ActionCloseGumps(int *params)
+void ActionCloseGumps(int const *params)
 {
 	event->close_gumps();
 }
 
-void ActionTest(int *params)
+void ActionTest(int const *params)
 {
 }
