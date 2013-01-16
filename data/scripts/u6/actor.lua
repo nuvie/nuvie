@@ -1573,10 +1573,14 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
    if is_range_weapon == true then
    
       if hit_actor == false then
-         hit_actor = nil
          if foe ~= nil then
             target_x = target_x + random(0, 2) - 1
             target_y = target_y + random(0, 2) - 1
+            local new_foe = map_get_actor(target_x, target_y, attacker.z)
+            if new_foe ~= foe then -- make sure multi-tile actors don't get attacked again on a miss
+               foe = new_foe
+               hit_actor = actor_combat_hit_check(attacker, foe, weapon)
+            end
          end
       end
       
@@ -1598,11 +1602,6 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
          play_sfx(SFX_ATTACK_SWING, true)
       end
    end
-   
-   if hit_actor == nil then
-      hit_actor = actor_combat_hit_check(attacker, foe, weapon)
-   end
-   
    
    if weapon_obj_n == 0x32 then --triple crossbow
 
