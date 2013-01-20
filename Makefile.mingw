@@ -88,8 +88,8 @@ unpack.exe: $(UNPACK_OBJS)
 	$(CXX) $(LFLAGS) -o $@ $+
 
 clean:
-	rm -f $(NUVIE_OBJS1) $(NUVIE_OBJS2) nuvie.exe $(U6DECOMP_OBJS) u6decomp.exe \
-	$(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACKFONT_OBJS) unpack_font.exe \
+	rm -f $(NUVIE_OBJS1) $(NUVIE_OBJS2) builds/mingw/resource.o nuvie.exe \
+	$(U6DECOMP_OBJS) u6decomp.exe $(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACKFONT_OBJS) unpack_font.exe \
 	$(UNPACKMAPTILES_OBJS) unpack_maptiles.exe $(UNPACKPORTRAITS_OBJS) unpack_portraits.exe \
 	$(UNPACKTALK_OBJS) unpack_talk.exe $(UNPACK_OBJS) unpack.exe
 
