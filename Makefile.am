@@ -63,12 +63,12 @@ osxdmg: bundle
 	cp $(srcdir)/changelog ./Nuvie-snapshot/Changelog
 	cp $(srcdir)/README ./Nuvie-snapshot/ReadMe
 	cp $(srcdir)/xcodebuild/misc/README_MacOSX.txt ./Nuvie-snapshot/ReadMe.MacOSX
-	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/Authors
-	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/License
-	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/Changelog
-	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/ReadMe
-	/Developer/Tools/SetFile -t ttro -c ttxt ./Nuvie-snapshot/ReadMe.MacOSX
-	/Developer/Tools/CpMac -r $(bundle_name) ./Nuvie-snapshot/
+	SetFile -t ttro -c ttxt ./Nuvie-snapshot/Authors
+	SetFile -t ttro -c ttxt ./Nuvie-snapshot/License
+	SetFile -t ttro -c ttxt ./Nuvie-snapshot/Changelog
+	SetFile -t ttro -c ttxt ./Nuvie-snapshot/ReadMe
+	SetFile -t ttro -c ttxt ./Nuvie-snapshot/ReadMe.MacOSX
+	CpMac -r $(bundle_name) ./Nuvie-snapshot/
 	hdiutil create -ov -format UDZO -imagekey zlib-level=9 -fs HFS+ \
 					-srcfolder Nuvie-snapshot \
 					-volname "Nuvie SVN snapshot" \
