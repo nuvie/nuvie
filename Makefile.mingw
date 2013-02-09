@@ -122,6 +122,7 @@ install: all
 	cp data/images/*.bmp $(U6PATH)/data/images
 	cp data/images/gumps/*.bmp $(U6PATH)/data/images/gumps
 	cp data/images/gumps/sign/*.bmp $(U6PATH)/data/images/gumps/sign
+	cp data/images/gumps/sign/*.dat $(U6PATH)/data/images/gumps/sign
 	cp data/images/gumps/container/*.bmp $(U6PATH)/data/images/gumps/container
 	cp data/images/gumps/doll/*.bmp $(U6PATH)/data/images/gumps/doll
 	cp data/images/gumps/mapeditor/*.bmp $(U6PATH)/data/images/gumps/mapeditor
