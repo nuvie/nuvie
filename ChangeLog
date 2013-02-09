@@ -1,3 +1,12 @@
+2013-02-09  Eric Fry <efry at users.sourceforge.net> r1634
+	* Added Daniel's new wooden sign gump graphics. You now get a nice wooden
+	  sign gump when viewing signs in full map mode.
+	* Added new BMPFont class. This allows for fonts specified by a bmp image file.
+	* Added the ability to select objects in container gumps with the keyboard
+	  'Enter' key.
+	* Added the ability to 'G'et objects from container gumps. This is handy for
+	  getting objects out of a chest with the keyboard in full map mode.
+
 2012-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1633
 	* Fix bug where a missed projectile still targeted the same actor instead of
 	  the actor in the tile it lands in
@@ -7,7 +16,7 @@
 
 2013-01-13  Dominik Reichardt <dominus@users.sourceforge.net> r1629
 	* fixed autotools warnings, changed version number
-	
+
 2012-12-29  Eric Fry <efry at users.sourceforge.net> r1628
 	* Added Daniel's new Chest and Crate gumps.
 	* Changed ContainerWidget to allow an arbitary number of rows and columns.

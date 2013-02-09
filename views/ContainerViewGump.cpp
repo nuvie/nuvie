@@ -286,15 +286,17 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 
 GUI_status ContainerViewGump::KeyDown(SDL_keysym key)
 {
+	/* moved into container widget
 	switch(key.sym)
 	    {
 	        case SDLK_RETURN:
 	        case SDLK_KP_ENTER:
-	        	return GUI_YUM;;
+
+	        	return GUI_YUM;
 	        default:
 	        	break;
 	    }
-
+	*/
 	return container_widget->KeyDown(key);
 }
 

@@ -2721,9 +2721,16 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
              else
                 {
 */
-             scroll->set_autobreak(true);
-             scroll->display_string(data,strlen(data)); //normal font
-             scroll->display_string("\n\t"); // '\t' = auto break off.
+             if(game->is_new_style())
+             {
+            	 game->get_view_manager()->open_sign_gump(data,strlen(data));
+             }
+             else
+             {
+            	 scroll->set_autobreak(true);
+            	 scroll->display_string(data,strlen(data)); //normal font
+            	 scroll->display_string("\n\t"); // '\t' = auto break off.
+             }
              //scroll->set_autobreak(false);
 //                }
              free(data);

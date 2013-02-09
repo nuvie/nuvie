@@ -550,6 +550,9 @@ void ContainerWidget::try_click()
 			}
 			break;
 		}
+		case GET_MODE:
+			event->perform_get(selected_obj,NULL,Game::get_game()->get_player()->get_actor());
+			break;
 		default:
 			event->select_view_obj(selected_obj, actor);
 			break;

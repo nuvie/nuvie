@@ -99,6 +99,7 @@ install: all
 	mkdir -p $(U6PATH)/data
 	mkdir -p $(U6PATH)/data/images
 	mkdir -p $(U6PATH)/data/images/gumps
+	mkdir -p $(U6PATH)/data/images/gumps/sign
 	mkdir -p $(U6PATH)/data/images/gumps/container
 	mkdir -p $(U6PATH)/data/images/gumps/doll
 	mkdir -p $(U6PATH)/data/images/gumps/mapeditor
@@ -120,6 +121,7 @@ install: all
 	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_08
 	cp data/images/*.bmp $(U6PATH)/data/images
 	cp data/images/gumps/*.bmp $(U6PATH)/data/images/gumps
+	cp data/images/gumps/sign/*.bmp $(U6PATH)/data/images/gumps/sign
 	cp data/images/gumps/container/*.bmp $(U6PATH)/data/images/gumps/container
 	cp data/images/gumps/doll/*.bmp $(U6PATH)/data/images/gumps/doll
 	cp data/images/gumps/mapeditor/*.bmp $(U6PATH)/data/images/gumps/mapeditor

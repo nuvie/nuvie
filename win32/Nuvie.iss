@@ -56,6 +56,9 @@ Source: data\images\gumps\gump_btn_up.bmp; DestDir: {app}\data\images\gumps; Fla
 Source: data\images\gumps\left_arrow.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\right_arrow.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\portrait_bg.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
+Source: data\images\gumps\sign\sign_bg.bmp; DestDir: {app}\data\images\gumps\sign; Flags: ignoreversion
+Source: data\images\gumps\sign\sign_font.bmp; DestDir: {app}\data\images\gumps\sign; Flags: ignoreversion
+Source: data\images\gumps\sign\sign_font.dat; DestDir: {app}\data\images\gumps\sign; Flags: ignoreversion
 Source: data\images\gumps\container\bag_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\chest_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\crate_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion

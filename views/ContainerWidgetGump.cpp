@@ -202,6 +202,14 @@ GUI_status ContainerWidgetGump::KeyDown(SDL_keysym key)
 	        case SDLK_KP6:
 	            cursor_right();
 	            break;
+	        case SDLK_RETURN:
+	        case SDLK_KP_ENTER:
+	        	selected_obj = get_obj_at_location(cursor_x * 16,cursor_y * 16);
+	        	if(selected_obj)
+	        	{
+	        		try_click();
+	        	}
+	        	break;
 	        default:
 	        	return GUI_PASS;
 	    }

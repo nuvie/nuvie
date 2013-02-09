@@ -37,6 +37,7 @@
 #include "DollViewGump.h"
 #include "ContainerViewGump.h"
 #include "PortraitViewGump.h"
+#include "SignViewGump.h"
 #include "PartyView.h"
 #include "SpellView.h"
 #include "SpellViewGump.h"
@@ -362,6 +363,18 @@ void ViewManager::open_portrait_gump(Actor *a)
 	{
 		PortraitViewGump *view = new PortraitViewGump(config);
 		view->init(Game::get_game()->get_screen(), this, 62, 0, text, party, tile_manager, obj_manager, portrait, a);
+		add_view((View *)view);
+		add_gump(view);
+		view->grab_focus();
+	}
+}
+
+void ViewManager::open_sign_gump(const char *sign_text, uint16 length)
+{
+	if(Game::get_game()->is_new_style())
+	{
+		SignViewGump *view = new SignViewGump(config);
+		view->init(Game::get_game()->get_screen(), this, text, party, tile_manager, obj_manager, sign_text, length);
 		add_view((View *)view);
 		add_gump(view);
 		view->grab_focus();

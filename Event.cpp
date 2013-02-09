@@ -806,55 +806,75 @@ bool Event::push_start()
 bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
 {
     bool got_object = false;
+    bool can_perform_get = false;
     //float weight;
     if(game->user_paused())
         return(false);
 
-  if(obj && !map_window->tile_is_black(obj->x, obj->y, obj))
+  if(obj)
   {
     if(!actor)
         actor = player->get_actor();
-    MapCoord target(obj->x, obj->y, obj->z);
-    scroll->display_string(obj_manager->look_obj(obj));
 
-    if(player->get_actor()->get_location().distance(target) > 1
-       && map_window->get_interface() == INTERFACE_NORMAL)
-        scroll->display_string("\n\nOut of range!");
-    else if(!map_window->can_get_obj(actor, obj))
-        scroll->display_string("\n\nBlocked.");
-    else if(obj->is_on_map())
-    {
-		if(obj_manager->obj_is_damaging(obj, actor))
-    		return false;
+	if(obj->is_on_map() && map_window->tile_is_black(obj->x, obj->y, obj))
+	{
+		scroll->display_string("nothing");
+	}
+	else
+	{
+		scroll->display_string(obj_manager->look_obj(obj));
 
-        // perform GET usecode (can't add to container)
-        if(usecode->has_getcode(obj) && (usecode->get_obj(obj, actor) == false))
-        {
-            game->get_script()->call_actor_subtract_movement_points(actor, 3);
-            scroll->display_string("\n");
-            scroll->display_prompt();
-            map_window->updateBlacking();
-            return(false); // ???
-        }
-
-        if(game->get_script()->call_actor_get_obj(actor, obj))
-        {
-            obj_manager->remove_obj_from_map(obj); //remove object from map.
-
-            actor->inventory_add_object(obj, container_obj);
-            game->get_script()->call_actor_subtract_movement_points(actor, 3);
-            got_object = true;
-        }
-
-/*        if(obj_manager->is_damaging(obj->x,obj->y,obj->z)) // I think the above check cancels this out
-        {
-            scroll->display_string("\n");
-            actor->display_condition(); // indicate that object hurt the player
-        }*/
-    }
+		if(!map_window->can_get_obj(actor, obj))
+		{
+			scroll->display_string("\n\nBlocked.");
+		}
+		else if(obj->is_on_map())
+		{
+			MapCoord target(obj->x, obj->y, obj->z);
+			if(player->get_actor()->get_location().distance(target) > 1
+				   && map_window->get_interface() == INTERFACE_NORMAL)
+			{
+					scroll->display_string("\n\nOut of range!");
+			}
+			else if(obj_manager->obj_is_damaging(obj, actor))
+			{
+				return false;
+			}
+			else
+			{
+				can_perform_get = true;
+			}
+		}
+		else
+		{
+			can_perform_get = true;
+		}
+	}
   }
     else
         scroll->display_string("nothing");
+
+  if(can_perform_get)
+  {
+		// perform GET usecode (can't add to container)
+		if(usecode->has_getcode(obj) && (usecode->get_obj(obj, actor) == false))
+		{
+			game->get_script()->call_actor_subtract_movement_points(actor, 3);
+			scroll->display_string("\n");
+			scroll->display_prompt();
+			map_window->updateBlacking();
+			return(false); // ???
+		}
+
+		if(game->get_script()->call_actor_get_obj(actor, obj))
+		{
+			obj_manager->remove_obj_from_map(obj); //remove object from map.
+
+			actor->inventory_add_object(obj, container_obj);
+			game->get_script()->call_actor_subtract_movement_points(actor, 3);
+			got_object = true;
+		}
+  }
 
     scroll->display_string("\n\n");
     scroll->display_prompt();

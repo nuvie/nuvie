@@ -64,7 +64,7 @@ private:
    uint8 drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y, uint8 color);
 
    virtual uint16 getCharWidth(uint8 c);
-   uint16 getStringWidth(const char *str);
+   virtual uint16 getStringWidth(const char *str);
 
    void setOffset(uint16 off) { offset = off; }
 

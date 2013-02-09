@@ -112,6 +112,7 @@ class ViewManager
 
  void open_mapeditor_view();
  void open_portrait_gump(Actor *a);
+ void open_sign_gump(const char *sign_text, uint16 length);
  void close_gump(DraggableView *gump);
  void close_all_gumps();
  bool gumps_are_active() { return !gumps.empty(); }
