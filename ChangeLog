@@ -1,4 +1,7 @@
-2013-02-09  Eric Fry <efry at users.sourceforge.net> r1634
+2013-02-09  Eric Fry <efry at users.sourceforge.net> r1637
+	* Added missing SignViewGump class.
+
+2013-02-09  Eric Fry <efry at users.sourceforge.net> r1636
 	* Added Daniel's new wooden sign gump graphics. You now get a nice wooden
 	  sign gump when viewing signs in full map mode.
 	* Added new BMPFont class. This allows for fonts specified by a bmp image file.

@@ -306,6 +306,8 @@ nuvie_SOURCES = \
 	views/SpellView.h \
 	views/SpellViewGump.cpp \
 	views/SpellViewGump.h \
+	views/SignViewGump.cpp \
+	views/SignViewGump.h \
 	views/ContainerViewGump.cpp \
 	views/ContainerViewGump.h \
 	views/ContainerWidget.cpp \
