@@ -1,3 +1,6 @@
+2012-02-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1679
+	* Restrict sign gump usage.
+
 2013-02-09  Eric Fry <efry at users.sourceforge.net> r1637
 	* Added missing SignViewGump class.
 

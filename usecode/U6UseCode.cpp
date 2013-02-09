@@ -2721,11 +2721,26 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
              else
                 {
 */
-             if(game->is_new_style())
+             bool using_gump = game->is_new_style();
+             if(using_gump)
              {
-            	 game->get_view_manager()->open_sign_gump(data,strlen(data));
+                 switch(obj->obj_n)
+                 {
+                     case OBJ_U6_CROSS: // I don't even know if this is used for text
+                     case OBJ_U6_SIGN:
+                         game->get_view_manager()->open_sign_gump(data,strlen(data)); break;
+                     case OBJ_U6_SIGN_ARROW:
+                     case OBJ_U6_BOOK:
+                     case OBJ_U6_BOOK_OF_CIRCLES:
+                     case OBJ_U6_CODEX:
+                     case OBJ_U6_SCROLL:
+                     case OBJ_U6_GRAVE:
+                     case OBJ_U6_PICTURE:
+                     default:
+                        using_gump = false;
+                 }
              }
-             else
+             if(!using_gump)
              {
             	 scroll->set_autobreak(true);
             	 scroll->display_string(data,strlen(data)); //normal font
