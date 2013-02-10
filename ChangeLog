@@ -1,3 +1,6 @@
+2013-02-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1641
+	* Comment out TextEffect calls (text pop up)
+
 2013-02-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1640
 	* Handle attacking the inventory better.
 	* Close gumps when attacking or after selecting an object to drop

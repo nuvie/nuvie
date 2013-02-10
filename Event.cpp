@@ -1076,10 +1076,10 @@ bool Event::look(Obj *obj)
          }
       }
       obj_manager->print_obj(obj, false); // DEBUG
-      if(game->is_new_style())
+/*      if(game->is_new_style())
       {
     	  new TextEffect(obj_manager->look_obj(obj, true), MapCoord((obj->x - map_window->get_cur_x())*16,(obj->y-map_window->get_cur_y())*16,obj->z));
-      }
+      }*/
       if(game->get_script()->call_look_obj(obj) == false)
       {
          scroll->display_prompt();
@@ -1182,7 +1182,8 @@ bool Event::lookAtCursor(bool delayed, uint16 x, uint16 y, uint8 z, Obj *obj, Ac
  else // ground
   {
    scroll->display_string("Thou dost see ");
-   new TextEffect(game->get_game_map()->look(x, y, z), MapCoord((x - map_window->get_cur_x())*16,(y-map_window->get_cur_y())*16,z));
+/*   if(game->is_new_style())
+     new TextEffect(game->get_game_map()->look(x, y, z), MapCoord((x - map_window->get_cur_x())*16,(y-map_window->get_cur_y())*16,z));*/
    scroll->display_string(game->get_game_map()->look(x, y, z));
    scroll->display_string("\n");
   }
