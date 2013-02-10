@@ -2398,7 +2398,7 @@ bool Event::drop_select(Obj *obj, uint16 qty)
     drop_obj = obj;
     scroll->display_string(drop_obj ? obj_manager->look_obj(drop_obj) : "nothing");
     scroll->display_string("\n");
-
+    close_gumps();
     if(drop_obj)
     {
         if(qty == 0 && obj_manager->is_stackable(drop_obj) && drop_obj->qty > 1)
@@ -3090,6 +3090,7 @@ bool Event::newAction(EventMode new_mode)
 // FIXME: make ATTACK_MODE use INPUT_MODE
 if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 {
+    close_gumps();
     doAction();
     return(mode==ATTACK_MODE);
 }
@@ -3134,6 +3135,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		case USE_MODE:  use_start();  break;
 		case GET_MODE:  get_start();  break;
 		case ATTACK_MODE:
+			close_gumps();
 			if(game->get_game_type() == NUVIE_GAME_U6
 					&& player->is_in_vehicle()
 					&& player->get_actor()->get_obj_n() != OBJ_U6_SHIP)

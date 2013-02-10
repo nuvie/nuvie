@@ -669,6 +669,10 @@ bool InventoryView::select_obj(Obj *obj)
             }
             break;
         }
+        case ATTACK_MODE:
+            set_show_cursor(false);
+            event->cancelAction();
+            return false;
         default:
             event->select_view_obj(obj, inventory_widget->get_actor());
             return true;

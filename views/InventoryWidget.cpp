@@ -700,7 +700,9 @@ void InventoryWidget::try_click()
 	if(!selected_obj)
 		return;
 	bool locked_chest = (usecode->is_chest(selected_obj) && selected_obj->frame_n > 1);
-	if(usecode->is_container(selected_obj) && !locked_chest) // open up the container.
+	if(event->get_mode() == ATTACK_MODE)
+		event->cancelAction();
+	else if(usecode->is_container(selected_obj) && !locked_chest) // open up the container.
 	{
 		container_obj = selected_obj;
 		if(usecode->is_chest(container_obj) && selected_obj->frame_n == 1)

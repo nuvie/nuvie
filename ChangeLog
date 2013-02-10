@@ -1,4 +1,9 @@
-2012-02-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1679
+2013-02-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1640
+	* Handle attacking the inventory better.
+	* Close gumps when attacking or after selecting an object to drop
+	* Allow deer to show their inventory when carried
+
+2013-02-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1639
 	* Restrict sign gump usage.
 
 2013-02-09  Eric Fry <efry at users.sourceforge.net> r1637
@@ -13,11 +18,11 @@
 	* Added the ability to 'G'et objects from container gumps. This is handy for
 	  getting objects out of a chest with the keyboard in full map mode.
 
-2012-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1633
+2013-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1633
 	* Fix bug where a missed projectile still targeted the same actor instead of
 	  the actor in the tile it lands in
 
-2012-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1632
+2013-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1632
 	* Enforce const-ness in KeyBinder class and on key actions
 
 2013-01-13  Dominik Reichardt <dominus@users.sourceforge.net> r1629

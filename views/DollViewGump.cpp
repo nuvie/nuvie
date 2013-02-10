@@ -201,7 +201,7 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 {
 	Event *event = Game::get_game()->get_event();
 	//close gump and return control to Magic class for clean up.
-	if(caller == gump_button)
+	if(event->get_mode() == ATTACK_MODE || caller == gump_button)
 	{
 		Game::get_game()->get_view_manager()->close_gump(this);
 		return GUI_YUM;
@@ -239,7 +239,6 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	}
 	else if(caller == doll_widget)
 	{
-		Event *event = Game::get_game()->get_event();
 		if(event->get_mode() != MOVE_MODE && event->get_mode() != EQUIP_MODE)
 		{
 			Obj *obj = (Obj *)data;
