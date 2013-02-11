@@ -113,7 +113,7 @@ bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h,
 
  cursor_x = cursor_y = 0;
  show_cursor = true;
- cursor_tile = tile_manager->get_cursor_tile();
+ cursor_tile = tile_manager->get_gump_cursor_tile();
 
  return true;
 }

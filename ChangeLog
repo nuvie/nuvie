@@ -1,3 +1,6 @@
+2013-02-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1642
+	* Use a new cursor for container gumps that lets you see items better
+
 2013-02-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1641
 	* Comment out TextEffect calls (text pop up)
 

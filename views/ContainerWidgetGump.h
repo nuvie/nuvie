@@ -39,7 +39,7 @@ class ContainerWidgetGump : public ContainerWidget {
 
  private:
  uint16 cursor_x, cursor_y;
- Tile *cursor_tile;
+ const Tile *cursor_tile;
  bool show_cursor;
 
  public:

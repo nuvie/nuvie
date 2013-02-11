@@ -173,6 +173,7 @@ class TileManager
 
    Tile *get_cursor_tile();
    Tile *get_use_tile();
+   const Tile *get_gump_cursor_tile();
 
  protected:
 
