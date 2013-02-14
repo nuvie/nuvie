@@ -113,6 +113,15 @@ bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16
 	font = new GUI_Font(GUI_FONT_GUMP);
 	font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
 
+	if(party->get_member_num(actor) < 0)
+	{
+		if(Game::get_game()->get_event()->using_control_cheat() == false)
+			heart_button->Hide();
+		left_button->Hide();
+		right_button->Hide();
+	}
+	party_button->Hide();
+
 	return true;
 }
 
@@ -251,6 +260,8 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 
 GUI_status DollViewGump::MouseDown(int x, int y, int button)
 {
+ if(party->get_member_num(actor) >= 0)
+ {
 	 if(button == SDL_BUTTON_WHEELDOWN)
 	 {
 		right_arrow();
@@ -261,6 +272,7 @@ GUI_status DollViewGump::MouseDown(int x, int y, int button)
 		 left_arrow();
 		 return GUI_YUM;
 	 }
+ }
 
 	return DraggableView::MouseDown(x, y, button);
 }

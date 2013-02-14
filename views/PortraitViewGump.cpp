@@ -94,6 +94,12 @@ bool PortraitViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, ui
 	right_button = new GUI_Button(this, 166, 6, image, image1, this);
 	this->AddWidget(right_button);
 
+	if(party->get_member_num(actor) < 0)
+	{
+		left_button->Hide();
+		right_button->Hide();
+	}
+
 	return true;
 }
 
@@ -211,6 +217,8 @@ GUI_status PortraitViewGump::callback(uint16 msg, GUI_CallBack *caller, void *da
 
 GUI_status PortraitViewGump::MouseDown(int x, int y, int button)
 {
+ if(party->get_member_num(actor) >= 0)
+ {
 	 if(button == SDL_BUTTON_WHEELDOWN)
 	 {
 		right_arrow();
@@ -221,6 +229,7 @@ GUI_status PortraitViewGump::MouseDown(int x, int y, int button)
 		 left_arrow();
 		 return GUI_YUM;
 	 }
+ }
 
 	return DraggableView::MouseDown(x, y, button);
 }

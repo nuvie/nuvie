@@ -398,6 +398,7 @@ void Event::get_inventory_obj(Actor *actor)
 	{
 		//view_manager->set_inventory_mode();
 		view_manager->open_container_view(actor); //FIXME need to open container gump in pickpocket mode.
+		view_manager->open_doll_view(actor);
 	}
 	else
 	{
@@ -2725,7 +2726,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
         	if(game->is_new_style() && actor == actor_manager->get_player())
         	{
         		//open inventory here.
-        		view_manager->open_doll_view(NULL);
+        		view_manager->open_doll_view(in_control_cheat? actor: NULL);
         	}
         	else if(target == player_location)
         		using_actor = false;

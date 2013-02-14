@@ -187,8 +187,16 @@ void ContainerViewGump::set_actor(Actor *a)
 	container_obj = NULL;
 	container_widget->set_actor(a);
 	doll_button->Show();
-	left_arrow_button->Show();
-	right_arrow_button->Show();
+	if(party->get_member_num(a) >= 0)
+	{
+		left_arrow_button->Show();
+		right_arrow_button->Show();
+	}
+	else
+	{
+		left_arrow_button->Hide();
+		right_arrow_button->Hide();
+	}
 }
 
 void ContainerViewGump::set_container_obj(Obj *o)
@@ -319,7 +327,7 @@ GUI_status ContainerViewGump::MouseDown(int x, int y, int button)
 	}
 	else
 	{
-		if(is_actor_container())
+		if(is_actor_container() && party->get_member_num(actor) >= 0)
 		{
 			if(button == SDL_BUTTON_WHEELDOWN)
 			{

@@ -206,7 +206,11 @@ GUI_status PortraitView::HandleEvent(const SDL_Event *event)
 void PortraitView::set_waiting(bool state)
 {
     if(state == true && display_doll == false && portrait_data == NULL) // don't wait for nothing
+    {
+        if(Game::get_game()->is_new_style())
+            this->Hide();
         return;
+    }
     waiting = state;
     set_show_cursor(waiting);
     Game::get_game()->get_scroll()->set_show_cursor(!waiting);
