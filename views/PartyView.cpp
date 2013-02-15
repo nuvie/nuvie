@@ -279,7 +279,7 @@ void PartyView::Display(bool full_redraw)
    update_display = false;
    uint8 end_offset = row_offset + 5;
    if(MD)
-      fill_md_background(bg_color, area);
+      fill_md_background(area);
    else
       screen->fill(bg_color, area.x, area.y, area.w, area.h);
    if(U6)

@@ -114,7 +114,7 @@ bool View::prev_party_member()
  return false;
 }
 
-void View::fill_md_background(uint8 bg_color, SDL_Rect area)
+void View::fill_md_background(SDL_Rect area)
 {
 	Screen *screen = Game::get_game()->get_screen();
 	screen->fill(bg_color, area.x +1, area.y + 9, 1, 1); // left pillar

@@ -111,7 +111,7 @@ void ActorView::Display(bool full_redraw)
   {
    update_display = false;
    if(MD)
-     fill_md_background(bg_color, area);
+     fill_md_background(area);
    else
      screen->fill(bg_color, area.x, area.y, area.w, area.h);
    screen->blit(area.x,area.y+8,portrait_data,8,56,64,56,false);

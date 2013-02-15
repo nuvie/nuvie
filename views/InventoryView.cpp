@@ -151,7 +151,7 @@ void InventoryView::Display(bool full_redraw)
  if(full_redraw || update_display)
    {
     if(MD)
-        fill_md_background(bg_color, area);
+        fill_md_background(area);
     else
         screen->fill(bg_color, area.x, area.y, area.w, area.h);
 

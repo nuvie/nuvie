@@ -1,3 +1,7 @@
+2013-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1645
+	* Remove unnecessary parameter
+	* Add join text in the converse gump even without party_all_the_time enabled
+
 2013-02-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1644
 	All changes are for fullscreen_map mode mode
 	* Show the actors doll when using pickpocket

@@ -120,9 +120,9 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 		}
 		bool cant_join = (Game::get_game()->get_game_type() == NUVIE_GAME_U6 // statues and altars
 		                  && actor->get_actor_num() >= 189 && actor->get_actor_num() <= 200);
-		if(actor && actor->is_in_party())
+		if(actor->is_in_party())
 			add_keyword("leave");
-		else if(actor && party_all_the_time && !cant_join)
+		else if(!cant_join)
 			add_keyword("join");
 
     	keyword_list = &conv_keywords;
