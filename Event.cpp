@@ -3367,14 +3367,6 @@ bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *targe
 
 	if(target_actor)
 	{
-		if(game->using_hackmove())
-			return true;
-		if(player->is_in_vehicle())
-		{
-			display_not_aboard_vehicle();
-			return false;
-		}
-
 		if(display_name)
 		{
 			scroll->display_string(target_actor == src_actor ? "yourself" : target_actor->get_name());
@@ -3384,6 +3376,14 @@ bool Event::can_move_obj_between_actors(Obj *obj, Actor *src_actor, Actor *targe
 		if(!target_actor->is_in_party() && target_actor != player->get_actor())
 		{
 			scroll->display_string("\n\nOnly within the party!");
+			return false;
+		}
+
+		if(game->using_hackmove())
+			return true;
+		if(player->is_in_vehicle())
+		{
+			display_not_aboard_vehicle();
 			return false;
 		}
 

@@ -1,3 +1,9 @@
+2013-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1646
+	* Show message for switches and levers that don't do anything
+	* Hack a fix for Covetous switch that doesn't work in the original
+	* Stop sign gump from displaying again when left clicking to close
+	* Fix hack mover not displaying the actor name of object recipient
+
 2013-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1645
 	* Remove unnecessary parameter
 	* Add join text in the converse gump even without party_all_the_time enabled

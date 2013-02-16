@@ -616,17 +616,27 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
  U6Link *link;
  uint16 target_obj_n = 0;
  const char *message = NULL;
+ const char *fail_message = NULL;
+ bool success = false;
  bool print = (items.actor_ref == player->get_actor());
 
  if(obj->obj_n == OBJ_U6_LEVER)
  {
      target_obj_n = OBJ_U6_PORTCULLIS;
      message = "\nSwitch the lever, you hear a noise.\n";
+     fail_message = "\nSwitch the lever, strange, nothing happened.\n";
  }
  else if(obj->obj_n == OBJ_U6_SWITCH)
  {
+     if(obj->quality == 113 && obj->x == 139 && obj->y == 0 && obj->z == 1) // hack for Covetous
+     {
+         doorway_obj = obj_manager->get_obj_of_type_from_location(OBJ_U6_DOORWAY, 0, 0, 160, 3, 1);
+         if(doorway_obj)
+             doorway_obj->quality = 113;
+     }
      target_obj_n = OBJ_U6_ELECTRIC_FIELD;
      message = "\nOperate the switch, you hear a noise.\n";
+     fail_message = "\nOperate the switch, strange, nothing happened.\n";
  }
 
  doorway_obj = obj_manager->find_obj(obj->z, OBJ_U6_DOORWAY, obj->quality);
@@ -642,6 +652,7 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
          break;
         }
      }
+    success = true;
 
     if(portc_obj == NULL) //no barrier object, so lets create one.
      {
@@ -667,7 +678,7 @@ bool U6UseCode::use_switch(Obj *obj, UseCodeEvent ev)
 
  toggle_frame(obj);
  if(print)
-   scroll->display_string(message);
+   scroll->display_string(success ? message : fail_message);
  return true;
 }
 

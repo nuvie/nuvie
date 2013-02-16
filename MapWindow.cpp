@@ -1987,6 +1987,7 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
         mouseToWorldCoords(x, y, wx, wy);
         event->multiuse((uint16)wx, (uint16)wy);
     }
+    looking = false;
     return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
 
