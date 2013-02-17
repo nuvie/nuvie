@@ -1,3 +1,9 @@
+2013-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1649
+	* Fix summon alignment
+	* Give clones combat worktype if their wt <= player
+	* Fix backwards parameters in actor_int_check
+	* Alt-Ctrl-P pickpocket cheat (need to double click actors)
+
 2013-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1648
 	* Improve hack move
 	* Add Alt-I no darkness cheat

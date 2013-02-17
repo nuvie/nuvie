@@ -17,7 +17,11 @@ for i=1,8 do
 		if clone_actor ~= nil then
 			clone_actor.frame_n = actor.frame_n
 			clone_actor.align = actor.align
-			clone_actor.wt = actor.wt
+			if actor.wt > WT_PLAYER then
+				clone_actor.wt = actor.wt
+			else
+				clone_actor.wt = WT_ASSAULT
+			end
 			fade_actor_in(clone_actor)
 			magic_success()
 			return

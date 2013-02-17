@@ -165,6 +165,7 @@ friend class Magic; // FIXME
  EventMode get_last_mode() { return(last_mode); }
  void set_mode(EventMode new_mode);
 
+ bool using_pickpocket_cheat;
  bool cursor_mode;
  void update_timers();
  bool update();
@@ -176,7 +177,7 @@ friend class Magic; // FIXME
 // void useselect_mode(Obj *src, const char *prompt = NULL); // deprecated
 // void freeselect_mode(Obj *src, const char *prompt = NULL); // deprecated
  void get_scroll_input(const char *allowed = NULL, bool can_escape = true);
- void get_inventory_obj(Actor *actor);
+ void get_inventory_obj(Actor *actor, bool getting_target = true);
  void get_spell_num(Actor *caster, Obj *spell_container);
 // void get_amount();
  void get_direction(const char *prompt);

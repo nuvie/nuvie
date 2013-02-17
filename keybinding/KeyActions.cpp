@@ -420,7 +420,7 @@ void ActionToggleUnlimitedCasting(int const *params)
 {
 	bool unlimited = !game->has_unlimited_casting();
 	game->set_unlimited_casting(unlimited);
-	string message = unlimited ? "Unlimited casting enabled" : "Unlimited casting disabled";
+	string message = unlimited ? "Unlimited casting" : "Normal casting";
 	new TextEffect(message);
 }
 
@@ -428,6 +428,13 @@ void ActionToggleNoDarkness(int const *params)
 {
 	bool no_darkness = game->get_screen()->toggle_darkness_cheat();
 	string message = no_darkness ? "No more darkness" : "Normal lighting";
+	new TextEffect(message);
+}
+
+void ActionTogglePickpocket(int const *params)
+{
+	bool pickpocket = (event->using_pickpocket_cheat = !event->using_pickpocket_cheat);
+	string message = pickpocket ? "Pickpocket mode" : "Pickpocket disabled";
 	new TextEffect(message);
 }
 

@@ -114,6 +114,7 @@ Event::Event(Configuration *cfg)
  showingQuitDialog = false;
  ignore_timeleft = false;
  in_control_cheat = false;
+ using_pickpocket_cheat = false;
 
  mode = MOVE_MODE;
  last_mode = MOVE_MODE;
@@ -390,10 +391,15 @@ void Event::get_scroll_input(const char *allowed, bool can_escape)
 //    scroll->grab_focus();
 }
 
-void Event::get_inventory_obj(Actor *actor)
+void Event::get_inventory_obj(Actor *actor, bool getting_target)
 {
-	get_target("");
-	moveCursorToInventory();
+	if(getting_target)
+	{
+		get_target("");
+		moveCursorToInventory();
+	}
+	else if(game->is_orig_style())
+		view_manager->set_inventory_mode();
 	if(game->is_new_style())
 	{
 		//view_manager->set_inventory_mode();
@@ -2710,6 +2716,11 @@ void Event::multiuse(uint16 wx, uint16 wy)
 
     if(using_actor) // use or talk to an actor
     {
+        if(using_pickpocket_cheat && game->are_cheats_enabled())
+        {
+            get_inventory_obj(actor, false);
+            return;
+        } 
         bool can_use;
         if(game->get_game_type() == NUVIE_GAME_U6 && (actor->get_actor_num() == 132 // Smith
            || actor->get_actor_num() == 130)) // Pushme Pullyu

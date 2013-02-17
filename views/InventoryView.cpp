@@ -95,6 +95,11 @@ bool InventoryView::set_party_member(uint8 party_member)
 
 bool InventoryView::set_actor(Actor *actor, bool pickpocket)
 {
+   if(party->contains_actor(actor))
+   {
+     set_party_member(party->get_member_num(actor));
+     return true;
+   }
    picking_pocket = pickpocket;
    is_party_member = false;
    outside_actor = actor;

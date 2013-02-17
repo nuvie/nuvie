@@ -220,7 +220,7 @@ function actor_can_turn_invisible(obj_n)
 	return false
 end
 
-function actor_int_check(attacker, defender)
+function actor_int_check(defender, attacker)
 
    if (math.floor(actor_int_adj(attacker) / 2) + 15) - actor_int_adj(defender) > math.random(1, 30) then
       return true
