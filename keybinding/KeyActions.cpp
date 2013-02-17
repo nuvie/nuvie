@@ -438,6 +438,13 @@ void ActionTogglePickpocket(int const *params)
 	new TextEffect(message);
 }
 
+void ActionToggleGodMode(int const *params)
+{
+	bool god_mode = game->toggle_god_mode();
+	string message = god_mode ? "God mode enabled" : "God mode disabled";
+	new TextEffect(message);
+}
+
 void ActionHealParty(int const *params)
 {
 	player->get_party()->heal();

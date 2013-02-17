@@ -9,7 +9,9 @@ local k,v
 
 for k,v in pairs(hit_items) do
 	if v.luatype == "actor" then
-		v.cursed = true
+		if is_god_mode_enabled() == false or v.in_party == false then
+			v.cursed = true
+		end
 	end
 end
 

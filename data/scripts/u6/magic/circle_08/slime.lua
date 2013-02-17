@@ -14,7 +14,7 @@ for x = loc.x - 5,loc.x + 5 do
 			local actor_type = actor_tbl[actor.obj_n]
 			
 			if actor.align == ALIGNMENT_EVIL and (actor_type == nil or actor_type[12] == 0) then
-				if actor_int_check(caster, actor) == false then
+				if actor_int_check(actor, caster) == false then
 					
 					local old_tile_num = actor.tile_num
 					actor.base_obj_n = 0x177 --convert actor into slime

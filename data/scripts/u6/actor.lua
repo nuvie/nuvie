@@ -222,6 +222,14 @@ end
 
 function actor_int_check(defender, attacker)
 
+   if is_god_mode_enabled() then
+      if defender.in_party then
+        return true
+      end
+      if attacker.in_party then
+        return false
+      end
+   end
    if (math.floor(actor_int_adj(attacker) / 2) + 15) - actor_int_adj(defender) > math.random(1, 30) then
       return true
    end
@@ -435,6 +443,9 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 end
 
 function actor_tile_dmg(actor, map_tile)
+		if is_god_mode_enabled() and actor.in_party then
+			return
+		end
 		local obj_n = actor.obj_n
 		local actor_type = actor_tbl[actor.obj_n]
 		local dmg = 0
@@ -572,7 +583,9 @@ end
 function actor_combat_hit_check(attacker, foe, weapon_obj)
 
    if foe == nil then return false end
-      
+	if is_god_mode_enabled() and attacker.in_party then
+		return true
+	end
 	if foe.luatype ~= "actor" or weapon_obj.obj_n == 48 then --48 glass sword
       --dgb(foe.luatype)
 		return true
@@ -1084,7 +1097,14 @@ function actor_take_hit(attacker, defender, max_dmg)
    else
       ac = 0 --object
    end
-   
+   if is_god_mode_enabled() then
+     if defender_type == "actor" and defender.in_party then
+--        print("`"..defender.name.." grazed.\n")
+        return
+     elseif attacker.in_party then
+        max_dmg = 255
+     end 
+   end
    if max_dmg > 0 then
       if defender_type == "actor" and defender.wt > 1 and defender.wt < 16 then
          --FIXME defender now targets attacker. I think.
@@ -1155,6 +1175,13 @@ function actor_hit(defender, max_dmg, attacker, no_hit_anim)
 	end
 	
 	if defender.luatype == "actor" then
+		if is_god_mode_enabled() then
+			if defender.in_party then
+				return 0
+			else
+				max_dmg = 255
+			end
+		end
 		--actor logic here
 		defender.hit_flag = true
 		if no_hit_anim == nil then

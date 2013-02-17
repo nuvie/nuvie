@@ -221,6 +221,7 @@ static int nscript_hail_storm_effect(lua_State *L);
 static int nscript_wizard_eye_effect(lua_State *L);
 
 static int nscript_play_sfx(lua_State *L);
+static int nscript_is_god_mode_enabled(lua_State *L);
 
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
@@ -631,6 +632,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_wizard_eye_effect);
    lua_setglobal(L, "wizard_eye_effect");
+
+   lua_pushcfunction(L, nscript_is_god_mode_enabled);
+   lua_setglobal(L, "is_god_mode_enabled");
 
    seed_random();
 
@@ -2869,4 +2873,11 @@ int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive)
 	lua_setmetatable(L, -2);
 
 	return 2;
+}
+
+static int nscript_is_god_mode_enabled(lua_State *L)
+{
+	bool god_mode = Game::get_game()->is_god_mode_enabled();
+	lua_pushboolean(L, god_mode);
+	return 1;
 }

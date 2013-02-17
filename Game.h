@@ -121,6 +121,7 @@ class Game
  bool dragging_enabled;
  bool cheats_enabled;
  bool unlimited_casting;
+ bool god_mode_enabled;
  bool game_play;
 
  public:
@@ -170,6 +171,8 @@ class Game
  void set_hackmove(bool hackmove) { is_using_hackmove = hackmove; }
  uint8 is_dragging_enabled() { return dragging_enabled; }
  void set_dragging_enabled(bool drag) { dragging_enabled = drag; }
+ bool is_god_mode_enabled() { return (god_mode_enabled && cheats_enabled); }
+ bool toggle_god_mode() { return (god_mode_enabled = !god_mode_enabled); }
  bool are_cheats_enabled() { return cheats_enabled; }
  void set_cheats_enabled(bool cheat) { cheats_enabled = cheat; }
  bool has_unlimited_casting() { return unlimited_casting; }

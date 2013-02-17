@@ -121,6 +121,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  game_type = NUVIE_GAME_NONE;
  game_play = true;
  unlimited_casting = false;
+ god_mode_enabled = false;
 
  config->value("config/cheats/enabled", cheats_enabled, false);
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);

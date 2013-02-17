@@ -1,3 +1,7 @@
+2013-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1650
+	* Add Alt-Ctrl-G god mode cheat
+	* Change slime actor_int_check due to r1649 parameter change
+
 2013-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1649
 	* Fix summon alignment
 	* Give clones combat worktype if their wt <= player

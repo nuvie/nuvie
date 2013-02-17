@@ -43,6 +43,7 @@ h	show_keys
 z	close_gumps
 
 Ctrl-c	toggle_cheats
+Alt-Ctrl-g	toggle_god_mode
 Alt-h	toggle_hackmove
 Alt-Ctrl-h	heal_party
 e	show_eggs
