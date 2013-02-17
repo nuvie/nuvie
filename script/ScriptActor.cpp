@@ -1012,6 +1012,8 @@ static int nscript_actor_can_carry_obj(lua_State *L)
 
 static int nscript_actor_can_carry_obj_weight(lua_State *L)
 {
+	   if(Game::get_game()->using_hackmove())
+	      return 1;
 	   Actor *actor = nscript_get_actor_from_args(L);
 	   if(actor == NULL)
 	      return 0;

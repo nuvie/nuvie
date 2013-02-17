@@ -50,7 +50,6 @@ static const sint32 globeradius_2[] = { 38,  58,  90, 120, 135, 160 };
 
 Screen::Screen(Configuration *cfg)
 {
- std::string str_lighting_style;
  config = cfg;
 
  sdl_surface = NULL;
@@ -63,16 +62,9 @@ Screen::Screen(Configuration *cfg)
  scale_factor = 2;
  fullscreen = false;
  doubleBuffer = false;
- std::string x;
- config->value( "config/general/lighting", str_lighting_style );
+ is_no_darkness = false;
 
- if( str_lighting_style == "none" )
-	 lighting_style = LIGHTING_STYLE_NONE;
- else if( str_lighting_style == "smooth" )
-	 lighting_style = LIGHTING_STYLE_SMOOTH;
- else
-	 lighting_style = LIGHTING_STYLE_ORIGINAL;
-
+ set_lighting_style();
  max_update_rects = 10;
  num_update_rects = 0;
  memset( shading_globe, 0, sizeof(shading_globe) );
@@ -144,6 +136,29 @@ config->value("config/video/scale_factor", scale_factor, 1);
  set_screen_mode();
 
  return true;
+}
+
+void Screen::set_lighting_style()
+{
+ std::string str_lighting_style;
+ config->value( "config/general/lighting", str_lighting_style );
+
+ if( str_lighting_style == "none" )
+	 lighting_style = LIGHTING_STYLE_NONE;
+ else if( str_lighting_style == "smooth" )
+	 lighting_style = LIGHTING_STYLE_SMOOTH;
+ else
+	 lighting_style = LIGHTING_STYLE_ORIGINAL;
+}
+
+bool Screen::toggle_darkness_cheat()
+{
+	is_no_darkness = !is_no_darkness;
+	if(is_no_darkness)
+		lighting_style = LIGHTING_STYLE_NONE;
+	else
+		set_lighting_style();
+	return is_no_darkness;
 }
 
 

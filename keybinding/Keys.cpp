@@ -119,6 +119,8 @@ const struct Action {
 	{ "SHOW_EGGS", ActionShowEggs, "Show eggs", Action::cheat_keys, true },
 	{ "TOGGLE_HACKMOVE", ActionToggleHackmove, "Toggle hack move", Action::cheat_keys, true },
 	{ "TOGGLE_EGG_SPAWN", ActionToggleEggSpawn, "Toggle egg spawn", Action::cheat_keys, true },
+	{ "TOGGLE_UNLIMITED_CASTING", ActionToggleUnlimitedCasting, "Toggle unlimited casting", Action::cheat_keys, true },
+	{ "TOGGLE_NO_DARKNESS", ActionToggleNoDarkness, "Toggle no darkness", Action::cheat_keys, true },
 	{ "HEAL_PARTY", ActionHealParty, "Heal party", Action::cheat_keys, true },
 	{ "TOGGLE_CHEATS", ActionToggleCheats, "Toggle cheats", Action::normal_keys, true },
 	{ "TEST", ActionTest, "Test", Action::dont_show, true },

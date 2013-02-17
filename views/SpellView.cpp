@@ -104,7 +104,7 @@ void SpellView::set_spell_caster(Actor *actor, Obj *s_container, bool eventMode)
 	spell_num = spell_container->quality - (16 * level);
 
 
-	if(spell_container->find_in_container(OBJ_U6_SPELL, MAGIC_ALL_SPELLS, OBJ_MATCH_QUALITY))
+	if(Game::get_game()->has_unlimited_casting() || spell_container->find_in_container(OBJ_U6_SPELL, MAGIC_ALL_SPELLS, OBJ_MATCH_QUALITY))
 		all_spells_mode = true;
 	else
 		all_spells_mode = false;
@@ -346,6 +346,8 @@ void SpellView::display_spell_text(Spell *spell, uint16 line_num, uint8 selected
 
 uint16 SpellView::get_available_spell_count(Spell *s)
 {
+	if(Game::get_game()->has_unlimited_casting())
+		return 99;
 	sint32 min_reagents = -1;
 	for(int shift=0;shift<8;shift++)
 	{

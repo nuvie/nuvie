@@ -31,6 +31,7 @@
 #include "MapWindow.h"
 #include "Effect.h"
 #include "EggManager.h"
+#include "Screen.h"
 
 #define game Game::get_game()
 #define event Game::get_game()->get_event()
@@ -412,6 +413,21 @@ void ActionToggleEggSpawn(int const *params)
 	bool spawning = !egg_manager->is_spawning_actors();
 	egg_manager->set_spawning_actors(spawning);
 	string message = spawning ? "Will spawn actors" : "Won't spawn actors";
+	new TextEffect(message);
+}
+
+void ActionToggleUnlimitedCasting(int const *params)
+{
+	bool unlimited = !game->has_unlimited_casting();
+	game->set_unlimited_casting(unlimited);
+	string message = unlimited ? "Unlimited casting enabled" : "Unlimited casting disabled";
+	new TextEffect(message);
+}
+
+void ActionToggleNoDarkness(int const *params)
+{
+	bool no_darkness = game->get_screen()->toggle_darkness_cheat();
+	string message = no_darkness ? "No more darkness" : "Normal lighting";
 	new TextEffect(message);
 }
 

@@ -1,3 +1,8 @@
+2013-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1648
+	* Improve hack move
+	* Add Alt-I no darkness cheat
+	* Alt-W toggle unlimited casting cheat
+
 2013-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1647
 	* Add cheats/enabled cfg option that must be enabled to use cheats
 	* Add use item keybinding support

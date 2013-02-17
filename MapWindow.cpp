@@ -1709,9 +1709,12 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool ac
 
 bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 {
-	if(!obj || obj->is_in_inventory())
+	if(!obj)
 		return false;
-
+	if(game->using_hackmove())
+		return true;
+	if(obj->is_in_inventory())
+		return false;
 	if(obj->is_in_container())
 		obj = obj->get_container_obj(true);
 

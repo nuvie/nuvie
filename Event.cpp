@@ -825,7 +825,9 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
 	{
 		scroll->display_string(obj_manager->look_obj(obj));
 
-		if(!map_window->can_get_obj(actor, obj))
+		if(game->using_hackmove())
+			can_perform_get = true;
+		else if(!map_window->can_get_obj(actor, obj))
 		{
 			scroll->display_string("\n\nBlocked.");
 		}

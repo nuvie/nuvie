@@ -120,6 +120,7 @@ class Game
  bool is_using_hackmove;
  bool dragging_enabled;
  bool cheats_enabled;
+ bool unlimited_casting;
  bool game_play;
 
  public:
@@ -171,6 +172,8 @@ class Game
  void set_dragging_enabled(bool drag) { dragging_enabled = drag; }
  bool are_cheats_enabled() { return cheats_enabled; }
  void set_cheats_enabled(bool cheat) { cheats_enabled = cheat; }
+ bool has_unlimited_casting() { return unlimited_casting; }
+ void set_unlimited_casting(bool unlimited) { unlimited_casting = unlimited; }
  bool use_new_converse_gump();
 
  /* Return instances of Game classes */

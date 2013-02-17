@@ -191,6 +191,11 @@ bool Magic::cast()
   event->scroll->display_string(spell[index]->name);
   event->scroll->display_string(")\n");
 
+  if(Game::get_game()->has_unlimited_casting())
+  {
+    cast_spell_directly(index);
+    return true;
+  }
 
   /* debug block */
   DEBUG(0,LEVEL_DEBUGGING,"matched spell #%d\n",index);

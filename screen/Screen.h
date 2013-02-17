@@ -50,6 +50,7 @@ class Screen
 
  bool fullscreen;
  bool doubleBuffer;
+ bool is_no_darkness;
 
  uint8 palette[768];
  uint16 width;
@@ -70,6 +71,8 @@ class Screen
 
    bool init();
 
+   void set_lighting_style();
+   bool toggle_darkness_cheat();
    bool set_palette(uint8 *palette);
    bool set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
    bool rotate_palette(uint8 pos, uint8 length);

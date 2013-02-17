@@ -120,6 +120,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  ignore_event_delay = 0;
  game_type = NUVIE_GAME_NONE;
  game_play = true;
+ unlimited_casting = false;
 
  config->value("config/cheats/enabled", cheats_enabled, false);
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
