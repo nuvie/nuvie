@@ -133,6 +133,7 @@ class Party {
  bool remove_dead_actor(Actor *actor);
  bool resurrect_dead_members();
  void heal();
+ void cure();
  //void set_active(uint8 member_num, bool state) { member[member_num].inactive = !state; }
 
  // Properties
@@ -166,6 +167,7 @@ class Party {
  bool has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual=true);
  bool remove_obj(uint16 obj_n, uint8 quality);
  Actor *who_has_obj(uint16 obj_n, uint8 quality, bool match_zero_qual=true);
+ Obj *get_obj(uint16 obj_n, uint8 quality, bool match_qual_zero=true, uint8 frame_n = 0, bool match_frame_n = false);
  bool is_horsed(); // is anyone on a horse?
  bool is_everyone_horsed();
  Obj *get_food(); // used while resting

@@ -121,6 +121,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  game_type = NUVIE_GAME_NONE;
  game_play = true;
 
+ config->value("config/cheats/enabled", cheats_enabled, false);
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
  config->value("config/input/enabled_dragging", dragging_enabled, true);
 }
@@ -400,7 +401,10 @@ bool Game::use_new_converse_gump()
 
 bool Game::using_hackmove()
 {
-	return is_using_hackmove;
+	if(cheats_enabled)
+		return is_using_hackmove;
+	else
+		return false;
 }
 
 bool Game::set_mouse_pointer(uint8 ptr_num)

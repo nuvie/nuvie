@@ -127,7 +127,7 @@ bool Magic::start_new_spell()
 
   if (Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) > 0)
   {
-	  event->scroll->display_string("No magic at this time!\n");
+	  event->scroll->display_string("No magic at this time!\n\n");
   }
   else if (spellbook_obj != NULL)
   {

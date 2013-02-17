@@ -1,4 +1,16 @@
-2013-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1646
+2013-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1647
+	* Add cheats/enabled cfg option that must be enabled to use cheats
+	* Add use item keybinding support
+	* Add Ctrl-C toggle cheats enabled
+	* Add Alt-H toggle hack mover cheat
+	* Add E toggle display egg cheat
+	* Add Alt-Ctrl-E toggle actor spawning
+	* Add Alt-Ctrl-H heal party cheat
+	* Add O use orb of moons command
+	* Add P use lock pick command
+	* Adjust anti-magic message display 
+
+2013-02-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1646
 	* Show message for switches and levers that don't do anything
 	* Hack a fix for Covetous switch that doesn't work in the original
 	* Stop sign gump from displaying again when left clicking to close

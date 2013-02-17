@@ -602,6 +602,7 @@ void Converse::unwait()
  */
 bool Converse::override_input()
 {
+    bool overide_cheat = Game::get_game()->are_cheats_enabled() && party_all_the_time;
     if(in_str.empty())
         in_str = "bye";
     else if(in_str == "look")
@@ -610,7 +611,7 @@ bool Converse::override_input()
         print(desc);
         script->seek(script->pos() - 1); // back to ASK command
     }
-    else if(party_all_the_time && in_str == "join")
+    else if(overide_cheat && in_str == "join")
     {
         if(Game::get_game()->get_game_type() == NUVIE_GAME_U6 // altars and statues
            && (npc->get_actor_num() >= 189 && npc->get_actor_num() <= 200))
@@ -620,7 +621,7 @@ bool Converse::override_input()
         print("\"Friends of Nuvie? Sure, I'll come along!\"\n*");
         return(false);
     }
-    else if(party_all_the_time && in_str == "leave")
+    else if(overide_cheat && in_str == "leave")
     {
         if(player->get_party()->contains_actor(npc))
             player->get_party()->remove_actor(npc);

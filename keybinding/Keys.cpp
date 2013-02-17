@@ -32,6 +32,7 @@
 #include "Configuration.h"
 #include "U6misc.h"
 #include "Console.h"
+#include "Effect.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::atoi;
@@ -114,6 +115,12 @@ const struct Action {
 	{ "DECREASE_DEBUG", ActionDecreaseDebug, "Decrease debug", Action::normal_keys, true },
 	{ "INCREASE_DEBUG", ActionIncreaseDebug, "Increase debug", Action::normal_keys, true },
 	{ "CLOSE_GUMPS", ActionCloseGumps, "Close gumps", Action::normal_keys, true },
+	{ "USE_ITEM", ActionUseItem, "Use item", Action::normal_keys, true },
+	{ "SHOW_EGGS", ActionShowEggs, "Show eggs", Action::cheat_keys, true },
+	{ "TOGGLE_HACKMOVE", ActionToggleHackmove, "Toggle hack move", Action::cheat_keys, true },
+	{ "TOGGLE_EGG_SPAWN", ActionToggleEggSpawn, "Toggle egg spawn", Action::cheat_keys, true },
+	{ "HEAL_PARTY", ActionHealParty, "Heal party", Action::cheat_keys, true },
+	{ "TOGGLE_CHEATS", ActionToggleCheats, "Toggle cheats", Action::normal_keys, true },
 	{ "TEST", ActionTest, "Test", Action::dont_show, true },
 	{ "", 0, "", Action::dont_show, false } //terminator
 };
@@ -224,6 +231,11 @@ bool KeyBinder::DoAction(ActionType const& a) const
 	if (!a.action->allow_in_vehicle && Game::get_game()->get_player()->is_in_vehicle())
 	{
 		Game::get_game()->get_event()->display_not_aboard_vehicle();
+		return true;
+	}
+	else if(a.action->key_type == Action::cheat_keys && !Game::get_game()->are_cheats_enabled())
+	{
+		new TextEffect("Cheats are disabled");
 		return true;
 	}
 	a.action->func(a.params);

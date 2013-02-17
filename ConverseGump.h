@@ -50,7 +50,6 @@ class ConverseGump: public MsgScroll
 
 	bool found_break_char;
 	bool solid_bg;
-	bool party_all_the_time;
 	uint8 converse_bg_color;
 
 	uint16 cursor_position;

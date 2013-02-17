@@ -28,6 +28,9 @@
 #include "InventoryView.h"
 #include "CommandBar.h"
 #include "ActorView.h"
+#include "MapWindow.h"
+#include "Effect.h"
+#include "EggManager.h"
 
 #define game Game::get_game()
 #define event Game::get_game()->get_event()
@@ -362,6 +365,69 @@ void ActionIncreaseDebug(int const *params)
 void ActionCloseGumps(int const *params)
 {
 	event->close_gumps();
+}
+
+void ActionUseItem(int const *params)
+{
+	uint16 obj_n = params[0] > 0 ? params[0] : 0;
+	uint8 qual = params[1] > 0 ? params[1] : 0;
+	bool match_qual = params[2] == 1 ? true: false;
+	uint8 frame_n = params[3] > 0 ? params[3] : 0;
+	bool match_frame_n = params[4] == 1 ? true: false;
+
+	// try player first
+	Obj *obj = player->get_actor()->inventory_get_object(obj_n, qual, match_qual, frame_n, match_frame_n);
+	if(!obj && !event->using_control_cheat())
+		obj =  player->get_party()->get_obj(obj_n, qual, match_qual, frame_n, match_frame_n);
+	if(obj)
+	{
+		game->get_scroll()->display_string("Use-", MSGSCROLL_NO_MAP_DISPLAY);
+		event->set_mode(USE_MODE);
+		event->use(obj);
+	}
+	// printf("ActionUseItem obj_n = %d, qual = %d, match_qual = %s, frame_n = %d, match_frame_n = %s\n", obj_n, qual, match_qual ? "true": "false", frame_n, match_frame_n ? "true": "false");
+}
+
+void ActionShowEggs(int const *params)
+{
+	if(game->get_game_type() != NUVIE_GAME_U6)
+		return;
+	bool show_eggs = !game->get_obj_manager()->is_showing_eggs();
+	game->get_obj_manager()->show_egg_objs(show_eggs);
+	string message = show_eggs ? "Showing eggs" : "Eggs invisible";
+	new TextEffect(message);
+}
+
+void ActionToggleHackmove(int const *params)
+{
+	bool hackmove = !game->using_hackmove();
+	game->set_hackmove(hackmove);
+	string message = hackmove ? "Hack move enabled" : "Hack move disabled";
+	new TextEffect(message);
+}
+
+void ActionToggleEggSpawn(int const *params)
+{
+	EggManager *egg_manager= game->get_obj_manager()->get_egg_manager();
+	bool spawning = !egg_manager->is_spawning_actors();
+	egg_manager->set_spawning_actors(spawning);
+	string message = spawning ? "Will spawn actors" : "Won't spawn actors";
+	new TextEffect(message);
+}
+
+void ActionHealParty(int const *params)
+{
+	player->get_party()->heal();
+	player->get_party()->cure();
+	new TextEffect("Party healed");
+}
+
+void ActionToggleCheats(int const *params)
+{
+	bool cheats = !game->are_cheats_enabled();
+	game->set_cheats_enabled(cheats);
+	string message = cheats ? "Cheats enabled" : "Cheats disabled";
+	new TextEffect(message);
 }
 
 void ActionTest(int const *params)

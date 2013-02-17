@@ -83,8 +83,6 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
  if(c<256)
 	 converse_bg_color = (uint8)c;
 
- cfg->value("config/cheats/party_all_the_time", party_all_the_time, false);
-
  input_char = 0;
  cursor_position = 0;
 }

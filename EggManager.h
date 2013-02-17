@@ -66,10 +66,13 @@ class EggManager
  bool spawn_egg(Obj *egg, uint8 hatch_probability);
  void spawn_eggs(uint16 x, uint16 y, uint8 z, bool teleport = false);
  std::list<Egg *> *get_egg_list() { return &egg_list; };
+ bool is_spawning_actors(){ return !not_spawning_actors; }
+ void set_spawning_actors(bool spawning) { not_spawning_actors = !spawning; }
 
  protected:
  
  uint8 get_worktype(Obj *embryo);
+ bool not_spawning_actors;
 };
 
 #endif /* __EggManager_h__ */

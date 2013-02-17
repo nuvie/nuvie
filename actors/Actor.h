@@ -339,6 +339,7 @@ class Actor
  void add_light(uint8 val);
  void subtract_light(uint8 val);
  void heal() { set_hp(get_maxhp()); }
+ void cure();
  void set_moves_left(sint8 val);
  void set_dead_flag(bool value);
  virtual void update_time() { set_moves_left(get_moves_left() + get_dexterity()); }

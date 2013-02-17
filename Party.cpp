@@ -583,6 +583,17 @@ Actor *Party::who_has_obj(uint16 obj_n, uint8 quality, bool match_qual_zero)
     return NULL;
 }
 
+Obj *Party::get_obj(uint16 obj_n, uint8 quality, bool match_qual_zero, uint8 frame_n, bool match_frame_n)
+{
+    Obj *obj;
+    for(uint16 i = 0; i < num_in_party; i++)
+    {
+        obj = member[i].actor->inventory_get_object(obj_n, quality, match_qual_zero, frame_n, match_frame_n);
+        if(obj)
+            return obj;
+    }
+    return NULL;
+}
 
 /* Is EVERYONE in the party at or near the coordinates?
  */
@@ -694,6 +705,14 @@ void Party::heal()
 
  return;
  
+}
+
+void Party::cure()
+{
+ for(uint16 i=0;i<num_in_party;i++)
+ {
+   member[i].actor->cure();
+ } 
 }
 
 void Party::show()

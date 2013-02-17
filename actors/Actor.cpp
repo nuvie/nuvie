@@ -2035,3 +2035,13 @@ bool Actor::is_at_scheduled_location()
 
    return false;
 }
+
+void Actor::cure()
+{
+	set_poisoned(false);
+	set_paralyzed(false);
+	set_charmed(false);
+	set_corpser_flag(false);
+	set_cursed(false);
+	set_asleep(false);
+}

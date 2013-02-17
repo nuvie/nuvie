@@ -151,7 +151,6 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  selected_obj = NULL;
  look_obj = NULL;
  look_actor = NULL;
- config->value("config/cheats/enable_hackmove", hackmove);
  walking = false;
  looking = false;
  drop_with_move = false;
@@ -440,7 +439,7 @@ bool MapWindow::is_on_screen(uint16 x, uint16 y, uint8 z)
 
 bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
 {
- if(hackmove)
+ if(game->using_hackmove())
     return false;
  if(!MapCoord(x,y,cur_level).is_visible()) // tmpBufTileIsBlack will crash if called (doesn't happen in gdb)
     return true;
@@ -600,6 +599,11 @@ void MapWindow::updateAmbience()
 
     if(!screen)
         return;
+    uint8 cur_min_brightness;
+    if(game->are_cheats_enabled())
+        cur_min_brightness = min_brightness;
+    else
+        cur_min_brightness = 0;
 
      GameClock *clock = game->get_clock();
 	 Weather *weather = game->get_weather();
@@ -609,17 +613,17 @@ void MapWindow::updateAmbience()
      if(x_ray_view == true)
          a = 255;
      else if(in_dungeon_level())
-	     a = min_brightness;
+	     a = cur_min_brightness;
      else if( weather->is_eclipse() ) //solar eclipse
-         a = min_brightness;
+         a = cur_min_brightness;
      else if( h == 19 ) //Dusk -- Smooth transition between 255 and min_brightness during first 59 minutes
-         a = 255 - (uint8)( ( 255.0f - min_brightness ) * (float)clock->get_minute() / 59.0f );
+         a = 255 - (uint8)( ( 255.0f - cur_min_brightness ) * (float)clock->get_minute() / 59.0f );
      else if( h == 5 ) //Dawn -- Smooth transition between min_brightness and 255 during first 45 minutes
-         a = min_brightness + ( 255.0f - min_brightness ) * (float)clock->get_minute() / 45.0f;
+         a = cur_min_brightness + ( 255.0f - cur_min_brightness ) * (float)clock->get_minute() / 45.0f;
      else if( h > 5 && h < 19 ) //Day
          a = 255;
      else //Night
-         a = min_brightness;
+         a = cur_min_brightness;
  
      if(a > 255)
          a = 255;
@@ -1596,7 +1600,7 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool ac
     bool in_inventory = obj->is_in_inventory();
     if(!in_inventory && original_obj_loc.x == x && original_obj_loc.y == y)
         return false;
-    if(hackmove)
+    if(game->using_hackmove())
         return true;
 
     if(tile_is_black(x, y, obj))
@@ -1752,7 +1756,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
  if(message == GUI_DRAG_OBJ)
    {
-    if(game->get_player()->is_in_vehicle() && !hackmove)
+    if(game->get_player()->is_in_vehicle() && !game->using_hackmove())
     {
         game->get_event()->display_not_aboard_vehicle();
         return false;
@@ -1924,7 +1928,7 @@ void MapWindow::set_interface()
 {
 	std::string interface_str;
 	config->value("config/input/interface", interface_str, "normal");
-	if(interface_str == "ignore_block" || hackmove)
+	if(interface_str == "ignore_block" ||  Game::get_game()->using_hackmove()) // game variable is not initialized
 		interface = INTERFACE_IGNORE_BLOCK;
 	else if(interface_str == "fullscreen")
 		interface = INTERFACE_FULLSCREEN;
@@ -2077,7 +2081,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	float weight = obj_manager->get_obj_weight (obj, OBJ_WEIGHT_EXCLUDE_CONTAINER_ITEMS);
 
 	if ((weight == 0 || player->get_actor_num() == 0
-	    || tile_is_black(obj->x, obj->y, obj)) && !hackmove)
+	    || tile_is_black(obj->x, obj->y, obj)) && !game->using_hackmove())
 		return	GUI_PASS;
 
 	if(distance > 1 && interface == INTERFACE_NORMAL)

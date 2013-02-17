@@ -106,6 +106,7 @@ class ObjManager
  ~ObjManager();
 
  void show_egg_objs(bool value);
+ bool is_showing_eggs() { return show_eggs; }
 
  bool loadObjs();
  bool load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_offset);

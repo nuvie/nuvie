@@ -17,6 +17,7 @@
 #include "SoundManager.h"
 #include "U6objects.h"
 #include "Effect.h"
+#include "Player.h"
 
 #include <cassert>
 
@@ -476,6 +477,16 @@ uint16 HitEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
         delete_self();
     }
     return(0);
+}
+
+TextEffect::TextEffect(std::string text) // default somewhat centered on player for cheat messages
+{
+	MapCoord loc = game->get_player()->get_actor()->get_location();
+	MapWindow *map_window = game->get_map_window();
+	loc.x = (loc.x- map_window->get_cur_x() -2)*16;
+	loc.y = (loc.y- map_window->get_cur_y() -1)*16;
+
+	add_anim(new TextAnim(text, loc, 1500));
 }
 
 /*** TextEffect ***/

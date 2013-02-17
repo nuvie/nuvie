@@ -58,6 +58,7 @@ EggManager::EggManager(Configuration *cfg, nuvie_game_t type, Map *m)
  map = m;
  actor_manager = NULL;
  obj_manager = NULL;
+ not_spawning_actors = false;
 }
 
 EggManager::~EggManager()
@@ -203,6 +204,8 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 				  if((gametype == NUVIE_GAME_U6 && (obj->obj_n >= OBJ_U6_GIANT_RAT || obj->obj_n == OBJ_U6_CHEST))
 						  || obj->quality != 0) /* spawn temp actor we know it's an actor if it has a non-zero worktype. */
 				  {
+					if(not_spawning_actors)
+						break;
 				  	// group new actors randomly if egg space already occupied
 				  	Actor *prev_actor = actor_manager->get_actor(egg->x, egg->y, egg->z);
 				  	Actor *new_actor = NULL;

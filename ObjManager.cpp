@@ -448,10 +448,11 @@ void ObjManager::clean_actor_inventories()
 
 void ObjManager::show_egg_objs(bool value)
 {
+ show_eggs = value;
  if(value == true)
    set_obj_tile_num(obj_egg_table[game_type], egg_tile_num); // show egg tile.
  else
-   set_obj_tile_num(obj_egg_table[game_type], 0); //nothing. we don't want to show eggs.
+   set_obj_tile_num(obj_egg_table[game_type], 1877); // transparent tile
 
  return;
 }

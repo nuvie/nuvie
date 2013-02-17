@@ -119,7 +119,7 @@ class Game
  uint8 ignore_event_delay; // (stack) if non-zero, Event will not periodically wait for NUVIE_INTERVAL
  bool is_using_hackmove;
  bool dragging_enabled;
-
+ bool cheats_enabled;
  bool game_play;
 
  public:
@@ -166,8 +166,11 @@ class Game
  bool doubleclick_opens_containers();
  bool is_roof_mode();
  bool using_hackmove();
+ void set_hackmove(bool hackmove) { is_using_hackmove = hackmove; }
  uint8 is_dragging_enabled() { return dragging_enabled; }
  void set_dragging_enabled(bool drag) { dragging_enabled = drag; }
+ bool are_cheats_enabled() { return cheats_enabled; }
+ void set_cheats_enabled(bool cheat) { cheats_enabled = cheat; }
  bool use_new_converse_gump();
 
  /* Return instances of Game classes */
