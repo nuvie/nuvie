@@ -3279,7 +3279,9 @@ bool U6UseCode::use_peer_gem(Obj *obj, UseCodeEvent ev)
    Unready: Cancel status effect. */
 bool U6UseCode::magic_ring(Obj *obj, UseCodeEvent ev)
 {
-    Actor *actor = actor_manager->get_actor_holding_obj(obj);
+    Actor *actor = obj->get_actor_holding_obj();
+    if(!actor)
+        actor = player->get_actor();
     if(actor->inventory_get_readied_object(ACTOR_HAND) != NULL
        && actor->inventory_get_readied_object(ACTOR_HAND) != obj
        && actor->inventory_get_readied_object(ACTOR_HAND_2) != NULL
@@ -3297,7 +3299,9 @@ bool U6UseCode::magic_ring(Obj *obj, UseCodeEvent ev)
 
 bool U6UseCode::storm_cloak(Obj *obj, UseCodeEvent ev)
 {
-    Actor *actor = actor_manager->get_actor_holding_obj(obj);
+    Actor *actor = obj->get_actor_holding_obj();
+    if(!actor)
+        actor = player->get_actor();
     if(actor->inventory_get_readied_object(ACTOR_BODY) != NULL
        && actor->inventory_get_readied_object(ACTOR_BODY) != obj)
         return true;

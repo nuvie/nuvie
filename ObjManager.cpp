@@ -183,7 +183,13 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
      {
       egg_manager->add_egg(obj);
       // set egg visibility
-      obj->set_invisible(!show_eggs);
+      if(game_type==NUVIE_GAME_U6)
+      {
+        obj->set_invisible(false);
+        show_egg_objs(show_eggs);
+      }
+      else
+        obj->set_invisible(!show_eggs);
      }
 
    if(usecode->is_container(obj)) //object type is container, but may be empty
