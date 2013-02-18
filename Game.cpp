@@ -122,6 +122,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  game_play = true;
  unlimited_casting = false;
  god_mode_enabled = false;
+ armageddon = false;
 
  config->value("config/cheats/enabled", cheats_enabled, false);
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
@@ -407,6 +408,13 @@ bool Game::using_hackmove()
 		return is_using_hackmove;
 	else
 		return false;
+}
+
+void Game::set_armageddon(bool val)
+{
+	if(armageddon || val) // don't interfere with spawn cheat unless Armageddon was cast
+		egg_manager->set_spawning_actors(!val);
+	armageddon = val;
 }
 
 bool Game::set_mouse_pointer(uint8 ptr_num)

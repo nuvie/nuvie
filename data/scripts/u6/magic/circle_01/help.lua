@@ -1,6 +1,8 @@
 magic_casting_effect()
 play_sfx(SFX_KAL_LOR, true)
-party_resurrect_dead_members()
+if g_armageddon == false then
+	party_resurrect_dead_members()
+end
 party_heal()
 player_move(0x133, 0x160, 0, true)
 

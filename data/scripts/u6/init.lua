@@ -75,6 +75,7 @@ OBJLIST_OFFSET_KEG_TIMER  = 0x1c4b
 g_vanish_obj = {["obj_n"] = 0, ["frame_n"] = 0}
 
 g_keg_timer = 0
+g_armageddon = false
 
 movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1} 
 movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
@@ -468,6 +469,7 @@ function load_game()
 
 	objlist_seek(OBJLIST_OFFSET_KEG_TIMER)
 	g_keg_timer = objlist_read2()
+	set_g_armageddon(false)
 
 end
 
@@ -617,6 +619,10 @@ function explode_surrounding_objects(x, y, z)
 	end
 end
 
+function set_g_armageddon(val)
+	g_armageddon = val
+	set_armageddon(val)
+end
 
 
 --load actor functions

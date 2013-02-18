@@ -222,6 +222,7 @@ static int nscript_wizard_eye_effect(lua_State *L);
 
 static int nscript_play_sfx(lua_State *L);
 static int nscript_is_god_mode_enabled(lua_State *L);
+static int nscript_set_armageddon(lua_State *L);
 
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
@@ -635,6 +636,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_is_god_mode_enabled);
    lua_setglobal(L, "is_god_mode_enabled");
+
+   lua_pushcfunction(L, nscript_set_armageddon);
+   lua_setglobal(L, "set_armageddon");
 
    seed_random();
 
@@ -2880,4 +2884,10 @@ static int nscript_is_god_mode_enabled(lua_State *L)
 	bool god_mode = Game::get_game()->is_god_mode_enabled();
 	lua_pushboolean(L, god_mode);
 	return 1;
+}
+
+static int nscript_set_armageddon(lua_State *L)
+{
+	Game::get_game()->set_armageddon((bool)lua_toboolean(L, 1));
+	return 0;
 }

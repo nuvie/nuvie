@@ -1,3 +1,4 @@
+set_g_armageddon(true)
 magic_casting_effect()
 local i
 for i=1,0xff do

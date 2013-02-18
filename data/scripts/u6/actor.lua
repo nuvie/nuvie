@@ -3757,7 +3757,9 @@ function actor_avatar_death(avatar)
 	play_sfx(SFX_KAL_LOR, true)
 	avatar.asleep = false
 	party_dismount_from_horses();
-	party_resurrect_dead_members()
+	if g_armageddon == false then
+		party_resurrect_dead_members()
+	end
 	party_heal()
 	party_update_leader()
 	player_move(0x133, 0x160, 0, true)

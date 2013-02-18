@@ -1770,6 +1770,7 @@ uint8 U6Actor::get_maxmagic()
 bool U6Actor::will_not_talk()
 {
 	if(worktype == WORKTYPE_U6_COMBAT_RETREAT || worktype == 0x12 // guard arrest player
+	   || Game::get_game()->is_armageddon()
 	   || worktype == WORKTYPE_U6_ATTACK_PARTY || worktype == 0x13) // repel undead and retreat
 		return true;
 	return false;

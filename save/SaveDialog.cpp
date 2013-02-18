@@ -130,6 +130,9 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 
  filelist.close();
 
+ if(Game::get_game()->is_armageddon())
+     save_button->Hide();
+
  return true;
 }
 
