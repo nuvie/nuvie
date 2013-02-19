@@ -175,6 +175,8 @@ private:
  bool init(char *player_name);
  void page_up();
  void page_down();
+ virtual void move_scroll_down();
+ virtual void move_scroll_up();
 
  void process_holding_buffer();
 

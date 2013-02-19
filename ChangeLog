@@ -1,3 +1,7 @@
+2013-02-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1654
+	* You can now use the mouse wheel to scroll text in original mode
+	* Reset the new message scroll rollback timer if you are manually scrolling
+
 2013-02-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1653
 	* Add "Original Game Save" file slot at the end of the save list
 

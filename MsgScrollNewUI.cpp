@@ -302,12 +302,14 @@ GUI_status MsgScrollNewUI::scroll_movement_event(ScrollEventType event)
 	case SCROLL_UP :
 		if(position > 0)
 		{
+			timer = new TimedCallback(this, NULL, 2000);
 			position--;
 			grab_focus();
 		}
 		return GUI_YUM;
 
 	case SCROLL_DOWN :
+		timer = new TimedCallback(this, NULL, 2000);
 		if(position < msg_buf.size())
 			position++;
 		return (GUI_YUM);

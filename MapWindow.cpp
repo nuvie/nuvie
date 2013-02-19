@@ -2001,18 +2001,6 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
 GUI_status MapWindow::MouseDown (int x, int y, int button)
 {
 	//DEBUG(0,LEVEL_DEBUGGING,"MapWindow::MouseDown, button = %i\n", button);
-	if(game->is_new_style())
-	{
-		if(button == SDL_BUTTON_WHEELDOWN)
-		{
-			((MsgScrollNewUI *)game->get_scroll())->move_scroll_down();
-			return GUI_YUM;
-		} else if(button == SDL_BUTTON_WHEELUP)
-		{
-			((MsgScrollNewUI *)game->get_scroll())->move_scroll_up();
-			return GUI_YUM;
-		}
-	}
 	Event *event = game->get_event();
 	Actor *player = actor_manager->get_player();
 	Obj	*obj = get_objAtMousePos (x, y);
@@ -2023,9 +2011,6 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		set_walking(true);
 		return GUI_YUM;
 	}
-
-	if(button != USE_BUTTON && button != WALK_BUTTON && button != DRAG_BUTTON)
-		return GUI_PASS;
 
 	mouseToWorldCoords(x, y, wx, wy);
 
@@ -2064,6 +2049,8 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 
 	if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE) // finish whatever action is being done, with mouse coordinates
 	{
+		if(button != USE_BUTTON && button != WALK_BUTTON)
+			return GUI_PASS;
 		looking = false;
 		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
 		event->select_target(uint16(wx), uint16(wy), cur_level); // the returned location
@@ -2074,10 +2061,22 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_PASS;
 	}
 
-	if (!obj)
+	if(game->is_orig_style())
 	{
-		return	GUI_PASS;
+		if(button == SDL_BUTTON_WHEELDOWN)
+		{
+			game->get_scroll()->page_down();
+			return GUI_YUM;
+		}
+		else if(button == SDL_BUTTON_WHEELUP)
+		{
+			game->get_scroll()->page_up();
+			return GUI_YUM;
+		}
 	}
+
+	if (!obj || button != DRAG_BUTTON)
+		return	GUI_PASS;
 
 	original_obj_loc = MapCoord(obj->x, obj->y, obj->z);
 	int distance = player->get_location().distance(original_obj_loc);

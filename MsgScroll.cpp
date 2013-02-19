@@ -620,6 +620,25 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
    requestor->callback(MSGSCROLL_CB_TEXT_READY, this, &input_str);
  }
 }
+
+void MsgScroll::move_scroll_down()
+{
+ if(msg_buf.size() > scroll_height && display_pos < msg_buf.size() - scroll_height)
+ {
+   display_pos++;
+   scroll_updated = true;
+ }
+}
+
+void MsgScroll::move_scroll_up()
+{
+ if(display_pos > 0)
+ {
+   display_pos--;
+   scroll_updated = true;
+ }
+}
+
 void MsgScroll::page_up()
 {
  uint8 i=0;
@@ -651,21 +670,11 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
 
     switch(key.sym)
      {
-      case SDLK_UP : if(display_pos > 0)
-                       {
-                        display_pos--;
-                        scroll_updated = true;
-                       }
+      case SDLK_UP : move_scroll_up();
                      return (GUI_YUM);
-                     break;
 
-      case SDLK_DOWN: if(msg_buf.size() > scroll_height && display_pos < msg_buf.size() - scroll_height)
-                        {
-                         display_pos++;
-                         scroll_updated = true;
-                        }
+      case SDLK_DOWN: move_scroll_down();
                       return (GUI_YUM);
-                      break;
       case SDLK_PAGEUP: page_up(); // handled in event too but keybindings can change
                         return (GUI_YUM);
       case SDLK_PAGEDOWN: page_down(); // handled in event too but keybindings can change
@@ -740,6 +749,20 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
 
         process_holding_buffer(); // Process any text in the holding buffer.
         return(GUI_YUM);
+    }
+    else if(button == SDL_BUTTON_WHEELUP)
+    {
+        if(Game::get_game()->is_orig_style())
+            page_up();
+        else
+            move_scroll_up();
+    }
+    else if(button == SDL_BUTTON_WHEELDOWN)
+    {
+        if(Game::get_game()->is_orig_style())
+            page_down();
+        else
+            move_scroll_down();
     }
     else if(button == 1) // left click == select word
     {
