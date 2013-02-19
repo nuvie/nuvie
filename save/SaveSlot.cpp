@@ -67,24 +67,22 @@ bool SaveSlot::init(const char *directory, std::string *file)
  if(file != NULL)
   {
    filename.assign(file->c_str());
-   new_save = false;
+   if(!load_info(directory))
+     return false;
   }
  else
   {
    filename.assign(""); //empty save slot.
-   new_save = true;
+   if(directory != NULL)
+   {
+     save_description.assign("Original Game Save");
+   }
+   else
+   {
+     save_description.assign("New Save.");
+     new_save = true;
+   }
   }
-
- if(new_save)
-   {
-    save_description.assign("New Save.");
-   }
-
- if(!new_save)
-   {
-    if(!load_info(directory))
-      return false;
-   }
 
  textinput_widget = new GUI_TextInput(MAPWINDOW_THUMBNAIL_SIZE + 2, 2, 255, 255, 255, (char *)save_description.c_str(), gui->get_font(),26,2, this);
  AddWidget((GUI_Widget *)textinput_widget);

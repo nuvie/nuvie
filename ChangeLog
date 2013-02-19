@@ -1,3 +1,6 @@
+2013-02-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1653
+	* Add "Original Game Save" file slot at the end of the save list
+
 2013-02-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1652
 	* Fix show eggs toggling when you don't start Nuvie with eggs showing
 	* Fix crash when equipping a ring or storm cloak from a container on the map

@@ -185,7 +185,12 @@ bool SaveManager::load(SaveSlot *save_slot)
  std::string save_filename;
 
  if(save_slot->get_filename()->size() == 0)
-   return savegame->load_new();
+ {
+   if(!save_slot->is_new_save() && savegame->load_original())
+     return true;
+   else
+     return savegame->load_new();
+ }
 
  build_path(savedir, save_slot->get_filename()->c_str(), save_filename);
 

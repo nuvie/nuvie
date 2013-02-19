@@ -62,6 +62,7 @@ SaveSlot(GUI_CallBack *callback, GUI_Color bg_color);
 
 bool init(const char *directory, std::string *filename);
 
+bool is_new_save() { return new_save; }
 std::string get_save_description();
 std::string *get_filename();
 

@@ -82,9 +82,12 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 
  color_ptr = &bg_color;
 
- for(i=0; i < num_saves; i++)
+ for(i=0; i < num_saves + 1; i++)
    {
-    filename = filelist.next();
+    if(i < num_saves)
+      filename = filelist.next();
+    else
+      filename = NULL;
     widget = new SaveSlot(this, *color_ptr);
     if(((SaveSlot *)widget)->init(save_directory, filename) == true)
      {
