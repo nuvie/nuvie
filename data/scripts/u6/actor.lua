@@ -1254,7 +1254,8 @@ function actor_hit(defender, max_dmg, attacker, no_hit_anim)
 	else
 		--object logic here
 		if defender_obj_n == 0x16e then -- tangle vine
-			--FIXME do something with tangle vine.
+			--FIXME do something with tangle vine. -- I think the message is all that needed added
+			print("\nTangle vine killed!\n") -- The pod doesn't have this text in the original for some reason
 		elseif defender.stackable == false and defender.qty ~= 0 then
 			hit_anim(defender.x, defender.y)
 			if (defender_obj_n < 0x129 or defender_obj_n > 0x12c or defender.frame_n < 0xc) --check frame_n for door objects

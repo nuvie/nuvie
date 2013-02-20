@@ -1,3 +1,7 @@
+2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1656
+	* Try to show actor name when talking to someone who gives "No response"
+	* Show "Tangle vine killed!" when attacking a tangle vine that is not alive
+
 2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1655
 	* Add MOVETYPE_U6_NONE to keep tangle vine pods from walking (for now)
 	* Give reaper a dead body instead of blood. Make that body a container.

@@ -620,10 +620,9 @@ bool Event::perform_talk(Actor *actor)
             || actor->get_alignment() == ACTOR_ALIGNMENT_CHAOTIC
             || (actor->get_alignment() == ACTOR_ALIGNMENT_NEUTRAL && actor->will_not_talk()))
     {
-        // always display look-string on failure
-        scroll->display_string(actor_manager->look_actor(actor));
-        scroll->display_string("\n");
-        scroll->display_string("No response.\n");
+        // always display name or look-string on failure
+        scroll->display_string(actor->get_name());
+        scroll->display_string("\n\nNo response\n");
     }
     else if(converse->start(actor))    // load and begin npc script
     {
