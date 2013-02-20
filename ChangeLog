@@ -1,3 +1,7 @@
+2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1655
+	* Add MOVETYPE_U6_NONE to keep tangle vine pods from walking (for now)
+	* Give reaper a dead body instead of blood. Make that body a container.
+
 2013-02-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1654
 	* You can now use the mouse wheel to scroll text in original mode
 	* Reset the new message scroll rollback timer if you are manually scrolling

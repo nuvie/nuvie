@@ -27,6 +27,7 @@
 #include "Actor.h"
 #include "ActorList.h"
 
+#define MOVETYPE_U6_NONE       0
 #define MOVETYPE_U6_LAND       1
 #define MOVETYPE_U6_WATER_LOW  2 // skiffs, rafts
 #define MOVETYPE_U6_WATER_HIGH 3 // ships

@@ -29,7 +29,7 @@ tiles_per_direction
 tiles_per_frame
 tile_start_offset
 dead_obj_n
-dead_frame_n
+dead_frame_n // 255 means same frame as they died
 can_laydown
 can_sit
 tile_type
@@ -46,7 +46,7 @@ const U6ActorType u6ActorTypes[] = {
  {OBJ_U6_ACID_SLUG,        0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,       50,  0},
  {OBJ_U6_WISP,             0, 0, 1, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,    50,  0},
  {OBJ_U6_GIANT_BAT,        0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      30,  0},
- {OBJ_U6_REAPER,           0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         40,  4},
+ {OBJ_U6_REAPER,           0, 0, 1, 0, OBJ_U6_REAPER, 255, false, false, ACTOR_ST, MOVETYPE_U6_LAND,      40,  4},
  {OBJ_U6_GREMLIN,          0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         20,  0},
  {OBJ_U6_GAZER,            0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,         30,  0},
  {OBJ_U6_BIRD,             0, 0, 1, 0, OBJ_U6_BLOOD, 0, false, false, ACTOR_ST, MOVETYPE_U6_AIR_LOW,      20,  0},
@@ -113,7 +113,7 @@ const U6ActorType u6ActorTypes[] = {
 
  // 2x1 FIXME
  {OBJ_U6_RAFT,             0, 0, 0, 1, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_WATER_LOW,   0,  0}, // FIX might need to fix this
- {OBJ_U6_TANGLE_VINE_POD,  2, 2, 1, 0, OBJ_U6_TANGLE_VINE_POD, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,20, 4},
+ {OBJ_U6_TANGLE_VINE_POD,  2, 2, 1, 0, OBJ_U6_TANGLE_VINE_POD, 255, false, false, ACTOR_ST, MOVETYPE_U6_NONE,20, 4}, // Movement type is probably a temp fix
 
  {OBJ_U6_SLIME,            0, 0, 0, 0, OBJ_U6_NOTHING, 0, false, false, ACTOR_ST, MOVETYPE_U6_LAND,        0,  0},
 

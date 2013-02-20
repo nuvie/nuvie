@@ -572,6 +572,8 @@ bool U6Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags
    
     switch(actor_type->movetype)
       {
+       case MOVETYPE_U6_NONE :
+                               return false;
        case MOVETYPE_U6_WATER_HIGH : // for HIGH we only want to move to open water.
                                      // No shorelines.
                                      map_tile = map->get_tile(new_x, new_y, new_z, MAP_ORIGINAL_TILE);

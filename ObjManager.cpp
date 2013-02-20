@@ -838,6 +838,7 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 		   && (target->obj_n == OBJ_U6_DESK
 		   || target->obj_n == OBJ_U6_DRAWER
 		   || target->obj_n == OBJ_U6_GRAVE
+		   || target->obj_n == OBJ_U6_REAPER
 		   || target->obj_n == OBJ_U6_DEAD_GARGOYLE
 		   || target->obj_n == OBJ_U6_DEAD_CYCLOPS))
 			return true;
