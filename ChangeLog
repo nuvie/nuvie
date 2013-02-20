@@ -1,3 +1,7 @@
+2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1659
+	* Fix crash when using a spellbook with the mouse in the doll view gump
+	* Don't close gumps when trying to cast and the spell book is not equipped
+
 2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1658
 	* Fix reagents needed for a bunch of spells
 	* Get rid of unneeded c_str() call in display_prompt

@@ -252,6 +252,7 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 		{
 			Obj *obj = (Obj *)data;
 			event->select_view_obj(obj, actor);
+			return GUI_YUM;
 		}
 	}
 

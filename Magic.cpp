@@ -133,6 +133,7 @@ bool Magic::start_new_spell()
   {
     state=MAGIC_STATE_SELECT_SPELL;
     clear_cast_buffer();
+    event->close_gumps();
     Game::get_game()->get_view_manager()->set_spell_mode(event->player->get_actor(), spellbook_obj);
     Game::get_game()->get_view_manager()->get_spell_view()->grab_focus();
     return true;

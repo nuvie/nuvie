@@ -257,7 +257,7 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
     && command_bar->get_selected_action() > 0) // Exclude attack mode too
  {
 	if(command_bar->try_selected_action() == false) // start new action
-		return GUI_PASS; // false if new event doesn't need target
+		return GUI_YUM; // false if new event doesn't need target
  }
 
  if(actor && selected_obj == NULL && (button == USE_BUTTON || button == ACTION_BUTTON || button == DRAG_BUTTON))
@@ -274,6 +274,7 @@ GUI_status DollWidget::MouseDown(int x, int y, int button)
         	  if(obj)
         	  {
         		  event->select_obj(obj, actor);
+                  return GUI_YUM;
         	  }
         	  else
         	  {
@@ -486,7 +487,7 @@ GUI_status DollWidget::MouseDouble(int x, int y, int button)
 
     if(event->newAction(USE_MODE))
         event->select_obj(obj);
-    return(GUI_PASS);
+    return(GUI_YUM);
 }
 
 // change container, ready/unready object, activate arrows
