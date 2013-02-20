@@ -346,6 +346,8 @@ void SpellView::display_spell_text(Spell *spell, uint16 line_num, uint8 selected
 
 uint16 SpellView::get_available_spell_count(Spell *s)
 {
+	if(s->reagents == 0) // Help and Armageddon
+		return 1;
 	if(Game::get_game()->has_unlimited_casting())
 		return 99;
 	sint32 min_reagents = -1;

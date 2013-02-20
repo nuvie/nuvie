@@ -558,7 +558,7 @@ void MsgScroll::display_prompt()
  if(!talking && !just_displayed_prompt)
   { 
  //line_count = 0;
-	   display_string(prompt.s.c_str(), prompt.font, MSGSCROLL_NO_MAP_DISPLAY);
+	   display_string(prompt.s, prompt.font, MSGSCROLL_NO_MAP_DISPLAY);
  //line_count = 0;
 
    clear_page_break();

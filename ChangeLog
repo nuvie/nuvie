@@ -1,3 +1,8 @@
+2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1658
+	* Fix reagents needed for a bunch of spells
+	* Get rid of unneeded c_str() call in display_prompt
+	* Have spells that don't require reagents display 1 for spell count
+
 2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1657
 	* Fix spell display text when casting from a spell slot
 	* Allow casting during anti-magic storm when using unlimited casting cheat
