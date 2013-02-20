@@ -1,3 +1,7 @@
+2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1657
+	* Fix spell display text when casting from a spell slot
+	* Allow casting during anti-magic storm when using unlimited casting cheat
+
 2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1656
 	* Try to show actor name when talking to someone who gives "No response"
 	* Show "Tangle vine killed!" when attacking a tangle vine that is not alive

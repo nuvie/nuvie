@@ -125,7 +125,7 @@ bool Magic::start_new_spell()
 {
   spellbook_obj = book_equipped();
 
-  if (Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) > 0)
+  if (Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_U6_STORM) > 0 && !Game::get_game()->has_unlimited_casting())
   {
 	  event->scroll->display_string("No magic at this time!\n\n");
   }
@@ -186,10 +186,24 @@ bool Magic::cast()
     return false;
   }
 //20110701 Pieter Luteijn: add an assert(spell[index]) to be sure it's not NULL?
+  if(cast_buffer_len != 0)
+  {
+    event->scroll->display_string("\n(");
+    event->scroll->display_string(spell[index]->name);
+    event->scroll->display_string(")\n");;
+  }
+  else
+  {
+    event->scroll->display_string(spell[index]->name);
+    event->scroll->display_string("\n\"");
 
-  event->scroll->display_string("\n(");
-  event->scroll->display_string(spell[index]->name);
-  event->scroll->display_string(")\n");
+    string incantation_str;
+    for(uint8 i=0; spell[index]->invocation[i] != '\0'; i++)
+      incantation_str += syllable[spell[index]->invocation[i] - SDLK_a];
+
+    incantation_str.erase(incantation_str.size() - 1); // get rid of extra space at the end
+    event->scroll->display_string(incantation_str += "\"\n");
+  }
 
   if(Game::get_game()->has_unlimited_casting())
   {
