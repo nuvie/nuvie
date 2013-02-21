@@ -479,9 +479,9 @@ magic_init("Disable", "avm", 0x13, 4, 3, "u6/magic/circle_04/disable.lua");
 magic_init("Fire Field", "ifg", 0x94, 4, 4, "u6/magic/circle_04/fire_field.lua");
 magic_init("Great Heal", "vm", 0x51, 4, 5, "u6/magic/circle_04/great_heal.lua");
 magic_init("Locate", "iw", 0x02, 4, 6, "u6/magic/circle_04/locate.lua");
-magic_init("Mass Dispel", "vajo", 0x16, 4, 7, "u6/magic/circle_04/mass_dispel.lua");
-magic_init("Poison Field", "ing", 0x54, 4, 8, "u6/magic/circle_04/poison_field.lua");
-magic_init("Sleep Field", "izg", 0x60, 4, 9, "u6/magic/circle_04/sleep_field.lua");
+magic_init("Mass Dispel", "vajo", 0x60, 4, 7, "u6/magic/circle_04/mass_dispel.lua"); -- The original engine uses 0x16
+magic_init("Poison Field", "ing", 0x16, 4, 8, "u6/magic/circle_04/poison_field.lua"); -- The original engine uses 0x54
+magic_init("Sleep Field", "izg", 0x54, 4, 9, "u6/magic/circle_04/sleep_field.lua"); -- The original engine uses 0x60
 magic_init("Wind Change", "rh", 0x88, 4, 10, "u6/magic/circle_04/wind_change.lua");
 
 magic_init("Energy Field", "isg", 0x15, 5, 1, "u6/magic/circle_05/energy_field.lua");
