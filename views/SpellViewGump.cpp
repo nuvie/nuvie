@@ -252,8 +252,10 @@ GUI_status SpellViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	//close gump and return control to Magic class for clean up.
 	if(caller == gump_button)
 	{
-		close_spellbook();
-
+		if(Game::get_game()->get_event()->is_looking_at_spellbook())
+			close_look();
+		else
+			close_spellbook();
 		return GUI_YUM;
 	}
 	else if(caller == left_button)
@@ -345,8 +347,9 @@ GUI_status SpellViewGump::MouseUp(int x, int y, int button)
 	if(spell != -1 && spell == selected_spell)
 	{
 		spell_container->quality = spell;
-
-		if(event_mode)
+		if(Game::get_game()->get_event()->is_looking_at_spellbook())
+			show_spell_description();
+		else if(event_mode)
 		{
 			event_mode_select_spell();
 		}

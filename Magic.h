@@ -122,8 +122,11 @@ class Magic : public CallBack {
     Obj *get_spellbook_obj() { return spellbook_obj; }
 
     Actor *get_actor_from_script();
+    void show_spell_description(uint8 index);
 private:
     bool spellbook_has_spell(Obj *book, uint8 spell_index);
+    void display_ingredients(uint8 index);
+    void display_spell_incantation(uint8 index);
 
 };
 

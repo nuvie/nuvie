@@ -147,6 +147,7 @@ friend class Magic; // FIXME
  bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
  bool move_in_inventory;
  bool in_control_cheat;
+ bool looking_at_spellbook;
 
  Uint32 fps_timestamp;
  uint16 fps_counter;
@@ -261,6 +262,8 @@ friend class Magic; // FIXME
  bool can_get_to_actor(Actor *actor, uint16 x, uint16 y);
  bool using_control_cheat() { return in_control_cheat; }
  void set_control_cheat(bool control_cheat) { in_control_cheat = control_cheat; }
+ bool is_looking_at_spellbook() { return looking_at_spellbook; }
+ void set_looking_at_spellbook(bool looking) { looking_at_spellbook = looking; }
 
  bool rest();
  bool rest_input(uint16 input);

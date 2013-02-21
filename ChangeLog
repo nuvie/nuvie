@@ -1,3 +1,6 @@
+2013-02-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1660
+	* Add looking inside spell books with look command
+
 2013-02-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1659
 	* Fix crash when using a spellbook with the mouse in the doll view gump
 	* Don't close gumps when trying to cast and the spell book is not equipped

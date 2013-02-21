@@ -157,7 +157,7 @@ void MsgScroll::init(Configuration *cfg, Font *f)
 	config->value("config/GameType",game_type);
 
 	scroll_updated = false;
-
+	discard_whitespace = true;
 	page_break = false;
 	show_cursor = true;
 	talking = false;
@@ -440,7 +440,7 @@ bool MsgScroll::parse_token(MsgText *token)
     	//                 if(msg_line->total_length + token->length() == scroll_width) //we add a new line but write to the old line.
     	//                    add_new_line();
 
-    	if(msg_line->total_length == 0 && token->s[0] == ' ') // discard whitespace at the start of a line.
+    	if(msg_line->total_length == 0 && token->s[0] == ' ' && discard_whitespace) // discard whitespace at the start of a line.
     		return true;
     }
                  if(token->s[0] == '*')

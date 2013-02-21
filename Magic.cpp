@@ -197,13 +197,8 @@ bool Magic::cast()
   {
     event->scroll->display_string(spell[index]->name);
     event->scroll->display_string("\n\"");
-
-    string incantation_str;
-    for(uint8 i=0; spell[index]->invocation[i] != '\0'; i++)
-      incantation_str += syllable[spell[index]->invocation[i] - SDLK_a];
-
-    incantation_str.erase(incantation_str.size() - 1); // get rid of extra space at the end
-    event->scroll->display_string(incantation_str += "\"\n");
+    display_spell_incantation(index);
+    event->scroll->display_string("\"\n");
   }
 
   if(Game::get_game()->has_unlimited_casting())
@@ -327,6 +322,47 @@ bool Magic::cast()
   event->player->subtract_movement_points(spell_level * 3 + 10);
 
   return true;
+}
+
+void Magic::display_spell_incantation(uint8 index)
+{
+	string incantation_str;
+	for(uint8 i=0; spell[index]->invocation[i] != '\0'; i++)
+		incantation_str += syllable[spell[index]->invocation[i] - SDLK_a];
+
+	incantation_str.erase(incantation_str.size() - 1); // get rid of extra space at the end
+	event->scroll->display_string(incantation_str);
+}
+
+void Magic::show_spell_description(uint8 index)
+{
+	event->scroll->display_string(spell[index]->name);
+	event->scroll->display_string("-");
+	display_spell_incantation(index);
+	display_ingredients(index);
+}
+
+void Magic::display_ingredients(uint8 index)
+{
+	event->scroll->display_string("\nIngredients:\n");
+	if(spell[index]->reagents == 0)
+	{
+		event->scroll->display_string("None\n\n");
+		return;
+	}
+	string list;
+	for (uint8 shift=0;shift<8;shift++) 
+	{
+		if (1<<shift&spell[index]->reagents) {
+			list += " ";
+			list += reagent[shift];
+			list += "\n";
+		}
+	}
+	list += "\n";
+	event->scroll->set_discard_whitespace(false);
+	event->scroll->display_string(list);
+	event->scroll->set_discard_whitespace(true);
 }
 
 void Magic::cast_spell_directly(uint8 spell_num)

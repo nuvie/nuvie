@@ -113,6 +113,7 @@ protected:
  uint16 cursor_wait;
 
  uint16 scrollback_height;
+ bool discard_whitespace;
 
 private:
  uint16 screen_x; //x offset to top left corner of MsgScroll
@@ -211,6 +212,7 @@ private:
  void set_show_cursor(bool state) { show_cursor = state; }
 
  void set_autobreak(bool state) { autobreak = state; }
+ void set_discard_whitespace(bool discard) { discard_whitespace = discard;}
 
  bool get_page_break() { return(page_break); }
 

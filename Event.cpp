@@ -63,6 +63,7 @@
 #include "views/InventoryWidget.h"
 #include "Script.h"
 #include "Keys.h"
+#include "SpellView.h"
 
 #include "FpsCounter.h"
 
@@ -114,6 +115,7 @@ Event::Event(Configuration *cfg)
  showingQuitDialog = false;
  ignore_timeleft = false;
  in_control_cheat = false;
+ looking_at_spellbook = false;
  using_pickpocket_cheat = false;
 
  mode = MOVE_MODE;
@@ -1080,6 +1082,18 @@ bool Event::look(Obj *obj)
          {
            Actor *actor = game->get_actor_manager()->get_actor(obj->quality);
            look(actor);
+           return false;
+         }
+         else if(obj->obj_n == OBJ_U6_SPELLBOOK)
+         {
+           looking_at_spellbook = true;
+           game->get_script()->call_look_obj(obj);
+           Actor *reader = obj->get_actor_holding_obj();
+           if(!reader)
+             reader = player->get_actor();
+           view_manager->close_all_gumps();
+           view_manager->set_spell_mode(reader, obj, false);
+           view_manager->get_current_view()->grab_focus();
            return false;
          }
       }
@@ -2820,6 +2834,11 @@ void Event::doAction()
 
     if(mode == LOOK_MODE)
     {
+        if(looking_at_spellbook)
+        {
+            view_manager->get_spell_view()->close_look();
+            return;
+        }
         if(input.type == EVENTINPUT_OBJECT && input.obj && (!input.obj->is_on_map()
            || (!(input.obj->status & OBJ_STATUS_INVISIBLE)
            && !map_window->tile_is_black(input.obj->x, input.obj->y, input.obj))))
@@ -3080,6 +3099,11 @@ void Event::cancelAction()
         endAction();
         return;
     }
+    else if(looking_at_spellbook)
+    {
+        view_manager->get_spell_view()->close_look();
+        return;
+    }
     else
     {
         scroll->display_string("what?\n");
@@ -3108,6 +3132,11 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
     doAction();
     return(mode==ATTACK_MODE);
 }
+	if(looking_at_spellbook) // pushed L while looking at spell book
+	{
+		view_manager->get_spell_view()->close_look();
+		return false;
+	}
     // since INPUT_MODE must be set to get input, it wouldn't make sense that
     // a mode would be requested again to complete the action
     assert(mode != new_mode);
@@ -3242,7 +3271,7 @@ void Event::endAction(bool prompt)
 //    game->set_mouse_pointer(0);
         return;
     }
-    else
+    else if(!looking_at_spellbook)
         set_mode(MOVE_MODE);
 
     map_window->updateBlacking();

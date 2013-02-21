@@ -417,6 +417,11 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
             break;
         case SDLK_RETURN:
         case SDLK_KP_ENTER:
+        	if(Game::get_game()->get_event()->is_looking_at_spellbook())
+        	{
+        		show_spell_description();
+        		return GUI_YUM;
+        	}
         	if(event_mode)
         	{
         		event_mode_select_spell();
@@ -424,9 +429,12 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
         	}
 
         	return GUI_PASS;
-
-        	break;
         case SDLK_ESCAPE:
+            if(Game::get_game()->get_event()->is_looking_at_spellbook())
+            {
+                close_look();
+                return GUI_YUM;
+            }
         	if(event_mode)
         	{
         		Game::get_game()->get_event()->select_spell_num(-1);
@@ -434,10 +442,8 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
     			return GUI_YUM;
         	}
         	return GUI_PASS;
-        	break;
         case SDLK_SPACE:
         	return GUI_PASS;
-            break;
         case SDLK_TAB :
 
         	break;
@@ -466,11 +472,16 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 	}
 	if(x < 0 && y > 0 && y < 162) // cast selected spell on the map
 	{
+		if(event->is_looking_at_spellbook())
+		{
+			close_look();
+			return GUI_YUM;
+		}
 		int wx, wy;
 		MapWindow *map_window = Game::get_game()->get_map_window();
 		uint8 z = Game::get_game()->get_player()->get_actor()->get_z();
 
-		Game::get_game()->get_event()->target_spell();
+		event->target_spell();
 		if(event->get_mode() == INPUT_MODE)
 		{
 			y += area.y;
@@ -483,6 +494,11 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 	}
 	if(x > 1 && (y > 101 || x > 137)) // cancel spell
 	{
+		if(event->is_looking_at_spellbook())
+		{
+			close_look();
+			return GUI_YUM;
+		}
 		event->set_mode(CAST_MODE);
 		event->cancelAction();
 		return GUI_PASS;
@@ -508,8 +524,9 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 	{
 		spell_container->quality = cur_spells[index+y];
 		update_display = true;
-
-    	if(event_mode)
+		if(event->is_looking_at_spellbook())
+			show_spell_description();
+    	else if(event_mode)
     	{
     		event_mode_select_spell();
     	}
@@ -557,6 +574,24 @@ void SpellView::update_buttons()
 	if(right_button && ((level < 8 && num_spells == 0) || level == 8)
 	   && cur_spells[num_spells_per_page*(1+index/num_spells_per_page)] == -1)
 		right_button->Hide();
+}
+
+void SpellView::close_look()
+{
+	Game::get_game()->get_event()->set_looking_at_spellbook(false);
+	Game::get_game()->get_scroll()->display_prompt();
+	Game::get_game()->get_view_manager()->close_spell_mode();
+	Game::get_game()->get_event()->endAction();
+}
+
+void SpellView::show_spell_description()
+{
+	if(get_selected_index() != -1)
+	{
+		uint8 index = (level-1)*16 + get_selected_index();
+		Game::get_game()->get_magic()->show_spell_description(index);
+	}
+	close_look();
 }
 
 GUI_status SpellView::callback(uint16 msg, GUI_CallBack *caller, void *data)
