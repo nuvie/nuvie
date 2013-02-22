@@ -134,6 +134,7 @@ class Party {
  bool resurrect_dead_members();
  void heal();
  void cure();
+ void set_ethereal(bool ethereal);
  //void set_active(uint8 member_num, bool state) { member[member_num].inactive = !state; }
 
  // Properties

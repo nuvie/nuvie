@@ -33,6 +33,7 @@
 #define MOVETYPE_U6_WATER_HIGH 3 // ships
 #define MOVETYPE_U6_AIR_LOW    4 // balloon, birds... this movetype cannot cross mountain tops.
 #define MOVETYPE_U6_AIR_HIGH   5 // dragons
+#define MOVETYPE_U6_ETHEREAL   6
 
 #define REMOVE_SURROUNDING_OBJS true
 
@@ -60,6 +61,7 @@ class U6Actor: public Actor
 
  const U6ActorType *actor_type;
  const U6ActorType *base_actor_type;
+ uint8 current_movetype;
 
  sint8 walk_frame_inc; // added to walk_frame each step
 
@@ -81,6 +83,7 @@ class U6Actor: public Actor
  bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  void twitch();
  void die(bool create_body=true);
+ void set_in_party(bool state);
  void set_poisoned(bool poisoned);
  void set_paralyzed(bool paralyzed);
  void set_protected(bool val);
@@ -88,6 +91,7 @@ class U6Actor: public Actor
  void set_corpser_flag(bool val);
  void set_cursed(bool val);
  void set_asleep(bool val);
+ void set_ethereal(bool ethereal) { current_movetype = ethereal ? MOVETYPE_U6_ETHEREAL: actor_type->movetype; }
 
  uint8 get_object_readiable_location(Obj *obj);
  const CombatType *get_object_combat_type(uint16 obj_n);

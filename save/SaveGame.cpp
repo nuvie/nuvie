@@ -258,6 +258,7 @@ bool SaveGame::load_objlist()
  weather = game->get_weather();
  
  clock->load(&objlist);
+ game->set_ethereal(false); // needs to go before actor_manager->load(&objlist);
  actor_manager->load(&objlist);
 
  party->load(&objlist);

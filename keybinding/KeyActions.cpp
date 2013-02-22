@@ -370,6 +370,8 @@ void ActionCloseGumps(int const *params)
 
 void ActionUseItem(int const *params)
 {
+	if(event->get_mode() != MOVE_MODE && event->get_mode() !=EQUIP_MODE)
+		return;
 	uint16 obj_n = params[0] > 0 ? params[0] : 0;
 	uint8 qual = params[1] > 0 ? params[1] : 0;
 	bool match_qual = params[2] == 1 ? true: false;
@@ -445,6 +447,15 @@ void ActionToggleGodMode(int const *params)
 	new TextEffect(message);
 }
 
+void ActionToggleEthereal(int const *params)
+{
+	bool ethereal = !game->is_ethereal();
+	game->set_ethereal(ethereal);
+	game->get_party()->set_ethereal(ethereal);
+	string message = ethereal ? "Ethereal movement" : "Normal movement";
+	new TextEffect(message);
+}
+
 void ActionHealParty(int const *params)
 {
 	player->get_party()->heal();
@@ -458,6 +469,9 @@ void ActionToggleCheats(int const *params)
 	game->set_cheats_enabled(cheats);
 	string message = cheats ? "Cheats enabled" : "Cheats disabled";
 	new TextEffect(message);
+
+	if(game->is_ethereal()) // doesn't change the bool's value
+		game->get_party()->set_ethereal(cheats);
 }
 
 void ActionTest(int const *params)

@@ -123,6 +123,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  unlimited_casting = false;
  god_mode_enabled = false;
  armageddon = false;
+ ethereal = false;
 
  config->value("config/cheats/enabled", cheats_enabled, false);
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);

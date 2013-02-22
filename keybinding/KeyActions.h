@@ -79,6 +79,7 @@ void ActionToggleUnlimitedCasting(int const *params);
 void ActionToggleNoDarkness(int const *params);
 void ActionTogglePickpocket(int const *params);
 void ActionToggleGodMode(int const *params);
+void ActionToggleEthereal(int const *params);
 void ActionHealParty(int const *params);
 void ActionToggleCheats(int const *params);
 

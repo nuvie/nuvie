@@ -1788,7 +1788,15 @@ void Event::alt_code(const char *cs)
             scroll->display_prompt();
             active_alt_code = 0;
             break;
-
+        case 222:
+        {
+            bool ethereal = !game->is_ethereal();
+            game->set_ethereal(ethereal);
+            game->get_party()->set_ethereal(ethereal);
+            const char *message = ethereal ? "Party desolidifies!\n\n": "Party solidifies!\n\n";
+            scroll->message(message);
+            break;
+        }
         case 314: // teleport player & party to selected location
             if(player->is_in_vehicle())
             {

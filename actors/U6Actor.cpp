@@ -67,7 +67,7 @@ bool U6Actor::init(uint8 obj_status)
 
  set_actor_obj_n(obj_n); //set actor_type
 
-
+ current_movetype = actor_type->movetype;
  
  body_armor_class = base_actor_type->body_armor_class;
       
@@ -570,8 +570,10 @@ bool U6Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags
  if(obj_n == OBJ_U6_SILVER_SERPENT && check_move_silver_serpent(new_x, new_y) == false)
    return false;
    
-    switch(actor_type->movetype)
+    switch(current_movetype)
       {
+       case MOVETYPE_U6_ETHEREAL:
+                                  return true;
        case MOVETYPE_U6_NONE :
                                return false;
        case MOVETYPE_U6_WATER_HIGH : // for HIGH we only want to move to open water.
@@ -1651,7 +1653,9 @@ bool U6Actor::can_twitch()
 bool U6Actor::can_be_passed(Actor *other)
 {
     U6Actor *other_ = static_cast<U6Actor *>(other);
-    return(Actor::can_be_passed(other_) && other_->actor_type->movetype != actor_type->movetype);
+    if(current_movetype == MOVETYPE_U6_ETHEREAL || other_->current_movetype == MOVETYPE_U6_ETHEREAL)
+        return true;
+    return(Actor::can_be_passed(other_) && other_->current_movetype != current_movetype);
 }
 
 void U6Actor::print()
@@ -1815,4 +1819,11 @@ void U6Actor::handle_lightsource(uint8 hour)
 				usecode->torch(torch2, USE_EVENT_USE);
 		}
 	}
+}
+
+void U6Actor::set_in_party(bool state)
+{
+	if(Game::get_game()->is_ethereal())
+		set_ethereal(state);
+	Actor::set_in_party(state);
 }

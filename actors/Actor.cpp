@@ -616,6 +616,8 @@ void Actor::set_in_party(bool state)
         status_flags |= ACTOR_STATUS_IN_PARTY;
         if(!is_charmed())
             set_alignment(ACTOR_ALIGNMENT_GOOD);
+        else
+            set_old_alignment(ACTOR_ALIGNMENT_GOOD);
     }
     else // left
     {

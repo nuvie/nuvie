@@ -123,6 +123,7 @@ class Game
  bool unlimited_casting;
  bool god_mode_enabled;
  bool armageddon;
+ bool ethereal;
  bool game_play;
 
  public:
@@ -176,10 +177,12 @@ class Game
  bool toggle_god_mode() { return (god_mode_enabled = !god_mode_enabled); }
  bool are_cheats_enabled() { return cheats_enabled; }
  void set_cheats_enabled(bool cheat) { cheats_enabled = cheat; }
- bool has_unlimited_casting() { return unlimited_casting; }
+ bool has_unlimited_casting() { return (unlimited_casting && cheats_enabled); }
  void set_unlimited_casting(bool unlimited) { unlimited_casting = unlimited; }
  bool is_armageddon() { return armageddon; }
  void set_armageddon(bool val);
+ bool is_ethereal() { return ethereal; }
+ void set_ethereal(bool val) { ethereal = val; }
  bool use_new_converse_gump();
 
  /* Return instances of Game classes */

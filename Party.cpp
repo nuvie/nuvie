@@ -715,6 +715,14 @@ void Party::cure()
  } 
 }
 
+void Party::set_ethereal(bool ethereal)
+{
+ for(uint16 i=0;i<num_in_party;i++)
+ {
+   member[i].actor->set_ethereal(ethereal);
+ } 
+}
+
 void Party::show()
 {
  uint16 i;
