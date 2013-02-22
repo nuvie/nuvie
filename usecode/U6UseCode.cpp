@@ -2732,13 +2732,18 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
              else
                 {
 */
-             bool using_gump = game->is_new_style();
+             bool using_gump = game->is_using_text_gumps();
              if(using_gump)
              {
                  switch(obj->obj_n)
                  {
                      case OBJ_U6_CROSS: // I don't even know if this is used for text
                      case OBJ_U6_SIGN:
+                         if(strlen(data) > 20) // FIXME sign text needs to fit on multiple lines
+                         {
+                             using_gump = false;
+                             break;
+                         }
                          game->get_view_manager()->open_sign_gump(data,strlen(data)); break;
                      case OBJ_U6_SIGN_ARROW:
                      case OBJ_U6_BOOK:

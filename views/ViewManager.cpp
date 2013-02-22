@@ -371,7 +371,7 @@ void ViewManager::open_portrait_gump(Actor *a)
 
 void ViewManager::open_sign_gump(const char *sign_text, uint16 length)
 {
-	if(Game::get_game()->is_new_style())
+	if(Game::get_game()->is_using_text_gumps()) // check should be useless
 	{
 		SignViewGump *view = new SignViewGump(config);
 		view->init(Game::get_game()->get_screen(), this, text, party, tile_manager, obj_manager, sign_text, length);

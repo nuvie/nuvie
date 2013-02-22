@@ -1,3 +1,9 @@
+2013-02-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1663
+	* Restrict sign gump to 20 characters until it can span multiple lines
+	* Add general/use_text_gumps cfg setting to use Ultima 7 style pop up
+	  graphics like signs, books, and sctolls instead of displaying text in the
+	  bottom right corner. Only signs are implemented (and only partially)
+
 2013-02-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1662
 	* Ignore use item keys if not in move or equip mode
 	* Add Alt-E toggle ethereal mode (walk through walls) cheat

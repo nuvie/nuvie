@@ -125,6 +125,7 @@ class Game
  bool armageddon;
  bool ethereal;
  bool game_play;
+ bool using_text_gumps;
 
  public:
 
@@ -168,6 +169,7 @@ class Game
  bool is_new_style() { return (game_style == NUVIE_STYLE_NEW); }
  bool is_orig_style() { return (game_style == NUVIE_STYLE_ORIG); }
  bool doubleclick_opens_containers();
+ bool is_using_text_gumps() { return (using_text_gumps || is_new_style()); }
  bool is_roof_mode();
  bool using_hackmove();
  void set_hackmove(bool hackmove) { is_using_hackmove = hackmove; }

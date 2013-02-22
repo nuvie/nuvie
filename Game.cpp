@@ -128,6 +128,7 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  config->value("config/cheats/enabled", cheats_enabled, false);
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
  config->value("config/input/enabled_dragging", dragging_enabled, true);
+ config->value("config/general/use_text_gumps", using_text_gumps, false);
 }
 
 Game::~Game()

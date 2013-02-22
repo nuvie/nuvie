@@ -268,6 +268,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/show_console", true);
 	config->set("config/general/fullscreen_map", false);
 	config->set("config/general/converse_gump", false);
+	config->set("config/general/use_text_gumps", false);
 	config->set("config/general/party_formation", "standard");
 
 	config->set("config/cheats/enabled", false);
