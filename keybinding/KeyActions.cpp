@@ -472,6 +472,9 @@ void ActionToggleCheats(int const *params)
 
 	if(game->is_ethereal()) // doesn't change the bool's value
 		game->get_party()->set_ethereal(cheats);
+	if(game->get_obj_manager()->is_showing_eggs() // doesn't change the bool's value
+	   && game->get_game_type() == NUVIE_GAME_U6)
+		game->get_obj_manager()->show_egg_objs(cheats);
 }
 
 void ActionTest(int const *params)

@@ -454,12 +454,15 @@ void ObjManager::clean_actor_inventories()
 
 void ObjManager::show_egg_objs(bool value)
 {
- show_eggs = value;
  if(value == true)
    set_obj_tile_num(obj_egg_table[game_type], egg_tile_num); // show egg tile.
  else
+ {
    set_obj_tile_num(obj_egg_table[game_type], 1877); // transparent tile
-
+   if(!Game::get_game()->are_cheats_enabled()) // preserve value on cheat toggle
+     return;
+ }
+   show_eggs = value;
  return;
 }
 

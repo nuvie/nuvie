@@ -182,7 +182,7 @@ class Game
  bool has_unlimited_casting() { return (unlimited_casting && cheats_enabled); }
  void set_unlimited_casting(bool unlimited) { unlimited_casting = unlimited; }
  bool is_armageddon() { return armageddon; }
- void set_armageddon(bool val);
+ void set_armageddon(bool val) { armageddon = val; }
  bool is_ethereal() { return ethereal; }
  void set_ethereal(bool val) { ethereal = val; }
  bool use_new_converse_gump();

@@ -412,13 +412,6 @@ bool Game::using_hackmove()
 		return false;
 }
 
-void Game::set_armageddon(bool val)
-{
-	if(armageddon || val) // don't interfere with spawn cheat unless Armageddon was cast
-		egg_manager->set_spawning_actors(!val);
-	armageddon = val;
-}
-
 bool Game::set_mouse_pointer(uint8 ptr_num)
 {
     return(cursor && cursor->set_pointer(ptr_num));

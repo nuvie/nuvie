@@ -1,3 +1,7 @@
+2013-02-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1664
+	* Disable don't spawn actors cheat after toggling cheats off
+	* Don't show_eggs after toggling cheats off
+
 2013-02-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1663
 	* Restrict sign gump to 20 characters until it can span multiple lines
 	* Add general/use_text_gumps cfg setting to use Ultima 7 style pop up

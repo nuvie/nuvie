@@ -204,7 +204,8 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
 				  if((gametype == NUVIE_GAME_U6 && (obj->obj_n >= OBJ_U6_GIANT_RAT || obj->obj_n == OBJ_U6_CHEST))
 						  || obj->quality != 0) /* spawn temp actor we know it's an actor if it has a non-zero worktype. */
 				  {
-					if(not_spawning_actors)
+					if((not_spawning_actors && Game::get_game()->are_cheats_enabled())
+					   || Game::get_game()->is_armageddon())
 						break;
 				  	// group new actors randomly if egg space already occupied
 				  	Actor *prev_actor = actor_manager->get_actor(egg->x, egg->y, egg->z);
