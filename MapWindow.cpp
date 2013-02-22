@@ -1615,6 +1615,8 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool ac
         return false;
     }
     MapCoord actor_loc = actor->get_location();
+    if(actor_manager->get_actor(x, y, actor_loc.z))
+        return false;
     Obj *dest_obj = obj_manager->get_obj(x, y, actor_loc.z);
     bool can_go_in_water = (game_type == NUVIE_GAME_U6
                             && (obj->obj_n == OBJ_U6_SKIFF || obj->obj_n == OBJ_U6_RAFT));

@@ -1,3 +1,7 @@
+2013-02-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1665
+	* Don't ignore invisible actors when moving
+	* Don't allow dropping objects onto actors
+
 2013-02-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1664
 	* Disable don't spawn actors cheat after toggling cheats off
 	* Don't show_eggs after toggling cheats off

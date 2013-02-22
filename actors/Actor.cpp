@@ -385,7 +385,7 @@ bool Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags f
     if(!ignore_actors)
        {
         a = map->get_actor(new_x,new_y,new_z,false);
-        if(a && a->is_visible())
+        if(a /*&& a->is_visible()*/)
           return a->can_be_passed(this); // we can move over or under some actors. eg mice, dragons etc.
        }
 
@@ -486,7 +486,7 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 
  Actor *other = map->get_actor(new_x, new_y, new_z, false);
  if(!ignore_actors && !force_move
-    && other && other->is_visible() && !other->can_be_passed(this))
+    && other /*&& other->is_visible()*/ && !other->can_be_passed(this))
    {
     set_error(ACTOR_BLOCKED_BY_ACTOR);
     error_struct.blocking_actor = other;
