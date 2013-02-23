@@ -54,6 +54,7 @@ o	use_item	87	# use orb of moons
 p	use_item	63	# use lock pick
 Alt-Ctrl-p	toggle_pickpocket_mode
 Alt-w	toggle_unlimited_casting
+x	toggle_x_ray
 
 Alt-a	select_command_bar	0	# select attack on the command bar
 Alt-c	select_command_bar	1	# select cast on the command bar

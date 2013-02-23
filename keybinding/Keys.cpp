@@ -124,6 +124,7 @@ const struct Action {
 	{ "TOGGLE_PICKPOCKET_MODE", ActionTogglePickpocket, "Toggle pickpocket mode", Action::cheat_keys, true },
 	{ "TOGGLE_GOD_MODE",  ActionToggleGodMode, "Toggle god mode", Action::cheat_keys, true },
 	{ "TOGGLE_ETHEREAL",  ActionToggleEthereal, "Toggle ethereal mode", Action::cheat_keys, true },
+	{ "TOGGLE_X_RAY",  ActionToggleX_Ray, "Toggle X-ray mode", Action::cheat_keys, true },
 	{ "HEAL_PARTY", ActionHealParty, "Heal party", Action::cheat_keys, true },
 	{ "TOGGLE_CHEATS", ActionToggleCheats, "Toggle cheats", Action::normal_keys, true },
 	{ "TEST", ActionTest, "Test", Action::dont_show, true },

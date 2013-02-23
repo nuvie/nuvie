@@ -65,6 +65,7 @@ typedef struct {
 
 enum RoofDisplayType {ROOF_DISPLAY_OFF, ROOF_DISPLAY_NORMAL, ROOF_DISPLAY_FORCE_ON };
 enum InterfaceType { INTERFACE_NORMAL, INTERFACE_FULLSCREEN, INTERFACE_IGNORE_BLOCK };
+enum X_RayType { X_RAY_CHEAT_OFF = -1,  X_RAY_OFF = 0, X_RAY_ON = 1, X_RAY_CHEAT_ON = 2};
 
 class MapWindow: public GUI_Widget
 {
@@ -74,7 +75,7 @@ class MapWindow: public GUI_Widget
  int game_type;
  bool enable_doubleclick;
  bool walk_with_left_button;
- bool x_ray_view;
+ X_RayType x_ray_view;
  InterfaceType interface;
 
  Map *map;
@@ -152,7 +153,8 @@ class MapWindow: public GUI_Widget
  void set_velocity(sint16 vx, sint16 vy) { vel_x = vx; vel_y = vy; }
  void set_overlay(SDL_Surface *surfpt);
  void set_overlay_level(int level = MAP_OVERLAY_DEFAULT) { overlay_level = level; }
- void set_x_ray_view(bool state);
+ void set_x_ray_view(X_RayType state, bool cheat_off = false);
+ X_RayType get_x_ray_view() { return x_ray_view; }
  void set_freeze_blacking_location(bool state);
  void set_enable_blacking(bool state);
  void set_roof_display_mode(enum RoofDisplayType mode) { roof_display = mode; }

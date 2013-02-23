@@ -1732,14 +1732,14 @@ uint16 U6WhitePotionEffect::callback(uint16 msg, CallBack *caller, void *data)
         else if(state == 2) // character outline
         {
             game->unpause_anims();
-            map_window->set_x_ray_view(true);
+            map_window->set_x_ray_view(X_RAY_ON);
             map_window->updateBlacking();
             start_timer(xray_length);
             state = 3;
         }
         else if(state == 3) // x-ray
         {
-            map_window->set_x_ray_view(false);
+            map_window->set_x_ray_view(X_RAY_OFF);
             map_window->updateBlacking();
             game->unpause_user();
             if(potion)
@@ -1768,7 +1768,7 @@ XRayEffect::XRayEffect(uint32 eff_ms)
 
 void XRayEffect::init_effect()
 {
-	Game::get_game()->get_map_window()->set_x_ray_view(true);
+	Game::get_game()->get_map_window()->set_x_ray_view(X_RAY_ON);
 	start_timer(xray_length);
 }
 
@@ -1777,7 +1777,7 @@ uint16 XRayEffect::callback(uint16 msg, CallBack *caller, void *data)
     if(msg == MESG_TIMED)
     {
         stop_timer();
-        Game::get_game()->get_map_window()->set_x_ray_view(false);
+        Game::get_game()->get_map_window()->set_x_ray_view(X_RAY_OFF);
         delete_self();
     }
 

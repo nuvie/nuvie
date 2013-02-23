@@ -456,6 +456,14 @@ void ActionToggleEthereal(int const *params)
 	new TextEffect(message);
 }
 
+void ActionToggleX_Ray(int const *params)
+{
+	bool x_ray = Game::get_game()->get_map_window()->get_x_ray_view() <= X_RAY_OFF;
+	Game::get_game()->get_map_window()->set_x_ray_view(x_ray ? X_RAY_CHEAT_ON: X_RAY_OFF, true);
+	string message = x_ray ? "X-ray mode" : "X-ray mode off";
+	new TextEffect(message);
+}
+
 void ActionHealParty(int const *params)
 {
 	player->get_party()->heal();
@@ -475,6 +483,12 @@ void ActionToggleCheats(int const *params)
 	if(game->get_obj_manager()->is_showing_eggs() // doesn't change the bool's value
 	   && game->get_game_type() == NUVIE_GAME_U6)
 		game->get_obj_manager()->show_egg_objs(cheats);
+
+	X_RayType xray = Game::get_game()->get_map_window()->get_x_ray_view();
+	if(cheats && xray == X_RAY_CHEAT_OFF)
+		Game::get_game()->get_map_window()->set_x_ray_view(X_RAY_CHEAT_ON);
+	else if(!cheats && xray == X_RAY_CHEAT_ON)
+		Game::get_game()->get_map_window()->set_x_ray_view(X_RAY_CHEAT_OFF);
 }
 
 void ActionTest(int const *params)

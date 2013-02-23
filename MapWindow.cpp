@@ -135,7 +135,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  show_cursor = false;
  show_use_cursor = false;
  show_grid = false;
- x_ray_view = false;
+ x_ray_view = X_RAY_OFF;
  freeze_blacking_location = false;
  enable_blacking = true;
 
@@ -303,8 +303,10 @@ void MapWindow::set_show_grid(bool state)
 	show_grid = state;
 }
 
-void MapWindow::set_x_ray_view(bool state)
+void MapWindow::set_x_ray_view(X_RayType state, bool cheat_off)
 {
+    if(x_ray_view == X_RAY_CHEAT_ON && state != X_RAY_CHEAT_OFF && !cheat_off)
+        return;
     x_ray_view = state;
     updateBlacking();
 }
@@ -610,7 +612,7 @@ void MapWindow::updateAmbience()
 	
      int h = clock->get_hour();
 	 int a;
-     if(x_ray_view == true)
+     if(x_ray_view >= X_RAY_ON)
          a = 255;
      else if(in_dungeon_level())
 	     a = cur_min_brightness;
@@ -1121,7 +1123,7 @@ void MapWindow::drawRoofs()
 		return;
 	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
 		return;
-	if(x_ray_view)
+	if(x_ray_view >= X_RAY_ON)
 		return;
 
 	bool orig_style = game->is_orig_style();
@@ -1322,7 +1324,7 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
 
  *ptr = (uint16)current;
 
- if(!x_ray_view && map->is_boundary(x,y,cur_level)) //hit the boundary wall tiles
+ if(x_ray_view <= X_RAY_OFF && map->is_boundary(x,y,cur_level)) //hit the boundary wall tiles
   {
    if(boundaryLookThroughWindow(*ptr, x, y) == false)
       return;
@@ -2502,7 +2504,7 @@ void MapWindow::wizard_eye_start(MapCoord location, uint16 duration, CallBack *c
 	wizard_eye_info.prev_x = cur_x;
 	wizard_eye_info.prev_y = cur_y;
 
-	set_x_ray_view(true);
+	set_x_ray_view(X_RAY_ON);
 
 	moveMap(location.x-(win_width/2), location.y-(win_height/2), cur_level);
 	grab_focus();
@@ -2524,7 +2526,7 @@ void MapWindow::wizard_eye_update()
 
 	if(wizard_eye_info.moves_left == 0)
 	{
-		set_x_ray_view(false);
+		set_x_ray_view(X_RAY_OFF);
 		moveMap(wizard_eye_info.prev_x, wizard_eye_info.prev_y, cur_level);
 		wizard_eye_info.caller->callback(EFFECT_CB_COMPLETE, (CallBack *)this, NULL);
 		release_focus();
