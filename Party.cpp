@@ -425,7 +425,7 @@ void Party::reform_party()
 sint8 Party::get_leader()
 {
     for(int m = 0; m < num_in_party; m++)
-        if(member[m].actor->is_immobile() == false)
+        if(member[m].actor->is_immobile() == false && member[m].actor->is_charmed() == false)
             return m;
     return -1;
 }

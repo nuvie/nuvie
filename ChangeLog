@@ -1,3 +1,7 @@
+2013-02-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1666
+	* Have charm change the party leader (charmed follow logic is broken)
+	* Don't switch to a solo actor who is disabled
+
 2013-02-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1665
 	* Don't ignore invisible actors when moving
 	* Don't allow dropping objects onto actors

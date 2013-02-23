@@ -539,6 +539,11 @@ bool Player::set_solo_mode(Actor *new_actor)
 {
     if(party->contains_actor(new_actor))
     {
+        if(new_actor->is_charmed())
+        {
+            Game::get_game()->get_scroll()->display_fmt_string("%s fails to respond.\n\n", new_actor->get_name());
+            return false;
+        }
         party_mode = false;
         set_actor(new_actor);
         return(true);

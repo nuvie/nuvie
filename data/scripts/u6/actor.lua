@@ -3648,6 +3648,9 @@ function spell_charm_actor(attacker, foe)
 		foe.align = attacker.align
 		hit_anim(foe.x, foe.y)
 		print("\n"..foe.name.." is charmed.\n")
+		if foe.in_party == true then
+			party_update_leader()
+		end
 	end
 	
 	return true
