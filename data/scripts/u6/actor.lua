@@ -220,6 +220,7 @@ function actor_can_turn_invisible(obj_n)
 	return false
 end
 
+-- returns true if defender loses the check
 function actor_int_check(defender, attacker)
 
    if is_god_mode_enabled() then
@@ -231,7 +232,7 @@ function actor_int_check(defender, attacker)
       end
    end
    if (math.floor(actor_int_adj(attacker) / 2) + 15) - actor_int_adj(defender) > math.random(1, 30) then
-      return true
+      return true -- defender lost
    end
    
    return false
@@ -3611,7 +3612,7 @@ function spell_poison_actor(attacker, foe)
 	local actor_base = actor_tbl[foe.obj_n]
 	if actor_base == nil or actor_base[19] == 1 or foe.actor_num == 0 then return 2 end --immune to poison
 	
-	if ((math.floor(actor_str_adj(foe) / 2) + 0x1e) - actor_int_adj(attacker)) / 2 <= math.random(1, 0x1e) then
+	if math.floor((math.floor(actor_str_adj(foe) / 2) + 0x1e - actor_int_adj(attacker)) / 2) <= math.random(1, 0x1e) then
 		foe.poisoned = true
 		hit_anim(foe.x, foe.y)
 		return -1

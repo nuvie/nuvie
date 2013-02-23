@@ -303,10 +303,34 @@ void MapWindow::set_show_grid(bool state)
 	show_grid = state;
 }
 
+/**
+ * cheat_off is needed to turn the X-ray cheat off (set to X_RAY_OFF)
+ * Convoluted logic is so we don't slow down boundaryFill with an extra check
+ */
 void MapWindow::set_x_ray_view(X_RayType state, bool cheat_off)
 {
-    if(x_ray_view == X_RAY_CHEAT_ON && state != X_RAY_CHEAT_OFF && !cheat_off)
-        return;
+    if(x_ray_view == X_RAY_CHEAT_ON)
+    {
+        if(state == X_RAY_ON) // X_RAY_CHEAT_ON takes precedence to preserve X-ray cheat
+            return;
+        else if(state == X_RAY_OFF)
+        {
+            if(!cheat_off) // not turning X-ray cheat off
+            {
+                if(game->are_cheats_enabled()) // don't turn off when cheats are enabled
+                    return;
+                else  // need to preserve X-ray cheat setting when cheats are off
+                    state = X_RAY_CHEAT_OFF;
+            }
+        }
+    }
+    else if(x_ray_view == X_RAY_CHEAT_OFF)
+    {
+        if(state == X_RAY_OFF) // X_RAY_CHEAT_OFF takes precedence to preserve X-ray cheat
+            return;
+        else if(state == X_RAY_ON) // need to preserve X-ray cheat setting when cheats are off
+            state = X_RAY_CHEAT_ON;
+    }
     x_ray_view = state;
     updateBlacking();
 }

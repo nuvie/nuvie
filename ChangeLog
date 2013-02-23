@@ -1,3 +1,7 @@
+2013-02-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1669
+	* Preserve X-ray mode cheat when cheats are off and an X-ray effect ends
+	* Round down floating point division in spell_poison_actor (Thanks Eric)
+
 2013-02-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1668
 	* Add X toggle X-ray mode cheat
 

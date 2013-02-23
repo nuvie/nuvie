@@ -485,9 +485,9 @@ void ActionToggleCheats(int const *params)
 		game->get_obj_manager()->show_egg_objs(cheats);
 
 	X_RayType xray = Game::get_game()->get_map_window()->get_x_ray_view();
-	if(cheats && xray == X_RAY_CHEAT_OFF)
+	if(xray == X_RAY_CHEAT_OFF)
 		Game::get_game()->get_map_window()->set_x_ray_view(X_RAY_CHEAT_ON);
-	else if(!cheats && xray == X_RAY_CHEAT_ON)
+	else if(xray == X_RAY_CHEAT_ON)
 		Game::get_game()->get_map_window()->set_x_ray_view(X_RAY_CHEAT_OFF);
 }
 
