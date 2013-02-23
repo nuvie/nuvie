@@ -658,6 +658,16 @@ void MsgScroll::page_down()
    scroll_updated = true;
 }
 
+void MsgScroll::process_page_break()
+{
+    page_break = false;
+    just_finished_page_break = true;
+    if(!input_mode)
+        Game::get_game()->get_gui()->unlock_input();
+    process_holding_buffer(); // Process any text in the holding buffer.
+    just_displayed_prompt = true;
+}
+
 /* Take input from the main event handler and do something with it
  * if necessary.
  */
@@ -684,13 +694,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
 
     if(page_break)
       {
-       page_break = false;
-       just_finished_page_break = true;
-       if(!input_mode)
-         Game::get_game()->get_gui()->unlock_input();
-
-       process_holding_buffer(); // Process any text in the holding buffer.
-       just_displayed_prompt = true;
+       process_page_break();
        return(GUI_YUM);
       }
 
@@ -742,12 +746,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
 
     if(page_break) // any click == scroll-to-end
     {
-        page_break = false;
-        just_finished_page_break = true;
-        if(!input_mode)
-            Game::get_game()->get_gui()->unlock_input();
-
-        process_holding_buffer(); // Process any text in the holding buffer.
+        process_page_break();
         return(GUI_YUM);
     }
     else if(button == SDL_BUTTON_WHEELUP)

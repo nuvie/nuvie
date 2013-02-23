@@ -104,7 +104,7 @@ protected:
  bool page_break;
  bool just_finished_page_break;
  bool just_displayed_prompt;
-
+ void process_page_break();
  std::list<MsgLine *> msg_buf;
 
  std::string input_buf;
