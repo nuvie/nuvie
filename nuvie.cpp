@@ -284,6 +284,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/ultima6/roof_mode", false);
 	config->set("config/ultima6/converse_solid_bg", false);
 	config->set("config/ultima6/converse_bg_color", 218);
+	config->set("config/ultima6/game_specific_keys", "(default)");
 	config->set("config/ultima6/newscroll/width", 30);
 	config->set("config/ultima6/newscroll/height", 19);
 	config->set("config/ultima6/newscroll/solid_bg", "no");
@@ -294,6 +295,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/martian/show_eggs", false);
 	config->set("config/martian/converse_solid_bg", false);
 	config->set("config/martian/converse_bg_color", 136);
+	config->set("config/ultima6/game_specific_keys", "(default)");
 	config->set("config/martian/newscroll/width", 30);
 	config->set("config/martian/newscroll/height", 19);
 	config->set("config/martian/newscroll/solid_bg", "no");
@@ -304,6 +306,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/savage/show_eggs", false);
 	config->set("config/savage/converse_solid_bg", false);
 	config->set("config/savage/converse_bg_color", 216);
+	config->set("config/ultima6/game_specific_keys", "(default)");
 	config->set("config/savage/newscroll/width", 30);
 	config->set("config/savage/newscroll/height", 19);
 	config->set("config/savage/newscroll/solid_bg", "no");

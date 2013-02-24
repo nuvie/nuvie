@@ -22,7 +22,10 @@ dist_nuviedata_DATA = \
 	data/ScrollBarDown_2.bmp \
 	data/ScrollBarUp_1.bmp \
 	data/ScrollBarUp_2.bmp \
-	data/defaultkeys.txt
+	data/defaultkeys.txt \
+	data/u6keys.txt \
+	data/sekeys.txt \
+	data/bgkeys.txt
 
 desktopdir=$(datadir)/applications
 dist_desktop_DATA = builds/linux/nuvie.desktop

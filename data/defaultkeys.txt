@@ -28,7 +28,6 @@ Ctrl-r	load_latest_save
 ,	new_command_bar
 `	toggle_combat_strategy
 tab	toggle_cursor
-c	cast
 l	look
 t	talk
 u	use
@@ -37,7 +36,6 @@ m	move
 d	drop
 b	toggle_combat
 a	attack
-r	rest
 i	new_inventory
 h	show_keys
 z	close_gumps
@@ -50,21 +48,17 @@ e	show_eggs
 Alt-E	toggle_ethereal
 Alt-Ctrl-e	toggle_egg_spawn
 Alt-i	toggle_no_darkness
-o	use_item	87	# use orb of moons
-p	use_item	63	# use lock pick
 Alt-Ctrl-p	toggle_pickpocket_mode
 Alt-w	toggle_unlimited_casting
 x	toggle_x_ray
 
 Alt-a	select_command_bar	0	# select attack on the command bar
-Alt-c	select_command_bar	1	# select cast on the command bar
 Alt-t	select_command_bar	2	# select talk on the command bar
 Alt-l	select_command_bar	3	# select look on the command bar
 Alt-g	select_command_bar	4	# select get on the command bar
 Alt-d	select_command_bar	5	# select drop on the command bar
 Alt-m	select_command_bar	6	# select move on the command bar
 Alt-u	select_command_bar	7	# select use on the command bar
-Alt-r	select_command_bar	8	# select rest on the command bar
 Alt-b	select_command_bar	9	# select toggle combat on the command bar
 pageup	msg_scroll_up
 pagedown	msg_scroll_down

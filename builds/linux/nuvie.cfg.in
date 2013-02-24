@@ -57,6 +57,7 @@
   <show_stealing>no</show_stealing>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>218</converse_bg_color>
+  <game_specific_keys>(default)</game_specific_keys>
   <music>native</music>
   <sfx>pcspeaker</sfx>
   <newscroll>
@@ -74,6 +75,7 @@
   <show_eggs>no</show_eggs>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>136</converse_bg_color>
+  <game_specific_keys>(default)</game_specific_keys>
   <newscroll>
    <width>30</width>
    <height>19</height>
@@ -89,6 +91,7 @@
   <show_eggs>no</show_eggs>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>216</converse_bg_color>
+  <game_specific_keys>(default)</game_specific_keys>
   <newscroll>
    <width>30</width>
    <height>19</height>

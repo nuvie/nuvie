@@ -51,6 +51,9 @@ Source: data\ScrollBarDown_2.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarUp_1.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarUp_2.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\defaultkeys.txt; DestDir: {app}\data\; Flags: ignoreversion
+Source: data\u6keys.txt; DestDir: {app}\data\; Flags: ignoreversion
+Source: data\sekeys.txt; DestDir: {app}\data\; Flags: ignoreversion
+Source: data\mdkeys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\images\gumps\gump_btn_down.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\gump_btn_up.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\left_arrow.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion

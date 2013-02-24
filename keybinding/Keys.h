@@ -86,6 +86,7 @@ public:
 	bool HandleEvent(const SDL_Event *event);
 	
 	void LoadFromFile(const char* filename);
+	void LoadGameSpecificKeys();
 	void LoadFromPatch();
 	void handle_wrong_key_pressed();
 

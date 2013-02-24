@@ -1,3 +1,12 @@
+2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1670
+	* Use game specific keybindings (u6keys.txt, mdkeys.txt, and sekeys.txt).
+	  Each game has its own game_specific_keys cfg entry. (default) will load
+	  the appropriate file from the data folder.
+	* Add new Martian Dreams key bindings
+		P	use pry bar
+		r	use tent
+		w	use watch
+
 2013-02-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1669
 	* Preserve X-ray mode cheat when cheats are off and an X-ray effect ends
 	* Round down floating point division in spell_poison_actor (Thanks Eric)

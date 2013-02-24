@@ -61,6 +61,7 @@
   <converse_bg_color>218</converse_bg_color>
   <music>native</music>
   <sfx>pcspeaker</sfx>
+  <game_specific_keys>(default)</game_specific_keys>
   <patch_keys>./patchkeys.txt</patch_keys>
   <newscroll>
    <width>30</width>
@@ -78,6 +79,7 @@
   <show_eggs>no</show_eggs>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>136</converse_bg_color>
+  <game_specific_keys>(default)</game_specific_keys>
   <patch_keys>./patchkeys.txt</patch_keys>
   <newscroll>
    <width>30</width>
@@ -95,6 +97,7 @@
   <show_eggs>no</show_eggs>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>216</converse_bg_color>
+  <game_specific_keys>(default)</game_specific_keys>
   <patch_keys>./patchkeys.txt</patch_keys>
   <newscroll>
    <width>30</width>

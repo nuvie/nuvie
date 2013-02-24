@@ -141,6 +141,9 @@ install: all
 	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
 	cp data/*.bmp $(U6PATH)/data
 	cp data/defaultkeys.txt $(U6PATH)/data
+	cp data/u6keys.txt $(U6PATH)/data
+	cp data/mdkeys.txt $(U6PATH)/data
+	cp data/sekeys.txt $(U6PATH)/data
 
 tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_font.exe unpack_maptiles.exe unpack_portraits.exe unpack_talk.exe
 	mkdir -p $(U6PATH)

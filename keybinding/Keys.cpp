@@ -507,6 +507,35 @@ void KeyBinder::LoadFromFile(const char* filename)
 	LoadFromFileInternal(filename);
 }
 
+void KeyBinder::LoadGameSpecificKeys()
+{
+	string key_path_str;
+	string default_key_path;
+	Configuration *config = Game::get_game()->get_config();
+	config->value("config/datadir", default_key_path, "./data");
+	nuvie_game_t game_type = get_game_type(config);
+
+	if(game_type == NUVIE_GAME_U6)
+		default_key_path += "/u6keys.txt";
+	else if(game_type ==  NUVIE_GAME_MD)
+		default_key_path += "/mdkeys.txt";
+	else // SE
+		default_key_path += "/sekeys.txt";
+
+	config->value(config_get_game_key(config) + "/game_specific_keys", key_path_str, default_key_path.c_str());
+	const char *key_path;
+	if(key_path_str == "(default)")
+		key_path = default_key_path.c_str();
+	else
+		key_path = key_path_str.c_str();
+	if (fileExists(key_path)) {
+		ConsoleAddInfo("Loading %s\n", key_path);
+		LoadFromFileInternal(key_path);
+	}
+	else // These aren't critical so failing to load doesn't matter much
+		ConsoleAddInfo("Couldn't find $s\n", key_path);
+}
+
 void KeyBinder::LoadFromPatch() // FIXME default should probably be system specific
 {
 	string PATCH_KEYS;
