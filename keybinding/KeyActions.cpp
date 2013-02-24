@@ -161,9 +161,16 @@ void ActionSelectNewCommandBar(int const *params)
 	cb->Show();
 }
 
-void ActionNewInventory(int const *params)
+void ActionDollGump(int const *params)
 {
-	view_manager->open_doll_view(NULL);
+	if(params[0] > 0)
+	{
+		Actor *party_member = player->get_party()->get_actor(params[0] -1);
+		if(party_member)
+			view_manager->open_doll_view(party_member);
+	}
+	else
+		view_manager->open_doll_view(NULL);
 }
 
 void ActionShowStats(int const *params)

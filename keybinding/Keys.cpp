@@ -91,7 +91,7 @@ const struct Action {
 	{ "REST", ActionRest, "Rest", Action::normal_keys, true },
 	{ "SELECT_COMMAND_BAR", ActionSelectCommandBar, "Select Command Bar", Action::normal_keys, true },
 	{ "NEW_COMMAND_BAR", ActionSelectNewCommandBar, "Select New Command Bar", Action::normal_keys, true },
-	{ "NEW_INVENTORY", ActionNewInventory, "New inventory", Action::normal_keys, true },
+	{ "DOLL_GUMP", ActionDollGump, "Doll gump", Action::normal_keys, true },
 	{ "SHOW_STATS", ActionShowStats, "Shows the party member's stats", Action::normal_keys, true },
 	{ "INVENTORY", ActionInventory, "inventory", Action::normal_keys, true },
 	{ "PREVIOUS_PARTY_MEMBER", ActionPreviousPartyMember, "Previous party member", Action::normal_keys, true },

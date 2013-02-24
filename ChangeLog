@@ -1,3 +1,6 @@
+2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1671
+	* Add Alt-F1 through Alt-F9 show doll gumps (fullscreen_map only)
+
 2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1670
 	* Use game specific keybindings (u6keys.txt, mdkeys.txt, and sekeys.txt).
 	  Each game has its own game_specific_keys cfg entry. (default) will load

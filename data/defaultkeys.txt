@@ -36,7 +36,7 @@ m	move
 d	drop
 b	toggle_combat
 a	attack
-i	new_inventory
+i	doll_gump #cycle doll gump
 h	show_keys
 z	close_gumps
 
@@ -76,6 +76,16 @@ pagedown	msg_scroll_down
 F10	party_view
 KP/	party_view
 /	party_view
+
+Alt-F1	doll_gump	1	# Show doll_gump for Avatar
+Alt-F2	doll_gump	2	# Show doll gump for character 2
+Alt-F3	doll_gump	3	# Show doll gump for character 3
+Alt-F4	doll_gump	4	# Show doll gump for character 4
+Alt-F5	doll_gump	5	# Show doll gump for character 5
+Alt-F6	doll_gump	6	# Show doll gump for character 6
+Alt-F7	doll_gump	7	# Show doll gump for character 7
+Alt-F8	doll_gump	8	# Show doll gump for character 8
+Alt-F9	doll_gump	9	# Show doll gump for character 9
 
 F1	inventory	1	# Show inventory for Avatar
 F2	inventory	2	# Show inventory for character 2

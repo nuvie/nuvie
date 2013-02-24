@@ -41,7 +41,7 @@ void ActionRest(int const *params);
 void ActionSelectCommandBar(int const *params);
 void ActionSelectNewCommandBar(int const *params);
 
-void ActionNewInventory(int const *params);
+void ActionDollGump(int const *params);
 void ActionShowStats(int const *params);
 void ActionInventory(int const *params);
 void ActionPartyView(int const *params);
