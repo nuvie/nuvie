@@ -1,3 +1,7 @@
+2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1674
+	* Move toggle_unlimited_casting key bindings to u6keys.txt and sekeys.txt
+	  the cheat isn't currently implemented in SE.
+
 2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1673
 	* Do unready code on actor death or when leaving the party
 	* Don't stack objects when moving them all to the body or ground
