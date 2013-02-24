@@ -25,7 +25,7 @@ dist_nuviedata_DATA = \
 	data/defaultkeys.txt \
 	data/u6keys.txt \
 	data/sekeys.txt \
-	data/bgkeys.txt
+	data/mdkeys.txt
 
 desktopdir=$(datadir)/applications
 dist_desktop_DATA = builds/linux/nuvie.desktop

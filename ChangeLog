@@ -1,3 +1,6 @@
+2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1672
+	* Fix typo that broke Makefile.am
+
 2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1671
 	* Add Alt-F1 through Alt-F9 show doll gumps (fullscreen_map only)
 
