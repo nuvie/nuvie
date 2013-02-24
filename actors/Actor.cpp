@@ -625,9 +625,9 @@ void Actor::set_in_party(bool state)
           {
            if(is_invisible())
                visible_flag = false;
-           inventory_drop_all();
            set_worktype(0x8f); // U6_WANDER_AROUND
            status_flags ^= ACTOR_STATUS_IN_PARTY;
+           inventory_drop_all(); // needs to be after party status change
            if(is_charmed())
                 set_old_alignment(ACTOR_ALIGNMENT_NEUTRAL);
            else
@@ -1130,7 +1130,7 @@ bool Actor::add_readied_object(Obj *obj)
  return true;
 }
 
-void Actor::remove_readied_object(Obj *obj)
+void Actor::remove_readied_object(Obj *obj, bool run_usecode)
 {
  uint8 location;
 
@@ -1138,7 +1138,7 @@ void Actor::remove_readied_object(Obj *obj)
    {
     if(readied_objects[location] != NULL && readied_objects[location]->obj == obj)
       {
-       remove_readied_object(location);
+       remove_readied_object(location, run_usecode);
        break;
       }
    }
@@ -1146,7 +1146,7 @@ void Actor::remove_readied_object(Obj *obj)
  return;
 }
 
-void Actor::remove_readied_object(uint8 location)
+void Actor::remove_readied_object(uint8 location, bool run_usecode)
 {
  Obj *obj;
 
@@ -1156,7 +1156,8 @@ void Actor::remove_readied_object(uint8 location)
    {
     if(readied_objects[location]->combat_type)
       readied_armor_class -= readied_objects[location]->combat_type->defence;
-
+    if(obj_manager->get_usecode()->has_readycode(obj) && run_usecode)
+      obj_manager->get_usecode()->ready_obj(obj, this);
     delete readied_objects[location];
     readied_objects[location] = NULL;
     //ERIC obj->status ^= 0x18; // remove "readied" bit flag.
@@ -1236,7 +1237,7 @@ void Actor::inventory_drop_all()
 }
 
 // Moves inventory and all readied items into a container object.
-void Actor::all_items_to_container(Obj *container_obj)
+void Actor::all_items_to_container(Obj *container_obj, bool stack)
 {
  U6LList *inventory;
  U6Link *link;
@@ -1262,7 +1263,7 @@ void Actor::all_items_to_container(Obj *container_obj)
         delete_obj(obj);
     }
     else
-    	obj_manager->moveto_container(obj, container_obj);
+    	obj_manager->moveto_container(obj, container_obj, stack);
    }
 
 
@@ -1606,13 +1607,15 @@ void Actor::die(bool create_body)
 {
     hp = 0;
     visible_flag = false;
-    set_dead_flag(true);
-
     Game *game = Game::get_game();
+
+    if(game->get_game_type() != NUVIE_GAME_U6) // set in U6 before removing items for torch usecode
+        set_dead_flag(true);                   // may need to add it elsewhere for other games
+
     if(game->get_player()->get_actor() == this && game->get_event()->using_control_cheat())
         game->get_event()->party_mode();
     if(is_temp())
-        Game::get_game()->get_actor_manager()->clear_actor(this);
+        game->get_actor_manager()->clear_actor(this);
 }
 
 void Actor::resurrect(MapCoord new_position, Obj *body_obj)

@@ -435,7 +435,7 @@ class Actor
  float get_inventory_weight();
  float get_inventory_equip_weight();
  void inventory_drop_all();
- void all_items_to_container(Obj *container_obj);
+ void all_items_to_container(Obj *container_obj, bool stack);
  bool can_carry_weight(Obj *obj);
  bool can_carry_weight(float obj_weight); // return from get_obj_weight()
  bool can_carry_object(uint16 obj_n, uint32 qty = 0);
@@ -445,8 +445,8 @@ class Actor
  virtual const CombatType *get_object_combat_type(uint16 obj_n) { return NULL; }
  
  bool add_readied_object(Obj *obj);
- void remove_readied_object(Obj *obj);
- void remove_readied_object(uint8 location);
+ void remove_readied_object(Obj *obj, bool run_usecode = true); // run_usecode to stop from running usecode twice or an infinite loop
+ void remove_readied_object(uint8 location, bool run_usecode = true);
 
  void remove_all_readied_objects();
  bool has_readied_objects();

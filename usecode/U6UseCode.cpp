@@ -3148,7 +3148,7 @@ bool U6UseCode::torch(Obj *obj, UseCodeEvent ev)
         }
         else // equip (get one from the stack)
         {
-            if(obj->qty > 1)
+            if(obj->qty > 1 && obj->frame_n == 0) // don't change the quantity of lit torches
             {
                 Obj *torch = obj_manager->get_obj_from_stack(obj, obj->qty - 1);
                 assert(torch != obj); // got a new object from the obj stack
@@ -3196,11 +3196,17 @@ void U6UseCode::extinguish_torch(Obj *obj)
     if(obj->is_readied())
     {
         Actor *owner = actor_manager->get_actor_holding_obj(obj);
-        if(owner->is_in_party() || owner == player->get_actor())
-            owner->remove_readied_object(obj); // needed to prevent endless loop
-        else
+        if((owner->is_in_party() || owner == player->get_actor()) && owner->is_alive()) 
         {
-            obj->frame_n = 0;
+            owner->remove_readied_object(obj, false);
+            if(owner->get_hp() == 0) // Avatar during Kal Lor item removal
+            {
+                game->get_map_window()->updateBlacking();
+                return;
+            }
+        }
+        else // don't extinguish on death or leaving the party
+        {
             game->get_map_window()->updateBlacking(); // might need this on death
             return;
         }

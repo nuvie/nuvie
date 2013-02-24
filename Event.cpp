@@ -2395,7 +2395,7 @@ bool Event::unready(Obj *obj)
         return(!obj->is_readied()); // handled by usecode
     }
 
-    actor->remove_readied_object(obj);
+    actor->remove_readied_object(obj, false); // already ran usecode so don't run when unequipping
 
     scroll->display_string("\n");
     scroll->display_prompt();

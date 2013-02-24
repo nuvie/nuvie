@@ -2130,8 +2130,6 @@ bool ObjManager::unlink_from_engine(Obj *obj)
     case OBJ_LOC_MAP : remove_obj_from_map(obj); break;
 
     case OBJ_LOC_READIED : a = (Actor *)obj->parent;
-                           if(Game::get_game()->get_usecode()->has_readycode(obj)) // this is a loop if called in usecode
-                             Game::get_game()->get_usecode()->ready_obj(obj, a);
                            a->remove_readied_object(obj);
                            a->inventory_remove_obj(obj);
                            break;

@@ -1575,19 +1575,8 @@ void U6Actor::die(bool create_body)
  if(has_surrounding_objs())
    clear_surrounding_objs_list(true);
 
-	Obj *obj = inventory_get_readied_object(ACTOR_ARM);
-	if(obj && obj->obj_n == OBJ_U6_TORCH && obj->frame_n == 1)
-	{
-		inventory_remove_obj(obj);
-		delete_obj(obj);
-	}
-	obj = inventory_get_readied_object(ACTOR_ARM_2);
-	if(obj && obj->obj_n == OBJ_U6_TORCH && obj->frame_n == 1)
-	{
-		inventory_remove_obj(obj);
-		delete_obj(obj);
-	}
 
+    set_dead_flag(true); // needed sooner for unready usecode of torches
     if(base_actor_type->dead_obj_n != OBJ_U6_NOTHING)
     {
     	if(create_body)
@@ -1609,7 +1598,7 @@ void U6Actor::die(bool create_body)
 			if(base_actor_type->dead_obj_n == OBJ_U6_BLOOD)
 				inventory_drop_all();
 			else // move my inventory into the dead body container
-				all_items_to_container(dead_body);
+				all_items_to_container(dead_body, false);
 			obj_manager->add_obj(dead_body, true);
     	}
     }
