@@ -1,3 +1,6 @@
+2013-02-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1676
+	* Use inventory_drop_all for Armageddon (fixes several issues)
+
 2013-02-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1675
 	* Don't close gumps when dragging and dropping
 

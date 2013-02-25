@@ -1577,7 +1577,9 @@ void U6Actor::die(bool create_body)
 
 
     set_dead_flag(true); // needed sooner for unready usecode of torches
-    if(base_actor_type->dead_obj_n != OBJ_U6_NOTHING)
+	if(game->is_armageddon())
+		inventory_drop_all();
+	else if(base_actor_type->dead_obj_n != OBJ_U6_NOTHING)
     {
     	if(create_body)
     	{

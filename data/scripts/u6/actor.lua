@@ -1208,7 +1208,7 @@ function actor_hit(defender, max_dmg, attacker, no_hit_anim)
 				if defender.hp ~= 0 then
 					if defender.in_party == true then player_subtract_karma(5) end --allowing your party to die is bad karma.
 					defender.hp = 0
-					defender.alive = false
+--					defender.alive = false -- This doesn't work. The variable is get only
 					if alignment_is_evil(defender.align) then
 						local actor_base = actor_tbl[defender.obj_n]
 						if actor_base ~= nil then
