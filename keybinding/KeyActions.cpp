@@ -120,6 +120,7 @@ void ActionMove(int const *params)
 
 void ActionDrop(int const *params)
 {
+	event->set_drop_from_key(true);
 	event->newAction(DROP_MODE);
 }
 

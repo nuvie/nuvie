@@ -1,3 +1,6 @@
+2013-02-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1675
+	* Don't close gumps when dragging and dropping
+
 2013-02-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1674
 	* Move toggle_unlimited_casting key bindings to u6keys.txt and sekeys.txt
 	  the cheat isn't currently implemented in SE.

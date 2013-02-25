@@ -143,6 +143,7 @@ friend class Magic; // FIXME
  Obj *push_obj;
  Actor *push_actor;
 
+ bool drop_from_key;
  bool showingQuitDialog;
  bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
  bool move_in_inventory;
@@ -253,6 +254,7 @@ friend class Magic; // FIXME
  bool drop_select(Obj *obj, uint16 qty = 0);
  bool drop_count(uint16 qty);
  bool perform_drop();
+ void set_drop_from_key(bool closing_gumps) { drop_from_key = closing_gumps; }
  bool drop(Obj *obj, uint16 qty, uint16 x, uint16 y);
  bool drop(uint16 x, uint16 y) { return(drop(drop_obj, drop_qty, x, y)); }
  void set_drop_target(uint16 x, uint16 y) { drop_x = sint32(x); drop_y = sint32(y); }

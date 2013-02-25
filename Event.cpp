@@ -110,6 +110,7 @@ Event::Event(Configuration *cfg)
  rest_guard = 0;
  push_obj = NULL;
  push_actor = NULL;
+ drop_from_key = false;
  move_in_inventory = false;
  time_queue = game_time_queue = NULL;
  showingQuitDialog = false;
@@ -2429,7 +2430,8 @@ bool Event::drop_select(Obj *obj, uint16 qty)
     drop_obj = obj;
     scroll->display_string(drop_obj ? obj_manager->look_obj(drop_obj) : "nothing");
     scroll->display_string("\n");
-    close_gumps();
+    if(drop_from_key)
+        close_gumps();
     if(drop_obj)
     {
         if(qty == 0 && obj_manager->is_stackable(drop_obj) && drop_obj->qty > 1)
@@ -3246,6 +3248,7 @@ void Event::endAction(bool prompt)
     {
         drop_obj = NULL;
         drop_qty = 0;
+        drop_from_key = false;
     }
     else if(mode == REST_MODE)
     {
