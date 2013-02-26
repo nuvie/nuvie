@@ -29,7 +29,7 @@
 #include "Magic.h"
 
 #include "SpellViewGump.h"
-
+#include "MapWindow.h"
 
 #define NEWMAGIC_BMP_W 144
 #define NEWMAGIC_BMP_H 82
@@ -326,22 +326,49 @@ GUI_status SpellViewGump::MouseDown(int x, int y, int button)
 		move_left();
 		return GUI_YUM;
 	}
-
-	selected_spell = getSpell(x, y);
-	if(selected_spell != -1)
+	else if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
+	{
+		close_spellbook();
 		return GUI_YUM;
+	}
+
+	sint16 clicked_spell = getSpell(x, y);
+	
+	if(clicked_spell != -1)
+	{
+		selected_spell = clicked_spell;
+		return GUI_YUM;
+	}
+
+	bool can_target = true; // maybe put this check into GUI_widget
+	if(HitRect(x, y))
+	{
+		if(bg_image)
+		{
+			Uint32 pixel = sdl_getpixel(bg_image, x - area.x, y - area.y);
+			if(pixel != bg_color_key)
+				can_target = false;
+		}
+		else
+			can_target = false;
+	}
+
+	if(can_target)
+	{
+		Event *event = Game::get_game()->get_event();
+		event->target_spell(); //Simulate a global key down event.
+		if(event->get_mode() == INPUT_MODE)
+			Game::get_game()->get_map_window()->select_target(x, y);
+		if(event->get_mode() != MOVE_MODE)
+			close_spellbook();
+		return GUI_YUM;
+	}
 
 	return DraggableView::MouseDown(x, y, button);
 }
 
 GUI_status SpellViewGump::MouseUp(int x, int y, int button)
 {
-	if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
-	{
-		close_spellbook();
-		return GUI_YUM;
-	}
-
 	sint16 spell = getSpell(x, y);
 
 	if(spell != -1 && spell == selected_spell)

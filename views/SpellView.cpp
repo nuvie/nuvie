@@ -477,18 +477,13 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 			close_look();
 			return GUI_YUM;
 		}
-		int wx, wy;
-		MapWindow *map_window = Game::get_game()->get_map_window();
-		uint8 z = Game::get_game()->get_player()->get_actor()->get_z();
 
 		event->target_spell();
 		if(event->get_mode() == INPUT_MODE)
 		{
 			y += area.y;
 			x += area.x;
-			map_window->mouseToWorldCoords(x, y, wx, wy);
-			map_window->moveCursor(wx - map_window->get_cur_x(), wy - map_window->get_cur_y());
-			event->select_target(uint16(wx), uint16(wy), z);
+			Game::get_game()->get_map_window()->select_target(x, y);
 		}
 		return GUI_YUM;
 	}

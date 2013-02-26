@@ -1,3 +1,8 @@
+2013-02-26  Malignant Manor <malignantmanor@users.sourceforge.net> r1678
+	* Allow casting selected spells from the new spell gump by clicking on the
+	  map window. Note that clicking on the spell book anywhere other the arrow
+	  will mess this up.
+
 2013-02-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1677
 	* Swap Gate Travel and Energy Wind filenames in the new spell book
 	* Fix Magic Trap graphic (used to display Detect Magic)

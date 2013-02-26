@@ -2032,7 +2032,6 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	Event *event = game->get_event();
 	Actor *player = actor_manager->get_player();
 	Obj	*obj = get_objAtMousePos (x, y);
-	int wx, wy;
 
 	if(is_wizard_eye_mode())
 	{
@@ -2040,10 +2039,11 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_YUM;
 	}
 
-	mouseToWorldCoords(x, y, wx, wy);
-
 	if(event->get_mode() == MOVE_MODE || event->get_mode() == EQUIP_MODE)
 	{
+		int wx, wy;
+		mouseToWorldCoords(x, y, wx, wy);
+
 		if(button == WALK_BUTTON && game->get_command_bar()->get_selected_action() != -1)
 		{
 			if(game->get_command_bar()->try_selected_action() == false) // start new action
@@ -2080,8 +2080,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		if(button != USE_BUTTON && button != WALK_BUTTON)
 			return GUI_PASS;
 		looking = false;
-		moveCursor(wx - cur_x, wy - cur_y); // the cursor location instead of
-		event->select_target(uint16(wx), uint16(wy), cur_level); // the returned location
+		select_target(x,y);
 		return  GUI_PASS;
 	}
 	else if(event->get_mode() != MOVE_MODE && event->get_mode() != EQUIP_MODE)
@@ -2253,6 +2252,13 @@ Actor *MapWindow::get_actorAtMousePos(int mx, int my)
     return	actor_manager->get_actor (wx, wy, cur_level);
 }
 
+void MapWindow::select_target(int x, int y)
+{
+	int wx, wy;
+	mouseToWorldCoords(x, y, wx, wy);
+	moveCursor(wx - cur_x, wy - cur_y);
+	game->get_event()->select_target(uint16(wx), uint16(wy), cur_level);
+}
 
 void MapWindow::mouseToWorldCoords (int mx, int my, int &wx, int &wy)
 {
