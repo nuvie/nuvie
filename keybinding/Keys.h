@@ -39,7 +39,7 @@ struct str_int_pair
 	int  num;
 };
 
-const int c_maxparams = 4;
+const int c_maxparams = 1;
 
 struct Action;
 struct ActionType {

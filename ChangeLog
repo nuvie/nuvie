@@ -1,3 +1,8 @@
+2013-02-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1680
+	* Remove use item key binding's ability to check for a specific quality or
+	  frame number. They weren't used, and I would need to increase the
+	  parameter limit on all key bindings (a little more memory) just for them.
+
 2013-02-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1679
 	* Add Ctrl-T teleport to mouse cursor cheat
 	* Add more teleport cheat locations (alt code 314)

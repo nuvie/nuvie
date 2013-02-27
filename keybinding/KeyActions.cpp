@@ -381,10 +381,17 @@ void ActionUseItem(int const *params)
 	if(event->get_mode() != MOVE_MODE && event->get_mode() !=EQUIP_MODE)
 		return;
 	uint16 obj_n = params[0] > 0 ? params[0] : 0;
+#if 0 // need to increase c_maxparams to 5 to use this many parameters
 	uint8 qual = params[1] > 0 ? params[1] : 0;
 	bool match_qual = params[2] == 1 ? true: false;
 	uint8 frame_n = params[3] > 0 ? params[3] : 0;
 	bool match_frame_n = params[4] == 1 ? true: false;
+#else
+	uint8 qual = 0;
+	bool match_qual = false;
+	uint8 frame_n = 0;
+	bool match_frame_n = false;
+#endif
 
 	// try player first
 	Obj *obj = player->get_actor()->inventory_get_object(obj_n, qual, match_qual, frame_n, match_frame_n);
