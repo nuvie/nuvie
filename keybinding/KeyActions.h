@@ -82,6 +82,7 @@ void ActionToggleGodMode(int const *params);
 void ActionToggleEthereal(int const *params);
 void ActionToggleX_Ray(int const *params);
 void ActionHealParty(int const *params);
+void ActionTeleportToCursor(int const *params);
 void ActionToggleCheats(int const *params);
 
 void ActionTest(int const *params);

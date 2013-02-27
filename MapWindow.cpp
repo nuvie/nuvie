@@ -2252,6 +2252,17 @@ Actor *MapWindow::get_actorAtMousePos(int mx, int my)
     return	actor_manager->get_actor (wx, wy, cur_level);
 }
 
+void MapWindow::teleport_to_cursor()
+{
+	int mx, my, wx, wy;
+	SDL_GetMouseState(&mx, &my);
+	mx = screen->get_translated_x((uint16)mx);
+	my = screen->get_translated_y((uint16)my);
+
+	mouseToWorldCoords(mx, my, wx, wy);
+	game->get_player()->move(wx, wy, cur_level, true);
+}
+
 void MapWindow::select_target(int x, int y)
 {
 	int wx, wy;

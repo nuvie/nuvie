@@ -1,3 +1,7 @@
+2013-02-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1679
+	* Add Ctrl-T teleport to mouse cursor cheat
+	* Add more teleport cheat locations (alt code 314)
+
 2013-02-26  Malignant Manor <malignantmanor@users.sourceforge.net> r1678
 	* Allow casting selected spells from the new spell gump by clicking on the
 	  map window. Note that clicking on the spell book anywhere other the arrow

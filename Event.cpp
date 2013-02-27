@@ -1902,9 +1902,10 @@ void Event::alt_code_teleport_menu(uint32 selection)
         scroll->display_string(" 3) Shrines\n");
         scroll->display_string(" 4) Gargoyles\n");
         scroll->display_string(" 5) Dungeons\n");
-        scroll->display_string(" 6) Other\n");
+        scroll->display_string(" 6) More Dungeons\n");
+        scroll->display_string(" 7) Other\n");
         scroll->display_string("Category? ");
-        get_scroll_input("0123456");
+        get_scroll_input("01234567");
     }
     else if(alt_code_input_num == 1) // selected category, select location
     {
@@ -1922,7 +1923,10 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 scroll->display_string(" 6) Jhelom\n");
                 scroll->display_string(" 7) Skara Brae\n");
                 scroll->display_string(" 8) New Magincia\n");
-                scroll->display_string(" 9) Buc's Den\n");
+                if(game->is_orig_style())
+                    scroll->display_string(" 9) Buc's Den\n");
+                else
+                    scroll->display_string(" 9) Buccaneer's Den\n");
                 scroll->display_string("Location? ");
                 get_scroll_input("0123456789");
                 break;
@@ -1930,11 +1934,11 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 scroll->display_string("Major Areas\n");
                 scroll->display_string(" 1) Cove\n");
                 scroll->display_string(" 2) Paws\n");
-                scroll->display_string(" 3) The Hold\n");
-                scroll->display_string(" 4) The Abbey\n");
+                scroll->display_string(" 3) Serpent's Hold\n");
+                scroll->display_string(" 4) Empath Abbey\n");
                 scroll->display_string(" 5) Lycaeum\n");
                 scroll->display_string(" 6) Library\n");
-                scroll->display_string(" 7) Sutek\n");
+                scroll->display_string(" 7) Sutek's Island\n");
                 scroll->display_string(" 8) Stonegate\n");
                 scroll->display_string(" 9) The Codex\n");
                 scroll->display_string("Location? ");
@@ -1955,7 +1959,10 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 break;
             case 4:
                 scroll->display_string("Gargoyles\n");
-                scroll->display_string(" 1) Hall\n");
+                if(game->is_orig_style())
+                    scroll->display_string(" 1) Hall\n");
+                else
+                    scroll->display_string(" 1) Hall of Knowledge\n");
                 scroll->display_string(" 2) Singularity\n");
                 scroll->display_string(" 3) King's Temple\n");
                 scroll->display_string(" 4) Tomb of Kings\n");
@@ -1968,28 +1975,49 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 break;
             case 5:
                 scroll->display_string("Dungeons\n");
-                scroll->display_string(" 1) Wrong\n");
-                scroll->display_string(" 2) Covetous\n");
-                scroll->display_string(" 3) Destard\n");
-                scroll->display_string(" 4) Shame\n");
-                scroll->display_string(" 5) Deceit\n");
-                scroll->display_string(" 6) Hythloth\n");
+                scroll->display_string(" 1) Ant Mound\n");
+                if(game->is_orig_style())
+                    scroll->display_string(" 2) Buc's Cave\n");
+                else
+                    scroll->display_string(" 2) Buccaneer's Cave\n");
+                scroll->display_string(" 3) Covetous\n");
+                scroll->display_string(" 4) Crypts\n");
+                scroll->display_string(" 5) Cyclops Cave\n");
+                scroll->display_string(" 6) Deceit\n");
+                scroll->display_string(" 7) Despise\n");
+                scroll->display_string(" 8) Destard\n");
+                if(game->is_orig_style())
+                    scroll->display_string(" 9) Heftimus's\n");
+                else
+                    scroll->display_string(" 9) Heftimus's Cave\n");
                 scroll->display_string("Location? ");
-                get_scroll_input("0123456");
+                get_scroll_input("0123456789");
                 break;
             case 6:
+                scroll->display_string("More Dungeons\n");
+                scroll->display_string(" 1) Hero's Hole\n");
+                scroll->display_string(" 2) Hythloth\n");
+                scroll->display_string(" 3) Pirate Cave\n");
+                scroll->display_string(" 4) Sewers\n");
+                scroll->display_string(" 5) Shame\n");
+                scroll->display_string(" 6) Spider Cave\n");
+                scroll->display_string(" 7) Sutek's Island\n");
+                scroll->display_string(" 8) Swamp Cave\n");
+                scroll->display_string(" 9) Wrong\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 7:
                 scroll->display_string("Other\n");
                 scroll->display_string(" 1) Iolo's Hut\n");
                 scroll->display_string(" 2) Lumberjack\n");
                 scroll->display_string(" 3) Saw Mill\n");
                 scroll->display_string(" 4) Thieves Guild\n");
                 scroll->display_string(" 5) Wisps\n");
-                scroll->display_string(" 6) Heftimus\n");
-                scroll->display_string(" 7) Ant Mound\n");
-                scroll->display_string(" 8) Buc's Cave\n");
-                scroll->display_string(" 9) Pirate Cave\n");
+                scroll->display_string(" 6) Dagger Isle\n");
+                scroll->display_string(" 7) Shipwreck\n");
                 scroll->display_string("Location? ");
-                get_scroll_input("0123456789");
+                get_scroll_input("01234567");
                 break;
         }
     }
@@ -2074,20 +2102,46 @@ void Event::alt_code_teleport_menu(uint32 selection)
                     teleport_dest = "6c dc 5";
                 break;
             case 5:
-                if(selection == 1) // Wrong
-                    teleport_dest = "1f4 53 0";
-                else if(selection == 2) // Covetous
+                if(selection == 1) // Ant Mound
+                    teleport_dest = "365 bb 0";
+                else if(selection == 2) // Buc's Cave
+                    teleport_dest = "234 253 0";
+                else if(selection == 3) // Covetous
                     teleport_dest = "273 73 0";
-                else if(selection == 3) // Destard
-                    teleport_dest = "120 29d 0";
-                else if(selection == 4) // Shame
-                    teleport_dest = "eb 19b 0";
-                else if(selection == 5) // Deceit
+                else if(selection == 4) // Crypts
+                    teleport_dest = "364 15a 0";
+                else if(selection == 5) // Cyclops Cave
+                    teleport_dest = "b9 1b5 0";
+                else if(selection == 6) // Deceit
                     teleport_dest = "3c4 136 0";
-                else if(selection == 6) // Hythloth
-                    teleport_dest = "3b4 3a4 0";
+                else if(selection == 7) // Despise
+                    teleport_dest = "16D 10a 0";
+                else if(selection == 8) // Destard
+                    teleport_dest = "11c 292 0";
+                else if(selection == 9) // Heftimus's
+                    teleport_dest = "84 35b 0";
                 break;
             case 6:
+                if(selection == 1) // Hero's Hole
+                    teleport_dest = "15c 32a 0";
+                else if(selection == 2) // Hythloth
+                    teleport_dest = "3b4 3a4 0";
+                else if(selection == 3) // Pirate Cave
+                    teleport_dest = "2c3 342 0";
+                else if(selection == 4) // Sewers
+                    teleport_dest = "123 17a 0";
+                else if(selection == 5) // Shame
+                    teleport_dest = "eb 19b 0";
+                else if(selection == 6) // Spider Cave
+                    teleport_dest = "5c fb 0";
+                else if(selection == 7) // Sutek's Island
+                    teleport_dest = "316 3d4 0";
+                else if(selection == 8) // Swamp Cave
+                    teleport_dest = "263 16c 0";
+                else if(selection == 9) // Wrong
+                    teleport_dest = "1f4 53 0";
+                break;
+           case 7:
                 if(selection == 1) // Iolo's Hut
                     teleport_dest = "c3 e8 0";
                 else if(selection == 2) // Lumberjack (Yew)
@@ -2098,14 +2152,10 @@ void Event::alt_code_teleport_menu(uint32 selection)
                     teleport_dest = "233 25e 0";
                 else if(selection == 5) // Wisps
                     teleport_dest = "a5 115 0";
-                else if(selection == 6) // Heftimus
-                    teleport_dest = "84 35b 0";
-                else if(selection == 7) // Ant Mound
-                    teleport_dest = "365 bb 0";
-                else if(selection == 8) // Buccaneer's Cave
-                    teleport_dest = "234 253 0";
-                else if(selection == 9) // Pirate Cave
-                    teleport_dest = "2c3 342 0";
+                else if(selection == 6) // Dagger Island
+                    teleport_dest = "3a9 d3 0";
+                else if(selection == 7) // Shipwreck
+                    teleport_dest = "1aa 3a6 0";
                 break;
         }
         if(strlen(teleport_dest))

@@ -479,6 +479,11 @@ void ActionHealParty(int const *params)
 	new TextEffect("Party healed");
 }
 
+void ActionTeleportToCursor(int const *params)
+{
+	Game::get_game()->get_map_window()->teleport_to_cursor();
+}
+
 void ActionToggleCheats(int const *params)
 {
 	bool cheats = !game->are_cheats_enabled();
