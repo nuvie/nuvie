@@ -32,6 +32,7 @@
 #include "Effect.h"
 #include "EggManager.h"
 #include "Screen.h"
+#include "GUI.h"
 
 #define game Game::get_game()
 #define event Game::get_game()->get_event()
@@ -309,6 +310,14 @@ void ActionQuitNODialog(int const *params)
 	game->quit();
 }
 
+void ActionToggleFullscreen(int const *params)
+{
+	if(!game->get_screen()->toggle_fullscreen())
+		new TextEffect("Couldn't toggle fullscreen");
+	else
+		game->get_gui()->force_full_redraw();
+}
+
 void ActionToggleCursor(int const *params)
 {
 	if(game->is_orig_style())
@@ -473,8 +482,8 @@ void ActionToggleEthereal(int const *params)
 
 void ActionToggleX_Ray(int const *params)
 {
-	bool x_ray = Game::get_game()->get_map_window()->get_x_ray_view() <= X_RAY_OFF;
-	Game::get_game()->get_map_window()->set_x_ray_view(x_ray ? X_RAY_CHEAT_ON: X_RAY_OFF, true);
+	bool x_ray = game->get_map_window()->get_x_ray_view() <= X_RAY_OFF;
+	game->get_map_window()->set_x_ray_view(x_ray ? X_RAY_CHEAT_ON: X_RAY_OFF, true);
 	string message = x_ray ? "X-ray mode" : "X-ray mode off";
 	new TextEffect(message);
 }
@@ -488,7 +497,7 @@ void ActionHealParty(int const *params)
 
 void ActionTeleportToCursor(int const *params)
 {
-	Game::get_game()->get_map_window()->teleport_to_cursor();
+	game->get_map_window()->teleport_to_cursor();
 }
 
 void ActionToggleCheats(int const *params)
@@ -504,11 +513,11 @@ void ActionToggleCheats(int const *params)
 	   && game->get_game_type() == NUVIE_GAME_U6)
 		game->get_obj_manager()->show_egg_objs(cheats);
 
-	X_RayType xray = Game::get_game()->get_map_window()->get_x_ray_view();
+	X_RayType xray = game->get_map_window()->get_x_ray_view();
 	if(xray == X_RAY_CHEAT_OFF)
-		Game::get_game()->get_map_window()->set_x_ray_view(X_RAY_CHEAT_ON);
+		game->get_map_window()->set_x_ray_view(X_RAY_CHEAT_ON);
 	else if(xray == X_RAY_CHEAT_ON)
-		Game::get_game()->get_map_window()->set_x_ray_view(X_RAY_CHEAT_OFF);
+		game->get_map_window()->set_x_ray_view(X_RAY_CHEAT_OFF);
 }
 
 void ActionTest(int const *params)

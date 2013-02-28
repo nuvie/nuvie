@@ -57,6 +57,7 @@ void ActionLoadLatestSave(int const *params);
 void ActionQuitDialog(int const *params);
 void ActionQuitNODialog(int const *params);
 
+void ActionToggleFullscreen(int const *params);
 void ActionToggleCursor(int const *params);
 void ActionToggleCombatStrategy(int const *params);
 void ActionToggleFps(int const *params);

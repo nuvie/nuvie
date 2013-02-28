@@ -1551,12 +1551,48 @@ void Screen::set_screen_mode()
 //	if (zbuffer) screen->create_zbuffer();
 }
 
+bool Screen::toggle_fullscreen()
+{
+	uint32 flags = sdl_surface->flags;
+	int scaled_height = height*scale_factor;
+	int scaled_width = width*scale_factor;
+	if(fullscreen)
+	{
+		flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
+		flags &= ~SDL_FULLSCREEN;
+		flags |= SDL_SWSURFACE;
+	}
+	else
+	{
+		flags |= SDL_FULLSCREEN;
+		if ( SDL_GetVideoInfo()->hw_available && doubleBuffer)
+			flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
+	}
+	uint8 bpp = get_sdl_surface()->format->BitsPerPixel;
+
+	if(!SDL_VideoModeOK(scaled_width, scaled_height, bpp, flags))
+	{
+		if(!fullscreen) // try software
+		{
+			flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
+			flags |= SDL_SWSURFACE;
+		}
+		if(!SDL_VideoModeOK(scaled_width, scaled_height, bpp, flags))
+		{
+			DEBUG(0,LEVEL_ERROR,"Couldn't toggle to %\n", fullscreen ? "a window" : "fullscreen");
+			return false;
+		}
+	}
+	fullscreen = !fullscreen;
+	return SDL_SetVideoMode(scaled_width, scaled_height, bpp, flags);
+}
 
 bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 {
 	// Try the universal scalers
 	if (scale_factor > 1 && scaler_index >= 0) {
-
+		int scaled_height = h*scale_factor;
+		int scaled_width = w*scale_factor;
 		scaler = scaler_reg.GetScaler(scaler_index);
 
 		// If the scaler wasn't found, use the Point scaler
@@ -1573,7 +1609,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		// If it requires 16 bit, force that. However, if it fails use point
 		else if (scaler->flags & SCALER_FLAG_16BIT_ONLY)
 		{
-			if ( !SDL_VideoModeOK(w, h, 16, flags)) {
+			if ( !SDL_VideoModeOK(scaled_width, scaled_height, 16, flags)) {
 				DEBUG(0,LEVEL_NOTIFICATION,"%s requires 16 bit colour. Couldn't set mode.\n",scaler->name );
 				scaler = scaler_reg.GetPointScaler();
 			}
@@ -1585,7 +1621,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		// If it requires 32 bit, force that. However, if it fails use point
 		else if (scaler->flags & SCALER_FLAG_32BIT_ONLY)
 		{
-			if ( !SDL_VideoModeOK(w, h, 32, flags)) {
+			if ( !SDL_VideoModeOK(scaled_width, scaled_height, 32, flags)) {
 				DEBUG(0,LEVEL_NOTIFICATION,"%s requires 32 bit colour. Couldn't set mode.\n",scaler->name );
 				scaler = scaler_reg.GetPointScaler();
 			}
@@ -1598,15 +1634,15 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		DEBUG(0,LEVEL_NOTIFICATION,"Using scaler: %s\n",scaler->name);
 
 		// Attempt to set Video mode
-		if ( !SDL_VideoModeOK(w, h, hwdepth, flags))
+		if ( !SDL_VideoModeOK(scaled_width,scaled_height, hwdepth, flags))
 		{
 			hwdepth = 0;
 
 			// Try 32 bit (but only if allowed)
-			if (SDL_VideoModeOK(w, h, 32, flags) && !(scaler->flags & SCALER_FLAG_16BIT_ONLY))
+			if (SDL_VideoModeOK(scaled_width, scaled_height, 32, flags) && !(scaler->flags & SCALER_FLAG_16BIT_ONLY))
 				hwdepth = 32;
 			// Try 16 bit (but only if allowed)
-			else if (SDL_VideoModeOK(w, h, 16, flags) && !(scaler->flags & SCALER_FLAG_32BIT_ONLY))
+			else if (SDL_VideoModeOK(scaled_width, scaled_height, 16, flags) && !(scaler->flags & SCALER_FLAG_32BIT_ONLY))
 				hwdepth = 16;
 		}
 
@@ -1615,7 +1651,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		{
 			DEBUG(0,LEVEL_NOTIFICATION,"%s requires 16/32 bit colour. Couldn't set mode.\n",scaler->name);
 		}
-		else if ((sdl_surface = SDL_SetVideoMode(w*scale_factor, h*scale_factor, hwdepth, flags)))
+		else if ((sdl_surface = SDL_SetVideoMode(scaled_width, scaled_height, hwdepth, flags)))
 		{
 			/* Create render surface */
 			surface = CreateRenderSurface (w, h, hwdepth);

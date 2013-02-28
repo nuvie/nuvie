@@ -15,6 +15,7 @@ Esc	cancel_action
 SPACE	cancel_action
 ENTER	do_action
 KP_ENTER	do_action
+Alt-ENTER	toggle_fullscreen
 
 q	quit
 Ctrl-q	quit
