@@ -1,3 +1,6 @@
+2013-03-02  Malignant Manor <malignantmanor@users.sourceforge.net> r1683
+	* Have more objects use the new container gumps.
+
 2013-03-02  Eric Fry <efry at users.sourceforge.net> r1682
 	* Added Daniel's new art gump artwork for corpse containers and barrels.
 	* Fixed cursor bug in ContainerViewGump when using a container widget that
