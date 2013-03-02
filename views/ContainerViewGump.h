@@ -83,6 +83,8 @@ public:
  void init_bag(std::string datadir);
  void init_chest(std::string datadir);
  void init_crate(std::string datadir);
+ void init_barrel(std::string datadir);
+ void init_corpse(std::string datadir, std::string bg_filename);
  void display_inventory_weight();
 
  void left_arrow();

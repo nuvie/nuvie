@@ -1,3 +1,9 @@
+2013-03-02  Eric Fry <efry at users.sourceforge.net> r1682
+	* Added Daniel's new art gump artwork for corpse containers and barrels.
+	* Fixed cursor bug in ContainerViewGump when using a container widget that
+	  wasn't 4 items wide.
+	* Removed unused buttons from container gumps.
+
 2013-02-28  Malignant Manor <malignantmanor@users.sourceforge.net> r1681
 	* Fix some SDL_VideoModeOK checks that were wrong and caused problems when
 	  trying to run Nuvie fullscreen

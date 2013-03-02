@@ -42,7 +42,7 @@
 ContainerViewGump::ContainerViewGump(Configuration *cfg) : DraggableView(cfg)
 {
 	bg_image = NULL; gump_button = NULL; up_arrow_button = NULL; down_arrow_button = NULL;
-	left_arrow_button = NULL; right_arrow_button = NULL;
+	doll_button = NULL; left_arrow_button = NULL; right_arrow_button = NULL;
 	container_widget = NULL; font = NULL; actor = NULL; container_obj = NULL;
 }
 
@@ -88,6 +88,14 @@ void ContainerViewGump::init_container_type(std::string datadir, Obj *obj_type)
 				return init_chest(datadir);
 			else if(obj_type->obj_n == OBJ_U6_CRATE)
 				return init_crate(datadir);
+			else if(obj_type->obj_n == OBJ_U6_BARREL)
+				return init_barrel(datadir);
+			else if(obj_type->obj_n == OBJ_U6_DEAD_BODY || obj_type->obj_n == OBJ_U6_DEAD_GARGOYLE)
+				return init_corpse(datadir, "corpse_body_bg.bmp");
+			else if(obj_type->obj_n == OBJ_U6_DEAD_CYCLOPS)
+				return init_corpse(datadir, "corpse_cyclops_bg.bmp");
+			else if(obj_type->obj_n == OBJ_U6_DEAD_ANIMAL)
+				return init_corpse(datadir, "corpse_animal_bg.bmp");
 		}
 	}
 
@@ -139,10 +147,6 @@ void ContainerViewGump::init_chest(std::string datadir)
 
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
-	doll_button = loadButton(datadir, "cont_doll", area.x + 18, area.y + bg_image->h);
-	left_arrow_button = loadButton(datadir, "cont_left", area.x + 18 + 11, area.y + bg_image->h);
-	right_arrow_button = loadButton(datadir, "cont_right", area.x + 18 + 22, area.y + bg_image->h);
-
 	SetRect(area.x, area.y, bg_image->w, bg_image->h + 16); //111, 101);
 
 	container_widget = new ContainerWidgetGump(config, this);
@@ -168,11 +172,7 @@ void ContainerViewGump::init_crate(std::string datadir)
 
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
-	doll_button = loadButton(datadir, "cont_doll", area.x + 18, area.y + bg_image->h);
-	left_arrow_button = loadButton(datadir, "cont_left", area.x + 18 + 11, area.y + bg_image->h);
-	right_arrow_button = loadButton(datadir, "cont_right", area.x + 18 + 22, area.y + bg_image->h);
-
-	SetRect(area.x, area.y, bg_image->w, bg_image->h + 16); //111, 101);
+	SetRect(area.x, area.y, bg_image->w, bg_image->h);
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = 10;
@@ -181,6 +181,55 @@ void ContainerViewGump::init_crate(std::string datadir)
 	AddWidget(container_widget);
 }
 
+void ContainerViewGump::init_barrel(std::string datadir)
+{
+	std::string imagefile, path;
+
+	gump_button = loadButton(datadir, "gump", 0, 55);
+
+	build_path(datadir, "container", path);
+	datadir = path;
+
+	up_arrow_button = loadButton(datadir, "cont_up", 102, 28);
+	down_arrow_button = loadButton(datadir, "cont_down", 102, 42);
+
+	build_path(datadir, "barrel_bg.bmp", imagefile);
+
+	bg_image = SDL_LoadBMP(imagefile.c_str());
+
+	SetRect(area.x, area.y, bg_image->w, bg_image->h);
+
+	container_widget = new ContainerWidgetGump(config, this);
+	container_widget_y_offset = 24;
+	container_widget->init(actor, 38, container_widget_y_offset, 4, 2, tile_manager, obj_manager, text);
+
+	AddWidget(container_widget);
+}
+
+void ContainerViewGump::init_corpse(std::string datadir, std::string bg_filename)
+{
+	std::string imagefile, path;
+
+	gump_button = loadButton(datadir, "gump", 0, 25);
+
+	build_path(datadir, "container", path);
+	datadir = path;
+
+	up_arrow_button = loadButton(datadir, "cont_up", 67, 28);
+	down_arrow_button = loadButton(datadir, "cont_down", 67, 78);
+
+	build_path(datadir, bg_filename, imagefile);
+
+	bg_image = SDL_LoadBMP(imagefile.c_str());
+
+	SetRect(area.x, area.y, bg_image->w, bg_image->h);
+
+	container_widget = new ContainerWidgetGump(config, this);
+	container_widget_y_offset = 26;
+	container_widget->init(actor, 20, container_widget_y_offset, 3, 4, tile_manager, obj_manager, text);
+
+	AddWidget(container_widget);
+}
 void ContainerViewGump::set_actor(Actor *a)
 {
 	actor = a;
@@ -189,13 +238,17 @@ void ContainerViewGump::set_actor(Actor *a)
 	doll_button->Show();
 	if(party->get_member_num(a) >= 0)
 	{
-		left_arrow_button->Show();
-		right_arrow_button->Show();
+		if(left_arrow_button)
+			left_arrow_button->Show();
+		if(right_arrow_button)
+			right_arrow_button->Show();
 	}
 	else
 	{
-		left_arrow_button->Hide();
-		right_arrow_button->Hide();
+		if(left_arrow_button)
+			left_arrow_button->Hide();
+		if(right_arrow_button)
+			right_arrow_button->Hide();
 	}
 }
 
@@ -203,9 +256,12 @@ void ContainerViewGump::set_container_obj(Obj *o)
 {
 	container_obj = o;
 	container_widget->set_container(container_obj);
-	doll_button->Hide();
-	left_arrow_button->Hide();
-	right_arrow_button->Hide();
+	if(doll_button)
+		doll_button->Hide();
+	if(left_arrow_button)
+		left_arrow_button->Hide();
+	if(right_arrow_button)
+		right_arrow_button->Hide();
 }
 
 void ContainerViewGump::Display(bool full_redraw)
@@ -263,11 +319,6 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 		Game::get_game()->get_view_manager()->close_gump(this);
 		return GUI_YUM;
 	}
-	else if(caller == doll_button)
-	{
-		Game::get_game()->get_view_manager()->open_doll_view(actor);
-		return GUI_YUM;
-	}
 	else if(caller == down_arrow_button)
 	{
 		container_widget->down_arrow();
@@ -278,12 +329,17 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 		container_widget->up_arrow();
 		return GUI_YUM;
 	}
-	else if(caller == left_arrow_button)
+	else if(doll_button && caller == doll_button)
+	{
+		Game::get_game()->get_view_manager()->open_doll_view(actor);
+		return GUI_YUM;
+	}
+	else if(left_arrow_button && caller == left_arrow_button)
 	{
 		left_arrow();
 		return GUI_YUM;
 	}
-	else if(caller == right_arrow_button)
+	else if(right_arrow_button && caller == right_arrow_button)
 	{
 		right_arrow();
 		return GUI_YUM;

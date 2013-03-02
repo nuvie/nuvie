@@ -130,7 +130,7 @@ void ContainerWidgetGump::Display(bool full_redraw)
 
 void ContainerWidgetGump::cursor_right()
 {
-	if(cursor_x < CONTAINER_WIDGET_COLS - 1)
+	if(cursor_x < cols - 1)
 	{
 		if(get_obj_at_location((cursor_x+1) * 16,cursor_y * 16) != NULL)
 		{
