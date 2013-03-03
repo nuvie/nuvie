@@ -245,6 +245,10 @@ GUI_status GUI_ScrollBar::MouseDown(int x, int y, int button)
 		slider_click_offset = y - area.y - button_height - slider_y;
 		grab_focus();
 	}
+	else if(y < area.y + button_height + slider_y)
+			callback_object->callback(SCROLLBAR_CB_PAGE_UP, this, NULL);
+	else
+			callback_object->callback(SCROLLBAR_CB_PAGE_DOWN, this, NULL);
 
 	return GUI_YUM;
 }

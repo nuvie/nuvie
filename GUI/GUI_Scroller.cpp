@@ -230,6 +230,10 @@ GUI_status GUI_Scroller::callback(uint16 msg, GUI_CallBack *caller, void *data)
 
    case SCROLLBAR_CB_DOWN_BUTTON : move_down();
                                  break;
+   case SCROLLBAR_CB_PAGE_DOWN: page_down();
+                                break;
+   case SCROLLBAR_CB_PAGE_UP: page_up();
+                              break;
 
    default : DEBUG(0,LEVEL_ERROR,"Unhandled callback!\n"); break;
   }

@@ -1,3 +1,7 @@
+2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1687
+	* Add forgotten SaveDialog offsets
+	* Clicking the scroll bar can now page up and page down
+
 2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1686
 	* Fix bug where non-stackable objects were stacked
 	* Fix bug where non-grabbable objs could be added to container gumps

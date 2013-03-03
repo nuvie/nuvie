@@ -37,6 +37,8 @@
 #define SCROLLBAR_CB_DOWN_BUTTON  0x1
 #define SCROLLBAR_CB_UP_BUTTON    0x2
 #define SCROLLBAR_CB_SLIDER_MOVED 0x3
+#define SCROLLBAR_CB_PAGE_DOWN    0x4
+#define SCROLLBAR_CB_PAGE_UP      0x5
 
 class GUI_Button;
 
