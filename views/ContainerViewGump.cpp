@@ -90,7 +90,9 @@ void ContainerViewGump::init_container_type(std::string datadir, Obj *obj_type)
 				return init_crate(datadir);
 			else if(obj_type->obj_n == OBJ_U6_BARREL)
 				return init_barrel(datadir);
-			else if(obj_type->obj_n == OBJ_U6_DEAD_BODY || obj_type->obj_n == OBJ_U6_DEAD_GARGOYLE
+			else if(obj_type->obj_n == OBJ_U6_DEAD_GARGOYLE)
+				return init_corpse(datadir, "corpse_gargoyle_bg.bmp");
+			else if(obj_type->obj_n == OBJ_U6_DEAD_BODY
 			        || obj_type->obj_n == OBJ_U6_GRAVE || obj_type->obj_n == OBJ_U6_REMAINS)
 				return init_corpse(datadir, "corpse_body_bg.bmp");
 			else if(obj_type->obj_n == OBJ_U6_DEAD_CYCLOPS)

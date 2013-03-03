@@ -68,6 +68,7 @@ Source: data\images\gumps\container\chest_bg.bmp; DestDir: {app}\data\images\gum
 Source: data\images\gumps\container\corpse_animal_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\corpse_body_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\corpse_cyclops_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
+Source: data\images\gumps\container\corpse_gargoyle_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\crate_bg.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\cont_doll_btn_down.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion
 Source: data\images\gumps\container\cont_doll_btn_up.bmp; DestDir: {app}\data\images\gumps\container; Flags: ignoreversion

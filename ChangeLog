@@ -1,3 +1,11 @@
+2013-03-04  Eric Fry <efry at users.sourceforge.net> r1685
+	* Added Daniel's Gargoyle corpse container gump.
+
+2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1684
+	* Allow the game size to be adjustable in fullscreen_map mode. The game size
+	  is slightly larger if the game_width is smaller than the screen_width or
+	  the game_height is smaller than the screen_height
+
 2013-03-02  Malignant Manor <malignantmanor@users.sourceforge.net> r1683
 	* Have more objects use the new container gumps.
 
