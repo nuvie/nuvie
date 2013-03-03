@@ -1,3 +1,7 @@
+2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1686
+	* Fix bug where non-stackable objects were stacked
+	* Fix bug where non-grabbable objs could be added to container gumps
+
 2013-03-04  Eric Fry <efry at users.sourceforge.net> r1685
 	* Added Daniel's Gargoyle corpse container gump.
 

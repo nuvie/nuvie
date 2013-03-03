@@ -197,7 +197,7 @@ void Obj::add(Obj *obj, bool stack)
   if(container == NULL)
     make_container();
   
-  if(stack)
+  if(stack && Game::get_game()->get_obj_manager()->is_stackable(obj))
     add_and_stack(obj);
   else
     container->addAtPos(0, obj);

@@ -417,6 +417,11 @@ bool ContainerWidget::drag_accept_drop(int x, int y, int message, void *data)
         }
         Game::get_game()->get_scroll()->message("\n\n");
     }
+    if(!obj_manager->can_get_obj(obj))
+    {
+        Game::get_game()->get_scroll()->message("Not possible.\n\n");
+        return false;
+    }
     if(container_obj && !container_obj->is_in_inventory()
        && !Game::get_game()->get_map_window()->can_get_obj(actor, container_obj))
     {
