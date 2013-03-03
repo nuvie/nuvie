@@ -86,8 +86,8 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 
 
 
- uint16 x_off = config_get_video_x_offset(config);
- uint16 y_off = config_get_video_y_offset(config);
+ uint16 x_off = Game::get_game()->get_game_x_offset();
+ uint16 y_off = Game::get_game()->get_game_y_offset();
 
  GUI_Widget::Init(NULL, x_off, y_off, s->get_width(), s->get_height());
 

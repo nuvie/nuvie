@@ -56,10 +56,10 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
  x = 8;
  y = 8;
 
- uint16 x_off = config_get_video_x_offset(config);
- uint16 y_off = config_get_video_y_offset(config);
+ uint16 x_off =Game::get_game()->get_game_x_offset();
+ uint16 y_off = Game::get_game()->get_game_y_offset();
 
- GUI_Widget::Init(NULL, x_off, y_off, 320, 200);
+ GUI_Widget::Init(NULL, x_off, y_off, Game::get_game()->get_game_width(), Game::get_game()->get_game_height());
  npc_portrait = NULL;
  avatar_portrait = NULL;
  keyword_list = NULL;

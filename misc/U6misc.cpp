@@ -96,22 +96,6 @@ void config_get_path( Configuration *config, std::string filename, std::string &
    return;
 }
 
-uint16 config_get_video_x_offset(Configuration *config)
-{
-	int off;
-	config->value("config/video/x_offset", off, 0);
-
-	return (uint16)off;
-}
-
-uint16 config_get_video_y_offset(Configuration *config)
-{
-	int off;
-	config->value("config/video/y_offset", off, 0);
-
-	return (uint16)off;
-}
-
 bool find_casesensitive_path( std::string path, std::string filename, std::string &new_path )
 {
    vector<string> directories;

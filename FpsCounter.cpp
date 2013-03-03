@@ -41,11 +41,10 @@ FpsCounter::FpsCounter() : GUI_Widget(NULL) { }
 FpsCounter::FpsCounter(Game *g) : GUI_Widget(NULL)
 {
     game = g;
-    Configuration *config = g->get_config();
     font = game->get_font_manager()->get_conv_font();
 
-    uint16 x_off = config_get_video_x_offset(config);
-    uint16 y_off = config_get_video_y_offset(config);
+    uint16 x_off = game->get_game_x_offset();
+    uint16 y_off = game->get_game_y_offset();
 
     Init(NULL, x_off+280, y_off, 40, 10);
 

@@ -38,6 +38,14 @@
   <scale_method>Point</scale_method>
   <scale_factor>2</scale_factor>
   <fullscreen>no</fullscreen>
+  <screen_width>320</screen_width>
+  <screen_height>200</screen_height>
+  <x_offset>0</x_offset>
+  <y_offset>0</y_offset>
+  <game_width>320</game_width>
+  <game_height>200</game_height>
+  <game_x_offset>0</game_x_offset>
+  <game_y_offset>0</game_y_offset>
  </video>
 
  <audio>

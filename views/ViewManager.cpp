@@ -76,8 +76,8 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  obj_manager = om;
  portrait = por;
 
- uint16 x_off = config_get_video_x_offset(config);
- uint16 y_off = config_get_video_y_offset(config);
+ uint16 x_off = Game::get_game()->get_game_x_offset();
+ uint16 y_off = Game::get_game()->get_game_y_offset();
 
  inventory_view = new InventoryView(config);
  inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
@@ -240,6 +240,8 @@ void ViewManager::open_doll_view(Actor *actor)
 		DollViewGump *doll = get_doll_view(actor);
 		if(doll == NULL)
 		{
+			uint16 x_off = Game::get_game()->get_game_x_offset();
+			uint16 y_off = Game::get_game()->get_game_y_offset();
 			uint8 num_doll_gumps = doll_gumps.size();
 			doll = new DollViewGump(config);
 			uint16 x = 12 * num_doll_gumps;
@@ -248,7 +250,7 @@ void ViewManager::open_doll_view(Actor *actor)
 			if(y + DOLLVIEWGUMP_HEIGHT > screen->get_height())
 				y = screen->get_height() - DOLLVIEWGUMP_HEIGHT;
 
-			doll->init(Game::get_game()->get_screen(), this, x, y, actor, text, party, tile_manager, obj_manager);
+			doll->init(Game::get_game()->get_screen(), this, x + x_off, y + y_off, actor, text, party, tile_manager, obj_manager);
 
 			add_view((View *)doll);
 			add_gump(doll);
@@ -319,8 +321,11 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 
 	if(view == NULL)
 	{
+		uint16 x_off = Game::get_game()->get_game_x_offset();
+		uint16 y_off = Game::get_game()->get_game_y_offset();
+
 		view = new ContainerViewGump(config);
-		view->init(Game::get_game()->get_screen(), this, Game::get_game()->get_screen()->get_width() - 120, 20, text, party, tile_manager, obj_manager, obj);
+		view->init(Game::get_game()->get_screen(), this, Game::get_game()->get_game_width() - 120 + x_off, 20 + y_off, text, party, tile_manager, obj_manager, obj);
 		if(actor)
 			view->set_actor(actor);
 		else
@@ -350,8 +355,11 @@ void ViewManager::open_mapeditor_view()
 {
 	if(Game::get_game()->is_new_style() && Game::get_game()->is_roof_mode())
 	{
+		uint16 x_off = Game::get_game()->get_game_x_offset();
+		uint16 y_off = Game::get_game()->get_game_y_offset();
+		x_off += Game::get_game()->get_game_width() - 90;
 		MapEditorView *view = new MapEditorView(config);
-		view->init(Game::get_game()->get_screen(), this, 230, 0, text, party, tile_manager, obj_manager);
+		view->init(Game::get_game()->get_screen(), this, x_off , y_off, text, party, tile_manager, obj_manager);
 		add_view((View *)view);
 		view->grab_focus();
 	}
@@ -361,8 +369,10 @@ void ViewManager::open_portrait_gump(Actor *a)
 {
 	if(Game::get_game()->is_new_style())
 	{
+		uint16 x_off = Game::get_game()->get_game_x_offset();
+		uint16 y_off = Game::get_game()->get_game_y_offset();
 		PortraitViewGump *view = new PortraitViewGump(config);
-		view->init(Game::get_game()->get_screen(), this, 62, 0, text, party, tile_manager, obj_manager, portrait, a);
+		view->init(Game::get_game()->get_screen(), this, 62 + x_off, y_off, text, party, tile_manager, obj_manager, portrait, a);
 		add_view((View *)view);
 		add_gump(view);
 		view->grab_focus();

@@ -50,10 +50,9 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
 {
     game = g;
     Weather *weather;
-    Configuration *config = g->get_config();
+    uint16 x_off = game->get_game_x_offset();
+    uint16 y_off =  game->get_game_y_offset();
 
-    uint16 x_off = config_get_video_x_offset(config);
-    uint16 y_off = config_get_video_y_offset(config);
     if(game->get_game_type() == NUVIE_GAME_U6)
     {
         offset = OBJLIST_OFFSET_U6_COMMAND_BAR;

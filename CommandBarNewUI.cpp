@@ -52,10 +52,8 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 {
     game = g;
     Weather *weather;
-    Configuration *config = g->get_config();
-
-    uint16 x_off = config_get_video_x_offset(config);
-    uint16 y_off = config_get_video_y_offset(config);
+    uint16 x_off = game->get_game_x_offset();
+    uint16 y_off = game->get_game_y_offset();
 
     icon_w = 5;
     icon_h = 3;

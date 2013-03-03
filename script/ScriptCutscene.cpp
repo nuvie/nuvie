@@ -791,8 +791,11 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	config = cfg;
 	gui = g;
 
-	x_off = config_get_video_x_offset(config);
-	y_off = config_get_video_y_offset(config);
+	int off;
+	config->value("config/video/x_offset", off, 0);
+	x_off = off;
+	config->value("config/video/y_offset", off, 0);
+	y_off = off;
 
 	nuvie_game_t game_type = get_game_type(config);
 

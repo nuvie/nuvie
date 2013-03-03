@@ -243,10 +243,14 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/video/scale_method", "point");
 	config->set("config/video/scale_factor", "2");
 	config->set("config/video/fullscreen", "no");
-//	config->set("config/video/screen_width", 320);
-//	config->set("config/video/screen_height", 200);
-//	config->set("config/video/x_offset", 0);
-//	config->set("config/video/y_offset", 0);
+	config->set("config/video/screen_width", 320);
+	config->set("config/video/screen_height", 200);
+	config->set("config/video/x_offset", 0);
+	config->set("config/video/y_offset", 0);
+	config->set("config/video/game_width", 320);
+	config->set("config/video/game_height", 200);
+	config->set("config/video/game_x_offset", 0);
+	config->set("config/video/game_y_offset", 0);
 
 	config->set("config/audio/enabled", true);
 	config->set("config/audio/enable_music", true);

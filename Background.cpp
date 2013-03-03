@@ -39,8 +39,8 @@ Background::Background(Configuration *cfg) : GUI_Widget(NULL)
 
  bg_w = 0; bg_h = 0;
  background = NULL;
- x_off = config_get_video_x_offset(config);
- y_off = config_get_video_y_offset(config);
+ x_off = Game::get_game()->get_game_x_offset();
+ y_off = Game::get_game()->get_game_y_offset();
 
 
  Init(NULL, 0,0,Game::get_game()->get_screen()->get_width(),Game::get_game()->get_screen()->get_height());

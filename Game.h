@@ -115,6 +115,12 @@ class Game
  KeyBinder *keybinder;
 
  GamePauseState pause_flags;
+ uint16 game_width;
+ uint16 game_height;
+ uint16 x_offset;
+ uint16 y_offset;
+ uint16 game_x_offset;
+ uint16 game_y_offset;
  uint16 pause_user_count;
  uint8 ignore_event_delay; // (stack) if non-zero, Event will not periodically wait for NUVIE_INTERVAL
  bool is_using_hackmove;
@@ -186,6 +192,11 @@ class Game
  bool is_ethereal() { return ethereal; }
  void set_ethereal(bool val) { ethereal = val; }
  bool use_new_converse_gump();
+
+ uint16 get_game_width() { if(is_orig_style()) return 320; else return game_width; }
+ uint16 get_game_height() { if(is_orig_style()) return 200; else return game_height; }
+ uint16 get_game_x_offset() { if(is_orig_style()) return x_offset; else return game_x_offset; }
+ uint16 get_game_y_offset() { if(is_orig_style()) return y_offset; else return game_y_offset; }
 
  /* Return instances of Game classes */
  static Game *get_game()          { return(game); }

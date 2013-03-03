@@ -129,6 +129,20 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
  config->value("config/input/enabled_dragging", dragging_enabled, true);
  config->value("config/general/use_text_gumps", using_text_gumps, false);
+
+ int value;
+ config->value("config/video/game_width", value, 320);
+ game_width = value;
+ config->value("config/video/game_height", value, 200);
+ game_height = value;
+ config->value("config/video/x_offset", value, 0);
+ x_offset = value;
+ config->value("config/video/y_offset", value, 0);
+ y_offset = value;
+ config->value("config/video/game_x_offset", value, 0);
+ game_x_offset = value;
+ config->value("config/video/game_y_offset", value, 0);
+ game_y_offset = value;
 }
 
 Game::~Game()

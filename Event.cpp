@@ -2222,8 +2222,12 @@ void Event::quitDialog()
 		showingQuitDialog = true;
 
 		close_gumps();
+		uint16 x_off = game->get_game_x_offset();
+		uint16 y_off = game->get_game_y_offset();
 
-		quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, 75, 60, 170, 80, "Do you want to Quit", (GUI_CallBack *)this, (GUI_CallBack *)this);
+		x_off += (game->get_game_width() - 170)/2;
+		y_off += (game->get_game_height() - 80)/2;
+		quit_dialog = (GUI_Widget *) new GUI_YesNoDialog(gui, x_off, y_off, 170, 80, "Do you want to Quit", (GUI_CallBack *)this, (GUI_CallBack *)this);
 
 		gui->AddWidget(quit_dialog);
 		gui->lock_input(quit_dialog);

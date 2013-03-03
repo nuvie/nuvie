@@ -115,8 +115,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  config = cfg;
  config->value("config/GameType",game_type);
 
- uint16 x_off = config_get_video_x_offset(config);
- uint16 y_off = config_get_video_y_offset(config);
+ uint16 x_off = Game::get_game()->get_game_x_offset();
+ uint16 y_off = Game::get_game()->get_game_y_offset();
 
  GUI_Widget::Init(NULL, x_off, y_off, 0, 0);
 
@@ -195,10 +195,20 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
 
  if(game->is_new_style())
  {
-	 offset_x -= 8;
-	 offset_y -= 4;
-	 map_w = 21;
-	 map_h = 13;
+	 uint16 game_width = game->get_game_width();
+	 uint16 game_height = game->get_game_height();
+
+	 if(game_width%16)
+		 offset_x -= (game_width%16)/2;
+	 else
+		 offset_x -= 8;
+
+	 if(game_height%16)
+		 offset_y -= (game_height%16)/2;
+	 else
+		 offset_y -= 8;
+	 map_w = (game_width/16) + 1;
+	 map_h = (game_height/16) + 1;
  }
 
  anim_manager = new AnimManager(offset_x, offset_y);
