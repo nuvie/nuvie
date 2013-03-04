@@ -55,6 +55,7 @@ void ConsoleDelete();
 void ConsoleAddInfo(const char *s, ...);
 void ConsoleAddError(std::string s);
 void ConsolePause();
+void ConsoleShow();
 void ConsoleHide();
 
 #endif /* __CONSOLE_H__ */

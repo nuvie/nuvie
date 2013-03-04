@@ -144,6 +144,7 @@ class Game
  void play();
  void update_once(bool process_gui_input);
  void update_once_display();
+ bool play_ending_sequence();
 
  GamePauseState get_pause_flags()            { return(pause_flags); }
  void set_pause_flags(GamePauseState state);

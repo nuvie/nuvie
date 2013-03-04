@@ -1,3 +1,7 @@
+2013-03-05  Eric Fry <efry at users.sourceforge.net> r1690
+	* Started work on ending sequence. It can be accessed by using the "--end"
+	  commandline argument.
+
 2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1689
 	* Add Ctrl-A toggle audio key binding
 	* Add CTRL-M toggle music key binding

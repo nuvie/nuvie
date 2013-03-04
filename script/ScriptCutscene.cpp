@@ -987,9 +987,11 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 {
 	NuvieIOFileRead file;
 	uint8 buf[0x240];
+	uint8 unpacked_palette[0x300];
 	std::string path;
 
 	config_get_path(config, filename, path);
+
 
 	if(file.open(path.c_str()) == false)
 	{
@@ -997,11 +999,19 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 		return;
 	}
 
-	file.seek(idx * 0x240);
+	if(strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".lbm") == 0)
+	{
+		//deluxe paint palette file.
+		file.seek(0x30);
+		file.readToBuf(unpacked_palette, 0x300);
+	}
+	else
+	{
+		file.seek(idx * 0x240);
 
-	file.readToBuf(buf, 0x240);
+		file.readToBuf(buf, 0x240);
 	    //printf("pal%d\n",idx);
-	    uint8 unpacked_palette[0x300];
+
 	    for (int i = 0; i < 0x100; i++)
 	    {
 	    	//printf("%d:",idx);
@@ -1017,7 +1027,7 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 	        }
 	        //printf(" untitled\n");
 	    }
-
+	}
 	screen->set_palette(unpacked_palette);
 }
 

@@ -76,12 +76,28 @@ bool Nuvie::init(int argc, char **argv)
 {
  GameSelect *game_select;
  uint8 game_type;
+ bool play_ending = false;
+ bool show_virtue_msg = false;
 
  if(argc > 1)
    game_type = get_game_type(argv[1]);
  else
    game_type = NUVIE_GAME_NONE;
 
+ if(argc > 2)
+ {
+   if(strcmp(argv[2],"--end")==0)
+   {
+	 if(argc > 6 && strcmp(argv[3], "5") == 0)
+	 {
+		 play_ending = true;
+	 }
+	 else
+	 {
+		 show_virtue_msg = true;
+	 }
+   }
+ }
  //find and load config file
  if(initConfig() == false)
    {
@@ -107,6 +123,19 @@ bool Nuvie::init(int argc, char **argv)
  ConsoleInit(config, screen, gui, 320, 200);
  ConsoleAddInfo("\n Nuvie: ver 0.4 rev 1577 \n");
  ConsoleAddInfo("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t");
+
+ if(show_virtue_msg)
+ {
+	 ConsoleShow();
+	 ConsoleAddInfo("");
+	 ConsoleAddInfo("");
+	 ConsoleAddInfo("\"The path to victory is marked with the laws of");
+	 ConsoleAddInfo(" Virtue, not the commands of DOS.\"");
+	 ConsoleAddInfo("");
+	 ConsoleAddInfo("     -- Lord British");
+	 return false;
+ }
+
  ConsoleAddInfo("Config file: \"%s\"", config->filename().c_str());
  game_select = new GameSelect(config);
 
@@ -134,10 +163,17 @@ bool Nuvie::init(int argc, char **argv)
  if(script->init() == false)
 	 return false;
 
-
- playIntro();
-
+ if(!play_ending)
+ {
+   playIntro();
+ }
  game = new Game(config, script, gui);
+
+ if(play_ending)
+ {
+   game->play_ending_sequence();
+   return false;
+ }
 
  if(game->loadGame(screen, sound_manager, game_type) == false)
    {

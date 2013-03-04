@@ -129,6 +129,11 @@ void ConsolePause()
 	 }
 }
 
+void ConsoleShow()
+{
+	g_console->Show();
+}
+
 void ConsoleHide()
 {
 	g_console->Hide();

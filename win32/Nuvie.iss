@@ -194,6 +194,7 @@ Source: data\scripts\md\init.lua; DestDir: {app}\data\scripts\md; Flags: ignorev
 Source: data\scripts\se\actor.lua; DestDir: {app}\data\scripts\se; Flags: ignoreversion
 Source: data\scripts\se\init.lua; DestDir: {app}\data\scripts\se; Flags: ignoreversion
 Source: data\scripts\u6\actor.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
+Source: data\scripts\u6\ending.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\init.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\intro.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
 Source: data\scripts\u6\magic.lua; DestDir: {app}\data\scripts\u6; Flags: ignoreversion
