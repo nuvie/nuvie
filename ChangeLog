@@ -1,3 +1,8 @@
+2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1689
+	* Add Ctrl-A toggle audio key binding
+	* Add CTRL-M toggle music key binding
+	* Add Ctrl-S toggle sfx key binding
+
 2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1688
 	* Fix wrong SpellViewGump offset from r1684
 	* Have fps counter update properly in original style

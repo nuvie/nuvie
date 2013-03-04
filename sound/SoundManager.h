@@ -73,6 +73,12 @@ public:
     bool isSoundPLaying(Audio::SoundHandle handle);
 
     bool playSfx(uint16 sfx_id, bool async = false);
+    bool is_audio_enabled() { return audio_enabled; }
+    void set_audio_enabled(bool val);
+    bool is_music_enabled() { return music_enabled; }
+    void set_music_enabled(bool val);
+    bool is_sfx_enabled() { return sfx_enabled; }
+    void set_sfx_enabled(bool val) { sfx_enabled = val; }
 
 private:
 	bool LoadCustomSongs(string scriptname);

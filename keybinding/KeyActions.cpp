@@ -33,6 +33,7 @@
 #include "EggManager.h"
 #include "Screen.h"
 #include "GUI.h"
+#include "SoundManager.h"
 
 #define game Game::get_game()
 #define event Game::get_game()->get_event()
@@ -342,6 +343,30 @@ void ActionToggleCombatStrategy(int const *params)
 void ActionToggleFps(int const *params)
 {
 	event->toggleFpsDisplay();
+}
+
+void ActionToggleAudio(int const *params)
+{
+	bool audio = !game->get_sound_manager()->is_audio_enabled();
+	game->get_sound_manager()->set_audio_enabled(audio);
+	string message = audio ? "Audio enabled" : "Audio disabled";
+	new TextEffect(message);
+}
+
+void ActionToggleMusic(int const *params)
+{
+	bool music = !game->get_sound_manager()->is_music_enabled();
+	game->get_sound_manager()->set_music_enabled(music);
+	string message = music ? "Music enabled" : "Music disabled";
+	new TextEffect(message);
+}
+
+void ActionToggleSFX(int const *params)
+{
+	bool sfx = !game->get_sound_manager()->is_sfx_enabled();
+	game->get_sound_manager()->set_sfx_enabled(sfx);
+	string message = sfx ? "Sfx enabled" : "Sfx disabled";
+	new TextEffect(message);
 }
 
 void ActionDoAction(int const *params)

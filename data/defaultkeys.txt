@@ -22,7 +22,6 @@ Ctrl-q	quit
 Alt-q	quit_no_dialog
 Alt-x	quit
 s	save_menu
-Ctrl-s	save_menu
 Ctrl-l	load_latest_save
 Ctrl-r	load_latest_save
 
@@ -52,6 +51,10 @@ Alt-i	toggle_no_darkness
 Alt-Ctrl-p	toggle_pickpocket_mode
 Ctrl-t	teleport_to_cursor
 x	toggle_x_ray
+
+Ctrl-a	toggle_audio
+Ctrl-m	toggle_music
+Ctrl-s	toggle_sfx
 
 Alt-a	select_command_bar	0	# select attack on the command bar
 Alt-t	select_command_bar	2	# select talk on the command bar

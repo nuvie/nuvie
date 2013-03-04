@@ -61,6 +61,9 @@ void ActionToggleFullscreen(int const *params);
 void ActionToggleCursor(int const *params);
 void ActionToggleCombatStrategy(int const *params);
 void ActionToggleFps(int const *params);
+void ActionToggleAudio(int const *params);
+void ActionToggleMusic(int const *params);
+void ActionToggleSFX(int const *params);
 
 void ActionDoAction(int const *params);
 void ActionCancelAction(int const *params);

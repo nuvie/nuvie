@@ -137,7 +137,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
   m_Config = config;
   m_Config->value ("config/audio/enabled", audio_enabled, true);
 
-  if(audio_enabled == false)
+/*  if(audio_enabled == false) // commented out to allow toggling
      {
       music_enabled = false;
       sfx_enabled = false;
@@ -145,7 +145,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
       sfx_volume = 0;
       mixer = NULL;
       return false;
-     }
+     }*/
 
   m_Config->value ("config/audio/enable_music", music_enabled, true);
   m_Config->value ("config/audio/enable_sfx", sfx_enabled, true);
@@ -175,7 +175,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
      return false;
     }
 
-  if(music_enabled)
+//  if(music_enabled)  // commented out to allow toggling
     {
      if(music_style == "native") 
        {
@@ -192,7 +192,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
      musicPlayFrom("random");
     }
 
-  if(sfx_enabled)
+//  if(sfx_enabled)  // commented out to allow toggling
     {
      //LoadObjectSamples(sound_dir);
      //LoadTileSamples(sound_dir);
@@ -543,7 +543,7 @@ void SoundManager::musicPlay(const char *filename)
 {
 	string path;
 
-	if(!music_enabled)
+	if(!music_enabled || !audio_enabled)
 		return;
 
 	config_get_path(m_Config, filename, path);
@@ -703,7 +703,7 @@ void SoundManager::update_map_sfx ()
 
 void SoundManager::update()
 {
-  if (music_enabled && g_MusicFinished)
+  if (music_enabled && audio_enabled && g_MusicFinished)
     {
       g_MusicFinished = false;
       if (m_pCurrentSong != NULL)
@@ -846,4 +846,22 @@ bool SoundManager::playSfx(uint16 sfx_id, bool async)
 	}
 
 	return false;
+}
+
+void SoundManager::set_audio_enabled(bool val)
+{
+	audio_enabled = val;
+	if(audio_enabled && music_enabled)
+		musicPlay();
+	else
+		musicStop();
+}
+
+void SoundManager::set_music_enabled(bool val)
+{
+	music_enabled = val;
+	if(audio_enabled && music_enabled)
+		musicPlay();
+	else
+		musicStop();
 }
