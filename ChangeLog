@@ -1,3 +1,7 @@
+2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1688
+	* Fix wrong SpellViewGump offset from r1684
+	* Have fps counter update properly in original style
+
 2013-03-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1687
 	* Add forgotten SaveDialog offsets
 	* Clicking the scroll bar can now page up and page down

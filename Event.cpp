@@ -2210,6 +2210,8 @@ void Event::toggleFpsDisplay()
 		fps_counter_widget->Hide();
 	else
 		fps_counter_widget->Show();
+	if(game->is_orig_style())
+		game->get_gui()->force_full_redraw();
 }
 
 void Event::quitDialog()

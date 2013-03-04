@@ -64,9 +64,9 @@ void FpsCounter::Display(bool full_redraw)
 {
     Screen *screen = game->get_screen();
 
-    if(full_redraw || update_display || game->is_new_style())
+//    if(full_redraw || update_display || game->is_new_style())
     {
-        update_display = false;
+//        update_display = false;
         screen->fill(0, area.x, area.y, area.w, area.h);
         font->drawString(screen, fps_string, area.x, area.y);
 

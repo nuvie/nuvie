@@ -47,9 +47,7 @@ SpellViewGump::~SpellViewGump()
 
 bool SpellViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
 {
-	uint16 x_off = Game::get_game()->get_game_x_offset();
-	uint16 y_off = Game::get_game()->get_game_y_offset();
-	View::init(x + x_off,y + y_off,t,p,tm,om);
+	View::init(x,y,t,p,tm,om);
 
 	SetRect(area.x, area.y, 162, 108);
 
