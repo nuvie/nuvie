@@ -347,7 +347,7 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 	   command_bar->Show();
    }
 
-   if(is_orig_style() || screen->get_width() != 320 || screen->get_height() != 200)
+   if(is_orig_style() || screen->get_width() != get_game_width() || screen->get_height() != get_game_height())
    {
 	   background->Show();
    }

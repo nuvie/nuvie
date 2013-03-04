@@ -454,13 +454,13 @@ void DollWidget::drag_draw(int x, int y, int message, void* data)
 	int	nx = x - 8;
 	int	ny = y - 8;
 
-	if (nx + 16 >= 320)
-		nx = 303;
+	if (nx + 16 >= screen->get_width())
+		nx = screen->get_width()-17;
 	else if (nx < 0)
 		nx = 0;
 
-	if (ny + 16 >= 200)
-		ny = 183;
+	if (ny + 16 >= screen->get_height())
+		ny = screen->get_height()-17;
 	else if (ny < 0)
 		ny = 0;
 
