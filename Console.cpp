@@ -131,10 +131,12 @@ void ConsolePause()
 
 void ConsoleShow()
 {
-	g_console->Show();
+	if(g_console)
+		g_console->Show();
 }
 
 void ConsoleHide()
 {
-	g_console->Hide();
+	if(g_console)
+		g_console->Hide();
 }

@@ -940,7 +940,12 @@ bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
           
              scroll->display_string("\nThe Codex has vanished!\n");
 
-             scroll->display_string("\nYou've finished the game!!\nPity we haven't implemented the end sequence yet.\n");
+             //FIXME put weird swirl effect in here.
+
+             game->get_map_window()->Hide();
+             game->get_scroll()->Hide();
+             game->play_ending_sequence();
+             game->quit();
 
              return(true);
             }

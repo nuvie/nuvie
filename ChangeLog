@@ -1,3 +1,7 @@
+2013-03-05  Eric Fry <efry at users.sourceforge.net> r1692
+	* More work on the ending sequence.
+	* The end sequence now displays when you complete the game.
+
 2013-03-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1691
 	* Use game size to determine if a background is needed for fullscreen_map
 	* Fix dragging from doll widget when the screen size is larger than default
