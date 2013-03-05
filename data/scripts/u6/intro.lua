@@ -2875,9 +2875,10 @@ local function main_menu()
 	
 	local input = input_poll()
 	local menu_idx = 0
+	local old_menu_id = 0
 	while true do
 		canvas_update()
-		input = input_poll(1)
+		input = input_poll(true)
 		if input ~= nil then
 			if input == 113 then     --q quit
 				return "Q"
@@ -2899,11 +2900,13 @@ local function main_menu()
 				if menu_idx < 4 then
 					menu_idx = menu_idx + 1
 					main_menu_set_pal(menu_idx)
+					old_menu_idx = menu_idx
 				end
 			elseif input == 273 then --up key
 				if menu_idx > 0 then
 					menu_idx = menu_idx - 1
 					main_menu_set_pal(menu_idx)
+					old_menu_idx = menu_idx
 				end
 			elseif input >= 48 and input <= 57 or input == 45 or input == 61 then --play music play pressing number keys or '-' or '='
 				if input == 45 then
@@ -2951,9 +2954,26 @@ local function main_menu()
 						return "J" -- journey onward
 					end
 				end
-			elseif input > 0 and input < 6 then
-				menu_idx = input - 1
-				main_menu_set_pal(menu_idx)
+			elseif input == 1 then
+				local x = get_mouse_x()
+				if x > 56 and x < 264 then
+					local y = get_mouse_y()
+					if y > 86 and y < 108 then
+						menu_idx = 0
+					elseif y > 107 and y < 128 then
+						menu_idx = 1
+					elseif y > 127 and y < 149 then
+						menu_idx = 2
+					elseif y > 148 and y < 170 then
+						menu_idx = 3
+					elseif y > 169 and y < 196 then
+						menu_idx = 4
+					end
+					if menu_idx ~= old_menu_idx then
+						main_menu_set_pal(menu_idx)
+						old_menu_idx = menu_idx
+					end
+				end
 			end
 			input = nil
 		end

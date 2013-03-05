@@ -782,11 +782,11 @@ static int nscript_get_mouse_y(lua_State *L)
 static int nscript_input_poll(lua_State *L)
 {
 	SDL_Event event;
-	uint8 menu_type;
+	bool poll_mouse_motion;
 	if(lua_isnil(L, 1))
-		menu_type = 0;
+		poll_mouse_motion = false;
 	else
-		menu_type = lua_tointeger(L, 1);
+		poll_mouse_motion = lua_toboolean(L, 1);
 	while(SDL_PollEvent(&event))
 	{
 		//FIXME do something here.
@@ -803,46 +803,10 @@ static int nscript_input_poll(lua_State *L)
 			lua_pushinteger(L, 0);
 			return 1;
 		}
-		if(menu_type > 0 && event.type == SDL_MOUSEMOTION)
+		if(poll_mouse_motion && event.type == SDL_MOUSEMOTION)
 		{
-			int x = event.button.x;
-			int y = event.button.y;
-			int scale_factor = cutScene->get_screen()->get_scale_factor();
-			if(scale_factor > 1)
-			{
-				x /= scale_factor;
-				y /= scale_factor;
-			}
-			x -= cutScene->get_x_off();
-			y -= cutScene->get_y_off();
-			if(menu_type == 1 && x > 56 && x < 264) // main menu
-			{
-				if(y > 86 && y < 108)
-				{
-					lua_pushinteger(L, 1);
-					return 1;
-				}
-				else if(y > 107 && y < 128)
-				{
-					lua_pushinteger(L, 2);
-					return 1;
-				}
-				else if(y > 127 && y < 149)
-				{
-					lua_pushinteger(L, 3);
-					return 1;
-				}
-				else if(y > 148 && y < 170)
-				{
-					lua_pushinteger(L, 4);
-					return 1;
-				}
-				else if(y > 169 && y < 196)
-				{
-					lua_pushinteger(L, 5);
-					return 1;
-				}
-			}
+			lua_pushinteger(L, 1);
+			return 1;
 		}
 	}
 
@@ -1197,7 +1161,7 @@ void ScriptCutscene::Display(bool full_redraw)
 
 				if(s->text.length() > 0)
 				{
-					font->drawString(screen, s->text.c_str(), s->x, s->y);
+					font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off);
 				}
 			}
 		}

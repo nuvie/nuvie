@@ -1,6 +1,9 @@
+2013-03-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1694
+	* Soft-code the mouse motion input pulling in ScriptCutscene
+	* Fix cutscene text not using offsets
+
 2013-03-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1693
-	* Have mouse work in the intro and menu. It will not highlight anything but
-	  clicks work.
+	* Have the mouse work in the intro and menu. It uses the wrong pointer.
 
 2013-03-05  Eric Fry <efry at users.sourceforge.net> r1692
 	* More work on the ending sequence.
