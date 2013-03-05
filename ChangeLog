@@ -1,3 +1,6 @@
+2013-03-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1695
+	* Properly make menu_idx global and change old_menu_idx usage
+
 2013-03-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1694
 	* Soft-code the mouse motion input pulling in ScriptCutscene
 	* Fix cutscene text not using offsets

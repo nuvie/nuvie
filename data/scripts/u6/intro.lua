@@ -2830,6 +2830,8 @@ local function main_menu_load()
 	fade_in_sprite(g_menu["menu"])
 end
 
+	g_menu_idx = 0
+
 local function selected_intro()
 	main_menu_set_pal(0)
 	fade_out()
@@ -2851,8 +2853,8 @@ local function selected_create_character()
 		return 1
 	end
 	canvas_set_palette("palettes.int", 0)
-	menu_idx=0
-	main_menu_set_pal(menu_idx)
+	g_menu_idx=0
+	main_menu_set_pal(g_menu_idx)
 	music_play("ultima.m")
 	fade_in_sprite(g_menu["menu"])
 	return 0
@@ -2863,8 +2865,8 @@ local function selected_acknowledgments()
 	fade_out_sprite(g_menu["menu"],6)
 	acknowledgements()
 	canvas_set_palette("palettes.int", 0)
-	menu_idx=0
-	main_menu_set_pal(menu_idx)
+	g_menu_idx=0
+	main_menu_set_pal(g_menu_idx)
 	fade_in_sprite(g_menu["menu"])
 end
 
@@ -2873,40 +2875,37 @@ local function main_menu()
 	g_menu["subtitle"].visible = true
 	g_menu["menu"].visible = true
 	
-	local input = input_poll()
-	local menu_idx = 0
-	local old_menu_id = 0
+	local input
+
 	while true do
 		canvas_update()
 		input = input_poll(true)
 		if input ~= nil then
 			if input == 113 then     --q quit
 				return "Q"
-			elseif input == 105 or input == 13 and menu_idx == 0 then --i
+			elseif input == 105 or input == 13 and g_menu_idx == 0 then --i
 				selected_intro()
-			elseif input == 99 or input == 13 and menu_idx == 1 then  --c
+			elseif input == 99 or input == 13 and g_menu_idx == 1 then  --c
 				if selected_create_character()== true then
 					return "J"
 				end
-			elseif input == 116 or input == 13 and menu_idx == 2 then --t
+			elseif input == 116 or input == 13 and g_menu_idx == 2 then --t
 				--transfer a character
-			elseif input == 97 or input == 13 and menu_idx == 3 then  --a
+			elseif input == 97 or input == 13 and g_menu_idx == 3 then  --a
 				selected_acknowledgments()
-			elseif input == 106 or input == 13 and menu_idx == 4 then --j
+			elseif input == 106 or input == 13 and g_menu_idx == 4 then --j
 				main_menu_set_pal(4)
 				fade_out()
 				return "J"
 			elseif input == 274 then --down key
-				if menu_idx < 4 then
-					menu_idx = menu_idx + 1
-					main_menu_set_pal(menu_idx)
-					old_menu_idx = menu_idx
+				if g_menu_idx < 4 then
+					g_menu_idx = g_menu_idx + 1
+					main_menu_set_pal(g_menu_idx)
 				end
 			elseif input == 273 then --up key
-				if menu_idx > 0 then
-					menu_idx = menu_idx - 1
-					main_menu_set_pal(menu_idx)
-					old_menu_idx = menu_idx
+				if g_menu_idx > 0 then
+					g_menu_idx = g_menu_idx - 1
+					main_menu_set_pal(g_menu_idx)
 				end
 			elseif input >= 48 and input <= 57 or input == 45 or input == 61 then --play music play pressing number keys or '-' or '='
 				if input == 45 then
@@ -2957,21 +2956,21 @@ local function main_menu()
 			elseif input == 1 then
 				local x = get_mouse_x()
 				if x > 56 and x < 264 then
+					local old_menu_idx = g_menu_idx
 					local y = get_mouse_y()
 					if y > 86 and y < 108 then
-						menu_idx = 0
+						g_menu_idx = 0
 					elseif y > 107 and y < 128 then
-						menu_idx = 1
+						g_menu_idx = 1
 					elseif y > 127 and y < 149 then
-						menu_idx = 2
+						g_menu_idx = 2
 					elseif y > 148 and y < 170 then
-						menu_idx = 3
+						g_menu_idx = 3
 					elseif y > 169 and y < 196 then
-						menu_idx = 4
+						g_menu_idx = 4
 					end
-					if menu_idx ~= old_menu_idx then
-						main_menu_set_pal(menu_idx)
-						old_menu_idx = menu_idx
+					if g_menu_idx ~= old_menu_idx then
+						main_menu_set_pal(g_menu_idx)
 					end
 				end
 			end
