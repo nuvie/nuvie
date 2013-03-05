@@ -88,6 +88,8 @@ static int nscript_canvas_hide_all_sprites(lua_State *L);
 static int nscript_canvas_string_length(lua_State *L);
 
 static int nscript_music_play(lua_State *L);
+static int nscript_get_mouse_x(lua_State *L);
+static int nscript_get_mouse_y(lua_State *L);
 static int nscript_input_poll(lua_State *L);
 
 static int nscript_config_set(lua_State *L);
@@ -162,6 +164,12 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_music_play);
    lua_setglobal(L, "music_play");
+
+   lua_pushcfunction(L, nscript_get_mouse_x);
+   lua_setglobal(L, "get_mouse_x");
+
+   lua_pushcfunction(L, nscript_get_mouse_y);
+   lua_setglobal(L, "get_mouse_y");
 
    lua_pushcfunction(L, nscript_input_poll);
    lua_setglobal(L, "input_poll");
@@ -747,9 +755,38 @@ static int nscript_music_play(lua_State *L)
 	return 0;
 }
 
+static int nscript_get_mouse_x(lua_State *L)
+{
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	int scale_factor = cutScene->get_screen()->get_scale_factor();
+	if(scale_factor > 1)
+		x /= scale_factor;
+	x -= cutScene->get_x_off();
+	lua_pushinteger(L, x);
+	return 1;
+}
+
+static int nscript_get_mouse_y(lua_State *L)
+{
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	int scale_factor = cutScene->get_screen()->get_scale_factor();
+	if(scale_factor > 1)
+		y /= scale_factor;
+	y -= cutScene->get_y_off();
+	lua_pushinteger(L, y);
+	return 1;
+}
+
 static int nscript_input_poll(lua_State *L)
 {
 	SDL_Event event;
+	uint8 menu_type;
+	if(lua_isnil(L, 1))
+		menu_type = 0;
+	else
+		menu_type = lua_tointeger(L, 1);
 	while(SDL_PollEvent(&event))
 	{
 		//FIXME do something here.
@@ -760,6 +797,52 @@ static int nscript_input_poll(lua_State *L)
 			else
 				lua_pushinteger(L, event.key.keysym.sym);
 			return 1;
+		}
+		if(event.type == SDL_MOUSEBUTTONDOWN)
+		{
+			lua_pushinteger(L, 0);
+			return 1;
+		}
+		if(menu_type > 0 && event.type == SDL_MOUSEMOTION)
+		{
+			int x = event.button.x;
+			int y = event.button.y;
+			int scale_factor = cutScene->get_screen()->get_scale_factor();
+			if(scale_factor > 1)
+			{
+				x /= scale_factor;
+				y /= scale_factor;
+			}
+			x -= cutScene->get_x_off();
+			y -= cutScene->get_y_off();
+			if(menu_type == 1 && x > 56 && x < 264) // main menu
+			{
+				if(y > 86 && y < 108)
+				{
+					lua_pushinteger(L, 1);
+					return 1;
+				}
+				else if(y > 107 && y < 128)
+				{
+					lua_pushinteger(L, 2);
+					return 1;
+				}
+				else if(y > 127 && y < 149)
+				{
+					lua_pushinteger(L, 3);
+					return 1;
+				}
+				else if(y > 148 && y < 170)
+				{
+					lua_pushinteger(L, 4);
+					return 1;
+				}
+				else if(y > 169 && y < 196)
+				{
+					lua_pushinteger(L, 5);
+					return 1;
+				}
+			}
 		}
 	}
 

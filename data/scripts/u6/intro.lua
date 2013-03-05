@@ -1121,6 +1121,16 @@ local function gypsy_ab_select(question)
 				return a_lookup_tbl[question - 104] + 1
 			elseif input == 66 or input == 98 then
 				return b_lookup_tbl[question - 104] + 1
+			elseif input == 0 then
+				local y = get_mouse_y()
+				if(y > 173 and y < 190) then
+					local x = get_mouse_x()
+					if x > 278 and x < 296 then
+						return a_lookup_tbl[question - 104] + 1
+					elseif x > 296 and x < 313 then
+						return b_lookup_tbl[question - 104] + 1
+					end
+				end
 			end
 			input = nil
 		end
@@ -1755,6 +1765,37 @@ local function create_character()
 				avatar.image = montage_img_tbl[gender*6+portrait_num]
 			elseif input == 99 or input == 67 then
 				break
+			elseif input == 0 then -- FIXME redundant stuff
+				local x = get_mouse_x()
+				if(x < 152) then
+					local y = get_mouse_y()
+					if x > 93 and y > 111 and y < 128 then
+						if gender == 0 then
+							gender = 1
+						else
+							gender = 0
+						end
+						avatar.image = montage_img_tbl[gender*6+portrait_num]
+					elseif x > 61 and y > 128 and y < 145 then
+						if portrait_num == 5 then
+							portrait_num = 0
+						else
+							portrait_num = portrait_num + 1
+						end
+						avatar.image = montage_img_tbl[gender*6+portrait_num]
+					elseif x > 85 and y > 145 and y < 162 then
+						break
+					elseif x > 79 and y > 162 and y < 179 then
+						bg.visible = false
+						name.visible = false
+						new_sex.visible = false
+						new_portrait.visible = false
+						continue.visible = false
+						esc_abort.visible = false
+						avatar.visible = false
+						return false
+					end
+				end
 			end
 			
 			input = nil
@@ -2789,6 +2830,44 @@ local function main_menu_load()
 	fade_in_sprite(g_menu["menu"])
 end
 
+local function selected_intro()
+	main_menu_set_pal(0)
+	fade_out()
+	canvas_hide_all_sprites()
+	intro()
+	music_play("ultima.m")
+	g_menu["title"].visible = true
+	fade_in()
+	g_menu["subtitle"].visible = true
+	g_menu["menu"].visible = true
+
+	fade_in_sprite(g_menu["menu"])
+end
+
+local function selected_create_character()
+	main_menu_set_pal(1)
+	fade_out_sprite(g_menu["menu"],6)
+	if create_character() == true then
+		return 1
+	end
+	canvas_set_palette("palettes.int", 0)
+	menu_idx=0
+	main_menu_set_pal(menu_idx)
+	music_play("ultima.m")
+	fade_in_sprite(g_menu["menu"])
+	return 0
+end
+
+local function selected_acknowledgments()
+	main_menu_set_pal(3)
+	fade_out_sprite(g_menu["menu"],6)
+	acknowledgements()
+	canvas_set_palette("palettes.int", 0)
+	menu_idx=0
+	main_menu_set_pal(menu_idx)
+	fade_in_sprite(g_menu["menu"])
+end
+
 local function main_menu()
 	g_menu["title"].visible = true
 	g_menu["subtitle"].visible = true
@@ -2798,46 +2877,20 @@ local function main_menu()
 	local menu_idx = 0
 	while true do
 		canvas_update()
-		input = input_poll()
+		input = input_poll(1)
 		if input ~= nil then
 			if input == 113 then     --q quit
 				return "Q"
 			elseif input == 105 or input == 13 and menu_idx == 0 then --i
-				main_menu_set_pal(0)
-				fade_out()
-				canvas_hide_all_sprites()
-				intro()
-				music_play("ultima.m")
-				g_menu["title"].visible = true
-				fade_in()
-				g_menu["subtitle"].visible = true
-				g_menu["menu"].visible = true
-				
-				fade_in_sprite(g_menu["menu"])
-				--run intro here
+				selected_intro()
 			elseif input == 99 or input == 13 and menu_idx == 1 then  --c
-				main_menu_set_pal(1)
-				fade_out_sprite(g_menu["menu"],6)
-				if create_character() == true then
+				if selected_create_character()== true then
 					return "J"
 				end
-				canvas_set_palette("palettes.int", 0)
-				menu_idx=0
-				main_menu_set_pal(menu_idx)
-				music_play("ultima.m")
-				fade_in_sprite(g_menu["menu"])
-				--create character
 			elseif input == 116 or input == 13 and menu_idx == 2 then --t
 				--transfer a character
 			elseif input == 97 or input == 13 and menu_idx == 3 then  --a
-				main_menu_set_pal(3)
-				fade_out_sprite(g_menu["menu"],6)
-				acknowledgements()
-				canvas_set_palette("palettes.int", 0)
-				menu_idx=0
-				main_menu_set_pal(menu_idx)
-				fade_in_sprite(g_menu["menu"])
-				--acknowledgments
+				selected_acknowledgments()
 			elseif input == 106 or input == 13 and menu_idx == 4 then --j
 				main_menu_set_pal(4)
 				fade_out()
@@ -2878,6 +2931,29 @@ local function main_menu()
 					"end.m"
 				}
 				music_play(song_names[input])
+			elseif input == 0 then
+				local x = get_mouse_x()
+				if x > 56 and x < 264 then
+					local y = get_mouse_y()
+					if y > 86 and y < 108 then
+						selected_intro()
+					elseif y > 107 and y < 128 then
+						if selected_create_character() == true then
+							return "J"
+						end
+					elseif y > 127 and y < 149 then
+						--transfer a character
+					elseif y > 148 and y < 170 then
+						selected_acknowledgments()
+					elseif y > 169 and y < 196 then
+						main_menu_set_pal(4)
+						fade_out()
+						return "J" -- journey onward
+					end
+				end
+			elseif input > 0 and input < 6 then
+				menu_idx = input - 1
+				main_menu_set_pal(menu_idx)
 			end
 			input = nil
 		end
