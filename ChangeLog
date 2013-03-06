@@ -1,3 +1,6 @@
+2013-03-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1697
+	* Fix walking mode not canceling on mouse up when the user is paused
+
 2013-03-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1696
 	* Reset the row offset in ContainerWidget when selecting a container
 	* Fix two instances of drag and dropped items corrupting the background

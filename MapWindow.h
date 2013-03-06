@@ -75,6 +75,7 @@ class MapWindow: public GUI_Widget
  int game_type;
  bool enable_doubleclick;
  bool walk_with_left_button;
+ uint8 walk_button_mask;
  X_RayType x_ray_view;
  InterfaceType interface;
 

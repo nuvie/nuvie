@@ -157,6 +157,10 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
  config->value("config/input/walk_with_left_button", walk_with_left_button, true);
+ if(walk_with_left_button)
+    walk_button_mask = (SDL_BUTTON(USE_BUTTON) | SDL_BUTTON(WALK_BUTTON));
+ else
+    walk_button_mask = SDL_BUTTON(WALK_BUTTON);
  config->value("config/cheats/min_brightness", min_brightness, 0);
  original_obj_loc = MapCoord(0,0,0);
 
@@ -596,11 +600,13 @@ void MapWindow::update()
         }
     }
 
-    if(walking && !game->user_paused())
+    if(walking)
     {
         int mx, my; // bit-AND buttons with mouse state to test
-        if(SDL_GetMouseState(&mx, &my) & (SDL_BUTTON(USE_BUTTON) | SDL_BUTTON(ACTION_BUTTON)))
+        if(SDL_GetMouseState(&mx, &my) & walk_button_mask)
         {
+        	if(game->user_paused())
+        		return;
         	mx = screen->get_translated_x((uint16)mx);
         	my = screen->get_translated_y((uint16)my);
         	if(is_wizard_eye_mode())
@@ -620,6 +626,8 @@ void MapWindow::update()
         									(uint32)my);
         	}
         }
+        else
+            walking = false;
     }
 
 }

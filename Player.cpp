@@ -735,11 +735,7 @@ void Player::update_player(Actor *next_player)
     bool same_actor = (next_player == get_actor());
     set_actor(next_player); // redirects to ActorManager::set_player()
     set_mapwindow_centered(true);
-    if(get_party()->is_in_combat_mode()) // HACK due to mouse up issues when the player is paused
-    {
-        map_window->set_looking(false);
-        map_window->set_walking(false);
-    }
+
     if(!scroll->can_displayed_prompt() && same_actor)
         return;
     scroll->display_string("\n");
