@@ -71,7 +71,7 @@ local function play()
 	
 	local scroll_img = image_load("end.shp", 0xb)
 
-	image_print(scroll_img, "A glowing portal springs from the floor!", 7, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "A glowing portal springs from the floor!", 7, 303, 34, 13, 0x3e)
 	local scroll = sprite_new(scroll_img, 1, 0xa0, true)
 	
 	local input
@@ -93,7 +93,7 @@ local function play()
 	characters.visible = true
 	
 	scroll_img = image_load("end.shp", 0xa)
-	image_print(scroll_img, "From its crimson depths Lord British emerges, trailed by the mage Nystul. Anguish and disbelief prevail on the royal seer's face, but Lord British directs his stony gaze at you and speaks as if to a wayward child.", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "From its crimson depths Lord British emerges, trailed by the mage Nystul. Anguish and disbelief prevail on the royal seer's face, but Lord British directs his stony gaze at you and speaks as if to a wayward child.", 8, 303, 7, 13, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x85
@@ -101,7 +101,7 @@ local function play()
 	rotate_and_wait()
 	
 	scroll_img = image_load("end.shp", 0xc)
-	image_print(scroll_img, "\"Thou didst have just cause to burgle our Codex, I trust\127 His Majesty says. \"But for Virtue's sake...", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "\"Thou didst have just cause to burgle our Codex, I trust\127 His Majesty says. \"But for Virtue's sake...", 8, 303, 7, 12, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x97
@@ -118,9 +118,10 @@ local function play()
 	end
 	
 	moongate.visible = false
-	
+	wait_for_input()
+		
 	scroll_img = image_load("end.shp", 0xb)
-	image_print(scroll_img, "\"WHAT HAST THOU DONE WITH IT?\127", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "\"WHAT HAST THOU DONE WITH IT?\127", 8, 303, 63, 13, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x0
 	scroll.y = 0xa0
@@ -129,7 +130,7 @@ local function play()
 	wait_for_input()
 	
 	scroll_img = image_load("end.shp", 0xa)
-	image_print(scroll_img, "You pick up the concave lens and pass it to the King. \"Was the book ever truly ours, Your Majesty? Was it written for Britannia alone? Thou dost no longer hold the Codex, but is its wisdom indeed lost? Look into the Vortex, and let the Codex answer for itself!\127", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "You pick up the concave lens and pass it to the King. \"Was the book ever truly ours, Your Majesty? Was it written for Britannia alone? Thou dost no longer hold the Codex, but is its wisdom indeed lost? Look into the Vortex, and let the Codex answer for itself!\127", 8, 303, 7, 8, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x85
@@ -147,7 +148,7 @@ local function play()
 	wait_for_input()
 	
 	scroll_img = image_load("end.shp", 0xc)
-	image_print(scroll_img, "As Lord British holds the glass before the wall, the Codex of Ultimate Wisdom wavers into view against a myriad of swimming stars!", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "As Lord British holds the glass before the wall, the Codex of Ultimate Wisdom wavers into view against a myriad of swimming stars!", 8, 303, 7, 12, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x97
@@ -182,7 +183,7 @@ local function play()
 	wait_for_input()
 	
 	scroll_img = image_load("end.shp", 0xb)
-	image_print(scroll_img, "Yet the book remains closed.", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "Yet the book remains closed.", 8, 303, 70, 13, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x0
 	scroll.y = 0xa0
@@ -190,7 +191,7 @@ local function play()
 	wait_for_input()
 	
 	scroll_img = image_load("end.shp", 0xb)
-	image_print(scroll_img, "And waves of heat shimmer in the air, heralding the birth of another red gate!", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "And waves of heat shimmer in the air, heralding the birth of another red gate!", 8, 303, 7, 9, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x0
 	scroll.y = 0x98
@@ -215,7 +216,7 @@ local function play()
 	characters.visible = true
 	
 	scroll_img = image_load("end.shp", 0xa)
-	image_print(scroll_img, "King Draxinusom of the Gargoyles strides forward, flanked by a small army of wingless attendants. Like Lord British, he seems to suppress his rage only through a heroic effort of will. His scaly hand grasps your shoulder, and your Amulet of Submission grows very warm.", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "King Draxinusom of the Gargoyles strides forward, flanked by a small army of wingless attendants. Like Lord British, he seems to suppress his rage only through a heroic effort of will. His scaly hand grasps your shoulder, and your Amulet of Submission grows very warm.", 8, 303, 7, 8, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x85
@@ -223,7 +224,7 @@ local function play()
 	rotate_and_wait()
 	
 	scroll_img = image_load("end.shp", 0xb)
-	image_print(scroll_img, "\"Thy time hath come, Thief,\127 he says.", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "\"Thy time hath come, Thief,\127 he says.", 8, 303, 46, 13, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x0
 	scroll.y = 0xa0
@@ -244,7 +245,7 @@ local function play()
 	wait_for_input()
 	
 	scroll_img = image_load("end.shp", 0xb)
-	image_print(scroll_img, "Quickly you reach down to seize the convex lens...", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "Quickly you reach down to seize the convex lens...", 8, 310, 5, 13, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x0
 	scroll.y = 0x98
@@ -252,7 +253,7 @@ local function play()
 	wait_for_input()
 	
 	scroll_img = image_load("end.shp", 0xc)
-	image_print(scroll_img, "...and you press it into the hand of the towering Gargoyle king, meeting his sunken eyes. \"Join my Lord in his search for peace, I beg thee.\127", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "...and you press it into the hand of the towering Gargoyle king, meeting his sunken eyes. \"Join my Lord in his search for peace, I beg thee.\127", 8, 303, 7, 12, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x97
@@ -264,7 +265,7 @@ local function play()
 	red_lens.visible = false
 		
 	scroll_img = image_load("end.shp", 0xa)
-	image_print(scroll_img, "At your urging, King Draxinusom reluctantly raises his lens to catch the light. As Lord British holds up his own lens, every eye in the room, human and Gargoyle alike, fixes upon the image of the Codex which shines upon the wall.", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "At your urging, King Draxinusom reluctantly raises his lens to catch the light. As Lord British holds up his own lens, every eye in the room, human and Gargoyle alike, fixes upon the image of the Codex which shines upon the wall.", 8, 303, 7, 13, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x85
@@ -272,7 +273,7 @@ local function play()
 	wait_for_input()
 	
 	scroll_img = image_load("end.shp", 0xa)
-	image_print(scroll_img, "The ancient book opens. Both kings gaze upon its pages in spellbound silence, as the eloquence of Ultimate Wisdom is revealed in the tongues of each lord's domain. You, too, can read the answers the Codex gives...", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "The ancient book opens. Both kings gaze upon its pages in spellbound silence, as the eloquence of Ultimate Wisdom is revealed in the tongues of each lord's domain. You, too, can read the answers the Codex gives...", 8, 303, 7, 13, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x85
@@ -295,7 +296,7 @@ local function play()
 	wait_for_input()
 	
 	scroll_img = image_load("end.shp", 0xa)
-	image_print(scroll_img, "...and when its wisdom is gleaned, when Lord British and King Draxinusom turn to each other as friends, hating no longer, fearing no more, you know that your mission in Britannia has ended at last.", 8, 303, 7, 10, 0x3e)
+	image_print(scroll_img, "...and when its wisdom is gleaned, when Lord British and King Draxinusom turn to each other as friends, hating no longer, fearing no more, you know that your mission in Britannia has ended at last.", 8, 303, 7, 13, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x85
@@ -345,7 +346,7 @@ local function play()
 	
 	local x, y
 	scroll_img = image_load("end.shp", 0xa)
-	x, y = image_print(scroll_img, "CONGRATULATIONS", 8, 303, 7, 10, 0x3e)
+	x, y = image_print(scroll_img, "CONGRATULATIONS", 8, 303, 107, 10, 0x3e)
 	x, y = image_print(scroll_img, "Thou hast completed Ultima VI: The False Prophet, in xxx years, yyyy months, and zzz day.", 8, 303, 7, y+10, 0x3e)
 	x, y = image_print(scroll_img, "Report thy feat unto Lord British at Origin Systems!", 8, 303, 7, y+10, 0x3e)
 	scroll.image = scroll_img

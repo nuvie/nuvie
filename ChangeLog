@@ -1,3 +1,6 @@
+2013-03-06  Eric Fry <efry at users.sourceforge.net> r1698
+	* Fixed text alignment in the end sequence.
+
 2013-03-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1697
 	* Fix walking mode not canceling on mouse up when the user is paused
 
