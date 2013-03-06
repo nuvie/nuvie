@@ -194,6 +194,7 @@ Actor *PartyView::get_actor(int x, int y)
 
 bool PartyView::drag_accept_drop(int x, int y, int message, void *data)
 {
+	GUI::get_gui()->force_full_redraw();
 	DEBUG(0,LEVEL_DEBUGGING,"PartyView::drag_accept_drop()\n");
 	if(message == GUI_DRAG_OBJ)
 	{

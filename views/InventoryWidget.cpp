@@ -556,6 +556,7 @@ bool InventoryWidget::drag_set_target_obj(int x, int y)
 
 bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
 {
+ GUI::get_gui()->force_full_redraw();
  DEBUG(0,LEVEL_DEBUGGING,"InventoryWidget::drag_accept_drop()\n");
  if(message == GUI_DRAG_OBJ)
    {

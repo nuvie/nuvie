@@ -541,6 +541,7 @@ void ContainerWidget::try_click()
 			bool locked_chest = (usecode->is_chest(selected_obj) && selected_obj->frame_n > 1);
 			if(usecode->is_container(selected_obj) && !locked_chest)
 			{
+				row_offset = 0;
 				container_obj = selected_obj;
 				if(usecode->is_chest(container_obj))
 				{

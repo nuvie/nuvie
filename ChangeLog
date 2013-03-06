@@ -1,3 +1,7 @@
+2013-03-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1696
+	* Reset the row offset in ContainerWidget when selecting a container
+	* Fix two instances of drag and dropped items corrupting the background
+
 2013-03-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1695
 	* Properly make menu_idx global and change old_menu_idx usage
 
