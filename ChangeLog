@@ -1,3 +1,8 @@
+2013-03-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1700
+	* Fix default drop quantity and rest selection when pressing enter
+	  without input
+	* Allow cursor targeting for guard selection when resting
+
 2013-03-07  Eric Fry <efry at users.sourceforge.net> r1699
 	* Fixed bug "Quitting from the Ultima 6 menu doesn't quit Nuvie" [3606989]
 

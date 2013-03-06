@@ -383,13 +383,16 @@ void Event::get_target(const MapCoord &init, const char *prompt)
 }
 
 /* Switch focus to MsgScroll and start getting user input. */
-void Event::get_scroll_input(const char *allowed, bool can_escape)
+void Event::get_scroll_input(const char *allowed, bool can_escape, bool using_target_cursor)
 {
     assert(scroll);
-    assert(mode != INPUT_MODE);
-    set_mode(INPUT_MODE); // saves previous mode
+    if(!using_target_cursor)
+    {
+        assert(mode != INPUT_MODE);
+        set_mode(INPUT_MODE); // saves previous mode
+    }
     input.get_text = true;
-    scroll->set_input_mode(true, allowed, can_escape);
+    scroll->set_input_mode(true, allowed, can_escape, using_target_cursor);
 //no need to grab focus because any input will eventually reach MsgScroll,
 //    scroll->grab_focus();
 }
@@ -2677,7 +2680,8 @@ bool Event::rest_input(uint16 input)
         if(party->get_party_size() > 1)
         {
             scroll->display_string("Who will guard? ");
-            get_scroll_input("0123456789");
+            get_target("");
+            get_scroll_input("0123456789", true, true);
         }
         else
         {
@@ -2875,6 +2879,11 @@ void Event::doAction()
     {
         if(input.get_text)
         {
+            if(last_mode == REST_MODE && rest_time != 0 && !scroll->has_input())
+            {
+                select_target(map_window->get_cursorCoord().x,map_window->get_cursorCoord().y, map_window->get_cursorCoord().z);
+                return;
+            }
             assert(scroll->has_input()); // doAction should only be called when input is ready
             assert(input.str == 0);
             input.str = new string(scroll->get_input());
@@ -3016,15 +3025,40 @@ void Event::doAction()
     	else if(!drop_qty)
     	{
     	    assert(input.str);
-    		drop_count(strtol(input.str->c_str(), NULL, 10));
+			if(strncmp(input.str->c_str(), "", input.str->length()) == 0)
+			{
+				char buf[6];
+				snprintf(buf, sizeof(buf), "%u", drop_obj->qty);
+				scroll->display_string(buf);
+				drop_count(drop_obj->qty);
+			}
+			else
+				drop_count(strtol(input.str->c_str(), NULL, 10));
         }
     	else
     		perform_drop();
     }
     else if(mode == REST_MODE)
     {
+        if(rest_time != 0 && !input.str)
+        {
+            sint8 party_num;
+            if(input.actor)
+                party_num = game->get_party()->get_member_num(input.actor) + 1;
+            else
+                party_num = 0;
+            rest_input(party_num > 0 ? party_num : 0);
+            return;
+        }
         assert(input.str);
-        rest_input(strtol(input.str->c_str(), NULL, 10));
+        if(strncmp(input.str->c_str(), "", input.str->length()) == 0)
+        {
+            if(rest_time == 0)
+                scroll->display_string("0");
+            rest_input(0);
+        }
+        else
+            rest_input(strtol(input.str->c_str(), NULL, 10));
     }
     else if(mode == CAST_MODE || mode == SPELL_MODE)
     {
@@ -3309,6 +3343,7 @@ void Event::endAction(bool prompt)
     else if(mode == REST_MODE)
     {
         rest_time = rest_guard = 0;
+        scroll->set_using_target_cursor(false);
     }
     if(cursor_mode || mode == EQUIP_MODE)
     {
@@ -3452,7 +3487,7 @@ bool Event::can_target_icon()
 	if(mode == INPUT_MODE && (last_mode == TALK_MODE
 	   || last_mode == CAST_MODE || last_mode == SPELL_MODE
 	   || last_mode == LOOK_MODE || move_in_inventory
-	   || last_mode == USE_MODE))
+	   || last_mode == USE_MODE || last_mode == REST_MODE))
 		return true;
 	else
 		return false;

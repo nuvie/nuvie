@@ -114,6 +114,7 @@ protected:
 
  uint16 scrollback_height;
  bool discard_whitespace;
+ bool using_target_cursor;
 
 private:
  uint16 screen_x; //x offset to top left corner of MsgScroll
@@ -178,6 +179,7 @@ private:
  void page_down();
  virtual void move_scroll_down();
  virtual void move_scroll_up();
+ void set_using_target_cursor(bool val) { using_target_cursor = val; }
 
  void process_holding_buffer();
 
@@ -206,7 +208,7 @@ private:
  void set_keyword_highlight(bool state);
 
  void set_input_mode(bool state, const char *allowed = NULL,
-                     bool can_escape = true);
+                     bool can_escape = true, bool use_target_cursor = false);
  virtual void set_talking(bool state,  Actor *actor = NULL) { talking = state; }
  bool is_talking() { return talking; }
  void set_show_cursor(bool state) { show_cursor = state; }

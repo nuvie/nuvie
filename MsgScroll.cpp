@@ -163,6 +163,7 @@ void MsgScroll::init(Configuration *cfg, Font *f)
 	talking = false;
 	autobreak = false;
 	just_finished_page_break = false;
+	using_target_cursor = false;
 
 	callback_target = NULL;
 	callback_user_data = NULL;
@@ -581,13 +582,14 @@ void MsgScroll::clear_permitted_input()
 	permit_input = NULL;
 }
 
-void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
+void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape, bool use_target_cursor)
 {
  bool do_callback = false;
 
  input_mode = state;
  clear_permitted_input();
  permit_inputescape = can_escape;
+ using_target_cursor = use_target_cursor;
 
  line_count = 0;
 
@@ -606,7 +608,7 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape)
    if(callback_target)
      do_callback = true; // **DELAY until end-of-method so callback can set_input_mode() again**
  }
- Game::get_game()->get_gui()->lock_input(input_mode ? this : NULL);
+ Game::get_game()->get_gui()->lock_input((input_mode && !using_target_cursor) ? this : NULL);
 
  // send whatever input was collected to target that requested it
  if(do_callback)
@@ -677,7 +679,31 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
 
     if(page_break == false && input_mode == false)
         return(GUI_PASS);
-
+    if(using_target_cursor)
+    {
+        switch(key.sym) // FIXME  hard coded
+        {
+            case SDLK_KP1:
+            case SDLK_KP2:
+            case SDLK_KP3:
+            case SDLK_KP4:
+            case SDLK_KP6:
+            case SDLK_KP7:
+            case SDLK_KP8:
+            case SDLK_KP9:
+                           if(key.unicode) // num lock is on
+                               break; // SDL doesn't get the proper num lock state in Windows
+            case SDLK_UP :
+            case SDLK_DOWN:
+            case SDLK_LEFT:
+            case SDLK_RIGHT:
+            case SDLK_TAB:
+            case SDLK_KP_ENTER:
+            case SDLK_RETURN:
+                return GUI_PASS;
+            default : break;
+        }
+    }
     switch(key.sym)
      {
       case SDLK_UP : move_scroll_up();
