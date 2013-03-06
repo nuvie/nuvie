@@ -2998,5 +2998,9 @@ while cmd ~= "Q" and cmd ~= "J" do
 	cmd = main_menu()
 end
 
+if cmd == "Q" then
+	config_set("config/quit", true)
+end
+
 canvas_hide_all_sprites()
 canvas_hide()

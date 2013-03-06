@@ -1,3 +1,6 @@
+2013-03-07  Eric Fry <efry at users.sourceforge.net> r1699
+	* Fixed bug "Quitting from the Ultima 6 menu doesn't quit Nuvie" [3606989]
+
 2013-03-06  Eric Fry <efry at users.sourceforge.net> r1698
 	* Fixed text alignment in the end sequence.
 

@@ -1057,11 +1057,9 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 		file.seek(idx * 0x240);
 
 		file.readToBuf(buf, 0x240);
-	    //printf("pal%d\n",idx);
 
 	    for (int i = 0; i < 0x100; i++)
 	    {
-	    	//printf("%d:",idx);
 	        for (int j = 0; j < 3; j++)
 	        {
 	            int byte_pos = (i*3*6 + j*6) / 8;
@@ -1070,11 +1068,21 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 	                        (buf[byte_pos+1] << 8))
 	                        >> shift_val) & 0x3F;
 	            unpacked_palette[i*3+j] = (uint8) (color << 2);
-	            //printf("%d ", unpacked_palette[i*3+j]);
 	        }
-	        //printf(" untitled\n");
 	    }
 	}
+
+	/*
+	printf("GIMP Palette\nName: U6 ending\n#\n");
+	for (int i = 0; i < 0x100; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			printf("% 3d ", unpacked_palette[i*3+j]);
+		}
+		printf(" untitled\n");
+	}
+	*/
 	screen->set_palette(unpacked_palette);
 }
 

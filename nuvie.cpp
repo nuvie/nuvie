@@ -165,8 +165,13 @@ bool Nuvie::init(int argc, char **argv)
 
  if(!play_ending)
  {
-   playIntro();
+   if(playIntro() == false)
+   {
+	   ConsoleDelete(); //no pause on exit.
+	   return false;
+   }
  }
+
  game = new Game(config, script, gui);
 
  if(play_ending)
@@ -577,5 +582,15 @@ bool Nuvie::playIntro()
 
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL*2);
 
-	return script->run_lua_file(script_file.c_str());
+	if(script->run_lua_file(script_file.c_str()))
+	{
+		bool should_quit = false;
+		config->value("config/quit", should_quit, false);
+		if(!should_quit)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
