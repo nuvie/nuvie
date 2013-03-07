@@ -1,3 +1,8 @@
+2013-03-08  Eric Fry <efry at users.sourceforge.net> r1701
+	* Added proper time to complete string to the end sequence.
+	* Added clock_get_year() clock_get_month() and clock_get_day() script
+	  functions.
+
 2013-03-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1700
 	* Fix default drop quantity and rest selection when pressing enter
 	  without input

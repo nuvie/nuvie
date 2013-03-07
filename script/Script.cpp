@@ -172,6 +172,9 @@ static int nscript_timer_set(lua_State *L);
 static int nscript_timer_get(lua_State *L);
 static int nscript_timer_update_all(lua_State *L);
 
+static int nscript_clock_get_year(lua_State *L);
+static int nscript_clock_get_month(lua_State *L);
+static int nscript_clock_get_day(lua_State *L);
 static int nscript_clock_get_minute(lua_State *L);
 static int nscript_clock_get_hour(lua_State *L);
 static int nscript_clock_inc(lua_State *L);
@@ -486,6 +489,15 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_timer_update_all);
    lua_setglobal(L, "timer_update_all");
+
+   lua_pushcfunction(L, nscript_clock_get_year);
+   lua_setglobal(L, "clock_get_year");
+
+   lua_pushcfunction(L, nscript_clock_get_month);
+   lua_setglobal(L, "clock_get_month");
+
+   lua_pushcfunction(L, nscript_clock_get_day);
+   lua_setglobal(L, "clock_get_day");
 
    lua_pushcfunction(L, nscript_clock_get_minute);
    lua_setglobal(L, "clock_get_minute");
@@ -2711,6 +2723,42 @@ static int nscript_timer_update_all(lua_State *L)
 	clock->update_timers(value);
 
 	return 0;
+}
+
+static int nscript_clock_get_year(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	if(clock == NULL)
+		return 0;
+
+	lua_pushinteger(L, clock->get_year());
+
+	return 1;
+}
+
+static int nscript_clock_get_month(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	if(clock == NULL)
+		return 0;
+
+	lua_pushinteger(L, clock->get_month());
+
+	return 1;
+}
+
+static int nscript_clock_get_day(lua_State *L)
+{
+	GameClock *clock = Game::get_game()->get_clock();
+
+	if(clock == NULL)
+		return 0;
+
+	lua_pushinteger(L, clock->get_day());
+
+	return 1;
 }
 
 static int nscript_clock_get_minute(lua_State *L)

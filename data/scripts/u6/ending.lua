@@ -343,11 +343,90 @@ local function play()
 	canvas_hide_all_sprites()
 	canvas_set_opacity(0xff)
 
+	local num_string = {"zero",
+	"one",
+	"two",
+	"three",
+	"four",
+	"five",
+	"six",
+	"seven",
+	"eight",
+	"nine",
+	"ten",
+	"eleven",
+	"twelve",
+	"thirteen",
+	"fourteen",
+	"fifteen",
+	"sixteen",
+	"seventeen",
+	"eighteen",
+	"nineteen",
+	"twenty",
+	"twenty-one",
+	"twenty-two",
+	"twenty-three",
+	"twenty-four",
+	"twenty-five",
+	"twenty-six",
+	"twenty-seven",
+	"twenty-eight",
+	"twenty-nine"
+	}
+
+	local year = clock_get_year()
+	if year == nil then year = 161 end
+	local month = clock_get_month()
+	if month == nil then month = 7 end
+	local day = clock_get_day()
+	if day == nil then day = 4 end
+
+	local current_days = year * 365 + month * 30 + day
+	local start_days = 161 * 365 + 7 * 30 + 4
+	local time = current_days - start_days
+	
+	local years = math.floor(time / 365)
+	local months = math.floor((time - years * 365) / 30)
+	local days = time - (years * 365 + months * 30)
+	
+	local time_string = ""
+	
+	if years > 0 then
+		if years > 29 then
+			time_string = time_string..years.." year"
+		else
+			time_string = time_string..num_string[years+1].." year"
+		end
+		
+		if years > 1 then
+			time_string = time_string.."s"
+		end
+	end
+	
+	if months > 0 then
+		if time_string ~= "" then
+			time_string = time_string..", "
+		end
+		time_string = time_string..num_string[months+1].." month"
+		if months > 1 then
+			time_string = time_string.."s"
+		end
+	end
+
+	if time_string ~= "" then
+		time_string = time_string..", and "
+	end
+	
+	time_string = time_string..num_string[days+1].." day"
+	if days > 1 then
+		time_string = time_string.."s"
+	end
 	
 	local x, y
 	scroll_img = image_load("end.shp", 0xa)
 	x, y = image_print(scroll_img, "CONGRATULATIONS", 8, 303, 107, 10, 0x3e)
-	x, y = image_print(scroll_img, "Thou hast completed Ultima VI: The False Prophet, in xxx years, yyyy months, and zzz day.", 8, 303, 7, y+10, 0x3e)
+	x, y = image_print(scroll_img, "Thou hast completed Ultima VI: The False Prophet, in "..time_string, 8, 303, 7, y+10, 0x3e)
 	x, y = image_print(scroll_img, "Report thy feat unto Lord British at Origin Systems!", 8, 303, 7, y+10, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
