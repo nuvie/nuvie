@@ -1,3 +1,6 @@
+2013-03-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1703
+	* Fix broken game size restriction check
+
 2013-03-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1702
 	* Get rid of offset cfg settings and replace them with game_position setting
 
