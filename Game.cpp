@@ -131,18 +131,26 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  config->value("config/general/use_text_gumps", using_text_gumps, false);
 
  int value;
+ uint16 screen_width = gui->get_width();
+ uint16 screen_height = gui->get_height();
+
  config->value("config/video/game_width", value, 320);
- game_width = value;
+ game_width = (game_width < screen_width) ? value : screen_width;
  config->value("config/video/game_height", value, 200);
- game_height = value;
- config->value("config/video/x_offset", value, 0);
- x_offset = value;
- config->value("config/video/y_offset", value, 0);
- y_offset = value;
- config->value("config/video/game_x_offset", value, 0);
- game_x_offset = value;
- config->value("config/video/game_y_offset", value, 0);
- game_y_offset = value;
+ game_height = (game_height < screen_height) ? value : screen_height;
+
+ string game_position;
+ config->value("config/video/game_position", game_position, "center");
+ 
+ if(game_position == "upper_left")
+    x_offset = y_offset = game_x_offset = game_y_offset = 0;
+ else // center
+ {
+    x_offset = (screen_width - 320)/2;
+    y_offset = (screen_height - 200)/2;
+    game_x_offset = (screen_width - game_width)/2;
+    game_y_offset = (screen_height - game_height)/2;
+ }
 }
 
 Game::~Game()

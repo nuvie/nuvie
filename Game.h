@@ -196,6 +196,8 @@ class Game
 
  uint16 get_game_width() { if(is_orig_style()) return 320; else return game_width; }
  uint16 get_game_height() { if(is_orig_style()) return 200; else return game_height; }
+ uint16 get_x_offset() { return x_offset; }
+ uint16 get_y_offset() { return y_offset; }
  uint16 get_game_x_offset() { if(is_orig_style()) return x_offset; else return game_x_offset; }
  uint16 get_game_y_offset() { if(is_orig_style()) return y_offset; else return game_y_offset; }
 

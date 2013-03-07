@@ -1,3 +1,6 @@
+2013-03-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1702
+	* Get rid of offset cfg settings and replace them with game_position setting
+
 2013-03-08  Eric Fry <efry at users.sourceforge.net> r1701
 	* Added proper time to complete string to the end sequence.
 	* Added clock_get_year() clock_get_month() and clock_get_day() script

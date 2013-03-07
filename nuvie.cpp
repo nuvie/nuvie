@@ -172,7 +172,7 @@ bool Nuvie::init(int argc, char **argv)
    }
  }
 
- game = new Game(config, script, gui);
+ game = Game::get_game(); // now initialized in script
 
  if(play_ending)
  {
@@ -286,12 +286,9 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/video/fullscreen", "no");
 	config->set("config/video/screen_width", 320);
 	config->set("config/video/screen_height", 200);
-	config->set("config/video/x_offset", 0);
-	config->set("config/video/y_offset", 0);
 	config->set("config/video/game_width", 320);
 	config->set("config/video/game_height", 200);
-	config->set("config/video/game_x_offset", 0);
-	config->set("config/video/game_y_offset", 0);
+	config->set("config/video/game_position", "center");
 
 	config->set("config/audio/enabled", true);
 	config->set("config/audio/enable_music", true);

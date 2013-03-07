@@ -420,6 +420,7 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    config = cfg;
    gametype = type;
    script = this;
+   new Game(config, script, gui);
 
    script_obj_list = iAVLAllocTree(get_iAVLKey);
 
