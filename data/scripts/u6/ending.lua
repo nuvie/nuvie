@@ -1,4 +1,7 @@
 local g_img_tbl = {}
+local START_YEAR = 161
+local START_MONTH = 7
+local START_DAY = 4
 
 local function wait_for_input()
 	local input = nil
@@ -383,51 +386,83 @@ local function play()
 	if day == nil then day = 4 end
 
 	local current_days = year * 365 + month * 30 + day
-	local start_days = 161 * 365 + 7 * 30 + 4
+	local start_days = START_YEAR * 365 + START_MONTH * 30 + START_DAY
 	local time = current_days - start_days
 	
 	local years = math.floor(time / 365)
 	local months = math.floor((time - years * 365) / 30)
 	local days = time - (years * 365 + months * 30)
 	
-	local time_string = ""
+	local line1 = ""
 	
 	if years > 0 then
 		if years > 29 then
-			time_string = time_string..years.." year"
+			line1 = line1..years.." year"
 		else
-			time_string = time_string..num_string[years+1].." year"
+			line1 = line1..num_string[years+1].." year"
 		end
 		
 		if years > 1 then
-			time_string = time_string.."s"
+			line1 = line1.."s"
 		end
 	end
 	
 	if months > 0 then
-		if time_string ~= "" then
-			time_string = time_string..", "
+		if line1 ~= "" then
+			line1 = line1..", "
 		end
-		time_string = time_string..num_string[months+1].." month"
+		line1 = line1..num_string[months+1].." month"
 		if months > 1 then
-			time_string = time_string.."s"
+			line1 = line1.."s"
 		end
 	end
 
-	if time_string ~= "" then
-		time_string = time_string..", and "
+	local line2 = ""
+	if days > 0 or line1 == "" then
+		if line1 ~= "" then
+			line1 = line1..","
+			line2 = "and "
+		end
+		
+		line2 = line2..num_string[days+1].." day"
+		if days ~= 1 then
+			line2 = line2.."s"
+		end
 	end
 	
-	time_string = time_string..num_string[days+1].." day"
-	if days > 1 then
-		time_string = time_string.."s"
+	if line1 == "" then
+		line1 = "Prophet, in"
+	else
+		line1 = "Prophet, in "..line1
+	end
+	
+	if string.len(line1.." "..line2) <= 38 and line2 ~= "" then
+		line1 = line1.." "..line2
+		line2 = ""
+	end
+	
+	if line2 == "" then
+		line1 = line1.."."
+	else
+		line2 = line2.."."
 	end
 	
 	local x, y
+	y=9
 	scroll_img = image_load("end.shp", 0xa)
-	x, y = image_print(scroll_img, "CONGRATULATIONS", 8, 303, 107, 10, 0x3e)
-	x, y = image_print(scroll_img, "Thou hast completed Ultima VI: The False Prophet, in "..time_string, 8, 303, 7, y+10, 0x3e)
-	x, y = image_print(scroll_img, "Report thy feat unto Lord British at Origin Systems!", 8, 303, 7, y+10, 0x3e)
+	image_print(scroll_img, "CONGRATULATIONS", 8, 303, 107, y, 0x3e)
+	y=y+8
+	image_print(scroll_img, "Thou hast completed Ultima VI: The False", 8, 303, 34, y, 0x3e)
+	y=y+8
+	image_print(scroll_img, line1, 8, 303, math.floor((318-canvas_string_length(line1)) / 2), y, 0x3e)
+	y=y+8
+	if line2 ~= "" then
+		image_print(scroll_img, line2, 8, 303, math.floor((318-canvas_string_length(line2)) / 2), y, 0x3e)
+		y=y+8
+	end
+	image_print(scroll_img, "Report thy feat unto Lord British at Origin", 8, 303, 23, y, 0x3e)
+	y=y+8
+	image_print(scroll_img, "Systems!", 8, 303, 132, y, 0x3e)
 	scroll.image = scroll_img
 	scroll.x = 0x1
 	scroll.y = 0x44

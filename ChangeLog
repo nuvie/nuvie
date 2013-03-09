@@ -1,3 +1,6 @@
+2013-03-09  Eric Fry <efry at users.sourceforge.net> r1704
+	* Fixed text formatting on end congratulation message.
+
 2013-03-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1703
 	* Fix broken game size restriction check
 
