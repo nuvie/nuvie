@@ -31,13 +31,15 @@
 
 class SoundManager;
 class Font;
+class U6LineWalker;
 
 extern "C"
 {
 #include "lauxlib.h"
 }
 
-struct CSImage {
+class CSImage {
+public:
 	U6Shape *shp;
 	uint16 refcount;
 
@@ -46,6 +48,24 @@ struct CSImage {
 		shp = shape;
 		refcount = 0;
 	}
+
+	virtual void updateEffect() { };
+};
+
+#define STAR_FIELD_NUM_STARS 70
+
+class CSStarFieldImage : public CSImage {
+
+private:
+	uint16 w;
+	uint16 h;
+	struct {
+		uint8 color;
+		U6LineWalker *line;
+	} stars[STAR_FIELD_NUM_STARS];
+public:
+	CSStarFieldImage(U6Shape *shape);
+	virtual void updateEffect();
 };
 
 struct CSSprite {

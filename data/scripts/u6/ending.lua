@@ -18,6 +18,8 @@ end
 
 local g_pal_counter = 0
 
+local star_field = nil
+
 local function stones_rotate_palette()
 	if g_pal_counter == 4 then
 		canvas_rotate_palette(16, 16)
@@ -30,7 +32,20 @@ end
 local function rotate_and_wait()
 	local input = nil
 	while input == nil do
+		image_update_effect(star_field.image)
 		stones_rotate_palette()
+		canvas_update()
+		input = input_poll()
+		if input ~= nil then
+			break
+		end
+	end
+end
+
+local function update_star_field_and_wait()
+	local input = nil
+	while input == nil do
+		image_update_effect(star_field.image)
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
@@ -47,9 +62,17 @@ local function play()
 	canvas_set_palette("endpal.lbm", 0)
 	canvas_set_update_interval(25)
 	sprite_new(g_img_tbl[7], 0, 0, true)--bg
-	local wall_transparent = sprite_new(g_img_tbl[0], 106, 0, false)--wall
+	
+	image_set_transparency_colour(g_img_tbl[0], 0)
+	star_field = sprite_new(image_new_starfield(114,94), 106, 0, false)
+	star_field.clip_x = 106
+	star_field.clip_y = 0
+	star_field.clip_w = 107
+	star_field.clip_h = 84
+	image_update_effect(star_field.image)
 	local codex = sprite_new(g_img_tbl[1], 0x97, 0x1d, false)
 	local codex_opened = sprite_new(g_img_tbl[2], 0x85, 0x17, false)
+	local wall_transparent = sprite_new(g_img_tbl[0], 106, 0, false)--wall
 	local wall = sprite_new(g_img_tbl[4], 106, 0, true)--wall
 	moongate = sprite_new(g_img_tbl[3], 9, 0x7d, true)--moongate
 	moongate.clip_x = 0
@@ -156,11 +179,12 @@ local function play()
 	scroll.x = 0x1
 	scroll.y = 0x97
 	
+	star_field.visible = true
 	wall_transparent.visible = true
 	
 	for i=0xff,0,-3  do
 		wall.opacity = i
-		--FIXME do star field here.
+		image_update_effect(star_field.image)
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
@@ -174,7 +198,7 @@ local function play()
 
 	for i=0,0xff,3  do
 		codex.opacity = i
-		--FIXME do star field here.
+		image_update_effect(star_field.image)
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
@@ -183,7 +207,7 @@ local function play()
 		end
 	end
 
-	wait_for_input()
+	update_star_field_and_wait()
 	
 	scroll_img = image_load("end.shp", 0xb)
 	image_print(scroll_img, "Yet the book remains closed.", 8, 303, 70, 13, 0x3e)
@@ -191,7 +215,7 @@ local function play()
 	scroll.x = 0x0
 	scroll.y = 0xa0
 	
-	wait_for_input()
+	update_star_field_and_wait()
 	
 	scroll_img = image_load("end.shp", 0xb)
 	image_print(scroll_img, "And waves of heat shimmer in the air, heralding the birth of another red gate!", 8, 303, 7, 9, 0x3e)
@@ -204,6 +228,7 @@ local function play()
 	moongate.visible = true
 	
 	for i=0x7d,-0xc,-1  do
+		image_update_effect(star_field.image)
 		stones_rotate_palette()
 		moongate.y = i
 		canvas_update()
@@ -233,6 +258,7 @@ local function play()
 	scroll.y = 0xa0
 	
 	for i=-0xc,0x7d,1  do
+		image_update_effect(star_field.image)
 		stones_rotate_palette()
 		moongate.y = i
 		canvas_update()
@@ -245,7 +271,7 @@ local function play()
 
 	moongate.visible = false
 	
-	wait_for_input()
+	update_star_field_and_wait()
 	
 	scroll_img = image_load("end.shp", 0xb)
 	image_print(scroll_img, "Quickly you reach down to seize the convex lens...", 8, 310, 5, 13, 0x3e)
@@ -253,7 +279,7 @@ local function play()
 	scroll.x = 0x0
 	scroll.y = 0x98
 
-	wait_for_input()
+	update_star_field_and_wait()
 	
 	scroll_img = image_load("end.shp", 0xc)
 	image_print(scroll_img, "...and you press it into the hand of the towering Gargoyle king, meeting his sunken eyes. \"Join my Lord in his search for peace, I beg thee.\127", 8, 303, 7, 12, 0x3e)
@@ -261,7 +287,7 @@ local function play()
 	scroll.x = 0x1
 	scroll.y = 0x97
 
-	wait_for_input()
+	update_star_field_and_wait()
 	
 	characters.visible = false
 	characters1.clip_w = 320
@@ -273,7 +299,7 @@ local function play()
 	scroll.x = 0x1
 	scroll.y = 0x85
 
-	wait_for_input()
+	update_star_field_and_wait()
 	
 	scroll_img = image_load("end.shp", 0xa)
 	image_print(scroll_img, "The ancient book opens. Both kings gaze upon its pages in spellbound silence, as the eloquence of Ultimate Wisdom is revealed in the tongues of each lord's domain. You, too, can read the answers the Codex gives...", 8, 303, 7, 13, 0x3e)
@@ -286,7 +312,7 @@ local function play()
 	
 	for i=0,0xff,3  do
 		codex_opened.opacity = i
-		--FIXME do star field here.
+		image_update_effect(star_field.image)
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
@@ -296,7 +322,7 @@ local function play()
 	end
 	codex.visible = false
 	
-	wait_for_input()
+	update_star_field_and_wait()
 	
 	scroll_img = image_load("end.shp", 0xa)
 	image_print(scroll_img, "...and when its wisdom is gleaned, when Lord British and King Draxinusom turn to each other as friends, hating no longer, fearing no more, you know that your mission in Britannia has ended at last.", 8, 303, 7, 13, 0x3e)
@@ -304,13 +330,13 @@ local function play()
 	scroll.x = 0x1
 	scroll.y = 0x85
 	
-	wait_for_input()
+	update_star_field_and_wait()
 	
 	scroll.visible = false
 	
 	for i=0xff,0,-3  do
 		codex_opened.opacity = i
-		--FIXME do star field here.
+		image_update_effect(star_field.image)
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
@@ -326,7 +352,7 @@ local function play()
 
 	for i=0,0xff,3  do
 		wall.opacity = i
-		--FIXME do star field here.
+		image_update_effect(star_field.image)
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
@@ -335,6 +361,7 @@ local function play()
 		end
 	end
 	
+	star_field.visible=false
 	wait_for_input()
 	
 

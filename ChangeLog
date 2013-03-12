@@ -1,3 +1,9 @@
+2013-03-12  Eric Fry <efry at users.sourceforge.net> r1705
+	* Added star field effect to end sequence.
+	* Added image_new_starfield(), image_set_transparency_colour()
+	  and image_update_effect() script functions.
+	* Changed CSImage from struct to class.
+
 2013-03-09  Eric Fry <efry at users.sourceforge.net> r1704
 	* Fixed text formatting on end congratulation message.
 

@@ -27,6 +27,7 @@
 #include "NuvieIO.h"
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"
+#include "U6LineWalker.h"
 
 #include "SoundManager.h"
 #include "Font.h"
@@ -44,11 +45,14 @@ static int nscript_image_gc(lua_State *L);
 static sint32 nscript_dec_image_ref_count(CSImage *image);
 
 static int nscript_image_new(lua_State *L);
+static int nscript_image_new_starfield(lua_State *L);
 static int nscript_image_load(lua_State *L);
 static int nscript_image_load_all(lua_State *L);
 static int nscript_image_print(lua_State *L);
 static int nscript_image_draw_line(lua_State *L);
+static int nscript_image_update_effect(lua_State *L);
 static int nscript_image_static(lua_State *L);
+static int nscript_image_set_transparency_colour(lua_State *L);
 static int nscript_image_bubble_effect_add_color(lua_State *L);
 static int nscript_image_bubble_effect(lua_State *L);
 
@@ -107,6 +111,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
    lua_pushcfunction(L, nscript_image_new);
    lua_setglobal(L, "image_new");
 
+   lua_pushcfunction(L, nscript_image_new_starfield);
+   lua_setglobal(L, "image_new_starfield");
+
    lua_pushcfunction(L, nscript_image_load);
    lua_setglobal(L, "image_load");
 
@@ -118,6 +125,12 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_image_static);
    lua_setglobal(L, "image_static");
+
+   lua_pushcfunction(L, nscript_image_set_transparency_colour);
+   lua_setglobal(L, "image_set_transparency_colour");
+
+   lua_pushcfunction(L, nscript_image_update_effect);
+   lua_setglobal(L, "image_update_effect");
 
    lua_pushcfunction(L, nscript_sprite_new);
    lua_setglobal(L, "sprite_new");
@@ -311,6 +324,21 @@ static int nscript_image_new(lua_State *L)
 	return 1;
 }
 
+static int nscript_image_new_starfield(lua_State *L)
+{
+	uint16 width = lua_tointeger(L, 1);
+	uint16 height = lua_tointeger(L, 2);
+
+	U6Shape *shp = new U6Shape();
+	if(shp->init(width, height) == false)
+		return 0;
+
+	CSStarFieldImage *image = new CSStarFieldImage(shp);
+
+	nscript_new_image_var(L, image);
+	return 1;
+}
+
 static int nscript_image_load(lua_State *L)
 {
 	const char *filename = lua_tostring(L, 1);
@@ -388,6 +416,17 @@ static int nscript_image_draw_line(lua_State *L)
 	return 0;
 }
 
+static int nscript_image_update_effect(lua_State *L)
+{
+	CSImage *img = nscript_get_image_from_args(L, 1);
+	if(img)
+	{
+		img->updateEffect();
+	}
+
+	return 0;
+}
+
 static uint8 u6_flask_num_colors = 0;
 static uint8 u6_flask_liquid_colors[8];
 
@@ -421,6 +460,24 @@ static int nscript_image_bubble_effect(lua_State *L)
 			data++;
 		}
 
+	}
+	return 0;
+}
+
+static int nscript_image_set_transparency_colour(lua_State *L)
+{
+	CSImage *img = nscript_get_image_from_args(L, 1);
+	uint8 pal_index = lua_tointeger(L, 2);
+	if(img)
+	{
+		unsigned char *data = img->shp->get_data();
+		uint16 w, h;
+		img->shp->get_size(&w, &h);
+		for(int i=0;i<w * h;i++)
+		{
+			if(data[i] == pal_index)
+				data[i] = 0xff;
+		}
 	}
 	return 0;
 }
@@ -1183,4 +1240,59 @@ void ScriptCutscene::Display(bool full_redraw)
 		screen->update(x_off,y_off,320, 200);
 }
 
+CSStarFieldImage::CSStarFieldImage(U6Shape *shape) : CSImage(shape)
+{
+	shp->get_size(&w, &h);
 
+	for(int i=0;i<STAR_FIELD_NUM_STARS;i++)
+	{
+		stars[i].color = 2;
+		stars[i].line = NULL;
+	}
+}
+
+void CSStarFieldImage::updateEffect()
+{
+	unsigned char *data = shp->get_data();
+
+	memset(data, 0, w * h);
+
+	for(int i=0;i<STAR_FIELD_NUM_STARS;i++)
+	{
+		if(stars[i].line == NULL)
+		{
+			switch(NUVIE_RAND()%4)
+			{
+			case 0 : stars[i].line = new U6LineWalker(w/2,h/2, 0, NUVIE_RAND()%h); break;
+			case 1 : stars[i].line = new U6LineWalker(w/2,h/2, w-1, NUVIE_RAND()%h); break;
+			case 2 : stars[i].line = new U6LineWalker(w/2,h/2, NUVIE_RAND()%w, 0); break;
+			case 3 : stars[i].line = new U6LineWalker(w/2,h/2, NUVIE_RAND()%w, h-1); break;
+			}
+
+			stars[i].color = NUVIE_RAND()%10 + 229;
+			uint16 start_pos = NUVIE_RAND()%(w/2);
+			for(int j=0;j<start_pos;j++)
+			{
+				if(stars[i].line->step() == false)
+				{
+					delete stars[i].line;
+					stars[i].line = NULL;
+					break;
+				}
+			}
+		}
+		else
+		{
+			uint32 cur_x, cur_y;
+			if(stars[i].line->next(&cur_x,&cur_y) == false)
+			{
+				delete stars[i].line;
+				stars[i].line = NULL;
+			}
+			else
+			{
+				data[cur_y*w+cur_x] = stars[i].color;
+			}
+		}
+	}
+}
