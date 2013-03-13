@@ -1,3 +1,6 @@
+2013-03-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1707
+	* Make FadeEffect use map window size to determine fade speed
+
 2013-03-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1706
 	* Fix r1665 regression that broke autowalk because invisible party members
 	  weren't ignored

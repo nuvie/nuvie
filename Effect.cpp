@@ -985,14 +985,14 @@ uint16 SleepEffect::callback(uint16 msg, CallBack *caller, void *data)
 /*** FadeEffect ***/
 FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, uint32 color, uint32 speed)
 {
-    speed = speed ? speed : 256000; // FIXME: get speed from effect radius
+    speed = speed ? speed : game->get_map_window()->get_win_area()*2116; // was 256000
     init(fade, dir, color, NULL, 0, 0, speed);
 }
 
 /* Takes an image to fade from/to. */
 FadeEffect::FadeEffect(FadeType fade, FadeDirection dir, SDL_Surface *capture, uint32 speed)
 {
-    speed = speed ? speed : 196000;
+    speed = speed ? speed : game->get_map_window()->get_win_area()*1620; // was 196000
     init(fade, dir, 0, capture, 0, 0, speed); // color=black
 }
 
@@ -1340,7 +1340,7 @@ FadeObjectEffect::FadeObjectEffect(Obj *obj, FadeDirection dir)
     else if(fade_dir == FADE_OUT)
     {
         effect_manager->watch_effect(this, /* call me */
-                                     new FadeEffect(FADE_PIXELATED, FADE_OUT, capture, 0, 0, 128000));
+                                     new FadeEffect(FADE_PIXELATED, FADE_OUT, capture, 0, 0, game->get_map_window()->get_win_area()*1058)); //was 128000
 //        obj_manager->remove_obj(fade_obj);
         game->get_map_window()->updateBlacking();
     }
