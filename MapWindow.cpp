@@ -377,13 +377,14 @@ void MapWindow::moveLevel(uint8 new_level)
 
 void MapWindow::moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add, uint8 new_y_add)
 {
+/*
  uint16 map_side_length;
 
  if(new_level == 0)
    map_side_length = 1024;
  else
    map_side_length = 256;
-/*
+
  if(new_x >= 0 && new_x <= map_side_length - win_width)
     {
      if(new_y >= 0 && new_y <= map_side_length - win_height)

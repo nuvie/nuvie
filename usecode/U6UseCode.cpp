@@ -2742,7 +2742,6 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
              {
                  switch(obj->obj_n)
                  {
-                     case OBJ_U6_CROSS: // I don't even know if this is used for text
                      case OBJ_U6_SIGN:
                          if(strlen(data) > 20) // FIXME sign text needs to fit on multiple lines
                          {
@@ -2756,6 +2755,7 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
                      case OBJ_U6_CODEX:
                      case OBJ_U6_SCROLL:
                      case OBJ_U6_GRAVE:
+                     case OBJ_U6_CROSS: // wooden cross used as grave marker (text like grave)
                      case OBJ_U6_PICTURE:
                      default:
                         using_gump = false;

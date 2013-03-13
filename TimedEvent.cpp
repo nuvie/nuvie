@@ -409,6 +409,7 @@ void TimedPartyMove::change_location()
     SDL_Surface *mapwindow_capture = NULL;
     if(wait_for_effect != 1)
     {
+        bool is_moongate = moongate != NULL;
         if(moongate&&moongate->obj_n==OBJ_U6_RED_GATE) // leave blue moongates
         {
             // get image before deleting moongate
@@ -419,7 +420,7 @@ void TimedPartyMove::change_location()
             delete_obj(moongate);
         }
 
-        if(moongate)
+        if(is_moongate)
             Game::get_game()->get_player()->move(target->x, target->y, target->z, true);
         else
             party->move(target->x, target->y, target->z);

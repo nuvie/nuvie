@@ -427,7 +427,7 @@ uint8 Actor::get_object_readiable_location(Obj *obj)
 
 bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
- assert(new_z < 6);
+// assert(new_z < 6); // shouldn't need to check anymore
 
  //const uint8 move_cost = 5; // base cost to move
  bool force_move = flags & ACTOR_FORCE_MOVE;
@@ -483,10 +483,10 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
        return false;
       }
    }
-
+ Game *game = Game::get_game();
  Actor *other = map->get_actor(new_x, new_y, new_z, false);
- if(!ignore_actors && !force_move
-    && other /*&& other->is_visible()*/ && !other->can_be_passed(this))
+ if(!ignore_actors && !force_move && other && !other->can_be_passed(this)
+    && (!game->get_party()->get_autowalk() || other->is_visible()))
    {
     set_error(ACTOR_BLOCKED_BY_ACTOR);
     error_struct.blocking_actor = other;
@@ -498,7 +498,6 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
  y = WRAPPED_COORD(new_y,new_z);
  z = new_z;
 
- Game *game = Game::get_game();
  can_move = true;
  //FIXME move this into Player::moveRelative()
  /*

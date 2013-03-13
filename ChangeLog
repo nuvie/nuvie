@@ -1,3 +1,10 @@
+2013-03-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1706
+	* Fix r1665 regression that broke autowalk because invisible party members
+	  weren't ignored
+	* Fix bad check for moongate in TimedPartyMove::change_location()
+	* Comment out unused code in MapWindow::moveLevel
+	* Don't have cross try to use the sign gump anymore
+
 2013-03-12  Eric Fry <efry at users.sourceforge.net> r1705
 	* Added star field effect to end sequence.
 	* Added image_new_starfield(), image_set_transparency_colour()
