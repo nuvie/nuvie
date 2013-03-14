@@ -1,3 +1,9 @@
+2013-03-15  Eric Fry <efry at users.sourceforge.net> r1708
+	* Add game mouse cursor support to intro / main menu script.
+	  This fixes "The SDL cursor is used in U6 menu instead of U6 mouse" [3606990]
+	* Added mouse_cursor_visible() and mouse_cursor_set_pointer() script 
+	  functions.
+
 2013-03-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1707
 	* Make FadeEffect use map window size to determine fade speed
 

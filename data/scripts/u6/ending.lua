@@ -55,7 +55,7 @@ local function update_star_field_and_wait()
 end
 
 local function play()
-
+	mouse_cursor_visible(false)
 	g_img_tbl = image_load_all("end.shp")
 	music_play("end.m")
 --[ [

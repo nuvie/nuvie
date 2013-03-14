@@ -31,6 +31,7 @@
 
 #include "SoundManager.h"
 #include "Font.h"
+#include "Cursor.h"
 
 #include "ScriptCutscene.h"
 
@@ -895,6 +896,7 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	config = cfg;
 	gui = g;
 
+	cursor = Game::get_game()->get_cursor();
 	x_off = Game::get_game()->get_x_offset();
 	y_off = Game::get_game()->get_y_offset();
 
@@ -1200,6 +1202,9 @@ void ScriptCutscene::wait()
 /* Show the widget  */
 void ScriptCutscene::Display(bool full_redraw)
 {
+	if(cursor && cursor->is_visible())
+		full_redraw = true;
+
 	if(full_redraw)
 		screen->fill(bg_color,0,0,area.w, area.h);
 	else
@@ -1233,6 +1238,9 @@ void ScriptCutscene::Display(bool full_redraw)
 			screen->fade(x_off,y_off,320,200, screen_opacity, bg_color);
 		}
 	}
+
+	if(cursor)
+		cursor->display();
 
 	if(full_redraw)
 		screen->update(0,0,area.w,area.h);

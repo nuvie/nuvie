@@ -61,6 +61,7 @@ public:
     void clear();
     void update();
 
+    bool is_visible() { return !hidden; }
 };
 
 #endif /* __Cursor_h__ */

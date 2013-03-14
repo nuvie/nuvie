@@ -41,6 +41,7 @@
 #include "UseCode.h"
 #include "SoundManager.h"
 #include "Console.h"
+#include "Cursor.h"
 
 #include "Script.h"
 #include "ScriptActor.h"
@@ -226,6 +227,9 @@ static int nscript_wizard_eye_effect(lua_State *L);
 static int nscript_play_sfx(lua_State *L);
 static int nscript_is_god_mode_enabled(lua_State *L);
 static int nscript_set_armageddon(lua_State *L);
+
+static int nscript_mouse_cursor_show(lua_State *L);
+static int nscript_mouse_cursor_set_pointer(lua_State *L);
 
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
@@ -420,7 +424,6 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    config = cfg;
    gametype = type;
    script = this;
-   new Game(config, script, gui);
 
    script_obj_list = iAVLAllocTree(get_iAVLKey);
 
@@ -652,6 +655,12 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_set_armageddon);
    lua_setglobal(L, "set_armageddon");
+
+   lua_pushcfunction(L, nscript_mouse_cursor_show);
+   lua_setglobal(L, "mouse_cursor_visible");
+
+   lua_pushcfunction(L, nscript_mouse_cursor_set_pointer);
+   lua_setglobal(L, "mouse_cursor_set_pointer");
 
    seed_random();
 
@@ -2938,5 +2947,35 @@ static int nscript_is_god_mode_enabled(lua_State *L)
 static int nscript_set_armageddon(lua_State *L)
 {
 	Game::get_game()->set_armageddon((bool)lua_toboolean(L, 1));
+	return 0;
+}
+
+static int nscript_mouse_cursor_show(lua_State *L)
+{
+	bool show_cursor = lua_toboolean(L, 1);
+	Cursor *cursor = Game::get_game()->get_cursor();
+	if(cursor)
+	{
+		if(show_cursor)
+		{
+			cursor->show();
+		}
+		else
+		{
+			cursor->hide();
+		}
+	}
+	return 0;
+}
+
+static int nscript_mouse_cursor_set_pointer(lua_State *L)
+{
+	uint8 new_pointer = lua_tointeger(L, 1);
+	Cursor *cursor = Game::get_game()->get_cursor();
+	if(cursor)
+	{
+		cursor->set_pointer(new_pointer);
+	}
+
 	return 0;
 }

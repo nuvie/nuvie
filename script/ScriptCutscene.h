@@ -32,6 +32,7 @@
 class SoundManager;
 class Font;
 class U6LineWalker;
+class Cursor;
 
 extern "C"
 {
@@ -100,6 +101,7 @@ class ScriptCutscene : public GUI_Widget
 private:
 	Configuration *config;
 	GUI *gui;
+	Cursor *cursor;
 	std::list<CSSprite *> sprite_list; // in paint order
 	Screen *screen;
 	uint8 *palette;

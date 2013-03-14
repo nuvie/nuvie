@@ -76,14 +76,16 @@
 
 Game *Game::game = NULL;
 
-Game::Game(Configuration *cfg, Script *s, GUI *g)
+Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
 {
  game = this;
  config = cfg;
- script = s;
  gui = g;
 
- screen = NULL;
+ screen = scr;
+ game_type = type;
+
+ script = NULL;
  background = NULL;
  cursor = NULL;
  dither = NULL;
@@ -118,7 +120,6 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
  pause_flags = PAUSE_UNPAUSED;
  pause_user_count = 0;
  ignore_event_delay = 0;
- game_type = NUVIE_GAME_NONE;
  game_play = true;
  unlimited_casting = false;
  god_mode_enabled = false;
@@ -151,6 +152,8 @@ Game::Game(Configuration *cfg, Script *s, GUI *g)
     game_x_offset = (screen_width - game_width)/2;
     game_y_offset = (screen_height - game_height)/2;
  }
+
+ init_cursor();
 }
 
 Game::~Game()
@@ -188,15 +191,13 @@ Game::~Game()
     if(keybinder) delete keybinder;
 }
 
-bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
+bool Game::loadGame(Script *s, SoundManager *sm)
 {
- screen = s;
- game_type = type;
-
  init_game_style();
 
    dither = new Dither(config);
 
+   script = s;
    sound_manager = sm;
    //sound_manager->LoadSongs(NULL);
    //sound_manager->LoadObjectSamples(NULL);
@@ -316,7 +317,6 @@ bool Game::loadGame(Screen *s, SoundManager *sm, nuvie_game_t type)
 
    effect_manager = new EffectManager;
 
-   init_cursor();
 
    magic = new Magic();
 

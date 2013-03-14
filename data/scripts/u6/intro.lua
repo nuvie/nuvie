@@ -1018,7 +1018,8 @@ local function stones_sequence()
 end
 
 local function play()
-
+mouse_cursor_set_pointer(0)
+mouse_cursor_visible(false)
 load_images("intro_1.shp")
 music_play("bootup.m")
 --[ [
@@ -2828,11 +2829,13 @@ local function main_menu_load()
 	g_menu["menu"].visible = true
 	
 	fade_in_sprite(g_menu["menu"])
+	mouse_cursor_visible(true)
 end
 
 	g_menu_idx = 0
 
 local function selected_intro()
+	mouse_cursor_visible(false)
 	main_menu_set_pal(0)
 	fade_out()
 	canvas_hide_all_sprites()
@@ -2844,6 +2847,7 @@ local function selected_intro()
 	g_menu["menu"].visible = true
 
 	fade_in_sprite(g_menu["menu"])
+	mouse_cursor_visible(true)
 end
 
 local function selected_create_character()

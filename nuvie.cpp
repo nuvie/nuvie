@@ -159,20 +159,11 @@ bool Nuvie::init(int argc, char **argv)
  SoundManager *sound_manager = new SoundManager();
  sound_manager->nuvieStartup(config);
 
+ game = new Game(config, screen, gui, game_type);
+
  script = new Script(config, gui, sound_manager, game_type);
  if(script->init() == false)
 	 return false;
-
- if(!play_ending)
- {
-   if(playIntro() == false)
-   {
-	   ConsoleDelete(); //no pause on exit.
-	   return false;
-   }
- }
-
- game = Game::get_game(); // now initialized in script
 
  if(play_ending)
  {
@@ -180,7 +171,13 @@ bool Nuvie::init(int argc, char **argv)
    return false;
  }
 
- if(game->loadGame(screen, sound_manager, game_type) == false)
+ if(playIntro() == false)
+ {
+	ConsoleDelete();
+	return false;
+ }
+
+ if(game->loadGame(script, sound_manager) == false)
    {
     delete game;
     return false;
