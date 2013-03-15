@@ -365,6 +365,9 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    view_manager->set_party_mode();
    view_manager->update();
 
+   if(cursor)
+       cursor->show();
+
  return true;
 }
 

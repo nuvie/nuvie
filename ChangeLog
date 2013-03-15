@@ -1,3 +1,8 @@
+2013-03-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1709
+	* Fix r1693 regression that caused create character to return to the menu
+	* Hide mouse during gypsy intro. Fix mouse colors during gypsy questions.
+	* Fix cursor's save_backing in cutscenes so that a full redraw isn't needed
+
 2013-03-15  Eric Fry <efry at users.sourceforge.net> r1708
 	* Add game mouse cursor support to intro / main menu script.
 	  This fixes "The SDL cursor is used in U6 menu instead of U6 mouse" [3606990]

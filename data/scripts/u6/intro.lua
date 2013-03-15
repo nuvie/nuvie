@@ -1802,7 +1802,7 @@ local function create_character()
 			input = nil
 		end
 	end
-	
+	mouse_cursor_visible(false)
 	fade_out()
 	canvas_hide_all_sprites()
 	
@@ -1931,7 +1931,10 @@ local function create_character()
 	image_print(scroll_img, "\"Behold the Virtues of the Avatar,\127 the woman says. \"Let us begin the casting!\127", 7, 303, 8, y+16, 0x3e)
 	
 	wait_for_input()
+	canvas_set_palette_entry(19, 200, 200, 200) -- fix mouse cursor
+	canvas_set_palette_entry(27, 68, 68, 68) -- fix mouse cursor
 
+	mouse_cursor_visible(true)
 	local a_button = sprite_new(g_gypsy_img_tbl[7], 0x117, 0xae, true)
 	local b_button = sprite_new(g_gypsy_img_tbl[8], 0x128, 0xae, true)
 
@@ -1951,6 +1954,7 @@ local function create_character()
 	
 	a_button.visible = false
 	b_button.visible = false
+	mouse_cursor_visible(false)
 	
 	scroll_img = image_load("blocks.shp", 3)
 	scroll.image = scroll_img
@@ -2854,14 +2858,14 @@ local function selected_create_character()
 	main_menu_set_pal(1)
 	fade_out_sprite(g_menu["menu"],6)
 	if create_character() == true then
-		return 1
+		return true
 	end
 	canvas_set_palette("palettes.int", 0)
 	g_menu_idx=0
 	main_menu_set_pal(g_menu_idx)
 	music_play("ultima.m")
 	fade_in_sprite(g_menu["menu"])
-	return 0
+	return false
 end
 
 local function selected_acknowledgments()

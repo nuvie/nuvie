@@ -1203,7 +1203,7 @@ void ScriptCutscene::wait()
 void ScriptCutscene::Display(bool full_redraw)
 {
 	if(cursor && cursor->is_visible())
-		full_redraw = true;
+		cursor->clear();
 
 	if(full_redraw)
 		screen->fill(bg_color,0,0,area.w, area.h);
