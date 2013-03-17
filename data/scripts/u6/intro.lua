@@ -1112,16 +1112,25 @@ local function gypsy_ab_select(question)
 	6, 7, 4, 5, 6, 7, 5, 6,
 	7, 6, 7, 7,
 	}
+	if g_highlight_index == nil then
+		g_highlight_index = 0
+	end
 
 	local input = nil
 	while input == nil do
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
-			if input == 65 or input == 97 then
+			if input == 65 or input == 97 or (input == 13 and g_highlight_index == 0) then
 				return a_lookup_tbl[question - 104] + 1
-			elseif input == 66 or input == 98 then
+			elseif input == 66 or input == 98 or input == 13 then
 				return b_lookup_tbl[question - 104] + 1
+			elseif input == 275 and g_highlight_index == 0 then -- right
+				g_highlight_index = 1
+				g_ab_highlight.x = g_ab_highlight.x + 17
+			elseif input == 276 and g_highlight_index == 1 then -- left
+				g_highlight_index = 0
+				g_ab_highlight.x = g_ab_highlight.x - 17
 			elseif input == 0 then
 				local y = get_mouse_y()
 				if(y > 173 and y < 190) then
@@ -1668,7 +1677,9 @@ local function create_character()
 	
 	local name = sprite_new(nil, 0x34, 0x78, true)
 	name.text = ""
+	local char_index = 0
 	local input = nil
+
 	while input == nil do
 		canvas_update()
 		input = input_poll()
@@ -1680,12 +1691,75 @@ local function create_character()
 			end
 			local name_text = name.text
 			local len = string.len(name_text)
-			if input == 8 and len > 0 then
+			if (input == 8 or input == 276) and len > 0 then
 				name.text = string.sub(name_text, 1, len - 1)
+				if len == 1 then -- old len
+					char_index = 0
+				else
+					char_index = string.byte(name_text, len -1)
+				end
 			elseif input == 13 and len > 0 then --return
 				break;
 			elseif g_keycode_tbl[input] ~= nil and len < 13 then
+				char_index = input
 				name.text = name_text..g_keycode_tbl[input]
+			elseif input == 273 then --up
+				if char_index == 0 then
+					if len > 0 then
+						char_index = 97 --a
+					else
+						char_index = 65 --A
+					end
+				elseif char_index == 32 then --gap in characters
+					char_index = 39
+				elseif char_index == 39 then --gap in characters
+					char_index = 44
+				elseif char_index == 46 then --gap in characters
+					char_index = 48
+				elseif char_index == 57 then --gap in characters
+					char_index = 65
+				elseif char_index == 90 then --gap in characters
+					char_index = 97
+				elseif char_index == 122 then --last char
+					char_index = 32
+				else
+					char_index = char_index + 1
+				end
+
+				if len > 0 then -- erase char
+					name_text = string.sub(name_text, 1, len - 1)
+				end
+				name.text = name_text..g_keycode_tbl[char_index]
+			elseif input == 274 then --down
+				if char_index == 0 then
+					if len > 0 then
+						char_index = 122 --z
+					else
+						char_index = 90 --Z
+					end
+				elseif char_index == 39 then --gap in characters
+					char_index = 32
+				elseif char_index == 44 then --gap in characters
+					char_index = 39
+				elseif char_index == 48 then --gap in characters
+					char_index = 46
+				elseif char_index == 65 then --gap in characters
+					char_index = 57
+				elseif char_index == 97 then --gap in characters
+					char_index = 90
+				elseif char_index == 32 then --first char
+					char_index = 122
+				else
+					char_index = char_index - 1
+				end
+
+				if len > 0 then -- erase char
+					name_text = string.sub(name_text, 1, len - 1)
+				end
+				name.text = name_text..g_keycode_tbl[char_index]
+			elseif input == 275 and len < 13 then --right
+				char_index = 97 --a
+				name.text = name_text.."a"
 			end
 			input = nil
 		end
@@ -1694,6 +1768,9 @@ local function create_character()
 	name.x = 0x10 + (284 - canvas_string_length(name.text)) / 2
 	
 	image_print(bg.image, "And art thou Male, or Female?", 7, 303, 52, 56, 0x48)
+	local gender_sprite = sprite_new(nil, 154, 152, true)
+	gender_sprite.text = ""
+
 	input = nil
 	local gender = 0
 	while input == nil do
@@ -1703,6 +1780,7 @@ local function create_character()
 			if should_exit(input) == true then
 				bg.visible = false
 				name.visible = false
+				gender_sprite.visible = false
 				return false
 			end
 			if input == 77 or input == 109 then
@@ -1711,12 +1789,22 @@ local function create_character()
 			elseif input == 70 or input == 102 then
 				gender = 0 --female
 				break
+			elseif input == 273 or input == 274 then --up and down
+				if gender == 0 then
+					gender = 1 --male
+					gender_sprite.text = "M"
+				else
+					gender = 0 --female
+					gender_sprite.text = "F"
+				end
+			elseif input == 13 and gender_sprite.text ~= "" then --return
+				break;
 			end
 			
 			input = nil
 		end
 	end
-	
+	gender_sprite.visible = false
 	load_images("vellum1.shp")
 	bg.image = g_img_tbl[0]
 	
@@ -1732,23 +1820,36 @@ local function create_character()
 	local montage_img_tbl = image_load_all("montage.shp")
 	local portrait_num = 0
 	local avatar = sprite_new(montage_img_tbl[gender*6+portrait_num], 0xc3, 0x76, true)
-	
+	local button_index = 0
+	local old_button_index = 0
+
+	local sex_highlight = sprite_new(image_new(58, 2), new_sex.x, new_sex.y +14, true)
+	image_draw_line(sex_highlight.image, 0, 0, 59, 0, 248)
+	image_draw_line(sex_highlight.image, 0, 1, 59, 1, 248)
+
+	local portrait_highlight = sprite_new(image_new(90, 2), new_portrait.x, new_portrait.y +14, false)
+	image_draw_line(portrait_highlight.image, 0, 0, 91, 0, 248)
+	image_draw_line(portrait_highlight.image, 0, 1, 91, 1, 248)
+
+	local continue_highlight = sprite_new(image_new(66, 2), continue.x, continue.y +14, false)
+	image_draw_line(continue_highlight.image, 0, 0, 67, 0, 248)
+	image_draw_line(continue_highlight.image, 0, 1, 67, 1, 248)
+
+	local esc_abort_highlight = sprite_new(image_new(72, 2), esc_abort.x, esc_abort.y +14, false)
+	image_draw_line(esc_abort_highlight.image, 0, 0, 73, 0, 248)
+	image_draw_line(esc_abort_highlight.image, 0, 1, 73, 1, 248)
+
 	input = nil
+	local exiting = false
+
 	while input == nil do
 		canvas_update()
 		input = input_poll()
 		if input ~= nil then
-			if should_exit(input) == true then
-				bg.visible = false
-				name.visible = false
-				new_sex.visible = false
-				new_portrait.visible = false
-				continue.visible = false
-				esc_abort.visible = false
-				avatar.visible = false
-				return false
+			if should_exit(input) == true  or (input == 13 and button_index == 3) then
+				exiting = true
 			end
-			if input == 112 or input == 80 then
+			if input == 112 or input == 80 or (input == 13 and button_index == 1) then
 				if portrait_num == 5 then
 					portrait_num = 0
 				else
@@ -1756,7 +1857,7 @@ local function create_character()
 				end
 				
 				avatar.image = montage_img_tbl[gender*6+portrait_num]
-			elseif input == 115 or input == 83 then
+			elseif input == 115 or input == 83 or (input == 13 and button_index == 0) then
 				if gender == 0 then
 					gender = 1
 				else
@@ -1764,8 +1865,12 @@ local function create_character()
 				end
 
 				avatar.image = montage_img_tbl[gender*6+portrait_num]
-			elseif input == 99 or input == 67 then
+			elseif input == 99 or input == 67 or (input == 13 and button_index == 2) then
 				break
+			elseif input == 273 and button_index > 0 then --up
+				button_index = button_index -1;
+			elseif input == 274 and button_index < 3 then --down
+				button_index = button_index +1;
 			elseif input == 0 then -- FIXME redundant stuff
 				local x = get_mouse_x()
 				if(x < 152) then
@@ -1787,18 +1892,45 @@ local function create_character()
 					elseif x > 85 and y > 145 and y < 162 then
 						break
 					elseif x > 79 and y > 162 and y < 179 then
-						bg.visible = false
-						name.visible = false
-						new_sex.visible = false
-						new_portrait.visible = false
-						continue.visible = false
-						esc_abort.visible = false
-						avatar.visible = false
-						return false
+						exiting = true
 					end
 				end
 			end
-			
+			if button_index ~= old_button_index or exiting == true then
+
+				if old_button_index == 0 then
+					sex_highlight.visible = false
+				elseif old_button_index == 1 then
+					portrait_highlight.visible = false
+				elseif old_button_index == 2 then
+					continue_highlight.visible = false
+				else
+					esc_abort_highlight.visible = false
+				end
+
+				if exiting == true then
+					bg.visible = false
+					name.visible = false
+					new_sex.visible = false
+					new_portrait.visible = false
+					continue.visible = false
+					esc_abort.visible = false
+					avatar.visible = false
+					return false
+				end
+
+				if button_index == 0 then
+					sex_highlight.visible = true
+				elseif button_index == 1 then
+					portrait_highlight.visible = true
+				elseif button_index == 2 then
+					continue_highlight.visible = true
+				else
+					esc_abort_highlight.visible = true
+				end
+
+				old_button_index = button_index
+			end
 			input = nil
 		end
 	end
@@ -1937,6 +2069,9 @@ local function create_character()
 	mouse_cursor_visible(true)
 	local a_button = sprite_new(g_gypsy_img_tbl[7], 0x117, 0xae, true)
 	local b_button = sprite_new(g_gypsy_img_tbl[8], 0x128, 0xae, true)
+	g_ab_highlight = sprite_new(image_new(16, 2), a_button.x, a_button.y + 13, true)
+	image_draw_line(g_ab_highlight.image, 0, 0, 17, 0, 248)
+	image_draw_line(g_ab_highlight.image, 0, 1, 17, 1, 248)
 
 	g_str = 0xf
 	g_dex = 0xf
@@ -1954,6 +2089,7 @@ local function create_character()
 	
 	a_button.visible = false
 	b_button.visible = false
+	g_ab_highlight.visible = false
 	mouse_cursor_visible(false)
 	
 	scroll_img = image_load("blocks.shp", 3)

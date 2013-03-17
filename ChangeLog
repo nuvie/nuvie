@@ -1,3 +1,6 @@
+2013-03-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1710
+	* Make intro more joypad friendly (arrows and enter are all the keys needed)
+
 2013-03-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1709
 	* Fix r1693 regression that caused create character to return to the menu
 	* Hide mouse during gypsy intro. Fix mouse colors during gypsy questions.
