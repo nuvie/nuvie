@@ -2353,7 +2353,8 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
     // MousePos->WorldCoord->Direction&MousePointer
     mouseToWorldCoords((int)mx, (int)my, wx, wy);
     get_movement_direction((uint16)wx, (uint16)wy, rel_x, rel_y, &mptr);
-    if(event->get_mode() == INPUT_MODE && mousecenter_x == (win_width/2) && mousecenter_y == (win_height/2))
+    if(event->get_mode() == INPUT_MODE && mousecenter_x == (win_width/2) && mousecenter_y == (win_height/2)
+       && !event->input_really_needs_directon())
         game->set_mouse_pointer(1); // crosshairs
     else if(dragging || (game->is_orig_style() && (wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1)
                                                    || wy == (cur_y+win_height-1))))

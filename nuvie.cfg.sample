@@ -13,6 +13,7 @@
   <enabled_dragging>yes</enabled_dragging>
   <look_on_left_click>yes</look_on_left_click>
   <walk_with_left_button>yes</walk_with_left_button>
+  <direction_selects_target>yes</direction_selects_target>
   <interface>normal</interface>
  </input>
 

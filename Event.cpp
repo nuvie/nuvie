@@ -118,6 +118,7 @@ Event::Event(Configuration *cfg)
  in_control_cheat = false;
  looking_at_spellbook = false;
  using_pickpocket_cheat = false;
+ config->value("config/input/direction_selects_target", direction_selects_target, true);
 
  mode = MOVE_MODE;
  last_mode = MOVE_MODE;
@@ -348,7 +349,7 @@ void Event::get_direction(const char *prompt)
     moveCursorToMapWindow();
     map_window->centerCursor();
     map_window->set_show_cursor(false);
-    map_window->set_show_use_cursor(true);
+//    map_window->set_show_use_cursor(true); // set in moveCursorToMapWindow()
 
     input.target_init = new MapCoord(map_window->get_cursorCoord()); // depends on MapWindow size
 }
@@ -356,11 +357,16 @@ void Event::get_direction(const char *prompt)
 void Event::get_direction(const MapCoord &from, const char *prompt)
 {
     get_direction(prompt);
-    map_window->moveCursor(from.x, from.y);
+    map_window->moveCursor(from.x - map_window->get_cur_x(), from.y - map_window->get_cur_y());
     input.target_init->x = from.x;
     input.target_init->y = from.y;
-
-    map_window->set_show_use_cursor(false);
+    if(input_really_needs_directon()) // actually getting a direction
+    {
+        if(!direction_selects_target)
+            map_window->set_show_cursor(true);
+        map_window->set_show_use_cursor(false);
+        map_window->set_mousecenter(from.x - map_window->get_cur_x(), from.y - map_window->get_cur_y());
+    }
 }
 
 void Event::get_target(const char *prompt)
@@ -567,11 +573,22 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
    case EQUIP_MODE      : map_window->moveCursorRelative(rel_x,rel_y);
                           break;
 
-   case INPUT_MODE      : map_window->moveCursorRelative(rel_x,rel_y);
-                          if((input.get_direction && map_window->get_interface() == INTERFACE_NORMAL) || push_actor)
+   case INPUT_MODE      :
+   {
+                          bool needs_dir = input_really_needs_directon();
+                          if(!direction_selects_target && needs_dir)
+                          {
+                            cursor_coord = map_window->get_cursorCoord();
+                            cursor_coord.x = WRAPPED_COORD(cursor_coord.x + rel_x,cursor_coord.z);
+                            cursor_coord.y = WRAPPED_COORD(cursor_coord.y + rel_y,cursor_coord.z);
+                            if(input.target_init->distance(cursor_coord) > 1)
+                              break;
+                          }
+                          map_window->moveCursorRelative(rel_x,rel_y);
+                          if(direction_selects_target && needs_dir)
                             select_direction(rel_x,rel_y);
                           break;
-
+   }
    default              : if(player->check_walk_delay() && !view_manager->gumps_are_active())
                             {
                              player->moveRelative(rel_x, rel_y);
@@ -1372,8 +1389,15 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 
     scroll->display_string(get_direction_name(pushrel_x, pushrel_y));
     scroll->display_string(".\n\n");
-    if((fabs(pushrel_x) > 1 || fabs(pushrel_y) > 1)
-       && !map_window->can_drop_obj(to.x, to.y, player->get_actor(), push_obj))
+
+    if(pushrel_x == 0 && pushrel_y == 0)
+    {
+        scroll->display_prompt();
+        endAction();
+        return true;
+    }
+
+    if(push_obj && !map_window->can_drop_obj(to.x, to.y, player->get_actor(), push_obj))
     {
         scroll->display_string("Blocked.\n");
         endAction(true);
@@ -1385,7 +1409,15 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     if(push_actor)
     {
         // if actor can take a step, do so; else 50% chance of pushing them
-        if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
+        if(push_actor == player->get_actor())
+        {
+             if(player->check_walk_delay() && !view_manager->gumps_are_active())
+             {
+                player->moveRelative(pushrel_x, pushrel_y);
+                game->time_changed();
+             }
+        }
+        else if(map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
             scroll->display_string("Blocked.\n\n");
         else if(!push_actor->moveRelative(pushrel_x, pushrel_y))
         {
@@ -1504,8 +1536,8 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     if(rel_x || rel_y)
     {
         push_obj = obj_manager->get_obj(target.x, target.y, from.z);
-        push_actor = actor_manager->get_actor(target.x, target.y, from.z);
     }
+    push_actor = actor_manager->get_actor(target.x, target.y, from.z);
     if(map_window->tile_is_black(target.x, target.y, push_obj))
     {
         scroll->display_string("nothing.\n");
@@ -1547,15 +1579,7 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     }
     else
     {
-        // FIXME: not taking win_width into account
-        map_window->set_mousecenter(target.x - from.x + 5, target.y - from.y + 5);
         get_direction(MapCoord(target.x, target.y), "\nTo ");
-        if(map_window->get_interface() != INTERFACE_NORMAL && !push_actor)
-        {
-            map_window->moveCursor(target.x - map_window->get_cur_x(), target.y - map_window->get_cur_y());
-            map_window->set_show_use_cursor(true);
-        }
-
     }
     return true;
 }
@@ -3406,6 +3430,8 @@ void Event::set_mode(EventMode new_mode)
 
 void Event::moveCursorToInventory()
 {
+    if(push_actor)
+        return;
     cursor_mode = false;
     if(mode == MOVE_MODE)
         newAction(EQUIP_MODE);
@@ -3592,10 +3618,10 @@ bool Event::select_view_obj(Obj *obj, Actor *actor)
 		cancelAction();
 	else
 	{
-		if(!obj)
+		if(!obj || push_actor != NULL)
 			return false;
 		if(usecode->cannot_unready(obj) && ((last_mode == DROP_MODE && drop_obj == NULL)
-		   || (last_mode == PUSH_MODE && push_obj == NULL && push_actor == NULL)))
+		   || (last_mode == PUSH_MODE && push_obj == NULL)))
 		{
 			scroll->display_string(obj_manager->look_obj(obj, false));
 			scroll->display_string("\n");
@@ -3615,4 +3641,12 @@ void Event::close_gumps()
 	{
 		view_manager->close_all_gumps();
 	}
+}
+
+bool Event::input_really_needs_directon()
+{
+    if((input.get_direction && (map_window->get_interface() == INTERFACE_NORMAL || last_mode == CAST_MODE)) || push_actor)
+        return true;
+    else
+        return false;
 }

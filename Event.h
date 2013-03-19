@@ -149,6 +149,7 @@ friend class Magic; // FIXME
  bool move_in_inventory;
  bool in_control_cheat;
  bool looking_at_spellbook;
+ bool direction_selects_target;
 
  Uint32 fps_timestamp;
  uint16 fps_counter;
@@ -298,6 +299,7 @@ friend class Magic; // FIXME
 
  void toggleFpsDisplay();
  void close_gumps();
+ bool input_really_needs_directon();
 
 /* FIXME: Some of the above (action) functions can be removed from public, so
    that we don't need to check for WAIT mode in all of them. */

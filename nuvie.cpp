@@ -299,6 +299,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/input/enabled_dragging", true);
 	config->set("config/input/look_on_left_click", true);
 	config->set("config/input/walk_with_left_button", true);
+	config->set("config/input/direction_selects_target", true);
 	config->set("config/input/interface", "normal");
 
 	config->set("config/general/lighting", "smooth");

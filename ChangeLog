@@ -1,3 +1,13 @@
+2013-03-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1711
+	* Allow move command to walk the player/party a tile (gamepad support)
+	* Add input/direction_selects_target cfg setting to stop directional input
+	  from automatically selecting a target when you press a direction key and
+	  the setting is "no". (gamepad support)
+	* Softcode centering of mouse on push_obj/push_actor
+	* Don't allow tabbing into the inventory or targeting it when you are
+	  moving an actor
+	* Fix bad blocking check
+
 2013-03-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1710
 	* Make intro more joypad friendly (arrows and enter are all the keys needed)
 
