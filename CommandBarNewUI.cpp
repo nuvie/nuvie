@@ -58,13 +58,32 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
     icon_w = 5;
     icon_h = 3;
     num_icons = 11;
-
-    icon_y_offset = 10;
+	uint8 text_height;
+	uint16 map_width;
+	uint16 map_height;
 
 	offset = OBJLIST_OFFSET_U6_COMMAND_BAR;
-	Init(NULL, 120+x_off, 74+y_off, 0, 0);
-	area.w = btn_size * icon_w; // space for 5x3 icons
-	area.h = btn_size * icon_h + 20; //
+	if(game->is_orig_style())
+	{
+		text_height = 8;
+		icon_y_offset = 0;
+		map_width = 176;
+		map_height = 176;
+	}
+	else
+	{
+		text_height = 17;
+		icon_y_offset = 9;
+		map_width = game->get_game_width();
+		map_height = game->get_game_height();
+		Init(NULL, 120+x_off, 74+y_off, 0, 0);
+	}
+	uint8 command_width = btn_size * icon_w;
+	uint8 command_height = btn_size * icon_h + text_height;
+
+	Init(NULL, (map_width - command_width)/2 + x_off, (map_height - command_height)/2 + y_off, 0, 0);
+	area.w = command_width; // space for 5x3 icons
+	area.h = command_height;
 
     event = NULL; // it's not set yet
     
@@ -105,7 +124,11 @@ GUI_status CommandBarNewUI::MouseDown(int x, int y, int button)
 			pos += x / btn_size;
 
 			if(pos < num_icons)
+			{
 				cur_pos = pos;
+				hit((sint8)cur_pos);
+				Hide();
+			}
 		}
 	}
 
@@ -114,6 +137,7 @@ GUI_status CommandBarNewUI::MouseDown(int x, int y, int button)
 
 GUI_status CommandBarNewUI::MouseUp(int x, int y, int button)
 {
+/*
 	if(HitRect(x, y))
 	{
 		x -= area.x;
@@ -125,7 +149,7 @@ GUI_status CommandBarNewUI::MouseUp(int x, int y, int button)
 			Hide();
 		}
 	}
-
+*/
     return(GUI_YUM);
 }
 
@@ -195,12 +219,14 @@ void CommandBarNewUI::Display(bool full_redraw)
       if(game->get_game_type() == NUVIE_GAME_U6)
       {
         //screen->fill(bg_color, area.x, area.y, area.w, area.h);
-
+    	if(game->is_new_style())
+    	{
         //display_information();
     	  string infostring(game->get_clock()->get_date_string());
     	  infostring += " Wind:";
     	  infostring += wind;
-    	  font->drawString(screen, infostring.c_str(), area.x, area.y);
+    	  font->drawString(screen, infostring.c_str(), area.x -13, area.y); // sort of center
+    	}
     	uint8 i=0;
         for(uint8 y=0; y < icon_h; y++)
         {

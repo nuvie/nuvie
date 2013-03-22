@@ -92,6 +92,7 @@ class Game
  Party *party;
  Converse *converse;
  CommandBar *command_bar;
+ CommandBar *new_command_bar;
 
  ViewManager *view_manager;
  EffectManager *effect_manager;
@@ -132,6 +133,7 @@ class Game
  bool ethereal;
  bool game_play;
  bool using_text_gumps;
+ bool using_new_command_bar;
 
  public:
 
@@ -235,6 +237,7 @@ class Game
  EffectManager *get_effect_manager()
                                    { return(effect_manager); }
  CommandBar *get_command_bar()     { return(command_bar); }
+ CommandBar *get_new_command_bar() { return(new_command_bar); }
  Weather *get_weather()            { return(weather); }
 
  Book *get_book()                  { return(book); }

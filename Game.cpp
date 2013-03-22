@@ -102,6 +102,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  event = NULL;
  converse = NULL;
  command_bar = NULL;
+ new_command_bar = NULL;
  clock = NULL;
  party = NULL;
  portrait = NULL;
@@ -130,6 +131,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
  config->value("config/input/enabled_dragging", dragging_enabled, true);
  config->value("config/general/use_text_gumps", using_text_gumps, false);
+ config->value("config/input/new_command_bar", using_new_command_bar, false);
 
  int value;
  uint16 screen_width = gui->get_width();
@@ -277,7 +279,15 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    weather = new Weather(config, clock, game_type);
 
    if(is_orig_style())
-	   command_bar = new CommandBar(this);
+   {
+       command_bar = new CommandBar(this);
+       if(using_new_command_bar)
+       {
+           new_command_bar = new CommandBarNewUI(this);
+           new_command_bar->Hide();
+           gui->AddWidget(new_command_bar);
+       }
+   }
    else
 	   command_bar = new CommandBarNewUI(this);
    command_bar->Hide();

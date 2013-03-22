@@ -296,6 +296,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/input/enable_doubleclick", true);
 	config->set("config/input/doubleclick_opens_containers", false);
 	config->set("config/input/party_view_targeting", false);
+	config->set("config/input/new_command_bar", false);
 	config->set("config/input/enabled_dragging", true);
 	config->set("config/input/look_on_left_click", true);
 	config->set("config/input/walk_with_left_button", true);

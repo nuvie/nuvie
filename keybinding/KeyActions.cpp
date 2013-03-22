@@ -159,7 +159,16 @@ void ActionSelectCommandBar(int const *params)
 
 void ActionSelectNewCommandBar(int const *params)
 {
-	CommandBar *cb = game->get_command_bar();
+	CommandBar *cb;
+	if(game->is_orig_style())
+	{
+		cb = game->get_new_command_bar();
+		if(!cb)
+			return;
+	}
+	else
+		cb = game->get_command_bar();
+
 	cb->grab_focus();
 	cb->Show();
 }
