@@ -35,6 +35,8 @@
 
 #include "ScriptCutscene.h"
 
+#define DELUXE_PAINT_MAGIC 0x4d524f46 // "FORM"
+
 static ScriptCutscene *cutScene = NULL;
 
 static int nscript_image_set(lua_State *L);
@@ -51,6 +53,7 @@ static int nscript_image_load(lua_State *L);
 static int nscript_image_load_all(lua_State *L);
 static int nscript_image_print(lua_State *L);
 static int nscript_image_draw_line(lua_State *L);
+static int nscript_image_blit(lua_State *L);
 static int nscript_image_update_effect(lua_State *L);
 static int nscript_image_static(lua_State *L);
 static int nscript_image_set_transparency_colour(lua_State *L);
@@ -145,6 +148,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
    lua_pushcfunction(L, nscript_image_draw_line);
    lua_setglobal(L, "image_draw_line");
 
+   lua_pushcfunction(L, nscript_image_blit);
+   lua_setglobal(L, "image_blit");
+
    lua_pushcfunction(L, nscript_canvas_set_bg_color);
    lua_setglobal(L, "canvas_set_bg_color");
 
@@ -234,11 +240,12 @@ static int nscript_image_set(lua_State *L)
 
 	key = lua_tostring(L, 2);
 
-	if(!strcmp(key, "w"))
+	if(!strcmp(key, "scale"))
 	{
-		//obj->x = (uint16)lua_tointeger(L, 3);
+		image->setScale((uint16)lua_tointeger(L, 3));
 		return 0;
 	}
+
    return 0;
 }
 
@@ -272,6 +279,12 @@ static int nscript_image_get(lua_State *L)
 		uint16 w, h;
 		image->shp->get_size(&w, &h);
 		lua_pushinteger(L, h);
+		return 1;
+	}
+
+	if(!strcmp(key, "scale"))
+	{
+		lua_pushinteger(L, image->getScale());
 		return 1;
 	}
 
@@ -362,7 +375,7 @@ static int nscript_image_load(lua_State *L)
 static int nscript_image_load_all(lua_State *L)
 {
 	const char *filename = lua_tostring(L, 1);
-	std::vector<CSImage *> images = cutScene->load_all_images(filename);
+	std::vector<std::vector<CSImage *> > images = cutScene->load_all_images(filename);
 
 	if(images.empty())
 	{
@@ -374,8 +387,20 @@ static int nscript_image_load_all(lua_State *L)
 	for(uint16 i=0;i<images.size();i++)
 	{
 		lua_pushinteger(L, i);
-
-		nscript_new_image_var(L, images[i]);
+		if(images[i].size() > 1)
+		{
+			lua_newtable(L);
+			for(uint16 j=0;j<images[i].size();j++)
+				{
+					lua_pushinteger(L, j);
+					nscript_new_image_var(L, images[i][j]);
+					lua_settable(L, -3);
+				}
+		}
+		else
+		{
+			nscript_new_image_var(L, images[i][0]);
+		}
 		lua_settable(L, -3);
 	}
 
@@ -417,6 +442,20 @@ static int nscript_image_draw_line(lua_State *L)
 	return 0;
 }
 
+static int nscript_image_blit(lua_State *L)
+{
+	CSImage *dest_img = nscript_get_image_from_args(L, 1);
+	CSImage *src_img = nscript_get_image_from_args(L, 2);
+	uint16 x = lua_tointeger(L, 3);
+	uint16 y = lua_tointeger(L, 4);
+
+	if(dest_img && src_img)
+	{
+		dest_img->shp->blit(src_img->shp, x, y);
+	}
+
+	return 0;
+}
 static int nscript_image_update_effect(lua_State *L)
 {
 	CSImage *img = nscript_get_image_from_args(L, 1);
@@ -981,7 +1020,7 @@ CSImage *ScriptCutscene::load_image(const char *filename, int idx)
 	return image;
 }
 
-std::vector<CSImage *> ScriptCutscene::load_all_images(const char *filename)
+std::vector<std::vector<CSImage *> > ScriptCutscene::load_all_images(const char *filename)
 {
 	std::string path;
 	CSImage *image = NULL;
@@ -989,30 +1028,69 @@ std::vector<CSImage *> ScriptCutscene::load_all_images(const char *filename)
 	config_get_path(config, filename, path);
 
 
-	std::vector<CSImage *> v;
+
+	std::vector<std::vector<CSImage *> > v;
 	U6Lzw lzw;
 
 	U6Lib_n lib_n;
-	uint32 decomp_size;
-	unsigned char *buf = lzw.decompress_file(path.c_str(), decomp_size);
-	NuvieIOBuffer io;
-	io.open(buf, decomp_size, false);
-	if(!lib_n.open(&io, 4, NUVIE_GAME_MD))
-	{
-		free(buf);
-		return v;
-	}
+	unsigned char *buf = NULL;
 
-	for(uint32 idx=0;idx<lib_n.get_num_items();idx++)
+	if(strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".lzc") == 0)
 	{
-		U6Shape *shp = new U6Shape();
-		if(shp->load(&lib_n, (uint32)idx))
+		if(!lib_n.open(path, 4, NUVIE_GAME_MD))
 		{
-			image = new CSImage(shp);
-			v.push_back(image);
+			return v;
+		}
+		for(uint32 idx=0;idx<lib_n.get_num_items();idx++)
+		{
+			buf = lib_n.get_item(idx,NULL);
+			NuvieIOBuffer io;
+			io.open(buf, lib_n.get_item_size(idx), false);
+			U6Lib_n lib1;
+			lib1.open(&io, 4, NUVIE_GAME_MD);
+			printf("lib_size = %d\n", lib1.get_num_items());
+			std::vector<CSImage *> v1;
+			for(uint32 idx1=0;idx1<lib1.get_num_items();idx1++)
+			{
+				U6Shape *shp = new U6Shape();
+				if(shp->load(&lib1, (uint32)idx1))
+				{
+					image = new CSImage(shp);
+					v1.push_back(image);
+				}
+			}
+			free(buf);
+			buf=NULL;
+			v.push_back(v1);
 		}
 	}
-	free(buf);
+	else
+	{
+		uint32 decomp_size;
+		buf = lzw.decompress_file(path.c_str(), decomp_size);
+		NuvieIOBuffer io;
+		io.open(buf, decomp_size, false);
+		if(!lib_n.open(&io, 4, NUVIE_GAME_MD))
+		{
+			free(buf);
+			return v;
+		}
+
+		for(uint32 idx=0;idx<lib_n.get_num_items();idx++)
+		{
+			std::vector<CSImage *> v1;
+			U6Shape *shp = new U6Shape();
+			if(shp->load(&lib_n, (uint32)idx))
+			{
+				image = new CSImage(shp);
+				v1.push_back(image);
+				v.push_back(v1);
+			}
+		}
+	}
+
+	if(buf)
+		free(buf);
 
 	return v;
 
@@ -1102,11 +1180,20 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 		return;
 	}
 
-	if(strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".lbm") == 0)
+	if(file.read4() == DELUXE_PAINT_MAGIC || strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".lbm") == 0)
 	{
 		//deluxe paint palette file.
 		file.seek(0x30);
 		file.readToBuf(unpacked_palette, 0x300);
+	}
+	else if(strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".pal") == 0)
+	{
+		U6Lib_n lib;
+		lib.open(path, 4, NUVIE_GAME_MD);
+		unsigned char *decomp_buf = lib.get_item(0,NULL);
+		memcpy(unpacked_palette, &decomp_buf[idx * 0x300], 0x300);
+
+		free(decomp_buf);
 	}
 	else
 	{
@@ -1246,6 +1333,55 @@ void ScriptCutscene::Display(bool full_redraw)
 		screen->update(0,0,area.w,area.h);
 	else
 		screen->update(x_off,y_off,320, 200);
+}
+
+void CSImage::setScale(uint16 percentage)
+{
+	if(scale == percentage)
+	{
+		return;
+	}
+
+	if(scaled_shp)
+		delete scaled_shp;
+
+	scale = percentage;
+	if(scale == 100)
+	{
+		scaled_shp = NULL;
+		shp = orig_shp;
+		return;
+	}
+
+	uint16 sw, sh;
+	uint16 sx, sy;
+
+	uint16 tw, th;
+	uint16 tx, ty;
+
+	float scale_factor = (float)scale / 100;
+
+	orig_shp->get_size(&sw, &sh);
+	orig_shp->get_hot_point(&sx, &sy);
+
+	tw = (uint16)((float)sw * scale_factor);
+	th = (uint16)((float)sh * scale_factor);
+	tx = (uint16)((float)sx * scale_factor);
+	ty = (uint16)((float)sy * scale_factor);
+
+	scaled_shp = new U6Shape();
+	if(!scaled_shp->init(tw,th,tx,ty))
+	{
+		scale = 100;
+		delete scaled_shp;
+		scaled_shp = NULL;
+		return;
+	}
+
+	scale_rect_8bit(orig_shp->get_data(), scaled_shp->get_data(), sw, sh, tw, th);
+	shp = scaled_shp;
+
+	return;
 }
 
 CSStarFieldImage::CSStarFieldImage(U6Shape *shape) : CSImage(shape)

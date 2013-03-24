@@ -174,8 +174,9 @@ unsigned char *U6Lib_n::get_item(uint32 item_number, unsigned char *ret_buf)
    lzw.decompress_buffer(lzw_buf, item->size, buf, item->uncomp_size);
   }
  else
+ {
    data->readToBuf(buf,item->size);
-
+ }
  return buf;
 }
 

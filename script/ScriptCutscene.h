@@ -41,14 +41,23 @@ extern "C"
 
 class CSImage {
 public:
+	U6Shape *orig_shp;
+	U6Shape *scaled_shp;
 	U6Shape *shp;
+	uint16 scale;
 	uint16 refcount;
 
 	CSImage(U6Shape *shape)
 	{
+		orig_shp = shape;
+		scaled_shp = NULL;
 		shp = shape;
+		scale = 100;
 		refcount = 0;
 	}
+
+	void setScale(uint16 percentage);
+	uint16 getScale() { return scale; }
 
 	virtual void updateEffect() { };
 };
@@ -118,7 +127,7 @@ public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
 	~ScriptCutscene();
 	CSImage *load_image(const char *filename, int idx);
-	std::vector<CSImage *> load_all_images(const char *filename);
+	std::vector<std::vector<CSImage *> > load_all_images(const char *filename);
 	void add_sprite(CSSprite *s) { sprite_list.push_back(s); }
 	void remove_sprite(CSSprite *s) { sprite_list.remove(s); }
 

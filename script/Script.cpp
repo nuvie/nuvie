@@ -1774,9 +1774,14 @@ static int nscript_print(lua_State *L)
 {
    MsgScroll *scroll = Game::get_game()->get_scroll();
    const char *string = luaL_checkstring(L, 1);
-
-   scroll->display_string(string);
-
+   if(scroll)
+   {
+	   scroll->display_string(string);
+   }
+   else
+   {
+	   printf("%s", string);
+   }
    return 0;
 }
 

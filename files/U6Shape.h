@@ -56,7 +56,7 @@ public:
 	U6Shape();
 	virtual ~U6Shape();
 
-	bool init(uint16 w, uint16 h);
+	bool init(uint16 w, uint16 h, uint16 hx=0, uint16 hy=0);
 	virtual bool load(std::string filename);
   bool load(U6Lib_n *file, uint32 index);
 	virtual bool load(unsigned char *buf);
@@ -67,6 +67,7 @@ public:
 	bool get_size(uint16 *w, uint16 *h);
 
 	void draw_line(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color);
+	bool blit(U6Shape *shp, uint16 x, uint16 y);
 };
 
 #endif

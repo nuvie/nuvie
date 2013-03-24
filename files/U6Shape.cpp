@@ -112,10 +112,12 @@ U6Shape::~U6Shape(void)
   free(raw);
 }
 
-bool U6Shape::init(uint16 w, uint16 h)
+bool U6Shape::init(uint16 w, uint16 h, uint16 hx, uint16 hy)
 {
  width = w;
  height = h;
+ hotx = hx;
+ hoty = hy;
  raw = (uint8 *)malloc(width * height);
 
  if(raw == NULL)
@@ -123,6 +125,8 @@ bool U6Shape::init(uint16 w, uint16 h)
 	 DEBUG(0,LEVEL_ERROR,"malloc failed to allocate space for shape\n");
 	 return false;
  }
+
+ memset(raw, 0xff, width * height);
 
  return true;
 }
@@ -349,4 +353,25 @@ void U6Shape::draw_line(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color)
 		return;
 
 	draw_line_8bit(sx, sy, ex, ey, color, raw, width, height);
+}
+
+bool U6Shape::blit(U6Shape *shp, uint16 x, uint16 y)
+{
+	if(shp == NULL)
+		return false;
+
+	unsigned char *src_data = shp->get_data();
+	uint16 src_w, src_h;
+
+	shp->get_size(&src_w, &src_h);
+
+	if(x+src_w > width || y+src_h > height)
+		return false;
+
+	for(int i=0;i<src_h;i++)
+	{
+		memcpy(&raw[x+y*width+i*width], &src_data[i*src_w], src_w);
+	}
+
+	return true;
 }

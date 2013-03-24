@@ -1,3 +1,11 @@
+2013-03-25  Eric Fry <efry at users.sourceforge.net> r1713
+	* Started work on Savage Empire intro sequence.
+	* Added U6Shape::blit() for blitting shapes onto each other.
+	* Added scale to cutscene CSImage objects. You can now scale them
+	  up or down in size. The scale value is a percentage.
+	* Added support for MD and SE cutscene palettes.
+	* Changed image_load_all() script function to load MD and SE image tables.
+
 2013-03-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1712
 	* Add input/new_command_bar cfg setting that allows the new command bar in
 	  original style games. fullscreen_map ignores the setting (gamepad support)
