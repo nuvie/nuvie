@@ -1,3 +1,6 @@
+2013-03-31  Eric Fry <efry at users.sourceforge.net> r1714
+	* Added MIDI play back classes from AdPlug 2.2.1
+
 2013-03-25  Eric Fry <efry at users.sourceforge.net> r1713
 	* Started work on Savage Empire intro sequence.
 	* Added U6Shape::blit() for blitting shapes onto each other.
