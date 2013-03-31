@@ -539,7 +539,7 @@ void SoundManager::musicPlay()
 
 }
 
-void SoundManager::musicPlay(const char *filename)
+void SoundManager::musicPlay(const char *filename, uint16 song_num)
 {
 	string path;
 
@@ -548,7 +548,7 @@ void SoundManager::musicPlay(const char *filename)
 
 	config_get_path(m_Config, filename, path);
 	SongAdPlug *song = new SongAdPlug(mixer->getMixer(), opl);
-	song->Init(path.c_str());
+	song->Init(path.c_str(), song_num);
 
 	musicStop();
 	m_pCurrentSong = song;

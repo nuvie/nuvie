@@ -41,10 +41,10 @@ SongAdPlug::~SongAdPlug() {
  //delete player;
 }
 
-bool SongAdPlug::Init(const char *filename) {
+bool SongAdPlug::Init(const char *filename, uint16 song_num) {
     if(filename) m_Filename = filename; // SB-X
 
-    stream = new U6AdPlugDecoderStream(opl, string(filename));
+    stream = new U6AdPlugDecoderStream(opl, string(filename), song_num);
 
     return true;
 }

@@ -35,7 +35,8 @@ public:
 
 	SongAdPlug(Audio::Mixer *m, CEmuopl *o);
 	~SongAdPlug();
-	bool Init(const char *filename);
+	bool Init(const char *filename) { return Init(filename, 0); }
+	bool Init(const char *filename, uint16 song_num);
 	bool Play(bool looping = false);
 	bool Stop();
 	bool SetVolume(uint8 volume);

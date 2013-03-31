@@ -116,6 +116,8 @@ local function origin_fx_sequence()
 	
 	fade_in()
 
+	music_play("music.lzc", 19)
+	
 	local i = 0
 	for i=0,6,1 do
 		conductor.image = g_img_tbl[10][i]

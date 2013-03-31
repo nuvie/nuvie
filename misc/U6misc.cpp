@@ -709,3 +709,11 @@ void scale_rect_8bit(unsigned char *Source, unsigned char *Target, int SrcWidth,
   } /* while */
 }
 
+bool has_file_extension(const char *filename, const char *extension)
+{
+	if(strlen(filename) > strlen(extension) && strcasecmp((const char *)&filename[strlen(filename)-4], extension) == 0)
+		return true;
+
+	return false;
+}
+

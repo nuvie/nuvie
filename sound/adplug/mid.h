@@ -19,7 +19,7 @@
  * mid.h - LAA, SCI, MID & CMF Player by Philip Hassey <philhassey@hotmail.com>
  */
 
-#include "player.h"
+#include "adplug_player.h"
 
 class CmidPlayer: public CPlayer
 {
@@ -30,7 +30,9 @@ public:
   ~CmidPlayer()
     { if(data) delete [] data; }
 
-  bool load(const std::string &filename, const CFileProvider &fp);
+  bool load(const std::string &filename);
+  bool load(std::string &filename, int song_index);
+  //bool load(const std::string &filename, const CFileProvider &fp);
   bool update();
   void rewind(int subsong);
   float getrefresh();
@@ -95,7 +97,8 @@ public:
   int type,tins,stins;
 
  private:
-  bool load_sierra_ins(const std::string &fname, const CFileProvider &fp);
+  //bool load_sierra_ins(const std::string &fname, const CFileProvider &fp);
+  void load_ultima_midi_tracks();
   void midiprintf(const char *format, ...);
   unsigned char datalook(long pos);
   unsigned long getnexti(unsigned long num);

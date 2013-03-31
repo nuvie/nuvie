@@ -18,6 +18,7 @@
  */
 
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "NuvieIO.h"
 #include "U6Lib_n.h"
 #include "U6Lzw.h"
@@ -25,12 +26,20 @@
 #include "U6AdPlugDecoderStream.h"
 
 
-U6AdPlugDecoderStream::U6AdPlugDecoderStream(CEmuopl *o, std::string filename)
+U6AdPlugDecoderStream::U6AdPlugDecoderStream(CEmuopl *o, std::string filename, uint16 song_num)
 {
   opl = o;
   samples_left = 0;
-  player = new Cu6mPlayer(opl);
-  player->load(filename.c_str());
+  if(has_file_extension(filename.c_str(), ".lzc"))
+  {
+	  player = new CmidPlayer(opl);
+	  ((CmidPlayer *)player)->load(filename, song_num);
+  }
+  else
+  {
+	  player = new Cu6mPlayer(opl);
+	  player->load(filename.c_str());
+  }
   player_refresh_count = (int)(opl->getRate() / player->getrefresh());
 }
 
@@ -45,17 +54,24 @@ int U6AdPlugDecoderStream::readBuffer(sint16 *buffer, const int numSamples)
 
  int len = numSamples / 2;
 
- //DEBUG(0, LEVEL_INFORMATIONAL, "Get here. numSamples = %d player refreshrate = %f\n", numSamples, player->getrefresh());
+ //DEBUG(0, LEVEL_INFORMATIONAL, "Get here. numSamples = %d player refreshrate = %f refresh_count = %d\n", numSamples, player->getrefresh(), (int)(opl->getRate() / player->getrefresh()));
 
- if(samples_left)
+ if(samples_left>0)
     {
+	  if(samples_left > len)
+	  {
+		  opl->update(data, len);
+		  samples_left -= len;
+		  return numSamples;
+	  }
+
       opl->update(data, samples_left);
       data += samples_left * 2;
+      len -= samples_left;
+      samples_left = 0;
     }
 
- len -= samples_left;
-
- for(i=len;i > 0; i -= player_refresh_count)
+ for(i=len;i > 0;)
    {
      if(!player->update())
        {
@@ -64,13 +80,16 @@ int U6AdPlugDecoderStream::readBuffer(sint16 *buffer, const int numSamples)
          DEBUG(0,LEVEL_DEBUGGING,"Music Finished!\n");
        }
 
-     j = i;
-     if (j > player_refresh_count) j = player_refresh_count;
-     samples_left = player_refresh_count - j;
-
+     j = (int)(opl->getRate() / player->getrefresh());
+     if(j > i)
+     {
+    	 samples_left = j - i;
+    	 j = i;
+     }
      opl->update(data, j);
 
      data += j * 2;
+     i -= j;
    }
 
  return numSamples;

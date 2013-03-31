@@ -845,9 +845,15 @@ static int nscript_canvas_string_length(lua_State *L)
 
 static int nscript_music_play(lua_State *L)
 {
+	uint16 song_num = 0;
 	const char *filename = lua_tostring(L, 1);
 
-	cutScene->get_sound_manager()->musicPlay(filename);
+	if(lua_gettop(L) >= 2 && !lua_isnil(L, 2))
+	{
+		song_num = lua_tointeger(L, 2);
+	}
+
+	cutScene->get_sound_manager()->musicPlay(filename, song_num);
 
 	return 0;
 }
@@ -1180,13 +1186,13 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 		return;
 	}
 
-	if(file.read4() == DELUXE_PAINT_MAGIC || strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".lbm") == 0)
+	if(file.read4() == DELUXE_PAINT_MAGIC || has_file_extension(filename, ".lbm"))
 	{
 		//deluxe paint palette file.
 		file.seek(0x30);
 		file.readToBuf(unpacked_palette, 0x300);
 	}
-	else if(strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".pal") == 0)
+	else if(has_file_extension(filename, ".pal"))
 	{
 		U6Lib_n lib;
 		lib.open(path, 4, NUVIE_GAME_MD);

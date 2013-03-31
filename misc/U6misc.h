@@ -81,4 +81,6 @@ Uint32 sdl_getpixel(SDL_Surface *surface, int x, int y);
 
 void scale_rect_8bit(unsigned char *Source, unsigned char *Target, int SrcWidth, int SrcHeight, int TgtWidth, int TgtHeight);
 
+bool has_file_extension(const char *filename, const char *extension);
+
 #endif /* __U6misc_h__ */

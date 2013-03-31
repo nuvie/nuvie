@@ -1,4 +1,10 @@
 2013-03-31  Eric Fry <efry at users.sourceforge.net> r1714
+	* Started work on SE/MD music support.
+	* Added has_file_extension() function.
+	* Added second argument to music_play() script function to allow it to play
+	  songs from library files. eg. MUSIC.LZC
+
+2013-03-31  Eric Fry <efry at users.sourceforge.net> r1714
 	* Added MIDI play back classes from AdPlug 2.2.1
 
 2013-03-25  Eric Fry <efry at users.sourceforge.net> r1713

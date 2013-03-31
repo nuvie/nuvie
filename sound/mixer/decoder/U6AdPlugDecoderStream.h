@@ -26,6 +26,7 @@
 #include "audiostream.h"
 #include "emuopl.h"
 #include "u6m.h"
+#include "mid.h"
 
 class U6Lib_n;
 class U6Lzw;
@@ -42,7 +43,7 @@ public:
 	opl = NULL; player = NULL; player_refresh_count = 0;
 	}
 
-	U6AdPlugDecoderStream(CEmuopl *o, std::string filename);
+	U6AdPlugDecoderStream(CEmuopl *o, std::string filename, uint16 song_num);
 	~U6AdPlugDecoderStream();
 
 	int readBuffer(sint16 *buffer, const int numSamples);

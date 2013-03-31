@@ -221,6 +221,9 @@ nuvie_SOURCES = \
 	sound/adplug/emuopl.h \
 	sound/adplug/fmopl.c \
 	sound/adplug/fmopl.h \
+	sound/adplug/mid.cpp \
+	sound/adplug/mid.h \
+	sound/adplug/mididata.h \
 	sound/adplug/opl.h \
 	sound/adplug/adplug_player.cpp \
 	sound/adplug/adplug_player.h \
