@@ -54,6 +54,30 @@ unpack_font_SOURCES = \
 	../misc/U6misc.h \
 	../misc/U6misc.cpp
 
+unpack_lzc_SOURCES = \
+	unpack_lzc.cpp \
+\
+  	../Debug.cpp \
+	../conf/Configuration.cpp \
+	../conf/Configuration.h \
+	../conf/XMLNode.cpp \
+	../conf/XMLNode.h \
+	../conf/XMLTree.cpp \
+	../conf/XMLTree.h \
+	../conf/ConfigNode.h \
+\
+	../files/NuvieIO.cpp \
+	../files/NuvieIO.h \
+	../files/NuvieIOFile.cpp \
+	../files/NuvieIOFile.h \
+	../files/U6Lib_n.cpp \
+	../files/U6Lib_n.h \
+	../files/U6Lzw.cpp \
+	../files/U6Lzw.h \
+\
+	../misc/U6misc.h \
+	../misc/U6misc.cpp
+
 unpack_maptiles_SOURCES = \
 	unpack_maptiles.cpp \
 \

@@ -1,4 +1,9 @@
-2013-03-31  Eric Fry <efry at users.sourceforge.net> r1714
+2013-05-09  Eric Fry <efry at users.sourceforge.net> r1716
+	* More work on SE/MD music support. rewriting music driver to be more like the
+	  original game engine.
+	* Added new tool unpack_lzc. This explodes an lzc file into its parts.
+
+2013-03-31  Eric Fry <efry at users.sourceforge.net> r1715
 	* Started work on SE/MD music support.
 	* Added has_file_extension() function.
 	* Added second argument to music_play() script function to allow it to play

@@ -160,6 +160,7 @@ unsigned char midi_fm_instruments[128][14] =
 };
 
 /* logarithmic relationship between midi and FM volumes */
+/*
 static int my_midi_fm_vol_table[128] = {
    0,  11, 16, 19, 22, 25, 27, 29, 32, 33, 35, 37, 39, 40, 42, 43,
    45, 46, 48, 49, 50, 51, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
@@ -171,4 +172,4 @@ static int my_midi_fm_vol_table[128] = {
    116, 117, 117, 118, 118, 119, 119, 120, 120, 121, 121, 122, 122,
    123, 123, 124, 124, 125, 125, 126, 126, 127
 };
-
+*/

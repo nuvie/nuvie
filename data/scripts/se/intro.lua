@@ -204,7 +204,8 @@ local function intro_sequence()
 	local g_img_tbl = image_load_all("intro.lzc")
 	
 	canvas_set_palette("savage.pal", 0)
-	
+	music_play("music.lzc", 18)
+		
 	local  logo = sprite_new(g_img_tbl[0][0], 0, 0, true)
 	fade_in()
 	if poll_for_esc(175) == true then return end
@@ -212,7 +213,13 @@ local function intro_sequence()
 	logo.image = g_img_tbl[0][1]
 	fade_in()
 	if poll_for_esc(175) == true then return end
-	fade_out()	
+	fade_out()
+
+	local  bg = sprite_new(g_img_tbl[1][0], 0, 0, true)
+	local  bg1 = sprite_new(g_img_tbl[1][1], 0, 0, true)
+	local  bg2 = sprite_new(g_img_tbl[1][2], 0, 0, true)
+	canvas_set_opacity(0xff)
+	wait_for_input()
 end
 
 canvas_set_update_interval(25)

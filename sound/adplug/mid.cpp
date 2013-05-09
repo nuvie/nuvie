@@ -80,7 +80,9 @@
 #include <math.h>
 #include <string.h>
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "U6Lib_n.h"
+#include "Game.h"
 #include "mid.h"
 #include "mididata.h"
 
@@ -99,8 +101,8 @@ void CmidPlayer::midiprintf(const char *format, ...)
 #define SIERRA_STYLE  8
 
 // AdLib melodic and rhythm mode defines
-#define ADLIB_MELODIC	0
-#define ADLIB_RYTHM	1
+#define ADLIB_MELODIC	1
+#define ADLIB_RYTHM	0
 
 // File types
 #define FILE_LUCAS      1
@@ -123,6 +125,8 @@ const int CmidPlayer::fnums[] = { 0x16b,0x181,0x198,0x1b0,0x1ca,0x1e5,0x202,0x22
 // Map CMF drum channels 11 - 15 to corresponding AdLib drum channels
 const int CmidPlayer::percussion_map[] = { 6, 7, 8, 8, 7 };
 
+const uint8 adlib_BD_cmd_tbl[] ={ 0, 1, 0, 1, 0, 1, 16, 8, 4, 2, 1 };
+
 CPlayer *CmidPlayer::factory(Copl *newopl)
 {
   return new CmidPlayer(newopl);
@@ -132,6 +136,41 @@ CmidPlayer::CmidPlayer(Copl *newopl)
   : CPlayer(newopl), author(&emptystr), title(&emptystr), remarks(&emptystr),
     emptystr('\0'), flen(0), data(0)
 {
+	const uint8 byte_73_init[] = {1, 2, 3, 4, 5, 6, 7, 8, 0xB, 0xFF, 0xFF, 0, 0xC};
+
+	adlib_tim_data = NULL;
+	adlib_num_active_channels = 9;
+	memset(midi_chan_tim_ptr, 0, sizeof(midi_chan_tim_ptr));
+	memset(midi_chan_pitch, 0, sizeof(midi_chan_pitch));
+	memset(midi_chan_tim_off_10, 0, sizeof(midi_chan_tim_off_10));
+	memset(midi_chan_tim_off_11, 0, sizeof(midi_chan_tim_off_11));
+
+	adlib_bd_status = 0;
+	memcpy(byte_73, byte_73_init, sizeof(byte_73_init));
+
+	for(int i=0;i<29;i++)
+	{
+		midi_chan_volume[i] = 0x100;
+	}
+
+	memset(adlib_ins, 0, sizeof(adlib_ins));
+
+	for(int i=0;i<11;i++)
+	{
+		adlib_ins[i].note = -1;
+		adlib_ins[i].channel = -1;
+		adlib_ins[i].byte_68 = 1;
+	}
+
+}
+
+CmidPlayer::~CmidPlayer()
+{
+	if(data)
+		delete [] data;
+
+	if(adlib_tim_data)
+		delete [] adlib_tim_data;
 }
 
 unsigned char CmidPlayer::datalook(long pos)
@@ -179,74 +218,7 @@ unsigned long CmidPlayer::getval()
 		}
 	return(v);
 }
-/*
-bool CmidPlayer::load_sierra_ins(const std::string &fname, const CFileProvider &fp)
-{
-    long i,j,k,l;
-    unsigned char ins[28];
-    char *pfilename;
-    binistream *f;
 
-    pfilename = (char *)malloc(fname.length()+9);
-    strcpy(pfilename,fname.c_str());
-    j=0;
-    for(i=strlen(pfilename)-1; i >= 0; i--)
-      if(pfilename[i] == '/' || pfilename[i] == '\\') {
-	j = i+1;
-	break;
-      }
-    sprintf(pfilename+j+3,"patch.003");
-
-    f = fp.open(pfilename);
-    free(pfilename);
-    if(!f) return false;
-
-    f->ignore(2);
-    stins = 0;
-    for (i=0; i<2; i++)
-        {
-        for (k=0; k<48; k++)
-            {
-            l=i*48+k;
-            midiprintf ("\n%2d: ",l);
-            for (j=0; j<28; j++)
-                ins[j] = f->readInt(1);
-
-            myinsbank[l][0]=
-                (ins[9]*0x80) + (ins[10]*0x40) +
-                (ins[5]*0x20) + (ins[11]*0x10) +
-                ins[1];   //1=ins5
-            myinsbank[l][1]=
-                (ins[22]*0x80) + (ins[23]*0x40) +
-                (ins[18]*0x20) + (ins[24]*0x10) +
-                ins[14];  //1=ins18
-
-            myinsbank[l][2]=(ins[0]<<6)+ins[8];
-            myinsbank[l][3]=(ins[13]<<6)+ins[21];
-
-            myinsbank[l][4]=(ins[3]<<4)+ins[6];
-            myinsbank[l][5]=(ins[16]<<4)+ins[19];
-            myinsbank[l][6]=(ins[4]<<4)+ins[7];
-            myinsbank[l][7]=(ins[17]<<4)+ins[20];
-
-            myinsbank[l][8]=ins[26];
-            myinsbank[l][9]=ins[27];
-
-            myinsbank[l][10]=((ins[2]<<1))+(1-(ins[12]&1));
-            //(ins[12] ? 0:1)+((ins[2]<<1));
-
-            for (j=0; j<11; j++)
-                midiprintf ("%02X ",myinsbank[l][j]);
-			stins++;
-            }
-		f->ignore(2);
-        }
-
-    fp.close(f);
-    memcpy(smyinsbank, myinsbank, 128 * 16);
-    return true;
-}
-*/
 void CmidPlayer::sierra_next_section()
 {
     int i,j;
@@ -341,61 +313,544 @@ bool CmidPlayer::load(std::string &filename, int song_index)
     type=good;
     //f->seek(0);
 
+    load_tim_file();
+
     rewind(0);
     return true;
 }
-/*
-bool CmidPlayer::load(const std::string &filename, const CFileProvider &fp)
+
+void CmidPlayer::load_tim_file()
 {
-    binistream *f = fp.open(filename); if(!f) return false;
-    int good;
-    unsigned char s[6];
+	U6Lib_n f;
+	std::string filename;
+	Configuration *config = Game::get_game()->get_config();
+	nuvie_game_t game_type = get_game_type(config);
+	if(game_type == NUVIE_GAME_SE)
+	{
+		config_get_path(config,"savage.tim",filename);
+	}
+	else // game_type == NUVIE_GAME_MD
+	{
+		config_get_path(config,"md.tim",filename);
+	}
 
-    f->readString((char *)s, 6);
-    good=0;
-    subsongs=0;
-    switch(s[0])
-        {
-        case 'A':
-            if (s[1]=='D' && s[2]=='L') good=FILE_LUCAS;
-            break;
-        case 'M':
-            if (s[1]=='T' && s[2]=='h' && s[3]=='d') good=FILE_MIDI;
-            break;
-        case 'C':
-            if (s[1]=='T' && s[2]=='M' && s[3]=='F') good=FILE_CMF;
-            break;
-        case 0x84:
-	  if (s[1]==0x00 && load_sierra_ins(filename, fp)) {
-	    if (s[2]==0xf0)
-	      good=FILE_ADVSIERRA;
-	    else
-	      good=FILE_SIERRA;
-	  }
-	  break;
-        default:
-            if (s[4]=='A' && s[5]=='D') good=FILE_OLDLUCAS;
-            break;
-        }
+	f.open(filename, 4, game_type);
+	unsigned char *buf = f.get_item(1);
+	adlib_tim_data = new unsigned char [f.get_item_size(1)-1];
+	num_tim_records = buf[0];
+	memcpy(adlib_tim_data, &buf[1], f.get_item_size(1)-1);
+	free(buf);
 
-    if (good!=0)
-		subsongs=1;
-    else {
-      fp.close(f);
-      return false;
-    }
+	for(int i=0;i<32;i++)
+	{
+		midi_chan_tim_ptr[i] = adlib_tim_data;
+	}
 
-    type=good;
-    f->seek(0);
-    flen = fp.filesize(f);
-    data = new unsigned char [flen];
-    f->readString((char *)data, flen);
-
-    fp.close(f);
-    rewind(0);
-    return true;
+	program_change(0x9 ,0x80);
+	program_change(0xa ,0x72);
+	program_change(0xb ,0x83);
+	program_change(0xc ,0x71);
+	program_change(0xd ,0x86);
+	program_change(0xe ,0x87);
+	program_change(0xf ,0x85);
+	program_change(0x10 ,0x84);
+	program_change(0x11 ,0x81);
+	program_change(0x12 ,0x88);
+	program_change(0x13 ,0x8D);
+	program_change(0x14 ,0x8F);
+	program_change(0x15 ,0x90);
+	program_change(0x16 ,0x91);
+	program_change(0x17 ,0x93);
+	program_change(0x18 ,0x8C);
+	program_change(0x19 ,0x8B);
 }
-*/
+
+unsigned char *CmidPlayer::get_tim_data(uint8 program_number)
+{
+	for(int i=0;i<num_tim_records;i++)
+	{
+		if(adlib_tim_data[i*48+0x2f] == program_number)
+		{
+			return &adlib_tim_data[i*48];
+		}
+	}
+
+	return NULL;
+}
+
+void CmidPlayer::program_change(sint8 channel, uint8 program_number)
+{
+	unsigned char *tim_data = get_tim_data(program_number);
+	int i,j;
+
+	for(i=0;i<11;i++)
+	{
+		if(adlib_ins[i].channel == channel)
+		{
+			play_note(channel, adlib_ins[i].note, 0); //note off.
+			adlib_ins[i].channel = -1;
+			adlib_ins[i].tim_data = NULL;
+
+		}
+	}
+
+	midi_chan_tim_ptr[channel] = tim_data;
+	midi_chan_tim_off_10[channel] = tim_data[0x10];
+	midi_chan_tim_off_11[channel] = tim_data[0x11];
+
+	if(tim_data[0xb] != 0 && adlib_num_active_channels == 9)
+	{
+		midi_write_adlib(0xa6, 0);
+		midi_write_adlib(0xb6, 0);
+		midi_write_adlib(0xa7, 0);
+		midi_write_adlib(0xb7, 0xa);
+		midi_write_adlib(0xa8, 0x54);
+		midi_write_adlib(0xb8, 0x9);
+
+		adlib_num_active_channels = 6;
+		for(i=6;i<9;i++)
+		{
+			for(j=0;j<13;j++)
+			{
+				if(byte_73[j] == i)
+				{
+					byte_73[j] = byte_73[i];
+					byte_73[i] = -1;
+					break;
+				}
+			}
+		}
+		adlib_bd_status = 0x20;
+		midi_write_adlib(0xbd, adlib_bd_status);
+	}
+}
+
+void CmidPlayer::pitch_bend(uint8 channel, uint8 pitch_lsb, uint8 pitch_msb)
+{
+	unsigned char *cur_tim_ptr = midi_chan_tim_ptr[channel];
+
+	midi_chan_pitch[channel] = ((sint16)((pitch_msb << 7) + pitch_lsb + 0xe000) * cur_tim_ptr[0xe]) / 256;
+
+	for(int i=0;i<adlib_num_active_channels;i++)
+	{
+		if(adlib_ins[i].byte_68 > 1 && adlib_ins[i].channel == channel)
+		{
+			sint16 var_4 = 0;
+
+			if(adlib_ins[i].tim_data != NULL)
+			{
+				var_4 = (sint16)adlib_ins[i].tim_data[0x24] + ((sint16)adlib_ins[i].tim_data[0x25] * 256);
+			}
+
+			uint16 var_2 = sub_60D(adlib_ins[i].word_3c + midi_chan_pitch[channel] + adlib_ins[i].word_cb + adlib_ins[i].word_121 + var_4);
+			var_2 += 0x2000;
+			midi_write_adlib(0xa0 + i, var_2 & 0xff);
+			midi_write_adlib(0xb0 + i, var_2 >> 8);
+		}
+
+	}
+}
+
+void CmidPlayer::control_mode_change(uint8 channel, uint8 function, uint8 value)
+{
+	uint8 c = channel;
+	if(c == 9)
+	{
+		c++;
+		do
+		{
+			control_mode_change(c, function, value);
+			c++;
+		} while(c<=25);
+		c = 9;
+	}
+
+	if(function == 1)
+	{
+		 midi_chan_tim_off_11[channel] = ((((sint8)midi_chan_tim_ptr[channel][0xf]) * value) / 128) + (sint8)midi_chan_tim_ptr[channel][0x11];
+	}
+	else if(function == 7)
+	{
+		midi_chan_volume[c] = value + 128;
+	}
+	else if(function == 0x7b)
+	{
+		bool var_6 = false;
+		for(int i=0;i<0xb;i++)
+		{
+			if(adlib_ins[i].byte_68 > 1)
+			{
+				if(adlib_ins[i].channel == channel)
+				{
+					play_note(channel, adlib_ins[i].note, 0); //note off
+				}
+				else if(i >= adlib_num_active_channels)
+				{
+					var_6 = true;
+				}
+			}
+		}
+
+		if(var_6 && adlib_num_active_channels < 9)
+		{
+			midi_write_adlib(0xbd, 0);
+			adlib_num_active_channels = 9;
+			byte_73[6] = 7;
+			byte_73[7] = 8;
+			byte_73[8] = byte_73[0xb];
+			byte_73[0xb] = 6;
+		}
+
+	}
+	else if(function == 0x79)
+	{
+		control_mode_change(channel, 1, 0);
+		control_mode_change(channel, 7, 0x7f);
+		pitch_bend(channel, 0, 0x40);
+	}
+}
+void CmidPlayer::play_note(uint8 channel, sint8 note, uint8 velocity)
+{
+	unsigned char *cur_tim_ptr = midi_chan_tim_ptr[channel];
+	for(;cur_tim_ptr!=NULL;cur_tim_ptr+=48)
+	{
+		sint8 voice = sub_4BF(channel, note, velocity, cur_tim_ptr);
+		sint16 var_4 = voice;
+		if(voice > 8)
+		{
+			var_4 = 0x11 - voice;
+		}
+
+		if(voice >= 0)
+		{
+			uint16 var_a = cur_tim_ptr[0x24] + (cur_tim_ptr[0x25] << 8);
+			if(velocity != 0)
+			{
+				adlib_ins[voice].word_121 = 0;
+				adlib_ins[voice].byte_137 = 0;
+				adlib_ins[voice].word_cb = cur_tim_ptr[0x12] + ((sint16)cur_tim_ptr[0x13] << 8);
+			}
+
+			sint8 cl = cur_tim_ptr[0x27];
+			if(cl < 0)
+			{
+				adlib_ins[voice].word_3c = (-((sint16)(note - 60)*256) / (1<<-(cl+1))) + 0x3c00;
+			}
+			else
+			{
+				adlib_ins[voice].word_3c = (((sint16)(note - 60)*256) / (1<<cl)) + 0x3c00;
+			}
+
+			uint16 var_2 = sub_60D(adlib_ins[voice].word_3c + midi_chan_pitch[channel] + adlib_ins[voice].word_cb + adlib_ins[voice].word_121 + var_a);
+			if(velocity == 0)
+			{
+				if(voice < adlib_num_active_channels || voice <= 6)
+				{
+					midi_write_adlib(0xa0 + var_4, var_2 & 0xff);
+					midi_write_adlib(0xb0 + var_4, var_2 >> 8);
+				}
+				else
+				{
+					adlib_bd_status &= ~adlib_BD_cmd_tbl[voice];
+				}
+			}
+			else
+			{
+				uint16 var_6 = cur_tim_ptr[6];
+				if(cur_tim_ptr[0xc] != 0 || midi_chan_volume[channel] < 0x100)
+				{
+					sint16 di = 0x3f - ((midi_chan_volume[channel] * (0x3f - ( ((sint16)(63 - velocity) / (sint16)(1<<(7 - cur_tim_ptr[0xc]))) + (var_6 & 0x3f)))) >> 8); //fixme this was 0x14 in dosbox var_6 = 8
+
+					di = 63 - velocity;
+					di = di / (1<<(7 - cur_tim_ptr[0xc]));
+					di += var_6 & 0x3f;
+
+					sint16 ax = (0x3f - di) * midi_chan_volume[channel];
+					ax = ax / 256;
+					di = 0x3f - ax;
+
+					if(di > 0x3f)
+					{
+						di = 0x3f;
+					}
+					if(di < 0)
+					{
+						di = 0;
+					}
+
+					midi_write_adlib(0x40 + adlib_voice_op1(voice), (var_6 & 0xc0) + di);
+				}
+
+				var_6 = cur_tim_ptr[1];
+				if(cur_tim_ptr[0xd] != 0)
+				{
+					sint16 di = (0x3f - velocity) / (sint16)(1<<(7 - cur_tim_ptr[0xd])) + (var_6 & 0x3f);
+					if(di > 0x3f)
+					{
+						di = 0x3f;
+					}
+					if(di < 0)
+					{
+						di = 0;
+					}
+
+					midi_write_adlib(0x40 + adlib_voice_op(voice), (var_6 & 0xc0) + di);
+				}
+
+				if(cur_tim_ptr[0xb] == 0 || voice == 6)
+				{
+					if(cur_tim_ptr[0xb] == 0)
+					{
+						var_2 += 0x2000;
+					}
+					midi_write_adlib(0xa0 + var_4, var_2 & 0xff);
+					midi_write_adlib(0xb0 + var_4, var_2 >> 8);
+				}
+
+				if(cur_tim_ptr[0xb] != 0)
+				{
+					adlib_bd_status |= adlib_BD_cmd_tbl[voice];
+				}
+			}
+
+			if(cur_tim_ptr[0xb] != 0)
+			{
+				midi_write_adlib(0xbd, adlib_bd_status);
+			}
+		}
+
+		if(cur_tim_ptr[0x26]==0)
+			break;
+	}
+}
+
+uint16 CmidPlayer::sub_60D(sint16 val)
+{
+	const uint16 word_20f[] = {0x1E5, 0x202, 0x220, 0x241, 0x263, 0x287, 0x2AE, 0x2D7, 0x302, 0x330, 0x360, 0x393, 0x3CA};
+
+	sint16 var_2 = val / 256;
+
+	sint16 si = ((var_2 + 6) / 0xc) - 2;
+	if(si > 7)
+	{
+		si = 7;
+	}
+	if(si < 0)
+	{
+		si = 0;
+	}
+
+	uint16 di = word_20f[(var_2 + 6) % 0xc];
+	if((val & 0xff) != 0)
+	{
+		di += ((word_20f[((var_2 - 18) % 0xc) + 1] - di) * (val & 0xff)) / 256;
+	}
+
+	return (si << 10) + di;
+}
+
+uint16 CmidPlayer::sub_4BF(uint8 channel, uint8 note, uint8 velocity, unsigned char *cur_tim_ptr)
+{
+	sint16 si = -1;
+
+	if(adlib_num_active_channels >= 9 || cur_tim_ptr[0xb] == 0)
+	{
+		if(velocity == 0)
+		{
+			for(si=0;si<adlib_num_active_channels;si++)
+			{
+				if(adlib_ins[si].byte_68 > 1 && adlib_ins[si].note == note && adlib_ins[si].channel == channel && adlib_ins[si].tim_data == cur_tim_ptr)
+				{
+					adlib_ins[si].byte_68 = 0;
+					sub_45E(si);
+					sub_48E(si, 0xb);
+					break;
+				}
+			}
+			if(si == adlib_num_active_channels)
+			{
+				si = -1;
+			}
+		}
+		else
+		{
+			if(byte_73[0xb] == 0xb)
+			{
+				if(midi_chan_tim_ptr[channel] == cur_tim_ptr)
+				{
+					si = byte_73[0xc];
+					byte_73[0xc] = byte_73[si];
+					sub_48E(si, 0xc);
+					midi_write_adlib(0xa0+si, 0);
+					midi_write_adlib(0xb0+si, 0);
+				}
+			}
+			else
+			{
+				si = byte_73[0xb];
+				byte_73[0xb] = byte_73[si];
+				sub_48E(si, 0xc);
+			}
+
+			if(si >= 0)
+			{
+				adlib_ins[si].byte_68 = 2;
+				adlib_ins[si].note = note;
+			}
+		}
+	}
+	else
+	{
+		si = cur_tim_ptr[0xb];
+		adlib_bd_status &= ~adlib_BD_cmd_tbl[cur_tim_ptr[0xb]];
+		midi_write_adlib(0xbd, adlib_bd_status);
+	}
+
+	if(si >= 0)
+	{
+		if(adlib_ins[si].channel != channel || adlib_ins[si].tim_data != cur_tim_ptr) //changing instruments
+		{
+			write_adlib_instrument(si, cur_tim_ptr);
+			adlib_ins[si].channel = channel;
+			adlib_ins[si].tim_data = cur_tim_ptr;
+		}
+	}
+
+	return si;
+}
+
+void CmidPlayer::sub_45E(sint16 voice)
+{
+	for(int i=0;i<0xd;i++)
+	{
+		if(byte_73[i] == voice)
+		{
+			byte_73[i] = byte_73[voice];
+			byte_73[voice] = voice;
+		}
+	}
+}
+
+void CmidPlayer::sub_48E(sint16 voice, uint8 val)
+{
+	for(int i=0;i<0xd;i++)
+	{
+		if(byte_73[i] == val)
+		{
+			byte_73[i] = voice;
+			byte_73[voice] = val;
+		}
+	}
+}
+
+uint8 CmidPlayer::adlib_voice_op(sint8 voice)
+{
+	const uint8 opp_tbl[] = {0, 1, 2, 8, 9, 0xA, 0x10, 0x11, 0x12, 0, 1, 2, 8, 9, 0xA, 0x10, 0x14, 0x12, 0x15, 0x11};
+	return opp_tbl[voice < adlib_num_active_channels ? voice + 9 : voice];
+}
+
+uint8 CmidPlayer::adlib_voice_op1(sint8 voice)
+{
+	const uint8 opp1_tbl[] = {3, 4, 5, 0xB, 0xC, 0xD, 0x13, 0x14, 0x15, 3, 4, 5, 0xB, 0xC, 0xD, 0x13, 0x14, 0x12, 0x15, 0x11};
+	return opp1_tbl[voice < adlib_num_active_channels ? voice + 9 : voice];
+}
+
+void CmidPlayer::write_adlib_instrument(sint8 voice, unsigned char *tim_data)
+{
+	uint8 opadd = adlib_voice_op(voice);
+	uint8 opadd1 = adlib_voice_op1(voice);
+	unsigned char *cur_tim_ptr = tim_data;
+
+	midi_write_adlib(0x20+opadd,*cur_tim_ptr++);
+	midi_write_adlib(0x40+opadd,*cur_tim_ptr++);
+	midi_write_adlib(0x60+opadd,*cur_tim_ptr++);
+	midi_write_adlib(0x80+opadd,*cur_tim_ptr++);
+	midi_write_adlib(0xe0+opadd,*cur_tim_ptr++);
+
+	if(adlib_num_active_channels == 9 || tim_data[0xb] < 7)
+	{
+		midi_write_adlib(0x20+opadd1,*cur_tim_ptr++);
+		midi_write_adlib(0x40+opadd1,*cur_tim_ptr++);
+		midi_write_adlib(0x60+opadd1,*cur_tim_ptr++);
+		midi_write_adlib(0x80+opadd1,*cur_tim_ptr++);
+		midi_write_adlib(0xe0+opadd1,*cur_tim_ptr++);
+		midi_write_adlib(0xc0+opadd1,*cur_tim_ptr++);
+	}
+
+}
+
+void CmidPlayer::interrupt_vector()
+{
+	const uint8 byte_229[] = {24, 0, 18, 20, 22, 0, 0, 0};
+
+	for(int i=0;i<adlib_num_active_channels;i++)
+	{
+		unsigned char *cur_tim_data = NULL;
+		bool update_adlib = false;
+		sint8 channel = adlib_ins[i].channel;
+		uint8 var_8 = byte_229[adlib_ins[i].byte_68];
+		uint16 var_10 = 0;
+		if(adlib_ins[i].tim_data == NULL)
+		{
+			cur_tim_data = adlib_tim_data;
+		}
+		else
+		{
+			cur_tim_data = adlib_ins[i].tim_data;
+			var_10 = cur_tim_data[0x24] & (cur_tim_data[0x25]<<8); //FIXME is this number signed?
+		}
+
+		if(var_8 != 0)
+		{
+			sint16 var_a = cur_tim_data[var_8*2 - 16] & (cur_tim_data[var_8*2 - 16+1]<<8);
+			sint16 var_c = cur_tim_data[(var_8+1)*2 - 16] & (cur_tim_data[(var_8+1)*2 - 16+1]<<8);
+
+			sint16 tmp = (var_c > adlib_ins[i].word_cb) ? var_c - adlib_ins[i].word_cb : adlib_ins[i].word_cb - var_c;
+			if(tmp >= var_a)
+			{
+				if(adlib_ins[i].word_cb >= var_c)
+				{
+					adlib_ins[i].word_cb -= var_a;
+				}
+				else
+				{
+					adlib_ins[i].word_cb += var_a;
+				}
+			}
+			else
+			{
+				adlib_ins[i].word_cb = var_c;
+				adlib_ins[i].byte_68++;
+			}
+
+			update_adlib = true;
+		}
+
+		if(channel < 32 && midi_chan_tim_off_10[channel] != 0)
+		{
+			adlib_ins[i].byte_137 += midi_chan_tim_off_10[channel];
+			sint8 var_11 = adlib_ins[i].byte_137;
+			if(var_11 > 63 || var_11 < -64)
+			{
+				var_11 = -128 - var_11;
+			}
+
+			adlib_ins[i].word_121 = (midi_chan_tim_off_11[channel] * var_11) / 16;
+			update_adlib = true;
+		}
+
+		if(update_adlib || var_10 != 0)
+		{
+			uint16 adlib_cmd_data = sub_60D(adlib_ins[i].word_3c + midi_chan_pitch[channel] + adlib_ins[i].word_cb + adlib_ins[i].word_121 + var_10);
+			if(adlib_ins[i].byte_68 > 1)
+			{
+				adlib_cmd_data += 0x2000;
+			}
+			midi_write_adlib(0xa0 + i, adlib_cmd_data & 0xff);
+			midi_write_adlib(0xb0 + i, adlib_cmd_data >> 8);
+		}
+	}
+}
 void CmidPlayer::midi_write_adlib(unsigned int r, unsigned char v)
 {
   opl->write(r,v);
@@ -518,10 +973,30 @@ void CmidPlayer::midi_fm_reset()
 
 bool CmidPlayer::update()
 {
-    long w,v,note,vel,ctrl,nv,x,l,lnum;
+	const uint8 adlib_chan_tbl[] = {
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10,
+			10, 18, 11, 0, 12, 13, 17, 13, 16, 13, 14, 13, 13, 15,
+			13, 19, 0, 0, 0, 0, 21, 0, 0, 0, 26, 26, 25, 20, 20,
+			0, 0, 21, 21, 22, 23, 0, 0, 24, 0, 20, 0 };
+
+	const uint8 adlib_note_tbl[] = {
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 48,
+			48, 48, 48, 0, 48, 42, 71, 42, 71, 47, 71, 47, 52, 79,
+			52, 77, 0, 0, 0, 0, 71, 0, 0, 0, 72, 79, 79, 64, 58,
+			0, 0, 89, 84, 48, 72, 0, 0, 36, 0, 96, 0 };
+
+    //long w,v,note,vel,ctrl,nv,x,l,lnum;
+    long w,v,note,vel,ctrl,x,l,lnum;
     int i=0,j,c;
-    int on,onl,numchan;
+    //int on,onl,numchan;
     int ret;
+
+    int current_status[16];
+
+    for(i=0;i<16;i++)
+    	current_status[i] = 0;
 
     if (doing == 1)
         {
@@ -552,29 +1027,58 @@ bool CmidPlayer::update()
 
 		v=getnext(1);
 
-        //  This is to do implied MIDI events.
-        if (v<0x80) {v=track[curtrack].pv; pos--;}
-        track[curtrack].pv=(unsigned char)v;
-
+        //  This is to do implied MIDI events. aka 'Running Status'
+        if (v<0x80)
+        {
+        	v=track[curtrack].pv;
+        	printf ("Running status [%2X]\n",(unsigned int)v);
+        	pos--;
+        }
+        else
+        {
+        	if(v >= 0xf0 && v < 0xf9)
+        	{
+        		track[curtrack].pv=0; //reset running status.
+        	}
+        	else if(v < 0xf0)
+        	{
+        		track[curtrack].pv=(unsigned char)v;
+        	}
+        	// if v > 0xf9 then current running status is maintained.
+        }
 		c=v&0x0f;
         midiprintf ("[%2X]",(unsigned int)v);
+        if(v==0xfe)
+        	midiprintf("pos=%d",(int)pos);
+        current_status[curtrack] = v;
         switch(v&0xf0)
             {
 			case 0x80: /*note off*/
 				midiprintf("Trk%02d: Note Off\n",curtrack);
 				note=getnext(1); vel=getnext(1);
+				play_note(c, note, 0);
+				/*
                 for (i=0; i<9; i++)
                     if (chp[i][0]==c && chp[i][1]==note)
                         {
                         midi_fm_endnote(i);
                         chp[i][0]=-1;
                         }
+                        */
                 break;
             case 0x90: /*note on*/
               //  doing=0;
             	midiprintf("Trk%02d: Note On\n",curtrack);
                 note=getnext(1); vel=getnext(1);
-
+                if(c == 10)
+                {
+                	play_note(adlib_chan_tbl[note] - 1, adlib_note_tbl[note], vel);
+                }
+                else
+                {
+                	play_note(c, note, vel);
+                }
+                /*
 		if(adlib_mode == ADLIB_RYTHM)
 		  numchan = 6;
 		else
@@ -664,6 +1168,7 @@ bool CmidPlayer::update()
                 }
                 else
                 midiprintf ("off");
+*/
                 break;
             case 0xa0: /*key after touch */
                 note=getnext(1); vel=getnext(1);
@@ -676,7 +1181,8 @@ midi_fm_playnote(i,note+cnote[c],my_midi_fm_vol_table[(cvols[c]*vel)/128]*2);
                 break;
             case 0xb0: /*control change .. pitch bend? */
                 ctrl=getnext(1); vel=getnext(1);
-
+                control_mode_change(c, ctrl, vel);
+/*
                 switch(ctrl)
                     {
                     case 0x07:
@@ -712,19 +1218,25 @@ midi_fm_playnote(i,note+cnote[c],my_midi_fm_vol_table[(cvols[c]*vel)/128]*2);
 			}
                         break;
                     }
+*/
                 break;
             case 0xc0: /*patch change*/
-	      x=getnext(1);
-	      ch[c].inum=x;
-	      for (j=0; j<11; j++)
-		ch[c].ins[j]=myinsbank[ch[c].inum][j];
-	      break;
+            	x=getnext(1);
+            	program_change(c, x);
+            	/*
+            	ch[c].inum=x;
+            	for (j=0; j<11; j++)
+            		ch[c].ins[j]=myinsbank[ch[c].inum][j];
+            	program_change(c,x);
+            	*/
+            	break;
             case 0xd0: /*chanel touch*/
                 x=getnext(1);
                 break;
             case 0xe0: /*pitch wheel*/
                 x=getnext(1);
-                x=getnext(1);
+                l=getnext(1);
+                pitch_bend(c,x,l);
                 break;
             case 0xf0:
                 switch(v)
@@ -814,10 +1326,15 @@ midi_fm_playnote(i,note+cnote[c],my_midi_fm_vol_table[(cvols[c]*vel)/128]*2);
                         break;
                     case 0xfe:
                     	i=getnext(1);
+                    	printf("FE %02X pos=%d\n",i, (int)pos);//(unsigned int)getnext(1),(unsigned int)getnext(1));
                     	getnext(2);
                     	if(i==0)
-                    		getnext(1);
-                        break;
+                    	{
+                    		printf(" %02X",(unsigned int)getnext(1));
+                    		//getnext(1);
+                    	}
+                    	printf("\n");
+                    	break;
                     case 0xfd:
                         break;
                     case 0xff:
@@ -839,8 +1356,13 @@ midi_fm_playnote(i,note+cnote[c],my_midi_fm_vol_table[(cvols[c]*vel)/128]*2);
                             }
                         else if (v==0x6)
                             {
+                        		printf ("Marker: ");
                         		for (i=0; i<l; i++)
-                        	       midiprintf ("%c",(unsigned char)getnext(1));
+                        		{
+                        	       //midiprintf ("%c",(unsigned char)getnext(1));
+                        	       printf ("%c",(unsigned char)getnext(1));
+                        		}
+                        		printf("\n");
                             }
                             else
                             {
@@ -877,7 +1399,15 @@ midi_fm_playnote(i,note+cnote[c],my_midi_fm_vol_table[(cvols[c]*vel)/128]*2);
         track[curtrack].pos=pos;
         }
 
-
+        for(i=0;i<16;i++)
+        {
+        	if(current_status[i] == 0)
+        		printf("--");
+        	else
+        		printf("%02X", current_status[i]);
+        	printf(" ");
+        }
+        printf("\n");
         ret=0; //end of song.
         iwait=0;
         for (curtrack=0; curtrack<16; curtrack++)
@@ -1000,7 +1530,8 @@ void CmidPlayer::rewind(int subsong)
             case FILE_MIDI:
                 if (type != FILE_LUCAS)
                     tins=128;
-                getnext(11);  /*skip header*/
+                getnext(9);  /*skip header*/
+                track_count = getnext(2); //total number of tracks.
                 deltas=getnext(2);
                 midiprintf ("deltas:%ld\n",deltas);
 
@@ -1169,7 +1700,7 @@ void CmidPlayer::rewind(int subsong)
 
 void CmidPlayer::load_ultima_midi_tracks()
 {
-    for(curtrack=0;curtrack<16;curtrack++)
+    for(curtrack=0;curtrack<track_count;curtrack++)
     {
         getnext(4); //skip MTrk
 

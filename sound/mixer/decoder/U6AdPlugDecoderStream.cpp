@@ -28,12 +28,14 @@
 
 U6AdPlugDecoderStream::U6AdPlugDecoderStream(CEmuopl *o, std::string filename, uint16 song_num)
 {
+  is_midi_track = false;
   opl = o;
   samples_left = 0;
   if(has_file_extension(filename.c_str(), ".lzc"))
   {
 	  player = new CmidPlayer(opl);
 	  ((CmidPlayer *)player)->load(filename, song_num);
+	  is_midi_track = true;
   }
   else
   {
@@ -41,6 +43,9 @@ U6AdPlugDecoderStream::U6AdPlugDecoderStream(CEmuopl *o, std::string filename, u
 	  player->load(filename.c_str());
   }
   player_refresh_count = (int)(opl->getRate() / player->getrefresh());
+
+  interrupt_rate = (int)(opl->getRate() / 60);
+  interrupt_samples_left = interrupt_rate;
 }
 
 U6AdPlugDecoderStream::~U6AdPlugDecoderStream()
@@ -60,12 +65,12 @@ int U6AdPlugDecoderStream::readBuffer(sint16 *buffer, const int numSamples)
     {
 	  if(samples_left > len)
 	  {
-		  opl->update(data, len);
+		  update_opl(data, len);
 		  samples_left -= len;
 		  return numSamples;
 	  }
 
-      opl->update(data, samples_left);
+	  update_opl(data, samples_left);
       data += samples_left * 2;
       len -= samples_left;
       samples_left = 0;
@@ -73,6 +78,7 @@ int U6AdPlugDecoderStream::readBuffer(sint16 *buffer, const int numSamples)
 
  for(i=len;i > 0;)
    {
+
      if(!player->update())
        {
          player->rewind();
@@ -86,7 +92,7 @@ int U6AdPlugDecoderStream::readBuffer(sint16 *buffer, const int numSamples)
     	 samples_left = j - i;
     	 j = i;
      }
-     opl->update(data, j);
+     update_opl(data, j);
 
      data += j * 2;
      i -= j;
@@ -95,3 +101,43 @@ int U6AdPlugDecoderStream::readBuffer(sint16 *buffer, const int numSamples)
  return numSamples;
 }
 
+void U6AdPlugDecoderStream::update_opl(short *data, int len)
+{
+	if(is_midi_track)
+	{
+		if(interrupt_samples_left>0)
+		{
+			if(interrupt_samples_left > len)
+			{
+				opl->update(data, len);
+				interrupt_samples_left -= len;
+				return;
+			}
+
+			opl->update(data, interrupt_samples_left);
+			data += interrupt_samples_left * 2;
+			len -= interrupt_samples_left;
+			interrupt_samples_left = 0;
+		}
+
+		for(int i=len;i > 0;)
+		{
+			((CmidPlayer *)player)->interrupt_vector();
+
+			int j = interrupt_rate;
+			if(j > i)
+			{
+				interrupt_samples_left = j - i;
+				j = i;
+			}
+			opl->update(data, j);
+
+			data += j * 2;
+			i -= j;
+		}
+	}
+	else
+	{
+		opl->update(data, len);
+	}
+}

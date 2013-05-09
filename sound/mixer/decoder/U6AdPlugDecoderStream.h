@@ -64,13 +64,17 @@ public:
 	 * converting data or stop.
 	 */
 	bool endOfData() const { return false; }
-
+private:
+	void update_opl(short *data, int num_samples);
 protected:
 
 	uint16 samples_left;
 	CEmuopl *opl;
 	CPlayer *player;
 	int player_refresh_count;
+	int interrupt_rate;
+	int interrupt_samples_left;
+	bool is_midi_track;
 };
 
 #endif /* __U6AdPlugDecoderStream_h__ */
