@@ -158,11 +158,11 @@ local function origin_fx_sequence()
 		conductor.image = g_img_tbl[10][i]
 		if poll_for_esc(4) == true then return end
 	end
-	if poll_for_esc(100) == true then return end
+	if poll_for_esc(200) == true then return end
 	
 	conductor.image = g_img_tbl[10][6]
 	
-	for i=1,20,1 do
+	for i=1,21,1 do
 		conductor.y = 98 + i * 12
 		conductor.image.scale = 100 + i * 15
 		
@@ -198,6 +198,8 @@ local function origin_fx_sequence()
 	
 		if poll_for_esc(4) == true then return end
 	end
+	
+	if poll_for_esc(200) == true then return end
 end
 
 local function intro_sequence()

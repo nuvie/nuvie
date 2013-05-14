@@ -104,7 +104,7 @@ public:
 	  sint8 channel;
 	  sint8 note;
 	  uint8 byte_68;
-	  uint16 word_121;
+	  sint16 word_121;
 	  uint8 byte_137;
 	  sint16 word_cb;
 	  sint16 word_3c;

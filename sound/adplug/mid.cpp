@@ -430,7 +430,7 @@ void CmidPlayer::pitch_bend(uint8 channel, uint8 pitch_lsb, uint8 pitch_msb)
 	unsigned char *cur_tim_ptr = midi_chan_tim_ptr[channel];
 
 	midi_chan_pitch[channel] = ((sint16)((pitch_msb << 7) + pitch_lsb + 0xe000) * cur_tim_ptr[0xe]) / 256;
-
+	printf("pitch_bend: c=%d, pitch=%d\n", channel, midi_chan_pitch[channel]);
 	for(int i=0;i<adlib_num_active_channels;i++)
 	{
 		if(adlib_ins[i].byte_68 > 1 && adlib_ins[i].channel == channel)
@@ -454,6 +454,7 @@ void CmidPlayer::pitch_bend(uint8 channel, uint8 pitch_lsb, uint8 pitch_msb)
 void CmidPlayer::control_mode_change(uint8 channel, uint8 function, uint8 value)
 {
 	uint8 c = channel;
+	printf("control_mode_change: c=%d, func=%2x, value=%d\n",channel, function, value);
 	if(c == 9)
 	{
 		c++;
@@ -467,7 +468,7 @@ void CmidPlayer::control_mode_change(uint8 channel, uint8 function, uint8 value)
 
 	if(function == 1)
 	{
-		 midi_chan_tim_off_11[channel] = ((((sint8)midi_chan_tim_ptr[channel][0xf]) * value) / 128) + (sint8)midi_chan_tim_ptr[channel][0x11];
+		 midi_chan_tim_off_11[channel] = ((((sint16)midi_chan_tim_ptr[channel][0xf]) * value) / 128) + (sint16)midi_chan_tim_ptr[channel][0x11];
 	}
 	else if(function == 7)
 	{
@@ -523,7 +524,7 @@ void CmidPlayer::play_note(uint8 channel, sint8 note, uint8 velocity)
 
 		if(voice >= 0)
 		{
-			uint16 var_a = cur_tim_ptr[0x24] + (cur_tim_ptr[0x25] << 8);
+			sint16 var_a = cur_tim_ptr[0x24] + (cur_tim_ptr[0x25] << 8);
 			if(velocity != 0)
 			{
 				adlib_ins[voice].word_121 = 0;
@@ -746,13 +747,13 @@ void CmidPlayer::sub_48E(sint16 voice, uint8 val)
 uint8 CmidPlayer::adlib_voice_op(sint8 voice)
 {
 	const uint8 opp_tbl[] = {0, 1, 2, 8, 9, 0xA, 0x10, 0x11, 0x12, 0, 1, 2, 8, 9, 0xA, 0x10, 0x14, 0x12, 0x15, 0x11};
-	return opp_tbl[voice < adlib_num_active_channels ? voice + 9 : voice];
+	return opp_tbl[adlib_num_active_channels < 9 ? voice + 9 : voice];
 }
 
 uint8 CmidPlayer::adlib_voice_op1(sint8 voice)
 {
 	const uint8 opp1_tbl[] = {3, 4, 5, 0xB, 0xC, 0xD, 0x13, 0x14, 0x15, 3, 4, 5, 0xB, 0xC, 0xD, 0x13, 0x14, 0x12, 0x15, 0x11};
-	return opp1_tbl[voice < adlib_num_active_channels ? voice + 9 : voice];
+	return opp1_tbl[adlib_num_active_channels < 9 ? voice + 9 : voice];
 }
 
 void CmidPlayer::write_adlib_instrument(sint8 voice, unsigned char *tim_data)
@@ -774,7 +775,7 @@ void CmidPlayer::write_adlib_instrument(sint8 voice, unsigned char *tim_data)
 		midi_write_adlib(0x60+opadd1,*cur_tim_ptr++);
 		midi_write_adlib(0x80+opadd1,*cur_tim_ptr++);
 		midi_write_adlib(0xe0+opadd1,*cur_tim_ptr++);
-		midi_write_adlib(0xc0+opadd1,*cur_tim_ptr++);
+		midi_write_adlib(0xc0+voice,*cur_tim_ptr++);
 	}
 
 }
@@ -789,7 +790,7 @@ void CmidPlayer::interrupt_vector()
 		bool update_adlib = false;
 		sint8 channel = adlib_ins[i].channel;
 		uint8 var_8 = byte_229[adlib_ins[i].byte_68];
-		uint16 var_10 = 0;
+		sint16 var_10 = 0;
 		if(adlib_ins[i].tim_data == NULL)
 		{
 			cur_tim_data = adlib_tim_data;
@@ -797,7 +798,7 @@ void CmidPlayer::interrupt_vector()
 		else
 		{
 			cur_tim_data = adlib_ins[i].tim_data;
-			var_10 = cur_tim_data[0x24] & (cur_tim_data[0x25]<<8); //FIXME is this number signed?
+			var_10 = cur_tim_data[0x24] & (cur_tim_data[0x25]<<8);
 		}
 
 		if(var_8 != 0)
