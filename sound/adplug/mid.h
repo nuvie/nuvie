@@ -154,6 +154,8 @@ public:
   void midi_fm_endnote(int voice);
   void midi_fm_reset();
 
+  sint16 read_sint16(unsigned char *buf);
+
  public:
   void interrupt_vector();
 };

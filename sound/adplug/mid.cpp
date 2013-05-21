@@ -173,6 +173,11 @@ CmidPlayer::~CmidPlayer()
 		delete [] adlib_tim_data;
 }
 
+sint16 CmidPlayer::read_sint16(unsigned char *buf)
+{
+	return (buf[1] << 8) | buf[0];
+}
+
 unsigned char CmidPlayer::datalook(long pos)
 {
     if (pos<0 || pos >= flen) return(0);
@@ -383,6 +388,7 @@ void CmidPlayer::program_change(sint8 channel, uint8 program_number)
 	unsigned char *tim_data = get_tim_data(program_number);
 	int i,j;
 
+	printf("Program change channel: %d program: %d\n", channel, program_number);
 	for(i=0;i<11;i++)
 	{
 		if(adlib_ins[i].channel == channel)
@@ -429,8 +435,9 @@ void CmidPlayer::pitch_bend(uint8 channel, uint8 pitch_lsb, uint8 pitch_msb)
 {
 	unsigned char *cur_tim_ptr = midi_chan_tim_ptr[channel];
 
-	midi_chan_pitch[channel] = ((sint16)((pitch_msb << 7) + pitch_lsb + 0xe000) * cur_tim_ptr[0xe]) / 256;
-	printf("pitch_bend: c=%d, pitch=%d\n", channel, midi_chan_pitch[channel]);
+	midi_chan_pitch[channel] = ((sint16)((pitch_msb << 7) + pitch_lsb - 8192) * cur_tim_ptr[0xe]) / 256;
+	printf("pitch_bend: c=%d, pitch=%d %d,%d,%d\n", channel, midi_chan_pitch[channel], pitch_msb, pitch_lsb, cur_tim_ptr[0xe]);
+
 	for(int i=0;i<adlib_num_active_channels;i++)
 	{
 		if(adlib_ins[i].byte_68 > 1 && adlib_ins[i].channel == channel)
@@ -439,7 +446,7 @@ void CmidPlayer::pitch_bend(uint8 channel, uint8 pitch_lsb, uint8 pitch_msb)
 
 			if(adlib_ins[i].tim_data != NULL)
 			{
-				var_4 = (sint16)adlib_ins[i].tim_data[0x24] + ((sint16)adlib_ins[i].tim_data[0x25] * 256);
+				var_4 = read_sint16(&adlib_ins[i].tim_data[0x24]);
 			}
 
 			uint16 var_2 = sub_60D(adlib_ins[i].word_3c + midi_chan_pitch[channel] + adlib_ins[i].word_cb + adlib_ins[i].word_121 + var_4);
@@ -524,12 +531,13 @@ void CmidPlayer::play_note(uint8 channel, sint8 note, uint8 velocity)
 
 		if(voice >= 0)
 		{
-			sint16 var_a = cur_tim_ptr[0x24] + (cur_tim_ptr[0x25] << 8);
+			sint16 var_a = read_sint16(&cur_tim_ptr[0x24]);
+
 			if(velocity != 0)
 			{
 				adlib_ins[voice].word_121 = 0;
 				adlib_ins[voice].byte_137 = 0;
-				adlib_ins[voice].word_cb = cur_tim_ptr[0x12] + ((sint16)cur_tim_ptr[0x13] << 8);
+				adlib_ins[voice].word_cb = read_sint16(&cur_tim_ptr[0x12]);
 			}
 
 			sint8 cl = cur_tim_ptr[0x27];
@@ -740,6 +748,7 @@ void CmidPlayer::sub_48E(sint16 voice, uint8 val)
 		{
 			byte_73[i] = voice;
 			byte_73[voice] = val;
+			break;
 		}
 	}
 }
@@ -798,13 +807,13 @@ void CmidPlayer::interrupt_vector()
 		else
 		{
 			cur_tim_data = adlib_ins[i].tim_data;
-			var_10 = cur_tim_data[0x24] & (cur_tim_data[0x25]<<8);
+			var_10 = read_sint16(&cur_tim_data[0x24]);
 		}
 
 		if(var_8 != 0)
 		{
-			sint16 var_a = cur_tim_data[var_8*2 - 16] & (cur_tim_data[var_8*2 - 16+1]<<8);
-			sint16 var_c = cur_tim_data[(var_8+1)*2 - 16] & (cur_tim_data[(var_8+1)*2 - 16+1]<<8);
+			sint16 var_a = read_sint16(&cur_tim_data[var_8*2 - 16]);
+			sint16 var_c = read_sint16(&cur_tim_data[(var_8+1)*2 - 16]);
 
 			sint16 tmp = (var_c > adlib_ins[i].word_cb) ? var_c - adlib_ins[i].word_cb : adlib_ins[i].word_cb - var_c;
 			if(tmp >= var_a)
@@ -969,7 +978,10 @@ void CmidPlayer::midi_fm_reset()
         midi_write_adlib(i,0);
 
     midi_write_adlib(0x01, 0x20);
-    midi_write_adlib(0xBD,0xc0);
+    //midi_write_adlib(0xBD,0xc0);
+    midi_write_adlib(0xBD,0);
+    //midi_write_adlib(0x8,0);
+
 }
 
 bool CmidPlayer::update()
@@ -1071,9 +1083,12 @@ bool CmidPlayer::update()
               //  doing=0;
             	midiprintf("Trk%02d: Note On\n",curtrack);
                 note=getnext(1); vel=getnext(1);
-                if(c == 10)
+                if(c == 9)
                 {
-                	play_note(adlib_chan_tbl[note] - 1, adlib_note_tbl[note], vel);
+                	if(adlib_chan_tbl[note] != 0)
+                	{
+                		play_note(adlib_chan_tbl[note] - 1, adlib_note_tbl[note], vel);
+                	}
                 }
                 else
                 {
@@ -1335,6 +1350,10 @@ midi_fm_playnote(i,note+cnote[c],my_midi_fm_vol_table[(cvols[c]*vel)/128]*2);
                     		//getnext(1);
                     	}
                     	printf("\n");
+                    	if(i != 3)
+                    	{
+                    		control_mode_change(c,0x7b,0);
+                    	}
                     	break;
                     case 0xfd:
                         break;
