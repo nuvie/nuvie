@@ -318,7 +318,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/cheats/party_all_the_time", false);
 
 	config->set("config/ultima6/music", "native");
-	config->set("config/ultima6/sfx", "pcspeaker");
+	config->set("config/ultima6/sfx", "native");
 	config->set("config/ultima6/skip_intro", false);
 	config->set("config/ultima6/show_eggs", false);
 	config->set("config/ultima6/show_stealing", false);
@@ -332,6 +332,8 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/ultima6/newscroll/bg_color", 218);
 	config->set("config/ultima6/newscroll/border_color", 220);
 
+	config->set("config/martian/music", "native");
+	config->set("config/martian/sfx", "native");
 	config->set("config/martian/skip_intro", false);
 	config->set("config/martian/show_eggs", false);
 	config->set("config/martian/converse_solid_bg", false);
@@ -343,6 +345,8 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/martian/newscroll/bg_color", 136);
 	config->set("config/martian/newscroll/border_color", 133);
 
+	config->set("config/savage/music", "native");
+	config->set("config/savage/sfx", "native");
 	config->set("config/savage/skip_intro", false);
 	config->set("config/savage/show_eggs", false);
 	config->set("config/savage/converse_solid_bg", false);

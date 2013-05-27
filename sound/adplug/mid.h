@@ -21,6 +21,8 @@
 
 #include "adplug_player.h"
 
+class OriginFXAdLibDriver;
+
 class CmidPlayer: public CPlayer
 {
 public:
@@ -96,48 +98,9 @@ public:
 
   int type,tins,stins;
 
-  unsigned char num_tim_records;
-  unsigned char *adlib_tim_data;
-
-  struct adlib_instrument
-  {
-	  sint8 channel;
-	  sint8 note;
-	  uint8 byte_68;
-	  sint16 word_121;
-	  uint8 byte_137;
-	  sint16 word_cb;
-	  sint16 word_3c;
-	  unsigned char *tim_data;
-  };
-
-  adlib_instrument adlib_ins[11];
-
-  int adlib_num_active_channels; //either 6 or 9.
-  unsigned char *midi_chan_tim_ptr[32];
-  uint8 midi_chan_tim_off_10[32];
-  sint16 midi_chan_tim_off_11[32];
-  sint16 midi_chan_pitch[32];
-  sint16 midi_chan_volume[29];
-
-  uint8 byte_73[13];
-  uint8 adlib_bd_status;
+  OriginFXAdLibDriver *origin_fx_driver;
 
  private:
-  //bool load_sierra_ins(const std::string &fname, const CFileProvider &fp);
-  void load_tim_file();
-  unsigned char *get_tim_data(uint8 program_number);
-  void program_change(sint8 channel, uint8 program_number);
-  void pitch_bend(uint8 channel, uint8 pitch_lsb, uint8 pitch_msb);
-  void control_mode_change(uint8 channel, uint8 function, uint8 value);
-  void play_note(uint8 channel, sint8 note, uint8 velocity);
-  uint8 adlib_voice_op(sint8 voice);
-  uint8 adlib_voice_op1(sint8 voice);
-  uint16 sub_60D(sint16 val);
-  uint16 sub_4BF(uint8 channel, uint8 note, uint8 velocity, unsigned char *cur_tim_ptr);
-  void sub_45E(sint16 voice);
-  void sub_48E(sint16 voice, uint8 val);
-  void write_adlib_instrument(sint8 voice, unsigned char *tim_data);
 
   void load_ultima_midi_tracks();
   void midiprintf(const char *format, ...);
@@ -153,8 +116,6 @@ public:
   void midi_fm_playnote(int voice, int note, int volume);
   void midi_fm_endnote(int voice);
   void midi_fm_reset();
-
-  sint16 read_sint16(unsigned char *buf);
 
  public:
   void interrupt_vector();

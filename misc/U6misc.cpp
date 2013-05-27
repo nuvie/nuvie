@@ -238,6 +238,16 @@ void build_path(std::string path, std::string filename, std::string &full_path)
  return;
 }
 
+bool has_fmtowns_support(Configuration *config)
+{
+	std::string townsdir;
+    config->value("config/ultima6/townsdir", townsdir, "");
+    if(townsdir != "" && directory_exists(townsdir.c_str()))
+    	return true;
+
+    return false;
+}
+
 bool directory_exists(const char *directory)
 {
  struct stat sb;

@@ -83,4 +83,6 @@ void scale_rect_8bit(unsigned char *Source, unsigned char *Target, int SrcWidth,
 
 bool has_file_extension(const char *filename, const char *extension);
 
+bool has_fmtowns_support(Configuration *config);
+
 #endif /* __U6misc_h__ */

@@ -123,6 +123,9 @@ private:
     SfxManager *m_SfxManager;
 
     CEmuopl *opl;
+
+    int game_type; //FIXME there's a nuvie_game_t, but almost everything uses int game_type (or gametype)
+
 public:
 	static bool g_MusicFinished;
 };

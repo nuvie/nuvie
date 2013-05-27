@@ -202,8 +202,12 @@ nuvie_SOURCES = \
 	script/ScriptCutscene.cpp \
 	script/ScriptCutscene.h \
 \
+	sound/AdLibSfxManager.cpp \
+	sound/AdLibSfxManager.h \
 	sound/CustomSfxManager.cpp \
 	sound/CustomSfxManager.h \
+	sound/OriginFXAdLibDriver.cpp \
+	sound/OriginFXAdLibDriver.h \
 	sound/PCSpeakerSfxManager.cpp \
 	sound/PCSpeakerSfxManager.h \
 	sound/SfxManager.h \

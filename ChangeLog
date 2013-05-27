@@ -1,3 +1,12 @@
+2013-05-27  Eric Fry <efry at users.sourceforge.net> r1719
+	* Added new 'native' config option for game sound effects. This is needed to
+	  support SE and MD sfx which are AdLib notes.
+	* Added has_fmtowns_support() this is used by the sound manager to determine
+	  if towns sfx should be used when 'native' is selected and fm-towns files are
+	  detected.
+	* Moved SE/MD adlib code into new OriginFXAdLibDriver.
+	* Started work on new AdLib sfx support for SE
+
 2013-05-21  Eric Fry <efry at users.sourceforge.net> r1718
 	* More work on SE music support. Cleaned up reading sint16 tim data.
 

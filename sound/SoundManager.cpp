@@ -44,6 +44,7 @@
 #include "doublebuffersdl-mixer.h"
 #include "decoder/FMtownsDecoderStream.h"
 
+#include "AdLibSfxManager.h"
 #include "PCSpeakerSfxManager.h"
 #include "TownsSfxManager.h"
 #include "CustomSfxManager.h"
@@ -136,6 +137,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
 
   m_Config = config;
   m_Config->value ("config/audio/enabled", audio_enabled, true);
+  m_Config->value("config/GameType",game_type);
 
 /*  if(audio_enabled == false) // commented out to allow toggling
      {
@@ -164,7 +166,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
 
   config_key = config_get_game_key(config);
   config_key.append("/sfx");
-  config->value (config_key, sfx_style, "pcspeaker");
+  config->value (config_key, sfx_style, "native");
 
   config_key = config_get_game_key(config);
   config_key.append("/sounddir");
@@ -179,8 +181,6 @@ bool SoundManager::nuvieStartup (Configuration * config)
     {
      if(music_style == "native") 
        {
-         int game_type; //FIXME there's a nuvie_game_t, but almost everything uses int game_type (or gametype)
-         config->value("config/GameType",game_type);
          if (game_type == NUVIE_GAME_U6)
 	   LoadNativeU6Songs(); //FIX need to handle MD & SE music too.
        }
@@ -489,9 +489,32 @@ bool SoundManager::LoadSfxManager(string sfx_style)
 		return false;
 	}
 
+	if(sfx_style == "native")
+	{
+		switch(game_type)
+		{
+		case NUVIE_GAME_U6 :
+			if(has_fmtowns_support(m_Config))
+			{
+				sfx_style = "towns";
+			}
+			else
+			{
+				sfx_style = "pcspeaker";
+			}
+			break;
+		case NUVIE_GAME_MD :
+		case NUVIE_GAME_SE : sfx_style = "adlib"; break;
+		}
+	}
+
 	if(sfx_style == "pcspeaker")
 	{
 		m_SfxManager = new PCSpeakerSfxManager(m_Config, mixer->getMixer());
+	}
+	if(sfx_style == "adlib")
+	{
+		m_SfxManager = new AdLibSfxManager(m_Config, mixer->getMixer());
 	}
 	else if(sfx_style == "towns")
 	{
