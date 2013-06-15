@@ -332,6 +332,9 @@ static int nscript_image_new(lua_State *L)
 	if(shp->init(width, height) == false)
 		return 0;
 
+	if(lua_gettop(L) >= 3)
+		shp->fill((uint8)lua_tointeger(L, 3));
+
 	CSImage *image = new CSImage(shp);
 
 	nscript_new_image_var(L, image);

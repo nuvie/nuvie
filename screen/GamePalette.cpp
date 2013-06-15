@@ -98,6 +98,17 @@ bool GamePalette::loadPalette()
 
  free(buf);
 
+/*
+	printf("GIMP Palette\nName: SE\n#\n");
+	for (int i = 0; i < 0x100; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			printf("% 3d ", palette[i*3+j]);
+		}
+		printf(" untitled\n");
+	}
+*/
  dither_mode = Game::get_game()->get_dither()->get_mode();
  if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
  {

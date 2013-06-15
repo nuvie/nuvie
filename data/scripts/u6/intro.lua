@@ -1671,7 +1671,7 @@ g_keycode_tbl =
 local function create_character()
 	music_play("create.m")
 	
-	local bubbles = sprite_new(image_new(100,100), 110, 30, false)
+	local bubbles = sprite_new(image_new(100,100, 0), 110, 30, false)
 	local bg = sprite_new(image_load("vellum1.shp", 0), 0x10, 0x50, true)
 	image_print(bg.image, "By what name shalt thou be called?", 7, 303, 36, 24, 0x48)
 	

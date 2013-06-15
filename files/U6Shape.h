@@ -68,6 +68,7 @@ public:
 
 	void draw_line(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color);
 	bool blit(U6Shape *shp, uint16 x, uint16 y);
+	void fill(uint8 color);
 };
 
 #endif

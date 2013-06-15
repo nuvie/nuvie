@@ -1,3 +1,10 @@
+2013-06-15  Eric Fry <efry at users.sourceforge.net> r1721
+	* Fixed bug with bubbling liquid in U6 Gypsy intro sequence.
+	* Added stub intro.lua script for md to prevent a crash on startup.
+	* Added optional third argument to image_new() script function. This allows
+	  you to set a fill colour on the newly created image. If the argument is
+	  omitted then you get a transparent 0xff image.
+
 2013-06-15  Eric Fry <efry at users.sourceforge.net> r1720
 	* Added Daniel's new Avatar doll gump art. At the moment only male avatars
 	  are available.

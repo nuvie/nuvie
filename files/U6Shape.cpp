@@ -375,3 +375,8 @@ bool U6Shape::blit(U6Shape *shp, uint16 x, uint16 y)
 
 	return true;
 }
+
+void U6Shape::fill(uint8 color)
+{
+	memset(raw, color, width*height);
+}
