@@ -89,6 +89,7 @@ Source: data\images\gumps\doll\inventory_btn_down.bmp; DestDir: {app}\data\image
 Source: data\images\gumps\doll\inventory_btn_up.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\party_btn_down.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\party_btn_up.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
+Source: data\images\gumps\doll\avatar_U6_02.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\avatar_U6_06.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\avatar_U6_07.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\avatar_U6_08.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
