@@ -155,6 +155,8 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
     game_y_offset = (screen_height - game_height)/2;
  }
 
+ effect_manager = new EffectManager;
+
  init_cursor();
 }
 
@@ -325,7 +327,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
 
    usecode->init(obj_manager, game_map, player, scroll);
 
-   effect_manager = new EffectManager;
+
 
 
    magic = new Magic();

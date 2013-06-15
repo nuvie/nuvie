@@ -1,3 +1,14 @@
+2013-06-15  Eric Fry <efry at users.sourceforge.net> r1720
+	* Added Daniel's new Avatar doll gump art. At the moment only male avatars
+	  are available.
+	* Refactored the way you get the avatar Actor object.
+	* Started adding support for AdLib based sfx in MD/SE.
+	* Cleaned out the CmidPlayer class so it only contains code relevant to
+	  Origin midi files.
+	* Added a new C++ class based version of the Opl2 emulator code. This is used
+	  by the new AdLib sfx.
+	* Removed mididata.h
+
 2013-05-27  Eric Fry <efry at users.sourceforge.net> r1719
 	* Added new 'native' config option for game sound effects. This is needed to
 	  support SE and MD sfx which are AdLib notes.

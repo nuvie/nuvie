@@ -58,6 +58,8 @@ class Portrait
 
  bool has_portrait(Actor *actor) { return (get_portrait_num(actor) != NO_PORTRAIT_FOUND); }
 
+ uint8 get_avatar_portrait_num();
+
  private:
 
  uint8 get_portrait_num(Actor *actor);

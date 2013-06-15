@@ -30,6 +30,7 @@
 #include "Dither.h"
 #include "Game.h"
 
+#include "ActorManager.h"
 #include "Actor.h"
 #include "Portrait.h"
 #include "U6Lzw.h"
@@ -116,6 +117,11 @@ bool Portrait::load(NuvieIO *objlist)
  return true;
 }
 
+uint8 Portrait::get_avatar_portrait_num()
+{
+	return get_portrait_num(Game::get_game()->get_actor_manager()->get_avatar());
+}
+
 uint8 Portrait::get_portrait_num(Actor *actor)
 {
 	uint8 num;
@@ -126,7 +132,7 @@ uint8 Portrait::get_portrait_num(Actor *actor)
 	num = actor->get_actor_num();
 	if (gametype==NUVIE_GAME_U6)
 	{
-		if(num == 1) // avatar portrait
+		if(actor->is_avatar()) // avatar portrait
 		{
 			num = avatar_portrait_num;
 		}
@@ -175,7 +181,7 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
    return NULL;
 
  if (gametype==NUVIE_GAME_U6) {
-  if(actor->get_actor_num() == 1) // avatar portrait
+  if(actor->is_avatar()) // avatar portrait
   {
    portrait = &portrait_z;
   }

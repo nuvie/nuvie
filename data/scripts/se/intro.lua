@@ -151,7 +151,7 @@ local function origin_fx_sequence()
 		conductor.image = g_img_tbl[10][16]
 
 		if poll_for_esc(1) == true then return end
-	
+			play_sfx(38, false)
 	end
 	
 	for i=16,20,1 do
@@ -159,6 +159,8 @@ local function origin_fx_sequence()
 		if poll_for_esc(4) == true then return end
 	end
 	if poll_for_esc(200) == true then return end
+	
+	play_sfx(12, false)
 	
 	conductor.image = g_img_tbl[10][6]
 	

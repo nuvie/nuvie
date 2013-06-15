@@ -54,14 +54,6 @@ public:
   static const unsigned char adlib_opadd[];
   static const int ops[], map_chan[], fnums[], percussion_map[];
 
-  struct midi_channel {
-    int inum;
-    unsigned char ins[11];
-    int vol;
-    int nshift;
-    int on;
-  };
-
   struct midi_track {
     unsigned long tend;
     unsigned long spos;
@@ -74,15 +66,14 @@ public:
   char *author,*title,*remarks,emptystr;
   long flen;
   unsigned long pos;
-  unsigned long sierra_pos; //sierras gotta be special.. :>
+
   int subsongs;
   unsigned char *data;
 
-  unsigned char adlib_data[256];
+
   int adlib_style;
   int adlib_mode;
-  unsigned char myinsbank[128][16], smyinsbank[128][16];
-  midi_channel ch[16];
+
   int chp[18][3];
 
   long deltas;
@@ -108,14 +99,6 @@ public:
   unsigned long getnexti(unsigned long num);
   unsigned long getnext(unsigned long num);
   unsigned long getval();
-  void sierra_next_section();
-  void midi_write_adlib(unsigned int r, unsigned char v);
-  void midi_fm_instrument(int voice, unsigned char *inst);
-  void midi_fm_percussion(int ch, unsigned char *inst);
-  void midi_fm_volume(int voice, int volume);
-  void midi_fm_playnote(int voice, int note, int volume);
-  void midi_fm_endnote(int voice);
-  void midi_fm_reset();
 
  public:
   void interrupt_vector();

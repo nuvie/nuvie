@@ -26,7 +26,7 @@
 
 #include "nuvieDefs.h"
 #include "mixer.h"
-//#include "decoder/AdLibStream.h"
+#include "decoder/AdLibSfxStream.h"
 #include "AdLibSfxManager.h"
 
 
@@ -50,13 +50,13 @@ bool AdLibSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *handl
 {
 	Audio::AudioStream *stream = NULL;
 
-	if(sfx_id == NUVIE_SFX_HIT)
+	if(sfx_id == NUVIE_SFX_SE_TICK)
 		{
-			//FIXME
+			stream = new AdLibSfxStream(config, mixer->getOutputRate(), 17, 0x30, 0x60, 0xff, 22050);
 		}
 	else if(sfx_id == NUVIE_SFX_EXPLOSION)
 		{
-			//FIXME
+			stream = new AdLibSfxStream(config, mixer->getOutputRate(), 8, 0x40, 0x40, 0x7f, 22050);
 		}
 
 

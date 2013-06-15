@@ -69,6 +69,7 @@ class OriginFXAdLibDriver
 	uint8 adlib_bd_status;
 
  public:
+	void init();
 	void play_note(uint8 channel, sint8 note, uint8 velocity);
 	void control_mode_change(uint8 channel, uint8 function, uint8 value);
 	void program_change(sint8 channel, uint8 program_number);

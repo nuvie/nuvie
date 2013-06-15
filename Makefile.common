@@ -227,8 +227,9 @@ nuvie_SOURCES = \
 	sound/adplug/fmopl.h \
 	sound/adplug/mid.cpp \
 	sound/adplug/mid.h \
-	sound/adplug/mididata.h \
 	sound/adplug/opl.h \
+	sound/adplug/OplClass.cpp \
+	sound/adplug/OplClass.h \
 	sound/adplug/adplug_player.cpp \
 	sound/adplug/adplug_player.h \
 	sound/adplug/silentopl.h \
@@ -253,6 +254,8 @@ nuvie_SOURCES = \
 	sound/mixer/doublebuffersdl-mixer.cpp \
 	sound/mixer/rate.cpp \
 \
+	sound/mixer/decoder/AdLibSfxStream.cpp \
+	sound/mixer/decoder/AdLibSfxStream.h \
 	sound/mixer/decoder/FMtownsDecoderStream.cpp \
 	sound/mixer/decoder/FMtownsDecoderStream.h \
 	sound/mixer/decoder/PCSpeaker.cpp \

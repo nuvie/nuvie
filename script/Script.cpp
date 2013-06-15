@@ -424,6 +424,7 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    config = cfg;
    gametype = type;
    script = this;
+   soundManager = sm;
 
    script_obj_list = iAVLAllocTree(get_iAVLKey);
 
@@ -2546,7 +2547,7 @@ static int nscript_play_sfx(lua_State *L)
 			play_mode = SFX_PLAY_ASYNC;
 	}
 
-	Game::get_game()->get_sound_manager()->playSfx(sfx_id, play_mode);
+	Script::get_script()->get_sound_manager()->playSfx(sfx_id, play_mode);
 
 	return 0;
 }

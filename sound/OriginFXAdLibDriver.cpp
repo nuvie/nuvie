@@ -64,6 +64,17 @@ OriginFXAdLibDriver::OriginFXAdLibDriver(Configuration *cfg, Copl *newopl)
 
 	load_tim_file();
 
+    init();
+}
+
+OriginFXAdLibDriver::~OriginFXAdLibDriver()
+{
+	if(adlib_tim_data)
+		delete [] adlib_tim_data;
+}
+
+void OriginFXAdLibDriver::init()
+{
     opl->init();
 
     for (int i=0; i<256; i++)
@@ -74,12 +85,6 @@ OriginFXAdLibDriver::OriginFXAdLibDriver(Configuration *cfg, Copl *newopl)
     midi_write_adlib(0x01, 0x20);
     midi_write_adlib(0xBD,0);
     midi_write_adlib(0x8,0);
-}
-
-OriginFXAdLibDriver::~OriginFXAdLibDriver()
-{
-	if(adlib_tim_data)
-		delete [] adlib_tim_data;
 }
 
 sint16 OriginFXAdLibDriver::read_sint16(unsigned char *buf)

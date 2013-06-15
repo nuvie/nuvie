@@ -69,4 +69,6 @@ typedef uint16 SfxIdType;
 #define NUVIE_SFX_SLUG_DISSOLVE 36
 #define NUVIE_SFX_HAIL_STONE 37
 
+#define NUVIE_SFX_SE_TICK 38
+
 #endif

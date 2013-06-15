@@ -97,6 +97,9 @@ using std::vector;
 
 #define ACTOR_CHANGE_BASE_OBJ_N true
 
+#define ACTOR_VEHICLE_ID_N 0
+#define ACTOR_AVATAR_ID_N  1
+
 class Map;
 class MapCoord;
 class UseCode;
@@ -268,6 +271,7 @@ class Actor
  virtual bool init(uint8 obj_status=NO_OBJ_STATUS);
  void init_from_obj(Obj *obj, bool change_base_obj=false);
 
+ bool is_avatar() { return(id_n==ACTOR_AVATAR_ID_N); }
  bool is_onscreen() { return(MapCoord(x,y,z).is_visible()); }
  bool is_in_party() { return ((status_flags & ACTOR_STATUS_IN_PARTY) == ACTOR_STATUS_IN_PARTY); }
  bool is_in_vehicle();

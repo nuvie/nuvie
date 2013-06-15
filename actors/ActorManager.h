@@ -35,8 +35,7 @@ class TileManager;
 class GameClock;
 class MapCoord;
 
-#define ACTOR_VEHICLE_ID_N 0
-#define ACTOR_AVATAR_ID_N  1
+
 
 #define ACTORMANAGER_MAX_ACTORS 256
 
@@ -82,6 +81,8 @@ class ActorManager
  Actor *get_actor(uint8 actor_num);
  Actor *get_actor(uint16 x, uint16 y, uint8 z,  bool inc_surrounding_objs=true, Actor *excluded_actor = NULL);
  Actor *get_actor_holding_obj(Obj *obj);
+
+ Actor *get_avatar();
 
  Actor *get_player();
  void set_player(Actor *a);

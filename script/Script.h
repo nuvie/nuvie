@@ -82,7 +82,7 @@ class Script
   static Script *script;
  Configuration *config;
  nuvie_game_t gametype; // what game is being played?
- 
+ SoundManager *soundManager;
  lua_State *L;
 
  public:
@@ -95,6 +95,7 @@ class Script
  /* Return instance of self */
  static Script *get_script()           { return(script); }
  Configuration *get_config() { return(config); }
+ SoundManager *get_sound_manager() { return soundManager; }
  
  bool run_script(const char *script);
    bool call_load_game(NuvieIO *objlist);

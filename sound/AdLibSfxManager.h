@@ -31,8 +31,12 @@
 #include "audiostream.h"
 
 
+
 class AdLibSfxManager : public SfxManager
 {
+ private:
+
+
  public:
 	AdLibSfxManager(Configuration *cfg, Audio::Mixer *m);
 	~AdLibSfxManager();

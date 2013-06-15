@@ -607,6 +607,11 @@ Actor *ActorManager::get_multi_tile_actor(uint16 x, uint16 y, uint8 z)
 	return NULL;
 }
 
+Actor *ActorManager::get_avatar()
+{
+	return get_actor(ACTOR_AVATAR_ID_N);
+}
+
 Actor *ActorManager::get_player()
 {
  return actors[player_actor]; //FIX here for dead party leader etc.

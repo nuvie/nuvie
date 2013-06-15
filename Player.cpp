@@ -186,7 +186,7 @@ Actor *Player::find_actor()
     if(party_leader != -1)
     	return party->get_actor(party_leader);
 
-    return(actor_manager->get_actor(ACTOR_AVATAR_ID_N));
+    return(actor_manager->get_avatar());
 }
 
 
@@ -252,7 +252,7 @@ uint8 Player::get_location_level()
 const char *Player::get_name()
 {
  if(actor->get_actor_num() == ACTOR_VEHICLE_ID_N)
-    return actor_manager->get_actor(ACTOR_AVATAR_ID_N)->get_name();
+    return actor_manager->get_avatar()->get_name();
 
  return actor->get_name(true);
 }
