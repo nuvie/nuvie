@@ -74,7 +74,7 @@ osxdmg: bundle
 	CpMac -r $(bundle_name) ./Nuvie-snapshot/
 	hdiutil create -ov -format UDZO -imagekey zlib-level=9 -fs HFS+ \
 					-srcfolder Nuvie-snapshot \
-					-volname "Nuvie SVN snapshot" \
+					-volname "Nuvie SVN snapshot$(REVISION)" \
 					Nuvie-snapshot.dmg
 	rm -rf Nuvie-snapshot
 
