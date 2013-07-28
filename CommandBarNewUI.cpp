@@ -47,6 +47,14 @@ using std::string;
 
 #define btn_size 17
 #define SELECTED_COLOR 248
+#define table_size_U6 11
+#define table_size_SE 10
+#define table_size_MD 9
+
+static const char *U6_mode_name_tbl[table_size_U6] = {"Attack", "Cast", "Talk", "Look", "Get", "Drop", "Move", "Use", "Rest", "Combat mode", "Load/Save"};
+static const char *SE_mode_name_tbl[table_size_SE] = {"Move", "Get", "Drop", "Use", "Talk", "Look", "Attack", "Rest", "Combat mode", "Load/Save"};
+static const char *MD_mode_name_tbl[table_size_MD] = {"Attack", "Talk", "Look", "Get", "Drop", "Move", "Use", "Combat mode", "Load/Save"};
+static const char *mode_name_tbl[table_size_U6];
 
 CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 {
@@ -57,12 +65,31 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 
     icon_w = 5;
     icon_h = 3;
-    num_icons = 11;
 	uint8 text_height;
 	uint16 map_width;
 	uint16 map_height;
 
 	offset = OBJLIST_OFFSET_U6_COMMAND_BAR;
+
+	if(game->get_game_type() == NUVIE_GAME_U6)
+	{
+		num_icons = table_size_U6;
+		for (uint8 i = 0; i < table_size_U6; i++)
+			mode_name_tbl[i] = U6_mode_name_tbl[i];
+	}
+	else if(game->get_game_type() == NUVIE_GAME_SE)
+	{
+		num_icons = table_size_SE;
+		for (uint8 i = 0; i < table_size_SE; i++)
+			mode_name_tbl[i] = SE_mode_name_tbl[i];
+	}
+	else // MD
+	{
+		num_icons = table_size_MD;
+		for (uint8 i = 0; i < table_size_MD; i++)
+			mode_name_tbl[i] = MD_mode_name_tbl[i];
+	}
+
 	if(game->is_orig_style())
 	{
 		text_height = 8;
@@ -95,10 +122,10 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 
     bg_color = game->get_palette()->get_bg_color();
 
-    if(game->get_game_type() == NUVIE_GAME_U6)
+//    if(game->get_game_type() == NUVIE_GAME_U6)
         init_buttons();
-
-    weather->add_wind_change_notification_callback((CallBack *)this); //we want to know when the wind direction changes.
+    if(game->get_game_type() == NUVIE_GAME_U6 && game->is_new_style())
+        weather->add_wind_change_notification_callback((CallBack *)this); //we want to know when the wind direction changes.
 
     cur_pos = 0;
 
@@ -227,6 +254,7 @@ void CommandBarNewUI::Display(bool full_redraw)
     	  infostring += wind;
     	  font->drawString(screen, infostring.c_str(), area.x -13, area.y); // sort of center
     	}
+      }
     	uint8 i=0;
         for(uint8 y=0; y < icon_h; y++)
         {
@@ -239,22 +267,17 @@ void CommandBarNewUI::Display(bool full_redraw)
             	}
             }
         }
-
-
-      }
       font->drawString(screen, get_command_name(cur_pos), area.x, area.y + icon_y_offset + icon_h * btn_size);
         screen->update(area.x, area.y, area.w, area.h);
   //  }
 }
-
-static const char *U6_mode_name_tbl[11] = {"Attack", "Cast", "Talk", "Look", "Get", "Drop", "Move", "Use", "Rest", "Combat mode", "Load/Save"};
 
 const char *CommandBarNewUI::get_command_name(sint8 command_num)
 {
 	if(command_num < 0 || command_num >= num_icons)
 		return "";
 
-	return U6_mode_name_tbl[command_num];
+	return mode_name_tbl[command_num];
 }
 
 /*

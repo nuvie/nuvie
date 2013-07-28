@@ -44,6 +44,44 @@
 
 using std::string;
 
+static Tile placeholder_tile = {
+		0,
+		false,
+		false,
+		false,
+		false,
+		false,
+		true,
+		false,
+		false,
+		0,
+		//uint8 qty;
+		//uint8 flags;
+
+		0,
+		0,
+		0,
+
+		{
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+			 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+		}
+};
+
 CommandBar::CommandBar() : GUI_Widget(NULL) { }
 
 CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
@@ -96,12 +134,40 @@ CommandBar::~CommandBar()
 
 bool CommandBar::init_buttons()
 {
+  if(game->get_game_type() == NUVIE_GAME_U6)
+  {
     TileManager *tile_man = game->get_tile_manager();
     for(uint32 i = 0; i < 9; i++)
         icon[i] = tile_man->get_tile(i+400);
     // NOTE: combat button has two states
     icon[9] = tile_man->get_tile(combat_mode ? 415 : 414);
     icon[10] = tile_man->get_tile(409); //save icon used by CommandBarNewUI
+  }
+	else if(game->get_game_type() == NUVIE_GAME_MD)
+	{
+		icon[0] = &placeholder_tile; // attack
+		icon[1] = &placeholder_tile; // talk
+		icon[2] = &placeholder_tile; // look
+		icon[3] = &placeholder_tile; // get
+		icon[4] = &placeholder_tile; // drop
+		icon[5] = &placeholder_tile; // move
+		icon[6] = &placeholder_tile; // use
+		icon[7] = &placeholder_tile; // combat mode
+		icon[8] = &placeholder_tile; // load/save
+	}
+	else // SE
+	{
+		icon[0] = &placeholder_tile; // move
+		icon[1] = &placeholder_tile; // get
+		icon[2] = &placeholder_tile; // drop
+		icon[3] = &placeholder_tile; // use
+		icon[4] = &placeholder_tile; // talk
+		icon[5] = &placeholder_tile; // look
+		icon[6] = &placeholder_tile; // attack
+		icon[7] = &placeholder_tile; // rest
+		icon[8] = &placeholder_tile; // combat mode
+		icon[9] = &placeholder_tile; // load/save
+	}
     return(true);
 }
 
@@ -208,9 +274,25 @@ bool CommandBar::try_selected_action(sint8 command_num) // return true if target
 			mode = U6_mode_tbl[command_num];
 	}
 	else if(game->get_game_type() == NUVIE_GAME_MD)
-		mode = MD_mode_tbl[command_num];
+	{
+		if(command_num == 8) //This is used by CommandBarNewUI
+		{
+			event->saveDialog();
+			return true;
+		}
+		else
+			mode = MD_mode_tbl[command_num];
+	}
 	else // SE
-		mode = SE_mode_tbl[command_num];
+	{
+		if(command_num == 9) //This is used by CommandBarNewUI
+		{
+			event->saveDialog();
+			return true;
+		}
+		else
+			mode = SE_mode_tbl[command_num];
+	}
 
 	switch(mode)
 	{
