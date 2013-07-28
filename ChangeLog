@@ -1,5 +1,11 @@
-2013-07-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1723
+2013-07-27  Eric Fry <efry at users.sourceforge.net> r1725
+	* Added Dom's commit message to the ChangeLog.
+
+2013-07-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1724
 	* Add placeholder graphics for SE and MD new command bars
+
+2013-06-23  Dominik Reichardt <dominus@users.sourceforge.net> r1723
+	* Added $(REVISION) variable for versioning the OS X snapshot disk images.
 
 2013-06-16  Eric Fry <efry at users.sourceforge.net> r1722
 	* Added Daniel's new paperdoll art for the third female portrait.
