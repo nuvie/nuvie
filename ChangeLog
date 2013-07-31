@@ -1,3 +1,7 @@
+2013-07-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1726
+	* Allow up, down, KP2, and KP8 to cycle through alphanumeric characters
+	 (and space) in the save description (gamepad support)
+
 2013-07-27  Eric Fry <efry at users.sourceforge.net> r1725
 	* Added Dom's commit message to the ChangeLog.
 

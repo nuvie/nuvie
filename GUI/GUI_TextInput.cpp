@@ -123,6 +123,58 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
 
     case SDLK_BACKSPACE : remove_char(); break; //delete the character to the left of the cursor
 
+    case SDLK_UP :
+    case SDLK_KP8 :
+                    if(pos == length)
+                    {
+                        if(length+1 > max_width * max_height)
+                            break;
+                        length++;
+                        if(pos == 0 || text[pos-1] == ' ')
+                            text[pos] = 'A';
+                        else
+                            text[pos] = 'a';
+                        break;
+                    }
+                    text[pos]++;
+                    // We want alphanumeric characters or space
+                    if(text[pos] < ' ' || text[pos] > 'z')
+                    {
+                        text[pos] = ' ';
+                        break;
+                    }
+                    while(!isalnum(text[pos]))
+                        text[pos]++;
+                    break;
+
+    case SDLK_KP2 :
+    case SDLK_DOWN : if(pos == length)
+                     {
+                         if(length+1 > max_width * max_height)
+                             break;
+                         length++;
+                         if(pos == 0 || text[pos-1] == ' ')
+                             text[pos] = 'Z';
+                         else
+                             text[pos] = 'z';
+                         break;
+                     }
+                     text[pos]--;
+                     // We want alphanumeric characters or space
+                     if(text[pos] < ' ' || text[pos] > 'z')
+                     {
+                         text[pos] = 'z';
+                         break;
+                     }
+                     else if(text[pos] < '0')
+                     {
+                         text[pos] = ' ';
+                         break;
+                     }
+                     while(!isalnum(text[pos]))
+                         text[pos]--;
+                     break;
+
     default : if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
                    ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
               add_char(ascii); break;
