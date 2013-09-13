@@ -63,6 +63,8 @@ nuvie_SOURCES = \
 	GUI/GUI_types.h \
 	GUI/GUI_TextInput.cpp \
 	GUI/GUI_TextInput.h \
+	GUI/GUI_TextToggleButton.cpp \
+	GUI/GUI_TextToggleButton.h \
 	GUI/GUI_widget.cpp \
 	GUI/GUI_widget.h \
 	GUI/GUI_CallBack.h \

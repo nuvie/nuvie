@@ -1,3 +1,7 @@
+2013-09-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net> r1727
+	* Add GUI_TextToggleButton: a button that cycles through a set of
+	  captions when clicked.
+
 2013-07-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1726
 	* Allow up, down, KP2, and KP8 to cycle through alphanumeric characters
 	 (and space) in the save description (gamepad support)
