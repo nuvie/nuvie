@@ -37,6 +37,7 @@ GUI_Dialog::GUI_Dialog(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, bo
 	B = b;
 	bg_color = 0;
     drag = false;
+    can_drag = is_moveable;
     button_x = button_y = 0;
     old_x = old_y = -1;
     backingstore = NULL;
@@ -220,7 +221,7 @@ GUI_Dialog:: Display(bool full_redraw)
 
 GUI_status GUI_Dialog::MouseDown(int x, int y, int button)
 {
- drag = true;
+ drag = can_drag;
  button_x = x;
  button_y = y;
 

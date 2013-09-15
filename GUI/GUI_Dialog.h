@@ -29,6 +29,7 @@
 #include "Screen.h"
 
 #define GUI_DIALOG_MOVABLE true
+#define GUI_DIALOG_UNMOVABLE false
 
 class GUI_Dialog : public GUI_Widget {
 
@@ -59,6 +60,7 @@ public:
     GUI_status MouseMotion(int x,int y,Uint8 state);
     void MoveRelative(int dx,int dy);
 protected:
+    bool can_drag;
     void loadBorderImages();
 };
 

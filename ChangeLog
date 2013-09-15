@@ -1,3 +1,9 @@
+2013-09-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1728
+	* Allow right clicks on GUI_Buttons. GUI_TextToggleButton will cycle
+	  backwards when right clicked. Other GUI_Buttons will do the same as a left
+	  click.
+	* Fix GUI_Dialog ignoring the is_moveable parameter (it was always true)
+
 2013-09-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net> r1727
 	* Add GUI_TextToggleButton: a button that cycles through a set of
 	  captions when clicked.

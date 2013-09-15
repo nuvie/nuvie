@@ -242,7 +242,7 @@ GUI_status GUI_Button:: MouseDown(int x, int y, int button)
 {
 	if(button == SDL_BUTTON_WHEELUP || button == SDL_BUTTON_WHEELDOWN)
 	  return GUI_PASS;
-	if (enabled &&(button==1))
+	if (enabled &&(button==1 || button==3))
 	{
 	  pressed[0]=1;
 	  Redraw();
@@ -254,7 +254,7 @@ GUI_status GUI_Button::MouseUp(int x,int y,int button)
 {
 	if (button==SDL_BUTTON_WHEELUP || button==SDL_BUTTON_WHEELDOWN)
 		return GUI_PASS;
-	if ((button==1) && (pressed[0]))
+	if ((button==1 || button==3) && (pressed[0]))
 	{
 	  pressed[0]=0;
 	  if ((x>=0) && (y>=0))
