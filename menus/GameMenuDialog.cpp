@@ -33,7 +33,7 @@
 #include "AudioDialog.h"
 #include "GameplayDialog.h"
 #include "CheatsDialog.h"
-#include "event.h"
+#include "Event.h"
 
 #define GMD_WIDTH 150
 #define GMD_HEIGHT 96
