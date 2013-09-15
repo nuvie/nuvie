@@ -11,7 +11,7 @@ KP1	walk_south_west
 KP2	walk_south
 KP3	walk_south_east
 
-Esc	cancel_action
+Esc	game_menu_dialog
 SPACE	cancel_action
 ENTER	do_action
 KP_ENTER	do_action

@@ -46,6 +46,7 @@ class Converse;
 class ViewManager;
 class UseCode;
 class GUI;
+class GUI_Dialog;
 class Magic;
 class KeyBinder;
 class FpsCounter;
@@ -123,6 +124,7 @@ friend class Magic; // FIXME
  UseCode *usecode;
  Magic *magic;
  KeyBinder *keybinder;
+ GUI_Dialog *gamemenu_dialog;
 
  SDL_Event event;
  EventMode mode, last_mode;
@@ -144,6 +146,7 @@ friend class Magic; // FIXME
  Actor *push_actor;
 
  bool drop_from_key;
+ bool showingDialog;
  bool showingQuitDialog;
  bool ignore_timeleft; // do not wait for NUVIE_INTERVAL
  bool move_in_inventory;
@@ -161,7 +164,7 @@ friend class Magic; // FIXME
 
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic *mg,
            GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g, KeyBinder *kb);
-
+ GUI_Dialog *get_gamemenu_dialog() { return gamemenu_dialog; }
  TimeQueue *get_time_queue() { return(time_queue); }
  TimeQueue *get_game_time_queue() { return(game_time_queue); }
  EventMode get_mode() { return(mode); }
@@ -288,8 +291,6 @@ friend class Magic; // FIXME
 
  void wait();
  void set_ignore_timeleft(bool newsetting) { ignore_timeleft = newsetting; }
- void quitDialog();
- void saveDialog();
  EventInput *get_input() { return &input; }
  // These cursor methods are use to make sure Event knows where the cursor is
  // when objects are selected with ENTER. (since MapWindow and InventoryView
@@ -300,6 +301,9 @@ friend class Magic; // FIXME
  void toggleFpsDisplay();
  void close_gumps();
  bool input_really_needs_directon();
+ void quitDialog();
+ void saveDialog();
+ void gameMenuDialog();
 
 /* FIXME: Some of the above (action) functions can be removed from public, so
    that we don't need to check for WAIT mode in all of them. */

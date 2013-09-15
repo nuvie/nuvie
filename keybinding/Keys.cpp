@@ -104,6 +104,7 @@ const struct Action {
 	{ "LOAD_LATEST_SAVE", ActionLoadLatestSave, "Load latest save", Action::normal_keys, true },
 	{ "QUIT", ActionQuitDialog, "Quit", Action::normal_keys, true },
 	{ "QUIT_NO_DIALOG", ActionQuitNODialog, "Quit without confirmation", Action::normal_keys, true },
+	{ "GAME_MENU_DIALOG", ActionGameMenuDialog, "Show game menu; Cancel action if in middle of action", Action::normal_keys, true },
 	{ "TOGGLE_FULLSCREEN", ActionToggleFullscreen, "Toggle Fullscreen", Action::normal_keys, true },
 	{ "TOGGLE_CURSOR", ActionToggleCursor, "Toggle Cursor", Action::normal_keys, true },
 	{ "TOGGLE_COMBAT_STRATEGY", ActionToggleCombatStrategy, "Toggle combat strategy", Action::normal_keys, true },

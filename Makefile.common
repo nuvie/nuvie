@@ -143,6 +143,17 @@ nuvie_SOURCES = \
 	lua/lzio.c \
 	lua/lzio.h \
 \
+	menus/AudioDialog.cpp \
+	menus/AudioDialog.h \
+	menus/CheatsDialog.cpp \
+	menus/CheatsDialog.h \
+	menus/GameMenuDialog.cpp \
+	menus/GameMenuDialog.h \
+	menus/GameplayDialog.cpp \
+	menus/GameplayDialog.h \
+	menus/VideoDialog.cpp \
+	menus/VideoDialog.h \
+\
 	misc/CallBack.h \
 	misc/U6LineWalker.cpp \
 	misc/U6LineWalker.h \

@@ -39,9 +39,13 @@
 
 #define NUVIE_SAVE_SCROLLER_ROWS   3
 #define NUVIE_SAVE_SCROLLER_HEIGHT NUVIE_SAVE_SCROLLER_ROWS * NUVIE_SAVESLOT_HEIGHT
+#define SD_WIDTH 320
+#define SD_HEIGHT 200
 
 SaveDialog::SaveDialog(GUI_CallBack *callback)
-          : GUI_Dialog(Game::get_game()->get_game_x_offset(),Game::get_game()->get_game_y_offset(), 320, 200, 244, 216, 131, false)
+          : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - SD_WIDTH)/2,
+                       Game::get_game()->get_game_y_offset() + (Game::get_game()->get_game_height() - SD_HEIGHT)/2,
+                       SD_WIDTH, SD_HEIGHT, 244, 216, 131, GUI_DIALOG_UNMOVABLE)
 {
  callback_object = callback;
  selected_slot = NULL;

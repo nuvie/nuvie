@@ -320,6 +320,11 @@ void ActionQuitNODialog(int const *params)
 	game->quit();
 }
 
+void ActionGameMenuDialog(int const *params)
+{
+	event->gameMenuDialog();
+}
+
 void ActionToggleFullscreen(int const *params)
 {
 	if(!game->get_screen()->toggle_fullscreen())

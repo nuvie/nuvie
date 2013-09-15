@@ -1,3 +1,6 @@
+2013-09-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1729
+	* Add menus system. (Video and gameplay options are just stubs.)
+
 2013-09-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1728
 	* Allow right clicks on GUI_Buttons. GUI_TextToggleButton will cycle
 	  backwards when right clicked. Other GUI_Buttons will do the same as a left

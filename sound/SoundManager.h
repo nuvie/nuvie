@@ -79,6 +79,11 @@ public:
     void set_music_enabled(bool val);
     bool is_sfx_enabled() { return sfx_enabled; }
     void set_sfx_enabled(bool val) { sfx_enabled = val; }
+    uint8 get_sfx_volume() { return sfx_volume; }
+    void set_sfx_volume(uint8 val) { sfx_volume = val; }
+    uint8 get_music_volume() { return music_volume; }
+    void set_music_volume(uint8 val) {music_volume = val; }
+    Sound *get_m_pCurrentSong() { return m_pCurrentSong; }
 
 private:
 	bool LoadCustomSongs(string scriptname);

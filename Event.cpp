@@ -59,6 +59,7 @@
 
 #include "GUI.h"
 #include "GUI_YesNoDialog.h"
+#include "GameMenuDialog.h"
 
 #include "views/InventoryWidget.h"
 #include "Script.h"
@@ -113,7 +114,8 @@ Event::Event(Configuration *cfg)
  drop_from_key = false;
  move_in_inventory = false;
  time_queue = game_time_queue = NULL;
- showingQuitDialog = false;
+ showingDialog = false;
+ gamemenu_dialog = NULL;
  ignore_timeleft = false;
  in_control_cheat = false;
  looking_at_spellbook = false;
@@ -204,7 +206,7 @@ bool Event::update()
   if(idle)
     gui->Idle(); // run Idle() for all widgets
 
-  if(showingQuitDialog) // temp. fix to show normal cursor over quit dialog
+  if(showingDialog) // temp. fix to show normal cursor over quit dialog
     game->set_mouse_pointer(0);
 
  return true;
@@ -2244,11 +2246,11 @@ void Event::toggleFpsDisplay()
 void Event::quitDialog()
 {
 	GUI_Widget *quit_dialog;
-	if((mode == MOVE_MODE || mode == EQUIP_MODE) && !showingQuitDialog)
+	if(mode == MOVE_MODE || mode == EQUIP_MODE)
 	{
 		map_window->set_looking(false);
 		map_window->set_walking(false);
-		showingQuitDialog = true;
+		showingDialog = true;
 
 		close_gumps();
 		uint16 x_off = game->get_game_x_offset();
@@ -2286,21 +2288,42 @@ void Event::saveDialog()
  return;
 }
 
+void Event::gameMenuDialog()
+{
+	if(mode == MOVE_MODE || mode == EQUIP_MODE)
+	{
+		showingDialog = true;
+		map_window->set_looking(false);
+		map_window->set_walking(false);
+		gamemenu_dialog = new GameMenuDialog((GUI_CallBack *)this);
+		gui->AddWidget(gamemenu_dialog);
+		gui->lock_input(gamemenu_dialog);
+	}
+	else
+		cancelAction();
+}
+
 uint16 Event::callback(uint16 msg, CallBack *caller, void *data)
 {
  GUI_Widget *widget;
 
  switch(msg) // Handle callback from quit dialog.
   {
-   case YESNODIALOG_CB_YES :  showingQuitDialog = false;
+   case YESNODIALOG_CB_YES :  showingDialog = false;
                               game->get_gui()->unlock_input();
                               return GUI_QUIT;
    case YESNODIALOG_CB_NO :  widget = (GUI_Widget *)data;
                              widget->Delete();
 
-                             showingQuitDialog = false;
-                             game->get_gui()->unlock_input();
+                             showingDialog = false;
+                             if(gamemenu_dialog != NULL)
+                                 gui->lock_input(gamemenu_dialog);
+                             else
+                                 game->get_gui()->unlock_input();
                              return GUI_YUM;
+   case GAMEMENUDIALOG_CB_DELETE : showingDialog = false;
+                                   gamemenu_dialog = NULL;
+                                   return GUI_YUM;
   }
 
  return GUI_PASS;

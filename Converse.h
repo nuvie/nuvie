@@ -153,6 +153,7 @@ public:
     void set_input(std::string s) { in_str = s; }
     void set_output(std::string s) { out_str = s; }
 
+    void set_party_all_the_time(bool val) { party_all_the_time = val; }
     const char *npc_name(uint8 num);
     void show_portrait(uint8 n);
     converse_value get_var(uint8 varnum)

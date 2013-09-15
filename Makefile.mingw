@@ -13,7 +13,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
 	-I$(SRC)/conf -I$(SRC)/files -I$(SRC)/fonts -I$(SRC)/GUI \
-	-I$(SRC)/keybinding -I$(SRC)/lua \
+	-I$(SRC)/keybinding -I$(SRC)/lua -I$(SRC)/menus \
 	-I$(SRC)/misc -I$(SRC)/pathfinder -I$(SRC)/save -I$(SRC)/screen \
 	-I$(SRC)/script -I$(SRC)/sound -I$(SRC)/sound/adplug -I$(SRC)/sound/mixer \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/views $(SDL_CFLAGS)

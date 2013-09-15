@@ -37,6 +37,8 @@
 #include "NuvieFileList.h"
 
 #include "GUI.h"
+//#include "Game.h"
+#include "Event.h"
 #include "Console.h"
 #include "SaveDialog.h"
 #include "SaveSlot.h"
@@ -175,6 +177,7 @@ void SaveManager::create_dialog()
     dialog->init(savedir.c_str(), search_prefix.c_str());
     dialog->grab_focus();
     gui->AddWidget(dialog);
+    gui->lock_input(dialog);
    }
 
  return;
@@ -262,6 +265,7 @@ GUI_status SaveManager::callback(uint16 msg, GUI_CallBack *caller, void *data)
 
  if(caller == dialog)
   {
+   GUI_Dialog *gamemenu_dialog = Game::get_game()->get_event()->get_gamemenu_dialog();
    switch(msg)
      {
        case SAVEDIALOG_CB_DELETE : dialog = NULL; break;
@@ -269,11 +273,16 @@ GUI_status SaveManager::callback(uint16 msg, GUI_CallBack *caller, void *data)
        case SAVEDIALOG_CB_LOAD : save_slot = (SaveSlot *)data;
                                  if(load(save_slot) == false)
                                     return GUI_PASS;
+                                 if(gamemenu_dialog != NULL)
+                                    gamemenu_dialog->callback(0, (GUI_CallBack *)gamemenu_dialog, (void *)gamemenu_dialog);
+                                    //callback_object->callback(GameplayDialog_CB_DELETE, this, this);
                                  break;
 
        case SAVEDIALOG_CB_SAVE : save_slot = (SaveSlot *)data;
                                  if(save(save_slot) == false)
                                     return GUI_PASS;
+                                 if(gamemenu_dialog != NULL)
+                                    GUI::get_gui()->lock_input(gamemenu_dialog);
                                  break;
        default : break;
      }
