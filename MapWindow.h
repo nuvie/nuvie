@@ -160,6 +160,9 @@ class MapWindow: public GUI_Widget
  void set_enable_blacking(bool state);
  void set_roof_display_mode(enum RoofDisplayType mode) { roof_display = mode; }
  void set_walking(bool state);
+ void set_walk_button_mask();
+ bool will_walk_with_left_button() { return walk_with_left_button; }
+ void set_walk_with_left_button(bool val) { walk_with_left_button = val; set_walk_button_mask(); }
  void set_looking(bool state) { looking = state; }
  int get_min_brightness() { return min_brightness; }
  void set_min_brightness(int brightness) { min_brightness = brightness; }
@@ -178,6 +181,11 @@ class MapWindow: public GUI_Widget
  void moveCursor(sint16 new_x, sint16 new_y);
  void moveCursorRelative(sint16 rel_x, sint16 rel_y);
 
+ bool is_doubleclick_enabled() { return enable_doubleclick; }
+ void set_enable_doubleclick(bool val) { enable_doubleclick = val; }
+ void set_look_on_left_click(bool val) { look_on_left_click = val; }
+ void set_use_left_clicks();
+ bool will_look_on_left_click() { return look_on_left_click; }
  bool is_on_screen(uint16 x, uint16 y, uint8 z);
  bool tile_is_black(uint16 x, uint16 y, Obj *obj = NULL); // subtracts cur_x and cur_y
  const char *look(uint16 x, uint16 y, bool show_prefix = true);

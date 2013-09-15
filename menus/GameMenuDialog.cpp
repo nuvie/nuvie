@@ -32,11 +32,12 @@
 #include "VideoDialog.h"
 #include "AudioDialog.h"
 #include "GameplayDialog.h"
+#include "InputDialog.h"
 #include "CheatsDialog.h"
 #include "Event.h"
 
 #define GMD_WIDTH 150
-#define GMD_HEIGHT 96
+#define GMD_HEIGHT 109
 
 GameMenuDialog::GameMenuDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - GMD_WIDTH)/2,
@@ -51,7 +52,7 @@ bool GameMenuDialog::init() {
 	int width = 132;
 	int height = 12;
 	int buttonX = 9;
-	int buttonY[] = { 9, 22, 35, 48, 61, 74 };
+	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87 };
 	GUI *gui = GUI::get_gui();
 
 	saveLoad_button = new GUI_Button(this, buttonX, buttonY[0], width, height, "Load/Save Game", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
@@ -60,11 +61,13 @@ bool GameMenuDialog::init() {
 	AddWidget(video_button);
 	audio_button = new GUI_Button(this, buttonX, buttonY[2], width, height, "Audio Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(audio_button);
-	gameplay_button = new GUI_Button(this, buttonX, buttonY[3], width, height, "Gameplay Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	input_button = new GUI_Button(this, buttonX, buttonY[3], width, height, "Input Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	AddWidget(input_button);
+	gameplay_button = new GUI_Button(this, buttonX, buttonY[4], width, height, "Gameplay Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(gameplay_button);
-	cheats_button = new GUI_Button(this, buttonX, buttonY[4], width, height, "Cheats", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	cheats_button = new GUI_Button(this, buttonX, buttonY[5], width, height, "Cheats", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cheats_button);
-	quit_button = new GUI_Button(this, buttonX, buttonY[5], width, height, "Quit", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	quit_button = new GUI_Button(this, buttonX, buttonY[6], width, height, "Quit", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(quit_button);
  
 	return true;
@@ -88,7 +91,6 @@ GUI_status GameMenuDialog::KeyDown(SDL_keysym key) {
 
 GUI_status GameMenuDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 	GUI *gui = GUI::get_gui();
-	gui->lock_input(this);
 
 	if(caller == this) {
 		 close_dialog();
@@ -104,6 +106,11 @@ GUI_status GameMenuDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 		audio_dialog = (GUI_Widget *) new AudioDialog((GUI_CallBack *)this);
 		GUI::get_gui()->AddWidget(audio_dialog);
 		gui->lock_input(audio_dialog);
+	} else if(caller == (GUI_CallBack *)input_button) {
+		GUI_Widget *input_dialog;
+		input_dialog = (GUI_Widget *) new InputDialog((GUI_CallBack *)this);
+		GUI::get_gui()->AddWidget(input_dialog);
+		gui->lock_input(input_dialog);
 	} else if(caller == (GUI_CallBack *)gameplay_button) {
 		GUI_Widget *gameplay_dialog;
 		gameplay_dialog = (GUI_Widget *) new GameplayDialog((GUI_CallBack *)this);
@@ -117,6 +124,7 @@ GUI_status GameMenuDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 	} else if(caller == (GUI_CallBack *)quit_button) {
 		Game::get_game()->get_event()->quitDialog();
 	} else {
+		gui->lock_input(this);
 		return GUI_PASS;
 	}
 	return GUI_YUM;

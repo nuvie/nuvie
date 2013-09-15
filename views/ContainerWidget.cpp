@@ -59,9 +59,6 @@ ContainerWidget::ContainerWidget(Configuration *cfg, GUI_CallBack *callback): GU
  row_offset = 0;
  
  config->value("config/GameType",game_type);
- config->value("config/input/enable_doubleclick",enable_doubleclick,true);
- 
-
 }
 
 ContainerWidget::~ContainerWidget()
@@ -294,7 +291,7 @@ GUI_status ContainerWidget::MouseUp(int x,int y,int button)
 	 if(selected_obj)
 	 {
 		 // only act now if objects can't be used with DoubleClick
-		 if(!enable_doubleclick)
+		 if(!Game::get_game()->get_map_window()->is_doubleclick_enabled())
 			 try_click();
 		 else
 		 {
@@ -574,7 +571,7 @@ void ContainerWidget::try_click()
 GUI_status ContainerWidget::MouseDouble(int x, int y, int button)
 {
     // we have to check if double-clicks are allowed here, since we use single-clicks
-    if(!enable_doubleclick)
+    if(!Game::get_game()->get_map_window()->is_doubleclick_enabled())
         return(GUI_PASS);
     Event *event = Game::get_game()->get_event();
     Obj *obj = selected_obj;

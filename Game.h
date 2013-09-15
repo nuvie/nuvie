@@ -133,7 +133,7 @@ class Game
  bool ethereal;
  bool game_play;
  bool using_text_gumps;
- bool using_new_command_bar;
+ bool open_containers; //doubleclick
 
  public:
 
@@ -173,11 +173,13 @@ class Game
  void time_changed();
  void stats_changed();
 
+ void init_new_command_bar();
  nuvie_game_t get_game_type() { return game_type; }
  uint8 get_game_style() { return game_style; }
  bool is_new_style() { return (game_style == NUVIE_STYLE_NEW); }
  bool is_orig_style() { return (game_style == NUVIE_STYLE_ORIG); }
  bool doubleclick_opens_containers();
+ void set_doubleclick_opens_containers(bool val) { open_containers = val; }
  bool is_using_text_gumps() { return (using_text_gumps || is_new_style()); }
  bool is_roof_mode();
  bool using_hackmove();

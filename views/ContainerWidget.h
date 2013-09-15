@@ -42,7 +42,6 @@ protected:
  Configuration *config;
 
  int game_type;
- bool enable_doubleclick;
 
  TileManager *tile_manager;
  ObjManager *obj_manager;

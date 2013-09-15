@@ -156,11 +156,9 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  drop_with_move = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
+ set_use_left_clicks();
  config->value("config/input/walk_with_left_button", walk_with_left_button, true);
- if(walk_with_left_button)
-    walk_button_mask = (SDL_BUTTON(USE_BUTTON) | SDL_BUTTON(WALK_BUTTON));
- else
-    walk_button_mask = SDL_BUTTON(WALK_BUTTON);
+ set_walk_button_mask();
  config->value("config/cheats/min_brightness", min_brightness, 0);
  original_obj_loc = MapCoord(0,0,0);
 
@@ -230,9 +228,6 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  overlay_level = MAP_OVERLAY_ONTOP;
  assert(SDL_FillRect(overlay, NULL, game->get_palette()->get_bg_color()) == 0);
 
- if(enable_doubleclick || look_on_left_click)
-   set_accept_mouseclick(true, USE_BUTTON); // allow left clicks
-
  wizard_eye_info.eye_tile = tile_manager->get_tile(TILE_U6_WIZARD_EYE);
  wizard_eye_info.moves_left = 0;
  wizard_eye_info.caller = NULL;
@@ -241,6 +236,14 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
 	 loadRoofTiles();
 
  return true;
+}
+
+void MapWindow::set_use_left_clicks()
+{
+	if(enable_doubleclick || look_on_left_click)
+		set_accept_mouseclick(true, USE_BUTTON); // allow left clicks
+	else
+		set_accept_mouseclick(false, USE_BUTTON); // disallow left clicks
 }
 
 bool MapWindow::set_windowSize(uint16 width, uint16 height)
@@ -300,6 +303,14 @@ else
  updateBlacking();
 
  return true;
+}
+
+void MapWindow::set_walk_button_mask()
+{
+	if(walk_with_left_button)
+		walk_button_mask = (SDL_BUTTON(USE_BUTTON) | SDL_BUTTON(WALK_BUTTON));
+	else
+		walk_button_mask = SDL_BUTTON(WALK_BUTTON);
 }
 
 void MapWindow::set_show_cursor(bool state)
@@ -2035,7 +2046,7 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
     Event *event = game->get_event();
 
     // only USE if not doing anything in event
-    if(event->get_mode() == MOVE_MODE && !is_wizard_eye_mode())
+    if(enable_doubleclick && event->get_mode() == MOVE_MODE && !is_wizard_eye_mode())
     {
         int wx, wy;
         mouseToWorldCoords(x, y, wx, wy);

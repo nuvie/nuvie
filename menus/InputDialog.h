@@ -1,7 +1,7 @@
-#ifndef __GameMenuDialog_h__
-#define __GameMenuDialog_h__
+#ifndef __InputDialog_h__
+#define __InputDialog_h__
 /*
- *  GameMenuDialog.h
+ *  InputDialog.h
  *  Nuvie
  *  Copyright (C) 2013 The Nuvie Team
  *
@@ -22,20 +22,22 @@
 
 #include "GUI_Dialog.h"
 
-#define GAMEMENUDIALOG_CB_DELETE 3
-
 class GUI;
 class GUI_CallBack;
 class GUI_Button;
+class GUI_TextToggleButton;
 
-class GameMenuDialog : public GUI_Dialog {
+class InputDialog : public GUI_Dialog {
 	protected:
 		GUI_CallBack *callback_object;
-		GUI_Button *saveLoad_button, *video_button, *audio_button, *input_button, *gameplay_button, *cheats_button, *quit_button;
+		GUI_Button *save_button, *cancel_button;
+		GUI_TextToggleButton *command_button, *direction_button, *doubleclick_button,
+		                     *dragging_button, *interface_button, *look_button,
+		                     *open_container_button, *party_targeting_button, *walk_button;
 
 	public:
-		GameMenuDialog(GUI_CallBack *callback);
-		~GameMenuDialog();
+		InputDialog(GUI_CallBack *callback);
+		~InputDialog();
 		bool init();
 
 		GUI_status close_dialog();
@@ -43,4 +45,4 @@ class GameMenuDialog : public GUI_Dialog {
 		GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 
-#endif /* __GameMenuDialog_h__ */
+#endif /* __InputDialog_h__ */

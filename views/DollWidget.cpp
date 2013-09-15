@@ -95,8 +95,6 @@ DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(N
  actor = NULL; tile_manager = NULL;
  selected_obj = NULL; obj_manager = NULL;
  unready_obj = NULL; empty_tile = NULL; blocked_tile = NULL;
-
- config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  
  bg_color = Game::get_game()->get_palette()->get_bg_color();
  need_to_free_tiles = false;
@@ -308,7 +306,7 @@ GUI_status DollWidget::MouseUp(int x,int y,int button)
  Event *event = Game::get_game()->get_event();
 
  // only act now if double-click is disabled
- if(selected_obj && !enable_doubleclick)
+ if(selected_obj && !Game::get_game()->get_map_window()->is_doubleclick_enabled())
    {
     event->unready(selected_obj);
     Redraw();
@@ -474,7 +472,7 @@ void DollWidget::drag_draw(int x, int y, int message, void* data)
 GUI_status DollWidget::MouseDouble(int x, int y, int button)
 {
     // we have to check if double-clicks are allowed here, since we use single-clicks
-    if(!enable_doubleclick)
+    if(!Game::get_game()->get_map_window()->is_doubleclick_enabled())
         return(GUI_PASS);
     Event *event = Game::get_game()->get_event();
     Obj *obj = selected_obj;

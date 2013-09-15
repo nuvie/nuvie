@@ -68,13 +68,13 @@ bool AudioDialog::init() {
 	widget = (GUI_Widget *) new GUI_Text(textX[2], textY[4], 0, 0, 0, "Sfx volume:", font);
 	AddWidget(widget);
  
-	char musicBuff[6], sfxBuff[6];
+	char musicBuff[5], sfxBuff[5];
 	int sfxVol_selection, musicVol_selection, num_of_sfxVol, num_of_musicVol;
 	SoundManager *sm = Game::get_game()->get_sound_manager();
 	const char* const enabled_text[] = { "Disabled", "Enabled" };
 
 	uint8 music_percent = round(sm->get_music_volume() / 2.55); // round needed for 10%, 30%, etc. 
-	sprintf(musicBuff, "~%u%%", music_percent);
+	sprintf(musicBuff, "%u%%", music_percent);
 	const char* const musicVol_text[] = { "0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%", musicBuff };
 
 	if(music_percent % 10 == 0) {
@@ -86,7 +86,7 @@ bool AudioDialog::init() {
 	}
 
 	uint8 sfx_percent = round(sm->get_sfx_volume() / 2.55); // round needed for 10%, 30%, etc.
-	sprintf(sfxBuff, "~%u%%", sfx_percent);
+	sprintf(sfxBuff, "%u%%", sfx_percent);
 	const char* const sfxVol_text[] = { "0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%", sfxBuff };
 
 	if(sfx_percent % 10 == 0) {

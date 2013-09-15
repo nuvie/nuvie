@@ -131,8 +131,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
  config->value("config/input/enabled_dragging", dragging_enabled, true);
  config->value("config/general/use_text_gumps", using_text_gumps, false);
- config->value("config/input/new_command_bar", using_new_command_bar, false);
-
+ config->value("config/input/doubleclick_opens_containers", open_containers, false);
  int value;
  uint16 screen_width = gui->get_width();
  uint16 screen_height = gui->get_height();
@@ -283,11 +282,11 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    if(is_orig_style())
    {
        command_bar = new CommandBar(this);
+       bool using_new_command_bar;
+       config->value("config/input/new_command_bar", using_new_command_bar, false);
        if(using_new_command_bar)
        {
-           new_command_bar = new CommandBarNewUI(this);
-           new_command_bar->Hide();
-           gui->AddWidget(new_command_bar);
+           init_new_command_bar();
        }
    }
    else
@@ -383,6 +382,14 @@ bool Game::loadGame(Script *s, SoundManager *sm)
  return true;
 }
 
+void Game::init_new_command_bar()
+{
+	if(new_command_bar != NULL)
+		return;
+	new_command_bar = new CommandBarNewUI(this);
+	new_command_bar->Hide();
+	gui->AddWidget(new_command_bar);
+}
 
 void Game::init_cursor()
 {
@@ -417,8 +424,6 @@ void Game::init_game_style()
 
 bool Game::doubleclick_opens_containers()
 {
-	bool open_containers;
-	config->value("config/input/doubleclick_opens_containers", open_containers, false);
 	if(open_containers || is_new_style())
 		return true;
 	else

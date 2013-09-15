@@ -35,9 +35,6 @@ class Actor;
 class DollWidget : public GUI_Widget {
 
  Configuration *config;
-
- bool enable_doubleclick;
-
  TileManager *tile_manager;
  ObjManager *obj_manager;
 

@@ -53,6 +53,7 @@ class PartyView : public View {
  void Display(bool full_redraw);
  void update() { update_display = true; }
  void display_sun_moon_strip();
+ void set_party_view_targeting(bool val) { party_view_targeting = val; }
 
  protected:
 
@@ -65,6 +66,7 @@ class PartyView : public View {
 
  bool up_arrow();
  bool down_arrow();
+ bool party_view_targeting;
 
  Actor *get_actor(int x, int y);
 };

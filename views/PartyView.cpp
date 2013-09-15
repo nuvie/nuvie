@@ -70,6 +70,7 @@ bool PartyView::init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl
  view_manager = vm;
  player = pl;
  row_offset = 0;
+ config->value("config/input/party_view_targeting", party_view_targeting, false);
 
  return true;
 }
@@ -128,8 +129,6 @@ GUI_status PartyView::MouseUp(int x,int y,int button)
   {
    Event *event = Game::get_game()->get_event();
    CommandBar *command_bar = Game::get_game()->get_command_bar();
-   bool party_view_targeting;
-   config->value("config/input/party_view_targeting", party_view_targeting, false);
 
    if(button == ACTION_BUTTON && event->get_mode() == MOVE_MODE
       && command_bar->get_selected_action() > 0) // Exclude attack mode too

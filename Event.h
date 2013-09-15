@@ -171,6 +171,8 @@ friend class Magic; // FIXME
  EventMode get_last_mode() { return(last_mode); }
  void set_mode(EventMode new_mode);
 
+ bool is_direction_selecting_targets() { return direction_selects_target; }
+ void set_direction_selects_target(bool val) { direction_selects_target = val; }
  bool using_pickpocket_cheat;
  bool cursor_mode;
  void update_timers();
