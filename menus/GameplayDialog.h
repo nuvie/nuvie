@@ -25,11 +25,15 @@
 class GUI;
 class GUI_CallBack;
 class GUI_Button;
+class GUI_TextToggleButton;
 
 class GameplayDialog : public GUI_Dialog {
 	protected:
 		GUI_CallBack *callback_object;
 		GUI_Button *save_button, *cancel_button;
+		GUI_TextToggleButton *formation_button, *stealing_button, *text_gump_button,
+		                     *converse_gump_button, *converse_solid_bg_button, 
+		                     *skip_intro_button, *show_console_button, *cursor_button;
 
 	public:
 		GameplayDialog(GUI_CallBack *callback);

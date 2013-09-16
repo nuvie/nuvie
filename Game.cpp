@@ -313,7 +313,9 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    //map_window->set_windowSize(11,11);
 
    converse = new Converse();
-   if(use_new_converse_gump())
+
+	config->value("config/general/converse_gump", enabled_converse_gump, false);
+   if(using_new_converse_gump())
    {
 	   ConverseGump *conv_gump = new ConverseGump(config, font_manager->get_font(0), screen);
 	   conv_gump->Hide();
@@ -437,11 +439,9 @@ bool Game::is_roof_mode()
 	return roof_mode;
 }
 
-bool Game::use_new_converse_gump()
+bool Game::using_new_converse_gump()
 {
-	bool converse_gump;
-	config->value("config/general/converse_gump", converse_gump, false);
-	if(converse_gump || is_new_style())
+	if(enabled_converse_gump || is_new_style())
 		return true;
 	else
 		return false;

@@ -25,14 +25,19 @@
 #include "GUI_types.h"
 #include "GUI_button.h"
 #include "GUI_text.h"
+#include "GUI_TextToggleButton.h"
 #include "GUI_CallBack.h"
 #include "GUI_area.h"
 
 #include "GUI_Dialog.h"
 #include "GameplayDialog.h"
+#include "Party.h"
+#include "Script.h"
+#include "U6misc.h"
+#include "Configuration.h"
 
-#define GD_WIDTH 212
-#define GD_HEIGHT 180
+#define GD_WIDTH 274
+#define GD_HEIGHT 153
 
 GameplayDialog::GameplayDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - GD_WIDTH)/2,
@@ -45,14 +50,87 @@ GameplayDialog::GameplayDialog(GUI_CallBack *callback)
 
 bool GameplayDialog::init() {
 	int height = 12;
-	GUI *gui = GUI::get_gui();
+	int yesno_width = 32;
+	int colX[] = { 9, 50, 233 };
+	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 132 };
+	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128, 141, 160 };
 
-	cancel_button = new GUI_Button(this, 50, 158, 54, height, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	GUI_Widget *widget;
+	GUI *gui = GUI::get_gui();
+	GUI_Font *font = gui->get_font();
+	Game *game = Game::get_game();
+	Configuration *config = Game::get_game()->get_config();
+	const char* const yesno_text[] = { "no", "yes" };
+	const char* const formation_text[] = { "standard", "column", "row", "delta" };
+
+	bool is_u6 = (game->get_game_type() == NUVIE_GAME_U6);
+	bool show_stealing, skip_intro, show_console, use_original_cursor, solid_bg;
+	std::string key = config_get_game_key(config);
+	config->value(key + "/skip_intro", skip_intro, false);
+	config->value("config/general/show_console", show_console, false);
+	config->value("config/general/enable_cursors", use_original_cursor, false);
+// party formation
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[0], 0, 0, 0, "Party formation:", font);
+	AddWidget(widget);
+	formation_button = new GUI_TextToggleButton(this, 197, buttonY[0], 68, height, formation_text, 4, game->get_party()->get_formation(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(formation_button);
+	if(is_u6) {
+// show stealing
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1], 0, 0, 0, "Look shows private property:", font);
+		AddWidget(widget);
+		config->value("config/ultima6/show_stealing", show_stealing, false);
+		stealing_button = new GUI_TextToggleButton(this, colX[2], buttonY[1], yesno_width, height, yesno_text, 2, show_stealing, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(stealing_button);
+	} else {
+		stealing_button = NULL;
+	}
+	if(Game::get_game()->is_orig_style()) {
+// Use text gump
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1 + is_u6], 0, 0, 0, "Use text gump:", font);
+		AddWidget(widget);
+		text_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY[1 + is_u6], yesno_width, height, yesno_text, 2, game->is_using_text_gumps(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(text_gump_button);
+		converse_solid_bg_button = NULL;
+	} else {
+// converse solid bg
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1 + is_u6], 0, 0, 0, "Converse gump has solid bg:", font);
+		AddWidget(widget);
+		config->value(key + "/converse_solid_bg", solid_bg, false);
+		converse_solid_bg_button = new GUI_TextToggleButton(this, colX[2], buttonY[1 + is_u6], 52, height, yesno_text, 2, solid_bg, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(converse_solid_bg_button);
+		text_gump_button = converse_gump_button = NULL;
+	}
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[4], 0, 0, 0, "The following require a restart:", font);
+	AddWidget(widget);
+// skip intro
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[5], 0, 0, 0, "Skip intro:", font);
+	AddWidget(widget);
+	skip_intro_button = new GUI_TextToggleButton(this, colX[2], buttonY[5], yesno_width, height, yesno_text, 2, skip_intro,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(skip_intro_button);
+// show console
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[6], 0, 0, 0, "Show console:", font);
+	AddWidget(widget);
+	show_console_button = new GUI_TextToggleButton(this, colX[2], buttonY[6], yesno_width, height, yesno_text, 2, show_console, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(show_console_button);
+// original cursor
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Use original cursors:", font);
+	AddWidget(widget);
+	cursor_button = new GUI_TextToggleButton(this, colX[2], buttonY[7], yesno_width, height, yesno_text, 2, use_original_cursor, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(cursor_button);
+
+	if(Game::get_game()->is_orig_style()) {
+// use converse gump
+		widget = (GUI_Widget *) new GUI_Text(colX[1], textY[8], 0, 0, 0, "Use converse gump:", font);
+		AddWidget(widget);
+		converse_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY[8], yesno_width, height, yesno_text, 2, game->using_new_converse_gump(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(converse_gump_button);
+	}
+	cancel_button = new GUI_Button(this, 77, buttonY[9], 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
-	save_button = new GUI_Button(this, 121, 158, 40, height, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	save_button = new GUI_Button(this, 158, buttonY[9], 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
- 
- return true;
+
+	return true;
 }
 
 GameplayDialog::~GameplayDialog() {
@@ -74,6 +152,28 @@ GUI_status GameplayDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 	if(caller == (GUI_CallBack *)cancel_button) {
 		return close_dialog();
 	} else if(caller == (GUI_CallBack *)save_button) {
+		Game *game  = Game::get_game();
+		Configuration *config = game->get_config();
+		std::string key = config_get_game_key(config);
+
+		game->get_party()->set_formation(formation_button->GetSelection());
+		config->set("config/general/party_formation", formation_button->GetSelection() ? "yes" : "no");
+		if(game->get_game_type() == NUVIE_GAME_U6) {
+			game->get_script()->call_set_g_show_stealing(stealing_button->GetSelection());
+			config->set("config/ultima6/show_stealing", stealing_button->GetSelection() ? "yes" : "no");
+		}
+		if(Game::get_game()->is_orig_style()) {
+			game->set_using_text_gumps(text_gump_button->GetSelection());
+			config->set("config/general/use_text_gumps", text_gump_button->GetSelection() ? "yes" : "no");
+			config->set("config/general/converse_gump", converse_gump_button->GetSelection() ? "yes" : "no"); // need restart
+		} else {
+			config->set(key + "/converse_solid_bg", converse_solid_bg_button->GetSelection() ? "yes" : "no");
+		}
+		config->set(key + "/skip_intro", skip_intro_button->GetSelection() ? "yes" : "no"); // need restart
+		config->set("config/general/show_console", show_console_button->GetSelection() ? "yes" : "no"); // need restart
+		config->set("config/general/enable_cursors", cursor_button->GetSelection() ? "yes" : "no"); // need restart
+
+		config->write();
 		close_dialog();
 		return GUI_YUM;
 	}

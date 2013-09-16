@@ -65,7 +65,7 @@ CombatTarget target;
 #define PARTY_FORM_STANDARD 0
 #define PARTY_FORM_COLUMN   1
 #define PARTY_FORM_ROW      2
-#define PARTY_FORM_DELTA    4
+#define PARTY_FORM_DELTA    3
 #define PARTY_FORM_COMBAT   7
 #define PARTY_FORM_REST     8
 
@@ -136,7 +136,8 @@ class Party {
  void cure();
  void set_ethereal(bool ethereal);
  //void set_active(uint8 member_num, bool state) { member[member_num].inactive = !state; }
-
+ uint8 get_formation() { return formation; } // walking formation
+ void set_formation(uint8 val) { formation = val; reform_party(); }
  // Properties
  uint8 get_party_size();
  virtual uint8 get_party_max() { return(8); } // U6

@@ -134,6 +134,7 @@ class Game
  bool game_play;
  bool using_text_gumps;
  bool open_containers; //doubleclick
+ bool enabled_converse_gump;
 
  public:
 
@@ -180,6 +181,7 @@ class Game
  bool is_orig_style() { return (game_style == NUVIE_STYLE_ORIG); }
  bool doubleclick_opens_containers();
  void set_doubleclick_opens_containers(bool val) { open_containers = val; }
+ void set_using_text_gumps(bool val) { using_text_gumps = val; }
  bool is_using_text_gumps() { return (using_text_gumps || is_new_style()); }
  bool is_roof_mode();
  bool using_hackmove();
@@ -196,7 +198,7 @@ class Game
  void set_armageddon(bool val) { armageddon = val; }
  bool is_ethereal() { return ethereal; }
  void set_ethereal(bool val) { ethereal = val; }
- bool use_new_converse_gump();
+ bool using_new_converse_gump();
 
  uint16 get_game_width() { if(is_orig_style()) return 320; else return game_width; }
  uint16 get_game_height() { if(is_orig_style()) return 200; else return game_height; }

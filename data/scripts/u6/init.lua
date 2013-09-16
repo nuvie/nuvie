@@ -128,6 +128,10 @@ g_show_stealing = config_get_boolean_value("config/ultima6/show_stealing")
 
 -- some common functions
 
+function set_g_show_stealing(stealing)
+	g_show_stealing = stealing
+end
+
 function dbg(msg_string)
 	--io.stderr:write(msg_string)
 end

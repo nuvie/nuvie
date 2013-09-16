@@ -412,14 +412,14 @@ void Converse::stop()
 {
 	scroll->set_talking(false);
 
-    if(Game::get_game()->use_new_converse_gump() && !scroll->is_converse_finished())
+    if(Game::get_game()->using_new_converse_gump() && !scroll->is_converse_finished())
     {
     	return;
     }
 
     reset(); // free memory
 
-    if(Game::get_game()->use_new_converse_gump())
+    if(Game::get_game()->using_new_converse_gump())
     {
     	scroll->Hide();
         if(Game::get_game()->is_orig_style())
@@ -524,7 +524,7 @@ void Converse::show_portrait(uint8 n)
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor, false);
-    if(Game::get_game()->use_new_converse_gump())
+    if(Game::get_game()->using_new_converse_gump())
     {
         if(Game::get_game()->is_orig_style())
             views->close_current_view();
@@ -633,7 +633,7 @@ bool Converse::override_input()
 
 void Converse::collect_input()
 {
-	if(!Game::get_game()->use_new_converse_gump())
+	if(!Game::get_game()->using_new_converse_gump())
 		print("\nyou say:");
     poll_input();
 }

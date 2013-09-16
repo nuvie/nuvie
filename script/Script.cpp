@@ -1090,6 +1090,16 @@ bool Script::call_advance_time(uint16 minutes)
 	return call_function("advance_time", 1, 0);
 }
 
+bool Script::call_set_g_show_stealing(bool stealing)
+{
+	lua_getglobal(L, "set_g_show_stealing");
+	lua_pushboolean(L, stealing);
+
+	if(call_function("set_g_show_stealing", 1, 0) == false)
+		return false;
+	return true;
+}
+
 ScriptThread *Script::new_thread(const char *scriptfile)
 {
    ScriptThread *t = NULL;

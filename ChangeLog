@@ -1,3 +1,6 @@
+2013-09-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1732
+	* Add gameplay menu content.
+
 2013-09-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1731
 	* Add interface menu. Remove ~ from some Audiodialog text. Add forgotten
 	  doubleclick_enabled check in MapWindow::MouseDouble.
