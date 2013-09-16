@@ -66,6 +66,8 @@ class ConverseGump: public MsgScroll
  virtual void display_string(std::string s, Font *f, bool include_on_map_window);
  virtual void set_talking(bool state, Actor *actor = NULL);
  virtual void set_font(uint8 font_type) {}
+ bool get_solid_bg() { return solid_bg; }
+ void set_solid_bg(bool val) { solid_bg = val; }
 
  void Display(bool full_redraw);
 

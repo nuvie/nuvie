@@ -101,6 +101,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  player = NULL;
  event = NULL;
  converse = NULL;
+ conv_gump = NULL;
  command_bar = NULL;
  new_command_bar = NULL;
  clock = NULL;
@@ -317,7 +318,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
 	config->value("config/general/converse_gump", enabled_converse_gump, false);
    if(using_new_converse_gump())
    {
-	   ConverseGump *conv_gump = new ConverseGump(config, font_manager->get_font(0), screen);
+	   conv_gump = new ConverseGump(config, font_manager->get_font(0), screen);
 	   conv_gump->Hide();
 	   gui->AddWidget(conv_gump);
 

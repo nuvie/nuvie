@@ -43,6 +43,7 @@ class MsgScroll;
 class Player;
 class Party;
 class Converse;
+class ConverseGump;
 class Cursor;
 class GameClock;
 class ViewManager;
@@ -91,6 +92,7 @@ class Game
  Player *player;
  Party *party;
  Converse *converse;
+ ConverseGump *conv_gump;
  CommandBar *command_bar;
  CommandBar *new_command_bar;
 
@@ -228,6 +230,7 @@ class Game
  Player *get_player()              { return(player); }
  Party *get_party()                { return(party); }
  Converse *get_converse()          { return(converse); }
+ ConverseGump *get_converse_gump() { return(conv_gump); }
  ViewManager *get_view_manager()   { return(view_manager); }
  GameClock *get_clock()            { return(clock); }
  Portrait *get_portrait()          { return(portrait); }

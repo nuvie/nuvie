@@ -34,6 +34,8 @@
 #include "Party.h"
 #include "Script.h"
 #include "U6misc.h"
+#include "Converse.h"
+#include "ConverseGump.h"
 #include "Configuration.h"
 
 #define GD_WIDTH 274
@@ -95,8 +97,8 @@ bool GameplayDialog::init() {
 // converse solid bg
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1 + is_u6], 0, 0, 0, "Converse gump has solid bg:", font);
 		AddWidget(widget);
-		config->value(key + "/converse_solid_bg", solid_bg, false);
-		converse_solid_bg_button = new GUI_TextToggleButton(this, colX[2], buttonY[1 + is_u6], 52, height, yesno_text, 2, solid_bg, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		solid_bg = game->get_converse_gump()->get_solid_bg();
+		converse_solid_bg_button = new GUI_TextToggleButton(this, colX[2], buttonY[1 + is_u6], yesno_width, height, yesno_text, 2, solid_bg, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(converse_solid_bg_button);
 		text_gump_button = converse_gump_button = NULL;
 	}
@@ -167,6 +169,7 @@ GUI_status GameplayDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 			config->set("config/general/use_text_gumps", text_gump_button->GetSelection() ? "yes" : "no");
 			config->set("config/general/converse_gump", converse_gump_button->GetSelection() ? "yes" : "no"); // need restart
 		} else {
+			game->get_converse_gump()->set_solid_bg(converse_solid_bg_button->GetSelection());
 			config->set(key + "/converse_solid_bg", converse_solid_bg_button->GetSelection() ? "yes" : "no");
 		}
 		config->set(key + "/skip_intro", skip_intro_button->GetSelection() ? "yes" : "no"); // need restart
