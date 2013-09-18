@@ -1,3 +1,6 @@
+2013-09-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1736
+	*Changes to make roof mode togglable
+
 2013-09-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1735
 	* Rename set_lighting_style to set_lighting_style_from_config
 	* Add is_fullscreen(), get_scaler_index(), and get_scaler_reg()

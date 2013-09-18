@@ -137,6 +137,7 @@ class Game
  bool using_text_gumps;
  bool open_containers; //doubleclick
  bool enabled_converse_gump;
+ bool roof_mode;
 
  public:
 
@@ -186,7 +187,8 @@ class Game
  void set_doubleclick_opens_containers(bool val) { open_containers = val; }
  void set_using_text_gumps(bool val) { using_text_gumps = val; }
  bool is_using_text_gumps() { return (using_text_gumps || is_new_style()); }
- bool is_roof_mode();
+ bool is_roof_mode() { return roof_mode; }
+ void set_roof_mode(bool val) { roof_mode = val; }
  bool using_hackmove();
  void set_hackmove(bool hackmove) { is_using_hackmove = hackmove; }
  uint8 is_dragging_enabled() { return dragging_enabled; }

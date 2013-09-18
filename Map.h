@@ -151,6 +151,7 @@ class Map
  Tile *get_dmg_tile(uint16 x, uint16 y, uint8 level);
  bool is_passable(uint16 x1, uint16 y1, uint16 x2, uint16 y2, uint8 level);
  bool has_roof(uint16 x, uint16 y, uint8 level);
+ void set_roof_mode(bool roofs);
 
  const char *look(uint16 x, uint16 y, uint8 level);
 

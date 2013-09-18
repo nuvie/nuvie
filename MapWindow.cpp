@@ -2605,6 +2605,22 @@ void MapWindow::wizard_eye_update()
 	}
 }
 
+void MapWindow::set_roof_mode(bool roofs)
+{
+	roof_mode = roofs;
+	if(roof_mode) {
+		if(roof_tiles)
+			return;
+		else
+			loadRoofTiles();
+	} else {
+		if(roof_tiles) {
+			SDL_FreeSurface(roof_tiles);
+			roof_tiles = NULL;
+		}
+	}
+}
+
 void MapWindow::loadRoofTiles()
 {
 	std::string datadir = GUI::get_gui()->get_data_dir();

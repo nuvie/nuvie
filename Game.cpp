@@ -132,6 +132,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
  config->value("config/input/enabled_dragging", dragging_enabled, true);
  config->value("config/general/use_text_gumps", using_text_gumps, false);
+ config->value(config_get_game_key(config) + "/roof_mode", roof_mode, false);
  config->value("config/input/doubleclick_opens_containers", open_containers, false);
  int value;
  uint16 screen_width = gui->get_width();
@@ -439,13 +440,6 @@ bool Game::doubleclick_opens_containers()
 		return true;
 	else
 		return false;
-}
-
-bool Game::is_roof_mode()
-{
-	bool roof_mode;
-	config->value(config_get_game_key(config) + "/roof_mode", roof_mode, false);
-	return roof_mode;
 }
 
 bool Game::using_new_converse_gump()

@@ -461,6 +461,22 @@ std::string Map::getRoofDataFilename()
 	return mapfile;
 }
 
+void Map::set_roof_mode(bool roofs)
+{
+	roof_mode = roofs;
+	if(roof_mode) {
+		if(roof_surface)
+			return;
+		else
+			loadRoofData();
+	} else {
+		if(roof_surface) {
+			free(roof_surface);
+			roof_surface = NULL;
+		}
+	}
+}
+
 void Map::loadRoofData()
 {
 	NuvieIOFileRead file;
