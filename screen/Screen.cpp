@@ -64,7 +64,7 @@ Screen::Screen(Configuration *cfg)
  doubleBuffer = false;
  is_no_darkness = false;
 
- set_lighting_style();
+ set_lighting_style_from_config();
  max_update_rects = 10;
  num_update_rects = 0;
  memset( shading_globe, 0, sizeof(shading_globe) );
@@ -138,7 +138,7 @@ config->value("config/video/scale_factor", scale_factor, 1);
  return true;
 }
 
-void Screen::set_lighting_style()
+void Screen::set_lighting_style_from_config()
 {
  std::string str_lighting_style;
  config->value( "config/general/lighting", str_lighting_style );
@@ -157,7 +157,7 @@ bool Screen::toggle_darkness_cheat()
 	if(is_no_darkness)
 		lighting_style = LIGHTING_STYLE_NONE;
 	else
-		set_lighting_style();
+		set_lighting_style_from_config();
 	return is_no_darkness;
 }
 

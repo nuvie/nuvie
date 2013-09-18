@@ -71,7 +71,10 @@ class Screen
 
    bool init();
 
-   void set_lighting_style();
+   bool is_fullscreen() { return fullscreen; }
+   int get_scaler_index() { return scaler_index; }
+   ScalerRegistry *get_scaler_reg() { return &scaler_reg; }
+   void set_lighting_style_from_config();
    bool toggle_darkness_cheat();
    bool toggle_fullscreen();
    bool set_palette(uint8 *palette);
