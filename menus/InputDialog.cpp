@@ -36,6 +36,7 @@
 #include "MapWindow.h"
 #include "PartyView.h"
 #include "ViewManager.h"
+#include "CommandBarNewUI.h"
 
 #define ID_WIDTH 280
 #define ID_HEIGHT 153
@@ -187,6 +188,8 @@ GUI_status InputDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 
 			if(command_button->GetSelection())
 				game->init_new_command_bar();
+			else
+				game->delete_new_command_bar();
 			config->set("config/input/new_command_bar", command_button->GetSelection() ? "yes" : "no");
 
 			game->get_view_manager()->get_party_view()->set_party_view_targeting(party_targeting_button->GetSelection());

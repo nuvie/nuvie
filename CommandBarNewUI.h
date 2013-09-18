@@ -33,6 +33,7 @@ class Game;
 class GUI_Button;
 class GUI_CallBack;
 class Text;
+class Font;
 
 class CommandBarNewUI: public CommandBar
 {

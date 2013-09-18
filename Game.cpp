@@ -385,6 +385,14 @@ bool Game::loadGame(Script *s, SoundManager *sm)
  return true;
 }
 
+void Game::delete_new_command_bar()
+{
+	if(new_command_bar == NULL)
+		return;
+	new_command_bar->Delete();
+	new_command_bar = NULL;
+}
+
 void Game::init_new_command_bar()
 {
 	if(new_command_bar != NULL)

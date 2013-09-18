@@ -54,8 +54,8 @@ bool GameplayDialog::init() {
 	int height = 12;
 	int yesno_width = 32;
 	int colX[] = { 9, 50, 233 };
-	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 132 };
-	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128, 141, 160 };
+	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126 };
+	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115 };
 
 	GUI_Widget *widget;
 	GUI *gui = GUI::get_gui();
@@ -127,9 +127,9 @@ bool GameplayDialog::init() {
 		converse_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY[8], yesno_width, height, yesno_text, 2, game->using_new_converse_gump(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(converse_gump_button);
 	}
-	cancel_button = new GUI_Button(this, 77, buttonY[9], 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	cancel_button = new GUI_Button(this, 77, buttonY[9] + 6, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
-	save_button = new GUI_Button(this, 158, buttonY[9], 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	save_button = new GUI_Button(this, 158, buttonY[9] + 6, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
 
 	return true;

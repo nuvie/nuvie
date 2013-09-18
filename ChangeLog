@@ -1,3 +1,8 @@
+2013-09-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1734
+	* have GUI_TextToggleButton update selection before callback
+	* Delete new_command_bar when disabled from the menu
+	* GameplayDialog.cpp: unneeded index changes
+
 2013-09-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1733
 	* Fix converse bg menu setting
 

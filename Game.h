@@ -177,6 +177,7 @@ class Game
  void stats_changed();
 
  void init_new_command_bar();
+ void delete_new_command_bar();
  nuvie_game_t get_game_type() { return game_type; }
  uint8 get_game_style() { return game_style; }
  bool is_new_style() { return (game_style == NUVIE_STYLE_NEW); }
