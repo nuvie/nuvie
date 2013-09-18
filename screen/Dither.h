@@ -31,10 +31,9 @@ class Configuration;
 // Dither modes..
 
 #define DITHER_NONE 0
-
-#define DITHER_HRC  1 //FIXME add this mode.
-#define DITHER_CGA  2
-#define DITHER_EGA  3
+#define DITHER_CGA  1
+#define DITHER_EGA  2
+#define DITHER_HRC  3 //FIXME add this mode.
 
 class Dither
 {

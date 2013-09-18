@@ -1,5 +1,9 @@
+2013-09-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1737
+	* Add VideoDialog menu options. Scaler and scale settings are not compiled
+	  by default since I don't know how to change them in game.
+
 2013-09-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1736
-	*Changes to make roof mode togglable
+	* Changes to make roof mode togglable
 
 2013-09-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1735
 	* Rename set_lighting_style to set_lighting_style_from_config

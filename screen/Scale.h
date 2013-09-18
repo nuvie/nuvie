@@ -87,7 +87,7 @@ public:
 	~ScalerRegistry();
 
 	// Get the total Number of scalers
-	int				GetNumScalers();
+	int				GetNumScalers() { return num_scalers; }
 
 	// Get the Scaler Index from it's name
 	int				GetIndexForName(const std::string &name);
