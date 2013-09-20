@@ -1,3 +1,9 @@
+2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1744
+	* Fix problems with the cursor not showing up when using tab while in input
+	  or attack mode.
+	* Stop cursor from disappearing from inventory or actor view every time a
+	  key passes through.
+
 2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1743
 	* Add MULTI_USE key binding that brings up a target cursor and behaves like
 	  you double clicked something (talks to npcs, looks at readable objs, uses

@@ -297,8 +297,13 @@ GUI_status ActorView::KeyDown(SDL_keysym key)
 		case SDLK_KP_ENTER:
 			select_button();
 			break;
+		case SDLK_UP: // would otherwise move invisible mapwindow cursor
+		case SDLK_DOWN:
+		case SDLK_KP8:
+		case SDLK_KP2:
+			break;
 		default:
-			set_show_cursor(false); // newAction() can move cursor here
+//			set_show_cursor(false); // newAction() can move cursor here
 			return GUI_PASS;
 	}
 	return(GUI_YUM);

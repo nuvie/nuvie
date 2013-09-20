@@ -50,6 +50,8 @@
 #include "U6objects.h"
 #include "UseCode.h"
 #include "CommandBar.h"
+#include "ActorView.h"
+#include "InventoryView.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define WALK_BUTTON 3
@@ -315,11 +317,24 @@ void MapWindow::set_walk_button_mask()
 
 void MapWindow::set_show_cursor(bool state)
 {
+ ActorView *actor_view = game->get_view_manager()->get_actor_view();
+ InventoryView *inventory_view = game->get_view_manager()->get_inventory_view();
+ if(actor_view)
+	actor_view->set_show_cursor(false);
+ if(inventory_view)
+	inventory_view->set_show_cursor(false);
+
  show_cursor = state;
 }
 
 void MapWindow::set_show_use_cursor(bool state)
 {
+ ActorView *actor_view = game->get_view_manager()->get_actor_view();
+ InventoryView *inventory_view = game->get_view_manager()->get_inventory_view();
+ if(actor_view)
+	actor_view->set_show_cursor(false);
+ if(inventory_view)
+	inventory_view->set_show_cursor(false);
  show_use_cursor = state;
 }
 
@@ -711,14 +726,14 @@ void MapWindow::Display(bool full_redraw)
 {
  uint16 i,j;
  uint16 *map_ptr;
- uint16 map_width;
+// uint16 map_width;
  Tile *tile;
  //unsigned char *ptr;
 
 
 
  //map_ptr = map->get_map_data(cur_level);
- map_width = map->get_width(cur_level);
+// map_width = map->get_width(cur_level);
 
  //map_ptr += cur_y * map_width + cur_x;
   map_ptr = tmp_map_buf;

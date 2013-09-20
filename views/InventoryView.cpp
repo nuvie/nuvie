@@ -376,7 +376,7 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
         	}
         	break;
         default:
-            set_show_cursor(false); // newAction() can move cursor here
+//            set_show_cursor(false); // newAction() can move cursor here
             return GUI_PASS;
     }
     return(GUI_YUM);

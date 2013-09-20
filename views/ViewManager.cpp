@@ -204,7 +204,8 @@ void ViewManager::set_inventory_mode()
 {
  set_current_view((View *)inventory_view);
  Event *event = Game::get_game()->get_event();
- if(event->get_mode() == EQUIP_MODE)
+ if(event->get_mode() == EQUIP_MODE || event->get_mode() == INPUT_MODE
+    || event->get_mode() == ATTACK_MODE)
 	inventory_view->set_show_cursor(true);
 }
 
@@ -213,6 +214,9 @@ void ViewManager::set_party_mode()
  Event *event = Game::get_game()->get_event();
  if(event->get_mode() == EQUIP_MODE)
 	 event->cancelAction();
+ else if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE)
+	 event->moveCursorToMapWindow();
+
  if(Game::get_game()->is_orig_style())
 	 set_current_view((View *)party_view);
  return;
@@ -221,7 +225,9 @@ void ViewManager::set_party_mode()
 void ViewManager::set_actor_mode()
 {
  set_current_view((View *)actor_view);
- if(Game::get_game()->get_event()->get_mode() == EQUIP_MODE)
+ Event *event = Game::get_game()->get_event();
+ if(event->get_mode() == EQUIP_MODE || event->get_mode() == INPUT_MODE
+    || event->get_mode() == ATTACK_MODE)
  {
 	actor_view->set_show_cursor(true);
 	actor_view->moveCursorToButton(2);
