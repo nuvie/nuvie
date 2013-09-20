@@ -1,3 +1,6 @@
+2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1742
+	* Fix crash when trying to load a non-existent portrait.
+
 2013-09-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net> r1741
 	* Remove U6Lib assumption that data entries are ordered. This fixes loading
 	  SE's faces.lzc.
@@ -13,12 +16,12 @@
 2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1739
 	* Navigate ActorView with keyboard when selected in equip mode
 	* Cancel out of equip mode when going to party view
-	* Change no_fullscreen bool from private to local variable in VideoDialog
 
 2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1738
 	* Have Event::cancelAction() close gumps if in move mode
 	* Allow Event::close_gumps() to work in original style games
 	* Cancel out of equip mode when going to save menu
+	* Change no_fullscreen bool from private to local variable in VideoDialog
 
 2013-09-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1737
 	* Add VideoDialog menu options. Scaler and scale settings are not compiled

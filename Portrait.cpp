@@ -210,9 +210,15 @@ unsigned char *Portrait::get_portrait_data(Actor *actor)
   NuvieIOBuffer shp_buf;
   U6Lib_n shp_lib;
 
-  shp = new U6Shape();
   shp_data = faces.get_item(num,NULL);
   shp_buf.open(shp_data, faces.get_item_size(num), NUVIE_BUF_NOCOPY);
+
+  if(shp_buf.get_size() == 0) // no portrait at that index
+  {
+    free(shp_data);
+    return(NULL);
+  }
+  shp = new U6Shape();
   shp_lib.open(&shp_buf, 4, gametype);
   shp->load(&shp_lib, 0);
   new_portrait=shp->get_data(); // probably need to copy here
