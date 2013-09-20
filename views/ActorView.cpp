@@ -44,6 +44,10 @@ ActorView::ActorView(Configuration *cfg) : View(cfg)
  portrait = NULL;
  portrait_data = NULL;
  in_party = false;
+ cursor_pos.x = 2;
+ cursor_pos.px = cursor_pos.py = 0;
+ cursor_tile = NULL;
+ show_cursor = false;
 }
 
 ActorView::~ActorView()
@@ -64,6 +68,7 @@ bool ActorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y,
  add_command_icons(tmp_screen, view_manager);
 
  set_party_member(0);
+ cursor_tile = tile_manager->get_cursor_tile();
 
  return true;
 }
@@ -119,6 +124,13 @@ void ActorView::Display(bool full_redraw)
    display_actor_stats();
    DisplayChildren(); //draw buttons
    screen->update(area.x, area.y, area.w, area.h);
+  }
+
+ if(show_cursor && cursor_tile != NULL)
+  {
+   screen->blit(cursor_pos.px, cursor_pos.py, (unsigned char *)cursor_tile->data,
+                8, 16, 16, 16, true, NULL);
+   screen->update(cursor_pos.px, cursor_pos.py, 16, 16);
   }
 
 }
@@ -260,3 +272,73 @@ void ActorView::display_actor_stats()
  return;
 }
 
+/* Move the cursor around and use command icons.
+ */
+GUI_status ActorView::KeyDown(SDL_keysym key)
+{
+	if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
+		return(GUI_PASS);
+	switch(key.sym)
+	{
+		//	keypad arrow keys
+		case SDLK_KP1:
+		case SDLK_KP7:
+		case SDLK_LEFT:
+		case SDLK_KP4:
+			moveCursorToButton(cursor_pos.x - 1);
+			break;
+		case SDLK_KP9:
+		case SDLK_KP3:
+		case SDLK_RIGHT:
+		case SDLK_KP6:
+			moveCursorToButton(cursor_pos.x + 1);
+			break;
+		case SDLK_RETURN:
+		case SDLK_KP_ENTER:
+			select_button();
+			break;
+		default:
+			set_show_cursor(false); // newAction() can move cursor here
+			return GUI_PASS;
+	}
+	return(GUI_YUM);
+}
+
+/* Put cursor over one of the command icons. */
+void ActorView::moveCursorToButton(sint8 button_num)
+{
+	if(button_num < 0 || button_num > 3)
+		return;
+	cursor_pos.x = button_num;
+	update_cursor();
+	update_display = true;
+}
+
+/* Update on-screen location (px,py) of cursor.
+ */
+void ActorView::update_cursor()
+{
+	cursor_pos.px = ((cursor_pos.x + 1) * 16) - 16;
+	cursor_pos.py = 80;
+	cursor_pos.px += area.x;
+	cursor_pos.py += area.y;
+}
+
+void ActorView::set_show_cursor(bool state)
+{
+	show_cursor = state;
+	update_display = true;
+}
+
+void ActorView::select_button()
+{
+	ViewManager *view_manager = Game::get_game()->get_view_manager();
+	if(cursor_pos.x == 0) // left
+		View::callback(BUTTON_CB, left_button, view_manager);
+	if(cursor_pos.x == 1) // party
+		View::callback(BUTTON_CB, party_button, view_manager);
+	if(cursor_pos.x == 2) // inventory
+		View::callback(BUTTON_CB, inventory_button, view_manager);
+	if(cursor_pos.x == 3) // right
+		View::callback(BUTTON_CB, right_button, view_manager);
+}

@@ -364,7 +364,6 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
         case SDLK_KP6:
             moveCursorRelative(1, 0);
             break;
-        case SDLK_SPACE:
         case SDLK_RETURN:
         case SDLK_KP_ENTER:
             select_objAtCursor();
@@ -556,8 +555,9 @@ void InventoryView::set_show_cursor(bool state)
     
     show_cursor = state;
     update_display = true;
-    if(state == true)
-        Game::get_game()->get_view_manager()->set_inventory_mode();
+    ViewManager *vm = Game::get_game()->get_view_manager();
+    if(state == true && vm->get_current_view() != this) // second comparison prevents endless loop
+        vm->set_inventory_mode();
     
 }
 

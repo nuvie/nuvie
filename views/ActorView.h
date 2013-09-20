@@ -39,6 +39,13 @@ class ActorView : public View {
  Portrait *portrait;
 
  unsigned char *portrait_data;
+ struct actcursor_pos_s
+ {
+	uint8 x;
+	uint32 px, py;
+ } cursor_pos;
+ Tile *cursor_tile;
+ bool show_cursor;
 
  public:
  ActorView(Configuration *cfg);
@@ -50,6 +57,8 @@ class ActorView : public View {
 
  void Display(bool full_redraw);
  void update() { update_display = true; }
+ void set_show_cursor(bool state);
+ void moveCursorToButton(sint8 button_num);
 
  protected:
 
@@ -57,6 +66,9 @@ class ActorView : public View {
  void display_name();
  void display_actor_stats();
  bool in_party;
+ GUI_status KeyDown(SDL_keysym key);
+ void update_cursor();
+ void select_button();
 };
 
 #endif /* __ActorView_h__ */
