@@ -71,6 +71,7 @@ typedef enum {
  EQUIP_MODE,
  WAIT_MODE, /* waiting for something, optionally display prompt when finished */
  INPUT_MODE,
+ MULTIUSE_MODE,
  KEYINPUT_MODE
 } EventMode;
 

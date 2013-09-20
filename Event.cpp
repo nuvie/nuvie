@@ -3177,6 +3177,33 @@ void Event::doAction()
 			endAction(true);
 		}
     }
+	else if(mode == MULTIUSE_MODE)
+	{
+		if(input.loc) // on map
+		{
+			set_mode(MOVE_MODE);
+			multiuse(input.loc->sx, input.loc->sy);
+		}
+		else // tryed on views/gumps
+		{
+			Obj *obj = input.obj; // newAction(USE_MODE) will NULL input.obj
+			if(!obj) // not sure if this is needed
+			{
+				set_mode(MOVE_MODE);
+				return;
+			}
+
+			if(usecode->is_readable(obj)) // look at a scroll or book
+			{
+				set_mode(LOOK_MODE);
+				look(obj);
+				endAction(false); // FIXME: should be in look()
+				return;
+			}
+			set_mode(USE_MODE);
+			use(obj);
+		}
+	}
     else if(cursor_mode)
     {
         MapCoord loc = map_window->get_cursorCoord(); // need to preserve locations if a target is needed
@@ -3330,6 +3357,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		case TALK_MODE: talk_start(); break;
 		case USE_MODE:  use_start();  break;
 		case GET_MODE:  get_start();  break;
+		case MULTIUSE_MODE: get_target("");  break;
 		case ATTACK_MODE:
 			close_gumps();
 			if(game->get_game_type() == NUVIE_GAME_U6
@@ -3514,7 +3542,7 @@ void Event::moveCursorToMapWindow(bool ToggleCursor)
 //    map_window->grab_focus(); FIXME add move() and keyhandler to MapWindow, and uncomment this
 }
 
-static const char eventModeStrings[][16] = {
+static const char eventModeStrings[][17] = {
 "LOOK_MODE",
 "USE_MODE",
 "GET_MODE",
@@ -3530,6 +3558,7 @@ static const char eventModeStrings[][16] = {
 "EQUIP_MODE",
 "WAIT_MODE", /* waiting for something, optionally display prompt when finished */
 "INPUT_MODE",
+"MULTIUSE_MODE",
 "KEYINPUT_MODE"
 };
 

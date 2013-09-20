@@ -89,6 +89,7 @@ const struct Action {
 	{ "TOGGLE_COMBAT", ActionToggleCombat, "Toggle combat", Action::normal_keys, false },
 	{ "ATTACK", ActionAttack, "Attack", Action::normal_keys, true },
 	{ "REST", ActionRest, "Rest", Action::normal_keys, true },
+	{ "MULTI_USE", ActionMultiUse, "Multi-use", Action::normal_keys, true },
 	{ "SELECT_COMMAND_BAR", ActionSelectCommandBar, "Select Command Bar", Action::normal_keys, true },
 	{ "NEW_COMMAND_BAR", ActionSelectNewCommandBar, "Select New Command Bar", Action::normal_keys, true },
 	{ "DOLL_GUMP", ActionDollGump, "Doll gump", Action::normal_keys, true },

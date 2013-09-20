@@ -141,6 +141,11 @@ void ActionRest(int const *params)
 	event->newAction(REST_MODE);
 }
 
+void ActionMultiUse(int const *params)
+{
+	event->newAction(MULTIUSE_MODE);
+}
+
 static const sint8 SE_command_tbl[] = {6, -1, 4, 5, 1, 2, 0, 3, 7, 8}; // convert U6 indexes
 static const sint8 MD_command_tbl[] = {0, -1, 1, 2, 3, 4, 5, 6, -1, 7};
 

@@ -1,3 +1,9 @@
+2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1743
+	* Add MULTI_USE key binding that brings up a target cursor and behaves like
+	  you double clicked something (talks to npcs, looks at readable objs, uses
+	  items, and attacks objs and non-good npcs when in combat mode).
+	  The MULTIUSE_MODE event was created to handle this.
+
 2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1742
 	* Fix crash when trying to load a non-existent portrait.
 

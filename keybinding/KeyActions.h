@@ -38,6 +38,7 @@ void ActionDrop(int const *params);
 void ActionToggleCombat(int const *params);
 void ActionAttack(int const *params);
 void ActionRest(int const *params);
+void ActionMultiUse(int const *params);
 void ActionSelectCommandBar(int const *params);
 void ActionSelectNewCommandBar(int const *params);
 
