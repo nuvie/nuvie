@@ -29,7 +29,6 @@ class GUI_TextToggleButton;
 
 class VideoDialog : public GUI_Dialog {
 	protected:
-		bool no_fullscreen; // no compatible fullscreen setting found
 		GUI_CallBack *callback_object;
 		GUI_Button *save_button, *cancel_button, *only2x_button;
 		GUI_TextToggleButton *scale_button, *scale_win_button, *scaler_button, *scaler_win_button,

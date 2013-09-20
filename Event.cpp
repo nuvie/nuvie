@@ -2279,6 +2279,8 @@ void Event::saveDialog()
  close_gumps();
 
  SaveManager *save_manager = game->get_save_manager();
+ if(mode == EQUIP_MODE)
+	cancelAction();
  if(mode == MOVE_MODE)
  {
 	 map_window->set_looking(false);
@@ -2290,7 +2292,7 @@ void Event::saveDialog()
 
 void Event::gameMenuDialog()
 {
-	if(mode == MOVE_MODE || mode == EQUIP_MODE)
+	if(mode == MOVE_MODE && !view_manager->gumps_are_active())
 	{
 		showingDialog = true;
 		map_window->set_looking(false);
@@ -3218,6 +3220,11 @@ void Event::cancelAction()
 
     if(mode == MOVE_MODE)
     {
+        if(view_manager->gumps_are_active())
+        {
+            close_gumps();
+            return;
+        }
         scroll->display_string("Pass!\n");
         player->pass();
     }
@@ -3660,7 +3667,7 @@ bool Event::select_view_obj(Obj *obj, Actor *actor)
 
 void Event::close_gumps()
 {
-	if(game->is_new_style())
+//	if(game->is_new_style())
 	{
 		view_manager->close_all_gumps();
 	}

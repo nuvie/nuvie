@@ -1,3 +1,8 @@
+2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1738
+	* Have Event::cancelAction() close gumps if in move mode
+	* Allow Event::close_gumps() to work in original style games
+	* Cancel out of equip mode when going to save menu
+
 2013-09-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1737
 	* Add VideoDialog menu options. Scaler and scale settings are not compiled
 	  by default since I don't know how to change them in game.

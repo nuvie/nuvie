@@ -58,7 +58,7 @@ bool VideoDialog::init() {
 	int colX[] = { 9, 29, 63, 201, 239};
 	int height = 12;
 	int yesno_width = 32;
-	no_fullscreen = false;
+	bool no_fullscreen = false; // no compatible fullscreen setting found
 	GUI_Widget *widget;
 	GUI *gui = GUI::get_gui();
 	GUI_Font *font = gui->get_font();
