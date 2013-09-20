@@ -311,9 +311,15 @@ uint32 U6Lib_n::calculate_num_offsets(bool skip4) //skip4 bytes of header.
  if(skip4)
    data->seek(0x4);
 
- //find first non-zero offset and calculate num_offsets from that.
+
+ // We assume the first data in the file is directly behind the offset table,
+ // so we continue scanning until we hit a data block.
+ uint32 max_count = 0xffffffff;
  for(i=0;!data->is_end();i++)
    {
+    if (i == max_count)
+      return i;
+
     if(lib_size == 2)
       offset = data->read2();
     else
@@ -326,7 +332,8 @@ uint32 U6Lib_n::calculate_num_offsets(bool skip4) //skip4 bytes of header.
        if(skip4)
          offset -= 4;
 
-       return offset / lib_size;
+       if (offset / lib_size < max_count)
+         max_count = offset / lib_size;
       }
    }
 
