@@ -1,3 +1,11 @@
+2013-09-20  Eric Fry <efry at users.sourceforge.net> r1740
+	* Fixed bug #287 "[Tried to print control char.]" error (and others).
+	  FM-Towns keyword commands are now handled in fullmap mode. They are
+	  added to the list of selectable keywords if the player has already
+	  met the actor who is referenced in the keyword command. These keywords
+	  take the format +actor_numKeyword+ eg. +5runes+ Would add the keyword
+	  'runes' to the list if the player has met Lord British. 
+
 2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1739
 	* Navigate ActorView with keyboard when selected in equip mode
 	* Cancel out of equip mode when going to party view

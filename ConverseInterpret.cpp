@@ -283,11 +283,18 @@ void ConverseInterpret::exec()
  */
 void ConverseInterpret::do_text()
 {
+  string output = get_formatted_text(converse->get_output().c_str());
+  converse->print(output.c_str());
+}
+
+/* Print script text, resolving special symbols as they are encountered.
+ */
+string ConverseInterpret::get_formatted_text(const char *c_str)
+{
     unsigned int i = 0;
     char symbol[3] = { '\0', '\0', '\0' },
          intval[16];
     string output;
-    const char *c_str = converse->get_output().c_str();
     const uint32 len = strlen(c_str);
     uint32 last_value = 0;
 
@@ -330,6 +337,8 @@ void ConverseInterpret::do_text()
                    i += 2;
                    break;
 
+         case '{' : i++; break; //FIXME what does this FM-Towns command do?
+
          case '~' :
                    if(i+3 <= len)
                      {
@@ -341,7 +350,7 @@ void ConverseInterpret::do_text()
                         i++;
                      }
                    break;
-                   
+
          case '/' : // singular
          case '\\' : // plural
          {
@@ -359,13 +368,31 @@ void ConverseInterpret::do_text()
                    break;
          }
 
-         default :  output.append(1,c_str[i]);
-                    i += 1;
-                    break;
+         default :
+                   //skip fm-towns keyword commands when in original ui mode.
+                   // They take the following form. '+actor_numberKeyword+' eg. '+3leave+'
+                   if(c_str[i] == '+' && Game::get_game()->is_orig_style())
+                   {
+                     if(i+3 <= len)
+                       {
+                        i++;
+
+                        for(;c_str[i] != 0x2b && i < len;) //0x2b = '+'
+                          i++;
+
+                        i++;
+                       }
+                   }
+                   else
+                   {
+                      output.append(1,c_str[i]);
+                      i += 1;
+                   }
+                   break;
         }
     }
 
-    converse->print(output.c_str());
+    return output;
 }
 
 
@@ -783,7 +810,7 @@ bool ConverseInterpret::op(stack<converse_typed_value> &i)
             converse->name = strdup(get_text().c_str()); // collected
             break;
         case U6OP_SLOOK: // 0xf1, description follows
-            converse->desc = strdup(get_text().c_str()); // collected
+            converse->desc = strdup(get_formatted_text(get_text().c_str()).c_str()); // collected
             converse->print("\nYou see ");
             converse->print(converse->desc);
             converse->print("\n");

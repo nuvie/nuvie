@@ -108,6 +108,7 @@ class ConverseGump: public MsgScroll
  std::string get_token_at_cursor();
 
  bool is_permanent_keyword(std::string keyword);
+ void parse_fm_towns_token(MsgText *token);
 };
 
 

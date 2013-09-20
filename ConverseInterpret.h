@@ -211,6 +211,7 @@ protected:
     void exec();
     void do_ctrl();
     void do_text();
+    string get_formatted_text(const char *c_str);
     converse_value pop_arg(stack<converse_typed_value> &vs);
     converse_typed_value pop_typed_arg(stack<converse_typed_value> &vs);
     virtual bool evop(stack<converse_typed_value> &i);
@@ -231,7 +232,7 @@ public:
 
     /* value tests */
     virtual bool is_print(converse_value check)
-     { return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a) || (check == 0x7e)) ); } //added '~' 0x7e for fm towns.
+     { return( ((check == 0x0a) || (check >= 0x20 && check <=0x7a) || (check == 0x7e) || (check == 0x7b)) ); } //added '~' 0x7e, '{' 0x7b  for fm towns.
     virtual bool is_ctrl(converse_value code)
      { return(((code >= 0xa1 || code == 0x9c || code == 0x9e) && !is_valop(code) && !is_datasize(code))); }
     virtual bool is_datasize(converse_value check)

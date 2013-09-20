@@ -352,7 +352,65 @@ bool ConverseGump::parse_token(MsgText *token)
 		add_keyword(keyword);
 	}
 
+  parse_fm_towns_token(token);
 	return MsgScroll::parse_token(token);
+}
+
+// Add FM-Towns keywords which take the form. +actor_numKeyword+ eg. +5runes+
+// Only add keyword if the player has met the actor given by the actor_num
+void ConverseGump::parse_fm_towns_token(MsgText *token)
+{
+  int at_idx = token->s.find_first_of('+', 0);
+  int i=0;
+  int len = (int)token->s.length();
+  bool has_met = false;
+  while(at_idx != -1 && i < len)
+  {
+    i=at_idx+1;
+    char c = token->s[i];
+    if(i < len && isdigit(c))
+    {
+      const char *c_str = token->s.c_str();
+      uint16 actor_num = (int)strtol(&c_str[i], NULL, 10);
+      if(actor_num < 256)
+      {
+        Actor *actor = Game::get_game()->get_actor_manager()->get_actor(actor_num);
+        if(actor)
+        {
+          has_met = actor->is_met();
+        }
+      }
+      for(;isdigit(c_str[i]);)
+        i++;
+    }
+
+    std::string keyword = "";
+    for(;i < len;i++)
+    {
+      char c = token->s[i];
+
+      if(isalpha(c))
+      {
+        keyword.push_back(c);
+      }
+
+      if(!isalpha(c) || i == len - 1)
+      {
+        token->s.erase(at_idx, (i-at_idx)+1);
+        i -= i - at_idx;
+        at_idx = token->s.find_first_of('+', i);
+        break;
+      }
+    }
+    DEBUG(0,LEVEL_WARNING, "%s", keyword.c_str());
+    if(has_met) //only add keyword if the player has met the actor in question.
+    {
+      add_keyword(keyword);
+      has_met = false;
+    }
+  }
+
+  return;
 }
 
 void ConverseGump::add_keyword(std::string keyword)
