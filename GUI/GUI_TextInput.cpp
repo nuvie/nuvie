@@ -97,6 +97,7 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
     case SDLK_RCTRL    :
     case SDLK_CAPSLOCK : break;
 
+    case SDLK_KP_ENTER:
     case SDLK_RETURN : if(callback_object)
                          callback_object->callback(TEXTINPUT_CB_TEXT_READY, this, text);
     case SDLK_ESCAPE : release_focus(); break;

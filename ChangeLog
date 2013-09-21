@@ -1,3 +1,8 @@
+2013-09-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1745
+	* Fix obj manager corruption on trying to load non-existent save file or
+	  one with the wrong version.
+	* For GUI_TextInput, allow KP_ENTER to callback to its parent
+
 2013-09-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1744
 	* Fix problems with the cursor not showing up when using tab while in input
 	  or attack mode.

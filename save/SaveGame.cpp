@@ -366,8 +366,6 @@ bool SaveGame::load(const char *filename)
  //char game_tag[3];
  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
 
- init(obj_manager);
-
  config->value("config/GameType",game_type);
 
  loadfile = new NuvieIOFileRead();
@@ -383,9 +381,12 @@ bool SaveGame::load(const char *filename)
 
  if(!check_version(loadfile))
   {
+   DEBUG(0,LEVEL_NOTIFICATION,"version incorrect\n");
    delete loadfile;
    return false;
   }
+
+ init(obj_manager); // needs to come after checking for failure
 
  load_info(loadfile); //load header info
 
