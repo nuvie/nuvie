@@ -55,6 +55,8 @@ void ActionPartyMode(int const *params);
 
 void ActionSaveDialog(int const *params);
 void ActionLoadLatestSave(int const *params);
+void ActionQuickSave(int const *params);
+void ActionQuickLoad(int const *params);
 void ActionQuitDialog(int const *params);
 void ActionQuitNODialog(int const *params);
 void ActionGameMenuDialog(int const *params);

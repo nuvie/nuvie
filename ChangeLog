@@ -1,3 +1,7 @@
+2013-09-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1746
+	* Add QUICK_SAVE and QUICK_LOAD key bindings. They need a parameter of the
+	  save file number. Example: QUICK_LOAD 0 loads nuvieU6qs000.sav
+
 2013-09-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1745
 	* Fix obj manager corruption on trying to load non-existent save file or
 	  one with the wrong version.

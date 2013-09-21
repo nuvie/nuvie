@@ -43,6 +43,8 @@
 #include "SaveDialog.h"
 #include "SaveSlot.h"
 #include "SaveGame.h"
+#include "MsgScroll.h"
+#include "Utils.h"
 //#include <direct.h>
 
 #if defined __linux__ || MACOSX
@@ -165,6 +167,38 @@ bool SaveManager::load_latest_save()
    }
 
  return true;
+}
+
+bool SaveManager::quick_save(int save_num, bool load)
+{
+	char end_buf[8]; // 000.sav\0
+	snprintf(end_buf, 8, "%03d.sav", save_num);
+	std::string save_name = "nuvie";
+
+	save_name.append(get_game_tag(game_type));
+	save_name.append("qs");
+	save_name.append(end_buf);
+
+	std::string fullpath;
+	build_path(savedir, save_name.c_str(), fullpath);
+	const char *fullpath_char = fullpath.c_str();
+
+	if(load) {
+		if(fileExists(fullpath_char)) {
+			if(savegame->load(fullpath_char)) {
+				return true;
+			} else {
+				Game::get_game()->get_scroll()->message("\nfailed!\n\n");
+				return false;
+			}
+		} else {
+			Game::get_game()->get_scroll()->display_string(save_name);
+			Game::get_game()->get_scroll()->message(" not found!\n\n");
+			return false;
+		}
+	}
+
+	return savegame->save(fullpath_char, &save_name); // always true
 }
 
 void SaveManager::create_dialog()

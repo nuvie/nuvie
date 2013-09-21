@@ -29,6 +29,9 @@
 
 #include "GUI_CallBack.h"
 
+#define QUICK_LOAD true
+#define QUICK_SAVE false
+
 class Configuration;
 
 
@@ -67,6 +70,7 @@ class SaveManager : public GUI_CallBack
 
  bool load(SaveSlot *save_slot);
  bool save(SaveSlot *save_slot);
+ bool quick_save(int save_num, bool load);
 
  std::string get_new_savefilename();
 

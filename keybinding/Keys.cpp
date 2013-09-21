@@ -103,6 +103,8 @@ const struct Action {
 	{ "PARTY_MODE", ActionPartyMode, "Party mode", Action::normal_keys, true },
 	{ "SAVE_MENU", ActionSaveDialog, "Save menu", Action::normal_keys, true },
 	{ "LOAD_LATEST_SAVE", ActionLoadLatestSave, "Load latest save", Action::normal_keys, true },
+	{ "QUICK_SAVE", ActionQuickSave, "Quick save", Action::normal_keys, true },
+	{ "QUICK_LOAD", ActionQuickLoad, "Quick load", Action::normal_keys, true },
 	{ "QUIT", ActionQuitDialog, "Quit", Action::normal_keys, true },
 	{ "QUIT_NO_DIALOG", ActionQuitNODialog, "Quit without confirmation", Action::normal_keys, true },
 	{ "GAME_MENU_DIALOG", ActionGameMenuDialog, "Show game menu; Cancel action if in middle of action", Action::normal_keys, true },
