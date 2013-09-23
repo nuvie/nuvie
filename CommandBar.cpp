@@ -176,7 +176,16 @@ bool CommandBar::load(NuvieIO *objlist)
 	objlist->seek(offset);
 	uint8 action = objlist->read1();
 	selected_action = (action == 0xff ? -1 : action - 0x81);
-	if(selected_action > 10 || selected_action < 0)
+
+	sint8 max_action;
+	if(game->get_game_type() == NUVIE_GAME_U6)
+		max_action = 9;
+	else if(game->get_game_type() == NUVIE_GAME_SE)
+		max_action = 8;
+	else // MD
+		max_action = 7;
+
+	if(selected_action > max_action || selected_action < 0)
 		selected_action = -1;
 	return true;
 }

@@ -1,3 +1,8 @@
+2013-09-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1748
+	* Fix CommandBarNewUI running Init twice in new style games
+	* Limit command bar setting on load to maximums depending on game_type. It
+	  was only using the U6 limit.
+
 2013-09-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1747
 	* Fix ending not showing if the intro was played
 	* Fix no darkness cheat reading from the cfg (which can now be changed)

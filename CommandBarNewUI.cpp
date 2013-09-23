@@ -103,7 +103,6 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 		icon_y_offset = 9;
 		map_width = game->get_game_width();
 		map_height = game->get_game_height();
-		Init(NULL, 120+x_off, 74+y_off, 0, 0);
 	}
 	uint8 command_width = btn_size * icon_w;
 	uint8 command_height = btn_size * icon_h + text_height;
