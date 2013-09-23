@@ -74,7 +74,6 @@ class Screen
    bool is_fullscreen() { return fullscreen; }
    int get_scaler_index() { return scaler_index; }
    ScalerRegistry *get_scaler_reg() { return &scaler_reg; }
-   void set_lighting_style_from_config();
    bool toggle_darkness_cheat();
    bool toggle_fullscreen();
    bool set_palette(uint8 *palette);
@@ -108,8 +107,8 @@ class Screen
    void drawalphamap8globe( sint16 x, sint16 y, uint16 radius );
    void blitalphamap8(sint16 x, sint16 y, SDL_Rect *clip_rect);
    bool updatingalphamap;
-   int get_lighting_style() { return lighting_style; }
-   int lighting_style;
+   int get_old_lighting_style() { return old_lighting_style; } // return the lighting_style before cheats applied
+   void set_lighting_style(int lighting);
 
    uint8 get_ambient() { return shading_ambient; }
    void set_ambient( uint8 ambient ) { shading_ambient = ambient; }
@@ -131,7 +130,7 @@ class Screen
    void draw_line (int sx, int sy, int ex, int ey, uint8 color);
 
 protected:
-
+   int lighting_style, old_lighting_style;
    bool fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
 
    bool fill32(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);

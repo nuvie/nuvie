@@ -178,7 +178,7 @@ bool VideoDialog::init() {
 	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[6], 0, 0, 0, "Lighting mode:", gui->get_font());
 	AddWidget(widget);
 	const char* const lighting_text[] = { "none", "smooth", "original" };
-	lighting_button = new GUI_TextToggleButton(this, colX[3], buttonY[6], 70, height, lighting_text, 3, screen->get_lighting_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	lighting_button = new GUI_TextToggleButton(this, colX[3], buttonY[6], 70, height, lighting_text, 3, screen->get_old_lighting_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(lighting_button);
 // fullscreen map (needs reset)
 	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Game map is entire screen:", gui->get_font());
