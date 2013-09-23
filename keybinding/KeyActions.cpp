@@ -315,39 +315,14 @@ void ActionLoadLatestSave(int const *params)
 	save_manager->load_latest_save();
 }
 
-static void quick_save(int save_num, bool load)
-{
-	if(save_num < 0 || save_num > 999)
-		return;
-	if(event->get_mode() == EQUIP_MODE)
-		event->set_mode(MOVE_MODE);
-	if(event->get_mode() != MOVE_MODE || game->user_paused())
-		return;
-
-	char buf[6];
-	std::string text;
-	SaveManager *save_manager = game->get_save_manager();
-
-	if(load) {
-		text = "loading quick save ";
-		event->close_gumps();
-	} else {
-		text = "saving quick save ";
-	}
-	snprintf(buf, 6, "%03d\n", save_num);
-	text.append(buf);
-	game->get_scroll()->display_string(text);
-	save_manager->quick_save(save_num, load);
-}
-
 void ActionQuickSave(int const *params)
 {
-	quick_save(params[0], QUICK_SAVE);
+	game->get_save_manager()->quick_save(params[0], QUICK_SAVE);
 }
 
 void ActionQuickLoad(int const *params)
 {
-	quick_save(params[0], QUICK_LOAD);
+	game->get_save_manager()->quick_save(params[0], QUICK_LOAD);
 }
 
 void ActionQuitDialog(int const *params)

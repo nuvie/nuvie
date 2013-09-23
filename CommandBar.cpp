@@ -40,7 +40,7 @@
 #include "Player.h"
 #include "Objlist.h"
 #include "NuvieIO.h"
-
+#include "SaveManager.h"
 
 using std::string;
 
@@ -142,6 +142,8 @@ bool CommandBar::init_buttons()
     // NOTE: combat button has two states
     icon[9] = tile_man->get_tile(combat_mode ? 415 : 414);
     icon[10] = tile_man->get_tile(409); //save icon used by CommandBarNewUI
+    icon[11] = tile_man->get_tile(409); // quick save
+    icon[12] = tile_man->get_tile(409); // quick load
   }
 	else if(game->get_game_type() == NUVIE_GAME_MD)
 	{
@@ -154,6 +156,8 @@ bool CommandBar::init_buttons()
 		icon[6] = &placeholder_tile; // use
 		icon[7] = &placeholder_tile; // combat mode
 		icon[8] = &placeholder_tile; // load/save
+		icon[9] = &placeholder_tile; // quick save
+		icon[10] = &placeholder_tile; // quick load
 	}
 	else // SE
 	{
@@ -167,6 +171,8 @@ bool CommandBar::init_buttons()
 		icon[7] = &placeholder_tile; // rest
 		icon[8] = &placeholder_tile; // combat mode
 		icon[9] = &placeholder_tile; // load/save
+		icon[10] = &placeholder_tile; // quick save
+		icon[11] = &placeholder_tile; // quick load
 	}
     return(true);
 }
@@ -258,9 +264,10 @@ static const EventMode MD_mode_tbl[] ={ ATTACK_MODE, TALK_MODE, LOOK_MODE, GET_M
 static const EventMode SE_mode_tbl[] ={ PUSH_MODE, GET_MODE, DROP_MODE, USE_MODE, TALK_MODE,
                                         LOOK_MODE, ATTACK_MODE, REST_MODE, COMBAT_MODE };
 
-
-
-bool CommandBar::try_selected_action(sint8 command_num) // return true if target is needed
+/*
+ * return true if target is needed (only used for original CommandBar commands)
+ */
+bool CommandBar::try_selected_action(sint8 command_num)
 {
 	if(!event) event = game->get_event();
 
@@ -272,36 +279,40 @@ bool CommandBar::try_selected_action(sint8 command_num) // return true if target
 
 	EventMode mode;
 
+	sint8 save_num, quick_save_num, quick_load_num;
 	if(game->get_game_type() == NUVIE_GAME_U6)
 	{
-		if(command_num == 10) //This is used by CommandBarNewUI
-		{
-			event->saveDialog();
-			return true;
-		}
-		else
-			mode = U6_mode_tbl[command_num];
+		save_num = 10; quick_save_num = 11; quick_load_num = 12;
 	}
 	else if(game->get_game_type() == NUVIE_GAME_MD)
 	{
-		if(command_num == 8) //This is used by CommandBarNewUI
-		{
-			event->saveDialog();
-			return true;
-		}
-		else
-			mode = MD_mode_tbl[command_num];
+		save_num = 8; quick_save_num = 9; quick_load_num = 10;
 	}
 	else // SE
 	{
-		if(command_num == 9) //This is used by CommandBarNewUI
-		{
-			event->saveDialog();
-			return true;
-		}
-		else
-			mode = SE_mode_tbl[command_num];
+		save_num = 9; quick_save_num = 10; quick_load_num = 11;
 	}
+
+// CommandBarNewUI only commands
+	if(command_num == save_num)
+	{
+		event->saveDialog();
+		return false;
+	}
+	else if(command_num == quick_save_num)
+		return game->get_save_manager()->quick_save(0, QUICK_SAVE);
+	else if(command_num == quick_load_num)
+		return game->get_save_manager()->quick_save(0, QUICK_LOAD);
+	else if(command_num >= save_num)
+		return false;
+
+// original CommandBar commands (also used in CommandBarNewUI)
+	if(game->get_game_type() == NUVIE_GAME_U6)
+		mode = U6_mode_tbl[command_num];
+	else if(game->get_game_type() == NUVIE_GAME_MD)
+		mode = MD_mode_tbl[command_num];
+	else // SE
+		mode = SE_mode_tbl[command_num];
 
 	switch(mode)
 	{

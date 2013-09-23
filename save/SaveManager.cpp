@@ -171,6 +171,28 @@ bool SaveManager::load_latest_save()
 
 bool SaveManager::quick_save(int save_num, bool load)
 {
+	if(save_num < 0 || save_num > 999)
+		return false;
+	Event *event = Game::get_game()->get_event();
+
+	if(event->get_mode() == EQUIP_MODE)
+		event->set_mode(MOVE_MODE);
+	if(event->get_mode() != MOVE_MODE || Game::get_game()->user_paused())
+		return false;
+
+	char buf[6];
+	std::string text;
+	MsgScroll *scroll = Game::get_game()->get_scroll();
+	if(load) {
+		text = "loading quick save ";
+		event->close_gumps();
+	} else {
+		text = "saving quick save ";
+	}
+	snprintf(buf, 6, "%03d\n", save_num);
+	text.append(buf);
+	scroll->display_string(text);
+
 	char end_buf[8]; // 000.sav\0
 	snprintf(end_buf, 8, "%03d.sav", save_num);
 	std::string save_name = "nuvie";
@@ -188,12 +210,12 @@ bool SaveManager::quick_save(int save_num, bool load)
 			if(savegame->load(fullpath_char)) {
 				return true;
 			} else {
-				Game::get_game()->get_scroll()->message("\nfailed!\n\n");
+				scroll->message("\nfailed!\n\n");
 				return false;
 			}
 		} else {
-			Game::get_game()->get_scroll()->display_string(save_name);
-			Game::get_game()->get_scroll()->message(" not found!\n\n");
+			scroll->display_string(save_name);
+			scroll->message(" not found!\n\n");
 			return false;
 		}
 	}

@@ -47,13 +47,13 @@ using std::string;
 
 #define btn_size 17
 #define SELECTED_COLOR 248
-#define table_size_U6 11
-#define table_size_SE 10
-#define table_size_MD 9
+#define table_size_U6 13
+#define table_size_SE 12
+#define table_size_MD 11
 
-static const char *U6_mode_name_tbl[table_size_U6] = {"Attack", "Cast", "Talk", "Look", "Get", "Drop", "Move", "Use", "Rest", "Combat mode", "Load/Save"};
-static const char *SE_mode_name_tbl[table_size_SE] = {"Move", "Get", "Drop", "Use", "Talk", "Look", "Attack", "Rest", "Combat mode", "Load/Save"};
-static const char *MD_mode_name_tbl[table_size_MD] = {"Attack", "Talk", "Look", "Get", "Drop", "Move", "Use", "Combat mode", "Load/Save"};
+static const char *U6_mode_name_tbl[table_size_U6] = {"Attack", "Cast", "Talk", "Look", "Get", "Drop", "Move", "Use", "Rest", "Combat mode", "Load/Save", "Quick save", "Quick load"};
+static const char *SE_mode_name_tbl[table_size_SE] = {"Move", "Get", "Drop", "Use", "Talk", "Look", "Attack", "Rest", "Combat mode", "Load/Save", "Quick save", "Quick load"};
+static const char *MD_mode_name_tbl[table_size_MD] = {"Attack", "Talk", "Look", "Get", "Drop", "Move", "Use", "Combat mode", "Load/Save", "Quick save", "Quick load"};
 static const char *mode_name_tbl[table_size_U6];
 
 CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
@@ -266,6 +266,11 @@ void CommandBarNewUI::Display(bool full_redraw)
             	}
             }
         }
+      if(game->get_game_type() == NUVIE_GAME_U6) // FIXME use new icon instead
+      {
+          font->drawString(screen, "QS", area.x + 2 + btn_size, icon_y_offset + area.y + 2 * btn_size + 4); 
+          font->drawString(screen, "QL", area.x + 2 + 2 * btn_size, icon_y_offset + area.y + 2 * btn_size + 4);
+      }
       font->drawString(screen, get_command_name(cur_pos), area.x, area.y + icon_y_offset + icon_h * btn_size);
         screen->update(area.x, area.y, area.w, area.h);
   //  }
