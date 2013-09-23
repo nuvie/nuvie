@@ -1,3 +1,7 @@
+2013-09-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1749
+	* Add quick save and quick load to CommandBarNewUI. It only uses slot 0 atm
+	* Merge quick_save from KeyActions.cpp into quick_save in SaveManager.cpp
+
 2013-09-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1748
 	* Fix CommandBarNewUI running Init twice in new style games
 	* Limit command bar setting on load to maximums depending on game_type. It
