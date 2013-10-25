@@ -1,3 +1,11 @@
+2013-10-24  Mikey Alexander r1751
+	* Add text_color attribute to CSSprite
+	* Add image_copy function and SE Font to ScriptCutScene
+	* Add first pass on most of the SE intro/menu scripts
+
+2013-09-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1750
+	* Add forgotten ChangeLog entry.
+
 2013-09-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1749
 	* Add quick save and quick load to CommandBarNewUI. It only uses slot 0 atm
 	* Merge quick_save from KeyActions.cpp into quick_save in SaveManager.cpp

@@ -49,6 +49,7 @@ static sint32 nscript_dec_image_ref_count(CSImage *image);
 
 static int nscript_image_new(lua_State *L);
 static int nscript_image_new_starfield(lua_State *L);
+static int nscript_image_copy(lua_State *L);
 static int nscript_image_load(lua_State *L);
 static int nscript_image_load_all(lua_State *L);
 static int nscript_image_print(lua_State *L);
@@ -117,6 +118,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_image_new_starfield);
    lua_setglobal(L, "image_new_starfield");
+
+   lua_pushcfunction(L, nscript_image_copy);
+   lua_setglobal(L, "image_copy");
 
    lua_pushcfunction(L, nscript_image_load);
    lua_setglobal(L, "image_load");
@@ -351,6 +355,25 @@ static int nscript_image_new_starfield(lua_State *L)
 		return 0;
 
 	CSStarFieldImage *image = new CSStarFieldImage(shp);
+
+	nscript_new_image_var(L, image);
+	return 1;
+}
+
+static int nscript_image_copy(lua_State *L)
+{
+	CSImage *img = nscript_get_image_from_args(L, 1);
+	uint16 w, h;
+
+	U6Shape *shp = new U6Shape();
+	img->shp->get_size(&w, &h);
+	if(shp->init(w, h) == false)
+	{
+		return 0;
+	}
+	shp->blit(img->shp, 0, 0);
+
+	CSImage *image = new CSImage(shp);
 
 	nscript_new_image_var(L, image);
 	return 1;
@@ -642,6 +665,11 @@ static int nscript_sprite_set(lua_State *L)
 		const char *text = lua_tostring(L, 3);
 		sprite->text = std::string(text);
 	}
+	if(!strcmp(key, "text_color"))
+	{
+		sprite->text_color = lua_tointeger(L, 3);
+		return 0;
+	}
    return 0;
 }
 
@@ -698,6 +726,12 @@ static int nscript_sprite_get(lua_State *L)
 	if(!strcmp(key, "text"))
 	{
 		lua_pushstring(L, sprite->text.c_str());
+		return 1;
+	}
+
+	if(!strcmp(key, "text_color"))
+	{
+		lua_pushinteger(L, sprite->text_color);
 		return 1;
 	}
 
@@ -974,6 +1008,18 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 		font->init(path.c_str());
 	}
 	//FIXME load other fonts for MD / SE if needed here.
+	if(game_type == NUVIE_GAME_SE)
+	{
+	    std::string path;
+	    U6Lib_n lib_file;
+
+	    config_get_path(config, "savage.fnt", path);
+
+	    lib_file.open(path,4,NUVIE_GAME_SE); //can be either SE or MD just as long as it isn't set to U6 type.
+
+	    unsigned char *buf = lib_file.get_item(0);
+	    font->initWithBuffer(buf, lib_file.get_item_size(0)); //buf will be freed by ~Font()
+	}
 
 	next_time = 0;
 	loop_interval = 40;
@@ -1324,7 +1370,14 @@ void ScriptCutscene::Display(bool full_redraw)
 
 				if(s->text.length() > 0)
 				{
+				    if (s->text_color == 0xffff)
+				    {
 					font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off);
+				    }
+				    else
+				    {
+					font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off, (uint8) s->text_color, (uint8) s->text_color);
+				    }
 				}
 			}
 		}

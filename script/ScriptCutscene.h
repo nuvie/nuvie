@@ -86,6 +86,7 @@ struct CSSprite {
 	bool visible;
 	SDL_Rect clip_rect;
 	std::string text;
+	uint16 text_color;
 
 	CSSprite()
 	{
@@ -99,6 +100,7 @@ struct CSSprite {
 		clip_rect.w = 0;
 		clip_rect.h = 0;
 		text = "";
+		text_color = 0xffff;
 	}
 };
 
