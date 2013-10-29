@@ -510,31 +510,67 @@ local create_questions_text = {
 "Will you (a) obey the word of your chief, or (b) join your fellow warriors in the fight?",
 nil,
 nil,
-"You have sworn to protect your chief at any cost. Yet you see him foully murder a warrior of his own tribe.",
-"The murdered man's brother asks you what you saw.",
-"Will you (a) keep your oath and protect your king, or (b) tell the truth of the matter?",
+"You fight a warrior you hate, and knock his spear from his hands.",
+"Another blow and he will be dead.",
+"Will you (a) let him surrender, and spare him if he does, or (b) slay him where he stands?",
 nil,
-"Your chief gives you a pouch of gems to take to another; he has not counted them.",
-"On the path to the other village, you find a lamed warrior who cannot hunt.",
-"He could trade you a few of your gems for food, and they will not be missed.",
-"Will you (a) deliver the gems as you were charged, or (b) give the warrior a gem?",
 "One warrior borrows another's spear and fails to return it. Days later, he mislays his own spear and you find it.",
 "Do you (a) return it to him, or (b) give it to the warrior who is owed the spear?",
 nil,
+nil,
+"You have sworn to protect your chief at any cost. Yet you see him foully murder a warrior of his own tribe.",
+"The murdered man's brother asks you what you saw.",
+"Will you (a) keep your oath and protect your king, or (b) tell the truth of the matter?",
 nil,
 "A huge, powerful warrior stands against you and demands you give him your food.",
 "Will you (a) throw his demand in his teeth and attack him, or (b) give him your food, since it is clear he is hungry?",
 nil,
 nil,
-"You fight a warrior you hate, and knock his spear from his hands.",
-"Another blow and he will be dead.",
-"Will you (a) let him surrender, and spare him if he does, or (b) slay him where he stands?",
-nil,
+"Your chief gives you a pouch of gems to take to another; he has not counted them.",
+"On the path to the other village, you find a lamed warrior who cannot hunt.",
+"He could trade you a few of your gems for food, and they will not be missed.",
+"Will you (a) deliver the gems as you were charged, or (b) give the warrior a gem?",
 }
+
+local create_questions_A_tbl = {
+2,
+1,
+1,
+0,
+0,
+2
+}
+
+local create_questions_B_tbl = {
+0,
+0,
+2,
+2,
+1,
+1
+}
+
+local function process_answer(q_num, input, sprites)
+	local stat_type
+	if input == 97 then
+		stat_type = create_questions_A_tbl[q_num]
+	else
+		stat_type = create_questions_B_tbl[q_num]
+	end
+
+	g_stats[stat_type] = g_stats[stat_type] + 3 + math.random(0, 2)
+
+	local color = 0 -- stat_type == 2
+	if stat_type == 0 then color = 1 end
+	if stat_type == 1 then color = 2 end
+
+	shaman_drop_anim(sprites, color)
+	return stat_type
+end
 
 local function ask_question(q_num, q_ord, sprites, text_image, images, text_width)
 	-- Do I need to display two pages?
-	local q_index = q_num * 2 + q_ord
+	local q_index = q_num -- * 2 + q_ord
 	-- Do I need to display two pages?
 	local two_questions = false
 	if create_questions_text[q_index*4+3+1] ~= nil then two_questions = true end
@@ -556,27 +592,49 @@ local function ask_question(q_num, q_ord, sprites, text_image, images, text_widt
 			x, y = image_print(text_image, create_questions_text[q_index*4+txt_ind+2], 8, text_width, 8, y+20, 0x00)
 		end
 	end
-	local answer = -1
-	while answer == -1 do
+	local stat_type = -1
+	while stat_type == -1 do
 		canvas_update()
 		input = input_poll(true)
 		if input ~= nil then
 			if input == 97 or input == 98 then
-				-- Some Math to get Answer from Question & Input
-				local q_off = q_ord
-				if (input == 98) then q_off = 1-q_off end
-				if q_num == 2 then
-					answer = q_off + 1
-				else
-					answer = q_num * q_off + q_off
-				end
+				stat_type = process_answer(q_index+1, input, sprites)
 			end
 		end
 	end
-	shaman_drop_anim(sprites, answer)
-	return answer
+	
+	local next_q
+	if stat_type == 0 then
+		if q_ord == 0 then
+			next_q = 2
+		elseif q_num == 0 then
+			next_q = 4
+		else
+			next_q = 3
+		end
+	elseif stat_type == 1 then
+		if q_ord == 0 then
+			next_q = 0
+		elseif q_num == 2 then
+			next_q = 4
+		else
+			next_q = 5
+		end
+	elseif stat_type == 2 then
+		if q_ord == 0 then
+			next_q = 1
+		elseif q_num == 0 then
+			next_q = 5
+		else
+			next_q = 3
+		end
+	end
+	
+	return next_q
 end
 
+
+ 
 g_keycode_tbl =
 {
 [32]=" ",
@@ -807,41 +865,20 @@ local function create_new_character(img_tbl2)
 	name.visible = false
 
 	-- Questions
-	local q1,q2,q3,q1d,q2d,q3d
-	q1 = math.random(0,2)
-	q1d = math.random(0,1)
-	q2d = math.random(0,1)
-	q3d = math.random(0,1)
+	local next_q = math.random(0,2)
+
 	-- Answers are 0-Red, 1-Yellow, 2-Blue (order of sprites in file)
-	local a1 = ask_question(q1, q1d, create_char_sprites, scroll_img, img_tbl2, text_width)
-	-- TODO REVERSE ENGINEER STATS MECHANISM
-	-- Currently randomly starts 16-18, then adds 3+(0-2) for each question
-	-- When using SE, values started 16-18, 19-23, and 22-28
-	-- The algorithm I'm using changes the last value to 22-29
-	-- This is close enough for right now
-	g_stats[a1] = g_stats[a1] + 3 + math.random(0,2)
-	if a1 == 0 then
-		q2 = 2
-	elseif a1 == 1 then
-		q2 = 1
-	else
-		q2 = 0
-	end
-	local a2 = ask_question(q2, q2d, create_char_sprites, scroll_img, img_tbl2, text_width)
-	g_stats[a2] = g_stats[a2] + 3 + math.random(0,2)
-	-- This formula points to the right question
-	q3 = a1 + a2 - 1
-	-- If same question as Q1, ask the opposite question
-	if q1 == q3 then q3d = 1-q3d end
-	local a3 = ask_question(q3, q3d, create_char_sprites, scroll_img, img_tbl2, text_width)
-	g_stats[a3] = g_stats[a3] + 3 + math.random(0,2)
+	next_q = ask_question(next_q, 0, create_char_sprites, scroll_img, img_tbl2, text_width)
+	next_q = ask_question(next_q, 1, create_char_sprites, scroll_img, img_tbl2, text_width)
+	ask_question(next_q, 2, create_char_sprites, scroll_img, img_tbl2, text_width)
 
 	config_set("config/newgame", true)
 	config_set("config/newgamedata/name", name.text)
-	config_set("config/newgamedata/str", g_stats[1])
-	config_set("config/newgamedata/dex", g_stats[2])
-	config_set("config/newgamedata/int", g_stats[0])
-	config_set("config/newgamedata/hitpoints", 56+(g_stats[1]-16)*2)
+	config_set("config/newgamedata/str", g_stats[0])
+	config_set("config/newgamedata/dex", g_stats[1])
+	config_set("config/newgamedata/int", g_stats[2])
+
+	--io.stderr:write("str "..g_stats[0].." dex "..g_stats[1].." int "..g_stats[2].."\n")
 
 	destroy_sprites(create_char_sprites, num_sprites)
 	canvas_set_palette("savage.pal", 0)

@@ -1,3 +1,7 @@
+2013-10-29  Eric Fry <efry at users.sourceforge.net> r1752
+	* Changed SE character creation logic to be more like the original.
+	* Split out new save game logic to allow for SE changes.
+
 2013-10-24  Mikey Alexander r1751
 	* Add text_color attribute to CSSprite
 	* Add image_copy function and SE Font to ScriptCutScene

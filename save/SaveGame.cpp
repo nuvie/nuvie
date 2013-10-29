@@ -572,6 +572,19 @@ void SaveGame::clean_up()
 
 void SaveGame::update_objlist_for_new_game()
 {
+  if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+  {
+    update_objlist_for_new_game_se();
+  }
+  else
+  {
+    update_objlist_for_new_game_u6();
+  }
+  //FIXME need a save game loader for MD.
+}
+
+void SaveGame::update_objlist_for_new_game_u6()
+{
 	std::string name = "";
 
 	config->value("config/newgamedata/name", name, "Avatar");
@@ -615,4 +628,36 @@ void SaveGame::update_objlist_for_new_game()
 
 	objlist.seek(0xff2);
 	objlist.write1(3); //level
+}
+
+void SaveGame::update_objlist_for_new_game_se()
+{
+  std::string name = "";
+
+  config->value("config/newgamedata/name", name, "Avatar");
+  objlist.seek(0xf00);
+  int len = name.length();
+  if(len > 13)
+    len = 13;
+
+  objlist.writeBuf((unsigned char *)name.c_str(), len+1);
+
+  int str,dex,intelligence;
+  config->value("config/newgamedata/str", str, 0xf);
+  objlist.seek(0x901);
+  objlist.write1(str);
+
+  config->value("config/newgamedata/dex", dex, 0xf);
+  objlist.seek(0xa01);
+  objlist.write1(dex);
+
+  config->value("config/newgamedata/int", intelligence, 0xf);
+  objlist.seek(0xb01);
+  objlist.write1(intelligence);
+
+  objlist.seek(0xe01);
+  objlist.write1(str*2+intelligence); //hp
+
+  objlist.seek(0x14f2);
+  objlist.write1(dex); //movement points
 }
