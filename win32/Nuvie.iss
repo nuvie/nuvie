@@ -21,6 +21,7 @@ DirExistsWarning=no
 [Icons]
 Name: {group}\{cm:UninstallProgram, Nuvie}; Filename: {uninstallexe}
 Name: {group}\Nuvie; Filename: {app}\nuvie.exe; WorkingDir: {app}; Comment: nuvie; Flags: createonlyiffileexists
+Name: {group}\Reset video settings; Filename: {app}\nuvie.exe; Parameters: --reset-video; WorkingDir: {app}; Comment: Reset video settings; Flags: createonlyiffileexists
 Name: {group}\AUTHORS; Filename: {app}\AUTHORS.txt; WorkingDir: {app}; Comment: AUTHORS; Flags: createonlyiffileexists
 Name: {group}\COPYING; Filename: {app}\COPYING.txt; WorkingDir: {app}; Comment: COPYING; Flags: createonlyiffileexists
 Name: {group}\ChangeLog; Filename: {app}\ChangeLog.txt; WorkingDir: {app}; Comment: ChangeLog; Flags: createonlyiffileexists

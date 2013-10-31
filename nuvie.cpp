@@ -78,9 +78,18 @@ bool Nuvie::init(int argc, char **argv)
  uint8 game_type;
  bool play_ending = false;
  bool show_virtue_msg = false;
+ bool reset_video = false;
 
  if(argc > 1)
-   game_type = get_game_type(argv[1]);
+ {
+    if(strcmp(argv[1],"--reset-video")==0)
+    {
+      reset_video = true;
+      game_type = NUVIE_GAME_NONE;
+    }
+    else
+      game_type = get_game_type(argv[1]);
+ }
  else
    game_type = NUVIE_GAME_NONE;
 
@@ -97,6 +106,8 @@ bool Nuvie::init(int argc, char **argv)
 		 show_virtue_msg = true;
 	 }
    }
+   else if(strcmp(argv[2],"--reset-video")==0)
+     reset_video = true;
  }
  //find and load config file
  if(initConfig() == false)
@@ -104,7 +115,11 @@ bool Nuvie::init(int argc, char **argv)
     DEBUG(0,LEVEL_ERROR,"No config file found!\n");
     return false;
    }
-
+ else if(reset_video)
+ {
+    set_safe_video_settings();
+    config->write();
+ }
  //load SDL screen and scaler if selected.
  screen = new Screen(config);
 
@@ -167,7 +182,7 @@ bool Nuvie::init(int argc, char **argv)
 
  if(play_ending)
  {
-   game->play_ending_sequence();
+   script->play_cutscene("/ending.lua");
    return false;
  }
 
@@ -278,13 +293,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/datadir", "./data");
 	config->set("config/keys", "(default)");
 
-	config->set("config/video/scale_method", "point");
-	config->set("config/video/scale_factor", "2");
-	config->set("config/video/fullscreen", "no");
-	config->set("config/video/screen_width", 320);
-	config->set("config/video/screen_height", 200);
-	config->set("config/video/game_width", 320);
-	config->set("config/video/game_height", 200);
+	set_safe_video_settings();
 	config->set("config/video/game_position", "center");
 
 	config->set("config/audio/enabled", true);
@@ -303,7 +312,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/input/direction_selects_target", true);
 	config->set("config/input/interface", "normal");
 
-	config->set("config/general/lighting", "smooth");
+	config->set("config/general/lighting", "original");
 	config->set("config/general/dither_mode", "none");
 	config->set("config/general/enable_cursors", true);
 	config->set("config/general/show_console", true);
@@ -364,6 +373,37 @@ void Nuvie::SharedDefaultConfigValues()
 //	config->set("config/newgamedata/str", 0xf);
 //	config->set("config/newgamedata/dex", 0xf);
 //	config->set("config/newgamedata/int", 0xf);
+
+}
+
+/* Should be safe default video settings
+ */
+void Nuvie::set_safe_video_settings()
+{
+	config->set("config/video/scale_method", "point");
+
+	if(SDL_Init(SDL_INIT_VIDEO) != 0)
+	{
+		DEBUG(0,LEVEL_ERROR,"Couldn't initialize SDL_VIDEO!\n");
+		exit(EXIT_FAILURE);
+	}
+	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
+	if(!vinfo) // couldn't get display mode
+		config->set("config/video/scale_factor", "1");
+	else
+	{
+		if(vinfo->current_w  >= 640 && vinfo->current_h >= 400)
+			config->set("config/video/scale_factor", "2");
+		else // portable with small screen
+			config->set("config/video/scale_factor", "1");
+	}
+	SDL_Quit();
+
+	config->set("config/video/fullscreen", "no");
+	config->set("config/video/screen_width", 320);
+	config->set("config/video/screen_height", 200);
+	config->set("config/video/game_width", 320);
+	config->set("config/video/game_height", 200);
 }
 
 bool Nuvie::initDefaultConfigWin32()
@@ -567,22 +607,12 @@ bool Nuvie::playIntro()
 
 	string key = config_get_game_key(config);
 	key.append("/skip_intro");
-
 	config->value(key, skip_intro, false);
 
 	if(skip_intro)
 		return true;
 
-	string script_file = "";
-	config->value("config/GameID", script_file);
-
-	script_file += "/intro.lua";
-
-	ConsoleHide();
-
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL*2);
-
-	if(script->run_lua_file(script_file.c_str()))
+	if(script->play_cutscene("/intro.lua"))
 	{
 		bool should_quit = false;
 		config->value("config/quit", should_quit, false);

@@ -1,3 +1,10 @@
+2013-10-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1753
+	* Fix regression where the --end command line crashed from NULL script
+	* Add --reset_video command line to reset to default video setting for
+	  scale_method, scale_factor, fullscreen, screen_width, screen_height,
+	  game_width, and game_height.
+	* Make original lighting the default since it can be changed in game.
+
 2013-10-29  Eric Fry <efry at users.sourceforge.net> r1752
 	* Changed SE character creation logic to be more like the original.
 	* Split out new save game logic to allow for SE changes.

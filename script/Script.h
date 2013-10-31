@@ -102,6 +102,7 @@ class Script
    bool call_load_game(NuvieIO *objlist);
    bool call_save_game(NuvieIO *objlist);
 
+   bool play_cutscene(const char *script_file);
    bool call_actor_update_all();
    bool call_actor_init(Actor *actor, uint8 alignment);
    bool call_actor_attack(Actor *actor, MapCoord location, Obj *weapon, Actor * foe);

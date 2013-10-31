@@ -944,7 +944,7 @@ bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 
              game->get_map_window()->Hide();
              game->get_scroll()->Hide();
-             game->play_ending_sequence();
+             game->get_script()->play_cutscene("/ending.lua");
              game->quit();
 
              return(true);

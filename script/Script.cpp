@@ -737,6 +737,18 @@ bool Script::run_script(const char *script)
    return true;
 }
 
+bool Script::play_cutscene(const char *script_file)
+{
+	string script_file_path = "";
+	config->value("config/GameID", script_file_path);
+	script_file_path += script_file;
+
+	ConsoleHide();
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL*2);
+
+	return run_lua_file(script_file_path.c_str());
+}
+
 bool Script::call_actor_update_all()
 {
    lua_getglobal(L, "actor_update_all");

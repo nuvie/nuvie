@@ -51,6 +51,7 @@ class Nuvie
 
    bool initConfig();
    void SharedDefaultConfigValues();
+   void set_safe_video_settings();
    bool initDefaultConfigWin32();
    bool initDefaultConfigMacOSX(const char *home_env);
    bool initDefaultConfigUnix(const char *home_env);
