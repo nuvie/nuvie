@@ -3136,13 +3136,8 @@ g_stones_tbl = nil
 canvas_hide_all_sprites()
 
 main_menu_load()
-local cmd = ""
 
-while cmd ~= "Q" and cmd ~= "J" do
-	cmd = main_menu()
-end
-
-if cmd == "Q" then
+if main_menu() == "Q" then -- returns "Q" for quit or "J" for Journey Onward
 	config_set("config/quit", true)
 end
 

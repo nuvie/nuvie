@@ -776,6 +776,7 @@ local function create_new_character(img_tbl2)
 	local num_sprites = 31
 	name.text = ""
 	name.text_color = 0x00
+	local char_index = 0
 	while input == nil do
 		canvas_update()
 		input = input_poll()
@@ -955,57 +956,111 @@ local function about_the_savage_empire(img_tbl2)
 	destroy_sprites(about_sprites, 12)
 end
 
+	g_menu_idx = 0
+	old_g_menu_idx = 0
+	g_menu1 = nil -- The Story So far...
+	g_menu2 = nil -- Create New Character
+	g_menu3 = nil -- About the Savage Empire
+	g_menu4 = nil -- Journey Onward
+	g_m1_focus = nil -- The Story So far...
+	g_m2_focus = nil -- Create New Character
+	g_m3_focus = nil -- About the Savage Empire
+	g_m4_focus = nil -- Journey Onward
+	g_m1_highlight = nil -- The Story So far...
+	g_m2_highlight = nil -- Create New Character
+	g_m3_highlight = nil -- About the Savage Empire
+	g_m4_highlight = nil -- Journey Onward
+	g_menu_sprites = {}
+
+local function selected_story_so_far(img_tbl2)
+	mouse_cursor_visible(false)
+	g_menu1.visible = false
+	g_m1_focus.visible = false
+	g_m1_highlight.visible = true
+	canvas_update()
+	story_so_far(img_tbl2)
+	g_menu1.visible = true
+	g_m1_focus.visible = true
+	g_m1_highlight.visible = false
+	mouse_cursor_visible(true)
+end
+
+local function selected_create_character(img_tbl2)
+	mouse_cursor_visible(false)
+	create_new_character(img_tbl2)
+	mouse_cursor_visible(true)
+end
+
+local function selected_about_the_savage_empire(img_tbl2)
+	mouse_cursor_visible(false)
+	g_menu3.visible = false
+	g_m3_focus.visible = false
+	g_m3_highlight.visible = true
+	canvas_update()
+	fade_out_sprites(g_menu_sprites, 50, 12)
+	about_the_savage_empire(img_tbl2)
+	g_menu3.visible = true
+	g_m3_focus.visible = true
+	g_m3_highlight.visible = false
+	fade_in_sprites(g_menu_sprites, 50, 12)
+	mouse_cursor_visible(true)
+end
+
+local function journey_onward()
+	mouse_cursor_visible(false)
+	g_menu4.visible = false
+	g_m4_focus.visible = false
+	g_m4_highlight.visible = true
+	canvas_update()
+end
+
+local function initialize_main_g_menu_sprites(img_tbl2)
+	g_menu1 = sprite_new(img_tbl2[0][5], 85, 117, true) -- The Story So far...
+	g_menu2 = sprite_new(img_tbl2[0][1], 85, 135, true) -- Create New Character
+	g_menu3 = sprite_new(img_tbl2[0][9], 85, 153, true) -- About the Savage Empire
+	g_menu4 = sprite_new(img_tbl2[0][3], 85, 171, true) -- Journey Onward
+	g_m1_focus = sprite_new(img_tbl2[0][6], 85, 117, true) -- The Story So far...
+	g_m2_focus = sprite_new(img_tbl2[0][2], 85, 135, false) -- Create New Character
+	g_m3_focus = sprite_new(img_tbl2[0][10], 85, 153, false) -- About the Savage Empire
+	g_m4_focus = sprite_new(img_tbl2[0][4], 85, 171, false) -- Journey Onward
+	g_m1_highlight = sprite_new(img_tbl2[0][13], 85, 117, false) -- The Story So far...
+	g_m2_highlight = sprite_new(img_tbl2[0][11], 85, 135, false) -- Create New Character
+	g_m3_highlight = sprite_new(img_tbl2[0][15], 85, 153, false) -- About the Savage Empire
+	g_m4_highlight = sprite_new(img_tbl2[0][12], 85, 171, false) -- Journey Onward
+	g_menu_sprites[1] = g_menu1
+	g_menu_sprites[2] = g_menu2
+	g_menu_sprites[3] = g_menu3
+	g_menu_sprites[4] = g_menu4
+	g_menu_sprites[5] = g_m1_highlight
+	g_menu_sprites[6] = g_m2_highlight
+	g_menu_sprites[7] = g_m3_highlight
+	g_menu_sprites[8] = g_m4_highlight
+	g_menu_sprites[9] = g_m1_focus
+	g_menu_sprites[10] = g_m2_focus
+	g_menu_sprites[11] = g_m3_focus
+	g_menu_sprites[12] = g_m4_focus
+
+	g_m2_focus.visible = false
+	g_m3_focus.visible = false
+	g_m4_focus.visible = false
+end
+
+local function set_main_menu_highlight()
+	if g_menu_idx == old_g_menu_idx then -- no change
+		return
+	end
+	g_menu_sprites[g_menu_idx + 9].visible = true
+	g_menu_sprites[old_g_menu_idx + 9].visible = false
+	old_g_menu_idx = g_menu_idx
+end
+
 local function main_menu(img_tbl2)
 	local input
-	local g_menu_idx = 0
 	local seTitle = sprite_new(img_tbl2[0][0], 0, 0, true)
-	local menu_sprites = {}
-	local menu1 = sprite_new(img_tbl2[0][5], 85, 117, true) -- The Story So far...
-	local menu2 = sprite_new(img_tbl2[0][1], 85, 135, true) -- Create New Character
-	local menu3 = sprite_new(img_tbl2[0][9], 85, 153, true) -- About the Savage Empire
-	local menu4 = sprite_new(img_tbl2[0][3], 85, 171, true) -- Journey Onward
-	local m1_focus = sprite_new(img_tbl2[0][6], 85, 117, true) -- The Story So far...
-	local m2_focus = sprite_new(img_tbl2[0][2], 85, 135, false) -- Create New Character
-	local m3_focus = sprite_new(img_tbl2[0][10], 85, 153, false) -- About the Savage Empire
-	local m4_focus = sprite_new(img_tbl2[0][4], 85, 171, false) -- Journey Onward
-	local m1_highlight = sprite_new(img_tbl2[0][13], 85, 117, false) -- The Story So far...
-	local m2_highlight = sprite_new(img_tbl2[0][11], 85, 135, false) -- Create New Character
-	local m3_highlight = sprite_new(img_tbl2[0][15], 85, 153, false) -- About the Savage Empire
-	local m4_highlight = sprite_new(img_tbl2[0][12], 85, 171, false) -- Journey Onward
-	menu_sprites[1] = menu1
-	menu_sprites[2] = menu2
-	menu_sprites[3] = menu3
-	menu_sprites[4] = menu4
-	menu_sprites[5] = m1_highlight
-	menu_sprites[6] = m2_highlight
-	menu_sprites[7] = m3_highlight
-	menu_sprites[8] = m4_highlight
-	menu_sprites[9] = m1_focus
-	menu_sprites[10] = m2_focus
-	menu_sprites[11] = m3_focus
-	menu_sprites[12] = m4_focus
+	mouse_cursor_visible(true)
+	initialize_main_g_menu_sprites(img_tbl2)
+
 	while true do
-		if g_menu_idx == 0 then
-			m1_focus.visible = true
-			m2_focus.visible = false
-			m3_focus.visible = false
-			m4_focus.visible = false
-		elseif g_menu_idx == 1 then
-			m1_focus.visible = false
-			m2_focus.visible = true
-			m3_focus.visible = false
-			m4_focus.visible = false
-		elseif g_menu_idx == 2 then
-			m1_focus.visible = false
-			m2_focus.visible = false
-			m3_focus.visible = true
-			m4_focus.visible = false
-		elseif g_menu_idx == 3 then
-			m1_focus.visible = false
-			m2_focus.visible = false
-			m3_focus.visible = false
-			m4_focus.visible = true
-		end
 		canvas_update()
 		input = input_poll(true)
 		if input ~= nil then
@@ -1014,49 +1069,33 @@ local function main_menu(img_tbl2)
 				return "Q"
 				-- TODO Add Space & Return
 			elseif input == 13 then --or input == 21 then -- space or return
-				if g_menu_idx == 0 then
-					menu1.visible = false
-					m1_focus.visible = false
-					m1_highlight.visible = true
-					canvas_update()
-					story_so_far(img_tbl2)
-					menu1.visible = true
-					m1_focus.visible = true
-					m1_highlight.visible = false
-				elseif g_menu_idx == 1 then
-					create_new_character(img_tbl2)
-				elseif g_menu_idx == 2 then
-					menu3.visible = false
-					m3_focus.visible = false
-					m3_highlight.visible = true
-					canvas_update()
-					fade_out_sprites(menu_sprites, 50, 12)
-					about_the_savage_empire(img_tbl2)
-					menu3.visible = true
-					m3_focus.visible = true
-					m3_highlight.visible = false
-					fade_in_sprites(menu_sprites, 50, 12)
-				elseif g_menu_idx == 3 then
-					menu4.visible = false
-					m4_focus.visible = false
-					m4_highlight.visible = true
-					canvas_update()
+				if g_menu_idx == 0 then -- story so far
+					selected_story_so_far(img_tbl2)
+				elseif g_menu_idx == 1 then -- create char
+					selected_create_character(img_tbl2)
+				elseif g_menu_idx == 2 then -- about SE
+					selected_about_the_savage_empire(img_tbl2)
+				elseif g_menu_idx == 3 then -- journey onward
+					journey_onward()
 					return "J"
 				end
 			elseif input == 274 then -- down key
 				g_menu_idx = g_menu_idx + 1
 				if (g_menu_idx == 4) then g_menu_idx = 0 end
+				set_main_menu_highlight()
 			elseif input == 273 then -- up key
 				g_menu_idx = g_menu_idx - 1
 				if (g_menu_idx == -1) then g_menu_idx = 3 end
+				set_main_menu_highlight()
 			end
 		end
 	end
+--[[		This code should never execute because there is no break in the loop
 	wait_for_input()
-	menu1.visible = false
-	menu2.visible = false
-	menu3.visible = false
-	menu4.visible = false
+	g_menu1.visible = false
+	g_menu2.visible = false
+	g_menu3.visible = false
+	g_menu4.visible = false]]--
 --	canvas_set_palette("savage.pal", 1)
 --	local  e4 = sprite_new(img_tbl2[4][3], 0, 0, true) -- Small Head/Eyes
 --	local  e5 = sprite_new(img_tbl2[4][4], 50, 0, true) -- Truth
@@ -1069,6 +1108,7 @@ local function main_menu(img_tbl2)
 --	local  h2 = sprite_new(img_tbl2[7][1], 50, 50, true) -- Small Top2
 end
 
+mouse_cursor_visible(false)
 canvas_set_update_interval(25)
 canvas_set_bg_color(0)
 canvas_set_opacity(0)
@@ -1083,7 +1123,9 @@ local g_img_tbl = image_load_all("intro.lzc")
 local img_tbl2 = image_load_all("create.lzc")
 intro_sequence(g_img_tbl)
 
-main_menu(img_tbl2)
+if main_menu(img_tbl2) == "Q" then -- returns "Q" for quit or "J" for Journey Onward
+	config_set("config/quit", true)
+end
 
 canvas_hide_all_sprites()
 canvas_hide()

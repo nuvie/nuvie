@@ -1,3 +1,11 @@
+2013-10-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1754
+	* Show and hide mouse cursor in SE intro
+	* Fix crash caused by uninitialized char_index in SE's intro
+	* Refactor SE main menu code so mouse controls can be more easily added
+	* Fix SE not quitting when the quit key is pressed in the main menu
+	* Remove unneeded loop checking for returned main_menu value in U6 intro
+	* Comment out unreachable code in SE intro
+
 2013-10-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1753
 	* Fix regression where the --end command line crashed from NULL script
 	* Add --reset_video command line to reset to default video setting for
