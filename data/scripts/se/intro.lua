@@ -7,10 +7,20 @@
 
 local function poll_for_key_or_button(cycles)
 	local input
-	input = input_poll()
-	-- TODO Detect Key or Button Press (Not mouse movement)
-	if input ~= nil and input == 27 then
-		return true
+	if cycles == nil then
+		input = input_poll()
+		if input ~= nil then
+			return true
+		end
+	else
+		local i
+		for i=0,cycles,1 do
+			local input = input_poll()
+			if input ~= nil then
+				return true
+			end
+			canvas_update()
+		end
 	end
 	return false
 end
@@ -235,42 +245,42 @@ local function origin_fx_sequence()
 		conductor.image = g_img_tbl[10][i]
 
 		update_players(players, g_img_tbl)
-		if poll_for_esc(4) == true then return end
+		if poll_for_key_or_button(4) == true then return end
 	end
 	for i=7,13,1 do
 		conductor.image = g_img_tbl[10][i]
 
 		update_players(players, g_img_tbl)
-		if poll_for_esc(4) == true then return end
+		if poll_for_key_or_button(4) == true then return end
 	end
 	for i=7,12,1 do
 		conductor.image = g_img_tbl[10][i]
 
 		update_players(players, g_img_tbl)
-		if poll_for_esc(4) == true then return end
+		if poll_for_key_or_button(4) == true then return end
 	end
 	local j
 	for i=1,4,1 do
 		for j=13,15,1 do
 			conductor.image = g_img_tbl[10][j]
-			if poll_for_esc(1) == true then return end
+			if poll_for_key_or_button(1) == true then return end
 		end
 	
 		conductor.image = g_img_tbl[10][14]
-		if poll_for_esc(2) == true then return end
+		if poll_for_key_or_button(2) == true then return end
 		conductor.image = g_img_tbl[10][13]
-		if poll_for_esc(2) == true then return end
+		if poll_for_key_or_button(2) == true then return end
 		conductor.image = g_img_tbl[10][16]
 
-		if poll_for_esc(1) == true then return end
+		if poll_for_key_or_button(1) == true then return end
 			play_sfx(38, false)
 	end
 	
 	for i=16,20,1 do
 		conductor.image = g_img_tbl[10][i]
-		if poll_for_esc(4) == true then return end
+		if poll_for_key_or_button(4) == true then return end
 	end
-	if poll_for_esc(200) == true then return end
+	if poll_for_key_or_button(200) == true then return end
 	
 	play_sfx(12, false)
 	
@@ -310,10 +320,10 @@ local function origin_fx_sequence()
 			logo.y = logo.y + 1
 		end
 	
-		if poll_for_esc(4) == true then return end
+		if poll_for_key_or_button(4) == true then return end
 	end
 	
-	if poll_for_esc(200) == true then return end
+	if poll_for_key_or_button(200) == true then return end
 end
 
 local function intro_sequence(g_img_tbl)
@@ -323,11 +333,11 @@ local function intro_sequence(g_img_tbl)
 		
 	local  logo = sprite_new(g_img_tbl[0][0], 0, 0, true)
 	fade_in()
-	if poll_for_esc(175) == true then return end
+	if poll_for_key_or_button(175) == true then return end
 	fade_out()
 	logo.image = g_img_tbl[0][1]
 	fade_in()
-	if poll_for_esc(175) == true then return end
+	if poll_for_key_or_button(175) == true then return end
 	fade_out()
 
 	canvas_set_palette("savage.pal", 0)
@@ -347,9 +357,9 @@ local function intro_sequence(g_img_tbl)
 	      t1.y = t1.y - 3
 	      if (t1.y < 0) then t1.y = 0 end
 	      i = i + 3
-	      if poll_for_esc(1) == true then return end
+	      if poll_for_key_or_button(1) == true then return end
 	end
-	if poll_for_esc(30) == true then return end
+	if poll_for_key_or_button(30) == true then return end
 	fade_out_sprite(t1, 4)
 	i = 0
 	current_credit = 1
@@ -382,7 +392,7 @@ local function intro_sequence(g_img_tbl)
 		    end
 		 end
 	      end
-	      if poll_for_esc(8) == true then return end
+	      if poll_for_key_or_button(8) == true then return end
 	end
 end
 
@@ -595,7 +605,7 @@ local function ask_question(q_num, q_ord, sprites, text_image, images, text_widt
 	local stat_type = -1
 	while stat_type == -1 do
 		canvas_update()
-		input = input_poll(true)
+		input = input_poll() -- make input_poll(true) if mouse selection ever gets implemented
 		if input ~= nil then
 			if input == 97 or input == 98 then
 				stat_type = process_answer(q_index+1, input, sprites)

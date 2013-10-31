@@ -1,3 +1,6 @@
+2013-10-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1756
+	* Allow all buttons and mouse clicks to bypass SE conductor and intro
+
 2013-10-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1755
 	* Add mouse and shortcut key support in SE main menu. There's still no mouse
 	  or gamepad selection of creation answers.
