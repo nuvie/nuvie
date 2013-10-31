@@ -784,7 +784,7 @@ local function create_new_character(img_tbl2)
 			if should_exit(input) == true then
 				destroy_sprites(create_char_sprites, num_sprites)
 				canvas_set_palette("savage.pal", 0)
-				return false
+				return false -- back to main menu
 			end
 			local name_text = name.text
 			local len = string.len(name_text)
@@ -883,6 +883,7 @@ local function create_new_character(img_tbl2)
 
 	destroy_sprites(create_char_sprites, num_sprites)
 	canvas_set_palette("savage.pal", 0)
+	return true -- Journey onward
 end
 
 -- Could/should get heights from sprite, but was getting error when trying
@@ -987,8 +988,9 @@ end
 
 local function selected_create_character(img_tbl2)
 	mouse_cursor_visible(false)
-	create_new_character(img_tbl2)
+	local start_new_game = create_new_character(img_tbl2)
 	mouse_cursor_visible(true)
+	return start_new_game
 end
 
 local function selected_about_the_savage_empire(img_tbl2)
@@ -1064,21 +1066,40 @@ local function main_menu(img_tbl2)
 		canvas_update()
 		input = input_poll(true)
 		if input ~= nil then
-			-- TODO ADD MOUSE BUTTONS
-			if input == 113 then
+			if input == 113 then -- q
 				return "Q"
-				-- TODO Add Space & Return
-			elseif input == 13 then --or input == 21 then -- space or return
+			elseif input == 13 or input == 32 then -- space or return
 				if g_menu_idx == 0 then -- story so far
 					selected_story_so_far(img_tbl2)
 				elseif g_menu_idx == 1 then -- create char
-					selected_create_character(img_tbl2)
+					if selected_create_character(img_tbl2) == true then
+						return "J" -- starting new game
+					end
 				elseif g_menu_idx == 2 then -- about SE
 					selected_about_the_savage_empire(img_tbl2)
 				elseif g_menu_idx == 3 then -- journey onward
 					journey_onward()
 					return "J"
 				end
+			elseif input == 115 or input == 116 then -- s or t (story so far)
+				g_menu_idx = 0
+				set_main_menu_highlight()
+				selected_story_so_far(img_tbl2)
+			elseif input == 99 then -- c (create char)
+				g_menu_idx = 1
+				set_main_menu_highlight()
+				if selected_create_character(img_tbl2) == true then
+					return "J" -- starting new game
+				end
+			elseif input == 97 then -- a (about SE)
+				g_menu_idx = 2
+				set_main_menu_highlight()
+				selected_about_the_savage_empire(img_tbl2)
+			elseif input == 106 then -- j (journey onward)
+				g_menu_idx = 3
+				set_main_menu_highlight()
+				journey_onward()
+				return "J"
 			elseif input == 274 then -- down key
 				g_menu_idx = g_menu_idx + 1
 				if (g_menu_idx == 4) then g_menu_idx = 0 end
@@ -1087,6 +1108,38 @@ local function main_menu(img_tbl2)
 				g_menu_idx = g_menu_idx - 1
 				if (g_menu_idx == -1) then g_menu_idx = 3 end
 				set_main_menu_highlight()
+			elseif input == 0 then --mouse click
+				local x = get_mouse_x()
+				if x > 84 and x < 242 then
+					local y = get_mouse_y()
+					if y > 118 and y < 134 then -- story so far
+						selected_story_so_far(img_tbl2)
+					elseif y > 133 and y < 152 then -- create new char
+						if selected_create_character(img_tbl2) == true then
+							return "J" -- starting new game
+						end
+					elseif y > 151 and y < 170 then -- about SE
+						selected_about_the_savage_empire(img_tbl2)
+					elseif y > 169 and y < 185 then -- journey onward
+						journey_onward()
+						return "J"
+					end
+				end
+			elseif input == 1 then --mouse movement
+				local x = get_mouse_x()
+				if x > 84 and x < 242 then
+					local y = get_mouse_y()
+					if y > 118 and y < 134 then -- story so far
+						g_menu_idx = 0
+					elseif y > 133 and y < 152 then -- create new char
+						g_menu_idx = 1
+					elseif y > 151 and y < 170 then -- about SE
+						g_menu_idx = 2
+					elseif y > 169 and y < 185 then -- journey onward
+						g_menu_idx = 3
+					end
+					set_main_menu_highlight()
+				end
 			end
 		end
 	end

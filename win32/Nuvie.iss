@@ -1,5 +1,5 @@
 [Setup]
-AppCopyright=2011
+AppCopyright=2013
 AppName=Nuvie
 AppVerName=Nuvie SVN
 AppPublisher=The Nuvie Team

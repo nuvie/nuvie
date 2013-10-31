@@ -3077,7 +3077,7 @@ local function main_menu()
 					"end.m"
 				}
 				music_play(song_names[input])
-			elseif input == 0 then
+			elseif input == 0 then --mouse click
 				local x = get_mouse_x()
 				if x > 56 and x < 264 then
 					local y = get_mouse_y()
@@ -3097,7 +3097,7 @@ local function main_menu()
 						return "J" -- journey onward
 					end
 				end
-			elseif input == 1 then
+			elseif input == 1 then --mouse movement
 				local x = get_mouse_x()
 				if x > 56 and x < 264 then
 					local old_menu_idx = g_menu_idx

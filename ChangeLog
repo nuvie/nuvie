@@ -1,3 +1,10 @@
+2013-10-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1755
+	* Add mouse and shortcut key support in SE main menu. There's still no mouse
+	  or gamepad selection of creation answers.
+	* Have successfully created SE character start a new game
+	* Add copy_scripts option to Makefile.mingw
+	* Add mouse input comments in U6 intro and update Win32 installer copyright
+
 2013-10-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1754
 	* Show and hide mouse cursor in SE intro
 	* Fix crash caused by uninitialized char_index in SE's intro
