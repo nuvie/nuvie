@@ -5,6 +5,30 @@
 -- TODO - CREATE NEW CHARACTER OVER EXISTING?
 -- TODO - CHANGE MENU FOR NO CHARACTER YET CREATED? (new install)
 
+-- input value constants
+MOUSE_CLICK       = 0
+MOUSE_MOTION      = 1
+SDLK_BACKSPACE    = 8
+SDLK_RETURN       = 13
+SDLK_ESCAPE       = 27
+SDLK_SPACE        = 32
+SDLK_a            = 97
+SDLK_b            = 98
+SDLK_c            = 99
+SDLK_j            = 106
+SDLK_q            = 113
+SDLK_s            = 115
+SDLK_t            = 116
+SDLK_KP2          = 258
+SDLK_KP4          = 260
+SDLK_KP6          = 262
+SDLK_KP8          = 264
+SDLK_KP_ENTER     = 271
+SDLK_UP           = 273
+SDLK_DOWN         = 274
+SDLK_RIGHT        = 275
+SDLK_LEFT         = 276
+
 local function poll_for_key_or_button(cycles)
 	local input
 	if cycles == nil then
@@ -29,14 +53,14 @@ local function poll_for_esc(cycles)
 	local input
 	if cycles == nil then
 		input = input_poll()
-		if input ~= nil and input == 27 then
+		if input ~= nil and input == SDLK_ESCAPE then
 			return true
 		end
 	else
 		local i
 		for i=0,cycles,1 do
 			local input = input_poll()
-			if input ~= nil and input == 27 then
+			if input ~= nil and input == SDLK_ESCAPE then
 				return true
 			end
 			canvas_update()
@@ -59,7 +83,7 @@ local function wait_for_input()
 end
 
 local function should_exit(input)
-	if input ~=nil and input == 27 then
+	if input ~=nil and input == SDLK_ESCAPE then
 		return true
 	end
 	
@@ -562,7 +586,7 @@ local create_questions_B_tbl = {
 
 local function process_answer(q_num, input, sprites)
 	local stat_type
-	if input == 97 then
+	if input == SDLK_a then
 		stat_type = create_questions_A_tbl[q_num]
 	else
 		stat_type = create_questions_B_tbl[q_num]
@@ -578,7 +602,7 @@ local function process_answer(q_num, input, sprites)
 	return stat_type
 end
 
-local function ask_question(q_num, q_ord, sprites, text_image, images, text_width)
+local function ask_question(q_num, q_ord, sprites, text_image, a_b_border_img, images, text_width)
 	-- Do I need to display two pages?
 	local q_index = q_num -- * 2 + q_ord
 	-- Do I need to display two pages?
@@ -602,17 +626,69 @@ local function ask_question(q_num, q_ord, sprites, text_image, images, text_widt
 			x, y = image_print(text_image, create_questions_text[q_index*4+txt_ind+2], 8, text_width, 8, y+20, 0x00)
 		end
 	end
+
+	local red = 0x04 
+	local black = 0x00
+	local answer = SDLK_a
+	local old_answer = 0
 	local stat_type = -1
+	local need_to_process_answer = false
+	local a_sprite = sprite_new(nil, 56 + 170, 129 + 45, true)
+	local b_sprite = sprite_new(nil, 72 + 170, 129 + 45, true)
+	a_sprite.text = "a"
+	b_sprite.text = "b"
+	a_sprite.text_color = red
+	b_sprite.text_color = black
+
 	while stat_type == -1 do
 		canvas_update()
-		input = input_poll() -- make input_poll(true) if mouse selection ever gets implemented
+		input = input_poll(true)
 		if input ~= nil then
-			if input == 97 or input == 98 then
-				stat_type = process_answer(q_index+1, input, sprites)
+			if input == SDLK_a or input == SDLK_b then
+				answer = input
+				need_to_process_answer = true
+			elseif input == SDLK_LEFT or input == SDLK_KP4 then
+				answer = SDLK_a
+			elseif input == SDLK_RIGHT or input == SDLK_KP6 then
+				answer = SDLK_b
+			elseif input == SDLK_KP_ENTER or input == SDLK_RETURN or input == SDLK_SPACE then
+				need_to_process_answer = true
+			elseif input == MOUSE_CLICK or input == MOUSE_MOTION then
+				local mouse_y = get_mouse_y()
+				if mouse_y >= b_sprite.y and mouse_y <= b_sprite.y + 7 then
+					local mouse_x = get_mouse_x()
+					if mouse_x > a_sprite.x and mouse_x < a_sprite.x + 7 then
+						answer = SDLK_a
+						if input == MOUSE_CLICK then
+							need_to_process_answer = true
+						end
+					elseif mouse_x > b_sprite.x and mouse_x < b_sprite.x + 6 then
+						answer = SDLK_b
+						if input == MOUSE_CLICK then
+							need_to_process_answer = true
+						end
+					end
+				end
+			end
+			if answer ~= old_answer then
+				old_answer = answer
+				if answer == SDLK_a then
+					a_sprite.text_color = red
+					b_sprite.text_color = black
+				else
+					a_sprite.text_color = black
+					b_sprite.text_color = red
+				end
+			end
+			if need_to_process_answer then
+				stat_type = process_answer(q_index+1, answer, sprites)
 			end
 		end
 	end
-	
+
+	destroy_sprite(a_sprite)
+	destroy_sprite(b_sprite)
+
 	local next_q
 	if stat_type == 0 then
 		if q_ord == 0 then
@@ -759,7 +835,9 @@ local function create_new_character(img_tbl2)
 	-- TODO Memory Management on Image?
 	-- Intro Screen1
 	local scroll_img = image_copy(img_tbl2[4][2])
+	local a_b_border = image_copy(img_tbl2[4][2])
 	local text_width = 130
+	create_char_sprites[32] = sprite_new(a_b_border, 170, 45, false) -- Border for a and b answers (overlapped by next border)
 	create_char_sprites[30] = sprite_new(scroll_img, 170, 25, true) -- Border
 	local x, y = image_print(scroll_img, "You are in a dirt-floored hut... and a tribesman with wise eyes stares down at you.", 8, text_width, 8, 10, 0x00)
 	x, y = image_print(scroll_img, "You feel as though you are floating. You cannot move your limbs. It is like a dream... yet you sense it is not a dream.", 8, text_width, 8, y+20, 0x00)
@@ -783,7 +861,7 @@ local function create_new_character(img_tbl2)
 	canvas_update()
 	local name = sprite_new(nil, 178, 25+y+10, true)
 	create_char_sprites[31] = name
-	local num_sprites = 31
+	local num_sprites = 32
 	name.text = ""
 	name.text_color = 0x00
 	local char_index = 0
@@ -798,22 +876,22 @@ local function create_new_character(img_tbl2)
 			end
 			local name_text = name.text
 			local len = string.len(name_text)
-			if (input == 8 or input == 276) and len > 0 then
+			if (input == SDLK_BACKSPACE or input == SDLK_LEFT) and len > 0 then
 				name.text = string.sub(name_text, 1, len - 1)
 				if len == 1 then -- old len
 					char_index = 0
 				else
 					char_index = string.byte(name_text, len -1)
 				end
-			elseif input == 13 and len > 0 then --return
+			elseif (input == SDLK_RETURN or input == SDLK_KP_ENTER) and len > 0 then --return
 				break;
 			elseif g_keycode_tbl[input] ~= nil and len < 13 then
 				char_index = input
 				name.text = name_text..g_keycode_tbl[input]
-			elseif input == 273 then --up
+			elseif input == SDLK_UP then --up
 				if char_index == 0 then
 					if len > 0 then
-						char_index = 97 --a
+						char_index = SDLK_a
 					else
 						char_index = 65 --A
 					end
@@ -837,7 +915,7 @@ local function create_new_character(img_tbl2)
 					name_text = string.sub(name_text, 1, len - 1)
 				end
 				name.text = name_text..g_keycode_tbl[char_index]
-			elseif input == 274 then --down
+			elseif input == SDLK_DOWN then --down
 				if char_index == 0 then
 					if len > 0 then
 						char_index = 122 --z
@@ -864,8 +942,8 @@ local function create_new_character(img_tbl2)
 					name_text = string.sub(name_text, 1, len - 1)
 				end
 				name.text = name_text..g_keycode_tbl[char_index]
-			elseif input == 275 and len < 13 then --right
-				char_index = 97 --a
+			elseif input == SDLK_RIGHT and len < 13 then --right
+				char_index = SDLK_a --a
 				name.text = name_text.."a"
 			end
 			input = nil
@@ -878,10 +956,12 @@ local function create_new_character(img_tbl2)
 	-- Questions
 	local next_q = math.random(0,2)
 
+	mouse_cursor_visible(true)
+	create_char_sprites[32].visible = true -- a b border
 	-- Answers are 0-Red, 1-Yellow, 2-Blue (order of sprites in file)
-	next_q = ask_question(next_q, 0, create_char_sprites, scroll_img, img_tbl2, text_width)
-	next_q = ask_question(next_q, 1, create_char_sprites, scroll_img, img_tbl2, text_width)
-	ask_question(next_q, 2, create_char_sprites, scroll_img, img_tbl2, text_width)
+	next_q = ask_question(next_q, 0, create_char_sprites, scroll_img, a_b_border, img_tbl2, text_width)
+	next_q = ask_question(next_q, 1, create_char_sprites, scroll_img, a_b_border, img_tbl2, text_width)
+	ask_question(next_q, 2, create_char_sprites, scroll_img, a_b_border, img_tbl2, text_width)
 
 	config_set("config/newgame", true)
 	config_set("config/newgamedata/name", name.text)
@@ -1076,9 +1156,9 @@ local function main_menu(img_tbl2)
 		canvas_update()
 		input = input_poll(true)
 		if input ~= nil then
-			if input == 113 then -- q
+			if input == SDLK_q then -- q
 				return "Q"
-			elseif input == 13 or input == 32 then -- space or return
+			elseif input == SDLK_RETURN or input == SDLK_SPACE or input == KP_ENTER then -- space or return
 				if g_menu_idx == 0 then -- story so far
 					selected_story_so_far(img_tbl2)
 				elseif g_menu_idx == 1 then -- create char
@@ -1091,34 +1171,34 @@ local function main_menu(img_tbl2)
 					journey_onward()
 					return "J"
 				end
-			elseif input == 115 or input == 116 then -- s or t (story so far)
+			elseif input == SDLK_s or input == SDLK_t then -- s or t (story so far)
 				g_menu_idx = 0
 				set_main_menu_highlight()
 				selected_story_so_far(img_tbl2)
-			elseif input == 99 then -- c (create char)
+			elseif input == SDLK_c then -- c (create char)
 				g_menu_idx = 1
 				set_main_menu_highlight()
 				if selected_create_character(img_tbl2) == true then
 					return "J" -- starting new game
 				end
-			elseif input == 97 then -- a (about SE)
+			elseif input == SDLK_a then -- a (about SE)
 				g_menu_idx = 2
 				set_main_menu_highlight()
 				selected_about_the_savage_empire(img_tbl2)
-			elseif input == 106 then -- j (journey onward)
+			elseif input == SDLK_j then -- j (journey onward)
 				g_menu_idx = 3
 				set_main_menu_highlight()
 				journey_onward()
 				return "J"
-			elseif input == 274 then -- down key
+			elseif input == SDLK_DOWN or input == SDL_KP2 then -- down key
 				g_menu_idx = g_menu_idx + 1
 				if (g_menu_idx == 4) then g_menu_idx = 0 end
 				set_main_menu_highlight()
-			elseif input == 273 then -- up key
+			elseif input == SDLK_UP or input == SDL_KP8 then -- up key
 				g_menu_idx = g_menu_idx - 1
 				if (g_menu_idx == -1) then g_menu_idx = 3 end
 				set_main_menu_highlight()
-			elseif input == 0 then --mouse click
+			elseif input == MOUSE_CLICK then --mouse click
 				local x = get_mouse_x()
 				if x > 84 and x < 242 then
 					local y = get_mouse_y()
@@ -1135,7 +1215,7 @@ local function main_menu(img_tbl2)
 						return "J"
 					end
 				end
-			elseif input == 1 then --mouse movement
+			elseif input == MOUSE_MOTION then --mouse movement
 				local x = get_mouse_x()
 				if x > 84 and x < 242 then
 					local y = get_mouse_y()
