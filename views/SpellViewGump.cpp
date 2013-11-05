@@ -45,9 +45,9 @@ SpellViewGump::~SpellViewGump()
 	delete font;
 }
 
-bool SpellViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool SpellViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om)
 {
-	View::init(x,y,t,p,tm,om);
+	View::init(x,y,f,p,tm,om);
 
 	SetRect(area.x, area.y, 162, 108);
 

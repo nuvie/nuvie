@@ -30,7 +30,7 @@ class Configuration;
 class TileManager;
 class ObjManager;
 class Screen;
-class Text;
+class Font;
 class BMPFont;
 
 class SignViewGump : public DraggableView {
@@ -42,7 +42,7 @@ public:
  SignViewGump(Configuration *cfg);
  ~SignViewGump();
 
- bool init(Screen *tmp_screen, void *view_manager, Text *t, Party *p, TileManager *tm, ObjManager *om, const char *text_string, uint16 length);
+ bool init(Screen *tmp_screen, void *view_manager, Font *f, Party *p, TileManager *tm, ObjManager *om, const char *text_string, uint16 length);
 
  void Display(bool full_redraw);
 

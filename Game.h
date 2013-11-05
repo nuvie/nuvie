@@ -30,7 +30,6 @@ class Script;
 class Screen;
 class Background;
 class GamePalette;
-class Text;
 class FontManager;
 class Dither;
 class TileManager;
@@ -79,7 +78,6 @@ class Game
  Screen *screen;
  Background *background;
  GamePalette *palette;
- Text *text;
  Dither *dither;
  FontManager *font_manager;
  TileManager *tile_manager;
@@ -218,7 +216,6 @@ class Game
  Screen *get_screen()              { return(screen); }
 // U6Shape *get_background()         { return(background); }
  GamePalette *get_palette()        { return(palette); }
- Text *get_text()                  { return(text); }
  Dither *get_dither()                  { return(dither); } 
  FontManager *get_font_manager()   { return(font_manager); }
  TileManager *get_tile_manager()   { return(tile_manager); }

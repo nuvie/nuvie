@@ -28,7 +28,7 @@
 
 class Configuration;
 class Screen;
-class Text;
+class Font;
 class TileManager;
 class ObjManager;
 class Portrait;
@@ -51,7 +51,7 @@ class ActorView : public View {
  ActorView(Configuration *cfg);
  ~ActorView();
 
- bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
+ bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
 
  bool set_party_member(uint8 party_member);
 

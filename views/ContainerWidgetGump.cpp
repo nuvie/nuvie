@@ -29,7 +29,6 @@
 #include "GamePalette.h"
 #include "ContainerWidgetGump.h"
 #include "Actor.h"
-#include "Text.h"
 #include "GameClock.h"
 #include "Event.h"
 #include "MsgScroll.h"
@@ -90,7 +89,7 @@ ContainerWidgetGump::~ContainerWidgetGump()
 
 }
 
-bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h, TileManager *tm, ObjManager *om, Text *t)
+bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h, TileManager *tm, ObjManager *om, Font *f)
 {
  tile_manager = tm;
  obj_manager = om;

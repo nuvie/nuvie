@@ -32,7 +32,7 @@ class TileManager;
 class ObjManager;
 class Screen;
 class Actor;
-class Text;
+class Font;
 class U6Bmp;
 class DollWidget;
 
@@ -60,7 +60,7 @@ public:
  DollViewGump(Configuration *cfg);
  ~DollViewGump();
 
- bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Actor *a, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Actor *a, Font *f, Party *p, TileManager *tm, ObjManager *om);
 
  void set_actor(Actor *a);
  Actor *get_actor() { return actor; }

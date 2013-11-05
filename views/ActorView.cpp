@@ -30,7 +30,7 @@
 #include "Party.h"
 #include "Portrait.h"
 #include "ActorView.h"
-#include "Text.h"
+#include "Font.h"
 #include "Player.h"
 #include "Event.h"
 
@@ -56,12 +56,12 @@ ActorView::~ActorView()
    free(portrait_data);
 }
 
-bool ActorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
+bool ActorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
 {
  if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
-	View::init(x,y,t,p,tm,om);
+	View::init(x,y,f,p,tm,om);
  else
-	View::init(x-8,y-2,t,p,tm,om);
+	View::init(x-8,y-2,f,p,tm,om);
 
  portrait = port;
 
@@ -196,7 +196,7 @@ void ActorView::display_name()
  if(name == NULL)
   return;
 
- text->drawString(screen, name, area.x + ((136) - strlen(name) * 8) / 2, area.y + y_off, 0);
+ font->drawString(screen, name, area.x + ((136) - strlen(name) * 8) / 2, area.y + y_off);
 
  return;
 }
@@ -207,7 +207,7 @@ void ActorView::display_actor_stats()
  char buf[10];
  int x_off = 0;
  int y_off = 0;
- int hp_text_color = 0; //standard text color
+ uint8 hp_text_color = 0; //standard text color
 
  if (MD)
 	x_off = -1;
@@ -229,45 +229,44 @@ void ActorView::display_actor_stats()
 	hp_text_color = 0x0c;
 
  sprintf(buf,"STR:%d",actor->get_strength());
- text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16, 0);
+ font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16);
 
  sprintf(buf,"DEX:%d",actor->get_dexterity());
- text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 8, 0);
+ font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 8);
 
  sprintf(buf,"INT:%d",actor->get_intelligence());
- text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 2 * 8, 0);
+ font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 2 * 8);
 
  if (MD || Game::get_game()->get_game_type()==NUVIE_GAME_SE)
  {
-	text->drawString(screen, "HP:", area.x + 5 * 16 + x_off, area.y + y_off + 16 + 3 * 8, 0);
-	sprintf(buf,"   %3d",actor->get_hp());
-	text->drawString(screen, buf, strlen(buf), area.x + 5 * 16 + x_off, area.y + y_off + 16 + 3 * 8, 0, hp_text_color);
+	sprintf(buf,"HP:%3d",actor->get_hp());
+	font->drawString(screen, buf, strlen(buf), area.x + 5 * 16 + x_off, area.y + y_off + 16 + 3 * 8, hp_text_color, 0);
 
 	sprintf(buf,"HM:%3d",actor->get_maxhp());
-	text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 4 * 8, 0);
+	font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 4 * 8);
 
 	sprintf(buf,"Lev:%2d",actor->get_level());
-	text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 5 * 8, 0);
+	font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 5 * 8);
 
-	text->drawString(screen, "Exper:", area.x + 5 * 16 + x_off, area.y + y_off + 16 + 6 * 8, 0);
+	font->drawString(screen, "Exper:", area.x + 5 * 16 + x_off, area.y + y_off + 16 + 6 * 8);
 	sprintf(buf,"%6d",actor->get_exp());
-	text->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 7 * 8, 0);
+	font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 7 * 8);
 	return;
  }
 
- text->drawString(screen, "Magic", area.x + 5 * 16, area.y + 16 + 4 * 8, 0);
+ font->drawString(screen, "Magic", area.x + 5 * 16, area.y + 16 + 4 * 8);
  sprintf(buf,"%d/%d",actor->get_magic(),actor->get_maxmagic());
- text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 5 * 8, 0);
+ font->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 5 * 8);
 
- text->drawString(screen, "Health", area.x + 5 * 16, area.y + 16 + 6 * 8, 0);
+ font->drawString(screen, "Health", area.x + 5 * 16, area.y + 16 + 6 * 8);
  sprintf(buf,"%3d",actor->get_hp());
- text->drawString(screen, buf, strlen(buf), area.x + 5 * 16, area.y + 16 + 7 * 8, 0, hp_text_color);
+ font->drawString(screen, buf, strlen(buf), area.x + 5 * 16, area.y + 16 + 7 * 8, hp_text_color, 0);
  sprintf(buf,"   /%d",actor->get_maxhp());
- text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 7 * 8, 0);
+ font->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 7 * 8);
 
- text->drawString(screen, "Lev/Exp", area.x + 5 * 16, area.y + 16 + 8 * 8, 0);
+ font->drawString(screen, "Lev/Exp", area.x + 5 * 16, area.y + 16 + 8 * 8);
  sprintf(buf,"%d/%d",actor->get_level(),actor->get_exp());
- text->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 9 * 8, 0);
+ font->drawString(screen, buf, area.x + 5 * 16, area.y + 16 + 9 * 8);
 
  return;
 }

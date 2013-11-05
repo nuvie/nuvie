@@ -50,9 +50,9 @@ ContainerViewGump::~ContainerViewGump()
 {
 }
 
-bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Obj *container_obj_type)
+bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Obj *container_obj_type)
 {
-	View::init(x,y,t,p,tm,om);
+	View::init(x,y,f,p,tm,om);
 
 	actor = p->get_actor(p->get_leader());
 
@@ -71,7 +71,7 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 
 	//font = new GUI_Font(GUI_FONT_GUMP);
 	//font->SetColoring( 0x08, 0x08, 0x08, 0x80, 0x58, 0x30, 0x00, 0x00, 0x00);
-	font = Game::get_game()->get_font_manager()->get_conv_font();
+	font = f;
 
 	return true;
 }
@@ -131,7 +131,7 @@ void ContainerViewGump::init_bag(std::string datadir)
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = CONTAINER_WIDGET_OFFSET;
-	container_widget->init(actor, 21, container_widget_y_offset, 4, 3, tile_manager, obj_manager, text);
+	container_widget->init(actor, 21, container_widget_y_offset, 4, 3, tile_manager, obj_manager, font);
 
 	AddWidget(container_widget);
 }
@@ -156,7 +156,7 @@ void ContainerViewGump::init_chest(std::string datadir)
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = CONTAINER_WIDGET_OFFSET - 1;
-	container_widget->init(actor, 21, container_widget_y_offset, 4, 2, tile_manager, obj_manager, text);
+	container_widget->init(actor, 21, container_widget_y_offset, 4, 2, tile_manager, obj_manager, font);
 
 	AddWidget(container_widget);
 }
@@ -181,7 +181,7 @@ void ContainerViewGump::init_crate(std::string datadir)
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = 10;
-	container_widget->init(actor, 21, container_widget_y_offset, 5, 3, tile_manager, obj_manager, text);
+	container_widget->init(actor, 21, container_widget_y_offset, 5, 3, tile_manager, obj_manager, font);
 
 	AddWidget(container_widget);
 }
@@ -206,7 +206,7 @@ void ContainerViewGump::init_barrel(std::string datadir)
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = 24;
-	container_widget->init(actor, 38, container_widget_y_offset, 4, 2, tile_manager, obj_manager, text);
+	container_widget->init(actor, 38, container_widget_y_offset, 4, 2, tile_manager, obj_manager, font);
 
 	AddWidget(container_widget);
 }
@@ -231,7 +231,7 @@ void ContainerViewGump::init_corpse(std::string datadir, std::string bg_filename
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = 26;
-	container_widget->init(actor, 20, container_widget_y_offset, 3, 4, tile_manager, obj_manager, text);
+	container_widget->init(actor, 20, container_widget_y_offset, 3, 4, tile_manager, obj_manager, font);
 
 	AddWidget(container_widget);
 }

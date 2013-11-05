@@ -42,6 +42,8 @@ Font::Font()
  font_data = NULL;
  num_chars = 0;
  offset = 0;
+ default_color = FONT_COLOR_U6_NORMAL;
+ default_highlight_color = FONT_COLOR_U6_HIGHLIGHT;
 }
 
 Font::~Font()
@@ -61,7 +63,10 @@ bool Font::init(const char *filename)
 	pixel_char = font_data[2];
 
  num_chars = 256;
-
+	if(Game::get_game()->get_game_type() != NUVIE_GAME_U6) {
+		default_color = FONT_COLOR_WOU_NORMAL;
+		default_highlight_color = FONT_COLOR_WOU_HIGHLIGHT;
+	}
  return true;
 }
 
@@ -73,13 +78,21 @@ bool Font::initWithBuffer(unsigned char *buffer, uint32 buffer_len)
 	pixel_char = font_data[2];
 
  num_chars = 256;
-
+	if(Game::get_game()->get_game_type() != NUVIE_GAME_U6) {
+		default_color = FONT_COLOR_WOU_NORMAL;
+		default_highlight_color = FONT_COLOR_WOU_HIGHLIGHT;
+	}
  return true;
+}
+
+uint16 Font::drawString(Screen *screen, const char *str, uint16 x, uint16 y)
+{
+	return drawString(screen, str, strlen(str), x, y, default_color, default_highlight_color);
 }
 
 uint16 Font::drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color, uint8 highlight_color)
 {
- return drawString(screen, str, strlen(str), x, y, color);
+ return drawString(screen, str, strlen(str), x, y, color, highlight_color);
 }
 
 uint16 Font::drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color, uint8 highlight_color)
@@ -136,6 +149,11 @@ uint16 Font::getCharWidth(uint8 c)
 		return 0;
 
 	return font_data[0x4 + get_char_num(c)];
+}
+
+uint16 Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y)
+{
+	return drawChar(screen, char_num, x, y, default_color);
 }
 
 uint16 Font::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,

@@ -13,7 +13,6 @@
 #include "MapWindow.h"
 #include "ObjManager.h"
 #include "Screen.h"
-#include "Text.h"
 #include "SoundManager.h"
 #include "AnimManager.h"
 

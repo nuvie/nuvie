@@ -31,7 +31,7 @@ class Configuration;
 class TileManager;
 class Portrait;
 class Screen;
-class Text;
+class Font;
 class ObjManager;
 class Party;
 class Actor;
@@ -56,7 +56,7 @@ class PortraitView : public View {
  PortraitView(Configuration *cfg);
  ~PortraitView();
 
- bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
+ bool init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
  void Display(bool full_redraw);
  GUI_status HandleEvent(const SDL_Event *event);
 

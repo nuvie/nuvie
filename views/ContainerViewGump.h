@@ -31,7 +31,7 @@ class TileManager;
 class ObjManager;
 class Screen;
 class Actor;
-class Text;
+class Font;
 class U6Bmp;
 class Font;
 class ContainerWidgetGump;
@@ -57,7 +57,7 @@ public:
  ContainerViewGump(Configuration *cfg);
  ~ContainerViewGump();
 
- bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Obj *container_obj_type);
+ bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Obj *container_obj_type);
 
  void Display(bool full_redraw);
 

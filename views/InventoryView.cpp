@@ -31,7 +31,7 @@
 #include "InventoryWidget.h"
 #include "InventoryView.h"
 #include "Party.h"
-#include "Text.h"
+#include "Font.h"
 #include "Actor.h"
 #include "Event.h"
 #include "MapWindow.h"
@@ -117,12 +117,12 @@ bool InventoryView::set_actor(Actor *actor, bool pickpocket)
    return true;
 }
 
-bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om)
 {
  if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-	View::init(x,y,t,p,tm,om);
+	View::init(x,y,f,p,tm,om);
  else
-	View::init(x-8,y-2,t,p,tm,om);
+	View::init(x-8,y-2,f,p,tm,om);
 
  doll_widget = new DollWidget(config, this);
  doll_widget->init(party->get_actor(cur_party_member), 0, 8, tile_manager, obj_manager, true);
@@ -130,7 +130,7 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
  AddWidget(doll_widget);
 
  inventory_widget = new InventoryWidget(config, this);
- inventory_widget->init(party->get_actor(cur_party_member), 64, 8, tile_manager, obj_manager, text);
+ inventory_widget->init(party->get_actor(cur_party_member), 64, 8, tile_manager, obj_manager, font);
 
  AddWidget(inventory_widget);
 
@@ -199,7 +199,7 @@ void InventoryView::display_name()
  if(name == NULL)
   return;
 
- text->drawString(screen, name, area.x + ((136) - strlen(name) * 8) / 2, area.y + y_off, 0);
+ font->drawString(screen, name, area.x + ((136) - strlen(name) * 8) / 2, area.y + y_off);
 
  return;
 }
@@ -273,13 +273,13 @@ void InventoryView::display_inventory_weights()
  equip_weight = ceilf(actor->get_inventory_equip_weight());
 
  snprintf(string,9,"E:%d/%ds",(int)equip_weight,strength);
- text->drawString(screen, string, area.x, area.y+72, 0);
+ font->drawString(screen, string, area.x, area.y+72);
 
  snprintf(string,9,"I:%d/%ds",(int)inv_weight,strength*2);
  if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-	text->drawString(screen, string, area.x+4*16+8, area.y+72, 0);
+	font->drawString(screen, string, area.x+4*16+8, area.y+72);
  else
-	text->drawString(screen, string, area.x, area.y+80, 0);
+	font->drawString(screen, string, area.x, area.y+80);
 }
 
 void InventoryView::display_combat_mode()
@@ -317,12 +317,12 @@ void InventoryView::display_combat_mode()
 	screen->blit(area.x+7*16, area.y + y_off, tile->data,8,16,16,16,true);
 
 	if(MD)
-		text->drawString(screen, combat_mode_tbl_md[index], area.x+5*16, area.y+101, 0);
+		font->drawString(screen, combat_mode_tbl_md[index], area.x+5*16, area.y+101);
 	else 
-		text->drawString(screen, combat_mode_tbl_se[index], area.x+5*16, area.y+98, 0);
+		font->drawString(screen, combat_mode_tbl_se[index], area.x+5*16, area.y+98);
  }
  else
-	text->drawString(screen, combat_mode_tbl[index], area.x+5*16, area.y+88, 0);
+	font->drawString(screen, combat_mode_tbl[index], area.x+5*16, area.y+88);
 }
 
 /* Move the cursor around, ready or unready objects, select objects, switch

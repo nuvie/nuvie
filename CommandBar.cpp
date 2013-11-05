@@ -31,7 +31,8 @@
 #include "Screen.h"
 #include "Event.h"
 #include "TileManager.h"
-#include "Text.h"
+#include "Font.h"
+#include "FontManager.h"
 #include "GameClock.h"
 #include "GamePalette.h"
 #include "CommandBar.h"
@@ -110,7 +111,7 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
     }
 
     event = NULL; // it's not set yet
-    text = game->get_text();
+    font = game->get_font_manager()->get_font(0);
     
     weather = game->get_weather();
     
@@ -390,7 +391,7 @@ void CommandBar::display_information()
     string infostring(game->get_clock()->get_date_string());
     infostring += " Wind:";
     infostring += wind;
-    text->drawString(screen, infostring.c_str(), area.x + 8, area.y, 0);
+    font->drawString(screen, infostring.c_str(), area.x + 8, area.y);
 }
 
 uint16 CommandBar::callback(uint16 msg, CallBack *caller, void * data)

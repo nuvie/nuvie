@@ -51,7 +51,7 @@ ViewManager::ViewManager(Configuration *cfg)
 {
  config = cfg;
  config->value("config/GameType",game_type);
- current_view = NULL; gui = NULL; text = NULL;
+ current_view = NULL; gui = NULL; font = NULL;
  tile_manager = NULL; obj_manager = NULL; party = NULL;
  portrait = NULL; actor_view = NULL; inventory_view = NULL;
  portrait_view = NULL; party_view = NULL; spell_view = NULL;
@@ -68,10 +68,10 @@ ViewManager::~ViewManager()
  if (current_view != spell_view)  delete spell_view;
 }
 
-bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *por)
+bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *por)
 {
  gui = g;
- text = t;
+ font = f;
  party = p;
  tile_manager = tm;
  obj_manager = om;
@@ -81,27 +81,27 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
  uint16 y_off = Game::get_game()->get_game_y_offset();
 
  inventory_view = new InventoryView(config);
- inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
+ inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager);
 
  portrait_view = new PortraitView(config);
- portrait_view->init(176+x_off,8+y_off, text, party, tile_manager, obj_manager, portrait);
+ portrait_view->init(176+x_off,8+y_off, font, party, tile_manager, obj_manager, portrait);
 
  if(Game::get_game()->is_orig_style())
  {
 	 //inventory_view = new InventoryView(config);
-	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
+	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager);
 	 actor_view = new ActorView(config);
-	 actor_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager, portrait);
+	 actor_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager, portrait);
 
 	 party_view = new PartyView(config);
-	 party_view->init(this,168+x_off,6+y_off, text, party, player, tile_manager, obj_manager);
+	 party_view->init(this,168+x_off,6+y_off, font, party, player, tile_manager, obj_manager);
 
 	 spell_view = new SpellView(config);
  }
  else
  {
 	 //inventory_view = new InventoryViewGump(config);
-	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, text, party, tile_manager, obj_manager);
+	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager);
 
 	 spell_view = new SpellViewGump(config);
  }
@@ -112,7 +112,7 @@ bool ViewManager::init(GUI *g, Text *t, Party *p, Player *player, TileManager *t
 	spell_x_offset = Game::get_game()->get_game_width() - SPELLVIEWGUMP_WIDTH + x_off;
  }
 
- spell_view->init(gui->get_screen(), this, spell_x_offset, 6+y_off, text, party, tile_manager, obj_manager);
+ spell_view->init(gui->get_screen(), this, spell_x_offset, 6+y_off, font, party, tile_manager, obj_manager);
  //set_current_view((View *)party_view);
 
  return true;
@@ -277,7 +277,7 @@ void ViewManager::open_doll_view(Actor *actor)
 			if(y + DOLLVIEWGUMP_HEIGHT > screen->get_height())
 				y = screen->get_height() - DOLLVIEWGUMP_HEIGHT;
 
-			doll->init(Game::get_game()->get_screen(), this, x + x_off, y + y_off, actor, text, party, tile_manager, obj_manager);
+			doll->init(Game::get_game()->get_screen(), this, x + x_off, y + y_off, actor, font, party, tile_manager, obj_manager);
 
 			add_view((View *)doll);
 			add_gump(doll);
@@ -352,7 +352,7 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 		uint16 y_off = Game::get_game()->get_game_y_offset();
 
 		view = new ContainerViewGump(config);
-		view->init(Game::get_game()->get_screen(), this, Game::get_game()->get_game_width() - 120 + x_off, 20 + y_off, text, party, tile_manager, obj_manager, obj);
+		view->init(Game::get_game()->get_screen(), this, Game::get_game()->get_game_width() - 120 + x_off, 20 + y_off, font, party, tile_manager, obj_manager, obj);
 		if(actor)
 			view->set_actor(actor);
 		else
@@ -386,7 +386,7 @@ void ViewManager::open_mapeditor_view()
 		uint16 y_off = Game::get_game()->get_game_y_offset();
 		x_off += Game::get_game()->get_game_width() - 90;
 		MapEditorView *view = new MapEditorView(config);
-		view->init(Game::get_game()->get_screen(), this, x_off , y_off, text, party, tile_manager, obj_manager);
+		view->init(Game::get_game()->get_screen(), this, x_off , y_off, font, party, tile_manager, obj_manager);
 		add_view((View *)view);
 		view->grab_focus();
 	}
@@ -399,7 +399,7 @@ void ViewManager::open_portrait_gump(Actor *a)
 		uint16 x_off = Game::get_game()->get_game_x_offset();
 		uint16 y_off = Game::get_game()->get_game_y_offset();
 		PortraitViewGump *view = new PortraitViewGump(config);
-		view->init(Game::get_game()->get_screen(), this, 62 + x_off, y_off, text, party, tile_manager, obj_manager, portrait, a);
+		view->init(Game::get_game()->get_screen(), this, 62 + x_off, y_off, font, party, tile_manager, obj_manager, portrait, a);
 		add_view((View *)view);
 		add_gump(view);
 		view->grab_focus();
@@ -411,7 +411,7 @@ void ViewManager::open_sign_gump(const char *sign_text, uint16 length)
 	if(Game::get_game()->is_using_text_gumps()) // check should be useless
 	{
 		SignViewGump *view = new SignViewGump(config);
-		view->init(Game::get_game()->get_screen(), this, text, party, tile_manager, obj_manager, sign_text, length);
+		view->init(Game::get_game()->get_screen(), this, font, party, tile_manager, obj_manager, sign_text, length);
 		add_view((View *)view);
 		add_gump(view);
 		view->grab_focus();

@@ -405,8 +405,6 @@ nuvie_SOURCES = \
 	Player.h \
 	Portrait.cpp \
 	Portrait.h \
-	Text.cpp \
-	Text.h \
 	TileManager.cpp \
 	TileManager.h \
 	TimedEvent.cpp \

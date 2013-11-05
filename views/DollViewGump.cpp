@@ -55,9 +55,9 @@ DollViewGump::~DollViewGump()
 		SDL_FreeSurface(avatar_doll);
 }
 
-bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Actor *a, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Actor *a, Font *f, Party *p, TileManager *tm, ObjManager *om)
 {
-	View::init(x,y,t,p,tm,om);
+	View::init(x,y,f,p,tm,om);
 
 	SetRect(area.x, area.y, 108, 136);
 

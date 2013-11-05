@@ -30,7 +30,7 @@
 #include "Game.h"
 #include "Actor.h"
 #include "Portrait.h"
-#include "Text.h"
+#include "Font.h"
 #include "ViewManager.h"
 #include "MsgScroll.h"
 #include "GUI.h"
@@ -53,9 +53,9 @@ PortraitView::~PortraitView()
  delete name_string;
 }
 
-bool PortraitView::init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
+bool PortraitView::init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
 {
- View::init(x,y,t,p,tm,om);
+ View::init(x,y,f,p,tm,om);
 
  portrait = port;
  cur_actor_num = 0;
@@ -173,7 +173,7 @@ void PortraitView::display_name()
 
  name = name_string->c_str();
 
- text->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+80, 0);
+ font->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+80);
 
  return;
 }

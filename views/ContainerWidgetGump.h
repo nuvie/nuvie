@@ -31,7 +31,7 @@
 class Configuration;
 class TileManager;
 class Actor;
-class Text;
+class Font;
 
 #define CONTAINER_WIDGET_GUMP_HEIGHT 48
 
@@ -46,7 +46,7 @@ class ContainerWidgetGump : public ContainerWidget {
  ContainerWidgetGump(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~ContainerWidgetGump();
 
- bool init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h, TileManager *tm, ObjManager *om, Text *t);
+ bool init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h, TileManager *tm, ObjManager *om, Font *f);
 
  void Display(bool full_redraw);
  GUI_status KeyDown(SDL_keysym key);

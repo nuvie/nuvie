@@ -30,7 +30,7 @@ class Configuration;
 class TileManager;
 class ObjManager;
 class Screen;
-class Text;
+class Font;
 class Party;
 class Player;
 class Actor;
@@ -45,7 +45,7 @@ class PartyView : public View {
  PartyView(Configuration *cfg);
  ~PartyView();
 
- bool init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl, TileManager *tm, ObjManager *om);
+ bool init(void *vm, uint16 x, uint16 y, Font *f, Party *p, Player *pl, TileManager *tm, ObjManager *om);
  GUI_status MouseUp(int x,int y,int button);
  GUI_status MouseDown(int x,int y,int button) { return(GUI_YUM); }
  bool drag_accept_drop(int x, int y, int message, void *data);

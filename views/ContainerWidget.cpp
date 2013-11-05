@@ -29,7 +29,6 @@
 #include "GamePalette.h"
 #include "ContainerWidget.h"
 #include "Actor.h"
-#include "Text.h"
 #include "GameClock.h"
 #include "Event.h"
 #include "MsgScroll.h"
@@ -66,7 +65,7 @@ ContainerWidget::~ContainerWidget()
 
 }
 
-bool ContainerWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t)
+bool ContainerWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Font *f)
 {
  tile_manager = tm;
  obj_manager = om;

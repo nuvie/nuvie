@@ -31,7 +31,7 @@ class Event;
 class Game;
 class GUI_Button;
 class GUI_CallBack;
-class Text;
+class Font;
 
 #define COMMANDBAR_USE_BUTTON 1
 #define COMMANDBAR_ACTION_BUTTON 3
@@ -47,7 +47,7 @@ class CommandBar: public GUI_Widget, public CallBack
 protected:
     Game *game;
     Event *event;
-    Text *text;
+    Font *font;
     Tile *icon[13];
 
     sint8 selected_action; // underlined icon (-1 = none)

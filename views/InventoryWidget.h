@@ -31,7 +31,7 @@
 class Configuration;
 class TileManager;
 class Actor;
-class Text;
+class Font;
 
 class InventoryWidget : public GUI_Widget {
 
@@ -42,7 +42,7 @@ protected:
 
  TileManager *tile_manager;
  ObjManager *obj_manager;
- Text *text;
+ Font *font;
 
  Actor *actor;
  Obj *container_obj;
@@ -61,7 +61,7 @@ protected:
  InventoryWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~InventoryWidget();
 
- bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
+ bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Font *f);
  void set_actor(Actor *a);
  Actor *get_actor() { return(actor); }
  Obj *get_container() { return(container_obj); }

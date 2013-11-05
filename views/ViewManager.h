@@ -33,7 +33,7 @@ class ObjManager;
 class Portrait;
 class Party;
 class Player;
-class Text;
+class Font;
 class Actor;
 class Obj;
 
@@ -56,7 +56,7 @@ class ViewManager
  Configuration *config;
  int game_type;
  GUI *gui;
- Text *text;
+ Font *font;
  TileManager *tile_manager;
  ObjManager *obj_manager;
  Party *party;
@@ -81,7 +81,7 @@ class ViewManager
  ViewManager(Configuration *cfg);
  virtual ~ViewManager();
 
- bool init(GUI *g, Text *t, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *por);
+ bool init(GUI *g, Font *f, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *por);
  void reload();
 
  void update();

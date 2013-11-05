@@ -74,6 +74,8 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 	bg_color = 136;
 	border_color = 133;
  }
+ font_color = 0; // black
+ font_highlight = FONT_COLOR_U6_HIGHLIGHT;
  cfg->value(new_scroll_cfg + "/bg_color", c, bg_color);
  bg_color = clamp_max(c, 255);
  cfg->value(new_scroll_cfg + "/border_color", c, border_color);
@@ -244,7 +246,7 @@ void MsgScrollNewUI::Display(bool full_redraw)
 			{
 				token = *iter1;
 
-				total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + 4 + total_length, y + 4, 0); //FIX for hardcoded font height
+				total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + 4 + total_length, y + 4, font_color, font_highlight); //FIX for hardcoded font height
 			}
 			y+=10;
 		}

@@ -33,7 +33,7 @@
 #include "InventoryWidget.h"
 #include "SpellView.h"
 #include "Party.h"
-#include "Text.h"
+#include "Font.h"
 #include "Actor.h"
 #include "Event.h"
 #include "MapWindow.h"
@@ -66,9 +66,9 @@ SpellView::~SpellView()
 	}
 }
 
-bool SpellView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om)
+bool SpellView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om)
 {
- View::init(x,y,t,p,tm,om);
+ View::init(x,y,f,p,tm,om);
 
  SetRect(area.x, area.y, NEWMAGIC_BMP_W, NEWMAGIC_BMP_H+16);
  string filename;
@@ -301,8 +301,8 @@ void SpellView::move_down()
 
 void SpellView::display_level_text()
 {
- text->drawString(screen, circle_num_tbl[level-1], area.x + 96 + 8, area.y+NEWMAGIC_BMP_H, 0);
- text->drawString(screen, "level", area.x + 96, area.y+NEWMAGIC_BMP_H+8, 0);
+ font->drawString(screen, circle_num_tbl[level-1], area.x + 96 + 8, area.y+NEWMAGIC_BMP_H);
+ font->drawString(screen, "level", area.x + 96, area.y+NEWMAGIC_BMP_H+8);
  return;
 }
 
@@ -334,12 +334,12 @@ void SpellView::display_spell_text(Spell *spell, uint16 line_num, uint8 selected
 	char num_str[4];
 	line_num++;
 
-	text->drawString(screen, spell->name, area.x + 16, area.y+(line_num * 8), 0);
+	font->drawString(screen, spell->name, area.x + 16, area.y+(line_num * 8));
 	snprintf(num_str, 3, "%d", get_available_spell_count(spell));
-	text->drawString(screen, num_str, area.x + NEWMAGIC_BMP_W-24, area.y+(line_num * 8), 0);
+	font->drawString(screen, num_str, area.x + NEWMAGIC_BMP_W-24, area.y+(line_num * 8));
 
 	if(spell->num == selected_spell)
-		text->drawChar(screen, 0x9a, area.x + 8, area.y+(line_num * 8));
+		font->drawChar(screen, 26, area.x + 8, area.y+(line_num * 8));
 
  return;
 }

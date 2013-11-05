@@ -31,7 +31,7 @@ class TileManager;
 class ObjManager;
 class Screen;
 class Actor;
-class Text;
+class Font;
 class U6Bmp;
 class Portrait;
 
@@ -49,7 +49,7 @@ public:
  PortraitViewGump(Configuration *cfg);
  ~PortraitViewGump();
 
- bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *por, Actor *a);
+ bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Portrait *por, Actor *a);
 
  void Display(bool full_redraw);
 

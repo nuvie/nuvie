@@ -32,7 +32,7 @@ class TileManager;
 class ObjManager;
 class Screen;
 class Actor;
-class Text;
+class Font;
 class U6Bmp;
 class Spell;
 
@@ -59,7 +59,7 @@ public:
  SpellView(Configuration *cfg);
  ~SpellView();
 
- virtual bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ virtual bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om);
 
  void set_spell_caster(Actor *actor, Obj *s_container, bool eventMode);
  sint16 get_selected_spell() { if(spell_container) { return spell_container->quality; } else return -1; }

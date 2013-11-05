@@ -43,7 +43,6 @@
 #include "Party.h"
 #include "Converse.h"
 #include "ConverseGump.h"
-#include "Text.h"
 #include "FontManager.h"
 #include "ViewManager.h"
 #include "EffectManager.h"
@@ -92,7 +91,6 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  tile_manager = NULL;
  obj_manager = NULL;
  palette = NULL;
- text = NULL;
  font_manager = NULL;
  scroll = NULL;
  game_map = NULL;
@@ -169,7 +167,6 @@ Game::~Game()
     if(tile_manager) delete tile_manager;
     if(obj_manager) delete obj_manager;
     if(palette) delete palette;
-    if(text) delete text;
     if(font_manager) delete font_manager;
     //delete scroll;
     if(game_map) delete game_map;
@@ -220,9 +217,6 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    background->init();
    background->Hide();
    gui->AddWidget(background);
-
-   text = new Text(config);
-   text->loadFont();
 
    font_manager = new FontManager(config);
    font_manager->init(game_type);
@@ -307,7 +301,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
 	   return false;
 
    view_manager = new ViewManager(config);
-   view_manager->init(gui, text, party, player, tile_manager, obj_manager, portrait);
+   view_manager->init(gui, font_manager->get_font(0), party, player, tile_manager, obj_manager, portrait);
    scroll->Hide();
    gui->AddWidget(scroll);
 

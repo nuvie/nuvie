@@ -50,9 +50,9 @@ PortraitViewGump::~PortraitViewGump()
 		free(portrait_data);
 }
 
-bool PortraitViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om, Portrait *por, Actor *a)
+bool PortraitViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Portrait *por, Actor *a)
 {
-	View::init(x,y,t,p,tm,om);
+	View::init(x,y,f,p,tm,om);
 
 	SetRect(area.x, area.y, 188, 91);
 

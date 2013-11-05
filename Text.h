@@ -24,6 +24,8 @@
  *
  */
 
+#if 0 /* This class has been depreciated by Font */
+
 //#include <string>
 
 class Configuration;
@@ -55,6 +57,8 @@ class Text
    uint8 drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y,
                        uint8 color);
 };
+
+#endif /* if 0 */
 
 #endif /* __Text_h__ */
 

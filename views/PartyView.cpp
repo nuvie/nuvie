@@ -28,7 +28,7 @@
 #include "Player.h"
 #include "GameClock.h"
 #include "PartyView.h"
-#include "Text.h"
+#include "Font.h"
 #include "Weather.h"
 #include "Script.h"
 #include "MsgScroll.h"
@@ -57,9 +57,9 @@ PartyView::~PartyView()
 
 }
 
-bool PartyView::init(void *vm, uint16 x, uint16 y, Text *t, Party *p, Player *pl, TileManager *tm, ObjManager *om)
+bool PartyView::init(void *vm, uint16 x, uint16 y, Font *f, Party *p, Player *pl, TileManager *tm, ObjManager *om)
 {
- View::init(x,y,t,p,tm,om);
+ View::init(x,y,f,p,tm,om);
  // PartyView is 8px wider than other Views, for the arrows
  // ...and 3px taller, for the sky (SB-X)
  if(U6)
@@ -319,7 +319,7 @@ void PartyView::Display(bool full_redraw)
       if(MD)
         y_offset = -3;
       // FIXME: Martian Dreams text is somewhat center aligned
-      text->drawString(screen, actor_name, area.x + x_offset + 24, area.y + y_offset + (i-row_offset) * rowH + 8, 0);
+      font->drawString(screen, actor_name, area.x + x_offset + 24, area.y + y_offset + (i-row_offset) * rowH + 8);
       sprintf(hp_string,"%3d",actor->get_hp());
       if(actor->is_poisoned()) //actor is poisoned, display their hp in green
         hp_text_color = 0xa;
@@ -336,7 +336,7 @@ void PartyView::Display(bool full_redraw)
       {
         x_offset = -16; y_offset = 14;
       }
-      text->drawString(screen, hp_string, strlen(hp_string), area.x + x_offset + 112, area.y + y_offset + (i-row_offset) * rowH, 0, hp_text_color);
+      font->drawString(screen, hp_string, strlen(hp_string), area.x + x_offset + 112, area.y + y_offset + (i-row_offset) * rowH, hp_text_color, 0);
      }
 
    screen->update(area.x, area.y, area.w, area.h);
@@ -487,10 +487,8 @@ bool PartyView::down_arrow()
 void PartyView::display_arrows()
 {
     int x_offset = 0; int y_offset = 0;
-    uint8 font_color = 0x48;
     if(SE || MD)
     {
-        font_color = 0;
         x_offset = 2;
         y_offset = 12;
     }
@@ -502,10 +500,10 @@ void PartyView::display_arrows()
         row_offset = 0;
 
     if((party_size - row_offset) > max_party_size) // display bottom arrow
-        text->drawChar(screen, 25, area.x - x_offset, area.y + 90 + y_offset, font_color);
+        font->drawChar(screen, 25, area.x - x_offset, area.y + 90 + y_offset);
     if(MD)
         y_offset = 3;
     if(row_offset > 0) // display top arrow
-        text->drawChar(screen, 24, area.x - x_offset, area.y + 18 - y_offset, font_color);
+        font->drawChar(screen, 24, area.x - x_offset, area.y + 18 - y_offset);
 }
 // </SB-X> 

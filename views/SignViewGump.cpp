@@ -64,7 +64,7 @@ SignViewGump::~SignViewGump()
 	}
 }
 
-bool SignViewGump::init(Screen *tmp_screen, void *view_manager, Text *t, Party *p, TileManager *tm, ObjManager *om, const char *text_string, uint16 length)
+bool SignViewGump::init(Screen *tmp_screen, void *view_manager, Font *f, Party *p, TileManager *tm, ObjManager *om, const char *text_string, uint16 length)
 {
 	uint16 x_off = Game::get_game()->get_game_x_offset();
 	uint16 y_off = Game::get_game()->get_game_y_offset();
@@ -72,7 +72,7 @@ bool SignViewGump::init(Screen *tmp_screen, void *view_manager, Text *t, Party *
 	x_off += (Game::get_game()->get_game_width() - SIGN_BG_W)/2;
 	y_off += (Game::get_game()->get_game_height() - SIGN_BG_H)/2;
 
-	View::init(x_off,y_off,t,p,tm,om);
+	View::init(x_off,y_off,f,p,tm,om);
 	SetRect(area.x, area.y, SIGN_BG_W, SIGN_BG_H);
 
 	std::string datadir = GUI::get_gui()->get_data_dir();

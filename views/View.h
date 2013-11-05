@@ -32,7 +32,7 @@ GUI_status viewRightButtonCallback(void *data);
 class Configuration;
 class TileManager;
 class Screen;
-class Text;
+class Font;
 class ObjManager;
 class Party;
 class GUI_Button;
@@ -45,7 +45,7 @@ class View: public GUI_Widget
 
  GUI_Button *left_button, *right_button, *actor_button, *party_button, *inventory_button;
 
- Text *text;
+ Font *font;
  TileManager *tile_manager;
  ObjManager *obj_manager;
  Party *party;
@@ -59,7 +59,7 @@ class View: public GUI_Widget
  View(Configuration *cfg);
  virtual ~View();
 
- virtual bool init(uint16 x, uint16 y, Text *t, Party *p, TileManager *tm, ObjManager *om);
+ virtual bool init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om);
 
  virtual bool set_party_member(uint8 party_member);
  uint8 get_party_member_num() { return cur_party_member; }

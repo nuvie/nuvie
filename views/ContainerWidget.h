@@ -34,7 +34,7 @@
 class Configuration;
 class TileManager;
 class Actor;
-class Text;
+class Font;
 
 class ContainerWidget : public GUI_Widget {
 
@@ -65,7 +65,7 @@ protected:
  ContainerWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~ContainerWidget();
 
- bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t);
+ bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Font *f);
  virtual void set_actor(Actor *a);
  Actor *get_actor() { return(actor); }
  Obj *get_container() { return(container_obj); }

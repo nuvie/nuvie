@@ -29,7 +29,7 @@
 #include "GamePalette.h"
 #include "InventoryWidget.h"
 #include "Actor.h"
-#include "Text.h"
+#include "Font.h"
 #include "GameClock.h"
 #include "Event.h"
 #include "MsgScroll.h"
@@ -54,7 +54,7 @@ InventoryWidget::InventoryWidget(Configuration *cfg, GUI_CallBack *callback): GU
  callback_object = callback;
 
  container_obj = NULL; tile_manager = NULL; obj_manager = NULL;
- selected_obj = NULL; text = NULL; actor = NULL;
+ selected_obj = NULL; font = NULL; actor = NULL;
  target_obj = NULL; target_cont = NULL; empty_tile = NULL;
  ready_obj = NULL; // FIXME: this is unused but I might need it again -- SB-X
  row_offset = 0;
@@ -67,11 +67,11 @@ InventoryWidget::~InventoryWidget()
 
 }
 
-bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Text *t)
+bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, Font *f)
 {
  tile_manager = tm;
  obj_manager = om;
- text = t;
+ font = f;
 
  bg_color = Game::get_game()->get_palette()->get_bg_color();
  obj_font_color = 0;
@@ -299,10 +299,10 @@ void InventoryWidget::display_arrows()
    row_offset = 0;
 
  if(row_offset > 0) //display top arrow
-    text->drawChar(screen, 24, area.x, area.y + 16, 0x48);
+    font->drawChar(screen, 24, area.x, area.y + 16);
 
  if(num_objects - row_offset * 4 > 12) //display bottom arrow
-    text->drawChar(screen, 25, area.x, area.y + 3 * 16 + 8, 0x48);
+    font->drawChar(screen, 25, area.x, area.y + 3 * 16 + 8);
 }
 
 GUI_status InventoryWidget::MouseDown(int x, int y, int button)

@@ -21,6 +21,8 @@
  *
  */
 
+#if 0 /* This class has been depreciated by Font */
+
 #include <stdio.h>
 
 #include <string>
@@ -238,3 +240,5 @@ uint8 Text::drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y,
 
  return w;
 }
+
+#endif  /* if 0 */
