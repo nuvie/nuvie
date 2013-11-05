@@ -982,7 +982,7 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	x_off = Game::get_game()->get_x_offset();
 	y_off = Game::get_game()->get_y_offset();
 
-	nuvie_game_t game_type = get_game_type(config);
+	nuvie_game_t game_type = Game::get_game()->get_game_type();
 
 	GUI_Widget::Init(NULL, 0, 0, g->get_width(), g->get_height());
 

@@ -1,3 +1,6 @@
+2013-11-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1758
+	* Use pointer to game_type in ScriptCutscene instead of reading from cfg
+
 2013-11-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1757
 	* Add mouse and arrow key answer selection in SE character creation
 	* Add some SDL keysym constants to SE's intro.lua
