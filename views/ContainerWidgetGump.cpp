@@ -20,24 +20,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-#include <cassert>
 #include "nuvieDefs.h"
-#include "U6LList.h"
 #include "Configuration.h"
 
 #include "GUI.h"
-#include "GamePalette.h"
 #include "ContainerWidgetGump.h"
-#include "Actor.h"
-#include "GameClock.h"
-#include "Event.h"
-#include "MsgScroll.h"
-#include "TimedEvent.h"
-#include "UseCode.h"
-#include "MapWindow.h"
-
-#include "InventoryFont.h"
-#include "ViewManager.h"
 
 
 static const Tile gump_empty_tile = {
@@ -115,6 +102,13 @@ bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h,
  cursor_tile = tile_manager->get_gump_cursor_tile();
 
  return true;
+}
+
+void ContainerWidgetGump::MoveRelative(int dx, int dy)
+{
+	if(Game::get_game()->is_orig_style()) // FIXME should probably use backfill.
+		GUI::get_gui()->force_full_redraw();
+	GUI_Widget::MoveRelative(dx, dy);
 }
 
 void ContainerWidgetGump::Display(bool full_redraw)

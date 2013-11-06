@@ -1,3 +1,7 @@
+2013-11-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1761
+	* Inefficiently stop container gump from corrupting original style games
+      when dragged
+
 2013-11-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1760
 	* Change container gump pop up location in original style games
 

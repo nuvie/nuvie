@@ -58,6 +58,7 @@ class ContainerWidgetGump : public ContainerWidget {
  void cursor_left();
  void cursor_up();
  void cursor_down();
+ void MoveRelative(int dx, int dy);
 };
 
 #endif /* __ContainerWidgetGump_h__ */
