@@ -350,9 +350,17 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 	{
 		uint16 x_off = Game::get_game()->get_game_x_offset();
 		uint16 y_off = Game::get_game()->get_game_y_offset();
+		uint16 container_x, container_y;
+		if(Game::get_game()->is_orig_style()) {
+			container_x = x_off;
+			container_y = y_off;
+		} else {
+			container_x = Game::get_game()->get_game_width() - 120 + x_off;
+			container_y = 20 + y_off;
+		}
 
 		view = new ContainerViewGump(config);
-		view->init(Game::get_game()->get_screen(), this, Game::get_game()->get_game_width() - 120 + x_off, 20 + y_off, font, party, tile_manager, obj_manager, obj);
+		view->init(Game::get_game()->get_screen(), this, container_x, container_y, font, party, tile_manager, obj_manager, obj);
 		if(actor)
 			view->set_actor(actor);
 		else
