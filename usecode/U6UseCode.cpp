@@ -29,6 +29,7 @@
 #include "MapEntity.h"
 
 #include "Game.h"
+#include "View.h"
 #include "ViewManager.h"
 #include "ActorManager.h"
 #include "Actor.h"
@@ -944,6 +945,8 @@ bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 
              game->get_map_window()->Hide();
              game->get_scroll()->Hide();
+             game->get_event()->close_gumps();
+             game->get_view_manager()->get_current_view()->Hide();
              game->get_script()->play_cutscene("/ending.lua");
              game->quit();
 
