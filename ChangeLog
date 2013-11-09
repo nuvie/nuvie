@@ -1,3 +1,6 @@
+2013-11-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1764
+	* Don't assign palette color for converse font. It doesn't use a palette
+
 2013-11-09  Eric Fry <efry at users.sourceforge.net> r1763
 	* Started work on a new long text gump. This will be used to display large
 	  blocks of text in the new fullscreen UI. eg looking at pictures, books etc.

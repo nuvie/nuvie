@@ -56,8 +56,6 @@ class MsgScrollNewUI: public MsgScroll
  bool solid_bg;
  uint8 bg_color;
  uint8 border_color;
- uint8 font_color;
- uint8 font_highlight;
  uint16 position;
 
  std::string trailing_whitespace;

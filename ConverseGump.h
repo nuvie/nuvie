@@ -54,8 +54,6 @@ class ConverseGump: public MsgScroll
 
 	uint16 cursor_position;
 	uint8 input_char;
-	uint8 font_color;
-	uint8 font_highlight;
  public:
 
  ConverseGump(Configuration *cfg, Font *f, Screen *s);

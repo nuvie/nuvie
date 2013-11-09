@@ -85,8 +85,6 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
 
  input_char = 0;
  cursor_position = 0;
- font_color = 0; // black
- font_highlight = FONT_COLOR_U6_HIGHLIGHT;
 }
 
 ConverseGump::~ConverseGump()
@@ -532,7 +530,7 @@ void ConverseGump::Display(bool full_redraw)
 				 total_length = 0;
 				 y += 10;
 			 }
-			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length, y + 4, font_color, font_highlight);
+			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length, y + 4, 0, 0);
 			 if(cursor_position == i)
 			 {
 				 screen->fill(CURSOR_COLOR, area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 16 + total_length, y + 4 + 8, token_len-8, 1);
@@ -541,8 +539,8 @@ void ConverseGump::Display(bool full_redraw)
 			 //total_length += t.s.length();
 		 }
 		 y+=16;
-		 font->drawString(screen, " *", area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8, y, font_color, font_highlight);
-		 font->drawString(screen, input_buf.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *"), y, font_color, font_highlight);
+		 font->drawString(screen, " *", area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8, y, 0, 0);
+		 font->drawString(screen, input_buf.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *"), y, 0, 0);
 		 drawCursor(area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *") + font->getStringWidth(input_buf.c_str()), y);
 		 if(cursor_position == keyword_list->size())
 		 {
@@ -562,7 +560,7 @@ void ConverseGump::Display(bool full_redraw)
 		  {
 			  token = *iter1;
 
-			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + FRAME_W + 4 + total_length, y + 4, font_color, font_highlight); //FIX for hardcoded font height
+			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + FRAME_W + 4 + total_length, y + 4, 0, 0); //FIX for hardcoded font height
 
 			  //token->s.length();
 			  //token->font->drawChar(screen, ' ', area.x + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0);
