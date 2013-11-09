@@ -29,6 +29,9 @@
 #define FONT_COLOR_WOU_NORMAL    0
 #define FONT_COLOR_WOU_HIGHLIGHT 4
 
+#define FONT_UP_ARROW_CHAR   19
+#define FONT_DOWN_ARROW_CHAR 20
+
 class Configuration;
 class Screen;
 class U6Shape;

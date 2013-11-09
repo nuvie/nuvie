@@ -327,6 +327,10 @@ nuvie_SOURCES = \
 	views/InventoryMessage.h \
 	views/InventoryWidget.cpp \
 	views/InventoryWidget.h \
+	views/ScrollViewGump.h \
+	views/ScrollViewGump.cpp \
+	views/ScrollWidgetGump.h \
+	views/ScrollWidgetGump.cpp \
 	views/SpellView.cpp \
 	views/SpellView.h \
 	views/SpellViewGump.cpp \

@@ -38,6 +38,7 @@
 #include "ContainerViewGump.h"
 #include "PortraitViewGump.h"
 #include "SignViewGump.h"
+#include "ScrollViewGump.h"
 #include "PartyView.h"
 #include "SpellView.h"
 #include "SpellViewGump.h"
@@ -424,6 +425,18 @@ void ViewManager::open_sign_gump(const char *sign_text, uint16 length)
 		add_gump(view);
 		view->grab_focus();
 	}
+}
+
+void ViewManager::open_scroll_gump(const char *text, uint16 length)
+{
+  if(Game::get_game()->is_using_text_gumps()) // check should be useless
+  {
+    ScrollViewGump *view = new ScrollViewGump(config);
+    view->init(Game::get_game()->get_screen(), this, font, party, tile_manager, obj_manager, string(text,length));
+    add_view((View *)view);
+    add_gump(view);
+    view->grab_focus();
+  }
 }
 
 void ViewManager::add_view(View *view)

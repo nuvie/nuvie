@@ -571,6 +571,8 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
                           if(player->weapon_can_hit(cursor_coord.x, cursor_coord.y) == false)
                             break;
                           DEBUG(0,LEVEL_DEBUGGING,"attack select(%d,%d)\n", cursor_coord.x, cursor_coord.y);
+                          map_window->moveCursorRelative(rel_x,rel_y);
+                          break;
 
    case EQUIP_MODE      : map_window->moveCursorRelative(rel_x,rel_y);
                           break;
@@ -1478,7 +1480,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
 				   // the object is passable and not on a boundary.
 
 				   obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
-				   if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
+				   if((obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP) ||
 					  (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
 				   {
 					 /* do normal move if no usecode or return from usecode was true */

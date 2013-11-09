@@ -2745,6 +2745,15 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
              {
                  switch(obj->obj_n)
                  {
+                     case OBJ_U6_BOOK:
+                     case OBJ_U6_PICTURE:
+                     case OBJ_U6_SCROLL:
+                     case OBJ_U6_GRAVE:
+                     case OBJ_U6_CROSS: // wooden cross used as grave marker (text like grave)
+                     case OBJ_U6_BOOK_OF_CIRCLES:
+                     case OBJ_U6_CODEX:
+                         game->get_view_manager()->open_scroll_gump(data,strlen(data));
+                         break;
                      case OBJ_U6_SIGN:
                          if(strlen(data) > 20) // FIXME sign text needs to fit on multiple lines
                          {
@@ -2753,13 +2762,7 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
                          }
                          game->get_view_manager()->open_sign_gump(data,strlen(data)); break;
                      case OBJ_U6_SIGN_ARROW:
-                     case OBJ_U6_BOOK:
-                     case OBJ_U6_BOOK_OF_CIRCLES:
-                     case OBJ_U6_CODEX:
-                     case OBJ_U6_SCROLL:
-                     case OBJ_U6_GRAVE:
-                     case OBJ_U6_CROSS: // wooden cross used as grave marker (text like grave)
-                     case OBJ_U6_PICTURE:
+
                      default:
                         using_gump = false;
                  }

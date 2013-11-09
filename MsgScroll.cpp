@@ -69,6 +69,11 @@ uint32 MsgText::length()
  return (uint32)s.length();
 }
 
+uint16 MsgText::getDisplayWidth()
+{
+  return font->getStringWidth(s.c_str());
+}
+
 MsgLine::~MsgLine()
 {
  std::list<MsgText *>::iterator iter;
@@ -145,6 +150,19 @@ MsgText *MsgLine::get_text_at_pos(uint16 pos)
   }
 
  return NULL;
+}
+
+uint16 MsgLine::get_display_width()
+{
+  uint16 total_length = 0;
+  std::list<MsgText *>::iterator iter;
+  for(iter=text.begin();iter != text.end() ; iter++)
+  {
+    MsgText *token = *iter;
+
+    total_length += token->font->getStringWidth(token->s.c_str());
+  }
+  return total_length;
 }
 
 // MsgScroll Class
@@ -404,6 +422,16 @@ void MsgScroll::display_string(std::string s, Font *f, bool include_on_map_windo
   return NULL;
  }
 
+bool MsgScroll::can_fit_token_on_msgline(MsgLine *msg_line, MsgText *token)
+{
+  if(msg_line->total_length + token->length() > scroll_width)
+  {
+    return false; //token doesn't fit on the current line.
+  }
+
+  return true;
+}
+
 bool MsgScroll::parse_token(MsgText *token)
 {
  MsgLine *msg_line;
@@ -433,7 +461,7 @@ bool MsgScroll::parse_token(MsgText *token)
 
     default   :  if(msg_line)
     {
-    	if(msg_line->total_length + token->length() > scroll_width) // the token is to big for the current line
+    	if(can_fit_token_on_msgline(msg_line, token) == false) // the token is to big for the current line
     	{
     		msg_line = add_new_line();
     	}

@@ -1,3 +1,9 @@
+2013-11-09  Eric Fry <efry at users.sourceforge.net> r1763
+	* Started work on a new long text gump. This will be used to display large
+	  blocks of text in the new fullscreen UI. eg looking at pictures, books etc.
+	* Fixed a few code warnings.
+	* Updated eclipse build config to Kepler.
+ 
 2013-11-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1762
 	* Stop gumps and inventory view from being displayed when playing the ending
 

@@ -66,6 +66,7 @@ class MsgText
  void copy(MsgText *msg_text);
  uint32 length();
 
+ uint16 getDisplayWidth();
  bool operator<( const MsgText &rhs ) const { return (s<rhs.s); }
 };
 
@@ -83,6 +84,7 @@ class MsgLine
  void remove_char();
  uint32 length();
  MsgText *get_text_at_pos(uint16 pos);
+ uint16 get_display_width();
 };
 
 class MsgScroll: public GUI_Widget, public CallBack
@@ -251,6 +253,7 @@ private:
 
  virtual void set_permitted_input(const char *allowed);
  virtual void clear_permitted_input();
+ virtual bool can_fit_token_on_msgline(MsgLine *msg_line, MsgText *token);
 };
 
 
