@@ -104,7 +104,8 @@ class Player
  const char *get_gender_title();
  uint8 get_gender()         { return(gender); }
 
- void moveRelative(sint16 rel_x, sint16 rel_y);
+ bool check_moveRelative(Actor *actor, sint16 rel_x, sint16 rel_y);
+ void moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement = false);
  void move(sint16 new_x, sint16 new_y, uint8 new_level, bool teleport);
  void moveLeft();
  void moveRight();

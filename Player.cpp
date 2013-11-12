@@ -283,8 +283,21 @@ const char *Player::get_gender_title()
    return "milady";
 }
 
+bool Player::check_moveRelative(Actor *actor, sint16 rel_x, sint16 rel_y)
+{
+	if(!actor->moveRelative(rel_x, rel_y, ACTOR_IGNORE_DANGER)) { /**MOVE**/
+		ActorError *ret = actor->get_error();
+		if(ret->err == ACTOR_BLOCKED_BY_ACTOR
+		   && party->contains_actor(ret->blocking_actor) && ret->blocking_actor->is_immobile() == false)
+			ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
+		if(!actor->moveRelative(rel_x, rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
+			return false;
+	}
+	return true;
+}
+
 // walk to adjacent square
-void Player::moveRelative(sint16 rel_x, sint16 rel_y)
+void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 {
 	const uint8 raft_movement_tbl[] = {
 			NUVIE_DIR_N, NUVIE_DIR_NE, NUVIE_DIR_N, NUVIE_DIR_NW, NUVIE_DIR_N, NUVIE_DIR_NE, NUVIE_DIR_NW, NUVIE_DIR_N,
@@ -299,6 +312,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
 	const uint8 ship_cost[8] = {0xA, 5, 3, 4, 5, 4, 3, 5};
 	const uint8 skiff_cost[8] = {3, 4, 5, 7, 0xA, 7, 5, 4};
 
+	bool can_change_rel_dir = true;
 	uint8 wind_dir = Game::get_game()->get_weather()->get_wind_dir();
     uint16 x, y;
     uint8 z;
@@ -310,6 +324,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     	{
     		if(actor->obj_n == OBJ_U6_INFLATED_BALLOON)
     		{
+    			can_change_rel_dir = false;
     			uint8 dir = get_reverse_direction(Game::get_game()->get_weather()->get_wind_dir());
     			if(dir == NUVIE_DIR_NONE)
     			{
@@ -327,6 +342,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     		else if(actor->obj_n == OBJ_U6_RAFT)
     		{
     			uint8 dir = 0;
+    			can_change_rel_dir = false;
     			Tile *t = Game::get_game()->get_game_map()->get_tile(x, y, z, true);
     			if(t->flags1&TILEFLAG_BLOCKING) //deep water tiles are blocking. Shore tiles should allow player movement.
     			{
@@ -354,6 +370,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     		{
     			rel_x = NUVIE_RAND()%3 - 1; // stumble and change direction
     			rel_y = NUVIE_RAND()%3 - 1;
+    			can_change_rel_dir = false;
     			Game::get_game()->get_scroll()->display_string("Hic!\n");
     		}
     	}
@@ -367,29 +384,27 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y)
     if(actor->is_immobile() && actor->id_n != 0)
         can_move = false;
 
-    actor->set_direction(rel_x, rel_y);
-
     if(can_move)
     {
-		if(!actor->moveRelative(rel_x, rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
-		{
-			ActorError *ret = actor->get_error();
-			if(ret->err == ACTOR_BLOCKED_BY_ACTOR
-			   && party->contains_actor(ret->blocking_actor) && ret->blocking_actor->is_immobile() == false)
-			{
-				ret->blocking_actor->push(actor, ACTOR_PUSH_HERE);
-			}
-			if(!actor->moveRelative(rel_x,rel_y, ACTOR_IGNORE_DANGER)) /**MOVE**/
-			{
-			   Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
-			   can_move = false;
-			   if(actor->id_n == 0) //vehicle actor.
-			   {
-				   actor->set_moves_left(0); //zero movement points here so U6 can change wind direction by advancing game time.
-			   }
-			}
+		if(!check_moveRelative(actor, rel_x, rel_y)) {
+				can_move = false;
+				if(mouse_movement && rel_x != 0 && rel_y != 0 && can_change_rel_dir) {
+					if(check_moveRelative(actor, rel_x, 0)) { // try x movement only
+						rel_y = 0;
+						can_move = true;
+					} else if(check_moveRelative(actor, 0, rel_y)) { // try y movement only
+						rel_x = 0;
+						can_move = true;
+					}
+				}
+				if(can_move == false) {
+					Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
+					if(actor->id_n == 0) //vehicle actor.
+						actor->set_moves_left(0); //zero movement points here so U6 can change wind direction by advancing game time.
+				}
 		}
     }
+	actor->set_direction(rel_x, rel_y);
 
     // post-move
     if(can_move)

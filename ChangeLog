@@ -1,4 +1,8 @@
-2013-11-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1764
+2013-11-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1765
+	* Allow walking with the mouse to move only one direction if diagonal
+	  movement is blocked in only one of the directions
+
+2013-11-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1764
 	* Don't assign palette color for converse font. It doesn't use a palette
 
 2013-11-09  Eric Fry <efry at users.sourceforge.net> r1763

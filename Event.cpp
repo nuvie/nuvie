@@ -2780,9 +2780,7 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
     // Mouse->World->RelativeDirection
     map_window->mouseToWorldCoords((int)mx, (int)my, wx, wy);
     map_window->get_movement_direction((uint16)wx, (uint16)wy, rx, ry);
-    // FIXME: With U6 mouse-move, Avatar tries to move left or right around obstacles.
-    player->moveRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
-                         (ry == 0) ? 0 : ry < 0 ? -1 : 1);
+    player->moveRelative(rx, ry, true);
     game->time_changed();
 }
 
