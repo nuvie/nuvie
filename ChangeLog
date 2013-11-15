@@ -1,3 +1,8 @@
+2013-11-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1766
+	* Fix bug #286, diagonally move check for player is wrong. U6 blocks player
+	  diagonal movement between blocked tiles (non-party members block). SE and
+	  MD don't have this restriction.
+
 2013-11-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1765
 	* Allow walking with the mouse to move only one direction if diagonal
 	  movement is blocked in only one of the directions

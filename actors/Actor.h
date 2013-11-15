@@ -58,6 +58,8 @@ using std::vector;
 #define ACTOR_OPEN_DOORS    4
 #define ACTOR_IGNORE_DANGER 8
 #define ACTOR_IGNORE_MOVES 0x10
+#define ACTOR_IGNORE_PARTY_MEMBERS 0x20 // only used in Actor::check_move. In U6, player diagonal movement
+                                        // between two blocked tiles isn't allowed (non-party actors block)
 
 // push-flags (exclusive)
 #define ACTOR_PUSH_ANYWHERE 0

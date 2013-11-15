@@ -312,6 +312,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 	const uint8 ship_cost[8] = {0xA, 5, 3, 4, 5, 4, 3, 5};
 	const uint8 skiff_cost[8] = {3, 4, 5, 7, 0xA, 7, 5, 4};
 
+	bool can_move = true;
 	bool can_change_rel_dir = true;
 	uint8 wind_dir = Game::get_game()->get_weather()->get_wind_dir();
     uint16 x, y;
@@ -374,13 +375,13 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     			Game::get_game()->get_scroll()->display_string("Hic!\n");
     		}
     	}
+		ActorMoveFlags move_flags = ACTOR_IGNORE_DANGER | ACTOR_IGNORE_PARTY_MEMBERS;
+		// don't allow diagonal move between blocked tiles (player only)
+		if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, move_flags)
+		   && !actor->check_move(x + 0, y + rel_y, z, move_flags))
+			can_move = false;
     }
 
-    bool can_move = true;
-    // don't allow diagonal move between blocked tiles (player only)
-    if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, ACTOR_IGNORE_OTHERS|ACTOR_IGNORE_DANGER)
-                      && !actor->check_move(x + 0, y + rel_y, z, ACTOR_IGNORE_OTHERS|ACTOR_IGNORE_DANGER))
-        can_move = false;
     if(actor->is_immobile() && actor->id_n != 0)
         can_move = false;
 

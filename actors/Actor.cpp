@@ -386,7 +386,12 @@ bool Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags f
        {
         a = map->get_actor(new_x,new_y,new_z,false);
         if(a /*&& a->is_visible()*/)
+        {
+          bool ignore_party_members = (flags & ACTOR_IGNORE_PARTY_MEMBERS);
+          if(ignore_party_members && a->is_in_party())
+            return true;
           return a->can_be_passed(this); // we can move over or under some actors. eg mice, dragons etc.
+        }
        }
 
 //    if(map->is_passable(new_x,new_y,new_z) == false)
