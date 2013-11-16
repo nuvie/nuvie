@@ -1,3 +1,6 @@
+2013-11-16  Eric Fry <efry at users.sourceforge.net> r1768
+	* Fixed some transparency issues with U6 bmp font.
+
 2013-11-16  Eric Fry <efry at users.sourceforge.net> r1767
 	* Removed hardcoded font data from ConvFont. The fonts are now stored in bmp
 	  files. The files are stored in data/images/gumps/fonts
