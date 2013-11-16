@@ -47,8 +47,7 @@ ScrollWidgetGump::ScrollWidgetGump(Configuration *cfg, Screen *s)
 
  font_normal = Game::get_game()->get_font_manager()->get_conv_font();
 
- font_garg = new ConvFont();
- font_garg->init(NULL, 256, 128);
+ font_garg = Game::get_game()->get_font_manager()->get_conv_garg_font();
 
  init(cfg, font_normal);
 
@@ -73,7 +72,7 @@ ScrollWidgetGump::ScrollWidgetGump(Configuration *cfg, Screen *s)
 
 ScrollWidgetGump::~ScrollWidgetGump()
 {
-	delete font_garg;
+
 }
 
 void ScrollWidgetGump::set_font(uint8 font_type)

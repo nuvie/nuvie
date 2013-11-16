@@ -25,6 +25,7 @@
  */
 
 #include "SpellView.h"
+#include "NuvieBmpFile.h"
 
 class Configuration;
 class TileManager;
@@ -42,6 +43,7 @@ class SpellViewGump : public SpellView {
 	GUI_Button *gump_button;
 	sint16 selected_spell;
 	GUI_Font *font;
+  NuvieBmpFile bmp;
 public:
  SpellViewGump(Configuration *cfg);
  ~SpellViewGump();

@@ -30,6 +30,7 @@
 
 #include "SpellViewGump.h"
 #include "MapWindow.h"
+#include "NuvieBmpFile.h"
 
 #define NEWMAGIC_BMP_W 144
 #define NEWMAGIC_BMP_H 82
@@ -118,7 +119,7 @@ uint8 SpellViewGump::fill_cur_spell_list()
 	//build_path(datadir, "", spellbookdir);
 
 	build_path(datadir, "spellbook_bg.bmp", imagefile);
-	bg_image = SDL_LoadBMP(imagefile.c_str());
+	bg_image = bmp.getSdlSurface32(imagefile);
 	if(bg_image == NULL)
 	{
 		DEBUG(0,LEVEL_ERROR,"Failed to load spellbook_bg.bmp from '%s' directory\n", datadir.c_str());
@@ -131,7 +132,7 @@ uint8 SpellViewGump::fill_cur_spell_list()
 	{
 		sprintf(filename, "spellbook_spell_%03d.bmp", cur_spells[i]);
 		build_path(datadir, filename, imagefile);
-		SDL_Surface *spell_image = SDL_LoadBMP(imagefile.c_str());
+		SDL_Surface *spell_image = bmp.getSdlSurface32(imagefile);
 		if(spell_image == NULL)
 		{
 			DEBUG(0,LEVEL_ERROR,"Failed to load %s from '%s' directory\n", filename, datadir.c_str());
@@ -167,7 +168,7 @@ void SpellViewGump::loadCircleString(std::string datadir)
 	sprintf(filename, "%d.bmp", level);
 	build_path(datadir, filename, imagefile);
 
-	SDL_Surface *s = SDL_LoadBMP(imagefile.c_str());
+	SDL_Surface *s = bmp.getSdlSurface32(imagefile);
 	if(s != NULL)
 	{
 		SDL_Rect dst;
@@ -192,7 +193,7 @@ void SpellViewGump::loadCircleSuffix(std::string datadir, std::string image)
 	std::string imagefile;
 
 	build_path(datadir, image, imagefile);
-	SDL_Surface *s = SDL_LoadBMP(imagefile.c_str());
+	SDL_Surface *s = bmp.getSdlSurface32(imagefile);
 	if(s != NULL)
 	{
 		SDL_Rect dst;

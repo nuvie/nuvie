@@ -31,13 +31,15 @@ class Screen;
 
 class ConvFont : public Font
 {
+   unsigned char *f_data;
+   uint8 *f_w_data;
    uint16 data_offset;
  public:
 
    ConvFont();
    ~ConvFont();
 
-   bool init(unsigned char *data, uint16 num_chars, uint16 char_offset);
+   bool init(unsigned char *data, uint8 *width_data, uint16 num_chars, uint16 char_offset);
 
    uint16 getCharWidth(uint8 c);
    uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,

@@ -40,7 +40,9 @@ class FontManager
  std::vector<Font *> fonts;
  uint16 num_fonts;
  Font *conv_font;
-
+ Font *conv_garg_font;
+ unsigned char *conv_font_data;
+ uint8 *conv_font_widths;
  public:
 
  FontManager(Configuration *cfg);
@@ -51,12 +53,13 @@ class FontManager
 
  Font *get_font(uint16 font_number);
  Font *get_conv_font() { return conv_font; }
+ Font *get_conv_garg_font() { return conv_garg_font; }
 
  protected:
 
  bool initU6();
  bool initWOU(std::string filename);
-
+ bool initConvFonts(nuvie_game_t game_type);
 };
 
 #endif /* __FontManager_h__ */

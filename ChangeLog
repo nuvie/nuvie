@@ -1,3 +1,11 @@
+2013-11-16  Eric Fry <efry at users.sourceforge.net> r1767
+	* Removed hardcoded font data from ConvFont. The fonts are now stored in bmp
+	  files. The files are stored in data/images/gumps/fonts
+	* Fixed up font support for SE and MD in the new UI mode.
+	* Added new 8/24 bit bmp file loader class. NuvieBmpFile.
+	* Moved U6 gargoyle font into FontManager class
+	* Fixed bug in Screen::create_sdl_surface_from() method.
+
 2013-11-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1766
 	* Fix bug #286, diagonally move check for player is wrong. U6 blocks player
 	  diagonal movement between blocked tiles (non-party members block). SE and

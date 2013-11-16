@@ -26,8 +26,10 @@
 #include "nuvieDefs.h"
 #include "Configuration.h"
 
+#include "GUI.h"
 #include "NuvieIOFile.h"
 #include "U6Lib_n.h"
+#include "NuvieBmpFile.h"
 #include "FontManager.h"
 #include "Font.h"
 #include "ConvFont.h"
@@ -39,8 +41,10 @@ FontManager::FontManager(Configuration *cfg)
  config = cfg;
  num_fonts = 0;
 
- conv_font = new ConvFont();
- conv_font->init(NULL, 256, 0);
+ conv_font = NULL;
+ conv_garg_font = NULL;
+ conv_font_data = NULL;
+ conv_font_widths = NULL;
 }
 
 FontManager::~FontManager()
@@ -52,12 +56,28 @@ FontManager::~FontManager()
     delete *font;
     font++;
    }
-
- delete conv_font;
+ if(conv_font)
+ {
+   delete conv_font;
+ }
+ if(conv_garg_font)
+ {
+   delete conv_garg_font;
+ }
+ if(conv_font_data)
+ {
+   free(conv_font_data);
+ }
+ if(conv_font_widths)
+ {
+   free(conv_font_widths);
+ }
 }
 
 bool FontManager::init(nuvie_game_t game_type)
 {
+  initConvFonts(game_type);
+
 	if(game_type == NUVIE_GAME_U6)
 		return initU6();
 
@@ -121,6 +141,53 @@ bool FontManager::initWOU(std::string filename)
 	 num_fonts++;
 */
 	 return true;
+}
+
+bool FontManager::initConvFonts(nuvie_game_t game_type)
+{
+  char filename[7]; // u6.bmp\0 or u6.dat\0
+  std::string datadir = GUI::get_gui()->get_data_dir();
+  std::string path;
+
+  build_path(datadir, "images", path);
+  datadir = path;
+  build_path(datadir, "gumps", path);
+  datadir = path;
+  build_path(datadir, "fonts", path);
+  datadir = path;
+
+  std::string imagefile;
+  sprintf(filename, "%s.bmp", get_game_tag(Game::get_game()->get_game_type()));
+
+  build_path(datadir, filename, imagefile);
+
+  NuvieBmpFile bmp;
+
+  bmp.load(imagefile);
+
+  conv_font_data = bmp.getRawIndexedDataCopy();
+
+  std::string widthfile;
+  sprintf(filename, "%s.dat", get_game_tag(Game::get_game()->get_game_type()));
+
+  build_path(datadir, filename, widthfile);
+
+  NuvieIOFileRead datfile;
+  datfile.open(widthfile);
+  uint32 bytes_read;
+  conv_font_widths = datfile.readBuf(256, &bytes_read);
+  datfile.close();
+
+  conv_font = new ConvFont();
+  ((ConvFont *)conv_font)->init(conv_font_data, conv_font_widths, 256, 0);
+
+  if(game_type == NUVIE_GAME_U6)
+  {
+    conv_garg_font = new ConvFont();
+    ((ConvFont *)conv_garg_font)->init(conv_font_data, conv_font_widths, 256, 128);
+  }
+
+  return true;
 }
 
 Font *FontManager::get_font(uint16 font_number)

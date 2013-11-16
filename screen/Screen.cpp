@@ -1289,7 +1289,7 @@ SDL_Surface *Screen::create_sdl_surface_from(unsigned char *src_buf, uint16 src_
           pixels[j] = surface->colour32[src_buf[j]];
          }
        src_buf += src_pitch;
-       pixels += src_pitch; //surface->pitch;
+       pixels += src_w;
       }
    }
 

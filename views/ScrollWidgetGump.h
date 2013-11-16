@@ -88,11 +88,11 @@ class ScrollWidgetGump: public MsgScroll
 
  protected:
 
- GUI_status scroll_movement_event(ScrollEventType event);
+
 
 
  private:
-
+ GUI_status scroll_movement_event(ScrollEventType event);
  void update_arrows();
 
 };

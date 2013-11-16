@@ -85,10 +85,11 @@ class MsgScrollNewUI: public MsgScroll
 
  protected:
 
- GUI_status scroll_movement_event(ScrollEventType event);
+
  MsgLine *add_new_line();
 
  private:
+ GUI_status scroll_movement_event(ScrollEventType event);
  uint16 count_empty_lines(std::string s);
 
 };
