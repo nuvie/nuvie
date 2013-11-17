@@ -31,6 +31,7 @@
 
 #include "GUI_Dialog.h"
 #include "CheatsDialog.h"
+#include "EggManager.h"
 #include "U6misc.h"
 #include "Converse.h"
 #include "ObjManager.h"
@@ -143,7 +144,8 @@ GUI_status CheatsDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) 
 		std::string key = config_get_game_key(config);
 		key.append("/show_eggs");
 		config->set(key, egg_button->GetSelection() ? "yes" : "no");
-		game->get_obj_manager()->show_egg_objs(egg_button->GetSelection());
+		game->get_obj_manager()->set_show_eggs(egg_button->GetSelection());
+		game->get_egg_manager()->set_egg_visibility(cheat_button->GetSelection() ? egg_button->GetSelection() : false);
 
 		game->set_cheats_enabled(cheat_button->GetSelection());
 		config->set("config/cheats/enabled", cheat_button->GetSelection() ? "yes" : "no");

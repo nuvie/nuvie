@@ -471,10 +471,9 @@ void ActionUseItem(int const *params)
 
 void ActionShowEggs(int const *params)
 {
-	if(game->get_game_type() != NUVIE_GAME_U6)
-		return;
 	bool show_eggs = !game->get_obj_manager()->is_showing_eggs();
-	game->get_obj_manager()->show_egg_objs(show_eggs);
+	game->get_obj_manager()->set_show_eggs(show_eggs);
+	game->get_egg_manager()->set_egg_visibility(show_eggs);
 	string message = show_eggs ? "Showing eggs" : "Eggs invisible";
 	new TextEffect(message);
 }
@@ -563,9 +562,8 @@ void ActionToggleCheats(int const *params)
 
 	if(game->is_ethereal()) // doesn't change the bool's value
 		game->get_party()->set_ethereal(cheats);
-	if(game->get_obj_manager()->is_showing_eggs() // doesn't change the bool's value
-	   && game->get_game_type() == NUVIE_GAME_U6)
-		game->get_obj_manager()->show_egg_objs(cheats);
+	if(game->get_obj_manager()->is_showing_eggs())
+		game->get_egg_manager()->set_egg_visibility(cheats);
 
 	X_RayType xray = game->get_map_window()->get_x_ray_view();
 	if(xray == X_RAY_CHEAT_OFF)

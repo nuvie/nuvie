@@ -1,3 +1,6 @@
+2013-11-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1770
+	* Fix r1652 regression where eggs that weren't visible could block dropping
+
 2013-11-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1769
 	* Stop spells and attacks when the Avatar dies. The original allowed party
 	  members that killed the Avatar with multiple attacks left to keep

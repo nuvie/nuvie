@@ -105,8 +105,8 @@ class ObjManager
  ObjManager(Configuration *cfg, TileManager *tm, EggManager *em);
  ~ObjManager();
 
- void show_egg_objs(bool value);
  bool is_showing_eggs() { return show_eggs; }
+ void set_show_eggs(bool value) { show_eggs = value; }
 
  bool loadObjs();
  bool load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_offset);

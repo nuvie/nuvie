@@ -183,13 +183,7 @@ bool ObjManager::load_super_chunk(NuvieIO *chunk_buf, uint8 level, uint8 chunk_o
      {
       egg_manager->add_egg(obj);
       // set egg visibility
-      if(game_type==NUVIE_GAME_U6)
-      {
-        obj->set_invisible(false);
-        show_egg_objs(show_eggs);
-      }
-      else
-        obj->set_invisible(!show_eggs);
+      obj->set_invisible(Game::get_game()->are_cheats_enabled() ? !show_eggs : true);
      }
 
    if(usecode->is_container(obj)) //object type is container, but may be empty
@@ -414,7 +408,7 @@ void ObjManager::clean()
 {
  uint8 i;
 
- egg_manager->clean(show_eggs); //show_eggs determines wether we delete the actual Objs from egg manager.
+ egg_manager->clean(Game::get_game()->are_cheats_enabled() ? show_eggs : false); //show_eggs determines wether we delete the actual Objs from egg manager.
 
  for(i=0;i<64;i++)
   iAVLCleanTree(surface[i], clean_obj_tree_node);
@@ -449,20 +443,6 @@ void ObjManager::clean_actor_inventories()
      }
   }
 
- return;
-}
-
-void ObjManager::show_egg_objs(bool value)
-{
- if(value == true)
-   set_obj_tile_num(obj_egg_table[game_type], egg_tile_num); // show egg tile.
- else
- {
-   set_obj_tile_num(obj_egg_table[game_type], 1877); // transparent tile
-   if(!Game::get_game()->are_cheats_enabled()) // preserve value on cheat toggle
-     return;
- }
-   show_eggs = value;
  return;
 }
 

@@ -124,6 +124,14 @@ void EggManager::remove_egg(Obj *egg_obj, bool keep_obj)
  return;
 }
 
+void EggManager::set_egg_visibility(bool show_eggs)
+{
+ std::list<Egg *>::iterator egg_iter;
+
+ for(egg_iter = egg_list.begin(); egg_iter != egg_list.end(); egg_iter++)
+    (*egg_iter)->obj->set_invisible(!show_eggs);
+}
+
 void EggManager::spawn_eggs(uint16 x, uint16 y, uint8 z, bool teleport)
 {
  std::list<Egg *>::iterator egg;
