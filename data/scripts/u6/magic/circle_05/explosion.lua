@@ -9,6 +9,9 @@ for k,v in pairs(hit_items) do
 	if v.luatype == "actor" then
 		spell_take_fire_dmg(caster, v)
 	end
+	if g_avatar_died == true then
+		break -- don't keep casting once Avatar is dead
+	end
 end
 
 explode_surrounding_objects(loc.x, loc.y, loc.z)

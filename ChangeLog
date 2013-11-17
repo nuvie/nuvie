@@ -1,3 +1,9 @@
+2013-11-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1769
+	* Stop spells and attacks when the Avatar dies. The original allowed party
+	  members that killed the Avatar with multiple attacks left to keep
+	  attacking until the end of their turn. Nuvie will not allow them. Doors
+	  explode after kal lor in the original. They will explode before in Nuvie.
+
 2013-11-16  Eric Fry <efry at users.sourceforge.net> r1768
 	* Fixed some transparency issues with U6 bmp font.
 

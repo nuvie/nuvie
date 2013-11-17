@@ -26,6 +26,9 @@ for x = x - 5,loc_x + 5 do
 					end
 
 					actor_hit_msg(actor)
+					if g_avatar_died == true then
+						break -- don't keep casting once Avatar is dead
+					end
 				end
 			end
 		end

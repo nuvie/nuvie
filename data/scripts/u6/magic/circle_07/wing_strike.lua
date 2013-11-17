@@ -21,7 +21,9 @@ for i=1,0xff do
 			wing_strike_effect(actor)
 			foes_present = true
 		end
-	
+		if g_avatar_died == true then
+			break -- don't keep casting once Avatar is dead
+		end
 	end
 end
 

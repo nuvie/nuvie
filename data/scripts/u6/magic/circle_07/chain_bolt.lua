@@ -16,6 +16,9 @@ actor_hit_msg(actor)
 local i,j
 
 for i=0,6 do
+	if g_avatar_died == true then
+		break -- don't keep casting once Avatar is dead
+	end
 	local var_c = 32769
 	local new_target = nil
 	for j=1,0xff do

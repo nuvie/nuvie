@@ -11,6 +11,9 @@ for k,v in pairs(hit_items) do
 	if v.luatype == "actor" then
 		spell_kill_actor(caster, v)
 	end
+	if g_avatar_died == true then
+		break -- don't keep casting once Avatar is dead
+	end
 end
 
 magic_success()

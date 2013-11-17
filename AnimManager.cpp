@@ -13,6 +13,7 @@
 #include "MapWindow.h"
 #include "ObjManager.h"
 #include "Screen.h"
+#include "Script.h"
 #include "SoundManager.h"
 #include "AnimManager.h"
 
@@ -1265,7 +1266,7 @@ bool WingAnim::update()
 
 	x += x_inc;
 
-	if(x == finish_x)
+	if(x == finish_x || Game::get_game()->get_script()->call_is_avatar_dead())
 	{
 		message(MESG_ANIM_DONE);
 		stop();
@@ -1368,6 +1369,11 @@ bool HailstormAnim::update()
 					pause();
 					message(MESG_ANIM_HIT, actor);
 					unpause();
+					if(Game::get_game()->get_script()->call_is_avatar_dead()) {
+						message(MESG_ANIM_DONE);
+						stop();
+						return true;
+					}
 				}
 				else
 				{

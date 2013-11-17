@@ -45,6 +45,9 @@ function magic_cast_spell(spell_num, caster, target)
 	end
 	g_magic_caster = nil
 	g_magic_target = nil
+	if g_avatar_died == true then
+		actor_avatar_death(Actor.get(1))
+	end
 end
 
 function magic_spell_name(spell_num)
@@ -395,6 +398,9 @@ function magic_wind_spell(spell_num, tile_num)
 				
 			elseif spell_num == 113 then --death wind
 				spell_kill_actor(caster, v)
+			end
+			if g_avatar_died == true then
+				break -- don't keep casting once Avatar is dead
 			end
 		end
 	end

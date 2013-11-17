@@ -123,6 +123,7 @@ class Script
    bool call_advance_time(uint16 minutes);
    bool call_can_get_obj_override(Obj *obj);
    bool call_out_of_ammo(Actor *attacker, Obj *weapon, bool print_message);
+   bool call_is_avatar_dead();
    bool call_set_g_show_stealing(bool stealing);
 
    MapCoord call_moonstone_get_loc(uint8 phase);

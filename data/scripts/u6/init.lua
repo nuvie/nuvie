@@ -76,6 +76,10 @@ g_vanish_obj = {["obj_n"] = 0, ["frame_n"] = 0}
 
 g_keg_timer = 0
 g_armageddon = false
+g_avatar_died = false -- used so we don't keep casting once Avatar is dead
+function is_avatar_dead()
+	return g_avatar_died
+end
 
 movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1} 
 movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
@@ -474,7 +478,7 @@ function load_game()
 	objlist_seek(OBJLIST_OFFSET_KEG_TIMER)
 	g_keg_timer = objlist_read2()
 	set_g_armageddon(false)
-
+	g_avatar_died = false
 end
 
 function save_game()
@@ -589,6 +593,11 @@ function explode_obj(obj, actor)
 	for k,v in pairs(hit_items) do
 		if v.luatype == "actor" then
 			actor_hit(v, random(1, 0x3c))
+		end
+		if g_avatar_died == true then
+			explode_surrounding_objects(x, y, z)
+			actor_avatar_death(Actor.get(1))
+			return -- don't keep exploding once Avatar is dead
 		end
 	end
 	

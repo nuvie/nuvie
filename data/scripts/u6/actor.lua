@@ -249,6 +249,9 @@ function subtract_movement_pts(actor, pts)
    if pts < 1 then pts = 1 end
    
    actor.mpts = actor.mpts - pts
+   if g_avatar_died == true then
+      actor_avatar_death(Actor.get(1))
+   end
 end
 
 function subtract_map_movement_pts(actor)
@@ -1370,7 +1373,7 @@ function actor_dead(actor)
 		Actor.kill(actor, create_body)
 	else
 		actor.hp = 0 -- hackish way of making the Avatar not extinguish his torch
-		actor_avatar_death(actor)
+		g_avatar_died = true
 	end
 	
 	if actor.obj_n == 0x177 then
@@ -1651,6 +1654,9 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
          if hit_actor == true then
             --dgb("triple xbow hit actor dmg = "..dmg.."\n");
             actor_take_hit(attacker, foe, dmg);
+            if g_avatar_died == true then
+                return
+            end
          end
 
       end
@@ -3792,7 +3798,7 @@ function actor_avatar_death(avatar)
 	party_set_combat_mode(false)
 	party_set_party_mode()
 	fade_in()
-
+	g_avatar_died = false
 end
 
 io.stderr:write("actor.lua loaded\n")

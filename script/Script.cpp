@@ -1006,6 +1006,14 @@ bool Script::call_out_of_ammo(Actor *attacker, Obj *weapon, bool print_message)
 	return lua_toboolean(L,-1);
 }
 
+bool Script::call_is_avatar_dead()
+{
+	lua_getglobal(L, "is_avatar_dead");
+	if(call_function("is_avatar_dead", 0, 1) == false)
+		return false;
+	return lua_toboolean(L,-1);
+}
+
 bool Script::call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace)
 {
 	int start_idx = lua_gettop(L);
