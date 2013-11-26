@@ -34,6 +34,7 @@
 #include "Font.h"
 #include "ConvFont.h"
 #include "U6Font.h"
+#include "WOUFont.h"
 #include "U6misc.h"
 
 FontManager::FontManager(Configuration *cfg)
@@ -89,7 +90,7 @@ bool FontManager::init(nuvie_game_t game_type)
 
 bool FontManager::initU6()
 {
- Font *font;
+ U6Font *font;
  unsigned char *font_data;
  std::string filename;
  NuvieIOFileRead u6_ch;
@@ -121,7 +122,7 @@ bool FontManager::initU6()
 
 bool FontManager::initWOU(std::string filename)
 {
-	 Font *font;
+	 WOUFont *font;
 	 std::string path;
 	 U6Lib_n lib_file;
 
@@ -129,7 +130,7 @@ bool FontManager::initWOU(std::string filename)
 
 	 lib_file.open(path,4,NUVIE_GAME_MD); //can be either SE or MD just as long as it isn't set to U6 type.
 
-	 font = new Font();
+	 font = new WOUFont();
 	 unsigned char *buf = lib_file.get_item(0);
 	 font->initWithBuffer(buf, lib_file.get_item_size(0)); //buf will be freed by ~Font()
 	 fonts.push_back(font);

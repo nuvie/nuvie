@@ -31,6 +31,7 @@
 
 #include "SoundManager.h"
 #include "Font.h"
+#include "WOUFont.h"
 #include "Cursor.h"
 
 #include "ScriptCutscene.h"
@@ -1000,7 +1001,7 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	std::string path;
 
 
-	font = new Font();
+	font = new WOUFont();
 
 	if(game_type == NUVIE_GAME_U6)
 	{
@@ -1177,7 +1178,7 @@ void ScriptCutscene::print_text(CSImage *image, const char *s, uint16 *x, uint16
 
 	    	  for(it=tokens.begin() ; it != tokens.end() ; it++ )
 	    	  {
-	    		  *x = font->drawStringToShape(image->shp, (*it).c_str(), *x, *y, color);
+	    		  *x = ((WOUFont *)font)->drawStringToShape(image->shp, (*it).c_str(), *x, *y, color);
 	    		  *x += new_space;
 	    	  }
 	    	*y += 8;
@@ -1200,7 +1201,7 @@ void ScriptCutscene::print_text(CSImage *image, const char *s, uint16 *x, uint16
 
 	  for(it=tokens.begin() ; it != tokens.end() ; it++ )
 	  {
-	  	 *x = font->drawStringToShape(image->shp, (*it).c_str(), *x, *y, color);
+	  	 *x = ((WOUFont *)font)->drawStringToShape(image->shp, (*it).c_str(), *x, *y, color);
 	  	 *x += space_width;
 	  }
 
@@ -1212,7 +1213,7 @@ void ScriptCutscene::print_text(CSImage *image, const char *s, uint16 *x, uint16
 	    	*y += 8;
 	    	*x = startx;
 	    }
-	  	*x = font->drawStringToShape(image->shp, token.c_str(), *x, *y, color);
+	  	*x = ((WOUFont *)font)->drawStringToShape(image->shp, token.c_str(), *x, *y, color);
 	  }
 
 

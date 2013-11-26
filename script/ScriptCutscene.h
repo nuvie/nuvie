@@ -30,6 +30,7 @@
 #include "Configuration.h"
 
 class SoundManager;
+class WOUFont;
 class Font;
 class U6LineWalker;
 class Cursor;
@@ -117,7 +118,7 @@ private:
 	Screen *screen;
 	uint8 *palette;
 	SoundManager *sound_manager;
-	Font *font;
+	WOUFont *font;
 	SDL_Rect clip_rect;
 	uint16 x_off, y_off;
 	uint32 next_time;
@@ -151,7 +152,7 @@ public:
 	uint16 get_x_off() { return x_off; }
 	uint16 get_y_off() { return y_off; }
 
-	Font *get_font() { return font; }
+	Font *get_font() { return (Font *)font; }
 	Configuration *get_config() { return config; }
 
 	void hide_sprites();

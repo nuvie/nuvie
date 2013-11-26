@@ -46,6 +46,8 @@ nuvie_SOURCES = \
 	fonts/ConvFont.h \
 	fonts/U6Font.cpp \
 	fonts/U6Font.h \
+	fonts/WOUFont.cpp \
+	fonts/WOUFont.h \
 	fonts/FontManager.cpp \
 	fonts/FontManager.h \
 \

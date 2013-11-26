@@ -68,7 +68,14 @@ static const Tile gump_empty_tile = {
 
 ContainerWidgetGump::ContainerWidgetGump(Configuration *cfg, GUI_CallBack *callback) : ContainerWidget(cfg, callback)
 {
- 
+  cursor_tile = NULL;
+  empty_tile = &gump_empty_tile;
+  obj_font_color = 15;
+  bg_color = 0;
+  fill_bg = false;
+
+  cursor_x = cursor_y = 0;
+  show_cursor = true;
 }
 
 ContainerWidgetGump::~ContainerWidgetGump()
@@ -92,13 +99,7 @@ bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h,
 
  set_actor(a);
  set_accept_mouseclick(true, 0);//USE_BUTTON); // accept [double]clicks from button1 (even if double-click disabled we need clicks)
- empty_tile = &gump_empty_tile;
- obj_font_color = 15;
- bg_color = 0;
- fill_bg = false;
 
- cursor_x = cursor_y = 0;
- show_cursor = true;
  cursor_tile = tile_manager->get_gump_cursor_tile();
 
  return true;

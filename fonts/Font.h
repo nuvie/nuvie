@@ -39,37 +39,31 @@ class U6Shape;
 class Font
 {
 protected:
- unsigned char *font_data;
  uint16 num_chars;
  uint16 offset;
+ uint8 default_color, default_highlight_color;
 
 private:
- uint16 height;
- uint8 pixel_char;
- uint8 default_color, default_highlight_color;
+
 
  public:
 
    Font();
-   ~Font();
-
-   virtual bool init(unsigned char *data, uint16 num_chars, uint16 char_offset) {return false;}
-   bool init(const char *filename);
-   bool initWithBuffer(unsigned char *buffer, uint32 buffer_len);
+   virtual ~Font();
 
 //   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y);
    uint16 drawString(Screen *screen, const char *str, uint16 x, uint16 y);
    uint16 drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color, uint8 highlight_color);
    uint16 drawString(Screen *screen, const char *str, uint16 string_len, uint16 x, uint16 y, uint8 color, uint8 highlight_color);
 
-   virtual uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y);
+   uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y);
    virtual uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
-                 uint8 color);
+                 uint8 color) = 0;
 
    uint16 drawStringToShape(U6Shape *shp, const char *str, uint16 x, uint16 y, uint8 color);
    uint8 drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y, uint8 color);
 
-   virtual uint16 getCharWidth(uint8 c);
+   virtual uint16 getCharWidth(uint8 c) = 0;
    virtual uint16 getStringWidth(const char *str);
 
    void setOffset(uint16 off) { offset = off; }

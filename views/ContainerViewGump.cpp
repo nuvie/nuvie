@@ -281,7 +281,7 @@ void ContainerViewGump::Display(bool full_redraw)
 
  if(container_obj == NULL)
  {
-	 font->drawString(screen, actor->get_name(), area.x + 18, area.y + 2);
+	 font->drawString(screen, actor->get_name(), area.x + 18, area.y + 2, 15, 15);
 	 display_inventory_weight();
  }
  update_display = false;
@@ -297,7 +297,7 @@ void ContainerViewGump::display_inventory_weight()
 	char string[11]; //I:nnn/nnns\0
 
 	snprintf(string, 10, "I:%d/%ds", (int)equip_weight,strength*2);
-	font->drawString(screen, string, area.x + 18 + 34, area.y + bg_image->h + 2);
+	font->drawString(screen, string, area.x + 18 + 34, area.y + bg_image->h + 2, 15, 15);
 }
 
 void ContainerViewGump::left_arrow()

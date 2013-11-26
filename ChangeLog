@@ -1,3 +1,8 @@
+2013-11-26  Eric Fry <efry at users.sourceforge.net> r1771
+	* Refactored Font and made the class an abstract class.
+	* Created new WOUFont class and moved the code from Font.
+	* Fixed text colour on the ContainerViewGump when displaying party inventory.
+
 2013-11-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1770
 	* Fix r1652 regression where eggs that weren't visible could block dropping
 

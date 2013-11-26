@@ -1,11 +1,11 @@
-#ifndef __BMPFont_h__
-#define __BMPFont_h__
+#ifndef __WOUFont_h__
+#define __WOUFont_h__
 
 /*
- *  BMPFont.h
+ *  WOUFont.h
  *  Nuvie
  *
- *  Created by Eric Fry on Sat Feb 09 2013.
+ *  Created by Eric Fry on Mon Nov 25 2013.
  *  Copyright (c) 2013. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -28,30 +28,32 @@
 
 class Configuration;
 class Screen;
+class U6Shape;
 
-class BMPFont : public Font
+class WOUFont : public Font
 {
-   SDL_Surface *sdl_font_data;
-   uint8 *font_width_data;
-
-   uint16 char_w, char_h;
-
-   bool dual_font_mode;
-   bool rune_mode;
+private:
+ unsigned char *font_data;
+ uint16 height;
+ uint8 pixel_char;
 
  public:
 
-   BMPFont();
-   ~BMPFont();
+   WOUFont();
+   virtual ~WOUFont();
 
-   bool init(std::string bmp_filename, bool dual_fontmap=false);
+   bool init(const char *filename);
+   bool initWithBuffer(unsigned char *buffer, uint32 buffer_len);
 
-   uint16 getCharWidth(uint8 c);
-   uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
+
+   virtual uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color);
-   uint16 getStringWidth(const char *str);
-  protected:
+
+   uint16 drawStringToShape(U6Shape *shp, const char *str, uint16 x, uint16 y, uint8 color);
+   uint8 drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y, uint8 color);
+
+   virtual uint16 getCharWidth(uint8 c);
 
 };
 
-#endif /* __BMPFont_h__ */
+#endif /* __WOUFont_h__ */
