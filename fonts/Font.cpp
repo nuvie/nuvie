@@ -83,7 +83,7 @@ uint16 Font::drawString(Screen *screen, const char *str, uint16 string_len, uint
  return font_len;
 }
 
-inline uint8 Font::get_char_num(uint8 c)
+uint8 Font::get_char_num(uint8 c)
 {
  if(c >= offset && c < offset + num_chars)
     c -= offset;
