@@ -126,10 +126,10 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 */
  AddWidget(scroller);
 
- load_button = new GUI_Button(this, 145, 8, 40, 16, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ load_button = new GUI_Button(this, 105, 8, 40, 16, "Load", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(load_button);
 
- save_button = new GUI_Button(this, 195, 8, 40, 16, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+ save_button = new GUI_Button(this, 175, 8, 40, 16, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
  AddWidget(save_button);
 
  cancel_button = new GUI_Button(this, 245, 8, 55, 16, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0); //154

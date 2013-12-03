@@ -1192,6 +1192,12 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  Actor *lord_british;
  MapCoord *mapcoord_ref = items.mapcoord_ref;
 
+ if(!obj->is_on_map())
+ {
+	scroll->display_string("\nNot usable\n");
+	return true;
+ }
+
  player->get_actor()->get_location(&x,&y,&z);
  lord_british = actor_manager->get_actor(U6_LORD_BRITISH_ACTOR_NUM);
 
@@ -1210,7 +1216,8 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
 //    return true;
 //   }
 
- if(ev == USE_EVENT_INPUT_CANCEL)
+ if(ev == USE_EVENT_INPUT_CANCEL ||
+    (items.obj_ref && !items.obj_ref->is_on_map())) // selected item in inventory
  {
 	 scroll->display_string("Failed\n");
 	 return true;
