@@ -1,3 +1,10 @@
+2013-12-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1774
+	* Fix backwards orb of the moons inventory check from r1772 and also not
+	  allow it to be used from new container gumps of npc corpses.
+	* Don't allow teleporting with red moongates if the party doesn't have the
+	  orb of the moons. (The original game engine let you teleport.)
+	* Fix orb of the moons solo mode error text.
+
 2013-12-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1772
 	* Show failed when targeting an inventory obj for orb of moons location.
 	* Don't allow orb of moons to be used when not in the party's inventory.

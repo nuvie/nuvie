@@ -1192,7 +1192,9 @@ bool U6UseCode::use_orb(Obj *obj, UseCodeEvent ev)
  Actor *lord_british;
  MapCoord *mapcoord_ref = items.mapcoord_ref;
 
- if(!obj->is_on_map())
+ // can't use obj->is_on_map() since new container gumps will
+ // have corpse items in an npc's inventoty
+ if(!party->has_obj(87, 0, false)) // make sure orb of moons is in party inventory
  {
 	scroll->display_string("\nNot usable\n");
 	return true;
@@ -2922,7 +2924,7 @@ bool U6UseCode::enter_moongate(Obj *obj, UseCodeEvent ev)
 
     if(!player->in_party_mode())
     {
-        scroll->display_string("\nNot in solo mode.\n\n");
+        scroll->display_string("\nYou must be in party mode to enter.\n\n");
         scroll->display_prompt();
         return(true);
     }
@@ -2937,7 +2939,11 @@ bool U6UseCode::enter_moongate(Obj *obj, UseCodeEvent ev)
 	    DEBUG(0,LEVEL_ERROR,"invalid moongate destination %d\n",obj->quality);
 	    return false;
 	  }
-
+	  if(!party->has_obj(87, 0, false)) // make sure orb of moons is in party inventory
+	  {
+	  	scroll->display_string("\nYou forgot the Orb of the Moons!\n");
+	  	return true;
+	  }
 	  if((obj->quality > 0 && obj->quality < 12) ||
 	      (obj->quality > 14 && obj->quality < 26) ) //positions 0, 12, 13 and 14 go nowhere.
 	  {
