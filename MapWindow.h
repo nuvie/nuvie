@@ -243,7 +243,7 @@ class MapWindow: public GUI_Widget
  void drag_perform_drop(int x, int y, int message, void *data);
  bool move_on_drop(Obj *obj);
  void set_interface();
- InterfaceType get_interface() { return interface; }
+ InterfaceType get_interface();
 
  void drag_draw(int x, int y, int message, void* data);
 

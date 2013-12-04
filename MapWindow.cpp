@@ -45,6 +45,7 @@
 #include "Game.h"
 #include "GameClock.h"
 #include "GamePalette.h"
+#include "Party.h"
 #include "Weather.h"
 #include "Script.h"
 #include "U6objects.h"
@@ -1708,14 +1709,14 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool ac
         return false;
     }
 
-    if(interface == INTERFACE_IGNORE_BLOCK && map->can_put_obj(x, y, cur_level))
+    if(get_interface() == INTERFACE_IGNORE_BLOCK && map->can_put_obj(x, y, cur_level))
        return true;
 
         // can't ever drop at the actor location
         if(actor_loc.x == x && actor_loc.y == y)
             return false;
 
-    if(actor_loc.distance(target_loc) > 5 && interface == INTERFACE_NORMAL)
+    if(actor_loc.distance(target_loc) > 5 && get_interface() == INTERFACE_NORMAL)
     {
         if(accepting_drop)
             game->get_scroll()->message("\n\nOut of range!\n\n");
@@ -1794,7 +1795,7 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 	if(actor->get_z() != obj->z)
 		return false;
 
-	if(interface == INTERFACE_IGNORE_BLOCK)
+	if(get_interface() == INTERFACE_IGNORE_BLOCK)
 		return true;
 
 	LineTestResult lt;
@@ -1971,7 +1972,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
 
 bool MapWindow::move_on_drop(Obj *obj)
 {
-	bool move = (interface == INTERFACE_NORMAL);
+	bool move = (get_interface() == INTERFACE_NORMAL);
 	if(drop_with_move && move)
 		return true;
 
@@ -2010,6 +2011,14 @@ void MapWindow::set_interface()
 		interface = INTERFACE_FULLSCREEN;
 	else
 		interface = INTERFACE_NORMAL;
+}
+
+InterfaceType MapWindow::get_interface()
+{
+	// check is easily exploited but would be annoying if checking for nearby enemies
+	if(interface == INTERFACE_FULLSCREEN && game->get_party()->is_in_combat_mode())
+		return INTERFACE_NORMAL;
+	return interface;
 }
 
 GUI_status MapWindow::Idle(void)
@@ -2158,7 +2167,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	    || tile_is_black(obj->x, obj->y, obj)) && !game->using_hackmove())
 		return	GUI_PASS;
 
-	if(distance > 1 && interface == INTERFACE_NORMAL)
+	if(distance > 1 && get_interface() == INTERFACE_NORMAL)
 		return	GUI_PASS;
 
 	if(button == DRAG_BUTTON && game->is_dragging_enabled())
@@ -2209,7 +2218,7 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 
 		if (map->lineTest(player->x, player->y, wx, wy, cur_level, LT_HitUnpassable, result)
             && !(result.hitObj && result.hitObj->x == wx && result.hitObj->y == wy)
-            && interface == INTERFACE_NORMAL)
+            && get_interface() == INTERFACE_NORMAL)
 			// something was in the way, so don't allow a drag
 			return GUI_PASS;
 		dragging = true;

@@ -1,4 +1,9 @@
-2013-12-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1774
+2013-12-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1775
+	* Restrict INTERFACE_FULLSCREEN to INTERFACE_NORMAL if in combat mode. This
+	  check can easily be exploited but would be annoying if it checked for
+	  nearby enemies.
+
+2013-12-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1774
 	* Fix backwards orb of the moons inventory check from r1772 and also not
 	  allow it to be used from new container gumps of npc corpses.
 	* Don't allow teleporting with red moongates if the party doesn't have the
