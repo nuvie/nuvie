@@ -86,6 +86,8 @@ protected:
 
  void drag_draw(int x, int y, int message, void* data);
 
+ uint8 get_num_rows() { return game_type == NUVIE_GAME_U6 ? 3 : 4; }
+
  protected:
 
  GUI_CallBack *callback_object; // object-selected callback

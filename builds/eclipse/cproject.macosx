@@ -49,6 +49,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/keybinding}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/sound/adplug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/pathfinder}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/portraits}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/script}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/fonts}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/save}&quot;"/>
@@ -759,4 +760,12 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/nuvie"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/nuvie"/>
+		</configuration>
+	</storageModule>
 </cproject>

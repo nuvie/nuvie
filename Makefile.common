@@ -192,6 +192,15 @@ nuvie_SOURCES = \
 	pathfinder/U6AStarPath.cpp \
 	pathfinder/U6AStarPath.h \
 \
+	portraits/Portrait.cpp \
+	portraits/Portrait.h \
+	portraits/PortraitU6.cpp \
+	portraits/PortraitU6.h \
+	portraits/PortraitMD.cpp \
+	portraits/PortraitMD.h \
+	portraits/PortraitSE.cpp \
+	portraits/PortraitSE.h \
+\
 	save/Objlist.h \
 	save/SaveDialog.cpp \
 	save/SaveDialog.h \
@@ -341,6 +350,8 @@ nuvie_SOURCES = \
 	views/SpellViewGump.h \
 	views/SignViewGump.cpp \
 	views/SignViewGump.h \
+	views/SunMoonStripWidget.cpp \
+	views/SunMoonStripWidget.h \
 	views/ContainerViewGump.cpp \
 	views/ContainerViewGump.h \
 	views/ContainerWidget.cpp \
@@ -411,8 +422,6 @@ nuvie_SOURCES = \
 	Party.h \
 	Player.cpp \
 	Player.h \
-	Portrait.cpp \
-	Portrait.h \
 	TileManager.cpp \
 	TileManager.h \
 	TimedEvent.cpp \

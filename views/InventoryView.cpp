@@ -122,7 +122,7 @@ bool InventoryView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint1
  if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
 	View::init(x,y,f,p,tm,om);
  else
-	View::init(x-8,y-2,f,p,tm,om);
+	View::init(x,y-2,f,p,tm,om);
 
  doll_widget = new DollWidget(config, this);
  doll_widget->init(party->get_actor(cur_party_member), 0, 8, tile_manager, obj_manager, true);
@@ -425,6 +425,11 @@ void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
                 moveCursorToSlot(4);
             else if(y == 2)
                 moveCursorToSlot(6);
+            else if(y == 3)
+            {
+              if(!picking_pocket)
+                moveCursorToButton(3);
+            }
         }
         else if(y == 0 && new_y < 0)
         {
@@ -433,7 +438,7 @@ void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
             else
                 moveCursorToTop(); // move to container icon
         }
-        else if(y == 2 && new_y > 0)
+        else if(y == (uint8)(inventory_widget->get_num_rows() - 1) && new_y > 0)
         {
             if(inventory_widget->down_arrow()) // scroll down
                 update_display = true;
@@ -500,9 +505,9 @@ void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
             else if(x == 2)
                 moveCursorToSlot(6);
             else if(x == 3)
-                moveCursorToInventory(0, 2);
+                moveCursorToInventory(0, inventory_widget->get_num_rows()-1);
             else if(x == 4)
-                moveCursorToInventory(1, 2);
+                moveCursorToInventory(1, inventory_widget->get_num_rows()-1);
         }
         else if(((sint16)x + new_x) >= 0 && (x + new_x) <= 4)
             moveCursorToButton(x + new_x);
@@ -523,18 +528,23 @@ void InventoryView::moveCursorRelative(sint8 new_x, sint8 new_y)
 void InventoryView::update_cursor()
 {
     SDL_Rect *ready_loc;
-
+    nuvie_game_t gametype = Game::get_game()->get_game_type();
     switch(cursor_pos.area)
     {
         case INVAREA_LIST:
-            cursor_pos.px = (4 * 16 + 8) + cursor_pos.x * 16;
-            cursor_pos.py = 16 + 8 + cursor_pos.y * 16;
-            cursor_pos.px += area.x;
-            cursor_pos.py += area.y;
+          if(gametype == NUVIE_GAME_U6)
+          {
+            cursor_pos.px = area.x + (4 * 16 + 8) + cursor_pos.x * 16;
+          }
+          else
+          {
+            cursor_pos.px = inventory_widget->area.x + cursor_pos.x * 16;
+          }
+            cursor_pos.py = area.y + 16 + 8 + cursor_pos.y * 16;
             break;
         case INVAREA_TOP:
-            cursor_pos.px = 32 + inventory_widget->area.x;
-            cursor_pos.py = 0 + inventory_widget->area.y;
+            cursor_pos.px = inventory_widget->area.x + (gametype == NUVIE_GAME_U6 ? 32 : (inventory_widget->area.w-16)/2);
+            cursor_pos.py = inventory_widget->area.y;
             break;
         case INVAREA_DOLL:
             ready_loc = doll_widget->get_item_hit_rect(cursor_pos.x);
@@ -543,9 +553,9 @@ void InventoryView::update_cursor()
             break;
         case INVAREA_COMMAND:
             cursor_pos.px = ((cursor_pos.x + 1) * 16) - 16;
-            cursor_pos.py = 80;
+            cursor_pos.py = left_button->area.y; //80;
             cursor_pos.px += area.x;
-            cursor_pos.py += area.y;
+            //cursor_pos.py += area.y;
             break;
     }
 }

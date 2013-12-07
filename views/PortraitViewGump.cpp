@@ -137,7 +137,7 @@ void PortraitViewGump::Display(bool full_redraw)
  SDL_BlitSurface(bg_image, NULL, surface, &dst);
 
  DisplayChildren(full_redraw);
- screen->blit(area.x+25,area.y+17,portrait_data,8,PORTRAIT_WIDTH,PORTRAIT_HEIGHT,PORTRAIT_WIDTH,false);
+ screen->blit(area.x+25,area.y+17,portrait_data,8,portrait->get_portrait_width(),portrait->get_portrait_height(),portrait->get_portrait_width(),false);
 
  int w,h;
  w = font->get_center(actor->get_name(), 138);

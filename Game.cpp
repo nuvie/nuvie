@@ -296,7 +296,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    player->init(obj_manager, actor_manager, map_window, clock, party);
    party->init(this, actor_manager);
 
-   portrait = new Portrait(config);
+   portrait = newPortrait(game_type, config);
    if(portrait->init() == false)
 	   return false;
 

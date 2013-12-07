@@ -1,3 +1,14 @@
+2013-12-07  Eric Fry <efry at users.sourceforge.net> r1776
+	* Moved Portrait class to portraits directory.
+	* Refactored Portrait class. Made it an abstract class.
+	* Created new U6/MD/SE specific portrait classes.
+	* Added background support to MD portraits.
+	* Fixed up some of the MD views.
+	* Fixed MD font. It now uses the correct font from system.lzc
+	* Refactored PartyView class and moved sun moon strip logic into new
+	  class. SunMoonStripWidget.
+	* Enabled four row inventory for MD.
+
 2013-12-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1775
 	* Restrict INTERFACE_FULLSCREEN to INTERFACE_NORMAL if in combat mode. This
 	  check can easily be exploited but would be annoying if it checked for

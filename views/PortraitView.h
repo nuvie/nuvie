@@ -34,16 +34,23 @@ class Screen;
 class Font;
 class ObjManager;
 class Party;
+class Player;
 class Actor;
 class DollWidget;
+class U6Shape;
 
 class PortraitView : public View {
+
+ nuvie_game_t gametype;
 
  uint8 cur_actor_num;
  Portrait *portrait;
  std::string *name_string;
 
  unsigned char *portrait_data;
+ U6Shape *bg_data;
+ uint8 portrait_width;
+ uint8 portrait_height;
 
  bool waiting; // waiting for input, then will return to previous view
  bool show_cursor; // indicate waiting for input
@@ -56,7 +63,7 @@ class PortraitView : public View {
  PortraitView(Configuration *cfg);
  ~PortraitView();
 
- bool init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Portrait *port);
+ bool init(uint16 x, uint16 y, Font *f, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *port);
  void Display(bool full_redraw);
  GUI_status HandleEvent(const SDL_Event *event);
 
@@ -67,7 +74,10 @@ class PortraitView : public View {
 
  protected:
 
- void display_name();
+ void display_name(uint16 y_offset);
+
+ private:
+ void load_md_background();
 
 };
 

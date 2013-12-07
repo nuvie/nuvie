@@ -34,12 +34,14 @@ class Font;
 class Party;
 class Player;
 class Actor;
+class SunMoonStripWidget;
 
 class PartyView : public View {
 
  Player *player;
  void *view_manager;
  uint16 row_offset; // first party member displayed
+ SunMoonStripWidget *sun_moon_widget;
 
  public:
  PartyView(Configuration *cfg);

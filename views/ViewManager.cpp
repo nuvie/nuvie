@@ -85,7 +85,7 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
  inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager);
 
  portrait_view = new PortraitView(config);
- portrait_view->init(176+x_off,8+y_off, font, party, tile_manager, obj_manager, portrait);
+ portrait_view->init(176+x_off,8+y_off, font, party, player, tile_manager, obj_manager, portrait);
 
  if(Game::get_game()->is_orig_style())
  {
@@ -95,8 +95,14 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 	 actor_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager, portrait);
 
 	 party_view = new PartyView(config);
-	 party_view->init(this,168+x_off,6+y_off, font, party, player, tile_manager, obj_manager);
-
+	 if(game_type==NUVIE_GAME_U6)
+	 {
+	   party_view->init(this,168+x_off,6+y_off, font, party, player, tile_manager, obj_manager);
+	 }
+	 else
+	 {
+	   party_view->init(this,176+x_off,6+y_off, font, party, player, tile_manager, obj_manager);
+	 }
 	 spell_view = new SpellView(config);
  }
  else

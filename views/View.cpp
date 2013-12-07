@@ -51,7 +51,7 @@ bool View::init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManag
  else if(Game::get_game()->get_game_type()==NUVIE_GAME_SE)
    GUI_Widget::Init(NULL, x+15, y, 132, 113);
  else
-   GUI_Widget::Init(NULL, x+16, y-4, 128, 118);
+   GUI_Widget::Init(NULL, x+8, y-4, 128, 118);
  Hide();
  font = f;
  party = p;
@@ -123,8 +123,10 @@ void View::fill_md_background(SDL_Rect area)
 	screen->fill(bg_color, area.x + area.w -2, area.y + 9, 1, 1); // right pillar
 	screen->fill(bg_color, area.x + area.w -3, area.y + 6, 1, 4); // right pillar
 	screen->fill(bg_color, area.x + area.w -4, area.y + 3, 1, 11); // right pillar
-	screen->fill(bg_color, area.x + 4, area.y, area.w - 8, 15); // top center
+	screen->fill(bg_color, area.x + 4, area.y, area.w-8, 15); // top center
 	screen->fill(bg_color, area.x, area.y +14, area.w, area.h -14); // bottom
+  //screen->fill(15, area.x, area.y, area.w, area.h); // bottom
+
 }
 
 void View::set_combat_mode(Actor *actor)

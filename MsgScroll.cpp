@@ -227,13 +227,14 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
 
  cursor_wait = 0;
 
- add_new_line();
  display_pos = 0;
  
  bg_color = Game::get_game()->get_palette()->get_bg_color();
 
  capitalise_next_letter = false;
  scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
+
+ add_new_line();
 }
 
 MsgScroll::~MsgScroll()

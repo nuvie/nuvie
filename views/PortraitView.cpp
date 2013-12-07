@@ -26,6 +26,9 @@
 #include "nuvieDefs.h"
 
 #include "Configuration.h"
+#include "U6misc.h"
+#include "U6Lib_n.h"
+#include "U6Shape.h"
 
 #include "Game.h"
 #include "Actor.h"
@@ -36,13 +39,25 @@
 #include "GUI.h"
 #include "DollWidget.h"
 #include "PortraitView.h"
-#include "PartyView.h"
+#include "SunMoonStripWidget.h"
+
 
 PortraitView::PortraitView(Configuration *cfg) : View(cfg)
 {
  portrait_data = NULL; portrait = NULL;
+ bg_data = NULL;
  name_string = new string; show_cursor = false;
  doll_widget = NULL; waiting = false; display_doll = false;
+ cur_actor_num = 0;
+ gametype = get_game_type(cfg);
+
+ //FIXME: Portraits in SE/MD are different size than in U6! 79x85 76x83
+ switch(gametype)
+ {
+   case NUVIE_GAME_U6: portrait_width=56; portrait_height=64; break;
+   case NUVIE_GAME_SE: portrait_width=79; portrait_height=85; break;
+   case NUVIE_GAME_MD: portrait_width=76; portrait_height=83; break;
+ }
 }
 
 PortraitView::~PortraitView()
@@ -50,20 +65,17 @@ PortraitView::~PortraitView()
  if(portrait_data != NULL)
    free(portrait_data);
 
+ if(bg_data != NULL)
+   delete bg_data;
+
  delete name_string;
 }
 
-bool PortraitView::init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om, Portrait *port)
+bool PortraitView::init(uint16 x, uint16 y, Font *f, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *port)
 {
  View::init(x,y,f,p,tm,om);
 
  portrait = port;
- cur_actor_num = 0;
- waiting = false;
- show_cursor = false;
- display_doll = false;
- // cursor_x =
- // cursor_y =
 
  doll_widget = new DollWidget(config, this);
  doll_widget->init(NULL, 0, 16, tile_manager, obj_manager, true);
@@ -71,48 +83,65 @@ bool PortraitView::init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, 
  AddWidget(doll_widget);
  doll_widget->Hide();
  
+ if(gametype == NUVIE_GAME_U6)
+ {
+   SunMoonStripWidget *sun_moon_widget = new SunMoonStripWidget(player, tile_manager);
+   sun_moon_widget->init(-8, -2);
+   AddWidget(sun_moon_widget);
+ }
+ else if(gametype == NUVIE_GAME_MD)
+ {
+   load_md_background();
+ }
+
  return true;
+}
+
+
+void PortraitView::load_md_background()
+{
+  U6Lib_n file;
+  bg_data = new U6Shape();
+  std::string filename;
+  config_get_path(config,"mdscreen.lzc",filename);
+  file.open(filename,4,gametype);
+  unsigned char *temp_buf = file.get_item(1);
+  bg_data->load(temp_buf + 8);
+  free(temp_buf);
 }
 
 void PortraitView::Display(bool full_redraw)
 {
-  //FIXME: Portraits in SE/MD are different size than in U6! 79x85 76x83
-  char w=0,h=0;
-  Configuration *config=Game::get_game()->get_config();
-  int gametype;
 
-  config->value("config/GameType",gametype);
-  switch(gametype)
-  {
-    case NUVIE_GAME_U6:
-    {
-      w=56; h=64;
-      PartyView *party_view = Game::get_game()->get_view_manager()->get_party_view();
-      if(Game::get_game()->is_orig_style() && party_view)
-      {
-        screen->fill(bg_color, area.x, area.y-2, area.w, 16);
-        party_view->display_sun_moon_strip();
-        screen->update(area.x, area.y-2, area.w, 2);
-      }
-      break;
-    }
-    case NUVIE_GAME_SE: w=79; h=85; break;
-    case NUVIE_GAME_MD: w=76; h=83; break;
-  }
  if(Game::get_game()->is_new_style())
    screen->fill(bg_color, area.x, area.y, area.w, area.h);
  if(portrait_data != NULL/* && (full_redraw || update_display)*/)
   {
    update_display = false;
    if(display_doll)
-   screen->blit(area.x+72,area.y+16,portrait_data,8,w,h,w,false);
+     screen->blit(area.x+72,area.y+16,portrait_data,8,portrait_width,portrait_height,portrait_width,false);
    else
-   screen->blit(area.x+40,area.y+16,portrait_data,8,w,h,w,false);
+   {
+     if(gametype == NUVIE_GAME_MD)
+     {
+       uint16 w,h;
+       bg_data->get_size(&w, &h);
+       screen->blit(area.x,area.y-2,bg_data->get_data(),8,w,h,w,true);
+
+       screen->blit(area.x+(area.w-portrait_width)/2,area.y+6,portrait_data,8,portrait_width,portrait_height,portrait_width,true);
+     }
+     else
+       screen->blit(area.x+(area.w-portrait_width)/2,area.y+(area.h-portrait_height)/2,portrait_data,8,portrait_width,portrait_height,portrait_width,true);
+   }
    
-   display_name();
+   if(gametype == NUVIE_GAME_MD)
+     display_name(98);
+   else
+     display_name(80);
+
    screen->update(area.x, area.y, area.w, area.h);
   }
-  if(show_cursor) // FIXME: should we be using scroll's drawCursor?
+  if(show_cursor && gametype == NUVIE_GAME_U6) // FIXME: should we be using scroll's drawCursor?
    {
     screen->fill(bg_color, area.x, area.y + area.h - 8, 8, 8);
     Game::get_game()->get_scroll()->drawCursor(area.x, area.y + area.h - 8);
@@ -132,7 +161,7 @@ bool PortraitView::set_portrait(Actor *actor, const char *name)
 
  portrait_data = portrait->get_portrait_data(actor);
 
- if(actor->has_readied_objects())
+ if(gametype == NUVIE_GAME_U6 && actor->has_readied_objects())
    {
     if(portrait_data == NULL)
       doll_x_offset = 34;
@@ -167,13 +196,13 @@ bool PortraitView::set_portrait(Actor *actor, const char *name)
  return true;
 }
 
-void PortraitView::display_name()
+void PortraitView::display_name(uint16 y_offset)
 {
  const char *name;
 
  name = name_string->c_str();
 
- font->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+80);
+ font->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+y_offset);
 
  return;
 }

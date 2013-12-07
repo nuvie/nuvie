@@ -51,6 +51,9 @@ private:
    Font();
    virtual ~Font();
 
+   void setDefaultColor(uint8 color) { default_color = color; }
+   void setDefaultHighlightColor(uint8 color) { default_highlight_color = color; }
+
 //   bool drawString(Screen *screen, std::string str, uint16 x, uint16 y);
    uint16 drawString(Screen *screen, const char *str, uint16 x, uint16 y);
    uint16 drawString(Screen *screen, const char *str, uint16 x, uint16 y, uint8 color, uint8 highlight_color);

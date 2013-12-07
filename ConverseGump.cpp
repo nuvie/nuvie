@@ -188,7 +188,7 @@ unsigned char *ConverseGump::create_framed_portrait(Actor *a) //FIXME U6 specifi
 		framed_data[(i+4)*FRAME_W+2] = 57;
 		framed_data[(i+4)*FRAME_W+3] = 142;
 
-		memcpy(&framed_data[(i+4)*FRAME_W+4], &portrait_data[i*PORTRAIT_WIDTH], PORTRAIT_WIDTH);
+		memcpy(&framed_data[(i+4)*FRAME_W+4], &portrait_data[i*p->get_portrait_width()], PORTRAIT_WIDTH);
 
 		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH] = 0;
 		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH+1] = 57;

@@ -37,6 +37,7 @@
 #include "CommandBar.h"
 #include "UseCode.h"
 #include "MapWindow.h"
+#include "SunMoonStripWidget.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status actorViewButtonCallback(void *data);
@@ -50,6 +51,9 @@ static const uint8 ACTION_BUTTON = 3;
 PartyView::PartyView(Configuration *cfg) : View(cfg)
 {
  player = NULL; view_manager = NULL;
+ party_view_targeting = false;
+ row_offset = 0;
+ sun_moon_widget = NULL;
 }
 
 PartyView::~PartyView()
@@ -69,7 +73,14 @@ bool PartyView::init(void *vm, uint16 x, uint16 y, Font *f, Party *p, Player *pl
 
  view_manager = vm;
  player = pl;
- row_offset = 0;
+
+ if(U6)
+ {
+   sun_moon_widget = new SunMoonStripWidget(player, tile_manager);
+   sun_moon_widget->init(area.x,area.y);
+   AddWidget(sun_moon_widget);
+ }
+
  config->value("config/input/party_view_targeting", party_view_targeting, false);
 
  return true;
@@ -282,8 +293,8 @@ void PartyView::Display(bool full_redraw)
       fill_md_background(area);
    else
       screen->fill(bg_color, area.x, area.y, area.w, area.h);
-   if(U6)
-      display_sun_moon_strip();
+   //if(U6)
+     // display_sun_moon_strip();
 
    display_arrows();
 
@@ -305,7 +316,10 @@ void PartyView::Display(bool full_redraw)
         x_offset = 6; y_offset = 1;
       }
       if(MD)
-        y_offset = 5;
+      {
+        x_offset = 16;
+        y_offset = 6;
+      }
       actor = party->get_actor(i);
       actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
 
@@ -338,128 +352,11 @@ void PartyView::Display(bool full_redraw)
       }
       font->drawString(screen, hp_string, strlen(hp_string), area.x + x_offset + 112, area.y + y_offset + (i-row_offset) * rowH, hp_text_color, 0);
      }
-
+   DisplayChildren(full_redraw);
    screen->update(area.x, area.y, area.w, area.h);
   }
 
  return;
-}
-
-void PartyView::display_sun_moon_strip()
-{
- uint8 level = player->get_location_level();
-
- if(level == 0 || level == 5)
-   display_surface_strip();
- else
-   display_dungeon_strip();
-
- return;
-}
-
-void PartyView::display_surface_strip()
-{
- uint8 i;
- Tile *tile;
- GameClock *clock = Game::get_game()->get_clock();
- Weather *weather = Game::get_game()->get_weather();
- bool eclipse = weather->is_eclipse();
- 
- display_sun(clock->get_hour(), 0/*minutes*/, eclipse);
-
- if(!eclipse)
-	 display_moons(clock->get_day(), clock->get_hour());
-
- for(i=0;i<9;i++)
-   {
-    tile = tile_manager->get_tile(352+i);
-    screen->blit(area.x+8 +i*16,area.y,tile->data,8,16,16,16,true);
-   }
-
- return;
-}
-
-void PartyView::display_dungeon_strip()
-{
- uint8 i;
- Tile *tile;
-
- tile = tile_manager->get_tile(372);
- screen->blit(area.x+8,area.y,tile->data,8,16,16,16,true);
-
- tile = tile_manager->get_tile(373);
-
- for(i=1;i<8;i++)
-   {
-    screen->blit(area.x+8 +i*16,area.y,tile->data,8,16,16,16,true);
-   }
-
- tile = tile_manager->get_tile(374);
- screen->blit(area.x+8 +7*16+8,area.y,tile->data,8,16,16,16,true);
-
- return;
-}
-// <SB-X>
-void PartyView::display_sun_moon(Tile *tile, uint8 pos)
-{
-    struct { sint16 x, y; } skypos[15] = // sky positions relative to area
-    {
-        { 8 + 7*16 - 0*8, 6 }, // 7*16 is the first position on the right side
-        { 8 + 7*16 - 1*8, 3 },
-        { 8 + 7*16 - 2*8, 1 },
-        { 8 + 7*16 - 3*8, -1 },
-        { 8 + 7*16 - 4*8, -2 },
-        { 8 + 7*16 - 5*8, -3 },
-        { 8 + 7*16 - 6*8, -4 },
-        { 8 + 7*16 - 7*8, -4 },
-        { 8 + 7*16 - 8*8, -4 },
-        { 8 + 7*16 - 9*8, -3 },
-        { 8 + 7*16 - 10*8, -2 },
-        { 8 + 7*16 - 11*8, -1 },
-        { 8 + 7*16 - 12*8, 1 },
-        { 8 + 7*16 - 13*8, 3 },
-        { 8 + 7*16 - 14*8, 6 }
-    };
-
-    int height = 16;
-    uint16 x = area.x + skypos[pos].x, y = area.y + skypos[pos].y;
-    if (skypos[pos].y == 6) // goes through the bottom if not reduced
-      height = 10;
-    screen->blit(x,y, tile->data,8 ,16, height,16,true);
-}
-
-void PartyView::display_sun(uint8 hour, uint8 minute, bool eclipse)
-{
-	uint16 sun_tile = 0;
-	if(eclipse)
-		sun_tile = 363; //eclipsed sun
-	else if(hour == 5 || hour == 19)
-		sun_tile = 361; //orange sun
-	else if(hour > 5 && hour < 19)
-		sun_tile = 362; //yellow sun
-	else return; //no sun
-	display_sun_moon(tile_manager->get_tile(sun_tile), hour - 5);
-}
-
-void PartyView::display_moons(uint8 day, uint8 hour, uint8 minute)
-{
-    uint8 phase = 0;
-    // trammel (starts 1 hour ahead of sun)
-    phase = uint8(nearbyint((day-1)/TRAMMEL_PHASE)) % 8;
-    Tile *tileA = tile_manager->get_tile((phase == 0) ? 584 : 584 + (8-phase)); // reverse order in tilelist
-    uint8 posA = ((hour + 1) + 3*phase) % 24; // advance 3 positions each phase-change
-
-    // felucca (starts 1 hour behind sun)
-    // ...my FELUCCA_PHASE may be wrong but this method works with it...
-    sint8 phaseb = (day-1) % uint8(nearbyint(FELUCCA_PHASE*8)) - 1;
-    phase = (phaseb >= 0) ? phaseb : 0;
-    Tile *tileB = tile_manager->get_tile((phase == 0) ? 584 : 584 + (8-phase)); // reverse order in tilelist
-    uint8 posB = ((hour - 1) + 3*phase) % 24; // advance 3 positions per phase-change
-
-    if(posA >= 5 && posA <= 19)
-        display_sun_moon(tileA, posA - 5);
-    if(posB >= 5 && posB <= 19)
-        display_sun_moon(tileB, posB - 5);
 }
 
 bool PartyView::up_arrow()

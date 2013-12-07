@@ -24,45 +24,51 @@
  *
  */
 
-#include "U6Lib_n.h"
 
 class Configuration;
 class Actor;
+class U6Lib_n;
+class NuvieIO;
 
 #define PORTRAIT_WIDTH 56
 #define PORTRAIT_HEIGHT 64
 
 #define NO_PORTRAIT_FOUND 255
 
+Portrait *newPortrait(nuvie_game_t gametype, Configuration *cfg);
+
 class Portrait
 {
+protected:
  Configuration *config;
- int gametype;
 
  uint8 avatar_portrait_num;
-
- U6Lib_n portrait_a;
- U6Lib_n portrait_b;
- U6Lib_n portrait_z;
- U6Lib_n faces;
-
- //unsigned char portrait_data[0xe00]; // 56x64 pixels
-
+ uint8 width;
+ uint8 height;
  public:
 
  Portrait(Configuration *cfg);
+ virtual ~Portrait() {};
 
- bool init();
- bool load(NuvieIO *objlist);
- unsigned char *get_portrait_data(Actor *actor);
+ virtual bool init()=0;
+ virtual bool load(NuvieIO *objlist)=0;
+ virtual unsigned char *get_portrait_data(Actor *actor)=0;
+
+ uint8 get_portrait_width() { return width; }
+ uint8 get_portrait_height() { return height; }
 
  bool has_portrait(Actor *actor) { return (get_portrait_num(actor) != NO_PORTRAIT_FOUND); }
 
  uint8 get_avatar_portrait_num();
 
+ protected:
+
+ unsigned char *get_wou_portrait_data(U6Lib_n *lib, uint8 num);
+
  private:
 
- uint8 get_portrait_num(Actor *actor);
+ virtual uint8 get_portrait_num(Actor *actor)=0;
+
 };
 
 #endif /* __Portrait_h__ */

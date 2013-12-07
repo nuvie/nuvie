@@ -61,7 +61,7 @@ bool ActorView::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y,
  if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
 	View::init(x,y,f,p,tm,om);
  else
-	View::init(x-8,y-2,f,p,tm,om);
+	View::init(x,y-2,f,p,tm,om);
 
  portrait = port;
 
@@ -112,14 +112,20 @@ bool ActorView::set_party_member(uint8 party_member)
 
 void ActorView::Display(bool full_redraw)
 {
+
  if(portrait_data != NULL && (full_redraw || update_display))
   {
    update_display = false;
    if(MD)
+   {
      fill_md_background(area);
+     screen->blit(area.x+1,area.y+16,portrait_data,8,portrait->get_portrait_width(),portrait->get_portrait_height(),portrait->get_portrait_width(), true);
+   }
    else
+   {
      screen->fill(bg_color, area.x, area.y, area.w, area.h);
-   screen->blit(area.x,area.y+8,portrait_data,8,56,64,56,false);
+     screen->blit(area.x,area.y+8,portrait_data,8,portrait->get_portrait_width(),portrait->get_portrait_height(),portrait->get_portrait_width(), false);
+   }
    display_name();
    display_actor_stats();
    DisplayChildren(); //draw buttons
@@ -323,9 +329,9 @@ void ActorView::moveCursorToButton(sint8 button_num)
 void ActorView::update_cursor()
 {
 	cursor_pos.px = ((cursor_pos.x + 1) * 16) - 16;
-	cursor_pos.py = 80;
+	cursor_pos.py = party_button->area.y;
 	cursor_pos.px += area.x;
-	cursor_pos.py += area.y;
+	//cursor_pos.py += area.y;
 }
 
 void ActorView::set_show_cursor(bool state)
