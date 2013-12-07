@@ -850,11 +850,11 @@ bool ObjManager::can_store_obj(Obj *target, Obj *src)
 				case OBJ_SE_GUNPOWDER:
 					if(target->obj_n == OBJ_SE_JAR)
 					{
-// FIXME - Only holds one kind of item at a time
-//         it changes frame to white color if magnesium and potassium (frame 2, tile 645)
-//         yellow with corn, corn meal, and sulfur (frame 1, tile 644)
-//         it changes to black for the rest (frame 3, tile 646)
-//         reverts when empty (frame 0, tile 643)
+						if(target->container_count_objects() == 0 || // only allow one object
+						   target->find_in_container(src->obj_n, src->quality)) 
+							return true;
+						else
+							return false;
 					}
 					return true;
 				default:
@@ -2165,7 +2165,24 @@ bool ObjManager::moveto_container(Obj *obj, Obj *container_obj, bool stack)
 
   unlink_from_engine(obj);
   container_obj->add(obj, stack);
-
+	if(game_type == NUVIE_GAME_SE) {
+		if(container_obj->obj_n == OBJ_SE_JAR) { // frame changes depending on contents
+			switch (obj->obj_n) {
+				case OBJ_SE_CORN_MEAL:
+				case OBJ_SE_CORN:
+				case OBJ_SE_SULFUR:
+					container_obj->frame_n = 1; // yellow jar
+					break;
+				case OBJ_SE_MAGNESIUM_RIBBON:
+				case OBJ_SE_POTASSIUM_NITRATE:
+					container_obj->frame_n = 2; // white jar
+					break;
+				default:
+					container_obj->frame_n = 3; // black jar
+					break;
+			}
+		}
+	}
   return true;
 }
 

@@ -27,6 +27,7 @@
 
 #include "ObjManager.h"
 #include "Game.h"
+#include "U6objects.h"
 
 Obj::Obj() {obj_n = 0; status = 0; nuvie_status = 0; frame_n = 0; qty = 0;
             quality = 0; parent = NULL; container = NULL; x = 0; y = 0; z = 0;};
@@ -241,7 +242,10 @@ bool Obj::remove(Obj *obj)
   
   if(container->remove(obj) == false)
     return false;
-  
+  if(Game::get_game()->get_game_type() == NUVIE_GAME_SE) {
+    if(obj_n == OBJ_SE_JAR)
+      frame_n = 0; // empty jar frame
+  }
   obj->x = 0;
   obj->y = 0;
   obj->z = 0;
