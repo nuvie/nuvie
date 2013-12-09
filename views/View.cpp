@@ -49,7 +49,7 @@ bool View::init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManag
  if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
    GUI_Widget::Init(NULL, x, y, 136, 96);
  else if(Game::get_game()->get_game_type()==NUVIE_GAME_SE)
-   GUI_Widget::Init(NULL, x+15, y, 132, 113);
+   GUI_Widget::Init(NULL, x+7, y-2, 132, 113);
  else
    GUI_Widget::Init(NULL, x+8, y-4, 128, 118);
  Hide();

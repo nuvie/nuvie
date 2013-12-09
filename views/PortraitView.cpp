@@ -91,21 +91,25 @@ bool PortraitView::init(uint16 x, uint16 y, Font *f, Party *p, Player *player, T
  }
  else if(gametype == NUVIE_GAME_MD)
  {
-   load_md_background();
+   load_background("mdscreen.lzc", 1);
+ }
+ else if(gametype == NUVIE_GAME_SE)
+ {
+   load_background("bkgrnd.lzc", 0);
  }
 
  return true;
 }
 
 
-void PortraitView::load_md_background()
+void PortraitView::load_background(const char *f, uint8 lib_offset)
 {
   U6Lib_n file;
   bg_data = new U6Shape();
-  std::string filename;
-  config_get_path(config,"mdscreen.lzc",filename);
-  file.open(filename,4,gametype);
-  unsigned char *temp_buf = file.get_item(1);
+  std::string path;
+  config_get_path(config,f,path);
+  file.open(path,4,gametype);
+  unsigned char *temp_buf = file.get_item(lib_offset);
   bg_data->load(temp_buf + 8);
   free(temp_buf);
 }
@@ -118,26 +122,32 @@ void PortraitView::Display(bool full_redraw)
  if(portrait_data != NULL/* && (full_redraw || update_display)*/)
   {
    update_display = false;
-   if(display_doll)
-     screen->blit(area.x+72,area.y+16,portrait_data,8,portrait_width,portrait_height,portrait_width,false);
-   else
+   if(gametype == NUVIE_GAME_U6)
    {
-     if(gametype == NUVIE_GAME_MD)
-     {
-       uint16 w,h;
-       bg_data->get_size(&w, &h);
-       screen->blit(area.x,area.y-2,bg_data->get_data(),8,w,h,w,true);
-
-       screen->blit(area.x+(area.w-portrait_width)/2,area.y+6,portrait_data,8,portrait_width,portrait_height,portrait_width,true);
-     }
+     if(display_doll)
+       screen->blit(area.x+72,area.y+16,portrait_data,8,portrait_width,portrait_height,portrait_width,false);
      else
        screen->blit(area.x+(area.w-portrait_width)/2,area.y+(area.h-portrait_height)/2,portrait_data,8,portrait_width,portrait_height,portrait_width,true);
-   }
-   
-   if(gametype == NUVIE_GAME_MD)
-     display_name(98);
-   else
      display_name(80);
+   }
+   else if(gametype == NUVIE_GAME_MD)
+   {
+     uint16 w,h;
+     bg_data->get_size(&w, &h);
+     screen->blit(area.x,area.y-2,bg_data->get_data(),8,w,h,w,true);
+
+     screen->blit(area.x+(area.w-portrait_width)/2,area.y+6,portrait_data,8,portrait_width,portrait_height,portrait_width,true);
+     display_name(100);
+   }
+   else if(gametype == NUVIE_GAME_SE)
+   {
+     uint16 w,h;
+     bg_data->get_size(&w, &h);
+     screen->blit(area.x,area.y,bg_data->get_data(),8,w,h,w,true);
+
+     screen->blit(area.x+(area.w-portrait_width)/2+1,area.y+1,portrait_data,8,portrait_width,portrait_height,portrait_width,true);
+     display_name(98);
+   }
 
    screen->update(area.x, area.y, area.w, area.h);
   }
@@ -202,7 +212,7 @@ void PortraitView::display_name(uint16 y_offset)
 
  name = name_string->c_str();
 
- font->drawString(screen, name, area.x + (136 - strlen(name) * 8) / 2, area.y+y_offset);
+ font->drawString(screen, name, area.x + (area.w - strlen(name) * 8) / 2, area.y+y_offset);
 
  return;
 }

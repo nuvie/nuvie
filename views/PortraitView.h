@@ -77,7 +77,7 @@ class PortraitView : public View {
  void display_name(uint16 y_offset);
 
  private:
- void load_md_background();
+ void load_background(const char *filename, uint8 lib_offset);
 
 };
 

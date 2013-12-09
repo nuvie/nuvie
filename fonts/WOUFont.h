@@ -34,6 +34,7 @@ class WOUFont : public Font
 {
 private:
  unsigned char *font_data;
+ unsigned char *char_buf;
  uint16 height;
  uint8 pixel_char;
 
@@ -54,6 +55,8 @@ private:
 
    virtual uint16 getCharWidth(uint8 c);
 
+ private:
+   bool initCharBuf();
 };
 
 #endif /* __WOUFont_h__ */

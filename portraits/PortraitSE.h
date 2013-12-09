@@ -43,8 +43,10 @@ class PortraitSE : public Portrait
  bool load(NuvieIO *objlist);
  unsigned char *get_portrait_data(Actor *actor);
 
- protected:
+ private:
 
+ U6Shape *get_background_shape(Actor *actor);
+ uint8 get_background_shape_num(Actor *actor);
  uint8 get_portrait_num(Actor *actor);
 
 };

@@ -59,7 +59,7 @@ class FontManager
 
  bool initU6();
  bool initWOU(std::string filename);
- bool initMDSystemFont();
+ bool initWOUSystemFont();
  bool initConvFonts(nuvie_game_t game_type);
 };
 

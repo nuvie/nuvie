@@ -1,3 +1,9 @@
+2013-12-09  Eric Fry <efry at users.sourceforge.net> r1779
+	* Added backgrounds to SE portraits.
+	* Fixed layout on SE views.
+	* Changed SE to use the font in system.lzc
+	* Fixed buffer overflow bug in WOUFont class.
+
 2013-12-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1778
 	* Restrict SE jar contents to one object and change its frame when adding or
 	  removing an object.

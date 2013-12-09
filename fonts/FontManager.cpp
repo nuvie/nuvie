@@ -82,10 +82,7 @@ bool FontManager::init(nuvie_game_t game_type)
 	if(game_type == NUVIE_GAME_U6)
 		return initU6();
 
-	if(game_type == NUVIE_GAME_SE)
-		return initWOU("savage.fnt");
-
-	return initMDSystemFont(); //initWOU("fonts.lzc"); //martian
+	return initWOUSystemFont();
 }
 
 bool FontManager::initU6()
@@ -144,7 +141,7 @@ bool FontManager::initWOU(std::string filename)
 	 return true;
 }
 
-bool FontManager::initMDSystemFont()
+bool FontManager::initWOUSystemFont()
 {
   U6Font *font;
   std::string path;

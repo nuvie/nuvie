@@ -40,6 +40,7 @@
 WOUFont::WOUFont()
 {
  font_data = NULL;
+ char_buf = NULL;
  num_chars = 0;
  offset = 0;
  height = 0;
@@ -52,6 +53,9 @@ WOUFont::~WOUFont()
 {
  if(font_data != NULL)
    free(font_data);
+
+ if(char_buf != NULL)
+   free(char_buf);
 }
 
 bool WOUFont::init(const char *filename)
@@ -69,7 +73,7 @@ bool WOUFont::init(const char *filename)
 		default_color = FONT_COLOR_WOU_NORMAL;
 		default_highlight_color = FONT_COLOR_WOU_HIGHLIGHT;
 	}
- return true;
+ return initCharBuf();
 }
 
 bool WOUFont::initWithBuffer(unsigned char *buffer, uint32 buffer_len)
@@ -84,7 +88,26 @@ bool WOUFont::initWithBuffer(unsigned char *buffer, uint32 buffer_len)
 		default_color = FONT_COLOR_WOU_NORMAL;
 		default_highlight_color = FONT_COLOR_WOU_HIGHLIGHT;
 	}
- return true;
+
+ return initCharBuf();
+}
+
+bool WOUFont::initCharBuf()
+{
+  uint8 max_width = 0;
+  for(uint16 i=0;i<num_chars;i++)
+  {
+    uint8 width = font_data[0x4 + i];
+    if(width > max_width)
+    {
+      max_width = width;
+    }
+  }
+  char_buf = (unsigned char *)malloc(max_width*height);
+  if(char_buf==NULL)
+    return false;
+
+  return true;
 }
 
 uint16 WOUFont::getCharWidth(uint8 c)
@@ -99,26 +122,25 @@ uint16 WOUFont::getCharWidth(uint8 c)
 uint16 WOUFont::drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                     uint8 color)
 {
-	unsigned char buf[121]; // 11x11
 	unsigned char *pixels;
 	uint16 width;
 
 	if(font_data == NULL)
 		return false;
 
-	memset(buf,0xff,121);
-
 	pixels = font_data + font_data[0x204 + char_num] * 256 + font_data[0x104 + char_num];
 	width = font_data[0x4 + char_num];
+
+  memset(char_buf,0xff,width*height);
 
 	//pixels += y * pitch + x;
 	for(uint8 i=0;i<(width*height);i++)
 	{
 		if(pixels[i] == pixel_char)
-			buf[i] = color;
+			char_buf[i] = color;
 	}
 
-	screen->blit(x,y,buf,8,width,height,width,true,NULL);
+	screen->blit(x,y,char_buf,8,width,height,width,true,NULL);
 	return width;
 }
 
