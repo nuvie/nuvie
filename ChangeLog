@@ -1,3 +1,8 @@
+2013-12-11  Eric Fry <efry at users.sourceforge.net> r1781
+	* Fixed avatar's gender when showing portrait in MD
+	* Added support for MD party doll graphics
+	* Load correct time/date for MD/SE games.
+
 2013-12-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1780
 	* Fix WoU inventory widget icon selection's x offset
 

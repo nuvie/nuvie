@@ -24,6 +24,9 @@
 // FIX need to subclass this class for U6, MD & SE
 #include "Configuration.h"
 #include "nuvieDefs.h"
+#include "U6misc.h"
+#include "U6Lib_n.h"
+#include "U6Shape.h"
 
 #include "MsgScroll.h"
 #include "Event.h"
@@ -98,6 +101,8 @@ DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(N
  
  bg_color = Game::get_game()->get_palette()->get_bg_color();
  need_to_free_tiles = false;
+
+ md_doll_shp = NULL;
 }
 
 DollWidget::~DollWidget()
@@ -109,6 +114,9 @@ DollWidget::~DollWidget()
 		if(empty_tile)
 			delete empty_tile;
 	}
+
+	if(md_doll_shp)
+	  delete md_doll_shp;
 }
 
 bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, bool override_style)
@@ -153,9 +161,45 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
 void DollWidget::set_actor(Actor *a)
 {
  actor = a;
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_MD)
+ {
+   load_md_doll_shp();
+ }
  Redraw();
 }
 
+void DollWidget::load_md_doll_shp()
+{
+  if(actor==NULL)
+  {
+    return;
+  }
+
+  if(md_doll_shp)
+    delete md_doll_shp;
+
+  md_doll_shp = new U6Shape();
+  U6Lib_n file;
+  std::string filename;
+  config_get_path(config,"mdinv.lzc",filename);
+  file.open(filename,4,NUVIE_GAME_MD);
+  uint8 num = actor->get_actor_num()+1;
+  if(actor->is_avatar() && Game::get_game()->get_player()->get_gender() == 0)
+  {
+    num--;
+  }
+  unsigned char *temp_buf = file.get_item(num);
+  if(temp_buf)
+  {
+    md_doll_shp->load(temp_buf + 8);
+    free(temp_buf);
+  }
+  else
+  {
+    delete md_doll_shp;
+    md_doll_shp = NULL;
+  }
+}
 
 SDL_Rect *DollWidget::get_item_hit_rect(uint8 location)
 {
@@ -206,6 +250,12 @@ inline void DollWidget::display_doll()
 			 tile = tile_manager->get_tile(tilenum+i*2+j);
 			 screen->blit(area.x+16+j*16,area.y+16+i*16,tile->data,8,16,16,16,true);
 		 }
+	 }
+	 if(md_doll_shp)
+	 {
+	   uint16 w,h;
+	   md_doll_shp->get_size(&w, &h);
+	   screen->blit(area.x+20,area.y+18,md_doll_shp->get_data(),8,w,h,w,true);
 	 }
  }
  display_readied_object(ACTOR_NECK, area.x, (area.y+8) + 0 * 16, actor, empty_tile);

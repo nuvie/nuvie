@@ -33,6 +33,7 @@
 #include "Actor.h"
 #include "PortraitMD.h"
 #include "U6misc.h"
+#include "Objlist.h"
 
 bool PortraitMD::init()
 {
@@ -55,8 +56,7 @@ bool PortraitMD::init()
 
 bool PortraitMD::load(NuvieIO *objlist)
 {
-  // U6 only?
- objlist->seek(0x1c72);
+ objlist->seek(OBJLIST_OFFSET_MD_GENDER);
 
  avatar_portrait_num = objlist->read1(); //read in the avatar portrait number from objlist.
  if(avatar_portrait_num > 0)
@@ -72,7 +72,14 @@ uint8 PortraitMD::get_portrait_num(Actor *actor)
 	if(actor == NULL)
 		return NO_PORTRAIT_FOUND;
 
-	num = actor->get_actor_num();
+	if(actor->is_avatar())
+	{
+	  num = avatar_portrait_num;
+	}
+	else
+	{
+	  num = actor->get_actor_num();
+	}
 
 	// FIXME select right avatar portrait, correct offset for MD (SE only has male)
 	num++;

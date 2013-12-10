@@ -38,6 +38,8 @@ View::View(Configuration *cfg) : GUI_Widget(NULL, 0, 0, 0, 0)
  left_button = NULL; font = NULL; tile_manager = NULL;
  right_button = NULL; obj_manager = NULL; party = NULL;
  party_button = NULL; inventory_button = NULL; actor_button = NULL;
+ bg_color = 0;
+ cur_party_member = 0;
 }
 
 View::~View()
@@ -57,7 +59,6 @@ bool View::init(uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManag
  party = p;
  tile_manager = tm;
  obj_manager = om;
- cur_party_member = 0;
  
  set_party_member(0);
 

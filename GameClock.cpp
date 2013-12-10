@@ -66,8 +66,14 @@ bool GameClock::load(NuvieIO *objlist)
 {
  init();
 
- objlist->seek(OBJLIST_OFFSET_U6_GAMETIME); // start of time data
-
+ if(game_type == NUVIE_GAME_U6)
+ {
+   objlist->seek(OBJLIST_OFFSET_U6_GAMETIME); // start of time data
+ }
+ else
+ {
+   objlist->seek(OBJLIST_OFFSET_WOU_GAMETIME); // start of time data
+ }
  minute = objlist->read1();
  hour = objlist->read1();
  day = objlist->read1();

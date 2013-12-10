@@ -31,6 +31,7 @@
 
 class Configuration;
 class Actor;
+class U6Shape;
 
 class DollWidget : public GUI_Widget {
 
@@ -46,6 +47,8 @@ class DollWidget : public GUI_Widget {
  
  bool need_to_free_tiles;
  Tile *empty_tile, *blocked_tile;
+
+ U6Shape *md_doll_shp;
 
  public:
  DollWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
@@ -78,6 +81,10 @@ class DollWidget : public GUI_Widget {
 
  void display_doll();
  void display_readied_object(uint8 location, uint16 x, uint16 y, Actor *actor, Tile *empty_tile);
+
+ private:
+
+ void load_md_doll_shp();
 };
 
 #endif /* __DollWidget_h__ */

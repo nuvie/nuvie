@@ -49,8 +49,13 @@
 
 //MD specific offsets
 
+
 #define OBJLIST_OFFSET_MD_COMMAND_BAR  0x1d26
 #define OBJLIST_OFFSET_MD_GENDER       0x1d27
+
+//WOU specific offsets (MD and SE)
+
+#define OBJLIST_OFFSET_WOU_GAMETIME     0x1cf3
 
 #define OBJLIST_PARTY_MODE 0xff
 
