@@ -78,11 +78,15 @@ bool InventoryWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjMan
 
  if(Game::get_game()->get_game_type()==NUVIE_GAME_U6)
  {
+	icon_x = 32;
 	obj_font_color = 0x48;
 	objlist_offset_x = 8;
  }
  else
+ {
+	icon_x = 23;
 	objlist_offset_x = 0;
+ }
  objlist_offset_y = 16;
 
  if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
@@ -166,15 +170,12 @@ void InventoryWidget::Display(bool full_redraw)
 void InventoryWidget::display_inventory_container()
 {
  Tile *tile;
- int x_off = 23;
- if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-	x_off = 32;
  if(!container_obj) //display actor
    tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
  else // display container object
    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(container_obj->obj_n)+container_obj->frame_n);
 
- screen->blit(area.x+x_off,area.y,tile->data,8,16,16,16,true);
+ screen->blit(area.x+icon_x,area.y,tile->data,8,16,16,16,true);
 
  return;
 }
@@ -408,8 +409,8 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
    {
     x -= area.x;
     y -= area.y;
-    if(x >= 32 && x <= 48 && // hit top icon either actor or container
-       y >= 0 && y <= 16)
+    if(x >= icon_x && x <= icon_x + 15 && // hit top icon either actor or container
+       y >= 0 && y <= 15)
       {
 		Event *event = Game::get_game()->get_event();
 

@@ -50,7 +50,7 @@ protected:
  Obj *selected_obj, *target_obj, *ready_obj;
  Obj *target_cont;
  uint16 row_offset;
-
+ uint8 icon_x;
  uint8 bg_color;
  uint8 objlist_offset_x, objlist_offset_y;
  uint8 obj_font_color;
