@@ -25,6 +25,7 @@
 
 MDActor::MDActor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
+  ethereal = false;
 }
 
 MDActor::~MDActor()
@@ -42,4 +43,15 @@ bool MDActor::will_not_talk()
 	if(worktype == 0xa0)
 		return true;
 	return false;
+}
+
+bool MDActor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
+{
+ if(ethereal)
+   return true;
+
+ if(Actor::check_move(new_x, new_y, new_z, flags) == false)
+    return false;
+
+ return map->is_passable(new_x,new_y,new_z);
 }

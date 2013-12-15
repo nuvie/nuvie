@@ -1,11 +1,11 @@
-#ifndef __SunMoonStripWidget_h__
-#define __SunMoonStripWidget_h__
+#ifndef __SunMoonRibbon_h__
+#define __SunMoonRibbon_h__
 
 /*
- *  SunMoonStripWidget.h
+ *  SunMoonRibbon.h
  *  Nuvie
  *
- *  Created by Eric Fry on Fri Nov 29 2013.
+ *  Created by Eric Fry on Wed Dec 11 2013.
  *  Copyright (c) 2013. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -24,33 +24,39 @@
  *
  */
 
-#include "GUI_widget.h"
-#include "TileManager.h"
+#include "SunMoonStripWidget.h"
 
-class Player;
 
-class SunMoonStripWidget : public GUI_Widget {
+class SunMoonRibbon : public SunMoonStripWidget {
 
-protected:
- TileManager *tile_manager;
- Player *player;
+private:
+  SDL_Surface *bg_data;
+  Weather *weather;
+  bool retracted;
+  uint16 current_time;
 
  public:
- SunMoonStripWidget(Player *p, TileManager *tm);
- ~SunMoonStripWidget();
+ SunMoonRibbon(Player *p, Weather *w, TileManager *tm);
+ ~SunMoonRibbon();
 
- void init(sint16 x, sint16 y);
+ void init(Screen *screen);
  void Display(bool full_redraw);
 
-protected:
- virtual void display_sun_moon(Tile *tile, uint8 pos);
- void display_sun(uint8 hour, uint8 minute, bool eclipse);
- void display_moons(uint8 day, uint8 hour, uint8 minute=0);
+ GUI_status MouseDown(int x, int y, int button);
+
+
+ void extend() { retracted = false; }
+ void retract() { retracted = true; }
+
+ protected:
+ void display_sun_moon(Tile *tile, uint8 pos);
 
  private:
+ void loadBgImage(uint8 num);
  void display_surface_strip();
  void display_dungeon_strip();
+ void update_hour(uint16 time);
 };
 
-#endif /* __SunMoonStripWidget_h__ */
+#endif /* __SunMoonRibbon_h__ */
 

@@ -348,6 +348,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, magic, clock, converse, view_manager, usecode, gui, keybinder);
    magic->init(event);
+
    
    if(save_manager->load_save() == false)
    {

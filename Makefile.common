@@ -350,6 +350,8 @@ nuvie_SOURCES = \
 	views/SpellViewGump.h \
 	views/SignViewGump.cpp \
 	views/SignViewGump.h \
+	views/SunMoonRibbon.cpp \
+	views/SunMoonRibbon.h \
 	views/SunMoonStripWidget.cpp \
 	views/SunMoonStripWidget.h \
 	views/ContainerViewGump.cpp \

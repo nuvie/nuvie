@@ -42,6 +42,7 @@
 #include "PartyView.h"
 #include "SpellView.h"
 #include "SpellViewGump.h"
+#include "SunMoonRibbon.h"
 #include "MapWindow.h"
 #include "MapEditorView.h"
 #include "MsgScroll.h"
@@ -57,6 +58,7 @@ ViewManager::ViewManager(Configuration *cfg)
  portrait = NULL; actor_view = NULL; inventory_view = NULL;
  portrait_view = NULL; party_view = NULL; spell_view = NULL;
  doll_next_party_member = 0;
+ ribbon = NULL;
 }
 
 ViewManager::~ViewManager()
@@ -111,6 +113,13 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager);
 
 	 spell_view = new SpellViewGump(config);
+	 if(game_type==NUVIE_GAME_U6)
+	 {
+	   ribbon = new SunMoonRibbon(player, Game::get_game()->get_weather(), tile_manager);
+	   ribbon->init(gui->get_screen());
+	   gui->AddWidget(ribbon);
+	   ribbon->Show();
+	 }
  }
 
  uint16 spell_x_offset = 168+x_off;
@@ -461,6 +470,10 @@ void ViewManager::add_gump(DraggableView *gump)
 {
 	gumps.push_back(gump);
 	Game::get_game()->get_map_window()->set_walking(false);
+	if(ribbon)
+	{
+	  ribbon->extend();
+	}
 }
 
 void ViewManager::close_gump(DraggableView *gump)
@@ -472,6 +485,11 @@ void ViewManager::close_gump(DraggableView *gump)
 	gump->close_view();
 	gump->Delete();
 	//gui->removeWidget((GUI_Widget *)gump);
+
+	if(gumps.empty() && ribbon != NULL)
+	{
+	  ribbon->retract();
+	}
 }
 
 void ViewManager::close_all_gumps()

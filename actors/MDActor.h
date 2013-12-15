@@ -28,6 +28,7 @@
 
 class MDActor: public Actor
 {
+  bool ethereal;
  protected:
 
  public:
@@ -38,6 +39,10 @@ class MDActor: public Actor
  bool init();
  bool will_not_talk();
  uint8 get_maxhp() { return(((level * 24 + strength * 2) < 255) ? (level * 24 + strength * 2) : 255); }
+
+ void set_ethereal(bool val) { ethereal = val; }
+
+ bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
 };
 
 #endif /* __MDActor_h__ */

@@ -46,6 +46,7 @@ class SpellView;
 class ContainerViewGump;
 class DollViewGump;
 class DraggableView;
+class SunMoonRibbon;
 
 using std::list;
 
@@ -75,6 +76,8 @@ class ViewManager
  std::list<DraggableView *> gumps;
 
  uint8 doll_next_party_member;
+
+ SunMoonRibbon *ribbon;
 
  public:
 
