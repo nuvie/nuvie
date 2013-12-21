@@ -226,7 +226,8 @@ class Actor
  uint8 status_flags;
  uint8 talk_flags;
  uint8 movement_flags; //0x19f1
- 
+
+ bool ethereal; 
  bool can_move;
  bool temp_actor;
  bool met_player;
@@ -395,7 +396,7 @@ class Actor
  virtual bool can_be_moved();
  virtual bool can_be_passed(Actor *other);
  virtual void update();
- virtual void set_in_party(bool state);
+ void set_in_party(bool state);
  void set_pathfinder(ActorPathFinder *new_pf, Path *path_type=0);
  ActorPathFinder *get_pathfinder() { return(pathfinder); }
  void delete_pathfinder();
@@ -481,7 +482,7 @@ class Actor
  
  virtual const CombatType *get_hand_combat_type() { return NULL; }
 
- virtual void set_ethereal(bool ethereal) { return; }
+ virtual void set_ethereal(bool val) { ethereal = val; }
  virtual void print();
  virtual void handle_lightsource(uint8 hour) { return; }
  virtual const char *get_worktype_string(uint32 wt) { return NULL; }

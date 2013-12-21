@@ -57,6 +57,7 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
 
  direction = 0;
  walk_frame = 0;
+ ethereal = false;
  can_move = true;
  temp_actor = false;
  visible_flag = true;
@@ -168,6 +169,8 @@ bool Actor::is_at_position(Obj *obj)
 
 bool Actor::is_passable()
 {
+ if(ethereal)
+	return true;
  Tile *tile;
 
  tile = obj_manager->get_obj_tile(obj_n,frame_n);
@@ -610,6 +613,8 @@ void Actor::delete_pathfinder()
 
 void Actor::set_in_party(bool state)
 {
+	if(Game::get_game()->is_ethereal())
+		set_ethereal(state);
     //in_party = state;
     delete_pathfinder();
     if(state == true) // joined

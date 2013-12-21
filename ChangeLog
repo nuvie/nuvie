@@ -1,3 +1,7 @@
+2013-12-21  Malignant Manor <malignantmanor@users.sourceforge.net> r7824
+	* Make ethereal part of the base actor class.
+	* Fix MD ethereal mode not allowing you to walk through actors.
+
 2013-12-21  Malignant Manor <malignantmanor@users.sourceforge.net> r7823
 	* Remove actor parameter from Player::check_moveRelative since it is a
 	  private pointer

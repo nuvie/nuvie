@@ -1644,8 +1644,6 @@ bool U6Actor::can_twitch()
 bool U6Actor::can_be_passed(Actor *other)
 {
     U6Actor *other_ = static_cast<U6Actor *>(other);
-    if(current_movetype == MOVETYPE_U6_ETHEREAL || other_->current_movetype == MOVETYPE_U6_ETHEREAL)
-        return true;
     return(Actor::can_be_passed(other_) && other_->current_movetype != current_movetype);
 }
 
@@ -1810,11 +1808,4 @@ void U6Actor::handle_lightsource(uint8 hour)
 				usecode->torch(torch2, USE_EVENT_USE);
 		}
 	}
-}
-
-void U6Actor::set_in_party(bool state)
-{
-	if(Game::get_game()->is_ethereal())
-		set_ethereal(state);
-	Actor::set_in_party(state);
 }

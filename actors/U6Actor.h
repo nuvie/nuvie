@@ -83,7 +83,6 @@ class U6Actor: public Actor
  bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  void twitch();
  void die(bool create_body=true);
- void set_in_party(bool state);
  void set_poisoned(bool poisoned);
  void set_paralyzed(bool paralyzed);
  void set_protected(bool val);
@@ -91,7 +90,7 @@ class U6Actor: public Actor
  void set_corpser_flag(bool val);
  void set_cursed(bool val);
  void set_asleep(bool val);
- void set_ethereal(bool ethereal) { current_movetype = ethereal ? MOVETYPE_U6_ETHEREAL: actor_type->movetype; }
+ void set_ethereal(bool val) { current_movetype = val ? MOVETYPE_U6_ETHEREAL: actor_type->movetype; ethereal = val; }
 
  uint8 get_object_readiable_location(Obj *obj);
  const CombatType *get_object_combat_type(uint16 obj_n);

@@ -25,7 +25,6 @@
 
 MDActor::MDActor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
-  ethereal = false;
 }
 
 MDActor::~MDActor()
