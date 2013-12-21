@@ -283,7 +283,7 @@ const char *Player::get_gender_title()
    return "milady";
 }
 
-bool Player::check_moveRelative(Actor *actor, sint16 rel_x, sint16 rel_y)
+bool Player::check_moveRelative(sint16 rel_x, sint16 rel_y)
 {
 	if(!actor->moveRelative(rel_x, rel_y, ACTOR_IGNORE_DANGER)) { /**MOVE**/
 		ActorError *ret = actor->get_error();
@@ -387,13 +387,13 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 
     if(can_move)
     {
-		if(!check_moveRelative(actor, rel_x, rel_y)) {
+		if(!check_moveRelative(rel_x, rel_y)) {
 				can_move = false;
 				if(mouse_movement && rel_x != 0 && rel_y != 0 && can_change_rel_dir) {
-					if(check_moveRelative(actor, rel_x, 0)) { // try x movement only
+					if(check_moveRelative(rel_x, 0)) { // try x movement only
 						rel_y = 0;
 						can_move = true;
-					} else if(check_moveRelative(actor, 0, rel_y)) { // try y movement only
+					} else if(check_moveRelative(0, rel_y)) { // try y movement only
 						rel_x = 0;
 						can_move = true;
 					}
@@ -572,6 +572,9 @@ bool Player::set_solo_mode(Actor *new_actor)
  */
 uint32 Player::get_walk_delay()
 {
+    if(game_type != NUVIE_GAME_U6)
+        return(125); // normal movement about 8 spaces per second
+
     if(actor->obj_n == OBJ_U6_BALLOON_BASKET)
         return(10); // 10x normal (wow!)
     else if(actor->obj_n == OBJ_U6_SHIP)

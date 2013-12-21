@@ -1,3 +1,8 @@
+2013-12-21  Malignant Manor <malignantmanor@users.sourceforge.net> r7823
+	* Remove actor parameter from Player::check_moveRelative since it is a
+	  private pointer
+	* Have Player::get_walk_delay() only check for object number for U6
+
 2013-12-15  Eric Fry <efry at users.sourceforge.net> r1782
 	* Added Daniel's new U6 celestial ribbon to the new UI.
 	  It shows the sun/moon locations and the current wind direction.
