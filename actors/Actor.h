@@ -376,6 +376,7 @@ class Actor
  void face_actor(Actor *a);
 
  void set_talk_flags(uint8 newflags) { talk_flags = newflags; }
+ uint8 get_flag(uint8 bitflag);
  void set_flag(uint8 bitflag);
  void clear_flag(uint8 bitflag);
  void show();

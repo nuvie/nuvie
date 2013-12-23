@@ -65,6 +65,7 @@ struct ScriptObjRef
    ScriptObjRef()
    {
       refcount = 0;
+      key = -1;
    };
 };
 
@@ -90,7 +91,7 @@ void nscript_new_obj_var(lua_State *L, Obj *obj);
 
 inline bool nscript_obj_init_from_obj(lua_State *L, Obj *dst_obj);
 inline bool nscript_obj_init_from_args(lua_State *L, int nargs, Obj *s_obj);
-static int nscript_obj_new(lua_State *L);
+static int nscript_obj_newobj(lua_State *L);
 int nscript_obj_new(lua_State *L, Obj *obj);
 static int nscript_obj_gc(lua_State *L);
 static int nscript_obj_get(lua_State *L);
@@ -105,7 +106,7 @@ static int nscript_container_remove_obj(lua_State *L);
 
 static const struct luaL_Reg nscript_objlib_f[] =
 {
-   { "new", nscript_obj_new },
+   { "new", nscript_obj_newobj },
    { "moveToMap", nscript_obj_movetomap },
    { "moveToInv", nscript_obj_movetoinv },
    { "moveToCont", nscript_obj_movetocont },
@@ -361,13 +362,14 @@ uint8 ScriptThread::resume(int narg)
    const char *s;
    int ret = lua_resume(L, narg);
 
+   state = NUVIE_SCRIPT_ERROR;
+
    if(ret == 0)
    {
       lua_gc(L, LUA_GCCOLLECT, 0); //FIXME! How often should we collect the garbage?
-      return NUVIE_SCRIPT_FINISHED;
+      state = NUVIE_SCRIPT_FINISHED;
    }
-
-   if(ret == LUA_YIELD)
+   else if(ret == LUA_YIELD)
    {
       if(lua_gettop(L) >= 1)
       {
@@ -375,45 +377,54 @@ uint8 ScriptThread::resume(int narg)
          if(s)
          {
             if(!strcmp(s, "target"))
-               return NUVIE_SCRIPT_GET_TARGET;
-
-            if(!strcmp(s, "dir"))
-               return NUVIE_SCRIPT_GET_DIRECTION;
-
-            if(!strcmp(s, "spell"))
-               return NUVIE_SCRIPT_GET_SPELL;
-
-            if(!strcmp(s, "inv_obj"))
+            {
+               state = NUVIE_SCRIPT_GET_TARGET;
+            }
+            else if(!strcmp(s, "dir"))
+            {
+               state = NUVIE_SCRIPT_GET_DIRECTION;
+            }
+            else if(!strcmp(s, "spell"))
+            {
+               state = NUVIE_SCRIPT_GET_SPELL;
+            }
+            else if(!strcmp(s, "inv_obj"))
             {
             	Actor *actor = nscript_get_actor_from_args(L, 2);
             	data = actor->get_actor_num();
-            	return NUVIE_SCRIPT_GET_INV_OBJ;
+            	state = NUVIE_SCRIPT_GET_INV_OBJ;
             }
-
-            if(!strcmp(s, "obj"))
-                return NUVIE_SCRIPT_GET_OBJ;
-
-            if(!strcmp(s, "talk"))
+            else if(!strcmp(s, "obj"))
+            {
+                state = NUVIE_SCRIPT_GET_OBJ;
+            }
+            else if(!strcmp(s, "player_obj"))
+            {
+                state = NUVIE_SCRIPT_GET_PLAYER_OBJ;
+            }
+            else if(!strcmp(s, "talk"))
             {
             	Actor *actor = nscript_get_actor_from_args(L, 2);
             	data = actor->get_actor_num();
             	return NUVIE_SCRIPT_TALK_TO_ACTOR;
             }
-
-            if(!strcmp(s, "adv_game_time"))
+            else if(!strcmp(s, "adv_game_time"))
             {
                if(lua_gettop(L) < 2)
                   data = 0;
                data = lua_tointeger(L, 2);
-               return NUVIE_SCRIPT_ADVANCE_GAME_TIME;
+               state = NUVIE_SCRIPT_ADVANCE_GAME_TIME;
             }
          }
       }
    }
 
-   DEBUG(0, LEVEL_ERROR, "%s\n", lua_tostring(L, lua_gettop(L)));
+   if(state == NUVIE_SCRIPT_ERROR)
+   {
+     DEBUG(0, LEVEL_ERROR, "%s\n", lua_tostring(L, lua_gettop(L)));
+   }
 
-   return NUVIE_SCRIPT_ERROR;
+   return state;
 }
 
 
@@ -929,6 +940,40 @@ bool Script::call_use_keg(Obj *obj)
    return true;
 }
 
+bool Script::call_has_usecode(Obj *obj, UseCodeEvent usecode_type)
+{
+  lua_getglobal(L, "has_usecode");
+
+  nscript_obj_new(L, obj);
+  lua_pushnumber(L, (lua_Number)usecode_type);
+
+  if(call_function("has_usecode", 2, 1) == false)
+    return false;
+
+  return lua_toboolean(L,-1);
+}
+
+ScriptThread *Script::call_use_obj(Obj *obj, Actor *actor)
+{
+  ScriptThread *t = NULL;
+  lua_State *s;
+
+  s = lua_newthread(L);
+
+  lua_getglobal(s, "use_obj");
+
+  nscript_obj_new(s, obj);
+  nscript_new_actor_var(s, actor->get_actor_num());
+
+  //FIXME wrap stacktrace dumping logic here as per call_function method.
+
+  t = new ScriptThread(s, 2);
+  //if(nscript_call_function(L, "use_obj", 2, 0, true) == false)
+  //  return false;
+
+  return t;
+}
+
 bool Script::call_magic_get_spell_list(Spell **spell_list)
 {
 	lua_getglobal(L, "magic_get_spell_list");
@@ -1192,7 +1237,7 @@ void nscript_new_obj_var(lua_State *L, Obj *obj)
     nscript_inc_obj_ref_count(obj);
 }
 
-static int nscript_obj_new(lua_State *L)
+static int nscript_obj_newobj(lua_State *L)
 {
    return nscript_obj_new(L, NULL);
 }

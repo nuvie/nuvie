@@ -1466,6 +1466,14 @@ void Actor::set_worktype(uint8 new_worktype, bool init)
  return ;
 }
 
+uint8 Actor::get_flag(uint8 bitflag)
+{
+  if(bitflag > 7)
+    return 0;
+
+  return (talk_flags >> bitflag) & 1;
+}
+
 /* Set NPC flag `bitflag' to 1.
  */
 void Actor::set_flag(uint8 bitflag)

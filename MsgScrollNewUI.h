@@ -68,6 +68,8 @@ class MsgScrollNewUI: public MsgScroll
  uint16 callback(uint16 msg, CallBack *caller, void *data);
  bool can_displayed_prompt() { return false; }
 
+ bool can_fit_token_on_msgline(MsgLine *msg_line, MsgText *token);
+
  void Display(bool full_redraw);
 
  void display_prompt() {}

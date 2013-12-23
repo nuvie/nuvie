@@ -998,7 +998,7 @@ bool Event::use(Obj *obj)
         player->subtract_movement_points(5);
     }
 
-    if(mode == USE_MODE) // check mode because UseCode may have changed it
+    if(mode == USE_MODE && usecode->get_running_script() == NULL) // check mode because UseCode may have changed it
         endAction(display_prompt);
     return true;
 }
@@ -2994,24 +2994,75 @@ void Event::doAction()
     }
     else if(mode == USE_MODE)
     {
-    	if(input.type == EVENTINPUT_OBJECT)
-            use(input.obj);
-    	else if(input.type == EVENTINPUT_MAPCOORD_DIR)
-    	{
-            if(input.actor && input.actor->is_visible() && usecode->has_usecode(input.actor))
+
+      if(usecode)
+      {
+        ScriptThread *usecode_script = usecode->get_running_script();
+        if(usecode_script != NULL)
+        {
+          uint8 script_state = usecode_script->get_state();
+          switch(script_state)
+          {
+          case NUVIE_SCRIPT_GET_DIRECTION :
+            if(input.type == EVENTINPUT_MAPCOORD_DIR)
             {
-                MapCoord loc = game->get_player()->get_actor()->get_location();
-                use(input.actor, loc.x + input.loc->sx, loc.y + input.loc->sy);
+              usecode_script->resume_with_direction(get_direction_code(input.loc->sx, input.loc->sy));
+            }
+            break;
+          case NUVIE_SCRIPT_GET_OBJ :
+            usecode_script->resume_with_obj(input.obj);
+            if(game->is_orig_style())
+            {
+              view_manager->get_inventory_view()->release_focus();
+              view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
             }
             else
-            	use(input.loc->sx,input.loc->sy);
+              view_manager->close_all_gumps();
+            break;
+          }
         }
         else
         {
+          if(game->is_new_style())
+            view_manager->close_all_gumps();
+
+          if(input.type == EVENTINPUT_OBJECT)
+            use(input.obj);
+          else if(input.type == EVENTINPUT_MAPCOORD_DIR)
+          {
+            if(input.actor && input.actor->is_visible() && usecode->has_usecode(input.actor))
+            {
+              MapCoord loc = game->get_player()->get_actor()->get_location();
+              use(input.actor, loc.x + input.loc->sx, loc.y + input.loc->sy);
+            }
+            else
+              use(input.loc->sx,input.loc->sy);
+          }
+          else
+          {
             scroll->display_string("what?\n");
             endAction(true);
+          }
         }
-        assert(mode != USE_MODE);
+
+        usecode_script = usecode->get_running_script();
+        if(usecode_script != NULL)
+        {
+          uint8 script_state = usecode_script->get_state();
+          switch(script_state)
+          {
+          case NUVIE_SCRIPT_GET_DIRECTION : get_direction(""); break;
+          case NUVIE_SCRIPT_GET_OBJ : get_target(""); break;
+          }
+        }
+
+        if(mode == USE_MODE && (usecode_script == NULL || usecode_script->is_running() == false))
+        {
+          endAction(true);
+        }
+      }
+
+       // assert(mode != USE_MODE);
     }
     else if(mode == GET_MODE)
     {

@@ -994,6 +994,9 @@ bool ConverseInterpret::evop(stack<converse_typed_value> &i)
         case U6OP_FLAG: // 0xab (npc, flag)
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
+#ifdef CONVERSE_DEBUG
+    DEBUG(0, LEVEL_DEBUGGING, "v[0] %d v[1] %d\n", v[0], v[1]);
+#endif
             if(v[1] <= 7)
             {
                 cnpc = converse->actors->get_actor(npc_num(v[0]));

@@ -151,3 +151,5 @@ else
 	end
 end
 
+-- init usecode
+usecode_init = nuvie_load("md/usecode.lua"); usecode_init();

@@ -1,8 +1,22 @@
-2013-12-21  Malignant Manor <malignantmanor@users.sourceforge.net> r7824
+2013-12-23  Eric Fry <efry at users.sourceforge.net> r1785
+	* Added usecode lua script logic. Started work on MD usecode script. The usecode
+	  class now calls has_usecode() and use_obj() lua scripts.
+	* Added MD use prybar script so the player can leave the capsule.
+	* Added a state variable  to the ScriptThread class so it can report on the lua
+	  yield state.
+	* Added Actor.get_talk_flag() script function
+	* Added Actor.clear_talk_flag() script function
+	* Improved text wrapping on new MsgScrollUI. It now wraps right up to the widget
+	  border.
+	* Reduced the default width of the new MsgScrollUI so it doesn't obscure the player.
+	* Added correct objlist offset for MD talk flags.
+	* Added Actor::get_flag() which returns actor talk flags.
+
+2013-12-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1784
 	* Make ethereal part of the base actor class.
 	* Fix MD ethereal mode not allowing you to walk through actors.
 
-2013-12-21  Malignant Manor <malignantmanor@users.sourceforge.net> r7823
+2013-12-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1783
 	* Remove actor parameter from Player::check_moveRelative since it is a
 	  private pointer
 	* Have Player::get_walk_delay() only check for object number for U6

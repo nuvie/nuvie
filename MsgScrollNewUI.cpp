@@ -77,7 +77,7 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
  cfg->value(new_scroll_cfg + "/border_color", c, border_color);
  border_color = clamp_max(c, 255);
 
- cfg->value(new_scroll_cfg + "/width", c, 30);
+ cfg->value(new_scroll_cfg + "/width", c, 18);
  scroll_width = c;
  cfg->value(new_scroll_cfg + "/height", c, 19);
  scroll_height = clamp_max(c, scrollback_height);
@@ -99,6 +99,16 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 MsgScrollNewUI::~MsgScrollNewUI()
 {
 
+}
+
+bool MsgScrollNewUI::can_fit_token_on_msgline(MsgLine *msg_line, MsgText *token)
+{
+  if(msg_line->get_display_width() + token->getDisplayWidth() > scroll_width * 7 - 8)
+  {
+    return false; //token doesn't fit on the current line.
+  }
+
+  return true;
 }
 
 void MsgScrollNewUI::display_string(std::string s, Font *f, bool include_on_map_window)

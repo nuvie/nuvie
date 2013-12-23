@@ -28,6 +28,8 @@
 #include <list>
 #include "GUI.h"
 
+#include "UseCode.h"
+
 extern "C"
 {
 #include "lauxlib.h"
@@ -41,6 +43,7 @@ class Actor;
 class NuvieIO;
 class SoundManager;
 
+#define NUVIE_SCRIPT_NOT_STARTED     255
 #define NUVIE_SCRIPT_ERROR             0
 #define NUVIE_SCRIPT_FINISHED          1
 #define NUVIE_SCRIPT_GET_TARGET        2
@@ -51,6 +54,7 @@ class SoundManager;
 #define NUVIE_SCRIPT_TALK_TO_ACTOR     7
 #define NUVIE_SCRIPT_GET_SPELL         8
 #define NUVIE_SCRIPT_GET_OBJ           9
+#define NUVIE_SCRIPT_GET_PLAYER_OBJ   10 //can get an object immediately surrounding the player or from their inventory.
 
 #define NUVIE_SCRIPT_CB_ADV_GAME_TIME  1
 
@@ -59,10 +63,11 @@ class ScriptThread
   lua_State *L;
   int start_nargs;
   uint32 data;
+  uint8 state;
 
 public:
   
-    ScriptThread(lua_State *l, int nargs) { L = l; start_nargs = nargs; data = 0; }
+    ScriptThread(lua_State *l, int nargs) { L = l; start_nargs = nargs; data = 0; state = NUVIE_SCRIPT_NOT_STARTED; }
   ~ScriptThread() {  }
   uint32 get_data() { return data; }
   uint8 start() { return resume(start_nargs); }
@@ -75,6 +80,8 @@ public:
   bool finished() { return lua_status(L) != LUA_YIELD ? true : false; }
   int get_error() { return lua_status(L); }
 
+  bool is_running() { return !finished(); }
+  uint8 get_state() { return state; }
 };
 
 #define SCRIPT_DISPLAY_HIT_MSG true
@@ -115,6 +122,9 @@ class Script
    bool call_actor_subtract_movement_points(Actor *actor, uint8 points);
    bool call_actor_resurrect(Actor *actor);
    bool call_use_keg(Obj *obj); //we need this until we move all usecode into script.
+   bool call_has_usecode(Obj *obj, UseCodeEvent usecode_type);
+   ScriptThread *call_use_obj(Obj *obj, Actor *actor);
+
    bool call_magic_get_spell_list(Spell **spell_list);
    bool call_actor_use_effect(Obj *effect_obj, Actor *actor);
    bool call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace=true);
@@ -137,5 +147,8 @@ class Script
    void seed_random();
  
 };
+
+
+
 
 #endif /* __Script_h__ */

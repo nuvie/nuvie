@@ -74,7 +74,9 @@ static int nscript_actor_hide_portrait(lua_State *L);
 static int nscript_actor_talk(lua_State *L);
 static int nscript_actor_unlink_surrounding_objs(lua_State *L);
 static int nscript_actor_use(lua_State *L);
+static int nscript_actor_get_talk_flag(lua_State *L);
 static int nscript_actor_set_talk_flag(lua_State *L);
+static int nscript_actor_clear_talk_flag(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -106,7 +108,9 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "talk", nscript_actor_talk },
    { "unlink_surrounding_objs", nscript_actor_unlink_surrounding_objs },
    { "use", nscript_actor_use },
+   { "get_talk_flag", nscript_actor_get_talk_flag },
    { "set_talk_flag", nscript_actor_set_talk_flag },
+   { "clear_talk_flag", nscript_actor_clear_talk_flag },
 
    { NULL, NULL }
 };
@@ -1378,4 +1382,25 @@ static int nscript_actor_set_talk_flag(lua_State *L)
 		return 0;
 	actor->set_flag((uint8)lua_tointeger(L, 2));
 	return 0;
+}
+
+static int nscript_actor_get_talk_flag(lua_State *L)
+{
+  Actor *actor;
+  actor = nscript_get_actor_from_args(L);
+  if(actor == NULL)
+    return 0;
+  lua_pushboolean(L, actor->get_flag((uint8)lua_tointeger(L, 2)));
+
+  return 1;
+}
+
+static int nscript_actor_clear_talk_flag(lua_State *L)
+{
+  Actor *actor;
+  actor = nscript_get_actor_from_args(L);
+  if(actor == NULL)
+    return 0;
+  actor->clear_flag((uint8)lua_tointeger(L, 2));
+  return 0;
 }

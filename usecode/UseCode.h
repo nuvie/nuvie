@@ -133,9 +133,14 @@ class MsgScroll;
 class MapCoord;
 class Party;
 class Player;
+class Script;
+class ScriptThread;
 
 class UseCode
 {
+private:
+  ScriptThread *script_thread;
+
  protected:
  Game *game;
  Configuration *config;
@@ -145,6 +150,7 @@ class UseCode
  MsgScroll *scroll;
  ActorManager *actor_manager;
  Party *party;
+ Script *script;
 
  // pass parameters to usecode functions via items (NULL itemref is unset)
  struct
@@ -171,7 +177,7 @@ class UseCode
  bool use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj=NULL);
  bool use_obj(Obj *obj, Obj *src_obj = NULL) { return(use_obj(obj, player->get_actor())); } // ??
 
- virtual bool use_obj(Obj *obj, Actor *actor)    { return(false); }
+ virtual bool use_obj(Obj *obj, Actor *actor);
  virtual bool look_obj(Obj *obj, Actor *actor)   { return(false); }
  virtual bool pass_obj(Obj *obj, Actor *actor, uint16 x, uint16 y) { return(false); }
  virtual bool search_obj(Obj *obj, Actor *actor) { return(false); }
@@ -182,7 +188,7 @@ class UseCode
  virtual bool get_obj(Obj *obj, Actor *actor)    { return(false); }
  virtual bool drop_obj(Obj *obj, Actor *actor, uint16 x, uint16 y, uint16 qty = 0) { return(false); }
 
- virtual bool has_usecode(Obj *obj, UseCodeEvent ev = USE_EVENT_USE)  { return(false); }
+ virtual bool has_usecode(Obj *obj, UseCodeEvent ev = USE_EVENT_USE);
  virtual bool has_usecode(Actor *actor, UseCodeEvent ev = USE_EVENT_USE)  { return(false); }
  virtual bool has_lookcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_LOOK)); }
  virtual bool has_passcode(Obj *obj) { return(has_usecode(obj, USE_EVENT_PASS)); }
@@ -213,6 +219,8 @@ class UseCode
  bool search_container(Obj *obj, bool show_string = true);
  Obj *destroy_obj(Obj *obj, uint32 count = 0);
  bool out_of_use_range(Obj *obj, bool check_enemies);
+
+ ScriptThread *get_running_script();
 
  protected:
 

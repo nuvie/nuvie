@@ -29,6 +29,7 @@
 #include "Actor.h"
 #include "UseCode.h"
 #include "MapWindow.h"
+#include "Script.h"
 #include "Event.h"
 
 UseCode::UseCode(Game *g, Configuration *cfg)
@@ -42,12 +43,19 @@ UseCode::UseCode(Game *g, Configuration *cfg)
  actor_manager = NULL;
  obj_manager = NULL;
  party = NULL;
+ script = NULL;
+
+ script_thread = NULL;
 
  clear_items();
 }
 
 UseCode::~UseCode()
 {
+  if(script_thread)
+  {
+    delete script_thread;
+  }
 }
 
 bool UseCode::init(ObjManager *om, Map *m, Player *p, MsgScroll *ms)
@@ -59,6 +67,7 @@ bool UseCode::init(ObjManager *om, Map *m, Player *p, MsgScroll *ms)
 
  actor_manager = game->get_actor_manager();
  party = player->get_party();
+ script = game->get_script();
 
  return true;
 }
@@ -81,6 +90,41 @@ void UseCode::clear_items()
     items.data_ref = NULL; */
 }
 
+ScriptThread *UseCode::get_running_script()
+{
+  if(script_thread && script_thread->is_running())
+    return script_thread;
+
+  return NULL;
+}
+
+bool UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
+{
+  return script->call_has_usecode(obj, ev);
+}
+
+bool UseCode::use_obj(Obj *obj, Actor *actor)
+{
+  if(script_thread)
+  {
+    delete script_thread;
+    script_thread = NULL;
+  }
+
+  script_thread = script->call_use_obj(obj, actor);
+
+  if(script_thread)
+  {
+    script_thread->start();
+    if(script_thread->finished())
+    {
+      delete script_thread;
+      script_thread = NULL;
+    }
+  }
+
+  return true;//script->call_use_obj(obj, actor);
+}
 
 // use obj at location with src_obj as object_ref
  bool UseCode::use_obj(uint16 x, uint16 y, uint8 z, Obj *src_obj)
