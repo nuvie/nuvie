@@ -277,10 +277,23 @@ void Player::subtract_movement_points(uint8 points)
 
 const char *Player::get_gender_title()
 {
- if(gender == 0)
-   return "milord";
- else
-   return "milady";
+  switch(game_type)
+  {
+  case NUVIE_GAME_U6 :
+    if(gender == 0)
+      return "milord";
+    else
+      return "milady";
+  case NUVIE_GAME_MD :
+    if(gender == 0)
+      return "Sir";
+    else
+      return "Madam";
+  default :
+    break;
+  }
+
+  return "Sir"; //FIXME is this needed for SE?
 }
 
 bool Player::check_moveRelative(sint16 rel_x, sint16 rel_y)

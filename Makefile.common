@@ -310,10 +310,6 @@ nuvie_SOURCES = \
 \
 	usecode/UseCode.h \
 	usecode/UseCode.cpp \
-	usecode/MDUseCode.h \
-	usecode/MDUseCode.cpp \
-	usecode/SEUseCode.h \
-	usecode/SEUseCode.cpp \
 	usecode/U6ObjectTypes.h \
 	usecode/U6UseCode.h \
 	usecode/U6UseCode.cpp \

@@ -60,9 +60,8 @@
 #include "PartyView.h"
 #include "ActorView.h"
 
+#include "UseCode.h"
 #include "U6UseCode.h"
-#include "MDUseCode.h"
-#include "SEUseCode.h"
 
 #include "Cursor.h"
 #include "SaveManager.h"
@@ -251,8 +250,8 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    switch (game_type)
      {
       case NUVIE_GAME_U6 : usecode = (UseCode *) new U6UseCode(this, config); break;
-      case NUVIE_GAME_MD : usecode = (UseCode *) new MDUseCode(this, config); break;
-      case NUVIE_GAME_SE : usecode = (UseCode *) new SEUseCode(this, config); break;
+      case NUVIE_GAME_MD : usecode = (UseCode *) new UseCode(this, config); break;
+      case NUVIE_GAME_SE : usecode = (UseCode *) new UseCode(this, config); break;
      }
 
    obj_manager->set_usecode(usecode);

@@ -91,10 +91,43 @@ function use_prybar_on_hatch(obj, target_obj, actor)
 	end
 end
 
+function use_sextant(obj, actor)
+	if actor.z ~= 0 then
+		print("Not while underground.\n")
+		return
+	end
+
+	local lat_str = "N"
+	local long_str = "W"
+	
+	local lat = math.modf(((actor.y - 512) * 240) / 1024)
+	local long = math.modf(((actor.x - 512) * 360) / 1024)
+	
+	if lat > 0 then
+		lat_str = "S"
+	else
+		if lat == 0 then
+			lat_str = " "
+		end
+	end
+	
+	if long == 180 or long == -180 or long == 0 then
+		long_str = " "
+	else
+		if long < 0 then
+			long_str = "E"
+		end
+	end
+	
+	lat = math.abs(lat)
+	long = 180 - math.abs(long)
+	print("You are somewhere near \nLat:" ..lat.." "..lat_str.."\nLong:"..long.." "..long_str.."\n")
+end
 
 local usecode_table = {
 [86]={["func"]=use_container},
 [87]={["func"]=use_container},
+[96]={["func"]=use_sextant},
 [102]={["on"]={[86]=use_crate,[427]=use_prybar_on_hatch}},
 [104]={["func"]=use_container},
 [152]={["func"]=use_door},
@@ -119,7 +152,7 @@ function use_obj(obj, actor)
 
 		local target_obj = get_target_obj("On - ")
 		if target_obj ~= nil then
-			print(target_obj.name.."\n")
+			print(target_obj.name.."\n\n")
 			local func = usecode_table[obj.obj_n].on[target_obj.obj_n]
 			if func ~= nil then
 				func(obj, target_obj, actor)
@@ -132,6 +165,7 @@ function use_obj(obj, actor)
 	else
 		local func = usecode_table[obj.obj_n].func
 		if func ~= nil then
+			print("\n")
 			func(obj, actor)
 		end
 	end

@@ -1,3 +1,11 @@
+2013-12-24  Eric Fry <efry at users.sourceforge.net> r1786
+	* Fixed player name for MD while in conversations. It now returns Sir/Madam
+	  instead of milord/milady
+	* Added usecode script stubs for SE. Ready for usecode functions to be added.
+	* Added MD use sextant usecode function.
+	* Deleted MDUseCode and SEUseCode C++ classes. All WoU usecode should go in
+	  script now. :)
+
 2013-12-23  Eric Fry <efry at users.sourceforge.net> r1785
 	* Added usecode lua script logic. Started work on MD usecode script. The usecode
 	  class now calls has_usecode() and use_obj() lua scripts.

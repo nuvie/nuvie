@@ -101,3 +101,6 @@ else
 		io.stderr:write(actor_load);
 	end
 end
+
+-- init usecode
+usecode_init = nuvie_load("se/usecode.lua"); usecode_init();
