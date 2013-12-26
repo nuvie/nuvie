@@ -530,6 +530,8 @@ bool SoundManager::LoadSfxManager(string sfx_style)
 
 void SoundManager::musicPlayFrom(string group)
 {
+ if(!music_enabled || !audio_enabled)
+   return;
  if(m_CurrentGroup != group)
   {
    g_MusicFinished = true;
@@ -546,6 +548,7 @@ void SoundManager::musicPause()
         }
 }
 
+/* don't call if audio or music is disabled */
 void SoundManager::musicPlay()
 {
 // Mix_ResumeMusic();

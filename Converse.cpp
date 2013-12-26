@@ -442,7 +442,9 @@ void Converse::stop()
     }
 
     Game::get_game()->unpause_user();
-    Game::get_game()->get_sound_manager()->musicPlay();
+    SoundManager *sm = Game::get_game()->get_sound_manager();
+    if(sm->is_audio_enabled() && sm->is_music_enabled())
+        sm->musicPlay();
     Game::get_game()->get_event()->set_mode(MOVE_MODE); // return control to player
 
     active = false;

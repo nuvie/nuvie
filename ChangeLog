@@ -1,3 +1,7 @@
+2013-12-26  Malignant Manor <malignantmanor@users.sourceforge.net> r1787
+	* Don't play music when ending conversations when music or audio is disabled
+	* Fixed a bug where the song could change when music or audio was disabled
+
 2013-12-24  Eric Fry <efry at users.sourceforge.net> r1786
 	* Fixed player name for MD while in conversations. It now returns Sir/Madam
 	  instead of milord/milady
