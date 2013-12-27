@@ -44,7 +44,7 @@ class DollWidget : public GUI_Widget {
  Obj *selected_obj, *unready_obj;
 
  uint8 bg_color;
- 
+ bool is_in_portrait_view;
  bool need_to_free_tiles;
  Tile *empty_tile, *blocked_tile;
 
@@ -54,7 +54,7 @@ class DollWidget : public GUI_Widget {
  DollWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~DollWidget();
 
- bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, bool override_style = false);
+ bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, bool in_portrat_view = false);
  void set_actor(Actor *a);
  void Display(bool full_redraw);
 

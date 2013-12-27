@@ -1,3 +1,8 @@
+2013-12-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1788
+	* Fix sun/moon strip display problem in fullscreen_map mode
+	* Show the doll in U6 when looking at an actor with equipment in
+	  fullscreen_map mode
+
 2013-12-26  Malignant Manor <malignantmanor@users.sourceforge.net> r1787
 	* Don't play music when ending conversations when music or audio is disabled
 	* Fixed a bug where the song could change when music or audio was disabled

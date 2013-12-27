@@ -148,8 +148,6 @@ void PortraitView::Display(bool full_redraw)
      screen->blit(area.x+(area.w-portrait_width)/2+1,area.y+1,portrait_data,8,portrait_width,portrait_height,portrait_width,true);
      display_name(98);
    }
-
-   screen->update(area.x, area.y, area.w, area.h);
   }
   if(show_cursor && gametype == NUVIE_GAME_U6) // FIXME: should we be using scroll's drawCursor?
    {
@@ -157,6 +155,7 @@ void PortraitView::Display(bool full_redraw)
     Game::get_game()->get_scroll()->drawCursor(area.x, area.y + area.h - 8);
    } 
    DisplayChildren(full_redraw);
+   screen->update(area.x, area.y, area.w, area.h);
 }
 
 bool PortraitView::set_portrait(Actor *actor, const char *name)
