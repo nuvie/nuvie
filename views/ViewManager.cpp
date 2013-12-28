@@ -118,7 +118,7 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 	   ribbon = new SunMoonRibbon(player, Game::get_game()->get_weather(), tile_manager);
 	   ribbon->init(gui->get_screen());
 	   gui->AddWidget(ribbon);
-	   ribbon->Show();
+	   ribbon->Hide(); //will be shown on first call to update()
 	 }
  }
 
@@ -203,6 +203,11 @@ void ViewManager::update()
 {
  if(current_view)
    current_view->Redraw();
+
+ if(ribbon && ribbon->Status() == WIDGET_HIDDEN)
+ {
+	 ribbon->Show();
+ }
 
  return;
 }

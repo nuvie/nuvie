@@ -1,3 +1,7 @@
+2013-12-29  Eric Fry <efry at users.sourceforge.net> r1789
+	* Fixed segfault when launching with new UI and show console selected.
+	  The new ribbon shouldn't be visible while the console is active.
+
 2013-12-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1788
 	* Fix sun/moon strip display problem in fullscreen_map mode
 	* Show the doll in U6 when looking at an actor with equipment in
