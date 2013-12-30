@@ -257,7 +257,12 @@ bool MsgScroll::init(char *player_name)
  std::string prompt_string;
 
  prompt_string.append(player_name);
- prompt_string.append(":\n>");
+ if(game_type==NUVIE_GAME_U6)
+ {
+   prompt_string.append(":\n");
+ }
+
+ prompt_string.append(">");
 
  if(set_prompt((char *)prompt_string.c_str(),font) == false)
    return false;

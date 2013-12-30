@@ -54,6 +54,14 @@ class ConverseGump: public MsgScroll
 
 	uint16 cursor_position;
 	uint8 input_char;
+
+	uint8 portrait_width;
+	uint8 portrait_height;
+	uint8 frame_w;
+	uint8 frame_h;
+
+	nuvie_game_t game_type;
+
  public:
 
  ConverseGump(Configuration *cfg, Font *f, Screen *s);
@@ -109,6 +117,9 @@ class ConverseGump: public MsgScroll
 
  bool is_permanent_keyword(std::string keyword);
  void parse_fm_towns_token(MsgText *token);
+
+ private:
+ unsigned char *get_portrait_data(Actor *a);
 };
 
 

@@ -1,3 +1,9 @@
+2013-12-31  Eric Fry <efry at users.sourceforge.net> r1792
+	* Fixed prompt string for MD/SE
+	* Added correct object number for MD eggs.
+	* Don't load magic/spellbook classes in MD/SE
+	* Fixed converse portrait display for MD/SE when using the new UI.
+
 2013-12-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1791
 	* Rename can_displayed_prompt to can_display_prompt.
 	* Remove a semicolon at the end of an include.

@@ -100,21 +100,21 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 	 if(game_type==NUVIE_GAME_U6)
 	 {
 	   party_view->init(this,168+x_off,6+y_off, font, party, player, tile_manager, obj_manager);
+	   spell_view = new SpellView(config);
 	 }
 	 else
 	 {
 	   party_view->init(this,176+x_off,6+y_off, font, party, player, tile_manager, obj_manager);
 	 }
-	 spell_view = new SpellView(config);
+
  }
  else
  {
 	 //inventory_view = new InventoryViewGump(config);
 	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager);
-
-	 spell_view = new SpellViewGump(config);
 	 if(game_type==NUVIE_GAME_U6)
 	 {
+	   spell_view = new SpellViewGump(config);
 	   ribbon = new SunMoonRibbon(player, Game::get_game()->get_weather(), tile_manager);
 	   ribbon->init(gui->get_screen());
 	   gui->AddWidget(ribbon);
@@ -128,7 +128,10 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 	spell_x_offset = Game::get_game()->get_game_width() - SPELLVIEWGUMP_WIDTH + x_off;
  }
 
- spell_view->init(gui->get_screen(), this, spell_x_offset, 6+y_off, font, party, tile_manager, obj_manager);
+ if(spell_view)
+ {
+   spell_view->init(gui->get_screen(), this, spell_x_offset, 6+y_off, font, party, tile_manager, obj_manager);
+ }
  //set_current_view((View *)party_view);
 
  return true;
@@ -267,12 +270,15 @@ void ViewManager::set_spell_mode(Actor *caster, Obj *spell_container, bool event
 
 void ViewManager::close_spell_mode()
 {
+  if(spell_view)
+  {
 	  //FIXME this should set previous view. Don't default to inventory view.
 	  spell_view->release_focus();
 	  if(Game::get_game()->is_orig_style())
 		  set_inventory_mode();
 	  else
 		  close_current_view();
+  }
 }
 
 void ViewManager::open_doll_view(Actor *actor)

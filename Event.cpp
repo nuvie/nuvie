@@ -2958,7 +2958,7 @@ void Event::doAction()
 
     if(mode == LOOK_MODE)
     {
-        if(looking_at_spellbook)
+        if(looking_at_spellbook && view_manager->get_spell_view() != NULL)
         {
             view_manager->get_spell_view()->close_look();
             return;
@@ -3281,7 +3281,7 @@ void Event::cancelAction()
 
     if(mode == INPUT_MODE) // cancel action of previous mode
     {
-        if(magic->is_waiting_for_inventory_obj())
+        if(magic != NULL && magic->is_waiting_for_inventory_obj())
         {
             if(game->is_orig_style())
             {
@@ -3331,7 +3331,7 @@ void Event::cancelAction()
         endAction();
         return;
     }
-    else if(looking_at_spellbook)
+    else if(looking_at_spellbook && view_manager->get_spell_view() != NULL)
     {
         view_manager->get_spell_view()->close_look();
         return;
@@ -3364,7 +3364,7 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
     doAction();
     return(mode==ATTACK_MODE);
 }
-	if(looking_at_spellbook) // pushed L while looking at spell book
+	if(looking_at_spellbook && view_manager->get_spell_view() != NULL) // pushed L while looking at spell book
 	{
 		view_manager->get_spell_view()->close_look();
 		return false;

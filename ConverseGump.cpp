@@ -37,9 +37,6 @@
 #include "ConverseGump.h"
 #include "ActorManager.h"
 
-#define FRAME_W (PORTRAIT_WIDTH + 8)
-#define FRAME_H (PORTRAIT_HEIGHT + 9)
-
 #define CURSOR_COLOR 248
 
 // ConverseGump Class
@@ -49,6 +46,8 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
  uint16 x, y;
 
  init(cfg, f);
+
+ game_type = Game::get_game()->get_game_type();
 
  scroll_width = 30;
  scroll_height = 8;
@@ -75,9 +74,9 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
 
  int c;
  uint8 default_c = 218;
- if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+ if(game_type == NUVIE_GAME_SE)
 	default_c = 216;
- else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD)
+ else if(game_type == NUVIE_GAME_MD)
 	default_c = 136;
  cfg->value(config_get_game_key(config) + "/converse_bg_color", c, default_c);
  if(c<256)
@@ -85,6 +84,14 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
 
  input_char = 0;
  cursor_position = 0;
+
+ portrait_width = frame_w = Game::get_game()->get_portrait()->get_portrait_width();
+ portrait_height = frame_h = Game::get_game()->get_portrait()->get_portrait_height();
+ if(game_type == NUVIE_GAME_U6)
+ {
+   frame_w = portrait_width + 8;
+   frame_h = portrait_height + 9;
+ }
 }
 
 ConverseGump::~ConverseGump()
@@ -108,7 +115,7 @@ void ConverseGump::set_talking(bool state, Actor *actor)
     	set_input_mode(false);
     	clear_scroll();
     	set_found_break_char(true);
-		bool altar = (Game::get_game()->get_game_type() == NUVIE_GAME_U6 // Singularity is excluded on purpose
+		bool altar = (game_type == NUVIE_GAME_U6 // Singularity is excluded on purpose
 		              && actor->get_actor_num() >= 192 && actor->get_actor_num() <= 199);
 		if(!altar)
 		{
@@ -116,7 +123,7 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 			add_keyword("job");
 			add_keyword("bye");
 		}
-		bool cant_join = (Game::get_game()->get_game_type() == NUVIE_GAME_U6 // statues and altars
+		bool cant_join = (game_type == NUVIE_GAME_U6 // statues and altars
 		                  && actor->get_actor_num() >= 189 && actor->get_actor_num() <= 200);
 		if(actor->is_in_party())
 			add_keyword("leave");
@@ -143,7 +150,7 @@ void ConverseGump::set_actor_portrait(Actor *a)
 		free(npc_portrait);
 
 	if(Game::get_game()->get_portrait()->has_portrait(a))
-		npc_portrait = create_framed_portrait(a);
+		npc_portrait = get_portrait_data(a);
 	else
 		npc_portrait = NULL;
 
@@ -151,89 +158,101 @@ void ConverseGump::set_actor_portrait(Actor *a)
 	{
 		Actor *p = Game::get_game()->get_player()->get_actor();
 		Actor *p1 = Game::get_game()->get_actor_manager()->get_actor(1);
-		avatar_portrait = create_framed_portrait(p->get_actor_num() != 0 ? p: p1); // don't use portrait 0 when in a vehicle
+		avatar_portrait = get_portrait_data(p->get_actor_num() != 0 ? p: p1); // don't use portrait 0 when in a vehicle
 	}
+}
+
+unsigned char *ConverseGump::get_portrait_data(Actor *a)
+{
+  if(game_type == NUVIE_GAME_U6)
+  {
+    return create_framed_portrait(a);
+  }
+
+  Portrait *p = Game::get_game()->get_portrait();
+  return p->get_portrait_data(a);
 }
 
 unsigned char *ConverseGump::create_framed_portrait(Actor *a) //FIXME U6 specific.
 {
+  //uint8 FRAME_W = portrait_width + 8;
 	uint16 i;
 	Portrait *p = Game::get_game()->get_portrait();
 	unsigned char *portrait_data = p->get_portrait_data(a);
-	unsigned char *framed_data = (unsigned char *)malloc(FRAME_W * FRAME_H);
+	unsigned char *framed_data = (unsigned char *)malloc(frame_w * frame_h);
 
-	memset(framed_data, 255, FRAME_W * FRAME_H);
+	memset(framed_data, 255, frame_w * frame_h);
 
-	memset(framed_data, 0, FRAME_W);
-	memset(framed_data + (FRAME_H-1)*FRAME_W, 0, FRAME_W);
-	memset(framed_data + 1*FRAME_W+2, 53, 57);
-	memset(framed_data + 2*FRAME_W+2, 57, 59);
+	memset(framed_data, 0, frame_w);
+	memset(framed_data + (frame_h-1)*frame_w, 0, frame_w);
+	memset(framed_data + 1*frame_w+2, 53, 57);
+	memset(framed_data + 2*frame_w+2, 57, 59);
 
-	memset(framed_data + 3*FRAME_W+4, 0, 57);
+	memset(framed_data + 3*frame_w+4, 0, 57);
 
 	//top left corner
-	framed_data[1*FRAME_W] = 0;
-	framed_data[1*FRAME_W+1] = 138;
-	framed_data[2*FRAME_W] = 0;
-	framed_data[2*FRAME_W+1] = 139;
-	framed_data[3*FRAME_W] = 0;
-	framed_data[3*FRAME_W+1] = 139;
-	framed_data[3*FRAME_W+2] = 57;
-	framed_data[3*FRAME_W+3] = 143;
+	framed_data[1*frame_w] = 0;
+	framed_data[1*frame_w+1] = 138;
+	framed_data[2*frame_w] = 0;
+	framed_data[2*frame_w+1] = 139;
+	framed_data[3*frame_w] = 0;
+	framed_data[3*frame_w+1] = 139;
+	framed_data[3*frame_w+2] = 57;
+	framed_data[3*frame_w+3] = 143;
 
-	for(i=0;i<PORTRAIT_HEIGHT;i++)
+	for(i=0;i<portrait_height;i++)
 	{
-		framed_data[(i+4)*FRAME_W] = 0;
-		framed_data[(i+4)*FRAME_W+1] = 139;
-		framed_data[(i+4)*FRAME_W+2] = 57;
-		framed_data[(i+4)*FRAME_W+3] = 142;
+		framed_data[(i+4)*frame_w] = 0;
+		framed_data[(i+4)*frame_w+1] = 139;
+		framed_data[(i+4)*frame_w+2] = 57;
+		framed_data[(i+4)*frame_w+3] = 142;
 
-		memcpy(&framed_data[(i+4)*FRAME_W+4], &portrait_data[i*p->get_portrait_width()], PORTRAIT_WIDTH);
+		memcpy(&framed_data[(i+4)*frame_w+4], &portrait_data[i*p->get_portrait_width()], portrait_width);
 
-		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH] = 0;
-		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH+1] = 57;
-		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH+2] = 53;
-		framed_data[(i+4)*FRAME_W+4+PORTRAIT_WIDTH+3] = 0;
+		framed_data[(i+4)*frame_w+4+portrait_width] = 0;
+		framed_data[(i+4)*frame_w+4+portrait_width+1] = 57;
+		framed_data[(i+4)*frame_w+4+portrait_width+2] = 53;
+		framed_data[(i+4)*frame_w+4+portrait_width+3] = 0;
 	}
 
-	memset(framed_data + (FRAME_H-5)*FRAME_W + 3, 142, 57);
-	memset(framed_data + (FRAME_H-4)*FRAME_W + 2, 57, 60);
-	memset(framed_data + (FRAME_H-3)*FRAME_W + 1, 139, 61);
-	memset(framed_data + (FRAME_H-2)*FRAME_W + 1, 142, 62);
+	memset(framed_data + (frame_h-5)*frame_w + 3, 142, 57);
+	memset(framed_data + (frame_h-4)*frame_w + 2, 57, 60);
+	memset(framed_data + (frame_h-3)*frame_w + 1, 139, 61);
+	memset(framed_data + (frame_h-2)*frame_w + 1, 142, 62);
 
 	//bottom left
-	framed_data[(FRAME_H-5)*FRAME_W] = 0;
-	framed_data[(FRAME_H-5)*FRAME_W+1] = 139;
-	framed_data[(FRAME_H-5)*FRAME_W+2] = 57;
-	framed_data[(FRAME_H-4)*FRAME_W] = 0;
-	framed_data[(FRAME_H-4)*FRAME_W+1] = 139;
-	framed_data[(FRAME_H-3)*FRAME_W] = 0;
-	framed_data[(FRAME_H-2)*FRAME_W] = 0;
+	framed_data[(frame_h-5)*frame_w] = 0;
+	framed_data[(frame_h-5)*frame_w+1] = 139;
+	framed_data[(frame_h-5)*frame_w+2] = 57;
+	framed_data[(frame_h-4)*frame_w] = 0;
+	framed_data[(frame_h-4)*frame_w+1] = 139;
+	framed_data[(frame_h-3)*frame_w] = 0;
+	framed_data[(frame_h-2)*frame_w] = 0;
 
 	//top right
-	framed_data[1*FRAME_W+59] = 50;
-	framed_data[1*FRAME_W+59+1] = 49;
-	framed_data[1*FRAME_W+59+2] = 49;
-	framed_data[1*FRAME_W+59+3] = 15;
-	framed_data[1*FRAME_W+59+4] = 0;
-	framed_data[2*FRAME_W+59+2] = 15;
-	framed_data[2*FRAME_W+59+3] = 49;
-	framed_data[2*FRAME_W+59+4] = 0;
-	framed_data[3*FRAME_W+59+2] = 57;
-	framed_data[3*FRAME_W+59+3] = 49;
-	framed_data[3*FRAME_W+59+4] = 0;
-	framed_data[4*FRAME_W+59+3] = 50;
+	framed_data[1*frame_w+59] = 50;
+	framed_data[1*frame_w+59+1] = 49;
+	framed_data[1*frame_w+59+2] = 49;
+	framed_data[1*frame_w+59+3] = 15;
+	framed_data[1*frame_w+59+4] = 0;
+	framed_data[2*frame_w+59+2] = 15;
+	framed_data[2*frame_w+59+3] = 49;
+	framed_data[2*frame_w+59+4] = 0;
+	framed_data[3*frame_w+59+2] = 57;
+	framed_data[3*frame_w+59+3] = 49;
+	framed_data[3*frame_w+59+4] = 0;
+	framed_data[4*frame_w+59+3] = 50;
 
 	//bottom right
-	framed_data[(FRAME_H-5)*FRAME_W+60] = 143;
-	framed_data[(FRAME_H-5)*FRAME_W+61] = 57;
-	framed_data[(FRAME_H-5)*FRAME_W+62] = 53;
-	framed_data[(FRAME_H-5)*FRAME_W+63] = 0;
-	framed_data[(FRAME_H-4)*FRAME_W+62] = 53;
-	framed_data[(FRAME_H-4)*FRAME_W+63] = 0;
-	framed_data[(FRAME_H-3)*FRAME_W+62] = 173;
-	framed_data[(FRAME_H-3)*FRAME_W+63] = 0;
-	framed_data[(FRAME_H-2)*FRAME_W+63] = 0;
+	framed_data[(frame_h-5)*frame_w+60] = 143;
+	framed_data[(frame_h-5)*frame_w+61] = 57;
+	framed_data[(frame_h-5)*frame_w+62] = 53;
+	framed_data[(frame_h-5)*frame_w+63] = 0;
+	framed_data[(frame_h-4)*frame_w+62] = 53;
+	framed_data[(frame_h-4)*frame_w+63] = 0;
+	framed_data[(frame_h-3)*frame_w+62] = 173;
+	framed_data[(frame_h-3)*frame_w+63] = 0;
+	framed_data[(frame_h-2)*frame_w+63] = 0;
 
 	free(portrait_data);
 
@@ -435,7 +454,7 @@ void ConverseGump::add_keyword(std::string keyword)
 std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 {
 	uint16 total_length = 0;
-	uint16 tmp_y = area.y + PORTRAIT_HEIGHT + 8 + 3 + 4;
+	uint16 tmp_y = area.y + portrait_height + 8 + 3 + 4;
 	std::list<MsgText>::iterator iter;
 	for(iter=keyword_list->begin();iter!=keyword_list->end();iter++)
 	{
@@ -446,8 +465,8 @@ std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 			total_length = 0;
 			tmp_y += 10;
 		}
-		//t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length * 8, y + PORTRAIT_HEIGHT + 8, 0);
-		if( x > area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length && x < area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length + token_len)
+		//t.font->drawString(screen, t.s.c_str(), area.x + portrait_width / 2 + portrait_width + 8 + total_length * 8, y + portrait_height + 8, 0);
+		if( x > area.x + portrait_width / 2 + portrait_width + 8 + total_length && x < area.x + portrait_width / 2 + portrait_width + 8 + total_length + token_len)
 		{
 			if(y > tmp_y && y < tmp_y + 8)
 			{
@@ -501,7 +520,7 @@ void ConverseGump::Display(bool full_redraw)
 	MsgText *token;
 	 //std::list<MsgText>::iterator iter;
 	 uint16 total_length = 0;
-	 uint16 y = area.y + PORTRAIT_HEIGHT + 8 + 3;
+	 uint16 y = area.y + portrait_height + 8 + 3;
 
 	 if(converse_bg_color != 255 || Game::get_game()->is_orig_style())
 	 {
@@ -511,14 +530,16 @@ void ConverseGump::Display(bool full_redraw)
 			screen->stipple_8bit(converse_bg_color, area.x, area.y, area.w, area.h);
 	 }
 
+	 bool use_transparency = (game_type == NUVIE_GAME_U6) ? false : true;
+
 	 if(npc_portrait)
 	 {
-		 screen->blit(area.x+4,area.y+4,npc_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
+		 screen->blit(area.x+4,area.y+4,npc_portrait,8,frame_w,frame_h,frame_w,use_transparency);
 	 }
 
 	 if(!page_break && input_mode && avatar_portrait && is_talking())
 	 {
-		 screen->blit(area.x + PORTRAIT_WIDTH / 2 + 4,y,avatar_portrait,8,FRAME_W,FRAME_H,FRAME_W,false);
+		 screen->blit(area.x + portrait_width / 2 + 4,y,avatar_portrait,8,frame_w,frame_h,frame_w,use_transparency);
 		 std::list<MsgText>::iterator iter;
 		 sint16 i = 0;
 		 for(iter=keyword_list->begin();iter!=keyword_list->end();i++,iter++)
@@ -530,21 +551,21 @@ void ConverseGump::Display(bool full_redraw)
 				 total_length = 0;
 				 y += 10;
 			 }
-			 t.font->drawString(screen, t.s.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + total_length, y + 4, 0, 0);
+			 t.font->drawString(screen, t.s.c_str(), area.x + portrait_width / 2 + portrait_width + 8 + total_length, y + 4, 0, 0);
 			 if(cursor_position == i)
 			 {
-				 screen->fill(CURSOR_COLOR, area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 16 + total_length, y + 4 + 8, token_len-8, 1);
+				 screen->fill(CURSOR_COLOR, area.x + portrait_width / 2 + portrait_width + 16 + total_length, y + 4 + 8, token_len-8, 1);
 			 }
 			 total_length += token_len;
 			 //total_length += t.s.length();
 		 }
 		 y+=16;
-		 font->drawString(screen, " *", area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8, y, 0, 0);
-		 font->drawString(screen, input_buf.c_str(), area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *"), y, 0, 0);
-		 drawCursor(area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 8 + font->getStringWidth(" *") + font->getStringWidth(input_buf.c_str()), y);
+		 font->drawString(screen, " *", area.x + portrait_width / 2 + portrait_width + 8, y, 0, 0);
+		 font->drawString(screen, input_buf.c_str(), area.x + portrait_width / 2 + portrait_width + 8 + font->getStringWidth(" *"), y, 0, 0);
+		 drawCursor(area.x + portrait_width / 2 + portrait_width + 8 + font->getStringWidth(" *") + font->getStringWidth(input_buf.c_str()), y);
 		 if(cursor_position == keyword_list->size())
 		 {
-			 screen->fill(CURSOR_COLOR, area.x + PORTRAIT_WIDTH / 2 + PORTRAIT_WIDTH + 16, y + 8, font->getStringWidth(input_buf.c_str())+8, 1);
+			 screen->fill(CURSOR_COLOR, area.x + portrait_width / 2 + portrait_width + 16, y + 8, font->getStringWidth(input_buf.c_str())+8, 1);
 		 }
 	 }
 
@@ -560,10 +581,10 @@ void ConverseGump::Display(bool full_redraw)
 		  {
 			  token = *iter1;
 
-			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + FRAME_W + 4 + total_length, y + 4, 0, 0); //FIX for hardcoded font height
+			  total_length += token->font->drawString(screen, token->s.c_str(), area.x + 4 + frame_w + 4 + total_length, y + 4, 0, 0); //FIX for hardcoded font height
 
 			  //token->s.length();
-			  //token->font->drawChar(screen, ' ', area.x + PORTRAIT_WIDTH + 8 + total_length * 8, y, 0);
+			  //token->font->drawChar(screen, ' ', area.x + portrait_width + 8 + total_length * 8, y, 0);
 			  //total_length += 1;
 
 		  }

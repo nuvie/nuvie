@@ -230,7 +230,13 @@ void Player::set_actor(Actor *new_actor)
     actor_manager->set_player(actor);
     std::string prompt = get_name();
 
-    prompt += ":\n>";
+    if(game_type==NUVIE_GAME_U6)
+    {
+      prompt += ":\n";
+    }
+
+    prompt += ">";
+
     scroll->set_prompt((char *)prompt.c_str());
 }
 
