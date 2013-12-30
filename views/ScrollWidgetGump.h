@@ -26,7 +26,7 @@
 #include "CallBack.h"
 #include "GUI_widget.h"
 #include "MsgScroll.h"
-#include "Font.h";
+#include "Font.h"
 #include <stdarg.h>
 
 #include <list>
@@ -68,7 +68,7 @@ class ScrollWidgetGump: public MsgScroll
  ScrollWidgetGump(Configuration *cfg, Screen *s);
  ~ScrollWidgetGump();
 
- bool can_displayed_prompt() { return false; }
+ bool can_display_prompt() { return false; }
 
  void Display(bool full_redraw);
 

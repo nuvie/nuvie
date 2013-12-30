@@ -1865,7 +1865,7 @@ static int nscript_display_prompt(lua_State *L)
 {
    MsgScroll *scroll = Game::get_game()->get_scroll();
 
-   if(!scroll->can_displayed_prompt())
+   if(!scroll->can_display_prompt())
       return 0;
 
    bool newline = lua_toboolean(L, 1);

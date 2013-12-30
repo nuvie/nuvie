@@ -187,7 +187,7 @@ private:
 
  MsgText *holding_buffer_get_token();
  bool is_holding_buffer_empty() { return holding_buffer.empty(); }
- virtual bool can_displayed_prompt() { return (!just_displayed_prompt); }
+ virtual bool can_display_prompt() { return (!just_displayed_prompt); }
 
  virtual bool parse_token(MsgText *token);
  void add_token(MsgText *token);

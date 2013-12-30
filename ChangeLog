@@ -1,3 +1,7 @@
+2013-12-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1791
+	* Rename can_displayed_prompt to can_display_prompt.
+	* Remove a semicolon at the end of an include.
+
 2013-12-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1790
 	* Add null check for portrait data in get_portrait_data.
 

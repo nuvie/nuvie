@@ -768,7 +768,7 @@ void Player::update_player(Actor *next_player)
     set_actor(next_player); // redirects to ActorManager::set_player()
     set_mapwindow_centered(true);
 
-    if(!scroll->can_displayed_prompt() && same_actor)
+    if(!scroll->can_display_prompt() && same_actor)
         return;
     scroll->display_string("\n");
     scroll->display_prompt();
