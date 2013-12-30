@@ -154,6 +154,8 @@ unsigned char *PortraitU6::get_portrait_data(Actor *actor)
  }
 
  lzw_data = portrait->get_item(num);
+ if(!lzw_data)
+   return NULL;
  new_portrait = lzw.decompress_buffer(lzw_data, portrait->get_item_size(num), new_length);
  free(lzw_data);
  Game::get_game()->get_dither()->dither_bitmap(new_portrait,PORTRAIT_WIDTH,PORTRAIT_HEIGHT,true);

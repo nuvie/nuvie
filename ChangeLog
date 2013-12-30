@@ -1,3 +1,6 @@
+2013-12-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1790
+	* Add null check for portrait data in get_portrait_data.
+
 2013-12-29  Eric Fry <efry at users.sourceforge.net> r1789
 	* Fixed segfault when launching with new UI and show console selected.
 	  The new ribbon shouldn't be visible while the console is active.
