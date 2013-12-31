@@ -1,3 +1,10 @@
+2014-01-01  Eric Fry <efry at users.sourceforge.net> r1793
+	* Added MD actor_init() function. Temp actors should spawn with correct stats
+	  now.
+	* Added MD actor stats script data.
+	* Added new data/scripts/common directory for common script functions.
+	* Added common actor.lua script and refactored some common code.
+
 2013-12-31  Eric Fry <efry at users.sourceforge.net> r1792
 	* Fixed prompt string for MD/SE
 	* Added correct object number for MD eggs.

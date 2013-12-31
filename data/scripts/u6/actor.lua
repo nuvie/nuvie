@@ -511,15 +511,6 @@ function actor_tile_dmg(actor, map_tile)
 
 end
 
-function actor_randomise_stat(base_stat)
-   local tmp = math.floor(base_stat/2)
-   if tmp == 0 then
-      return base_stat
-   end
-   
-   return math.random(0, tmp) + math.random(0, tmp)  + base_stat - tmp
-end
-
 function actor_get_max_magic_points(actor)
    local obj_n = actor.obj_n
    if obj_n == 410 then --avatar

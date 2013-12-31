@@ -1,3 +1,8 @@
+local lua_file = nil
+
+--load common functions
+lua_file = nuvie_load("common/actor.lua"); lua_file();
+
 --note nuvie direction values aren't the same as the original it uses the following scheme
 --701
 --6 2
@@ -12,12 +17,6 @@ DIR_SOUTHEAST = 5
 DIR_SOUTHWEST = 6
 DIR_NORTHWEST = 7
 DIR_NONE      = 8
-
-ALIGNMENT_DEFAULT = 0
-ALIGNMENT_NEUTRAL = 1
-ALIGNMENT_EVIL    = 2
-ALIGNMENT_GOOD    = 3 
-ALIGNMENT_CHAOTIC = 4
 
 
 SFX_BLOCKED = 0

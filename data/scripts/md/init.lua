@@ -1,3 +1,8 @@
+local lua_file = nil
+
+--load common functions
+lua_file = nuvie_load("common/actor.lua"); lua_file();
+
 
 function dbg(msg_string)
 	io.stderr:write(msg_string)

@@ -1,131 +1,143 @@
 io.stderr:write("actor.lua get here\n")
 
 --Actor stats table
---[objnum] = {str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,flies-immune to tremor,repel undead (not used anymore),poisonous,strength_based,double dmg from fire,immune to magic (fire only),immune to poison,undead and immune to death spells,immune to sleep spell,{spell table},{weapon table},{armor table},{treasure table},exp_related see actor_hit()}
+--[obj_num] = {str,dex,int,hp,alignment,,damage??,,,,,,,,,,,,,,,,}
 actor_tbl = {
---unconscious Martian
-[291] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---student
-[309] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---student
-[310] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---yourself
-[318] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---yourself
-[319] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---yourself
-[342] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---yourself
-[343] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---yourself
-[344] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---scientist
-[345] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---young woman
-[346] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---cowboy
-[347] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---gentleman
-[348] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---uniformed man
-[349] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---adventurer
-[350] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---common gellow
-[351] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---man
-[352] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---man in white
-[353] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---lady
-[354] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---woman
-[355] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---adventuress
-[356] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---metal woman
-[357] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---mechanical man
-[358] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---sextelleger
-[359] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---bushalo
-[360] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---plantellope
-[361] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---tentacle
-[362] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---ammonoid
-[363] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---proto martian
-[364] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---hedgehog
-[365] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---cave worm
-[366] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---janitor
-[367] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---planther
-[368] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---martian
-[369] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---rockworm base
-[370] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---rockworm
-[371] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---rockworm
-[372] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---giant maw
-[373] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---creeper
-[374] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---oxy leech
-[375] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---agrobot
-[376] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---wisp
-[377] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---airsquid
-[378] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---canal worm
-[379] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---airsquid
-[380] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---dust devil
-[381] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---mechanical man
-[382] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---creeping cactus
-[383] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---pod devil
-[384] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---jumping bean
-[385] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---sand trapper
-[386] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---bushrat
-[387] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---glow worm
-[388] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---king
-[389] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---shadowlord
-[390] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---your mother
-[391] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---horse
-[392] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---Dibbs
-[393] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---Raxachk
-[394] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---yourself
-[396] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---yourself
-[397] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0},
---minotaur
-[398] = {1, 28, 4, 3, 1, ALIGNMENT_NEUTRAL, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {}, {}, {}, {}, 0}
+--OBJ_YOURSELF5
+[343] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_YOURSELF6
+[344] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_POOR_MONK
+[342] = {22,22,22,60,ALIGNMENT_EVIL,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_SCIENTIST
+[345] = {15,15,25,30,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_YOUNG_WOMAN
+[346] = {18,18,22,60,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_COWBOY
+[347] = {20,25,18,60,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_GENTLEMAN
+[348] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_UNIFORMED_MAN
+[349] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_ADVENTURER
+[350] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_COMMON_FELLOW
+[351] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_MAN
+[352] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_MAN_IN_WHITE
+[353] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_LADY
+[354] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_WOMAN
+[355] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_ADVENTURESS
+[356] = {25,25,25,90,ALIGNMENT_GOOD,0,6,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_METAL_WOMAN1
+[357] = {25,25,25,90,ALIGNMENT_GOOD,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_MECHANICAL_MAN
+[358] = {25,15,10,40,ALIGNMENT_GOOD,4,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_MARTIAN
+[369] = {15,15,20,30,ALIGNMENT_NEUTRAL,0,6,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_SEXTELLEGER
+[359] = {20,20,10,45,ALIGNMENT_CHAOTIC,4,35,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_BUSHALO
+[360] = {25,12,11,35,ALIGNMENT_NEUTRAL,8,20,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0},
+--OBJ_PLANTELLOPE
+[361] = {15,22,9,20,ALIGNMENT_NEUTRAL,1,12,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_ROCKWORM2
+[372] = {20,15,10,40,ALIGNMENT_CHAOTIC,8,25,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_WISP
+[377] = {20,20,20,80,ALIGNMENT_NEUTRAL,3,30,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0},
+--OBJ_AIRSQUID
+[378] = {10,20,15,10,ALIGNMENT_EVIL,0,6,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0},
+--OBJ_AIRSQUID1
+[380] = {15,15,8,30,ALIGNMENT_EVIL,4,20,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_GIANT_MAW
+[373] = {30,10,9,100,ALIGNMENT_CHAOTIC,3,30,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_TENTACLE1
+[362] = {20,20,9,10,ALIGNMENT_CHAOTIC,2,20,1,1,1,0,0,0,0,0,1,0,1,0,0,0,0,0},
+--OBJ_CREEPING_CACTUS
+[383] = {20,12,3,30,ALIGNMENT_CHAOTIC,4,25,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_AMMONOID
+[363] = {15,15,3,20,ALIGNMENT_CHAOTIC,10,12,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_PROTO_MARTIAN
+[364] = {20,19,10,20,ALIGNMENT_EVIL,2,10,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0},
+--OBJ_MONSTER_FOOTPRINTS
+[145] = {20,19,10,20,ALIGNMENT_EVIL,2,12,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0},
+--OBJ_POD_DEVIL
+[384] = {15,18,3,25,ALIGNMENT_CHAOTIC,4,12,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_JUMPING_BEAN
+[385] = {10,22,10,10,ALIGNMENT_CHAOTIC,1,4,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_HEDGEHOG
+[365] = {17,12,8,20,ALIGNMENT_CHAOTIC,3,20,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_CREEPER
+[374] = {15,15,3,20,ALIGNMENT_CHAOTIC,1,16,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_AGROBOT
+[376] = {29,18,10,30,ALIGNMENT_CHAOTIC,10,20,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+--OBJ_CANAL_WORM
+[379] = {20,20,15,30,ALIGNMENT_CHAOTIC,5,25,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0},
+--OBJ_DUST_DEVIL
+[381] = {30,30,30,255,ALIGNMENT_NEUTRAL,99,60,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+--OBJ_SAND_TRAPPER
+[386] = {25,25,10,40,ALIGNMENT_CHAOTIC,4,18,1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,0},
+--OBJ_OXY_LEECH
+[375] = {10,25,12,20,ALIGNMENT_CHAOTIC,1,10,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_CAVE_WORM
+[366] = {15,15,15,30,ALIGNMENT_EVIL,2,15,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_JANITOR
+[367] = {20,15,10,30,ALIGNMENT_CHAOTIC,10,20,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+--OBJ_BUSHRAT
+[387] = {10,25,10,20,ALIGNMENT_EVIL,2,12,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_PLANTHER
+[368] = {15,22,12,20,ALIGNMENT_CHAOTIC,4,20,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_MINOTAUR
+[398] = {20,18,8,90,ALIGNMENT_NEUTRAL,2,15,0,1,1,1,0,0,0,0,0,0,1,0,0,0,0,0},
+--OBJ_YOUR_MOTHER
+[391] = {12,20,15,255,ALIGNMENT_CHAOTIC,9,1,0,1,0,1,0,0,0,0,0,0,1,0,0,0,0,0},
+--OBJ_TREE
+[408] = {25,18,5,90,ALIGNMENT_NEUTRAL,3,12,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_SOMETHING_YOU_SHOULDNT2
+[424] = {25,18,5,90,ALIGNMENT_NEUTRAL,3,12,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
+--OBJ_HUGE_RED_SPOT
+[403] = {20,20,10,255,ALIGNMENT_EVIL,99,12,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 }
+
+
+--
+-- actor_init(actor)
+--
+
+function actor_init(actor, alignment)
+
+ local actor_base = actor_tbl[actor.obj_n]
+ if actor_base ~= nil then
+   actor.str = actor_randomise_stat(actor_base[1])
+   actor.dex = actor_randomise_stat(actor_base[2])
+   actor.int = actor_randomise_stat(actor_base[3])
+   actor.hp = actor_randomise_stat(actor_base[4])
+
+   actor.level = 0
+   actor.align = actor_base[5]
+ else
+   actor.str = 15
+   actor.dex = 15
+   actor.int = 15
+   actor.hp = 30
+   actor.level = 1
+   actor.align = ALIGNMENT_CHAOTIC
+ end
+ 
+ if alignment ~= nil and alignment ~= ALIGNMENT_DEFAULT then
+   actor.align = alignment
+ end
+   
+ actor.wt = 8
+ actor.combat_mode = 8
+ actor.mpts = actor.dex
+ actor.exp = 0
+   
+end
 
 function actor_map_dmg(actor, map_x, map_y, map_z)
 	--FIXME

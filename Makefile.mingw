@@ -152,6 +152,7 @@ install: all
 
 copy_scripts:
 	mkdir -p $(U6PATH)/data/scripts
+	mkdir -p $(U6PATH)/data/scripts/common
 	mkdir -p $(U6PATH)/data/scripts/md
 	mkdir -p $(U6PATH)/data/scripts/se
 	mkdir -p $(U6PATH)/data/scripts/u6
@@ -172,6 +173,7 @@ copy_scripts:
 	cp data/scripts/u6/magic/circle_06/*.lua $(U6PATH)/data/scripts/u6/magic/circle_06
 	cp data/scripts/u6/magic/circle_07/*.lua $(U6PATH)/data/scripts/u6/magic/circle_07
 	cp data/scripts/u6/magic/circle_08/*.lua $(U6PATH)/data/scripts/u6/magic/circle_08
+	cp data/scripts/common/*.lua $(U6PATH)/data/scripts/common
 	cp data/scripts/md/*.lua $(U6PATH)/data/scripts/md
 	cp data/scripts/se/*.lua $(U6PATH)/data/scripts/se
 	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
