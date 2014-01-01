@@ -661,71 +661,8 @@ Obj *Actor::get_weapon_obj(sint8 readied_obj_location)
 void Actor::attack(sint8 readied_obj_location, MapCoord target, Actor *foe)
 {
    const uint8 attack_cost = 10; // base cost to attack
-   const CombatType *combat_type;
 
-   combat_type = get_weapon(readied_obj_location);
-
-   assert(combat_type != NULL); // this should be set
-// if(combat_type == NULL)
-//   return;
-   //DEBUG(0, LEVEL_DEBUGGING, "%s (%d) attacking %s (%d)\n", get_name(), id_n, actor->get_name(), actor->id_n);
-   //face_location(target);
-
-   //FIXME just hacked in to test lua actor_attack()
    Game::get_game()->get_script()->call_actor_attack(this, target, get_weapon_obj(readied_obj_location), foe);
-
-/*
-// using new defend() method
-   uint8 damage = actor->defend(dex, combat_type->attack);
-   // FIXME: properly handle missile weapons
-   // they still hit if they do 0 damage, and miss if the defender saved
-   // and should we calculate who else the attack could hit so they can defend?
-   if(combat_type->attack_type == ATTACK_TYPE_THROWN
-      || combat_type->attack_type == ATTACK_TYPE_MISSLE)
-   {
-      MapCoord start(this->get_location());
-      MapCoord target(actor->get_location());
-      // effect hits actor for damage
-      if(damage > 0)
-         new MissileEffect(combat_type->missle_tile_num,
-            combat_type->thrown_obj_n, start, target, damage);
-      else // miss (potentially hitting anything in the way)
-      {
-         // randomly move target to another square
-         if((target.x - start.x) == 0 || (target.x - start.x) > (target.y - start.y)) // moving more vertically
-            target.x += NUVIE_RAND() % 3 - 1;
-         else if((target.y - start.y) == 0 || (target.y - start.y) > (target.x - start.x)) // moving more horizontally
-            target.y += NUVIE_RAND() % 3 - 1;
-         else // moving diagonally
-         {
-            target.x += NUVIE_RAND() % 3 - 1;
-            target.y += NUVIE_RAND() % 3 - 1;
-         }
-         new MissileEffect(combat_type->missle_tile_num,
-            combat_type->thrown_obj_n, start, target, combat_type->attack,
-            MISSILE_HIT_ACTORS);
-      }
-   }
-   else if(damage > 0)
-   {
-      if(combat_type->breaks_on_contact)
-      {
-         weapon_obj = readied_objects[readied_obj_location]->obj;
-         remove_readied_object(readied_obj_location);
-         inventory_remove_obj(weapon_obj);
-         if(id_n == Game::get_game()->get_player()->get_actor()->id_n)
-            nuprint("Thy sword hath shattered!\n");
-      }
-      if(damage == 255) // A weapon that does 255 damage kills every time.
-      {
-         actor->hit(255, ACTOR_FORCE_HIT);
-      }
-      else
-      {
-         actor->hit(damage, ACTOR_FORCE_HIT);
-      }
-   }
-*/
 
    set_moves_left(moves - attack_cost);
 }
