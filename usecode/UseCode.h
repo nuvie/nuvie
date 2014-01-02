@@ -221,6 +221,7 @@ private:
  bool out_of_use_range(Obj *obj, bool check_enemies);
 
  ScriptThread *get_running_script();
+ bool is_script_running();
 
  protected:
 

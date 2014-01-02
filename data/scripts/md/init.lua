@@ -1,7 +1,7 @@
 local lua_file = nil
 
 --load common functions
-lua_file = nuvie_load("common/actor.lua"); lua_file();
+lua_file = nuvie_load("common/common.lua"); lua_file();
 
 
 function dbg(msg_string)

@@ -194,6 +194,7 @@ static int nscript_map_remove_obj(lua_State *L);
 static int nscript_map_is_water(lua_State *L);
 static int nscript_map_is_on_screen(lua_State *L);
 static int nscript_map_get_impedence(lua_State *L);
+static int nscript_map_get_tile_num(lua_State *L);
 static int nscript_map_get_dmg_tile_num(lua_State *L);
 static int nscript_map_line_test(lua_State *L);
 static int nscript_map_line_hit_check(lua_State *L);
@@ -550,6 +551,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_map_get_impedence);
    lua_setglobal(L, "map_get_impedence");
+
+   lua_pushcfunction(L, nscript_map_get_tile_num);
+   lua_setglobal(L, "map_get_tile_num");
 
    lua_pushcfunction(L, nscript_map_get_dmg_tile_num);
    lua_setglobal(L, "map_get_dmg_tile_num");
@@ -2226,6 +2230,24 @@ static int nscript_map_get_impedence(lua_State *L)
 	lua_pushinteger(L, map->get_impedance(x, y, z, ignore_objects));
 
 	return 1;
+}
+
+static int nscript_map_get_tile_num(lua_State *L)
+{
+  Map *map = Game::get_game()->get_game_map();
+
+  uint16 x = (uint16) luaL_checkinteger(L, 1);
+  uint16 y = (uint16) luaL_checkinteger(L, 2);
+  uint8 z = (uint8) luaL_checkinteger(L, 3);
+
+  Tile *t = map->get_tile(x, y, z);
+  if(t != NULL)
+  {
+    lua_pushinteger(L, t->tile_num);
+    return 1;
+  }
+
+  return 0;
 }
 
 static int nscript_map_get_dmg_tile_num(lua_State *L)

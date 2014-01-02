@@ -1,8 +1,22 @@
+2014-01-02  Eric Fry <efry at users.sourceforge.net> r1796
+	* Changed MD usecode to select target with direction cursor.
+	* Fixed user input cancellation when using new usecode scripts.
+	* Added new common/common.lua script
+	* Moved more script functions into common script files.
+	* Added MD missc text only usecode function.
+	* Added MD digging object on ground usecode function. You can now dig holes
+	  with a shovel.
+	* Changed new usecode script logic to allow using an object on a map location
+	  target instead of a target object. The digging usecode is an example of
+	  this.
+	* Added UseCode::is_script_running()
+	* Added map_get_tile_num() script function.
+
 2014-01-01  Eric Fry <efry at users.sourceforge.net> r1795
 	* Removed useless code and assert from Actor::attack()
 	* Fixed Nellie Bly's name in new UI font. replaced underscore with space.
 
-2012-04-03  Kirben r1794
+2014-01-01  Kirben r1794
 	* Fixed mingw build
 
 2014-01-01  Eric Fry <efry at users.sourceforge.net> r1793

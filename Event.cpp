@@ -3291,6 +3291,22 @@ void Event::cancelAction()
             else
                 view_manager->get_inventory_view()->Hide();
         }
+        else
+        {
+          if(usecode)
+          {
+            if(usecode->is_script_running())
+            {
+              if(game->is_orig_style()) //FIXME consolidate this logic with magic script logic above
+              {
+                  view_manager->get_inventory_view()->release_focus();
+                  view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
+              }
+              else
+                  view_manager->close_all_gumps();
+            }
+          }
+        }
         endAction();
         cancelAction();
         return;
@@ -3319,6 +3335,11 @@ void Event::cancelAction()
     }
     else if(mode == USE_MODE)
     {
+      if(usecode->is_script_running())
+      {
+        usecode->get_running_script()->resume_with_nil();
+      }
+
     	if(callback_target)
     	{
     		message(CB_INPUT_CANCELED, (char*)&input);

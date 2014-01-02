@@ -98,6 +98,14 @@ ScriptThread *UseCode::get_running_script()
   return NULL;
 }
 
+bool UseCode::is_script_running()
+{
+  if(script_thread && script_thread->is_running())
+    return true;
+
+  return false;
+}
+
 bool UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
 {
   return script->call_has_usecode(obj, ev);

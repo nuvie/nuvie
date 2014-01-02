@@ -213,6 +213,7 @@ Source: data\images\gumps\spellbook\rd.bmp; DestDir: {app}\data\images\gumps\spe
 Source: data\images\roof_tiles.bmp; DestDir: {app}\data\images; Flags: ignoreversion
 Source: data\maps\u6\roof_map_00.dat; DestDir: {app}\data\maps\u6; Flags: ignoreversion
 Source: data\scripts\common\actor.lua; DestDir: {app}\data\scripts\common; Flags: ignoreversion
+Source: data\scripts\common\common.lua; DestDir: {app}\data\scripts\common; Flags: ignoreversion
 Source: data\scripts\md\actor.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
 Source: data\scripts\md\init.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
 Source: data\scripts\md\intro.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
