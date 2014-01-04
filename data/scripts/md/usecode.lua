@@ -207,53 +207,62 @@ function use_tool_on_ground(obj, target_obj, actor, target_x, target_y, target_z
 	end
 end
 
+function use_shovel_on_pile_to_hole(obj, target_obj, to_obj, actor)
+	Obj.removeFromEngine(target_obj)
+	Obj.removeFromEngine(to_obj)
+	--FIXME play sfx here. 1B (twice)
+	print("You filled in the hole.\n")
+end
+
 
 local usecode_table = {
 --OBJ_PICK
-[65]={["on"]={[255]=use_misc_text,[257]=use_misc_text}}, --hole in ice, hole
+[65]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_SHOVEL
-[66]={["on"]={[255]=use_misc_text,[257]=use_misc_text,[0]=use_tool_on_ground}}, --hole in ice, hole
+[66]={[255]=use_misc_text,[257]=use_misc_text,[258]={[257]=use_shovel_on_pile_to_hole},[0]=use_tool_on_ground}, --hole in ice, hole
 --OBJ_HOE 
-[67]={["on"]={[255]=use_misc_text,[257]=use_misc_text}}, --hole in ice, hole
+[67]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_BERRY4
-[77]={["func"]=use_misc_text},
+[77]=use_misc_text,
 --OBJ_CLUMP_OF_ROUGE_BERRIES
-[78]={["func"]=use_misc_text}, 
-[86]={["func"]=use_container},
-[87]={["func"]=use_container},
-[96]={["func"]=use_sextant},
-[102]={["on"]={[86]=use_crate,[427]=use_prybar_on_hatch}},
-[104]={["func"]=use_container},
+[78]=use_misc_text, 
+[86]=use_container,
+[87]=use_container,
+[96]=use_sextant,
+[102]={[86]=use_crate,[427]=use_prybar_on_hatch},
+[104]=use_container,
 --OBJ_BLOB_OF_OXIUM
-[131]={["func"]=use_misc_text}, 
-[152]={["func"]=use_door},
+[131]=use_misc_text,
+--OBJ_DOOR 
+[152]=use_door,
 --OBJ_CAMERA
-[184]={["func"]=use_misc_text},
+[184]=use_misc_text,
 --OBJ_CABLE_SPOOL
-[199]={["func"]=use_misc_text},
-[222]={["func"]=use_door},
+[199]=use_misc_text,
+[222]=use_door,
 --OBJ_MARTIAN_HOE
-[263]={["on"]={[255]=use_misc_text,[257]=use_misc_text}}, --hole in ice, hole
+[263]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_MARTIAN_SHOVEL
-[267]={["on"]={[255]=use_misc_text,[257]=use_misc_text}}, --hole in ice, hole
-[273]={["on"]={[86]=use_crate}}, --Hammer needs more codes
-[284]={["func"]=use_container},
+[267]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
+[273]={[86]=use_crate}, --Hammer needs more codes
+[284]=use_container,
 --OBJ_DREAM_MACHINE1
-[288]={["func"]=use_misc_text},
+[288]=use_misc_text,
 --OBJ_MARTIAN_CLOCK
-[293]={["func"]=use_misc_text},
+[293]=use_misc_text,
 --OBJ_OXYGENATED_AIR_MACHINE
-[323]={["func"]=use_misc_text},
+[323]=use_misc_text,
 --OBJ_MARTIAN_PICK
-[327]={["on"]={[255]=use_misc_text,[257]=use_misc_text}}, --hole in ice, hole
-[421]={["func"]=use_door},
-[427]={["func"]=use_misc_text},
+[327]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
+--OBJ_CLOSED_HATCH
+[421]=use_door,
+[427]=use_misc_text,
 --OBJ_PILE_OF_ROCKS
-[442]={["func"]=use_misc_text},
+[442]=use_misc_text,
 --OBJ_PILE_OF_IRON_ORE
-[443]={["func"]=use_misc_text},
+[443]=use_misc_text,
 --OBJ_PILE_OF_COAL
-[444]={["func"]=use_misc_text}, 
+[444]=use_misc_text,
 }
 
 
@@ -265,45 +274,75 @@ function has_usecode(obj, usecode_type)
 	return false
 end
 
-function use_obj(obj, actor)
-	if usecode_table[obj.obj_n].on ~= nil then
-
-		local dir = get_direction("On - ")
-		if dir == nil then
-			print("nothing!\n")
-			return
+function use_obj_on_to(obj, target_obj, actor, use_to_tbl)
+	local dir = get_direction("To - ")
+	if dir == nil then
+		print("nothing!\n")
+		return
+	end
+	
+	local to_x, to_y = direction_get_loc(dir, actor.x, actor.y)
+	
+	local to_obj = map_get_obj(to_x, to_y, actor.z)
+	
+	if to_obj ~= nil then
+		print(to_obj.name.."\n")
+		local func = use_to_tbl[to_obj.obj_n]
+		if func ~= nil then
+			func(obj, target_obj, to_obj, actor)
 		end
+	else
+		print("something")
+	end
+end
 
-		local target_x, target_y = direction_get_loc(dir, actor.x, actor.y)
-		
-		local target_obj = map_get_obj(target_x, target_y, actor.z)
-		
-		if target_obj ~= nil then
-			print(target_obj.name.."\n\n")
-			local func = usecode_table[obj.obj_n].on[target_obj.obj_n]
+function use_obj_on(obj, actor, use_on_tbl)
+	local dir = get_direction("On - ")
+	if dir == nil then
+		print("nothing!\n")
+		return
+	end
+
+	local target_x, target_y = direction_get_loc(dir, actor.x, actor.y)
+	
+	local target_obj = map_get_obj(target_x, target_y, actor.z)
+	
+	if target_obj ~= nil then
+		print(target_obj.name.."\n")
+		local on = use_on_tbl[target_obj.obj_n]
+		if on ~= nil then
+			if type(on) == "function" then
+				local func = on
+				func(obj, target_obj, actor)
+			else
+				use_obj_on_to(obj, target_obj, actor, on)
+			end
+		else
+			local func = use_on_tbl[0]
 			if func ~= nil then
 				func(obj, target_obj, actor)
 			else
-				func = usecode_table[obj.obj_n].on[0]
-				if func ~= nil then
-					func(obj, target_obj, actor)
-				else
-					print("\nNo effect\n")
-				end
-			end
-		else
-			local func = usecode_table[obj.obj_n].on[0]
-			if func ~= nil then
-				func(obj, nil, actor, target_x, target_y, actor.z)
-			else
-				print("nothing!\n")
+				print("\nNo effect\n")
 			end
 		end
 	else
-		local func = usecode_table[obj.obj_n].func
+		local func = use_on_tbl[0]
+		if func ~= nil then
+			func(obj, nil, actor, target_x, target_y, actor.z)
+		else
+			print("nothing!\n")
+		end
+	end
+end
+
+function use_obj(obj, actor)
+	if type(usecode_table[obj.obj_n]) == "function" then
+		local func = usecode_table[obj.obj_n]
 		if func ~= nil then
 			print("\n")
 			func(obj, actor)
 		end
+	else
+		use_obj_on(obj, actor, usecode_table[obj.obj_n])
 	end
 end
