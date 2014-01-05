@@ -25,6 +25,7 @@
  */
 
 #include "nuvieDefs.h"
+#include "NuvieBmpFile.h"
 #include "DraggableView.h"
 
 class Configuration;
@@ -33,13 +34,14 @@ class ObjManager;
 class Screen;
 class Actor;
 class Font;
-class U6Bmp;
 class DollWidget;
 
 
 #define DOLLVIEWGUMP_HEIGHT 136
 
 class DollViewGump : public DraggableView {
+
+  NuvieBmpFile bmp;
 
 	GUI_Button *gump_button;
 	GUI_Button *combat_button;
@@ -55,6 +57,7 @@ class DollViewGump : public DraggableView {
 	bool is_avatar;
 
 	SDL_Surface *avatar_doll;
+  SDL_Surface *actor_doll;
 
 public:
  DollViewGump(Configuration *cfg);
@@ -82,7 +85,11 @@ public:
  void left_arrow();
  void right_arrow();
 
+ private:
+ std::string getDataDirString();
  void loadAvatarDollImage(std::string datadir);
+ void loadCustomActorDollImage();
+
 };
 
 #endif /* __DollViewGump_h__ */

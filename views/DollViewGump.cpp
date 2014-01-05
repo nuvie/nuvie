@@ -44,6 +44,7 @@ DollViewGump::DollViewGump(Configuration *cfg) : DraggableView(cfg),
 {
 	bg_image = NULL;
 	avatar_doll = NULL;
+	actor_doll = NULL;
 	is_avatar = false;
 }
 
@@ -53,6 +54,8 @@ DollViewGump::~DollViewGump()
 		delete font;
 	if(avatar_doll)
 		SDL_FreeSurface(avatar_doll);
+	if(actor_doll)
+	  SDL_FreeSurface(actor_doll);
 }
 
 bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Actor *a, Font *f, Party *p, TileManager *tm, ObjManager *om)
@@ -128,8 +131,23 @@ bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16
 	party_button->Hide();
 
 	loadAvatarDollImage(datadir);
+	loadCustomActorDollImage();
 
 	return true;
+}
+
+std::string DollViewGump::getDataDirString()
+{
+  std::string datadir = GUI::get_gui()->get_data_dir();
+  std::string path;
+  build_path(datadir, "images", path);
+  datadir = path;
+  build_path(datadir, "gumps", path);
+  datadir = path;
+  build_path(datadir, "doll", path);
+  datadir = path;
+
+  return datadir;
 }
 
 void DollViewGump::loadAvatarDollImage(std::string datadir) {
@@ -139,7 +157,23 @@ void DollViewGump::loadAvatarDollImage(std::string datadir) {
 
 	sprintf(filename, "avatar_%s_%02d.bmp", get_game_tag(Game::get_game()->get_game_type()), portrait_num);
 	build_path(datadir, filename, imagefile);
-	avatar_doll = SDL_LoadBMP(imagefile.c_str());
+	avatar_doll = bmp.getSdlSurface32(imagefile);
+}
+
+void DollViewGump::loadCustomActorDollImage() {
+  std::string datadir = getDataDirString();
+  char filename[17]; //actor_nn_nnn.bmp\0
+  std::string imagefile;
+  uint8 actor_num = actor->get_actor_num();
+
+  if(actor_doll != NULL)
+  {
+    SDL_FreeSurface(actor_doll);
+  }
+  sprintf(filename, "actor_%s_%03d.bmp", get_game_tag(Game::get_game()->get_game_type()), actor_num);
+  build_path(datadir, filename, imagefile);
+  actor_doll = bmp.getSdlSurface32(imagefile);
+  //actor_doll = SDL_LoadBMP(imagefile.c_str());
 }
 
 static const char combat_mode_tbl[][8] = {"COMMAND", "FRONT", "REAR", "FLANK", "BERSERK", "RETREAT", "ASSAULT"};
@@ -150,7 +184,12 @@ void DollViewGump::set_actor(Actor *a)
 {
 	actor = a;
 	if(actor)
+	{
 		is_avatar = actor->is_avatar();
+
+		if(!is_avatar)
+		  loadCustomActorDollImage();
+	}
 
 	if(doll_widget)
 		doll_widget->set_actor(actor);
@@ -166,13 +205,24 @@ void DollViewGump::Display(bool full_redraw)
  dst.h = 136;
  SDL_BlitSurface(bg_image, NULL, surface, &dst);
 
- if(is_avatar && avatar_doll)
+ if(is_avatar)
  {
-	 dst.x += 45;
-	 dst.y += 32;
-	 SDL_BlitSurface(avatar_doll, NULL, surface, &dst);
+   if(avatar_doll)
+   {
+     dst.x += 45;
+     dst.y += 32;
+     SDL_BlitSurface(avatar_doll, NULL, surface, &dst);
+   }
  }
-
+ else
+ {
+   if(actor_doll)
+   {
+     dst.x += 45;
+     dst.y += 32;
+     SDL_BlitSurface(actor_doll, NULL, surface, &dst);
+   }
+ }
  uint8 w = font->get_center(actor->get_name(), 58);
  font->TextOut(screen->get_sdl_surface(), area.x + 29 + w, area.y + 7, actor->get_name());
 

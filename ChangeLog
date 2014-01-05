@@ -1,3 +1,13 @@
+2014-01-05  Eric Fry <efry at users.sourceforge.net> r1798
+	* Added support for custom doll images for other actors. Any actor can have a
+	  custom doll gump image now. You simply create a bmp file with the following
+	  name 'data/images/gumps/doll/actor_<gametype>_<actor_num>.bmp'
+	  So Dupre would be data/images/gumps/doll/actor_U6_002.bmp
+	* Changed DollViewGump to use the new NuvieBmpFile class.
+	* Resaved all the existing doll images as indexed bmp files with the standard
+	  U6 palette.
+	* Added HiPhish's doll images for Dupre, Shamino and Iolo.
+
 2014-01-04  Eric Fry <efry at users.sourceforge.net> r1797
 	* Added Use 'on' 'to' actions to new MD usecode script.
 	* Added use shovel on pile to hole usecode.
