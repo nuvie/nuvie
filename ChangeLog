@@ -1,3 +1,7 @@
+2013-01-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1800
+	* Fix r1785 regression that caused a crash in new style when using a
+	  container inside a gump.
+
 2014-01-05  Eric Fry <efry at users.sourceforge.net> r1798
 	* Added support for custom doll images for other actors. Any actor can have a
 	  custom doll gump image now. You simply create a bmp file with the following

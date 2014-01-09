@@ -3023,8 +3023,8 @@ void Event::doAction()
         }
         else
         {
-          if(game->is_new_style())
-            view_manager->close_all_gumps();
+//          if(game->is_new_style()) // don't do this it wll crash when using containers inside a gump
+//            view_manager->close_all_gumps();
 
           if(input.type == EVENTINPUT_OBJECT)
             use(input.obj);
