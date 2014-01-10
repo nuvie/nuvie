@@ -55,8 +55,6 @@ Background::~Background()
 bool Background::init()
 {
  std::string filename;
- U6Lib_n file;
- unsigned char *temp_buf;
 
  if(Game::get_game()->is_orig_style())
  {
@@ -70,20 +68,12 @@ bool Background::init()
 
 		case NUVIE_GAME_MD :
 							 background = new U6Shape();
-							 config_get_path(config,"mdscreen.lzc",filename);
-							 file.open(filename,4,game_type);
-							 temp_buf = file.get_item(0);
-							 background->load(temp_buf + 8);
-							 free(temp_buf);
+							 background->load_WoU_background(config, game_type);
 							 break;
 
 		case NUVIE_GAME_SE :
 							 background = new U6Shape();
-							 config_get_path(config,"screen.lzc",filename);
-							 file.open(filename,4,game_type);
-							 temp_buf = file.get_item(0);
-							 background->load(temp_buf + 8);
-							 free(temp_buf);
+							 background->load_WoU_background(config, game_type);
 							 break;
 	   }
 

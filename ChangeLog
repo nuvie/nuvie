@@ -1,3 +1,6 @@
+2013-01-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1803
+	* Add load_WoU_background function to U6Shape
+
 2013-01-10  Dominik Reichardt <dominus@users.sourceforge.net> r1802
 	* Fixed compiling with clang against OS X SDK 10.9 (thanks wjp).
 

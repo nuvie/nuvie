@@ -276,6 +276,25 @@ bool U6Shape::load(unsigned char *buf)
 	return true;
 }
 
+// TODO - allow for failure
+bool U6Shape::load_WoU_background(Configuration *config, nuvie_game_t game_type)
+{
+ U6Lib_n file;
+ unsigned char *temp_buf;
+ std::string filename;
+
+ if(game_type == NUVIE_GAME_MD)
+	config_get_path(config,"mdscreen.lzc",filename);
+ else // SE
+	config_get_path(config,"screen.lzc", filename);
+
+ file.open(filename,4,game_type);
+ temp_buf = file.get_item(0);
+ load(temp_buf + 8);
+ free(temp_buf);
+ return true;
+}
+
 /*
  * =====================================
  *  unsigned char *U6Shape::get_data();

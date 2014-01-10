@@ -34,6 +34,7 @@
 #include "SDL.h"
 
 class U6Lib_n;
+class Configuration;
 
 /*
  * ==================
@@ -60,6 +61,7 @@ public:
 	virtual bool load(std::string filename);
   bool load(U6Lib_n *file, uint32 index);
 	virtual bool load(unsigned char *buf);
+	bool load_WoU_background(Configuration *config, nuvie_game_t game_type);
 
 	unsigned char *get_data();
   SDL_Surface *get_shape_surface();
