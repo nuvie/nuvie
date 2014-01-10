@@ -1,4 +1,13 @@
-2013-01-08  Malignant Manor <malignantmanor@users.sourceforge.net> r1800
+2013-01-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1801
+	* Stop container view gump from defaulting to the party leader as the actor.
+	  It will now default to the container obj owner or NULL if not one. This
+	  fixes bug #289.
+	* Have container view gump show the name and carrying capacity of the owner
+	  when using a container in someone's inventory.
+	* Replace local variable usage of a private variable with an actual local
+	  variable in ContainerWidget.cpp.
+
+2013-01-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1800
 	* Fix r1785 regression that caused a crash in new style when using a
 	  container inside a gump.
 

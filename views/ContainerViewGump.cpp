@@ -54,7 +54,7 @@ bool ContainerViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, u
 {
 	View::init(x,y,f,p,tm,om);
 
-	actor = p->get_actor(p->get_leader());
+	//actor = p->get_actor(p->get_leader()); don't have party leader as default, get owner of container obj or leave NULL (moved to init_container_type)
 
 	std::string datadir = GUI::get_gui()->get_data_dir();
 	std::string imagefile;
@@ -82,6 +82,8 @@ void ContainerViewGump::init_container_type(std::string datadir, Obj *obj_type)
 
 	if(obj_type != NULL)
 	{
+		if(obj_type->is_in_inventory())
+			actor = obj_type->get_actor_holding_obj();
 		if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
 		{
 			if(obj_type->obj_n == OBJ_U6_CHEST)
@@ -279,7 +281,7 @@ void ContainerViewGump::Display(bool full_redraw)
 
  DisplayChildren(full_redraw);
 
- if(container_obj == NULL)
+ if(actor)
  {
 	 font->drawString(screen, actor->get_name(), area.x + 18, area.y + 2, 15, 15);
 	 display_inventory_weight();

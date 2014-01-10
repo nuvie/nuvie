@@ -37,6 +37,7 @@
 #include "MapWindow.h"
 #include "Player.h"
 #include "ActorManager.h"
+#include "Script.h"
 
 #include "InventoryFont.h"
 #include "ViewManager.h"
@@ -220,7 +221,7 @@ GUI_status ContainerWidget::MouseDown(int x, int y, int button)
  y -= area.y;
 
  // ABOEING
- if(actor && (button == USE_BUTTON || button == ACTION_BUTTON || button == DRAG_BUTTON))
+ if(/*actor && */(button == USE_BUTTON || button == ACTION_BUTTON || button == DRAG_BUTTON))
  {
     Obj *obj; // FIXME: duplicating code in DollWidget
     if((obj = get_obj_at_location(x,y)) != NULL)
@@ -397,16 +398,29 @@ bool ContainerWidget::drag_accept_drop(int x, int y, int message, void *data)
           return false;
       }
     }
-    if(obj->is_readied() && obj->get_actor_holding_obj() != actor)
+    Actor *container_owner = (container_obj ? container_obj->get_actor_holding_obj() : NULL);
+    if(!container_owner)
+        container_owner = actor;
+    if(obj->is_readied() && obj->get_actor_holding_obj() != container_owner)
     {
         DEBUG(0,LEVEL_WARNING,"ContainerWidget: Cannot Move between party members!\n"); 
         return false;
     }
-    if(obj->is_in_inventory() && obj->get_actor_holding_obj() != actor)
+    if(!obj->is_in_inventory()) {
+        if(container_owner) {
+            Game::get_game()->get_scroll()->display_string("Get-");
+            Game::get_game()->get_scroll()->display_string(obj_manager->look_obj(obj, OBJ_SHOW_PREFIX));
+            if(Game::get_game()->get_script()->call_actor_get_obj(container_owner, obj) == false) {
+                Game::get_game()->get_scroll()->message("\n\n");
+                return false;
+            }
+            Game::get_game()->get_scroll()->message("\n\n");
+        }
+    } else if(container_owner && obj->get_actor_holding_obj() != container_owner)
     {
         Event *event = Game::get_game()->get_event();
-        event->display_move_text(actor, obj);
-        if(!event->can_move_obj_between_actors(obj, obj->get_actor_holding_obj(), actor, false))
+        event->display_move_text(container_owner, obj);
+        if(!event->can_move_obj_between_actors(obj, obj->get_actor_holding_obj(), container_owner, false))
         {
             Game::get_game()->get_scroll()->message("\n\n");
             return false;
@@ -418,15 +432,18 @@ bool ContainerWidget::drag_accept_drop(int x, int y, int message, void *data)
         Game::get_game()->get_scroll()->message("Not possible.\n\n");
         return false;
     }
+    Actor *grabber = actor;
+    if(!grabber)
+        grabber = Game::get_game()->get_player()->get_actor();
     if(container_obj && !container_obj->is_in_inventory()
-       && !Game::get_game()->get_map_window()->can_get_obj(actor, container_obj))
+       && !Game::get_game()->get_map_window()->can_get_obj(grabber, container_obj))
     {
         Game::get_game()->get_scroll()->message("\n\nblocked\n\n");
         return false;
     }
     if(!obj->is_in_inventory() && !obj->is_readied())
     {
-        if(!Game::get_game()->get_map_window()->can_get_obj(actor, obj))
+        if(!Game::get_game()->get_map_window()->can_get_obj(grabber, obj))
         {
             Game::get_game()->get_scroll()->message("\n\nblocked\n\n");
             return false;
@@ -520,13 +537,13 @@ void ContainerWidget::try_click()
 {
 	Event *event = Game::get_game()->get_event();
 	UseCode *usecode = Game::get_game()->get_usecode();
-	Actor *actor = NULL;
+	Actor *owner = NULL;
 	if(!selected_obj)
 		selected_obj = ready_obj;
 	if(selected_obj)
-		actor = Game::get_game()->get_actor_manager()->get_actor(selected_obj->x);
-	if(!actor || !actor->is_in_party())
-		actor = Game::get_game()->get_player()->get_actor();
+		owner = Game::get_game()->get_actor_manager()->get_actor(selected_obj->x);
+	if(!owner || !owner->is_in_party())
+		owner = Game::get_game()->get_player()->get_actor();
 	switch(event->get_mode())
 	{
 		case MOVE_MODE:
@@ -541,13 +558,13 @@ void ContainerWidget::try_click()
 				container_obj = selected_obj;
 				if(usecode->is_chest(container_obj))
 				{
-					usecode->process_effects(container_obj, actor);
+					usecode->process_effects(container_obj, owner);
 					Redraw();
 				}
 			}
 			else
 			{
-				event->ready(selected_obj, actor);
+				event->ready(selected_obj, owner);
 				Redraw();
 			}
 			break;
@@ -559,7 +576,7 @@ void ContainerWidget::try_click()
 			event->close_gumps();
 			break;
 		default:
-			event->select_view_obj(selected_obj, actor);
+			event->select_view_obj(selected_obj, owner);
 			break;
 	}
 	ready_obj = NULL;
