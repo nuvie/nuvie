@@ -1,3 +1,6 @@
+2013-01-10  Dominik Reichardt <dominus@users.sourceforge.net> r1802
+	* Fixed compiling with clang against OS X SDK 10.9 (thanks wjp).
+
 2013-01-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1801
 	* Stop container view gump from defaulting to the party leader as the actor.
 	  It will now default to the container obj owner or NULL if not one. This
