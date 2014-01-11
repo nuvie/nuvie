@@ -60,10 +60,7 @@ ScrollWidgetGump::ScrollWidgetGump(Configuration *cfg, Screen *s)
  show_up_arrow = false;
  show_down_arrow = false;
 
- uint16 x_off = Game::get_game()->get_game_x_offset();
- uint16 y_off = Game::get_game()->get_game_y_offset();
-
- GUI_Widget::Init(NULL, x_off, y_off, SCROLLWIDGETGUMP_W, SCROLLWIDGETGUMP_H);
+ GUI_Widget::Init(NULL, 0, 0, SCROLLWIDGETGUMP_W, SCROLLWIDGETGUMP_H);
 
  add_new_line(); //MsgScroll requires a line to start.
 
@@ -175,6 +172,9 @@ GUI_status ScrollWidgetGump::KeyDown(SDL_keysym key)
     return MsgScroll::KeyDown(key);
 }
 
+static SDL_Rect arrow_up_rect[1] = {{SCROLLWIDGETGUMP_W - 8 - 1, 4 + 1, 7, 5}};
+static SDL_Rect arrow_down_rect[1] = {{SCROLLWIDGETGUMP_W - 8 - 1, SCROLLWIDGETGUMP_H - 8 + 3, 7 , 5}};
+
 GUI_status ScrollWidgetGump::MouseDown(int x, int y, int button)
 {
 	ScrollEventType event = SCROLL_ESCAPE;
@@ -183,6 +183,18 @@ GUI_status ScrollWidgetGump::MouseDown(int x, int y, int button)
 	{
 	case SDL_BUTTON_WHEELDOWN : event = SCROLL_DOWN; break;
 	case SDL_BUTTON_WHEELUP : event = SCROLL_UP; break;
+	case SDL_BUTTON_LEFT : {
+	                       x -= area.x;
+	                       y -= area.y;
+	                       if(HitRect(x,y, arrow_up_rect[0]))
+	                           event = SCROLL_UP;
+	                       else if(HitRect(x,y, arrow_down_rect[0]))
+	                           event = SCROLL_DOWN;
+// FIXME - uncomment when we get a checkmark
+//	                       else if(show_down_arrow || show_up_arrow) // don't close if scrollable
+//	                           return GUI_YUM;
+	                       break;
+	}
 	default : break;
 	}
 

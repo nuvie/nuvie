@@ -1,15 +1,19 @@
+2014-01-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1805
+	* Fix ScrollWidgetGump position when using game offsets
+	* Allow ScrollWidgetGump to be scrolled with the left mouse button
+
 2014-01-11  Eric Fry <efry at users.sourceforge.net> r1804
 	* Fixed bug when using the mapwindow overlays in fullmap mode.
 	  Changed the Screen copy_area16/32() methods to clip to the screen surface
 	  while copying.
 
-2013-01-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1803
+2014-01-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1803
 	* Add load_WoU_background function to U6Shape
 
-2013-01-10  Dominik Reichardt <dominus@users.sourceforge.net> r1802
+2014-01-10  Dominik Reichardt <dominus@users.sourceforge.net> r1802
 	* Fixed compiling with clang against OS X SDK 10.9 (thanks wjp).
 
-2013-01-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1801
+2014-01-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1801
 	* Stop container view gump from defaulting to the party leader as the actor.
 	  It will now default to the container obj owner or NULL if not one. This
 	  fixes bug #289.
@@ -18,7 +22,7 @@
 	* Replace local variable usage of a private variable with an actual local
 	  variable in ContainerWidget.cpp.
 
-2013-01-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1800
+2014-01-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1800
 	* Fix r1785 regression that caused a crash in new style when using a
 	  container inside a gump.
 
