@@ -2559,7 +2559,7 @@ SDL_Surface *MapWindow::get_sdl_surface(uint16 x, uint16 y, uint16 w, uint16 h)
 // new_surface = screen->create_sdl_surface_from(screen_area, screen->get_bpp(),
 //                                               copy_area.w, copy_area.h,
 //                                               copy_area.w);
- delete [] screen_area;
+ free(screen_area);
  return(new_surface);
 }
 

@@ -1850,11 +1850,40 @@ unsigned char *Screen::copy_area32(SDL_Rect *area, unsigned char *buf)
 	}
     uint32 *dest = copied;
     uint32 *src = (uint32 *)surface->pixels;
-            src += area->y * surface->w + area->x;
+    uint16 src_x_off = abs(area->x);
+    uint16 src_y_off = abs(area->y);
+    uint16 src_w = area->w;
+    uint16 src_h = area->h;
 
-    for(uint32 i = 0; i < area->h; i++)
+    if(area->x < 0)
     {
-        for(uint32 j = 0; j < area->w; j++)
+      src_x_off = 0;
+      src_w += area->x;
+      dest += abs(area->x);
+    }
+
+    if(area->y < 0)
+    {
+      src_y_off = 0;
+      src_h += area->y;
+      dest += (area->w * abs(area->y));
+    }
+
+    if(src_x_off + src_w > surface->w)
+    {
+      src_w -= ((src_x_off + src_w) - surface->w);
+    }
+
+    if(src_y_off + src_h > surface->h)
+    {
+      src_h -= ((src_y_off + src_h) - surface->h);
+    }
+
+    src += src_y_off * surface->w + src_x_off;
+
+    for(uint32 i = 0; i < src_h; i++)
+    {
+        for(uint32 j = 0; j < src_w; j++)
             dest[j] = src[j];
         dest += area->w;
         src += surface->w;
@@ -1895,18 +1924,47 @@ unsigned char *Screen::copy_area16(SDL_Rect *area, unsigned char *buf)
 	{
 		copied = (uint16 *)malloc(area->w * area->h * 2);
 	}
-    uint16 *dest = copied;
-    uint16 *src = (uint16 *)surface->pixels;
-            src += area->y * surface->w + area->x;
+  uint16 *dest = copied;
+  uint16 *src = (uint16 *)surface->pixels;
+  uint16 src_x_off = abs(area->x);
+  uint16 src_y_off = abs(area->y);
+  uint16 src_w = area->w;
+  uint16 src_h = area->h;
 
-    for(uint32 i = 0; i < area->h; i++)
-    {
-        for(uint32 j = 0; j < area->w; j++)
-            dest[j] = src[j];
-        dest += area->w;
-        src += surface->w;
-    }
-    return((unsigned char *)copied);
+  if(area->x < 0)
+  {
+    src_x_off = 0;
+    src_w += area->x;
+    dest += abs(area->x);
+  }
+
+  if(area->y < 0)
+  {
+    src_y_off = 0;
+    src_h += area->y;
+    dest += (area->w * abs(area->y));
+  }
+
+  if(src_x_off + src_w > surface->w)
+  {
+    src_w -= ((src_x_off + src_w) - surface->w);
+  }
+
+  if(src_y_off + src_h > surface->h)
+  {
+    src_h -= ((src_y_off + src_h) - surface->h);
+  }
+
+  src += src_y_off * surface->w + src_x_off;
+
+  for(uint32 i = 0; i < src_h; i++)
+  {
+      for(uint32 j = 0; j < src_w; j++)
+          dest[j] = src[j];
+      dest += area->w;
+      src += surface->w;
+  }
+  return((unsigned char *)copied);
 }
 
 

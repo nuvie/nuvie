@@ -1,3 +1,8 @@
+2014-01-11  Eric Fry <efry at users.sourceforge.net> r1804
+	* Fixed bug when using the mapwindow overlays in fullmap mode.
+	  Changed the Screen copy_area16/32() methods to clip to the screen surface
+	  while copying.
+
 2013-01-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1803
 	* Add load_WoU_background function to U6Shape
 
