@@ -1,3 +1,6 @@
+2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1810
+	* Fix improper centering of the map window when using variable screen sizes.
+
 2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1809
 	* Remove accidental code added in r1806 that would use the cfg screen size
 	  for offsets in original style
