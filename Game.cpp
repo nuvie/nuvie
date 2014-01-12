@@ -114,8 +114,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  magic = NULL;
  book = NULL;
  keybinder = NULL;
- 
- game_style = 0;
+
  pause_flags = PAUSE_UNPAUSED;
  pause_user_count = 0;
  ignore_event_delay = 0;
@@ -135,6 +134,16 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  uint16 screen_width = gui->get_width();
  uint16 screen_height = gui->get_height();
 
+ init_game_style();
+ if(is_orig_style()) {
+	game_width = 320; game_height = 200;
+ } else {
+	config->value("config/video/game_width", value, 320);
+	game_width = (value < screen_width) ? value : screen_width;
+	config->value("config/video/game_height", value, 200);
+	game_height = (value < screen_height) ? value : screen_height;
+ }
+
  config->value("config/video/game_width", value, 320);
  game_width = (value < screen_width) ? value : screen_width;
  config->value("config/video/game_height", value, 200);
@@ -144,11 +153,9 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  config->value("config/video/game_position", game_position, "center");
  
  if(game_position == "upper_left")
-    x_offset = y_offset = game_x_offset = game_y_offset = 0;
+    game_x_offset = game_y_offset = 0;
  else // center
  {
-    x_offset = (screen_width - 320)/2;
-    y_offset = (screen_height - 200)/2;
     game_x_offset = (screen_width - game_width)/2;
     game_y_offset = (screen_height - game_height)/2;
  }
@@ -194,8 +201,6 @@ Game::~Game()
 
 bool Game::loadGame(Script *s, SoundManager *sm)
 {
- init_game_style();
-
    dither = new Dither(config);
 
    script = s;

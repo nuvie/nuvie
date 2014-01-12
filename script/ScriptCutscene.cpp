@@ -980,8 +980,11 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	gui = g;
 
 	cursor = Game::get_game()->get_cursor();
-	x_off = Game::get_game()->get_x_offset();
-	y_off = Game::get_game()->get_y_offset();
+	x_off = Game::get_game()->get_game_x_offset();
+	y_off = Game::get_game()->get_game_y_offset();
+
+	x_off += (Game::get_game()->get_game_width() - 320)/2; // center it
+	y_off += (Game::get_game()->get_game_height() - 200)/2; // center it
 
 	nuvie_game_t game_type = Game::get_game()->get_game_type();
 

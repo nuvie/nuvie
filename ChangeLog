@@ -1,3 +1,7 @@
+2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1806
+	* Get rid of needless x_off and y_off values in game.h and related changes
+	* Properly center cutscenes
+
 2014-01-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1805
 	* Fix ScrollWidgetGump position when using game offsets
 	* Allow ScrollWidgetGump to be scrolled with the left mouse button
