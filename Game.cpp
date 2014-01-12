@@ -144,11 +144,6 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
 	game_height = (value < screen_height) ? value : screen_height;
  }
 
- config->value("config/video/game_width", value, 320);
- game_width = (value < screen_width) ? value : screen_width;
- config->value("config/video/game_height", value, 200);
- game_height = (value < screen_height) ? value : screen_height;
-
  string game_position;
  config->value("config/video/game_position", game_position, "center");
  
