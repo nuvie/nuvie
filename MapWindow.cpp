@@ -1264,12 +1264,22 @@ void MapWindow::drawRoofs()
 
 void MapWindow::drawRain()
 {
-	int c = win_width * win_height;
+	int c;
+	if(game->is_orig_style())
+		c = win_width * win_height;
+	else
+		c = (game->get_game_width() * game->get_game_height())/256;
 	for(int i=0;i<c;i++)
 	{
-		//FIXME this assumes we have a mapwindow border. fix this when we go full screen.
-		uint16 x = area.x + NUVIE_RAND()%((win_width-1)*16-2) + 8;
-		uint16 y = area.y + NUVIE_RAND()%((win_height-1)*16-2) + 8;
+		uint16 x;
+		uint16 y;
+		if(game->is_orig_style()) {
+			x = area.x + NUVIE_RAND()%((win_width-1)*16-2) + 8;
+			y = area.y + NUVIE_RAND()%((win_height-1)*16-2) + 8;
+		} else {
+				x = game->get_game_x_offset() + NUVIE_RAND()%(game->get_game_width() - 2);
+			y = game->get_game_y_offset() + NUVIE_RAND()%(game->get_game_height() - 2);
+		}
 
 		//FIXME the original does something with the palette if a pixel is black then draw gray etc.
 		//We can't do this easily here because we don't have the original 8 bit display surface.
