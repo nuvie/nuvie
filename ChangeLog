@@ -1,3 +1,10 @@
+2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1811
+	* Fix clip_rect and screen->update area for new style. Unfortunately, the
+	  roofs are still wrongly drawn outside of the map window clip_rect and it
+	  will corrupt the NULL background that exists when the game size is larger
+	  than the screen size. The left border of the upcoming original+ UI also
+	  has this roof corruption issue.
+
 2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1810
 	* Fix improper centering of the map window when using variable screen sizes.
 

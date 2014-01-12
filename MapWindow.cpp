@@ -247,8 +247,13 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
  win_width = width;
  win_height = height;
 
- area.w = win_width * 16;
- area.h = win_height * 16;
+ if(game->is_orig_style()) {
+   area.w = win_width * 16;
+   area.h = win_height * 16;
+} else {
+     area.w = game->get_game_width();
+   area.h = game->get_game_height();
+}
 
  // We make the temp map +1 bigger on the top and left edges
  // and +2 bigger on the bottom and right edges
@@ -287,10 +292,10 @@ if(game->is_orig_style())
 }
 else
 {
-	 clip_rect.x = area.x;
-	 clip_rect.y = area.y;
-	 clip_rect.w = win_width * 16;
-	 clip_rect.h = win_height * 16;
+	 clip_rect.x = game->get_game_x_offset();
+	 clip_rect.y = game->get_game_y_offset();
+	 clip_rect.w = area.w;
+	 clip_rect.h = area.h;
 }
  anim_manager->set_area(clip_rect);
 
@@ -829,7 +834,7 @@ void MapWindow::Display(bool full_redraw)
  if(game->is_orig_style())
 	 screen->update(area.x+8,area.y+8,win_width*16-16,win_height*16-16);
  else
-	 screen->update(area.x,area.y,win_width*16,win_height*16);
+	 screen->update(Game::get_game()->get_game_x_offset(), Game::get_game()->get_game_y_offset(), game->get_game_width(), game->get_game_height());
 
  if(window_updated)
   {
