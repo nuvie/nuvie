@@ -36,7 +36,7 @@ class Background: public GUI_Widget
 
  U6Shape *background;
  uint16 bg_w, bg_h;
- uint16 x_off, y_off;
+ uint16 x_off, y_off, right_bg_x_off, left_bg_x_off, border_width;
 
  public:
 
@@ -44,8 +44,10 @@ class Background: public GUI_Widget
  ~Background();
 
  bool init();
-
+ uint16 get_border_width() { return border_width; }
  void Display(bool full_redraw);
+ bool drag_accept_drop(int x, int y, int message, void *data); // needed for original+_full_map
+ void drag_perform_drop(int x, int y, int message, void *data); // needed for original+_full_map
 
 };
 

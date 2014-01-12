@@ -1,3 +1,24 @@
+2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1812
+	* Bind multi-use keybinding to semicolon ";".
+	* Stop MD command bar from being able to open the save menu.
+	* There are two new game styles, original+ and original+ full map. Original+
+	  allows the game to use the original UI and have resolutions greater than
+	  320x200. It gets rid of some useless background to show more of the game
+	  map. Original+ will have will stop drawing the map when the UI begins.
+	  Original+ full map will draw the map underneath UI if the gane height is
+	  greater than 200, else it will use Original+ instead.
+	* Fullscreen map has been renamed to new and the general/fullscreen_map cfg
+	  option has been replaced by video/game_style. The options are original,
+	  new, original+, and original+_full_map, and they can be set in the video
+	  options menu.
+	* A new cfg setting, ultima6/orig_plus_cb_text_color, will select the
+	  palette index color to use when displaying the text on the U6 command bar
+	  in both original+ styles.
+	* The command bar in both original+ styles can be hidden and shown by
+	  pressing the period "." key, The show_orig_plus_cb cfg setting in each
+	  game specic setting will control whether it is displayed on startup. The
+	  period key also changes the cfg setting.
+
 2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1811
 	* Fix clip_rect and screen->update area for new style. Unfortunately, the
 	  roofs are still wrongly drawn outside of the map window clip_rect and it

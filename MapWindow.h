@@ -93,7 +93,7 @@ class MapWindow: public GUI_Widget
  AnimManager *anim_manager;
 
  sint16 cur_x, cur_y;
- uint16 cursor_x, cursor_y;
+ uint16 cursor_x, cursor_y, map_center_xoff;
  sint16 mousecenter_x, mousecenter_y; // location mousecursor rotates around, relative to cur_x&cur_y
  uint16 last_boundary_fill_x, last_boundary_fill_y; // start of boundary-fill in previous blacking update
  Tile *cursor_tile;
@@ -106,7 +106,7 @@ class MapWindow: public GUI_Widget
  unsigned char *thumbnail;
  bool new_thumbnail;
 
- uint16 win_width, win_height;
+ uint16 win_width, win_height, border_width;
  uint8 cur_level;
 
  uint8 cur_x_add, cur_y_add; // pixel offset from cur_x,cur_y (set by shiftMapRelative)

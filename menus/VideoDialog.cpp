@@ -180,11 +180,14 @@ bool VideoDialog::init() {
 	const char* const lighting_text[] = { "none", "smooth", "original" };
 	lighting_button = new GUI_TextToggleButton(this, colX[3], buttonY[6], 70, height, lighting_text, 3, screen->get_old_lighting_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(lighting_button);
-// fullscreen map (needs reset)
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Game map is entire screen:", gui->get_font());
+// game_style (needs reset)
+	const char *game_style_text[4];
+	game_style_text[0] = "original style"; game_style_text[1] = "new style"; game_style_text[2] = "original+";
+	game_style_text[3] = "original+ full map";
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Game style:", gui->get_font());
 	AddWidget(widget);
-	fullscreen_map_button = new GUI_TextToggleButton(this, colX[4], buttonY[7], yesno_width, height, yesno_text, 2, game->is_new_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
-	AddWidget(fullscreen_map_button);
+	game_style_button = new GUI_TextToggleButton(this, colX[3] - 84, buttonY[7], 154, height, game_style_text, 4, game->get_game_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(game_style_button);
 // dithering (needs reset)
 	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[8], 0, 0, 0, "Old video graphics:", gui->get_font());
 	AddWidget(widget);
@@ -329,7 +332,10 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 			lighting_char = "original";
 		config->set("config/general/lighting", lighting_char);
 	// fullscreen_map
-		config->set("config/general/fullscreen_map", fullscreen_map_button->GetSelection() ? "yes" : "no");
+		const char *game_style_text[4];
+		game_style_text[0] = "original"; game_style_text[1] = "new"; game_style_text[2] = "original+";
+		game_style_text[3] = "original+_full_map";
+		config->set("config/video/game_style", game_style_text[game_style_button->GetSelection()]);
 	// dither
 		const char *dither_char;
 		uint8 dither = dither_button->GetSelection();

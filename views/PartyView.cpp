@@ -274,19 +274,19 @@ void PartyView::drag_perform_drop(int x, int y, int message, void *data)
 
 void PartyView::Display(bool full_redraw)
 {
- uint8 i;
- uint8 hp_text_color;
- Actor *actor;
- Tile *actor_tile;
- char *actor_name;
- char hp_string[4];
- uint8 party_size = party->get_party_size();
- int rowH = 16;
- if(MD)
-   rowH = 24;
 
- if(full_redraw || update_display)
+ if(full_redraw || update_display || Game::get_game()->is_original_plus_full_map())
   {
+   uint8 i;
+   uint8 hp_text_color;
+   Actor *actor;
+   Tile *actor_tile;
+   char *actor_name;
+   char hp_string[4];
+   uint8 party_size = party->get_party_size();
+   int rowH = 16;
+   if(MD)
+      rowH = 24;
    update_display = false;
    uint8 end_offset = row_offset + 5;
    if(MD)

@@ -215,6 +215,9 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
                          break;
    }
 
+ if(Game::get_game()->is_original_plus())
+   x += Game::get_game()->get_game_width() - 320;
+
  uint16 x_off = Game::get_game()->get_game_x_offset();
  uint16 y_off = Game::get_game()->get_game_y_offset();
 
@@ -897,7 +900,7 @@ void MsgScroll::Display(bool full_redraw)
 
  clearCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
 
- if(scroll_updated || full_redraw)
+ if(scroll_updated || full_redraw || Game::get_game()->is_original_plus_full_map())
   {
    screen->fill(bg_color,area.x, area.y, scroll_width * 8, (scroll_height)*8); //clear whole scroll
 

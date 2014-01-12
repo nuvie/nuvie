@@ -294,6 +294,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/keys", "(default)");
 
 	set_safe_video_settings();
+	config->set("config/video/game_style", "original");
 	config->set("config/video/game_position", "center");
 
 	config->set("config/audio/enabled", true);
@@ -316,7 +317,6 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/dither_mode", "none");
 	config->set("config/general/enable_cursors", true);
 	config->set("config/general/show_console", true);
-	config->set("config/general/fullscreen_map", false);
 	config->set("config/general/converse_gump", false);
 	config->set("config/general/use_text_gumps", false);
 	config->set("config/general/party_formation", "standard");
@@ -332,6 +332,8 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/ultima6/show_eggs", false);
 	config->set("config/ultima6/show_stealing", false);
 	config->set("config/ultima6/roof_mode", false);
+	config->set("config/ultima6/show_orig_plus_cb", true);
+	config->set("config/ultima6/orig_plus_cb_text_color", 115);
 	config->set("config/ultima6/converse_solid_bg", false);
 	config->set("config/ultima6/converse_bg_color", 218);
 	config->set("config/ultima6/game_specific_keys", "(default)");
@@ -345,9 +347,10 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/martian/sfx", "native");
 	config->set("config/martian/skip_intro", false);
 	config->set("config/martian/show_eggs", false);
+	config->set("config/martian/show_orig_plus_cb", true);
 	config->set("config/martian/converse_solid_bg", false);
 	config->set("config/martian/converse_bg_color", 136);
-	config->set("config/ultima6/game_specific_keys", "(default)");
+	config->set("config/martian/game_specific_keys", "(default)");
 	config->set("config/martian/newscroll/width", 30);
 	config->set("config/martian/newscroll/height", 19);
 	config->set("config/martian/newscroll/solid_bg", "no");
@@ -358,9 +361,10 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/savage/sfx", "native");
 	config->set("config/savage/skip_intro", false);
 	config->set("config/savage/show_eggs", false);
+	config->set("config/savage/show_orig_plus_cb", true);
 	config->set("config/savage/converse_solid_bg", false);
 	config->set("config/savage/converse_bg_color", 216);
-	config->set("config/ultima6/game_specific_keys", "(default)");
+	config->set("config/savage/game_specific_keys", "(default)");
 	config->set("config/savage/newscroll/width", 30);
 	config->set("config/savage/newscroll/height", 19);
 	config->set("config/savage/newscroll/solid_bg", "no");

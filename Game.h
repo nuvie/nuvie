@@ -71,7 +71,7 @@ typedef enum
 class Game
 {
  nuvie_game_t game_type;
- uint8 game_style; //new or original
+ uint8 game_style; //new, original, orig_plus_cutoff_map, or orig_plus_full_map
  static Game *game;
  Configuration *config;
  Script *script;
@@ -176,6 +176,9 @@ class Game
  void delete_new_command_bar();
  nuvie_game_t get_game_type() { return game_type; }
  uint8 get_game_style() { return game_style; }
+ bool is_original_plus() { return (game_style == NUVIE_STYLE_ORIG_PLUS_CUTOFF_MAP || game_style == NUVIE_STYLE_ORIG_PLUS_FULL_MAP); }
+ bool is_original_plus_cutoff_map() { return (game_style == NUVIE_STYLE_ORIG_PLUS_CUTOFF_MAP); }
+ bool is_original_plus_full_map() { return (game_style == NUVIE_STYLE_ORIG_PLUS_FULL_MAP); }
  bool is_new_style() { return (game_style == NUVIE_STYLE_NEW); }
  bool is_orig_style() { return (game_style == NUVIE_STYLE_ORIG); }
  bool doubleclick_opens_containers();
@@ -210,7 +213,7 @@ class Game
  Configuration *get_config()       { return(config); }
  Script *get_script()              { return(script); }
  Screen *get_screen()              { return(screen); }
-// U6Shape *get_background()         { return(background); }
+ Background *get_background()      { return(background); }
  GamePalette *get_palette()        { return(palette); }
  Dither *get_dither()                  { return(dither); } 
  FontManager *get_font_manager()   { return(font_manager); }

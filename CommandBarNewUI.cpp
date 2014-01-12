@@ -41,6 +41,7 @@
 #include "Player.h"
 #include "Objlist.h"
 #include "NuvieIO.h"
+#include "Background.h"
 
 
 using std::string;
@@ -59,6 +60,7 @@ static const char *mode_name_tbl[table_size_U6];
 CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 {
     game = g;
+    background = NULL;
     Weather *weather;
     uint16 x_off = game->get_game_x_offset();
     uint16 y_off = game->get_game_y_offset();
@@ -90,7 +92,7 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 			mode_name_tbl[i] = MD_mode_name_tbl[i];
 	}
 
-	if(!game->is_new_style())
+	if(game->is_orig_style())
 	{
 		text_height = 8;
 		icon_y_offset = 0;
@@ -99,9 +101,18 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 	}
 	else
 	{
-		text_height = 17;
-		icon_y_offset = 9;
-		map_width = game->get_game_width();
+		if(game->get_game_type() == NUVIE_GAME_U6)
+		{
+			text_height = 17;
+			icon_y_offset = 9;
+		} else {
+			text_height = 8;
+			icon_y_offset = 0;
+		}
+		if(game->is_original_plus())
+			map_width = game->get_game_width() - game->get_background()->get_border_width();
+		else
+			map_width = game->get_game_width();
 		map_height = game->get_game_height();
 	}
 	uint8 command_width = btn_size * icon_w;
@@ -123,7 +134,7 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 
 //    if(game->get_game_type() == NUVIE_GAME_U6)
         init_buttons();
-    if(game->get_game_type() == NUVIE_GAME_U6 && game->is_new_style())
+    if(game->get_game_type() == NUVIE_GAME_U6 && !game->is_orig_style())
         weather->add_wind_change_notification_callback((CallBack *)this); //we want to know when the wind direction changes.
 
     cur_pos = 0;
@@ -245,7 +256,7 @@ void CommandBarNewUI::Display(bool full_redraw)
       if(game->get_game_type() == NUVIE_GAME_U6)
       {
         //screen->fill(bg_color, area.x, area.y, area.w, area.h);
-    	if(game->is_new_style())
+    	if(!game->is_orig_style())
     	{
         //display_information();
     	  string infostring(game->get_clock()->get_date_string());

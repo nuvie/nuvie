@@ -40,6 +40,7 @@
 #include "Scale.h"
 #include "Screen.h"
 #include "MapWindow.h"
+#include "Background.h"
 
 #define sqr(a) ((a)*(a))
 
@@ -961,12 +962,16 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
         memset( shading_data, shading_ambient, sizeof(char)*shading_rect.w*shading_rect.h );
     }
     updatingalphamap = true;
-
+    sint16 x_off;
+    if(Game::get_game()->is_original_plus_full_map())
+        x_off = - Game::get_game()->get_background()->get_border_width();
+    else
+        x_off = 0;
     //Light globe around the avatar
     if( lighting_style == LIGHTING_STYLE_ORIGINAL )
-        drawalphamap8globe( (shading_rect.w-1)/2, (shading_rect.h-1)/2, opacity/64+3 ); //range (0..3)+3 or (3..6)
+        drawalphamap8globe( (shading_rect.w-1 + x_off/16)/2, (shading_rect.h-1)/2, opacity/64+3 ); //range (0..3)+3 or (3..6)
     else if( lighting_style == LIGHTING_STYLE_SMOOTH )
-        drawalphamap8globe( (((shading_rect.w-8)/16)-1)/2, (((shading_rect.h-8)/16)-1)/2, 3 );
+        drawalphamap8globe( (((shading_rect.w-8 + x_off)/16)-1)/2, (((shading_rect.h-8)/16)-1)/2, 3 );
 }
 
 void Screen::buildalphamap8()

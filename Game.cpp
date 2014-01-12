@@ -142,6 +142,12 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
 	game_width = (value < screen_width) ? value : screen_width;
 	config->value("config/video/game_height", value, 200);
 	game_height = (value < screen_height) ? value : screen_height;
+	if(game_width < 320)
+		game_width = 320;
+	if(game_height < 200)
+		game_height = 200;
+	if(is_original_plus_full_map() && screen_height <= 200) // not tall enough to show extra map space
+		game_style = NUVIE_STYLE_ORIG_PLUS_CUTOFF_MAP;
  }
 
  string game_position;
@@ -215,7 +221,8 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    background = new Background(config);
    background->init();
    background->Hide();
-   gui->AddWidget(background);
+   if(is_original_plus_full_map() == false) // need to render before map window
+       gui->AddWidget(background);
 
    font_manager = new FontManager(config);
    font_manager->init(game_type);
@@ -271,6 +278,8 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    map_window->init(game_map, tile_manager, obj_manager, actor_manager);
    map_window->Hide();
    gui->AddWidget(map_window);
+   if(is_original_plus_full_map()) // need to render after map window
+       gui->AddWidget(background);
 
    weather = new Weather(config, clock, game_type);
 
@@ -365,7 +374,14 @@ bool Game::loadGame(Script *s, SoundManager *sm)
 
    if(!is_new_style())
    {
-	   command_bar->Show();
+        if(is_orig_style())
+            command_bar->Show();
+        else {
+            bool show;
+            config->value(config_get_game_key(config) + "/show_orig_plus_cb", show, true);
+            if(show)
+                command_bar->Show();
+        }
    }
 
    if(!is_new_style() || screen->get_width() != get_game_width() || screen->get_height() != get_game_height())
@@ -417,18 +433,16 @@ void Game::init_cursor()
 
 void Game::init_game_style()
 {
-	bool fullscreen_map = false;
-
-	config->value("config/general/fullscreen_map", fullscreen_map, false);
-
-	if(fullscreen_map)
-	{
+	string game_style_str;
+	config->value("config/video/game_style", game_style_str, "original");
+	if(game_style_str == "new")
 		game_style = NUVIE_STYLE_NEW;
-	}
+	else if(game_style_str == "original+")
+		game_style = NUVIE_STYLE_ORIG_PLUS_CUTOFF_MAP;
+	else if(game_style_str == "original+_full_map")
+		game_style = NUVIE_STYLE_ORIG_PLUS_FULL_MAP;
 	else
-	{
 		game_style = NUVIE_STYLE_ORIG;
-	}
 
 }
 

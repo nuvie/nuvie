@@ -42,6 +42,8 @@ typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
 
 #define NUVIE_STYLE_ORIG 0
 #define NUVIE_STYLE_NEW  1
+#define NUVIE_STYLE_ORIG_PLUS_CUTOFF_MAP 2
+#define NUVIE_STYLE_ORIG_PLUS_FULL_MAP   3
 
 #define MAX(x, y)      ((x) > (y) ? (x) : (y))
 #define MIN(x, y)      ((x) < (y) ? (x) : (y))

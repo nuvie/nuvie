@@ -82,6 +82,8 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 
  uint16 x_off = Game::get_game()->get_game_x_offset();
  uint16 y_off = Game::get_game()->get_game_y_offset();
+ if(Game::get_game()->is_original_plus())
+	 x_off += Game::get_game()->get_game_width() - 320;
 
  inventory_view = new InventoryView(config);
  inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager);

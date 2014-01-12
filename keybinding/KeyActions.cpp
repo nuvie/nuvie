@@ -34,6 +34,9 @@
 #include "Screen.h"
 #include "GUI.h"
 #include "SoundManager.h"
+#include "Background.h"
+#include "Configuration.h"
+#include "U6misc.h"
 
 #define game Game::get_game()
 #define event Game::get_game()->get_event()
@@ -396,6 +399,24 @@ void ActionToggleSFX(int const *params)
 	game->get_sound_manager()->set_sfx_enabled(sfx);
 	string message = sfx ? "Sfx enabled" : "Sfx disabled";
 	new TextEffect(message);
+}
+
+void ActionToggleOriginalPlusCommandBar(int const *params)
+{
+	if(Game::get_game()->is_original_plus() == false)
+		return;
+	CommandBar *cb = game->get_command_bar();
+	Configuration *config = game->get_config();
+	bool hide = cb->Status() == WIDGET_VISIBLE;
+	if(hide) {
+		cb->Hide();
+		game->get_screen()->clear(cb->X(), cb->Y(), cb->W(), cb->H(), NULL); // can be over null background so need to not leave corruption
+		game->get_screen()->update(cb->X(), cb->Y(), cb->W(), cb->H());
+	} else {
+		cb->Show();
+	}
+	config->set(config_get_game_key(config) + "/show_orig_plus_cb", !hide);
+	config->write();
 }
 
 void ActionDoAction(int const *params)

@@ -32,6 +32,7 @@ class Game;
 class GUI_Button;
 class GUI_CallBack;
 class Font;
+class U6Shape;
 
 #define COMMANDBAR_USE_BUTTON 1
 #define COMMANDBAR_ACTION_BUTTON 3
@@ -49,13 +50,14 @@ protected:
     Event *event;
     Font *font;
     Tile *icon[13];
+    U6Shape *background; // used to display the WoU command bar backgrounds
 
     sint8 selected_action; // underlined icon (-1 = none)
     bool combat_mode; // state of combat icon
     std::string wind; // wind direction
     void fill_square(uint8 pal_index);
 
-    uint8 bg_color;
+    uint8 bg_color, font_color;
     uint16 offset;
 
     virtual void display_information();

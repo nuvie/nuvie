@@ -113,7 +113,7 @@ bool ActorView::set_party_member(uint8 party_member)
 void ActorView::Display(bool full_redraw)
 {
 
- if(portrait_data != NULL && (full_redraw || update_display))
+ if(portrait_data != NULL && (full_redraw || update_display || Game::get_game()->is_original_plus_full_map()))
   {
    update_display = false;
    if(MD)

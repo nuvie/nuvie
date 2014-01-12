@@ -459,6 +459,19 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 	y -= area.y;
 	x -= area.x;
 	Event *event = Game::get_game()->get_event();
+	bool selecting_spell, canceling_spell, doing_nothing;
+	if(Game::get_game()->is_original_plus()) {
+		if(Game::get_game()->is_original_plus_full_map())
+			selecting_spell = (x < -7 || y > 194);
+		else
+			selecting_spell = (x < -7);
+		canceling_spell = (x > 1 && (y > 101 || x > 137));
+		doing_nothing = ((x > -8 && x < 16) || (x > -8 && (y < 8 || (y > 71 && y < 195))));
+	} else {
+		selecting_spell = (x < 0 && y > 0 && y < 162);
+		canceling_spell = (x > 1 && (y > 101 || x > 137));
+		doing_nothing = (y < 8 || y > 71 || x < 16 || x > 134);
+	}
 
 	if(button == SDL_BUTTON_WHEELUP)
 	{
@@ -470,7 +483,7 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 		move_down();
 		return GUI_PASS;
 	}
-	if(x < 0 && y > 0 && y < 162) // cast selected spell on the map
+	if(selecting_spell) // cast selected spell on the map
 	{
 		if(event->is_looking_at_spellbook())
 		{
@@ -487,7 +500,7 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 		}
 		return GUI_YUM;
 	}
-	if(x > 1 && (y > 101 || x > 137)) // cancel spell
+	if(canceling_spell) // cancel spell
 	{
 		if(event->is_looking_at_spellbook())
 		{
@@ -496,9 +509,9 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 		}
 		event->set_mode(CAST_MODE);
 		event->cancelAction();
-		return GUI_PASS;
+		return GUI_YUM;
 	}
-	if(y < 8 || y > 71 || x < 16 || x > 134) // do nothing
+	if(doing_nothing) // do nothing
 	{
 		return GUI_YUM;
 	}

@@ -53,6 +53,7 @@
 #include "CommandBar.h"
 #include "ActorView.h"
 #include "InventoryView.h"
+#include "Background.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define WALK_BUTTON 3
@@ -197,18 +198,27 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  obj_manager = om;
  actor_manager = am;
  uint16 map_w = 11, map_h = 11;
-
+ border_width = game->get_background()->get_border_width();
  if(!game->is_orig_style())
  {
 	 uint16 game_width = game->get_game_width();
 	 uint16 game_height = game->get_game_height();
 
+	 if(game->is_original_plus_cutoff_map()) {
+		 map_center_xoff = 0;
+		 game_width -= border_width; // don't go over border
+	 } else if(game->is_original_plus_full_map()) {
+		 map_center_xoff = (border_width/16)%16;
+	 } else { // new style
+		 map_center_xoff = 0;
+	 }
 	 map_w = (game_width/16) + 1;
 	 map_h = (game_height/16) + 1;
 	 offset_x -= (map_w*16 - game_width)/2;
 	 offset_y -= (map_h*16 - game_height)/2;
  }
-
+ else
+	 map_center_xoff = 0;
  anim_manager = new AnimManager(offset_x, offset_y);
 
  cursor_tile = tile_manager->get_cursor_tile();
@@ -251,6 +261,9 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
    area.w = win_width * 16;
    area.h = win_height * 16;
 } else {
+    if(game->is_original_plus_cutoff_map())
+     area.w = game->get_game_width() - border_width - 1;
+    else
      area.w = game->get_game_width();
    area.h = game->get_game_height();
 }
@@ -447,7 +460,7 @@ void MapWindow::shiftMapRelative(sint16 rel_x, sint16 rel_y)
  */
 void MapWindow::centerMap(uint16 x, uint16 y, uint8 z)
 {
- moveMap(x - ((win_width - 1) / 2), y - ((win_height - 1) / 2), z);
+     moveMap(x - ((win_width - 1 - map_center_xoff) / 2) , y - ((win_height - 1) / 2), z);
 }
 
 void MapWindow::centerMapOnActor(Actor *actor)
@@ -466,7 +479,7 @@ void MapWindow::centerMapOnActor(Actor *actor)
 void MapWindow::centerCursor()
 {
 
- cursor_x = (win_width - 1) / 2;
+ cursor_x = (win_width - 1 - map_center_xoff) / 2;
  cursor_y = (win_height - 1) / 2;
 
  return;
@@ -833,6 +846,8 @@ void MapWindow::Display(bool full_redraw)
 
  if(game->is_orig_style())
 	 screen->update(area.x+8,area.y+8,win_width*16-16,win_height*16-16);
+ else if(game->is_original_plus_cutoff_map())
+	 screen->update(Game::get_game()->get_game_x_offset(), Game::get_game()->get_game_y_offset(), game->get_game_width() - border_width - 1, game->get_game_height());
  else
 	 screen->update(Game::get_game()->get_game_x_offset(), Game::get_game()->get_game_y_offset(), game->get_game_width(), game->get_game_height());
 
@@ -1189,7 +1204,7 @@ void MapWindow::drawRoofs()
 {
 	if(cur_y < 1 || cur_y > 1012) // FIXME We need to handle this properly
 		return;
-	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
+	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1 - map_center_xoff) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
 		return;
 	if(x_ray_view >= X_RAY_ON)
 		return;
@@ -1265,6 +1280,8 @@ void MapWindow::drawRain()
 	int c;
 	if(game->is_orig_style())
 		c = win_width * win_height;
+	else if(game->is_original_plus_cutoff_map())
+		c = ((game->get_game_width() - border_width) * game->get_game_height())/256;
 	else
 		c = (game->get_game_width() * game->get_game_height())/256;
 	for(int i=0;i<c;i++)
@@ -1275,6 +1292,9 @@ void MapWindow::drawRain()
 			x = area.x + NUVIE_RAND()%((win_width-1)*16-2) + 8;
 			y = area.y + NUVIE_RAND()%((win_height-1)*16-2) + 8;
 		} else {
+			if(game->is_original_plus_cutoff_map())
+				x = game->get_game_x_offset() + NUVIE_RAND()%(game->get_game_width() - border_width - 2);
+			else
 				x = game->get_game_x_offset() + NUVIE_RAND()%(game->get_game_width() - 2);
 			y = game->get_game_y_offset() + NUVIE_RAND()%(game->get_game_height() - 2);
 		}
@@ -1332,7 +1352,7 @@ void MapWindow::generateTmpMap()
 
  if(freeze_blacking_location == false)
   {
-   x = cur_x + ((win_width - 1) / 2);
+   x = cur_x + ((win_width - 1 - map_center_xoff) / 2);
    y = cur_y + ((win_height - 1) / 2);
   }
  else // SB-X
@@ -2414,6 +2434,8 @@ void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint
 {
     uint16 cent_x = cur_x + mousecenter_x, //+ (win_width / 2),
            cent_y = cur_y + mousecenter_y; //+ (win_height / 2);
+    if(game->is_original_plus_full_map() && game->get_event()->get_mode() != INPUT_MODE) // we are offcenter
+            cent_x = actor_manager->get_player()->x;
     uint16 dist_x = abs(wx - cent_x), dist_y = abs(wy - cent_y);
 
     rel_x = rel_y = 0;

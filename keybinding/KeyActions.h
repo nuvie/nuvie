@@ -68,6 +68,7 @@ void ActionToggleFps(int const *params);
 void ActionToggleAudio(int const *params);
 void ActionToggleMusic(int const *params);
 void ActionToggleSFX(int const *params);
+void ActionToggleOriginalPlusCommandBar(int const *params);
 
 void ActionDoAction(int const *params);
 void ActionCancelAction(int const *params);

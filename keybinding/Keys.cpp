@@ -115,6 +115,7 @@ const struct Action {
 	{ "TOGGLE_AUDIO", ActionToggleAudio, "Toggle audio", Action::normal_keys, true },
 	{ "TOGGLE_MUSIC", ActionToggleMusic, "Toggle music", Action::normal_keys, true },
 	{ "TOGGLE_SFX", ActionToggleSFX, "Toggle sfx", Action::normal_keys, true },
+	{ "TOGGLE_ORIGINAL_PLUS_COMMAND_BAR", ActionToggleOriginalPlusCommandBar, "Show/hide original plus command bar", Action::normal_keys, true },
 	{ "DO_ACTION", ActionDoAction, "Do action", Action::normal_keys, true },
 	{ "CANCEL_ACTION", ActionCancelAction, "Cancel action", Action::normal_keys, true },
 	{ "MSG_SCROLL_UP", ActionMsgScrollUP, "Msg scroll up", Action::normal_keys, true },

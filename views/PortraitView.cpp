@@ -117,7 +117,7 @@ void PortraitView::load_background(const char *f, uint8 lib_offset)
 void PortraitView::Display(bool full_redraw)
 {
 
- if(Game::get_game()->is_new_style())
+ if(Game::get_game()->is_new_style() || Game::get_game()->is_original_plus_full_map())
    screen->fill(bg_color, area.x, area.y, area.w, area.h);
  if(portrait_data != NULL/* && (full_redraw || update_display)*/)
   {

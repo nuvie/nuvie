@@ -42,6 +42,7 @@
 #include "Objlist.h"
 #include "NuvieIO.h"
 #include "SaveManager.h"
+#include "U6Shape.h"
 
 using std::string;
 
@@ -88,6 +89,7 @@ CommandBar::CommandBar() : GUI_Widget(NULL) { }
 CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
 {
     game = g;
+    background = NULL;
     Weather *weather;
     uint16 x_off = game->get_game_x_offset();
     uint16 y_off =  game->get_game_y_offset();
@@ -95,19 +97,51 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
     if(game->get_game_type() == NUVIE_GAME_U6)
     {
         offset = OBJLIST_OFFSET_U6_COMMAND_BAR;
-        Init(NULL, 8+x_off, 168+y_off, 0, 0);
+        if(game->is_original_plus()) {
+            
+            int value;
+            Configuration *cfg = game->get_config();
+            cfg->value(config_get_game_key(cfg) + "/orig_plus_cb_text_color", value, 155); // light blue so that it stands out most of the time and isn't too bold
+            font_color = value;
+            y_off += game->get_game_height() - 29;
+            if(game->get_game_height() > 228) // bottom right
+                Init(NULL, x_off + 159 + game->get_game_width() - 320, y_off, 0, 0);
+            else // bottom left
+                Init(NULL, x_off, y_off, 0, 0);
+        } else {
+            font_color = FONT_COLOR_U6_NORMAL;
+            Init(NULL, 8+x_off, 168+y_off, 0, 0);
+        }
         area.w = 16 * 10; // space for 10 icons
         area.h = 24 + 1; // extra space for the underlined default action
     }
     else if(game->get_game_type() == NUVIE_GAME_MD)
     {
+        if(game->is_original_plus()) {
+           background = new U6Shape();
+           background->load_WoU_background(game->get_config(), game->get_game_type());
+           y_off += game->get_game_height() - 34;
+           if(game->get_game_height() > 233)
+               Init(NULL, x_off + game->get_game_width() - 320 + 174, y_off, 146, 34);
+           else
+               Init(NULL, 16+x_off, y_off - 3, 146, 34);
+        } else
+            Init(NULL, 16+x_off, 163+y_off, 146, 34);
         offset = OBJLIST_OFFSET_MD_COMMAND_BAR;
-        Init(NULL, 15+x_off, 163+y_off, 146, 33);
     }
     else // SE
     {
+        if(game->is_original_plus()) {
+           background = new U6Shape();
+           background->load_WoU_background(game->get_config(), game->get_game_type());
+           y_off += game->get_game_height() - 22;
+           if(game->get_game_height() > 221) // bottom right
+               Init(NULL, x_off + 156 + game->get_game_width() - 320, y_off, 163, 19);
+           else
+               Init(NULL, 8+x_off, y_off, 1643, 19);
+        } else
+            Init(NULL, 8+x_off, 178+y_off, 163, 19);
         offset = OBJLIST_OFFSET_SE_COMMAND_BAR;
-        Init(NULL, 8+x_off, 178+y_off, 163, 19);
     }
 
     event = NULL; // it's not set yet
@@ -131,6 +165,8 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
 
 CommandBar::~CommandBar()
 {
+ if(background)
+  delete background;
 }
 
 bool CommandBar::init_buttons()
@@ -234,8 +270,11 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
         uint8 activate = x / 16; // icon selected
         if(game->get_game_type() == NUVIE_GAME_SE)
               activate = x/18;
-        else if(game->get_game_type() == NUVIE_GAME_MD)
-              activate = (x-1)/18;
+        else if(game->get_game_type() == NUVIE_GAME_MD) {
+              activate = (x)/18;
+              if(activate > 7)
+                  activate = 7;
+        }
         if(button == COMMANDBAR_USE_BUTTON)
             return(hit(activate));
         else if(button == COMMANDBAR_ACTION_BUTTON)
@@ -364,12 +403,15 @@ void CommandBar::Display(bool full_redraw)
 {
     Screen *screen = game->get_screen();
 
-    if(full_redraw || update_display)
+    if(full_redraw || update_display || game->is_original_plus())
     {
         update_display = false;
       if(game->get_game_type() == NUVIE_GAME_U6)
       {
-        screen->fill(bg_color, area.x, area.y, area.w, area.h);
+        if(game->is_orig_style())
+            screen->fill(bg_color, area.x, area.y, area.w, area.h);
+        else if(game->is_original_plus_cutoff_map() && area.x != game->get_game_x_offset()) // over null background so clear area where text is displayed
+            screen->clear(area.x + 1, area.y, area.w -1, area.h -16, NULL);
 
         display_information();
         for(uint32 i = 0; i < 10; i++)
@@ -378,9 +420,25 @@ void CommandBar::Display(bool full_redraw)
         if(selected_action >= 0 && selected_action <= 9)
             screen->fill(9, area.x + selected_action*16, area.y + 24, 16, 1);
       }
-        else if(game->get_game_type() == NUVIE_GAME_SE
-                && selected_action >= 0 && selected_action <= 8)
-            fill_square(6);
+        else if(game->get_game_type() == NUVIE_GAME_SE) {
+            if(game->is_original_plus()) {
+                unsigned char *se_ptr = background->get_data();
+                se_ptr += ((320 * 178) + 8); // ((bg_w * image_y_off)  + image_x_off)
+                screen->blit(area.x, area.y, se_ptr, 8, 163, 19, 320, true); // drawing command bar icons from background
+            }
+            if(selected_action >= 0 && selected_action <= 8)
+                fill_square(6);
+        } else { // MD
+            if(game->is_original_plus()) {
+                unsigned char *md_bg_ptr = background->get_data();
+                md_bg_ptr += ((320 * 163) + 15); // ((bg_w * image_y_off)  + image_x_off)
+                screen->fill(0, area.x, area.y, area.w, area.h); // lever slots, text, top, and bottom have transparency so we need to fill in black first
+                screen->blit(area.x, area.y, md_bg_ptr, 8, area.w, area.h, 320, true); // drawing command bar icons from background
+                screen->fill(0, area.x, area.y, 1, area.h); // make left black so it looks better
+                screen->fill(0, area.x + area.w - 1, area.y, 1, area.h); // make right black so it looks better
+            }
+            // FIXME code to display the switched levers goes here (the selected action and the current action will be have the lever down)
+        }
 
         screen->update(area.x, area.y, area.w, area.h);
     }
@@ -391,7 +449,7 @@ void CommandBar::display_information()
     string infostring(game->get_clock()->get_date_string());
     infostring += " Wind:";
     infostring += wind;
-    font->drawString(screen, infostring.c_str(), area.x + 8, area.y);
+    font->drawString(screen, infostring.c_str(), area.x + 8, area.y, font_color, font_color);
 }
 
 uint16 CommandBar::callback(uint16 msg, CallBack *caller, void * data)
