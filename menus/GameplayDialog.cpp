@@ -86,7 +86,7 @@ bool GameplayDialog::init() {
 	} else {
 		stealing_button = NULL;
 	}
-	if(Game::get_game()->is_orig_style()) {
+	if(!Game::get_game()->is_new_style()) {
 // Use text gump
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1 + is_u6], 0, 0, 0, "Use text gump:", font);
 		AddWidget(widget);
@@ -120,7 +120,7 @@ bool GameplayDialog::init() {
 	cursor_button = new GUI_TextToggleButton(this, colX[2], buttonY[7], yesno_width, height, yesno_text, 2, use_original_cursor, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(cursor_button);
 
-	if(Game::get_game()->is_orig_style()) {
+	if(!Game::get_game()->is_new_style()) {
 // use converse gump
 		widget = (GUI_Widget *) new GUI_Text(colX[1], textY[8], 0, 0, 0, "Use converse gump:", font);
 		AddWidget(widget);
@@ -164,7 +164,7 @@ GUI_status GameplayDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 			game->get_script()->call_set_g_show_stealing(stealing_button->GetSelection());
 			config->set("config/ultima6/show_stealing", stealing_button->GetSelection() ? "yes" : "no");
 		}
-		if(Game::get_game()->is_orig_style()) {
+		if(!Game::get_game()->is_new_style()) {
 			game->set_using_text_gumps(text_gump_button->GetSelection());
 			config->set("config/general/use_text_gumps", text_gump_button->GetSelection() ? "yes" : "no");
 			config->set("config/general/converse_gump", converse_gump_button->GetSelection() ? "yes" : "no"); // need restart

@@ -1,3 +1,7 @@
+2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1807
+	* Change most is_orig_style function calls to !is_new_style in preparation
+	  for two new additional styles
+
 2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1806
 	* Get rid of needless x_off and y_off values in game.h and related changes
 	* Properly center cutscenes

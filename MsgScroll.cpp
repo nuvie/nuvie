@@ -811,14 +811,14 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
     }
     else if(button == SDL_BUTTON_WHEELUP)
     {
-        if(Game::get_game()->is_orig_style())
+        if(!Game::get_game()->is_new_style())
             page_up();
         else
             move_scroll_up();
     }
     else if(button == SDL_BUTTON_WHEELDOWN)
     {
-        if(Game::get_game()->is_orig_style())
+        if(!Game::get_game()->is_new_style())
             page_down();
         else
             move_scroll_down();

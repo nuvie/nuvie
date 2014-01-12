@@ -305,7 +305,7 @@ void KeyBinder::handle_wrong_key_pressed()
 
 void KeyBinder::ShowKeys() const // FIXME This doesn't look very good, the font is missing
 {                                // some characters, and it is longer than msgscroll can hold
-	if(Game::get_game()->is_orig_style())
+//	if(Game::get_game()->is_orig_style())
 	{
 		std::vector<string>::const_iterator iter;
 		string keys;

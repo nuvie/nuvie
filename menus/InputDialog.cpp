@@ -74,7 +74,7 @@ bool InputDialog::init() {
 	AddWidget(widget);
 	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[5], 0, 0, 0, "Enable doubleclick:", font);
 	AddWidget(widget);
-	if(game->is_orig_style()) {
+	if(!game->is_new_style()) {
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[6], 0, 0, 0, "Doubleclick opens containers:", font);
 		AddWidget(widget);
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[7], 0, 0, 0, "Use new command bar:", font);
@@ -109,7 +109,7 @@ bool InputDialog::init() {
 	AddWidget(walk_button);
 	doubleclick_button = new GUI_TextToggleButton(this, colX[1], buttonY[5], yesno_width, height, yesno_text, 2, map_window->is_doubleclick_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(doubleclick_button);
-	if(Game::get_game()->is_orig_style()) {
+	if(!Game::get_game()->is_new_style()) {
 		open_container_button = new GUI_TextToggleButton(this, colX[1], buttonY[6], yesno_width, height, yesno_text, 2, game->doubleclick_opens_containers(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(open_container_button);
 
@@ -182,7 +182,7 @@ GUI_status InputDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 
 		map_window->set_use_left_clicks(); // allow or disallow left clicks - Must come after look_on_left_click and enable_doubleclick
 
-		if(Game::get_game()->is_orig_style()) {
+		if(!Game::get_game()->is_new_style()) {
 			game->set_doubleclick_opens_containers(open_container_button->GetSelection());
 			config->set("config/input/doubleclick_opens_containers", open_container_button->GetSelection() ? "yes" : "no");
 

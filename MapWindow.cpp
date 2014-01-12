@@ -198,7 +198,7 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
  actor_manager = am;
  uint16 map_w = 11, map_h = 11;
 
- if(game->is_new_style())
+ if(!game->is_orig_style())
  {
 	 uint16 game_width = game->get_game_width();
 	 uint16 game_height = game->get_game_height();
@@ -2142,7 +2142,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_PASS;
 	}
 
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 	{
 		if(button == SDL_BUTTON_WHEELDOWN)
 		{

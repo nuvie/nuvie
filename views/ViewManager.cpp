@@ -89,7 +89,7 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
  portrait_view = new PortraitView(config);
  portrait_view->init(176+x_off,8+y_off, font, party, player, tile_manager, obj_manager, portrait);
 
- if(Game::get_game()->is_orig_style())
+ if(!Game::get_game()->is_new_style())
  {
 	 //inventory_view = new InventoryView(config);
 	 //inventory_view->init(gui->get_screen(), this, 176+x_off,8+y_off, font, party, tile_manager, obj_manager);
@@ -139,7 +139,7 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 
 void ViewManager::reload()
 {
- if(Game::get_game()->is_orig_style())
+ if(!Game::get_game()->is_new_style())
    actor_view->set_party_member(0);
  inventory_view->set_party_member(0);
 
@@ -241,7 +241,7 @@ void ViewManager::set_party_mode()
  else if(event->get_mode() == INPUT_MODE || event->get_mode() == ATTACK_MODE)
 	 event->moveCursorToMapWindow();
 
- if(Game::get_game()->is_orig_style())
+ if(!Game::get_game()->is_new_style())
 	 set_current_view((View *)party_view);
  return;
 }
@@ -274,7 +274,7 @@ void ViewManager::close_spell_mode()
   {
 	  //FIXME this should set previous view. Don't default to inventory view.
 	  spell_view->release_focus();
-	  if(Game::get_game()->is_orig_style())
+	  if(!Game::get_game()->is_new_style())
 		  set_inventory_mode();
 	  else
 		  close_current_view();
@@ -378,7 +378,7 @@ void ViewManager::open_container_view(Actor *actor, Obj *obj)
 		uint16 x_off = Game::get_game()->get_game_x_offset();
 		uint16 y_off = Game::get_game()->get_game_y_offset();
 		uint16 container_x, container_y;
-		if(Game::get_game()->is_orig_style()) {
+		if(!Game::get_game()->is_new_style()) {
 			container_x = x_off;
 			container_y = y_off;
 		} else {

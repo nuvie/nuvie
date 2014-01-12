@@ -165,7 +165,7 @@ void ActionSelectCommandBar(int const *params)
 void ActionSelectNewCommandBar(int const *params)
 {
 	CommandBar *cb;
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 	{
 		cb = game->get_new_command_bar();
 		if(!cb)
@@ -197,7 +197,7 @@ void ActionShowStats(int const *params)
 	Actor *party_member = player->get_party()->get_actor(params[0] -1);
 	if(party_member == NULL)
 		return;
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 	{
 		actor_view->set_party_member(params[0] -1);
 		view_manager->set_actor_mode();
@@ -212,7 +212,7 @@ void ActionInventory(int const *params)
 		return;
 	if(player->get_party()->get_party_size() >= params[0])
 	{
-		if(game->is_orig_style())
+		if(!game->is_new_style())
 		{
 			view_manager->set_inventory_mode();
 			inventory_view->set_party_member(params[0] -1);
@@ -234,7 +234,7 @@ void ActionNextPartyMember(int const *params)
 {
 	if(event->using_control_cheat())
 		return;
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 	{
 		if(view_manager->get_current_view() == actor_view)
 		{
@@ -256,7 +256,7 @@ void ActionPreviousPartyMember(int const *params)
 {
 	if(event->using_control_cheat())
 		return;
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 	{
 		if(view_manager->get_current_view() == actor_view)
 		{
@@ -275,7 +275,7 @@ void ActionPreviousPartyMember(int const *params)
 
 void ActionToggleView(int const *params)
 {
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 	{
 		if(view_manager->get_current_view() == actor_view)
 			view_manager->set_inventory_mode();
@@ -350,7 +350,7 @@ void ActionToggleFullscreen(int const *params)
 
 void ActionToggleCursor(int const *params)
 {
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 	{
 		if(event->get_input()->select_from_inventory == false)
 			event->moveCursorToInventory();
@@ -365,7 +365,7 @@ void ActionToggleCursor(int const *params)
 
 void ActionToggleCombatStrategy(int const *params)
 {
-	if(game->is_orig_style() && view_manager->get_current_view() == inventory_view)
+	if(!game->is_new_style() && view_manager->get_current_view() == inventory_view)
 		inventory_view->simulate_CB_callback();
 }
 
@@ -410,13 +410,13 @@ void ActionCancelAction(int const *params)
 
 void ActionMsgScrollUP(int const *params)
 {
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 		game->get_scroll()->page_up();
 }
 
 void ActionMsgScrollDown(int const *params)
 {
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 		game->get_scroll()->page_down();
 }
 

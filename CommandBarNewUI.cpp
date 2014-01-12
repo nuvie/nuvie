@@ -90,7 +90,7 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 			mode_name_tbl[i] = MD_mode_name_tbl[i];
 	}
 
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 	{
 		text_height = 8;
 		icon_y_offset = 0;

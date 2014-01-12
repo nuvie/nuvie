@@ -253,7 +253,7 @@ bool Party::resurrect_dead_members()
   if(Game::get_game()->get_event()->using_control_cheat())
   {
      Game::get_game()->get_event()->set_control_cheat(false);
-     if(Game::get_game()->is_orig_style())
+     if(!Game::get_game()->is_new_style())
      {
        Game::get_game()->get_view_manager()->set_inventory_mode();
        Game::get_game()->get_view_manager()->get_current_view()->set_party_member(0);

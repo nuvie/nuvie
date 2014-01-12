@@ -371,7 +371,7 @@ string ConverseInterpret::get_formatted_text(const char *c_str)
          default :
                    //skip fm-towns keyword commands when in original ui mode.
                    // They take the following form. '+actor_numberKeyword+' eg. '+3leave+'
-                   if(c_str[i] == '+' && Game::get_game()->is_orig_style())
+                   if(c_str[i] == '+' && !Game::get_game()->is_new_style())
                    {
                      if(i+3 <= len)
                        {

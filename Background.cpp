@@ -56,7 +56,7 @@ bool Background::init()
 {
  std::string filename;
 
- if(Game::get_game()->is_orig_style())
+ if(!Game::get_game()->is_new_style())
  {
 	 switch(game_type)
 	   {

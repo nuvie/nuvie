@@ -412,7 +412,7 @@ void Event::get_inventory_obj(Actor *actor, bool getting_target)
 		get_target("");
 		moveCursorToInventory();
 	}
-	else if(game->is_orig_style())
+	else if(!game->is_new_style())
 		view_manager->set_inventory_mode();
 	if(game->is_new_style())
 	{
@@ -928,7 +928,7 @@ bool Event::get(sint16 rel_x, sint16 rel_y)
 
  obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
  bool got_object;
- if(game->is_orig_style())
+ if(!game->is_new_style())
     got_object = perform_get(obj, view_manager->get_inventory_view()->get_inventory_widget()->get_container(),
                                player->get_actor());
  else
@@ -1687,19 +1687,19 @@ void Event::alt_code_input(const char *in)
           {
             player->set_actor(a);
             player->set_mapwindow_centered(true);
-            if(game->is_orig_style())
+            if(!game->is_new_style())
                view_manager->set_inventory_mode(); // reset inventoryview
             if(game->get_party()->contains_actor(player->get_actor()))
             {
                 in_control_cheat = false;
                 uint8 member_num = game->get_party()->get_member_num(player->get_actor());
-                if(game->is_orig_style())
+                if(!game->is_new_style())
                     view_manager->get_inventory_view()->set_party_member(member_num);
             }
             else
             {
                 in_control_cheat = true;
-                if(game->is_orig_style())
+                if(!game->is_new_style())
                     view_manager->get_inventory_view()->set_actor(player->get_actor());
             }
             scroll->display_string("\n\n");
@@ -1954,7 +1954,7 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 scroll->display_string(" 6) Jhelom\n");
                 scroll->display_string(" 7) Skara Brae\n");
                 scroll->display_string(" 8) New Magincia\n");
-                if(game->is_orig_style())
+                if(!game->is_new_style())
                     scroll->display_string(" 9) Buc's Den\n");
                 else
                     scroll->display_string(" 9) Buccaneer's Den\n");
@@ -1990,7 +1990,7 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 break;
             case 4:
                 scroll->display_string("Gargoyles\n");
-                if(game->is_orig_style())
+                if(!game->is_new_style())
                     scroll->display_string(" 1) Hall\n");
                 else
                     scroll->display_string(" 1) Hall of Knowledge\n");
@@ -2007,7 +2007,7 @@ void Event::alt_code_teleport_menu(uint32 selection)
             case 5:
                 scroll->display_string("Dungeons\n");
                 scroll->display_string(" 1) Ant Mound\n");
-                if(game->is_orig_style())
+                if(!game->is_new_style())
                     scroll->display_string(" 2) Buc's Cave\n");
                 else
                     scroll->display_string(" 2) Buccaneer's Cave\n");
@@ -2017,7 +2017,7 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 scroll->display_string(" 6) Deceit\n");
                 scroll->display_string(" 7) Despise\n");
                 scroll->display_string(" 8) Destard\n");
-                if(game->is_orig_style())
+                if(!game->is_new_style())
                     scroll->display_string(" 9) Heftimus's\n");
                 else
                     scroll->display_string(" 9) Heftimus's Cave\n");
@@ -2241,7 +2241,7 @@ void Event::toggleFpsDisplay()
 		fps_counter_widget->Hide();
 	else
 		fps_counter_widget->Show();
-	if(game->is_orig_style())
+	if(!game->is_new_style())
 		game->get_gui()->force_full_redraw();
 }
 
@@ -2813,7 +2813,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
         {
             Actor *a = actor_manager->get_actor(actor->get_x(), actor->get_y(), actor->get_z(), true, actor);
             if(a || (!in_combat && (!actor->is_visible() // null invisible actors if not in combat and no one is found
-                     || (actor == player_actor && game->is_orig_style() && actor->get_actor_num() != 0)))) // pass if in combat if player and not showing inventory
+                     || (actor == player_actor && !game->is_new_style() && actor->get_actor_num() != 0)))) // pass if in combat if player and not showing inventory
                 actor = a;
         }
 
@@ -3011,7 +3011,7 @@ void Event::doAction()
             break;
           case NUVIE_SCRIPT_GET_OBJ :
             usecode_script->resume_with_obj(input.obj);
-            if(game->is_orig_style())
+            if(!game->is_new_style())
             {
               view_manager->get_inventory_view()->release_focus();
               view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
@@ -3171,7 +3171,7 @@ void Event::doAction()
     		else
     		{
     			magic->resume();
-				if(game->is_orig_style())
+				if(!game->is_new_style())
 					view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
     		}
     	}
@@ -3182,7 +3182,7 @@ void Event::doAction()
     	else if(input.type == EVENTINPUT_OBJECT)
     	{
     		magic->resume(input.obj);
-			if(game->is_orig_style())
+			if(!game->is_new_style())
 			{
 				view_manager->get_inventory_view()->release_focus();
 				view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
@@ -3283,7 +3283,7 @@ void Event::cancelAction()
     {
         if(magic != NULL && magic->is_waiting_for_inventory_obj())
         {
-            if(game->is_orig_style())
+            if(!game->is_new_style())
             {
                 view_manager->get_inventory_view()->release_focus();
                 view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
@@ -3297,7 +3297,7 @@ void Event::cancelAction()
           {
             if(usecode->is_script_running())
             {
-              if(game->is_orig_style()) //FIXME consolidate this logic with magic script logic above
+              if(!game->is_new_style()) //FIXME consolidate this logic with magic script logic above
               {
                   view_manager->get_inventory_view()->release_focus();
                   view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
@@ -3522,7 +3522,7 @@ void Event::endAction(bool prompt)
         input.get_direction = false;
         map_window->set_show_use_cursor(false);
         map_window->set_show_cursor(false);
-        if(game->is_orig_style())
+        if(!game->is_new_style())
             view_manager->get_inventory_view()->set_show_cursor(false);
 //    game->set_mouse_pointer(0);
         return;
@@ -3569,7 +3569,7 @@ void Event::moveCursorToInventory()
     {
         map_window->set_show_cursor(false); // hide both MapWindow cursors
         map_window->set_show_use_cursor(false);
-        if(game->is_orig_style())
+        if(!game->is_new_style())
         {
             view_manager->get_inventory_view()->set_show_cursor(true);
             view_manager->get_inventory_view()->grab_focus(); // Inventory wants keyboard input
@@ -3586,7 +3586,7 @@ void Event::moveCursorToInventory()
 void Event::moveCursorToMapWindow(bool ToggleCursor)
 {
     input.select_from_inventory = false;
-    if(game->is_orig_style())
+    if(!game->is_new_style())
     {
         view_manager->get_inventory_view()->set_show_cursor(false);
         view_manager->get_inventory_view()->release_focus();

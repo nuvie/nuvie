@@ -225,7 +225,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    font_manager = new FontManager(config);
    font_manager->init(game_type);
 
-   if(is_orig_style())
+   if(!is_new_style())
    {
 	   scroll = new MsgScroll(config, font_manager->get_font(0));
    }
@@ -279,7 +279,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
 
    weather = new Weather(config, clock, game_type);
 
-   if(is_orig_style())
+   if(!is_new_style())
    {
        command_bar = new CommandBar(this);
        bool using_new_command_bar;
@@ -368,12 +368,12 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    //ConsolePause();
    ConsoleHide();
 
-   if(is_orig_style())
+   if(!is_new_style())
    {
 	   command_bar->Show();
    }
 
-   if(is_orig_style() || screen->get_width() != get_game_width() || screen->get_height() != get_game_height())
+   if(!is_new_style() || screen->get_width() != get_game_width() || screen->get_height() != get_game_height())
    {
 	   background->Show();
    }
@@ -568,7 +568,7 @@ void Game::wait_for_interval()
 
 void Game::time_changed()
 {
-    if(is_orig_style())
+    if(!is_new_style())
     {
         get_command_bar()->update(); // date & wind
         get_view_manager()->get_party_view()->update(); // sky
@@ -579,7 +579,7 @@ void Game::time_changed()
 // FIXME: should this be in ViewManager?
 void Game::stats_changed()
 {
-    if(is_orig_style())
+    if(!is_new_style())
     {
         get_view_manager()->get_actor_view()->update();
         get_view_manager()->get_party_view()->update();

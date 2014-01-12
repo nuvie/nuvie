@@ -124,7 +124,7 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  tile_manager = tm;
  obj_manager = om;
  is_in_portrait_view = in_portrait_view;
- if(Game::get_game()->is_orig_style() || is_in_portrait_view)
+ if(!Game::get_game()->is_new_style() || is_in_portrait_view)
  {
  switch(Game::get_game()->get_game_type())
  {
@@ -227,7 +227,7 @@ inline void DollWidget::display_doll()
  Tile *tile;
  uint16 i,j;
 
- if(Game::get_game()->is_orig_style() || is_in_portrait_view)
+ if(!Game::get_game()->is_new_style() || is_in_portrait_view)
  {
 	int tilenum = 368;
 	if(Game::get_game()->get_game_type() == NUVIE_GAME_MD) // FIXME: different depending on npc - Also needs npc doll info code
