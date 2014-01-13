@@ -256,17 +256,8 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
 {
  win_width = width;
  win_height = height;
-
- if(game->is_orig_style()) {
-   area.w = win_width * 16;
-   area.h = win_height * 16;
-} else {
-    if(game->is_original_plus_cutoff_map())
-     area.w = game->get_game_width() - border_width - 1;
-    else
-     area.w = game->get_game_width();
-   area.h = game->get_game_height();
-}
+ area.w = win_width * 16;
+ area.h = win_height * 16;
 
  // We make the temp map +1 bigger on the top and left edges
  // and +2 bigger on the bottom and right edges
@@ -307,8 +298,11 @@ else
 {
 	 clip_rect.x = game->get_game_x_offset();
 	 clip_rect.y = game->get_game_y_offset();
-	 clip_rect.w = area.w;
-	 clip_rect.h = area.h;
+	if(game->is_original_plus_cutoff_map())
+		 clip_rect.w = game->get_game_width() - border_width - 1;
+	else
+		 clip_rect.w = game->get_game_width();
+	 clip_rect.h = game->get_game_height();
 }
  anim_manager->set_area(clip_rect);
 

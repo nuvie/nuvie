@@ -1,3 +1,8 @@
+2014-01-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1813
+	* Fix r1811 regression that could cause animated effects, like when casting
+	  the light spell, to not display properly because the area.w and area.h
+	  didn't match (win_width * 16) and (win_height * 16) respectively.
+
 2014-01-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1812
 	* Bind multi-use keybinding to semicolon ";".
 	* Stop MD command bar from being able to open the save menu.
