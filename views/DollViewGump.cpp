@@ -150,6 +150,15 @@ std::string DollViewGump::getDataDirString()
   return datadir;
 }
 
+void DollViewGump::setColorKey(SDL_Surface *image)
+{
+  if(image)
+  {
+    bg_color_key = SDL_MapRGB(image->format, 0xf1, 0x0f, 0xc4);
+    SDL_SetColorKey(image, SDL_SRCCOLORKEY, bg_color_key);
+  }
+}
+
 void DollViewGump::loadAvatarDollImage(std::string datadir) {
 	char filename[17]; //avatar_nn_nn.bmp\0
 	std::string imagefile;
@@ -158,6 +167,11 @@ void DollViewGump::loadAvatarDollImage(std::string datadir) {
 	sprintf(filename, "avatar_%s_%02d.bmp", get_game_tag(Game::get_game()->get_game_type()), portrait_num);
 	build_path(datadir, filename, imagefile);
 	avatar_doll = bmp.getSdlSurface32(imagefile);
+	if(avatar_doll == NULL)
+	{
+	  avatar_doll = loadGenericDollImage();
+	}
+	setColorKey(avatar_doll);
 }
 
 void DollViewGump::loadCustomActorDollImage() {
@@ -174,6 +188,27 @@ void DollViewGump::loadCustomActorDollImage() {
   build_path(datadir, filename, imagefile);
   actor_doll = bmp.getSdlSurface32(imagefile);
   //actor_doll = SDL_LoadBMP(imagefile.c_str());
+
+  if(actor_doll == NULL)
+  {
+    actor_doll = loadGenericDollImage();
+  }
+  setColorKey(actor_doll);
+}
+
+SDL_Surface *DollViewGump::loadGenericDollImage() {
+  std::string datadir = getDataDirString();
+  char filename[14]; //avatar_nn.bmp\0
+  std::string imagefile;
+
+  if(actor_doll != NULL)
+  {
+    SDL_FreeSurface(actor_doll);
+  }
+
+  sprintf(filename, "actor_%s.bmp", get_game_tag(Game::get_game()->get_game_type()));
+  build_path(datadir, filename, imagefile);
+  return bmp.getSdlSurface32(imagefile);
 }
 
 static const char combat_mode_tbl[][8] = {"COMMAND", "FRONT", "REAR", "FLANK", "BERSERK", "RETREAT", "ASSAULT"};

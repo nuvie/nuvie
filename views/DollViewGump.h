@@ -89,6 +89,9 @@ public:
  std::string getDataDirString();
  void loadAvatarDollImage(std::string datadir);
  void loadCustomActorDollImage();
+ SDL_Surface *loadGenericDollImage();
+
+ void setColorKey(SDL_Surface *image);
 
 };
 

@@ -1,3 +1,7 @@
+2014-01-15  Eric Fry <efry at users.sourceforge.net> r1816
+	* Changed doll gump image background to transparent.
+	* Added HiPhish's new doll gump artwork.
+ 
 2014-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1815
 	* Add excluded_obj parameter to lineTest and testIntersection to keep be
 	  able to exclude objs from hitting themselves. It is only used for the
