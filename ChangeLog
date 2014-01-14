@@ -1,3 +1,7 @@
+2014-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1814
+	* Make sure we have an odd number of tiles so the player can be centered
+	  on the map.
+
 2014-01-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1813
 	* Fix r1811 regression that could cause animated effects, like when casting
 	  the light spell, to not display properly because the area.w and area.h
