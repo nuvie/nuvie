@@ -861,7 +861,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
 			can_perform_get = true;
 		else if(!map_window->can_get_obj(actor, obj))
 		{
-			scroll->display_string("\n\nBlocked.");
+			scroll->display_string("\n\nCan't reach it.");
 		}
 		else if(obj->is_on_map())
 		{
@@ -990,7 +990,7 @@ bool Event::use(Obj *obj)
     }
     else if(!obj->is_in_inventory() && !map_window->can_get_obj(player->get_actor(), obj) && player_loc != target)
     {
-        scroll->display_string("\nBlocked.\n");
+        scroll->display_string("\nCan't reach it\n");
     }
     else // Usable
     {
@@ -1400,10 +1400,11 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
         endAction();
         return true;
     }
-
-    if(push_obj && !map_window->can_drop_obj(to.x, to.y, player->get_actor(), push_obj))
+    CanDropOrMoveMsg can_move_check;
+    if(push_obj && (can_move_check = map_window->can_drop_or_move_obj(to.x, to.y, player->get_actor(), push_obj)) != MSG_SUCCESS)
     {
-        scroll->display_string("Blocked.\n");
+//        scroll->display_string("Blocked.\n");  // using text from can_drop_or_move_obj
+        map_window->display_can_drop_or_move_msg(can_move_check, "");
         endAction(true);
         return true;
     }
@@ -1578,7 +1579,7 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
             && ((push_obj && !map_window->can_get_obj(player->get_actor(), push_obj))
             || (push_actor && !can_get_to_actor(push_actor, target.x, target.y))))
     {
-        scroll->display_string("\n\nBlocked.\n");
+        scroll->display_string("\n\nCan't reach it\n");
         endAction(true);
     }
     else
@@ -2474,7 +2475,7 @@ bool Event::ready(Obj *obj, Actor *actor)
     }
 	else if(obj->is_in_container() && obj->get_actor_holding_obj() != actor
 	        && !Game::get_game()->get_map_window()->can_get_obj(actor, obj->get_container_obj()))
-		scroll->display_string("\nBlocked!\n");
+		scroll->display_string("\nCan't reach it\n");
     else if(!(readied = actor->add_readied_object(obj)))
     {
     	if(actor->get_object_readiable_location(obj) == ACTOR_NOT_READIABLE)
@@ -2621,18 +2622,20 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
                     : player->get_actor();
     MapCoord actor_loc = actor->get_location();
     MapCoord drop_loc(x, y, actor_loc.z);
+/* not used in the original game engine
     sint16 rel_x = x - actor_loc.x;
     sint16 rel_y = y - actor_loc.y;
     if(rel_x != 0 || rel_y != 0)
     {
         scroll->display_string(get_direction_name(rel_x, rel_y));
-        scroll->display_string(".\n");
-    }
-
+        scroll->display_string(".");
+    }*/
+    CanDropOrMoveMsg can_drop;
     if(!drop_from_map // already checked in map window
-       && !map_window->can_drop_obj(drop_loc.x, drop_loc.y, actor, obj))
+       && (can_drop = map_window->can_drop_or_move_obj(drop_loc.x, drop_loc.y, actor, obj)) != MSG_SUCCESS)
     {
-        scroll->display_string("\nNot possible\n");
+//        scroll->display_string("\n\nNot possible\n"); // using text from can_drop_or_move_obj
+        map_window->display_can_drop_or_move_msg(can_drop, "\n\n");
         endAction(true); // because the DropEffect is never called to do this
         return false;
     }
@@ -2669,7 +2672,8 @@ bool Event::drop(Obj *obj, uint16 qty, uint16 x, uint16 y)
             player->subtract_movement_points(5);
         else
             game->get_script()->call_actor_subtract_movement_points(actor, 3);
-        endAction(interface_fullscreen);
+        scroll->message("\n\n");
+        endAction(false);
         set_mode(MOVE_MODE);
         return true;
     }

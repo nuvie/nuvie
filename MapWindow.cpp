@@ -157,7 +157,6 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  look_actor = NULL;
  walking = false;
  looking = false;
- drop_with_move = false;
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
  set_use_left_clicks();
@@ -1690,102 +1689,97 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
  return false;
 }
 
-/* Returns true if any object could be placed at world coordinates x,y.
- * If actor is set a line-of-site check must pass. (z is always cur_level)
+/* Returns MSG_SUCCESS if the obj can be dropped or moved by the actor at world coordinates x,y or an error msg.
+ * There must be a direct path between the actor to the obj and also between the obj and destination.
+ * Objs that can't be picked up will be blocked actors and unpassable areas. (z is always cur_level)
  */
-bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool accepting_drop)
+CanDropOrMoveMsg MapWindow::can_drop_or_move_obj(uint16 x, uint16 y, Actor *actor, Obj *obj)
 {
     bool in_inventory = obj->is_in_inventory();
-    if(!in_inventory && original_obj_loc.x == x && original_obj_loc.y == y)
-        return false;
+    if(!in_inventory && obj->x == x && obj->y == y)
+        return MSG_NOT_POSSIBLE;
     if(game->using_hackmove())
-        return true;
+        return MSG_SUCCESS;
 
     if(tile_is_black(x, y, obj))
     {
-        if(accepting_drop)
-        {
             if(tile_is_black(x, y))
-                game->get_scroll()->message("\n\nNot possible.\n\n");
+                return MSG_NOT_POSSIBLE;
             else
-                game->get_scroll()->message("\n\nBlocked.\n\n");
-        }
-        return false;
+                return MSG_BLOCKED;
     }
     MapCoord actor_loc = actor->get_location();
     if(actor_manager->get_actor(x, y, actor_loc.z))
-        return false;
+        return MSG_NOT_POSSIBLE;
+
     Obj *dest_obj = obj_manager->get_obj(x, y, actor_loc.z);
     bool can_go_in_water = (game_type == NUVIE_GAME_U6
                             && (obj->obj_n == OBJ_U6_SKIFF || obj->obj_n == OBJ_U6_RAFT));
     if(can_go_in_water && dest_obj) // it is drawn underneath so only allow on hackmove
-    {
-        if(accepting_drop)
-            game->get_scroll()->message("\n\nNot possible.\n\n");
-        return false;
-    }
+        return MSG_NOT_POSSIBLE;
+
     LineTestResult lt;
     MapCoord target_loc(x,y, actor_loc.z);
+    MapCoord obj_loc(obj->x,obj->y, actor_loc.z);
 
     if(in_inventory && !obj->get_actor_holding_obj()->is_onscreen()
        && obj->get_actor_holding_obj()->get_location().distance(target_loc) > 5)
-    {
-        if(accepting_drop)
-            game->get_scroll()->message("\n\nOut of range!\n\n");
-        return false;
-    }
+        return MSG_OUT_OF_RANGE;
 
     if(get_interface() == INTERFACE_IGNORE_BLOCK && map->can_put_obj(x, y, cur_level))
-       return true;
-
-        // can't ever drop at the actor location
-        if(actor_loc.x == x && actor_loc.y == y)
-            return false;
+       return MSG_SUCCESS;
 
     if(actor_loc.distance(target_loc) > 5 && get_interface() == INTERFACE_NORMAL)
-    {
-        if(accepting_drop)
-            game->get_scroll()->message("\n\nOut of range!\n\n");
-        return false;
+        return MSG_OUT_OF_RANGE;
+
+    uint8 lt_flags;
+    sint16 rel_x, rel_y;
+// This can allow an extra tile of movement than it should but isn't a big enough deal to complicate pathfinding more
+    if(!in_inventory && !obj_manager->can_get_obj(obj)) { // don't treat as missile if we cannot pick it up
+        lt_flags = LT_HitUnpassable|LT_HitActors; // I don't think LT_HitMissileBoundary is still needed
+        rel_x = obj->x - actor_loc.x;
+        rel_y = obj->y - actor_loc.y;
+        rel_x = (rel_x == 0) ? 0 : (rel_x < 0) ? -1 : 1;
+        rel_y = (rel_y == 0) ? 0 : (rel_y < 0) ? -1 : 1;
+    } else {
+        lt_flags = LT_HitMissileBoundary;
+        rel_x = 0; rel_y = 0;
     }
-    if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
+
+
+    if(map->lineTest(actor_loc.x + rel_x, actor_loc.y + rel_y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
     {
-        if(original_obj_loc.distance(target_loc) != 1 || !accepting_drop)
+        MapCoord hit_loc = MapCoord(lt.hit_x, lt.hit_y, lt.hit_level);
+        if(obj_loc.distance(target_loc) != 1 || hit_loc.distance(target_loc) != 1)
         {
-            MapCoord hit_loc = MapCoord(lt.hit_x, lt.hit_y, lt.hit_level);
             if(lt.hitObj && target_loc == hit_loc)
             {
                 if(obj_manager->can_store_obj(lt.hitObj, obj)) //if we are moving onto a container.
-                    return true;
+                    return MSG_SUCCESS;
             }
-            if(accepting_drop)
-                game->get_scroll()->message("\n\nBlocked.\n\n");
-            return false;
+            return MSG_BLOCKED;
         }
-        drop_with_move = true;
         // trying to push object one tile away from actor
-        if(map->lineTest(original_obj_loc.x, original_obj_loc.y, x, y, actor_loc.z, LT_HitMissileBoundary, lt))
+        if(map->lineTest(obj->x, obj->y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
         {
             if(lt.hitObj)
             {
                 if(obj_manager->can_store_obj(lt.hitObj, obj)) //if we are moving onto a container.
-                    return true;
-                else // I don't think these are needed
+                    return MSG_SUCCESS;
+/*                else // I don't think these are needed
                 {
                     // We can place an object on a bench or table. Or on any other object if
                     // the object is passable and not on a boundary.
 
                     Tile *obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
                     if(!obj_tile) // shouldn't happen
-                        return false;
+                        return MSG_NO_TILE;
                     if((obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP)
                        || (obj_tile->passable && !map->is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
-                        return true;
-                }
+                        return MSG_SUCCESS;
+                }*/
             }
-            if(accepting_drop)
-                game->get_scroll()->message("\n\nBlocked.\n\n");
-            return false;
+            return MSG_BLOCKED;
         }
     }
     Tile *tile;
@@ -1795,16 +1789,27 @@ bool MapWindow::can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool ac
         tile = map->get_tile(x, y, actor_loc.z);
 
     if(!tile) // shouldn't happen
-        return false;
+        return MSG_NO_TILE;
 
     if((can_go_in_water || !map->is_water(x, y, actor_loc.z))
        && ((tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP)
        || (tile->passable && !map->is_boundary(x, y, actor_loc.z))))
-        return true;
+        return MSG_SUCCESS;
 
-    if(accepting_drop)
-        game->get_scroll()->message("\n\nNot possible.\n\n");
-    return false;
+    return MSG_NOT_POSSIBLE;
+}
+
+void MapWindow::display_can_drop_or_move_msg(CanDropOrMoveMsg msg, string msg_text)
+{
+	if(msg == MSG_NOT_POSSIBLE)
+		msg_text += "Not possible\n";
+	else if(msg == MSG_BLOCKED)
+		msg_text += "Blocked\n";
+	else if(msg == MSG_OUT_OF_RANGE)
+		msg_text += "Out of range\n";
+/*	else if(msg == MSG_NO_TILE) // shouldn't be needed now that blacked out areas are checked first
+		msg_text += "ERROR: No tile. Report me\n";*/
+	game->get_scroll()->display_string(msg_text);
 }
 
 bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
@@ -1864,7 +1869,6 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
         game->get_event()->display_not_aboard_vehicle();
         return false;
     }
-    drop_with_move = false;
     map_width = map->get_width(cur_level);
     x = (cur_x + x) % map_width;
     y = (cur_y + y) % map_width;
@@ -1906,11 +1910,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 				}
     		}
     		else
-    		{
-    			if(!obj_manager->can_get_obj(obj))
-    				drop_with_move = true;
     			return true;
-    		}
     	}
     }
     else
@@ -1936,8 +1936,11 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 		else
 			return true; //throw on ground
     }
-
-    game->get_scroll()->message("\n\nBlocked.\n\n");
+	game->get_scroll()->display_string("Move-");
+	game->get_scroll()->display_string(obj_manager->look_obj(obj)); // getting obj name
+	game->get_scroll()->display_string("\nto ");
+	game->get_scroll()->display_string(get_direction_name(x - obj->x ,  y - obj->y));
+	game->get_scroll()->message(".\n\nCan't reach it\n\n");
   }
 
  return false;
@@ -1972,20 +1975,26 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         }
         else
         {
-            if(!obj->is_in_inventory() && move_on_drop(obj))
+            if(!obj->is_in_inventory())
             {
+                move_on_drop(obj); // no longer determines whether to drop or move but can call usecode
                 event->newAction(PUSH_MODE);
                 event->select_obj(obj);
-                event->pushTo(x-original_obj_loc.x, y-original_obj_loc.y, PUSH_FROM_OBJECT);
+                event->pushTo(x-obj->x, y-obj->y, PUSH_FROM_OBJECT);
                 event->endAction();
                 return;
             }
-
-            if(!can_drop_obj(x, y, actor_manager->get_player(), obj, true))
+            CanDropOrMoveMsg can_drop; // so we can skip quantity prompt
+            if((can_drop = can_drop_or_move_obj(x, y, actor_manager->get_player(), obj)) != MSG_SUCCESS) {
+                game->get_scroll()->display_string("Drop-");
+                game->get_scroll()->display_string(obj_manager->look_obj(obj));
+                game->get_scroll()->display_string("\n\nlocation:\n\n");
+                display_can_drop_or_move_msg(can_drop, "");
+                game->get_scroll()->message("\n");
                 return;
-
+            }
         	// drop on ground or into a container
-        	event->newAction(DROP_MODE); // FIXME: drops no matter what the mode is
+        	event->newAction(DROP_MODE);
         	event->select_obj(obj);
         	if(obj->qty <= 1 || !obj_manager->is_stackable(obj))
         		event->select_target(x, y);
@@ -1995,16 +2004,16 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
     }
 
 }
-
+// performs some usecode but used to decide whether to move or drop too
 bool MapWindow::move_on_drop(Obj *obj)
 {
 	bool move = (get_interface() == INTERFACE_NORMAL);
-	if(drop_with_move && move)
+/*	if(drop_with_move && move)
 		return true;
 
 	if(obj_manager->obj_is_damaging(obj))
 		return move;
-
+*/
 	if(game->get_usecode()->has_getcode(obj) && obj->is_in_inventory() == false)
 	{
 		if(game_type == NUVIE_GAME_U6)

@@ -1,3 +1,22 @@
+2014-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1815
+	* Add excluded_obj parameter to lineTest and testIntersection to keep be
+	  able to exclude objs from hitting themselves. It is only used for the
+	  LT_HitMissileBoundary and LT_HitUnpassable atm. This fixes bug #288,
+	  barrel blocks itself when moving
+	* Rename can_drop_obj to can_drop_or_move_obj. Have it return error or
+	  success messages instead of true and false. Add LT_HitUnpassable and
+	  LT_HitActors to ungettable objects so that they behave like the original
+	  such as barrels blocking passage on one side in the Moonglow pub. A minor
+	  bug with ungettable objs is that they can, at some positions, let the
+	  player move them an extra tile further than they should be allowed. This
+	  was done to simplify pathfinding that allows them to more than 1 tile.
+	* Get rid of drop_with_move variable in MapWindow and always use move(push)
+	  when dropping a map obj and always use drop when dropping an inventory obj
+	* Fix move command not being able to push an obj 1 block away if the
+	  player's path to the destination was blocked but the object wasn't
+	* Improve drag and drop/can_drop_obj messages and event messages
+	* Remove direction text from drop event since the original doesn't have it
+
 2014-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1814
 	* Make sure we have an odd number of tiles so the player can be centered
 	  on the map.

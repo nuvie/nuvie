@@ -66,6 +66,7 @@ typedef struct {
 enum RoofDisplayType {ROOF_DISPLAY_OFF, ROOF_DISPLAY_NORMAL, ROOF_DISPLAY_FORCE_ON };
 enum InterfaceType { INTERFACE_NORMAL, INTERFACE_FULLSCREEN, INTERFACE_IGNORE_BLOCK };
 enum X_RayType { X_RAY_CHEAT_OFF = -1,  X_RAY_OFF = 0, X_RAY_ON = 1, X_RAY_CHEAT_ON = 2};
+enum CanDropOrMoveMsg { MSG_NOT_POSSIBLE, MSG_SUCCESS, MSG_BLOCKED, MSG_OUT_OF_RANGE, MSG_NO_TILE};
 
 class MapWindow: public GUI_Widget
 {
@@ -135,7 +136,6 @@ class MapWindow: public GUI_Widget
 
  bool draw_brit_lens_anim;
  bool draw_garg_lens_anim;
- bool drop_with_move;
 
  public:
 
@@ -215,7 +215,8 @@ class MapWindow: public GUI_Widget
  bool in_dungeon_level() { return(cur_level != 0 && cur_level != 5); }
  bool in_town();
  // can put object at world location x,y?
- bool can_drop_obj(uint16 x, uint16 y, Actor *actor, Obj *obj, bool accepting_drop = false);
+ CanDropOrMoveMsg can_drop_or_move_obj(uint16 x, uint16 y, Actor *actor, Obj *obj);
+ void display_can_drop_or_move_msg(CanDropOrMoveMsg msg, std::string msg_text = "");
  bool can_get_obj(Actor *actor, Obj *obj);
  void display_move_text(Actor *target_actor, Obj *obj);
  MapCoord original_obj_loc;

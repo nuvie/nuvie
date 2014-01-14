@@ -2288,7 +2288,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
 	 for (sint8 ix=-1;ix<2;ix++) 
 	 {
 	   DEBUG(0,LEVEL_DEBUGGING,"can drop at %d %d?\n",ix,iy); 
-	   if(Game::get_game()->get_map_window()->can_drop_obj(x+ix,y+iy,balloonist, obj))
+	   if(Game::get_game()->get_map_window()->can_drop_or_move_obj(x+ix,y+iy,balloonist, obj) == MSG_SUCCESS)
 	   {
 	     DEBUG(0,LEVEL_DEBUGGING,"yes, can drop at %d %d.\n",x+ix,y+iy); 
 	     obj_manager->unlink_from_engine(obj);

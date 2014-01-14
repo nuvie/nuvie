@@ -666,7 +666,7 @@ bool MapCoord::is_visible()
 }
 
 
-bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result)
+bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result, Obj *excluded_obj)
 {
 /* more checks added, may need more testing (SB-X) */
 #if 0
@@ -699,8 +699,11 @@ bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResul
 	{
 		if (!is_passable (x, y, level))
 		{
-			Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
-			return	true;
+			Obj *obj_hit = obj_manager->get_obj (x, y, level);
+			if (!obj_hit  || !excluded_obj || obj_hit  != excluded_obj) {
+				Result.init (x, y, level, NULL, obj_manager->get_obj (x, y, level, true));
+				return	true;
+			}
 		}
 	}
 
@@ -758,7 +761,7 @@ bool Map::testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResul
 //	returns true if a line hits something travelling from (start_x, start_y) to
 //	(end_x, end_y).  If a hit occurs Result is filled in with the relevant info.
 bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
-				   uint8 flags, LineTestResult &Result, uint32 skip)
+				   uint8 flags, LineTestResult &Result, uint32 skip, Obj *excluded_obj)
 {
 	//	standard Bresenham's algorithm.
 	int	deltax = abs (end_x - start_x);
@@ -812,7 +815,7 @@ bool Map::lineTest(int start_x, int start_y, int end_x, int end_y, uint8 level,
 	for (uint32 i = 0; i < count; i++)
 	{
 		//	test the current location
-		if ((i >= skip) && (testIntersection(x, y, level, flags, Result) == true))
+		if ((i >= skip) && (testIntersection(x, y, level, flags, Result, excluded_obj) == true))
 			return	true;
 
 		if (d < 0)
