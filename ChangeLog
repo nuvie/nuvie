@@ -1,3 +1,7 @@
+2014-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1816
+	* Have ScrollWidgetGump handle page breaks better.
+	* Fix SunMoonRibbon offsets.
+
 2014-01-15  Eric Fry <efry at users.sourceforge.net> r1816
 	* Changed doll gump image background to transparent.
 	* Added HiPhish's new doll gump artwork.
@@ -5,8 +9,8 @@
 2014-01-14  Malignant Manor <malignantmanor@users.sourceforge.net> r1815
 	* Add excluded_obj parameter to lineTest and testIntersection to keep be
 	  able to exclude objs from hitting themselves. It is only used for the
-	  LT_HitMissileBoundary and LT_HitUnpassable atm. This fixes bug #288,
-	  barrel blocks itself when moving
+	  LT_HitUnpassable atm. This fixes bug #288, barrel blocks itself when
+	  moving
 	* Rename can_drop_obj to can_drop_or_move_obj. Have it return error or
 	  success messages instead of true and false. Add LT_HitUnpassable and
 	  LT_HitActors to ungettable objects so that they behave like the original

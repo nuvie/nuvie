@@ -65,11 +65,12 @@ ScrollWidgetGump::ScrollWidgetGump(Configuration *cfg, Screen *s)
  add_new_line(); //MsgScroll requires a line to start.
 
  position = 0;
+// ignore_page_breaks = true;
 }
 
 ScrollWidgetGump::~ScrollWidgetGump()
 {
-
+// ignore_page_breaks = false;
 }
 
 void ScrollWidgetGump::set_font(uint8 font_type)
@@ -217,7 +218,7 @@ GUI_status ScrollWidgetGump::scroll_movement_event(ScrollEventType event)
 
 	case SCROLL_DOWN :
 		//timer = new TimedCallback(this, NULL, 2000);
-		if(position + scroll_height < msg_buf.size())
+		if(position + scroll_height < msg_buf.size()/* && !page_break*/)
 		{
 			position++;
 			update_arrows();
@@ -244,7 +245,7 @@ void ScrollWidgetGump::update_arrows()
     show_up_arrow = true;
   }
 
-  if(position + scroll_height < msg_buf.size())
+  if(position + scroll_height < msg_buf.size() || page_break)
   {
     show_down_arrow = true;
   }

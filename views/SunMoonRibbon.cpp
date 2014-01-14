@@ -56,7 +56,7 @@ SunMoonRibbon::~SunMoonRibbon()
 
 void SunMoonRibbon::init(Screen *screen)
 {
-  GUI_Widget::Init(NULL,screen->get_width()-SUNMOON_RIBBON_TOTAL_WIDTH,0,SUNMOON_RIBBON_TOTAL_WIDTH,SUNMOON_RIBBON_HEIGHT);
+  GUI_Widget::Init(NULL, Game::get_game()->get_game_x_offset() + Game::get_game()->get_game_width()-SUNMOON_RIBBON_TOTAL_WIDTH,Game::get_game()->get_game_y_offset(),SUNMOON_RIBBON_TOTAL_WIDTH,SUNMOON_RIBBON_HEIGHT);
 
   loadBgImage(0);
 }
@@ -213,7 +213,7 @@ void SunMoonRibbon::display_dungeon_strip()
   src.h = SUNMOON_RIBBON_HEIGHT;
 
   dest.x = area.x + SUNMOON_RIBBON_TOTAL_WIDTH - SUNMOON_RIBBON_END_WIDTH;
-  dest.y = 0;
+  dest.y = area.y;
   dest.w = SUNMOON_RIBBON_END_WIDTH;
   dest.h = SUNMOON_RIBBON_HEIGHT;
 
