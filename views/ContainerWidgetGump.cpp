@@ -105,13 +105,6 @@ bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h,
  return true;
 }
 
-void ContainerWidgetGump::MoveRelative(int dx, int dy)
-{
-	if(!Game::get_game()->is_new_style()) // FIXME should probably use backfill.
-		GUI::get_gui()->force_full_redraw();
-	GUI_Widget::MoveRelative(dx, dy);
-}
-
 void ContainerWidgetGump::Display(bool full_redraw)
 {
 	display_inventory_list();

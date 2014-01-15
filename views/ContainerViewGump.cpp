@@ -106,10 +106,10 @@ void ContainerViewGump::init_container_type(std::string datadir, Obj *obj_type)
 		}
 	}
 
-	return init_bag(datadir);
+	return init_backpack(datadir, obj_type ? !obj_type->is_in_inventory() : true);
 }
 
-void ContainerViewGump::init_bag(std::string datadir)
+void ContainerViewGump::init_backpack(std::string datadir, bool extend_area_w)
 {
 	std::string imagefile, path;
 
@@ -121,7 +121,7 @@ void ContainerViewGump::init_bag(std::string datadir)
 	up_arrow_button = loadButton(datadir, "cont_up", 83, 35);
 	down_arrow_button = loadButton(datadir, "cont_down", 83, 66);
 
-	build_path(datadir, "bag_bg.bmp", imagefile);
+	build_path(datadir, "backpack_bg.bmp", imagefile);
 
 	bg_image = SDL_LoadBMP(imagefile.c_str());
 
@@ -136,6 +136,8 @@ void ContainerViewGump::init_bag(std::string datadir)
 	container_widget->init(actor, 21, container_widget_y_offset, 4, 3, tile_manager, obj_manager, font);
 
 	AddWidget(container_widget);
+	if(extend_area_w) // text extends beyond the gump
+		area.w += 4;
 }
 
 void ContainerViewGump::init_chest(std::string datadir)
@@ -299,7 +301,7 @@ void ContainerViewGump::display_inventory_weight()
 	char string[11]; //I:nnn/nnns\0
 
 	snprintf(string, 10, "I:%d/%ds", (int)equip_weight,strength*2);
-	font->drawString(screen, string, area.x + 18 + 34, area.y + bg_image->h + 2, 15, 15);
+	font->drawString(screen, string, area.x + (container_obj ? 18 : 18 + 34), area.y + bg_image->h + 2, 15, 15);
 }
 
 void ContainerViewGump::left_arrow()
@@ -311,11 +313,13 @@ void ContainerViewGump::left_arrow()
 		party_mem_num = party->get_party_size() - 1;
 
 	set_actor(party->get_actor(party_mem_num));
+	force_full_redraw_if_needed();
 }
 
 void ContainerViewGump::right_arrow()
 {
 	set_actor(party->get_actor((party->get_member_num(actor) + 1) % party->get_party_size()));
+	force_full_redraw_if_needed();
 }
 
 GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)

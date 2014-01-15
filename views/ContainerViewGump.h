@@ -80,7 +80,7 @@ public:
  protected:
 
  void init_container_type(std::string datadir, Obj *obj_type);
- void init_bag(std::string datadir);
+ void init_backpack(std::string datadir, bool extend_area_w);
  void init_chest(std::string datadir);
  void init_crate(std::string datadir);
  void init_barrel(std::string datadir);

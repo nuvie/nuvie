@@ -36,6 +36,16 @@ DraggableView::DraggableView(Configuration *config)
 	drag = false; button_x = 0; button_y = 0;
 	bg_image = NULL;
 	bg_color_key = 0;
+	Game *game = Game::get_game();
+	if(game->is_orig_style() || game->is_original_plus_cutoff_map()) {
+		need_full_redraw_when_moved = true;
+		always_need_full_redraw_when_moved = true;
+	} else if(game->get_game_width() < game->get_screen()->get_width()
+	          || game->get_game_height() < game->get_screen()->get_height()) {
+		need_full_redraw_when_moved = true;
+		always_need_full_redraw_when_moved = false;
+	} else // no need to set always_need_full_redraw_when_moved
+		need_full_redraw_when_moved = false;
 }
 
 DraggableView::~DraggableView()
@@ -111,6 +121,17 @@ GUI_status DraggableView::MouseMotion(int x,int y,Uint8 state)
  return (GUI_YUM);
 }
 
+void DraggableView::force_full_redraw_if_needed()
+{
+ if(need_full_redraw_when_moved) {
+	 if(always_need_full_redraw_when_moved // or over background
+	    || (area.x + area.w > Game::get_game()->get_game_width() + Game::get_game()->get_game_x_offset()
+	         || area.x < Game::get_game()->get_game_x_offset() || area.y < Game::get_game()->get_game_y_offset()
+	         || area.y + area.h > Game::get_game()->get_game_height() + Game::get_game()->get_game_y_offset()))
+		 GUI::get_gui()->force_full_redraw();
+ }
+}
+
 void DraggableView::MoveRelative(int dx,int dy)
 {
  int new_x = area.x + dx;
@@ -135,6 +156,7 @@ void DraggableView::MoveRelative(int dx,int dy)
 	 dy = screen->get_height() - (area.y + area.h);
  }
 
+ force_full_redraw_if_needed(); // needs to happen before the move
  GUI_Widget::MoveRelative(dx, dy);
 
  return;

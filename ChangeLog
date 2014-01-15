@@ -1,3 +1,7 @@
+2014-01-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1819
+	* Rename bag_bg.bmp to backpack_bg.bmp and init_bag to init_backpack
+	* Inefficiently stop DraggableViews from causing corruption
+
 2014-01-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1818
 	* Add HiPhish's updated Sherry doll.
 	* Fix pink pixel in Dupre's doll and make it transparent.

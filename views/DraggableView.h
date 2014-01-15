@@ -36,7 +36,7 @@ protected:
 	Uint32 bg_color_key;
 
 private:
-	bool drag;
+	bool drag, need_full_redraw_when_moved, always_need_full_redraw_when_moved;
     int button_x, button_y;
 
 public:
@@ -51,6 +51,7 @@ public:
 
 protected:
     void set_bg_color_key(Uint8 r, Uint8 g, Uint8 b);
+    void force_full_redraw_if_needed();
 };
 
 #endif /* __DraggableView_h__ */
