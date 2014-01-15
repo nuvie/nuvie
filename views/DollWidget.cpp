@@ -38,6 +38,8 @@
 #include "CommandBar.h"
 #include "MapWindow.h"
 #include "Player.h"
+#include "ViewManager.h"
+#include "NuvieBmpFile.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define ACTION_BUTTON 3
@@ -102,6 +104,8 @@ DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(N
  bg_color = Game::get_game()->get_palette()->get_bg_color();
  need_to_free_tiles = false;
 
+ use_new_dolls = true; old_use_new_dolls = true;
+ actor_doll = NULL;
  md_doll_shp = NULL;
 }
 
@@ -114,9 +118,7 @@ DollWidget::~DollWidget()
 		if(empty_tile)
 			delete empty_tile;
 	}
-
-	if(md_doll_shp)
-	  delete md_doll_shp;
+	free_doll_shapes();
 }
 
 bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, bool in_portrait_view)
@@ -139,6 +141,8 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  case NUVIE_GAME_MD : blocked_tile = tile_manager->get_tile(TILE_MD_BLOCKED_EQUIP); // FIXME: different depending on npc
                       empty_tile = tile_manager->get_tile(TILE_MD_EQUIP); // FIXME: different depending on npc
                       break;
+	 config->value(config_get_game_key(config) + "/use_new_dolls", use_new_dolls, false);
+	 old_use_new_dolls = use_new_dolls;
  }
  }
  else
@@ -158,10 +162,49 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  return true;
 }
 
+void DollWidget::free_doll_shapes()
+{
+	if(actor_doll) {
+		SDL_FreeSurface(actor_doll);
+		actor_doll = NULL;
+	}
+	if(md_doll_shp) {
+		delete md_doll_shp;
+		md_doll_shp = NULL;
+	}
+}
+
+void DollWidget::setColorKey(SDL_Surface *image)
+{
+	if(image) {
+		Uint32 bg_color_key = SDL_MapRGB(image->format, 0xf1, 0x0f, 0xc4);
+		SDL_SetColorKey(image, SDL_SRCCOLORKEY, bg_color_key);
+	}
+}
+
 void DollWidget::set_actor(Actor *a)
 {
  actor = a;
- if(Game::get_game()->get_game_type() == NUVIE_GAME_MD)
+ if(!Game::get_game()->is_new_style()) { // needed so it can be changed in the menus
+	 config->value(config_get_game_key(config) + "/use_new_dolls", use_new_dolls, false);
+	if(old_use_new_dolls != use_new_dolls) {
+		if(!use_new_dolls)
+			free_doll_shapes();
+		old_use_new_dolls = use_new_dolls;
+	}
+ }
+ if(use_new_dolls) {
+	if(actor) {
+		ViewManager *vm = Game::get_game()->get_view_manager();
+		if(actor->is_avatar())
+			actor_doll = vm->loadAvatarDollImage(actor_doll);
+		else
+			actor_doll = vm->loadCustomActorDollImage(actor_doll, actor->get_actor_num());
+		setColorKey(actor_doll);
+	} else
+		free_doll_shapes();
+ }
+ else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD)
  {
    load_md_doll_shp();
  }
@@ -222,13 +265,24 @@ void DollWidget::Display(bool full_redraw)
 
 }
 
-inline void DollWidget::display_doll()
+inline void DollWidget::display_new_doll()
+{
+	SDL_Rect dst;
+	dst = area;
+
+	if(actor_doll) {
+		dst.w = 108;
+		dst.h = 136;
+		dst.x += 18;
+		dst.y += 16;
+		SDL_BlitSurface(actor_doll, NULL, surface, &dst);
+	}
+}
+
+inline void DollWidget::display_old_doll()
 {
  Tile *tile;
  uint16 i,j;
-
- if(!Game::get_game()->is_new_style() || is_in_portrait_view)
- {
 	int tilenum = 368;
 	if(Game::get_game()->get_game_type() == NUVIE_GAME_MD) // FIXME: different depending on npc - Also needs npc doll info code
 		tilenum = 275;
@@ -257,6 +311,15 @@ inline void DollWidget::display_doll()
 	   md_doll_shp->get_size(&w, &h);
 	   screen->blit(area.x+20,area.y+18,md_doll_shp->get_data(),8,w,h,w,true);
 	 }
+}
+
+inline void DollWidget::display_doll()
+{
+ if(!Game::get_game()->is_new_style() || is_in_portrait_view) {
+	if(use_new_dolls)
+		display_new_doll();
+	else
+		display_old_doll();
  }
  display_readied_object(ACTOR_NECK, area.x, (area.y+8) + 0 * 16, actor, empty_tile);
  display_readied_object(ACTOR_BODY, area.x+3*16, (area.y+8) + 0 * 16, actor, empty_tile);

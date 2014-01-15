@@ -1,3 +1,10 @@
+2014-01-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1821
+	* The custom dolls can now be used in all game styles. Use the game specific
+	  use_new_dolls cfg option or the video menu to allow it for non-new styles.
+	  The lines on the new dolls look awful against the off-white background. We
+	  will need to have separate images for new and non-new styles or have a
+	  separate image overlay with the lines.
+
 2014-01-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1819
 	* Rename bag_bg.bmp to backpack_bg.bmp and init_bag to init_backpack
 	* Inefficiently stop DraggableViews from causing corruption

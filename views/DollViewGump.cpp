@@ -31,7 +31,6 @@
 #include "Party.h"
 #include "Actor.h"
 #include "ViewManager.h"
-#include "Portrait.h"
 
 #include "ContainerViewGump.h"
 #include "DollWidget.h"
@@ -43,7 +42,6 @@ DollViewGump::DollViewGump(Configuration *cfg) : DraggableView(cfg),
 	doll_widget(NULL), font(NULL), actor(NULL)
 {
 	bg_image = NULL;
-	avatar_doll = NULL;
 	actor_doll = NULL;
 	is_avatar = false;
 }
@@ -52,8 +50,6 @@ DollViewGump::~DollViewGump()
 {
 	if(font)
 		delete font;
-	if(avatar_doll)
-		SDL_FreeSurface(avatar_doll);
 	if(actor_doll)
 	  SDL_FreeSurface(actor_doll);
 }
@@ -129,25 +125,15 @@ bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16
 		right_button->Hide();
 	}
 	party_button->Hide();
-
-	loadAvatarDollImage(datadir);
-	loadCustomActorDollImage();
+	is_avatar = actor->is_avatar();
+	ViewManager *vm = Game::get_game()->get_view_manager();
+	if(is_avatar)
+		actor_doll = vm->loadAvatarDollImage(actor_doll);
+	else
+		actor_doll = vm->loadCustomActorDollImage(actor_doll, actor->get_actor_num());
+	setColorKey(actor_doll);
 
 	return true;
-}
-
-std::string DollViewGump::getDataDirString()
-{
-  std::string datadir = GUI::get_gui()->get_data_dir();
-  std::string path;
-  build_path(datadir, "images", path);
-  datadir = path;
-  build_path(datadir, "gumps", path);
-  datadir = path;
-  build_path(datadir, "doll", path);
-  datadir = path;
-
-  return datadir;
 }
 
 void DollViewGump::setColorKey(SDL_Surface *image)
@@ -157,58 +143,6 @@ void DollViewGump::setColorKey(SDL_Surface *image)
     bg_color_key = SDL_MapRGB(image->format, 0xf1, 0x0f, 0xc4);
     SDL_SetColorKey(image, SDL_SRCCOLORKEY, bg_color_key);
   }
-}
-
-void DollViewGump::loadAvatarDollImage(std::string datadir) {
-	char filename[17]; //avatar_nn_nn.bmp\0
-	std::string imagefile;
-	uint8 portrait_num = Game::get_game()->get_portrait()->get_avatar_portrait_num();
-
-	sprintf(filename, "avatar_%s_%02d.bmp", get_game_tag(Game::get_game()->get_game_type()), portrait_num);
-	build_path(datadir, filename, imagefile);
-	avatar_doll = bmp.getSdlSurface32(imagefile);
-	if(avatar_doll == NULL)
-	{
-	  avatar_doll = loadGenericDollImage();
-	}
-	setColorKey(avatar_doll);
-}
-
-void DollViewGump::loadCustomActorDollImage() {
-  std::string datadir = getDataDirString();
-  char filename[17]; //actor_nn_nnn.bmp\0
-  std::string imagefile;
-  uint8 actor_num = actor->get_actor_num();
-
-  if(actor_doll != NULL)
-  {
-    SDL_FreeSurface(actor_doll);
-  }
-  sprintf(filename, "actor_%s_%03d.bmp", get_game_tag(Game::get_game()->get_game_type()), actor_num);
-  build_path(datadir, filename, imagefile);
-  actor_doll = bmp.getSdlSurface32(imagefile);
-  //actor_doll = SDL_LoadBMP(imagefile.c_str());
-
-  if(actor_doll == NULL)
-  {
-    actor_doll = loadGenericDollImage();
-  }
-  setColorKey(actor_doll);
-}
-
-SDL_Surface *DollViewGump::loadGenericDollImage() {
-  std::string datadir = getDataDirString();
-  char filename[14]; //avatar_nn.bmp\0
-  std::string imagefile;
-
-  if(actor_doll != NULL)
-  {
-    SDL_FreeSurface(actor_doll);
-  }
-
-  sprintf(filename, "actor_%s.bmp", get_game_tag(Game::get_game()->get_game_type()));
-  build_path(datadir, filename, imagefile);
-  return bmp.getSdlSurface32(imagefile);
 }
 
 static const char combat_mode_tbl[][8] = {"COMMAND", "FRONT", "REAR", "FLANK", "BERSERK", "RETREAT", "ASSAULT"};
@@ -221,9 +155,12 @@ void DollViewGump::set_actor(Actor *a)
 	if(actor)
 	{
 		is_avatar = actor->is_avatar();
-
-		if(!is_avatar)
-		  loadCustomActorDollImage();
+		ViewManager *vm = Game::get_game()->get_view_manager();
+		if(is_avatar)
+			actor_doll = vm->loadAvatarDollImage(actor_doll);
+		else
+			actor_doll = vm->loadCustomActorDollImage(actor_doll, actor->get_actor_num());
+		setColorKey(actor_doll);
 	}
 
 	if(doll_widget)
@@ -240,24 +177,13 @@ void DollViewGump::Display(bool full_redraw)
  dst.h = 136;
  SDL_BlitSurface(bg_image, NULL, surface, &dst);
 
- if(is_avatar)
- {
-   if(avatar_doll)
-   {
-     dst.x += 45;
-     dst.y += 32;
-     SDL_BlitSurface(avatar_doll, NULL, surface, &dst);
-   }
- }
- else
- {
    if(actor_doll)
    {
      dst.x += 45;
      dst.y += 32;
      SDL_BlitSurface(actor_doll, NULL, surface, &dst);
    }
- }
+
  uint8 w = font->get_center(actor->get_name(), 58);
  font->TextOut(screen->get_sdl_surface(), area.x + 29 + w, area.y + 7, actor->get_name());
 

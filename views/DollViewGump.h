@@ -25,7 +25,6 @@
  */
 
 #include "nuvieDefs.h"
-#include "NuvieBmpFile.h"
 #include "DraggableView.h"
 
 class Configuration;
@@ -48,7 +47,6 @@ class DollViewGump : public DraggableView {
 	GUI_Button *heart_button;
 	GUI_Button *party_button;
 	GUI_Button *inventory_button;
-
 	DollWidget *doll_widget;
 
 	GUI_Font *font;
@@ -56,7 +54,6 @@ class DollViewGump : public DraggableView {
 	Actor *actor;
 	bool is_avatar;
 
-	SDL_Surface *avatar_doll;
   SDL_Surface *actor_doll;
 
 public:
@@ -86,10 +83,6 @@ public:
  void right_arrow();
 
  private:
- std::string getDataDirString();
- void loadAvatarDollImage(std::string datadir);
- void loadCustomActorDollImage();
- SDL_Surface *loadGenericDollImage();
 
  void setColorKey(SDL_Surface *image);
 

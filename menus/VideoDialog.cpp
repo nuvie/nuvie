@@ -39,9 +39,11 @@
 #include "GUI_Dialog.h"
 #include "VideoDialog.h"
 #include "Configuration.h"
+#include "ViewManager.h"
+#include "InventoryView.h"
 
 #define VD_WIDTH 280
-#define VD_HEIGHT 153
+#define VD_HEIGHT 165
 
 VideoDialog::VideoDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - VD_WIDTH)/2,
@@ -53,8 +55,8 @@ VideoDialog::VideoDialog(GUI_CallBack *callback)
 }
 
 bool VideoDialog::init() {
-	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128 };
-	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126, 139 };
+	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128, 141 };
+	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126, 139, 152 };
 	int colX[] = { 9, 29, 63, 201, 239};
 	int height = 12;
 	int yesno_width = 32;
@@ -171,33 +173,46 @@ bool VideoDialog::init() {
 	AddWidget(widget);
 	roof_button = new GUI_TextToggleButton(this, colX[4], buttonY[3], yesno_width, height, yesno_text, 2, game->is_roof_mode(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(roof_button);
+// use_new_dolls
+	if(game->is_new_style()) {
+		doll_button = NULL; old_use_new_dolls = true;
+	} else {
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[4], 0, 0, 0, "Use new actor dolls:", gui->get_font());
+		AddWidget(widget);
+		bool use_new_dolls;
+		Configuration *config = Game::get_game()->get_config();
+		config->value(config_get_game_key(config) + "/use_new_dolls", use_new_dolls, false);
+		old_use_new_dolls = use_new_dolls;
+		doll_button = new GUI_TextToggleButton(this, colX[4], buttonY[4], yesno_width, height, yesno_text, 2, use_new_dolls, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(doll_button);
+	}
 // needs restart text
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[5], 0, 0, 0, "The following require a restart:", gui->get_font());
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[6], 0, 0, 0, "The following require a restart:", gui->get_font());
 	AddWidget(widget);
 // lighting (needs reset)
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[6], 0, 0, 0, "Lighting mode:", gui->get_font());
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Lighting mode:", gui->get_font());
 	AddWidget(widget);
 	const char* const lighting_text[] = { "none", "smooth", "original" };
-	lighting_button = new GUI_TextToggleButton(this, colX[3], buttonY[6], 70, height, lighting_text, 3, screen->get_old_lighting_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	lighting_button = new GUI_TextToggleButton(this, colX[3], buttonY[7], 70, height, lighting_text, 3, screen->get_old_lighting_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(lighting_button);
 // game_style (needs reset)
 	const char *game_style_text[4];
 	game_style_text[0] = "original style"; game_style_text[1] = "new style"; game_style_text[2] = "original+";
 	game_style_text[3] = "original+ full map";
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Game style:", gui->get_font());
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[8], 0, 0, 0, "Game style:", gui->get_font());
 	AddWidget(widget);
-	game_style_button = new GUI_TextToggleButton(this, colX[3] - 84, buttonY[7], 154, height, game_style_text, 4, game->get_game_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	game_style_button = new GUI_TextToggleButton(this, colX[3] - 84, buttonY[8], 154, height, game_style_text, 4, game->get_game_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(game_style_button);
 // dithering (needs reset)
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[8], 0, 0, 0, "Old video graphics:", gui->get_font());
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[9], 0, 0, 0, "Old video graphics:", gui->get_font());
 	AddWidget(widget);
 	const char* const dither_text[] = { "no", "CGA", "EGA" };
-	dither_button = new GUI_TextToggleButton(this, colX[4], buttonY[8], yesno_width, height, dither_text, 3, game->get_dither()->get_mode(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	dither_button = new GUI_TextToggleButton(this, colX[4], buttonY[9], yesno_width, height, dither_text, 3, game->get_dither()->get_mode(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(dither_button);
 // cancel/save buttons
-	cancel_button = new GUI_Button(this, 84, buttonY[9] + 6, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	cancel_button = new GUI_Button(this, 84, buttonY[10] + 6, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
-	save_button = new GUI_Button(this, 155, buttonY[9] + 6, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	save_button = new GUI_Button(this, 155, buttonY[10] + 6, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
 
 	rebuild_buttons(true);
@@ -321,6 +336,14 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 		game->get_map_window()->set_roof_mode(roof_mode);
 		game->get_game_map()->set_roof_mode(roof_mode);
 		config->set(config_get_game_key(config) + "/roof_mode", roof_mode ? "yes" : "no");
+	// use_new_dolls
+		if(doll_button && old_use_new_dolls != (doll_button->GetSelection() ? 1 : 0)) {
+			config->set(config_get_game_key(config) + "/use_new_dolls", doll_button->GetSelection() ? "yes" : "no");
+			ViewManager *vm = game->get_view_manager();
+			InventoryView *iv = vm->get_inventory_view();
+			if(vm->get_current_view() == iv) // showing a doll so need to reset
+				iv->set_party_member(iv->get_party_member_num());
+		}
 	// lighting
 		const char *lighting_char;
 		int lighting = lighting_button->GetSelection();

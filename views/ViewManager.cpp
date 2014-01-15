@@ -48,6 +48,7 @@
 #include "MsgScroll.h"
 #include "Party.h"
 #include "Event.h"
+#include "Portrait.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -557,4 +558,62 @@ GUI_status inventoryViewButtonCallback(void *data)
  view_manager->set_inventory_mode();
 
  return GUI_YUM;
+}
+
+// beginning of custom doll functions shared between DollWidget and DollViewGump
+std::string ViewManager::getDollDataDirString()
+{
+  if(!DollDataDirString.empty())
+    return DollDataDirString;
+  DollDataDirString = GUI::get_gui()->get_data_dir();
+  std::string path;
+  build_path(DollDataDirString, "images", path);
+  DollDataDirString = path;
+  build_path(DollDataDirString, "gumps", path);
+  DollDataDirString = path;
+  build_path(DollDataDirString, "doll", path);
+  DollDataDirString = path;
+
+  return DollDataDirString;
+}
+
+SDL_Surface *ViewManager::loadAvatarDollImage(SDL_Surface *avatar_doll) {
+	char filename[17]; //avatar_nn_nn.bmp\0
+	std::string imagefile;
+	uint8 portrait_num = Game::get_game()->get_portrait()->get_avatar_portrait_num();
+
+	sprintf(filename, "avatar_%s_%02d.bmp", get_game_tag(Game::get_game()->get_game_type()), portrait_num);
+	build_path(getDollDataDirString(), filename, imagefile);
+	if(avatar_doll != NULL)
+		SDL_FreeSurface(avatar_doll);
+
+	avatar_doll = bmp.getSdlSurface32(imagefile);
+	if(avatar_doll == NULL)
+		avatar_doll = loadGenericDollImage();
+	return avatar_doll;
+}
+
+SDL_Surface *ViewManager::loadCustomActorDollImage(SDL_Surface *actor_doll, uint8 actor_num) {
+  char filename[17]; //actor_nn_nnn.bmp\0
+  std::string imagefile;
+
+  if(actor_doll != NULL)
+    SDL_FreeSurface(actor_doll);
+
+  sprintf(filename, "actor_%s_%03d.bmp", get_game_tag(Game::get_game()->get_game_type()), actor_num);
+  build_path(getDollDataDirString(), filename, imagefile);
+  actor_doll = bmp.getSdlSurface32(imagefile);
+
+  if(actor_doll == NULL)
+    actor_doll = loadGenericDollImage();
+  return actor_doll;
+}
+
+SDL_Surface *ViewManager::loadGenericDollImage() {
+  char filename[14]; //avatar_nn.bmp\0
+  std::string imagefile;
+
+  sprintf(filename, "actor_%s.bmp", get_game_tag(Game::get_game()->get_game_type()));
+  build_path(getDollDataDirString(), filename, imagefile);
+  return bmp.getSdlSurface32(imagefile);
 }

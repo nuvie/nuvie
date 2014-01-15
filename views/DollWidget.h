@@ -40,6 +40,7 @@ class DollWidget : public GUI_Widget {
  ObjManager *obj_manager;
 
  Actor *actor;
+ bool use_new_dolls, old_use_new_dolls;
 
  Obj *selected_obj, *unready_obj;
 
@@ -49,12 +50,15 @@ class DollWidget : public GUI_Widget {
  Tile *empty_tile, *blocked_tile;
 
  U6Shape *md_doll_shp;
+ SDL_Surface *actor_doll;
 
  public:
  DollWidget(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~DollWidget();
 
  bool init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager *om, bool in_portrat_view = false);
+ void free_doll_shapes();
+ void setColorKey(SDL_Surface *image);
  void set_actor(Actor *a);
  void Display(bool full_redraw);
 
@@ -80,6 +84,8 @@ class DollWidget : public GUI_Widget {
  GUI_CallBack *callback_object; // object-selected callback
 
  void display_doll();
+ void display_old_doll();
+ void display_new_doll();
  void display_readied_object(uint8 location, uint16 x, uint16 y, Actor *actor, Tile *empty_tile);
 
  private:

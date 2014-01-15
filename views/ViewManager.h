@@ -25,6 +25,7 @@
  */
 
 #include <list>
+#include "NuvieBmpFile.h"
 
 class Configuration;
 class GUI;
@@ -78,6 +79,8 @@ class ViewManager
  uint8 doll_next_party_member;
 
  SunMoonRibbon *ribbon;
+ NuvieBmpFile bmp;
+ std::string DollDataDirString;
 
  public:
 
@@ -122,6 +125,12 @@ class ViewManager
  bool gumps_are_active() { return !gumps.empty(); }
 
  bool set_current_view(View *view);
+
+// custom doll functions shared between DollWidget and DollViewGump
+ std::string getDollDataDirString();
+ SDL_Surface *loadAvatarDollImage(SDL_Surface *avatar_doll);
+ SDL_Surface *loadCustomActorDollImage(SDL_Surface *actor_doll, uint8 actor_num);
+ SDL_Surface *loadGenericDollImage();
 
  protected:
 
