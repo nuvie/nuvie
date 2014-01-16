@@ -35,6 +35,7 @@
 class Actor;
 class CallbackTarget;
 class Configuration;
+class Converse;
 class Book;
 class Game;
 class TimeQueue;
