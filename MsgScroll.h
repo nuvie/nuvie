@@ -99,9 +99,10 @@ protected:
  // set by request_input()
  CallBack *callback_target;
  char *callback_user_data;
-
+ uint8 input_char;
  bool input_mode;
  const char *permit_input; // character list, or 0 = any string
+ bool yes_no_only, numbers_only; // limited input selection
 
  bool page_break;
  bool just_finished_page_break;
@@ -211,7 +212,7 @@ private:
 
  void set_input_mode(bool state, const char *allowed = NULL,
                      bool can_escape = true, bool use_target_cursor = false);
- virtual void set_talking(bool state,  Actor *actor = NULL) { talking = state; }
+ virtual void set_talking(bool state,  Actor *actor = NULL) { talking = state; input_char = 0; }
  bool is_talking() { return talking; }
  void set_show_cursor(bool state) { show_cursor = state; }
 
@@ -254,6 +255,9 @@ private:
  virtual void set_permitted_input(const char *allowed);
  virtual void clear_permitted_input();
  virtual bool can_fit_token_on_msgline(MsgLine *msg_line, MsgText *token);
+ void increase_input_char();
+ void decrease_input_char();
+ uint8 get_char_from_input_char();
 };
 
 

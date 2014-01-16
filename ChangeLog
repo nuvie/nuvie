@@ -1,3 +1,10 @@
+2014-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1826
+	* Add number support to converse gump arrow key character selection and
+	  limit to 0-9 and y/n when appropriate.
+	* Add arrow key character selection to MsgScroll. The game can now be
+	  played from character creation to ending without a gamepad in
+	  non-new styles. (You must still bind keyboard keys to the pad though.)
+
 2014-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1824
 	* Have mouse wheel scroll in party and inventory widget.
 	* Have mouse wheel change actors in actor, party, and inventory views.

@@ -174,6 +174,9 @@ void MsgScroll::init(Configuration *cfg, Font *f)
 	config = cfg;
 	config->value("config/GameType",game_type);
 
+	input_char = 0;
+	yes_no_only = false;
+	numbers_only = false;
 	scroll_updated = false;
 	discard_whitespace = true;
 	page_break = false;
@@ -612,11 +615,19 @@ void MsgScroll::set_keyword_highlight(bool state)
 void MsgScroll::set_permitted_input(const char *allowed)
 {
 	permit_input = allowed;
+	if(permit_input) {
+		if(strcmp(permit_input, "yn") == 0)
+			yes_no_only = true;
+		else if(strcmp(permit_input, "0123456789") == 0)
+			numbers_only = true;
+	}
 }
 
 void MsgScroll::clear_permitted_input()
 {
 	permit_input = NULL;
+	yes_no_only = false;
+	numbers_only = false;
 }
 
 void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape, bool use_target_cursor)
@@ -743,10 +754,12 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
     }
     switch(key.sym)
      {
-      case SDLK_UP : move_scroll_up();
+      case SDLK_UP : if(input_mode) break; //will select printable ascii
+                     move_scroll_up();
                      return (GUI_YUM);
 
-      case SDLK_DOWN: move_scroll_down();
+      case SDLK_DOWN: if(input_mode) break; //will select printable ascii
+                      move_scroll_down();
                       return (GUI_YUM);
       case SDLK_PAGEUP: page_up(); // handled in event too but keybindings can change
                         return (GUI_YUM);
@@ -772,15 +785,40 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                           }
                           return(GUI_YUM);
         case SDLK_KP_ENTER:
-        case SDLK_RETURN: if(permit_inputescape)
+        case SDLK_RETURN: if(permit_inputescape || (yes_no_only && input_char != 0))
                           {
+                            if(input_char != 0)
+                            {
+                              input_buf_add_char(get_char_from_input_char());
+                              input_char = 0;
+                            }
                             if(input_mode)
                               set_input_mode(false);
                           }
                           return(GUI_YUM);
+        case SDLK_RIGHT:
+                        if(yes_no_only)
+                          break;
+                        else if(input_char != 0)
+                        {
+                          input_buf_add_char(get_char_from_input_char());
+                          input_char = 0;
+                        }
+                        break;
+        case SDLK_DOWN:
+                       increase_input_char();
+                       break;
+        case SDLK_UP:
+                     decrease_input_char();
+                     break;
+        case SDLK_LEFT :
         case SDLK_BACKSPACE :
-                            if(input_mode)
-                              input_buf_remove_char();
+                            if(input_mode) {
+                              if(input_char != 0)
+                                  input_char = 0;
+                              else
+                                  input_buf_remove_char();
+                            }
                             break;
         default: // alphanumeric characters
                  if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
@@ -930,6 +968,9 @@ void MsgScroll::Display(bool full_redraw)
     }
    else
      cursor_x = area.x;
+   if(Game::get_game()->is_original_plus_full_map() && show_cursor
+      && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height))
+     drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
   }
 else
  {
@@ -970,6 +1011,11 @@ void MsgScroll::drawCursor(uint16 x, uint16 y)
  uint8 font_color = 0x48;
  if(Game::get_game()->get_game_type()!=NUVIE_GAME_U6)
     font_color = 0;
+ if(input_char != 0) { // show letter selected by arrow keys
+    font->drawChar(screen, get_char_from_input_char(), x, y, font_color);
+    screen->update(x, y, 8, 8);
+    return;
+ }
  if(page_break)
     {
      if(cursor_wait <= 2) // flash arrow
@@ -1068,4 +1114,32 @@ void MsgScroll::request_input(CallBack *caller, void *user_data)
 {
     callback_target = caller;
     callback_user_data = (char *)user_data;
+}
+
+void MsgScroll::increase_input_char()
+{
+	if(yes_no_only)
+		input_char = input_char == 25 ? 14 : 25; 
+	else if(numbers_only)
+		input_char = (input_char == 0 || input_char == 36) ? 27 : input_char + 1;
+	else
+		input_char = (input_char + 1) % 37;
+}
+
+void MsgScroll::decrease_input_char()
+{
+	if(yes_no_only)
+		input_char = input_char == 25 ? 14 : 25;
+	else if(numbers_only)
+		input_char = (input_char == 0 || input_char == 27) ? 36 : input_char - 1;
+	else
+		input_char = input_char == 0 ? 36 : input_char - 1;
+}
+
+uint8 MsgScroll::get_char_from_input_char()
+{
+	if(input_char > 26)
+		return (input_char - 26 + SDLK_0 - 1);
+	else
+		return (input_char + SDLK_a - 1);
 }

@@ -53,7 +53,6 @@ class ConverseGump: public MsgScroll
 	uint8 converse_bg_color;
 
 	uint16 cursor_position;
-	uint8 input_char;
 
 	uint8 portrait_width;
 	uint8 portrait_height;

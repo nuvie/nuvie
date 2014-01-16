@@ -82,7 +82,6 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
  if(c<256)
 	 converse_bg_color = (uint8)c;
 
- input_char = 0;
  cursor_position = 0;
 
  portrait_width = frame_w = Game::get_game()->get_portrait()->get_portrait_width();
@@ -263,14 +262,14 @@ void ConverseGump::set_permitted_input(const char *allowed)
 {
 	permitted_input_keywords.clear();
 	keyword_list = &permitted_input_keywords;
+	MsgScroll::set_permitted_input(allowed);
 
-	if(allowed && strcmp(allowed, "yn") == 0)
+	if(yes_no_only)
 	{
 		add_keyword("yes");
 		add_keyword("no");
 	}
-
-	if(allowed && strcmp(allowed, "0123456789") == 0)
+	else if(numbers_only)
 	{
 		add_keyword("0");
 		add_keyword("1");
@@ -285,7 +284,6 @@ void ConverseGump::set_permitted_input(const char *allowed)
 	}
 
 	cursor_position = 0;
-	MsgScroll::set_permitted_input(allowed);
 }
 
 void ConverseGump::clear_permitted_input()
@@ -636,9 +634,11 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 				}
 				break;
 			case SDLK_RIGHT:
-				if(cursor_at_input_section() && input_char != 0)
+				if(yes_no_only)
+					break;
+				else if(cursor_at_input_section() && input_char != 0)
 				{
-					input_buf_add_char(input_char + SDLK_a - 1);
+					input_buf_add_char(get_char_from_input_char());
 					input_char = 0;
 				}
 				else
@@ -646,11 +646,11 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 				break;
 			case SDLK_DOWN:
 				cursor_move_to_input();
-				input_char = (input_char + 1) % 27;
+				increase_input_char();
 				break;
 			case SDLK_UP:
 				cursor_move_to_input();
-				input_char = input_char == 0 ? 26 : input_char - 1;
+				decrease_input_char();
 				break;
 	        case SDLK_ESCAPE:
 	        					if(permit_inputescape)
@@ -663,7 +663,7 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	                          return(GUI_YUM);
 	        case SDLK_KP_ENTER:
 	        case SDLK_RETURN:
-	        					if(permit_inputescape || !cursor_at_input_section())
+	        					if(permit_inputescape || !cursor_at_input_section() || (yes_no_only && input_char != 0))
 	        	                 {
 	        						if(!cursor_at_input_section())
 	        						{
@@ -673,7 +673,7 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	        						{
 	        							if(input_char != 0)
 	        							{
-	        								input_buf_add_char(input_char + SDLK_a - 1);
+	        								input_buf_add_char(get_char_from_input_char());
 	        								input_char = 0;
 	        							}
 	        						}
@@ -775,7 +775,7 @@ void ConverseGump::drawCursor(uint16 x, uint16 y)
 {
 	if(input_char != 0)
 	{
-		font->drawChar(screen, input_char + SDLK_a - 1, x, y);
+		font->drawChar(screen, get_char_from_input_char(), x, y);
 	}
 	else
 	{
