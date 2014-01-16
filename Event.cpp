@@ -1067,9 +1067,11 @@ bool Event::use(sint16 rel_x, sint16 rel_y)
     else
         obj = NULL;
  }
- if(obj) // FIXME: try actor first
+ bool visible_actor = actor && actor->is_visible();
+ 
+ if(obj && (!visible_actor || !usecode->has_usecode(actor)))
     return(use(obj));
- else if(actor && actor->is_visible())
+ if(visible_actor)
  {
     MapCoord loc = player->get_actor()->get_location();
     return(use(actor, loc.x + rel_x, loc.y + rel_y));
@@ -3280,7 +3282,8 @@ void Event::cancelAction()
 {
     if(game->user_paused())
         return;
-
+    if(view_manager->gumps_are_active() && (magic == NULL || !magic->is_waiting_for_inventory_obj()))
+         return close_gumps();
     if(mode == INPUT_MODE) // cancel action of previous mode
     {
         if(magic != NULL && magic->is_waiting_for_inventory_obj())
@@ -3304,8 +3307,8 @@ void Event::cancelAction()
                   view_manager->get_inventory_view()->release_focus();
                   view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
               }
-              else
-                  view_manager->close_all_gumps();
+//              else
+//                  view_manager->close_all_gumps();
             }
           }
         }
@@ -3316,11 +3319,6 @@ void Event::cancelAction()
 
     if(mode == MOVE_MODE)
     {
-        if(view_manager->gumps_are_active())
-        {
-            close_gumps();
-            return;
-        }
         scroll->display_string("Pass!\n");
         player->pass();
     }

@@ -132,7 +132,6 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
 
     bg_color = game->get_palette()->get_bg_color();
 
-//    if(game->get_game_type() == NUVIE_GAME_U6)
         init_buttons();
     if(game->get_game_type() == NUVIE_GAME_U6 && !game->is_orig_style())
         weather->add_wind_change_notification_callback((CallBack *)this); //we want to know when the wind direction changes.
@@ -283,6 +282,9 @@ void CommandBarNewUI::Display(bool full_redraw)
           font->drawString(screen, "QL", area.x + 2 + 2 * btn_size, icon_y_offset + area.y + 2 * btn_size + 4);
       }
       font->drawString(screen, get_command_name(cur_pos), area.x, area.y + icon_y_offset + icon_h * btn_size);
+      if(game->get_game_type() == NUVIE_GAME_U6 && game->is_original_plus()) // need to have edges of text update
+        screen->update(area.x-13, area.y, area.w+26, area.h);
+      else
         screen->update(area.x, area.y, area.w, area.h);
   //  }
 }

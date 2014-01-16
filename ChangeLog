@@ -1,3 +1,9 @@
+2014-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1823
+	* Have use try using an actor before an object if the actor has use usecode.
+	* Fix some new command bar text that didn't update properly.
+	* Have cancelAction always close gumps if they are open and do nothing else
+	  unless a spell like pickpocket is waiting for an inventory item.
+
 2014-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1822
 	* The use converse gump setting in the menu no longer requires a restart.
 
