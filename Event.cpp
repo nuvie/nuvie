@@ -99,7 +99,6 @@ Event::Event(Configuration *cfg)
  scroll = NULL;
  clock = NULL;
  player = NULL;
- converse = NULL;
  view_manager = NULL;
  usecode = NULL;
  magic = NULL;
@@ -136,7 +135,7 @@ Event::~Event()
 }
 
 bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic *mg,
-                 GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g, KeyBinder *kb)
+                 GameClock *gc, ViewManager *vm, UseCode *uc, GUI *g, KeyBinder *kb)
 {
  gui = g;
  obj_manager = om;
@@ -144,7 +143,6 @@ bool Event::init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic 
  scroll = ms;
  clock = gc;
  player = p;
- converse = c;
  view_manager = vm;
  usecode = uc;
 
@@ -651,7 +649,7 @@ bool Event::perform_talk(Actor *actor)
         scroll->display_string(actor->get_name());
         scroll->display_string("\n\nNo response\n");
     }
-    else if(converse->start(actor))    // load and begin npc script
+    else if(game->get_converse()->start(actor))    // load and begin npc script
     {
         // try to use real name
         scroll->display_string(actor->get_name());
@@ -1612,7 +1610,7 @@ void Event::alt_code_input(const char *in)
 
         case 400: // talk to NPC (FIXME: get portrait and inventory too)
         	a_num = (uint8)strtol(in, NULL, 10);
-            if(a_num == 0 || !converse->start(a_num))
+            if(a_num == 0 || !game->get_converse()->start(a_num))
             {
                 scroll->display_string("\n");
                 scroll->display_prompt();

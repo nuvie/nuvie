@@ -29,6 +29,7 @@ class GUI_TextToggleButton;
 
 class GameplayDialog : public GUI_Dialog {
 	protected:
+		bool old_using_converse_gump;
 		GUI_CallBack *callback_object;
 		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *formation_button, *stealing_button, *text_gump_button,

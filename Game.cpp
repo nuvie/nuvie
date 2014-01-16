@@ -316,19 +316,11 @@ bool Game::loadGame(Script *s, SoundManager *sm)
 
    //map_window->set_windowSize(11,11);
 
-   converse = new Converse();
-
-	config->value("config/general/converse_gump", enabled_converse_gump, false);
-   if(using_new_converse_gump())
-   {
-	   conv_gump = new ConverseGump(config, font_manager->get_font(0), screen);
-	   conv_gump->Hide();
-	   gui->AddWidget(conv_gump);
-
-	   converse->init(config, game_type, conv_gump, actor_manager, clock, player, view_manager, obj_manager);
-   }
-   else
-	   converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
+	if(is_new_style())
+		enabled_converse_gump = true;
+	else
+		config->value("config/general/converse_gump", enabled_converse_gump, false);
+	init_converse();
 
    usecode->init(obj_manager, game_map, player, scroll);
 
@@ -356,7 +348,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    keybinder->LoadFromPatch(); // won't load if file isn't found
 
    event = new Event(config);
-   event->init(obj_manager, map_window, scroll, player, magic, clock, converse, view_manager, usecode, gui, keybinder);
+   event->init(obj_manager, map_window, scroll, player, magic, clock, view_manager, usecode, gui, keybinder);
    if(game_type==NUVIE_GAME_U6)
    {
      magic->init(event);
@@ -398,6 +390,27 @@ bool Game::loadGame(Script *s, SoundManager *sm)
        cursor->show();
 
  return true;
+}
+
+void Game::init_converse()
+{
+	converse = new Converse();
+	if(enabled_converse_gump) {
+		conv_gump = new ConverseGump(config, font_manager->get_font(0), screen);
+		conv_gump->Hide();
+		gui->AddWidget(conv_gump);
+
+		converse->init(config, game_type, conv_gump, actor_manager, clock, player, view_manager, obj_manager);
+	} else
+		converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
+}
+
+void Game::set_using_new_converse_gump(bool use_converse_gump)
+{
+	if(converse)
+		delete converse;
+	enabled_converse_gump = use_converse_gump;
+	init_converse();
 }
 
 void Game::delete_new_command_bar()
@@ -449,14 +462,6 @@ void Game::init_game_style()
 bool Game::doubleclick_opens_containers()
 {
 	if(open_containers || is_new_style())
-		return true;
-	else
-		return false;
-}
-
-bool Game::using_new_converse_gump()
-{
-	if(enabled_converse_gump || is_new_style())
 		return true;
 	else
 		return false;

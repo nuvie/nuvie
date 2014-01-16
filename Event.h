@@ -42,7 +42,6 @@ class MapWindow;
 class MsgScroll;
 class GameClock;
 class Player;
-class Converse;
 class ViewManager;
 class UseCode;
 class GUI;
@@ -164,7 +163,7 @@ friend class Magic; // FIXME
  virtual ~Event();
 
  bool init(ObjManager *om, MapWindow *mw, MsgScroll *ms, Player *p, Magic *mg,
-           GameClock *gc, Converse *c, ViewManager *vm, UseCode *uc, GUI *g, KeyBinder *kb);
+           GameClock *gc, ViewManager *vm, UseCode *uc, GUI *g, KeyBinder *kb);
  GUI_Dialog *get_gamemenu_dialog() { return gamemenu_dialog; }
  TimeQueue *get_time_queue() { return(time_queue); }
  TimeQueue *get_game_time_queue() { return(game_time_queue); }

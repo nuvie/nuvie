@@ -102,30 +102,31 @@ bool GameplayDialog::init() {
 		AddWidget(converse_solid_bg_button);
 		text_gump_button = converse_gump_button = NULL;
 	}
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[4], 0, 0, 0, "The following require a restart:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[5], 0, 0, 0, "The following require a restart:", font);
 	AddWidget(widget);
 // skip intro
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[5], 0, 0, 0, "Skip intro:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[6], 0, 0, 0, "Skip intro:", font);
 	AddWidget(widget);
-	skip_intro_button = new GUI_TextToggleButton(this, colX[2], buttonY[5], yesno_width, height, yesno_text, 2, skip_intro,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	skip_intro_button = new GUI_TextToggleButton(this, colX[2], buttonY[6], yesno_width, height, yesno_text, 2, skip_intro,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(skip_intro_button);
 // show console
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[6], 0, 0, 0, "Show console:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Show console:", font);
 	AddWidget(widget);
-	show_console_button = new GUI_TextToggleButton(this, colX[2], buttonY[6], yesno_width, height, yesno_text, 2, show_console, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	show_console_button = new GUI_TextToggleButton(this, colX[2], buttonY[7], yesno_width, height, yesno_text, 2, show_console, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(show_console_button);
 // original cursor
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Use original cursors:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[8], 0, 0, 0, "Use original cursors:", font);
 	AddWidget(widget);
-	cursor_button = new GUI_TextToggleButton(this, colX[2], buttonY[7], yesno_width, height, yesno_text, 2, use_original_cursor, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	cursor_button = new GUI_TextToggleButton(this, colX[2], buttonY[8], yesno_width, height, yesno_text, 2, use_original_cursor, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(cursor_button);
 
 	if(!Game::get_game()->is_new_style()) {
-// use converse gump
-		widget = (GUI_Widget *) new GUI_Text(colX[1], textY[8], 0, 0, 0, "Use converse gump:", font);
+// use converse gump - no longer requires a restart
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[3], 0, 0, 0, "Use converse gump:", font);
 		AddWidget(widget);
-		converse_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY[8], yesno_width, height, yesno_text, 2, game->using_new_converse_gump(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		converse_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY[3], yesno_width, height, yesno_text, 2, game->using_new_converse_gump(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(converse_gump_button);
+		old_using_converse_gump = game->using_new_converse_gump();
 	}
 	cancel_button = new GUI_Button(this, 77, buttonY[9] + 6, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
@@ -167,7 +168,11 @@ GUI_status GameplayDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 		if(!Game::get_game()->is_new_style()) {
 			game->set_using_text_gumps(text_gump_button->GetSelection());
 			config->set("config/general/use_text_gumps", text_gump_button->GetSelection() ? "yes" : "no");
-			config->set("config/general/converse_gump", converse_gump_button->GetSelection() ? "yes" : "no"); // need restart
+			bool using_converse_gump = (converse_gump_button->GetSelection() ? 1 : 0);
+			if(using_converse_gump != old_using_converse_gump) {
+				config->set("config/general/converse_gump", using_converse_gump ? "yes" : "no");
+				game->set_using_new_converse_gump(using_converse_gump);
+			}
 		} else {
 			game->get_converse_gump()->set_solid_bg(converse_solid_bg_button->GetSelection());
 			config->set(key + "/converse_solid_bg", converse_solid_bg_button->GetSelection() ? "yes" : "no");

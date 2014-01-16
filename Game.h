@@ -201,7 +201,8 @@ class Game
  void set_armageddon(bool val) { armageddon = val; }
  bool is_ethereal() { return ethereal; }
  void set_ethereal(bool val) { ethereal = val; }
- bool using_new_converse_gump();
+ void set_using_new_converse_gump(bool val);
+ bool using_new_converse_gump() { return enabled_converse_gump; }
 
  uint16 get_game_width() { return game_width; }
  uint16 get_game_height() { return game_height; }
@@ -248,7 +249,7 @@ class Game
  Book *get_book()                  { return(book); }
  KeyBinder *get_keybinder()        { return(keybinder); }
  protected:
-
+	void init_converse();
 };
 
 #endif /* __Game_h__ */

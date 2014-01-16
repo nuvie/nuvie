@@ -1,3 +1,6 @@
+2014-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1822
+	* The use converse gump setting in the menu no longer requires a restart.
+
 2014-01-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1821
 	* The custom dolls can now be used in all game styles. Use the game specific
 	  use_new_dolls cfg option or the video menu to allow it for non-new styles.
