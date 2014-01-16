@@ -439,19 +439,13 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
        Redraw();
       }
 
-    if(HitRect(x,y,arrow_rects[0]) //up arrow hit rect
+    if((button == SDL_BUTTON_WHEELUP || HitRect(x,y,arrow_rects[0])) //up arrow hit rect
        && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-      {
-       if(up_arrow())
-         Redraw();
-      }
+       up_arrow();
 
-    if(HitRect(x,y,arrow_rects[1]) //down arrow hit rect
+    if((button == SDL_BUTTON_WHEELDOWN || HitRect(x,y,arrow_rects[1])) //down arrow hit rect
        && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-      {
-       if(down_arrow())
-         Redraw();
-      }
+       down_arrow();
 
     // only act now if objects can't be used with DoubleClick
     if(selected_obj && !Game::get_game()->get_map_window()->is_doubleclick_enabled())
@@ -462,6 +456,10 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
         ready_obj = selected_obj;
       }
    }
+   else if(button == SDL_BUTTON_WHEELUP && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+       up_arrow();
+   else if(button == SDL_BUTTON_WHEELDOWN && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+       down_arrow();
 
  selected_obj = NULL;
 
@@ -473,6 +471,7 @@ bool InventoryWidget::up_arrow()
  if(row_offset > 0)
   {
    row_offset--;
+   Redraw();
    return true;
   }
 
@@ -490,6 +489,7 @@ bool InventoryWidget::down_arrow()
  if(num_objects - row_offset * 4 > 12)
    {
     row_offset++;
+    Redraw();
     return true;
    }
 

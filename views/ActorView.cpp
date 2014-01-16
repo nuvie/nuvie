@@ -277,6 +277,18 @@ void ActorView::display_actor_stats()
  return;
 }
 
+GUI_status ActorView::MouseDown(int x, int y, int button)
+{
+	if(button == SDL_BUTTON_WHEELUP) {
+		View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
+		return GUI_YUM;
+	} else if(button == SDL_BUTTON_WHEELDOWN) {
+		View::callback(BUTTON_CB, right_button, Game::get_game()->get_view_manager());
+		return GUI_YUM;
+	}
+	return GUI_PASS;
+}
+
 /* Move the cursor around and use command icons.
  */
 GUI_status ActorView::KeyDown(SDL_keysym key)

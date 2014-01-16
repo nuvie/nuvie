@@ -695,6 +695,22 @@ bool InventoryView::select_obj(Obj *obj)
     return false;
 }
 
+GUI_status InventoryView::MouseDown(int x, int y, int button)
+{
+	if(!is_party_member)
+		return GUI_PASS;
+	x -= area.x;
+	y -= area.y;
+	bool wheel_range = (x < 64 || y > 78);
+	if(button == SDL_BUTTON_WHEELUP && wheel_range) {
+		View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
+		return GUI_YUM;
+	} else if(button == SDL_BUTTON_WHEELDOWN && wheel_range) {
+		View::callback(BUTTON_CB, right_button, Game::get_game()->get_view_manager());
+		return GUI_YUM;
+	}
+	return GUI_PASS;
+}
 
 /* Messages from child widgets, Inventory & Doll.
  **INVSELECT is called when an object is selected with MouseDown.*

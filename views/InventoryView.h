@@ -93,7 +93,7 @@ class InventoryView : public View {
  void update_cursor();
  void hide_buttons();
  void show_buttons();
-
+ GUI_status MouseDown(int x, int y, int button);
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 

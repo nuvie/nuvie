@@ -66,6 +66,7 @@ class ActorView : public View {
  void display_name();
  void display_actor_stats();
  bool in_party;
+ GUI_status MouseDown(int x, int y, int button);
  GUI_status KeyDown(SDL_keysym key);
  void update_cursor();
  void select_button();
