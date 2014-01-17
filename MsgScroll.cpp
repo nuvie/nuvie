@@ -854,14 +854,14 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
     {
         if(!Game::get_game()->is_new_style())
             page_up();
-        else
+        else if(input_mode)
             move_scroll_up();
     }
     else if(button == SDL_BUTTON_WHEELDOWN)
     {
         if(!Game::get_game()->is_new_style())
             page_down();
-        else
+        else if(input_mode)
             move_scroll_down();
     }
     else if(button == 1) // left click == select word

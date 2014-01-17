@@ -433,12 +433,16 @@ void ActionMsgScrollUP(int const *params)
 {
 	if(!game->is_new_style())
 		game->get_scroll()->page_up();
+	else
+		game->get_scroll()->move_scroll_up();
 }
 
 void ActionMsgScrollDown(int const *params)
 {
 	if(!game->is_new_style())
 		game->get_scroll()->page_down();
+	else
+		game->get_scroll()->move_scroll_down();
 }
 
 void ActionShowKeys(int const *params)

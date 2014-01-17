@@ -2128,6 +2128,16 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_YUM;
 	}
 
+	if(game->is_new_style()) {
+		if(button == SDL_BUTTON_WHEELDOWN) {
+			game->get_scroll()->move_scroll_down();
+			return GUI_YUM;
+		} else if(button == SDL_BUTTON_WHEELUP) {
+			game->get_scroll()->move_scroll_up();
+			return GUI_YUM;
+		}
+	}
+
 	if(event->get_mode() == MOVE_MODE || event->get_mode() == EQUIP_MODE)
 	{
 		int wx, wy;
@@ -2177,7 +2187,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_PASS;
 	}
 
-	if(!game->is_new_style())
+//	if(!game->is_new_style())
 	{
 		if(button == SDL_BUTTON_WHEELDOWN)
 		{

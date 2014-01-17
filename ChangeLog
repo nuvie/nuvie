@@ -1,3 +1,10 @@
+2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1827
+	* Move MsgScrollNewUI mouse wheel scrolling into map window unless in
+	  input_mode so that it doesn't scroll when scrolling gumps.
+	* Have msg_scroll_up and msg_scroll_down keys work in new style and get
+	  rid of the hard coded keys unless locked into input mode.
+	* Have MsgScrollNewUI display the input_char added last revision.
+
 2014-01-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1826
 	* Add number support to converse gump arrow key character selection and
 	  limit to 0-9 and y/n when appropriate.

@@ -218,6 +218,7 @@ void MsgScrollNewUI::Display(bool full_redraw)
 	MsgText *token;
 
 	uint16 y = area.y + 4;
+	uint16 total_length = 0;
 	std::list<MsgLine *>::iterator iter;
 
 	iter=msg_buf.begin();
@@ -248,7 +249,7 @@ void MsgScrollNewUI::Display(bool full_redraw)
 				screen->fill(border_color, area.x + scroll_width * 7 + 7, y + (i==0?-4:4), 1, (i==0?18:10));
 			}
 
-			for(uint16 total_length = 0;iter1 != msg_line->text.end() ; iter1++)
+			for(total_length = 0;iter1 != msg_line->text.end() ; iter1++)
 			{
 				token = *iter1;
 
@@ -258,6 +259,8 @@ void MsgScrollNewUI::Display(bool full_redraw)
 		}
 
 	}
+	if(input_char != 0)
+		font->drawChar(screen, get_char_from_input_char(), total_length + 8, y - 6);
 	if(border_color != 255 && y != area.y + 4)
 	{
 		screen->fill(border_color, area.x, y + 4, scroll_width * 7 + 8, 1); //draw bottom border
@@ -278,8 +281,8 @@ GUI_status MsgScrollNewUI::KeyDown(SDL_keysym key)
 
 	switch(key.sym)
 	{
-	case SDLK_PAGEDOWN: event = SCROLL_DOWN; break;
-	case SDLK_PAGEUP: event = SCROLL_UP; break;
+	case SDLK_PAGEDOWN: if(input_mode) event = SCROLL_DOWN; break;
+	case SDLK_PAGEUP: if(input_mode) event = SCROLL_UP; break;
 	default : break;
 	}
 
