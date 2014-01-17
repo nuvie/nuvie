@@ -697,7 +697,10 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	                  {
 	                   cursor_move_to_input();
 	                   if(permit_input == NULL)
-	                    input_buf_add_char(ascii);
+	                   {
+	                     if(!numbers_only || isdigit(ascii))
+	                       input_buf_add_char(ascii);
+	                   }
 	                   else if(strchr(permit_input, ascii) || strchr(permit_input, tolower(ascii)))
 	                   {
 	                    input_buf_add_char(toupper(ascii));

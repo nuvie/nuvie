@@ -211,7 +211,8 @@ private:
  void set_keyword_highlight(bool state);
 
  void set_input_mode(bool state, const char *allowed = NULL,
-                     bool can_escape = true, bool use_target_cursor = false);
+                     bool can_escape = true, bool use_target_cursor = false,
+                     bool set_numbers_only_to_true = false);
  virtual void set_talking(bool state,  Actor *actor = NULL) { talking = state; input_char = 0; }
  bool is_talking() { return talking; }
  void set_show_cursor(bool state) { show_cursor = state; }

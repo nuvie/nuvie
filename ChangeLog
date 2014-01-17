@@ -1,3 +1,9 @@
+2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1828
+	* Do a better job of telling the MsgScrolls and converse gump that we want
+	  only numbers as input. Unfortunately, the conversation code of the
+	  original game doesn't tell us that we need to restrict to only numbers
+	  when they allow more than one digit.
+
 2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1827
 	* Move MsgScrollNewUI mouse wheel scrolling into map window unless in
 	  input_mode so that it doesn't scroll when scrolling gumps.

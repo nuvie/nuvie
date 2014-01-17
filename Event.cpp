@@ -389,7 +389,7 @@ void Event::get_target(const MapCoord &init, const char *prompt)
 }
 
 /* Switch focus to MsgScroll and start getting user input. */
-void Event::get_scroll_input(const char *allowed, bool can_escape, bool using_target_cursor)
+void Event::get_scroll_input(const char *allowed, bool can_escape, bool using_target_cursor, bool set_numbers_only_to_true)
 {
     assert(scroll);
     if(!using_target_cursor)
@@ -398,7 +398,7 @@ void Event::get_scroll_input(const char *allowed, bool can_escape, bool using_ta
         set_mode(INPUT_MODE); // saves previous mode
     }
     input.get_text = true;
-    scroll->set_input_mode(true, allowed, can_escape, using_target_cursor);
+    scroll->set_input_mode(true, allowed, can_escape, using_target_cursor, set_numbers_only_to_true);
 //no need to grab focus because any input will eventually reach MsgScroll,
 //    scroll->grab_focus();
 }

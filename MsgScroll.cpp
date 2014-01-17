@@ -618,7 +618,7 @@ void MsgScroll::set_permitted_input(const char *allowed)
 	if(permit_input) {
 		if(strcmp(permit_input, "yn") == 0)
 			yes_no_only = true;
-		else if(strcmp(permit_input, "0123456789") == 0)
+		else if(strncmp(permit_input, "0123456789", strlen(permit_input)) == 0)
 			numbers_only = true;
 	}
 }
@@ -630,7 +630,7 @@ void MsgScroll::clear_permitted_input()
 	numbers_only = false;
 }
 
-void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape, bool use_target_cursor)
+void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape, bool use_target_cursor, bool set_numbers_only_to_true)
 {
  bool do_callback = false;
 
@@ -638,6 +638,8 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape,
  clear_permitted_input();
  permit_inputescape = can_escape;
  using_target_cursor = use_target_cursor;
+ if(set_numbers_only_to_true)
+   numbers_only = true;
 
  line_count = 0;
 
@@ -827,7 +829,10 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                  if(input_mode && isprint(ascii))
                   {
                    if(permit_input == NULL)
-                    input_buf_add_char(ascii);
+                   {
+                     if(!numbers_only || isdigit(ascii))
+                       input_buf_add_char(ascii);
+                   }
                    else if(strchr(permit_input, ascii) || strchr(permit_input, tolower(ascii)))
                    {
                     input_buf_add_char(toupper(ascii));
