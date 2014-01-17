@@ -1121,14 +1121,15 @@ void MsgScroll::request_input(CallBack *caller, void *user_data)
     callback_user_data = (char *)user_data;
 }
 
+// 0 is no char, 1 - 26 is alpha, 27 is space, 28 - 37 is numbers
 void MsgScroll::increase_input_char()
 {
 	if(yes_no_only)
 		input_char = input_char == 25 ? 14 : 25; 
 	else if(numbers_only)
-		input_char = (input_char == 0 || input_char == 36) ? 27 : input_char + 1;
+		input_char = (input_char == 0 || input_char == 37) ? 28 : input_char + 1;
 	else
-		input_char = (input_char + 1) % 37;
+		input_char = (input_char + 1) % 38;
 }
 
 void MsgScroll::decrease_input_char()
@@ -1136,15 +1137,18 @@ void MsgScroll::decrease_input_char()
 	if(yes_no_only)
 		input_char = input_char == 25 ? 14 : 25;
 	else if(numbers_only)
-		input_char = (input_char == 0 || input_char == 27) ? 36 : input_char - 1;
+		input_char = (input_char == 0 || input_char == 28) ? 37 : input_char - 1;
 	else
-		input_char = input_char == 0 ? 36 : input_char - 1;
+		input_char = input_char == 0 ? 37 : input_char - 1;
 }
 
 uint8 MsgScroll::get_char_from_input_char()
 {
-	if(input_char > 26)
-		return (input_char - 26 + SDLK_0 - 1);
+
+	if(input_char > 27)
+		return (input_char - 28 + SDLK_0);
+	else if(input_char == 27)
+		return SDLK_SPACE;
 	else
 		return (input_char + SDLK_a - 1);
 }

@@ -1710,17 +1710,13 @@ local function create_character()
 					else
 						char_index = 65 --A
 					end
-				elseif char_index == 32 then --gap in characters
-					char_index = 39
-				elseif char_index == 39 then --gap in characters
-					char_index = 44
-				elseif char_index == 46 then --gap in characters
+				elseif char_index <= 32 then --gap in characters
 					char_index = 48
-				elseif char_index == 57 then --gap in characters
+				elseif char_index <= 57 then --gap in characters
 					char_index = 65
-				elseif char_index == 90 then --gap in characters
+				elseif char_index <= 90 then --gap in characters
 					char_index = 97
-				elseif char_index == 122 then --last char
+				elseif char_index >= 122 then --last char
 					char_index = 32
 				else
 					char_index = char_index + 1
@@ -1737,18 +1733,14 @@ local function create_character()
 					else
 						char_index = 90 --Z
 					end
-				elseif char_index == 39 then --gap in characters
-					char_index = 32
-				elseif char_index == 44 then --gap in characters
-					char_index = 39
-				elseif char_index == 48 then --gap in characters
-					char_index = 46
 				elseif char_index == 65 then --gap in characters
 					char_index = 57
 				elseif char_index == 97 then --gap in characters
 					char_index = 90
-				elseif char_index == 32 then --first char
+				elseif char_index <= 32 then --first char
 					char_index = 122
+				elseif char_index <= 48 then --gap in characters
+					char_index = 32
 				else
 					char_index = char_index - 1
 				end

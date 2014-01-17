@@ -1,3 +1,8 @@
+2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1829
+	* Add space to the arrow key selection in Msgscrolls and converse gump.
+	* Restrict U6 intro characters when using arrow keys.
+	* Make conversation string comparison case insensitive.
+
 2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1828
 	* Do a better job of telling the MsgScrolls and converse gump that we want
 	  only numbers as input. Unfortunately, the conversation code of the
