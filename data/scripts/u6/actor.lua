@@ -1593,10 +1593,21 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
 
    local hit_actor = actor_combat_hit_check(attacker, foe, weapon)
    local num_bolts
+   local missed_target = false
    
    if is_range_weapon == true then
-   
-      if hit_actor == false then
+      --FIXME might need to get new foe here.
+      target_x, target_y = map_line_hit_check(attacker.x, attacker.y, target_x, target_y, attacker.z)
+
+     local failed_line_check
+     if foe ~= nil and (foe.x ~= target_x or foe.y ~= target_y) then
+        hit_actor = false
+        failed_line_check = true
+     else
+        failed_line_check = false
+     end
+
+      if hit_actor == false and failed_line_check == false then
          if foe ~= nil then
             target_x = target_x + random(0, 2) - 1
             target_y = target_y + random(0, 2) - 1
@@ -1614,9 +1625,14 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
          if num_bolts > 3 then num_bolts = 3 end
       end
       
+      if failed_line_check == false then
       --FIXME might need to get new foe here.
       target_x, target_y = map_line_hit_check(attacker.x, attacker.y, target_x, target_y, attacker.z)
-      
+
+         if foe ~= nil and (foe.x ~= target_x or foe.y ~= target_y) then
+            hit_actor = false -- leaving off line check bool since triple bolts should probably do damage
+         end
+      end
       combat_range_weapon_1D5F9(attacker, target_x, target_y, target_z, foe, weapon)
       
       
@@ -1639,7 +1655,16 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
             
             foe = map_get_actor(target_x + movement_offset_x_tbl[t+1], target_y + movement_offset_y_tbl[t+1], player_loc.z)
             --dgb("new_x = "..target_x + movement_offset_x_tbl[t+1].." new_y = "..target_y + movement_offset_y_tbl[t+1].."\n");
-            hit_actor = actor_combat_hit_check(attacker, foe, weapon);
+            if failed_line_check == true then
+                hit_actor = false
+            else
+                target_x, target_y = map_line_hit_check(attacker.x, attacker.y, target_x, target_y, attacker.z)
+                if foe ~= nil and foe.x == target_x and foe.y == target_y then
+                    hit_actor = actor_combat_hit_check(attacker, foe, weapon);
+                else
+                    hit_actor = false
+                end
+            end
          end
 
          if hit_actor == true then

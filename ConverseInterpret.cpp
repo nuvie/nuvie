@@ -1201,7 +1201,7 @@ converse_value ConverseInterpret::evop_eq(stack<converse_typed_value> &vs)
 	}
 	else
 	{
-		if(stricmp(get_rstr(operand1.val), get_rstr(operand2.val)) == 0)
+		if(strcasecmp(get_rstr(operand1.val), get_rstr(operand2.val)) == 0)
 			out = 1;
 	}
 
