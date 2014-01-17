@@ -1975,7 +1975,7 @@ void MapWindow::drag_perform_drop(int x, int y, int message, void *data)
         }
         else
         {
-            if(!obj->is_in_inventory())
+            if(!obj->is_in_inventory() && !obj->is_in_container()) // !need is_in_container to exclude container gumps
             {
                 move_on_drop(obj); // no longer determines whether to drop or move but can call usecode
                 event->newAction(PUSH_MODE);

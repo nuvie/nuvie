@@ -83,19 +83,19 @@ ContainerWidgetGump::~ContainerWidgetGump()
 
 }
 
-bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint16 w, uint16 h, TileManager *tm, ObjManager *om, Font *f)
+bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint8 Cols, uint8 Rows,TileManager *tm, ObjManager *om, Font *f)
 {
  tile_manager = tm;
  obj_manager = om;
 
- rows = h;
- cols = w;
+ rows = Rows;
+ cols = Cols;
 
  //objlist_offset_x = 0;
  //objlist_offset_y = 0;
 
  //72 =  4 * 16 + 8
- GUI_Widget::Init(NULL, x, y, CONTAINER_WIDGET_COLS * 16, CONTAINER_WIDGET_GUMP_HEIGHT);
+ GUI_Widget::Init(NULL, x, y, cols * 16, rows * 16);
 
  set_actor(a);
  set_accept_mouseclick(true, 0);//USE_BUTTON); // accept [double]clicks from button1 (even if double-click disabled we need clicks)

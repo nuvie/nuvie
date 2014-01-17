@@ -379,7 +379,7 @@ GUI_status ContainerViewGump::MouseDown(int x, int y, int button)
 {
 	int y_off = y - area.y;
 
-	if(y_off >= container_widget_y_offset && y_off < container_widget_y_offset + CONTAINER_WIDGET_GUMP_HEIGHT)
+	if(y_off >= container_widget_y_offset && y_off < container_widget_y_offset + container_widget->H())
 	{
 		if(button == SDL_BUTTON_WHEELDOWN)
 		{

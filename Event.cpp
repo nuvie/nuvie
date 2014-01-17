@@ -1355,7 +1355,9 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     	{
             // exchange inventory.
             Actor *src_actor = push_obj->get_actor_holding_obj();
-            if(src_actor)
+            if(!src_actor) // container on the map (container gump)
+               src_actor = player->get_actor();
+//            if(src_actor)
             {
             	Actor *target_actor = map->get_actor(rel_x, rel_y, src_actor->get_z());
             	if(can_move_obj_between_actors(push_obj, src_actor, target_actor, true))

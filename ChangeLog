@@ -1,3 +1,10 @@
+2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1830
+	* Fix r1815 regression that broke dragging objs inside containers on the map
+	  to somewhere other than the container.
+	* Have move command work when used on objs inside containers on the map.
+	* Fix bug #290, Dragging items in the last row of a corpse container
+	  impossible. All container gumps acted as backpacks and were affected.
+
 2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1829
 	* Add space to the arrow key selection in Msgscrolls and converse gump.
 	* Restrict U6 intro characters when using arrow keys.
