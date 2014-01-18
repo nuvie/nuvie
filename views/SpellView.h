@@ -89,8 +89,8 @@ public:
 
  void move_left();
  void move_right();
- void move_up();
- void move_down();
+ GUI_status move_up();
+ GUI_status move_down();
 
  void set_prev_level();
  void set_next_level();
@@ -102,7 +102,7 @@ public:
  void display_spell_list_text();
  void display_spell_text(Spell *spell, uint16 line_num, uint8 selected_spell);
  void show_spell_description();
-
+ GUI_status cancel_spell();
  uint16 get_available_spell_count(Spell *s);
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);

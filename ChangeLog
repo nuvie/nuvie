@@ -1,3 +1,8 @@
+2014-01-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1834
+	* Have the right mouse button cancel spell view
+	* Change selecting_spell to the more accurate selecting_spell_target.
+	* Make some minor changes to shorten SpellView::MouseDown.
+
 2014-01-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1833
 	* Allow inventory widget to accept objects held by other party members
 	* Allow readied items to be moved to another party member's containers in

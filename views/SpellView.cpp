@@ -267,7 +267,7 @@ void SpellView::move_right()
 	update_display = true;
 }
 
-void SpellView::move_up()
+GUI_status SpellView::move_up()
 {
 	sint8 index = get_selected_index();
 
@@ -278,10 +278,10 @@ void SpellView::move_up()
 	}
 	else
 		move_left();
-
+	return GUI_YUM;
 }
 
-void SpellView::move_down()
+GUI_status SpellView::move_down()
 {
 	sint8 index = get_selected_index();
 
@@ -297,6 +297,7 @@ void SpellView::move_down()
 	}
 	else
 		move_right();
+	return GUI_YUM;
 }
 
 void SpellView::display_level_text()
@@ -401,12 +402,10 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
     {
         case SDLK_UP:
         case SDLK_KP8:
-            move_up();
-            break;
+            return move_up();
         case SDLK_DOWN:
         case SDLK_KP2:
-            move_down();
-            break;
+            return move_down();
         case SDLK_LEFT:
         case SDLK_KP4:
         	move_left();
@@ -430,18 +429,7 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
 
         	return GUI_PASS;
         case SDLK_ESCAPE:
-            if(Game::get_game()->get_event()->is_looking_at_spellbook())
-            {
-                close_look();
-                return GUI_YUM;
-            }
-        	if(event_mode)
-        	{
-        		Game::get_game()->get_event()->select_spell_num(-1);
-    			release_focus();
-    			return GUI_YUM;
-        	}
-        	return GUI_PASS;
+            return cancel_spell();
         case SDLK_SPACE:
         	return GUI_PASS;
         case SDLK_TAB :
@@ -454,36 +442,49 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
     return(GUI_YUM);
 }
 
+GUI_status SpellView::cancel_spell()
+{
+	Event *event = Game::get_game()->get_event();
+	if(event->is_looking_at_spellbook()) {
+		close_look();
+		return GUI_YUM;
+	} else if(event_mode) {
+		event->select_spell_num(-1);
+		release_focus();
+		return GUI_YUM;
+	}
+	event->set_mode(CAST_MODE);
+	event->cancelAction();
+	return GUI_YUM;
+}
+
 GUI_status SpellView::MouseDown(int x, int y, int button)
 {
 	y -= area.y;
 	x -= area.x;
 	Event *event = Game::get_game()->get_event();
-	bool selecting_spell, canceling_spell, doing_nothing;
+	bool selecting_spell_target, canceling_spell, doing_nothing;
 	if(Game::get_game()->is_original_plus()) {
 		if(Game::get_game()->is_original_plus_full_map())
-			selecting_spell = (x < -7 || y > 194);
+			selecting_spell_target = (x < -7 || y > 194);
 		else
-			selecting_spell = (x < -7);
+			selecting_spell_target = (x < -7);
 		canceling_spell = (x > 1 && (y > 101 || x > 137));
 		doing_nothing = ((x > -8 && x < 16) || (x > -8 && (y < 8 || (y > 71 && y < 195))));
 	} else {
-		selecting_spell = (x < 0 && y > 0 && y < 162);
+		selecting_spell_target = (x < 0 && y > 0 && y < 162);
 		canceling_spell = (x > 1 && (y > 101 || x > 137));
 		doing_nothing = (y < 8 || y > 71 || x < 16 || x > 134);
 	}
 
 	if(button == SDL_BUTTON_WHEELUP)
-	{
-		move_up();
-		return GUI_PASS;
-	}
+		return move_up();
 	if(button == SDL_BUTTON_WHEELDOWN)
-	{
-		move_down();
-		return GUI_PASS;
-	}
-	if(selecting_spell) // cast selected spell on the map
+		return move_down();
+	if(button == SDL_BUTTON_RIGHT)
+		return cancel_spell();
+
+	if(selecting_spell_target) // cast selected spell on the map
 	{
 		if(event->is_looking_at_spellbook())
 		{
@@ -501,20 +502,10 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 		return GUI_YUM;
 	}
 	if(canceling_spell) // cancel spell
-	{
-		if(event->is_looking_at_spellbook())
-		{
-			close_look();
-			return GUI_YUM;
-		}
-		event->set_mode(CAST_MODE);
-		event->cancelAction();
-		return GUI_YUM;
-	}
+		return cancel_spell();
 	if(doing_nothing) // do nothing
-	{
 		return GUI_YUM;
-	}
+// selecting spell index
 
 	sint8 index = get_selected_index();
 
@@ -522,10 +513,7 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 		index = num_spells_per_page;
 	else
 		index = 0;
-
-
 	y = (y / num_spells_per_page) - 1;
-
 	//printf("x = %d, y = %d index=%d\n", x, y, index);
 
 	if(cur_spells[index+y] != -1)
@@ -535,13 +523,9 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 		if(event->is_looking_at_spellbook())
 			show_spell_description();
     	else if(event_mode)
-    	{
     		event_mode_select_spell();
-    	}
     	else
-    	{
 			Game::get_game()->get_event()->target_spell();
-    	}
 	}
 
 	return GUI_YUM;
