@@ -401,11 +401,6 @@ bool ContainerWidget::drag_accept_drop(int x, int y, int message, void *data)
     Actor *container_owner = (container_obj ? container_obj->get_actor_holding_obj() : NULL);
     if(!container_owner)
         container_owner = actor;
-    if(obj->is_readied() && obj->get_actor_holding_obj() != container_owner)
-    {
-        DEBUG(0,LEVEL_WARNING,"ContainerWidget: Cannot Move between party members!\n"); 
-        return false;
-    }
     if(!obj->is_in_inventory()) {
         if(container_owner) {
             Game::get_game()->get_scroll()->display_string("Get-");
@@ -478,8 +473,8 @@ void ContainerWidget::drag_perform_drop(int x, int y, int message, void *data)
    {
     DEBUG(0,LEVEL_DEBUGGING,"Drop into inventory.\n");
     obj = (Obj *)data;
-
-	if(obj->get_actor_holding_obj() != actor)
+	bool moving_between_actors = obj->get_actor_holding_obj() != actor;
+	if(moving_between_actors)
 		Game::get_game()->get_player()->subtract_movement_points(3);
 	if(target_cont && obj_manager->can_store_obj(target_cont, obj))
 	{
@@ -491,9 +486,11 @@ void ContainerWidget::drag_perform_drop(int x, int y, int message, void *data)
     }
     else
     {
-    	if(obj->is_readied())
+    	if(obj->is_readied()) {
     		Game::get_game()->get_event()->unready(obj);
-    	else
+    		if(moving_between_actors)
+    			obj_manager->moveto_inventory(obj, actor);
+    	} else
     		obj_manager->moveto_inventory(obj, actor);
     }
 

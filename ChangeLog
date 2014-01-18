@@ -1,4 +1,11 @@
-2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1832
+2014-01-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1833
+	* Allow inventory widget to accept objects held by other party members
+	* Allow readied items to be moved to another party member's containers in
+	  new style.
+	* Stop map window sizes that are a perfect fit in width or height from being
+	  2 tiles too large
+
+2014-01-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1832
 	* Fix r1826 regression that wouldn't allow you to use the right arrow to
 	  select keywords in the converse gump when restricted to numbers.
 	* Don't allow right arrow to add more than one char when permit_input.

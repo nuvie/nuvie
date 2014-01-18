@@ -211,12 +211,18 @@ bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
 	 } else { // new style
 		 map_center_xoff = 0;
 	 }
-	 map_w = (game_width/16) + 1;
-	 map_h = (game_height/16) + 1;
-	if(map_w%2 == 0) // need odd number of tiles to center properly
-		map_w += 1;
-	if(map_h%2 == 0) // need odd number of tiles to center properly
-		map_h += 1;
+	 map_w = game_width/16;
+	 map_h = game_height/16;
+	 if(game_width%16 != 0 || map_w%2 == 0) { // not just the right size
+		 map_w += 1;
+		 if(map_w%2 == 0) // need odd number of tiles to center properly
+			 map_w += 1;
+	 }
+	 if(game_height%16 != 0 || map_h%2 == 0) { // not just the right size
+		 map_h += 1;
+		 if(map_h%2 == 0) // need odd number of tiles to center properly
+			 map_h += 1;
+	 }
 	 offset_x -= (map_w*16 - game_width)/2;
 	 offset_y -= (map_h*16 - game_height)/2;
  }

@@ -569,12 +569,6 @@ bool InventoryWidget::drag_accept_drop(int x, int y, int message, void *data)
           return false;
       }
     }
-
-    if((obj->is_in_inventory() || obj->is_readied()) && obj->get_actor_holding_obj() != actor)
-    {
-        DEBUG(0,LEVEL_WARNING,"InventoryWidget: Cannot Move between party members!\n"); 
-        return false;
-    }
     Actor *src_actor = Game::get_game()->get_player()->get_actor();
 
     if(obj->get_actor_holding_obj() == actor)
