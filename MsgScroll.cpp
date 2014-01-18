@@ -787,25 +787,19 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                           }
                           return(GUI_YUM);
         case SDLK_KP_ENTER:
-        case SDLK_RETURN: if(permit_inputescape || (yes_no_only && input_char != 0))
+        case SDLK_RETURN: if(permit_inputescape ||
+                             (yes_no_only && (input_char != 0 || strcasecmp(input_buf.c_str(), "y") == 0
+                              || strcasecmp(input_buf.c_str(), "n") == 0)))
                           {
                             if(input_char != 0)
-                            {
                               input_buf_add_char(get_char_from_input_char());
-                              input_char = 0;
-                            }
                             if(input_mode)
                               set_input_mode(false);
                           }
                           return(GUI_YUM);
         case SDLK_RIGHT:
-                        if(yes_no_only)
-                          break;
-                        else if(input_char != 0)
-                        {
+                        if(input_char != 0 && permit_input == NULL)
                           input_buf_add_char(get_char_from_input_char());
-                          input_char = 0;
-                        }
                         break;
         case SDLK_DOWN:
                        increase_input_char();
@@ -831,7 +825,11 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                    if(permit_input == NULL)
                    {
                      if(!numbers_only || isdigit(ascii))
+                     {
+                       if(input_char != 0)
+                         input_buf_add_char(get_char_from_input_char());
                        input_buf_add_char(ascii);
+                     }
                    }
                    else if(strchr(permit_input, ascii) || strchr(permit_input, tolower(ascii)))
                    {
@@ -874,6 +872,15 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
      if(input_mode)
        {
         token_str = get_token_string_at_pos(x,y);
+        if(permit_input != NULL) {
+            if(strchr(permit_input, token_str[0])
+               || strchr(permit_input, tolower(token_str[0])))
+            {
+                input_buf_add_char(token_str[0]);
+                set_input_mode(false);
+            }
+            return(GUI_YUM);
+        }
 
         for(i=0;i < token_str.length(); i++)
         {
@@ -1056,6 +1063,9 @@ void MsgScroll::set_page_break()
 bool MsgScroll::input_buf_add_char(char c)
 {
  MsgText token;
+ input_char = 0;
+ if(permit_input != NULL)
+	input_buf_remove_char();
  input_buf.append(&c, 1);
  scroll_updated = true;
 
@@ -1130,6 +1140,8 @@ void MsgScroll::increase_input_char()
 		input_char = (input_char == 0 || input_char == 37) ? 28 : input_char + 1;
 	else
 		input_char = (input_char + 1) % 38;
+	if(permit_input != NULL && !strchr(permit_input, get_char_from_input_char())) // might only be needed for the teleport cheat menu
+		increase_input_char();
 }
 
 void MsgScroll::decrease_input_char()
@@ -1140,6 +1152,8 @@ void MsgScroll::decrease_input_char()
 		input_char = (input_char == 0 || input_char == 28) ? 37 : input_char - 1;
 	else
 		input_char = input_char == 0 ? 37 : input_char - 1;
+	if(permit_input != NULL && !strchr(permit_input, get_char_from_input_char())) // might only be needed for the teleport cheat menu
+		decrease_input_char();
 }
 
 uint8 MsgScroll::get_char_from_input_char()

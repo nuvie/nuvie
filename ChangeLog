@@ -1,3 +1,10 @@
+2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1832
+	* Fix r1826 regression that wouldn't allow you to use the right arrow to
+	  select keywords in the converse gump when restricted to numbers.
+	* Don't allow right arrow to add more than one char when permit_input.
+	* Add input_char before text typed after it.
+	* Don't allow cursor selection in permit_input unless it is permitted input.
+
 2014-01-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1831
 	* Use strcasecmp instead of stricmp for compatibility reasons.
 	* Fix bug #260, attack through wall as long as you attack an obj or actor

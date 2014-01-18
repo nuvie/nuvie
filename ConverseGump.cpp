@@ -498,6 +498,9 @@ std::string ConverseGump::get_token_at_cursor()
 
 bool ConverseGump::input_buf_add_char(char c)
 {
+	input_char = 0;
+	if(permit_input != NULL)
+		input_buf_remove_char();
 	input_buf.append(&c, 1);
 	return true;
 }
@@ -634,13 +637,8 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 				}
 				break;
 			case SDLK_RIGHT:
-				if(yes_no_only)
-					break;
-				else if(cursor_at_input_section() && input_char != 0)
-				{
+				if(cursor_at_input_section() && input_char != 0 && permit_input == NULL)
 					input_buf_add_char(get_char_from_input_char());
-					input_char = 0;
-				}
 				else
 					cursor_position = (cursor_position + 1) % (keyword_list->size()+1);
 				break;
@@ -663,19 +661,16 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	                          return(GUI_YUM);
 	        case SDLK_KP_ENTER:
 	        case SDLK_RETURN:
-	        					if(permit_inputescape || !cursor_at_input_section() || (yes_no_only && input_char != 0))
+	        					if(permit_inputescape || !cursor_at_input_section()
+	        					   || (yes_no_only && (input_char != 0 || strcasecmp(input_buf.c_str(), "y") == 0
+	        					       || strcasecmp(input_buf.c_str(), "n") == 0)))
 	        	                 {
 	        						if(!cursor_at_input_section())
-	        						{
 	        							input_add_string(get_token_at_cursor());
-	        						}
 	        						else
 	        						{
 	        							if(input_char != 0)
-	        							{
 	        								input_buf_add_char(get_char_from_input_char());
-	        								input_char = 0;
-	        							}
 	        						}
 	                              //if(input_mode)
 	                                set_input_mode(false);
@@ -699,6 +694,8 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	                   if(permit_input == NULL)
 	                   {
 	                     if(!numbers_only || isdigit(ascii))
+	                       if(input_char != 0)
+	                         input_buf_add_char(get_char_from_input_char());
 	                       input_buf_add_char(ascii);
 	                   }
 	                   else if(strchr(permit_input, ascii) || strchr(permit_input, tolower(ascii)))
