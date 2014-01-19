@@ -39,11 +39,13 @@
 
 DollViewGump::DollViewGump(Configuration *cfg) : DraggableView(cfg),
 	gump_button(NULL), combat_button(NULL), heart_button(NULL), party_button(NULL), inventory_button(NULL),
-	doll_widget(NULL), font(NULL), actor(NULL)
+	doll_widget(NULL), font(NULL), actor(NULL), cursor_tile(NULL)
 {
 	bg_image = NULL;
 	actor_doll = NULL;
 	is_avatar = false;
+	show_cursor = true;
+	cursor_pos = CURSOR_HEAD;
 }
 
 DollViewGump::~DollViewGump()
@@ -62,6 +64,7 @@ bool DollViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, uint16
 
 	actor = a;
 	is_avatar = actor->is_avatar();
+	cursor_tile = tile_manager->get_gump_cursor_tile();
 	doll_widget = new DollWidget(config, this);
 	doll_widget->init(actor, 26, 16, tile_manager, obj_manager);
 
@@ -167,6 +170,50 @@ void DollViewGump::set_actor(Actor *a)
 		doll_widget->set_actor(actor);
 }
 
+uint8 DollViewGump::get_cursor_xoff()
+{
+	switch(cursor_pos) {
+		case CURSOR_LEFT: return 18;
+		case CURSOR_RIGHT: return 82;
+		case CURSOR_HEAD: return 50;
+		case CURSOR_NECK:
+		case CURSOR_RIGHT_HAND: return 26;
+		case CURSOR_CHEST:
+		case CURSOR_LEFT_HAND: return 74;
+		case CURSOR_RIGHT_RING: return 26;
+		case CURSOR_LEFT_RING:  return 74;
+		case CURSOR_FEET:  return 50;
+		case CURSOR_CHECK: return 1;
+		case CURSOR_COMBAT:  return 23;
+		case CURSOR_HEART:  return 26;
+		case CURSOR_PARTY: return 50;
+		case CURSOR_INVENTORY:
+		default : return 74;
+	}
+}
+
+uint8 DollViewGump::get_cursor_yoff()
+{
+	switch(cursor_pos) {
+		case CURSOR_LEFT:
+		case CURSOR_RIGHT: return 2;
+		case CURSOR_HEAD: return 16;
+		case CURSOR_NECK: return 24;
+		case CURSOR_CHEST: return 24;
+		case CURSOR_RIGHT_HAND:
+		case CURSOR_LEFT_HAND: return 40;
+		case CURSOR_RIGHT_RING:
+		case CURSOR_LEFT_RING: return 57;
+		case CURSOR_FEET: return 63;
+		case CURSOR_CHECK: return 111;
+		case CURSOR_COMBAT: return 92;
+		case CURSOR_HEART:
+		case CURSOR_PARTY:
+		case CURSOR_INVENTORY:
+		default: return 109;
+	}
+}
+
 void DollViewGump::Display(bool full_redraw)
 {
  //display_level_text();
@@ -191,6 +238,8 @@ void DollViewGump::Display(bool full_redraw)
 
  DisplayChildren(full_redraw);
  displayCombatMode();
+ if(show_cursor)
+	screen->blit(area.x+get_cursor_xoff(),area.y+get_cursor_yoff(),(unsigned char *)cursor_tile->data,8,16,16,16,true);
  update_display = false;
  screen->update(area.x, area.y, area.w, area.h);
 
@@ -267,16 +316,9 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	{
 		Game::get_game()->get_view_manager()->open_portrait_gump(actor);
 	}
-	else if(caller == combat_button && actor->is_in_party()
-	        && party->get_member_num(actor) != 0)
+	else if(caller == combat_button)
 	{
-		set_combat_mode(actor);
-		update_display = true;
-	}
-	else if(caller == combat_button && event->get_mode() != INPUT_MODE
-	        && event->get_mode() != ATTACK_MODE && event->get_mode() != CAST_MODE)
-	{
-		event->newAction(COMBAT_MODE);
+		activate_combat_button();
 	}
 	else if(caller == party_button) // FIXME: What is this supposed to do?
 	{
@@ -293,6 +335,259 @@ GUI_status DollViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 	}
 
     return GUI_PASS;
+}
+
+GUI_status DollViewGump::moveCursorRelative(uint8 direction)
+{
+	dollCursorPos cursor_left = actor->is_in_party() ? CURSOR_LEFT : CURSOR_HEAD; // don't allow pickpocket or control cheat into arrow area
+	dollCursorPos cursor_right = actor->is_in_party() ? CURSOR_RIGHT : CURSOR_HEAD;
+	dollCursorPos cursor_party; // no party button yet so skip it
+	dollCursorPos cursor_heart; // not available in pickpocket mode
+
+	if(!actor->is_in_party() && !Game::get_game()->get_event()->using_control_cheat()) {
+		if(direction == NUVIE_DIR_SW || direction == NUVIE_DIR_W)
+			cursor_heart = CURSOR_CHECK;
+		else
+			cursor_heart = CURSOR_INVENTORY;
+	} else
+		cursor_heart = CURSOR_HEART;
+
+	if(direction == NUVIE_DIR_W || direction == NUVIE_DIR_SW)
+		cursor_party = cursor_heart;
+	else
+		cursor_party = CURSOR_INVENTORY;
+
+	switch(cursor_pos) {
+		case CURSOR_LEFT:
+			switch(direction) {
+				case NUVIE_DIR_NE:
+				case NUVIE_DIR_E: cursor_pos = CURSOR_RIGHT; return GUI_YUM;
+				case NUVIE_DIR_SW:
+				case NUVIE_DIR_S: cursor_pos = CURSOR_NECK; return GUI_YUM;
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_HEAD; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_RIGHT:
+			switch(direction) {
+				case NUVIE_DIR_W:
+				case NUVIE_DIR_NW: cursor_pos = CURSOR_LEFT; return GUI_YUM;
+				case NUVIE_DIR_S:
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_CHEST; return GUI_YUM;
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_HEAD; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_HEAD:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NW: cursor_pos = cursor_left; return GUI_YUM;
+				case NUVIE_DIR_NE: cursor_pos = cursor_right; return GUI_YUM;
+				case NUVIE_DIR_W:
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_NECK; return GUI_YUM;
+				case NUVIE_DIR_E:
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_CHEST; return GUI_YUM;
+				case NUVIE_DIR_S: cursor_pos = CURSOR_FEET; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_NECK:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NW: cursor_pos = cursor_left; return GUI_YUM;
+				case NUVIE_DIR_E:
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_HEAD; return GUI_YUM;
+				case NUVIE_DIR_S:
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_RIGHT_HAND; return GUI_YUM;
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_LEFT_HAND; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_CHEST:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NE: cursor_pos = cursor_right; return GUI_YUM;
+				case NUVIE_DIR_W:
+				case NUVIE_DIR_NW: cursor_pos = CURSOR_HEAD; return GUI_YUM;
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_RIGHT_HAND; return GUI_YUM;
+				case NUVIE_DIR_S:
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_LEFT_HAND; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_RIGHT_HAND:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NW: cursor_pos = CURSOR_NECK; return GUI_YUM;
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_CHEST; return GUI_YUM;
+				case NUVIE_DIR_E: cursor_pos = CURSOR_LEFT_HAND; return GUI_YUM;
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_FEET; return GUI_YUM;
+				case NUVIE_DIR_S:
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_RIGHT_RING; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_LEFT_HAND:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_CHEST; return GUI_YUM;
+				case NUVIE_DIR_NW: cursor_pos = CURSOR_HEAD; return GUI_YUM;
+				case NUVIE_DIR_W: cursor_pos = CURSOR_RIGHT_HAND; return GUI_YUM;
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_FEET; return GUI_YUM;
+				case NUVIE_DIR_S:
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_LEFT_RING; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_RIGHT_RING:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NW: cursor_pos = CURSOR_RIGHT_HAND; return GUI_YUM;
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_LEFT_HAND; return GUI_YUM;
+				case NUVIE_DIR_S:
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_FEET; return GUI_YUM;
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_COMBAT; return GUI_YUM;
+				case NUVIE_DIR_E: cursor_pos = CURSOR_LEFT_RING;
+				default: return GUI_YUM;
+			}
+		case CURSOR_LEFT_RING:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_LEFT_HAND; return GUI_YUM;
+				case NUVIE_DIR_NW: cursor_pos = CURSOR_RIGHT_HAND; return GUI_YUM;
+				case NUVIE_DIR_W: cursor_pos = CURSOR_RIGHT_RING; return GUI_YUM;
+				case NUVIE_DIR_S:
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_FEET; return GUI_YUM;
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_COMBAT; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_FEET:
+			switch(direction) {
+				case NUVIE_DIR_N: cursor_pos = CURSOR_HEAD; return GUI_YUM;
+				case NUVIE_DIR_W:
+				case NUVIE_DIR_NW: cursor_pos = CURSOR_RIGHT_RING; return GUI_YUM;
+				case NUVIE_DIR_E:
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_LEFT_RING; return GUI_YUM;
+				case NUVIE_DIR_S:
+				case NUVIE_DIR_SW:
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_COMBAT; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_COMBAT:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NW: cursor_pos = CURSOR_RIGHT_RING; return GUI_YUM;
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_FEET; return GUI_YUM;
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_CHECK; return GUI_YUM;
+				case NUVIE_DIR_SE: cursor_pos = cursor_party; return GUI_YUM;
+				case NUVIE_DIR_S: cursor_pos = cursor_heart; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_CHECK:
+			switch(direction) {
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_COMBAT; return GUI_YUM;
+				case NUVIE_DIR_E:
+				case NUVIE_DIR_SE: cursor_pos = cursor_heart; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_HEART:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NW:
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_COMBAT; return GUI_YUM;
+				case NUVIE_DIR_W:
+				case NUVIE_DIR_SW: cursor_pos = CURSOR_CHECK; return GUI_YUM;
+				case NUVIE_DIR_E:
+				case NUVIE_DIR_SE: cursor_pos = cursor_party; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_PARTY:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NW:
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_COMBAT; return GUI_YUM;
+				case NUVIE_DIR_W:
+				case NUVIE_DIR_SW: cursor_pos = cursor_heart; return GUI_YUM;
+				case NUVIE_DIR_E:
+				case NUVIE_DIR_SE: cursor_pos = CURSOR_INVENTORY; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		case CURSOR_INVENTORY:
+			switch(direction) {
+				case NUVIE_DIR_N:
+				case NUVIE_DIR_NW:
+				case NUVIE_DIR_NE: cursor_pos = CURSOR_COMBAT; return GUI_YUM;
+				case NUVIE_DIR_W:
+				case NUVIE_DIR_SW: cursor_pos = cursor_party; return GUI_YUM;
+				default: return GUI_YUM;
+			}
+		default: return GUI_YUM;
+	}
+}
+
+GUI_status DollViewGump::KeyDown(SDL_keysym key)
+{
+	bool numlock = (key.mod & KMOD_NUM); // SDL doesn't get the proper num lock state in Windows
+	switch(key.sym) {
+		case SDLK_KP1: if(numlock) break;
+			return moveCursorRelative( NUVIE_DIR_SW);
+		case SDLK_KP3: if(numlock) break;
+			return moveCursorRelative( NUVIE_DIR_SE);
+		case SDLK_KP7: if(numlock) break;
+			return moveCursorRelative( NUVIE_DIR_NW);
+		case SDLK_KP9: if(numlock) break;
+			return moveCursorRelative( NUVIE_DIR_NE);
+		case SDLK_KP8: if(numlock) break;
+		case SDLK_UP:
+			return moveCursorRelative( NUVIE_DIR_N);
+		case SDLK_KP2: if(numlock) break;
+		case SDLK_DOWN:
+			return moveCursorRelative( NUVIE_DIR_S);
+		case SDLK_KP4: if(numlock) break;
+		case SDLK_LEFT:
+			return moveCursorRelative( NUVIE_DIR_W);
+		case SDLK_KP6: if(numlock) break;
+		case SDLK_RIGHT:
+			return moveCursorRelative( NUVIE_DIR_E);
+		case SDLK_RETURN:
+		case SDLK_KP_ENTER: {
+			Event *event = Game::get_game()->get_event();
+			bool in_party = party->get_member_num(actor) >= 0;
+			if(event->get_mode() == ATTACK_MODE || cursor_pos == CURSOR_CHECK) {
+				Game::get_game()->get_view_manager()->close_gump(this);
+			} else if(cursor_pos == CURSOR_LEFT) {
+				if(in_party)
+					left_arrow();
+			} else if(cursor_pos == CURSOR_RIGHT) {
+				if(in_party)
+					right_arrow();
+			} else if(cursor_pos == CURSOR_COMBAT) {
+				activate_combat_button();
+			} else if(cursor_pos == CURSOR_HEART) {
+				if(in_party || event->using_control_cheat())
+					Game::get_game()->get_view_manager()->open_portrait_gump(actor);
+			} else if(cursor_pos == CURSOR_PARTY) {
+				if(in_party)
+					{}
+			} else if(cursor_pos == CURSOR_INVENTORY) {
+				Game::get_game()->get_view_manager()->open_container_view(actor);
+			} else {
+				Obj *obj = actor->inventory_get_readied_object((uint8)cursor_pos);
+				if(event->get_mode() == MOVE_MODE || event->get_mode() == EQUIP_MODE) {
+					if(obj)
+						event->unready(obj);
+				} else
+					event->select_view_obj(obj, actor);
+			}
+			return GUI_YUM;
+		}
+		default: break;
+	}
+	return GUI_PASS;
+}
+
+void DollViewGump::activate_combat_button()
+{
+	Event *event = Game::get_game()->get_event();
+	if(actor->is_in_party() && party->get_member_num(actor) != 0) {
+		set_combat_mode(actor);
+		update_display = true;
+	} else if(event->get_mode() != INPUT_MODE && event->get_mode() != CAST_MODE
+	          && event->get_mode() != ATTACK_MODE )
+		event->newAction(COMBAT_MODE);
 }
 
 GUI_status DollViewGump::MouseDown(int x, int y, int button)

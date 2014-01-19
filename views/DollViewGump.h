@@ -35,7 +35,8 @@ class Actor;
 class Font;
 class DollWidget;
 
-
+typedef enum { CURSOR_HEAD, CURSOR_NECK, CURSOR_CHEST, CURSOR_RIGHT_HAND, CURSOR_LEFT_HAND, CURSOR_RIGHT_RING, CURSOR_LEFT_RING, CURSOR_FEET,
+               CURSOR_LEFT, CURSOR_RIGHT, CURSOR_COMBAT, CURSOR_CHECK, CURSOR_HEART, CURSOR_PARTY, CURSOR_INVENTORY } dollCursorPos;
 #define DOLLVIEWGUMP_HEIGHT 136
 
 class DollViewGump : public DraggableView {
@@ -53,6 +54,9 @@ class DollViewGump : public DraggableView {
 
 	Actor *actor;
 	bool is_avatar;
+	bool show_cursor;
+	const Tile *cursor_tile;
+	dollCursorPos cursor_pos;
 
   SDL_Surface *actor_doll;
 
@@ -84,8 +88,12 @@ public:
 
  private:
 
+ uint8 get_cursor_xoff();
+ uint8 get_cursor_yoff();
+ void activate_combat_button();
  void setColorKey(SDL_Surface *image);
-
+ GUI_status moveCursorRelative(uint8 direction);
+ GUI_status KeyDown(SDL_keysym key);
 };
 
 #endif /* __DollViewGump_h__ */

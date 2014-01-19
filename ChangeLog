@@ -1,3 +1,6 @@
+2014-01-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1835
+	* Add some basic arrow/numpad support to the DollViewGump.
+
 2014-01-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1834
 	* Have the right mouse button cancel spell view
 	* Change selecting_spell to the more accurate selecting_spell_target.
