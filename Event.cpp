@@ -636,7 +636,7 @@ bool Event::perform_talk(Actor *actor)
     if(!player->in_party_mode() && !pc->is_avatar()) //only the avatar can talk in solo mode
     {
         // always display look-string on failure
-        scroll->display_string(actor_manager->look_actor(actor));
+        scroll->display_string(actor->get_name());
         scroll->display_string("\n");
         scroll->display_string("Not in solo mode.\n");
     }
@@ -1591,6 +1591,16 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
     return true;
 }
 
+bool Event::actor_exists(Actor *a)
+{
+	if(a->get_z() > 5 || a->get_actor_num() == 0
+	   || ((a->is_temp() || a->get_strength() == 0) && a->get_x() == 0 && a->get_y() == 0 && a->get_z() == 0) // temp actor that has been cleaned up or invalid normal npc
+	   /*|| strcmp(a->get_name(true), "Nothing") == 0*/) { // This last one probably isn't needed anymore
+		scroll->display_string("\nnpc is invalid or at invalid location");
+		return false;
+	}
+	return true;
+}
 
 /* Send input to active alt-code. */
 void Event::alt_code_input(const char *in)
@@ -1674,9 +1684,7 @@ void Event::alt_code_input(const char *in)
             break;
 
         case 414: // teleport player & party to NPC location
-            if(a->get_z() > 5 || strcmp(a->get_name(true), "Nothing") == 0)
-                scroll->display_string("\nnpc is invalid or at invalid location");
-            else
+            if(actor_exists(a))
                 alt_code_teleport_to_person((uint32)strtol(in, NULL, 10));
             scroll->display_string("\n\n");
             scroll->display_prompt();
@@ -1684,8 +1692,13 @@ void Event::alt_code_input(const char *in)
             break;
 
         case 500: // control/watch anyone
-            if(a->get_z() > 5 || a->get_actor_num() == 0 || strcmp(a->get_name(true), "Nothing") == 0)
-                scroll->display_string("\nnpc is invalid or at invalid location\n\n");
+            if(!actor_exists(a)) {
+                scroll->display_string("\n\n");
+            } else if(!a->is_alive()) {
+                scroll->display_string("\n");
+                scroll->display_string(a->get_name(true));
+                scroll->display_string(" is dead\n\n");
+            }
           else
           {
             player->set_actor(a);
@@ -1711,6 +1724,33 @@ void Event::alt_code_input(const char *in)
             active_alt_code = 0;
             break;
 
+        case 501: // resurrect npc
+        {
+            if(!actor_exists(a)) {
+                // Do nothing. It already prints a message
+            } else if(a->is_alive()) {
+                scroll->display_string("\n"); 
+                scroll->display_string(a->get_name(true)); 
+                scroll->display_string(" is not dead.");
+            } else {
+                bool failed = true;
+                for(int i=1; i < 8; i++) {
+                    uint16 newx = NUVIE_RAND()%10 + player->get_actor()->get_x() - 5;
+                    uint16 newy = NUVIE_RAND()%10 + player->get_actor()->get_y() - 5;
+                    if(a->move(newx, newy, player->get_actor()->get_z())) {
+                        failed = false;
+                        MapCoord res_loc(newx, newy, player->get_actor()->get_z());
+                        a->resurrect(res_loc);
+                    }
+                }
+                if(failed) // No location found. Resurrect anyway.
+                    a->resurrect(player->get_actor()->get_location());
+            }
+            scroll->display_string("\n\n");
+            scroll->display_prompt();
+            active_alt_code = 0;
+            break;
+        }
         case 456: // polymorph
             if(alt_code_input_num == 0)
             {
@@ -1762,6 +1802,18 @@ void Event::alt_code(const char *cs)
                  scroll->display_prompt();
                  active_alt_code = 0;
                  break;
+            }
+            scroll->display_string("Npc number? ");
+            get_scroll_input();
+            active_alt_code = c;
+            break;
+
+        case 501: // resurrect npc
+            if(player->is_in_vehicle()) {
+                display_not_aboard_vehicle(false);
+                scroll->display_prompt();
+                active_alt_code = 0;
+                break;
             }
             scroll->display_string("Npc number? ");
             get_scroll_input();

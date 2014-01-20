@@ -618,6 +618,10 @@ bool Converse::override_input()
         if(Game::get_game()->get_game_type() == NUVIE_GAME_U6 // altars and statues
            && (npc->get_actor_num() >= 189 && npc->get_actor_num() <= 200))
             return true;
+        else if(!npc->is_alive()) {
+            print("\"How can I join you when I'm dead?\"\n*");
+            return true;
+        }
         if(!player->get_party()->contains_actor(npc))
             player->get_party()->add_actor(npc);
         print("\"Friends of Nuvie? Sure, I'll come along!\"\n*");

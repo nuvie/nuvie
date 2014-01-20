@@ -1,3 +1,8 @@
+2014-01-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1838
+	* Add alt code 501 to resurrect an actor.
+	* Better restrict actors allowed to be used with alt codes.
+	* Display party members's name when a solo party member tries to talk to him
+
 2014-01-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1837
 	* Fix roof background corruption issues in non-original styles.
 	* Change the roof_tiles.bmp index used for transparency to index 255.

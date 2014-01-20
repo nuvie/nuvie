@@ -307,6 +307,7 @@ friend class Magic; // FIXME
  void quitDialog();
  void saveDialog();
  void gameMenuDialog();
+ bool actor_exists(Actor *a);
 
 /* FIXME: Some of the above (action) functions can be removed from public, so
    that we don't need to check for WAIT mode in all of them. */
