@@ -1269,8 +1269,13 @@ void MapWindow::drawRoofs()
 	    		   src.w = 8;
 	    		   dst.w = 8;
 	    	   }
+	    	   SDL_BlitSurface(roof_tiles, &src, surface, &dst);
 	       }
-	       SDL_BlitSurface(roof_tiles, &src, surface, &dst);
+			else {
+				unsigned char *ptr = (unsigned char *)roof_tiles->pixels;
+				ptr += src.x + src.y*80;
+				screen->blit(dst.x, dst.y, ptr, 8, 16, 16, 80, true, &clip_rect);
+			}
 		   }
 	     }
 	   roof_map_ptr += 1024;
@@ -2708,7 +2713,7 @@ void MapWindow::loadRoofTiles()
 	datadir = path;
 	build_path(datadir, "roof_tiles.bmp", imagefile);
 	roof_tiles = SDL_LoadBMP(imagefile.c_str());
-	if(roof_tiles)
+	if(roof_tiles && game->is_orig_style())
 	{
 		SDL_SetColorKey(roof_tiles, SDL_SRCCOLORKEY, SDL_MapRGB(roof_tiles->format, 0, 0x70, 0xfc));
 	}

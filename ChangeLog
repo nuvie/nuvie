@@ -1,3 +1,7 @@
+2014-01-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1837
+	* Fix roof background corruption issues in non-original styles.
+	* Change the roof_tiles.bmp index used for transparency to index 255.
+
 2014-01-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1836
 	* Add some basic arrow/numpad support to the PortraitViewGump.
 	* In DollViewGump, use a setter for cursor_xoff and cursor_yoff instead of
