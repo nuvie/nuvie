@@ -1,3 +1,6 @@
+2014-01-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1839
+	* Add updated documentation that was forgotten in the last commit.
+
 2014-01-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1838
 	* Add alt code 501 to resurrect an actor.
 	* Better restrict actors allowed to be used with alt codes.
