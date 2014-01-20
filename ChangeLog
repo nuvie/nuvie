@@ -1,3 +1,8 @@
+2014-01-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1836
+	* Add some basic arrow/numpad support to the PortraitViewGump.
+	* In DollViewGump, use a setter for cursor_xoff and cursor_yoff instead of
+	  calling a function to figure it out.
+
 2014-01-19  Malignant Manor <malignantmanor@users.sourceforge.net> r1835
 	* Add some basic arrow/numpad support to the DollViewGump.
 

@@ -40,6 +40,10 @@ PortraitViewGump::PortraitViewGump(Configuration *cfg) : DraggableView(cfg)
 	portrait = NULL;
 	font = NULL; gump_button = NULL;
 	portrait_data = NULL; actor = NULL;
+	cursor_tile = NULL;
+	show_cursor = true;
+	cursor_pos = CURSOR_CHECK;
+	cursor_xoff = 1; cursor_yoff = 67;
 }
 
 PortraitViewGump::~PortraitViewGump()
@@ -99,6 +103,7 @@ bool PortraitViewGump::init(Screen *tmp_screen, void *view_manager, uint16 x, ui
 		left_button->Hide();
 		right_button->Hide();
 	}
+	cursor_tile = tile_manager->get_gump_cursor_tile();
 
 	return true;
 }
@@ -188,11 +193,28 @@ void PortraitViewGump::Display(bool full_redraw)
  font->TextExtent(buf, &w, &h);
  font->TextOut(screen->get_sdl_surface(), area.x + 170 - w, area.y + 73, buf);
 
+ if(show_cursor)
+	screen->blit(area.x+cursor_xoff,area.y+cursor_yoff,(unsigned char *)cursor_tile->data,8,16,16,16,true);
  update_display = false;
  screen->update(area.x, area.y, area.w, area.h);
 
 
  return;
+}
+
+GUI_status PortraitViewGump::set_cursor_pos(gumpCursorPos pos)
+{
+	if(party->get_member_num(actor) < 0)
+		return GUI_YUM;
+	cursor_pos = pos;
+	if(cursor_pos == CURSOR_CHECK) {
+		cursor_xoff = 1; cursor_yoff = 67;
+	} else if(cursor_pos == CURSOR_LEFT) {
+		cursor_xoff = 18; cursor_yoff = 1;
+	} else {
+		cursor_xoff = 162; cursor_yoff = 1;
+	}
+	return GUI_YUM;
 }
 
 GUI_status PortraitViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
@@ -213,6 +235,46 @@ GUI_status PortraitViewGump::callback(uint16 msg, GUI_CallBack *caller, void *da
 	}
 
     return GUI_PASS;
+}
+
+GUI_status PortraitViewGump::KeyDown(SDL_keysym key)
+{
+	bool numlock = (key.mod & KMOD_NUM); // SDL doesn't get the proper num lock state in Windows
+	switch(key.sym) {
+		case SDLK_KP1:
+		case SDLK_KP2: if(numlock) break;
+		case SDLK_DOWN:
+			return set_cursor_pos(CURSOR_CHECK);
+		case SDLK_KP8: if(numlock) break;
+		case SDLK_UP:
+			if(cursor_pos == CURSOR_CHECK)
+				return set_cursor_pos(CURSOR_LEFT);
+			return GUI_YUM;
+		case SDLK_KP4:
+		case SDLK_KP7: if(numlock) break;
+		case SDLK_LEFT:
+			if(cursor_pos == CURSOR_RIGHT)
+				return set_cursor_pos(CURSOR_LEFT);
+			return set_cursor_pos(CURSOR_CHECK);
+		case SDLK_KP9:
+		case SDLK_KP3:
+		case SDLK_KP6: if(numlock) break;
+		case SDLK_RIGHT:
+			if(cursor_pos == CURSOR_CHECK)
+				return set_cursor_pos(CURSOR_LEFT);
+			return set_cursor_pos(CURSOR_RIGHT);
+		case SDLK_RETURN:
+		case SDLK_KP_ENTER:
+			if(cursor_pos == CURSOR_CHECK)
+				Game::get_game()->get_view_manager()->close_gump(this);
+			else if(cursor_pos == CURSOR_LEFT)
+				left_arrow();
+			else
+				right_arrow();
+			return GUI_YUM;
+		default: break;
+	}
+	return GUI_PASS;
 }
 
 GUI_status PortraitViewGump::MouseDown(int x, int y, int button)

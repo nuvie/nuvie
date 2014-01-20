@@ -44,6 +44,10 @@ class PortraitViewGump : public DraggableView {
 	Portrait *portrait;
 	unsigned char *portrait_data;
 	Actor *actor;
+	bool show_cursor;
+	const Tile *cursor_tile;
+	gumpCursorPos cursor_pos;
+	uint8 cursor_xoff, cursor_yoff;
 
 public:
  PortraitViewGump(Configuration *cfg);
@@ -62,6 +66,8 @@ public:
  void set_actor(Actor *a);
  void left_arrow();
  void right_arrow();
+ GUI_status KeyDown(SDL_keysym key);
+ GUI_status set_cursor_pos(gumpCursorPos pos);
 };
 
 #endif /* __PortraitViewGump_h__ */
