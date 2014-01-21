@@ -653,10 +653,10 @@ void MapWindow::update()
         	my = screen->get_translated_y((uint16)my);
         	if(is_wizard_eye_mode())
         	{
-        		int wx, wy;
-        		mouseToWorldCoords(mx, my, wx, wy);
+//        		int wx, wy;
+//        		mouseToWorldCoords(mx, my, wx, wy);
         		sint16 rx, ry;
-        	    get_movement_direction((uint16)wx, (uint16)wy, rx, ry);
+        	    get_movement_direction((uint16)mx, (uint16)my, rx, ry);
         	    moveMapRelative((rx == 0) ? 0 : rx < 0 ? -1 : 1,
         	                         (ry == 0) ? 0 : ry < 0 ? -1 : 1);
         	    wizard_eye_update();
@@ -833,8 +833,12 @@ void MapWindow::Display(bool full_redraw)
  if(new_thumbnail)
    create_thumbnail();
 
- if(is_wizard_eye_mode())
-	 screen->blit((win_width/2)*16,(win_height/2)*16,(unsigned char *)wizard_eye_info.eye_tile->data,8,16,16,16,true,&clip_rect);
+ if(is_wizard_eye_mode()) {
+	 uint16 we_x = mousecenter_x*16 + area.x;
+	 if(game->is_original_plus_full_map())
+		 we_x -= ((map_center_xoff + 1)/2)*16;
+	screen->blit(we_x,mousecenter_y*16+area.y,(unsigned char *)wizard_eye_info.eye_tile->data,8,16,16,16,true,&clip_rect);
+ }
 
  if(game->is_orig_style())
 	 drawBorder();
@@ -1205,7 +1209,7 @@ void MapWindow::drawBorder()
 
 void MapWindow::drawRoofs()
 {
-	if(cur_y < 1 || cur_y > 1012) // FIXME We need to handle this properly
+	if(cur_y < 1 || cur_y > 760) // FIXME We need to handle this properly
 		return;
 	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1 - map_center_xoff) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
 		return;
@@ -2442,8 +2446,9 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
         return;
 
     // MousePos->WorldCoord->Direction&MousePointer
-    mouseToWorldCoords((int)mx, (int)my, wx, wy);
-    get_movement_direction((uint16)wx, (uint16)wy, rel_x, rel_y, &mptr);
+    if(game->is_orig_style())
+        mouseToWorldCoords((int)mx, (int)my, wx, wy);
+    get_movement_direction((uint16)mx, (uint16)my, rel_x, rel_y, &mptr);
     if(event->get_mode() == INPUT_MODE && mousecenter_x == (win_width/2) && mousecenter_y == (win_height/2)
        && !event->input_really_needs_directon())
         game->set_mouse_pointer(1); // crosshairs
@@ -2455,21 +2460,24 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
 }
 
 /* Get relative movement direction from the MouseCenter coordinates to the
- * world coordinates wx,wy, for walking with the mouse, etc. The mouse-pointer
+ * mouse coordinates mx,my, for walking with the mouse, etc. The mouse-pointer
  * number that should be used for that direction will be set to mptr.
  */
-void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y, uint8 *mptr)
+void MapWindow::get_movement_direction(uint16 mx, uint16 my, sint16 &rel_x, sint16 &rel_y, uint8 *mptr)
 {
-    uint16 cent_x = cur_x + mousecenter_x, //+ (win_width / 2),
-           cent_y = cur_y + mousecenter_y; //+ (win_height / 2);
-    if(game->is_original_plus_full_map() && game->get_event()->get_mode() != INPUT_MODE) // we are offcenter
-            cent_x = actor_manager->get_player()->x;
-    uint16 dist_x = abs(wx - cent_x), dist_y = abs(wy - cent_y);
+    uint16 cent_x = mousecenter_x,
+           cent_y = mousecenter_y;
+    if(game->is_original_plus_full_map() && game->get_event()->get_mode() != INPUT_MODE)
+        cent_x -= (map_center_xoff + 1)/2; // player is off center
+
+    mx = (mx - area.x)/16;
+    my = (my - area.y)/16;
+    uint16 dist_x = abs(mx - cent_x), dist_y = abs(my - cent_y);
 
     rel_x = rel_y = 0;
     if(dist_x <= 4 && dist_y <= 4)
     {   // use mapwindow coords (4,4 is center of mapwindow)
-        uint8 cursor_num = movement_array[(9 * (4 + (wy - cent_y))) + (4 + (wx - cent_x))];
+        uint8 cursor_num = movement_array[(9 * (4 + (my - cent_y))) + (4 + (mx - cent_x))];
         if(mptr) // set mouse-pointer number
             *mptr = cursor_num;
         if(cursor_num == 1) // nowhere
@@ -2501,42 +2509,42 @@ void MapWindow::get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint
     }
     else // mapwindow is larger than the array; use 4 squares around center array
     {
-        if(dist_x <= 4 && wy < cent_y) // up
+        if(dist_x <= 4 && my < cent_y) // up
         {
             rel_y = -1;
             if(mptr) *mptr = 2;
         }
-        else if(dist_x <= 4 && wy > cent_y) // down
+        else if(dist_x <= 4 && my > cent_y) // down
         {
             rel_y = 1;
             if(mptr) *mptr = 6;
         }
-        else if(wx < cent_x && dist_y <= 4) // left
+        else if(mx < cent_x && dist_y <= 4) // left
         {
             rel_x = -1;
             if(mptr) *mptr = 8;
         }
-        else if(wx > cent_x && dist_y <= 4) // right
+        else if(mx > cent_x && dist_y <= 4) // right
         {
             rel_x = 1;
             if(mptr) *mptr = 4;
         }
-        else if(wx > cent_x && wy < cent_y) // up-right
+        else if(mx > cent_x && my < cent_y) // up-right
         {
             rel_x = 1; rel_y = -1;
             if(mptr) *mptr = 3;
         }
-        else if(wx > cent_x && wy > cent_y) // down-right
+        else if(mx > cent_x && my > cent_y) // down-right
         {
             rel_x = 1; rel_y = 1;
             if(mptr) *mptr = 5;
         }
-        else if(wx < cent_x && wy > cent_y) // down-left
+        else if(mx < cent_x && my > cent_y) // down-left
         {
             rel_x = -1; rel_y = 1;
             if(mptr) *mptr = 7;
         }
-        else if(wx < cent_x && wy < cent_y) // up-left
+        else if(mx < cent_x && my < cent_y) // up-left
         {
             rel_x = -1; rel_y = -1;
             if(mptr) *mptr = 9;
@@ -2659,8 +2667,10 @@ void MapWindow::wizard_eye_start(MapCoord location, uint16 duration, CallBack *c
 	wizard_eye_info.prev_y = cur_y;
 
 	set_x_ray_view(X_RAY_ON);
-
-	moveMap(location.x-(win_width/2), location.y-(win_height/2), cur_level);
+	sint16 map_x = location.x-(win_width/2);
+	if(game->is_original_plus_full_map())
+		 map_x += ((map_center_xoff + 1)/2);
+	moveMap(map_x, location.y-(win_height/2) , cur_level); // FIXME - map should already be centered on the caster so why are we doing this?
 	grab_focus();
 }
 

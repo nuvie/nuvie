@@ -2829,15 +2829,15 @@ void Event::walk_to_mouse_cursor(uint32 mx, uint32 my)
 {
 // FIXME: might add generic walk_to() action to Player
 // player->walk_to(uint16 x, uint16 y, uint16 move_max, uint16 timeout_seconds);
-    int wx, wy;
+//    int wx, wy;
     sint16 rx, ry;
 
     if(game->user_paused() || !player->check_walk_delay())
         return;
 
     // Mouse->World->RelativeDirection
-    map_window->mouseToWorldCoords((int)mx, (int)my, wx, wy);
-    map_window->get_movement_direction((uint16)wx, (uint16)wy, rx, ry);
+//    map_window->mouseToWorldCoords((int)mx, (int)my, wx, wy);
+    map_window->get_movement_direction((uint16)mx, (uint16)my, rx, ry);
     player->moveRelative(rx, ry, true);
     game->time_changed();
 }

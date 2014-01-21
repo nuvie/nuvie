@@ -282,6 +282,8 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
             select_action(activate);
         }
     }
+    else if(game->is_original_plus())
+        return GUI_PASS;
     return(GUI_YUM);
 }
 

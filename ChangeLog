@@ -1,3 +1,12 @@
+2014-01-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1840
+	* Fix get_movement_direction (mouse pointer) world wrapping.
+	* Don't have the text portion of the command bar override mouse clicks in
+	  both original plus styles.
+	* Fix wizard eye center in original+_full_map style or when using offsets.
+	* Drastically lower the size of allowed map roof drawing area to help keep
+	  some higher game heights from crashing. 1100x4300 still crashes. 1100x4200
+	  doesn't seem to crash. Lower game height is more important than width.
+
 2014-01-20  Malignant Manor <malignantmanor@users.sourceforge.net> r1839
 	* Add updated documentation that was forgotten in the last commit.
 

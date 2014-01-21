@@ -199,7 +199,7 @@ class MapWindow: public GUI_Widget
  void teleport_to_cursor();
  void select_target(int x, int y);
  void mouseToWorldCoords (int mx, int my, int &wx, int &wy);
- void get_movement_direction(uint16 wx, uint16 wy, sint16 &rel_x, sint16 &rel_y, uint8 *mptr = NULL);
+ void get_movement_direction(uint16 mx, uint16 my, sint16 &rel_x, sint16 &rel_y, uint8 *mptr = NULL);
 
  TileManager *get_tile_manager() { return tile_manager; }
  AnimManager *get_anim_manager() { return anim_manager; }
