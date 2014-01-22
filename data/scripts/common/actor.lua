@@ -14,19 +14,12 @@ g_combat_range_tbl = {
 6, 6, 6, 7, 7, 8, 8, 8,
 7, 7, 7, 7, 8, 8, 8, 8}
 
-function get_absolute_attack_range(absx, absy)
+function get_combat_range(absx, absy)
    if absx < 8 and absy < 8 then
       return g_combat_range_tbl[absx * 8 + absy + 1]
    end
 
    return 9
-end
-
-function get_attack_range(x,y,target_x,target_y)
-   local absx = abs(target_x - x)
-   local absy = abs(target_y - y)
-   --dgb("target_x="..target_x.." target_y="..target_y.." x="..x.." y="..y.." absx="..absx.." absy="..absy)
-   return get_absolute_attack_range(absx, absy)
 end
 
 function get_weapon_range(obj_n)

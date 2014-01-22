@@ -1,3 +1,7 @@
+2014-01-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1842
+	* Use world wrapping for lua attack range. The attack will still try to go
+	  the long way though. This doesn't matter for U6 or SE.
+
 2014-01-21  Malignant Manor <malignantmanor@users.sourceforge.net> r1841
 	* Don't use the wrong range values in U6ActorTypes.h. Use the lua value.
 

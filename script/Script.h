@@ -135,7 +135,7 @@ class Script
    bool call_out_of_ammo(Actor *attacker, Obj *weapon, bool print_message);
    bool call_is_avatar_dead();
    bool call_set_g_show_stealing(bool stealing);
-   uint8 call_get_absolute_attack_range(uint16 absx, uint16 absy);
+   uint8 call_get_combat_range(uint16 absx, uint16 absy);
    uint8 call_get_weapon_range(uint16 obj_n);
 
    MapCoord call_moonstone_get_loc(uint8 phase);

@@ -657,14 +657,11 @@ Obj *Actor::get_weapon_obj(sint8 readied_obj_location)
    return NULL;
 }
 
-bool Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)
+uint8 Actor::get_range(uint16 target_x, uint16 target_y)
 {
  sint16 off_x, off_y;
  uint16 map_pitch = map->get_width(z);
 
- if(!weapon)
-   return false;
- 
  if(target_x <= x)
 	 off_x = x - target_x;
  else //target_x > x
@@ -676,7 +673,7 @@ bool Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 tar
 		 if(map_pitch - target_x + x < 11)
 			 off_x = target_x - map_pitch - x; //negative offset
 		 else
-			 return false; // x out of range
+			 off_x = 9; // x out of range
 	 }
  }
 
@@ -691,12 +688,20 @@ bool Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 tar
 			if(map_pitch - target_y + y < 11)
 				off_y = target_y - map_pitch - y; //negative offset
 			else
-				return false; // y out of range
+				off_y = 9; // y out of range
 		}
 	}
 
+ return Game::get_game()->get_script()->call_get_combat_range(abs(off_x), abs(off_y));
+}
+
+bool Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)
+{
+ if(!weapon)
+   return false;
+
  Script *script = Game::get_game()->get_script();
- if(script->call_get_absolute_attack_range(abs(off_x), abs(off_y)) > script->call_get_weapon_range(weapon->obj_n))
+ if(get_range(target_x, target_y) > script->call_get_weapon_range(weapon->obj_n))
 	return false;
  return true;
 }

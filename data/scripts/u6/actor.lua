@@ -1468,7 +1468,7 @@ function actor_attack(attacker, target_x, target_y, target_z, weapon, foe)
       --dgb("\nweapon = "..weapon.name.."obj_n = "..weapon_obj_n.."\n")
    end
    
-   if get_attack_range(attacker.x,attacker.y, target_x, target_y) > get_weapon_range(weapon_obj_n) then
+   if Actor.get_range(attacker, target_x, target_y) > get_weapon_range(weapon_obj_n) then
       return
    end
 
@@ -1758,7 +1758,7 @@ function actor_get_weapon(attacker, foe)
    if foe == nil then return nil end
    
    local in_party = attacker.in_party
-   local range = get_attack_range(attacker.x, attacker.y, foe.x, foe.y)
+   local range = Actor.get_range(attacker, foe.x, foe.y)
    --dgb("range = "..range.."\n")
    local max_dmg = 0
    local obj, weapon
@@ -2902,7 +2902,7 @@ function actor_wt_flank(actor)
    local should_move_actor = false
    local weapon_obj = actor_get_weapon(actor, target_actor)
    local weapon_range = get_weapon_range(weapon_obj.obj_n)
-   local attack_range = get_attack_range(actor_x, actor_y, tmp_x, tmp_y)
+   local attack_range = Actor.get_range(actor, tmp_x, tmp_y)
    
    if attack_range < 9 and attack_range <= weapon_range then
    
@@ -2992,7 +2992,7 @@ function actor_wt_berserk(actor)
    local target_y = target_actor.y
    local weapon_obj = actor_get_weapon(actor, target_actor)
    local weapon_range = get_weapon_range(weapon_obj.obj_n)
-   local attack_range = get_attack_range(actor_x, actor_y, target_x, target_y)
+   local attack_range = Actor.get_range(actor, target_x, target_y)
 
    if attack_range < 9 and attack_range <= weapon_range then
 
@@ -3226,7 +3226,7 @@ function actor_wt_attack(actor)
       local weapon_range = get_weapon_range(weapon_obj.obj_n)
 
       if abs(target_x - actor_x) < 8 and abs(target_y - actor_y) < 8 and 
-       get_attack_range(actor_x, actor_y, target_x, target_y) <= weapon_range then
+       Actor.get_range(actor, target_x, target_y) <= weapon_range then
 
          if sub_1D59F(actor, target_x, target_y, weapon_range, 0) == true then
             actor_attack(actor, g_obj.x, g_obj.y, g_obj.z, weapon_obj, g_obj)

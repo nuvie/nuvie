@@ -1169,12 +1169,12 @@ bool Script::call_set_g_show_stealing(bool stealing)
 	return true;
 }
 
-uint8 Script::call_get_absolute_attack_range(uint16 absx, uint16 absy)
+uint8 Script::call_get_combat_range(uint16 absx, uint16 absy)
 {
-	lua_getglobal(L, "get_absolute_attack_range");
+	lua_getglobal(L, "get_combat_range");
 	lua_pushnumber(L, (lua_Number)absx);
 	lua_pushnumber(L, (lua_Number)absy);
-	if(call_function("get_absolute_attack_range", 2, 1) == false)
+	if(call_function("get_combat_range", 2, 1) == false)
 		return 9;
 	return (uint8)lua_tointeger(L,-1);
 }

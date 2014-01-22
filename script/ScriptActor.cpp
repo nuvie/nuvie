@@ -52,6 +52,7 @@ static int nscript_actor_get(lua_State *L);
 static int nscript_get_player_actor(lua_State *L);
 static int nscript_actor_kill(lua_State *L);
 static int nscript_actor_hit(lua_State *L);
+static int nscript_actor_get_range(lua_State *L);
 static int nscript_actor_resurrect(lua_State *L);
 static int nscript_actor_inv_add_obj(lua_State *L);
 static int nscript_actor_inv_remove_obj(lua_State *L);
@@ -84,6 +85,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "clone", nscript_actor_clone },
    { "kill", nscript_actor_kill },
    { "hit", nscript_actor_hit },
+   { "get_range", nscript_actor_get_range },
    { "resurrect", nscript_actor_resurrect },
    { "move", nscript_actor_move },
    { "walk_path", nscript_actor_walk_path },
@@ -959,6 +961,18 @@ static int nscript_actor_hit(lua_State *L)
    actor->hit(damage, true); //force hit
 
    return 0;
+}
+
+static int nscript_actor_get_range(lua_State *L)
+{
+	Actor *actor;
+	actor = nscript_get_actor_from_args(L);
+	if(actor == NULL)
+		return 0;
+	uint16 target_x = (uint16) luaL_checkinteger(L, 2);
+	uint16 target_y = (uint16) luaL_checkinteger(L, 3);
+	lua_pushinteger(L, actor->get_range(target_x, target_y));
+	return 1;
 }
 
 static int nscript_actor_move(lua_State *L)
