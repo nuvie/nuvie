@@ -418,7 +418,7 @@ class Actor
  void reduce_hp(uint8 amount);
  virtual void die(bool create_body=true);
  void resurrect(MapCoord new_position, Obj *body_obj=NULL);
- virtual bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y) { return true; }
+ bool weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y);
  virtual bool weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hit_x, uint16 *hit_y) { *hit_x = target->get_x(); *hit_y = target->get_y(); return true; }
  void display_condition();
  ActorList *find_enemies(); // returns list or 0 if no enemies nearby

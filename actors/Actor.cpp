@@ -657,6 +657,50 @@ Obj *Actor::get_weapon_obj(sint8 readied_obj_location)
    return NULL;
 }
 
+bool Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)
+{
+ sint16 off_x, off_y;
+ uint16 map_pitch = map->get_width(z);
+
+ if(!weapon)
+   return false;
+ 
+ if(target_x <= x)
+	 off_x = x - target_x;
+ else //target_x > x
+ {
+	 if(target_x - x < 8) //small positive offset
+		 off_x = target_x - x;
+	 else // target wrapped around the map.
+	 {
+		 if(map_pitch - target_x + x < 11)
+			 off_x = target_x - map_pitch - x; //negative offset
+		 else
+			 return false; // x out of range
+	 }
+ }
+
+ if(target_y <= y)
+	 off_y = y - target_y;
+	else //target_y > y
+	{
+		if(target_y - y < 8) //small positive offset
+			off_y = target_y - y;
+		else // target wrapped around the map.
+		{
+			if(map_pitch - target_y + y < 11)
+				off_y = target_y - map_pitch - y; //negative offset
+			else
+				return false; // y out of range
+		}
+	}
+
+ Script *script = Game::get_game()->get_script();
+ if(script->call_get_absolute_attack_range(abs(off_x), abs(off_y)) > script->call_get_weapon_range(weapon->obj_n))
+	return false;
+ return true;
+}
+
 // attack another actor with melee attack or a weapon (short or long range)
 void Actor::attack(sint8 readied_obj_location, MapCoord target, Actor *foe)
 {

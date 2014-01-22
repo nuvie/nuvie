@@ -147,29 +147,8 @@ function actor_update_all()
 	--FIXME
 end
 
-local get_attack_range = function(x,y,target_x,target_y)
-   local combat_range_tbl = {
-0, 1, 2, 3, 4, 5, 6, 7, 
-1, 1, 2, 3, 4, 5, 6, 7, 
-2, 2, 2, 3, 4, 5, 6, 7,
-3, 3, 3, 4, 5, 6, 7, 7,
-4, 4, 4, 5, 6, 7, 7, 8,
-5, 5, 5, 6, 7, 7, 8, 8,
-6, 6, 6, 7, 7, 8, 8, 8,
-7, 7, 7, 7, 8, 8, 8, 8}
-
-   local absx = abs(target_x - x)
-   local absy = abs(target_y - y)
-   dbg("target_x="..target_x.." target_y="..target_y.." x="..x.." y="..y.." absx="..absx.." absy="..absy)
-   if absx < 8 and absy < 8 then
-      return combat_range_tbl[absx * 8 + absy + 1]
-   end
-   
-   return 9
-end
-
-local get_weapon_range = function(obj_n)
-   local range_weapon_tbl = {
+-- [objectnum] = range
+   g_range_weapon_tbl = {
       [40] = 6,  --Cupid's bow and arrows
       [41] = 4, --derringer
       [42] = 5, --revolver
@@ -185,16 +164,6 @@ local get_weapon_range = function(obj_n)
       [261] = 2, --spray gun
       [313] = 7, --M60 machine gun (not sure, I think this is a scripted event?)
    }
-   
-   local range = range_weapon_tbl[obj_n]
-   
-   if range == nil then
-      return 1
-   end
-   
-   return range
-
-end
 
 local projectile_weapon_tbl = --FIXME weed sprayer and spray gun
 {

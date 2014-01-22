@@ -699,7 +699,7 @@ const CombatType *U6Actor::get_hand_combat_type()
 
 bool U6Actor::weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hit_x, uint16 *hit_y)
 {
-	if(weapon_can_hit(weapon, target->get_x(), target->get_y()))
+	if(Actor::weapon_can_hit(weapon, target->get_x(), target->get_y()))
 	{
 		*hit_x = target->get_x();
 		*hit_y = target->get_y();
@@ -714,7 +714,7 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hi
 		for(obj_iter = surrounding_objs->begin(); obj_iter != surrounding_objs->end(); obj_iter++)
 		{
 			Obj *obj = *obj_iter;
-			if(weapon_can_hit(weapon, obj->x, obj->y))
+			if(Actor::weapon_can_hit(weapon, obj->x, obj->y))
 			{
 				*hit_x = obj->x;
 				*hit_y = obj->y;
@@ -729,7 +729,7 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hi
 	Tile *tile = obj_manager->get_obj_tile(target->get_obj_n(),target->get_frame_n());
 	if(tile->dbl_width && tile->dbl_height)
 	{
-		if(weapon_can_hit(weapon, target_x-1, target_y-1))
+		if(Actor::weapon_can_hit(weapon, target_x-1, target_y-1))
 		{
 			*hit_x = target_x-1;
 			*hit_y = target_y-1;
@@ -738,7 +738,7 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hi
 	}
 	if(tile->dbl_width)
 	{
-		if(weapon_can_hit(weapon, target_x-1, target_y))
+		if(Actor::weapon_can_hit(weapon, target_x-1, target_y))
 		{
 			*hit_x = target_x-1;
 			*hit_y = target_y;
@@ -747,7 +747,7 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hi
 	}
 	if(tile->dbl_height)
 	{
-		if(weapon_can_hit(weapon, target_x, target_y-1))
+		if(Actor::weapon_can_hit(weapon, target_x, target_y-1))
 		{
 			*hit_x = target_x;
 			*hit_y = target_y-1;
@@ -756,53 +756,6 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hi
 	}
 
 	return false;
-}
-
-bool U6Actor::weapon_can_hit(const CombatType *weapon, uint16 target_x, uint16 target_y)
-{
- sint16 off_x, off_y;
- uint16 map_pitch = map->get_width(z);
-	
- if(!weapon)
-   return false;
-
- if(weapon->hit_range == 0)
-   return true;
- 
- if(target_x <= x)
-	 off_x = x - target_x;
- else //target_x > x
- {
-	 if(target_x - x < 5) //small positive offset
-		 off_x = target_x - x;
-	 else // target wrapped around the map.
-	 {
-		 if(map_pitch - target_x + x < 11)
-			 off_x = target_x - map_pitch - x; //negative offset
-		 else
-			 return false; // x out of range
-	 }
- }
-
- if(target_y <= y)
-	 off_y = y - target_y;
-	else //target_y > y
-	{
-		if(target_y - y < 5) //small positive offset
-			off_y = target_y - y;
-		else // target wrapped around the map.
-		{
-			if(map_pitch - target_y + y < 11)
-				off_y = target_y - map_pitch - y; //negative offset
-			else
-				return false; // y out of range
-		}
-	}
- 
- if(abs(off_x) > 5 || abs(off_y) > 5)
-   return false;
-
- return (bool)u6combat_hitrange_tbl[weapon->hit_range - 1][(5 + off_y) * 11 + (5 + off_x)];
 }
 
 void U6Actor::twitch()

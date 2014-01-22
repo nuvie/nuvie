@@ -1169,6 +1169,25 @@ bool Script::call_set_g_show_stealing(bool stealing)
 	return true;
 }
 
+uint8 Script::call_get_absolute_attack_range(uint16 absx, uint16 absy)
+{
+	lua_getglobal(L, "get_absolute_attack_range");
+	lua_pushnumber(L, (lua_Number)absx);
+	lua_pushnumber(L, (lua_Number)absy);
+	if(call_function("get_absolute_attack_range", 2, 1) == false)
+		return 9;
+	return (uint8)lua_tointeger(L,-1);
+}
+
+uint8 Script::call_get_weapon_range(uint16 obj_n)
+{
+	lua_getglobal(L, "get_weapon_range");
+	lua_pushnumber(L, (lua_Number)obj_n);
+	if(call_function("get_weapon_range", 1, 1) == false)
+		return 1;
+	return (uint8)lua_tointeger(L,-1);
+}
+
 ScriptThread *Script::new_thread(const char *scriptfile)
 {
    ScriptThread *t = NULL;
