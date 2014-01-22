@@ -342,7 +342,8 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     {
     	if(actor->id_n == 0)
     	{
-    		if(actor->obj_n == OBJ_U6_INFLATED_BALLOON)
+    		if(actor->obj_n == OBJ_U6_INFLATED_BALLOON &&
+    		   (!Game::get_game()->has_free_balloon_movement() || !party->has_obj(OBJ_U6_FAN, 0, false)))
     		{
     			can_change_rel_dir = false;
     			uint8 dir = get_reverse_direction(Game::get_game()->get_weather()->get_wind_dir());

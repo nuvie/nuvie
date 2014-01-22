@@ -123,6 +123,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  god_mode_enabled = false;
  armageddon = false;
  ethereal = false;
+ free_balloon_movement = false;
 
  config->value("config/cheats/enabled", cheats_enabled, false);
  config->value("config/cheats/enable_hackmove", is_using_hackmove, false);
@@ -251,6 +252,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
      book = new Book(config);
      if(book->init() == false)
        return false;
+     config->value(config_get_game_key(config) + "/free_balloon_movement", free_balloon_movement, false);
    }
 
    // Correct usecode class for each game

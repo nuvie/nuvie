@@ -336,6 +336,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/ultima6/orig_plus_cb_text_color", 115);
 	config->set("config/ultima6/converse_solid_bg", false);
 	config->set("config/ultima6/converse_bg_color", 218);
+	config->set("config/ultima6/free_balloon_movement", false);
 	config->set("config/ultima6/game_specific_keys", "(default)");
 	config->set("config/ultima6/newscroll/width", 30);
 	config->set("config/ultima6/newscroll/height", 19);

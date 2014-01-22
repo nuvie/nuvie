@@ -1,3 +1,9 @@
+2014-01-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1843
+	* Add U6 specific free_balloon_movement cfg setting that allows you to move
+	  the balloon in whatever direction you want as long as someone in the party
+	  has a magic fan. This is also in the input menu.
+	* Don't have swamps poison actors in vehicles. (Horses are not vehicles.)
+
 2014-01-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1842
 	* Use world wrapping for lua attack range. The attack will still try to go
 	  the long way though. This doesn't matter for U6 or SE.

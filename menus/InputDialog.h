@@ -33,7 +33,8 @@ class InputDialog : public GUI_Dialog {
 		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *command_button, *direction_button, *doubleclick_button,
 		                     *dragging_button, *interface_button, *look_button,
-		                     *open_container_button, *party_targeting_button, *walk_button;
+		                     *open_container_button, *party_targeting_button, *walk_button,
+		                     *balloon_button;
 
 	public:
 		InputDialog(GUI_CallBack *callback);

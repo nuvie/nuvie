@@ -37,9 +37,10 @@
 #include "PartyView.h"
 #include "ViewManager.h"
 #include "CommandBarNewUI.h"
+#include "U6misc.h"
 
 #define ID_WIDTH 280
-#define ID_HEIGHT 153
+#define ID_HEIGHT 166
 
 InputDialog::InputDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - ID_WIDTH)/2,
@@ -51,8 +52,8 @@ InputDialog::InputDialog(GUI_CallBack *callback)
 }
 
 bool InputDialog::init() {
-	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115 };
-	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 132 };
+	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128 };
+	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126, 145 };
 	int colX[] = { 9, 239 };
 	int height = 12;
 	int yesno_width = 32;
@@ -74,12 +75,16 @@ bool InputDialog::init() {
 	AddWidget(widget);
 	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[5], 0, 0, 0, "Enable doubleclick:", font);
 	AddWidget(widget);
+	if(game->get_game_type() == NUVIE_GAME_U6) {
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[6], 0, 0, 0, "Allow free balloon movement:", font);
+		AddWidget(widget);
+	}
 	if(!game->is_new_style()) {
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[6], 0, 0, 0, "Doubleclick opens containers:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[7], 0, 0, 0, "Doubleclick opens containers:", font);
 		AddWidget(widget);
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[7], 0, 0, 0, "Use new command bar:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[8], 0, 0, 0, "Use new command bar:", font);
 		AddWidget(widget);
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[8], 0, 0, 0, "Party view targeting:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[9], 0, 0, 0, "Party view targeting:", font);
 		AddWidget(widget);
 	}
 
@@ -109,24 +114,29 @@ bool InputDialog::init() {
 	AddWidget(walk_button);
 	doubleclick_button = new GUI_TextToggleButton(this, colX[1], buttonY[5], yesno_width, height, yesno_text, 2, map_window->is_doubleclick_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(doubleclick_button);
+	if(game->get_game_type() == NUVIE_GAME_U6) {
+		balloon_button = new GUI_TextToggleButton(this, colX[1], buttonY[6], yesno_width, height, yesno_text, 2, game->has_free_balloon_movement(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(balloon_button);
+	} else
+		balloon_button = NULL;
 	if(!Game::get_game()->is_new_style()) {
-		open_container_button = new GUI_TextToggleButton(this, colX[1], buttonY[6], yesno_width, height, yesno_text, 2, game->doubleclick_opens_containers(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		open_container_button = new GUI_TextToggleButton(this, colX[1], buttonY[7], yesno_width, height, yesno_text, 2, game->doubleclick_opens_containers(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(open_container_button);
 
 		bool using_new_command_bar;
 		config->value("config/input/new_command_bar", using_new_command_bar, false);
-		command_button = new GUI_TextToggleButton(this, colX[1], buttonY[7], yesno_width, height, yesno_text, 2, using_new_command_bar, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		command_button = new GUI_TextToggleButton(this, colX[1], buttonY[8], yesno_width, height, yesno_text, 2, using_new_command_bar, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(command_button);
 
 		bool party_view_targeting;
 		config->value("config/input/party_view_targeting", party_view_targeting, false);
-		party_targeting_button = new GUI_TextToggleButton(this, colX[1], buttonY[8], yesno_width, height, yesno_text, 2, party_view_targeting,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		party_targeting_button = new GUI_TextToggleButton(this, colX[1], buttonY[9], yesno_width, height, yesno_text, 2, party_view_targeting,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(party_targeting_button);
 	} else
 		open_container_button = command_button = party_targeting_button = NULL;
-	cancel_button = new GUI_Button(this, 83, buttonY[9], 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	cancel_button = new GUI_Button(this, 83, buttonY[10], 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
-	save_button = new GUI_Button(this, 154, buttonY[9], 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	save_button = new GUI_Button(this, 154, buttonY[10], 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
  
  return true;
@@ -182,6 +192,10 @@ GUI_status InputDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 
 		map_window->set_use_left_clicks(); // allow or disallow left clicks - Must come after look_on_left_click and enable_doubleclick
 
+		if(game->get_game_type() == NUVIE_GAME_U6) {
+			game->set_free_balloon_movement(balloon_button->GetSelection() == 1);
+			config->set(config_get_game_key(config) + "/free_balloon_movement", balloon_button->GetSelection() ? "yes" : "no");
+		}
 		if(!Game::get_game()->is_new_style()) {
 			game->set_doubleclick_opens_containers(open_container_button->GetSelection());
 			config->set("config/input/doubleclick_opens_containers", open_container_button->GetSelection() ? "yes" : "no");

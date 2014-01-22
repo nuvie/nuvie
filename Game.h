@@ -134,6 +134,7 @@ class Game
  bool open_containers; //doubleclick
  bool enabled_converse_gump;
  bool roof_mode;
+ bool free_balloon_movement;
 
  public:
 
@@ -203,6 +204,8 @@ class Game
  void set_ethereal(bool val) { ethereal = val; }
  void set_using_new_converse_gump(bool val);
  bool using_new_converse_gump() { return enabled_converse_gump; }
+ void set_free_balloon_movement(bool val) { free_balloon_movement = val; }
+ bool has_free_balloon_movement() { return free_balloon_movement; }
 
  uint16 get_game_width() { return game_width; }
  uint16 get_game_height() { return game_height; }
