@@ -437,6 +437,12 @@ bool SaveGame::save(const char *filename, std::string *save_description)
  Actor *avatar = Game::get_game()->get_actor_manager()->get_actor(1); // get the avatar actor.
 
  config->value("config/GameType",game_type);
+ bool newgame;
+ config->value("config/newgame", newgame, false);
+ if(newgame) {
+    config->set("config/newgame", false);
+    config->write();
+ }
 
  savefile = new NuvieIOFileWrite();
 

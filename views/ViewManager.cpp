@@ -49,6 +49,7 @@
 #include "Party.h"
 #include "Event.h"
 #include "Portrait.h"
+#include "UseCode.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -558,6 +559,19 @@ GUI_status inventoryViewButtonCallback(void *data)
  view_manager->set_inventory_mode();
 
  return GUI_YUM;
+}
+
+void ViewManager::double_click_obj(Obj *obj)
+{
+    Event *event = Game::get_game()->get_event();
+    if(Game::get_game()->get_usecode()->is_readable(obj)) // look at a scroll or book
+    {
+        event->set_mode(LOOK_MODE);
+        event->look(obj);
+        event->endAction(false); // FIXME: should be in look()
+    }
+    else if(event->newAction(USE_MODE))
+        event->select_obj(obj);
 }
 
 // beginning of custom doll functions shared between DollWidget and DollViewGump

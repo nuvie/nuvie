@@ -128,6 +128,7 @@ class ViewManager
  bool gumps_are_active() { return !gumps.empty(); }
 
  bool set_current_view(View *view);
+ void double_click_obj(Obj *obj);
 
 // custom doll functions shared between DollWidget and DollViewGump
  std::string getDollDataDirString();

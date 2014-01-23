@@ -1,3 +1,10 @@
+2014-01-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1844
+	* Fix r1829 regression which caused the up arrow to skip characters in
+	  character creation.
+	* Fix newgame setting always being true if you change settings in the menu
+	  after starting a new game.
+	* Allow double clicks to use objects in a container on the map.
+
 2014-01-22  Malignant Manor <malignantmanor@users.sourceforge.net> r1843
 	* Add U6 specific free_balloon_movement cfg setting that allows you to move
 	  the balloon in whatever direction you want as long as someone in the party

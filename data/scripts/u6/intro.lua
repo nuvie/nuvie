@@ -1712,9 +1712,9 @@ local function create_character()
 					end
 				elseif char_index <= 32 then --gap in characters
 					char_index = 48
-				elseif char_index <= 57 then --gap in characters
+				elseif char_index >= 57 and  char_index < 65 then --gap in characters
 					char_index = 65
-				elseif char_index <= 90 then --gap in characters
+				elseif char_index >= 90 and char_index < 97 then --gap in characters
 					char_index = 97
 				elseif char_index >= 122 then --last char
 					char_index = 32

@@ -717,7 +717,6 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
     // we have to check if double-clicks are allowed here, since we use single-clicks
     if(!Game::get_game()->get_map_window()->is_doubleclick_enabled())
         return(GUI_PASS);
-    Event *event = Game::get_game()->get_event();
     Obj *obj = selected_obj;
 
     ready_obj = NULL;
@@ -728,14 +727,7 @@ GUI_status InventoryWidget::MouseDouble(int x, int y, int button)
     if(!obj)
         return(MouseUp(x, y, button)); // probably hit an arrow
 
-    if(Game::get_game()->get_usecode()->is_readable(obj)) // look at a scroll or book
-    {
-        event->set_mode(LOOK_MODE);
-        event->look(obj);
-        event->endAction(false); // FIXME: should be in look()
-    }
-    else if(event->newAction(USE_MODE))
-        event->select_obj(obj);
+    Game::get_game()->get_view_manager()->double_click_obj(obj);
     return(GUI_PASS);
 }
 

@@ -586,19 +586,16 @@ GUI_status ContainerWidget::MouseDouble(int x, int y, int button)
     // we have to check if double-clicks are allowed here, since we use single-clicks
     if(!Game::get_game()->get_map_window()->is_doubleclick_enabled())
         return(GUI_PASS);
-    Event *event = Game::get_game()->get_event();
     Obj *obj = selected_obj;
 
     ready_obj = NULL;
     selected_obj = NULL;
 
-    if(!actor)
-        return(GUI_YUM);
+//    if(!actor)
+//        return(GUI_YUM);
     if(!obj)
         return(MouseUp(x, y, button)); // probably hit an arrow
-
-    if(event->newAction(USE_MODE))
-        event->select_obj(obj);
+    Game::get_game()->get_view_manager()->double_click_obj(obj);
     return(GUI_PASS);
 }
 
