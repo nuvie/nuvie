@@ -759,7 +759,8 @@ void ConverseGump::input_add_string(std::string token_str)
 	input_buf.clear();
 	for(uint16 i=0;i < token_str.length(); i++)
 	{
-		if(isalnum(token_str[i]))
+		if(isalnum(token_str[i]) && (!permit_input || strchr(permit_input, token_str[i])
+		                             || strchr(permit_input, tolower(token_str[i]))))
 			input_buf_add_char(token_str[i]);
 	}
 }

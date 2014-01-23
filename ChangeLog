@@ -1,3 +1,7 @@
+2014-01-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1845
+	* Fix r1832 regression where the ConverseGump would mess up when adding
+	  keywords by clicking them when permit input.
+
 2014-01-23  Malignant Manor <malignantmanor@users.sourceforge.net> r1844
 	* Fix r1829 regression which caused the up arrow to skip characters in
 	  character creation.
