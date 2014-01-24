@@ -1008,8 +1008,7 @@ bool Event::use(Actor *actor, uint16 x, uint16 y)
     bool display_prompt = true;
     Obj *obj = actor->make_obj();
 
-    if(!map_window->tile_is_black(x, y) && usecode->has_usecode(actor)
-       && !usecode->is_container(obj))
+    if(!map_window->tile_is_black(x, y) && usecode->has_usecode(actor))
     {
         if(game->get_game_type() == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_HORSE_WITH_RIDER)
             scroll->display_string("horse");
@@ -1268,7 +1267,13 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 	{
 		if(actor)
 		{
-			if(can_move_obj_between_actors(push_obj, push_obj->get_actor_holding_obj(), actor, true))
+			Actor *src_actor;
+			if(push_obj->is_in_inventory())
+				src_actor = push_obj->get_actor_holding_obj();
+			else
+				src_actor = game->get_player()->get_actor();
+
+			if(can_move_obj_between_actors(push_obj, src_actor, actor, true))
 				obj_manager->moveto_inventory(push_obj, actor);
 			scroll->message("\n\n");
 			endAction();
@@ -2918,8 +2923,7 @@ void Event::multiuse(uint16 wx, uint16 wy)
            || actor->get_actor_num() == 130)) // Pushme Pullyu
             can_use = false;
         else
-            can_use = (usecode->has_usecode(actor)
-                       && !usecode->is_container(actor->get_obj_n(), actor->get_frame_n()));
+            can_use = usecode->has_usecode(actor);
         if(can_use)
         {
             scroll->display_string("Use-", MSGSCROLL_NO_MAP_DISPLAY);
@@ -3157,9 +3161,11 @@ void Event::doAction()
         }
     	else
     	{
-    		move_in_inventory = true;
     		if(!push_obj)
+    		{
+    			move_in_inventory = true;
     			pushFrom(input.obj);
+    		}
     		else
     		{
     			pushTo(input.obj, input.actor);

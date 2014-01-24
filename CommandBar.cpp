@@ -413,7 +413,7 @@ void CommandBar::Display(bool full_redraw)
         if(game->is_orig_style())
             screen->fill(bg_color, area.x, area.y, area.w, area.h);
         else if(game->is_original_plus_cutoff_map() && area.x != game->get_game_x_offset()) // over null background so clear area where text is displayed
-            screen->clear(area.x + 1, area.y, area.w -1, area.h -16, NULL);
+            screen->clear(area.x + 2, area.y, area.w -2, area.h -16, NULL);
 
         display_information();
         for(uint32 i = 0; i < 10; i++)

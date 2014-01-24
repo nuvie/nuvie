@@ -243,7 +243,7 @@ bool U6UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::has_usecode(Actor *actor, UseCodeEvent ev)
 {
     const U6ObjectType *type = get_object_type(actor->get_obj_n(), actor->get_frame_n(), ev);
-    if(!type)
+    if(!type || type->flags == OBJTYPE_CONTAINER)
         return(false);
     return(true);
 }

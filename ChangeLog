@@ -1,3 +1,11 @@
+2014-01-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1847
+	* Stop actors that have shapes that have use_container usecode from blocking
+	  the use of objects. (i.e. Sherry)
+	* Have move_in_inventory be set only once.
+	* Make command bar clear area in original+ 1 pixel narrower.
+	* Fix r1846 regression that caused a crash when moving an object from a
+	  container on the map to an actor.
+
 2014-01-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1846
 	* Don't have MsgScroll pass mouse wheel motion to views.
 	* Fix moving objects to an actor occupying the same tile as the player.
