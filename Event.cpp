@@ -1268,9 +1268,11 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 	{
 		if(actor)
 		{
-			scroll->display_string(actor->get_name());
-			scroll->display_string("\n");
-			ok = obj_manager->moveto_inventory(push_obj, actor);
+			if(can_move_obj_between_actors(push_obj, push_obj->get_actor_holding_obj(), actor, true))
+				obj_manager->moveto_inventory(push_obj, actor);
+			scroll->message("\n\n");
+			endAction();
+			return(true);
 		}
 	}
 
@@ -3149,7 +3151,7 @@ void Event::doAction()
 			else
 				pushTo(input.loc->sx,input.loc->sy,PUSH_FROM_OBJECT);
         }
-        else if(input.type == EVENTINPUT_MAPCOORD)
+        else if(input.type == EVENTINPUT_MAPCOORD && !move_in_inventory)
         {
         	pushTo(input.loc->x,input.loc->y);
         }

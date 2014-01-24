@@ -859,6 +859,8 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
             page_up();
         else if(input_mode)
             move_scroll_up();
+        if(!Game::get_game()->is_new_style())
+            return GUI_YUM;
     }
     else if(button == SDL_BUTTON_WHEELDOWN)
     {
@@ -866,6 +868,8 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
             page_down();
         else if(input_mode)
             move_scroll_down();
+        if(!Game::get_game()->is_new_style())
+            return GUI_YUM;
     }
     else if(button == 1) // left click == select word
     {
