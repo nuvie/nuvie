@@ -1302,7 +1302,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
 
 //FIX for day_of_week
 
-bool Actor::updateSchedule(uint8 hour)
+bool Actor::updateSchedule(uint8 hour, bool teleport)
 {
  uint8 day_of_week;
  uint16 new_pos;
@@ -1326,13 +1326,15 @@ bool Actor::updateSchedule(uint8 hour)
    return false;
 
  // U6: temp. fix for walking statues; they shouldn't have schedules
- if(id_n >= 188 && id_n <= 200)
+ if(Game::get_game()->get_game_type() == NUVIE_GAME_U6 && id_n >= 188 && id_n <= 200)
   {
    DEBUG(0,LEVEL_WARNING,"tried to update schedule for non-movable actor %d\n", id_n);
    return(false);
   }
 
  set_worktype(sched[sched_pos]->worktype);
+ if(teleport)
+   move(sched[sched_pos]->x, sched[sched_pos]->y, sched[sched_pos]->z, ACTOR_FORCE_MOVE);
  return true;
 }
 

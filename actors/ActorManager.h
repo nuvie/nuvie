@@ -97,7 +97,7 @@ class ActorManager
  void twitchActors();
  void moveActors();
  void startActors();
- void updateSchedules();
+ void updateSchedules(bool teleport = false);
 
  void clear_actor(Actor *actor);
  bool resurrect_actor(Obj *actor_obj, MapCoord new_position);

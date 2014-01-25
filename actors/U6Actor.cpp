@@ -401,14 +401,15 @@ uint16 U6Actor::get_downward_facing_tile_num()
  return obj_manager->get_obj_tile_num(base_actor_type->base_obj_n) + base_actor_type->tile_start_offset + (NUVIE_DIR_S * base_actor_type->tiles_per_direction + base_actor_type->tiles_per_frame - 1) + shift;
 }
 
-bool U6Actor::updateSchedule(uint8 hour)
+bool U6Actor::updateSchedule(uint8 hour, bool teleport)
 {
  bool ret;
  handle_lightsource(hour);
 
- if((ret = Actor::updateSchedule(hour)) == true) //walk to next schedule location if required.
+ if((ret = Actor::updateSchedule(hour, teleport)) == true) //walk to next schedule location if required.
    {
-    if(sched[sched_pos] != NULL && (sched[sched_pos]->x != x || sched[sched_pos]->y != y || sched[sched_pos]->z != z))
+    if(sched[sched_pos] != NULL && (sched[sched_pos]->x != x || sched[sched_pos]->y != y || sched[sched_pos]->z != z
+                                    || worktype == WORKTYPE_U6_SLEEP)) // needed to go underneath bed if teleporting
     {
        set_worktype(WORKTYPE_U6_WALK_TO_LOCATION);
        MapCoord loc(sched[sched_pos]->x, sched[sched_pos]->y, sched[sched_pos]->z);
@@ -1726,8 +1727,6 @@ bool U6Actor::will_not_talk()
 
 void U6Actor::handle_lightsource(uint8 hour)
 {
-	if(worktype == WORKTYPE_U6_SLEEP) // accident waiting to happen
-		return;
 	Obj *torch = inventory_get_readied_object(ACTOR_ARM);
 	if(torch && torch->obj_n != OBJ_U6_TORCH)
 		torch = NULL;
@@ -1737,8 +1736,9 @@ void U6Actor::handle_lightsource(uint8 hour)
 	if(torch || torch2)
 	{
 		U6UseCode *usecode = (U6UseCode*)Game::get_game()->get_usecode();
-		if(hour < 6 || hour > 18 || (z != 0 && z != 5)
+		if((hour < 6 || hour > 18 || (z != 0 && z != 5)
 		   || Game::get_game()->get_weather()->is_eclipse())
+		   && worktype != WORKTYPE_U6_SLEEP)
 		{
 			if(torch && torch->frame_n == 0)
 			{

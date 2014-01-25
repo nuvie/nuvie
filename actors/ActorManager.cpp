@@ -685,13 +685,13 @@ void ActorManager::startActors()
     //ERIC Game::get_game()->pause_user();
 }
 
-void ActorManager::updateSchedules()
+void ActorManager::updateSchedules(bool teleport)
 {
     uint8 cur_hour = clock->get_hour();
 
     for(int i=0;i<ACTORMANAGER_MAX_ACTORS;i++)
     	if(!actors[i]->is_in_party()) // don't do scheduled activities while partying
-    		actors[i]->updateSchedule(cur_hour);
+    		actors[i]->updateSchedule(cur_hour, teleport);
 }
 
 void ActorManager::twitchActors()

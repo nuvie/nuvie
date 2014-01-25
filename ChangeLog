@@ -1,3 +1,9 @@
+2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1849
+	* Have kal lor advance time to when LB is scheduled to be on the throne.
+	* Advancing time by 60 or more minutes will cause npcs to teleport to their
+	  schedule location if the schedule is different.
+	* Have handle_lightsources extinguish on sleep worktype
+
 2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1848
 	* Fix r1846 regression that caused a crash when moving an object from the
 	  inventory to the map.

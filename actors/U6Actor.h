@@ -72,7 +72,7 @@ class U6Actor: public Actor
 
  bool init(uint8 obj_status=NO_OBJ_STATUS);
  virtual uint16 get_downward_facing_tile_num();
- bool updateSchedule(uint8 hour);
+ bool updateSchedule(uint8 hour, bool teleport = false);
  void set_worktype(uint8 new_worktype, bool init = false);
  void revert_worktype();
  void change_base_obj_n(uint16 val);

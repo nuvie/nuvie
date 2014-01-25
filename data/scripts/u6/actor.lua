@@ -2011,6 +2011,7 @@ function actor_update_all()
 end
 
 function advance_time(num_turns)
+	local teleport = num_turns >= 60
 	--dgb("advance_time("..num_turns..")")
 	local time_stop_timer = timer_get(TIMER_TIME_STOP)
 	
@@ -2125,7 +2126,7 @@ function advance_time(num_turns)
 	
 	if minute + num_turns >= 60 then
 
-		update_actor_schedules()
+		update_actor_schedules(teleport)
 		
 		--update magic points
 		local party_actor
@@ -3737,6 +3738,15 @@ function actor_resurrect(actor)
 	end
 end
 
+function get_LB_to_throne()
+	local cur_hour = clock_get_hour()
+-- LB is on throne at 8-12 and 14-18
+	while cur_hour < 8 or cur_hour > 17 or (cur_hour > 11 and cur_hour < 14) do
+		advance_time(60)
+		cur_hour = clock_get_hour()
+	end
+end
+
 function actor_avatar_death(avatar)
 	
 	--FIXME the hit tile is displayed constantly while the death tune is playing.
@@ -3763,7 +3773,7 @@ function actor_avatar_death(avatar)
 				Actor.inv_unready_obj(avatar, obj)
 		end
 	end
-
+	get_LB_to_throne()
 	party_heal()
 	party_update_leader()
 	player_move(0x133, 0x160, 0, true)

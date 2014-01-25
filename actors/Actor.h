@@ -475,7 +475,7 @@ class Actor
  protected:
 
  void loadSchedule(unsigned char *schedule_data, uint16 num);
- virtual bool updateSchedule(uint8 hour);
+ virtual bool updateSchedule(uint8 hour, bool teleport = false);
  uint16 getSchedulePos(uint8 hour);
 // uint16 getSchedulePos(uint8 hour, uint8 day_of_week);
 // inline uint16 Actor::getSchedulePos(uint8 hour);

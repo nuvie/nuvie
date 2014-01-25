@@ -1365,8 +1365,13 @@ static int nscript_map_get_actor(lua_State *L)
 
 static int nscript_update_actor_schedules(lua_State *L)
 {
+	bool teleport;
+	if(lua_gettop(L) >= 1)
+		teleport = (bool)lua_toboolean(L, 1);
+	else
+		teleport = false;
 	ActorManager *actor_manager = Game::get_game()->get_actor_manager();
-	actor_manager->updateSchedules();
+	actor_manager->updateSchedules(teleport);
 	return 0;
 }
 
