@@ -1631,7 +1631,9 @@ static int nscript_obj_get(lua_State *L)
    }
    
    if(!strcmp(key, "on_map"))
+   {
       lua_pushboolean(L, (int)obj->is_on_map()); return 1;
+   }
 
    if(!strcmp(key, "readied"))
    {
