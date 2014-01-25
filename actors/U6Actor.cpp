@@ -1737,8 +1737,7 @@ void U6Actor::handle_lightsource(uint8 hour)
 	{
 		U6UseCode *usecode = (U6UseCode*)Game::get_game()->get_usecode();
 		if((hour < 6 || hour > 18 || (z != 0 && z != 5)
-		   || Game::get_game()->get_weather()->is_eclipse())
-		   && worktype != WORKTYPE_U6_SLEEP)
+		   || Game::get_game()->get_weather()->is_eclipse()))
 		{
 			if(torch && torch->frame_n == 0)
 			{

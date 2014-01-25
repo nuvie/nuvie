@@ -3399,6 +3399,7 @@ function actor_wt_walk_to_location(actor)
 	if Actor.is_at_scheduled_location(actor) then
 		actor.wt = actor.sched_wt
 		if actor.wt == WT_SLEEP then
+			-- add extinguish light source code if actors with a light source actually go to sleep
 			actor_wt_sleep(actor)
 		end
 	end

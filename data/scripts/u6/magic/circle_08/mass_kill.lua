@@ -16,4 +16,5 @@ for k,v in pairs(hit_items) do
 	end
 end
 
+explode_surrounding_objects(loc.x, loc.y, loc.z)
 magic_success()

@@ -1,3 +1,9 @@
+2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1850
+	* Don't do anything different for sleep worktype in  handle_lightsources. It
+	  should be handled in the lua function actor_wt_walk_to_location. Since no
+	  actors that I know of need code for it, there is only a comment about it.
+	* Have mass kill explode surrounding objects.
+
 2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1849
 	* Have kal lor advance time to when LB is scheduled to be on the throne.
 	* Advancing time by 60 or more minutes will cause npcs to teleport to their
