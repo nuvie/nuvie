@@ -1,3 +1,8 @@
+2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1848
+	* Fix r1846 regression that caused a crash when moving an object from the
+	  inventory to the map.
+	* Use proper cancel messages when canceling push mode.
+
 2014-01-24  Malignant Manor <malignantmanor@users.sourceforge.net> r1847
 	* Stop actors that have shapes that have use_container usecode from blocking
 	  the use of objects. (i.e. Sherry)

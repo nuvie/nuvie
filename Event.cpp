@@ -1279,6 +1279,11 @@ bool Event::pushTo(Obj *obj, Actor *actor)
 			endAction();
 			return(true);
 		}
+		else {
+			scroll->message("nobody.\n\n");
+			endAction();
+			return false;
+		}
 	}
 
 	if(!ok)
@@ -3373,6 +3378,17 @@ void Event::cancelAction()
 //                  view_manager->close_all_gumps();
             }
           }
+            if(last_mode == PUSH_MODE) {
+                if(push_obj || push_actor) {
+                    if(move_in_inventory)
+                        scroll->display_string("nobody.\n");
+                    else
+                        scroll->display_string("nowhere.\n");
+                    endAction();
+                    endAction(true);
+                    return;
+                }
+            }
         }
         endAction();
         cancelAction();
