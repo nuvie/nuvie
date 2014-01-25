@@ -586,6 +586,14 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
                             if(input.target_init->distance(cursor_coord) > 1)
                               break;
                           }
+                          else if(last_mode == CAST_MODE)
+                          {
+                            cursor_coord = map_window->get_cursorCoord();
+                            cursor_coord.x = WRAPPED_COORD(cursor_coord.x + rel_x,cursor_coord.z);
+                            cursor_coord.y = WRAPPED_COORD(cursor_coord.y + rel_y,cursor_coord.z);
+                            if(player->get_actor()->get_range(cursor_coord.x, cursor_coord.y) > 7)
+                              break;
+                          }
                           map_window->moveCursorRelative(rel_x,rel_y);
                           if(direction_selects_target && needs_dir)
                             select_direction(rel_x,rel_y);

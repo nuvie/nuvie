@@ -1,3 +1,6 @@
+2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1851
+	* Limit spell range to 7.
+
 2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1850
 	* Don't do anything different for sleep worktype in  handle_lightsources. It
 	  should be handled in the lua function actor_wt_walk_to_location. Since no

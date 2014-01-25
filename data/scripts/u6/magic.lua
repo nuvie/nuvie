@@ -114,6 +114,7 @@ select_actor = function()
 		print("nothing\n");
 	else
 		print(actor.name.."\n");
+		if out_of_spell_range(actor.x, actor.y) then return end
 	end
 
 	return actor
@@ -130,6 +131,7 @@ select_obj = function()
 		print("nothing\n");
 	else
 		print(obj.name .. "\n");
+		if obj.on_map and out_of_spell_range(obj.x, obj.y) then return end
 	end
 
 	return obj 
@@ -142,8 +144,9 @@ function select_actor_or_obj()
 
 	local loc = select_location_with_prompt("On Whom: ")
 	local actor = map_get_actor(loc)
+	local obj
 	if actor == nil then
-		local obj = map_get_obj(loc)
+		obj = map_get_obj(loc)
 		actor = obj
 		if is_player == true then
 			if obj ~= nil then
@@ -158,6 +161,7 @@ function select_actor_or_obj()
 
 	magic_casting_fade_effect(caster)
 	if loc == nil or actor == nil then magic_no_effect() return end
+	if (obj == nil or obj.on_map) and out_of_spell_range(loc.x, loc.y) then return end
 
 	return actor
 end
@@ -185,6 +189,7 @@ function select_actor_with_projectile(projectile_tile, caster)
 	
 	magic_casting_fade_effect(caster)
 	if loc == nil then magic_no_effect() return end
+	if out_of_spell_range(loc.x, loc.y) then return end
 
 	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
 	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 4)
@@ -217,6 +222,7 @@ function select_actor_or_obj_with_projectile(projectile_tile, caster)
 	magic_casting_fade_effect(caster)
 
 	if loc == nil then magic_no_effect() return end
+	if out_of_spell_range(loc.x, loc.y) then return end
 
 	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
 	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 4)
@@ -242,6 +248,7 @@ function select_obj_with_projectile(projectile_tile, caster)
 
 	magic_casting_fade_effect(caster)
 	if loc == nil then magic_no_effect() return end
+	if out_of_spell_range(loc.x, loc.y) then return end
 
 	local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
 	projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 4)
@@ -261,6 +268,7 @@ local loc = select_location_with_prompt("Location: ")
 
 magic_casting_fade_effect(caster)
 if loc == nil then magic_no_effect() return end
+if out_of_spell_range(loc.x, loc.y) then return end
 
 local hit_x, hit_y =  map_line_hit_check(caster.x, caster.y, loc.x, loc.y, loc.z)
 projectile(projectile_tile, caster.x, caster.y, hit_x, hit_y, 4)
@@ -272,6 +280,15 @@ end
 
 function select_spell()
 	return get_spell()
+end
+
+function out_of_spell_range(target_x, target_y)
+	if Actor.get_range(magic_get_caster(), target_x, target_y) > 7 then
+		print("\nout of range\n")
+		return true
+	else
+		return false
+	end
 end
 
 function caster_get_location()	  
