@@ -245,6 +245,7 @@ class MapWindow: public GUI_Widget
  bool move_on_drop(Obj *obj);
  void set_interface();
  InterfaceType get_interface();
+ bool is_interface_fullscreen_in_combat();
 
  void drag_draw(int x, int y, int message, void* data);
 

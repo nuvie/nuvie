@@ -1894,8 +1894,7 @@ bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)
 
     if(obj->is_in_inventory() == false) //obj on map.
     {
-    	if(can_get_obj(p, obj)  //make sure there is a clear line from player to object
-		   || (obj->is_in_container() && can_get_obj(p, obj->get_container_obj())))
+    	if(can_get_obj(p, obj))  //make sure there is a clear line from player to object
     	{
     		if(target_actor)
     		{
@@ -2071,6 +2070,13 @@ InterfaceType MapWindow::get_interface()
 	return interface;
 }
 
+bool MapWindow::is_interface_fullscreen_in_combat()
+{
+	if(interface == INTERFACE_FULLSCREEN && game->get_party()->is_in_combat_mode())
+		return true;
+	return false;
+}
+
 GUI_status MapWindow::Idle(void)
 {
     return(GUI_Widget::Idle());
@@ -2227,7 +2233,8 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	    || tile_is_black(obj->x, obj->y, obj)) && !game->using_hackmove())
 		return	GUI_PASS;
 
-	if(distance > 1 && get_interface() == INTERFACE_NORMAL)
+	// checking interface directly to allow dragging in INTERFACE_FULLSCREEN when in combat
+	if(distance > 1 && interface == INTERFACE_NORMAL)
 		return	GUI_PASS;
 
 	if(button == DRAG_BUTTON && game->is_dragging_enabled())
@@ -2285,7 +2292,12 @@ GUI_status	MapWindow::MouseMotion (int x, int y, Uint8 state)
 		set_mousedown(0, DRAG_BUTTON); // cancel MouseHeld
 		game->set_mouse_pointer(0); // arrow
 		tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
-		return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
+		bool out_of_range;
+		if(is_interface_fullscreen_in_combat() && player->get_location().distance(original_obj_loc) > 1)
+			out_of_range = true;
+		else
+			out_of_range = false;
+		return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8, out_of_range);
 	}
 
 	return	GUI_PASS;

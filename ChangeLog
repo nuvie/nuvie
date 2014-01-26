@@ -1,3 +1,7 @@
+2014-01-26  Malignant Manor <malignantmanor@users.sourceforge.net> r1853
+	* Allow dragging objects greater than 1 tile away in interface FULLSCREEN
+	  when in combat, but display out of range when dropped.
+
 2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1852
 	* Add forgotten parenthesis missing from r1851.
 

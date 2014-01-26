@@ -40,12 +40,13 @@ protected:
  GUI_DragArea *drag_source;
  int message;
  void *data;
+ bool is_out_of_range;
 
 public:
 
  GUI_DragManager(Screen *s);
 
- GUI_status start_drag(GUI_DragArea *src, int msg, void *d, unsigned char *icon_buf, uint16 w, uint16 h, uint8 bpp);
+ GUI_status start_drag(GUI_DragArea *src, int msg, void *d, unsigned char *icon_buf, uint16 w, uint16 h, uint8 bpp, bool out_of_range = false);
  void drop(GUI_DragArea *drag_target, int x, int y);
 
  // let us find out where the drag originated, because we might

@@ -345,7 +345,16 @@ GUI_status ContainerWidget::MouseMotion(int x,int y,Uint8 state)
    {
     dragging = true;
     tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
-    return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
+    bool out_of_range = false;
+    if(!selected_obj->is_in_inventory() && Game::get_game()->get_map_window()->is_interface_fullscreen_in_combat())
+    {
+        Obj *obj = selected_obj->is_in_container() ? selected_obj->get_container_obj(true) : selected_obj;
+        MapCoord obj_loc(obj->x, obj->y, obj->z);
+        Actor *player = Game::get_game()->get_player()->get_actor();
+        if(player->get_location().distance(obj_loc) > 1)
+            out_of_range = true;
+    }
+    return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8, out_of_range);
    }
 
 	return GUI_PASS;
