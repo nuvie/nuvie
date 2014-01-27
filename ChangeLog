@@ -1,3 +1,7 @@
+2014-01-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1855
+	* Change MsgScrollNewUI height and width to the correct value.
+	* Add another min_brightness setting to the cheat menu.
+
 2014-01-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1854
 	* Allow all styles except original to change the size of the converse gump
 	  through game specific converse_width and converse_height settings. The

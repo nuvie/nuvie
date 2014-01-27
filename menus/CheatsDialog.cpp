@@ -87,13 +87,15 @@ bool CheatsDialog::init() {
 		brightness_selection = 2;
 	} else if(min_brightness == 80) {
 		brightness_selection = 3;
-	} else if(min_brightness == 128) {
+	} else if(min_brightness == 100) {
 		brightness_selection = 4;
-	} else if(min_brightness == 255) {
+	} else if(min_brightness == 128) {
 		brightness_selection = 5;
-	} else {
-		num_of_brightness = 7;
+	} else if(min_brightness == 255) {
 		brightness_selection = 6;
+	} else {
+		num_of_brightness = 8;
+		brightness_selection = 7; // manually edited setting
 	}
 
 	char buff[4];
@@ -155,7 +157,7 @@ GUI_status CheatsDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) 
 		config->set("config/cheats/party_all_the_time", party_button->GetSelection() ? "yes" : "no");
 
 		int brightness = brightness_button->GetSelection();
-		if(brightness < 6) {
+		if(brightness < 7) {
 			int min_brightness;
 			if(brightness == 0)
 				min_brightness = 0;
@@ -166,8 +168,10 @@ GUI_status CheatsDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) 
 			else if(brightness == 3)
 				min_brightness = 80;
 			else if(brightness == 4)
+				min_brightness = 100;
+			else if(brightness == 5)
 				min_brightness = 128;
-			else //if(brightness == 5)
+			else //if(brightness == 6)
 				min_brightness = 255;
 			config->set("config/cheats/min_brightness", min_brightness);
 			game->get_map_window()->set_min_brightness(min_brightness);

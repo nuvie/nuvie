@@ -87,7 +87,7 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
  uint16 x_off = Game::get_game()->get_game_x_offset();
  uint16 y_off = Game::get_game()->get_game_y_offset();
 
- GUI_Widget::Init(NULL, x_off, y_off, s->get_width(), s->get_height());
+ GUI_Widget::Init(NULL, x_off, y_off, scroll_width*7 + 8, scroll_height*10 + 8);
 
  cursor_wait = 0;
 
