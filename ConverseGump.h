@@ -50,6 +50,7 @@ class ConverseGump: public MsgScroll
 
 	bool found_break_char;
 	bool solid_bg;
+	bool force_solid_bg;
 	uint8 converse_bg_color;
 
 	uint16 cursor_position;
@@ -58,6 +59,7 @@ class ConverseGump: public MsgScroll
 	uint8 portrait_height;
 	uint8 frame_w;
 	uint8 frame_h;
+	uint16 min_w;
 
 	nuvie_game_t game_type;
 
@@ -73,7 +75,7 @@ class ConverseGump: public MsgScroll
  virtual void display_string(std::string s, Font *f, bool include_on_map_window);
  virtual void set_talking(bool state, Actor *actor = NULL);
  virtual void set_font(uint8 font_type) {}
- bool get_solid_bg() { return solid_bg; }
+ //bool get_solid_bg() { return solid_bg; }
  void set_solid_bg(bool val) { solid_bg = val; }
 
  void Display(bool full_redraw);

@@ -37,6 +37,7 @@
 #include "ConverseGump.h"
 #include "Converse.h"
 #include "GUI.h"
+#include "Background.h"
 
 //#define CONVERSE_DEBUG
 
@@ -508,6 +509,7 @@ void Converse::set_svar(uint8 varnum, const char *set)
  */
 void Converse::show_portrait(uint8 n)
 {
+    Game * game = Game::get_game();
     Actor *actor = (n == npc_num) ? npc : actors->get_actor(n);
     const char *nameret = 0;
     if(!actor)
@@ -515,7 +517,7 @@ void Converse::show_portrait(uint8 n)
     bool statue = (gametype == NUVIE_GAME_U6 && n >= 189 && n <= 191);
     if(gametype == NUVIE_GAME_U6 && n == 0) // Pushme Pullyu
     {
-        Actor *real_actor = Game::get_game()->get_actor_manager()->get_actor(130);
+        Actor *real_actor = game->get_actor_manager()->get_actor(130);
         if(real_actor->is_met() || player->get_party()->contains_actor(real_actor))
             nameret = npc_name(130);
         else
@@ -526,9 +528,10 @@ void Converse::show_portrait(uint8 n)
         nameret = npc_name(n);
     else
         nameret = actors->look_actor(actor, false);
-    if(Game::get_game()->using_new_converse_gump())
+    if(game->using_new_converse_gump())
     {
-        if(!Game::get_game()->is_new_style())
+        if((game->is_original_plus() && game->get_converse_gump()->W() > game->get_game_width() - game->get_background()->get_border_width())
+           || game->is_orig_style())
             views->close_current_view();
         ((ConverseGump *)scroll)->set_actor_portrait(actor);
     }

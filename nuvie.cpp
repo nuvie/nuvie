@@ -336,6 +336,8 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/ultima6/orig_plus_cb_text_color", 115);
 	config->set("config/ultima6/converse_solid_bg", false);
 	config->set("config/ultima6/converse_bg_color", 218);
+	config->set("config/ultima6/converse_width", "default");
+	config->set("config/ultima6/converse_height", "default");
 	config->set("config/ultima6/free_balloon_movement", false);
 	config->set("config/ultima6/game_specific_keys", "(default)");
 	config->set("config/ultima6/newscroll/width", 30);
@@ -351,6 +353,8 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/martian/show_orig_plus_cb", true);
 	config->set("config/martian/converse_solid_bg", false);
 	config->set("config/martian/converse_bg_color", 136);
+	config->set("config/martian/converse_width", "default");
+	config->set("config/martian/converse_height", "default");
 	config->set("config/martian/game_specific_keys", "(default)");
 	config->set("config/martian/newscroll/width", 30);
 	config->set("config/martian/newscroll/height", 19);
@@ -365,6 +369,8 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/savage/show_orig_plus_cb", true);
 	config->set("config/savage/converse_solid_bg", false);
 	config->set("config/savage/converse_bg_color", 216);
+	config->set("config/savage/converse_width", "default");
+	config->set("config/savage/converse_height", "default");
 	config->set("config/savage/game_specific_keys", "(default)");
 	config->set("config/savage/newscroll/width", 30);
 	config->set("config/savage/newscroll/height", 19);

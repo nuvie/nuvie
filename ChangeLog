@@ -1,9 +1,21 @@
+2014-01-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1854
+	* Allow all styles except original to change the size of the converse gump
+	  through game specific converse_width and converse_height settings. The
+	  minimal converse_width is 286 in U6, 298 in MD, and 301 in SE. The minimal
+	  converse_height is 152 in U6, 185 in SE, and 181 in MD. They can also be
+	  set to default (which is the default). Default will try and size them to
+	  what will look best.
+	* Allow both original+ styles to use transparent and dithered converse gump
+	  backgrounds. For original+ to have a non-solid background, it's game_width
+	  minus border_width must be greater than or equal to converse_width.
+	  border_width is 158 in U6, 144 in MD, and 142 in SE.
+
 2014-01-26  Malignant Manor <malignantmanor@users.sourceforge.net> r1853
 	* Allow dragging objects greater than 1 tile away in interface FULLSCREEN
 	  when in combat, but display out of range when dropped.
 
 2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1852
-	* Add forgotten parenthesis missing from r1851.
+	* Add forgotten braces missing from r1851.
 
 2014-01-25  Malignant Manor <malignantmanor@users.sourceforge.net> r1851
 	* Limit spell range to 7.

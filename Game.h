@@ -121,6 +121,8 @@ class Game
  uint16 game_x_offset;
  uint16 game_y_offset;
  uint16 pause_user_count;
+ uint16 converse_gump_width;
+ uint16 min_converse_gump_width;
  uint8 ignore_event_delay; // (stack) if non-zero, Event will not periodically wait for NUVIE_INTERVAL
  bool is_using_hackmove;
  bool dragging_enabled;
@@ -135,6 +137,7 @@ class Game
  bool enabled_converse_gump;
  bool roof_mode;
  bool free_balloon_movement;
+ bool force_solid_converse_bg;
 
  public:
 
@@ -206,7 +209,9 @@ class Game
  bool using_new_converse_gump() { return enabled_converse_gump; }
  void set_free_balloon_movement(bool val) { free_balloon_movement = val; }
  bool has_free_balloon_movement() { return free_balloon_movement; }
-
+ bool is_forcing_solid_converse_bg() { return force_solid_converse_bg; }
+ uint16 get_converse_gump_width() { return converse_gump_width; }
+ uint16 get_min_converse_gump_width() { return min_converse_gump_width; }
  uint16 get_game_width() { return game_width; }
  uint16 get_game_height() { return game_height; }
  uint16 get_game_x_offset() { return game_x_offset; }
@@ -253,6 +258,7 @@ class Game
  KeyBinder *get_keybinder()        { return(keybinder); }
  protected:
 	void init_converse();
+	void init_converse_gump_settings();
 };
 
 #endif /* __Game_h__ */

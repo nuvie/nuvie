@@ -43,54 +43,87 @@
 
 ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
 {
- uint16 x, y;
+// uint16 x, y;
 
  init(cfg, f);
-
- game_type = Game::get_game()->get_game_type();
+ Game *game = Game::get_game();
+ game_type = game->get_game_type();
 
  scroll_width = 30;
  scroll_height = 8;
 
- x = 8;
- y = 8;
+// x = 8;
+// y = 8;
+ int gump_h;
+ uint8 min_h, default_c;
+ std::string height_str;
+ min_w = game->get_min_converse_gump_width();
+ uint16 x_off = game->get_game_x_offset();
+ uint16 y_off = game->get_game_y_offset();
+ int game_h = game->get_game_height();
 
- uint16 x_off =Game::get_game()->get_game_x_offset();
- uint16 y_off = Game::get_game()->get_game_y_offset();
+ if(game_type == NUVIE_GAME_SE) {
+	default_c = 216; min_h = 185;
+ } else if(game_type == NUVIE_GAME_MD) {
+	default_c = 136; min_h = 181;
+ } else {// U6
+	default_c = 218; min_h = 152;
+ }
+ cfg->value(config_get_game_key(cfg) + "/converse_height", height_str, "default");
 
- GUI_Widget::Init(NULL, x_off, y_off, Game::get_game()->get_game_width(), Game::get_game()->get_game_height());
+ if(game->is_orig_style()) {
+	gump_h = game_h;
+ } else {
+	if(height_str == "default") {
+		if(game_h > min_h*1.5) // big enough that we probably don't want to take up the whole screen
+			gump_h = min_h;
+		else
+			gump_h = game_h;
+	} else {
+		cfg->value(config_get_game_key(cfg) + "/converse_height", gump_h, game_h);
+		if(gump_h < min_h)
+			gump_h = min_h;
+		else if(gump_h > game_h)
+			gump_h = game_h;
+	}
+ }
+
+ GUI_Widget::Init(NULL, x_off, y_off, game->get_converse_gump_width(), (uint16)gump_h);
  npc_portrait = NULL;
  avatar_portrait = NULL;
  keyword_list = NULL;
 
- font = Game::get_game()->get_font_manager()->get_conv_font();
+ font = game->get_font_manager()->get_conv_font();
 
  found_break_char = false;
  cursor_wait = 0;
- if(!Game::get_game()->is_new_style())
+
+ if(game->is_forcing_solid_converse_bg())
+ {
 	solid_bg = true;
+	force_solid_bg = true;
+ }
  else
+ {
+	force_solid_bg = false;
 	cfg->value(config_get_game_key(config) + "/converse_solid_bg", solid_bg, false);
+ }
 
  int c;
- uint8 default_c = 218;
- if(game_type == NUVIE_GAME_SE)
-	default_c = 216;
- else if(game_type == NUVIE_GAME_MD)
-	default_c = 136;
  cfg->value(config_get_game_key(config) + "/converse_bg_color", c, default_c);
  if(c<256)
 	 converse_bg_color = (uint8)c;
 
  cursor_position = 0;
 
- portrait_width = frame_w = Game::get_game()->get_portrait()->get_portrait_width();
- portrait_height = frame_h = Game::get_game()->get_portrait()->get_portrait_height();
+ portrait_width = frame_w = game->get_portrait()->get_portrait_width();
+ portrait_height = frame_h = game->get_portrait()->get_portrait_height();
  if(game_type == NUVIE_GAME_U6)
  {
    frame_w = portrait_width + 8;
    frame_h = portrait_height + 9;
  }
+DEBUG(0, LEVEL_DEBUGGING, "\nMin w = %d\n", frame_w + 12 + 210);
 }
 
 ConverseGump::~ConverseGump()
@@ -458,7 +491,9 @@ std::string ConverseGump::get_token_string_at_pos(uint16 x, uint16 y)
 	{
 		MsgText t = *iter;
 		uint16 token_len = font->getStringWidth(t.s.c_str());
-		if(token_len + total_length >= (26 * 8))
+
+//		if(token_len + total_length >= (26 * 8))
+		if(portrait_width / 2 + portrait_width + token_len + total_length + 8 >= min_w - 4)
 		{
 			total_length = 0;
 			tmp_y += 10;
@@ -523,7 +558,7 @@ void ConverseGump::Display(bool full_redraw)
 	 uint16 total_length = 0;
 	 uint16 y = area.y + portrait_height + 8 + 3;
 
-	 if(converse_bg_color != 255 || !Game::get_game()->is_new_style())
+	 if(converse_bg_color != 255 || force_solid_bg)
 	 {
 		if(solid_bg)
 			screen->fill(converse_bg_color, area.x, area.y, area.w, area.h);
@@ -547,7 +582,8 @@ void ConverseGump::Display(bool full_redraw)
 		 {
 			 MsgText t = *iter;
 			 uint16 token_len = font->getStringWidth(t.s.c_str());
-			 if(token_len + total_length >= (26 * 8))
+//			 if(token_len + total_length >= (26 * 8))
+			 if(portrait_width / 2 + portrait_width + token_len + total_length + 8 >= min_w - 4)
 			 {
 				 total_length = 0;
 				 y += 10;

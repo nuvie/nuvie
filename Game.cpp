@@ -318,10 +318,7 @@ bool Game::loadGame(Script *s, SoundManager *sm)
 
    //map_window->set_windowSize(11,11);
 
-	if(is_new_style())
-		enabled_converse_gump = true;
-	else
-		config->value("config/general/converse_gump", enabled_converse_gump, false);
+	init_converse_gump_settings();
 	init_converse();
 
    usecode->init(obj_manager, game_map, player, scroll);
@@ -392,6 +389,54 @@ bool Game::loadGame(Script *s, SoundManager *sm)
        cursor->show();
 
  return true;
+}
+
+void Game::init_converse_gump_settings()
+{
+	if(is_new_style())
+		enabled_converse_gump = true;
+	else
+		config->value("config/general/converse_gump", enabled_converse_gump, false);
+
+	std::string width_str;
+	int gump_w = get_game_width();
+
+	if(game_type == NUVIE_GAME_MD)
+		min_converse_gump_width = 298;
+	else if(game_type == NUVIE_GAME_SE)
+		min_converse_gump_width = 301;
+	else // U6
+		min_converse_gump_width = 286;
+
+	config->value(config_get_game_key(config) + "/converse_width", width_str, "default");
+	if(!game->is_orig_style())
+	{
+		if(width_str == "default")
+		{
+			int map_width = get_game_width();
+			if(is_original_plus())
+				map_width += - background->get_border_width() - 1;
+			if(map_width > min_converse_gump_width*1.5) // big enough that we probably don't want to take up the whole screen
+				gump_w = min_converse_gump_width;
+			else if(game->is_original_plus() && map_width >= min_converse_gump_width) // big enough to draw without going over the UI
+				gump_w = map_width;
+		}
+		else
+		{
+			config->value(config_get_game_key(config) + "/converse_width", gump_w, gump_w);
+			if(gump_w < min_converse_gump_width)
+				gump_w = min_converse_gump_width;
+			else if(gump_w > get_game_width())
+				gump_w = get_game_width();
+		}
+	}
+	converse_gump_width = (uint16)gump_w;
+
+	if((is_original_plus_cutoff_map() && get_game_width() - background->get_border_width() < min_converse_gump_width)
+	   || game->is_orig_style())
+		force_solid_converse_bg = true;
+	else
+		force_solid_converse_bg = false;
 }
 
 void Game::init_converse()

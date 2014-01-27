@@ -37,9 +37,10 @@
 #include "Converse.h"
 #include "ConverseGump.h"
 #include "Configuration.h"
+#include "Background.h"
 
 #define GD_WIDTH 274
-#define GD_HEIGHT 153
+#define GD_HEIGHT 166
 
 GameplayDialog::GameplayDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - GD_WIDTH)/2,
@@ -54,8 +55,9 @@ bool GameplayDialog::init() {
 	int height = 12;
 	int yesno_width = 32;
 	int colX[] = { 9, 50, 233 };
-	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126 };
-	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115 };
+	int buttonY = 9;
+	uint8 textY = 11;
+	uint8 row_h = 13;
 
 	GUI_Widget *widget;
 	GUI *gui = GUI::get_gui();
@@ -72,65 +74,67 @@ bool GameplayDialog::init() {
 	config->value("config/general/show_console", show_console, false);
 	config->value("config/general/enable_cursors", use_original_cursor, false);
 // party formation
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[0], 0, 0, 0, "Party formation:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY, 0, 0, 0, "Party formation:", font);
 	AddWidget(widget);
-	formation_button = new GUI_TextToggleButton(this, 197, buttonY[0], 68, height, formation_text, 4, game->get_party()->get_formation(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	formation_button = new GUI_TextToggleButton(this, 197, buttonY, 68, height, formation_text, 4, game->get_party()->get_formation(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(formation_button);
 	if(is_u6) {
 // show stealing
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1], 0, 0, 0, "Look shows private property:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Look shows private property:", font);
 		AddWidget(widget);
 		config->value("config/ultima6/show_stealing", show_stealing, false);
-		stealing_button = new GUI_TextToggleButton(this, colX[2], buttonY[1], yesno_width, height, yesno_text, 2, show_stealing, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		stealing_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, show_stealing, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(stealing_button);
 	} else {
 		stealing_button = NULL;
 	}
 	if(!Game::get_game()->is_new_style()) {
 // Use text gump
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1 + is_u6], 0, 0, 0, "Use text gump:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Use text gump:", font);
 		AddWidget(widget);
-		text_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY[1 + is_u6], yesno_width, height, yesno_text, 2, game->is_using_text_gumps(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		text_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, game->is_using_text_gumps(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(text_gump_button);
-		converse_solid_bg_button = NULL;
-	} else {
-// converse solid bg
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1 + is_u6], 0, 0, 0, "Converse gump has solid bg:", font);
+// use converse gump
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Use converse gump:", font);
 		AddWidget(widget);
-		solid_bg = game->get_converse_gump()->get_solid_bg();
-		converse_solid_bg_button = new GUI_TextToggleButton(this, colX[2], buttonY[1 + is_u6], yesno_width, height, yesno_text, 2, solid_bg, font, BUTTON_TEXTALIGN_CENTER, this, 0);
-		AddWidget(converse_solid_bg_button);
-		text_gump_button = converse_gump_button = NULL;
-	}
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[5], 0, 0, 0, "The following require a restart:", font);
-	AddWidget(widget);
-// skip intro
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[6], 0, 0, 0, "Skip intro:", font);
-	AddWidget(widget);
-	skip_intro_button = new GUI_TextToggleButton(this, colX[2], buttonY[6], yesno_width, height, yesno_text, 2, skip_intro,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
-	AddWidget(skip_intro_button);
-// show console
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[7], 0, 0, 0, "Show console:", font);
-	AddWidget(widget);
-	show_console_button = new GUI_TextToggleButton(this, colX[2], buttonY[7], yesno_width, height, yesno_text, 2, show_console, font, BUTTON_TEXTALIGN_CENTER, this, 0);
-	AddWidget(show_console_button);
-// original cursor
-	widget = (GUI_Widget *) new GUI_Text(colX[1], textY[8], 0, 0, 0, "Use original cursors:", font);
-	AddWidget(widget);
-	cursor_button = new GUI_TextToggleButton(this, colX[2], buttonY[8], yesno_width, height, yesno_text, 2, use_original_cursor, font, BUTTON_TEXTALIGN_CENTER, this, 0);
-	AddWidget(cursor_button);
-
-	if(!Game::get_game()->is_new_style()) {
-// use converse gump - no longer requires a restart
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[3], 0, 0, 0, "Use converse gump:", font);
-		AddWidget(widget);
-		converse_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY[3], yesno_width, height, yesno_text, 2, game->using_new_converse_gump(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		converse_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, game->using_new_converse_gump(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(converse_gump_button);
 		old_using_converse_gump = game->using_new_converse_gump();
+	} else {
+		text_gump_button = NULL;
+		converse_gump_button = NULL;
 	}
-	cancel_button = new GUI_Button(this, 77, buttonY[9] + 6, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	if(!game->is_forcing_solid_converse_bg()) {
+// converse solid bg
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Converse gump has solid bg:", font);
+		AddWidget(widget);
+		config->value(key + "/converse_solid_bg", solid_bg, false); // need to check cfg since converse_gump may be NULL
+		converse_solid_bg_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, solid_bg, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(converse_solid_bg_button);
+	} else
+		converse_solid_bg_button = NULL;
+// following require restart
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h*2, 0, 0, 0, "The following require a restart:", font);
+	AddWidget(widget);
+// skip intro
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY += row_h, 0, 0, 0, "Skip intro:", font);
+	AddWidget(widget);
+	skip_intro_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h*3, yesno_width, height, yesno_text, 2, skip_intro,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(skip_intro_button);
+// show console
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY += row_h, 0, 0, 0, "Show console:", font);
+	AddWidget(widget);
+	show_console_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, show_console, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(show_console_button);
+// original cursor
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY += row_h, 0, 0, 0, "Use original cursors:", font);
+	AddWidget(widget);
+	cursor_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, use_original_cursor, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(cursor_button);
+
+	cancel_button = new GUI_Button(this, 77, GD_HEIGHT - 20, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
-	save_button = new GUI_Button(this, 158, buttonY[9] + 6, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	save_button = new GUI_Button(this, 158, GD_HEIGHT - 20, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
 
 	return true;
@@ -173,8 +177,10 @@ GUI_status GameplayDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 				config->set("config/general/converse_gump", using_converse_gump ? "yes" : "no");
 				game->set_using_new_converse_gump(using_converse_gump);
 			}
-		} else {
-			game->get_converse_gump()->set_solid_bg(converse_solid_bg_button->GetSelection());
+		}
+		if(converse_solid_bg_button) {
+			if(game->get_converse_gump())
+				game->get_converse_gump()->set_solid_bg(converse_solid_bg_button->GetSelection());
 			config->set(key + "/converse_solid_bg", converse_solid_bg_button->GetSelection() ? "yes" : "no");
 		}
 		config->set(key + "/skip_intro", skip_intro_button->GetSelection() ? "yes" : "no"); // need restart
