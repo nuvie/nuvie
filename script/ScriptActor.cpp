@@ -32,6 +32,7 @@
 #include "ViewManager.h"
 #include "Converse.h"
 #include "UseCode.h"
+#include "PortraitView.h"
 
 extern bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
 extern Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
@@ -1086,7 +1087,10 @@ static int nscript_actor_show_portrait(lua_State *L)
 
 static int nscript_actor_hide_portrait(lua_State *L)
 {
-	Game::get_game()->get_view_manager()->set_party_mode();
+	if(Game::get_game()->is_new_style())
+		Game::get_game()->get_view_manager()->get_portrait_view()->Hide();
+	else
+		Game::get_game()->get_view_manager()->set_party_mode();
 
 	return 0;
 }

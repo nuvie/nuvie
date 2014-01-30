@@ -2433,7 +2433,7 @@ function caught_by_guard(actor)
    
    print("\n\"Thou art under arrest!\"\n\n\"Wilt thou come quietly?\"\n\n:")
    
-   local var_6 = input_select("yn", true)
+   local var_6 = input_select("yn", false)
    
    actor.wt = 0x81
    
