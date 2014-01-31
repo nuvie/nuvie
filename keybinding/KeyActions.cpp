@@ -40,6 +40,7 @@
 
 #define game Game::get_game()
 #define event Game::get_game()->get_event()
+#define party Game::get_game()->get_party()
 #define player Game::get_game()->get_player()
 #define view_manager Game::get_game()->get_view_manager()
 #define inventory_view Game::get_game()->get_view_manager()->get_inventory_view()
@@ -185,7 +186,7 @@ void ActionDollGump(int const *params)
 {
 	if(params[0] > 0)
 	{
-		Actor *party_member = player->get_party()->get_actor(params[0] -1);
+		Actor *party_member = party->get_actor(params[0] -1);
 		if(party_member)
 			view_manager->open_doll_view(party_member);
 	}
@@ -197,7 +198,7 @@ void ActionShowStats(int const *params)
 {
 	if(event->using_control_cheat())
 		return;
-	Actor *party_member = player->get_party()->get_actor(params[0] -1);
+	Actor *party_member = party->get_actor(params[0] -1);
 	if(party_member == NULL)
 		return;
 	if(!game->is_new_style())
@@ -213,7 +214,7 @@ void ActionInventory(int const *params)
 {
 	if(event->using_control_cheat() || params[0] == 0)
 		return;
-	if(player->get_party()->get_party_size() >= params[0])
+	if(party->get_party_size() >= params[0])
 	{
 		if(!game->is_new_style())
 		{
@@ -222,7 +223,7 @@ void ActionInventory(int const *params)
 		}
 		else
 		{
-			view_manager->open_container_view(game->get_party()->get_actor(params[0] -1));
+			view_manager->open_container_view(party->get_actor(params[0] -1));
 		}
 	}
 }
@@ -242,13 +243,13 @@ void ActionNextPartyMember(int const *params)
 		if(view_manager->get_current_view() == actor_view)
 		{
 			uint8 party_num = actor_view->get_party_member_num();
-			if(player->get_party()->get_party_size() >= party_num+2)
+			if(party->get_party_size() >= party_num+2)
 				actor_view->set_party_member(party_num+1);
 		}
 		else if(!inventory_view->is_picking_pocket())
 		{
 			uint8 party_num = inventory_view->get_party_member_num();
-			if(player->get_party()->get_party_size() >= party_num+2
+			if(party->get_party_size() >= party_num+2
 			   && inventory_view->set_party_member(party_num+1))
 				view_manager->set_inventory_mode();
 		}
@@ -295,7 +296,7 @@ void ActionEnd(int const *params)
 		return;
 	if(!game->is_new_style())
 	{
-		uint8 mem_num = player->get_party()->get_party_size() - 1;
+		uint8 mem_num = party->get_party_size() - 1;
 		if(view_manager->get_current_view() == actor_view)
 			actor_view->set_party_member(mem_num);
 		else if(!inventory_view->is_picking_pocket())
@@ -321,6 +322,24 @@ void ActionToggleView(int const *params)
 
 void ActionSoloMode(int const *params)
 {
+	if(params[0] == 0)
+	{
+		if(player->in_party_mode())
+			event->solo_mode(0);
+		else
+		{
+			uint8 party_size = party->get_party_size() - 1;
+			sint8 new_mem_num = party->get_member_num(player->get_actor()) + 1;
+			if(new_mem_num > party_size)
+			{
+				if(!event->party_mode())
+					event->solo_mode(0); // failed so start over again
+			}
+			else
+				event->solo_mode((uint32)new_mem_num);
+		}
+		return;
+	}
 	if(event->get_mode() == INPUT_MODE)
 		event->select_party_member(params[0] -1);
 	else if(player->is_in_vehicle())
@@ -520,7 +539,7 @@ void ActionUseItem(int const *params)
 	// try player first
 	Obj *obj = player->get_actor()->inventory_get_object(obj_n, qual, match_qual, frame_n, match_frame_n);
 	if(!obj && !event->using_control_cheat())
-		obj =  player->get_party()->get_obj(obj_n, qual, match_qual, frame_n, match_frame_n);
+		obj =  party->get_obj(obj_n, qual, match_qual, frame_n, match_frame_n);
 	if(obj)
 	{
 		game->get_scroll()->display_string("Use-", MSGSCROLL_NO_MAP_DISPLAY);
@@ -589,7 +608,7 @@ void ActionToggleEthereal(int const *params)
 {
 	bool ethereal = !game->is_ethereal();
 	game->set_ethereal(ethereal);
-	game->get_party()->set_ethereal(ethereal);
+	party->set_ethereal(ethereal);
 	string message = ethereal ? "Ethereal movement" : "Normal movement";
 	new TextEffect(message);
 }
@@ -604,8 +623,8 @@ void ActionToggleX_Ray(int const *params)
 
 void ActionHealParty(int const *params)
 {
-	player->get_party()->heal();
-	player->get_party()->cure();
+	party->heal();
+	party->cure();
 	new TextEffect("Party healed");
 }
 
@@ -622,7 +641,7 @@ void ActionToggleCheats(int const *params)
 	new TextEffect(message);
 
 	if(game->is_ethereal()) // doesn't change the bool's value
-		game->get_party()->set_ethereal(cheats);
+		party->set_ethereal(cheats);
 	if(game->get_obj_manager()->is_showing_eggs())
 		game->get_egg_manager()->set_egg_visibility(cheats);
 

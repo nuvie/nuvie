@@ -2470,7 +2470,7 @@ void Event::solo_mode(uint32 party_member)
 }
 
 /* Switch to party mode. */
-void Event::party_mode()
+bool Event::party_mode()
 {
     MapCoord leader_loc;
     if(in_control_cheat)
@@ -2482,11 +2482,12 @@ void Event::party_mode()
     assert(actor); // there must be a leader
 
     if(game->user_paused())
-        return;
+        return false;
 
     if(player->is_in_vehicle())
-        return;
+        return false;
 
+    bool success = false;
     leader_loc = actor->get_location();
 
     if(player->get_party()->is_in_combat_mode())
@@ -2495,6 +2496,7 @@ void Event::party_mode()
     {
         if(player->set_party_mode(player->get_party()->get_actor(0)))
         {
+            success = true;
             scroll->display_string("Party mode\n");
             player->set_mapwindow_centered(true);
         }
@@ -2503,6 +2505,7 @@ void Event::party_mode()
         scroll->display_string("Not everyone is here.\n");
     scroll->display_string("\n");
     scroll->display_prompt();
+    return success;
 }
 
 /* Switch to or from combat mode. */

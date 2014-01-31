@@ -1,3 +1,6 @@
+2014-01-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1858
+	* Have solo key binding toggle through party members if 0 is the parameter.
+
 2014-01-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1857
 	* Get rid of most hardcoded key.syms in favor of custom keybindings. When
 	  you need to type alphanumeric characters all keybindings that are
