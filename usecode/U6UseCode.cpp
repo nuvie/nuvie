@@ -49,6 +49,7 @@
 #include "Effect.h"
 #include "Weather.h"
 #include "Script.h"
+#include "Keys.h"
 
 #include "U6UseCode.h"
 #include "U6ObjectTypes.h"
@@ -1744,8 +1745,9 @@ bool U6UseCode::use_crystal_ball(Obj *obj, UseCodeEvent ev)
 bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)
 {
 // FIXME: need intrument sounds AND a config option to simply change music
-// track when an instrument is played
-// FIXME: also some floating music note icons like in U7
+// track when an instrument is played. Maybe NORTH_KEY and SOUTH_KEY can cycle through sounds/music and DO_ACTION_KEY can play it.
+/// FIXME: also some floating music note icons like in U7
+    game->get_event()->close_gumps(); // gumps will steal input
     const char *musicmsg = (obj->obj_n == OBJ_U6_PANPIPES) ? "panpipes"
                  : (obj->obj_n == OBJ_U6_HARPSICHORD) ? "harpsichord"
                  : (obj->obj_n == OBJ_U6_HARP) ? "harp"
@@ -1755,6 +1757,7 @@ bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)
     if(items.data_ref)
     {
             SDLKey key = ((EventInput*)items.data_ref)->key;
+            ActionKeyType key_type = ((EventInput*)items.data_ref)->action_key_type;
             if(key == SDLK_0) DEBUG(0,LEVEL_WARNING,"FIXME: %s: modulate 0\n", musicmsg);
             if(key == SDLK_1) DEBUG(0,LEVEL_WARNING,"FIXME: %s: modulate 1\n", musicmsg);
             if(key == SDLK_2) DEBUG(0,LEVEL_WARNING,"FIXME: %s: modulate 2\n", musicmsg);
@@ -1765,7 +1768,7 @@ bool U6UseCode::play_instrument(Obj *obj, UseCodeEvent ev)
             if(key == SDLK_7) DEBUG(0,LEVEL_WARNING,"FIXME: %s: modulate 7\n", musicmsg);
             if(key == SDLK_8) DEBUG(0,LEVEL_WARNING,"FIXME: %s: modulate 8\n", musicmsg);
             if(key == SDLK_9) DEBUG(0,LEVEL_WARNING,"FIXME: %s: modulate 9\n", musicmsg);
-            return(key != SDLK_RETURN && key != SDLK_KP_ENTER && key != SDLK_SPACE);
+            return(key_type != DO_ACTION_KEY && key_type != CANCEL_ACTION_KEY);
     }
     else
         game->get_event()->key_redirect(this, obj);

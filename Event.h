@@ -31,6 +31,7 @@
 #include "ObjManager.h"
 //#include "GUI_CallBack.h"
 #include "CallBack.h"
+#include "KeysEnum.h"
 
 class Actor;
 class CallbackTarget;
@@ -91,6 +92,7 @@ struct EventInput_s
 //    union
 //    {
         SDLKey key; // last key entered, if capturing input
+        ActionKeyType action_key_type; // last ActionKeyType entered if capturing input
         MapCoord *loc; // target location, or direction if relative ???
         std::string *str; // ???
 //    };
@@ -181,6 +183,7 @@ friend class Magic; // FIXME
  bool handleEvent(const SDL_Event *event);
  void request_input(CallBack *caller, void *user_data=NULL);
  void target_spell();
+ void close_spellbook();
 // Prompt for input.
 // obsolete:
 // void useselect_mode(Obj *src, const char *prompt = NULL); // deprecated

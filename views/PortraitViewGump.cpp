@@ -33,6 +33,7 @@
 
 #include "ContainerWidgetGump.h"
 #include "PortraitViewGump.h"
+#include "Keys.h"
 
 
 PortraitViewGump::PortraitViewGump(Configuration *cfg) : DraggableView(cfg)
@@ -118,6 +119,8 @@ void PortraitViewGump::set_actor(Actor *a)
 
 void PortraitViewGump::left_arrow()
 {
+	if(party->get_member_num(actor) < 0)
+		return;
 	uint8 party_mem_num = party->get_member_num(actor);
 	if(party_mem_num > 0)
 		party_mem_num--;
@@ -129,6 +132,8 @@ void PortraitViewGump::left_arrow()
 
 void PortraitViewGump::right_arrow()
 {
+	if(party->get_member_num(actor) < 0)
+		return;
 	set_actor(party->get_actor((party->get_member_num(actor) + 1) % party->get_party_size()));
 }
 
@@ -239,38 +244,48 @@ GUI_status PortraitViewGump::callback(uint16 msg, GUI_CallBack *caller, void *da
 
 GUI_status PortraitViewGump::KeyDown(SDL_keysym key)
 {
-	bool numlock = (key.mod & KMOD_NUM); // SDL doesn't get the proper num lock state in Windows
-	switch(key.sym) {
-		case SDLK_KP1:
-		case SDLK_KP2: if(numlock) break;
-		case SDLK_DOWN:
+//	I was checking for numlock but probably don't need to
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+
+	switch(keybinder->GetActionKeyType(a)) {
+		case SOUTH_WEST_KEY:
+		case SOUTH_KEY:
 			return set_cursor_pos(CURSOR_CHECK);
-		case SDLK_KP8: if(numlock) break;
-		case SDLK_UP:
+		case NORTH_KEY:
 			if(cursor_pos == CURSOR_CHECK)
 				return set_cursor_pos(CURSOR_LEFT);
 			return GUI_YUM;
-		case SDLK_KP4:
-		case SDLK_KP7: if(numlock) break;
-		case SDLK_LEFT:
+		case NORTH_WEST_KEY:
+		case WEST_KEY:
 			if(cursor_pos == CURSOR_RIGHT)
 				return set_cursor_pos(CURSOR_LEFT);
 			return set_cursor_pos(CURSOR_CHECK);
-		case SDLK_KP9:
-		case SDLK_KP3:
-		case SDLK_KP6: if(numlock) break;
-		case SDLK_RIGHT:
+		case NORTH_EAST_KEY:
+		case SOUTH_EAST_KEY:
+		case EAST_KEY:
 			if(cursor_pos == CURSOR_CHECK)
 				return set_cursor_pos(CURSOR_LEFT);
 			return set_cursor_pos(CURSOR_RIGHT);
-		case SDLK_RETURN:
-		case SDLK_KP_ENTER:
+		case DO_ACTION_KEY:
 			if(cursor_pos == CURSOR_CHECK)
 				Game::get_game()->get_view_manager()->close_gump(this);
 			else if(cursor_pos == CURSOR_LEFT)
 				left_arrow();
 			else
 				right_arrow();
+			return GUI_YUM;
+		case NEXT_PARTY_MEMBER_KEY:
+			right_arrow(); return GUI_YUM;
+		case PREVIOUS_PARTY_MEMBER_KEY:
+			left_arrow(); return GUI_YUM;
+		case HOME_KEY:
+			if(party->get_member_num(actor) >= 0)
+				set_actor(party->get_actor(0));
+			return GUI_YUM;
+		case END_KEY:
+			if(party->get_member_num(actor) >= 0)
+				set_actor(party->get_actor(party->get_party_size() - 1));
 			return GUI_YUM;
 		default: break;
 	}
@@ -279,7 +294,7 @@ GUI_status PortraitViewGump::KeyDown(SDL_keysym key)
 
 GUI_status PortraitViewGump::MouseDown(int x, int y, int button)
 {
- if(party->get_member_num(actor) >= 0)
+// if(party->get_member_num(actor) >= 0)
  {
 	 if(button == SDL_BUTTON_WHEELDOWN)
 	 {

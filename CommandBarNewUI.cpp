@@ -42,6 +42,7 @@
 #include "Objlist.h"
 #include "NuvieIO.h"
 #include "Background.h"
+#include "Keys.h"
 
 
 using std::string;
@@ -191,10 +192,12 @@ GUI_status CommandBarNewUI::MouseUp(int x, int y, int button)
 
 GUI_status CommandBarNewUI::KeyDown(SDL_keysym key)
 {
-    switch(key.sym)
+    KeyBinder *keybinder = Game::get_game()->get_keybinder();
+    ActionType a = keybinder->get_ActionType(key);
+
+    switch(keybinder->GetActionKeyType(a))
     {
-        case SDLK_UP:
-        case SDLK_KP8:
+        case NORTH_KEY:
         	do
         	{
 				if(cur_pos - icon_w < 0)
@@ -203,15 +206,13 @@ GUI_status CommandBarNewUI::KeyDown(SDL_keysym key)
 					cur_pos -= icon_w;
         	} while(cur_pos >= num_icons);
             break;
-        case SDLK_DOWN:
-        case SDLK_KP2:
+        case SOUTH_KEY:
         	do
         	{
         		cur_pos = (cur_pos + icon_w) % (icon_w * icon_h);
         	} while(cur_pos >= num_icons);
             break;
-        case SDLK_LEFT:
-        case SDLK_KP4:
+        case WEST_KEY:
         	do
         	{
 				if(cur_pos%icon_w == 0)
@@ -220,25 +221,25 @@ GUI_status CommandBarNewUI::KeyDown(SDL_keysym key)
 					cur_pos--;
         	} while(cur_pos >= num_icons);
             break;
-        case SDLK_RIGHT:
-        case SDLK_KP6:
+        case EAST_KEY:
         	do
         	{
         		cur_pos = (cur_pos/icon_w)*icon_w + (cur_pos+1) % icon_w;
         	} while(cur_pos >= num_icons);
             break;
-        case SDLK_RETURN:
-        case SDLK_KP_ENTER:
+        case DO_ACTION_KEY:
         	if(cur_pos < num_icons)
         	{
 				hit((sint8)cur_pos);
 				Hide();
         	}
         	break;
-        case SDLK_ESCAPE:
+        case CANCEL_ACTION_KEY:
+        case NEW_COMMAND_BAR_KEY:
         	Hide();
         	break;
-        default :
+
+        default : keybinder->handle_always_available_keys(a);
         	break;
     }
 

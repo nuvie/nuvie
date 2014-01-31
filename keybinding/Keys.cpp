@@ -70,75 +70,78 @@ const struct Action {
 		cheat_keys
 	} key_type;
 	bool allow_in_vehicle;
+	ActionKeyType action_key_type;
 } NuvieActions[] = {
-	{ "WALK_WEST", ActionWalkWest, "Walk west", Action::normal_keys, true},
-	{ "WALK_EAST", ActionWalkEast, "Walk east", Action::normal_keys, true },
-	{ "WALK_NORTH", ActionWalkNorth, "Walk north", Action::normal_keys, true },
-	{ "WALK_SOUTH", ActionWalkSouth, "Walk south", Action::normal_keys, true },
-	{ "WALK_NORTH_EAST", ActionWalkNorthEast, "Walk north-east", Action::normal_keys, true },
-	{ "WALK_SOUTH_EAST", ActionWalkSouthEast, "Walk south-east", Action::normal_keys, true },
-	{ "WALK_NORTH_WEST", ActionWalkNorthWest, "Walk north-west", Action::normal_keys, true },
-	{ "WALK_SOUTH_WEST", ActionWalkSouthWest, "Walk south-west", Action::normal_keys, true },
-	{ "CAST", ActionCast, "Cast", Action::normal_keys, true }, // allow_in_vehicle is true so the right message or cancel is done for WOU games
-	{ "LOOK", ActionLook, "Look", Action::normal_keys, true },
-	{ "TALK", ActionTalk, "Talk", Action::normal_keys, true },
-	{ "USE", ActionUse, "Use", Action::normal_keys, true },
-	{ "GET", ActionGet, "Get", Action::normal_keys, false },
-	{ "MOVE", ActionMove, "Move", Action::normal_keys, false },
-	{ "DROP", ActionDrop, "Drop", Action::normal_keys, false },
-	{ "TOGGLE_COMBAT", ActionToggleCombat, "Toggle combat", Action::normal_keys, false },
-	{ "ATTACK", ActionAttack, "Attack", Action::normal_keys, true },
-	{ "REST", ActionRest, "Rest", Action::normal_keys, true },
-	{ "MULTI_USE", ActionMultiUse, "Multi-use", Action::normal_keys, true },
-	{ "SELECT_COMMAND_BAR", ActionSelectCommandBar, "Select Command Bar", Action::normal_keys, true },
-	{ "NEW_COMMAND_BAR", ActionSelectNewCommandBar, "Select New Command Bar", Action::normal_keys, true },
-	{ "DOLL_GUMP", ActionDollGump, "Doll gump", Action::normal_keys, true },
-	{ "SHOW_STATS", ActionShowStats, "Shows the party member's stats", Action::normal_keys, true },
-	{ "INVENTORY", ActionInventory, "inventory", Action::normal_keys, true },
-	{ "PREVIOUS_PARTY_MEMBER", ActionPreviousPartyMember, "Previous party member", Action::normal_keys, true },
-	{ "NEXT_PARTY_MEMBER", ActionNextPartyMember, "Next party member", Action::normal_keys, true },
-	{ "TOGGLE_VIEW", ActionToggleView, "Toggle between inventory and actor view", Action::normal_keys, true },
-	{ "PARTY_VIEW", ActionPartyView, "Party view", Action::normal_keys, true },
-	{ "SOLO_MODE", ActionSoloMode, "Solo mode", Action::normal_keys, true },
-	{ "PARTY_MODE", ActionPartyMode, "Party mode", Action::normal_keys, true },
-	{ "SAVE_MENU", ActionSaveDialog, "Save menu", Action::normal_keys, true },
-	{ "LOAD_LATEST_SAVE", ActionLoadLatestSave, "Load latest save", Action::normal_keys, true },
-	{ "QUICK_SAVE", ActionQuickSave, "Quick save", Action::normal_keys, true },
-	{ "QUICK_LOAD", ActionQuickLoad, "Quick load", Action::normal_keys, true },
-	{ "QUIT", ActionQuitDialog, "Quit", Action::normal_keys, true },
-	{ "QUIT_NO_DIALOG", ActionQuitNODialog, "Quit without confirmation", Action::normal_keys, true },
-	{ "GAME_MENU_DIALOG", ActionGameMenuDialog, "Show game menu; Cancel action if in middle of action", Action::normal_keys, true },
-	{ "TOGGLE_FULLSCREEN", ActionToggleFullscreen, "Toggle Fullscreen", Action::normal_keys, true },
-	{ "TOGGLE_CURSOR", ActionToggleCursor, "Toggle Cursor", Action::normal_keys, true },
-	{ "TOGGLE_COMBAT_STRATEGY", ActionToggleCombatStrategy, "Toggle combat strategy", Action::normal_keys, true },
-	{ "TOGGLE_FPS_DISPLAY", ActionToggleFps, "Toggle frames per second display", Action::normal_keys, true },
-	{ "TOGGLE_AUDIO", ActionToggleAudio, "Toggle audio", Action::normal_keys, true },
-	{ "TOGGLE_MUSIC", ActionToggleMusic, "Toggle music", Action::normal_keys, true },
-	{ "TOGGLE_SFX", ActionToggleSFX, "Toggle sfx", Action::normal_keys, true },
-	{ "TOGGLE_ORIGINAL_PLUS_COMMAND_BAR", ActionToggleOriginalPlusCommandBar, "Show/hide original plus command bar", Action::normal_keys, true },
-	{ "DO_ACTION", ActionDoAction, "Do action", Action::normal_keys, true },
-	{ "CANCEL_ACTION", ActionCancelAction, "Cancel action", Action::normal_keys, true },
-	{ "MSG_SCROLL_UP", ActionMsgScrollUP, "Msg scroll up", Action::normal_keys, true },
-	{ "MSG_SCROLL_DOWN", ActionMsgScrollDown, "Msg scroll down", Action::normal_keys, true },
-	{ "SHOW_KEYS", ActionShowKeys, "Show keys", Action::normal_keys, true },
-	{ "DECREASE_DEBUG", ActionDecreaseDebug, "Decrease debug", Action::normal_keys, true },
-	{ "INCREASE_DEBUG", ActionIncreaseDebug, "Increase debug", Action::normal_keys, true },
-	{ "CLOSE_GUMPS", ActionCloseGumps, "Close gumps", Action::normal_keys, true },
-	{ "USE_ITEM", ActionUseItem, "Use item", Action::normal_keys, true },
-	{ "SHOW_EGGS", ActionShowEggs, "Show eggs", Action::cheat_keys, true },
-	{ "TOGGLE_HACKMOVE", ActionToggleHackmove, "Toggle hack move", Action::cheat_keys, true },
-	{ "TOGGLE_EGG_SPAWN", ActionToggleEggSpawn, "Toggle egg spawn", Action::cheat_keys, true },
-	{ "TOGGLE_UNLIMITED_CASTING", ActionToggleUnlimitedCasting, "Toggle unlimited casting", Action::cheat_keys, true },
-	{ "TOGGLE_NO_DARKNESS", ActionToggleNoDarkness, "Toggle no darkness", Action::cheat_keys, true },
-	{ "TOGGLE_PICKPOCKET_MODE", ActionTogglePickpocket, "Toggle pickpocket mode", Action::cheat_keys, true },
-	{ "TOGGLE_GOD_MODE",  ActionToggleGodMode, "Toggle god mode", Action::cheat_keys, true },
-	{ "TOGGLE_ETHEREAL",  ActionToggleEthereal, "Toggle ethereal mode", Action::cheat_keys, true },
-	{ "TOGGLE_X_RAY",  ActionToggleX_Ray, "Toggle X-ray mode", Action::cheat_keys, true },
-	{ "HEAL_PARTY", ActionHealParty, "Heal party", Action::cheat_keys, true },
-	{ "TELEPORT_TO_CURSOR", ActionTeleportToCursor, "Teleport to cursor", Action::cheat_keys, true },
-	{ "TOGGLE_CHEATS", ActionToggleCheats, "Toggle cheats", Action::normal_keys, true },
-	{ "TEST", ActionTest, "Test", Action::dont_show, true },
-	{ "", 0, "", Action::dont_show, false } //terminator
+	{ "WALK_WEST", ActionWalkWest, "Walk west", Action::normal_keys, true, WEST_KEY  },
+	{ "WALK_EAST", ActionWalkEast, "Walk east", Action::normal_keys, true, EAST_KEY },
+	{ "WALK_NORTH", ActionWalkNorth, "Walk north", Action::normal_keys, true, NORTH_KEY },
+	{ "WALK_SOUTH", ActionWalkSouth, "Walk south", Action::normal_keys, true, SOUTH_KEY },
+	{ "WALK_NORTH_EAST", ActionWalkNorthEast, "Walk north-east", Action::normal_keys, true, NORTH_EAST_KEY },
+	{ "WALK_SOUTH_EAST", ActionWalkSouthEast, "Walk south-east", Action::normal_keys, true, SOUTH_EAST_KEY },
+	{ "WALK_NORTH_WEST", ActionWalkNorthWest, "Walk north-west", Action::normal_keys, true, NORTH_WEST_KEY },
+	{ "WALK_SOUTH_WEST", ActionWalkSouthWest, "Walk south-west", Action::normal_keys, true, SOUTH_WEST_KEY },
+	{ "CAST", ActionCast, "Cast", Action::normal_keys, true, OTHER_KEY }, // allow_in_vehicle is true, so the right message or cancel is done for WOU games
+	{ "LOOK", ActionLook, "Look", Action::normal_keys, true, OTHER_KEY },
+	{ "TALK", ActionTalk, "Talk", Action::normal_keys, true, OTHER_KEY },
+	{ "USE", ActionUse, "Use", Action::normal_keys, true, OTHER_KEY },
+	{ "GET", ActionGet, "Get", Action::normal_keys, false, OTHER_KEY },
+	{ "MOVE", ActionMove, "Move", Action::normal_keys, false, OTHER_KEY },
+	{ "DROP", ActionDrop, "Drop", Action::normal_keys, false, OTHER_KEY },
+	{ "TOGGLE_COMBAT", ActionToggleCombat, "Toggle combat", Action::normal_keys, false, OTHER_KEY },
+	{ "ATTACK", ActionAttack, "Attack", Action::normal_keys, true, OTHER_KEY },
+	{ "REST", ActionRest, "Rest", Action::normal_keys, true, OTHER_KEY },
+	{ "MULTI_USE", ActionMultiUse, "Multi-use", Action::normal_keys, true, OTHER_KEY },
+	{ "SELECT_COMMAND_BAR", ActionSelectCommandBar, "Select Command Bar", Action::normal_keys, true, OTHER_KEY },
+	{ "NEW_COMMAND_BAR", ActionSelectNewCommandBar, "Select New Command Bar", Action::normal_keys, true, NEW_COMMAND_BAR_KEY },
+	{ "DOLL_GUMP", ActionDollGump, "Doll gump", Action::normal_keys, true, OTHER_KEY },
+	{ "SHOW_STATS", ActionShowStats, "Shows the party member's stats", Action::normal_keys, true, OTHER_KEY },
+	{ "INVENTORY", ActionInventory, "inventory", Action::normal_keys, true, OTHER_KEY },
+	{ "PREVIOUS_PARTY_MEMBER", ActionPreviousPartyMember, "Previous party member", Action::normal_keys, true, PREVIOUS_PARTY_MEMBER_KEY },
+	{ "NEXT_PARTY_MEMBER", ActionNextPartyMember, "Next party member", Action::normal_keys, true, NEXT_PARTY_MEMBER_KEY },
+	{ "HOME_KEY", ActionHome, "Home key", Action::normal_keys, true, HOME_KEY },
+	{ "END_KEY", ActionEnd, "End key", Action::normal_keys, true, END_KEY },
+	{ "TOGGLE_VIEW", ActionToggleView, "Toggle between inventory and actor view", Action::normal_keys, true, OTHER_KEY },
+	{ "PARTY_VIEW", ActionPartyView, "Party view", Action::normal_keys, true, OTHER_KEY },
+	{ "SOLO_MODE", ActionSoloMode, "Solo mode", Action::normal_keys, true, OTHER_KEY },
+	{ "PARTY_MODE", ActionPartyMode, "Party mode", Action::normal_keys, true, OTHER_KEY },
+	{ "SAVE_MENU", ActionSaveDialog, "Save menu", Action::normal_keys, true, OTHER_KEY },
+	{ "LOAD_LATEST_SAVE", ActionLoadLatestSave, "Load latest save", Action::normal_keys, true, OTHER_KEY },
+	{ "QUICK_SAVE", ActionQuickSave, "Quick save", Action::normal_keys, true, OTHER_KEY },
+	{ "QUICK_LOAD", ActionQuickLoad, "Quick load", Action::normal_keys, true, OTHER_KEY },
+	{ "QUIT", ActionQuitDialog, "Quit", Action::normal_keys, true, QUIT_KEY },
+	{ "QUIT_NO_DIALOG", ActionQuitNODialog, "Quit without confirmation", Action::normal_keys, true, QUIT_KEY },
+	{ "GAME_MENU_DIALOG", ActionGameMenuDialog, "Show game menu; Cancel action if in middle of action", Action::normal_keys, true, CANCEL_ACTION_KEY },
+	{ "TOGGLE_FULLSCREEN", ActionToggleFullscreen, "Toggle Fullscreen", Action::normal_keys, true, TOGGLE_FULLSCREEN_KEY },
+	{ "TOGGLE_CURSOR", ActionToggleCursor, "Toggle Cursor", Action::normal_keys, true, TOGGLE_CURSOR_KEY },
+	{ "TOGGLE_COMBAT_STRATEGY", ActionToggleCombatStrategy, "Toggle combat strategy", Action::normal_keys, true, OTHER_KEY },
+	{ "TOGGLE_FPS_DISPLAY", ActionToggleFps, "Toggle frames per second display", Action::normal_keys, true, TOGGLE_FPS_KEY },
+	{ "TOGGLE_AUDIO", ActionToggleAudio, "Toggle audio", Action::normal_keys, true, TOGGLE_AUDIO_KEY },
+	{ "TOGGLE_MUSIC", ActionToggleMusic, "Toggle music", Action::normal_keys, true, TOGGLE_MUSIC_KEY },
+	{ "TOGGLE_SFX", ActionToggleSFX, "Toggle sfx", Action::normal_keys, true, TOGGLE_SFX_KEY },
+	{ "TOGGLE_ORIGINAL_PLUS_COMMAND_BAR", ActionToggleOriginalPlusCommandBar, "Show/hide original plus command bar", Action::normal_keys, true,  },
+	{ "DO_ACTION", ActionDoAction, "Do action", Action::normal_keys, true, DO_ACTION_KEY },
+	{ "CANCEL_ACTION", ActionCancelAction, "Cancel action", Action::normal_keys, true, CANCEL_ACTION_KEY },
+	{ "MSG_SCROLL_UP", ActionMsgScrollUP, "Msg scroll up", Action::normal_keys, true, MSGSCROLL_UP_KEY },
+	{ "MSG_SCROLL_DOWN", ActionMsgScrollDown, "Msg scroll down", Action::normal_keys, true, MSGSCROLL_DOWN_KEY },
+	{ "SHOW_KEYS", ActionShowKeys, "Show keys", Action::normal_keys, true, OTHER_KEY },
+	{ "DECREASE_DEBUG", ActionDecreaseDebug, "Decrease debug", Action::normal_keys, true, DECREASE_DEBUG_KEY },
+	{ "INCREASE_DEBUG", ActionIncreaseDebug, "Increase debug", Action::normal_keys, true, INCREASE_DEBUG_KEY },
+	{ "CLOSE_GUMPS", ActionCloseGumps, "Close gumps", Action::normal_keys, true, OTHER_KEY },
+	{ "USE_ITEM", ActionUseItem, "Use item", Action::normal_keys, true, OTHER_KEY },
+	{ "SHOW_EGGS", ActionShowEggs, "Show eggs", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_HACKMOVE", ActionToggleHackmove, "Toggle hack move", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_EGG_SPAWN", ActionToggleEggSpawn, "Toggle egg spawn", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_UNLIMITED_CASTING", ActionToggleUnlimitedCasting, "Toggle unlimited casting", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_NO_DARKNESS", ActionToggleNoDarkness, "Toggle no darkness", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_PICKPOCKET_MODE", ActionTogglePickpocket, "Toggle pickpocket mode", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_GOD_MODE",  ActionToggleGodMode, "Toggle god mode", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_ETHEREAL",  ActionToggleEthereal, "Toggle ethereal mode", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_X_RAY",  ActionToggleX_Ray, "Toggle X-ray mode", Action::cheat_keys, true, OTHER_KEY },
+	{ "HEAL_PARTY", ActionHealParty, "Heal party", Action::cheat_keys, true, OTHER_KEY },
+	{ "TELEPORT_TO_CURSOR", ActionTeleportToCursor, "Teleport to cursor", Action::cheat_keys, true, OTHER_KEY },
+	{ "TOGGLE_CHEATS", ActionToggleCheats, "Toggle cheats", Action::normal_keys, true, OTHER_KEY },
+	{ "TEST", ActionTest, "Test", Action::dont_show, true, OTHER_KEY },
+	{ "", 0, "", Action::dont_show, false, OTHER_KEY } //terminator
 };
 
 const struct {
@@ -242,6 +245,17 @@ void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action,
 	bindings[k] = a;
 }
 
+ActionType KeyBinder::get_ActionType(SDL_keysym key)
+{
+	KeyMap::iterator sdlkey_index = get_sdlkey_index(key);
+	return (*sdlkey_index).second;
+}
+
+ActionKeyType KeyBinder::GetActionKeyType(ActionType a)
+{
+	return a.action->action_key_type;
+}
+
 bool KeyBinder::DoAction(ActionType const& a) const
 {
 	if (!a.action->allow_in_vehicle && Game::get_game()->get_player()->is_in_vehicle())
@@ -259,29 +273,35 @@ bool KeyBinder::DoAction(ActionType const& a) const
 	return true;
 }
 
+KeyMap::iterator KeyBinder::get_sdlkey_index(SDL_keysym keysym)
+{
+	SDL_keysym key = keysym;
+	key.mod = KMOD_NONE;
+	if (keysym.mod & KMOD_SHIFT)
+		key.mod = (SDLMod)(key.mod | KMOD_SHIFT);
+	if (keysym.mod & KMOD_CTRL)
+		key.mod = (SDLMod)(key.mod | KMOD_CTRL);
+#if defined(MACOS) || defined(MACOSX)
+	// map Meta to Alt on MacOS
+	if (keysym.mod & KMOD_META)
+		key.mod = (SDLMod)(key.mod | KMOD_ALT);
+#else
+	if (keysym.mod & KMOD_ALT)
+		key.mod = (SDLMod)(key.mod | KMOD_ALT);
+#endif
+
+	return bindings.find(key);
+}
+
 bool KeyBinder::HandleEvent(const SDL_Event *ev)
 {
 	SDL_keysym key = ev->key.keysym;
 	KeyMap::iterator sdlkey_index;
-	
+
 	if (ev->type != SDL_KEYDOWN)
 		return false;
-	
-	key.mod = KMOD_NONE;
-	if (ev->key.keysym.mod & KMOD_SHIFT)
-		key.mod = (SDLMod)(key.mod | KMOD_SHIFT);
-	if (ev->key.keysym.mod & KMOD_CTRL)
-		key.mod = (SDLMod)(key.mod | KMOD_CTRL);
-#if defined(MACOS) || defined(MACOSX)
-	// map Meta to Alt on MacOS
-	if (ev->key.keysym.mod & KMOD_META)
-		key.mod = (SDLMod)(key.mod | KMOD_ALT);
-#else
-	if (ev->key.keysym.mod & KMOD_ALT)
-		key.mod = (SDLMod)(key.mod | KMOD_ALT);
-#endif
-	
-	sdlkey_index = bindings.find(key);
+
+	sdlkey_index = get_sdlkey_index(key);
 	if (sdlkey_index != bindings.end())
 		return DoAction((*sdlkey_index).second);
 
@@ -301,6 +321,24 @@ void KeyBinder::handle_wrong_key_pressed()
 	{
 		Game::get_game()->get_scroll()->display_string("what?\n\n");
 		Game::get_game()->get_scroll()->display_prompt();
+	}
+}
+
+bool KeyBinder::handle_always_available_keys(ActionType a)
+{
+	switch(a.action->action_key_type)
+	{
+		case TOGGLE_AUDIO_KEY: // FIXME - Shutting off the music in cutscenes will not have any music play when
+		case TOGGLE_MUSIC_KEY: //         you toggle it back on. It has to wait for the engine to play another song
+		case TOGGLE_SFX_KEY:
+		case TOGGLE_FPS_KEY: // fps is not available in intro or when viewing ending with command line cheat
+		case TOGGLE_FULLSCREEN_KEY:
+		case DECREASE_DEBUG_KEY:
+		case INCREASE_DEBUG_KEY:
+		case QUIT_KEY: // FIXME - doesn't currently work in intro or when viewing ending with command line cheat
+			a.action->func(a.params);
+			return true;
+		default: return false;
 	}
 }
 

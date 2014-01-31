@@ -38,6 +38,7 @@
 #include "ScrollWidgetGump.h"
 #include "ActorManager.h"
 #include "TimedEvent.h"
+#include "Keys.h"
 
 // ScrollWidgetGump Class
 
@@ -158,12 +159,17 @@ GUI_status ScrollWidgetGump::KeyDown(SDL_keysym key)
 {
 	ScrollEventType event = SCROLL_ESCAPE;
 
-	switch(key.sym)
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+
+	switch(keybinder->GetActionKeyType(a))
 	{
-	case SDLK_PAGEDOWN:
-	case SDLK_DOWN: event = SCROLL_DOWN; break;
-	case SDLK_PAGEUP:
-	case SDLK_UP: event = SCROLL_UP; break;
+	case MSGSCROLL_DOWN_KEY:
+	case SOUTH_KEY: event = SCROLL_DOWN; break;
+	case MSGSCROLL_UP_KEY:
+	case NORTH_KEY: event = SCROLL_UP; break;
+	case HOME_KEY: event = SCROLL_TO_BEGINNING; break;
+	case END_KEY: event = SCROLL_TO_END; break;
 	default : break;
 	}
 
@@ -224,7 +230,26 @@ GUI_status ScrollWidgetGump::scroll_movement_event(ScrollEventType event)
 			update_arrows();
 		}
 		return (GUI_YUM);
-
+	case SCROLL_TO_BEGINNING :
+		if(position > 0)
+		{
+			position = 0;
+			update_arrows();
+		}
+		return GUI_YUM;
+	case SCROLL_TO_END :
+		if(position + scroll_height < msg_buf.size() || page_break)
+		{
+			while(position + scroll_height < msg_buf.size() || page_break)
+			{
+				if(page_break)
+					process_page_break();
+				else // added else just in case noting is added to the buffer
+					position++;
+			}
+			update_arrows();
+		}
+		return GUI_YUM;
 	default :
 		//release_focus();
 		//new TimedCallback(this, NULL, 50);

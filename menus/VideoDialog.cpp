@@ -41,6 +41,7 @@
 #include "Configuration.h"
 #include "ViewManager.h"
 #include "InventoryView.h"
+#include "Keys.h"
 
 #define VD_WIDTH 280
 #define VD_HEIGHT 165
@@ -278,9 +279,15 @@ GUI_status VideoDialog::close_dialog() {
 }
 
 GUI_status VideoDialog::KeyDown(SDL_keysym key) {
-	if(key.sym == SDLK_ESCAPE)
-		return close_dialog();
-	return GUI_PASS;
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+
+	switch(keybinder->GetActionKeyType(a))
+	{
+		case CANCEL_ACTION_KEY: return close_dialog();
+		default: keybinder->handle_always_available_keys(a); break;
+	}
+	return GUI_YUM;
 }
 
 GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {

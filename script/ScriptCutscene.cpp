@@ -33,6 +33,7 @@
 #include "Font.h"
 #include "WOUFont.h"
 #include "Cursor.h"
+#include "Keys.h"
 
 #include "ScriptCutscene.h"
 
@@ -933,10 +934,26 @@ static int nscript_input_poll(lua_State *L)
 		//FIXME do something here.
 		if(event.type == SDL_KEYDOWN)
 		{
-			if((((event.key.keysym.mod & KMOD_CAPS) == KMOD_CAPS && (event.key.keysym.mod & KMOD_SHIFT) == 0) || ((event.key.keysym.mod & KMOD_CAPS) == 0 && event.key.keysym.mod & KMOD_SHIFT)) && event.key.keysym.sym >= SDLK_a && event.key.keysym.sym <= SDLK_z)
-				lua_pushinteger(L, event.key.keysym.sym-32);
-			else
-				lua_pushinteger(L, event.key.keysym.sym);
+			SDL_keysym key = event.key.keysym;
+			if((((key.mod & KMOD_CAPS) == KMOD_CAPS && (key.mod & KMOD_SHIFT) == 0) || ((key.mod & KMOD_CAPS) == 0 && key.mod & KMOD_SHIFT))
+			   && key.sym >= SDLK_a && key.sym <= SDLK_z)
+				key.sym = (SDLKey)(key.sym -32);
+			if(!isalnum(key.sym) || (key.mod &KMOD_ALT) || (key.mod &KMOD_CTRL)|| (key.mod &KMOD_META))
+			{
+				KeyBinder *keybinder = Game::get_game()->get_keybinder();
+				ActionType a = keybinder->get_ActionType(key);
+				switch(keybinder->GetActionKeyType(a))
+				{
+					case WEST_KEY: key.sym = SDLK_LEFT; break;
+					case EAST_KEY: key.sym = SDLK_RIGHT; break;
+					case SOUTH_KEY: key.sym = SDLK_DOWN; break;
+					case NORTH_KEY: key.sym = SDLK_UP; break;
+					case CANCEL_ACTION_KEY: key.sym = SDLK_ESCAPE; break;
+					case DO_ACTION_KEY: key.sym = SDLK_RETURN; break;
+					default: if(keybinder->handle_always_available_keys(a)) return 0; break;
+				}
+			}
+			lua_pushinteger(L, key.sym);
 			return 1;
 		}
 		if(event.type == SDL_MOUSEBUTTONDOWN)

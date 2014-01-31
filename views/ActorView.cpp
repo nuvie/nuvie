@@ -33,6 +33,7 @@
 #include "Font.h"
 #include "Player.h"
 #include "Event.h"
+#include "Keys.h"
 
 extern GUI_status inventoryViewButtonCallback(void *data);
 extern GUI_status partyViewButtonCallback(void *data);
@@ -295,29 +296,26 @@ GUI_status ActorView::KeyDown(SDL_keysym key)
 {
 	if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
 		return(GUI_PASS);
-	switch(key.sym)
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+
+	switch(keybinder->GetActionKeyType(a))
 	{
-		//	keypad arrow keys
-		case SDLK_KP1:
-		case SDLK_KP7:
-		case SDLK_LEFT:
-		case SDLK_KP4:
+		case SOUTH_WEST_KEY:
+		case NORTH_WEST_KEY:
+		case WEST_KEY:
 			moveCursorToButton(cursor_pos.x - 1);
 			break;
-		case SDLK_KP9:
-		case SDLK_KP3:
-		case SDLK_RIGHT:
-		case SDLK_KP6:
+		case NORTH_EAST_KEY:
+		case SOUTH_EAST_KEY:
+		case EAST_KEY:
 			moveCursorToButton(cursor_pos.x + 1);
 			break;
-		case SDLK_RETURN:
-		case SDLK_KP_ENTER:
+		case DO_ACTION_KEY:
 			select_button();
 			break;
-		case SDLK_UP: // would otherwise move invisible mapwindow cursor
-		case SDLK_DOWN:
-		case SDLK_KP8:
-		case SDLK_KP2:
+		case NORTH_KEY: // would otherwise move invisible mapwindow cursor
+		case SOUTH_KEY:
 			break;
 		default:
 //			set_show_cursor(false); // newAction() can move cursor here

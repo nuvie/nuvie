@@ -275,12 +275,7 @@ GUI_status SpellViewGump::callback(uint16 msg, GUI_CallBack *caller, void *data)
 
 void SpellViewGump::close_spellbook()
 {
-	//Simulate a global key down event.
-	SDL_Event e;
-	e.type = SDL_KEYDOWN;
-	e.key.keysym.sym = SDLK_ESCAPE;
-
-	Game::get_game()->get_event()->handleEvent(&e);
+	Game::get_game()->get_event()->close_spellbook();
 }
 
 sint16 SpellViewGump::getSpell(int x, int y)

@@ -30,6 +30,7 @@
 #include "MapWindow.h"
 #include "ViewManager.h"
 #include "MapEditorView.h"
+#include "Keys.h"
 
 #define TILES_W 5
 #define TILES_H 10
@@ -118,105 +119,108 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
 {
 	MapCoord loc;
 	uint16 *roof_data;
-	SDLMod mods = SDL_GetModState();
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+	ActionKeyType action_type = keybinder->GetActionKeyType(a);
 
 	// alt input
-	if(mods & KMOD_ALT)
+	if(key.mod & KMOD_ALT)
 	{
-		switch(key.sym)
+		SDL_keysym key_without_alt = key; // need to see what action is without alt
+		uint16 mod_without_alt = key_without_alt.mod; // this and next 2 lines are due SDLMod not wanting to do the bitwise ~ operation
+		mod_without_alt &= ~KMOD_ALT;
+		key_without_alt.mod = (SDLMod)mod_without_alt;
+		ActionType action_without_alt = keybinder->get_ActionType(key_without_alt);
+
+		if(keybinder->GetActionKeyType(action_without_alt) <= SOUTH_WEST_KEY)
+			action_type = keybinder->GetActionKeyType(action_without_alt);
+
+		switch(action_type)
 		{
-		case SDLK_UP:
-		case SDLK_KP8:
+		case NORTH_KEY:
 			if(selectedTile >= TILES_W)
 				update_selected_tile_relative(-TILES_W);
-			break;
-		case SDLK_DOWN:
-		case SDLK_KP2:
+			return GUI_YUM;
+		case SOUTH_KEY:
 			update_selected_tile_relative(TILES_W);
-			break;
-		case SDLK_LEFT:
-		case SDLK_KP4:
+			return GUI_YUM;
+		case WEST_KEY:
 			update_selected_tile_relative(-1);
-			break;
-		case SDLK_RIGHT:
-		case SDLK_KP6:
+			return GUI_YUM;
+		case EAST_KEY:
 			update_selected_tile_relative(1);
-			break;
-		case SDLK_KP1:
+			return GUI_YUM;
+		case SOUTH_WEST_KEY:
 			update_selected_tile_relative(TILES_W);
 			if(selectedTile%TILES_W) // don't wrap
 				update_selected_tile_relative(-1);
-			break;
-		case SDLK_KP3:
+			return GUI_YUM;
+		case SOUTH_EAST_KEY:
 			update_selected_tile_relative(TILES_W);
 			if((selectedTile+1)%TILES_W) // don't wrap
 				update_selected_tile_relative(1);
-			break;
-		case SDLK_KP7:
+			return GUI_YUM;
+		case NORTH_WEST_KEY:
 			if(selectedTile >= TILES_W)
 				update_selected_tile_relative(-TILES_W);
 			if(selectedTile%TILES_W) // don't wrap
 					update_selected_tile_relative(-1);
-			break;
-		case SDLK_KP9:
+			return GUI_YUM;
+		case NORTH_EAST_KEY:
 			if(selectedTile >= TILES_W)
 				update_selected_tile_relative(-TILES_W);
 			if((selectedTile+1)%TILES_W) // don't wrap
 				update_selected_tile_relative(1);
-			break;
+			return GUI_YUM;
 		default:
 			break;
 		}
-
-		return GUI_YUM;
+	}
+	else if(key.mod == KMOD_NONE)
+	{
+		if(key.sym == SDLK_g) {
+			toggleGrid();
+			return GUI_YUM;
+		} else if(key.sym == SDLK_s){
+			Game::get_game()->get_game_map()->saveRoofData();
+			return GUI_YUM;
+		}
 	}
 
-    switch(key.sym)
+    switch(action_type)
     {
-    	case SDLK_PAGEUP:
+    	case MSGSCROLL_UP_KEY:
     		update_selected_tile_relative(-(TILES_W * TILES_H));
     		break;
-    	case SDLK_PAGEDOWN:
+    	case MSGSCROLL_DOWN_KEY:
     		update_selected_tile_relative(TILES_W * TILES_H);
     		break;
-        case SDLK_KP1:
+        case SOUTH_WEST_KEY:
         	map_window->moveMapRelative(-1,1);
             break;
-        case SDLK_KP3:
+        case SOUTH_EAST_KEY:
         	map_window->moveMapRelative(1,1);
             break;
-        case SDLK_KP7:
+        case NORTH_WEST_KEY:
         	map_window->moveMapRelative(-1,-1);
             break;
-        case SDLK_KP9:
+        case NORTH_EAST_KEY:
         	map_window->moveMapRelative(1,-1);
             break;
 
-        case SDLK_UP:
-        case SDLK_KP8:
+        case NORTH_KEY:
         	map_window->moveMapRelative(0,-1);
             break;
-        case SDLK_DOWN:
-        case SDLK_KP2:
+        case SOUTH_KEY:
         	map_window->moveMapRelative(0,1);
             break;
-        case SDLK_LEFT:
-        case SDLK_KP4:
+        case WEST_KEY:
         	map_window->moveMapRelative(-1, 0);
             break;
-        case SDLK_RIGHT:
-        case SDLK_KP6:
+        case EAST_KEY:
         	map_window->moveMapRelative(1, 0);
             break;
-        case SDLK_g:
-        	toggleGrid();
-        	break;
-        case SDLK_s:
-        	Game::get_game()->get_game_map()->saveRoofData();
-        	break;
-        case SDLK_SPACE:
-        case SDLK_RETURN:
-        case SDLK_KP_ENTER:
+        case DO_ACTION_KEY:
 
         	loc = map_window->get_cursorCoord();
         	roof_data = Game::get_game()->get_game_map()->get_roof_data(loc.z);
@@ -225,24 +229,25 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
         		roof_data[loc.y * 1024 + loc.x] = selectedTile;
         	}
             break;
-        case SDLK_TAB :
+        case TOGGLE_CURSOR_KEY :
 
         	break;
-        case SDLK_HOME:
+        case HOME_KEY:
         	selectedTile = 0;
         	tile_offset = 0;
         	break;
-        case SDLK_END:
+        case END_KEY:
         	selectedTile = MAPWINDOW_ROOFTILES_IMG_W * MAPWINDOW_ROOFTILES_IMG_H -1;
         	tile_offset = (TILES_W * TILES_H) * (selectedTile / (TILES_W * TILES_H));
         	break;
-        case SDLK_ESCAPE:
+        case CANCEL_ACTION_KEY:
         	//Game::get_game()->get_view_manager()->close_gump(this);
         	close_view();
         	GUI::get_gui()->removeWidget((GUI_Widget *)this);
         	break;
         default:
-            return GUI_PASS;
+            keybinder->handle_always_available_keys(a);
+            break; // was GUI_PASS pefore action_type change
     }
     return(GUI_YUM);
 }

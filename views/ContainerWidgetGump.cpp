@@ -25,6 +25,7 @@
 
 #include "GUI.h"
 #include "ContainerWidgetGump.h"
+#include "Keys.h"
 
 
 static const Tile gump_empty_tile = {
@@ -171,26 +172,24 @@ void ContainerWidgetGump::cursor_down()
 
 GUI_status ContainerWidgetGump::KeyDown(SDL_keysym key)
 {
-	switch(key.sym)
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+
+	switch(keybinder->GetActionKeyType(a))
 	    {
-	        case SDLK_UP:
-	        case SDLK_KP8:
+	        case NORTH_KEY:
 	            cursor_up();
 	            break;
-	        case SDLK_DOWN:
-	        case SDLK_KP2:
+	        case SOUTH_KEY:
 	            cursor_down();
 	            break;
-	        case SDLK_LEFT:
-	        case SDLK_KP4:
+	        case WEST_KEY:
 	        	cursor_left();
 	            break;
-	        case SDLK_RIGHT:
-	        case SDLK_KP6:
+	        case EAST_KEY:
 	            cursor_right();
 	            break;
-	        case SDLK_RETURN:
-	        case SDLK_KP_ENTER:
+	        case DO_ACTION_KEY:
 	        	selected_obj = get_obj_at_location(cursor_x * 16,cursor_y * 16);
 	        	if(selected_obj)
 	        	{

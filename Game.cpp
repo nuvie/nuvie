@@ -74,7 +74,7 @@
 
 Game *Game::game = NULL;
 
-Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
+Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type, SoundManager *sm)
 {
  game = this;
  config = cfg;
@@ -82,6 +82,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
 
  screen = scr;
  game_type = type;
+ sound_manager = sm;
 
  script = NULL;
  background = NULL;
@@ -105,7 +106,6 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  party = NULL;
  portrait = NULL;
  view_manager = NULL;
- sound_manager = NULL;
  save_manager = NULL;
  egg_manager = NULL;
  usecode = NULL;
@@ -165,6 +165,22 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type)
  effect_manager = new EffectManager;
 
  init_cursor();
+
+ keybinder = new KeyBinder();
+ std::string keyfilename, dir;
+ config->value("config/keys",keyfilename,"(default)");
+ bool key_file_exists = fileExists(keyfilename.c_str());
+
+ if(keyfilename != "(default)" && !key_file_exists)
+	fprintf(stderr, "Couldn't find the default key setting at %s - trying defaultkeys.txt in the data directory\n", keyfilename.c_str());
+ if(keyfilename == "(default)" || !key_file_exists)
+ {
+	config->value("config/datadir", dir, "./data");
+	keyfilename = dir + "/defaultkeys.txt";
+ }
+ keybinder->LoadFromFile(keyfilename.c_str()); // will throw() if not found
+ keybinder->LoadGameSpecificKeys(); // won't load if file isn't found
+ keybinder->LoadFromPatch(); // won't load if file isn't found
 }
 
 Game::~Game()
@@ -201,12 +217,11 @@ Game::~Game()
     if(keybinder) delete keybinder;
 }
 
-bool Game::loadGame(Script *s, SoundManager *sm)
+bool Game::loadGame(Script *s)
 {
    dither = new Dither(config);
 
    script = s;
-   sound_manager = sm;
    //sound_manager->LoadSongs(NULL);
    //sound_manager->LoadObjectSamples(NULL);
 
@@ -329,22 +344,6 @@ bool Game::loadGame(Script *s, SoundManager *sm)
    {
      magic = new Magic();
    }
-
-   keybinder = new KeyBinder();
-   std::string keyfilename, dir;
-   config->value("config/keys",keyfilename,"(default)");
-   bool key_file_exists = fileExists(keyfilename.c_str());
-
-   if(keyfilename != "(default)" && !key_file_exists)
-       fprintf(stderr, "Couldn't find the default key setting at %s - trying defaultkeys.txt in the data directory\n", keyfilename.c_str());
-   if (keyfilename == "(default)" || !key_file_exists)
-   {
-       config->value("config/datadir", dir, "./data");
-       keyfilename = dir + "/defaultkeys.txt";
-   }
-   keybinder->LoadFromFile(keyfilename.c_str()); // will throw() if not found
-   keybinder->LoadGameSpecificKeys(); // won't load if file isn't found
-   keybinder->LoadFromPatch(); // won't load if file isn't found
 
    event = new Event(config);
    event->init(obj_manager, map_window, scroll, player, magic, clock, view_manager, usecode, gui, keybinder);

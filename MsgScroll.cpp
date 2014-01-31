@@ -36,6 +36,7 @@
 #include "Event.h"
 #include "Game.h"
 #include "Effect.h"
+#include "Keys.h"
 
 // MsgText Class
 MsgText::MsgText()
@@ -729,29 +730,31 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
 
     if(page_break == false && input_mode == false)
         return(GUI_PASS);
-    if(using_target_cursor)
+    if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
+        ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
+    else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
+
+    bool is_printable = isprint(ascii);
+    KeyBinder *keybinder = Game::get_game()->get_keybinder();
+    ActionType a = keybinder->get_ActionType(key);
+    ActionKeyType action_key_type = keybinder->GetActionKeyType(a);
+
+    if(using_target_cursor && !is_printable && action_key_type <= DO_ACTION_KEY) // directional keys, toggle_cursor, and do_action
+        return GUI_PASS;
+
+    if(!input_mode || !is_printable)
     {
-        switch(key.sym) // FIXME  hard coded
+        switch(action_key_type)
         {
-            case SDLK_KP1:
-            case SDLK_KP2:
-            case SDLK_KP3:
-            case SDLK_KP4:
-            case SDLK_KP6:
-            case SDLK_KP7:
-            case SDLK_KP8:
-            case SDLK_KP9:
-                           if(key.unicode) // num lock is on
-                               break; // SDL doesn't get the proper num lock state in Windows
-            case SDLK_UP :
-            case SDLK_DOWN:
-            case SDLK_LEFT:
-            case SDLK_RIGHT:
-            case SDLK_TAB:
-            case SDLK_KP_ENTER:
-            case SDLK_RETURN:
-                return GUI_PASS;
-            default : break;
+            case WEST_KEY: key.sym = SDLK_LEFT; break;
+            case EAST_KEY: key.sym = SDLK_RIGHT; break;
+            case SOUTH_KEY: key.sym = SDLK_DOWN; break;
+            case NORTH_KEY: key.sym = SDLK_UP; break;
+            case CANCEL_ACTION_KEY: key.sym = SDLK_ESCAPE; break;
+            case DO_ACTION_KEY: key.sym = SDLK_RETURN; break;
+            case MSGSCROLL_UP_KEY: key.sym = SDLK_PAGEUP; break;
+            case MSGSCROLL_DOWN_KEY: key.sym = SDLK_PAGEDOWN; break;
+            default: if(keybinder->handle_always_available_keys(a)) return GUI_YUM; break;
         }
     }
     switch(key.sym)
@@ -763,9 +766,13 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
       case SDLK_DOWN: if(input_mode) break; //will select printable ascii
                       move_scroll_down();
                       return (GUI_YUM);
-      case SDLK_PAGEUP: page_up(); // handled in event too but keybindings can change
+      case SDLK_PAGEUP: if(Game::get_game()->is_new_style())
+                            move_scroll_up();
+                        else page_up();
                         return (GUI_YUM);
-      case SDLK_PAGEDOWN: page_down(); // handled in event too but keybindings can change
+      case SDLK_PAGEDOWN: if(Game::get_game()->is_new_style())
+                              move_scroll_down();
+                          else page_down();
                           return (GUI_YUM);
       default : break;
      }
@@ -817,10 +824,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                             }
                             break;
         default: // alphanumeric characters
-                 if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-                   ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
-                 else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
-                 if(input_mode && isprint(ascii))
+                 if(input_mode && is_printable)
                   {
                    if(permit_input == NULL)
                    {

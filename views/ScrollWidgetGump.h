@@ -42,7 +42,9 @@ class CallBack;
 typedef enum {
 	SCROLL_UP,
 	SCROLL_DOWN,
-	SCROLL_ESCAPE
+	SCROLL_ESCAPE,
+	SCROLL_TO_BEGINNING,
+	SCROLL_TO_END
 } ScrollEventType;
 
 #define SCROLLWIDGETGUMP_W 200

@@ -245,7 +245,7 @@ void ActionNextPartyMember(int const *params)
 			if(player->get_party()->get_party_size() >= party_num+2)
 				actor_view->set_party_member(party_num+1);
 		}
-		else
+		else if(!inventory_view->is_picking_pocket())
 		{
 			uint8 party_num = inventory_view->get_party_member_num();
 			if(player->get_party()->get_party_size() >= party_num+2
@@ -267,10 +267,42 @@ void ActionPreviousPartyMember(int const *params)
 			if(party_num >= 1)
 				actor_view->set_party_member(party_num-1);
 		}
-		else
+		else if(!inventory_view->is_picking_pocket())
 		{
 			uint8 party_num = inventory_view->get_party_member_num();
 			if(party_num >= 1 && inventory_view->set_party_member(party_num-1))
+				view_manager->set_inventory_mode();
+		}
+	}
+}
+
+void ActionHome(int const *params)
+{
+	if(event->using_control_cheat())
+		return;
+	if(!game->is_new_style())
+	{
+		if(view_manager->get_current_view() == actor_view)
+			actor_view->set_party_member(0);
+		else if(!inventory_view->is_picking_pocket() && inventory_view->set_party_member(0))
+			view_manager->set_inventory_mode();
+	}
+}
+
+void ActionEnd(int const *params)
+{
+	if(event->using_control_cheat())
+		return;
+	if(!game->is_new_style())
+	{
+		uint8 mem_num = player->get_party()->get_party_size() - 1;
+		if(view_manager->get_current_view() == actor_view)
+			actor_view->set_party_member(mem_num);
+		else if(!inventory_view->is_picking_pocket())
+		{
+			if(view_manager->get_current_view() != inventory_view)
+				view_manager->set_inventory_mode();
+			if(inventory_view->set_party_member(mem_num))
 				view_manager->set_inventory_mode();
 		}
 	}
@@ -282,7 +314,7 @@ void ActionToggleView(int const *params)
 	{
 		if(view_manager->get_current_view() == actor_view)
 			view_manager->set_inventory_mode();
-		else if(view_manager->get_current_view() == inventory_view)
+		else if(view_manager->get_current_view() == inventory_view && !inventory_view->is_picking_pocket())
 			view_manager->set_actor_mode();
 	}
 }
@@ -330,7 +362,10 @@ void ActionQuickLoad(int const *params)
 
 void ActionQuitDialog(int const *params)
 {
-	event->quitDialog();
+	if(!event) // intro or used view ending command line
+		{} // FIXME need way to quit
+	else
+		event->quitDialog();
 }
 
 void ActionQuitNODialog(int const *params)
@@ -374,7 +409,8 @@ void ActionToggleCombatStrategy(int const *params)
 
 void ActionToggleFps(int const *params)
 {
-	event->toggleFpsDisplay();
+	if(event)
+		event->toggleFpsDisplay();
 }
 
 void ActionToggleAudio(int const *params)

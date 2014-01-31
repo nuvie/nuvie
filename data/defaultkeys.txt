@@ -117,6 +117,8 @@ shift-=	next_party_member
 KP+	next_party_member
 -	previous_party_member
 KP-	previous_party_member
+home	home_key
+end	end_key
 KP*	toggle_view	# Toggle between inventory and actor view
 shift-8	toggle_view	# Toggle between inventory and actor view
 

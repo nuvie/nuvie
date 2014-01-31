@@ -278,14 +278,14 @@ void MsgScrollNewUI::Display(bool full_redraw)
 GUI_status MsgScrollNewUI::KeyDown(SDL_keysym key)
 {
 	ScrollEventType event = SCROLL_ESCAPE;
-
+/*
 	switch(key.sym)
 	{
 	case SDLK_PAGEDOWN: if(input_mode) event = SCROLL_DOWN; break;
 	case SDLK_PAGEUP: if(input_mode) event = SCROLL_UP; break;
 	default : break;
 	}
-
+*/
 	if(scroll_movement_event(event) == GUI_YUM)
 		return GUI_YUM;
 

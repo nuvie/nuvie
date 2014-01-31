@@ -35,6 +35,7 @@
 #include "InputDialog.h"
 #include "CheatsDialog.h"
 #include "Event.h"
+#include "Keys.h"
 
 #define GMD_WIDTH 150
 #define GMD_HEIGHT 109
@@ -84,8 +85,15 @@ GUI_status GameMenuDialog::close_dialog() {
 }
 
 GUI_status GameMenuDialog::KeyDown(SDL_keysym key) {
-	if(key.sym == SDLK_ESCAPE)
-		return close_dialog();
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+	ActionKeyType action_key_type = keybinder->GetActionKeyType(a);
+
+	switch(keybinder->GetActionKeyType(a))
+	{
+		case CANCEL_ACTION_KEY: return close_dialog();
+		default: keybinder->handle_always_available_keys(a); break;
+	}
 	return GUI_YUM;
 }
 

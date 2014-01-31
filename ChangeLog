@@ -1,3 +1,19 @@
+2014-01-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1857
+	* Get rid of most hardcoded key.syms in favor of custom keybindings. When
+	  you need to type alphanumeric characters all keybindings that are
+	  alphanumeric will be ignored and so will (usually) backspace. Have some
+	  keybindings some work in cutscenes and intro menu. (walk_east, walk_west,
+	  walk_north, walk_south, cancel_action, and do_action). Keybindings that
+	  pretty much always work are toggle_audio, toggle_music_key, toggle_fps,
+	  toggle_sfx_key, toggle_fullscreen, decrease_debug, increase_debug, quit,
+	  and quit_no_dialog. Those bindings are also available in cutscenes and
+	  intro menu. The toggle_fps and quit keys are currently not working before
+	  the game map loads so they don't work in the intro and intro menu. They
+	  also don't work during the ending if viewed using the cheat.
+	* Home and end key select the first and last party member in views and gumps
+	* Add previous and next party member keybinding support to gumps and stop
+	  them from working when in pickpocket mode.
+
 2014-01-30  Malignant Manor <malignantmanor@users.sourceforge.net> r1856
 	* Stop allowing input escape when the guard is trying to arrest you and have
 	  it close the portrait properly in new style.

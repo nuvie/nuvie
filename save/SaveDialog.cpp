@@ -36,6 +36,7 @@
 #include "SaveSlot.h"
 #include "SaveDialog.h"
 #include "NuvieFileList.h"
+#include "Keys.h"
 
 #define NUVIE_SAVE_SCROLLER_ROWS   3
 #define NUVIE_SAVE_SCROLLER_HEIGHT NUVIE_SAVE_SCROLLER_ROWS * NUVIE_SAVESLOT_HEIGHT
@@ -165,37 +166,23 @@ GUI_status SaveDialog::MouseDown(int x, int y, int button)
 
 GUI_status SaveDialog::KeyDown(SDL_keysym key)
 {
+ KeyBinder *keybinder = Game::get_game()->get_keybinder();
+ ActionType a = keybinder->get_ActionType(key);
 
- switch(key.sym)
+ switch(keybinder->GetActionKeyType(a))
  {
-	case SDLK_ESCAPE :
-		return close_dialog();
-	case SDLK_UP :
-	case SDLK_KP8 :
-		scroller->move_up();
-		break;
-	case SDLK_DOWN :
-	case SDLK_KP2 :
-		scroller->move_down();
-		break;
-	case SDLK_PAGEUP:
-	case SDLK_LEFT:
-	case SDLK_KP4:
-		scroller->page_up();
-		break;
-	case SDLK_PAGEDOWN :
-	case SDLK_RIGHT :
-	case SDLK_KP6 :
-		scroller->page_down();
-		break;
-	case SDLK_HOME :
-		scroller->page_up(true);
-		break;
-	case SDLK_END :
-		scroller->page_down(true);
-		break;
-	default:
-		break;
+	case EAST_KEY:
+	case MSGSCROLL_DOWN_KEY: scroller->page_down(); break;
+
+	case WEST_KEY:
+	case MSGSCROLL_UP_KEY: scroller->page_up(); break;
+
+	case NORTH_KEY: scroller->move_up(); break;
+	case SOUTH_KEY: scroller->move_down(); break;
+	case HOME_KEY: scroller->page_up(true); break;
+	case END_KEY:scroller->page_down(true); break;
+	case CANCEL_ACTION_KEY: return close_dialog();
+	default: keybinder->handle_always_available_keys(a); break;
  }
  return GUI_YUM;
 }

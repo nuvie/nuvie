@@ -115,6 +115,7 @@ class Magic : public CallBack {
     bool is_waiting_for_obj() { if(magic_script && state == MAGIC_STATE_ACQUIRE_OBJ) return true; else return false; }
     bool is_waiting_to_talk() { if(state == MAGIC_STATE_TALK_TO_ACTOR) return true; else return false; }
     bool is_waiting_for_spell() { if(magic_script && state == MAGIC_STATE_ACQUIRE_SPELL) return true; else return false; }
+    bool is_selecting_spell() { if(magic_script && state == MAGIC_STATE_SELECT_SPELL) return true; else return false; }
 
     bool is_waiting_to_resume() { if(magic_script) return true; else return false; }
 

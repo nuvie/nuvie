@@ -43,6 +43,7 @@
 #include "Script.h"
 #include "U6objects.h"
 #include "Magic.h"
+#include "Keys.h"
 
 static const char circle_num_tbl[][8] = {"1ST", "2ND", "3RD", "4TH", "5TH", "6TH", "7TH", "8TH"};
 static const int obj_n_reagent[8]={OBJ_U6_MANDRAKE_ROOT, OBJ_U6_NIGHTSHADE, OBJ_U6_BLACK_PEARL, OBJ_U6_BLOOD_MOSS, OBJ_U6_SPIDER_SILK, OBJ_U6_GARLIC, OBJ_U6_GINSENG, OBJ_U6_SULFUROUS_ASH};
@@ -398,24 +399,30 @@ void SpellView::event_mode_select_spell()
  */
 GUI_status SpellView::KeyDown(SDL_keysym key)
 {
-    switch(key.sym)
+    KeyBinder *keybinder = Game::get_game()->get_keybinder();
+    ActionType a = keybinder->get_ActionType(key);
+
+    switch(keybinder->GetActionKeyType(a))
     {
-        case SDLK_UP:
-        case SDLK_KP8:
+        case NORTH_KEY:
             return move_up();
-        case SDLK_DOWN:
-        case SDLK_KP2:
+        case SOUTH_KEY:
             return move_down();
-        case SDLK_LEFT:
-        case SDLK_KP4:
+        case WEST_KEY:
+        case PREVIOUS_PARTY_MEMBER_KEY:
         	move_left();
             break;
-        case SDLK_RIGHT:
-        case SDLK_KP6:
+        case EAST_KEY:
+        case NEXT_PARTY_MEMBER_KEY:
             move_right();
             break;
-        case SDLK_RETURN:
-        case SDLK_KP_ENTER:
+        case HOME_KEY:
+// TODO - add going to first viable page
+            break;
+        case END_KEY:
+// TODO - add going to last viable page
+            break;
+        case DO_ACTION_KEY:
         	if(Game::get_game()->get_event()->is_looking_at_spellbook())
         	{
         		show_spell_description();
@@ -428,11 +435,9 @@ GUI_status SpellView::KeyDown(SDL_keysym key)
         	}
 
         	return GUI_PASS;
-        case SDLK_ESCAPE:
+        case CANCEL_ACTION_KEY:
             return cancel_spell();
-        case SDLK_SPACE:
-        	return GUI_PASS;
-        case SDLK_TAB :
+        case TOGGLE_CURSOR_KEY :
 
         	break;
 

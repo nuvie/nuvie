@@ -212,6 +212,35 @@ bool Event::update()
 
 bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 {
+	// when casting the magic class will handle keyboard events
+	if(mode == KEYINPUT_MODE)
+	{
+		SDLKey sym = event->key.keysym.sym;
+		ActionKeyType action_key_type = OTHER_KEY;
+
+		if(!((magic->is_selecting_spell() && ((sym >= SDLK_a && sym <= SDLK_z) || sym == SDLK_BACKSPACE)) ||
+		  ((magic->is_waiting_for_location() || last_mode == USE_MODE) && sym >= SDLK_1 && sym <= SDLK_9)))
+		{
+			KeyBinder *keybinder = game->get_keybinder();
+			ActionType a = keybinder->get_ActionType(event->key.keysym);
+			action_key_type = keybinder->GetActionKeyType(a);
+			switch(action_key_type)
+			{
+				default: if(keybinder->handle_always_available_keys(a)) return true; break;
+			}
+		}
+		input.type = EVENTINPUT_KEY;
+		input.key = sym;
+		input.action_key_type = action_key_type;
+		// callback should return a true value if it handled the event
+		if(action_key_type != CANCEL_ACTION_KEY && message(CB_DATA_READY, (char*)&input))
+			return true;
+		callback_target = 0;
+		endAction(); // no more keys for you! (end KEYINPUT_MODE)
+		keybinder->HandleEvent(event);
+		return	true;
+	}
+
 	SDLMod mods = SDL_GetModState();
 	// alt-code input
 	if(mods & KMOD_ALT)
@@ -263,18 +292,6 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		return true;
 	}
 
-	// when casting the magic class will handle keyboard events
-	if(mode == KEYINPUT_MODE)
-	{
-		input.type = EVENTINPUT_KEY;
-		input.key = event->key.keysym.sym;
-        // callback should return a true value if it handled the event
-		if(input.key != SDLK_ESCAPE && message(CB_DATA_READY, (char*)&input))
-    		return true;
-        callback_target = 0;
-        endAction(); // no more keys for you! (end KEYINPUT_MODE)
-	}
-
 	keybinder->HandleEvent(event);
 
 	return	true;
@@ -283,11 +300,22 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 void Event::target_spell()
 {
 	input.type = EVENTINPUT_KEY;
-	input.key = SDLK_RETURN;
+	input.key = SDLK_RETURN; // only needed to overwrite old value so it isn't a number or backspace
+	input.action_key_type = DO_ACTION_KEY;
 	message(CB_DATA_READY, (char*)&input);
 	callback_target = 0;
 	endAction();
 	doAction();
+}
+
+void Event::close_spellbook()
+{
+	if(callback_target)
+	{
+		callback_target = 0;
+		endAction();
+	}
+	cancelAction();
 }
 
 bool Event::handleEvent(const SDL_Event *event)

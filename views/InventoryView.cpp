@@ -37,6 +37,7 @@
 #include "MapWindow.h"
 #include "UseCode.h"
 #include "ViewManager.h"
+#include "Keys.h"
 
 static const char combat_mode_tbl[][8] = {"COMMAND", " FRONT", "  REAR", " FLANK", "BERSERK", "RETREAT", "ASSAULT"};
 static const char combat_mode_tbl_se[][6] = {"CMND", "RANGE", "FLEE", "CLOSE"};
@@ -332,43 +333,40 @@ GUI_status InventoryView::KeyDown(SDL_keysym key)
 {
     if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
         return(GUI_PASS);
-    switch(key.sym)
+    KeyBinder *keybinder = Game::get_game()->get_keybinder();
+    ActionType a = keybinder->get_ActionType(key);
+
+    switch(keybinder->GetActionKeyType(a))
     {
 		//	keypad arrow keys (moveCursorRelative doesn't accept diagonals)
-        case SDLK_KP1:
+        case SOUTH_WEST_KEY:
             moveCursorRelative(0, 1); moveCursorRelative(-1, 0);
             break;
-        case SDLK_KP3:
+        case SOUTH_EAST_KEY:
             moveCursorRelative(0, 1); moveCursorRelative(1, 0);
             break;
-        case SDLK_KP7:
+        case NORTH_WEST_KEY:
             moveCursorRelative(0, -1); moveCursorRelative(-1, 0);
             break;
-        case SDLK_KP9:
+        case NORTH_EAST_KEY:
             moveCursorRelative(0, -1); moveCursorRelative(1, 0);
             break;
-
-        case SDLK_UP:
-        case SDLK_KP8:
+        case NORTH_KEY:
             moveCursorRelative(0, -1);
             break;
-        case SDLK_DOWN:
-        case SDLK_KP2:
+        case SOUTH_KEY:
             moveCursorRelative(0, 1);
             break;
-        case SDLK_LEFT:
-        case SDLK_KP4:
+        case WEST_KEY:
             moveCursorRelative(-1, 0);
             break;
-        case SDLK_RIGHT:
-        case SDLK_KP6:
+        case EAST_KEY:
             moveCursorRelative(1, 0);
             break;
-        case SDLK_RETURN:
-        case SDLK_KP_ENTER:
+        case DO_ACTION_KEY:
             select_objAtCursor();
             break;
-        case SDLK_TAB :
+        case TOGGLE_CURSOR_KEY :
         	if (is_party_member) // when in pickpocket mode we don't want to allow tabing to map window.
         	{
         		set_show_cursor(false);

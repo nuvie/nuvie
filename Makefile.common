@@ -91,6 +91,7 @@ nuvie_SOURCES = \
 	keybinding/KeyActions.h \
 	keybinding/Keys.cpp \
 	keybinding/Keys.h \
+	keybinding/KeysEnum.h \
 	keybinding/Utils.cpp \
 	keybinding/Utils.h \
 \

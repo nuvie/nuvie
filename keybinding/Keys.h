@@ -28,6 +28,7 @@
 #endif
 
 #include "SDL_events.h"
+#include "KeysEnum.h"
 
 #include <vector>
 #include <map>
@@ -82,13 +83,17 @@ public:
 	void Flush() {
 		bindings.clear(); keyhelp.clear(); cheathelp.clear();
 	}
+	ActionType get_ActionType(SDL_keysym key);
+	ActionKeyType GetActionKeyType(ActionType a);
 	bool DoAction(ActionType const& a) const;
+	KeyMap::iterator get_sdlkey_index(SDL_keysym key);
 	bool HandleEvent(const SDL_Event *event);
 	
 	void LoadFromFile(const char* filename);
 	void LoadGameSpecificKeys();
 	void LoadFromPatch();
 	void handle_wrong_key_pressed();
+	bool handle_always_available_keys(ActionType a);
 
 	void ShowKeys() const;
  private:

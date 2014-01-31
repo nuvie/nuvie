@@ -35,6 +35,7 @@
 #include "ContainerViewGump.h"
 #include "DollWidget.h"
 #include "DollViewGump.h"
+#include "Keys.h"
 
 
 DollViewGump::DollViewGump(Configuration *cfg) : DraggableView(cfg),
@@ -257,6 +258,8 @@ void DollViewGump::displayCombatMode()
 
 void DollViewGump::left_arrow()
 {
+	if(party->get_member_num(actor) < 0)
+		return;
 	uint8 party_mem_num = party->get_member_num(actor);
 	if(party_mem_num > 0)
 		party_mem_num--;
@@ -268,6 +271,8 @@ void DollViewGump::left_arrow()
 
 void DollViewGump::right_arrow()
 {
+	if(party->get_member_num(actor) < 0)
+		return;
 	set_actor(party->get_actor((party->get_member_num(actor) + 1) % party->get_party_size()));
 }
 
@@ -500,39 +505,44 @@ GUI_status DollViewGump::moveCursorRelative(uint8 direction)
 
 GUI_status DollViewGump::KeyDown(SDL_keysym key)
 {
-	bool numlock = (key.mod & KMOD_NUM); // SDL doesn't get the proper num lock state in Windows
-	switch(key.sym) {
-		case SDLK_KP1: if(numlock) break;
+// I was restricting numpad keys when in numlock but there shouldn't be any needed number input
+//	bool numlock = (key.mod & KMOD_NUM); // SDL doesn't get the proper num lock state in Windows
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+
+	switch(keybinder->GetActionKeyType(a)) {
+		case SOUTH_WEST_KEY:
 			return moveCursorRelative( NUVIE_DIR_SW);
-		case SDLK_KP3: if(numlock) break;
+		case SOUTH_EAST_KEY:
 			return moveCursorRelative( NUVIE_DIR_SE);
-		case SDLK_KP7: if(numlock) break;
+		case NORTH_WEST_KEY:
 			return moveCursorRelative( NUVIE_DIR_NW);
-		case SDLK_KP9: if(numlock) break;
+		case NORTH_EAST_KEY:
 			return moveCursorRelative( NUVIE_DIR_NE);
-		case SDLK_KP8: if(numlock) break;
-		case SDLK_UP:
+		case NORTH_KEY:
 			return moveCursorRelative( NUVIE_DIR_N);
-		case SDLK_KP2: if(numlock) break;
-		case SDLK_DOWN:
+		case SOUTH_KEY:
 			return moveCursorRelative( NUVIE_DIR_S);
-		case SDLK_KP4: if(numlock) break;
-		case SDLK_LEFT:
+		case WEST_KEY:
 			return moveCursorRelative( NUVIE_DIR_W);
-		case SDLK_KP6: if(numlock) break;
-		case SDLK_RIGHT:
+		case EAST_KEY:
 			return moveCursorRelative( NUVIE_DIR_E);
-		case SDLK_RETURN:
-		case SDLK_KP_ENTER: {
+		case NEXT_PARTY_MEMBER_KEY:
+			right_arrow(); return GUI_YUM;
+		case PREVIOUS_PARTY_MEMBER_KEY:
+			left_arrow(); return GUI_YUM;
+		case HOME_KEY:
+			set_actor(party->get_actor(0)); return GUI_YUM;
+		case END_KEY:
+			set_actor(party->get_actor(party->get_party_size() - 1)); return GUI_YUM;
+		case DO_ACTION_KEY: {
 			Event *event = Game::get_game()->get_event();
 			bool in_party = party->get_member_num(actor) >= 0;
 			if(event->get_mode() == ATTACK_MODE || cursor_pos == CURSOR_CHECK) {
 				Game::get_game()->get_view_manager()->close_gump(this);
 			} else if(cursor_pos == CURSOR_LEFT) {
-				if(in_party)
 					left_arrow();
 			} else if(cursor_pos == CURSOR_RIGHT) {
-				if(in_party)
 					right_arrow();
 			} else if(cursor_pos == CURSOR_COMBAT) {
 				activate_combat_button();
@@ -572,7 +582,7 @@ void DollViewGump::activate_combat_button()
 
 GUI_status DollViewGump::MouseDown(int x, int y, int button)
 {
- if(party->get_member_num(actor) >= 0)
+// if(party->get_member_num(actor) >= 0)
  {
 	 if(button == SDL_BUTTON_WHEELDOWN)
 	 {

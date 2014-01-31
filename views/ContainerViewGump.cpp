@@ -36,6 +36,7 @@
 #include "FontManager.h"
 #include "ContainerWidgetGump.h"
 #include "ContainerViewGump.h"
+#include "Keys.h"
 
 #define CONTAINER_WIDGET_OFFSET 29
 
@@ -361,6 +362,28 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
 
 GUI_status ContainerViewGump::KeyDown(SDL_keysym key)
 {
+	if(left_arrow_button && left_arrow_button->Status() == WIDGET_VISIBLE) // okay to change member number
+	{
+		KeyBinder *keybinder = Game::get_game()->get_keybinder();
+		ActionType a = keybinder->get_ActionType(key);
+
+		switch(keybinder->GetActionKeyType(a))
+		{
+			case NEXT_PARTY_MEMBER_KEY:
+				right_arrow(); return GUI_YUM;
+			case PREVIOUS_PARTY_MEMBER_KEY:
+				left_arrow(); return GUI_YUM;
+			case HOME_KEY:
+				set_actor(party->get_actor(0));
+				force_full_redraw_if_needed();
+				return GUI_YUM;
+			case END_KEY:
+				set_actor(party->get_actor(party->get_party_size() - 1));
+				force_full_redraw_if_needed();
+				return GUI_YUM;
+			default: break;
+		}
+	}
 	/* moved into container widget
 	switch(key.sym)
 	    {

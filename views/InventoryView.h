@@ -83,6 +83,7 @@ class InventoryView : public View {
  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
  GUI_status KeyDown(SDL_keysym key);
  void simulate_CB_callback();
+ bool is_picking_pocket() { return picking_pocket; }
 
  protected:
 

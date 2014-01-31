@@ -25,6 +25,7 @@
 
 #include "GUI_TextInput.h"
 #include "GUI_font.h"
+#include "Keys.h"
 
 GUI_TextInput:: GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str,
                               GUI_Font *gui_font, uint16 width, uint16 height, GUI_CallBack *callback)
@@ -88,6 +89,26 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
 
  if(!focused)
    return GUI_PASS;
+ if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
+   ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
+
+ if(!isprint(ascii) && key.sym != SDLK_BACKSPACE)
+ {
+    KeyBinder *keybinder = Game::get_game()->get_keybinder();
+    ActionType a = keybinder->get_ActionType(key);
+    switch(keybinder->GetActionKeyType(a))
+    {
+      case NORTH_KEY: key.sym = SDLK_UP; break;
+      case SOUTH_KEY: key.sym = SDLK_DOWN; break;
+      case WEST_KEY: key.sym = SDLK_LEFT; break;
+      case EAST_KEY: key.sym = SDLK_RIGHT; break;
+      case DO_ACTION_KEY: key.sym = SDLK_RETURN; break;
+      case CANCEL_ACTION_KEY: key.sym = SDLK_ESCAPE; break;
+      case HOME_KEY: key.sym = SDLK_HOME;
+      case END_KEY: key.sym = SDLK_END;
+      default : if(keybinder->handle_always_available_keys(a)) return GUI_YUM; break;
+    }
+ }
 
  switch(key.sym)
    {
@@ -176,8 +197,7 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
                          text[pos]--;
                      break;
 
-    default : if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-                   ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
+    default :
               add_char(ascii); break;
    }
 

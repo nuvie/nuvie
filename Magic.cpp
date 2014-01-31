@@ -516,7 +516,7 @@ uint16 Magic::callback(uint16 msg, CallBack *caller, void *data)
             }
         } // MAGIC_STATE_SELECT_SPELL
         if(state == MAGIC_STATE_ACQUIRE_TARGET) {
-            if(sym>=SDLK_1 && sym<=SDLK_8)
+            if(sym>=SDLK_1 && sym<=SDLK_9)
             {
                 cast();//event->player->get_party()->get_actor(sym - 48-1));
                 event->cancel_key_redirect();
@@ -528,7 +528,7 @@ uint16 Magic::callback(uint16 msg, CallBack *caller, void *data)
         // we'll lose input focus, except for these three which end
         // Casting. (besides, not handling all keys means they go back
         // to global which could start another action)
-        if(sym != SDLK_RETURN && sym != SDLK_ESCAPE && sym != SDLK_SPACE)
+        if(event->input.action_key_type != DO_ACTION_KEY && event->input.action_key_type != CANCEL_ACTION_KEY)
             return 1;
 
         return 0;

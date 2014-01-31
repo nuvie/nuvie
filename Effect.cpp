@@ -481,8 +481,10 @@ uint16 HitEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
 
 TextEffect::TextEffect(std::string text) // default somewhat centered on player for cheat messages
 {
-	MapCoord loc = game->get_player()->get_actor()->get_location();
 	MapWindow *map_window = game->get_map_window();
+	if(!map_window || map_window->Status() != WIDGET_VISIBLE) // scripted sequence like intro and intro menu
+		return;
+	MapCoord loc = game->get_player()->get_actor()->get_location();
 	loc.x = (loc.x- map_window->get_cur_x() -2)*16;
 	loc.y = (loc.y- map_window->get_cur_y() -1)*16;
 

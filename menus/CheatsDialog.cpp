@@ -37,6 +37,7 @@
 #include "ObjManager.h"
 #include "MapWindow.h"
 #include "Configuration.h"
+#include "Keys.h"
 
 #define CD_WIDTH 212
 #define CD_HEIGHT 101
@@ -131,9 +132,15 @@ GUI_status CheatsDialog::close_dialog() {
 }
 
 GUI_status CheatsDialog::KeyDown(SDL_keysym key) {
-	if(key.sym == SDLK_ESCAPE)
-		return close_dialog();
-	return GUI_PASS;
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+
+	switch(keybinder->GetActionKeyType(a))
+	{
+		case CANCEL_ACTION_KEY: return close_dialog();
+		default: keybinder->handle_always_available_keys(a); break;
+	}
+	return GUI_YUM;
 }
 
 GUI_status CheatsDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {

@@ -141,10 +141,10 @@ class Game
 
  public:
 
- Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type);
+ Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type, SoundManager *sm);
  ~Game();
 
- bool loadGame(Script *s, SoundManager *sm);
+ bool loadGame(Script *s);
  void init_cursor();
  void init_game_style();
  void play();

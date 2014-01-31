@@ -38,6 +38,7 @@
 #include "ConverseGump.h"
 #include "Configuration.h"
 #include "Background.h"
+#include "Keys.h"
 
 #define GD_WIDTH 274
 #define GD_HEIGHT 166
@@ -150,8 +151,14 @@ GUI_status GameplayDialog::close_dialog() {
 }
 
 GUI_status GameplayDialog::KeyDown(SDL_keysym key) {
-	if(key.sym == SDLK_ESCAPE)
-		return close_dialog();
+	KeyBinder *keybinder = Game::get_game()->get_keybinder();
+	ActionType a = keybinder->get_ActionType(key);
+
+	switch(keybinder->GetActionKeyType(a))
+	{
+		case CANCEL_ACTION_KEY: return close_dialog();
+		default: keybinder->handle_always_available_keys(a); break;
+	}
 	return GUI_YUM;
 }
 

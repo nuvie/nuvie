@@ -36,6 +36,7 @@
 #include "Player.h"
 #include "ConverseGump.h"
 #include "ActorManager.h"
+#include "Keys.h"
 
 #define CURSOR_COLOR 248
 
@@ -652,6 +653,26 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
        return(GUI_YUM);
       }
 
+	if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
+		ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
+	else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
+
+	if(!input_mode || !isprint(ascii))
+	{
+		KeyBinder *keybinder = Game::get_game()->get_keybinder();
+		ActionType a = keybinder->get_ActionType(key);
+		switch(keybinder->GetActionKeyType(a))
+		{
+			case WEST_KEY: key.sym = SDLK_LEFT; break;
+			case EAST_KEY: key.sym = SDLK_RIGHT; break;
+			case SOUTH_KEY: key.sym = SDLK_DOWN; break;
+			case NORTH_KEY: key.sym = SDLK_UP; break;
+			case CANCEL_ACTION_KEY: key.sym = SDLK_ESCAPE; break;
+			case DO_ACTION_KEY: key.sym = SDLK_RETURN; break;
+			default: if(keybinder->handle_always_available_keys(a)) return GUI_YUM; break;
+		}
+	}
+
 	switch(key.sym)
 	    {
 			case SDLK_LEFT:
@@ -721,9 +742,6 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	                              input_buf_remove_char();
 	                            break;
 	        default: // alphanumeric characters
-	                 if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-	                   ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
-	                 else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
 	                 if(input_mode && isprint(ascii))
 	                  {
 	                   cursor_move_to_input();

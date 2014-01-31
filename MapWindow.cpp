@@ -54,6 +54,7 @@
 #include "ActorView.h"
 #include "InventoryView.h"
 #include "Background.h"
+#include "Keys.h"
 
 #define USE_BUTTON 1 /* FIXME: put this in a common location */
 #define WALK_BUTTON 3
@@ -2328,36 +2329,24 @@ GUI_status MapWindow::KeyDown(SDL_keysym key)
 {
 	if(is_wizard_eye_mode())
 	{
-		if(key.sym == SDLK_ESCAPE)
+		KeyBinder *keybinder = Game::get_game()->get_keybinder();
+		ActionType a = keybinder->get_ActionType(key);
+		switch(keybinder->GetActionKeyType(a))
 		{
-			wizard_eye_stop();
+			case WEST_KEY: moveMapRelative(-1,0); break;
+			case EAST_KEY: moveMapRelative(1,0); break;
+			case SOUTH_KEY: moveMapRelative(0,1); break;
+			case NORTH_KEY: moveMapRelative(0,-1); break;
+			case NORTH_EAST_KEY: moveMapRelative(1,-1); break;
+			case SOUTH_EAST_KEY: moveMapRelative(1,1); break;
+			case NORTH_WEST_KEY: moveMapRelative(-1,-1); break;
+			case SOUTH_WEST_KEY: moveMapRelative(-1,1); break;
+			case CANCEL_ACTION_KEY: wizard_eye_stop(); break;
+			default: if(keybinder->handle_always_available_keys(a)) return GUI_YUM; break;
 		}
-		else if(key.sym == SDLK_LEFT)
-		{
-			moveMapRelative(-1,0);
+		if(keybinder->GetActionKeyType(a) <= SOUTH_WEST_KEY)
 			wizard_eye_update();
-		}
-		else if(key.sym == SDLK_RIGHT)
-		{
-			moveMapRelative(1,0);
-			wizard_eye_update();
-		}
-		else if(key.sym == SDLK_UP)
-		{
-			moveMapRelative(0,-1);
-			wizard_eye_update();
-		}
-		else if(key.sym == SDLK_DOWN)
-		{
-			moveMapRelative(0,1);
-			wizard_eye_update();
-		}
 	}
-/*    if(key.sym == SDLK_RETURN)
-    {
-		game->get_event()->select_target(cur_x+cursor_x, cur_y+cursor_y);
-        return GUI_YUM;
-    }*/
     return GUI_PASS;
 }
 

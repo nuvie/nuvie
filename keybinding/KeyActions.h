@@ -48,6 +48,8 @@ void ActionInventory(int const *params);
 void ActionPartyView(int const *params);
 void ActionNextPartyMember(int const *params);
 void ActionPreviousPartyMember(int const *params);
+void ActionHome(int const *params);
+void ActionEnd(int const *params);
 void ActionToggleView(int const *params);
 
 void ActionSoloMode(int const *params);
