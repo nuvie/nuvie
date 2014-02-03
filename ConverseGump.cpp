@@ -124,7 +124,7 @@ ConverseGump::ConverseGump(Configuration *cfg, Font *f, Screen *s)
    frame_w = portrait_width + 8;
    frame_h = portrait_height + 9;
  }
-DEBUG(0, LEVEL_DEBUGGING, "\nMin w = %d\n", frame_w + 12 + 210);
+//DEBUG(0, LEVEL_DEBUGGING, "\nMin w = %d\n", frame_w + 12 + 210);
 }
 
 ConverseGump::~ConverseGump()

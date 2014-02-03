@@ -37,8 +37,10 @@ class GUI_Button;
 class GUI_YesNoDialog : public GUI_Dialog {
 protected:
 
+sint8 b_index_num;
 GUI_Button *yes_button, *no_button;
 GUI_CallBack *yes_callback_object, *no_callback_object;
+GUI_Button *button_index[2];
 
 public:
 

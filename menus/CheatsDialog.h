@@ -29,9 +29,12 @@ class GUI_TextToggleButton;
 
 class CheatsDialog : public GUI_Dialog {
 	protected:
+		uint8 last_index;
+		sint8 b_index_num;
 		GUI_CallBack *callback_object;
 		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *brightness_button, *cheat_button, *egg_button, *hackmove_button, *party_button;
+		GUI_Button *button_index[7]; // add to here when you add a button. Keep buttons in order by height
 
 	public:
 		CheatsDialog(GUI_CallBack *callback);

@@ -29,10 +29,13 @@ class GUI_TextToggleButton;
 
 class AudioDialog : public GUI_Dialog {
 	protected:
+		uint8 last_index;
+		sint8 b_index_num;
 		GUI_CallBack *callback_object;
-		GUI_Button *save_button, *load_button, *cancel_button;
+		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *audio_button, *music_button, *musicType_button, *musicVol_button,
 		                     *sfx_button, *sfxVol_button, *sfxType_button;
+		GUI_Button *button_index[9]; // add to here when you add a button. Keep buttons in order by height
 
 	public:
 		AudioDialog(GUI_CallBack *callback);

@@ -59,6 +59,8 @@ bool GameplayDialog::init() {
 	int buttonY = 9;
 	uint8 textY = 11;
 	uint8 row_h = 13;
+	b_index_num = -1;
+	last_index = 0;
 
 	GUI_Widget *widget;
 	GUI *gui = GUI::get_gui();
@@ -79,6 +81,7 @@ bool GameplayDialog::init() {
 	AddWidget(widget);
 	formation_button = new GUI_TextToggleButton(this, 197, buttonY, 68, height, formation_text, 4, game->get_party()->get_formation(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(formation_button);
+	button_index[last_index] = formation_button;
 	if(is_u6) {
 // show stealing
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Look shows private property:", font);
@@ -86,6 +89,7 @@ bool GameplayDialog::init() {
 		config->value("config/ultima6/show_stealing", show_stealing, false);
 		stealing_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, show_stealing, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(stealing_button);
+		button_index[last_index+=1] = stealing_button;
 	} else {
 		stealing_button = NULL;
 	}
@@ -95,12 +99,14 @@ bool GameplayDialog::init() {
 		AddWidget(widget);
 		text_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, game->is_using_text_gumps(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(text_gump_button);
+		button_index[last_index+=1] = text_gump_button;
 // use converse gump
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Use converse gump:", font);
 		AddWidget(widget);
 		converse_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, game->using_new_converse_gump(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(converse_gump_button);
 		old_using_converse_gump = game->using_new_converse_gump();
+		button_index[last_index+=1] = converse_gump_button;
 	} else {
 		text_gump_button = NULL;
 		converse_gump_button = NULL;
@@ -112,6 +118,7 @@ bool GameplayDialog::init() {
 		config->value(key + "/converse_solid_bg", solid_bg, false); // need to check cfg since converse_gump may be NULL
 		converse_solid_bg_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, solid_bg, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(converse_solid_bg_button);
+		button_index[last_index+=1] = converse_solid_bg_button;
 	} else
 		converse_solid_bg_button = NULL;
 // following require restart
@@ -122,21 +129,26 @@ bool GameplayDialog::init() {
 	AddWidget(widget);
 	skip_intro_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h*3, yesno_width, height, yesno_text, 2, skip_intro,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(skip_intro_button);
+	button_index[last_index+=1] = skip_intro_button;
 // show console
 	widget = (GUI_Widget *) new GUI_Text(colX[1], textY += row_h, 0, 0, 0, "Show console:", font);
 	AddWidget(widget);
 	show_console_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, show_console, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(show_console_button);
+	button_index[last_index+=1] = show_console_button;
 // original cursor
 	widget = (GUI_Widget *) new GUI_Text(colX[1], textY += row_h, 0, 0, 0, "Use original cursors:", font);
 	AddWidget(widget);
 	cursor_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, use_original_cursor, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(cursor_button);
+	button_index[last_index+=1] = cursor_button;
 
 	cancel_button = new GUI_Button(this, 77, GD_HEIGHT - 20, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
+	button_index[last_index+=1] = cancel_button;
 	save_button = new GUI_Button(this, 158, GD_HEIGHT - 20, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
+	button_index[last_index+=1] = save_button;
 
 	return true;
 }
@@ -156,6 +168,27 @@ GUI_status GameplayDialog::KeyDown(SDL_keysym key) {
 
 	switch(keybinder->GetActionKeyType(a))
 	{
+		case NORTH_KEY:
+		case WEST_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num <= 0)
+				b_index_num = last_index;
+			else
+				b_index_num = b_index_num - 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case SOUTH_KEY:
+		case EAST_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num == last_index)
+				b_index_num = 0;
+			else
+				b_index_num += 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case DO_ACTION_KEY: if(b_index_num != -1) return button_index[b_index_num]->Activate_button(); break;
 		case CANCEL_ACTION_KEY: return close_dialog();
 		default: keybinder->handle_always_available_keys(a); break;
 	}

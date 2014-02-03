@@ -29,12 +29,15 @@ class GUI_TextToggleButton;
 
 class InputDialog : public GUI_Dialog {
 	protected:
+		uint8 last_index;
+		sint8 b_index_num;
 		GUI_CallBack *callback_object;
 		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *command_button, *direction_button, *doubleclick_button,
 		                     *dragging_button, *interface_button, *look_button,
 		                     *open_container_button, *party_targeting_button, *walk_button,
 		                     *balloon_button;
+		GUI_Button *button_index[12]; // add to here when you add a button. Keep buttons in order by height
 
 	public:
 		InputDialog(GUI_CallBack *callback);

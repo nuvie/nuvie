@@ -54,6 +54,8 @@ bool AudioDialog::init() {
 	int textX[] = { 9, 19, 29 };
 	int textY[] = { 11, 24, 37, 50, 63};
 	int buttonY[] = { 9, 22, 35, 48, 61, 80 };
+	b_index_num = -1;
+	last_index = 0;
 
 	GUI_Widget *widget;
 	GUI_Font * font = GUI::get_gui()->get_font();
@@ -100,19 +102,31 @@ bool AudioDialog::init() {
 
 	audio_button = new GUI_TextToggleButton(this, colX[0], buttonY[0], 70, height, enabled_text, 2, sm->is_audio_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(audio_button); 
+	button_index[last_index] = audio_button;
+
 	music_button = new GUI_TextToggleButton(this, colX[0], buttonY[1], 70, height, enabled_text, 2, sm->is_music_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(music_button);
+	button_index[last_index += 1] = music_button;
+
 	musicVol_button = new GUI_TextToggleButton(this, colX[1], buttonY[2], 40, height, musicVol_text, num_of_musicVol, musicVol_selection, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(musicVol_button);
+	button_index[last_index += 1] = musicVol_button;
+
 	sfx_button = new GUI_TextToggleButton(this, colX[0], buttonY[3], 70, height, enabled_text, 2, sm->is_sfx_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(sfx_button);
+	button_index[last_index += 1] = sfx_button;
+
 	sfxVol_button = new GUI_TextToggleButton(this, colX[1], buttonY[4], 40, height, sfxVol_text, num_of_sfxVol, sfxVol_selection, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(sfxVol_button); 
+	button_index[last_index += 1] = sfxVol_button;
 
 	cancel_button = new GUI_Button(this, 34, buttonY[5], 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
+	button_index[last_index += 1] = cancel_button;
+
 	save_button = new GUI_Button(this, 105, buttonY[5], 60, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
+	button_index[last_index += 1] = save_button;
  
  return true;
 }
@@ -132,6 +146,27 @@ GUI_status AudioDialog::KeyDown(SDL_keysym key) {
 
 	switch(keybinder->GetActionKeyType(a))
 	{
+		case NORTH_KEY:
+		case WEST_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num <= 0)
+				b_index_num = last_index;
+			else
+				b_index_num = b_index_num - 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case SOUTH_KEY:
+		case EAST_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num == last_index)
+				b_index_num = 0;
+			else
+				b_index_num += 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case DO_ACTION_KEY: if(b_index_num != -1) return button_index[b_index_num]->Activate_button(); break;
 		case CANCEL_ACTION_KEY: return close_dialog();
 		default: keybinder->handle_always_available_keys(a); break;
 	}

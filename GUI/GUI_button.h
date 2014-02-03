@@ -107,6 +107,8 @@ public:
 	/* yields flag if button is a checkbutton */
 	virtual int IsCheckButton()
 	  {return is_checkable;}
+	virtual void set_highlighted(bool val) { is_highlighted = val; }
+	virtual GUI_status Activate_button(int x = 0, int y = 0, int button = 1);
 
 protected:
 	/* yields an appropriate image */
@@ -129,6 +131,7 @@ protected:
 	/* Checkbutton flags */
 	int is_checkable;
 	int checked;
+	bool is_highlighted;
 };
 
 #endif /* _GUI_button_h */

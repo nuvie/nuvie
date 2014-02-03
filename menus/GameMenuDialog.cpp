@@ -54,22 +54,31 @@ bool GameMenuDialog::init() {
 	int height = 12;
 	int buttonX = 9;
 	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87 };
+	b_index_num = -1;
+	last_index = 0;
 	GUI *gui = GUI::get_gui();
 
 	saveLoad_button = new GUI_Button(this, buttonX, buttonY[0], width, height, "Load/Save Game", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(saveLoad_button); 
+	button_index[last_index] = saveLoad_button;
 	video_button = new GUI_Button(this, buttonX, buttonY[1], width, height, "Video Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(video_button);
+	button_index[last_index+=1] = video_button;
 	audio_button = new GUI_Button(this, buttonX, buttonY[2], width, height, "Audio Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(audio_button);
+	button_index[last_index+=1] = audio_button;
 	input_button = new GUI_Button(this, buttonX, buttonY[3], width, height, "Input Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(input_button);
+	button_index[last_index+=1] = input_button;
 	gameplay_button = new GUI_Button(this, buttonX, buttonY[4], width, height, "Gameplay Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(gameplay_button);
+	button_index[last_index+=1] = gameplay_button;
 	cheats_button = new GUI_Button(this, buttonX, buttonY[5], width, height, "Cheats", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cheats_button);
+	button_index[last_index+=1] = cheats_button;
 	quit_button = new GUI_Button(this, buttonX, buttonY[6], width, height, "Quit", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(quit_button);
+	button_index[last_index+=1] = quit_button;
  
 	return true;
 }
@@ -87,10 +96,29 @@ GUI_status GameMenuDialog::close_dialog() {
 GUI_status GameMenuDialog::KeyDown(SDL_keysym key) {
 	KeyBinder *keybinder = Game::get_game()->get_keybinder();
 	ActionType a = keybinder->get_ActionType(key);
-	ActionKeyType action_key_type = keybinder->GetActionKeyType(a);
 
 	switch(keybinder->GetActionKeyType(a))
 	{
+		case NORTH_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num <= 0)
+				b_index_num = last_index;
+			else
+				b_index_num = b_index_num - 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case SOUTH_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num == last_index)
+				b_index_num = 0;
+			else
+				b_index_num += 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case DO_ACTION_KEY:
+			if(b_index_num != -1) return button_index[b_index_num]->Activate_button(); break;
 		case CANCEL_ACTION_KEY: return close_dialog();
 		default: keybinder->handle_always_available_keys(a); break;
 	}

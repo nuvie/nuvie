@@ -29,12 +29,15 @@ class GUI_TextToggleButton;
 
 class VideoDialog : public GUI_Dialog {
 	protected:
+		uint8 last_index;
+		sint8 b_index_num;
 		bool old_use_new_dolls;
 		GUI_CallBack *callback_object;
 		GUI_Button *save_button, *cancel_button, *only2x_button;
 		GUI_TextToggleButton *scale_button, *scale_win_button, *scaler_button, *scaler_win_button,
 		                     *fullscreen_button, *roof_button, *lighting_button, *dither_button,
 		                     *game_style_button, *doll_button;
+		GUI_Button *button_index[8]; // add to here when you add a button. Keep buttons in order by height
 		void rebuild_buttons(bool init);
 	public:
 		VideoDialog(GUI_CallBack *callback);

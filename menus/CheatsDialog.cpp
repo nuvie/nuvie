@@ -56,6 +56,8 @@ bool CheatsDialog::init() {
 	int buttonY[] = { 9, 22, 35, 48, 61, 80 };
 	int colX[] = { 9, 163 };
 	int height = 12;
+	b_index_num = -1;
+	last_index = 0;
 	GUI_Widget *widget;
 	GUI *gui = GUI::get_gui();
 
@@ -105,19 +107,31 @@ bool CheatsDialog::init() {
 
 	cheat_button = new GUI_TextToggleButton(this, colX[1] - 30, buttonY[0], 70, height, enabled_text, 2, game->are_cheats_enabled(), gui->get_font(), BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(cheat_button); 
+	button_index[last_index] = cheat_button;
+
 	egg_button = new GUI_TextToggleButton(this, colX[1], buttonY[1], 40, height, yesno_text, 2, game->get_obj_manager()->is_showing_eggs(), gui->get_font(), BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(egg_button); 
+	button_index[last_index+=1] = egg_button;
+
 	hackmove_button = new GUI_TextToggleButton(this, colX[1], buttonY[2], 40, height, yesno_text, 2, game->using_hackmove(), gui->get_font(), BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(hackmove_button);
+	button_index[last_index+=1] = hackmove_button;
+
 	party_button = new GUI_TextToggleButton(this, colX[1], buttonY[3], 40, height, yesno_text, 2, party_all_the_time, gui->get_font(), BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(party_button);
+	button_index[last_index+=1] = party_button;
+
 	brightness_button = new GUI_TextToggleButton(this, colX[1], buttonY[4], 40, height, brightness_text, num_of_brightness, brightness_selection,  gui->get_font(), BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(brightness_button);
+	button_index[last_index+=1] = brightness_button;
 
 	cancel_button = new GUI_Button(this, 50, buttonY[5], 54, height, "Cancel", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
+	button_index[last_index+=1] = cancel_button;
+
 	save_button = new GUI_Button(this, 121, buttonY[5], 40, height, "Save", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
+	button_index[last_index+=1] = save_button;
 
 	return true;
 }
@@ -137,6 +151,27 @@ GUI_status CheatsDialog::KeyDown(SDL_keysym key) {
 
 	switch(keybinder->GetActionKeyType(a))
 	{
+		case NORTH_KEY:
+		case WEST_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num <= 0)
+				b_index_num = last_index;
+			else
+				b_index_num = b_index_num - 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case SOUTH_KEY:
+		case EAST_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num == last_index)
+				b_index_num = 0;
+			else
+				b_index_num += 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case DO_ACTION_KEY: if(b_index_num != -1) return button_index[b_index_num]->Activate_button(); break;
 		case CANCEL_ACTION_KEY: return close_dialog();
 		default: keybinder->handle_always_available_keys(a); break;
 	}

@@ -58,6 +58,8 @@ bool InputDialog::init() {
 	int colX[] = { 9, 239 };
 	int height = 12;
 	int yesno_width = 32;
+	b_index_num = -1;
+	last_index = 0;
 	GUI_Widget *widget;
 	GUI *gui = GUI::get_gui();
 	GUI_Font *font = gui->get_font();
@@ -105,40 +107,59 @@ bool InputDialog::init() {
 
 	interface_button = new GUI_TextToggleButton(this, 129, buttonY[0], 142, height, interface_text, 3, interface, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(interface_button);
+	button_index[last_index] = interface_button;
+
 	dragging_button = new GUI_TextToggleButton(this, colX[1], buttonY[1], yesno_width, height, yesno_text, 2, game->is_dragging_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(dragging_button);
+	button_index[last_index+=1] = dragging_button;
+
 	direction_button = new GUI_TextToggleButton(this, colX[1], buttonY[2], yesno_width, height, yesno_text, 2, game->get_event()->is_direction_selecting_targets(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(direction_button);
+	button_index[last_index+=1] = direction_button;
+
 	look_button = new GUI_TextToggleButton(this, colX[1], buttonY[3], yesno_width, height, yesno_text, 2, map_window->will_look_on_left_click(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(look_button);
+	button_index[last_index+=1] = look_button;
+
 	walk_button = new GUI_TextToggleButton(this, colX[1], buttonY[4], yesno_width, height, yesno_text, 2, map_window->will_walk_with_left_button(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(walk_button);
+	button_index[last_index+=1] = walk_button;
+
 	doubleclick_button = new GUI_TextToggleButton(this, colX[1], buttonY[5], yesno_width, height, yesno_text, 2, map_window->is_doubleclick_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(doubleclick_button);
+	button_index[last_index+=1] = doubleclick_button;
+
 	if(game->get_game_type() == NUVIE_GAME_U6) {
 		balloon_button = new GUI_TextToggleButton(this, colX[1], buttonY[6], yesno_width, height, yesno_text, 2, game->has_free_balloon_movement(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(balloon_button);
+		button_index[last_index+=1] = balloon_button;
 	} else
 		balloon_button = NULL;
 	if(!Game::get_game()->is_new_style()) {
 		open_container_button = new GUI_TextToggleButton(this, colX[1], buttonY[7], yesno_width, height, yesno_text, 2, game->doubleclick_opens_containers(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(open_container_button);
+		button_index[last_index+=1] = open_container_button;
 
 		bool using_new_command_bar;
 		config->value("config/input/new_command_bar", using_new_command_bar, false);
 		command_button = new GUI_TextToggleButton(this, colX[1], buttonY[8], yesno_width, height, yesno_text, 2, using_new_command_bar, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(command_button);
+		button_index[last_index+=1] = command_button;
 
 		bool party_view_targeting;
 		config->value("config/input/party_view_targeting", party_view_targeting, false);
 		party_targeting_button = new GUI_TextToggleButton(this, colX[1], buttonY[9], yesno_width, height, yesno_text, 2, party_view_targeting,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(party_targeting_button);
+		button_index[last_index+=1] = party_targeting_button;
 	} else
 		open_container_button = command_button = party_targeting_button = NULL;
 	cancel_button = new GUI_Button(this, 83, buttonY[10], 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
+	button_index[last_index+=1] = cancel_button;
+
 	save_button = new GUI_Button(this, 154, buttonY[10], 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
+	button_index[last_index+=1] = save_button;
  
  return true;
 }
@@ -158,6 +179,27 @@ GUI_status InputDialog::KeyDown(SDL_keysym key) {
 
 	switch(keybinder->GetActionKeyType(a))
 	{
+		case NORTH_KEY:
+		case WEST_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num <= 0)
+				b_index_num = last_index;
+			else
+				b_index_num = b_index_num - 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case SOUTH_KEY:
+		case EAST_KEY:
+			if(b_index_num != -1)
+				button_index[b_index_num]->set_highlighted(false);
+
+			if(b_index_num == last_index)
+				b_index_num = 0;
+			else
+				b_index_num += 1;
+			button_index[b_index_num]->set_highlighted(true); break;
+		case DO_ACTION_KEY: if(b_index_num != -1) return button_index[b_index_num]->Activate_button(); break;
 		case CANCEL_ACTION_KEY: return close_dialog();
 		default: keybinder->handle_always_available_keys(a); break;
 	}

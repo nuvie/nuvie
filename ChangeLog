@@ -1,3 +1,9 @@
+2014-02-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1859
+	* Add keyboard support to menus (except save menu) and to yes no popup.
+	  Directional keys select the button and the first press one before a button
+	  is highlighted. You can use the do_action button (enter) to activate them.
+	* Comment out debug in ConverseGump.cpp.
+
 2014-01-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1858
 	* Have solo key binding toggle through party members if 0 is the parameter.
 

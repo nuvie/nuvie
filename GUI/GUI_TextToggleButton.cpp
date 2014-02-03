@@ -63,20 +63,27 @@ GUI_status GUI_TextToggleButton::MouseUp(int x,int y,int button)
 	if ((button==1 || button==3) && (pressed[0]))
 	{
 	  pressed[0]=0;
-	  selection = (selection + (button==1 ? 1 : -1)) % count;
-	  if(selection < 0)
-		  selection = count -1;
-
-	  if ((x>=0) && (y>=0))
-	    if (callback_object && callback_object->callback(BUTTON_CB, this, widget_data)==GUI_QUIT)
-	      return GUI_QUIT;
-
-	  ChangeTextButton(-1,-1,-1,-1,texts[selection],alignment);
-
-	  Redraw();
-	  return GUI_YUM;
+	  return Activate_button(x, y, button);
 	}
 	return GUI_Button::MouseUp(x,y,button);
+}
+
+GUI_status GUI_TextToggleButton::Activate_button(int x,int y,int button)
+{
+	selection = (selection + (button==1 ? 1 : -1)) % count;
+	if(selection < 0)
+		selection = count -1;
+
+	if(x >= 0 && y >= 0)
+	{
+		if (callback_object && callback_object->callback(BUTTON_CB, this, widget_data)==GUI_QUIT)
+			return GUI_QUIT;
+	}
+
+	ChangeTextButton(-1,-1,-1,-1,texts[selection],alignment);
+	Redraw();
+
+	return GUI_YUM;
 }
 
 int GUI_TextToggleButton::GetSelection() const

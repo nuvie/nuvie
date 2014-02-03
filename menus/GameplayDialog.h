@@ -29,12 +29,15 @@ class GUI_TextToggleButton;
 
 class GameplayDialog : public GUI_Dialog {
 	protected:
+		uint8 last_index;
+		sint8 b_index_num;
 		bool old_using_converse_gump;
 		GUI_CallBack *callback_object;
 		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *formation_button, *stealing_button, *text_gump_button,
 		                     *converse_gump_button, *converse_solid_bg_button, 
 		                     *skip_intro_button, *show_console_button, *cursor_button;
+		GUI_Button *button_index[10]; // add to here when you add a button. Keep buttons in order by height
 
 	public:
 		GameplayDialog(GUI_CallBack *callback);

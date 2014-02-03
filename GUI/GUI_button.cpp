@@ -74,6 +74,7 @@ GUI_Button:: GUI_Button(void *data, int x, int y, int w, int h,
 	flatbutton=0;
 	is_checkable=0;
 	checked=0;
+	is_highlighted = false;
 }
 
 GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, const char *text,
@@ -100,6 +101,7 @@ GUI_Button::GUI_Button(void *data, int x, int y, int w, int h, const char *text,
 
   is_checkable=is_checkbutton;
   checked=0;
+  is_highlighted = false;
 /*
   if (is_checkable &&(checkmarks==NULL))
   {
@@ -166,7 +168,7 @@ void GUI_Button:: Display(bool full_redraw)
 
 	if (button)
 	{
-	  if ((button2!=NULL) && (pressed[0])==1)
+	  if ((button2!=NULL) && ((pressed[0])==1 || is_highlighted))
 	    SDL_BlitSurface(button2,NULL,surface,&dest);
 	  else
 	    SDL_BlitSurface(button,NULL,surface,&dest);
@@ -257,11 +259,19 @@ GUI_status GUI_Button::MouseUp(int x,int y,int button)
 	if ((button==1 || button==3) && (pressed[0]))
 	{
 	  pressed[0]=0;
-	  if ((x>=0) && (y>=0))
-	    if (callback_object && callback_object->callback(BUTTON_CB, this, widget_data)==GUI_QUIT)
-	      return GUI_QUIT;
-	  Redraw();
+	  return Activate_button(x, y, button);
 	}
+	return GUI_YUM;
+}
+
+GUI_status GUI_Button::Activate_button(int x,int y,int button)
+{
+	if(x >= 0 && y >= 0)
+	{
+		if (callback_object && callback_object->callback(BUTTON_CB, this, widget_data)==GUI_QUIT)
+			return GUI_QUIT;
+	}
+	Redraw();
 	return GUI_YUM;
 }
 
