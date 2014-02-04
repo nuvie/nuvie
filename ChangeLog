@@ -1,3 +1,7 @@
+2014-02-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1860
+	* Fix uninitialized variable from last commit.
+	* Fix toggle_cursor opening the vehicle's inventory instead of the player's.
+
 2014-02-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1859
 	* Add keyboard support to menus (except save menu) and to yes no popup.
 	  Directional keys select the button and the first press one before a button

@@ -54,6 +54,7 @@ GUI_Button:: GUI_Button(void *data, int x, int y, SDL_Surface *image,
 	flatbutton=0;
 	is_checkable=0;
 	checked=0;
+	is_highlighted = false;
 }
 
 GUI_Button:: GUI_Button(void *data, int x, int y, int w, int h,

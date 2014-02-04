@@ -416,7 +416,12 @@ void ActionToggleCursor(int const *params)
 	}
 	else
 	{
-		game->get_view_manager()->open_container_view(player->get_actor());
+		Actor *actor;
+		if(player->is_in_vehicle())
+			actor = party->get_actor(0);
+		else
+			actor = player->get_actor();
+		game->get_view_manager()->open_container_view(actor);
 	}
 }
 
