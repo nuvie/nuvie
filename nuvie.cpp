@@ -303,6 +303,36 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/audio/music_volume", 100);
 	config->set("config/audio/sfx_volume", 255);
 
+#ifdef HAVE_JOYSTICK_SUPPORT
+	config->set("config/joystick/enable_joystick", false);
+	config->set("config/joystick/repeat_hat", false);
+	config->set("config/joystick/repeat_delay", 50);
+// axes_pair1
+	config->set("config/joystick/axes_pair1/axis_x", 0);
+	config->set("config/joystick/axes_pair1/axis_y", 1);
+	config->set("config/joystick/axes_pair1/delay", 110);
+	config->set("config/joystick/axes_pair1/x_deadzone", 8000);
+	config->set("config/joystick/axes_pair1/y_deadzone", 8000);
+// axes_pair2
+	config->set("config/joystick/axes_pair2/axis_x", 3);
+	config->set("config/joystick/axes_pair2/axis_y", 2);
+	config->set("config/joystick/axes_pair2/delay", 110);
+	config->set("config/joystick/axes_pair2/x_deadzone", 8000);
+	config->set("config/joystick/axes_pair2/y_deadzone", 8000);
+// axes_pair3
+	config->set("config/joystick/axes_pair3/axis_x", 4);
+	config->set("config/joystick/axes_pair3/axis_y", 5);
+	config->set("config/joystick/axes_pair3/delay", 110);
+	config->set("config/joystick/axes_pair3/x_deadzone", 8000);
+	config->set("config/joystick/axes_pair3/y_deadzone", 8000);
+// axes_pair4
+	config->set("config/joystick/axes_pair4/axis_x", 6);
+	config->set("config/joystick/axes_pair4/axis_y", 7);
+	config->set("config/joystick/axes_pair4/delay", 110);
+	config->set("config/joystick/axes_pair4/x_deadzone", 8000);
+	config->set("config/joystick/axes_pair4/y_deadzone", 8000);
+#endif
+
 	config->set("config/input/enable_doubleclick", true);
 	config->set("config/input/doubleclick_opens_containers", false);
 	config->set("config/input/party_view_targeting", false);

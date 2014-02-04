@@ -126,3 +126,40 @@ Ctrl-f	toggle_fps_display
 
 Ctrl-d	decrease_debug
 Ctrl-i	increase_debug
+
+joy_up		walk_north
+joy_down	walk_south
+joy_left	walk_west
+joy_right	walk_east
+joy_rightup		walk_north_east
+joy_rightdown	walk_south_east
+joy_leftup		walk_north_west
+joy_leftdown	walk_south_west
+joy_up2		msg_scroll_up
+joy_down2	msg_scroll_down
+joy_left2	previous_party_member
+joy_right2	next_party_member
+joy_rightup2	do_nothing
+joy_rightdown2	do_nothing
+joy_leftup2		do_nothing
+joy_leftdown2	do_nothing
+joy_hat_up	walk_north
+joy_hat_down	walk_south
+joy_hat_left	walk_west
+joy_hat_right	walk_east
+joy_hat_rightup	walk_north_east
+joy_hat_rightdown	walk_south_east
+joy_hat_leftup		walk_north_west
+joy_hat_leftdown	walk_south_west
+joy0	toggle_cursor
+joy1	cancel_action
+joy2	do_action
+joy3	multi_use
+joy4	solo_mode 0
+joy5	toggle_combat
+joy6	get
+joy7	drop
+joy8	game_menu_dialog
+joy9	new_command_bar
+joy10	move
+joy11	look

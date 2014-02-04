@@ -32,6 +32,9 @@
 #include "GUI.h"
 #include "GUI_types.h"
 
+#ifdef HAVE_JOYSTICK_SUPPORT
+#include "Keys.h"
+#endif
 
 const int GUI::mouseclick_delay = 300; /* SB-X */
 
@@ -279,6 +282,19 @@ GUI:: HandleEvent(SDL_Event *event)
    }
   else if(!block_input)
    {
+#ifdef HAVE_JOYSTICK_SUPPORT
+	if(event->type >= SDL_JOYAXISMOTION && event->type <= SDL_JOYBUTTONUP)
+	{
+		event->key.keysym.sym = Game::get_game()->get_keybinder()->get_key_from_joy_events(event);
+		if(event->key.keysym.sym == SDLK_LAST) // isn't mapped, is in deadzone, or axis didn't return to center before moving again
+		{
+			HandleStatus(status);
+			CleanupDeletedWidgets(status != GUI_QUIT);
+			return status; // pretend nothing happened
+		}
+		event->type = SDL_KEYDOWN;
+	}
+#endif
 	  switch (event->type) {
  		/* SDL_QUIT events quit the GUI */
     // case SDL_QUIT:

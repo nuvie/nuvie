@@ -96,6 +96,6 @@ void ActionHealParty(int const *params);
 void ActionTeleportToCursor(int const *params);
 void ActionToggleCheats(int const *params);
 
-void ActionTest(int const *params);
+void ActionDoNothing(int const *params);
 
 #endif

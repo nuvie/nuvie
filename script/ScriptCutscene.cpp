@@ -932,6 +932,16 @@ static int nscript_input_poll(lua_State *L)
 	while(SDL_PollEvent(&event))
 	{
 		//FIXME do something here.
+		KeyBinder *keybinder = Game::get_game()->get_keybinder();
+#ifdef HAVE_JOYSTICK_SUPPORT
+		if(event.type >= SDL_JOYAXISMOTION && event.type <= SDL_JOYBUTTONUP)
+		{
+			event.key.keysym.sym = keybinder->get_key_from_joy_events(&event);
+			if(event.key.keysym.sym == SDLK_LAST) // make sure button isn't mapped or is in deadzone
+				return 0; // pretend nothing happened
+			event.type = SDL_KEYDOWN;
+		}
+#endif
 		if(event.type == SDL_KEYDOWN)
 		{
 			SDL_keysym key = event.key.keysym;
@@ -940,7 +950,6 @@ static int nscript_input_poll(lua_State *L)
 				key.sym = (SDLKey)(key.sym -32);
 			if(!isalnum(key.sym) || (key.mod &KMOD_ALT) || (key.mod &KMOD_CTRL)|| (key.mod &KMOD_META))
 			{
-				KeyBinder *keybinder = Game::get_game()->get_keybinder();
 				ActionType a = keybinder->get_ActionType(key);
 				switch(keybinder->GetActionKeyType(a))
 				{

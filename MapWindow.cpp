@@ -672,7 +672,28 @@ void MapWindow::update()
         else
             walking = false;
     }
-
+#ifdef HAVE_JOYSTICK_SUPPORT // repeat axis or hat when walking or wizard_eye_mode
+	KeyBinder *keybinder = game->get_keybinder();
+	if(keybinder->get_joystick() && keybinder->is_joy_repeat_enabled() && (event->get_mode() == MOVE_MODE || is_wizard_eye_mode())
+	   && keybinder->get_next_joy_repeat_time() < clock->get_ticks())
+// !game->user_paused(), !game->get_view_manager()->gumps_are_active() - I don't think these are needed but may need them later
+	{
+		SDLKey key;
+		if(keybinder->is_hat_repeating())
+			key = keybinder->get_key_from_joy_hat_button(SDL_JoystickGetHat(keybinder->get_joystick(), 0));
+		else
+			key = keybinder->get_key_from_joy_walk_axes();
+		if(key != SDLK_LAST)
+		{
+			SDL_Event sdl_event;
+			sdl_event.type = SDL_KEYDOWN;
+			sdl_event.key.keysym.sym = key;
+			sdl_event.key.keysym.mod = KMOD_NONE;
+			if(GUI::get_gui()->HandleEvent(&sdl_event) == GUI_PASS)
+				event->handleEvent(&sdl_event);
+		}
+	}
+#endif
 }
 
 // moved from updateBlacking() so you don't have to update all blacking (SB-X)
@@ -2342,10 +2363,11 @@ GUI_status MapWindow::KeyDown(SDL_keysym key)
 			case NORTH_WEST_KEY: moveMapRelative(-1,-1); break;
 			case SOUTH_WEST_KEY: moveMapRelative(-1,1); break;
 			case CANCEL_ACTION_KEY: wizard_eye_stop(); break;
-			default: if(keybinder->handle_always_available_keys(a)) return GUI_YUM; break;
+			default: keybinder->handle_always_available_keys(a); return GUI_YUM;
 		}
 		if(keybinder->GetActionKeyType(a) <= SOUTH_WEST_KEY)
 			wizard_eye_update();
+		return GUI_YUM;
 	}
     return GUI_PASS;
 }

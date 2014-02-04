@@ -221,7 +221,6 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		if(!((magic->is_selecting_spell() && ((sym >= SDLK_a && sym <= SDLK_z) || sym == SDLK_BACKSPACE)) ||
 		  ((magic->is_waiting_for_location() || last_mode == USE_MODE) && sym >= SDLK_1 && sym <= SDLK_9)))
 		{
-			KeyBinder *keybinder = game->get_keybinder();
 			ActionType a = keybinder->get_ActionType(event->key.keysym);
 			action_key_type = keybinder->GetActionKeyType(a);
 			switch(action_key_type)
@@ -2405,6 +2404,9 @@ void Event::gameMenuDialog()
 		gamemenu_dialog = new GameMenuDialog((GUI_CallBack *)this);
 		gui->AddWidget(gamemenu_dialog);
 		gui->lock_input(gamemenu_dialog);
+#ifdef HAVE_JOYSTICK_SUPPORT
+		keybinder->set_enable_joy_repeat(false);
+#endif
 	}
 	else
 		cancelAction();
@@ -2430,6 +2432,9 @@ uint16 Event::callback(uint16 msg, CallBack *caller, void *data)
                              return GUI_YUM;
    case GAMEMENUDIALOG_CB_DELETE : showingDialog = false;
                                    gamemenu_dialog = NULL;
+        #ifdef HAVE_JOYSTICK_SUPPORT
+                                   keybinder->set_enable_joy_repeat(true);
+        #endif
                                    return GUI_YUM;
   }
 

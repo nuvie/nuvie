@@ -74,6 +74,17 @@ fi
 #AC_ARG_WITH(u6, [  --with-u6=DIR          directory where U6 is installed ],U6PATH=$with_u6,U6PATH=${datadir}/games/u6/)
 #AC_SUBST(U6PATH)
 
+# Joystick support
+AC_ARG_ENABLE(joysticks, [  --disable-joysticks         Disable support for joysticks],,enable_joysticks=yes)
+AC_MSG_CHECKING([whether to support joysticks])
+if test x$enable_joysticks = xno; then
+        AC_MSG_RESULT(no)
+        AM_CONDITIONAL(HAVE_JOYSTICK_SUPPORT, false)
+else
+        AC_MSG_RESULT(yes)
+        AM_CONDITIONAL(HAVE_JOYSTICK_SUPPORT, true)
+fi
+
 # ---------------------------------------------------------------------
 # Black magic for static linking on OS X
 # ---------------------------------------------------------------------

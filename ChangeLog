@@ -1,3 +1,7 @@
+2014-02-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1861
+	* Add some basic joystick (controller/gamepad) mapping support.
+	* Change test keybinding to do_nothing.
+
 2014-02-03  Malignant Manor <malignantmanor@users.sourceforge.net> r1860
 	* Fix uninitialized variable from last commit.
 	* Fix toggle_cursor opening the vehicle's inventory instead of the player's.

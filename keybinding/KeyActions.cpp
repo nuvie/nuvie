@@ -180,6 +180,9 @@ void ActionSelectNewCommandBar(int const *params)
 
 	cb->grab_focus();
 	cb->Show();
+#ifdef HAVE_JOYSTICK_SUPPORT
+	game->get_keybinder()->set_enable_joy_repeat(false);
+#endif
 }
 
 void ActionDollGump(int const *params)
@@ -657,6 +660,6 @@ void ActionToggleCheats(int const *params)
 		game->get_map_window()->set_x_ray_view(X_RAY_CHEAT_OFF);
 }
 
-void ActionTest(int const *params)
+void ActionDoNothing(int const *params)
 {
 }

@@ -47,6 +47,10 @@
 #include "Utils.h"
 //#include <direct.h>
 
+#ifdef HAVE_JOYSTICK_SUPPORT
+#include "Keys.h"
+#endif
+
 #if defined __linux__ || MACOSX
 #include <sys/stat.h>
 #endif
@@ -329,6 +333,9 @@ GUI_status SaveManager::callback(uint16 msg, GUI_CallBack *caller, void *data)
        case SAVEDIALOG_CB_LOAD : save_slot = (SaveSlot *)data;
                                  if(load(save_slot) == false)
                                     return GUI_PASS;
+        #ifdef HAVE_JOYSTICK_SUPPORT
+                                 Game::get_game()->get_keybinder()->set_enable_joy_repeat(true);
+        #endif
                                  if(gamemenu_dialog != NULL)
                                     gamemenu_dialog->callback(0, (GUI_CallBack *)gamemenu_dialog, (void *)gamemenu_dialog);
                                     //callback_object->callback(GameplayDialog_CB_DELETE, this, this);

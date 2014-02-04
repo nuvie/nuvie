@@ -166,21 +166,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type, SoundMana
 
  init_cursor();
 
- keybinder = new KeyBinder();
- std::string keyfilename, dir;
- config->value("config/keys",keyfilename,"(default)");
- bool key_file_exists = fileExists(keyfilename.c_str());
-
- if(keyfilename != "(default)" && !key_file_exists)
-	fprintf(stderr, "Couldn't find the default key setting at %s - trying defaultkeys.txt in the data directory\n", keyfilename.c_str());
- if(keyfilename == "(default)" || !key_file_exists)
- {
-	config->value("config/datadir", dir, "./data");
-	keyfilename = dir + "/defaultkeys.txt";
- }
- keybinder->LoadFromFile(keyfilename.c_str()); // will throw() if not found
- keybinder->LoadGameSpecificKeys(); // won't load if file isn't found
- keybinder->LoadFromPatch(); // won't load if file isn't found
+ keybinder = new KeyBinder(config);
 }
 
 Game::~Game()

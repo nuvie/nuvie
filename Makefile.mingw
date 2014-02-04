@@ -11,7 +11,8 @@ SRC=.
 SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
-CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC) -I$(SRC)/actors \
+CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DHAVE_JOYSTICK_SUPPORT \
+	-I$(SRC) -I$(SRC)/actors \
 	-I$(SRC)/conf -I$(SRC)/files -I$(SRC)/fonts -I$(SRC)/GUI \
 	-I$(SRC)/keybinding -I$(SRC)/lua -I$(SRC)/menus -I$(SRC)/misc \
 	-I$(SRC)/pathfinder -I$(SRC)/portraits -I$(SRC)/save -I$(SRC)/screen \
