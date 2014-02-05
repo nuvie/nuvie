@@ -53,10 +53,11 @@ InputDialog::InputDialog(GUI_CallBack *callback)
 }
 
 bool InputDialog::init() {
-	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128 };
-	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126, 145 };
+	uint8 textY = 11;
+	uint8 buttonY = 9;
 	int colX[] = { 9, 239 };
 	int height = 12;
+	uint8 row_h = 13;
 	int yesno_width = 32;
 	b_index_num = -1;
 	last_index = 0;
@@ -66,28 +67,28 @@ bool InputDialog::init() {
 	Game *game = Game::get_game();
 	MapWindow *map_window = game->get_map_window();
 
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[0], 0, 0, 0, "Interface:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY, 0, 0, 0, "Interface:", font);
 	AddWidget(widget);
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[1], 0, 0, 0, "Dragging enabled:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Dragging enabled:", font);
 	AddWidget(widget);
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[2], 0, 0, 0, "Direction selects target:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Direction selects target:", font);
 	AddWidget(widget);
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[3], 0, 0, 0, "Look on left_click:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Look on left_click:", font);
 	AddWidget(widget); 
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[4], 0, 0, 0, "Walk with left button:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Walk with left button:", font);
 	AddWidget(widget);
-	widget = (GUI_Widget *) new GUI_Text(colX[0], textY[5], 0, 0, 0, "Enable doubleclick:", font);
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Enable doubleclick:", font);
 	AddWidget(widget);
 	if(game->get_game_type() == NUVIE_GAME_U6) {
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[6], 0, 0, 0, "Allow free balloon movement:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Allow free balloon movement:", font);
 		AddWidget(widget);
 	}
 	if(!game->is_new_style()) {
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[7], 0, 0, 0, "Doubleclick opens containers:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Doubleclick opens containers:", font);
 		AddWidget(widget);
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[8], 0, 0, 0, "Use new command bar:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Use new command bar:", font);
 		AddWidget(widget);
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY[9], 0, 0, 0, "Party view targeting:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Party view targeting:", font);
 		AddWidget(widget);
 	}
 
@@ -105,59 +106,59 @@ bool InputDialog::init() {
 	const char* const yesno_text[] = { "no", "yes" };
 	const char* const interface_text[] = { "Normal", "U7 like", "ignores obstacles" };
 
-	interface_button = new GUI_TextToggleButton(this, 129, buttonY[0], 142, height, interface_text, 3, interface, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	interface_button = new GUI_TextToggleButton(this, 129, buttonY, 142, height, interface_text, 3, interface, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(interface_button);
 	button_index[last_index] = interface_button;
 
-	dragging_button = new GUI_TextToggleButton(this, colX[1], buttonY[1], yesno_width, height, yesno_text, 2, game->is_dragging_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	dragging_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, game->is_dragging_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(dragging_button);
 	button_index[last_index+=1] = dragging_button;
 
-	direction_button = new GUI_TextToggleButton(this, colX[1], buttonY[2], yesno_width, height, yesno_text, 2, game->get_event()->is_direction_selecting_targets(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	direction_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, game->get_event()->is_direction_selecting_targets(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(direction_button);
 	button_index[last_index+=1] = direction_button;
 
-	look_button = new GUI_TextToggleButton(this, colX[1], buttonY[3], yesno_width, height, yesno_text, 2, map_window->will_look_on_left_click(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	look_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, map_window->will_look_on_left_click(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(look_button);
 	button_index[last_index+=1] = look_button;
 
-	walk_button = new GUI_TextToggleButton(this, colX[1], buttonY[4], yesno_width, height, yesno_text, 2, map_window->will_walk_with_left_button(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	walk_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, map_window->will_walk_with_left_button(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(walk_button);
 	button_index[last_index+=1] = walk_button;
 
-	doubleclick_button = new GUI_TextToggleButton(this, colX[1], buttonY[5], yesno_width, height, yesno_text, 2, map_window->is_doubleclick_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	doubleclick_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, map_window->is_doubleclick_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(doubleclick_button);
 	button_index[last_index+=1] = doubleclick_button;
 
 	if(game->get_game_type() == NUVIE_GAME_U6) {
-		balloon_button = new GUI_TextToggleButton(this, colX[1], buttonY[6], yesno_width, height, yesno_text, 2, game->has_free_balloon_movement(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		balloon_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, game->has_free_balloon_movement(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(balloon_button);
 		button_index[last_index+=1] = balloon_button;
 	} else
 		balloon_button = NULL;
 	if(!Game::get_game()->is_new_style()) {
-		open_container_button = new GUI_TextToggleButton(this, colX[1], buttonY[7], yesno_width, height, yesno_text, 2, game->doubleclick_opens_containers(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		open_container_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, game->doubleclick_opens_containers(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(open_container_button);
 		button_index[last_index+=1] = open_container_button;
 
 		bool using_new_command_bar;
 		config->value("config/input/new_command_bar", using_new_command_bar, false);
-		command_button = new GUI_TextToggleButton(this, colX[1], buttonY[8], yesno_width, height, yesno_text, 2, using_new_command_bar, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		command_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, using_new_command_bar, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(command_button);
 		button_index[last_index+=1] = command_button;
 
 		bool party_view_targeting;
 		config->value("config/input/party_view_targeting", party_view_targeting, false);
-		party_targeting_button = new GUI_TextToggleButton(this, colX[1], buttonY[9], yesno_width, height, yesno_text, 2, party_view_targeting,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		party_targeting_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, party_view_targeting,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(party_targeting_button);
 		button_index[last_index+=1] = party_targeting_button;
 	} else
 		open_container_button = command_button = party_targeting_button = NULL;
-	cancel_button = new GUI_Button(this, 83, buttonY[10], 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	cancel_button = new GUI_Button(this, 83, ID_HEIGHT - 20, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
 	button_index[last_index+=1] = cancel_button;
 
-	save_button = new GUI_Button(this, 154, buttonY[10], 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	save_button = new GUI_Button(this, 154, ID_HEIGHT - 20, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
 	button_index[last_index+=1] = save_button;
  

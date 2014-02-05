@@ -44,7 +44,7 @@
 #include "Keys.h"
 
 #define VD_WIDTH 280
-#define VD_HEIGHT 126
+#define VD_HEIGHT 139
 
 VideoDialog::VideoDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - VD_WIDTH)/2,

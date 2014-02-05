@@ -1,3 +1,7 @@
+2014-02-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1862
+	* Have InputDialog not leave empty rows when an option isn't available.
+	* Increase VideoDialog height.
+
 2014-02-04  Malignant Manor <malignantmanor@users.sourceforge.net> r1861
 	* Add some basic joystick (controller/gamepad) mapping support.
 	* Change test keybinding to do_nothing.
