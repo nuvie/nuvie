@@ -587,8 +587,13 @@ bool Event::move(sint16 rel_x, sint16 rel_y)
  
  if(game->user_paused())
     return false;
+ EventMode current_mode;
+ if(last_mode == MULTIUSE_MODE && game->get_party()->is_in_combat_mode())
+	current_mode = ATTACK_MODE;
+ else
+	current_mode = mode;
 
- switch(mode)
+ switch(current_mode)
   {
    case ATTACK_MODE     : cursor_coord = map_window->get_cursorCoord();
                           cursor_coord.x = WRAPPED_COORD(cursor_coord.x + rel_x,cursor_coord.z);
@@ -3551,7 +3556,11 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 		case TALK_MODE: talk_start(); break;
 		case USE_MODE:  use_start();  break;
 		case GET_MODE:  get_start();  break;
-		case MULTIUSE_MODE: get_target("");  break;
+		case MULTIUSE_MODE:
+			get_target("");
+			if(game->get_party()->is_in_combat_mode())
+				player->attack_select_init(false);
+			break;
 		case ATTACK_MODE:
 			close_gumps();
 			if(game->get_game_type() == NUVIE_GAME_U6

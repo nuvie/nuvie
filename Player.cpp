@@ -639,12 +639,12 @@ bool Player::weapon_can_hit(uint16 x, uint16 y)
  return actor->weapon_can_hit(actor->get_weapon(current_weapon), x, y);
 }
 
-void Player::attack_select_init()
+void Player::attack_select_init(bool use_attack_text)
 {
  current_weapon = ACTOR_NO_READIABLE_LOCATION;
  
- if(attack_select_next_weapon() == false)
-   attack_select_weapon_at_location(ACTOR_NO_READIABLE_LOCATION); // attack with hands.
+ if(attack_select_next_weapon(false, use_attack_text) == false)
+   attack_select_weapon_at_location(ACTOR_NO_READIABLE_LOCATION, use_attack_text); // attack with hands.
  
  map_window->centerCursor();
 
@@ -691,20 +691,20 @@ void Player::attack_select_init()
  return;
 }
 
-bool Player::attack_select_next_weapon(bool add_newline)
+bool Player::attack_select_next_weapon(bool add_newline, bool use_attack_text)
 {
  sint8 i;
 
  for(i=current_weapon + 1; i < ACTOR_MAX_READIED_OBJECTS;i++)
    {
-    if(attack_select_weapon_at_location(i, add_newline) == true)
+    if(attack_select_weapon_at_location(i, add_newline, use_attack_text) == true)
       return true;
    }
 
  return false;
 }
 
-bool Player::attack_select_weapon_at_location(sint8 location, bool add_newline)
+bool Player::attack_select_weapon_at_location(sint8 location, bool add_newline, bool use_attack_text)
 {
  const CombatType *weapon;
  MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -712,6 +712,8 @@ bool Player::attack_select_weapon_at_location(sint8 location, bool add_newline)
  if(location == ACTOR_NO_READIABLE_LOCATION)
    {
     current_weapon = location;
+    if(use_attack_text == false)
+        return true;
     if(add_newline)
         scroll->display_string("\n");
     if(game_type == NUVIE_GAME_U6 && actor->obj_n == OBJ_U6_SHIP)
@@ -727,6 +729,8 @@ bool Player::attack_select_weapon_at_location(sint8 location, bool add_newline)
  if(weapon && weapon->attack > 0)
    {
     current_weapon = location;
+    if(use_attack_text == false)
+        return true;
     if(add_newline)
         scroll->display_string("\n");
     scroll->display_fmt_string("Attack with %s-", obj_manager->get_obj_name(weapon->obj_n));

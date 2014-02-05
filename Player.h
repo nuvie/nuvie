@@ -118,15 +118,15 @@ class Player
  bool check_walk_delay();
 
  bool weapon_can_hit(uint16 x, uint16 y);
- void attack_select_init();
- bool attack_select_next_weapon(bool add_newline = false);
+ void attack_select_init(bool use_attack_text = true);
+ bool attack_select_next_weapon(bool add_newline = false, bool use_attack_text = true);
 
  void attack(MapCoord target, Actor *target_actor);
  sint8 get_current_weapon() { return current_weapon; }
 
  protected:
  
- bool attack_select_weapon_at_location(sint8 location, bool add_newline = false);
+ bool attack_select_weapon_at_location(sint8 location, bool add_newline = false, bool use_attack_text = true);
 };
 
 #endif /* __Player_h__ */

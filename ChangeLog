@@ -1,3 +1,10 @@
+2014-02-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1863
+	* Fix multi_use keybinding not being able to make a second attack.
+	* Have multi_use keybinding center the cursor on the player's combat target
+	  if in combat mode. Have multi_use restrict the cursor to combat range if
+	  in combat mode. You can still talk to party members in combat with
+	  multi_use, if within weapon range.
+
 2014-02-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1862
 	* Have InputDialog not leave empty rows when an option isn't available.
 	* Increase VideoDialog height.

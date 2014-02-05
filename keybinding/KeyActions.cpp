@@ -147,7 +147,10 @@ void ActionRest(int const *params)
 
 void ActionMultiUse(int const *params)
 {
-	event->newAction(MULTIUSE_MODE);
+	if(event->get_mode() == ATTACK_MODE)
+		event->doAction();
+	else
+		event->newAction(MULTIUSE_MODE);
 }
 
 static const sint8 SE_command_tbl[] = {6, -1, 4, 5, 1, 2, 0, 3, 7, 8}; // convert U6 indexes
