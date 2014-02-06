@@ -1,3 +1,6 @@
+2014-02-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1865
+	* Add JoystickDialog files to SVN that I forgot last commit.
+
 2014-02-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1864
 	* Add Joystick sub-menu to the game menu.
 	* Get rid of auto selection option of joystick in SDL 1.2. It was pretty
