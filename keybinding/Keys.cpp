@@ -37,7 +37,6 @@
 #ifndef UNDER_EMBEDDED_CE
 using std::atoi;
 using std::cerr;
-using std::cout;
 using std::endl;
 using std::ifstream;
 using std::isspace;
@@ -297,7 +296,18 @@ KeyBinder::KeyBinder(Configuration *config)
 
 #ifdef HAVE_JOYSTICK_SUPPORT
 	joystick = NULL;
-	init_joystick(config);
+	std::string enable_joystick_str;
+	config->value("config/joystick/enable_joystick", enable_joystick_str, "no");
+
+	if(enable_joystick_str == "no")
+		enable_joystick =  -1;
+#if SDL_VERSION_ATLEAST(2,0,0)
+	else if(enable_joystick_str == "auto")
+		init_joystick(127);
+#endif
+	else
+		init_joystick(clamp(atoi(enable_joystick_str.c_str()), 0, 9));
+
 	int config_int;
 	uint16 max_delay = 10000; // 10 seconds but means no repeat
 	uint16 max_deadzone = 32766; // one less than highest possible
@@ -753,6 +763,38 @@ void KeyBinder::FillParseMaps()
 
 #ifdef HAVE_JOYSTICK_SUPPORT
 
+uint8 KeyBinder::get_axis(uint8 index)
+{
+	switch(index)
+	{
+		case 0: return x_axis;
+		case 1: return y_axis;
+		case 2: return x_axis2;
+		case 3: return y_axis2;
+		case 4: return x_axis3;
+		case 5: return y_axis3;
+		case 6: return x_axis4;
+		case 7:
+		default: return y_axis4;
+	}
+}
+
+void KeyBinder::set_axis(uint8 index, uint8 value)
+{
+	switch(index)
+	{
+		case 0: x_axis = value;
+		case 1: y_axis = value;
+		case 2: x_axis2 = value;
+		case 3: y_axis2 = value;
+		case 4: x_axis3 = value;
+		case 5: y_axis3 = value;
+		case 6: x_axis4 = value;
+		case 7:
+		default: y_axis4 = value;
+	}
+}
+
 joy_axes_pairs KeyBinder::get_axes_pair(int axis)
 {
 	if(axis == x_axis || axis == y_axis)
@@ -984,23 +1026,17 @@ SDLKey KeyBinder::get_key_from_joy_events(SDL_Event *event)
 		return SDLK_LAST;
 }
 
-void KeyBinder::init_joystick(Configuration *config)
+void KeyBinder::init_joystick(sint8 joy_num)
 {
+	enable_joystick = joy_num;
 	if(joystick)
 	{
 		SDL_JoystickClose(joystick);
 		joystick = NULL;
+		if(enable_joystick == - 1)
+			SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 	}
-	sint8 enable_joystick;
-	std::string enable_joystick_str;
-	config->value("config/joystick/enable_joystick", enable_joystick_str, "no");
-
-	if(enable_joystick_str == "no")
-		enable_joystick = -1;
-	else if(enable_joystick_str == "auto")
-		enable_joystick = 127;
-	else
-		enable_joystick = atoi(enable_joystick_str.c_str());
+	enable_joystick = joy_num;
 
 	if(enable_joystick > - 1)
 	{
@@ -1011,7 +1047,8 @@ void KeyBinder::init_joystick(Configuration *config)
 		{
 			for(int i=0; i < SDL_NumJoysticks(); i++)
 				fprintf(stdout, "Joystick %i is %s.\n", i, SDL_JoystickName(i));
-
+#if SDL_VERSION_ATLEAST(2,0,0)
+//can use SDL_GameControllerGetAttached(SDL_GameController* gamecontroller) when we implement SDL2
 			if(enable_joystick == 127) // autodetect - seems to always pick joystick 0 but there is some possiblity that SDL couldn't open it
 			{
 				for(int i=0; joystick == NULL && i < SDL_NumJoysticks(); i++)
@@ -1021,6 +1058,7 @@ void KeyBinder::init_joystick(Configuration *config)
 				}
 			}
 			else
+#endif
 				joystick = SDL_JoystickOpen(joystick_index);
 		}
 		if(joystick == NULL)

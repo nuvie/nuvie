@@ -18,7 +18,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "SDL.h"
 #include "nuvieDefs.h"
 
 #include "GUI.h"
@@ -38,7 +37,14 @@
 #include "Keys.h"
 
 #define GMD_WIDTH 150
+
+#ifdef HAVE_JOYSTICK_SUPPORT
+#include "JoystickDialog.h"
+
+#define GMD_HEIGHT 122 // 13 bigger
+#else
 #define GMD_HEIGHT 109
+#endif
 
 GameMenuDialog::GameMenuDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - GMD_WIDTH)/2,
@@ -53,30 +59,36 @@ bool GameMenuDialog::init() {
 	int width = 132;
 	int height = 12;
 	int buttonX = 9;
-	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87 };
+	uint8 buttonY = 9;
+	uint8 row_h = 13;
 	b_index_num = -1;
 	last_index = 0;
 	GUI *gui = GUI::get_gui();
 
-	saveLoad_button = new GUI_Button(this, buttonX, buttonY[0], width, height, "Load/Save Game", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	saveLoad_button = new GUI_Button(this, buttonX, buttonY, width, height, "Load/Save Game", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(saveLoad_button); 
 	button_index[last_index] = saveLoad_button;
-	video_button = new GUI_Button(this, buttonX, buttonY[1], width, height, "Video Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	video_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Video Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(video_button);
 	button_index[last_index+=1] = video_button;
-	audio_button = new GUI_Button(this, buttonX, buttonY[2], width, height, "Audio Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	audio_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Audio Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(audio_button);
 	button_index[last_index+=1] = audio_button;
-	input_button = new GUI_Button(this, buttonX, buttonY[3], width, height, "Input Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	input_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Input Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(input_button);
 	button_index[last_index+=1] = input_button;
-	gameplay_button = new GUI_Button(this, buttonX, buttonY[4], width, height, "Gameplay Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+#ifdef HAVE_JOYSTICK_SUPPORT
+	joystick_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Joystick Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	AddWidget(joystick_button);
+	button_index[last_index+=1] = joystick_button;
+#endif
+	gameplay_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Gameplay Options", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(gameplay_button);
 	button_index[last_index+=1] = gameplay_button;
-	cheats_button = new GUI_Button(this, buttonX, buttonY[5], width, height, "Cheats", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	cheats_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Cheats", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cheats_button);
 	button_index[last_index+=1] = cheats_button;
-	quit_button = new GUI_Button(this, buttonX, buttonY[6], width, height, "Quit", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	quit_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Quit", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(quit_button);
 	button_index[last_index+=1] = quit_button;
  
@@ -147,6 +159,13 @@ GUI_status GameMenuDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 		input_dialog = (GUI_Widget *) new InputDialog((GUI_CallBack *)this);
 		GUI::get_gui()->AddWidget(input_dialog);
 		gui->lock_input(input_dialog);
+#ifdef HAVE_JOYSTICK_SUPPORT
+	} else if(caller == (GUI_CallBack *)joystick_button) {
+		GUI_Widget *joystick_dialog;
+		joystick_dialog = (GUI_Widget *) new JoystickDialog((GUI_CallBack *)this);
+		GUI::get_gui()->AddWidget(joystick_dialog);
+		gui->lock_input(joystick_dialog);
+#endif
 	} else if(caller == (GUI_CallBack *)gameplay_button) {
 		GUI_Widget *gameplay_dialog;
 		gameplay_dialog = (GUI_Widget *) new GameplayDialog((GUI_CallBack *)this);

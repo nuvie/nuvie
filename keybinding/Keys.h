@@ -84,6 +84,7 @@ class KeyBinder {
            y_axis_deadzone, x_axis2_deadzone, y_axis2_deadzone, x_axis3_deadzone, y_axis3_deadzone,
            x_axis4_deadzone, y_axis4_deadzone;
 	uint8 x_axis, y_axis, x_axis2, y_axis2, x_axis3, y_axis3, x_axis4, y_axis4;
+	sint8 enable_joystick;
 #endif
  	void LoadFromFileInternal(const char* filename);
 public:
@@ -114,16 +115,21 @@ public:
 
 	void ShowKeys() const;
 #ifdef HAVE_JOYSTICK_SUPPORT
+	uint8 get_axis(uint8 index);
+	void set_axis(uint8 index, uint8 value);
 	SDLKey get_key_from_joy_walk_axes() { return get_key_from_joy_axis_motion(x_axis, true); }
 	SDLKey get_key_from_joy_axis_motion(int axis, bool repeating);
 	SDLKey get_key_from_joy_hat_button(uint8 hat_button);
 	SDLKey get_key_from_joy_events(SDL_Event *event);
-	void init_joystick(Configuration *config);
+	void init_joystick(sint8 joy_num);
 	SDL_Joystick *get_joystick() { return joystick; }
 	uint32 get_next_joy_repeat_time() { return next_joy_repeat_time; }
 	void set_enable_joy_repeat(bool val) { if (joy_repeat_delay == 10000) return; joy_repeat_enabled = val; }
 	bool is_joy_repeat_enabled() { return joy_repeat_enabled; }
 	bool is_hat_repeating() { return repeat_hat; }
+	void set_hat_repeating(bool val) { repeat_hat = val; }
+	sint8 get_enable_joystick() { return enable_joystick; }
+	void set_enable_joystick(bool val) { enable_joystick = val; }
 #endif
 
  private:

@@ -1,3 +1,9 @@
+2014-02-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1864
+	* Add Joystick sub-menu to the game menu.
+	* Get rid of auto selection option of joystick in SDL 1.2. It was pretty
+	  useless because unplugged controllers in an adapter still got selected.
+	* Set max enable_joystick to 9.
+
 2014-02-05  Malignant Manor <malignantmanor@users.sourceforge.net> r1863
 	* Fix multi_use keybinding not being able to make a second attack.
 	* Have multi_use keybinding center the cursor on the player's combat target

@@ -158,6 +158,8 @@ nuvie_SOURCES = \
 	menus/GameplayDialog.h \
 	menus/InputDialog.cpp \
 	menus/InputDialog.h \
+	menus/JoystickDialog.cpp \
+	menus/JoystickDialog.h \
 	menus/VideoDialog.cpp \
 	menus/VideoDialog.h \
 \
