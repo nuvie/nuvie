@@ -99,8 +99,9 @@
   <roof_mode>no</roof_mode>
   <show_stealing>no</show_stealing>
   <use_new_dolls>no</use_new_dolls>
-  <show_orig_plus_cb>yes</show_orig_plus_cb>
-  <orig_plus_cb_text_color>115</orig_plus_cb_text_color>
+  <cb_position>default</cb_position>
+  <show_orig_style_cb>yes</show_orig_style_cb>
+  <cb_text_color>115</cb_text_color>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>218</converse_bg_color>
   <converse_width>default</converse_width>
@@ -125,7 +126,8 @@
   <skip_intro> no </skip_intro>
   <show_eggs>no</show_eggs>
   <use_new_dolls>no</use_new_dolls>
-  <show_orig_plus_cb>yes</show_orig_plus_cb>
+  <cb_position>default</cb_position>
+  <show_orig_style_cb>yes</show_orig_style_cb>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>136</converse_bg_color>
   <converse_width>default</converse_width>
@@ -147,7 +149,8 @@
   <skip_intro> no </skip_intro>
   <show_eggs>no</show_eggs>
   <use_new_dolls>no</use_new_dolls>
-  <show_orig_plus_cb>yes</show_orig_plus_cb>
+  <cb_position>default</cb_position>
+  <show_orig_style_cb>yes</show_orig_style_cb>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>216</converse_bg_color>
   <converse_width>default</converse_width>

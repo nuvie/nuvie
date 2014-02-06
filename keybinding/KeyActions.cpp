@@ -171,15 +171,9 @@ void ActionSelectCommandBar(int const *params)
 
 void ActionSelectNewCommandBar(int const *params)
 {
-	CommandBar *cb;
-	if(!game->is_new_style())
-	{
-		cb = game->get_new_command_bar();
-		if(!cb)
-			return;
-	}
-	else
-		cb = game->get_command_bar();
+	CommandBar *cb = game->get_new_command_bar();
+	if(!cb)
+		return;
 
 	cb->grab_focus();
 	cb->Show();
@@ -467,9 +461,9 @@ void ActionToggleSFX(int const *params)
 	new TextEffect(message);
 }
 
-void ActionToggleOriginalPlusCommandBar(int const *params)
+void ActionToggleOriginalStyleCommandBar(int const *params)
 {
-	if(Game::get_game()->is_original_plus() == false)
+	if(Game::get_game()->is_orig_style())
 		return;
 	CommandBar *cb = game->get_command_bar();
 	Configuration *config = game->get_config();
@@ -481,7 +475,7 @@ void ActionToggleOriginalPlusCommandBar(int const *params)
 	} else {
 		cb->Show();
 	}
-	config->set(config_get_game_key(config) + "/show_orig_plus_cb", !hide);
+	config->set(config_get_game_key(config) + "/show_orig_style_cb", !hide);
 	config->write();
 }
 

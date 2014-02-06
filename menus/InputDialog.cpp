@@ -86,8 +86,10 @@ bool InputDialog::init() {
 	if(!game->is_new_style()) {
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Doubleclick opens containers:", font);
 		AddWidget(widget);
+	}
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Use new command bar:", font);
 		AddWidget(widget);
+	if(!game->is_new_style()) {
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Party view targeting:", font);
 		AddWidget(widget);
 	}
@@ -140,20 +142,19 @@ bool InputDialog::init() {
 		open_container_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, game->doubleclick_opens_containers(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(open_container_button);
 		button_index[last_index+=1] = open_container_button;
-
-		bool using_new_command_bar;
-		config->value("config/input/new_command_bar", using_new_command_bar, false);
-		command_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, using_new_command_bar, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		}
+		command_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, game->get_new_command_bar() != NULL, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(command_button);
 		button_index[last_index+=1] = command_button;
 
+	if(!Game::get_game()->is_new_style()) {
 		bool party_view_targeting;
 		config->value("config/input/party_view_targeting", party_view_targeting, false);
 		party_targeting_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, yesno_width, height, yesno_text, 2, party_view_targeting,  font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(party_targeting_button);
 		button_index[last_index+=1] = party_targeting_button;
 	} else
-		open_container_button = command_button = party_targeting_button = NULL;
+		open_container_button = party_targeting_button = NULL;
 	cancel_button = new GUI_Button(this, 83, ID_HEIGHT - 20, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
 	button_index[last_index+=1] = cancel_button;
@@ -246,16 +247,16 @@ GUI_status InputDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 			game->set_free_balloon_movement(balloon_button->GetSelection() == 1);
 			config->set(config_get_game_key(config) + "/free_balloon_movement", balloon_button->GetSelection() ? "yes" : "no");
 		}
-		if(!Game::get_game()->is_new_style()) {
+		if(open_container_button) {
 			game->set_doubleclick_opens_containers(open_container_button->GetSelection());
 			config->set("config/input/doubleclick_opens_containers", open_container_button->GetSelection() ? "yes" : "no");
-
+		}
 			if(command_button->GetSelection())
 				game->init_new_command_bar();
 			else
 				game->delete_new_command_bar();
 			config->set("config/input/new_command_bar", command_button->GetSelection() ? "yes" : "no");
-
+		if(party_targeting_button) {
 			game->get_view_manager()->get_party_view()->set_party_view_targeting(party_targeting_button->GetSelection());
 			config->set("config/input/party_view_targeting", party_targeting_button->GetSelection() ? "yes" : "no");
 		}

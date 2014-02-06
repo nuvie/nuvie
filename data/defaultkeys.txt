@@ -27,7 +27,7 @@ Ctrl-r	load_latest_save
 
 ;	multi_use
 ,	new_command_bar
-.	toggle_original_plus_command_bar
+.	toggle_original_style_command_bar
 `	toggle_combat_strategy
 tab	toggle_cursor
 l	look

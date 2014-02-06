@@ -307,30 +307,18 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/joystick/enable_joystick", false);
 	config->set("config/joystick/repeat_hat", false);
 	config->set("config/joystick/repeat_delay", 50);
-// axes_pair1
-	config->set("config/joystick/axes_pair1/axis_x", 0);
-	config->set("config/joystick/axes_pair1/axis_y", 1);
-	config->set("config/joystick/axes_pair1/delay", 110);
-	config->set("config/joystick/axes_pair1/x_deadzone", 8000);
-	config->set("config/joystick/axes_pair1/y_deadzone", 8000);
-// axes_pair2
-	config->set("config/joystick/axes_pair2/axis_x", 3);
-	config->set("config/joystick/axes_pair2/axis_y", 2);
-	config->set("config/joystick/axes_pair2/delay", 110);
-	config->set("config/joystick/axes_pair2/x_deadzone", 8000);
-	config->set("config/joystick/axes_pair2/y_deadzone", 8000);
-// axes_pair3
-	config->set("config/joystick/axes_pair3/axis_x", 4);
-	config->set("config/joystick/axes_pair3/axis_y", 5);
-	config->set("config/joystick/axes_pair3/delay", 110);
-	config->set("config/joystick/axes_pair3/x_deadzone", 8000);
-	config->set("config/joystick/axes_pair3/y_deadzone", 8000);
-// axes_pair4
-	config->set("config/joystick/axes_pair4/axis_x", 6);
-	config->set("config/joystick/axes_pair4/axis_y", 7);
-	config->set("config/joystick/axes_pair4/delay", 110);
-	config->set("config/joystick/axes_pair4/x_deadzone", 8000);
-	config->set("config/joystick/axes_pair4/y_deadzone", 8000);
+
+	uint8 axisx[] = { 0, 3, 4, 6 };
+	uint8 axisy[] = { 1, 2, 5, 7 };
+	std::string axes_str = "config/joystick/axes_pair";
+	std::string pair_str[] = { axes_str + "1", axes_str + "2", axes_str + "3", axes_str + "4" };
+	for(int i=0; i < 4; i++) {
+	config->set(pair_str[i] + "/axis_x", axisx[i]);
+	config->set(pair_str[i] + "/axis_y", axisy[i]);
+	config->set(pair_str[i] + "/delay", 110);
+	config->set(pair_str[i] + "/x_deadzone", 8000);
+	config->set(pair_str[i] + "/y_deadzone", 8000);
+	}
 #endif
 
 	config->set("config/input/enable_doubleclick", true);
@@ -355,58 +343,36 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/cheats/enable_hackmove", false);
 	config->set("config/cheats/min_brightness", 0);
 	config->set("config/cheats/party_all_the_time", false);
-
-	config->set("config/ultima6/music", "native");
-	config->set("config/ultima6/sfx", "native");
-	config->set("config/ultima6/skip_intro", false);
-	config->set("config/ultima6/show_eggs", false);
-	config->set("config/ultima6/show_stealing", false);
-	config->set("config/ultima6/roof_mode", false);
-	config->set("config/ultima6/show_orig_plus_cb", true);
-	config->set("config/ultima6/orig_plus_cb_text_color", 115);
-	config->set("config/ultima6/converse_solid_bg", false);
-	config->set("config/ultima6/converse_bg_color", 218);
-	config->set("config/ultima6/converse_width", "default");
-	config->set("config/ultima6/converse_height", "default");
-	config->set("config/ultima6/free_balloon_movement", false);
-	config->set("config/ultima6/game_specific_keys", "(default)");
-	config->set("config/ultima6/newscroll/width", 30);
-	config->set("config/ultima6/newscroll/height", 19);
-	config->set("config/ultima6/newscroll/solid_bg", "no");
-	config->set("config/ultima6/newscroll/bg_color", 218);
-	config->set("config/ultima6/newscroll/border_color", 220);
-
-	config->set("config/martian/music", "native");
-	config->set("config/martian/sfx", "native");
-	config->set("config/martian/skip_intro", false);
-	config->set("config/martian/show_eggs", false);
-	config->set("config/martian/show_orig_plus_cb", true);
-	config->set("config/martian/converse_solid_bg", false);
-	config->set("config/martian/converse_bg_color", 136);
-	config->set("config/martian/converse_width", "default");
-	config->set("config/martian/converse_height", "default");
-	config->set("config/martian/game_specific_keys", "(default)");
-	config->set("config/martian/newscroll/width", 30);
-	config->set("config/martian/newscroll/height", 19);
-	config->set("config/martian/newscroll/solid_bg", "no");
-	config->set("config/martian/newscroll/bg_color", 136);
-	config->set("config/martian/newscroll/border_color", 133);
-
-	config->set("config/savage/music", "native");
-	config->set("config/savage/sfx", "native");
-	config->set("config/savage/skip_intro", false);
-	config->set("config/savage/show_eggs", false);
-	config->set("config/savage/show_orig_plus_cb", true);
-	config->set("config/savage/converse_solid_bg", false);
-	config->set("config/savage/converse_bg_color", 216);
-	config->set("config/savage/converse_width", "default");
-	config->set("config/savage/converse_height", "default");
-	config->set("config/savage/game_specific_keys", "(default)");
-	config->set("config/savage/newscroll/width", 30);
-	config->set("config/savage/newscroll/height", 19);
-	config->set("config/savage/newscroll/solid_bg", "no");
-	config->set("config/savage/newscroll/bg_color", 216);
-	config->set("config/savage/newscroll/border_color", 219);
+// game specific settings
+	uint8 bg_color[] = { 218, 136, 216 }; // U6, MD, SE
+	uint8 border_color[] = { 220, 133, 219 }; // U6, MD, SE
+	std::string game_str[] = { "config/ultima6/", "config/martian/", "config/savage/" };
+	for(int i=0; i < 3; i++) {
+		config->set(game_str[i] + "music", "native");
+		config->set(game_str[i] + "sfx", "native");
+		config->set(game_str[i] + "skip_intro", false);
+		config->set(game_str[i] + "show_eggs", false);
+		if(i == 0) { // U6
+			config->set("config/ultima6/show_stealing", false);
+			config->set(game_str[i] + "roof_mode", false);
+		}
+		config->set(game_str[i] + "cb_position", "default");
+		config->set(game_str[i] + "show_orig_style_cb", true);
+		if(i == 0) // U6
+			config->set("config/ultima6/cb_text_color", 115);
+		config->set(game_str[i] + "converse_solid_bg", false);
+		config->set(game_str[i] + "converse_bg_color", bg_color[i]);
+		config->set(game_str[i] + "converse_width", "default");
+		config->set(game_str[i] + "converse_height", "default");
+		if(i == 0) // U6
+			config->set(game_str[i] + "free_balloon_movement", false);
+		config->set(game_str[i] + "game_specific_keys", "(default)");
+		config->set(game_str[i] + "newscroll/width", 30);
+		config->set(game_str[i] + "newscroll/height", 19);
+		config->set(game_str[i] + "newscroll/solid_bg", "no");
+		config->set(game_str[i] + "newscroll/bg_color", bg_color[i]);
+		config->set(game_str[i] + "newscroll/border_color", border_color[i]); 
+	}
 
 //	config->set("config/newgamedata/name", "Avatar");
 //	config->set("config/newgamedata/gender", 0);

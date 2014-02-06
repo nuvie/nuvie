@@ -286,7 +286,7 @@ bool Game::loadGame(Script *s)
 
    weather = new Weather(config, clock, game_type);
 
-   if(!is_new_style())
+//   if(!is_new_style()) // Everyone always uses original style command bar now.
    {
        command_bar = new CommandBar(this);
        bool using_new_command_bar;
@@ -296,8 +296,8 @@ bool Game::loadGame(Script *s)
            init_new_command_bar();
        }
    }
-   else
-	   command_bar = new CommandBarNewUI(this);
+//   else
+//	   command_bar = new CommandBarNewUI(this);
    command_bar->Hide();
    gui->AddWidget(command_bar);
 
@@ -348,13 +348,13 @@ bool Game::loadGame(Script *s)
    //ConsolePause();
    ConsoleHide();
 
-   if(!is_new_style())
+//   if(!is_new_style())
    {
         if(is_orig_style())
             command_bar->Show();
         else {
             bool show;
-            config->value(config_get_game_key(config) + "/show_orig_plus_cb", show, true);
+            config->value(config_get_game_key(config) + "/show_orig_style_cb", show, true);
             if(show)
                 command_bar->Show();
         }
@@ -616,7 +616,8 @@ void Game::time_changed()
 {
     if(!is_new_style())
     {
-        get_command_bar()->update(); // date & wind
+        if(game->is_orig_style()) // others constantly update
+            get_command_bar()->update(); // date & wind
         get_view_manager()->get_party_view()->update(); // sky
     }
     get_map_window()->updateAmbience();

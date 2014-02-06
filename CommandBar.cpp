@@ -93,18 +93,30 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
     Weather *weather;
     uint16 x_off = game->get_game_x_offset();
     uint16 y_off =  game->get_game_y_offset();
+    bool right_pos_cb;
+    Configuration *cfg;
+
+    if(!game->is_orig_style())
+    {
+        cfg = game->get_config();
+        std::string pos_str;
+        cfg->value(config_get_game_key(cfg) + "/cb_position", pos_str, "default");
+        if(pos_str == "default")
+            right_pos_cb = !game->is_new_style();
+        else
+            right_pos_cb = pos_str != "left"; 
+    }
 
     if(game->get_game_type() == NUVIE_GAME_U6)
     {
         offset = OBJLIST_OFFSET_U6_COMMAND_BAR;
-        if(game->is_original_plus()) {
+        if(!game->is_orig_style()) {
             
             int value;
-            Configuration *cfg = game->get_config();
-            cfg->value(config_get_game_key(cfg) + "/orig_plus_cb_text_color", value, 155); // light blue so that it stands out most of the time and isn't too bold
+            cfg->value(config_get_game_key(cfg) + "/cb_text_color", value, 115); // light blue so that it stands out most of the time and isn't too bold
             font_color = value;
             y_off += game->get_game_height() - 29;
-            if(game->get_game_height() > 228) // bottom right
+            if(right_pos_cb && (game->get_game_height() > 228 || game->is_new_style())) // bottom right
                 Init(NULL, x_off + 159 + game->get_game_width() - 320, y_off, 0, 0);
             else // bottom left
                 Init(NULL, x_off, y_off, 0, 0);
@@ -117,11 +129,11 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
     }
     else if(game->get_game_type() == NUVIE_GAME_MD)
     {
-        if(game->is_original_plus()) {
+        if(!game->is_orig_style()) {
            background = new U6Shape();
            background->load_WoU_background(game->get_config(), game->get_game_type());
            y_off += game->get_game_height() - 34;
-           if(game->get_game_height() > 233)
+           if(right_pos_cb && (game->get_game_height() > 233 || game->is_new_style()))
                Init(NULL, x_off + game->get_game_width() - 320 + 174, y_off, 146, 34);
            else
                Init(NULL, 16+x_off, y_off - 3, 146, 34);
@@ -131,11 +143,11 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
     }
     else // SE
     {
-        if(game->is_original_plus()) {
+        if(!game->is_orig_style()) {
            background = new U6Shape();
            background->load_WoU_background(game->get_config(), game->get_game_type());
            y_off += game->get_game_height() - 22;
-           if(game->get_game_height() > 221) // bottom right
+           if(right_pos_cb && (game->get_game_height() > 221 || game->is_new_style())) // bottom right
                Init(NULL, x_off + 156 + game->get_game_width() - 320, y_off, 163, 19);
            else
                Init(NULL, 8+x_off, y_off, 1643, 19);
@@ -154,9 +166,6 @@ CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
     wind = "?";
 
     bg_color = game->get_palette()->get_bg_color();
-    if(game->is_new_style())
-        return;
-
     if(game->get_game_type() == NUVIE_GAME_U6)
         init_buttons();
 
@@ -385,7 +394,7 @@ void CommandBar::set_combat_mode(bool mode)
     if(combat_mode != mode)
     {
         combat_mode = mode;
-        if(!game->is_new_style() && game->get_game_type() == NUVIE_GAME_U6)
+        if(game->get_game_type() == NUVIE_GAME_U6)
         {
             icon[9] = tile_man->get_tile(combat_mode ? 415 : 414);
             update_display = true;
@@ -405,7 +414,7 @@ void CommandBar::Display(bool full_redraw)
 {
     Screen *screen = game->get_screen();
 
-    if(full_redraw || update_display || game->is_original_plus())
+    if(full_redraw || update_display || !game->is_orig_style())
     {
         update_display = false;
       if(game->get_game_type() == NUVIE_GAME_U6)
@@ -423,7 +432,7 @@ void CommandBar::Display(bool full_redraw)
             screen->fill(9, area.x + selected_action*16, area.y + 24, 16, 1);
       }
         else if(game->get_game_type() == NUVIE_GAME_SE) {
-            if(game->is_original_plus()) {
+            if(!game->is_orig_style()) {
                 unsigned char *se_ptr = background->get_data();
                 se_ptr += ((320 * 178) + 8); // ((bg_w * image_y_off)  + image_x_off)
                 screen->blit(area.x, area.y, se_ptr, 8, 163, 19, 320, true); // drawing command bar icons from background
@@ -431,7 +440,7 @@ void CommandBar::Display(bool full_redraw)
             if(selected_action >= 0 && selected_action <= 8)
                 fill_square(6);
         } else { // MD
-            if(game->is_original_plus()) {
+            if(!game->is_orig_style()) {
                 unsigned char *md_bg_ptr = background->get_data();
                 md_bg_ptr += ((320 * 163) + 15); // ((bg_w * image_y_off)  + image_x_off)
                 screen->fill(0, area.x, area.y, area.w, area.h); // lever slots, text, top, and bottom have transparency so we need to fill in black first

@@ -1,3 +1,13 @@
+2014-02-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1866
+	* Use original style command bar in new style. It is mandatory but can be
+	  hidden. New command bar is now optional. orig_plus_cb_text_color is now
+	  cb_text_color. show_orig_plus_cb is now show_orig_style_cb.
+	  toggle_original_plus_command_bar is now toggle_original_style_command_bar.
+	* Add game specific cb_position cfg setting to determine orig_style_cb
+	  position.
+	* use loops when setting default cfg settings instead of having to add lots
+	  of repeated settings.
+
 2014-02-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1865
 	* Add JoystickDialog files to SVN that I forgot last commit.
 
@@ -295,11 +305,11 @@
 	  option has been replaced by video/game_style. The options are original,
 	  new, original+, and original+_full_map, and they can be set in the video
 	  options menu.
-	* A new cfg setting, ultima6/orig_plus_cb_text_color, will select the
+	* A new cfg setting, ultima6/cb_text_color, will select the
 	  palette index color to use when displaying the text on the U6 command bar
 	  in both original+ styles.
 	* The command bar in both original+ styles can be hidden and shown by
-	  pressing the period "." key, The show_orig_plus_cb cfg setting in each
+	  pressing the period "." key, The show_orig_style_cb cfg setting in each
 	  game specic setting will control whether it is displayed on startup. The
 	  period key also changes the cfg setting.
 
