@@ -1,3 +1,4 @@
+#ifdef HAVE_JOYSTICK_SUPPORT
 /*
  *  JoystickDialog.cpp
  *  Nuvie
@@ -241,3 +242,4 @@ GUI_status JoystickDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 
 	return GUI_PASS;
 }
+#endif /* HAVE_JOYSTICK_SUPPORT */

@@ -1,5 +1,6 @@
 #ifndef __JoystickDialog_h__
 #define __JoystickDialog_h__
+#ifdef HAVE_JOYSTICK_SUPPORT
 /*
  *  JoystickDialog.h
  *  Nuvie
@@ -46,5 +47,5 @@ class JoystickDialog : public GUI_Dialog {
 		GUI_status KeyDown(SDL_keysym key);
 		GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
-
+#endif /* HAVE_JOYSTICK_SUPPORT */
 #endif /* __JoystickDialog_h__ */

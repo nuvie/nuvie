@@ -1,3 +1,7 @@
+2014-02-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1867
+	* Add #ifdef HAVE_JOYSTICK_SUPPORT to JoystickDialog.* to fix builds without
+	  HAVE_JOYSTICK_SUPPORT defined.
+
 2014-02-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1866
 	* Use original style command bar in new style. It is mandatory but can be
 	  hidden. New command bar is now optional. orig_plus_cb_text_color is now
