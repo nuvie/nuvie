@@ -86,8 +86,8 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 
  uint16 x_off = Game::get_game()->get_game_x_offset();
  uint16 y_off = Game::get_game()->get_game_y_offset();
-
- GUI_Widget::Init(NULL, x_off, y_off, scroll_width*7 + 8, scroll_height*10 + 8);
+ // need to accept clicks on whole game area
+ GUI_Widget::Init(NULL, x_off, y_off, Game::get_game()->get_game_width(), Game::get_game()->get_game_height());
 
  cursor_wait = 0;
 
@@ -272,7 +272,7 @@ void MsgScrollNewUI::Display(bool full_redraw)
 	snprintf(buf, 10, "%d", (int)msg_buf.size());
 	font_normal->drawString(screen, buf, 160, 20);
 */
-	screen->update(area.x,area.y, area.w, area.h);
+	screen->update(area.x,area.y, scroll_width*7 + 8, scroll_height*10 + 8);
 }
 
 GUI_status MsgScrollNewUI::KeyDown(SDL_keysym key)

@@ -254,6 +254,8 @@ GUI_status SaveDialog::KeyDown(SDL_keysym key)
 		}
 		break;
 	case DO_ACTION_KEY: {
+		if(show_cursor == false)
+			break;
 		if(cursor_loc == CURSOR_AT_SLOTS) // editing save description and selecting the slot
 			show_cursor = false;
 		uint16 x = (area.x + cursor_x)*screen->get_scale_factor();

@@ -1491,14 +1491,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
     }
     else
     {
-        Tile *tile = map->get_tile(push_obj->x, push_obj->y, push_obj->z);
-
-        if(map_window->get_interface() != INTERFACE_IGNORE_BLOCK && (tile->flags1 & TILEFLAG_WALL)
-           && (((tile->flags1 & TILEFLAG_WALL_MASK) == 208 // pushing north or south through wall
-                && (to.y < push_obj->y || player->get_actor()->get_y() < push_obj->y))
-           || ((tile->flags1 & TILEFLAG_WALL_MASK) == 176 // pushing east or west through wall
-               && (to.x < push_obj->x || player->get_actor()->get_x() < push_obj->x))
-           || ((tile->flags1 & TILEFLAG_WALL_MASK) == 240))) // northwest corner (always blocked)
+        if(map_window->get_interface() != INTERFACE_IGNORE_BLOCK && map_window->blocked_by_wall(player->get_actor(), push_obj))
         {
             scroll->display_string("Blocked.\n\n");
         }

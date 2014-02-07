@@ -46,6 +46,7 @@ Background::Background(Configuration *cfg) : GUI_Widget(NULL)
 
 
  Init(NULL, 0,0,Game::get_game()->get_screen()->get_width(),Game::get_game()->get_screen()->get_height());
+ drop_target = false;
 }
 
 Background::~Background()
@@ -143,26 +144,4 @@ void Background::Display(bool full_redraw)
    }
 
  return;
-}
-
-bool Background::drag_accept_drop(int x, int y, int message, void *data)
-{
-	GUI::get_gui()->force_full_redraw();
-	DEBUG(0,LEVEL_DEBUGGING,"Background::drag_accept_drop()\n");
-	if(Game::get_game()->is_original_plus_full_map() && message == GUI_DRAG_OBJ) { // added to gui before the map window so we need to redirect
-		MapWindow *map_window = Game::get_game()->get_map_window();
-		if(!map_window) // should be initialized before drops occur but we will play it safe
-			return false;
-		if(Game::get_game()->get_game_width() > x - x_off && x >= x_off // make sure we are on the map window
-		   && Game::get_game()->get_game_height() > y - y_off && y >= y_off)
-			return map_window->drag_accept_drop(x, y, message, data);
-	}
-	return false;
-}
-
-void Background::drag_perform_drop(int x, int y, int message, void *data)
-{
-	DEBUG(0,LEVEL_DEBUGGING,"Background::drag_perform_drop()\n");
-	if(message == GUI_DRAG_OBJ) // should only happen with original_plus_full_map
-		Game::get_game()->get_map_window()->drag_perform_drop(x, y, message, data);
 }

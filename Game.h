@@ -192,7 +192,7 @@ class Game
  bool is_roof_mode() { return roof_mode; }
  void set_roof_mode(bool val) { roof_mode = val; }
  bool using_hackmove();
- void set_hackmove(bool hackmove) { is_using_hackmove = hackmove; }
+ void set_hackmove(bool hackmove);
  uint8 is_dragging_enabled() { return dragging_enabled; }
  void set_dragging_enabled(bool drag) { dragging_enabled = drag; }
  bool is_god_mode_enabled() { return (god_mode_enabled && cheats_enabled); }

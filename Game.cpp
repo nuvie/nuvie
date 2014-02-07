@@ -507,6 +507,12 @@ bool Game::using_hackmove()
 		return false;
 }
 
+void Game::set_hackmove(bool hackmove)
+{
+	is_using_hackmove = hackmove;
+	map_window->set_interface();
+}
+
 bool Game::set_mouse_pointer(uint8 ptr_num)
 {
     return(cursor && cursor->set_pointer(ptr_num));

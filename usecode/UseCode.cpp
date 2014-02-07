@@ -181,7 +181,7 @@ bool UseCode::search_container(Obj *obj, bool show_string)
        temp_obj->y = obj->y;
        temp_obj->z = obj->z;
        */
-       obj_manager->moveto_map(temp_obj, MapCoord(obj));
+       obj_manager->moveto_map(temp_obj, obj->is_in_container() ? MapCoord(obj->get_container_obj(true)) : MapCoord(obj));
        if(show_string)
        {
          scroll->display_string(obj_manager->look_obj(temp_obj,true));

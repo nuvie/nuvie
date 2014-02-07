@@ -1770,6 +1770,7 @@ CanDropOrMoveMsg MapWindow::can_drop_or_move_obj(uint16 x, uint16 y, Actor *acto
         return MSG_OUT_OF_RANGE;
 
     uint8 lt_flags;
+#if 0 // going to treat ungettable objects the same as others for now
     sint16 rel_x, rel_y;
 // This can allow an extra tile of movement than it should but isn't a big enough deal to complicate pathfinding more
     if(!in_inventory && !obj_manager->can_get_obj(obj)) { // don't treat as missile if we cannot pick it up
@@ -1785,6 +1786,10 @@ CanDropOrMoveMsg MapWindow::can_drop_or_move_obj(uint16 x, uint16 y, Actor *acto
 
 
     if(map->lineTest(actor_loc.x + rel_x, actor_loc.y + rel_y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
+#else
+	lt_flags = LT_HitMissileBoundary;
+	if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
+#endif
     {
         MapCoord hit_loc = MapCoord(lt.hit_x, lt.hit_y, lt.hit_level);
         if(obj_loc.distance(target_loc) != 1 || hit_loc.distance(target_loc) != 1)
@@ -1867,23 +1872,33 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 		return true;
 
 	LineTestResult lt;
-	if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt))
+	if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt, 0, obj))
 	{
-		if(lt.hitObj != obj)
 			return false;
 	}
 
 	if(game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_SECRET_DOOR)
 		return true;
+	return !blocked_by_wall(actor, obj);
+}
+
+/*
+ * Check to make sure the obj isn't on the other side of a wall or trying to push through it.
+ * The original engine didn't bother to check.
+ */
+bool MapWindow::blocked_by_wall(Actor *actor, Obj *obj)
+{
+	if(game_type == NUVIE_GAME_U6 && obj->x == 282 && obj->y == 438 && cur_level == 0) // HACK for buggy location
+		return false;
 	Tile *tile = map->get_tile(obj->x, obj->y, cur_level);
 	if((tile->flags1 & TILEFLAG_WALL && !game->get_usecode()->is_door(obj))
        && (((tile->flags1 & TILEFLAG_WALL_MASK) == 208 && actor->get_y() < obj->y) // can't get items that are south
 	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 176 && actor->get_x() < obj->x) // can't get items that are east
 	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 240 // northwest corner - used in SE (not sure if used in other games)
 	       && (actor->get_y() < obj->y || actor->get_x() < obj->x))))
-		return false;
+		return true;
 
-	return true;
+	return false;
 }
 
 bool MapWindow::drag_accept_drop(int x, int y, int message, void *data)

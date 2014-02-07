@@ -1,3 +1,15 @@
+2014-02-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1869
+	* Go back to handling ungettable objects like other objects as far as
+	  pathfinding is concerned.
+	* Go back to having MsgScrollNewUI being the size of the game area. This
+	  fixes bug #292, Stuck reading signposts (mouse click ignored).
+	* Fix lock pick container causing a crash when dropped from inside a
+	  container gump to a party member.
+	* Set drop_target to false in Background so there is no need to handle it.
+	* Fix hackmove toggle not working properly.
+	* Don't do anything in save dialog when pressing the do_action key when the
+	  keyboard cursor is hidden.
+
 2014-02-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1868
 	* Add keyboard support to save menu. You need to press tab to cycle through
 	  areas in the menu. Enter can select what's under the keyboard cursor.

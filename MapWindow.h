@@ -218,6 +218,7 @@ class MapWindow: public GUI_Widget
  CanDropOrMoveMsg can_drop_or_move_obj(uint16 x, uint16 y, Actor *actor, Obj *obj);
  void display_can_drop_or_move_msg(CanDropOrMoveMsg msg, std::string msg_text = "");
  bool can_get_obj(Actor *actor, Obj *obj);
+ bool blocked_by_wall(Actor *actor, Obj *obj);
  void display_move_text(Actor *target_actor, Obj *obj);
  MapCoord original_obj_loc;
 

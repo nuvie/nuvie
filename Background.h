@@ -46,8 +46,6 @@ class Background: public GUI_Widget
  bool init();
  uint16 get_border_width() { return border_width; }
  void Display(bool full_redraw);
- bool drag_accept_drop(int x, int y, int message, void *data); // needed for original+_full_map
- void drag_perform_drop(int x, int y, int message, void *data); // needed for original+_full_map
 
 };
 
