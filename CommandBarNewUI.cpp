@@ -129,7 +129,7 @@ CommandBarNewUI::CommandBarNewUI(Game *g) : CommandBar()
     
     selected_action = -1;
     combat_mode = false;
-    wind = "?";
+    wind = weather->get_wind_dir_str();
 
     bg_color = game->get_palette()->get_bg_color();
 
@@ -292,8 +292,8 @@ void CommandBarNewUI::Display(bool full_redraw)
           font->drawString(screen, "QL", area.x + 2 + 2 * btn_size, icon_y_offset + area.y + 2 * btn_size + 4);
       }
       font->drawString(screen, get_command_name(cur_pos), area.x, area.y + icon_y_offset + icon_h * btn_size);
-      if(game->get_game_type() == NUVIE_GAME_U6 && game->is_original_plus()) // need to have edges of text update
-        screen->update(area.x-13, area.y, area.w+26, area.h);
+      if(game->get_game_type() == NUVIE_GAME_U6 && !game->is_orig_style())
+        screen->update(area.x-13, area.y, area.w+26, area.h); // need to have edges of text update
       else
         screen->update(area.x, area.y, area.w, area.h);
   //  }

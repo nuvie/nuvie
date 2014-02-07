@@ -102,6 +102,7 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
       case SOUTH_KEY: key.sym = SDLK_DOWN; break;
       case WEST_KEY: key.sym = SDLK_LEFT; break;
       case EAST_KEY: key.sym = SDLK_RIGHT; break;
+      case TOGGLE_CURSOR_KEY: release_focus(); return GUI_PASS; // can tab through to SaveDialog
       case DO_ACTION_KEY: key.sym = SDLK_RETURN; break;
       case CANCEL_ACTION_KEY: key.sym = SDLK_ESCAPE; break;
       case HOME_KEY: key.sym = SDLK_HOME;

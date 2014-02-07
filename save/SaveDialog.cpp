@@ -38,6 +38,10 @@
 #include "NuvieFileList.h"
 #include "Keys.h"
 
+#define CURSOR_HIDDEN 0
+#define CURSOR_AT_TOP 1
+#define CURSOR_AT_SLOTS 2
+
 #define NUVIE_SAVE_SCROLLER_ROWS   3
 #define NUVIE_SAVE_SCROLLER_HEIGHT NUVIE_SAVE_SCROLLER_ROWS * NUVIE_SAVESLOT_HEIGHT
 #define SD_WIDTH 320
@@ -54,6 +58,12 @@ SaveDialog::SaveDialog(GUI_CallBack *callback)
  save_button = NULL;
  load_button = NULL;
  cancel_button = NULL;
+ cursor_tile = NULL;
+ show_cursor = false;
+ index = 0;
+ save_index = 3;
+ set_cursor_pos(0);
+ cursor_loc = CURSOR_HIDDEN;
 }
 
 bool SaveDialog::init(const char *save_directory, const char *search_prefix)
@@ -141,12 +151,37 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
  if(Game::get_game()->is_armageddon())
      save_button->Hide();
 
+ cursor_tile = Game::get_game()->get_tile_manager()->get_gump_cursor_tile();
+
  return true;
 }
 
 
 SaveDialog::~SaveDialog()
 {
+}
+
+void SaveDialog::Display(bool full_redraw)
+{
+	GUI_Dialog::Display(full_redraw);
+	if(show_cursor) {
+		screen->blit(cursor_x, cursor_y,(unsigned char *)cursor_tile->data,8,16,16,16,true);
+		screen->update(cursor_x, cursor_y, 16, 16);
+	}
+}
+
+void SaveDialog::set_cursor_pos(uint8 index_num)
+{
+	switch(index_num) {
+		case 0: cursor_x = 117; cursor_y = 8; break;
+		case 1: cursor_x = 188; cursor_y = 8; break;
+		case 2: cursor_x = 264; cursor_y = 8; break;
+		case 3: cursor_x = 146; cursor_y = 26; break;
+		case 4: cursor_x = 146; cursor_y = 78; break;
+		default:
+		case 5: cursor_x = 146; cursor_y = 130; break;
+	}
+		cursor_x += area.x; cursor_y += area.y;
 }
 
 GUI_status SaveDialog::close_dialog()
@@ -172,15 +207,72 @@ GUI_status SaveDialog::KeyDown(SDL_keysym key)
  switch(keybinder->GetActionKeyType(a))
  {
 	case EAST_KEY:
+		if(cursor_loc == CURSOR_AT_TOP) {
+			if(index == 2)
+				set_cursor_pos(index = 0);
+			else
+				set_cursor_pos(++index);
+			break;
+		} // else fall through
 	case MSGSCROLL_DOWN_KEY: scroller->page_down(); break;
 
 	case WEST_KEY:
+		if(cursor_loc == CURSOR_AT_TOP) {
+			if(index == 0)
+				set_cursor_pos(index = 2);
+			else
+				set_cursor_pos(--index);
+			break;
+		} // else fall through
 	case MSGSCROLL_UP_KEY: scroller->page_up(); break;
 
-	case NORTH_KEY: scroller->move_up(); break;
-	case SOUTH_KEY: scroller->move_down(); break;
+	case NORTH_KEY:
+		if(cursor_loc == CURSOR_AT_SLOTS && save_index != 3) { // not at top of save slots
+			set_cursor_pos(--save_index); break;
+		}
+		scroller->move_up(); break;
+	case SOUTH_KEY:
+		if(cursor_loc == CURSOR_AT_SLOTS && save_index != 5) { // not at bottom of save slots
+			set_cursor_pos(++save_index); break;
+		}
+		scroller->move_down(); break;
 	case HOME_KEY: scroller->page_up(true); break;
 	case END_KEY:scroller->page_down(true); break;
+	case TOGGLE_CURSOR_KEY:
+		if(cursor_loc == CURSOR_AT_TOP) {
+			cursor_loc = CURSOR_HIDDEN;
+			show_cursor = false;
+		} else {
+			if(cursor_loc == CURSOR_HIDDEN) {
+				set_cursor_pos(save_index);
+				cursor_loc = CURSOR_AT_SLOTS;
+			} else { // if CURSOR_AT_SLOTS
+				set_cursor_pos(index);
+				cursor_loc = CURSOR_AT_TOP;
+			}
+			show_cursor = true;
+		}
+		break;
+	case DO_ACTION_KEY: {
+		if(cursor_loc == CURSOR_AT_SLOTS) // editing save description and selecting the slot
+			show_cursor = false;
+		uint16 x = (area.x + cursor_x)*screen->get_scale_factor();
+		uint16 y = (area.y + cursor_y + 8)*screen->get_scale_factor();
+
+		SDL_Event fake_event;
+		fake_event.button.x = x;
+		fake_event.button.y = y;
+		fake_event.type = fake_event.button.type = SDL_MOUSEBUTTONDOWN;
+		fake_event.button.state = SDL_RELEASED;
+		fake_event.button.button = SDL_BUTTON_LEFT;
+		GUI::get_gui()->HandleEvent(&fake_event);
+
+		fake_event.button.x = x; //GUI::HandleEvent divides by scale so we need to restore it
+		fake_event.button.y = y;
+		fake_event.type = fake_event.button.type = SDL_MOUSEBUTTONUP;
+		GUI::get_gui()->HandleEvent(&fake_event);
+		break;
+	}
 	case CANCEL_ACTION_KEY: return close_dialog();
 	default: keybinder->handle_always_available_keys(a); break;
  }

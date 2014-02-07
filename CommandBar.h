@@ -75,7 +75,7 @@ public:
 
     void select_action(sint8 activate);
     void set_combat_mode(bool mode);
-    void set_wind(std::string dir)        { wind = dir; update_display = true; }
+//    void set_wind(std::string dir)        { wind = dir; update_display = true; }
     void set_selected_action(sint8 action) { selected_action = action;
                                             update_display = true; }
     bool try_selected_action(sint8 command_num = -1);

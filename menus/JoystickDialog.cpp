@@ -215,11 +215,13 @@ GUI_status JoystickDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 		uint8 enabled_setting;
 		if(enable_button->GetSelection() == 5)
 			enabled_setting = kb->get_enable_joystick();
-		else if(enable_button->GetSelection() == 4)
+		else if(enable_button->GetSelection() == 4) {
 			enabled_setting = 255;
-		else
+			config->set("config/joystick/enable_joystick", "no");
+		} else {
 			enabled_setting = enable_button->GetSelection();
-		config->set("config/joystick/enable_joystick", enabled_setting);
+			config->set("config/joystick/enable_joystick", enabled_setting);
+		}
 		kb->init_joystick(enabled_setting == 255 ? -1 : enabled_setting); // will close and NULL joystick and open again if enabled
 // hat repeating
 		kb->set_hat_repeating(hat_repeating_b->GetSelection() == 1);

@@ -24,6 +24,7 @@
  */
 
 #include "GUI_Dialog.h"
+#include "TileManager.h"
 
 class GUI;
 class GUI_CallBack;
@@ -47,9 +48,15 @@ GUI_CallBack *callback_object;
 GUI_Button *save_button, *load_button, *cancel_button;
 
 SaveSlot *selected_slot;
+uint8 index, save_index, cursor_loc;
+uint16 cursor_x, cursor_y;
+const Tile *cursor_tile;
+bool show_cursor;
+void set_cursor_pos(uint8 index_num);
 
 public:
 
+void Display(bool full_redraw);
 SaveDialog(GUI_CallBack *callback);
 
 ~SaveDialog();

@@ -1,3 +1,11 @@
+2014-02-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1868
+	* Add keyboard support to save menu. You need to press tab to cycle through
+	  areas in the menu. Enter can select what's under the keyboard cursor.
+	* Fix joystick disabled menu setting not saving correctly.
+	* Increase update area on new command bar for new style because the edges of
+	  text gets cutoff if enabled in game. Have it update wind on init.
+	* Comment out unused function in CommandBar.h.
+
 2014-02-06  Malignant Manor <malignantmanor@users.sourceforge.net> r1867
 	* Add #ifdef HAVE_JOYSTICK_SUPPORT to JoystickDialog.* to fix builds without
 	  HAVE_JOYSTICK_SUPPORT defined.
