@@ -144,6 +144,7 @@
 #define OBJ_U6_HORSE_CARCASS       134
 #define OBJ_U6_HORSE_CHOPS         135
 
+#define OBJ_U6_PANTS               137
 #define OBJ_U6_PLANT               138
 
 #define OBJ_U6_DECORATIVE_SWORD    141

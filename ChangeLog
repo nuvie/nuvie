@@ -1,3 +1,9 @@
+2014-02-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1870
+	* Close gumps when using a peer gem.
+	* Allow pants, tunic, and dress to be equipped.
+	* Stop cistern and watch from constantly animating in MD.
+	* Fix command bar text blocking commands in new style.
+
 2014-02-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1869
 	* Go back to handling ungettable objects like other objects as far as
 	  pathfinding is concerned.

@@ -508,7 +508,10 @@ bool TileManager::loadAnimData()
       || animdata.tile_to_animate[i] == 1009 // Crank
       || animdata.tile_to_animate[i] == 1020)) // Chain
       || (game_type == NUVIE_GAME_MD
-      && animdata.tile_to_animate[i] >= 16 && animdata.tile_to_animate[i] <= 23)) // canal
+      && ((animdata.tile_to_animate[i] >= 1 && animdata.tile_to_animate[i] <= 4) // cistern
+      || (animdata.tile_to_animate[i] >= 16 && animdata.tile_to_animate[i] <= 23) // canal
+      || (animdata.tile_to_animate[i] >= 616 && animdata.tile_to_animate[i] <= 627)))) // watch --pu62 lists as 416-427
+ 
     animdata.loop_count[i] = 0; // don't start animated
    else
     animdata.loop_count[i] = -1; // infinite animation

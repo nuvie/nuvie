@@ -203,6 +203,10 @@ static const struct {uint16 obj_n; uint8 readiable_location; uint8 defence; uint
 {OBJ_U6_CLEAVER, ACTOR_ARM, 0, 4 },
 {OBJ_U6_KNIFE, ACTOR_ARM, 0, 4 },
 
+{OBJ_U6_TUNIC, ACTOR_BODY, 0, 0 },
+{OBJ_U6_DRESS, ACTOR_BODY, 0, 0 },
+{OBJ_U6_PANTS, ACTOR_BODY, 0, 0 },
+
 {OBJ_U6_LUTE, ACTOR_ARM, 0, 0 },
 
 {OBJ_U6_PLIERS, ACTOR_ARM, 0, 0 },

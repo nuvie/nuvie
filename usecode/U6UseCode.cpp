@@ -3308,6 +3308,7 @@ bool U6UseCode::use_peer_gem(Obj *obj, UseCodeEvent ev)
     uint16 x, y;
     uint8 z;
     player->get_location(&x, &y, &z);
+    game->get_event()->close_gumps();
     new PeerEffect(x-(x%8)-18,y-(y%8)-18,z, obj); // wrap to chunk boundary,
                                                   // and center in 11x11 MapWindow
     return false; // no prompt

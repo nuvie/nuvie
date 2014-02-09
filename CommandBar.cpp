@@ -273,8 +273,8 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
     x -= area.x;
     y -= area.y;
 
-    if((game->get_game_type() == NUVIE_GAME_U6 && y >= 8 && y <= 24)
-        || game->get_game_type() != NUVIE_GAME_U6)
+    if(game->get_game_type() != NUVIE_GAME_U6 ||
+      (y >= 8 && y <= 24))
     {
         uint8 activate = x / 16; // icon selected
         if(game->get_game_type() == NUVIE_GAME_SE)
@@ -291,7 +291,7 @@ GUI_status CommandBar::MouseDown(int x, int y, int button)
             select_action(activate);
         }
     }
-    else if(game->is_original_plus())
+    else if(!game->is_orig_style())
         return GUI_PASS;
     return(GUI_YUM);
 }
