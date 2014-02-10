@@ -43,6 +43,8 @@
 #include "NuvieIO.h"
 #include "SaveManager.h"
 #include "U6Shape.h"
+#include "MapWindow.h"
+#include "GUI.h"
 
 using std::string;
 
@@ -475,3 +477,23 @@ uint16 CommandBar::callback(uint16 msg, CallBack *caller, void * data)
     
     return 1;
 }
+
+bool CommandBar::drag_accept_drop(int x, int y, int message, void *data)
+{
+	GUI::get_gui()->force_full_redraw();
+	DEBUG(0,LEVEL_DEBUGGING,"CommandBar::drag_accept_drop()\n");
+	if(game->get_game_type() == NUVIE_GAME_U6 && !Game::get_game()->is_orig_style()
+	   && message == GUI_DRAG_OBJ) {
+		if(y < area.y + 8) // over text
+			return Game::get_game()->get_map_window()->drag_accept_drop(x, y, message, data);
+	}
+	return false;
+}
+
+void CommandBar::drag_perform_drop(int x, int y, int message, void *data)
+{
+	DEBUG(0,LEVEL_DEBUGGING,"CommandBar::drag_perform_drop()\n");
+	if(message == GUI_DRAG_OBJ) // should only happen with !orig_style in U6
+		Game::get_game()->get_map_window()->drag_perform_drop(x, y, message, data);
+}
+

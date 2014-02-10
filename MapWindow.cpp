@@ -2195,7 +2195,11 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 			return GUI_YUM;
 		}
 	}
-
+	if(game->is_original_plus() && y <= Game::get_game()->get_game_y_offset() + 200
+	   && x >= Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width) {
+		looking = false;
+		return GUI_PASS;
+	}
 	if(event->get_mode() == MOVE_MODE || event->get_mode() == EQUIP_MODE)
 	{
 		int wx, wy;

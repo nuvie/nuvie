@@ -1,4 +1,12 @@
-2014-02-07  Malignant Manor <malignantmanor@users.sourceforge.net> r1870
+2014-02-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1871
+	* Don't have the command bar text block (drag and) drop in non-original
+	  styles.
+	* Revert r1869 set drop_target change to background since it would allow
+	  (drag and) drop onto the UI's background.
+	* Have MapWindow ignore clicks over the background in both original+ styles.
+	* Have MsgScroll cancel actions when you click on it like the original does.
+
+2014-02-09  Malignant Manor <malignantmanor@users.sourceforge.net> r1870
 	* Close gumps when using a peer gem.
 	* Allow pants, tunic, and dress to be equipped.
 	* Stop cistern and watch from constantly animating in MD.

@@ -897,13 +897,22 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
         }
 
        }
+     else
+        Game::get_game()->get_event()->cancelAction();
     }
     else if(button == 3) // right click == send input
-        if(permit_inputescape && input_mode)
+    {
+      if(input_mode)
+      {
+        if(permit_inputescape)
         {
             set_input_mode(false);
             return(GUI_YUM);
         }
+      }
+      else
+            Game::get_game()->get_event()->cancelAction();
+    }
     return(GUI_PASS);
 }
 
