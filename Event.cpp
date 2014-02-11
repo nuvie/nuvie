@@ -119,6 +119,7 @@ Event::Event(Configuration *cfg)
  in_control_cheat = false;
  looking_at_spellbook = false;
  using_pickpocket_cheat = false;
+ do_not_show_target_cursor = false;
  config->value("config/input/direction_selects_target", direction_selects_target, true);
 
  mode = MOVE_MODE;
@@ -3480,6 +3481,13 @@ void Event::cancelAction()
     else
     {
         scroll->display_string("what?\n");
+        if(mode == ATTACK_MODE)
+        {
+            player->subtract_movement_points(10);
+            game->get_actor_manager()->startActors(); // end player turn
+            endAction();
+            return;
+        }
     }
 
     endAction(true);
@@ -3644,6 +3652,7 @@ void Event::endAction(bool prompt)
         input.get_text = false;
 //        input.select_from_inventory = false; // indicates cursor location
         input.get_direction = false;
+        do_not_show_target_cursor = false;
         map_window->set_show_use_cursor(false);
         map_window->set_show_cursor(false);
         if(!game->is_new_style())
@@ -3896,6 +3905,14 @@ void Event::close_gumps()
 	{
 		view_manager->close_all_gumps();
 	}
+}
+
+bool Event::dont_show_target_cursor()
+{
+    if(do_not_show_target_cursor || push_actor)
+        return true;
+    else
+        return false;
 }
 
 bool Event::input_really_needs_directon()

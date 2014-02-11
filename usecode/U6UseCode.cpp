@@ -1409,6 +1409,8 @@ bool U6UseCode::use_shovel(Obj *obj, UseCodeEvent ev)
 
 //        game->get_event()->useselect_mode(obj, "Direction: ");
         game->get_event()->get_direction(from, "Direction: ");
+        if(game->get_map_window()->get_interface() == INTERFACE_NORMAL)
+            game->get_event()->do_not_show_target_cursor = true;
         game->get_event()->request_input(this, obj);
         return(false);
     }

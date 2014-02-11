@@ -306,6 +306,8 @@ friend class Magic; // FIXME
 
  void toggleFpsDisplay();
  void close_gumps();
+ bool do_not_show_target_cursor;
+ bool dont_show_target_cursor();
  bool input_really_needs_directon();
  void quitDialog();
  void saveDialog();

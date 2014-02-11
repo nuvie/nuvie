@@ -1,3 +1,7 @@
+2014-02-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1872
+	* End character's turn when canceling an attack.
+	* Do a better job of selecting when to use the target cursor.
+
 2014-02-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1871
 	* Don't have the command bar text block (drag and) drop in non-original
 	  styles.
