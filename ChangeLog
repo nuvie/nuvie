@@ -1,3 +1,9 @@
+2014-02-11  Dominik Reichardt <dominus@users.sourceforge.net> r1877
+	* Fixed configure.ac magic for Joystick support. Instead of appending the 
+	  CPPFLAGS it's better to make it an AC_DEFINE. That made it necessary to 
+	  add some nuvieDefs.h includes or move them outside of the 
+	  #ifdef HAVE_JOYSTICK_SUPPORT condition.
+
 2014-02-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1876
 	* Fix r1871 regression that caused the new msgscroll to cancel action.
 

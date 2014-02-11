@@ -29,10 +29,9 @@
 
 #include "SDL_events.h"
 #include "KeysEnum.h"
-
-#ifdef HAVE_JOYSTICK_SUPPORT
 #include "nuvieDefs.h"
 
+#ifdef HAVE_JOYSTICK_SUPPORT
 typedef enum { AXES_PAIR1, AXES_PAIR2, AXES_PAIR3, AXES_PAIR4, UNHANDLED_AXES_PAIR } joy_axes_pairs;
 #endif
 

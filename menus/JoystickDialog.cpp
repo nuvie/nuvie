@@ -1,4 +1,3 @@
-#ifdef HAVE_JOYSTICK_SUPPORT
 /*
  *  JoystickDialog.cpp
  *  Nuvie
@@ -22,6 +21,7 @@
 //#include "SDL.h"
 #include "nuvieDefs.h"
 
+#ifdef HAVE_JOYSTICK_SUPPORT
 #include "GUI.h"
 #include "GUI_types.h"
 #include "GUI_button.h"

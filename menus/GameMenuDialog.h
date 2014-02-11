@@ -21,6 +21,7 @@
  */
 
 #include "GUI_Dialog.h"
+#include "nuvieDefs.h"
 
 #define GAMEMENUDIALOG_CB_DELETE 3
 

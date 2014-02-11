@@ -81,7 +81,7 @@ if test x$enable_joysticks = xno; then
         AC_MSG_RESULT(no)
 else
         AC_MSG_RESULT(yes)
-        CPPFLAGS="$CPPFLAGS -DHAVE_JOYSTICK_SUPPORT"
+        AC_DEFINE(HAVE_JOYSTICK_SUPPORT, 1, [Enable Joystick Support])
 fi
 
 # ---------------------------------------------------------------------
