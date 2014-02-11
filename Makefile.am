@@ -46,7 +46,7 @@ bundle: ${EXE_TARGET}
 	mkdir -p $(bundle_name)/Contents/Resources/data/
 	mkdir -p $(bundle_name)/Contents/Resources/English.lproj/
 	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
-	$(INSTALL_DATA) xcodebuild/Info-Nuvie.plist $(bundle_name)/Contents/Info.plist
+	$(INSTALL_DATA) builds/macosx/Info.plist $(bundle_name)/Contents/Info.plist
 	$(INSTALL_PROGRAM) nuvie$(EXEEXT) $(bundle_name)/Contents/MacOS/
 	$(INSTALL_DATA) xcodebuild/nuvie.icns $(bundle_name)/Contents/Resources/
 	$(INSTALL_DATA) xcodebuild/English.lproj/InfoPlist.strings $(bundle_name)/Contents/Resources/English.lproj/
@@ -66,11 +66,13 @@ osxdmg: bundle
 	cp $(srcdir)/changelog ./Nuvie-snapshot/Changelog
 	cp $(srcdir)/README ./Nuvie-snapshot/ReadMe
 	cp $(srcdir)/xcodebuild/misc/README_MacOSX.txt ./Nuvie-snapshot/ReadMe.MacOSX
+	cp $(srcdir)/nuvie.cfg.sample ./Nuvie-snapshot/nuvie.cfg.sample
 	SetFile -t ttro -c ttxt ./Nuvie-snapshot/Authors
 	SetFile -t ttro -c ttxt ./Nuvie-snapshot/License
 	SetFile -t ttro -c ttxt ./Nuvie-snapshot/Changelog
 	SetFile -t ttro -c ttxt ./Nuvie-snapshot/ReadMe
 	SetFile -t ttro -c ttxt ./Nuvie-snapshot/ReadMe.MacOSX
+	SetFile -t ttro -c ttxt ./Nuvie-snapshot/nuvie.cfg.sample
 	CpMac -r $(bundle_name) ./Nuvie-snapshot/
 	hdiutil create -ov -format UDZO -imagekey zlib-level=9 -fs HFS+ \
 					-srcfolder Nuvie-snapshot \
