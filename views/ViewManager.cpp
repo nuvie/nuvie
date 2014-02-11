@@ -50,6 +50,7 @@
 #include "Event.h"
 #include "Portrait.h"
 #include "UseCode.h"
+#include "NuvieBmpFile.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -591,23 +592,28 @@ std::string ViewManager::getDollDataDirString()
   return DollDataDirString;
 }
 
-SDL_Surface *ViewManager::loadAvatarDollImage(SDL_Surface *avatar_doll) {
+SDL_Surface *ViewManager::loadAvatarDollImage(SDL_Surface *avatar_doll, bool orig) {
 	char filename[17]; //avatar_nn_nn.bmp\0
 	std::string imagefile;
 	uint8 portrait_num = Game::get_game()->get_portrait()->get_avatar_portrait_num();
 
 	sprintf(filename, "avatar_%s_%02d.bmp", get_game_tag(Game::get_game()->get_game_type()), portrait_num);
-	build_path(getDollDataDirString(), filename, imagefile);
+	if(orig) {
+		build_path(getDollDataDirString(), "orig_style", imagefile);
+		build_path(imagefile, filename, imagefile);
+	} else {
+		build_path(getDollDataDirString(), filename, imagefile);
+	}
 	if(avatar_doll != NULL)
 		SDL_FreeSurface(avatar_doll);
-
+	NuvieBmpFile bmp;
 	avatar_doll = bmp.getSdlSurface32(imagefile);
 	if(avatar_doll == NULL)
-		avatar_doll = loadGenericDollImage();
+		avatar_doll = loadGenericDollImage(orig);
 	return avatar_doll;
 }
 
-SDL_Surface *ViewManager::loadCustomActorDollImage(SDL_Surface *actor_doll, uint8 actor_num) {
+SDL_Surface *ViewManager::loadCustomActorDollImage(SDL_Surface *actor_doll, uint8 actor_num, bool orig) {
   char filename[17]; //actor_nn_nnn.bmp\0
   std::string imagefile;
 
@@ -615,19 +621,31 @@ SDL_Surface *ViewManager::loadCustomActorDollImage(SDL_Surface *actor_doll, uint
     SDL_FreeSurface(actor_doll);
 
   sprintf(filename, "actor_%s_%03d.bmp", get_game_tag(Game::get_game()->get_game_type()), actor_num);
-  build_path(getDollDataDirString(), filename, imagefile);
+  if(orig) {
+    build_path(getDollDataDirString(), "orig_style", imagefile);
+    build_path(imagefile, filename, imagefile);
+  } else {
+    build_path(getDollDataDirString(), filename, imagefile);
+  }
+  NuvieBmpFile bmp;
   actor_doll = bmp.getSdlSurface32(imagefile);
 
   if(actor_doll == NULL)
-    actor_doll = loadGenericDollImage();
+    actor_doll = loadGenericDollImage(orig);
   return actor_doll;
 }
 
-SDL_Surface *ViewManager::loadGenericDollImage() {
+SDL_Surface *ViewManager::loadGenericDollImage(bool orig) {
   char filename[14]; //avatar_nn.bmp\0
   std::string imagefile;
 
   sprintf(filename, "actor_%s.bmp", get_game_tag(Game::get_game()->get_game_type()));
-  build_path(getDollDataDirString(), filename, imagefile);
+  if(orig) {
+    build_path(getDollDataDirString(), "orig_style", imagefile);
+    build_path(imagefile, filename, imagefile);
+  } else {
+    build_path(getDollDataDirString(), filename, imagefile);
+  }
+  NuvieBmpFile bmp;
   return bmp.getSdlSurface32(imagefile);
 }

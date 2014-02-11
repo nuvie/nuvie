@@ -50,7 +50,7 @@ class DollWidget : public GUI_Widget {
  Tile *empty_tile, *blocked_tile;
 
  U6Shape *md_doll_shp;
- SDL_Surface *actor_doll;
+ SDL_Surface *actor_doll, *doll_bg;
 
  public:
  DollWidget(Configuration *cfg, GUI_CallBack *callback = NULL);

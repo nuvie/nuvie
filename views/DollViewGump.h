@@ -39,8 +39,6 @@ class DollWidget;
 
 class DollViewGump : public DraggableView {
 
-  NuvieBmpFile bmp;
-
 	GUI_Button *gump_button;
 	GUI_Button *combat_button;
 	GUI_Button *heart_button;

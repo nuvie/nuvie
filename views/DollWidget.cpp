@@ -105,7 +105,7 @@ DollWidget::DollWidget(Configuration *cfg, GUI_CallBack *callback): GUI_Widget(N
  need_to_free_tiles = false;
 
  use_new_dolls = true; old_use_new_dolls = true;
- actor_doll = NULL;
+ actor_doll = NULL; doll_bg = NULL;
  md_doll_shp = NULL;
 }
 
@@ -168,6 +168,10 @@ void DollWidget::free_doll_shapes()
 		SDL_FreeSurface(actor_doll);
 		actor_doll = NULL;
 	}
+	if(doll_bg) {
+		SDL_FreeSurface(doll_bg);
+		doll_bg = NULL;
+	}
 	if(md_doll_shp) {
 		delete md_doll_shp;
 		md_doll_shp = NULL;
@@ -194,15 +198,31 @@ void DollWidget::set_actor(Actor *a)
 	}
  }
  if(use_new_dolls) {
+	free_doll_shapes();
 	if(actor) {
 		ViewManager *vm = Game::get_game()->get_view_manager();
 		if(actor->is_avatar())
-			actor_doll = vm->loadAvatarDollImage(actor_doll);
+			actor_doll = vm->loadAvatarDollImage(actor_doll, true);
 		else
-			actor_doll = vm->loadCustomActorDollImage(actor_doll, actor->get_actor_num());
+			actor_doll = vm->loadCustomActorDollImage(actor_doll, actor->get_actor_num(), true);
 		setColorKey(actor_doll);
-	} else
-		free_doll_shapes();
+		if(actor_doll) {
+			std::string imagefile;
+			build_path(vm->getDollDataDirString(), "orig_style", imagefile);
+			build_path(imagefile, "doll_bg.bmp", imagefile);
+			NuvieBmpFile bmp;
+			doll_bg = bmp.getSdlSurface32(imagefile);
+			if(doll_bg) {
+				SDL_Rect dst;
+				dst.w = 27;
+				dst.h = 30;
+				dst.x = 3;
+				dst.y = 1;
+				SDL_BlitSurface(actor_doll, NULL, doll_bg, &dst);
+				setColorKey(doll_bg);
+			}
+		}
+	}
  }
  else if(Game::get_game()->get_game_type() == NUVIE_GAME_MD)
  {
@@ -267,15 +287,14 @@ void DollWidget::Display(bool full_redraw)
 
 inline void DollWidget::display_new_doll()
 {
-	SDL_Rect dst;
-	dst = area;
-
-	if(actor_doll) {
-		dst.w = 108;
-		dst.h = 136;
-		dst.x += 18;
-		dst.y += 16;
-		SDL_BlitSurface(actor_doll, NULL, surface, &dst);
+	if(doll_bg) {
+		SDL_Rect dst;
+		dst = area;
+		dst.w = 33;
+		dst.h = 33;
+		dst.x += 15;
+		dst.y += 15;
+		SDL_BlitSurface(doll_bg, NULL, surface, &dst);
 	}
 }
 
