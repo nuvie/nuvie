@@ -63,10 +63,10 @@ fi
 AC_ARG_ENABLE(tools,    [  --disable-tools         Don't build the tools],,enable_tools=yes)
 AC_MSG_CHECKING(whether to build the tools)
 if test x$enable_tools = xno; then
-        AC_MSG_RESULT(yes)
+        AC_MSG_RESULT(no)
         AM_CONDITIONAL(BUILD_TOOLS, false)
 else
-        AC_MSG_RESULT(no)
+        AC_MSG_RESULT(yes)
         AM_CONDITIONAL(BUILD_TOOLS, true)
 fi
 
@@ -79,10 +79,9 @@ AC_ARG_ENABLE(joysticks, [  --disable-joysticks         Disable support for joys
 AC_MSG_CHECKING([whether to support joysticks])
 if test x$enable_joysticks = xno; then
         AC_MSG_RESULT(no)
-        AM_CONDITIONAL(HAVE_JOYSTICK_SUPPORT, false)
 else
         AC_MSG_RESULT(yes)
-        AM_CONDITIONAL(HAVE_JOYSTICK_SUPPORT, true)
+        CPPFLAGS="$CPPFLAGS -DHAVE_JOYSTICK_SUPPORT"
 fi
 
 # ---------------------------------------------------------------------
