@@ -1,3 +1,6 @@
+2014-02-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1876
+	* Fix r1871 regression that caused the new msgscroll to cancel action.
+
 2014-02-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1875
 	* Modify the custom dolls to look better in non-new styles.
 

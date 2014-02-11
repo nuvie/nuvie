@@ -897,7 +897,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
         }
 
        }
-     else
+     else if(!Game::get_game()->is_new_style())
         Game::get_game()->get_event()->cancelAction();
     }
     else if(button == 3) // right click == send input
@@ -910,7 +910,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
             return(GUI_YUM);
         }
       }
-      else
+      else if(!Game::get_game()->is_new_style())
             Game::get_game()->get_event()->cancelAction();
     }
     return(GUI_PASS);
