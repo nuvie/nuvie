@@ -2495,7 +2495,9 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
        && !event->dont_show_target_cursor())
         game->set_mouse_pointer(1); // crosshairs
     else if(dragging || (game->is_orig_style() && (wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1)
-                                                   || wy == (cur_y+win_height-1))))
+                                                   || wy == (cur_y+win_height-1)))
+            || (game->is_original_plus() && (my <= Game::get_game()->get_game_y_offset() + 200 || game->is_original_plus_cutoff_map())
+                && mx >= Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width))
         game->set_mouse_pointer(0); // arrow
     else
         game->set_mouse_pointer(mptr); // 1=crosshairs, 2to9=arrows

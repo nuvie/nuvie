@@ -1,4 +1,7 @@
-2014-02-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1872
+2014-02-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1873
+	* Use pointer cursor when over original+ background/UI.
+
+2014-02-11  Malignant Manor <malignantmanor@users.sourceforge.net> r1872
 	* End character's turn when canceling an attack.
 	* Do a better job of selecting when to use the target cursor.
 
