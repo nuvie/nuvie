@@ -1,3 +1,6 @@
+2014-02-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1881
+	* Have install call copy_scripts to get rid of redundancy in makefile.mingw.
+
 2014-02-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1880
 	* Add forgotten (from r1875) orig_style\doll_bg.bmp to the Windows installer
 
