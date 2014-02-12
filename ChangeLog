@@ -1,3 +1,6 @@
+2014-02-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1880
+	* Add forgotten (from r1875) orig_style\doll_bg.bmp to the Windows installer
+
 2014-02-12  Malignant Manor <malignantmanor@users.sourceforge.net> r1879
 	* Have the orig_style_cb hidden in new style by default.
 	* Allow container view gump to select the check mark with arrow keys.

@@ -143,6 +143,7 @@ Source: data\images\gumps\doll\orig_style\avatar_U6_08.bmp; DestDir: {app}\data\
 Source: data\images\gumps\doll\orig_style\avatar_U6_09.bmp; DestDir: {app}\data\images\gumps\doll\orig_style; Flags: ignoreversion
 Source: data\images\gumps\doll\orig_style\avatar_U6_10.bmp; DestDir: {app}\data\images\gumps\doll\orig_style; Flags: ignoreversion
 Source: data\images\gumps\doll\orig_style\avatar_U6_11.bmp; DestDir: {app}\data\images\gumps\doll\orig_style; Flags: ignoreversion
+Source: data\images\gumps\doll\orig_style\doll_bg.bmp; DestDir: {app}\data\images\gumps\doll\orig_style\; Flags: ignoreversion
 Source: data\images\gumps\doll\combat_btn_down.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\combat_btn_up.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
 Source: data\images\gumps\doll\doll_bg.bmp; DestDir: {app}\data\images\gumps\doll; Flags: ignoreversion
