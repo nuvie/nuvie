@@ -141,6 +141,6 @@ Makefile
 tools/Makefile
 builds/linux/nuvie.cfg
 nuvie.spec:builds/linux/nuvie.spec.in
-builds/macosx/info.plist
+builds/macosx/Info.plist
 ])
 AC_OUTPUT
