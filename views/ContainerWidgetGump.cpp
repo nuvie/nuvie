@@ -26,6 +26,7 @@
 #include "GUI.h"
 #include "ContainerWidgetGump.h"
 #include "Keys.h"
+#include "ViewManager.h"
 
 
 static const Tile gump_empty_tile = {
@@ -111,7 +112,7 @@ void ContainerWidgetGump::Display(bool full_redraw)
 	display_inventory_list();
 	if(show_cursor)
 	{
-		screen->blit(area.x+cursor_x*16,area.y+cursor_y*16,(unsigned char *)cursor_tile->data,8,16,16,16,true);
+		screen->blit(area.x+(cursor_x < 0 ? -21 : cursor_x*16),area.y+(cursor_x < 0 ? -2 : cursor_y*16),(unsigned char *)cursor_tile->data,8,16,16,16,true);
 	}
 	screen->update(area.x, area.y, area.w, area.h);
 }
@@ -129,7 +130,7 @@ void ContainerWidgetGump::cursor_right()
 
 void ContainerWidgetGump::cursor_left()
 {
-	if(cursor_x > 0)
+	if(cursor_x > -1)
 	{
 		cursor_x--;
 	}
@@ -190,6 +191,11 @@ GUI_status ContainerWidgetGump::KeyDown(SDL_keysym key)
 	            cursor_right();
 	            break;
 	        case DO_ACTION_KEY:
+	        	if(cursor_x == -1)
+	        	{
+	        		Game::get_game()->get_view_manager()->close_gump((DraggableView*)parent);
+	        		break;
+	        	}
 	        	selected_obj = get_obj_at_location(cursor_x * 16,cursor_y * 16);
 	        	if(selected_obj)
 	        	{

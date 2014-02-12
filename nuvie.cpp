@@ -357,7 +357,7 @@ void Nuvie::SharedDefaultConfigValues()
 			config->set(game_str[i] + "roof_mode", false);
 		}
 		config->set(game_str[i] + "cb_position", "default");
-		config->set(game_str[i] + "show_orig_style_cb", true);
+		config->set(game_str[i] + "show_orig_style_cb", "default");
 		if(i == 0) // U6
 			config->set("config/ultima6/cb_text_color", 115);
 		config->set(game_str[i] + "converse_solid_bg", false);

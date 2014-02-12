@@ -354,7 +354,17 @@ bool Game::loadGame(Script *s)
             command_bar->Show();
         else {
             bool show;
-            config->value(config_get_game_key(config) + "/show_orig_style_cb", show, true);
+            std::string show_cb;
+            config->value(config_get_game_key(config) + "/show_orig_style_cb", show_cb, "default");
+            if(show_cb == "default") {
+                if(is_new_style())
+                    show = false;
+                else
+                    show = true;
+            } else if(show_cb == "no")
+                show = false;
+            else
+                show = true;
             if(show)
                 command_bar->Show();
         }

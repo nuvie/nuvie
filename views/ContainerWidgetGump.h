@@ -36,7 +36,8 @@ class Font;
 class ContainerWidgetGump : public ContainerWidget {
 
  private:
- uint16 cursor_x, cursor_y;
+ sint16 cursor_x;
+ uint16 cursor_y;
  const Tile *cursor_tile;
  bool show_cursor;
 
