@@ -141,6 +141,7 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 {
 	if(state == true)
 	{
+		Game::get_game()->get_keybinder()->set_enable_joy_repeat(false);
 		found_break_char = true;
 		conv_keywords.clear();
 		permitted_input_keywords.clear();
@@ -162,7 +163,10 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 			add_keyword("leave");
 		else if(!cant_join)
 			add_keyword("join");
-
+		if(game_type == NUVIE_GAME_U6 && !altar) {
+			add_keyword("rune");
+			add_keyword("mantra");
+		}
     	keyword_list = &conv_keywords;
 
 		if(avatar_portrait)
@@ -173,6 +177,8 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 
 		cursor_position = 0;
 	}
+	else
+		Game::get_game()->get_keybinder()->set_enable_joy_repeat(true);
 
 	MsgScroll::set_talking(state);
 }

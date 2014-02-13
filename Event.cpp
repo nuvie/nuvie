@@ -2148,8 +2148,9 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 scroll->display_string(" 5) Wisps\n");
                 scroll->display_string(" 6) Dagger Isle\n");
                 scroll->display_string(" 7) Shipwreck\n");
+                scroll->display_string(" 8) Phoenix\n");
                 scroll->display_string("Location? ");
-                get_scroll_input("01234567");
+                get_scroll_input("012345678");
                 break;
         }
     }
@@ -2288,6 +2289,8 @@ void Event::alt_code_teleport_menu(uint32 selection)
                     teleport_dest = "3a9 d3 0";
                 else if(selection == 7) // Shipwreck
                     teleport_dest = "1aa 3a6 0";
+                else if(selection == 8) // Phoenix
+                    teleport_dest = "76 46 3";
                 break;
         }
         if(strlen(teleport_dest))

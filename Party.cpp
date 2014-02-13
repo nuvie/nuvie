@@ -936,9 +936,7 @@ bool Party::can_rest(std::string &err_str)
 
 	ActorList *enemies = 0;
 	ActorList *all_actors = 0;
-	uint8 level = 0;
 
-	level = pActor->get_z();
 	if(is_in_combat_mode())
 	{
 		if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
@@ -952,7 +950,7 @@ bool Party::can_rest(std::string &err_str)
 			&& pActor->get_obj_n() != OBJ_U6_SHIP) // player is a vehicle
 		err_str = "-Can not be repaired!";
 	else if(Game::get_game()->get_game_type() == NUVIE_GAME_U6
-	        && ((level != 0 && level != 5) || game->get_map_window()->in_town()))
+	        && game->get_map_window()->in_town())
 		err_str = "-Only in the wilderness!";
 	else if((enemies = pActor->find_enemies()))
 	{

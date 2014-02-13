@@ -2690,12 +2690,18 @@ void MapWindow::set_overlay(SDL_Surface *surfpt)
     overlay = surfpt;
 }
 
-/* Returns true if town tiles are visible in the MapWindow. */ 
+// TODO: We probably shouldn't use m_ViewableTiles anymore or make sure tiles more than 5 tiles away aren't added
+// There's no check for is_orig_style (which will only have 5 tiles) below to help speed this up in higher resolutions
+
+/* Returns true if town tiles are within 5 tiles of the player */ 
 bool MapWindow::in_town()
 {
+    MapCoord player_loc = actor_manager->get_player()->get_location();
+
     for(std::vector<TileInfo>::iterator ti = m_ViewableTiles.begin();
         ti != m_ViewableTiles.end(); ti++)
-        if((*ti).t->flags1&TILEFLAG_WALL && (*ti).t->flags1&TILEFLAG_WALL_MASK) //only wall tiles with wall direction bits set.
+        if(MapCoord((*ti).x, (*ti).y, cur_level).distance(player_loc) <= 5 && // make sure tile is close enough
+           (*ti).t->flags1&TILEFLAG_WALL && (*ti).t->flags1&TILEFLAG_WALL_MASK) //only wall tiles with wall direction bits set.
         {
             return true;
         }

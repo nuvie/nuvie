@@ -1,3 +1,10 @@
+2014-02-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1885
+	* Allow sleeping in dungeons like the original and have the in_town check
+	  only count tiles 5 tiles away or less.
+	* Add Phoenix to the teleport list.
+	* Stop joystick repeating when using ConverseGump.
+	* Add rune and mantra to ConverseGump keywords.
+
 2014-02-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1884
 	* Add kludge to fix an infinite loop crash caused by increase_input_char()
 	  and decrease_input_char() being used during the hacky PauseEffect (peer).
