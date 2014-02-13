@@ -1,3 +1,7 @@
+2014-02-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1883
+	* Fix save dialog adding area.x/y twice when determining the location of the
+	  keyboard cursor. (Forgetten when I optimized display updates.)
+
 2014-02-12  Dominik Reichardt <dominus@users.sourceforge.net> r1882
 	* Fixed case sensitive plunder in configure.ac (Info.plist not info.plist)
 

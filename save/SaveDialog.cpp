@@ -258,8 +258,8 @@ GUI_status SaveDialog::KeyDown(SDL_keysym key)
 			break;
 		if(cursor_loc == CURSOR_AT_SLOTS) // editing save description and selecting the slot
 			show_cursor = false;
-		uint16 x = (area.x + cursor_x)*screen->get_scale_factor();
-		uint16 y = (area.y + cursor_y + 8)*screen->get_scale_factor();
+		uint16 x = cursor_x*screen->get_scale_factor();
+		uint16 y = (cursor_y + 8)*screen->get_scale_factor();
 
 		SDL_Event fake_event;
 		fake_event.button.x = x;
