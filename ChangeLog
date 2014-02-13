@@ -1,3 +1,7 @@
+2014-02-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1884
+	* Add kludge to fix an infinite loop crash caused by increase_input_char()
+	  and decrease_input_char() being used during the hacky PauseEffect (peer).
+
 2014-02-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1883
 	* Fix save dialog adding area.x/y twice when determining the location of the
 	  keyboard cursor. (Forgetten when I optimized display updates.)

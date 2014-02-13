@@ -1151,6 +1151,8 @@ void MsgScroll::request_input(CallBack *caller, void *user_data)
 // 0 is no char, 1 - 26 is alpha, 27 is space, 28 - 37 is numbers
 void MsgScroll::increase_input_char()
 {
+	if(permit_input != NULL && strcmp(permit_input, "\n") == 0) // blame hacky PauseEffect
+		return;
 	if(yes_no_only)
 		input_char = input_char == 25 ? 14 : 25; 
 	else if(numbers_only)
@@ -1163,6 +1165,8 @@ void MsgScroll::increase_input_char()
 
 void MsgScroll::decrease_input_char()
 {
+	if(permit_input != NULL && strcmp(permit_input, "\n") == 0) // blame hacky PauseEffect
+		return;
 	if(yes_no_only)
 		input_char = input_char == 25 ? 14 : 25;
 	else if(numbers_only)
